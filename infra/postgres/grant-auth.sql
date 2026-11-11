@@ -152,6 +152,9 @@ GRANT INSERT(character_id,item_id,trade_id,quantity,item),UPDATE(quantity),DELET
 -- runtime roles as well as databases upgraded with the role already present.
 DO $$
 BEGIN
+  IF to_regclass('mare_game.bounty_victories') IS NOT NULL THEN
+    GRANT SELECT ON mare_game.bounty_victories TO mare_runtime;
+  END IF;
   IF to_regclass('mare_game.market_listings') IS NOT NULL THEN
     GRANT SELECT ON mare_game.market_listings,mare_game.market_proposals,mare_game.market_notifications TO mare_runtime;
     GRANT EXECUTE ON FUNCTION mare_game.market_balance(uuid),mare_game.market_reward_wallet_offset(uuid),

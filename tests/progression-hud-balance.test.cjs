@@ -1,22 +1,22 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),C=require('../character-system.js'),X=require('../character-catalog.js'),B=require('../world-battle.cjs'),A=require('../archipelago.js'),F=require('../forge-system.js'),D=require('../contract-system.js');
-test('double the incremental XP percentage and convert saves once',()=>{
- assert.equal(X.xpNeeded(1),80);assert.equal(X.xpNeeded(2),130);
- for(const level of [3,5,10,20,40,75,200]){
-   const prev=X.legacyXpNeeded(level-1),growth=2*(X.legacyXpNeeded(level)-prev)/prev;
-   assert(Math.abs(X.xpNeeded(level)-X.xpNeeded(level-1)*(1+growth))<=1.25);
-   const xp=Math.floor(X.legacyXpNeeded(level)/2),save={level,xp,stats:{xpEarned:123}},m=X.migrateXP(save);
-   assert.equal(m.level,level);assert.equal(m.stats,save.stats);
-   assert(Math.abs(m.xp/X.xpNeeded(level)-xp/X.legacyXpNeeded(level))<=1/X.xpNeeded(level));
-   assert.equal(X.migrateXP(m),m);
- }
+test('charge a third of the previous level cost and preserve exact XP through migration',()=>{
+  assert.equal(X.xpNeeded(1),27);assert.equal(X.xpNeeded(2),44);
+  for(const level of [3,5,10,20,40,75,200]){
+    const cost=X.xpNeeded(level),next=X.xpNeeded(level+1),stats={xpEarned:123};
+    assert.equal(cost,Math.ceil(X.previousXpNeeded(level)/3));
+    assert.deepEqual(X.migrateXP({level,xp:cost-1,stats,xpCurveVersion:2}),{level,xp:cost-1,stats,xpCurveVersion:3});
+    const m=X.migrateXP({level,xp:cost+next+7,stats,xpCurveVersion:2});
+    assert.deepEqual(m,{level:level+2,xp:7,stats,xpCurveVersion:3});
+    assert.equal(X.migrateXP(m),m);
+  }
 });
 test('XP follows archipelago order across regions; normal iron is scaled once after loot bonuses',()=>{
  assert.deepEqual([4,5,10,80].map(level=>F.lootLevel(level,B.hunt.get('swamp'))),[5,5,10,10]);
  for(const [i,island] of A.islands.entries()){
    const s=B.hunt.get(island.area).sectors[0],type=s.roles[0],p=B.hunt.profile(island.area,s.id,type);
    const reward=B.hunt.rewards(island.area,{...p,type,district:s.id},p.level);
-   assert.equal(reward.xp,Math.round(Math.round(p.xp/10)*1.15**i));
+   assert.equal(reward.xp,2*Math.round(Math.round(p.xp/10)*1.15**i));
    assert.equal(reward.gearChance,.12);
    assert.equal(B.hunt.materialDropChance(reward,2),Math.min(1,reward.materialChance*2)*.2);
  }
@@ -44,4 +44,19 @@ test('old battle profiles are upgraded once without resetting wounds, position o
  const {x,y,id}=m;B.upgradeBalance(b);
  assert.deepEqual({x:m.x,y:m.y,id:m.id},{x,y,id});assert.equal(m.hp,Math.ceil(m.maxHP/2));assert(Math.abs(m.attackClock-m.attackSec/2)<1e-10);
  const before=structuredClone(b);B.upgradeBalance(b);assert.deepEqual(b,before);
+});
+test('César level five halves normal and amplified incoming hits once',()=>{
+  const stats={defense:40,mitigation:0,protection:0};
+  for(const multiplier of [1,1.8,2.1]){
+    const attack=220*multiplier;
+    const before=C.incoming(stats,attack,false,1);
+    assert.equal(C.incoming(stats,attack,false,1,{monster:{type:'cesar',level:5}}),Math.ceil(before/2));
+    assert.equal(C.incoming(stats,attack,false,1,{monster:{type:'cesar',level:6}}),before);
+  }
+});
+test('high-level world damage preserves defense and does not change dungeon damage',()=>{
+  const damage=(defense,level,source)=>C.incoming({defense,mitigation:0},250,false,1,{monster:{level,source}});
+  assert.equal(damage(100,44,'world'),damage(100,45,'boss-dungeon'));
+  assert(damage(100,45,'world')>damage(100,44,'world'));
+  assert(damage(200,45,'world')<damage(100,45,'world'));
 });

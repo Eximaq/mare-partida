@@ -9,8 +9,9 @@ const catalog=rules.create({characters});
 const rulesHash=createHash('sha256').update(JSON.stringify(catalog)).update(getGameCatalog().rulesHash)
   .update(readFileSync(new URL('../../../../character-system.js',import.meta.url),'utf8').replaceAll('\r\n','\n')).digest('hex');
 export const xpNeeded:(level:number)=>number=rules.xpNeeded;
+export const previousXpNeeded:(level:number)=>number=rules.previousXpNeeded;
 export const legacyXpNeeded:(level:number)=>number=rules.legacyXpNeeded;
-export const advanceOriginalLevel:(value:{level:number;start:bigint;experience:bigint})=>{level:number;start:bigint;levels:{level:number;start:bigint}[]}=rules.advance;
+export const advanceOriginalLevel:(value:{level:number;start:bigint;experience:bigint},limit?:number,cost?:(level:number)=>number)=>{level:number;start:bigint;levels:{level:number;start:bigint}[]}=rules.advance;
 export function deriveOriginalFighter(classId:string,factionId:string,state:CharacterState,allocated:AttributeValues,inventory:OriginalInventory,build?:TalentBuild,runtime?:any,haki?:any,fruits?:{registered:string[]} | null,battle?:any,legacyCadence=false,crewVitality=0):Fighter {
   const A=require('../../../../akuma-system.js'),P=require('../../../../akuma-passives.js'),fruitId=A.itemData(inventory.equipment.akuma_no_mi,getGameCatalog().items)?.id;
   const gear=A.applyGear(forge.aggregate(inventory.equipment,getGameCatalog().items),inventory.equipment.akuma_no_mi,getGameCatalog().items);gear.akumaRegistered=fruits?.registered.length||0;

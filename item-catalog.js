@@ -6,7 +6,7 @@
    health:Object.freeze({id:"potion",name:"Poção de Vida",resource:"Vida",stock:"potions",price:35,icon:"assets/ui/items-hd/potion.png",key:"Q"}),
    mana:Object.freeze({id:"mana-potion",name:"Poção de Mana",resource:"Energia",stock:"manaPotions",price:35,icon:"assets/ui/items-hd/mana-potion.svg",key:"E"}),
  });
- const potionRules=Object.freeze({restorePercent:25,cooldownMs:4000,maxPurchase:99,maxStock:1000000000,merchantReach:80});
+ const potionRules=Object.freeze({restorePercent:25,cooldownMs:5000,maxPurchase:99,maxStock:1000000000,merchantReach:80});
  const potionRecovery=max=>Math.round(max*potionRules.restorePercent/100);
  function create({forge:MareForge,prison:MarePrison,haki:MareHaki,akuma:MareAkuma,hakiProgression:MareHakiProgression,bossDungeons:BossDungeons=root.MareBossDungeons||(typeof require==='function'?require('./boss-dungeon-system.js'):null)}){
   const itemDefs = [

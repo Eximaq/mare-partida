@@ -26,7 +26,7 @@ test('every authored common monster gets deterministic points and the new attack
   assert.equal(profile.accuracy,1);
   assert.equal(profile.defense,Math.round(Math.round((base.physical_defense+.24*profile.attributes.defense)*1.3)*1.2));
   assert.equal(profile.magicDefense,Math.round(base.magic_defense*1.2));
-  assert.equal(E.hunt.rewards(area,{...profile,type:slot.type,district:slot.sector},profile.level).xp,Math.round(Math.round(profile.xp/10)*E.hunt.xpByMap(area)));
+  assert.equal(E.hunt.rewards(area,{...profile,type:slot.type,district:slot.sector},profile.level).xp,2*Math.round(Math.round(profile.xp/10)*E.hunt.xpByMap(area)));
  }
 });
 test('shared contracts preserve original IDs, fixed rewards and migrated once-only objectives',()=>{

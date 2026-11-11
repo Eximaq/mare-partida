@@ -18,6 +18,7 @@
 !packages/shared/src/**
 
 !boss-dungeon-system.js
+!bounty-system.js
 !character-catalog.js
 !character-system.js
 !item-catalog.js

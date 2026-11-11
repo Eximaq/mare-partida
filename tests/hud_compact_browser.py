@@ -132,6 +132,9 @@ with sync_playwright() as p:
         q.clock.run_for(4100)
         q.evaluate('__compactQA.game.energy=0;__compactQA.refresh()')
         q.keyboard.press('e')
+        assert q.evaluate('__compactQA.game.manaPotions')==2
+        q.clock.run_for(1000)
+        q.keyboard.press('e')
         assert q.evaluate('__compactQA.game.manaPotions')==1
         assert q.evaluate('__compactQA.game.energy')>=q.evaluate('Math.round(__compactQA.stats().maxEnergy*.25)')
         # A self-targeted class skill exercises the real button and cooldown
