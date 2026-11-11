@@ -10,5 +10,47 @@
     "size_bytes": 930685,
     "sha256": "73b7053f994f230b2d88191e6acd1bef51a46f1758fdd2ad6edd087c7349b57e",
     "pngs": 12
+  },
+  {
+    "file": "female_22_east_EW36.zip",
+    "size_bytes": 829224,
+    "sha256": "29f9897148dc70122b6ac82137214ecda835169df39563b9d1c92061f245bf72",
+    "pngs": 12
+  },
+  {
+    "file": "female_22_west_EW36.zip",
+    "size_bytes": 828981,
+    "sha256": "8c82b8c52e8db3dd35979f119a9fc4c2739e445866ada80eecc00bb478473964",
+    "pngs": 12
+  },
+  {
+    "file": "female_22_south_SN25.zip",
+    "size_bytes": 672701,
+    "sha256": "a0d78a2153d63b2e608956bc44d8b85c9dc7eb0cbf70bad8e06c50742b8ed92b",
+    "pngs": 10
+  },
+  {
+    "file": "female_22_north_SN25.zip",
+    "size_bytes": 700918,
+    "sha256": "d104c74acec57c3ac8ebc82d1e982f9d6cd4f9fb6065fa5a6d2f396aaa489304",
+    "pngs": 12
+  },
+  {
+    "file": "male_172_pants161-boot8_shown-states_upperarm-v2.zip",
+    "size_bytes": 634857,
+    "sha256": "94b8c75d3c5bf247d85c59542f1bc11087ab249a1f4674310b43e897cf55aacf",
+    "pngs": 8
+  },
+  {
+    "file": "male_172_pants161-boot183_shown-states_upperarm-v2.zip",
+    "size_bytes": 628992,
+    "sha256": "ee365d34bb08b1f404083da8c4f58ad7f4e0b924c44025389efde387575a1a64",
+    "pngs": 8
+  },
+  {
+    "file": "male_172_pants147-boot176_shown-states_upperarm-v2.zip",
+    "size_bytes": 622397,
+    "sha256": "ce0bde487715dc59aa0063c3f64cf83f020f2514ed765c0a8462f5f9bae0306d",
+    "pngs": 8
   }
 ]
