@@ -1,0 +1,32 @@
+[
+  {
+    "file": "male119_east-west_four-torsos_approved-v1.zip",
+    "bytes": 6580708,
+    "sha256": "f1b23de9c2d1b9c3c57b7b53e9947e0d3b909b8c7371e124629fe43c08487ee8",
+    "finalFrames": 64
+  },
+  {
+    "file": "female15_east-west_four-torsos_approved-v1.zip",
+    "bytes": 6262216,
+    "sha256": "da7c924b13b45adaa610e549d33c20fa513be35d90106bf6c26318c2987d3d0d",
+    "finalFrames": 64
+  },
+  {
+    "file": "female118_east-west_four-torsos_approved-v1.zip",
+    "bytes": 5736242,
+    "sha256": "705891db8e33dab271a5fdbeb0197ccbc12fec9eed757d286a4dc70f06994bda",
+    "finalFrames": 64
+  },
+  {
+    "file": "female119_east-west_four-torsos_approved-v1.zip",
+    "bytes": 6333002,
+    "sha256": "33c747324ebdb11bca655c8437cc1ba962579930da289f3a46e5662317d3e573",
+    "finalFrames": 64
+  },
+  {
+    "file": "female120_east-west_four-torsos_approved-v1.zip",
+    "bytes": 6208204,
+    "sha256": "4c4177375176e60568fc783d7ca3305b6ec2085474d717b6ca52549413827a96",
+    "finalFrames": 64
+  }
+]
