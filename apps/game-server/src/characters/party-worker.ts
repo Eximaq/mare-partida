@@ -97,7 +97,7 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
      await recordDailyProgress(c,a.id,kills.map((k:any)=>({...k,berry:crewMonsterBerry(k.reward.gold,E.catalog.factions[a.factionId].gold,a.crewBenefits.navigator)})));
     }
     if(a.state.version>=Number.MAX_SAFE_INTEGER)throw Error('state_version_exhausted');
-     await advanceLevel(c,a.id,requestId,a.state);await c.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[a.id]);
+     await advanceLevel(c,a.id,requestId,a.state,true);await c.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[a.id]);
     const after=await readCharacterState(c,a.id);if(after.level>a.state.level){const next=(await readCombatInputs(c,[a.id])).get(a.id)!.fighter(a.b);a.b.hp=next.maxHp;if(next.rulesetId==='original-character-v1')a.b.energy=next.stats.maxEnergy;}await observeServerAchievements(c,a.id,a.state,after,{kills:kills.length,currentCombatSchema:true});
     await c.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4)',[a.id,requestId,digest('server-party:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:after})]);
     a.b.partyXpReceived=(a.b.partyXpReceived??0)+Number(awarded.xp);

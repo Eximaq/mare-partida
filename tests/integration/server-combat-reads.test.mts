@@ -64,7 +64,7 @@ async function prepareSharedReward(f:any,all:any[]){
  await f.pool.query("UPDATE mare_game.party_instances SET simulation=$2,tick_at=clock_timestamp()-interval '150 milliseconds' WHERE id=$1",[instance,JSON.stringify(room)]);
  return instance;
 }
-test('four-member reward avoids repeated permanent-power reads while preserving XP, loot and receipts',async()=>authDatabase(async f=>{
+test('four-member reward avoids repeated permanent-power reads while preserving XP, loot and receipts',async t=>authDatabase(async f=>{
  const all=await party(f);
  await f.pool.query("UPDATE mare_game.character_progression SET xp_boost_until=transaction_timestamp()+interval '1 hour' WHERE character_id=$1",[all[0]!.c.id]);
  const before=await Promise.all(all.map(a=>a.read())),instance=await prepareSharedReward(f,all);
@@ -77,6 +77,7 @@ test('four-member reward avoids repeated permanent-power reads while preserving 
   const power=await permanentCharacterPower(c,id,after.state),row=(await c.query('SELECT power FROM mare_game.character_hierarchy WHERE character_id=$1',[id])).rows[0];assert.equal(row.power,power);
   assert.equal((await c.query("SELECT count(*)::int n FROM mare_game.character_commands WHERE character_id=$1 AND result->>'action'='battle.reward'",[id])).rows[0].n,1);
  }}finally{c.release();}
+ t.diagnostic(`Shared reward database round trips: ${n}`);
  assert.ok(n<=90,`shared reward used ${n} database round trips; repeated power reads delay the next room`);
 }));
 

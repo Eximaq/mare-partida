@@ -1093,6 +1093,21 @@
     return ONLINE_GAME&&g===game?MareOnlineGameUI.derived(stats,ONLINE_GAME.data):stats;
   }
   function xpNeeded(level){if(ONLINE_GAME)return Number(ONLINE_GAME.data?.online?.progression?.xpForNextLevel||1);return MareCharacterCatalog.xpNeeded(level);}
+  let bountySnapshot,bountyCheck=0,bountyCharacter;
+  function playerBounty(){
+    if(ONLINE_GAME)return ONLINE_GAME.data?.online.bounty??null;
+    if(!game)return null;
+    const now=performance.now();
+    if(bountyCharacter===game.characterId&&now<bountyCheck)return bountySnapshot;
+    bountyCheck=now+1000;bountyCharacter=game.characterId;
+    const haki=MareHakiProgression.ids.filter(id=>MareHakiProgression.learned(game,id)).length;
+    bountySnapshot=MareBounty.calculate({
+      power:getDerived(game,null).power,level:game.level,hierarchy:game.hierarchyTier,hierarchyMax:MareHierarchy.titles[game.factionId]?.length,
+      impel:game.impelDown?.cleared,impelMax:MarePrison.FLOOR_COUNT,haki,
+      achievements:MareBounty.countAchievements(MareAchievements.list(game)),berry:game.gold,crew:0
+    }).berry;
+    return bountySnapshot;
+  }
   function observeAchievements(g=game){if(ONLINE_GAME)return g;return MareAchievements.observe(g,{power:getDerived(g,null).power});}
   function saveGame(){if(ONLINE_GAME)return;if(!game||suppressSave||!saveWriter.owner)return;if(DEV_ACTIVE)game.devSandbox=true;game=observeAchievements(); try {localStorage.setItem(STORAGE_KEY,JSON.stringify(game));$('saveDot').style.background='#65c9bc';return true;} catch(e) {toast('Não foi possível salvar o progresso no navegador.','danger');return false;} }
   function preserveSave(raw,key=STORAGE_KEY+'-before-attributes-v1'){
@@ -1691,7 +1706,7 @@
     if(DEV_ACTIVE&&game.devOptions?.godMode)return;
     if(session.fruitInvulnerable>0)return;
     const d=getDerived();if(!direct&&!source&&Math.random()<d.evasion){session.haki.eyeFX=.35;spawnVisual(world.hero.x,world.hero.y-46,'ESQUIVA','#b8a8ef',13);return;}
-    const rawBeforeLogia=direct?amount:MareCharacters.incoming(physical?d:{...d,defense:d.magicDefense??d.defense},amount*(source?.kobuDebuffUntil>Date.now()?.8:1)*(source?.hakiDebuff>0?1-MareHakiProgression.limits.bossReduction:1)*(physical?1-(d.impactResistancePercent||0):1),session.guard>0,rand(.85,1.1),{monster:!!source}),raw=MareRankB.reduction(rawBeforeLogia,{equipped:MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id,physical,hasHaki:hasHaki===true||source?.hasHaki===true}),retaliation=MareAkuma.retaliate(amount,raw,{active:supaShieldActive()&&!reflected,physical,direct}),reaction=direct?{damage:raw*(bariActive?.2:1)}:MareTalentCombat.receive(game,session.talents,{stats:d,amount:retaliation.damage*(bariActive?.2:1),physical,source,melee:!!source&&physical&&(source.reach??monsterTypes[source.type]?.reach??Infinity)<=60});
+    const rawBeforeLogia=direct?amount:MareCharacters.incoming(physical?d:{...d,defense:d.magicDefense??d.defense},amount*(source?.kobuDebuffUntil>Date.now()?.8:1)*(source?.hakiDebuff>0?1-MareHakiProgression.limits.bossReduction:1)*(physical?1-(d.impactResistancePercent||0):1),session.guard>0,rand(.85,1.1),{monster:source}),raw=MareRankB.reduction(rawBeforeLogia,{equipped:MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id,physical,hasHaki:hasHaki===true||source?.hasHaki===true}),retaliation=MareAkuma.retaliate(amount,raw,{active:supaShieldActive()&&!reflected,physical,direct}),reaction=direct?{damage:raw*(bariActive?.2:1)}:MareTalentCombat.receive(game,session.talents,{stats:d,amount:retaliation.damage*(bariActive?.2:1),physical,source,melee:!!source&&physical&&(source.reach??monsterTypes[source.type]?.reach??Infinity)<=60});
     if(reaction.untargetable||reaction.invulnerable)return;
     game.energy=Math.max(0,game.energy-(reaction.energyUsed||0));
     if(reaction.parry){spawnVisual(world.hero.x,world.hero.y-60,'APAROU','#e5d6a2',13);if(source?.alive&&distance(world.hero,source)<=d.range&&combatLine(world.hero,source))outputDamage(source,MareCharacters.damage(d,enemyArmor(source)*(1-d.penetration)));return;}
@@ -2138,7 +2153,7 @@
     syncExpeditionMini();
     $('xpPerHour').textContent=scene==='hunt'&&session.elapsed>=20?fmt(session.xp/session.elapsed*3600):'—';$('goldPerHour').textContent=scene==='hunt'&&session.elapsed>=20?fmt(session.gold/session.elapsed*3600):'—';$('questList').innerHTML=questDefs.map(q=>{let count=clamp(questProgress(q),0,q.target),done=game.claimed.includes(q.id),ready=count>=q.target&&!done;return `<div class="quest"><div class="quest-title"><span>${escapeHTML(q.title)}</span><b>${done?'CONCLUÍDO':count+' / '+q.target}</b></div><div class="quest-desc">${escapeHTML(q.desc)}</div><div class="progress-track"><i style="width:${count/q.target*100}%"></i></div>${ready?`<button data-claim="${q.id}">RESGATAR ${q.gold} ✦ + ${q.xp} XP</button>`:''}</div>`;}).join('');
     $('lootList').innerHTML=session.recentLoot.length?session.recentLoot.map(x=>`<div class="loot-entry"><span>${lootIcon(x.name,x.def)}${escapeHTML(x.name)}</span><b>OBTIDO</b></div>`).join(''):'<div class="empty-note">Sua próxima descoberta aparecerá aqui.</div>';
-    if(currentPanel==='myprofile')MarePlayerHub.refresh(game,derived);
+    if(currentPanel==='myprofile')MarePlayerHub.refresh(game,derived,playerBounty());
     updateMiniHud();
   }
   function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{fit:64,time:world.time,scale:equippedZoan().id===MareRyu.rules.id?64/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?90/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?1:64/48});else drawPaperDoll(portrait,36,70,'idle','south',world.time,64/46);vfx_aura.draw(portrait,36,70,world.time,64/48,null,'front');window.MareCharacterHUD?.portrait((c,canvas)=>{lobby96.draw(c,{...game,zoanTransformed:false},{scene:'lobby',action:'idle',direction:'south',time:0,x:canvas.width/2,y:canvas.height-12,scale:192/46,consumer:'wantedPortrait'});});}
@@ -2833,7 +2848,7 @@ ${avatarExtra}
         return {key,slot:slotNames[key]||key,item:!!item,name:item?MareForge.gearName(item,itemDefs):'Vazio',gear:item&&MareForge.isGear(item,itemDefs),icon:item?(MareItemArt.path(item.def,def)||def.icon_path):null,rarity,rarityName:rarityNames[rarity],level:item?.level,plus:item?.plus};
       });
       const classArt=({sword:'sword',brawler:'star',gunner:'eye',rogue:'boots',cyborg:'shield',strategist:'flame',healer:'heart'})[g.classId];
-      body.innerHTML=MarePlayerHub.render(currentPanel,{online:!!ONLINE_GAME,crewIdentity,game:g,stats:s,className,factionName:factions[g.factionId]?.name,title:MareHierarchy.title(g.factionId,g.hierarchyTier),classIcon:classArt?'assets/ui/talents/cutouts/talent_'+classArt+'.png':null,factionIcon:'assets/ui/faction-emblems/'+(factions[g.factionId]?g.factionId:'pirate')+'.png',equipment});
+      body.innerHTML=MarePlayerHub.render(currentPanel,{online:!!ONLINE_GAME,crewIdentity,game:g,stats:s,bounty:playerBounty(),className,factionName:factions[g.factionId]?.name,title:MareHierarchy.title(g.factionId,g.hierarchyTier),classIcon:classArt?'assets/ui/talents/cutouts/talent_'+classArt+'.png':null,factionIcon:'assets/ui/faction-emblems/'+(factions[g.factionId]?g.factionId:'pirate')+'.png',equipment});
       MarePlayerHub.hydrate(currentPanel);
     }
     if(currentPanel==='haki'){$('characterTabs')?.remove();body.innerHTML=MareHakiUI.render(game,session.haki,{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0,defs:itemDefs,selected:hakiSelected});MareHakiUI.refresh(body,game,session.haki,{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0,defs:itemDefs});}
@@ -3734,7 +3749,7 @@ function applySceneHudLayout(){
     $('miniEnergyText').textContent=fmt(game.energy)+' / '+fmt(s.maxEnergy);
     $('miniXPText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));
     $('miniXP').style.width=(100*clamp(game.xp/xpNeeded(game.level),0,1)).toFixed(1)+'%';
-    window.MareCharacterHUD?.update({name:game.name,className:classes[game.classId].name,factionId:game.factionId,hierarchyTier:game.hierarchyTier,hp:game.hp,maxHP:s.maxHP,energy:game.energy,maxEnergy:s.maxEnergy,xp:game.xp,neededXP:xpNeeded(game.level)});
+    window.MareCharacterHUD?.update({name:game.name,className:classes[game.classId].name,factionId:game.factionId,hierarchyTier:game.hierarchyTier,hp:game.hp,maxHP:s.maxHP,energy:game.energy,maxEnergy:s.maxEnergy,xp:game.xp,neededXP:xpNeeded(game.level),bounty:playerBounty()});
     if(dungeonRun){$('journeyTitle').textContent=MareBossDungeons.byId[dungeonRun.id].name;$('journeyChapter').textContent='Masmorra de Chefes';$('journeyProgress').textContent=MareBossDungeons.status(game,dungeonRun.id)==='pending'?'Baú disponível':'Derrote o adversário';$('journeyFill').style.width=MareBossDungeons.status(game,dungeonRun.id)==='pending'?'100%':'0%';const a=$('journeyAction');a.textContent='Ver masmorra';a.dataset.panel='dungeons';delete a.dataset.claim;return;}if(impelRun){$('journeyTitle').textContent='Andar '+impelRun.currentFloor+(MarePrison.isBossFloor(impelRun.currentFloor)?' · Chefe':'');$('journeyChapter').textContent='Impel Down';$('journeyProgress').textContent=game.impelDown.cleared+' / 100 concluídos';$('journeyFill').style.width=game.impelDown.cleared+'%';const a=$('journeyAction');a.textContent=impelRun.pending?'Salvar conclusão':'Ver andares';a.dataset.panel='prison';delete a.dataset.claim;return;}
     const quest=questDefs.find(q=>!game.claimed.includes(q.id)&&(scene!=='hunt'||!['orange','swamp','beach','rare'].includes(game.area)||q.area===game.area));
     $('journeyTitle').textContent=quest?quest.title:'Contratos concluídos';
@@ -4071,6 +4086,7 @@ function applySceneHudLayout(){
     }
     if(['modes','map','prison','character','dev','hunt','crew'].includes(currentPanel)&&e.key==='Tab'){const items=[...$('panelOverlay').querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled),summary,[tabindex="0"]')].filter(b=>b.getClientRects().length);const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
     if(['modes','map','prison','character','dev','hunt','crew'].includes(currentPanel)&&['Enter',' '].includes(e.key)&&document.activeElement?.tagName==='BUTTON')return;
+    if(document.activeElement?.closest('#characterPoster')&&['Enter',' '].includes(e.key))return;
     if(isTyping||!game||!session||!$('startOverlay').classList.contains('hidden'))return;
     if(e.key==='F8'&&MareDev.ENABLED){e.preventDefault();openPanel('dev');return;}
     const k=e.key.toLowerCase();

@@ -26,9 +26,13 @@ test('Berry uses 1 percent of lifetime earnings at entry, never current wallet o
  const zero=base();zero.stats.goldEarned=0;assert.equal(S.reward(zero,'alvida',xp).berry,0);
 });
 
-test('nine profiles scale only common combat attributes once at their fixed level',()=>{
+test('nine profiles preserve level and scale common attributes, with four early encounters calibrated',()=>{
  const C=require('../character-system.js');assert.deepEqual(S.catalog.map(d=>d.level),[10,20,30,40,50,60,70,80,90]);assert.equal(new Set(S.catalog.map(d=>d.monster)).size,9);
- for(const d of S.catalog){const p=S.combatProfile(d.id),baseProfile=d.normalCombat,normal=C.monsterProfile(baseProfile);assert.equal(p.attributePoints,C.earned(d.level)*3);for(const k of ['maxHP','attack','defense','magicDefense'])assert(Math.abs(p[k]-normal[k]*7.5)<=4,k);assert.equal(p.attackSec,baseProfile.attackSec/2.25);assert.equal(p.speed,baseProfile.speed*2);for(const k of ['level','reach','aggro'])assert.equal(p[k],baseProfile[k]);assert.equal(S.status(base(d.level-1),d.id),'locked');assert.equal(S.status(base(d.level),d.id),'available');}
+ const tuned={alvida:[3185,351,238,101],morgan:[4206,704,432,169],buggy:[8522,1150,778,300],kuro:[10390,1687,743,281]};
+ for(const d of S.catalog){const p=S.combatProfile(d.id),baseProfile=d.normalCombat,normal=C.monsterProfile(baseProfile),fields=['maxHP','attack','defense','magicDefense'];assert.equal(p.attributePoints,C.earned(d.level)*3);
+ if(tuned[d.id]){assert.deepEqual(fields.map(k=>p[k]),tuned[d.id]);assert(p.attackSec>=baseProfile.attackSec/2.25);}
+ else{for(const k of fields)assert(Math.abs(p[k]-normal[k]*7.5)<=4,k);assert.equal(p.attackSec,baseProfile.attackSec/2.25);}
+ assert.equal(p.speed,baseProfile.speed*2);for(const k of ['level','reach','aggro'])assert.equal(p[k],baseProfile[k]);assert.equal(S.status(base(d.level-1),d.id),'locked');assert.equal(S.status(base(d.level),d.id),'available');}
 });
 test('unconfigured rewards preserve each victory and do not grant currency or fragments',()=>{
  let g=base(90);for(const d of S.catalog.filter(d=>!d.rewardConfigured)){g=win(g,d.id,'run-'+d.id);assert.equal(S.reward(g,d.id,xp),null);assert.equal(g.bossDungeons.records[d.id].reward,null);const before=JSON.stringify(g);assert(!claim(g,d.id).ok);assert.equal(JSON.stringify(g),before);assert(S.begin(g,d.id,'new').resume);}

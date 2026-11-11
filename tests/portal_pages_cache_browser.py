@@ -3,6 +3,7 @@ import http.server
 import json
 import threading
 from pathlib import Path
+import re
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,12 +31,21 @@ def check_release(browser, folder):
     server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), Release)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     context = browser.new_context(reduced_motion='reduce')
+    context.grant_permissions(['clipboard-read', 'clipboard-write'])
     page = context.new_page()
     errors = []
     page.on('pageerror', lambda error: errors.append(str(error)))
     try:
-        page.goto(f'http://127.0.0.1:{server.server_port}/portal/')
+        url = f'http://127.0.0.1:{server.server_port}/portal/'
+        page.goto(url)
         page.wait_for_load_state('networkidle')
+        plans = page.get_by_role('region', name='Planos de colaborador')
+        assert plans.is_visible(), 'A página pública deve mostrar os planos'
+        assert plans.locator('.plan-price').all_text_contents() == ['R$ 15', 'R$ 25', 'R$ 50']
+        assert plans.get_by_role('button', name='Ver Pix').count() == 3
+        community = page.get_by_role('navigation', name='Comunidade')
+        assert community.get_by_role('link', name='Instagram').get_attribute('href') == 'https://www.instagram.com/kaizokuidle2d'
+        assert community.get_by_role('link', name='Discord').get_attribute('href') == 'https://discord.gg/uRnP79cp7h'
         page.evaluate("localStorage.setItem('portal-cache-test', 'preserved')")
         results = []
         for width, height in [(1920, 1080), (1366, 768), (1280, 720), (390, 844), (320, 740)]:
@@ -53,14 +63,75 @@ def check_release(browser, folder):
             assert state['header'] == 'flex', (folder, state)
             assert state['images'] and state['forms'] == 0, state
             results.append(dict(viewport=[width, height], **state))
-        page.locator('summary').focus()
+        page.locator('.captains-note summary').focus()
         page.keyboard.press('Enter')
-        assert page.locator('details').evaluate('(el) => el.open')
+        assert page.locator('.captains-note').evaluate('(el) => el.open')
         page.keyboard.press('Enter')
-        assert not page.locator('details').evaluate('(el) => el.open')
+        assert not page.locator('.captains-note').evaluate('(el) => el.open')
         page.reload()
         page.wait_for_load_state('networkidle')
         assert page.evaluate("localStorage.getItem('portal-cache-test')") == 'preserved'
+        dialog = page.get_by_role('dialog', name='Apoio por Pix')
+        for amount in [15, 25, 50]:
+            payment = plans.get_by_role('button', name=f'Ver Pix de R$ {amount}', exact=True)
+            payment.focus()
+            page.keyboard.press('Enter')
+            assert dialog.is_visible()
+            assert re.fullmatch(rf'R\$\s{amount},00', dialog.locator('.pix-amount').inner_text())
+            image = dialog.get_by_role('img', name=re.compile('QR Code Pix de R'))
+            image.wait_for()
+            assert image.get_attribute('src').startswith(f'./assets/pix-{amount}.png?v=')
+            assert image.evaluate('(el) => el.complete && el.naturalWidth > 0')
+            copy_button = dialog.get_by_role('button', name='Copiar código Pix')
+            assert copy_button.count() == 1, 'Cada plano precisa oferecer Pix Copia e Cola'
+            copy_button.click()
+            dialog.get_by_text('Código copiado!', exact=True).wait_for()
+            expected = (ROOT / folder / f'portal/assets/pix-{amount}.txt').read_text(encoding='utf-8').strip()
+            assert page.evaluate('(code) => navigator.clipboard.readText().then(text => text === code)', expected)
+            page.screenshot(path=str(EVIDENCE / f'{folder}-modal-{amount}.png'))
+            assert page.url == url and len(context.pages) == 1
+            page.keyboard.press('Escape')
+            assert dialog.is_hidden()
+            assert payment.evaluate('(el) => el === document.activeElement')
+
+        # A failed image must not show a stale QR from a previous plan.
+        page.route('**/assets/pix-50.png?*', lambda route: route.fulfill(status=404))
+        payment.click()
+        page.get_by_text('QR Code indisponível. Tente novamente mais tarde.', exact=True).wait_for()
+        assert dialog.get_by_role('img').count() == 0
+        page.evaluate("""() => Object.defineProperty(navigator, 'clipboard', {
+            configurable: true,
+            value: { writeText: () => Promise.reject(new DOMException('Blocked', 'NotAllowedError')) }
+        })""")
+        dialog.get_by_role('button', name='Copiar código Pix').click()
+        manual_code = dialog.get_by_role('textbox', name='Código Pix para copiar manualmente')
+        manual_code.wait_for()
+        assert manual_code.evaluate('(el, code) => el.value === code && el.readOnly', expected)
+        dialog.get_by_role('button', name='Fechar').click()
+        assert dialog.is_hidden()
+
+        page.route('**/assets/pix-15.txt?*', lambda route: route.fulfill(status=404))
+        plans.get_by_role('button', name='Ver Pix de R$ 15', exact=True).click()
+        dialog.get_by_text('Código para copiar indisponível. Tente novamente mais tarde.', exact=True).wait_for()
+        assert dialog.get_by_role('button', name='Copiar código Pix').is_disabled()
+        assert manual_code.is_hidden()
+        dialog.get_by_role('button', name='Fechar').click()
+
+        page.unroute_all()
+        context.route('https://discord.gg/**', lambda route: route.fulfill(status=200, body='Discord'))
+        for amount in [15, 25, 50]:
+            plans.get_by_role('button', name=f'Ver Pix de R$ {amount}', exact=True).click()
+            receipt_link = dialog.get_by_role('link', name='Enviar comprovante no Discord')
+            assert receipt_link.is_visible(), 'Cada plano precisa oferecer o envio do comprovante no Discord'
+            assert dialog.get_by_text(re.compile('mensagem privada.*vantagens', re.IGNORECASE)).is_visible()
+            with page.expect_popup() as popup:
+                receipt_link.click()
+            discord = popup.value
+            discord.wait_for_load_state('domcontentloaded')
+            assert discord.url == 'https://discord.gg/uRnP79cp7h'
+            discord.close()
+            assert dialog.is_visible() and page.url == url
+            dialog.get_by_role('button', name='Fechar').click()
         assert '/portal/portal.css' not in requests, requests
         assert not errors, errors
         return dict(build=folder, stale_css_requested=False, screens=results, errors=errors)

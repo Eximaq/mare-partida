@@ -24,11 +24,22 @@
   const r=original.bossDungeons?.records[id];if(!r||r.phase!=='running'||r.ownerId!==original.characterId||r.runId!==identity?.runId||r.encounterId!==identity?.encounterId)return fail('O adversário não pertence a esta instância.');
   const s=migrate(original),next=s.bossDungeons.records[id];next.phase='pending';next.reward=reward(s,id,xpNeeded);next.defeatedAt=now;s.bossDungeons.seq++;return {ok:true,state:s,record:next};
  }
+ const combatTuning=Object.freeze({
+  alvida:{hp:.488,attack:.78,defense:.80,interval:1.12},
+  morgan:{hp:.296,attack:.82,defense:.75,interval:1.10},
+  buggy:{hp:.36,attack:.90,defense:.90,interval:1.05},
+  kuro:{hp:.2983,attack:1,defense:.65,interval:1}
+ });
  function combatProfile(id){
   const d=byId[id];if(!d)throw Error('Chefe desconhecido');
   const base=d.normalCombat;
   const characters=root.MareCharacters||(typeof module!=='undefined'?require('./character-system.js'):null);
-  return {...characters.monsterProfile(base,{bossMultiplier:characters.monsterBalance.dungeonAttributes}),xp:0,gold:[0,0]};
+  const profile=characters.monsterProfile(base,{bossMultiplier:characters.monsterBalance.dungeonAttributes});
+  const tuning=combatTuning[id];
+  if(tuning)Object.assign(profile,{maxHP:Math.ceil(profile.maxHP*tuning.hp),attack:Math.ceil(profile.attack*tuning.attack),
+    defense:Math.ceil(profile.defense*tuning.defense),magicDefense:Math.ceil(profile.magicDefense*tuning.defense),
+    attackSec:profile.attackSec*tuning.interval});
+  return {...profile,xp:0,gold:[0,0]};
  }
  function materialDef(defs,id){return defs.findIndex(d=>['akuma-fragment','weapon-fragment'].includes(d.kind)&&d.materialId===id);}
  function claim(original,id,{runId,position,chest,defs,applyXP,commit,now=Date.now()}={}){

@@ -180,7 +180,7 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
      await creditCrewActivities(client,crewHuntEvents(id,kills,now));
     }
    }
-   await advanceLevel(client,id,requestId,state);await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
+   await advanceLevel(client,id,requestId,state,!!inputs.inventory);await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
    const after=await readCharacterState(client,id);
    await observeServerAchievements(client,id,state,after,{kills:b.dungeon?0:result.kills.length,currentCombatSchema:true});
    if(after.level>state.level){await storeBattle(client,id,b);const next=await readFighter(client,id,after);b.hp=next.maxHp;if(next.rulesetId==='original-character-v1')b.energy=next.stats.maxEnergy;}

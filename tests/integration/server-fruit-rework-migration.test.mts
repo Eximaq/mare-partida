@@ -8,7 +8,8 @@ import {createRequire} from 'node:module';
 import {authDatabase} from './auth-support.mjs';
 import {applyMigrations} from '../../apps/game-server/src/db/migrations.js';
 const require=createRequire(import.meta.url),E=require('../../world-battle.cjs');
-const migration='0051_fruit_rework_compatibility.sql';
+const historicalTarget='b672ad6a2dc8d1b947514a51985552813cbf96dc2b40fad2935275ef3d81a977';
+const migration='0053_fruit_rework_compatibility.sql';
 const privateHash='d28ab5e53df81f190558b406a873618e6848955d0e53b92edc395d254e9c114d';
 const publicHash='c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b';
 
@@ -35,7 +36,7 @@ test('fruit rework upgrades only audited battles, preserving every other field a
    assert.deepEqual(await applyMigrations(f.pool),[migration]);
    for(const {id,b} of snapshots){
     const after=(await f.pool.query('SELECT simulation FROM mare_game.character_battles WHERE character_id=$1',[id])).rows[0].simulation;
-    assert.deepEqual(after,{...b,rulesHash:b.fixtureMode==='unknown'?b.rulesHash:E.rulesHash});
+    assert.deepEqual(after,{...b,rulesHash:b.fixtureMode==='unknown'?b.rulesHash:historicalTarget});
     if(b.fixtureMode==='unknown')assert.throws(()=>E.step(after,{dt:.05}),/battle_rules_changed/);
    }
    assert.deepEqual(await snapshot(),economicBefore);

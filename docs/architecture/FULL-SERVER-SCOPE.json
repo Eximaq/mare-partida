@@ -1,6 +1,6 @@
 {
   "scope": "all-current-gameplay",
-  "baseline": "69dac39e1a85ef9d294a9bccfe76ed85eee7fb7d",
+  "baseline": "d1b6f1fd143374a26a55bb6786559e36e360e545",
   "completionRule": "Every current gameplay feature must be implemented with original rules, original UI integration and adversarial tests. A blocked button or isolated alpha substitute is not completion.",
   "features": [
     {
@@ -281,7 +281,7 @@
     },
     {
       "id": "fruits",
-      "name": "Registration/compendium, all30 fruits/passives, transformations and RankEâ€“S skills",
+      "name": "Registration/compendium, all30 fruits/passives, transformations and RankEÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“S skills",
       "status": "implemented",
       "sources": [
         "docs/architecture/ORIGINAL-FRUITS-SERVER.md",
