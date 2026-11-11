@@ -132,7 +132,7 @@ h1 { font-size: clamp(30px, 3.35vw, 49px); font-weight: 500; line-height: 1.12; 
   cursor: pointer;
 }
 .plan-payment:hover { background: #1b4b58; }
-.plan-payment:focus-visible, .pix-copy:focus-visible, .pix-close:focus-visible, .pix-copy-manual:focus-visible { outline: 3px solid var(--parchment); outline-offset: 4px; }
+.plan-payment:focus-visible, .pix-copy:focus-visible, .pix-close:focus-visible, .pix-copy-manual:focus-visible, .pix-receipt-link:focus-visible { outline: 3px solid var(--parchment); outline-offset: 4px; }
 .pix-dialog {
   width: min(calc(100% - 36px), 380px);
   max-height: calc(100% - 36px);
@@ -179,6 +179,23 @@ h1 { font-size: clamp(30px, 3.35vw, 49px); font-weight: 500; line-height: 1.12; 
   font: 16px monospace;
   resize: vertical;
 }
+.pix-receipt-help {
+  margin: 16px 0 8px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.pix-receipt-link {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #688f96;
+  background: var(--deep-sea);
+  color: var(--sea-glass);
+  font-weight: 600;
+  text-decoration: none;
+}
+.pix-receipt-link:hover { background: #15394a; }
 .pix-close {
   min-height: 44px;
   margin-top: 12px;
@@ -213,6 +230,9 @@ h1 { font-size: clamp(30px, 3.35vw, 49px); font-weight: 500; line-height: 1.12; 
 }
 @media (max-width: 480px) {
   .community a { padding-inline: 10px; font-size: 15px; }
+  .pix-dialog { padding: 16px; }
+  .pix-status { margin: 10px 0 12px; }
+  .pix-receipt-help { margin-top: 12px; }
 }
 .voyage { display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; padding: 21px 28px; border-top: 1px solid #d7ac654d; border-bottom: 1px solid #d7ac6526; font-size: 18px; text-shadow: 0 2px 2px #041521; }
 .voyage i { font-style: normal; color: var(--brass); font-size: 12px; }

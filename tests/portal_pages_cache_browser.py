@@ -115,6 +115,23 @@ def check_release(browser, folder):
         dialog.get_by_text('Código para copiar indisponível. Tente novamente mais tarde.', exact=True).wait_for()
         assert dialog.get_by_role('button', name='Copiar código Pix').is_disabled()
         assert manual_code.is_hidden()
+        dialog.get_by_role('button', name='Fechar').click()
+
+        page.unroute_all()
+        context.route('https://discord.gg/**', lambda route: route.fulfill(status=200, body='Discord'))
+        for amount in [15, 25, 50]:
+            plans.get_by_role('button', name=f'Ver Pix de R$ {amount}', exact=True).click()
+            receipt_link = dialog.get_by_role('link', name='Enviar comprovante no Discord')
+            assert receipt_link.is_visible(), 'Cada plano precisa oferecer o envio do comprovante no Discord'
+            assert dialog.get_by_text(re.compile('mensagem privada.*vantagens', re.IGNORECASE)).is_visible()
+            with page.expect_popup() as popup:
+                receipt_link.click()
+            discord = popup.value
+            discord.wait_for_load_state('domcontentloaded')
+            assert discord.url == 'https://discord.gg/uRnP79cp7h'
+            discord.close()
+            assert dialog.is_visible() and page.url == url
+            dialog.get_by_role('button', name='Fechar').click()
         assert '/portal/portal.css' not in requests, requests
         assert not errors, errors
         return dict(build=folder, stale_css_requested=False, screens=results, errors=errors)
