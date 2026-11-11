@@ -6,7 +6,7 @@
     "adjustments": 362,
     "context_entries": 111,
     "original_png_assets": 128,
-    "scope": "source-only; no visual approval"
+    "scope": "User-authorized ready art and exact applicable settings, archived as editable sources. No runtime integration or new rendered-validation claim."
   },
   {
     "file": "hair_user_adjustments_source-only_v1.zip",
@@ -15,6 +15,32 @@
     "adjustments": 27,
     "context_entries": 12,
     "original_png_assets": 94,
-    "scope": "source-only; no visual approval"
+    "scope": "User-authorized ready art and exact applicable settings, archived as editable sources. No runtime integration or new rendered-validation claim."
+  },
+  {
+    "file": "male_headgear_user_adjustments_source-only_v1.zip",
+    "bytes": 2776990,
+    "sha256": "30b71680ed7155c30c82f27a635c907da74c4ce2985e9b1a9afc3499526bab2e",
+    "png_assets": 116,
+    "adjustments": 408,
+    "unmatched_targets": 0,
+    "hideHair_true": 48,
+    "catalog_identity": "4d46e60429591250481681796ef4cbc5733931d0315fd1d67bb0d2acf8c2cddb",
+    "canonical_pack_digests_equal_identity": 120,
+    "context_entries": 120,
+    "scope": "User-authorized ready art and exact applicable settings, archived as editable sources. No runtime integration or new rendered-validation claim."
+  },
+  {
+    "file": "male_hair_user_adjustments_source-only_v1.zip",
+    "bytes": 12094130,
+    "sha256": "80774292a216b5d0961bd1a67a183b05568c63c6639481922a77665bfc1a39bb",
+    "png_assets": 130,
+    "adjustments": 40,
+    "unmatched_targets": 0,
+    "hideHair_true": 0,
+    "catalog_identity": "c4d845ad10f431231070cc1acffc4bfec0b0941b781f409975ed12bf0d2a6045",
+    "canonical_pack_digests_equal_identity": 0,
+    "context_entries": 12,
+    "scope": "User-authorized ready art and exact applicable settings, archived as editable sources. No runtime integration or new rendered-validation claim."
   }
 ]
