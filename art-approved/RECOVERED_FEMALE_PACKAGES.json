@@ -1,0 +1,100 @@
+[
+  {
+    "path": "art-approved/clothing/female-torso130-source/female_130_east_EW44_source-pack.zip",
+    "bytes": 1515300,
+    "sha256": "e1fbf3a5d11800665dcbe0d87e12eee0ca9733a3fefe5d4d678b2ab037acd7ee",
+    "pngCount": 83,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/female-torso130-source/female_130_north_N39_source-pack.zip",
+    "bytes": 1148856,
+    "sha256": "43041c6682ece5fe6d4fbf014ef74b8d199eccc9b3df7d57f4d9ec243c8fafdb",
+    "pngCount": 60,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/female-torso130-source/female_130_south_S36_source-pack.zip",
+    "bytes": 929135,
+    "sha256": "c5f6bc28df55939f8acffde98b305547fa1df979d6db6610777a2cbf1f50c1ff",
+    "pngCount": 53,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/female-torso130-source/female_130_west_EW44_source-pack.zip",
+    "bytes": 1516831,
+    "sha256": "3cdf59c925ee087d73fc056f8550b7618bf34ba6f9cfb49ecdb767fe6250d2bd",
+    "pngCount": 83,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/pants147-and-headgear157/female_147_east_EW49_approved-fourview84.zip",
+    "bytes": 908558,
+    "sha256": "af1a932d62221262179915dca6929a87e2613a010106e4d9113dba567de2b3c6",
+    "pngCount": 12,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/pants147-and-headgear157/female_147_north_N9_approved-fourview84.zip",
+    "bytes": 786947,
+    "sha256": "2b1a9c71057b9d9be3a542abea27b1ce087594e797ebd34f28bf46de02b6b696",
+    "pngCount": 12,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/pants147-and-headgear157/female_147_south_S8_approved-fourview84.zip",
+    "bytes": 757977,
+    "sha256": "70dbd5be7bf92920535ce2201cccf61e6b013495bb5f2b5d7a53a3fe5ec9ead2",
+    "pngCount": 10,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/pants147-and-headgear157/female_147_west_EW49_approved-fourview84.zip",
+    "bytes": 911589,
+    "sha256": "e8946ff16d1fa6a9c684275874393a0f988992ab712f25bd63cdbd6124224342",
+    "pngCount": 12,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/pants147-and-headgear157/female_157_north_static_own-art_v1.zip",
+    "bytes": 1710415,
+    "sha256": "206744d475676ed9d668e80689c4fa19fbd4c903fe82b19a714fc0429f7cff8a",
+    "pngCount": 2,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/female-pants168-182/female_168_west_fourview_EW41_SN4.zip",
+    "bytes": 1069372,
+    "sha256": "586c5dfc489f2829459f38fdfe378cd64bffe7f42763731ec08e735d69e74ae3",
+    "pngCount": 12,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/female-pants168-182/female_182_east_fourview_EW38_SN3.zip",
+    "bytes": 1084767,
+    "sha256": "faadf72749c5e7e4d4333cf4bba8bd8b4985cdbd773fac45eddc0b0e642c5214",
+    "pngCount": 12,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/female-pants168-182/female_182_north_fourview_EW38_SN3.zip",
+    "bytes": 996447,
+    "sha256": "b5071960e3fbd1d1ced0c56a30f99818db94b6e336c5db42579a8f4631a056be",
+    "pngCount": 12,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/female-pants168-182/female_182_south_fourview_EW38_SN3.zip",
+    "bytes": 908007,
+    "sha256": "409574a13369274c0a4d332661b046f3abda9f3a715410833c08f64a1907ef02",
+    "pngCount": 10,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/female-pants168-182/female_182_west_fourview_EW38_SN3.zip",
+    "bytes": 1083116,
+    "sha256": "1bf0f6423407efffbc83028e56db2c9bb40911fadc3880927d54b567f576e21c",
+    "pngCount": 12,
+    "productionEnabled": false
+  }
+]
