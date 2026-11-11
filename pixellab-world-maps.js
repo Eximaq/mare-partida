@@ -83,9 +83,6 @@
     {id:'armazens',name:'Armazéns da Enseada',cell:[18,7]},
     {id:'jardins',name:'Jardins do Porto',cell:[22,-7]}
   ]});
-  // Material codes in the published Orange projection; use the same foot edge as navigation.
-  const orangeSurfaces={c:'areia',g:'grama',e:'cimento',m:'madeira',u:'madeira'};
-  orange.map.footstepSurface=(x,y)=>orangeSurfaces[terrainCell(data.orange,x,y-1)]||null;
   const loguetown=createMap(data.loguetown,{spawnCell:[10,10],returnCell:[10,10],level:40,roles:['marinheiro'],districts:[
     {id:'cais',name:'Entrada Sul',cell:[10,10]},
     {id:'avenida',name:'Avenida Central',cell:[0,2]},

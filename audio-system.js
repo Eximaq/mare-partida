@@ -13,6 +13,13 @@
     const audio=new Audio(new URL(path,document.baseURI).href);audio.loop=true;audio.preload='none';audio.volume=0;return[id,audio];
   }));
   const gains={lobby:0,hunt:0};
+  // The published Orange projection uses these material codes at the player's feet.
+  const orangeSurfaces={c:'areia',g:'grama',e:'cimento',m:'madeira',u:'madeira'};
+  function orangeSurface(x,y){
+    const map=globalThis.MarePixelWorldMaps?.orange.source;
+    if(!map)return null;
+    return orangeSurfaces[map.terrain[Math.floor((y-1)/map.cellSize)]?.[Math.floor(x/map.cellSize)]]||null;
+  }
   const orangeCues=new Map([
     ['espada-corte',.72],['espada-acerto',.85],['magia-fogo',.76],
     ['supa-espiral-cortante',.84],['supa-retaliacao-metalica',.82],
@@ -55,7 +62,7 @@
     if(contact<=previous)return;
     const fraction=(contact-previous)/gait.stepDistance;
     const x=from.x+(to.x-from.x)*fraction,y=from.y+(to.y-from.y)*fraction;
-    const surface=globalThis.MarePixelWorldMaps?.orange.map.footstepSurface?.(x,y);
+    const surface=orangeSurface(x,y);
     if(!surface)return;
     const variant=(orangeVariants.get(surface)||0)%3+1;
     orangeVariants.set(surface,variant);

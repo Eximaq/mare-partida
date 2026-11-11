@@ -13,7 +13,7 @@ class Audio {
 }
 const document={baseURI:'https://example.test/mare-partida/',body:{classList:{contains:()=>false}},
   readyState:'complete',addEventListener:(name,cb)=>{listeners[name]=cb;},dispatchEvent(){}};
-const context={MarePixelWorldMaps,MareOrange:require('../orange-world.js'),Audio,URL,document,MutationObserver:class{observe(){}},CustomEvent:class{},
+const context={MarePixelWorldMaps,Audio,URL,document,MutationObserver:class{observe(){}},CustomEvent:class{},
   localStorage:{getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value)},
   cancelAnimationFrame(){},requestAnimationFrame(){},performance:{now:()=>0}};
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../audio-system.js'),'utf8'),context);
