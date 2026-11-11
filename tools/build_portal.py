@@ -8,8 +8,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 # Deliberate allowlist: no account code, gameplay, local data or review assets.
 PUBLIC_FILES = (
-    'index.html', 'portal.css', 'ocean-art.css',
+    'index.html', 'portal.css', 'ocean-art.css', 'pix-dialog.js',
     'assets/logo-kaizoku-idle-oficial.png', 'assets/ui/banner-compass.webp',
+    'assets/pix-15.png', 'assets/pix-25.png', 'assets/pix-50.png',
 )
 
 
@@ -21,7 +22,7 @@ def version_portal_assets(portal):
         digest = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
         return f'{match[1]}{match[2]}?v={digest}{match[3]}'
 
-    entry.write_text(re.sub(r'((?:src|href)=")([.]/[^"?]+)(")', version,
+    entry.write_text(re.sub(r'((?:src|href|data-pix-qr)=")([.]/[^"?]+)(")', version,
                             entry.read_text(encoding='utf-8')), encoding='utf-8')
 
 
