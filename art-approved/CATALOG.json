@@ -575,6 +575,34 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved-daggers-v3/weapon71_east-west_female-source-approved-v3.zip",
+      "bytes": 1234464,
+      "sha256": "4f048b68f16e7a828413b88eb0cf557d19af0ba548d79d9c54ed8e3d8a305844",
+      "pngEntries": 17,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-daggers-v3/weapon72_east-west_female-source-approved-v3.zip",
+      "bytes": 1292661,
+      "sha256": "3c45dd6c6ebb2ad1e5aae048ac827b704070fa996f6407c1a247ced7365baa8d",
+      "pngEntries": 17,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-daggers-v3/weapon73_east-west_female-source-approved-v3.zip",
+      "bytes": 1180412,
+      "sha256": "caab29fb3c1034c45047af58d5999d349e2003749039a7191e589436df9d8eda",
+      "pngEntries": 17,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-daggers-v3/weapon74_east-west_female-source-approved-v3.zip",
+      "bytes": 1218545,
+      "sha256": "ed88a9010bcedb12ae3484183d51c378750fc87cbe0571d2ae2ab59951d26700",
+      "pngEntries": 17,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/approved-multiview-v10/weapon0_east-west_sword0-v2.zip",
       "bytes": 1153550,
       "sha256": "3982adcc9b6186204beb45756a2e5d0a2e59ced889b8fac855f348cdf144f7f3",
