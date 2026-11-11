@@ -52,6 +52,58 @@ test('Phoenix passive restores health and energy only after ten seconds actually
  const f=fixture('akuma_tori_phoenix');f.b.hp=20;f.b.energy=0;const initial=f.b.hp;
  for(let i=0;i<99;i++)f.step(.1);const before=f.b.hp;assert(before>initial);f.step(.11);assert(f.b.hp-before>=f.stats.maxHP*.1);assert(f.b.energy>=f.stats.maxEnergy*.1);
 });
+
+test('Jiki carries the actual server charge duration through persistence to the online assembly',()=>{
+ const G=require('../../fruit-summon-runtime.cjs'),ui=require('../../apps/account-client/game-ui.js');
+ for(const [elapsed,want] of [[2000,2],[6250,6]] as const){
+  const f={id:'akuma_jiki_jiki',effects:{}} as any;
+  const c={fruit:f.id,key:'1',hero:{x:0,y:0,direction:'right'},target:{id:'target',alive:true,hp:100,x:200,y:0},stats:{physical:100,penetration:0},epoch:1800000000000,now:1800000000};
+  G.cast(f,c);G.cast(f,{...c,epoch:c.epoch+elapsed,now:c.now+elapsed/1000});
+  const saved=JSON.parse(JSON.stringify({fruit:{...f,time:c.epoch+elapsed,cooldowns:{}}}));
+  assert.equal(saved.fruit.effects.jikiShots[0].assemblyAge,want);
+  assert.equal(ui.fruitView(saved,30).effects.jikiShots[0].assemblyAge,want);
+  assert.equal(saved.fruit.effects.jikiShots[0].attack,100);
+ }
+});
+
+test('Wolf emits exactly one persisted impact per actual charge/bleed hit, including the final tick',()=>{
+ const f=fixture('akuma_inu_wolf');f.b.energy=1000;assert(f.cast('1'));
+ const seen=new Map<number,any>();
+ for(let i=0;i<70;i++){
+  f.step(.1);Object.assign(f.b,JSON.parse(JSON.stringify(f.b)));
+  for(const e of f.b.events)seen.set(e.seq,e);
+ }
+ const hits=[...seen.values()].filter(e=>e.type==='damage'),fx=[...seen.values()].filter(e=>e.type==='fruit'&&e.kind==='wolf-impact');
+ assert.equal(hits.length,6,'one charge and five bleed ticks');assert.equal(fx.length,6);
+ assert(fx.every(e=>e.id===f.m.id&&Number.isFinite(e.x)&&Number.isFinite(e.y)));
+ assert.equal(fx.filter(e=>e.phase==='charge').length,1);assert.equal(fx.filter(e=>e.phase==='bleed').length,5);
+});
+
+test('Wolf emits no impact when the authoritative damage handler rejects a hit',()=>{
+ const G=require('../../fruit-lower-runtime.cjs'),m={id:'target',alive:true,hp:100,x:0,y:0,wolfBleed:{started:0,nextTick:1,attack:100}},effects:any[]=[];
+ G.tick({id:'akuma_inu_wolf',effects:{}},{enemies:[m],now:1,epoch:1000,hero:{},stats:{},armor:()=>0,hit:()=>0,effect:(e:any)=>effects.push(e)},.1);
+ assert.deepEqual(effects,[]);
+});
+
+test('Phoenix worker simulation persists all five energy impacts across non-aligned final steps',()=>{
+ const f=fixture('akuma_tori_phoenix');f.b.energy=1000;assert(f.cast('3'));const seen=new Map();
+ for(let i=0;i<90;i++){f.step(.033);Object.assign(f.b,JSON.parse(JSON.stringify(f.b)));for(const e of f.b.events)seen.set(e.seq,e);}
+ assert.equal([...seen.values()].filter((e:any)=>e.type==='damage').length,5);
+ assert.equal(f.b.fruit.advanced.rankS.jobs.length,0);
+});
+
+test('Phoenix persisted totem heals a nearby Party ally seven times and never an out-of-range ally',()=>{
+ const F=require('../../fruit-runtime.cjs'),f=fixture('akuma_tori_phoenix'),start=f.context().now;
+ const near={b:{hp:1},hero:{...f.hero},stats:{maxHP:100}},far={b:{hp:1},hero:{x:f.hero.x+321,y:f.hero.y},stats:{maxHP:100}};
+ f.b.energy=1000;assert(f.cast('2'));let pulses=0,total=0,selfPulses=0;
+ for(let i=1;i<=250;i++){
+  F.tick(f.b,{...f.context(),now:start+i*33,allies:[near,far]},.033,{hit:()=>0,heal:()=>{selfPulses++;}});
+  if(near.b.hp>1){pulses++;total+=near.b.hp-1;near.b.hp=1;}
+  Object.assign(f.b,JSON.parse(JSON.stringify(f.b)));
+ }
+ assert.equal(pulses,7);assert.equal(total,105);assert.equal(selfPulses,7);assert.equal(far.b.hp,1);
+ assert.equal(f.b.fruit.advanced.rankS.jobs.length,0);
+});
 test('Kuku rejects old corpses, while two original food pickups survive independently',()=>{
  const f=fixture('akuma_kuku_kuku');f.m.alive=false;f.m.hp=0;assert(!f.cast('1'));f.m.corpseUntil=f.context().now+12000;assert(f.cast('1'));f.step(.5);assert.equal(f.b.fruit.effects.food.length,1);
  for(let i=0;i<76;i++)f.step(.2);f.b.mobs.push({...f.m,id:'second',fruitConsumed:false,corpseUntil:f.context().now+12000,x:f.hero.x+80});assert(f.cast('1'));f.step(.5);assert.equal(f.b.fruit.effects.food.length,2);

@@ -1,68 +1,150 @@
 /* The supplied artwork frames the live controls. Occupied slots retain their rarity colors. */
 #app #panelOverlay.inventory-mode.pirate-hd {
-  --bag-frame: url('assets/ui/inventory-reference/bag-frame.png');
-  --detail-frame: url('assets/ui/inventory-reference/detail-frame.png');
   --slot-rim: url('assets/ui/inventory-reference/slot-rim.png');
   --tab: url('assets/ui/inventory-reference/tab.png');
   --tab-active: url('assets/ui/inventory-reference/tab-active.png');
-  --field: url('assets/ui/inventory-reference/field.png');
-  --plaque: url('assets/ui/inventory-reference/plaque.png');
   --ink: #071922;
   --ivory: #f5ebd4;
   --gold: #ffda85;
   --line: #8d744448;
   color-scheme: dark;
 
-  & > .dialog, & .op-inventory-shell, & .op-body-grid {
+  --inventory-limit: min(650px, calc(100dvh - 28px));
+  padding: max(8px, var(--rpg-safe-top)) 8px max(8px, var(--rpg-safe-bottom));
+  background: #031218a8;
+  backdrop-filter: blur(3px);
+
+  &.hud-density > .dialog, & > .dialog {
+    width: min(1120px, 100%);
+    height: auto;
+    max-height: var(--inventory-limit);
     background: transparent;
     box-shadow: none;
   }
-  & .op-body-grid {gap:10px; padding:0}
-  & .op-panel {
-    background:linear-gradient(155deg,#122a32,#06151d 70%);
-    border:12px solid transparent; border-image:var(--bag-frame) 24 / 16px stretch;
-    padding:8px; color:var(--ivory); scrollbar-color:#8d784d #091820;
+  & > .dialog > .dialog-body {
+    display: flex;
+    height: auto;
+    min-height: 0;
   }
-  & .op-topbar {padding:0 10px; min-height:64px; gap:4px; background:var(--ink); border:0}
+  & .op-inventory-shell {
+    --inventory-rope: url('assets/ui/hud-nautical-v2/rope-frame.png');
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    margin-top: 23px;
+    overflow: visible;
+    border: 6px solid transparent;
+    border-image: var(--inventory-rope) 150 / 6px round;
+    border-radius: 11px;
+    background: linear-gradient(150deg,#15313d,#0a1c28 67%) padding-box;
+    box-shadow: 0 14px 38px #0009;
+  }
+  & .op-body-grid {
+    grid-template-columns: minmax(246px, 1fr) minmax(330px, 1.62fr) minmax(241px, 1fr);
+    gap: 8px;
+    padding: 7px;
+    align-items: start;
+    align-content: start;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #8d784d transparent;
+  }
+  &.hud-density .op-panel, & .op-panel {
+    background:linear-gradient(155deg,#112b38,#091c28 70%);
+    border:1px solid #997b4b85;
+    border-radius: 7px;
+    padding:7px;
+    color:var(--ivory);
+    box-shadow: inset 0 0 0 2px #06192388;
+    scrollbar-color:#8d784d #091820;
+  }
+  & .op-topbar {
+    position: relative;
+    justify-content: center;
+    padding: 0 7px;
+    min-height: 39px;
+    gap: 0;
+    background: linear-gradient(110deg,#173440,#0d2331 66%);
+    border: 0;
+    border-bottom: 1px solid var(--line);
+  }
   & .op-title-banner, & .op-title-banner h2 {padding:0; margin:0; border:0; background:none; box-shadow:none}
-  & .op-title-banner img {width:auto; height:78px; display:block}
-  & .op-close {width:44px; height:44px; background:none; border:0; box-shadow:none}
-  & .op-close img {width:34px; height:34px}
-  & .op-character-panel > .hd-panel-heading {display:none}
-  & .hd-panel-heading, & .op-panel-head, & .op-detail-box h4 {
-    min-height:40px; padding:4px 9px; margin:0 0 8px;
-    border:6px solid transparent; border-image:var(--plaque) 13 32 fill / 7px 16px stretch;
-    background:none; font:700 20px/1.12 var(--rpg-hd-heading); color:var(--ivory);
+  & .op-title-banner {
+    position: absolute;
+    z-index: 2;
+    inset: -27px auto auto 50%;
+    transform: translateX(-50%);
   }
-  & .op-head-left h3 {font-size:21px}
-  & .op-panel-head .inv-ui-icon, & .hd-panel-heading .inv-ui-icon {width:24px; height:24px}
-  & .op-tabs {gap:4px; margin-bottom:8px}
+  & .op-title-banner img {width:auto; height:59px; display:block; filter:drop-shadow(0 3px 4px #000a)}
+  & .op-top-actions {position:absolute; right:3px; top:0}
+  & .op-top-actions kbd {display:none}
+  & .op-close {width:42px; height:40px; background:none; border:0; box-shadow:none}
+  & .op-close img {width:31px; height:31px}
+  & .op-character-panel > .hd-panel-heading {display:none}
+  &.hud-density .hd-panel-heading, & .hd-panel-heading, & .op-panel-head, & .op-detail-box h4 {
+    min-height:34px; padding:3px 5px; margin:0 0 6px;
+    border:0; border-bottom:1px solid var(--line);
+    background:none; font:700 18px/1.12 var(--rpg-hd-heading); color:var(--ivory);
+  }
+  & .hd-panel-heading {justify-content:start}
+  & .op-head-left {gap:6px}
+  & .op-head-left h3 {font-size:19px}
+  & .op-panel-head .inv-ui-icon, & .hd-panel-heading .inv-ui-icon {width:18px; height:18px}
+  & .op-tabs {grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr)); gap:4px; margin-bottom:6px}
   & .op-tabs button, & .op-pagination button, & .op-best-btn,
   & .op-action, & .op-item-actions .op-action.secondary, & .op-item-actions .op-action.primary {
-    background:none; border:5px solid transparent; border-image:var(--tab) 10 fill / 6px stretch;
-    padding:4px 6px; color:var(--ivory); box-shadow:none;
+    border:1px solid #8e7348;
+    border-radius:5px;
+    background:linear-gradient(#173744,#0b2331);
+    padding:3px 5px;
+    color:var(--ivory);
+    box-shadow:inset 0 1px #c9a56420;
   }
-  & .op-tabs button.active, & .op-pagination button.active {
-    border-image:var(--tab-active) 12 fill / 7px stretch; color:#fff5dc; outline:0; filter:none;
+  & .op-tabs button.active, & .op-pagination button.active, & .op-detail-actions .op-action.primary, & .op-best-btn {
+    border-color:#d7aa61;
+    background:linear-gradient(#604522,#382813);
+    color:#fff5dc;
+    outline:0;
   }
-  & .op-tabs button {min-height:40px; font:700 15px/1 var(--rpg-font)}
-  & .op-avatar-stage {border:3px solid #8f713d; border-radius:5px; background:#08212e url('assets/ui/inventory-reference/avatar-chart.png') center/cover}
-  & .op-avatar-meta strong {border:7px solid transparent; border-image:url('assets/ui/inventory-reference/nameplate.png') 12 16 fill / 8px 10px; padding:0 2px; background:none; box-shadow:none}
-  & .op-avatar-meta strong img {width:18px; height:18px; object-fit:contain; vertical-align:middle}
-  & .op-avatar-meta span {color:#e2d9bd}
-  & .op-character-summary, & .op-fruit-equipped {border:1px solid var(--line); background:#08171ee6; border-radius:4px; padding:4px 8px}
-  & .op-stats-list div, & .op-power-banner {background:transparent; border:0; border-bottom:1px solid var(--line); margin:0; box-shadow:none}
+  & .op-tabs button {min-height:33px; gap:4px; padding-inline:3px; font:700 14px/1.1 var(--rpg-font)}
+  & .op-tabs button span {min-width:0; text-align:center; overflow-wrap:anywhere}
+  & .op-tabs button .inv-ui-icon {width:16px; height:16px; flex:none}
+  & .op-character-core {grid-template-columns:60px minmax(0,1fr) 60px; gap:5px}
+  & .op-equip-side {gap:4px}
+  & .op-equip-side .op-equip-slot {height:45px; min-height:45px}
+  & .op-equip-slot .op-slot-label {font-size:10.5px}
+  &.hud-density .op-avatar-stage, & .op-avatar-stage {height:175px; border:1px solid #94784a; border-radius:5px; background:#08212e url('assets/ui/inventory-reference/avatar-chart.png') center/cover}
+  & .op-avatar-stage [data-headgear-visibility] {right:7px; bottom:7px}
+  & .op-avatar-meta strong {border:5px solid transparent; border-image:url('assets/ui/inventory-reference/nameplate.png') 12 16 fill / 6px 8px; padding:0 2px; background:none; box-shadow:none; font-size:19px}
+  & .op-avatar-meta strong img {width:15px; height:15px; object-fit:contain; vertical-align:middle}
+  & .op-avatar-meta span {color:#e2d9bd; font-size:13px}
+  & .op-character-summary, & .op-fruit-equipped {border:1px solid var(--line); background:#08171e88; border-radius:5px; padding:3px 6px; margin-top:6px}
+  & .op-stats-list div, & .op-power-banner {background:transparent; border:0; border-bottom:1px solid var(--line); margin:0; box-shadow:none; min-height:24px; padding:2px 0; grid-template-columns:19px minmax(0,1fr) auto; gap:5px}
+  & .op-power-banner b {font-size:23px}
+  & .op-power-banner label {font:700 15px/1.1 var(--rpg-font)}
   & .op-stats-list div:last-child {border:0}
-  & .op-stats-list .inv-ui-icon, & .op-power-banner .inv-ui-icon {width:23px; height:23px}
-  & .op-tool-row {gap:6px; margin:0 0 8px}
+  & .op-stats-list b {font-size:16px}
+  & .op-stats-list .inv-ui-icon, & .op-power-banner .inv-ui-icon {width:17px; height:17px}
+  & .op-fruit-equipped .op-equip-slot {flex-basis:43px; height:43px; min-height:43px}
+  & .op-fruit-equipped>div {gap:0}
+  & .op-fruit-equipped>div :is(strong,span) {font-size:14px}
+  & .op-hide-check {margin:4px 0 0}
+  & .op-tool-row {gap:5px; margin:0 0 6px}
   & .op-tool-row select, & .op-tool-row .op-search {
-    background:#081c25; border:5px solid transparent; border-image:var(--field) 12 fill / 6px stretch;
-    color:var(--ivory); box-shadow:none;
+    min-height:34px; height:34px; border:1px solid #8f764e9e; border-radius:5px;
+    background:#081e2a; color:var(--ivory); box-shadow:none;
   }
-  & .op-search input {color:var(--ivory); background:transparent}
+  & .op-search input {color:var(--ivory); background:transparent; min-height:30px; height:30px}
   & .op-search input::placeholder {color:#c2c4bc}
-  & .op-grid-wrap {padding:4px; border:9px solid transparent; border-image:var(--bag-frame) 24 / 12px stretch; background:#071a22; box-shadow:none; border-radius:4px}
-  & .op-grid {background:none}
+  & .op-grid-wrap {
+    flex: 0 1 auto;
+    padding:5px;
+    border:1px solid #78623e;
+    border-radius:6px;
+    background: #071923;
+    box-shadow: inset 0 1px 5px #0007;
+  }
+  & .op-grid {background:none; gap:6px}
   & .op-grid > .op-item.empty, & .op-equip-slot:not(.filled), & .op-detail-icon {
     background:linear-gradient(135deg,#102831,#07151c);
     border:5px solid transparent; border-image:var(--slot-rim) 12 / 7px stretch; box-shadow:none;
@@ -78,7 +160,6 @@
   & .op-bag-capacity {margin:0}
   & .op-pagination {column-gap:5px; row-gap:3px}
   & .op-page-count {font-size:13px}
-  & .op-detail-panel {border-image:var(--detail-frame) 16 / 12px stretch}
   & .op-detail-wrap, & .op-detail-box, & .op-detail-content, & .op-detail-box p, & .op-detail-head small,
   & .op-skill-row strong, & .op-effect-list b, & .op-stat-row b, & .op-comparison-deltas {color:var(--ivory)}
   & .op-detail-head h3, & .op-skill-row strong {color:var(--gold)}
@@ -88,22 +169,18 @@
   & .op-stat-row {background:#091c25; color:var(--ivory); border:0; border-bottom:1px solid var(--line); border-radius:0; box-shadow:none}
   & .op-stat-row .inv-ui-icon {width:22px; height:22px}
   & .op-comparison-plate {background-color:var(--ink)}
-  & .op-item-actions .op-action[data-sell] {border-image:url('assets/ui/inventory-reference/sell.png') 10 fill / 6px stretch}
-  & .op-item-actions .op-action[data-inventory-forge] {border-image:url('assets/ui/inventory-reference/forge.png') 10 fill / 6px stretch}
-  & .op-item-actions .op-action {min-height:48px; height:auto; font-size:16px}
-  & .op-item-actions .op-action .inv-ui-icon {width:24px; height:24px}
   & .op-detail-actions {border-color:var(--line); padding-top:8px}
   & button:focus-visible, & select:focus-visible, & input:focus-visible {outline:2px solid #fff2b8; outline-offset:1px}
 
-  & .op-panel-head {display:grid; grid-template-columns:minmax(0,1fr) minmax(70px,.7fr) auto; gap:5px; padding:3px}
-  & .op-panel-head .op-best-btn {width:auto; max-width:none; min-height:42px}
+  & .op-panel-head {display:grid; grid-template-columns:minmax(0,1fr) minmax(70px,.75fr) auto; gap:5px}
+  & .op-panel-head .op-best-btn {width:auto; max-width:none; min-height:34px; font-size:13px}
   & .op-panel-head .ui-select, & .op-tool-row .ui-select {min-width:0}
   & .ui-select-trigger {
-    min-width:0; min-height:42px; font:600 15px/1.1 var(--rpg-font); color:var(--ivory);
-    border:5px solid transparent; border-image:var(--field) 12 fill / 5px stretch;
-    padding-inline:6px 18px; background:none; box-shadow:none;
+    min-width:0; min-height:34px; font:700 14px/1.1 var(--rpg-font); color:var(--ivory);
+    border:1px solid #8f764e9e; border-radius:5px;
+    padding-inline:6px 18px; background:#081e2a; box-shadow:none;
   }
-  & .op-tool-row {grid-template-columns:minmax(0,1fr) minmax(94px,.38fr) minmax(88px,.35fr)}
+  & .op-tool-row {grid-template-columns:minmax(0,1fr) minmax(88px,.38fr) minmax(80px,.35fr)}
   & .op-comparison:not([data-state=better],[data-state=worse],[data-state=equal]) .op-comparison-plate {border-image:var(--tab) 10 fill / 5px stretch}
   & .op-forge-details, & .op-effect-list > div, & .op-origin-row > div {
     background:#0d232b; color:var(--ivory); border:1px solid var(--line); box-shadow:none;
@@ -115,31 +192,83 @@
   & .op-detail-head:has(.rarity-supreme) small {color:#ffa5ab}
   & .op-detail-head:has(.rarity-uncommon) small {color:#97e3b2}
   & .op-detail-head:has(.rarity-legendary) small {color:#ffce79}
-  & .op-topbar {position:relative; justify-content:center}
-  & .op-top-actions {position:absolute; right:6px; top:4px}
-  & .op-top-actions kbd {display:none}
-  & .op-panel {border-image-width:20px}
-  & .op-character-panel {border-image:url('assets/ui/inventory-reference/rope-frame.png') 34 / 18px stretch}
+  & .op-pagination {min-height:35px; padding-top:5px}
+  & .op-detail-wrap {gap:6px; font:16px/1.3 var(--rpg-font)}
+  &.hud-density .op-detail-head, & .op-detail-head {grid-template-columns:62px minmax(0,1fr); gap:8px; padding:2px 0 7px}
+  &.hud-density .op-detail-icon, & .op-detail-icon {width:62px; height:62px}
+  &.hud-density .op-detail-head h3, & .op-detail-head h3 {font-size:21px; margin:0 0 3px}
+  & .op-detail-head small {font-size:14px}
+  & .op-detail-content {padding-right:3px}
+  & .op-detail-box p {font-size:16px; margin:5px 0 7px}
+  & .op-stat-row {min-height:25px; padding:2px 4px; gap:5px}
+  & .op-stat-row .inv-ui-icon {width:16px; height:16px}
+  & .op-forge-details {margin:5px 0}
+  & .op-detail-actions {padding-top:5px; gap:5px}
+  & .op-item-actions {gap:5px}
+  &.hud-density .op-item-actions .op-action, & .op-item-actions .op-action {min-height:43px; height:auto; font-size:14px; padding:3px 4px; grid-template-columns:19px minmax(0,1fr)}
+  &.hud-density .op-item-actions .op-action .inv-ui-icon, & .op-item-actions .op-action .inv-ui-icon {width:19px; height:19px}
+
+  /* The approved ornament stays above the tint. A crisp rim and soft spill
+     strengthen rarity without brightening the icon or quantity label. */
+  & .rarity-common {--inv-slot-light:#9aaba9; --inv-slot-spill:#8eafad23}
+  & .rarity-uncommon {--inv-slot-light:#65e995; --inv-slot-spill:#40ef845c}
+  & .rarity-rare {--inv-slot-light:#67caff; --inv-slot-spill:#2cafff70}
+  & .rarity-epic {--inv-slot-light:#c18dff; --inv-slot-spill:#a661ff80}
+  & .rarity-legendary {--inv-slot-light:#ffd076; --inv-slot-spill:#ffaf4290}
+  & .rarity-supreme {--inv-slot-light:#ff888d; --inv-slot-spill:#ff4f669e}
+  & :is(.op-grid>.op-item:not(.empty), .op-equip-slot.filled, .op-detail-icon[class*="rarity-"]) {
+    border:1px solid var(--inv-slot-light,#9aaba9);
+    border-radius:5px;
+    box-shadow: inset 0 0 6px var(--inv-slot-spill), 0 0 5px var(--inv-slot-spill);
+  }
+  & .op-equip-slot.filled {background-image:none}
+  & .op-equip-slot.filled::before, & .op-equip-slot.filled::after {display:block}
+  & :is(.op-grid>.op-item:not(.empty), .op-equip-slot.filled):is(:hover, .selected) {
+    box-shadow: inset 0 0 8px var(--inv-slot-spill), 0 0 8px var(--inv-slot-spill);
+  }
+
   @media(min-width:1101px) {
-    & .op-inventory-shell {display:grid; grid-template-columns:minmax(285px,1.03fr) minmax(375px,1.55fr) minmax(270px,.99fr); grid-template-rows:88px minmax(0,1fr); gap:0 10px}
-    & .op-topbar {grid-area:1/1; z-index:1; align-self:stretch; border:7px solid transparent; border-image:var(--bag-frame) 24 / 12px stretch; padding-inline:10px; flex-wrap:nowrap}
-    & .op-body-grid {grid-area:1/1/3/4; grid-template-columns:subgrid; grid-template-rows:subgrid; column-gap:10px; row-gap:0; pointer-events:none}
-    & .op-body-grid > section {pointer-events:auto}
-    & .op-character-panel {grid-area:2/1/3/2}
-    & .op-bag-panel {grid-area:1/2/3/3}
-    & .op-detail-panel {grid-area:1/3/3/4}
+    & .op-panel {max-height:calc(var(--inventory-limit) - 88px)}
+  }
+  @media(max-width:1100px) {
+    &.hud-density > .dialog, & > .dialog {width:min(780px,100%)}
+    & .op-topbar {min-height:78px; padding-top:35px; position:relative}
+    & .op-section-nav {display:flex; flex:1 0 100%; gap:5px; border:0; padding:0}
+    & .op-section-nav a {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      min-height: 36px;
+      border: 1px solid #95794c9c;
+      border-radius: 5px;
+      background: #0b2432;
+      color: var(--ivory);
+      font: 700 15px/1.15 var(--rpg-font);
+      text-decoration: none;
+    }
+    & .op-section-nav a:focus-visible {outline:2px solid var(--gold); outline-offset:-2px}
+    & .op-body-grid {grid-template-columns:minmax(240px, .75fr) minmax(0, 1fr); grid-auto-rows:max-content}
+    & :is(.op-character-panel, .op-bag-panel, .op-detail-panel) {height:auto; min-height:0}
+    & .op-character-panel {grid-column:auto}
+    & .op-detail-panel {grid-column:1/-1}
   }
   @media(max-width:760px) {
-    & .op-title-banner img {height:54px}
-    & .op-panel {padding:6px}
-    & .op-section-nav {margin-bottom:5px}
-    & .op-section-nav a {min-height:44px}
-    & .op-tabs button, & .op-tool-row select, & .op-tool-row .op-search {min-height:44px}
-    & .op-panel-head {grid-template-columns:1fr 1fr}
+    & {--inventory-limit:calc(100dvh - 18px)}
+    & .op-body-grid {display:grid; grid-template-columns:minmax(0,1fr); gap:6px; padding:6px}
+    & .op-panel {width:auto; scroll-margin-top:0}
+    & .op-character-core {grid-template-columns:60px minmax(0,1fr) 60px}
+    & .op-section-nav a, & .op-tabs button {min-height:44px}
+    & .op-panel-head {grid-template-columns:minmax(0,1fr) minmax(65px,.65fr) auto}
+    & .op-tool-row {grid-template-columns:repeat(2,minmax(0,1fr))}
+    & .op-pagination {gap:4px}
+    & .op-pagination .op-bag-capacity {width:auto; flex:0 0 auto}
+    & .op-pagination .op-bag-capacity .inv-ui-icon {width:18px; height:18px}
+    & .op-pagination .op-page-count {width:auto; flex:1 0 auto; text-align:left; white-space:nowrap}
+    & .op-pagination button {min-width:32px; min-height:38px}
+  }
+  @media(max-width:360px) {
+    & .op-panel-head {grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
     & .op-panel-head .op-best-btn {grid-column:1/-1}
-    & .op-tool-row {grid-template-columns:1fr 1fr}
-    & .op-pagination {display:flex; align-items:center; flex-wrap:wrap}
-    & .op-pagination .op-bag-capacity {flex:0 0 auto; width:auto; margin:0}
-    & .op-pagination .op-page-count {width:auto; flex:1}
   }
 }

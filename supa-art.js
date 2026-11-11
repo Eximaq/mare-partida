@@ -165,11 +165,13 @@
     "duration": 756
   }
 };
+  const reworks=root.MareParameciaReworks||(typeof require==='function'?require('./paramecia-rework-data.js'):null);
+  if(reworks)for(const [key,visual]of Object.entries(reworks.art.supa.effects)){animations[key]={...animations[key],...visual};}
   function frameAt(kind,elapsedMs,loop=false){
     const animation=animations[kind];
-    if(!animation||!Number.isFinite(elapsedMs)||elapsedMs<0||(!loop&&elapsedMs>=animation.duration))return null;
-    let time=elapsedMs%animation.duration;
-    for(const frame of animation.frames){if(time<frame.duration)return frame;time-=frame.duration;}
+    if(!animation||!Number.isFinite(elapsedMs)||elapsedMs<0||(!loop&&elapsedMs+1e-8>=animation.duration))return null;
+    let time=elapsedMs%animation.duration;if(time+1e-8>=animation.duration)time=0;
+    for(const frame of animation.frames){if(time+1e-8<frame.duration)return frame;time-=frame.duration;}
     return null;
   }
   function draw(ctx,image,kind,x,y,elapsedMs,{loop=false,scale=1}={}){

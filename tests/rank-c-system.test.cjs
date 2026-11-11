@@ -1,6 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict'),C=require('../rank-c-system.js');
-assert.deepEqual(C.rules,require('../assets/akuma/rank-c-rules.json'));
+const expected=JSON.parse(JSON.stringify(require('../assets/akuma/rank-c-rules.json')));for(const [fruit,r]of Object.entries(expected))for(const skill of r.skills){skill.icon_path='assets/akuma/reworks/'+fruit+'/skill-'+skill.key+'.png';}assert.deepEqual(C.rules,expected);
 const hero={id:'a',partyId:'pt',instance:'beach',x:10,y:10,hp:40,maxHP:100,status:{talentControl:{remaining:5},slow:2,wolfBleed:{remaining:3},debuffs:['poison']}};
 const near={id:'b',partyId:'pt',instance:'beach',x:20,y:20,hp:50,maxHP:200},far={...near,id:'c',x:999},outsider={...near,id:'d',partyId:'other'},otherMap={...near,id:'e',instance:'other'};
 const got=C.healParty(hero,[near,far,outsider,otherMap],{x:0,y:0,width:100,height:100},1000);assert.equal(got.length,2);assert.equal(hero.hp,60);assert.equal(near.hp,90);assert.equal(hero.status.talentControl,undefined);assert.equal(hero.status.slow,0);assert.equal(hero.status.horuSpeedUntil,7000);assert.equal(far.hp,50);

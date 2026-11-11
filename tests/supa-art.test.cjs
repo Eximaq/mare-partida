@@ -6,23 +6,22 @@ const crypto=require('node:crypto');
 const Art=require('../supa-art.js');
 const Akuma=require('../akuma-system.js');
 const manifest=require('../assets/akuma/supa/manifest.json');
-assert.equal(Art.animations.slash.frames.length,8);
+assert.equal(Art.animations.slash.frames.length,24);
 assert.equal(Art.animations.slash.duration,472);
-assert.equal(Art.animations.shield.frames.length,12);
+assert.equal(Art.animations.shield.frames.length,36);
 assert.equal(Art.animations.shield.duration,756);
 for(const asset of manifest.assets){
   const bytes=fs.readFileSync(path.join(__dirname,'../assets/akuma/supa',asset.asset));
   assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),asset.sha256);
 }
 for(const [kind,file] of [['slash','slash-arc'],['shield','spiral-ward']]){
-  const source=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/akuma/supa',file+'.json'),'utf8'));
+  const source=require('../paramecia-rework-manifest.js').supa.effects[kind];
   const animation=Art.animations[kind];
-  const png=fs.readFileSync(path.join(__dirname,'../assets/akuma/supa',file+'.png'));
-  assert.ok(animation.image.endsWith('?v='+crypto.createHash('sha256').update(png).digest('hex').slice(0,12)));
-  assert.equal(png.readUInt32BE(16),source.meta.size.w);
-  assert.equal(png.readUInt32BE(20),source.meta.size.h);
-  assert.deepEqual(animation.anchor,source.meta.anchor);
-  assert.deepEqual(animation.frames,source.frames.map(f=>({...f.frame,duration:f.duration})));
+  const png=fs.readFileSync(path.join(__dirname,'..',animation.image));
+  assert.equal(animation.image,source.image);
+  assert.deepEqual(animation.anchor,source.anchor);
+  assert.deepEqual(animation.frames,source.frames);
+  for(const f of animation.frames){assert.ok(f.x+f.w<=png.readUInt32BE(16));assert.ok(f.y+f.h<=png.readUInt32BE(20));}
   let elapsed=0;
   for(const frame of animation.frames){
     assert.equal(Art.frameAt(kind,elapsed),frame);
@@ -33,7 +32,7 @@ for(const [kind,file] of [['slash','slash-arc'],['shield','spiral-ward']]){
   assert.equal(Art.frameAt(kind,elapsed,true),animation.frames[0]);
   assert.equal(Art.frameAt(kind,-1,true),null);
   assert.equal(Art.frameAt(kind,NaN,true),null);
-  const image={complete:true,naturalWidth:source.meta.size.w};
+  const image={complete:true,naturalWidth:png.readUInt32BE(16)};
   const calls=[];
   const ctx={save(){},restore(){},drawImage(...args){calls.push(args);}};
   assert.equal(Art.draw(ctx,image,kind,100,200,0),true);

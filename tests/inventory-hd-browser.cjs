@@ -4,7 +4,7 @@ await p.route('**/__dev_version',r=>r.fulfill({body:'stable'}));
 await p.route('**/game.js*',async r=>{const a=await r.fetch();
 await r.fulfill({response:a,body:(await a.text()).replace('  window.__mareDiagnostics=','  window.__invQA={get game(){return game},defs:itemDefs,newItem,openPanel,renderPanel,get ui(){return inventoryUI},stats:getDerived,get forge(){return forgeUI},save:saveGame,refresh:updateUI,select(id){selectedItem=id;renderPanel()}};\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')})});
 await p.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8159/');
-await p.waitForFunction(()=>window.__invQA&&__mareDiagnostics().lobby96.state==='ready',null,{timeout:90000});
+await p.waitForFunction(()=>window.__invQA&&__mareDiagnostics().lobby96.state==='ready',null,{timeout:90000}).catch(async e=>{console.error({errors,readiness:await p.evaluate(()=>({hook:!!window.__invQA,lobby:window.__mareDiagnostics?.().lobby96,ready:document.readyState}))});throw e;});
 await p.locator('#characterName').fill('Papacapim');
 await p.locator('#nextToClass').click();
 await p.locator('#nextToAppearance').click();
@@ -15,12 +15,44 @@ await p.evaluate(()=>{let q=__invQA,g=q.game;g.level=200;g.inventory=q.defs.filt
 await p.waitForFunction(()=>{const c=document.getElementById('inventorySprite');return c&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0)},{},{timeout:90000});
 await p.evaluate(()=>__invQA.renderPanel());
 await p.mouse.move(0,0);
+await p.locator('.op-inventory-shell img:not([loading=lazy])').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
 await p.screenshot({path:out+'/'+(process.env.QA_STAGE||'before')+'.png'});assert.equal(await p.locator('[data-inv-slot]').count(),12);
 const slots=await p.locator('[data-inv-slot]').evaluateAll(xs=>xs.map(x=>x.dataset.invSlot));assert(slots.includes('belt'));assert(slots.includes('akuma_no_mi'));
 await p.evaluate(()=>window.__gridNode=document.querySelector('.op-grid'));
 await p.locator('[data-item]').first().click();assert(await p.evaluate(()=>window.__gridNode===document.querySelector('.op-grid')),'Selection preserves grid DOM');
 for(const tab of ['visual','style','equipment']){await p.locator('[data-inv-tab="'+tab+'"]').click();assert(await p.locator('[data-inv-tab="'+tab+'"]').evaluate(e=>e.classList.contains('active')));}
 await p.locator('#invSearch').fill('naoexistezz');assert.equal(await p.locator('[data-item]').count(),0);
+const compact=await p.locator('.op-inventory-shell').evaluate(shell=>{
+  const rect=selector=>shell.querySelector(selector).getBoundingClientRect();
+  const frame=shell.getBoundingClientRect(),title=rect('.op-title-banner img');
+  const tray=rect('.op-grid-wrap'),grid=rect('.op-grid'),character=rect('.op-character-panel'),privacy=rect('.op-hide-check');
+  const tab=shell.querySelector('[data-inv-tab=equipment]');
+  const button=tab.getBoundingClientRect();
+  const label=document.createRange();
+  label.selectNodeContents(tab.querySelector('span'));
+  const parts=[tab.querySelector('img').getBoundingClientRect(),...label.getClientRects()];
+  return {slots:shell.querySelector('.op-grid').children.length,pageSize:MareUI.inventoryGrid(innerWidth).pageSize,
+    equipmentFits:parts.every(part=>part.left>=button.left+2&&part.right<=button.right-2&&part.top>=button.top&&part.bottom<=button.bottom),
+    trayGap:tray.height-grid.height,profileGap:character.bottom-privacy.bottom,
+    crestOverlaps:title.top<frame.top&&title.bottom>frame.top,
+    crestOffset:Math.abs(title.left+title.width/2-frame.left-frame.width/2)};
+});
+assert.deepEqual({slots:compact.slots,equipmentFits:compact.equipmentFits},{slots:compact.pageSize,equipmentFits:true},'Empty results fill a complete page and the Equipment tab contains its label and icon');
+assert(compact.trayGap<28&&compact.profileGap<32,JSON.stringify(compact));
+assert(compact.crestOverlaps&&compact.crestOffset<3,JSON.stringify(compact));
+const glows=await p.locator('.op-equip-slot.filled').first().evaluate(slot=>{
+  const styles={};
+  const initial=slot.className;
+  try{
+    for(const rarity of ['common','uncommon','rare','epic','legendary','supreme']){
+      slot.className=initial.replace(/rarity-\w+/, 'rarity-'+rarity);
+      styles[rarity]=getComputedStyle(slot).boxShadow;
+    }
+    return styles;
+  }finally{slot.className=initial;}
+});
+assert.equal(new Set(Object.values(glows)).size,6,'Every rarity has a distinct rim glow');
+
 await p.locator('#invSearch').fill('');
 await p.locator('#invSort').selectOption('name');assert.equal(await p.locator('#invSort').inputValue(),'name');
 await p.locator('#invRarity').selectOption('epic');assert(await p.locator('[data-item]').count()>0);
@@ -47,13 +79,37 @@ await p.locator('[data-unequip="head"]').click();assert.equal(await p.evaluate((
 const countBefore=await p.evaluate(()=>__invQA.game.inventory.length+Object.values(__invQA.game.equipment).filter(Boolean).length);const powerBefore=await p.evaluate(()=>__invQA.stats().power);await p.locator('[data-auto-equip]').click();assert((await p.evaluate(()=>__invQA.stats().power))>=powerBefore);assert.equal(await p.evaluate(()=>__invQA.game.inventory.length+Object.values(__invQA.game.equipment).filter(Boolean).length),countBefore,'Equip best conserves inventory items');
 await p.evaluate(()=>{__invQA.game.hp=1;__invQA.game.potions=4;__invQA.select('virtual-potion')});await p.locator('[data-inv-use-potion]').click();assert((await p.evaluate(()=>__invQA.game.hp))>1);
 await p.evaluate(()=>{const q=__invQA;q.game.inventory=[];q.game.potions=q.game.materials=0;q.renderPanel()});assert.equal(await p.locator('[data-item]').count(),0);assert.match(await p.locator('.op-page-count').innerText(),/0.+0 de 0/);
+const fullPage=await p.evaluate(()=>MareUI.inventoryGrid(innerWidth).pageSize);
+assert.equal(await p.locator('.op-grid > .op-item.empty').count(),fullPage);
+await p.evaluate(()=>{const q=__invQA;q.game.inventory=[q.newItem(q.defs[0],1)];q.renderPanel()});
+assert.equal(await p.locator('.op-grid > .op-item:not(.empty)').count(),1);
+assert.equal(await p.locator('.op-grid > .op-item.empty').count(),fullPage-1);
+await p.screenshot({path:out+'/inventory-partial.png'});
 await p.evaluate(()=>{const q=__invQA;q.game.inventory=Array.from({length:120},(_,n)=>q.newItem(q.defs[n%q.defs.length],20));q.ui.page=0;q.renderPanel()});assert.equal(await p.locator('.op-bag-capacity b').innerText(),'120 / 120');assert(await p.locator('[data-inv-page="1"]').first().isEnabled());
 await p.locator('[data-inv-page="1"]').first().click();assert.equal(await p.evaluate(()=>__invQA.ui.page),1);
 await p.evaluate(()=>{let q=__invQA;q.ui.page=0;q.ui.sort='recent';q.game.inventory=q.defs.filter(x=>x.type==='akuma_no_mi').slice(0,16).concat(q.defs.filter(x=>x.slot&&x.type!=='akuma_no_mi').slice(-49)).map(x=>q.newItem(x,20));q.game.name='Capitão de Nome Bastante Comprido';q.renderPanel();q.select(q.game.equipment.akuma_no_mi.id)});
 for(const [width,height] of [[1920,1080],[1672,941],[1366,768],[1280,720],[1024,768],[393,852],[360,800],[320,568],[844,390]]){await p.setViewportSize({width,height});
 await p.evaluate(()=>__invQA.renderPanel());
 await p.mouse.move(0,0);const overflow=await p.locator('.op-body-grid').evaluate(e=>({width:e.clientWidth,scroll:e.scrollWidth}));assert(overflow.scroll<=overflow.width+1,'horizontal overflow '+width+': '+JSON.stringify(overflow));const close=await p.locator('.op-close').boundingBox();assert(close.y>=0&&close.y+close.height<=height,'close remains visible');
+await p.waitForFunction(()=>{
+  const img=document.querySelector('.op-title-banner img');
+  const r=img.getBoundingClientRect(),frame=img.closest('.op-inventory-shell').getBoundingClientRect();
+  return r.top>=0&&r.top<frame.top&&r.bottom>frame.top&&document.elementFromPoint(r.left+r.width/2,frame.top-3)===img;
+},null,{timeout:5000}).catch(e=>{throw new Error('Crest clipped at '+width,{cause:e});});
 await p.screenshot({path:out+'/inventory-'+width+'.png'});}
+await p.setViewportSize({width:393,height:852});
+await p.evaluate(()=>__invQA.renderPanel());
+await p.locator('.op-section-nav a[href="#inventory-bag"]').click();
+await p.waitForFunction(()=>{
+  const bag=document.getElementById('inventory-bag').getBoundingClientRect();
+  const body=document.querySelector('.op-body-grid').getBoundingClientRect();
+  return bag.top>=body.top-2&&bag.top<body.top+24;
+});
+assert(await p.locator('.op-pagination').evaluate(footer=>{
+  const centerY=selector=>{const r=footer.querySelector(selector).getBoundingClientRect();return r.top+r.height/2;};
+  return Math.abs(centerY('.op-bag-capacity')-centerY('button'))<4&&Math.abs(centerY('.op-page-count')-centerY('button'))<4;
+}),'Capacity, range and pagination share one row on a standard phone');
+await p.screenshot({path:out+'/inventory-mochila-393.png'});
 await p.setViewportSize({width:1366,height:768});
 await p.locator('.op-close').click();for(const faction of ['pirate','marine','revolutionary','government'])for(const level of [49,50,51]){await p.evaluate(({faction,level})=>{__invQA.game.factionId=faction;__invQA.game.level=level;__invQA.refresh()}, {faction,level});await p.evaluate(()=>document.fonts.ready);await p.waitForFunction(()=>[...document.querySelectorAll('.topbar img')].every(i=>i.complete));const snapshot=()=>p.locator('.topbar').evaluate(e=>({text:e.innerText,box:[e.clientWidth,e.clientHeight],styles:[getComputedStyle(e).backgroundImage,getComputedStyle(e).borderImageSource,getComputedStyle(e).fontFamily],images:[...e.querySelectorAll('img')].map(i=>i.getAttribute('src'))}));const pre=await snapshot();await p.evaluate(()=>__invQA.openPanel('inventory'));await p.locator('.op-close').click();assert.deepEqual(await snapshot(),pre,'HUD layout, content and materials preserved '+faction+' '+level);}
 await p.evaluate(()=>{const q=__invQA;q.game.name='Papacapim';q.game.factionId='pirate';q.game.level=200;q.game.appearance96=MareCharacterAppearance.normalize({...MareCharacterAppearance.read(q.game),gender:'feminino',hairStyle:'hair-bob',hairColor:'violet',skinColor:'brown'});q.renderPanel();q.openPanel('inventory')});

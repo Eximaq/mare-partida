@@ -63,6 +63,14 @@ arrive('dawn','beach');wire.battle.area='beach';
   assert(engine.fruitCast(b,skill.key,{...c,now:now+51}),f.id+skill.key);engine.step(b,{...c,now:now+101,dt:.05});wire.battle=b;
   await p.evaluate(()=>MareGameSession.load());await p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));assert.deepEqual(errors,[],f.id+skill.key);
  }
- assert.equal(sent.length,4);assert.deepEqual(legacy,[]);assert.deepEqual(errors,[]);assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-fruits');console.log('Fruit UI passed: owned compendium, original transform/skill controls, persisted cooldown and registration, mobile, no legacy API or save writes. BFF fixture; no provider calls.');
+ // A confirmed server impact must reach the original Wolf renderer, once per
+ // sequence. Repeated state snapshots cannot replay an expired impact.
+ wire.battle.events=[];wire.battle.seq=10000;await p.evaluate(()=>MareGameSession.load());
+ await p.evaluate(()=>{globalThis.wolfDraws=0;const draw=MareWolf.drawEffect;MareWolf.drawEffect=function(...args){if(args[1]==='bleed')globalThis.wolfDraws++;return draw.apply(this,args);};});
+ wire.battle.events=[{seq:10001,type:'fruit',fruitId:'akuma_inu_wolf',kind:'wolf-impact',phase:'bleed',x:wire.world.position.x,y:wire.world.position.y}];wire.battle.seq=10001;
+ await p.evaluate(()=>MareGameSession.load());await p.waitForFunction(()=>globalThis.wolfDraws>0,null,{timeout:4000});
+ await p.waitForTimeout(500);const draws=await p.evaluate(()=>globalThis.wolfDraws);
+ await p.evaluate(()=>MareGameSession.load());await p.waitForTimeout(500);assert.equal(await p.evaluate(()=>globalThis.wolfDraws),draws,'duplicate snapshot must not replay Wolf impact');
+ assert.equal(sent.length,4);assert.deepEqual(legacy,[]);assert.deepEqual(errors,[]);assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-fruits');console.log('Fruit UI passed: owned compendium, original transform/skill controls, persisted cooldown and registration, mobile, Wolf feedback without replay, no legacy API or save writes. BFF fixture; no provider calls.');
  }catch(e){console.error({errors,diagnostic:await p.evaluate(()=>({online:!!window.MareGameSession,controlled:window.MareGameSession?.controlled,map:window.__mareDiagnostics?.().map,body:document.body.innerText.slice(0,1000)}))});throw e;}finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});

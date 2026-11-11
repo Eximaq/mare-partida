@@ -1,6 +1,7 @@
 'use strict';
 ((root)=>{
  if(typeof module!=='undefined')require('./rank-b-data.js');
+ const reworks=root.MareParameciaReworks||(typeof require==='function'?require('./paramecia-rework-data.js'):null);reworks?.apply('rankB',root.MareRankBData);
  const {rules,effects}=root.MareRankBData,images=new Map();
  const has=id=>Object.values(rules).some(r=>r.id===id),visible=(e,v)=>!!v&&e.x>=v.x&&e.y>=v.y&&e.x<=v.x+v.width&&e.y<=v.y+v.height;
  const reduction=(amount,{equipped,physical=true,hasHaki=false}={})=>physical&&!hasHaki&&[rules.beta.id,'akuma_mera_mera','akuma_yami_yami','akuma_hie_hie'].includes(equipped)?amount*(1-rules.beta.physicalDamageReduction):amount;
@@ -10,9 +11,9 @@
  function due(job,elapsed){const times=job.kind==='punch'?Array.from({length:4},(_,i)=>effects.punch.duration*(i+1)/4):Array.from({length:5},(_,i)=>chokeLead+(i+1)*1000),hits=[];job.next ||= 0;while(job.next<times.length&&elapsed+1e-6>=times[job.next])hits.push(job.next++);return hits;}
  function image(url){if(!images.has(url)){const im=new Image();im.src=url;images.set(url,im);}return images.get(url);}
  function preload(){for(const fx of Object.values(effects))image(fx.image);}
- function draw(c,kind,x,y,elapsed,{width=64,height=width,loop=false}={}){const f=frame(kind,elapsed,loop),im=image(effects[kind].image);if(!f||!im.complete||!im.naturalWidth)return false;c.save();c.imageSmoothingEnabled=false;c.drawImage(im,f.x,f.y,f.w,f.h,Math.round(x-width/2),Math.round(y-height/2),width,height);c.restore();return true;}
- function drawLegs(c,entity,elapsed){const v=rules.beta.legVfx,f=frame('slime',elapsed,true),base=(v.foot/f.h)*v.height;return draw(c,'slime',entity.x,entity.y+v.baseOffset-base+v.height/2,elapsed,{width:v.width,height:v.height,loop:true});}
- function drawTether(c,from,to,elapsed){const dx=to.x-from.x,dy=to.y-from.y,len=Math.hypot(dx,dy);if(len<1)return false;const f=frame('tether',elapsed,true),im=image(effects.tether.image);if(!im.complete||!im.naturalWidth)return false;c.save();c.translate(from.x,from.y-22);c.rotate(Math.atan2(dy,dx));c.imageSmoothingEnabled=false;c.drawImage(im,f.x,f.y,f.w,f.h,0,-16,len,32);c.restore();return true;}
+ function draw(c,kind,x,y,elapsed,{width=64,height=width,loop=false}={}){const legacy=frame(kind,elapsed,loop),f=legacy&&reworks.frame(effects[kind],legacy,elapsed,loop?'loop':'once',kind),im=image(effects[kind].image);if(!f||!im.complete||!im.naturalWidth)return false;c.save();c.imageSmoothingEnabled=false;c.drawImage(im,f.x,f.y,f.w,f.h,Math.round(x-width/2),Math.round(y-height/2),width,height);c.restore();return true;}
+ function drawLegs(c,entity,elapsed){const v=rules.beta.legVfx,f=frame('slime',elapsed,true),base=(effects.slime.rework?114/128:v.foot/f.h)*v.height;return draw(c,'slime',entity.x,entity.y+v.baseOffset-base+v.height/2,elapsed,{width:v.width,height:v.height,loop:true});}
+ function drawTether(c,from,to,elapsed){const dx=to.x-from.x,dy=to.y-from.y,len=Math.hypot(dx,dy);if(len<1)return false;const f=reworks.frame(effects.tether,frame('tether',elapsed,true),elapsed,'loop','tether'),im=image(effects.tether.image);if(!im.complete||!im.naturalWidth)return false;c.save();c.translate(from.x,from.y-22);c.rotate(Math.atan2(dy,dx));c.imageSmoothingEnabled=false;c.drawImage(im,f.x,f.y,f.w,f.h,0,-16,len,32);c.restore();return true;}
  function drawBurst(c,at,elapsed){if(elapsed>=effects.burst.duration)return;for(let i=0;i<8;i++){const angle=i*Math.PI/4;c.save();c.translate(at.x,at.y);c.rotate(angle);draw(c,'burst',64,0,elapsed,{width:128,height:128});c.restore();}}
  // Constant-speed linear interpolation delegates collision resolution to the existing navigator.
  function glide(entity,goal,speed,dt,nav){const dx=goal.x-entity.x,dy=goal.y-entity.y,d=Math.hypot(dx,dy);if(d<1e-6)return 0;const t=Math.min(1,Math.max(0,speed*dt)/d),x=entity.x,y=entity.y;nav.move(entity,dx*t,dy*t);const moved=Math.hypot(entity.x-x,entity.y-y);if(moved>.01){entity.walking=.2;entity.facing=dx<0?-1:dx>0?1:entity.facing;entity.direction=Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'back':'front');}return moved;}

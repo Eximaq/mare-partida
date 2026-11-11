@@ -32,15 +32,20 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await page.locator('[data-profile-tab=gear]').click();await page.waitForFunction(()=>document.querySelector('#captainPortraitState')?.hidden);
  assert.equal(await page.locator('.captain-equipment-card').count(),12);
  assert(await page.locator('[data-profile-slot] .captain-equipment-art img').evaluateAll(es=>es.length>0&&es.every(e=>e.getAttribute('src').startsWith('assets/ui/items-hd/'))));
- // A HUD refresh can replace the slot nodes while Chromium is decoding. Check the exact
- // displayed resources independently, then require loaded images in the current panel.
- await page.locator('[data-profile-slot] .captain-equipment-art img').evaluateAll(es=>Promise.all(es.map(e=>{
-  const image=new Image();image.src=e.currentSrc||e.src;return image.decode();
- })));
- await page.waitForFunction(()=>{
-  const images=[...document.querySelectorAll('[data-profile-slot] .captain-equipment-art img')];
-  return images.length>0&&images.every(image=>image.complete&&image.naturalWidth>0);
- });
+ // Load lazy cards, decode stable resources despite HUD node replacement, and
+ // require the current panel to finish loading. Missing/corrupt images still fail.
+ const equipmentImages='[data-profile-slot] .captain-equipment-art img';
+ await page.locator(equipmentImages).evaluateAll(es=>es.forEach(e=>{e.loading='eager'}));
+ try{
+  await page.locator(equipmentImages).evaluateAll(es=>Promise.all(es.map(async e=>{
+   const source=e.currentSrc||e.src,image=new Image();image.src=source;
+   try{await image.decode();}catch(error){throw Error('Equipment image decode failed: '+source+' ('+error.message+')');}
+  })));
+  await page.waitForFunction(selector=>{const images=[...document.querySelectorAll(selector)];return images.length>0&&images.every(e=>e.complete&&e.naturalWidth>0)},equipmentImages);
+ }catch(error){
+  const state=await page.locator(equipmentImages).evaluateAll(es=>es.map(e=>({src:e.currentSrc||e.src,complete:e.complete,width:e.naturalWidth,connected:e.isConnected})));
+  throw Error('Equipment images failed: '+JSON.stringify(state)+'; '+error.message);
+ }
  await page.locator('[data-profile-slot=weapon]').focus();await page.waitForFunction(()=>!document.querySelector('#gameTooltip').classList.contains('hidden'));
  assert((await page.locator('#gameTooltip').textContent()).includes(await page.evaluate(()=>__captainQA.defs[__captainQA.game.equipment.weapon.def].name)));
  await page.mouse.move(1,1);await page.locator('[data-profile-tab=gear]').focus();await shot('profile-equipment');

@@ -5,15 +5,23 @@ Push-Location -LiteralPath $repo
 try {
  $version=(Get-Content -LiteralPath (Join-Path $repo '.node-version') -Raw).Trim()
  if($version -notmatch '^24\.\d+\.\d+$'){throw 'Versao Node local invalida'}
- $portable=Join-Path $env:LOCALAPPDATA ('MarePartida\node-v'+$version+'-win-x64\node.exe')
- $node=if(Test-Path -LiteralPath $portable){$portable}else{(Get-Command node -CommandType Application -ErrorAction Stop).Source}
+ $pgRoot=Join-Path $env:LOCALAPPDATA 'MarePartida'
+ $settingsFile=Join-Path $repo 'infra/local/continuous/settings.json'
+ if(Test-Path -LiteralPath $settingsFile){
+  $settings=Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json
+  if($settings.resourceRoot){
+   if(-not [IO.Path]::IsPathRooted($settings.resourceRoot)){throw 'resourceRoot deve ser um caminho absoluto existente'}
+   $pgRoot=(Resolve-Path -LiteralPath $settings.resourceRoot -ErrorAction Stop).Path
+  }
+ }
+ $portable=Join-Path $pgRoot ('node-v'+$version+'-win-x64\node.exe')
+ $node=if(Test-Path -LiteralPath $portable){$portable}else{(Get-Command node -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source}
  if($Action -eq 'start') {
   $actualNode=(& $node --version | Out-String).Trim()
   if($LASTEXITCODE -ne 0 -or $actualNode -ne ('v'+$version)){
    $reported=if($actualNode -match '^v\d+\.\d+\.\d+$'){$actualNode}else{'indisponivel'}
    throw ('Node esperado: v'+$version+'; encontrado: '+$reported+' em '+$node+'. Nenhum servico foi iniciado')
   }
-  $pgRoot=Join-Path $env:LOCALAPPDATA 'MarePartida'
   $data=Join-Path $pgRoot 'authoritative-dev\data'
   $control=Join-Path $pgRoot 'postgres-18.6\pgsql\bin\pg_ctl.exe'
   $ready=Join-Path $pgRoot 'postgres-18.6\pgsql\bin\pg_isready.exe'

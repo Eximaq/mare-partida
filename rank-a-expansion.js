@@ -85,11 +85,27 @@
   e.dots=e.dots.filter(d=>{const target=c.enemies.find(m=>m.id===d.targetId);if(!live(target))return false;while(d.left>0&&d.next<=c.now+EPS&&d.next<=d.until+EPS){emit(c,d,target,d.power,1,true,true,'dot:'+d.kind+':'+(++d.tick),true);d.left--;d.next++;}return d.left>0;});
  }
  function clear(s,enemies){if(!s.expansion)return;s.expansion={jobs:[],dots:[],fields:[],dome:null,seq:0};for(const m of enemies)for(const key of ['rankASilenceUntil','rankADragUntil','rankABlindUntil','rankAPoisonSlowUntil'])delete m[key];}
- function draw(ctx,s,now,enemies,layer,paint,effects,hero){
+ function draw(ctx,s,now,enemies,layer,paint,effects,hero,visual=null){
   const e=s.expansion;if(!e)return;
   const f=(key,age,rate=1)=>Math.floor(Math.max(0,age)*1000*rate/83)%effects[key].frames.length;
   if(layer!=='back'&&domeActive(s,now)&&hero){ctx.save();ctx.globalAlpha=.38;paint(ctx,'bariDome',f('bariDome',now-e.dome.started),hero.x,hero.y-48,150,150);ctx.restore();}
   for(const j of e.jobs){const age=now-j.started,m=enemies.find(m=>m.id===j.targetId),[dx,dy]=j.direction;if(layer==='back'&&!['redPoison','overheat','parasite','hydra'].includes(j.kind))continue;if(layer==='front'&&['redPoison','overheat'].includes(j.kind))continue;
+   if(visual&&['hydra','gasBomb','redPoison'].includes(j.kind)){
+    if(j.kind==='hydra'&&m&&layer!=='front'){const boundaries=[.1,.22,.36,.55,.7,.8,.91,1.02,1.13,1.24,1.34,1.427],index=boundaries.findIndex(v=>age<v);ctx.save();if(dx<0){ctx.translate(m.x,m.y);ctx.scale(-1,1);visual(ctx,'doku','hydra',index<0?11:index,-60,-64,164,156);}else visual(ctx,'doku','hydra',index<0?11:index,m.x-60,m.y-64,164,156);ctx.restore();}
+    if(j.kind==='redPoison'&&layer!=='front'){const size=384*Math.min(1,age/.6),q=[4,5,6,7,8,9,8,7,6,5],index=age<.6?Math.min(2,Math.floor(age/.2)):age<.8?3:age>=3.35?(age<3.48?10:11):q[Math.floor((age-.8)*10)%q.length];ctx.save();ctx.globalAlpha=.65;visual(ctx,'doku','redPoison',index,j.point.x,j.point.y-55,size,size);ctx.restore();}
+    if(j.kind==='gasBomb'&&layer!=='back'){const p=Math.min(1,age/Math.max(.001,j.duration)),index=j.hit?Math.min(11,4+Math.floor((now-j.impact)/.8*8)):Math.min(3,Math.floor(p*4));visual(ctx,'doku','gasBomb',index,j.origin.x+(j.point.x-j.origin.x)*p,j.origin.y+(j.point.y-j.origin.y)*p-32,88,82);}
+    continue;
+   }
+   if(visual&&['tamaito','parasite','overheat'].includes(j.kind)){
+    if(j.kind==='overheat'&&hero&&layer!=='front'){
+     const dir=hero.direction||'front',key=({right:'east',left:'west',front:'south',back:'north'})[dir]||dir;
+     const hands={east:[[57,80],[57,80],[57,80],[57,80]],south:[[81,79],[86,78],[82,79],[84,79]],west:[[71,80],[71,80],[72,80],[72,80]],north:[[82,78],[82,78],[78,80],[78,80]]};
+     const hand=(hands[key]||hands.south)[Math.floor(now*4)%4],angle=({east:0,south:Math.PI/2,west:Math.PI,north:-Math.PI/2})[key]||0;
+     visual(ctx,'ito','overheat',Math.floor(age*60)%36,hero.x+hand[0]-64,hero.y+hand[1]-112,432,432,angle,{x:222,y:190});
+    }else if(j.kind==='parasite'&&m){const idx=age<.12?Math.floor(age/.015):age<5?8+Math.floor((age-.12)*60)%24:32+Math.floor((age-5)/.0166);for(const side of layer==='all'?['back','front']:[layer]){visual(ctx,'ito','parasite-'+side,idx,m.x,m.y);if(side==='front')for(const hit of [1.5,3.5])if(age>=hit&&age<hit+.18)visual(ctx,'ito','parasite-pulse',Math.floor((age-hit)/.015),m.x,m.y);}}
+    else if(j.kind==='tamaito'&&m&&layer!=='back'){for(const shot of j.shots){const d=dist(j.origin,m),a=now-shot.released;if(!shot.hit){const k=Math.min(1,a*1000/Math.max(1,d));visual(ctx,'ito','tamaito',Math.floor(a*60)%24,j.origin.x+(m.x-j.origin.x)*k,j.origin.y+(m.y-j.origin.y)*k-32,96,36,Math.atan2(m.y-j.origin.y,m.x-j.origin.x));}else if(a-d/1000>=0&&a-d/1000<.16)visual(ctx,'ito','tamaito-impact',Math.floor((a-d/1000)/.016),m.x,m.y-32);}}
+    continue;
+   }
    if(j.kind==='bariPush'||j.kind==='bariCharge')paint(ctx,j.kind,Math.min(28,Math.floor(age/.7*29)),j.origin.x+dx*j.distance,j.origin.y+dy*j.distance-40,128,128,Math.atan2(dy,dx)+(j.kind==='bariCharge'?Math.PI/4:0));
    else if(j.kind==='hydra'&&m)paint(ctx,'hydra',Math.min(40,Math.floor(age/.8*23)),m.x-(dx<0?-60:60),m.y-64,164,156,0,dx<0);
    else if(j.kind==='gasBomb'){const p=Math.min(1,age/Math.max(.001,j.duration));paint(ctx,'gasBomb',j.hit?Math.min(32,8+Math.floor((now-j.impact)/.8*25)):Math.min(7,Math.floor(p*8)),j.origin.x+(j.point.x-j.origin.x)*p,j.origin.y+(j.point.y-j.origin.y)*p-32,88,82);}

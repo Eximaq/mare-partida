@@ -85,3 +85,8 @@ The final upstream trigger scopes safe-integer headroom to pending market propos
 ## November 6 presentation synchronization
 
 Main ae481226 adds nautical windows, the Forge reveal, breathing/scale for the four port NPCs and the redesigned trade HUD (PRs #273–#276). These are presentation changes; trade commands still use the existing authorized server operations, offer versions and consent. The private static package must be replaced with the successful Pages artifact of this exact revision. Startup now waits for PostgreSQL readiness through recovery, while enforcing the same Node version and preserving the existing cluster.
+
+
+## November 10 server rework compatibility
+
+See [PRIVATE-REWORK-SYNC.md](PRIVATE-REWORK-SYNC.md) for the integration of main `69dac39e`, the narrowly scoped battle migration, Jiki/Wolf presentation adapters, Phoenix final-boundary regression and Windows resource-path diagnosis. The newer private build deliberately differs in the online Wolf adapter and generated cache hashes; the earlier byte-for-byte Pages claim applies only to the November 6 package.

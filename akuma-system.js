@@ -31,7 +31,7 @@
   }
   const catalog=Object.freeze([
     new AkumaNoMiData('akuma_kuku_kuku','Kuku-Kuku no Mi','E','assets/akuma/kuku-icon.png',{healing_received_percent:.05,max_hp_percent:.03},'assets/akuma/kuku-aura.png','assets/akuma/kuku-skill-icon.png?v=grid-1','assets/akuma/kuku-skill-sheet.png?v=grid-1',9,3),
-    new AkumaNoMiData('akuma_beri_beri','Beri-Beri no Mi','E','assets/akuma/beri-icon.png',{impact_resistance_percent:.15},'assets/akuma/beri-aura.png','assets/akuma/beri-skill-icon.png?v=grid-1','assets/akuma/beri-skill-sheet.png?v=grid-1',17,5),
+    new AkumaNoMiData('akuma_beri_beri','Beri-Beri no Mi','E','assets/akuma/beri-icon.png',{impact_resistance_percent:.15},'assets/akuma/beri-aura.png','assets/akuma/beri-skill-icon-v2.webp','assets/akuma/beri-skill-sheet-v2.webp',36,6,{skill_frame_size:192,skill_render_size:192,skill_fps:24,skill_anchor_x:.5,skill_anchor_y:.75}),
     new AkumaNoMiData('akuma_tori_albatroz','Tori-Tori no Mi: Albatroz','E','assets/akuma/zoan/tori-fruit.png',{move_speed_percent:.12,evasion_percent:.05},'', 'assets/akuma/zoan/tori-skill-icon.png','',1,1,{family:'zoan',zoan_sprite_sheet:'assets/sprites-combat-v2/tori/idle-south.png'}),
     new AkumaNoMiData('akuma_uma_uma','Uma-Uma no Mi','E','assets/akuma/zoan/uma-fruit.png',{move_speed_percent:.15,max_hp_percent:.03},'', 'assets/akuma/zoan/uma-skill-icon.png','',1,1,{family:'zoan',zoan_sprite_sheet:'assets/sprites-combat-v2/uma/idle-south.png'}),
     new AkumaNoMiData('akuma_inu_dachshund','Inu-Inu no Mi: Dachshund','E','assets/akuma/zoan/inu-fruit.png',{evasion_percent:.10,physical_defense_percent:.03},'', 'assets/akuma/zoan/inu-skill-icon.png','',1,1,{family:'zoan',zoan_sprite_sheet:'assets/sprites-combat-v2/inu/idle-south.png'}),
@@ -117,6 +117,8 @@
     return {...stats,attack:base,physical:base,elemental:base,fruitOffenseVersion:offenseRules.version};
   }
   const castCoefficient=id=>id==='akuma_inu_dachshund'?.85:id==='akuma_uma_uma'?.55:1;
+  if(typeof module!=='undefined')require('./paramecia-rework-data.js');
+  root.MareParameciaReworks?.applyCatalog?.(catalog,supaRules);
   root.MareAkuma={offenseRules,offensiveStats,castCoefficient,ranks,rankRarities,rarityFor,familyFor,slotsPerRank,AkumaNoMiData,catalog,byId,isZoan,isFruit,registered,slotsForRank,passiveCount,register,migrate,itemData,bonusStats,applyGear,activeSkill,activeSkills,cooldownKey,supaRules,supaTargets,retaliate};
   if(typeof module!=='undefined')module.exports=root.MareAkuma;
 })(globalThis);

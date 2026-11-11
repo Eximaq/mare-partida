@@ -38,7 +38,7 @@ function cast(f,c){if(!valid(f,c))return;const e=f.effects,{fruit:id,key,now,sta
 }
 function tick(f,c,dt){const e=f.effects,{now,epoch:ms,stats:s,hero:h}=c;
  if(f.hpScale&&e.bisonUntil<=now){c.scaleHp(1/f.hpScale);delete f.hpScale;}
- for(const m of c.enemies){if(m.hasMatoMark&&!RC.marked(m,ms))RC.clearMark(m);if(m.wolfBleed){for(const _ of W.dueTicks(m.wolfBleed,now))if(live(m))c.hit(m,W.damage(m.wolfBleed.attack,c.armor(m,false),.2));if(m.wolfBleed.nextTick>5||!live(m))delete m.wolfBleed;}}
+ for(const m of c.enemies){if(m.hasMatoMark&&!RC.marked(m,ms))RC.clearMark(m);if(m.wolfBleed){for(const _ of W.dueTicks(m.wolfBleed,now))if(live(m)&&c.hit(m,W.damage(m.wolfBleed.attack,c.armor(m,false),.2))>0)c.effect?.({fruitId:W.rules.id,kind:'wolf-impact',phase:'bleed',id:m.id,x:m.x,y:m.y});if(m.wolfBleed.nextTick>5||!live(m))delete m.wolfBleed;}}
  if((e.flags||[]).length&&ms>=(e.flagTick||0)){e.flags=e.flags.filter(v=>v.until>ms);e.kobuUntil=0;for(const m of c.enemies)delete m.kobuDebuffUntil;for(const flag of e.flags){if(flag.key==='1'&&X.visible(flag,c.view))e.kobuUntil=flag.until/1000;else if(flag.key==='2')for(const m of c.enemies.filter(live))if(X.visible(m,flag.view))m.kobuDebuffUntil=flag.until;}e.flagTick=ms+1000;}
  for(const p of e.shots||[]){if(p.launch>now)continue;if(p.kind==='doru'){D.step(p,dt,c.enemies,c.clear,{impact:shot=>{if(shot.key==='1')for(const m of D.targets({x:shot.impactX,y:shot.impactY},c.enemies).filter(m=>live(m)&&c.clear(shot,m)))c.hit(m,D.damage(shot.attack,c.armor(m,false)));}},now);continue;}
   const impact=(m,shot)=>{shot.resolved=true;if(m){shot.x=m.x;shot.y=m.y;}if(p.kind==='bomu')c.effect?.({fruitId:f.id,kind:'bomu-impact',key:p.key,x:p.x,y:p.y});const targets=p.kind==='bomu'?(p.key==='1'?(m?[m]:[]):c.enemies.filter(m=>live(m)&&X.inSplash(p,m))):(m?[m]:[]);for(const target of targets)c.hit(target,C.damage({physical:shot.attack,elemental:0},c.armor(target,false)*(1-shot.penetration),{type:'physical',multiplier:p.kind==='bomu'?(p.key==='1'?.75:1.5):1.1}));};
@@ -57,7 +57,7 @@ function tick(f,c,dt){const e=f.effects,{now,epoch:ms,stats:s,hero:h}=c;
   while(budget>0&&!a.finished){const n=Math.min(8,budget),from={x:h.x,y:h.y},moved=c.move(h,a.dx*n,a.dy*n);budget-=n;if(a.kind==='neko-dash')a.remaining-=n;else a.travel+=moved;if(moved<n-.01){delete e.action;return;}
    const victim=a.kind==='bison'?c.enemies.find(m=>live(m)&&N.segmentHit(from,h,m,24)):t;
    if(victim&&!a.hit&&N.segmentHit(from,h,victim,a.kind==='wolf'?W.rules.hitRadius:24)){a.hit=true;if(a.kind==='neko-dash')physical(victim,1.45,N.backstab(h.x-from.x,h.y-from.y,victim.emberFacing||'south'));
-    else if(a.kind==='wolf'){a.finished=now;c.hit(victim,W.damage(a.attack,c.armor(victim,false),1));if(live(victim))victim.wolfBleed={started:now,nextTick:1,attack:a.attack};}
+    else if(a.kind==='wolf'){a.finished=now;if(c.hit(victim,W.damage(a.attack,c.armor(victim,false),1))>0)c.effect?.({fruitId:W.rules.id,kind:'wolf-impact',phase:'charge',id:victim.id,x:victim.x,y:victim.y});if(live(victim))victim.wolfBleed={started:now,nextTick:1,attack:a.attack};}
     else{a.finished=now;c.hit(victim,C.damage({physical:a.attack,elemental:0},c.armor(victim,false)*(1-a.penetration),{multiplier:1.8}));victim.bisonStunUntil=now+2;victim.telegraph=null;}
    }
   }

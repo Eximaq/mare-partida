@@ -1,6 +1,7 @@
 'use strict';
 ((root)=>{
  if(typeof module!=='undefined')require('./rank-c-expansion-data.js');
+ const reworks=root.MareParameciaReworks||(typeof require==='function'?require('./paramecia-rework-data.js'):null);reworks?.apply('rankCExpansion',root.MareRankCExpansionData);
  const {rules,effects,clips}=root.MareRankCExpansionData,images=new Map(),directions={front:'south',back:'north',left:'west',right:'east'};
  const has=id=>Object.values(rules).some(r=>r.id===id),visible=(p,v)=>!!v&&p.x>=v.x&&p.y>=v.y&&p.x<=v.x+v.width&&p.y<=v.y+v.height;
  function image(url){if(!images.has(url)){const im=new Image();im.src=url;images.set(url,im);}return images.get(url);}
@@ -16,7 +17,7 @@
   if(kind==='revolution'&&t>=list.slice(0,10).reduce((s,f)=>s+f.duration,0)){t-=list.slice(0,10).reduce((s,f)=>s+f.duration,0);list=list.slice(10,17);}
   const duration=list.reduce((s,f)=>s+f.duration,0);if(mode==='hold'&&t>=duration)return list.at(-1);if(mode==='impact'&&t>=duration)return null;t%=duration;for(const f of list){if(t<f.duration)return f;t-=f.duration;}return list[0];
  }
- function drawEffect(c,kind,x,y,elapsed,{width=64,height=width,mode='loop',mirror=false}={}){const f=effectFrame(kind,elapsed,mode),im=image(effects[kind].image);if(!f||!im.complete||!im.naturalWidth)return false;c.save();c.translate(Math.round(x),Math.round(y));c.imageSmoothingEnabled=false;const paint=()=>c.drawImage(im,f.x,f.y,f.w,f.h,-width/2,-height/2,width,height);paint();if(mirror){c.scale(-1,1);paint();}c.restore();return true;}
+ function drawEffect(c,kind,x,y,elapsed,{width=64,height=width,mode='loop',mirror=false}={}){const legacy=effectFrame(kind,elapsed,mode),f=legacy&&reworks.frame(effects[kind],legacy,elapsed,mode,kind),im=image(effects[kind].image);if(!f||!im.complete||!im.naturalWidth)return false;if(reworks&&['revolution','deposition'].includes(kind))reworks.flagFeedback(c,kind,elapsed,x,y+height/2,width/64);c.save();c.translate(Math.round(x),Math.round(y));c.imageSmoothingEnabled=false;const paint=()=>c.drawImage(im,f.x,f.y,f.w,f.h,-width/2,-height/2,width,height);paint();if(mirror){c.scale(-1,1);paint();}c.restore();return true;}
  const flagArea=(p,v)=>({x:p.x-v.width/2,y:p.y-v.height/2,width:v.width,height:v.height});
  const affected=(flag,entity,view,now)=>flag.until>now&&entity.alive!==false&&visible(flag,view||{x:entity.x-flag.view.width/2,y:entity.y-flag.view.height/2,width:flag.view.width,height:flag.view.height});
  const inSplash=(center,entity)=>Math.abs(center.x-entity.x)<=rules.bomu.splash&&Math.abs(center.y-entity.y)<=rules.bomu.splash;

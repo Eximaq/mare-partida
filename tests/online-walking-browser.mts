@@ -77,6 +77,14 @@ await authDatabase(async f=>{
    if(run.kind==='click'){const end=frames.at(-1);assert.ok(Math.hypot(end.x-run.target.x,end.y-run.target.y)<2,'distant click must eventually arrive by walking');}
    console.log(JSON.stringify({kind:run.kind,map:run.mapId,maxWindowSpeed,passed:true}));
   }
+  // The speed window above is fixed, but the neutral monsters may only start
+  // following near its end. Wait for the same movement evidence threshold,
+  // rather than assuming 18 seconds always contains 101 moving samples.
+  await p.waitForFunction(()=>{
+   const last=new Map();let moves=0;
+   for(const v of globalThis.monsterProbe){const prior=last.get(v.id);if(prior&&Math.hypot(v.x-prior.x,v.y-prior.y)>.01)moves++;last.set(v.id,v);}
+   return moves>100;
+  },null,{timeout:30000,polling:250});
   const samples=await p.evaluate('globalThis.monsterProbe');let moves=0,sliding=0,rewinds=0;const last=new Map();
   for(const v of samples){const prev=last.get(v.id);if(prev){if(v.phase<prev.phase-.01)rewinds++;if(Math.hypot(v.x-prev.x,v.y-prev.y)>.01){moves++;if(!v.moving)sliding++;}}last.set(v.id,v);}
   console.log(JSON.stringify({monsterFrames:samples.length,moves,sliding,phaseRewinds:rewinds}));
