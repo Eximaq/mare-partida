@@ -63,18 +63,20 @@ test('prison progression, fallback and installation caps preserve earned profess
   assert.equal(effectiveProfession('doctor',3,5),.03);
 });
 
-test('automatic potions use the Doctor bonus and deployment keeps the ongoing battle intact',()=>{
+test('map deployment clears obsolete movement and preserves progress and Doctor potion healing',()=>{
   const require=createRequire(import.meta.url),engine=require('../../world-battle.cjs'),chars=require('../../character-system.js');
   const stats=chars.derive({classId:'brawler',level:1,attributes:chars.empty()},engine.catalog.classes.brawler,engine.catalog.factions.pirate,{attack:0,defense:0,hp:0});
   const nav=require('../../world-catalog.cjs').load().navigation('dawn'),hero={...nav.map.spawn,direction:'front'};
   const battle=engine.create('beach',stats,1000,()=>.5);
   battle.auto=true;
   battle.autoSkills=false;
+  battle.autoRoute=[{x:1488,y:1648}];
   battle.hp=stats.maxHP*.2;
   battle.rulesHash='063ad6d7e40b3146f8542e122e64cff8078b7eb61c49b0722d7e32044be2b461';
   const before=structuredClone(battle);
   engine.upgradeBalance(battle);
-  assert.deepEqual(battle,{...before,rulesHash:engine.rulesHash});
+  assert.deepEqual(battle,{...before,rulesHash:engine.rulesHash,auto:false,actionLockUntil:0,autoRoute:null,skillJob:null,unreachableUntil:{}});
+  battle.auto=true;
   const without=structuredClone(battle);
   const step=(b:typeof battle,potionHealingBonus:number)=>engine.step(b,{hero:{...hero},nav,stats,classId:'brawler',factionId:'pirate',level:1,now:1250,dt:.25,rng:()=>.5,potions:1,potionHealingBonus});
   assert.equal(step(without,0).potionsUsed,1);

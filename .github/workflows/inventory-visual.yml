@@ -57,7 +57,7 @@ jobs:
       - name: Preparar Chromium
         run: |
           python -m pip install playwright==1.63.0
-          python -m playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh python -m playwright
           npm install --prefix /tmp/mare-inventory-node playwright@1.63.0
           /tmp/mare-inventory-node/node_modules/.bin/playwright install chromium
       - name: Inventário desktop, tablet e mobile

@@ -270,11 +270,14 @@
     const $ = (id) => document.getElementById(id);
     const frameMeter=createFrameMeter(),meter=document.createElement('div');
     meter.id='onlinePerformance';meter.setAttribute('aria-label','Conexão e desempenho');
-    meter.textContent='Ping HTTP: — · FPS: —';document.body.append(meter);
+    const ping=document.createElement('strong'),stats=document.createElement('span');
+    ping.textContent='Conexão · —';meter.append(ping,stats);(document.getElementById('app')||document.body).append(meter);
     function renderPerformance(){
       const n=client.network||{},f=frameMeter.sample(),ms=v=>Number.isFinite(v)?Math.round(v)+' ms':'—';
-      meter.textContent=(client.available?'Ping HTTP: '+ms(n.rttMs):'Sem conexão')+' · FPS: '+(document.hidden?'—':f.fps??'—')+' · Estado: '+ms(n.ageMs);
-      meter.title='Ping HTTP inclui rede e processamento do servidor. Estado é o tempo desde a última leitura válida, não o ping. Intervalo entre leituras: '+ms(n.intervalMs)+'. Maior intervalo entre frames: '+ms(f.maxFrameMs)+'. FPS baixo indica lentidão de renderização.';
+      ping.textContent=client.available?ms(n.rttMs):'Sem conexão';
+      stats.textContent=(document.hidden?'—':f.fps??'—')+' FPS';
+      meter.setAttribute('aria-label','Conexão: '+ping.textContent+' · '+stats.textContent+' · Estado: '+ms(n.ageMs));
+      meter.title='Ping HTTP inclui rede e processamento do servidor. Última leitura válida há '+ms(n.ageMs)+'. Intervalo entre leituras: '+ms(n.intervalMs)+'. Maior intervalo entre frames: '+ms(f.maxFrameMs)+'. FPS baixo indica lentidão de renderização.';
       meter.dataset.stale=String(!client.available||n.ageMs>5000);
     }
     const performanceTimer=setInterval(renderPerformance,1000);

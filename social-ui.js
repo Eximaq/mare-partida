@@ -4,7 +4,7 @@
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const tabs = {friends:'Amigos',messages:'Mensagens',mail:'Correio',trade:'Trocas'};
   const icons = {friends:'assets/ui/social/party.png',messages:'assets/ui/port-chat/send.png',mail:'assets/ui/hud-expedition/contract.png',trade:'assets/ui/inventory-final/icons/equipment.png'};
-  const badgeKey = {friends:'friendRequests',messages:'unreadMessages',mail:'pending',trade:'tradeInvites'};
+  const badgeKey = {friends:'friendRequests',mail:'pending',trade:'tradeInvites'};
   const reasons = {
     social_unavailable:'O servidor ainda não disponibiliza o Social.', social_contact_blocked:'Contato bloqueado.',
     contact_blocked:'Contato bloqueado.', friend_exists:'A amizade já existe.', friend_request_pending:'Já existe uma solicitação.',
@@ -33,7 +33,6 @@
   const blank=text=>'<p class="social-empty">'+esc(text)+'</p>';
   const sections = [
     ['friends','Amigos','Solicitações e lista de amigos.'],
-    ['messages','Mensagens','Conversas privadas.'],
     ['mail','Correio','Entregas e recompensas oficiais.'],
     ['trade','Trocas','Negocie itens com outro jogador.'],
   ];
@@ -61,6 +60,13 @@
         if(b){b.hidden=n===0;b.textContent=n>99?'99+':String(n);b.setAttribute('aria-label',n+' pendências');}
       }
       o.marketBadge?.(Number(next.marketPending)||0);
+      const unread=Number(next.unreadMessages)||0;
+      const launcher=document.getElementById('chatCornerToggle');
+      if(launcher){
+        if(unread)launcher.dataset.privateUnread=unread>99?'99+':String(unread);
+        else delete launcher.dataset.privateUnread;
+        launcher.setAttribute('aria-label',unread?'Canal do Porto · '+unread+' mensagens privadas não lidas':'Canal do Porto');
+      }
       const notice=document.querySelector('[data-social-attention]'),has=[...Object.values(badgeKey),'marketPending'].some(k=>Number(next[k])>0);
       if(notice)notice.hidden=!has;
       if(was!==Number(next.unreadMessages)&&chat.classList.contains('hud-open')&&view!=='messages')void refreshInbox();

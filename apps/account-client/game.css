@@ -13,5 +13,29 @@ body.online-game #devLauncher { display:none!important; }
 
 .online-boot-error { position:fixed;inset:20%;padding:32px;display:grid;place-items:center;background:#102b35;color:#f2e5cb;border:2px solid #dfb779;z-index:100000; }
 
-#onlinePerformance { position:fixed;left:16px;top:260px;z-index:45;padding:6px 9px;border:1px solid #8d7750;border-radius:4px;background:rgba(8,28,36,.92);color:#f2e5cb;font:12px/1.4 system-ui,sans-serif;font-variant-numeric:tabular-nums;max-width:calc(100vw - 24px); }
-#onlinePerformance[data-stale="true"] { color:#ffb6a9;border-color:#c47c68; }
+#onlinePerformance {
+  position: fixed;
+  z-index: 28;
+  top: max(10px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 8px;
+  border: 1px solid #70909a8c;
+  border-radius: 20px;
+  background: #092331f2;
+  color: #d0e1e4;
+  font: 12px/1.15 var(--rpg-ui-reading, system-ui);
+  font-variant-numeric: tabular-nums;
+}
+#onlinePerformance::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #8de2bc; }
+#onlinePerformance strong { color: #b7f2db; }
+#onlinePerformance span { padding-inline-start: 6px; border-inline-start: 1px solid #70909a8c; }
+#onlinePerformance[data-stale=true] strong { color: #ffb6a9; }
+#onlinePerformance[data-stale=true]::before { background: #ffb6a9; }
+@media (max-width: 760px) {
+  #onlinePerformance { top: auto; bottom: max(5px, env(safe-area-inset-bottom)); right: 8px; left: auto; transform: none; }
+  #onlinePerformance span { display: none; }
+}

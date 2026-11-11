@@ -76,13 +76,10 @@
     action.append(document.getElementById('hakiQuickCast'));
     const controls=document.createElement('div');controls.className='journey-controls';
     controls.append(document.getElementById('autoToggle'));
-    const expedition=document.getElementById('floatingExpedition'),summary=journey.querySelector('.journey-content'),entry=document.getElementById('expeditionMini');
+    const expedition=document.getElementById('floatingExpedition'),summary=journey.querySelector('.journey-content');
     summary.classList.add('journey-summary');expedition.querySelector('.floating-title').after(summary);
     expedition.setAttribute('role','dialog');expedition.setAttribute('aria-modal','false');
     const expeditionTitle=expedition.querySelector('.floating-title>span');expeditionTitle.id='expeditionWindowTitle';expeditionTitle.textContent='Expedição';expedition.setAttribute('aria-labelledby',expeditionTitle.id);
-    entry.classList.remove('hidden');entry.setAttribute('role','menuitem');entry.setAttribute('aria-controls','floatingExpedition');
-    entry.querySelector('.mini-dot').outerHTML='<img src="assets/ui/hud-expedition/contract.png" width="24" height="24" alt="">';
-    document.getElementById('modesQuickMenu').append(entry);
     journey.querySelector('.journey-heading').after(controls);
     expedition.querySelector('.journey-footer').append(document.getElementById('huntRoute'));
     document.getElementById('journeyToggle').firstChild.textContent='';
@@ -135,7 +132,7 @@
     });
     observer.observe(app,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});measure();
   }
-  const lootHud=':is(.topbar,.hud-launcher,.location-heading,.action-panel,#mainMenu,.character-quick-menu,.floating-window,.floating-chat,#chatCornerToggle,#targetHud,.utility-tray,#expeditionMini,#huntXpTracker,#journeyHud,.party-compact,#worldLoading,#toastContainer,.boss-banner,.world-hint,.world-command,#npcTooltip,#devLauncher)';
+  const lootHud=':is(.topbar,.hud-launcher,.location-heading,.action-panel,#mainMenu,.character-quick-menu,.floating-window,.floating-chat,#chatCornerToggle,#targetHud,.utility-tray,#huntXpTracker,#journeyHud,.party-compact,#worldLoading,#toastContainer,.boss-banner,.world-hint,.world-command,#npcTooltip,#devLauncher)';
   function lootSpace(lane){
     if(topModal()||document.hidden)return false;
     const a=lane.getBoundingClientRect();
@@ -146,6 +143,100 @@
       if(b.width&&b.height&&a.left<b.right+6&&a.right>b.left-6&&a.top<b.bottom+6&&a.bottom>b.top-6)return false;
     }
     return true;
+  }
+  function positionQuickMenu(trigger){
+    const menu=document.getElementById(trigger.getAttribute('aria-controls'));
+    if(!menu||menu.classList.contains('hidden'))return;
+    const button=trigger.getBoundingClientRect();
+    const width=menu.offsetWidth;
+    const center=(button.left+button.right)/2;
+    const left=Math.max(8,Math.min(innerWidth-width-8,center-width/2));
+    menu.style.setProperty('--quick-shift',left+width/2-center+'px');
+    const flipped=innerHeight-button.bottom<Math.min(menu.scrollHeight+18,210)&&button.top>innerHeight-button.bottom;
+    trigger.parentElement.classList.toggle('quick-above',flipped);
+    menu.style.setProperty('--quick-room',Math.max(54,(flipped?button.top:innerHeight-button.bottom)-18)+'px');
+  }
+
+  const windowHandles='.dialog-header,.creation-top,.ui-window-header,.confirmation-card > header,.forge-presentation-eyebrow,.op-topbar,.floating-title,#characterPoster .wanted-sheet';
+  const windowSurfaces='.dialog,.creation-dialog,.ui-window,.confirmation-card,.forge-presentation,#floatingChat,#floatingExpedition,#floatingStatus,#characterPoster';
+  const panelPositions=new Map(),floatingPositions=new WeakMap();
+  let positionObserver;
+  let activeDrag=null,lastPanelKey=null;
+  function windowKey(surface){
+    const overlay=surface.parentElement;
+    if(overlay?.id!=='panelOverlay')return null;
+    return (overlay.dataset.uiPanel||'')+'/'+(overlay.querySelector('#dialogTitle')?.textContent||'');
+  }
+  function windowPosition(surface){
+    const key=windowKey(surface);
+    return (key?panelPositions.get(key):floatingPositions.get(surface))||{x:0,y:0};
+  }
+  function fitWindow(surface,x,y,remember=false){
+    const applied=surface.style.translate.split(' ').map(parseFloat);
+    const rect=surface.getBoundingClientRect();
+    const left=rect.left-(applied[0]||0),top=rect.top-(applied[1]||0);
+    const clamp=(value,min,max)=>Math.max(min,Math.min(value,Math.max(min,max)));
+    const position={x:clamp(x,-left,innerWidth-rect.width-left),y:clamp(y,-top,innerHeight-rect.height-top)};
+    surface.style.translate=position.x||position.y?position.x+'px '+position.y+'px':'';
+    if(remember){
+      const key=windowKey(surface);
+      if(key||surface.id)positionObserver.observe(surface);
+      if(key)panelPositions.set(key,position);
+      else floatingPositions.set(surface,position);
+    }
+  }
+  function syncWindowPosition(){
+    const surface=document.querySelector('#panelOverlay:not(.hidden) > .dialog');
+    if(!surface){lastPanelKey=null;return;}
+    const key=windowKey(surface);
+    if(key===lastPanelKey)return;
+    lastPanelKey=key;
+    const {x,y}=windowPosition(surface);
+    fitWindow(surface,x,y);
+  }
+  function bindWindowDragging(){
+    positionObserver=new ResizeObserver(entries=>{
+      for(const {target} of entries){
+        if(!visible(target))continue;
+        const {x,y}=windowPosition(target);
+        fitWindow(target,x,y);
+      }
+    });
+    document.addEventListener('pointerdown',event=>{
+      const handle=event.target.closest(windowHandles);
+      const surface=handle?.closest(windowSurfaces);
+      if(!surface||!event.isPrimary||event.button!==0||event.target.closest('button,a,input,textarea,select,summary,[contenteditable]'))return;
+      if(handle.matches('.op-topbar')&&event.target.closest('nav'))return;
+      const [x=0,y=0]=surface.style.translate.split(' ').filter(Boolean).map(parseFloat);
+      activeDrag={id:event.pointerId,handle,surface,x,y,startX:event.clientX,startY:event.clientY};
+      handle.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    });
+    document.addEventListener('pointermove',event=>{
+      if(activeDrag?.id!==event.pointerId)return;
+      const {surface,x,y,startX,startY}=activeDrag;
+      fitWindow(surface,x+event.clientX-startX,y+event.clientY-startY,true);
+    });
+    for(const type of ['pointerup','pointercancel','lostpointercapture']){
+      document.addEventListener(type,event=>{if(activeDrag?.id===event.pointerId)activeDrag=null;});
+    }
+    document.addEventListener('keydown',event=>{
+      if(!event.altKey||event.target.closest('input,textarea,select,[role=combobox],[contenteditable]'))return;
+      const direction={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[event.key];
+      const surface=event.target.closest(windowSurfaces);
+      if(!direction||!surface)return;
+      const [x=0,y=0]=surface.style.translate.split(' ').filter(Boolean).map(parseFloat);
+      event.preventDefault();event.stopImmediatePropagation();
+      fitWindow(surface,x+direction[0]*16,y+direction[1]*16,true);
+    },true);
+    addEventListener('resize',()=>{
+      document.querySelectorAll(windowSurfaces).forEach(surface=>{
+        if(!visible(surface)||!surface.style.translate)return;
+        const {x,y}=windowPosition(surface);
+        fitWindow(surface,x,y);
+      });
+      document.querySelectorAll('#mainMenu [aria-haspopup=menu][aria-expanded=true]').forEach(positionQuickMenu);
+    });
   }
   let observedTop=null,noticeRoot=null;
   function syncModals(){
@@ -159,13 +250,13 @@
     for(const child of app.children)child.inert=!!top&&child!==top;
     for(const el of document.querySelectorAll('.ui-modal'))el.inert=!!top&&el!==top;
     if(top&&top!==observedTop&&!top.contains(document.activeElement)){const target=focusable(top)[0];target?.focus({preventScroll:true});}
-    observedTop=top;
+    observedTop=top;syncWindowPosition();
   }
   function boot(){
     const panel=document.getElementById('panelOverlay');panel?.setAttribute('aria-labelledby','dialogTitle');
     const observer=new MutationObserver(records=>{for(const r of records){if(r.type==='attributes'){const select=r.target.closest?.('select');if(select){selectBindings.get(select)?.sync?.();if(select.disabled&&activeSelect?.select===select)closeSelect();}}}for(const r of records)if(r.type==='childList'){const select=r.target.closest?.('select');if(select&&activeSelect?.select===select)closeSelect();}for(const r of records)if(r.type==='childList')for(const n of r.addedNodes)if(n.nodeType===1&&n.closest('#panelOverlay,#startOverlay,.confirmation-overlay,.ui-modal'))upgrade(n.parentElement||n);syncModals();});
-    observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden','disabled','selected']});
-    upgrade(document.getElementById('startOverlay'));syncModals();
+    observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden','disabled','selected','data-ui-panel']});
+    upgrade(document.getElementById('startOverlay'));bindWindowDragging();syncModals();
     document.addEventListener('pointerdown',e=>{if(activeSelect&&!activeSelect.list.contains(e.target)&&!activeSelect.trigger.contains(e.target)){e.preventDefault();e.stopImmediatePropagation();swallowSelectClick=true;closeSelect(true);}},true);
     document.addEventListener('click',e=>{if(swallowSelectClick){swallowSelectClick=false;e.preventDefault();e.stopImmediatePropagation();}},true);
     addEventListener('resize',()=>closeSelect());document.addEventListener('scroll',e=>{if(activeSelect&&!activeSelect.list.contains(e.target))closeSelect();},true);
@@ -194,7 +285,7 @@
     const delta=afterPower-beforePower;
     return {state:delta>0?'better':delta<0?'worse':'equal',delta};
   };
-  root.MareUI={lootSpace,escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,art,inspectImages,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals,inventoryGrid,inventoryPageAtResize,inventoryNumericRows,inventoryPowerState};
+  root.MareUI={lootSpace,escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,art,inspectImages,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals,positionQuickMenu,inventoryGrid,inventoryPageAtResize,inventoryNumericRows,inventoryPowerState};
   if(typeof document!=='undefined')document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot,{once:true}):boot();
   if(typeof module!=='undefined')module.exports=root.MareUI;
 })(globalThis);

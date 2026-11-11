@@ -36,7 +36,7 @@ jobs:
       - name: Preparar Chromium e build
         run: |
           python -m pip install playwright==1.63.0
-          python -m playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh python -m playwright
           python tools/build_pages.py
       - name: Conferir jogo e capturar o pacote estático
         env:

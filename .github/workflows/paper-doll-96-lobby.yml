@@ -70,7 +70,7 @@ jobs:
       - name: Preparar Chromium e Pages
         run: |
           npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
-          npx playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh npx playwright
           python tools/build_pages.py
           python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/lobby96-server.txt" 2>&1 &
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
@@ -104,7 +104,7 @@ jobs:
       - name: Preparar navegador e Pages
         run: |
           npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
-          npx playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh npx playwright
           python tools/build_pages.py
           python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/weapons96-server.txt" 2>&1 &
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
@@ -133,7 +133,7 @@ jobs:
       - name: Preparar navegador e Pages
         run: |
           npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
-          npx playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh npx playwright
           python tools/build_pages.py
           python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/other-weapons96-server.txt" 2>&1 &
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
@@ -167,7 +167,7 @@ jobs:
       - name: Preparar navegador e Pages
         run: |
           npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
-          npx playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh npx playwright
           python tools/build_pages.py
           python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/headgear96-server.txt" 2>&1 &
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
@@ -196,7 +196,7 @@ jobs:
       - name: Preparar navegador e Pages
         run: |
           npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
-          npx playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh npx playwright
           python tools/build_pages.py
           python -m http.server 8159 --bind 127.0.0.1 > "$RUNNER_TEMP/appearance-server.txt" 2>&1 &
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8159/dist/ > /dev/null

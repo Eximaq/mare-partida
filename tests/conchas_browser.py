@@ -52,8 +52,8 @@ def travel(page):
         if (__mareDiagnostics().autoPlay) document.querySelector('#autoToggle').click();
     }""")
     page.wait_for_function(
-        "MarePixelMapRenderer.stats().conchas.loaded && "
-        "MarePixelMapRenderer.stats().conchas.loadedObjects===105 && "
+        "document.querySelector('#worldLoading').dataset.state==='ready' && "
+        "MareWorldDepth.state('conchas')==='ready' && "
         "['idle','walk','attack','hurt'].every(a=>MareSpriteCombatV2.status('helmeppo',a,'south')==='ready')"
     )
     page.clock.pause_at(page.evaluate("new Date(Date.now() + 1000).toISOString()"))
@@ -114,21 +114,25 @@ with sync_playwright() as playwright:
         # Source cells include the PixelLab origin offset. Check the declared
         # entry and its southern sector, then the actual hero position.
         entry = page.evaluate("""() => ({
-            cell: MarePixelWorldMaps.conchas.spawnCell,
             spawn: MareWorld.maps.conchas.spawn,
-            south: MarePixelWorldMaps.conchas.districts.find(d => d.id === 'areia-sul')
+            exported: MareMapExports.get('conchas').spawn,
+            south: MareMapExports.get('conchas').districts.find(d => d.id === 'areia-sul')
         })""")
-        assert entry["cell"] == [11, 24], entry
         spawn = entry["spawn"]
-        assert (spawn["x"], spawn["y"]) == (entry["south"]["x"], entry["south"]["y"]), entry
+        assert spawn == entry["exported"], entry
+        assert entry["south"]["cell"] == [11, 24], entry
+        assert abs(spawn["x"] - entry["south"]["x"]) < 16 and abs(spawn["y"] - entry["south"]["y"]) < 16, entry
         assert ((current["hero"]["x"] - spawn["x"]) ** 2 + (current["hero"]["y"] - spawn["y"]) ** 2) ** 0.5 < 24, (current["hero"], entry)
         assert current["walkable"] and current["alive"] > 0
         assert all(mob["type"] == "helmeppo" and mob["level"] == 8 for mob in current["mobs"]), current["mobs"]
         assert current["hunt"]["bossReady"] is False
         assert page.evaluate("MareHunt.get('swamp').boss") is None
-        assert page.evaluate("MarePixelWorldMaps.stats().conchas") == {
-            "loaded": True, "colliders": page.evaluate("MarePixelWorldMaps.conchas.map.colliders.length"), "objects": 105, "loadedObjects": 105
-        }
+        assert page.evaluate("""() => {
+            const expected = MareMapExports.get('conchas');
+            const image = MareMapExports.prepare('conchas');
+            return image.naturalWidth === expected.width && image.naturalHeight === expected.height
+                && MareWorldDepth.regions('conchas').length === expected.props.length;
+        }""")
         assert page.evaluate("MareSpriteCombatV2.status('helmeppo','attack','south')==='ready'")
         assert page.evaluate("MareNewIslandArt.layout({...__mareDiagnostics().mobs[0],attackAnim:.4}).action") == "attack"
         if size == (1366, 768):

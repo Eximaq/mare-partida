@@ -76,12 +76,13 @@ with sync_playwright() as p:
         q.keyboard.press('o');assert q.locator('#floatingExpedition').is_visible()
         q.keyboard.press('o');assert q.locator('#floatingExpedition').is_hidden()
         q.locator('#modesMenuTrigger').click()
-        q.locator('#expeditionMini').click()
-        assert q.locator('#modesQuickMenu').is_hidden()
+        assert q.locator('#modesQuickMenu #expeditionMini').count()==0
+        q.keyboard.press('Escape')
+        q.locator('#journeyToggle').click()
         assert q.locator('#floatingExpedition').is_visible()
         q.screenshot(path=str(OUT/phase/'expedition-desktop.png'))
         q.locator('[data-close-window=expedition]').click()
-        assert q.locator('#modesMenuTrigger').evaluate('e=>e===document.activeElement')
+        assert q.locator('#journeyToggle').evaluate('e=>e===document.activeElement')
         # Progress/reward changes while closed are reflected in the same live nodes.
         q.evaluate('__compactQA.game.stats.crab=6;__compactQA.refresh()')
         q.clock.run_for(100)

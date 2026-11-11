@@ -47,7 +47,7 @@ jobs:
       - name: Preparar Chromium
         run: |
           python -m pip install playwright==1.63.0
-          python -m playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh python -m playwright
       - name: Validar catálogo, bônus e componentes compartilhados
         run: |
           node --test tests/compendium-hd.test.cjs tests/akuma-system.test.cjs tests/character-system.test.cjs tests/game-tooltips.test.cjs tests/forge-system.test.cjs tests/rank-a-system.test.cjs tests/rank-a-expansion.test.cjs tests/rank-b-system.test.cjs tests/rank-s-system.test.cjs tests/rank-s-three.test.cjs tests/inventory-components.test.cjs tests/inventory-comparison.test.cjs tests/inventory-rarity-slots.test.cjs

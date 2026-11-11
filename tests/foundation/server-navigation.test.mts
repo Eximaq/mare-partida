@@ -2,6 +2,12 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),world=require('../../world-catalog.cjs').load(),E=require('../../world-battle.cjs'),C=require('../../character-system.js');
+// These edge cases were reported against the original Dawn mask. Keep that
+// geometry as a regression fixture after replacing the live map.
+const legacyDawn=require('../../dawn-world.js').map;
+const dawnMask=require('../../dawn-map-data.js').mask;
+const Navigation=world.originalNavigation('dawn').constructor;
+const indexedDawn=()=>require('../../server-navigation.cjs').indexedNavigation(Navigation,legacyDawn,legacyDawn.navigationCell,10,{terrainMask:dawnMask});
 test('server broad phase agrees with original exact collisions, LOS and paths on every map',()=>{
  let queries=0;for(const id of Object.keys(world.maps)){
   const old=world.originalNavigation(id),fast=world.navigation(id),map=world.maps[id];assert.deepEqual([...fast.grid],[...old.grid],id+' navigation grid');
@@ -20,7 +26,7 @@ test('indexed and original navigation produce identical battle state under deter
 });
 
 test('isolated patrol endpoint is rejected without searching the entire reachable map on each substep',()=>{
- const nav=world.navigation('dawn'),start={x:1488,y:1648},end={x:1509.7901182151293,y:1594.6806719081092};
+ const nav=indexedDawn(),start={x:1488,y:1648},end={x:1509.7901182151293,y:1594.6806719081092};
  let calls=0;const clear=nav.clear;nav.clear=function(...args:any[]){calls++;return clear.apply(this,args);};
  try{assert.equal(nav.path(start,end).length,0);assert(calls<=12,'unreachable final edge must be detected locally; checks='+calls);}finally{nav.clear=clear;}
 });
@@ -49,7 +55,7 @@ test('open static mask regions avoid repeated terrain sampling without changing 
 });
 
 test('negative grid-boundary segments retain the original exact mask traversal decision',()=>{
- const fast=world.navigation('dawn'),original=world.originalNavigation('dawn');
+ const fast=indexedDawn(),original=new Navigation(legacyDawn,legacyDawn.navigationCell);
  const a={x:1488,y:1648},b={x:1496,y:1640};
  assert.equal(original.clear(a,b),false);assert.equal(fast.clear(a,b),false);
  assert.equal(JSON.stringify(fast.path(a,b)),JSON.stringify(original.path(a,b)));

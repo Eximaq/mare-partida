@@ -45,7 +45,7 @@ jobs:
       - name: Preparar Chromium
         run: |
           npm install --prefix /tmp/mare-contracts-node playwright@1.63.0
-          /tmp/mare-contracts-node/node_modules/.bin/playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh /tmp/mare-contracts-node/node_modules/.bin/playwright
       - name: Validar quadro e pacote público
         run: |
           node --test tests/contracts-board.test.cjs tests/contracts-art.test.cjs tests/ui-system.test.cjs tests/ui-mobile-preview.test.cjs

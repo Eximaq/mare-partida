@@ -21,6 +21,20 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  });
  const open=async panel=>{await page.evaluate(p=>__captainQA.open(p),panel);await page.evaluate(()=>document.fonts.ready);};
  const shot=async name=>{await page.waitForFunction(()=>document.querySelectorAll('#toastContainer .toast').length===0);await page.screenshot({path:process.env.MARE_QA_DIR+'/'+name+'.png'});};
+ const poster=page.locator('#characterPoster');
+ await page.locator('#characterPosterToggle').click();
+ const statusBox=await page.locator('.topbar').boundingBox(),posterBox=await poster.boundingBox();
+ assert(posterBox.x>=statusBox.x+statusBox.width,'Desktop poster opens beside the status');
+ await shot('poster');
+ await page.locator('#characterPosterClose').click();
+ const trigger=page.locator('#modesMenuTrigger');
+ await trigger.click();
+ const menu=page.locator('#modesQuickMenu'), menuBox=await menu.boundingBox(), triggerBox=await trigger.boundingBox();
+ const menuWidth=await page.evaluate(()=>innerWidth);
+ assert(menuBox.x>=0&&menuBox.x+menuBox.width<=menuWidth&&Math.abs(menuBox.y-triggerBox.y-triggerBox.height)<20,'Modes submenu is docked to its trigger');
+ assert.equal(await menu.getByRole('menuitem',{name:'Expedição',exact:true}).count(),0);
+ await shot('menu-modos');
+ await page.keyboard.press('Escape');
  await open('myprofile');
  await page.waitForFunction(()=>document.querySelector('#captainPortraitState')?.hidden);
  assert.equal(await page.locator('[data-profile-value=berry]').textContent(),'98.189','total earned, not balance');
@@ -66,7 +80,14 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  assert.equal(await page.locator('.captain-news-item h3').first().textContent(),feed[0].title);
  await page.locator('.captain-morgan').evaluate(e=>e.decode());await shot('journal');
  for(const tab of ['event','update','notice','all']){await page.locator('[data-journal-tab='+tab+']').click();assert.equal(await page.locator('.captain-news-item').count(),feed.filter(x=>tab==='all'||x.type===tab).length);}
- await open('settings');assert.equal(await page.locator('[data-settings-card]').count(),5);await shot('settings');
+ await open('settings');assert.equal(await page.locator('[data-settings-card]').count(),5);
+ const settingsWindow=page.locator('#panelOverlay > .dialog'), beforeDrag=await settingsWindow.boundingBox();
+ const grip=await page.locator('#panelOverlay .dialog-header').boundingBox();
+ await page.mouse.move(grip.x+grip.width/2,grip.y+grip.height/2);
+ await page.mouse.down();await page.mouse.move(grip.x+grip.width/2+52,grip.y+grip.height/2-24,{steps:4});await page.mouse.up();
+ const afterDrag=await settingsWindow.boundingBox();
+ assert(afterDrag.x>beforeDrag.x+30&&afterDrag.y<beforeDrag.y-12,'Settings follows a drag on its header');
+ await shot('settings');
  for(const section of ['general','audio','graphics','interface','accessibility']){
   await page.locator('[data-settings-card='+section+']').click();await page.locator('#captain-detail-'+section).scrollIntoViewIfNeeded();assert.equal(await page.locator('[data-settings-card='+section+']').getAttribute('aria-expanded'),'true');await shot('settings-'+section);
  }
@@ -94,7 +115,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  assert.equal(await musicToggle.isChecked(),false);
  await effectsSlider.fill('68');
  assert.match(await page.locator('[data-settings-card=audio] em').textContent(),/Música: desligada.*Efeitos: 68%/);
- await page.locator('[data-settings-tab=discord]').click();assert.equal(await page.locator('#dialogBody a').count(),0);assert((await page.locator('.captain-empty').textContent()).includes('ainda não informado'));await shot('settings-discord');
+ await page.locator('[data-settings-tab=discord]').click();assert.equal(await page.getByRole('link',{name:'Entrar no Discord'}).getAttribute('href'),'https://discord.gg/uRnP79cp7h');await shot('settings-discord');
  const prefs=await page.evaluate(()=>MarePlayerHub.getPreferences());await page.reload();await page.waitForFunction(()=>window.__captainQA?.game);assert.deepEqual(await page.evaluate(()=>MarePlayerHub.getPreferences()),prefs);
  assert.deepEqual(await page.evaluate(()=>{const {volume,muted,effectsVolume,effectsMuted}=MareAudio.getState();return {volume,muted,effectsVolume,effectsMuted};}),{volume:.37,muted:true,effectsVolume:.68,effectsMuted:false});
  // Restore normal viewing preferences through actual controls for the final captures.

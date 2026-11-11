@@ -47,7 +47,7 @@ jobs:
       - name: Preparar Chromium
         run: |
           npm install --no-save --package-lock=false playwright@1.56.1
-          npx playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh npx playwright
       - name: Dados, privacidade, preferências e pacote estático
         run: |
           node --test tests/captain-hd.test.cjs tests/player-hub.test.cjs tests/game-tooltips.test.cjs tests/character-appearance.test.cjs tests/headgear-visibility.test.cjs tests/ui-system.test.cjs tests/character-hud-hierarchy.test.cjs

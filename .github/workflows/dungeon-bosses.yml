@@ -46,7 +46,7 @@ jobs:
       - name: Preparar navegador
         run: |
           npm install --no-save --package-lock=false playwright@1.56.1
-          npx playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh npx playwright
       - name: Perfis, animações, recompensas e pacote
         run: |
           node --test tests/boss-dungeons.test.cjs tests/boss-dungeon-combat.test.cjs tests/sprite-combat-v2.test.cjs tests/current-player-sprites.test.cjs tests/ui-mobile-preview.test.cjs

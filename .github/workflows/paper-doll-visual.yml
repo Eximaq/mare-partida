@@ -147,7 +147,7 @@ jobs:
       - name: Preparar navegador e pacote
         run: |
           python -m pip install playwright==1.63.0 Pillow==13.0.0
-          python -m playwright install --with-deps chromium
+          bash tools/install_ci_chromium.sh python -m playwright
           python tests/paper_doll_fit_audit_test.py
           python tests/paper_doll_masked_candidate_test.py
           python tests/paper_doll_masked_references_test.py

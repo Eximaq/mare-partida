@@ -177,7 +177,12 @@ function createGroup(payload){
     await page.evaluate(()=>document.fonts.ready);
     await view.locator('.crew-vessel-art:not([hidden])').waitFor();
     await page.screenshot({path:path.join(out,'tripulacao-geral.png')});
+    const crewBox=()=>page.locator('#panelOverlay > .dialog').boundingBox();
+    const overviewSize=await crewBox();
     await view.getByRole('button',{name:'Navio e instalações'}).click();
+    const shipSize=await crewBox();
+    assert.equal(shipSize.width,overviewSize.width,'Crew width stays fixed across views');
+    assert.equal(shipSize.height,overviewSize.height,'Crew height stays fixed across views');
     await view.locator('.crew-ship-preview summary').click();
     const nextShip=view.locator('.crew-ship-preview [data-stage="2"] .crew-vessel-art:not([hidden])');
     await nextShip.waitFor();
@@ -202,6 +207,8 @@ function createGroup(payload){
     await page.keyboard.press('c');
     await page.locator('[data-contract-period="professional"]').click();
     await page.locator('[data-contract-board]').getByText('Caçada Especial',{exact:true}).waitFor();
+    await page.locator('.contracts-professional .crew-cycle').waitFor();
+    assert.equal(await page.locator('.contracts-professional .contracts-art').isVisible(),false);
     assert(await page.locator('.contracts-tabs').evaluate(element=>element.scrollWidth<=element.clientWidth+1));
     await page.screenshot({path:path.join(out,'tripulacao-contratos.png')});
     await page.locator('#closePanel').click();

@@ -29,7 +29,7 @@ await authDatabase(async f=>{
   await p.evaluate(()=>MareGameSession.command('world.travel',{islandId:'dawn'}));
   await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
   await p.waitForTimeout(2000);
-  await p.waitForFunction(()=>/Ping HTTP: \d+ ms.*FPS: \d+/.test(document.querySelector('#onlinePerformance')?.textContent||''));
+  await p.waitForFunction(()=>/^\d+ ms$/.test(document.querySelector('#onlinePerformance strong')?.textContent||'')&&/^\d+ FPS$/.test(document.querySelector('#onlinePerformance span')?.textContent||''));
   await p.evaluate(()=>{const original=globalThis.MareEmberRenderer.monster;globalThis.monsterProbe=[];globalThis.MareEmberRenderer.monster=function(ctx,m,...args){if(m.alive)globalThis.monsterProbe.push({id:m.id,x:m.x,y:m.y,moving:m.moving,phase:m.emberElapsed});return original.call(this,ctx,m,...args);};});
   assert.equal(await p.evaluate(()=>Number.isFinite(__mareDiagnostics().onlineSampledAt)),true,'motion probes need the time associated with the drawn pose');
   let compactReads=0;p.on('response',r=>{if(r.url().endsWith('/frame')&&r.status()===200)compactReads++;});
@@ -55,7 +55,8 @@ await authDatabase(async f=>{
    await p.waitForTimeout(5000);
    const meter=await p.evaluate(()=>MareGameSession.network);
    assert.ok(meter.rttMs>=240,'HTTP ping includes injected 250ms network delay');
-   assert.match(await p.locator('#onlinePerformance').innerText(),/Ping HTTP: \d+ ms.*FPS: \d+/);
+   assert.match(await p.locator('#onlinePerformance strong').innerText(),/^\d+ ms$/);
+   assert.match(await p.locator('#onlinePerformance span').innerText(),/^\d+ FPS$/);
    captures.push({kind:'click',mapId,target,frames:await p.evaluate('window.captureMotion=false;window.motion')});
    await p.unroute('**/v1/**');
   }
@@ -94,7 +95,7 @@ await authDatabase(async f=>{
   await p.unroute(disconnected);await p.evaluate(()=>MareGameSession.read(true));
   // Polling and the one-second meter have independent clocks. Assert recovery
   // itself with a bound, rather than assuming both complete in a fixed 1100ms.
-  await p.waitForFunction(()=>MareGameSession.available&&/Ping HTTP:/.test(document.querySelector('#onlinePerformance')?.textContent||''),null,{timeout:10000});
+  await p.waitForFunction(()=>MareGameSession.available&&/^\d+ ms$/.test(document.querySelector('#onlinePerformance strong')?.textContent||''),null,{timeout:10000});
   assert.ok(compactReads>5,'current server advertises compact frames, renderer consumes them');
   assert.deepEqual(errors,[]);assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');await p.screenshot({path:resolve(out,'combat.png')});
   await p.setViewportSize({width:640,height:900});

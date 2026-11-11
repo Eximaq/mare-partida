@@ -128,7 +128,8 @@ const wire={marketAvailable:true,socialAvailable:true,combatPreview:{rulesetId:'
     assert.equal(await page.locator('#mainMenu > [data-panel=market]').count(),0);
     await page.locator('#socialMenuTrigger').click();
     const menu=page.locator('#socialQuickMenu');
-    assert.equal(await menu.locator('[role=menuitem]').count(),7);
+    assert.equal(await menu.locator('[role=menuitem]').count(),6);
+    assert.equal(await menu.locator('[data-social-open=messages]').count(),0);
     assert.equal(await menu.locator('[data-social-open=trade]').count(),1);
     await menu.getByRole('menuitem',{name:/Mercado dos Mares/i}).waitFor();
     await menu.locator('[data-market-badge]:not([hidden])').waitFor();

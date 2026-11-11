@@ -241,8 +241,8 @@ jobs:
       - name: Prepare isolated browser and trusted local certificate
         run: |
           npm install --prefix "$RUNNER_TEMP/mare-browser" playwright@1.56.1
-          "$RUNNER_TEMP/mare-browser/node_modules/.bin/playwright" install --with-deps chromium
-          sudo apt-get install -y libnss3-tools
+          bash tools/install_ci_chromium.sh "$RUNNER_TEMP/mare-browser/node_modules/.bin/playwright"
+          command -v certutil >/dev/null || sudo apt-get install -y libnss3-tools
           mkdir -p infra/local
           openssl req -x509 -newkey rsa:2048 -sha256 -nodes -days 2 -subj /CN=Mare-CI-Disposable-CA -addext 'basicConstraints=critical,CA:TRUE' -addext 'keyUsage=critical,keyCertSign,cRLSign' -keyout "$RUNNER_TEMP/mare-ca.key" -out "$RUNNER_TEMP/mare-ca.crt" 2>/dev/null
           openssl req -new -newkey rsa:2048 -nodes -subj /CN=localhost -keyout infra/local/localhost.key -out "$RUNNER_TEMP/mare-local.csr" 2>/dev/null

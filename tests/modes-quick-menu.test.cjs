@@ -26,3 +26,5 @@ assert.ok(build.includes("'modes-menu.css'"));
 console.log('Menu Modos: direct map/prison actions, keyboard navigation, escape, focus, CSS and Pages build OK');
 
 assert.deepEqual([...html.matchAll(/data-quick-mode="([^"]+)"/g)].map(m=>m[1]),['map','prison','dungeons']);
+
+assert.doesNotMatch(get('ui-system.js'),/getElementById\('modesQuickMenu'\)\.append\(entry\)/,'Expedition stays outside the Modes submenu');
