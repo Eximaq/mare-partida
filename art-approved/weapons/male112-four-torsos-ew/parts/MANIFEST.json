@@ -1,0 +1,52 @@
+{
+  "original": "Manopla112_Masculino_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 6156297,
+  "sha256": "e3ad9c12450070cef8929ba3e1730ad84278db9597e5ccdd586628b7eba51c2b",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "fb6db5a1a57a9a76b335fa3c6dc43a7ef4d571ae64d7fe3e90640db3db3ba657"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "8861a21f0b70ca9de758b58e23c6ae507e9bac178584dd760f4ec48d2b804389"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 750000,
+      "sha256": "a9f9ca738e495d64a37cf3c2d2895a861d6b66380566c01f0d61b3338ae16c56"
+    },
+    {
+      "path": "archive.part003",
+      "bytes": 750000,
+      "sha256": "a7f1ef94bf97bbd5aa19d16920dfcb0dcee7eef0175f6af03dd724f54b54ae1d"
+    },
+    {
+      "path": "archive.part004",
+      "bytes": 750000,
+      "sha256": "d262ad7300095cea3011ea96ac8abc595e37939c8f678c1436401e73ce2119e5"
+    },
+    {
+      "path": "archive.part005",
+      "bytes": 750000,
+      "sha256": "9a42ba21aa5885f9139ebb25e5df94ae254b02a7e0907bacfd30d3c0017d5fb8"
+    },
+    {
+      "path": "archive.part006",
+      "bytes": 750000,
+      "sha256": "4335dfc8894288f0d8e030bab31237883ac000dab1cea12488734a847485c538"
+    },
+    {
+      "path": "archive.part007",
+      "bytes": 750000,
+      "sha256": "fac53a4d6241ae7eeff9bfe2926f7ca0ab4da751ba5553c9d2f400cee9968761"
+    },
+    {
+      "path": "archive.part008",
+      "bytes": 156297,
+      "sha256": "8e948b2f33c785003c95d189f39afd1010a8d1fc780ebac0235a76e955a1b5c8"
+    }
+  ]
+}

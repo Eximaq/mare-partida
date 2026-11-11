@@ -1044,6 +1044,20 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/female-daggers12-13-71-74-four-torsos-ew/Adagas12_13_71_72_73_74_Feminino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 47754994,
+      "sha256": "09c90ccf548883e39e9397a6b3de196294fd07b68f987b3aec7c16e85670ac99",
+      "pngEntries": 840,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/female-daggers12-13-71-74-four-torsos-ew/parts/MANIFEST.json",
+        "reconstruct": "weapons/female-daggers12-13-71-74-four-torsos-ew/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/female-firearms-idle-v2/female_weapon113_idle-east-west-v2_approved.zip",
       "bytes": 2792292,
       "sha256": "499b7849f10c52fdafc3f99c11ef90cfdafbc6e2c227c2a7c3f04d31f9ad9ef4",
@@ -1088,6 +1102,20 @@
         "type": "split-archive",
         "manifest": "weapons/female111-four-torsos-ew-v3/parts/MANIFEST.json",
         "reconstruct": "weapons/female111-four-torsos-ew-v3/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/female112-four-torsos-ew/Manopla112_Feminino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 7763676,
+      "sha256": "96da69e85d094726e94aeaba80c4095725d517972509cc4849248b6a007d5a42",
+      "pngEntries": 168,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/female112-four-torsos-ew/parts/MANIFEST.json",
+        "reconstruct": "weapons/female112-four-torsos-ew/parts/RECONSTRUCT.py",
         "originalPreservedLocally": true,
         "reconstructionVerified": true
       }
@@ -1277,6 +1305,20 @@
         "type": "split-archive",
         "manifest": "weapons/male111-four-torsos-ew-v3/parts/MANIFEST.json",
         "reconstruct": "weapons/male111-four-torsos-ew-v3/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/male112-four-torsos-ew/Manopla112_Masculino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 6156297,
+      "sha256": "e3ad9c12450070cef8929ba3e1730ad84278db9597e5ccdd586628b7eba51c2b",
+      "pngEntries": 136,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male112-four-torsos-ew/parts/MANIFEST.json",
+        "reconstruct": "weapons/male112-four-torsos-ew/parts/RECONSTRUCT.py",
         "originalPreservedLocally": true,
         "reconstructionVerified": true
       }
