@@ -428,6 +428,20 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/south-historical-110-114/male_110_south_v6.zip",
+      "bytes": 876842,
+      "sha256": "aad481b9aa4a43d42039c4b227a23d6d42ce3237b1f9f7537d59097a356ec436",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/south-historical-110-114/male_114_south_v1.zip",
+      "bytes": 685550,
+      "sha256": "1531d7f1c5e3ecbe19cf8e5aeea64357d16733981eff8d7e6bf58b2348632f2f",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/staff-north/male_staff121_north_v1.zip",
       "bytes": 698597,
       "sha256": "7a918e479a9b13b709696450159228542079d68b93f7b1dd00372bf55d2a644c",
