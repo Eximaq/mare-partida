@@ -347,11 +347,17 @@ export class AuthService {
   }
   async crewRanking(token:string){return this.withSession(token,"play",async client=>({leaderboard:await readCrewRankings(client)}));}
   /** Only presentation is MVCC. Commands and provider refresh retain their locks. */
-  private async presentation<T extends {weeklyBoss?:{current:unknown}|null}>(token:string,id:string,run:(client:PoolClient)=>Promise<T>,prepareContracts=false):Promise<T>{
+  private async presentation<T>(token:string,id:string,run:(client:PoolClient,weeklyBoss:Awaited<ReturnType<typeof readWeeklyBoss>>|null)=>Promise<T>,prepareContracts=false):Promise<T>{
     const hash=digest(token);
-    const access=async(client:Pick<PoolClient,'query'>,provider=true)=>{
+    const access=async(client:Pick<PoolClient,'query'>,provider=true,weekly=false)=>{
+      const weeklyFields=weekly?`,
+        EXISTS(SELECT 1 FROM mare_game.weekly_boss_operators o WHERE o.account_id=s.account_id) can_manage,
+        EXISTS(SELECT 1 FROM mare_game.weekly_boss_members m WHERE m.character_id=$2) member,
+        EXISTS(SELECT 1 FROM mare_game.weekly_boss_events e WHERE e.mode='official' AND e.status='active' AND e.closes_at>clock_timestamp()) public_active,
+        (SELECT e.cycle_key::text FROM mare_game.weekly_boss_entitlements e WHERE e.character_id=$2 ORDER BY e.cycle_key DESC LIMIT 1) cycle`:
+        provider?'':", to_regclass('mare_game.weekly_boss_settings') IS NOT NULL weekly_available";
       const row=(await client.query(`SELECT s.id,s.account_id,s.provider_valid_until,clock_timestamp() now,
-        EXISTS(SELECT 1 FROM mare_game.characters WHERE id=$2 AND account_id=s.account_id) owned
+        EXISTS(SELECT 1 FROM mare_game.characters WHERE id=$2 AND account_id=s.account_id) owned${weeklyFields}
         FROM mare_game.app_sessions s JOIN mare_game.accounts a ON a.id=s.account_id AND a.auth_epoch=s.account_epoch
         WHERE s.token_hash=$1 AND s.kind='play' AND s.revoked_at IS NULL
         AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp()`,[hash,id])).rows[0];
@@ -393,28 +399,28 @@ export class AuthService {
     try{
       await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
       await client.query("SET LOCAL statement_timeout='3s'; SET LOCAL idle_in_transaction_session_timeout='10s'");
-      await access(client);
-      const result=await run(client);
+      const context=await access(client,true,initial.weekly_available);
+      const weeklyBoss=initial.weekly_available?await readWeeklyBoss(client,id,context):null;
+      const result=await run(client,weeklyBoss);
       await client.query('COMMIT');
       // A fresh READ COMMITTED statement, not the old snapshot: discard a response
       // if logout/recovery/rotation/expiry committed while it was being projected.
-      if(result.weeklyBoss?.current)await touchWeeklyBossPresence(client,id,initial.id);
+      if(weeklyBoss?.current)await touchWeeklyBossPresence(client,id,initial.id);
       await access(client);
       return result;
     }catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
   }
   /** Compact, owner-only presentation from one committed database snapshot. */
   async onlineFrame(token:string,id:string){
-    return this.presentation(token,id,async(client)=>{
+    return this.presentation(token,id,async(client,weeklyBoss)=>{
       const state=await readCharacterState(client,id),partyMotion=await readPartyMotion(client,id);
       const world=await readWorld(client,id),battle=await readBattle(client,id),lobby=await readLobby(client,id,world);
-      const weeklyBoss=await readWeeklyBoss(client,id);
       const timing=(await client.query("SELECT clock_timestamp() now,tick_at FROM mare_game.character_battles WHERE character_id=$1",[id])).rows[0];
       return {protocol:2,characterId:id,version:state.version,serverNow:(timing?.now??new Date()).toISOString(),simulationAgeMs:timing?Math.max(0,timing.now.getTime()-timing.tick_at.getTime()):null,world,battle,lobby,partyMotion,weeklyBoss};
     });
   }
   async onlineState(token: string, id: string) {
-    return this.presentation(token,id,async (client) => {
+    return this.presentation(token,id,async (client,weeklyBoss) => {
       const state = await readCharacterState(client, id);
       const party=await readParty(client,id);
       const journey = (await client.query<{ started: boolean }>(
@@ -436,7 +442,6 @@ export class AuthService {
         power:hierarchy.power,factionId:combatPreview.factionId,crewAvailable:!!inputs?.crewAvailable,
         hierarchy,achievements,prison,haki
       }):null;
-      const weeklyBoss=await readWeeklyBoss(client,id);
       return { sync:{protocol:2}, bounty, weeklyBoss, ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...(await hasSocial(client)?{socialAvailable:true}:{}), ...(await marketAvailable(client)?{marketAvailable:true}:{}), state, party, profile, fruits, hierarchy, haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements, talents, contracts:await readContracts(client,id,{state,readOnly:true,schemaAvailable:inputs?.dailyAvailable,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state,!!originalInventory), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     },true);
   }

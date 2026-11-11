@@ -124,13 +124,8 @@ export async function touchWeeklyBossPresence(c:PoolClient,id:string,sessionId:s
 }
 
 /** Read the event projection without modifying membership. */
-export async function readWeeklyBoss(c:PoolClient,id:string){
- if(!await weeklyBossAvailable(c))return null;
- const context=(await c.query(`SELECT clock_timestamp() now,
- EXISTS(SELECT 1 FROM mare_game.weekly_boss_operators o JOIN mare_game.characters ch ON ch.account_id=o.account_id WHERE ch.id=$1) can_manage,
- EXISTS(SELECT 1 FROM mare_game.weekly_boss_members WHERE character_id=$1) member,
- EXISTS(SELECT 1 FROM mare_game.weekly_boss_events WHERE mode='official' AND status='active' AND closes_at>clock_timestamp()) public_active,
- (SELECT cycle_key::text FROM mare_game.weekly_boss_entitlements WHERE character_id=$1 ORDER BY cycle_key DESC LIMIT 1) cycle`,[id])).rows[0];
+type WeeklyReadContext={now:Date;can_manage:boolean;member:boolean;public_active:boolean;cycle:string|null};
+export async function readWeeklyBoss(c:PoolClient,id:string,context:WeeklyReadContext){
  // Closed events must not add N+1 queries or a changing clock to unrelated state.
  if(!context.can_manage&&!context.member&&!context.public_active)return {canManage:false,events:[],current:null,peers:[],serverNow:null,rewardPendingCycle:context.cycle??null};
  const canManage=!!context.can_manage,at:Date=context.now;

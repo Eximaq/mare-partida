@@ -22,3 +22,13 @@ test('cold Dawn route does not resolve Math through the VM global proxy for ever
   assert.equal(lookups,0,'per-sample VM global lookups amplify cold path CPU');
  }finally{vm.createContext=create;delete require.cache[file];if(old)require.cache[file]=old;}
 });
+
+test('exported Dawn ground uses the static mask for clear open segments',()=>{
+ const world=require('../../world-catalog.cjs').load(),nav=world.navigation('dawn');
+ const start={x:872,y:1608},end={x:872,y:1640};
+ const exact=world.originalNavigation('dawn');assert.equal(exact.clear(start,end),true);
+ let calls=0;const sample=nav.map.terrainWalkable;
+ nav.map.terrainWalkable=(...args:any[])=>{calls++;return sample(...args);};
+ try{assert.equal(nav.clear(start,end),true);assert.equal(calls,0);}
+ finally{nav.map.terrainWalkable=sample;}
+});
