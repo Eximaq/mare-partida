@@ -463,6 +463,13 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved-multiview-v10/weapon14_north_v3.zip",
+      "bytes": 527299,
+      "sha256": "5e3825ee7596d5c1eea433893c9c5a67596606c8ad5a0c70fda06dcc3798d88c",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/bronze2-south/male_2_south_v1.zip",
       "bytes": 871026,
       "sha256": "b4b0e75167fdd4e8a498e9ec94e6373755f198afae5ccc8afdd67d8944b89d07",
