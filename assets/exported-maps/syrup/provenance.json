@@ -1,16 +1,15 @@
 {
-  "file": "Mapa_-_Vila_Syrup-export (2).zip",
+  "file": "Mapa_-_Vila_Syrup-export.zip",
   "sourceId": "e18957af-0e33-49da-81d3-2e991fac4cc4",
   "origin": [
     -1088,
-    -2048
+    -1664
   ],
   "objects": 65,
-  "archiveSha256": "f33839f2c30e42467caa2be3523649fa37743419031cb40a35f39f7269451877",
-  "compositeSha256": "e2c6fc2a6ab8eeb558d3a4083661d474260693029edab06cee4bcaab6fca4c95",
+  "archiveSha256": "de95ca42bd0151631c25bd97403ad26b26e2616f351b569aac66cb979e98d888",
+  "compositeSha256": "1fb8bf1b2080137cb2fcb2aecc60b1e1b7db423e0fa8273211eeaa13eb570bb6",
   "overlays": 0,
   "blockedTerrainIds": [
-    2,
-    4
+    2
   ]
 }
