@@ -1079,6 +1079,20 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/m151-equipped-approved/male116_south_M151_head157_equipped-approved-v1.zip",
+      "bytes": 752194,
+      "sha256": "0120964ff699d3cbca4759ec5ac32aef408ec8a1affbac3499532792adb7c1f7",
+      "pngEntries": 5,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/m151-equipped-approved/male151_north_3keys_approved-reuse-v1.zip",
+      "bytes": 1210104,
+      "sha256": "0ccdf7f95e3ce6528dc3588b7ff5e08763fe13dce835246ece1a968ea71a1f99",
+      "pngEntries": 43,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/relicario32-reapproved/weapon32_north_visual-v2_reapproved.zip",
       "bytes": 4162759,
       "sha256": "241bd9d298a06e5498fe6e74d8a085c0c9ee7b75ad82ce97a177cfce662ad852",
