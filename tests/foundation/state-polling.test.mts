@@ -5,7 +5,7 @@ import { runInNewContext } from "node:vm";
 
 const source = readFileSync(new URL("../../apps/account-client/game-ui.js", import.meta.url), "utf8");
 
-function mountWithClock() {
+function mountWithClock(readLatencies: number[] = []) {
   let now = 10_000;
   let timerId = 0;
   const timers = new Map<number, { due: number; fn: () => void; repeat: number }>();
@@ -52,10 +52,17 @@ function mountWithClock() {
     data: { online: { battle: {} } },
     network: { rttMs: 102, ageMs: 395, intervalMs: 759 },
     subscribe() {},
-    async read() { reads.push({ at: now, kind: "full" }); },
-    async readFrame() { reads.push({ at: now, kind: "frame" }); },
+    async read() { await recordRead("full"); },
+    async readFrame() { await recordRead("frame"); },
     async renew() {},
   };
+  async function recordRead(kind: string) {
+    reads.push({ at: now, kind });
+    const latency = readLatencies[reads.length - 1];
+    if (latency === undefined) return;
+    await new Promise<void>(resolve => schedule(resolve, latency));
+    client.network.rttMs = latency;
+  }
   runInNewContext(source, clock);
   clock.MareOnlineGameUI.mount(client, { message() {} });
   return { tick, reads, meter, client, close: () => events.get("pagehide")?.() };
@@ -93,18 +100,32 @@ test("the meter distinguishes HTTP latency and the interval between state update
   }
 });
 
-test("visible solo auto combat follows the 250 ms worker cadence and slows down on a high RTT", async () => {
-  const f = mountWithClock();
+test("a slow solo frame occupies its slot without adding a cadence penalty or overlapping another read", async () => {
+  const f = mountWithClock([80, 325, 80, 900, 80]);
   try {
     Object.assign(f.client.data.online, { battle: { auto: true }, world: { mapId: "dawn", area: "beach" }, sync: { protocol: 2 } });
     await f.tick(10_250);
+    await f.tick(10_330);
     await f.tick(10_500);
-    assert.deepEqual(f.reads.map(read => read.kind), ["full", "frame"]);
-    f.client.network.rttMs = 325;
     await f.tick(10_750);
     assert.equal(f.reads.length, 2);
-    await f.tick(11_250);
-    assert.equal(f.reads.length, 3);
+    await f.tick(10_825);
+    await f.tick(10_874);
+    assert.equal(f.reads.length, 2);
+    await f.tick(10_875);
+    await f.tick(10_955);
+    await f.tick(11_125);
+    await f.tick(11_750);
+    assert.equal(f.reads.length, 4);
+    await f.tick(12_025);
+    await f.tick(12_075);
+    assert.deepEqual(f.reads, [
+      { at: 10_250, kind: "full" },
+      { at: 10_500, kind: "frame" },
+      { at: 10_875, kind: "frame" },
+      { at: 11_125, kind: "frame" },
+      { at: 12_075, kind: "frame" },
+    ]);
   } finally {
     f.close();
   }

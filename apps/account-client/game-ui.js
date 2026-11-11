@@ -36,10 +36,9 @@
   const combatBlendDuration = (gap, quickHunt) => Math.min(1250, Math.max(quickHunt ? 400 : 900, gap + 100));
   function quickHuntUpdates(client) {
     const { battle, world, sync } = client.data?.online ?? {};
-    const rtt = client.network?.rttMs;
     return client.controlled && sync?.protocol === 2 && !!world?.area &&
       battle?.auto === true && !battle.partyInstanceId && !battle.weeklyBossInstanceId &&
-      !battle.dungeon && !battle.prison && (rtt == null || rtt <= 200);
+      !battle.dungeon && !battle.prison;
   }
   const sameCombatPoint = (previous, next) =>
     previous && previous.mapId === next.mapId && !previous.path.length && !next.path.length &&
@@ -567,6 +566,8 @@
         retryDelay = e.status === 429 ? 60000 : 500 * 2 ** (readFailures - 1);
         message(e);
       } finally {
+        // A slow response already delays the next read. Keep the same deadline
+        // and let the completed request apply backpressure without switching rates.
         const untilNext = lastRead + pollPeriod() - performance.now();
         schedulePoll(retryDelay ?? Math.max(50, Math.min(250, Math.ceil(untilNext))));
       }
