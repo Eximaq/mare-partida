@@ -240,6 +240,7 @@
     control_conflict:
       "Outra aba está controlando seu personagem. Assuma o controle se quiser continuar aqui.",
     state_version_conflict: "O progresso mudou. Confira os dados atualizados.",
+    command_rate_limited: "Muitos comandos em pouco tempo. Aguarde alguns segundos para tentar de novo.",
     gold_insufficient: "Ouro insuficiente.",
     item_equipped: "Desequipe antes de vender a última unidade.",
     item_quantity_insufficient: "Quantidade insuficiente.",

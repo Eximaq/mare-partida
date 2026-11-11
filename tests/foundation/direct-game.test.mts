@@ -126,22 +126,24 @@ test('the accepted movement is visible while the full snapshot is still loading'
     ...world, path: [{ x: 100, y: 0 }],
     serverNow: '2026-11-11T12:00:00.100Z', motionUntil: '2026-11-11T12:00:01.100Z',
   };
-  const reconciling = Promise.withResolvers<void>();
-  const release = Promise.withResolvers<void>();
+  let signalReconciliation!: () => void;
+  let releaseSnapshot!: () => void;
+  const reconciling = new Promise<void>((resolve) => { signalReconciliation = resolve; });
+  const release = new Promise<void>((resolve) => { releaseSnapshot = resolve; });
   const f = fixture({
     world, commandWorld: accepted,
-    waitForSnapshot: () => { reconciling.resolve(); return release.promise; },
+    waitForSnapshot: () => { signalReconciliation(); return release; },
   });
   await f.client.load();
   await f.client.acquire();
   const moving = f.client.command('world.move', { x: 100, y: 0 });
   try {
-    await reconciling.promise;
+    await reconciling;
     assert.deepEqual(f.client.data.online.world, accepted);
     assert.equal(f.client.data.online.state.version, 0);
     await assert.rejects(f.client.command('world.stop', {}), { code: 'pending_command' });
   } finally {
-    release.resolve();
+    releaseSnapshot();
     await moving;
   }
   assert.equal(f.client.data.online.state.version, 1);

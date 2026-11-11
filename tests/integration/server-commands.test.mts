@@ -175,3 +175,34 @@ test("command rate limits preserve retry while old receipts never impose a lifet
     assert.deepEqual(await service.command(login.token, character.id, input), result);
     assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.character_commands")).rows[0].n, 10002);
   }));
+test("movement has a bounded command budget independent of other actions", async () =>
+  authDatabase(async ({ service, pool }) => {
+    const login = await service.login("movement-budget@example.invalid", "fixture");
+    const character = await service.createCharacter(login.token, { name: "Mover", classId: "sword", factionId: "pirate" });
+    const control = await service.acquireControl(login.token, character.id);
+    const envelope = { control: { epoch: control.epoch, token: control.token }, payload: {} };
+    const initialize = await service.command(login.token, character.id, {
+      ...envelope, requestId: randomUUID(), action: "world.initialize", expectedVersion: 0,
+    });
+    const expectedVersion = initialize.state.version;
+    const seed = (action: string, count: number) => pool.query(
+      "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) SELECT $1,gen_random_uuid(),repeat('a',64),$2::jsonb FROM generate_series(1,$3::int)",
+      [character.id, JSON.stringify({ ...initialize, action }), count],
+    );
+    await seed("world.move", 65);
+    await service.command(login.token, character.id, {
+      ...envelope, requestId: randomUUID(), action: "state.sync", expectedVersion,
+    });
+    await seed("state.sync", 58);
+    const stop = { ...envelope, requestId: randomUUID(), action: "world.stop" as const, expectedVersion };
+    const accepted = await service.command(login.token, character.id, stop);
+    assert.equal(accepted.state.version, expectedVersion + 1);
+    await seed("world.move", 114);
+    await assert.rejects(service.command(login.token, character.id, {
+      ...stop, requestId: randomUUID(), expectedVersion: accepted.state.version,
+    }), { code: "command_rate_limited" });
+    await assert.rejects(service.command(login.token, character.id, {
+      ...envelope, requestId: randomUUID(), action: "state.sync", expectedVersion: accepted.state.version,
+    }), { code: "command_rate_limited" });
+    assert.deepEqual(await service.command(login.token, character.id, stop), accepted);
+  }));

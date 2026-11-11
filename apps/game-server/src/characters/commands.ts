@@ -61,11 +61,18 @@ export async function executeCharacterCommand(
   }
   let state = await readCharacterState(client, characterId);
   if (!social && state.version !== input.expectedVersion) throw new AuthFault(409, "state_version_conflict");
-  // Keep immutable receipts for replay; bound request rate, not a player's lifetime.
-  const budget = (await client.query<{recent:number}>(
-    "SELECT count(*)::int AS recent FROM mare_game.character_commands WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds' AND result->>'action'<>'battle.reward' AND ((result->>'action') ~ '^(friend|contact|message|mail|trade|market)[.]')=$2",[characterId,social]
-  )).rows[0]!;
-  if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
+  // Frequent movement shares a bounded budget for starting and stopping.
+  // It must not consume the independent budget for progression or social commands.
+  const movement = input.action === 'world.move' || input.action === 'world.stop';
+  const limit = movement ? 180 : 60;
+  const budget = (await client.query<{recent:number}>(`
+    SELECT count(*)::int AS recent
+    FROM mare_game.character_commands
+    WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds'
+      AND result->>'action'<>'battle.reward'
+      AND ((result->>'action') ~ '^(friend|contact|message|mail|trade|market)[.]')=$2
+      AND (result->>'action' IN ('world.move','world.stop'))=$3`,[characterId,social,movement])).rows[0]!;
+  if (budget.recent >= limit) throw new AuthFault(429, "command_rate_limited");
   if(party&&['prison.prepare','prison.enter'].includes(input.action))throw new AuthFault(409,'party_prison_individual');
   if(party&&['world.travel','world.return','dungeon.enter'].includes(input.action)){
    const b=await readBattle(client,characterId);if(b?.partyInstanceId||input.action==='dungeon.enter')throw new AuthFault(409,'party_collective_navigation_required');
