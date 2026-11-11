@@ -1,0 +1,26 @@
+[
+  {
+    "file": "female_133_south_material-r4.zip",
+    "size_bytes": 771706,
+    "sha256": "3fd71858fcc5c15254cd0c61ffac2075d2ff5cd7e77b101a4e6d20130b5a4f3d",
+    "pngs": 10
+  },
+  {
+    "file": "female_133_north_material-r4.zip",
+    "size_bytes": 833115,
+    "sha256": "18c2cef62271aca4244686c4971ca13d0bce09c2da718d17b7f3b010b6031684",
+    "pngs": 12
+  },
+  {
+    "file": "female_175_east_art-v51.zip",
+    "size_bytes": 855334,
+    "sha256": "b65fbaf05c2deba568fb4ad11bd1692b749f44b1f1d51dba0f2601ef3a20ca3e",
+    "pngs": 12
+  },
+  {
+    "file": "female_175_west_art-v51.zip",
+    "size_bytes": 855492,
+    "sha256": "f8a439ca9573e6488afe4daf9937014f15de0a9e23b36381c7fe3533aeb1f4df",
+    "pngs": 12
+  }
+]
