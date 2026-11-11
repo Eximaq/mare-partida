@@ -463,6 +463,13 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/bronze2-south/male_2_south_v1.zip",
+      "bytes": 871026,
+      "sha256": "b4b0e75167fdd4e8a498e9ec94e6373755f198afae5ccc8afdd67d8944b89d07",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/south-historical-110-114/male_110_south_v6.zip",
       "bytes": 876842,
       "sha256": "aad481b9aa4a43d42039c4b227a23d6d42ce3237b1f9f7537d59097a356ec436",
