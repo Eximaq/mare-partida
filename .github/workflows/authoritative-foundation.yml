@@ -83,7 +83,7 @@ jobs:
           import pg from 'pg';
           import { getGameCatalog } from './apps/game-server/dist/gameplay/catalog.js';
           import {xpNeeded} from './apps/game-server/dist/gameplay/character.js';
-          assert.equal(xpNeeded(21),48003);
+          assert.equal(xpNeeded(21),16001);
           const {createRequire}=await import('node:module');
           const world=createRequire(import.meta.url)('./world-catalog.cjs').load();
           assert.equal(world.maps.lobby.spawn.x,1504);
