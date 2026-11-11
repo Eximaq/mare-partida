@@ -16,5 +16,17 @@
     "size_bytes": 1408318,
     "sha256": "2a093de6a1460e8007655bae79831f3a0fe77267e93c1785056822aa48f88b3b",
     "pngs": 24
+  },
+  {
+    "file": "weapon114_north-east-west_pistolas114-cycle-v1.zip",
+    "size_bytes": 2028846,
+    "sha256": "4edc9e0d89eb55741a674d17dbf667061bb3b819d5c2f97fc7f5fae026476a6a",
+    "pngs": 24
+  },
+  {
+    "file": "weapon12_east-west_adagas12-lateral-v1.zip",
+    "size_bytes": 932028,
+    "sha256": "0681b9e489782f6ea7c6f9c70e75291fadd4f0a11aafa720c282807b599284ae",
+    "pngs": 16
   }
 ]
