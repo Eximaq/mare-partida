@@ -33,7 +33,14 @@
     return {x,y,direction,moving:moving&&elapsedMs<duration};
   }
   // Cover the observed full-state fallback gap while keeping the blend bounded.
-  const combatBlendDuration = gap => Math.min(1250, Math.max(900, gap + 100));
+  const combatBlendDuration = (gap, quickHunt) => Math.min(1250, Math.max(quickHunt ? 400 : 900, gap + 100));
+  function quickHuntUpdates(client) {
+    const { battle, world, sync } = client.data?.online ?? {};
+    const rtt = client.network?.rttMs;
+    return client.controlled && sync?.protocol === 2 && !!world?.area &&
+      battle?.auto === true && !battle.partyInstanceId && !battle.weeklyBossInstanceId &&
+      !battle.dungeon && !battle.prison && (rtt == null || rtt <= 200);
+  }
   const sameCombatPoint = (previous, next) =>
     previous && previous.mapId === next.mapId && !previous.path.length && !next.path.length &&
     previous.position.x === next.position.x && previous.position.y === next.position.y;
@@ -50,7 +57,7 @@
       return {...pose,x:pose.x+offset.x*weight,y:pose.y+offset.y*weight,
         moving:pose.moving||(weight>0&&Math.hypot(offset.x,offset.y)>.1)};
     }
-    return {sample,update(next,now,{buffered=false}={}){
+    return {sample,update(next,now,{buffered=false,quickHunt=false}={}){
       if(next===snapshot)return false;
       const gap=now-observed;
       observed=now;
@@ -65,7 +72,7 @@
       const limit=Math.min(512,Math.max(128,next.speed*Math.min(3,Math.max(0,gap)/1000)+32));
       const snap=!previous||snapshot.mapId!==next.mapId||gap>5000||Math.hypot(previous.x-target.x,previous.y-target.y)>limit;
       offset=snap?{x:0,y:0}:{x:previous.x-target.x,y:previous.y-target.y};
-      duration=buffered?combatBlendDuration(gap):200;
+      duration=buffered?combatBlendDuration(gap,quickHunt):200;
       wasBuffered=buffered;
       snapshot=next;received=now;return snap;
     }};
@@ -93,7 +100,7 @@
       if(dt>0)state.moving=moved>1e-8;
       return {x:state.x,y:state.y,direction:state.direction,moving:state.moving};
     }
-    return {sample,update(next,now,{buffered=false,reset=false}={}){
+    return {sample,update(next,now,{buffered=false,reset=false,quickHunt=false}={}){
       if(next===snapshot&&!reset)return false;
       const gap=now-observed;
       observed=now;
@@ -109,7 +116,7 @@
       const points=connected?[...bridge,...next.path].map(p=>({x:p.x,y:p.y})):[];
       state={x:origin.x,y:origin.y,direction:next.direction,moving:false,last:now,points,travel:0,
         bridge:connected?length(origin,bridge):0,pathLength:connected?length(next.position,next.path):0,
-        buffered:buffered&&!next.path.length,duration:combatBlendDuration(gap)};
+        buffered:buffered&&!next.path.length,duration:combatBlendDuration(gap,quickHunt)};
       snapshot=next;received=now;return snap;
     }};
   }
@@ -532,7 +539,7 @@
     });
     let lastRead = -Infinity, lastFullRead = -Infinity;
     let pollTimer, pollingStopped = false;
-    const pollPeriod = () => client.data?.online?.battle && client.controlled ? 750 : 3000;
+    const pollPeriod = () => quickHuntUpdates(client) ? 250 : client.data?.online?.battle && client.controlled ? 750 : 3000;
     const schedulePoll = (delay = 250) => {
       if (!pollingStopped) pollTimer = setTimeout(pollState, delay);
     };
@@ -550,13 +557,15 @@
       lastRead = started;
       const full = started - lastFullRead >= 3000 || !client.readFrame;
       if (full) lastFullRead = started;
+      let retryDelay;
       try {
         await (full ? client.read(true) : client.readFrame());
       } catch (e) {
+        if(e.status===429)retryDelay=60000;
         message(e);
       } finally {
         const untilNext = lastRead + pollPeriod() - performance.now();
-        schedulePoll(Math.max(50, Math.min(250, Math.ceil(untilNext))));
+        schedulePoll(retryDelay ?? Math.max(50, Math.min(250, Math.ceil(untilNext))));
       }
     }
     schedulePoll();
@@ -587,6 +596,6 @@
       run,
     };
   }
-  root.MareOnlineGameUI = { project, derived, mount, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline, message:e=>labels[e.code]||"Não foi possível concluir. Confira a sessão e tente novamente." };
+  root.MareOnlineGameUI = { project, derived, mount, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline, quickHuntUpdates, message:e=>labels[e.code]||"Não foi possível concluir. Confira a sessão e tente novamente." };
   if (typeof module !== "undefined") module.exports = { project, derived, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline };
 })(globalThis);

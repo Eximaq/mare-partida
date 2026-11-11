@@ -91,3 +91,35 @@ test("the meter distinguishes HTTP latency and the interval between state update
     f.close();
   }
 });
+
+test("visible solo auto combat follows the 250 ms worker cadence and slows down on a high RTT", async () => {
+  const f = mountWithClock();
+  try {
+    Object.assign(f.client.data.online, { battle: { auto: true }, world: { mapId: "dawn", area: "beach" }, sync: { protocol: 2 } });
+    await f.tick(10_250);
+    await f.tick(10_500);
+    assert.deepEqual(f.reads.map(read => read.kind), ["full", "frame"]);
+    f.client.network.rttMs = 325;
+    await f.tick(10_750);
+    assert.equal(f.reads.length, 2);
+    await f.tick(11_250);
+    assert.equal(f.reads.length, 3);
+  } finally {
+    f.close();
+  }
+});
+
+test("a server rate limit stops periodic requests for the retry window", async () => {
+  const f = mountWithClock();
+  try {
+    f.client.read = async () => { throw Object.assign(new Error("limited"), { status: 429 }); };
+    await f.tick(10_250);
+    f.client.read = async () => { f.reads.push({ at: 0, kind: "recovered" }); };
+    await f.tick(13_500);
+    assert.equal(f.reads.length, 0);
+    await f.tick(70_250);
+    assert.deepEqual(f.reads.map(read => read.kind), ["recovered"]);
+  } finally {
+    f.close();
+  }
+});

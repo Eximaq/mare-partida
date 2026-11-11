@@ -2,6 +2,8 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {characterCommandSchema} from '@mare/shared';
+import {readLobby} from '../../apps/game-server/src/characters/lobby.js';
+import type {PoolClient} from 'pg';
 import {authDatabase} from './auth-support.mjs';
 async function actor(f:any,name:string){
  const login=await f.service.login(randomUUID()+'@example.invalid','fixture');
@@ -38,4 +40,13 @@ test('public character IDs confer no authority and the roster is bounded',async(
  await assert.rejects(f.service.command(a.login.token,b.c.id,forged),{code:'character_not_found'});
  for(let n=0;n<16;n++)await actor(f,'Visitante '+n);
  const lobby=(await a.read()).lobby;assert.equal(lobby.limit,16);assert.equal(lobby.players.length,16);assert.equal(lobby.truncated,true);assert.equal(new Set(lobby.players.map((p:any)=>p.id)).size,16);assert(!lobby.players.some((p:any)=>p.id===a.c.id));
+ const world=(await a.read()).world;
+ const c=await f.pool.connect();
+ try{
+  let queries=0;
+  const counting={query(...args:any[]){queries++;return (c.query as Function).apply(c,args);}} as PoolClient;
+  const projection=await readLobby(counting,a.c.id,world);
+  assert.equal(projection.players.length,16);
+  assert.equal(queries,3,'roster, capabilities and all visible positions use a fixed query count');
+ }finally{c.release();}
 }));

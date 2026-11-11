@@ -28,6 +28,19 @@ test('travel respects original island gates and server spawns, crossing accounts
  assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.character_world')).rows[0].n,1);
 }));
 
+test('the Skypiea catalog destination records an achievement visit without changing balances',async()=>authDatabase(async({service,pool})=>{
+ const a=await actor(service);
+ await a.send(await a.input('world.initialize'));
+ await pool.query('UPDATE mare_game.character_progression SET level=75 WHERE character_id=$1',[a.c.id]);
+ const before=await a.read();
+ await a.send(await a.input('world.travel',{islandId:'skypiea-01'}));
+ const after=await a.read();
+ assert.equal(after.world?.mapId,'skypiea-01');
+ assert.deepEqual((await pool.query('SELECT island_id FROM mare_game.achievement_visits WHERE character_id=$1',[a.c.id])).rows,[{island_id:'skypiea-01'}]);
+ assert.equal(after.state.experience,before.state.experience);
+ assert.equal(after.state.gold,before.state.gold);
+}));
+
 test('pilot attacks use authoritative position and reject range bypass before consuming HP, turn or RNG rewards',async()=>authDatabase(async({service,pool})=>{
  const a=await actor(service);await a.send(await a.input('world.initialize'));await a.send(await a.input('journey.begin'));await a.send(await a.input('hunt.begin'));
  await pool.query("UPDATE mare_game.character_hunts SET begun_at=clock_timestamp()-interval '31 seconds' WHERE character_id=$1",[a.c.id]);await a.send(await a.input('hunt.claim'));
