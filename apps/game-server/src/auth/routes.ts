@@ -251,7 +251,15 @@ export function createAuthHandler(options: {
           if (url.search || request.headers["transfer-encoding"] || Number(request.headers["content-length"] ?? 0) !== 0)
             throw new AuthFault(400, "invalid_request");
           const id = parse(z.uuid(), stateMatch[1]);
-          reply(200, stateMatch[2] === "game-catalog" ? await service.gameCatalog(session,id) : stateMatch[2] === "frame" ? await service.onlineFrame(session,id) : stateMatch[2] === "online-state" ? await service.onlineState(session, id) : await service.characterState(session, id));
+          if (stateMatch[2] === "frame") {
+            const header = request.headers["x-mare-state-version"];
+            const version = header === undefined ? undefined
+              : Number(parse(z.string().regex(/^(0|[1-9]\d{0,15})$/), header));
+            if (version !== undefined && !Number.isSafeInteger(version)) throw new AuthFault(400, "invalid_request");
+            reply(200, await service.onlineFrame(session, id, version));
+            return;
+          }
+          reply(200, stateMatch[2] === "game-catalog" ? await service.gameCatalog(session,id) : stateMatch[2] === "online-state" ? await service.onlineState(session, id) : await service.characterState(session, id));
           return;
         }
         if (path === "/v1/me") {

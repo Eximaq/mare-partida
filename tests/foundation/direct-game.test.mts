@@ -12,7 +12,7 @@ function fixture(options:any={}) {
   const requests: any[] = [],
     storage = new Map();
   const snapshot = () => ({
-    ...(options.frameSupport?{sync:{protocol:1}}:{}),
+    ...(options.frameSupport?{sync:{protocol:options.frameProtocol??1}}:{}),
     ...(options.world ? { world: options.world } : {}),
     state: { characterId: id, version, level: 1, experience: "20", gold: "8" },
     progression: { xpIntoLevel: "20", xpForNextLevel: "80" },
@@ -333,6 +333,20 @@ test('Party motion preserves public metadata and requires full refresh on roster
  assert.equal(merged.group.members[0].hp,80);assert.equal(merged.group.members[0].name,'Captain');assert.equal(merged.invites,full.invites);assert.equal((full.group.members[0] as any).hp,undefined);
  assert.equal(mergePartyMotion(full,{group:{id:'g',members:[{id:'other'}]}}),null);
  assert.equal(mergePartyMotion(full,{group:null}),null);
+});
+test('a newer compact request can return full progress and Dawn positions in one response',async()=>{
+ const world={mapId:'dawn',position:{x:40,y:80},path:[]};
+ const fullState={sync:{protocol:2},state:{characterId:id,version:1,level:2,experience:'80',gold:'30'},world,battle:null,lobby:{players:[]},party:{group:null,invites:[]}};
+ const f=fixture({frameSupport:true,frameProtocol:2,framePatch:{protocol:2,version:1,fullState}});
+ await f.client.load();
+ await f.client.readFrame();
+ assert.equal(f.requests.filter(r=>r.path.endsWith('/online-state')).length,1);
+ assert.equal(new Headers(f.requests.find(r=>r.path.endsWith('/frame')).headers).get('x-mare-state-version'),'0');
+ assert.deepEqual(f.client.data.online,fullState);
+ const forged=fixture({frameSupport:true,frameProtocol:2,framePatch:{protocol:2,version:1,fullState:{...fullState,state:{...fullState.state,characterId:'other'}}}});
+ await forged.client.load();
+ await assert.rejects(forged.client.readFrame(),{code:'invalid_server_state'});
+ assert.equal(forged.client.data.online.state.version,0);
 });
 test('an older failed read cannot undo a newer successful connection; authentication failure still closes it',async()=>{
  const pending:Array<{resolve:(value:Response)=>void;reject:(reason:Error)=>void}>=[];

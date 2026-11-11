@@ -231,9 +231,8 @@
       storage.removeItem(key);
     };
     const fault = (code) => Object.assign(new Error(code), { code });
-    async function api(path, payload) {
-      const headers = {},
-        options = { cache: "no-store", signal: AbortSignal.timeout(10000) };
+    async function api(path, payload, headers = {}) {
+      const options = { cache: "no-store", signal: AbortSignal.timeout(10000), headers };
       if (payload !== undefined) {
         const csrf = await csrfToken();
         headers["content-type"] = "application/json";
@@ -342,15 +341,29 @@
       const flight=(async()=>{
         const original=data,revision=++readVersion,started=monotonic();
         try{
-          const f=await api(`/v1/characters/${original.character.id}/frame`),completed=monotonic();
+          const protocol=original.online.sync.protocol;
+          const knownVersion=original.online.state.version;
+          const headers=protocol===2?{'x-mare-state-version':String(knownVersion)}:{};
+          const f=await api(`/v1/characters/${original.character.id}/frame`,undefined,headers),completed=monotonic();
           if(revision!==readVersion||data!==original)return;
-          if(![1,2].includes(f.protocol)||f.protocol!==original.online.sync.protocol||f.characterId!==original.character.id||!Number.isSafeInteger(f.version)||f.version<0||!Number.isFinite(Date.parse(f.serverNow))||!('world' in f)||!('battle' in f)||!('lobby' in f)||!(f.protocol===2?'partyMotion' in f:'party' in f))throw fault('invalid_server_state');
-          // Economy, equipment, skills and derived stats change only through full state.
-          const party=f.protocol===2?mergePartyMotion(original.online.party,f.partyMotion):f.party;
+          if(f.protocol!==protocol||f.characterId!==original.character.id||!Number.isSafeInteger(f.version)||f.version<0||!Number.isFinite(Date.parse(f.serverNow)))throw fault('invalid_server_state');
           const daily=original.online.contracts?.daily;
-          if(f.version!==original.online.state.version||(f.protocol===2&&!party)||(daily&&Date.parse(f.serverNow)>=daily.endsAt))return read(true);
+          const dailyExpired=daily&&Date.parse(f.serverNow)>=daily.endsAt;
+          let online;
+          if('fullState' in f){
+            validate(original,f.fullState);
+            if(protocol!==2||f.fullState.sync?.protocol!==protocol||f.fullState.state.version!==f.version||f.version<=knownVersion)throw fault('invalid_server_state');
+            if(dailyExpired)return read(true);
+            online=f.fullState;
+          }else{
+            if(!('world' in f)||!('battle' in f)||!('lobby' in f)||!(protocol===2?'partyMotion' in f:'party' in f))throw fault('invalid_server_state');
+            const party=protocol===2?mergePartyMotion(original.online.party,f.partyMotion):f.party;
+            // Older servers and changes outside the compact projection still need a full read.
+            if(f.version!==knownVersion||(protocol===2&&!party)||dailyExpired)return read(true);
+            online={...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party,weeklyBoss:f.weeklyBoss??null};
+          }
           networkSample={rttMs:Math.max(0,completed-started),at:completed,intervalMs:networkSample?Math.max(0,completed-networkSample.at):null};
-          data={character:original.character,online:{...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party,weeklyBoss:f.weeklyBoss??null}};
+          data={character:original.character,online};
           available=true;notify();return data;
         }catch(error){if(revision===readVersion){available=false;notify();}throw error;}
       })().finally(()=>{if(frameFlight===flight)frameFlight=null;});

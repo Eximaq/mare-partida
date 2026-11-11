@@ -12,16 +12,26 @@ test('light frame is owner-only, versioned, no-store and cannot write economic f
  for(const action of ['items.initialize','world.initialize','battle.start'])await cmd(action);
  const full=await f.service.onlineState(a.token,c.id);assert.equal((full as any).sync?.protocol,2);
  const api=createHttpServer({isReady:async()=>true,handle:createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9443',cookieSeconds:3600})});api.listen(0,'127.0.0.1');await once(api,'listening');
- const base=`http://127.0.0.1:${(api.address() as any).port}`,path=`/v1/characters/${c.id}/frame`,get=(token=a.token,suffix='')=>fetch(base+path+suffix,{headers:{cookie:`__Host-mare_session=${token}`}});
+ const base=`http://127.0.0.1:${(api.address() as any).port}`,path=`/v1/characters/${c.id}/frame`,get=(token=a.token,suffix='',version?:string)=>fetch(base+path+suffix,{headers:{cookie:`__Host-mare_session=${token}`,...(version===undefined?{}:{'x-mare-state-version':version})}});
  try{
   const r=await get();assert.equal(r.status,200);assert.equal(r.headers.get('cache-control'),'no-store');assert.match(r.headers.get('server-timing')||'',/^app;dur=/);
   const frame=await r.json();assert.equal(frame.protocol,2);assert.equal(frame.characterId,c.id);assert.equal(frame.version,full.state.version);assert.equal(frame.world.mapId,full.world!.mapId);assert.equal(frame.battle.seq,full.battle.seq);assert.ok(Number.isFinite(Date.parse(frame.serverNow)));assert.ok(frame.simulationAgeMs>=0);
   for(const field of ['accountId','ownerId','inventory','originalInventory','gold','token'])assert.equal(frame[field],undefined);
   assert.ok(JSON.stringify(frame).length<JSON.stringify(full).length*.8,'frame omits expensive static projections');
+  const compact=await (await get(a.token,'',String(full.state.version))).json();
+  assert.equal(compact.fullState,undefined,'unchanged progress remains compact');
+  await cmd('world.travel',{islandId:'dawn'});
+  const updated=await (await get(a.token,'',String(full.state.version))).json();
+  assert.equal(updated.protocol,2);
+  assert.equal(updated.fullState.world.mapId,'dawn');
+  assert.deepEqual(updated.fullState.state,await f.service.characterState(a.token,c.id));
+  assert.equal(updated.fullState.state.version,updated.version);
+  assert.equal((await get(a.token,'','9007199254740992')).status,400);
+  assert.equal((await get(b.token,'',String(full.state.version))).status,404);
   assert.equal((await get(b.token)).status,404);
   for(const field of ['accountId','ownerId','characterId','gold'])assert.equal((await get(a.token,`?${field}=forged`)).status,400);
   assert.equal((await fetch(base+path,{method:'POST'})).status,405);
-  assert.deepEqual(await f.service.characterState(a.token,c.id),full.state);
+  assert.deepEqual(await f.service.characterState(a.token,c.id),updated.fullState.state);
   await f.service.logout(a.token,'all');assert.equal((await get()).status,401);
  }finally{api.closeAllConnections();await new Promise<void>(r=>api.close(()=>r()));}
 }));
