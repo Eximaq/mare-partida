@@ -26,7 +26,30 @@ await authDatabase(async f=>{
   }
   const p=await login('owner@example.invalid'),q=await login('collaborator@example.invalid'),r=await login('player@example.invalid');
   assert.equal(await r.locator('#weeklyBossMenu').isVisible(),false,'ordinary player must not see a closed event');
-  await p.locator('#modesMenuTrigger').click();await p.locator('#weeklyBossMenu').click();await p.locator('#weeklyBossDialog').waitFor();assert(await p.locator('[data-weekly-op=activate]').isDisabled());await p.screenshot({path:resolve(out,'admin-closed.png')});
+   async function openWeeklyPanel(){
+    await p.locator('#modesMenuTrigger').click();
+    await p.locator('#weeklyBossMenu').click();
+    await p.locator('#weeklyBossDialog').waitFor();
+   }
+   async function expectStartBlocked(code:string,message:string){
+    await openWeeklyPanel();
+    const response=p.waitForResponse((r:any)=>r.url().endsWith('/commands')&&r.request().method()==='POST');
+    await p.locator('[data-weekly-op=test]').click();
+    const rejection=await response;
+    assert.equal(rejection.status(),409);
+    assert.equal((await rejection.json()).error,code);
+    await p.getByText(message,{exact:true}).waitFor({timeout:5000});
+    await p.locator('[data-weekly-close]').click();
+   }
+   await p.evaluate(()=>MareGameSession.command('party.create',{}));
+   await expectStartBlocked('weekly_boss_test_leave_party','Saia da Party para participar do teste privado.');
+   await p.evaluate(()=>MareGameSession.command('party.leave',{}));
+   await p.evaluate(()=>MareGameSession.command('world.travel',{islandId:'dawn'}));
+   await expectStartBlocked('weekly_boss_return_to_port','Volte ao porto com o personagem vivo para entrar no encontro.');
+   await p.evaluate(()=>MareGameSession.command('world.return',{}));
+   await openWeeklyPanel();
+   assert(await p.locator('[data-weekly-op=activate]').isDisabled());
+   await p.screenshot({path:resolve(out,'admin-closed.png')});
   await p.locator('[data-weekly-op=test]').click();await p.waitForFunction(()=>globalThis.__mareDiagnostics().map.id==='marineford'&&globalThis.__mareDiagnostics().mobs.some((m:any)=>m.name==='Akainu'),null,{timeout:20000});
   const id=await p.evaluate(()=>MareGameSession.data.online.weeklyBoss.current.id);
   await q.locator('#modesMenuTrigger').click();await q.locator('#weeklyBossMenu').click();await q.locator(`[data-weekly-op=join][data-event="${id}"]`).click();

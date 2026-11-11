@@ -48,7 +48,10 @@
   button.addEventListener('click',()=>{menu.classList.add('hidden');doc.getElementById('modesMenuTrigger')?.setAttribute('aria-expanded','false');dirty=false;message='';dialog.showModal();refresh(true);});
   dialog.addEventListener('cancel',()=>{dirty=false;});dialog.addEventListener('close',()=>{dirty=false;});
   dialog.addEventListener('input',e=>{if(e.target.closest('#weeklyBossConfig'))dirty=true;});
-  const errors={weekly_boss_operator_required:'Esta conta não administra eventos.',weekly_boss_map_unavailable:'Marineford não está disponível.',weekly_boss_balance_required:'Revise o balanceamento antes da abertura.',weekly_boss_config_invalid:'Confira os valores da configuração.',weekly_boss_spawn_blocked:'O local ou o alcance informado não é válido no mapa.',weekly_boss_revision_conflict:'Outro administrador alterou o evento. Reabra o painel.',weekly_boss_event_unavailable:'Este encontro já foi encerrado ou não está disponível.',control_required:'Retome o controle do personagem.',pending_command:'Há uma operação pendente. Aguarde sua confirmação.',weekly_boss_busy:'O evento está ocupado. Tente novamente.'};
+  const errors={
+   weekly_boss_test_leave_party:'Saia da Party para participar do teste privado.',
+   weekly_boss_return_to_port:'Volte ao porto com o personagem vivo para entrar no encontro.',
+   weekly_boss_operator_required:'Esta conta não administra eventos.',weekly_boss_map_unavailable:'Marineford não está disponível.',weekly_boss_balance_required:'Revise o balanceamento antes da abertura.',weekly_boss_config_invalid:'Confira os valores da configuração.',weekly_boss_spawn_blocked:'O local ou o alcance informado não é válido no mapa.',weekly_boss_revision_conflict:'Outro administrador alterou o evento. Reabra o painel.',weekly_boss_event_unavailable:'Este encontro já foi encerrado ou não está disponível.',control_required:'Retome o controle do personagem.',pending_command:'Há uma operação pendente. Aguarde sua confirmação.',weekly_boss_busy:'O evento está ocupado. Tente novamente.'};
   async function send(payload){
    if(!model(data(),state()).ready)return;locked=true;dirty=false;message='Enviando ao servidor…';refresh(true);
    try{await session.command('weeklyBoss.execute',payload);await session.read();message='Operação confirmada pelo servidor.';}
