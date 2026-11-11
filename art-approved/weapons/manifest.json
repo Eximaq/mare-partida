@@ -532,6 +532,78 @@
           "height": 640
         }
       ]
+    },
+    {
+      "itemId": 117,
+      "name": "Braço 117",
+      "version": "v3-north",
+      "approvedDirections": [
+        "north"
+      ],
+      "approvedAt": "2026-11-11",
+      "status": "art-approved-not-integrated",
+      "productionEnabled": false,
+      "sequence": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "finalFramePattern": "117/v3/{direction}/frames/{frame:02}.png",
+      "files": [
+        {
+          "path": "117/v3/north/frames/00.png",
+          "sha256": "e32cc9457f32befc276d5387b8dcb02ca384e55c46aa22075a95e02a9b70784a",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v3/north/frames/01.png",
+          "sha256": "278dd27e638e84eb13d1d6aa4dd25b9629a1cebd1681241d3dfb98cbce691a96",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v3/north/frames/02.png",
+          "sha256": "e1f99599126f3e1882f1af39d8881e5a6d3fd683d16d69bcb271c9e8d3bd5645",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v3/north/frames/03.png",
+          "sha256": "f66b0989a0cc1399d78a231fa554a32924f74743a3a6c6a17da32749db489eda",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v3/north/frames/04.png",
+          "sha256": "b9b219dafd0c2f3ddf34d7025354c3ff40beacc92452a81bb3d183975327d2c5",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v3/north/frames/05.png",
+          "sha256": "cc776ad12d8b6bb0fd4fc1f8b3dbe1311040b675ddd23cfdd5e35c4a3ac2a112",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v3/north/frames/06.png",
+          "sha256": "a269ec357030246308d4293e1991c4476d4163170b1238ad2c5e8678f92f20a2",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v3/north/frames/07.png",
+          "sha256": "a813e7f5f36be2e9145393966e5de286f5af1b03436e6b6ab3dc524b3a03be77",
+          "width": 640,
+          "height": 640
+        }
+      ]
     }
   ]
 }
