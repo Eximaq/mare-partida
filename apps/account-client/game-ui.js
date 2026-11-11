@@ -273,9 +273,11 @@
     meter.textContent='Ping HTTP: — · FPS: —';document.body.append(meter);
     function renderPerformance(){
       const n=client.network||{},f=frameMeter.sample(),ms=v=>Number.isFinite(v)?Math.round(v)+' ms':'—';
-      meter.textContent=(client.available?'Ping HTTP: '+ms(n.rttMs):'Sem conexão')+' · FPS: '+(document.hidden?'—':f.fps??'—')+' · Estado: '+ms(n.ageMs);
-      meter.title='Ping HTTP inclui rede e processamento do servidor. Estado é o tempo desde a última leitura válida, não o ping. Intervalo entre leituras: '+ms(n.intervalMs)+'. Maior intervalo entre frames: '+ms(f.maxFrameMs)+'. FPS baixo indica lentidão de renderização.';
-      meter.dataset.stale=String(!client.available||n.ageMs>5000);
+      const stale = n.ageMs > 5000;
+      const updates = stale ? 'Sem atualizar há '+ms(n.ageMs) : 'Atualizações: '+ms(n.intervalMs);
+      meter.textContent=(client.available?'Ping HTTP: '+ms(n.rttMs):'Sem conexão')+' · FPS: '+(document.hidden?'—':f.fps??'—')+' · '+updates;
+      meter.title='Ping HTTP inclui rede e processamento do servidor. Atualizações mostra o intervalo entre as duas últimas leituras válidas. Última leitura há '+ms(n.ageMs)+'. Maior intervalo entre frames: '+ms(f.maxFrameMs)+'.';
+      meter.dataset.stale=String(!client.available||stale);
     }
     const performanceTimer=setInterval(renderPerformance,1000);
     const resetPerformance=()=>{frameMeter.reset();renderPerformance();};
@@ -283,7 +285,6 @@
     let panel = null,
       section = null,
       error = "",
-      reading = false,
       redirecting = false;
     const redirectToLogin = () => {
       if (redirecting) return;
@@ -508,19 +509,36 @@
       if (!client.data) redirectToLogin();
       render();
     });
-    let lastRead=0,lastFullRead=0;
-    const poll = setInterval(() => {
-      if (redirecting || document.hidden || reading || client.busy) return;
-      const now=Date.now(),period=client.data?.online.battle&&client.controlled?750:3000;
-      if(now-lastRead<period)return;lastRead=now;
-      reading = true;
-      const full=now-lastFullRead>=3000||!client.readFrame;if(full)lastFullRead=now;
-      void (full?client.read(true):client.readFrame())
-        .catch(message)
-        .finally(() => {
-          reading = false;
-        });
-    }, 250);
+    let lastRead = -Infinity, lastFullRead = -Infinity;
+    let pollTimer, pollingStopped = false;
+    const pollPeriod = () => client.data?.online?.battle && client.controlled ? 750 : 3000;
+    const schedulePoll = (delay = 250) => {
+      if (!pollingStopped) pollTimer = setTimeout(pollState, delay);
+    };
+    async function pollState() {
+      if (redirecting || document.hidden || client.busy) {
+        schedulePoll();
+        return;
+      }
+      const started = performance.now();
+      const remaining = lastRead + pollPeriod() - started;
+      if (remaining > 0) {
+        schedulePoll(Math.min(250, Math.ceil(remaining)));
+        return;
+      }
+      lastRead = started;
+      const full = started - lastFullRead >= 3000 || !client.readFrame;
+      if (full) lastFullRead = started;
+      try {
+        await (full ? client.read(true) : client.readFrame());
+      } catch (e) {
+        message(e);
+      } finally {
+        const untilNext = lastRead + pollPeriod() - performance.now();
+        schedulePoll(Math.max(50, Math.min(250, Math.ceil(untilNext))));
+      }
+    }
+    schedulePoll();
     const renewal = setInterval(() => {
       if (!redirecting && !document.hidden) void client.renew().catch(message);
     }, 30000);
@@ -532,7 +550,8 @@
     root.addEventListener("pagehide", () => {
       clearInterval(performanceTimer);meter.remove();
       document.removeEventListener("visibilitychange",resetPerformance);
-      clearInterval(poll);
+      pollingStopped = true;
+      clearTimeout(pollTimer);
       clearInterval(renewal);
       document.removeEventListener("visibilitychange", resumePresence);
     });
