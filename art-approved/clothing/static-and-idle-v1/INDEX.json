@@ -1,0 +1,112 @@
+{
+  "packages": [
+    {
+      "file": "female_151_static_south-neck-only_v1.zip",
+      "bytes": 270959,
+      "sha256": "4fecc50e672b1f2184d558fc2357486e47a7a4ea50e7e2b1f0c3eb5ae5af3031",
+      "unique_png_count": 4,
+      "logical_frame_count": 4
+    },
+    {
+      "file": "female_158_static_south-neck-only_v1.zip",
+      "bytes": 283412,
+      "sha256": "381b87255d04ec2fd450fdcb2f352e38745c5c654bd121af4b550b702a938307",
+      "unique_png_count": 4,
+      "logical_frame_count": 4
+    },
+    {
+      "file": "female_165_static_south-neck-only_v1.zip",
+      "bytes": 285669,
+      "sha256": "a54f10b75e70d4511727e0e6982db3deca74054cbf255977322bb83477274557",
+      "unique_png_count": 4,
+      "logical_frame_count": 4
+    },
+    {
+      "file": "female_172_static_south-neck-only_v1.zip",
+      "bytes": 291607,
+      "sha256": "8619d5fb097267ad6b1f77669393121bf211104ce07a917713131845ae97af59",
+      "unique_png_count": 4,
+      "logical_frame_count": 4
+    },
+    {
+      "file": "female_179_static_south-neck-only_v1.zip",
+      "bytes": 297465,
+      "sha256": "c0af5c68047371f083a66d72194161d8cddfb288d9e71c0444dfe5d24ab0b8fe",
+      "unique_png_count": 4,
+      "logical_frame_count": 4
+    },
+    {
+      "file": "male_158_static_four-views_v1.zip",
+      "bytes": 312489,
+      "sha256": "797ee318d8f0c52c2799e4c6db8ae961b20810cc48d5a04fe5cf29ab1c72d9c3",
+      "unique_png_count": 4,
+      "logical_frame_count": 4
+    },
+    {
+      "file": "male_165_static_four-views_v1.zip",
+      "bytes": 313278,
+      "sha256": "ad299ef086093191df1ceda6eac5a2d0a0246cc0a956cc1914dd65837c8741e2",
+      "unique_png_count": 4,
+      "logical_frame_count": 4
+    },
+    {
+      "file": "male_172_static_four-views_v1.zip",
+      "bytes": 319386,
+      "sha256": "3571d3962c0a52523259599437753365a891c95366dcc640424dd2e4e5c6e97c",
+      "unique_png_count": 4,
+      "logical_frame_count": 4
+    },
+    {
+      "file": "male_179_static_four-views_v1.zip",
+      "bytes": 328143,
+      "sha256": "1ff0fd0cfd9cb58eff80989bb740404d149086ce9ae18ba1df9c3d5fd9029c1f",
+      "unique_png_count": 4,
+      "logical_frame_count": 4
+    },
+    {
+      "file": "female_151_idle_north_v1.zip",
+      "bytes": 303918,
+      "sha256": "a806e2f1e524756fb547e2ace83a3b9d2e8c7d6e26c2cf1573ba7fae4c8ee2d2",
+      "unique_png_count": 4,
+      "logical_frame_count": 8
+    },
+    {
+      "file": "female_158_idle_south_v1.zip",
+      "bytes": 347635,
+      "sha256": "88bd9af91c6d9c889417eaa7b847ca8295f72d8b1b5e28b2b692db6ec37a62e1",
+      "unique_png_count": 4,
+      "logical_frame_count": 8
+    },
+    {
+      "file": "female_172_idle_south_v1.zip",
+      "bytes": 368695,
+      "sha256": "6860e1116b03cbe30e594b76595246ccbeece60177cb21e59b8e612571d4f7b6",
+      "unique_png_count": 4,
+      "logical_frame_count": 8
+    },
+    {
+      "file": "female_179_idle_south_v1.zip",
+      "bytes": 382779,
+      "sha256": "770b6b1ec05ad533d8086d104d7f0dd4220590f2807275fd026ca472249034bb",
+      "unique_png_count": 4,
+      "logical_frame_count": 8
+    },
+    {
+      "file": "female_151_idle_south_v1.zip",
+      "bytes": 340257,
+      "sha256": "f6452db5beeaac1a35aebf1963c428228fe11bdc00b4e0af1879a08c9a51f1a6",
+      "unique_png_count": 4,
+      "logical_frame_count": 8
+    }
+  ],
+  "unique_png_count": 56,
+  "logical_frame_count": 76,
+  "excluded": [
+    "Other idle directions",
+    "Female 165 south idle",
+    "Male animations",
+    "Torso 130 pending final composition export"
+  ],
+  "total_zip_bytes": 4445692,
+  "global_unique_png_count": 51
+}
