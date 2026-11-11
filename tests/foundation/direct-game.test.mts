@@ -13,6 +13,7 @@ function fixture(options:any={}) {
     storage = new Map();
   const snapshot = () => ({
     ...(options.frameSupport?{sync:{protocol:1}}:{}),
+    ...(options.world ? { world: options.world } : {}),
     state: { characterId: id, version, level: 1, experience: "20", gold: "8" },
     progression: { xpIntoLevel: "20", xpForNextLevel: "80" },
     journey: { started: true },
@@ -53,7 +54,10 @@ function fixture(options:any={}) {
         });
       if (path === "/v1/auth/csrf")
         return Response.json({ csrfToken: "fixture" });
-      if (path.endsWith("/online-state")) return stateStatus===200?Response.json(snapshot()):Response.json({error:"unavailable"},{status:stateStatus});
+      if (path.endsWith("/online-state")) {
+        if (version > 0 && options.waitForSnapshot) await options.waitForSnapshot();
+        return stateStatus===200?Response.json(snapshot()):Response.json({error:"unavailable"},{status:stateStatus});
+      }
       if(path.endsWith('/frame'))return Response.json({protocol:1,characterId:id,version,serverNow:new Date().toISOString(),simulationAgeMs:40,world:null,battle:null,lobby:{players:[]},party:{group:null,invites:[]},...(options.framePatch||{})});
       if(path.endsWith('/control/renew'))return renewalStatus===200?Response.json({epoch:1}):Response.json({error:renewalStatus===409?'control_conflict':'unavailable'},{status:renewalStatus});
       if (path.endsWith("/control"))
@@ -61,7 +65,13 @@ function fixture(options:any={}) {
       if (path.endsWith("/commands")) {
         if (fail) throw new Error("lost reply");
         version++;
-        return Response.json({});
+        const intent = JSON.parse(o.body);
+        return Response.json(options.commandWorld ? {
+          requestId: intent.requestId,
+          action: intent.action,
+          state: snapshot().state,
+          world: options.commandWorld,
+        } : {});
       }
       if (path === "/v1/auth/logout")
         return new Response(null, { status: 204 });
@@ -104,6 +114,38 @@ test('commands reuse identity and short-lived memory CSRF instead of serial redu
  assert.equal(f.requests.filter(r=>r.path==='/v1/auth/csrf').length,1);
  assert.equal(f.requests.filter(r=>r.path.endsWith('/online-state')).length,3);
  assert.equal(f.storage.size,0);
+});
+
+test('the accepted movement is visible while the full snapshot is still loading', async () => {
+  const world = {
+    mapId: 'lobby', rulesHash: 'fixture-world', area: null,
+    position: { x: 0, y: 0 }, path: [], speed: 100, direction: 'right',
+    serverNow: '2026-11-11T12:00:00.000Z', motionUntil: '2026-11-11T12:00:00.000Z',
+  };
+  const accepted = {
+    ...world, path: [{ x: 100, y: 0 }],
+    serverNow: '2026-11-11T12:00:00.100Z', motionUntil: '2026-11-11T12:00:01.100Z',
+  };
+  const reconciling = Promise.withResolvers<void>();
+  const release = Promise.withResolvers<void>();
+  const f = fixture({
+    world, commandWorld: accepted,
+    waitForSnapshot: () => { reconciling.resolve(); return release.promise; },
+  });
+  await f.client.load();
+  await f.client.acquire();
+  const moving = f.client.command('world.move', { x: 100, y: 0 });
+  try {
+    await reconciling.promise;
+    assert.deepEqual(f.client.data.online.world, accepted);
+    assert.equal(f.client.data.online.state.version, 0);
+    await assert.rejects(f.client.command('world.stop', {}), { code: 'pending_command' });
+  } finally {
+    release.resolve();
+    await moving;
+  }
+  assert.equal(f.client.data.online.state.version, 1);
+  assert.deepEqual(f.client.data.online.world, world);
 });
 
 test('a second intent during reconciliation cannot leave an unsent command for replay',async()=>{

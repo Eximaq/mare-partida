@@ -376,6 +376,7 @@
       busy = true;
       notify();
       try {
+        const sentControl = control;
         const receipt=await api(`/v1/characters/${data.character.id}/commands`, {
           requestId: intent.requestId,
           expectedVersion: intent.expectedVersion,
@@ -384,7 +385,21 @@
           control: { epoch: control.epoch, token: control.token },
         });
         discard();
-        await read(intent.action!=='profile.identity');
+        const reconciliation = read(intent.action!=='profile.identity');
+        const online = data?.online;
+        const world = receipt.world;
+        // Render the confirmed path while the full snapshot reconciles state and inventory.
+        if ((intent.action === 'world.move' || intent.action === 'world.stop') &&
+            control === sentControl && receipt.requestId === intent.requestId &&
+            receipt.action === intent.action && data?.character?.id === intent.characterId &&
+            receipt.state?.characterId === intent.characterId && online?.world && world &&
+            receipt.state.version >= online.state.version && world.mapId === online.world.mapId &&
+            world.rulesHash === online.world.rulesHash &&
+            Date.parse(world.serverNow) >= Date.parse(online.world.serverNow)) {
+          data = { ...data, online: { ...online, world } };
+          notify();
+        }
+        await reconciliation;
         return receipt;
       } catch (error) {
         if (error.status && error.status < 500) discard();
