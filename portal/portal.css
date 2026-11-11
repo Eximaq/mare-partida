@@ -132,7 +132,7 @@ h1 { font-size: clamp(30px, 3.35vw, 49px); font-weight: 500; line-height: 1.12; 
   cursor: pointer;
 }
 .plan-payment:hover { background: #1b4b58; }
-.plan-payment:focus-visible, .pix-close:focus-visible { outline: 3px solid var(--parchment); outline-offset: 4px; }
+.plan-payment:focus-visible, .pix-copy:focus-visible, .pix-close:focus-visible, .pix-copy-manual:focus-visible { outline: 3px solid var(--parchment); outline-offset: 4px; }
 .pix-dialog {
   width: min(calc(100% - 36px), 380px);
   max-height: calc(100% - 36px);
@@ -155,8 +155,33 @@ h1 { font-size: clamp(30px, 3.35vw, 49px); font-weight: 500; line-height: 1.12; 
   image-rendering: pixelated;
 }
 .pix-status { margin: 14px 0 18px; color: var(--muted); line-height: 1.45; }
+.pix-copy {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--brass);
+  background: #163a47;
+  color: var(--parchment);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pix-copy:hover:not(:disabled) { background: #1b4b58; }
+.pix-copy:disabled { opacity: 0.65; cursor: default; }
+.pix-copy-feedback { margin: 8px 0; color: var(--sea-glass); line-height: 1.4; }
+.pix-copy-feedback:empty { margin: 0; }
+.pix-copy-manual {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #688f96;
+  background: var(--deep-sea);
+  color: var(--parchment);
+  font: 16px monospace;
+  resize: vertical;
+}
 .pix-close {
   min-height: 44px;
+  margin-top: 12px;
   padding: 8px 18px;
   border: 1px solid #688f96;
   background: var(--deep-sea);

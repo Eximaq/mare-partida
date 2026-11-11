@@ -62,7 +62,7 @@
     <ul class="plan-perks">
       <li>Título de Fundador no perfil</li>
     </ul>
-    <button class="plan-payment" type="button" data-pix-amount="15" data-pix-qr="./assets/pix-15.png" aria-haspopup="dialog">
+    <button class="plan-payment" type="button" data-pix-amount="15" data-pix-qr="./assets/pix-15.png" data-pix-code="./assets/pix-15.txt" aria-haspopup="dialog">
       Ver Pix<span class="visually-hidden"> de R$ 15</span><span aria-hidden="true">+</span>
     </button>
   </article>
@@ -73,7 +73,7 @@
       <li>Título de Fundador no perfil</li>
       <li>Emblema de Fundador</li>
     </ul>
-    <button class="plan-payment" type="button" data-pix-amount="25" data-pix-qr="./assets/pix-25.png" aria-haspopup="dialog">
+    <button class="plan-payment" type="button" data-pix-amount="25" data-pix-qr="./assets/pix-25.png" data-pix-code="./assets/pix-25.txt" aria-haspopup="dialog">
       Ver Pix<span class="visually-hidden"> de R$ 25</span><span aria-hidden="true">+</span>
     </button>
   </article>
@@ -85,7 +85,7 @@
       <li>Emblema de Fundador</li>
       <li>Visual exclusivo de Capitão</li>
     </ul>
-    <button class="plan-payment" type="button" data-pix-amount="50" data-pix-qr="./assets/pix-50.png" aria-haspopup="dialog">
+    <button class="plan-payment" type="button" data-pix-amount="50" data-pix-qr="./assets/pix-50.png" data-pix-code="./assets/pix-50.txt" aria-haspopup="dialog">
       Ver Pix<span class="visually-hidden"> de R$ 50</span><span aria-hidden="true">+</span>
     </button>
   </article>
@@ -97,6 +97,9 @@
   <p class="pix-amount plan-price"></p>
   <div class="pix-image"></div>
   <p class="pix-status" role="status"></p>
+  <button class="pix-copy" type="button" disabled>Copiar código Pix</button>
+  <p class="pix-copy-feedback" role="status"></p>
+  <textarea class="pix-copy-manual" aria-label="Código Pix para copiar manualmente" rows="3" readonly hidden></textarea>
   <button class="pix-close" type="button" autofocus>Fechar</button>
 </dialog>
 <div class="voyage" role="group" aria-label="Uma aventura pirata em pixel art">

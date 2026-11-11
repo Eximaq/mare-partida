@@ -1,6 +1,7 @@
 """The public coming-soon package must not ship the game or local files."""
 import re
 import hashlib
+import binascii
 import subprocess
 import sys
 import tempfile
@@ -34,6 +35,13 @@ class PortalBuildTest(unittest.TestCase):
                 qr = output / f'portal/assets/pix-{amount}.png'
                 self.assertTrue(qr.is_file(), 'Cada plano precisa do QR correspondente no build')
                 self.assertTrue(qr.read_bytes().startswith(b'\x89PNG\r\n\x1a\n'))
+                code_ref = re.search(r'data-pix-code="([^"]+)"', card[0])
+                self.assertIsNotNone(code_ref, 'O plano precisa de Pix Copia e Cola')
+                self.assertEqual(urlsplit(code_ref[1]).path, f'./assets/pix-{amount}.txt')
+                code = (output / f'portal/assets/pix-{amount}.txt').read_bytes()
+                self.assertTrue(code.startswith(b'000201') and f'5405{amount}.00'.encode() in code,
+                                'O código precisa ter o valor fixo do plano')
+                self.assertEqual(binascii.crc_hqx(code[:-4], 0xffff), int(code[-4:], 16))
             self.assertIn('href="https://www.instagram.com/kaizokuidle2d"', html)
             self.assertIn('href="https://discord.gg/uRnP79cp7h"', html)
             self.assertIn('<dialog', html)
