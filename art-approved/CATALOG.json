@@ -757,6 +757,34 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved-north-history/male_weapon0_north_original-restored-v2.zip",
+      "bytes": 2947585,
+      "sha256": "7dc0252e263773d5de7a54087abb91b03335d62f777f30cfeb254a87c64a14ef",
+      "pngEntries": 75,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-north-history/male_weapon128_north_historical-v1.zip",
+      "bytes": 2929193,
+      "sha256": "73d1f744e3934a0cbd74bc73d529770070407f4a3069737c4f41735e8eb93e88",
+      "pngEntries": 14,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-north-history/male_weapon67_north_original-restored-v1.zip",
+      "bytes": 2055371,
+      "sha256": "f7289124ad445432f47e53337b76083071d954e3d7ce669aaba2fab718e40ed8",
+      "pngEntries": 41,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-north-history/male_weapon70_north_original-restored-v2.zip",
+      "bytes": 1894261,
+      "sha256": "7066e58e88cec8a788b60e85de81be392e5ee9e0bdebca49dd8825d9749819a8",
+      "pngEntries": 41,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/approved-south-history/male_weapon121_south_v1.zip",
       "bytes": 1087967,
       "sha256": "feb6cb77b799a2c2995e55f82a610c3b8c385d59b46dcdf0dc1c8177632b275a",

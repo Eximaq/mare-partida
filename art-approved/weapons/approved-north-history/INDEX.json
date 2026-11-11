@@ -1,0 +1,54 @@
+[
+  {
+    "file": "male_weapon0_north_original-restored-v2.zip",
+    "item": 0,
+    "direction": "north",
+    "version": "original-restored-v2",
+    "bytes": 2947585,
+    "sha256": "7dc0252e263773d5de7a54087abb91b03335d62f777f30cfeb254a87c64a14ef",
+    "pngCount": 75,
+    "frameCount": 8,
+    "videoCount": 1,
+    "fps": 12,
+    "productionEnabled": false
+  },
+  {
+    "file": "male_weapon67_north_original-restored-v1.zip",
+    "item": 67,
+    "direction": "north",
+    "version": "original-restored-v1",
+    "bytes": 2055371,
+    "sha256": "f7289124ad445432f47e53337b76083071d954e3d7ce669aaba2fab718e40ed8",
+    "pngCount": 41,
+    "frameCount": 8,
+    "videoCount": 1,
+    "fps": 12,
+    "productionEnabled": false
+  },
+  {
+    "file": "male_weapon70_north_original-restored-v2.zip",
+    "item": 70,
+    "direction": "north",
+    "version": "original-restored-v2",
+    "bytes": 1894261,
+    "sha256": "7066e58e88cec8a788b60e85de81be392e5ee9e0bdebca49dd8825d9749819a8",
+    "pngCount": 41,
+    "frameCount": 8,
+    "videoCount": 1,
+    "fps": 12,
+    "productionEnabled": false
+  },
+  {
+    "file": "male_weapon128_north_historical-v1.zip",
+    "item": 128,
+    "direction": "north",
+    "version": "historical-v1",
+    "bytes": 2929193,
+    "sha256": "73d1f744e3934a0cbd74bc73d529770070407f4a3069737c4f41735e8eb93e88",
+    "pngCount": 14,
+    "frameCount": 9,
+    "videoCount": 1,
+    "fps": 12,
+    "productionEnabled": false
+  }
+]
