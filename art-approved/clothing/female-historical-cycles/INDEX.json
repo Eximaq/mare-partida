@@ -1,0 +1,52 @@
+[
+  {
+    "file": "female_133_east_stitched-r15.zip",
+    "bytes": 867597,
+    "sha256": "31b420774149b0f4e88e7e5829a5c563d25091d51ae1ad2b56cb57a6819f6b49"
+  },
+  {
+    "file": "female_133_west_stitched-r15.zip",
+    "bytes": 867942,
+    "sha256": "632b4371438be0c4e8a2148c7085f04b2a07a32a69eae5d35c5d0e18547a75e0"
+  },
+  {
+    "file": "female_161_east_stitched-r27.zip",
+    "bytes": 870258,
+    "sha256": "865f73260aa788a583b888bf304d0adbf29307a6e9f143829a7b02dc4513441e"
+  },
+  {
+    "file": "female_161_west_stitched-r27.zip",
+    "bytes": 871348,
+    "sha256": "ae940bc525f12c413be0ecd799da2646b5c856bf7144833323e9ac460371a1da"
+  },
+  {
+    "file": "female_21_east_stitched-r3.zip",
+    "bytes": 835950,
+    "sha256": "0bb81e26e86724a03963d321a143170143fe493f7afc828192fe1edeb78ebff9"
+  },
+  {
+    "file": "female_21_west_stitched-r3.zip",
+    "bytes": 837113,
+    "sha256": "2a61a3c5ff32febde2b67a10c51881353b68293149c159277cece619f478526f"
+  },
+  {
+    "file": "female_6_east_v42_source-pack.zip",
+    "bytes": 2092350,
+    "sha256": "bc356dab54e316549d8995ce1d53bf224ae480aa7ac61cadb2df6646a8c344f3"
+  },
+  {
+    "file": "female_6_north_v24_source-pack.zip",
+    "bytes": 1518107,
+    "sha256": "d78de5feac98b70d1675ebb27a0ce91a77957e742182e2938e439fe4ebf03e23"
+  },
+  {
+    "file": "female_6_south_v24_source-pack.zip",
+    "bytes": 1481311,
+    "sha256": "833b04e1faee34f986e3e67e6ab16bdcbf5a43ba98aa38378bd6877adb9c3ac3"
+  },
+  {
+    "file": "female_6_west_v42_source-pack.zip",
+    "bytes": 2089144,
+    "sha256": "631bc0b3e90e301f418b2ed2c221ec1d6181ac3180926fb58fac98788eb3894c"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "file": "male_133_east_equipped-r1.zip",
+    "bytes": 1210950,
+    "sha256": "f69e208afc678a48669dcbe622a5a7b3c94c741fe04fffd01a19bbc271883642"
+  },
+  {
+    "file": "male_133_north_equipped-r1.zip",
+    "bytes": 1436192,
+    "sha256": "f82330e824de7e1c362881ba882037854ed60facc8858dafb14038fa646902b5"
+  },
+  {
+    "file": "male_133_north_isolated-r2.zip",
+    "bytes": 1213469,
+    "sha256": "0cb9a3db4c57c1567209b08e158eef5800d77bf782e97bf0280ca0e554292a22"
+  },
+  {
+    "file": "male_133_south_equipped-r1.zip",
+    "bytes": 1605583,
+    "sha256": "e3b110c6752b9aeabf969aa66bc1e8bc131d125b623764b7d658def9c33226be"
+  },
+  {
+    "file": "male_133_south_isolated-r2.zip",
+    "bytes": 1304738,
+    "sha256": "d1fe197dcb2259059448268fcaa0e0f8bc92a9389cbb373e9b6d7b1464e2a173"
+  },
+  {
+    "file": "male_133_west_equipped-r1.zip",
+    "bytes": 1209836,
+    "sha256": "4dbf63a299b6d460bb465c8c404279b9426222119f262622b4a680580820d317"
+  },
+  {
+    "file": "male_147_east_visible-r1.zip",
+    "bytes": 1199704,
+    "sha256": "1dc7133a6739f89a51beebef980f2e46ca39ca764ef1ff8c809400ab29055676"
+  },
+  {
+    "file": "male_147_north_visible-r1.zip",
+    "bytes": 1424331,
+    "sha256": "670fbec2f9feb1c7e2b27af0b19f39f16aba11639b2a4260b037b378c8793838"
+  },
+  {
+    "file": "male_147_south_visible-r1.zip",
+    "bytes": 1605620,
+    "sha256": "a893da70cacdc1aa9cc33431bdd7369cc1f3d94e5e4d4d14e06610ab7fce4ddc"
+  },
+  {
+    "file": "male_147_west_visible-r1.zip",
+    "bytes": 1198941,
+    "sha256": "6a677d38464ed649efc4be17a4abb8f3ba57d70716b87b6dc3d8a25bf498e41b"
+  }
+]
