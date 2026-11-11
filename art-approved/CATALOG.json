@@ -1079,6 +1079,13 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/m113-m151-equipped-south/male113_south_M151_head157_equipped-approved-v1.zip",
+      "bytes": 1225781,
+      "sha256": "d8fee2987f91745317d37683abdb157abfbf28e147daf75ba97706c414568346",
+      "pngEntries": 25,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/m151-equipped-approved/male116_south_M151_head157_equipped-approved-v1.zip",
       "bytes": 752194,
       "sha256": "0120964ff699d3cbca4759ec5ac32aef408ec8a1affbac3499532792adb7c1f7",
