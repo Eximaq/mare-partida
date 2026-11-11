@@ -12,6 +12,17 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class PortalBuildTest(unittest.TestCase):
+    def test_public_portal_contains_three_plans_and_community_actions(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / 'site'
+            subprocess.run([sys.executable, str(ROOT / 'tools/build_portal.py'),
+                            '--output-dir', str(output)], check=True, capture_output=True)
+            html = (output / 'portal/index.html').read_text(encoding='utf-8')
+            self.assertEqual(re.findall(r'class="plan-price">(R\$ \d+)</p>', html),
+                             ['R$ 15', 'R$ 25', 'R$ 50'])
+            self.assertIn('aria-label="Comunidade"', html)
+            self.assertIn('Pix em breve', html)
+
     def test_pages_styles_bypass_cached_unversioned_assets(self):
         from urllib.parse import parse_qs
         portal = ROOT / 'dist/portal'
@@ -58,7 +69,7 @@ class PortalBuildTest(unittest.TestCase):
             self.assertFalse((output / 'game.js').exists())
             self.assertFalse((output / 'assets').exists())
             self.assertFalse(list(output.rglob('*.py')))
-            self.assertFalse(list(output.rglob('*.js')))
+            self.assertEqual(list(output.rglob('*.js')), [landing.parent / 'collaborators.js'])
 
 
 if __name__ == '__main__':

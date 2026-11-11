@@ -8,6 +8,20 @@ Cenário náutico original em pixel art, nova logo, aviso “Em desenvolvimento�
 
 O fundo `ocean-art.css` e os assets anteriores não foram modificados. O jogo, saves e a entrada local `index.html` continuam intactos.
 
+## Planos de colaborador
+
+O portal apresenta três opções de apoio único. As vantagens propostas são cumulativas e previstas para o lançamento.
+
+| Plano | Valor | Vantagens previstas |
+| --- | --- | --- |
+| Grumete | R$ 15 | Título de Fundador no perfil |
+| Navegador | R$ 25 | Título e emblema de Fundador |
+| Capitão | R$ 50 | Título, emblema e visual exclusivo de Capitão |
+
+Os botões de Instagram e Discord passam a apontar para os destinos oficiais quando os links forem preenchidos em `portal/collaborators.js`. Para ativar o Pix, gerar três cobranças reutilizáveis de valor fixo na conta de recebimento e salvar os QR Codes públicos como `portal/assets/pix-15.png`, `pix-25.png` e `pix-50.png`. Conferir o destinatário e o valor de cada código no app do banco antes de publicar.
+
+Em `collaborators.js`, preencher `pix.claimUrl` com o endereço do canal privado de atendimento no Discord e ativar `pix.enabled`. O canal deve orientar o apoiador a informar o plano e, quando disponível, a conta que receberá a vantagem. A equipe confirma cada transação no banco e registra o apoio pelo identificador da transação para evitar contagem duplicada. O portal não confirma pagamentos nem entrega recompensas automaticamente. Se o QR não carregar, o plano permanece com a indicação “Pix em breve”.
+
 ## Publicar na Cloudflare Pages
 
 Para este domínio, publicar **somente o portal**:
