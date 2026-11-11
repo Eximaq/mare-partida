@@ -13,7 +13,7 @@ source=source.replace('  window.__mareDiagnostics=',"  window.__boundsQA={paused
  await page.evaluate(()=>{window.__navSlices=[];const build=MareWorld.Navigation.prototype.buildCells;MareWorld.Navigation.prototype.buildCells=function(...args){const t=performance.now(),result=build.apply(this,args);__navSlices.push(performance.now()-t);return result;};});
  await page.locator('#characterName').fill('Map Bounds');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.waitForFunction(()=>!!__boundsQA.game);
  await page.waitForFunction(()=>__boundsQA.state()==='ready');assert.equal(await page.evaluate(()=>__mareDiagnostics().map.navigation.cached),1,'unused maps do not build navigation at startup');
- const ids=await page.evaluate(()=>Object.keys(MareWorld.maps));assert.equal(ids.length,19);const visits=[];
+ const ids=await page.evaluate(()=>Object.keys(MareWorld.maps));assert.equal(ids.length,21);const visits=[];
  for(const id of ids){
   await page.evaluate(id=>__boundsQA.open(id),id);await page.waitForFunction(()=>__boundsQA.state()==='ready',null,{timeout:20000});
   const result=await page.evaluate(()=>{const q=__boundsQA,c=q.camera,map=MareWorld.maps[q.forcedMap],coverage=MareWorld.coverageFor(map),before={x:q.hero.x,y:q.hero.y},times=[];
@@ -28,7 +28,7 @@ source=source.replace('  window.__mareDiagnostics=',"  window.__boundsQA={paused
  const cache=await page.evaluate(()=>({dawn:MareDawnRenderer.stats(),ember:MareEmberRenderer.stats()}));assert(cache.dawn.chunks<=35);assert(cache.ember.chunks<=32);
  const cold=await browser.newPage({viewport:{width:1366,height:768}});let blockedRequests=0;
  await cold.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));
- await cold.route('**/assets/lobby-map.png*',async r=>{blockedRequests++;await new Promise(resolve=>setTimeout(resolve,1500));await r.fulfill({status:404,body:'fixture missing map'});});
+ await cold.route('**/assets/exported-maps/lobby/map.png*',async r=>{blockedRequests++;await new Promise(resolve=>setTimeout(resolve,1500));await r.fulfill({status:404,body:'fixture missing map'});});
  await cold.goto(process.env.MARE_TEST_URL,{waitUntil:'domcontentloaded'});await cold.waitForFunction(()=>!!window.__boundsQA);
  await cold.locator('#characterName').fill('Loading QA');await cold.locator('#nextToClass').click();await cold.locator('#nextToAppearance').click();await cold.locator('#createCharacter').click();await cold.locator('[data-confirm-accept]').click();await cold.waitForFunction(()=>!!__boundsQA.game);
  await cold.locator('#worldLoading').waitFor({state:'visible'});await cold.waitForFunction(()=>__boundsQA.state()==='failed');

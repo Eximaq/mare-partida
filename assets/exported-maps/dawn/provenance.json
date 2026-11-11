@@ -1,0 +1,15 @@
+{
+  "file": "Mapa_-_Ilha_Dawn-export.zip",
+  "sourceId": "7d0ac76f-c10e-4077-82ae-c25c19bc2335",
+  "origin": [
+    -1344,
+    -640
+  ],
+  "objects": 43,
+  "archiveSha256": "3680dcd9ec8ca4c2d1ef5d6a0a026c5c925c505fd53b4fb38343f4db0896f67d",
+  "compositeSha256": "fc250150bf1fcec37c0487680c70b393941261fa6730a4d490a0f91839fe428e",
+  "overlays": 0,
+  "blockedTerrainIds": [
+    1
+  ]
+}

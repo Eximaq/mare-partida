@@ -1,0 +1,15 @@
+{
+  "file": "Marineford-export.zip",
+  "sourceId": "25ef9349-33a5-4103-aea2-28dce9a8aae2",
+  "origin": [
+    -2048,
+    -2240
+  ],
+  "objects": 158,
+  "archiveSha256": "013df7a22b9ae869f55471e0344daff8b42f94debcbfd56499373879d51e9b5a",
+  "compositeSha256": "9d39a63faed3ec3c1c1b6fa5e65762496ab4011e5b013e61767339dc883351b2",
+  "overlays": 0,
+  "blockedTerrainIds": [
+    3
+  ]
+}

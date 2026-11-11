@@ -1,0 +1,15 @@
+{
+  "file": "Cidade_das_Conchas-export.zip",
+  "sourceId": "a12956e6-c961-499a-8242-ca264fcfc39a",
+  "origin": [
+    -1408,
+    -1152
+  ],
+  "objects": 127,
+  "archiveSha256": "277a6c18194abecc1c99d6980896f35d2a032903ac263907ee7d5570ce15b4f6",
+  "compositeSha256": "c8f001e3fa3950e489d3dfb3b2bc06fe51c8b0c8282f6c1fc77993d3f91d7b8a",
+  "overlays": 0,
+  "blockedTerrainIds": [
+    3
+  ]
+}

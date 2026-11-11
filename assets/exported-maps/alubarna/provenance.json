@@ -1,0 +1,18 @@
+{
+  "file": "Alubarna-export (1).zip",
+  "sourceId": "a6da583d-86dc-443e-becc-d5f2457e3bab",
+  "origin": [
+    -4544,
+    -3392
+  ],
+  "objects": 106,
+  "archiveSha256": "f0162b26fa5d84baab781d39305b89e394bff554d4a869ffd3307a5b6f777a68",
+  "compositeSha256": "061f44dc1062913211b9bc517b264f02f1c826eb9ac2186d77f52a80ff71780e",
+  "overlays": 0,
+  "blockedTerrainIds": [
+    2,
+    6,
+    10,
+    13
+  ]
+}

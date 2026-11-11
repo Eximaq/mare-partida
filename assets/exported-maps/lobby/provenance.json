@@ -1,0 +1,15 @@
+{
+  "file": "Lobby-export.zip",
+  "sourceId": "5cf16074-4d27-437e-acd5-869fe9339f26",
+  "origin": [
+    -1152,
+    -960
+  ],
+  "objects": 91,
+  "archiveSha256": "e93af8f3c1ca0bf989df1022e607fddc7fbbfa96f336de6e46ae7dc35811dce4",
+  "compositeSha256": "80025ef20501ea891c91ce4df14de78b2776a0d87fa8f7df1773fe9e2c00f241",
+  "overlays": 1,
+  "blockedTerrainIds": [
+    1
+  ]
+}

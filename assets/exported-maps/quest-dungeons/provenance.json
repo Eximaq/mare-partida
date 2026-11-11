@@ -1,0 +1,16 @@
+{
+  "file": "Quest_Dungeons-export (1).zip",
+  "sourceId": "8cf41b1c-df16-4a86-beb8-74ab6dc6d7f3",
+  "origin": [
+    -1024,
+    -1152
+  ],
+  "objects": 75,
+  "archiveSha256": "c3bb452f3675a45e289185fbc6bccd1f3e980521b832d2a2a19f6dc2b70d1161",
+  "compositeSha256": "c1a872f259ef5b529705667740dfa26d1cd301971dbc3fbf8aada108c8e721f2",
+  "overlays": 0,
+  "blockedTerrainIds": [
+    2,
+    4
+  ]
+}

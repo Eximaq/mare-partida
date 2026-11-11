@@ -62,6 +62,7 @@
   // Visual existence is independent of walking/physics. A '.' is absent only in
   // native terrain metadata; dark tiles, walls and water remain real content.
   if(globalThis.MareQuestDungeonWorld)maps['quest-dungeons']=MareQuestDungeonWorld.map;
+  globalThis.MareMapExports?.install(maps);
   class Coverage {
     constructor({rows=null,tile=64,x=0,y=0,width,height,version=1}={}){
       this.tile=tile;this.x=x;this.y=y;this.version=version;this.rows=rows;
