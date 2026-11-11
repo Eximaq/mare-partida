@@ -4,17 +4,52 @@
       "path": "clothing/female-pants168-182/female_168_north_fourview_EW41_SN4.zip",
       "bytes": 868925,
       "sha256": "d5269b476eed0c3becbbe3a1c87ab579e914d84f52e920f81b24bc15bd914d7c",
-      "pngCount": 12,
+      "pngEntries": 12,
       "productionEnabled": false
     },
     {
       "path": "clothing/female-pants168-182/female_168_south_fourview_EW41_SN4.zip",
       "bytes": 857395,
       "sha256": "b68f0465bc8bdc182488144b0dec754172fe804a9ff9b004d0ae9188eecd409a",
-      "pngCount": 10,
+      "pngEntries": 10,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_168_west_fourview_EW41_SN4.zip",
+      "bytes": 1069372,
+      "sha256": "586c5dfc489f2829459f38fdfe378cd64bffe7f42763731ec08e735d69e74ae3",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_182_east_fourview_EW38_SN3.zip",
+      "bytes": 1084767,
+      "sha256": "faadf72749c5e7e4d4333cf4bba8bd8b4985cdbd773fac45eddc0b0e642c5214",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_182_north_fourview_EW38_SN3.zip",
+      "bytes": 996447,
+      "sha256": "b5071960e3fbd1d1ced0c56a30f99818db94b6e336c5db42579a8f4631a056be",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_182_south_fourview_EW38_SN3.zip",
+      "bytes": 908007,
+      "sha256": "409574a13369274c0a4d332661b046f3abda9f3a715410833c08f64a1907ef02",
+      "pngEntries": 10,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_182_west_fourview_EW38_SN3.zip",
+      "bytes": 1083116,
+      "sha256": "1bf0f6423407efffbc83028e56db2c9bb40911fadc3880927d54b567f576e21c",
+      "pngEntries": 12,
       "productionEnabled": false
     }
   ],
   "productionEnabled": false,
-  "note": "Lote parcial preservado: somente NORTH/SOUTH da calça feminina168. Demais direções serão acrescentadas em lotes separados."
+  "note": "168 NORTH/SOUTH/WEST and 182 all four views. 168 EAST remains pending upload."
 }

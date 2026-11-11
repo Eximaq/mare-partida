@@ -1,0 +1,489 @@
+{
+  "packages": [
+    {
+      "path": "clothing/female-historical-cycles/female_133_east_stitched-r15.zip",
+      "bytes": 867597,
+      "sha256": "31b420774149b0f4e88e7e5829a5c563d25091d51ae1ad2b56cb57a6819f6b49",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-historical-cycles/female_133_west_stitched-r15.zip",
+      "bytes": 867942,
+      "sha256": "632b4371438be0c4e8a2148c7085f04b2a07a32a69eae5d35c5d0e18547a75e0",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-historical-cycles/female_161_east_stitched-r27.zip",
+      "bytes": 870258,
+      "sha256": "865f73260aa788a583b888bf304d0adbf29307a6e9f143829a7b02dc4513441e",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-historical-cycles/female_161_west_stitched-r27.zip",
+      "bytes": 871348,
+      "sha256": "ae940bc525f12c413be0ecd799da2646b5c856bf7144833323e9ac460371a1da",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-historical-cycles/female_21_east_stitched-r3.zip",
+      "bytes": 835950,
+      "sha256": "0bb81e26e86724a03963d321a143170143fe493f7afc828192fe1edeb78ebff9",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-historical-cycles/female_21_west_stitched-r3.zip",
+      "bytes": 837113,
+      "sha256": "2a61a3c5ff32febde2b67a10c51881353b68293149c159277cece619f478526f",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-historical-cycles/female_6_east_v42_source-pack.zip",
+      "bytes": 2092350,
+      "sha256": "bc356dab54e316549d8995ce1d53bf224ae480aa7ac61cadb2df6646a8c344f3",
+      "pngEntries": 169,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-historical-cycles/female_6_north_v24_source-pack.zip",
+      "bytes": 1518107,
+      "sha256": "d78de5feac98b70d1675ebb27a0ce91a77957e742182e2938e439fe4ebf03e23",
+      "pngEntries": 127,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-historical-cycles/female_6_south_v24_source-pack.zip",
+      "bytes": 1481311,
+      "sha256": "833b04e1faee34f986e3e67e6ab16bdcbf5a43ba98aa38378bd6877adb9c3ac3",
+      "pngEntries": 95,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-historical-cycles/female_6_west_v42_source-pack.zip",
+      "bytes": 2089144,
+      "sha256": "631bc0b3e90e301f418b2ed2c221ec1d6181ac3180926fb58fac98788eb3894c",
+      "pngEntries": 169,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_168_north_fourview_EW41_SN4.zip",
+      "bytes": 868925,
+      "sha256": "d5269b476eed0c3becbbe3a1c87ab579e914d84f52e920f81b24bc15bd914d7c",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_168_south_fourview_EW41_SN4.zip",
+      "bytes": 857395,
+      "sha256": "b68f0465bc8bdc182488144b0dec754172fe804a9ff9b004d0ae9188eecd409a",
+      "pngEntries": 10,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_168_west_fourview_EW41_SN4.zip",
+      "bytes": 1069372,
+      "sha256": "586c5dfc489f2829459f38fdfe378cd64bffe7f42763731ec08e735d69e74ae3",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_182_east_fourview_EW38_SN3.zip",
+      "bytes": 1084767,
+      "sha256": "faadf72749c5e7e4d4333cf4bba8bd8b4985cdbd773fac45eddc0b0e642c5214",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_182_north_fourview_EW38_SN3.zip",
+      "bytes": 996447,
+      "sha256": "b5071960e3fbd1d1ced0c56a30f99818db94b6e336c5db42579a8f4631a056be",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_182_south_fourview_EW38_SN3.zip",
+      "bytes": 908007,
+      "sha256": "409574a13369274c0a4d332661b046f3abda9f3a715410833c08f64a1907ef02",
+      "pngEntries": 10,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_182_west_fourview_EW38_SN3.zip",
+      "bytes": 1083116,
+      "sha256": "1bf0f6423407efffbc83028e56db2c9bb40911fadc3880927d54b567f576e21c",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-torso130-source/female_130_east_EW44_source-pack.zip",
+      "bytes": 1515300,
+      "sha256": "e1fbf3a5d11800665dcbe0d87e12eee0ca9733a3fefe5d4d678b2ab037acd7ee",
+      "pngEntries": 83,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-torso130-source/female_130_north_N39_source-pack.zip",
+      "bytes": 1148856,
+      "sha256": "43041c6682ece5fe6d4fbf014ef74b8d199eccc9b3df7d57f4d9ec243c8fafdb",
+      "pngEntries": 60,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-torso130-source/female_130_south_S36_source-pack.zip",
+      "bytes": 929135,
+      "sha256": "c5f6bc28df55939f8acffde98b305547fa1df979d6db6610777a2cbf1f50c1ff",
+      "pngEntries": 53,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-torso130-source/female_130_west_EW44_source-pack.zip",
+      "bytes": 1516831,
+      "sha256": "3cdf59c925ee087d73fc056f8550b7618bf34ba6f9cfb49ecdb767fe6250d2bd",
+      "pngEntries": 83,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-historical-cycles/male_133_east_equipped-r1.zip",
+      "bytes": 1210950,
+      "sha256": "f69e208afc678a48669dcbe622a5a7b3c94c741fe04fffd01a19bbc271883642",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-historical-cycles/male_133_north_equipped-r1.zip",
+      "bytes": 1436192,
+      "sha256": "f82330e824de7e1c362881ba882037854ed60facc8858dafb14038fa646902b5",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-historical-cycles/male_133_north_isolated-r2.zip",
+      "bytes": 1213469,
+      "sha256": "0cb9a3db4c57c1567209b08e158eef5800d77bf782e97bf0280ca0e554292a22",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-historical-cycles/male_133_south_equipped-r1.zip",
+      "bytes": 1605583,
+      "sha256": "e3b110c6752b9aeabf969aa66bc1e8bc131d125b623764b7d658def9c33226be",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-historical-cycles/male_133_south_isolated-r2.zip",
+      "bytes": 1304738,
+      "sha256": "d1fe197dcb2259059448268fcaa0e0f8bc92a9389cbb373e9b6d7b1464e2a173",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-historical-cycles/male_133_west_equipped-r1.zip",
+      "bytes": 1209836,
+      "sha256": "4dbf63a299b6d460bb465c8c404279b9426222119f262622b4a680580820d317",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-historical-cycles/male_147_east_visible-r1.zip",
+      "bytes": 1199704,
+      "sha256": "1dc7133a6739f89a51beebef980f2e46ca39ca764ef1ff8c809400ab29055676",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-historical-cycles/male_147_north_visible-r1.zip",
+      "bytes": 1424331,
+      "sha256": "670fbec2f9feb1c7e2b27af0b19f39f16aba11639b2a4260b037b378c8793838",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-historical-cycles/male_147_south_visible-r1.zip",
+      "bytes": 1605620,
+      "sha256": "a893da70cacdc1aa9cc33431bdd7369cc1f3d94e5e4d4d14e06610ab7fce4ddc",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-historical-cycles/male_147_west_visible-r1.zip",
+      "bytes": 1198941,
+      "sha256": "6a677d38464ed649efc4be17a4abb8f3ba57d70716b87b6dc3d8a25bf498e41b",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-pants-154/male_154_east_occlusion-r3.zip",
+      "bytes": 1202802,
+      "sha256": "43e55fae45f3147f4de0abfd33ae4350c7f15f776c52c96b8f91d8e807abc99b",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-pants-154/male_154_north_occlusion-r3.zip",
+      "bytes": 1452118,
+      "sha256": "317ab37a204a6c49db2f70fa97cb3fe21e2a94edda783744fd2b1e294a29c3e7",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-pants-154/male_154_south_occlusion-r3.zip",
+      "bytes": 1613338,
+      "sha256": "6d641b2ed52d70538505195708cddc08c3acf80ae33e24ad78fd4e73b0564551",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-pants-154/male_154_west_occlusion-r3.zip",
+      "bytes": 1201664,
+      "sha256": "9f2200b783a152704f346632efd737a2e9eda87e2c9ecdcd89d26facdc8addea",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-torso151/male_151_static_four-views_v1.zip",
+      "bytes": 291351,
+      "sha256": "1ef2f225fc298e6888947f89a4ac79523d09fc089e48a912c19de9ae9fd6a268",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-torsos-7-137-144/male_137_static_corrected_v1.zip",
+      "bytes": 302944,
+      "sha256": "534e01cc3cacc225cc2372cc352f8fb075ba2da7b2d341a9a102ae3e313ff2a8",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-torsos-7-137-144/male_144_static_corrected_v2.zip",
+      "bytes": 309748,
+      "sha256": "43eaa6614ab895fe8b3f0f078d19f01b02b5592a65b2b98b768c24fc28a5b2e1",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male-torsos-7-137-144/male_7_static_corrected_v2.zip",
+      "bytes": 261318,
+      "sha256": "26bdafccf46cc63a5034b5e5868eda817d3c0b33811912df7479b47187c2064c",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/pants147-and-headgear157/female_147_east_EW49_approved-fourview84.zip",
+      "bytes": 908558,
+      "sha256": "af1a932d62221262179915dca6929a87e2613a010106e4d9113dba567de2b3c6",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/pants147-and-headgear157/female_147_north_N9_approved-fourview84.zip",
+      "bytes": 786947,
+      "sha256": "2b1a9c71057b9d9be3a542abea27b1ce087594e797ebd34f28bf46de02b6b696",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/pants147-and-headgear157/female_147_south_S8_approved-fourview84.zip",
+      "bytes": 757977,
+      "sha256": "70dbd5be7bf92920535ce2201cccf61e6b013495bb5f2b5d7a53a3fe5ec9ead2",
+      "pngEntries": 10,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/pants147-and-headgear157/female_147_west_EW49_approved-fourview84.zip",
+      "bytes": 911589,
+      "sha256": "e8946ff16d1fa6a9c684275874393a0f988992ab712f25bd63cdbd6124224342",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/pants147-and-headgear157/female_157_north_static_own-art_v1.zip",
+      "bytes": 1710415,
+      "sha256": "206744d475676ed9d668e80689c4fa19fbd4c903fe82b19a714fc0429f7cff8a",
+      "pngEntries": 2,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/female_151_idle_north_v1.zip",
+      "bytes": 303918,
+      "sha256": "a806e2f1e524756fb547e2ace83a3b9d2e8c7d6e26c2cf1573ba7fae4c8ee2d2",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/female_151_idle_south_v1.zip",
+      "bytes": 340257,
+      "sha256": "f6452db5beeaac1a35aebf1963c428228fe11bdc00b4e0af1879a08c9a51f1a6",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/female_151_static_south-neck-only_v1.zip",
+      "bytes": 270959,
+      "sha256": "4fecc50e672b1f2184d558fc2357486e47a7a4ea50e7e2b1f0c3eb5ae5af3031",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/female_158_idle_south_v1.zip",
+      "bytes": 347635,
+      "sha256": "88bd9af91c6d9c889417eaa7b847ca8295f72d8b1b5e28b2b692db6ec37a62e1",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/female_158_static_south-neck-only_v1.zip",
+      "bytes": 283412,
+      "sha256": "381b87255d04ec2fd450fdcb2f352e38745c5c654bd121af4b550b702a938307",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/female_165_static_south-neck-only_v1.zip",
+      "bytes": 285669,
+      "sha256": "a54f10b75e70d4511727e0e6982db3deca74054cbf255977322bb83477274557",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/female_172_idle_south_v1.zip",
+      "bytes": 368695,
+      "sha256": "6860e1116b03cbe30e594b76595246ccbeece60177cb21e59b8e612571d4f7b6",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/female_172_static_south-neck-only_v1.zip",
+      "bytes": 291607,
+      "sha256": "8619d5fb097267ad6b1f77669393121bf211104ce07a917713131845ae97af59",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/female_179_idle_south_v1.zip",
+      "bytes": 382779,
+      "sha256": "770b6b1ec05ad533d8086d104d7f0dd4220590f2807275fd026ca472249034bb",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/female_179_static_south-neck-only_v1.zip",
+      "bytes": 297465,
+      "sha256": "c0af5c68047371f083a66d72194161d8cddfb288d9e71c0444dfe5d24ab0b8fe",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/male_158_static_four-views_v1.zip",
+      "bytes": 312489,
+      "sha256": "797ee318d8f0c52c2799e4c6db8ae961b20810cc48d5a04fe5cf29ab1c72d9c3",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/male_165_static_four-views_v1.zip",
+      "bytes": 313278,
+      "sha256": "ad299ef086093191df1ceda6eac5a2d0a0246cc0a956cc1914dd65837c8741e2",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/male_172_static_four-views_v1.zip",
+      "bytes": 319386,
+      "sha256": "3571d3962c0a52523259599437753365a891c95366dcc640424dd2e4e5c6e97c",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/static-and-idle-v1/male_179_static_four-views_v1.zip",
+      "bytes": 328143,
+      "sha256": "1ff0fd0cfd9cb58eff80989bb740404d149086ce9ae18ba1df9c3d5fd9029c1f",
+      "pngEntries": 4,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/walk-and-collar-history/male_172_south_collar-cuff-v2.zip",
+      "bytes": 1802709,
+      "sha256": "6e610416ca143c8b3138b5327c504975d6ef4f00972dc51701671c498aa71670",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/walk-and-collar-history/male_walk_south_16phases_r7.zip",
+      "bytes": 1110637,
+      "sha256": "75b0a2d87c38bdaa52b816defcc82aaa48b1ae2dad113e5d0c3fe1b3264c807c",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/117-south/male_117_south_full-return-v2.zip",
+      "bytes": 999707,
+      "sha256": "ccb86565b0ac79846396debe2ce83ddc7607ab467740032ec147820ca9b3d2c8",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/staff-north/male_staff121_north_v1.zip",
+      "bytes": 698597,
+      "sha256": "7a918e479a9b13b709696450159228542079d68b93f7b1dd00372bf55d2a644c",
+      "pngEntries": 9,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/staff-north/male_staff123_north_v1.zip",
+      "bytes": 693192,
+      "sha256": "734be77c44d78bdb535145d9f663ca925075e76483a9b111cbfdae2b41b40d13",
+      "pngEntries": 9,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/staff-north/male_staff124_north_v1.zip",
+      "bytes": 693037,
+      "sha256": "6910643b38e36f303815823b47943317e7e5b71d0f3784e9059d9cdcf40258b8",
+      "pngEntries": 9,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/staff-north/male_staff125_north_v1.zip",
+      "bytes": 933916,
+      "sha256": "eaabfb2cb2be709987e250017c710f27119dd7b717a1fac204ae2514c2aefeff",
+      "pngEntries": 9,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/staff-north/male_staff126_north_v1.zip",
+      "bytes": 1138397,
+      "sha256": "91bdb15a1f2d4e5fc110c37cb5fef0777b0784145a0149e3004d6339321aee78",
+      "pngEntries": 9,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/staff-north/male_staff127_north_v1.zip",
+      "bytes": 1028868,
+      "sha256": "8b01a3985b517d65b82e928ae7fc18e3b0ec5991b08fd3a10a534f0ddbc559b1",
+      "pngEntries": 9,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/staff-north/male_staff31_north_right-diagonal-v3.zip",
+      "bytes": 1027385,
+      "sha256": "ef520bb0cbcf96010d243c96e6a77e8771d6826b5d26b24c4ca3b6cfd23345de",
+      "pngEntries": 9,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/sword0-south/male_sword0_south_approved-cycle_presentation-v2.zip",
+      "bytes": 1101706,
+      "sha256": "9e95e9dcea550cadf43c3aa36bd12a6604d92c287a1058bf0d8c210baf8c5991",
+      "pngEntries": 9,
+      "productionEnabled": false
+    }
+  ],
+  "productionEnabled": false,
+  "note": "Source archive only. Static approvals do not imply animation approval. PNG entries include source layers where applicable."
+}
