@@ -5,19 +5,25 @@ const vm=require('node:vm');
 const path=require('node:path');
 const MarePixelWorldMaps=require('../pixellab-world-maps.js');
 
-const played=[], listeners={}, values=new Map();
+const audioKey='mare-partida-audio-v1',played=[],music=[],listeners={},values=new Map([
+  [audioKey,JSON.stringify({muted:true,volume:.37})]
+]);
 class Audio {
   constructor(src){this.src=src;this.paused=true;this.currentTime=0;}
-  play(){this.paused=false;played.push(this);return Promise.resolve();}
+  play(){this.paused=false;(this.loop?music:played).push(this);return Promise.resolve();}
   pause(){this.paused=true;}
 }
-const document={baseURI:'https://example.test/mare-partida/',body:{classList:{contains:()=>false}},
+const document={baseURI:'https://example.test/mare-partida/',body:{classList:{contains:name=>name==='scene-hunt'}},
   readyState:'complete',addEventListener:(name,cb)=>{listeners[name]=cb;},dispatchEvent(){}};
 const context={MarePixelWorldMaps,Audio,URL,document,MutationObserver:class{observe(){}},CustomEvent:class{},
   localStorage:{getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value)},
   cancelAnimationFrame(){},requestAnimationFrame(){},performance:{now:()=>0}};
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../audio-system.js'),'utf8'),context);
 const audio=context.MareAudio;
+assert.equal(audio.getState().volume,.37,'Keep the existing music volume');
+assert.equal(audio.getState().muted,true,'Keep existing music mute');
+assert.equal(audio.getState().effectsMuted,false,'A music mute must not migrate into effects');
+assert.ok(audio.getState().effectsVolume>.37,'Effects start at their own audible volume');
 assert.equal(typeof audio.playOrange,'function','Orange Town needs its own effects channel');
 assert.equal(typeof audio.walkOrange,'function','Orange Town footsteps need to follow actual gait contacts');
 const filename=entry=>new URL(entry.src).pathname.split('/').at(-1);
@@ -30,12 +36,24 @@ for(const cue of ['espada-corte','espada-acerto','magia-fogo','supa-espiral-cort
   audio.playOrange('orange',cue);
   assert.equal(filename(played.at(-1)),cue+'.ogg');
 }
-audio.setMuted(true);
+assert.equal(music.length,0,'Muted music did not start during effects playback');
+audio.setEffectsMuted(true);
 assert.ok(played.every(clip=>clip.paused),'Mute stops active effects immediately');
 const beforeMute=played.length;
 audio.playOrange('orange','espada-corte');
 assert.equal(played.length,beforeMute);
-audio.setVolume(.55);
+audio.setVolume(.31);
+assert.ok(music.length>0,'Music can be restored while effects are muted');
+audio.playOrange('orange','espada-corte');
+assert.equal(played.length,beforeMute,'A music volume change does not unmute effects');
+audio.setEffectsVolume(.55);
+assert.equal(audio.getState().volume,.31);
+assert.equal(audio.getState().muted,false);
+audio.setMuted(true);
+assert.equal(audio.getState().effectsMuted,false);
+assert.equal(audio.getState().effectsVolume,.55);
+const saved=JSON.parse(values.get(audioKey));
+assert.deepEqual(saved,{muted:true,volume:.31,effectsMuted:false,effectsVolume:.55});
 document.hidden=true;
 audio.playOrange('orange','espada-corte');
 assert.equal(played.length,beforeMute,'Background tabs should be silent');
@@ -60,6 +78,12 @@ for(const [col,row,surface] of [[26,15,'cimento'],[24,11,'areia'],[32,11,'grama'
   }
 }
 const beforeExit=played.length;
+audio.setEffectsVolume(0);
+audio.playOrange('orange','espada-corte');
+assert.equal(played.length,beforeExit,'Effects slider at zero is silent');
+audio.setEffectsMuted(false);
+assert.ok(audio.getState().effectsVolume>0,'Enabling effects at zero restores an audible level');
+assert.equal(audio.getState().muted,true);
 audio.walkOrange('lobby',{x:0,y:0},{x:40,y:0},{moving:true,distance:20,stepDistance:4});
 assert.equal(played.length,beforeExit);
 assert.ok(played.every(clip=>clip.paused),'Leaving Orange Town stops active effects');

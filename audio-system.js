@@ -4,10 +4,14 @@
   'use strict';
   const KEY='mare-partida-audio-v1';
   const SOURCES={lobby:'assets/audio/porto-das-correntes.mp3',hunt:'assets/audio/trilha-cacada.mp3'};
-  let settings={muted:false,volume:0.30};
+  const MUSIC_DEFAULT=.30,EFFECTS_DEFAULT=.75;
+  const settings={muted:false,volume:MUSIC_DEFAULT,effectsMuted:false,effectsVolume:EFFECTS_DEFAULT};
+  const clampVolume=value=>Math.max(0,Math.min(1,value));
   try{const p=JSON.parse(localStorage.getItem(KEY)||'null');if(p&&typeof p==='object'){
     settings.muted=p.muted===true;
-    if(Number.isFinite(p.volume))settings.volume=Math.max(0,Math.min(1,p.volume));
+    if(Number.isFinite(p.volume))settings.volume=clampVolume(p.volume);
+    settings.effectsMuted=p.effectsMuted===true;
+    if(Number.isFinite(p.effectsVolume))settings.effectsVolume=clampVolume(p.effectsVolume);
   }}catch(_){}
   const tracks=Object.fromEntries(Object.entries(SOURCES).map(([id,path])=>{
     const audio=new Audio(new URL(path,document.baseURI).href);audio.loop=true;audio.preload='none';audio.volume=0;return[id,audio];
@@ -29,7 +33,7 @@
   }
   const orangeClips=new Map(),orangeVariants=new Map();
   let orangeActive=false;
-  const mayPlayOrange=()=>unlocked&&!settings.muted&&settings.volume>0&&!document.hidden;
+  const mayPlayOrange=()=>unlocked&&!settings.effectsMuted&&settings.effectsVolume>0&&!document.hidden;
   function stopOrange(){
     for(const audio of orangeClips.values())if(!audio.paused)audio.pause();
   }
@@ -44,13 +48,13 @@
   function playOrange(mapId,cue){
     if(mapId!=='orange'||!mayPlayOrange()||!orangeCues.has(cue))return;
     const audio=orangeClip(cue);
-    audio.volume=settings.volume*orangeCues.get(cue);
+    audio.volume=settings.effectsVolume*orangeCues.get(cue);
     audio.currentTime=0;
     void audio.play().catch(()=>{});
   }
   function walkOrange(mapId,from,to,gait){
     const active=mapId==='orange';
-    if(active!==orangeActive){orangeActive=active;applyVolume();if(!active)stopOrange();}
+    if(active!==orangeActive){orangeActive=active;applyMusicVolume();if(!active)stopOrange();}
     if(!active)return;
     if(!mayPlayOrange())return;
     // Prime the small bank on arrival so the first attack needn't wait for a download.
@@ -76,38 +80,57 @@
   }
   function emit(){document.dispatchEvent(new CustomEvent('mare-audio-change',{detail:getState()}));}
   function persist(){try{localStorage.setItem(KEY,JSON.stringify(settings));}catch(_){}emit();}
-  function applyVolume(){
-    for(const id of Object.keys(tracks))tracks[id].volume=Math.max(0,Math.min(1,gains[id]*settings.volume*(id==='hunt'&&orangeActive ? .35 : 1)));
-    for(const [cue,audio] of orangeClips)if(!audio.paused)audio.volume=settings.volume*orangeCues.get(cue);
+  function applyMusicVolume(){
+    for(const id of Object.keys(tracks))tracks[id].volume=settings.muted?0:clampVolume(gains[id]*settings.volume*(id==='hunt'&&orangeActive ? .35 : 1));
+  }
+  function syncEffects(){
+    if(!mayPlayOrange()){stopOrange();return;}
+    for(const [cue,audio] of orangeClips)if(!audio.paused)audio.volume=settings.effectsVolume*orangeCues.get(cue);
   }
   function transition(){
-    if(scene()!=='hunt')orangeActive=false;
-    if(!mayPlayOrange()||scene()!=='hunt')stopOrange();
-    const target=unlocked&&!settings.muted&&settings.volume>0&&!document.hidden?scene():null;
-    if(target===current&&(!target||!tracks[target].paused)){applyVolume();return;}
+    const area=scene();
+    if(area!=='hunt'){orangeActive=false;stopOrange();}
+    else syncEffects();
+    const target=unlocked&&!settings.muted&&settings.volume>0&&!document.hidden?area:null;
+    if(target===current&&(!target||!tracks[target].paused)){applyMusicVolume();return;}
     current=target;fadeId++;cancelAnimationFrame(fadeFrame);
     const token=fadeId,initial={...gains};
-    if(target)tracks[target].play().catch(()=>{if(token===fadeId){unlocked=false;current=null;transition();}});
+    if(target)tracks[target].play().catch(()=>{if(token===fadeId)current=null;});
     const start=performance.now();
     function step(now){
       if(token!==fadeId)return;
       const t=Math.min(1,(now-start)/750);
       for(const id of Object.keys(tracks))gains[id]=initial[id]+((target===id?1:0)-initial[id])*t;
-      applyVolume();
+      applyMusicVolume();
       if(t<1)fadeFrame=requestAnimationFrame(step);
       else for(const id of Object.keys(tracks))if(id!==target)tracks[id].pause();
     }
     fadeFrame=requestAnimationFrame(step);
   }
   function unlock(){if(!unlocked)unlocked=true;transition();}
-  function setMuted(v){settings.muted=Boolean(v);persist();transition();return getState();}
+  function setMuted(v){
+    settings.muted=Boolean(v);
+    if(!settings.muted&&settings.volume===0)settings.volume=MUSIC_DEFAULT;
+    persist();transition();applyMusicVolume();return getState();
+  }
   function setVolume(v){
     const amount=Number(v);if(!Number.isFinite(amount))return getState();
-    settings.volume=Math.max(0,Math.min(1,amount));
+    settings.volume=clampVolume(amount);
     settings.muted=settings.volume===0;
-    persist();transition();applyVolume();return getState();
+    persist();transition();applyMusicVolume();return getState();
   }
-  function getState(){return{scene:scene(),muted:settings.muted,volume:settings.volume,unlocked,track:current};}
+  function setEffectsMuted(v){
+    settings.effectsMuted=Boolean(v);
+    if(!settings.effectsMuted&&settings.effectsVolume===0)settings.effectsVolume=EFFECTS_DEFAULT;
+    persist();syncEffects();return getState();
+  }
+  function setEffectsVolume(v){
+    const amount=Number(v);if(!Number.isFinite(amount))return getState();
+    settings.effectsVolume=clampVolume(amount);
+    settings.effectsMuted=settings.effectsVolume===0;
+    persist();syncEffects();return getState();
+  }
+  function getState(){return{scene:scene(),...settings,unlocked,track:current};}
   function init(){
     document.addEventListener('pointerdown',unlock,{capture:true});
     document.addEventListener('keydown',unlock,{capture:true});
@@ -115,7 +138,7 @@
     new MutationObserver(transition).observe(document.body,{attributes:true,attributeFilter:['class']});
     transition();
   }
-  globalThis.MareAudio=Object.freeze({getState,setMuted,setVolume,playOrange,walkOrange});
+  globalThis.MareAudio=Object.freeze({getState,setMuted,setVolume,setEffectsMuted,setEffectsVolume,playOrange,walkOrange});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 })();
