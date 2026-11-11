@@ -19,8 +19,17 @@ test('indexed and original navigation produce identical battle state under deter
  }
 });
 
+
+function legacyDawnNavigation(){
+ const {indexedNavigation}=require('../../server-navigation.cjs');
+ const {map}=require('../../dawn-world.js');
+ const {mask}=require('../../dawn-map-data.js');
+ const Base=world.originalNavigation('lobby').constructor,cell=map.navigationCell||24;
+ return {fast:indexedNavigation(Base,map,cell,10,{terrainMask:mask}),original:new Base(map,cell)};
+}
+
 test('isolated patrol endpoint is rejected without searching the entire reachable map on each substep',()=>{
- const nav=world.navigation('dawn'),start={x:1488,y:1648},end={x:1509.7901182151293,y:1594.6806719081092};
+ const nav=legacyDawnNavigation().fast,start={x:1488,y:1648},end={x:1509.7901182151293,y:1594.6806719081092};
  let calls=0;const clear=nav.clear;nav.clear=function(...args:any[]){calls++;return clear.apply(this,args);};
  try{assert.equal(nav.path(start,end).length,0);assert(calls<=12,'unreachable final edge must be detected locally; checks='+calls);}finally{nav.clear=clear;}
 });
@@ -49,7 +58,7 @@ test('open static mask regions avoid repeated terrain sampling without changing 
 });
 
 test('negative grid-boundary segments retain the original exact mask traversal decision',()=>{
- const fast=world.navigation('dawn'),original=world.originalNavigation('dawn');
+ const {fast,original}=legacyDawnNavigation();
  const a={x:1488,y:1648},b={x:1496,y:1640};
  assert.equal(original.clear(a,b),false);assert.equal(fast.clear(a,b),false);
  assert.equal(JSON.stringify(fast.path(a,b)),JSON.stringify(original.path(a,b)));

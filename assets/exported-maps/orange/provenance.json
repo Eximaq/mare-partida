@@ -1,0 +1,15 @@
+{
+  "file": "Orange_Town-export.zip",
+  "sourceId": "1e54e217-5ae7-48ed-aa9e-43bbb58b88b6",
+  "origin": [
+    -960,
+    -1216
+  ],
+  "objects": 42,
+  "archiveSha256": "2b32d8e0be131521b5a349feafcde077a0c55f096655bd3ba1a5af9faa415ec3",
+  "compositeSha256": "058af802e98d3dbbbec2b914fa463ac16609009330ada1584ee8b7b82c79dff5",
+  "overlays": 1,
+  "blockedTerrainIds": [
+    3
+  ]
+}

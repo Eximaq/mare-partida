@@ -22,7 +22,7 @@ test('a small map gets finite cropping rather than moving the player or inventin
  camera.update(hero,map,.016,true);assert(camera.masked);assert.deepEqual(hero,{x:64,y:64});const p=camera.worldToScreen(hero.x,hero.y);assert.equal(p.x,750);assert.equal(p.y,450);assert.equal(camera.fitZoom(map,1500,900,.8),1.8);
 });
 test('all registered maps use their native coverage, with finite caches and bounded edge searches',()=>{
- assert.equal(Object.keys(maps).length,20);
+ assert.equal(Object.keys(maps).length,21);
  for(const [id,map]of Object.entries(maps)){
   const camera=new Camera(),coverage=coverageFor(map);assert(coverage.exists(map.spawn.x,map.spawn.y),id+' spawn has visual content');
   for(const [sw,sh]of [[360,800],[960,570],[1920,1080],[3440,1440]])for(const zoom of [.8,1,1.8]){

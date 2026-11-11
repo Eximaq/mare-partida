@@ -9,7 +9,7 @@ import {authDatabase} from './auth-support.mjs';
 import {applyMigrations} from '../../apps/game-server/src/db/migrations.js';
 const require=createRequire(import.meta.url),E=require('../../world-battle.cjs');
 const historicalTarget='b672ad6a2dc8d1b947514a51985552813cbf96dc2b40fad2935275ef3d81a977';
-const migration='0053_fruit_rework_compatibility.sql';
+const migration='0054_fruit_rework_compatibility.sql';
 const privateHash='d28ab5e53df81f190558b406a873618e6848955d0e53b92edc395d254e9c114d';
 const publicHash='c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b';
 

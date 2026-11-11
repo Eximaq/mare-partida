@@ -5,9 +5,18 @@
  const city=root.MareAlubarna||(typeof module!=='undefined'?require('./alubarna-world.js'):null);
  if(city)for(const [id,w]of Object.entries(city.worlds))plans[id]=w.slots;
  const sky=root.MareSkypiea||(typeof module!=='undefined'?require('./skypiea-world.js'):null);if(sky)plans['skypiea-01']=sky.slots;
- for(const list of Object.values(plans)){list.forEach(Object.freeze);Object.freeze(list);}Object.freeze(plans);
  const characters=root.MareCharacters||(typeof module!=='undefined'?require('./character-system.js'):null);
  const RESPAWN_MS=30000/characters.monsterBalance.respawnSpeed;
+ const mapExports=root.MareMapExports||(typeof module!=='undefined'?require('./world-map-exports.js'):null);
+ for(const [area,slots] of Object.entries(plans)){
+  const moved=mapExports?.get(area)?.slots;
+  if(!moved)continue;
+  plans[area]=slots.map(slot=>{
+   const sharedId=area.startsWith('alubarna-')?slot.id.replace(area,'alubarna-01'):slot.id;
+   return moved[sharedId]?{...slot,...moved[sharedId]}:slot;
+  });
+ }
+ for(const list of Object.values(plans)){list.forEach(Object.freeze);Object.freeze(list);}Object.freeze(plans);
  const slots=area=>plans[area]||[];
  const ready=(area,mobs,deadlines,now,boss=false)=>slots(area).filter(s=>!!s.boss===boss&&!mobs.some(m=>m.alive&&m.spawnId===s.id)&&now>=(deadlines?.[s.id]||0));
  function hurt(m){m.engaged=true;m.returning=false;return true;}

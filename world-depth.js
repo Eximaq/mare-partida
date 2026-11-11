@@ -2,13 +2,15 @@
 /* Depth metadata and original-pixel overlays for flattened owner maps. */
 ((root)=>{
  const assetBase=typeof document!=='undefined'?document.currentScript?.src:null;
- const cache=new Map(),images=new Map(),overlays=new Map();let mask=null,cover=null;
+ const cache=new Map(),images=new Map(),overlays=new Map(),loadStates=new Map();let mask=null,cover=null;
  function prepare(items){if(typeof Image!=='function')return;for(const id of new Set(items.filter(p=>p.type!=='pixel'||p.mapId!=='conchas').map(p=>p.assetId).filter(Boolean)))if(!images.has(id)){const im=new Image();const file='assets/map-depth/objects/'+id+'.png';im.src=assetBase?new URL(file,assetBase).href:file;images.set(id,im);}}
  const ready=()=>[...images.values()].every(im=>im.complete&&im.naturalWidth>0);
  function maskedOverlay(p,source){const im=images.get(p.assetId);if(!im?.complete||!im.naturalWidth)return null;if(overlays.has(p))return overlays.get(p);const canvas=document.createElement('canvas');canvas.width=Math.ceil(p.w);canvas.height=Math.ceil(p.h);const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.drawImage(source,p.x,p.y,p.w,p.h,0,0,p.w,p.h);c.globalCompositeOperation='destination-in';c.drawImage(im,0,0,p.w,p.h);overlays.set(p,canvas);if(overlays.size>64)overlays.delete(overlays.keys().next().value);return canvas;}
 
  function regions(id){if(cache.has(id))return cache.get(id);let items=[];
-  if(id==='skypiea-01'&&root.MareSkypiea)items=root.MareSkypiea.props.filter(p=>!p.cloud).map(p=>({...p,type:'sky',tall:p.h>96}));
+  const imported=root.MareMapExports?.get(id);
+  if(imported)items=imported.props.map(p=>({...p,type:'export',mapId:id,tall:p.h>56}));
+  else if(id==='skypiea-01'&&root.MareSkypiea)items=root.MareSkypiea.props.filter(p=>!p.cloud).map(p=>({...p,type:'sky',tall:p.h>96}));
   else if(id==='lobby'&&root.MareLobby){items=root.MareLobby.depthObjects.map(p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,base:p.pivotY,tall:p.h>72,type:'lobby',assetId:p.assetId}));}
   else if(root.MareAlubarna?.worlds[id])items=root.MareAlubarna.props.filter(p=>p.h>40).map(p=>({...p,tall:p.h>96,type:'alubarna'}));
   else if(id==='alabasta'&&root.MareAlabasta)items=root.MareAlabasta.props.filter(p=>p.h>40).map(p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,base:p.base,tall:p.h>96,type:'alabasta',assetId:p.assetId}));
@@ -21,9 +23,9 @@
  function draw(ctx,p,actors){if(p.type==='sky'){if(actors.some(a=>root.MareWorld.occluded(a,[{...p,tall:true}],a.visualHeight||120,a.visualWidth||64)))root.MareSkypiea.drawProp(ctx,p);return true;}if(!actors.some(a=>root.MareWorld.occluded(a,[{...p,tall:true}],a.visualHeight||120,a.visualWidth||64)))return false;
   if(p.type==='dawn'){root.MareDawnRenderer.prop(ctx,p.prop,actors);return true;}
   if(p.type==='ember'){root.MareEmberRenderer.prop(ctx,p.prop);return true;}
-  const image=p.type==='alubarna'?root.MareAlubarna.image:p.type==='alabasta'?root.MareAlabasta.image:p.type==='lobby'?root.MareLobby.image:p.type==='pixel'?root.MarePixelWorldMaps.imageCache[p.mapId==='conchas'?'conchasForeground':p.mapId]:root.MareNewIslands.images[p.mapId];
+  const image=p.type==='export'?root.MareMapExports.prepare(p.mapId):p.type==='alubarna'?root.MareAlubarna.image:p.type==='alabasta'?root.MareAlabasta.image:p.type==='lobby'?root.MareLobby.image:p.type==='pixel'?root.MarePixelWorldMaps.imageCache[p.mapId==='conchas'?'conchasForeground':p.mapId]:root.MareNewIslands.images[p.mapId];
   if(!image?.complete||!image.naturalWidth)return false;
-  if(p.mapId!=='conchas'){const overlay=maskedOverlay(p,image);if(!overlay)return false;ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(overlay,p.x,p.y);ctx.restore();return true;}
+  if(p.type==='export'||p.mapId!=='conchas'){const overlay=maskedOverlay(p,image);if(!overlay)return false;ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(overlay,p.x,p.y);ctx.restore();return true;}
   ctx.save();ctx.imageSmoothingEnabled=false;ctx.beginPath();
   if(p.tree)ctx.ellipse(p.x+p.w/2,p.y+p.h/2,p.w/2,p.h/2,0,0,Math.PI*2);
   else ctx.rect(p.x,p.y,p.w,p.h);
@@ -35,5 +37,13 @@
   if(occluders){cover ||= document.createElement('canvas');if(cover.width!==w||cover.height!==h){cover.width=w;cover.height=h;}const o=cover.getContext('2d');o.clearRect(0,0,w,h);o.save();o.translate(-left,-top);for(const p of occluders)draw(o,p,[{...actor,visualHeight:height,visualWidth:width}]);o.restore();c.save();c.globalCompositeOperation='destination-in';c.drawImage(cover,0,0);c.restore();}
   ctx.save();ctx.globalAlpha*=alpha;ctx.imageSmoothingEnabled=false;ctx.drawImage(mask,left,top);ctx.restore();return true;
  }
- root.MareWorldDepth={regions,draw,silhouette,ready};if(typeof module!=='undefined')module.exports=root.MareWorldDepth;
+ function state(id){
+  const previous=loadStates.get(id);
+  if(typeof previous==='string')return previous;
+  const assets=previous||regions(id).map(p=>images.get(p.assetId)).filter(Boolean);
+  const result=assets.some(im=>im.complete&&!im.naturalWidth)?'failed':assets.every(im=>im.complete)?'ready':'loading';
+  loadStates.set(id,result==='loading'?assets:result);
+  return result;
+ }
+ root.MareWorldDepth={regions,draw,silhouette,ready,state};if(typeof module!=='undefined')module.exports=root.MareWorldDepth;
 })(globalThis);

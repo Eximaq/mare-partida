@@ -9,9 +9,9 @@ import {applyMigrations,isDatabaseReady} from '../../apps/game-server/src/db/mig
 
 const source=new URL('../../apps/game-server/migrations/',import.meta.url);
 const legacy='0040_detach_claimed_dungeon_members.sql';
-const current='0052_detach_claimed_dungeon_members.sql';
-const rework='0053_fruit_rework_compatibility.sql';
-const progression=['0050_character_xp_curve.sql','0051_bounty_victories.sql'];
+const current='0053_detach_claimed_dungeon_members.sql';
+const rework='0054_fruit_rework_compatibility.sql';
+const progression=['0050_character_xp_curve.sql','0051_bounty_victories.sql','0052_world_map_exports.sql'];
 
 async function installedHistory(){
  const dir=await history('main');
@@ -24,7 +24,7 @@ test('installed private 75ffa2e history accepts public progression without chang
  const dir=await installedHistory();
  await authDatabase(async f=>{
   const session=await f.service.login(randomUUID()+'@example.invalid','fixture');
-  const character=await f.service.createCharacter(session.token,{name:'Progressão',classId:'sword',factionId:'pirate'});
+  const character=await f.service.createCharacter(session.token,{name:'ProgressÃ£o',classId:'sword',factionId:'pirate'});
   const lease=await f.service.acquireControl(session.token,character.id);
   const initial=await f.service.characterState(session.token,character.id);
   await f.service.command(session.token,character.id,{action:'items.initialize',payload:{},expectedVersion:initial.version,requestId:randomUUID(),control:{epoch:lease.epoch,token:lease.token}});
@@ -37,7 +37,7 @@ test('installed private 75ffa2e history accepts public progression without chang
   for(const row of before)assert.deepEqual((await f.pool.query('SELECT * FROM mare_meta.schema_migrations WHERE name=$1',[row.name])).rows,[row]);
   assert.equal(await isDatabaseReady(f.pool),true);
   assert.deepEqual(await applyMigrations(f.pool),[]);
-  assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_meta.schema_migrations')).rows[0].n,53);
+  assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_meta.schema_migrations')).rows[0].n,54);
   const state=await f.service.characterState(session.token,character.id);
   assert.equal(state.level,3);assert.equal(state.experience,'120');assert.equal(state.gold,'73');assert.equal(state.version,version+1);
   assert.equal((await f.pool.query('SELECT level_start_experience::text start FROM mare_game.character_progression WHERE character_id=$1',[character.id])).rows[0].start,'71');
@@ -88,13 +88,13 @@ test('the private 0040 repair upgrades to current social schema without rewritin
   const before=(await f.pool.query('SELECT * FROM mare_meta.schema_migrations ORDER BY name')).rows;
   assert.equal(before.length,40);
   const added=await applyMigrations(f.pool);
-  assert.equal(added.length,13);
+  assert.equal(added.length,14);
   assert.equal(added[0],'0040_daily_contracts.sql');
   assert.equal(added.at(-1),rework);
   for(const row of before)assert.deepEqual((await f.pool.query('SELECT * FROM mare_meta.schema_migrations WHERE name=$1',[row.name])).rows,[row]);
   assert.equal(await isDatabaseReady(f.pool),true);
   assert.deepEqual(await applyMigrations(f.pool),[]);
-  assert.equal((await f.pool.query("SELECT count(*)::int n FROM mare_meta.schema_migrations")).rows[0].n,53);
+  assert.equal((await f.pool.query("SELECT count(*)::int n FROM mare_meta.schema_migrations")).rows[0].n,54);
   assert((await f.pool.query("SELECT to_regclass('mare_game.contract_daily_cycles') present")).rows[0].present);
  },dir);
 });
@@ -163,5 +163,20 @@ test('the installed 0049 private repair upgrades wallet rules without rewriting 
   assert.deepEqual(await applyMigrations(f.pool),['0049_market_wallet_grants.sql',...progression,rework]);
   for(const row of before)assert.deepEqual((await f.pool.query('SELECT * FROM mare_meta.schema_migrations WHERE name=$1',[row.name])).rows,[row]);
   assert.equal(await isDatabaseReady(f.pool),true);assert.deepEqual(await applyMigrations(f.pool),[]);
+ },dir);
+});
+
+
+test('the previous 53-migration private installation adds the public maps once',async()=>{
+ const dir=await history('main');
+ for(const name of progression.slice(0,2))await copyFile(new URL(name,source),join(dir,name));
+ await copyFile(new URL(current,source),join(dir,'0052_detach_claimed_dungeon_members.sql'));
+ await copyFile(new URL(rework,source),join(dir,'0053_fruit_rework_compatibility.sql'));
+ await authDatabase(async f=>{
+  const before=(await f.pool.query('SELECT * FROM mare_meta.schema_migrations ORDER BY name')).rows;
+  assert.deepEqual(await applyMigrations(f.pool),['0052_world_map_exports.sql']);
+  for(const row of before)assert.deepEqual((await f.pool.query('SELECT * FROM mare_meta.schema_migrations WHERE name=$1',[row.name])).rows,[row]);
+  assert.equal(await isDatabaseReady(f.pool),true);
+  assert.deepEqual(await applyMigrations(f.pool),[]);
  },dir);
 });

@@ -2,7 +2,8 @@
 // Audits the actual runtime maps. JSON/Tiled cleanup always writes to a separate output.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const ROOT=path.resolve(__dirname,'..');
-const MAP_SCRIPTS=['island-world.js','lobby-map-data.js','lobby-world.js','impel-down-world.js','alabasta-map-data.js','alabasta-world.js', 'alubarna-map-data.js', 'alubarna-world.js','ember-world.js','orange-world.js','conchas-world.js','dawn-map-data.js','dawn-world.js','rare-world.js','new-islands-data.js','new-islands-objects.js','new-islands.js','pixellab-world-maps-data.js','conchas-pixellab-data.js','conchas-structures.js','pixellab-world-maps.js','quest-dungeons-data.js','quest-dungeons-world.js','skypiea-map-data.js','skypiea-world.js','world-system.js'];
+const {indexedNavigation}=require('../server-navigation.cjs');
+const MAP_SCRIPTS=['island-world.js','lobby-map-data.js','lobby-world.js','impel-down-world.js','alabasta-map-data.js','alabasta-world.js', 'alubarna-map-data.js', 'alubarna-world.js','ember-world.js','orange-world.js','conchas-world.js','dawn-map-data.js','dawn-world.js','rare-world.js','new-islands-data.js','new-islands-objects.js','new-islands.js','pixellab-world-maps-data.js','conchas-pixellab-data.js','conchas-structures.js','pixellab-world-maps.js','quest-dungeons-data.js','quest-dungeons-world.js','skypiea-map-data.js','skypiea-world.js','world-map-exports-data.js','world-map-exports.js','world-system.js'];
 function loadMaps(){const context=vm.createContext({console,atob});for(const file of MAP_SCRIPTS)vm.runInContext(fs.readFileSync(path.join(ROOT,file),'utf8'),context,{filename:file});return context;}
 function sanitizeDocument(input){
  const document=structuredClone(input),issues=[];
@@ -19,13 +20,18 @@ function sanitizeDocument(input){
  };walk(document);return {document,issues};
 }
 function auditMaps({full=false,mapId=null}={}){
- const ctx=loadMaps(),{maps,Navigation,cleanColliders}=ctx.MareWorld,results=[];
+ const ctx=loadMaps(),{maps,Navigation,cleanColliders}=ctx.MareWorld,results=[],navigation=new Map();
  for(const [id,map]of Object.entries(maps)){
   if(mapId&&id!==mapId)continue;
   const before=map.colliders.length,clean=cleanColliders(map.colliders),invalid=map.colliders.filter(o=>!o||![o.x,o.y,o.w,o.h].every(Number.isFinite)||o.w<=0||o.h<=0).length;
-  const nav=new Navigation(map,map.navigationCell||24),world=ctx.MarePixelWorldMaps?.[id]||ctx.MareNewIslands?.[id];
-  const goals=[...(map.navigationGoals||world?.districts||[]),...(map.interactions||[]),...(world?.returnPoint?[world.returnPoint]:[]),...(id==='lobby'?Object.values(ctx.MareLobby.npcs):[])];
-  const routes=[];for(const goal of goals){for(const [a,b]of [[map.spawn,goal],[goal,map.spawn]]){const route=nav.path(a,b),actor={...a};let ticks=0;while(route.length&&ticks++<10000)nav.follow(actor,route,180,.1);routes.push({goal:goal.id||'service',ok:ticks<10000&&Math.hypot(actor.x-b.x,actor.y-b.y)<1,steps:ticks});}}
+  const imported=ctx.MareMapExports.get(id),geometry=imported||map;
+  if(!navigation.has(geometry))navigation.set(geometry,indexedNavigation(Navigation,map,map.navigationCell||24));
+  const nav=navigation.get(geometry),world=ctx.MarePixelWorldMaps?.[id]||ctx.MareNewIslands?.[id];
+  const goals=[...(map.navigationGoals||world?.districts||[]),...(map.interactions||[]),
+   ...(imported?[...imported.districts,...Object.entries(imported.slots||{}).map(([id,p])=>({id,...p}))]:world?.returnPoint?[world.returnPoint]:[]),
+   ...(id==='lobby'?Object.entries(ctx.MareLobby.npcs).map(([id,p])=>({id,...p})):[])];
+  const uniqueGoals=[...new Map(goals.map(goal=>[goal.x+':'+goal.y,goal])).values()];
+  const routes=[];for(const goal of uniqueGoals){for(const [a,b]of [[map.spawn,goal],[goal,map.spawn]]){const route=nav.path(a,b),actor={...a};let ticks=0;while(route.length&&ticks++<10000)nav.follow(actor,route,180,.1);routes.push({goal:goal.id||'service',ok:ticks<10000&&Math.hypot(actor.x-b.x,actor.y-b.y)<1,steps:ticks});}}
   let overlaps=0;for(let i=0;i<clean.length;i++)for(let j=i+1;j<clean.length;j++){const a=clean[i],b=clean[j];if(a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y)overlaps++;}
   let components=null;if(full){const seen=new Uint8Array(nav.grid.length),sizes=[];for(let seed=0;seed<seen.length;seed++){if(seen[seed]||!nav.grid[seed])continue;const queue=[seed];seen[seed]=1;for(let n=0;n<queue.length;n++){const k=queue[n],x=k%nav.cols,y=Math.floor(k/nav.cols);for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]]){const nx=x+dx,ny=y+dy,ni=ny*nav.cols+nx;if(nx<0||ny<0||nx>=nav.cols||ny>=nav.rows||seen[ni]||!nav.grid[ni])continue;if(!nav.clear({x:(x+.5)*nav.cell,y:(y+.5)*nav.cell},{x:(nx+.5)*nav.cell,y:(ny+.5)*nav.cell}))continue;seen[ni]=1;queue.push(ni);}}sizes.push(queue.length);}components=sizes.sort((a,b)=>b-a);}
   results.push({id,width:map.width,height:map.height,gridCells:nav.grid.length,walkableCells:nav.grid.reduce((n,v)=>n+v,0),colliders:before,invalid,duplicatesRemoved:before-clean.length-invalid,overlapsPreserved:overlaps,spawnValid:nav.walkable(map.spawn.x,map.spawn.y),routes,components});

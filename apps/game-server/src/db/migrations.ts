@@ -25,10 +25,10 @@ function assertHistory(migrations: Migration[], applied: Applied[]) {
   // Keep deployed receipts immutable when public main allocated the same numbers.
   // Only these exact, audited private scripts may appear outside the public prefix.
   const groups = [
-    {current:'0052_detach_claimed_dungeon_members.sql', checksum:'87423f59558537c4be6e3dd32d72ee625e1906fa0550436e7cdf3f619efed331',
-      names:['0040_detach_claimed_dungeon_members.sql','0047_detach_claimed_dungeon_members.sql','0049_detach_claimed_dungeon_members.sql','0050_detach_claimed_dungeon_members.sql']},
-    {current:'0053_fruit_rework_compatibility.sql', checksum:'41e298e875e2aa27082c3c242ef370702ae699f09a2548e75e72e9e5d1793b3a',
-      names:['0051_fruit_rework_compatibility.sql']},
+    {current:'0053_detach_claimed_dungeon_members.sql', checksum:'87423f59558537c4be6e3dd32d72ee625e1906fa0550436e7cdf3f619efed331',
+      names:['0040_detach_claimed_dungeon_members.sql','0047_detach_claimed_dungeon_members.sql','0049_detach_claimed_dungeon_members.sql','0050_detach_claimed_dungeon_members.sql','0052_detach_claimed_dungeon_members.sql']},
+    {current:'0054_fruit_rework_compatibility.sql', checksum:'41e298e875e2aa27082c3c242ef370702ae699f09a2548e75e72e9e5d1793b3a',
+      names:['0051_fruit_rework_compatibility.sql','0053_fruit_rework_compatibility.sql']},
   ];
   const aliases = new Map<string,string>();
   for(const group of groups){
@@ -39,13 +39,14 @@ function assertHistory(migrations: Migration[], applied: Applied[]) {
        !migrations.some(r=>r.name===group.current&&r.checksum===group.checksum)){
       throw new Error('Migration history mismatch; unknown or duplicate private receipt');
     }
-    const prefix=Math.min(Number(row.name.slice(0,4)),50);
+    const number=Number(row.name.slice(0,4));
+    const prefix=number>=52?52:Math.min(number,50);
     if(migrations.some(r=>Number(r.name.slice(0,4))<prefix&&!applied.some(a=>a.name===r.name&&a.checksum===r.checksum))){
       throw new Error('Migration history mismatch; private receipt requires its complete predecessors');
     }
     aliases.set(row.name,group.current);
   }
-  if(aliases.has('0051_fruit_rework_compatibility.sql') &&
+  if(groups[1]!.names.some(name=>aliases.has(name)) &&
      !applied.some(row=>row.name===groups[0]!.current||groups[0]!.names.includes(row.name))){
     throw new Error('Migration history mismatch; fruit rework requires the dungeon repair');
   }

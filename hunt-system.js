@@ -32,6 +32,16 @@
   Object.assign(regions,Object.fromEntries(alubarna.specs.map(s=>[s.id,{name:s.name,min:s.min,max:s.max,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:alubarna.worlds[s.id].districts.map(d=>({...d,min:s.level,max:s.level,roles:[s.type]}))}])));
   const archetypes={crab:{hp:1.25,attack:.8,defense:1.3,speed:36,reach:43,attackSec:2.8,aggro:220},bandit:{hp:1,attack:1,defense:1,speed:50,reach:51,attackSec:2.1,aggro:300},spirit:{hp:.82,attack:1.1,defense:.7,speed:30,reach:165,attackSec:3.1,aggro:330},boss:{hp:4.2,attack:1.5,defense:1.45,speed:30,reach:70,attackSec:2.7,aggro:390},...Object.fromEntries(Object.keys(monsterCatalog).map(id=>[id,{hp:1,attack:1,defense:1,speed:monsterCatalog[id].move_speed,reach:monsterCatalog[id].reach,attackSec:monsterCatalog[id].attack_seconds,aggro:monsterCatalog[id].aggro_radius}]))};
   const balance=root.MareCharacters||(typeof module!=='undefined'?require('./character-system.js'):null);
+  const mapExports=root.MareMapExports||(typeof module!=='undefined'?require('./world-map-exports.js'):null);
+  for(const [area,region] of Object.entries(regions)){
+    const moved=mapExports?.get(area)?.districts;
+    if(!moved)continue;
+    const first=area.startsWith('alubarna-')?'alubarna-01':area;
+    region.sectors=region.sectors.map(sector=>{
+      const point=moved.find(p=>p.id===sector.id.replace(area,first));
+      return point?{...sector,x:point.x,y:point.y}:sector;
+    });
+  }
   const get=area=>regions[area]||null;
   function sectors(area,anchors=[]){return get(area)?.sectors.map(s=>({...s,...(anchors.find(a=>a.id===s.id)?{x:anchors.find(a=>a.id===s.id).x,y:anchors.find(a=>a.id===s.id).y}:{})}))||[];}
   function sectorAt(area,point,anchors=[]){return sectors(area,anchors).reduce((best,s)=>!best||Math.hypot(s.x-point.x,s.y-point.y)<Math.hypot(best.x-point.x,best.y-point.y)?s:best,null);}

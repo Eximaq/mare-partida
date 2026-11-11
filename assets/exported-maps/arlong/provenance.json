@@ -1,0 +1,16 @@
+{
+  "file": "Arlong_Park-export.zip",
+  "sourceId": "a7513953-ae4c-4de4-aac6-90564ed690f1",
+  "origin": [
+    -576,
+    -1216
+  ],
+  "objects": 56,
+  "archiveSha256": "0566c0bdbb1d60c89a0263073da9709c14bf6038402a4d287875b53bb21c9814",
+  "compositeSha256": "f82ac9e049a0ed3609e3d185b05625f1ae0f26068a5f510254e4997f28f0acc9",
+  "overlays": 0,
+  "blockedTerrainIds": [
+    1,
+    3
+  ]
+}

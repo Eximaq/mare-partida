@@ -1,5 +1,11 @@
 # Orange Town — mapa PixelLab Nv.11–15
 
+## Piloto de efeitos sonoros (demonstração)
+
+A grade do mapa atual define areia, grama, piso de pedra e madeira. A caminhada do personagem humano alterna três gravações por material no contato do pé com o chão. Um ataque físico toca o corte ao sair e ganha impacto somente se causar dano. As habilidades elementais usam o efeito de magia do piloto; Espiral Cortante e Retaliação Metálica têm efeitos próprios na ativação. Na Central do Navegante, abra Configurações → Áudio para ajustar Música e Efeitos do jogo separadamente. Cada um tem volume e botão de ativar próprios; as preferências são salvas no navegador.
+
+Arquivos e licença por clipe: [provenance.json](../assets/audio/orange-town/provenance.json). Validação: `node tests/orange-audio.test.cjs` e `node tests/orange_audio_browser.cjs` com o servidor local em execução (variável `MARE_TEST_URL`; padrão porta 8138).
+
 ## Estado atual · 22/10/2026
 
 O mapa anterior foi substituído pelo mapa `Orange Town` do PixelLab (`1e54e217-5ae7-48ed-aa9e-43bbb58b88b6`), 61×44 células de 64 px. Mr. 3 (`115d5400-e87f-4990-96d5-39605ee0311c`) e Cabaji (`30284edc-eb47-475b-9019-c84ef902e164`) são patrulhas comuns de Nv.13; não há chefe nem respawn de chefe. A área usa navegação por tiles transitáveis, colliders AABB nas bases dos objetos do mapa e saída para o Lobby no cais. Os detalhes abaixo registram a versão antiga e não representam o conteúdo ativo.

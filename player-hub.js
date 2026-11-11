@@ -50,23 +50,42 @@
   if(profileTab==='wall'||profileTab==='custom'&&!ctx.online)body+='<div class="captain-empty">'+icon(profileTab==='wall'?'bubble':'shirt')+'<h3>'+(profileTab==='wall'?'Mural público':'Personalização pública')+'</h3><p>'+(profileTab==='wall'?'Mural público em desenvolvimento.':'Personalização pública do perfil em desenvolvimento.')+'</p></div>';
   return body+'</section>';
  }
- const settingCards=[['general','GERAL','Idioma, conexão e conta.','flag'],['audio','ÁUDIO','Música e volume.','music'],['graphics','GRÁFICOS','Qualidade e quantidade de efeitos.','star'],['interface','INTERFACE E CONTROLES','Organização e atalhos.','swords'],['accessibility','ACESSIBILIDADE','Legibilidade e movimento.','eye']];
+ const settingCards=[['general','GERAL','Idioma, conexão e conta.','flag'],['audio','ÁUDIO','Música e efeitos do jogo.','music'],['graphics','GRÁFICOS','Qualidade e quantidade de efeitos.','star'],['interface','INTERFACE E CONTROLES','Organização e atalhos.','swords'],['accessibility','ACESSIBILIDADE','Legibilidade e movimento.','eye']];
  const settingLabels={quality:'Efeitos visuais',density:'Densidade da HUD',motion:'Animações de interface'};
  const select=(id,options,current)=>'<select data-captain-setting="'+id+'" aria-label="'+E(settingLabels[id]||id)+'">'+options.map(([value,label])=>'<option value="'+value+'" '+(current===value?'selected':'')+'>'+E(label)+'</option>').join('')+'</select>';
- function settingDetail(id){
-  const a=root.MareAudio?.getState?.()||{muted:true,volume:0};
+ const audioState=()=>({muted:true,volume:0,effectsMuted:true,effectsVolume:0,...root.MareAudio?.getState?.()});
+ const audioControls=[
+  {label:'Música',summary:'Música',off:'desligada',toggle:'Ativar música',slider:'Volume da música',mute:'mute',range:'music-volume',output:'captainMusicValue',muted:'muted',volume:'volume',setMute:'setMuted',setVolume:'setVolume'},
+  {label:'Efeitos do jogo',summary:'Efeitos',off:'desligados',toggle:'Ativar efeitos do jogo',slider:'Volume dos efeitos',mute:'effects-mute',range:'effects-volume',output:'captainEffectsValue',muted:'effectsMuted',volume:'effectsVolume',setMute:'setEffectsMuted',setVolume:'setEffectsVolume'}
+ ];
+ const audioPercent=(a,c)=>Math.round(a[c.volume]*100);
+ const audioOn=(a,c)=>!a[c.muted]&&a[c.volume]>0;
+ const audioSummary=a=>audioControls.map(c=>c.summary+': '+(audioOn(a,c)?audioPercent(a,c)+'%':c.off)).join(' · ');
+ const audioMarkup=(a,c)=>'<label class="captain-setting-line"><span>'+c.label+'</span><input type="checkbox" data-captain-'+c.mute+' aria-label="'+c.toggle+'" '+(audioOn(a,c)?'checked':'')+'></label>'+
+  '<label class="captain-setting-line"><span>'+c.slider+': <output id="'+c.output+'">'+audioPercent(a,c)+'%</output></span><input type="range" min="0" max="100" value="'+audioPercent(a,c)+'" data-captain-'+c.range+' aria-label="'+c.slider+'"></label>';
+ function syncAudio(a){
+  const summary=document.querySelector('[data-settings-card="audio"] em');
+  if(summary)summary.textContent=audioSummary(a);
+  for(const c of audioControls){
+   const toggle=document.querySelector('[data-captain-'+c.mute+']'),slider=document.querySelector('[data-captain-'+c.range+']'),output=document.getElementById(c.output);
+   if(toggle)toggle.checked=audioOn(a,c);
+   if(slider&&slider.value!==String(audioPercent(a,c)))slider.value=audioPercent(a,c);
+   if(output)output.textContent=audioPercent(a,c)+'%';
+  }
+ }
+ function settingDetail(id,a){
   if(id==='general')return '<div class="captain-settings-detail">'+field('Idioma','Português (Brasil)','flag')+field('Conexão',ctx.online?'Online · sessão autenticada':'Jogo local · navegador','anchor')+field('Conta',ctx.online?'Autenticada':'Não disponível nesta versão','gear')+(ctx.online?'<button type="button" data-online-action="logout">Sair da conta</button>':'')+'<p>'+(ctx.online?'Personagem persistido no servidor. Áudio e exibição são preferências deste navegador.':'Os saves continuam locais e independentes das preferências de interface.')+'</p></div>';
-  if(id==='audio')return '<div class="captain-settings-detail"><label class="captain-setting-line"><span>Trilha sonora</span><input type="checkbox" data-captain-mute aria-label="Ativar música" '+(a.muted?'':'checked')+'></label><label class="captain-setting-line"><span>Volume da música: <output id="captainMusicValue">'+Math.round(a.volume*100)+'%</output></span><input type="range" min="0" max="100" value="'+Math.round(a.volume*100)+'" data-captain-music-volume aria-label="Volume da música"></label><p>Porto e caçadas trocam de faixa automaticamente. Áudio de efeitos separado ainda não está disponível.</p></div>';
+  if(id==='audio')return '<div class="captain-settings-detail">'+audioControls.map(c=>audioMarkup(a,c)).join('')+'<p>Ajuste a trilha sem mudar o volume de passos, golpes e habilidades.</p></div>';
   if(id==='graphics')return '<div class="captain-settings-detail"><label class="captain-setting-line"><span>Efeitos visuais</span>'+select('quality',[['high','Alta qualidade'],['low','Reduzidos']],prefs.quality)+'</label><p>Reduzir efeitos preserva a jogabilidade e simplifica efeitos ambientais.</p></div>';
   if(id==='interface')return '<div class="captain-settings-detail"><label class="captain-setting-line"><span>Densidade da HUD</span>'+select('density',[['standard','Padrão'],['compact','Compacta']],prefs.density)+'</label><p>Atalhos: I inventário · F forja · P personagem · M modos · C contratos.</p></div>';
   if(id==='accessibility')return '<div class="captain-settings-detail"><label class="captain-setting-line"><span>Animações de interface</span>'+select('motion',[['normal','Normais'],['reduced','Reduzidas']],prefs.motion)+'</label><label class="captain-setting-line"><span>Textos maiores nos painéis</span><input type="checkbox" data-captain-larger '+(prefs.largerText?'checked':'')+'></label></div>';
   return '';
  }
  function settingsHTML(){
-  const a=root.MareAudio?.getState?.()||{muted:true,volume:0};
+  const a=audioState();
   return '<section class="captain-settings"><nav class="captain-tabs" aria-label="Configurações">'+[['geral','GERAL','compass'],['discord','DISCORD','bubble']].map(([id,label,i])=>button(label,id,settingsTab,i).replace('data-captain-tab','data-settings-tab')).join('')+'</nav>'+
    (settingsTab==='discord'?'<div class="captain-empty">'+icon('bubble')+'<h3>Comunidade Discord</h3><p>Servidor oficial ainda não informado. Quando houver um convite verificado, ele aparecerá aqui.</p></div>':
-   '<div class="captain-setting-cards">'+settingCards.map(([id,title,desc,i])=>'<section class="captain-setting-card" data-setting-section="'+id+'"><button type="button" class="captain-setting-heading" data-settings-card="'+id+'" aria-expanded="'+(settingsExpanded===id)+'" aria-controls="captain-detail-'+id+'"><span class="captain-setting-icon">'+icon(i)+'</span><span class="captain-setting-copy"><strong>'+title+'</strong><small>'+desc+'</small><em>'+E(({general:'Português · Salvo localmente',audio:a.muted?'Música silenciada':'Música ligada · '+Math.round(a.volume*100)+'%',graphics:prefs.quality==='high'?'Qualidade: Alta':'Efeitos reduzidos',interface:prefs.density==='compact'?'HUD compacta':'HUD padrão',accessibility:prefs.largerText?'Textos ampliados':'Visualização padrão'})[id])+'</em></span><span class="captain-chevron" aria-hidden="true">'+(settingsExpanded===id?'−':'›')+'</span></button>'+(settingsExpanded===id?'<div id="captain-detail-'+id+'">'+settingDetail(id)+'</div>':'')+'</section>').join('')+'</div>')+'</section>';
+   '<div class="captain-setting-cards">'+settingCards.map(([id,title,desc,i])=>'<section class="captain-setting-card" data-setting-section="'+id+'"><button type="button" class="captain-setting-heading" data-settings-card="'+id+'" aria-expanded="'+(settingsExpanded===id)+'" aria-controls="captain-detail-'+id+'"><span class="captain-setting-icon">'+icon(i)+'</span><span class="captain-setting-copy"><strong>'+title+'</strong><small>'+desc+'</small><em>'+E(({general:'Português · Salvo localmente',audio:audioSummary(a),graphics:prefs.quality==='high'?'Qualidade: Alta':'Efeitos reduzidos',interface:prefs.density==='compact'?'HUD compacta':'HUD padrão',accessibility:prefs.largerText?'Textos ampliados':'Visualização padrão'})[id])+'</em></span><span class="captain-chevron" aria-hidden="true">'+(settingsExpanded===id?'−':'›')+'</span></button>'+(settingsExpanded===id?'<div id="captain-detail-'+id+'">'+settingDetail(id,a)+'</div>':'')+'</section>').join('')+'</div>')+'</section>';
  }
  function unmount(){if(portraitFrame&&root.cancelAnimationFrame)root.cancelAnimationFrame(portraitFrame);portraitFrame=0;}
  function render(panel,snapshot){unmount();ctx={...snapshot,stamp:JSON.stringify([snapshot.game.equipment,snapshot.game.preferences?.hideItems,snapshot.game.appearance96,snapshot.game.paperDollLook,snapshot.game.zoanTransformed,snapshot.game.name,snapshot.game.classId,snapshot.game.factionId,snapshot.game.hierarchyTier])};if(panel==='journal')return journalHTML();if(panel==='myprofile')return profileHTML();if(panel==='settings')return settingsHTML();return '';}
@@ -95,9 +114,14 @@
  });
  document.addEventListener('change',e=>{
   const setting=e.target.closest('[data-captain-setting]');if(setting){const id=setting.dataset.captainSetting;if(values[id]?.includes(setting.value)){prefs[id]=setting.value;store();focusedRedraw('[data-captain-setting="'+id+'"]');}return;}
-  if(e.target.matches('[data-captain-mute]')){root.MareAudio?.setMuted?.(!e.target.checked);focusedRedraw('[data-captain-mute]');}
+  const channel=audioControls.find(c=>e.target.matches('[data-captain-'+c.mute+']'));
+  if(channel){root.MareAudio?.[channel.setMute]?.(!e.target.checked);return;}
   if(e.target.matches('[data-captain-larger]')){prefs.largerText=e.target.checked;store();focusedRedraw('[data-captain-larger]');}
  });
- document.addEventListener('input',e=>{if(e.target.matches('[data-captain-music-volume]')){const vol=Math.max(0,Math.min(1,Number(e.target.value)/100));root.MareAudio?.setVolume?.(vol);const output=document.getElementById('captainMusicValue');if(output)output.textContent=Math.round(vol*100)+'%';}});
+ document.addEventListener('input',e=>{
+  const channel=audioControls.find(c=>e.target.matches('[data-captain-'+c.range+']'));
+  if(channel)root.MareAudio?.[channel.setVolume]?.(Number(e.target.value)/100);
+ });
+ document.addEventListener('mare-audio-change',e=>syncAudio(e.detail));
  root.MarePlayerHub=Object.freeze({configure,render,hydrate,refresh,unmount,getPreferences:()=>({...prefs})});
 })(globalThis);

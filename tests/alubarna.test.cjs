@@ -10,14 +10,31 @@ test('fixed monster levels and independent progress survive migration',()=>{
  let g=H.migrate({hunts:{areas:{beach:{kills:7},alabasta:{kills:5}}}});g=H.recordKill(g,'alubarna-01','puppu').state;assert.equal(g.hunts.areas['alubarna-01'].kills,1);assert.equal(g.hunts.areas['alubarna-02'].kills,0);assert.equal(g.hunts.areas.beach.kills,7);assert.equal(g.hunts.areas.alabasta.kills,5);
 });
 test('full map instances provide safe spawns and routes to every encounter',()=>{
- const A=require('../alubarna-world.js');require('../world-system.js');const B=require('../monster-behavior.js');for(const [id]of specs){const w=A.worlds[id],n=new MareWorld.Navigation(w.map,32);assert.equal(w.map.width,6592);assert.equal(w.map.height,5248);assert(n.walkable(w.map.spawn.x,w.map.spawn.y));for(const s of B.slots(id)){assert(n.walkable(s.x,s.y),s.id);assert(n.path(w.map.spawn,s).length,s.id);assert(Math.hypot(s.x-w.map.spawn.x,s.y-w.map.spawn.y)>180);}assert(w.map.colliders.some(c=>c.blocksProjectiles));}
+ const catalog=require('../world-catalog.cjs').load(),B=require('../monster-behavior.js');
+ const map=catalog.maps['alubarna-01'],nav=catalog.navigation(map.id);
+ assert.deepEqual([map.width,map.height],[8128,5568]);
+ assert(nav.walkable(map.spawn.x,map.spawn.y));
+ for(const [id] of specs){
+  assert.equal(catalog.maps[id].terrainWalkable(3048,4408),true);
+  for(const slot of B.slots(id)){
+   assert(nav.walkable(slot.x,slot.y),slot.id);
+   assert(nav.path(map.spawn,slot).length,slot.id);
+   assert(Math.hypot(slot.x-map.spawn.x,slot.y-map.spawn.y)>180);
+  }
+ }
+ assert(map.colliders.some(c=>c.blocksProjectiles));
 });
 test('all five native animation sets obey South Hurt and apparent size order',()=>{
  require('../sprite-combat-v2-data.js');require('../sprite-combat-v2.js');for(const [,,,type,,size]of specs){const d=MareSpriteCombatV2Data[type];assert.equal(d?.worldHeight,size);assert.equal(d.idle_extent_ratio,1);for(const dir of ['south','north','west','east']){for(const a of ['idle','walk','attack'])assert(MareSpriteCombatV2.resolve(type,a,dir).requested);assert(MareSpriteCombatV2.resolve(type,'hurt',dir).clip.image.endsWith('/hurt-south.png'));}}
 });
 
-test('the native northern arch leaves a route and projectile opening toward the palace',()=>{
- const A=require('../alubarna-world.js'),map=A.worlds['alubarna-01'].map;require('../world-system.js');const n=new MareWorld.Navigation(map,32),goal={x:3280,y:752};
- assert(n.walkable(goal.x,goal.y),'palace approach is open ground');assert(n.path(map.spawn,goal).length,'the northern arch must not seal off the palace road');
- assert(n.projectileClear({x:3295,y:850},{x:3295,y:960}),'projectiles cross the visible arch opening');assert(!n.projectileClear({x:3232,y:850},{x:3232,y:960}),'the arch columns remain solid');
+test('the exported south and palace gates keep their openings and solid supports',()=>{
+ const catalog=require('../world-catalog.cjs').load(),map=catalog.maps['alubarna-01'];
+ const nav=catalog.navigation(map.id);
+ for(const [x,y] of [[3042,4100],[3028,2650]]){
+  assert(nav.clear({x,y:y-50},{x,y:y+50}));
+  assert(nav.projectileClear({x,y:y-50},{x,y:y+50}));
+  assert(!nav.projectileClear({x:x-78,y:y-50},{x:x-78,y:y+50}));
+ }
+ assert(nav.path(map.spawn,map.navigationGoals.find(p=>p.id==='palacio')).length);
 });

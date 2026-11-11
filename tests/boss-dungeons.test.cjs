@@ -16,7 +16,16 @@ test('forming consumes exactly ten and rolls only once among official Rank E, re
 test('insufficient, locked, foreign and missing catalog fail before RNG; full bag checks the resulting slot count',()=>{for(const mutate of [g=>g.inventory[0].quantity=9,g=>g.inventory[0].locked=true,g=>g.inventory[0].boundToCharacter='someone-else']){const g=ten();mutate(g);assert(!S.craft(g,{expectedSeq:g.bossDungeons.seq,defs,catalog:fruits,random:()=>{throw Error('must not roll');}}).ok);}let g=ten();g.inventory[0].quantity=11;g.inventory.push(...Array.from({length:119},(_,i)=>({id:'x'+i,def:90})));assert(!S.craft(g,{expectedSeq:g.bossDungeons.seq,defs,catalog:fruits,random:()=>{throw Error('must not roll');}}).ok);});
 test('failed formation writes no partial changes and can retry the same sampled fruit without another draw',()=>{const g=ten();let rolls=0;const r=S.craft(g,{expectedSeq:g.bossDungeons.seq,defs,catalog:fruits,random:()=>{rolls++;return .1;},commit:()=>false});assert(!r.ok);assert.equal(S.count(g),10);assert(r.chosenId);const retried=S.craft(g,{expectedSeq:g.bossDungeons.seq,defs,catalog:fruits,chosenId:r.chosenId,random:()=>{rolls++;return .9;},commit:()=>true});assert(retried.ok);assert.equal(rolls,1);assert.equal(retried.item.fruitId,r.chosenId);});
 test('reveal survives reload; acknowledging never draws or adds another item',()=>{const g=ten(),r=S.craft(g,{expectedSeq:g.bossDungeons.seq,defs,catalog:fruits,random:()=>0,commit:()=>true});const loaded=JSON.parse(JSON.stringify(r.state)),ack=S.acknowledge(loaded,r.item.id,()=>true);assert(ack.ok);assert.equal(ack.state.inventory.length,1);assert.equal(ack.state.bossDungeons.reveal,null);assert(!S.acknowledge(ack.state,r.item.id,()=>true).ok);});
-test('native map preserves the exported chest and gives a valid lower carpet spawn and route',()=>{const c=require('../tools/audit_maps.cjs').loadMaps(),w=c.MareQuestDungeonWorld,n=new c.MareWorld.Navigation(w.map,16);assert.equal(w.data.props.length,44);assert.deepEqual({...w.chest.bounds},{x:930,y:280,w:64,h:64});assert(n.walkable(w.map.spawn.x,w.map.spawn.y));assert(n.path(w.map.spawn,w.map.navigationGoals[1]).length);assert.equal(w.data.rows.join('').replaceAll('.','').length,562);assert(!n.walkable(w.chest.x,w.chest.y));});
+test('the arena gate connects the lower spawn to the exported chest',()=>{
+ const c=require('../tools/audit_maps.cjs').loadMaps(),map=c.MareWorld.maps['quest-dungeons'];
+ const {chest,props,enemySpawn}=c.MareMapExports.get(map.id);
+ const artwork=props.find(p=>p.id==='1cb97a09-0a88-4167-9627-1fd4b1e6ca0b');
+ const n=new c.MareWorld.Navigation(map,16);
+ assert.deepEqual({...chest.bounds},{x:artwork.x,y:artwork.y,w:artwork.w,h:artwork.h});
+ assert(n.path(map.spawn,enemySpawn).length);
+ assert(n.path(enemySpawn,chest).length);
+ assert(!n.walkable(artwork.ground.x+artwork.ground.w/2,artwork.base-12));
+});
 
 test('Berry uses 1 percent of lifetime earnings at entry, never current wallet or later earnings',()=>{
  let g=base();g.gold=7;g.stats.goldEarned=123456;const entered=S.begin(g,'alvida','snapshot').state;
