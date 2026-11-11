@@ -1240,6 +1240,20 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/male-daggers12-13-71-74-four-torsos-ew-v2/Adagas12_13_71_72_73_74_Masculino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 53968967,
+      "sha256": "67134527f6c1793484ac303b9624f17ea0212ce231e10adafa193d75289e3461",
+      "pngEntries": 960,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/MANIFEST.json",
+        "reconstruct": "weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/male1-68-four-torsos-ew/Sabre1_Nodachi68_Masculinos_Quatro_Trajes_EW_Editavel.zip",
       "bytes": 18952344,
       "sha256": "3b3ff09ef98716f5d4b0faff6c9b90c3d3b366a7822c33a137ecb5981056ad84",
