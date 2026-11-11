@@ -1,5 +1,6 @@
 import {readFruits} from './fruits.js';
 import {permanentCharacterPower} from './power.js';
+import {readCombatInputs} from './combat-inputs.js';
 import {refreshHierarchyPower} from './hierarchy.js';
 import {readHaki} from './haki.js';
 import {readPrison} from './prison.js';
@@ -9,7 +10,7 @@ import type {PoolClient} from 'pg';
 import {achievementsSnapshotSchema,type CharacterState} from '@mare/shared';
 import {AuthFault} from '../auth/errors.js';
 import {readTalents} from './talents.js';
-import {rewardWalletBaseline} from './reward-wallet.js';
+import {rewardWalletBaseline,rewardWalletOffsetSql} from './reward-wallet.js';
 const require=createRequire(import.meta.url),A=require('../../../../achievement-system.js');
 const rulesHash=createHash('sha256').update(JSON.stringify(A.catalog)).digest('hex');
 const flags=Object.freeze({prison:false,fruit:false,haki:false,fastTravel:false,bounty:false});
@@ -39,16 +40,27 @@ export async function readAchievements(client:PoolClient,id:string,state:Charact
 }
 // Called only inside an authorized command or worker transaction, after its mutation.
 // Replay returns before this hook; failure rolls counters back with the economy/receipt.
-export async function observeServerAchievements(client:PoolClient,id:string,before:CharacterState,after:CharacterState,options:{kills?:number;island?:string;powerBefore?:number}={}){
+export async function observeServerAchievements(client:PoolClient,id:string,before:CharacterState,after:CharacterState,options:{kills?:number;island?:string;powerBefore?:number;currentCombatSchema?:true}={}){
  if(!await available(client))return;
  const kills=options.kills??0;if(!Number.isSafeInteger(kills)||kills<0)throw new AuthFault(503,'invalid_achievement_event');
  const delta=BigInt(after.gold)-BigInt(before.gold),gain=delta>0n?Number(delta>1000000n?1000000n:delta):0;
- const currentPower=await permanentCharacterPower(client,id,after);
+ // Workers already require the current schema. Read again AFTER the reward and
+ // level change, on this transaction's locked character: never reuse tick inputs
+ // or temporary combat buffs. Historical command/migration callers keep their
+ // compatibility reader. This option is internal, never part of an HTTP payload.
+ const fresh=options.currentCombatSchema?(await readCombatInputs(client,[id],{crewBenefits:false})).get(id):undefined;
+ if(fresh&&(['characterId','version','level','experience','gold'] as const).some(k=>fresh.state[k]!==after[k]))throw new AuthFault(503,'character_state_unavailable');
+ const currentPower=fresh?fresh.permanentPower():await permanentCharacterPower(client,id,after);
  await refreshHierarchyPower(client,id,currentPower);
  const power=Math.max(options.powerBefore??0,Math.min(100000,currentPower));
- await client.query(`INSERT INTO mare_game.achievement_progress(character_id,kills,coins,peak_power) VALUES($1,LEAST(10000,$2::int),LEAST(1000000,$3::int+$4::int),$5)
+ // Evaluate the market-adjusted baseline once in the existing write, under the
+ // same character lock. Keep numeric precision and the original cap before gain.
+ const offset=await rewardWalletOffsetSql(client);
+ await client.query(`WITH wallet AS MATERIALIZED (SELECT LEAST(1000000,GREATEST(0,$3::numeric+${offset}))::int baseline)
+ INSERT INTO mare_game.achievement_progress(character_id,kills,coins,peak_power)
+ SELECT $1,LEAST(10000,$2::int),LEAST(1000000,baseline+$4::int),$5 FROM wallet WHERE true
  ON CONFLICT(character_id) DO UPDATE SET kills=LEAST(10000,mare_game.achievement_progress.kills+$2),
- coins=LEAST(1000000,GREATEST(mare_game.achievement_progress.coins,$3)+$4),peak_power=GREATEST(mare_game.achievement_progress.peak_power,$5)`,[id,Math.min(10000,kills),cappedGold(await rewardWalletBaseline(client,id,before.gold)),gain,power]);
+ coins=LEAST(1000000,GREATEST(mare_game.achievement_progress.coins,(SELECT baseline FROM wallet))+$4),peak_power=GREATEST(mare_game.achievement_progress.peak_power,$5)`,[id,Math.min(10000,kills),before.gold,gain,power]);
  if(options.island){
   if(!A.travelIds.includes(options.island))throw new AuthFault(503,'invalid_achievement_event');
   await client.query('INSERT INTO mare_game.achievement_visits(character_id,island_id) VALUES($1,$2) ON CONFLICT DO NOTHING',[id,options.island]);

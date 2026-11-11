@@ -118,8 +118,14 @@
 
 !skypiea-map-data.js
 !skypiea-world.js
+!akainu-combat.js
+!weekly-boss-rules.cjs
+!weekly-boss-battle.cjs
 
 !paramecia-rework-data.js
 !paramecia-rework-manifest.js
 !rank-s-rework-data.js
 !rank-s-rework.js
+
+!world-map-exports-data.js
+!world-map-exports.js

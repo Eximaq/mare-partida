@@ -1,0 +1,10 @@
+'use strict';
+const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const c=vm.createContext({console,performance:{now:()=>100},Image:class{constructor(){this.complete=true;this.naturalWidth=1000;}}});
+vm.runInContext(fs.readFileSync('akainu-art-data.js','utf8'),c);
+if(fs.existsSync('akainu-art.js'))vm.runInContext(fs.readFileSync('akainu-art.js','utf8'),c);
+function art(){assert(c.KaizokuAkainuArt,'Akainu renderer must exist');return c.KaizokuAkainuArt;}
+test('four native facing rows retain world scale and fixed foot anchor',()=>{const A=art();for(const [d,row]of ['south','west','east','north'].map((x,i)=>[x,i])){const f=A.pose({alive:true,hp:100,emberFacing:d,moving:1,emberElapsed:.2},1000);assert.equal(f.clip.row,row);assert.equal(f.action,'walk');assert.equal(f.scale,114/84);}});
+test('cast reaches release frame at actual impact and corpse fades without damage',()=>{const A=art(),m={hp:100,alive:true,emberFacing:'east',action:{kind:'aoe',startedAt:1000,impactAt:2000,endAt:2850}};assert.equal(A.pose(m,2000).frame,4);assert.equal(A.pose(m,2800).frame,5);m.alive=false;m.hp=0;m.defeatedAt=3000;assert.equal(A.pose(m,3600).alpha,.5);assert.equal(A.pose(m,4300).alpha,0);});
+test('renderer performs only drawing and preserves every combat field',()=>{const A=art(),m={hp:50,alive:true,emberFacing:'north',x:80,y:90,action:{kind:'aoe',startedAt:1000,impactAt:2000,endAt:2850,radius:120,center:{x:80,y:90}}},before=JSON.stringify(m);const calls=[],ctx=new Proxy({},{get:(t,p)=>t[p]||(t[p]=(...a)=>calls.push([p,...a]))});A.draw(ctx,m,80,90,2200);A.ground(ctx,m,2200);assert.equal(JSON.stringify(m),before);assert(calls.some(c=>c[0]==='drawImage'));});
+test('facing stays fixed through a weekly cast even as snapshots interpolate position',()=>{const U=require('../apps/account-client/game-ui.js'),m={x:20,y:20,emberFacing:'north',moving:0,attackAnim:0,hit:0,action:{kind:'aoe'}};U.stepMonsterVisual(m,{x:21,y:20},.016,1);assert.equal(m.emberFacing,'north');});

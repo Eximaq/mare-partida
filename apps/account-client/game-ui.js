@@ -32,12 +32,24 @@
     }
     return {x,y,direction,moving:moving&&elapsedMs<duration};
   }
+  // Cover the observed full-state fallback gap while keeping the blend bounded.
+  const combatBlendDuration = (gap, quickHunt) => Math.min(1250, Math.max(quickHunt ? 400 : 900, gap + 100));
+  function quickHuntUpdates(client) {
+    const { battle, world, sync } = client.data?.online ?? {};
+    const rtt = client.network?.rttMs;
+    return client.controlled && sync?.protocol === 2 && !!world?.area &&
+      battle?.auto === true && !battle.partyInstanceId && !battle.weeklyBossInstanceId &&
+      !battle.dungeon && !battle.prison && (rtt == null || rtt <= 200);
+  }
+  const sameCombatPoint = (previous, next) =>
+    previous && previous.mapId === next.mapId && !previous.path.length && !next.path.length &&
+    previous.position.x === next.position.x && previous.position.y === next.position.y;
   // Cosmetic correction only. Commands/collisions keep using worldPosition directly.
   // Manual correction is short; sampled combat spans its observed update cadence.
   // Neither mode extends the approved path or extrapolates unseen combat positions.
   function createWorldPresentation({walk=false,route}={}) {
     if(walk)return createWalkingPresentation(route);
-    let snapshot=null,received=0,offset={x:0,y:0},duration=200;
+    let snapshot=null,received=0,observed=0,wasBuffered=false,offset={x:0,y:0},duration=200;
     function sample(now){
       if(!snapshot)return null;
       const elapsed=Math.max(0,now-received),pose=worldPosition(snapshot,elapsed);
@@ -45,22 +57,30 @@
       return {...pose,x:pose.x+offset.x*weight,y:pose.y+offset.y*weight,
         moving:pose.moving||(weight>0&&Math.hypot(offset.x,offset.y)>.1)};
     }
-    return {sample,update(next,now,{buffered=false}={}){
+    return {sample,update(next,now,{buffered=false,quickHunt=false}={}){
       if(next===snapshot)return false;
+      const gap=now-observed;
+      observed=now;
+      if(buffered&&wasBuffered&&gap<=5000&&sameCombatPoint(snapshot,next)){
+        // Keep the in-flight blend but accept the latest facing for this point.
+        snapshot=next;
+        return false;
+      }
       const previous=sample(now),target=worldPosition(next,0);
       // A peer can start moving between polls. Allow that observed progress,
       // while still snapping large teleports and never retaining stale offsets.
-      const limit=Math.min(512,Math.max(128,next.speed*Math.min(3,Math.max(0,now-received)/1000)+32));
-      const snap=!previous||snapshot.mapId!==next.mapId||now-received>5000||Math.hypot(previous.x-target.x,previous.y-target.y)>limit;
+      const limit=Math.min(512,Math.max(128,next.speed*Math.min(3,Math.max(0,gap)/1000)+32));
+      const snap=!previous||snapshot.mapId!==next.mapId||gap>5000||Math.hypot(previous.x-target.x,previous.y-target.y)>limit;
       offset=snap?{x:0,y:0}:{x:previous.x-target.x,y:previous.y-target.y};
-      duration=buffered?Math.max(250,Math.min(1250,now-received+100)):200;
+      duration=buffered?combatBlendDuration(gap,quickHunt):200;
+      wasBuffered=buffered;
       snapshot=next;received=now;return snap;
     }};
   }
   // Walking may remain behind a late server sample, but must never sprint to catch
   // it. Bridge only through the same collision map, then follow the approved path.
   function createWalkingPresentation(route=(from,to)=>[{x:to.x,y:to.y}]) {
-    let snapshot=null,received=0,state=null;
+    let snapshot=null,received=0,observed=0,state=null;
     const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
     const length=(from,points)=>{let n=0;for(const p of points){n+=distance(from,p);from=p;}return n;};
     function sample(now){
@@ -80,8 +100,15 @@
       if(dt>0)state.moving=moved>1e-8;
       return {x:state.x,y:state.y,direction:state.direction,moving:state.moving};
     }
-    return {sample,update(next,now,{buffered=false,reset=false}={}){
+    return {sample,update(next,now,{buffered=false,reset=false,quickHunt=false}={}){
       if(next===snapshot&&!reset)return false;
+      const gap=now-observed;
+      observed=now;
+      if(!reset&&buffered&&state?.buffered&&sameCombatPoint(snapshot,next)&&snapshot.speed===next.speed){
+        snapshot=next;
+        if(!state.points.length)state.direction=next.direction;
+        return false;
+      }
       const previous=sample(now),snap=!previous||snapshot.mapId!==next.mapId||reset;
       const origin=snap?next.position:previous;
       const bridge=distance(origin,next.position)<1e-8?[]:route(origin,next.position);
@@ -89,7 +116,7 @@
       const points=connected?[...bridge,...next.path].map(p=>({x:p.x,y:p.y})):[];
       state={x:origin.x,y:origin.y,direction:next.direction,moving:false,last:now,points,travel:0,
         bridge:connected?length(origin,bridge):0,pathLength:connected?length(next.position,next.path):0,
-        buffered:buffered&&!next.path.length,duration:Math.max(250,Math.min(1250,now-received+100))};
+        buffered:buffered&&!next.path.length,duration:combatBlendDuration(gap,quickHunt)};
       snapshot=next;received=now;return snap;
     }};
   }
@@ -106,7 +133,7 @@
     if(frameId===undefined||m.onlineVisualFrame!==frameId){m.onlineVisualFrame=frameId;m.onlineVisualOrigin={x:m.x,y:m.y};}
     const dx=pose.x-m.onlineVisualOrigin.x,dy=pose.y-m.onlineVisualOrigin.y,moving=Math.hypot(dx,dy)>1e-8;
     m.x=pose.x;m.y=pose.y;m.moving=moving?1:0;
-    if(moving&&!(m.attackAnim>0))m.emberFacing=Math.abs(dx)>Math.abs(dy)?(dx<0?'west':'east'):(dy<0?'north':'south');
+    if(moving&&!(m.attackAnim>0)&&!m.action)m.emberFacing=Math.abs(dx)>Math.abs(dy)?(dx<0?'west':'east'):(dy<0?'north':'south');
     m.emberElapsed=(m.emberElapsed||0)+dt;m.attackAnim=Math.max(0,m.attackAnim-dt);m.hit=Math.max(0,m.hit-dt);
   }
   function fruitTimeline(value,epoch,time){
@@ -240,6 +267,7 @@
     control_conflict:
       "Outra aba está controlando seu personagem. Assuma o controle se quiser continuar aqui.",
     state_version_conflict: "O progresso mudou. Confira os dados atualizados.",
+    command_rate_limited: "Muitos comandos em pouco tempo. Aguarde alguns segundos para tentar de novo.",
     gold_insufficient: "Ouro insuficiente.",
     item_equipped: "Desequipe antes de vender a última unidade.",
     item_quantity_insufficient: "Quantidade insuficiente.",
@@ -273,9 +301,11 @@
     meter.textContent='Ping HTTP: — · FPS: —';document.body.append(meter);
     function renderPerformance(){
       const n=client.network||{},f=frameMeter.sample(),ms=v=>Number.isFinite(v)?Math.round(v)+' ms':'—';
-      meter.textContent=(client.available?'Ping HTTP: '+ms(n.rttMs):'Sem conexão')+' · FPS: '+(document.hidden?'—':f.fps??'—')+' · Estado: '+ms(n.ageMs);
-      meter.title='Ping HTTP inclui rede e processamento do servidor. Estado é o tempo desde a última leitura válida, não o ping. Intervalo entre leituras: '+ms(n.intervalMs)+'. Maior intervalo entre frames: '+ms(f.maxFrameMs)+'. FPS baixo indica lentidão de renderização.';
-      meter.dataset.stale=String(!client.available||n.ageMs>5000);
+      const stale = n.ageMs > 5000;
+      const updates = stale ? 'Sem atualizar há '+ms(n.ageMs) : 'Atualizações: '+ms(n.intervalMs);
+      meter.textContent=(client.available?'Ping HTTP: '+ms(n.rttMs):'Sem conexão')+' · FPS: '+(document.hidden?'—':f.fps??'—')+' · '+updates;
+      meter.title='Ping HTTP inclui rede e processamento do servidor. Atualizações mostra o intervalo entre as duas últimas leituras válidas. Última leitura há '+ms(n.ageMs)+'. Maior intervalo entre frames: '+ms(f.maxFrameMs)+'.';
+      meter.dataset.stale=String(!client.available||stale);
     }
     const performanceTimer=setInterval(renderPerformance,1000);
     const resetPerformance=()=>{frameMeter.reset();renderPerformance();};
@@ -283,7 +313,6 @@
     let panel = null,
       section = null,
       error = "",
-      reading = false,
       redirecting = false;
     const redirectToLogin = () => {
       if (redirecting) return;
@@ -508,19 +537,38 @@
       if (!client.data) redirectToLogin();
       render();
     });
-    let lastRead=0,lastFullRead=0;
-    const poll = setInterval(() => {
-      if (redirecting || document.hidden || reading || client.busy) return;
-      const now=Date.now(),period=client.data?.online.battle&&client.controlled?750:3000;
-      if(now-lastRead<period)return;lastRead=now;
-      reading = true;
-      const full=now-lastFullRead>=3000||!client.readFrame;if(full)lastFullRead=now;
-      void (full?client.read(true):client.readFrame())
-        .catch(message)
-        .finally(() => {
-          reading = false;
-        });
-    }, 250);
+    let lastRead = -Infinity, lastFullRead = -Infinity;
+    let pollTimer, pollingStopped = false;
+    const pollPeriod = () => quickHuntUpdates(client) ? 250 : client.data?.online?.battle && client.controlled ? 750 : 3000;
+    const schedulePoll = (delay = 250) => {
+      if (!pollingStopped) pollTimer = setTimeout(pollState, delay);
+    };
+    async function pollState() {
+      if (redirecting || document.hidden || client.busy) {
+        schedulePoll();
+        return;
+      }
+      const started = performance.now();
+      const remaining = lastRead + pollPeriod() - started;
+      if (remaining > 0) {
+        schedulePoll(Math.min(250, Math.ceil(remaining)));
+        return;
+      }
+      lastRead = started;
+      const full = started - lastFullRead >= 3000 || !client.readFrame;
+      if (full) lastFullRead = started;
+      let retryDelay;
+      try {
+        await (full ? client.read(true) : client.readFrame());
+      } catch (e) {
+        if(e.status===429)retryDelay=60000;
+        message(e);
+      } finally {
+        const untilNext = lastRead + pollPeriod() - performance.now();
+        schedulePoll(retryDelay ?? Math.max(50, Math.min(250, Math.ceil(untilNext))));
+      }
+    }
+    schedulePoll();
     const renewal = setInterval(() => {
       if (!redirecting && !document.hidden) void client.renew().catch(message);
     }, 30000);
@@ -532,7 +580,8 @@
     root.addEventListener("pagehide", () => {
       clearInterval(performanceTimer);meter.remove();
       document.removeEventListener("visibilitychange",resetPerformance);
-      clearInterval(poll);
+      pollingStopped = true;
+      clearTimeout(pollTimer);
       clearInterval(renewal);
       document.removeEventListener("visibilitychange", resumePresence);
     });
@@ -547,6 +596,6 @@
       run,
     };
   }
-  root.MareOnlineGameUI = { project, derived, mount, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline, message:e=>labels[e.code]||"Não foi possível concluir. Confira a sessão e tente novamente." };
+  root.MareOnlineGameUI = { project, derived, mount, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline, quickHuntUpdates, message:e=>labels[e.code]||"Não foi possível concluir. Confira a sessão e tente novamente." };
   if (typeof module !== "undefined") module.exports = { project, derived, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline };
 })(globalThis);

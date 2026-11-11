@@ -21,7 +21,7 @@ arrive('lobby',null);
 const engine=require('../world-battle.cjs');wire.battle=engine.create('beach',wire.combatPreview.stats,Date.now(),()=>.5);arrive('dawn','beach');
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH}),out=process.env.MARE_QA_DIR||'tmp/online-battle';fs.mkdirSync(out,{recursive:true});
- let motionReply=false,holdMotion=false;const heldReplies=[];
+ let motionReply=false,holdMotion=false,repeatMotion=false;const heldReplies=[];
  const context=await browser.newContext({viewport:{width:1366,height:768}}),p=await context.newPage(),errors=[],commands=[];
  try{
   p.on('pageerror',e=>errors.push(e.message));p.on('requestfailed',r=>{if(new URL(r.url()).pathname.endsWith('.js'))console.error('Script request failed: '+new URL(r.url()).pathname+' '+r.failure()?.errorText);});p.on('response',r=>{if(r.status()>=400&&new URL(r.url()).pathname.endsWith('.js'))console.error('Script HTTP '+r.status()+': '+new URL(r.url()).pathname);});await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-byte-for-byte'));
@@ -31,7 +31,8 @@ const engine=require('../world-battle.cjs');wire.battle=engine.create('beach',wi
    if(url.pathname==='/v1/me')body={character};
    else if(url.pathname==='/v1/auth/csrf')body={csrfToken:'local-fixture'};
    else if(url.pathname.endsWith('/online-state')){
-    if(holdMotion&&motionReply)await new Promise(resolve=>heldReplies.push(resolve));
+    if(holdMotion&&motionReply&&!repeatMotion)await new Promise(resolve=>heldReplies.push(resolve));
+    if(repeatMotion)repeatMotion=false;
     if(holdMotion)motionReply=true;
     body=wire;
    }
@@ -61,13 +62,19 @@ const engine=require('../world-battle.cjs');wire.battle=engine.create('beach',wi
   wire.world.serverNow=new Date().toISOString();wire.world.motionUntil=wire.world.serverNow;
   holdMotion=true;const epoch=wire.world.serverNow;
   await p.waitForFunction(epoch=>MareGameSession.data.online.world.serverNow===epoch,epoch);
+  const repeatedAt=new Date(Date.parse(epoch)+100).toISOString();
+  wire.world.serverNow=repeatedAt;wire.world.motionUntil=repeatedAt;repeatMotion=true;
   const motion=await p.evaluate(async()=>{
    const rows=[],start=performance.now();
+   const duplicate=new Promise((resolve,reject)=>setTimeout(()=>MareGameSession.read(true).then(resolve,reject),90));
    await new Promise(resolve=>{function frame(t){const d=__mareDiagnostics();rows.push({t:t-start,hero:d.hero.x,mob:d.mobs[0].x});if(t-start<680)requestAnimationFrame(frame);else resolve();}requestAnimationFrame(frame);});
+   await duplicate;
    return rows;
   });
+  assert.equal(await p.evaluate(()=>MareGameSession.data.online.world.serverNow),repeatedAt,'repeat reached the running game');
+  fs.writeFileSync(path.join(out,'dawn-motion-frames.json'),JSON.stringify(motion));
   holdMotion=false;for(const release of heldReplies)release();
-  const middle=motion.find(s=>s.t>=320),late=motion.find(s=>s.t>=600);
+  const middle=motion.find(s=>s.t>=500),late=motion.find(s=>s.t>=650);
   assert(middle&&late,'capture middle and end of a combat snapshot interval');
   assert(late.hero-middle.hero>1,'auto hero must keep moving after the first 200ms');
   assert(late.mob-middle.mob>1,'monster must keep moving after the first 180ms');

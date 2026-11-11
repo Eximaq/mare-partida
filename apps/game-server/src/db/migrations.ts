@@ -22,12 +22,44 @@ async function loadMigrations(directory: string): Promise<Migration[]> {
 }
 
 function assertHistory(migrations: Migration[], applied: Applied[]) {
-  for (const [index, row] of applied.entries()) {
-    const expected = migrations[index];
-    if (!expected || expected.name !== row.name || expected.checksum !== row.checksum) {
+  // Keep deployed receipts immutable when public main allocated the same numbers.
+  // Only these exact, audited private scripts may appear outside the public prefix.
+  const groups = [
+    {current:'0053_detach_claimed_dungeon_members.sql', checksum:'87423f59558537c4be6e3dd32d72ee625e1906fa0550436e7cdf3f619efed331',
+      names:['0040_detach_claimed_dungeon_members.sql','0047_detach_claimed_dungeon_members.sql','0049_detach_claimed_dungeon_members.sql','0050_detach_claimed_dungeon_members.sql','0052_detach_claimed_dungeon_members.sql']},
+    {current:'0054_fruit_rework_compatibility.sql', checksum:'41e298e875e2aa27082c3c242ef370702ae699f09a2548e75e72e9e5d1793b3a',
+      names:['0051_fruit_rework_compatibility.sql','0053_fruit_rework_compatibility.sql']},
+  ];
+  const aliases = new Map<string,string>();
+  for(const group of groups){
+    const rows=applied.filter(row=>group.names.includes(row.name));
+    if(!rows.length)continue;
+    const row=rows[0]!;
+    if(rows.length!==1 || row.checksum!==group.checksum || applied.some(r=>r.name===group.current) ||
+       !migrations.some(r=>r.name===group.current&&r.checksum===group.checksum)){
+      throw new Error('Migration history mismatch; unknown or duplicate private receipt');
+    }
+    const number=Number(row.name.slice(0,4));
+    const prefix=number>=52?52:Math.min(number,50);
+    if(migrations.some(r=>Number(r.name.slice(0,4))<prefix&&!applied.some(a=>a.name===r.name&&a.checksum===r.checksum))){
+      throw new Error('Migration history mismatch; private receipt requires its complete predecessors');
+    }
+    aliases.set(row.name,group.current);
+  }
+  if(groups[1]!.names.some(name=>aliases.has(name)) &&
+     !applied.some(row=>row.name===groups[0]!.current||groups[0]!.names.includes(row.name))){
+    throw new Error('Migration history mismatch; fruit rework requires the dungeon repair');
+  }
+  const renamed=new Set(aliases.values());
+  const expectedHistory=migrations.filter(row=>!renamed.has(row.name));
+  const canonicalHistory=applied.filter(row=>!aliases.has(row.name));
+  for(const [index,row] of canonicalHistory.entries()){
+    const expected=expectedHistory[index];
+    if(!expected||expected.name!==row.name||expected.checksum!==row.checksum){
       throw new Error('Migration history mismatch; restore matching files or add a new migration');
     }
   }
+  return new Set(applied.map(row=>aliases.get(row.name)??row.name));
 }
 
 export async function applyMigrations(pool: Pool, directory = defaultDirectory): Promise<string[]> {
@@ -44,8 +76,8 @@ export async function applyMigrations(pool: Pool, directory = defaultDirectory):
         name text PRIMARY KEY, checksum text NOT NULL, applied_at timestamptz NOT NULL DEFAULT now()
       )`);
     const applied = await client.query<Applied>('SELECT name, checksum FROM mare_meta.schema_migrations ORDER BY name');
-    assertHistory(migrations, applied.rows);
-    const pending = migrations.slice(applied.rowCount ?? 0);
+    const completed = assertHistory(migrations, applied.rows);
+    const pending = migrations.filter(migration => !completed.has(migration.name));
     for (const migration of pending) {
       await client.query(migration.sql);
       await client.query('INSERT INTO mare_meta.schema_migrations(name,checksum) VALUES($1,$2)', [migration.name, migration.checksum]);
@@ -62,7 +94,7 @@ export async function isDatabaseReady(pool: Pool): Promise<boolean> {
   try {
     const migrations = await loadMigrations(defaultDirectory);
     const applied = await pool.query<Applied>('SELECT name, checksum FROM mare_meta.schema_migrations ORDER BY name');
-    assertHistory(migrations, applied.rows);
-    return applied.rows.length === migrations.length;
+    const completed = assertHistory(migrations, applied.rows);
+    return completed.size === migrations.length;
   } catch { return false; }
 }

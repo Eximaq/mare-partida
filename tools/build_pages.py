@@ -25,6 +25,7 @@ web_files = ['index.html', 'ui-preview.html', 'ui-art-direction.css', 'item-cata
 web_files += ['party-ui.js','party.css','crew-flag.js','crew-ui.js','crew-ui.css','social-ui.js','social-ui.css','market-online-ui.js','market-online-ui.css']
 web_files += ['world-map-exports-data.js','world-map-exports.js','quest-dungeons-data.js','quest-dungeons-world.js','boss-dungeon-system.js','boss-dungeon-combat.js','dungeon-boss-art-data.js','boss-dungeon-ui.js','save-writer.js','boss-dungeons.css']
 web_files += ['rank-a-data.js', 'rank-a-expansion.js', 'rank-a-system.js', 'character-appearance.js', 'character-studio.js', 'character-studio.css', 'headgear-visibility.js', 'paper-doll-96-lobby.js', 'paper-doll-look-data.js', 'paper-doll-look.js', 'paper-doll-coverage.js', 'paper-doll-look.css', 'sprite-combat-v2-data.js', 'sprite-combat-v2.js', 'ui-navigator.css', 'character-hud.js', 'rank-s-data.js', 'rank-s-system.js', 'rank-s-rework-data.js', 'rank-s-rework.js', 'paramecia-rework-data.js', 'paramecia-rework-manifest.js', 'jiki-assembly-art.js']
+web_files += ['weekly-boss-ui.js','weekly-boss-ui.css','akainu-art-data.js','akainu-art.js']
 if not include_reviews:
     retired_scripts = {"paper-doll.js", "paper-doll-assets.js", "paper-doll-review.js", "paper-doll-look-data.js", "paper-doll-look.js", "paper-doll-coverage.js", "paper-doll-look.css"}
     web_files = [name for name in web_files if name not in retired_scripts]

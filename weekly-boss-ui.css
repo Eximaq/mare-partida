@@ -1,0 +1,34 @@
+#weeklyBossMenu[hidden],#weeklyBossHUD[hidden]{display:none!important}
+#weeklyBossDialog{box-sizing:border-box;width:min(720px,calc(100vw - 24px));max-height:calc(100dvh - 32px);overflow:auto;padding:24px;color:#f2e7ce;background:linear-gradient(145deg,#182931,#101b23);border:2px solid #b9985e;border-radius:10px;box-shadow:0 24px 70px #000b;font:inherit;z-index:10000}
+#weeklyBossDialog::backdrop{background:#030b12bb}
+#weeklyBossDialog *{box-sizing:border-box}
+#weeklyBossDialog h2,#weeklyBossDialog h3,#weeklyBossDialog p{margin:0 0 12px}
+#weeklyBossDialog small{font-size:11px;letter-spacing:.1em;color:#d9b875}
+#weeklyBossDialog .weekly-heading{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #806a43;margin-bottom:18px;padding-bottom:12px}
+#weeklyBossDialog .weekly-heading h2{font-size:28px;margin-top:5px}
+#weeklyBossDialog button{min-height:42px;padding:9px 14px;border:1px solid #aa8a55;border-radius:5px;background:#243b42;color:#fff1d5;font:inherit;cursor:pointer}
+#weeklyBossDialog button:hover:not(:disabled){background:#355058}
+#weeklyBossDialog button:disabled{opacity:.45;cursor:not-allowed}
+#weeklyBossDialog button:focus-visible,#weeklyBossDialog input:focus-visible,#weeklyBossDialog summary:focus-visible{outline:2px solid #efd290;outline-offset:3px}
+#weeklyBossDialog .weekly-heading button{align-self:flex-start;font-size:24px;line-height:1}
+#weeklyBossDialog .weekly-message{color:#f3d28e;min-height:1.4em}
+#weeklyBossDialog .weekly-event,#weeklyBossDialog .weekly-admin{padding:18px 0;border-top:1px solid #5b5444}
+#weeklyBossDialog .weekly-event button{margin:4px 8px 0 0}
+#weeklyBossDialog .weekly-danger{background:#603337;border-color:#bd7774}
+#weeklyBossDialog .weekly-note,#weeklyBossDialog .weekly-closed{line-height:1.5;color:#d1c6ad}
+#weeklyBossDialog .weekly-actions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 18px}
+#weeklyBossDialog details{border:1px solid #57616a;border-radius:5px;padding:12px}
+#weeklyBossDialog summary{cursor:pointer;padding:5px 0;margin-bottom:10px}
+#weeklyBossDialog fieldset{border:0;padding:0;margin:0;min-width:0}
+#weeklyBossDialog .weekly-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#weeklyBossDialog label{display:grid;gap:6px;font-size:13px}
+#weeklyBossDialog input[type=number]{width:100%;min-height:40px;padding:8px;color:#fff2d7;background:#0d1820;border:1px solid #6b6a5b;border-radius:4px;font:inherit}
+#weeklyBossDialog .weekly-confirm{display:flex;align-items:flex-start;margin:18px 0;line-height:1.4}
+#weeklyBossDialog input[type=checkbox]{width:20px;height:20px;flex:none;margin:0}
+#weeklyBossHUD{position:fixed;top:88px;left:50%;transform:translateX(-50%);width:min(380px,calc(100vw - 32px));padding:10px 14px;z-index:80;pointer-events:none;color:#fff0ce;background:#111e29ed;border:1px solid #bd985a;border-radius:7px;text-align:center;box-shadow:0 4px 16px #0008}
+#weeklyBossHUD strong{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:16px}
+#weeklyBossHUD small{font-size:10px;font-weight:400;color:#e7c98c}
+#weeklyBossHUD span{font-size:12px}
+#weeklyBossHUD .weekly-life{height:10px;background:#412b32;border-radius:3px;margin:7px 0 4px;overflow:hidden}
+#weeklyBossHUD .weekly-life i{display:block;height:100%;background:linear-gradient(90deg,#b33931,#f08039)}
+@media(max-width:480px){#weeklyBossDialog{padding:16px;width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}#weeklyBossDialog .weekly-fields{grid-template-columns:1fr}#weeklyBossDialog .weekly-actions button{flex:1 1 100%}#weeklyBossHUD{top:64px}}

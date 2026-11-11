@@ -10,7 +10,7 @@ function setup(id='alvida'){
  let now=1000;const step=(dt=.05)=>E.step(b,{hero,nav,stats,baseStats:stats,classId:'sword',factionId:'pirate',level:10,build:{nodes:{},keystone:null,ultimate:null},rng:()=>.5,now:now+=dt*1000,dt});return {b,hero,stats,step};
 }
 test('nine dungeons use their original boss profile, spawn and persistent resources',()=>{
- for(const d of D.catalog){const f=setup(d.id),m=f.b.mobs[0],p=D.combatProfile(d.id);assert.equal(f.b.mobs.length,1);assert.equal(m.type,d.monster);assert.equal(m.hp,p.maxHP);assert.equal(m.attack,p.attack);assert.equal(m.defense,p.defense);assert.equal(m.magicDefense,p.magicDefense);assert.equal(m.x,928);assert.equal(m.y,672);assert.equal(f.hero.x,928);assert.equal(f.hero.y,1440);assert.equal(f.b.energy,42);assert.deepEqual(f.b.cooldowns,[3,7]);assert.equal(f.b.talentCooldowns.immortalUntil,90000);}
+ for(const d of D.catalog){const f=setup(d.id),m=f.b.mobs[0],p=D.combatProfile(d.id);assert.equal(f.b.mobs.length,1);assert.equal(m.type,d.monster);assert.equal(m.hp,p.maxHP);assert.equal(m.attack,p.attack);assert.equal(m.defense,p.defense);assert.equal(m.magicDefense,p.magicDefense);assert.equal(m.x,1816);assert.equal(m.y,1384);assert.equal(f.hero.x,1824);assert.equal(f.hero.y,2144);assert.equal(f.b.energy,42);assert.deepEqual(f.b.cooldowns,[3,7]);assert.equal(f.b.talentCooldowns.immortalUntil,90000);}
 });
 test('boss impact occurs once at its authored contact frame, survives JSON and cannot hit out of range',()=>{
  for(const id of D.catalog.map((d:any)=>d.id))for(const [direction,dx,dy] of [['south',0,40],['north',0,-40],['east',40,0],['west',-40,0]] as const){

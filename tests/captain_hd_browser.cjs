@@ -32,13 +32,16 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await page.locator('[data-profile-tab=gear]').click();await page.waitForFunction(()=>document.querySelector('#captainPortraitState')?.hidden);
  assert.equal(await page.locator('.captain-equipment-card').count(),12);
  assert(await page.locator('[data-profile-slot] .captain-equipment-art img').evaluateAll(es=>es.length>0&&es.every(e=>e.getAttribute('src').startsWith('assets/ui/items-hd/'))));
- // Lazy images may not have a current request when decode() is called.
- // Request every equipment card in this fixture, then retain strict decoding.
+ // Load lazy cards, decode stable resources despite HUD node replacement, and
+ // require the current panel to finish loading. Missing/corrupt images still fail.
  const equipmentImages='[data-profile-slot] .captain-equipment-art img';
  await page.locator(equipmentImages).evaluateAll(es=>es.forEach(e=>{e.loading='eager'}));
  try{
+  await page.locator(equipmentImages).evaluateAll(es=>Promise.all(es.map(async e=>{
+   const source=e.currentSrc||e.src,image=new Image();image.src=source;
+   try{await image.decode();}catch(error){throw Error('Equipment image decode failed: '+source+' ('+error.message+')');}
+  })));
   await page.waitForFunction(selector=>{const images=[...document.querySelectorAll(selector)];return images.length>0&&images.every(e=>e.complete&&e.naturalWidth>0)},equipmentImages);
-  await page.locator(equipmentImages).evaluateAll(es=>Promise.all(es.map(async e=>{try{await e.decode()}catch(error){throw Error('Equipment image decode failed: '+e.src+' ('+error.message+')')}})));
  }catch(error){
   const state=await page.locator(equipmentImages).evaluateAll(es=>es.map(e=>({src:e.currentSrc||e.src,complete:e.complete,width:e.naturalWidth,connected:e.isConnected})));
   throw Error('Equipment images failed: '+JSON.stringify(state)+'; '+error.message);

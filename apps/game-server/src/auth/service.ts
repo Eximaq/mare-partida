@@ -1,9 +1,11 @@
+import {readWeeklyBoss,touchWeeklyBossPresence} from '../characters/weekly-boss.js';
 import {heartbeatSocialPresence,readPrivateMessages,readSocialContacts,readSocialContactBadge} from '../characters/social-contacts.js';
 import {readSocialMail,readSocialMailCount} from '../characters/mail.js';
 import {marketAvailable,readMarket,readMarketBadge,sweepMarket,type MarketRead} from '../characters/market.js';
 import {reapExpiredTrades,readTrade,readSocialTradeCount} from '../characters/trade.js';
 
 import {readCombatInputs} from '../characters/combat-inputs.js';
+import {presentationParty,presence,refreshPartyLeader} from '../characters/party.js';
 import {readPartyMotion} from '../characters/party.js';
 import {readParty} from '../characters/party.js';
 import {readCrew,readCrewIdentity,readCrewRankings} from '../characters/crew.js';
@@ -19,7 +21,7 @@ import {readPrison} from '../characters/prison.js';
 import {readAchievements} from '../characters/achievements.js';
 import {readTalents} from '../characters/talents.js';
 import {readWorld,stopWorld} from '../characters/world.js';
-import {readContracts} from '../characters/contracts.js';
+import {readContracts,needsDailyContracts,initializeDailyContracts} from '../characters/contracts.js';
 import {readBattle,pauseBattle} from '../characters/battle.js';
 import {readOriginalInventory} from '../gameplay/inventory.js';
 import {getGameCatalog} from "../gameplay/catalog.js";
@@ -344,21 +346,89 @@ export class AuthService {
     });
   }
   async crewRanking(token:string){return this.withSession(token,"play",async client=>({leaderboard:await readCrewRankings(client)}));}
-  /** Compact presentation snapshot under the same authorization/lock boundary as full state. */
-  async onlineFrame(token:string,id:string){
-    return this.withSession(token,'play',async(client,row)=>{
-      await this.owned(client,row.account_id,id,true);await lockParty(client,id);
-      const state=await readCharacterState(client,id),partyMotion=await readPartyMotion(client,id);
+  /** Only presentation is MVCC. Commands and provider refresh retain their locks. */
+  private async presentation<T>(token:string,id:string,run:(client:PoolClient,weeklyBoss:Awaited<ReturnType<typeof readWeeklyBoss>>|null)=>Promise<T>,prepareContracts=false):Promise<T>{
+    const hash=digest(token);
+    const access=async(client:Pick<PoolClient,'query'>,provider=true,weekly=false)=>{
+      const weeklyFields=weekly?`,
+        EXISTS(SELECT 1 FROM mare_game.weekly_boss_operators o WHERE o.account_id=s.account_id) can_manage,
+        EXISTS(SELECT 1 FROM mare_game.weekly_boss_members m WHERE m.character_id=$2) member,
+        EXISTS(SELECT 1 FROM mare_game.weekly_boss_events e WHERE e.mode='official' AND e.status='active' AND e.closes_at>clock_timestamp()) public_active,
+        (SELECT e.cycle_key::text FROM mare_game.weekly_boss_entitlements e WHERE e.character_id=$2 ORDER BY e.cycle_key DESC LIMIT 1) cycle`:
+        provider?'':", to_regclass('mare_game.weekly_boss_settings') IS NOT NULL weekly_available";
+      const row=(await client.query(`SELECT s.id,s.account_id,s.provider_valid_until,clock_timestamp() now,
+        EXISTS(SELECT 1 FROM mare_game.characters WHERE id=$2 AND account_id=s.account_id) owned${weeklyFields}
+        FROM mare_game.app_sessions s JOIN mare_game.accounts a ON a.id=s.account_id AND a.auth_epoch=s.account_epoch
+        WHERE s.token_hash=$1 AND s.kind='play' AND s.revoked_at IS NULL
+        AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp()`,[hash,id])).rows[0];
+      if(!row||provider&&row.provider_valid_until<=row.now)throw unauthorized();
+      if(!row.owned)throw new AuthFault(404,'character_not_found');
+      return row;
+    };
+    const initial=await access(this.options.pool,false);
+    if(initial.provider_valid_until<=initial.now){
+      // Refresh tokens still rotate exactly once under the existing session lock.
+      await this.withSession(token,'play',(client,row)=>this.owned(client,row.account_id,id));
+    }else{
+      // Best-effort idle heartbeat: do not queue behind a simulation/refresh lock.
+      // Expiry is never bypassed; the snapshot and final check use the stored TTL.
+      await this.options.pool.query(`WITH heartbeat AS (
+        SELECT s.id FROM mare_game.app_sessions s JOIN mare_game.accounts a ON a.id=s.account_id AND a.auth_epoch=s.account_epoch
+        WHERE s.token_hash=$1 AND s.kind='play' AND s.revoked_at IS NULL AND s.expires_at>clock_timestamp()
+        AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp() FOR UPDATE OF s SKIP LOCKED)
+        UPDATE mare_game.app_sessions s SET idle_expires_at=LEAST(expires_at,clock_timestamp()+$2::bigint*interval '1 millisecond')
+        FROM heartbeat WHERE s.id=heartbeat.id`,[hash,this.options.policy.idleMs]);
+    }
+    const pulse=await this.options.pool.connect();let staleParty:string|undefined;let missingContracts=false;
+    try{
+      staleParty=await presentationParty(pulse,id);
+      if(prepareContracts)missingContracts=await needsDailyContracts(pulse,id);
+    }finally{pulse.release();}
+    if(staleParty||missingContracts)await this.withSession(token,'play',async(client,row)=>{
+      await this.owned(client,row.account_id,id,missingContracts);
+      if(staleParty){
+        const group=await lockParty(client,id);
+        if(group)await refreshPartyLeader(client,group,await presence(client,group));
+      }
+      if(missingContracts){
+        const inputs=(await readCombatInputs(client,[id],{crewBenefits:false})).get(id)!;
+        await initializeDailyContracts(client,id,{state:inputs.state,legacyFighter:()=>inputs.fighter(null,true)});
+      }
+    });
+    const client=await this.options.pool.connect();
+    try{
+      await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+      await client.query("SET LOCAL statement_timeout='3s'; SET LOCAL idle_in_transaction_session_timeout='10s'");
+      const context=await access(client,true,initial.weekly_available);
+      const weeklyBoss=initial.weekly_available?await readWeeklyBoss(client,id,context):null;
+      const result=await run(client,weeklyBoss);
+      await client.query('COMMIT');
+      // A fresh READ COMMITTED statement, not the old snapshot: discard a response
+      // if logout/recovery/rotation/expiry committed while it was being projected.
+      if(weeklyBoss?.current)await touchWeeklyBossPresence(client,id,initial.id);
+      await access(client);
+      return result;
+    }catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
+  }
+  /** Compact, owner-only presentation from one committed database snapshot. */
+  async onlineFrame(token:string,id:string,knownVersion?:number){
+    return this.presentation(token,id,async(client,weeklyBoss)=>{
+      const state=await readCharacterState(client,id);
+      if(knownVersion!==undefined&&knownVersion<state.version){
+        const fullState=await this.readOnlineState(client,id,weeklyBoss,state);
+        return {protocol:2,characterId:id,version:state.version,serverNow:new Date().toISOString(),fullState};
+      }
+      const partyMotion=await readPartyMotion(client,id);
       const world=await readWorld(client,id),battle=await readBattle(client,id),lobby=await readLobby(client,id,world);
       const timing=(await client.query("SELECT clock_timestamp() now,tick_at FROM mare_game.character_battles WHERE character_id=$1",[id])).rows[0];
-      return {protocol:2,characterId:id,version:state.version,serverNow:(timing?.now??new Date()).toISOString(),simulationAgeMs:timing?Math.max(0,timing.now.getTime()-timing.tick_at.getTime()):null,world,battle,lobby,partyMotion};
+      return {protocol:2,characterId:id,version:state.version,serverNow:(timing?.now??new Date()).toISOString(),simulationAgeMs:timing?Math.max(0,timing.now.getTime()-timing.tick_at.getTime()):null,world,battle,lobby,partyMotion,weeklyBoss};
     });
   }
   async onlineState(token: string, id: string) {
-    return this.withSession(token, "play", async (client, row) => {
-      await this.owned(client, row.account_id, id,true);
-      const state = await readCharacterState(client, id);
-      await lockParty(client,id);
+    return this.presentation(token,id,async (client,weeklyBoss) =>
+      this.readOnlineState(client,id,weeklyBoss,await readCharacterState(client,id)),true);
+  }
+  private async readOnlineState(client:PoolClient,id:string,weeklyBoss:Awaited<ReturnType<typeof readWeeklyBoss>>|null,state:Awaited<ReturnType<typeof readCharacterState>>) {
       const party=await readParty(client,id);
       const journey = (await client.query<{ started: boolean }>(
         "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started", [id],
@@ -373,14 +443,13 @@ export class AuthService {
       const battle=await readBattle(client,id),haki=battle?hakiView(battle):null,prison=await readPrison(client,id);
       const fruits=inputs?.fruits??await readFruits(client,id),talents=inputs?.talents??await readTalents(client,id,state),power=inputs?.permanentPower();
       const combatPreview=inputs?.inventory?inputs.fighter(battle):await readFighter(client,id,state);
-      const hierarchy=await readHierarchy(client,id,state,power);
+      const hierarchy=await readHierarchy(client,id,state,power,true);
       const achievements=await readAchievements(client,id,state,{power,prison,haki,fruits});
       const bounty=originalInventory&&hierarchy&&combatPreview.rulesetId==='original-character-v1'?await readBounty(client,state,{
         power:hierarchy.power,factionId:combatPreview.factionId,crewAvailable:!!inputs?.crewAvailable,
         hierarchy,achievements,prison,haki
       }):null;
-      return { sync:{protocol:2}, bounty, ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...(await hasSocial(client)?{socialAvailable:true}:{}), ...(await marketAvailable(client)?{marketAvailable:true}:{}), state, party, profile, fruits, hierarchy, haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements, talents, contracts:await readContracts(client,id,{state,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state,!!originalInventory), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
-    });
+      return { sync:{protocol:2}, bounty, weeklyBoss, ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...(await hasSocial(client)?{socialAvailable:true}:{}), ...(await marketAvailable(client)?{marketAvailable:true}:{}), state, party, profile, fruits, hierarchy, haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements, talents, contracts:await readContracts(client,id,{state,readOnly:true,schemaAvailable:inputs?.dailyAvailable,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state,!!originalInventory), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
   }
   private async owned(
     client: PoolClient,

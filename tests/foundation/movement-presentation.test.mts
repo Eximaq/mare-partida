@@ -49,3 +49,34 @@ test('buffered combat handles jitter and a stop, while manual movement retains s
  p.update(idle(145),2400,{buffered:true});assert.equal(p.sample(4000).x,145);
  p.update(idle(160),4100);assert.equal(p.sample(4300).x,160);
 });
+
+test('a repeated combat position preserves the pace of the current interpolation',()=>{
+ const idle=(x:number)=>world(x,{path:[]}),options={buffered:true};
+ for(const walk of [false,true]){
+  const regular=createWorldPresentation({walk}),repeated=createWorldPresentation({walk});
+  for(const p of [regular,repeated]){
+   p.update(idle(0),0,options);
+   p.update(idle(75),750,options);
+  }
+  for(let t=760;t<=1600;t+=10){
+   if(t===850)repeated.update(idle(75),t,options);
+   assert.equal(repeated.sample(t).x,regular.sample(t).x,`duplicate changed the pace at ${t}ms (walk=${walk})`);
+  }
+  assert.equal(repeated.sample(2000).x,75);
+ }
+});
+
+test('combat interpolation still advances across the observed 865ms gap',()=>{
+ const idle=(x:number)=>world(x,{path:[]}),options={buffered:true};
+ for(const walk of [false,true]){
+  const p=createWorldPresentation({walk});
+  p.update(idle(0),0,options);
+  p.update(idle(75),750,options);
+  let earlier;
+  for(let t=760;t<=1610;t+=10){
+   const {x}=p.sample(t);
+   if(t===1600)earlier=x;
+   if(t===1610)assert(x>earlier!&&x<75,`combat paused before the next frame (walk=${walk})`);
+  }
+ }
+});

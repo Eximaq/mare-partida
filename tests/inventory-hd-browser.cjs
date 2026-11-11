@@ -4,7 +4,7 @@ await p.route('**/__dev_version',r=>r.fulfill({body:'stable'}));
 await p.route('**/game.js*',async r=>{const a=await r.fetch();
 await r.fulfill({response:a,body:(await a.text()).replace('  window.__mareDiagnostics=','  window.__invQA={get game(){return game},defs:itemDefs,newItem,openPanel,renderPanel,get ui(){return inventoryUI},stats:getDerived,get forge(){return forgeUI},save:saveGame,refresh:updateUI,select(id){selectedItem=id;renderPanel()}};\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')})});
 await p.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8159/');
-await p.waitForFunction(()=>window.__invQA&&__mareDiagnostics().lobby96.state==='ready',null,{timeout:90000});
+await p.waitForFunction(()=>window.__invQA&&__mareDiagnostics().lobby96.state==='ready',null,{timeout:90000}).catch(async e=>{console.error({errors,readiness:await p.evaluate(()=>({hook:!!window.__invQA,lobby:window.__mareDiagnostics?.().lobby96,ready:document.readyState}))});throw e;});
 await p.locator('#characterName').fill('Papacapim');
 await p.locator('#nextToClass').click();
 await p.locator('#nextToAppearance').click();

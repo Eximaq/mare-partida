@@ -58,6 +58,24 @@ test('worker advances only authorized server time, serializes kills and atomical
  await a.read();await a.read();assert.deepEqual((await pool.query('SELECT simulation,tick_at FROM mare_game.character_battles')).rows,snapshot,'GET never advances simulation');
  await service.logout(a.login.token,'all');await tick();assert.deepEqual((await pool.query('SELECT simulation,tick_at FROM mare_game.character_battles')).rows,snapshot);
 }));
+test('solo tick writes simulation and time together, preserving the control epoch',async()=>authDatabase(async({service,pool})=>{
+ const a=await actor(service);await a.send(await a.input('battle.start'));
+ await a.send(await a.input('world.travel',{islandId:'dawn'}));
+ await pool.query("UPDATE mare_game.character_battles SET tick_at=clock_timestamp()-interval '250 milliseconds'");
+ const before=(await pool.query('SELECT tick_at,control_epoch FROM mare_game.character_battles')).rows[0];
+ await pool.query(`CREATE TABLE mare_game.test_tick_writes(tick_changed boolean,epoch_unchanged boolean);
+ CREATE FUNCTION mare_game.test_count_tick_write() RETURNS trigger LANGUAGE plpgsql AS $$
+ BEGIN
+ INSERT INTO mare_game.test_tick_writes VALUES(NEW.tick_at>OLD.tick_at,NEW.control_epoch=OLD.control_epoch);
+ RETURN NEW;
+ END $$;
+ CREATE TRIGGER test_tick_write AFTER UPDATE ON mare_game.character_battles
+ FOR EACH ROW EXECUTE FUNCTION mare_game.test_count_tick_write()`);
+ await battle.tickWorldBattles(pool);
+ assert.deepEqual((await pool.query('SELECT * FROM mare_game.test_tick_writes')).rows,[{tick_changed:true,epoch_unchanged:true}]);
+ const after=(await pool.query('SELECT tick_at,control_epoch FROM mare_game.character_battles')).rows[0];
+ assert(after.tick_at>before.tick_at);assert.equal(after.control_epoch,before.control_epoch);
+}));
 test('expired controller/provider and restart gaps never farm offline; reward write failure rolls back the whole tick',async()=>authDatabase(async({service,pool})=>{
  const tick=()=>(battle as any).tickWorldBattles(pool),a=await actor(service,'strategist');await a.send(await a.input('battle.start'));await a.send(await a.input('world.travel',{islandId:'dawn'}));await a.send(await a.input('battle.auto',{enabled:true}));
  await pool.query("UPDATE mare_game.character_battles SET tick_at=clock_timestamp()-interval '1 hour'");await tick();let o=await a.read();assert.equal(o.battle.auto,false);assert.equal(o.state.experience,'0');

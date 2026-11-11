@@ -89,6 +89,8 @@ test('deployed battle rules migrate once without moving wounded monsters or rese
   'c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46',
   '79cf407896a79045951d84214601438b80b1b121dea598f6a66619f76935a82f',
   'c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b',
+  'b672ad6a2dc8d1b947514a51985552813cbf96dc2b40fad2935275ef3d81a977',
+  'af7565fe0be56f7430216ed4d617953ccc25eea962245cb09f93dd21796c8b34',
  ]){
   const f=fixture(),m=f.m;m.hp=Math.floor(m.maxHP/2);const ratio=m.hp/m.maxHP,x=m.x;
   f.b.rulesHash=rulesHash;delete m.balanceVersion;

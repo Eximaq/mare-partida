@@ -22,9 +22,9 @@
   const originalSlots=['head','necklace','coat','legs','boots','weapon','cloak','gloves','ring','belt','charm','akuma_no_mi'];
   const instanceId=v=>typeof v==='string'&&/^[a-zA-Z0-9:-]{1,80}$/.test(v);
   function validForge(op){
-    if(!op||typeof op!=='object'||!Number.isSafeInteger(op.expectedSeq)||op.expectedSeq<0)return false;
-    const fields={upgrade:['itemId'],imbue:['itemId','pearlItemId','socket'],remove:['itemId','socket'],fuse:['itemIds'],fuseEquipment:['itemIds','slot'],reforge:['itemId'],reforgeLine:['itemId','line']}[op.type];
-    if(!fields||Object.keys(op).sort().join()!==['type','expectedSeq',...fields].sort().join())return false;
+    if(!op||typeof op!=='object'||typeof op.type!=='string'||!Number.isSafeInteger(op.expectedSeq)||op.expectedSeq<0)return false;
+    const fields={formEpicWeapon:[],upgrade:['itemId'],imbue:['itemId','pearlItemId','socket'],remove:['itemId','socket'],fuse:['itemIds'],fuseEquipment:['itemIds','slot'],reforge:['itemId'],reforgeLine:['itemId','line']}[op.type];
+    if(!Array.isArray(fields)||Object.keys(op).sort().join()!==['type','expectedSeq',...fields].sort().join())return false;
     return fields.every(k=>k==='itemIds'?Array.isArray(op[k])&&op[k].length===5&&new Set(op[k]).size===5&&op[k].every(instanceId):k==='slot'?originalSlots.includes(op[k]):k==='socket'||k==='line'?Number.isInteger(op[k])&&op[k]>=0&&op[k]<=(k==='socket'?4:7):instanceId(op[k]));
   }
   function validIntent(action, p) {
@@ -32,6 +32,17 @@
     const keys = Object.keys(p).sort().join();
     const socialId=v=>typeof v==='string'&&/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(v);
     const namedInvite=(keys==='targetId'&&socialId(p.targetId))||(keys==='name'&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=40);
+    if(action==='weeklyBoss.execute'){
+      const version=v=>Number.isSafeInteger(v)&&v>0;
+      if(['test','leave'].includes(p.op))return keys==='op';
+      if(p.op==='activate')return keys==='op,revision'&&version(p.revision);
+      if(p.op==='join')return keys==='eventId,op'&&socialId(p.eventId);
+      if(p.op==='cancel')return keys==='eventId,op,version'&&socialId(p.eventId)&&version(p.version);
+      if(p.op==='configure'){
+        const c=p.config,q=c?.profile,limits={hp:[1,1e9],attack:[1,1e6],defense:[0,1e6],magicDefense:[0,1e6],speed:[1,240],reach:[24,160],attackSec:[1,30],aoeCooldown:[4,120],aoeRadius:[48,240],aoeWindup:[.8,5],aoeMultiplier:[.1,10],level:[1,1000],leash:[240,1200]},point=v=>v&&Object.keys(v).sort().join()==='x,y'&&[v.x,v.y].every(n=>Number.isFinite(n)&&n>=0&&n<=100000);
+        return keys==='config,op,revision'&&version(p.revision)&&c&&Object.keys(c).sort().join()==='balanceApproved,durationMinutes,entry,mapId,maxPlayers,minLevel,profile,spawn'&&c.mapId==='marineford'&&c.balanceApproved===true&&point(c.spawn)&&point(c.entry)&&Number.isInteger(c.maxPlayers)&&c.maxPlayers>=1&&c.maxPlayers<=16&&Number.isInteger(c.minLevel)&&c.minLevel>=1&&c.minLevel<=1000&&Number.isInteger(c.durationMinutes)&&c.durationMinutes>=1&&c.durationMinutes<=180&&q&&Object.keys(q).sort().join()===Object.keys(limits).sort().join()&&Object.entries(limits).every(([k,[lo,hi]])=>Number.isFinite(q[k])&&q[k]>=lo&&q[k]<=hi)&&Number.isInteger(q.hp)&&Number.isInteger(q.level)&&q.leash>=q.aoeRadius+64;
+      }return false;
+    }
     if(['party.invite','crew.invite','trade.invite'].includes(action))return namedInvite;
     if(['friend.request','friend.remove'].includes(action))return keys==='targetId'&&socialId(p.targetId);
     if(action==='friend.respond')return keys==='accept,requestId'&&socialId(p.requestId)&&typeof p.accept==='boolean';
@@ -220,9 +231,8 @@
       storage.removeItem(key);
     };
     const fault = (code) => Object.assign(new Error(code), { code });
-    async function api(path, payload) {
-      const headers = {},
-        options = { cache: "no-store", signal: AbortSignal.timeout(10000) };
+    async function api(path, payload, headers = {}) {
+      const options = { cache: "no-store", signal: AbortSignal.timeout(10000), headers };
       if (payload !== undefined) {
         const csrf = await csrfToken();
         headers["content-type"] = "application/json";
@@ -331,15 +341,29 @@
       const flight=(async()=>{
         const original=data,revision=++readVersion,started=monotonic();
         try{
-          const f=await api(`/v1/characters/${original.character.id}/frame`),completed=monotonic();
+          const protocol=original.online.sync.protocol;
+          const knownVersion=original.online.state.version;
+          const headers=protocol===2?{'x-mare-state-version':String(knownVersion)}:{};
+          const f=await api(`/v1/characters/${original.character.id}/frame`,undefined,headers),completed=monotonic();
           if(revision!==readVersion||data!==original)return;
-          if(![1,2].includes(f.protocol)||f.protocol!==original.online.sync.protocol||f.characterId!==original.character.id||!Number.isSafeInteger(f.version)||f.version<0||!Number.isFinite(Date.parse(f.serverNow))||!('world' in f)||!('battle' in f)||!('lobby' in f)||!(f.protocol===2?'partyMotion' in f:'party' in f))throw fault('invalid_server_state');
-          // Economy, equipment, skills and derived stats change only through full state.
-          const party=f.protocol===2?mergePartyMotion(original.online.party,f.partyMotion):f.party;
+          if(f.protocol!==protocol||f.characterId!==original.character.id||!Number.isSafeInteger(f.version)||f.version<0||!Number.isFinite(Date.parse(f.serverNow)))throw fault('invalid_server_state');
           const daily=original.online.contracts?.daily;
-          if(f.version!==original.online.state.version||(f.protocol===2&&!party)||(daily&&Date.parse(f.serverNow)>=daily.endsAt))return read(true);
+          const dailyExpired=daily&&Date.parse(f.serverNow)>=daily.endsAt;
+          let online;
+          if('fullState' in f){
+            validate(original,f.fullState);
+            if(protocol!==2||f.fullState.sync?.protocol!==protocol||f.fullState.state.version!==f.version||f.version<=knownVersion)throw fault('invalid_server_state');
+            if(dailyExpired)return read(true);
+            online=f.fullState;
+          }else{
+            if(!('world' in f)||!('battle' in f)||!('lobby' in f)||!(protocol===2?'partyMotion' in f:'party' in f))throw fault('invalid_server_state');
+            const party=protocol===2?mergePartyMotion(original.online.party,f.partyMotion):f.party;
+            // Older servers and changes outside the compact projection still need a full read.
+            if(f.version!==knownVersion||(protocol===2&&!party)||dailyExpired)return read(true);
+            online={...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party,weeklyBoss:f.weeklyBoss??null};
+          }
           networkSample={rttMs:Math.max(0,completed-started),at:completed,intervalMs:networkSample?Math.max(0,completed-networkSample.at):null};
-          data={character:original.character,online:{...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party}};
+          data={character:original.character,online};
           available=true;notify();return data;
         }catch(error){if(revision===readVersion){available=false;notify();}throw error;}
       })().finally(()=>{if(frameFlight===flight)frameFlight=null;});
@@ -365,6 +389,7 @@
       busy = true;
       notify();
       try {
+        const sentControl = control;
         const receipt=await api(`/v1/characters/${data.character.id}/commands`, {
           requestId: intent.requestId,
           expectedVersion: intent.expectedVersion,
@@ -373,7 +398,21 @@
           control: { epoch: control.epoch, token: control.token },
         });
         discard();
-        await read(intent.action!=='profile.identity');
+        const reconciliation = read(intent.action!=='profile.identity');
+        const online = data?.online;
+        const world = receipt.world;
+        // Render the confirmed path while the full snapshot reconciles state and inventory.
+        if ((intent.action === 'world.move' || intent.action === 'world.stop') &&
+            control === sentControl && receipt.requestId === intent.requestId &&
+            receipt.action === intent.action && data?.character?.id === intent.characterId &&
+            receipt.state?.characterId === intent.characterId && online?.world && world &&
+            receipt.state.version >= online.state.version && world.mapId === online.world.mapId &&
+            world.rulesHash === online.world.rulesHash &&
+            Date.parse(world.serverNow) >= Date.parse(online.world.serverNow)) {
+          data = { ...data, online: { ...online, world } };
+          notify();
+        }
+        await reconciliation;
         return receipt;
       } catch (error) {
         if (error.status && error.status < 500) discard();
@@ -417,7 +456,7 @@
       acquire,
       async command(action, payload = {}) {
         if (!validIntent(action, payload)) throw fault("invalid_intent");
-        if (pending) throw fault("pending_command");
+        if (pending || busy) throw fault("pending_command");
         if (!available || !control || !data?.character)
           throw fault("control_required");
         const intent = {

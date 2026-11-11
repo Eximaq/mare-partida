@@ -88,6 +88,7 @@ test("client economic intents allow original actions and reject client-supplied 
     ["items.sell", { itemId: "server-instance" }],
     ["potions.buy", {}],
     ["potions.use", {}],
+    ["forge.execute", { operation: { type: "formEpicWeapon", expectedSeq: 0 } }],
     ["potions.buy", {kind: "mana", quantity: 2}],
     ["potions.use", {kind: "mana"}],
     [
@@ -108,6 +109,10 @@ test("client economic intents allow original actions and reject client-supplied 
     ["potions.use", { kind: "mana", quantity: 2 }],
     ["items.equip", { itemId: "x", attack: 999 }],
     ["items.sell", { itemId: "x", ownerId: "other" }],
+    ["forge.execute", { operation: { type: "formEpicWeapon", expectedSeq: 0, potential: 100 } }],
+    ["forge.execute", { operation: { type: "formEpicWeapon", expectedSeq: 0, itemId: "chosen-weapon" } }],
+    ["forge.execute", { operation: { type: "constructor", expectedSeq: 0 } }],
+    ["forge.execute", { operation: { type: ["formEpicWeapon"], expectedSeq: 0 } }],
     [
       "forge.execute",
       {

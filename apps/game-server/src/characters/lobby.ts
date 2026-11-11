@@ -1,6 +1,6 @@
 import type {PoolClient} from 'pg';
 import type {WorldSnapshot} from '@mare/shared';
-import {readWorld} from './world.js';
+import {readWorlds} from './world.js';
 const limit=16;
 /** Public visual projection only. No client position, private inventory or account/session identifier. */
 export async function readLobby(client:PoolClient,id:string,world:WorldSnapshot|null){
@@ -21,8 +21,10 @@ export async function readLobby(client:PoolClient,id:string,world:WorldSnapshot|
  AND s.revoked_at IS NULL AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp()
  AND s.provider_valid_until>clock_timestamp() AND s.account_epoch=a.auth_epoch
  ORDER BY c.id LIMIT $3`,[id,world.rulesHash,limit+1])).rows;
- for(const row of rows.slice(0,limit)){
-  const motion=await readWorld(client,row.id);
+ const visible=rows.slice(0,limit);
+ const positions=await readWorlds(client,visible.map(row=>row.id));
+ for(const row of visible){
+  const motion=positions.get(row.id);
   // A travel committed between the roster query and the position query must not leak a hunt.
   if(motion?.mapId!=='lobby')continue;
   const equipment:Record<string,{def:number}>={};

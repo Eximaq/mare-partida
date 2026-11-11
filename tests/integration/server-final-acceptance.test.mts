@@ -31,7 +31,8 @@ test('every command rejects injected authority, foreign character, absent CSRF a
   'trade.invite':{targetId:b.c.id},'trade.respond':{tradeId:randomUUID(),accept:true},'trade.cancel':{tradeId:randomUUID()},
   'trade.offer':{tradeId:randomUUID(),expectedOfferVersion:1,itemId:'fixture-owned-item',quantity:1},'trade.lock':{tradeId:randomUUID(),expectedOfferVersion:1,locked:true},
   'trade.confirm':{tradeId:randomUUID(),expectedOfferVersion:1},
-  'market.execute':{kind:'market_publish',itemId:'fixture-owned-item',quantity:1,mode:'direct',price:100,hours:24},
+  'weeklyBoss.execute':{op:'test'},
+  'market.execute':{kind:'market_publish',mode:'direct',itemId:'fixture-owned-item',quantity:1,price:100,hours:24},
  });
  const expected=characterCommandSchema.options.flatMap(s=>{const a:any=s.shape.action;return a.options??[a.value];});assert.deepEqual(Object.keys(values).sort(),expected.sort(),'new actions must be added to the adversarial matrix');
  const server=createHttpServer({isReady:async()=>true,handle:createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9443',cookieSeconds:3600})});server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${(server.address() as any).port}`,before=await a.read();
@@ -58,7 +59,7 @@ test('navigation upgrade changes only the known hash, preserves all rows and fai
  await f.pool.query('UPDATE mare_game.character_world SET rules_hash=$2 WHERE character_id=$1',[b.c.id,'f'.repeat(64)]);
  const tables=(await f.pool.query("SELECT tablename FROM pg_tables WHERE schemaname='mare_game' ORDER BY tablename")).rows.map(r=>r.tablename);
  const snapshot=async()=>{const out:Record<string,unknown>={};for(const t of tables){assert.match(t,/^[a-z_]+$/);out[t]=(await f.pool.query(`SELECT to_jsonb(t) row FROM mare_game.${t} t ORDER BY to_jsonb(t)::text`)).rows.map(r=>t==='character_world'?{...r.row,rules_hash:r.row.character_id===a.c.id?'known':r.row.rules_hash}:r.row);}return out;};
- const before=await snapshot(),sql=(await Promise.all(['0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0041_progression_hud_balance.sql'].map(name=>readFile(new URL('../../apps/game-server/migrations/'+name,import.meta.url),'utf8')))).join('\n');
+ const before=await snapshot(),sql=(await Promise.all(['0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0041_progression_hud_balance.sql','0052_world_map_exports.sql'].map(name=>readFile(new URL('../../apps/game-server/migrations/'+name,import.meta.url),'utf8')))).join('\n');
  await f.pool.query(sql);await f.pool.query(sql);assert.deepEqual(await snapshot(),before);
  assert.equal((await f.pool.query('SELECT rules_hash FROM mare_game.character_world WHERE character_id=$1',[a.c.id])).rows[0].rules_hash,current);
  await a.read();await assert.rejects(b.read(),{code:'world_rules_changed'});

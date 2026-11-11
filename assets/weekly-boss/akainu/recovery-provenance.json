@@ -1,0 +1,330 @@
+{
+  "normalization": [
+    {
+      "clip": "walk",
+      "direction": "south",
+      "frame": 0,
+      "sourceBounds": [
+        19,
+        2,
+        91,
+        86
+      ],
+      "translation": [
+        9,
+        30
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "south",
+      "frame": 1,
+      "sourceBounds": [
+        108,
+        2,
+        181,
+        85
+      ],
+      "translation": [
+        9,
+        30
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "south",
+      "frame": 2,
+      "sourceBounds": [
+        200,
+        2,
+        271,
+        86
+      ],
+      "translation": [
+        9,
+        30
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "south",
+      "frame": 3,
+      "sourceBounds": [
+        290,
+        2,
+        364,
+        86
+      ],
+      "translation": [
+        9,
+        30
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "west",
+      "frame": 0,
+      "sourceBounds": [
+        31,
+        97,
+        89,
+        181
+      ],
+      "translation": [
+        4,
+        31
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "west",
+      "frame": 1,
+      "sourceBounds": [
+        112,
+        97,
+        185,
+        181
+      ],
+      "translation": [
+        4,
+        31
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "west",
+      "frame": 2,
+      "sourceBounds": [
+        214,
+        97,
+        267,
+        181
+      ],
+      "translation": [
+        4,
+        31
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "west",
+      "frame": 3,
+      "sourceBounds": [
+        292,
+        97,
+        365,
+        181
+      ],
+      "translation": [
+        4,
+        31
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "east",
+      "frame": 0,
+      "sourceBounds": [
+        21,
+        192,
+        73,
+        274
+      ],
+      "translation": [
+        17,
+        34
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "east",
+      "frame": 1,
+      "sourceBounds": [
+        105,
+        192,
+        175,
+        273
+      ],
+      "translation": [
+        17,
+        34
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "east",
+      "frame": 2,
+      "sourceBounds": [
+        202,
+        192,
+        256,
+        272
+      ],
+      "translation": [
+        17,
+        34
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "east",
+      "frame": 3,
+      "sourceBounds": [
+        287,
+        192,
+        360,
+        272
+      ],
+      "translation": [
+        17,
+        34
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "north",
+      "frame": 0,
+      "sourceBounds": [
+        19,
+        284,
+        92,
+        374
+      ],
+      "translation": [
+        8,
+        30
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "north",
+      "frame": 1,
+      "sourceBounds": [
+        110,
+        284,
+        183,
+        373
+      ],
+      "translation": [
+        8,
+        30
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "north",
+      "frame": 2,
+      "sourceBounds": [
+        202,
+        284,
+        273,
+        374
+      ],
+      "translation": [
+        8,
+        30
+      ]
+    },
+    {
+      "clip": "walk",
+      "direction": "north",
+      "frame": 3,
+      "sourceBounds": [
+        291,
+        284,
+        365,
+        374
+      ],
+      "translation": [
+        8,
+        30
+      ]
+    },
+    {
+      "clip": "idle",
+      "direction": "south",
+      "source": "punch frame 0",
+      "translation": [
+        -21,
+        -26
+      ]
+    },
+    {
+      "clip": "idle",
+      "direction": "west",
+      "source": "punch frame 0",
+      "translation": [
+        -24,
+        -24
+      ]
+    },
+    {
+      "clip": "idle",
+      "direction": "east",
+      "source": "punch frame 0",
+      "translation": [
+        -11,
+        -22
+      ]
+    },
+    {
+      "clip": "idle",
+      "direction": "north",
+      "source": "punch frame 0",
+      "translation": [
+        -16,
+        -23
+      ]
+    }
+  ],
+  "sheets": [
+    {
+      "name": "idle",
+      "size": [
+        96,
+        384
+      ],
+      "rgbaSha256": "6cfe1a7a62b14de972e7a8aaecfde504c0a7d7fd036b3700acc910c916681111"
+    },
+    {
+      "name": "walk",
+      "size": [
+        512,
+        512
+      ],
+      "rgbaSha256": "7d1d44b489422e96020a6006fd19a3fce0d58b3a12ca36f45a3a49d070f718ad"
+    },
+    {
+      "name": "hurt",
+      "size": [
+        384,
+        512
+      ],
+      "rgbaSha256": "a320a632a6cb4e0e307dbe08a070d7edf718b0dd32807c16a7eed9eb891b50c4"
+    },
+    {
+      "name": "punch",
+      "size": [
+        640,
+        512
+      ],
+      "rgbaSha256": "abaff3abcdb1ff4ee75fd2466e890f5b15fc573d28c36a6bda5a76a3e21ecc60"
+    },
+    {
+      "name": "aoe",
+      "size": [
+        768,
+        512
+      ],
+      "rgbaSha256": "ba318398bf8afce661c9f34c0856594a07e6417136796c39a95729ba6bcda373"
+    },
+    {
+      "name": "magma-area",
+      "size": [
+        1152,
+        768
+      ],
+      "rgbaSha256": "dbedb80442399c194914d4485cbbde099190f4aed347500bae8b42ada05ca55f"
+    }
+  ]
+}

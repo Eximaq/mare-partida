@@ -4,12 +4,16 @@ import {AuthFault} from "../auth/errors.js";
 import {advanceOriginalLevel,previousXpNeeded,xpNeeded} from '../gameplay/character.js';
 
 // At most20 levels per reward, matching gainXP. Exact BIGINT XP and immutable receipts.
-export async function advanceLevel(client:PoolClient,id:string,requestId:string,state:CharacterState) {
+export async function advanceLevel(client:PoolClient,id:string,requestId:string,state:CharacterState,original?:boolean) {
   const row=(await client.query<{level:number;experience:string;start:string}>(`SELECT level,experience::text,level_start_experience::text AS start
     FROM mare_game.character_progression WHERE character_id=$1`,[id])).rows[0];
   if(!row||row.level!==state.level)throw new AuthFault(503,"character_state_unavailable");
-  const present=(await client.query("SELECT to_regclass('mare_game.game_inventory') IS NOT NULL AS present")).rows[0].present;
-  const original=present&&(await client.query('SELECT 1 FROM mare_game.game_inventory WHERE character_id=$1',[id])).rowCount;
+  // Workers already validated the fighter/inventory under these same locks.
+  // Older tutorial callers still discover the schema and owned inventory here.
+  if(original===undefined){
+    const present=(await client.query("SELECT to_regclass('mare_game.game_inventory') IS NOT NULL AS present")).rows[0].present;
+    original=!!(present&&(await client.query('SELECT 1 FROM mare_game.game_inventory WHERE character_id=$1',[id])).rowCount);
+  }
   const next=advanceOriginalLevel({level:row.level,start:BigInt(row.start),experience:BigInt(row.experience)},20,original?xpNeeded:previousXpNeeded);
   if(next.level===state.level)return;
   for(const earned of next.levels)await client.query(`INSERT INTO mare_game.character_level_ledger(character_id,level,request_id,experience_total,version_before)

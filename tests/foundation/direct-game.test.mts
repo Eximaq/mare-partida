@@ -12,7 +12,8 @@ function fixture(options:any={}) {
   const requests: any[] = [],
     storage = new Map();
   const snapshot = () => ({
-    ...(options.frameSupport?{sync:{protocol:1}}:{}),
+    ...(options.frameSupport?{sync:{protocol:options.frameProtocol??1}}:{}),
+    ...(options.world ? { world: options.world } : {}),
     state: { characterId: id, version, level: 1, experience: "20", gold: "8" },
     progression: { xpIntoLevel: "20", xpForNextLevel: "80" },
     journey: { started: true },
@@ -53,7 +54,10 @@ function fixture(options:any={}) {
         });
       if (path === "/v1/auth/csrf")
         return Response.json({ csrfToken: "fixture" });
-      if (path.endsWith("/online-state")) return stateStatus===200?Response.json(snapshot()):Response.json({error:"unavailable"},{status:stateStatus});
+      if (path.endsWith("/online-state")) {
+        if (version > 0 && options.waitForSnapshot) await options.waitForSnapshot();
+        return stateStatus===200?Response.json(snapshot()):Response.json({error:"unavailable"},{status:stateStatus});
+      }
       if(path.endsWith('/frame'))return Response.json({protocol:1,characterId:id,version,serverNow:new Date().toISOString(),simulationAgeMs:40,world:null,battle:null,lobby:{players:[]},party:{group:null,invites:[]},...(options.framePatch||{})});
       if(path.endsWith('/control/renew'))return renewalStatus===200?Response.json({epoch:1}):Response.json({error:renewalStatus===409?'control_conflict':'unavailable'},{status:renewalStatus});
       if (path.endsWith("/control"))
@@ -61,7 +65,13 @@ function fixture(options:any={}) {
       if (path.endsWith("/commands")) {
         if (fail) throw new Error("lost reply");
         version++;
-        return Response.json({});
+        const intent = JSON.parse(o.body);
+        return Response.json(options.commandWorld ? {
+          requestId: intent.requestId,
+          action: intent.action,
+          state: snapshot().state,
+          world: options.commandWorld,
+        } : {});
       }
       if (path === "/v1/auth/logout")
         return new Response(null, { status: 204 });
@@ -104,6 +114,53 @@ test('commands reuse identity and short-lived memory CSRF instead of serial redu
  assert.equal(f.requests.filter(r=>r.path==='/v1/auth/csrf').length,1);
  assert.equal(f.requests.filter(r=>r.path.endsWith('/online-state')).length,3);
  assert.equal(f.storage.size,0);
+});
+
+test('the accepted movement is visible while the full snapshot is still loading', async () => {
+  const world = {
+    mapId: 'lobby', rulesHash: 'fixture-world', area: null,
+    position: { x: 0, y: 0 }, path: [], speed: 100, direction: 'right',
+    serverNow: '2026-11-11T12:00:00.000Z', motionUntil: '2026-11-11T12:00:00.000Z',
+  };
+  const accepted = {
+    ...world, path: [{ x: 100, y: 0 }],
+    serverNow: '2026-11-11T12:00:00.100Z', motionUntil: '2026-11-11T12:00:01.100Z',
+  };
+  let signalReconciliation!: () => void;
+  let releaseSnapshot!: () => void;
+  const reconciling = new Promise<void>((resolve) => { signalReconciliation = resolve; });
+  const release = new Promise<void>((resolve) => { releaseSnapshot = resolve; });
+  const f = fixture({
+    world, commandWorld: accepted,
+    waitForSnapshot: () => { signalReconciliation(); return release; },
+  });
+  await f.client.load();
+  await f.client.acquire();
+  const moving = f.client.command('world.move', { x: 100, y: 0 });
+  try {
+    await reconciling;
+    assert.deepEqual(f.client.data.online.world, accepted);
+    assert.equal(f.client.data.online.state.version, 0);
+    await assert.rejects(f.client.command('world.stop', {}), { code: 'pending_command' });
+  } finally {
+    releaseSnapshot();
+    await moving;
+  }
+  assert.equal(f.client.data.online.state.version, 1);
+  assert.deepEqual(f.client.data.online.world, world);
+});
+
+test('a second intent during reconciliation cannot leave an unsent command for replay',async()=>{
+ const f=fixture();await f.client.load();await f.client.acquire();
+ let second:Promise<unknown>|undefined;
+ const off=f.client.subscribe(()=>{
+  if(f.client.busy&&!f.client.pending&&!second)
+   second=f.client.command('world.travel',{islandId:'dawn'}).catch((error:any)=>error.code);
+ });
+ try{await f.client.command('world.stop',{});}finally{off();}
+ assert.ok(second);assert.equal(await second,'pending_command');
+ assert.equal(f.storage.size,0);assert.equal(f.client.pending,null);
+ assert.equal(f.requests.filter(r=>r.path.endsWith('/commands')).length,1);
 });
 
 test('CSRF cache is single-flight, expires, clears on rejection/logout and never retries mutations',async()=>{
@@ -276,6 +333,20 @@ test('Party motion preserves public metadata and requires full refresh on roster
  assert.equal(merged.group.members[0].hp,80);assert.equal(merged.group.members[0].name,'Captain');assert.equal(merged.invites,full.invites);assert.equal((full.group.members[0] as any).hp,undefined);
  assert.equal(mergePartyMotion(full,{group:{id:'g',members:[{id:'other'}]}}),null);
  assert.equal(mergePartyMotion(full,{group:null}),null);
+});
+test('a newer compact request can return full progress and Dawn positions in one response',async()=>{
+ const world={mapId:'dawn',position:{x:40,y:80},path:[]};
+ const fullState={sync:{protocol:2},state:{characterId:id,version:1,level:2,experience:'80',gold:'30'},world,battle:null,lobby:{players:[]},party:{group:null,invites:[]}};
+ const f=fixture({frameSupport:true,frameProtocol:2,framePatch:{protocol:2,version:1,fullState}});
+ await f.client.load();
+ await f.client.readFrame();
+ assert.equal(f.requests.filter(r=>r.path.endsWith('/online-state')).length,1);
+ assert.equal(new Headers(f.requests.find(r=>r.path.endsWith('/frame')).headers).get('x-mare-state-version'),'0');
+ assert.deepEqual(f.client.data.online,fullState);
+ const forged=fixture({frameSupport:true,frameProtocol:2,framePatch:{protocol:2,version:1,fullState:{...fullState,state:{...fullState.state,characterId:'other'}}}});
+ await forged.client.load();
+ await assert.rejects(forged.client.readFrame(),{code:'invalid_server_state'});
+ assert.equal(forged.client.data.online.state.version,0);
 });
 test('an older failed read cannot undo a newer successful connection; authentication failure still closes it',async()=>{
  const pending:Array<{resolve:(value:Response)=>void;reject:(reason:Error)=>void}>=[];
