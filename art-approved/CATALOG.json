@@ -1093,6 +1093,13 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/m158-equipped-south-v3/male116_south_M158_head157_equipped-approved-v3.zip",
+      "bytes": 921800,
+      "sha256": "3cef8ee2d843766e54579e000794e94ac238e4062f147615b12c1a71098bc48c",
+      "pngEntries": 5,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/relicario32-reapproved/weapon32_north_visual-v2_reapproved.zip",
       "bytes": 4162759,
       "sha256": "241bd9d298a06e5498fe6e74d8a085c0c9ee7b75ad82ce97a177cfce662ad852",
