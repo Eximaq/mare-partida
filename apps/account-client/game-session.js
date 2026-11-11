@@ -231,8 +231,8 @@
       storage.removeItem(key);
     };
     const fault = (code) => Object.assign(new Error(code), { code });
-    async function api(path, payload, headers = {}) {
-      const options = { cache: "no-store", signal: AbortSignal.timeout(10000), headers };
+    async function api(path, payload, headers = {}, signal = AbortSignal.timeout(10000)) {
+      const options = { cache: "no-store", signal, headers };
       if (payload !== undefined) {
         const csrf = await csrfToken();
         headers["content-type"] = "application/json";
@@ -284,14 +284,14 @@
       )
         throw fault("invalid_server_state");
     }
-    async function read(snapshotOnly=false) {
+    async function read(snapshotOnly=false,{signal}={}) {
       const revision = ++readVersion;
       let me, online;
       try {
-        me = snapshotOnly&&data?.character ? {character:data.character} : await api("/v1/me");
+        me = snapshotOnly&&data?.character ? {character:data.character} : await api("/v1/me",undefined,{},signal);
         const started=monotonic();
         online = me.character
-          ? await api(`/v1/characters/${me.character.id}/online-state`)
+          ? await api(`/v1/characters/${me.character.id}/online-state`,undefined,{},signal)
           : null;
         validate(me, online);
         const completed=monotonic();
@@ -335,8 +335,8 @@
       return data;
     }
     let frameFlight=null;
-    async function readFrame(){
-      if(![1,2].includes(data?.online?.sync?.protocol))return read(true);
+    async function readFrame({signal}={}){
+      if(![1,2].includes(data?.online?.sync?.protocol))return read(true,{signal});
       if(frameFlight)return frameFlight;
       const flight=(async()=>{
         const original=data,revision=++readVersion,started=monotonic();
@@ -344,7 +344,7 @@
           const protocol=original.online.sync.protocol;
           const knownVersion=original.online.state.version;
           const headers=protocol===2?{'x-mare-state-version':String(knownVersion)}:{};
-          const f=await api(`/v1/characters/${original.character.id}/frame`,undefined,headers),completed=monotonic();
+          const f=await api(`/v1/characters/${original.character.id}/frame`,undefined,headers,signal),completed=monotonic();
           if(revision!==readVersion||data!==original)return;
           if(f.protocol!==protocol||f.characterId!==original.character.id||!Number.isSafeInteger(f.version)||f.version<0||!Number.isFinite(Date.parse(f.serverNow)))throw fault('invalid_server_state');
           const daily=original.online.contracts?.daily;
@@ -353,13 +353,13 @@
           if('fullState' in f){
             validate(original,f.fullState);
             if(protocol!==2||f.fullState.sync?.protocol!==protocol||f.fullState.state.version!==f.version||f.version<=knownVersion)throw fault('invalid_server_state');
-            if(dailyExpired)return read(true);
+            if(dailyExpired)return read(true,{signal});
             online=f.fullState;
           }else{
             if(!('world' in f)||!('battle' in f)||!('lobby' in f)||!(protocol===2?'partyMotion' in f:'party' in f))throw fault('invalid_server_state');
             const party=protocol===2?mergePartyMotion(original.online.party,f.partyMotion):f.party;
             // Older servers and changes outside the compact projection still need a full read.
-            if(f.version!==knownVersion||(protocol===2&&!party)||dailyExpired)return read(true);
+            if(f.version!==knownVersion||(protocol===2&&!party)||dailyExpired)return read(true,{signal});
             online={...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party,weeklyBoss:f.weeklyBoss??null};
           }
           networkSample={rttMs:Math.max(0,completed-started),at:completed,intervalMs:networkSample?Math.max(0,completed-networkSample.at):null};

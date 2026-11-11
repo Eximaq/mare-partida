@@ -16,6 +16,8 @@ import {AuthService as CompiledAuthService} from '../../apps/game-server/dist/au
 const readInt=(key:string,fallback:number,min:number,max:number)=>{const n=Number(process.env[key]??fallback);assert.ok(Number.isInteger(n)&&n>=min&&n<=max,key);return n;};
 const threaded=process.env.MARE_LOAD_SIMULATION==='workers';
 const clients=readInt('MARE_LOAD_CLIENTS',12,1,3000),seconds=readInt('MARE_LOAD_SECONDS',20,10,600),mode=process.env.MARE_LOAD_MODE??'mixed';
+const pollInterval=readInt('MARE_LOAD_INTERVAL_MS',750,250,3000);
+const sharedIp=process.env.MARE_LOAD_SHARED_IP==='1';
 assert.ok(['full','mixed','party'].includes(mode));assert.ok(!process.env.MARE_LOAD_TARGET,'External targets are not supported');
 assert.ok(mode!=='party'||clients%4===0,'Party load requires complete four-member rooms');
 const sleep=(n:number)=>new Promise(r=>setTimeout(r,Math.max(0,n)));
@@ -27,7 +29,7 @@ await authDatabase(async f=>{
   const command=async(action:any,payload:any={})=>{const state=await f.service.characterState(s.token,c.id);return f.service.command(s.token,c.id,{requestId:randomUUID(),expectedVersion:state.version,control:lease,action,payload});};
   for(const action of ['items.initialize','world.initialize','battle.start'])await command(action);
   if(mode!=='party'){await command('world.travel',{islandId:'dawn'});await command('battle.auto',{enabled:true});}
-  users.push({s,c,lease,command,reading:false,renewing:false,nextRenew:0,lastFull:-Infinity});
+  users.push({s,c,lease,command,reading:false,renewing:false,nextRenew:0,lastFull:-Infinity,version:(await f.service.characterState(s.token,c.id)).version});
  }
  if(mode==='party')for(let start=0;start<users.length;start+=4){
   const group=users.slice(start,start+4),a=group[0];await a.command('party.create');
@@ -60,7 +62,7 @@ await authDatabase(async f=>{
  server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${(server.address() as any).port}`;
  try{
  await workers?.start();
- const headers=(u:any,i:number)=>({cookie:`__Host-mare_session=${u.s.token}`,'x-mare-client-ip':`10.${Math.floor(i/65000)}.${Math.floor(i/250)%250}.${i%250+1}`});
+ const headers=(u:any,i:number)=>({cookie:`__Host-mare_session=${u.s.token}`,'x-mare-client-ip':sharedIp?'10.0.0.1':`10.${Math.floor(i/65000)}.${Math.floor(i/250)%250}.${i%250+1}`});
  const renew=async(u:any,i:number)=>{
   const auth=headers(u,i),signal=AbortSignal.timeout(6000);
   const csrf=await fetch(base+'/v1/auth/csrf',{headers:auth,signal});
@@ -83,55 +85,69 @@ await authDatabase(async f=>{
  await f.pool.query('UPDATE mare_game.party_instances SET tick_at=clock_timestamp()');
  timer=setInterval(()=>{if(!workers){solo.tick();party.tick();}},250);delay.enable();
  const times:number[]=[],bytes:number[]=[],app:number[]=[],ages:number[]=[],statuses:Record<string,number>={};let dropped=0,inflight=0,requests=0,maxPoolWait=0,stop=false;
- const startedAt=new Date().toISOString(),cpu=process.cpuUsage(),start=performance.now(),end=start+seconds*1000,next=users.map((_,i)=>start+i*750/clients);
+ const startedAt=new Date().toISOString(),cpu=process.cpuUsage(),start=performance.now(),end=start+seconds*1000,next=users.map((_,i)=>start+i*pollInterval/clients);
  const requestFailures={timeout:0,network:0,invalidResponse:0};
- for(const [i,u] of users.entries())u.nextRenew=start+30000+i*750/clients;
+ for(const [i,u] of users.entries())u.nextRenew=start+30000+i*pollInterval/clients;
  let schedulerMissed=0,readBusy=0,queueFull=0,renewals=0,renewalFailures=0;
- const transitions:any[]=[],windows:any[]=[];let windowAt=start,windowRequests=0,windowDrops=0,windowPeak=0,windowTimes:number[]=[];
+ const transitions:any[]=[],windows:any[]=[];
+ let windowAt=start,windowRequests=0,windowDrops=0,windowPeak=0;
+ let windowTimes:number[]=[],windowAppTimes:number[]=[],windowRenewTimes:number[]=[];
+ const recordWindow=(now:number)=>{
+  const window={second:Math.round((now-start)/1000),requests:requests-windowRequests,dropped:dropped-windowDrops,
+   poolWaitPeak:windowPeak,httpP95Ms:Math.round(percentile(windowTimes,.95)),appP95Ms:Math.round(percentile(windowAppTimes,.95)),
+   renewals:windowRenewTimes.length,renewalMaxMs:Math.round(Math.max(0,...windowRenewTimes))};
+  windows.push(window);
+  if(process.env.MARE_LOAD_PROGRESS==='1')console.log(JSON.stringify({event:'capacity_window',...window,interrupted:transitions.length}));
+  windowAt=now;windowRequests=requests;windowDrops=dropped;windowPeak=0;
+  windowTimes=[];windowAppTimes=[];windowRenewTimes=[];
+ };
   while(performance.now()<end&&!stop){
    if(workers&&!workers.healthy()){stop=true;break;}
    const now=performance.now();maxPoolWait=Math.max(maxPoolWait,f.pool.waitingCount);
    windowPeak=Math.max(windowPeak,f.pool.waitingCount);
-   if(now-windowAt>=10000){
-    windows.push({second:Math.round((now-start)/1000),requests:requests-windowRequests,dropped:dropped-windowDrops,poolWaitPeak:windowPeak,httpP95Ms:Math.round(percentile(windowTimes,.95))});
-    if(process.env.MARE_LOAD_PROGRESS==='1')console.log(JSON.stringify({event:'capacity_window',...windows.at(-1),interrupted:transitions.length}));
-    windowAt=now;windowRequests=requests;windowDrops=dropped;windowPeak=0;windowTimes=[];
-   }
+   if(now-windowAt>=10000)recordWindow(now);
    for(let i=0;i<users.length;i++){
     const u=users[i];
     if(now>=u.nextRenew&&!u.renewing){
      u.nextRenew+=30000;u.renewing=true;
-     const flight=renew(u,i).then(status=>{renewals++;if(status!==200)renewalFailures++;},()=>{renewalFailures++;}).finally(()=>{u.renewing=false;});
+     const renewalStarted=performance.now();
+     const flight=renew(u,i).then(status=>{renewals++;if(status!==200)renewalFailures++;},()=>{renewalFailures++;}).finally(()=>{
+      windowRenewTimes.push(performance.now()-renewalStarted);u.renewing=false;
+     });
      flights.add(flight);void flight.finally(()=>flights.delete(flight));
     }
     if(now<next[i]!)continue;
-    const missed=Math.floor((now-next[i]!)/750);schedulerMissed+=missed;dropped+=missed;next[i]!+=(missed+1)*750;
+    const missed=Math.floor((now-next[i]!)/pollInterval);schedulerMissed+=missed;dropped+=missed;next[i]!+=(missed+1)*pollInterval;
     if(u.reading){readBusy++;dropped++;continue;}
     if(inflight>=96){queueFull++;dropped++;continue;}
     const full=mode==='full'||now-u.lastFull>=3000,path=full?'online-state':'frame';
     if(full)u.lastFull=now;
     u.reading=true;inflight++;requests++;
     const flight=(async()=>{const t=performance.now(),signal=AbortSignal.timeout(6000);let received=false;try{
-     const r=await fetch(`${base}/v1/characters/${u.c.id}/${path}`,{headers:headers(u,i),signal}),body=await r.text();
-     received=true;statuses[r.status]=(statuses[r.status]??0)+1;times.push(performance.now()-t);bytes.push(Buffer.byteLength(body));const ms=Number(r.headers.get('server-timing')?.match(/dur=([\d.]+)/)?.[1]);if(Number.isFinite(ms))app.push(ms);
+     const r=await fetch(`${base}/v1/characters/${u.c.id}/${path}`,{headers:{...headers(u,i),...(full?{}:{'x-mare-state-version':String(u.version)})},signal}),body=await r.text();
+     received=true;statuses[r.status]=(statuses[r.status]??0)+1;times.push(performance.now()-t);bytes.push(Buffer.byteLength(body));
+     const ms=Number(r.headers.get('server-timing')?.match(/dur=([\d.]+)/)?.[1]);
+     if(Number.isFinite(ms)){app.push(ms);windowAppTimes.push(ms);}
      windowTimes.push(times.at(-1)!);
      if(r.ok){
       const value=JSON.parse(body);assert.equal(value.characterId??value.state.characterId,u.c.id);
+      u.version=value.version??value.state.version;
       if(Number.isFinite(value.simulationAgeMs))ages.push(value.simulationAgeMs);
-      if(value.battle?.auto===false&&!u.stopped){
-       u.stopped=true;transitions.push({actor:i+1,room:mode==='party'?Math.floor(i/4)+1:null,atMs:Math.round(performance.now()-start),alive:value.battle.hp>0,poolWait:f.pool.waitingCount,httpInFlight:inflight});
+      const battle=(value.fullState??value).battle;
+      if(battle?.auto===false&&!u.stopped){
+       u.stopped=true;transitions.push({actor:i+1,room:mode==='party'?Math.floor(i/4)+1:null,atMs:Math.round(performance.now()-start),alive:battle.hp>0,poolWait:f.pool.waitingCount,httpInFlight:inflight});
       }
      }else if(r.status>=500)stop=true;
     }catch(error){const kind=received?'invalidResponse':signal.aborted&&signal.reason?.name==='TimeoutError'?'timeout':'network';requestFailures[kind]++;statuses[kind]=(statuses[kind]??0)+1;stop=true;}finally{u.reading=false;inflight--;}})();flights.add(flight);void flight.finally(()=>flights.delete(flight));
    }
    await sleep(10);
   }
-  const plannedPolls=Math.ceil(seconds*1000*clients/750);
-  const duePolls=stop?Math.ceil(Math.min(seconds*1000,performance.now()-start)*clients/750):plannedPolls;
+  const plannedPolls=Math.ceil(seconds*1000*clients/pollInterval);
+  const duePolls=stop?Math.ceil(Math.min(seconds*1000,performance.now()-start)*clients/pollInterval):plannedPolls;
   const unissued=Math.max(0,duePolls-requests-dropped),aborted=plannedPolls-duePolls;
   schedulerMissed+=unissued;dropped+=unissued+aborted;
   await Promise.all(flights);
-  windows.push({second:Math.round((performance.now()-start)/1000),requests:requests-windowRequests,dropped:dropped-windowDrops,poolWaitPeak:windowPeak,httpP95Ms:Math.round(percentile(windowTimes,.95))});
+  recordWindow(performance.now());
   const workerStatus=workers?.report();clearInterval(timer);await Promise.all([solo.stop(),party.stop(),workers?.stop()]);
   const elapsed=performance.now()-start,cpuUsed=process.cpuUsage(cpu);
   const bad=(await f.pool.query('SELECT count(*)::int n FROM mare_game.character_progression WHERE gold<0 OR experience<0')).rows[0].n;assert.equal(bad,0);
@@ -146,7 +162,7 @@ await authDatabase(async f=>{
    runtime:{node:process.version,apiPoolMax:f.pool.options.max,
     api:f.service instanceof CompiledAuthService?'compiled':'source',
     developmentLoader:process.execArgv.some(v=>/tsx|--(?:import|loader)/.test(v))},
-   activity,simulation:threaded?'workers':'inline',workerStatus,fixtureIntegrity:fixture?.integrity(),profile:mode,clients,
+   activity,simulation:threaded?'workers':'inline',workerStatus,fixtureIntegrity:fixture?.integrity(),profile:mode,clients,pollInterval,sharedIp,
    parties:mode==='party'?clients/4:0,partitionLoad,controlled,providerFixtureLifetimeMs:f.provider.tokenLifetimeMs,
    startedAt,endedAt:new Date().toISOString(),processId:process.pid,
    durationSeconds:Math.round(elapsed/1000),requests,statuses,dropped,requestFailures,

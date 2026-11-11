@@ -360,3 +360,25 @@ test('an older failed read cannot undo a newer successful connection; authentica
  pending[3]!.resolve(Response.json({error:'session_expired'},{status:401}));await rejected;
  assert.equal(c.available,false,'401 remains fail-closed even when responses are reordered');assert.equal(c.data,null);
 });
+
+test('a stalled frame observes the polling deadline and the following frame recovers',async()=>{
+ const character={id,name:'Fixture',classId:'sword',factionId:'pirate'};
+ const snapshot={sync:{protocol:1},state:{characterId:id,version:0,level:1,experience:'0',gold:'0'}};
+ let stall=true;
+ const c=createSession({storage:{getItem(){return null;},removeItem(){}},fetch:async(path:string,options:any)=>{
+  if(path==='/v1/me')return Response.json({character});
+  if(path.endsWith('/online-state'))return Response.json(snapshot);
+  if(stall)return new Promise((_resolve,reject)=>{
+   const guard=setTimeout(()=>reject(new Error('polling deadline was ignored')),250);
+   options.signal.addEventListener('abort',()=>{clearTimeout(guard);reject(options.signal.reason);},{once:true});
+  });
+  return Response.json({protocol:1,characterId:id,version:0,serverNow:new Date().toISOString(),world:null,battle:null,lobby:{},party:null});
+ }});
+ await c.load();
+ await assert.rejects(c.readFrame({signal:AbortSignal.timeout(20)}),{name:'TimeoutError'});
+ assert.equal(c.available,false);
+ assert.equal(c.data.character.id,id);
+ stall=false;
+ await c.readFrame();
+ assert.equal(c.available,true);
+});

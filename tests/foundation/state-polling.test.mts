@@ -15,6 +15,7 @@ function mountWithClock() {
   const clock = {
     Date: { now: () => now },
     performance: { now: () => now },
+    AbortSignal,
     setInterval(fn: () => void, delay: number) { return schedule(fn, delay, delay); },
     setTimeout(fn: () => void, delay: number) { return schedule(fn, delay); },
     clearInterval(id: number) { timers.delete(id); },
@@ -119,6 +120,28 @@ test("a server rate limit stops periodic requests for the retry window", async (
     assert.equal(f.reads.length, 0);
     await f.tick(70_250);
     assert.deepEqual(f.reads.map(read => read.kind), ["recovered"]);
+  } finally {
+    f.close();
+  }
+});
+
+test("consecutive read failures back off and keep the full refresh due", async () => {
+  const f = mountWithClock();
+  let attempts = 0;
+  f.client.read = async () => {
+    attempts++;
+    if (attempts <= 2) throw Object.assign(new Error("temporary"), { status: 503 });
+  };
+  try {
+    await f.tick(10_250);
+    await f.tick(10_749);
+    assert.equal(attempts, 1);
+    await f.tick(10_750);
+    assert.equal(attempts, 2);
+    await f.tick(11_749);
+    assert.equal(attempts, 2);
+    await f.tick(11_750);
+    assert.equal(attempts, 3);
   } finally {
     f.close();
   }

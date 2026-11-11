@@ -538,7 +538,7 @@
       render();
     });
     let lastRead = -Infinity, lastFullRead = -Infinity;
-    let pollTimer, pollingStopped = false;
+    let pollTimer, pollingStopped = false, readFailures = 0;
     const pollPeriod = () => quickHuntUpdates(client) ? 250 : client.data?.online?.battle && client.controlled ? 750 : 3000;
     const schedulePoll = (delay = 250) => {
       if (!pollingStopped) pollTimer = setTimeout(pollState, delay);
@@ -550,18 +550,21 @@
       }
       const started = performance.now();
       const remaining = lastRead + pollPeriod() - started;
-      if (remaining > 0) {
+      if (readFailures === 0 && remaining > 0) {
         schedulePoll(Math.min(250, Math.ceil(remaining)));
         return;
       }
       lastRead = started;
       const full = started - lastFullRead >= 3000 || !client.readFrame;
-      if (full) lastFullRead = started;
       let retryDelay;
       try {
-        await (full ? client.read(true) : client.readFrame());
+        const options = { signal: AbortSignal.timeout(1500) };
+        await (full ? client.read(true, options) : client.readFrame(options));
+        if (full) lastFullRead = started;
+        readFailures = 0;
       } catch (e) {
-        if(e.status===429)retryDelay=60000;
+        readFailures = Math.min(readFailures + 1, 4);
+        retryDelay = e.status === 429 ? 60000 : 500 * 2 ** (readFailures - 1);
         message(e);
       } finally {
         const untilNext = lastRead + pollPeriod() - performance.now();

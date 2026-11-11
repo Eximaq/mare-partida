@@ -42,3 +42,20 @@ O ensaio por mapa mede HTTP interno. A captura em Dawn carrega o cliente do dom�
 A suíte de fundação passou com 259 testes. A rodada Linux com lobby, mundo e projeção passou com 29 testes. No PostgreSQL local isolado, 83 de 84 testes de integração passaram na rodada paralela e 15 verificações adicionais de migração passaram. A falha na rodada paralela foi o teste de vitória do chefe privado. A suíte inteira do chefe passou em uma repetição isolada (6 de 6). A verificação de tipos, a compilação e o teste de caçada no navegador passaram.
 
 A imagem da candidata e a imagem de retorno compatível com a migração foram montadas na VPS. A ativação ficou pendente porque a credencial temporária de SSH expirou. A migração 0056 foi validada apenas em bancos descartáveis.
+
+## Verificação com dois jogadores no mesmo IP
+
+A meta de 40 ms é uma referência. A verificação com duas sessões separadas em Dawn mede pausas de combate, erros, limites de requisição, leituras descartadas e filas. O ensaio usa dois personagens descartáveis, workers reais e o mesmo IP sintético no gateway local. Para reproduzir com o runtime compilado, execute `npm run load:local` com `MARE_LOAD_CLIENTS=2`, `MARE_LOAD_SHARED_IP=1`, `MARE_LOAD_INTERVAL_MS=250`, `MARE_LOAD_SIMULATION=workers`, `MARE_LOAD_SECONDS=75` e um `TEST_DATABASE_URL` apontando para um PostgreSQL descartável. `MARE_LOAD_PROGRESS=1` registra o p95 do HTTP e da API e a duração das renovações em janelas de dez segundos.
+
+Na primeira rodada com o carregador de desenvolvimento, de 125 segundos, as 978 respostas emitidas foram HTTP 200. Os dois personagens permaneceram em caçada automática, sem fila no pool ou reinício de worker. Houve 22 leituras descartadas porque a resposta anterior ainda estava em voo. Na repetição isolada de 75 segundos, houve 582 respostas HTTP 200, 18 leituras bloqueadas pela resposta anterior e p95 de 50 ms, com um pico de p95 de 450 ms na janela de 30 a 40 segundos. O gerador executou no horário previsto e nenhum pedido expirou. As duas rodadas reprovaram pelo critério de descartes. A repetição confirma que a execução concorrente das outras suítes é insuficiente para explicar o pico.
+
+Com a API compilada no Windows (Node 24.15.0 e PostgreSQL 18.6), sem o carregador de desenvolvimento, os dois ensaios aprovaram. Todos os pedidos retornaram HTTP 200. Houve zero descartes, interrupções, reinícios de worker e espera observada no pool. A repetição de três minutos teve p95 por janela de dez segundos entre 26 e 34 ms. O ensaio é local e ainda não identifica a origem do pico do runtime de desenvolvimento nem dos trancos pelo domínio de testes.
+
+| Duração | Leituras HTTP | p95 | p99 | Máximo | Renovações | Renovação mais lenta |
+|---:|---:|---:|---:|---:|---:|---:|
+| 75 s | 600 | 28 ms | 36 ms | 58 ms | 4 | 15 ms |
+| 180 s | 1.440 | 29 ms | 36 ms | 74 ms | 10 | 17 ms |
+
+A inspeção encontrou que a espera de até 10 segundos de uma leitura de estado podia bloquear as leituras seguintes. A leitura periódica agora tem prazo de 1,5 segundo, compartilhado com eventual consulta de estado completo, e espaça as novas tentativas a partir de 500 ms. Uma resposta 429 conserva a espera de 60 segundos. A validação das respostas e o envio de comandos continuam sob o contrato existente.
+
+Na janela autenticada pelo domínio de testes, a próxima coleta deve parear o intervalo de atualização e o RTT no navegador com o `Server-Timing` da mesma resposta e as janelas `http_window` e `simulation_pool` na VPS. Os intervalos de estado medem a chegada de respostas sucessivas. O RTT mede o tempo de uma requisição. Uma captura em Dawn e no porto com as duas sessões permite localizar a diferença entre servidor, transporte e apresentação no navegador.
