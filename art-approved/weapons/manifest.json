@@ -604,6 +604,324 @@
           "height": 640
         }
       ]
+    },
+    {
+      "itemId": 3,
+      "name": "Luvas de Marfim",
+      "version": "v3-south",
+      "approvedDirections": [
+        "south"
+      ],
+      "approvedAt": "2026-11-09",
+      "status": "art-approved-not-integrated",
+      "productionEnabled": false,
+      "sequence": [
+        0,
+        0,
+        1,
+        1,
+        2,
+        2,
+        3,
+        3,
+        4,
+        4,
+        5,
+        5,
+        6,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        11
+      ],
+      "fps": 24,
+      "finalFramePattern": "3/v3-south/{direction}/frames/{frame:02}.png",
+      "files": [
+        {
+          "path": "3/v3-south/south/frames/00.png",
+          "sha256": "2303f2c88790042b206da47eae43c72dc64eee881070ad43155d15f3b39478c7",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "3/v3-south/south/frames/01.png",
+          "sha256": "0837bbf3ed600e21554923535146fc09a792e2a650d19456592ffb6009a1e31e",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "3/v3-south/south/frames/02.png",
+          "sha256": "acd336c2bcd58e7735feaf06ae94724ef468965544883dcf4d125e75abaf21d2",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "3/v3-south/south/frames/03.png",
+          "sha256": "0bdc9e69e603df413ea7323852575fd8c944580b2fb8382a2b46751bed44d28d",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "3/v3-south/south/frames/04.png",
+          "sha256": "0316ae65e800c3429100bbaac80cb32d0984736c8d36eeda8cd546d0e6273c2e",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "3/v3-south/south/frames/05.png",
+          "sha256": "693cac2a9d3a0f5928089dde2bc04dfb6137327329a386c7c6cf1ff181519500",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "3/v3-south/south/frames/06.png",
+          "sha256": "5ddf68d2082558bed85cdbf30bc0d859d373e114a07d488ca4bd68229044469d",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "3/v3-south/south/frames/07.png",
+          "sha256": "68b46b22fe616560154660bb6df7f964eb75bf189aac4e9cd21359a5b6247f54",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "3/v3-south/south/frames/08.png",
+          "sha256": "46d04ce70cadd969219685f31e2f9db564f52cb49deae39dd2b1c4d523b026eb",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "3/v3-south/south/frames/09.png",
+          "sha256": "d67f981b3960fcea726af338e5a990a56350ffcbc3a3639662ae2e331aa17695",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "3/v3-south/south/frames/10.png",
+          "sha256": "7061a007f3a0d5e4ce950c622a902027a9ff8fdf3cbdfeb54ee09701d387fedd",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "3/v3-south/south/frames/11.png",
+          "sha256": "a8b29cdc39b32c8cdacc0466d320e5e6c439f077ae231aefedf2c1503cf45c3b",
+          "width": 640,
+          "height": 640
+        }
+      ],
+      "loop": false
+    },
+    {
+      "itemId": 14,
+      "name": "Manopla de Aço",
+      "version": "v3-south",
+      "approvedDirections": [
+        "south"
+      ],
+      "approvedAt": "2026-11-09",
+      "status": "art-approved-not-integrated",
+      "productionEnabled": false,
+      "sequence": [
+        0,
+        0,
+        1,
+        1,
+        2,
+        2,
+        3,
+        3,
+        4,
+        4,
+        5,
+        5,
+        6,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        11
+      ],
+      "fps": 24,
+      "finalFramePattern": "14/v3-south/{direction}/frames/{frame:02}.png",
+      "files": [
+        {
+          "path": "14/v3-south/south/frames/00.png",
+          "sha256": "ed7a638eb21a314dce2d878daf622a0d81dc132417e1c4d82df6e4df305b2578",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "14/v3-south/south/frames/01.png",
+          "sha256": "b4ba163e6e492138222a49f65ff24fe47e87af7a18929d1513d30ace0361e16c",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "14/v3-south/south/frames/02.png",
+          "sha256": "188a210c46cb0e547554afb58c8af9f7e61bee18c33058c303868c2980c360b5",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "14/v3-south/south/frames/03.png",
+          "sha256": "0d5daa1027bb286a020887e52186369044f56c8e55bb830344aa945e28a12092",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "14/v3-south/south/frames/04.png",
+          "sha256": "3efb5676f9d9ba31f9c2cda404156a15ea559f7a15ec827d81e78c626a889aff",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "14/v3-south/south/frames/05.png",
+          "sha256": "b5f56a0da812a97bb64bc3455a1c898ab5f9b56ebbf3fc32f89f976b72a90f71",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "14/v3-south/south/frames/06.png",
+          "sha256": "1403f0b58a596d7c3c3a9cc2f67b96be7c6670a74fd3b9d063d9120bfecf94a5",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "14/v3-south/south/frames/07.png",
+          "sha256": "c82943d095e99b16523429c0050e37aa0ee7d079e37fc5e7bf87892f828576c0",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "14/v3-south/south/frames/08.png",
+          "sha256": "fde9316f9d1441d5f05088749ac86b16a8c5e3d89b8aa897dd08cc0c1cb5407f",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "14/v3-south/south/frames/09.png",
+          "sha256": "b689fd174eb7c7384ba925540a3a35708748a7b3ad8350e1083f095aad82b660",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "14/v3-south/south/frames/10.png",
+          "sha256": "75c45c9aeaf00141454ae7b21fa65e8e6e8da15ccccb9c33c8d1409ce7c1af07",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "14/v3-south/south/frames/11.png",
+          "sha256": "02a85f87594adb3a9cbada06228875dd1964e7de1f7e78a33c28a77713d0555c",
+          "width": 640,
+          "height": 640
+        }
+      ]
+    },
+    {
+      "itemId": 67,
+      "name": "Katana da Maelstrom",
+      "version": "v1-south",
+      "approvedDirections": [
+        "south"
+      ],
+      "approvedAt": "2026-11-10",
+      "status": "art-approved-not-integrated",
+      "productionEnabled": false,
+      "sequence": [
+        0,
+        1,
+        2,
+        2,
+        3,
+        3,
+        4,
+        4,
+        5,
+        5,
+        6,
+        6,
+        7,
+        7,
+        8,
+        8
+      ],
+      "fps": 24,
+      "finalFramePattern": "67/v1-south/{direction}/frames/{frame:02}.png",
+      "files": [
+        {
+          "path": "67/v1-south/south/frames/00.png",
+          "sha256": "daaffc1cf56d99970f62334dfeae7e615382de3a7ab751da2429562ed3f1a52e",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "67/v1-south/south/frames/01.png",
+          "sha256": "bb8b8180dcaedc4b40eecec921cb140ae85fa3978d0aefda2c88cdd30f6e0490",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "67/v1-south/south/frames/02.png",
+          "sha256": "10d9bd8665dbb8e3c61cdd42602e015a9492fc1f0af77d7e674084229d71ebd5",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "67/v1-south/south/frames/03.png",
+          "sha256": "467938b8a64da1606530b7b6c2d0de0f394ced53b94a698182e2b9386ef10396",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "67/v1-south/south/frames/04.png",
+          "sha256": "ac120d0df8406bef253e2c53f972b580da2f83a7426d483bbab68da95e4bd7bb",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "67/v1-south/south/frames/05.png",
+          "sha256": "8b1e75575e4c098f918f340b2c66b79e8ff8857416be9bf2ca0b4d568fe71724",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "67/v1-south/south/frames/06.png",
+          "sha256": "91f0e46e0fdb395f187aef9e0191e1d7f616178c9cd8fe6f392ce934ff871cfb",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "67/v1-south/south/frames/07.png",
+          "sha256": "c2d7c4c33275c3a880298dae31a86a07adbee7882e33f05721c16a97fc640609",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "67/v1-south/south/frames/08.png",
+          "sha256": "23c1c1ab6c406b6bfdd3c4f0630bf6b54dee2cb18e58ce7a285ddfe7a3c1852d",
+          "width": 640,
+          "height": 640
+        }
+      ],
+      "sourceStateLabels": [
+        "0",
+        "lift",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "loop": false
     }
   ]
 }

@@ -29,3 +29,7 @@ Os arquivos foram copiados byte a byte dos conjuntos congelados aprovados. Não 
 ## Segundo lote: Braço 117 NORTH v3
 
 Oito poses finais NORTH da revisão v3, aprovadas em11/11/2026, arquivadas em `117/v3/north/frames/`. Não inclui as revisões NORTH v1/v2 rejeitadas. EAST/WEST v1 permanece byte a byte igual. Total acumulado:88PNGs,40composições finais. Integração no jogo continua pendente.
+
+## Terceiro lote: ciclos frontais históricos
+
+Luvas de Marfim3 e Manopla de Aço14:12poses SOUTH de cada ciclo aprovado em09/11/2026. Katana da Maelstrom67:9poses SOUTH do ciclo aprovado em10/11/2026. As33composições são byte a byte iguais às seleções preservadas nas respectivas aprovações. Não se estende aprovação às outras direções ou combinações de inventário. Total acumulado:121PNGs,73composições finais.
