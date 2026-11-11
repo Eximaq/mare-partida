@@ -118,17 +118,22 @@ def check_release(browser, folder):
         dialog.get_by_role('button', name='Fechar').click()
 
         page.unroute_all()
-        context.route('https://discord.gg/**', lambda route: route.fulfill(status=200, body='Discord'))
+        receipts_channel = 'https://discord.com/channels/1561926293287870525/1569908033142915174'
+        context.route('https://discord.com/channels/**', lambda route: route.fulfill(status=200, body='Discord'))
+        receipts_help = plans.get_by_role('link', name='canal de comprovantes')
+        assert receipts_help.count() == 1, 'Os planos precisam indicar o canal de comprovantes'
+        assert receipts_help.get_attribute('href') == receipts_channel
         for amount in [15, 25, 50]:
             plans.get_by_role('button', name=f'Ver Pix de R$ {amount}', exact=True).click()
             receipt_link = dialog.get_by_role('link', name='Enviar comprovante no Discord')
             assert receipt_link.is_visible(), 'Cada plano precisa oferecer o envio do comprovante no Discord'
-            assert dialog.get_by_text(re.compile('mensagem privada.*vantagens', re.IGNORECASE)).is_visible()
+            assert dialog.get_by_text(re.compile('tópico particular.*comprovante', re.IGNORECASE)).is_visible()
+            assert dialog.get_by_role('link', name='Entre no servidor').get_attribute('href') == 'https://discord.gg/uRnP79cp7h'
             with page.expect_popup() as popup:
                 receipt_link.click()
             discord = popup.value
             discord.wait_for_load_state('domcontentloaded')
-            assert discord.url == 'https://discord.gg/uRnP79cp7h'
+            assert discord.url == receipts_channel
             discord.close()
             assert dialog.is_visible() and page.url == url
             dialog.get_by_role('button', name='Fechar').click()
