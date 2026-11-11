@@ -3,6 +3,7 @@ import { once } from "node:events";
 import type { AddressInfo } from "node:net";
 import { test } from "node:test";
 import { createHttpServer } from "../../apps/game-server/src/http.js";
+import { requestMetrics } from "../../apps/game-server/src/metrics.js";
 
 test("a stuck readiness probe times out and concurrent clients cannot multiply database probes", async (t) => {
   let calls = 0;
@@ -103,4 +104,44 @@ test("HTTP serves no checkout files, mutation routes or WebSocket gameplay", asy
   });
   assert.equal(write.status, 405);
   assert.equal(write.headers.get("allow"), "GET");
+});
+
+test("HTTP records normalized routes and counts a closed response once", { timeout: 5000 }, async (t) => {
+  const metrics = requestMetrics();
+  let started!: () => void;
+  const pending = new Promise<void>(resolve => { started = resolve; });
+  let recordedAbort!: () => void;
+  const aborted = new Promise<void>(resolve => { recordedAbort = resolve; });
+  const server = createHttpServer({
+    isReady: async () => true,
+    onRequest(status, duration, route) {
+      metrics.record(status, duration, route);
+      if (status === null) recordedAbort();
+    },
+    async handle(request, response) {
+      if (request.url?.includes("/online-state")) started();
+      else response.end("ok");
+    },
+  });
+  t.after(() => {
+    server.closeAllConnections();
+    server.close();
+  });
+  server.listen(0, "127.0.0.1");
+  await once(server, "listening");
+  const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+  const id = "11111111-1111-4111-8111-111111111111";
+  await (await fetch(`${base}/v1/characters/${id}/frame?key=sensitive`)).text();
+  const controller = new AbortController();
+  const abandoned = fetch(`${base}/v1/characters/${id}/online-state`, { signal: controller.signal });
+  await pending;
+  controller.abort();
+  await assert.rejects(abandoned, { name: "AbortError" });
+  await aborted;
+  const window = metrics.flush();
+  assert.equal(window.requests, 1);
+  assert.equal(window.aborted, 1);
+  assert.equal(window.routes.frame?.requests, 1);
+  assert.equal(window.routes.state?.aborted, 1);
+  assert.doesNotMatch(JSON.stringify(window), /sensitive|11111111/);
 });

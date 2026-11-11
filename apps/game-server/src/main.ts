@@ -1,6 +1,7 @@
 import {createSimulationPool,simulationSettings} from './simulation-pool.js';
 import {requestMetrics} from "./metrics.js";
 import { once } from "node:events";
+import { monitorEventLoopDelay } from "node:perf_hooks";
 import { readConfig } from "./config.js";
 import { createPool } from "./db/pool.js";
 import { isDatabaseReady } from "./db/migrations.js";
@@ -51,8 +52,15 @@ async function main() {
   let stopping = false;
   const simulations=service?createSimulationPool({databaseUrl:config.databaseUrl,counts:simulationSettings(process.env)}):undefined;
   const metrics=requestMetrics();
+  const eventLoop = monitorEventLoopDelay({ resolution: 20 });
+  eventLoop.enable();
   const reporter=setInterval(()=>{
-    console.log(JSON.stringify(metrics.flush()));
+    console.log(JSON.stringify({
+      ...metrics.flush(),
+      eventLoopMaxMs: Math.round(eventLoop.max / 1e6),
+      dbPoolWaiting: pool.waitingCount,
+    }));
+    eventLoop.reset();
     if(simulations)console.log(JSON.stringify(simulations.report()));
   },60000);reporter.unref();
   const server = createHttpServer({
@@ -75,7 +83,7 @@ async function main() {
     server.listen(config.port, config.host);
     await once(server, "listening");
   } catch (error) {
-    clearInterval(revocations);clearInterval(reporter);await simulations?.stop();
+    clearInterval(revocations);clearInterval(reporter);eventLoop.disable();await simulations?.stop();
     await pool.end();
     throw error;
   }
@@ -92,6 +100,7 @@ async function main() {
     stopping = true;
     clearInterval(revocations);
     clearInterval(reporter);
+    eventLoop.disable();
     const simulationStopped=simulations?.stop();
     const deadline = setTimeout(() => {
       server.closeAllConnections();

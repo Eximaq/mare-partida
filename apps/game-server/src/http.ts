@@ -4,10 +4,11 @@ import {
   type ServerResponse,
 } from "node:http";
 import type { HealthResponse } from "@mare/shared";
+import { httpRouteGroup, type HttpRouteGroup } from "./metrics.js";
 
 export function createHttpServer(options: {
   isReady: () => Promise<boolean>;
-  onRequest?: (status:number,durationMs:number)=>void;
+  onRequest?: (status: number | null, durationMs: number, route: HttpRouteGroup) => void;
   readinessTimeoutMs?: number;
   handle?: (
     request: IncomingMessage,
@@ -25,9 +26,16 @@ export function createHttpServer(options: {
     return pending;
   };
   const server = createServer({ maxHeaderSize: 8192 }, (request, response) => {
-    const started=performance.now();
-    response.once('finish',()=>options.onRequest?.(response.statusCode,performance.now()-started));
     const path = request.url?.split("?")[0];
+    const onRequest = options.onRequest;
+    if (onRequest) {
+      const started = performance.now();
+      const route = httpRouteGroup(path);
+      response.once("finish", () => onRequest(response.statusCode, performance.now() - started, route));
+      response.once("close", () => {
+        if (!response.writableFinished) onRequest(null, performance.now() - started, route);
+      });
+    }
     const reply = (
       status: number,
       value: HealthResponse | { error: string },
