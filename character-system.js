@@ -84,9 +84,11 @@
     return Math.max(1,Math.floor(Math.max(1,raw)*(critical?(stats.critMultiplier||1.65):1)));
   }
   const dexterityCadence=Object.freeze({rogue:.70,gunner:.40});
-  const pveDefenseEfficiency=1; // Taxa de redução ainda não definida.
+  const pveDefenseEfficiency=1;
   function incoming(stats,amount,guard=false,variance=1,{monster=false}={}){
-    return Math.max(1,Math.floor(amount*100/(100+stats.defense*(monster?pveDefenseEfficiency:1)*3)*(1-stats.mitigation)*(guard?1-stats.protection:1)*variance));
+    const defenseScale=monster?.source==='world'&&monster.level>=45?2:3;
+    const dealt=Math.max(1,Math.floor(amount*100/(100+stats.defense*pveDefenseEfficiency*defenseScale)*(1-stats.mitigation)*(guard?1-stats.protection:1)*variance));
+    return monster?.type==='cesar'&&monster.level===5?Math.ceil(dealt/2):dealt;
   }
   // Real recipients only. An eventual party can pass actual allies through the same contract.
   function healRecipients(recipients,amount){
@@ -95,7 +97,7 @@
       return {id:recipient.id,amount:recipient.hp-before};
     });
   }
-  const monsterBalance=Object.freeze({version:2,attackSpeed:1.5*1.5,moveSpeed:2,hp:1.5,attack:1.3,defenseAdjustment:1.2,saltedIronChance:.2,worldXpGrowth:1.15,prisonFloorGrowth:1.075,dungeonAttributes:7.5,accuracy:1,attributeBudget:3,defense:1.3,xp:.1,playerDamage:.5,gearChance:.12,respawnSpeed:1.5});
+  const monsterBalance=Object.freeze({version:3,attackSpeed:1.5*1.5,moveSpeed:2,hp:1.5,attack:1.3,defenseAdjustment:1.2,saltedIronChance:.2,worldXpGrowth:1.15,prisonFloorGrowth:1.075,dungeonAttributes:7.5,accuracy:1,attributeBudget:3,defense:1.3,xp:.1,playerDamage:.5,gearChance:.12,respawnSpeed:1.5});
   function monsterProfile(base,{role='balanced',bossMultiplier=1,bossStats={},legacy=false}={}){
     const points=earned(base.level)*monsterBalance.attributeBudget;
     const weights={balanced:[.35,.30],tank:[.50,.20],offense:[.25,.50]}[role];

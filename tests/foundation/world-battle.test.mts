@@ -88,12 +88,13 @@ test('deployed battle rules migrate once without moving wounded monsters or rese
  for(const rulesHash of [
   'c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46',
   '79cf407896a79045951d84214601438b80b1b121dea598f6a66619f76935a82f',
+  'c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b',
  ]){
   const f=fixture(),m=f.m;m.hp=Math.floor(m.maxHP/2);const ratio=m.hp/m.maxHP,x=m.x;
   f.b.rulesHash=rulesHash;delete m.balanceVersion;
   f.b.potionReadyAt=2000;
   f.engine.upgradeBalance(f.b);assert.equal(f.b.rulesHash,f.engine.rulesHash);assert.equal(m.x,x);
-  assert.equal(m.hp,Math.ceil(m.maxHP*ratio));assert.equal(m.balanceVersion,2);
+  assert.equal(m.hp,Math.ceil(m.maxHP*ratio));assert.equal(m.balanceVersion,3);
   assert.equal(f.b.potionReadyAt,2000);
   const saved=structuredClone(f.b);f.engine.upgradeBalance(f.b);assert.deepEqual(f.b,saved);
   f.b.rulesHash='unknown';f.engine.upgradeBalance(f.b);assert.equal(f.b.rulesHash,'unknown');

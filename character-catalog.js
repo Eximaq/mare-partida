@@ -29,8 +29,8 @@ function legacyXpNeeded(level){
   if(!Number.isSafeInteger(value))throw new RangeError('XP precision limit');
   return value;
 }
-const xpCurveVersion=2, xpCurve=[0,80];
-function xpNeeded(level){
+const xpCurveVersion=3, xpCurve=[0,80];
+function previousXpNeeded(level){
   if(!Number.isSafeInteger(level)||level<1||level>1000000)throw new RangeError('XP precision limit');
   for(let n=xpCurve.length;n<=level;n++){
     const old=legacyXpNeeded(n-1), growth=(legacyXpNeeded(n)-old)/old;
@@ -40,21 +40,24 @@ function xpNeeded(level){
   }
   return Math.round(xpCurve[level]);
 }
+function xpNeeded(level){
+  return Math.max(1,Math.ceil(previousXpNeeded(level)/3));
+}
 function migrateXP(save){
   if(save.xpCurveVersion===xpCurveVersion)return save;
-  const before=legacyXpNeeded(save.level),after=xpNeeded(save.level),xp=Math.max(0,Math.trunc(Number(save.xp)||0));
-  const scaled=Math.round(xp*after/before);
-  return {...save,xpCurveVersion,xp:xp<before?Math.min(after-1,scaled):scaled};
+  const xp=BigInt(Math.max(0,Math.trunc(Number(save.xp)||0)));
+  const progress=advance({level:save.level,start:0n,experience:xp},Infinity);
+  return {...save,xpCurveVersion,level:progress.level,xp:Number(xp-progress.start)};
 }
-function advance({level,start,experience}){
+function advance({level,start,experience},limit=20,cost=xpNeeded){
   if(typeof start!=='bigint'||typeof experience!=='bigint'||start<0n||experience<start||experience>9223372036854775807n)throw new RangeError('Invalid experience');
   const levels=[];
-  for(let n=0;n<20;n++){
-    const next=start+BigInt(xpNeeded(level));
+  for(let n=0;n<limit;n++){
+    const next=start+BigInt(cost(level));
     if(experience<next)break;
     level++;start=next;levels.push({level,start});
   }
   return {level,start,levels};
 }
-const api={create,xpNeeded,legacyXpNeeded,migrateXP,xpCurveVersion,advance};root.MareCharacterCatalog=api;if(typeof module!=='undefined')module.exports=api;
+const api={create,xpNeeded,previousXpNeeded,legacyXpNeeded,migrateXP,xpCurveVersion,advance};root.MareCharacterCatalog=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

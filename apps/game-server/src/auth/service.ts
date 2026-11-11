@@ -41,6 +41,7 @@ import type { SessionPolicy } from "./config.js";
 import { initializeCharacterState, readCharacterState } from "../characters/state.js";
 import { executeCharacterCommand } from "../characters/commands.js";
 import { readHunt } from "../characters/hunt.js";
+import {readBounty} from '../characters/bounty.js';
 import { readLevelProgression } from "../characters/progression.js";
 import { readCombat } from "../characters/combat.js";
 async function hasSocial(client:PoolClient){
@@ -372,7 +373,13 @@ export class AuthService {
       const battle=await readBattle(client,id),haki=battle?hakiView(battle):null,prison=await readPrison(client,id);
       const fruits=inputs?.fruits??await readFruits(client,id),talents=inputs?.talents??await readTalents(client,id,state),power=inputs?.permanentPower();
       const combatPreview=inputs?.inventory?inputs.fighter(battle):await readFighter(client,id,state);
-      return { sync:{protocol:2}, ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...(await hasSocial(client)?{socialAvailable:true}:{}), ...(await marketAvailable(client)?{marketAvailable:true}:{}), state, party, profile, fruits, hierarchy:await readHierarchy(client,id,state,power), haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements:await readAchievements(client,id,state,{power,prison,haki,fruits}), talents, contracts:await readContracts(client,id,{state,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      const hierarchy=await readHierarchy(client,id,state,power);
+      const achievements=await readAchievements(client,id,state,{power,prison,haki,fruits});
+      const bounty=originalInventory&&hierarchy&&combatPreview.rulesetId==='original-character-v1'?await readBounty(client,state,{
+        power:hierarchy.power,factionId:combatPreview.factionId,crewAvailable:!!inputs?.crewAvailable,
+        hierarchy,achievements,prison,haki
+      }):null;
+      return { sync:{protocol:2}, bounty, ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...(await hasSocial(client)?{socialAvailable:true}:{}), ...(await marketAvailable(client)?{marketAvailable:true}:{}), state, party, profile, fruits, hierarchy, haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements, talents, contracts:await readContracts(client,id,{state,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state,!!originalInventory), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(

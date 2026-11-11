@@ -39,8 +39,9 @@
     const compactName=$('hudPlayerName');
     if(compactName&&compactName.textContent!==data.name){compactName.textContent=data.name;compactName.title=data.name;}
     const className=$('hudClassName');if(className&&data.className!==undefined)className.textContent=data.className;
-    // Bounty is an unimplemented feature, not a balance derived from coins or kills.
-    if($('wantedBounty').textContent!=='')$('wantedBounty').textContent='';
+    const bountyText=data.bounty?.toLocaleString('pt-BR')??'—';
+    const bounty=$('wantedBounty');
+    if(bounty.textContent!==bountyText)bounty.textContent=bountyText;
     const faction=data.factionId,tier=data.hierarchyTier,key=faction+':'+tier;
     if(key!==rankKey){
       rankKey=key;
