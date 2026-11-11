@@ -2,13 +2,13 @@
 
 ## Estado de entrega
 
-A integração não cria Marineford, não altera tabelas de spawn público e não abre um evento no carregamento, reinício ou deploy. A configuração inicial é nula e não existe operador pré-cadastrado. O conteúdo oficial só abre por comando autenticado de um dos dois operadores, depois de Marineford estar registrado e de a configuração ser validada. Publicar o cliente não atualiza o servidor do colaborador.
+Marineford usa o mapa exportado registrado no catálogo. O evento oficial permanece fechado por padrão, com configuração inicial nula e sem operadores pré-cadastrados. A abertura depende de comando autenticado de um operador e da validação da arena e do balanceamento.
 
 ## Operação no jogo
 
-Depois de atualizar o backend e cadastrar os dois operadores, entrar com uma dessas contas e abrir **Modos → Boss semanal · Akainu**. O botão **Teste privado** usa uma instância isolada do mapa de teste já existente; não coloca o boss nos mapas públicos e não concede XP, Berry, itens, profissão ou direitos de recompensa. O segundo operador pode entrar no mesmo encontro. **Encerrar encontro** devolve os participantes ao porto. Nenhuma conta comum vê esse ensaio.
+Depois de atualizar o backend e cadastrar os dois operadores, entrar com uma dessas contas e abrir **Modos → Boss semanal · Akainu**. Os dois personagens devem estar no porto. O botão **Teste privado** abre Marineford por 15 minutos para até dois operadores. O segundo operador usa **Entrar** no mesmo encontro e vê a mesma vida de Akainu. A instância fica visível apenas aos operadores e não concede XP, Berry, itens, profissão ou direitos de recompensa. **Encerrar encontro** restaura o estado dos personagens anterior à entrada.
 
-A configuração do próximo evento é um formulário real: posições de nascimento/entrada, lotação, nível mínimo, duração e atributos de combate. Salvar não abre o evento. A abertura oficial fica bloqueada enquanto Marineford não existir, o local não for caminhável, o raio não couber na área, a entrada não tiver caminho/visibilidade ou o balanceamento não estiver confirmado. A periodicidade não cria um agendamento automático.
+A configuração do próximo evento é um formulário real: posições de nascimento/entrada, lotação, nível mínimo, duração e atributos de combate. Salvar não abre o evento. A abertura oficial exige Marineford, uma posição caminhável, espaço para o raio de ataque, caminho e visibilidade a partir da entrada e confirmação do balanceamento. A periodicidade não cria um agendamento automático.
 
 ## Autoridade e persistência
 
