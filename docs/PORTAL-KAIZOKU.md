@@ -26,7 +26,7 @@ Na preparação, foram conferidos CRC, moeda BRL, valores fixos e a mesma chave 
 
 O botão **Copiar código Pix** usa o mesmo código de cada QR, distribuído em um arquivo de texto com versão por hash. O apoiador pode colar no Pix Copia e Cola do app do banco. Se o navegador bloquear a cópia automática, a janela mostra um campo de leitura para copiar manualmente.
 
-Após pagar, o apoiador pode usar **Enviar comprovante no Discord** na janela de qualquer plano. O link abre o canal **#comprovantes-pix** em outra aba. Quem ainda não faz parte do servidor pode entrar pelo convite oficial na mesma janela. No canal, o apoiador cria um tópico particular e anexa o comprovante. A equipe confere a transação no banco e registra o identificador para evitar duplicidade. A confirmação do Pix e o registro das vantagens são manuais.
+Após pagar, o apoiador pode usar **Enviar comprovante no Discord** na janela de qualquer plano. O link abre o canal **#comprovantes-pix** em outra aba. Quem ainda não faz parte do servidor pode usar o convite na mesma janela e aceitar as regras em **#aceitar-termos** para receber o cargo Tripulante. No canal, o apoiador cria um tópico particular e anexa o comprovante. A equipe confere a transação no banco e registra o identificador para evitar duplicidade. A confirmação do Pix e o registro das vantagens são manuais.
 
 ## Publicar na Cloudflare Pages
 
