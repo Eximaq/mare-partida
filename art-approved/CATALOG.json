@@ -337,6 +337,20 @@
       "productionEnabled": false
     },
     {
+      "path": "clothing/recent-approved/female_158_east_cuff-occlusion-v13.zip",
+      "bytes": 932945,
+      "sha256": "8376b7e3f0c4725a08dc7c0fd60e97be1edfd456022250b9f66542f259dfe9fe",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/recent-approved/female_158_west_cuff-occlusion-v13.zip",
+      "bytes": 930685,
+      "sha256": "73b7053f994f230b2d88191e6acd1bef51a46f1758fdd2ad6edd087c7349b57e",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
       "path": "clothing/static-and-idle-v1/female_151_idle_north_v1.zip",
       "bytes": 303918,
       "sha256": "a806e2f1e524756fb547e2ace83a3b9d2e8c7d6e26c2cf1573ba7fae4c8ee2d2",

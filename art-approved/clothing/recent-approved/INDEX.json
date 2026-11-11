@@ -1,0 +1,14 @@
+[
+  {
+    "file": "female_158_east_cuff-occlusion-v13.zip",
+    "size_bytes": 932945,
+    "sha256": "8376b7e3f0c4725a08dc7c0fd60e97be1edfd456022250b9f66542f259dfe9fe",
+    "pngs": 12
+  },
+  {
+    "file": "female_158_west_cuff-occlusion-v13.zip",
+    "size_bytes": 930685,
+    "sha256": "73b7053f994f230b2d88191e6acd1bef51a46f1758fdd2ad6edd087c7349b57e",
+    "pngs": 12
+  }
+]
