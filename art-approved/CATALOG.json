@@ -582,6 +582,20 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved-1-13-laterals/weapon13_east-west_approved-v1.zip",
+      "bytes": 1424035,
+      "sha256": "5554c4eab438934f45eba95b4dce9849266b28c3eac91c8e04df19e2c475a98a",
+      "pngEntries": 17,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-1-13-laterals/weapon1_east-west_approved-v2.zip",
+      "bytes": 2076244,
+      "sha256": "4758a4130bfb3c4d2b1aee9d0e618dda0c1e626b9da64230ecf6da0a455855ad",
+      "pngEntries": 17,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/approved-daggers-v3/weapon71_east-west_female-source-approved-v3.zip",
       "bytes": 1234464,
       "sha256": "4f048b68f16e7a828413b88eb0cf557d19af0ba548d79d9c54ed8e3d8a305844",
