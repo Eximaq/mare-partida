@@ -1,0 +1,210 @@
+{
+  "licenca_fontes": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "amostras": [
+    {
+      "arquivo": "passo-cimento-01.ogg",
+      "fontes": [
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/footstep_concrete_000.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "passo-cimento-02.ogg",
+      "fontes": [
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/footstep_concrete_001.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "passo-cimento-03.ogg",
+      "fontes": [
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/footstep_concrete_002.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "passo-areia-01.ogg",
+      "fontes": [
+        {
+          "autor": "Fantozzi",
+          "fonte": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Fantozzi-footsteps/ogg/Fantozzi-SandL1.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "passo-areia-02.ogg",
+      "fontes": [
+        {
+          "autor": "Fantozzi",
+          "fonte": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Fantozzi-footsteps/ogg/Fantozzi-SandR1.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "passo-areia-03.ogg",
+      "fontes": [
+        {
+          "autor": "Fantozzi",
+          "fonte": "https://opengameart.org/content/fantozzis-footsteps-grasssand-stone",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Fantozzi-footsteps/ogg/Fantozzi-SandL2.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "passo-grama-01.ogg",
+      "fontes": [
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/footstep_grass_000.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "passo-grama-02.ogg",
+      "fontes": [
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/footstep_grass_001.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "passo-grama-03.ogg",
+      "fontes": [
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/footstep_grass_002.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "passo-madeira-01.ogg",
+      "fontes": [
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/footstep_wood_000.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "passo-madeira-02.ogg",
+      "fontes": [
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/footstep_wood_001.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "passo-madeira-03.ogg",
+      "fontes": [
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/footstep_wood_002.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "espada-corte.ogg",
+      "fontes": [
+        {
+          "autor": "StarNinjas",
+          "fonte": "https://opengameart.org/content/20-sword-sound-effects-attacks-and-clashes",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "sword - StarNinjas/sword.1.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "espada-acerto.ogg",
+      "fontes": [
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/impactPunch_medium_000.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "magia-fogo.ogg",
+      "fontes": [
+        {
+          "autor": "rubberduck",
+          "fonte": "https://opengameart.org/content/80-cc0-rpg-sfx",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "spell_fire_02.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "supa-espiral-cortante.ogg",
+      "fontes": [
+        {
+          "autor": "StarNinjas",
+          "fonte": "https://opengameart.org/content/20-sword-sound-effects-attacks-and-clashes",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "sword - StarNinjas/sword.1.ogg"
+        },
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/impactMetal_light_002.ogg"
+        },
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/impactMetal_light_002.ogg"
+        }
+      ]
+    },
+    {
+      "arquivo": "supa-retaliacao-metalica.ogg",
+      "fontes": [
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/impactMetal_medium_001.ogg"
+        },
+        {
+          "autor": "Kenney",
+          "fonte": "https://kenney.nl/assets/impact-sounds",
+          "licenca": "CC0-1.0",
+          "arquivo_original": "Audio/impactMetal_light_002.ogg"
+        }
+      ]
+    }
+  ]
+}

@@ -169,6 +169,8 @@
   const keys = new Set(), rejectedTargets = new Map();
   const mapKey=()=>ONLINE_GAME?.data?.online.world?.mapId||(scene==='lobby'?'lobby':dungeonRun?'quest-dungeons':impelRun?'impel-down':game?.area==='skypiea-01'?'skypiea-01':MareAlubarna.worlds[game?.area]?game.area:game?.area==='alabasta'&&worldMaps.alabasta?'alabasta':game?.area==='rare'&&worldMaps.rare?'rare':game?.area==='syrup'&&worldMaps.syrup?'syrup':game?.area==='baratie'&&worldMaps.baratie?'baratie':game?.area==='arlong'&&worldMaps.arlong?'arlong':game?.area==='swamp'&&worldMaps.conchas?'conchas':game?.area==='orange'&&worldMaps.orange?'orange':game?.area==='loguetown'&&worldMaps.loguetown?'loguetown':game?.area==='beach'&&worldMaps.dawn?'dawn':game?.area==='beach'&&worldMaps.embers?'embers':'hunt');
   const activeMap = () => worldMaps[mapKey()];
+  const playOrangeSfx=cue=>{if(!ONLINE_GAME&&scene==='hunt')globalThis.MareAudio?.playOrange(mapKey(),cue);};
+  const orangeBasicSfx=()=>MareCharacters.roles[game.classId].magic&&!game.zoanTransformed?'magia-fogo':'espada-corte';
   const navigator = () => navigationFor(mapKey());
   // Combat rays ignore floor/water and low scenery; movement retains feet collisions.
   function combatLine(a,b){return navigator().projectileClear(a,b);}
@@ -988,6 +990,7 @@
         session.nekoAction={kind:'dash',targetId:nekoTarget.id,dx:dx/length,dy:dy/length,remaining:Math.min(MareNeko.rules.dashRange+MareNeko.rules.dashBeyond,length+MareNeko.rules.dashBeyond),hit:false,started:world.time};
       }else{session.nekoAction={kind:'combo',targetId:nekoTarget.id,x:nekoTarget.x,y:nekoTarget.y-24,nextHit:0,started:world.time};stepNekoAction(0);}
     }else if(fruit.id==='akuma_supa_supa'){
+      playOrangeSfx(skill.key==='1'?'supa-espiral-cortante':'supa-retaliacao-metalica');
       if(skill.key==='1'){
         const ids=serverEffect?new Set(serverEffect.target_ids.map(String)):null;
         const targets=ids?livingMobs().filter(m=>ids.has(String(m.id))):MareAkuma.supaTargets(castPosition,livingMobs());
@@ -1467,7 +1470,9 @@
     const clip=fruit?MareZoanArt.attackTiming(fruit.id,world.hero.direction):{frames:4,fps:8,impact_frame:2,loop:false};if(!clip)return false;
     const clock=MareCombatAnimation.create({attack:clip}),identity=basicAttackIdentity(),zone=game.area;
     clock.play('attack',{direction:world.hero.direction,attackSpeed:speed,onImpact:()=>{
-      if(basicAttackIdentity()===identity&&game.area===zone&&world.mobs.includes(m))heroAttack(m,mult,null,area,true);
+      if(basicAttackIdentity()!==identity||game.area!==zone)return;
+      playOrangeSfx(orangeBasicSfx());
+      if(world.mobs.includes(m))heroAttack(m,mult,null,area,true);
     }});
     session.basicAttack={clock,identity,area:zone};world.hero.walking=0;syncBasicAttackVisual();return true;
   }
@@ -1482,7 +1487,7 @@
       if(controller.locked())return false;
       faceCombatTarget(m);world.hero.walking=0;
       const action=skill?'skill':classCombat.basicAction(game,world.hero);
-      const accepted=controller.play(action,{direction:world.hero.direction,...(!skill?{attackSpeed:s.speed}:{}),onImpact:()=>heroAttack(m,mult,skill,area,true)});
+      const accepted=controller.play(action,{direction:world.hero.direction,...(!skill?{attackSpeed:s.speed}:{}),onImpact:()=>{if(!skill)playOrangeSfx(orangeBasicSfx());heroAttack(m,mult,skill,area,true);}});
       if(accepted&&!skill)world.hero.combatSequence++;
       return accepted;
     }
@@ -1503,6 +1508,7 @@
     const amount=isRyuForm()&&type==='physical'?MareRyu.mitigate(raw,m,MareHaki.eligibleOffensive(game,session.haki)):raw;
     const offensiveDamage=Math.min(amount,m.hp/MareCharacters.monsterBalance.playerDamage);
     const actual=outputDamage(m,amount,crit,{source:'class',classId:game.classId,category:!zoan&&skill&&['impactoAncora','pontoFraco','corteMare'].includes(classSkillEffect(skill))?classSkillEffect(skill):zoan?MareCombatVfx.classify({fruitId:equippedZoan()?.id}):null,exclusive:!zoan&&!!MareCombatVfx.data.flightEnds[MareCombatVfx.data.classHits[game.classId]]});
+    if(actual>0&&!skill&&type==='physical')playOrangeSfx('espada-acerto');
     const passive=MareTalentCombat.afterHit(game,rt,{target:m,stats:s,basic:!skill,magic:type==='elemental',projectile:['gunner','cyborg','strategist','healer'].includes(game.classId),critical:crit,damage:actual,offensiveDamage});
     applyTalentContact(passive,m);
     applyUltimateActions(MareUltimates.after(game,rt.ultimate,{target:m,hero:world.hero,stats:s,damage:offensiveDamage,basic:!skill,magic:type==='elemental',critical:crit,projectile:['gunner','cyborg','strategist','healer'].includes(game.classId)||ultimate==='spatial',enemies:livingMobs(),clear:(a,b)=>combatLine(a,b)}));
@@ -1557,6 +1563,7 @@
     if(!self&&(!m||distance(world.hero,m)>d.range||!combatLine(world.hero,m))){if(manual)toast('Não há alvo ao alcance.');return false;}
     const impact=()=>{
       if(scene!=='hunt'||game.hp<=0||session.respawn>0)return;
+      if(skill.damageType==='elemental')playOrangeSfx('magia-fogo');
       if(skill.type==='strike')heroAttack(m,skill.multiplier,skill,false,true);
       if(skill.type==='guard'){session.guard=7;const effect=classSkillEffect(skill)||'heal',healed=restoreHero(Math.round(d.maxHP*(game.classId==='cyborg'?.12:.18)+d.healing*.25),{effect});if(effect!=='heal'&&!healed)emitCombatVfx(effect,world.hero);}
       if(skill.type==='heal'){const healed=restoreHero(d.healing,{effect:classSkillEffect(skill)||'heal'});session.healingDone=(session.healingDone||0)+healed;const self={id:'hero',x:world.hero.x,y:world.hero.y,hp:game.hp,maxHP:d.maxHP};MareTalentCombat.chainHeal(game,[self],self,healed);}
@@ -1903,7 +1910,8 @@
     try{tickSimulation(dt);}finally{
       if(world.hero===actor){
         const context=scene+':'+game.area+':'+basicAttackIdentity(),active=identity===context&&!game.zoanTransformed&&actor.walking>0&&!classCombatController()?.locked()&&!basicAttackPose();
-        lobby96.stepWalk(actor,world.time,active,{from,dt,context});
+        const gait=lobby96.stepWalk(actor,world.time,active,{from,dt,context});
+        if(!ONLINE_GAME)globalThis.MareAudio?.walkOrange(scene==='hunt'?mapKey():null,from,actor,gait);
       }
     }
   }
