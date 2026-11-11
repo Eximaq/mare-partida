@@ -126,11 +126,45 @@ h1 { font-size: clamp(30px, 3.35vw, 49px); font-weight: 500; line-height: 1.12; 
   border: 1px solid var(--brass);
   background: #163a47;
   color: var(--parchment);
+  font-family: inherit;
   font-size: 16px;
   font-weight: 600;
-  text-decoration: none;
+  cursor: pointer;
 }
 .plan-payment:hover { background: #1b4b58; }
+.plan-payment:focus-visible, .pix-close:focus-visible { outline: 3px solid var(--parchment); outline-offset: 4px; }
+.pix-dialog {
+  width: min(calc(100% - 36px), 380px);
+  max-height: calc(100% - 36px);
+  padding: 26px;
+  border: 1px solid var(--brass);
+  background: var(--ink);
+  color: var(--parchment);
+  text-align: center;
+  box-shadow: 0 6px 0 #041521a6;
+}
+.pix-dialog::backdrop { background: #04131cdd; }
+.pix-dialog h2 { margin: 0 0 14px; font-size: 26px; }
+.pix-image img:not([hidden]) {
+  display: block;
+  width: min(100%, 232px);
+  height: auto;
+  margin: 0 auto 14px;
+  padding: 8px;
+  background: white;
+  image-rendering: pixelated;
+}
+.pix-status { margin: 14px 0 18px; color: var(--muted); line-height: 1.45; }
+.pix-close {
+  min-height: 44px;
+  padding: 8px 18px;
+  border: 1px solid #688f96;
+  background: var(--deep-sea);
+  color: var(--parchment);
+  font: inherit;
+  cursor: pointer;
+}
+.pix-close:hover { background: #15394a; }
 .support-help {
   max-width: 75ch;
   margin: 20px 0 0;

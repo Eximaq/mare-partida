@@ -18,7 +18,9 @@ O portal apresenta três opções de apoio único. As vantagens propostas são c
 | Navegador | R$ 25 | Título e emblema de Fundador |
 | Capitão | R$ 50 | Título, emblema e visual exclusivo de Capitão |
 
-O portal usa links diretos em `portal/index.html`. Cada plano abre a página da cobrança de valor fixo no Nubank em uma nova aba. O banco exibe o QR Code e o apoiador confirma o pagamento no app do seu banco. Instagram e Discord apontam para os endereços oficiais fornecidos pelo proprietário.
+Cada plano abre uma janela no portal com o valor e, quando configurado, o QR Code Pix do plano. Instagram e Discord apontam para os endereços oficiais fornecidos pelo proprietário.
+
+Os QR Codes anteriores usam um identificador pessoal como chave e foram retirados da configuração. Para ativar um plano, conferir o valor e os dados contidos no novo código, adicionar o PNG revisado à lista de arquivos públicos em `tools/build_portal.py` e configurar `data-pix-qr="./assets/pix-VALOR.png"` no botão em `portal/index.html`. O estado atual informa que o Pix está temporariamente indisponível. A janela não mostra dados bancários pessoais. O aplicativo do banco controla os dados do recebedor exibidos na confirmação.
 
 Após pagar, o apoiador pode entrar no Discord e pedir à equipe, em privado, o registro do apoio. A equipe confere a transação no banco e registra o identificador para evitar duplicidade. A confirmação do Pix e o registro das vantagens são manuais.
 

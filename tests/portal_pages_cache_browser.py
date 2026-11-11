@@ -3,6 +3,7 @@ import http.server
 import json
 import threading
 from pathlib import Path
+import re
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,7 +41,7 @@ def check_release(browser, folder):
         plans = page.get_by_role('region', name='Planos de colaborador')
         assert plans.is_visible(), 'A página pública deve mostrar os planos'
         assert plans.locator('.plan-price').all_text_contents() == ['R$ 15', 'R$ 25', 'R$ 50']
-        assert plans.get_by_role('link', name='Ver QR Code Pix').count() == 3
+        assert plans.get_by_role('button', name='Ver Pix').count() == 3
         community = page.get_by_role('navigation', name='Comunidade')
         assert community.get_by_role('link', name='Instagram').get_attribute('href') == 'https://www.instagram.com/kaizokuidle2d'
         assert community.get_by_role('link', name='Discord').get_attribute('href') == 'https://discord.gg/uRnP79cp7h'
@@ -69,16 +70,30 @@ def check_release(browser, folder):
         page.reload()
         page.wait_for_load_state('networkidle')
         assert page.evaluate("localStorage.getItem('portal-cache-test')") == 'preserved'
-        # The popup exercises real keyboard navigation without starting a bank session.
-        context.route('https://nubank.com.br/cobrar/**', lambda route: route.fulfill(body='Pix'))
-        payment = plans.get_by_role('link', name='Ver QR Code Pix de R$ 25', exact=False)
-        payment.focus()
-        with page.expect_popup() as opened:
+        dialog = page.get_by_role('dialog', name='Apoio por Pix')
+        for amount in [15, 25, 50]:
+            payment = plans.get_by_role('button', name=f'Ver Pix de R$ {amount}', exact=True)
+            payment.focus()
             page.keyboard.press('Enter')
-        payment_page = opened.value
-        payment_page.wait_for_load_state()
-        assert payment_page.url == payment.get_attribute('href')
-        payment_page.close()
+            assert dialog.is_visible()
+            assert re.fullmatch(rf'R\$\s{amount},00', dialog.locator('.pix-amount').inner_text())
+            assert dialog.get_by_role('status').inner_text() == 'Pix temporariamente indisponível.'
+            assert dialog.get_by_role('img').count() == 0
+            assert page.url == url and len(context.pages) == 1
+            page.keyboard.press('Escape')
+            assert dialog.is_hidden()
+            assert payment.evaluate('(el) => el === document.activeElement')
+
+        # A local image tests the rendering path without exposing a payment code.
+        page.route('**/assets/pix-50.png', lambda route: route.fulfill(
+            path=ROOT / folder / 'portal/assets/ui/banner-compass.webp', content_type='image/webp'))
+        payment.evaluate("(el) => el.dataset.pixQr = './assets/pix-50.png'")
+        payment.click()
+        image = dialog.get_by_role('img', name=re.compile('QR Code Pix de R'))
+        image.wait_for()
+        assert image.get_attribute('src') == './assets/pix-50.png'
+        dialog.get_by_role('button', name='Fechar').click()
+        assert dialog.is_hidden()
         assert '/portal/portal.css' not in requests, requests
         assert not errors, errors
         return dict(build=folder, stale_css_requested=False, screens=results, errors=errors)

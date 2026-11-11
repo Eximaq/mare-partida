@@ -9,11 +9,6 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-CHARGES = {
-    15: '6af3c714-58d1-4952-a494-9b3d6313f544',
-    25: '6af3c889-744a-4ba2-9763-948c9671a009',
-    50: '6af3c8a8-a1b3-4705-a2ef-963b2f36ee7a',
-}
 
 
 class PortalBuildTest(unittest.TestCase):
@@ -26,14 +21,16 @@ class PortalBuildTest(unittest.TestCase):
             self.assertEqual(re.findall(r'class="plan-price">(R\$ \d+)</p>', html),
                              ['R$ 15', 'R$ 25', 'R$ 50'])
             self.assertIn('aria-label="Comunidade"', html)
-            for amount, charge in CHARGES.items():
+            self.assertFalse('nubank.com.br/cobrar/' in html,
+                             'O portal público não deve expor links pessoais de cobrança')
+            for amount in (15, 25, 50):
                 card = re.search(rf'<article[^>]+aria-labelledby="plan-{amount}">.*?</article>',
                                  html, re.DOTALL)
                 self.assertIsNotNone(card, amount)
-                self.assertIn(f'href="https://nubank.com.br/cobrar/1m7ssu/{charge}"', card[0])
+                self.assertIn(f'data-pix-amount="{amount}"', card[0])
             self.assertIn('href="https://www.instagram.com/kaizokuidle2d"', html)
             self.assertIn('href="https://discord.gg/uRnP79cp7h"', html)
-            self.assertNotIn('Pix em breve', html)
+            self.assertIn('<dialog', html)
 
     def test_pages_styles_bypass_cached_unversioned_assets(self):
         from urllib.parse import parse_qs
@@ -81,7 +78,7 @@ class PortalBuildTest(unittest.TestCase):
             self.assertFalse((output / 'game.js').exists())
             self.assertFalse((output / 'assets').exists())
             self.assertFalse(list(output.rglob('*.py')))
-            self.assertFalse(list(output.rglob('*.js')))
+            self.assertEqual(list(output.rglob('*.js')), [landing.parent / 'pix-dialog.js'])
 
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 # Deliberate allowlist: no account code, gameplay, local data or review assets.
 PUBLIC_FILES = (
-    'index.html', 'portal.css', 'ocean-art.css',
+    'index.html', 'portal.css', 'ocean-art.css', 'pix-dialog.js',
     'assets/logo-kaizoku-idle-oficial.png', 'assets/ui/banner-compass.webp',
 )
 

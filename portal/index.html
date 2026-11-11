@@ -20,6 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./ocean-art.css">
 <link rel="stylesheet" href="./portal.css">
+<script defer src="./pix-dialog.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -61,9 +62,9 @@
     <ul class="plan-perks">
       <li>Título de Fundador no perfil</li>
     </ul>
-    <a class="plan-payment" href="https://nubank.com.br/cobrar/1m7ssu/6af3c714-58d1-4952-a494-9b3d6313f544" rel="noopener noreferrer" target="_blank">
-      Ver QR Code Pix<span class="visually-hidden"> de R$ 15 no Nubank, abre em nova aba</span><span aria-hidden="true">↗</span>
-    </a>
+    <button class="plan-payment" type="button" data-pix-amount="15" aria-haspopup="dialog">
+      Ver Pix<span class="visually-hidden"> de R$ 15</span><span aria-hidden="true">+</span>
+    </button>
   </article>
   <article class="support-plan" aria-labelledby="plan-25">
     <h3 id="plan-25">Navegador</h3>
@@ -72,9 +73,9 @@
       <li>Título de Fundador no perfil</li>
       <li>Emblema de Fundador</li>
     </ul>
-    <a class="plan-payment" href="https://nubank.com.br/cobrar/1m7ssu/6af3c889-744a-4ba2-9763-948c9671a009" rel="noopener noreferrer" target="_blank">
-      Ver QR Code Pix<span class="visually-hidden"> de R$ 25 no Nubank, abre em nova aba</span><span aria-hidden="true">↗</span>
-    </a>
+    <button class="plan-payment" type="button" data-pix-amount="25" aria-haspopup="dialog">
+      Ver Pix<span class="visually-hidden"> de R$ 25</span><span aria-hidden="true">+</span>
+    </button>
   </article>
   <article class="support-plan" aria-labelledby="plan-50">
     <h3 id="plan-50">Capitão</h3>
@@ -84,13 +85,20 @@
       <li>Emblema de Fundador</li>
       <li>Visual exclusivo de Capitão</li>
     </ul>
-    <a class="plan-payment" href="https://nubank.com.br/cobrar/1m7ssu/6af3c8a8-a1b3-4705-a2ef-963b2f36ee7a" rel="noopener noreferrer" target="_blank">
-      Ver QR Code Pix<span class="visually-hidden"> de R$ 50 no Nubank, abre em nova aba</span><span aria-hidden="true">↗</span>
-    </a>
+    <button class="plan-payment" type="button" data-pix-amount="50" aria-haspopup="dialog">
+      Ver Pix<span class="visually-hidden"> de R$ 50</span><span aria-hidden="true">+</span>
+    </button>
   </article>
   </div>
-  <p class="support-help">O QR Code abre no Nubank. Confira o valor e o destinatário no app do seu banco antes de pagar. Depois, fale com a equipe em privado pelo <a href="https://discord.gg/uRnP79cp7h" rel="noopener noreferrer" target="_blank">Discord</a> para registrar seu apoio.</p>
+  <p class="support-help">Depois de pagar, fale com a equipe em privado pelo <a href="https://discord.gg/uRnP79cp7h" rel="noopener noreferrer" target="_blank">Discord</a> para registrar seu apoio.</p>
 </section>
+<dialog class="pix-dialog" aria-labelledby="pix-title">
+  <h2 id="pix-title">Apoio por Pix</h2>
+  <p class="pix-amount plan-price"></p>
+  <div class="pix-image"></div>
+  <p class="pix-status" role="status"></p>
+  <button class="pix-close" type="button" autofocus>Fechar</button>
+</dialog>
 <div class="voyage" role="group" aria-label="Uma aventura pirata em pixel art">
 <span>Um mundo de ilhas</span><i aria-hidden="true">✦</i>
 <span>Uma vida de aventuras</span><i aria-hidden="true">✦</i>
