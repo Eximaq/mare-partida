@@ -55,7 +55,8 @@ await authDatabase(async f=>{
    await p.waitForTimeout(5000);
    const meter=await p.evaluate(()=>MareGameSession.network);
    assert.ok(meter.rttMs>=240,'HTTP ping includes injected 250ms network delay');
-   assert.match(await p.locator('#onlinePerformance').innerText(),/Ping HTTP: \d+ ms.*FPS: \d+/);
+   assert.match(await p.locator('#onlinePerformance strong').innerText(),/^\d+ ms$/);
+   assert.match(await p.locator('#onlinePerformance span').innerText(),/^\d+ FPS$/);
    captures.push({kind:'click',mapId,target,frames:await p.evaluate('window.captureMotion=false;window.motion')});
    await p.unroute('**/v1/**');
   }

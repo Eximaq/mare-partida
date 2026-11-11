@@ -7,13 +7,14 @@ async function actor(service:any){const email=randomUUID()+'@example.invalid',lo
 test('world initializes once at original port, movement consumes only server time, reload and stop preserve position',async()=>authDatabase(async({service,pool})=>{
  const a=await actor(service),before=await a.read(),init=await a.input('world.initialize'),receipt=await a.send(init);
  assert.ok(receipt.world,'world command must return an authoritative snapshot');assert.deepEqual(receipt.world.position,{x:1504,y:1568});assert.equal(receipt.world.mapId,'lobby');assert.deepEqual(await a.send(init),receipt);
- const start=await a.send(await a.input('world.move',{x:1504,y:1504}));assert.deepEqual(start.world.position,{x:1504,y:1568});assert(start.world.speed>0&&start.world.speed<300);
+ const destination={x:1504,y:1632};
+ const start=await a.send(await a.input('world.move',destination));assert.deepEqual(start.world.position,{x:1504,y:1568});assert(start.world.speed>0&&start.world.speed<300);
  await pool.query("UPDATE mare_game.character_world SET started_at=clock_timestamp()-interval '150 milliseconds' WHERE character_id=$1",[a.c.id]);
- const moved=(await a.read()).world;assert(moved.position.y<1568&&moved.position.y>1504);assert(moved.position.x===1504);assert(moved.path.length>0);
+ const moved=(await a.read()).world;assert(moved.position.y>1568&&moved.position.y<destination.y);assert(moved.position.x===destination.x);assert(moved.path.length>0);
  const stopped=await a.send(await a.input('world.stop'));assert.equal(stopped.world.path.length,0);assert.deepEqual((await a.read()).world.position,stopped.world.position);
  const after=await a.read();assert.equal(after.state.gold,before.state.gold);assert.equal(after.state.experience,before.state.experience);assert.deepEqual(after.originalInventory,before.originalInventory);
  await assert.rejects(a.send(await a.input('world.move',{x:0,y:0})),{code:'world_destination_blocked'});
- const intents=await Promise.all([a.input('world.move',{x:1504,y:1504}),a.input('world.move',{x:1504,y:1440})]);const two=await Promise.allSettled(intents.map(a.send));assert.equal(two.filter(x=>x.status==='fulfilled').length,1);
+ const intents=await Promise.all([a.input('world.move',destination),a.input('world.move',{x:1504,y:1664})]);const two=await Promise.allSettled(intents.map(a.send));assert.equal(two.filter(x=>x.status==='fulfilled').length,1);
 }));
 test('travel respects original island gates and server spawns, crossing accounts and stale controllers cannot move or replay',async()=>authDatabase(async({service,pool})=>{
  const a=await actor(service),b=await actor(service);await a.send(await a.input('world.initialize'));

@@ -52,14 +52,18 @@ test('twelve original worlds advance together without starvation, double reward 
  console.log(JSON.stringify({worlds:12,monsters:168,batches:4,maxBatchMs:Math.max(...times),averageBatchMs:Math.round(times.reduce((a,b)=>a+b,0)/times.length)}));
 }));
 
-test('navigation upgrade changes only the known hash, preserves all rows and fails closed for unknown rules',async()=>authDatabase(async f=>{
- const {readFile}=await import('node:fs/promises'),a=await actor(f),b=await actor(f),old='76e9e8b995af3a5fcdbd12e34a8d4b280ac276c95e59f3e42e0a81a4825806b5',current=require('../../world-catalog.cjs').load().rulesHash;
- await f.pool.query('UPDATE mare_game.character_world SET rules_hash=$2 WHERE character_id=$1',[a.c.id,old]);
+test('navigation upgrade reanchors only known maps and preserves all other rows',async()=>authDatabase(async f=>{
+ const {readFile}=await import('node:fs/promises'),a=await actor(f),b=await actor(f),old='76e9e8b995af3a5fcdbd12e34a8d4b280ac276c95e59f3e42e0a81a4825806b5';
+ const world=require('../../world-catalog.cjs').load();
+ await f.pool.query("UPDATE mare_game.character_world SET rules_hash=$2,x=1450,y=1500,path='[{\"x\":1500,\"y\":1500}]',speed=100,motion_until=started_at+interval '1 second' WHERE character_id=$1",[a.c.id,old]);
  await f.pool.query('UPDATE mare_game.character_world SET rules_hash=$2 WHERE character_id=$1',[b.c.id,'f'.repeat(64)]);
  const tables=(await f.pool.query("SELECT tablename FROM pg_tables WHERE schemaname='mare_game' ORDER BY tablename")).rows.map(r=>r.tablename);
- const snapshot=async()=>{const out:Record<string,unknown>={};for(const t of tables){assert.match(t,/^[a-z_]+$/);out[t]=(await f.pool.query(`SELECT to_jsonb(t) row FROM mare_game.${t} t ORDER BY to_jsonb(t)::text`)).rows.map(r=>t==='character_world'?{...r.row,rules_hash:r.row.character_id===a.c.id?'known':r.row.rules_hash}:r.row);}return out;};
- const before=await snapshot(),sql=(await Promise.all(['0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0041_progression_hud_balance.sql'].map(name=>readFile(new URL('../../apps/game-server/migrations/'+name,import.meta.url),'utf8')))).join('\n');
- await f.pool.query(sql);await f.pool.query(sql);assert.deepEqual(await snapshot(),before);
- assert.equal((await f.pool.query('SELECT rules_hash FROM mare_game.character_world WHERE character_id=$1',[a.c.id])).rows[0].rules_hash,current);
+ const snapshot=async()=>{const out:Record<string,any[]>={};for(const t of tables){assert.match(t,/^[a-z_]+$/);const order=t==='character_world'?'t.character_id':'to_jsonb(t)::text';out[t]=(await f.pool.query(`SELECT to_jsonb(t) row FROM mare_game.${t} t ORDER BY ${order}`)).rows.map(r=>r.row);}return out;};
+ const expected=await snapshot(),known=expected.character_world!.find(row=>row.character_id===a.c.id);
+ Object.assign(known,world.maps.lobby.spawn,{rules_hash:world.rulesHash,path:[],speed:0,motion_until:known.started_at});
+ const migrations=['0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0041_progression_hud_balance.sql','0052_world_map_exports.sql'];
+ const sql=(await Promise.all(migrations.map(name=>readFile(new URL('../../apps/game-server/migrations/'+name,import.meta.url),'utf8')))).join('\n');
+ await f.pool.query(sql);assert.deepEqual(await snapshot(),expected);
+ await f.pool.query(sql);assert.deepEqual(await snapshot(),expected);
  await a.read();await assert.rejects(b.read(),{code:'world_rules_changed'});
 }));
