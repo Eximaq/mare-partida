@@ -28,6 +28,12 @@ class PortalBuildTest(unittest.TestCase):
                                  html, re.DOTALL)
                 self.assertIsNotNone(card, amount)
                 self.assertIn(f'data-pix-amount="{amount}"', card[0])
+                reference = re.search(r'data-pix-qr="([^"]+)"', card[0])
+                self.assertIsNotNone(reference, 'O plano precisa apontar para um QR local')
+                self.assertEqual(urlsplit(reference[1]).path, f'./assets/pix-{amount}.png')
+                qr = output / f'portal/assets/pix-{amount}.png'
+                self.assertTrue(qr.is_file(), 'Cada plano precisa do QR correspondente no build')
+                self.assertTrue(qr.read_bytes().startswith(b'\x89PNG\r\n\x1a\n'))
             self.assertIn('href="https://www.instagram.com/kaizokuidle2d"', html)
             self.assertIn('href="https://discord.gg/uRnP79cp7h"', html)
             self.assertIn('<dialog', html)

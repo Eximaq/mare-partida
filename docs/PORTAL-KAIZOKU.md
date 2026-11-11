@@ -20,7 +20,9 @@ O portal apresenta três opções de apoio único. As vantagens propostas são c
 
 Cada plano abre uma janela no portal com o valor e, quando configurado, o QR Code Pix do plano. Instagram e Discord apontam para os endereços oficiais fornecidos pelo proprietário.
 
-Os QR Codes anteriores usam um identificador pessoal como chave e foram retirados da configuração. Para ativar um plano, conferir o valor e os dados contidos no novo código, adicionar o PNG revisado à lista de arquivos públicos em `tools/build_portal.py` e configurar `data-pix-qr="./assets/pix-VALOR.png"` no botão em `portal/index.html`. O estado atual informa que o Pix está temporariamente indisponível. A janela não mostra dados bancários pessoais. O aplicativo do banco controla os dados do recebedor exibidos na confirmação.
+Os três planos usam os novos códigos com chave aleatória fornecidos pelo proprietário, nos arquivos `portal/assets/pix-15.png`, `pix-25.png` e `pix-50.png`. O nome do recebedor foi autorizado pelo proprietário e continua contido nos códigos. A janela mostra o valor e a imagem local. O aplicativo do banco controla os dados do recebedor exibidos na confirmação.
+
+Na preparação, foram conferidos CRC, moeda BRL, valores fixos e a mesma chave aleatória nos três códigos. Os PNGs foram decodificados por uma segunda biblioteca e comparados aos dados originais. Os dois builds versionam as imagens por hash para evitar mistura de códigos antigos. Os links de cobrança e páginas bancárias não são distribuídos com o portal.
 
 Após pagar, o apoiador pode entrar no Discord e pedir à equipe, em privado, o registro do apoio. A equipe confere a transação no banco e registra o identificador para evitar duplicidade. A confirmação do Pix e o registro das vantagens são manuais.
 

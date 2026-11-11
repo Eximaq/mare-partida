@@ -77,21 +77,21 @@ def check_release(browser, folder):
             page.keyboard.press('Enter')
             assert dialog.is_visible()
             assert re.fullmatch(rf'R\$\s{amount},00', dialog.locator('.pix-amount').inner_text())
-            assert dialog.get_by_role('status').inner_text() == 'Pix temporariamente indisponível.'
-            assert dialog.get_by_role('img').count() == 0
+            image = dialog.get_by_role('img', name=re.compile('QR Code Pix de R'))
+            image.wait_for()
+            assert image.get_attribute('src').startswith(f'./assets/pix-{amount}.png?v=')
+            assert image.evaluate('(el) => el.complete && el.naturalWidth > 0')
+            page.screenshot(path=str(EVIDENCE / f'{folder}-modal-{amount}.png'))
             assert page.url == url and len(context.pages) == 1
             page.keyboard.press('Escape')
             assert dialog.is_hidden()
             assert payment.evaluate('(el) => el === document.activeElement')
 
-        # A local image tests the rendering path without exposing a payment code.
-        page.route('**/assets/pix-50.png', lambda route: route.fulfill(
-            path=ROOT / folder / 'portal/assets/ui/banner-compass.webp', content_type='image/webp'))
-        payment.evaluate("(el) => el.dataset.pixQr = './assets/pix-50.png'")
+        # A failed image must not show a stale QR from a previous plan.
+        page.route('**/assets/pix-50.png?*', lambda route: route.fulfill(status=404))
         payment.click()
-        image = dialog.get_by_role('img', name=re.compile('QR Code Pix de R'))
-        image.wait_for()
-        assert image.get_attribute('src') == './assets/pix-50.png'
+        page.get_by_text('QR Code indisponível. Tente novamente mais tarde.', exact=True).wait_for()
+        assert dialog.get_by_role('img').count() == 0
         dialog.get_by_role('button', name='Fechar').click()
         assert dialog.is_hidden()
         assert '/portal/portal.css' not in requests, requests

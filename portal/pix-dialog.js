@@ -16,7 +16,7 @@
       imageSlot.replaceChildren();
       status.textContent = 'Pix temporariamente indisponível.';
       dialog.showModal();
-      if (qr !== `./assets/pix-${value}.png`) return;
+      if (!qr || qr.split('?')[0] !== `./assets/pix-${value}.png`) return;
 
       const image = new Image(232, 232);
       image.alt = `QR Code Pix de ${amount.textContent}`;
