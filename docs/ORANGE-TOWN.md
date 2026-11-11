@@ -2,7 +2,7 @@
 
 ## Piloto de efeitos sonoros (demonstração)
 
-A grade do mapa atual define areia, grama, piso de pedra e madeira. A caminhada do personagem humano alterna três gravações por material no contato do pé com o chão. Um ataque físico toca o corte ao sair e ganha impacto somente se causar dano. As habilidades elementais usam o efeito de magia do piloto; Espiral Cortante e Retaliação Metálica têm efeitos próprios na ativação. A Central do Navegante controla o volume e o silêncio; a trilha fica mais baixa nesta ilha para dar espaço aos efeitos.
+A grade do mapa atual define areia, grama, piso de pedra e madeira. A caminhada do personagem humano alterna três gravações por material no contato do pé com o chão. Um ataque físico toca o corte ao sair e ganha impacto somente se causar dano. As habilidades elementais usam o efeito de magia do piloto; Espiral Cortante e Retaliação Metálica têm efeitos próprios na ativação. Na Central do Navegante, abra Configurações → Áudio para ajustar Música e Efeitos do jogo separadamente. Cada um tem volume e botão de ativar próprios; as preferências são salvas no navegador.
 
 Arquivos e licença por clipe: [provenance.json](../assets/audio/orange-town/provenance.json). Validação: `node tests/orange-audio.test.cjs` e `node tests/orange_audio_browser.cjs` com o servidor local em execução (variável `MARE_TEST_URL`; padrão porta 8138).
 

@@ -79,9 +79,24 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await page.locator('[data-settings-card=audio]').click();await page.locator('[data-captain-mute]').check();
  await page.locator('[data-captain-music-volume]').fill('37');await page.locator('[data-captain-music-volume]').dispatchEvent('input');
  assert.equal(await page.locator('#captainMusicValue').textContent(),'37%');assert.equal(await page.evaluate(()=>Math.round(MareAudio.getState().volume*100)),37);
- await page.locator('[data-captain-mute]').uncheck();assert.equal(await page.evaluate(()=>MareAudio.getState().muted),true);
+ const musicToggle=page.getByRole('checkbox',{name:'Ativar música'});
+ const effectsToggle=page.getByRole('checkbox',{name:'Ativar efeitos do jogo'});
+ const effectsSlider=page.getByRole('slider',{name:'Volume dos efeitos'});
+ await effectsSlider.fill('68');
+ assert.equal(await page.locator('#captainEffectsValue').textContent(),'68%');
+ assert.equal(await page.locator('#captainMusicValue').textContent(),'37%');
+ await musicToggle.uncheck();
+ assert.equal(await page.evaluate(()=>MareAudio.getState().muted),true);
+ assert(await effectsToggle.isChecked());
+ await effectsSlider.fill('0');
+ assert.equal(await effectsToggle.isChecked(),false);
+ await effectsToggle.check();
+ assert.equal(await musicToggle.isChecked(),false);
+ await effectsSlider.fill('68');
+ assert.match(await page.locator('[data-settings-card=audio] em').textContent(),/Música: desligada.*Efeitos: 68%/);
  await page.locator('[data-settings-tab=discord]').click();assert.equal(await page.locator('#dialogBody a').count(),0);assert((await page.locator('.captain-empty').textContent()).includes('ainda não informado'));await shot('settings-discord');
  const prefs=await page.evaluate(()=>MarePlayerHub.getPreferences());await page.reload();await page.waitForFunction(()=>window.__captainQA?.game);assert.deepEqual(await page.evaluate(()=>MarePlayerHub.getPreferences()),prefs);
+ assert.deepEqual(await page.evaluate(()=>{const {volume,muted,effectsVolume,effectsMuted}=MareAudio.getState();return {volume,muted,effectsVolume,effectsMuted};}),{volume:.37,muted:true,effectsVolume:.68,effectsMuted:false});
  // Restore normal viewing preferences through actual controls for the final captures.
  await open('settings');await page.locator('[data-settings-card=graphics]').click();await page.locator('[data-captain-setting=quality]').selectOption('high');
  await page.locator('[data-settings-card=interface]').click();await page.locator('[data-captain-setting=density]').selectOption('standard');

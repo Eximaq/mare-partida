@@ -110,7 +110,9 @@ const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8')
     },['supa-espiral-cortante.ogg','supa-retaliacao-metalica.ogg']);
     await cues(()=>{
       MareAudio.setMuted(true);const q=__orangeAudioQA;q.game.classId='sword';q.world.hero.combat=null;orangeAttack(true);
-      MareAudio.setMuted(false);
+    },['espada-corte.ogg','espada-acerto.ogg']);
+    await cues(()=>{
+      MareAudio.setEffectsMuted(true);MareAudio.setMuted(false);orangeAttack(true);
     },[]);
     await cues(()=>{const q=__orangeAudioQA;q.returnLobby();q.move('d',15);},[]);
     const audio=await page.evaluate(()=>orangeAudio);
