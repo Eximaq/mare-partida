@@ -1079,6 +1079,20 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/female113-116-five-torsos-south-v2/female113_south_five-torsos_corrected-approved-v2.zip",
+      "bytes": 5539768,
+      "sha256": "57a92d4538b64c09ff53f3018f60553327d2960c2a024c87159f98bf3c741c6a",
+      "pngEntries": 150,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/female113-116-five-torsos-south-v2/female116_south_five-torsos_corrected-approved-v2.zip",
+      "bytes": 5629292,
+      "sha256": "21d8b5ec52a3b85956e888460926a5cd0f26d9deed89397ea5cca853f9298929",
+      "pngEntries": 75,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/m113-four-outfits-south/male113_south_M172_M158v3_M165v3_M179_head157_approved.zip",
       "bytes": 6007403,
       "sha256": "1b32a6a98e7186e9087e641e7b09d745c33f1d0792073c3c3c37b84ea6704b8b",
