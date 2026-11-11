@@ -1,0 +1,44 @@
+[
+  {
+    "file": "weapon68_east-west-v2_approved.zip",
+    "sha256": "391077e12d3b372cb30c6bd1ba8a3be80b746d4993514bb9e247cbcc2206442f",
+    "bytes": 1785714,
+    "finalFrames": 16,
+    "originalSourcePngs": 1
+  },
+  {
+    "file": "weapon1_north-v1_approved.zip",
+    "sha256": "9fcb78a7f3da1cecb8325a1530f7eef915b0bc6d1a0aa017c24b62bfca37856a",
+    "bytes": 1148727,
+    "finalFrames": 8,
+    "originalSourcePngs": 1
+  },
+  {
+    "file": "weapon68_north-v1_approved.zip",
+    "sha256": "1f0278fb50a7e2ad3a9ea804345510a95cb5baed4bd5ef07742729fc959d3c62",
+    "bytes": 978441,
+    "finalFrames": 8,
+    "originalSourcePngs": 1
+  },
+  {
+    "file": "weapon12_east-west-v1_approved.zip",
+    "sha256": "f579271ad8af47384722f1172457fabca6673f99fca79243c5b4587a139de594",
+    "bytes": 1522821,
+    "finalFrames": 16,
+    "originalSourcePngs": 1
+  },
+  {
+    "file": "weapon17_east-west-v1_approved.zip",
+    "sha256": "78d52cde3707c6808f7269a071605560aa47a264426c52c295c689b58010a571",
+    "bytes": 1326481,
+    "finalFrames": 16,
+    "originalSourcePngs": 1
+  },
+  {
+    "file": "weapon17_north-v1_approved.zip",
+    "sha256": "624818df1f6bdb4f98e5fa121645940e992a1e59c9370198f6c6f459e75259ec",
+    "bytes": 1237298,
+    "finalFrames": 8,
+    "originalSourcePngs": 1
+  }
+]
