@@ -9,7 +9,8 @@
     try{await ONLINE_GAME.load();}
     catch(error){if(error.code==='authentication_required'){location.replace('/online/');return;}document.body.classList.remove('online-session-loading');const message=document.createElement('p');message.textContent='Não foi possível carregar seu personagem. Atualize a página para tentar novamente.';message.setAttribute('role','alert');document.body.replaceChildren(message);return;}
   }
-  let onlineWorldFrame=null,onlineMoveKeys='',onlineNextMove=0,onlineMoveWorking=false;
+  let onlineWorldFrame=null,onlineMoveKeys='',onlineNextMove=0,onlineMoveWorking=null;
+  let queuedOnlineWalk=null;
   let onlineUI=null,onlineAttackWorking=false,onlineEncounterId=null,onlineInventoryStamp=null;
   const classCombat=MareCombatRegistry.create({sprites:MareFactionSprites,animation:MareCombatAnimation,loadVisuals:false});
   const DEV_ACTIVE=!ONLINE_GAME&&MareDev.active(location.search);
@@ -184,7 +185,14 @@
   new ResizeObserver(resizeViewport).observe(canvas);
   function walkTo(point,action=null){
     if(ONLINE_GAME?.data?.online.world){
-      if(!ONLINE_GAME.controlled||ONLINE_GAME.busy||ONLINE_GAME.pending)return false;
+      if(!ONLINE_GAME.controlled||!ONLINE_GAME.available)return false;
+      if(onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop'){
+        const {character,online}=ONLINE_GAME.data;
+        queuedOnlineWalk={point,action,characterId:character.id,mapId:online.world.mapId};
+        lobbyAction=null;
+        return true;
+      }
+      if(onlineMoveWorking||ONLINE_GAME.busy||ONLINE_GAME.pending)return false;
       lobbyAction=action;lobbyDestination=point;void onlineWorldCommand('world.move',{x:point.x,y:point.y});return true;
     }
     const path=navigator().path(world.hero,point);
@@ -1746,10 +1754,19 @@
   }
   async function onlineWorldCommand(action,payload={},close=false){
     if(onlineMoveWorking||!ONLINE_GAME.controlled||ONLINE_GAME.busy||ONLINE_GAME.pending)return;
-    onlineMoveWorking=true;
-    try{await ONLINE_GAME.command(action,payload);if(close)closePanel();}
+    onlineMoveWorking=action;
+    let accepted=false;
+    try{await ONLINE_GAME.command(action,payload);accepted=true;if(close)closePanel();}
     catch(error){lobbyAction=null;lobbyDestination=null;onlineUI?.error(error);}
-    finally{onlineMoveWorking=false;}
+    finally{
+      onlineMoveWorking=null;
+      const walk=queuedOnlineWalk;
+      queuedOnlineWalk=null;
+      const current=ONLINE_GAME.data;
+      if(accepted&&walk&&!currentPanel&&current?.character?.id===walk.characterId&&current.online.world?.mapId===walk.mapId){
+        walkTo(walk.point,walk.action);
+      }
+    }
   }
   function syncOnlineWorld(){
     const w=ONLINE_GAME.data?.online.world;if(!w)return;

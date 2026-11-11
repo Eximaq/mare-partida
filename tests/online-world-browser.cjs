@@ -22,6 +22,44 @@ arrive('lobby',null);
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});
  const out=process.env.MARE_QA_DIR||'tmp/online-world';fs.mkdirSync(out,{recursive:true});
  const context=await browser.newContext({viewport:{width:1366,height:768}}),p=await context.newPage(),errors=[],commands=[];
+ let holdSnapshot=false,releaseSnapshot;
+ async function testMovementWhileReconciling(mapId){
+  const {spawn}=maps.maps[mapId];
+  const click=async(dx,dy)=>{
+   const target=await p.locator('#worldCanvas').evaluate((canvas,{x,y})=>{
+    const box=canvas.getBoundingClientRect(),{camera}=__mareDiagnostics();
+    return {x:box.x+(x-Math.round(camera.x))*box.width/camera.width,y:box.y+(y-Math.round(camera.y))*box.height/camera.height};
+   },{x:spawn.x+dx,y:spawn.y+dy});
+   await p.mouse.click(target.x,target.y);
+  };
+  await p.waitForFunction(()=>!MareGameSession.busy);
+  const start=commands.length,deadline=Date.now()+5000;
+  holdSnapshot=true;
+  const commandResponse=p.waitForResponse(response=>response.url().endsWith('/commands')&&response.request().method()==='POST');
+  const firstClick=performance.now();
+  await click(78,0);
+  const response=await commandResponse;
+  const responseAt=performance.now();
+  assert.equal(response.status(),200);
+  while(!releaseSnapshot&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,10));
+  assert(releaseSnapshot,`${mapId}: first command must reach its full state read`);
+  try{
+   await p.waitForFunction(x=>__mareDiagnostics().hero.x>x+1,spawn.x,{timeout:3000});
+   const visibleAt=performance.now();
+   console.log(`${mapId} fixture: click to POST ${Math.round(commandStarted-firstClick)} ms, POST to response ${Math.round(responseAt-commandStarted)} ms, click to first step ${Math.round(visibleAt-firstClick)} ms`);
+   await click(30,45);
+   await click(-58,30);
+   assert.equal(commands.length,start+1,`${mapId}: no concurrent movement POST`);
+  }finally{
+   releaseSnapshot();
+   releaseSnapshot=undefined;
+  }
+  await p.waitForFunction(()=>!MareGameSession.busy);
+  assert.equal(commands.length,start+2,`${mapId}: the latest click must be sent after reconciliation`);
+  assert.equal(commands[start+1].action,'world.move');
+  assert(Math.abs(commands[start+1].payload.x-(spawn.x-58))<3,`${mapId}: intermediate click must not be sent`);
+ }
+ let commandStarted=0;
  try{
   p.on('pageerror',e=>errors.push(e.message));
   await context.addInitScript(()=>{localStorage.setItem('mare-partida-save-v1','preserve-demo-byte-for-byte');});
@@ -30,9 +68,16 @@ arrive('lobby',null);
    const pathname=new URL(route.request().url()).pathname;let body={};
    if(pathname==='/v1/me')body={character};
    else if(pathname==='/v1/auth/csrf')body={csrfToken:'local-fixture'};
-   else if(pathname.endsWith('/online-state'))body=wire;
+   else if(pathname.endsWith('/online-state')){
+    if(holdSnapshot&&commands.at(-1)?.action==='world.move'){
+     holdSnapshot=false;
+     await new Promise(resolve=>{releaseSnapshot=resolve;});
+    }
+    body=wire;
+   }
    else if(pathname.endsWith('/control')||pathname.endsWith('/renew'))body={epoch:1,token:'x'.repeat(43)};
    else if(pathname.endsWith('/commands')){
+    commandStarted=performance.now();
     const v=route.request().postDataJSON();commands.push(v);assert.equal(v.expectedVersion,wire.state.version);
     if(v.action==='world.move'){
      assert.deepEqual(Object.keys(v.payload).sort(),['x','y']);const nav=maps.navigation(wire.world.mapId);wire.world.path=nav.path(wire.world.position,v.payload);assert(wire.world.path.length);
@@ -42,6 +87,7 @@ arrive('lobby',null);
     else if(v.action==='world.stop'){wire.world.path=[];}
     else throw Error('Unexpected intent '+v.action);
     wire.state.version++;
+    body={requestId:v.requestId,action:v.action,state:wire.state,world:wire.world};
    }else throw Error('Unexpected API '+pathname);
    await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body)});
   });
@@ -53,6 +99,7 @@ arrive('lobby',null);
   await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready);
   assert.equal(await p.evaluate(()=>__mareDiagnostics().map.id),'lobby');
   const initial=await p.evaluate(()=>({x:__mareDiagnostics().hero.x,y:__mareDiagnostics().hero.y}));assert.deepEqual(initial,{x:1504,y:1568});
+  await testMovementWhileReconciling('lobby');
   // Physical keyboard drives the shipped input path, not a test-only command.
   await p.keyboard.down('w');await p.waitForFunction(()=>__mareDiagnostics().hero.y<1558);await p.keyboard.up('w');
   await p.waitForFunction(()=>!MareGameSession.busy);assert(commands.some(c=>c.action==='world.move'));assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-byte-for-byte');
@@ -60,6 +107,7 @@ arrive('lobby',null);
   await p.locator('[data-travel-island="dawn"]').click();
   await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
   assert.equal(await p.locator('#panelOverlay').isHidden(),true);assert(commands.some(c=>c.action==='world.travel'));
+  await testMovementWhileReconciling('dawn');
   await p.locator('#journeyToggle').click();await p.locator('#huntRoute').click();await p.waitForSelector('[data-online-action="journey.begin"]');await p.keyboard.press('Escape');
   await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.evaluate(()=>document.fonts.ready);
   await p.screenshot({path:path.join(out,'online-world-dawn.png')});
