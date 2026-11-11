@@ -33,7 +33,7 @@ test('fruit rework upgrades only audited battles, preserving every other field a
    const tables=['characters','character_progression','game_inventory','character_commands','world_battle_rewards'];
    const snapshot=async()=>Promise.all(tables.map(async table=>(await f.pool.query(`SELECT to_jsonb(t) row FROM mare_game.${table} t ORDER BY to_jsonb(t)::text`)).rows));
    const economicBefore=await snapshot();
-   assert.deepEqual(await applyMigrations(f.pool),[migration]);
+   assert.deepEqual(await applyMigrations(f.pool),[migration,'0055_akainu_weekly_boss.sql']);
    for(const {id,b} of snapshots){
     const after=(await f.pool.query('SELECT simulation FROM mare_game.character_battles WHERE character_id=$1',[id])).rows[0].simulation;
     assert.deepEqual(after,{...b,rulesHash:b.fixtureMode==='unknown'?b.rulesHash:historicalTarget});

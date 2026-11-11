@@ -17,7 +17,7 @@ test('cold Dawn route does not resolve Math through the VM global proxy for ever
  try{
   const world=require(file).load(),nav=world.navigation('dawn');lookups=0;
   const route=nav.path({x:2137.7381123218383,y:1057.5929338939222},{x:2304.423881155701,y:1851.783344798676});
-  assert.equal(route.length,24);assert.deepEqual({...route[0]},{x:2184,y:1128});
+  assert.equal(route.length,4);assert.deepEqual({...route[0]},{x:2440,y:1512});
   assert.deepEqual({...route.at(-1)},{x:2304.423881155701,y:1851.783344798676});
   assert.equal(lookups,0,'per-sample VM global lookups amplify cold path CPU');
  }finally{vm.createContext=create;delete require.cache[file];if(old)require.cache[file]=old;}

@@ -1,6 +1,9 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require('node:crypto');
-const D=require('../dawn-map-data.js'),O=require('../dawn-world.js'),H=require('../hunt-system.js');require('../world-system.js');
+const D=require('../dawn-map-data.js'),O=require('../dawn-world.js'),H=require('../hunt-system.js');
+// This provenance fixture exercises the original Dawn export, before replacement.
+delete globalThis.MareMapExports;
+require('../world-system.js');
 const {Navigation,Camera,maps}=MareWorld,nav=new Navigation(O.map,O.map.navigationCell);
 assert.equal(maps.dawn,O.map);assert.deepEqual([O.COLS,O.ROWS,O.TILE,O.map.width,O.map.height],[56,40,64,3584,2560]);
 assert.equal(crypto.createHash('sha256').update(fs.readFileSync('assets/dawn-manual/map.png')).digest('hex'),D.source.sha256);

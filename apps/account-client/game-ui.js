@@ -106,7 +106,7 @@
     if(frameId===undefined||m.onlineVisualFrame!==frameId){m.onlineVisualFrame=frameId;m.onlineVisualOrigin={x:m.x,y:m.y};}
     const dx=pose.x-m.onlineVisualOrigin.x,dy=pose.y-m.onlineVisualOrigin.y,moving=Math.hypot(dx,dy)>1e-8;
     m.x=pose.x;m.y=pose.y;m.moving=moving?1:0;
-    if(moving&&!(m.attackAnim>0))m.emberFacing=Math.abs(dx)>Math.abs(dy)?(dx<0?'west':'east'):(dy<0?'north':'south');
+    if(moving&&!(m.attackAnim>0)&&!m.action)m.emberFacing=Math.abs(dx)>Math.abs(dy)?(dx<0?'west':'east'):(dy<0?'north':'south');
     m.emberElapsed=(m.emberElapsed||0)+dt;m.attackAnim=Math.max(0,m.attackAnim-dt);m.hit=Math.max(0,m.hit-dt);
   }
   function fruitTimeline(value,epoch,time){

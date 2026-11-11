@@ -147,7 +147,7 @@ test('shared dungeon keeps one scaled boss and each eligible character owns a on
  assert.equal(waiting.battle.partyInstanceId,instance);
  assert.equal(waiting.battle.mobs.length,1);
  // Reproduce the stale personal reference left by 0039. The other member still has a valid chest.
- const repair=await readFile(new URL('../../apps/game-server/migrations/0052_detach_claimed_dungeon_members.sql',import.meta.url),'utf8');
+ const repair=await readFile(new URL('../../apps/game-server/migrations/0053_detach_claimed_dungeon_members.sql',import.meta.url),'utf8');
  await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{partyInstanceId}',to_jsonb($2::text)) WHERE character_id=$1",[a.c.id,instance]);
  assert.equal((await f.pool.query(repair)).rowCount,1);
  assert.equal((await f.pool.query(repair)).rowCount,0);
