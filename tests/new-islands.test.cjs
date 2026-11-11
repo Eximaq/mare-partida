@@ -8,21 +8,25 @@ const root=path.join(__dirname,'..');
 for(const [id,allowed,min] of [['rare','ei',16],['syrup','u',21],['baratie','c',26],['arlong','c',31]]){
   const island=islands[id],nav=new MareWorld.Navigation(island.map,32);
   assert.equal(MareWorld.maps[id],island.map);
-  assert.equal(island.map.width,island.data.width*64);
-  assert.equal(island.map.height,island.data.height*64);
-  assert(allowed.includes(island.at(Math.floor(island.spawn.x/64),Math.floor(island.spawn.y/64))));
-  assert(nav.walkable(island.spawn.x,island.spawn.y));
+  const exported=MareMapExports.get(id),spawn=island.map.spawn;
+  assert.equal(island.map.width,exported?.width??island.data.width*64);
+  assert.equal(island.map.height,exported?.height??island.data.height*64);
+  if(exported)assert.deepEqual(spawn,exported.spawn);
+  else assert(allowed.includes(island.at(Math.floor(spawn.x/64),Math.floor(spawn.y/64))));
+  assert(nav.walkable(spawn.x,spawn.y));
   assert(island.map.colliders.length>=(id==='arlong'?25:30),`${id}: visible object footprints are solid`);
   assert(island.map.colliders.some(o=>{
     const x=o.x+o.w/2,y=o.y+o.h/2;
     return island.map.terrainWalkable(x,y)&&!nav.walkable(x,y);
   }),`${id}: objects stop movement on otherwise walkable terrain`);
-  for(const sector of island.districts){assert(nav.walkable(sector.x,sector.y));assert(nav.path(island.spawn,sector).length,`${id}/${sector.id}`);}
+  for(const sector of island.districts){assert(nav.walkable(sector.x,sector.y));assert(nav.path(spawn,sector).length,`${id}/${sector.id}`);}
   assert.equal(H.get(id).min,min);
-  assert(fs.existsSync(path.join(root,`assets/new-islands/${id}-map.png`)));
+  const art=exported?`assets/exported-maps/${id}/map.png`:`assets/new-islands/${id}-map.png`;
+  const png=fs.readFileSync(path.join(root,art));
+  assert.deepEqual([png.readUInt32BE(16),png.readUInt32BE(20)],[island.map.width,island.map.height]);
 }
-assert(islands.syrup.spawn.y>islands.syrup.map.height*.7);
-assert(islands.baratie.spawn.y>islands.baratie.districts.at(-1).y);
+assert(islands.syrup.map.spawn.y>islands.syrup.districts[0].y);
+assert(islands.baratie.map.spawn.y>islands.baratie.districts.at(-1).y);
 const python=cp.execFileSync('python',['-X','utf8','-c','import json; from server.monsters import CATALOG; print(json.dumps(CATALOG))'],{cwd:root,encoding:'utf8'});
 assert.deepEqual(catalog,JSON.parse(python));
 for(const [id,area,level] of [['cocox','rare',18],['sham','syrup',23],['buchi','syrup',23],['pearl','baratie',28],['gin','baratie',28],['kuroobi','arlong',33],['chew','arlong',33],['mr3','orange',13],['cabaji','orange',13],['marinheiro','loguetown',40]]){
