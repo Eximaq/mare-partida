@@ -1,0 +1,35 @@
+{
+  "path": "weapons/male4-115-four-torsos-ew/Rifles4_115_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 46660845,
+  "sha256": "7dac370703d3055432321af25b33a438120d36b8c99dbd894e66dbfca23ae820",
+  "pngEntries": 313,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+  "weapons": [
+    4,
+    115
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "male",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 144,
+  "manifestHashesVerified": 316,
+  "archiveNote": "Exact original editable ZIP preserved; internal candidate labels predate owner approval.",
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male4-115-four-torsos-ew/parts/MANIFEST.json",
+    "reconstruct": "weapons/male4-115-four-torsos-ew/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  }
+}

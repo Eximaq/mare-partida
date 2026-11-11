@@ -1,0 +1,36 @@
+{
+  "path": "weapons/female113116-four-torsos-ew/female113116_east-west_four-torsos_approved-v1.zip",
+  "bytes": 31528354,
+  "sha256": "827392fa97aeef6d01687afb1688bfbcd81511fa133825d97b0a335354e80741",
+  "pngEntries": 568,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented female113 and female116 complete lateral cycles with four torsos.",
+  "weapons": [
+    113,
+    116
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "female",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 144,
+  "manifestHashesVerified": 584,
+  "sourceBackupSHA256": "827392fa97aeef6d01687afb1688bfbcd81511fa133825d97b0a335354e80741",
+  "archiveNote": "Original editable backup preserved byte-for-byte. Internal candidate labels reflect pre-approval packaging; this index records subsequent owner approval. Approval covers only these equipped combinations.",
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/female113116-four-torsos-ew/parts/MANIFEST.json",
+    "reconstruct": "weapons/female113116-four-torsos-ew/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  }
+}

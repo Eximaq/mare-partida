@@ -1,0 +1,137 @@
+{
+  "original": "Rifles4_115_Femininos_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 19392977,
+  "sha256": "16598f83a5fe6ae7d1c39518034ab7bf746be26819b5f6d3ae9448f03f5b6808",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "140b990fd546e64675369f7f3b7795f7201759d77533fd08d218e1954a3cb55d"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "7d649e74c33ad018ca7bcf199e1a3d0df358be22ff0878c611a590075140e78e"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 750000,
+      "sha256": "cd39eb97ce43b8a3d00755ffccb007aca32e245b0c44857881f88013aecb9f14"
+    },
+    {
+      "path": "archive.part003",
+      "bytes": 750000,
+      "sha256": "ccf817afd7f3114f472cf88c78c9bd28af12053a610ac0e6068659c1f97a4a07"
+    },
+    {
+      "path": "archive.part004",
+      "bytes": 750000,
+      "sha256": "9b6f52f6ffd5da9c1a272a62159734f4ef02246987aa0d90809fda5a7627f20a"
+    },
+    {
+      "path": "archive.part005",
+      "bytes": 750000,
+      "sha256": "470e280f469d9e3046228cdf3ab722f95fa47d7dfdf60b875ca6d403de0e1cb2"
+    },
+    {
+      "path": "archive.part006",
+      "bytes": 750000,
+      "sha256": "377270cce54640935c71f190d0a4e61fe5680ce82a21c1f352632d051be4708b"
+    },
+    {
+      "path": "archive.part007",
+      "bytes": 750000,
+      "sha256": "16bb5f13f01d0d9424a6aa8b3e22a495ce6bfa85c48e61f2978a053442682eab"
+    },
+    {
+      "path": "archive.part008",
+      "bytes": 750000,
+      "sha256": "0ecf447f538e563886826c29d385b30a615397ad1cabeb129ec9d7db7f59cf62"
+    },
+    {
+      "path": "archive.part009",
+      "bytes": 750000,
+      "sha256": "9c54397796522075ef833cd551ca89500b50afb6c17cada95e1c6fdd046db105"
+    },
+    {
+      "path": "archive.part010",
+      "bytes": 750000,
+      "sha256": "91c669e445be4586d2e84ebc7eed3e638b3f763e06f4132272c8caa668f29d70"
+    },
+    {
+      "path": "archive.part011",
+      "bytes": 750000,
+      "sha256": "1a09854c9d17068fae130d5a85ddc89236ecf13c8e94a3a49fe14afa282e5b01"
+    },
+    {
+      "path": "archive.part012",
+      "bytes": 750000,
+      "sha256": "6f6679a10f49f905e8e8655d626db704c4cfd1503158e3992b9b3c4a1092c749"
+    },
+    {
+      "path": "archive.part013",
+      "bytes": 750000,
+      "sha256": "8de16d6ff3cf18af93e7e11781adcf40a92b0c9fa8e90d7b3b42099b0f1942c3"
+    },
+    {
+      "path": "archive.part014",
+      "bytes": 750000,
+      "sha256": "9b06df8417f34c35afc593a7fb5a0637c372a222fe03de86ceb11f6d1e459201"
+    },
+    {
+      "path": "archive.part015",
+      "bytes": 750000,
+      "sha256": "08410d6b74ddc267319557140672cfc9ffe9628576074648983a058a83f0583c"
+    },
+    {
+      "path": "archive.part016",
+      "bytes": 750000,
+      "sha256": "4e62fb197ca4d653396e61e3854718ad633c68c4610d3874a268150fa6011db5"
+    },
+    {
+      "path": "archive.part017",
+      "bytes": 750000,
+      "sha256": "8396a3be479f694966abac96e8057ac73da6f9de85d594766c8244e6a2e2478a"
+    },
+    {
+      "path": "archive.part018",
+      "bytes": 750000,
+      "sha256": "953bde14e0ea56914bf5d7b2c9c9779dcb574d8d1d0bfcba6eec1de969824d95"
+    },
+    {
+      "path": "archive.part019",
+      "bytes": 750000,
+      "sha256": "d285cbd60c1f99d84a495f9738eb9c4be5e93569e09acbaeae6fd4edddcc7d1c"
+    },
+    {
+      "path": "archive.part020",
+      "bytes": 750000,
+      "sha256": "b8cdb8bfca10988177f4ce03f8ac5b988f4a9d02d5e6002095d552c6d831fffb"
+    },
+    {
+      "path": "archive.part021",
+      "bytes": 750000,
+      "sha256": "b13542b05ee14f9cbe69b1662a92bbdf3cd86683991c6f64ac135c25728dd6f0"
+    },
+    {
+      "path": "archive.part022",
+      "bytes": 750000,
+      "sha256": "c21c7a4667dfa4956487763e926db29c3886042723b04cbf17ea2b71cbe43496"
+    },
+    {
+      "path": "archive.part023",
+      "bytes": 750000,
+      "sha256": "297dcf6d93bea4716c2773ef5f52e4ebc5c2c3d3392a628860be890452dcdfbe"
+    },
+    {
+      "path": "archive.part024",
+      "bytes": 750000,
+      "sha256": "eeedaef26fce24e68994cd4d7de47177d6ef88f885f0f964513f869cbd8af503"
+    },
+    {
+      "path": "archive.part025",
+      "bytes": 642977,
+      "sha256": "e82966afcb1f190216306de83c7ee65a7260dfe367d3fac5a5d1aca9e82bfb07"
+    }
+  ]
+}

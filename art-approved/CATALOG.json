@@ -1093,6 +1093,34 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/female113116-four-torsos-ew/female113116_east-west_four-torsos_approved-v1.zip",
+      "bytes": 31528354,
+      "sha256": "827392fa97aeef6d01687afb1688bfbcd81511fa133825d97b0a335354e80741",
+      "pngEntries": 568,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/female113116-four-torsos-ew/parts/MANIFEST.json",
+        "reconstruct": "weapons/female113116-four-torsos-ew/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/female4-115-four-torsos-ew/Rifles4_115_Femininos_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 19392977,
+      "sha256": "16598f83a5fe6ae7d1c39518034ab7bf746be26819b5f6d3ae9448f03f5b6808",
+      "pngEntries": 520,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/female4-115-four-torsos-ew/parts/MANIFEST.json",
+        "reconstruct": "weapons/female4-115-four-torsos-ew/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/lateral-four-torsos-approved/female118_east-west_four-torsos_approved-v1.zip",
       "bytes": 5736242,
       "sha256": "705891db8e33dab271a5fdbeb0197ccbc12fec9eed757d286a4dc70f06994bda",
@@ -1182,6 +1210,76 @@
       "sha256": "899fee7c6125f67f0af89b811b7f38b4fecd9d60dbfcb82088bfe147f1e42436",
       "pngEntries": 5,
       "productionEnabled": false
+    },
+    {
+      "path": "weapons/male113116-four-torsos-ew-v2/Rifles113_116_Masculinos_Quatro_Trajes_EW_V2_Backup.zip",
+      "bytes": 38991474,
+      "sha256": "885cf73d362bca98b98402e1575f521dd36d5af117319e4fab28cfce03d17a68",
+      "pngEntries": 241,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male113116-four-torsos-ew-v2/parts/MANIFEST.json",
+        "reconstruct": "weapons/male113116-four-torsos-ew-v2/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/male118-four-torsos-ew-v2/male118_east-west_four-torsos_approved-v2.zip",
+      "bytes": 7933867,
+      "sha256": "55b2ab8f948c726a6d9cc9861c941475867cb8f13ec8d12eedfdc3b2b7f69525",
+      "pngEntries": 169,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male118-four-torsos-ew-v2/parts/MANIFEST.json",
+        "reconstruct": "weapons/male118-four-torsos-ew-v2/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/male15-four-torsos-ew/male15_east-west_four-torsos_approved-v1.zip",
+      "bytes": 8099083,
+      "sha256": "7e5a8cc954562e40e781c7e526c3ff15d0ce99d7b6921fa67f531dbbe70cf461",
+      "pngEntries": 122,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male15-four-torsos-ew/parts/MANIFEST.json",
+        "reconstruct": "weapons/male15-four-torsos-ew/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/male4-115-four-torsos-ew/Rifles4_115_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 46660845,
+      "sha256": "7dac370703d3055432321af25b33a438120d36b8c99dbd894e66dbfca23ae820",
+      "pngEntries": 313,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male4-115-four-torsos-ew/parts/MANIFEST.json",
+        "reconstruct": "weapons/male4-115-four-torsos-ew/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/male5-four-torsos-ew/Mosquete5_Masculino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 7090380,
+      "sha256": "0059e3e29fee9dd30c40592f149543462405ab8074e4091dc76813bbd9b97caa",
+      "pngEntries": 166,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male5-four-torsos-ew/parts/MANIFEST.json",
+        "reconstruct": "weapons/male5-four-torsos-ew/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
     },
     {
       "path": "weapons/relicario32-reapproved/weapon32_north_visual-v2_reapproved.zip",

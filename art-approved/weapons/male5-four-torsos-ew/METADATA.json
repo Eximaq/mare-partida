@@ -1,0 +1,33 @@
+{
+  "path": "weapons/male5-four-torsos-ew/Mosquete5_Masculino_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 7090380,
+  "sha256": "0059e3e29fee9dd30c40592f149543462405ab8074e4091dc76813bbd9b97caa",
+  "pngEntries": 166,
+  "productionEnabled": false,
+  "approval": "Owner approved presented male5 complete lateral cycles with four torsos.",
+  "weapons": [
+    5
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "male",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 64,
+  "manifestHashesVerified": 169,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male5-four-torsos-ew/parts/MANIFEST.json",
+    "reconstruct": "weapons/male5-four-torsos-ew/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  }
+}

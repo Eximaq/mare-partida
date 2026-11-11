@@ -1,0 +1,34 @@
+{
+  "path": "weapons/male15-four-torsos-ew/male15_east-west_four-torsos_approved-v1.zip",
+  "bytes": 8099083,
+  "sha256": "7e5a8cc954562e40e781c7e526c3ff15d0ce99d7b6921fa67f531dbbe70cf461",
+  "pngEntries": 122,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented male15 complete lateral cycles with four torsos.",
+  "weapons": [
+    15
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "male",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 64,
+  "manifestHashesVerified": 127,
+  "archiveNote": "Original editable backup preserved byte-for-byte. Internal candidate labels reflect pre-approval packaging.",
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male15-four-torsos-ew/parts/MANIFEST.json",
+    "reconstruct": "weapons/male15-four-torsos-ew/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  }
+}

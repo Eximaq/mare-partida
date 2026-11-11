@@ -1,0 +1,62 @@
+{
+  "original": "male118_east-west_four-torsos_approved-v2.zip",
+  "bytes": 7933867,
+  "sha256": "55b2ab8f948c726a6d9cc9861c941475867cb8f13ec8d12eedfdc3b2b7f69525",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "34f4af03f76c6d6ea91a66ea4ad4203d467b191780586735bd617f9e22a417b3"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "5bcbf6d17fecef5ff48a36728aaa81957a987f1f991888d39dd4a6878c303e91"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 750000,
+      "sha256": "367ec868428d088a70eca3f04d7d3986f48be2c9077b03cf4a395e16c4883d25"
+    },
+    {
+      "path": "archive.part003",
+      "bytes": 750000,
+      "sha256": "954dfe29003b61844f344112e98b860a5bdcd7571f9a49871df4b875a0b16585"
+    },
+    {
+      "path": "archive.part004",
+      "bytes": 750000,
+      "sha256": "71ae63c1f3153e469508f449ce3ca3e995538a9be94e5eca1df786c840746267"
+    },
+    {
+      "path": "archive.part005",
+      "bytes": 750000,
+      "sha256": "49e429678231f0577ea32f1fac38a6c1fe217948e6e566890329d2a0cecb036f"
+    },
+    {
+      "path": "archive.part006",
+      "bytes": 750000,
+      "sha256": "ae33547d43ddfa24efecc92156af91ffceb677a71b36b4e46101d4a28be9374f"
+    },
+    {
+      "path": "archive.part007",
+      "bytes": 750000,
+      "sha256": "e26d5d7ef3df414f3fd84f99e8730ac2eb4ee594c3c881edcb4958e6e180952d"
+    },
+    {
+      "path": "archive.part008",
+      "bytes": 750000,
+      "sha256": "aabe919d85008ba809f4ad08df589f0c58c2a63825f34755927829fb67b5001a"
+    },
+    {
+      "path": "archive.part009",
+      "bytes": 750000,
+      "sha256": "2e969a5f46b4d836b755c4c6110494d1850df61929f366b2a789eb385765135f"
+    },
+    {
+      "path": "archive.part010",
+      "bytes": 433867,
+      "sha256": "d77e760c33e9cf882e0adc1678e0df10f5a76350f56291b015fc71d8e91e78e0"
+    }
+  ]
+}
