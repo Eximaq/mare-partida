@@ -1,0 +1,20 @@
+[
+  {
+    "file": "weapon118_north-east-west_canhao118-candidate-v3.zip",
+    "size_bytes": 1392831,
+    "sha256": "b834520253190a5452b5fdc542b34edbe2ce6b4b7d97e2ada41e240b11183a96",
+    "pngs": 24
+  },
+  {
+    "file": "weapon119_north-east-west_kaizoku119-new-candidate.zip",
+    "size_bytes": 1455862,
+    "sha256": "57c0e1867b63058fbca10a36ddc0f7436fecc3107238dfcc31882e6e1077bd9c",
+    "pngs": 24
+  },
+  {
+    "file": "weapon120_north-east-west_canhao120-candidate-v1.zip",
+    "size_bytes": 1408318,
+    "sha256": "2a093de6a1460e8007655bae79831f3a0fe77267e93c1785056822aa48f88b3b",
+    "pngs": 24
+  }
+]

@@ -428,6 +428,27 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved-multiview-v10/weapon118_north-east-west_canhao118-candidate-v3.zip",
+      "bytes": 1392831,
+      "sha256": "b834520253190a5452b5fdc542b34edbe2ce6b4b7d97e2ada41e240b11183a96",
+      "pngEntries": 24,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-multiview-v10/weapon119_north-east-west_kaizoku119-new-candidate.zip",
+      "bytes": 1455862,
+      "sha256": "57c0e1867b63058fbca10a36ddc0f7436fecc3107238dfcc31882e6e1077bd9c",
+      "pngEntries": 24,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-multiview-v10/weapon120_north-east-west_canhao120-candidate-v1.zip",
+      "bytes": 1408318,
+      "sha256": "2a093de6a1460e8007655bae79831f3a0fe77267e93c1785056822aa48f88b3b",
+      "pngEntries": 24,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/south-historical-110-114/male_110_south_v6.zip",
       "bytes": 876842,
       "sha256": "aad481b9aa4a43d42039c4b227a23d6d42ce3237b1f9f7537d59097a356ec436",
