@@ -638,6 +638,27 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved-15-109-111-v2/weapon109_north_approved-v2.zip",
+      "bytes": 1052375,
+      "sha256": "e1f21cc9865c21d9090c5a205b5e6a7aaa92a39ce73af29e9a8e7449b7c85f15",
+      "pngEntries": 9,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-15-109-111-v2/weapon111_north_approved-v2.zip",
+      "bytes": 1068663,
+      "sha256": "741ea7da9d03e70003c1348db1c99c84ec9d153b4101b8a484924ea0af9933ee",
+      "pngEntries": 9,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-15-109-111-v2/weapon15_east-west_approved-v2.zip",
+      "bytes": 1369821,
+      "sha256": "3805f5b742a709cee2344c49bf70246d6cde3feeff1532b4e873a39bcb8d8d86",
+      "pngEntries": 17,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/approved-daggers-v3/weapon71_east-west_female-source-approved-v3.zip",
       "bytes": 1234464,
       "sha256": "4f048b68f16e7a828413b88eb0cf557d19af0ba548d79d9c54ed8e3d8a305844",
@@ -876,6 +897,34 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved-rifles-horizontal-v2/weapon113_east-west_horizontal-v2_approved.zip",
+      "bytes": 3807672,
+      "sha256": "a0435cb9469fbf7f0e1db8217e4c96aa5dbfcb6ebc7fefd460ec794b49b1d35e",
+      "pngEntries": 19,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-rifles-horizontal-v2/weapon115_east-west_horizontal-v2_approved.zip",
+      "bytes": 3862240,
+      "sha256": "807dd5f451fa6209786f1a3dd317ba54a621b61d27cae80c40f2bc1d176f8970",
+      "pngEntries": 19,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-rifles-horizontal-v2/weapon116_east-west_horizontal-v2_approved.zip",
+      "bytes": 3883977,
+      "sha256": "12b379370dd37f96d869376395dbc9ed61ea2751d25f8159794a8866de702c39",
+      "pngEntries": 19,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-rifles-horizontal-v2/weapon4_east-west_horizontal-v2_approved.zip",
+      "bytes": 3628780,
+      "sha256": "91301b3161e5d4ba06c43778a436838ebe2e7225360501ad9b58b033bd9fd257",
+      "pngEntries": 19,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/approved-south-history/male_weapon121_south_v1.zip",
       "bytes": 1087967,
       "sha256": "feb6cb77b799a2c2995e55f82a610c3b8c385d59b46dcdf0dc1c8177632b275a",
@@ -967,6 +1016,13 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved111-ew-v1/weapon111_east-west_local-base-v1_approved.zip",
+      "bytes": 3656929,
+      "sha256": "7f51629bf8f9d09b1bb624381f2e365ea85be3f5fc85e7330a8964f89162e8b0",
+      "pngEntries": 19,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/approved112-v3/weapon112_north-east-west_approved-v3.zip",
       "bytes": 1851347,
       "sha256": "e3d9dfdf8db3a53528a3bb90bfdb8e9f38984250ea8a5096e502d2dacec35815",
@@ -978,6 +1034,13 @@
       "bytes": 871026,
       "sha256": "b4b0e75167fdd4e8a498e9ec94e6373755f198afae5ccc8afdd67d8944b89d07",
       "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/relicario32-reapproved/weapon32_north_visual-v2_reapproved.zip",
+      "bytes": 4162759,
+      "sha256": "241bd9d298a06e5498fe6e74d8a085c0c9ee7b75ad82ce97a177cfce662ad852",
+      "pngEntries": 11,
       "productionEnabled": false
     },
     {

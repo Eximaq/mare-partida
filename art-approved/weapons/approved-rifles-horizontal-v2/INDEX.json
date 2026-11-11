@@ -1,0 +1,30 @@
+[
+  {
+    "file": "weapon4_east-west_horizontal-v2_approved.zip",
+    "bytes": 3628780,
+    "sha256": "91301b3161e5d4ba06c43778a436838ebe2e7225360501ad9b58b033bd9fd257",
+    "finalFrames": 18,
+    "sourcePngs": 1
+  },
+  {
+    "file": "weapon113_east-west_horizontal-v2_approved.zip",
+    "bytes": 3807672,
+    "sha256": "a0435cb9469fbf7f0e1db8217e4c96aa5dbfcb6ebc7fefd460ec794b49b1d35e",
+    "finalFrames": 18,
+    "sourcePngs": 1
+  },
+  {
+    "file": "weapon115_east-west_horizontal-v2_approved.zip",
+    "bytes": 3862240,
+    "sha256": "807dd5f451fa6209786f1a3dd317ba54a621b61d27cae80c40f2bc1d176f8970",
+    "finalFrames": 18,
+    "sourcePngs": 1
+  },
+  {
+    "file": "weapon116_east-west_horizontal-v2_approved.zip",
+    "bytes": 3883977,
+    "sha256": "12b379370dd37f96d869376395dbc9ed61ea2751d25f8159794a8866de702c39",
+    "finalFrames": 18,
+    "sourcePngs": 1
+  }
+]

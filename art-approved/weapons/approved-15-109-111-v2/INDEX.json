@@ -1,0 +1,23 @@
+[
+  {
+    "file": "weapon15_east-west_approved-v2.zip",
+    "bytes": 1369821,
+    "sha256": "3805f5b742a709cee2344c49bf70246d6cde3feeff1532b4e873a39bcb8d8d86",
+    "finalFrames": 16,
+    "originalSourcePngs": 1
+  },
+  {
+    "file": "weapon109_north_approved-v2.zip",
+    "bytes": 1052375,
+    "sha256": "e1f21cc9865c21d9090c5a205b5e6a7aaa92a39ce73af29e9a8e7449b7c85f15",
+    "finalFrames": 8,
+    "originalSourcePngs": 1
+  },
+  {
+    "file": "weapon111_north_approved-v2.zip",
+    "bytes": 1068663,
+    "sha256": "741ea7da9d03e70003c1348db1c99c84ec9d153b4101b8a484924ea0af9933ee",
+    "finalFrames": 8,
+    "originalSourcePngs": 1
+  }
+]
