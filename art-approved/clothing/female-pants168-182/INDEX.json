@@ -1,6 +1,13 @@
 {
   "packages": [
     {
+      "path": "clothing/female-pants168-182/female_168_east_fourview_EW41_SN4.zip",
+      "bytes": 1070842,
+      "sha256": "f7cde4d354acb1220c7e6ab41e002db90c2270d97a067436f25db0f66eca1423",
+      "pngEntries": 12,
+      "productionEnabled": false
+    },
+    {
       "path": "clothing/female-pants168-182/female_168_north_fourview_EW41_SN4.zip",
       "bytes": 868925,
       "sha256": "d5269b476eed0c3becbbe3a1c87ab579e914d84f52e920f81b24bc15bd914d7c",
@@ -51,5 +58,5 @@
     }
   ],
   "productionEnabled": false,
-  "note": "168 NORTH/SOUTH/WEST and 182 all four views. 168 EAST remains pending upload."
+  "note": "Female168 and182: all four approved views preserved. Source archive only."
 }
