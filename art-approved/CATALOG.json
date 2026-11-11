@@ -1037,6 +1037,13 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/female-blue-north-v2/female_blue_north_3keys_4-115-116_corrected-v2.zip",
+      "bytes": 981650,
+      "sha256": "a597314b14bcd5ba74d14abeaf3cf29e361222688d5b12c33e0431f119d78d78",
+      "pngEntries": 43,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/female-firearms-idle-v2/female_weapon113_idle-east-west-v2_approved.zip",
       "bytes": 2792292,
       "sha256": "499b7849f10c52fdafc3f99c11ef90cfdafbc6e2c227c2a7c3f04d31f9ad9ef4",
