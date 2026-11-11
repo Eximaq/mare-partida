@@ -176,6 +176,34 @@
       "productionEnabled": false
     },
     {
+      "path": "clothing/final-history-gaps/female_outfit151-154-152-155_east_materials-v3_source-pack.zip",
+      "bytes": 2119696,
+      "sha256": "cb408ba9c4c621da4c24e644561429ce0f746baf4eb83d18e3aa9ffc220be0d6",
+      "pngEntries": 161,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/final-history-gaps/female_outfit151-154-152-155_north_materials-v3_source-pack.zip",
+      "bytes": 1568534,
+      "sha256": "ded76b49e4a1a169b5f77977d4aa88c42aa57f9753125055141a5e88efe7eaeb",
+      "pngEntries": 140,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/final-history-gaps/female_outfit151-154-152-155_south_materials-v3_source-pack.zip",
+      "bytes": 1429409,
+      "sha256": "19d5ce4d90b42cdd92b10c8f04287c4f3dccb9c0995aaca46bf623322a3ca339",
+      "pngEntries": 119,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/final-history-gaps/female_outfit151-154-152-155_west_materials-v3_source-pack.zip",
+      "bytes": 2119353,
+      "sha256": "e1b61e531a2581d86f6b30b0b378b433aa05319d0a3d9bc0daba72dad02613f0",
+      "pngEntries": 161,
+      "productionEnabled": false
+    },
+    {
       "path": "clothing/male-historical-cycles/male_133_east_equipped-r1.zip",
       "bytes": 1210950,
       "sha256": "f69e208afc678a48669dcbe622a5a7b3c94c741fe04fffd01a19bbc271883642",
