@@ -9,3 +9,23 @@ Para atualizar um export, rode `python tools/import_world_map_exports.py <pasta-
 Marineford está registrado como `marineford` no catálogo de mapas. O Boss Semanal ainda está desativado em `apps/game-server/src/characters/crew-profession-rules.ts`. Quando o modo for ativado, sua entrada deverá selecionar esse mapa e o encontro da semana.
 
 A migração 0052 reposiciona personagens no ponto de entrada do mapa atualizado ao reconectar e encerra o caminho anterior. Os dados de progressão e as recompensas da masmorra continuam no save.
+
+## Vila Syrup — contorno e chegada (11/11/2026)
+
+O ZIP fornecido pelo proprietário, `Mapa Vila Syrup.zip`, atualiza somente Syrup.
+O PNG composto é copiado sem alterações. Seus 65 objetos, máscaras e retângulos
+de apoio são preservados; a nova origem do export exige apenas +384 px em Y
+nas coordenadas relativas à imagem. Nenhuma colisão de objeto é removida ou reduzida.
+
+`tools/syrup-boundary.json` registra o contorno vermelho da referência e os
+pontos de navegação. A máscara de terreno bloqueia água e qualquer célula de
+16 px que ultrapasse esse contorno. A chegada fica em (2296, 3144), dentro
+do círculo ciano, com folga para os pés. Retorno, setores e pontos de patrulha
+permanecem dentro da área permitida. IDs e tipos dos monstros não mudam.
+
+Reprodução: `python tools/update_syrup_boundary.py <zip>`. O importador dedicado
+confere a preservação de todos os objetos e atualiza apenas a entrada Syrup
+nos dados compartilhados. Regressão: `node --test tests/syrup-boundary.test.cjs`;
+rotas: `node tools/audit_maps.cjs --map syrup --full`.
+A migração 0053 invalida caminhos antigos de Syrup e preserva posições e
+caminhos dos demais mapas. Sua execução no banco de produção não faz parte do PR.
