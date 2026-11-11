@@ -274,6 +274,34 @@
       "productionEnabled": false
     },
     {
+      "path": "clothing/male140-revised/male_140_east_r3.zip",
+      "bytes": 1228169,
+      "sha256": "106306a68dd933ca7371f5ec83ca0934db71e6035e16a84d4f540f686631b2fb",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male140-revised/male_140_north_r6.zip",
+      "bytes": 1269226,
+      "sha256": "b102035ef34309c360e7556666649f7294d97a837049921eef1a9d06501446fd",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male140-revised/male_140_south_r6.zip",
+      "bytes": 1355979,
+      "sha256": "26784b337c8c9b20b97de7e5aa0333352505628cb080703328fe82d5fddc8083",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/male140-revised/male_140_west_r3.zip",
+      "bytes": 1227139,
+      "sha256": "a70a8ab0ca92da54359da9f2bc0d615ef8d9c423c0610fcc5ec54752e8b905af",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
       "path": "clothing/pants147-and-headgear157/female_147_east_EW49_approved-fourview84.zip",
       "bytes": 908558,
       "sha256": "af1a932d62221262179915dca6929a87e2613a010106e4d9113dba567de2b3c6",
@@ -470,6 +498,13 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved-multiview-v10/weapon121_east-west_east-mirror-v2.zip",
+      "bytes": 1106444,
+      "sha256": "10738d1986949711adaba0d2924c367481d29f2e0dc5555cb55ed83aa1e442a3",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/approved-multiview-v10/weapon122_north_orbe122north.zip",
       "bytes": 557716,
       "sha256": "8aef5cd53e4320e7d2806931fdb32a93730199c2575c1e13815d6f083bd08495",
@@ -477,9 +512,58 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved-multiview-v10/weapon123_east-west_source-east-literal-west.zip",
+      "bytes": 1000681,
+      "sha256": "a114a4a23738b6d394bc7c774bd72929b8617b045c09d048f83457b9134d3ead",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-multiview-v10/weapon124_east-west_east-mirror-v2.zip",
+      "bytes": 1031851,
+      "sha256": "2e48f350505a633b7981b69ded8ce3fe91c23da82d095426468569e6121beadf",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-multiview-v10/weapon125_east-west_east-mirror-v2.zip",
+      "bytes": 1006400,
+      "sha256": "1c42b97967c16ef432fb1cf2cceaab213517d80121a0f3e49b8522de011ada36",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-multiview-v10/weapon126_east-west_east-mirror-v2.zip",
+      "bytes": 1018942,
+      "sha256": "b2eb6f193449c6ca3943f68e3a47d6fddd6771eb66ae5a992b7b93782a75b2a2",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-multiview-v10/weapon127_east-west_east-mirror-v2.zip",
+      "bytes": 1042735,
+      "sha256": "01fb7be594af5823d5f4c29499a5a9eb524b6db219bc4a35500ef54831ae0375",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-multiview-v10/weapon128_east-west_east-mirror-v2.zip",
+      "bytes": 1010032,
+      "sha256": "95030f170afb288a110a0282f5d25fdd11973bbb38ff01e434cf41d7c3b8da1c",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/approved-multiview-v10/weapon12_east-west_adagas12-lateral-v1.zip",
       "bytes": 932028,
       "sha256": "0681b9e489782f6ea7c6f9c70e75291fadd4f0a11aafa720c282807b599284ae",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-multiview-v10/weapon14_east-west_source-east-literal-west.zip",
+      "bytes": 853665,
+      "sha256": "541880438bfd445ea26df9ccefbf86f26cd5af295e7d9f99fd7b08991dfcc7d5",
       "pngEntries": 16,
       "productionEnabled": false
     },
@@ -519,6 +603,20 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved-multiview-v10/weapon31_east-west_source-east-literal-west.zip",
+      "bytes": 991662,
+      "sha256": "f35138c64186da2a72282fc133f27b74fae7d2fce1d739784f939744ecb16e0f",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-multiview-v10/weapon3_east-west_idle-fit.zip",
+      "bytes": 873803,
+      "sha256": "fb9a4f62d3c0dcfd11e928e1c7ac069d457791971ec14b6731bd67c2eaf77f19",
+      "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/approved-multiview-v10/weapon3_north_north-plus15.zip",
       "bytes": 533098,
       "sha256": "49c6b0ec9a9c22ff66805d16d4791961c435fdf754b8c7d0c2add16c5c0fcacf",
@@ -537,6 +635,97 @@
       "bytes": 1356530,
       "sha256": "dcce4ecb4a41d71116f3e7a10913642875a3fae4e23efa3ba595adbe9a750796",
       "pngEntries": 16,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon121_south_v1.zip",
+      "bytes": 1087967,
+      "sha256": "feb6cb77b799a2c2995e55f82a610c3b8c385d59b46dcdf0dc1c8177632b275a",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon122_south_v1.zip",
+      "bytes": 990334,
+      "sha256": "845b7101a6de43f92c3143414e596623a6dd0508117e33b11dba616f612b88f6",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon123_south_v1.zip",
+      "bytes": 1018388,
+      "sha256": "8d43a3aa4e4b302bc9a4f2b2c35501c2bad9d3e7cbd64f8fe576fbab70c033c7",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon124_south_v1.zip",
+      "bytes": 1037401,
+      "sha256": "a0e0b1f0443c0799a5625dd7f2a1bd960ee7095a0f1e48ae65a7ff548af5c668",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon125_south_v1.zip",
+      "bytes": 1015330,
+      "sha256": "168e7458309aac0de204479fdd16ec935fae0953a679546af04c18d03cf463f5",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon126_south_v1.zip",
+      "bytes": 1026762,
+      "sha256": "fa092e60efbc65d27ebbd4d76e5929a987fa47405fd658d26b10471470c49ad1",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon127_south_v1.zip",
+      "bytes": 1035023,
+      "sha256": "90cda5e2210414010a32fc97ff1cd1227f4a163fc7d9f569798c36d427cc929a",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon128_south_v1.zip",
+      "bytes": 1023717,
+      "sha256": "2ba978e6ae9dca53d6bc3b29c7140bcd0741c54f491d113e288a4567506e960b",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon12_south_v1.zip",
+      "bytes": 1189059,
+      "sha256": "8e660f486269c790d24e3b28f8da7c84ebf3118f86c5fe5def69e3485eb97c82",
+      "pngEntries": 9,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon16_south_v1.zip",
+      "bytes": 959973,
+      "sha256": "d849e9302787966635056b273982b4f2cd80c1c9858418d3fdc8d6910f3ef032",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon31_south_v1.zip",
+      "bytes": 1022575,
+      "sha256": "73eaf48e6a8840b8da0aae4acb2b80ee6c89d1bc3437fb154722bca71ea3cd8c",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon32_south_v1.zip",
+      "bytes": 960200,
+      "sha256": "7b228d5a69ffa84087ffe8653ad922a9171a2531fa7e2a322addb830f6fdb850",
+      "pngEntries": 8,
+      "productionEnabled": false
+    },
+    {
+      "path": "weapons/approved-south-history/male_weapon70_south_sharpness-v2.zip",
+      "bytes": 1430764,
+      "sha256": "e672656773cf1ee19c013ae8dcc9ae672ba741739e320c02f1876d2233842842",
+      "pngEntries": 9,
       "productionEnabled": false
     },
     {

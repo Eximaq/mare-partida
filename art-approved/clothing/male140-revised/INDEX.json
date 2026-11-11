@@ -1,0 +1,26 @@
+[
+  {
+    "file": "male_140_east_r3.zip",
+    "size_bytes": 1228169,
+    "sha256": "106306a68dd933ca7371f5ec83ca0934db71e6035e16a84d4f540f686631b2fb",
+    "pngs": 16
+  },
+  {
+    "file": "male_140_west_r3.zip",
+    "size_bytes": 1227139,
+    "sha256": "a70a8ab0ca92da54359da9f2bc0d615ef8d9c423c0610fcc5ec54752e8b905af",
+    "pngs": 16
+  },
+  {
+    "file": "male_140_south_r6.zip",
+    "size_bytes": 1355979,
+    "sha256": "26784b337c8c9b20b97de7e5aa0333352505628cb080703328fe82d5fddc8083",
+    "pngs": 16
+  },
+  {
+    "file": "male_140_north_r6.zip",
+    "size_bytes": 1269226,
+    "sha256": "b102035ef34309c360e7556666649f7294d97a837049921eef1a9d06501446fd",
+    "pngs": 16
+  }
+]

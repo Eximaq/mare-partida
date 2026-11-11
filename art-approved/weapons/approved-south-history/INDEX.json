@@ -1,0 +1,145 @@
+[
+  {
+    "file": "male_weapon12_south_v1.zip",
+    "item": 12,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 1189059,
+    "sha256": "8e660f486269c790d24e3b28f8da7c84ebf3118f86c5fe5def69e3485eb97c82",
+    "pngCount": 9,
+    "videoCount": 2,
+    "fps": 24
+  },
+  {
+    "file": "male_weapon16_south_v1.zip",
+    "item": 16,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 959973,
+    "sha256": "d849e9302787966635056b273982b4f2cd80c1c9858418d3fdc8d6910f3ef032",
+    "pngCount": 8,
+    "videoCount": 2,
+    "fps": 12
+  },
+  {
+    "file": "male_weapon31_south_v1.zip",
+    "item": 31,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 1022575,
+    "sha256": "73eaf48e6a8840b8da0aae4acb2b80ee6c89d1bc3437fb154722bca71ea3cd8c",
+    "pngCount": 8,
+    "videoCount": 2,
+    "fps": 12
+  },
+  {
+    "file": "male_weapon32_south_v1.zip",
+    "item": 32,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 960200,
+    "sha256": "7b228d5a69ffa84087ffe8653ad922a9171a2531fa7e2a322addb830f6fdb850",
+    "pngCount": 8,
+    "videoCount": 2,
+    "fps": 12
+  },
+  {
+    "file": "male_weapon70_south_sharpness-v2.zip",
+    "item": 70,
+    "direction": "south",
+    "version": "sharpness-v2",
+    "bytes": 1430764,
+    "sha256": "e672656773cf1ee19c013ae8dcc9ae672ba741739e320c02f1876d2233842842",
+    "pngCount": 9,
+    "videoCount": 2,
+    "fps": 24
+  },
+  {
+    "file": "male_weapon121_south_v1.zip",
+    "item": 121,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 1087967,
+    "sha256": "feb6cb77b799a2c2995e55f82a610c3b8c385d59b46dcdf0dc1c8177632b275a",
+    "pngCount": 8,
+    "videoCount": 2,
+    "fps": 12
+  },
+  {
+    "file": "male_weapon122_south_v1.zip",
+    "item": 122,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 990334,
+    "sha256": "845b7101a6de43f92c3143414e596623a6dd0508117e33b11dba616f612b88f6",
+    "pngCount": 8,
+    "videoCount": 2,
+    "fps": 12
+  },
+  {
+    "file": "male_weapon123_south_v1.zip",
+    "item": 123,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 1018388,
+    "sha256": "8d43a3aa4e4b302bc9a4f2b2c35501c2bad9d3e7cbd64f8fe576fbab70c033c7",
+    "pngCount": 8,
+    "videoCount": 2,
+    "fps": 12
+  },
+  {
+    "file": "male_weapon124_south_v1.zip",
+    "item": 124,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 1037401,
+    "sha256": "a0e0b1f0443c0799a5625dd7f2a1bd960ee7095a0f1e48ae65a7ff548af5c668",
+    "pngCount": 8,
+    "videoCount": 2,
+    "fps": 12
+  },
+  {
+    "file": "male_weapon125_south_v1.zip",
+    "item": 125,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 1015330,
+    "sha256": "168e7458309aac0de204479fdd16ec935fae0953a679546af04c18d03cf463f5",
+    "pngCount": 8,
+    "videoCount": 2,
+    "fps": 12
+  },
+  {
+    "file": "male_weapon126_south_v1.zip",
+    "item": 126,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 1026762,
+    "sha256": "fa092e60efbc65d27ebbd4d76e5929a987fa47405fd658d26b10471470c49ad1",
+    "pngCount": 8,
+    "videoCount": 2,
+    "fps": 12
+  },
+  {
+    "file": "male_weapon127_south_v1.zip",
+    "item": 127,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 1035023,
+    "sha256": "90cda5e2210414010a32fc97ff1cd1227f4a163fc7d9f569798c36d427cc929a",
+    "pngCount": 8,
+    "videoCount": 2,
+    "fps": 12
+  },
+  {
+    "file": "male_weapon128_south_v1.zip",
+    "item": 128,
+    "direction": "south",
+    "version": "v1",
+    "bytes": 1023717,
+    "sha256": "2ba978e6ae9dca53d6bc3b29c7140bcd0741c54f491d113e288a4567506e960b",
+    "pngCount": 8,
+    "videoCount": 2,
+    "fps": 12
+  }
+]

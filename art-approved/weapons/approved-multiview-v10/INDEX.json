@@ -94,5 +94,65 @@
     "size_bytes": 849649,
     "sha256": "a8db3cc1305d9fac8996d795917f29af0df0d08896fc3025404776726cc65a03",
     "pngs": 16
+  },
+  {
+    "file": "weapon14_east-west_source-east-literal-west.zip",
+    "size_bytes": 853665,
+    "sha256": "541880438bfd445ea26df9ccefbf86f26cd5af295e7d9f99fd7b08991dfcc7d5",
+    "pngs": 16
+  },
+  {
+    "file": "weapon31_east-west_source-east-literal-west.zip",
+    "size_bytes": 991662,
+    "sha256": "f35138c64186da2a72282fc133f27b74fae7d2fce1d739784f939744ecb16e0f",
+    "pngs": 16
+  },
+  {
+    "file": "weapon123_east-west_source-east-literal-west.zip",
+    "size_bytes": 1000681,
+    "sha256": "a114a4a23738b6d394bc7c774bd72929b8617b045c09d048f83457b9134d3ead",
+    "pngs": 16
+  },
+  {
+    "file": "weapon121_east-west_east-mirror-v2.zip",
+    "size_bytes": 1106444,
+    "sha256": "10738d1986949711adaba0d2924c367481d29f2e0dc5555cb55ed83aa1e442a3",
+    "pngs": 16
+  },
+  {
+    "file": "weapon124_east-west_east-mirror-v2.zip",
+    "size_bytes": 1031851,
+    "sha256": "2e48f350505a633b7981b69ded8ce3fe91c23da82d095426468569e6121beadf",
+    "pngs": 16
+  },
+  {
+    "file": "weapon125_east-west_east-mirror-v2.zip",
+    "size_bytes": 1006400,
+    "sha256": "1c42b97967c16ef432fb1cf2cceaab213517d80121a0f3e49b8522de011ada36",
+    "pngs": 16
+  },
+  {
+    "file": "weapon126_east-west_east-mirror-v2.zip",
+    "size_bytes": 1018942,
+    "sha256": "b2eb6f193449c6ca3943f68e3a47d6fddd6771eb66ae5a992b7b93782a75b2a2",
+    "pngs": 16
+  },
+  {
+    "file": "weapon127_east-west_east-mirror-v2.zip",
+    "size_bytes": 1042735,
+    "sha256": "01fb7be594af5823d5f4c29499a5a9eb524b6db219bc4a35500ef54831ae0375",
+    "pngs": 16
+  },
+  {
+    "file": "weapon128_east-west_east-mirror-v2.zip",
+    "size_bytes": 1010032,
+    "sha256": "95030f170afb288a110a0282f5d25fdd11973bbb38ff01e434cf41d7c3b8da1c",
+    "pngs": 16
+  },
+  {
+    "file": "weapon3_east-west_idle-fit.zip",
+    "size_bytes": 873803,
+    "sha256": "fb9a4f62d3c0dcfd11e928e1c7ac069d457791971ec14b6731bd67c2eaf77f19",
+    "pngs": 16
   }
 ]
