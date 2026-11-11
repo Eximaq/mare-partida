@@ -24,6 +24,8 @@ Os três planos usam os novos códigos com chave aleatória fornecidos pelo prop
 
 Na preparação, foram conferidos CRC, moeda BRL, valores fixos e a mesma chave aleatória nos três códigos. Os PNGs foram decodificados por uma segunda biblioteca e comparados aos dados originais. Os dois builds versionam as imagens por hash para evitar mistura de códigos antigos. Os links de cobrança e páginas bancárias não são distribuídos com o portal.
 
+O botão **Copiar código Pix** usa o mesmo código de cada QR, distribuído em um arquivo de texto com versão por hash. O apoiador pode colar no Pix Copia e Cola do app do banco. Se o navegador bloquear a cópia automática, a janela mostra um campo de leitura para copiar manualmente.
+
 Após pagar, o apoiador pode entrar no Discord e pedir à equipe, em privado, o registro do apoio. A equipe confere a transação no banco e registra o identificador para evitar duplicidade. A confirmação do Pix e o registro das vantagens são manuais.
 
 ## Publicar na Cloudflare Pages
