@@ -876,6 +876,13 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved112-v3/weapon112_north-east-west_approved-v3.zip",
+      "bytes": 1851347,
+      "sha256": "e3d9dfdf8db3a53528a3bb90bfdb8e9f38984250ea8a5096e502d2dacec35815",
+      "pngEntries": 24,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/bronze2-south/male_2_south_v1.zip",
       "bytes": 871026,
       "sha256": "b4b0e75167fdd4e8a498e9ec94e6373755f198afae5ccc8afdd67d8944b89d07",
