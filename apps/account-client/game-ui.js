@@ -32,12 +32,17 @@
     }
     return {x,y,direction,moving:moving&&elapsedMs<duration};
   }
+  // Cover the observed full-state fallback gap while keeping the blend bounded.
+  const combatBlendDuration = gap => Math.min(1250, Math.max(900, gap + 100));
+  const sameCombatPoint = (previous, next) =>
+    previous && previous.mapId === next.mapId && !previous.path.length && !next.path.length &&
+    previous.position.x === next.position.x && previous.position.y === next.position.y;
   // Cosmetic correction only. Commands/collisions keep using worldPosition directly.
   // Manual correction is short; sampled combat spans its observed update cadence.
   // Neither mode extends the approved path or extrapolates unseen combat positions.
   function createWorldPresentation({walk=false,route}={}) {
     if(walk)return createWalkingPresentation(route);
-    let snapshot=null,received=0,offset={x:0,y:0},duration=200;
+    let snapshot=null,received=0,observed=0,wasBuffered=false,offset={x:0,y:0},duration=200;
     function sample(now){
       if(!snapshot)return null;
       const elapsed=Math.max(0,now-received),pose=worldPosition(snapshot,elapsed);
@@ -47,20 +52,28 @@
     }
     return {sample,update(next,now,{buffered=false}={}){
       if(next===snapshot)return false;
+      const gap=now-observed;
+      observed=now;
+      if(buffered&&wasBuffered&&gap<=5000&&sameCombatPoint(snapshot,next)){
+        // Keep the in-flight blend but accept the latest facing for this point.
+        snapshot=next;
+        return false;
+      }
       const previous=sample(now),target=worldPosition(next,0);
       // A peer can start moving between polls. Allow that observed progress,
       // while still snapping large teleports and never retaining stale offsets.
-      const limit=Math.min(512,Math.max(128,next.speed*Math.min(3,Math.max(0,now-received)/1000)+32));
-      const snap=!previous||snapshot.mapId!==next.mapId||now-received>5000||Math.hypot(previous.x-target.x,previous.y-target.y)>limit;
+      const limit=Math.min(512,Math.max(128,next.speed*Math.min(3,Math.max(0,gap)/1000)+32));
+      const snap=!previous||snapshot.mapId!==next.mapId||gap>5000||Math.hypot(previous.x-target.x,previous.y-target.y)>limit;
       offset=snap?{x:0,y:0}:{x:previous.x-target.x,y:previous.y-target.y};
-      duration=buffered?Math.max(250,Math.min(1250,now-received+100)):200;
+      duration=buffered?combatBlendDuration(gap):200;
+      wasBuffered=buffered;
       snapshot=next;received=now;return snap;
     }};
   }
   // Walking may remain behind a late server sample, but must never sprint to catch
   // it. Bridge only through the same collision map, then follow the approved path.
   function createWalkingPresentation(route=(from,to)=>[{x:to.x,y:to.y}]) {
-    let snapshot=null,received=0,state=null;
+    let snapshot=null,received=0,observed=0,state=null;
     const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
     const length=(from,points)=>{let n=0;for(const p of points){n+=distance(from,p);from=p;}return n;};
     function sample(now){
@@ -82,6 +95,13 @@
     }
     return {sample,update(next,now,{buffered=false,reset=false}={}){
       if(next===snapshot&&!reset)return false;
+      const gap=now-observed;
+      observed=now;
+      if(!reset&&buffered&&state?.buffered&&sameCombatPoint(snapshot,next)&&snapshot.speed===next.speed){
+        snapshot=next;
+        if(!state.points.length)state.direction=next.direction;
+        return false;
+      }
       const previous=sample(now),snap=!previous||snapshot.mapId!==next.mapId||reset;
       const origin=snap?next.position:previous;
       const bridge=distance(origin,next.position)<1e-8?[]:route(origin,next.position);
@@ -89,7 +109,7 @@
       const points=connected?[...bridge,...next.path].map(p=>({x:p.x,y:p.y})):[];
       state={x:origin.x,y:origin.y,direction:next.direction,moving:false,last:now,points,travel:0,
         bridge:connected?length(origin,bridge):0,pathLength:connected?length(next.position,next.path):0,
-        buffered:buffered&&!next.path.length,duration:Math.max(250,Math.min(1250,now-received+100))};
+        buffered:buffered&&!next.path.length,duration:combatBlendDuration(gap)};
       snapshot=next;received=now;return snap;
     }};
   }
