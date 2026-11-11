@@ -367,7 +367,7 @@ export async function mutateOriginalInventory(
           throw new AuthFault(409, "item_equipped");
         if (
           item.locked || item.boundToCharacter ||
-          ["pearl-box", "haki-fragment"].includes(String(def.kind))
+          ["visual-completo", "pearl-box", "haki-fragment"].includes(String(def.kind))
         )
           throw new AuthFault(409, "item_protected");
         delta = BigInt(Math.round(14 + item.level * 7 + item.plus * 18));
@@ -375,7 +375,7 @@ export async function mutateOriginalInventory(
       } else {
         if (!i.inventory.some((x) => x.id === item.id))
           throw new AuthFault(409, "item_already_equipped");
-        if (!forge.isGear(item, defs)&&def.type!=='akuma_no_mi')
+        if (!forge.isGear(item, defs)&&def.type!=='akuma_no_mi'&&def.kind!=='visual-completo')
           throw new AuthFault(409, "item_not_equippable");
         const cls = (
           await client.query(
@@ -383,7 +383,7 @@ export async function mutateOriginalInventory(
             [id],
           )
         ).rows[0].class_id;
-        if (def.slot === "weapon" && def.type !== cls)
+        if ((def.slot === "weapon" && def.type !== cls) || (def.requiredClass && def.requiredClass !== cls))
           throw new AuthFault(409, "item_class_mismatch");
         const slot = def.slot as keyof typeof i.equipment,
           previous = i.equipment[slot];

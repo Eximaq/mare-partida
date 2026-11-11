@@ -44,13 +44,13 @@ test("original catalog is complete, read-only and scoped by authenticated charac
       assert.equal(response.status, 200);
       assert.equal(response.headers.get("cache-control"), "no-store");
       const catalog = await response.json();
-      assert.equal(catalog.items.length, 187);
-      assert.equal(catalog.slots.length, 12);
+      assert.equal(catalog.items.length, 188);
+      assert.equal(catalog.slots.length, 13);
       assert.equal(catalog.items[67].name, "Katana da Maelstrom");
       assert.equal(catalog.items[67].defIndex, 67);
       assert.equal(
         catalog.rulesHash,
-        "b1981b18a1634fee07a0c0ae53ce1a13b32d9e4b91fbc05dde6e421c34c09325",
+        "66324486a472d62b544f990897f13dfc519ae093ddcdb4b9714e35ab375a8560",
       );
       assert.equal((await get(login.token, "?ownerId=forged")).status, 400);
       assert.equal((await get(login.token, "", "POST")).status, 405);

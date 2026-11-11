@@ -187,6 +187,7 @@
     }
     function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;
+      if(root.MareVisualCompletoRenderer?.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer})){draws++;return true;}
       if(!active||state!=='ready'||player?.zoanTransformed||!['south','north','east','west'].includes(direction))return false;
       const value=resolve(player);if(scene!=='lobby'&&!(scene==='hunt'&&value.supported))return false;
       if(scene==='hunt'&&!pending&&!previewPending&&bundles.has(value.key))trimSourceImages();
@@ -215,6 +216,7 @@
     }
     let previewPending=false,previewWanted=null;
     function preview(ctx,player,{action='idle',direction='south',time=0,appearance=null,consumer='appearance-preview'}={}){
+      if(root.MareVisualCompletoRenderer?.draw(ctx,player,{action:'idle',direction,time:0,x:ctx.canvas.width/2,y:ctx.canvas.height-24,scale:192/46,consumer}))return true;
       if(state!=='ready'||!actions.includes(action)||!['south','north','west','east'].includes(direction))return false;
       const value=appearance?resolve({...player,appearance96:appearance},current,true):resolve(player,draft,false),dir=direction==='west'?'east':direction,key=value.key+':'+clipKey(action,dir,value.look);
       if(previewWanted!==key)previewMessage='';previewWanted=key;

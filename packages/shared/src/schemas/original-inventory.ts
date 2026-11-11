@@ -12,6 +12,7 @@ export const originalSlotSchema = z.enum([
   "belt",
   "charm",
   "akuma_no_mi",
+  "visual_completo",
 ]);
 export const instanceIdSchema = z
   .string()
@@ -22,7 +23,7 @@ const count = z.number().int().min(0).max(1000000000);
 const stat = z.number().finite().min(0).max(1000000);
 export const originalItemSchema = z.strictObject({
   id: instanceIdSchema,
-  def: z.number().int().min(0).max(186),
+  def: z.number().int().min(0).max(187),
   level: z.number().int().min(1).max(100),
   plus: z.number().int().min(0).max(20),
   locked: z.boolean(),
@@ -74,7 +75,7 @@ export const originalItemSchema = z.strictObject({
 });
 const equipment = z.strictObject(
   Object.fromEntries(
-    originalSlotSchema.options.map((s) => [s, originalItemSchema.nullable()]),
+    originalSlotSchema.options.map((s) => [s, s==="visual_completo"?originalItemSchema.nullable().default(null):originalItemSchema.nullable()]),
   ) as Record<
     z.infer<typeof originalSlotSchema>,
     ReturnType<typeof originalItemSchema.nullable>

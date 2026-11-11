@@ -29,12 +29,14 @@ test("server and original browser rules expose 109 preserved definitions plus tw
     "baseline captured before extraction; changing order or values requires an explicit rules migration",
   );
   const server = getGameCatalog();
-  assert.equal(server.items.length, 187);
-  assert.equal(server.items.at(-1)?.kind,"xp-boost");
-  assert.equal(server.rulesHash,'b1981b18a1634fee07a0c0ae53ce1a13b32d9e4b91fbc05dde6e421c34c09325');
+  assert.equal(server.items[187]?.id,"visual_completo_zoro");
+  assert.equal(server.items[187]?.requiredClass,"sword");
+  assert.equal(server.items.length, 188);
+  assert.equal(server.items[186]?.kind,"xp-boost");
+  assert.equal(server.rulesHash,'66324486a472d62b544f990897f13dfc519ae093ddcdb4b9714e35ab375a8560');
   assert.deepEqual(c.items.slice(103,109),require('../../boss-dungeon-system.js').fragments);
   assert.equal(server.items.filter((i) => i.type === "akuma_no_mi").length, 30);
-  assert.equal(server.slots.length, 12);
+  assert.equal(server.slots.length, 13);
   assert.equal(server.capacity, 120);
   assert.equal(server.healerWeaponIndex, 31);
   for (const [i, item] of server.items.entries()) {
