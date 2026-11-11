@@ -1,6 +1,6 @@
-# Private synchronization with main d1b6f1fd
+# Private synchronization with main 6aa5d2a8
 
-Integrates merged PRs #283, #284, #285 and #286 with private revision `75ffa2e2`. The public portal includes the collaborator plans, Pix dialog/copy action and Discord receipt link. No payment, message, privileged provider action or public backend deployment is performed by this integration.
+Integrates merged PRs #283, #284, #285, #286 and #287 with private revision `75ffa2e2`. The public portal includes the collaborator plans, Pix dialog/copy action and Discord receipt link. No payment, message, privileged provider action or public backend deployment is performed by this integration.
 
 The original progression and Bounty implementation from main remains the source of rules: XP curve version 3, Caesar damage adjustment and world monster defense scaling at level 45+. Bounty is calculated from authoritative state. Competitive credits remain disabled for normal clients; their SQL function is not granted to the runtime. The online snapshot retains the PR #232 MVCC reads and read-only hierarchy/contracts projection.
 
