@@ -29,6 +29,7 @@
   }
   function open(){
     if(!panel)return;
+    if(innerWidth<=640&&$('floatingChat')?.classList.contains('hud-open'))$('floatingChat').querySelector('[data-close-window=chat]')?.click();
     panel.hidden=false;panel.scrollTop=0;toggle.setAttribute('aria-expanded','true');
     toggle.setAttribute('aria-label','Recolher cartaz do personagem');toggle.title='Recolher cartaz do personagem';
     toggle.closest('.topbar').classList.add('poster-expanded');fitName();portrait(source);

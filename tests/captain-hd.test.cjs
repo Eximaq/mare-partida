@@ -30,7 +30,7 @@ async function main(){
  game.preferences.hideItems=true;api.render('myprofile',snapshot);api.hydrate('myprofile');assert(privatePortrait,'portrait must receive privacy flag');api.unmount();assert(canceled>0,'close cancels pending portrait rendering');
  document.getElementById=()=>null;
  for(const section of ['general','audio','graphics','interface','accessibility']){click('[data-settings-card]',{settingsCard:section});html=api.render('settings',snapshot);assert(html.includes('id="captain-detail-'+section+'"'));assert(html.includes('aria-expanded="true"'));}
- click('[data-settings-tab]',{settingsTab:'discord'});html=api.render('settings',snapshot);assert(html.includes('ainda não informado'));assert(!html.includes('href='),'no invented Discord link');
+ click('[data-settings-tab]',{settingsTab:'discord'});html=api.render('settings',snapshot);assert(html.includes('href="https://discord.gg/uRnP79cp7h"'));assert(html.includes('Entrar no Discord'));
  api.render('journal',snapshot);await new Promise(resolve=>setImmediate(resolve));html=api.render('journal',snapshot);assert(html.includes('Actual &amp; &lt;news&gt;'));assert.equal(fetches,1,'one lazy feed request, no polling');
  click('[data-journal-tab]',{journalTab:'notice'});html=api.render('journal',snapshot);assert(html.includes('Nenhuma publicação'));assert.equal(fetches,1);
  for(const f of ['morgan-approved.png','icons.png','general-scene.png','audio-scene.png','graphics-scene.png','interface-scene.png','accessibility-scene.png']){const b=fs.readFileSync(path.join(__dirname,'../assets/ui/captain-hd',f));assert.equal(b.subarray(1,4).toString(),'PNG');}

@@ -34,7 +34,7 @@ for(const pending of [0,4]){
     querySelector:()=>({focus:()=>focused++,classList:{toggle:()=>{}}})};
   const context={game:{},notificationManager:{state:{character:pending},focus:()=>{throw Error('Badge bypassed the menu')}},
     updateNotifications:()=>{},closeModesMenu:()=>{},closeCaptainMenu:()=>{},
-    document:{querySelector:()=>null},$:id=>({characterQuickMenu:menu,characterMenuTrigger:trigger,
+    MareUI:{positionQuickMenu:button=>assert.equal(button,trigger)},document:{querySelector:()=>null},$:id=>({characterQuickMenu:menu,characterMenuTrigger:trigger,
       panelOverlay:{classList:{contains:()=>true}},characterMenuHakiHint:{}}[id])};
   vm.createContext(context);vm.runInContext(source.match(/  function toggleCharacterMenu\([^]*?\n  }/)[0],context);
   context.toggleCharacterMenu();assert.equal(classes.has('hidden'),false);

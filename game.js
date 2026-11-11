@@ -1309,7 +1309,7 @@
     const tab=document.createElement('button');tab.type='button';tab.className='contract-tab ui-button';tab.dataset.contractPeriod='professional';tab.setAttribute('aria-pressed',String(professional));tab.innerHTML='<img class="contract-icon" src="assets/ui/contracts-hd/weekly.png" alt=""><span>PROFISSIONAIS</span>';tabs.append(tab);
     if(professional){
       for(const other of tabs.querySelectorAll('button:not([data-contract-period=professional])'))other.setAttribute('aria-pressed','false');
-      board.querySelector('.contracts-footer').hidden=true;board.querySelector('.contracts-list').setAttribute('aria-label','Contratos profissionais');
+      board.classList.add('contracts-professional');board.querySelector('.contracts-footer').hidden=true;board.querySelector('.contracts-list').setAttribute('aria-label','Contratos profissionais');
       renderProfessionalContracts(body);
       if(crewProfessionStatus==='idle')void loadProfessionalContracts();
     }
@@ -2159,7 +2159,7 @@
     transformButton.classList.toggle('hidden',!zoan);transformButton.classList.toggle('active',!!game.zoanTransformed);transformButton.setAttribute('aria-pressed',String(!!game.zoanTransformed));
     if(zoan){const icon=$('zoanTransformIcon'),src=zoan.icon_path;if(icon.dataset.src!==src){icon.dataset.src=src;icon.innerHTML=`<img src="${src}" alt="" draggable="false">`;}transformButton.setAttribute('aria-label',(game.zoanTransformed?'Retornar à forma humana':'Transformar em '+zoan.name)+' (T)');transformButton.removeAttribute('title');}
 
-    syncExpeditionMini();
+    syncExpeditionLauncher();
     $('xpPerHour').textContent=scene==='hunt'&&session.elapsed>=20?fmt(session.xp/session.elapsed*3600):'—';$('goldPerHour').textContent=scene==='hunt'&&session.elapsed>=20?fmt(session.gold/session.elapsed*3600):'—';$('questList').innerHTML=questDefs.map(q=>{let count=clamp(questProgress(q),0,q.target),done=game.claimed.includes(q.id),ready=count>=q.target&&!done;return `<div class="quest"><div class="quest-title"><span>${escapeHTML(q.title)}</span><b>${done?'CONCLUÍDO':count+' / '+q.target}</b></div><div class="quest-desc">${escapeHTML(q.desc)}</div><div class="progress-track"><i style="width:${count/q.target*100}%"></i></div>${ready?`<button data-claim="${q.id}">RESGATAR ${q.gold} ✦ + ${q.xp} XP</button>`:''}</div>`;}).join('');
     $('lootList').innerHTML=session.recentLoot.length?session.recentLoot.map(x=>`<div class="loot-entry"><span>${lootIcon(x.name,x.def)}${escapeHTML(x.name)}</span><b>OBTIDO</b></div>`).join(''):'<div class="empty-note">Sua próxima descoberta aparecerá aqui.</div>';
     if(currentPanel==='myprofile')MarePlayerHub.refresh(game,derived,playerBounty());
@@ -2998,7 +2998,7 @@ ${avatarExtra}
     closeModesMenu();closeCharacterMenu();
     menu.classList.toggle('hidden',!opening);
     trigger.setAttribute('aria-expanded',String(opening));
-    if(opening)menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});
+    if(opening){MareUI.positionQuickMenu(trigger);menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});}
     else trigger.focus({preventScroll:true});
   }
   function closeModesMenu(restoreFocus=false){
@@ -3015,7 +3015,7 @@ ${avatarExtra}
     closeCharacterMenu();closeCaptainMenu();
     menu.classList.toggle('hidden',!opening);
     trigger.setAttribute('aria-expanded',String(opening));
-    if(opening)menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});
+    if(opening){MareUI.positionQuickMenu(trigger);menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});}
     else trigger.focus({preventScroll:true});
   }
   function toggleCharacterMenu(){
@@ -3028,7 +3028,7 @@ ${avatarExtra}
     trigger.setAttribute('aria-expanded',String(opening));
     $('characterMenuHakiHint').textContent=game.has_haki_unlocked?'Despertado':'Nível 50 + Livro da Vontade';
     menu.querySelector('[data-character-section="haki"]')?.classList.toggle('is-locked',!game.has_haki_unlocked);
-    if(opening)menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});
+    if(opening){MareUI.positionQuickMenu(trigger);menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});}
     else trigger.focus({preventScroll:true});
   }
   function openPanel(panel,characterSection=null){
@@ -3639,11 +3639,6 @@ $('gameFrame').appendChild(targetHud);
   journal.parentNode.removeChild(journal);chatWindow.appendChild(journal);
   document.querySelector('.dashboard').appendChild(chatWindow);floating.chat=chatWindow;
   floating.status.id='floatingStatus';floating.expedition.id='floatingExpedition';
-  const expeditionMini=document.createElement('button');
-  expeditionMini.id='expeditionMini';
-  expeditionMini.className='expedition-mini hidden';
-  expeditionMini.innerHTML='<span class="mini-dot">●</span><span class="mini-label">Caçada ativa</span><span class="mini-key">O</span>';
-  document.querySelector('.dashboard').appendChild(expeditionMini);
   const journey=document.createElement('section');journey.id='journeyHud';journey.className='journey-hud';
   journey.innerHTML='<button class="journey-heading" id="journeyToggle" aria-expanded="true">⌖ <span>Diário de bordo</span><span class="journey-chevron">−</span></button><div class="journey-content"><small id="journeyChapter">Contratos do porto</small><strong id="journeyTitle">Uma nova travessia</strong><div class="journey-track"><i id="journeyFill"></i></div><div class="journey-footer"><span id="journeyProgress">0 / 6</span><button id="journeyAction" data-panel="contracts">Ver contrato</button></div></div>';
   document.querySelector('.dashboard').appendChild(journey);
@@ -3705,19 +3700,15 @@ $('gameFrame').appendChild(targetHud);
     $('socialQuickMenu').classList.add('hidden');$('socialMenuTrigger').setAttribute('aria-expanded','false');openPanel(b.hasAttribute('data-market-open')?'market':b.dataset.socialOpen);
   });
   const compactParty=document.createElement('section');compactParty.id='partyCompact';compactParty.hidden=true;compactParty.setAttribute('aria-label','Membros do grupo');$('app').append(compactParty);
-  $('socialMenuTrigger').addEventListener('click',e=>{e.stopPropagation();const open=$('socialQuickMenu').classList.contains('hidden');closeCharacterMenu();closeModesMenu();closeCaptainMenu();$('socialQuickMenu').classList.toggle('hidden',!open);e.currentTarget.setAttribute('aria-expanded',String(open));if(open)$('socialQuickMenu').querySelector('button').focus();});
+  $('socialMenuTrigger').addEventListener('click',e=>{e.stopPropagation();const open=$('socialQuickMenu').classList.contains('hidden');closeCharacterMenu();closeModesMenu();closeCaptainMenu();$('socialQuickMenu').classList.toggle('hidden',!open);e.currentTarget.setAttribute('aria-expanded',String(open));if(open){MareUI.positionQuickMenu(e.currentTarget);$('socialQuickMenu').querySelector('button').focus({preventScroll:true});}});
   document.addEventListener('click',e=>{if(!socialAnchor.contains(e.target)){$('socialQuickMenu').classList.add('hidden');$('socialMenuTrigger').setAttribute('aria-expanded','false');}if(e.target.closest('[data-party-open],[data-crew-open]')){$('socialQuickMenu').classList.add('hidden');$('socialMenuTrigger').setAttribute('aria-expanded','false');openPanel(e.target.closest('[data-crew-open]')?'crew':'party');}if(e.target.closest('[data-party-collapse]')){partyCollapsed=!partyCollapsed;partyCompactStamp=null;updatePartyUI();}const choice=e.target.closest('[data-party-kind],[data-party-region],[data-party-destination]');if(choice&&!choice.disabled&&currentPanel==='party'){if(choice.dataset.partyKind)partyDestination.kind=choice.dataset.partyKind;if(choice.dataset.partyRegion){partyDestination.region=choice.dataset.partyRegion;const first=MareArchipelago.islands.find(i=>i.region===partyDestination.region);if(first)partyDestination.huntId=first.id;}if(choice.dataset.partyDestination){partyDestination.kind=choice.dataset.kind;partyDestination[choice.dataset.kind==='hunt'?'huntId':'dungeonId']=choice.dataset.partyDestination;}const scroll=$('dialogBody').querySelector('.party-destination-grid')?.scrollTop||0;renderPartyPanel();const grid=$('dialogBody').querySelector('.party-destination-grid');if(grid)grid.scrollTop=scroll;const focus=$('dialogBody').querySelector('[data-party-destination="'+choice.dataset.partyDestination+'"], [data-party-kind="'+choice.dataset.partyKind+'"], [data-party-region="'+choice.dataset.partyRegion+'"]');focus?.focus({preventScroll:true});}const b=e.target.closest('[data-party-action],[data-party-respond]');if(b&&!b.disabled)void handlePartyAction(b);});
   $('journeyToggle').addEventListener('click',()=>toggleFloating('expedition'));
   let expeditionReturnFocus=null;
 
-  function syncExpeditionMini(){
+  function syncExpeditionLauncher(){
     const open=floating.expedition.classList.contains('hud-open');
-    expeditionMini.classList.toggle('open',open);
-    expeditionMini.setAttribute('aria-expanded',String(open));
     $('journeyToggle').setAttribute('aria-expanded',String(open));
     $('journeyToggle').classList.toggle('selected',open);
-    const lbl=expeditionMini.querySelector('.mini-label');
-    if(lbl)lbl.textContent='Expedição';
   }
 
   function toggleFloating(kind,force){let el=floating[kind];if(!el)return;const open=force===undefined?!el.classList.contains('hud-open'):!!force;
@@ -3731,10 +3722,10 @@ $('gameFrame').appendChild(targetHud);
     if(kind==='expedition'&&open&&!wasOpen)el.querySelector('[data-close-window]').focus({preventScroll:true});
     if(kind==='expedition'&&!open&&wasOpen&&el.contains(document.activeElement))expeditionReturnFocus?.focus({preventScroll:true});
     document.querySelectorAll('[data-hud]').forEach(btn=>{if(btn.dataset.hud===kind){btn.classList.toggle('selected',open);btn.setAttribute('aria-expanded',String(open));}});
-    syncExpeditionMini();
+    syncExpeditionLauncher();
     const chatButton=$('chatCornerToggle');if(chatButton)chatButton.classList.toggle('is-open',floating.chat.classList.contains('hud-open'));
     document.body.classList.toggle('chat-open',floating.chat.classList.contains('hud-open'));
-    if(kind==='chat'&&open&&!wasOpen)socialUI?.chatOpened();
+    if(kind==='chat'&&open&&!wasOpen){if(innerWidth<=640)window.MareCharacterHUD?.close();socialUI?.chatOpened();}
   }
 
 function applySceneHudLayout(){
@@ -3744,10 +3735,9 @@ function applySceneHudLayout(){
   toggleFloating('expedition', false);
   toggleFloating('chat', window.innerWidth>=1000);
   document.body.classList.toggle('hunt-hud-layout', inHunt);
-  syncExpeditionMini();
+  syncExpeditionLauncher();
 }
 
-  expeditionMini.addEventListener('click',()=>toggleFloating('expedition'));
   // Hand off to the requested window; closing it must reveal the playfield.
   floating.expedition.addEventListener('click',e=>{if(e.target.closest('[data-panel],#huntRoute'))toggleFloating('expedition',false);},true);
   $('chatCornerToggle').addEventListener('click',()=>toggleFloating('chat'));
