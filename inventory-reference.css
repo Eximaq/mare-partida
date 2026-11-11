@@ -272,3 +272,7 @@
     & .op-panel-head .op-best-btn {grid-column:1/-1}
   }
 }
+
+.op-complete-visual button{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;padding:8px;color:inherit;background:#10252c;border:1px solid #a98a4e;border-radius:5px}.op-complete-visual button>span{display:grid;place-items:center;width:80px;height:80px}.op-complete-visual .item-icon{width:80px;height:80px;object-fit:contain;image-rendering:pixelated}
+
+.op-complete-visual{margin-top:10px}.op-complete-visual strong{font-size:11px;white-space:nowrap;color:#f9e2ae}

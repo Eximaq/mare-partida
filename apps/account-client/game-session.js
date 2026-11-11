@@ -19,7 +19,7 @@
       "spirit",
     ],
     items = ["dock-scrap-v1", "training-weapon-v1", "dock-vest-v1"];
-  const originalSlots=['head','necklace','coat','legs','boots','weapon','cloak','gloves','ring','belt','charm','akuma_no_mi'];
+  const originalSlots=['head','necklace','coat','legs','boots','weapon','cloak','gloves','ring','belt','charm','akuma_no_mi','visual_completo'];
   const instanceId=v=>typeof v==='string'&&/^[a-zA-Z0-9:-]{1,80}$/.test(v);
   function validForge(op){
     if(!op||typeof op!=='object'||!Number.isSafeInteger(op.expectedSeq)||op.expectedSeq<0)return false;

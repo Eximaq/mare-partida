@@ -3,7 +3,7 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
 test('remaining ten append after 119 preserved definitions, completing 1/2/1 per class',()=>{
  const baseline={items:C.items.slice(0,119),slots:[...C.inventorySlotsLeft,...C.inventorySlotsRight],capacity:C.capacity,healerWeaponIndex:C.healerWeaponIndex};
- assert.equal(hash(JSON.stringify(baseline)),'1702173f0fa0090e321f24aa4718aa50a470e6a49527d7e66eb2eda18e0b7892');assert.equal(C.items.length,187);
+ assert.equal(hash(JSON.stringify(baseline)),'1702173f0fa0090e321f24aa4718aa50a470e6a49527d7e66eb2eda18e0b7892');assert.equal(C.items.length,188);
  for(const type of ['brawler','gunner','cyborg','strategist','healer'])assert.deepEqual(C.items.slice(109).filter(i=>i.type===type).map(i=>i.rarity),['epic','legendary','legendary','supreme']);
  assert.deepEqual(C.items.slice(119,129).map(i=>i.type),['cyborg','cyborg','strategist','strategist','strategist','strategist','healer','healer','healer','healer']);
  assert.deepEqual(C.items.slice(119,129).map((d,i)=>F.itemStats({def:i+119,rarity:d.rarity,level:1,plus:0,extras:[]},C.items).attack),[44,72,22,40,44,72,19,36,40,66]);

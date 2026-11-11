@@ -21,8 +21,8 @@ const assembled = load("item-catalog.js").create({
 });
 const slots = z
   .array(z.string().min(1).max(30))
-  .length(12)
-  .parse([...assembled.inventorySlotsLeft, ...assembled.inventorySlotsRight]);
+  .length(13)
+  .parse([...assembled.inventorySlotsLeft, ...assembled.inventorySlotsRight, "visual_completo"]);
 const definition = z
   .object({
     name: z.string().min(1).max(100),
@@ -34,7 +34,7 @@ const definition = z
   .passthrough()
   .refine(
     (item) =>
-      item.type === "akuma_no_mi" ||
+      item.type === "akuma_no_mi" || item.kind === "visual-completo" ||
       [item.attack, item.defense, item.hp].every((n) => typeof n === "number"),
     "Equipment/material stats required",
   );
@@ -44,7 +44,7 @@ const definitions = z
   .max(1000)
   .parse(JSON.parse(JSON.stringify(assembled.items)));
 if (
-  new Set(slots).size !== 12 ||
+  new Set(slots).size !== 13 ||
   assembled.capacity !== 120 ||
   !Number.isInteger(assembled.healerWeaponIndex)
 )

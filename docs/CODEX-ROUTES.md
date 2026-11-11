@@ -6,6 +6,7 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 
 | Tarefa | Código a localizar primeiro | Documentos e testes a procurar | Atenção |
 |---|---|---|---|
+| Visual Completo / Zoro | `visual-completo.js`, `visual-completo-renderer.js`, `game.js` | `docs/VISUAL-COMPLETO-ZORO.md`, `tests/visual-completo.test.cjs` | Exclusivo de Espadachim; sem atributos, grants ou mudanças de combate |
 | Fundação do servidor autoritativo | `apps/game-server`, `packages/shared`, `infra` | `docs/architecture/AUTHORITATIVE-FOUNDATION.md`, `docs/operations/LOCAL-SERVER.md`, `tests/foundation`, `tests/integration/server*` | Fase 1: sem autenticação/gameplay online; preservar frontend/saves; publicação da branch e Draft PR autorizados na revisão; sem merge/deploy |
 | Paridade integral do servidor | `item-catalog.js`, `apps/game-server/src/gameplay`, `tools/server-completeness.mts` | `docs/architecture/FULL-SERVER-PARITY.md`, `FULL-SERVER-SCOPE.json`, `ORIGINAL-INVENTORY-SERVER.md`, testes `current-game-catalog` e `server-original-catalog` | Todos os sistemas atuais; não contar alpha reduzido ou botão bloqueado como entregue; preservar IDs e regras originais |
 | Entrada direta no jogo online | `apps/account-client/login.js`, `game-session.js`, `game-ui.js`, `game.js`, `tools/dev-gateway.mts` | `docs/architecture/DIRECT-ONLINE-GAME.md`, testes `direct-game*`, `direct-login*`, `server-game-client` | `/game` não pode cair no save offline; alpha limitado ainda sem paridade de gameplay; não promover miniporto como jogo completo |

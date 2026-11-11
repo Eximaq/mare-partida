@@ -4,7 +4,7 @@ const map=require('../docs/art/equipment-56/mapa_56_itens.json'),receipt=require
 const forge=require('../forge-system.js'),catalog=require('../item-catalog.js').create({forge,prison:require('../prison-system.js'),haki:require('../haki-system.js'),akuma:require('../akuma-system.js'),hakiProgression:require('../haki-progression.js')}),art=require('../item-art.js'),policy=require('../tools/paper-doll-96-v3/weapons.js').composition;
 const root=path.join(__dirname,'..'),hash=b=>crypto.createHash('sha256').update(b).digest('hex'),read=f=>fs.readFileSync(path.join(root,f));
 test('56 append-only universal definitions preserve every previous item and the source-path catalog order',()=>{
- assert.equal(catalog.items.length,187);assert.equal(hash(JSON.stringify(catalog.items.slice(0,129))),'215500faa3c5c5053ff483910a805b14e8fa4a18eb5f19a4575ec7d5cd8a673c');
+ assert.equal(catalog.items.length,188);assert.equal(hash(JSON.stringify(catalog.items.slice(0,129))),'215500faa3c5c5053ff483910a805b14e8fa4a18eb5f19a4575ec7d5cd8a673c');
  assert.equal(map.length,56);assert.equal(new Set(map.map(r=>r.id)).size,56);assert.equal(new Set(map.map(r=>r.arquivo)).size,56);
  assert.deepEqual(map.map(r=>r.id),Array.from({length:56},(_,i)=>129+i));
  for(const [n,r]of map.entries()){

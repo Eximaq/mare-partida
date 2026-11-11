@@ -26,7 +26,7 @@ export async function readLobby(client:PoolClient,id:string,world:WorldSnapshot|
   // A travel committed between the roster query and the position query must not leak a hunt.
   if(motion?.mapId!=='lobby')continue;
   const equipment:Record<string,{def:number}>={};
-  if(!row.preferences.hideItems)for(const slot of ['weapon','head','coat','cloak','gloves','legs','boots']){
+  if(!row.preferences.hideItems)for(const slot of ['weapon','head','coat','cloak','gloves','legs','boots','visual_completo']){
    const item=row.equipment[slot];if(item&&Number.isInteger(item.def))equipment[slot]={def:item.def};
   }
   players.push({id:row.id,name:row.name,classId:row.class_id,factionId:row.faction_id,appearance96:row.appearance,hideHeadgear:!!row.preferences.hideHeadgear,equipment,...(row.crew_tag?{crew:{tag:row.crew_tag,flag:row.crew_flag}}:{}),world:motion});
