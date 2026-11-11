@@ -50,7 +50,7 @@ h1 { font-size: clamp(30px, 3.35vw, 49px); font-weight: 500; line-height: 1.12; 
   gap: 10px;
   margin-top: 24px;
 }
-.community > :not([hidden]) {
+.community a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -62,8 +62,6 @@ h1 { font-size: clamp(30px, 3.35vw, 49px); font-weight: 500; line-height: 1.12; 
   font-size: 17px;
   text-decoration: none;
 }
-.community > span { color: var(--muted); }
-.community small { font-size: 13px; color: var(--sea-glass); }
 .community a:hover { border-color: var(--brass); background: #15394a; }
 .support {
   width: min(100%, 960px);
@@ -117,32 +115,30 @@ h1 { font-size: clamp(30px, 3.35vw, 49px); font-weight: 500; line-height: 1.12; 
   line-height: 1.4;
 }
 .plan-perks li::marker { color: var(--brass); }
-.plan-status, .plan-payment { margin: auto 0 0; }
-.plan-status, .plan-payment summary {
+.plan-payment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin: auto 0 0;
   padding: 12px;
-  border: 1px solid #527980;
-  background: var(--deep-sea);
+  border: 1px solid var(--brass);
+  background: #163a47;
+  color: var(--parchment);
   font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
 }
-.plan-status { color: var(--muted); }
-.plan-payment summary { min-height: 44px; cursor: pointer; color: var(--parchment); }
-.plan-payment summary:hover { border-color: var(--brass); }
-.pix-instructions {
-  padding: 12px;
-  background: var(--deep-sea);
+.plan-payment:hover { background: #1b4b58; }
+.support-help {
+  max-width: 75ch;
+  margin: 20px 0 0;
+  color: var(--muted);
   font-size: 16px;
-  line-height: 1.45;
+  line-height: 1.5;
 }
-.pix-code {
-  display: block;
-  width: min(100%, 232px);
-  height: auto;
-  margin: 0 auto;
-  padding: 8px;
-  background: white;
-  image-rendering: pixelated;
-}
-.pix-claim { display: inline-flex; align-items: center; gap: 5px; min-height: 44px; color: var(--sea-glass); }
+.support-help a { color: var(--sea-glass); }
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -157,7 +153,7 @@ h1 { font-size: clamp(30px, 3.35vw, 49px); font-weight: 500; line-height: 1.12; 
   .support-plan { min-height: 0; }
 }
 @media (max-width: 480px) {
-  .community > :not([hidden]) { padding-inline: 10px; font-size: 15px; }
+  .community a { padding-inline: 10px; font-size: 15px; }
 }
 .voyage { display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; padding: 21px 28px; border-top: 1px solid #d7ac654d; border-bottom: 1px solid #d7ac6526; font-size: 18px; text-shadow: 0 2px 2px #041521; }
 .voyage i { font-style: normal; color: var(--brass); font-size: 12px; }

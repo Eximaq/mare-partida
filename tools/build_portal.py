@@ -8,10 +8,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 # Deliberate allowlist: no account code, gameplay, local data or review assets.
 PUBLIC_FILES = (
-    'index.html', 'portal.css', 'ocean-art.css', 'collaborators.js',
+    'index.html', 'portal.css', 'ocean-art.css',
     'assets/logo-kaizoku-idle-oficial.png', 'assets/ui/banner-compass.webp',
 )
-PIX_FILES = ('assets/pix-15.png', 'assets/pix-25.png', 'assets/pix-50.png')
 
 
 def version_portal_assets(portal):
@@ -30,8 +29,7 @@ def build(output):
     source = ROOT / 'portal'
     if output == ROOT or output in ROOT.parents or output == source or output.is_relative_to(source):
         raise SystemExit('Output must be separate from the source tree.')
-    public_files = PUBLIC_FILES + tuple(name for name in PIX_FILES if (source / name).is_file())
-    allowed = {Path('portal') / name for name in public_files}
+    allowed = {Path('portal') / name for name in PUBLIC_FILES}
     allowed.update(map(Path, ['index.html', '_redirects', '_headers']))
     if output.exists():
         for existing in output.rglob('*'):
@@ -39,7 +37,7 @@ def build(output):
                 raise SystemExit('Output contains unexpected files; choose an empty directory.')
     output.mkdir(parents=True, exist_ok=True)
     portal = output / 'portal'
-    for relative in public_files:
+    for relative in PUBLIC_FILES:
         destination = portal / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / 'portal' / relative, destination)

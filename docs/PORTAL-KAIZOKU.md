@@ -18,9 +18,9 @@ O portal apresenta três opções de apoio único. As vantagens propostas são c
 | Navegador | R$ 25 | Título e emblema de Fundador |
 | Capitão | R$ 50 | Título, emblema e visual exclusivo de Capitão |
 
-Os botões de Instagram e Discord passam a apontar para os destinos oficiais quando os links forem preenchidos em `portal/collaborators.js`. Para ativar o Pix, gerar três cobranças reutilizáveis de valor fixo na conta de recebimento e salvar os QR Codes públicos como `portal/assets/pix-15.png`, `pix-25.png` e `pix-50.png`. Conferir o destinatário e o valor de cada código no app do banco antes de publicar.
+O portal usa links diretos em `portal/index.html`. Cada plano abre a página da cobrança de valor fixo no Nubank em uma nova aba. O banco exibe o QR Code e o apoiador confirma o pagamento no app do seu banco. Instagram e Discord apontam para os endereços oficiais fornecidos pelo proprietário.
 
-Em `collaborators.js`, preencher `pix.claimUrl` com o endereço do canal privado de atendimento no Discord e ativar `pix.enabled`. O canal deve orientar o apoiador a informar o plano e, quando disponível, a conta que receberá a vantagem. A equipe confirma cada transação no banco e registra o apoio pelo identificador da transação para evitar contagem duplicada. O portal não confirma pagamentos nem entrega recompensas automaticamente. Se o QR não carregar, o plano permanece com a indicação “Pix em breve”.
+Após pagar, o apoiador pode entrar no Discord e pedir à equipe, em privado, o registro do apoio. A equipe confere a transação no banco e registra o identificador para evitar duplicidade. A confirmação do Pix e o registro das vantagens são manuais.
 
 ## Publicar na Cloudflare Pages
 
