@@ -1,0 +1,20 @@
+{
+  "packages": [
+    {
+      "path": "clothing/female-pants168-182/female_168_north_fourview_EW41_SN4.zip",
+      "bytes": 868925,
+      "sha256": "d5269b476eed0c3becbbe3a1c87ab579e914d84f52e920f81b24bc15bd914d7c",
+      "pngCount": 12,
+      "productionEnabled": false
+    },
+    {
+      "path": "clothing/female-pants168-182/female_168_south_fourview_EW41_SN4.zip",
+      "bytes": 857395,
+      "sha256": "b68f0465bc8bdc182488144b0dec754172fe804a9ff9b004d0ae9188eecd409a",
+      "pngCount": 10,
+      "productionEnabled": false
+    }
+  ],
+  "productionEnabled": false,
+  "note": "Lote parcial preservado: somente NORTH/SOUTH da calça feminina168. Demais direções serão acrescentadas em lotes separados."
+}
