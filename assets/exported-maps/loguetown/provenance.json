@@ -1,0 +1,15 @@
+{
+  "file": "Loguetown-export.zip",
+  "sourceId": "0f56fe63-4344-4d8d-83ce-87771336a858",
+  "origin": [
+    -896,
+    -2368
+  ],
+  "objects": 52,
+  "archiveSha256": "d984006b76a13311d52600cbe06d22aff8877ed5d00cecbd395b220aa03f43f0",
+  "compositeSha256": "074457336e60175987627162b29e8659ad8f10a790c491badbceaf8ff8446f97",
+  "overlays": 0,
+  "blockedTerrainIds": [
+    2
+  ]
+}

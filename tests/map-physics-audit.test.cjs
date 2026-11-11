@@ -14,6 +14,23 @@ test('rectangular feet cannot protrude beyond a map boundary',()=>{const nav=new
 
 test('invalid or unbounded motion and ray coordinates cannot hang the game loop',()=>{const vm=require('node:vm'),fs=require('node:fs'),source=fs.readFileSync(require.resolve('../world-system.js'),'utf8');for(const action of ["nav.move(actor,Infinity,0)","nav.clear(actor,{x:Infinity,y:50})"]){const ctx=vm.createContext({});vm.runInContext(source,ctx);assert.doesNotThrow(()=>vm.runInContext("var nav=new MareWorld.Navigation({width:100,height:100,colliders:[]}),actor={x:50,y:50};"+action,ctx,{timeout:50}));assert.deepEqual(JSON.parse(vm.runInContext('JSON.stringify(actor)',ctx)),{x:50,y:50});}});
 
-test('Baratie counters retain movement collision while allowing shots over the counter',()=>{const ctx=require('../tools/audit_maps.cjs').loadMaps(),objects=ctx.MareNewIslandObjects.baratie,index=objects.placements.findIndex(p=>objects.assets[p[0]]==='6b548885-4803-4c22-b874-cacbaf37b87b'),c=ctx.MareNewIslands.baratie.map.colliders.find(o=>o.id==='baratie-object-'+index);assert.ok(c);const map=ctx.MareNewIslands.baratie.map,nav=new Navigation({width:map.width,height:map.height,colliders:[c]}),a={x:c.x-20,y:c.y+c.h/2},b={x:c.x+c.w+20,y:a.y};assert.equal(nav.clear(a,b),false);assert.equal(nav.projectileClear(a,b),true);});
+test('Baratie blocks movement at low props and keeps projectile clearance',()=>{
+ const ctx=require('../tools/audit_maps.cjs').loadMaps(),map=ctx.MareWorld.maps.baratie;
+ const solid=map.colliders.find(c=>!c.blocksProjectiles&&c.w>=20&&c.h>=16);
+ assert.ok(solid);
+ const nav=new Navigation({width:map.width,height:map.height,colliders:[solid]});
+ const a={x:solid.x-20,y:solid.y+solid.h/2},b={x:solid.x+solid.w+20,y:a.y};
+ assert.equal(nav.clear(a,b),false);
+ assert.equal(nav.projectileClear(a,b),true);
+});
 
-test('Dawn exact segment hook respects non-solid flags on an otherwise passable footprint',()=>{const ctx=require('../tools/audit_maps.cjs').loadMaps(),d=ctx.MareDawn,nav=new ctx.MareWorld.Navigation(d.map,16);const c=d.map.colliders.find(o=>d.ground(o.x+o.w/2,o.y+o.h/2,10)),p={x:c.x+c.w/2,y:c.y+c.h/2};assert.ok(c);assert.equal(nav.clear(p,p),false);c.isSolid=false;assert.equal(nav.walkable(p.x,p.y),true);assert.equal(nav.clear(p,p),true);});
+test('Dawn keeps floor walkability independent of a solid object footprint',()=>{
+ const ctx=require('../tools/audit_maps.cjs').loadMaps(),map=ctx.MareWorld.maps.dawn;
+ const nav=new ctx.MareWorld.Navigation(map,16);
+ const solid=map.colliders.find(c=>map.terrainWalkable(c.x+c.w/2,c.y+c.h/2,10));
+ assert.ok(solid);
+ const p={x:solid.x+solid.w/2,y:solid.y+solid.h/2};
+ assert.equal(nav.clear(p,p),false);
+ const terrainOnly=new ctx.MareWorld.Navigation({...map,colliders:[]},16);
+ assert.equal(terrainOnly.clear(p,p),true);
+});

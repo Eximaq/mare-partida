@@ -1,0 +1,1252 @@
+{
+  "alubarna": {
+    "spawn": {
+      "x": 3048,
+      "y": 4408
+    },
+    "safeZones": [
+      {
+        "x": 3048,
+        "y": 4408,
+        "radius": 140
+      }
+    ],
+    "goals": [
+      {
+        "id": "entrada",
+        "name": "Avenida Sul",
+        "x": 3048,
+        "y": 3880
+      },
+      {
+        "id": "mercado",
+        "name": "Mercado de Alubarna",
+        "x": 2488,
+        "y": 3368
+      },
+      {
+        "id": "praca",
+        "name": "Praça Central",
+        "x": 3048,
+        "y": 3000
+      },
+      {
+        "id": "bairro",
+        "name": "Bairro das Torres",
+        "x": 3688,
+        "y": 3272
+      },
+      {
+        "id": "palacio",
+        "name": "Avenida do Palácio",
+        "x": 3032,
+        "y": 2488
+      }
+    ],
+    "districts": [
+      {
+        "id": "entrada",
+        "name": "Avenida Sul",
+        "x": 3048,
+        "y": 3880
+      },
+      {
+        "id": "mercado",
+        "name": "Mercado de Alubarna",
+        "x": 2488,
+        "y": 3368
+      },
+      {
+        "id": "praca",
+        "name": "Praça Central",
+        "x": 3048,
+        "y": 3000
+      },
+      {
+        "id": "bairro",
+        "name": "Bairro das Torres",
+        "x": 3688,
+        "y": 3272
+      },
+      {
+        "id": "palacio",
+        "name": "Avenida do Palácio",
+        "x": 3032,
+        "y": 2488
+      }
+    ],
+    "interactions": [
+      {
+        "id": "return",
+        "radius": 40,
+        "x": 3048,
+        "y": 4488
+      }
+    ],
+    "returnPoint": {
+      "id": "return",
+      "radius": 40,
+      "x": 3048,
+      "y": 4488
+    },
+    "slots": {
+      "alubarna-01-entrada-0": {
+        "x": 2984,
+        "y": 3912
+      },
+      "alubarna-01-entrada-1": {
+        "x": 3048,
+        "y": 3912
+      },
+      "alubarna-01-mercado-2": {
+        "x": 2424,
+        "y": 3448
+      },
+      "alubarna-01-mercado-3": {
+        "x": 2552,
+        "y": 3448
+      },
+      "alubarna-01-praca-4": {
+        "x": 2984,
+        "y": 3032
+      },
+      "alubarna-01-praca-5": {
+        "x": 3112,
+        "y": 3016
+      },
+      "alubarna-01-bairro-6": {
+        "x": 3640,
+        "y": 3304
+      },
+      "alubarna-01-bairro-7": {
+        "x": 3688,
+        "y": 3272
+      },
+      "alubarna-01-palacio-8": {
+        "x": 3032,
+        "y": 2504
+      },
+      "alubarna-01-palacio-9": {
+        "x": 3096,
+        "y": 2520
+      }
+    }
+  },
+  "arlong": {
+    "spawn": {
+      "x": 1384,
+      "y": 1640
+    },
+    "safeZones": [
+      {
+        "x": 1384,
+        "y": 1640,
+        "radius": 140
+      }
+    ],
+    "goals": [
+      {
+        "id": "entrada",
+        "name": "Passarela do Porto",
+        "x": 1384,
+        "y": 1560,
+        "tx": 21,
+        "ty": 24
+      },
+      {
+        "id": "ala-oeste",
+        "name": "Ala Oeste",
+        "x": 936,
+        "y": 1368,
+        "tx": 14,
+        "ty": 21
+      },
+      {
+        "id": "ala-leste",
+        "name": "Ala Leste",
+        "x": 1752,
+        "y": 1112,
+        "tx": 27,
+        "ty": 17
+      },
+      {
+        "id": "palacio",
+        "name": "Praça do Palácio",
+        "x": 1320,
+        "y": 1112,
+        "tx": 20,
+        "ty": 17
+      }
+    ],
+    "districts": [
+      {
+        "id": "entrada",
+        "name": "Passarela do Porto",
+        "x": 1384,
+        "y": 1560,
+        "tx": 21,
+        "ty": 24
+      },
+      {
+        "id": "ala-oeste",
+        "name": "Ala Oeste",
+        "x": 936,
+        "y": 1368,
+        "tx": 14,
+        "ty": 21
+      },
+      {
+        "id": "ala-leste",
+        "name": "Ala Leste",
+        "x": 1752,
+        "y": 1112,
+        "tx": 27,
+        "ty": 17
+      },
+      {
+        "id": "palacio",
+        "name": "Praça do Palácio",
+        "x": 1320,
+        "y": 1112,
+        "tx": 20,
+        "ty": 17
+      }
+    ],
+    "interactions": [
+      {
+        "id": "return",
+        "radius": 40,
+        "x": 1384,
+        "y": 1640
+      }
+    ],
+    "returnPoint": {
+      "id": "return",
+      "radius": 40,
+      "x": 1384,
+      "y": 1640
+    },
+    "slots": {
+      "arlong-entrada-0": {
+        "x": 1192,
+        "y": 1544
+      },
+      "arlong-entrada-1": {
+        "x": 1512,
+        "y": 1576
+      },
+      "arlong-ala-oeste-0": {
+        "x": 744,
+        "y": 1208
+      },
+      "arlong-ala-oeste-1": {
+        "x": 984,
+        "y": 1544
+      },
+      "arlong-ala-leste-0": {
+        "x": 1608,
+        "y": 1048
+      },
+      "arlong-ala-leste-1": {
+        "x": 1944,
+        "y": 1192
+      },
+      "arlong-palacio-0": {
+        "x": 1176,
+        "y": 1048
+      },
+      "arlong-palacio-1": {
+        "x": 1448,
+        "y": 1224
+      }
+    }
+  },
+  "baratie": {
+    "spawn": {
+      "x": 1496,
+      "y": 2200
+    },
+    "safeZones": [
+      {
+        "x": 1496,
+        "y": 2200,
+        "radius": 140
+      }
+    ],
+    "goals": [
+      {
+        "id": "entrada",
+        "name": "Salão Sul",
+        "x": 1240,
+        "y": 2136,
+        "tx": 19,
+        "ty": 28
+      },
+      {
+        "id": "salão",
+        "name": "Salão de Jantar",
+        "x": 1240,
+        "y": 1816,
+        "tx": 19,
+        "ty": 23
+      },
+      {
+        "id": "convés",
+        "name": "Convés Principal",
+        "x": 1496,
+        "y": 1496,
+        "tx": 23,
+        "ty": 18
+      },
+      {
+        "id": "cozinha",
+        "name": "Cozinha",
+        "x": 1240,
+        "y": 1112,
+        "tx": 19,
+        "ty": 12
+      }
+    ],
+    "districts": [
+      {
+        "id": "entrada",
+        "name": "Salão Sul",
+        "x": 1240,
+        "y": 2136,
+        "tx": 19,
+        "ty": 28
+      },
+      {
+        "id": "salão",
+        "name": "Salão de Jantar",
+        "x": 1240,
+        "y": 1816,
+        "tx": 19,
+        "ty": 23
+      },
+      {
+        "id": "convés",
+        "name": "Convés Principal",
+        "x": 1496,
+        "y": 1496,
+        "tx": 23,
+        "ty": 18
+      },
+      {
+        "id": "cozinha",
+        "name": "Cozinha",
+        "x": 1240,
+        "y": 1112,
+        "tx": 19,
+        "ty": 12
+      }
+    ],
+    "interactions": [
+      {
+        "id": "return",
+        "radius": 40,
+        "x": 1496,
+        "y": 2200
+      }
+    ],
+    "returnPoint": {
+      "id": "return",
+      "radius": 40,
+      "x": 1496,
+      "y": 2200
+    },
+    "slots": {
+      "baratie-entrada-0": {
+        "x": 1112,
+        "y": 2040
+      },
+      "baratie-entrada-1": {
+        "x": 1320,
+        "y": 2280
+      },
+      "baratie-salão-0": {
+        "x": 1112,
+        "y": 1672
+      },
+      "baratie-salão-1": {
+        "x": 1384,
+        "y": 1864
+      },
+      "baratie-convés-0": {
+        "x": 1336,
+        "y": 1448
+      },
+      "baratie-convés-1": {
+        "x": 1640,
+        "y": 1576
+      },
+      "baratie-cozinha-0": {
+        "x": 1160,
+        "y": 1032
+      },
+      "baratie-cozinha-1": {
+        "x": 1384,
+        "y": 1192
+      }
+    }
+  },
+  "conchas": {
+    "spawn": {
+      "x": 2144,
+      "y": 2720
+    },
+    "safeZones": [
+      {
+        "x": 2144,
+        "y": 2720,
+        "radius": 140
+      }
+    ],
+    "goals": [],
+    "districts": [
+      {
+        "id": "areia-sul",
+        "name": "Areia Sul",
+        "cell": [
+          11,
+          24
+        ],
+        "x": 2136,
+        "y": 2712,
+        "min": 8,
+        "max": 8,
+        "roles": [
+          "helmeppo"
+        ]
+      },
+      {
+        "id": "caminho-central",
+        "name": "Caminho Central",
+        "cell": [
+          12,
+          20
+        ],
+        "x": 2200,
+        "y": 2456,
+        "min": 8,
+        "max": 8,
+        "roles": [
+          "helmeppo"
+        ]
+      },
+      {
+        "id": "ruas-do-porto",
+        "name": "Ruas do Porto",
+        "cell": [
+          12,
+          16
+        ],
+        "x": 2152,
+        "y": 2136,
+        "min": 8,
+        "max": 8,
+        "roles": [
+          "helmeppo"
+        ]
+      },
+      {
+        "id": "praca-das-conchas",
+        "name": "Praça das Conchas",
+        "cell": [
+          12,
+          10
+        ],
+        "x": 2216,
+        "y": 1816,
+        "min": 8,
+        "max": 8,
+        "roles": [
+          "helmeppo"
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "id": "return",
+        "radius": 40,
+        "x": 2136,
+        "y": 2712
+      }
+    ],
+    "returnPoint": {
+      "id": "return",
+      "radius": 40,
+      "x": 2136,
+      "y": 2712
+    },
+    "slots": {
+      "swamp-areia-sul-0": {
+        "x": 1960,
+        "y": 2632
+      },
+      "swamp-areia-sul-1": {
+        "x": 2344,
+        "y": 2712
+      },
+      "swamp-caminho-central-0": {
+        "x": 2056,
+        "y": 2376
+      },
+      "swamp-caminho-central-1": {
+        "x": 2344,
+        "y": 2504
+      },
+      "swamp-ruas-do-porto-0": {
+        "x": 2008,
+        "y": 2056
+      },
+      "swamp-ruas-do-porto-1": {
+        "x": 2296,
+        "y": 2120
+      },
+      "swamp-praca-das-conchas-0": {
+        "x": 2072,
+        "y": 1736
+      },
+      "swamp-praca-das-conchas-1": {
+        "x": 2328,
+        "y": 1896
+      }
+    }
+  },
+  "lobby": {
+    "spawn": {
+      "x": 1504,
+      "y": 1568
+    },
+    "safeZones": [
+      {
+        "x": 1504,
+        "y": 1568,
+        "radius": 140
+      }
+    ],
+    "goals": [
+      {
+        "x": 1496,
+        "y": 1560
+      },
+      {
+        "x": 1368,
+        "y": 1128
+      },
+      {
+        "x": 1944,
+        "y": 1496
+      },
+      {
+        "x": 2456,
+        "y": 1432
+      }
+    ],
+    "districts": [],
+    "npcs": {
+      "luffy": {
+        "x": 2456,
+        "y": 1368
+      },
+      "nami": {
+        "x": 1816,
+        "y": 1176
+      },
+      "ryuma": {
+        "x": 1560,
+        "y": 1432
+      },
+      "donquixote": {
+        "x": 1832,
+        "y": 1560
+      }
+    },
+    "interactions": [
+      {
+        "id": "world-map",
+        "kind": "hunt",
+        "x": 2520,
+        "y": 1496,
+        "radius": 46
+      }
+    ]
+  },
+  "loguetown": {
+    "spawn": {
+      "x": 1576,
+      "y": 3032
+    },
+    "safeZones": [
+      {
+        "x": 1576,
+        "y": 3032,
+        "radius": 140
+      }
+    ],
+    "goals": [],
+    "districts": [
+      {
+        "id": "cais",
+        "name": "Entrada Sul",
+        "cell": [
+          10,
+          10
+        ],
+        "x": 1576,
+        "y": 3032,
+        "min": 40,
+        "max": 40,
+        "roles": [
+          "marinheiro"
+        ]
+      },
+      {
+        "id": "avenida",
+        "name": "Avenida Central",
+        "cell": [
+          0,
+          2
+        ],
+        "x": 936,
+        "y": 2520,
+        "min": 40,
+        "max": 40,
+        "roles": [
+          "marinheiro"
+        ]
+      },
+      {
+        "id": "praca",
+        "name": "Praça da Torre",
+        "cell": [
+          2,
+          -5
+        ],
+        "x": 1064,
+        "y": 2072,
+        "min": 40,
+        "max": 40,
+        "roles": [
+          "marinheiro"
+        ]
+      },
+      {
+        "id": "jardins",
+        "name": "Jardins do Quartel",
+        "cell": [
+          0,
+          -18
+        ],
+        "x": 920,
+        "y": 1240,
+        "min": 40,
+        "max": 40,
+        "roles": [
+          "marinheiro"
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "id": "return",
+        "radius": 40,
+        "x": 1576,
+        "y": 3032
+      }
+    ],
+    "returnPoint": {
+      "id": "return",
+      "radius": 40,
+      "x": 1576,
+      "y": 3032
+    },
+    "slots": {
+      "loguetown-cais-0": {
+        "x": 1576,
+        "y": 2824
+      },
+      "loguetown-cais-1": {
+        "x": 1752,
+        "y": 2984
+      },
+      "loguetown-avenida-0": {
+        "x": 936,
+        "y": 2456
+      },
+      "loguetown-avenida-1": {
+        "x": 1080,
+        "y": 2584
+      },
+      "loguetown-praca-0": {
+        "x": 936,
+        "y": 1992
+      },
+      "loguetown-praca-1": {
+        "x": 1208,
+        "y": 2152
+      },
+      "loguetown-jardins-0": {
+        "x": 808,
+        "y": 1160
+      },
+      "loguetown-jardins-1": {
+        "x": 1064,
+        "y": 1320
+      }
+    }
+  },
+  "dawn": {
+    "spawn": {
+      "x": 872,
+      "y": 1608
+    },
+    "safeZones": [
+      {
+        "x": 872,
+        "y": 1608,
+        "radius": 160
+      }
+    ],
+    "goals": [
+      {
+        "id": "cais",
+        "name": "Cais de Dawn",
+        "min": 1,
+        "max": 2,
+        "x": 1128,
+        "y": 1640
+      },
+      {
+        "id": "corsarios",
+        "name": "Bosque dos Corsários",
+        "min": 3,
+        "max": 4,
+        "x": 1352,
+        "y": 1544
+      },
+      {
+        "id": "estaleiro",
+        "name": "Praia dos Barqueiros",
+        "min": 3,
+        "max": 4,
+        "x": 1656,
+        "y": 1752
+      },
+      {
+        "id": "mercado",
+        "name": "Enseada das Conchas",
+        "min": 4,
+        "max": 4,
+        "x": 2152,
+        "y": 1736
+      },
+      {
+        "id": "ancoras",
+        "name": "Passarela das Âncoras",
+        "min": 4,
+        "max": 5,
+        "x": 1672,
+        "y": 1352
+      },
+      {
+        "id": "farol",
+        "name": "Clareira dos Vigias",
+        "min": 5,
+        "max": 5,
+        "x": 1832,
+        "y": 1160
+      },
+      {
+        "id": "caldeira",
+        "name": "Vila do Capitão",
+        "min": 5,
+        "max": 5,
+        "x": 2152,
+        "y": 1064
+      }
+    ],
+    "districts": [
+      {
+        "id": "cais",
+        "name": "Cais de Dawn",
+        "min": 1,
+        "max": 2,
+        "x": 1128,
+        "y": 1640
+      },
+      {
+        "id": "corsarios",
+        "name": "Bosque dos Corsários",
+        "min": 3,
+        "max": 4,
+        "x": 1352,
+        "y": 1544
+      },
+      {
+        "id": "estaleiro",
+        "name": "Praia dos Barqueiros",
+        "min": 3,
+        "max": 4,
+        "x": 1656,
+        "y": 1752
+      },
+      {
+        "id": "mercado",
+        "name": "Enseada das Conchas",
+        "min": 4,
+        "max": 4,
+        "x": 2152,
+        "y": 1736
+      },
+      {
+        "id": "ancoras",
+        "name": "Passarela das Âncoras",
+        "min": 4,
+        "max": 5,
+        "x": 1672,
+        "y": 1352
+      },
+      {
+        "id": "farol",
+        "name": "Clareira dos Vigias",
+        "min": 5,
+        "max": 5,
+        "x": 1832,
+        "y": 1160
+      },
+      {
+        "id": "caldeira",
+        "name": "Vila do Capitão",
+        "min": 5,
+        "max": 5,
+        "x": 2152,
+        "y": 1064
+      }
+    ],
+    "interactions": [
+      {
+        "id": "return",
+        "radius": 38,
+        "x": 760,
+        "y": 1608
+      }
+    ],
+    "returnPoint": {
+      "id": "return",
+      "radius": 38,
+      "x": 760,
+      "y": 1608
+    },
+    "slots": {
+      "beach-cais-0": {
+        "x": 1048,
+        "y": 1480
+      },
+      "beach-cais-1": {
+        "x": 1272,
+        "y": 1736
+      },
+      "beach-corsarios-0": {
+        "x": 1272,
+        "y": 1448
+      },
+      "beach-corsarios-1": {
+        "x": 1496,
+        "y": 1640
+      },
+      "beach-estaleiro-0": {
+        "x": 1656,
+        "y": 1800
+      },
+      "beach-estaleiro-1": {
+        "x": 1880,
+        "y": 1832
+      },
+      "beach-mercado-0": {
+        "x": 1944,
+        "y": 1608
+      },
+      "beach-mercado-1": {
+        "x": 2296,
+        "y": 1832
+      },
+      "beach-ancoras-0": {
+        "x": 1528,
+        "y": 1256
+      },
+      "beach-ancoras-1": {
+        "x": 1816,
+        "y": 1416
+      },
+      "beach-farol-0": {
+        "x": 1688,
+        "y": 1080
+      },
+      "beach-farol-1": {
+        "x": 1976,
+        "y": 1240
+      },
+      "beach-caldeira-0": {
+        "x": 2008,
+        "y": 984
+      },
+      "beach-caldeira-1": {
+        "x": 2296,
+        "y": 1176
+      },
+      "beach-boss": {
+        "x": 2152,
+        "y": 1064
+      }
+    }
+  },
+  "syrup": {
+    "spawn": {
+      "x": 1816,
+      "y": 2104
+    },
+    "safeZones": [
+      {
+        "x": 1816,
+        "y": 2104,
+        "radius": 140
+      }
+    ],
+    "goals": [
+      {
+        "id": "entrada",
+        "name": "Estrada do Sul",
+        "x": 1816,
+        "y": 1944,
+        "tx": 32,
+        "ty": 43
+      },
+      {
+        "id": "vila-baixa",
+        "name": "Vila Baixa",
+        "x": 1704,
+        "y": 1096,
+        "tx": 30,
+        "ty": 30
+      },
+      {
+        "id": "praça",
+        "name": "Praça dos Gatos",
+        "x": 1384,
+        "y": 792,
+        "tx": 23,
+        "ty": 22
+      },
+      {
+        "id": "bosque",
+        "name": "Bosque de Syrup",
+        "x": 2200,
+        "y": 440,
+        "tx": 38,
+        "ty": 19
+      }
+    ],
+    "districts": [
+      {
+        "id": "entrada",
+        "name": "Estrada do Sul",
+        "x": 1816,
+        "y": 1944,
+        "tx": 32,
+        "ty": 43
+      },
+      {
+        "id": "vila-baixa",
+        "name": "Vila Baixa",
+        "x": 1704,
+        "y": 1096,
+        "tx": 30,
+        "ty": 30
+      },
+      {
+        "id": "praça",
+        "name": "Praça dos Gatos",
+        "x": 1384,
+        "y": 792,
+        "tx": 23,
+        "ty": 22
+      },
+      {
+        "id": "bosque",
+        "name": "Bosque de Syrup",
+        "x": 2200,
+        "y": 440,
+        "tx": 38,
+        "ty": 19
+      }
+    ],
+    "interactions": [
+      {
+        "id": "return",
+        "radius": 40,
+        "x": 1816,
+        "y": 2104
+      }
+    ],
+    "returnPoint": {
+      "id": "return",
+      "radius": 40,
+      "x": 1816,
+      "y": 2104
+    },
+    "slots": {
+      "syrup-entrada-0": {
+        "x": 1672,
+        "y": 1864
+      },
+      "syrup-entrada-1": {
+        "x": 2008,
+        "y": 2024
+      },
+      "syrup-vila-baixa-0": {
+        "x": 1560,
+        "y": 1032
+      },
+      "syrup-vila-baixa-1": {
+        "x": 1848,
+        "y": 1192
+      },
+      "syrup-praça-0": {
+        "x": 1384,
+        "y": 792
+      },
+      "syrup-praça-1": {
+        "x": 1432,
+        "y": 792
+      },
+      "syrup-bosque-0": {
+        "x": 2056,
+        "y": 440
+      },
+      "syrup-bosque-1": {
+        "x": 2376,
+        "y": 520
+      }
+    }
+  },
+  "marineford": {
+    "spawn": {
+      "x": 3592,
+      "y": 2792
+    },
+    "safeZones": [],
+    "goals": [
+      {
+        "id": "courtyard",
+        "x": 3272,
+        "y": 2728
+      }
+    ],
+    "districts": [],
+    "interactions": []
+  },
+  "orange": {
+    "spawn": {
+      "x": 1184,
+      "y": 1952
+    },
+    "safeZones": [
+      {
+        "x": 1184,
+        "y": 1952,
+        "radius": 140
+      }
+    ],
+    "goals": [],
+    "districts": [
+      {
+        "id": "cais",
+        "name": "Cais das Laranjeiras",
+        "cell": [
+          3,
+          11
+        ],
+        "x": 1192,
+        "y": 1960,
+        "min": 13,
+        "max": 13,
+        "roles": [
+          "mr3",
+          "cabaji"
+        ]
+      },
+      {
+        "id": "rua",
+        "name": "Rua dos Navegantes",
+        "cell": [
+          5,
+          2
+        ],
+        "x": 1320,
+        "y": 1368,
+        "min": 13,
+        "max": 13,
+        "roles": [
+          "mr3",
+          "cabaji"
+        ]
+      },
+      {
+        "id": "praca",
+        "name": "Praça dos Toldos",
+        "cell": [
+          13,
+          0
+        ],
+        "x": 1768,
+        "y": 1160,
+        "min": 13,
+        "max": 13,
+        "roles": [
+          "mr3",
+          "cabaji"
+        ]
+      },
+      {
+        "id": "armazens",
+        "name": "Armazéns da Enseada",
+        "cell": [
+          18,
+          7
+        ],
+        "x": 2136,
+        "y": 1688,
+        "min": 13,
+        "max": 13,
+        "roles": [
+          "mr3",
+          "cabaji"
+        ]
+      },
+      {
+        "id": "jardins",
+        "name": "Jardins do Porto",
+        "cell": [
+          22,
+          -7
+        ],
+        "x": 2328,
+        "y": 728,
+        "min": 13,
+        "max": 13,
+        "roles": [
+          "mr3",
+          "cabaji"
+        ]
+      }
+    ],
+    "interactions": [
+      {
+        "id": "return",
+        "radius": 40,
+        "x": 1192,
+        "y": 1960
+      }
+    ],
+    "returnPoint": {
+      "id": "return",
+      "radius": 40,
+      "x": 1192,
+      "y": 1960
+    },
+    "slots": {
+      "orange-cais-0": {
+        "x": 984,
+        "y": 1912
+      },
+      "orange-cais-1": {
+        "x": 1368,
+        "y": 2024
+      },
+      "orange-rua-0": {
+        "x": 1240,
+        "y": 1288
+      },
+      "orange-rua-1": {
+        "x": 1480,
+        "y": 1448
+      },
+      "orange-praca-0": {
+        "x": 1608,
+        "y": 1096
+      },
+      "orange-praca-1": {
+        "x": 1896,
+        "y": 1256
+      },
+      "orange-armazens-0": {
+        "x": 1992,
+        "y": 1576
+      },
+      "orange-armazens-1": {
+        "x": 2280,
+        "y": 1800
+      },
+      "orange-jardins-0": {
+        "x": 2088,
+        "y": 680
+      },
+      "orange-jardins-1": {
+        "x": 2472,
+        "y": 872
+      }
+    }
+  },
+  "quest-dungeons": {
+    "spawn": {
+      "x": 1824,
+      "y": 2144
+    },
+    "safeZones": [],
+    "goals": [
+      {
+        "id": "arena",
+        "x": 1816,
+        "y": 1384
+      },
+      {
+        "id": "chest-approach",
+        "x": 1848,
+        "y": 1096
+      }
+    ],
+    "districts": [],
+    "interactions": [
+      {
+        "id": "40420c70-1e86-493e-a829-79b42d260c18",
+        "x": 1848,
+        "y": 1096,
+        "radius": 90,
+        "bounds": {
+          "x": 1775,
+          "y": 940,
+          "w": 160,
+          "h": 128
+        }
+      }
+    ],
+    "enemySpawn": {
+      "x": 1816,
+      "y": 1384
+    },
+    "chest": {
+      "id": "40420c70-1e86-493e-a829-79b42d260c18",
+      "x": 1848,
+      "y": 1096,
+      "radius": 90,
+      "bounds": {
+        "x": 1775,
+        "y": 940,
+        "w": 160,
+        "h": 128
+      }
+    }
+  }
+}

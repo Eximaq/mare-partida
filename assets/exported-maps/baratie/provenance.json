@@ -1,0 +1,15 @@
+{
+  "file": "Baratie-export.zip",
+  "sourceId": "8b917413-6107-481e-ae4b-947f37b83de2",
+  "origin": [
+    -1152,
+    -2176
+  ],
+  "objects": 68,
+  "archiveSha256": "446a440151e2fd6cecd0be297b59924b2d4baeedef2fd3b07d51a3357512f4c2",
+  "compositeSha256": "0b13f454582e91b0bafcab6dcdfebd2b9a9a61ad2f4a32055a079617b54c43dd",
+  "overlays": 0,
+  "blockedTerrainIds": [
+    2
+  ]
+}

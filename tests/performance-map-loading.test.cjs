@@ -11,4 +11,14 @@ test('interrupted optional monster metadata stays bounded and does not reject th
 
 test('monster prefetch follows the installed current registry instead of loading legacy actor sheets',()=>{const c=loadMaps(),legacy=[],current=[];c.Image=class{set src(v){legacy.push(v)}};c.MareSpriteCombatV2Data={sham:{monster:true}};c.MareSpriteCombatV2={preload:id=>current.push(id)};vm.runInContext(fs.readFileSync(path.join(root,'new-islands-art.js'),'utf8'),c);c.MareNewIslandArt.prepare('sham');assert.deepEqual(current,['sham']);assert.deepEqual(legacy,[]);});
 
-test('Conchas uses its baked foreground instead of requesting nonexistent depth masks',()=>{const c=loadMaps(),urls=[];c.Image=class{set src(v){urls.push(v)}};vm.runInContext(fs.readFileSync(path.join(root,'world-depth.js'),'utf8'),c);assert(c.MareWorldDepth.regions('conchas').length);assert.deepEqual(urls,[],'Conchas depth is supplied by conchasForeground');});
+test('Conchas loads each existing export mask once and does not load the retired foreground',()=>{
+ const c=loadMaps(),urls=[];
+ c.Image=class{set src(v){urls.push(v)}};
+ vm.runInContext(fs.readFileSync(path.join(root,'world-depth.js'),'utf8'),c);
+ const regions=c.MareWorldDepth.regions('conchas');
+ assert(regions.length);
+ assert.equal(urls.length,new Set(regions.map(p=>p.assetId)).size);
+ assert(urls.every(url=>fs.existsSync(path.join(root,url))));
+ c.MareWorldDepth.regions('conchas');
+ assert.equal(urls.length,new Set(urls).size);
+});
