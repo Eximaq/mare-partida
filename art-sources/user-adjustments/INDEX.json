@@ -1,0 +1,20 @@
+[
+  {
+    "file": "headgear_user_adjustments_source-only_v1.zip",
+    "bytes": 3075482,
+    "sha256": "7a6a749e049f3397549c274f6af138e9e68e50c115c0413aa8186df3c61226c7",
+    "adjustments": 362,
+    "context_entries": 111,
+    "original_png_assets": 128,
+    "scope": "source-only; no visual approval"
+  },
+  {
+    "file": "hair_user_adjustments_source-only_v1.zip",
+    "bytes": 2383764,
+    "sha256": "ab2d91a1a9c72a44e4e4b77d8b92036defe33b01807cdbfdcba1c02cda8110f7",
+    "adjustments": 27,
+    "context_entries": 12,
+    "original_png_assets": 94,
+    "scope": "source-only; no visual approval"
+  }
+]
