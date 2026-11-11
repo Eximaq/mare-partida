@@ -40,5 +40,59 @@
     "size_bytes": 1472737,
     "sha256": "613311373fd9666d009e423177bbbb8881218ba4985dfa446cd83f237845d878",
     "pngs": 24
+  },
+  {
+    "file": "weapon0_east-west_sword0-v2.zip",
+    "size_bytes": 1153550,
+    "sha256": "3982adcc9b6186204beb45756a2e5d0a2e59ced889b8fac855f348cdf144f7f3",
+    "pngs": 16
+  },
+  {
+    "file": "weapon67_east-west_sword67-v2.zip",
+    "size_bytes": 1255194,
+    "sha256": "0b1095440f567da046c4a87994d374f5aeb510a0885a6b9c8859e03e864ea1a1",
+    "pngs": 16
+  },
+  {
+    "file": "weapon70_east-west_sword70-v2.zip",
+    "size_bytes": 1356530,
+    "sha256": "dcce4ecb4a41d71116f3e7a10913642875a3fae4e23efa3ba595adbe9a750796",
+    "pngs": 16
+  },
+  {
+    "file": "weapon16_east-west_focus16.zip",
+    "size_bytes": 869161,
+    "sha256": "a9bdda8df2559284843ecfac30ca9d05400883a6ca30cc59a11189454cc84097",
+    "pngs": 16
+  },
+  {
+    "file": "weapon16_north_compasso16north.zip",
+    "size_bytes": 520486,
+    "sha256": "4c0bed4d0ef7dc73841713018b4a275ad83003df474c1f52f70337f80ae120d4",
+    "pngs": 8
+  },
+  {
+    "file": "weapon122_north_orbe122north.zip",
+    "size_bytes": 557716,
+    "sha256": "8aef5cd53e4320e7d2806931fdb32a93730199c2575c1e13815d6f083bd08495",
+    "pngs": 8
+  },
+  {
+    "file": "weapon3_north_north-plus15.zip",
+    "size_bytes": 533098,
+    "sha256": "49c6b0ec9a9c22ff66805d16d4791961c435fdf754b8c7d0c2add16c5c0fcacf",
+    "pngs": 8
+  },
+  {
+    "file": "weapon2_north_bronze-north6.zip",
+    "size_bytes": 539343,
+    "sha256": "07b1dd564553bfb6c61d70ac5e788a50e47816da712ed4b88152cea4a43fa296",
+    "pngs": 8
+  },
+  {
+    "file": "weapon2_east-west_bronze-orientation.zip",
+    "size_bytes": 849649,
+    "sha256": "a8db3cc1305d9fac8996d795917f29af0df0d08896fc3025404776726cc65a03",
+    "pngs": 16
   }
 ]
