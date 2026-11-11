@@ -428,6 +428,13 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/approved-multiview-v10/weapon110_north-east-west_enlarged-v2.zip",
+      "bytes": 1472737,
+      "sha256": "613311373fd9666d009e423177bbbb8881218ba4985dfa446cd83f237845d878",
+      "pngEntries": 24,
+      "productionEnabled": false
+    },
+    {
       "path": "weapons/approved-multiview-v10/weapon114_north-east-west_pistolas114-cycle-v1.zip",
       "bytes": 2028846,
       "sha256": "4edc9e0d89eb55741a674d17dbf667061bb3b819d5c2f97fc7f5fae026476a6a",
