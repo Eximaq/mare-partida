@@ -1,0 +1,537 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Approved art archive, not a runtime manifest",
+  "productionEnabled": false,
+  "items": [
+    {
+      "itemId": 117,
+      "name": "Braço 117",
+      "version": "v1",
+      "approvedDirections": [
+        "east",
+        "west"
+      ],
+      "approvedAt": "2026-11-11",
+      "status": "art-approved-not-integrated",
+      "productionEnabled": false,
+      "sequence": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "finalFramePattern": "117/v1/{direction}/frames/{frame:02}.png",
+      "files": [
+        {
+          "path": "117/v1/east/frames/00.png",
+          "sha256": "15ebd0ab2a51a4174f2ad0ed046f445e14bbd88e3599a07b1e653bd5ccde9562",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/frames/01.png",
+          "sha256": "bbc39c4e1d17b3f7a7e611af4cfd52c6fa13d83738956beab828da6aac20f741",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/frames/02.png",
+          "sha256": "d7736620f0b8221f7ec5404a623f6ec01248e8ab27161f857a7b752f833b0e58",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/frames/03.png",
+          "sha256": "d3525ee64128b757f9582d25875c1bed8337456ccf1bcdfa17a5486fd825d39a",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/frames/04.png",
+          "sha256": "6233e48fdaf32d9726348111f48b6892b46b50b1d4565a391ec1f5cd86bfedaf",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/frames/05.png",
+          "sha256": "3a7ac8060ed356b5bc52e4acda8ae0ba40f0498723d7805fe1c0bdf27ade45fd",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/frames/06.png",
+          "sha256": "fda6c98d4bc12e7f1da248d54b11279f8dc268c9735f7b48429ea2e63aa6f526",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/frames/07.png",
+          "sha256": "4b65cd915ad6878065b1690f45ac5eedd2c97a72b26171ae0bcd6d0fefca0096",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/00-base.png",
+          "sha256": "2e92c76386aaaf40252a2e5d26846a84eca93ef31ff140657bb6dcd4cf61f346",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/00-equipment.png",
+          "sha256": "4577ab047ecdde54c165b5322df7525a1296f8e6a236c94e1cfe22628e4c8472",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/00-right-gear.png",
+          "sha256": "4577ab047ecdde54c165b5322df7525a1296f8e6a236c94e1cfe22628e4c8472",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/01-base.png",
+          "sha256": "ee6d766ed6de64cbccacad9c98cb313a4f586c1a609b782bf50bc55bfd3fef5b",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/01-equipment.png",
+          "sha256": "2778e02c49d0803f334fb3449cd58b73fb8afcc9ea586545fd265a3dff01f2f5",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/01-right-gear.png",
+          "sha256": "2778e02c49d0803f334fb3449cd58b73fb8afcc9ea586545fd265a3dff01f2f5",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/02-base.png",
+          "sha256": "0836ac9a467bb00437ee0f9312602a1bf6b2d4c20d5e19aec3417c845d7f9ad4",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/02-equipment.png",
+          "sha256": "057b34a73b1d48c7a1e355aa0e8f13ca60ebbc6be57d71e1a80510896ef61d96",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/02-right-gear.png",
+          "sha256": "057b34a73b1d48c7a1e355aa0e8f13ca60ebbc6be57d71e1a80510896ef61d96",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/03-base.png",
+          "sha256": "a9e310b273924aaeffbf0fe02e59f9d9ee6f4de8828833ce1e211ded12dc8584",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/03-equipment.png",
+          "sha256": "561e4f67c46f3ad4aaf8b014a3c49b44ca9e1a47ee2d25f1aff24bfa7ea5e911",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/03-right-gear.png",
+          "sha256": "561e4f67c46f3ad4aaf8b014a3c49b44ca9e1a47ee2d25f1aff24bfa7ea5e911",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/04-base.png",
+          "sha256": "2930e201b2657da99bed40d85ab2ec3dc293b5f56489336bb71978aa464d201f",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/04-equipment.png",
+          "sha256": "2d980f38e7c931fec28762383a852a410f0ce40f537c9b5d946a95ba1240228c",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/04-right-gear.png",
+          "sha256": "2d980f38e7c931fec28762383a852a410f0ce40f537c9b5d946a95ba1240228c",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/05-base.png",
+          "sha256": "084e77f44de44450cc8d937367c41219b621b0dd6c45b9c85fbf7bc46be26ee9",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/05-equipment.png",
+          "sha256": "d88cefe3c6ba36100b24587b91b0b2a323b3139f72a571d4a6511f90bdddf724",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/05-right-gear.png",
+          "sha256": "d88cefe3c6ba36100b24587b91b0b2a323b3139f72a571d4a6511f90bdddf724",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/06-base.png",
+          "sha256": "c54b62f26763d794bd3e8fdec5935ff77328defb3e610e0abe58c7d1b52913c0",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/06-equipment.png",
+          "sha256": "2778e02c49d0803f334fb3449cd58b73fb8afcc9ea586545fd265a3dff01f2f5",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/06-right-gear.png",
+          "sha256": "2778e02c49d0803f334fb3449cd58b73fb8afcc9ea586545fd265a3dff01f2f5",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/07-base.png",
+          "sha256": "4c30183c9d1ab082c01655e210db9ef56d12a22884439d6f35749ea177de692f",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/07-equipment.png",
+          "sha256": "cd595796e1637b1b932346c7499166b0d13258acdb9d453925dc73b4909650c6",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/layers/07-right-gear.png",
+          "sha256": "cd595796e1637b1b932346c7499166b0d13258acdb9d453925dc73b4909650c6",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/masks/00-right-occlusion.png",
+          "sha256": "8262cd6f839c5f0b60f3534ebd053b23594aaefc88f1bd094ffc370ce538cd99",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/masks/01-right-occlusion.png",
+          "sha256": "8262cd6f839c5f0b60f3534ebd053b23594aaefc88f1bd094ffc370ce538cd99",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/masks/02-right-occlusion.png",
+          "sha256": "8262cd6f839c5f0b60f3534ebd053b23594aaefc88f1bd094ffc370ce538cd99",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/masks/03-right-occlusion.png",
+          "sha256": "8262cd6f839c5f0b60f3534ebd053b23594aaefc88f1bd094ffc370ce538cd99",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/masks/04-right-occlusion.png",
+          "sha256": "8262cd6f839c5f0b60f3534ebd053b23594aaefc88f1bd094ffc370ce538cd99",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/masks/05-right-occlusion.png",
+          "sha256": "8262cd6f839c5f0b60f3534ebd053b23594aaefc88f1bd094ffc370ce538cd99",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/masks/06-right-occlusion.png",
+          "sha256": "8262cd6f839c5f0b60f3534ebd053b23594aaefc88f1bd094ffc370ce538cd99",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/east/masks/07-right-occlusion.png",
+          "sha256": "8262cd6f839c5f0b60f3534ebd053b23594aaefc88f1bd094ffc370ce538cd99",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/frames/00.png",
+          "sha256": "ec4b9c5ef1e31f0c34df996f94c4193c0b3cc65e762b0fc100b2baead6d7d912",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/frames/01.png",
+          "sha256": "39422e2527942333d74c5ca3d13e9e2a5e8f942f58317774bce9ebcaee6f062a",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/frames/02.png",
+          "sha256": "5a2bb16e69462acba9209a177959761fe7f5aa3d173c347a1177dcf54f76c959",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/frames/03.png",
+          "sha256": "ffbde8debab292dd38565a8ac579b97431933828b890986c3df06388d43924bc",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/frames/04.png",
+          "sha256": "722212655e3d0a8ca266aff8516b9c45c32aad147bb83a053e2e08606ee9f1e8",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/frames/05.png",
+          "sha256": "1ad7815ce36b708e0e6dea50ec42b9eb222ab380492b59e575e9e45854a6cd99",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/frames/06.png",
+          "sha256": "3cfb491cc1707d339f667ceed06cbd5bf1fca2eb955042ce9e71ca5ffe32b18d",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/frames/07.png",
+          "sha256": "b8dbd0b77f3f3feb1940e19b589664359c1cd5bd3f0235f36d1ac241e0c8e946",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/00-base.png",
+          "sha256": "09b278017b35fa1f4af444658b220c7617317a74dfd6ddcd8d51b236b3c94307",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/00-equipment.png",
+          "sha256": "ca5074229ce17e05ade0369d8cab8f273d7fbefaf16fb4831e620be58e55461b",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/01-base.png",
+          "sha256": "1d22cd583f6738a47714976f5d0997dd08a1f5b97d98c7e2da20b5b014ab99a7",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/01-equipment.png",
+          "sha256": "99445b272c9a72e657b0db4501a626149e3a5e970cc0218865faced6bc85b938",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/02-base.png",
+          "sha256": "9724df6e4df0479c9836f97d935a36f94d531514275acfe57c2a0aaad9878e11",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/02-equipment.png",
+          "sha256": "06a32f5b1951d14779b6ac35d55c4a85f690e67e336c75535f137110cbdff8cd",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/03-base.png",
+          "sha256": "bd2278a555569747f36eec065d7436f4768d36cc09c9fd35e4d3e0b433ea1e16",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/03-equipment.png",
+          "sha256": "5bf3b092edfb89ba4491e95aef1e62d9bfb8de6739e18bf0848d2cbb97bb0c99",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/04-base.png",
+          "sha256": "9dadac60938e3ba16886b2e7b6b3f92eeeaaee14ad814852e1587dd580ae608e",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/04-equipment.png",
+          "sha256": "9fedadcd3448578a20bd6ee30acda0d76e80678cc8450084e7abc1ce075f07fd",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/05-base.png",
+          "sha256": "5fb2d14f71024a2385a6ee7ce1f6f452e1e743b7fa291c7c12392c4cbc14f92e",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/05-equipment.png",
+          "sha256": "5df255a6a481665cd3cad63203256f1db0d942ccf716f1dba3c0e7ea2c121157",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/06-base.png",
+          "sha256": "771e7fe7da3fabcb9cb1ca3ec6ba6baddd9beda9af3af03ebabcbdbb8ab79913",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/06-equipment.png",
+          "sha256": "99445b272c9a72e657b0db4501a626149e3a5e970cc0218865faced6bc85b938",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/07-base.png",
+          "sha256": "235f3beaa71fbc5c4c731462d20e0f13c4f1bb889428ea643c9163a349d11f7a",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "117/v1/west/layers/07-equipment.png",
+          "sha256": "4a372bb66f190b6242f88191314a5844c26ccbecd3a205fabc4374a6a6b8039e",
+          "width": 640,
+          "height": 640
+        }
+      ]
+    },
+    {
+      "itemId": 122,
+      "name": "Orbe 122",
+      "version": "v1",
+      "approvedDirections": [
+        "east",
+        "west"
+      ],
+      "approvedAt": "2026-11-11",
+      "status": "art-approved-not-integrated",
+      "productionEnabled": false,
+      "sequence": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "finalFramePattern": "122/v1/{direction}/{frame:02}.png",
+      "files": [
+        {
+          "path": "122/v1/east/00.png",
+          "sha256": "4232a19a63efbffe8984f07e59306033eb89019b3c8faa3ea4952332c578dd36",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/east/01.png",
+          "sha256": "82f0cfd65077cfc4205336e003418ee5d7cc6b860d35fc29b93d62a8093cea23",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/east/02.png",
+          "sha256": "a7fde1a5b4ae129376fde34732e859691007d4c64ba767cc7956b2129624a937",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/east/03.png",
+          "sha256": "6aa9c5767625240d931f02d4e54edab3698f944cdae89dff1cf90d463ac950e2",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/east/04.png",
+          "sha256": "c9046e8d79b61d1a32ca66bedf50e85f180093608945c631330f2ccdead2c64e",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/east/05.png",
+          "sha256": "da6aa20ddec40f74e3fe2a59ca4cd251816162d5db79f02d91c4e8b53b80ae46",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/east/06.png",
+          "sha256": "021217f5a61ba43de93fbeaee960b5cbeacce85810a1c866cd274a4173a8d146",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/east/07.png",
+          "sha256": "289484f75cf9976c4966d4d7a23f816976547e4e7972e68dd1e886e3dd4a27e9",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/west/00.png",
+          "sha256": "529ea4f98f321a06609697e30f3bf8b0eb0fbfbc34b2bd2a8bc36b6ad89c174b",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/west/01.png",
+          "sha256": "e95233bf25bfe2847f42180c968b9462207f1d70978d713e558b1ef5bd101201",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/west/02.png",
+          "sha256": "3de2f6a31b93a4f4f0af9f8b93a373819dd72e1443bb2e1040963a202f2607db",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/west/03.png",
+          "sha256": "6e473b8b9e154e7e3747e33cefbe7673fdd0a2527b99477fe9372152729b02cd",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/west/04.png",
+          "sha256": "15f12930c6950389c102f99da81e1cd88b4b5dce8f43beb3eba4634d0387bedb",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/west/05.png",
+          "sha256": "7cc2fc375d0968d56f68624a80f4a5ea2572e780054d154604b1a7619a573fd6",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/west/06.png",
+          "sha256": "230a711f8e3949fd6f9c5628e4dc054f7e2964f62d04e11fc017c93e11fb815d",
+          "width": 640,
+          "height": 640
+        },
+        {
+          "path": "122/v1/west/07.png",
+          "sha256": "dd9084ed8bec0e4bdd5b11a3f261e33a948068ccbe9637e23119df1c83a80668",
+          "width": 640,
+          "height": 640
+        }
+      ]
+    }
+  ]
+}
