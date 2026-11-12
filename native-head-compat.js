@@ -4,7 +4,8 @@ const canonical=b=>({masculino:'male',feminino:'female'})[b]||b;
 const point=p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y);
 const near=(a,b)=>Math.abs(a-b)<1e-7;
 function create({makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h}),basePrefix='tools/rework-base-hd/assets/',headPrefix='tools/rework-accessories/assets/'}={}){
- const pixels=new WeakMap();
+ const pixels=new WeakMap(),mirrors=new WeakMap();
+ function mirrored(image){if(mirrors.has(image))return mirrors.get(image);const c=makeCanvas(image.width,image.height),ctx=c.getContext("2d");ctx.imageSmoothingEnabled=false;ctx.translate(c.width,0);ctx.scale(-1,1);ctx.drawImage(image,0,0);mirrors.set(image,c);return c;}
  function lookup(images,source,prefix){const get=k=>images instanceof Map?images.get(k):images?.[k];return get(source)||get(prefix+source+'.png');}
  function raster(image){
   if(pixels.has(image))return pixels.get(image);
@@ -20,18 +21,19 @@ function create({makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'
   for(let j=0;j<h;j++)for(let i=0;i<w;i++)for(let k=0;k<4;k++)if(x.data[((ay+j)*x.width+ax+i)*4+k]!==y.data[((by+j)*y.width+bx+i)*4+k])return {equal:false,reason:'head-source-pixels-differ'};
   return {equal:true,baseBounds:x.bounds,headBounds:y.bounds,width:w,height:h,opaquePixels:x.opaquePixels,offsetPixels:{x:ax-bx,y:ay-by}};
  }
- function validate({basePack,baseBody,baseDirection,baseFrame=0,baseImages,headRecord,headImages,replaceFace=true}={}){
+ function validate({basePack,baseBody,baseDirection,baseFrame=0,baseMirrorX=false,baseImages,headRecord,headImages,replaceFace=true}={}){
   const fail=reason=>({compatible:false,reason});const h=headRecord,bd=basePack?.directions?.[baseDirection],hd=h?.entry?.pack?.directions?.[h.direction];
   if(!h||!bd||!hd)return fail('missing-authored-head-contract');
   if(canonical(baseBody||basePack.body)!==h.body||baseDirection!==h.direction)return fail('body-or-direction-differs');
   if(basePack.density!==4||h.density!==4||h.entry.pack.density!==4)return fail('native-density4-required');
   if(bd.renderMirrorFrom||hd.renderMirrorFrom)return fail('whole-character-mirror-not-proven');
   if(!Number.isInteger(baseFrame)||baseFrame<0||baseFrame>=bd.clip.frames||!bd.poses?.[baseFrame])return fail('authored-frame-unavailable');
-  const sourceNeck=bd.rest?.NECK,sourceNose=bd.rest?.NOSE,headNeck=hd.rest?.NECK,headNose=hd.rest?.NOSE,targetNeck=bd.poses[baseFrame].NECK,targetNose=bd.poses[baseFrame].NOSE;
+  const transformed=p=>baseMirrorX&&point(p)?{x:basePack.frame.width-p.x,y:p.y}:p;
+  const sourceNeck=transformed(bd.rest?.NECK),sourceNose=transformed(bd.rest?.NOSE),headNeck=hd.rest?.NECK,headNose=hd.rest?.NOSE,targetNeck=transformed(bd.poses[baseFrame].NECK),targetNose=transformed(bd.poses[baseFrame].NOSE);
   if(![sourceNeck,sourceNose,headNeck,headNose,targetNeck,targetNose].every(point))return fail('missing-neck-nose-anchors');
   const vectors=[[sourceNeck,sourceNose],[targetNeck,targetNose]].map(([n,o])=>({x:o.x-n.x,y:o.y-n.y})),hx=headNose.x-headNeck.x,hy=headNose.y-headNeck.y;
   if(vectors.some(v=>!near(v.x,hx)||!near(v.y,hy)))return fail('head-rotation-or-scale-needs-authored-support');
-  const slots=replaceFace?['headBase','face']:['headBase'],proof={mode:'exact-cropped-rgba-and-anchors',density:4,slots:{}};
+  const slots=replaceFace?['headBase','face']:['headBase'],proof={mode:'exact-cropped-rgba-and-anchors',density:4,mirrorBaseX:!!baseMirrorX,slots:{}};
   for(const slot of slots){
    const bl=bd.layers.filter(l=>l.slot===slot),hl=hd.layers.filter(l=>l.slot===slot);
    if(slot==='face'&&bl.length===0&&hl.length===0){proof.slots.face={absentInBoth:true};continue;}
@@ -42,7 +44,7 @@ function create({makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'
    const bs=bl[0].frames?.[baseFrame]||bl[0].source,hs=hl[0].source,bi=lookup(baseImages,bs,basePrefix),hi=lookup(headImages,hs,headPrefix);
    if(!bi||!hi)return fail('missing-head-source-image:'+slot);
    if(bi.width!==basePack.frame.width*4||bi.height!==basePack.frame.height*4||hi.width!==h.frame.width*4||hi.height!==h.frame.height*4)return fail('head-raster-size-mismatch');
-   const match=compare(bi,hi);if(!match.equal)return fail(slot+':'+match.reason);
+   const match=compare(baseMirrorX?mirrored(bi):bi,hi);if(!match.equal)return fail(slot+':'+match.reason);
    if(!near(match.offsetPixels.x,(sourceNeck.x-headNeck.x)*4)||!near(match.offsetPixels.y,(sourceNeck.y-headNeck.y)*4))return fail('head-pixels-do-not-register-to-neck:'+slot);
    proof.slots[slot]={...match,baseSource:bs,headSource:hs};
   }

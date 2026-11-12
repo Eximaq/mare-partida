@@ -1,0 +1,478 @@
+{
+  "schema": "native-outfit-contract-audit-v1",
+  "records": 97,
+  "sets": 11,
+  "completeUnarmedSets": 4,
+  "scope": "Exact saved equipment sets only. Candidate flags are not artistic approval. No universal armor coverage or absent-art inference.",
+  "families": [
+    {
+      "body": "male",
+      "equipment": {
+        "pants": 133
+      },
+      "records": [
+        "male-pants133-walk-south-isolated-r2",
+        "male-pants133-walk-north-isolated-r2",
+        "male-pants133-walk-east-source-v18-candidate",
+        "male-pants133-walk-west-source-v18-candidate",
+        "male-pants133-idle-south-isolated-r2",
+        "male-pants133-idle-north-isolated-r2",
+        "male-pants133-idle-east-source-v18-candidate",
+        "male-pants133-idle-west-source-v18-candidate",
+        "male-pants133-attack-unarmed-south-drawn8-candidate",
+        "male-pants133-attack-focus-south-drawn8-candidate",
+        "male-pants133-attack-unarmed-east-drawn8-candidate",
+        "male-pants133-attack-unarmed-west-drawn8-candidate",
+        "male-pants133-attack-unarmed-north-drawn8-candidate"
+      ],
+      "states": [
+        "attack-focus:south",
+        "attack-unarmed:east",
+        "attack-unarmed:north",
+        "attack-unarmed:south",
+        "attack-unarmed:west",
+        "idle:east",
+        "idle:north",
+        "idle:south",
+        "idle:west",
+        "walk:east",
+        "walk:north",
+        "walk:south",
+        "walk:west"
+      ],
+      "candidateRecords": 9,
+      "missingFamilyStates": [],
+      "completeUnarmedFamily": true,
+      "scope": "native-unarmed-family-contract"
+    },
+    {
+      "body": "female",
+      "equipment": {
+        "boots": 155,
+        "gloves": 152,
+        "pants": 147,
+        "torso": 6
+      },
+      "records": [
+        "female_6_east_v42_source-pack",
+        "female_6_east_v42_source-pack-idle-frame0",
+        "female_6_north_v24_source-pack",
+        "female_6_north_v24_source-pack-idle-frame0",
+        "female_6_south_v24_source-pack",
+        "female_6_south_v24_source-pack-idle-frame0",
+        "female_6_west_v42_source-pack",
+        "female_6_west_v42_source-pack-idle-frame0"
+      ],
+      "states": [
+        "idle:east",
+        "idle:north",
+        "idle:south",
+        "idle:west",
+        "walk:east",
+        "walk:north",
+        "walk:south",
+        "walk:west"
+      ],
+      "candidateRecords": 8,
+      "missingFamilyStates": [
+        "attack-unarmed:south",
+        "attack-unarmed:north",
+        "attack-unarmed:east",
+        "attack-unarmed:west"
+      ],
+      "completeUnarmedFamily": false,
+      "scope": "partial-only-no-complete-family"
+    },
+    {
+      "body": "female",
+      "equipment": {
+        "boots": 155,
+        "gloves": 152,
+        "pants": 154,
+        "torso": 151
+      },
+      "records": [
+        "female_outfit151-154-152-155_east_materials-v3_source-pack",
+        "female_outfit151-154-152-155_east_materials-v3_source-pack-idle-frame0",
+        "female_outfit151-154-152-155_north_materials-v3_source-pack",
+        "female_outfit151-154-152-155_north_materials-v3_source-pack-idle-frame0",
+        "female_outfit151-154-152-155_south_materials-v3_source-pack",
+        "female_outfit151-154-152-155_south_materials-v3_source-pack-idle-frame0",
+        "female_outfit151-154-152-155_west_materials-v3_source-pack",
+        "female_outfit151-154-152-155_west_materials-v3_source-pack-idle-frame0"
+      ],
+      "states": [
+        "idle:east",
+        "idle:north",
+        "idle:south",
+        "idle:west",
+        "walk:east",
+        "walk:north",
+        "walk:south",
+        "walk:west"
+      ],
+      "candidateRecords": 8,
+      "missingFamilyStates": [
+        "attack-unarmed:south",
+        "attack-unarmed:north",
+        "attack-unarmed:east",
+        "attack-unarmed:west"
+      ],
+      "completeUnarmedFamily": false,
+      "scope": "partial-only-no-complete-family"
+    },
+    {
+      "body": "male",
+      "equipment": {
+        "boots": 134,
+        "gloves": 152,
+        "pants": 133,
+        "torso": 151
+      },
+      "records": [
+        "male-coat151-pants133-gloves152-boots134-walk-north-source-v18",
+        "male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",
+        "male-coat151-pants133-gloves152-boots134-walk-east-source-v18",
+        "male-coat151-pants133-gloves152-boots134-walk-east-source-v18-idle-frame0",
+        "male-coat151-pants133-gloves152-boots134-walk-west-source-v18",
+        "male-coat151-pants133-gloves152-boots134-walk-west-source-v18-idle-frame0"
+      ],
+      "states": [
+        "idle:east",
+        "idle:north",
+        "idle:west",
+        "walk:east",
+        "walk:north",
+        "walk:west"
+      ],
+      "candidateRecords": 6,
+      "missingFamilyStates": [
+        "idle:south",
+        "walk:south",
+        "attack-unarmed:south",
+        "attack-unarmed:north",
+        "attack-unarmed:east",
+        "attack-unarmed:west"
+      ],
+      "completeUnarmedFamily": false,
+      "scope": "partial-only-no-complete-family"
+    },
+    {
+      "body": "male",
+      "equipment": {
+        "boots": 9,
+        "gloves": 152,
+        "pants": 133,
+        "torso": 151
+      },
+      "records": [
+        "male-coat151-pants133-gloves152-boots9-walk-south-source-v18",
+        "male-coat151-pants133-gloves152-boots9-walk-south-source-v18-idle-frame0",
+        "male-coat151-pants133-gloves152-boots9-walk-north-source-v18",
+        "male-coat151-pants133-gloves152-boots9-walk-north-source-v18-idle-frame0",
+        "male-coat151-pants133-gloves152-boots9-walk-east-source-v18",
+        "male-coat151-pants133-gloves152-boots9-walk-east-source-v18-idle-frame0",
+        "male-coat151-pants133-gloves152-boots9-walk-west-source-v18",
+        "male-coat151-pants133-gloves152-boots9-walk-west-source-v18-idle-frame0"
+      ],
+      "states": [
+        "idle:east",
+        "idle:north",
+        "idle:south",
+        "idle:west",
+        "walk:east",
+        "walk:north",
+        "walk:south",
+        "walk:west"
+      ],
+      "candidateRecords": 8,
+      "missingFamilyStates": [
+        "attack-unarmed:south",
+        "attack-unarmed:north",
+        "attack-unarmed:east",
+        "attack-unarmed:west"
+      ],
+      "completeUnarmedFamily": false,
+      "scope": "partial-only-no-complete-family"
+    },
+    {
+      "body": "male",
+      "equipment": {
+        "boots": 148,
+        "gloves": 152,
+        "pants": 133,
+        "torso": 151
+      },
+      "records": [
+        "male-coat151-pants133-gloves152-boots148-walk-south-source-v18",
+        "male-coat151-pants133-gloves152-boots148-walk-south-source-v18-idle-frame0",
+        "male-coat151-pants133-gloves152-boots148-walk-north-source-v18",
+        "male-coat151-pants133-gloves152-boots148-walk-north-source-v18-idle-frame0"
+      ],
+      "states": [
+        "idle:north",
+        "idle:south",
+        "walk:north",
+        "walk:south"
+      ],
+      "candidateRecords": 4,
+      "missingFamilyStates": [
+        "idle:east",
+        "idle:west",
+        "walk:east",
+        "walk:west",
+        "attack-unarmed:south",
+        "attack-unarmed:north",
+        "attack-unarmed:east",
+        "attack-unarmed:west"
+      ],
+      "completeUnarmedFamily": false,
+      "scope": "partial-only-no-complete-family"
+    },
+    {
+      "body": "male",
+      "equipment": {
+        "boots": 9,
+        "pants": 133
+      },
+      "records": [
+        "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate",
+        "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate",
+        "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+        "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+        "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate",
+        "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate",
+        "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+        "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+        "male-pants133-idle-east-source-v18-candidate-boots9-isolated-candidate",
+        "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+        "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+        "male-pants133-idle-west-source-v18-candidate-boots9-isolated-candidate",
+        "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate"
+      ],
+      "states": [
+        "attack-focus:south",
+        "attack-unarmed:east",
+        "attack-unarmed:north",
+        "attack-unarmed:south",
+        "attack-unarmed:west",
+        "idle:east",
+        "idle:north",
+        "idle:south",
+        "idle:west",
+        "walk:east",
+        "walk:north",
+        "walk:south",
+        "walk:west"
+      ],
+      "candidateRecords": 13,
+      "missingFamilyStates": [],
+      "completeUnarmedFamily": true,
+      "scope": "native-unarmed-family-contract"
+    },
+    {
+      "body": "male",
+      "equipment": {
+        "boots": 148,
+        "pants": 133
+      },
+      "records": [
+        "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate",
+        "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate",
+        "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+        "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+        "male-pants133-walk-north-isolated-r2-boots148-isolated-candidate",
+        "male-pants133-idle-north-isolated-r2-boots148-isolated-candidate",
+        "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate"
+      ],
+      "states": [
+        "attack-focus:south",
+        "attack-unarmed:north",
+        "attack-unarmed:south",
+        "idle:north",
+        "idle:south",
+        "walk:north",
+        "walk:south"
+      ],
+      "candidateRecords": 7,
+      "missingFamilyStates": [
+        "idle:east",
+        "idle:west",
+        "walk:east",
+        "walk:west",
+        "attack-unarmed:east",
+        "attack-unarmed:west"
+      ],
+      "completeUnarmedFamily": false,
+      "scope": "partial-only-no-complete-family"
+    },
+    {
+      "body": "male",
+      "equipment": {
+        "boots": 9,
+        "pants": 133,
+        "torso": 151
+      },
+      "records": [
+        "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate-coat151-existing",
+        "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate-coat151-existing",
+        "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate-coat151-existing",
+        "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate-coat151-existing",
+        "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate-coat151-existing",
+        "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate-coat151-existing",
+        "male-pants133-idle-east-source-v18-candidate-boots9-isolated-candidate-coat151-existing",
+        "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate-coat151-existing",
+        "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate-coat151-existing",
+        "male-pants133-idle-west-source-v18-candidate-boots9-isolated-candidate-coat151-existing",
+        "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate-coat151-existing",
+        "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate-coat151-south-registered"
+      ],
+      "states": [
+        "attack-unarmed:east",
+        "attack-unarmed:north",
+        "attack-unarmed:south",
+        "attack-unarmed:west",
+        "idle:east",
+        "idle:north",
+        "idle:south",
+        "idle:west",
+        "walk:east",
+        "walk:north",
+        "walk:south",
+        "walk:west"
+      ],
+      "candidateRecords": 12,
+      "missingFamilyStates": [],
+      "completeUnarmedFamily": true,
+      "scope": "native-unarmed-family-contract"
+    },
+    {
+      "body": "male",
+      "equipment": {
+        "pants": 133,
+        "torso": 151
+      },
+      "records": [
+        "male-pants133-walk-south-isolated-r2-coat151-native",
+        "male-pants133-idle-south-isolated-r2-coat151-native",
+        "male-pants133-walk-north-isolated-r2-coat151-native",
+        "male-pants133-idle-north-isolated-r2-coat151-native",
+        "male-pants133-attack-unarmed-north-drawn8-candidate-coat151-native",
+        "male-pants133-walk-east-source-v18-candidate-coat151-native",
+        "male-pants133-idle-east-source-v18-candidate-coat151-native",
+        "male-pants133-attack-unarmed-east-drawn8-candidate-coat151-native",
+        "male-pants133-walk-west-source-v18-candidate-coat151-native",
+        "male-pants133-idle-west-source-v18-candidate-coat151-native",
+        "male-pants133-attack-unarmed-west-drawn8-candidate-coat151-native",
+        "male-pants133-attack-unarmed-south-drawn8-candidate-coat151-native"
+      ],
+      "states": [
+        "attack-unarmed:east",
+        "attack-unarmed:north",
+        "attack-unarmed:south",
+        "attack-unarmed:west",
+        "idle:east",
+        "idle:north",
+        "idle:south",
+        "idle:west",
+        "walk:east",
+        "walk:north",
+        "walk:south",
+        "walk:west"
+      ],
+      "candidateRecords": 12,
+      "missingFamilyStates": [],
+      "completeUnarmedFamily": true,
+      "scope": "native-unarmed-family-contract"
+    },
+    {
+      "body": "male",
+      "equipment": {
+        "boots": 148,
+        "pants": 133,
+        "torso": 151
+      },
+      "records": [
+        "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate-coat151-native",
+        "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate-coat151-native",
+        "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate-coat151-native",
+        "male-pants133-walk-north-isolated-r2-boots148-isolated-candidate-coat151-native",
+        "male-pants133-idle-north-isolated-r2-boots148-isolated-candidate-coat151-native",
+        "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate-coat151-native"
+      ],
+      "states": [
+        "attack-unarmed:north",
+        "attack-unarmed:south",
+        "idle:north",
+        "idle:south",
+        "walk:north",
+        "walk:south"
+      ],
+      "candidateRecords": 6,
+      "missingFamilyStates": [
+        "idle:east",
+        "idle:west",
+        "walk:east",
+        "walk:west",
+        "attack-unarmed:east",
+        "attack-unarmed:west"
+      ],
+      "completeUnarmedFamily": false,
+      "scope": "partial-only-no-complete-family"
+    }
+  ],
+  "engineeringGaps": [
+    {
+      "body": "female",
+      "equipmentSets": [
+        {
+          "torso": 6,
+          "pants": 147,
+          "gloves": 152,
+          "boots": 155
+        },
+        {
+          "torso": 151,
+          "pants": 154,
+          "gloves": 152,
+          "boots": 155
+        }
+      ],
+      "exists": "Native512 authored walk4dirs plus exact first-frame idle",
+      "missing": "Registered attack sources for the same full saved equipment identity. Existing clothed composites include baked torso/lower-body; cannot substitute naked attack or arbitrary donor body.",
+      "familyGateEffect": "Not normal-world enabled until attack closure. Source and review availability is not live integration."
+    },
+    {
+      "body": "male",
+      "equipmentSets": [
+        {
+          "torso": 151,
+          "pants": 133,
+          "gloves": 152,
+          "boots": 9
+        }
+      ],
+      "exists": "Walk and idle4dirs, isolated native coat151 attack4dirs without gloves152",
+      "missing": "Glove152 authored/registered attack ownership. Drawn attack pose metadata is static; binding walk gloves to those anchors would leave gloves floating."
+    },
+    {
+      "body": "male",
+      "equipmentSets": [
+        {
+          "torso": 151,
+          "pants": 133,
+          "gloves": 152,
+          "boots": 134
+        },
+        {
+          "torso": 151,
+          "pants": 133,
+          "gloves": 152,
+          "boots": 148
+        }
+      ],
+      "exists": "Exact source contracts N/E/W for134 and S/N for148",
+      "missing": "Source/registration for missing directions and glove152 attacks. Do not mirror unverified footwear or use another boot ID."
+    }
+  ]
+}

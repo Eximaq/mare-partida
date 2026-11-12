@@ -1,56 +1,32 @@
 # Native-density rework in the actual player renderer
 
-This change starts from main after PR305. It does not merge or reuse the rejected PR306 head-on-legacy-body bridge.
+The normal `paper-doll-96-lobby.js` path calls `MareReworkNativeHD.drawStable`. This is not a gallery-only replacement. Approved source PNGs remain512/640 pixels, composed and drawn at physical scale1 without native96 conversion. Character-size calibration is deferred as requested.
 
-## What is actually connected
+## Current coverage, not a claim of universal completion
 
-`paper-doll-96-lobby.js` calls `MareReworkNativeHD.drawStable` before its existing renderer. This is the normal player path, not a query-only gallery. Full authored 512×512 or640×640 sources are composed into equally sized canvases and drawn with the three-argument `drawImage(canvas,x,y)` form. Physical pivots are preserved. Character art is not reduced to128pixels and then enlarged.
+- All41 equipped weapon IDs now have male original-appearance idle/walk/attack families in all4directions. ID0 is the separate unarmed base.
+- Female original equipment families:2,3,14,15,109,110,111,112,117. Existing item rasters are registered on the female class base; derived registrations remain explicit calibration candidates, not new artistic approvals.
+- Native bases include both genders. Exact registered clothing contracts and anatomical palette masks remain separate from arbitrary wardrobe combinations.
+- A mirrored-WEST proof bug previously disabled otherwise compatible male head families. Native mirrored pixels and anchors are now checked against authored WEST heads before activation. No Original-to-cropped substitution is made.
+- Four full male clothing sets support unarmed idle/walk/attack. Partial clothing sets are preserved and not represented as full world coverage. See `OUTFIT_CONTRACT_AUDIT.json`.
+- Four firearm families4/5/113/115 now have mask-owned skin/hair recoloring. Attachment and unmasked pixels remain unchanged. Other source ownership restrictions remain explicit.
 
-The source registry contains160 source variants covering64 body/action/direction slots. This is **source coverage**, not proof that every saved equipment/cosmetic combination works. Historical studies,8 idles derived from walking frame0, mirrored male WEST walk, and new clothing/carry fits retain explicit candidate status. They are not relabeled as individually approved art.
+`RENDERER_FAMILY_MATRIX.json` records actual resolver/family coverage by item, gender, palette and exact registered outfit. `HEAD_FAMILY_COVERAGE.json`, when present, independently checks named hair/headgear families. These are resolver proofs, not claims that all visual combinations were approved.
 
-The integrated providers include:
-- Whole masculine/feminine bases and authored animation sources, including drawn attacks.
-- Native head families, only when exact head-source pixels and registration prove compatibility. No guessed Original→cropped mapping.
-- Gauntlet109 attacks in four directions, and candidate carried/idle/walk gauntlets following authored arm bindings.
-- Rifle115 SOUTH original five-state layers and NORTH three original-body states. Its fused backing cannot silently accept arbitrary hair/clothing changes.
-- Orb17 SOUTH eight authored states recovered as native640 layers, pixel-exact against approved source composites. This does not claim complete four-direction idle/walk/attack coverage.
-- Isolated pants133 with authored body layers. SOUTH/NORTH walking references are pixel-exact; E/W and attack adaptations are explicitly candidates.
--109+133 attacks use an identity-checked pants overlay, not replacement of the body or weapon with a screenshot.
+## Identity and stability
 
-## Stable family and saved appearance
+Saves, equipped item IDs, collision/gameplay and user appearance are not rewritten. Unknown identities are not wildcards. The full idle/walk/attack family gate prevents switching between the rework and the rejected old body during attacks. A ready family holds its last native frame while loading the next frame. Unsupported combinations remain explicitly uncovered rather than changing clothes or hiding equipment.
 
-The world renderer checks idle, walk and the relevant attack in all four directions before taking over an actor. It does not activate a lone SOUTH attack and then switch back to the old body when walking. While a ready native actor loads its next frame it holds its last native frame instead of flashing the old renderer. Uncovered combinations retain the existing complete renderer and expose a reason in `snapshot().nativeHD`; this is not reported as rework completion.
+115S retains the approved historical dressed source in the archive, but uses an isolated-item original-body registration for original avatars.128N uses a separately labeled recomposition rather than the rejected shaky historical cycle.69 preserves the entire blade with transparent margins and compensated pivot, not scaling/cropping.
 
-The actual save fields (`gender`, `hairStyle`, `hairColor`, `eyeStyle`, `eyeColor`, `skinColor`) are read. Source palettes may be applied without changing raster size or alpha. Fused heads without a verified mask reject incompatible palette/head changes. Equipment identities are matched explicitly; an unknown slot is not a wildcard. Zoan and complete-character overrides keep their prior precedence. Gameplay stats, saves, hit timing and collision dimensions are not rewritten.
+## Source packaging and verification
 
-## Assets and performance
+Original bytes are delivered through same-origin ZIPs with ZIP SHA256, CRC and per-PNG SHA256 checks. Frames request bounded dependencies rather than loading all animation frames into a64-slot cache. No remote raw-GitHub dependency is needed for the native providers.
 
-Original PNG bytes are retained in verified same-origin ZIP archives. ZIP SHA256, CRC and each PNG SHA256 are checked before decoding. There is no dependency on raw.githubusercontent.com for these new body/equipment providers. The original PR304 review catalog remains separate.
+`npm run test:rework-hd` checks source dimensions, actual ZIP loading, rendering, identity guards, anatomical palette ownership and full-family gates. `npm run test:foundation`, `npm run test:legacy`, typecheck, shared/server build and Pages build cover regression. Native browser evidence is captured through the actual game renderer by `.github/workflows/native-hd-visual.yml`, not by presenting a source collage as game implementation. Each capture's commit must be checked: previous e43 evidence does not prove later changes.
 
-The base distribution groups assets by usage rather than by random SHA order: each source needs about0.3–3.2MB cold, instead of fetching the whole71.8MB collection. Frames load their needed layers, not every frame of every animation. Source/image/frame caches are bounded. The preview viewport expands and scrolls rather than shrinking the source into a72pixel portrait.
+## Remaining true boundaries
 
-## Known calibration and coverage limits
+Female fused head+hair sources do not yet have a proven removable ownership mask matching named hairstyles. Original male hairstyle is not pixel-identical to named adjusted styles. Head18/19 lack four-direction records. Some female clothing attack ownership/identity contracts are unresolved even though their approved walking PNGs exist. These are not silently relabeled as mere calibration or completed replacement. Source catalogs are preserved for continued recovery without unnecessary regeneration.
 
-- The raster is intentionally shown1:1, per the instruction to defer character-size reduction. This is larger than the previous native96 character; collision and world scale remain unchanged.
--109 EAST/WEST retains an approximately2physical-pixel head-registration difference versus the earlier composite preview. This is not claimed pixel-exact.
--109 carry remains a calibration candidate: small SOUTH skin contours and an absent far-hand layer in lateral sources need visual follow-up. No floating invented far glove is inserted.
--109 NORTH frames1/6 retain the source's absent right gauntlet; the pants overlay does not cause that absence.
-- Rifle115's incomplete full-family coverage is not silently promoted to a complete equipped character.
-- Arbitrary helmets, hair, outfits and weapons are not certified merely because their files exist. Other approved compositions remain in the prior catalog; fused screenshots are not claimed independently interchangeable layers.
-- Browser/in-game playtesting has not been completed in this environment. Tests and supplied screenshots are from the actual Canvas providers offline, not a claim of browser validation.
-
-## Verification
-
-`npm run test:rework-hd` exercises original-raster preservation, palette/source identity guards, real provider draws, family gating, stable loading, archive corruption rejection and weapon/carry composition. `npm run test:legacy` protects the existing game. `python tools/build_pages.py` includes source archives and runtime modules in the deployed build. Generated runtime screenshots and their metadata are under this directory.
-
-## Publication checkpoint
-
-All approved source catalogs from main remain included; this PR does not discard completed items. Archival presence, native modular recovery, and activation in normal gameplay are distinct. The exhaustive weapon audit is in `ALL_WEAPON_ITEMS_AUDIT.md`. Missing compatible families are reported rather than silently substituting different equipment, changing saved appearance, or reducing original pixels. Further recovered pieces can be added to this same branch.
-
-Build of shared/server and Pages succeeded. The native suite passed27checks plus the8-state Orb17 pixel-exact check. Browser/in-game verification remains pending.
-
-## Additional native recovery
-
-Two female outfit sets (6+147+152+155 and151+154+152+155) now provide16original idle/walk contracts across four directions, with328frames verified. These are source candidates, not new approvals. Their full attack family is not yet available and the normal-world family gate remains in effect. Orbs17 NORTH/EAST/WEST and122 EAST/WEST have base-preserving registrations from existing artwork, retaining640native pixels and explicit calibration status. The17 NORTH frame1 differs from the historical composite because the original head is kept stationary rather than copying a displaced head.
-
-The latest checkpoint has47modular outfit contracts, including34new contracts with481rendered frames. Orb17 now has a complete original-appearance idle/walk/focus-attack family in all four directions; native-world family tests pass. Its carry registrations remain calibration candidates. Other incomplete outfit/weapon families remain guarded.
+PR307 remains a draft integration checkpoint, without merge. Full task completion is distinct from publication of this checkpoint.

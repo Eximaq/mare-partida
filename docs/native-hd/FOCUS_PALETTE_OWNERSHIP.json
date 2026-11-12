@@ -1,0 +1,98 @@
+[
+  {
+    "item": 17,
+    "direction": "south",
+    "frames": 8,
+    "changed": 36240,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 17,
+    "direction": "north",
+    "frames": 8,
+    "changed": 40520,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 17,
+    "direction": "east",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 17,
+    "direction": "west",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 122,
+    "direction": "east",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 122,
+    "direction": "west",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 122,
+    "direction": "south",
+    "frames": 8,
+    "changed": 36240,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 122,
+    "direction": "north",
+    "frames": 8,
+    "changed": 40520,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 32,
+    "direction": "north",
+    "frames": 8,
+    "changed": 40520,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 121,
+    "direction": "north",
+    "frames": 8,
+    "changed": 40520,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 31,
+    "direction": "north",
+    "frames": 8,
+    "changed": 40520,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 128,
+    "direction": "north",
+    "frames": 8,
+    "changed": 40520,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  }
+]

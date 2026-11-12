@@ -1,0 +1,5 @@
+16/121 HD: 8 attack records +8carry plans,200actual NodeCanvasframes.58newassets,2ZIP3,942,236bytes.
+Rebuild build.py then fix121n.py then test.cjs then package.py.
+16 all4dirs original approved complete640composites.121 S/EW original complete640composites. All atomic originals require original appearance only, no arbitrary outfits or hair/skin overrides.
+121N source has same red/background corruption as32N. Fixed using original17basePack plus isolated121equipment from source0/GEAR121-0 authoredmask, physicalscale1, translated to LEFT HAND CENTER. Candidate gesture/calibration, not newapproval. Nativebody unchanged.121 carry samepureequipment, depth+.1 topreventarm hidingstaff shaft, handhole source fits basehand approximately.16 carry original equipment component in authoredprotectedmask x>=340/y>=330, existingS/EW sourceidentity. All carry positions candidates and preserve sourcepixels.
+Add16/121 attack-focus/carry allowlists, atomicoriginalguards except121N separated. Browser/live tests pending integrator.

@@ -1,0 +1,21 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),cv=require('@napi-rs/canvas');
+const base=require('./tools/rework-base-hd/index.json'),heads=require('./tools/rework-accessories/head-layer-index.json');
+test('authored WEST head registers pixel-exact on native mirrored male walk without resampling',async()=>{
+ const r=base.records.find(r=>r.body==='male'&&r.action==='walk'&&r.direction==='west'&&r.mirrorX),h=heads.records.find(r=>r.body==='male'&&r.direction==='west'&&r.style==='cropped'&&r.item==null),load=require('./tools/rework-hd-test-loader.cjs').create(__dirname),images=new Map();
+ for(const l of r.pack.directions.west.layers.filter(l=>l.slot==='headBase'))for(const s of l.frames||[l.source])images.set(s,await load('tools/rework-base-hd/assets/'+s+'.png'));
+ for(const l of h.entry.pack.directions.west.layers.filter(l=>l.slot==='headBase'))images.set(l.source,await cv.loadImage('tools/rework-accessories/assets/'+l.source+'.png'));
+ const api=require('./native-head-compat.js').create({makeCanvas:cv.createCanvas});
+ for(let frame=0;frame<r.pack.directions.west.clip.frames;frame++){
+  const proof=api.validate({basePack:r.pack,baseBody:r.body,baseDirection:r.direction,baseFrame:frame,baseMirrorX:true,baseImages:images,headRecord:h,headImages:images,replaceFace:false});assert.equal(proof.compatible,true,proof.reason);assert.equal(proof.targetNeck.x,r.pack.frame.width-r.pack.directions.west.poses[frame].NECK.x);assert.equal(proof.proof.mirrorBaseX,true);
+ }
+ const invalid=structuredClone(h);invalid.entry.pack.directions.west.rest.NOSE.x+=1;
+ assert.equal(api.validate({basePack:r.pack,baseBody:r.body,baseDirection:r.direction,baseMirrorX:true,baseImages:images,headRecord:invalid,headImages:images,replaceFace:false}).compatible,false);
+});
+test('normal world family enables exact male cropped head and helmet in all idle walk attack directions',async()=>{
+ const vm=require('node:vm'),path=require('node:path');vm.runInThisContext(fs.readFileSync('tools/rework-accessories/vendor.js','utf8'));
+ for(const[n,f]of Object.entries({MareReworkBaseHD:'player-rework-base-hd',MareReworkWeaponNativeHD:'player-rework-weapon-native-hd',MareReworkFemaleEquipmentHD:'player-rework-female-equipment-hd',MareReworkHead:'player-rework-head-family',MareNativeHeadCompat:'native-head-compat',MareReworkModularOutfitsHD:'player-rework-modular-outfits-hd',MareReworkWeaponCarryHD:'player-rework-weapon-carry-hd',MareReworkOutfitOverlayHD:'player-rework-outfit-overlay-hd',MareReworkOutfitCarryOverlayHD:'player-rework-outfit-carry-overlay-hd',MareReworkZip:'player-rework-zip',MareReworkHDAssets:'player-rework-hd-assets'}))global[n]=require('./'+f+'.js');global.MareAppearance96=require('./tools/paper-doll-96-v3/appearance.js');
+ const api=require('./player-rework-native-hd.js').create({fetchJSON:async p=>JSON.parse(fs.readFileSync(p)),loadImage:require('./tools/rework-hd-test-loader.cjs').create(__dirname),makeCanvas:cv.createCanvas});
+ for(const head of [null,129]){const p={appearance96:{body:'male',hair:'hair-cropped'},equipment:head?{head:{def:head}}:{}};const before=JSON.stringify(p);assert(await api.prepareFamily(p),JSON.stringify(api.snapshot().families.at(-1)));for(const direction of ['south','north','east','west'])for(const action of ['idle','walk','attack']){const o={action,direction,progress:.4,x:600,y:700};assert(await api.prepare(p,o),JSON.stringify(api.snapshot()));assert(api.drawStable(cv.createCanvas(1200,1200).getContext('2d'),p,o));assert.equal(api.snapshot().last.physicalScale,1);}assert.equal(JSON.stringify(p),before);}
+ const original={appearance96:{body:'male',hair:'original'},equipment:{head:{def:129}}};assert.equal(await api.prepareFamily(original),false,'original hair is not a named-style wildcard');
+ const female={appearance96:{body:'female',hair:'hair-cropped'},equipment:{head:{def:129}}};assert.equal(await api.prepareFamily(female),false,'fused female anatomy still needs source ownership');
+});

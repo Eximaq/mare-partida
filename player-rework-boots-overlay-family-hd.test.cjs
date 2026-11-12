@@ -23,7 +23,7 @@ test('all new combinations render through actual archive loader and padding pres
   assert.deepEqual(b.getContext('2d').getImageData(64,64,512,512).data,a.getContext('2d').getImageData(0,0,512,512).data);
  }
  const gallery=createCanvas(640*4,640*3),gc=gallery.getContext('2d');gc.fillStyle='#363e48';gc.fillRect(0,0,gallery.width,gallery.height);
- for(const r of index.records.filter(r=>r.bootsOverlay)){
+ for(const r of index.records.filter(r=>r.bootsOverlay&&!r.equipment.torso)){
   const d=r.pack.directions[r.direction],canvas=createCanvas(r.pack.frame.width*4,r.pack.frame.height*4),ctx=canvas.getContext('2d'),images=new Map();
   for(const p of api.requiredFiles(r))images.set(p,await load(p));
   for(let frame=0;frame<d.clip.frames;frame++){api.render(ctx,r,images,{frame});assert.ok(ctx.getImageData(0,0,canvas.width,canvas.height).data.some(v=>v));count++;}
@@ -48,7 +48,7 @@ test('attack clothing occludes naked calves without changing source images',asyn
 
 test('all 64 attack states preserve every rendered pixel above calf occlusion',async()=>{
  const {createCanvas}=require('@napi-rs/canvas'),load=require('./tools/rework-hd-test-loader.cjs').create(__dirname);let count=0;
- for(const r of index.records.filter(r=>r.bootsOverlay&&r.bodyOcclusion)){
+ for(const r of index.records.filter(r=>r.bootsOverlay&&r.bodyOcclusion&&!r.equipment.torso)){
   const images=new Map();for(const p of api.requiredFiles(r))images.set(p,await load(p));
   const without={...r};delete without.bodyOcclusion;
   for(let frame=0;frame<r.pack.directions[r.direction].clip.frames;frame++){

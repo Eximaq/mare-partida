@@ -1,8 +1,8 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),cv=require('@napi-rs/canvas');
 global.ReworkAccessoryVendor=require('./tools/rework-accessories/vendor.js');global.MareAppearance96=require('./tools/paper-doll-96-v3/appearance.js');
 for(const [name,file]of Object.entries({MareReworkBaseHD:'player-rework-base-hd',MareReworkWeaponNativeHD:'player-rework-weapon-native-hd',MareReworkHead:'player-rework-head-family',MareNativeHeadCompat:'native-head-compat',MareReworkModularOutfitsHD:'player-rework-modular-outfits-hd',MareReworkWeaponCarryHD:'player-rework-weapon-carry-hd',MareReworkOutfitOverlayHD:'player-rework-outfit-overlay-hd',MareReworkOutfitCarryOverlayHD:'player-rework-outfit-carry-overlay-hd',MareReworkZip:'player-rework-zip',MareReworkHDAssets:'player-rework-hd-assets'}))global[name]=require('./'+file+'.js');
-test('real-save light black pants133 andboots9 has a complete genuinely recolored native family',async()=>{
+for(const coat of [false,true])test('real-save light black pants133 boots9 '+(coat?'coat151':'without coat')+' has a complete genuinely recolored native family',async()=>{
  const api=require('./player-rework-native-hd.js').create({fetchJSON:async p=>JSON.parse(fs.readFileSync(path.join(__dirname,p))),loadImage:require('./tools/rework-hd-test-loader.cjs').create(__dirname),makeCanvas:cv.createCanvas});await api.ready;
- const p={appearance96:{gender:'masculino',hairStyle:'original',skinColor:'light',hairColor:'black'},equipment:{legs:{def:133},boots:{def:9}}};assert.equal(await api.prepareFamily(p),true);
+ const p={appearance96:{gender:'masculino',hairStyle:'original',skinColor:'light',hairColor:'black'},equipment:{legs:{def:133},boots:{def:9},...(coat?{torso:{def:151}}:{})}};assert.equal(await api.prepareFamily(p),true);
  for(const direction of ['south','north','east','west'])for(const action of ['idle','walk','attack']){const r=api.select(p,{action,direction});assert.ok(r);assert.equal(r.colorAppearance.skin,'light');assert.equal(r.colorAppearance.hairColor,'black');assert.ok(r.paletteSourceMasks);}
 });

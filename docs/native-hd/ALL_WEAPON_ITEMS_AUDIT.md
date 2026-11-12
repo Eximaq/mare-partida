@@ -1,57 +1,52 @@
-# Cobertura real dos 42 IDs do catálogo de armas
+# Cobertura de armas no renderizador nativo
 
-O ID 0 representa base/sem arma, não uma arma equipada.
+41 IDs equipáveis; ID0 é base sem arma. Esta tabela consulta `select` e `prepareFamily` para idle/walk/ataque nas quatro direções. Não é aprovação visual de todas as combinações. Calibragens derivadas continuam candidatas.
 
-Famílias masculinas de aparência original HD completas: 109, 111, 17, 122. Aprovação de artes não equivale à aprovação das novas adaptações; calibragem e divergências estão declaradas. Os demais IDs de equipamentos ainda precisam de integração completa; a base sem arma é contada separadamente.
+|Item|Masculino original|Feminino original|Masculino light/black|
+|---|---|---|---|
+|0|Completa|Completa|Completa|
+|1|Completa|Não coberta|Não coberta|
+|2|Completa|Não coberta|Não coberta|
+|3|Completa|Não coberta|Não coberta|
+|4|Completa|Não coberta|Completa|
+|5|Completa|Não coberta|Completa|
+|12|Completa|Não coberta|Não coberta|
+|13|Completa|Não coberta|Não coberta|
+|14|Completa|Não coberta|Não coberta|
+|15|Completa|Não coberta|Não coberta|
+|16|Completa|Não coberta|Não coberta|
+|17|Completa|Não coberta|Não coberta|
+|31|Completa|Não coberta|Não coberta|
+|32|Completa|Não coberta|Não coberta|
+|67|Completa|Não coberta|Não coberta|
+|68|Completa|Não coberta|Não coberta|
+|69|Completa|Não coberta|Não coberta|
+|70|Completa|Não coberta|Não coberta|
+|71|Completa|Não coberta|Não coberta|
+|72|Completa|Não coberta|Não coberta|
+|73|Completa|Não coberta|Não coberta|
+|74|Completa|Não coberta|Não coberta|
+|109|Completa|Completa|Completa|
+|110|Completa|Não coberta|Não coberta|
+|111|Completa|Completa|Não coberta|
+|112|Completa|Não coberta|Não coberta|
+|113|Completa|Não coberta|Completa|
+|114|Completa|Não coberta|Não coberta|
+|115|Completa|Não coberta|Completa|
+|116|Completa|Não coberta|Não coberta|
+|117|Completa|Não coberta|Não coberta|
+|118|Completa|Não coberta|Não coberta|
+|119|Completa|Não coberta|Não coberta|
+|120|Completa|Não coberta|Não coberta|
+|121|Completa|Não coberta|Não coberta|
+|122|Completa|Não coberta|Não coberta|
+|123|Completa|Não coberta|Não coberta|
+|124|Completa|Não coberta|Não coberta|
+|125|Completa|Não coberta|Não coberta|
+|126|Completa|Não coberta|Não coberta|
+|127|Completa|Não coberta|Não coberta|
+|128|Completa|Não coberta|Não coberta|
 
-|Item|Ciclos catálogo|EstadoHD|
-|---|---:|---|
-|0|26|Base/sem arma, cobertura independente de equipamentos.|
-|1|25|not wired to native HD renderer|
-|2|25|not wired to native HD renderer|
-|3|25|not wired to native HD renderer|
-|4|25|not wired to native HD renderer|
-|5|15|not wired to native HD renderer|
-|12|18|not wired to native HD renderer|
-|13|18|not wired to native HD renderer|
-|14|25|not wired to native HD renderer|
-|15|17|not wired to native HD renderer|
-|16|25|not wired to native HD renderer|
-|17|25|complete male original idle/walk/attack all4directions; existing orb/hand interface adapted, head-source differences explicit|
-|31|26|not wired to native HD renderer|
-|32|25|not wired to native HD renderer|
-|67|26|not wired to native HD renderer|
-|68|25|not wired to native HD renderer|
-|69|20|not wired to native HD renderer|
-|70|26|not wired to native HD renderer|
-|71|20|not wired to native HD renderer|
-|72|20|not wired to native HD renderer|
-|73|20|not wired to native HD renderer|
-|74|20|not wired to native HD renderer|
-|109|25|complete male original idle/walk/attack; supported identity only|
-|110|25|not wired to native HD renderer|
-|111|25|Família masculina original completa; registros de calibragem candidatos.|
-|112|25|not wired to native HD renderer|
-|113|32|not wired to native HD renderer|
-|114|11|not wired to native HD renderer|
-|115|25|Parcial: SOUTH vestida preservada, mas bloqueada para a aparência original; correção em andamento.|
-|116|34|not wired to native HD renderer|
-|117|25|not wired to native HD renderer|
-|118|25|not wired to native HD renderer|
-|119|25|not wired to native HD renderer|
-|120|19|not wired to native HD renderer|
-|121|26|not wired to native HD renderer|
-|122|25|complete male original idle/walk/attack all4directions; existing orb/hand interface adapted, head-source differences explicit|
-|123|26|not wired to native HD renderer|
-|124|26|not wired to native HD renderer|
-|125|26|not wired to native HD renderer|
-|126|26|not wired to native HD renderer|
-|127|26|not wired to native HD renderer|
-|128|26|not wired to native HD renderer|
+As fontes aprovadas históricas continuam preservadas. Uma roupa ou cabelo não coberto nunca é substituído silenciosamente por outra aparência. Ver RENDERER_FAMILY_MATRIX.md e OUTFIT_CONTRACT_AUDIT.json para os contratos de roupas.
 
-## Current integration increment
-Items4,113,115 now have original-body native idle/walk/attack families in four directions. SOUTH/EW registration is candidate calibration, not a new approval. Previous dressed115S remains archived and excluded for an original avatar. Custom palettes and arbitrary outfits remain restricted where not independently supported. Seven original-identity weapon families:4,17,109,111,113,115,122.
-
-Latest increment:5 and69 complete original male families.69 uses transparent canvas margins with compensated pivot to preserve the complete blade, never scale/crop. Nine original weapon families now present. Custom colors remain restricted pending actual masks.
-
-Current increment:16 original male weapon families 1,4,5,17,67,68,69,70,109,111,113,114,115,116,117,122. 25 catalog weapon IDs remain, plus female variants and unsupported outfit/palette combinations. Coverage includes source-preserving candidate registrations; not all globally approved combinations.
+115S usa adaptação de item isolado sobre corpo original; a versão histórica vestida não é usada para trocar o save. 128N mantém recomposição candidata para evitar a animação antiga trêmula.
