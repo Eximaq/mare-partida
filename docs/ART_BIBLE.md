@@ -125,3 +125,18 @@ O proprietário escolheu103×82 células64 nos cinco destinos. Uma imagem6592×5
 Dois peitorais refeitos como camisas fechadas com mangas curtas; tecido separado de pele antes do encaixe. 16 folhas anatômicas fixas para 424 poses, 32 folhas de peitoral com poses estáticas e movimento. Pulsos medidos sobre os próprios frames, lados resolvidos por cotovelo/pose anterior e profundidade normalizada. Cabeça não pode redesenhar ombro sobre roupa; luva fechada conserva a silhueta nativa dos dedos. Capa mantida, sujeita à mesma prioridade das mãos. Referências históricas, escala, corpo e timing preservados. Custos: 38 gerações de reparo artístico + 31,9 de medição, total69,9. Contrato e limites em PAPER-DOLL-96-FIT-CONTRACT.md.
 
 A revisão cromática v9 limita os dois peitorais a paletas explícitas por material; pontos rosados e pele copiada do gerador não são aceitos. Os 34 exports conservaram seu alpha. A fonte anatômica continua igual para os dois tecidos, preservando encaixes ao trocar material.
+
+## NPCs do Porto das Correntes
+
+Os sprites abaixo foram preparados a partir dos quatro PNGs fornecidos para a atualização do porto. O recorte usa a caixa ocupada pelos pixels com alfa ≥ 48 para ignorar resíduos quase transparentes fora da silhueta. Os sprites RGBA são armazenados a 2× e desenhados na escala indicada, com o centro dos pés no ponto cadastrado do NPC.
+
+| NPC | Original | Sprite em `assets/npcs/` | Escala no mapa |
+| --- | --- | --- | --- |
+| Shimotsuki Kozaburo | Shimotsuki Kozaburo.png · 1122 × 1402 | shimotsuki-kozaburo-map.png | 46 × 90 |
+| Luffy | Luffy.png · 1086 × 1448 | luffy-map.png | 35 × 86 |
+| Nami | Nami.png · 1086 × 1448 | nami-map.png | 33 × 86 |
+| Donquixote | Donquixote.png · 1086 × 1448 | donquixote-map.png | 66 × 96 |
+
+A fonte, o peso e o contorno do nome vêm de `map-player-hud.js`, com preenchimento laranja escuro para os NPCs. A área de interação usa as dimensões do sprite, com uma margem de 5 px para toque. A aproximação e os serviços continuam no fluxo do porto. Quando o movimento online para antes do destino, o cliente pode recalcular a aproximação uma vez a partir da posição confirmada. Shimotsuki Kozaburo mantém a chave interna do ferreiro e é identificado na abertura da Forja das Correntes.
+
+Origem das quatro imagens — anexos fornecidos pelo solicitante para a revisão visual do porto. Licenciamento comercial não verificado.

@@ -48,3 +48,13 @@ HUD.drawEnemy(context,120,40,'César · Nv.5',{hp:120,maxHP:100,width:88,targete
 assert.deepEqual(tracks.map(track=>track.slice(0,4)),[[76.5,43.5,87,10]]);
 assert.equal(rectangles.find(rect=>rect.color==='#e24562').width,86);
 assert.equal(context.strokeStyle,'#f3ca80','the selected enemy has a gold life rim');
+
+const names=[];
+const nameContext={
+ save(){},restore(){},
+ strokeText(text,x,y){names.push({text,x,y,font:this.font,join:this.lineJoin,width:this.lineWidth,outline:this.strokeStyle});},
+ fillText(text,x,y){names.at(-1).fill=this.fillStyle;},
+};
+HUD.draw(nameContext,120,40,'Navegante');
+HUD.drawNPCName(nameContext,120,40,'Shimotsuki Kozaburo');
+assert.deepEqual(names[1],{...names[0],text:'Shimotsuki Kozaburo',fill:'#d27525'});

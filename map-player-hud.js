@@ -66,7 +66,7 @@
     bar(context,left,energyY,width,energyHeight,currentEnergy,maxEnergy,energy);
   }
 
-  function drawName(context,x,y,name){
+  function drawName(context,x,y,name,color='#fff8e9'){
     context.font=font;
     context.textAlign='center';
     context.textBaseline='alphabetic';
@@ -74,7 +74,7 @@
     context.lineWidth=3;
     context.strokeStyle='#081219';
     context.strokeText(name,x,y);
-    context.fillStyle='#fff8e9';
+    context.fillStyle=color;
     context.fillText(name,x,y);
   }
 
@@ -95,7 +95,13 @@
     context.restore();
   }
 
-  const api={measure,draw,drawEnemy};
+  function drawNPCName(context,x,y,name){
+    context.save();
+    drawName(context,Math.round(x),Math.round(y),name,'#d27525');
+    context.restore();
+  }
+
+  const api={measure,draw,drawEnemy,drawNPCName};
   root.MareMapPlayerHud=api;
   if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
