@@ -1,6 +1,7 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const {loadMaps}=require('../tools/audit_maps.cjs');
+const {minZoom,maxZoom}=require('../hud-telemetry.js');
 const ctx=loadMaps(),{Coverage,Camera,coverageFor,maps}=ctx.MareWorld;
 test('visual existence preserves water, walls, shadows and negative coordinates; holes are absent',()=>{
  const c=new Coverage({rows:['wa.','wsa'],tile:64,x:-128,y:-64});
@@ -25,8 +26,8 @@ test('all registered maps use their native coverage, with finite caches and boun
  assert.equal(Object.keys(maps).length,21);
  for(const [id,map]of Object.entries(maps)){
   const camera=new Camera(),coverage=coverageFor(map);assert(coverage.exists(map.spawn.x,map.spawn.y),id+' spawn has visual content');
-  for(const [sw,sh]of [[360,800],[960,570],[1920,1080],[3440,1440]])for(const zoom of [.8,1,1.8]){
-   const z=camera.fitZoom(map,sw,sh,zoom);camera.width=Math.round(sw/z);camera.height=Math.round(sh/z);
+  for(const [sw,sh]of [[360,800],[960,570],[1920,1080],[3440,1440]])for(const zoom of [minZoom,1,maxZoom]){
+   const z=Math.min(camera.fitZoom(map,sw,sh,zoom),maxZoom);camera.width=Math.round(sw/z);camera.height=Math.round(sh/z);
    const b=coverage.bounds;for(const hero of [map.spawn,{x:b.x+32,y:b.y+96},{x:b.x+b.w-32,y:b.y+b.h-32}]){
     camera.update(hero,map,.016,true);assert([camera.x,camera.y].every(Number.isFinite),id);assert(camera.width<=b.w||camera.masked);assert(camera.height<=b.h||camera.masked);
     const p=camera.worldToScreen(hero.x,hero.y),back=camera.screenToWorld(p.x,p.y);assert.equal(back.x,hero.x);assert.equal(back.y,hero.y);
