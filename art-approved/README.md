@@ -57,3 +57,8 @@ O backup v2 das laterais EAST/WEST está em `weapons/nodachi69-ew-male-base-v2-a
 ## Nodachi de Fogo 69: quatro trajes M/F nas laterais
 
 A aprovação posterior dos quatro trajes masculinos e femininos de EAST/WEST está em `weapons/nodachi69-ew-four-outfits-approved/`. Backups exatos, reconstrução, CRC e SHA-256 verificados. Sem integração ou teste no jogo.
+
+
+## Arma 13 SOUTH V2 aprovada
+
+A composição apresentada está em `weapons/adaga13-south-v2-approved/`. Aprovação restrita à prévia mostrada, sem extensão a outros modelos ou trajes. Backup exato verificado; sem integração ou teste no jogo.

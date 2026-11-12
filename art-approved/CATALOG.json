@@ -2565,6 +2565,15 @@
         "Nodachi69_F_QuatroTrajes_EW_Editavel.zip.part002"
       ],
       "restore": "weapons/nodachi69-ew-four-outfits-approved/RESTORE.py"
+    },
+    {
+      "path": "weapons/adaga13-south-v2-approved/13_SOUTH_PRESENTED_V2/Adaga13_SOUTH_V2_Editavel_Candidata.zip",
+      "bytes": 6643712,
+      "sha256": "301acc694d772a67e3f6311f2db914b87bedc784dddc73ff30fb22c7ea174dce",
+      "pngEntries": 105,
+      "productionEnabled": false,
+      "storage": "zip",
+      "approvalScope": "Presented SOUTH V2 composition only; no other models or outfits inferred"
     }
   ],
   "productionEnabled": false,

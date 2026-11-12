@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 1,
+  "totalBytes": 6643712,
+  "scope": "Weapon13 SOUTH V2 presented composition only; no other models or outfits inferred.",
+  "packages": [
+    {
+      "key": "13_SOUTH_PRESENTED_V2",
+      "filename": "Adaga13_SOUTH_V2_Editavel_Candidata.zip",
+      "bytes": 6643712,
+      "sha256": "301acc694d772a67e3f6311f2db914b87bedc784dddc73ff30fb22c7ea174dce",
+      "pngEntries": 105,
+      "entries": 133,
+      "parts": [
+        {
+          "path": "Adaga13_SOUTH_V2_Editavel_Candidata.zip",
+          "bytes": 6643712,
+          "sha256": "301acc694d772a67e3f6311f2db914b87bedc784dddc73ff30fb22c7ea174dce",
+          "git_blob_sha": "89bb97485c7dd2eb04e1ff8cd8a19bb29e779f5f"
+        }
+      ],
+      "approval": "approved presented composition only",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}
