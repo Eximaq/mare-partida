@@ -46,19 +46,19 @@ const contracts=require('../contract-system.js');wire.contracts={rulesetId:contr
   });
   await p.route(process.env.MARE_TEST_URL,async route=>{const r=await route.fetch(),html=await r.text(),boot='<script defer src="/apps/account-client/game-session.js"></script><script defer src="/apps/account-client/game-ui.js"></script>';await route.fulfill({response:r,body:html.replace(/<script defer src="game\.js/,boot+'<script defer src="game.js')});});
   await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready);
-  await p.keyboard.press('c');await p.waitForSelector('[data-contract-board]');assert.equal(await p.locator('[data-contract-id]').count(),10);
+  await p.keyboard.press('c');await p.waitForSelector('[data-contract-board]');await p.locator('[data-contract-period="journey"]').click();assert.equal(await p.locator('[data-contract-id]').count(),10);
   assert.equal(await p.locator('[data-contract-id="crab"] [data-contract-count]').innerText(),'5 / 6');assert.equal(await p.locator('[data-contract-id="crab"] [data-claim]').count(),0);
-  for(const period of ['weekly','monthly']){await p.locator(`[data-contract-period="${period}"]`).click();assert.equal(await p.locator('[data-contract-id]').count(),0);assert.equal(await p.locator('[data-contract-total]').innerText(),'0 / 0');}
-  await p.locator('[data-contract-period="daily"]').click();
+  for(const period of ['daily','weekly','monthly']){await p.locator(`[data-contract-period="${period}"]`).click();assert.equal(await p.locator('[data-contract-id]').count(),0);assert.equal(await p.locator('[data-contract-total]').innerText(),'0 / 0');}
+  await p.locator('[data-contract-period="journey"]').click();
   wire.contracts.progress.crab=6;wire.state.version++;await p.evaluate(()=>MareGameSession.read(true));
   await p.locator('[data-contract-id="crab"] [data-claim]').click();await p.waitForFunction(()=>MareGameSession.data.online.contracts.claimed.includes('crab')&&!MareGameSession.busy);
   assert.equal(await p.locator('[data-contract-id="crab"]').getAttribute('data-state'),'claimed');assert.equal(wire.state.gold,'205');assert.equal(sent.length,1);
   await p.locator('[data-contract-id="bandit"] [data-claim]').click();await p.waitForFunction(()=>MareGameSession.pending&&!MareGameSession.busy);assert.equal(wire.state.gold,'330');assert.equal(receipts.size,2);
   const lostRequest=sent.at(-1).requestId;await p.reload();await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready);await p.keyboard.press('c');
   await p.locator('[data-online-action="resume"]').click();await p.waitForFunction(()=>!MareGameSession.pending&&!MareGameSession.busy);
-  assert.equal(sent.at(-1).requestId,lostRequest);assert.equal(wire.state.gold,'330');assert.equal(receipts.size,2);assert.equal(await p.locator('[data-contract-id="bandit"]').getAttribute('data-state'),'claimed');
-  wire.contracts.daily={cycle:contracts.day(Date.now()),endsAt:Date.now()+3600000,claimed:false,objectives:[{id:'daily-combat',title:'Caçada do Dia',desc:'Derrote César.',target:2,current:2},{id:'daily-berry',title:'Tesouros da Jornada',desc:'Obtenha Berry de monstros.',target:50,current:50},{id:'daily-reinforcement',title:'Reforços da Caçada',desc:'Derrote mais um César.',target:1,current:1}]};wire.state.version++;
-  await p.evaluate(()=>MareGameSession.read(true));await p.waitForSelector('[data-contract-id="daily-reinforcement"]');
+  await p.locator('[data-contract-period="journey"]').click();assert.equal(sent.at(-1).requestId,lostRequest);assert.equal(wire.state.gold,'330');assert.equal(receipts.size,2);assert.equal(await p.locator('[data-contract-id="bandit"]').getAttribute('data-state'),'claimed');
+  const daily=contracts.daily({cycle:Date.now(),level:2,classId:'sword'});wire.contracts.daily={...daily,objectives:daily.objectives.map(q=>({...q,current:q.target}))};wire.state.version++;
+  await p.evaluate(()=>MareGameSession.read(true));await p.locator('[data-contract-period="daily"]').click();await p.waitForSelector('[data-contract-id="daily-combat"]');
   const boost=p.locator('.contracts-final img');assert.equal(await boost.evaluate(i=>i.decode().then(()=>i.naturalWidth)),128);
   await p.locator('[data-claim="daily-reward"]').click();await p.waitForFunction(()=>MareGameSession.data.online.contracts.daily?.claimed&&!MareGameSession.busy);
   assert.equal(await p.locator('[data-claim="daily-reward"]').count(),0);

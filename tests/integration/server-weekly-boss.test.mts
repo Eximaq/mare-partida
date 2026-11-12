@@ -22,9 +22,9 @@ test('weekly boss is disabled and ordinary accounts cannot activate or test it',
  await assert.rejects(a.event({op:'test'}),{code:'weekly_boss_operator_required'});
  await assert.rejects(a.event({op:'activate',revision:1}),{code:'weekly_boss_operator_required'});
 }));
-test('official activation remains blocked without Marineford even for an authorized operator',async()=>authDatabase(async f=>{
+test('official activation rejects a blocked Marineford spawn even for an authorized operator',async()=>authDatabase(async f=>{
  const a=await actor(f);await operator(f,a,1);const r=await a.event({op:'configure',revision:1,config});assert.equal(r.weeklyBoss.revision,2);
- await assert.rejects(a.event({op:'activate',revision:2}),{code:'weekly_boss_map_unavailable'});
+ await assert.rejects(a.event({op:'activate',revision:2}),{code:'weekly_boss_spawn_blocked'});
  assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.weekly_boss_events')).rows[0].n,0);
 }));
 test('two operators share one private test boss, public users cannot see it, cancel restores the original port',async()=>authDatabase(async f=>{
@@ -51,4 +51,37 @@ test('private boss victory cannot mint XP, Berry, profession progress or weekly 
  assert.equal((await f.pool.query('SELECT status FROM mare_game.weekly_boss_events WHERE id=$1',[id])).rows[0].status,'won');
  const after=await a.read();assert.equal(after.state.gold,before.state.gold);assert.equal(after.state.experience,before.state.experience);
  assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.weekly_boss_victories')).rows[0].n,0);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.weekly_boss_entitlements')).rows[0].n,0);
+}));
+
+test('official reward receipts record every individual outcome and deliver each fragment once after retry',async()=>authDatabase(async f=>{
+ const actors=await Promise.all([actor(f),actor(f),actor(f)]);
+ const account=await operator(f,actors[0],1),eventId=randomUUID();
+ const ids=actors.map(a=>a.c.id).sort();
+ await f.pool.query(`INSERT INTO mare_game.weekly_boss_events
+   (id,mode,status,map_id,cycle_key,config,simulation,created_by,closes_at,ended_at)
+   VALUES($1,'official','won','marineford',CURRENT_DATE,$2,'{}',$3,
+     clock_timestamp()+interval '1 hour',clock_timestamp())`,[eventId,config,account]);
+ for(const id of ids)await f.pool.query(
+  'INSERT INTO mare_game.weekly_boss_victories(event_id,character_id,damage,healing,combat_ms) VALUES($1,$2,100,0,10000)',
+  [eventId,id]
+ );
+ const {grantWeeklyBossLoot}=await import('../../apps/game-server/src/characters/weekly-boss-loot.js');
+ const grant=async(random:()=>number)=>{
+  const client=await f.pool.connect();
+  try{await client.query('BEGIN');await grantWeeklyBossLoot(client,eventId,ids,random);await client.query('COMMIT');}
+  catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
+ };
+ const draws=[0,0,0,.5,0,.9,.5,.5];
+ await grant(()=>{assert(draws.length);return draws.shift()!;});
+ assert.equal(draws.length,0);
+ const read=()=>f.pool.query('SELECT rank_b,haki FROM mare_game.weekly_boss_loot WHERE event_id=$1 ORDER BY character_id',[eventId]);
+ assert.deepEqual((await read()).rows,[
+  {rank_b:true,haki:'armament'},{rank_b:false,haki:'observation'},{rank_b:false,haki:null},
+ ]);
+ const mail=()=>f.pool.query('SELECT character_id,attachments FROM mare_game.social_mail WHERE source_id=$1 ORDER BY character_id',[eventId]);
+ const delivered=(await mail()).rows;
+ assert.deepEqual(delivered.map(row=>[row.character_id,row.attachments.length]),[[ids[0],2],[ids[1],1]]);
+ assert(delivered.every(row=>row.attachments.every((item:any)=>!item.bound&&(item.quantity??item.qty)===1)));
+ await grant(()=>{throw Error('retry must reuse all persisted outcomes');});
+ assert.deepEqual((await mail()).rows,delivered);
 }));

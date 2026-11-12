@@ -1274,7 +1274,7 @@
     const result=MarePrison.completeFloor(game,pending.floor,true,itemDefs);if(!result.ok){toast(result.message,'danger');return false;}
     result.state.stats.kills++;result.state.stats[pending.type]=(result.state.stats[pending.type]||0)+1;
     try{localStorage.setItem(STORAGE_KEY,JSON.stringify(result.state));}catch{toast('Não foi possível salvar a vitória. Abra os andares e tente salvar novamente.','danger');return false;}
-    game=result.state;if(result.reward)rewardNotice({item:game.inventory.find(i=>i.id==='impel-milestone-'+pending.floor),eventId:'milestone:'+game.characterId+':'+pending.floor});impelRun.pending=null;impelRun.transitionAt=world.time+.85;toast('Andar Concluído · '+pending.floor,'good');log('Impel Down · Andar '+pending.floor+' concluído.','good');if(result.rewardPending)toast('Caixa de marco pendente: libere espaço na mochila.');if(currentPanel==='prison')renderPanel();return true;
+    game=result.state;if(result.reward)rewardNotice({item:game.inventory.find(i=>i.id==='impel-milestone-'+pending.floor),eventId:'milestone:'+game.characterId+':'+pending.floor});impelRun.pending=null;impelRun.transitionAt=world.time+.85;toast('Andar Concluído · '+pending.floor,'good');log('Impel Down · Andar '+pending.floor+' concluído.','good');if(result.rewardPending)toast('Caixa de Pérolas pendente. Libere espaço na mochila.');if(currentPanel==='prison')renderPanel();return true;
   }
   function claimImpelMilestone(floor){
     if(ONLINE_GAME){void onlineItemCommand('prison.claim',{floor});return;}
