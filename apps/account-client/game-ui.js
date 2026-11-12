@@ -95,10 +95,10 @@
         const p=state.points[0],dx=p.x-state.x,dy=p.y-state.y,d=Math.hypot(dx,dy);
         if(d<1e-8){state.points.shift();continue;}
         const step=Math.min(d,budget);state.x+=dx/d*step;state.y+=dy/d*step;state.travel+=step;budget-=step;moved+=step;
-        state.direction=Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'back':'front');
+        if(!state.stationaryCorrection)state.direction=Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'back':'front');
         if(step>=d-1e-8){state.x=p.x;state.y=p.y;state.points.shift();}
       }
-      if(dt>0)state.moving=moved>1e-8;
+      if(dt>0)state.moving=!state.stationaryCorrection&&moved>1e-8;
       return {x:state.x,y:state.y,direction:state.direction,moving:state.moving};
     }
     function update(next,now,{buffered=false,reset=false,quickHunt=false,preview=false,force=false}={}){
@@ -142,6 +142,9 @@
       const points=bridge?[...bridge,...next.path].map(p=>({x:p.x,y:p.y})):[];
       state={x:origin.x,y:origin.y,direction:next.direction,moving:false,last:now,points,travel:0,
         bridge:bridge?length(origin,bridge):0,pathLength:bridge?length(join,next.path):0,
+        // An idle authoritative pose may need positional reconciliation, but
+        // that correction is not an instruction to turn and walk backwards.
+        stationaryCorrection:!buffered&&!next.path.length,
         buffered:buffered&&!next.path.length,duration:combatBlendDuration(gap,quickHunt)};
       snapshot=next;received=now;return snap;
     }
@@ -152,15 +155,17 @@
       update(confirmed,now,{...confirmedOptions,force:true});
     }
     return {sample,update,cancel,
-      predict(target,now,{speed=confirmed?.speed}={}){
-        if(!confirmed||!state||!Number.isFinite(speed)||speed<=0||!Number.isFinite(target?.x)||!Number.isFinite(target?.y))return null;
+      predict(target,now,{speed=confirmed?.speed,stop=false}={}){
+        if(!confirmed||!state||!Number.isFinite(speed)||speed<=0||(!stop&&(!Number.isFinite(target?.x)||!Number.isFinite(target?.y))))return null;
         if(windowUntil!==null&&now>=windowUntil){sample(now);return latestTicket;}
-        const origin=sample(now),points=distance(origin,target)<1e-8?[]:route(origin,target);
-        if(distance(origin,target)>=1e-8&&!points.length)return null;
+        // Stop at this sample, not at a position sampled by the caller earlier.
+        // Even a subpixel backward route flips the walk animation for one frame.
+        const origin=sample(now),points=stop||distance(origin,target)<1e-8?[]:route(origin,target);
+        if(!stop&&distance(origin,target)>=1e-8&&!points.length)return null;
         // Local presentation only. Never send this pose or mutate the confirmed
         // snapshot. Repeated clicks cannot extend an unacknowledged window.
         const until=windowUntil??now+750,id=++serial;
-        const next={...confirmed,position:{x:origin.x,y:origin.y},path:points.map(p=>({x:p.x,y:p.y})),speed,
+        const next={...confirmed,position:{x:origin.x,y:origin.y},path:points.map(p=>({x:p.x,y:p.y})),speed,direction:stop?origin.direction:confirmed.direction,
           motionUntil:new Date(Date.parse(confirmed.serverNow)+Math.max(0,until-now)).toISOString()};
         update(next,now,{preview:true,force:true});
         prediction={id,until};windowUntil=until;latestTicket=id;return id;

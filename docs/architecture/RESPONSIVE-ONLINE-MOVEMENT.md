@@ -247,3 +247,55 @@ Execução completa final, sem alterar a correção ou os limites:
 
 A correção do marcador está validada; a execução final aprovada não apaga as
 esperas longas anteriores nem certifica estabilidade absoluta da rede.
+
+## Soltura do teclado sem percurso de retorno
+
+O controlador de parada amostrava a posição em um instante e a entregava à
+previsão como um destino de caminhada, amostrado novamente alguns instantes
+depois. O avanço entre as duas leituras deixava esse destino atrás do personagem.
+Mesmo uma diferença subpixel criava um segmento de retorno e invertia o sprite.
+Além disso, a previsão reaproveitava a direção da confirmação anterior, que podia
+estar defasada em relação à direção já exibida.
+
+Quatro regressões do controlador real reproduziram a inversão (D/A/W/S) com
+três milissegundos entre leituras do relógio. A previsão de parada agora é uma
+operação explícita: captura posição e direção juntas, com caminho vazio, sem
+receber coordenada anterior do controlador. A fila, confirmação, rejeição e
+janela máxima sem ACK continuam iguais. O payload de `world.stop` permanece
+vazio; nenhuma posição do cliente é persistida no servidor por essa mudança.
+
+A captura com essa primeira correção ainda mostrou recuo de aproximadamente
+44 px após a confirmação, com giro à esquerda e retorno à direita. O início
+da caminhada aguardava 599,6 ms; renovação e parada levavam cerca de 315–318 ms.
+O cache CSRF de 30 s expirava e sua renovação síncrona acrescentava uma viagem
+antes do POST, enquanto a previsão já avançava. Dois testes de sessão
+reproduziram a ausência de renovação durante as leituras e protegeram o caminho
+de falha. Leituras autenticadas com controle ativo agora antecipam a renovação
+nos últimos cinco segundos, sem bloquear comandos com token ainda válido.
+Prazo de 30 s, single-flight, invalidação por troca de sessão/rejeição/logout e
+ausência de replay automático permanecem. Uma falha não prolonga a validade;
+tentativas de preparo são espaçadas em pelo menos cinco segundos.
+
+Uma correção posicional para uma pose manual parada também deixa de ser tratada
+como caminhada ao contrário: preserva a direção confirmada e não dispara passos.
+A posição continua convergindo à autoridade, pela navegação e velocidade
+limitadas; posições de combate interpoladas continuam animadas. Uma regressão
+adicional cobre as quatro direções e verifica convergência e imutabilidade do
+estado recebido.
+
+Após as correções, o início medido no porto caiu para 316,1 ms na mesma bancada
+com atraso artificial de 250 ms; renovação/parada ficaram em 297,1/308,3 ms.
+O recuo máximo observado foi zero no porto e em Dawn, em 189/190 quadros após
+soltura incluindo confirmação. Isso não promete zero correção sob qualquer
+variação de rede. A posição real continua pertencendo ao servidor.
+
+Verificação: `npm test` passou 295 testes de fundação e 188 arquivos legados;
+build estático e sintaxe passaram. A primeira execução do novo coletor de quadros
+falhou por `__name` inserido pelo transpiler dentro de `page.evaluate`; o coletor
+foi corrigido sem alterar as asserções. O ensaio final verifica também as 48
+inversões rápidas, ausência de marcadores de clique, perseguição e animação de
+monstros (102 amostras móveis, zero deslizes/reinícios de fase).
+Reconexão, viewport estreito, carregamento progressivo de 26,9 s, falha de mapa
+base e preservação do save demo passaram na execução completa. PostgreSQL de
+teste encerrado. Esses ensaios usam backend/worker reais e identidade fictícia
+local; não representam uma nova medição do ping dos convidados pela Internet.

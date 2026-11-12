@@ -119,10 +119,32 @@ await authDatabase(async f=>{
    await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);await p.waitForTimeout(3000);
    }
    const heldOrigin=await p.evaluate(()=>({x:__mareDiagnostics().hero.x,y:__mareDiagnostics().hero.y}));
+   await p.evaluate(`
+    globalThis.heldTrace=[];globalThis.heldCommands=[];globalThis.recordHeld=true;
+    if(!globalThis.heldCommandProbe){globalThis.heldCommandProbe=true;const command=MareGameSession.command;MareGameSession.command=function(action,payload){const row={action,payload,start:performance.now()};if(globalThis.recordHeld)globalThis.heldCommands.push(row);return command.call(this,action,payload).then(receipt=>{row.end=performance.now();row.world=receipt?.world;return receipt;});};}
+    function sampleHeld(){if(!globalThis.recordHeld)return;const d=__mareDiagnostics(),w=MareGameSession.data.online.world;globalThis.heldTrace.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,direction:d.hero.direction,moving:d.hero.walking>0,world:w});requestAnimationFrame(sampleHeld);}requestAnimationFrame(sampleHeld);
+   `);
    await p.keyboard.down('d');await p.waitForTimeout(3000);
    assert.equal(await p.evaluate(()=>__mareDiagnostics().destination),null,'held keyboard renewal must not create a click marker');
    await p.screenshot({path:resolve(out,'keyboard-held-'+mapId+'.png')});
-   await p.keyboard.up('d');await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);await p.waitForTimeout(3000);
+   await p.evaluate(`
+    globalThis.releaseFrames=[];globalThis.recordStop=true;
+    globalThis.releaseFacing=__mareDiagnostics().hero.direction;
+    function sampleStop(){if(!globalThis.recordStop)return;const d=__mareDiagnostics();globalThis.releaseFrames.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,direction:d.hero.direction,moving:d.hero.walking>0});requestAnimationFrame(sampleStop);}requestAnimationFrame(sampleStop);
+   `);
+   await p.keyboard.up('d');await p.waitForTimeout(180);
+   const release=await p.evaluate(()=>({expected:globalThis.releaseFacing,frames:globalThis.releaseFrames.slice(2)}));
+   assert.ok(release.frames.length>=3,'release has visible frames before the delayed ACK');
+   assert.ok(release.frames.every(f=>f.direction===release.expected&&!f.moving),'release must not reverse facing or walk to an earlier sample');
+   await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);await p.waitForTimeout(3000);
+   const releaseTrace=await p.evaluate(()=>{globalThis.recordStop=false;return globalThis.releaseFrames;});
+   await writeFile(resolve(out,'release-'+mapId+'.json'),JSON.stringify(releaseTrace,null,2));
+   await writeFile(resolve(out,'held-'+mapId+'.json'),JSON.stringify(await p.evaluate(()=>{globalThis.recordHeld=false;return {frames:globalThis.heldTrace,commands:globalThis.heldCommands};}),null,2));
+   const vector={right:[1,0],left:[-1,0],back:[0,-1],front:[0,1]}[release.expected];
+   assert.ok(vector);let peak=-Infinity,maxPullback=0;
+   for(const f of releaseTrace.slice(2)){const along=f.x*vector[0]+f.y*vector[1];peak=Math.max(peak,along);maxPullback=Math.max(maxPullback,peak-along);assert.equal(f.direction,release.expected,'a confirmed stop must not turn the sprite around');}
+   console.log(JSON.stringify({map:mapId,releaseFacingPreserved:true,frames:releaseTrace.length,maxPullback}));
+   assert.ok(maxPullback<=8,'release must not pull the player back more than eight pixels in this controlled-latency scenario');
    // Return through the authoritative movement contract so this new held-key
    // probe does not change the starting corridor of the existing chase test.
    await p.evaluate(q=>MareGameSession.command('world.move',q),heldOrigin);

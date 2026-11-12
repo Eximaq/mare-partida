@@ -183,10 +183,10 @@
     if(game)camera.update(world.hero,activeMap(),0,true);
   }
   new ResizeObserver(resizeViewport).observe(canvas);
-  function previewOnlineWalk(point){
+  function previewOnlineWalk(point,stop=false){
     const presentation=onlineWorldFrame?.presentation;
     if(!presentation?.predict||onlineWorldFrame.special||!ONLINE_GAME.controlled||!ONLINE_GAME.available||actionLocked()||game.hp<=0||session.respawn>0)return null;
-    const id=presentation.predict(point,performance.now(),{speed:getDerived().moveSpeed});
+    const id=presentation.predict(point,performance.now(),{speed:getDerived().moveSpeed,stop});
     return id===null?null:{presentation,id};
   }
   function walkTo(point,action=null,preview=null){
@@ -226,13 +226,12 @@
   }
   function stopOnlineWalk(preview=null){
     if(!ONLINE_GAME.controlled||!ONLINE_GAME.available)return false;
-    const point=onlineWorldFrame.presentation.sample(performance.now());
     if(onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop'){
       const {character,online}=ONLINE_GAME.data;
-      queuedOnlineWalk={stop:true,characterId:character.id,mapId:online.world.mapId,preview:preview||previewOnlineWalk(point)};
+      queuedOnlineWalk={stop:true,characterId:character.id,mapId:online.world.mapId,preview:preview||previewOnlineWalk(null,true)};
     }else{
       if(onlineMoveWorking||ONLINE_GAME.busy||ONLINE_GAME.pending)return false;
-      void onlineWorldCommand('world.stop',{},false,preview||previewOnlineWalk(point));
+      void onlineWorldCommand('world.stop',{},false,preview||previewOnlineWalk(null,true));
     }
     lobbyAction=null;lobbyDestination=null;return true;
   }

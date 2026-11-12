@@ -72,3 +72,15 @@ test('mouse click after key release keeps its own marker and replaces the queued
  const f=fixture();f.step(0,['d']);f.step(20,[]);f.c.walkTo({x:350,y:100});await f.ack(0);
  assert.equal(f.commands[1].action,'world.move');assert.equal(f.c.lobbyDestination.x,350);
 });
+
+for(const [key,direction] of [['d','right'],['a','left'],['w','back'],['s','front']]){
+ test('release keeps facing and freezes atomically while walking '+key,()=>{
+  const f=fixture();f.step(0,[key]);f.step(100,[key]);f.step(200,[key]);
+  let time=200;f.c.performance.now=()=>time+=3;
+  f.c.stopOnlineWalk();
+  const stopped=f.c.onlineWorldFrame.presentation.sample(240);
+  assert.equal(stopped.direction,direction,'a stop must not become a backward micro-walk');
+  assert.equal(stopped.moving,false,'releasing has no route back to an earlier sampled position');
+  assert.deepEqual(f.c.onlineWorldFrame.presentation.sample(260),stopped);
+ });
+}

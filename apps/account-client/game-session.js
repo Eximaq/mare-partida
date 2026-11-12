@@ -211,10 +211,10 @@
       readVersion = 0;
     let confirmedMovementVersion = -1;
     let networkSample=null;
-    let csrfCache=null,csrfFlight=null,csrfGeneration=0;
-    const clearCsrf=()=>{csrfGeneration++;csrfCache=null;csrfFlight=null;};
-    function csrfToken(){
-      if(csrfCache&&now()<csrfCache.until)return Promise.resolve(csrfCache.token);
+    let csrfCache=null,csrfFlight=null,csrfGeneration=0,csrfWarmAt=0;
+    const clearCsrf=()=>{csrfGeneration++;csrfCache=null;csrfFlight=null;csrfWarmAt=0;};
+    function csrfToken(refresh=false){
+      if(!refresh&&csrfCache&&now()<csrfCache.until)return Promise.resolve(csrfCache.token);
       if(csrfFlight)return csrfFlight;
       const generation=csrfGeneration;
       const flight=api('/v1/auth/csrf').then(result=>{
@@ -222,6 +222,14 @@
         csrfCache={token:result.csrfToken,until:now()+30000};return result.csrfToken;
       }).finally(()=>{if(csrfFlight===flight)csrfFlight=null;});
       csrfFlight=flight;return flight;
+    }
+    function warmCsrf(){
+      // Keep the same short cache and binding checks, but avoid putting its
+      // refresh round trip between local movement prediction and the POST.
+      const time=now();
+      if(!control||!available||!csrfCache||time<csrfCache.until-5000||time<csrfWarmAt)return;
+      csrfWarmAt=time+5000;
+      void csrfToken(true).catch(()=>{});
     }
     const listeners = new Set();
     const notify = () => {
@@ -324,6 +332,7 @@
       }
       data = { character: me.character ?? null, online: preserveConfirmedMovement(online) };
       available = true;
+      warmCsrf();
       if (!pending && me.character) {
         try {
           const saved = JSON.parse(storage.getItem(key) || "null");
@@ -374,7 +383,7 @@
           }
           networkSample={rttMs:Math.max(0,completed-started),at:completed,intervalMs:networkSample?Math.max(0,completed-networkSample.at):null};
           data={character:original.character,online:preserveConfirmedMovement(online)};
-          available=true;notify();return data;
+          available=true;warmCsrf();notify();return data;
         }catch(error){if(revision===readVersion){available=false;notify();}throw error;}
       })().finally(()=>{if(frameFlight===flight)frameFlight=null;});
       frameFlight=flight;return flight;

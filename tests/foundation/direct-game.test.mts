@@ -53,8 +53,10 @@ function fixture(options:any={}) {
             factionId: "pirate",
           },
         });
-      if (path === "/v1/auth/csrf")
+      if (path === "/v1/auth/csrf") {
+        if(options.waitForCsrf)await options.waitForCsrf();
         return Response.json({ csrfToken: "fixture" });
+      }
       if (path.endsWith("/online-state")) {
         const requested = snapshot();
         if (version > 0 && options.waitForSnapshot) await options.waitForSnapshot();
@@ -242,6 +244,27 @@ test('CSRF cache is single-flight, expires, clears on rejection/logout and never
  await c.api('/test',{});assert.equal(csrfReads,4);
  await c.logout();await c.api('/test',{});assert.equal(csrfReads,5);
  await c.api('/v1/auth/rotate',{});await c.api('/test',{});assert.equal(csrfReads,6);
+});
+
+test('active frame polling refreshes CSRF before expiry instead of delaying the next movement',async()=>{
+ let time=0;const f=fixture({now:()=>time,frameSupport:true});
+ await f.client.load();await f.client.acquire();
+ time=26000;await f.client.readFrame();
+ assert.equal(f.requests.filter(r=>r.path==='/v1/auth/csrf').length,2,'refresh must start during polling, before a key press');
+ time=31000;await f.client.command('world.move',{x:100,y:100});
+ assert.equal(f.requests.filter(r=>r.path==='/v1/auth/csrf').length,2,'movement uses the refreshed binding without an extra round trip');
+});
+
+test('background CSRF refresh neither blocks valid commands nor extends a failed refresh lifetime',async()=>{
+ let time=0,reads=0,rejectRefresh:any;
+ const f=fixture({now:()=>time,frameSupport:true,waitForCsrf:()=>{if(++reads===2)return new Promise((_,reject)=>{rejectRefresh=reject;});}});
+ await f.client.load();await f.client.acquire();time=26000;await f.client.readFrame();
+ assert.equal(reads,2);
+ time=27000;await f.client.command('world.move',{x:100,y:100});
+ assert.equal(reads,2,'a still-valid binding remains usable during refresh');
+ rejectRefresh(new Error('isolated refresh failure'));await new Promise(resolve=>setImmediate(resolve));
+ time=31000;await f.client.command('world.stop',{});
+ assert.equal(reads,3,'an expired binding still requires a fresh token after a failed refresh');
 });
 
 test('identity changes still refresh the character metadata used by talents and faction UI',async()=>{

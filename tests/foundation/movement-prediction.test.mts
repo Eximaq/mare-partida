@@ -3,6 +3,18 @@ import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),{createWorldPresentation}=require('../../apps/account-client/game-ui.js');
 const world=(patch:any={})=>({mapId:'lobby',position:{x:0,y:0},path:[],speed:100,direction:'right',serverNow:'2026-01-01T00:00:00Z',motionUntil:'2026-01-01T00:00:03Z',...patch});
+
+test('a stopped authoritative correction preserves facing without animating a reverse walk',()=>{
+ for(const [dx,dy,direction] of [[1,0,'right'],[-1,0,'left'],[0,-1,'back'],[0,1,'front']] as const){
+  const p=createWorldPresentation({walk:true});p.update(world({direction}),0);
+  p.predict({x:dx*100,y:dy*100},0);for(let t=20;t<=100;t+=20)p.sample(t);
+  const stop=p.predict(null,100,{stop:true});
+  const authoritative=world({direction,position:{x:dx*8,y:dy*8}}),copy=structuredClone(authoritative);
+  p.update(authoritative,150);p.settle(stop,150);
+  for(let t=160;t<=250;t+=10){const pose=p.sample(t);assert.equal(pose.direction,direction);assert.equal(pose.moving,false,'position reconciliation is not a walking command');}
+  assert.equal(p.sample(250).x,dx*8);assert.equal(p.sample(250).y,dy*8);assert.deepEqual(authoritative,copy);
+ }
+});
 test('local intent moves before acknowledgement without changing the authoritative snapshot',()=>{
  const p=createWorldPresentation({walk:true}),w=world(),copy=structuredClone(w);p.update(w,0);
  assert.equal(typeof p.predict,'function');
