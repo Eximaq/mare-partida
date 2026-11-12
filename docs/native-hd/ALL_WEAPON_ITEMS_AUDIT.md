@@ -48,3 +48,6 @@ Famílias masculinas de aparência original HD completas: 109, 111, 17, 122. Apr
 |126|26|not wired to native HD renderer|
 |127|26|not wired to native HD renderer|
 |128|26|not wired to native HD renderer|
+
+## Current integration increment
+Items4,113,115 now have original-body native idle/walk/attack families in four directions. SOUTH/EW registration is candidate calibration, not a new approval. Previous dressed115S remains archived and excluded for an original avatar. Custom palettes and arbitrary outfits remain restricted where not independently supported. Seven original-identity weapon families:4,17,109,111,113,115,122.

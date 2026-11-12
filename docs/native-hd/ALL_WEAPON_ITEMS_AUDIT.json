@@ -228,8 +228,8 @@
           "otherLayerPNGs": 15
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male ORIGINAL idle/walk/attack four directions; new original-body registration candidates, not new approval",
+      "gap": "Other saved palettes/outfits remain identity-restricted. Prior dressed SOUTH source remains archived and excluded for original body."
     },
     {
       "item": 5,
@@ -1120,8 +1120,8 @@
           "otherLayerPNGs": 13
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male ORIGINAL idle/walk/attack four directions; new original-body registration candidates, not new approval",
+      "gap": "Other saved palettes/outfits remain identity-restricted. Prior dressed SOUTH source remains archived and excluded for original body."
     },
     {
       "item": 114,
@@ -1192,8 +1192,8 @@
           "otherLayerPNGs": 12
         }
       ],
-      "nativeHD": "partial: original N/E/W and carry recovered; dressed SOUTH archival source blocked for original avatar",
-      "gap": "Original-compatible SOUTH replacement pending; do not count family complete."
+      "nativeHD": "complete male ORIGINAL idle/walk/attack four directions; new original-body registration candidates, not new approval",
+      "gap": "Other saved palettes/outfits remain identity-restricted. Prior dressed SOUTH source remains archived and excluded for original body."
     },
     {
       "item": 116,
@@ -1624,9 +1624,12 @@
     }
   ],
   "completeOriginalIdentityFamilies": [
+    4,
+    17,
     109,
     111,
-    17,
+    113,
+    115,
     122
   ],
   "catalogIdNote": "42 catalog IDs include ID0 (unarmed/base); this is not a count of42 equipped weapons."

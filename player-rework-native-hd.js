@@ -31,7 +31,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!r)return null;
   const hasSeparateHair=r.pack.directions[r.direction].layers.some(l=>l.slot==='hair');
   if(!hasSeparateHair&&((a.hairColor&&a.hairColor!=='original')||(a.skin&&a.skin!=='original')))return null;
-  const headItem=equipment.head?.def,needHead=headItem!=null||r.hairStyle!==hair.replace(/^hair-/,'');
+  const headItem=equipment.head?.def??equipment.head,needHead=headItem!=null||r.hairStyle!==hair.replace(/^hair-/,'');
   const headLook={...a,hair,head:headItem!=null?'head-'+headItem:'original'};
   const head=needHead?headRegistry?.resolve({body:canonical(a.body),direction:o.direction,look:headLook}):null;
   if(needHead&&(!head||!headCompat))return null;
