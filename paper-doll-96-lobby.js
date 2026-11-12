@@ -194,7 +194,7 @@
     function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;
       if(root.MareVisualCompletoRenderer?.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer})){draws++;return true;}
-      if(nativeHD?.drawStable(ctx,player,{action,direction,time,progress,x,y,consumer,weaponless})){draws++;return true;}
+      if(nativeHD?.drawStable(ctx,player,{action:['combat-idle','guard','hurt','death'].includes(action)?'idle':action,direction,time,progress,x,y,consumer,weaponless})){draws++;return true;}
       if(rework?.active&&!player?.zoanTransformed){rework.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale:scale===null?1:scale*46/96,consumer,weaponless});return true;}
       if(!active||state!=='ready'||player?.zoanTransformed||!['south','north','east','west'].includes(direction))return false;
       const value=resolve(player);if(scene!=='lobby'&&!(scene==='hunt'&&value.supported))return false;
@@ -250,7 +250,7 @@
       const spec=clip.nativeSpec,x=direction==='west'?spec.width+1-point.x:point.x;
       return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(point.y-spec.pivot.y)*scale,frame:4,weapon:value.look.weapon};
     }
-    const height=player=>active&&!player?.zoanTransformed?96:null;
+    const height=player=>active&&!player?.zoanTransformed?(nativeHD?.height(player)||96):null;
     return {ready,snapshot,draw,height,ensure,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
   }
   root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,appearanceLook,assetReferences,validateRelease,frameAt,directionOf};

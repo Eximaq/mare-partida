@@ -60,6 +60,10 @@ test('orb17 has a complete native original-appearance family in the normal world
 
 test('orb122 has a complete native original-appearance world family',async()=>{const api=make();const p={appearance96:{body:'male',hair:'original'},equipment:{weapon:{def:122}}};assert.equal(await api.prepareFamily(p),true);});
 
-test('rifle115 now has a complete original-appearance native world family',async()=>{const api=make();const p={appearance96:{body:'male',hair:'original'},equipment:{weapon:{def:115}}};assert.equal(await api.prepareFamily(p),true);});
+test('rifle115 world activation requires an original-compatible SOUTH source',async()=>{const api=make();const p={appearance96:{body:'male',hair:'original'},equipment:{weapon:{def:115}}};await api.ready;const south=api.select(p,{action:'attack-firearm',direction:'south'});assert.equal(await api.prepareFamily(p),!!south);if(south)assert.notEqual(south.id,'rifle115-v5-south-native-layers');});
 
 test('rifle115 refuses a whole family whose baked attack hair is incompatible',async()=>{const api=make();assert.equal(await api.prepareFamily({appearance96:{body:'male',hair:'hair-cropped'},equipment:{weapon:{def:115}}}),false);});
+
+test('world visual height follows original HD alpha bounds without altering art scale',async()=>{const api=make(),p={appearance96:{body:'male',hair:'original'},equipment:{}},o={action:'idle',direction:'south'};await api.prepareFamily(p);await api.prepare(p,o);const c=cv.createCanvas(800,800);assert(api.drawStable(c.getContext('2d'),p,o));assert(api.height(p)>250);assert.equal(api.snapshot().last.physicalScale,1);});
+
+test('gauntlet111 has a complete original-appearance native world family',async()=>{const api=make();assert.equal(await api.prepareFamily({appearance96:{body:'male',hair:'original'},equipment:{weapon:{def:111}}}),true);});
