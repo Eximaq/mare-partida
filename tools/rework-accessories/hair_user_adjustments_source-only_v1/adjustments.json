@@ -1,0 +1,440 @@
+{
+  "schema": "r1-hair-fit-adjustments-v1",
+  "previewOnly": true,
+  "catalogVersion": "hair-fit-editor-r1-v1",
+  "catalogSHA256": "f84b2b25df7b6a5f53976edae47555aae1a9aa05b5d0f1974fe11689c2286acc",
+  "adjustments": [
+    {
+      "target": {
+        "snapshot": "03ad59aca21da16cd4979e2fb7f7e516d2d047e37bf003100857e8781f0317b9",
+        "packSHA256": "03ad59aca21da16cd4979e2fb7f7e516d2d047e37bf003100857e8781f0317b9",
+        "body": "female",
+        "style": "cropped",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 0.5,
+        "y": 1.5,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "03ad59aca21da16cd4979e2fb7f7e516d2d047e37bf003100857e8781f0317b9",
+        "packSHA256": "03ad59aca21da16cd4979e2fb7f7e516d2d047e37bf003100857e8781f0317b9",
+        "body": "female",
+        "style": "cropped",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -0.75,
+        "y": 1.75,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "117f5896fc32d76ca1e650364324af82c473efe4b4dc86433ebd6672c59e7fb8",
+        "packSHA256": "117f5896fc32d76ca1e650364324af82c473efe4b4dc86433ebd6672c59e7fb8",
+        "body": "female",
+        "style": "braided",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": 1.25,
+        "y": 2,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "1c14f9e95617ccc6b5f5a87489e73d897b623f8719d3be66eb8f5322e8c62e49",
+        "packSHA256": "1c14f9e95617ccc6b5f5a87489e73d897b623f8719d3be66eb8f5322e8c62e49",
+        "body": "female",
+        "style": "undercut",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -1,
+        "y": 2.25,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "482be66cf0f31ab6f2abe823877cbbf8b0aeec31a9e4fc463a35c8a499ab8f98",
+        "packSHA256": "482be66cf0f31ab6f2abe823877cbbf8b0aeec31a9e4fc463a35c8a499ab8f98",
+        "body": "female",
+        "style": "bob",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -1.5,
+        "y": 1.75,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "6c05ed1cf5297ea61cd122d430ccc9799db7bd54a862aa9cc2a6f0446190bc82",
+        "packSHA256": "6c05ed1cf5297ea61cd122d430ccc9799db7bd54a862aa9cc2a6f0446190bc82",
+        "body": "female",
+        "style": "swept",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -1.5,
+        "y": 2.5,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "acf30de36ab3e8ff86b4919435d055917d6dd67f842f53350a957c8178ca5c90",
+        "packSHA256": "acf30de36ab3e8ff86b4919435d055917d6dd67f842f53350a957c8178ca5c90",
+        "body": "female",
+        "style": "spiky",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -1.75,
+        "y": 2,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "2649f794ecde781f2dca8620f657e13106b3d6b60cd659a8cb1bb860d842c6c7",
+        "packSHA256": "2649f794ecde781f2dca8620f657e13106b3d6b60cd659a8cb1bb860d842c6c7",
+        "body": "female",
+        "style": "topknot",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -1.5,
+        "y": 0.5,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "8b2cd11eb178f413b4f22b8126ac9dc92b9b47622b3960095541fcb878aa0d88",
+        "packSHA256": "8b2cd11eb178f413b4f22b8126ac9dc92b9b47622b3960095541fcb878aa0d88",
+        "body": "female",
+        "style": "afro",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -1.5,
+        "y": 0,
+        "scale": 98,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "f3ae7cf40600bc359ebdc432be3a50760eca647e69692614acbe6247bb40c160",
+        "packSHA256": "f3ae7cf40600bc359ebdc432be3a50760eca647e69692614acbe6247bb40c160",
+        "body": "female",
+        "style": "ponytail",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -1.75,
+        "y": 0.75,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "8cca704e032c45080a73f654f26dd269d5f8d81b8e4584c12ac8480feb62e0b9",
+        "packSHA256": "8cca704e032c45080a73f654f26dd269d5f8d81b8e4584c12ac8480feb62e0b9",
+        "body": "female",
+        "style": "wavy",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -0.75,
+        "y": 0.75,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "6d903089bfe4980dd3fa16b6e2d66d1cde3a788c7be4b5aa01b2206c77f5b608",
+        "packSHA256": "6d903089bfe4980dd3fa16b6e2d66d1cde3a788c7be4b5aa01b2206c77f5b608",
+        "body": "female",
+        "style": "curly",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -1,
+        "y": 0.25,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "207e8ba57f1e36a321d30d6e0f9ee5575fca555cdbf52d5e1baef2f881705675",
+        "packSHA256": "207e8ba57f1e36a321d30d6e0f9ee5575fca555cdbf52d5e1baef2f881705675",
+        "body": "female",
+        "style": "long",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -2,
+        "y": 2.75,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "117f5896fc32d76ca1e650364324af82c473efe4b4dc86433ebd6672c59e7fb8",
+        "packSHA256": "117f5896fc32d76ca1e650364324af82c473efe4b4dc86433ebd6672c59e7fb8",
+        "body": "female",
+        "style": "braided",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": -1.25,
+        "y": 1.75,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "1c14f9e95617ccc6b5f5a87489e73d897b623f8719d3be66eb8f5322e8c62e49",
+        "packSHA256": "1c14f9e95617ccc6b5f5a87489e73d897b623f8719d3be66eb8f5322e8c62e49",
+        "body": "female",
+        "style": "undercut",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 1.5,
+        "y": 2.5,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "482be66cf0f31ab6f2abe823877cbbf8b0aeec31a9e4fc463a35c8a499ab8f98",
+        "packSHA256": "482be66cf0f31ab6f2abe823877cbbf8b0aeec31a9e4fc463a35c8a499ab8f98",
+        "body": "female",
+        "style": "bob",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 2,
+        "y": 2,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "6c05ed1cf5297ea61cd122d430ccc9799db7bd54a862aa9cc2a6f0446190bc82",
+        "packSHA256": "6c05ed1cf5297ea61cd122d430ccc9799db7bd54a862aa9cc2a6f0446190bc82",
+        "body": "female",
+        "style": "swept",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 2.25,
+        "y": 2.25,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "acf30de36ab3e8ff86b4919435d055917d6dd67f842f53350a957c8178ca5c90",
+        "packSHA256": "acf30de36ab3e8ff86b4919435d055917d6dd67f842f53350a957c8178ca5c90",
+        "body": "female",
+        "style": "spiky",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 1.75,
+        "y": 2,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "2649f794ecde781f2dca8620f657e13106b3d6b60cd659a8cb1bb860d842c6c7",
+        "packSHA256": "2649f794ecde781f2dca8620f657e13106b3d6b60cd659a8cb1bb860d842c6c7",
+        "body": "female",
+        "style": "topknot",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 2,
+        "y": 1,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "8b2cd11eb178f413b4f22b8126ac9dc92b9b47622b3960095541fcb878aa0d88",
+        "packSHA256": "8b2cd11eb178f413b4f22b8126ac9dc92b9b47622b3960095541fcb878aa0d88",
+        "body": "female",
+        "style": "afro",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 1.25,
+        "y": 0,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "f3ae7cf40600bc359ebdc432be3a50760eca647e69692614acbe6247bb40c160",
+        "packSHA256": "f3ae7cf40600bc359ebdc432be3a50760eca647e69692614acbe6247bb40c160",
+        "body": "female",
+        "style": "ponytail",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 1.75,
+        "y": 1,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "8cca704e032c45080a73f654f26dd269d5f8d81b8e4584c12ac8480feb62e0b9",
+        "packSHA256": "8cca704e032c45080a73f654f26dd269d5f8d81b8e4584c12ac8480feb62e0b9",
+        "body": "female",
+        "style": "wavy",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 0.75,
+        "y": 0.25,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "6d903089bfe4980dd3fa16b6e2d66d1cde3a788c7be4b5aa01b2206c77f5b608",
+        "packSHA256": "6d903089bfe4980dd3fa16b6e2d66d1cde3a788c7be4b5aa01b2206c77f5b608",
+        "body": "female",
+        "style": "curly",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 1,
+        "y": 0.5,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "207e8ba57f1e36a321d30d6e0f9ee5575fca555cdbf52d5e1baef2f881705675",
+        "packSHA256": "207e8ba57f1e36a321d30d6e0f9ee5575fca555cdbf52d5e1baef2f881705675",
+        "body": "female",
+        "style": "long",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 2.75,
+        "y": 2.5,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "8b2cd11eb178f413b4f22b8126ac9dc92b9b47622b3960095541fcb878aa0d88",
+        "packSHA256": "8b2cd11eb178f413b4f22b8126ac9dc92b9b47622b3960095541fcb878aa0d88",
+        "body": "female",
+        "style": "afro",
+        "direction": "south"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0,
+        "scale": 94,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "1c14f9e95617ccc6b5f5a87489e73d897b623f8719d3be66eb8f5322e8c62e49",
+        "packSHA256": "1c14f9e95617ccc6b5f5a87489e73d897b623f8719d3be66eb8f5322e8c62e49",
+        "body": "female",
+        "style": "undercut",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 1.5,
+        "scale": 88,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "207e8ba57f1e36a321d30d6e0f9ee5575fca555cdbf52d5e1baef2f881705675",
+        "packSHA256": "207e8ba57f1e36a321d30d6e0f9ee5575fca555cdbf52d5e1baef2f881705675",
+        "body": "female",
+        "style": "long",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    }
+  ]
+}
