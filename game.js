@@ -1803,7 +1803,17 @@
         navigator().move(target,dx/length*distance,dy/length*distance);if(Math.hypot(target.x-actor.x,target.y-actor.y)>1)void onlineWorldCommand(session.genie?'fruit.move':'world.move',target);
       }else if(previous&&previous!=='0,0')void onlineWorldCommand(session.genie?'fruit.move':'world.stop',session.genie?{x:session.genie.x,y:session.genie.y}:{});
     }
-    if(!pose.moving&&lobbyAction&&lobbyDestination&&Math.hypot(pose.x-lobbyDestination.x,pose.y-lobbyDestination.y)<5){const action=lobbyAction;lobbyAction=null;lobbyDestination=null;if(Math.hypot(pose.x-action.x,pose.y-action.y)<80)activateNPC(action);}
+    if(pose.moving||!lobbyAction||!lobbyDestination)return;
+    const action=lobbyAction,destination=lobbyDestination;
+    if(distance(pose,destination)<5){
+      lobbyAction=null;lobbyDestination=null;
+      if(distance(pose,action)<80)activateNPC(action);
+    }else if(action.art&&!onlineWorldFrame.snapshot.path.length&&!onlineMoveWorking&&!ONLINE_GAME.busy&&!ONLINE_GAME.pending){
+      // A collision can end the server path early. Replan the NPC approach once from its confirmed position.
+      if(action.approachRetried){lobbyAction=null;lobbyDestination=null;return;}
+      lobbyAction={...action,approachRetried:true};
+      void onlineWorldCommand('world.move',destination);
+    }
   }
   function applyOnlineEquipment(){
     if(ONLINE_GAME.data.online.originalInventory)return;

@@ -137,6 +137,6 @@ Os sprites abaixo foram preparados a partir dos quatro PNGs fornecidos para a at
 | Nami | Nami.png · 1086 × 1448 | nami-map.png | 33 × 86 |
 | Donquixote | Donquixote.png · 1086 × 1448 | donquixote-map.png | 66 × 96 |
 
-A fonte, o peso e o contorno do nome vêm de `map-player-hud.js`, com preenchimento laranja escuro para os NPCs. A área de interação usa as dimensões do sprite, com uma margem de 5 px para toque. A aproximação e os serviços continuam no fluxo do porto. Shimotsuki Kozaburo mantém a chave interna do ferreiro e é identificado na abertura da Forja das Correntes.
+A fonte, o peso e o contorno do nome vêm de `map-player-hud.js`, com preenchimento laranja escuro para os NPCs. A área de interação usa as dimensões do sprite, com uma margem de 5 px para toque. A aproximação e os serviços continuam no fluxo do porto. Quando o movimento online para antes do destino, o cliente pode recalcular a aproximação uma vez a partir da posição confirmada. Shimotsuki Kozaburo mantém a chave interna do ferreiro e é identificado na abertura da Forja das Correntes.
 
 Origem das quatro imagens — anexos fornecidos pelo solicitante para a revisão visual do porto. Licenciamento comercial não verificado.

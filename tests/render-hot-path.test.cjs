@@ -58,6 +58,30 @@ test('NPCs draw only the supplied art and name, with mouse and touch bounds deri
  }
  assert.deepEqual(draws,[]);assert.deepEqual(labels,[]);
 });
+test('an interrupted online NPC approach replans once after the server stops and opens only after arrival',()=>{
+ const moves=[],opened=[],npc={art:'ryuma',kind:'forge',x:1560,y:1432};
+ const destination={x:1526,y:1445},stopped={x:1624,y:1545,moving:false};
+ const c=vm.createContext({
+  onlineWorldFrame:{snapshot:{path:[]},received:0,presentation:{sample:()=>stopped}},
+  MareOnlineGameUI:{worldPosition:()=>stopped},performance:{now:()=>10},
+  world:{hero:{}},ONLINE_GAME:{controlled:true,busy:false,pending:false},
+  keys:new Set(),currentPanel:null,actionLocked:()=>false,onlineMoveKeys:'0,0',onlineNextMove:0,
+  distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),onlineMoveWorking:true,
+  lobbyAction:npc,lobbyDestination:destination,activateNPC:a=>opened.push(a),
+  onlineWorldCommand:(...args)=>moves.push(args),
+ });
+ vm.runInContext(fn('tickOnlineWorld'),c);
+ vm.runInContext('tickOnlineWorld()',c);
+ assert.deepEqual(moves,[]);
+ c.onlineMoveWorking=false;vm.runInContext('tickOnlineWorld()',c);
+ assert.deepEqual(moves,[['world.move',destination]]);assert.deepEqual(opened,[]);
+ vm.runInContext('tickOnlineWorld()',c);
+ assert.equal(c.lobbyAction,null);assert.equal(moves.length,1);
+ c.lobbyAction={...npc,approachRetried:true};c.lobbyDestination=destination;
+ c.MareOnlineGameUI.worldPosition=()=>({...destination,moving:false});
+ vm.runInContext('tickOnlineWorld()',c);
+ assert.equal(opened[0].art,'ryuma');assert.equal(c.lobbyDestination,null);
+});
 test('HUD integer formatting reuses one formatter while preserving Portuguese output',()=>{
  let made=0;const c=vm.createContext({Intl:{NumberFormat:class{constructor(locale){made++;this.f=new Intl.NumberFormat(locale);}format(n){return this.f.format(n);}}}});
  vm.runInContext(source.slice(source.indexOf('  const fmt ='),source.indexOf('  const escapeHTML')),c);
