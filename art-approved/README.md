@@ -47,3 +47,8 @@ O backup aprovado de NORTH, masculino e feminino com quatro trajes, está em `we
 ## Sabre 1 e Nodachi 68 SOUTH aprovados
 
 A composição apresentada sobre o ciclo da arma 67 está em `weapons/sabre1-nodachi68-south-base67-approved/`. Aprovação restrita à prévia mostrada, sem extensão a modelos ou trajes não apresentados. Backup exato verificado; sem integração ou teste no jogo.
+
+
+## Nodachi de Fogo 69: laterais masculinas de base aprovadas
+
+O backup v2 das laterais EAST/WEST está em `weapons/nodachi69-ew-male-base-v2-approved/`. Aprovação restrita ao modelo masculino de base apresentado, sem extensão ao feminino ou trajes não mostrados. Backup exato verificado; sem integração ou teste no jogo.

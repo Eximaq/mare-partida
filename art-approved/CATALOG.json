@@ -2525,6 +2525,20 @@
       "productionEnabled": false,
       "storage": "zip",
       "approvalScope": "Presented composition only; no unshown model/outfit variants"
+    },
+    {
+      "path": "weapons/nodachi69-ew-male-base-v2-approved/69_EW_M_BASE_V2/Nodachi69_EW_FonteAnterior_Intacta_Candidato_Editavel_v2.zip",
+      "bytes": 14509669,
+      "sha256": "168bc00e1509c0cde4f33106e8e45945ff6512441736965806d1ce82fbd6bfc4",
+      "pngEntries": 105,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Nodachi69_EW_FonteAnterior_Intacta_Candidato_Editavel_v2.zip.part001",
+        "Nodachi69_EW_FonteAnterior_Intacta_Candidato_Editavel_v2.zip.part002"
+      ],
+      "restore": "weapons/nodachi69-ew-male-base-v2-approved/RESTORE.py",
+      "approvalScope": "Presented male base v2 only; no female or outfit variants"
     }
   ],
   "productionEnabled": false,
