@@ -189,6 +189,16 @@
         const data=texture(images.get(cleanHeadFile),cleanHeadFile,'headSkin',skin).pixels;
         pieces.headBase={full:fromPixels(fitted([cleanHeadFile,selected.key,fi,skin?.join(',')||''].join(':'),()=>api.attach(data,'head',rest,pose,socket,padding,spec.width,spec.height)).full,spec.width,spec.height)};
       }
+      // Replace the head family atomically. Never paste a new hair/helmet onto
+      // an incompatible native head or discard the player's uncovered styles.
+      const reworkedHead=options.reworkHead?.compose(selected,look,{skinRamp:skin,hairRamp:api.hairs[look.hairColor]?.ramp,rest,pose,socket,padding,width:spec.width,height:spec.height});
+      if(reworkedHead){
+        for(const slot of ['headBase','face','hair','head']){
+          const pixels=reworkedHead[slot];
+          if(pixels)pieces[slot]={full:fromPixels(pixels,spec.width,spec.height)};
+          else delete pieces[slot];
+        }
+      }
       if(pieces.torso&&pieces.headBase){
         const c=pieces.headBase.full,cx=c.getContext('2d'),d=cx.getImageData(0,0,spec.width,spec.height),collar=Math.floor(pose.find(p=>p.label==='NECK').y*128+padding)-1;
         // Canonical heads contain a small piece of bare shoulder. It belongs
@@ -271,8 +281,8 @@
         }
       }
       ctx.clearRect(0,0,spec.width,spec.height);
-      const calibration=catalog.headCalibration?.[selected.direction]||{};
-      if(headState.hairHideMode==='partial'&&pieces.hair){const c=pieces.hair.full,d=c.getContext('2d').getImageData(0,0,spec.width,spec.height).data,fit=api.headAdjustment(options.allowHeadAdjustment&&look.headAdjustment?look.headAdjustment:catalog.headAdjustments?.[headStyle.id]?.[selected.body]?.[selected.direction]),center=rest.find(j=>j.label==='NECK').y*128-20,line=headStyle.hairlineY?.[selected.body]?.[selected.direction]??rest.find(j=>j.label==='NOSE').y*128-3,hairline=center+(line-center)*fit.scale/100+fit.y;
+      const calibration=reworkedHead?{}:catalog.headCalibration?.[selected.direction]||{};
+      if(!reworkedHead&&headState.hairHideMode==='partial'&&pieces.hair){const c=pieces.hair.full,d=c.getContext('2d').getImageData(0,0,spec.width,spec.height).data,fit=api.headAdjustment(options.allowHeadAdjustment&&look.headAdjustment?look.headAdjustment:catalog.headAdjustments?.[headStyle.id]?.[selected.body]?.[selected.direction]),center=rest.find(j=>j.label==='NECK').y*128-20,line=headStyle.hairlineY?.[selected.body]?.[selected.direction]??rest.find(j=>j.label==='NOSE').y*128-3,hairline=center+(line-center)*fit.scale/100+fit.y;
         pieces.hair.full=fromPixels(api.clipHairCrown(d,rest,socket,padding,spec.width,spec.height,hairline,calibration.hairX||0,calibration.hairY||0),spec.width,spec.height);}
       const hairPass=render=>render();
       const full=slot=>{if(pieces[slot]?.full){const render=()=>ctx.drawImage(pieces[slot].full,slot==='hair'?(calibration.hairX||0):0,slot==='hair'?(calibration.hairY||0):0);if(slot==='hair')hairPass(render);else render();}};
