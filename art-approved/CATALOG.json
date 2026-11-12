@@ -1450,6 +1450,20 @@
       }
     },
     {
+      "path": "weapons/mixed113-north-three-keys/Arma113_NORTH_MF_Editavel.zip",
+      "bytes": 1885220,
+      "sha256": "1b23b0d15aa2561858018ae53980ad90224ed7c94d6ddf262be826b72b4a6113",
+      "pngEntries": 58,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/mixed113-north-three-keys/parts/MANIFEST.json",
+        "reconstruct": "weapons/mixed113-north-three-keys/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/mixed115-north-three-keys/Arma115_NORTH_MF_Editavel.zip",
       "bytes": 3773509,
       "sha256": "201c8a8ccbb5d105132a331a1f96ae7a93fc5194822319583ac16524f0f59f66",

@@ -1,0 +1,22 @@
+{
+  "original": "Arma113_NORTH_MF_Editavel.zip",
+  "bytes": 1885220,
+  "sha256": "1b23b0d15aa2561858018ae53980ad90224ed7c94d6ddf262be826b72b4a6113",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "c6777e9c34747d2b4cdb0cd296428e49a82033d034f8e9c9e836a92c23420cdf"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "759ddbf4435f4f8f3aeb67f8477e3e23a314487b50a3a6010449d6b0c3aca7c4"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 385220,
+      "sha256": "04c6f06462c6b87c7f07289a6957fafdecbca92cfac4abc4d5111c1bace59fed"
+    }
+  ]
+}
