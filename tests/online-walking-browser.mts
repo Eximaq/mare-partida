@@ -42,7 +42,7 @@ await authDatabase(async f=>{
   await p.evaluate(()=>{const original=globalThis.MareEmberRenderer.monster;globalThis.monsterProbe=[];globalThis.MareEmberRenderer.monster=function(ctx,m,...args){if(m.alive)globalThis.monsterProbe.push({id:m.id,x:m.x,y:m.y,moving:m.moving,phase:m.emberElapsed});return original.call(this,ctx,m,...args);};});
   assert.equal(await p.evaluate(()=>Number.isFinite(__mareDiagnostics().onlineSampledAt)),true,'motion probes need the time associated with the drawn pose');
   let compactReads=0;p.on('response',r=>{if(r.url().endsWith('/frame')&&r.status()===200)compactReads++;});
-  const captures=[];
+  const captures=[],keyboardResponseFailures:string[]=[];
   for(const mapId of ['lobby','dawn']){
    await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
    await p.evaluate(id=>MareGameSession.command(id==='lobby'?'world.return':'world.travel',id==='lobby'?{}:{islandId:'dawn'}),mapId);
@@ -99,20 +99,35 @@ await authDatabase(async f=>{
    const keyOrigin=await p.evaluate(()=>({x:__mareDiagnostics().hero.x,y:__mareDiagnostics().hero.y}));
    const axis=[[1,0,'d','a'],[0,1,'s','w']].find(([dx,dy])=>[-45,-30,-15,15,30,45].every(n=>nav.walkable(keyOrigin.x+Number(dx)*n,keyOrigin.y+Number(dy)*n)));
    assert.ok(axis,'keyboard probe needs a clear corridor on both sides');
-   await p.evaluate(`globalThis.keyFrames=[];globalThis.keyInputs=[];globalThis.keyCommands=[];globalThis.recordKeys=true;globalThis.recordRelease=false;
+   await p.evaluate(`globalThis.keyFrames=[];globalThis.keyInputs=[];globalThis.keyCommands=[];globalThis.recordKeys=true;globalThis.recordRelease=false;globalThis.keyboardPointerEvents=0;
     if(!globalThis.commandProbeInstalled){globalThis.commandProbeInstalled=true;const command=MareGameSession.command;MareGameSession.command=function(action,...args){const row={action,start:performance.now()};if(globalThis.recordKeys)globalThis.keyCommands.push(row);return command.call(this,action,...args).then(value=>{row.end=performance.now();return value;},error=>{row.end=performance.now();row.error=error.code;throw error;});};}
     if(!globalThis.keyProbeInstalled){globalThis.keyProbeInstalled=true;
+     window.addEventListener('pointerdown',()=>{if(globalThis.recordKeys)globalThis.keyboardPointerEvents++;},true);
      window.addEventListener('keydown',e=>{const vectors={w:[0,-1],a:[-1,0],s:[0,1],d:[1,0]};const v=vectors[e.key];if(!globalThis.recordKeys||!v||e.repeat)return;const h=__mareDiagnostics().hero;globalThis.keyInputs.push({t:performance.now(),x:h.x,y:h.y,dx:v[0],dy:v[1]});},true);
      window.addEventListener('keyup',()=>{if(globalThis.recordRelease)globalThis.releasedAt=performance.now();},true);
     }
-    function keySample(){if(!globalThis.recordKeys)return;const d=__mareDiagnostics();globalThis.keyFrames.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,moving:d.hero.walking>0,busy:MareGameSession.busy,available:MareGameSession.available,controlled:MareGameSession.controlled});requestAnimationFrame(keySample);}requestAnimationFrame(keySample);
+    function keySample(){if(!globalThis.recordKeys)return;const d=__mareDiagnostics();globalThis.keyFrames.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,moving:d.hero.walking>0,clickMarker:d.destination!==null,busy:MareGameSession.busy,available:MareGameSession.available,controlled:MareGameSession.controlled});requestAnimationFrame(keySample);}requestAnimationFrame(keySample);
    `);
    let held='';for(let i=0;i<8;i++){if(held)await p.keyboard.up(held);held=String(axis[i%2?3:2]);await p.keyboard.down(held);await p.waitForTimeout(110);}
    await p.evaluate(()=>{globalThis.recordRelease=true;});await p.keyboard.up(held);await p.waitForTimeout(100);
-   const keyboard=await p.evaluate(()=>{globalThis.recordKeys=false;globalThis.recordRelease=false;return {responses:globalThis.keyInputs.map((input,i,all)=>{const next=all[i+1]?.t??globalThis.releasedAt;const frame=globalThis.keyFrames.find(f=>f.t>input.t&&f.t<next&&(f.x-input.x)*input.dx+(f.y-input.y)*input.dy>.5);return frame?frame.t-input.t:null;}),stopMs:(globalThis.keyFrames.find(f=>f.t>globalThis.releasedAt&&!f.moving)?.t??Infinity)-globalThis.releasedAt};});
-   console.log(JSON.stringify({map:mapId,keyboardRound,keyboard}));await writeFile(resolve(out,'keyboard-'+mapId+'-'+keyboardRound+'.json'),JSON.stringify(await p.evaluate(()=>({frames:globalThis.keyFrames,inputs:globalThis.keyInputs,commands:globalThis.keyCommands})),null,2));assert.equal(keyboard.responses.length,8);assert.ok(keyboard.responses.every(ms=>ms!==null&&ms<=80),'WASD turns before the delayed ACK');assert.ok(keyboard.stopMs<=80,'key release stops before the delayed ACK');
+   const keyboard=await p.evaluate(()=>{globalThis.recordKeys=false;globalThis.recordRelease=false;return {pointerEvents:globalThis.keyboardPointerEvents,markerFrames:globalThis.keyFrames.filter(f=>f.t>globalThis.keyInputs[0].t+50&&f.clickMarker).length,responses:globalThis.keyInputs.map((input,i,all)=>{const next=all[i+1]?.t??globalThis.releasedAt;const frame=globalThis.keyFrames.find(f=>f.t>input.t&&f.t<next&&(f.x-input.x)*input.dx+(f.y-input.y)*input.dy>.5);return frame?frame.t-input.t:null;}),stopMs:(globalThis.keyFrames.find(f=>f.t>globalThis.releasedAt&&!f.moving)?.t??Infinity)-globalThis.releasedAt};});
+   console.log(JSON.stringify({map:mapId,keyboardRound,keyboard}));await writeFile(resolve(out,'keyboard-'+mapId+'-'+keyboardRound+'.json'),JSON.stringify(await p.evaluate(()=>({frames:globalThis.keyFrames,inputs:globalThis.keyInputs,commands:globalThis.keyCommands})),null,2));assert.equal(keyboard.pointerEvents,0,'keyboard must not synthesize mouse inputs');assert.equal(keyboard.markerFrames,0,'keyboard must not create or restore a click destination');assert.equal(keyboard.responses.length,8);
+   // Collect latency failures without skipping the independent marker, combat
+   // and reconnect regressions. The same strict assertions fail the run below.
+   if(!keyboard.responses.every(ms=>ms!==null&&ms<=80))keyboardResponseFailures.push(mapId+':'+keyboardRound+':turn');
+   if(!(keyboard.stopMs<=80))keyboardResponseFailures.push(mapId+':'+keyboardRound+':release');
    await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);await p.waitForTimeout(3000);
    }
+   const heldOrigin=await p.evaluate(()=>({x:__mareDiagnostics().hero.x,y:__mareDiagnostics().hero.y}));
+   await p.keyboard.down('d');await p.waitForTimeout(3000);
+   assert.equal(await p.evaluate(()=>__mareDiagnostics().destination),null,'held keyboard renewal must not create a click marker');
+   await p.screenshot({path:resolve(out,'keyboard-held-'+mapId+'.png')});
+   await p.keyboard.up('d');await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);await p.waitForTimeout(3000);
+   // Return through the authoritative movement contract so this new held-key
+   // probe does not change the starting corridor of the existing chase test.
+   await p.evaluate(q=>MareGameSession.command('world.move',q),heldOrigin);
+   await p.waitForFunction(q=>{const w=MareGameSession.data.online.world;return Math.hypot(w.position.x-q.x,w.position.y-q.y)<2;},heldOrigin,{timeout:15000});
+   await p.waitForTimeout(300);
    await p.unroute('**/v1/**');
    // Reject an actual UI command before it reaches the isolated backend.
    const original=await p.evaluate(()=>({world:structuredClone(MareGameSession.data.online.world),version:MareGameSession.data.online.state.version}));
@@ -190,5 +205,6 @@ await authDatabase(async f=>{
   assert.deepEqual(bootDiagnostics,['[online-game] bootstrap_failed initial_map_asset_failed']);
   assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');
   console.log('Optional depth failure allowed entry; a missing base map reported the specific failure without exposing the creation form.');
+  assert.deepEqual(keyboardResponseFailures,[],'WASD turns and release must respond within 80ms before the delayed ACK');
  }catch(error){await context?.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw error;}finally{await simulations?.stop();await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
 });

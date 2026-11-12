@@ -207,6 +207,23 @@
     if(scene==='hunt'){autoPlay=false;world.target=null;updateUI();}
     return true;
   }
+  // Keyboard intent has no click destination or NPC arrival action. It only
+  // shares the bounded transport/acknowledgement queue with pointer movement.
+  function moveOnlineKeyboard(dx,dy,preview=null){
+    if(!ONLINE_GAME.controlled||!ONLINE_GAME.available)return false;
+    const now=performance.now(),actor=onlineWorldFrame.presentation.sample(now),target={x:actor.x,y:actor.y};
+    const length=Math.hypot(dx,dy);if(!length)return stopOnlineWalk(preview);
+    navigator().move(target,dx/length*getDerived().moveSpeed*2.5,dy/length*getDerived().moveSpeed*2.5);
+    if(Math.hypot(target.x-actor.x,target.y-actor.y)<=1)return stopOnlineWalk();
+    lobbyAction=null;lobbyDestination=null;
+    if(onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop'){
+      const {character,online}=ONLINE_GAME.data;
+      queuedOnlineWalk={keyboard:{dx,dy},point:target,characterId:character.id,mapId:online.world.mapId,preview:preview||previewOnlineWalk(target)};
+      return true;
+    }
+    if(onlineMoveWorking||ONLINE_GAME.busy||ONLINE_GAME.pending)return false;
+    void onlineWorldCommand('world.move',target,false,preview||previewOnlineWalk(target));return true;
+  }
   function stopOnlineWalk(preview=null){
     if(!ONLINE_GAME.controlled||!ONLINE_GAME.available)return false;
     const point=onlineWorldFrame.presentation.sample(performance.now());
@@ -1783,7 +1800,9 @@
       queuedOnlineWalk=null;
       const current=ONLINE_GAME.data;
       if(accepted&&walk&&(walk.stop||!currentPanel)&&current?.character?.id===walk.characterId&&current.online.world?.mapId===walk.mapId){
-        if(walk.stop)stopOnlineWalk(walk.preview);else walkTo(walk.point,walk.action,walk.preview);
+        if(walk.stop)stopOnlineWalk(walk.preview);
+        else if(walk.keyboard)moveOnlineKeyboard(walk.keyboard.dx,walk.keyboard.dy,walk.preview);
+        else walkTo(walk.point,walk.action,walk.preview);
       }else if(walk?.preview)walk.preview.presentation.cancel(performance.now());
     }
   }
@@ -1827,11 +1846,12 @@
     const queueable=!session.genie&&(onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop');
     if(ONLINE_GAME.available&&(queueable||!ONLINE_GAME.busy&&!ONLINE_GAME.pending&&!onlineMoveWorking)&&(signature!==onlineMoveKeys||(dx||dy)&&now>=onlineNextMove)){
       const previous=onlineMoveKeys;onlineMoveKeys=signature;onlineNextMove=now+2200;
-      if(dx||dy){lobbyAction=null;lobbyDestination=null;const actor=session.genie||visual,target={x:actor.x,y:actor.y},length=Math.hypot(dx,dy),distance=getDerived().moveSpeed*2.5;
-        navigator().move(target,dx/length*distance,dy/length*distance);
-        if(Math.hypot(target.x-actor.x,target.y-actor.y)>1){
-          if(session.genie)void onlineWorldCommand('fruit.move',target);else walkTo(target);
-        }else if(!session.genie)stopOnlineWalk();
+      if(dx||dy){
+        if(session.genie){
+          lobbyAction=null;lobbyDestination=null;const actor=session.genie,target={x:actor.x,y:actor.y},length=Math.hypot(dx,dy),distance=getDerived().moveSpeed*2.5;
+          navigator().move(target,dx/length*distance,dy/length*distance);
+          if(Math.hypot(target.x-actor.x,target.y-actor.y)>1)void onlineWorldCommand('fruit.move',target);
+        }else moveOnlineKeyboard(dx,dy);
       }else if(previous&&previous!=='0,0'){
         if(session.genie)void onlineWorldCommand('fruit.move',{x:session.genie.x,y:session.genie.y});else stopOnlineWalk();
       }

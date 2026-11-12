@@ -195,3 +195,55 @@ Verificações finais desta extensão: 285/285 testes de fundação, 188/188 arq
 legados, build estático, sintaxe e diff aprovados. A repetição completa do navegador
 passou também reconexão, viewport estreito, preparação lenta (27,4 s), falha de mapa
 base e preservação do save demo. O PostgreSQL descartável foi parado ao encerrar.
+
+## Separação entre teclado e destino do mouse
+
+O caminho de WASD/setas chamava `walkTo`, que publica `lobbyDestination` para o
+marcador circular do mouse. A drenagem da fila também chamava essa função após
+uma confirmação, restaurando o marcador. Não havia geração de eventos de mouse;
+a interferência estava no estado compartilhado e foi reproduzida por duas
+regressões antes da mudança.
+
+`moveOnlineKeyboard` agora trata direção e mantém a intenção como teclado na
+fila. Cancela destino de clique e ação de NPC, e uma confirmação atrasada não
+converte a direção em clique. Soltura continua enviando parada; o mouse conserva
+seu próprio marcador. A fila de uma intenção pendente e a previsão limitada são
+compartilhadas, mas os manipuladores de entrada são distintos. O protocolo
+autoritativo continua `world.move`/`world.stop`: não foi criado um protocolo novo
+de vetores, nem alterada a velocidade, colisão, economia ou persistência.
+
+Doze testes focados passaram, incluindo mistura de mouse/teclado e confirmação
+atrasada. A fundação passou 288/288 com concorrência de testes limitada a dois,
+e os arquivos legados passaram 188/188. Na primeira execução com concorrência
+padrão, um teste de reinício de worker não recuperou a saúde dentro de 350 ms;
+o teste isolado e a suíte com dois executores passaram, sem mudar a asserção ou
+o código do worker. Isso não é evidência de capacidade da VPS.
+
+Um ensaio visual registrou zero eventos de ponteiro e zero marcadores nas três
+sequências do porto, mas reprovou resposta imediata de duas teclas: a confirmação
+do primeiro comando demorou 1.046 ms, ultrapassando a janela de previsão de
+750 ms. O trace mostra retorno à posição confirmada e interrupção da previsão.
+A origem do custo adicional dessa requisição não foi isolada; não se atribui
+esse custo ao PC nem à Internet. Nenhum limite foi ampliado para aprovar o teste.
+
+Essa condição reapareceu em outra execução. As falhas de latência agora são
+coletadas e reprovam a execução ao final, permitindo observar também os cenários
+independentes sem esconder o resultado. O novo teste de tecla mantida caminha de
+volta pelo contrato autoritativo antes da perseguição: sem essa preparação ele
+deixava o personagem perto dos monstros e não produzia as 101 amostras mínimas de
+deslocamento exigidas pelo teste anterior.
+
+Execução completa final, sem alterar a correção ou os limites:
+
+- 48 inversões nos dois mapas; zero eventos de ponteiro e zero quadros com
+  marcador de clique. Tecla mantida por três segundos também sem marcador.
+- Resposta visual p50 38 ms, p95 45,4 ms e máximo 48,8 ms; soltura 20,2–48,4 ms.
+  Requisições tiveram atraso artificial de 250 ms, além do processamento real.
+- Cliques, velocidade, rejeição/reconciliação, perseguição e 114 amostras de
+  movimento de monstros passaram; zero deslizes e reinícios da fase visual.
+- Reconexão, viewport estreito, carregamento progressivo de 27,1 s, falha
+  explícita de mapa base e preservação do save demo passaram. Banco descartável
+  encerrado. Build, sintaxe e diff conferidos.
+
+A correção do marcador está validada; a execução final aprovada não apaga as
+esperas longas anteriores nem certifica estabilidade absoluta da rede.

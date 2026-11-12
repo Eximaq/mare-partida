@@ -58,3 +58,17 @@ test('WASD and arrow keys use equivalent normalized directions',()=>{
 test('special genie movement retains the authoritative fruit command path',()=>{
  const f=fixture();f.c.session.genie={x:100,y:100};f.step(0,['d']);assert.equal(f.commands[0].action,'fruit.move');assert.equal(f.step(20,['a']).x,100);assert.equal(f.c.queuedOnlineWalk,null);
 });
+
+test('keyboard never creates or restores a mouse destination marker',async()=>{
+ const f=fixture();f.step(0,['d']);assert.equal(f.c.lobbyDestination,null,'keydown must not publish a click marker');
+ f.step(20,['a']);await f.ack(0);assert.equal(f.c.lobbyDestination,null,'queued keyboard acknowledgement must remain a keyboard input');
+});
+test('keyboard immediately replaces pending mouse navigation and NPC intent',async()=>{
+ const f=fixture();f.c.walkTo({x:500,y:100},{kind:'npc',x:500,y:100});assert.equal(f.c.lobbyDestination.x,500);
+ f.step(0,['w']);assert.equal(f.c.lobbyDestination,null);assert.equal(f.c.lobbyAction,null);
+ await f.ack(0);assert.equal(f.c.lobbyDestination,null);assert.equal(f.c.lobbyAction,null);assert.ok(f.commands[1].payload.y<100);
+});
+test('mouse click after key release keeps its own marker and replaces the queued stop',async()=>{
+ const f=fixture();f.step(0,['d']);f.step(20,[]);f.c.walkTo({x:350,y:100});await f.ack(0);
+ assert.equal(f.commands[1].action,'world.move');assert.equal(f.c.lobbyDestination.x,350);
+});
