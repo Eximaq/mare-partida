@@ -1,0 +1,215 @@
+{
+  "schema": "drawn8-authored-review-v1",
+  "productionEnabled": false,
+  "completeModularity": false,
+  "items": {
+    "109": {
+      "body": "masculino",
+      "direction": "south",
+      "appearance": "approved-source",
+      "classSource": "punch",
+      "archiveSHA256": "be620e66e06ea2b9c943b92600abae46e0ef7f473e9917b6491cbf545cd06f8c",
+      "density": 4,
+      "frame": [
+        160,
+        160
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "frames": [
+        {
+          "state": 0,
+          "approvedSHA256": "f42714418db810de07197c31403119e0368aee94744d662f4a672d3c743938e2",
+          "interfaceKind": "rounding-only",
+          "changedPixels": 64,
+          "approved": "109/0-final.png",
+          "equipment": "109/0-equipment.png",
+          "interfaceMask": "109/0-mask.png",
+          "interfacePixels": "109/0-interface.png",
+          "body": "109/0-body.png",
+          "bodySHA256": "816234b2769e3cbadaf130a174f015fe1c586a903764be9fda4f91c71f6f2990"
+        },
+        {
+          "state": 1,
+          "approvedSHA256": "800a7cfe291786a394fa251ea6e38d16d9bc4bf28b2646cb5c71a4420660b52d",
+          "interfaceKind": "rounding-only",
+          "changedPixels": 0,
+          "approved": "109/1-final.png",
+          "equipment": "109/1-equipment.png",
+          "interfaceMask": "109/1-mask.png",
+          "interfacePixels": "109/1-interface.png",
+          "body": "109/1-body.png",
+          "bodySHA256": "553c2187b794a88f6e4df8eb59e7e72e31cd19b46537ce18764a3d61b44da0d7"
+        },
+        {
+          "state": 2,
+          "approvedSHA256": "be77b9c8df0f7891afae54c3157abef1563c9d924c3eb27128caf27798742706",
+          "interfaceKind": "rounding-only",
+          "changedPixels": 460,
+          "approved": "109/2-final.png",
+          "equipment": "109/2-equipment.png",
+          "interfaceMask": "109/2-mask.png",
+          "interfacePixels": "109/2-interface.png",
+          "body": "109/2-body.png",
+          "bodySHA256": "13a2c945c76a5900c182bcf86c1f32ef85433db56cc73ff9c26bd06d21e73c6e"
+        },
+        {
+          "state": 3,
+          "approvedSHA256": "556884fad6300a5197896ad24bd40972f51e5d2fe280b9858b2116a26f63c4a5",
+          "interfaceKind": "rounding-only",
+          "changedPixels": 863,
+          "approved": "109/3-final.png",
+          "equipment": "109/3-equipment.png",
+          "interfaceMask": "109/3-mask.png",
+          "interfacePixels": "109/3-interface.png",
+          "body": "109/3-body.png",
+          "bodySHA256": "f2c496f0c9349690f0fdfb38af67c915495ccf8e88a4bb5d8e08455d2b0f9373"
+        },
+        {
+          "state": 4,
+          "approvedSHA256": "4abf17bb2aaa4c19d688870deec76bbcb6270eb3b8572df3429ded2138108c6d",
+          "interfaceKind": "rounding-only",
+          "changedPixels": 1198,
+          "approved": "109/4-final.png",
+          "equipment": "109/4-equipment.png",
+          "interfaceMask": "109/4-mask.png",
+          "interfacePixels": "109/4-interface.png",
+          "body": "109/4-body.png",
+          "bodySHA256": "e2fe6f45cb7c475a542ef6e0d320b64f9d9a8f0b30c8005af567722a295b34fe"
+        },
+        {
+          "state": 5,
+          "approvedSHA256": "4079290de32fd422d3bc3286891ea1bdfb19be09df99a09ae5ba7760439e8829",
+          "interfaceKind": "rounding-only",
+          "changedPixels": 917,
+          "approved": "109/5-final.png",
+          "equipment": "109/5-equipment.png",
+          "interfaceMask": "109/5-mask.png",
+          "interfacePixels": "109/5-interface.png",
+          "body": "109/5-body.png",
+          "bodySHA256": "1ca77bc58d1f46bca7455c0731dd2c82c180597dd3ca6d4ac29c9a0eac11c72e"
+        },
+        {
+          "state": 6,
+          "approvedSHA256": "698fcafab66c39e449a72339d38f213feb9b1f6217ffade32d7add2da1299ade",
+          "interfaceKind": "rounding-only",
+          "changedPixels": 0,
+          "approved": "109/6-final.png",
+          "equipment": "109/6-equipment.png",
+          "interfaceMask": "109/6-mask.png",
+          "interfacePixels": "109/6-interface.png",
+          "body": "109/6-body.png",
+          "bodySHA256": "2ef56479b38586028c2b00d510cee5f4ae0aaa2c09568d18a28472c257771ab9"
+        }
+      ]
+    },
+    "17": {
+      "body": "masculino",
+      "direction": "south",
+      "appearance": "approved-source",
+      "classSource": "focus",
+      "archiveSHA256": "99c55ef65e110a3340d0f889b77b5036cc03391711586bcb481ddb1d6765f0c5",
+      "density": 4,
+      "frame": [
+        160,
+        160
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "frames": [
+        {
+          "state": 0,
+          "approvedSHA256": "d4c459d045c095ba04d2978038bc99ad3faf6bd3e0dbd191207c11c5fbd391de",
+          "interfaceKind": "authored-hand-and-orb",
+          "changedPixels": 1017,
+          "approved": "17/0-final.png",
+          "interfaceMask": "17/0-mask.png",
+          "interfacePixels": "17/0-interface.png",
+          "body": "17/0-body.png",
+          "bodySHA256": "8729940f8a864bd2ad847686f2a875e5b5d831d032050a7cc21ba9a8c1f1f280"
+        },
+        {
+          "state": 1,
+          "approvedSHA256": "0dc83a53549d8f32b90bbde961a6f50a1b78f76b7d2d1483127cf1954d864b48",
+          "interfaceKind": "authored-hand-and-orb",
+          "changedPixels": 1567,
+          "approved": "17/1-final.png",
+          "interfaceMask": "17/1-mask.png",
+          "interfacePixels": "17/1-interface.png",
+          "body": "17/1-body.png",
+          "bodySHA256": "1e23e6683e4964ebe57b19e7e3114b4927a76e67d637515a2be964eff91cd9ae"
+        },
+        {
+          "state": 2,
+          "approvedSHA256": "970189c872c4ec308a1e03f4c218b90d35b273d203143f0ea6333814d1f1a2ca",
+          "interfaceKind": "authored-hand-and-orb",
+          "changedPixels": 2267,
+          "approved": "17/2-final.png",
+          "interfaceMask": "17/2-mask.png",
+          "interfacePixels": "17/2-interface.png",
+          "body": "17/2-body.png",
+          "bodySHA256": "add76d21b7fc9be611534680d1b3e795ef6c67a30ad72b8b2908daf752a1e25a"
+        },
+        {
+          "state": 3,
+          "approvedSHA256": "286d898f82b0388f6713cd394249f16278a65f6872711d635616a3cc87a1b3b4",
+          "interfaceKind": "authored-hand-and-orb",
+          "changedPixels": 980,
+          "approved": "17/3-final.png",
+          "interfaceMask": "17/3-mask.png",
+          "interfacePixels": "17/3-interface.png",
+          "body": "17/3-body.png",
+          "bodySHA256": "fa3cda9775a0b9e0e966963cd9fd7445fe2f2f3b6d52c406c88899c8e3a30d95"
+        },
+        {
+          "state": 4,
+          "approvedSHA256": "656f503dadd6cc5babc03c1c91e7d6cfc2a0527d57c4f1e0778e458a328dd741",
+          "interfaceKind": "authored-hand-and-orb",
+          "changedPixels": 980,
+          "approved": "17/4-final.png",
+          "interfaceMask": "17/4-mask.png",
+          "interfacePixels": "17/4-interface.png",
+          "body": "17/4-body.png",
+          "bodySHA256": "06e6d058ec4aac9dd540e670ff6937afbb67fd843c60b88d18f04ed14dbb16b5"
+        },
+        {
+          "state": 5,
+          "approvedSHA256": "01632a633734764feecabdc298472778bf8e81586a36df5e66466484d31688d9",
+          "interfaceKind": "authored-hand-and-orb",
+          "changedPixels": 955,
+          "approved": "17/5-final.png",
+          "interfaceMask": "17/5-mask.png",
+          "interfacePixels": "17/5-interface.png",
+          "body": "17/5-body.png",
+          "bodySHA256": "d04e0e108db1ca641a529b958b92417259e2f22ac3ac306fb6fb3e8ab2237c9b"
+        },
+        {
+          "state": 6,
+          "approvedSHA256": "dd6dcae039de660098777e6eb97382389a7aa75b405c96d4d84b32f6f3d87e33",
+          "interfaceKind": "authored-hand-and-orb",
+          "changedPixels": 1792,
+          "approved": "17/6-final.png",
+          "interfaceMask": "17/6-mask.png",
+          "interfacePixels": "17/6-interface.png",
+          "body": "17/6-body.png",
+          "bodySHA256": "7d9de3c9cfe823109dcfd7650b1f5d7e446795d5939208b3af31df43f4fb5f40"
+        },
+        {
+          "state": 7,
+          "approvedSHA256": "d3265b62b0eaa138326b93c796a2f6f36791b66970ac9c4f8d5e31cf1fca9e2a",
+          "interfaceKind": "authored-hand-and-orb",
+          "changedPixels": 1021,
+          "approved": "17/7-final.png",
+          "interfaceMask": "17/7-mask.png",
+          "interfacePixels": "17/7-interface.png",
+          "body": "17/7-body.png",
+          "bodySHA256": "6ec153a763f3e61e84d1a2821c573555da2d2f0429f2a863a051130706b4db0b"
+        }
+      ]
+    }
+  }
+}

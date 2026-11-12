@@ -1,0 +1,14 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Rework 109/17 · revisão isolada</title>
+<style>body{background:#172632;color:#eee;font:16px system-ui;margin:20px}canvas{background:#40515c;width:min(100%,640px);image-rendering:pixelated}button,select{font:inherit;margin:8px;padding:8px}p{max-width:700px}</style>
+<h1>Rework aprovado · 109 / 17 SOUTH</h1><p>Revisão isolada. Não é integração completa no jogo. Masculino e aparência original apenas. Sem teste de roupas, feminino ou recoloração. Estados apresentados, sem inventar timeline de combate.</p>
+<label>Arma <select id="item"><option>109</option><option>17</option></select></label><label>Estado <select id="state"></select></label><button id="next">Próximo estado</button><p id="status" role="status"></p><canvas id="canvas" width="640" height="640" aria-label="Frame rework aprovado"></canvas>
+<script src="renderer.js"></script><script>
+(async()=>{
+ const item=document.querySelector('#item'),state=document.querySelector('#state'),status=document.querySelector('#status'),ctx=document.querySelector('canvas').getContext('2d');
+ const response=await fetch('assets/manifest.json');if(!response.ok)throw Error('Manifesto indisponível');const manifest=await response.json();
+ const adapter=MareRework10917Review.create(manifest,{review:true,loadImage:path=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(Error('Falha ao carregar '+path));im.src='assets/'+path;})});let revision=0;
+ async function show(){const current=++revision,q={item:Number(item.value),state:Number(state.value),body:'masculino',direction:'south',appearance:'approved-source'};status.textContent='Carregando…';ctx.clearRect(0,0,640,640);try{const ready=await adapter.prepare(q);if(current!==revision)return;if(!ready)throw Error('Variante não coberta');adapter.draw(ctx,q,{x:320,y:512,scale:4});status.textContent=`Arma ${q.item} · estado ${q.state} · fonte aprovada, sem base antiga`;}catch(e){if(current===revision)status.textContent=e.message;}}
+ function select(){state.replaceChildren(...manifest.items[item.value].frames.map(f=>{const o=document.createElement('option');o.value=f.state;o.textContent=f.state;return o}));show()}
+ item.onchange=select;state.onchange=show;document.querySelector('#next').onclick=()=>{state.selectedIndex=(state.selectedIndex+1)%state.options.length;show()};select();
+})().catch(e=>document.querySelector('#status').textContent=e.message);
+</script></html>

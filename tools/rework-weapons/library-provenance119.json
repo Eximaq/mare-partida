@@ -1,0 +1,25 @@
+{
+  "item": 119,
+  "sourceArchive": "Punho119_Cobertura_Continua_Candidato_v4.zip",
+  "sourceArchiveSha256": "411fbc7876269ac95426390e06f6ec7384458fb4387f4bde42c8953de364b63e",
+  "sourceMembers": [
+    "tech119-user-coverage-candidate-v4/0-composite.png",
+    "tech119-user-coverage-candidate-v4/1-composite.png",
+    "tech119-user-coverage-candidate-v4/2-composite.png",
+    "tech119-user-coverage-candidate-v4/3-composite.png",
+    "tech119-user-coverage-candidate-v4/4-composite.png",
+    "tech119-user-coverage-candidate-v4/5-composite.png",
+    "tech119-user-coverage-candidate-v4/6-composite.png",
+    "tech119-user-coverage-candidate-v4/7-composite.png",
+    "tech119-user-coverage-candidate-v4/8-composite.png",
+    "tech119-user-coverage-candidate-v4/9-composite.png",
+    "tech119-user-coverage-candidate-v4/10-composite.png",
+    "tech119-user-coverage-candidate-v4/11-composite.png"
+  ],
+  "pngByteIdentity": true,
+  "approvalMessage": "Sentinel_03b44189b7708191bb8ba7171ba5f3c0",
+  "approvalUTC": "2026-11-12T19:29:35.964975+00:00",
+  "approvalText": "119 t\u00e1 aprovada, pode colocar.",
+  "approvalContext": "Responding to explicit119 frontal approval verification message Sentinel_e3bcc7c89a8c8191b770ba341a73dba2",
+  "scope": "Existing male base SOUTH corrected v4 visual cycle only; no arbitrary outfit combinations certified"
+}

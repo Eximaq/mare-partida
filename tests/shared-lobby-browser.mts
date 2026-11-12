@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {once} from 'node:events';
-import {readFile,mkdir} from 'node:fs/promises';
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {createRequire} from 'node:module';
 import {authDatabase} from './integration/auth-support.mjs';
@@ -9,6 +9,7 @@ import {createAuthHandler} from '../apps/game-server/src/auth/routes.js';
 import {createDevGateway} from '../tools/dev-gateway.mjs';
 declare global {var MareGameSession:any;var __mareDiagnostics:any;}
 const require=createRequire(import.meta.url),{chromium}=require('playwright');
+const {movementSteps}=require('./helpers/movement-samples.cjs');
 const out=process.env.MARE_QA_DIR||'tmp/shared-lobby-browser';await mkdir(out,{recursive:true});
 await authDatabase(async f=>{
  const handler=createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9445',cookieSeconds:3600});
@@ -51,7 +52,9 @@ await authDatabase(async f=>{
       function sample(t){
         if(!window.captureMovement)return;
         const d=window.__mareDiagnostics(),peer=d.sharedLobby.players[0];
-        window.movementFrames.push({t,x:d.hero.x,y:d.hero.y,cx:d.camera.x,cy:d.camera.y,peer:peer?{x:peer.x,y:peer.y}:null});
+        // RAF's nominal timestamp can precede this callback by a long task.
+        // Peer diagnostics sample performance.now(); own pose has its render clock.
+        window.movementFrames.push({t,observedAt:performance.now(),heroSampledAt:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,cx:d.camera.x,cy:d.camera.y,peer:peer?{x:peer.x,y:peer.y}:null});
         requestAnimationFrame(sample);
       }
       requestAnimationFrame(sample);
@@ -60,10 +63,9 @@ await authDatabase(async f=>{
   await q.keyboard.down('ArrowRight');await q.waitForTimeout(4000);await q.keyboard.up('ArrowRight');await q.waitForTimeout(1400);
   for(const [page,remote] of [[p,true],[q,false]] as const){
     const frames=await page.evaluate('window.captureMovement=false; window.movementFrames');
-    const steps=frames.slice(1).flatMap((b:any,i:number)=>{
-      const a=frames[i],dt=b.t-a.t,from=remote?a.peer:a,to=remote?b.peer:b;
-      return dt>0&&dt<=50&&from&&to?[{speed:Math.hypot(to.x-from.x,to.y-from.y)/dt,camera:Math.hypot(b.cx-a.cx,b.cy-a.cy)/dt}]:[];
-    });
+    await writeFile(resolve(out,remote?'remote-motion.json':'own-motion.json'),JSON.stringify(frames));
+    assert.ok(frames.every((f:any)=>Number.isFinite(f.observedAt)&&Number.isFinite(f.heroSampledAt)),'motion samples include observation and rendered-pose clocks');
+    const steps=movementSteps(frames,remote);
     assert.ok(steps.length>50,'enough regular frames to evaluate motion');
     const positions=frames.map((f:any)=>remote?f.peer?.x:f.x).filter(Number.isFinite);
     assert.ok(Math.max(...positions)-Math.min(...positions)>30,'walking must really occur');

@@ -1,0 +1,12 @@
+{
+  "schema": "accessory-pilot-offline-qa-v1",
+  "records": 837,
+  "rendered": 837,
+  "failed": [],
+  "sampleVisualInspection": [
+    "female-129-cropped-south",
+    "male-129-cropped-south"
+  ],
+  "allCombinationsVisuallyApproved": false,
+  "gameplayTested": false
+}
