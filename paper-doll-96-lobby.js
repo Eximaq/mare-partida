@@ -72,8 +72,10 @@
   function create({search='',baseURL=root.location?.href,onChange=()=>{},sharedLobby=false}={}){
     const active=enabled(search),rehearsal=false,base=new URL('tools/paper-doll-96-v3/',baseURL);
     const accessoryPilot=root.MareReworkAccessoryTest?.create({search,baseURL,onChange});
+    const weaponCycles=root.MareReworkWeapons?.create({search,baseURL,onChange});
+    const outfitCycles=root.MareReworkWeapons?.create({search,baseURL,onChange,mode:'outfits',manifestPath:'tools/rework-outfits/catalog.json'});
     const pilot=root.MarePlayerReworkTest?.create({search,baseURL,onChange});
-    const rework=accessoryPilot?.active?accessoryPilot:pilot?.active?pilot:root.MarePlayerReworkRuntime?.create({release:root.MarePlayerReworkRelease,onChange,loadImage:async path=>{const im=new Image();im.src=new URL(path,baseURL).href;await im.decode();return im;}});
+    const rework=weaponCycles?.active?weaponCycles:outfitCycles?.active?outfitCycles:accessoryPilot?.active?accessoryPilot:pilot?.active?pilot:root.MarePlayerReworkRuntime?.create({release:root.MarePlayerReworkRelease,onChange,loadImage:async path=>{const im=new Image();im.src=new URL(path,baseURL).href;await im.decode();return im;}});
     let state=active?'loading':'off',message='',previewMessage='',release=null,assetRevision=null,manifest,catalog,rigs,weaponCatalog,wardrobe,choices={},current={...defaults},draft={...defaults};
     let draws=0,lastPose=null,pending=null,preparing=null,wanted=null,bundles=new Map(),previews=new Map(),failed=new Set();
     const images=new Map(),inflight=new Map(),imageFailures=new Map(),diagnostics=new Map();let loading=0,peakLoads=0,imageBytes=0;const waiting=[];

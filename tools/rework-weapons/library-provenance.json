@@ -1,0 +1,217 @@
+[
+  {
+    "item": 3,
+    "sourceArchive": "Luvas3_SOUTH_Pareadas_v3_Comparacao71.zip",
+    "sourceArchiveSha256": "22349d6c91ebbe40bccbbf2b23580f4645d59109aae7ac7853b637bf89a97231",
+    "sourceMembers": [
+      "assets/2303f2c88790042b206da47eae43c72dc64eee881070ad43155d15f3b39478c7.png",
+      "assets/0837bbf3ed600e21554923535146fc09a792e2a650d19456592ffb6009a1e31e.png",
+      "assets/acd336c2bcd58e7735feaf06ae94724ef468965544883dcf4d125e75abaf21d2.png",
+      "assets/0bdc9e69e603df413ea7323852575fd8c944580b2fb8382a2b46751bed44d28d.png",
+      "assets/0316ae65e800c3429100bbaac80cb32d0984736c8d36eeda8cd546d0e6273c2e.png",
+      "assets/693cac2a9d3a0f5928089dde2bc04dfb6137327329a386c7c6cf1ff181519500.png",
+      "assets/5ddf68d2082558bed85cdbf30bc0d859d373e114a07d488ca4bd68229044469d.png",
+      "assets/68b46b22fe616560154660bb6df7f964eb75bf189aac4e9cd21359a5b6247f54.png",
+      "assets/46d04ce70cadd969219685f31e2f9db564f52cb49deae39dd2b1c4d523b026eb.png",
+      "assets/d67f981b3960fcea726af338e5a990a56350ffcbc3a3639662ae2e331aa17695.png",
+      "assets/7061a007f3a0d5e4ce950c622a902027a9ff8fdf3cbdfeb54ee09701d387fedd.png",
+      "assets/a8b29cdc39b32c8cdacc0466d320e5e6c439f077ae231aefedf2c1503cf45c3b.png"
+    ],
+    "sourcePack": "weapon-male-gauntlet-readonly-v71_3_south_1ad29733ff12.json",
+    "pngByteIdentity": true,
+    "scope": "Exact approved male base SOUTH composite, no arbitrary equipment combinations validated",
+    "approval": "USER_SHOWN_APPROVAL_ADDENDUM_20261110.json / M67_USER_SHOWN_APPROVAL_V1.json in Indice_Adagas_71_72_73_Colecoes92_94.zip"
+  },
+  {
+    "item": 14,
+    "sourceArchive": "Manopla14_SOUTH_v3_Comparacao68.zip",
+    "sourceArchiveSha256": "1e196f6d2cf3ae0d33e4d811157ad34bcd751546c6084b2baa97838e7258e775",
+    "sourceMembers": [
+      "assets/ed7a638eb21a314dce2d878daf622a0d81dc132417e1c4d82df6e4df305b2578.png",
+      "assets/b4ba163e6e492138222a49f65ff24fe47e87af7a18929d1513d30ace0361e16c.png",
+      "assets/188a210c46cb0e547554afb58c8af9f7e61bee18c33058c303868c2980c360b5.png",
+      "assets/0d5daa1027bb286a020887e52186369044f56c8e55bb830344aa945e28a12092.png",
+      "assets/3efb5676f9d9ba31f9c2cda404156a15ea559f7a15ec827d81e78c626a889aff.png",
+      "assets/b5f56a0da812a97bb64bc3455a1c898ab5f9b56ebbf3fc32f89f976b72a90f71.png",
+      "assets/1403f0b58a596d7c3c3a9cc2f67b96be7c6670a74fd3b9d063d9120bfecf94a5.png",
+      "assets/c82943d095e99b16523429c0050e37aa0ee7d079e37fc5e7bf87892f828576c0.png",
+      "assets/fde9316f9d1441d5f05088749ac86b16a8c5e3d89b8aa897dd08cc0c1cb5407f.png",
+      "assets/b689fd174eb7c7384ba925540a3a35708748a7b3ad8350e1083f095aad82b660.png",
+      "assets/75c45c9aeaf00141454ae7b21fa65e8e6e8da15ccccb9c33c8d1409ce7c1af07.png",
+      "assets/02a85f87594adb3a9cbada06228875dd1964e7de1f7e78a33c28a77713d0555c.png"
+    ],
+    "sourcePack": "weapon-male-gauntlet-readonly-v68_14_south_7d875dc90cef.json",
+    "pngByteIdentity": true,
+    "scope": "Exact approved male base SOUTH composite, no arbitrary equipment combinations validated",
+    "approval": "USER_SHOWN_APPROVAL_ADDENDUM_20261110.json / M67_USER_SHOWN_APPROVAL_V1.json in Indice_Adagas_71_72_73_Colecoes92_94.zip"
+  },
+  {
+    "item": 67,
+    "sourceArchive": "Katana67_SOUTH_Aprovada_Comparacao86.zip",
+    "sourceArchiveSha256": "32106883da6c6e2b798c41bab59a3dbe90946fef8f4381b29c4323a6d3d585dd",
+    "sourceMembers": [
+      "assets/daaffc1cf56d99970f62334dfeae7e615382de3a7ab751da2429562ed3f1a52e.png",
+      "assets/bb8b8180dcaedc4b40eecec921cb140ae85fa3978d0aefda2c88cdd30f6e0490.png",
+      "assets/10d9bd8665dbb8e3c61cdd42602e015a9492fc1f0af77d7e674084229d71ebd5.png",
+      "assets/467938b8a64da1606530b7b6c2d0de0f394ced53b94a698182e2b9386ef10396.png",
+      "assets/ac120d0df8406bef253e2c53f972b580da2f83a7426d483bbab68da95e4bd7bb.png",
+      "assets/8b1e75575e4c098f918f340b2c66b79e8ff8857416be9bf2ca0b4d568fe71724.png",
+      "assets/91f0e46e0fdb395f187aef9e0191e1d7f616178c9cd8fe6f392ce934ff871cfb.png",
+      "assets/c2d7c4c33275c3a880298dae31a86a07adbee7882e33f05721c16a97fc640609.png",
+      "assets/23c1c1ab6c406b6bfdd3c4f0630bf6b54dee2cb18e58ce7a285ddfe7a3c1852d.png"
+    ],
+    "sourcePack": "weapon-male67-candidate-readonly-v86_south_373ddb8f7b31.json",
+    "pngByteIdentity": true,
+    "scope": "Exact approved male base SOUTH composite, no arbitrary equipment combinations validated",
+    "approval": "USER_SHOWN_APPROVAL_ADDENDUM_20261110.json / M67_USER_SHOWN_APPROVAL_V1.json in Indice_Adagas_71_72_73_Colecoes92_94.zip"
+  },
+  {
+    "item": 71,
+    "sourceArchive": "Adagas71_Pegada_Superior_Comparacao92.zip",
+    "sourceArchiveSha256": "dd8cda58dff9b88fc9bd7a310cb2786b0d0c754cacb5626affffe12df5fd7632",
+    "sourceMembers": [
+      "assets/8602d980e4f8597cab9e52e69d52a2d429434d9f830a2ce67c388113b462d151.png",
+      "assets/3059f70dfa9886c69c7c6b6c459acc6ca5abc082466c4fd3f3b4f8b8794d24d5.png",
+      "assets/40a28f8fef7830b817022d33d5852a9a98b38756e8f7bbe8385d86709db7f3c8.png",
+      "assets/fc5d6a66aa32e8a103c527b7c429ad4d369fda26b2e63e0bcc00bb40bb5b84ed.png",
+      "assets/5d3aeeca65ac53f590a1cca254952d8750e8c2ac9c910e2ee28f5923845e9846.png",
+      "assets/51aa84b6e32dd9c5c3cffea89ed81768b16460d187952c6ac2f13709235594bb.png",
+      "assets/63247498e2e9be52ff45a564262a154426a2a5e4b11bd8285711f3bd783d49b2.png",
+      "assets/bd168654b43aae291ab587dcb04d3f9ea658917b51934e92d76e9fb57bcb913d.png",
+      "assets/dc5b514512a50bbab6c4cb8706ca82c36a1c8876c951b9f80b14b6a112ffc244.png"
+    ],
+    "sourcePack": "weapon-male71-upper-v2-readonly-v92_south.json",
+    "pngByteIdentity": true,
+    "scope": "Exact approved male base SOUTH composite, no arbitrary equipment combinations validated",
+    "approval": "User blanket approval Sentinel_0e80b471a474819192aeb250306e0270 after corrected previews"
+  },
+  {
+    "item": 72,
+    "sourceArchive": "Adagas72_Pegada_Superior_Comparacao93.zip",
+    "sourceArchiveSha256": "446bc82613f650bfee03f5a40d6c16c3550d04a986e6ceddf93603a8f4ea5ad7",
+    "sourceMembers": [
+      "assets/d450f89697d9d0d0777b9721a841ddf24e2ad0d013a21518eb2ff3a6cb1130ee.png",
+      "assets/8acc4295f980576bad9211800c239a1716fd84e0d2b110dbb628499ca6926c88.png",
+      "assets/2025aa49976043dc185163b5e2e6e78f1e7c0917f5c9fe1b8f36c123ab42c5f5.png",
+      "assets/e6778b8d3b1565167b3a78ac4f6ad5433b1515054d68155ca4f07ab0ae9cec0f.png",
+      "assets/44c59ceb1b5b832e0e2a5143ed44cb88b88a8a0ad95cce9f09b2ccd5792d4167.png",
+      "assets/61853f01ab89ee17c69b875f991da375472ee277a105b1c221152286664fd130.png",
+      "assets/f5822c7d7886f3bc3a3ce2bfdb04ea88692ea1936ab9672df787f9f964aa1cfa.png",
+      "assets/ea05eff907accee12d7d68c7a3e7058c894b99878823be5d5c68f8f908bfe465.png",
+      "assets/522d18edf1ab51a26980cb4a797dd36ebe5dd8f5bdb79851ee4bd2cf8febb165.png"
+    ],
+    "sourcePack": "weapon-male72-upper-v2-readonly-v93_south.json",
+    "pngByteIdentity": true,
+    "scope": "Exact approved male base SOUTH composite, no arbitrary equipment combinations validated",
+    "approval": "User blanket approval Sentinel_0e80b471a474819192aeb250306e0270 after corrected previews"
+  },
+  {
+    "item": 73,
+    "sourceArchive": "Punhal73_Ciclo_Comparacao94_R2.zip",
+    "sourceArchiveSha256": "e658cafaeae278ecf71c5ca0749d3fb9688813970c737084fc7d1b9fae178f0a",
+    "sourceMembers": [
+      "assets/d05be31d41db9a449c8b275605968f859c4d89111f3cb472fce8a875fbb17ea7.png",
+      "assets/639c7ddabb463983395861c7d839230e41fb896d72082631d410aa5c8915213a.png",
+      "assets/e2b4e22f6f9824ba437590d1828d160cfa0b8bcb8c046a19e4425676f0eb538f.png",
+      "assets/60ba1dcf66b1a8a9c478d47c7d40043d151ac534b883c498154f1ef83d535032.png",
+      "assets/cb40668477aadaff5ff748b699aa0d533c954daee08eeef8e5e63e7c7ea2e281.png",
+      "assets/c52b0c52c9a67dd5cdf634be854abf0571c82933b0af4fc8b066de9b875dd22e.png",
+      "assets/2e36d085cc86b60cb15a8924dcd2683127e1685c7c9fc8d5e9ce9831dcb36a10.png",
+      "assets/2caf9220d28142d2941ae11c8392217b48e005be9393c527efb8704c08da7ec0.png",
+      "assets/6d68406f9fd3defd341c3f372a728955b27973532a641c9beeb63800ae823833.png"
+    ],
+    "sourcePack": "weapon-male73-full-v1-readonly-v94_south.json",
+    "pngByteIdentity": true,
+    "scope": "Exact approved male base SOUTH composite, no arbitrary equipment combinations validated",
+    "approval": "User blanket approval Sentinel_0e80b471a474819192aeb250306e0270 after corrected previews"
+  },
+  {
+    "item": 74,
+    "sourceArchive": "Lamina74_Ciclo_Comparacao96.zip",
+    "sourceArchiveSha256": "192fec13d3f09e0f23db55cec7f20675fbf615df1a60e26159398151aaedfc7a",
+    "sourceMembers": [
+      "assets/5f933cf41483727f9d3466e3b09c213b1e6698a2818f0c7eec242eabda504a46.png",
+      "assets/71ea9de456fe1b9cf3a0cd0d1bbd18faaafe76dd64b6dcb016b00ab9ff5ecbac.png",
+      "assets/ae921dd46b43f2868fbcec4193e0001fbd8c901993c99c19009a5682c3b4a05c.png",
+      "assets/e30bfac56f8e7983e026553edfa1a6649e7ca7980f23f740c41dada1996e564c.png",
+      "assets/688399e146cffbc79d2031fdddd15ead1be0ed42db5ce63d1281cd339d720376.png",
+      "assets/d7b64b0bec3a66a279e5e944f8f4d45c870e35f8c4d120e0561c3d5443e14579.png",
+      "assets/82a868738a888017ee6b156596ea5591015168579948c40017b1797054fe3ff0.png",
+      "assets/18e1a0880843d5a52b72ab74d1de64e24c4e6a970687bc2d49885eee6c030495.png",
+      "assets/6acf7af2915c38e932bcb9371e29b5f0f0e9983da6746e3f2146220fe8f0be8c.png"
+    ],
+    "sourcePack": "weapon-male74-full-v1-readonly-v96_south.json",
+    "pngByteIdentity": true,
+    "scope": "Exact approved male base SOUTH composite, no arbitrary equipment combinations validated",
+    "approval": "User blanket approval Sentinel_0e80b471a474819192aeb250306e0270 after corrected previews"
+  },
+  {
+    "item": 112,
+    "sourceArchive": "Ruptura112_Ciclo_Frontal_Pareado_v1.zip",
+    "sourceArchiveSha256": "e7c1d1cd2f46175df399d94a1ef5c4c7f95012a582640b11107786a1380493e3",
+    "sourceMembers": [
+      "layers/0-composite.png",
+      "layers/1-composite.png",
+      "layers/2-composite.png",
+      "layers/3-composite.png",
+      "layers/4-composite.png",
+      "layers/5-composite.png",
+      "layers/6-composite.png",
+      "layers/7-composite.png",
+      "layers/8-composite.png",
+      "layers/9-composite.png",
+      "layers/10-composite.png",
+      "layers/11-composite.png"
+    ],
+    "sourcePack": "MANIFEST.json",
+    "pngByteIdentity": true,
+    "scope": "Exact approved male base SOUTH composite, no arbitrary equipment combinations validated",
+    "approval": "USER_SHOWN_APPROVAL_ADDENDUM_20261110.json / M67_USER_SHOWN_APPROVAL_V1.json in Indice_Adagas_71_72_73_Colecoes92_94.zip"
+  },
+  {
+    "item": 118,
+    "sourceArchive": "Canhao_M118_Ciclo_Reto_v6_Colecao60.zip",
+    "sourceArchiveSha256": "e4f40182e6a26a307098ec83eb7a3f66e9590d429adbd2983de3778207f3c378",
+    "sourceMembers": [
+      "assets/93591a1638fe0e6786f640e00e4463d26129356c4dd2153ecf68ba8749c40d25.png",
+      "assets/8d6a118978c1c354f7416087b875417d0590b730dfde6c8bbb46c7388638d9e4.png",
+      "assets/8506c6cad2cbbc0b67cab14651d8ff4a7554e2e1f971160b7c70194899f60642.png",
+      "assets/26b35e7e220b95731cc7aec0df1ddd7214d7aafad6c64b35a26f48467139e376.png",
+      "assets/0484edbf022cca8c4956647c11d695d68b58910790b56965c529600ef8fb2a9b.png",
+      "assets/6b7015a2450b006724f3a1d24381d8be1a261395f1decebbc2e061b8c98e3c39.png",
+      "assets/060e12184c9f0e99cb2ef66c6eaced7085ae6222502f73a4c252c41b4965bfe6.png",
+      "assets/d8d2a4e78027f873f373638862087edf36f3cd202dca7b62d1c0640e0ce3aaa0.png",
+      "assets/a11c2a1777f4ade44bedd80202df92473c5e1f0e2dd736adf1e3e017dba644bb.png",
+      "assets/026eef8d2a7e35ecec017413bd6c55748f79a015d85a6249707b41b5bec455df.png",
+      "assets/0fc314f7215567ca3ee5bb5aa1eecfff200a9db536b0fe6a3df9c53deeb916a8.png",
+      "assets/6c89d45937af12502adb40e346bc32831ad606c3792b9d29db1b42fc3b4209ec.png"
+    ],
+    "sourcePack": "weapon-male-straight-readonly-v60_118_south_179f4b523fc0.json",
+    "pngByteIdentity": true,
+    "scope": "Exact approved male base SOUTH composite, no arbitrary equipment combinations validated",
+    "approval": "USER_SHOWN_APPROVAL_ADDENDUM_20261110.json / M67_USER_SHOWN_APPROVAL_V1.json in Indice_Adagas_71_72_73_Colecoes92_94.zip"
+  },
+  {
+    "item": 120,
+    "sourceArchive": "Canhao_M120_Ciclo_Reto_v6_Colecao60.zip",
+    "sourceArchiveSha256": "8d35b29e349f81e2ff89697198373382537c5b58b273f53d95ee74aa14434a2d",
+    "sourceMembers": [
+      "assets/fe453fdf954c73fbaf82ada51c7a9219cabbeca8b7fed9724f77800e81968b96.png",
+      "assets/73d4c7282e7d15bc7f2ea86e519c39a4c937859d973d74cbc905cbba08c35801.png",
+      "assets/c8910585c2514249ca3d3cabdd00a8f9b09dac638962db64ca6b481467879435.png",
+      "assets/a97da054b685b37bcbe08e0a650722bb8e22d1242f14a72836958559a85ea96d.png",
+      "assets/4d72a6300a3f3c9a49b45613f657ee786191df19fa236ce832e1fa4eeab4ee0c.png",
+      "assets/05ee27bb6a534fa6a32e649051c387487c2677d616b6b62d661db05191d216f9.png",
+      "assets/9efb223404c568bdfea10d4c1a245f7a22ead1fd2e16c1b827511949a830fa33.png",
+      "assets/b77388b0c56249f9d0e6aa27dca5eddf177bdd7eaa6d64784173a2c4b160be1f.png",
+      "assets/5d28687b7961416ebc61abbeb0f08598b999d7d4b0b130821fa4764f94088dd5.png",
+      "assets/a8367805f34fc81fd59e07d103c272d886edb0eeb683bd19fd03ed596be357bb.png",
+      "assets/998efbf235166bffd5dc1c80465f31a50386f723aa93158b20e1e51c34ae6489.png",
+      "assets/8b4267ce197be594d1c85327d35f1d5d66ef3601630967718b01bbc401e1c67c.png"
+    ],
+    "sourcePack": "weapon-male-straight-readonly-v60_120_south_32c1fa3086fa.json",
+    "pngByteIdentity": true,
+    "scope": "Exact approved male base SOUTH composite, no arbitrary equipment combinations validated",
+    "approval": "USER_SHOWN_APPROVAL_ADDENDUM_20261110.json / M67_USER_SHOWN_APPROVAL_V1.json in Indice_Adagas_71_72_73_Colecoes92_94.zip"
+  }
+]
