@@ -1434,7 +1434,7 @@
       if(effect.rangeBound)ctx.restore();
     }
     if(layer!=='front')return;
-    if(game.hp>0&&session.respawn<=0)MareCombatVfx.drawStatuses(ctx,combatHudBox(world.hero,60,game.name),combatStatus(world.hero),world.time);
+    if(game.hp>0&&session.respawn<=0)MareCombatVfx.drawStatuses(ctx,playerMapHudBox(playerMapName(game.name,crewIdentity)),combatStatus(world.hero),world.time);
     for(const actor of livingMobs())MareCombatVfx.drawStatuses(ctx,combatHudBox(actor,actor.type==='boss'?88:65,monsterName(actor)+' · Nv.'+actor.level),combatStatus(actor),world.time);
     if(hoyaActive())MareCombatVfx.drawStatuses(ctx,combatHudBox(session.genie,64,'Gênio'),combatStatus(session.genie),world.time);
   }
@@ -3521,14 +3521,26 @@ ${avatarExtra}
     if(betaEquipped())MareRankB.drawLegs(ctx,{x,y},world.time*1000);
     if(u==='armamentSkin'&&rt.vigor>0){px(ctx,x-30,y-94,60,6,'#10222a');px(ctx,x-29,y-93,58*rt.vigor/rt.vigorMax,4,'#e4c77b');}
   }
+  const playerMapName=(name,crew)=>crew?'['+crew.tag+'] '+name:name;
+  function playerMapHudBox(name){
+    const {x,y}=world.hero;
+    const box=MareCombatVfx.layout(x,y,{height:combatVisualHeight(world.hero),nameWidth:MareMapPlayerHud.measure(ctx,name)});
+    // The stacked menu can cover a name at the default offset on phones.
+    const nameY=box.nameY+(innerWidth<=640?26:12);
+    return {...box,nameY,iconY:nameY+10,ccY:nameY-26};
+  }
   function drawForegroundLayer(actors){
     const height=combatVisualHeight(world.hero),regions=MareWorldDepth.regions(activeMap().id);
     if(world.hero.visible!==false&&session.respawn<=0&&MareWorld.occluded(world.hero,regions,height,Math.max(48,height))){
       MareWorldDepth.silhouette(ctx,world.hero,(c,x,y)=>drawPlayerSprite(c,x,y),{height:height+32,width:Math.max(160,height*1.8),occluders:regions});
     }
-    const name=crewIdentity?'['+crewIdentity.tag+'] '+game.name:game.name;
-    drawCombatHeader(world.hero,name,game.hp,getDerived().maxHP);
-    if(crewIdentity){ctx.save();ctx.font='bold 13px Trebuchet MS';drawCrewFlag(crewIdentity,world.hero.x-ctx.measureText(name).width/2-16,combatHudBox(world.hero,60,name).nameY-11);ctx.restore();}
+    const name=playerMapName(game.name,crewIdentity),box=playerMapHudBox(name);
+    const {maxHP,maxEnergy}=getDerived();
+    const tier=ONLINE_GAME?ONLINE_GAME.data?.online.hierarchy?.tier:game.hierarchyTier;
+    const frame=MareMapPlayerHud.draw(ctx,world.hero.x,box.nameY,name,{
+      faction:game.factionId,tier,resources:{hp:game.hp,maxHP,energy:game.energy,maxEnergy}
+    });
+    drawCrewFlag(crewIdentity,frame.left-17,frame.top+3);
   }
   function sharedLobbyPlayers(){
     const group=ONLINE_GAME?.data?.online.party?.group,weekly=ONLINE_GAME?.data?.online.weeklyBoss,instance=ONLINE_GAME?.data?.online.battle?.weeklyBossInstanceId||ONLINE_GAME?.data?.online.battle?.partyInstanceId;
@@ -3553,7 +3565,10 @@ ${avatarExtra}
     const body=(c,x,y)=>entry?MareSpriteCombatV2.draw(c,key,x,y,{action:peer.action==='attack'?'attack':peer.moving?'walk':'idle',direction:peer.direction,time:world.time,scale:zoanVisualScale(key)*(entry.world_scale??1),height:key==='ryu'?entry.worldHeight:null}):sharedLobbyRenderer.draw(c,peer,{scene,action:peer.action==='attack'?'attack':peer.moving?'walk':'idle',direction:peer.direction,time:world.time,x,y,consumer:'shared-lobby'});
     const aura=layer=>{if(!fruit)return;if(MareRankS.has(fruit.id)){if(!partyAuraLoaded.has(fruit.id)){partyAuraLoaded.add(fruit.id);MareRankS.preload(fruit.id);}MareRankS.drawAura(ctx,fruit.id,peer.x,peer.y,world.time,fruit.id===MareRankS.rules.phoenix.id&&!peer.zoanTransformed?.7:1,layer);}else vfx_aura.draw(ctx,peer.x,peer.y,world.time,1,fruit,layer);};
     aura('back');body(ctx,peer.x,peer.y);aura('front');if(peer.haki)MareHakiArt.draw(ctx,peer.haki,peer,world.time,false,body);
-    ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.lineWidth=3;ctx.strokeStyle='#071b23';ctx.fillStyle='#c5f2ff';const identity=peer.crewIdentity??peer.crew,name=identity?'['+identity.tag+'] '+peer.name:peer.name;ctx.strokeText(name,peer.x,peer.y-102);ctx.fillText(name,peer.x,peer.y-102);drawCrewFlag(identity,peer.x-ctx.measureText(name).width/2-16,peer.y-113);ctx.restore();
+    const identity=peer.crewIdentity??peer.crew,name=playerMapName(peer.name,identity);
+    const frame=MareMapPlayerHud.draw(ctx,peer.x,peer.y-102,name,{faction:peer.factionId,tier:peer.hierarchyTier});
+    drawCrewFlag(identity,frame.left-17,frame.top+3);
+    ctx.restore();
   }
   function drawEntityLayer(){
     const actors=[world.hero,...sharedLobbyPlayers(),...world.mobs.filter(m=>scene==='hunt'&&m.alive),...(scene==='lobby'?npcs:[])].map(a=>({...a,visualHeight:a.visualHeight||(a===world.hero?combatVisualHeight(a):combatActorHeight(a)),visualWidth:a.visualWidth||Math.max(48,a===world.hero?combatVisualHeight(a):combatActorHeight(a))}));
