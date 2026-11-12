@@ -72,7 +72,7 @@ test('map deployment clears obsolete movement and preserves progress and Doctor 
   battle.autoSkills=false;
   battle.autoRoute=[{x:1488,y:1648}];
   battle.hp=stats.maxHP*.2;
-  battle.rulesHash='0'.repeat(64);
+  battle.rulesHash='063ad6d7e40b3146f8542e122e64cff8078b7eb61c49b0722d7e32044be2b461';
   const before=structuredClone(battle);
   engine.upgradeBalance(battle);
   assert.deepEqual(battle,{...before,rulesHash:engine.rulesHash,auto:false,actionLockUntil:0,autoRoute:null,skillJob:null,unreachableUntil:{}});

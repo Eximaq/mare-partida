@@ -11,3 +11,10 @@ test('bound dungeon fragments use their existing native icon without changing le
 test('all six fragment ranks resolve to the existing native asset without changing rarity or recipe',()=>{const d=require('../boss-dungeon-system.js');for(const f of d.fragments){assert.equal(art.path(f.id,f),f.icon_path);assert(fs.existsSync(path.join(__dirname,'..',art.path(f.id,f))));}assert.deepEqual(d.recipes.E,{rank:'E',quantity:10,resultRank:'E',random:true});assert.deepEqual(Object.keys(d.recipes),['E','B']);});
 
 test('all twenty class weapon icons resolve through the shared inventory HD lookup',()=>{const weapons=require('../tools/paper-doll-96-v3/weapons.json').items.filter(w=>w.itemId>=109);assert.equal(weapons.length,20);for(const w of weapons){const file=art.path(w.itemId,{icon_path:w.reference});assert.equal(file.split('?')[0],w.reference.split('?')[0]);assert(fs.existsSync(path.join(__dirname,'..',file.split('?')[0])));}});
+
+test('Epic reward chest and equipped Visual Completo reuse their native inventory icons',()=>{
+ for(const def of [require('../boss-dungeon-system.js').epicBox,require('../visual-completo.js').definition]){
+  assert.equal(art.path(def.id,def),def.icon_path);
+  assert(fs.existsSync(path.join(__dirname,'..',def.icon_path)));
+ }
+});

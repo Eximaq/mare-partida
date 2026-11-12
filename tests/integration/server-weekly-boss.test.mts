@@ -85,3 +85,39 @@ test('official reward receipts record every individual outcome and deliver each 
  await grant(()=>{throw Error('retry must reuse all persisted outcomes');});
  assert.deepEqual((await mail()).rows,delivered);
 }));
+
+test('official Marineford combat persists loot outcomes only for credited participants',async()=>authDatabase(async f=>{
+ const [a,b,observer]=await Promise.all([actor(f),actor(f),actor(f)]);
+ await operator(f,a,1);
+ const marineford={...config,spawn:{x:2560,y:1408},entry:{x:2740,y:1408}};
+ await a.event({op:'configure',revision:1,config:marineford});
+ const {weeklyBoss:{eventId:id}}=await a.event({op:'activate',revision:2});
+ for(const who of [a,b,observer])await who.event({op:'join',eventId:id});
+ const {tickWeeklyBosses}=await import('../../apps/game-server/src/characters/weekly-boss-worker.js');
+ const {rows:[{simulation:room}]}=await f.pool.query('SELECT simulation FROM mare_game.weekly_boss_events WHERE id=$1',[id]);
+ const mob=room.mobs[0];
+ mob.hp=1;mob.nextPunchAt=Date.now()+1e8;mob.nextAoeAt=Date.now()+1e8;
+ for(const who of [a,b])room.contributions[who.c.id]={damage:100,healing:0,combatMs:11000};
+ await f.pool.query('UPDATE mare_game.weekly_boss_events SET simulation=$2 WHERE id=$1',[id,room]);
+ for(const who of [a,b]){
+  const v=await who.read();
+  v.battle.auto=false;v.battle.autoSkills=false;
+  await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[who.c.id,v.battle]);
+  await f.pool.query("UPDATE mare_game.character_world SET x=$2,y=$3,path='[]',speed=0 WHERE character_id=$1",[who.c.id,mob.x+20,mob.y]);
+ }
+ const read=()=>f.pool.query('SELECT character_id,rank_b,haki FROM mare_game.weekly_boss_loot WHERE event_id=$1 ORDER BY character_id',[id]);
+ for(let retry=0;retry<12;retry++){
+  for(const who of [a,b])await f.pool.query(
+   "UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{pending}',$2) WHERE character_id=$1",
+   [who.c.id,JSON.stringify({targetId:mob.id,remaining:0})]
+  );
+  await f.pool.query("UPDATE mare_game.weekly_boss_events SET tick_at=clock_timestamp()-interval '150 milliseconds' WHERE id=$1",[id]);
+  await tickWeeklyBosses(f.pool);
+  if((await read()).rowCount===2)break;
+ }
+ const receipts=(await read()).rows;
+ assert.deepEqual(receipts.map(row=>row.character_id),[a.c.id,b.c.id].sort());
+ assert.equal((await f.pool.query('SELECT status FROM mare_game.weekly_boss_events WHERE id=$1',[id])).rows[0].status,'won');
+ await tickWeeklyBosses(f.pool);
+ assert.deepEqual((await read()).rows,receipts);
+}));

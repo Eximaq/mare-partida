@@ -95,7 +95,8 @@ jobs:
           assert.equal(battle.create('beach',{maxHP:200,maxEnergy:90},0,()=>.5).mobs.length,14);
           assert(world.navigation('dawn').walkable(872,1608));
           assert.equal(getGameCatalog().items.length, 189);
-          assert.equal(getGameCatalog().slots.length, 12);
+          assert.equal(getGameCatalog().slots.length, 13);
+          assert(getGameCatalog().slots.includes('visual_completo'));
           assert.equal(getGameCatalog().rulesHash, '73e8db5876c24d2ae1d6611965fb07031f6bfe00a4865ed973166fdeb27dd1aa');
           assert.notEqual(process.getuid(), 0);
           for (const path of ['/app/.env', '/app/.git', '/app/game.js', '/app/node_modules/typescript']) {

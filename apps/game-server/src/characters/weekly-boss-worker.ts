@@ -15,8 +15,7 @@ import {weeklyRoster,storeWeeklyRoom,weeklyAudit} from './weekly-boss-store.js';
 import {leaveWeeklyBoss,weeklyInputs} from './weekly-boss.js';
 const require=createRequire(import.meta.url),S=require('../../../../weekly-boss-battle.cjs'),R=require('../../../../weekly-boss-rules.cjs'),A=require('../../../../akainu-combat.js'),E=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
 const rng=()=>randomInt(0,0x100000000)/0x100000000;
-/** Only the shared lane updates this encounter. All rewards are durable rights,
- * not economic grants; a reward catalog has deliberately not been invented. */
+/** The shared lane settles the encounter, eligibility and individual loot in one transaction. */
 export async function tickWeeklyBosses(pool:Pool,assignment?:SimulationPartition,maxBatchMs=Infinity){
  const shard=partition(assignment),budget=simulationBudget(maxBatchMs);
  if(!(await pool.query("SELECT to_regclass('mare_game.weekly_boss_events') present")).rows[0].present)return 0;
@@ -53,8 +52,7 @@ export async function tickWeeklyBosses(pool:Pool,assignment?:SimulationPartition
   const results=S.step(room,actors,{nav:maps().navigation(row.map_id),now,dt:elapsed>2?0:Math.min(1,elapsed),rng});
   for(const a of actors){
    const result=results.find((r:any)=>r.id===a.id);
-   // Only an actually consumed production potion mutates inventory. No kill loot,
-   // steal money, XP, contract or profession credit comes from this adapter.
+   // Reconcile only consumables actually used during an official tick.
    if(row.mode==='official'&&result.potionsUsed){
     const requestId=randomUUID();await awardWorldLoot(c,a.id,requestId,a.state,[],undefined,result.potionsUsed,{xpGrant:0});
     await c.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[a.id]);
