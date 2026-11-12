@@ -1,0 +1,35 @@
+{
+  "path": "weapons/female1-68-four-torsos-ew-v2/Sabre1_Nodachi68_Femininos_Quatro_Trajes_EW_Editavel_Corrigido_v2.zip",
+  "bytes": 23910028,
+  "sha256": "6d1add6c614e9cfe71b48010413d23e4d1c17cfd39c27a029e756fb81c06d59c",
+  "pngEntries": 492,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+  "weapons": [
+    1,
+    68
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "female",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 128,
+  "manifestHashesVerified": 496,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/female1-68-four-torsos-ew-v2/parts/MANIFEST.json",
+    "reconstruct": "weapons/female1-68-four-torsos-ew-v2/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  },
+  "archiveNote": "Exact corrected V2 female sword ZIP; previous uncorrected delivery excluded."
+}
