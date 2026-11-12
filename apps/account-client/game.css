@@ -1,6 +1,7 @@
 /* Keep the existing game shell and nautical HUD; only connected dialog content differs. */
 body.online-session-loading #app { visibility:hidden; }
 body.online-session-loading::after { content:'Carregando seu personagem…';position:fixed;inset:0;display:grid;place-items:center;background:#081c24;color:#f2e5cb;font:24px Georgia,serif;z-index:99999; }
+body.online-session-loading.online-world-loading::after { content:'Preparando o mapa e o personagem…';padding:24px;text-align:center; }
 .online-item-list { display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;padding:16px; }
 .online-item { padding:18px;border:1px solid #b89558;background:rgba(14,23,27,.85); }
 .online-item h3 { color:#efd49a;font-family:Georgia,serif; }

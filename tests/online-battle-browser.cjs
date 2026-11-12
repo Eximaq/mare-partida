@@ -22,10 +22,15 @@ const engine=require('../world-battle.cjs');wire.battle=engine.create('beach',wi
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH}),out=process.env.MARE_QA_DIR||'tmp/online-battle';fs.mkdirSync(out,{recursive:true});
  let motionReply=false,holdMotion=false,repeatMotion=false;const heldReplies=[];
+ let releaseMap;const mapGate=new Promise(resolve=>{releaseMap=resolve;});
+ let markMapRequested;const mapRequested=new Promise(resolve=>{markMapRequested=resolve;});
+ const legacyDawnRequests=[];
  const context=await browser.newContext({viewport:{width:1366,height:768}}),p=await context.newPage(),errors=[],commands=[];
  try{
   p.on('pageerror',e=>errors.push(e.message));p.on('requestfailed',r=>{if(new URL(r.url()).pathname.endsWith('.js'))console.error('Script request failed: '+new URL(r.url()).pathname+' '+r.failure()?.errorText);});p.on('response',r=>{if(r.status()>=400&&new URL(r.url()).pathname.endsWith('.js'))console.error('Script HTTP '+r.status()+': '+new URL(r.url()).pathname);});await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-byte-for-byte'));
   await p.route('https://**/*',r=>r.abort());
+  p.on('request',r=>{if(new URL(r.url()).pathname.endsWith('/assets/dawn-manual/map.png'))legacyDawnRequests.push(r.url());});
+  await p.route('**/assets/exported-maps/dawn/map.png',async route=>{markMapRequested();await mapGate;await route.continue();});
   await p.route('**/v1/**',async route=>{
    const url=new URL(route.request().url());let body={};
    if(url.pathname==='/v1/me')body={character};
@@ -47,8 +52,17 @@ const engine=require('../world-battle.cjs');wire.battle=engine.create('beach',wi
    }else throw Error('Unexpected route '+url.pathname);
    await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body)});
   });
-  await p.route(process.env.MARE_TEST_URL,async route=>{const r=await route.fetch(),html=await r.text(),boot='<script defer src="/apps/account-client/game-session.js"></script><script defer src="/apps/account-client/game-ui.js"></script>';await route.fulfill({response:r,body:html.replace(/<script defer src="game\.js/,boot+'<script defer src="game.js')});});
-  await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready);
+  await p.route(process.env.MARE_TEST_URL,async route=>{const r=await route.fetch(),html=await r.text(),boot='<script defer src="/apps/account-client/game-session.js"></script><script defer src="/apps/account-client/game-ui.js"></script><link rel="stylesheet" href="/apps/account-client/game.css">';await route.fulfill({response:r,body:html.replace(/<script defer src="game\.js/,boot+'<script defer src="game.js')});});
+  await p.goto(process.env.MARE_TEST_URL,{waitUntil:'domcontentloaded'});
+  await Promise.all([p.waitForFunction(()=>window.MareGameSession?.controlled),mapRequested]);
+  assert.equal(await p.locator('body').evaluate(body=>body.classList.contains('online-session-loading')),true,'show loading while the active map is pending');
+  assert.equal(await p.locator('#app').evaluate(app=>getComputedStyle(app).visibility),'hidden');
+  await p.keyboard.press('Space');
+  assert.deepEqual(commands,[],'gameplay input waits for the active map');
+  releaseMap();
+  await p.waitForFunction(()=>window.__mareDiagnostics?.().map.navigation.ready&&!document.body.classList.contains('online-session-loading'));
+  assert.equal(await p.locator('#app').evaluate(app=>getComputedStyle(app).visibility),'visible');
+  assert.deepEqual(legacyDawnRequests,[],'the exported Dawn map does not download the retired terrain');
   assert.equal(await p.evaluate(()=>__mareDiagnostics().alive),14,'original mobs must be drawn from the server snapshot');
   const hp=wire.battle.mobs[0].hp;await p.locator('#autoToggle').click();await p.waitForFunction(()=>__mareDiagnostics().autoPlay);
   assert(commands.some(v=>v.action==='battle.auto'));await p.waitForTimeout(800);assert.equal(wire.battle.mobs[0].hp,hp,'browser cannot deal local damage');
@@ -86,5 +100,5 @@ const engine=require('../world-battle.cjs');wire.battle=engine.create('beach',wi
   await p.setViewportSize({width:393,height:852});await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.screenshot({path:path.join(out,'original-online-monsters-mobile.png')});
   assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-byte-for-byte');assert.deepEqual(errors,[]);
   console.log('Original online mobs, auto and skill intents, authoritative HP, continuous sampled combat, native hunt route, reload, mobile and demo preservation passed.');
- }catch(e){await p.screenshot({path:path.join(out,'failure.png')}).catch(()=>{});console.error({pageErrors:errors,commands:commands.map(v=>v.action)});throw e;}finally{holdMotion=false;for(const release of heldReplies)release();await context.close();await browser.close();}
+ }catch(e){await p.screenshot({path:path.join(out,'failure.png')}).catch(()=>{});console.error({pageErrors:errors,commands:commands.map(v=>v.action)});throw e;}finally{releaseMap();holdMotion=false;for(const release of heldReplies)release();await context.close();await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});
