@@ -53,3 +53,5 @@ Famílias masculinas de aparência original HD completas: 109, 111, 17, 122. Apr
 Items4,113,115 now have original-body native idle/walk/attack families in four directions. SOUTH/EW registration is candidate calibration, not a new approval. Previous dressed115S remains archived and excluded for an original avatar. Custom palettes and arbitrary outfits remain restricted where not independently supported. Seven original-identity weapon families:4,17,109,111,113,115,122.
 
 Latest increment:5 and69 complete original male families.69 uses transparent canvas margins with compensated pivot to preserve the complete blade, never scale/crop. Nine original weapon families now present. Custom colors remain restricted pending actual masks.
+
+Current increment:16 original male weapon families 1,4,5,17,67,68,69,70,109,111,113,114,115,116,117,122. 25 catalog weapon IDs remain, plus female variants and unsupported outfit/palette combinations. Coverage includes source-preserving candidate registrations; not all globally approved combinations.

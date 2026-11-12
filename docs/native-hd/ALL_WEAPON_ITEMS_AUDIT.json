@@ -94,8 +94,8 @@
           "otherLayerPNGs": 20
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred."
     },
     {
       "item": 2,
@@ -591,8 +591,8 @@
           "otherLayerPNGs": 176
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred."
     },
     {
       "item": 68,
@@ -645,8 +645,8 @@
           "otherLayerPNGs": 20
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred."
     },
     {
       "item": 69,
@@ -718,8 +718,8 @@
           "otherLayerPNGs": 176
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred."
     },
     {
       "item": 71,
@@ -1138,8 +1138,8 @@
       ],
       "archives": 4,
       "layerEvidence": [],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred."
     },
     {
       "item": 115,
@@ -1286,8 +1286,8 @@
           "otherLayerPNGs": 32
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred."
     },
     {
       "item": 118,
@@ -1624,15 +1624,21 @@
     }
   ],
   "completeOriginalIdentityFamilies": [
+    1,
     4,
     5,
     17,
+    67,
+    68,
     69,
+    70,
     109,
     111,
     113,
+    114,
     115,
     116,
+    117,
     122
   ],
   "catalogIdNote": "42 catalog IDs include ID0 (unarmed/base); this is not a count of42 equipped weapons."
