@@ -1324,6 +1324,20 @@
       }
     },
     {
+      "path": "weapons/male1-68-north-three-torsos/Sabre1_Nodachi68_NORTH_M151_M158_M179_Editavel.zip",
+      "bytes": 13171623,
+      "sha256": "d77a96089aaf04ad28fb8de7b8a4cb1ec52ddcb8aea704a1dc32270b794315a9",
+      "pngEntries": 192,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male1-68-north-three-torsos/parts/MANIFEST.json",
+        "reconstruct": "weapons/male1-68-north-three-torsos/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/male111-four-torsos-ew-v3/Manopla111_Masculino_Quatro_Trajes_EW_Editavel.zip",
       "bytes": 6356208,
       "sha256": "9420e8e7a7d6f229ebfb85cf951125ac492e86a98e5eb20d5082bb5733d271a3",
