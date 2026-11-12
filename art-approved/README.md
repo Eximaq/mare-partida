@@ -77,3 +77,8 @@ As armas 12, 13, 71, 72, 73 e 74 na composição masculina apresentada estão em
 ## Nodachi de Fogo 69 SOUTH aprovada
 
 A composição masculina apresentada está em `weapons/nodachi69-south-presented-approved/`. Aprovação restrita à prévia mostrada, sem extensão ao feminino ou a outros trajes. Backup exato verificado; sem integração ou teste no jogo.
+
+
+## Manopla 111 e mosquete 5 SOUTH: posição inicial +20%
+
+Os ciclos apresentados e aprovados estão em `weapons/manopla111-mosquete5-south-initial-plus20-approved/`. Escopo restrito às combinações mostradas; rifle 115 não incluído. Backups exatos verificados; sem integração ou teste no jogo.

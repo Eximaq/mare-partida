@@ -2606,6 +2606,24 @@
       "productionEnabled": false,
       "storage": "zip",
       "approvalScope": "Presented SOUTH male composition only; no female or additional outfits"
+    },
+    {
+      "path": "weapons/manopla111-mosquete5-south-initial-plus20-approved/111_SOUTH_INITIAL_PLUS20_V2/Manopla111_Inicial_v2_Editavel.zip",
+      "bytes": 3692540,
+      "sha256": "df69ed92e5d7bd6794fdb2633927228d8f26ae19dbd25fc0e3cd243bc510c5b5",
+      "pngEntries": 37,
+      "productionEnabled": false,
+      "storage": "zip",
+      "approvalScope": "Presented SOUTH cycle with initial pose enlarged20 percent only"
+    },
+    {
+      "path": "weapons/manopla111-mosquete5-south-initial-plus20-approved/5_SOUTH_INITIAL_PLUS20_V2/Mosquete5_SOUTH_Inicial_Maior_v2_Backup.zip",
+      "bytes": 2242143,
+      "sha256": "d0bdab20685518b5f81e2b8640845f06f672a1d01c1adcc676202b1c740fa212",
+      "pngEntries": 35,
+      "productionEnabled": false,
+      "storage": "zip",
+      "approvalScope": "Presented SOUTH cycle with initial pose enlarged20 percent only"
     }
   ],
   "productionEnabled": false,

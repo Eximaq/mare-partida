@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 2,
+  "totalBytes": 5934683,
+  "scope": "111 and5 SOUTH presented cycles, only initial pose enlarged20 percent. No other outfits/views inferred;115 is not included.",
+  "packages": [
+    {
+      "key": "111_SOUTH_INITIAL_PLUS20_V2",
+      "filename": "Manopla111_Inicial_v2_Editavel.zip",
+      "bytes": 3692540,
+      "sha256": "df69ed92e5d7bd6794fdb2633927228d8f26ae19dbd25fc0e3cd243bc510c5b5",
+      "pngEntries": 37,
+      "entries": 41,
+      "parts": [
+        {
+          "path": "Manopla111_Inicial_v2_Editavel.zip",
+          "bytes": 3692540,
+          "sha256": "df69ed92e5d7bd6794fdb2633927228d8f26ae19dbd25fc0e3cd243bc510c5b5",
+          "git_blob_sha": "84fb148678cdf2ec2a46109c7024b2928540ec73"
+        }
+      ],
+      "approval": "approved presented composition only",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "5_SOUTH_INITIAL_PLUS20_V2",
+      "filename": "Mosquete5_SOUTH_Inicial_Maior_v2_Backup.zip",
+      "bytes": 2242143,
+      "sha256": "d0bdab20685518b5f81e2b8640845f06f672a1d01c1adcc676202b1c740fa212",
+      "pngEntries": 35,
+      "entries": 47,
+      "parts": [
+        {
+          "path": "Mosquete5_SOUTH_Inicial_Maior_v2_Backup.zip",
+          "bytes": 2242143,
+          "sha256": "d0bdab20685518b5f81e2b8640845f06f672a1d01c1adcc676202b1c740fa212",
+          "git_blob_sha": "2c52a4d6131cc13c72719ed70d6b348dbd03039e"
+        }
+      ],
+      "approval": "approved presented composition only",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}
