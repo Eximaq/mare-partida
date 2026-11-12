@@ -1,11 +1,12 @@
 /* Calibratable carry candidate. Exact source PNGs, full native canvas and authored walk bones. */
 (function(root){'use strict';
+const hairAnatomy=root.MareHairAnatomyHD||(typeof require==='function'?require('./player-rework-hair-anatomy-hd.js'):null);
 function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePrefix='tools/rework-base-hd/assets/',weaponPrefix='tools/rework-weapon-layers-hd/',makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
  if(!vendor?.compositor)throw Error('Carry needs original compositor');const V=vendor.compositor;
  function resolve({item,body,action,direction,appearance={},equipment={}}={}){
-  if(![1,68,67,70,69,117,109,111,17,122,4,5,113,114,115,116].includes(Number(item))||!['male','masculino'].includes(body)||!['walk','idle'].includes(action))return null;
+  if(![112,71,72,73,74,12,13,2,3,15,1,68,67,70,69,117,109,111,17,122,4,5,113,114,115,116].includes(Number(item))||!['male','masculino'].includes(body)||!['walk','idle'].includes(action))return null;
   if(Object.entries(equipment).some(([k,v])=>k!=='weapon'&&v!=null&&!['original','none'].includes(v)))return null;
-  if([17,122,111,117].includes(Number(item))&&[appearance.skin,appearance.skinColor].some(v=>v&&v!=='original'))return null;
+  if([112,2,3,15,17,122,111,117].includes(Number(item))&&[appearance.skin,appearance.skinColor].some(v=>v&&v!=='original'))return null;
   let plan=carryIndex.records.find(r=>r.item===Number(item)&&r.direction===direction);if(!plan)return null;
   const hair=(appearance.hairStyle||appearance.hair||'original').replace(/^hair-/,'');
   const base=baseIndex.records.find(r=>r.body==='male'&&r.direction===direction&&r.action===action&&r.hairStyle===hair);if(!base)return null;
@@ -19,7 +20,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   if(!r)throw Error('Unsupported carry identity');const p=r.base.pack,d=p.directions[r.direction],pose=d.poses[frame];if(!pose)throw Error('No authored frame');const padding=r.plan.paddingPhysical??0;if(!Number.isInteger(padding)||padding<0)throw Error('Carry padding must be a nonnegative integer');const w=p.frame.width*4+2*padding,h=p.frame.height*4+2*padding;ctx.canvas.width=w;ctx.canvas.height=h;
   const canvas=r.base.mirrorX?makeCanvas(w,h):ctx.canvas,target=r.base.mirrorX?canvas.getContext('2d'):ctx;target.clearRect(0,0,w,h);target.imageSmoothingEnabled=false;target.save();target.translate(padding,padding);try{
   const map=new Map(r.base.sourceRefs.map(s=>[s,images.get(basePrefix+s+'.png')||images.get(s)]));const skin=appearance.skin||appearance.skinColor,hair=appearance.hairColor;
-  if((skin&&skin!=='original'||hair&&hair!=='original')){if(!appearanceAPI)throw Error('Carry palette API unavailable');for(const [source,image] of map){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),isHair=uses.some(l=>l.slot==='hair'),isSkin=uses.some(l=>['body','headBase','face'].includes(l.slot)),ramp=isHair?appearanceAPI.hairs[hair]?.ramp:isSkin?appearanceAPI.skins[skin]?.ramp:null;if(!ramp)continue;const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d');tc.drawImage(image,0,0);const data=tc.getImageData(0,0,image.width,image.height);data.data.set(appearanceAPI.recolor(data.data,appearanceAPI.materialMask(data.data,isHair?'hair':'skin'),ramp));tc.putImageData(data,0,0);map.set(source,tile);}}
+  if((skin&&skin!=='original'||hair&&hair!=='original')){if(!appearanceAPI)throw Error('Carry palette API unavailable');for(const [source,image] of map){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),isHair=uses.some(l=>l.slot==='hair'),isSkin=uses.some(l=>['body','headBase','face'].includes(l.slot)),ramp=isHair?appearanceAPI.hairs[hair]?.ramp:isSkin?appearanceAPI.skins[skin]?.ramp:null;if(!ramp&&!(isHair&&hairAnatomy?.records[source]))continue;const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d');tc.drawImage(image,0,0);const data=tc.getImageData(0,0,image.width,image.height);const anatomical=isHair?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;data.data.set(anatomical||appearanceAPI.recolor(data.data,appearanceAPI.materialMask(data.data,isHair?'hair':'skin'),ramp));tc.putImageData(data,0,0);map.set(source,tile);}}
   const layers=V.plan(p,r.direction,frame).filter(l=>!hiddenSlots.includes(l.slot));const operations=layers.map(l=>({depth:l.depth,layer:l}));
   for(const part of r.plan.parts){const hand=layers.find(l=>l.binding?.a===part.binding.a&&l.binding?.b===part.binding.b);if(!hand)continue; // Lateral source has no authored far hand: do not float a disconnected far gauntlet.
    operations.push({depth:hand.depth+(part.depthOffset??.1),part});}

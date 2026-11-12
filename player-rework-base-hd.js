@@ -1,5 +1,6 @@
 /* Full authored rework source renderer. No resampling, inferred limbs or old body. */
 (function(root){'use strict';
+const hairAnatomy=root.MareHairAnatomyHD||(typeof require==='function'?require('./player-rework-hair-anatomy-hd.js'):null);
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-base-hd/assets/'}={}){
  if(index?.schema!=='rework-full-hd-v1'||!vendor?.compositor)throw Error('Missing HD base dependencies');
  const body=b=>({masculino:'male',feminino:'female'})[b]||b;
@@ -21,8 +22,8 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
   const skin=appearance.skin||appearance.skinColor,hair=appearance.hairColor;
   if((skin&&skin!=='original'||hair&&hair!=='original')&&appearanceAPI){
    for(const source of sources(r,frame)){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),hairLayer=uses.some(l=>l.slot==='hair'),skinLayer=uses.some(l=>['body','headBase','face'].includes(l.slot));
-    const ramp=hairLayer?appearanceAPI.hairs[hair]?.ramp:skinLayer?appearanceAPI.skins[skin]?.ramp:null;if(!ramp)continue;
-    const image=map.get(source),w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,tile=makeCanvas(w,h),cx=tile.getContext('2d');cx.drawImage(image,0,0);const data=cx.getImageData(0,0,w,h);data.data.set(appearanceAPI.recolor(data.data,appearanceAPI.materialMask(data.data,hairLayer?'hair':'skin'),ramp));cx.putImageData(data,0,0);map.set(source,tile);
+    const ramp=hairLayer?appearanceAPI.hairs[hair]?.ramp:skinLayer?appearanceAPI.skins[skin]?.ramp:null;if(!ramp&&!(hairLayer&&hairAnatomy?.records[source]))continue;
+    const image=map.get(source),w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,tile=makeCanvas(w,h),cx=tile.getContext('2d');cx.drawImage(image,0,0);const data=cx.getImageData(0,0,w,h);const anatomical=hairLayer?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;data.data.set(anatomical||appearanceAPI.recolor(data.data,appearanceAPI.materialMask(data.data,hairLayer?'hair':'skin'),ramp));cx.putImageData(data,0,0);map.set(source,tile);
    }
   }
   // compositor consumes original density4 PNGs, with no intermediate 1x canvas.
