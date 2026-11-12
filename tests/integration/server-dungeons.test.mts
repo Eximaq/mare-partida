@@ -49,7 +49,7 @@ test('dungeons require original levels, accept no client authority and keep a st
  await f.pool.query('INSERT INTO mare_game.battle_talent_steals(character_id,spawn_id,total) VALUES($1,$2,6)',[a.c.id,o.battle.mobs[0].id]);await a.doit('world.return');await a.doit('dungeon.enter',{dungeonId:'alvida'});assert.equal((await a.read()).battle.mobs[0].id,o.battle.mobs[0].id);assert.equal((await a.read()).battle.mobs[0].talentStolen,6);
 }));
 test('only a nearby chest sends official mail and grants XP and Berry once',async()=>authDatabase(async f=>{
- const a=await actor(f.service);await level(f,a);await a.doit('dungeon.enter',{dungeonId:'alvida'});const before=await a.read();await kill(f,a);let o=await a.read();assert.equal(o.dungeons.records.alvida.phase,'pending');assert.deepEqual(o.state,before.state.version===o.state.version?before.state:{...before.state,version:before.state.version+1});assert.deepEqual(o.originalInventory,before.originalInventory);assert.equal(o.achievements.kills,before.achievements.kills);assert.deepEqual(o.contracts,before.contracts);
+ const a=await actor(f.service);await level(f,a);await a.doit('dungeon.enter',{dungeonId:'alvida'});const before=await a.read();await kill(f,a);let o=await a.read();assert.equal(o.dungeons.records.alvida.phase,'pending');assert.deepEqual(o.state,before.state.version===o.state.version?before.state:{...before.state,version:before.state.version+1});assert.deepEqual(o.originalInventory,before.originalInventory);assert.equal(o.achievements.kills,before.achievements.kills);assert.deepEqual(o.contracts.daily,before.contracts.daily);assert.equal(o.contracts.weekly.objectives[0].current,before.contracts.weekly.objectives[0].current+1);
  await assert.rejects(a.doit('dungeon.claim',{dungeonId:'alvida'}),{code:'dungeon_chest_out_of_range'});await a.doit('world.return');await a.doit('dungeon.enter',{dungeonId:'alvida'});assert.equal((await a.read()).battle.mobs.length,0);await near(f,a);const input=await a.input('dungeon.claim',{dungeonId:'alvida'});assert.deepEqual(...await Promise.all([a.send(input),a.send(input)]));o=await a.read();assert.equal(o.dungeons.records.alvida.phase,'claimed');assert.equal(o.world.mapId,'lobby');assert.equal(o.world.area,null);assert(o.battle.dungeon==null);assert.deepEqual(o.world.position,{...maps.maps.lobby.spawn});assert.deepEqual(o.originalInventory,before.originalInventory);const letter=(await inbox(f,a)).letters[0]!;assert.equal(o.dungeons.records.alvida.mailId,letter.id);assert.equal(letter.attachments[0]?.quantity,5);assert.equal(letter.attachments[0]?.boundToCharacter,a.c.id);assert.equal(BigInt(o.state.gold)-BigInt(before.state.gold),100n);assert(BigInt(o.state.experience)>BigInt(before.state.experience));assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_claims')).rows[0].n,1);await assert.rejects(a.doit('dungeon.claim',{dungeonId:'alvida'}),{code:'dungeon_reward_unavailable'});
  const claim=await a.input('mail.claim',{mailId:letter.id});assert.deepEqual(...await Promise.all([a.send(claim),a.send(claim)]));const after=await a.read();
  assert.deepEqual(after.originalInventory.inventory.find((i:any)=>i.id===letter.attachments[0]?.id),letter.attachments[0]);assert(after.dungeons.records.alvida.mailClaimedAt);assert.equal(after.state.experience,o.state.experience);assert.equal(after.state.gold,o.state.gold);
@@ -69,13 +69,44 @@ test('a full bag permits sending mail; separate exact fragment stacks still craf
  await assert.rejects(a.doit('dungeon.craft',{expectedSeq:o.dungeons.seq}),{code:'dungeon_craft_unavailable'});await a.doit('dungeon.acknowledge',{itemId:fruit.id});assert.equal((await a.read()).dungeons.reveal,null);await assert.rejects(a.doit('dungeon.acknowledge',{itemId:fruit.id}),{code:'dungeon_reveal_unavailable'});
 }));
 
-test('undefined rewards of the four later bosses preserve victory without inventing XP, currency or fragments',async()=>authDatabase(async f=>{
+test('dungeons 60–90 deliver the configured bound rewards once, capturing gear level at victory',async()=>authDatabase(async f=>{
  const a=await actor(f.service);await level(f,a,90);
- for(const d of D.catalog.filter((d:any)=>!d.rewardConfigured)){
-  await a.doit('dungeon.enter',{dungeonId:d.id});const before=await a.read();await kill(f,a);const after=await a.read();assert.equal(after.dungeons.records[d.id].phase,'pending');assert.equal(after.dungeons.records[d.id].reward,null);assert.equal(after.state.gold,before.state.gold);assert.equal(after.state.experience,before.state.experience);assert.deepEqual(after.originalInventory,before.originalInventory);
-  await near(f,a);await assert.rejects(a.doit('dungeon.claim',{dungeonId:d.id}),{code:'dungeon_reward_unavailable'});await a.doit('world.return');await a.doit('dungeon.enter',{dungeonId:d.id});assert.equal((await a.read()).battle.mobs.length,0);
+ const catalog=(await import('../../apps/game-server/src/gameplay/catalog.js')).getGameCatalog().items;
+ for(const d of D.catalog.filter((d:any)=>d.level>=60&&d.level<=90)){
+  await a.doit('dungeon.enter',{dungeonId:d.id});
+  const before=await a.read();
+  await kill(f,a);
+  const won=await a.read(),gear=d.level<=70;
+  const reward=won.dungeons.records[d.id].reward;
+  assert.equal(won.dungeons.records[d.id].phase,'pending');
+  assert.equal(reward.boundToCharacter,a.c.id);
+  assert.equal(reward.quantity,gear?1:10);
+  if(gear)assert.equal(reward.equipmentLevel,before.state.level);
+  else assert.equal(reward.materialId,'akuma_fragment_b');
+  await near(f,a);
+  const claim=await a.input('dungeon.claim',{dungeonId:d.id});
+  assert.deepEqual(...await Promise.all([a.send(claim),a.send(claim)]));
+  await assert.rejects(a.doit('dungeon.claim',{dungeonId:d.id}),{code:'dungeon_reward_unavailable'});
+  await level(f,a,before.state.level+1);
+  await redeem(a,d.id);
+  const inventory=(await a.read()).originalInventory.inventory;
+  if(gear){
+   const box=inventory.find((i:any)=>catalog[i.def]?.kind==='epic-equipment-box');
+   assert.equal(box.level,before.state.level);
+   assert.equal(box.boundToCharacter,a.c.id);
+   const open=await a.input('items.open-box',{itemId:box.id});
+   assert.deepEqual(...await Promise.all([a.send(open),a.send(open)]));
+   const opened=(await a.read()).originalInventory.inventory;
+   assert(!opened.some((i:any)=>i.id===box.id));
+   assert(opened.some((i:any)=>i.level===before.state.level&&i.rarity==='epic'&&i.potential===70&&i.boundToCharacter===a.c.id));
+  }else{
+   const stacks=inventory.filter((i:any)=>i.materialId==='akuma_fragment_b');
+   assert(stacks.every((i:any)=>i.boundToCharacter===a.c.id));
+   assert.equal(stacks.reduce((total:number,i:any)=>total+i.quantity,0),d.level===80?10:20);
+  }
  }
- assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_victories')).rows[0].n,4);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_claims')).rows[0].n,0);
+ assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_victories')).rows[0].n,4);
+ assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_claims')).rows[0].n,4);
 }));
 
 test('failed victory and chest commits roll back combat, progression, inventory, ledgers and version',async()=>authDatabase(async f=>{
@@ -112,7 +143,7 @@ test('versioned dungeon upgrade preserves existing characters, inventory, worlds
   for(const name of (await readdir(source)).filter(n=>n<'0025'))await copyFile(new URL(name,source),join(dir,name));
   await authDatabase(async f=>{
    const a=await actor(f.service);await a.doit('prison.enter',{floor:1});const before=await a.read();await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{rulesHash}',to_jsonb($2::text)) WHERE character_id=$1",[a.c.id,'5f9f3b94bacc9b9da99edfeee01f0ce1bbec02dc4d9897c1247fc06e5ace4dd6']);
-   assert.deepEqual(await applyMigrations(f.pool),['0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_market_wallet_grants.sql', '0050_character_xp_curve.sql', '0051_bounty_victories.sql', '0052_world_map_exports.sql']);assert.deepEqual(await applyMigrations(f.pool),[]);const after=await a.read();assert.deepEqual(after.state,before.state);assert.deepEqual(after.originalInventory,{...before.originalInventory,manaPotions:0});assert.deepEqual(after.battle,before.battle);assert.deepEqual(after.prison,before.prison);assert.deepEqual(after.dungeons.records,{});
+   assert.deepEqual(await applyMigrations(f.pool),['0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_market_wallet_grants.sql', '0050_character_xp_curve.sql', '0051_bounty_victories.sql', '0052_world_map_exports.sql', '0053_syrup_boundary.sql', '0054_akainu_weekly_boss.sql', '0055_prison_floor_rewards.sql', '0056_weekly_contracts.sql', '0057_crew_contribution_coins.sql', '0058_weekly_boss_loot.sql', '0059_boss_dungeon_rewards.sql']);assert.deepEqual(await applyMigrations(f.pool),[]);const after=await a.read();assert.deepEqual(after.state,before.state);assert.deepEqual(after.originalInventory,{...before.originalInventory,manaPotions:0});assert.deepEqual(after.battle,before.battle);assert.deepEqual(after.prison,before.prison);assert.deepEqual(after.dungeons.records,{});
   },dir);
  }finally{assert.equal(dirname(resolve(dir)),resolve(tmpdir()));assert(resolve(dir).startsWith(join(resolve(tmpdir()),'mare-dungeon-migrations-')));await rm(dir,{recursive:true,force:true});}
 });
@@ -170,3 +201,31 @@ test('official event replay keeps exact attachments; bulk claim leaves a letter 
  assert.equal(rolls,1);
  assert.equal((await inbox(f,a)).pending,0);
 }));
+
+test('reward migration uses the level in a pending legacy victory receipt',async()=>{
+ const dir=await mkdtemp(join(tmpdir(),'mare-dungeon-reward-migrations-'));
+ const source=new URL('../../apps/game-server/migrations/',import.meta.url);
+ try{
+  for(const name of (await readdir(source)).filter(n=>n<'0059'))await copyFile(new URL(name,source),join(dir,name));
+  await authDatabase(async f=>{
+   const a=await actor(f.service);await level(f,a,95);
+   for(const dungeonId of ['arlong','wapol']){
+    await a.doit('dungeon.enter',{dungeonId});await kill(f,a);await a.doit('world.return');
+    await f.pool.query('UPDATE mare_game.dungeon_victories SET reward=NULL WHERE character_id=$1 AND dungeon_id=$2',[a.c.id,dungeonId]);
+    await f.pool.query("UPDATE mare_game.character_dungeons SET state=jsonb_set(state,ARRAY['records',$2,'reward'],'null') WHERE character_id=$1",[a.c.id,dungeonId]);
+   }
+   await level(f,a,150);
+   assert.deepEqual(await applyMigrations(f.pool),['0059_boss_dungeon_rewards.sql']);
+   const {records}=(await a.read()).dungeons;
+   assert.equal(records.arlong.reward.equipmentLevel,95);
+   assert.equal(records.arlong.reward.boundToCharacter,a.c.id);
+   assert.equal(records.wapol.reward.quantity,10);
+   assert.equal(records.wapol.reward.boundToCharacter,a.c.id);
+   assert.deepEqual(await applyMigrations(f.pool),[]);
+   assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_claims')).rows[0].n,0);
+  },dir);
+ }finally{
+  assert.equal(dirname(resolve(dir)),resolve(tmpdir()));
+  await rm(dir,{recursive:true,force:true});
+ }
+});

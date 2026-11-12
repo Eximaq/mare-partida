@@ -24,24 +24,29 @@ type DailyInputs={state:CharacterState;legacyFighter?:()=>Awaited<ReturnType<typ
 const tableByPeriod={daily:'contract_daily_cycles',weekly:'contract_weekly_cycles'} as const;
 type Period=keyof typeof tableByPeriod;
 async function recurringState(client:PoolClient,id:string){
- const tables=(await client.query("SELECT to_regclass('mare_game.contract_daily_cycles') daily,to_regclass('mare_game.contract_weekly_cycles') weekly")).rows[0];
- if(!tables.daily)return null;
- const clock=(await client.query('SELECT floor(extract(epoch FROM transaction_timestamp())*1000)::bigint now, p.level,c.faction_id,c.class_id,COALESCE(extract(epoch FROM p.xp_boost_until)*1000,0)::bigint boost FROM mare_game.character_progression p JOIN mare_game.characters c ON c.id=p.character_id WHERE p.character_id=$1',[id])).rows[0];
- if(!clock)return null;
+ const clock=(await client.query(`
+  SELECT to_regclass('mare_game.contract_daily_cycles') daily,to_regclass('mare_game.contract_weekly_cycles') weekly,
+   floor(extract(epoch FROM transaction_timestamp())*1000)::bigint now,p.level,c.faction_id,c.class_id,
+   COALESCE(extract(epoch FROM (to_jsonb(p)->>'xp_boost_until')::timestamptz)*1000,0)::bigint boost
+  FROM mare_game.character_progression p JOIN mare_game.characters c ON c.id=p.character_id WHERE p.character_id=$1
+ `,[id])).rows[0];
+ if(!clock?.daily)return null;
+ const now=Number(clock.now),day=contracts.day(now),week=contracts.week(now);
+ const states=(await client.query(`
+  SELECT 'daily' period,state FROM mare_game.contract_daily_cycles WHERE character_id=$1 AND cycle=$2
+  ${clock.weekly?"UNION ALL SELECT 'weekly' period,state FROM mare_game.contract_weekly_cycles WHERE character_id=$1 AND cycle=$3":''}
+ `,clock.weekly?[id,day,week]:[id,day])).rows;
  const read=async (period:Period,cycle:number)=>{
-  const table=tableByPeriod[period];
-  const previous=(await client.query('SELECT state FROM mare_game.'+table+' WHERE character_id=$1 AND cycle=$2',[id,cycle])).rows[0]?.state;
+  const table=tableByPeriod[period],previous=states.find(row=>row.period===period)?.state;
   const input={cycle,level:clock.level,classId:clock.class_id,goldFactor:engine.catalog.factions[clock.faction_id].gold};
   const state=period==='daily'?contracts.rebalanceDaily(previous,input):previous??contracts.weekly(input);
-  if(state!==previous){
-   if(previous)await client.query('UPDATE mare_game.'+table+' SET state=$3 WHERE character_id=$1 AND cycle=$2 AND state=$4',[id,cycle,JSON.stringify(state),JSON.stringify(previous)]);
-   else await client.query('INSERT INTO mare_game.'+table+'(character_id,cycle,state) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',[id,cycle,JSON.stringify(state)]);
-   return (await client.query('SELECT state FROM mare_game.'+table+' WHERE character_id=$1 AND cycle=$2',[id,cycle])).rows[0].state;
-  }
-  return state;
+  if(state===previous)return state;
+  const updated=previous
+   ?await client.query('UPDATE mare_game.'+table+' SET state=$3 WHERE character_id=$1 AND cycle=$2 AND state=$4 RETURNING state',[id,cycle,JSON.stringify(state),JSON.stringify(previous)])
+   :await client.query('INSERT INTO mare_game.'+table+'(character_id,cycle,state) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING state',[id,cycle,JSON.stringify(state)]);
+  return updated.rows[0]?.state??(await client.query('SELECT state FROM mare_game.'+table+' WHERE character_id=$1 AND cycle=$2',[id,cycle])).rows[0].state;
  };
- const now=Number(clock.now),daily=await read('daily',contracts.day(now));
- const weekly=tables.weekly?await read('weekly',contracts.week(now)):undefined;
+ const daily=await read('daily',day),weekly=clock.weekly?await read('weekly',week):undefined;
  return {daily,...(weekly?{weekly}:{}),xpBoostUntil:Number(clock.boost)};
 }
 export async function recordDailyProgress(client:PoolClient,id:string,kills:any[]){
