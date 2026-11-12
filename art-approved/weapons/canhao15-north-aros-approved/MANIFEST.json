@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "packageCount": 1,
+  "totalBytes": 2623352,
+  "scope": "15 NORTH latest presented version with more closed rings at rest and transition; no unshown variants or in-game readiness inferred.",
+  "packages": [
+    {
+      "key": "15_NORTH_AROS_PRESENTED",
+      "filename": "Canhao15_Aros_Editavel_Backup.zip",
+      "bytes": 2623352,
+      "sha256": "46c48bda7cb4c92fc2a0fc2bbe9ebab3f8a86b3d971dbabb8237b00adeafc3b1",
+      "pngEntries": 42,
+      "entries": 45,
+      "parts": [
+        {
+          "path": "Canhao15_Aros_Editavel_Backup.zip",
+          "bytes": 2623352,
+          "sha256": "46c48bda7cb4c92fc2a0fc2bbe9ebab3f8a86b3d971dbabb8237b00adeafc3b1",
+          "git_blob_sha": "fb0f2eebfdf2ded7a607209beb965933bf2080a3"
+        }
+      ],
+      "approval": "approved latest presented version only",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

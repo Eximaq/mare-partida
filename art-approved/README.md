@@ -97,3 +97,8 @@ A última prévia aprovada está em `weapons/manopla109-south-initial-fit-v3-app
 ## Nodachi de Fogo 69 NORTH V6 aprovada
 
 A composição V6 apresentada está em `weapons/nodachi69-north-v6-approved/`. Backup exato verificado; versões anteriores rejeitadas excluídas, sem extensão a modelos/trajes não mostrados. Sem integração ou teste no jogo.
+
+
+## Canhão 15 NORTH: última versão aprovada
+
+O backup apresentado com os aros mais fechados está em `weapons/canhao15-north-aros-approved/`. Backup exato verificado. O encerramento da revisão visual não equivale a integração ou teste no jogo.

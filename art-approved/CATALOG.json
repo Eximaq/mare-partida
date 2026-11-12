@@ -2651,6 +2651,15 @@
       "productionEnabled": false,
       "storage": "zip",
       "approvalScope": "69 NORTH V6 presented composition only"
+    },
+    {
+      "path": "weapons/canhao15-north-aros-approved/15_NORTH_AROS_PRESENTED/Canhao15_Aros_Editavel_Backup.zip",
+      "bytes": 2623352,
+      "sha256": "46c48bda7cb4c92fc2a0fc2bbe9ebab3f8a86b3d971dbabb8237b00adeafc3b1",
+      "pngEntries": 42,
+      "productionEnabled": false,
+      "storage": "zip",
+      "approvalScope": "15 NORTH latest presented version with closed rings; no unshown variants inferred"
     }
   ],
   "productionEnabled": false,
