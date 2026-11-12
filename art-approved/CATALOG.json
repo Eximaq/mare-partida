@@ -1637,6 +1637,757 @@
       "sha256": "9e95e9dcea550cadf43c3aa36bd12a6604d92c287a1058bf0d8c210baf8c5991",
       "pngEntries": 9,
       "productionEnabled": false
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/112_N_M/Manopla112_NORTH_M151_M158_M165_M179_V1_Editavel.zip",
+      "bytes": 7062816,
+      "sha256": "8ce0916d6b0b9b82ff56fd1b3ce1ea60cf4fd19999e69eb8b43039b568722f43",
+      "pngEntries": 128,
+      "productionEnabled": false,
+      "storage": "zip",
+      "parts": [
+        "Manopla112_NORTH_M151_M158_M165_M179_V1_Editavel.zip"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/2-3-110_N_M/Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 21061684,
+      "sha256": "cafd14818c0c41c7d622fa01f11f2b19ef036d1dd135352795cb7ccf8e33e10b",
+      "pngEntries": 384,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip.part001",
+        "Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip.part002",
+        "Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip.part003"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/14_N_M151-158-179/Manopla14_NORTH_M151_M158_M179_Editavel.zip",
+      "bytes": 5195977,
+      "sha256": "d045797424bad472a587c2c013a61c7416bfdcdfe23f584684b935790eaf95fa",
+      "pngEntries": 96,
+      "productionEnabled": false,
+      "storage": "zip",
+      "parts": [
+        "Manopla14_NORTH_M151_M158_M179_Editavel.zip"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/14_N_M165/Manopla14_NORTH_M165_Final_Editavel.zip",
+      "bytes": 1691286,
+      "sha256": "775c5b5a52c0fc83bc0dcd7cd8f1b29d897a9c201f260b2dc747fe2258b1ae06",
+      "pngEntries": 32,
+      "productionEnabled": false,
+      "storage": "zip",
+      "parts": [
+        "Manopla14_NORTH_M165_Final_Editavel.zip"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/2-3-14-110_EW_M/Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 41724168,
+      "sha256": "7d7ff0aa0c8da17f79872fc58014d6801edf747c7b6b6e0bb0f22e20321f9205",
+      "pngEntries": 1024,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part001",
+        "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part002",
+        "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part003",
+        "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part004",
+        "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part005",
+        "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part006"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/2-3_EW_F/Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 26851756,
+      "sha256": "55edc48964acdcb57aa1d38c6d6f99c3454acaf1254d5c8ce7cebb21f382be49",
+      "pngEntries": 640,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip.part001",
+        "Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip.part002",
+        "Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip.part003",
+        "Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip.part004"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/110_EW_F/Manoplas110_Feminino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 13842228,
+      "sha256": "2f507d3fefe7525e585584498c2e1899a04671b94973cd743a2d8222022fc665",
+      "pngEntries": 320,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Manoplas110_Feminino_Quatro_Trajes_EW_Editavel.zip.part001",
+        "Manoplas110_Feminino_Quatro_Trajes_EW_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/14_EW_F/Manoplas14_Feminino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 13357093,
+      "sha256": "7cb1f106ddcf4adeb366f5de3c7f273dda176b49de3fdb3a1d7900bc4be9e8e3",
+      "pngEntries": 320,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Manoplas14_Feminino_Quatro_Trajes_EW_Editavel.zip.part001",
+        "Manoplas14_Feminino_Quatro_Trajes_EW_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/1-68-111-112_N_F/Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 25180214,
+      "sha256": "16055abee490179d90ad1300cd8f2c4331b4d4816eef8a63fde2fb45685905d7",
+      "pngEntries": 257,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part001",
+        "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part002",
+        "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part003",
+        "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part004"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/2-3-14-110_N_F/Manoplas2_3_14_110_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 21928856,
+      "sha256": "40bf4a1f0763e0bfccd70d0f36c7f13eac519e5bb651fe072f5f36feb31e3c7a",
+      "pngEntries": 257,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Manoplas2_3_14_110_Feminino_NORTH_QuatroTrajes_Editavel.zip.part001",
+        "Manoplas2_3_14_110_Feminino_NORTH_QuatroTrajes_Editavel.zip.part002",
+        "Manoplas2_3_14_110_Feminino_NORTH_QuatroTrajes_Editavel.zip.part003"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/17-122_N_F_V4/Orbes17_122_Femininos_NORTH_Editavel.zip",
+      "bytes": 11067993,
+      "sha256": "73efe0d7bb8250311a8c57a730439d4047d43fe1124e68fdc8f098677612ba85",
+      "pngEntries": 129,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Orbes17_122_Femininos_NORTH_Editavel.zip.part001",
+        "Orbes17_122_Femininos_NORTH_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/16_N_M/Compasso16_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 6798835,
+      "sha256": "82aec7d0680a8ee1c7bde12dc907f90298d4b85855f0bd30d92b6aaf82fc30cd",
+      "pngEntries": 128,
+      "productionEnabled": false,
+      "storage": "zip",
+      "parts": [
+        "Compasso16_Masculino_NORTH_QuatroTrajes_Editavel.zip"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/16_EW_M/Compasso16_Masculino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 10406014,
+      "sha256": "5225da3adf6789dcdc97443338c636581516babb0e850bbedcc4886bcf4979db",
+      "pngEntries": 256,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Compasso16_Masculino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Compasso16_Masculino_EAST_WEST_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/16_N_F/Compasso16_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 5427751,
+      "sha256": "cca79e220d26c7e834474975b68591b7697f198e8233f31957353634214b208e",
+      "pngEntries": 65,
+      "productionEnabled": false,
+      "storage": "zip",
+      "parts": [
+        "Compasso16_Feminino_NORTH_QuatroTrajes_Editavel.zip"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/16_EW_F/Compasso16_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 13315010,
+      "sha256": "a70c87bd726f35ac620995f49bc6504976c633c506d22074dc57250a84d7d845",
+      "pngEntries": 320,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Compasso16_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Compasso16_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/118-119-120_N_M/Itens118_119_120_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 20886529,
+      "sha256": "c46cc76a34476786ba3138186fe71a247c42027c03803a73a563e9c4958c12f4",
+      "pngEntries": 384,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Itens118_119_120_Masculino_NORTH_QuatroTrajes_Editavel.zip.part001",
+        "Itens118_119_120_Masculino_NORTH_QuatroTrajes_Editavel.zip.part002",
+        "Itens118_119_120_Masculino_NORTH_QuatroTrajes_Editavel.zip.part003"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/118-119-120_N_F/Itens118_119_120_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 16382114,
+      "sha256": "4077749ad5331ea1168c07c33f8b5ae536fda75bc3b20e18647af313c18e419c",
+      "pngEntries": 193,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Itens118_119_120_Feminino_NORTH_QuatroTrajes_Editavel.zip.part001",
+        "Itens118_119_120_Feminino_NORTH_QuatroTrajes_Editavel.zip.part002",
+        "Itens118_119_120_Feminino_NORTH_QuatroTrajes_Editavel.zip.part003"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/114_N_M/Pistolas114_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 7517417,
+      "sha256": "3688ea866c5c225dbdcd80fd7f6d1ff8783c7da4f75f33e763e6f4edbc6d037f",
+      "pngEntries": 128,
+      "productionEnabled": false,
+      "storage": "zip",
+      "parts": [
+        "Pistolas114_Masculino_NORTH_QuatroTrajes_Editavel.zip"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/114_N_F/Pistolas114_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 5581193,
+      "sha256": "ce29a1be500dd3a3ebbd00e7d69f47310a69d99b3911021365cabe3c7f4f2f88",
+      "pngEntries": 65,
+      "productionEnabled": false,
+      "storage": "zip",
+      "parts": [
+        "Pistolas114_Feminino_NORTH_QuatroTrajes_Editavel.zip"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/0-67-70_N_M/Itens0_67_70_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 23246964,
+      "sha256": "11d78cb51c09a6e7a974df7b61fb05586a9aeb947d9836ec3d7cfd4221807e06",
+      "pngEntries": 384,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Itens0_67_70_Masculino_NORTH_QuatroTrajes_Editavel.zip.part001",
+        "Itens0_67_70_Masculino_NORTH_QuatroTrajes_Editavel.zip.part002",
+        "Itens0_67_70_Masculino_NORTH_QuatroTrajes_Editavel.zip.part003"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/0-67-70_N_F/Itens0_67_70_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 18531999,
+      "sha256": "d0bcc0547898e952c4e19d7de1ed4a1faec29681f1cb7374a7aaec6b380f4ea1",
+      "pngEntries": 193,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Itens0_67_70_Feminino_NORTH_QuatroTrajes_Editavel.zip.part001",
+        "Itens0_67_70_Feminino_NORTH_QuatroTrajes_Editavel.zip.part002",
+        "Itens0_67_70_Feminino_NORTH_QuatroTrajes_Editavel.zip.part003"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/128_EW_M/Cajado128_Masculino_EW_QuatroTrajes_Editavel.zip",
+      "bytes": 6713334,
+      "sha256": "8228c8562ef396b5fcc331915c9bd50e21181e3e353c7d852d10a92b3660ef89",
+      "pngEntries": 136,
+      "productionEnabled": false,
+      "storage": "zip",
+      "parts": [
+        "Cajado128_Masculino_EW_QuatroTrajes_Editavel.zip"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/128_EW_F/Cajado128_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9475910,
+      "sha256": "3d03bab0eae205a0f7899ac44732312a275fc65a2db197876a211e5ec82da97c",
+      "pngEntries": 184,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado128_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Cajado128_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/124_EW_M/Cajado124_Masculino_EW_QuatroTrajes_Editavel.zip",
+      "bytes": 6812556,
+      "sha256": "fb1b82efc98e5e2155195ec8e5108659d3946bbc17e767c43dad34d50f691726",
+      "pngEntries": 136,
+      "productionEnabled": false,
+      "storage": "zip",
+      "parts": [
+        "Cajado124_Masculino_EW_QuatroTrajes_Editavel.zip"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/124_EW_F/Cajado124_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9623819,
+      "sha256": "93ff824c71bad6cc610a5dd6daeb5bded501d12dc30e5578e2b699a9f7401dd2",
+      "pngEntries": 184,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado124_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Cajado124_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/124_N_M179/Cajado124_Masculino_NORTH_Traje179_Editavel.zip",
+      "bytes": 2927978,
+      "sha256": "73c6537707fc9e22bff717da798d27dcf8ee4b87c179f0bad16c6e13dad368b2",
+      "pngEntries": 48,
+      "productionEnabled": false,
+      "storage": "zip",
+      "parts": [
+        "Cajado124_Masculino_NORTH_Traje179_Editavel.zip"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/124_N_M151-158-165/Cajado124_Masculino_NORTH_Trajes151_158_165_Editavel.zip",
+      "bytes": 8247529,
+      "sha256": "0b0c561a08b955bd7b430ef7ca352b310e5c50eba11c3d5dc5ce207c4597f89b",
+      "pngEntries": 150,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado124_Masculino_NORTH_Trajes151_158_165_Editavel.zip.part001",
+        "Cajado124_Masculino_NORTH_Trajes151_158_165_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/124_N_F/Cajado124_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9467139,
+      "sha256": "00c994c3bee6276e771db08b11c2897e5bb6a4e15e05e74c2d17ed19d51d54dd",
+      "pngEntries": 145,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado124_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+        "Cajado124_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/126_N_M/Cajado126_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 17840540,
+      "sha256": "50bcdd0fb79bf67ad393ef50f77c24430653964075f8b5f53a2097c3a689d7f2",
+      "pngEntries": 198,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado126_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+        "Cajado126_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+        "Cajado126_Masculino_NORTH_4Trajes_Editavel.zip.part003"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/126_N_F/Cajado126_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 10636951,
+      "sha256": "d37b0f705d680ab9fb82141dd2cb7320398e87ebb06ad3dffd452aeb1fc9c3c3",
+      "pngEntries": 145,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado126_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+        "Cajado126_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/126_EW_M/Cajado126_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 9517541,
+      "sha256": "a7c936cccbc95085241282e351ff474c899089255a8f021f69befdc38851f5d1",
+      "pngEntries": 141,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado126_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+        "Cajado126_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/126_EW_F/Cajado126_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9423302,
+      "sha256": "630188d214c252c2841da5752c2e7eff825f377db7f6ea23a08758f32e2f1daf",
+      "pngEntries": 181,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado126_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Cajado126_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/127_N_M/Cajado127_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 15972926,
+      "sha256": "d71e3c884d13bad4abafa81e384cbf845a77e93a0fb6aba229ae21ce1a9b0604",
+      "pngEntries": 198,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado127_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+        "Cajado127_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+        "Cajado127_Masculino_NORTH_4Trajes_Editavel.zip.part003"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/127_N_F/Cajado127_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 10371423,
+      "sha256": "5f8c4a16a792d2f310cadffa34825134e3e810519a6eeeae4b98f56793c7de36",
+      "pngEntries": 145,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado127_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+        "Cajado127_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/127_EW_M/Cajado127_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 10692361,
+      "sha256": "ac3cf4cf6750ce8e1087854fd173e5e02f0d93fe2dad580d3edcdd40aed29388",
+      "pngEntries": 157,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado127_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+        "Cajado127_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/127_EW_F/Cajado127_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9572169,
+      "sha256": "6a761adf0467afbf95c2970b85de86ff8e34210f952df4f30d315bc28fab0488",
+      "pngEntries": 181,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado127_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Cajado127_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/125_N_M/Cajado125_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 15589513,
+      "sha256": "b3ce1cd87cb49f2c0936ede07f6281416f6df3b3e3322925782cdfc5a81714db",
+      "pngEntries": 207,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado125_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+        "Cajado125_Masculino_NORTH_4Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/125_N_F/Cajado125_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9810198,
+      "sha256": "0b7548c2d7098784fb8e0d07109efc51fc6be794a5d26e4d257e6a34ed782d85",
+      "pngEntries": 145,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado125_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+        "Cajado125_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/125_EW_M/Cajado125_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 10411044,
+      "sha256": "44076a4e46514d8db35d63afb8b2db61b84c26b64e603c27f42dc4be76c112ad",
+      "pngEntries": 157,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado125_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+        "Cajado125_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/125_EW_F/Cajado125_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9340989,
+      "sha256": "d6a93974b75c60edde91e05cad272593cae40820e58baf9ba3afaa0345e84c50",
+      "pngEntries": 181,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado125_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Cajado125_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/123_N_M/Cetro123_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 17773882,
+      "sha256": "1746da5bb98416afd5033032ab9b29ef62e5ac5e6d29c0c1c013f9002e1ead1c",
+      "pngEntries": 207,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cetro123_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+        "Cetro123_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+        "Cetro123_Masculino_NORTH_4Trajes_Editavel.zip.part003"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/123_N_F/Cetro123_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9520828,
+      "sha256": "ee9cfc7b8d2f50f580c145cce67e2a3fc811343d43c2d87f35929c463ef62c7f",
+      "pngEntries": 145,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cetro123_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+        "Cetro123_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/123_EW_M/Cetro123_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 10173959,
+      "sha256": "c5a3ccc984d34ec53ecb680b5762d19c7354dd25449ce6a0f8b8c81769453fad",
+      "pngEntries": 157,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cetro123_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+        "Cetro123_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/123_EW_F/Cetro123_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9295576,
+      "sha256": "ad28798495abb90afa2c807fa1fd1195920b70a219e18c67fab3f5063ff19240",
+      "pngEntries": 181,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cetro123_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Cetro123_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/121_N_M/Cetro121_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 17863513,
+      "sha256": "2a1774026b4d7f1e75743d1a14418edfdba3f4dfb74b82a2af6cd41ab4b8778c",
+      "pngEntries": 207,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cetro121_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+        "Cetro121_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+        "Cetro121_Masculino_NORTH_4Trajes_Editavel.zip.part003"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/121_N_F/Cetro121_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9578527,
+      "sha256": "df6e19dd5e522bdbc1be12fcd33cc885aa85b660401957e034059719ab7d4c1a",
+      "pngEntries": 145,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cetro121_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+        "Cetro121_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/121_EW_M/Cetro121_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 11045554,
+      "sha256": "c6760dc9b77ab138a97e9089e611460ecaf3705d7092088b4b9fe005f177a8f0",
+      "pngEntries": 165,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cetro121_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+        "Cetro121_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/121_EW_F/Cetro121_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9983898,
+      "sha256": "7103ccac59ab720f4e26eef6db6cb71231e6f5a5354a9ad34c3102719006f699",
+      "pngEntries": 189,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cetro121_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Cetro121_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/31_N_M/Cajado31_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 15511408,
+      "sha256": "70aa6a62eb9c00709f0567c1be6e4dd0a8e2a82ea39e030d1852d57a7a867228",
+      "pngEntries": 207,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado31_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+        "Cajado31_Masculino_NORTH_4Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/31_N_F/Cajado31_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9612875,
+      "sha256": "ea97d2af75c3102b21a40dcad488f8b34152aa7dba3d521692152fc1983f5163",
+      "pngEntries": 145,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado31_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+        "Cajado31_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/31_EW_M/Cajado31_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 10140510,
+      "sha256": "d7dcad73b1b4532717cc390f0f1eb1576a5ed729162d3056f8b9fd392897cd53",
+      "pngEntries": 157,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado31_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+        "Cajado31_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/31_EW_F/Cajado31_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9238694,
+      "sha256": "c347b57a37382936b6da47882056d1c04214d7331839102005ec0391954ab7a9",
+      "pngEntries": 181,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado31_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Cajado31_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/32_EW_M/Relicario32_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 13642038,
+      "sha256": "feadc7e006834551bc7122ceeed4780bd9c2d5e9cf9e264e410d0d62d28f9da3",
+      "pngEntries": 193,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Relicario32_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+        "Relicario32_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/32_EW_F_V2/Relicario32_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 12578962,
+      "sha256": "4336c5b12656b99bc98d4966e0e4631c7bb78694c846246c3dc4e33519820331",
+      "pngEntries": 221,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Relicario32_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Relicario32_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/32_N_M/Relicario32_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 24523594,
+      "sha256": "33d1da5bcb7f7237aa59fe072619f19c4ba8fb0c48d79fab8b3c51f079726bf3",
+      "pngEntries": 207,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+        "Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+        "Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part003",
+        "Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part004"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/32_N_F/Relicario32_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9638826,
+      "sha256": "bea35396e9efb6b164874d37c9934b9bdf519d3cfe406e1238e963691c023e66",
+      "pngEntries": 145,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Relicario32_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+        "Relicario32_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
+    },
+    {
+      "path": "weapons/clothing-batch-20261112/117_N_M/Braco117_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 11824898,
+      "sha256": "01e1828be28963dc4d0a8e9e626903cd2b7627d5ef1b3717ef023a7bf127fd09",
+      "pngEntries": 198,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Braco117_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+        "Braco117_Masculino_NORTH_4Trajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/clothing-batch-20261112/RESTORE.py"
     }
   ],
   "productionEnabled": false,

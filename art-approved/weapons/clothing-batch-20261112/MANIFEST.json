@@ -1,0 +1,1499 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 57,
+  "totalBytes": 721452661,
+  "excluded": [
+    "128 NORTH, every outfit and both models",
+    "Superseded/rejected previews",
+    "117 NORTH female, not yet presented"
+  ],
+  "scope": "Approved presented clothing previews only. Archive, not game integration.",
+  "packages": [
+    {
+      "key": "112_N_M",
+      "filename": "Manopla112_NORTH_M151_M158_M165_M179_V1_Editavel.zip",
+      "bytes": 7062816,
+      "sha256": "8ce0916d6b0b9b82ff56fd1b3ce1ea60cf4fd19999e69eb8b43039b568722f43",
+      "pngEntries": 128,
+      "entries": 131,
+      "parts": [
+        {
+          "path": "Manopla112_NORTH_M151_M158_M165_M179_V1_Editavel.zip",
+          "bytes": 7062816,
+          "git_blob_sha": "90171fec3c46ad85a226c73f6be87c34ae35c6cf",
+          "sha256": "8ce0916d6b0b9b82ff56fd1b3ce1ea60cf4fd19999e69eb8b43039b568722f43"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "2-3-110_N_M",
+      "filename": "Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 21061684,
+      "sha256": "cafd14818c0c41c7d622fa01f11f2b19ef036d1dd135352795cb7ccf8e33e10b",
+      "pngEntries": 384,
+      "entries": 387,
+      "parts": [
+        {
+          "path": "Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "7aabf6aa83f13214bc87a06594760b519859d639",
+          "sha256": "08a16f4bb59dc07161deedf685725b22369788875035f6f8988024e9955cf8c6"
+        },
+        {
+          "path": "Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "c3f6f409aa565ad439ca9121472bcbc9ea6d1e0c",
+          "sha256": "6321dc774a0188147faa7dbd19705cc93b86aa10e36ba65b724192d05f088c39"
+        },
+        {
+          "path": "Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip.part003",
+          "bytes": 5333044,
+          "git_blob_sha": "682bb80c889cf420f47059c82de71deb9ee65b15",
+          "sha256": "f949798acb74564b60c6f0c6ff7ff2731c62c419b0f1995c3eee0b366222d245"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "14_N_M151-158-179",
+      "filename": "Manopla14_NORTH_M151_M158_M179_Editavel.zip",
+      "bytes": 5195977,
+      "sha256": "d045797424bad472a587c2c013a61c7416bfdcdfe23f584684b935790eaf95fa",
+      "pngEntries": 96,
+      "entries": 99,
+      "parts": [
+        {
+          "path": "Manopla14_NORTH_M151_M158_M179_Editavel.zip",
+          "bytes": 5195977,
+          "git_blob_sha": "a40c108e89d2eb75e262d160799d9b3ac959bb13",
+          "sha256": "d045797424bad472a587c2c013a61c7416bfdcdfe23f584684b935790eaf95fa"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "14_N_M165",
+      "filename": "Manopla14_NORTH_M165_Final_Editavel.zip",
+      "bytes": 1691286,
+      "sha256": "775c5b5a52c0fc83bc0dcd7cd8f1b29d897a9c201f260b2dc747fe2258b1ae06",
+      "pngEntries": 32,
+      "entries": 35,
+      "parts": [
+        {
+          "path": "Manopla14_NORTH_M165_Final_Editavel.zip",
+          "bytes": 1691286,
+          "git_blob_sha": "7b1d02209c36d36f600b500f4422061691036326",
+          "sha256": "775c5b5a52c0fc83bc0dcd7cd8f1b29d897a9c201f260b2dc747fe2258b1ae06"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "2-3-14-110_EW_M",
+      "filename": "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 41724168,
+      "sha256": "7d7ff0aa0c8da17f79872fc58014d6801edf747c7b6b6e0bb0f22e20321f9205",
+      "pngEntries": 1024,
+      "entries": 1027,
+      "parts": [
+        {
+          "path": "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "8e57170070166560551193776c7e584211a22aaf",
+          "sha256": "d5f181de22583300a457cd21d46ef98dd62b40814f5c8155bf90a65e7c1943fc"
+        },
+        {
+          "path": "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "2f3c28b8daf8a0d20fe9b6296b5e82f73c91a64c",
+          "sha256": "4b84c22a04d2b0909e4126063c1caddc7c818bf2d6ad3d050e22de947fd4722e"
+        },
+        {
+          "path": "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part003",
+          "bytes": 7864320,
+          "git_blob_sha": "ce36237c19e38cbfc7b6b6d7effda2182aa53a96",
+          "sha256": "8cc4bdf61face4684c0cb6960549d89bede2c5a93facdfb245e7e17db60b4457"
+        },
+        {
+          "path": "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part004",
+          "bytes": 7864320,
+          "git_blob_sha": "dcb01e5e5a1a1e6821e96cfcd1b4fd4752045529",
+          "sha256": "13a86289da192e8ebd30528fb522b4e18b6430ca593e6629c4ea24a06df34654"
+        },
+        {
+          "path": "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part005",
+          "bytes": 7864320,
+          "git_blob_sha": "740e159bb7aee680df0f5c8f560ef7019fae471c",
+          "sha256": "e4c186106a08456b0802c52a3eeb776621aa181b89ef1d203a7fb5d6a874a29a"
+        },
+        {
+          "path": "Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part006",
+          "bytes": 2402568,
+          "git_blob_sha": "6c414135357bf2b8cec6fb539551064023b5caa8",
+          "sha256": "81cd5758e37e9b1484211d497b103e2f80847bee7ac86ee6d99930aa6612c59d"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "2-3_EW_F",
+      "filename": "Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 26851756,
+      "sha256": "55edc48964acdcb57aa1d38c6d6f99c3454acaf1254d5c8ce7cebb21f382be49",
+      "pngEntries": 640,
+      "entries": 643,
+      "parts": [
+        {
+          "path": "Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "78ca6dae9b520234549069423909182682667e76",
+          "sha256": "f3a5df83e5037bd37affa0d3527b9c99a1f69d4a41b305bf9c8c7d8b8c92bd09"
+        },
+        {
+          "path": "Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "45f673b0e750c590842f64d974aa013f32c570a5",
+          "sha256": "30375924faab66a23627804df6227a6684355d6d358dbcf8cd80bd1e1e6248dd"
+        },
+        {
+          "path": "Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip.part003",
+          "bytes": 7864320,
+          "git_blob_sha": "f6b4d35a2f04c2f7474d4cf10cef99718d5b121a",
+          "sha256": "8e23461d22a38f9bab9b9465ea60e3a16128a4eaf7a464d7e390c36fe77b0920"
+        },
+        {
+          "path": "Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip.part004",
+          "bytes": 3258796,
+          "git_blob_sha": "e73a9f7418dff6344fb25f41ef6d9b86c8b821d0",
+          "sha256": "b65f3a9fbfca310f575893ce97a09dad4a3adc502e7d1bb9cc5d55d2edfaba29"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "110_EW_F",
+      "filename": "Manoplas110_Feminino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 13842228,
+      "sha256": "2f507d3fefe7525e585584498c2e1899a04671b94973cd743a2d8222022fc665",
+      "pngEntries": 320,
+      "entries": 323,
+      "parts": [
+        {
+          "path": "Manoplas110_Feminino_Quatro_Trajes_EW_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "13f919dc7924ee337bb29c2c0a69e7b752d9fae6",
+          "sha256": "e5d248d629f2f2820d700b3e8f0528065db83291c5fc758c4ec9d36e51c4ff76"
+        },
+        {
+          "path": "Manoplas110_Feminino_Quatro_Trajes_EW_Editavel.zip.part002",
+          "bytes": 5977908,
+          "git_blob_sha": "215b1b39b8772c891a886e793d7932ef27b75427",
+          "sha256": "d5d9aef1ab11297a887adadb2c2fda41feb094678aaf477a16e460b7b3f78e0e"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "14_EW_F",
+      "filename": "Manoplas14_Feminino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 13357093,
+      "sha256": "7cb1f106ddcf4adeb366f5de3c7f273dda176b49de3fdb3a1d7900bc4be9e8e3",
+      "pngEntries": 320,
+      "entries": 323,
+      "parts": [
+        {
+          "path": "Manoplas14_Feminino_Quatro_Trajes_EW_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "0a9ec264e411a73201b7431bfab798cde90cef3a",
+          "sha256": "0cfb291163fb184e03df8c20736b17075e1c4a14a68ddf77ccc6ec978d1e1280"
+        },
+        {
+          "path": "Manoplas14_Feminino_Quatro_Trajes_EW_Editavel.zip.part002",
+          "bytes": 5492773,
+          "git_blob_sha": "9199b7c2fdf1e68c14236fd39c90acdebd6065cb",
+          "sha256": "33dac047250495fc5d0ddfb47dd22761b6e757b700a71239e0362e8796d32034"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "1-68-111-112_N_F",
+      "filename": "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 25180214,
+      "sha256": "16055abee490179d90ad1300cd8f2c4331b4d4816eef8a63fde2fb45685905d7",
+      "pngEntries": 257,
+      "entries": 261,
+      "parts": [
+        {
+          "path": "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "41aab567cbbc1138cd5e50eb3f63ef6f72355e50",
+          "sha256": "287a3aafb16c37ec4b3de8fe8a738ffb1865c10f1e0cb7a3b0f2d0fa60138594"
+        },
+        {
+          "path": "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "a1d026efa1bbae9630f7c425806cf84918f14e85",
+          "sha256": "04ca67e341de675fd0e79d3eccfbc9c56ac6fd4a03aa7b4ecba5e883d0dab995"
+        },
+        {
+          "path": "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part003",
+          "bytes": 7864320,
+          "git_blob_sha": "0067ecf003b8dd0e0b24d7f38a63adf066931ee2",
+          "sha256": "3aba98788643f2bc46877a0054082aabd4700c488bcdb8027af967b6383e8eaa"
+        },
+        {
+          "path": "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part004",
+          "bytes": 1587254,
+          "git_blob_sha": "0c57a15bc16a97d9f405ef2fbe15ffb12a4a6f1d",
+          "sha256": "5881aec72bf2bf6a3b02af597dc74374df6cbb1a68b3755a39b681ae1b9c3d9d"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "2-3-14-110_N_F",
+      "filename": "Manoplas2_3_14_110_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 21928856,
+      "sha256": "40bf4a1f0763e0bfccd70d0f36c7f13eac519e5bb651fe072f5f36feb31e3c7a",
+      "pngEntries": 257,
+      "entries": 261,
+      "parts": [
+        {
+          "path": "Manoplas2_3_14_110_Feminino_NORTH_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "20b69b7af22a16fea01e9246a7076940a7dc32ed",
+          "sha256": "d49fd634e610d8dccca5dd1b105d7cc5cf6b58e1ecb2e134ee843b2f125baade"
+        },
+        {
+          "path": "Manoplas2_3_14_110_Feminino_NORTH_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "d1bade2e197a01bff6a7206afc856641d677759a",
+          "sha256": "cb3b26029ed71918a192d3c1bb89316e2b8ee1fa77b3c8e9ed954c87c6ae1c1a"
+        },
+        {
+          "path": "Manoplas2_3_14_110_Feminino_NORTH_QuatroTrajes_Editavel.zip.part003",
+          "bytes": 6200216,
+          "git_blob_sha": "e2d9ced74de339e315588b65b92ee1bc13608b36",
+          "sha256": "77c03209b381b28dfa26cfb937f011445be50dabc01726900e1585423bcdab12"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "17-122_N_F_V4",
+      "filename": "Orbes17_122_Femininos_NORTH_Editavel.zip",
+      "bytes": 11067993,
+      "sha256": "73efe0d7bb8250311a8c57a730439d4047d43fe1124e68fdc8f098677612ba85",
+      "pngEntries": 129,
+      "entries": 133,
+      "parts": [
+        {
+          "path": "Orbes17_122_Femininos_NORTH_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "d7b0addda5330554adf7adb6777d2b7f49b1b990",
+          "sha256": "9446deccd3418eeeaa6c718a8e3bf77a5daec4d130af23f3085f76cfd6939373"
+        },
+        {
+          "path": "Orbes17_122_Femininos_NORTH_Editavel.zip.part002",
+          "bytes": 3203673,
+          "git_blob_sha": "12ec973d0b06bb4e300328fc4ed3370c0824dce9",
+          "sha256": "236a5cbe357669f8c88d911d4204301a7fd26b77d3ce373b5461d3e34fe7512f"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "16_N_M",
+      "filename": "Compasso16_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 6798835,
+      "sha256": "82aec7d0680a8ee1c7bde12dc907f90298d4b85855f0bd30d92b6aaf82fc30cd",
+      "pngEntries": 128,
+      "entries": 131,
+      "parts": [
+        {
+          "path": "Compasso16_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+          "bytes": 6798835,
+          "git_blob_sha": "03d115c1ea4fdb203b6e35fb28ca2ba9a598fe30",
+          "sha256": "82aec7d0680a8ee1c7bde12dc907f90298d4b85855f0bd30d92b6aaf82fc30cd"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "16_EW_M",
+      "filename": "Compasso16_Masculino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 10406014,
+      "sha256": "5225da3adf6789dcdc97443338c636581516babb0e850bbedcc4886bcf4979db",
+      "pngEntries": 256,
+      "entries": 259,
+      "parts": [
+        {
+          "path": "Compasso16_Masculino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "09ee956e2a466ba7612e5d0ea0749db171c10d2f",
+          "sha256": "0f6d51ebc2c84c084cff5ed96906b6c191469ae2f4d8a2ccc87ba5830d8c22a2"
+        },
+        {
+          "path": "Compasso16_Masculino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 2541694,
+          "git_blob_sha": "d52b13bb74cbcd917b73aacc5dc4a6c8d5f89a82",
+          "sha256": "78792114fb6c1c54e7e03201a882aa0c3f226a5562a1988d32fd8e022e5db3d7"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "16_N_F",
+      "filename": "Compasso16_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 5427751,
+      "sha256": "cca79e220d26c7e834474975b68591b7697f198e8233f31957353634214b208e",
+      "pngEntries": 65,
+      "entries": 69,
+      "parts": [
+        {
+          "path": "Compasso16_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+          "bytes": 5427751,
+          "git_blob_sha": "dd8b4e2ccc3cef5758b049add734d8246deec929",
+          "sha256": "cca79e220d26c7e834474975b68591b7697f198e8233f31957353634214b208e"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "16_EW_F",
+      "filename": "Compasso16_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 13315010,
+      "sha256": "a70c87bd726f35ac620995f49bc6504976c633c506d22074dc57250a84d7d845",
+      "pngEntries": 320,
+      "entries": 324,
+      "parts": [
+        {
+          "path": "Compasso16_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "f0a0bf1b2a2e52984d5e514d81f2dc1332b774b7",
+          "sha256": "f9fa90ea4704fc5fde886e2add9bd6d7f244bbd90b1c174c70da489d5bee47a5"
+        },
+        {
+          "path": "Compasso16_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 5450690,
+          "git_blob_sha": "67bc727b8faa92c1c6695528b130fbc35d580d66",
+          "sha256": "0c9f4eaa4b658a0f819f40ed1ad146896d7c3ff19240c7f29d300e04f31bd633"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "118-119-120_N_M",
+      "filename": "Itens118_119_120_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 20886529,
+      "sha256": "c46cc76a34476786ba3138186fe71a247c42027c03803a73a563e9c4958c12f4",
+      "pngEntries": 384,
+      "entries": 387,
+      "parts": [
+        {
+          "path": "Itens118_119_120_Masculino_NORTH_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "37586accc8a8518290d421c4cd5286951c04b425",
+          "sha256": "7be500602de98f81f97a761aade46d85ce9e9bf6a100c801eb678bfbd58c7a73"
+        },
+        {
+          "path": "Itens118_119_120_Masculino_NORTH_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "34e6ef2ad711056ec2bd4756185cfe653f849810",
+          "sha256": "c463e961dd652f9fb4f064c287d13af0765ffabc339a35582a848b58d91194ef"
+        },
+        {
+          "path": "Itens118_119_120_Masculino_NORTH_QuatroTrajes_Editavel.zip.part003",
+          "bytes": 5157889,
+          "git_blob_sha": "5f7c023b39cf85d5ef775b06f69f1f511474c23b",
+          "sha256": "ccaa5b54d160f11c899db1798a4ba6310a99aa9d31dbb7d0c5cd5fc8f91a1df7"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "118-119-120_N_F",
+      "filename": "Itens118_119_120_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 16382114,
+      "sha256": "4077749ad5331ea1168c07c33f8b5ae536fda75bc3b20e18647af313c18e419c",
+      "pngEntries": 193,
+      "entries": 197,
+      "parts": [
+        {
+          "path": "Itens118_119_120_Feminino_NORTH_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "6f85a785dd68fea7462d27d2bd0f0f5a7a219f7d",
+          "sha256": "5d73bc16d4ed9b2423268ede509d178622c0d8d83bb23ca2c7b40547879314e0"
+        },
+        {
+          "path": "Itens118_119_120_Feminino_NORTH_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "fd481c4bdd278d8e2755c413dd20029a1aefc598",
+          "sha256": "1e726b6bb5ecd9cfb2368fb9165f90f3183b996af6806019c6712f32284bac4a"
+        },
+        {
+          "path": "Itens118_119_120_Feminino_NORTH_QuatroTrajes_Editavel.zip.part003",
+          "bytes": 653474,
+          "git_blob_sha": "f0ae3199de3e5f8afde2b27a014b9cd285c724c5",
+          "sha256": "9d8728907ae2fb502a4e4e50296a2d3b127bdf08c357d0ff1992a5e4f630a5fb"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "114_N_M",
+      "filename": "Pistolas114_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 7517417,
+      "sha256": "3688ea866c5c225dbdcd80fd7f6d1ff8783c7da4f75f33e763e6f4edbc6d037f",
+      "pngEntries": 128,
+      "entries": 131,
+      "parts": [
+        {
+          "path": "Pistolas114_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+          "bytes": 7517417,
+          "git_blob_sha": "ac99390c0de9950a90355be5e198088328d3dabe",
+          "sha256": "3688ea866c5c225dbdcd80fd7f6d1ff8783c7da4f75f33e763e6f4edbc6d037f"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "114_N_F",
+      "filename": "Pistolas114_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 5581193,
+      "sha256": "ce29a1be500dd3a3ebbd00e7d69f47310a69d99b3911021365cabe3c7f4f2f88",
+      "pngEntries": 65,
+      "entries": 69,
+      "parts": [
+        {
+          "path": "Pistolas114_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+          "bytes": 5581193,
+          "git_blob_sha": "ff8f38d68ca1b27e3cb0eeeb454e3a9c3ea4f454",
+          "sha256": "ce29a1be500dd3a3ebbd00e7d69f47310a69d99b3911021365cabe3c7f4f2f88"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "0-67-70_N_M",
+      "filename": "Itens0_67_70_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 23246964,
+      "sha256": "11d78cb51c09a6e7a974df7b61fb05586a9aeb947d9836ec3d7cfd4221807e06",
+      "pngEntries": 384,
+      "entries": 387,
+      "parts": [
+        {
+          "path": "Itens0_67_70_Masculino_NORTH_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "fe360ecc9553f03e6cbb1cb258ef3c0468507d96",
+          "sha256": "603263ceda5ff23a90ff0c64b546bd0b698f7a124970677a4b9068d39777af0e"
+        },
+        {
+          "path": "Itens0_67_70_Masculino_NORTH_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "3bf3a53b2c00fc5f65f18ec56ad166277394a16c",
+          "sha256": "4a7326f000bfeacae74ea700d968138fbc2025c78672b3c26d2a6401e1b5dc0a"
+        },
+        {
+          "path": "Itens0_67_70_Masculino_NORTH_QuatroTrajes_Editavel.zip.part003",
+          "bytes": 7518324,
+          "git_blob_sha": "ba221afaf36a302e12f6d7c2355c273ea60e89b0",
+          "sha256": "fd45e9400004175e06debd985ea9967218e04e7b99823f7dbf78ff8b92283b08"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "0-67-70_N_F",
+      "filename": "Itens0_67_70_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+      "bytes": 18531999,
+      "sha256": "d0bcc0547898e952c4e19d7de1ed4a1faec29681f1cb7374a7aaec6b380f4ea1",
+      "pngEntries": 193,
+      "entries": 197,
+      "parts": [
+        {
+          "path": "Itens0_67_70_Feminino_NORTH_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "d45155f8ca856d1d71984cddb45a7d3a5b53cc06",
+          "sha256": "403e883f0f2ef0ab55fd80bbc99bf7d05d360563f879fd31e33bcf0704b43e1a"
+        },
+        {
+          "path": "Itens0_67_70_Feminino_NORTH_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "6432b706dedbd002235eed73c8a3df2b08ba6490",
+          "sha256": "6b9a685f1d5d373883ec2882bd8acf883824fe0e30de92450e3fc30d9670a3b2"
+        },
+        {
+          "path": "Itens0_67_70_Feminino_NORTH_QuatroTrajes_Editavel.zip.part003",
+          "bytes": 2803359,
+          "git_blob_sha": "98bc75f6b5e03e6579dfa244af34e50358aaf163",
+          "sha256": "3acae6fcc5e6272223078c1ba26b2ca98bd08151e97fa00e7bbb988cbd77e1f0"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "128_EW_M",
+      "filename": "Cajado128_Masculino_EW_QuatroTrajes_Editavel.zip",
+      "bytes": 6713334,
+      "sha256": "8228c8562ef396b5fcc331915c9bd50e21181e3e353c7d852d10a92b3660ef89",
+      "pngEntries": 136,
+      "entries": 140,
+      "parts": [
+        {
+          "path": "Cajado128_Masculino_EW_QuatroTrajes_Editavel.zip",
+          "bytes": 6713334,
+          "git_blob_sha": "8af33f79eef085fbd79b7d04f8591eb7bdb58a87",
+          "sha256": "8228c8562ef396b5fcc331915c9bd50e21181e3e353c7d852d10a92b3660ef89"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "128_EW_F",
+      "filename": "Cajado128_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9475910,
+      "sha256": "3d03bab0eae205a0f7899ac44732312a275fc65a2db197876a211e5ec82da97c",
+      "pngEntries": 184,
+      "entries": 192,
+      "parts": [
+        {
+          "path": "Cajado128_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "9c7b65dfc1170a899fb3d04283f4348a532c4569",
+          "sha256": "de042d7cd54f23cda9bce97e942d274d414c4aa878e88d4fea633b117d70591d"
+        },
+        {
+          "path": "Cajado128_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 1611590,
+          "git_blob_sha": "04c9021eb25917d05833d80fd66d624150cd8c92",
+          "sha256": "fd6a7c28001ec39582247809d290df91f84ee0ac8bc5f2eba1a92de3de967492"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "124_EW_M",
+      "filename": "Cajado124_Masculino_EW_QuatroTrajes_Editavel.zip",
+      "bytes": 6812556,
+      "sha256": "fb1b82efc98e5e2155195ec8e5108659d3946bbc17e767c43dad34d50f691726",
+      "pngEntries": 136,
+      "entries": 140,
+      "parts": [
+        {
+          "path": "Cajado124_Masculino_EW_QuatroTrajes_Editavel.zip",
+          "bytes": 6812556,
+          "git_blob_sha": "978437d7dea85051d9e7a9bc616f8e8533fb880c",
+          "sha256": "fb1b82efc98e5e2155195ec8e5108659d3946bbc17e767c43dad34d50f691726"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "124_EW_F",
+      "filename": "Cajado124_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9623819,
+      "sha256": "93ff824c71bad6cc610a5dd6daeb5bded501d12dc30e5578e2b699a9f7401dd2",
+      "pngEntries": 184,
+      "entries": 191,
+      "parts": [
+        {
+          "path": "Cajado124_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "9fe1f477d32d4a1f1b356874e0d2e2434928f7ec",
+          "sha256": "976ba08c4d147892bd1c0e1dda0b661f1c84ac0308af50ea85557e753f1fcd6d"
+        },
+        {
+          "path": "Cajado124_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 1759499,
+          "git_blob_sha": "01af2e7f134a2badda6bda0b4754fdd568f74b79",
+          "sha256": "50f8ce3c5af9c5fd96b1b69044079ae87bdb4825f3cd964fce08deb453b29d1d"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "124_N_M179",
+      "filename": "Cajado124_Masculino_NORTH_Traje179_Editavel.zip",
+      "bytes": 2927978,
+      "sha256": "73c6537707fc9e22bff717da798d27dcf8ee4b87c179f0bad16c6e13dad368b2",
+      "pngEntries": 48,
+      "entries": 56,
+      "parts": [
+        {
+          "path": "Cajado124_Masculino_NORTH_Traje179_Editavel.zip",
+          "bytes": 2927978,
+          "git_blob_sha": "707f18bef96361a8e20fe528fc75515bdf44c179",
+          "sha256": "73c6537707fc9e22bff717da798d27dcf8ee4b87c179f0bad16c6e13dad368b2"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "124_N_M151-158-165",
+      "filename": "Cajado124_Masculino_NORTH_Trajes151_158_165_Editavel.zip",
+      "bytes": 8247529,
+      "sha256": "0b0c561a08b955bd7b430ef7ca352b310e5c50eba11c3d5dc5ce207c4597f89b",
+      "pngEntries": 150,
+      "entries": 171,
+      "parts": [
+        {
+          "path": "Cajado124_Masculino_NORTH_Trajes151_158_165_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "4a5a3084784317485e71027392aec3030f631ac4",
+          "sha256": "c0206d2ed46c09be1de8c229013294d83629038499b43fdafed1e51a173abfe4"
+        },
+        {
+          "path": "Cajado124_Masculino_NORTH_Trajes151_158_165_Editavel.zip.part002",
+          "bytes": 383209,
+          "git_blob_sha": "0a7dea8b04ea78eb2269fa8d0a1bc607b5e8bf53",
+          "sha256": "bc62d57710471f2a2e62a884558aa36d486d03530fd057ba7cfc851b0e70f3b4"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "124_N_F",
+      "filename": "Cajado124_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9467139,
+      "sha256": "00c994c3bee6276e771db08b11c2897e5bb6a4e15e05e74c2d17ed19d51d54dd",
+      "pngEntries": 145,
+      "entries": 151,
+      "parts": [
+        {
+          "path": "Cajado124_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "09c6cd45f33ea8ba0ece55c05a5638dbd87b6773",
+          "sha256": "937acd8361681a44ba4f5ab8352bace71ecca927b8176166ecb4e34742163cf0"
+        },
+        {
+          "path": "Cajado124_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002",
+          "bytes": 1602819,
+          "git_blob_sha": "4214b32d11efa09b77cac2321ef52c8f95a747fb",
+          "sha256": "4c6c7d81c2717da959c6f8df28c8a6c5ceda20d1ac569152be2bafe640d15b8b"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "126_N_M",
+      "filename": "Cajado126_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 17840540,
+      "sha256": "50bcdd0fb79bf67ad393ef50f77c24430653964075f8b5f53a2097c3a689d7f2",
+      "pngEntries": 198,
+      "entries": 223,
+      "parts": [
+        {
+          "path": "Cajado126_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "8ffcb5402f31f76fa6d988a10a97780096d8b22b",
+          "sha256": "af831082c430a0a6c672cb2913c09350bda1606e28ffdac49cbff8e9ce321a66"
+        },
+        {
+          "path": "Cajado126_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "7a8312e754cca833d3da331f080713e3bbed0590",
+          "sha256": "e5f47cbe189bd7383de296c29f3faa8d70478f5a1b5c13084fdaf33ca7ebf9a9"
+        },
+        {
+          "path": "Cajado126_Masculino_NORTH_4Trajes_Editavel.zip.part003",
+          "bytes": 2111900,
+          "git_blob_sha": "994c8fa9d8b95d43fa4e972a0a87a383d4e80ccc",
+          "sha256": "e0b3626a1434b3b5d9ce001c2b275ca296ee7c921915ca8b54e67fe0e7edd7f5"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "126_N_F",
+      "filename": "Cajado126_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 10636951,
+      "sha256": "d37b0f705d680ab9fb82141dd2cb7320398e87ebb06ad3dffd452aeb1fc9c3c3",
+      "pngEntries": 145,
+      "entries": 151,
+      "parts": [
+        {
+          "path": "Cajado126_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "f6b93178e6a8f699e9774e7ff01d0e9f9a14ea73",
+          "sha256": "9561d0a2c5363e44a0e446e05ca3f0cfc6e6dda01f2f7a36b44fd52571003fe2"
+        },
+        {
+          "path": "Cajado126_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002",
+          "bytes": 2772631,
+          "git_blob_sha": "0273bf3b101fba82d8a30065c99e2bb10543b2df",
+          "sha256": "e55806ebd7ff73eb47be4a32e9aac5cc912c406d6f64cd8975cbabda3ab88844"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "126_EW_M",
+      "filename": "Cajado126_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 9517541,
+      "sha256": "a7c936cccbc95085241282e351ff474c899089255a8f021f69befdc38851f5d1",
+      "pngEntries": 141,
+      "entries": 152,
+      "parts": [
+        {
+          "path": "Cajado126_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "5a7992c54d7e13c5894fffba2cb47a83c6bd931d",
+          "sha256": "cc96fb8787b7ace80b22f04ead370ced3bb70450d784cbea2885a40a8e81efb7"
+        },
+        {
+          "path": "Cajado126_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+          "bytes": 1653221,
+          "git_blob_sha": "b66f5a4d4504c765ab2686c440f441f56af829af",
+          "sha256": "de7c5cca7a56b7e8238190807e6b600221a5d9d9937a726006e7e3d2f4fdd599"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "126_EW_F",
+      "filename": "Cajado126_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9423302,
+      "sha256": "630188d214c252c2841da5752c2e7eff825f377db7f6ea23a08758f32e2f1daf",
+      "pngEntries": 181,
+      "entries": 190,
+      "parts": [
+        {
+          "path": "Cajado126_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "d3d58c68a5d0c5619f25531591b1fc45aeb95344",
+          "sha256": "d9b37450ec0141de8682f8213aee565367d14c1a6e00825b574ddf6b087d4ae6"
+        },
+        {
+          "path": "Cajado126_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 1558982,
+          "git_blob_sha": "ceceb77aa83715b8b1e22d5bb40c73a45829d55f",
+          "sha256": "955d7cd171fec7b51779c9ee211b7a7f3f14103cdd9bfa7ea83ad9f30013c63e"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "127_N_M",
+      "filename": "Cajado127_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 15972926,
+      "sha256": "d71e3c884d13bad4abafa81e384cbf845a77e93a0fb6aba229ae21ce1a9b0604",
+      "pngEntries": 198,
+      "entries": 224,
+      "parts": [
+        {
+          "path": "Cajado127_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "3081799f34270be9c1c722995b142e8a8e27567d",
+          "sha256": "e292ae5b6741450b9b686e2d5106d2dadbafe9762dd76d5a1d4882ccd873d70f"
+        },
+        {
+          "path": "Cajado127_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "6cc3f9c2173bbb5809eca061e7fa5b0ef6a53342",
+          "sha256": "dc0f48dd8e153a17609d8a9456c3dbf1707ba95ae6d9daa31a1a35e90c4702ac"
+        },
+        {
+          "path": "Cajado127_Masculino_NORTH_4Trajes_Editavel.zip.part003",
+          "bytes": 244286,
+          "git_blob_sha": "b038aec399ba0fef24cad4a4eb60b19c674e02a3",
+          "sha256": "e37a003b23439ca379b4772df185587ee576145a5d0b8907bbc185bba9242ed2"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "127_N_F",
+      "filename": "Cajado127_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 10371423,
+      "sha256": "5f8c4a16a792d2f310cadffa34825134e3e810519a6eeeae4b98f56793c7de36",
+      "pngEntries": 145,
+      "entries": 151,
+      "parts": [
+        {
+          "path": "Cajado127_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "ef4e714b4ccbb372c580c49df23428b816c721e6",
+          "sha256": "408ed4fafc20e7026508f5cecf6e73f9867bccdbb66378c062b8983b35625a8c"
+        },
+        {
+          "path": "Cajado127_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002",
+          "bytes": 2507103,
+          "git_blob_sha": "3e93fb243d9e228824d4824aab7968e81152b4db",
+          "sha256": "5ea68c0bd64aa61599ff9346a263aa1546e5ba7499acae8b40bd5f22a4848825"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "127_EW_M",
+      "filename": "Cajado127_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 10692361,
+      "sha256": "ac3cf4cf6750ce8e1087854fd173e5e02f0d93fe2dad580d3edcdd40aed29388",
+      "pngEntries": 157,
+      "entries": 170,
+      "parts": [
+        {
+          "path": "Cajado127_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "257a2c90d46c268a8543f0219a99a483709f244a",
+          "sha256": "cc2fbd5fb385865b2aad0e6346e257ddd0aff18a4ca2f239fe8cf80728df694c"
+        },
+        {
+          "path": "Cajado127_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+          "bytes": 2828041,
+          "git_blob_sha": "58658411bc2a9ba03a98203572c2dce464e254af",
+          "sha256": "2ac09e6d52a6137b7d93b90d323a7a7ce903a8dd5b5d222b1b0352b10d8d3b82"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "127_EW_F",
+      "filename": "Cajado127_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9572169,
+      "sha256": "6a761adf0467afbf95c2970b85de86ff8e34210f952df4f30d315bc28fab0488",
+      "pngEntries": 181,
+      "entries": 190,
+      "parts": [
+        {
+          "path": "Cajado127_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "feacc88b87cd1df31216badf979509df6a8f4092",
+          "sha256": "6cdf00ecc4cff47232ba8c97a70c1bb4763fd80689f1831110e41e52bf2e69c9"
+        },
+        {
+          "path": "Cajado127_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 1707849,
+          "git_blob_sha": "4afafd000be2b18a02f10d4717b06bccc6efdc2f",
+          "sha256": "83483e269646561b28b65c43f77b03659daadac189291b3079626621fe9ece74"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "125_N_M",
+      "filename": "Cajado125_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 15589513,
+      "sha256": "b3ce1cd87cb49f2c0936ede07f6281416f6df3b3e3322925782cdfc5a81714db",
+      "pngEntries": 207,
+      "entries": 235,
+      "parts": [
+        {
+          "path": "Cajado125_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "5868cf0682c8636ba32c99835aa3e9694fc44601",
+          "sha256": "b0b0a68692237519845e364bc5d128f2cb71a62dc63a10b60138b6135a7addc7"
+        },
+        {
+          "path": "Cajado125_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+          "bytes": 7725193,
+          "git_blob_sha": "5d67e10af3cbaa0a87240b1c322db33173cac144",
+          "sha256": "2a55a3bfc44262ca27a5cd54df946d72b6832d77c0ef308843ba825df00d8dc0"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "125_N_F",
+      "filename": "Cajado125_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9810198,
+      "sha256": "0b7548c2d7098784fb8e0d07109efc51fc6be794a5d26e4d257e6a34ed782d85",
+      "pngEntries": 145,
+      "entries": 151,
+      "parts": [
+        {
+          "path": "Cajado125_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "ae8b2fa8980d48bcdbc508153ba46f05640959a1",
+          "sha256": "eeb33929e5ed30b263d037dee0798c3138d2dd78d621872867a6fdfa2277660b"
+        },
+        {
+          "path": "Cajado125_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002",
+          "bytes": 1945878,
+          "git_blob_sha": "725e9ca6a4569b0209eabd2baa1743ec8d3f70e0",
+          "sha256": "b54d60a3c1736dda39f380b142990659b0fde285407420522a813e1b3d359af5"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "125_EW_M",
+      "filename": "Cajado125_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 10411044,
+      "sha256": "44076a4e46514d8db35d63afb8b2db61b84c26b64e603c27f42dc4be76c112ad",
+      "pngEntries": 157,
+      "entries": 170,
+      "parts": [
+        {
+          "path": "Cajado125_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "59ab60e26658dc954715c8e5d75365c0f2cbf31b",
+          "sha256": "f3ffd959a22a45595eef59ccb8046c0ed76484d66abff8d6897f0ffd59e9efc7"
+        },
+        {
+          "path": "Cajado125_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+          "bytes": 2546724,
+          "git_blob_sha": "38b2929ba31c8ec6d49e2dfe4fc1025fd92ad349",
+          "sha256": "27d5d54ee4f59309521d3d4ce2edd06a03f64ceb082f2e57479645859a9636be"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "125_EW_F",
+      "filename": "Cajado125_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9340989,
+      "sha256": "d6a93974b75c60edde91e05cad272593cae40820e58baf9ba3afaa0345e84c50",
+      "pngEntries": 181,
+      "entries": 190,
+      "parts": [
+        {
+          "path": "Cajado125_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "fe2df6d05f2cfcce9e1a1abd449f864455074802",
+          "sha256": "85e3249e548b34b66955956dc880bc4d66f04c512947462c8087eab245ecf0b9"
+        },
+        {
+          "path": "Cajado125_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 1476669,
+          "git_blob_sha": "00965e39b40665808d1d1fbd908fef4461be5867",
+          "sha256": "d7f93be81fe15c8a610f215ca6c64c6b4780e0f5dbeae393e7923dfc16b2634c"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "123_N_M",
+      "filename": "Cetro123_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 17773882,
+      "sha256": "1746da5bb98416afd5033032ab9b29ef62e5ac5e6d29c0c1c013f9002e1ead1c",
+      "pngEntries": 207,
+      "entries": 235,
+      "parts": [
+        {
+          "path": "Cetro123_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "12bb61b22856ba5c9d7d7b8ee0bc2124e025286a",
+          "sha256": "3e6db108f814d6cbfc892eceb6a44059183aec99ee151896bc3097724b0fc3a0"
+        },
+        {
+          "path": "Cetro123_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "158cf264bcee839e08b2f4af5ec2b2d1511a4ab3",
+          "sha256": "efeff7c59e2eb9052fe242eaa8bdf25e64b6163daac1ba95d6439eb953adec61"
+        },
+        {
+          "path": "Cetro123_Masculino_NORTH_4Trajes_Editavel.zip.part003",
+          "bytes": 2045242,
+          "git_blob_sha": "0b1a362af7ab45f6c1e7a57b0fa421aba5ab3a85",
+          "sha256": "d6b4e697ca5deb2c0173c9568f9cabeff79c7dd3af3027309441124ad00a89b1"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "123_N_F",
+      "filename": "Cetro123_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9520828,
+      "sha256": "ee9cfc7b8d2f50f580c145cce67e2a3fc811343d43c2d87f35929c463ef62c7f",
+      "pngEntries": 145,
+      "entries": 151,
+      "parts": [
+        {
+          "path": "Cetro123_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "2b5eeb3acd9c693b37f5eb60eb09219243de8854",
+          "sha256": "7772ad9a29850d524f4a369ed9b583ed1349f97646472fee9ebcb6518506bac5"
+        },
+        {
+          "path": "Cetro123_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002",
+          "bytes": 1656508,
+          "git_blob_sha": "8efc0a25bdaa3e7a4f40b7ea42649c628b69227a",
+          "sha256": "2f536255810f611d6e4f8ef34d3389e75cc12e3a3baeecaa9495eaa3814fe878"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "123_EW_M",
+      "filename": "Cetro123_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 10173959,
+      "sha256": "c5a3ccc984d34ec53ecb680b5762d19c7354dd25449ce6a0f8b8c81769453fad",
+      "pngEntries": 157,
+      "entries": 170,
+      "parts": [
+        {
+          "path": "Cetro123_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "bb14ec0fd500db8025ce338fc8226104c803fdd1",
+          "sha256": "3bcb4c1ddc616b90ca2dd4794db8eb643467961e5f6073ffd627ee14a9e264ec"
+        },
+        {
+          "path": "Cetro123_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+          "bytes": 2309639,
+          "git_blob_sha": "5fea82709ba3fe3dcc9f352c16d446a3cdbbe5f2",
+          "sha256": "344e99ccb8f7fd935e616fcb5669c0fc7aa4805649c2d9efd1dc540ef12f0f21"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "123_EW_F",
+      "filename": "Cetro123_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9295576,
+      "sha256": "ad28798495abb90afa2c807fa1fd1195920b70a219e18c67fab3f5063ff19240",
+      "pngEntries": 181,
+      "entries": 190,
+      "parts": [
+        {
+          "path": "Cetro123_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "6a4fcd93acdf1963bbb361e559846484bac03f85",
+          "sha256": "08f8698ccfe1dc94b2d36bf8e2b493050ff7115c6cb1f7f5e44f596d65ffb2fa"
+        },
+        {
+          "path": "Cetro123_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 1431256,
+          "git_blob_sha": "8d3d1da429328e804a71cd9b6db0fa835c46da33",
+          "sha256": "88c583f6bb1c2ff5bb80dea73b4553e44a1174a6546bc3f3df755ee9445b1c11"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "121_N_M",
+      "filename": "Cetro121_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 17863513,
+      "sha256": "2a1774026b4d7f1e75743d1a14418edfdba3f4dfb74b82a2af6cd41ab4b8778c",
+      "pngEntries": 207,
+      "entries": 235,
+      "parts": [
+        {
+          "path": "Cetro121_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "c1a0248440ef002a0dc9cbf76615240c9b19a104",
+          "sha256": "e9f0a33800350a8923eeafb1e4f73dda5faae34903be7f5605017bcc9b910951"
+        },
+        {
+          "path": "Cetro121_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "2be272502189b21a90b09b1f77893fdfd312e59c",
+          "sha256": "e9a72088a38efef0b7e1988af1a2e251704df514d688057c8b816de5bfa360cb"
+        },
+        {
+          "path": "Cetro121_Masculino_NORTH_4Trajes_Editavel.zip.part003",
+          "bytes": 2134873,
+          "git_blob_sha": "a389d0380c70308d1fbd1580f34c3eb7432db8cd",
+          "sha256": "75d6d204daf02c80c67eecde2bed702531807986793bb9eeea89309a099c616d"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "121_N_F",
+      "filename": "Cetro121_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9578527,
+      "sha256": "df6e19dd5e522bdbc1be12fcd33cc885aa85b660401957e034059719ab7d4c1a",
+      "pngEntries": 145,
+      "entries": 151,
+      "parts": [
+        {
+          "path": "Cetro121_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "0341d0ee5c1164d6280b58000408118f4913e444",
+          "sha256": "956c96d6ddcdd13becaa279271a3051a72fd0fa94256cb901bb7460ae823d9e2"
+        },
+        {
+          "path": "Cetro121_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002",
+          "bytes": 1714207,
+          "git_blob_sha": "100847cb9083c39fc79c3438d03877e3187f7092",
+          "sha256": "8cfeecc1989fb6595fb6d43c4a72c3775d2c8e64e52d2ee3243ac200bace066d"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "121_EW_M",
+      "filename": "Cetro121_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 11045554,
+      "sha256": "c6760dc9b77ab138a97e9089e611460ecaf3705d7092088b4b9fe005f177a8f0",
+      "pngEntries": 165,
+      "entries": 178,
+      "parts": [
+        {
+          "path": "Cetro121_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "2a0aff381656f272b61b0f82b0fc4c205191952e",
+          "sha256": "0f3974275d908dd7391c056b03804677ad026b3d3627b5756a328c08ebf5aaf4"
+        },
+        {
+          "path": "Cetro121_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+          "bytes": 3181234,
+          "git_blob_sha": "c6c1cd308f79989f7af481c1a02081d75bb472fd",
+          "sha256": "3be1b5d588d8393c1226775ad6c57a1984a7ea47fb8f14e5d562a7e6e1809da7"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "121_EW_F",
+      "filename": "Cetro121_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9983898,
+      "sha256": "7103ccac59ab720f4e26eef6db6cb71231e6f5a5354a9ad34c3102719006f699",
+      "pngEntries": 189,
+      "entries": 198,
+      "parts": [
+        {
+          "path": "Cetro121_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "b4bbc7f80b8024c527d661d677b4c2b746a11b40",
+          "sha256": "f76c0c693522ea620bd2542341cc55f6e9c86e527834d425f2a65c22e1e03fdb"
+        },
+        {
+          "path": "Cetro121_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 2119578,
+          "git_blob_sha": "41c58fb84490c5b06e43372662b8348ba7bc105c",
+          "sha256": "a54ce73e372a0560332fd84c9d204d09889787bfd33cb55d1dbf6223d6a8628d"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "31_N_M",
+      "filename": "Cajado31_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 15511408,
+      "sha256": "70aa6a62eb9c00709f0567c1be6e4dd0a8e2a82ea39e030d1852d57a7a867228",
+      "pngEntries": 207,
+      "entries": 235,
+      "parts": [
+        {
+          "path": "Cajado31_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "1c7236f94d2d0c84e2f96b3d6c38c10ba14508fa",
+          "sha256": "e51823b2791b11aa3b724f75a3a2ecc668e354cfa79e6ce084447ec7f58a3b46"
+        },
+        {
+          "path": "Cajado31_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+          "bytes": 7647088,
+          "git_blob_sha": "0256b02ac9b6c113e6c2014e80bf16e9237c0d13",
+          "sha256": "60e5ca61981eb7497c605de1c8acb76d688c2b3732fb8da53bec182d16ffb7ad"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "31_N_F",
+      "filename": "Cajado31_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9612875,
+      "sha256": "ea97d2af75c3102b21a40dcad488f8b34152aa7dba3d521692152fc1983f5163",
+      "pngEntries": 145,
+      "entries": 151,
+      "parts": [
+        {
+          "path": "Cajado31_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "17ac07e5ea179c1e430878d793bcbc6e12d0fbc1",
+          "sha256": "de504b3b1675e565f388d6ff4716a560fe81963afb3e7a81bd7e1250d0887500"
+        },
+        {
+          "path": "Cajado31_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002",
+          "bytes": 1748555,
+          "git_blob_sha": "ed914d84d569824e28ef1edf8095ca38166a8103",
+          "sha256": "c349fef1554e65e2d32fcb60565ce90fdd58a766af728e4cd3a841584fb21fff"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "31_EW_M",
+      "filename": "Cajado31_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 10140510,
+      "sha256": "d7dcad73b1b4532717cc390f0f1eb1576a5ed729162d3056f8b9fd392897cd53",
+      "pngEntries": 157,
+      "entries": 170,
+      "parts": [
+        {
+          "path": "Cajado31_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "55f52e2a2cf7f37ea44428393a96508b6c40e74c",
+          "sha256": "fb2213ce7daf8342485b5b8bc20da3c7206479d278f426f1a49b9f37d1b5be7c"
+        },
+        {
+          "path": "Cajado31_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+          "bytes": 2276190,
+          "git_blob_sha": "57993159747b402da30e4e2355de1d42c4e1c0fd",
+          "sha256": "52dd094b67fdc451b634374c0ad548eeda5ca28b5942906735b5503e60de1e75"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "31_EW_F",
+      "filename": "Cajado31_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 9238694,
+      "sha256": "c347b57a37382936b6da47882056d1c04214d7331839102005ec0391954ab7a9",
+      "pngEntries": 181,
+      "entries": 190,
+      "parts": [
+        {
+          "path": "Cajado31_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "273a7f5c5dd3c5bd746a38cccffb2f5b4d439e62",
+          "sha256": "2e350cb27a4e541bd402e8c4ff94787c44eb25dc61384da7b9259a9524ce2377"
+        },
+        {
+          "path": "Cajado31_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 1374374,
+          "git_blob_sha": "ce7f1aa6c595129485de96f1d9af7be76de82874",
+          "sha256": "06eadb16f9b31ead5cbbebc3eab9902d87caab1902db715fe6fd2b077096486a"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "32_EW_M",
+      "filename": "Relicario32_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+      "bytes": 13642038,
+      "sha256": "feadc7e006834551bc7122ceeed4780bd9c2d5e9cf9e264e410d0d62d28f9da3",
+      "pngEntries": 193,
+      "entries": 212,
+      "parts": [
+        {
+          "path": "Relicario32_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "2e45a3e9913107f10ec53f1156f33ff8e7fed65d",
+          "sha256": "804b0bbafa7ff5150ed1a6de031b68f15c8e1ccc048ca9c64dbb10ef430df6f7"
+        },
+        {
+          "path": "Relicario32_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+          "bytes": 5777718,
+          "git_blob_sha": "be6cbaebb03f352b2bf0ef8d56f6e35434bd09ac",
+          "sha256": "d3415d2672f14299d3cd27d027ee7fcfb227697d7c2794d1574bfdd4d26078fd"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "32_EW_F_V2",
+      "filename": "Relicario32_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 12578962,
+      "sha256": "4336c5b12656b99bc98d4966e0e4631c7bb78694c846246c3dc4e33519820331",
+      "pngEntries": 221,
+      "entries": 237,
+      "parts": [
+        {
+          "path": "Relicario32_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "9b32efbf3162e3a546879dfef8dea6d45015fa2a",
+          "sha256": "90ca14e2a5e97bc9ebe6fa69a8c54b7f542154a6f7f6e173097d857012c9c0d6"
+        },
+        {
+          "path": "Relicario32_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 4714642,
+          "git_blob_sha": "3321972b22324a39c90c732665030ed20d9781d3",
+          "sha256": "7711f9ef5ef145b2496a27f68c24b47c134800afcd223832e511178b88a3bd03"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "32_N_M",
+      "filename": "Relicario32_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 24523594,
+      "sha256": "33d1da5bcb7f7237aa59fe072619f19c4ba8fb0c48d79fab8b3c51f079726bf3",
+      "pngEntries": 207,
+      "entries": 236,
+      "parts": [
+        {
+          "path": "Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "7e914f1e1ffb2c814793cbeaf790d88cbbd540ad",
+          "sha256": "5ac660092c8bc725e32dd070d25a3356aadeb98732237c1b6f10c07345e6aeae"
+        },
+        {
+          "path": "Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "git_blob_sha": "6e1ab041b280ca8edb318abe3601c5337614a048",
+          "sha256": "f4bff9c7bbd71112cc6850fc7ad0760cfa393ee777e58230e224c97ca84873df"
+        },
+        {
+          "path": "Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part003",
+          "bytes": 7864320,
+          "git_blob_sha": "e16751466342b4b41c5ca69314a8dd13f1cc78c4",
+          "sha256": "69d2ab94e36f5c259bbe49ea2f67f44b030bce699a3b3f84b88038563038bb66"
+        },
+        {
+          "path": "Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part004",
+          "bytes": 930634,
+          "git_blob_sha": "c5779e21a40855abce02c9533ba3677aad405cd0",
+          "sha256": "7056495b9f91f045d0e06d25ab060efd1d5c805134ce89615ef68736d44d0f5a"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "32_N_F",
+      "filename": "Relicario32_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+      "bytes": 9638826,
+      "sha256": "bea35396e9efb6b164874d37c9934b9bdf519d3cfe406e1238e963691c023e66",
+      "pngEntries": 145,
+      "entries": 152,
+      "parts": [
+        {
+          "path": "Relicario32_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "d8377ef0e67b9e854cb9368d9a3142aa123a0201",
+          "sha256": "5232ed3c4c9b01ac3ad0d53226f1b5251d45280dd626a5e5515b748eb25ea606"
+        },
+        {
+          "path": "Relicario32_Feminino_NORTH_Quatro_Trajes_Editavel.zip.part002",
+          "bytes": 1774506,
+          "git_blob_sha": "7ce2521d90765b034fbee8b05705e8a5e5faa170",
+          "sha256": "5ef5aa0e69ea6d99b323601970261a5270999c3e7413663154f1c85881763d7c"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "117_N_M",
+      "filename": "Braco117_Masculino_NORTH_4Trajes_Editavel.zip",
+      "bytes": 11824898,
+      "sha256": "01e1828be28963dc4d0a8e9e626903cd2b7627d5ef1b3717ef023a7bf127fd09",
+      "pngEntries": 198,
+      "entries": 236,
+      "parts": [
+        {
+          "path": "Braco117_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "97b12d6107cba5395288ea4e08a9d1e86d9b2ca3",
+          "sha256": "b65e2e6b3515e6e3f648e933da826a4d1b571f1e88a0fb0d7b889bafdcd67013"
+        },
+        {
+          "path": "Braco117_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+          "bytes": 3960578,
+          "git_blob_sha": "d876b057b968e7e62d16358c3c5c9996ed8a41f8",
+          "sha256": "a15147b1f48a75de47b5d7084719d21dc8079155b3e91b1f8bbe76e64bccec5a"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

@@ -15,3 +15,8 @@ Organização incremental de fontes aprovadas. Sem PR, merge ou ativação no jo
 São arquivos de fonte para futura implementação, não integração funcional. Não alteram compositor, bindings, catálogo do jogo, save ou distribuição Pages. Alguns pacotes contêm camadas editáveis ou apresentações aprovadas, não sprites finais de produção. Contagens de PNGs podem incluir camadas e não equivalem a fases únicas.
 
 A aprovação de uma vista estática não aprova automaticamente sua animação. Cada inclusão preserva o escopo aprovado e os bytes das fontes. Versões em correção e fontes sem vínculo verificável com aprovação ficam fora. A cobertura ainda está sendo reconciliada; este arquivo não declara que todo o histórico foi recuperado.
+
+
+## Atualização de 2026-11-12
+
+57 pacotes aprovados de roupas em animações de armas em `weapons/clothing-batch-20261112/`. Todos os ciclos NORTH do cajado 128 ficam fora. O manifesto registra hashes exatos e o script restaura os ZIPs divididos em partes. Arquivo de fontes, sem integração ou teste no jogo.
