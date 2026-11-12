@@ -45,11 +45,18 @@ test('private boss victory cannot mint XP, Berry, profession progress or weekly 
  const a=await actor(f);await operator(f,a,1);const before=await a.read(),r=await a.event({op:'test'}),id=r.weeklyBoss.eventId;
  const row=(await f.pool.query('SELECT simulation FROM mare_game.weekly_boss_events WHERE id=$1',[id])).rows[0],room=row.simulation,m=room.mobs[0];m.hp=1;m.nextPunchAt=Date.now()+1e8;m.nextAoeAt=Date.now()+1e8;
  await f.pool.query('UPDATE mare_game.weekly_boss_events SET simulation=$2 WHERE id=$1',[id,JSON.stringify(room)]);
- const v=await a.read();v.battle.auto=false;v.battle.autoSkills=false;v.battle.pending={targetId:m.id,remaining:0};await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(v.battle)]);
+ const v=await a.read();v.battle.auto=false;v.battle.autoSkills=false;await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(v.battle)]);
  await f.pool.query("UPDATE mare_game.character_world SET x=$2,y=$3,path='[]',speed=0 WHERE character_id=$1",[a.c.id,m.x-20,m.y]);
- await f.pool.query("UPDATE mare_game.weekly_boss_events SET tick_at=clock_timestamp()-interval '150 milliseconds' WHERE id=$1",[id]);
- const {tickWeeklyBosses}=await import('../../apps/game-server/src/characters/weekly-boss-worker.js');await tickWeeklyBosses(f.pool);
- assert.equal((await f.pool.query('SELECT status FROM mare_game.weekly_boss_events WHERE id=$1',[id])).rows[0].status,'won');
+ const {tickWeeklyBosses}=await import('../../apps/game-server/src/characters/weekly-boss-worker.js');
+ let status='active';
+ for(let attempt=0;attempt<12&&status==='active';attempt++){
+  // The real worker may roll a miss. Queue another attack only while the fight is active.
+  await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{pending}',$2) WHERE character_id=$1",[a.c.id,JSON.stringify({targetId:m.id,remaining:0})]);
+  await f.pool.query("UPDATE mare_game.weekly_boss_events SET tick_at=clock_timestamp()-interval '150 milliseconds' WHERE id=$1",[id]);
+  await tickWeeklyBosses(f.pool);
+  status=(await f.pool.query('SELECT status FROM mare_game.weekly_boss_events WHERE id=$1',[id])).rows[0].status;
+ }
+ assert.equal(status,'won');
  const after=await a.read();assert.equal(after.state.gold,before.state.gold);assert.equal(after.state.experience,before.state.experience);
  assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.weekly_boss_victories')).rows[0].n,0);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.weekly_boss_entitlements')).rows[0].n,0);
 }));
