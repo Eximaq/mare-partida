@@ -85,9 +85,9 @@ test('Assassin consumes five critical marks; clone copies 50% damage and poison 
  C.afterHit(g,rt,{target:m,stats,damage:100,basic:true});C.afterHit(g,rt,{target:m,stats,damage:50,basic:true,contactScale:.5,fromClone:true});assert.equal(m.talentPoison.power,20);assert.equal(m.clonePoison.power,10);assert.equal(C.tick(rt,1,[m]).reduce((s,a)=>s+a.amount,0),30);
 });
 test('Underworld is the only world-loot exception for boxes and never grants direct gems or pearls',()=>{
- assert.deepEqual(U.loot(make('rogue'),()=>0),{box:false,legendary:false});assert.deepEqual(U.loot(built('rogue','underworld'),()=>0),{box:true,legendary:true});assert.deepEqual(U.loot(built('rogue','underworld'),()=>.9),{box:false,legendary:false});
+ assert.deepEqual(U.loot(make('rogue'),()=>0),{box:false,legendary:false});assert.deepEqual(U.loot(built('rogue','underworld'),()=>0),{box:false,legendary:true});assert.deepEqual(U.loot(built('rogue','underworld'),()=>.9),{box:false,legendary:false});
  const defs=[...require('../forge-system.js').pearls.map(p=>({name:p.name,kind:'pearl',pearlId:p.id})),...P.boxes],g=make('rogue');g.inventory=[{id:'special-box',def:25,origin:'Senhor do Submundo'}];const opened=P.openBox(g,'special-box',defs,()=>0);assert(opened.ok);assert(opened.item.origin.startsWith('Senhor do Submundo'));
- assert(P.canDrop('pearl-box','underworld'));assert(!P.canDrop('pearl','underworld'));assert(!P.canDrop('gem','underworld'));assert(!P.canDrop('pearl-box','world'));
+ assert(!P.canDrop('pearl-box','underworld'));assert(!P.canDrop('pearl','underworld'));assert(!P.canDrop('gem','underworld'));assert(!P.canDrop('pearl-box','world'));
 });
 test('Overclock doubles speed, removes internal shield cooldown, pays unavoidable HP cost; EMP detects crossing',()=>{
  let g=built('cyborg','overclock'),d=U.stats(stats,g);assert.equal(d.speed,2);assert.equal(d.moveSpeed,200);assert.equal(U.internalCooldown(g,90000),0);assert.equal(U.internalCooldown(make(),90000),90000);assert.equal(tick(g,U.start(),1)[0].selfBurn,1);

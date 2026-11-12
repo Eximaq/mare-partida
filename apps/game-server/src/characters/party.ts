@@ -24,7 +24,7 @@ export async function lockPeer(c:PoolClient,m:any){
 }
 async function assertDestination(c:PoolClient,m:any,p:any){
  const s=await readCharacterState(c,m.character_id),b=await readBattle(c,m.character_id),w=await readWorld(c,m.character_id);
- if(!m.connected||!b||!w||b.hp<=0||b.prison||w.mapId==='impel-down')throw new AuthFault(409,'party_member_unavailable');
+ if(!m.connected||!b||!w||b.hp<=0||b.weeklyBossInstanceId||b.prison||w.mapId==='impel-down')throw new AuthFault(409,'party_member_unavailable');
  if(b.dungeon)throw new AuthFault(409,'party_member_in_dungeon');
  const spec=p.kind==='hunt'?maps().islands.find((x:any)=>x.id===p.destination):D.byId[p.destination];
  if(!spec||s.level<(spec.minLevel??spec.level))throw new AuthFault(409,'party_destination_locked');

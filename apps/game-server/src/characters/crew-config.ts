@@ -23,9 +23,9 @@ export const crewPolicy = {
 } as const;
 
 export const crewMissionRules = {
-  kills:{title:'Caçada dos Mares', perMember:1000*10, xp:800},
-  bosses:{title:'Bandeiras Conquistadas', perMember:2, xp:700},
-  donations:{title:'Riqueza do Convés', perMember:3500, xp:450},
+  kills:{title:'Caçada dos Mares', perMember:1000*10, xp:800, coins:40},
+  bosses:{title:'Bandeiras Conquistadas', perMember:2, xp:700, coins:35},
+  donations:{title:'Riqueza do Convés', perMember:3500, xp:450, coins:25},
 } as const;
 export const seaWar = {
   id:'sea-war', title:'Guerra dos Mares', active:false,
@@ -62,3 +62,5 @@ export function crewCombatXp(base:number,bonus:number) {
 export function crewMonsterBerry(base:number,factionMultiplier:number,bonus=0) {
   return Math.round(base*factionMultiplier*(1+bonus));
 }
+
+export const rankCFragmentPrice=Object.values(crewMissionRules).reduce((total,mission)=>total+mission.coins,0);

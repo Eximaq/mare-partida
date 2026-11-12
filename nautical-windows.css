@@ -770,3 +770,17 @@ html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-a
   text-decoration: none;
 }
 .captain-discord a:is(:hover,:focus-visible) { background: #2c5f71; }
+
+/* Keep the recurring, one-time and professional categories in the same board. */
+#app #panelOverlay.contracts-mode .contracts-tabs:has([data-contract-period="journey"]) {
+  grid-template-columns: repeat(4,minmax(0,1fr));
+}
+#app #panelOverlay.contracts-mode .contracts-tabs:has([data-contract-period="journey"]):has([data-contract-period="professional"]) {
+  grid-template-columns: repeat(5,minmax(0,1fr));
+}
+@media(max-width:760px) {
+  #app #panelOverlay.contracts-mode .contracts-tabs:has([data-contract-period="journey"]),
+  #app #panelOverlay.contracts-mode .contracts-tabs:has([data-contract-period="journey"]):has([data-contract-period="professional"]) {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}

@@ -15,6 +15,7 @@ body.online-game #devLauncher { display:none!important; }
 
 #onlinePerformance {
   position: fixed;
+  pointer-events: none;
   z-index: 28;
   top: max(10px, env(safe-area-inset-top));
   left: 50%;

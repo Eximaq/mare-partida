@@ -16,44 +16,56 @@
   quests.forEach(Object.freeze);Object.freeze(quests);
   const progress=(game,q)=>q?.area?Math.max(game.hunts?.areas[q.area]?.[q.metric]||0,game.stats?.[q.id]||0):(game.stats?.[q?.stat]||0);
   const matching=kill=>quests.filter(q=>q.area?kill.area===q.area&&(q.metric==='kills'||kill.monster.type==='boss'):kill.monster.type===q.stat);
-  const dailyRules=Object.freeze({hours:6,prisonHours:.25,targetMultiplier:4,berryShare:.95,dayMs:86400000,boostMs:3600000,xpMultiplier:2});
+  const dailyRules=Object.freeze({hours:5,otherHours:.5,weeklyMultiplier:7,dailyBoosts:1,weeklyBoosts:2,dayMs:86400000,boostMs:3600000,xpMultiplier:2});
   const boost=Object.freeze({name:'Boost de XP (1h)',kind:'xp-boost',slot:'consumable',rarity:'epic',attack:0,defense:0,hp:0,symbol:'⌛',icon_path:'assets/ui/contracts-hd/xp-boost.png',description:'Duplica a XP do personagem durante uma hora real.'});
-  // Map-specific route and survival adjustments from seeded live-engine benchmark runs.
-  const dailyEfficiency=Object.freeze({beach:1.23,rare:1.085,loguetown:1.155,'alubarna-05':.83,'skypiea-01':1.12});
+  // Live-engine hunt baselines in kills and Berry per hour.
+  const huntRates=Object.freeze([
+    {"min":1,"monster":1,"kills":468,"berry":14940,"byClass":{"sword":[468,14940],"brawler":[384,12108],"gunner":[576,17244],"rogue":[708,21972],"cyborg":[168,4992],"strategist":[660,20568],"healer":[288,8736]}},
+    {"min":11,"monster":11,"kills":540,"berry":25728,"byClass":{"sword":[540,25728],"brawler":[432,20532],"gunner":[612,28932],"rogue":[780,36984],"cyborg":[204,9816],"strategist":[600,29052],"healer":[384,17844]}},
+    {"min":31,"monster":31,"kills":240,"berry":47664,"byClass":{"sword":[240,48024],"brawler":[216,42636],"gunner":[288,59232],"rogue":[396,78720],"cyborg":[72,14364],"strategist":[240,51204],"healer":[168,34476]}},
+    {"min":50,"monster":45,"kills":156,"berry":67452,"byClass":{"sword":[156,67452],"brawler":[156,63732],"gunner":[240,99816],"rogue":[288,116868],"cyborg":[48,18144],"strategist":[228,93312],"healer":[120,51144]}},
+    {"min":75,"monster":70,"kills":48,"berry":71916,"byClass":{"sword":[48,66780],"brawler":[48,66744],"gunner":[72,95232],"rogue":[72,105312],"cyborg":[12,15936],"strategist":[72,102336],"healer":[24,38040]}}
+  ].map(row=>Object.freeze({...row,byClass:Object.freeze(row.byClass)})));
   const day=now=>Math.floor(now/dailyRules.dayMs);
-  function daily({cycle,level,seed,profiles,stats,goldFactor=1}){
-    const eligible=profiles.filter(p=>p.entry<=level).sort((a,b)=>Math.abs(level-a.level)-Math.abs(level-b.level)||a.type.localeCompare(b.type));
-    if(!eligible.length)throw Error('Nenhum encontro diário elegível');
-    const nearest=eligible.filter(p=>Math.abs(p.level-level)===Math.abs(eligible[0].level-level));
-    const p=nearest[seed%nearest.length];
-    // Only the next floor can be prepared; use the existing reinforcement objective for new cycles.
-    const magical=stats.attack===stats.elemental&&stats.attack!==stats.physical;
-    const armor=magical?p.magicDefense*.15:p.defense*.30;
-    const hits=Math.ceil(p.maxHP/Math.max(1,(stats.attack-armor)*.5));
-    const combatSeconds=hits/Math.max(.1,stats.speed);
-    const travelSeconds=p.travel/Math.max(1,stats.huntSpeed||stats.moveSpeed);
-    const rate=3600*(dailyEfficiency[p.area]??1)/Math.max(combatSeconds+travelSeconds,(p.respawnSeconds??20)/p.slots);
-    const hours=dailyRules.hours-dailyRules.prisonHours;
-    const baseKills=Math.max(1,Math.ceil(rate*hours)),factor=dailyRules.targetMultiplier;
-    const kills=baseKills*factor;
-    const reinforcements=Math.max(1,Math.ceil(rate*dailyRules.prisonHours))*factor;
-    return {cycle,endsAt:(cycle+1)*dailyRules.dayMs,claimed:false,objectives:[
-      {id:'daily-combat',title:'Caçada do Dia',desc:'Derrote '+p.name+' em '+p.region+'.',area:p.area,type:p.type,target:kills,current:0},
-      {id:'daily-berry',title:'Tesouros da Jornada',desc:'Obtenha Berry diretamente dos monstros em '+p.region+'.',area:p.area,target:Math.max(1,Math.ceil(baseKills*(p.gold[0]+p.gold[1])/2*goldFactor*dailyRules.berryShare))*factor,current:0},
-      {id:'daily-reinforcement',title:'Reforços da Caçada',desc:'Derrote mais '+reinforcements+' após concluir a Caçada do Dia.',area:p.area,type:p.type,target:reinforcements,current:0}
+  const week=now=>Math.floor((day(now)+3)/7);
+  function daily({cycle,level,classId,goldFactor=1}){
+    const rate=huntRates.findLast(row=>level>=row.min)||huntRates[0];
+    const [kills,berry]=rate.byClass[classId]??[rate.kills,rate.berry];
+    const hours=dailyRules.hours-dailyRules.otherHours;
+    return {revision:2,cycle,endsAt:(cycle+1)*dailyRules.dayMs,claimed:false,objectives:[
+      {id:'daily-combat',title:'Caçada do Dia',desc:'Derrote monstros de nível '+rate.monster+' ou superior.',minMonster:rate.monster,target:Math.ceil(kills*hours),current:0},
+      {id:'daily-berry',title:'Tesouros da Jornada',desc:'Obtenha Berry de monstros de nível '+rate.monster+' ou superior.',minMonster:rate.monster,target:Math.ceil(berry*hours*goldFactor),current:0}
     ]};
   }
+  function rebalanceDaily(previous,input){
+    if(!previous||previous.cycle!==input.cycle)return daily(input);
+    if(previous.revision===2||previous.claimed)return previous;
+    const next=daily(input);
+    for(const q of next.objectives){
+      const prior=previous.objectives.find(x=>x.id===q.id);
+      const extra=q.id==='daily-combat'?(previous.objectives.find(x=>x.id==='daily-reinforcement')?.current||0):0;
+      q.current=Math.min(q.target,(prior?.current||0)+extra);
+    }
+    return next;
+  }
+  function weekly({cycle,level,classId,goldFactor=1}){
+    return {cycle,endsAt:((cycle+1)*7-3)*dailyRules.dayMs,claimed:false,
+      objectives:daily({cycle:0,level,classId,goldFactor}).objectives.map(({minMonster,...q})=>({...q,desc:q.id==='daily-combat'?'Derrote monstros.':'Obtenha Berry diretamente dos monstros.',id:q.id.replace('daily','weekly'),title:q.id==='daily-combat'?'Monstros derrotados':'Tesouros da Semana',target:q.target*dailyRules.weeklyMultiplier}))};
+  }
   function applyDaily(d,kill){
+    if(d.claimed)return d;
     const combat=d.objectives.find(q=>q.id==='daily-combat');
-    const combatComplete=combat.current>=combat.target;
+    const combatComplete=combat&&combat.current>=combat.target;
     for(const q of d.objectives){
       if(q.id==='daily-reinforcement'&&!combatComplete)continue;
-      const amount=q.id==='daily-prison'?Number(kill.prisonFloor===q.floor):kill.area!==q.area?0:q.id==='daily-berry'?(kill.berry||0):Number(kill.monster?.type===q.type);
+      const amount=q.id==='daily-prison'?Number(kill.prisonFloor===q.floor):
+        q.area&&kill.area!==q.area||q.minMonster&&(!kill.reward||kill.monster?.level<q.minMonster)?0:q.id.endsWith('-berry')?(kill.berry||0):
+        Number(!!kill.monster&&(!q.type||kill.monster.type===q.type));
       q.current=Math.min(q.target,q.current+amount);
     }
     return d;
   }
   const dailyComplete=d=>!!d?.objectives.length&&d.objectives.every(q=>q.current>=q.target);
-  const api=Object.freeze({rulesetId:'original-contracts-v1',quests,progress,matching,dailyRules,boost,day,daily,applyDaily,dailyComplete});
+  const api=Object.freeze({rulesetId:'original-contracts-v1',quests,progress,matching,dailyRules,boost,huntRates,day,week,daily,rebalanceDaily,weekly,applyDaily,dailyComplete});
   root.MareContracts=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

@@ -26,6 +26,7 @@ function stats(b,c,base){
  if(R.roomActive(advanced,t)){out.physical*=1.3;out.elemental*=1.3;out.defense*=1.3;out.speed*=1.3;out.attack=C.roles[c.classId].magic?out.elemental:out.physical;}
  return out;
 }
+function basicMultiplier(b){return A.zoanBasicMultiplier(A.byId(b.fruit?.id),b.fruit?.transformed);}
 function transform(b,enabled,c){const f=state(b,c);if(b.hp<=0||!A.isZoan(A.byId(f.id))||f.job)return false;if(f.transformed!==enabled)reset(b);f.transformed=enabled;return true;}
 function move(nav,m,dx,dy){const from={x:m.x,y:m.y},n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/4));for(let i=1;i<=n;i++){const p={x:from.x+dx*i/n,y:from.y+dy*i/n};if(!nav.walkable(p.x,p.y)||!nav.projectileClear(m,p))break;Object.assign(m,p);}return distance(from,m);}
 function armor(m,magic,now){return (magic?1:R.defenseFactor(m,now))*(m.rankSDefenseUntil>now?.2:1)*(m.rankSPhoenixDefenseUntil>now?.5:1)*(m.kobuDebuffUntil>now*1000?.8:1)*(m.empRemaining>0?0:(magic?(m.magicDefense??m.defense):m.defense)*(m.hakiDebuff>0?.85:1)*(m.zoanDefenseUntil>now?.95:1));}
@@ -95,4 +96,4 @@ function incoming(b,c,m,raw,original,physical=true){const f=state(b,c),now=c.now
  const p=R.protect(rt,now,raw,tags),r=A.retaliate(original,p.damage,{active:f.effects.supaUntil>now,physical});
  return {damage:r.damage,reflected:r.reflected,ushi:f.effects.ushiUntil>now,bariMelee:R.domeActive(rt,now)&&tags.melee,physical};
 }
-module.exports={A,P,R,S,valid,state,stats,cast,tick,transform,reset,armor,incoming,genieDamage:G.damage,encode,decode,move};
+module.exports={basicMultiplier,A,P,R,S,valid,state,stats,cast,tick,transform,reset,armor,incoming,genieDamage:G.damage,encode,decode,move};

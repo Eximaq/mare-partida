@@ -32,6 +32,17 @@
     const keys = Object.keys(p).sort().join();
     const socialId=v=>typeof v==='string'&&/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(v);
     const namedInvite=(keys==='targetId'&&socialId(p.targetId))||(keys==='name'&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=40);
+    if(action==='weeklyBoss.execute'){
+      const version=v=>Number.isSafeInteger(v)&&v>0;
+      if(['test','leave'].includes(p.op))return keys==='op';
+      if(p.op==='activate')return keys==='op,revision'&&version(p.revision);
+      if(p.op==='join')return keys==='eventId,op'&&socialId(p.eventId);
+      if(p.op==='cancel')return keys==='eventId,op,version'&&socialId(p.eventId)&&version(p.version);
+      if(p.op==='configure'){
+        const c=p.config,q=c?.profile,limits={hp:[1,1e9],attack:[1,1e6],defense:[0,1e6],magicDefense:[0,1e6],speed:[1,240],reach:[24,160],attackSec:[1,30],aoeCooldown:[4,120],aoeRadius:[48,240],aoeWindup:[.8,5],aoeMultiplier:[.1,10],level:[1,1000],leash:[240,1200]},point=v=>v&&Object.keys(v).sort().join()==='x,y'&&[v.x,v.y].every(n=>Number.isFinite(n)&&n>=0&&n<=100000);
+        return keys==='config,op,revision'&&version(p.revision)&&c&&Object.keys(c).sort().join()==='balanceApproved,durationMinutes,entry,mapId,maxPlayers,minLevel,profile,spawn'&&c.mapId==='marineford'&&c.balanceApproved===true&&point(c.spawn)&&point(c.entry)&&Number.isInteger(c.maxPlayers)&&c.maxPlayers>=1&&c.maxPlayers<=16&&Number.isInteger(c.minLevel)&&c.minLevel>=1&&c.minLevel<=1000&&Number.isInteger(c.durationMinutes)&&c.durationMinutes>=1&&c.durationMinutes<=180&&q&&Object.keys(q).sort().join()===Object.keys(limits).sort().join()&&Object.entries(limits).every(([k,[lo,hi]])=>Number.isFinite(q[k])&&q[k]>=lo&&q[k]<=hi)&&Number.isInteger(q.hp)&&Number.isInteger(q.level)&&q.leash>=q.aoeRadius+64;
+      }return false;
+    }
     if(['party.invite','crew.invite','trade.invite'].includes(action))return namedInvite;
     if(['friend.request','friend.remove'].includes(action))return keys==='targetId'&&socialId(p.targetId);
     if(action==='friend.respond')return keys==='accept,requestId'&&socialId(p.requestId)&&typeof p.accept==='boolean';
@@ -81,6 +92,8 @@
       if(action==='crew.transfer'||action==='crew.kick')return keys==='memberId'&&uuid(p.memberId);
       if(action==='crew.leave')return keys==='';
       if(action==='crew.dissolve')return keys==='confirmed'&&p.confirmed===true;
+      if(action==='crew.claim-coins')return keys==='missionId'&&uuid(p.missionId);
+      if(action==='crew.buy-fragment')return keys==='';
       if(action==='crew.donate')return keys==='amount'&&whole(p.amount,Number.MAX_SAFE_INTEGER);
       if(action==='crew.upgrade')return keys==='expectedLevel,facility'&&whole(p.expectedLevel,5)&&['hull','infirmary','galley','command','workshop','navigation','warehouse'].includes(p.facility);
       if(action==='crew.profession')return keys==='profession'&&['doctor','command','cook','carpenter','navigator'].includes(p.profession);
@@ -111,7 +124,7 @@
     if(action==='haki.cast')return keys==='';
     if(action==='haki.invest')return keys==='expectedSeq,nodeId'&&Number.isSafeInteger(p.expectedSeq)&&p.expectedSeq>=0&&['coating','hardening','guard','imbuement','emission','armament-final','perception','anticipation','intent','serenity','future','observation-final','presence','resolve','pressure','conqueror-final'].includes(p.nodeId);
     if(['dungeon.enter','dungeon.claim'].includes(action))return keys==='dungeonId'&&['alvida','morgan','buggy','kuro','krieg','arlong','smoker','wapol','crocodile'].includes(p.dungeonId);
-    if(action==='dungeon.craft')return keys==='expectedSeq'&&Number.isSafeInteger(p.expectedSeq)&&p.expectedSeq>=0;
+    if(action==='dungeon.craft')return (keys==='expectedSeq'||keys==='expectedSeq,rank'&&['E','B'].includes(p.rank))&&Number.isSafeInteger(p.expectedSeq)&&p.expectedSeq>=0;
     if(action==='dungeon.acknowledge')return keys==='itemId'&&instanceId(p.itemId);
     if(['prison.prepare','prison.enter','prison.claim'].includes(action))return keys==='floor'&&Number.isInteger(p.floor)&&p.floor>=1&&p.floor<=100;
     if(action==='talents.reset')return keys==='';
@@ -119,7 +132,7 @@
       const b=p.build;return keys==='build'&&b&&typeof b==='object'&&!Array.isArray(b)&&Object.keys(b).sort().join()==='keystone,nodes,ultimate'&&b.nodes&&typeof b.nodes==='object'&&!Array.isArray(b.nodes)&&Object.keys(b.nodes).length<=15&&Object.entries(b.nodes).every(([id,n])=>/^(sword|brawler|gunner|rogue|cyborg|strategist|healer)-[0-2]-[0-4]$/.test(id)&&Number.isInteger(n)&&n>=0&&n<=10)&&[b.keystone,b.ultimate].every(v=>v===null||typeof v==='string'&&/^[a-zA-Z]{1,32}$/.test(v));
     }
     if(action==='achievement.claim')return keys==='achievementId'&&["kills-0", "kills-1", "kills-2", "kills-3", "floors-0", "floors-1", "floors-2", "floors-3", "coins-0", "coins-1", "coins-2", "level-0", "level-1", "level-2", "level-3", "level-4", "power-0", "power-1", "power-2", "power-3", "power-4", "fruits-0", "fruits-1", "awakenings-0", "observation-0", "armament-0", "conqueror-0", "hakiMastery-0", "islands-0", "fastTravel-0", "bounties-0"].includes(p.achievementId);
-    if(action==='contract.claim')return keys==='contractId'&&['crab','bandit','boss','dawn-patrol','dawn-clear','conchas-patrol','conchas-clear','orange-patrol','orange-clear','rare-patrol','daily-reward'].includes(p.contractId);
+    if(action==='contract.claim')return keys==='contractId'&&['crab','bandit','boss','dawn-patrol','dawn-clear','conchas-patrol','conchas-clear','orange-patrol','orange-clear','rare-patrol','daily-reward','weekly-reward'].includes(p.contractId);
     if(['battle.start','battle.first'].includes(action))return keys==='';
     if(action==='battle.auto')return keys==='enabled'&&typeof p.enabled==='boolean';
     if(action==='battle.target')return keys==='targetId'&&(p.targetId===null||typeof p.targetId==='string'&&/^[a-f0-9-]{36}$/.test(p.targetId));
@@ -339,7 +352,7 @@
           const daily=original.online.contracts?.daily;
           if(f.version!==original.online.state.version||(f.protocol===2&&!party)||(daily&&Date.parse(f.serverNow)>=daily.endsAt))return read(true);
           networkSample={rttMs:Math.max(0,completed-started),at:completed,intervalMs:networkSample?Math.max(0,completed-networkSample.at):null};
-          data={character:original.character,online:{...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party}};
+          data={character:original.character,online:{...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party,weeklyBoss:f.weeklyBoss??null}};
           available=true;notify();return data;
         }catch(error){if(revision===readVersion){available=false;notify();}throw error;}
       })().finally(()=>{if(frameFlight===flight)frameFlight=null;});

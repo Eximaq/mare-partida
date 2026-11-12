@@ -1,3 +1,5 @@
+import {lockWeeklyBoss} from '../characters/weekly-boss-store.js';
+import {readWeeklyBoss} from '../characters/weekly-boss.js';
 import {heartbeatSocialPresence,readPrivateMessages,readSocialContacts,readSocialContactBadge} from '../characters/social-contacts.js';
 import {readSocialMail,readSocialMailCount} from '../characters/mail.js';
 import {marketAvailable,readMarket,readMarketBadge,sweepMarket,type MarketRead} from '../characters/market.js';
@@ -347,18 +349,20 @@ export class AuthService {
   /** Compact presentation snapshot under the same authorization/lock boundary as full state. */
   async onlineFrame(token:string,id:string){
     return this.withSession(token,'play',async(client,row)=>{
-      await this.owned(client,row.account_id,id,true);await lockParty(client,id);
+      await this.owned(client,row.account_id,id,true);await lockParty(client,id);await lockWeeklyBoss(client,id);
+      const weeklyBoss=await readWeeklyBoss(client,id,row.id);
       const state=await readCharacterState(client,id),partyMotion=await readPartyMotion(client,id);
       const world=await readWorld(client,id),battle=await readBattle(client,id),lobby=await readLobby(client,id,world);
       const timing=(await client.query("SELECT clock_timestamp() now,tick_at FROM mare_game.character_battles WHERE character_id=$1",[id])).rows[0];
-      return {protocol:2,characterId:id,version:state.version,serverNow:(timing?.now??new Date()).toISOString(),simulationAgeMs:timing?Math.max(0,timing.now.getTime()-timing.tick_at.getTime()):null,world,battle,lobby,partyMotion};
+      return {protocol:2,characterId:id,version:state.version,serverNow:(timing?.now??new Date()).toISOString(),simulationAgeMs:timing?Math.max(0,timing.now.getTime()-timing.tick_at.getTime()):null,world,battle,lobby,partyMotion,weeklyBoss};
     });
   }
   async onlineState(token: string, id: string) {
     return this.withSession(token, "play", async (client, row) => {
       await this.owned(client, row.account_id, id,true);
       const state = await readCharacterState(client, id);
-      await lockParty(client,id);
+      await lockParty(client,id);await lockWeeklyBoss(client,id);
+      const weeklyBoss=await readWeeklyBoss(client,id,row.id);
       const party=await readParty(client,id);
       const journey = (await client.query<{ started: boolean }>(
         "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started", [id],
@@ -379,7 +383,7 @@ export class AuthService {
         power:hierarchy.power,factionId:combatPreview.factionId,crewAvailable:!!inputs?.crewAvailable,
         hierarchy,achievements,prison,haki
       }):null;
-      return { sync:{protocol:2}, bounty, ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...(await hasSocial(client)?{socialAvailable:true}:{}), ...(await marketAvailable(client)?{marketAvailable:true}:{}), state, party, profile, fruits, hierarchy, haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements, talents, contracts:await readContracts(client,id,{state,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state,!!originalInventory), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      return { sync:{protocol:2}, bounty, ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...(await hasSocial(client)?{socialAvailable:true}:{}), ...(await marketAvailable(client)?{marketAvailable:true}:{}), state, party, weeklyBoss, profile, fruits, hierarchy, haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements, talents, contracts:await readContracts(client,id,{state,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state,!!originalInventory), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(

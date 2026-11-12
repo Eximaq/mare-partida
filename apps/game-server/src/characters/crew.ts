@@ -3,6 +3,7 @@ import type {PoolClient} from 'pg';
 import {AuthFault} from '../auth/errors.js';
 import {assertSocialContactAllowed} from './social-contacts.js';
 import {crewCapacity,crewFacilities,crewLevel,crewPolicy,crewProject,seaWar,type CrewFacility} from './crew-config.js';
+import {buyRankCFragment,claimContributionCoins,readContributionCoins} from './crew-contribution.js';
 import {creditCrewDonation,ensureCrewMissions,readCrewMissions} from './crew-activity.js';
 import {creditProfessionDonation,professionLevel,readCrewProfessionBenefits} from './crew-professions.js';
 import {
@@ -25,6 +26,8 @@ type CrewCommand = {
   | {action:'crew.leave';payload:Record<string,never>}
   | {action:'crew.dissolve';payload:{confirmed:true}}
   | {action:'crew.donate';payload:{amount:number}}
+  | {action:'crew.claim-coins';payload:{missionId:string}}
+  | {action:'crew.buy-fragment';payload:Record<string,never>}
   | {action:'crew.upgrade';payload:{facility:CrewFacility;expectedLevel:number}}
 );
 type CrewRequest={
@@ -209,6 +212,13 @@ async function upgrade(client:PoolClient,crew:CrewRow,id:string,requestId:string
 export async function executeCrew(client:PoolClient,id:string,input:CrewCommand,_state?:{version:number}) {
   await requireCrew(client);
   switch(input.action) {
+    case 'crew.claim-coins':
+      await claimContributionCoins(client,id,input.payload.missionId);
+      break;
+    case 'crew.buy-fragment':
+      await lockActorCrew(client,id);
+      await buyRankCFragment(client,id,input.requestId);
+      break;
     case 'crew.create':
       await createCrew(client,id,input);
       break;
@@ -366,7 +376,7 @@ export async function readCrew(client:PoolClient,id:string,search='') {
   if(current&&(membership?.crew_id!==current.id||membership.role!==current.role))group=null;
   const requests=await readRequests(client,id,group?current:null);
   return {serverNow,blockedUntil,group,listing:group?[]:await listCrews(client,search),...requests,
-    donation:await crewDonation(client,id,serverNow),contribution:group?.members.find(m=>m.id===id)?.contribution??0};
+    donation:await crewDonation(client,id,serverNow),coins:await readContributionCoins(client,id),contribution:group?.members.find(m=>m.id===id)?.contribution??0};
 }
 
 export async function readCrewIdentity(client:PoolClient,id:string) {

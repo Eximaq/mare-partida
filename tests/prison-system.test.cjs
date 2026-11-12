@@ -18,17 +18,17 @@ test('Explicitly disabled system rejects entrance, victories and reward claims',
  for(let f=1;f<=100;f++){assert.equal(P.canEnter(g,f),false);assert.equal(P.completeFloor(g,f,true,defs).ok,false);}
  assert.equal(P.claimMilestone(g,5,defs).ok,false);assert.equal(snap(g),before);
 });
-test('Sequential victory only, exactly ten first-clear rewards through floor 100',()=>{
+test('Sequential victory only, one reward per first clear through floor 100',()=>{
  const active=P.createSystem({available:true});let g=seed();
  for(let f=1;f<=100;f++){
   const before=snap(g);assert.equal(active.completeFloor(g,f+1,true,defs).ok,false);assert.equal(active.completeFloor(g,f,false,defs).ok,false);
   const result=active.completeFloor(g,f,true,defs);assert(result.ok);assert.equal(snap(g),before);g=result.state;
   assert.equal(g.impelDown.cleared,f);assert.equal(active.completeFloor(g,f,true,defs).ok,false);
-  if(f%5===0&&f<=50)assert.equal(active.claimMilestone(g,f,defs).ok,false);
+  assert.equal(active.claimMilestone(JSON.parse(snap(g)),f,defs).ok,false);
  }
- assert.equal(g.inventory.length,10);assert.deepEqual(g.impelDown.claimed,P.milestones);
- assert(g.inventory.every(i=>defs[i.def].boxLevel===1));assert.equal(active.canEnter(g,101),false);
- assert.equal(P.rewardFor(55),null);assert.equal(P.rewardFor(100),null);
+ assert.equal(g.inventory.length,100);assert.deepEqual(g.impelDown.claimed,P.milestones);
+ assert.deepEqual([14,15,29,30].map(f=>defs[g.inventory.find(i=>i.id==='impel-milestone-'+f).def].boxLevel),[1,2,2,3]);assert.equal(active.canEnter(g,101),false);
+ assert.equal(P.rewardFor(55).level,3);assert.equal(P.rewardFor(100).level,3);
 });
 test('Full bag keeps floor victory and pending milestone; retry grants exactly once',()=>{
  const active=P.createSystem({available:true}),g=seed();g.impelDown={cleared:4,claimed:[]};g.inventory=Array.from({length:120},(_,i)=>({id:'gear'+i,def:0}));

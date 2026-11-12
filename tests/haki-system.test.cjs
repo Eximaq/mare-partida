@@ -15,10 +15,11 @@ for(const b of P.ids){g=P.addFragments(g,b,100,defs,d=>({id:'test-'+b,def:defs.i
 g=H.configure(g,'armament',true);assert.equal(H.configure(g,'conqueror',true),null);
 H.touch(g,rt);assert.equal(rt.active,'armament');
 const stats={defense:100,penetration:.10,evasion:.10,accuracy:.75};
-assert.equal(H.stats(stats,g,rt).penetration,.25);assert(Math.abs(H.stats(stats,g,rt).defense-110)<1e-8);
+const passive=H.stats(stats,g,H.start());
+assert(Math.abs(H.stats(stats,g,rt).penetration-passive.penetration-.15)<1e-8);assert(Math.abs(H.stats(stats,g,rt).defense-passive.defense*1.1)<1e-8);
 H.tick(g,rt,2);assert.equal(g.haki.current,90);H.touch(g,rt);H.tick(g,rt,6);assert.equal(g.haki.current,60);assert.equal(rt.active,null);assert.equal(rt.inCombat,false);
 H.tick(g,rt,2);assert.equal(g.haki.current,70);
-g=H.configure(g,'observation',true);assert.equal(g.haki.auto,'observation');H.touch(g,rt);assert.equal(rt.active,'observation');assert.equal(H.stats(stats,g,rt).evasion,.25);assert.equal(H.stats(stats,g,rt).accuracy,.90);
+g=H.configure(g,'observation',true);assert.equal(g.haki.auto,'observation');H.touch(g,rt);assert.equal(rt.active,'observation');assert(Math.abs(H.stats(stats,g,rt).evasion-passive.evasion-.15)<1e-8);assert(Math.abs(H.stats(stats,g,rt).accuracy-passive.accuracy-.15)<1e-8);
 g.haki.current=1;H.tick(g,rt,1);assert.equal(g.haki.current,0);assert.equal(rt.active,null);H.touch(g,rt);assert.equal(rt.active,null);H.tick(g,rt,6);H.tick(g,rt,20);assert.equal(g.haki.current,100);
 H.touch(g,rt);assert.equal(rt.active,'observation');H.stop(rt);assert.equal(rt.active,null);
 assert(H.toggle(g,rt,'armament').ok);assert.equal(rt.active,'armament');H.touch(g,rt);assert.equal(rt.active,'armament');assert(H.toggle(g,rt,'observation').ok);assert.equal(rt.active,'observation');assert(H.toggle(g,rt,'observation').ok);assert.equal(rt.active,null);

@@ -32,9 +32,9 @@ test('dexterity changes cadence only for the two authorized classes',()=>{
    assert(a.speed>=classes[id].speed&&b.evasion>a.evasion);
  }
 });
-test('daily reinforcement and Berry targets are quadrupled; current cycle state remains untouched by generation',()=>{
+test('measured daily targets replace fixed estimates and legacy floor credit still works',()=>{
  const d=D.daily({cycle:2,level:5,seed:0,profiles:[{entry:1,level:5,area:'beach',name:'César',type:'cesar',region:'Dawn',maxHP:100,defense:0,gold:[10,10],travel:0,slots:1,respawnSeconds:3600}],stats:{attack:50,physical:50,speed:1,huntSpeed:100}});
- assert.deepEqual(d.objectives.map(x=>[x.id,x.target]),[['daily-combat',32],['daily-berry',304],['daily-reinforcement',4]]);
+ assert.deepEqual(d.objectives.map(x=>[x.id,x.target]),[['daily-combat',2106],['daily-berry',67230]]);
  const old={objectives:[{id:'daily-combat',current:1,target:1},{id:'daily-prison',floor:4,current:0,target:1}]};
  D.applyDaily(old,{prisonFloor:4});assert(D.dailyComplete(old));
 });

@@ -21,9 +21,10 @@ export function deriveOriginalFighter(classId:string,factionId:string,state:Char
   const hakiStats=haki?require('../../../../haki-system.js').stats(talentStats,{has_haki_unlocked:haki.state.unlocked,haki:haki.state},haki.runtime):talentStats;
   const stats=battle?require('../../../../fruit-runtime.cjs').stats(structuredClone(battle),{fruitId,classId,now:Date.now()},hakiStats):P.apply(hakiStats,fruitId,{magic:!!characters.roles[classId].magic,healer:classId==='healer'});
   const damageType=characters.roles[classId].magic?'elemental':'physical';
+  const basicMultiplier=A.zoanBasicMultiplier(A.byId(fruitId),battle?.fruit?.id===fruitId&&battle?.fruit?.transformed);
   return fighterSchema.parse({rulesetId:'original-character-v1',rulesHash,classId,factionId,level:state.level,sourceVersion:state.version,
     allocated,total:stats.attributes,...(fruitId?{fruitId}:{}),stats,...(build&&T.spent(build)>0||haki?.state.unlocked||fruitId?{baseStats}:{}),equipped:{weapon:null,armor:null},damageType,maxHp:stats.maxHP,
-    attackMin:characters.damage(stats,0,{type:damageType,variance:.9}),attackMax:characters.damage(stats,0,{type:damageType,variance:1.12,critical:true}),
+    attackMin:characters.damage(stats,0,{type:damageType,multiplier:basicMultiplier,variance:.9}),attackMax:characters.damage(stats,0,{type:damageType,multiplier:basicMultiplier,variance:1.12,critical:true}),
     armor:stats.defense,cooldownMs:Math.ceil(1000/stats.speed)});
 }
 // The encounter remains the dock pilot. Only the player's original formulas are migrated here.

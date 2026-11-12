@@ -11,5 +11,5 @@ test('Visual Completo can use existing owned-item commands and old inventories r
  assert.equal(parsed.equipment.visual_completo,null);
  const next=originalInventorySchema.parse({...old,equipment:{...equipment,visual_completo:item}});
  assert.equal(next.equipment.visual_completo?.id,'zoro-test');
- assert.equal(originalItemSchema.safeParse({...item,def:188}).success,false);
+ assert.equal(originalItemSchema.safeParse({...item,def:189}).success,false);
 });

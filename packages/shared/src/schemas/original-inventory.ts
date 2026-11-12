@@ -23,8 +23,8 @@ const count = z.number().int().min(0).max(1000000000);
 const stat = z.number().finite().min(0).max(1000000);
 export const originalItemSchema = z.strictObject({
   id: instanceIdSchema,
-  def: z.number().int().min(0).max(187),
-  level: z.number().int().min(1).max(100),
+  def: z.number().int().min(0).max(188),
+  level: z.number().int().min(1).max(1000),
   plus: z.number().int().min(0).max(20),
   locked: z.boolean(),
   obtainedAt: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),

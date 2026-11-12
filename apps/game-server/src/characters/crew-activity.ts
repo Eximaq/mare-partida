@@ -50,7 +50,7 @@ export async function readCrewMissions(client:PoolClient,crew:CrewRow,now:Date) 
     const row=stored.find(m=>m.kind===rule.kind);
     return {id:row?.id??null,type:rule.kind,title:crewMissionRules[rule.kind].title,capacity:row?.capacity??rule.capacity,
       target:row?.target??rule.target,progress:row?.progress??0,xp:row?.reward_xp??rule.reward_xp,
-      completedAt:row?.completed_at??null,endsAt};
+      completedAt:row?.completed_at??null,coins:crewMissionRules[rule.kind].coins,endsAt};
   });
 }
 

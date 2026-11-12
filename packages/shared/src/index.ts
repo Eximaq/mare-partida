@@ -26,3 +26,5 @@ export * from './schemas/haki.js';
 export * from './schemas/profile.js';
 
 export * from './schemas/party.js';
+
+export * from './schemas/weekly-boss.js';

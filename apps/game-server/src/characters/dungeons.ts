@@ -1,4 +1,4 @@
-import {boostXp} from './contracts.js';
+import {boostXp,recordDailyProgress} from './contracts.js';
 import {createRequire} from 'node:module';
 import {randomInt,randomUUID} from 'node:crypto';
 import type {PoolClient} from 'pg';
@@ -20,7 +20,7 @@ export async function readDungeons(client:PoolClient,id:string,includeMailStatus
  if(!(await client.query("SELECT to_regclass('mare_game.character_dungeons') present")).rows[0].present)return null;
  const row=(await client.query('SELECT state FROM mare_game.character_dungeons WHERE character_id=$1',[id])).rows[0];
  const state=dungeonStateSchema.parse(D.migrate({characterId:id,bossDungeons:row?.state}).bossDungeons);
- if(Object.values(state.records).some(r=>r?.ownerId!==id||r.reward&&r.reward.boundToCharacter!==id)||state.reveal&&state.reveal.boundToCharacter!==id)throw new AuthFault(503,'dungeon_state_unavailable');
+ if(Object.values(state.records).some(r=>r?.ownerId!==id||r.reward&&r.reward.boundToCharacter!==id)||state.reveal?.boundToCharacter&&state.reveal.boundToCharacter!==id)throw new AuthFault(503,'dungeon_state_unavailable');
  if(includeMailStatus){
   const letters=Object.values(state.records).filter(record=>record?.mailId);
   if(letters.length){
@@ -84,16 +84,8 @@ export async function mutateDungeon(client:PoolClient,id:string,input:CharacterC
    source:'dungeon',sourceId:dungeonId,rewardId:'chest',title:'Baú de '+name,
    message:'Itens da sua vitória em Masmorra de Chefes.',
    makeAttachments:()=>{
-    const materialId='materialId' in reward?reward.materialId:undefined;
-    const def=getGameCatalog().items.findIndex(item=>materialId?
-     (item.kind==='akuma-fragment'||item.kind==='weapon-fragment')&&item.materialId===materialId:
-     item.kind==='haki-book'&&item.id==='will-book');
-    if(def<0)throw new AuthFault(503,'dungeon_reward_catalog_unavailable');
-    const item:OriginalItemInstance={id:receipt,def,level:1,plus:0,locked:false,obtainedAt:now.getTime(),
-     binding:'character',boundToCharacter:id,origin:'Masmorra de Chefes · '+name,sources:[receipt],
-     ...(materialId?{materialId,quantity:reward.quantity}:{}),
-     ...(materialId==='akuma_fragment_e'?{rank:'E',rarity:'rare'}:{rarity:'epic'}),
-    };
+    const item:OriginalItemInstance|null=D.rewardItem(getGameCatalog().items,reward,dungeonId,receipt,now.getTime());
+    if(!item)throw new AuthFault(503,'dungeon_reward_catalog_unavailable');
     return [item];
    },
   });
@@ -106,7 +98,7 @@ export async function mutateDungeon(client:PoolClient,id:string,input:CharacterC
   delete b.partyInstanceId;
   E.changeArea(b,null,now.getTime(),rng);const port=maps().maps.lobby.spawn;Object.assign(w,{mapId:'lobby',area:null,position:{...port},path:[],speed:0,direction:'front',serverNow:now.toISOString(),motionUntil:now.toISOString()});await storeWorld(client,id,w);await storeBattle(client,id,b);
  }else if(input.action==='dungeon.craft'){
-  result=D.craft(base,{expectedSeq:input.payload.expectedSeq,defs:getGameCatalog().items,catalog:require('../../../../akuma-system.js').catalog,random:rng,commit:()=>true,now:now.getTime()});
+  result=D.craft(base,{expectedSeq:input.payload.expectedSeq,rank:input.payload.rank,defs:getGameCatalog().items,catalog:require('../../../../akuma-system.js').catalog,random:rng,commit:()=>true,now:now.getTime()});
   if(!result.ok)throw new AuthFault(409,'dungeon_craft_unavailable');
   await inventoryChange(client,id,input,state,stock,{...stock,inventory:result.state.inventory});
  }else if(input.action==='dungeon.acknowledge'){
@@ -120,5 +112,6 @@ export async function completeDungeonVictory(client:PoolClient,id:string,request
  const result=D.defeat({characterId:id,level:state.level,bossDungeons:p},kill.dungeonId,{runId:kill.runId,encounterId:kill.encounterId},legacyXpNeeded,now.getTime());
  if(!result.ok)throw new AuthFault(503,'dungeon_victory_invalid');
  await client.query('INSERT INTO mare_game.dungeon_victories(character_id,dungeon_id,run_id,spawn_id,request_id,reward,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7)',[id,kill.dungeonId,kill.runId,kill.id,requestId,result.record.reward===null?null:JSON.stringify(result.record.reward),E.rulesHash]);
+ await recordDailyProgress(client,id,[{id:kill.id,monster:kill.monster}]);
  await save(client,id,result.state.bossDungeons);b.dungeon.record=result.record;
 }

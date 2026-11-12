@@ -104,7 +104,7 @@
   function renderMissions(group,compact=false){
     const missions=(group.missions||[]).filter(mission=>!compact||!mission.completedAt).slice(0,compact?1:20);
     const tasks={kills:'Derrote monstros elegíveis',donations:'Contribua com Berry',bosses:'Vença chefes elegíveis'};
-    const cards=missions.map(mission=>'<article class="crew-mission"><strong>'+escape(mission.title)+'</strong><small>'+escape(tasks[mission.type]||'Missão coletiva')+' · Meta fixada para '+number(mission.capacity)+' vagas</small>'+progress(mission.progress,mission.target)+'<span>'+number(mission.xp)+' XP da tripulação'+(mission.completedAt?' · Creditado':' · Até '+escape(date(mission.endsAt)))+'</span></article>').join('');
+    const cards=missions.map(mission=>'<article class="crew-mission"><strong>'+escape(mission.title)+'</strong><small>'+escape(tasks[mission.type]||'Missão coletiva')+' · Meta fixada para '+number(mission.capacity)+' vagas</small>'+progress(mission.progress,mission.target)+'<span>'+number(mission.xp)+' XP da tripulação · '+number(mission.coins||0)+' moedas por participante elegível'+(mission.completedAt?' · Creditado':' · Até '+escape(date(mission.endsAt)))+'</span></article>').join('');
     const future=compact?'':(group.futureMissions||[]).map(mission=>'<div class="crew-future"><b>'+escape(mission.title)+'</b><span>Expansão futura · '+number(mission.xp)+' XP da tripulação</span></div>').join('');
     return (cards||empty('Nenhuma missão ativa neste momento.'))+future;
   }
@@ -161,6 +161,13 @@
     return section('Tesouraria','<div class="crew-treasury-balance">'+asset('assets/ui/inventory-final/berry.png')+'<b>'+number(group.treasury)+' Berry</b></div><p>Você já contribuiu com <b>'+number(crew.contribution)+' Berry</b>.</p><p>Disponível hoje: <b>'+number(remaining)+' Berry</b> · Nova cota em '+escape(date(crew.donation?.resetsAt))+'</p><form class="crew-form crew-inline-form" data-crew-form="donate"><label>Quantidade de Berry<input name="amount" type="number" min="1" max="'+remaining+'" required '+disabled(!remaining)+'></label><button type="submit" class="crew-button crew-primary"'+disabled(!remaining)+'>Doar Berry</button></form>')+
       section('Histórico da tesouraria',(group.history||[]).map(event=>row(event.kind==='upgrade'?'Obra · '+(facilities[event.facility]?.[0]||'Instalação'):'Doação',event.characterName+' · '+date(event.createdAt),'<b>'+(event.kind==='upgrade'?'−':'+')+number(Math.abs(Number(event.amount)))+' Berry</b>')).join('')||empty('A tesouraria ainda não tem movimentações.'));
   }
+  function contributionShop(crew,canBuy){
+    const coins=crew.coins;
+    if(!coins)return '';
+    const claims=coins.claims.map(m=>row(m.title,'Missão concluída · '+number(m.coins)+' moedas',button('claim-coins','Resgatar',m.id))).join('');
+    const offer=canBuy?row('Fragmento de Akuma Rank C','1 unidade negociável · '+number(coins.price)+' moedas',button('buy-fragment','Comprar',null,coins.balance<coins.price,'crew-primary')):'';
+    return section('Moedas de Contribuição','<p><b>'+number(coins.balance)+'</b> disponíveis · '+number(coins.earned)+' recebidas · '+number(coins.bought)+' fragmentos comprados</p>'+offer+claims);
+  }
   function unbound(crew,profession,editor,view,draft,query){
     if(view==='profession')return '<div class="crew-panel-inner">'+button('back','Voltar ao recrutamento')+renderProfession(profession)+'</div>';
     const remainingMinutes=crew.blockedUntil?Math.max(0,Math.ceil((new Date(crew.blockedUntil)-new Date(crew.serverNow))/60000)):0;
@@ -178,7 +185,7 @@
     const block=locked?'<p class="crew-note" role="status">Novo vínculo disponível em '+Math.floor(remainingMinutes/60)+'h '+remainingMinutes%60+'min · '+escape(date(crew.blockedUntil))+'.</p>':'';
     return '<div class="crew-panel-inner">'+section('Sem tripulação',block+'<p class="crew-muted">Encontre uma tripulação ou reúna seus companheiros sob uma nova bandeira.</p><div class="crew-row-actions">'+button('create-view','Criar tripulação',null,locked,'crew-primary')+button('profession-view','Minha profissão')+'</div>')+
       section('Encontrar tripulação','<form class="crew-form crew-inline-form" data-crew-form="search"><label>Buscar por nome ou sigla<input name="query" maxlength="32" value="'+escape(query)+'" autocomplete="off"></label><button type="submit" class="crew-button">Buscar</button></form><div class="crew-directory">'+(directory||empty('Nenhuma tripulação encontrada.'))+'</div>')+
-      section('Convites recebidos',requests(crew.invites,'invites',locked))+(outgoing.length?section('Minhas candidaturas',requests(outgoing,'outgoing')):'')+'</div>';
+      contributionShop(crew,false)+section('Convites recebidos',requests(crew.invites,'invites',locked))+(outgoing.length?section('Minhas candidaturas',requests(outgoing,'outgoing')):'')+'</div>';
   }
   function bound(crew,profession,view,activeFacility,selfId,art){
     const group=crew.group;
@@ -191,7 +198,7 @@
       case 'contracts':content=section('Contratos profissionais',contracts(profession));break;
       case 'ship':content=section('Navio e instalações',renderShip(group,activeFacility,art));break;
       case 'treasury':content=treasury(crew,group);break;
-      case 'store':content=section('Armazém comercial','<p>Instalação Nv. '+number(group.facilities.warehouse)+'</p>'+empty('O catálogo da loja da tripulação ainda não está disponível.'));break;
+      case 'store':content=contributionShop(crew,true);break;
       case 'recruitment':content=recruitment(crew,group);break;
       default:content=section('Navio da tripulação',renderShip(group,activeFacility,art,true))+section('Missão coletiva atual',renderMissions(group,true));
     }
@@ -325,6 +332,8 @@
         if(crewView)block().scrollTop=0;
         return;
       }
+      if(action==='claim-coins'){void send(action,{missionId:value});return;}
+      if(action==='buy-fragment'){review('Comprar Fragmento de Akuma Rank C?',number(data.crew.coins.price)+' Moedas de Contribuição por 1 fragmento negociável.',action,{},'Comprar fragmento');return;}
       if(action==='retry'){void refresh({showLoading:true});return;}
       if(['back','create-view','profession-view','treasury-view'].includes(action)){
         view={back:'overview','create-view':'create','profession-view':'profession','treasury-view':'treasury'}[action];

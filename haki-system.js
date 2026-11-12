@@ -47,10 +47,19 @@
     const next=migrate(g);next.haki.auto=enabled?id:(next.haki.auto===id?null:next.haki.auto);if(enabled)next.haki.equipped=id;return next;
   }
   function stats(s,g,rt){
-    if(!g.has_haki_unlocked||!rt?.active||!P.learned(g,rt.active)||g.haki.current<=0)return s;
-    const e=P.effects(g,rt.active);
-    if(rt.active==='armament')return {...s,penetration:Math.min(.95,(s.penetration||0)+(e.penetration||0)),defense:s.defense*(1+(e.defense||0))};
-    return {...s,evasion:Math.min(.75,(s.evasion||0)+(e.evasion||0)),accuracy:Math.min(1,(s.accuracy||0)+(e.accuracy||0))};
+    if(!g.has_haki_unlocked)return s;
+    const p=P.passives(g),active=rt?.active&&P.learned(g,rt.active)&&g.haki.current>0?P.effects(g,rt.active):{};
+    const physical=(s.physical||0)*(1+(p.physicalBonus||0)),elemental=(s.elemental||0)*(1+(p.elementalBonus||0));
+    const attack=(s.attack||0)*(1+(s.attack===s.elemental&&s.attack!==s.physical?p.elementalBonus||0:p.physicalBonus||0));
+    const defense=(s.defense||0)*(1+(p.defenseBonus||0))*(1+(active.defense||0));
+    const penetration=Math.min(.95,(s.penetration||0)+(1-(s.penetration||0))*(p.penetrationBonus||0)+(active.penetration||0));
+    const accuracy=Math.min(1,(s.accuracy||0)+(1-(s.accuracy||0))*(p.accuracyBonus||0)+(active.accuracy||0));
+    const evasion=Math.min(.75,(s.evasion||0)+(1-(s.evasion||0))*(p.evasionBonus||0)+(active.evasion||0));
+    const powerGain=(attack-(s.attack||0))*8+(defense-(s.defense||0))*5+
+      (penetration-(s.penetration||0))*250+(accuracy-(s.accuracy||0))*450+(evasion-(s.evasion||0))*220;
+    return {...s,physical,elemental,attack,defense,penetration,accuracy,evasion,
+      ...(s.magicDefense===undefined?{}:{magicDefense:s.magicDefense*(1+(p.defenseBonus||0))}),
+      power:(s.power||0)+Math.ceil(Math.max(0,powerGain-1e-9))};
   }
   function unlock(g,itemId,defs){
     const next=migrate(g),item=next.inventory?.find(i=>i.id===itemId);

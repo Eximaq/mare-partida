@@ -19,6 +19,7 @@ export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
  const result=new Map<string,CombatInputs>();if(!unique.length)return result;
  const rows=(await c.query(`SELECT ch.id,ch.class_id,ch.faction_id,ch.state_version::float8 version,
  to_regclass('mare_game.character_professions') IS NOT NULL crew_benefits_available,
+ (SELECT simulation->'haki' FROM mare_game.character_battles WHERE character_id=ch.id) haki_state,
  p.level,p.experience::text,p.gold::text,to_jsonb(i) inventory,t.build,t.revision,coalesce(a.budget,0) legacy_budget,pr.appearance,pr.preferences,
  (SELECT jsonb_build_object('strength',coalesce(sum(strength),0),'dexterity',coalesce(sum(dexterity),0),
  'vitality',coalesce(sum(vitality),0),'intelligence',coalesce(sum(intelligence),0),'spirit',coalesce(sum(spirit),0))
@@ -41,7 +42,7 @@ export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
   const fallback=row.preferences?null:await readProfile(c,row.id);
   const preferences=preferencesSchema.parse(row.preferences??fallback?.preferences),appearance=appearanceSchema.parse(row.appearance??fallback?.appearance);
   const crewBenefits=benefits.get(row.id)??noCrewBenefits;
-  result.set(row.id,{state,attributes,inventory,talents,fruits,preferences,appearance,crewAvailable:row.crew_benefits_available===true,crewBenefits,permanentPower:()=>{if(!inventory)return 0;const f=deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,inventory,talents.build,undefined,undefined,fruits);return f.rulesetId==='original-character-v1'?Math.min(1000000000,Math.max(0,Math.floor(f.stats.power))):0;},fighter:(battle:any,legacyCadence=false)=>{if(!inventory)throw new AuthFault(503,'original_inventory_required');return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,inventory,talents.build,battle?runtime.load(battle):undefined,battle?hakiView(battle):undefined,fruits,battle,legacyCadence,crewBenefits.cook);}});
+  result.set(row.id,{state,attributes,inventory,talents,fruits,preferences,appearance,crewAvailable:row.crew_benefits_available===true,crewBenefits,permanentPower:()=>{if(!inventory)return 0;const f=deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,inventory,talents.build,undefined,row.haki_state?{state:hakiView({haki:row.haki_state}).state}:undefined,fruits,undefined,false,crewBenefits.cook);return f.rulesetId==='original-character-v1'?Math.min(1000000000,Math.max(0,Math.floor(f.stats.power))):0;},fighter:(battle:any,legacyCadence=false)=>{if(!inventory)throw new AuthFault(503,'original_inventory_required');return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,inventory,talents.build,battle?runtime.load(battle):undefined,battle?hakiView(battle):undefined,fruits,battle,legacyCadence,crewBenefits.cook);}});
  }
  if(result.size!==unique.length)throw new AuthFault(503,'character_state_unavailable');return result;
 }

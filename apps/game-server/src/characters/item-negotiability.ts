@@ -2,7 +2,7 @@ import type {OriginalItemInstance} from '@mare/shared';
 import {getGameCatalog} from '../gameplay/catalog.js';
 
 const {items}=getGameCatalog();
-const forbidden=new Set(['weapon-fragment','akuma-fragment','xp-boost','profession-material','quest']);
+const forbidden=new Set(['profession-material','quest']);
 
 export function itemTradeRestriction(item:OriginalItemInstance):'locked'|'bound'|null{
   const def=items[item.def];
