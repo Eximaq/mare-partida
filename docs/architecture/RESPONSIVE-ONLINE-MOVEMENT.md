@@ -110,3 +110,40 @@ Os percentis do log são limites de buckets, não quantis exatos.
 - Preservar interpolação dos terceiros separada da previsão do próprio personagem.
   Só alterar a simulação ou persistência após profiling com causa reproduzível.
 - Nenhuma conclusão de capacidade para 3.000 jogadores decorre destes ensaios.
+
+## Entrada no Opera: correção de preparação de aparência (12/11/2026)
+
+Observação no Opera autenticado pelo domínio da VPS: o console registrou
+`bootstrap_failed initial_appearance_timeout`. Na aba Network, camadas PNG do
+personagem ainda retornavam 200, com exemplos de 2,59–3,49 s. A API continuava
+retornando frames. Isso demonstra uma falha na preparação visual da entrada,
+não uma recusa de login nem perda do personagem. Não explica sozinho todo tranco
+que possa ocorrer durante a partida.
+
+O limite anterior de 20 s contava todo o carregamento frio e a composição dos
+sprites como uma única espera. O preparo agora acompanha progresso confirmado
+(manifestos, módulos, imagens decodificadas e quadros compostos), com 20 s sem
+progresso e teto de 120 s. O limite do mapa permanece 20 s. Resultado `false`
+do compositor é propagado como falha, em vez de liberar a partida incompleta.
+Nenhum prazo de combate, sessão, tick ou regra de jogo foi alterado. A revisão do
+manifesto foi regenerada porque inclui o código do carregador; nenhuma imagem
+foi modificada.
+
+Evidências desta revisão:
+
+- Regressões antes da correção: 2 falhas reproduzidas (progresso além de 20 s e
+  resultado de preparação malsucedido), 2 casos de timeout já aprovados.
+- Depois: 4/4 regressões; suíte completa com 276/276 testes de fundação e 188/188
+  arquivos legados; sintaxe, revisão de assets, build estático e diff conferidos.
+- Navegador com PostgreSQL e worker isolados: oito módulos atrasados em 3 s cada;
+  entrada concluída em 29.714 ms, sem erro fatal e sem liberar sprites incompletos.
+- Primeiro deslocamento: 11,8 ms no porto e 10,7 ms em Dawn, com RTT da bancada de
+  344/360 ms. Dezesseis mudanças rápidas de direção: 5,9–37,6 ms. Rejeição de
+  comando reconciliada nos dois mapas. Velocidade e colisão preservadas.
+- 106 amostras de movimento de monstros, zero deslocamentos sem animação e zero
+  reinícios da fase visual. Desktop, viewport de 640 px, reconexão, falha de mapa
+  base e preservação do save demo aprovados.
+
+Esses números de resposta são da bancada, não medições certificadas do Opera
+pela VPS. A aplicação hospedada e a repetição de jogo real dependem de acesso SSH
+válido; não se deve declarar o movimento da VPS estabilizado só com estes testes.

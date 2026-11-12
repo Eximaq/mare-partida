@@ -72,10 +72,10 @@
   function create({search='',baseURL=root.location?.href,onChange=()=>{},sharedLobby=false}={}){
     const active=enabled(search),rehearsal=false,base=new URL('tools/paper-doll-96-v3/',baseURL);
     let state=active?'loading':'off',message='',previewMessage='',release=null,assetRevision=null,manifest,catalog,rigs,weaponCatalog,wardrobe,choices={},current={...defaults},draft={...defaults};
-    let draws=0,lastPose=null,pending=null,preparing=null,wanted=null,bundles=new Map(),previews=new Map(),failed=new Set();
+    let progress=0,draws=0,lastPose=null,pending=null,preparing=null,wanted=null,bundles=new Map(),previews=new Map(),failed=new Set();
     const images=new Map(),inflight=new Map(),imageFailures=new Map(),diagnostics=new Map();let loading=0,peakLoads=0,imageBytes=0;const waiting=[];
     const pause=()=>new Promise(resolve=>setTimeout(resolve,0));
-    const snapshot=()=>({renderer:'native96',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:previews.size,peakLoads});
+    const snapshot=()=>({renderer:'native96',enabled:active,rehearsal,state,progress,message,previewMessage,assetRevision,visualState:state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:previews.size,peakLoads});
     function diagnose(error,context={}){
       const detail={component:context.consumer||'player',...context,...error.spriteContext,status:'failed',message:error.message};
       const key=[detail.asset||detail.component,detail.code||'load-failed'].join(':');
@@ -84,8 +84,8 @@
     }
     function report(error,context={}){diagnose(error,context);message='Não foi possível carregar o visual atual. Recarregue a página; o diagnóstico registra o recurso com falha.';onChange();}
     function failure(message,context){const error=Error(message);error.spriteContext=context;return error;}
-    async function json(file){const url=new URL(file,base);if(assetRevision&&file!=='player-pack.json')url.searchParams.set('revision',assetRevision);const r=await fetch(url,{cache:file==='player-pack.json'?'no-cache':'default'});if(!r.ok)throw failure('Arquivo ausente: '+file,{component:'player-manifest',asset:file,resolved:url.href,code:'manifest-http'});try{return await r.json();}catch(cause){throw failure('Manifesto inválido: '+file,{component:'player-manifest',asset:file,resolved:url.href,code:'manifest-json'});}}
-    function script(file){return new Promise((resolve,reject)=>{const node=document.createElement('script');node.src=new URL(file+'?revision='+assetRevision,base).href;node.onload=resolve;node.onerror=()=>reject(failure('Compositor indisponível: '+file,{component:'player-compositor',asset:file,resolved:node.src,code:'module-load'}));document.head.append(node);});}
+    async function json(file){const url=new URL(file,base);if(assetRevision&&file!=='player-pack.json')url.searchParams.set('revision',assetRevision);const r=await fetch(url,{cache:file==='player-pack.json'?'no-cache':'default'});if(!r.ok)throw failure('Arquivo ausente: '+file,{component:'player-manifest',asset:file,resolved:url.href,code:'manifest-http'});try{const value=await r.json();progress++;return value;}catch(cause){throw failure('Manifesto inválido: '+file,{component:'player-manifest',asset:file,resolved:url.href,code:'manifest-json'});}}
+    function script(file){return new Promise((resolve,reject)=>{const node=document.createElement('script');node.src=new URL(file+'?revision='+assetRevision,base).href;node.onload=()=>{progress++;resolve();};node.onerror=()=>reject(failure('Compositor indisponível: '+file,{component:'player-compositor',asset:file,resolved:node.src,code:'module-load'}));document.head.append(node);});}
     async function image(file,context={}){
       const size=release?.resources?.[file];
       if(!safeFile(file)||!size)throw failure('Camada fora do registro atual: '+file,{...context,asset:file,code:'unregistered-resource'});
@@ -98,7 +98,7 @@
         try{
           const img=new Image();img.src=url;await img.decode();
           if(img.naturalWidth!==size[0]||img.naturalHeight!==size[1])throw Error('Dimensões incompatíveis com o registro atual');
-          images.set(file,img);imageBytes+=size[0]*size[1]*4;while(images.size>192||imageBytes>64*1024*1024){const oldest=images.keys().next().value,old=images.get(oldest);imageBytes-=old.naturalWidth*old.naturalHeight*4;images.delete(oldest);}return img;
+          progress++;images.set(file,img);imageBytes+=size[0]*size[1]*4;while(images.size>192||imageBytes>64*1024*1024){const oldest=images.keys().next().value,old=images.get(oldest);imageBytes-=old.naturalWidth*old.naturalHeight*4;images.delete(oldest);}return img;
         }catch(cause){const error=failure('Falha na camada atual '+file+': '+cause.message,{...context,component:context.consumer||'player-compositor',asset:file,resolved:url,code:'image-load'});imageFailures.set(file,error);diagnose(error,context);throw error;}
         finally{loading--;waiting.shift()?.();}
       })();inflight.set(file,promise);try{return await promise;}finally{inflight.delete(file);}
@@ -136,7 +136,7 @@
       const tile=Object.assign(document.createElement('canvas'),{width:renderSpec.width*density,height:renderSpec.height*density}),tc=tile.getContext('2d');tc.imageSmoothingEnabled=false;tc.scale(density,density);tc.translate(pad.x,pad.top);
       for(let frame=0;frame<sel.clip.frames;frame++){
         if(cancel())return null;
-        tc.clearRect(-pad.x,-pad.top,renderSpec.width,renderSpec.height);emissions.push(wardrobe.draw(tc,loaded,sel,frame,spec,[],look));ctx.drawImage(tile,frame*renderSpec.width*density,0);await pause();
+        tc.clearRect(-pad.x,-pad.top,renderSpec.width,renderSpec.height);emissions.push(wardrobe.draw(tc,loaded,sel,frame,spec,[],look));ctx.drawImage(tile,frame*renderSpec.width*density,0);progress++;await pause();
       }
       return {strip,spec:renderSpec,nativeSpec:spec,clip:sel.clip,emissions,density};
     }

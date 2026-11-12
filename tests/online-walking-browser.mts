@@ -150,6 +150,18 @@ await authDatabase(async f=>{
   await p.waitForFunction(()=>MareGameSession.available&&Number.isFinite(__mareDiagnostics().hero.x),null,{timeout:10000});
   await p.screenshot({path:resolve(out,'combat-narrow.png')});assert.deepEqual(errors,[]);
   console.log('Mouse routes in lobby/dawn and automatic chase passed with real backend/worker in desktop/narrow viewports; demo preserved.');
+  // Cold load with eight sequential compositor modules arriving three seconds
+  // apart: progress is real, but total preparation exceeds the former 20s cap.
+  const slowModules=/\/tools\/paper-doll-96-v3\/(?:rig|layers|motion|surface|torso|appearance|weapons|wardrobe)\.js(?:\?.*)?$/;
+  let delayedModules=0;
+  await p.route(slowModules,async(r:any)=>{delayedModules++;await new Promise(resolve=>setTimeout(resolve,3000));await r.continue();});
+  const coldStarted=Date.now();await p.reload();
+  await p.waitForFunction(()=>document.querySelector('.online-boot-error')||(!document.body.classList.contains('online-session-loading')&&__mareDiagnostics().lobby96.visualState==='ready'),null,{timeout:90000});
+  assert.equal(await p.locator('.online-boot-error').count(),0,'progressing appearance must finish even after twenty seconds');
+  assert.equal(delayedModules,8);assert.ok(Date.now()-coldStarted>20000);
+  assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');
+  console.log(JSON.stringify({slowAppearancePassed:true,delayedModules,elapsedMs:Date.now()-coldStarted}));
+  await p.unroute(slowModules);
   const bootDiagnostics:string[]=[];
   p.on('console',(msg:any)=>{if(msg.text().startsWith('[online-game] bootstrap_failed'))bootDiagnostics.push(msg.text());});
   await p.route(/\/assets\/exported-maps\/(?:dawn|lobby)\/map\.png(?:\?.*)?$/,(r:any)=>r.abort());
