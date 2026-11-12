@@ -1,78 +1,87 @@
 'use strict';
 ((root)=>{
-  const font='bold 14px Georgia, serif';
-  const rims={
-    pirate:['#865044','#c76b53','#f0b177'],
-    marine:['#476d8b','#619ac1','#b1deed'],
-    revolutionary:['#52704c','#82a96d','#c0d59e'],
-    government:['#757a86','#aab1bf','#e7e9ed'],
-    neutral:['#65584a','#94816b','#cab89f']
-  };
+  const font='700 16px "Segoe UI", system-ui, sans-serif';
+  const life={fill:'#e24562',shine:'#ff9eab',shade:'#9f2944',rim:'#825461',icon:'#ff899c'};
+  const energy={fill:'#a16bea',shine:'#d4b6ff',shade:'#653ba5',rim:'#685682',icon:'#d4b6ff'};
+
   function measure(context,name){
     context.save();
     context.font=font;
-    const width=Math.ceil(context.measureText(name).width)+16;
+    const width=Math.ceil(context.measureText(name).width)+4;
     context.restore();
     return width;
   }
-  function bar(context,x,y,width,height,value,max,color){
-    context.fillStyle='#06171e';
-    context.fillRect(x,y,width,height);
-    const fill=max>0&&Number.isFinite(value)?Math.round(width*Math.max(0,Math.min(1,value/max))):0;
-    if(fill){
-      context.fillStyle=color;
-      context.fillRect(x,y,fill,height);
-    }
-  }
-  function draw(context,x,baseline,name,{faction,tier,resources}={}){
-    const width=measure(context,name),center=Math.round(x);
-    const left=Math.round(center-width/2),right=left+width;
-    const top=Math.round(baseline)-14,bottom=top+20,cut=4;
-    const ranked=Number.isInteger(tier)&&tier>=1&&tier<=8&&Object.hasOwn(rims,faction)&&faction!=='neutral';
-    const [low,mid,light]=rims[ranked?faction:'neutral'];
-    context.save();
+
+  function bar(context,x,y,height,value,max,colors){
+    const width=62;
+    const fraction=Number.isFinite(value)&&Number.isFinite(max)&&max>0?Math.max(0,Math.min(1,value/max)):0;
+    const fill=Math.round((width-2)*fraction);
+
     context.beginPath();
-    context.moveTo(left+cut,top);
-    context.lineTo(right-cut,top);
-    context.lineTo(right,top+cut);
-    context.lineTo(right,bottom-cut);
-    context.lineTo(right-cut,bottom);
-    context.lineTo(left+cut,bottom);
-    context.lineTo(left,bottom-cut);
-    context.lineTo(left,top+cut);
-    context.closePath();
-    context.fillStyle='rgba(9, 22, 29, .91)';
+    context.roundRect(x+.5,y+.5,width-1,height-1,2);
+    context.fillStyle='#111521';
     context.fill();
-    context.strokeStyle='#071117';
-    context.lineWidth=3;
-    context.stroke();
-    context.strokeStyle=ranked&&tier>=3?mid:low;
-    context.lineWidth=1;
-    context.stroke();
-    if(ranked&&tier>=3){
-      context.beginPath();
-      context.moveTo(left+2,top+cut);
-      context.lineTo(left+cut,top+1);
-      context.lineTo(left+(tier>=5?12:7),top+1);
-      context.moveTo(right-2,top+cut);
-      context.lineTo(right-cut,top+1);
-      context.lineTo(right-(tier>=5?12:7),top+1);
-      context.strokeStyle=light;
-      context.stroke();
+    if(fill){
+      context.save();
+      context.clip();
+      context.fillStyle=colors.fill;
+      context.fillRect(x+1,y+1,fill,height-2);
+      context.fillStyle=colors.shine;
+      context.fillRect(x+1,y+1,fill,1);
+      context.fillStyle=colors.shade;
+      context.fillRect(x+1,y+height-2,fill,1);
+      context.restore();
     }
+    context.lineWidth=1;
+    context.strokeStyle=colors.rim;
+    context.stroke();
+  }
+
+  function drawResources(context,x,y,{hp,maxHP,energy:currentEnergy,maxEnergy}){
+    const left=x-26,iconX=left-12;
+
+    context.beginPath();
+    context.moveTo(iconX+4,y+7);
+    context.bezierCurveTo(iconX+2,y+5,iconX,y+4,iconX,y+2);
+    context.bezierCurveTo(iconX,y,iconX+3,y-1,iconX+4,y+1);
+    context.bezierCurveTo(iconX+5,y-1,iconX+8,y,iconX+8,y+2);
+    context.bezierCurveTo(iconX+8,y+4,iconX+6,y+5,iconX+4,y+7);
+    context.closePath();
+    context.fillStyle=life.icon;
+    context.fill();
+    bar(context,left,y,7,hp,maxHP,life);
+
+    const boltY=y+9;
+    context.beginPath();
+    context.moveTo(iconX+4,boltY-1);
+    context.lineTo(iconX+1,boltY+3);
+    context.lineTo(iconX+4,boltY+3);
+    context.lineTo(iconX+3,boltY+7);
+    context.lineTo(iconX+7,boltY+2);
+    context.lineTo(iconX+4,boltY+2);
+    context.lineTo(iconX+5,boltY-1);
+    context.closePath();
+    context.fillStyle=energy.icon;
+    context.fill();
+    bar(context,left,boltY,5,currentEnergy,maxEnergy,energy);
+  }
+
+  function draw(context,x,baseline,name,resources){
+    const center=Math.round(x),y=Math.round(baseline);
+    context.save();
     context.font=font;
     context.textAlign='center';
     context.textBaseline='alphabetic';
-    context.fillStyle='#fff0d4';
-    context.fillText(name,center,top+14);
-    if(resources){
-      const x=center-30;
-      bar(context,x,bottom+4,60,5,resources.hp,resources.maxHP,'#e25069');
-      bar(context,x,bottom+11,60,3,resources.energy,resources.maxEnergy,'#9e71e5');
-    }
+    context.lineJoin='round';
+    context.lineWidth=3;
+    context.strokeStyle='#081219';
+    context.strokeText(name,center,y);
+    context.fillStyle='#fff8e9';
+    context.fillText(name,center,y);
+    if(resources)drawResources(context,center,y+5,resources);
     context.restore();
-    return {left,top,bottom};
   }
+
   const api={measure,draw};
   root.MareMapPlayerHud=api;
   if(typeof module!=='undefined')module.exports=api;
