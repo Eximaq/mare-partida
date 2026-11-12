@@ -40,8 +40,8 @@
           "otherLayerPNGs": 176
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "base/unarmed source ID, not an equipped weapon",
+      "gap": "Native base coverage is tracked independently from equipment families."
     },
     {
       "item": 1,
@@ -1019,8 +1019,8 @@
           "otherLayerPNGs": 32
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack all4directions; existing-source registration candidates",
+      "gap": "Custom skin compatibility requires separate hand-interface masks."
     },
     {
       "item": 112,
@@ -1192,8 +1192,8 @@
           "otherLayerPNGs": 12
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack all4directions;SOUTH/NORTH preserved references,EW rigid source512 on gunner640 is candidate not approved800composition",
-      "gap": "Baked SOUTH/NORTH head restricts saved identity;EW/carry grip and angles need review"
+      "nativeHD": "partial: original N/E/W and carry recovered; dressed SOUTH archival source blocked for original avatar",
+      "gap": "Original-compatible SOUTH replacement pending; do not count family complete."
     },
     {
       "item": 116,
@@ -1625,8 +1625,9 @@
   ],
   "completeOriginalIdentityFamilies": [
     109,
+    111,
     17,
-    122,
-    115
-  ]
+    122
+  ],
+  "catalogIdNote": "42 catalog IDs include ID0 (unarmed/base); this is not a count of42 equipped weapons."
 }

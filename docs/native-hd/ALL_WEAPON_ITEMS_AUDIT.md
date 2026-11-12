@@ -1,10 +1,12 @@
-# Cobertura real das42 armas
+# Cobertura real dos 42 IDs do catálogo de armas
 
-Famílias masculinas originaisHD completas:109,17,122,115. Aprovação de artes não equivale à aprovação das novas adaptações; calibragem e divergências estão declaradas. As demais38IDs ainda não têm famíliaHD modular ligada.
+O ID 0 representa base/sem arma, não uma arma equipada.
+
+Famílias masculinas de aparência original HD completas: 109, 111, 17, 122. Aprovação de artes não equivale à aprovação das novas adaptações; calibragem e divergências estão declaradas. Os demais IDs de equipamentos ainda precisam de integração completa; a base sem arma é contada separadamente.
 
 |Item|Ciclos catálogo|EstadoHD|
 |---|---:|---|
-|0|26|not wired to native HD renderer|
+|0|26|Base/sem arma, cobertura independente de equipamentos.|
 |1|25|not wired to native HD renderer|
 |2|25|not wired to native HD renderer|
 |3|25|not wired to native HD renderer|
@@ -28,11 +30,11 @@ Famílias masculinas originaisHD completas:109,17,122,115. Aprovação de artes 
 |74|20|not wired to native HD renderer|
 |109|25|complete male original idle/walk/attack; supported identity only|
 |110|25|not wired to native HD renderer|
-|111|25|not wired to native HD renderer|
+|111|25|Família masculina original completa; registros de calibragem candidatos.|
 |112|25|not wired to native HD renderer|
 |113|32|not wired to native HD renderer|
 |114|11|not wired to native HD renderer|
-|115|25|complete male original idle/walk/attack all4directions;SOUTH/NORTH preserved references,EW rigid source512 on gunner640 is candidate not approved800composition|
+|115|25|Parcial: SOUTH vestida preservada, mas bloqueada para a aparência original; correção em andamento.|
 |116|34|not wired to native HD renderer|
 |117|25|not wired to native HD renderer|
 |118|25|not wired to native HD renderer|
