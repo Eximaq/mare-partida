@@ -29,7 +29,7 @@
     background:url('assets/ui/forge-reference/crest.png') center/contain no-repeat;
     mix-blend-mode:lighten;
   }
-  & .dialog-header small {display:none}
+  & .dialog-header small {display:block;color:#d8b978;letter-spacing:.08em}
   & #dialogTitle {font-size:clamp(24px,2.8vw,38px);color:var(--forge-ivory)}
   & #closePanel {
     position:absolute;
