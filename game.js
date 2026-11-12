@@ -166,7 +166,7 @@
   // Combat rays ignore floor/water and low scenery; movement retains feet collisions.
   function combatLine(a,b){return navigator().projectileClear(a,b);}
   function resizeViewport(){
-    const rect=canvas.getBoundingClientRect(), zoom=game?camera.fitZoom(activeMap(),rect.width,rect.height,worldZoom.value,world.hero):worldZoom.value;
+    const rect=canvas.getBoundingClientRect(), zoom=game?camera.fitZoom(activeMap(),rect.width,rect.height,worldZoom.value,world.hero,MareHudTelemetry.maxZoom):worldZoom.value;
     W=Math.max(1,Math.round(rect.width/zoom));H=Math.max(1,Math.round(rect.height/zoom));
     canvas.width=W;canvas.height=H;ctx.imageSmoothingEnabled=false;
     camera.width=W;camera.height=H;viewportMapId=game?mapKey():null;

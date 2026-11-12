@@ -113,15 +113,15 @@
   }
   class Camera {
     constructor(){this.x=0;this.y=0;this.width=960;this.height=570;this.solves=0;this.masked=false;}
-    fitZoom(map,w,h,requested=1,anchor=map.spawn){
-      const b=coverageFor(map).bounds,min=Math.min(1.8,Math.max(requested,Math.ceil(Math.max(w/b.w,h/b.h)*100)/100));
+    fitZoom(map,w,h,requested=1,anchor=map.spawn,maxZoom=1.8){
+      const b=coverageFor(map).bounds,min=Math.min(maxZoom,Math.max(requested,Math.ceil(Math.max(w/b.w,h/b.h)*100)/100));
       if(!anchor)return min;
       // At map entry/resize/manual zoom, try a modest zoom-in before using a
       // finite edge finish for corridors that cannot fit the screen aspect ratio.
-      const probe=new Camera();for(let z=min;z<1.801;z=Math.min(1.8,Math.round((z+.1)*100)/100)){
+      const probe=new Camera();for(let z=min;z<maxZoom;z=Math.min(maxZoom,Math.round((z+.1)*100)/100)){
         probe.width=Math.max(1,Math.round(w/z));probe.height=Math.max(1,Math.round(h/z));probe.update(anchor,map,0,true);
-        if(!probe.masked||z>=1.8)return z;
-      }return 1.8;
+        if(!probe.masked)return z;
+      }return maxZoom;
     }
     update(focus,map,dt=0,snap=false,anchor=focus){
       const coverage=coverageFor(map),b=coverage.bounds,w=this.width,h=this.height;

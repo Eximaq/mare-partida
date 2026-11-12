@@ -3,10 +3,10 @@
    XP/h is a running average over the current hunt session, not a guarantee. */
 ((root)=>{
   const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
-  const minZoom=0.8,maxZoom=1.8,step=0.1;
+  const minZoom=0.9,maxZoom=1.25,stepsPerUnit=20;
   function normalizeZoom(value){
     const number=Number(value);
-    return Number.isFinite(number)?Math.round(clamp(number,minZoom,maxZoom)*10)/10:1;
+    return Number.isFinite(number)?Math.round(clamp(number,minZoom,maxZoom)*stepsPerUnit)/stepsPerUnit:1;
   }
   function createZoom(onChange){
     let value=1;
@@ -17,7 +17,7 @@
         if(target!==value){value=target;onChange?.(value);}
         return value;
       },
-      step(direction){return this.set(value+(direction>0?step:-step));},
+      step(direction){return this.set(value+(direction>0?1:-1)/stepsPerUnit);},
       reset(){return this.set(1);}
     };
   }
