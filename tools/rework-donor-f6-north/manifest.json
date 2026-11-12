@@ -1,0 +1,119 @@
+{
+  "id": "donor-f6-north",
+  "scope": "Exact closed outfit F6+147+152+155 north walk; no naked-base claim",
+  "gender": "female",
+  "direction": "north",
+  "action": "walk",
+  "logicalFrame": {
+    "width": 128,
+    "height": 128
+  },
+  "pivot": {
+    "x": 64,
+    "y": 112
+  },
+  "density": 4,
+  "clip": {
+    "frames": 40,
+    "fps": 40,
+    "loop": true
+  },
+  "timeline": [
+    "frames/00.png",
+    "frames/00.png",
+    "frames/00.png",
+    "frames/00.png",
+    "frames/00.png",
+    "frames/01.png",
+    "frames/01.png",
+    "frames/01.png",
+    "frames/02.png",
+    "frames/02.png",
+    "frames/03.png",
+    "frames/03.png",
+    "frames/03.png",
+    "frames/03.png",
+    "frames/03.png",
+    "frames/04.png",
+    "frames/04.png",
+    "frames/04.png",
+    "frames/05.png",
+    "frames/05.png",
+    "frames/06.png",
+    "frames/06.png",
+    "frames/06.png",
+    "frames/06.png",
+    "frames/06.png",
+    "frames/07.png",
+    "frames/07.png",
+    "frames/07.png",
+    "frames/08.png",
+    "frames/08.png",
+    "frames/09.png",
+    "frames/09.png",
+    "frames/09.png",
+    "frames/09.png",
+    "frames/09.png",
+    "frames/10.png",
+    "frames/10.png",
+    "frames/10.png",
+    "frames/11.png",
+    "frames/11.png"
+  ],
+  "files": [
+    {
+      "path": "frames/00.png",
+      "sha256": "2f05942a442b8e4d00398ba6441a2064c846ccd4fc5c690d50566976dc302d3e"
+    },
+    {
+      "path": "frames/01.png",
+      "sha256": "7a8b8ea818f700133cf177af6b7343557b6196ef28a906aaef6b6fd4328c4635"
+    },
+    {
+      "path": "frames/02.png",
+      "sha256": "ff021074be7b1fb7cf6236ccd886e126c27746c7d5a776fbe7e9b06e751835bb"
+    },
+    {
+      "path": "frames/03.png",
+      "sha256": "f9028178968e9f0e2c08d1b77ea807bd0a3969bb802649db66b275a1c696bfbb"
+    },
+    {
+      "path": "frames/04.png",
+      "sha256": "821782892ade4471af1bfdcf9ba667d0f677d03fc965893158d4e072a4fb3e9a"
+    },
+    {
+      "path": "frames/05.png",
+      "sha256": "eb513ea188d68e6cd623a0e6a9db9039221c395cbe7fa1bedba29bdec058a46e"
+    },
+    {
+      "path": "frames/06.png",
+      "sha256": "76e90b14bde234dd81ef4e07acfbc1d4a6114b715df8aac7b8dc607d4faa2578"
+    },
+    {
+      "path": "frames/07.png",
+      "sha256": "daaf245a74bbff4196e8855a4edb0b769926687fc7057f0be9a66148827f18c5"
+    },
+    {
+      "path": "frames/08.png",
+      "sha256": "5e6d457e96c0a5236235dac42d6de860a1837fa99f4fe74d3d1a7a7b215f27ea"
+    },
+    {
+      "path": "frames/09.png",
+      "sha256": "ffe993d9e490352bb46922b6b34078ec5c981e1aac04cf5156aead69c79e5fca"
+    },
+    {
+      "path": "frames/10.png",
+      "sha256": "44921c65cedc03d39e3ba184f0caf65572e8a5bbd31bce1122e4c371919777f6"
+    },
+    {
+      "path": "frames/11.png",
+      "sha256": "718b80c6c5f97aae7148c288ac5c85b3087634ff9749acc7fdfcc1a1d0dffff6"
+    }
+  ],
+  "sourceArchiveSha256": "d78de5feac98b70d1675ebb27a0ce91a77957e742182e2938e439fe4ebf03e23",
+  "sourceGitCommit": "2801902fa2dad8e83069815faeaa3f53f90bc1b6",
+  "sourceGitPath": "art-approved/clothing/female-historical-cycles/female_6_north_v24_source-pack.zip",
+  "render": "Original BancadaV7 ModularPilot compositor in native Skia Canvas (browser launch unavailable), 40frames, no scaling/pose changes",
+  "approvalScope": "Historical composition archived approved; internal historical candidate flags retained; not approval for cross-outfit use",
+  "productionEnabled": false
+}

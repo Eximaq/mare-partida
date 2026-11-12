@@ -1,0 +1,7 @@
+(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.HairPreview=api;})(globalThis,function(){
+'use strict';
+function prepare(entry,direction,images,a,makeCanvas){const pack=JSON.parse(JSON.stringify(entry.pack)),d=pack.directions[direction],ids=entry.hairLayers[direction].map(l=>l.id),out=new Map(images),center={x:entry.pivots[direction].x*4,y:entry.pivots[direction].y*4},s=a.scale/100;
+for(const l of d.layers.filter(l=>ids.includes(l.id))){const setting=a.layers[l.id]||{visible:true,depthOffset:0};l.depth+=setting.depthOffset;if(a.hideHair||!setting.visible)continue;if(!a.x&&!a.y&&a.scale===100)continue;
+const img=images.get(l.source),c=makeCanvas(img.width,img.height),ctx=c.getContext('2d');ctx.drawImage(img,0,0);const rgba=ctx.getImageData(0,0,c.width,c.height).data;for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++)if(rgba[(y*c.width+x)*4+3]){const nx=center.x+(x-center.x)*s+a.x*4,ny=center.y+(y-center.y)*s+a.y*4;if(nx<0||ny<0||nx+s>c.width||ny+s>c.height)throw Error('Ajuste cortaria cabelo na borda. Reduza escala/deslocamento.');}ctx.clearRect(0,0,c.width,c.height);ctx.imageSmoothingEnabled=false;ctx.translate(center.x+a.x*4,center.y+a.y*4);ctx.scale(s,s);ctx.translate(-center.x,-center.y);ctx.drawImage(img,0,0);l.source='preview:'+l.id;out.set(l.source,c);}
+d.layers=d.layers.filter(l=>!ids.includes(l.id)||(!a.hideHair&&(a.layers[l.id]?.visible!==false)));pack.productionReady=false;return {pack,images:out};}
+return {prepare};});

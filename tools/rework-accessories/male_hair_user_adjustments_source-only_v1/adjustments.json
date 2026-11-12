@@ -1,0 +1,648 @@
+{
+  "schema": "r1-male-hair-hd-fit-adjustments-v2",
+  "previewOnly": true,
+  "catalogVersion": "male-hair-studio-new-generated-hd-v3",
+  "catalogSHA256": "c4d845ad10f431231070cc1acffc4bfec0b0941b781f409975ed12bf0d2a6045",
+  "adjustments": [
+    {
+      "target": {
+        "snapshot": "1f11ce5286cfc0bfbc1f7a191e4ecf273b3ba80aa7012f482c718042f0e11551",
+        "packSHA256": "1f11ce5286cfc0bfbc1f7a191e4ecf273b3ba80aa7012f482c718042f0e11551",
+        "body": "male",
+        "style": "afro",
+        "direction": "south"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0,
+        "scale": 88,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "1f11ce5286cfc0bfbc1f7a191e4ecf273b3ba80aa7012f482c718042f0e11551",
+        "packSHA256": "1f11ce5286cfc0bfbc1f7a191e4ecf273b3ba80aa7012f482c718042f0e11551",
+        "body": "male",
+        "style": "afro",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0,
+        "scale": 84,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "1f11ce5286cfc0bfbc1f7a191e4ecf273b3ba80aa7012f482c718042f0e11551",
+        "packSHA256": "1f11ce5286cfc0bfbc1f7a191e4ecf273b3ba80aa7012f482c718042f0e11551",
+        "body": "male",
+        "style": "afro",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0,
+        "scale": 84,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "1f11ce5286cfc0bfbc1f7a191e4ecf273b3ba80aa7012f482c718042f0e11551",
+        "packSHA256": "1f11ce5286cfc0bfbc1f7a191e4ecf273b3ba80aa7012f482c718042f0e11551",
+        "body": "male",
+        "style": "afro",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0,
+        "scale": 84,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "342849c02d3679d02cc424f9f70a8c5bca937d0ac63308ccace4c4da11516c35",
+        "packSHA256": "342849c02d3679d02cc424f9f70a8c5bca937d0ac63308ccace4c4da11516c35",
+        "body": "male",
+        "style": "bob",
+        "direction": "south"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 1.5,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "1ba0cf4a79b41377459c145064cb0ad81a74ad270ebb5977a9961789a0001a9b",
+        "packSHA256": "1ba0cf4a79b41377459c145064cb0ad81a74ad270ebb5977a9961789a0001a9b",
+        "body": "male",
+        "style": "braided",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 1.5,
+        "y": 3.25,
+        "scale": 80,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "1ba0cf4a79b41377459c145064cb0ad81a74ad270ebb5977a9961789a0001a9b",
+        "packSHA256": "1ba0cf4a79b41377459c145064cb0ad81a74ad270ebb5977a9961789a0001a9b",
+        "body": "male",
+        "style": "braided",
+        "direction": "south"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0,
+        "scale": 86,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "1ba0cf4a79b41377459c145064cb0ad81a74ad270ebb5977a9961789a0001a9b",
+        "packSHA256": "1ba0cf4a79b41377459c145064cb0ad81a74ad270ebb5977a9961789a0001a9b",
+        "body": "male",
+        "style": "braided",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 3.5,
+        "scale": 87,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "1ba0cf4a79b41377459c145064cb0ad81a74ad270ebb5977a9961789a0001a9b",
+        "packSHA256": "1ba0cf4a79b41377459c145064cb0ad81a74ad270ebb5977a9961789a0001a9b",
+        "body": "male",
+        "style": "braided",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -1.25,
+        "y": 3.5,
+        "scale": 80,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de",
+        "packSHA256": "3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de",
+        "body": "male",
+        "style": "cropped",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 2.25,
+        "scale": 93,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de",
+        "packSHA256": "3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de",
+        "body": "male",
+        "style": "cropped",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0.75,
+        "scale": 93,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de",
+        "packSHA256": "3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de",
+        "body": "male",
+        "style": "cropped",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 0.75,
+        "y": 1.75,
+        "scale": 95,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "8d5c5d71730a2a569d7f4becdc91b7bd34b7e284f358c769de1757fdec9518fa",
+        "packSHA256": "8d5c5d71730a2a569d7f4becdc91b7bd34b7e284f358c769de1757fdec9518fa",
+        "body": "male",
+        "style": "curly",
+        "direction": "south"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0,
+        "scale": 91,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "8d5c5d71730a2a569d7f4becdc91b7bd34b7e284f358c769de1757fdec9518fa",
+        "packSHA256": "8d5c5d71730a2a569d7f4becdc91b7bd34b7e284f358c769de1757fdec9518fa",
+        "body": "male",
+        "style": "curly",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0,
+        "scale": 91,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "8d5c5d71730a2a569d7f4becdc91b7bd34b7e284f358c769de1757fdec9518fa",
+        "packSHA256": "8d5c5d71730a2a569d7f4becdc91b7bd34b7e284f358c769de1757fdec9518fa",
+        "body": "male",
+        "style": "curly",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 0.5,
+        "y": 1.25,
+        "scale": 90,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "8d5c5d71730a2a569d7f4becdc91b7bd34b7e284f358c769de1757fdec9518fa",
+        "packSHA256": "8d5c5d71730a2a569d7f4becdc91b7bd34b7e284f358c769de1757fdec9518fa",
+        "body": "male",
+        "style": "curly",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -0.5,
+        "y": 0.75,
+        "scale": 90,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "c8f6cdb58798cf9c8711eec816481e30ae0f245278edfdaa7cdc69d7b360c55c",
+        "packSHA256": "c8f6cdb58798cf9c8711eec816481e30ae0f245278edfdaa7cdc69d7b360c55c",
+        "body": "male",
+        "style": "long",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -0.25,
+        "y": 3,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "c8f6cdb58798cf9c8711eec816481e30ae0f245278edfdaa7cdc69d7b360c55c",
+        "packSHA256": "c8f6cdb58798cf9c8711eec816481e30ae0f245278edfdaa7cdc69d7b360c55c",
+        "body": "male",
+        "style": "long",
+        "direction": "south"
+      },
+      "adjustment": {
+        "x": -0.25,
+        "y": 2.25,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "c8f6cdb58798cf9c8711eec816481e30ae0f245278edfdaa7cdc69d7b360c55c",
+        "packSHA256": "c8f6cdb58798cf9c8711eec816481e30ae0f245278edfdaa7cdc69d7b360c55c",
+        "body": "male",
+        "style": "long",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": -0.25,
+        "y": 2.75,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "e11d41e9f7fc146df73cb05fe06d3266dcfc7038f871c504b9b2cc722b101dde",
+        "packSHA256": "e11d41e9f7fc146df73cb05fe06d3266dcfc7038f871c504b9b2cc722b101dde",
+        "body": "male",
+        "style": "ponytail",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 2.25,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "e11d41e9f7fc146df73cb05fe06d3266dcfc7038f871c504b9b2cc722b101dde",
+        "packSHA256": "e11d41e9f7fc146df73cb05fe06d3266dcfc7038f871c504b9b2cc722b101dde",
+        "body": "male",
+        "style": "ponytail",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 1,
+        "scale": 96,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "e11d41e9f7fc146df73cb05fe06d3266dcfc7038f871c504b9b2cc722b101dde",
+        "packSHA256": "e11d41e9f7fc146df73cb05fe06d3266dcfc7038f871c504b9b2cc722b101dde",
+        "body": "male",
+        "style": "ponytail",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 0.25,
+        "y": 2.75,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "cc07e5453d8e792677cd7141a8f1e4ce62da34d3da0383dd45272385e014528a",
+        "packSHA256": "cc07e5453d8e792677cd7141a8f1e4ce62da34d3da0383dd45272385e014528a",
+        "body": "male",
+        "style": "spiky",
+        "direction": "south"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": -1.25,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "cc07e5453d8e792677cd7141a8f1e4ce62da34d3da0383dd45272385e014528a",
+        "packSHA256": "cc07e5453d8e792677cd7141a8f1e4ce62da34d3da0383dd45272385e014528a",
+        "body": "male",
+        "style": "spiky",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0.25,
+        "scale": 90,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "cc07e5453d8e792677cd7141a8f1e4ce62da34d3da0383dd45272385e014528a",
+        "packSHA256": "cc07e5453d8e792677cd7141a8f1e4ce62da34d3da0383dd45272385e014528a",
+        "body": "male",
+        "style": "spiky",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 0.75,
+        "y": -0.75,
+        "scale": 94,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "cc07e5453d8e792677cd7141a8f1e4ce62da34d3da0383dd45272385e014528a",
+        "packSHA256": "cc07e5453d8e792677cd7141a8f1e4ce62da34d3da0383dd45272385e014528a",
+        "body": "male",
+        "style": "spiky",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -0.5,
+        "y": -0.75,
+        "scale": 94,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "b694fe43765d1975a98e58445b4553c2b88e89853e5c66c86d5fce8f1db0aabf",
+        "packSHA256": "b694fe43765d1975a98e58445b4553c2b88e89853e5c66c86d5fce8f1db0aabf",
+        "body": "male",
+        "style": "swept",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 1.25,
+        "scale": 90,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "b694fe43765d1975a98e58445b4553c2b88e89853e5c66c86d5fce8f1db0aabf",
+        "packSHA256": "b694fe43765d1975a98e58445b4553c2b88e89853e5c66c86d5fce8f1db0aabf",
+        "body": "male",
+        "style": "swept",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 1.25,
+        "y": 0,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "b694fe43765d1975a98e58445b4553c2b88e89853e5c66c86d5fce8f1db0aabf",
+        "packSHA256": "b694fe43765d1975a98e58445b4553c2b88e89853e5c66c86d5fce8f1db0aabf",
+        "body": "male",
+        "style": "swept",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -1.25,
+        "y": 0,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "9f963a1b5b151c2b5280fe1ba88bba7ddbcbeb3a80217a194f245001759b7670",
+        "packSHA256": "9f963a1b5b151c2b5280fe1ba88bba7ddbcbeb3a80217a194f245001759b7670",
+        "body": "male",
+        "style": "topknot",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -1,
+        "y": -1.25,
+        "scale": 91,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "9f963a1b5b151c2b5280fe1ba88bba7ddbcbeb3a80217a194f245001759b7670",
+        "packSHA256": "9f963a1b5b151c2b5280fe1ba88bba7ddbcbeb3a80217a194f245001759b7670",
+        "body": "male",
+        "style": "topknot",
+        "direction": "south"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": -1.5,
+        "scale": 92,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "9f963a1b5b151c2b5280fe1ba88bba7ddbcbeb3a80217a194f245001759b7670",
+        "packSHA256": "9f963a1b5b151c2b5280fe1ba88bba7ddbcbeb3a80217a194f245001759b7670",
+        "body": "male",
+        "style": "topknot",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0,
+        "scale": 89,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "9f963a1b5b151c2b5280fe1ba88bba7ddbcbeb3a80217a194f245001759b7670",
+        "packSHA256": "9f963a1b5b151c2b5280fe1ba88bba7ddbcbeb3a80217a194f245001759b7670",
+        "body": "male",
+        "style": "topknot",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 1,
+        "y": -1.25,
+        "scale": 90,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "34cc264b0fae6c9fe454fb34b51ab5e7f6fadd6b1a85be68ef8ec767e0d7c256",
+        "packSHA256": "34cc264b0fae6c9fe454fb34b51ab5e7f6fadd6b1a85be68ef8ec767e0d7c256",
+        "body": "male",
+        "style": "undercut",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0.25,
+        "y": 1.25,
+        "scale": 90,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "34cc264b0fae6c9fe454fb34b51ab5e7f6fadd6b1a85be68ef8ec767e0d7c256",
+        "packSHA256": "34cc264b0fae6c9fe454fb34b51ab5e7f6fadd6b1a85be68ef8ec767e0d7c256",
+        "body": "male",
+        "style": "undercut",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": 1.75,
+        "y": 1,
+        "scale": 90,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "34cc264b0fae6c9fe454fb34b51ab5e7f6fadd6b1a85be68ef8ec767e0d7c256",
+        "packSHA256": "34cc264b0fae6c9fe454fb34b51ab5e7f6fadd6b1a85be68ef8ec767e0d7c256",
+        "body": "male",
+        "style": "undercut",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": -2,
+        "y": 1.25,
+        "scale": 90,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "a868f8eb968880481f02f44ac1aea332de44d6aaf8c2d99d614c411bac639030",
+        "packSHA256": "a868f8eb968880481f02f44ac1aea332de44d6aaf8c2d99d614c411bac639030",
+        "body": "male",
+        "style": "wavy",
+        "direction": "south"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 1.5,
+        "scale": 100,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "a868f8eb968880481f02f44ac1aea332de44d6aaf8c2d99d614c411bac639030",
+        "packSHA256": "a868f8eb968880481f02f44ac1aea332de44d6aaf8c2d99d614c411bac639030",
+        "body": "male",
+        "style": "wavy",
+        "direction": "north"
+      },
+      "adjustment": {
+        "x": 0,
+        "y": 0,
+        "scale": 90,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "a868f8eb968880481f02f44ac1aea332de44d6aaf8c2d99d614c411bac639030",
+        "packSHA256": "a868f8eb968880481f02f44ac1aea332de44d6aaf8c2d99d614c411bac639030",
+        "body": "male",
+        "style": "wavy",
+        "direction": "east"
+      },
+      "adjustment": {
+        "x": -1.75,
+        "y": 2,
+        "scale": 92,
+        "hideHair": false,
+        "layers": {}
+      }
+    },
+    {
+      "target": {
+        "snapshot": "a868f8eb968880481f02f44ac1aea332de44d6aaf8c2d99d614c411bac639030",
+        "packSHA256": "a868f8eb968880481f02f44ac1aea332de44d6aaf8c2d99d614c411bac639030",
+        "body": "male",
+        "style": "wavy",
+        "direction": "west"
+      },
+      "adjustment": {
+        "x": 1.25,
+        "y": 1.75,
+        "scale": 92,
+        "hideHair": false,
+        "layers": {}
+      }
+    }
+  ]
+}
