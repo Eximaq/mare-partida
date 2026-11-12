@@ -1,0 +1,37 @@
+{
+  "original": "Arma5_NORTH_MF_Editavel.zip",
+  "bytes": 4171028,
+  "sha256": "a4e5857b9ded879ad01a08d3c6546f0959921cd1d27fc8d813ca9ad04c5a03bc",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "96967e140984f340898ee8e53eacdd79e7a466eb067d9c02bfc12ae5b0a721f0"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "a801f5c856b50df9c05d1e26d325bff06c4f6d65d3bc0f0c26d77116e73b9e61"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 750000,
+      "sha256": "a67565b49170f62b7362d2c7f735008b412aab89dbf77d0de3492c0de0228d47"
+    },
+    {
+      "path": "archive.part003",
+      "bytes": 750000,
+      "sha256": "dbf5d8edaf5f452f95f0dc757f85fd36bbed3fd19e339b3f0503a33f8819d690"
+    },
+    {
+      "path": "archive.part004",
+      "bytes": 750000,
+      "sha256": "6e46f0c945183acb5fb537be853331bf1710c0b567873eef917e34c093563985"
+    },
+    {
+      "path": "archive.part005",
+      "bytes": 421028,
+      "sha256": "fc0f9450708a9012e1feb9fa33e16c3a4e57ec728d4f653e4614aaf7be0f9360"
+    }
+  ]
+}

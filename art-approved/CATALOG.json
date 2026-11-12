@@ -1464,6 +1464,20 @@
       }
     },
     {
+      "path": "weapons/mixed5-north-three-keys/Arma5_NORTH_MF_Editavel.zip",
+      "bytes": 4171028,
+      "sha256": "a4e5857b9ded879ad01a08d3c6546f0959921cd1d27fc8d813ca9ad04c5a03bc",
+      "pngEntries": 60,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/mixed5-north-three-keys/parts/MANIFEST.json",
+        "reconstruct": "weapons/mixed5-north-three-keys/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/relicario32-reapproved/weapon32_north_visual-v2_reapproved.zip",
       "bytes": 4162759,
       "sha256": "241bd9d298a06e5498fe6e74d8a085c0c9ee7b75ad82ce97a177cfce662ad852",

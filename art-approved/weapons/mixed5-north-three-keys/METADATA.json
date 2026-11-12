@@ -1,0 +1,44 @@
+{
+  "path": "weapons/mixed5-north-three-keys/Arma5_NORTH_MF_Editavel.zip",
+  "bytes": 4171028,
+  "sha256": "a4e5857b9ded879ad01a08d3c6546f0959921cd1d27fc8d813ca9ad04c5a03bc",
+  "pngEntries": 60,
+  "productionEnabled": false,
+  "approval": "Owner approved the exact presented NORTH three-key sequence and timing.",
+  "weapons": [
+    5
+  ],
+  "gender": "male/female",
+  "directions": [
+    "NORTH"
+  ],
+  "distinctKeyFrames": 6,
+  "timing": {
+    "sequence": [
+      0,
+      1,
+      2,
+      1,
+      0
+    ],
+    "ticks": [
+      15,
+      8,
+      3,
+      5,
+      17
+    ],
+    "fps": 24
+  },
+  "scope": "5M/F existing equipment simulation under torso; exact approved three-key bases and timing; hidden anatomical grip not certified",
+  "excluded": "Rejected historical uniform19 eight-state cycles; no game integration/test",
+  "archiveNote": "Original presented ZIP preserved exactly; internal candidate labels predate approval. Historical uniform19 eight-state videos remain rejected.",
+  "runtimeIntegrated": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/mixed5-north-three-keys/parts/MANIFEST.json",
+    "reconstruct": "weapons/mixed5-north-three-keys/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  }
+}
