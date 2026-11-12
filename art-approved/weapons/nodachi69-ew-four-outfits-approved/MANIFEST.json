@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 2,
+  "totalBytes": 25701323,
+  "scope": "Nodachi69 EAST/WEST four outfits male and female, exact presented versions.",
+  "packages": [
+    {
+      "key": "69_EW_M_4TRAJES",
+      "filename": "Nodachi69_M_QuatroTrajes_EW_Editavel.zip",
+      "bytes": 13723155,
+      "sha256": "93f1149c1a4532fb66418981445bded470fcf98ace517c3f569ac085ed568d76",
+      "pngEntries": 166,
+      "entries": 172,
+      "parts": [
+        {
+          "path": "Nodachi69_M_QuatroTrajes_EW_Editavel.zip.part001",
+          "bytes": 7864320,
+          "sha256": "81069b00c5ec9fa6a69da844846bc4eaa66e32fbe897b954533dc6c0bd02775c",
+          "git_blob_sha": "654b001dc1322085d2361c12077d7ad74073efd2"
+        },
+        {
+          "path": "Nodachi69_M_QuatroTrajes_EW_Editavel.zip.part002",
+          "bytes": 5858835,
+          "sha256": "6be203f2bb1818af77967de690be172031f7d833c42245dc283f5c29c64323ee",
+          "git_blob_sha": "e01fdbbf97c5ded375691e1f6aae532427f25fb0"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "69_EW_F_4TRAJES",
+      "filename": "Nodachi69_F_QuatroTrajes_EW_Editavel.zip",
+      "bytes": 11978168,
+      "sha256": "17378d4a11b7d1e3004e77fb9f95c380a3ffe4d4ff347c04ce3d8904fc9a39a2",
+      "pngEntries": 162,
+      "entries": 169,
+      "parts": [
+        {
+          "path": "Nodachi69_F_QuatroTrajes_EW_Editavel.zip.part001",
+          "bytes": 7864320,
+          "sha256": "3736de5359173563fe5a3d45885b492dab2717fb6be69c9db98eb9d0f43b54da",
+          "git_blob_sha": "521562ba2cb0428be357a8e73dc0533bde6fa3ce"
+        },
+        {
+          "path": "Nodachi69_F_QuatroTrajes_EW_Editavel.zip.part002",
+          "bytes": 4113848,
+          "sha256": "a6b3bed7c469a7739b45bb4709932770f7ae218df008d14760bedcfe38e06517",
+          "git_blob_sha": "11384d97472f4d539e1be55cddf692148e0babd0"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

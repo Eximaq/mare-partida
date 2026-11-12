@@ -52,3 +52,8 @@ A composição apresentada sobre o ciclo da arma 67 está em `weapons/sabre1-nod
 ## Nodachi de Fogo 69: laterais masculinas de base aprovadas
 
 O backup v2 das laterais EAST/WEST está em `weapons/nodachi69-ew-male-base-v2-approved/`. Aprovação restrita ao modelo masculino de base apresentado, sem extensão ao feminino ou trajes não mostrados. Backup exato verificado; sem integração ou teste no jogo.
+
+
+## Nodachi de Fogo 69: quatro trajes M/F nas laterais
+
+A aprovação posterior dos quatro trajes masculinos e femininos de EAST/WEST está em `weapons/nodachi69-ew-four-outfits-approved/`. Backups exatos, reconstrução, CRC e SHA-256 verificados. Sem integração ou teste no jogo.
