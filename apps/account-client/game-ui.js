@@ -110,11 +110,30 @@
       }
       const previous=sample(now),snap=!previous||snapshot.mapId!==next.mapId||reset;
       const origin=snap?next.position:previous;
-      const bridge=distance(origin,next.position)<1e-8?[]:route(origin,next.position);
-      const connected=distance(origin,next.position)<1e-8||(bridge.length&&distance(bridge.at(-1),next.position)<1e-6);
-      const points=connected?[...bridge,...next.path].map(p=>({x:p.x,y:p.y})):[];
+      const connect=point=>{
+        if(distance(origin,point)<1e-8)return [];
+        const points=route(origin,point);
+        return points.length&&distance(points.at(-1),point)<1e-6?points:null;
+      };
+      let join=next.position,bridge=null;
+      const first=next.path[0];
+      if(!snap&&first){
+        const dx=first.x-join.x,dy=first.y-join.y;
+        const along=((origin.x-join.x)*dx+(origin.y-join.y)*dy)/(dx*dx+dy*dy);
+        // Join the confirmed segment ahead instead of continuing in the old direction.
+        if(along>0&&along<=1){
+          const point={x:join.x+dx*along,y:join.y+dy*along};
+          const shortcut=connect(point);
+          if(shortcut&&length(origin,shortcut)<=distance(origin,join)){
+            join=point;
+            bridge=shortcut;
+          }
+        }
+      }
+      bridge??=connect(join);
+      const points=bridge?[...bridge,...next.path].map(p=>({x:p.x,y:p.y})):[];
       state={x:origin.x,y:origin.y,direction:next.direction,moving:false,last:now,points,travel:0,
-        bridge:connected?length(origin,bridge):0,pathLength:connected?length(next.position,next.path):0,
+        bridge:bridge?length(origin,bridge):0,pathLength:bridge?length(join,next.path):0,
         buffered:buffered&&!next.path.length,duration:combatBlendDuration(gap,quickHunt)};
       snapshot=next;received=now;return snap;
     }};

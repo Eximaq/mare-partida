@@ -14,6 +14,7 @@ function fixture(options:any={}) {
   const snapshot = () => ({
     ...(options.frameSupport?{sync:{protocol:options.frameProtocol??1}}:{}),
     ...(options.world ? { world: options.world } : {}),
+    ...(options.battle ? { battle: options.battle } : {}),
     state: { characterId: id, version, level: 1, experience: "20", gold: "8" },
     progression: { xpIntoLevel: "20", xpForNextLevel: "80" },
     journey: { started: true },
@@ -55,10 +56,15 @@ function fixture(options:any={}) {
       if (path === "/v1/auth/csrf")
         return Response.json({ csrfToken: "fixture" });
       if (path.endsWith("/online-state")) {
+        const requested = snapshot();
         if (version > 0 && options.waitForSnapshot) await options.waitForSnapshot();
-        return stateStatus===200?Response.json(snapshot()):Response.json({error:"unavailable"},{status:stateStatus});
+        return stateStatus===200?Response.json(requested):Response.json({error:"unavailable"},{status:stateStatus});
       }
-      if(path.endsWith('/frame'))return Response.json({protocol:1,characterId:id,version,serverNow:new Date().toISOString(),simulationAgeMs:40,world:null,battle:null,lobby:{players:[]},party:{group:null,invites:[]},...(options.framePatch||{})});
+      if(path.endsWith('/frame')){
+        const frame = {protocol:1,characterId:id,version,serverNow:new Date().toISOString(),simulationAgeMs:40,world:null,battle:null,lobby:{players:[]},party:{group:null,invites:[]},...(options.framePatch||{})};
+        if(options.waitForFrame)await options.waitForFrame();
+        return Response.json(frame);
+      }
       if(path.endsWith('/control/renew'))return renewalStatus===200?Response.json({epoch:1}):Response.json({error:renewalStatus===409?'control_conflict':'unavailable'},{status:renewalStatus});
       if (path.endsWith("/control"))
         return acquisitionStatus===200?Response.json({ epoch: 1, token: "x".repeat(43) }):Response.json({error:'control_conflict'},{status:409});
@@ -70,7 +76,7 @@ function fixture(options:any={}) {
           requestId: intent.requestId,
           action: intent.action,
           state: snapshot().state,
-          world: options.commandWorld,
+          world: typeof options.commandWorld==='function'?options.commandWorld(intent):options.commandWorld,
         } : {});
       }
       if (path === "/v1/auth/logout")
@@ -116,7 +122,7 @@ test('commands reuse identity and short-lived memory CSRF instead of serial redu
  assert.equal(f.storage.size,0);
 });
 
-test('the accepted movement is visible while the full snapshot is still loading', async () => {
+test('confirmed movement and stop use the receipt version without fetching full state', async () => {
   const world = {
     mapId: 'lobby', rulesHash: 'fixture-world', area: null,
     position: { x: 0, y: 0 }, path: [], speed: 100, direction: 'right',
@@ -126,28 +132,87 @@ test('the accepted movement is visible while the full snapshot is still loading'
     ...world, path: [{ x: 100, y: 0 }],
     serverNow: '2026-11-11T12:00:00.100Z', motionUntil: '2026-11-11T12:00:01.100Z',
   };
-  let signalReconciliation!: () => void;
-  let releaseSnapshot!: () => void;
-  const reconciling = new Promise<void>((resolve) => { signalReconciliation = resolve; });
-  const release = new Promise<void>((resolve) => { releaseSnapshot = resolve; });
+  const stopped = { ...accepted, path: [], serverNow: '2026-11-11T12:00:00.150Z' };
   const f = fixture({
-    world, commandWorld: accepted,
-    waitForSnapshot: () => { signalReconciliation(); return release; },
+    world, battle: { auto: true, hp: 50 },
+    commandWorld: (intent: any) => intent.action === 'world.move' ? accepted : stopped,
   });
   await f.client.load();
   await f.client.acquire();
-  const moving = f.client.command('world.move', { x: 100, y: 0 });
+  await f.client.command('world.move', { x: 100, y: 0 });
+  assert.equal(f.requests.filter(r => r.path.endsWith('/online-state')).length, 1);
+  assert.deepEqual(f.client.data.online.world, accepted);
+  assert.deepEqual(f.client.data.online.battle, { auto: false, hp: 50 });
+  assert.equal(f.client.data.online.state.version, 0);
+  await f.client.command('world.stop', {});
+  assert.deepEqual(f.client.data.online.world, stopped);
+  assert.deepEqual(f.requests.filter(r => r.path.endsWith('/commands')).map(r => JSON.parse(r.body).expectedVersion), [0, 1]);
+  assert.equal(f.requests.filter(r => r.path.endsWith('/online-state')).length, 1);
+  assert.equal(f.storage.size, 0);
+});
+
+test('a snapshot taken before an accepted movement cannot rewind the route or its version', async () => {
+  const world = {
+    mapId: 'lobby', rulesHash: 'fixture-world', position: { x: 0, y: 0 }, path: [],
+    serverNow: '2026-11-11T12:00:00.000Z',
+  };
+  const accepted = { ...world, path: [{ x: 100, y: 0 }], serverNow: '2026-11-11T12:00:00.100Z' };
+  let signalRead!: () => void;
+  let releaseRead!: () => void;
+  const started = new Promise<void>((resolve) => { signalRead = resolve; });
+  const release = new Promise<void>((resolve) => { releaseRead = resolve; });
+  let hold = false;
+  const f = fixture({
+    world, commandWorld: accepted,
+    waitForSnapshot: () => { if (hold) { signalRead(); return release; } },
+  });
+  await f.client.load();
+  await f.client.acquire();
+  await f.client.command('world.move', { x: 100, y: 0 });
+  hold = true;
+  const stale = f.client.read(true);
+  await started;
+  hold = false;
   try {
-    await reconciling;
-    assert.deepEqual(f.client.data.online.world, accepted);
-    assert.equal(f.client.data.online.state.version, 0);
-    await assert.rejects(f.client.command('world.stop', {}), { code: 'pending_command' });
+    await f.client.command('world.move', { x: 100, y: 0 });
   } finally {
-    releaseSnapshot();
-    await moving;
+    releaseRead();
+    await stale;
   }
-  assert.equal(f.client.data.online.state.version, 1);
-  assert.deepEqual(f.client.data.online.world, world);
+  assert.deepEqual(f.client.data.online.world, accepted);
+  assert.equal(f.client.data.online.state.version, 1,'keep the full snapshot while preserving the newer path');
+  await f.client.read(true);
+  assert.equal(f.client.data.online.state.version, 2);
+});
+
+test('a frame returning during movement still refreshes nearby players', async () => {
+  const world = {
+    mapId: 'lobby', rulesHash: 'fixture-world', position: { x: 0, y: 0 }, path: [],
+    serverNow: '2026-11-11T12:00:00.000Z',
+  };
+  const accepted = { ...world, path: [{ x: 100, y: 0 }], serverNow: '2026-11-11T12:00:00.100Z' };
+  let signalRead!: () => void;
+  let releaseRead!: () => void;
+  const started = new Promise<void>((resolve) => { signalRead = resolve; });
+  const release = new Promise<void>((resolve) => { releaseRead = resolve; });
+  const lobby = { players: [{ name: 'Navegante' }] };
+  const f = fixture({
+    world, commandWorld: accepted, frameSupport: true,
+    framePatch: { world, lobby },
+    waitForFrame: () => { signalRead(); return release; },
+  });
+  await f.client.load();
+  await f.client.acquire();
+  const frame = f.client.readFrame();
+  await started;
+  try {
+    await f.client.command('world.move', { x: 100, y: 0 });
+  } finally {
+    releaseRead();
+    await frame;
+  }
+  assert.deepEqual(f.client.data.online.lobby, lobby);
+  assert.deepEqual(f.client.data.online.world, accepted);
 });
 
 test('a second intent during reconciliation cannot leave an unsent command for replay',async()=>{

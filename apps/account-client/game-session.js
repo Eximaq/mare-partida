@@ -209,6 +209,7 @@
       available = false,
       renewing = null,
       readVersion = 0;
+    let confirmedMovementVersion = -1;
     let networkSample=null;
     let csrfCache=null,csrfFlight=null,csrfGeneration=0;
     const clearCsrf=()=>{csrfGeneration++;csrfCache=null;csrfFlight=null;};
@@ -254,6 +255,7 @@
           available = false;
           data = null;
           control = null;
+          confirmedMovementVersion = -1;
           readVersion++;
           discard();
           notify();
@@ -284,6 +286,13 @@
       )
         throw fault("invalid_server_state");
     }
+    const stopAuto = (battle) => battle?.auto ? { ...battle, auto: false } : battle;
+    function preserveConfirmedMovement(online) {
+      if (!online || online.state.version >= confirmedMovementVersion) return online;
+      const current = data.online;
+      const battle = online.world?.mapId === current.world.mapId ? stopAuto(online.battle) : current.battle;
+      return { ...online, world: current.world, battle };
+    }
     async function read(snapshotOnly=false,{signal}={}) {
       const revision = ++readVersion;
       let me, online;
@@ -311,8 +320,9 @@
         clearCsrf();
         control = null;
         pending = null;
+        confirmedMovementVersion = -1;
       }
-      data = { character: me.character ?? null, online };
+      data = { character: me.character ?? null, online: preserveConfirmedMovement(online) };
       available = true;
       if (!pending && me.character) {
         try {
@@ -345,7 +355,7 @@
           const knownVersion=original.online.state.version;
           const headers=protocol===2?{'x-mare-state-version':String(knownVersion)}:{};
           const f=await api(`/v1/characters/${original.character.id}/frame`,undefined,headers,signal),completed=monotonic();
-          if(revision!==readVersion||data!==original)return;
+          if(revision!==readVersion)return;
           if(f.protocol!==protocol||f.characterId!==original.character.id||!Number.isSafeInteger(f.version)||f.version<0||!Number.isFinite(Date.parse(f.serverNow)))throw fault('invalid_server_state');
           const daily=original.online.contracts?.daily;
           const dailyExpired=daily&&Date.parse(f.serverNow)>=daily.endsAt;
@@ -363,7 +373,7 @@
             online={...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party,weeklyBoss:f.weeklyBoss??null};
           }
           networkSample={rttMs:Math.max(0,completed-started),at:completed,intervalMs:networkSample?Math.max(0,completed-networkSample.at):null};
-          data={character:original.character,online};
+          data={character:original.character,online:preserveConfirmedMovement(online)};
           available=true;notify();return data;
         }catch(error){if(revision===readVersion){available=false;notify();}throw error;}
       })().finally(()=>{if(frameFlight===flight)frameFlight=null;});
@@ -398,21 +408,23 @@
           control: { epoch: control.epoch, token: control.token },
         });
         discard();
-        const reconciliation = read(intent.action!=='profile.identity');
         const online = data?.online;
         const world = receipt.world;
-        // Render the confirmed path while the full snapshot reconciles state and inventory.
+        // Movement has a complete path receipt. Keep the snapshot version for
+        // frame polling so any changes outside the path still come from a full state.
         if ((intent.action === 'world.move' || intent.action === 'world.stop') &&
             control === sentControl && receipt.requestId === intent.requestId &&
             receipt.action === intent.action && data?.character?.id === intent.characterId &&
             receipt.state?.characterId === intent.characterId && online?.world && world &&
+            receipt.state.version === intent.expectedVersion + 1 &&
             receipt.state.version >= online.state.version && world.mapId === online.world.mapId &&
             world.rulesHash === online.world.rulesHash &&
             Date.parse(world.serverNow) >= Date.parse(online.world.serverNow)) {
-          data = { ...data, online: { ...online, world } };
-          notify();
+          confirmedMovementVersion = receipt.state.version;
+          data = { ...data, online: { ...online, world, battle: stopAuto(online.battle) } };
+          return receipt;
         }
-        await reconciliation;
+        await read(intent.action!=='profile.identity');
         return receipt;
       } catch (error) {
         if (error.status && error.status < 500) discard();
@@ -462,7 +474,7 @@
         const intent = {
           characterId: data.character.id,
           requestId: uuid(),
-          expectedVersion: data.online.state.version,
+          expectedVersion: Math.max(data.online.state.version, confirmedMovementVersion),
           action,
           payload: JSON.parse(JSON.stringify(payload)),
         };
@@ -500,6 +512,7 @@
         readVersion++;
         control = null;
         data = null;
+        confirmedMovementVersion = -1;
         networkSample = null;
         discard();
         notify();

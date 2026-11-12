@@ -80,3 +80,27 @@ test('combat interpolation still advances across the observed 865ms gap',()=>{
   }
  }
 });
+
+test('a confirmed reversal continues from the visual position already on the new path',()=>{
+ const p=createWorldPresentation({walk:true});
+ p.update(world(),0);
+ for(let t=100;t<400;t+=100)p.sample(t);
+ assert.equal(p.sample(400).x,40);
+ p.update(world(65,{path:[{x:0,y:100}],direction:'left'}),400);
+ assert.equal(p.sample(400).x,40,'the reversal does not teleport');
+ assert.equal(p.sample(500).x,30,'follow the new direction without first walking toward the old one');
+ assert.equal(p.sample(500).direction,'left');
+});
+
+test('a nearby reversal joins the first segment through the collision map',()=>{
+ const route=(_from:any,to:any)=>[{x:to.x,y:to.y}];
+ const p=createWorldPresentation({walk:true,route});
+ p.update(world(),0);for(let t=100;t<=400;t+=100)p.sample(t);
+ p.update(world(65,{position:{x:65,y:102},path:[{x:0,y:102}],direction:'left'}),400);
+ assert.deepEqual(p.sample(500),{x:32,y:102,direction:'left',moving:true});
+
+ const blocked=createWorldPresentation({walk:true,route:(from:any,to:any)=>to.x<60?[]:route(from,to)});
+ blocked.update(world(),0);for(let t=100;t<=400;t+=100)blocked.sample(t);
+ blocked.update(world(65,{position:{x:65,y:102},path:[{x:0,y:102}],direction:'left'}),400);
+ assert.ok(blocked.sample(500).x>40,'fall back to the route through the confirmed origin if the join is blocked');
+});
