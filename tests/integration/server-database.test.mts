@@ -116,11 +116,13 @@ test('readiness and the real connection pool recover after a network interruptio
     const runtime = createPool(proxiedUrl.toString());
     try {
       assert.equal(await isDatabaseReady(runtime), true);
+      assert.equal((await runtime.query('SHOW jit')).rows[0].jit, 'off');
       available = false;
       for (const socket of sockets) socket.destroy();
       assert.equal(await isDatabaseReady(runtime), false);
       available = true;
       assert.equal(await isDatabaseReady(runtime), true);
+      assert.equal((await runtime.query('SHOW jit')).rows[0].jit, 'off');
     } finally {
       await runtime.end();
       for (const socket of sockets) socket.destroy();
