@@ -19,10 +19,10 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if([109,17,122].includes(r.item)&&[appearance.hair,appearance.hairStyle].some(v=>v&&v!=='original'))return null;
   return r.item===109?{...r,colorAppearance:appearance}:r;
  }
- function requiredFiles(r){if(!r)return [];const files=new Set();for(const s of r.states)for(const l of s.layers){files.add(resource(l.url));if(l.mask)files.add(resource(l.mask.url));}if(r.basePack)for(const p of Object.values(r.basePack.images))files.add(resource(p));return [...files];}
+ function requiredFiles(r){if(!r)return [];const files=new Set();for(const s of r.states)for(const l of [...s.layers,...(s.attachment?[s.attachment]:[])]){files.add(resource(l.url));if(l.mask)files.add(resource(l.mask.url));}if(r.basePack)for(const p of Object.values(r.basePack.images))files.add(resource(p));return [...files];}
  function render(ctx,r,images,{frame=0,state,hiddenSlots=[],appearance=r?.colorAppearance||{}}={}){
   if(!r)throw Error('Missing native weapon source');let s=state===undefined?r.states[frame]:r.states.find(s=>s.state===String(state));if(!s)throw Error('Unapproved native weapon state');
-  if(r.item===115&&hiddenSlots.length)throw Error('115 backing has baked head/hair; hiding slots is unsupported');
+  if(r.item===115&&!r.hairSeparated&&hiddenSlots.length)throw Error('115 backing has baked head/hair; hiding slots is unsupported');
   if(hiddenSlots.some(x=>!['hair','face','headBase'].includes(x)))throw Error('Only independent head slots may be hidden');
   const recolored=r.item===109&&['skin','skinColor','hairColor','eyeColor'].some(k=>appearance[k]&&appearance[k]!=='original');
   const [w,h]=r.nativeCanvas;ctx.canvas.width=w;ctx.canvas.height=h;ctx.clearRect(0,0,w,h);ctx.imageSmoothingEnabled=false;
@@ -30,6 +30,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(r.basePack){const p=r.basePack.pack,d=p.directions[r.direction],map=new Map();for(const [key,url] of Object.entries(r.basePack.images)){const im=images.get(resource(url))||images.get(url);if(!im)throw Error('Missing base asset '+url);map.set(key,im);}
    const pack={...p,directions:{[r.direction]:{...d,layers:d.layers.filter(l=>!hiddenSlots.includes(l.slot))}}};
    if(recolored){if(!root.MareReworkBaseHD)throw Error('Native palette renderer unavailable');const base=root.MareReworkBaseHD.create({schema:'rework-full-hd-v1',records:[]},{vendor,prefix:''});base.render(ctx,{id:r.id,pack,direction:r.direction,sourceRefs:[...map.keys()]},map,{frame:Number(s.state),appearance,makeCanvas});}
+   else if(s.attachment){const dir=pack.directions[r.direction],at=s.attachment,ops=dir.layers.map(layer=>({depth:layer.depth,layer}));ops.push({depth:at.depth,attachment:at});for(const op of ops.sort((a,b)=>a.depth-b.depth)){if(op.layer){const one={...pack,directions:{[r.direction]:{...dir,layers:[op.layer]}}};vendor.compositor.render(ctx,one,map,{direction:r.direction,frame:Number(s.state),density:4,clear:false});}else{ctx.save();ctx.transform(...at.matrix);if(at.mirrorX){ctx.translate(at.size[0],0);ctx.scale(-1,1);}ctx.drawImage(image(at),0,0);ctx.restore();}}}
    else vendor.compositor.render(ctx,pack,map,{direction:r.direction,frame:Number(s.state),density:4});
   }
   for(const l of [...s.layers].sort((a,b)=>a.depth-b.depth)){

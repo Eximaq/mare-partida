@@ -20,7 +20,7 @@ test('normal provider outputs original physical raster 1:1 and physical pivot',a
 });
 test('does not substitute unknown cosmetic identities or hide equipped objects',async()=>{
  const api=make();await api.ready;const o={action:'idle',direction:'south'};
- for(const player of [{appearance96:{hair:'hair-not-a-real-style'}},{appearance96:{hair:'hair-cropped',eyeColor:'green'}},{appearance96:{hair:'hair-cropped'},equipment:{weapon:{def:115}}},{appearance96:{hair:'hair-cropped'},equipment:{coat:{def:151}}},{appearance96:{hair:'hair-cropped'},zoanTransformed:true}])assert.equal(api.select(player,o),null);
+ for(const player of [{appearance96:{hair:'hair-not-a-real-style'}},{appearance96:{hair:'hair-cropped',eyeColor:'green'}},{appearance96:{hair:'hair-cropped'},equipment:{weapon:{def:999}}},{appearance96:{hair:'hair-cropped'},equipment:{coat:{def:151}}},{appearance96:{hair:'hair-cropped'},zoanTransformed:true}])assert.equal(api.select(player,o),null);
 });
 test('all supported calls render from runtime instead of legacy head-only bridge',async()=>{
  const api=make(),index=JSON.parse(fs.readFileSync(path.join(__dirname,'tools/rework-base-hd/index.json')));let count=0;
@@ -40,7 +40,7 @@ test('small portrait allocates a scrollable native viewport rather than shrinkin
 
 test('dynamic selected hair is composed on compatible HD body after exact head-source proof',async()=>{const api=make(),player={appearance96:{gender:'masculino',hairStyle:'hair-cropped'}},o={action:'attack-unarmed',direction:'south',progress:.3,x:400,y:700};assert(await api.prepare(player,o),JSON.stringify(api.snapshot()));const c=cv.createCanvas(800,800);assert(api.draw(c.getContext('2d'),player,o));assert.equal(api.snapshot().last.width,640);assert.equal(api.snapshot().last.physicalScale,1);});
 
-test('stable world gate refuses partial weapon family rather than alternating legacy and HD',async()=>{const api=make(),player={appearance96:{gender:'masculino',hairStyle:'original'},equipment:{weapon:{def:115}}};assert.equal(await api.prepareFamily(player),false);const c=cv.createCanvas(800,800);assert.equal(api.drawStable(c.getContext('2d'),player,{action:'attack-unarmed',direction:'south'}),false);assert.match(api.snapshot().last.reason,/Incomplete native family/);});
+test('stable world gate refuses uncovered weapon family rather than alternating legacy and HD',async()=>{const api=make(),player={appearance96:{gender:'masculino',hairStyle:'original'},equipment:{weapon:{def:999}}};assert.equal(await api.prepareFamily(player),false);const c=cv.createCanvas(800,800);assert.equal(api.drawStable(c.getContext('2d'),player,{action:'attack-unarmed',direction:'south'}),false);assert.match(api.snapshot().last.reason,/Incomplete native family/);});
 
 test('complete native male original family stays HD while a different action loads',async()=>{global.MareAppearance96=require('./tools/paper-doll-96-v3/appearance.js');try{const api=make(),player={appearance96:{gender:'masculino',hairStyle:'original',hairColor:'black',skinColor:'light',eyeColor:'blue',eyeStyle:'original'}},o={action:'idle',direction:'south',x:400,y:700};assert(await api.prepareFamily(player),JSON.stringify(api.snapshot()));assert(await api.prepare(player,o));const c=cv.createCanvas(800,800);assert(api.drawStable(c.getContext('2d'),player,o));assert(api.drawStable(c.getContext('2d'),player,{...o,action:'walk',direction:'north'}));assert.equal(api.snapshot().last.state,'holding-native-while-loading');}finally{delete global.MareAppearance96;}});
 
@@ -59,3 +59,7 @@ test('numeric equipment IDs cannot disappear into an unarmed native base',async(
 test('orb17 has a complete native original-appearance family in the normal world',async()=>{const api=make();const p={appearance96:{body:'male',hair:'original'},equipment:{weapon:{def:17}}};assert.equal(await api.prepareFamily(p),true);for(const action of ['idle','walk','attack-focus'])for(const direction of ['north','south','east','west'])assert(api.select(p,{action,direction}),action+direction);});
 
 test('orb122 has a complete native original-appearance world family',async()=>{const api=make();const p={appearance96:{body:'male',hair:'original'},equipment:{weapon:{def:122}}};assert.equal(await api.prepareFamily(p),true);});
+
+test('rifle115 now has a complete original-appearance native world family',async()=>{const api=make();const p={appearance96:{body:'male',hair:'original'},equipment:{weapon:{def:115}}};assert.equal(await api.prepareFamily(p),true);});
+
+test('rifle115 refuses a whole family whose baked attack hair is incompatible',async()=>{const api=make();assert.equal(await api.prepareFamily({appearance96:{body:'male',hair:'hair-cropped'},equipment:{weapon:{def:115}}}),false);});

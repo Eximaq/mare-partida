@@ -478,8 +478,8 @@
           "otherLayerPNGs": 64
         }
       ],
-      "nativeHD": "SOUTH attack only;8states pixel-exact recovered this pass;family gate blocks world",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack all4directions; existing orb/hand interface adapted, head-source differences explicit",
+      "gap": "Other saved skins/outfits/hair need matching identity; candidate grip calibration"
     },
     {
       "item": 31,
@@ -1192,8 +1192,8 @@
           "otherLayerPNGs": 12
         }
       ],
-      "nativeHD": "SOUTH and NORTH attack;5+3 states pixel-exact, baked backing, family gate blocks world",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack all4directions;SOUTH/NORTH preserved references,EW rigid source512 on gunner640 is candidate not approved800composition",
+      "gap": "Baked SOUTH/NORTH head restricts saved identity;EW/carry grip and angles need review"
     },
     {
       "item": 116,
@@ -1421,8 +1421,8 @@
           "otherLayerPNGs": 64
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack all4directions; existing orb/hand interface adapted, head-source differences explicit",
+      "gap": "Other saved skins/outfits/hair need matching identity; candidate grip calibration"
     },
     {
       "item": 123,
@@ -1622,5 +1622,11 @@
       "nativeHD": "not wired to native HD renderer",
       "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
     }
+  ],
+  "completeOriginalIdentityFamilies": [
+    109,
+    17,
+    122,
+    115
   ]
 }

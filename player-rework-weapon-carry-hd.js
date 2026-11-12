@@ -3,7 +3,7 @@
 function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePrefix='tools/rework-base-hd/assets/',weaponPrefix='tools/rework-weapon-layers-hd/',makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
  if(!vendor?.compositor)throw Error('Carry needs original compositor');const V=vendor.compositor;
  function resolve({item,body,action,direction,appearance={},equipment={}}={}){
-  if(![109,17,122].includes(Number(item))||!['male','masculino'].includes(body)||!['walk','idle'].includes(action))return null;
+  if(![109,17,122,115].includes(Number(item))||!['male','masculino'].includes(body)||!['walk','idle'].includes(action))return null;
   if(Object.entries(equipment).some(([k,v])=>k!=='weapon'&&v!=null&&!['original','none'].includes(v)))return null;
   if([17,122].includes(Number(item))&&[appearance.skin,appearance.skinColor].some(v=>v&&v!=='original'))return null;
   let plan=carryIndex.records.find(r=>r.item===Number(item)&&r.direction===direction);if(!plan)return null;
@@ -22,7 +22,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   if((skin&&skin!=='original'||hair&&hair!=='original')){if(!appearanceAPI)throw Error('Carry palette API unavailable');for(const [source,image] of map){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),isHair=uses.some(l=>l.slot==='hair'),isSkin=uses.some(l=>['body','headBase','face'].includes(l.slot)),ramp=isHair?appearanceAPI.hairs[hair]?.ramp:isSkin?appearanceAPI.skins[skin]?.ramp:null;if(!ramp)continue;const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d');tc.drawImage(image,0,0);const data=tc.getImageData(0,0,image.width,image.height);data.data.set(appearanceAPI.recolor(data.data,appearanceAPI.materialMask(data.data,isHair?'hair':'skin'),ramp));tc.putImageData(data,0,0);map.set(source,tile);}}
   const layers=V.plan(p,r.direction,frame).filter(l=>!hiddenSlots.includes(l.slot));const operations=layers.map(l=>({depth:l.depth,layer:l}));
   for(const part of r.plan.parts){const hand=layers.find(l=>l.binding?.a===part.binding.a&&l.binding?.b===part.binding.b);if(!hand)continue; // Lateral source has no authored far hand: do not float a disconnected far gauntlet.
-   operations.push({depth:hand.depth+.1,part});}
+   operations.push({depth:hand.depth+(part.depthOffset??.1),part});}
   for(const op of operations.sort((a,b)=>a.depth-b.depth)){
    if(op.layer){const original=d.layers.find(l=>l.id===op.layer.id);const pack={...p,directions:{[r.direction]:{...d,layers:[original]}}};const cover=r.plan.parts.find(q=>q.hideHandBeyondWrist&&original.binding?.a===q.binding.a&&original.binding?.b===q.binding.b);target.save();if(cover){const a=pose[cover.binding.a],b=pose[cover.binding.b],dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy),ux=dx/len,uy=dy/len,nx=-uy,ny=ux,L=2000,x=b.x*4,y=b.y*4;target.beginPath();target.moveTo(x+nx*L,y+ny*L);target.lineTo(x-nx*L,y-ny*L);target.lineTo(x-nx*L-ux*L,y-ny*L-uy*L);target.lineTo(x+nx*L-ux*L,y+ny*L-uy*L);target.closePath();target.clip();}V.render(target,pack,map,{direction:r.direction,frame,density:4,clear:false});target.restore();continue;}
    const q=op.part,im=images.get(weaponPrefix+q.source.url);if(!im)throw Error('Missing isolated gauntlet');const a=q.binding.a,b=q.binding.b;
