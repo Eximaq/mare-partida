@@ -1,0 +1,34 @@
+{
+  "path": "weapons/male17-122-north-four-torsos/Orbes17_122_NORTH_M151_M158_M165_M179_Editavel.zip",
+  "bytes": 13979874,
+  "sha256": "227ae9eb407bf5189ed71876c25428247d631cf922f9691c31dd746f8721cd43",
+  "pngEntries": 256,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete NORTH cycles for this specific weapon and outfit set.",
+  "weapons": [
+    17,
+    122
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "male",
+  "directions": [
+    "NORTH"
+  ],
+  "finalFrames": 64,
+  "manifestHashesVerified": 258,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male17-122-north-four-torsos/parts/MANIFEST.json",
+    "reconstruct": "weapons/male17-122-north-four-torsos/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  },
+  "archiveNote": "Exact approved male NORTH ZIP; no other pending artwork included."
+}

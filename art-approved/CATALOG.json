@@ -1338,6 +1338,20 @@
       }
     },
     {
+      "path": "weapons/male1-68-north-torso165/Sabre1_Nodachi68_NORTH_M165_Editavel.zip",
+      "bytes": 4323899,
+      "sha256": "2a9f5e01ee2c301fb9cdb918703506841ab658f7d1ad7e2f9c1f3322bfa40138",
+      "pngEntries": 64,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male1-68-north-torso165/parts/MANIFEST.json",
+        "reconstruct": "weapons/male1-68-north-torso165/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/male111-four-torsos-ew-v3/Manopla111_Masculino_Quatro_Trajes_EW_Editavel.zip",
       "bytes": 6356208,
       "sha256": "9420e8e7a7d6f229ebfb85cf951125ac492e86a98e5eb20d5082bb5733d271a3",
@@ -1431,6 +1445,20 @@
         "type": "split-archive",
         "manifest": "weapons/male17-122-four-torsos-ew/parts/MANIFEST.json",
         "reconstruct": "weapons/male17-122-four-torsos-ew/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/male17-122-north-four-torsos/Orbes17_122_NORTH_M151_M158_M165_M179_Editavel.zip",
+      "bytes": 13979874,
+      "sha256": "227ae9eb407bf5189ed71876c25428247d631cf922f9691c31dd746f8721cd43",
+      "pngEntries": 256,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male17-122-north-four-torsos/parts/MANIFEST.json",
+        "reconstruct": "weapons/male17-122-north-four-torsos/parts/RECONSTRUCT.py",
         "originalPreservedLocally": true,
         "reconstructionVerified": true
       }

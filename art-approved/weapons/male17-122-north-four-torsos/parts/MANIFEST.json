@@ -1,0 +1,102 @@
+{
+  "original": "Orbes17_122_NORTH_M151_M158_M165_M179_Editavel.zip",
+  "bytes": 13979874,
+  "sha256": "227ae9eb407bf5189ed71876c25428247d631cf922f9691c31dd746f8721cd43",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "f55489e1548dcd84216412a1d2f5abe91db1ab8c6b9a347344a50632d2d95347"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "345d6de3590c29545b990f4a2d9deca8efcb7343e9d9b800526da5cc7ed78a70"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 750000,
+      "sha256": "a98c3272f3e9b7dfe70d64c5fc1d8fb7b1d01e205c585db3dad98e81418af259"
+    },
+    {
+      "path": "archive.part003",
+      "bytes": 750000,
+      "sha256": "b8cdba44df801532aa12da09a23c8700c83ddc002385435742108ced1b497996"
+    },
+    {
+      "path": "archive.part004",
+      "bytes": 750000,
+      "sha256": "29ae25daf4ba9fb3fc6a6c5330d1efa5fd4137fbc5b1e72d4637520bcecfa945"
+    },
+    {
+      "path": "archive.part005",
+      "bytes": 750000,
+      "sha256": "2768d83ee2a14a6981f87e6a1ecfac649d5b3fe13e370023438a1f4465254450"
+    },
+    {
+      "path": "archive.part006",
+      "bytes": 750000,
+      "sha256": "69fd8b7627bbd0e69214ea6e88cd788a5ba0c357bc2501eca40c598c54e76c47"
+    },
+    {
+      "path": "archive.part007",
+      "bytes": 750000,
+      "sha256": "15367a97714c4d8eb7e4729fdc94c187ddbeb1cbbb7cc89802852bbfdc3e5eec"
+    },
+    {
+      "path": "archive.part008",
+      "bytes": 750000,
+      "sha256": "6f4b18d7bd877e01fef06202d1d022ba25630197fdded0efe9a6a1a7cb32cb00"
+    },
+    {
+      "path": "archive.part009",
+      "bytes": 750000,
+      "sha256": "989a44813921b541f932075136dbfe973d645a7aacb2fd181394b7684078f2df"
+    },
+    {
+      "path": "archive.part010",
+      "bytes": 750000,
+      "sha256": "bdd8c568c6b2cbd8474f61f531ebb415646d7d781e9c725ca593c8ec2c95d0ed"
+    },
+    {
+      "path": "archive.part011",
+      "bytes": 750000,
+      "sha256": "e151d10dd548e7f97a007b133c84188779279ad8b832622acecf726431d3d170"
+    },
+    {
+      "path": "archive.part012",
+      "bytes": 750000,
+      "sha256": "e06b229143320eb8e9cf0b2b8ef0f343645f5cfd00e852d87354bec533ad1396"
+    },
+    {
+      "path": "archive.part013",
+      "bytes": 750000,
+      "sha256": "03faf51d904ffe834ef1e0451048df25bc7aded55f24f0f24177af2fcdd7dff0"
+    },
+    {
+      "path": "archive.part014",
+      "bytes": 750000,
+      "sha256": "39908ce07cdd40135702b130e0d9b9be15723f2151afdcd8d3008c004216b4fc"
+    },
+    {
+      "path": "archive.part015",
+      "bytes": 750000,
+      "sha256": "24233b95cc37b526da8599bd932bcf90df40cecd4463e9917e4e8972619d0f2b"
+    },
+    {
+      "path": "archive.part016",
+      "bytes": 750000,
+      "sha256": "a939ca437f506ed78427c553c388413448c31fc78b6d6dc44fc3f797b1e10b83"
+    },
+    {
+      "path": "archive.part017",
+      "bytes": 750000,
+      "sha256": "6c6fc4a94555d84db741106176203aae71820d81b8c0e9a789d27bce3d49e579"
+    },
+    {
+      "path": "archive.part018",
+      "bytes": 479874,
+      "sha256": "c80e9da44075d337143c9982e4e4b32c2599f4ce9491d914ee1c4f97fa0d458f"
+    }
+  ]
+}
