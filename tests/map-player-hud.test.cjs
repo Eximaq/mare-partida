@@ -3,14 +3,14 @@ const assert=require('node:assert/strict');
 const HUD=require('../map-player-hud.js');
 
 const rectangles=[], labels=[], outlinedLabels=[], tracks=[];
-let shapeStrokes=0;
+let shapeStrokes=0, labelX;
 const context={
   save(){},restore(){},measureText:name=>({width:name.length*8}),
   beginPath(){},moveTo(){},lineTo(){},bezierCurveTo(){},closePath(){},fill(){},clip(){},
   stroke(){shapeStrokes++;},
   roundRect(...args){tracks.push(args);},
   strokeText(name){outlinedLabels.push(name);},
-  fillText(name){labels.push(name);},
+  fillText(name,x){labels.push(name);labelX=x;},
   fillRect(x,y,width,height){rectangles.push({x,y,width,height,color:this.fillStyle});}
 };
 
@@ -25,6 +25,8 @@ assert.equal(shapeStrokes,0);
 HUD.draw(context,120,40,'Navegante',{hp:25,maxHP:100,energy:60,maxEnergy:50});
 assert(tracks.every(track=>track[1]>40),'resource tracks sit below the nickname');
 assert.equal(tracks[0][2],tracks[1][2]);
+assert.equal(labelX,120,'the name stays centered over the player');
+for(const [x,,width] of tracks)assert.equal(x+width/2,labelX,'each resource track is centered below the name');
 assert.equal(rectangles.find(rect=>rect.color==='#e24562').height,9,'life has a substantial fill');
 assert.equal(rectangles.find(rect=>rect.color==='#a16bea').height,7,'energy remains easy to see');
 assert.equal(rectangles.find(rect=>rect.color==='#e24562').width,15);

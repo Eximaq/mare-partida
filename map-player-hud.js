@@ -37,7 +37,7 @@
   }
 
   function drawResources(context,x,y,{hp,maxHP,energy:currentEnergy,maxEnergy}){
-    const width=62,left=x-26,iconX=left-12;
+    const width=62,left=x-width/2,iconX=left-12;
     const lifeHeight=11,energyHeight=9,energyY=y+lifeHeight+2;
     const heartY=y+2,boltY=energyY+1;
 
