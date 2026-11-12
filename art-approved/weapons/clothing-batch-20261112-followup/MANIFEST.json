@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 3,
+  "totalBytes": 31230423,
+  "scope": "Explicit follow-up approval of 109 male/female EAST/WEST and117 female NORTH v7 only.",
+  "packages": [
+    {
+      "key": "109_EW_M",
+      "filename": "Manopla109_Masculino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 11695036,
+      "sha256": "7ee8b53eb631139192cd3bedce8c7fb2a0dc007813b583136aafce7e92ad1eac",
+      "pngEntries": 256,
+      "entries": 263,
+      "parts": [
+        {
+          "path": "Manopla109_Masculino_Quatro_Trajes_EW_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "37556a9a8b2ad23d57301ca3ef9cc6169ffa64bc",
+          "sha256": "13145b0de5ca1a0dfdb975581e6fb524c43d7c3984dc896fdd3d7f3f1b0e0f81"
+        },
+        {
+          "path": "Manopla109_Masculino_Quatro_Trajes_EW_Editavel.zip.part002",
+          "bytes": 3830716,
+          "git_blob_sha": "f4cf83a13578893938504efa19985c6621896b50",
+          "sha256": "71a7267bfe2eddae7012cdb38e60fa9ab304b55a28cd5628c1ea7d7cca670c7b"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "109_EW_F",
+      "filename": "Manopla109_Feminino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 7108741,
+      "sha256": "bff5c811284d01392c1ef56ecc14467e1cd790ba6148fab3a36e4a96dd285fa7",
+      "pngEntries": 192,
+      "entries": 197,
+      "parts": [
+        {
+          "path": "Manopla109_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "bytes": 7108741,
+          "git_blob_sha": "d3421b64f771208ab0ac48f9356a13eb843268f9",
+          "sha256": "bff5c811284d01392c1ef56ecc14467e1cd790ba6148fab3a36e4a96dd285fa7"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "117_N_F",
+      "filename": "Braco117_F_NORTH_QuatroTrajes_v7_Editavel.zip",
+      "bytes": 12426646,
+      "sha256": "5e9739c9fc8ee7629a8d0fbcfa8f20398f39a81ca460e2e1af65f816709ba5f6",
+      "pngEntries": 147,
+      "entries": 153,
+      "parts": [
+        {
+          "path": "Braco117_F_NORTH_QuatroTrajes_v7_Editavel.zip.part001",
+          "bytes": 7864320,
+          "git_blob_sha": "452679a5d87b7b73bf136367af6d66b76f7ba418",
+          "sha256": "1e0fc3921f5b5bcf29cb74506d7a3824645dd9e289e83dfb649261e1bac0d55c"
+        },
+        {
+          "path": "Braco117_F_NORTH_QuatroTrajes_v7_Editavel.zip.part002",
+          "bytes": 4562326,
+          "git_blob_sha": "15976a6da3ff51ae72fa1088d199efffb7e2fefc",
+          "sha256": "772ee843aec1afc9a880611c78fb8cb986642b079e80d5404d739681aa50be6a"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}
