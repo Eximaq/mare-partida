@@ -1,0 +1,1626 @@
+{
+  "catalogCycles": 1000,
+  "items": 42,
+  "scope": "Audit of approved catalog versus current nativeHD integration; NOT claim all implemented",
+  "records": [
+    {
+      "item": 0,
+      "catalogCycles": 26,
+      "directions": {
+        "north": 9,
+        "east": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/approved-north-history/male_weapon0_north_original-restored-v2.zip",
+          "equipmentPNGs": 16,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 16
+        },
+        {
+          "archive": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 224,
+          "otherLayerPNGs": 240
+        },
+        {
+          "archive": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_M/Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 160,
+          "otherLayerPNGs": 176
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 1,
+      "catalogCycles": 25,
+      "directions": {
+        "north": 8,
+        "east": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/female1-68-four-torsos-ew-v2/Sabre1_Nodachi68_Femininos_Quatro_Trajes_EW_Editavel_Corrigido_v2.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 64,
+          "otherLayerPNGs": 64
+        },
+        {
+          "archive": "art-approved/weapons/male1-68-four-torsos-ew/Sabre1_Nodachi68_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 64,
+          "otherLayerPNGs": 80
+        },
+        {
+          "archive": "art-approved/weapons/male1-68-north-three-torsos/Sabre1_Nodachi68_NORTH_M151_M158_M179_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 48,
+          "otherLayerPNGs": 48
+        },
+        {
+          "archive": "art-approved/weapons/male1-68-north-torso165/Sabre1_Nodachi68_NORTH_M165_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 16,
+          "otherLayerPNGs": 16
+        },
+        {
+          "archive": "art-approved/weapons/sabre1-nodachi68-south-base67-approved/1-68_SOUTH_PRESENTED/Sabre1_Nodachi68_SOUTH_Adaptacao_Base67_Candidata_v1.zip",
+          "equipmentPNGs": 18,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 20
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 2,
+      "catalogCycles": 25,
+      "directions": {
+        "east": 8,
+        "north": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/2-3-110_N_M/Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 96,
+          "otherLayerPNGs": 96
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/2-3_EW_F/Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 128,
+          "otherLayerPNGs": 128
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 3,
+      "catalogCycles": 25,
+      "directions": {
+        "east": 8,
+        "north": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/2-3-110_N_M/Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 96,
+          "otherLayerPNGs": 96
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/2-3_EW_F/Manoplas2_3_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 128,
+          "otherLayerPNGs": 128
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 4,
+      "catalogCycles": 25,
+      "directions": {
+        "south": 1,
+        "east": 10,
+        "north": 4,
+        "west": 10
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 8,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/female-blue-north-v2/female_blue_north_3keys_4-115-116_corrected-v2.zip",
+          "equipmentPNGs": 9,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 9
+        },
+        {
+          "archive": "art-approved/weapons/female4-115-four-torsos-ew/Rifles4_115_Femininos_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 72,
+          "otherLayerPNGs": 72
+        },
+        {
+          "archive": "art-approved/weapons/female4-116-north-three-keys/Armas4_116_Feminino_NORTH_Editavel.zip",
+          "equipmentPNGs": 3,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 3
+        },
+        {
+          "archive": "art-approved/weapons/m151-equipped-approved/male151_north_3keys_approved-reuse-v1.zip",
+          "equipmentPNGs": 9,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 9
+        },
+        {
+          "archive": "art-approved/weapons/male4-115-four-torsos-ew/Rifles4_115_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 18,
+          "otherLayerPNGs": 18
+        },
+        {
+          "archive": "art-approved/weapons/male4-north-three-keys/Rifle4_NORTH_Tempo_Proposto_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 3,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 6
+        },
+        {
+          "archive": "art-approved/weapons/mosquete4-south-v3-approved/4_SOUTH_V3_M151_157/Mosquete4_SOUTH_CanoFrontal_Editavel_Candidato.zip",
+          "equipmentPNGs": 5,
+          "handsPNGs": 5,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 15
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 5,
+      "catalogCycles": 15,
+      "directions": {
+        "south": 1,
+        "east": 6,
+        "north": 2,
+        "west": 6
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 4,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/male5-four-torsos-ew/Mosquete5_Masculino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 40
+        },
+        {
+          "archive": "art-approved/weapons/manopla111-mosquete5-south-initial-plus20-approved/5_SOUTH_INITIAL_PLUS20_V2/Mosquete5_SOUTH_Inicial_Maior_v2_Backup.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 4
+        },
+        {
+          "archive": "art-approved/weapons/mixed5-north-three-keys/Arma5_NORTH_MF_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 3,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 11
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 12,
+      "catalogCycles": 18,
+      "directions": {
+        "east": 8,
+        "west": 8,
+        "north": 1,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 4,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/daggers12-13-71-74-north-presented-approved/12-13-71-74_NORTH_M_PRESENTED/Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip",
+          "equipmentPNGs": 48,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 48
+        },
+        {
+          "archive": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/Adagas12_13_71_72_73_74_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        },
+        {
+          "archive": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/Adagas12_13_71_72_73_74_Masculino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 13,
+      "catalogCycles": 18,
+      "directions": {
+        "east": 8,
+        "west": 8,
+        "north": 1,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 4,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/adaga13-south-v2-approved/13_SOUTH_PRESENTED_V2/Adaga13_SOUTH_V2_Editavel_Candidata.zip",
+          "equipmentPNGs": 18,
+          "handsPNGs": 1,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 65
+        },
+        {
+          "archive": "art-approved/weapons/daggers12-13-71-74-north-presented-approved/12-13-71-74_NORTH_M_PRESENTED/Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip",
+          "equipmentPNGs": 48,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 48
+        },
+        {
+          "archive": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/Adagas12_13_71_72_73_74_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        },
+        {
+          "archive": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/Adagas12_13_71_72_73_74_Masculino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 14,
+      "catalogCycles": 25,
+      "directions": {
+        "east": 8,
+        "north": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/14_EW_F/Manoplas14_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 64,
+          "otherLayerPNGs": 64
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/14_N_M151-158-179/Manopla14_NORTH_M151_M158_M179_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 24,
+          "otherLayerPNGs": 24
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/14_N_M165/Manopla14_NORTH_M165_Final_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 8,
+          "otherLayerPNGs": 8
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 15,
+      "catalogCycles": 17,
+      "directions": {
+        "north": 1,
+        "east": 8,
+        "west": 8
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 3,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/male15-four-torsos-ew/male15_east-west_four-torsos_approved-v1.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 8
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 16,
+      "catalogCycles": 25,
+      "directions": {
+        "east": 8,
+        "north": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 17,
+      "catalogCycles": 25,
+      "directions": {
+        "south": 1,
+        "north": 8,
+        "east": 8,
+        "west": 8
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/female17-122-four-torsos-ew/Orbes17_122_Femininos_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 16,
+          "otherLayerPNGs": 16
+        },
+        {
+          "archive": "art-approved/weapons/male17-122-four-torsos-ew/Orbes17_122_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 16,
+          "otherLayerPNGs": 16
+        },
+        {
+          "archive": "art-approved/weapons/male17-122-north-four-torsos/Orbes17_122_NORTH_M151_M158_M165_M179_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 64,
+          "otherLayerPNGs": 64
+        }
+      ],
+      "nativeHD": "SOUTH attack only;8states pixel-exact recovered this pass;family gate blocks world",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 31,
+      "catalogCycles": 26,
+      "directions": {
+        "east": 8,
+        "north": 9,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/31_EW_F/Cajado31_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/31_N_F/Cajado31_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 36,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 36
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 32,
+      "catalogCycles": 25,
+      "directions": {
+        "east": 8,
+        "north": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/32_EW_F_V2/Relicario32_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 9,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 57
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/32_EW_M/Relicario32_Masculino_EAST_WEST_4Trajes_Editavel.zip",
+          "equipmentPNGs": 9,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 25
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/32_N_F/Relicario32_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 36,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 36
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 67,
+      "catalogCycles": 26,
+      "directions": {
+        "north": 9,
+        "east": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/approved-north-history/male_weapon67_north_original-restored-v1.zip",
+          "equipmentPNGs": 16,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 17
+        },
+        {
+          "archive": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 224,
+          "otherLayerPNGs": 240
+        },
+        {
+          "archive": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_M/Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 160,
+          "otherLayerPNGs": 176
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 68,
+      "catalogCycles": 25,
+      "directions": {
+        "north": 8,
+        "east": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/female1-68-four-torsos-ew-v2/Sabre1_Nodachi68_Femininos_Quatro_Trajes_EW_Editavel_Corrigido_v2.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 64,
+          "otherLayerPNGs": 64
+        },
+        {
+          "archive": "art-approved/weapons/male1-68-four-torsos-ew/Sabre1_Nodachi68_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 64,
+          "otherLayerPNGs": 80
+        },
+        {
+          "archive": "art-approved/weapons/male1-68-north-three-torsos/Sabre1_Nodachi68_NORTH_M151_M158_M179_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 48,
+          "otherLayerPNGs": 48
+        },
+        {
+          "archive": "art-approved/weapons/male1-68-north-torso165/Sabre1_Nodachi68_NORTH_M165_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 16,
+          "otherLayerPNGs": 16
+        },
+        {
+          "archive": "art-approved/weapons/sabre1-nodachi68-south-base67-approved/1-68_SOUTH_PRESENTED/Sabre1_Nodachi68_SOUTH_Adaptacao_Base67_Candidata_v1.zip",
+          "equipmentPNGs": 18,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 20
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 69,
+      "catalogCycles": 20,
+      "directions": {
+        "north": 1,
+        "east": 9,
+        "west": 9,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/nodachi69-ew-four-outfits-approved/69_EW_F_4TRAJES/Nodachi69_F_QuatroTrajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/nodachi69-ew-male-base-v2-approved/69_EW_M_BASE_V2/Nodachi69_EW_FonteAnterior_Intacta_Candidato_Editavel_v2.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 17
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 70,
+      "catalogCycles": 26,
+      "directions": {
+        "north": 9,
+        "east": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/approved-north-history/male_weapon70_north_original-restored-v2.zip",
+          "equipmentPNGs": 16,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 17
+        },
+        {
+          "archive": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 224,
+          "otherLayerPNGs": 240
+        },
+        {
+          "archive": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_M/Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 160,
+          "otherLayerPNGs": 176
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 71,
+      "catalogCycles": 20,
+      "directions": {
+        "east": 9,
+        "west": 9,
+        "north": 1,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/approved-daggers-v3/weapon71_east-west_female-source-approved-v3.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 1
+        },
+        {
+          "archive": "art-approved/weapons/daggers12-13-71-74-north-presented-approved/12-13-71-74_NORTH_M_PRESENTED/Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip",
+          "equipmentPNGs": 48,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 48
+        },
+        {
+          "archive": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/Adagas12_13_71_72_73_74_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        },
+        {
+          "archive": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/Adagas12_13_71_72_73_74_Masculino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 72,
+      "catalogCycles": 20,
+      "directions": {
+        "east": 9,
+        "west": 9,
+        "north": 1,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/approved-daggers-v3/weapon72_east-west_female-source-approved-v3.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 1
+        },
+        {
+          "archive": "art-approved/weapons/daggers12-13-71-74-north-presented-approved/12-13-71-74_NORTH_M_PRESENTED/Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip",
+          "equipmentPNGs": 48,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 48
+        },
+        {
+          "archive": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/Adagas12_13_71_72_73_74_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        },
+        {
+          "archive": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/Adagas12_13_71_72_73_74_Masculino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 73,
+      "catalogCycles": 20,
+      "directions": {
+        "east": 9,
+        "west": 9,
+        "north": 1,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/approved-daggers-v3/weapon73_east-west_female-source-approved-v3.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 1
+        },
+        {
+          "archive": "art-approved/weapons/daggers12-13-71-74-north-presented-approved/12-13-71-74_NORTH_M_PRESENTED/Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip",
+          "equipmentPNGs": 48,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 48
+        },
+        {
+          "archive": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/Adagas12_13_71_72_73_74_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        },
+        {
+          "archive": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/Adagas12_13_71_72_73_74_Masculino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 74,
+      "catalogCycles": 20,
+      "directions": {
+        "east": 9,
+        "west": 9,
+        "north": 1,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/approved-daggers-v3/weapon74_east-west_female-source-approved-v3.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 1
+        },
+        {
+          "archive": "art-approved/weapons/daggers12-13-71-74-north-presented-approved/12-13-71-74_NORTH_M_PRESENTED/Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip",
+          "equipmentPNGs": 48,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 48
+        },
+        {
+          "archive": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/Adagas12_13_71_72_73_74_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        },
+        {
+          "archive": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/Adagas12_13_71_72_73_74_Masculino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 192,
+          "otherLayerPNGs": 192
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 109,
+      "catalogCycles": 25,
+      "directions": {
+        "south": 1,
+        "east": 8,
+        "west": 8,
+        "north": 8
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 4,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112-followup/109_EW_F/Manopla109_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 32,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112-followup/109_EW_M/Manopla109_Masculino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/manopla109-north-approved/109_N_MF/Manopla109_NORTH_MF_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 8,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 40
+        }
+      ],
+      "nativeHD": "complete male original idle/walk/attack; supported identity only",
+      "gap": "Other identities and outfits need matching sources"
+    },
+    {
+      "item": 110,
+      "catalogCycles": 25,
+      "directions": {
+        "east": 8,
+        "north": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/110_EW_F/Manoplas110_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 64,
+          "otherLayerPNGs": 64
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/2-3-110_N_M/Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 96,
+          "otherLayerPNGs": 96
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 111,
+      "catalogCycles": 25,
+      "directions": {
+        "south": 1,
+        "north": 8,
+        "east": 8,
+        "west": 8
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/female111-four-torsos-ew-v3/Manopla111_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/male111-four-torsos-ew-v3/Manopla111_Masculino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/male111-north-four-torsos-v2/Manopla111_NORTH_M151_M158_M165_M179_V2_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 112,
+      "catalogCycles": 25,
+      "directions": {
+        "north": 8,
+        "east": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/112_N_M/Manopla112_NORTH_M151_M158_M165_M179_V1_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/female112-four-torsos-ew/Manopla112_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/male112-four-torsos-ew/Manopla112_Masculino_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 113,
+      "catalogCycles": 32,
+      "directions": {
+        "east": 10,
+        "north": 2,
+        "south": 10,
+        "west": 10
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 7,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/female113-116-five-torsos-south-v2/female113_south_five-torsos_corrected-approved-v2.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 25,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 75
+        },
+        {
+          "archive": "art-approved/weapons/female113116-four-torsos-ew/female113116_east-west_four-torsos_approved-v1.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 72,
+          "otherLayerPNGs": 72
+        },
+        {
+          "archive": "art-approved/weapons/m113-four-outfits-south/male113_south_M172_M158v3_M165v3_M179_head157_approved.zip",
+          "equipmentPNGs": 20,
+          "handsPNGs": 20,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 80
+        },
+        {
+          "archive": "art-approved/weapons/m113-m151-equipped-south/male113_south_M151_head157_equipped-approved-v1.zip",
+          "equipmentPNGs": 5,
+          "handsPNGs": 5,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 20
+        },
+        {
+          "archive": "art-approved/weapons/male113116-four-torsos-ew-v2/Rifles113_116_Masculinos_Quatro_Trajes_EW_V2_Backup.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 18,
+          "otherLayerPNGs": 18
+        },
+        {
+          "archive": "art-approved/weapons/mixed113-north-three-keys/Arma113_NORTH_MF_Editavel.zip",
+          "equipmentPNGs": 10,
+          "handsPNGs": 3,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 13
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 114,
+      "catalogCycles": 11,
+      "directions": {
+        "north": 8,
+        "east": 1,
+        "west": 1,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 4,
+      "layerEvidence": [],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 115,
+      "catalogCycles": 25,
+      "directions": {
+        "east": 10,
+        "north": 4,
+        "west": 10,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 7,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/female-blue-north-v2/female_blue_north_3keys_4-115-116_corrected-v2.zip",
+          "equipmentPNGs": 9,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 9
+        },
+        {
+          "archive": "art-approved/weapons/female4-115-four-torsos-ew/Rifles4_115_Femininos_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 72,
+          "otherLayerPNGs": 72
+        },
+        {
+          "archive": "art-approved/weapons/m151-equipped-approved/male151_north_3keys_approved-reuse-v1.zip",
+          "equipmentPNGs": 9,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 9
+        },
+        {
+          "archive": "art-approved/weapons/male4-115-four-torsos-ew/Rifles4_115_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 18,
+          "otherLayerPNGs": 18
+        },
+        {
+          "archive": "art-approved/weapons/mixed115-north-three-keys/Arma115_NORTH_MF_Editavel.zip",
+          "equipmentPNGs": 9,
+          "handsPNGs": 3,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 12
+        }
+      ],
+      "nativeHD": "SOUTH and NORTH attack;5+3 states pixel-exact, baked backing, family gate blocks world",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 116,
+      "catalogCycles": 34,
+      "directions": {
+        "east": 10,
+        "north": 4,
+        "south": 10,
+        "west": 10
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 13,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/female-blue-north-v2/female_blue_north_3keys_4-115-116_corrected-v2.zip",
+          "equipmentPNGs": 9,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 9
+        },
+        {
+          "archive": "art-approved/weapons/female113116-four-torsos-ew/female113116_east-west_four-torsos_approved-v1.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 72,
+          "otherLayerPNGs": 72
+        },
+        {
+          "archive": "art-approved/weapons/female4-116-north-three-keys/Armas4_116_Feminino_NORTH_Editavel.zip",
+          "equipmentPNGs": 3,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 3
+        },
+        {
+          "archive": "art-approved/weapons/m151-equipped-approved/male151_north_3keys_approved-reuse-v1.zip",
+          "equipmentPNGs": 9,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 9
+        },
+        {
+          "archive": "art-approved/weapons/male113116-four-torsos-ew-v2/Rifles113_116_Masculinos_Quatro_Trajes_EW_V2_Backup.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 18,
+          "otherLayerPNGs": 18
+        },
+        {
+          "archive": "art-approved/weapons/male116-north-three-keys/Arma116_NORTH_Backup_Editavel.zip",
+          "equipmentPNGs": 9,
+          "handsPNGs": 3,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 12
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 117,
+      "catalogCycles": 25,
+      "directions": {
+        "north": 8,
+        "east": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/arm117-ew-approved/117_EW_F/Braco117_F_EW_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/arm117-ew-approved/117_EW_M/Braco117_M_EW_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 118,
+      "catalogCycles": 25,
+      "directions": {
+        "north": 8,
+        "east": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/male118-four-torsos-ew-v2/male118_east-west_four-torsos_approved-v2.zip",
+          "equipmentPNGs": 32,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 48
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 119,
+      "catalogCycles": 25,
+      "directions": {
+        "north": 8,
+        "east": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 120,
+      "catalogCycles": 19,
+      "directions": {
+        "north": 8,
+        "east": 5,
+        "west": 5,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 121,
+      "catalogCycles": 26,
+      "directions": {
+        "east": 8,
+        "north": 9,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/121_EW_F/Cetro121_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/121_N_F/Cetro121_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 36,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 36
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 122,
+      "catalogCycles": 25,
+      "directions": {
+        "north": 8,
+        "east": 8,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/female17-122-four-torsos-ew/Orbes17_122_Femininos_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 16,
+          "otherLayerPNGs": 16
+        },
+        {
+          "archive": "art-approved/weapons/male17-122-four-torsos-ew/Orbes17_122_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 16,
+          "otherLayerPNGs": 16
+        },
+        {
+          "archive": "art-approved/weapons/male17-122-north-four-torsos/Orbes17_122_NORTH_M151_M158_M165_M179_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 64,
+          "otherLayerPNGs": 64
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 123,
+      "catalogCycles": 26,
+      "directions": {
+        "east": 8,
+        "north": 9,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/123_EW_F/Cetro123_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/123_N_F/Cetro123_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 36,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 36
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 124,
+      "catalogCycles": 26,
+      "directions": {
+        "east": 8,
+        "north": 9,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 7,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/124_EW_F/Cajado124_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/124_N_F/Cajado124_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 36,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 36
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 125,
+      "catalogCycles": 26,
+      "directions": {
+        "east": 8,
+        "north": 9,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/125_EW_F/Cajado125_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/125_N_F/Cajado125_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 36,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 36
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 126,
+      "catalogCycles": 26,
+      "directions": {
+        "east": 8,
+        "north": 9,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/126_EW_F/Cajado126_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/126_N_F/Cajado126_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 36,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 36
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 127,
+      "catalogCycles": 26,
+      "directions": {
+        "east": 8,
+        "north": 9,
+        "west": 8,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 6,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/127_EW_F/Cajado127_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/127_N_F/Cajado127_Feminino_NORTH_Quatro_Trajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 36,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 36
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    },
+    {
+      "item": 128,
+      "catalogCycles": 26,
+      "directions": {
+        "east": 8,
+        "west": 8,
+        "north": 9,
+        "south": 1
+      },
+      "bodies": [
+        "female",
+        "male"
+      ],
+      "archives": 5,
+      "layerEvidence": [
+        {
+          "archive": "art-approved/weapons/clothing-batch-20261112/128_EW_F/Cajado128_Feminino_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 32,
+          "otherLayerPNGs": 32
+        },
+        {
+          "archive": "art-approved/weapons/staff128-north-base127-approved/128_N_BASE127/Cajado128_BASE127_Editavel_Backup_QA.zip",
+          "equipmentPNGs": 0,
+          "handsPNGs": 0,
+          "ownershipMasks": 0,
+          "otherLayerPNGs": 73
+        }
+      ],
+      "nativeHD": "not wired to native HD renderer",
+      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+    }
+  ]
+}

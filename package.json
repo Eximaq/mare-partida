@@ -22,9 +22,11 @@
     "load:local": "node --env-file-if-exists=.env.test.local --import tsx tools/load/local-capacity.mts",
     "test:auth-browser": "node --env-file-if-exists=.env.test.local --import tsx tools/auth-browser-fixture.mts",
     "start:server": "node --env-file-if-exists=.env.server.local apps/game-server/dist/main.js",
-    "db:migrate": "node --env-file-if-exists=.env.migration.local apps/game-server/dist/migrate-cli.js"
+    "db:migrate": "node --env-file-if-exists=.env.migration.local apps/game-server/dist/migrate-cli.js",
+    "test:rework-hd": "node --test player-rework-native-hd.test.cjs player-rework-weapon-native-hd.test.cjs player-rework-hd-assets.test.cjs player-rework-weapon-carry-hd.test.cjs player-rework-outfit-overlay-hd.test.cjs player-rework-outfit-carry-overlay-hd.test.cjs test-orb17-hd.cjs"
   },
   "devDependencies": {
+    "@napi-rs/canvas": "^0.1.100",
     "@types/node": "24.19.2",
     "@types/pg": "8.23.1",
     "selfsigned": "5.5.0",

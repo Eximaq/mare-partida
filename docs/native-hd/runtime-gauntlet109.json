@@ -1,0 +1,19 @@
+{
+  "state": "ready",
+  "error": null,
+  "last": {
+    "state": "rendered",
+    "source": "gauntlet109-south-native-layers",
+    "frame": 2,
+    "width": 640,
+    "height": 640,
+    "pivot": {
+      "x": 320,
+      "y": 512
+    },
+    "density": 4,
+    "physicalScale": 1
+  },
+  "cachedSources": 3,
+  "failures": []
+}

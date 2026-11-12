@@ -24,7 +24,7 @@ web_files = ['index.html', 'ui-preview.html', 'ui-art-direction.css', 'visual-co
               'dawn-map-data.js', 'dawn-world.js', 'dawn-renderer.js', 'rare-world.js', 'rare-renderer.js', 'new-islands-data.js', 'new-islands-objects.js', 'new-islands.js', 'monster-catalog.js', 'monster-game-catalog.js', 'new-islands-art.js', 'pixellab-world-maps-data.js', 'conchas-pixellab-data.js', 'conchas-structures.js', 'pixellab-world-maps.js', 'world-system.js', 'world-depth.js', 'orange-world.js', 'conchas-world.js', 'conchas-renderer.js', 'terrain-autotile.js', 'orange-terrain.js', 'orange-renderer.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-progression.js', 'haki-mastery.css', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'achievement-ui.js', 'honors-hd.css', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'talents-hd.css', 'compendium-ui.js', 'compendium-hd.css', 'voyage-ui.js', 'voyage-hd.css', 'dev-tools.js', 'hunt-system.js', 'monster-behavior.js']
 web_files += ['party-ui.js','party.css','crew-flag.js','crew-ui.js','crew-ui.css','social-ui.js','social-ui.css','market-online-ui.js','market-online-ui.css','map-player-hud.js']
 web_files += ['world-map-exports-data.js','world-map-exports.js','quest-dungeons-data.js','quest-dungeons-world.js','boss-dungeon-system.js','boss-dungeon-combat.js','dungeon-boss-art-data.js','boss-dungeon-ui.js','save-writer.js','boss-dungeons.css']
-web_files += ['rank-a-data.js', 'rank-a-expansion.js', 'rank-a-system.js', 'character-appearance.js', 'character-studio.js', 'character-studio.css', 'headgear-visibility.js', 'player-rework-runtime.js', 'player-rework-test.js', 'player-rework-zip.js', 'player-rework-weapons.js', 'player-rework-accessory-pilot.js', 'player-rework-accessory-test.js', 'paper-doll-96-lobby.js', 'paper-doll-look-data.js', 'paper-doll-look.js', 'paper-doll-coverage.js', 'paper-doll-look.css', 'sprite-combat-v2-data.js', 'sprite-combat-v2.js', 'ui-navigator.css', 'character-hud.js', 'rank-s-data.js', 'rank-s-system.js', 'rank-s-rework-data.js', 'rank-s-rework.js', 'paramecia-rework-data.js', 'paramecia-rework-manifest.js', 'jiki-assembly-art.js']
+web_files += ['rank-a-data.js', 'rank-a-expansion.js', 'rank-a-system.js', 'character-appearance.js', 'character-studio.js', 'character-studio.css', 'headgear-visibility.js', 'player-rework-runtime.js', 'player-rework-base-hd.js', 'player-rework-hd-assets.js', 'player-rework-weapon-native-hd.js', 'player-rework-native-hd.js', 'player-rework-outfit-carry-overlay-hd.js', 'player-rework-outfit-overlay-hd.js', 'player-rework-weapon-carry-hd.js', 'player-rework-modular-outfits-hd.js', 'player-rework-head-family.js', 'native-head-compat.js', 'player-rework-test.js', 'player-rework-zip.js', 'player-rework-weapons.js', 'player-rework-accessory-pilot.js', 'player-rework-accessory-test.js', 'paper-doll-96-lobby.js', 'paper-doll-look-data.js', 'paper-doll-look.js', 'paper-doll-coverage.js', 'paper-doll-look.css', 'sprite-combat-v2-data.js', 'sprite-combat-v2.js', 'ui-navigator.css', 'character-hud.js', 'rank-s-data.js', 'rank-s-system.js', 'rank-s-rework-data.js', 'rank-s-rework.js', 'paramecia-rework-data.js', 'paramecia-rework-manifest.js', 'jiki-assembly-art.js']
 web_files += ['weekly-boss-ui.js','weekly-boss-ui.css','akainu-art-data.js','akainu-art.js']
 if not include_reviews:
     retired_scripts = {"paper-doll.js", "paper-doll-assets.js", "paper-doll-review.js", "paper-doll-look-data.js", "paper-doll-look.js", "paper-doll-coverage.js", "paper-doll-look.css"}
@@ -180,7 +180,7 @@ for name in ['manifest.json'] + [f'frames/{i:02}.png' for i in range(12)]:
 # Exact idle accessory snapshots are available only through the explicit test query.
 accessories = Path('tools/rework-accessories')
 accessory_manifest = json.loads((ROOT/accessories/'manifest.json').read_text())
-accessory_files = ['manifest.json', 'vendor.js']
+accessory_files = ['manifest.json', 'vendor.js', 'head-layer-index.json']
 accessory_files += [p['name']+'/catalog.json' for p in accessory_manifest['packages']]
 accessory_files += [str(p.relative_to(ROOT/accessories)) for p in sorted((ROOT/accessories/'assets').glob('*.png'))]
 for name in accessory_files:
@@ -195,3 +195,13 @@ for folder in ['tools/rework-weapons','tools/rework-outfits']:
     source=ROOT/folder
     if source.is_dir():
         shutil.copytree(source,OUT/folder,dirs_exist_ok=True)
+
+# Native-density source modules: deploy original PNG bytes, never review-only workspaces.
+for folder in ['tools/rework-base-hd','tools/rework-weapon-layers-hd','tools/rework-modular-outfits-hd']:
+    source=ROOT/folder
+    if source.is_dir():
+        for p in source.rglob('*'):
+            if p.is_file() and p.suffix in ['.json','.png','.zip'] and not (folder in ['tools/rework-base-hd','tools/rework-modular-outfits-hd','tools/rework-weapon-layers-hd'] and 'assets' in p.relative_to(source).parts):
+                target=OUT/folder/p.relative_to(source)
+                target.parent.mkdir(parents=True,exist_ok=True)
+                shutil.copy2(p,target)

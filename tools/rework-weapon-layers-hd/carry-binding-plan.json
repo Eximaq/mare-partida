@@ -1,0 +1,488 @@
+{
+  "schema": "109-native-carry-binding-plan-v1",
+  "records": [
+    {
+      "item": 109,
+      "body": "male",
+      "direction": "south",
+      "targetWalkRecord": "male-walk-south-r7",
+      "sourceDirection": "south",
+      "parts": [
+        {
+          "side": "RIGHT",
+          "source": {
+            "url": "assets/c92306d04370a505079c46bb4e877b4e16fd4b581f8ce42a3c4be032279300b5.png",
+            "sha256": "c92306d04370a505079c46bb4e877b4e16fd4b581f8ce42a3c4be032279300b5",
+            "nativeSize": [
+              640,
+              640
+            ],
+            "sourceClip": [
+              0,
+              0,
+              320,
+              640
+            ]
+          },
+          "sourceBone": {
+            "RIGHT ELBOW": {
+              "x": 65.30143540669857,
+              "y": 75.86602870813397
+            },
+            "RIGHT ARM": {
+              "x": 63.464114832535884,
+              "y": 89.41626794258373
+            }
+          },
+          "targetRestBone": {
+            "RIGHT ELBOW": {
+              "x": 49.30143540669857,
+              "y": 59.86602870813397
+            },
+            "RIGHT ARM": {
+              "x": 47.464114832535884,
+              "y": 73.41626794258373
+            }
+          },
+          "binding": {
+            "kind": "rigid",
+            "a": "RIGHT ELBOW",
+            "b": "RIGHT ARM"
+          },
+          "evidence": "Existing exact overlay,split on transparent column320;no altered pixel or resampling",
+          "restOffsetLogical": [
+            16,
+            16
+          ],
+          "restOffsetPhysical": [
+            64,
+            64
+          ],
+          "depthPolicy": "Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it",
+          "calibrationOffsetPhysical": [
+            -8,
+            -2
+          ],
+          "calibrationEvidence": "Visual native512 walkstate0: painted RIGHT hand extends image-left of unadjusted gauntlet; shift8pxleft2pxup, no source PNG modification. Candidate pending user review."
+        },
+        {
+          "side": "LEFT",
+          "source": {
+            "url": "assets/c92306d04370a505079c46bb4e877b4e16fd4b581f8ce42a3c4be032279300b5.png",
+            "sha256": "c92306d04370a505079c46bb4e877b4e16fd4b581f8ce42a3c4be032279300b5",
+            "nativeSize": [
+              640,
+              640
+            ],
+            "sourceClip": [
+              320,
+              0,
+              320,
+              640
+            ]
+          },
+          "sourceBone": {
+            "LEFT ELBOW": {
+              "x": 94.69856459330144,
+              "y": 75.86602870813397
+            },
+            "LEFT ARM": {
+              "x": 96.53588516746412,
+              "y": 89.41626794258373
+            }
+          },
+          "targetRestBone": {
+            "LEFT ELBOW": {
+              "x": 78.69856459330144,
+              "y": 59.86602870813397
+            },
+            "LEFT ARM": {
+              "x": 80.53588516746412,
+              "y": 73.41626794258373
+            }
+          },
+          "binding": {
+            "kind": "rigid",
+            "a": "LEFT ELBOW",
+            "b": "LEFT ARM"
+          },
+          "evidence": "Existing exact overlay,split on transparent column320;no altered pixel or resampling",
+          "restOffsetLogical": [
+            16,
+            16
+          ],
+          "restOffsetPhysical": [
+            64,
+            64
+          ],
+          "depthPolicy": "Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it"
+        }
+      ],
+      "targetNativeCanvas": [
+        512,
+        512
+      ],
+      "mirrorEntireComposition": false,
+      "status": "rendered-carry-candidate-needs-user-calibration",
+      "canUseSameRegistrationForIdle": false,
+      "idleConstraint": "Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim",
+      "restrictions": [
+        "Do not flatten head or change source raster dimensions.",
+        "Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.",
+        "Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.",
+        "This is an attachment plan, not a verified carry animation."
+      ],
+      "requiresVisualCalibration": true
+    },
+    {
+      "item": 109,
+      "body": "male",
+      "direction": "north",
+      "targetWalkRecord": "v7-male-walk-drawn-north-north",
+      "sourceDirection": "north",
+      "parts": [
+        {
+          "side": "RIGHT",
+          "source": {
+            "url": "assets/9223485e69ff9d654c0089e1e38b957005c79c702d3ec752f8d735a79889b84d.png",
+            "sha256": "9223485e69ff9d654c0089e1e38b957005c79c702d3ec752f8d735a79889b84d",
+            "nativeSize": [
+              640,
+              640
+            ]
+          },
+          "sourceBone": {
+            "RIGHT ELBOW": {
+              "x": 93.5,
+              "y": 74
+            },
+            "RIGHT ARM": {
+              "x": 95.25,
+              "y": 88.25
+            }
+          },
+          "targetRestBone": {
+            "RIGHT ELBOW": {
+              "x": 77.5,
+              "y": 58.0
+            },
+            "RIGHT ARM": {
+              "x": 79.25,
+              "y": 72.25
+            }
+          },
+          "binding": {
+            "kind": "rigid",
+            "a": "RIGHT ELBOW",
+            "b": "RIGHT ARM"
+          },
+          "evidence": "Original explicit left/right layer filenames and target hand coordinates in recipe",
+          "restOffsetLogical": [
+            16,
+            16
+          ],
+          "restOffsetPhysical": [
+            64,
+            64
+          ],
+          "depthPolicy": "Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it"
+        },
+        {
+          "side": "LEFT",
+          "source": {
+            "url": "assets/ac0d9d557f7f4338776fe5f079139304e813c25338d57943233af23c5cfd8c2b.png",
+            "sha256": "ac0d9d557f7f4338776fe5f079139304e813c25338d57943233af23c5cfd8c2b",
+            "nativeSize": [
+              640,
+              640
+            ]
+          },
+          "sourceBone": {
+            "LEFT ELBOW": {
+              "x": 66.5,
+              "y": 74
+            },
+            "LEFT ARM": {
+              "x": 64.5,
+              "y": 88.25
+            }
+          },
+          "targetRestBone": {
+            "LEFT ELBOW": {
+              "x": 50.5,
+              "y": 58.0
+            },
+            "LEFT ARM": {
+              "x": 48.5,
+              "y": 72.25
+            }
+          },
+          "binding": {
+            "kind": "rigid",
+            "a": "LEFT ELBOW",
+            "b": "LEFT ARM"
+          },
+          "evidence": "Original explicit left/right layer filenames and target hand coordinates in recipe",
+          "restOffsetLogical": [
+            16,
+            16
+          ],
+          "restOffsetPhysical": [
+            64,
+            64
+          ],
+          "depthPolicy": "Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it"
+        }
+      ],
+      "targetNativeCanvas": [
+        512,
+        512
+      ],
+      "mirrorEntireComposition": false,
+      "status": "rendered-carry-candidate-needs-user-calibration",
+      "canUseSameRegistrationForIdle": false,
+      "idleConstraint": "Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim",
+      "restrictions": [
+        "Do not flatten head or change source raster dimensions.",
+        "Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.",
+        "Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.",
+        "This is an attachment plan, not a verified carry animation."
+      ],
+      "requiresVisualCalibration": true
+    },
+    {
+      "item": 109,
+      "body": "male",
+      "direction": "east",
+      "targetWalkRecord": "v7-male-walk-drawn-east-east",
+      "sourceDirection": "east",
+      "parts": [
+        {
+          "side": "RIGHT",
+          "source": {
+            "url": "assets/5dec856bc116a8e7d3fae8d930ef882b36c68e7ba61a73367896e2faac8e0462.png",
+            "sha256": "5dec856bc116a8e7d3fae8d930ef882b36c68e7ba61a73367896e2faac8e0462",
+            "nativeSize": [
+              640,
+              640
+            ]
+          },
+          "sourceBone": {
+            "RIGHT ELBOW": {
+              "x": 75.5,
+              "y": 73.5
+            },
+            "RIGHT ARM": {
+              "x": 80,
+              "y": 88.75
+            }
+          },
+          "targetRestBone": {
+            "RIGHT ELBOW": {
+              "x": 59.5,
+              "y": 57.5
+            },
+            "RIGHT ARM": {
+              "x": 64.0,
+              "y": 72.75
+            }
+          },
+          "binding": {
+            "kind": "rigid",
+            "a": "RIGHT ELBOW",
+            "b": "RIGHT ARM"
+          },
+          "evidence": "Original explicit near/right and far/left equipment layers;RIGHTnear in authored walk handNear binding",
+          "restOffsetLogical": [
+            16,
+            16
+          ],
+          "restOffsetPhysical": [
+            64,
+            64
+          ],
+          "depthPolicy": "Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it"
+        },
+        {
+          "side": "LEFT",
+          "source": {
+            "url": "assets/f1f951fd1513baf343053acc6b50d8e1289ecbb87923296a07ba570e274b5bab.png",
+            "sha256": "f1f951fd1513baf343053acc6b50d8e1289ecbb87923296a07ba570e274b5bab",
+            "nativeSize": [
+              640,
+              640
+            ]
+          },
+          "sourceBone": {
+            "LEFT ELBOW": {
+              "x": 87.25,
+              "y": 73.25
+            },
+            "LEFT ARM": {
+              "x": 88.5,
+              "y": 88.75
+            }
+          },
+          "targetRestBone": {
+            "LEFT ELBOW": {
+              "x": 71.25,
+              "y": 57.25
+            },
+            "LEFT ARM": {
+              "x": 72.5,
+              "y": 72.75
+            }
+          },
+          "binding": {
+            "kind": "rigid",
+            "a": "LEFT ELBOW",
+            "b": "LEFT ARM"
+          },
+          "evidence": "Original explicit near/right and far/left equipment layers;RIGHTnear in authored walk handNear binding",
+          "restOffsetLogical": [
+            16,
+            16
+          ],
+          "restOffsetPhysical": [
+            64,
+            64
+          ],
+          "depthPolicy": "Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it"
+        }
+      ],
+      "targetNativeCanvas": [
+        512,
+        512
+      ],
+      "mirrorEntireComposition": false,
+      "status": "rendered-carry-candidate-needs-user-calibration",
+      "canUseSameRegistrationForIdle": false,
+      "idleConstraint": "Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim",
+      "restrictions": [
+        "Do not flatten head or change source raster dimensions.",
+        "Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.",
+        "Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.",
+        "This is an attachment plan, not a verified carry animation."
+      ],
+      "requiresVisualCalibration": true
+    },
+    {
+      "item": 109,
+      "body": "male",
+      "direction": "west",
+      "targetWalkRecord": "v7-male-walk-drawn-east-east-mirror-west-candidate",
+      "sourceDirection": "east",
+      "parts": [
+        {
+          "side": "RIGHT",
+          "source": {
+            "url": "assets/5dec856bc116a8e7d3fae8d930ef882b36c68e7ba61a73367896e2faac8e0462.png",
+            "sha256": "5dec856bc116a8e7d3fae8d930ef882b36c68e7ba61a73367896e2faac8e0462",
+            "nativeSize": [
+              640,
+              640
+            ]
+          },
+          "sourceBone": {
+            "RIGHT ELBOW": {
+              "x": 75.5,
+              "y": 73.5
+            },
+            "RIGHT ARM": {
+              "x": 80,
+              "y": 88.75
+            }
+          },
+          "targetRestBone": {
+            "RIGHT ELBOW": {
+              "x": 59.5,
+              "y": 57.5
+            },
+            "RIGHT ARM": {
+              "x": 64.0,
+              "y": 72.75
+            }
+          },
+          "binding": {
+            "kind": "rigid",
+            "a": "RIGHT ELBOW",
+            "b": "RIGHT ARM"
+          },
+          "evidence": "Original explicit near/right and far/left equipment layers;RIGHTnear in authored walk handNear binding",
+          "restOffsetLogical": [
+            16,
+            16
+          ],
+          "restOffsetPhysical": [
+            64,
+            64
+          ],
+          "depthPolicy": "Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it"
+        },
+        {
+          "side": "LEFT",
+          "source": {
+            "url": "assets/f1f951fd1513baf343053acc6b50d8e1289ecbb87923296a07ba570e274b5bab.png",
+            "sha256": "f1f951fd1513baf343053acc6b50d8e1289ecbb87923296a07ba570e274b5bab",
+            "nativeSize": [
+              640,
+              640
+            ]
+          },
+          "sourceBone": {
+            "LEFT ELBOW": {
+              "x": 87.25,
+              "y": 73.25
+            },
+            "LEFT ARM": {
+              "x": 88.5,
+              "y": 88.75
+            }
+          },
+          "targetRestBone": {
+            "LEFT ELBOW": {
+              "x": 71.25,
+              "y": 57.25
+            },
+            "LEFT ARM": {
+              "x": 72.5,
+              "y": 72.75
+            }
+          },
+          "binding": {
+            "kind": "rigid",
+            "a": "LEFT ELBOW",
+            "b": "LEFT ARM"
+          },
+          "evidence": "Original explicit near/right and far/left equipment layers;RIGHTnear in authored walk handNear binding",
+          "restOffsetLogical": [
+            16,
+            16
+          ],
+          "restOffsetPhysical": [
+            64,
+            64
+          ],
+          "depthPolicy": "Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it"
+        }
+      ],
+      "targetNativeCanvas": [
+        512,
+        512
+      ],
+      "mirrorEntireComposition": true,
+      "status": "rendered-carry-candidate-needs-user-calibration",
+      "canUseSameRegistrationForIdle": false,
+      "idleConstraint": "Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim",
+      "restrictions": [
+        "Do not flatten head or change source raster dimensions.",
+        "Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.",
+        "Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.",
+        "This is an attachment plan, not a verified carry animation."
+      ],
+      "requiresVisualCalibration": true
+    }
+  ],
+  "allEightBonePairsMatchRestAfter64pxPadding": true,
+  "warning": "Only REST pose0 coordinate compatibility checked. DRAWN8 limb points remain constant through attack even when painted hands move; therefore no visual attachment proof or attack-to-walk inference. Carry is NOT enabled."
+}
