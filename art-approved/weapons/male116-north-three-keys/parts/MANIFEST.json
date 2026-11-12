@@ -1,0 +1,22 @@
+{
+  "original": "Arma116_NORTH_Backup_Editavel.zip",
+  "bytes": 1947449,
+  "sha256": "8865192c6a7a7633c3f22bdfa7a154feead941808986e3664727eed1ec277df1",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "6f6bb5f2212c2fae9fe82fda7071ff4ab12b6f0a9e444e9d916114eb0fe7e50f"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "04fb54e97474ed6c11a7c3425f922964ec86ed05b405df9a655b01a7d2d371ce"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 447449,
+      "sha256": "48740d566cb775a0fcfa18cd0fe2a7767824a525a9af02f7d12fbe221c0b606d"
+    }
+  ]
+}

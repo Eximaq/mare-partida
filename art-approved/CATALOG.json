@@ -1177,6 +1177,20 @@
       }
     },
     {
+      "path": "weapons/female4-116-north-three-keys/Armas4_116_Feminino_NORTH_Editavel.zip",
+      "bytes": 2050300,
+      "sha256": "503e5388293dc15a5c8b600e987821e5f59f1cd7f9bc48e2f8bfbf460c9a89f7",
+      "pngEntries": 35,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/female4-116-north-three-keys/parts/MANIFEST.json",
+        "reconstruct": "weapons/female4-116-north-three-keys/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/lateral-four-torsos-approved/female118_east-west_four-torsos_approved-v1.zip",
       "bytes": 5736242,
       "sha256": "705891db8e33dab271a5fdbeb0197ccbc12fec9eed757d286a4dc70f06994bda",
@@ -1338,6 +1352,20 @@
       }
     },
     {
+      "path": "weapons/male116-north-three-keys/Arma116_NORTH_Backup_Editavel.zip",
+      "bytes": 1947449,
+      "sha256": "8865192c6a7a7633c3f22bdfa7a154feead941808986e3664727eed1ec277df1",
+      "pngEntries": 35,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male116-north-three-keys/parts/MANIFEST.json",
+        "reconstruct": "weapons/male116-north-three-keys/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/male118-four-torsos-ew-v2/male118_east-west_four-torsos_approved-v2.zip",
       "bytes": 7933867,
       "sha256": "55b2ab8f948c726a6d9cc9861c941475867cb8f13ec8d12eedfdc3b2b7f69525",
@@ -1394,6 +1422,20 @@
       }
     },
     {
+      "path": "weapons/male4-north-three-keys/Rifle4_NORTH_Tempo_Proposto_Editavel.zip",
+      "bytes": 270694,
+      "sha256": "c5313a276de53421bf3cb28ad66990574283ad1fed8e3f6aacaed74cf7eb105b",
+      "pngEntries": 12,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male4-north-three-keys/parts/MANIFEST.json",
+        "reconstruct": "weapons/male4-north-three-keys/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/male5-four-torsos-ew/Mosquete5_Masculino_Quatro_Trajes_EW_Editavel.zip",
       "bytes": 7090380,
       "sha256": "0059e3e29fee9dd30c40592f149543462405ab8074e4091dc76813bbd9b97caa",
@@ -1403,6 +1445,20 @@
         "type": "split-archive",
         "manifest": "weapons/male5-four-torsos-ew/parts/MANIFEST.json",
         "reconstruct": "weapons/male5-four-torsos-ew/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/mixed115-north-three-keys/Arma115_NORTH_MF_Editavel.zip",
+      "bytes": 3773509,
+      "sha256": "201c8a8ccbb5d105132a331a1f96ae7a93fc5194822319583ac16524f0f59f66",
+      "pngEntries": 58,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/mixed115-north-three-keys/parts/MANIFEST.json",
+        "reconstruct": "weapons/mixed115-north-three-keys/parts/RECONSTRUCT.py",
         "originalPreservedLocally": true,
         "reconstructionVerified": true
       }

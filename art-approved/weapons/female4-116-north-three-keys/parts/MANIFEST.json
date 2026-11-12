@@ -1,0 +1,22 @@
+{
+  "original": "Armas4_116_Feminino_NORTH_Editavel.zip",
+  "bytes": 2050300,
+  "sha256": "503e5388293dc15a5c8b600e987821e5f59f1cd7f9bc48e2f8bfbf460c9a89f7",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "3519ea40c2e7f80f2171a92d9b92e35d94d510edc6b0d9312c40e47be9038236"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "ee8f70ef314dfa7f5a9dcddda4f6378ac74b06fdeddfc28ec086e249b7017725"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 550300,
+      "sha256": "212904320eeab6becf5804c577d5131361de4c96ed12260f3d7b1dd79ca11fb0"
+    }
+  ]
+}
