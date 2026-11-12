@@ -2465,6 +2465,43 @@
         "Braco117_F_EW_QuatroTrajes_Editavel.zip.part002"
       ],
       "restore": "weapons/arm117-ew-approved/RESTORE.py"
+    },
+    {
+      "path": "weapons/swords0-67-70-ew-approved/0-67-70_EW_M/Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 41540601,
+      "sha256": "f45a0fde1feb64c86d7db371c4fa304af605cb010c4f2fd1e60f72af1eba9d84",
+      "pngEntries": 619,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+        "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part003",
+        "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part004",
+        "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part005",
+        "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part006"
+      ],
+      "restore": "weapons/swords0-67-70-ew-approved/RESTORE.py"
+    },
+    {
+      "path": "weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 63089207,
+      "sha256": "27aaf381440afce9a0e0d41d3dfc55415a3753c5efff0a8412a853f7e8d8773a",
+      "pngEntries": 1112,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+        "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+        "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part003",
+        "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part004",
+        "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part005",
+        "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part006",
+        "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part007",
+        "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part008",
+        "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part009"
+      ],
+      "restore": "weapons/swords0-67-70-ew-approved/RESTORE.py"
     }
   ],
   "productionEnabled": false,

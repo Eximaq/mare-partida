@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 2,
+  "totalBytes": 104629808,
+  "scope": "Weapons0/67/70 EAST/WEST male and female, four outfits each; exact approved editables.",
+  "packages": [
+    {
+      "key": "0-67-70_EW_M",
+      "filename": "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 41540601,
+      "sha256": "f45a0fde1feb64c86d7db371c4fa304af605cb010c4f2fd1e60f72af1eba9d84",
+      "pngEntries": 619,
+      "entries": 634,
+      "parts": [
+        {
+          "path": "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "sha256": "8731bdaf8162611ff4c714f90c84d9d1ba8e878f938402cabd1bdcfe9fb0b612",
+          "git_blob_sha": "21e4ecc9042fafba4f24db01af61786212000a46"
+        },
+        {
+          "path": "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "sha256": "a6a2c7dd2f94a5877511ac18c08575247e8c0e3176caf468ea50a84a10212b62",
+          "git_blob_sha": "e57658ce39b526c35700d22331049ec59947527c"
+        },
+        {
+          "path": "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part003",
+          "bytes": 7864320,
+          "sha256": "653aa6267e5ed09de2a3129aea435a41d0ed9448fd10e8dd07827adc1385441f",
+          "git_blob_sha": "f958148ffeff25e87d9e3eae33f307b08411fd92"
+        },
+        {
+          "path": "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part004",
+          "bytes": 7864320,
+          "sha256": "d2dba328b1fbf755fa99918c590ca91176b8a03720629c9db964bc7b7b6fa4c1",
+          "git_blob_sha": "b1a5cf3a5bfe2be70bd867a86399739c66c2b97e"
+        },
+        {
+          "path": "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part005",
+          "bytes": 7864320,
+          "sha256": "884876b31b6efe46b2dc3d0f9f437a2245772655c271508be208d9c274469a52",
+          "git_blob_sha": "68604eec326aa1ba17c3664ef5a3d4cdcfae13b8"
+        },
+        {
+          "path": "Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part006",
+          "bytes": 2219001,
+          "sha256": "51c67bdffbf290b93b55f85e2febfa3ca7d68fd7e02ebef137c2424a978ce957",
+          "git_blob_sha": "e2c424a1ef78c1c48e43907cbc466e5f31dd6a73"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "0-67-70_EW_F",
+      "filename": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip",
+      "bytes": 63089207,
+      "sha256": "27aaf381440afce9a0e0d41d3dfc55415a3753c5efff0a8412a853f7e8d8773a",
+      "pngEntries": 1112,
+      "entries": 1132,
+      "parts": [
+        {
+          "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "sha256": "c25a3f3913c1e608833039a0b2efd657f62bbe5b76cd3f80394d6f633bdfedb2",
+          "git_blob_sha": "3f8d65f5a7ccfea9d2df3057b0746eeee26aa180"
+        },
+        {
+          "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "sha256": "84fbc2918dc35eb94c274c85dea600405fb0150183caa0369fd14655cfad9011",
+          "git_blob_sha": "60906e8ddf6bd2d2c1bd6d310c08705dca2b0bf5"
+        },
+        {
+          "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part003",
+          "bytes": 7864320,
+          "sha256": "c321b627d60b501202c78f4df966dc18315549da6f3b1e84aaac9eae70d094bb",
+          "git_blob_sha": "67e335d7b6aac1fca3e5c111ccfe358705296800"
+        },
+        {
+          "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part004",
+          "bytes": 7864320,
+          "sha256": "6d03983b0e41d73c755826f072029d1582d30bb25468254bf899825c5ec026f3",
+          "git_blob_sha": "aa4f85ee59c2e54f678ad0322450c9081971c63b"
+        },
+        {
+          "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part005",
+          "bytes": 7864320,
+          "sha256": "9a0dec443fb0b32c3ef2908fc66495693a216868a7fbf4f7f2bcc81ec0a58dde",
+          "git_blob_sha": "703d040b1b0a1d0de96eed5c8e66707bd141be93"
+        },
+        {
+          "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part006",
+          "bytes": 7864320,
+          "sha256": "2fc3efcf08ca3bda2d926b4076b8f17e317d94d30f3bd8891e1519f88af8153a",
+          "git_blob_sha": "e7ba59814b8d876cb889912cb8fd73d411d83c6e"
+        },
+        {
+          "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part007",
+          "bytes": 7864320,
+          "sha256": "9d5946ae3b89d960e8d8e49c5d17ed66b9581654f7a9b8ad84804c7a13d63a3d",
+          "git_blob_sha": "caedbefc6eb757d9576f769c81fa52b18a6c6e8e"
+        },
+        {
+          "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part008",
+          "bytes": 7864320,
+          "sha256": "5667a05171968643d00ce275f1b269af61d07cb4c8985f5747d8e8390e776275",
+          "git_blob_sha": "06a992bb29e1ea561ef732257f89408b212f2daf"
+        },
+        {
+          "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part009",
+          "bytes": 174647,
+          "sha256": "532521c7512fd1aab12d0fbef0d8f11f2ce254fa7e2f84b85e7e01916259fdbc",
+          "git_blob_sha": "70c5672aaef03b0ddccb29d1677c9cb14d63241c"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

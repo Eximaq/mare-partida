@@ -32,3 +32,8 @@ A versão nova baseada na animação aprovada do cajado 127 foi aprovada em 2026
 ## Braço 117: laterais aprovadas
 
 Os dois backups aprovados de EAST/WEST, masculino e feminino com quatro trajes, estão em `weapons/arm117-ew-approved/`. Reconstrução exata, CRC e SHA-256 verificados; sem integração ou teste no jogo.
+
+
+## Armas 0, 67 e 70: laterais aprovadas
+
+Os dois backups aprovados de EAST/WEST, masculino e feminino com quatro trajes, estão em `weapons/swords0-67-70-ew-approved/`. Reconstrução exata, CRC e SHA-256 verificados; sem integração ou teste no jogo.
