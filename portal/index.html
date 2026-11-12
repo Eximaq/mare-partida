@@ -20,7 +20,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./ocean-art.css">
 <link rel="stylesheet" href="./portal.css">
-<script defer src="./pix-dialog.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -50,61 +49,6 @@
   <a href="https://discord.gg/uRnP79cp7h" rel="noopener noreferrer" target="_blank">Discord <span aria-hidden="true">↗</span></a>
 </nav>
 </div>
-<section class="support" aria-labelledby="support-title">
-  <div class="support-intro">
-    <h2 id="support-title">Planos de colaborador</h2>
-    <p>Apoie o desenvolvimento de Kaizoku Idle com um Pix único. As vantagens estão previstas para o lançamento.</p>
-  </div>
-  <div class="support-plans">
-  <article class="support-plan" aria-labelledby="plan-15">
-    <h3 id="plan-15">Grumete</h3>
-    <p class="plan-price">R$ 15</p>
-    <ul class="plan-perks">
-      <li>Título de Fundador no perfil</li>
-    </ul>
-    <button class="plan-payment" type="button" data-pix-amount="15" data-pix-qr="./assets/pix-15.png" data-pix-code="./assets/pix-15.txt" aria-haspopup="dialog">
-      Ver Pix<span class="visually-hidden"> de R$ 15</span><span aria-hidden="true">+</span>
-    </button>
-  </article>
-  <article class="support-plan" aria-labelledby="plan-25">
-    <h3 id="plan-25">Navegador</h3>
-    <p class="plan-price">R$ 25</p>
-    <ul class="plan-perks">
-      <li>Título de Fundador no perfil</li>
-      <li>Emblema de Fundador</li>
-    </ul>
-    <button class="plan-payment" type="button" data-pix-amount="25" data-pix-qr="./assets/pix-25.png" data-pix-code="./assets/pix-25.txt" aria-haspopup="dialog">
-      Ver Pix<span class="visually-hidden"> de R$ 25</span><span aria-hidden="true">+</span>
-    </button>
-  </article>
-  <article class="support-plan" aria-labelledby="plan-50">
-    <h3 id="plan-50">Capitão</h3>
-    <p class="plan-price">R$ 50</p>
-    <ul class="plan-perks">
-      <li>Título de Fundador no perfil</li>
-      <li>Emblema de Fundador</li>
-      <li>Visual exclusivo de Capitão</li>
-    </ul>
-    <button class="plan-payment" type="button" data-pix-amount="50" data-pix-qr="./assets/pix-50.png" data-pix-code="./assets/pix-50.txt" aria-haspopup="dialog">
-      Ver Pix<span class="visually-hidden"> de R$ 50</span><span aria-hidden="true">+</span>
-    </button>
-  </article>
-  </div>
-  <p class="support-help">Depois de pagar, abra um tópico particular no <a href="https://discord.com/channels/1561926293287870525/1569908033142915174" rel="noopener noreferrer" target="_blank">canal de comprovantes</a> para registrar seu apoio.</p>
-</section>
-<dialog class="pix-dialog" aria-labelledby="pix-title">
-  <h2 id="pix-title">Apoio por Pix</h2>
-  <p class="pix-amount plan-price"></p>
-  <div class="pix-image"></div>
-  <p class="pix-status" role="status"></p>
-  <button class="pix-copy" type="button" disabled>Copiar código Pix</button>
-  <p class="pix-copy-feedback" role="status"></p>
-  <textarea class="pix-copy-manual" aria-label="Código Pix para copiar manualmente" rows="3" readonly hidden></textarea>
-  <p class="pix-receipt-help" id="pix-receipt-help">Após pagar, abra um tópico particular no canal e anexe o comprovante para registrar seu apoio.</p>
-  <a class="pix-receipt-link" href="https://discord.com/channels/1561926293287870525/1569908033142915174" target="_blank" rel="noopener noreferrer" aria-describedby="pix-receipt-help">Enviar comprovante no Discord</a>
-  <p class="pix-receipt-help">Novo no Discord do jogo? <a href="https://discord.gg/uRnP79cp7h" target="_blank" rel="noopener noreferrer">Entre no servidor</a> e aceite as regras em #aceitar-termos para liberar o canal.</p>
-  <button class="pix-close" type="button" autofocus>Fechar</button>
-</dialog>
 <div class="voyage" role="group" aria-label="Uma aventura pirata em pixel art">
 <span>Um mundo de ilhas</span><i aria-hidden="true">✦</i>
 <span>Uma vida de aventuras</span><i aria-hidden="true">✦</i>
