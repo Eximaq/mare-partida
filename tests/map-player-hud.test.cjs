@@ -2,35 +2,32 @@
 const assert=require('node:assert/strict');
 const HUD=require('../map-player-hud.js');
 
-const rectangles=[], labels=[], strokes=[];
+const rectangles=[], labels=[], outlinedLabels=[], tracks=[];
+let shapeStrokes=0;
 const context={
   save(){},restore(){},measureText:name=>({width:name.length*8}),
-  beginPath(){},moveTo(){},lineTo(){},closePath(){},fill(){},
-  stroke(){strokes.push(this.strokeStyle);},
+  beginPath(){},moveTo(){},lineTo(){},bezierCurveTo(){},closePath(){},fill(){},clip(){},
+  stroke(){shapeStrokes++;},
+  roundRect(...args){tracks.push(args);},
+  strokeText(name){outlinedLabels.push(name);},
   fillText(name){labels.push(name);},
   fillRect(x,y,width,height){rectangles.push({x,y,width,height,color:this.fillStyle});}
 };
 
-const name='[MARE] NaveganteSul';
-const peer=HUD.draw(context,120,40,name,{faction:'marine',tier:3});
+const name='NaveganteSul';
+HUD.draw(context,120,40,name);
 assert.deepEqual(labels,[name]);
-assert(peer.left<120-name.length*4,'long name and crew tag fit inside the border');
-assert.equal(rectangles.length,0,'peer nameplates never draw resource bars');
-const marine=strokes.at(-1);
-HUD.draw(context,120,40,'Navegante',{faction:'pirate',tier:3});
-assert.notEqual(strokes.at(-1),marine,'peer faction has its own rim');
-HUD.draw(context,120,40,'Sem título',{faction:'marine'});
-const neutral=strokes.at(-1);
-HUD.draw(context,120,40,'Sem título',{faction:'pirate',tier:0});
-assert.equal(strokes.at(-1),neutral,'missing titles use the same neutral rim');
-HUD.draw(context,120,40,'Navegante',{resources:{hp:25,maxHP:100,energy:50,maxEnergy:50}});
-assert.equal(rectangles.length,4);
-assert(rectangles.every(rect=>rect.y>peer.bottom),'resources are below the name frame');
-assert.equal(rectangles[1].width,rectangles[0].width/4);
-assert.equal(rectangles[3].width,rectangles[2].width);
-assert.equal(rectangles[1].color,'#e25069');
-assert.equal(rectangles[3].color,'#9e71e5');
-assert(rectangles[3].height<rectangles[1].height);
+assert.deepEqual(outlinedLabels,[name]);
+assert.equal(tracks.length,0,'a remote player draws only text');
+assert.equal(rectangles.length,0);
+assert.equal(shapeStrokes,0);
+
+HUD.draw(context,120,40,'Navegante',{hp:25,maxHP:100,energy:60,maxEnergy:50});
+assert(tracks.every(track=>track[1]>40),'resource tracks sit below the nickname');
+assert.equal(tracks[0][2],tracks[1][2]);
+assert(tracks[1][3]<tracks[0][3]);
+assert.equal(rectangles.find(rect=>rect.color==='#e24562').width,15);
+assert.equal(rectangles.find(rect=>rect.color==='#a16bea').width,60);
 rectangles.length=0;
-HUD.draw(context,120,40,'Navegante',{resources:{hp:0,maxHP:100,energy:0,maxEnergy:0}});
-assert.equal(rectangles.length,2,'zero resources leave only the empty tracks');
+HUD.draw(context,120,40,'Navegante',{hp:0,maxHP:100,energy:0,maxEnergy:0});
+assert.equal(rectangles.length,0,'empty tracks have no colored fill');
