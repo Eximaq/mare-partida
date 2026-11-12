@@ -7,7 +7,7 @@
   "source": "Existing native96 materials and authored animations; owner authorised default use in Sprint2.",
   "headgearPolicy": "../../headgear-visibility.js",
   "renderer": "native96",
-  "assetRevision": "native96-60c273da93848645",
+  "assetRevision": "native96-b91277c5078664be",
   "resources": {
     "assets/appearance3-face-almond-feminino-east.png": [
       128,
@@ -8202,6 +8202,10 @@
       128
     ],
     "assets/weapon-item-109-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-109-south.png": [
       128,
       128
     ],

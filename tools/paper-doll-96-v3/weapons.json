@@ -1532,6 +1532,41 @@
             "nativeSha256": "128bac470732a42f877abe56717113b285b697a8173953cd71e81f44caca5d1f",
             "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
           }
+        },
+        "south": {
+          "sha256": "51a68cf90c65a91c6ac8c9ac03b5852d1592d10d056dcac0430ec4129189d047",
+          "grip": {
+            "x": 76,
+            "y": 64
+          },
+          "tip": {
+            "x": 109,
+            "y": 65
+          },
+          "axisAngle": 1.5707963267948966,
+          "bounds": {
+            "x0": 14,
+            "y0": 32,
+            "x1": 113,
+            "y1": 97
+          },
+          "materialScale": 0.14,
+          "renderDensity": 3,
+          "visibleHeight": 23,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "55eeba35-f899-4482-bcd8-66d1de857ecf",
+            "assetId": "63f76de3-5e5b-5ce8-8e4b-ad630309e466",
+            "candidate": 2,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "51a68cf90c65a91c6ac8c9ac03b5852d1592d10d056dcac0430ec4129189d047",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          },
+          "source": "assets/weapon-item-109-south.png"
         }
       }
     },
