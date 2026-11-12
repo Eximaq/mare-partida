@@ -12,13 +12,12 @@
     return width;
   }
 
-  function bar(context,x,y,height,value,max,colors){
-    const width=62;
+  function bar(context,x,y,width,height,value,max,colors,rim=colors.rim){
     const fraction=Number.isFinite(value)&&Number.isFinite(max)&&max>0?Math.max(0,Math.min(1,value/max)):0;
     const fill=Math.round((width-2)*fraction);
 
     context.beginPath();
-    context.roundRect(x+.5,y+.5,width-1,height-1,2);
+    context.roundRect(x+.5,y+.5,width-1,height-1,3);
     context.fillStyle='#111521';
     context.fill();
     if(fill){
@@ -33,25 +32,26 @@
       context.restore();
     }
     context.lineWidth=1;
-    context.strokeStyle=colors.rim;
+    context.strokeStyle=rim;
     context.stroke();
   }
 
   function drawResources(context,x,y,{hp,maxHP,energy:currentEnergy,maxEnergy}){
-    const left=x-26,iconX=left-12;
+    const width=62,left=x-26,iconX=left-12;
+    const lifeHeight=11,energyHeight=9,energyY=y+lifeHeight+2;
+    const heartY=y+2,boltY=energyY+1;
 
     context.beginPath();
-    context.moveTo(iconX+4,y+7);
-    context.bezierCurveTo(iconX+2,y+5,iconX,y+4,iconX,y+2);
-    context.bezierCurveTo(iconX,y,iconX+3,y-1,iconX+4,y+1);
-    context.bezierCurveTo(iconX+5,y-1,iconX+8,y,iconX+8,y+2);
-    context.bezierCurveTo(iconX+8,y+4,iconX+6,y+5,iconX+4,y+7);
+    context.moveTo(iconX+4,heartY+7);
+    context.bezierCurveTo(iconX+2,heartY+5,iconX,heartY+4,iconX,heartY+2);
+    context.bezierCurveTo(iconX,heartY,iconX+3,heartY-1,iconX+4,heartY+1);
+    context.bezierCurveTo(iconX+5,heartY-1,iconX+8,heartY,iconX+8,heartY+2);
+    context.bezierCurveTo(iconX+8,heartY+4,iconX+6,heartY+5,iconX+4,heartY+7);
     context.closePath();
     context.fillStyle=life.icon;
     context.fill();
-    bar(context,left,y,7,hp,maxHP,life);
+    bar(context,left,y,width,lifeHeight,hp,maxHP,life);
 
-    const boltY=y+9;
     context.beginPath();
     context.moveTo(iconX+4,boltY-1);
     context.lineTo(iconX+1,boltY+3);
@@ -63,26 +63,39 @@
     context.closePath();
     context.fillStyle=energy.icon;
     context.fill();
-    bar(context,left,boltY,5,currentEnergy,maxEnergy,energy);
+    bar(context,left,energyY,width,energyHeight,currentEnergy,maxEnergy,energy);
   }
 
-  function draw(context,x,baseline,name,resources){
-    const center=Math.round(x),y=Math.round(baseline);
-    context.save();
+  function drawName(context,x,y,name){
     context.font=font;
     context.textAlign='center';
     context.textBaseline='alphabetic';
     context.lineJoin='round';
     context.lineWidth=3;
     context.strokeStyle='#081219';
-    context.strokeText(name,center,y);
+    context.strokeText(name,x,y);
     context.fillStyle='#fff8e9';
-    context.fillText(name,center,y);
-    if(resources)drawResources(context,center,y+5,resources);
+    context.fillText(name,x,y);
+  }
+
+  function draw(context,x,baseline,name,resources){
+    const center=Math.round(x),y=Math.round(baseline);
+    context.save();
+    drawName(context,center,y,name);
+    if(resources)drawResources(context,center,y+3,resources);
     context.restore();
   }
 
-  const api={measure,draw};
+  function drawEnemy(context,x,baseline,name,{hp,maxHP,width,boss=false,targeted=false}){
+    const center=Math.round(x),y=Math.round(baseline);
+    const rim=targeted?'#f3ca80':boss?'#bd8b59':life.rim;
+    context.save();
+    drawName(context,center,y,name);
+    bar(context,center-width/2,y+3,width,11,hp,maxHP,life,rim);
+    context.restore();
+  }
+
+  const api={measure,draw,drawEnemy};
   root.MareMapPlayerHud=api;
   if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

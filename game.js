@@ -1404,6 +1404,13 @@
     return MareCombatVfx.statuses(actor,world.time,Date.now(),hero?{...rankA,armorUp:room||session.guard>0||supaShieldActive()||bisonShellActive()||rt.shield>0&&rt.shieldTime>0||session.haki.active==='armament',buff:room||session.blessing>0||bisonShellActive()||ushiBuffActive()||wolfAuraActive()||horuBuffActive()||session.kobuSupportUntil>Date.now()||rt.bloodlust>0||hoyaActive()||rt.ultimate.immortal>0||rt.ultimate.holyHP>0||rt.ultimate.holyAttack>0}:genie?{...rankA,buff:MareHoya.empowered(actor,world.time)}:rankA);
   }
   function combatHudBox(actor,width=60,name=''){ctx.save();ctx.font='bold 13px Trebuchet MS';const nameWidth=ctx.measureText(name).width;ctx.restore();return MareCombatVfx.layout(actor.x,actor.y,{height:combatVisualHeight(actor),barWidth:width,nameWidth});}
+  function enemyHudBox(actor){
+    const name=monsterName(actor)+' · Nv.'+actor.level;
+    const boss=actor.type==='boss'||actor.source==='boss-dungeon'||actor.source==='weekly-boss';
+    const width=boss?88:66;
+    const layout=MareCombatVfx.layout(actor.x,actor.y,{height:combatVisualHeight(actor),barWidth:width,nameWidth:MareMapPlayerHud.measure(ctx,name)});
+    return {...layout,name,width,boss};
+  }
   function drawCombatHeader(actor,name,hp,maxHP,width=60,color='#5ed09c'){
     const box=combatHudBox(actor,width,name);ctx.save();ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#03171c';ctx.strokeText(name,actor.x,box.nameY);ctx.fillStyle='#effcf5';ctx.fillText(name,actor.x,box.nameY);px(ctx,actor.x-width/2,box.barY,width,7,'#001819');px(ctx,actor.x-width/2+1,box.barY+1,(width-2)*Math.max(0,Math.min(1,hp/Math.max(1,maxHP))),5,color);if(world.target===actor){ctx.strokeStyle='#d9b777';ctx.lineWidth=2;ctx.strokeRect(actor.x-width/2-3,box.barY-3,width+6,13);}ctx.restore();
   }
@@ -1423,7 +1430,7 @@
     }
     if(layer!=='front')return;
     if(game.hp>0&&session.respawn<=0)MareCombatVfx.drawStatuses(ctx,playerMapHudBox(),combatStatus(world.hero),world.time);
-    for(const actor of livingMobs())MareCombatVfx.drawStatuses(ctx,combatHudBox(actor,actor.type==='boss'?88:65,monsterName(actor)+' · Nv.'+actor.level),combatStatus(actor),world.time);
+    for(const actor of livingMobs())MareCombatVfx.drawStatuses(ctx,enemyHudBox(actor),combatStatus(actor),world.time);
     if(hoyaActive())MareCombatVfx.drawStatuses(ctx,combatHudBox(session.genie,64,'Gênio'),combatStatus(session.genie),world.time);
   }
   function addProjectile(x,y,tx,ty,color='#f4dfa1',born=null,releaseId=null){world.projectiles.push({x,y,tx,ty,progress:0,color,born,releaseId});}
@@ -3445,10 +3452,15 @@ ${avatarExtra}
     ctx.drawImage(img,Math.round(m.x-width/2),Math.round(m.y-size+bob),Math.round(width),Math.round(size));
     ctx.restore();return true;
   }
-  function drawMonster(m){
-    if(drawMobArt(m)){if(m.alive)drawCombatHeader(m,monsterName(m)+' · Nv.'+m.level,m.hp,m.maxHP,m.type==='boss'?88:65,m.type==='boss'?'#e5a35d':'#e27283');return;}
+  function drawMonsterFallback(m){
     let t=world.time,scale=m.type==='boss'?2.15:m.type==='crab'?1.65:1.8,bob=Math.round(Math.sin(t*3+m.bob)*2);ctx.save();ctx.translate(Math.round(m.x),Math.round(m.y+bob));ctx.scale(scale,scale);ctx.fillStyle='#071b20a0';ctx.beginPath();ctx.ellipse(0,2,13,4,0,0,Math.PI*2);ctx.fill();if(m.type==='crab'){px(ctx,-10,-12,20,12,'#7d3b36');px(ctx,-8,-17,16,10,'#d27b58');px(ctx,-11,-16,5,6,'#e6b477');px(ctx,6,-16,5,6,'#e6b477');px(ctx,-7,-14,3,3,'#182e32');px(ctx,5,-14,3,3,'#182e32');px(ctx,-17,-6,8,3,'#aa5444');px(ctx,9,-6,8,3,'#aa5444');px(ctx,-19,-16,8,7,'#d78563');px(ctx,11,-16,8,7,'#d78563');}else if(m.type==='bandit'){px(ctx,-5,-11,5,9,'#353a35');px(ctx,1,-11,5,9,'#353a35');px(ctx,-8,-26,17,15,'#8d5741');px(ctx,-6,-39,12,13,'#c08e6a');px(ctx,-12,-40,24,5,'#3e3a3a');px(ctx,-7,-46,16,8,'#55504b');px(ctx,10,-25,4,22,'#bdc7ba');px(ctx,9,-16,8,3,'#eac078');px(ctx,-5,-34,3,2,'#292e2c');px(ctx,2,-34,3,2,'#292e2c');}else if(m.type==='spirit'){ctx.globalAlpha=.85;px(ctx,-10,-28,21,22,'#2e7e75');px(ctx,-7,-39,15,13,'#a8e7c5');px(ctx,-13,-27,5,13,'#78c9b1');px(ctx,10,-27,5,13,'#78c9b1');px(ctx,-8,-5,7,5,'#77cabb');px(ctx,2,-5,7,5,'#80d5c4');px(ctx,-6,-33,4,3,'#295751');px(ctx,4,-33,4,3,'#295751');px(ctx,-13,-40,8,5,'#9ecbb1');ctx.globalAlpha=1;}else {px(ctx,-7,-13,7,11,'#24262d');px(ctx,2,-13,7,11,'#24262d');px(ctx,-11,-32,22,20,'#732f36');px(ctx,-7,-43,15,13,'#c09878');px(ctx,-16,-47,31,7,'#2c3434');px(ctx,-8,-54,17,9,'#423a36');px(ctx,-6,-36,12,4,'#e9c178');px(ctx,-14,-29,5,19,'#b1a18c');px(ctx,13,-39,5,30,'#cbd5cf');px(ctx,9,-19,14,4,'#e7b974');px(ctx,-3,-38,3,2,'#262a2a');px(ctx,4,-38,3,2,'#262a2a');}if(m.hit>0){ctx.globalCompositeOperation='screen';px(ctx,-11,-39,22,29,'#fff9d0aa');ctx.globalCompositeOperation='source-over';}ctx.restore();
-    if(m.alive)drawCombatHeader(m,monsterName(m)+' · Nv.'+m.level,m.hp,m.maxHP,m.type==='boss'?88:56,m.type==='boss'?'#d9aa6c':'#c87369');}
+  }
+  function drawMonster(m){
+    if(!drawMobArt(m))drawMonsterFallback(m);
+    if(!m.alive)return;
+    const {nameY,name,width,boss}=enemyHudBox(m);
+    MareMapPlayerHud.drawEnemy(ctx,m.x,nameY,name,{hp:m.hp,maxHP:m.maxHP,width,boss,targeted:world.target===m});
+  }
   function drawTalentFields(){
     if(scene!=='hunt'||!session)return;ctx.save();
     for(const f of session.talents.ultimate.fields){
@@ -3513,7 +3525,7 @@ ${avatarExtra}
     const {x,y}=world.hero;
     const box=MareCombatVfx.layout(x,y,{height:combatVisualHeight(world.hero),nameWidth:MareMapPlayerHud.measure(ctx,game.name)});
     // The stacked menu can cover a name at the default offset on phones.
-    const nameY=box.nameY+(innerWidth<=640?26:12);
+    const nameY=box.nameY+(innerWidth<=640?23:12);
     return {...box,nameY,iconY:nameY+10,ccY:nameY-26};
   }
   function drawForegroundLayer(actors){
