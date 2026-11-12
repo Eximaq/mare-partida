@@ -3558,8 +3558,10 @@ ${avatarExtra}
     if(MareMapExports.get(id)){
       image=MareMapExports.prepare(id);
       const depth=MareWorldDepth.state(id);
-      if(depth==='failed'||image.complete&&!image.naturalWidth)return 'failed';
-      return image.complete&&depth==='ready'?'ready':'loading';
+      // The flattened map already contains these objects. Online occlusion
+      // masks can finish in the background without blocking a playable map.
+      if((!ONLINE_GAME&&depth==='failed')||(image.complete&&!image.naturalWidth))return 'failed';
+      return image.complete&&(ONLINE_GAME||depth==='ready')?'ready':'loading';
     }
     if(id==='quest-dungeons'){MareQuestDungeonWorld.prepare();return MareQuestDungeonWorld.state();}
     if(id==='lobby')image=MareLobby.image;
@@ -3584,14 +3586,15 @@ ${avatarExtra}
     const deadline = performance.now() + 20_000;
     return new Promise((resolve, reject) => {
       let appearanceSettled = false;
-      let appearanceError;
-      appearance.then(() => { appearanceSettled = true; }, error => { appearanceError = error; });
+      let appearanceFailed = false;
+      appearance.then(() => { appearanceSettled = true; }, () => { appearanceFailed = true; });
       function check(frameTime) {
         try {
-          if (appearanceError) throw appearanceError;
+          if (appearanceFailed) throw new Error('initial_appearance_failed');
           const state = mapArtState(frameTime);
           if (state === 'ready' && appearanceSettled) resolve();
-          else if (state === 'failed' || frameTime >= deadline) throw new Error('initial_world_unavailable');
+          else if (state === 'failed') throw new Error('initial_map_asset_failed');
+          else if (frameTime >= deadline) throw new Error(state === 'ready' ? 'initial_appearance_timeout' : 'initial_map_timeout');
           else requestAnimationFrame(check);
         } catch (error) {
           reject(error);
@@ -4206,7 +4209,9 @@ function applySceneHudLayout(){
 })().catch(error=>{
   if(!globalThis.MareGameSession?.enabled){setTimeout(()=>{throw error;});return;}
   document.body.classList.remove('online-session-loading','online-world-loading');
+  document.getElementById('startOverlay')?.classList.add('hidden');
   const box=document.createElement('section');box.className='online-boot-error';box.setAttribute('role','alert');box.textContent='Não foi possível iniciar o jogo online. Seu progresso continua no servidor. Atualize a página para tentar novamente.';document.body.append(box);
-  console.error('[online-game] bootstrap_failed');
+  const known=['initial_map_asset_failed','initial_map_timeout','initial_appearance_failed','initial_appearance_timeout'];
+  console.error('[online-game] bootstrap_failed',known.includes(error?.message)?error.message:'unexpected');
 });
 

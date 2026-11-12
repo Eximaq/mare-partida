@@ -20,8 +20,16 @@ await authDatabase(async f=>{
  try{
   gateway.listen(9445,'127.0.0.1');await once(gateway,'listening');browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});context=await browser.newContext({viewport:{width:1366,height:900}});const p=await context.newPage();p.on('dialog',async(d:any)=>{assert.equal(d.type(),'confirm');assert.match(d.message(),/Este personagem está sob controle/);await d.accept();});p.on('pageerror',(e:any)=>errors.push(e.stack||e.message));await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-final-acceptance'));
   await p.route(/^https?:\/\/(?!localhost:9445\/)/,(r:any)=>r.abort());
+  let blockedDepth=0;
+  await p.route('**/assets/map-depth/objects/export-14436f8b05ddc40898b1f60d.png',(r:any)=>{
+   blockedDepth++;
+   return r.abort();
+  });
   await p.goto('https://localhost:9445/online/');await p.locator('#email').fill('acceptance@example.invalid');await p.locator('#password').fill('Fixture password only 123');await p.locator('#login-submit').click();await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#classStep [data-class=sword]').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();
-  await p.waitForFunction(()=>globalThis.MareGameSession?.data?.online?.battle&&globalThis.__mareDiagnostics?.().map.navigation.ready);await p.waitForFunction(()=>globalThis.__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});
+  await p.waitForFunction(()=>document.querySelector('.online-boot-error')||(globalThis.MareGameSession?.data?.online?.battle&&globalThis.__mareDiagnostics?.().map.navigation.ready));
+  assert.ok(blockedDepth>0,'the test must block an optional object mask');
+  assert.equal(await p.locator('.online-boot-error').count(),0,'a missing optional object mask must not block entry to the port');
+  await p.waitForFunction(()=>globalThis.__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});
 
 
   simulations=createSimulationPool({databaseUrl:f.pool.options.connectionString!,counts:{solo:2,party:1},workerUrl:new URL('../apps/game-server/dist/simulation-worker.js',import.meta.url)});await simulations.start();
@@ -101,5 +109,14 @@ await authDatabase(async f=>{
   await p.waitForFunction(()=>MareGameSession.available&&Number.isFinite(__mareDiagnostics().hero.x),null,{timeout:10000});
   await p.screenshot({path:resolve(out,'combat-narrow.png')});assert.deepEqual(errors,[]);
   console.log('Mouse routes in lobby/dawn and automatic chase passed with real backend/worker in desktop/narrow viewports; demo preserved.');
+  const bootDiagnostics:string[]=[];
+  p.on('console',(msg:any)=>{if(msg.text().startsWith('[online-game] bootstrap_failed'))bootDiagnostics.push(msg.text());});
+  await p.route(/\/assets\/exported-maps\/(?:dawn|lobby)\/map\.png(?:\?.*)?$/,(r:any)=>r.abort());
+  await p.reload();
+  await p.locator('.online-boot-error').waitFor({state:'visible',timeout:15000});
+  assert.equal(await p.locator('#startOverlay').isVisible(),false);
+  assert.deepEqual(bootDiagnostics,['[online-game] bootstrap_failed initial_map_asset_failed']);
+  assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');
+  console.log('Optional depth failure allowed entry; a missing base map reported the specific failure without exposing the creation form.');
  }catch(error){await context?.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw error;}finally{await simulations?.stop();await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
 });
