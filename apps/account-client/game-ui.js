@@ -80,10 +80,12 @@
   // it. Bridge only through the same collision map, then follow the approved path.
   function createWalkingPresentation(route=(from,to)=>[{x:to.x,y:to.y}]) {
     let snapshot=null,received=0,observed=0,state=null;
+    let confirmed=null,confirmedOptions={},prediction=null,serial=0,settledSerial=0,windowUntil=null,latestTicket=null;
     const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
     const length=(from,points)=>{let n=0;for(const p of points){n+=distance(from,p);from=p;}return n;};
     function sample(now){
       if(!state)return null;
+      if(prediction&&now>=prediction.until)cancel(now,true);
       const elapsed=Math.max(0,now-received),dt=Math.max(0,Math.min(100,now-state.last));state.last=Math.max(state.last,now);
       const lease=Math.max(0,Date.parse(snapshot.motionUntil)-Date.parse(snapshot.serverNow));
       const bridge=state.buffered?state.bridge*Math.min(1,elapsed/state.duration):state.bridge;
@@ -99,8 +101,14 @@
       if(dt>0)state.moving=moved>1e-8;
       return {x:state.x,y:state.y,direction:state.direction,moving:state.moving};
     }
-    return {sample,update(next,now,{buffered=false,reset=false,quickHunt=false}={}){
-      if(next===snapshot&&!reset)return false;
+    function update(next,now,{buffered=false,reset=false,quickHunt=false,preview=false,force=false}={}){
+      if(!preview){
+        confirmed=next;confirmedOptions={buffered,reset,quickHunt};
+        if(prediction&&snapshot.mapId===next.mapId&&!reset)return false;
+        if(reset||snapshot&&snapshot.mapId!==next.mapId){windowUntil=null;latestTicket=null;settledSerial=serial;}
+        prediction=null;
+      }
+      if(next===snapshot&&!reset&&!force)return false;
       const gap=now-observed;
       observed=now;
       if(!reset&&buffered&&state?.buffered&&sameCombatPoint(snapshot,next)&&snapshot.speed===next.speed){
@@ -136,7 +144,38 @@
         bridge:bridge?length(origin,bridge):0,pathLength:bridge?length(join,next.path):0,
         buffered:buffered&&!next.path.length,duration:combatBlendDuration(gap,quickHunt)};
       snapshot=next;received=now;return snap;
-    }};
+    }
+    function cancel(now,expired=false){
+      if(!expired){windowUntil=null;latestTicket=null;settledSerial=serial;}
+      if(!prediction)return;
+      prediction=null;
+      update(confirmed,now,{...confirmedOptions,force:true});
+    }
+    return {sample,update,cancel,
+      predict(target,now,{speed=confirmed?.speed}={}){
+        if(!confirmed||!state||!Number.isFinite(speed)||speed<=0||!Number.isFinite(target?.x)||!Number.isFinite(target?.y))return null;
+        if(windowUntil!==null&&now>=windowUntil){sample(now);return latestTicket;}
+        const origin=sample(now),points=distance(origin,target)<1e-8?[]:route(origin,target);
+        if(distance(origin,target)>=1e-8&&!points.length)return null;
+        // Local presentation only. Never send this pose or mutate the confirmed
+        // snapshot. Repeated clicks cannot extend an unacknowledged window.
+        const until=windowUntil??now+750,id=++serial;
+        const next={...confirmed,position:{x:origin.x,y:origin.y},path:points.map(p=>({x:p.x,y:p.y})),speed,
+          motionUntil:new Date(Date.parse(confirmed.serverNow)+Math.max(0,until-now)).toISOString()};
+        update(next,now,{preview:true,force:true});
+        prediction={id,until};windowUntil=until;latestTicket=id;return id;
+      },
+      settle(id,now,{accepted=true}={}){
+        if(latestTicket===null||id<=settledSerial||id>latestTicket)return;
+        settledSerial=id;
+        if(!accepted||latestTicket===id){cancel(now);return;}
+        // An earlier acknowledged command proves the connection is progressing.
+        // Keep the newer queued intent, without letting clicks alone renew it.
+        windowUntil=now+750;
+        if(prediction){prediction.until=windowUntil;snapshot={...snapshot,
+          motionUntil:new Date(Date.parse(snapshot.serverNow)+windowUntil-received).toISOString()};}
+      }
+    };
   }
   // Local render diagnostics only: no timer or network request per frame.
   function createFrameMeter(){

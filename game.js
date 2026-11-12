@@ -183,17 +183,23 @@
     if(game)camera.update(world.hero,activeMap(),0,true);
   }
   new ResizeObserver(resizeViewport).observe(canvas);
-  function walkTo(point,action=null){
+  function previewOnlineWalk(point){
+    const presentation=onlineWorldFrame?.presentation;
+    if(!presentation?.predict||onlineWorldFrame.special||!ONLINE_GAME.controlled||!ONLINE_GAME.available||actionLocked()||game.hp<=0||session.respawn>0)return null;
+    const id=presentation.predict(point,performance.now(),{speed:getDerived().moveSpeed});
+    return id===null?null:{presentation,id};
+  }
+  function walkTo(point,action=null,preview=null){
     if(ONLINE_GAME?.data?.online.world){
       if(!ONLINE_GAME.controlled||!ONLINE_GAME.available)return false;
       if(onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop'){
         const {character,online}=ONLINE_GAME.data;
-        queuedOnlineWalk={point,action,characterId:character.id,mapId:online.world.mapId};
+        queuedOnlineWalk={point,action,characterId:character.id,mapId:online.world.mapId,preview:previewOnlineWalk(point)};
         lobbyAction=null;
         return true;
       }
       if(onlineMoveWorking||ONLINE_GAME.busy||ONLINE_GAME.pending)return false;
-      lobbyAction=action;lobbyDestination=point;void onlineWorldCommand('world.move',{x:point.x,y:point.y});return true;
+      lobbyAction=action;lobbyDestination=point;void onlineWorldCommand('world.move',{x:point.x,y:point.y},false,preview||previewOnlineWalk(point));return true;
     }
     const path=navigator().path(world.hero,point);
     if(!path.length){toast('Nao ha caminho livre ate esse ponto.');return false;}
@@ -1752,20 +1758,21 @@
     scene='hunt';game.area='beach';autoPlay=true;autoSkills=false;lobbyDestination=null;lobbyAction=null;travelPath=[];onlineEncounterId=null;
     initializeSession();prepareRegion('beach');applySceneHudLayout();setAreaLabels();syncOnlineGame();closePanel();
   }
-  async function onlineWorldCommand(action,payload={},close=false){
+  async function onlineWorldCommand(action,payload={},close=false,preview=null){
     if(onlineMoveWorking||!ONLINE_GAME.controlled||ONLINE_GAME.busy||ONLINE_GAME.pending)return;
     onlineMoveWorking=action;
     let accepted=false;
     try{await ONLINE_GAME.command(action,payload);accepted=true;if(close)closePanel();}
     catch(error){lobbyAction=null;lobbyDestination=null;onlineUI?.error(error);}
     finally{
+      preview?.presentation.settle(preview.id,performance.now(),{accepted});
       onlineMoveWorking=null;
       const walk=queuedOnlineWalk;
       queuedOnlineWalk=null;
       const current=ONLINE_GAME.data;
       if(accepted&&walk&&!currentPanel&&current?.character?.id===walk.characterId&&current.online.world?.mapId===walk.mapId){
-        walkTo(walk.point,walk.action);
-      }
+        walkTo(walk.point,walk.action,walk.preview);
+      }else if(walk?.preview)walk.preview.presentation.cancel(performance.now());
     }
   }
   function syncOnlineWorld(){
@@ -1795,6 +1802,7 @@
   }
   function tickOnlineWorld(){
     if(!onlineWorldFrame)return;
+    if(!ONLINE_GAME.controlled||!ONLINE_GAME.available||game.hp<=0||session.respawn>0)onlineWorldFrame.presentation.cancel?.(performance.now());
     const pose=MareOnlineGameUI.worldPosition(onlineWorldFrame.snapshot,performance.now()-onlineWorldFrame.received);
     const sampledAt=performance.now(),visual=onlineWorldFrame.presentation.sample(sampledAt);
     Object.assign(world.hero,{x:visual.x,y:visual.y,direction:visual.direction,walking:visual.moving?.2:0,onlineSampledAt:sampledAt});
