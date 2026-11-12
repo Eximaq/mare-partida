@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 1,
+  "totalBytes": 14422321,
+  "weaponIds": [
+    12,
+    13,
+    71,
+    72,
+    73,
+    74
+  ],
+  "scope": "Six daggers NORTH, presented male composition only. No female, additional outfits or modular integration inferred.",
+  "packages": [
+    {
+      "key": "12-13-71-74_NORTH_M_PRESENTED",
+      "filename": "Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip",
+      "bytes": 14422321,
+      "sha256": "80abf4150a510cb254ed2da3a9890ffed8065e5ab3824e17e91d24a123a08655",
+      "pngEntries": 170,
+      "entries": 180,
+      "parts": [
+        {
+          "path": "Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip.part001",
+          "bytes": 7864320,
+          "sha256": "26192c58f99bd49c7cc95872ec0e5539d1489ccf559a1d30a395c57e40284139",
+          "git_blob_sha": "cee08a902ac1852dc22a5fcf3681dc1da832303d"
+        },
+        {
+          "path": "Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip.part002",
+          "bytes": 6558001,
+          "sha256": "4d0acd9f7c8ba9f282efafd22b9e4402b92b07a814143af188a045112a6433c4",
+          "git_blob_sha": "52a9dd5497091f28a40df1aedf3695896c238f5f"
+        }
+      ],
+      "approval": "approved presented male composition only",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

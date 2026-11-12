@@ -67,3 +67,8 @@ A composição apresentada está em `weapons/adaga13-south-v2-approved/`. Aprova
 ## Mosquete 4 SOUTH V3 aprovado
 
 O ciclo apresentado com cano frontal está em `weapons/mosquete4-south-v3-approved/`. Aprovação restrita à combinação M151/157 mostrada. Backup exato verificado; sem integração ou teste no jogo.
+
+
+## Seis adagas NORTH aprovadas
+
+As armas 12, 13, 71, 72, 73 e 74 na composição masculina apresentada estão em `weapons/daggers12-13-71-74-north-presented-approved/`. Aprovação restrita ao que foi mostrado, sem inferir feminino, outros trajes ou integração modular. Backup exato verificado; sem integração ou teste no jogo.

@@ -2583,6 +2583,20 @@
       "productionEnabled": false,
       "storage": "zip",
       "approvalScope": "Presented SOUTH V3 M151/157 combination only"
+    },
+    {
+      "path": "weapons/daggers12-13-71-74-north-presented-approved/12-13-71-74_NORTH_M_PRESENTED/Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip",
+      "bytes": 14422321,
+      "sha256": "80abf4150a510cb254ed2da3a9890ffed8065e5ab3824e17e91d24a123a08655",
+      "pngEntries": 170,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip.part001",
+        "Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip.part002"
+      ],
+      "restore": "weapons/daggers12-13-71-74-north-presented-approved/RESTORE.py",
+      "approvalScope": "Weapons12,13,71,72,73,74 NORTH presented male composition only; no female, additional outfits or modular integration"
     }
   ],
   "productionEnabled": false,
