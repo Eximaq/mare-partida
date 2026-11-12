@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 1,
+  "totalBytes": 19627771,
+  "scope": "Staff128 NORTH using approved127 animation, both models and outfits151/158/165/179. Rejected earlier128 versions are excluded.",
+  "packages": [
+    {
+      "key": "128_N_BASE127",
+      "filename": "Cajado128_BASE127_Editavel_Backup_QA.zip",
+      "bytes": 19627771,
+      "sha256": "218ef49345deb0b68186a5d1f171f71697a541f5bbfa1b4edac4bdc2be3bc6f6",
+      "pngEntries": 435,
+      "entries": 445,
+      "parts": [
+        {
+          "path": "Cajado128_BASE127_Editavel_Backup_QA.zip.part001",
+          "bytes": 7864320,
+          "sha256": "569af36653dc35babc1f63c091523923d1adbe2bf7973c9cc87d302f2a13ef1e",
+          "git_blob_sha": "17b40dd7bb4035072e7bc8c2dc50a5da0eb42c96"
+        },
+        {
+          "path": "Cajado128_BASE127_Editavel_Backup_QA.zip.part002",
+          "bytes": 7864320,
+          "sha256": "9252d83658ccb2d1dbb6246c22a16ed857a4118879727ea5cbb75de36b3b8d46",
+          "git_blob_sha": "c2c22aa10b8d13e34c3a17543618173a9419f9a7"
+        },
+        {
+          "path": "Cajado128_BASE127_Editavel_Backup_QA.zip.part003",
+          "bytes": 3899131,
+          "sha256": "2e0a7b189b24afdd3eeded6677c40fddfec73299d3e375248dd923ae42a07932",
+          "git_blob_sha": "b32ae5a369cf1fea694f28b3fbccd7ef177f46b6"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

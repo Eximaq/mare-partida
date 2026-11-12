@@ -2426,6 +2426,20 @@
         "Braco117_F_NORTH_QuatroTrajes_v7_Editavel.zip.part002"
       ],
       "restore": "weapons/clothing-batch-20261112-followup/RESTORE.py"
+    },
+    {
+      "path": "weapons/staff128-north-base127-approved/128_N_BASE127/Cajado128_BASE127_Editavel_Backup_QA.zip",
+      "bytes": 19627771,
+      "sha256": "218ef49345deb0b68186a5d1f171f71697a541f5bbfa1b4edac4bdc2be3bc6f6",
+      "pngEntries": 435,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Cajado128_BASE127_Editavel_Backup_QA.zip.part001",
+        "Cajado128_BASE127_Editavel_Backup_QA.zip.part002",
+        "Cajado128_BASE127_Editavel_Backup_QA.zip.part003"
+      ],
+      "restore": "weapons/staff128-north-base127-approved/RESTORE.py"
     }
   ],
   "productionEnabled": false,
