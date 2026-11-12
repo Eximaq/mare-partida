@@ -2440,6 +2440,31 @@
         "Cajado128_BASE127_Editavel_Backup_QA.zip.part003"
       ],
       "restore": "weapons/staff128-north-base127-approved/RESTORE.py"
+    },
+    {
+      "path": "weapons/arm117-ew-approved/117_EW_M/Braco117_M_EW_QuatroTrajes_Editavel.zip",
+      "bytes": 6722213,
+      "sha256": "3cdfb435942dc2ee134311de64c8ad69805e47944d53be1e319d2fd433a5e912",
+      "pngEntries": 153,
+      "productionEnabled": false,
+      "storage": "zip",
+      "parts": [
+        "Braco117_M_EW_QuatroTrajes_Editavel.zip"
+      ],
+      "restore": "weapons/arm117-ew-approved/RESTORE.py"
+    },
+    {
+      "path": "weapons/arm117-ew-approved/117_EW_F/Braco117_F_EW_QuatroTrajes_Editavel.zip",
+      "bytes": 13817084,
+      "sha256": "2cbe1defb1a1d47b4abde949c7fc5b8a09e25dcce10cbbfc6e44f9035affff99",
+      "pngEntries": 290,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Braco117_F_EW_QuatroTrajes_Editavel.zip.part001",
+        "Braco117_F_EW_QuatroTrajes_Editavel.zip.part002"
+      ],
+      "restore": "weapons/arm117-ew-approved/RESTORE.py"
     }
   ],
   "productionEnabled": false,

@@ -27,3 +27,8 @@ A aprovação explícita posterior de 109 nas laterais (M/F) e117 feminino NORTH
 ## Cajado 128 NORTH: aprovação posterior
 
 A versão nova baseada na animação aprovada do cajado 127 foi aprovada em 2026-11-12 e está em `weapons/staff128-north-base127-approved/`. A aprovação inclui os dois modelos e quatro trajes. As exclusões anteriores permanecem válidas para as versões rejeitadas, não para este backup específico. A reconstrução exata e o CRC foram verificados; sem integração ou teste no jogo.
+
+
+## Braço 117: laterais aprovadas
+
+Os dois backups aprovados de EAST/WEST, masculino e feminino com quatro trajes, estão em `weapons/arm117-ew-approved/`. Reconstrução exata, CRC e SHA-256 verificados; sem integração ou teste no jogo.

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 2,
+  "totalBytes": 20539297,
+  "scope": "Arm117 EAST/WEST male and female, four outfits each; exact approved editables.",
+  "packages": [
+    {
+      "key": "117_EW_M",
+      "filename": "Braco117_M_EW_QuatroTrajes_Editavel.zip",
+      "bytes": 6722213,
+      "sha256": "3cdfb435942dc2ee134311de64c8ad69805e47944d53be1e319d2fd433a5e912",
+      "pngEntries": 153,
+      "entries": 159,
+      "parts": [
+        {
+          "path": "Braco117_M_EW_QuatroTrajes_Editavel.zip",
+          "bytes": 6722213,
+          "sha256": "3cdfb435942dc2ee134311de64c8ad69805e47944d53be1e319d2fd433a5e912",
+          "git_blob_sha": "c8bdc4cdb97540b382fcdffef81f3e934d13afc7"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    },
+    {
+      "key": "117_EW_F",
+      "filename": "Braco117_F_EW_QuatroTrajes_Editavel.zip",
+      "bytes": 13817084,
+      "sha256": "2cbe1defb1a1d47b4abde949c7fc5b8a09e25dcce10cbbfc6e44f9035affff99",
+      "pngEntries": 290,
+      "entries": 300,
+      "parts": [
+        {
+          "path": "Braco117_F_EW_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "sha256": "1d5d74d70577ebe9dd42182db20111ca96b467e989b95d46975c7851c91417ec",
+          "git_blob_sha": "15d0358dc13f22703d69e8e48c3173814b774059"
+        },
+        {
+          "path": "Braco117_F_EW_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 5952764,
+          "sha256": "0d64e3dc5cc95910f2c6485ae07bb184e35956d9068deb34ba2b50ea331bfcd6",
+          "git_blob_sha": "63f6fc4c5a7f7d2307da11c9c3cf3cad28645ed1"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}
