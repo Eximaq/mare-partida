@@ -1,0 +1,16 @@
+{
+  "source": "Rifle115_SOUTH_V5_Proporcoes_Editavel.zip",
+  "sha256": "d87a8ccc05a8aff100db2c7454dd40355c7dfef65e7fbc45d164005f3535d585",
+  "approval": "provisional",
+  "publicationApproval": "Owner explicitly authorized renewed inclusion in PR304 after automatic review failure",
+  "states": [
+    "0",
+    "1",
+    "2",
+    "4",
+    "R"
+  ],
+  "ticks": 43,
+  "fps": 24,
+  "preservation": "Original ZIP and PNG bytes unchanged; R remains approved weapon4 substitute"
+}
