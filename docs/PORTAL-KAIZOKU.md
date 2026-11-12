@@ -8,25 +8,7 @@ Cenário náutico original em pixel art, nova logo, aviso “Em desenvolvimento�
 
 O fundo `ocean-art.css` e os assets anteriores não foram modificados. O jogo, saves e a entrada local `index.html` continuam intactos.
 
-## Planos de colaborador
-
-O portal apresenta três opções de apoio único. As vantagens propostas são cumulativas e previstas para o lançamento.
-
-| Plano | Valor | Vantagens previstas |
-| --- | --- | --- |
-| Grumete | R$ 15 | Título de Fundador no perfil |
-| Navegador | R$ 25 | Título e emblema de Fundador |
-| Capitão | R$ 50 | Título, emblema e visual exclusivo de Capitão |
-
-Cada plano abre uma janela no portal com o valor e, quando configurado, o QR Code Pix do plano. Instagram e Discord apontam para os endereços oficiais fornecidos pelo proprietário.
-
-Os três planos usam os novos códigos com chave aleatória fornecidos pelo proprietário, nos arquivos `portal/assets/pix-15.png`, `pix-25.png` e `pix-50.png`. O nome do recebedor foi autorizado pelo proprietário e continua contido nos códigos. A janela mostra o valor e a imagem local. O aplicativo do banco controla os dados do recebedor exibidos na confirmação.
-
-Na preparação, foram conferidos CRC, moeda BRL, valores fixos e a mesma chave aleatória nos três códigos. Os PNGs foram decodificados por uma segunda biblioteca e comparados aos dados originais. Os dois builds versionam as imagens por hash para evitar mistura de códigos antigos. Os links de cobrança e páginas bancárias não são distribuídos com o portal.
-
-O botão **Copiar código Pix** usa o mesmo código de cada QR, distribuído em um arquivo de texto com versão por hash. O apoiador pode colar no Pix Copia e Cola do app do banco. Se o navegador bloquear a cópia automática, a janela mostra um campo de leitura para copiar manualmente.
-
-Após pagar, o apoiador pode usar **Enviar comprovante no Discord** na janela de qualquer plano. O link abre o canal **#comprovantes-pix** em outra aba. Quem ainda não faz parte do servidor pode usar o convite na mesma janela e aceitar as regras em **#aceitar-termos** para receber o cargo Tripulante. No canal, o apoiador cria um tópico particular e anexa o comprovante. A equipe confere a transação no banco e registra o identificador para evitar duplicidade. A confirmação do Pix e o registro das vantagens são manuais.
+Instagram e Discord apontam para os endereços oficiais da comunidade. Os planos de colaborador e os arquivos de pagamento foram retirados dos pacotes públicos.
 
 ## Publicar na Cloudflare Pages
 
