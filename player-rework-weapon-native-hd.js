@@ -5,7 +5,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
  const resource=url=>{const p=new URL(url,'https://native.invalid/'+prefix).pathname.slice(1);if(!/^tools\/(rework-weapon-layers-hd|rework-modular-outfits-hd)\/assets\/[a-f0-9]{64}\.png$/.test(p))throw Error('Invalid native weapon source path');return p;};
  const body=b=>({masculino:'male',feminino:'female'})[b]||b;
  function resolve({item,body:b,action='attack',direction,appearance={},equipment={}}={}){
-  const allowed=Number(item)===109?['attack','punch','attack-unarmed']:Number(item)===115?['attack','shoot','attack-firearm']:Number(item)===17?['attack','focus','attack-focus','cast']:[];
+  const allowed=Number(item)===109?['attack','punch','attack-unarmed']:Number(item)===115?['attack','shoot','attack-firearm']:[17,122].includes(Number(item))?['attack','focus','attack-focus','cast']:[];
   if(!allowed.includes(action))return null;
   const equippedWeapon=equipment.weapon&&typeof equipment.weapon==='object'?equipment.weapon.def:equipment.weapon;
   if(equippedWeapon!=null&&Number(equippedWeapon)!==Number(item))return null;
@@ -16,7 +16,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(appearance.face&&!['original','face-gentle'].includes(appearance.face))return null;
   // Cosmetics are composed separately only after caller hides the authored head slots.
   if(r.item===115&&[appearance.hair,appearance.hairStyle,appearance.head].some(v=>v&&!['original','none'].includes(v)))return null;
-  if([109,17].includes(r.item)&&[appearance.hair,appearance.hairStyle].some(v=>v&&v!=='original'))return null;
+  if([109,17,122].includes(r.item)&&[appearance.hair,appearance.hairStyle].some(v=>v&&v!=='original'))return null;
   return r.item===109?{...r,colorAppearance:appearance}:r;
  }
  function requiredFiles(r){if(!r)return [];const files=new Set();for(const s of r.states)for(const l of s.layers){files.add(resource(l.url));if(l.mask)files.add(resource(l.mask.url));}if(r.basePack)for(const p of Object.values(r.basePack.images))files.add(resource(p));return [...files];}

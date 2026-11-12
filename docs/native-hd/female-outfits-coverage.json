@@ -1,0 +1,316 @@
+{
+  "scope": "Source inventory is NOT world runtime integration or global artistic approval",
+  "sourceAsOfUTC": "2026-11-09T13:44:24.223616+00:00",
+  "catalogCoverage": {
+    "male": {
+      "boots": {
+        "itemCount": 9,
+        "itemIds": [
+          "134",
+          "141",
+          "148",
+          "162",
+          "169",
+          "176",
+          "183",
+          "8",
+          "9"
+        ],
+        "itemDirectionCount": 36
+      },
+      "gloves": {
+        "itemCount": 10,
+        "itemIds": [
+          "131",
+          "138",
+          "145",
+          "152",
+          "159",
+          "166",
+          "173",
+          "180",
+          "25",
+          "26"
+        ],
+        "itemDirectionCount": 40
+      },
+      "hair": {
+        "itemCount": 12,
+        "itemIds": [
+          "afro",
+          "bob",
+          "braided",
+          "cropped",
+          "curly",
+          "long",
+          "ponytail",
+          "spiky",
+          "swept",
+          "topknot",
+          "undercut",
+          "wavy"
+        ],
+        "itemDirectionCount": 24
+      },
+      "headgear": {
+        "itemCount": 10,
+        "itemIds": [
+          "129",
+          "136",
+          "143",
+          "150",
+          "157",
+          "164",
+          "171",
+          "178",
+          "18",
+          "19"
+        ],
+        "itemDirectionCount": 18
+      },
+      "weapons": {
+        "itemCount": 23,
+        "itemIds": [
+          "0",
+          "116",
+          "12",
+          "121",
+          "122",
+          "123",
+          "124",
+          "125",
+          "126",
+          "127",
+          "128",
+          "16",
+          "17",
+          "31",
+          "32",
+          "5",
+          "67",
+          "69",
+          "70",
+          "71",
+          "72",
+          "73",
+          "74"
+        ],
+        "itemDirectionCount": 23
+      }
+    },
+    "female": {
+      "boots": {
+        "itemCount": 10,
+        "itemIds": [
+          "134",
+          "141",
+          "148",
+          "155",
+          "162",
+          "169",
+          "176",
+          "183",
+          "8",
+          "9"
+        ],
+        "itemDirectionCount": 40
+      },
+      "gloves": {
+        "itemCount": 10,
+        "itemIds": [
+          "131",
+          "138",
+          "145",
+          "152",
+          "159",
+          "166",
+          "173",
+          "180",
+          "25",
+          "26"
+        ],
+        "itemDirectionCount": 36
+      },
+      "pants": {
+        "itemCount": 10,
+        "itemIds": [
+          "133",
+          "140",
+          "147",
+          "154",
+          "161",
+          "168",
+          "175",
+          "182",
+          "21",
+          "22"
+        ],
+        "itemDirectionCount": 40
+      }
+    }
+  },
+  "preparedAddition": {
+    "records": 16,
+    "walkFrames": 320,
+    "idleFrames": 8,
+    "pixelExactFramesVerified": 328,
+    "originalAssets": 706,
+    "resampling": false,
+    "equipmentSets": [
+      {
+        "body": "female",
+        "torso": 6,
+        "pants": 147,
+        "gloves": 152,
+        "boots": 155
+      },
+      {
+        "body": "female",
+        "torso": 151,
+        "pants": 154,
+        "gloves": 152,
+        "boots": 155
+      }
+    ],
+    "directions": [
+      "south",
+      "north",
+      "east",
+      "west"
+    ],
+    "actions": [
+      "walk",
+      "idle"
+    ],
+    "sourceApproval": "candidate flags retained",
+    "limitations": [
+      "No attack source in these bundles",
+      "No arbitrary equipment mixes",
+      "Idle is source walk frame zero",
+      "F130 excluded: unidentified fused outfit underneath",
+      "Head customization not established"
+    ]
+  },
+  "families": [
+    {
+      "id": "conjuntos",
+      "title": "Conjuntos completos",
+      "note": "As coleções v43–v47 são comparações de combinações exatas. Só a prévia 176 SOUTH indicada tem aprovação localizada. Perfis M172 aguardam novo refino de espessura da manga; não são finalizados.",
+      "references": 40,
+      "selectedReferences": 1,
+      "pendingReferences": 20,
+      "editable": 0,
+      "readonly": 40
+    },
+    {
+      "id": "compatibilidade",
+      "title": "Compatibilidade luvas × torsos",
+      "note": "112 estudos separados, sem offsets universais ou troca de defaults. Ordem de manga, cuff e owners depende da combinação.",
+      "references": 117,
+      "selectedReferences": 0,
+      "pendingReferences": 4,
+      "editable": 5,
+      "readonly": 112
+    },
+    {
+      "id": "botas",
+      "title": "Botas",
+      "note": "M: fontes sobre roupa 151/calça 133. F: fontes sobre 151 + shorts, sem fit validado com calça longa. A bota 141 distante E/W conserva aviso de revisão; F155 E/W usa a correção de sola explicitamente identificada.",
+      "references": 69,
+      "selectedReferences": 67,
+      "pendingReferences": 1,
+      "editable": 69,
+      "readonly": 0
+    },
+    {
+      "id": "luvas",
+      "title": "Luvas",
+      "note": "Edita somente equipamento liberado. Near-only e bilateral são coberturas diferentes, não duas versões equivalentes. F152 bilateral v1 foi retirada. F131 SOUTH e F180 SOUTH/E/W seguem sem candidata integrada.",
+      "references": 80,
+      "selectedReferences": 66,
+      "pendingReferences": 0,
+      "editable": 78,
+      "readonly": 2
+    },
+    {
+      "id": "calcas",
+      "title": "Calças",
+      "note": "F usa comparações somente leitura. Correções localizadas não aprovam toda a animação. F154 v6 mantém aprovação apenas do último ajuste mostrado; F161/F182 têm limites artísticos e F182 curta E/W versus longa S/N. F168 v34 é a candidata localizada atual de 2/5/6, ainda fora da bancada v47 e sem aprovação global; v27 ficou histórica contestada.",
+      "references": 94,
+      "selectedReferences": 64,
+      "pendingReferences": 4,
+      "editable": 24,
+      "readonly": 70
+    },
+    {
+      "id": "torsos",
+      "title": "Torsos e roupas",
+      "note": "Fontes de manga/owner e ordem protegidas. M172 lateral compartilha pendência de manga/cuff; o novo patch ainda não é final. Os 40 candidatos F têm contratos regionais, não rig certificado.",
+      "references": 67,
+      "selectedReferences": 67,
+      "pendingReferences": 1,
+      "editable": 67,
+      "readonly": 0
+    },
+    {
+      "id": "cabelos",
+      "title": "Cabelos",
+      "note": "12 estilos M S/N: só cabelo modular ajustável. São 18 ajustes pessoais explícitos e seis defaults declarados, não seis aprovações pessoais. Fixação rígida, sem simulação dos fios. Cabeças fundidas e outras coberturas não são inferidas.",
+      "references": 24,
+      "selectedReferences": 24,
+      "pendingReferences": 0,
+      "editable": 24,
+      "readonly": 0
+    },
+    {
+      "id": "capacetes",
+      "title": "Capacetes e chapéus",
+      "note": "216 contratos M S/N × 12 estilos, somente leitura. A máscara acompanha o contrato da combinação; mover equipamento sozinho pode quebrar o corte. Não há revisão visual universal de todas as poses.",
+      "references": 216,
+      "selectedReferences": 216,
+      "pendingReferences": 0,
+      "editable": 0,
+      "readonly": 216
+    },
+    {
+      "id": "capas_idle",
+      "title": "Capas e idles de tecido",
+      "note": "Os idles HD512 foram renderizados da composição original, não ampliados de 128. Controles 128 são históricos separados. Capas têm oscilação rígida, não simulação de tecido.",
+      "references": 64,
+      "selectedReferences": 40,
+      "pendingReferences": 0,
+      "editable": 64,
+      "readonly": 0
+    },
+    {
+      "id": "ataques",
+      "title": "Ataques e armas",
+      "note": "23 pilotos SOUTH M de equipamento são composites somente leitura, não rigs separados. Cajados do suplemento usam o gesto focus existente. Tiro NORTH relativo é diagnóstico lado a lado, sem substituir o original. Ataques F históricos e ciclos parciais não viram aprovados.",
+      "references": 110,
+      "selectedReferences": 23,
+      "pendingReferences": 0,
+      "editable": 83,
+      "readonly": 27
+    },
+    {
+      "id": "bases",
+      "title": "Bases e fontes regionais",
+      "note": "Controles e versões regionais permanecem separados. Aprovação de uma base, direção ou pose não se transfere à combinação inteira. Use o estado e o hash exatos, não o número da versão.",
+      "references": 306,
+      "selectedReferences": 22,
+      "pendingReferences": 0,
+      "editable": 291,
+      "readonly": 15
+    },
+    {
+      "id": "olhos",
+      "title": "Olhos e cores",
+      "note": "Piloto independente no principal, limitado às duas máscaras F S/E exatas. Não é uma coleção de olhos já compatível com todas as cabeças ou caminhadas.",
+      "references": 0,
+      "selectedReferences": 0,
+      "pendingReferences": 0,
+      "editable": 0,
+      "readonly": 0
+    }
+  ]
+}

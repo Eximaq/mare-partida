@@ -48,3 +48,9 @@ The base distribution groups assets by usage rather than by random SHA order: ea
 All approved source catalogs from main remain included; this PR does not discard completed items. Archival presence, native modular recovery, and activation in normal gameplay are distinct. The exhaustive weapon audit is in `ALL_WEAPON_ITEMS_AUDIT.md`. Missing compatible families are reported rather than silently substituting different equipment, changing saved appearance, or reducing original pixels. Further recovered pieces can be added to this same branch.
 
 Build of shared/server and Pages succeeded. The native suite passed27checks plus the8-state Orb17 pixel-exact check. Browser/in-game verification remains pending.
+
+## Additional native recovery
+
+Two female outfit sets (6+147+152+155 and151+154+152+155) now provide16original idle/walk contracts across four directions, with328frames verified. These are source candidates, not new approvals. Their full attack family is not yet available and the normal-world family gate remains in effect. Orbs17 NORTH/EAST/WEST and122 EAST/WEST have base-preserving registrations from existing artwork, retaining640native pixels and explicit calibration status. The17 NORTH frame1 differs from the historical composite because the original head is kept stationary rather than copying a displaced head.
+
+The latest checkpoint has47modular outfit contracts, including34new contracts with481rendered frames. Orb17 now has a complete original-appearance idle/walk/focus-attack family in all four directions; native-world family tests pass. Its carry registrations remain calibration candidates. Other incomplete outfit/weapon families remain guarded.
