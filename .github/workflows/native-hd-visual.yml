@@ -1,0 +1,45 @@
+name: Rework HD nativo — jogo real e capturas
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'player-rework-*hd*'
+      - 'tools/rework-*-hd/**'
+      - 'paper-doll-96-lobby.js'
+      - 'tests/native_hd_game_browser.cjs'
+      - '.github/workflows/native-hd-visual.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-hd-visual-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  native-world:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: npm run test:rework-hd
+      - name: Chromium and actual Pages build
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
+          bash tools/install_ci_chromium.sh npx playwright
+          python tools/build_pages.py
+          python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/native-hd-server.txt" 2>&1 &
+          curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
+      - name: Capture normal world renderer without touching owner saves
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8157/dist/
+          MARE_EVIDENCE_DIR: artifacts/native-hd-game
+        run: node tests/native_hd_game_browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game
+          path: artifacts/native-hd-game
+          if-no-files-found: ignore
