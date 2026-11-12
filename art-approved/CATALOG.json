@@ -1366,6 +1366,20 @@
       }
     },
     {
+      "path": "weapons/male111-north-four-torsos-v2/Manopla111_NORTH_M151_M158_M165_M179_V2_Editavel.zip",
+      "bytes": 7149745,
+      "sha256": "eddd3ede4f049a9004cda56e438bdc1e1a72aaee38dbe851c9d921b0327b93d5",
+      "pngEntries": 128,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male111-north-four-torsos-v2/parts/MANIFEST.json",
+        "reconstruct": "weapons/male111-north-four-torsos-v2/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/male112-four-torsos-ew/Manopla112_Masculino_Quatro_Trajes_EW_Editavel.zip",
       "bytes": 6156297,
       "sha256": "e3ad9c12450070cef8929ba3e1730ad84278db9597e5ccdd586628b7eba51c2b",

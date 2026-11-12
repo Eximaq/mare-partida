@@ -1,0 +1,57 @@
+{
+  "original": "Manopla111_NORTH_M151_M158_M165_M179_V2_Editavel.zip",
+  "bytes": 7149745,
+  "sha256": "eddd3ede4f049a9004cda56e438bdc1e1a72aaee38dbe851c9d921b0327b93d5",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "113eb9a0319470aac75462f4b9cdc49ab0689513632153553ee3f0e9a9bfcb8d"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "86d0c6ec798acfa9faefb2e2ef55028a64d7f40fc712fa7fce9940ea86540a75"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 750000,
+      "sha256": "9ff47e77a06d61c8c69f57ffc11323e9b527cc9b235bb0c0285c75a7e2a8bfbc"
+    },
+    {
+      "path": "archive.part003",
+      "bytes": 750000,
+      "sha256": "66cd4a3dc3444b0176495fd94ca7fd1de461f8d4973c45a092472b7f870bb5a5"
+    },
+    {
+      "path": "archive.part004",
+      "bytes": 750000,
+      "sha256": "79ff60d75f2c1d9cf8d28a81635d84f1d8e0e770bc0ecf0b07cdd3dbdff69b95"
+    },
+    {
+      "path": "archive.part005",
+      "bytes": 750000,
+      "sha256": "b209b89e271b9c6eb4286de8236484eb7f2e511699062c79f68df7606a3a7eda"
+    },
+    {
+      "path": "archive.part006",
+      "bytes": 750000,
+      "sha256": "3cd0efb751bedcf2e15148b1725fff7521701765fe5a3be57f75e19da8132d76"
+    },
+    {
+      "path": "archive.part007",
+      "bytes": 750000,
+      "sha256": "f290cf00064564b95d7b700e9aee9b042083aa80a7207d921e9e99416935ea99"
+    },
+    {
+      "path": "archive.part008",
+      "bytes": 750000,
+      "sha256": "f29ce42b594cc5b6be792d8ff61ce9b698f52ce438129665491d44684acdc795"
+    },
+    {
+      "path": "archive.part009",
+      "bytes": 399745,
+      "sha256": "3783b6f4af065db2b08728162fc68cc867725346dea2e1eceedd54c3a32a02a4"
+    }
+  ]
+}
