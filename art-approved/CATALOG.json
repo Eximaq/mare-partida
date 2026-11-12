@@ -2516,6 +2516,15 @@
         "Manopla109_NORTH_MF_QuatroTrajes_Editavel.zip.part003"
       ],
       "restore": "weapons/manopla109-north-approved/RESTORE.py"
+    },
+    {
+      "path": "weapons/sabre1-nodachi68-south-base67-approved/1-68_SOUTH_PRESENTED/Sabre1_Nodachi68_SOUTH_Adaptacao_Base67_Candidata_v1.zip",
+      "bytes": 4803888,
+      "sha256": "af7448687a3c0367274cd437c0c20014f605bb5b0da8150fb79f8fcd55d15a71",
+      "pngEntries": 60,
+      "productionEnabled": false,
+      "storage": "zip",
+      "approvalScope": "Presented composition only; no unshown model/outfit variants"
     }
   ],
   "productionEnabled": false,

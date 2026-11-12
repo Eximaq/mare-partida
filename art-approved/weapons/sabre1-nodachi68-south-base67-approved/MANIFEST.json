@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 1,
+  "totalBytes": 4803888,
+  "scope": "Weapons1/68 SOUTH on approved67 base, only the presented composition. No approval for unshown models or outfits.",
+  "packages": [
+    {
+      "key": "1-68_SOUTH_PRESENTED",
+      "filename": "Sabre1_Nodachi68_SOUTH_Adaptacao_Base67_Candidata_v1.zip",
+      "bytes": 4803888,
+      "sha256": "af7448687a3c0367274cd437c0c20014f605bb5b0da8150fb79f8fcd55d15a71",
+      "pngEntries": 60,
+      "entries": 67,
+      "parts": [
+        {
+          "path": "Sabre1_Nodachi68_SOUTH_Adaptacao_Base67_Candidata_v1.zip",
+          "bytes": 4803888,
+          "sha256": "af7448687a3c0367274cd437c0c20014f605bb5b0da8150fb79f8fcd55d15a71",
+          "git_blob_sha": "a220448551123d578100db4314a92657e2a8a7a4"
+        }
+      ],
+      "approval": "approved presented composition only",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

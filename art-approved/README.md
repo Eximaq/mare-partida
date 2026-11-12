@@ -42,3 +42,8 @@ Os dois backups aprovados de EAST/WEST, masculino e feminino com quatro trajes, 
 ## Manopla 109 NORTH aprovada
 
 O backup aprovado de NORTH, masculino e feminino com quatro trajes, está em `weapons/manopla109-north-approved/`. Reconstrução exata, CRC e SHA-256 verificados. A pendência SOUTH é separada. Sem integração ou teste no jogo.
+
+
+## Sabre 1 e Nodachi 68 SOUTH aprovados
+
+A composição apresentada sobre o ciclo da arma 67 está em `weapons/sabre1-nodachi68-south-base67-approved/`. Aprovação restrita à prévia mostrada, sem extensão a modelos ou trajes não apresentados. Backup exato verificado; sem integração ou teste no jogo.
