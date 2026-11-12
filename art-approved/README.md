@@ -62,3 +62,8 @@ A aprovação posterior dos quatro trajes masculinos e femininos de EAST/WEST es
 ## Arma 13 SOUTH V2 aprovada
 
 A composição apresentada está em `weapons/adaga13-south-v2-approved/`. Aprovação restrita à prévia mostrada, sem extensão a outros modelos ou trajes. Backup exato verificado; sem integração ou teste no jogo.
+
+
+## Mosquete 4 SOUTH V3 aprovado
+
+O ciclo apresentado com cano frontal está em `weapons/mosquete4-south-v3-approved/`. Aprovação restrita à combinação M151/157 mostrada. Backup exato verificado; sem integração ou teste no jogo.

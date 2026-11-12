@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 1,
+  "totalBytes": 2764744,
+  "scope": "Weapon4 SOUTH V3 frontal barrel, presented M151/157 combination only; no unshown variants approved.",
+  "packages": [
+    {
+      "key": "4_SOUTH_V3_M151_157",
+      "filename": "Mosquete4_SOUTH_CanoFrontal_Editavel_Candidato.zip",
+      "bytes": 2764744,
+      "sha256": "dd5451526cce4f6e666ad568bf11dcfa39288eb99af4ba110f1256541364df99",
+      "pngEntries": 26,
+      "entries": 36,
+      "parts": [
+        {
+          "path": "Mosquete4_SOUTH_CanoFrontal_Editavel_Candidato.zip",
+          "bytes": 2764744,
+          "sha256": "dd5451526cce4f6e666ad568bf11dcfa39288eb99af4ba110f1256541364df99",
+          "git_blob_sha": "fa31ce539b2d92c8e16d9f6f611c8dbfe122c44d"
+        }
+      ],
+      "approval": "approved presented M151/157 combination only",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

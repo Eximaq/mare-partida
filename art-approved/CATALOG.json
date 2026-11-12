@@ -2574,6 +2574,15 @@
       "productionEnabled": false,
       "storage": "zip",
       "approvalScope": "Presented SOUTH V2 composition only; no other models or outfits inferred"
+    },
+    {
+      "path": "weapons/mosquete4-south-v3-approved/4_SOUTH_V3_M151_157/Mosquete4_SOUTH_CanoFrontal_Editavel_Candidato.zip",
+      "bytes": 2764744,
+      "sha256": "dd5451526cce4f6e666ad568bf11dcfa39288eb99af4ba110f1256541364df99",
+      "pngEntries": 26,
+      "productionEnabled": false,
+      "storage": "zip",
+      "approvalScope": "Presented SOUTH V3 M151/157 combination only"
     }
   ],
   "productionEnabled": false,
