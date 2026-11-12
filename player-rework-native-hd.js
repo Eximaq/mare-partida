@@ -42,7 +42,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  async function prepare(player,o){await ready;const r=select(player,o);if(!r)return false;const frame=frameFor(r,o),key=r.id+':'+frame,files=filesFor(r,frame);let entry=cache.get(r.id);if(entry?.frames.has(frame)||entry&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
   const job=(async()=>{try{entry=entry||{images:new Map(),proofs:[],frames:new Map()};await Promise.all(files.map(async p=>{if(!entry.images.has(p))entry.images.set(p,await imageLoader(p));}));
   if(r.headRecord){const proof=headCompat.validate({basePack:r.pack,baseBody:r.body,baseDirection:r.direction,baseFrame:frame,baseImages:entry.images,headRecord:r.headRecord,headImages:entry.images,replaceFace:false});if(!proof.compatible)throw Error('Head identity: '+proof.reason);entry.proofs[frame]=proof;}
-  for(const p of files){const im=entry.images.get(p);entry.images.delete(p);entry.images.set(p,im);}while(entry.images.size>64)entry.images.delete(entry.images.keys().next().value);
+  for(const p of files){const im=entry.images.get(p);entry.images.delete(p);entry.images.set(p,im);}while(entry.images.size>Math.max(64,files.length))entry.images.delete(entry.images.keys().next().value);
   cache.set(r.id,entry);while(cache.size>2)cache.delete(cache.keys().next().value);onChange();return true;}catch(e){failures.set(key,e.message);error=e.message;onChange();return false;}finally{pending.delete(key);}})();pending.set(key,job);return job;
  }
  function draw(ctx,player,o={}){

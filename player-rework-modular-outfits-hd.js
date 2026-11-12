@@ -7,7 +7,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
  function resolve({body,direction,action,equipment={},appearance={}}={}){
   if(!['walk','idle','attack-unarmed','attack-focus'].includes(action))return null;
   const canonicalEquipment={};for(const [key,value]of Object.entries(equipment)){const slot=({legs:'pants',coat:'torso'})[key]||key,selected=id(value);if(selected!=null&&!['none','original'].includes(selected))canonicalEquipment[slot]=Number(selected);}
-  if(appearance.hair&&!['original'].includes(appearance.hair)||appearance.face&&!['original','face-gentle'].includes(appearance.face)||appearance.skin&&!['original','light'].includes(appearance.skin)||appearance.hairColor&&!['original'].includes(appearance.hairColor)||appearance.eyeColor&&!['original','blue'].includes(appearance.eyeColor))return null;
+  if(appearance.hair&&!['original'].includes(appearance.hair)||appearance.face&&!['original','face-gentle'].includes(appearance.face)||[appearance.skin,appearance.skinColor].some(v=>v&&v!=='original')||appearance.hairColor&&!['original'].includes(appearance.hairColor)||appearance.eyeColor&&!['original','blue'].includes(appearance.eyeColor))return null;
   return index.records.find(r=>r.body===canonical(body)&&r.direction===direction&&r.action===action&&(!r.candidate||allowCandidates)&&Object.keys(canonicalEquipment).length===Object.keys(r.equipment).length&&Object.entries(r.equipment).every(([slot,item])=>canonicalEquipment[slot]===item))||null;
  }
  const sources=(r,frame)=>frame===undefined?r.sourceRefs:[...new Set(r.pack.directions[r.direction].layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean))];

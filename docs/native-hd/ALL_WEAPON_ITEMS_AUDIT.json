@@ -268,8 +268,8 @@
           "otherLayerPNGs": 11
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack four directions; explicit registration candidates, original raster preserved",
+      "gap": "Other palettes/outfits remain restricted. Adapted placements are candidates, not new approval."
     },
     {
       "item": 12,
@@ -678,8 +678,8 @@
           "otherLayerPNGs": 17
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack four directions; explicit registration candidates, original raster preserved",
+      "gap": "Other palettes/outfits remain restricted. Adapted placements are candidates, not new approval."
     },
     {
       "item": 70,
@@ -1253,8 +1253,8 @@
           "otherLayerPNGs": 12
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration"
+      "nativeHD": "complete male original idle/walk/attack four directions; original SOUTH composite, candidate lateral registration",
+      "gap": "Other palettes/outfits remain restricted; no new approval inferred."
     },
     {
       "item": 117,
@@ -1625,11 +1625,14 @@
   ],
   "completeOriginalIdentityFamilies": [
     4,
+    5,
     17,
+    69,
     109,
     111,
     113,
     115,
+    116,
     122
   ],
   "catalogIdNote": "42 catalog IDs include ID0 (unarmed/base); this is not a count of42 equipped weapons."
