@@ -72,3 +72,8 @@ O ciclo apresentado com cano frontal está em `weapons/mosquete4-south-v3-approv
 ## Seis adagas NORTH aprovadas
 
 As armas 12, 13, 71, 72, 73 e 74 na composição masculina apresentada estão em `weapons/daggers12-13-71-74-north-presented-approved/`. Aprovação restrita ao que foi mostrado, sem inferir feminino, outros trajes ou integração modular. Backup exato verificado; sem integração ou teste no jogo.
+
+
+## Nodachi de Fogo 69 SOUTH aprovada
+
+A composição masculina apresentada está em `weapons/nodachi69-south-presented-approved/`. Aprovação restrita à prévia mostrada, sem extensão ao feminino ou a outros trajes. Backup exato verificado; sem integração ou teste no jogo.

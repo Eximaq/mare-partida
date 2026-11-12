@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 1,
+  "totalBytes": 3203184,
+  "scope": "Weapon69 SOUTH presented male composition on approved68 cycle only. No female or additional outfits inferred.",
+  "packages": [
+    {
+      "key": "69_SOUTH_M_PRESENTED",
+      "filename": "Nodachi69_SOUTH_FonteAnterior_Editavel.zip",
+      "bytes": 3203184,
+      "sha256": "1d7db51526a3b1d4e1780c7a66c449133e621a72c2828a3941a0f87d6c52a4f5",
+      "pngEntries": 39,
+      "entries": 48,
+      "parts": [
+        {
+          "path": "Nodachi69_SOUTH_FonteAnterior_Editavel.zip",
+          "bytes": 3203184,
+          "sha256": "1d7db51526a3b1d4e1780c7a66c449133e621a72c2828a3941a0f87d6c52a4f5",
+          "git_blob_sha": "cd86c673d901dd5739e4c5eb987834c302342333"
+        }
+      ],
+      "approval": "approved presented male composition only",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

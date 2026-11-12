@@ -2597,6 +2597,15 @@
       ],
       "restore": "weapons/daggers12-13-71-74-north-presented-approved/RESTORE.py",
       "approvalScope": "Weapons12,13,71,72,73,74 NORTH presented male composition only; no female, additional outfits or modular integration"
+    },
+    {
+      "path": "weapons/nodachi69-south-presented-approved/69_SOUTH_M_PRESENTED/Nodachi69_SOUTH_FonteAnterior_Editavel.zip",
+      "bytes": 3203184,
+      "sha256": "1d7db51526a3b1d4e1780c7a66c449133e621a72c2828a3941a0f87d6c52a4f5",
+      "pngEntries": 39,
+      "productionEnabled": false,
+      "storage": "zip",
+      "approvalScope": "Presented SOUTH male composition only; no female or additional outfits"
     }
   ],
   "productionEnabled": false,
