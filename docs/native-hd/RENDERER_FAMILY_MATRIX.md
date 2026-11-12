@@ -2,59 +2,59 @@
 
 Actual select()+prepareFamily() gate for M/F, original/light+black and registered clothing sets. Resolver coverage is NOT visual approval, complete render verification, or arbitrary wardrobe support. Item0 means unarmed base, not equipment.
 
-Generated: 2026-11-12T23:32:37.028Z
+Generated: 2026-11-12T23:43:30.526Z
 
-68/2016 tested identity/clothing cases pass the complete idle+walk+attack gate. This is not a visual-pass rate.
+104/2016 tested identity/clothing cases pass the complete idle+walk+attack gate. This is not a visual-pass rate.
 
 | Item | Male original | Male light/black | Female original | Female light/black |
 |---|---|---|---|---|
 | 0 (base) | yes | yes | yes | no |
-| 1 | yes | no | no | no |
+| 1 | yes | no | yes | no |
 | 2 | yes | no | yes | no |
 | 3 | yes | no | yes | no |
-| 4 | yes | yes | no | no |
-| 5 | yes | yes | no | no |
-| 12 | yes | no | no | no |
-| 13 | yes | no | no | no |
+| 4 | yes | yes | yes | no |
+| 5 | yes | yes | yes | no |
+| 12 | yes | no | yes | no |
+| 13 | yes | no | yes | no |
 | 14 | yes | no | yes | no |
 | 15 | yes | no | yes | no |
-| 16 | yes | no | no | no |
-| 17 | yes | no | no | no |
-| 31 | yes | no | no | no |
-| 32 | yes | no | no | no |
-| 67 | yes | no | no | no |
-| 68 | yes | no | no | no |
-| 69 | yes | no | no | no |
-| 70 | yes | no | no | no |
-| 71 | yes | no | no | no |
-| 72 | yes | no | no | no |
-| 73 | yes | no | no | no |
-| 74 | yes | no | no | no |
+| 16 | yes | no | yes | no |
+| 17 | yes | no | yes | no |
+| 31 | yes | no | yes | no |
+| 32 | yes | no | yes | no |
+| 67 | yes | no | yes | no |
+| 68 | yes | no | yes | no |
+| 69 | yes | no | yes | no |
+| 70 | yes | no | yes | no |
+| 71 | yes | no | yes | no |
+| 72 | yes | no | yes | no |
+| 73 | yes | no | yes | no |
+| 74 | yes | no | yes | no |
 | 109 | yes | yes | yes | no |
 | 110 | yes | no | yes | no |
 | 111 | yes | no | yes | no |
 | 112 | yes | no | yes | no |
-| 113 | yes | yes | no | no |
-| 114 | yes | no | no | no |
-| 115 | yes | yes | no | no |
-| 116 | yes | no | no | no |
+| 113 | yes | yes | yes | no |
+| 114 | yes | no | yes | no |
+| 115 | yes | yes | yes | no |
+| 116 | yes | no | yes | no |
 | 117 | yes | no | yes | no |
-| 118 | yes | no | no | no |
-| 119 | yes | no | no | no |
-| 120 | yes | no | no | no |
-| 121 | yes | no | no | no |
-| 122 | yes | no | no | no |
-| 123 | yes | no | no | no |
-| 124 | yes | no | no | no |
-| 125 | yes | no | no | no |
-| 126 | yes | no | no | no |
-| 127 | yes | no | no | no |
-| 128 | yes | no | no | no |
+| 118 | yes | no | yes | no |
+| 119 | yes | no | yes | no |
+| 120 | yes | no | yes | no |
+| 121 | yes | no | yes | no |
+| 122 | yes | no | yes | no |
+| 123 | yes | no | yes | no |
+| 124 | yes | no | yes | no |
+| 125 | yes | no | yes | no |
+| 126 | yes | no | yes | no |
+| 127 | yes | no | yes | no |
+| 128 | yes | no | yes | no |
 
 ## Registered clothing sets
 
-- {}: 58/168 complete cases.
-- {"pants":133}: 4/168 complete cases.
+- {}: 90/168 complete cases.
+- {"pants":133}: 8/168 complete cases.
 - {"boots":155,"gloves":152,"pants":147,"torso":6}: 0/168 complete cases.
 - {"boots":155,"gloves":152,"pants":154,"torso":151}: 0/168 complete cases.
 - {"boots":134,"gloves":152,"pants":133,"torso":151}: 0/168 complete cases.

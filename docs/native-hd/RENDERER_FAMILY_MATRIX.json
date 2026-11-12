@@ -1,17 +1,17 @@
 {
   "schema": "native-world-family-coverage-v1",
-  "generatedAt": "2026-11-12T23:32:37.028Z",
+  "generatedAt": "2026-11-12T23:43:30.526Z",
   "scope": "Actual select()+prepareFamily() gate for M/F, original/light+black and registered clothing sets. Resolver coverage is NOT visual approval, complete render verification, or arbitrary wardrobe support. Item0 means unarmed base, not equipment.",
   "equipmentItemCount": 41,
   "clothingSetCount": 12,
   "caseCount": 2016,
-  "completeCaseCount": 68,
+  "completeCaseCount": 104,
   "fingerprints": {
     "tools/rework-base-hd/index.json": "baef34f1ab9de0e3a1d4ca46a6ec907caa3fd61b9366f39a79b722a139c7e7a0",
-    "tools/rework-weapon-layers-hd/index.json": "576ecb961f238d4600d2cc2b8aac17dab4029d993a34b702438e170b4fd31816",
+    "tools/rework-weapon-layers-hd/index.json": "c966c9c1b17ada459702a2d2db47938063fb1bf5152c0c7b7fe785c2ac8e8807",
     "tools/rework-weapon-layers-hd/carry-binding-plan.json": "c2b1794b112d266518c88a3fa719c03316a42ea58b7dc3546cac0dc2d2df46a2",
     "tools/rework-modular-outfits-hd/index.json": "17bfbd38ff120d8d9f5dc76fba22bd6e64cc2da991f7d3f892095b54e2c8304f",
-    "player-rework-native-hd.js": "3dba1690f9100d108ecee52b82871d6df178bd97c8a464b688491e15185de196",
+    "player-rework-native-hd.js": "02e38a84e272938619f1b70628868039a679ffd487302066b96497cf29a3831c",
     "player-rework-weapon-native-hd.js": "7a602be72603e5ee172f519c5f076f9ff8a9bfd73ce331777b0610752f7a462f",
     "player-rework-weapon-carry-hd.js": "146b29f43f8ed361b8092fe782800795da2f09f1a91198b58334523bb4335e0e"
   },
@@ -2877,21 +2877,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-sword",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female1-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female1-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female1-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female1-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female1-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female1-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female1-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female1-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "south",
+          "id": "female1-attack-sword-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "north",
+          "id": "female1-attack-sword-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "east",
+          "id": "female1-attack-sword-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "west",
+          "id": "female1-attack-sword-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 1,
@@ -6807,21 +6870,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-firearm",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female4-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female4-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female4-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female4-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female4-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female4-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female4-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female4-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "south",
+          "id": "female4-attack-firearm-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "north",
+          "id": "female4-attack-firearm-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "east",
+          "id": "female4-attack-firearm-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "west",
+          "id": "female4-attack-firearm-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 4,
@@ -8117,21 +8243,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-firearm",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female5-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female5-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female5-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female5-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female5-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female5-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female5-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female5-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "south",
+          "id": "female5-attack-firearm-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "north",
+          "id": "female5-attack-firearm-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "east",
+          "id": "female5-attack-firearm-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "west",
+          "id": "female5-attack-firearm-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 5,
@@ -9405,21 +9594,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-daggers",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female12-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female12-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female12-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female12-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female12-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female12-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female12-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female12-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "south",
+          "id": "female12-attack-daggers-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "north",
+          "id": "female12-attack-daggers-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "east",
+          "id": "female12-attack-daggers-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "west",
+          "id": "female12-attack-daggers-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 12,
@@ -10693,21 +10945,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-daggers",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female13-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female13-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female13-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female13-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female13-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female13-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female13-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female13-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "south",
+          "id": "female13-attack-daggers-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "north",
+          "id": "female13-attack-daggers-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "east",
+          "id": "female13-attack-daggers-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "west",
+          "id": "female13-attack-daggers-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 13,
@@ -12681,21 +12996,84 @@
       "clothing": {
         "pants": 133
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "carry15-male-idle-original-south-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "carry15-male-idle-original-north-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "carry15-male-idle-original-east-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "carry15-male-idle-original-west-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "carry15-male-walk-south-r7-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "carry15-v7-male-walk-drawn-north-north-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "carry15-v7-male-walk-drawn-east-east-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "carry15-v7-male-walk-drawn-east-east-mirror-west-candidate-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "cannon15-south-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "cannon15-north-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "cannon15-east-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "cannon15-west-native-layers-pants133-candidate",
+          "provider": "weapon"
+        }
+      ]
     },
     {
       "item": 15,
@@ -14560,21 +14938,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female16-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female16-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female16-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female16-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female16-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female16-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female16-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female16-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female16-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female16-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female16-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female16-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 16,
@@ -15807,21 +16248,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female17-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female17-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female17-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female17-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female17-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female17-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female17-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female17-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female17-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female17-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female17-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female17-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 17,
@@ -17054,21 +17558,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female31-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female31-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female31-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female31-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female31-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female31-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female31-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female31-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female31-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female31-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female31-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female31-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 31,
@@ -18301,21 +18868,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female32-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female32-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female32-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female32-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female32-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female32-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female32-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female32-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female32-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female32-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female32-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female32-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 32,
@@ -19589,21 +20219,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-sword",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female67-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female67-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female67-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female67-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female67-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female67-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female67-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female67-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "south",
+          "id": "female67-attack-sword-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "north",
+          "id": "female67-attack-sword-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "east",
+          "id": "female67-attack-sword-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "west",
+          "id": "female67-attack-sword-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 67,
@@ -20877,21 +21570,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-sword",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female68-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female68-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female68-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female68-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female68-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female68-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female68-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female68-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "south",
+          "id": "female68-attack-sword-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "north",
+          "id": "female68-attack-sword-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "east",
+          "id": "female68-attack-sword-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "west",
+          "id": "female68-attack-sword-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 68,
@@ -22165,21 +22921,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-sword",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female69-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female69-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female69-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female69-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female69-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female69-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female69-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female69-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "south",
+          "id": "female69-attack-sword-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "north",
+          "id": "female69-attack-sword-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "east",
+          "id": "female69-attack-sword-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "west",
+          "id": "female69-attack-sword-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 69,
@@ -23453,21 +24272,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-sword",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female70-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female70-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female70-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female70-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female70-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female70-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female70-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female70-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "south",
+          "id": "female70-attack-sword-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "north",
+          "id": "female70-attack-sword-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "east",
+          "id": "female70-attack-sword-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-sword",
+          "direction": "west",
+          "id": "female70-attack-sword-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 70,
@@ -24741,21 +25623,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-daggers",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female71-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female71-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female71-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female71-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female71-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female71-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female71-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female71-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "south",
+          "id": "female71-attack-daggers-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "north",
+          "id": "female71-attack-daggers-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "east",
+          "id": "female71-attack-daggers-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "west",
+          "id": "female71-attack-daggers-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 71,
@@ -26029,21 +26974,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-daggers",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female72-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female72-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female72-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female72-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female72-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female72-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female72-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female72-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "south",
+          "id": "female72-attack-daggers-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "north",
+          "id": "female72-attack-daggers-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "east",
+          "id": "female72-attack-daggers-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "west",
+          "id": "female72-attack-daggers-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 72,
@@ -27317,21 +28325,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-daggers",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female73-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female73-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female73-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female73-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female73-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female73-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female73-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female73-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "south",
+          "id": "female73-attack-daggers-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "north",
+          "id": "female73-attack-daggers-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "east",
+          "id": "female73-attack-daggers-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "west",
+          "id": "female73-attack-daggers-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 73,
@@ -28605,21 +29676,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-daggers",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female74-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female74-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female74-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female74-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female74-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female74-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female74-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female74-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "south",
+          "id": "female74-attack-daggers-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "north",
+          "id": "female74-attack-daggers-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "east",
+          "id": "female74-attack-daggers-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-daggers",
+          "direction": "west",
+          "id": "female74-attack-daggers-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 74,
@@ -32092,21 +33226,84 @@
       "clothing": {
         "pants": 133
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "carry111-male-idle-original-south-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "carry111-male-idle-original-north-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "carry111-male-idle-original-east-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "carry111-male-idle-original-west-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "carry111-male-walk-south-r7-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "carry111-v7-male-walk-drawn-north-north-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "carry111-v7-male-walk-drawn-east-east-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "carry111-v7-male-walk-drawn-east-east-mirror-west-candidate-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "gauntlet111-south-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "gauntlet111-north-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "gauntlet111-east-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "gauntlet111-west-native-layers-pants133-candidate",
+          "provider": "weapon"
+        }
+      ]
     },
     {
       "item": 111,
@@ -33402,21 +34599,84 @@
       "clothing": {
         "pants": 133
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "carry112-male-idle-original-south-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "carry112-male-idle-original-north-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "carry112-male-idle-original-east-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "carry112-male-idle-original-west-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "carry112-male-walk-south-r7-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "carry112-v7-male-walk-drawn-north-north-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "carry112-v7-male-walk-drawn-east-east-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "carry112-v7-male-walk-drawn-east-east-mirror-west-candidate-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "gauntlet112-south-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "gauntlet112-north-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "gauntlet112-east-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "gauntlet112-west-native-layers-pants133-candidate",
+          "provider": "weapon"
+        }
+      ]
     },
     {
       "item": 112,
@@ -35344,21 +36604,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-firearm",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female113-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female113-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female113-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female113-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female113-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female113-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female113-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female113-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "south",
+          "id": "female113-attack-firearm-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "north",
+          "id": "female113-attack-firearm-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "east",
+          "id": "female113-attack-firearm-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "west",
+          "id": "female113-attack-firearm-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 113,
@@ -36632,21 +37955,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-firearm",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female114-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female114-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female114-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female114-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female114-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female114-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female114-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female114-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "south",
+          "id": "female114-attack-firearm-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "north",
+          "id": "female114-attack-firearm-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "east",
+          "id": "female114-attack-firearm-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "west",
+          "id": "female114-attack-firearm-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 114,
@@ -37942,21 +39328,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-firearm",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female115-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female115-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female115-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female115-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female115-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female115-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female115-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female115-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "south",
+          "id": "female115-attack-firearm-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "north",
+          "id": "female115-attack-firearm-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "east",
+          "id": "female115-attack-firearm-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "west",
+          "id": "female115-attack-firearm-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 115,
@@ -39230,21 +40679,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-firearm",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female116-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female116-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female116-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female116-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female116-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female116-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female116-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female116-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "south",
+          "id": "female116-attack-firearm-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "north",
+          "id": "female116-attack-firearm-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "east",
+          "id": "female116-attack-firearm-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-firearm",
+          "direction": "west",
+          "id": "female116-attack-firearm-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 116,
@@ -39908,21 +41420,84 @@
       "clothing": {
         "pants": 133
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "carry117-male-idle-original-south-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "carry117-male-idle-original-north-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "carry117-male-idle-original-east-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "carry117-male-idle-original-west-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "carry117-male-walk-south-r7-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "carry117-v7-male-walk-drawn-north-north-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "carry117-v7-male-walk-drawn-east-east-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "carry117-v7-male-walk-drawn-east-east-mirror-west-candidate-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "arm117-south-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "arm117-north-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "arm117-east-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "arm117-west-native-layers-pants133-candidate",
+          "provider": "weapon"
+        }
+      ]
     },
     {
       "item": 117,
@@ -41787,21 +43362,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female118-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female118-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female118-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female118-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female118-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female118-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female118-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female118-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "female118-attack-unarmed-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "female118-attack-unarmed-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "female118-attack-unarmed-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "female118-attack-unarmed-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 118,
@@ -43034,21 +44672,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female119-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female119-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female119-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female119-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female119-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female119-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female119-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female119-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "female119-attack-unarmed-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "female119-attack-unarmed-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "female119-attack-unarmed-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "female119-attack-unarmed-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 119,
@@ -44281,21 +45982,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female120-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female120-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female120-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female120-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female120-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female120-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female120-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female120-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "female120-attack-unarmed-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "female120-attack-unarmed-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "female120-attack-unarmed-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "female120-attack-unarmed-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 120,
@@ -45528,21 +47292,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female121-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female121-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female121-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female121-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female121-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female121-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female121-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female121-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female121-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female121-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female121-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female121-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 121,
@@ -46775,21 +48602,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female122-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female122-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female122-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female122-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female122-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female122-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female122-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female122-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female122-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female122-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female122-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female122-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 122,
@@ -48022,21 +49912,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female123-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female123-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female123-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female123-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female123-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female123-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female123-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female123-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female123-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female123-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female123-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female123-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 123,
@@ -49269,21 +51222,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female124-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female124-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female124-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female124-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female124-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female124-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female124-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female124-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female124-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female124-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female124-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female124-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 124,
@@ -50516,21 +52532,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female125-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female125-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female125-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female125-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female125-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female125-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female125-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female125-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female125-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female125-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female125-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female125-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 125,
@@ -51763,21 +53842,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female126-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female126-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female126-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female126-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female126-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female126-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female126-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female126-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female126-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female126-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female126-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female126-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 126,
@@ -53010,21 +55152,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female127-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female127-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female127-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female127-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female127-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female127-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female127-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female127-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female127-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female127-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female127-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female127-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 127,
@@ -54257,21 +56462,84 @@
       "body": "female",
       "profile": "original",
       "clothing": {},
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-focus",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "female128-idle-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "female128-idle-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "female128-idle-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "female128-idle-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "female128-walk-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "female128-walk-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "female128-walk-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "female128-walk-west-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "south",
+          "id": "female128-attack-focus-south-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "north",
+          "id": "female128-attack-focus-north-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "east",
+          "id": "female128-attack-focus-east-candidate",
+          "provider": "female-equipment"
+        },
+        {
+          "action": "attack-focus",
+          "direction": "west",
+          "id": "female128-attack-focus-west-candidate",
+          "provider": "female-equipment"
+        }
+      ]
     },
     {
       "item": 128,

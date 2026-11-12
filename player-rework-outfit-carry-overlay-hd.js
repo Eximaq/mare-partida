@@ -1,7 +1,7 @@
 /* Pants-only carry composition; never imports a clothed/baked body background. */
 (function(root){'use strict';
 function adaptCarry(carry,outfits){
- if(carry?.item!==109||!['idle','walk'].includes(carry.action))return null;
+ if(!Number.isInteger(carry?.item)||carry.base?.body!=='male'||!['idle','walk'].includes(carry.action))return null;
  const dir=carry.direction,mirror=!!carry.base.mirrorX,sourceDir=mirror?'east':dir;
  const outfit=outfits.records.find(o=>o.item===133&&o.body==='male'&&o.action===carry.action&&o.direction===sourceDir);if(!outfit)return null;
  const d=carry.base.pack.directions[dir],od=outfit.pack.directions[sourceDir],cloth=od.layers.find(l=>['own133-isolated','pants133-visible-cloth-only'].includes(l.id));if(!cloth)return null;

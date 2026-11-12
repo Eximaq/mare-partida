@@ -5,10 +5,10 @@ The normal `paper-doll-96-lobby.js` path calls `MareReworkNativeHD.drawStable`. 
 ## Current coverage, not a claim of universal completion
 
 - All41 equipped weapon IDs now have male original-appearance idle/walk/attack families in all4directions. ID0 is the separate unarmed base.
-- Female original equipment families:2,3,14,15,109,110,111,112,117. Existing item rasters are registered on the female class base; derived registrations remain explicit calibration candidates, not new artistic approvals.
+- All41 female original equipment families now resolve idle/walk/class-attack in all4directions (492records,2788frames). Existing item rasters are registered on the female class base; derived registrations remain explicit calibration candidates, not new artistic approvals.
 - Native bases include both genders. Exact registered clothing contracts and anatomical palette masks remain separate from arbitrary wardrobe combinations.
 - A mirrored-WEST proof bug previously disabled otherwise compatible male head families. Native mirrored pixels and anchors are now checked against authored WEST heads before activation. No Original-to-cropped substitution is made.
-- Four full male clothing sets support unarmed idle/walk/attack. Partial clothing sets are preserved and not represented as full world coverage. See `OUTFIT_CONTRACT_AUDIT.json`.
+- Four full male clothing sets support unarmed idle/walk/attack. Weapon15/111/112/117 with pants133 additionally reuse exact proven body contracts. Partial clothing sets are preserved and not represented as full world coverage. See `OUTFIT_CONTRACT_AUDIT.json`.
 - Four firearm families4/5/113/115 now have mask-owned skin/hair recoloring. Attachment and unmasked pixels remain unchanged. Other source ownership restrictions remain explicit.
 
 `RENDERER_FAMILY_MATRIX.json` records actual resolver/family coverage by item, gender, palette and exact registered outfit. `HEAD_FAMILY_COVERAGE.json`, when present, independently checks named hair/headgear families. These are resolver proofs, not claims that all visual combinations were approved.
