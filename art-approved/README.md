@@ -87,3 +87,8 @@ Os ciclos apresentados e aprovados estão em `weapons/manopla111-mosquete5-south
 ## Orbe 17 SOUTH aprovada com ressalva
 
 A prévia apresentada está em `weapons/orbe17-south-frame5-caveat-approved/`. O quadro 5 permanece sem correção, conforme ressalva aceita. Somente os arquivos17 foram extraídos byte a byte do backup misto;109 excluída. Sem integração ou teste no jogo.
+
+
+## Manopla 109 SOUTH: encaixe inicial v3 aprovado
+
+A última prévia aprovada está em `weapons/manopla109-south-initial-fit-v3-approved/`, com os sete quadros fornecidos preservados. A exclusão da109 no pacote misto anterior era histórica; esta aprovação específica é posterior. Backup exato verificado; sem integração ou teste no jogo.

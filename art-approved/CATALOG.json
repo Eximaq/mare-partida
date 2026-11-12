@@ -2633,6 +2633,15 @@
       "productionEnabled": false,
       "storage": "zip",
       "approvalScope": "Presented17 SOUTH only with uncorrected frame5 caveat;109 excluded"
+    },
+    {
+      "path": "weapons/manopla109-south-initial-fit-v3-approved/109_SOUTH_INITIAL_FIT_V3/Manopla109_EncaixeInicial_v3_Editavel.zip",
+      "bytes": 747906,
+      "sha256": "be620e66e06ea2b9c943b92600abae46e0ef7f473e9917b6491cbf545cd06f8c",
+      "pngEntries": 9,
+      "productionEnabled": false,
+      "storage": "zip",
+      "approvalScope": "Presented109 SOUTH initial-fit v3 only; seven supplied frames"
     }
   ],
   "productionEnabled": false,
