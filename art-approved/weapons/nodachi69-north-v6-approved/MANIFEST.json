@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "packageCount": 1,
+  "totalBytes": 2200924,
+  "scope": "69 NORTH V6 presented composition only, original hand tilted inward and grip raised at rest. No additional models/outfits inferred.",
+  "packages": [
+    {
+      "key": "69_NORTH_V6_PRESENTED",
+      "filename": "Nodachi69_NORTH_V6_Editavel.zip",
+      "bytes": 2200924,
+      "sha256": "b949edc84eb9f898d4dddcfc45db759fab04b99ed9d70d462b7b774207fba428",
+      "pngEntries": 34,
+      "entries": 38,
+      "parts": [
+        {
+          "path": "Nodachi69_NORTH_V6_Editavel.zip",
+          "bytes": 2200924,
+          "sha256": "b949edc84eb9f898d4dddcfc45db759fab04b99ed9d70d462b7b774207fba428",
+          "git_blob_sha": "25c7243a04ac9a198d83d3c6b7334e09b3cc22d5"
+        }
+      ],
+      "approval": "approved presented V6 only",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

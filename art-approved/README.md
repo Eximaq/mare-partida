@@ -92,3 +92,8 @@ A prévia apresentada está em `weapons/orbe17-south-frame5-caveat-approved/`. O
 ## Manopla 109 SOUTH: encaixe inicial v3 aprovado
 
 A última prévia aprovada está em `weapons/manopla109-south-initial-fit-v3-approved/`, com os sete quadros fornecidos preservados. A exclusão da109 no pacote misto anterior era histórica; esta aprovação específica é posterior. Backup exato verificado; sem integração ou teste no jogo.
+
+
+## Nodachi de Fogo 69 NORTH V6 aprovada
+
+A composição V6 apresentada está em `weapons/nodachi69-north-v6-approved/`. Backup exato verificado; versões anteriores rejeitadas excluídas, sem extensão a modelos/trajes não mostrados. Sem integração ou teste no jogo.

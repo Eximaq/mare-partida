@@ -2642,6 +2642,15 @@
       "productionEnabled": false,
       "storage": "zip",
       "approvalScope": "Presented109 SOUTH initial-fit v3 only; seven supplied frames"
+    },
+    {
+      "path": "weapons/nodachi69-north-v6-approved/69_NORTH_V6_PRESENTED/Nodachi69_NORTH_V6_Editavel.zip",
+      "bytes": 2200924,
+      "sha256": "b949edc84eb9f898d4dddcfc45db759fab04b99ed9d70d462b7b774207fba428",
+      "pngEntries": 34,
+      "productionEnabled": false,
+      "storage": "zip",
+      "approvalScope": "69 NORTH V6 presented composition only"
     }
   ],
   "productionEnabled": false,
