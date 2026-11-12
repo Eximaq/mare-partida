@@ -55,6 +55,8 @@
   }
   const byId=(id,entries=catalog)=>entries.find(fruit=>fruit.id===id)||null;
   const isZoan=(fruit)=>fruit?.family==='zoan';
+  const zoanBasicByRank=Object.freeze({E:1.20,D:1.35,C:1.55,B:1.65,A:1.75,S:2});
+  const zoanBasicMultiplier=(fruit,transformed)=>transformed&&isZoan(fruit)?(zoanBasicByRank[fruit.rank]??1):1;
   const isFruit=(item,defs)=>!!item&&(item.type==='akuma_no_mi'||defs?.[item.def]?.type==='akuma_no_mi');
   function registered(game,entries=catalog){
     const ids=Array.isArray(game?.akumaCompendium)?game.akumaCompendium:[];
@@ -119,6 +121,6 @@
   const castCoefficient=id=>id==='akuma_inu_dachshund'?.85:id==='akuma_uma_uma'?.55:1;
   if(typeof module!=='undefined')require('./paramecia-rework-data.js');
   root.MareParameciaReworks?.applyCatalog?.(catalog,supaRules);
-  root.MareAkuma={offenseRules,offensiveStats,castCoefficient,ranks,rankRarities,rarityFor,familyFor,slotsPerRank,AkumaNoMiData,catalog,byId,isZoan,isFruit,registered,slotsForRank,passiveCount,register,migrate,itemData,bonusStats,applyGear,activeSkill,activeSkills,cooldownKey,supaRules,supaTargets,retaliate};
+  root.MareAkuma={offenseRules,offensiveStats,castCoefficient,ranks,rankRarities,rarityFor,familyFor,slotsPerRank,AkumaNoMiData,catalog,byId,isZoan,zoanBasicByRank,zoanBasicMultiplier,isFruit,registered,slotsForRank,passiveCount,register,migrate,itemData,bonusStats,applyGear,activeSkill,activeSkills,cooldownKey,supaRules,supaTargets,retaliate};
   if(typeof module!=='undefined')module.exports=root.MareAkuma;
 })(globalThis);

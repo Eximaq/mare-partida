@@ -21,15 +21,31 @@ async function loadMigrations(directory: string): Promise<Migration[]> {
   }));
 }
 
-function assertHistory(migrations: Migration[], applied: Applied[]) {
-  for (const [index, row] of applied.entries()) {
-    const expected = migrations[index];
-    if (!expected || expected.name !== row.name || expected.checksum !== row.checksum) {
-      throw new Error('Migration history mismatch; restore matching files or add a new migration');
+export function pendingMigrations<T extends Applied>(migrations: T[], applied: Applied[]): T[] {
+  const oldAkainu = '0050_akainu_weekly_boss.sql';
+  const currentAkainu = '0054_akainu_weekly_boss.sql';
+  const historic = applied.find(row => row.name === oldAkainu);
+  const mismatch = () => new Error('Migration history mismatch; restore matching files or add a new migration');
+  let plan = migrations;
+  let history = applied;
+  if (historic) {
+    const canonical = migrations.find(row => row.name === currentAkainu);
+    if (!canonical || canonical.checksum !== historic.checksum ||
+        applied.some(row => row.name === currentAkainu) ||
+        applied.filter(row => row.name < oldAkainu).length !== migrations.filter(row => row.name < oldAkainu).length) {
+      throw mismatch();
     }
+    // The deployed Akainu branch and main both used sequence 0050.
+    // Keep the recorded name and checksum intact and skip only the identical SQL.
+    plan = migrations.filter(row => row.name !== currentAkainu);
+    history = applied.filter(row => row.name !== oldAkainu);
   }
+  for (const [index, row] of history.entries()) {
+    const expected = plan[index];
+    if (!expected || expected.name !== row.name || expected.checksum !== row.checksum) throw mismatch();
+  }
+  return plan.slice(history.length);
 }
-
 export async function applyMigrations(pool: Pool, directory = defaultDirectory): Promise<string[]> {
   const migrations = await loadMigrations(directory);
   const client = await pool.connect();
@@ -44,8 +60,7 @@ export async function applyMigrations(pool: Pool, directory = defaultDirectory):
         name text PRIMARY KEY, checksum text NOT NULL, applied_at timestamptz NOT NULL DEFAULT now()
       )`);
     const applied = await client.query<Applied>('SELECT name, checksum FROM mare_meta.schema_migrations ORDER BY name');
-    assertHistory(migrations, applied.rows);
-    const pending = migrations.slice(applied.rowCount ?? 0);
+    const pending = pendingMigrations(migrations, applied.rows);
     for (const migration of pending) {
       await client.query(migration.sql);
       await client.query('INSERT INTO mare_meta.schema_migrations(name,checksum) VALUES($1,$2)', [migration.name, migration.checksum]);
@@ -62,7 +77,6 @@ export async function isDatabaseReady(pool: Pool): Promise<boolean> {
   try {
     const migrations = await loadMigrations(defaultDirectory);
     const applied = await pool.query<Applied>('SELECT name, checksum FROM mare_meta.schema_migrations ORDER BY name');
-    assertHistory(migrations, applied.rows);
-    return applied.rows.length === migrations.length;
+    return pendingMigrations(migrations, applied.rows).length === 0;
   } catch { return false; }
 }

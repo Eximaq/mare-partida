@@ -1,3 +1,5 @@
+import {authorizeWeeklyBoss,lockWeeklyBoss,weeklyRoom} from './weekly-boss-store.js';
+import {executeWeeklyBoss} from './weekly-boss.js';
 import {executeSocialContact,type SocialContactCommand} from './social-contacts.js';
 import {executeMarket} from './market.js';
 import {executeSocialMail} from './mail.js';
@@ -42,6 +44,8 @@ export async function executeCharacterCommand(
   if (!controller.rowCount) throw new AuthFault(409, "control_conflict");
   const social = /^(friend|contact|message|mail|trade|market)\./.test(input.action);
   const party=social?null:await lockParty(client,characterId);
+  if(input.action==='weeklyBoss.execute')await authorizeWeeklyBoss(client,characterId,input.payload.op);
+  const weekly=await lockWeeklyBoss(client,characterId);
   // Authority is checked on every replay. Credentials are deliberately excluded from storage
   // and identity, so a newly authorized controller can reconcile a lost response.
   const intent = input.action === "attributes.allocate" ? attributeKeys.map(k=>input.payload.allocation[k]) :
@@ -66,7 +70,14 @@ export async function executeCharacterCommand(
   if(party&&['world.travel','world.return','dungeon.enter'].includes(input.action)){
    const b=await readBattle(client,characterId);if(b?.partyInstanceId||input.action==='dungeon.enter')throw new AuthFault(409,'party_collective_navigation_required');
   }
-  let mail, market;
+  let mail, market, weeklyBoss;
+  if(weekly){
+   const room=await weeklyRoom(client,weekly);
+   if(room?.mode==='test'&&!['state.sync','weeklyBoss.execute','world.move','world.stop','battle.auto','battle.target','battle.skill','fruit.cast','fruit.transform','fruit.move'].includes(input.action))throw new AuthFault(409,'weekly_boss_test_isolated');
+   if(/^(party[.]|prison[.]|dungeon[.])/.test(input.action)||['world.travel','world.return','battle.first','profile.class'].includes(input.action))throw new AuthFault(409,'weekly_boss_leave_required');
+  }
+  if(input.action==='weeklyBoss.execute'){weeklyBoss=await executeWeeklyBoss(client,characterId,input,state);state=await readCharacterState(client,characterId);}
+
   if(social){
     if(input.action==='market.execute')market=await executeMarket(client,characterId,input);
     else if(input.action.startsWith('mail.'))mail=await executeSocialMail(client,characterId,input,state);
@@ -80,7 +91,7 @@ export async function executeCharacterCommand(
   switch(input.action){
     case 'crew.create': case 'crew.join': case 'crew.apply': case 'crew.invite': case 'crew.respond':
     case 'crew.recruitment': case 'crew.role': case 'crew.transfer': case 'crew.kick': case 'crew.leave':
-    case 'crew.dissolve': case 'crew.donate': case 'crew.upgrade':
+    case 'crew.dissolve': case 'crew.donate': case 'crew.upgrade': case 'crew.claim-coins': case 'crew.buy-fragment':
       await executeCrew(client,characterId,input,state);break;
     case 'crew.profession':
       await chooseProfession(client,characterId,input.payload.profession);
@@ -124,8 +135,8 @@ export async function executeCharacterCommand(
   let inventory;
   if(input.action==="inventory.buy"||input.action==="inventory.sell"||input.action==="equipment.equip"||input.action==="equipment.unequip") {inventory=await mutateInventory(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==="combat.claim") inventory=await readInventory(client,characterId);
-  if(!social&&input.action!=='state.sync')await observeServerAchievements(client,characterId,before,state,{powerBefore,...(input.action==='world.travel'?{island:input.payload.islandId}:{}),...(input.action==='combat.claim'?{kills:1}:{})});
-  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(mail ? {mail} : {}), ...(market ? {market} : {}), ...(world ? {world} : {}), ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}), ...(inventory ? {inventory} : {}) });
+  if(!weekly&&input.action!=='weeklyBoss.execute'&&!social&&input.action!=='state.sync')await observeServerAchievements(client,characterId,before,state,{powerBefore,...(input.action==='world.travel'?{island:input.payload.islandId}:{}),...(input.action==='combat.claim'?{kills:1}:{})});
+  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(weeklyBoss ? {weeklyBoss} : {}), ...(mail ? {mail} : {}), ...(market ? {market} : {}), ...(world ? {world} : {}), ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}), ...(inventory ? {inventory} : {}) });
   await client.query(
     "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)",
     [characterId, input.requestId, hash, JSON.stringify(result)],

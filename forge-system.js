@@ -12,7 +12,8 @@
   const int=n=>Number.isSafeInteger(n)&&n>=0?n:0,clone=v=>JSON.parse(JSON.stringify(v));
   function draw(random){const n=random();if(!Number.isFinite(n)||n<0||n>=1)throw Error('RNG inválido');return n;}
   function range(lo,hi,random){return lo+Math.floor(draw(random)*(hi-lo+1));}
-  function rarityFromRoll(n){if(!Number.isInteger(n)||n<1||n>1000)throw Error('Roleta inválida');return n<=600?'common':n<=850?'uncommon':n<=950?'rare':'epic';}
+  const normalRarityScale=1000,normalRareLimit=950;
+  function rarityFromRoll(n){if(!Number.isInteger(n)||n<1||n>normalRarityScale)throw Error('Roleta inválida');return n<=600?'common':n<=850?'uncommon':n<=normalRareLimit?'rare':'epic';}
   const rollRarity=(random=Math.random)=>rarityFromRoll(range(1,1000,random));
   function seeded(text){let n=2166136261;for(const c of String(text))n=Math.imul(n^c.charCodeAt(0),16777619);return ()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};}
   const isGear=(item,defs)=>!!item&&!!defs[item.def]&&!defs[item.def].kind&&defs[item.def].type!=='akuma_no_mi'&&item.type!=='akuma_no_mi'&&!item.pearlId;
@@ -42,13 +43,15 @@
   const epicWeaponPool=defs=>defs.map((d,i)=>({d,i})).filter(({d})=>d.slot==='weapon'&&d.rarity==='epic'&&d.fixedRarity&&d.icon_path&&!d.unavailable).map(({i})=>i);
   const weaponFragments=g=>(g.inventory||[]).filter(i=>i.materialId===weaponFragment.materialId&&!i.locked&&(!i.boundToCharacter||i.boundToCharacter===g.characterId));
   const weaponFragmentCount=g=>weaponFragments(g).reduce((n,i)=>n+int(i.quantity),0);
+  const epicDropChance=()=>generationRules.normalGearChance*(normalRarityScale-normalRareLimit)/normalRarityScale;
+  const mapFragmentChance=monster=>monster?.source==='world'&&monster.level>=40?epicDropChance():0;
   function normalLoot(defs,level,region,random=Math.random){if(draw(random)>=generationRules.normalGearChance)return null;const r=rollRarity(random),pool=defs.map((d,def)=>({d,def})).filter(({d})=>!d.kind&&d.type!=='akuma_no_mi'&&d.rarity===r&&!d.unavailable);if(!pool.length)throw Error('Pool de equipamentos vazio: '+r);return {def:pool[Math.floor(draw(random)*pool.length)].def,rarity:r,level:lootLevel(level,region)};}
   function gearName(item,defs){const d=defs[item?.def];return isGear(item,defs)?'LV. '+item.level+' '+d.name+(item.plus?' +'+item.plus:''):d?.name||'Item';}
 
   function normalizeItem(original,defs,random=null){
     const item=clone(original),def=defs[item.def];if(!def)return item;
     if(def.kind==='visual-completo'||def.type==='akuma_no_mi'||item.type==='akuma_no_mi')return item;
-    if(['pearl-box','haki-book','haki-fragment','akuma-fragment','weapon-fragment'].includes(def.kind))return item;
+    if(['pearl-box','epic-equipment-box','haki-book','haki-fragment','akuma-fragment','weapon-fragment'].includes(def.kind))return item;
     if(isPearl(item,defs)){const p=pearlOf(item,defs);if(p)item.pearlId=p.id;item.forgeVersion=VERSION;return item;}
     const fixedRarityUpgrade=def.fixedRarity&&rarity[def.rarity]&&item.rarity!==def.rarity;
     item.level=Math.max(1,int(item.level));item.plus=int(item.plus);item.rarity=def.fixedRarity&&rarity[def.rarity]?def.rarity:(rarity[item.rarity]?item.rarity:(rarity[def.rarity]?def.rarity:'common'));
@@ -179,5 +182,5 @@
     }catch(error){return fail('A operação não foi concluída; nenhum recurso foi consumido.');}
   }
   function assertBudget(g){if(!Number.isFinite(g.gold)||!Number.isFinite(g.materials)||g.gold<0||g.materials<0||g.inventory.length>CAPACITY)throw Error('Saldo inválido');const ids=allGear(g).map(i=>i.id);if(new Set(ids).size!==ids.length)throw Error('IDs duplicados');}
-  const api={weaponFragment,weaponFragmentCount,epicWeaponPool,normalLoot,generationRules,generateItem,rollPotential,potentialProbabilities,lootLevel,gearName,VERSION,CAPACITY,refinement,equipmentFusion,pearlFusion,rarity,names,keys,pearls,pearlById,fusion,isGear,isPearl,pearlOf,normalizeItem,migrate,itemStats,aggregate,rarityFromRoll,rollRarity,rollExtras,extraRange,upgradeCost,upgradeChance,removalCost,reforgeCost,execute};root.MareForge=api;if(typeof module!=='undefined')module.exports=api;
+  const api={weaponFragment,weaponFragmentCount,epicWeaponPool,normalLoot,epicDropChance,mapFragmentChance,generationRules,generateItem,rollPotential,potentialProbabilities,lootLevel,gearName,VERSION,CAPACITY,refinement,equipmentFusion,pearlFusion,rarity,names,keys,pearls,pearlById,fusion,isGear,isPearl,pearlOf,normalizeItem,migrate,itemStats,aggregate,rarityFromRoll,rollRarity,rollExtras,extraRange,upgradeCost,upgradeChance,removalCost,reforgeCost,execute};root.MareForge=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

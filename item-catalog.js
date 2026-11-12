@@ -1233,6 +1233,7 @@
   if(contracts)itemDefs.push(contracts.boost);
   const visuals=root.MareVisualCompleto||(typeof require==='function'?require('./visual-completo.js'):null);
   if(visuals){itemDefs.push(visuals.definition);slotNames[visuals.slot]='VISUAL COMPLETO';}
+  itemDefs.push(BossDungeons.epicBox);
   return {items:itemDefs,slotNames,inventorySlotsLeft,inventorySlotsRight,capacity:BAG_CAPACITY,healerWeaponIndex};
  }
  const api={create,potions,potionRules,potionRecovery};root.MareItemCatalog=api;if(typeof module!=='undefined')module.exports=api;

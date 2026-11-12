@@ -31,7 +31,7 @@ test('prison art and identity belong to the supplied confirmed encounter',()=>{
  assert(html.includes('data-prison-floor="100"'));
  assert(html.includes('data-prison-milestone="50"'));
  assert(!html.includes('Bananawani'));
- assert(!/data-prison-milestone="(?:55|100)"/.test(html));
+ assert(html.includes('data-prison-milestone="100"'));
  assert(html.includes('Uma única vez'));
 });
 test('old cleared floors are inspection only; unknown encounters never pretend to be confirmed',()=>{
@@ -39,7 +39,7 @@ test('old cleared floors are inspection only; unknown encounters never pretend t
  const html=U.prison({system:P,game,floor:1,enemy:null});
  assert(html.includes('Adversário desconhecido'));assert(!html.includes('data-expedition-monster='));
  assert(/data-prison-enter disabled/.test(html));
- assert(html.includes('Este andar não concede caixa de marco.'));
+ assert(html.includes('data-prison-claim="1"'));
  const milestone=U.prison({system:P,game,floor:5,enemy:null});
  assert(milestone.includes('Recebida'));assert(!milestone.includes('data-prison-claim="5"'));
  game.impelDown.claimed=[];

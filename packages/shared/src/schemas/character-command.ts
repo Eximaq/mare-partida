@@ -1,3 +1,4 @@
+import {weeklyBossPayloadSchema,weeklyBossReceiptSchema} from './weekly-boss.js';
 import {appearanceSchema,preferencePatchSchema} from './profile.js';
 import {hakiActions,hakiNodeSchema,hakiContinuousSchema} from './haki.js';
 import {dungeonActions,dungeonIdSchema} from './dungeons.js';
@@ -31,6 +32,7 @@ const socialActions = ['friend.request','friend.respond','friend.cancel','friend
 const offerVersion = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
 export const messageIdSchema = z.string().regex(/^[1-9][0-9]{0,18}$/).refine(id=>BigInt(id)<=9223372036854775807n);
 export const characterCommandSchema = z.discriminatedUnion("action", [
+ z.strictObject({...commandEnvelope,action:z.literal('weeklyBoss.execute'),payload:weeklyBossPayloadSchema}),
  z.strictObject({...commandEnvelope,action:z.enum(['friend.request','friend.remove']),payload:z.strictObject({targetId:z.uuid()})}),
  z.strictObject({...commandEnvelope,action:z.literal('friend.respond'),payload:z.strictObject({requestId:z.uuid(),accept:z.boolean()})}),
  z.strictObject({...commandEnvelope,action:z.literal('friend.cancel'),payload:z.strictObject({requestId:z.uuid()})}),
@@ -57,6 +59,8 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
  z.strictObject({...commandEnvelope,action:z.literal('crew.dissolve'),payload:z.strictObject({confirmed:z.literal(true)})}),
  z.strictObject({...commandEnvelope,action:z.literal('crew.donate'),payload:z.strictObject({amount:z.number().int().min(1).max(Number.MAX_SAFE_INTEGER)})}),
  z.strictObject({...commandEnvelope,action:z.literal('crew.upgrade'),payload:z.strictObject({facility:z.enum(crewFacilities),expectedLevel:z.number().int().min(1).max(5)})}),
+ z.strictObject({...commandEnvelope,action:z.literal('crew.claim-coins'),payload:z.strictObject({missionId:z.uuid()})}),
+ z.strictObject({...commandEnvelope,action:z.literal('crew.buy-fragment'),payload:z.strictObject({})}),
  z.strictObject({...commandEnvelope,action:z.literal('crew.profession'),payload:z.strictObject({profession:z.enum(crewProfessions)})}),
  z.strictObject({...commandEnvelope,action:z.enum(['party.create','party.leave']),payload:z.strictObject({})}),
  z.strictObject({...commandEnvelope,action:z.literal('party.invite'),payload:inviteTarget}),
@@ -79,7 +83,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
  z.strictObject({...commandEnvelope,action:z.literal('haki.toggle'),payload:z.strictObject({branch:hakiContinuousSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('haki.cast'),payload:z.strictObject({})}),
  z.strictObject({...commandEnvelope,action:z.enum(['dungeon.enter','dungeon.claim']),payload:z.strictObject({dungeonId:dungeonIdSchema})}),
- z.strictObject({...commandEnvelope,action:z.literal('dungeon.craft'),payload:z.strictObject({expectedSeq:z.number().int().min(0).max(Number.MAX_SAFE_INTEGER)})}),
+ z.strictObject({...commandEnvelope,action:z.literal('dungeon.craft'),payload:z.strictObject({expectedSeq:z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),rank:z.enum(['E','B']).optional()})}),
  z.strictObject({...commandEnvelope,action:z.literal('dungeon.acknowledge'),payload:z.strictObject({itemId:instanceIdSchema})}),z.strictObject({...commandEnvelope,action:z.enum(prisonActions),payload:z.strictObject({floor:prisonFloorSchema})}),z.strictObject({...commandEnvelope,action:z.literal('achievement.claim'),payload:z.strictObject({achievementId:achievementIdSchema})}),z.strictObject({...commandEnvelope,action:z.literal('talents.commit'),payload:z.strictObject({build:talentBuildSchema})}),z.strictObject({...commandEnvelope,action:z.literal('talents.reset'),payload:z.strictObject({})}),z.strictObject({
   requestId: z.uuid(),
   action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim"]),
@@ -108,7 +112,8 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,'market.execute',...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
+  action: z.enum(["weeklyBoss.execute", "state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,'market.execute',...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
+  weeklyBoss:weeklyBossReceiptSchema.optional(),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),
   inventory: inventorySnapshotSchema.optional(),

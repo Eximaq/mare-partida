@@ -6,7 +6,8 @@
  const ids=['armament','observation','conqueror'];
  const names={armament:'Armamento',observation:'Observação',conqueror:'Conquistador'};
  const fragments=ids.map(branch=>Object.freeze({id:'haki-fragment-'+branch,name:'Fragmento de Haki '+(branch==='observation'?'da ':'do ')+names[branch],kind:'haki-fragment',branch,slot:'material',rarity:'epic',fixedRarity:true,attack:0,defense:0,hp:0,stackLimit:MAX_STACK,icon_path:'assets/haki/mastery/fragment-'+branch+'.png',description:'Material de treinamento exclusivo do Haki '+(branch==='observation'?'da ':'do ')+names[branch]+'. Consumido somente ao confirmar uma graduação válida. Fontes de obtenção ainda serão definidas.'}));
- const node=(id,branch,name,effects,order,final=false)=>Object.freeze({id,branch,name,order,max:final?1:3,costs:final?[4]:[1+Math.floor(order/2),2+Math.floor(order/2),3+Math.floor(order/2)],requires:[],effects:Object.freeze(effects),final,icon:final?branch:id,provisional:true});
+ const passiveByNode=Object.freeze({coating:{penetrationBonus:.04},hardening:{defenseBonus:.09},guard:{defenseBonus:.09},imbuement:{physicalBonus:.09},emission:{penetrationBonus:.06},perception:{accuracyBonus:.06},anticipation:{evasionBonus:.12},intent:{accuracyBonus:.06},serenity:{evasionBonus:.10},future:{evasionBonus:.13},presence:{physicalBonus:.04,elementalBonus:.04},resolve:{defenseBonus:.06},pressure:{physicalBonus:.05,elementalBonus:.05}});
+ const node=(id,branch,name,effects,order,final=false)=>Object.freeze({id,branch,name,order,max:final?1:3,costs:final?[4]:[1+Math.floor(order/2),2+Math.floor(order/2),3+Math.floor(order/2)],requires:[],effects:Object.freeze({...effects,...passiveByNode[id]}),final,icon:final?branch:id,provisional:true});
  const branches={
   armament:[node('coating','armament','Revestimento',{penetration:limits.penetration/3},0),node('hardening','armament','Endurecimento',{defense:limits.defense/2},1),node('guard','armament','Guarda Reforçada',{defense:limits.defense/2},2),node('imbuement','armament','Imbuimento',{penetration:limits.penetration/3},3),node('emission','armament','Emissão',{penetration:limits.penetration/3},4),node('armament-final','armament','Domínio do Armamento',{},5,true)],
   observation:[node('perception','observation','Percepção',{accuracy:.06},0),node('anticipation','observation','Antecipação',{evasion:.06},1),node('intent','observation','Leitura de Intenção',{accuracy:.09},2),node('serenity','observation','Serenidade',{evasion:.03},3),node('future','observation','Vislumbre do Futuro',{evasion:.06},4),node('observation-final','observation','Domínio da Observação',{},5,true)],
@@ -68,11 +69,16 @@
  function effects(g,b){
   const result={};if(!learned(g,b))return result;
   // Legacy access is temporarily preserved pending the owner's explicit migration policy.
-  if(held(g)||g.haki.mastery.completedVersions[b])for(const n of branches[b])for(const[k,v]of Object.entries(n.effects))result[k]=(result[k]||0)+v;
-  else for(const n of branches[b])for(const[k,v]of Object.entries(n.effects))result[k]=(result[k]||0)+v*rank(g,n.id)/n.max;
+  if(held(g)||g.haki.mastery.completedVersions[b])for(const n of branches[b])for(const[k,v]of Object.entries(n.effects).filter(([key])=>!key.endsWith('Bonus')))result[k]=(result[k]||0)+v;
+  else for(const n of branches[b])for(const[k,v]of Object.entries(n.effects).filter(([key])=>!key.endsWith('Bonus')))result[k]=(result[k]||0)+v*rank(g,n.id)/n.max;
   for(const k of Object.keys(result))result[k]=Math.round(result[k]*1e9)/1e9;return result;
  }
+ function passives(g){
+  const result={};if(!g?.has_haki_unlocked)return result;
+  for(const n of nodes)for(const [key,value] of Object.entries(passiveByNode[n.id]||{}))result[key]=(result[key]||0)+value*rank(g,n.id)/n.max;
+  return result;
+ }
  function progress(g,b){return {current:branches[b].reduce((s,n)=>s+rank(g,n.id),0),total:branches[b].reduce((s,n)=>s+n.max,0),complete:complete(g,b)};}
- const api={VERSION,MAX_STACK,limits,ids,names,branches,nodes,byId,fragments,empty,normalize,held,rank,complete,gate,learned,quantity,qty,cost,error,invest,addFragments,effects,progress};
+ const api={VERSION,MAX_STACK,limits,ids,names,branches,nodes,byId,fragments,empty,normalize,held,rank,complete,gate,learned,quantity,qty,cost,error,invest,addFragments,effects,passives,progress};
  root.MareHakiProgression=Object.freeze(api);if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

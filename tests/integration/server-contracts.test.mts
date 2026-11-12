@@ -113,18 +113,20 @@ test('versioned migration backfills only existing server kills and upgrades only
    for(const name of ['0018_battle_profile_compatibility.sql','0019_original_contracts.sql'])await copyFile(new URL(name,source),join(dir,name));
    assert.deepEqual(await applyMigrations(pool,dir),['0018_battle_profile_compatibility.sql','0019_original_contracts.sql']);
    assert.equal((await a.read()).battle.rulesHash,'e8c783982e814f1ea67b0ce8fa11e072c47c3a1f5746e77a9ca2de10a0eedce1');
-   assert.deepEqual(await applyMigrations(pool),['0020_restore_stable_battle_hash.sql','0021_original_talents.sql','0022_talent_battle_compatibility.sql','0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_market_wallet_grants.sql', '0050_character_xp_curve.sql', '0051_bounty_victories.sql', '0052_world_map_exports.sql']);assert.deepEqual(await applyMigrations(pool),[]);
+   assert.deepEqual(await applyMigrations(pool),['0020_restore_stable_battle_hash.sql','0021_original_talents.sql','0022_talent_battle_compatibility.sql','0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_market_wallet_grants.sql', '0050_character_xp_curve.sql', '0051_bounty_victories.sql', '0052_world_map_exports.sql', '0053_syrup_boundary.sql', '0054_akainu_weekly_boss.sql', '0055_prison_floor_rewards.sql', '0056_weekly_contracts.sql', '0057_crew_contribution_coins.sql', '0058_weekly_boss_loot.sql', '0059_boss_dungeon_rewards.sql']);assert.deepEqual(await applyMigrations(pool),[]);
    const after=await a.read();assert.deepEqual(after.state,before);assert.equal(after.contracts.progress.crab,6);assert.equal(after.contracts.progress['dawn-patrol'],8);assert.deepEqual(after.contracts.claimed,[]);
    assert.deepEqual(after.battle,{...sim,rulesHash:engine.rulesHash});assert.equal((await b.read()).battle.rulesHash,'unknown');assert.equal((await b.read()).contracts.progress.crab,0);
   },dir);
  }finally{assert.equal(dirname(resolve(dir)),resolve(tmpdir()));assert(resolve(dir).startsWith(join(resolve(tmpdir()),'mare-contract-migrations-')));await rm(dir,{recursive:true,force:true});}
 });
 
-test('daily reward is one bound boost per server cycle, expires and cannot stack',async()=>authDatabase(async({service,pool})=>{
+test('recurring rewards use independent quantities and an XP boost expires without stacking',async()=>authDatabase(async({service,pool})=>{
  const a=await actor(service);
  await a.send({...await a.input('crab'),action:'items.initialize',payload:{}});
  const initial=await a.read(),daily=initial.contracts.daily!;
- assert.equal(daily.objectives[0]!.type,'cesar');
+ assert.deepEqual(daily.objectives.map((q:{id:string})=>q.id),['daily-combat','daily-berry']);
+ assert.deepEqual(initial.contracts.weekly!.objectives.map((q:{target:number})=>q.target),daily.objectives.map((q:{target:number})=>q.target*7));
+ assert.equal(initial.contracts.weekly!.objectives[0]!.title,'Monstros derrotados');
  await assert.rejects(a.send(await a.input('daily-reward')),{code:'contract_incomplete'});
  for(const q of daily.objectives)q.current=q.target;
  await pool.query('UPDATE mare_game.contract_daily_cycles SET state=$3 WHERE character_id=$1 AND cycle=$2',[a.c.id,daily.cycle,daily]);
@@ -132,9 +134,8 @@ test('daily reward is one bound boost per server cycle, expires and cannot stack
  const [one,replay]=await Promise.all([a.send(claim),a.send(claim)]);assert.deepEqual(one,replay);
  await assert.rejects(a.send(await a.input('daily-reward')),{code:'contract_already_claimed'});
  const ready=await a.read(),item=ready.originalInventory!.inventory.find((i:OriginalItemInstance)=>i.origin==='Missões diárias')!;
- assert.equal(item.boundToCharacter,a.c.id);
+ assert.equal(item.boundToCharacter,undefined);
  const intent=async(action:string)=>({...await a.input('crab'),action,payload:{itemId:item.id}});
- await assert.rejects(a.send(await intent('items.sell')),{code:'item_protected'});
  await pool.query("UPDATE mare_game.character_progression SET xp_boost_until=clock_timestamp()+interval '1 minute' WHERE character_id=$1",[a.c.id]);
  await assert.rejects(a.send(await intent('items.use-xp-boost')),{code:'xp_boost_active'});
  assert((await a.read()).originalInventory!.inventory.some((i:OriginalItemInstance)=>i.id===item.id));
@@ -147,4 +148,13 @@ test('daily reward is one bound boost per server cycle, expires and cannot stack
  await complete(pool,a.c.id,'bandit',5);await a.send(await a.input('bandit'));
  assert.equal((await a.read()).state.experience,'230');
  assert.equal((await a.read()).contracts.daily!.claimed,true);
+ const weekly=(await a.read()).contracts.weekly!;
+ await assert.rejects(a.send(await a.input('weekly-reward')),{code:'contract_incomplete'});
+ for(const q of weekly.objectives)q.current=q.target;
+ await pool.query('UPDATE mare_game.contract_weekly_cycles SET state=$3 WHERE character_id=$1 AND cycle=$2',[a.c.id,weekly.cycle,weekly]);
+ const weeklyClaim=await a.input('weekly-reward');
+ assert.deepEqual(...await Promise.all([a.send(weeklyClaim),a.send(weeklyClaim)]));
+ const settled=await a.read();
+ assert.equal(settled.contracts.weekly!.claimed,true);
+ assert.equal(settled.originalInventory!.inventory.filter((i:OriginalItemInstance)=>i.origin==='Missões semanais'&&!i.boundToCharacter).length,2);
 }));

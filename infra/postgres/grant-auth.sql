@@ -66,6 +66,8 @@ GRANT INSERT (character_id,spawn_id,request_id,area,monster,experience_delta,gol
 
 GRANT SELECT ON mare_game.contract_progress,mare_game.contract_claims,mare_game.contract_daily_cycles TO mare_runtime;
 GRANT INSERT (character_id,cycle,state), UPDATE (state) ON mare_game.contract_daily_cycles TO mare_runtime;
+GRANT SELECT ON mare_game.contract_weekly_cycles TO mare_runtime;
+GRANT INSERT (character_id,cycle,state), UPDATE (state) ON mare_game.contract_weekly_cycles TO mare_runtime;
 GRANT INSERT (character_id,contract_id,progress) ON mare_game.contract_progress TO mare_runtime;
 GRANT UPDATE (progress) ON mare_game.contract_progress TO mare_runtime;
 GRANT INSERT (character_id,contract_id,request_id,version_before,experience_before,gold_before,experience_delta,gold_delta,rules_hash) ON mare_game.contract_claims TO mare_runtime;
@@ -162,3 +164,20 @@ BEGIN
   END IF;
 END
 $$;
+
+GRANT SELECT, INSERT ON mare_game.crew_contribution_coins TO mare_runtime;
+GRANT SELECT, INSERT ON mare_game.weekly_boss_loot TO mare_runtime;
+-- Event operators are provisioned by the migration owner only, never by the client/runtime.
+DO $$ BEGIN
+ IF to_regclass('mare_game.weekly_boss_settings') IS NOT NULL THEN
+  GRANT SELECT ON mare_game.weekly_boss_operators,mare_game.weekly_boss_settings,mare_game.weekly_boss_events,
+   mare_game.weekly_boss_members,mare_game.weekly_boss_victories,mare_game.weekly_boss_entitlements,mare_game.weekly_boss_audit TO mare_runtime;
+  GRANT UPDATE(revision,config) ON mare_game.weekly_boss_settings TO mare_runtime;
+  GRANT INSERT(id,boss_id,mode,status,map_id,cycle_key,config,simulation,created_by,opened_at,closes_at,tick_at),UPDATE(status,simulation,tick_at,ended_at,version) ON mare_game.weekly_boss_events TO mare_runtime;
+  GRANT INSERT(character_id,event_id,last_seen,control_epoch,return_world,return_battle),UPDATE(last_seen,control_epoch),DELETE ON mare_game.weekly_boss_members TO mare_runtime;
+  GRANT INSERT(event_id,character_id,damage,healing,combat_ms) ON mare_game.weekly_boss_victories TO mare_runtime;
+  GRANT INSERT(character_id,cycle_key,event_id) ON mare_game.weekly_boss_entitlements TO mare_runtime;
+  GRANT INSERT(action,account_id,event_id,detail) ON mare_game.weekly_boss_audit TO mare_runtime;
+  GRANT USAGE ON SEQUENCE mare_game.weekly_boss_audit_id_seq TO mare_runtime;
+ END IF;
+END $$;

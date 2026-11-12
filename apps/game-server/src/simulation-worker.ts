@@ -1,3 +1,4 @@
+import {tickWeeklyBosses} from './characters/weekly-boss-worker.js';
 import {parentPort,workerData} from 'node:worker_threads';
 import {createRequire} from 'node:module';
 import {createPool} from './db/pool.js';
@@ -9,7 +10,7 @@ if(!parentPort)throw Error('Simulation worker requires private parent');
 const {databaseUrl,kind,index,count}=workerData;
 if(typeof databaseUrl!=='string'||!['solo','party'].includes(kind))throw Error('Invalid private worker configuration');
 const shard=partition({index,count}),pool=createPool(databaseUrl,2);
-const lane=createTickLane(kind,()=>kind==='solo'?tickWorldBattles(pool,shard,200):tickPartyBattles(pool,shard,200));
+const lane=createTickLane(kind,async()=>kind==='solo'?tickWorldBattles(pool,shard,200):(await tickPartyBattles(pool,shard,150))+(await tickWeeklyBosses(pool,shard,150)));
 let stopped=false,ready=false;
 const heartbeat=setInterval(()=>parentPort!.postMessage({type:'heartbeat'}),1000);
 const timer=setInterval(()=>{if(!stopped&&ready)lane.tick();},250),report=setInterval(()=>parentPort!.postMessage({type:'metrics',value:lane.flush()}),10000);

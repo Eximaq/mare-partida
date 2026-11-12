@@ -56,8 +56,8 @@ async function seedFloor(f:any,a:any,floor:number){
  await a.doit('prison.enter',{floor});
 }
 
-test('worker victory credits a floor and one box atomically, never XP/loot/regional contracts; next floor advances on server time',async()=>authDatabase(async(f)=>{
- const a=await actor(f.service);await seedFloor(f,a,5);const before=await a.read();await kill(f,a);let after=await a.read();assert.equal(after.prison.cleared,5);assert.deepEqual(after.prison.claimed,[5]);assert.equal(after.state.experience,before.state.experience);assert.equal(after.state.gold,before.state.gold);assert.deepEqual(after.contracts,before.contracts);assert.deepEqual(after.battle.hunts,before.battle.hunts);assert.equal(after.achievements.kills,before.achievements.kills+1);
+test('worker victory credits a floor, one box and the weekly counter atomically',async()=>authDatabase(async(f)=>{
+ const a=await actor(f.service);await seedFloor(f,a,5);const before=await a.read();await kill(f,a);let after=await a.read();assert.equal(after.prison.cleared,5);assert.deepEqual(after.prison.claimed,[5]);assert.equal(after.state.experience,before.state.experience);assert.equal(after.state.gold,before.state.gold);assert.deepEqual(after.contracts.progress,before.contracts.progress);assert.deepEqual(after.contracts.daily,before.contracts.daily);assert.equal(after.contracts.weekly.objectives[0].current,before.contracts.weekly.objectives[0].current+1);assert.deepEqual(after.battle.hunts,before.battle.hunts);assert.equal(after.achievements.kills,before.achievements.kills+1);
  assert.equal(after.originalInventory.inventory.filter((i:any)=>i.id==='impel-milestone-5').length,1);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.prison_floors')).rows[0].n,1);
  await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{prison,transitionAt}',to_jsonb((extract(epoch from clock_timestamp())*1000-1)::bigint)),tick_at=clock_timestamp()-interval '150 milliseconds' WHERE character_id=$1",[a.c.id]);assert((await tickWorldBattles(f.pool))>=1);
  after=await a.read();assert.equal(after.battle.prison.floor,6);assert.equal(after.battle.mobs.length,1);assert.equal(after.prison.cleared,5);assert.equal(after.originalInventory.inventory.filter((i:any)=>i.id==='impel-milestone-5').length,1);assert.equal(after.world.position.x,480);
@@ -77,9 +77,10 @@ test('receipt failure rolls back the entire prison victory, box, counters and mo
  await assert.rejects(kill(f,a),{code:'battle_tick_failed'});const after=await a.read();assert.deepEqual(after.prison,before.prison);assert.deepEqual(after.state,before.state);assert.deepEqual(after.achievements,before.achievements);assert.deepEqual(after.originalInventory,before.originalInventory);assert(after.battle.mobs[0].alive);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.prison_floors')).rows[0].n,0);
 }));
 
-test('floor ten unlocks the original achievement through server progress and floor100 exits without an invented reward',async()=>authDatabase(async(f)=>{
+test('floor ten unlocks the original achievement and floor 100 grants a level 3 box before exiting',async()=>authDatabase(async(f)=>{
  const a=await actor(f.service);await seedFloor(f,a,10);await kill(f,a);assert((await a.read()).achievements.entries.find((x:any)=>x.id==='floors-0').ready);await a.doit('achievement.claim',{achievementId:'floors-0'});assert.equal((await a.read()).talents.earned,1);
- await a.doit('world.return');await seedFloor(f,a,100);const before=await a.read();await kill(f,a);assert.equal((await a.read()).prison.cleared,100);assert.deepEqual((await a.read()).originalInventory,before.originalInventory);
+ await a.doit('world.return');await seedFloor(f,a,100);const before=await a.read();await kill(f,a);const last=await a.read();assert.equal(last.prison.cleared,100);assert.equal(last.originalInventory.inventory.length,before.originalInventory.inventory.length+1);
+ const box=last.originalInventory.inventory.find((i:any)=>i.id==='impel-milestone-100');assert.equal(box.origin,'Impel Down · Andar 100');assert.equal(box.boundToCharacter,undefined);
  await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{prison,transitionAt}',to_jsonb((extract(epoch from clock_timestamp())*1000-1)::bigint)),tick_at=clock_timestamp()-interval '150 milliseconds' WHERE character_id=$1",[a.c.id]);await tickWorldBattles(f.pool);assert.equal((await a.read()).world.mapId,'lobby');assert(!(await a.read()).battle.prison);
 }));
 
@@ -118,7 +119,30 @@ test('prison migration preserves prior data and only upgrades the known engine h
   await authDatabase(async(f)=>{
    const a=await actor(f.service);await a.doit('world.travel',{islandId:'dawn'});const before=await a.read();
    const previous='c6f28ee5b9d8ce36d1df33e560675ddab0038e6186a5691483238bb25c9c91bf';await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{rulesHash}',to_jsonb($2::text)) WHERE character_id=$1",[a.c.id,previous]);
-   assert.deepEqual(await applyMigrations(f.pool),['0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_market_wallet_grants.sql', '0050_character_xp_curve.sql', '0051_bounty_victories.sql', '0052_world_map_exports.sql']);assert.deepEqual(await applyMigrations(f.pool),[]);const after=await a.read();assert.deepEqual(after.state,before.state);assert.deepEqual(after.originalInventory,{...before.originalInventory,manaPotions:0});assert.deepEqual(after.battle,before.battle);assert.deepEqual({...after.world,serverNow:null},{...before.world,serverNow:null});assert.deepEqual(after.talents,before.talents);assert.equal(after.prison.cleared,0);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.prison_floors')).rows[0].n,0);assert.equal(after.achievements.bonus,before.achievements.bonus);
+   assert.deepEqual(await applyMigrations(f.pool),['0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_market_wallet_grants.sql', '0050_character_xp_curve.sql', '0051_bounty_victories.sql', '0052_world_map_exports.sql', '0053_syrup_boundary.sql', '0054_akainu_weekly_boss.sql', '0055_prison_floor_rewards.sql', '0056_weekly_contracts.sql', '0057_crew_contribution_coins.sql', '0058_weekly_boss_loot.sql', '0059_boss_dungeon_rewards.sql']);assert.deepEqual(await applyMigrations(f.pool),[]);const after=await a.read();assert.deepEqual(after.state,before.state);assert.deepEqual(after.originalInventory,{...before.originalInventory,manaPotions:0});assert.deepEqual(after.battle,before.battle);assert.deepEqual({...after.world,serverNow:null},{...before.world,serverNow:null});assert.deepEqual(after.talents,before.talents);assert.equal(after.prison.cleared,0);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.prison_floors')).rows[0].n,0);assert.equal(after.achievements.bonus,before.achievements.bonus);
   },dir);
  }finally{assert.equal(dirname(resolve(dir)),resolve(tmpdir()));assert(resolve(dir).startsWith(join(resolve(tmpdir()),'mare-prison-migrations-')));await rm(dir,{recursive:true,force:true});}
 });
+
+test('floors 14, 15, 29 and 30 persist the expected tradable boxes and pearls',async()=>authDatabase(async f=>{
+ const a=await actor(f.service);
+ const catalog=(await import('../../apps/game-server/src/gameplay/catalog.js')).getGameCatalog().items;
+ for(const [floor,expected] of [[14,1],[15,2],[29,2],[30,3]]){
+  await seedFloor(f,a,floor!);
+  await kill(f,a);
+  const id='impel-milestone-'+floor;
+  const won=await a.read(),box=won.originalInventory.inventory.find((i:any)=>i.id===id);
+  assert(won.prison.claimed.includes(floor));
+  assert.equal(catalog[box.def]?.boxLevel,expected);
+  assert.equal(box.boundToCharacter,undefined);
+  const open=await a.input('items.open-box',{itemId:id});
+  assert.deepEqual(...await Promise.all([a.send(open),a.send(open)]));
+  const stock=(await a.read()).originalInventory.inventory;
+  assert(!stock.some((i:any)=>i.id===id));
+  const pearls=stock.filter((i:any)=>i.id==='pearl-from-'+id);
+  assert.equal(pearls.length,1);
+  assert.equal(Number(pearls[0].pearlId.split('_').at(-1)),expected);
+  assert.equal(pearls[0].boundToCharacter,undefined);
+  await a.doit('world.return');
+ }
+}));

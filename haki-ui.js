@@ -3,8 +3,8 @@
  const E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const P=()=>root.MareHakiProgression;
  const icon=id=>`<img class="haki-icon" src="${id==='book'?'assets/ui/items-pixellab/book.png':'assets/haki/mastery/'+id+'.png'}" alt="" draggable="false">`;
- const labels={penetration:'Penetração física',defense:'Defesa',accuracy:'Precisão',evasion:'Esquiva',stun:'Atordoamento em comuns',bossReduction:'Redução ATQ/DEF de chefes',bossDuration:'Duração em chefes',radius:'Alcance'};
- const value=(key,n)=>key==='radius'?Math.round(n)+' px':['stun','bossDuration'].includes(key)?Number(n.toFixed(2))+' s':'+'+Number((n*100).toFixed(2))+(key==='defense'||key==='bossReduction'?'%':' pp');
+ const labels={physicalBonus:'Ataque físico (passivo)',elementalBonus:'Ataque elemental (passivo)',defenseBonus:'Defesa (passivo)',penetrationBonus:'Penetração sobre a margem (passivo)',accuracyBonus:'Precisão sobre a margem (passivo)',evasionBonus:'Esquiva sobre a margem (passivo)',penetration:'Penetração física',defense:'Defesa',accuracy:'Precisão',evasion:'Esquiva',stun:'Atordoamento em comuns',bossReduction:'Redução ATQ/DEF de chefes',bossDuration:'Duração em chefes',radius:'Alcance'};
+ const value=(key,n)=>key==='radius'?Math.round(n)+' px':['stun','bossDuration'].includes(key)?Number(n.toFixed(2))+' s':'+'+Number((n*100).toFixed(2))+(key.endsWith('Bonus')||key==='defense'||key==='bossReduction'?'%':' pp');
  const effectRows=(node,rank)=>Object.entries(node.effects).map(([key,n])=>`<li><span>${labels[key]}</span><b>${value(key,n*rank/node.max)}</b></li>`).join('');
  function nodeButton(g,n,selected,defs){
   const rank=P().rank(g,n.id),error=P().error(g,n.id,defs),state=rank===n.max?'complete':rank?'partial':error?'locked':'ready';

@@ -4,10 +4,10 @@
   const FLOOR_COUNT=100,VERSION=1,CAPACITY=120;
   const clone=value=>JSON.parse(JSON.stringify(value));
   const validFloor=floor=>Number.isInteger(floor)&&floor>=1&&floor<=FLOOR_COUNT;
-  const milestones=Object.freeze(Array.from({length:10},(_,i)=>(i+1)*5));
+  const milestones=Object.freeze(Array.from({length:FLOOR_COUNT},(_,i)=>i+1));
   const boxes=Object.freeze([1,2,3].map(level=>Object.freeze({
     name:`Caixa de Pérolas Nível ${level}`,kind:'pearl-box',boxLevel:level,
-    slot:'consumable',rarity:['common','uncommon','rare'][level-1],
+    slot:'consumable',boxQuantity:1,rarity:['common','uncommon','rare'][level-1],
     attack:0,defense:0,hp:0,symbol:'▣'
   })));
   function multiplier(floor){if(!validFloor(floor))throw Error('Andar inválido');return Math.pow(characters.monsterBalance.prisonFloorGrowth,floor-1);}
@@ -21,7 +21,7 @@
     const p=characters.monsterProfile({level:floor,maxHP:result.hp,attack:result.atk,defense:result.def,speed:base.speed,attackSec:base.attackSec??2.1},{bossMultiplier:base.prisonElite?2.5:1});
     return {...result,hp:p.maxHP,atk:p.attack,def:p.defense,magicDefense:p.magicDefense,speed:p.speed,attackSec:p.attackSec,accuracy:p.accuracy,attributePoints:p.attributePoints};
   }
-  const rewardFor=floor=>milestones.includes(floor)?{kind:'pearl-box',level:1,quantity:1}:null;
+  const rewardFor=floor=>validFloor(floor)?{kind:'pearl-box',level:floor<15?1:floor<30?2:3,quantity:1}:null;
   const isBossFloor=floor=>validFloor(floor)&&floor%5===0;
   const unlockedThrough=save=>Math.min(FLOOR_COUNT,migrate(save).impelDown.cleared+1);
   const canInspect=(save,floor)=>validFloor(floor)&&floor<=unlockedThrough(save);
@@ -92,11 +92,11 @@
   function migrate(original){
     const save=clone(original),old=save.impelDown||{};
     const cleared=Number.isInteger(old.cleared)?Math.min(100,Math.max(0,old.cleared)):0;
-    save.impelDown={...old,version:VERSION,cleared,claimed:[...new Set((Array.isArray(old.claimed)?old.claimed:[]).filter(f=>milestones.includes(f)&&f<=cleared))],options:{autoAdvance:old.options?.autoAdvance===true,pauseBeforeBoss:old.options?.pauseBeforeBoss!==false}};
+    save.impelDown={...old,version:VERSION,cleared,claimed:[...new Set((Array.isArray(old.claimed)?old.claimed:[]).filter(f=>validFloor(f)&&f<=cleared))],options:{autoAdvance:old.options?.autoAdvance===true,pauseBeforeBoss:old.options?.pauseBeforeBoss!==false}};
     return save;
   }
   // Existing pearls and fusion remain usable; only prison rewards create new supply.
-  const canDrop=(kind,source)=>!['pearl','gem','pearl-box'].includes(kind)||source==='impel-down'||(kind==='pearl-box'&&source==='underworld');
+  const canDrop=(kind,source)=>!['pearl','gem','pearl-box'].includes(kind)||source==='impel-down';
   const allItems=save=>[...(save.inventory||[]),...Object.values(save.equipment||{}).filter(Boolean)];
   const unique=save=>new Set(allItems(save).map(i=>i.id)).size===allItems(save).length;
   function openBox(original,id,defs,random=Math.random,now=Date.now()){

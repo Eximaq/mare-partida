@@ -1,3 +1,4 @@
+import {sendOfficialMail} from '../characters/mail.js';
 import {boostXp} from '../characters/contracts.js';
 import {crewMonsterBerry} from '../characters/crew-config.js';
 import { createRequire } from "node:module";
@@ -51,12 +52,18 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
   const r=k.reward;xp+=BigInt(r.xp);gold+=BigInt(crewMonsterBerry(r.gold,battle.catalog.factions[identity.faction_id].gold,passives.monsterBerryBonus));
   if(random()<battle.hunt.materialDropChance(r,lootMultiplier))after.materials=Math.min(1000000000,after.materials+r.materials);
   if(after.inventory.length<120){const plan=forge.normalLoot(defs,state.level,battle.hunt.get(k.area),random);if(plan){const item=make(plan.def,plan.level,plan.rarity,battle.hunt.get(k.area).name);item.generation.source='map:'+k.area;after.inventory.unshift(item);}}
+  if(forge.mapFragmentChance(k.monster)>0&&random()<forge.mapFragmentChance(k.monster)){
+   const fragments=require('../../../../boss-dungeon-system.js'),origin='Caçada · '+battle.hunt.get(k.area).name;
+   const fragment=fragments.addMapFragment(after.inventory,defs,origin,randomUUID);
+   if(!fragment)await sendOfficialMail(client,id,{
+    source:'event',sourceId:k.id,rewardId:'map-rank-d',title:'Fragmento de Akuma Rank D',
+    message:'A mochila estava cheia. O fragmento da caçada foi enviado pelo Correio.',
+    makeAttachments:()=>[fragments.addMapFragment([],defs,origin,randomUUID)],
+   });
+  }
   if(random()<Math.min(1,r.potionChance*lootMultiplier))after.potions=Math.min(1000000000,after.potions+r.potions);
   if(require('../../../../haki-system.js').drop({...k.monster,source:k.monster.source??'world'},random)&&after.inventory.length<120){const def=defs.findIndex(d=>d.kind==='haki-book');if(def<0)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(def,1,'epic',battle.hunt.get(k.area).name));}
-  if(underworld&&k.monster.type!=='boss'&&after.inventory.length<120){
-   const special=U.loot(g,random);
-   if(special.box){const def=defs.findIndex(d=>d.kind==='pearl-box'&&d.boxLevel===1);if(def<0)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(def,1,String(defs[def]!.rarity??'common'),'Senhor do Submundo'));}
-  }
+
  }
  if(passives.grant){if(after.inventory.length>=120)throw new AuthFault(409,'inventory_full');after.inventory.push(passives.grant);}
  xp=await boostXp(client,id,xp);
@@ -72,8 +79,9 @@ export function validateInventoryItem(item:OriginalItemInstance,owner?:string){
   const def=defs[item.def];
   if((item.type==='akuma_no_mi'||item.fruitId!==undefined)&&(def?.type!=='akuma_no_mi'||item.fruitId!==def.fruitId))throw new AuthFault(503,'original_inventory_unavailable');
   if(def?.kind==='weapon-fragment'&&(item.materialId!==def.materialId||!item.quantity||!item.boundToCharacter||item.binding!=='character'))throw new AuthFault(503,'original_inventory_unavailable');
-  if(def?.kind==='xp-boost'&&(!item.boundToCharacter||item.binding!=='character'||item.quantity!==undefined))throw new AuthFault(503,'original_inventory_unavailable');
-  if(def?.kind==='akuma-fragment'&&(!item.boundToCharacter||item.binding!=='character'||item.materialId!==def.materialId||item.rank!==def.rank||!item.quantity))throw new AuthFault(503,'original_inventory_unavailable');
+  if(def?.kind==='xp-boost'&&item.quantity!==undefined)throw new AuthFault(503,'original_inventory_unavailable');
+  if((item.binding==='character')!==!!item.boundToCharacter)throw new AuthFault(503,'original_inventory_unavailable');
+  if(def?.kind==='akuma-fragment'&&(item.materialId!==def.materialId||item.rank!==def.rank||!item.quantity))throw new AuthFault(503,'original_inventory_unavailable');
 }
 function valid(input: unknown,owner?:string): OriginalInventory {
   const parsed = originalInventorySchema.safeParse(input);
@@ -393,7 +401,7 @@ export async function mutateOriginalInventory(
       }
     } else if (input.action === "items.use-xp-boost") {
       const item=i.inventory.find(x=>x.id===input.payload.itemId);
-      if(!item||defs[item.def]?.kind!=='xp-boost'||item.locked||item.boundToCharacter!==id)
+      if(!item||defs[item.def]?.kind!=='xp-boost'||item.locked||(item.boundToCharacter&&item.boundToCharacter!==id))
         throw new AuthFault(409,'item_protected');
       const available=await client.query("SELECT to_regclass('mare_game.contract_daily_cycles') present");
       if(!available.rows[0].present)throw new AuthFault(503,'contracts_unavailable');
@@ -406,7 +414,9 @@ export async function mutateOriginalInventory(
       outcome={xpBoostUntil:updated.rows[0].xp_boost_until};
     } else if (input.action === "items.open-box") {
       const box=i.inventory.find(x=>x.id===input.payload.itemId);if(!box)throw new AuthFault(404,'item_not_found');
-      const result=require('../../../../prison-system.js').openBox(i,input.payload.itemId,defs,random,Date.now());
+      const result=defs[box.def]?.kind==='epic-equipment-box'
+        ?require('../../../../boss-dungeon-system.js').openEpicBox(i,box.id,defs,random,Date.now())
+        :require('../../../../prison-system.js').openBox(i,box.id,defs,random,Date.now());
       if(!result.ok)throw new AuthFault(409,box.locked?'item_protected':'box_unavailable');
       i={...i,inventory:result.state.inventory};outcome={consumed:box.id,created:result.item.id};
     } else if (input.action === "items.unequip") {

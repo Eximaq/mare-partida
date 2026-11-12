@@ -25,15 +25,15 @@ test("server and original browser rules expose 109 preserved definitions plus tw
   };
   assert.equal(
     createHash("sha256").update(JSON.stringify(summary)).digest("hex"),
-    "3f54745b49aa5fae5818c250330ec959d2301e1c973a2abd538c77f2f118ce6a",
+    "ada245510d65d39257605761b9abe43ba252af13dcaf6df0f036589976e83259",
     "baseline captured before extraction; changing order or values requires an explicit rules migration",
   );
   const server = getGameCatalog();
   assert.equal(server.items[187]?.id,"visual_completo_zoro");
   assert.equal(server.items[187]?.requiredClass,"sword");
-  assert.equal(server.items.length, 188);
+  assert.equal(server.items.length, 189);
   assert.equal(server.items[186]?.kind,"xp-boost");
-  assert.equal(server.rulesHash,'66324486a472d62b544f990897f13dfc519ae093ddcdb4b9714e35ab375a8560');
+  assert.equal(server.rulesHash,'73e8db5876c24d2ae1d6611965fb07031f6bfe00a4865ed973166fdeb27dd1aa');
   assert.deepEqual(c.items.slice(103,109),require('../../boss-dungeon-system.js').fragments);
   assert.equal(server.items.filter((i) => i.type === "akuma_no_mi").length, 30);
   assert.equal(server.slots.length, 13);

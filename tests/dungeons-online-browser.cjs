@@ -46,7 +46,7 @@ const D=require('../boss-dungeon-system.js'),chest=maps.maps['quest-dungeons'].i
      if(v.action==='dungeon.claim'){
       assert.deepEqual(v.payload,{dungeonId:wire.battle.dungeon.id});const r=D.claim(base(),v.payload.dungeonId,{runId:wire.battle.dungeon.record.runId,position:wire.world.position,chest,defs:catalog.items,applyXP:()=>{},commit:()=>true});assert(r.ok);wire.dungeons=r.state.bossDungeons;wire.originalInventory.inventory=r.state.inventory;wire.state.gold=String(BigInt(wire.state.gold)+BigInt(r.reward.berry));
      }
-     if(v.action==='dungeon.craft'){assert.deepEqual(v.payload,{expectedSeq:wire.dungeons.seq});const r=D.craft(base(),{expectedSeq:v.payload.expectedSeq,defs:catalog.items,catalog:require('../akuma-system.js').catalog,random:()=>0,commit:()=>true});assert(r.ok);wire.dungeons=r.state.bossDungeons;wire.originalInventory.inventory=r.state.inventory;}
+     if(v.action==='dungeon.craft'){assert.deepEqual(v.payload,{expectedSeq:wire.dungeons.seq,rank:'E'});const r=D.craft(base(),{expectedSeq:v.payload.expectedSeq,defs:catalog.items,catalog:require('../akuma-system.js').catalog,random:()=>0,commit:()=>true});assert(r.ok);wire.dungeons=r.state.bossDungeons;wire.originalInventory.inventory=r.state.inventory;}
      if(v.action==='dungeon.acknowledge'){assert.deepEqual(v.payload,{itemId:wire.dungeons.reveal.itemId});const r=D.acknowledge(base(),v.payload.itemId,()=>true);assert(r.ok);wire.dungeons=r.state.bossDungeons;}
      wire.state.version++;receipts.add(v.requestId);
     }

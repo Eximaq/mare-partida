@@ -17,76 +17,74 @@ async function available(client:PoolClient){
  return !!(await client.query("SELECT to_regclass('mare_game.contract_progress') present")).rows[0].present;
 }
 const engine=require('../../../../world-battle.cjs');
-const behavior=require('../../../../monster-behavior.js');
-const profiles=Object.entries(engine.hunt.regions).flatMap(([area,region]:[string,any])=>{
- const slots=behavior.slots(area).filter((slot:any)=>!slot.boss);
- return [...new Set<string>(slots.map((slot:any)=>slot.type))].map(type=>{
-  const group=slots.filter((slot:any)=>slot.type===type),first=group[0];
-  const nearest=group.map((a:any)=>Math.min(...(group.length>1?group:slots).filter((b:any)=>a!==b).map((b:any)=>Math.hypot(a.x-b.x,a.y-b.y))));
-  const travel=nearest.length&&nearest.every(Number.isFinite)?nearest.reduce((a:number,b:number)=>a+b,0)/nearest.length*1.25:200;
-  return {...engine.hunt.profile(area,first.sector,type,.5,{legacy:true}),type,area,entry:region.min,region:region.name,name:engine.prisonCatalog[type].name,slots:group.length,travel,respawnSeconds:behavior.RESPAWN_MS/1000};
- });
-});
 async function dailyAvailable(client:PoolClient){
  return !!(await client.query("SELECT to_regclass('mare_game.contract_daily_cycles') present")).rows[0].present;
 }
 type DailyInputs={state:CharacterState;legacyFighter?:()=>Awaited<ReturnType<typeof readFighter>>};
-async function dailyState(client:PoolClient,id:string,inputs?:DailyInputs){
- if(!await dailyAvailable(client))return null;
- const clock=(await client.query(`SELECT floor(extract(epoch FROM transaction_timestamp())*1000)::bigint now,
-   p.level,c.faction_id,COALESCE(extract(epoch FROM p.xp_boost_until)*1000,0)::bigint boost,d.state
-   FROM mare_game.character_progression p JOIN mare_game.characters c ON c.id=p.character_id
-   LEFT JOIN mare_game.contract_daily_cycles d ON d.character_id=p.character_id
-    AND d.cycle=floor(extract(epoch FROM transaction_timestamp())/86400)::int
-   WHERE p.character_id=$1`,[id])).rows[0];
- if(!clock)return null;
- const cycle=contracts.day(Number(clock.now));
- let row=clock.state?{state:clock.state}:null;
- if(!row){
-  const state=inputs?.state??await readCharacterState(client,id),fighter=inputs?.legacyFighter?.()??await readFighter(client,id,state,{legacyCadence:true});
-  if(fighter.rulesetId!=='original-character-v1')return null;
-  const stats=fighter.stats;
-  const seed=createHash('sha256').update(id+':'+cycle).digest().readUInt32BE();
-  const daily=contracts.daily({cycle,level:clock.level,seed,profiles,stats,goldFactor:engine.catalog.factions[clock.faction_id].gold});
-  row=(await client.query('INSERT INTO mare_game.contract_daily_cycles(character_id,cycle,state) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING state',[id,cycle,JSON.stringify(daily)])).rows[0]
-   ??(await client.query('SELECT state FROM mare_game.contract_daily_cycles WHERE character_id=$1 AND cycle=$2',[id,cycle])).rows[0];
- }
- if(!row)throw new AuthFault(503,'contract_unavailable');
- return {daily:row.state,xpBoostUntil:Number(clock.boost)};
+const tableByPeriod={daily:'contract_daily_cycles',weekly:'contract_weekly_cycles'} as const;
+type Period=keyof typeof tableByPeriod;
+async function recurringState(client:PoolClient,id:string){
+ const clock=(await client.query(`
+  SELECT to_regclass('mare_game.contract_daily_cycles') daily,to_regclass('mare_game.contract_weekly_cycles') weekly,
+   floor(extract(epoch FROM transaction_timestamp())*1000)::bigint now,p.level,c.faction_id,c.class_id,
+   COALESCE(extract(epoch FROM (to_jsonb(p)->>'xp_boost_until')::timestamptz)*1000,0)::bigint boost
+  FROM mare_game.character_progression p JOIN mare_game.characters c ON c.id=p.character_id WHERE p.character_id=$1
+ `,[id])).rows[0];
+ if(!clock?.daily)return null;
+ const now=Number(clock.now),day=contracts.day(now),week=contracts.week(now);
+ const states=(await client.query(`
+  SELECT 'daily' period,state FROM mare_game.contract_daily_cycles WHERE character_id=$1 AND cycle=$2
+  ${clock.weekly?"UNION ALL SELECT 'weekly' period,state FROM mare_game.contract_weekly_cycles WHERE character_id=$1 AND cycle=$3":''}
+ `,clock.weekly?[id,day,week]:[id,day])).rows;
+ const read=async (period:Period,cycle:number)=>{
+  const table=tableByPeriod[period],previous=states.find(row=>row.period===period)?.state;
+  const input={cycle,level:clock.level,classId:clock.class_id,goldFactor:engine.catalog.factions[clock.faction_id].gold};
+  const state=period==='daily'?contracts.rebalanceDaily(previous,input):previous??contracts.weekly(input);
+  if(state===previous)return state;
+  const updated=previous
+   ?await client.query('UPDATE mare_game.'+table+' SET state=$3 WHERE character_id=$1 AND cycle=$2 AND state=$4 RETURNING state',[id,cycle,JSON.stringify(state),JSON.stringify(previous)])
+   :await client.query('INSERT INTO mare_game.'+table+'(character_id,cycle,state) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING state',[id,cycle,JSON.stringify(state)]);
+  return updated.rows[0]?.state??(await client.query('SELECT state FROM mare_game.'+table+' WHERE character_id=$1 AND cycle=$2',[id,cycle])).rows[0].state;
+ };
+ const daily=await read('daily',day),weekly=clock.weekly?await read('weekly',week):undefined;
+ return {daily,...(weekly?{weekly}:{}),xpBoostUntil:Number(clock.boost)};
 }
 export async function recordDailyProgress(client:PoolClient,id:string,kills:any[]){
  if(!kills.length)return;
- const entry=await dailyState(client,id);
- if(!entry||entry.daily.claimed)return;
- for(const kill of kills)contracts.applyDaily(entry.daily,kill);
- await client.query('UPDATE mare_game.contract_daily_cycles SET state=$3 WHERE character_id=$1 AND cycle=$2',[id,entry.daily.cycle,JSON.stringify(entry.daily)]);
+ const entry=await recurringState(client,id);if(!entry)return;
+ for(const period of ['daily','weekly'] as const){
+  const state=entry[period];if(!state||state.claimed)continue;
+  for(const kill of new Map(kills.map(k=>[k.id,k])).values())contracts.applyDaily(state,kill);
+  await client.query('UPDATE mare_game.'+tableByPeriod[period]+' SET state=$3 WHERE character_id=$1 AND cycle=$2',[id,state.cycle,JSON.stringify(state)]);
+ }
 }
 export async function boostXp(client:PoolClient,id:string,xp:bigint){
  if(xp<=0n||!await dailyAvailable(client))return xp;
  const active=(await client.query('SELECT xp_boost_until>transaction_timestamp() active FROM mare_game.character_progression WHERE character_id=$1',[id])).rows[0]?.active;
  return active?xp*BigInt(contracts.dailyRules.xpMultiplier):xp;
 }
-async function claimDaily(client:PoolClient,id:string){
- const entry=await dailyState(client,id);
- if(!entry||!contracts.dailyComplete(entry.daily))throw new AuthFault(409,'contract_incomplete');
- if(entry.daily.claimed)throw new AuthFault(409,'contract_already_claimed');
+async function claimRecurring(client:PoolClient,id:string,period:Period){
+ const entry=(await recurringState(client,id))?.[period];
+ if(!entry||!contracts.dailyComplete(entry))throw new AuthFault(409,'contract_incomplete');
+ if(entry.claimed)throw new AuthFault(409,'contract_already_claimed');
+ const quantity=period==='weekly'?contracts.dailyRules.weeklyBoosts:contracts.dailyRules.dailyBoosts;
  const stock=await readOriginalInventory(client,id);
- if(!stock||stock.inventory.length>=120)throw new AuthFault(409,'inventory_full');
+ if(!stock||stock.inventory.length+quantity>120)throw new AuthFault(409,'inventory_full');
  const def=getGameCatalog().items.findIndex((item:any)=>item.kind==='xp-boost');
  if(def<0)throw new AuthFault(503,'loot_catalog_unavailable');
- stock.inventory.push({id:randomUUID(),def,level:1,plus:0,rarity:'epic',locked:false,binding:'character',boundToCharacter:id,origin:'Missões diárias',obtainedAt:Date.now()});
- entry.daily.claimed=true;
+ for(let i=0;i<quantity;i++)stock.inventory.push({id:randomUUID(),def,level:1,plus:0,rarity:'epic',locked:false,origin:period==='weekly'?'Missões semanais':'Missões diárias',obtainedAt:Date.now()});
+ entry.claimed=true;
  await writeInventory(client,id,stock);
- await client.query('UPDATE mare_game.contract_daily_cycles SET state=$3 WHERE character_id=$1 AND cycle=$2',[id,entry.daily.cycle,JSON.stringify(entry.daily)]);
+ await client.query('UPDATE mare_game.'+tableByPeriod[period]+' SET state=$3 WHERE character_id=$1 AND cycle=$2',[id,entry.cycle,JSON.stringify(entry)]);
  await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
 }
-export async function readContracts(client:PoolClient,id:string,inputs?:DailyInputs){
+export async function readContracts(client:PoolClient,id:string,_inputs?:DailyInputs){
  // Historical migration fixtures do not yet have this domain. New daily cycles are initialized on first access.
  if(!await available(client))return null;
  const {progress,claimed}=(await client.query(`SELECT
    COALESCE((SELECT jsonb_object_agg(contract_id,progress) FROM mare_game.contract_progress WHERE character_id=$1),'{}') progress,
    ARRAY(SELECT contract_id FROM mare_game.contract_claims WHERE character_id=$1 ORDER BY contract_id) claimed`,[id])).rows[0];
- return contractsSnapshotSchema.parse({rulesetId:contracts.rulesetId,progress:Object.fromEntries(contracts.quests.map((q:any)=>[q.id,progress[q.id]??0])),claimed,...await dailyState(client,id,inputs)});
+ return contractsSnapshotSchema.parse({rulesetId:contracts.rulesetId,progress:Object.fromEntries(contracts.quests.map((q:any)=>[q.id,progress[q.id]??0])),claimed,...await recurringState(client,id)});
 }
 // Caller owns the character lock; inserts the unique spawn receipt in the same transaction.
 export async function recordContractKills(client:PoolClient,id:string,kills:any[]){
@@ -95,7 +93,7 @@ export async function recordContractKills(client:PoolClient,id:string,kills:any[
   ON CONFLICT(character_id,contract_id) DO UPDATE SET progress=LEAST($3,mare_game.contract_progress.progress+1)`,[id,q.id,q.target]);
 }
 export async function claimContract(client:PoolClient,id:string,requestId:string,state:CharacterState,contractId:string){
- if(contractId==='daily-reward')return claimDaily(client,id);
+ if(contractId==='daily-reward'||contractId==='weekly-reward')return claimRecurring(client,id,contractId==='weekly-reward'?'weekly':'daily');
  const q=contracts.quests.find((q:any)=>q.id===contractId);
  if(!q)throw new AuthFault(400,'invalid_request');
  const view=await readContracts(client,id);

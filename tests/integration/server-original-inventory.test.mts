@@ -152,7 +152,8 @@ test("canonical inventory converts owned alpha copies once, preserves gold/XP an
     assert.equal(o.state.experience, "0");
     assert.equal(o.state.version, 1);
     assert.equal(i.catalogId, "original-game-v1");
-    assert.equal(Object.keys(i.equipment).length, 12);
+    assert.equal(Object.keys(i.equipment).length, 13);
+    assert.equal(i.equipment.visual_completo,null);
     assert.equal(i.equipment.weapon.def, 0);
     assert.equal(i.inventory.length, 3);
     assert.equal(i.inventory.filter((x: any) => x.def === 0).length, 1);

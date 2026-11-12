@@ -40,24 +40,28 @@ test('shared contracts preserve original IDs, fixed rewards and migrated once-on
  for(const q of c.quests){assert(Object.isFrozen(q));assert.equal(c.progress({stats:{crab:2},hunts:{areas:{beach:{kills:7}}}},q),['crab','dawn-patrol'].includes(q.id)?7:0);}
  assert.deepEqual(c.matching({area:'beach',monster:{type:'boss'}}).map((q:any)=>q.id),['crab','boss','dawn-patrol','dawn-clear']);
  assert.deepEqual(c.matching({area:'swamp',monster:{type:'helmeppo'}}).map((q:any)=>q.id),['bandit','conchas-patrol','conchas-clear']);
- assert.equal(require('../../contracts-board.js').periodConfig.daily.recurrence,'once');
+ assert.equal(require('../../contracts-board.js').periodConfig.journey.recurrence,'once');
 });
 
-test('daily objectives are stable, validate kill sources and require the sequential fallback',()=>{
- const D=require('../../contract-system.js'),profile={area:'beach',entry:1,region:'Dawn',type:'cesar',name:'César',level:5,maxHP:295,defense:17,magicDefense:8,gold:[22,35],travel:300,slots:14};
- const make=(prisonEligible:boolean)=>D.daily({cycle:10,level:5,cleared:0,seed:0,profiles:[profile,{...profile,entry:75,level:77,type:'satori'}],stats:{attack:70,speed:1.3,huntSpeed:130},prisonEligible});
- const d=make(false);assert.deepEqual(d,make(false));assert.equal(d.endsAt,11*86400000);
- const [combat,berry,fallback]=d.objectives;assert.equal(combat.type,'cesar');assert.equal(fallback.id,'daily-reinforcement');
- D.applyDaily(d,{area:'swamp',monster:{type:'cesar'},berry:100});assert.equal(berry.current,0);
- D.applyDaily(d,{area:'beach',monster:{type:'other'}});assert.equal(berry.current,0);
- const kill={area:'beach',monster:{type:'cesar'},berry:berry.target};
- combat.current=combat.target-1;D.applyDaily(d,kill);assert.equal(fallback.current,0);assert(!D.dailyComplete(d));
- for(let i=0;i<fallback.target;i++)D.applyDaily(d,kill);assert(D.dailyComplete(d));
- const p=make(true);assert.equal(p.objectives[2].id,'daily-reinforcement');
- p.objectives[2]={id:'daily-prison',floor:1,target:1,current:0};
- D.applyDaily(p,{prisonFloor:2});assert.equal(p.objectives[2].current,0);
- D.applyDaily(p,{prisonFloor:1});assert.equal(p.objectives[2].current,1);
+test('daily and weekly targets use the measured rates and preserve issued progress',()=>{
+ const D=require('../../contract-system.js'),input={cycle:10,level:35};
+ const daily=D.daily(input),weekly=D.weekly(input);
+ assert.deepEqual(daily,D.daily(input));assert.equal(daily.endsAt,11*86400000);
+ assert.equal(daily.objectives[0].target,1080);
+ assert.deepEqual(weekly.objectives.map((q:any)=>q.target),daily.objectives.map((q:any)=>7*q.target));
+ const kill={area:'other',monster:{type:'other',level:20},berry:100,reward:{}};
+ D.applyDaily(daily,kill);D.applyDaily(weekly,kill);
+ assert.deepEqual(daily.objectives.map((q:any)=>q.current),[0,0]);
+ assert.deepEqual(weekly.objectives.map((q:any)=>q.current),[1,100]);
+ D.applyDaily(daily,{...kill,monster:{...kill.monster,level:35}});
+ assert.deepEqual(daily.objectives.map((q:any)=>q.current),[1,100]);
+ assert.equal(D.rebalanceDaily(daily,{...input,level:80}),daily);
+ const cyborg={...input,classId:"cyborg"};
+ assert.equal(D.daily(cyborg).objectives[0].target,324);
+ assert.equal(D.weekly(cyborg).objectives[0].target,2268);
+ const old={...daily,revision:undefined,objectives:[...daily.objectives,{id:'daily-reinforcement',current:3}]};
+ assert.equal(D.rebalanceDaily(old,input).objectives[0].current,4);
  const client=require('../../apps/account-client/game-session.js');
- assert(client.validIntent('contract.claim',{contractId:'daily-reward'}));
+ for(const id of ['daily-reward','weekly-reward'])assert(client.validIntent('contract.claim',{contractId:id}));
  assert(client.validIntent('items.use-xp-boost',{itemId:'11111111-1111-4111-8111-111111111111'}));
 });

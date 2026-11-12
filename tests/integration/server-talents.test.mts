@@ -83,17 +83,16 @@ test('the real worker applies an earned poison build and persists its damage acr
  assert(after.battle.mobs[0].hp<hp);assert.equal(after.battle.talents.procs.poison,1);
 }));
 
-test('server loot preserves special boxes and the six-gold cap without overriding fixed gear rarity',async()=>authDatabase(async({service,pool})=>{
+test('server loot excludes pearl boxes and preserves the six-gold cap and fixed gear rarity',async()=>authDatabase(async({service,pool})=>{
  const a=await actor(service,'rogue'),before=await a.read(),spawnId=randomUUID(),client=await pool.connect();
  const reward={xp:2,gold:3,materials:1,materialChance:1,potions:1,potionChance:1,gearChance:1,gearLevel:1};
  try{
   await client.query('BEGIN');const requestId=randomUUID();
   await awardWorldLoot(client,a.c.id,requestId,before.state,[{id:spawnId,area:'beach',monster:{type:'bandit'},reward}],undefined,0,{build:build({},'lightHands','underworld'),steals:[{spawnId,amount:6}],rng:()=>0});
   await client.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4)',[a.c.id,requestId,'0'.repeat(64),JSON.stringify({action:'battle.reward'})]);await client.query('COMMIT');
-  const after=await a.read();assert.equal(BigInt(after.state.gold)-BigInt(before.state.gold),9n);assert.equal(after.originalInventory.inventory.length-before.originalInventory.inventory.length,2);
-  assert(!after.originalInventory.inventory.some((i:any)=>i.origin==='Senhor do Submundo'&&i.rarity==='legendary'));
+  const after=await a.read();assert.equal(BigInt(after.state.gold)-BigInt(before.state.gold),9n);assert.equal(after.originalInventory.inventory.length-before.originalInventory.inventory.length,1);
   assert(after.originalInventory.inventory.some((i:any)=>i.generation?.source==='map:beach'&&i.rarity==='common'&&i.potential===0));
-  assert(after.originalInventory.inventory.some((i:any)=>i.origin==='Senhor do Submundo'));
+  assert(!after.originalInventory.inventory.some((i:any)=>i.origin==='Senhor do Submundo'));
   assert.equal((await pool.query('SELECT total FROM mare_game.battle_talent_steals WHERE character_id=$1 AND spawn_id=$2',[a.c.id,spawnId])).rows[0].total,6);
   await client.query('BEGIN');await assert.rejects(awardWorldLoot(client,a.c.id,randomUUID(),after.state,[],undefined,0,{build:build({},'lightHands'),steals:[{spawnId,amount:1}]}));await client.query('ROLLBACK');assert.deepEqual((await a.read()).state,after.state);
  }finally{await client.query('ROLLBACK');client.release();}
@@ -146,7 +145,7 @@ test('talent migrations preserve existing worlds and battle payloads, upgrade on
    const old={...before.battle,hp:13,talentCooldowns:{immortalUntil:9999999999999},rulesHash:'562bfa13620d2bc08aebcc96590bfeee5fdd3ebab4be31832e28046c31de235f'};
    await pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(old)]);
    await pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[b.c.id,JSON.stringify({...old,rulesHash:'unknown'})]);
-   assert.deepEqual(await applyMigrations(pool),['0021_original_talents.sql','0022_talent_battle_compatibility.sql','0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_market_wallet_grants.sql', '0050_character_xp_curve.sql', '0051_bounty_victories.sql', '0052_world_map_exports.sql']);assert.deepEqual(await applyMigrations(pool),[]);
+   assert.deepEqual(await applyMigrations(pool),['0021_original_talents.sql','0022_talent_battle_compatibility.sql','0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_market_wallet_grants.sql', '0050_character_xp_curve.sql', '0051_bounty_victories.sql', '0052_world_map_exports.sql', '0053_syrup_boundary.sql', '0054_akainu_weekly_boss.sql', '0055_prison_floor_rewards.sql', '0056_weekly_contracts.sql', '0057_crew_contribution_coins.sql', '0058_weekly_boss_loot.sql', '0059_boss_dungeon_rewards.sql']);assert.deepEqual(await applyMigrations(pool),[]);
    const after=await a.read();assert.deepEqual(after.battle,{...old,rulesHash:engine.rulesHash});assert.deepEqual(after.state,before.state);assert.deepEqual(after.originalInventory,{...before.originalInventory,manaPotions:0});assert.deepEqual(after.world.position,before.world.position);assert.equal(after.talents.spent,0);assert.equal((await b.read()).battle.rulesHash,'unknown');
    assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.character_talents')).rows[0].n,0);
   },dir);
