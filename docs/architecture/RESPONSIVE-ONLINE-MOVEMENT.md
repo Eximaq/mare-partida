@@ -1,7 +1,7 @@
 # Resposta ao comando e latência de rede
 
 Diagnóstico de 12/11/2026, sobre `08ace750`, na VPS de testes e em bancada isolada.
-Escopo desta entrega: movimento manual por clique no porto e nas caçadas normais.
+Escopo: movimento manual por clique e, na extensão abaixo, por WASD/setas no porto e nas caçadas normais.
 
 ## Causa demonstrada
 
@@ -31,8 +31,8 @@ da requisição mediu 392 ms entre clique e primeiro deslocamento antes da corre
    combate automático, dano, inventário ou personagens de terceiros.
 
 Os 750 ms são uma janela visual, não uma nova validade de sessão ou tick. Os prazos
-do backend, combate, persistência e economia permanecem iguais. O teclado continua
-usando o caminho de comandos existente; esta entrega não afirma previsão de WASD.
+do backend, combate, persistência e economia permanecem iguais. A primeira entrega contemplava apenas o clique. A extensão de teclado abaixo usa
+o mesmo contrato de movimento, sem antecipar ações especiais.
 
 Referências técnicas primárias consultadas:
 
@@ -145,5 +145,53 @@ Evidências desta revisão:
   base e preservação do save demo aprovados.
 
 Esses números de resposta são da bancada, não medições certificadas do Opera
-pela VPS. A aplicação hospedada e a repetição de jogo real dependem de acesso SSH
-válido; não se deve declarar o movimento da VPS estabilizado só com estes testes.
+pela VPS. A correção de entrada foi aplicada na VPS e os três hashes foram verificados pelo
+HTTPS público. Backup: `rollback-appearance-0f7dc1c9.RvbWaS`, em
+`/srv/mare-staging/incoming/`. API e PostgreSQL não foram reiniciados. O controle
+do Opera foi interrompido pela ferramenta antes da inspeção final; não se deve
+declarar o movimento da VPS estabilizado só com estes testes.
+
+## WASD e setas: mesma resposta imediata do clique
+
+O teclado ainda verificava `busy/pending` antes de processar mudanças de direção e
+mandava `world.move` diretamente, sem chamar a previsão visual usada pelo mouse.
+Com uma requisição em voo, a troca de tecla e a soltura aguardavam a rede.
+Quatro regressões do código real reproduziram essa diferença antes da correção.
+
+WASD e setas agora usam a mesma fila limitada do clique. A posição visual orienta
+somente o destino desejado, nunca substitui a posição autoritativa. A soltura
+prepara uma parada visual imediata e mantém somente o último `world.stop` pendente;
+um novo movimento pode substituí-lo. A abertura de um painel conserva a parada,
+e respostas rejeitadas ou mudanças de mapa descartam a intenção obsoleta.
+Velocidade diagonal normalizada, navegação, limite de 750 ms sem confirmação,
+renovação de destino de 2,2 s, comandos de frutas e autoridade do servidor foram
+preservados.
+
+Verificação de teclado:
+
+- Nove regressões de integração entre o controlador de input e a apresentação:
+  início, inversão com pedido pendente, soltura, fila, diagonal, painel, rejeição,
+  mudança de mapa, cliente indisponível, setas e caminho especial do gênio.
+- Navegador com API/worker/PostgreSQL isolados e atraso artificial de 250 ms:
+  três sequências de oito mudanças por mapa (porto e Dawn), 48 amostras,
+  resposta visual p50 37,6 ms, p95 46,3 ms e máximo 49,3 ms. Soltura entre
+  20,1 e 29,2 ms. RTT medido no ensaio perto de 324 ms, não 40 ms.
+- Cliques, rejeição e reconciliação passaram nos dois mapas; velocidade normal
+  preservada. A execução observou 104 amostras de movimento dos monstros,
+  zero deslizes sem animação e zero reinícios da fase visual.
+- Um primeiro ensaio perdeu duas respostas no fim da sequência de Dawn; não havia
+  trace suficiente para determinar a causa desse episódio. Após instrumentação,
+  uma execução completa de 16 teclas e a repetição ampliada de 48 passaram sem
+  alterar o limite de aprovação ou a janela de previsão. Isso não autoriza afirmar
+  ausência de todo jitter. Outra repetição parou por falha da sonda do teste
+  (clique antes do primeiro quadro capturado); a posição anterior agora é colhida
+  no próprio evento de entrada.
+
+O teste é de apresentação e contrato de movimento com rede simulada, não de
+capacidade nem uma nova medição de RTT da Internet. A validação pelo usuário na
+VPS continua relevante; nenhuma economia, save ou regra de combate foi alterada.
+
+Verificações finais desta extensão: 285/285 testes de fundação, 188/188 arquivos
+legados, build estático, sintaxe e diff aprovados. A repetição completa do navegador
+passou também reconexão, viewport estreito, preparação lenta (27,4 s), falha de mapa
+base e preservação do save demo. O PostgreSQL descartável foi parado ao encerrar.

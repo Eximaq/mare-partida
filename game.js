@@ -207,6 +207,18 @@
     if(scene==='hunt'){autoPlay=false;world.target=null;updateUI();}
     return true;
   }
+  function stopOnlineWalk(preview=null){
+    if(!ONLINE_GAME.controlled||!ONLINE_GAME.available)return false;
+    const point=onlineWorldFrame.presentation.sample(performance.now());
+    if(onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop'){
+      const {character,online}=ONLINE_GAME.data;
+      queuedOnlineWalk={stop:true,characterId:character.id,mapId:online.world.mapId,preview:preview||previewOnlineWalk(point)};
+    }else{
+      if(onlineMoveWorking||ONLINE_GAME.busy||ONLINE_GAME.pending)return false;
+      void onlineWorldCommand('world.stop',{},false,preview||previewOnlineWalk(point));
+    }
+    lobbyAction=null;lobbyDestination=null;return true;
+  }
   function navigateEntity(entity,goal,speed,dt,range=0){
     if(entity===world.hero&&actionLocked())return true;
     const nav=navigator(),dist=Math.hypot(goal.x-entity.x,goal.y-entity.y);
@@ -1770,8 +1782,8 @@
       const walk=queuedOnlineWalk;
       queuedOnlineWalk=null;
       const current=ONLINE_GAME.data;
-      if(accepted&&walk&&!currentPanel&&current?.character?.id===walk.characterId&&current.online.world?.mapId===walk.mapId){
-        walkTo(walk.point,walk.action,walk.preview);
+      if(accepted&&walk&&(walk.stop||!currentPanel)&&current?.character?.id===walk.characterId&&current.online.world?.mapId===walk.mapId){
+        if(walk.stop)stopOnlineWalk(walk.preview);else walkTo(walk.point,walk.action,walk.preview);
       }else if(walk?.preview)walk.preview.presentation.cancel(performance.now());
     }
   }
@@ -1812,11 +1824,17 @@
     const dx=currentPanel?0:Number(keys.has('d')||keys.has('arrowright'))-Number(keys.has('a')||keys.has('arrowleft'));
     const dy=currentPanel?0:Number(keys.has('s')||keys.has('arrowdown'))-Number(keys.has('w')||keys.has('arrowup'));
     const signature=dx+','+dy,now=performance.now();
-    if(!ONLINE_GAME.busy&&!ONLINE_GAME.pending&&!onlineMoveWorking&&(signature!==onlineMoveKeys||(dx||dy)&&now>=onlineNextMove)){
+    const queueable=!session.genie&&(onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop');
+    if(ONLINE_GAME.available&&(queueable||!ONLINE_GAME.busy&&!ONLINE_GAME.pending&&!onlineMoveWorking)&&(signature!==onlineMoveKeys||(dx||dy)&&now>=onlineNextMove)){
       const previous=onlineMoveKeys;onlineMoveKeys=signature;onlineNextMove=now+2200;
-      if(dx||dy){lobbyAction=null;lobbyDestination=null;const actor=session.genie||pose,target={x:actor.x,y:actor.y},length=Math.hypot(dx,dy),distance=getDerived().moveSpeed*2.5;
-        navigator().move(target,dx/length*distance,dy/length*distance);if(Math.hypot(target.x-actor.x,target.y-actor.y)>1)void onlineWorldCommand(session.genie?'fruit.move':'world.move',target);
-      }else if(previous&&previous!=='0,0')void onlineWorldCommand(session.genie?'fruit.move':'world.stop',session.genie?{x:session.genie.x,y:session.genie.y}:{});
+      if(dx||dy){lobbyAction=null;lobbyDestination=null;const actor=session.genie||visual,target={x:actor.x,y:actor.y},length=Math.hypot(dx,dy),distance=getDerived().moveSpeed*2.5;
+        navigator().move(target,dx/length*distance,dy/length*distance);
+        if(Math.hypot(target.x-actor.x,target.y-actor.y)>1){
+          if(session.genie)void onlineWorldCommand('fruit.move',target);else walkTo(target);
+        }else if(!session.genie)stopOnlineWalk();
+      }else if(previous&&previous!=='0,0'){
+        if(session.genie)void onlineWorldCommand('fruit.move',{x:session.genie.x,y:session.genie.y});else stopOnlineWalk();
+      }
     }
     if(!pose.moving&&lobbyAction&&lobbyDestination&&Math.hypot(pose.x-lobbyDestination.x,pose.y-lobbyDestination.y)<5){const action=lobbyAction;lobbyAction=null;lobbyDestination=null;if(Math.hypot(pose.x-action.x,pose.y-action.y)<80)activateNPC(action);}
   }

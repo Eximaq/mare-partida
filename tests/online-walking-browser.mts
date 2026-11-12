@@ -2,7 +2,7 @@
 import {createSimulationPool} from '../apps/game-server/src/simulation-pool.js';
 import assert from 'node:assert/strict';
 import {once} from 'node:events';
-import {readFile,mkdir} from 'node:fs/promises';
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {createRequire} from 'node:module';
 import {authDatabase} from './integration/auth-support.mjs';
@@ -60,7 +60,7 @@ await authDatabase(async f=>{
    await p.route('**/v1/**',async(r:any)=>{try{await new Promise(resolve=>setTimeout(resolve,250));await r.continue();}catch{errors.push('delayed_request_failed');}});
    await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
    const canvas=await p.locator('#worldCanvas').boundingBox();
-   await p.evaluate(()=>document.querySelector('#worldCanvas').addEventListener('pointerdown',()=>{globalThis.motionClickedAt=performance.now();},{once:true,capture:true}));
+   await p.evaluate(()=>document.querySelector('#worldCanvas').addEventListener('pointerdown',()=>{const h=__mareDiagnostics().hero;globalThis.motionBefore={x:h.x,y:h.y};globalThis.motionClickedAt=performance.now();},{once:true,capture:true}));
    await p.mouse.click(canvas.x+(target.x-Math.round(screen.camera.x))*canvas.width/screen.camera.width,canvas.y+(target.y-Math.round(screen.camera.y))*canvas.height/screen.camera.height);
    await p.waitForTimeout(5000);
    const meter=await p.evaluate(()=>MareGameSession.network);
@@ -68,7 +68,7 @@ await authDatabase(async f=>{
    assert.match(await p.locator('#onlinePerformance').innerText(),/Ping HTTP: \d+ ms.*FPS: \d+/);
    captures.push({kind:'click',mapId,target,frames:await p.evaluate('window.captureMotion=false;window.motion')});
    const response=await p.evaluate(()=>{
-    const before=window.motion.filter(f=>f.t<=globalThis.motionClickedAt).at(-1);
+    const before=globalThis.motionBefore;
     const first=window.motion.find(f=>f.t>globalThis.motionClickedAt&&Math.hypot(f.x-before.x,f.y-before.y)>.5);
     return first?first.t-globalThis.motionClickedAt:null;
    });
@@ -94,6 +94,25 @@ await authDatabase(async f=>{
    assert.equal(rapid.length,8);assert.ok(rapid.every(ms=>ms!==null&&ms<=80),'new clicks must turn immediately while earlier commands remain in flight');
    await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
    await p.waitForTimeout(3000);
+   // Keyboard has its own input path: test actual key events under the same RTT.
+   for(let keyboardRound=0;keyboardRound<3;keyboardRound++){
+   const keyOrigin=await p.evaluate(()=>({x:__mareDiagnostics().hero.x,y:__mareDiagnostics().hero.y}));
+   const axis=[[1,0,'d','a'],[0,1,'s','w']].find(([dx,dy])=>[-45,-30,-15,15,30,45].every(n=>nav.walkable(keyOrigin.x+Number(dx)*n,keyOrigin.y+Number(dy)*n)));
+   assert.ok(axis,'keyboard probe needs a clear corridor on both sides');
+   await p.evaluate(`globalThis.keyFrames=[];globalThis.keyInputs=[];globalThis.keyCommands=[];globalThis.recordKeys=true;globalThis.recordRelease=false;
+    if(!globalThis.commandProbeInstalled){globalThis.commandProbeInstalled=true;const command=MareGameSession.command;MareGameSession.command=function(action,...args){const row={action,start:performance.now()};if(globalThis.recordKeys)globalThis.keyCommands.push(row);return command.call(this,action,...args).then(value=>{row.end=performance.now();return value;},error=>{row.end=performance.now();row.error=error.code;throw error;});};}
+    if(!globalThis.keyProbeInstalled){globalThis.keyProbeInstalled=true;
+     window.addEventListener('keydown',e=>{const vectors={w:[0,-1],a:[-1,0],s:[0,1],d:[1,0]};const v=vectors[e.key];if(!globalThis.recordKeys||!v||e.repeat)return;const h=__mareDiagnostics().hero;globalThis.keyInputs.push({t:performance.now(),x:h.x,y:h.y,dx:v[0],dy:v[1]});},true);
+     window.addEventListener('keyup',()=>{if(globalThis.recordRelease)globalThis.releasedAt=performance.now();},true);
+    }
+    function keySample(){if(!globalThis.recordKeys)return;const d=__mareDiagnostics();globalThis.keyFrames.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,moving:d.hero.walking>0,busy:MareGameSession.busy,available:MareGameSession.available,controlled:MareGameSession.controlled});requestAnimationFrame(keySample);}requestAnimationFrame(keySample);
+   `);
+   let held='';for(let i=0;i<8;i++){if(held)await p.keyboard.up(held);held=String(axis[i%2?3:2]);await p.keyboard.down(held);await p.waitForTimeout(110);}
+   await p.evaluate(()=>{globalThis.recordRelease=true;});await p.keyboard.up(held);await p.waitForTimeout(100);
+   const keyboard=await p.evaluate(()=>{globalThis.recordKeys=false;globalThis.recordRelease=false;return {responses:globalThis.keyInputs.map((input,i,all)=>{const next=all[i+1]?.t??globalThis.releasedAt;const frame=globalThis.keyFrames.find(f=>f.t>input.t&&f.t<next&&(f.x-input.x)*input.dx+(f.y-input.y)*input.dy>.5);return frame?frame.t-input.t:null;}),stopMs:(globalThis.keyFrames.find(f=>f.t>globalThis.releasedAt&&!f.moving)?.t??Infinity)-globalThis.releasedAt};});
+   console.log(JSON.stringify({map:mapId,keyboardRound,keyboard}));await writeFile(resolve(out,'keyboard-'+mapId+'-'+keyboardRound+'.json'),JSON.stringify(await p.evaluate(()=>({frames:globalThis.keyFrames,inputs:globalThis.keyInputs,commands:globalThis.keyCommands})),null,2));assert.equal(keyboard.responses.length,8);assert.ok(keyboard.responses.every(ms=>ms!==null&&ms<=80),'WASD turns before the delayed ACK');assert.ok(keyboard.stopMs<=80,'key release stops before the delayed ACK');
+   await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);await p.waitForTimeout(3000);
+   }
    await p.unroute('**/v1/**');
    // Reject an actual UI command before it reaches the isolated backend.
    const original=await p.evaluate(()=>({world:structuredClone(MareGameSession.data.online.world),version:MareGameSession.data.online.state.version}));
