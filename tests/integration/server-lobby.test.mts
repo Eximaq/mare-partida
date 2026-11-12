@@ -11,8 +11,10 @@ async function actor(f:any,name:string){
 }
 test('shared lobby exposes only public appearance and authoritative motion; travel and logout remove peers',async()=>authDatabase(async f=>{
  const a=await actor(f,'Navegante Alfa'),b=await actor(f,'Navegante Beta');
+ await f.pool.query("INSERT INTO mare_game.character_hierarchy(character_id,tier) VALUES($1,3) ON CONFLICT(character_id) DO UPDATE SET tier=EXCLUDED.tier",[b.c.id]);
  const lobby=(await a.read()).lobby;assert.equal(lobby.players.length,1);const peer=lobby.players[0];assert.equal(peer.id,b.c.id);assert.equal(peer.name,'Navegante Beta');assert.deepEqual(peer.world.position,(await b.read()).world.position);
- assert.deepEqual(Object.keys(peer).sort(),['appearance96','classId','equipment','factionId','hideHeadgear','id','name','world'].sort());
+ assert.deepEqual(Object.keys(peer).sort(),['appearance96','classId','equipment','factionId','hideHeadgear','hierarchyTier','id','name','world'].sort());
+ assert.equal(peer.hierarchyTier,3);
  for(const item of Object.values(peer.equipment) as any[])if(item)assert.deepEqual(Object.keys(item),['def']);
  const before=(await b.read()).state;await Promise.all([a.read(),b.read()]);assert.deepEqual((await b.read()).state,before);
  await assert.rejects(f.service.onlineState(a.login.token,b.c.id),{code:'character_not_found'});

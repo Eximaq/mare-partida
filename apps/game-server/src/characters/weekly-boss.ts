@@ -7,6 +7,7 @@ import {AuthFault} from '../auth/errors.js';
 import {readBattle,readBattleRows,storeBattle} from './battle.js';
 import {readWorld,readWorlds,storeWorld} from './world.js';
 import {readCombatInputs} from './combat-inputs.js';
+import {readHierarchyTiers} from './hierarchy.js';
 import {lockPeer} from './party.js';
 import {weeklyBossAvailable,weeklyOperator,weeklyRoom,weeklyRoster,weeklyAudit,authorizeWeeklyBoss} from './weekly-boss-store.js';
 const require=createRequire(import.meta.url),A=require('../../../../akainu-combat.js'),R=require('../../../../weekly-boss-rules.cjs'),E=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
@@ -124,9 +125,10 @@ export async function readWeeklyBoss(c:PoolClient,id:string,sessionId:string){
  if(current){
   const roster=(await weeklyRoster(c,current.id)).filter(m=>m.connected),ids=roster.map(m=>m.character_id),inputs=await weeklyInputs(c,ids),worlds=await readWorlds(c,ids,at),battles=await readBattleRows(c,ids);
   const names=new Map((await c.query('SELECT id,name,class_id,faction_id FROM mare_game.characters WHERE id=ANY($1::uuid[])',[ids])).rows.map(r=>[r.id,r]));
+  const tiers=await readHierarchyTiers(c,ids);
   for(const m of roster){const input=inputs.get(m.character_id),b=battles.get(m.character_id)?.simulation,w=worlds.get(m.character_id);if(!input||!b||!w||b.weeklyBossInstanceId!==current.id)continue;const f=input.fighter(b),n=names.get(m.character_id),equipment:any={};
    if(!input.preferences.hideItems)for(const slot of ['weapon','head','coat','cloak','gloves','legs','boots']){const item=input.inventory?.equipment[slot];if(item)equipment[slot]={def:item.def};}
-   peers.push({id:m.character_id,name:n.name,classId:n.class_id,factionId:n.faction_id,level:input.state.level,hp:Math.max(0,b.hp),maxHp:f.maxHp,connected:true,world:w,instanceId:current.id,appearance96:input.appearance,hideHeadgear:!!input.preferences.hideHeadgear,equipment,action:b.pending||b.skillJob?'attack':'idle',fruitId:f.fruitId,zoanTransformed:b.fruit?.transformed===true,haki:b.haki?{active:b.haki.active,eyeFX:b.haki.eyeFX,kingFX:b.haki.kingFX}:null});
+   peers.push({id:m.character_id,name:n.name,classId:n.class_id,factionId:n.faction_id,hierarchyTier:tiers.get(m.character_id)??null,level:input.state.level,hp:Math.max(0,b.hp),maxHp:f.maxHp,connected:true,world:w,instanceId:current.id,appearance96:input.appearance,hideHeadgear:!!input.preferences.hideHeadgear,equipment,action:b.pending||b.skillJob?'attack':'idle',fruitId:f.fruitId,zoanTransformed:b.fruit?.transformed===true,haki:b.haki?{active:b.haki.active,eyeFX:b.haki.eyeFX,kingFX:b.haki.kingFX}:null});
   }
  }
  return {canManage,lootRules:weeklyBossLootRules,events:rows.map(view),current:current?view(current):null,peers,serverNow:at.toISOString(),rewardPendingCycle:rights?.cycle??null,...(settings?{revision:settings.revision,config:settings.config,marinefordReady:!!maps().maps.marineford}: {})};
