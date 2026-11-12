@@ -2624,6 +2624,15 @@
       "productionEnabled": false,
       "storage": "zip",
       "approvalScope": "Presented SOUTH cycle with initial pose enlarged20 percent only"
+    },
+    {
+      "path": "weapons/orbe17-south-frame5-caveat-approved/17_SOUTH_PRESENTED_FRAME5_CAVEAT/Orbe17_SOUTH_Textura_3_4_v2_Aprovada_Somente17.zip",
+      "bytes": 758747,
+      "sha256": "99c55ef65e110a3340d0f889b77b5036cc03391711586bcb481ddb1d6765f0c5",
+      "pngEntries": 8,
+      "productionEnabled": false,
+      "storage": "zip",
+      "approvalScope": "Presented17 SOUTH only with uncorrected frame5 caveat;109 excluded"
     }
   ],
   "productionEnabled": false,

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "packageCount": 1,
+  "totalBytes": 758747,
+  "scope": "17 SOUTH presented only; frame5 uncorrected;109 excluded",
+  "packages": [
+    {
+      "key": "17_SOUTH_PRESENTED_FRAME5_CAVEAT",
+      "filename": "Orbe17_SOUTH_Textura_3_4_v2_Aprovada_Somente17.zip",
+      "bytes": 758747,
+      "sha256": "99c55ef65e110a3340d0f889b77b5036cc03391711586bcb481ddb1d6765f0c5",
+      "pngEntries": 8,
+      "parts": [
+        {
+          "path": "Orbe17_SOUTH_Textura_3_4_v2_Aprovada_Somente17.zip",
+          "bytes": 758747,
+          "sha256": "99c55ef65e110a3340d0f889b77b5036cc03391711586bcb481ddb1d6765f0c5",
+          "git_blob_sha": "9e62c29796c907a95f052b153d9e28eadd6892db"
+        }
+      ],
+      "approval": "approved with known frame5 caveat",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

@@ -82,3 +82,8 @@ A composição masculina apresentada está em `weapons/nodachi69-south-presented
 ## Manopla 111 e mosquete 5 SOUTH: posição inicial +20%
 
 Os ciclos apresentados e aprovados estão em `weapons/manopla111-mosquete5-south-initial-plus20-approved/`. Escopo restrito às combinações mostradas; rifle 115 não incluído. Backups exatos verificados; sem integração ou teste no jogo.
+
+
+## Orbe 17 SOUTH aprovada com ressalva
+
+A prévia apresentada está em `weapons/orbe17-south-frame5-caveat-approved/`. O quadro 5 permanece sem correção, conforme ressalva aceita. Somente os arquivos17 foram extraídos byte a byte do backup misto;109 excluída. Sem integração ou teste no jogo.
