@@ -1,6 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
+import {itemTradeRestriction} from '../../apps/game-server/src/characters/item-negotiability.js';
 import {authDatabase} from './auth-support.mjs';
 async function actor(f:any){
  const login=await f.service.login(randomUUID()+'@example.invalid','fixture');
@@ -81,7 +82,7 @@ test('official reward receipts record every individual outcome and deliver each 
  const mail=()=>f.pool.query('SELECT character_id,attachments FROM mare_game.social_mail WHERE source_id=$1 ORDER BY character_id',[eventId]);
  const delivered=(await mail()).rows;
  assert.deepEqual(delivered.map(row=>[row.character_id,row.attachments.length]),[[ids[0],2],[ids[1],1]]);
- assert(delivered.every(row=>row.attachments.every((item:any)=>!item.bound&&(item.quantity??item.qty)===1)));
+ assert(delivered.every(row=>row.attachments.every((item:any)=>itemTradeRestriction(item)===null&&(item.quantity??item.qty)===1)));
  await grant(()=>{throw Error('retry must reuse all persisted outcomes');});
  assert.deepEqual((await mail()).rows,delivered);
 }));

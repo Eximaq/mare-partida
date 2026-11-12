@@ -5,6 +5,7 @@ import type pg from 'pg';
 import type {AuthService} from '../../apps/game-server/src/auth/service.js';
 import {creditCrewActivities,readCrew,readCrewIdentity,readCrewRankings} from '../../apps/game-server/src/characters/crew.js';
 import {crewMissionRules,crewWeek,seaWar} from '../../apps/game-server/src/characters/crew-config.js';
+import {itemTradeRestriction} from '../../apps/game-server/src/characters/item-negotiability.js';
 import {authDatabase} from './auth-support.mjs';
 
 const flag='1'+'0'.repeat(1023);
@@ -157,4 +158,44 @@ test('last berth is atomic and treasury, donated Berry and weekly rewards are ea
   assert.equal(ranking[0]!.memberCount,11);
   assert.equal(ranking[0]!.capacity,16);
   assert.equal((await captain.crew()).group!.history.filter(row=>row.kind==='donation').length,1);
+}));
+
+test('one week of personal crew claims buys one tradable Rank C fragment and preserves history',()=>authDatabase(async({service,pool})=>{
+  const captain=await actor(service,pool,'Capitão das Moedas');
+  const member=await actor(service,pool,'Navegante das Moedas');
+  const outsider=await actor(service,pool,'Observador do Convés');
+  await captain.act('crew.create',{name:'Rota da Contribuição',tag:'MOED',flag,policy:'open',minLevel:1});
+  const {id:crewId}=(await captain.crew()).group!;
+  await member.act('crew.join',{crewId});
+  await member.act('items.initialize');
+  await assert.rejects(member.act('crew.buy-fragment'),{code:'crew_coin_insufficient'});
+  await transaction(pool,c=>creditCrewActivities(c,[
+    {characterId:member.id,kind:'kills',eventId:'weekly-hunt',quantity:crewMissionRules.kills.perMember*12},
+    {characterId:member.id,kind:'bosses',eventId:'weekly-bosses',quantity:crewMissionRules.bosses.perMember*12},
+  ]));
+  const donation=(await member.crew()).group!.missions.find(m=>m.type==='donations')!;
+  await pool.query('UPDATE mare_game.crew_missions SET progress=target-1 WHERE id=$1',[donation.id]);
+  await pool.query('UPDATE mare_game.character_progression SET gold=10 WHERE character_id=$1',[member.id]);
+  await member.act('crew.donate',{amount:1});
+  const eligible=(await member.crew()).coins;
+  assert.deepEqual(eligible.claims.map(m=>m.coins).sort((a,b)=>a-b),[25,35,40]);
+  await assert.rejects(outsider.act('crew.claim-coins',{missionId:eligible.claims[0]!.id}),{code:'crew_coin_ineligible'});
+  for(const mission of eligible.claims)await member.act('crew.claim-coins',{missionId:mission.id});
+  await member.act('crew.claim-coins',{missionId:eligible.claims[0]!.id});
+  const earned=(await member.crew()).coins;
+  assert.equal(earned.balance,earned.price);
+  assert.equal(earned.earned,100);
+  const buy=await member.input('crew.buy-fragment',{});
+  const receipt=await member.send(buy);
+  assert.deepEqual(await member.send(buy),receipt);
+  const {readOriginalInventory}=await import('../../apps/game-server/src/gameplay/inventory.js');
+  const bag=await transaction(pool,c=>readOriginalInventory(c,member.id));
+  const fragments=bag!.inventory.filter(item=>item.materialId==='akuma_fragment_c');
+  assert.equal(fragments.length,1);
+  assert.equal(fragments[0]!.quantity,1);
+  assert.equal(fragments[0]!.origin,'Loja da Tripulação');
+  assert.equal(itemTradeRestriction(fragments[0]!),null);
+  await member.act('crew.leave');
+  const coins=(await member.crew()).coins;
+  assert.deepEqual([coins.balance,coins.earned,coins.bought,coins.claims.length],[0,100,1,0]);
 }));
