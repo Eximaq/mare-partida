@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "approvalDate": "2026-11-12",
+  "packageCount": 1,
+  "totalBytes": 21926774,
+  "scope": "Manopla109 NORTH male and female, four outfits each; SOUTH remains separate and unapproved.",
+  "packages": [
+    {
+      "key": "109_N_MF",
+      "filename": "Manopla109_NORTH_MF_QuatroTrajes_Editavel.zip",
+      "bytes": 21926774,
+      "sha256": "c9b6471533b58480358d77833471caa8e7315df9b68822c9d173fa3fab1411ab",
+      "pngEntries": 301,
+      "entries": 317,
+      "parts": [
+        {
+          "path": "Manopla109_NORTH_MF_QuatroTrajes_Editavel.zip.part001",
+          "bytes": 7864320,
+          "sha256": "71f38077d74021b580a040d2267921977b438394d6cabc1fa238c54922c20409",
+          "git_blob_sha": "d81cf0255217b618cec6e83dc9a05c6da8774913"
+        },
+        {
+          "path": "Manopla109_NORTH_MF_QuatroTrajes_Editavel.zip.part002",
+          "bytes": 7864320,
+          "sha256": "e1bf0fdda65f0db63addebeb23a68c540fb5acce8453b25b53f311f1e7e4d18f",
+          "git_blob_sha": "e14cb907b258d9f8afa0568aff11dfb4b797b6b9"
+        },
+        {
+          "path": "Manopla109_NORTH_MF_QuatroTrajes_Editavel.zip.part003",
+          "bytes": 6198134,
+          "sha256": "fc2976809c049516023d72ce43ae703632907dc6102f1875b019c36c23b5604f",
+          "git_blob_sha": "54d0103641defa11a6b0fc0d159b84de86fa08dc"
+        }
+      ],
+      "approval": "approved",
+      "productionEnabled": false,
+      "inGameTested": false
+    }
+  ]
+}

@@ -37,3 +37,8 @@ Os dois backups aprovados de EAST/WEST, masculino e feminino com quatro trajes, 
 ## Armas 0, 67 e 70: laterais aprovadas
 
 Os dois backups aprovados de EAST/WEST, masculino e feminino com quatro trajes, estão em `weapons/swords0-67-70-ew-approved/`. Reconstrução exata, CRC e SHA-256 verificados; sem integração ou teste no jogo.
+
+
+## Manopla 109 NORTH aprovada
+
+O backup aprovado de NORTH, masculino e feminino com quatro trajes, está em `weapons/manopla109-north-approved/`. Reconstrução exata, CRC e SHA-256 verificados. A pendência SOUTH é separada. Sem integração ou teste no jogo.

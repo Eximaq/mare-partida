@@ -2502,6 +2502,20 @@
         "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part009"
       ],
       "restore": "weapons/swords0-67-70-ew-approved/RESTORE.py"
+    },
+    {
+      "path": "weapons/manopla109-north-approved/109_N_MF/Manopla109_NORTH_MF_QuatroTrajes_Editavel.zip",
+      "bytes": 21926774,
+      "sha256": "c9b6471533b58480358d77833471caa8e7315df9b68822c9d173fa3fab1411ab",
+      "pngEntries": 301,
+      "productionEnabled": false,
+      "storage": "split-zip",
+      "parts": [
+        "Manopla109_NORTH_MF_QuatroTrajes_Editavel.zip.part001",
+        "Manopla109_NORTH_MF_QuatroTrajes_Editavel.zip.part002",
+        "Manopla109_NORTH_MF_QuatroTrajes_Editavel.zip.part003"
+      ],
+      "restore": "weapons/manopla109-north-approved/RESTORE.py"
     }
   ],
   "productionEnabled": false,
