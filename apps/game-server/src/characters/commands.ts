@@ -61,18 +61,19 @@ export async function executeCharacterCommand(
   }
   let state = await readCharacterState(client, characterId);
   if (!social && state.version !== input.expectedVersion) throw new AuthFault(409, "state_version_conflict");
-  // Frequent movement shares a bounded budget for starting and stopping.
-  // It must not consume the independent budget for progression or social commands.
+  // Continuous movement is a paced input stream, not a minute-long action quota.
+  // The client sends at most 8/s; 12/s permits arrival jitter but bounds floods.
+  // Progression/social budgets and the controller lock remain independent.
   const movement = input.action === 'world.move' || input.action === 'world.stop';
-  const limit = movement ? 180 : 60;
+  const limit = movement ? 12 : 60;
   const budget = (await client.query<{recent:number}>(`
     SELECT count(*)::int AS recent
     FROM mare_game.character_commands
-    WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds'
+    WHERE character_id=$1 AND created_at>clock_timestamp()-$4::interval
       AND result->>'action'<>'battle.reward'
       AND ((result->>'action') ~ '^(friend|contact|message|mail|trade|market)[.]')=$2
-      AND (result->>'action' IN ('world.move','world.stop'))=$3`,[characterId,social,movement])).rows[0]!;
-  if (budget.recent >= limit) throw new AuthFault(429, "command_rate_limited");
+      AND (result->>'action' IN ('world.move','world.stop'))=$3`,[characterId,social,movement,movement?'1 second':'60 seconds'])).rows[0]!;
+  if (budget.recent >= limit) throw new AuthFault(429, "command_rate_limited", movement?1:60);
   if(party&&['prison.prepare','prison.enter'].includes(input.action))throw new AuthFault(409,'party_prison_individual');
   if(party&&['world.travel','world.return','dungeon.enter'].includes(input.action)){
    const b=await readBattle(client,characterId);if(b?.partyInstanceId||input.action==='dungeon.enter')throw new AuthFault(409,'party_collective_navigation_required');

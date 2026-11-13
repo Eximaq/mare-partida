@@ -2,6 +2,7 @@ export class AuthFault extends Error {
   constructor(
     public readonly status: number,
     public readonly code: string,
+    public readonly retryAfterSeconds?: number,
   ) {
     super(code);
   }

@@ -370,3 +370,70 @@ Verificação geral após a correção do corredor: `npm test` passou 301 testes
 de fundação e 188 arquivos legados. Build estático, sintaxe dos dois scripts
 alterados e `git diff --check` passaram. Nenhuma migração ou alteração de
 API, autenticação, banco, save ou regra econômica faz parte deste ajuste.
+
+## Movimento contínuo e limite de comandos
+
+A investigação da mensagem de excesso de comandos encontrou um limite de
+180 recibos de `world.move`/`world.stop` em 60 segundos por personagem.
+A consulta agregada na VPS encontrou janelas atingindo exatamente 180.
+Isso demonstra uma barreira de política para movimento contínuo; não é
+evidência de saturação da CPU. Três regressões de integração reproduziram
+o bloqueio por minuto, a ausência de proteção adequada por segundo e o
+compartilhamento indevido da cota de consultas com comandos.
+
+O cliente agora espaça movimentos em pelo menos 125 ms (até oito por segundo),
+com uma requisição em voo e somente a intenção mais recente pendente.
+A previsão local continua reagindo à tecla/clique imediatamente. Soltura,
+nova direção e mouse substituem a intenção anterior. Perda de controle, morte,
+troca de mapa ou rejeição descartam a pendência; uma ação de combate enviada
+durante o intervalo também descarta um movimento ainda não enviado.
+Isso não cria uma fila ilimitada nem implementa histórico completo de inputs.
+
+No servidor, movimento usa uma janela deslizante de um segundo, com até
+12 movimentos/paradas aceitos por personagem. A diferença entre oito envios
+e doze chegadas acomoda variação de entrega. Uma rajada acima disso continua
+recusada com HTTP 429 e `Retry-After: 1`. A decisão permanece dentro da
+transação e depois da validação de controle, versão e replay. As cotas de
+ações econômicas e sociais continuam em 60/minuto; dano, cooldowns,
+velocidade, colisões, recompensas e sessões não mudam.
+
+A entrada HTTP de comandos usa sua própria cota de 1.200/minuto por IP,
+permitindo dois clientes no mesmo NAT a oito movimentos/segundo cada.
+Consultas mantêm 600/minuto e autenticação mantém 300/minuto. Esses limites
+continuam finitos: não certificam uma rede com qualquer quantidade de
+jogadores nem capacidade para 3.000 simultâneos. Não há migração de banco
+nem alteração de recibos existentes.
+
+Validação desta revisão:
+
+- `npm test`: 304/304 testes de fundação e 188/188 arquivos legados.
+  Build TypeScript/estático, typecheck, sintaxe e diff aprovados.
+- PostgreSQL: execução geral 317/319. O teste de backup falhou por executável
+  ausente e passou com `PG_BIN` apontando para PostgreSQL 18.6. O primeiro
+  ensaio contínuo encontrou 401 perto da expiração artificial de 60 s da
+  fixture; a hipótese de cookie antigo não foi confirmada. A repetição chegou
+  aos 70 s, mas reprovou uma asserção indevida de rotação do cookie — renovar
+  o provedor não implica trocar o cookie BFF. Essa asserção foi removida.
+- O ensaio final usa o helper de carga existente com a política de homologação
+  (JWT 900 s, sessão 24 h/2 h), pool de runtime, HTTP/PostgreSQL reais e duas
+  identidades fictícias. Em 70 s contínuos, porto/Dawn aceitaram 553/559
+  comandos: 530/536 movimentos/paradas e 23 seleções de alvo por conta.
+  Zero erros HTTP, inclusive zero 429, estado final persistido e parada
+  confirmada. Tempo de ciclo p95 116,6/106,6 ms; inclui leituras/renovações
+  periódicas. Não é RTT de Internet, benchmark de capacidade ou ensaio de
+  renovação do JWT real. Os testes específicos de expiração permanecem
+  separados e passaram na suíte; o 401 da primeira janela não é atribuído
+  conclusivamente ao cookie nem tratado como falha resolvida deste patch.
+- Navegador com API/worker/PostgreSQL reais isolados e atraso artificial de
+  250 ms: 80 mudanças de tecla, p95 visual 45,4 ms, máximo 48,1 ms, zero
+  orientações antigas ou eventos/marcadores de mouse. Soltura sem inversão,
+  recuo máximo 1,69 px no porto e zero em Dawn. Cliques, perseguição,
+  reconciliação de rejeição, 109 amostras móveis de monstros sem deslize,
+  reconexão, viewport estreito, carregamento lento de 27,9 s, falha de mapa
+  explícita e save demo preservado passaram.
+
+As duas revalidações de integração passaram sem mudar regras de produção.
+O teste contínuo verifica admissão e persistência de movimentos/seleções;
+combate com worker é verificado pelo ensaio de navegador separado. Os bancos
+descartáveis foram encerrados. A janela de previsão sem ACK continua em
+750 ms; esta correção não promete ausência de correções sob qualquer rede.

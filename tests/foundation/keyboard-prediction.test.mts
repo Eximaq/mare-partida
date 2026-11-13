@@ -11,9 +11,9 @@ function fixture(){
  const initial={mapId:'lobby',position:{x:100,y:100},path:[],speed:100,direction:'right',serverNow:'2026-01-01T00:00:00Z',motionUntil:'2026-01-01T00:00:03Z'};
  const presentation=ui.createWorldPresentation({walk:true});presentation.update(initial,0);
  const gameSession:any={controlled:true,available:true,busy:false,pending:false,data:{character:{id:'fixture'},online:{world:initial}},command(action:string,payload:any){this.busy=true;return new Promise((resolve,reject)=>commands.push({action,payload,resolve,reject}));}};
- const c=vm.createContext({performance:{now:()=>now},MareOnlineGameUI:ui,ONLINE_GAME:gameSession,onlineWorldFrame:{snapshot:initial,received:0,presentation,special:false},onlineMoveKeys:'',onlineNextMove:0,onlineMoveWorking:null,queuedOnlineWalk:null,keys:new Set(),game:{hp:100},session:{respawn:0},world:{hero:{x:100,y:100}},currentPanel:null,lobbyAction:null,lobbyDestination:null,actionLocked:()=>false,getDerived:()=>({moveSpeed:100}),navigator:()=>({clear:()=>true,move:(p:any,x:number,y:number)=>{p.x+=x;p.y+=y;}}),onlineUI:{error:()=>{}},closePanel:()=>{},activateNPC:()=>{}});
+ const c=vm.createContext({performance:{now:()=>now},MareOnlineGameUI:ui,ONLINE_GAME:gameSession,onlineWorldFrame:{snapshot:initial,received:0,presentation,special:false},onlineMoveKeys:'',onlineNextMove:0,onlineMoveWorking:null,queuedOnlineWalk:null,onlineMoveSendAt:0,keys:new Set(),game:{hp:100},session:{respawn:0},world:{hero:{x:100,y:100}},currentPanel:null,lobbyAction:null,lobbyDestination:null,actionLocked:()=>false,getDerived:()=>({moveSpeed:100}),navigator:()=>({clear:()=>true,move:(p:any,x:number,y:number)=>{p.x+=x;p.y+=y;}}),onlineUI:{error:()=>{}},closePanel:()=>{},activateNPC:()=>{}});
  vm.runInContext(section('  function previewOnlineWalk(', '  function navigateEntity(')+section('  async function onlineWorldCommand(', '  function syncOnlineWorld(')+section('  function tickOnlineWorld(', '  function applyOnlineEquipment('),c);
- return {c,commands,initial,step(t:number,keys:string[]){now=t;c.keys=new Set(keys);c.tickOnlineWorld();return {...c.world.hero};},async ack(index:number,accepted=true){const cmd=commands[index];gameSession.busy=false;if(accepted)cmd.resolve();else cmd.reject(Error('rejected'));await Promise.resolve();await Promise.resolve();}};
+ return {c,commands,initial,step(t:number,keys:string[]){now=t;c.keys=new Set(keys);c.tickOnlineWorld();return {...c.world.hero};},async ack(index:number,accepted=true,at?:number){if(at!==undefined)now=at;const cmd=commands[index];gameSession.busy=false;if(accepted)cmd.resolve();else cmd.reject(Error('rejected'));await Promise.resolve();await Promise.resolve();}};
 }
 test('WASD starts and reverses before the first command acknowledgement',()=>{
  const f=fixture();f.step(0,['d']);assert.equal(f.commands.length,1);
@@ -21,6 +21,23 @@ test('WASD starts and reverses before the first command acknowledgement',()=>{
  const turning=f.step(40,['a']);const west=f.step(60,['a']);assert.ok(west.x<turning.x,'the newer key must win while the previous move is in flight');
  assert.equal(f.commands.length,1,'one network command at a time');assert.equal(f.c.queuedOnlineWalk.point.x<100,true);
  assert.deepEqual(f.initial.position,{x:100,y:100});
+});
+test('low latency key spam keeps only the newest intent and bounds sends without delaying the local turn',async()=>{
+ const f=fixture();let acked=0;
+ for(let t=0;t<=1000;t+=10){const key=(t/10)%2?'a':'d',hero=f.step(t,[key]);assert.equal(hero.direction,key==='a'?'left':'right');while(acked<f.commands.length)await f.ack(acked++);}
+ assert.ok(f.commands.length<=9,'at most eight movement sends per second plus the initial send');
+ assert.ok(f.commands.length>=7,'the client must continue sending, not just hide commands');
+ f.step(1010,[]);f.step(1140,[]);while(acked<f.commands.length)await f.ack(acked++);
+ assert.equal(f.commands.at(-1).action,'world.stop','keyup is retained as the newest intent');
+});
+test('losing control during the pacing gap discards unsent movement before reacquisition',async()=>{
+ const f=fixture();f.step(0,['d']);await f.ack(0,true,10);f.step(20,['a']);assert.ok(f.c.queuedOnlineWalk);
+ f.c.ONLINE_GAME.controlled=false;f.step(150,[]);assert.equal(f.c.queuedOnlineWalk,null,'a later controller must not inherit an old unsent direction');
+});
+test('a newer combat action replaces an unsent movement during the pacing gap',async()=>{
+ const f=fixture();f.step(0,['d']);await f.ack(0,true,10);f.step(20,['a']);
+ void f.c.onlineWorldCommand('battle.target',{targetId:'fixture-target'});assert.equal(f.commands[1].action,'battle.target');assert.equal(f.c.queuedOnlineWalk,null);
+ await f.ack(1,true,150);assert.equal(f.commands.length,2,'old movement must not restart after selecting an enemy');
 });
 test('rapid orthogonal keys reach the rendered hero in the same input tick',()=>{
  const f=fixture();
@@ -32,11 +49,11 @@ test('rapid orthogonal keys reach the rendered hero in the same input tick',()=>
 test('releasing keys stops presentation and coalesces the queued stop',async()=>{
  const f=fixture();f.step(0,['d']);f.step(40,['d']);f.step(60,[]);const a=f.step(80,[]),b=f.step(100,[]);
  assert.equal(a.x,b.x,'keyup must not wait for HTTP');assert.equal(f.c.queuedOnlineWalk.stop,true);
- await f.ack(0);assert.equal(f.commands.length,2);assert.equal(f.commands[1].action,'world.stop');
+ await f.ack(0,true,150);assert.equal(f.commands.length,2);assert.equal(f.commands[1].action,'world.stop');
 });
 test('only the latest keyboard intent is dispatched after the current command',async()=>{
  const f=fixture();f.step(0,['d']);f.step(20,['a']);f.step(40,[]);f.step(60,['w']);
- await f.ack(0);assert.equal(f.commands.length,2);assert.equal(f.commands[1].action,'world.move');assert.ok(f.commands[1].payload.y<100);
+ await f.ack(0,true,150);assert.equal(f.commands.length,2);assert.equal(f.commands[1].action,'world.move');assert.ok(f.commands[1].payload.y<100);
 });
 test('diagonal prediction keeps the normal movement speed',()=>{
  const f=fixture();f.step(0,['w','d']);const p=f.step(20,['w','d']);assert.ok(Math.abs(Math.hypot(p.x-100,p.y-100)-2)<1e-6);
@@ -60,7 +77,7 @@ test('captured mixed-key corners in Porto and Dawn require only a direct preview
 
 test('opening a panel while a move is pending retains a stop instead of a stale turn',async()=>{
  const f=fixture();f.step(0,['d']);f.step(20,['a']);f.c.currentPanel='inventory';f.step(40,['a']);
- assert.equal(f.c.queuedOnlineWalk.stop,true);await f.ack(0);assert.equal(f.commands[1].action,'world.stop');
+ assert.equal(f.c.queuedOnlineWalk.stop,true);await f.ack(0,true,150);assert.equal(f.commands[1].action,'world.stop');
 });
 test('rejection and map changes discard queued keyboard intentions',async()=>{
  const f=fixture();f.step(0,['d']);f.step(20,['a']);await f.ack(0,false);assert.equal(f.commands.length,1);assert.equal(f.c.queuedOnlineWalk,null);
@@ -83,19 +100,19 @@ test('special genie movement retains the authoritative fruit command path',()=>{
 
 test('keyboard never creates or restores a mouse destination marker',async()=>{
  const f=fixture();f.step(0,['d']);assert.equal(f.c.lobbyDestination,null,'keydown must not publish a click marker');
- f.step(20,['a']);await f.ack(0);assert.equal(f.c.lobbyDestination,null,'queued keyboard acknowledgement must remain a keyboard input');
+ f.step(20,['a']);await f.ack(0,true,150);assert.equal(f.c.lobbyDestination,null,'queued keyboard acknowledgement must remain a keyboard input');
 });
 test('keyboard immediately replaces pending mouse navigation and NPC intent',async()=>{
  const f=fixture();f.c.walkTo({x:500,y:100},{kind:'npc',x:500,y:100});assert.equal(f.c.lobbyDestination.x,500);
  f.step(0,['w']);assert.equal(f.c.lobbyDestination,null);assert.equal(f.c.lobbyAction,null);
- await f.ack(0);assert.equal(f.c.lobbyDestination,null);assert.equal(f.c.lobbyAction,null);assert.ok(f.commands[1].payload.y<100);
+ await f.ack(0,true,150);assert.equal(f.c.lobbyDestination,null);assert.equal(f.c.lobbyAction,null);assert.ok(f.commands[1].payload.y<100);
 });
 test('mouse click after key release keeps its own marker and replaces the queued stop',async()=>{
- const f=fixture();f.step(0,['d']);f.step(20,[]);f.c.walkTo({x:350,y:100});await f.ack(0);
+ const f=fixture();f.step(0,['d']);f.step(20,[]);f.c.walkTo({x:350,y:100});await f.ack(0,true,150);
  assert.equal(f.commands[1].action,'world.move');assert.equal(f.c.lobbyDestination.x,350);
 });
 
-for(const [key,direction] of [['d','right'],['a','left'],['w','back'],['s','front']]){
+for(const [key,direction] of [['d','right'],['a','left'],['w','back'],['s','front']] as const){
  test('release keeps facing and freezes atomically while walking '+key,()=>{
   const f=fixture();f.step(0,[key]);f.step(100,[key]);f.step(200,[key]);
   let time=200;f.c.performance.now=()=>time+=3;

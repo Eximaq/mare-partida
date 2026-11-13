@@ -167,7 +167,9 @@ export function createAuthHandler(options: {
       // Gameplay polling and movement share an IP behind the local gateway/NAT.
       // Reserve the original authentication budget instead of letting play traffic consume it.
       const gameplay = path === "/v1/me" || path === "/v1/hierarchy/ranking" || path === "/v1/crews/ranking" || path === "/v1/characters" || !!match || !!stateMatch || !!commandMatch;
-      await service.rateLimit((gameplay ? "game-ip:" : "ip:") + ip, gameplay ? 600 : 300, 60);
+      // Two active players behind one NAT can send 960 paced movements/minute.
+      // Command ingress stays bounded without consuming read or login budgets.
+      await service.rateLimit((commandMatch ? "command-ip:" : gameplay ? "game-ip:" : "ip:") + ip, commandMatch ? 1200 : gameplay ? 600 : 300, 60);
       const jar = cookies(request),
         session = jar.get(SESSION),
         preauth = jar.get(PREAUTH);
@@ -393,7 +395,7 @@ export function createAuthHandler(options: {
         response.setHeader("Connection", "close");
         response.once("finish", () => request.destroy());
       }
-      if (fault.status === 429) response.setHeader("Retry-After", "60");
+      if (fault.status === 429) response.setHeader("Retry-After", String(fault.retryAfterSeconds??60));
       reply(fault.status, { error: fault.code });
     }
   };

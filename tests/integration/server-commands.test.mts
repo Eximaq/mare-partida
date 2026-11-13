@@ -175,7 +175,7 @@ test("command rate limits preserve retry while old receipts never impose a lifet
     assert.deepEqual(await service.command(login.token, character.id, input), result);
     assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.character_commands")).rows[0].n, 10002);
   }));
-test("movement has a bounded command budget independent of other actions", async () =>
+test("sustained movement does not exhaust a minute budget or spend the action budget", async () =>
   authDatabase(async ({ service, pool }) => {
     const login = await service.login("movement-budget@example.invalid", "fixture");
     const character = await service.createCharacter(login.token, { name: "Mover", classId: "sword", factionId: "pirate" });
@@ -185,11 +185,11 @@ test("movement has a bounded command budget independent of other actions", async
       ...envelope, requestId: randomUUID(), action: "world.initialize", expectedVersion: 0,
     });
     const expectedVersion = initialize.state.version;
-    const seed = (action: string, count: number) => pool.query(
-      "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) SELECT $1,gen_random_uuid(),repeat('a',64),$2::jsonb FROM generate_series(1,$3::int)",
-      [character.id, JSON.stringify({ ...initialize, action }), count],
+    const seed = (action: string, count: number, age = '0 seconds') => pool.query(
+      "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result,created_at) SELECT $1,gen_random_uuid(),repeat('a',64),$2::jsonb,clock_timestamp()-$4::interval FROM generate_series(1,$3::int)",
+      [character.id, JSON.stringify({ ...initialize, action }), count, age],
     );
-    await seed("world.move", 65);
+    await seed("world.move", 240, '2 seconds');
     await service.command(login.token, character.id, {
       ...envelope, requestId: randomUUID(), action: "state.sync", expectedVersion,
     });
@@ -197,7 +197,7 @@ test("movement has a bounded command budget independent of other actions", async
     const stop = { ...envelope, requestId: randomUUID(), action: "world.stop" as const, expectedVersion };
     const accepted = await service.command(login.token, character.id, stop);
     assert.equal(accepted.state.version, expectedVersion + 1);
-    await seed("world.move", 114);
+    await seed("world.move", 11);
     await assert.rejects(service.command(login.token, character.id, {
       ...stop, requestId: randomUUID(), expectedVersion: accepted.state.version,
     }), { code: "command_rate_limited" });
@@ -206,3 +206,34 @@ test("movement has a bounded command budget independent of other actions", async
     }), { code: "command_rate_limited" });
     assert.deepEqual(await service.command(login.token, character.id, stop), accepted);
   }));
+
+test('movement burst rejection has a short retry hint and cannot bypass control or replay',async()=>authDatabase(async({service,pool,vault})=>{
+ const login=await service.login('movement-burst@example.invalid','fixture');
+ const c=await service.createCharacter(login.token,{name:'Burst',classId:'sword',factionId:'pirate'}),control=await service.acquireControl(login.token,c.id);
+ const input={requestId:randomUUID(),expectedVersion:0,action:'world.initialize' as const,payload:{},control:{epoch:control.epoch,token:control.token}};
+ const initialized=await service.command(login.token,c.id,input);
+ await pool.query("INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) SELECT $1,gen_random_uuid(),repeat('a',64),$2::jsonb FROM generate_series(1,12)",[c.id,JSON.stringify({...initialized,action:'world.move'})]);
+ const server=createHttpServer({isReady:async()=>true,handle:createAuthHandler({service,vault,origin:'https://localhost:9443',cookieSeconds:3600})});server.listen(0,'127.0.0.1');await once(server,'listening');
+ const send=(command:any)=>fetch(`http://127.0.0.1:${(server.address() as AddressInfo).port}/v1/characters/${c.id}/commands`,{method:'POST',headers:{'content-type':'application/json',origin:'https://localhost:9443',cookie:`__Host-mare_session=${login.token}`,'x-csrf-token':vault.csrf(login.token)},body:JSON.stringify(command)});
+ try{
+  const stop={...input,requestId:randomUUID(),action:'world.stop',expectedVersion:initialized.state.version};
+  const rejected=await send(stop);assert.equal(rejected.status,429);assert.equal(rejected.headers.get('retry-after'),'1');assert.deepEqual(await rejected.json(),{error:'command_rate_limited'});
+  assert.equal((await send({...stop,control:{...stop.control,epoch:control.epoch+1}})).status,409);
+  assert.deepEqual(await (await send(input)).json(),initialized,'authorized idempotent replay still succeeds at quota');
+  assert.equal((await service.characterState(login.token,c.id)).version,initialized.state.version);
+ }finally{server.closeAllConnections();await new Promise<void>(r=>server.close(()=>r()));}
+}));
+
+test('command ingress does not spend the read budget shared by players behind one IP',async()=>authDatabase(async({service,vault})=>{
+ const login=await service.login('ingress@example.invalid','fixture'),c=await service.createCharacter(login.token,{name:'Ingress',classId:'sword',factionId:'pirate'}),control=await service.acquireControl(login.token,c.id);
+ const input={requestId:randomUUID(),expectedVersion:0,action:'state.sync' as const,payload:{},control:{epoch:control.epoch,token:control.token}};
+ const limited=service.rateLimit.bind(service);await limited('game-ip:127.0.0.1',1,60);
+ service.rateLimit=async(key,limit,seconds)=>limited(key,key==='game-ip:127.0.0.1'?1:limit,seconds);
+ const server=createHttpServer({isReady:async()=>true,handle:createAuthHandler({service,vault,origin:'https://localhost:9443',cookieSeconds:3600})});server.listen(0,'127.0.0.1');await once(server,'listening');
+ const base=`http://127.0.0.1:${(server.address() as AddressInfo).port}`,headers={cookie:`__Host-mare_session=${login.token}`};
+ try{
+  const result=await fetch(base+`/v1/characters/${c.id}/commands`,{method:'POST',headers:{...headers,'content-type':'application/json',origin:'https://localhost:9443','x-csrf-token':vault.csrf(login.token)},body:JSON.stringify(input)});
+  assert.equal(result.status,200,'command traffic has an independently bounded ingress budget');
+  assert.equal((await fetch(base+'/v1/me',{headers})).status,429,'read budget remains enforced');
+ }finally{server.closeAllConnections();await new Promise<void>(r=>server.close(()=>r()));}
+}));

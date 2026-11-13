@@ -15,7 +15,7 @@ test('a new key faces its collision-checked route in the input frame',()=>{
 
 test('W A S D W confirmation continues the current intent instead of walking sideways to an older segment',()=>{
  const p=createWorldPresentation({walk:true});p.update(world({position:{x:100,y:100}}),0);
- let ticket:any;for(const [t,x,y] of [[0,100,-150],[80,-150,92],[160,92,342],[240,342,100],[320,100,-150]]){
+ let ticket:any;for(const [t,x,y] of [[0,100,-150],[80,-150,92],[160,92,342],[240,342,100],[320,100,-150]] as const){
   ticket=p.predict({x,y},t);for(let at=t+20;at<=t+80;at+=20)p.sample(at);
  }
  const acknowledged=world({position:{x:90,y:110},path:[{x:100,y:-150}],direction:'front'});

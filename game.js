@@ -10,7 +10,7 @@
     catch(error){if(error.code==='authentication_required'){location.replace('/online/');return;}document.body.classList.remove('online-session-loading');const message=document.createElement('p');message.textContent='Não foi possível carregar seu personagem. Atualize a página para tentar novamente.';message.setAttribute('role','alert');document.body.replaceChildren(message);return;}
   }
   let onlineWorldFrame=null,onlineMoveKeys='',onlineNextMove=0,onlineMoveWorking=null;
-  let queuedOnlineWalk=null;
+  let queuedOnlineWalk=null,onlineMoveSendAt=0;
   let onlineUI=null,onlineAttackWorking=false,onlineEncounterId=null,onlineInventoryStamp=null;
   const classCombat=MareCombatRegistry.create({sprites:MareFactionSprites,animation:MareCombatAnimation,loadVisuals:false});
   const DEV_ACTIVE=!ONLINE_GAME&&MareDev.active(location.search);
@@ -189,12 +189,16 @@
     const id=presentation.predict(point,performance.now(),{speed:getDerived().moveSpeed,stop});
     return id===null?null:{presentation,id};
   }
+  function deferOnlineWalk(){
+    return onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop'||
+      (!onlineMoveWorking&&!ONLINE_GAME.busy&&!ONLINE_GAME.pending&&performance.now()<onlineMoveSendAt);
+  }
   function walkTo(point,action=null,preview=null){
     if(ONLINE_GAME?.data?.online.world){
       if(!ONLINE_GAME.controlled||!ONLINE_GAME.available)return false;
-      if(onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop'){
+      if(deferOnlineWalk()){
         const {character,online}=ONLINE_GAME.data;
-        queuedOnlineWalk={point,action,characterId:character.id,mapId:online.world.mapId,preview:previewOnlineWalk(point)};
+        queuedOnlineWalk={point,action,characterId:character.id,mapId:online.world.mapId,preview:preview||previewOnlineWalk(point)};
         lobbyAction=null;
         return true;
       }
@@ -221,7 +225,7 @@
     Object.assign(target,point(reach));
     if(Math.hypot(target.x-actor.x,target.y-actor.y)<=1)return stopOnlineWalk();
     lobbyAction=null;lobbyDestination=null;
-    if(onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop'){
+    if(deferOnlineWalk()){
       const {character,online}=ONLINE_GAME.data;
       queuedOnlineWalk={keyboard:{dx,dy},point:target,characterId:character.id,mapId:online.world.mapId,preview:preview||previewOnlineWalk(target)};
       return true;
@@ -231,7 +235,7 @@
   }
   function stopOnlineWalk(preview=null){
     if(!ONLINE_GAME.controlled||!ONLINE_GAME.available)return false;
-    if(onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop'){
+    if(deferOnlineWalk()){
       const {character,online}=ONLINE_GAME.data;
       queuedOnlineWalk={stop:true,characterId:character.id,mapId:online.world.mapId,preview:preview||previewOnlineWalk(null,true)};
     }else{
@@ -239,6 +243,18 @@
       void onlineWorldCommand('world.stop',{},false,preview||previewOnlineWalk(null,true));
     }
     lobbyAction=null;lobbyDestination=null;return true;
+  }
+  function flushOnlineWalk(){
+    if(!queuedOnlineWalk||onlineMoveWorking||ONLINE_GAME.busy||ONLINE_GAME.pending)return;
+    const walk=queuedOnlineWalk,current=ONLINE_GAME.data;
+    if(!ONLINE_GAME.controlled||!ONLINE_GAME.available||game.hp<=0||session.respawn>0||actionLocked()||current?.character?.id!==walk.characterId||current.online.world?.mapId!==walk.mapId||!walk.stop&&currentPanel){
+      queuedOnlineWalk=null;walk.preview?.presentation.cancel(performance.now());return;
+    }
+    if(performance.now()<onlineMoveSendAt)return;
+    queuedOnlineWalk=null;
+    if(walk.stop)stopOnlineWalk(walk.preview);
+    else if(walk.keyboard)moveOnlineKeyboard(walk.keyboard.dx,walk.keyboard.dy,walk.preview);
+    else walkTo(walk.point,walk.action,walk.preview);
   }
   function navigateEntity(entity,goal,speed,dt,range=0){
     if(entity===world.hero&&actionLocked())return true;
@@ -1793,6 +1809,8 @@
   }
   async function onlineWorldCommand(action,payload={},close=false,preview=null){
     if(onlineMoveWorking||!ONLINE_GAME.controlled||ONLINE_GAME.busy||ONLINE_GAME.pending)return;
+    if(action==='world.move'||action==='world.stop')onlineMoveSendAt=performance.now()+125;
+    else if(queuedOnlineWalk){queuedOnlineWalk.preview?.presentation.cancel(performance.now());queuedOnlineWalk=null;}
     onlineMoveWorking=action;
     let accepted=false;
     try{await ONLINE_GAME.command(action,payload);accepted=true;if(close)closePanel();}
@@ -1800,14 +1818,8 @@
     finally{
       preview?.presentation.settle(preview.id,performance.now(),{accepted});
       onlineMoveWorking=null;
-      const walk=queuedOnlineWalk;
-      queuedOnlineWalk=null;
-      const current=ONLINE_GAME.data;
-      if(accepted&&walk&&(walk.stop||!currentPanel)&&current?.character?.id===walk.characterId&&current.online.world?.mapId===walk.mapId){
-        if(walk.stop)stopOnlineWalk(walk.preview);
-        else if(walk.keyboard)moveOnlineKeyboard(walk.keyboard.dx,walk.keyboard.dy,walk.preview);
-        else walkTo(walk.point,walk.action,walk.preview);
-      }else if(walk?.preview)walk.preview.presentation.cancel(performance.now());
+      if(accepted)flushOnlineWalk();
+      else{queuedOnlineWalk?.preview?.presentation.cancel(performance.now());queuedOnlineWalk=null;}
     }
   }
   function syncOnlineWorld(){
@@ -1837,7 +1849,7 @@
   }
   function tickOnlineWorld(){
     if(!onlineWorldFrame)return;
-    if(!ONLINE_GAME.controlled||!ONLINE_GAME.available||game.hp<=0||session.respawn>0)onlineWorldFrame.presentation.cancel?.(performance.now());
+    if(!ONLINE_GAME.controlled||!ONLINE_GAME.available||game.hp<=0||session.respawn>0){onlineWorldFrame.presentation.cancel?.(performance.now());queuedOnlineWalk=null;}
     const pose=MareOnlineGameUI.worldPosition(onlineWorldFrame.snapshot,performance.now()-onlineWorldFrame.received);
     const sampledAt=performance.now(),visual=onlineWorldFrame.presentation.sample(sampledAt);
     Object.assign(world.hero,{x:visual.x,y:visual.y,direction:visual.direction,walking:visual.moving?.2:0,onlineSampledAt:sampledAt});
@@ -1865,6 +1877,7 @@
       Object.assign(world.hero,{x:inputPose.x,y:inputPose.y,direction:inputPose.direction,walking:inputPose.moving?.2:0,onlineSampledAt:inputAt});
       if(inputPose.direction==='left')world.hero.facing=-1;if(inputPose.direction==='right')world.hero.facing=1;
     }
+    flushOnlineWalk();
     if(!pose.moving&&lobbyAction&&lobbyDestination&&Math.hypot(pose.x-lobbyDestination.x,pose.y-lobbyDestination.y)<5){const action=lobbyAction;lobbyAction=null;lobbyDestination=null;if(Math.hypot(pose.x-action.x,pose.y-action.y)<80)activateNPC(action);}
   }
   function applyOnlineEquipment(){
