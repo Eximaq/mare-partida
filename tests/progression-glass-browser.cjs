@@ -62,6 +62,7 @@ const sizes = [[1920,1080],[1366,768],[1280,720],[1024,768],[768,1024],[390,844]
           assert(await page.locator('[data-haki-invest=coating]').isVisible());
           if(width<=760) {await page.locator('[data-haki-back-tree]').click();assert(await page.locator('.hm-tree').isVisible());}
         }
+        assert(await page.locator('#dialogBody button').evaluateAll(es=>es.every(e=>getComputedStyle(e).borderImageSource==='none')),'no legacy button textures '+panel);
         await page.screenshot({path:path.join(out,panel+'-'+width+'.png')});
       }
     }
