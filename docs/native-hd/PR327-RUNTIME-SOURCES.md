@@ -32,7 +32,7 @@ As adaptações preservam os PNGs de origem, a densidade, o pivô e a escala do 
 | Paleta original | 3.984 | 2.679 | 696 | 609 |
 | Paleta personalizada de teste | 3.984 | 1.246 | 1.913 | 825 |
 
-As matrizes cobrem 166 combinações derivadas de registros e os 102 itens dos sete slots auditados, incluindo 42 armas e 10 capas. Todas as 42 armas encontram fonte HD isoladamente, com a paleta original. As Grevas 21 masculinas não têm registro para as 12 poses auditadas. A auditoria distingue ausência nos índices de ausência de arte no histórico.
+As matrizes cobrem 166 combinações derivadas de registros e os 102 itens dos sete slots auditados, incluindo 42 armas e 10 capas. Todas as 42 armas encontram fonte HD isoladamente, com a paleta original. No levantamento inicial, as Grevas 21 masculinas ainda não tinham registro para as 12 poses auditadas. O lote seguinte registra sua geração. A auditoria distingue ausência nos índices de ausência de arte no histórico.
 
 `python tools/build_pages.py` prepara a build para o navegador. `tests/rework_catalog_creation_browser.cjs` usa a criação real, controles de movimento e clique no alvo para o ataque. Os testes com `MARE_CHECK_CREATION_COLOR=1` e `MARE_CHECK_STARTER_ATTACKS=1` verificam a mudança de pixels na prévia, as fontes desenhadas no mapa e as poses alcançadas pelo ataque. `tests/rework-starter-coat.test.cjs` verifica o carregamento e a composição dos clipes de teste.
 
@@ -142,3 +142,26 @@ Cada célula conta as poses HD resolvidas entre 12 por corpo, com três ações 
 | 180 | Manoplas da Vontade Absoluta | gloves | 0 | 0 | 0 | 0 |
 | 182 | Calças do Trono dos Mares | legs | 0 | 12 | 0 | 0 |
 | 183 | Botas do Horizonte Eterno | boots | 0 | 0 | 0 | 0 |
+
+## Lote seguinte
+
+As Grevas 21 masculinas agora têm fonte registrada. Foram gerados 96 PNGs independentes para 12 clipes de repouso, caminhada e punhos. A adaptação usa os pixels das Grevas 21 femininas do acervo v47 e as silhuetas quadro a quadro da camada masculina 22. A transferência encurta a barra para acompanhar a peça original e preserva os rasters de corpo e o pivô. A geração é candidata a revisão visual, com os comandos em `tools/pants22-native/build-pants21.cjs` e `tools/pants22-native/package-pants21.py`. O mapa desenhou a camada 21 com espada 0 após equipagem pelo inventário, em repouso e caminhada nas quatro direções.
+
+A peça 168 feminina mantém sua própria camada com punhos 2. O vínculo exige os mesmos rasters, poses e âncoras do corpo e substitui apenas o short base. Confirmado no mapa com cabelo Chanel rosa, olhos verdes/amendoados e pele escura. Os 12 clipes foram carregados e desenhados também pelo compositor em teste.
+
+### Peitorais com espada 0 no mapa
+
+Equipagem pelo inventário seguida de repouso e caminhada nas quatro direções. As amostras registraram o ID da fonte realmente desenhada. A avaliação de cada costura e todos os ataques permanecem separadas.
+
+| Corpo | IDs exercitados com fonte HD em todas as quatro direções |
+| --- | --- |
+| Masculino | 7, 130, 137, 144, 158, 165, 172, 179 |
+| Feminino | 7, 130, 137, 144, 151, 158, 165, 172, 179 |
+
+O carregamento agora preserva as camadas de gola, manga e punho registradas junto de cada peitoral. As amostras usaram cabelo Chanel rosa, olhos verdes/amendoados e pele escura. O 151 masculino foi vinculado nas poses compatíveis com o doador de calça 133 e ainda precisa de adaptação lateral no conjunto com espada.
+
+A matriz anterior é histórica. Rode a auditoria novamente para obter os totais desta versão, que inclui os vínculos da peça 21 e da 168 com arma.
+
+### Personalização aplicada no mapa
+
+O editor de personagem foi usado para aplicar uma opção por vez. No espadachim inicial, as cinco opções de formato dos olhos e as seis cores produziram rasters distintos em SOUTH, EAST e WEST nos dois corpos, com repouso e caminhada observados nas quatro direções. NORTH manteve o mesmo raster entre opções de olhos. As dez cores do cabelo Chanel masculino produziram rasters distintos nas quatro direções. Essa prova mede as opções no conjunto testado, sem equivalência presumida para os outros estilos, capacetes ou clipes.

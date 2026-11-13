@@ -13,6 +13,10 @@ const end=Number(process.env.MARE_CATALOG_END||(powers?1:catalogOnly?7:14));
 const expectStarterHD=process.env.MARE_EXPECT_STARTER_HD==='1';
 const checkStarterAttacks=process.env.MARE_CHECK_STARTER_ATTACKS==='1';
 const checkCreationColor=process.env.MARE_CHECK_CREATION_COLOR==='1';
+const cosmeticsField=process.env.MARE_COSMETICS_FIELD;
+const cosmeticStart=Number(process.env.MARE_COSMETICS_START||0);
+const cosmeticLimit=Number(process.env.MARE_COSMETICS_LIMIT||Infinity);
+const itemMovement=process.env.MARE_CHECK_ITEM_MOVEMENT==='1';
 const strictAssets=process.env.MARE_STRICT_VISUAL_ASSETS==='1';
 const onlyGender=process.env.MARE_CATALOG_GENDER;
 const onlyItems=new Set((process.env.MARE_CATALOG_ITEMS||'').split(',').filter(Boolean).map(Number));
@@ -30,6 +34,8 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
    for(let i=start;i<end;i++){
     const classId=Object.keys(classes)[i%Object.keys(classes).length],expected=appearance(gender,i);
     if(checkCreationColor)Object.assign(expected,{hairStyle:'hair-bob',hairColor:'pink'});
+    if(cosmeticsField)Object.assign(expected,{hairStyle:'hair-bob',hairColor:'silver',eyeStyle:'original',eyeColor:'blue',skinColor:'light'});
+    if(itemMovement)Object.assign(expected,{hairStyle:'hair-bob',hairColor:'pink',eyeStyle:'face-almond',eyeColor:'green',skinColor:'dark'});
     const context=await browser.newContext({viewport:{width:1440,height:960}});
     const page=await context.newPage(),errors=[];
     const result={id:gender+'/'+i,classId,expected,directions:{},errors,assetErrors:[]};
@@ -79,7 +85,7 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
        window.__appearanceCatalogQA={
         read:()=>({visual:lobby96.worldVisual(),frames:[...frames.values()],weapon:game?.equipment?.weapon?.def,fruit:game?.equipment?.akuma_no_mi?.fruitId,form:!!game?.zoanTransformed,displayedForm:!!lobby96.worldPlayer()?.zoanTransformed}),
         seedItems(){
-         const eligible=itemDefs.map((def,id)=>({def,id})).filter(({def,id})=>MareForge.isGear({def:id},itemDefs)&&['coat','head','legs','boots','gloves','weapon','cloak'].includes(def.slot)&&(def.slot==='weapon'?def.type===game.classId:game.classId==='sword'));
+         const eligible=itemDefs.map((def,id)=>({def,id})).filter(({def,id})=>MareForge.isGear({def:id},itemDefs)&&['coat','head','legs','boots','gloves','weapon','cloak'].includes(def.slot)&&(def.slot==='weapon'?def.type===game.classId:game.classId==='sword'||${itemMovement}));
          const items=eligible.map(({def,id})=>({def:id,slot:def.slot,item:newItem(def,1,false)}));
          game.inventory.push(...items.map(x=>x.item));
          return items.map(({def,slot,item})=>({def,slot,id:item.id}));
@@ -200,8 +206,46 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
      assert.deepEqual(errors,[]);
      if(strictAssets)assert.deepEqual(result.assetErrors,[]);
      result.status='EXERCITADO'; // Emitted pixels and identities, not an independent visual comparison.
+     if(cosmeticsField){
+      result.cosmetics=[];
+      const outFile=path.join(out,'cosmetics.json');
+      for(const option of Object.keys(choices[cosmeticsField]).slice(cosmeticStart,cosmeticStart+cosmeticLimit)){
+       const entry={field:cosmeticsField,option,directions:{}};
+       result.cosmetics.push(entry);
+       await fs.writeFile(outFile,JSON.stringify(evidence,null,2));
+       await page.locator('#mainMenu [data-panel=character]').click();
+       await page.locator('#characterQuickMenu [data-character-section=status]').click();
+       await page.locator('#dialogBody [data-character-section=appearance]').click();
+       await page.locator('#profileAppearance [data-appearance='+cosmeticsField+']').selectOption(option);
+       await page.locator('[data-appearance-apply]').click();
+       await page.keyboard.press('Escape');
+       await page.waitForFunction(({field,option})=>{const q=__appearanceCatalogQA.read();return q.visual?.state==='ready'&&q.frames.some(f=>f.publishedKey===q.visual.publishedKey&&f.look[field]===option);},{field:cosmeticsField,option},{timeout:30000});
+       for(const [key,direction] of directions){
+        await page.evaluate(d=>{__appearanceCatalogQA.clear();__appearanceCatalogQA.lane(d);},direction);
+        await page.keyboard.down(key);
+        try{await page.waitForFunction(d=>__appearanceCatalogQA.read().frames.filter(f=>f.direction===d&&f.action==='walk').length>=3,direction,{timeout:8000});}
+        finally{await page.keyboard.up(key);}
+        await page.waitForFunction(d=>__appearanceCatalogQA.read().frames.some(f=>f.direction===d&&f.action==='idle'),direction,{timeout:8000});
+        const frames=(await read()).frames.filter(f=>f.direction===direction);
+        assert(frames.every(f=>f.opaque>0&&f.look[cosmeticsField]===option));
+        entry.directions[direction]=frames;
+       }
+       await fs.writeFile(outFile,JSON.stringify(evidence,null,2));
+      }
+      const distinct=Object.fromEntries(directions.map(([,d])=>[d,new Set(result.cosmetics.map(e=>e.directions[d].find(f=>f.action==='idle')?.hash)).size]));
+      result.distinctIdleRasters=distinct;
+      const visibleDirections=cosmeticsField.startsWith('eye')?['south','east','west']:['south','north','east','west'];
+      for(const d of visibleDirections)assert.equal(distinct[d],result.cosmetics.length,'Distinct '+cosmeticsField+' pixels in '+d);
+      if(strictAssets)assert.deepEqual(result.assetErrors,[]);
+     }
      if(catalogOnly){
       result.items=[];
+      if(itemMovement){
+       await page.locator('#mainMenu [data-panel=inventory]').click();
+       await page.locator('[data-inv-slot=coat]').click();
+       await page.locator('[data-unequip=coat]').click();
+       await page.locator('[data-close-panel]').click();
+      }
       for(const item of (await page.evaluate(()=>__appearanceCatalogQA.seedItems())).filter(item=>!onlyItems.size||onlyItems.has(item.def))){
        const record={def:item.def,slot:item.slot};
        result.items.push(record);
@@ -231,6 +275,24 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
         assert(selected.some(([slot,def])=>slot===item.slot&&def===item.def));
         record.frames=state.frames.filter(frame=>frame.publishedKey===state.visual.publishedKey);
         if(item.slot==='weapon'&&record.frames.some(f=>f.weaponIds))assert(record.frames.some(f=>f.weaponIds?.includes(item.def)));
+        if(itemMovement){
+         record.directions={};
+         for(const [key,direction] of directions){
+          await page.evaluate(d=>{__appearanceCatalogQA.clear();__appearanceCatalogQA.lane(d);},direction);
+          await page.keyboard.down(key);
+          try{
+           await page.waitForFunction(d=>__appearanceCatalogQA.read().frames.filter(f=>f.action==='walk'&&f.direction===d).length>=3,direction,{timeout:8000});
+          }finally{await page.keyboard.up(key);}
+          await page.waitForFunction(d=>__appearanceCatalogQA.read().frames.some(f=>f.action==='idle'&&f.direction===d),direction,{timeout:8000});
+          const frames=(await read()).frames.filter(f=>f.direction===direction);
+          assert(frames.every(frame=>frame.opaque>0&&frame.publishedKey===state.visual.publishedKey));
+          record.directions[direction]=frames;
+         }
+         if(strictAssets)assert.deepEqual(result.assetErrors,[]);
+         record.nativeDirections=Object.entries(record.directions).filter(([,frames])=>frames.every(frame=>!frame.source.startsWith('native96'))).map(([direction])=>direction);
+         if(item.def===21&&gender==='masculino')for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,/pants21-native/);
+         if(item.def===168&&gender==='feminino')for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,/pants168-native.*hair-palette:pink.*eye-palette:green/);
+        }
         record.status='EXERCITADO';
        }catch(error){
         record.status='FALHOU';record.error=error.message;
@@ -280,7 +342,7 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
      result.status='FALHOU';result.error=error.message;
      result.last=await page.evaluate(()=>window.__appearanceCatalogQA?.read()).catch(()=>null);
     }finally{
-     await fs.writeFile(path.join(out,powers?'powers.json':catalogOnly?'equipment.json':'creation.json'),JSON.stringify(evidence,null,2));
+     await fs.writeFile(path.join(out,powers?'powers.json':catalogOnly?'equipment.json':cosmeticsField?'cosmetics.json':'creation.json'),JSON.stringify(evidence,null,2));
      await context.close();
      console.log(result.id+' '+classId+' '+result.status+' '+(result.error||''));
     }

@@ -23,6 +23,16 @@ test('male starter keeps authored body, weapon, pivots and timing when applying 
  }
 });
 
+test('male coat seam and collar repair layers keep the registered coat identity',()=>{
+ for(const coat of [7,130,137,144,158,165,172,179])
+  for(const direction of ['south','north','east','west'])for(const action of ['idle','walk']){
+   const source=carry.resolve({item:0,body:'male',action,direction,equipment:{weapon:0}});
+   const dressed=adaptIsolatedCoat(source,outfits,{coat});
+   assert.equal(dressed?.outfitOverlay.item,coat,coat+'/'+action+'/'+direction);
+   assert.equal(dressed?.outfitOverlay.sourceRecord,'male-torso'+coat+'-'+direction+'-frozen-'+action+'-native');
+  }
+});
+
 test('coat 6 is rejected when its authored body or frame contract differs',()=>{
  const source=carry.resolve({item:0,body:'male',action:'walk',direction:'east',equipment:{weapon:0}});
  const changed=structuredClone(source);
@@ -90,4 +100,43 @@ test('male starter sword uses isolated blade sources with the selected coat and 
    assert(ctx.getImageData(0,0,200,200).data.some((value,i)=>i%4===3&&value));
   }finally{prepared.release();}
  }
+});
+
+test('female pants 168 replaces only shorts in compatible equipped weapon clips',async()=>{
+ const {make,cv}=require('./rework-integration-support.cjs'),api=make();
+ await api.ready;
+ const appearance96={gender:'feminino',hairStyle:'hair-bob',hairColor:'pink',skinColor:'dark',eyeStyle:'face-almond',eyeColor:'green'};
+ const player={appearance96,equipment:{weapon:{def:2},legs:{def:168}}};
+ const options=[];
+ for(const direction of ['south','north','east','west'])for(const action of ['idle','walk','attack-unarmed']){
+  const o={action,direction,x:100,y:145};
+  const source=api.select(player,o);
+  assert.equal(source?.outfitSourceId,'female-pants168-'+action+'-'+direction);
+  assert.equal(source.material.eyeStyle,'face-almond');
+  assert.equal(source.material.eyeColor,'green');
+  options.push({player,options:o});
+ }
+ const prepared=await api.prepareConfiguration(options);
+ try{
+  const ctx=cv.createCanvas(200,200).getContext('2d');
+  assert.equal(prepared.coverage.length,12);
+  for(const {options:o} of options)assert(prepared.draw(ctx,player,o));
+ }finally{prepared.release();}
+ assert.equal(api.select({...player,equipment:{...player.equipment,weapon:{def:0}}},{action:'attack-sword',direction:'east'}),null);
+});
+
+test('male pants 21 renders independent generated layers in all supported directions and actions',async()=>{
+ const {make,cv}=require('./rework-integration-support.cjs'),api=make();
+ await api.ready;
+ const player={appearance96:{gender:'masculino',hairStyle:'original',hairColor:'original',skinColor:'original'},equipment:{legs:{def:21}}};
+ const poses=['south','north','east','west'].flatMap(direction=>['idle','walk','attack-unarmed'].map(action=>({player,options:{direction,action,x:100,y:150}})));
+ const prepared=await api.prepareConfiguration(poses);
+ try{
+  for(const {options} of poses){
+   assert.equal(api.select(player,options)?.id,'male-pants21-'+options.action+'-'+options.direction);
+   const ctx=cv.createCanvas(200,200).getContext('2d');
+   assert(prepared.draw(ctx,player,options));
+   assert(ctx.getImageData(0,0,200,200).data.some((value,i)=>i%4===3&&value));
+  }
+ }finally{prepared.release();}
 });
