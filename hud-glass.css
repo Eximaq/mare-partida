@@ -786,7 +786,7 @@
 /* Inventory: glass chrome around the existing equipment, bag and item actions.
    Rarity artwork, color tokens and item animations remain on occupied slots. */
 #app #panelOverlay.inventory-mode.pirate-hd {
-  --inventory-limit: min(620px, calc(100dvh - 40px));
+  --inventory-limit: min(720px, calc(100dvh - 40px));
   --rpg-font: var(--glass-type);
   --rpg-hd-heading: var(--glass-type);
   --ivory: #f5f6f8;
@@ -797,7 +797,7 @@
   -webkit-backdrop-filter: blur(2px);
   font: 400 13px/1.4 var(--glass-type);
 
-  &.hud-density > .dialog, & > .dialog { width: min(1080px, 100%); }
+  &.hud-density > .dialog, & > .dialog { width: min(1180px, 100%); }
   & .op-inventory-shell {
     margin-top: 18px;
     border: 1px solid var(--glass-line);
