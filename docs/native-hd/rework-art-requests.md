@@ -1,6 +1,6 @@
 # Artes e contratos pendentes — lista para produção
 
-**Atualização da calça 22 masculina:** fontes originais recuperadas e candidata independente exercitada no mapa. Vínculo definitivo, revisão visual completa e combinações permanecem pendentes; não solicitar uma prancha inteira nova. [Relatório da candidata e evidências](PANTS22_MALE_CANDIDATE.md).
+**Calça 22 masculina (cobertura já concluída):** camada independente vinculada no índice publicado em 1c63826f; idle, caminhada e combate desarmado nas quatro direções, inventário e recarga validados. Não repetir essa adaptação nem solicitar prancha inteira. Famílias armadas e combinações adicionais continuam separadas. [Relatório da candidata e evidências](PANTS22_MALE_CANDIDATE.md).
 
 **Escopo atualizado:** capas (slot cloak; defs 23, 24, 135, 142, 149, 156, 163, 170, 177 e 184) não têm impacto visual, conforme orientação do proprietário. Foram retiradas dos pedidos de arte e dos bloqueios visuais. Os resultados históricos de testes não foram reescritos: ocorrências de cloak omitido nessas rodadas deixam de ser pendências visuais. Esta revisão altera apenas o relatório, sem remover itens ou modificar atributos.
 
@@ -13,7 +13,7 @@ SOUTH = sul, NORTH = norte, EAST = leste, WEST = oeste. Nos itens abaixo, a font
 | def | Peça | Corpo | Direção | Material necessário |
 |---|---|---|---|---|
 | 21 | Grevas de Navegante | masculino | quatro direções | Repouso, caminhada e ataque com camada de calça própria; os ciclos femininos não substituem esta base |
-| 22 | Calças da Maré Alta | masculino | quatro direções | Repouso, caminhada e ataque com camada de calça própria |
+| 22 | Calças da Maré Alta | masculino | quatro direções | Somente famílias armadas e combinações adicionais; idle/walk/ataque desarmado já vinculados e validados |
 | 0 | Espada de Ferro Salgado | ambos | quatro direções | Fonte de porte em repouso/caminhada; o ataque histórico existe e está separado abaixo |
 | 168 | Saia/Pernas do Rito Marinho | feminino | quatro direções | Fonte compatível de ataque; caminhada histórica existe e está separada abaixo |
 
@@ -88,6 +88,14 @@ Luvas 25 e 26 possuem fontes nos conjuntos masculinos torso151/pants133/boots155
 
 Kaizoku_capacetes_18_19_candidatos.zip foi recebido e conferido. As seis fontes NORTH/EAST/WEST são PNGs RGBA 512×512 idênticos aos assets históricos existentes; não foram duplicadas nem alteradas. Elas saem da categoria de fonte não localizada e entram como **candidatas de adaptação masculina**. O manifesto conserva approval=false e os deslocamentos físicos propostos de (0,0) NORTH, (-1,0) EAST e (1,0) WEST.
 
-A prova existente native-head-compat validou 390/390 poses da cabeça masculina original: repouso, caminhada e seis famílias de ataque. A prova cobre os pixels da cabeça e as âncoras NECK/NOSE, não aprova automaticamente a sobreposição do capacete. Ainda faltam teste no mapa, corte parcial do cabelo para 18, ocultação integral para 19 e restauração ao ocultar/desequipar. Nenhuma checagem foi afrouxada e o pacote não foi ativado em produção.
+A prova existente native-head-compat validou 390/390 poses da cabeça masculina original: repouso, caminhada e seis famílias de ataque. A prova cobre os pixels da cabeça e as âncoras NECK/NOSE, não aprova automaticamente a sobreposição do capacete. Atualização: os seis registros agora integram o índice publicável, mantendo a prova exata da cabeça. O 18 usa o alfa da peça sobre o cabelo original; o 19 oculta a camada de cabelo masculina durante o desenho e a restaura ao ocultar/retirar o item. Testados ambos os itens/corpos nas quatro direções, movimento, combate desarmado e controles reais de inventário. Não houve geração, alteração ou duplicação de PNGs. Cabelos nomeados/combinações adicionais não foram testados nesta rodada.
 
 Manifesto: [head18-19-male-manifest.json](candidates/head18-19-male-manifest.json). Resultado: [head18-19-male-validation.json](candidates/head18-19-male-validation.json).
+
+## Capacetes 18/19 — cobertura essencial concluída
+
+[Fontes desenhadas e cenários](evidence/helmets18-19/runtime.json) · [Masculino 19 EAST](evidence/helmets18-19/male19-east.png) · [Feminino 19 EAST](evidence/helmets18-19/female19-east.png).
+
+Comandos: `python tools/build_pages.py`; `node --test player-rework-received-helmets-runtime.test.cjs` (2/2); `node --test player-rework-original-hair-helmets-runtime-hd.test.cjs` (1/1); `tests/received_helmets_map_browser.cjs` via Playwright/Edge. Fixture fornece itens 18/19 desequipados, corpo/aparência original e alvo imóvel em passagem livre; teclado, clique de ataque, equipar, ocultar e retirar usam a interface. Não injeta direção/ação/frame nem intercepta imagens/índices. Uma asserção inicial esperava um formato incorreto do ID feminino; foi substituída por verificação do hash da camada real, contra os registros do item/direção. A primeira abertura encontrou o servidor local desligado; somente a rodada posterior conta.
+
+Não se reivindica cobertura de todas as armas, cabelos ou roupas, nem recarga/reconexão nesta rodada. Permanecem: 21 masculino; porte/contratos da arma 0; adaptação da 168; independência das botas 8/9 e luvas 25/26; quatro estilos de olhos; máscaras femininas de pele/cabelo original. Capas excluídas.
