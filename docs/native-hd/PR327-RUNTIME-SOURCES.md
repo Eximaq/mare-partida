@@ -192,3 +192,7 @@ A regressão do retrato encontrou o capacete fora do canvas de 72 px quando o sp
 O seletor também passou a reutilizar a camada de calça 133 e bota 9 junto a outras armas de porte compatível. A regressão automatizada verifica as oito poses com espada 0.
 
 O reteste do retrato passou com 18 e 19 nos dois corpos, incluindo dez alternâncias, persistência após recarga e restauração dos pixels. O lote de pernas com espada confirmou retorno a native96 nos IDs 133, 140, 147, 154, 161, 175 e 182 nos dois corpos na build anterior à extensão de porte da 133. O 168 manteve a fonte HD no corpo feminino e caiu para native96 no masculino.
+
+A auditoria de cabelo para espada 0 e peitoral 6 cruzou 14 estilos, dez cores, dois corpos, quatro direções e duas ações. A opção feminina sem cabelo causava as 80 lacunas iniciais. O seletor agora usa a cabeça limpa já registrada e resolve 2.240 de 2.240 consultas de repouso e caminhada. Esse número mede seleção. A execução pelo editor mediu individualmente os 14 estilos e as dez cores no Chanel.
+
+O inventário confirmou repouso e caminhada HD nas quatro direções para todos os dez IDs de capacete nos dois corpos, com espada 0 e peitoral 6. O reteste da calça 133, primeiro sem bota e depois com a bota 9, passou no corpo masculino com espada 0 e personalização nas quatro direções. A opção feminina sem cabelo também foi aplicada pelo editor e desenhou a cabeça limpa em todas as direções.

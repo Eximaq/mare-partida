@@ -152,3 +152,13 @@ test('male pants 133 and boots 9 use verified lower poses with sword carry',asyn
   assert.equal(source?.bootsOverlay.item,9);
  }
 });
+
+test('female no-hair uses the clean authored head instead of falling back',async()=>{
+ const {make}=require('./rework-integration-support.cjs'),api=make();
+ await api.ready;
+ const player={appearance96:{gender:'feminino',hairStyle:'none',hairColor:'pink',skinColor:'dark',eyeColor:'green'},equipment:{weapon:{def:0},coat:{def:6}}};
+ const poses=['south','north','east','west'].flatMap(direction=>['idle','walk'].map(action=>({player,options:{direction,action}})));
+ const prepared=await api.prepareConfiguration(poses);
+ try{assert(prepared.coverage.every(p=>p.source.includes(':female-original-face:none:')));}
+ finally{prepared.release();}
+});

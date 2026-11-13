@@ -20,7 +20,8 @@ const itemMovement=process.env.MARE_CHECK_ITEM_MOVEMENT==='1';
 const keepStarterCoat=process.env.MARE_KEEP_STARTER_COAT==='1';
 const strictAssets=process.env.MARE_STRICT_VISUAL_ASSETS==='1';
 const onlyGender=process.env.MARE_CATALOG_GENDER;
-const onlyItems=new Set((process.env.MARE_CATALOG_ITEMS||'').split(',').filter(Boolean).map(Number));
+const itemOrder=(process.env.MARE_CATALOG_ITEMS||'').split(',').filter(Boolean).map(Number);
+const onlyItems=new Set(itemOrder);
 const directions=[['d','east'],['a','west'],['w','north'],['s','south']];
 const {healerWeaponIndex}=require('../item-catalog.js').create({forge:require('../forge-system.js'),prison:require('../prison-system.js'),haki:require('../haki-system.js'),akuma:require('../akuma-system.js'),hakiProgression:require('../haki-progression.js')});
 const starter={sword:0,brawler:2,gunner:4,rogue:12,cyborg:14,strategist:16,healer:healerWeaponIndex};
@@ -229,6 +230,8 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
         await page.waitForFunction(d=>__appearanceCatalogQA.read().frames.some(f=>f.direction===d&&f.action==='idle'),direction,{timeout:8000});
         const frames=(await read()).frames.filter(f=>f.direction===direction);
         assert(frames.every(f=>f.opaque>0&&f.look[cosmeticsField]===option));
+        if(gender==='feminino'&&cosmeticsField==='hairStyle'&&option==='none')
+         for(const frame of frames)assert.match(frame.source,/:female-original-face:none:/);
         entry.directions[direction]=frames;
        }
        await fs.writeFile(outFile,JSON.stringify(evidence,null,2));
@@ -247,7 +250,9 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
        await page.locator('[data-unequip=coat]').click();
        await page.locator('[data-close-panel]').click();
       }
-      for(const item of (await page.evaluate(()=>__appearanceCatalogQA.seedItems())).filter(item=>!onlyItems.size||onlyItems.has(item.def))){
+      const items=(await page.evaluate(()=>__appearanceCatalogQA.seedItems())).filter(item=>!onlyItems.size||onlyItems.has(item.def));
+      if(itemOrder.length)items.sort((a,b)=>itemOrder.indexOf(a.def)-itemOrder.indexOf(b.def));
+      for(const item of items){
        const record={def:item.def,slot:item.slot};
        result.items.push(record);
        try{
@@ -292,6 +297,7 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
          if(strictAssets)assert.deepEqual(result.assetErrors,[]);
          record.nativeDirections=Object.entries(record.directions).filter(([,frames])=>frames.every(frame=>!frame.source.startsWith('native96'))).map(([direction])=>direction);
          if(item.slot==='head'&&keepStarterCoat)for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,new RegExp('(?:head:|bob:)'+item.def+'(?:[:]|$)'));
+         if((item.def===133||item.def===9&&onlyItems.has(133))&&gender==='masculino'&&!keepStarterCoat)for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,/pants133-candidate/);
          if(item.def===21&&gender==='masculino')for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,/pants21-native/);
          if(item.def===168&&gender==='feminino')for(const frames of Object.values(record.directions))for(const frame of frames){
           assert.match(frame.source,/pants168-native.*hair-palette:pink.*eye-palette:green/);
