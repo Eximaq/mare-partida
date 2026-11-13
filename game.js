@@ -128,7 +128,7 @@
     const send=async()=>{const ok=await onlineItemCommand('party.'+action,payload);if(ok&&action==='start')closePanel();else if(currentPanel==='party')renderPartyPanel();return ok;};
     if(action==='leave'||action==='kick')showConfirmation(action==='leave'?'Sair do grupo?':'Remover membro?','A participação na atividade será encerrada e o personagem retornará ao porto. Recompensas pessoais pendentes serão preservadas.',send,action==='leave'?'SAIR':'REMOVER');else await send();
   }
-  const lobby96=MarePaperDoll96Lobby.create({search:location.search,onChange:()=>{if(game){renderPortrait();if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
+  const lobby96=MarePaperDoll96Lobby.create({search:location.search,onChange:()=>{if(game){renderPortrait();const inventoryPreview=$('inventorySprite');if(currentPanel==='inventory'&&inventoryPreview)drawCurrentPreview(inventoryPreview,185,{aura:false});if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
   let paperDollDebug=DEV_ACTIVE&&new URLSearchParams(location.search).get('paperDollDebug')==='1';
   const STORAGE_KEY=MareDev.key(location.search);
   const saveWriter=ONLINE_GAME?{ready:true,owner:true,exclusive:false}:MareSaveWriter.create(STORAGE_KEY);

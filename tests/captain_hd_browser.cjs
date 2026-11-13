@@ -40,7 +40,9 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  assert.equal(await page.locator('[data-profile-value=berry]').textContent(),'98.189','total earned, not balance');
  assert.equal(await page.locator('[data-profile-value=title]').textContent(),'Pirata Promissor');
  assert.equal(await page.locator('[data-profile-value=power]').first().textContent(),await page.evaluate(()=>Math.round(__captainQA.stats().power).toLocaleString('pt-BR')));
- assert.equal(await page.locator('#captainProfilePortrait').getAttribute('width'),'256');
+ const portraitRaster=await page.locator('#captainProfilePortrait').evaluate(c=>({width:c.width,height:c.height,opaque:[...c.getContext('2d').getImageData(0,0,c.width,c.height).data].some((v,i)=>i%4===3&&v)}));
+ assert(portraitRaster.width>=512&&portraitRaster.height>=512&&portraitRaster.width<=2048&&portraitRaster.height<=2096,'profile retains native HD backing instead of the retired256px raster');
+ assert(portraitRaster.opaque,'portrait contains rendered pixels after its loading state clears');
  const realState=await page.evaluate(()=>JSON.stringify({eq:__captainQA.game.equipment,appearance:__captainQA.game.appearance96,attributes:__captainQA.game.attributes}));
  await shot('profile-overview');
  await page.locator('[data-profile-tab=gear]').click();await page.waitForFunction(()=>document.querySelector('#captainPortraitState')?.hidden);

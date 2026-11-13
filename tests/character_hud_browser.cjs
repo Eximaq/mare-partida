@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=require('node:path'),{chromium}=require('playwright');
 const base=process.env.MARE_TEST_URL||'http://127.0.0.1:8165/',out=process.env.MARE_QA_DIR||require('node:os').tmpdir();
-const hook="  window.__hudQA={get game(){return game},get world(){return world},stats:getDerived,refresh(){updateUI();renderPortrait();drawWorld();presentWorld()},save:saveGame,enterHunt,returnLobby,openPanel,promote:promoteHierarchy,equipHead(){game.equipment.head=newItem(itemDefs[19]);updateUI();renderPortrait()}};\n  window.__mareDiagnostics=";
+const hook="  window.__hudQA={get game(){return game},get world(){return world},stats:getDerived,refresh(){updateUI();renderPortrait();drawWorld();presentWorld()},portraitState(){renderPortrait();const s=lobby96.snapshot();return {renderer:s.renderer,last:s.renderer==='rework-default-hd'?s.defaultHD?.last:s.nativeHD?.last}},save:saveGame,enterHunt,returnLobby,openPanel,promote:promoteHierarchy,equipHead(){game.equipment.head=newItem(itemDefs[19]);updateUI();renderPortrait()}};\n  window.__mareDiagnostics=";
 (async()=>{await fs.mkdir(out,{recursive:true});const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{
  const ctx=await browser.newContext({viewport:{width:1366,height:768}}),p=await ctx.newPage(),errors=[],missing=[];
  p.on('pageerror',e=>errors.push(e.message));p.on('response',r=>{if(r.status()>=400&&/character-hud|Alabasta/.test(r.url()))missing.push(r.url())});
@@ -17,7 +17,7 @@ const hook="  window.__hudQA={get game(){return game},get world(){return world},
  for(const ratio of [0,.25,1]){await p.evaluate(r=>{__hudQA.game.hp=__hudQA.stats().maxHP*r;__hudQA.game.energy=__hudQA.stats().maxEnergy*r;__hudQA.refresh()},ratio);for(const id of ['miniHP','miniEnergy']){const actual=await p.locator('#'+id).evaluate(e=>e.getBoundingClientRect().width/e.parentElement.getBoundingClientRect().width);assert(Math.abs(actual-ratio)<.012,id+' true fill at '+ratio)}}
  await p.evaluate(()=>{__hudQA.game.gold=987654321;__hudQA.game.xp=20;__hudQA.refresh()});
  await p.waitForTimeout(1100);await p.evaluate(()=>__hudQA.refresh());assert.equal(await p.locator('#miniXP').getAttribute('style'),'width: '+(2000/require('../character-catalog.js').xpNeeded(1)).toFixed(1)+'%;');
- await p.locator('#characterPosterToggle').click();assert.equal(await p.locator('#characterPosterToggle').getAttribute('aria-expanded'),'true');const displayedBounty=await p.locator('#wantedBounty').innerText();assert.match(displayedBounty,/^[0-9.]+$/);await p.screenshot({path:path.join(out,'cartaz-bounty.png')});
+ await p.locator('#characterPosterToggle').click();assert.equal(await p.locator('#characterPosterToggle').getAttribute('aria-expanded'),'true');const displayedBounty=await p.locator('#wantedBounty').innerText();assert.match(displayedBounty,/^[0-9.]+$/);await p.waitForFunction(()=>{const v=__hudQA.portraitState();return ['native-hd','rework-default-hd'].includes(v.renderer)&&v.last?.state==='rendered'&&v.last.consumer==='wantedPortrait'&&v.last.direction==='south';},null,{timeout:120000});await p.screenshot({path:path.join(out,'cartaz-bounty.png')});
  assert.equal(await p.locator('#wantedBountyDetails').count(),0);assert.equal(await p.locator('#wantedName').innerText(),'Bento D’Água');
  assert(await p.locator('#wantedPortrait').evaluate(c=>{const a=c.getContext('2d').getImageData(0,0,c.width,c.height).data;return a.some((v,i)=>i%4===3&&v>0)&&a[3]===0}),'shared portrait rendered');
  await p.locator('#characterPosterToggle').focus();await p.keyboard.press('Escape');assert(await p.locator('#characterPoster').isHidden());assert.equal(await p.evaluate(()=>document.activeElement.id),'characterPosterToggle');await p.keyboard.press('Enter');assert(await p.locator('#characterPoster').isVisible());await p.mouse.click(650,400);assert(await p.locator('#characterPoster').isHidden());
@@ -60,14 +60,25 @@ const hook="  window.__hudQA={get game(){return game},get world(){return world},
 
  await p.locator('#characterPosterToggle').click();
  await p.evaluate(()=>__hudQA.equipHead());
- const portraits=[];
+ const portraits=[];const headBefore=await p.evaluate(()=>JSON.stringify(__hudQA.game.equipment.head));const appearanceStats=await p.evaluate(()=>__hudQA.stats());
  for(const gender of ['masculino','feminino'])for(const hide of [false,true]){
   await p.evaluate(({gender,hide})=>{__hudQA.game.appearance96=MareCharacterAppearance.normalize({...__hudQA.game.appearance96,gender,hairStyle:'hair-swept',hairColor:'violet',skinColor:'brown'});__hudQA.game.preferences={...__hudQA.game.preferences,hideHeadgear:hide};__hudQA.refresh()},{gender,hide});
-  await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready');await p.evaluate(()=>__hudQA.refresh());
-  const portrait=await p.locator('#wantedPortrait').evaluate(c=>c.toDataURL());portraits.push(portrait);
+  await p.waitForFunction(()=>{const v=__hudQA.portraitState();return ['native-hd','rework-default-hd'].includes(v.renderer)&&v.last?.state==='rendered'&&v.last.consumer==='wantedPortrait'&&v.last.direction==='south'&&v.last.physicalScale===105/374;},null,{timeout:120000});
+  const rendered=await p.evaluate(()=>__hudQA.portraitState());
+  const portrait=await p.locator('#wantedPortrait').evaluate(c=>c.toDataURL());portraits.push({gender,hide,portrait,...rendered});
+  assert.equal(await p.evaluate(()=>JSON.stringify(__hudQA.game.equipment.head)),headBefore,'visual fallback must not remove the equipped helmet');assert.deepEqual(await p.evaluate(()=>__hudQA.stats()),appearanceStats,'cosmetic visibility must not affect gameplay stats');assert.equal(await p.evaluate(()=>MareHeadgear.hidden(__hudQA.game)),hide);
+
   await p.screenshot({path:path.join(out,'hud-appearance-'+gender+'-'+hide+'.png')});
  }
- assert.equal(new Set(portraits).size,4,'body and helmet visibility alter the actual portrait');
+ for(const gender of ['masculino','feminino']){
+  const [visible,hidden]=portraits.filter(p=>p.gender===gender);
+  if(visible.renderer==='rework-default-hd'&&hidden.renderer==='rework-default-hd'){
+   assert(visible.last.unrepresentedSlots.includes('head')&&hidden.last.unrepresentedSlots.includes('head'),'bare fallback must explicitly report the missing helmet');
+   assert.equal(visible.portrait,hidden.portrait,'no invisible helmet is invented on the authorized bare base');
+  }else assert.notEqual(visible.portrait,hidden.portrait,'supported headgear visibility alters the actual portrait');
+ }
+ for(const hide of [false,true]){const pair=portraits.filter(p=>p.hide===hide);assert.notEqual(pair[0].portrait,pair[1].portrait,'male and female rework bodies stay distinct');}
+ await fs.writeFile(path.join(out,'hud-portrait-renderers.json'),JSON.stringify(portraits.map(({portrait,...p})=>p),null,2));
  await p.keyboard.press('Escape');
 
  const layouts=[];
