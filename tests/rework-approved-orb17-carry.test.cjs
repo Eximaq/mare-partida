@@ -44,5 +44,34 @@ test('17 SOUTH carry keeps the same source while recoloring only the marked hand
    assert(blue>35&&changed>300,action+'/'+frame);
   }
  }
- assert.equal(carry.resolve({item:17,body:'male',action:'idle',direction:'north',appearance:{skin:'dark'}}),null);
+
+});
+test('17 NORTH and lateral grips keep their independent native materials',async()=>{
+ const carry=global.MareReworkWeaponCarryHD.create(bases,fixtures,{makeCanvas:cv.createCanvas});
+ for(const direction of ['north','east','west']){
+  const r=carry.resolve({item:17,body:'male',action:'walk',direction,appearance:{skin:'dark'}});
+  assert(r,direction);
+  const images=new Map(await Promise.all(carry.requiredFiles(r).map(async f=>[f,await files(f)])));
+  for(let frame=0;frame<r.base.pack.directions[direction].clip.frames;frame++){
+   const a=cv.createCanvas(512,512).getContext('2d'),b=cv.createCanvas(512,512).getContext('2d');
+   carry.render(a,r,images,{frame,appearance:{skin:'dark'}});
+   carry.render(b,r,images,{frame,appearance:{}});
+   const aa=a.getImageData(0,0,512,512).data,bb=b.getImageData(0,0,512,512).data;
+   let blue=0,changed=0,maxOrbDelta=0;
+   for(let i=0;i<aa.length;i+=4){
+    assert.equal(aa[i+3],bb[i+3]);
+    if(bb[i+3]===255&&bb[i+2]>=125&&bb[i+2]>bb[i]&&bb[i+1]>bb[i]+35){
+     for(let channel=0;channel<3;channel++)maxOrbDelta=Math.max(maxOrbDelta,Math.abs(aa[i+channel]-bb[i+channel]));
+     blue++;
+    }
+    if(aa[i]!==bb[i])changed++;
+   }
+   assert(maxOrbDelta<=(direction==='north'?1:2),direction+'/'+frame+' orb channel rounding');
+   assert(blue>35&&changed>300,direction+'/'+frame);
+  }
+ }
+ const altered=structuredClone(fixtures);
+ altered.records.find(r=>r.item===17&&r.direction==='east').parts[0].skinMaterial.sourceSHA256='0'.repeat(64);
+ const mismatched=global.MareReworkWeaponCarryHD.create(bases,altered,{makeCanvas:cv.createCanvas});
+ assert.equal(mismatched.resolve({item:17,body:'male',action:'idle',direction:'east',appearance:{skin:'dark'}}),null);
 });
