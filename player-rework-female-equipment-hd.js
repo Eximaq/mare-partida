@@ -4,23 +4,29 @@ function attachIsolatedCoat(record,outfit,coat){
  if(!['idle','walk','attack-unarmed'].includes(record.action)||!outfit||outfit.equipment.torso!==coat||Object.keys(outfit.equipment).length!==1)return null;
  const dir=record.direction,base=record.baseRecord,pack=base.pack,d=pack.directions[dir],o=outfit.pack.directions[dir];
  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
- // The female carry clips select every fifth frame of the one-second walk.
- // Match the actual body rasters and poses before projecting the garment.
+ // The female carry clip has eight states and the original garment has
+ // forty ticks over the same second. Keep all garment frames and hold
+ // each authored weapon transform for the corresponding five ticks.
  const stride=o.clip.frames/d.clip.frames;
  if(!eq(pack.frame,outfit.pack.frame)||!eq(pack.pivot,outfit.pack.pivot)||pack.density!==outfit.pack.density||
-    !Number.isInteger(stride)||stride<1||d.clip.loop!==o.clip.loop||
+    !Number.isInteger(stride)||stride<1||d.clip.loop!==o.clip.loop||record.states.length!==d.clip.frames||
     record.action!=='idle'&&o.clip.fps!==d.clip.fps*stride||!Object.entries(d.rest).every(([key,point])=>eq(point,o.rest[key])))return null;
- const frames=Array.from({length:d.clip.frames},(_,i)=>i*stride);
- const project=l=>l.frames?{...l,frames:frames.map(i=>l.frames[i])}:l;
- const original=o.layers.filter(l=>l.id.startsWith('base:')).map(l=>project({...l,id:l.id.slice(5)}));
- const layers=o.layers.filter(l=>!l.id.startsWith('base:')).map(project);
- const sharesPose=(pose,donor)=>Object.entries(pose).every(([key,point])=>eq(point,donor[key]));
- if(!d.poses.every((pose,i)=>sharesPose(pose,o.poses[frames[i]]))||!eq(original,d.layers)||
-    !layers.length||layers.some(l=>!l.id.startsWith('coat'+coat+'-')||!['top','underArms'].includes(l.slot)||l.frames?.some(f=>!f)))return null;
+ const sourceFrame=i=>Math.floor(i/stride);
+ const original=o.layers.filter(l=>l.id.startsWith('base:'));
+ const layers=o.layers.filter(l=>!l.id.startsWith('base:'));
+ if(original.length!==d.layers.length||o.poses.length!==o.clip.frames||!layers.length||
+    layers.some(l=>!l.id.startsWith('coat'+coat+'-')||!['top','underArms'].includes(l.slot)||l.frames&&(l.frames.length!==o.clip.frames||l.frames.some(f=>!f))))return null;
+ for(const [index,layer] of d.layers.entries()){
+  const {frames, ...source}=layer,{frames:donorFrames,...donor}=original[index];
+  if(!eq(source,{...donor,id:donor.id.slice(5)})||!!frames!==!!donorFrames||
+     donorFrames&&(donorFrames.length!==o.clip.frames||!donorFrames.every((sha,i)=>sha===frames[sourceFrame(i)])))return null;
+ }
+ if(!o.poses.every((pose,i)=>Object.entries(d.poses[sourceFrame(i)]).every(([key,point])=>eq(point,pose[key]))))return null;
  const refs=[...new Set(layers.flatMap(l=>l.frames||[l.source]))];
  if(refs.some(sha=>!outfit.sourceRefs.includes(sha)||base.sourceRefs.includes(sha)))return null;
- const combined={...pack,directions:{...pack.directions,[dir]:{...d,rest:{...d.rest,...o.rest},poses:frames.map(i=>o.poses[i]),layers:[...d.layers,...layers]}}};
- return {...record,id:record.id+'-coat'+coat+'-native',pack:combined,baseRecord:{...base,pack:combined,sourceRefs:[...base.sourceRefs,...refs]},outfitSources:refs,outfitSourceId:outfit.id,sourceRasterPadding:outfit.sourceRasterPadding};
+ const combined={...pack,directions:{...pack.directions,[dir]:{...o,clip:record.action==='idle'?d.clip:o.clip,layers:[...original.map(l=>({...l,id:l.id.slice(5)})),...layers]}}};
+ const states=o.poses.map((_,i)=>record.states[sourceFrame(i)]);
+ return {...record,states,id:record.id+'-coat'+coat+'-native',pack:combined,baseRecord:{...base,pack:combined,sourceRefs:[...base.sourceRefs,...refs]},outfitSources:refs,outfitSourceId:outfit.id,sourceRasterPadding:outfit.sourceRasterPadding};
 }
 const asset=(r,sha)=>'tools/'+(r.outfitSources?.includes(sha)?'rework-modular-outfits-hd':'rework-base-hd')+'/assets/'+sha+'.png';
 function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVendor?.compositor,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){if(index?.schema!=='female-native-equipment-registration-v1'||!vendor)throw Error('Missing female equipment sources');return {

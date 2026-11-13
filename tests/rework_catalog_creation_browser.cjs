@@ -154,6 +154,11 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
      if(classId in starter)assert.equal(initial.weapon,starter[classId]);
      assert.equal(initial.visual.state,'ready',initial.visual.error);
      const verifyStarterHD=expectStarterHD&&gender==='masculino'&&classId==='sword'&&expected.hairStyle==='original';
+     if(checkCreationColor&&gender==='feminino'&&classId==='sword'){
+      const walk=initial.visual.coverage.filter(p=>p.action==='walk');
+      assert.equal(walk.length,4);
+      for(const pose of walk)assert.equal(pose.frames,40);
+     }
      if(verifyStarterHD){
       const poses=initial.visual.coverage.filter(p=>['idle','walk'].includes(p.action));
       assert.equal(poses.length,8);

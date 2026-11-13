@@ -16,7 +16,7 @@ Os registros de corpo, roupa, arma e porte já existentes foram preservados nos 
 ## Vínculos recuperados
 
 - Peitorais isolados masculinos e femininos por ID, em repouso e caminhada, com a arma carregada, quando o corpo e a pose coincidem. A calça masculina 22 usa a própria camada ao lado da arma e do peitoral.
-- Caminhada feminina com camada de peitoral por cima da mesma base que a arma usa. O registro da arma usa a cada quinto quadro da roupa. A projeção exige igualdade de poses, rasters corporais, pivô e duração do ciclo.
+- Caminhada feminina com camada de peitoral por cima da mesma base que a arma usa. Os 40 quadros originais da roupa são mantidos. Cada uma das oito poses da arma permanece pelos cinco quadros correspondentes. O vínculo exige igualdade de poses, rasters corporais, pivô e duração do ciclo.
 - Ataque feminino de punhos com peitoral quando a anatomia do registro coincide, preservando as âncoras da roupa.
 - Espada masculina com peitoral e cabelo selecionados em EAST e WEST, usando a lâmina isolada e os pontos do ataque. O item 0 também usa a camada de lâmina independente em NORTH.
 - A prévia da personalização aplica a aparência selecionada. O porte e as composições recuperadas usam as camadas de cabelo, pele e olhos que a fonte permite personalizar.
@@ -36,7 +36,7 @@ As matrizes cobrem 166 combinações derivadas de registros e os 102 itens dos s
 
 `python tools/build_pages.py` prepara a build para o navegador. `tests/rework_catalog_creation_browser.cjs` usa a criação real, controles de movimento e clique no alvo para o ataque. Os testes com `MARE_CHECK_CREATION_COLOR=1` e `MARE_CHECK_STARTER_ATTACKS=1` verificam a mudança de pixels na prévia, as fontes desenhadas no mapa e as poses alcançadas pelo ataque. `tests/rework-starter-coat.test.cjs` verifica o carregamento e a composição dos clipes de teste.
 
-O reteste local dos dois espadachins capturou 25 poses de repouso e caminhada com a fonte HD e 25 amostras de ataque nas quatro direções. No ataque masculino, EAST, WEST e NORTH desenharam a lâmina original reaproveitada com o peitoral 6 e cabelo Chanel rosa. Os 46 testes Node selecionados passaram.
+O reteste local dos dois espadachins capturou 25 poses de repouso e caminhada com a fonte HD e 25 amostras de ataque nas quatro direções. No ataque masculino, EAST, WEST e NORTH desenharam a lâmina original reaproveitada com o peitoral 6 e cabelo Chanel rosa. Os 46 testes Node de seleção, composição e anatomia passaram. O reteste de navegador verificou os 40 quadros preparados em cada direção na caminhada feminina e não registrou erros de assets nesse cenário.
 
 ## Pendências de integração
 

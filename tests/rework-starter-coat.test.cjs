@@ -56,6 +56,9 @@ test('female equipment resolves authored coat walk and matching punch without tr
   assert(walk?.outfitSourceId?.startsWith('female-torso6-'),direction);
   assert.equal(walk.material.hairColor,'pink');
   assert.equal(walk.material.skinColor,'dark');
+  assert.equal(walk.states.length,40);
+  assert.equal(walk.states[0],walk.states[4]);
+  assert.notEqual(walk.states[4],walk.states[5]);
   const punch=api.select(look(2),{action:'attack-unarmed',direction});
   assert(punch?.outfitSourceId?.startsWith('female-torso6-'),direction);
   const options={action:'attack-unarmed',direction,x:100,y:140};
