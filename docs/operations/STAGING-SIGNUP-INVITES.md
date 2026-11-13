@@ -15,9 +15,11 @@ uma mensagem de erro de duplicidade quando o provedor não fornece essa certeza.
 
 `SIGNUP_INVITE_CODE_SHA256` configura o SHA-256 hexadecimal de um código compartilhado
 de alta entropia no ambiente privado do backend. O código nunca integra o cliente,
-URLs, logs, documentação versionada ou banco. Ausência dessa variável mantém o
-backend de desenvolvimento sem restrição de convite; em staging ela deve estar
-configurada **antes** de retirar o Basic Auth do gateway. Código curto/previsível
+URLs, logs, documentação versionada ou banco. Ausência dessa variável só permite
+Auth nas origens HTTPS de loopback `localhost`, `127.0.0.1` e `[::1]`. Em qualquer
+outra origem o processo recusa iniciar, evitando que a perda da configuração abra
+o cadastro. Em staging ela deve estar configurada **antes** de retirar o Basic Auth
+do gateway. Código curto/previsível
 não é apropriado. Para rotacionar, atualize o hash privado e reinicie somente a API.
 
 A validação ocorre no servidor, com comparação em tempo constante, schemas estritos,
@@ -46,6 +48,62 @@ não restringe a API pública de cadastro do próprio provedor nem sua cota SMTP
 Admissões expiradas são removidas em lotes limitados. Rotacionar o convite não revoga
 contas ou admissões anteriormente aceitas. Depois de 24 horas sem primeiro acesso,
 é necessário iniciar novamente o cadastro com um convite válido.
+
+Um callback recusado continua sem emitir sessão. Navegação HTML recebe um retorno
+fixo à tela de acesso com orientação; consumidores JSON continuam recebendo o erro
+400/403. A interface não declara confirmação concluída: informa que ela **pode** ter
+ocorrido no provedor antes do erro e permite tentar login, sujeito às verificações
+normais. Não reflete códigos/URLs recebidos nem reenvia e-mail automaticamente.
+
+## Investigação do relato de confirmação em 13/11/2026
+
+A API publicada desde 05:37 UTC tinha o hash de convite configurado e o Supabase de
+desenvolvimento informou `mailer_autoconfirm=false`. A identidade mais recente,
+criada na janela do relato, teve o e-mail confirmado no provedor às 19:49:29 UTC;
+a conta interna e a sessão do jogo foram criadas às 19:50:59 UTC. Consulta somente
+de leitura com a sessão dessa identidade, sem chave administrativa nem refresh.
+Esses horários **não** demonstram entrada antes da confirmação. O vínculo dessa
+identidade com o convidado ainda depende de confirmar o personagem informado.
+
+Na mesma revisão publicada, uma tentativa sem convite foi recusada com
+403 `invitation_invalid`, antes da chamada ao provedor. O desvio de convite
+relatado não foi reproduzido. A admissão é consumida no primeiro acesso; os registros
+disponíveis não permitem reconstituir cada ação do formulário nem a razão exata do
+callback histórico. Não se afirma que o convidado abriu em outro navegador.
+
+Regressão isolada reproduz o cenário possível: login antes de confirmação retorna
+401; provedor confirma e-mail; callback em outro navegador retorna erro; login
+posterior aceita somente a identidade previamente convidada. Sem admissão, login,
+callback de fluxo antigo e recuperação continuam recusados. O fluxo PKCE não foi
+relaxado para corrigir a mensagem.
+
+A auditoria encontrou separadamente uma falha de configuração reproduzível: remover
+o hash permitia cadastro aberto em origem externa. O teste falhou antes da correção
+e passou após exigir o hash fora do loopback. Essa não era a configuração ativa da
+VPS e não é apresentada como causa comprovada do relato.
+
+Verificação final da correção:
+
+- `npm run typecheck`, `npm run build`, `git diff --check`: aprovados.
+- `npm test`: 312 testes foundation e 188 arquivos legados aprovados.
+- 21 integrações PostgreSQL: Auth, HTTP, PKCE, resposta perdida na recuperação,
+  privilégios e convites; todas aprovadas, sem pular testes.
+- Navegador real desktop/390 px: cadastro inválido sem envio, confirmação obrigatória,
+  callback válido, entrada, retorno inválido sem sessão e sem overflow. Apenas
+  provedor simulado; nenhum envio SMTP real.
+- Imagem Linux candidata recusa configuração externa sem hash antes de iniciar;
+  configuração real preservada é aceita. Nenhuma migração necessária.
+
+Aplicada somente à VPS de testes, imagem
+`sha256:d08f328b801cf81a7df4746c7f097235aee8ac9600223939a628c1b66d4d2ab5`.
+Backup verificado em
+`/srv/mare-staging/incoming/rollback-auth-callback-20261113T201431Z`.
+API pronta, cadastro sem convite 403, callback HTML inválido 303 sem cookie de sessão,
+identidade anônima 401. A navegação pelo HTTPS público exibiu a orientação correta.
+Mesmo container PostgreSQL; seis contas e cinco personagens antes/depois. Hashes de
+`game.js`, `game-session.js`, HUD, gateway e configurações privadas preservados.
+Somente módulos de configuração/rotas Auth e `login.js` atualizados; sem merge,
+Pages, DNS, alteração de configuração Supabase, criação de conta ou envio de e-mail.
 
 ## Verificação em 13/11/2026
 

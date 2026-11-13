@@ -116,3 +116,21 @@ test("auth stays off without opt-in and refuses insecure origins, secret provide
     );
   }
 });
+
+test("an externally reachable auth origin cannot silently disable invitations when its hash is missing", () => {
+  const base = {
+    AUTH_ENABLED: "true",
+    AUTH_PUBLIC_ORIGIN: "https://teste.kaizokuidle2d.com.br",
+    SUPABASE_URL: "https://exampledev.supabase.co",
+    SUPABASE_PUBLISHABLE_KEY: "sb_publishable_fixture",
+    AUTH_ENCRYPTION_KEY: Buffer.alloc(32, 7).toString("base64"),
+    SESSION_ABSOLUTE_SECONDS: "86400",
+    SESSION_IDLE_SECONDS: "7200",
+    PROVIDER_RECHECK_SECONDS: "900",
+  };
+  for (const origin of [base.AUTH_PUBLIC_ORIGIN, "https://26.1.2.3:9444", "https://localhost.example.com"])
+    assert.throws(() => readAuthConfig({...base, AUTH_PUBLIC_ORIGIN: origin}), /Invalid authentication configuration/);
+  assert.equal(readAuthConfig({...base, SIGNUP_INVITE_CODE_SHA256: "a".repeat(64)})?.signupInviteHash, "a".repeat(64));
+  for (const host of ["localhost", "127.0.0.1", "[::1]"])
+    assert.equal(readAuthConfig({...base, AUTH_PUBLIC_ORIGIN: `https://${host}:9443`})?.signupInviteHash, undefined);
+});

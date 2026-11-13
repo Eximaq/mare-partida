@@ -51,7 +51,10 @@ export type SessionPolicy = {
 export function readAuthConfig(env: NodeJS.ProcessEnv) {
   if (env.AUTH_ENABLED !== "true") return undefined;
   const result = schema.safeParse(env);
-  if (!result.success)
+  // A missing deployment secret must not turn a private test into open signup.
+  // Only the explicit loopback development origins may run without invitations.
+  if (!result.success || (!result.data.SIGNUP_INVITE_CODE_SHA256 &&
+    !["localhost", "127.0.0.1", "[::1]"].includes(new URL(result.data.AUTH_PUBLIC_ORIGIN).hostname)))
     throw new Error(
       "Invalid authentication configuration; check origin, provider, keys and session policy",
     );

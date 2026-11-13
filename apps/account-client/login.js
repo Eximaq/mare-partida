@@ -14,6 +14,7 @@
     invalid_request: "Confira os campos informados.",
     invitation_invalid: "Código de convite inválido. Confira o código recebido.",
     invitation_required: "Para participar do teste, use Criar conta e informe seu código de convite.",
+    invalid_auth_flow: "Não foi possível concluir este link neste navegador. Se era um cadastro, a confirmação do e-mail pode ter ocorrido antes deste aviso: tente Entrar com a conta cadastrada. Se era recuperação de senha, abra o link no mesmo navegador em que fez o pedido. Este aviso não libera acesso ao jogo.",
   };
   async function api(path, data) {
     const options = { cache: "no-store", signal: AbortSignal.timeout(10000) };
@@ -148,7 +149,13 @@
         }
       }),
   );
-  if (new URL(location.href).searchParams.get("recovery") === "1") {
+  const params = new URL(location.href).searchParams;
+  const callbackError = params.get("auth_error");
+  if (["invalid_auth_flow", "invitation_required"].includes(callbackError)) {
+    $("status").textContent = messages[callbackError];
+    history.replaceState(null, "", "/online/");
+  }
+  if (params.get("recovery") === "1" && !callbackError) {
     $("login-view").hidden = true;
     $("reset-form").hidden = false;
     $("panel-title").textContent = "Definir nova senha";

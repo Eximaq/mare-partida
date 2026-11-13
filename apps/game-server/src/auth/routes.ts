@@ -399,6 +399,16 @@ export function createAuthHandler(options: {
         response.once("finish", () => request.destroy());
       }
       if (fault.status === 429) response.setHeader("Retry-After", String(fault.retryAfterSeconds??60));
+      // Email verification happens at the provider before this browser-bound
+      // callback. A failed exchange must never imply either confirmation or login.
+      // Preserve the JSON API contract and show fixed guidance for HTML navigation.
+      if (request.method === "GET" && new URL(request.url ?? "/", origin).pathname === "/v1/auth/callback" &&
+        ["invalid_auth_flow", "invitation_required"].includes(fault.code) &&
+        /(?:^|,)\s*text\/html(?:\s*;[^,]*)?(?:,|$)/i.test(request.headers.accept ?? "")) {
+        response.setHeader("Location", "/online/?auth_error=" + fault.code);
+        reply(303);
+        return;
+      }
       reply(fault.status, { error: fault.code });
     }
   };

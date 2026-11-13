@@ -47,7 +47,14 @@ await authDatabase(async f=>{
   await p.goto(origin+'/v1/auth/callback?code=fixture-confirmation');await p.waitForURL('**/game');
   assert.equal(await p.evaluate(async()=> (await fetch('/v1/me')).status),200);
   const mobile=await browser.newContext({viewport:{width:390,height:844}}),m=await mobile.newPage();
-  await m.route(/^https?:\/\/(?!localhost:9446\/)/,r=>r.abort());await m.goto(origin+'/online/');await m.getByRole('button',{name:'Criar conta',exact:true}).click();
+  await m.route(/^https?:\/\/(?!localhost:9446\/)/,r=>r.abort());
+  await m.goto(origin+'/v1/auth/callback?code=fixture-wrong-browser');
+  await m.waitForFunction(()=>document.querySelector('#status')?.textContent?.includes('Não foi possível concluir este link neste navegador'));
+  assert.equal(new URL(m.url()).pathname,'/online/');
+  assert.equal(await m.evaluate(async()=> (await fetch('/v1/me')).status),401);
+  assert.ok(await m.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  await m.screenshot({path:resolve(out,'callback-mobile.png'),fullPage:true});
+  await m.getByRole('button',{name:'Criar conta',exact:true}).click();
   await m.locator('#invite-code').scrollIntoViewIfNeeded();assert.ok(await m.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await m.screenshot({path:resolve(out,'signup-mobile.png'),fullPage:true});assert.deepEqual(errors,[]);assert.equal(sends,1);
   console.log('Invite form desktop/mobile, invalid code with zero sends, single valid request, confirmation-required login, callback and authenticated entry passed; fixture provider only.');

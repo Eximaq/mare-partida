@@ -5,7 +5,7 @@ import { runInNewContext } from "node:vm";
 const settle = async () => {
   for (let i = 0; i < 12; i++) await new Promise<void>((r) => setImmediate(r));
 };
-function page(authenticated = false) {
+function page(authenticated = false, query = "") {
   const elements = new Map<string, any>(),
     paths: string[] = [],
     redirects: string[] = [],
@@ -35,7 +35,7 @@ function page(authenticated = false) {
       URL,
       AbortSignal,
       location: {
-        href: "https://localhost:9443/online/",
+        href: "https://localhost:9443/online/" + query,
         replace: (path: string) => redirects.push(path),
       },
       history: { replaceState() {} },
@@ -117,4 +117,16 @@ test("an existing session goes directly to the game; normal entry contains no du
     "combat-attack",
   ])
     assert.equal(html.includes(marker), false, marker);
+});
+
+test("failed callback shows fixed guidance without treating the URL as proof of confirmation", async () => {
+  const p = page(false, "?auth_error=invalid_auth_flow&code=not-for-display");
+  await settle();
+  assert.match(p.get('status').textContent, /Não foi possível concluir este link neste navegador/);
+  assert.match(p.get('status').textContent, /confirmação do e-mail pode ter ocorrido/);
+  assert.ok(!p.get('status').textContent.includes('not-for-display'));
+  assert.deepEqual(p.redirects, []);
+  assert.deepEqual(p.paths, ['/v1/me'], 'no send, password reset or automatic login');
+  const forged = page(false, '?auth_error=unknown-injected-text'); await settle();
+  assert.equal(forged.get('status').textContent, '');
 });
