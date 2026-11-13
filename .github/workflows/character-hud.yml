@@ -19,6 +19,7 @@ on:
       - 'tools/build_pages.py'
       - 'tests/character_hud_browser.cjs'
       - 'tests/glass-hud-browser.cjs'
+      - 'tests/character-glass-browser.cjs'
       - 'tests/hud-telemetry-display.test.cjs'
       - '.github/workflows/character-hud.yml'
   workflow_dispatch:
@@ -66,6 +67,7 @@ jobs:
           sleep 2
           node tests/character_hud_browser.cjs
           node tests/glass-hud-browser.cjs
+          node tests/character-glass-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
