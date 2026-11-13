@@ -8,7 +8,8 @@
   --glass-shadow: 0 6px 20px #0004, inset 0 1px 0 #ffffff0a;
   --hud-profile: 336px;
 }
-#app.hud-nautical :is(.topbar.nautical-profile, #mainMenu, #onlinePerformance, #floatingChat, #chatCornerToggle, .action-panel),
+#app.hud-nautical :is(.topbar.nautical-profile, #mainMenu, #onlinePerformance, #floatingChat, #chatCornerToggle, .action-panel, #floatingExpedition),
+#app.hud-nautical #journeyHud :is(.journey-heading, .auto-button),
 #app.hud-nautical #mainMenu .character-menu-anchor > .character-quick-menu {
   border: 1px solid var(--glass-line);
   border-image: none;
@@ -605,4 +606,179 @@
 }
 @media (prefers-reduced-motion: reduce) {
   #app.hud-nautical .action-panel :is(.skill-button, #hakiQuickCast button) { transition: none; }
+}
+
+/* Expedition: a quiet launcher and compact live journal, using the HUD glass. */
+#app.hud-nautical #journeyHud .journey-heading {
+  min-width: 0;
+  padding: 8px 12px;
+  gap: 8px;
+  font: 650 14px/1.2 var(--glass-type);
+}
+#app.hud-nautical #journeyHud .journey-heading:is(:hover, :focus-visible, [aria-expanded=true]) {
+  background-image: none;
+  background-color: #25282ee6;
+  border-color: #d8c18a;
+}
+#app.hud-nautical #journeyHud .journey-heading::before,
+#app.hud-nautical #expeditionWindowTitle::before { width: 18px; height: 20px; }
+#app.hud-nautical #journeyHud .journey-chevron {
+  border-color: #ffffff24;
+  border-radius: 4px;
+  background: #10131999;
+  color: var(--glass-muted);
+  font: 600 10px/1.2 var(--glass-type);
+}
+#app.hud-nautical #journeyHud .auto-button {
+  padding: 8px 12px;
+  font: 600 13px/1.2 var(--glass-type);
+}
+#app.hud-nautical #journeyHud .auto-button small { font: inherit; }
+#app.hud-nautical #journeyHud .auto-button.active { border-color: #77d6ce80; color: #baf7ef; }
+#app.hud-nautical #floatingExpedition {
+  width: 344px;
+  max-height: min(680px, calc(100dvh - 120px));
+  padding: 0 12px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #d8c18a70 transparent;
+  font-size: 13px;
+}
+#app.hud-nautical #floatingExpedition.hud-open { display: flex; flex-direction: column; }
+#app.hud-nautical #floatingExpedition > * { flex-shrink: 0; }
+#app.hud-nautical #floatingExpedition .quest-card { display: flex; flex-direction: column; flex: 0 1 auto; min-height: 108px; }
+#app.hud-nautical #floatingExpedition .floating-title {
+  top: 0;
+  min-height: 48px;
+  margin: 0 -12px;
+  padding: 0 6px 0 12px;
+  border-bottom: 1px solid #ffffff16;
+  background: #171a1ff5;
+  color: #f5f6f8;
+  font: 650 16px/1.25 var(--glass-type);
+}
+#app.hud-nautical #floatingExpedition [data-close-window] {
+  border-radius: 8px;
+  background: transparent;
+  color: var(--glass-muted);
+  font: 400 24px/1 var(--glass-type);
+}
+#app.hud-nautical #floatingExpedition :is(.panel-block, .journey-content) {
+  padding: 8px 0;
+  border-color: #ffffff16;
+}
+#app.hud-nautical #floatingExpedition .section-heading {
+  min-height: 0;
+  margin: 0;
+  padding: 0 0 8px;
+  color: var(--glass-gold);
+  font: 650 12px/1.3 var(--glass-type);
+  text-transform: none;
+}
+#app.hud-nautical #floatingExpedition :is(.section-heading > span, .quest-title > span) { font: inherit; letter-spacing: 0; }
+#app.hud-nautical #floatingExpedition :is(.journey-content > small, .expedition-badge small, .expedition-grid small, .micro-light, .rate-footnote, .expedition-since) {
+  color: var(--glass-muted);
+  font: 500 11px/1.4 var(--glass-type);
+  letter-spacing: 0;
+}
+#app.hud-nautical #floatingExpedition .journey-content > strong {
+  margin-top: 3px;
+  color: #f5f6f8;
+  font: 650 15px/1.35 var(--glass-type);
+}
+#app.hud-nautical #floatingExpedition :is(.journey-track, .progress-track) {
+  height: 6px;
+  padding: 0;
+  border: 1px solid #ffffff20;
+  border-radius: 8px;
+  background: #080b1099;
+  overflow: hidden;
+}
+#app.hud-nautical #floatingExpedition .journey-track { margin: 8px 0; }
+#app.hud-nautical #floatingExpedition .journey-track i { border-radius: inherit; background: linear-gradient(90deg, #a9782e, #e4ce96); }
+#app.hud-nautical #floatingExpedition .journey-footer { gap: 6px; padding: 0; border: 0; color: var(--glass-muted); font: 500 12px/1.3 var(--glass-type); }
+#app.hud-nautical #floatingExpedition #journeyProgress { margin-right: auto; }
+#app.hud-nautical #floatingExpedition :is(.journey-footer button, .quest button, .text-button) {
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--glass-line);
+  border-image: none;
+  border-radius: 8px;
+  background: #d4af3712;
+  box-shadow: none;
+  color: var(--glass-gold);
+  font: 650 12px/1.3 var(--glass-type);
+  text-transform: none;
+  text-decoration: none;
+  filter: none;
+}
+#app.hud-nautical #floatingExpedition #journeyAction::after { content: none; }
+#app.hud-nautical #floatingExpedition [data-claim] { border-color: #77d6ce80; background: #4bbb9c1f; color: #baf7ef; }
+#app.hud-nautical #floatingExpedition .expedition-badge {
+  min-height: 0;
+  margin: 0;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: #ffffff05;
+  gap: 8px;
+}
+#app.hud-nautical #floatingExpedition .crossed-blades { font-size: 20px; }
+#app.hud-nautical #floatingExpedition :is(.expedition-badge strong, .expedition-grid b, .rate-line b) {
+  color: #f5f6f8;
+  font: 700 15px/1.3 var(--glass-type);
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+#app.hud-nautical #floatingExpedition .expedition-grid { margin-top: 6px; gap: 4px; }
+#app.hud-nautical #floatingExpedition .expedition-grid > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  min-height: 30px;
+  padding: 5px 8px;
+  gap: 6px;
+  border: 0;
+  border-radius: 6px;
+  background: #ffffff04;
+}
+#app.hud-nautical #floatingExpedition .expedition-grid > div::after { content: none; }
+#app.hud-nautical #floatingExpedition .expedition-grid b { margin: 0; overflow-wrap: anywhere; }
+#app.hud-nautical #floatingExpedition .rates-card .rate-line {
+  display: inline-flex;
+  width: calc(50% - 4px);
+  vertical-align: top;
+  margin: 0;
+  padding: 4px 0;
+  border: 0;
+  border-radius: 0;
+}
+#app.hud-nautical #floatingExpedition .rate-line > div:first-child { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; flex: 1; }
+#app.hud-nautical #floatingExpedition .rate-footnote { margin: 4px 0 0; padding: 0; }
+#app.hud-nautical #floatingExpedition .rate-line span { color: var(--glass-muted); font: 500 11px/1.4 var(--glass-type); letter-spacing: 0; }
+#app.hud-nautical #floatingExpedition .rate-glyph { display: none; }
+#app.hud-nautical #floatingExpedition .micro-light[data-live=true] { color: #9ee9cd; }
+#app.hud-nautical #floatingExpedition :is(.quest-list, .loot-list) {
+  max-height: 132px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #d8c18a70 transparent;
+}
+#app.hud-nautical #floatingExpedition .quest-list { flex: 0 1 auto; min-height: 0; }
+#app.hud-nautical #floatingExpedition .quest { padding: 8px 0; border-color: #ffffff12; }
+#app.hud-nautical #floatingExpedition .quest-title { gap: 8px; margin-bottom: 4px; color: #f5f6f8; font: 650 13px/1.35 var(--glass-type); }
+#app.hud-nautical #floatingExpedition .quest-title b { flex: none; color: var(--glass-muted); font: 500 11px/1.4 var(--glass-type); }
+#app.hud-nautical #floatingExpedition :is(.quest-desc, .empty-note, .loot-entry) { color: var(--glass-muted); font: 400 12px/1.4 var(--glass-type); }
+#app.hud-nautical #floatingExpedition .loot-list { max-height: 72px; }
+#app.hud-nautical #floatingExpedition .loot-entry b { color: #9ee9cd; font: 600 11px/1.4 var(--glass-type); }
+#app.hud-nautical #floatingExpedition .side-footer { padding: 8px 0 0; border: 0; color: var(--glass-muted); font: 500 10px/1.3 var(--glass-type); }
+@media (hover: hover) {
+  #app.hud-nautical #floatingExpedition button:hover:not(:disabled),
+  #app.hud-nautical #journeyHud .auto-button:hover { background-color: #ffffff12; border-color: #d8c18a; color: #f5f6f8; filter: none; }
+}
+#app.hud-nautical :is(#floatingExpedition, #journeyHud) button:focus-visible { outline: 2px solid var(--glass-gold); outline-offset: 2px; }
+#app.hud-nautical #floatingExpedition button:disabled { opacity: .55; cursor: not-allowed; }
+@media (max-width: 760px), (max-height: 500px) {
+  #app.hud-nautical #floatingExpedition { max-height: min(620px, calc(100dvh - 24px)); }
 }
