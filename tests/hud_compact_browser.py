@@ -147,12 +147,12 @@ with sync_playwright() as p:
         # A self-targeted class skill exercises the real button and cooldown
         # without a timing dependency on enemy navigation.
         q.evaluate('''() => {const x=__compactQA;x.game.equipment.akuma_no_mi=null;
-          x.game.classId='cyborg';x.syncFruit();x.enter();x.refresh()}''')
+          x.game.classId='cyborg';x.game.equipment.weapon=x.newItem(x.defs[14]);x.syncFruit();x.enter();x.refresh()}''')
         if q.locator('#autoToggle').get_attribute('aria-pressed')=='true':
             q.locator('#autoToggle').click()
         # enterHunt loads map art and builds navigation asynchronously. The
         # production RAF intentionally suspends simulation/HUD ticks until ready.
-        q.wait_for_function("document.querySelector('#worldLoading')?.dataset.state === 'ready'", timeout=60000)
+        q.wait_for_function("__mareDiagnostics().lobby96.worldVisual?.state === 'ready' && document.querySelector('#worldLoading')?.dataset.state === 'ready'", timeout=60000)
         q.evaluate('__compactQA.session.cooldowns[1]=0;__compactQA.game.energy=__compactQA.stats().maxEnergy;__compactQA.refresh()')
         q.locator('#classSkill2').click()
         q.wait_for_function("document.querySelector('#classSkill2').classList.contains('is-cooling')", timeout=10000)
