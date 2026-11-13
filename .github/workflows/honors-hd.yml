@@ -9,6 +9,8 @@ on:
       - 'hierarchy*.js'
       - 'character-hud.js'
       - 'honors-hd.css'
+      - 'hud-glass.css'
+      - 'tests/progression-glass-browser.cjs'
       - 'talent-ui.js'
       - 'game.js'
       - 'index.html'
@@ -65,6 +67,7 @@ jobs:
           python tests/run_honors_hd_browser.py tests/fruit-online-browser.cjs --dist --offline
           python tests/run_honors_hd_browser.py tests/honors_hd_browser.cjs --dist
           python tests/run_honors_hd_browser.py tests/honors_offline_browser.cjs --dist --offline
+          python tests/run_honors_hd_browser.py tests/progression-glass-browser.cjs --dist --offline
           python tests/run_honors_hd_browser.py tests/honors_cache_browser.cjs --dist --offline
       - name: Capturas reais de teste
         if: always()

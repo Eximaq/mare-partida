@@ -12,19 +12,20 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  const open=async s=>page.evaluate(s=>__honorsQA.open('character',s),s);
  await open('achievements');await page.evaluate(()=>document.fonts.ready);
  const dialog=await page.locator('#panelOverlay .dialog').boundingBox();
- assert(dialog.width<=1120&&dialog.height<=650,'achievements window is compact');
+ assert(dialog.width<=1180&&dialog.height<=702,'inventory-sized achievements window');
  const featured=page.locator('.achievement-featured');
  assert(await featured.evaluate(async e=>{
   const style=getComputedStyle(e,'::before'),asset=new Image();
   asset.src=style.backgroundImage.match(/url\("([^"]+)"\)/)[1];
   await asset.decode();
-  const font=await document.fonts.load('700 23px "Barlow Semi Condensed"','1 PT');
-  return asset.naturalWidth===1080&&style.animationName==='achievement-sea'&&font.some(face=>face.status==='loaded');
+  await document.fonts.ready;const font=document.fonts.check('700 23px system-ui','1 PT');
+  return asset.naturalWidth===1080&&style.animationName==='achievement-sea'&&font;
  }));
  const reward=page.locator('[data-achievement-claim=kills-0]');
- assert((await reward.evaluate(e=>getComputedStyle(e).borderImageSource)).includes('tab-active.png'));
+ assert.equal(await reward.evaluate(e=>getComputedStyle(e).borderImageSource),'none');
+ const resting=await reward.evaluate(e=>getComputedStyle(e).backgroundColor);
  await reward.hover();
- await page.waitForFunction(()=>getComputedStyle(document.querySelector('[data-achievement-claim=kills-0]')).filter==='brightness(1.22)');
+ await page.waitForFunction(resting=>getComputedStyle(document.querySelector('[data-achievement-claim=kills-0]')).backgroundColor!==resting,resting);
  await page.emulateMedia({reducedMotion:'reduce'});
  assert.equal(await featured.evaluate(e=>getComputedStyle(e,'::before').animationName),'none');
  await page.emulateMedia({reducedMotion:'no-preference'});

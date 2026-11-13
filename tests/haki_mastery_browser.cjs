@@ -25,7 +25,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 
  await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(500);
  const dialog=await page.locator('#panelOverlay .dialog').boundingBox();
- assert(dialog.width<=1120&&dialog.height<=650,'compact mastery window');
+ assert(dialog.width<=1180&&dialog.height<=702,'inventory-sized mastery window');
  assert(await page.locator('#dialogBody').evaluate(e=>e.scrollHeight<=e.clientHeight+1));
  const colors=await page.locator('.hm-tree>.hm-branch').evaluateAll(es=>es.map(e=>getComputedStyle(e).getPropertyValue('--hm-accent').trim()));
  assert.equal(new Set(colors).size,3);
