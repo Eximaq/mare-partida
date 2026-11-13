@@ -161,3 +161,12 @@ Nas versões femininas, a composição fechada contém pernas, botas e cabelo. N
 ### Calças femininas com fonte bloqueada
 
 Os seis ZIPs de 133 r15, 161 r27 e 21 r3 EAST/WEST somam 72 quadros de apresentação com fundo opaco. A busca no acervo aprovado, nos registros de roupa e nos dois ZIPs pertinentes da pasta Correções recuperou as apresentações e as revisões posteriores v42/v47. Ainda faltam as camadas transparentes das três revisões exatas, ou uma fonte verificável que comprove a equivalência fase a fase. As linhas correspondentes permanecem abertas na matriz.
+
+### Vistas e sequências de repouso restauradas
+
+O jogo agora seleciona as vistas aprovadas de 7, 137, 144, 158, 165, 172 e 179 masculinos e 151, 158, 165, 172 e 179 femininos quando o traje está isolado e a aparência coincide com a referência. As sequências autoradas prevalecem sobre a vista estática na mesma direção. Os demais trajes, cores e acessórios continuam na composição modular. A assinatura exige cabelo castanho Original no masculino e Curto rente no feminino, olhos castanhos e pele clara.
+
+O navegador carregou 12 saves descartáveis, caminhou com o teclado nas quatro direções e observou o repouso em cada parada. Os 48 ciclos emitiram 83 ticks, incluindo as cinco sequências femininas completas de oito ticks a 4 fps: 151 SOUTH e NORTH, 158 SOUTH, 172 SOUTH e 179 SOUTH. Cada tick foi confrontado com a fonte em 512×512, com alfa e pixels opacos iguais. As vistas estáticas sobrepostas por um ciclo animado ficam documentadas como referências do acervo; seguem sem cobertura independente no mapa.
+
+- Masculino: [7 e 137](evidence/approved-poses/Kaizoku-repouso-masculino-7-137.png), [144 e 158](evidence/approved-poses/Kaizoku-repouso-masculino-144-158.png), [165 e 172](evidence/approved-poses/Kaizoku-repouso-masculino-165-172.png), [179](evidence/approved-poses/Kaizoku-repouso-masculino-179.png).
+- Feminino: [151 e 158](evidence/approved-poses/Kaizoku-repouso-feminino-151-158.png), [165 e 172](evidence/approved-poses/Kaizoku-repouso-feminino-165-172.png), [179](evidence/approved-poses/Kaizoku-repouso-feminino-179.png), [quatro poses únicas por sequência animada](evidence/approved-poses/Kaizoku-repouso-feminino-ciclos.png).

@@ -21,7 +21,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!eyes?.supports(style)&&!customColor)return selectBase(player,o,true);
   if(style&&!['original','face-gentle'].includes(style)&&!eyes?.supports(style))return null;
   const isFemale=canonical(raw.gender??raw.body)==='female';
-  if(isFemale)return selectBase(player,o);
+  if(isFemale)return selectBase(player,o,true);
   if(customColor&&!root.MareCharacterAppearance?.eyes[color])return null;
   if(!player.__reworkSubset&&['idle','attack','attack-unarmed','attack-focus'].includes(o.action)){const exact=selectBase(player,o,true,true);if(exact)return exact;}
   const original={...player,appearance96:{...raw,eyeStyle:'original',face:'original',eyeColor:'original'}};
