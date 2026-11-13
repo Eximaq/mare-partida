@@ -62,7 +62,7 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
             const snapshot = draw.snapshot;
             if (!['native-hd', 'rework-default-hd'].includes(snapshot?.renderer)) return false;
             const active = snapshot.renderer === 'native-hd' ? snapshot.nativeHD : snapshot.defaultHD;
-            return active?.last?.state === 'rendered' && active.last.physicalScale === 105 / 374 && active.last.consumer==='world' && active.last.direction===draw.direction ? result : false;
+            return active?.last?.state === 'rendered' && active.last.physicalScale === 105 / 374 && active.last.consumer==='world' && active.last.direction===MarePaperDoll96Lobby.directionOf(draw.direction) ? result : false;
           }, stageStarted, { timeout: 120000 });
           const state = await handle.jsonValue();
           assert.deepEqual(state.identity, original, 'Rendering/reload must not rewrite saved appearance or equipment');
