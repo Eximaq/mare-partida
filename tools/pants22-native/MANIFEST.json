@@ -1,0 +1,43 @@
+{
+  "def": 22,
+  "slot": "legs",
+  "renderSlot": "pants",
+  "sourceBody": "female",
+  "targetBody": "male",
+  "sourceRaster": [
+    512,
+    512
+  ],
+  "density": 4,
+  "pivot": [
+    64,
+    112
+  ],
+  "status": "original layers; male adaptation not validated",
+  "layers": [
+    {
+      "file": "sources/south-pants-leg-left.png",
+      "sha256": "35bf06de936f78d60b498d5852c82a27a1ddcf711b0e42526bab910ae83cd4df"
+    },
+    {
+      "file": "sources/south-pants-waist.png",
+      "sha256": "96b2f75199a7ee3fa10e2338fab80d2c099251faebbb5ef547127d3d8aae176b"
+    },
+    {
+      "file": "sources/north-pants-waist.png",
+      "sha256": "9c2d377080f95a4b4d9e3ad836de2ec9473af7fcc7d7312e04c990d3512f501d"
+    },
+    {
+      "file": "sources/south-pants-leg-right.png",
+      "sha256": "50190f6203b75d44f6bb21bf21ae8bad49992a47bd8ee1658ccd3ee4b90adb90"
+    },
+    {
+      "file": "sources/north-pants-leg-right.png",
+      "sha256": "ad8992761ad9a739d65c3a2ebac67854a8bf71122f7ef0d13ad5e8c4e5b8a5f0"
+    },
+    {
+      "file": "sources/north-pants-leg-left.png",
+      "sha256": "171f7f5f5bd605fb44eb48147e2aceee9a454ddd72a9c560362ec48f6ce33067"
+    }
+  ]
+}

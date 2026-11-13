@@ -1,5 +1,7 @@
 # Lacunas de cobertura do rework — auditoria em andamento
 
+**Atualização da calça 22 masculina:** fontes originais recuperadas e candidata independente exercitada no mapa. Vínculo definitivo, revisão visual completa e combinações permanecem pendentes; não solicitar uma prancha inteira nova. [Relatório da candidata e evidências](PANTS22_MALE_CANDIDATE.md).
+
 **Escopo atualizado:** capas (slot cloak; defs 23, 24, 135, 142, 149, 156, 163, 170, 177 e 184) não têm impacto visual, conforme orientação do proprietário. Foram retiradas dos pedidos de arte e dos bloqueios visuais. Os resultados históricos de testes não foram reescritos: ocorrências de cloak omitido nessas rodadas deixam de ser pendências visuais. Esta revisão altera apenas o relatório, sem remover itens ou modificar atributos.
 
 Base: `b0d7cf81e7be357e7e4c2a6d1ff4c5f727a804d6`. Branch: `fix/rework-map-user-flows`.
