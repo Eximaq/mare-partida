@@ -15,4 +15,6 @@ const {create}=require('../player-rework-native-hd.js');
 global.MareReworkZip=require('../player-rework-zip.js');global.MareReworkHDAssets=require('../player-rework-hd-assets.js');
 const make=(options={})=>create({fetchJSON:async p=>{const file=path.join(__dirname,'..',p);return JSON.parse(fs.existsSync(file)?fs.readFileSync(file):require('node:zlib').gunzipSync(fs.readFileSync(file+'.gz')));},loadImage:require('../tools/rework-hd-test-loader.cjs').create(path.join(__dirname,'..')),makeCanvas:cv.createCanvas,...options});
 
+global.MareCharacterAppearance=require('../character-appearance.js');
+global.MareReworkEyeStylesHD=require('../player-rework-eye-styles-hd.js');
 global.MareHeadgear=require('../headgear-visibility.js');global.MareAppearance96=require('../tools/paper-doll-96-v3/appearance.js');global.MareOriginalHairHelmetsHD=require('../player-rework-original-hair-helmets-hd.js');module.exports={make,cv};

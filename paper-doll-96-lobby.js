@@ -242,7 +242,8 @@
     function preview(ctx,player,{action='idle',direction='south',time=0,appearance=null,consumer='appearance-preview'}={}){
       if(root.MareVisualCompletoRenderer?.draw(ctx,player,{action:'idle',direction,time:0,x:ctx.canvas.width/2,y:ctx.canvas.height-24,scale:192/46,consumer}))return true;
       if(nativeHD?.draw(ctx,appearance?{...player,appearance96:appearance}:player,{action,direction,time,x:ctx.canvas.width/2,y:ctx.canvas.height-24,consumer,preview:true})){defaultHD?.clear();return true;}
-      if(!rework?.active&&defaultHD?.draw(ctx,appearance?{...player,appearance96:appearance}:player,{action,direction,time,x:ctx.canvas.width/2,y:ctx.canvas.height-24,consumer,preview:true}))return defaultHD.snapshot().last?.state==='rendered';
+      // An editor must never silently reset a selected palette or hairstyle.
+      if(!appearance&&!rework?.active&&defaultHD?.draw(ctx,player,{action,direction,time,x:ctx.canvas.width/2,y:ctx.canvas.height-24,consumer,preview:true}))return defaultHD.snapshot().last?.state==='rendered';
       if(rework?.active&&!player?.zoanTransformed){rework.draw(ctx,appearance?{...player,appearance96:appearance}:player,{action,direction,time,preview:true,x:ctx.canvas.width/2,y:ctx.canvas.height-24,scale:2,consumer});return true;}
       if(state!=='ready'||!actions.includes(action)||!['south','north','west','east'].includes(direction))return false;
       const value=appearance?resolve({...player,appearance96:appearance},current,true):resolve(player,draft,false),dir=direction==='west'?'east':direction,key=value.key+':'+clipKey(action,dir,value.look);
