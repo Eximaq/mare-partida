@@ -113,7 +113,7 @@ export async function claimContract(client:PoolClient,id:string,requestId:string
  if(after.level>state.level){
   const f=await readFighter(client,id,after);
   if(f.rulesetId==='original-character-v1')await client.query(`UPDATE mare_game.character_battles SET simulation=
-   jsonb_set(jsonb_set(simulation,'{hp}',to_jsonb($2::int)),'{energy}',to_jsonb($3::int)) WHERE character_id=$1`,[id,f.maxHp,f.stats.maxEnergy]);
+   jsonb_set(jsonb_set(simulation,'{hp}',to_jsonb($2::float8)),'{energy}',to_jsonb($3::float8)) WHERE character_id=$1`,[id,f.maxHp,f.stats.maxEnergy]);
  }
  await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
 }
