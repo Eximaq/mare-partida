@@ -1769,7 +1769,7 @@
     initializeSession();prepareRegion('beach');applySceneHudLayout();setAreaLabels();syncOnlineGame();closePanel();
   }
   async function onlineWorldCommand(action,payload={},close=false){
-    if((action.startsWith('battle.')||action.startsWith('fruit.')||action==='world.move')&&!lobby96.worldReady(game))return;
+    if((action.startsWith('battle.')||action==='fruit.transform'||action==='fruit.cast'||action==='world.move')&&!lobby96.worldReady(game))return;
     if(onlineMoveWorking||!ONLINE_GAME.controlled||ONLINE_GAME.busy||ONLINE_GAME.pending)return;
     onlineMoveWorking=true;
     try{await ONLINE_GAME.command(action,payload);if(close)closePanel();}
