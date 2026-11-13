@@ -868,7 +868,19 @@
      ACESSÓRIO; the avatar column absorbs narrow-screen width changes. */
   & .op-character-core { grid-template-columns: 72px minmax(0,1fr) 72px; gap: 5px; }
   & .op-equip-side { gap: 3px; }
-  & .op-equip-side .op-equip-slot { height: 44px; min-height: 44px; }
+  & .op-equip-side .op-equip-slot {
+    --equipment-slot-height: clamp(54px, calc((100dvh - 396px) / 6), 60px);
+    height: var(--equipment-slot-height);
+    min-height: var(--equipment-slot-height);
+    padding: 2px;
+  }
+  & .op-equip-slot .op-slot-icon .item-icon {
+    width: 32px;
+    height: 32px;
+    max-width: 32px;
+    max-height: 32px;
+    object-fit: contain;
+  }
   & .op-equip-slot .op-slot-label { color: #e0e3e8; font: 600 10px/1.2 var(--glass-type); letter-spacing: 0; }
   &.hud-density .op-avatar-stage, & .op-avatar-stage { height: 160px; border: 1px solid #ffffff14; border-radius: 8px; background: #080e1666; }
   & .op-avatar-meta { gap: 2px; }
@@ -951,7 +963,15 @@
   @media (hover: hover) {
     & :is(.op-tabs button, .op-pagination button, .op-action, .op-best-btn, .op-close, .op-section-nav a):hover:not(:disabled) { background: #ffffff12; border-color: #d8c18a; color: #fff; }
   }
+  @media (min-width: 761px) {
+    /* Row count follows the available height; sockets and rarity rims stay square. */
+    & .op-bag-panel { align-self: stretch; }
+    & .op-grid-wrap { flex: 1 1 0; }
+    & .op-grid { height: 100%; grid-template-rows: none; grid-auto-rows: max-content; align-content: space-between; }
+    & .op-grid > .op-item { height: auto; aspect-ratio: 1; align-self: start; }
+  }
   @media (min-width: 1101px) {
+    & :is(.op-character-panel, .op-detail-panel) { grid-column: auto; }
     & .op-panel { max-height: calc(var(--inventory-limit) - 74px); }
   }
   @media (max-width: 1100px) {
