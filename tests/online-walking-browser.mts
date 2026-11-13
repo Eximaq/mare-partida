@@ -6,20 +6,28 @@ import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {createRequire} from 'node:module';
 import {authDatabase} from './integration/auth-support.mjs';
-import {createHttpServer} from '../apps/game-server/src/http.js';
+import {createHttpServer,attachRealtime} from '../apps/game-server/src/http.js';
 import {createAuthHandler} from '../apps/game-server/src/auth/routes.js';
 import {createDevGateway} from '../tools/dev-gateway.mjs';
 declare global {var MareGameSession:any;var __mareDiagnostics:any;}
 const require=createRequire(import.meta.url),{chromium}=require('playwright');
 const out=process.env.MARE_QA_DIR||'tmp/online-walking';await mkdir(out,{recursive:true});
+const useRealtime=process.env.MARE_QA_REALTIME==='1';
 await authDatabase(async f=>{
  const handler=createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9445',cookieSeconds:3600});
  const api=createHttpServer({isReady:async()=>true,handle:handler});api.listen(0,'127.0.0.1');await once(api,'listening');
+ const realtime=useRealtime?attachRealtime(api,{service:f.service,vault:f.vault,origin:'https://localhost:9445'}):null;
  const gateway=createDevGateway({key:await readFile('infra/local/localhost.key','utf8'),cert:await readFile('infra/local/localhost.crt','utf8'),staticRoot:resolve(process.env.MARE_QA_STATIC_ROOT||'dist'),onlineRoot:resolve('apps/account-client'),upstream:new URL(`http://127.0.0.1:${(api.address() as any).port}`)});
  let simulations:any;let browser:any,context:any;const errors:string[]=[],httpProbe:any[]=[];let browserTimeOrigin=0;
  try{
   gateway.listen(9445,'127.0.0.1');await once(gateway,'listening');browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});context=await browser.newContext({viewport:{width:1366,height:900}});const p=await context.newPage();p.on('dialog',async(d:any)=>{assert.equal(d.type(),'confirm');assert.match(d.message(),/Este personagem está sob controle/);await d.accept();});p.on('pageerror',(e:any)=>errors.push(e.stack||e.message));await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-final-acceptance'));
   await p.route(/^https?:\/\/(?!localhost:9445\/)/,(r:any)=>r.abort());
+  let socketDelay=0,socketFrames=0;
+  if(useRealtime)await p.routeWebSocket('**/v1/realtime',(client:any)=>{
+    const server=client.connectToServer();
+    client.onMessage((message:any)=>setTimeout(()=>server.send(message),socketDelay));
+    server.onMessage((message:any)=>{if(JSON.parse(String(message)).type==='frame')socketFrames++;setTimeout(()=>client.send(message),socketDelay);});
+  });
   const pendingHttp=new Map();
   p.on('request',(r:any)=>{const path=new URL(r.url()).pathname;if(!path.startsWith('/v1/'))return;const row={kind:path.split('/').at(-1),method:r.method(),start:Date.now(),end:null,status:null};pendingHttp.set(r,row);httpProbe.push(row);});
   p.on('response',(r:any)=>{const row=pendingHttp.get(r.request());if(row)row.status=r.status();});
@@ -47,12 +55,14 @@ await authDatabase(async f=>{
   await p.evaluate(()=>MareGameSession.command('world.travel',{islandId:'dawn'}));
   await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
   await p.waitForTimeout(2000);
-  await p.waitForFunction(()=>/Ping HTTP: \d+ ms.*FPS: \d+/.test(document.querySelector('#onlinePerformance')?.textContent||''));
+  await p.waitForFunction(()=>/Ping (HTTP|WS): \d+ ms.*FPS: \d+/.test(document.querySelector('#onlinePerformance')?.textContent||''));
+  if(useRealtime)await p.waitForFunction(()=>MareGameSession.realtime.connected);
   await p.evaluate(()=>{const original=globalThis.MareEmberRenderer.monster;globalThis.monsterProbe=[];globalThis.MareEmberRenderer.monster=function(ctx,m,...args){if(m.alive)globalThis.monsterProbe.push({id:m.id,x:m.x,y:m.y,moving:m.moving,phase:m.emberElapsed});return original.call(this,ctx,m,...args);};});
   assert.equal(await p.evaluate(()=>Number.isFinite(__mareDiagnostics().onlineSampledAt)),true,'motion probes need the time associated with the drawn pose');
   let compactReads=0;p.on('response',r=>{if(r.url().endsWith('/frame')&&r.status()===200)compactReads++;});
   const captures=[],keyboardResponseFailures:string[]=[];
   for(const mapId of ['lobby','dawn']){
+   if(useRealtime){await p.evaluate(()=>{MareGameSession.disconnectRealtime(false);return MareGameSession.connectRealtime();});await p.waitForFunction(()=>MareGameSession.realtime.connected);}
    await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
    await p.evaluate(id=>MareGameSession.command(id==='lobby'?'world.return':'world.travel',id==='lobby'?{}:{islandId:'dawn'}),mapId);
    await p.waitForFunction(id=>__mareDiagnostics().map.id===id&&__mareDiagnostics().map.navigation.ready,mapId);
@@ -66,15 +76,17 @@ await authDatabase(async f=>{
     if(free){target=q;break;}
    }
    assert(target);
+   socketDelay=125;
    await p.route('**/v1/**',async(r:any)=>{try{await new Promise(resolve=>setTimeout(resolve,250));await r.continue();}catch{errors.push('delayed_request_failed');}});
    await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
    const canvas=await p.locator('#worldCanvas').boundingBox();
    await p.evaluate(()=>document.querySelector('#worldCanvas').addEventListener('pointerdown',()=>{const h=__mareDiagnostics().hero;globalThis.motionBefore={x:h.x,y:h.y};globalThis.motionClickedAt=performance.now();},{once:true,capture:true}));
    await p.mouse.click(canvas.x+(target.x-Math.round(screen.camera.x))*canvas.width/screen.camera.width,canvas.y+(target.y-Math.round(screen.camera.y))*canvas.height/screen.camera.height);
    await p.waitForTimeout(5000);
-   const meter=await p.evaluate(()=>MareGameSession.network);
-   assert.ok(meter.rttMs>=240,'HTTP ping includes injected 250ms network delay');
-   assert.match(await p.locator('#onlinePerformance').innerText(),/Ping HTTP: \d+ ms.*FPS: \d+/);
+   const meter=await p.evaluate(ws=>ws?MareGameSession.realtime:MareGameSession.network,useRealtime);
+   assert.ok(meter.rttMs>=240,'ping includes injected 250ms network delay');
+   if(useRealtime)assert.ok(meter.connected,'probe must exercise the persistent socket');
+   assert.match(await p.locator('#onlinePerformance').innerText(),/Ping (HTTP|WS): \d+ ms.*FPS: \d+/);
    captures.push({kind:'click',mapId,target,frames:await p.evaluate('window.captureMotion=false;window.motion')});
    const response=await p.evaluate(()=>{
     const before=globalThis.motionBefore;
@@ -84,9 +96,11 @@ await authDatabase(async f=>{
    console.log(JSON.stringify({map:mapId,clickToMotionMs:response,httpRttMs:meter.rttMs}));
    assert.ok(response!==null&&response<=80,'manual movement must respond before the delayed server acknowledgement');
    // Alternate real pointer inputs faster than the delayed HTTP round trip.
+   const profiler=process.env.MARE_QA_PROFILE==='1'?await context.newCDPSession(p):null;
+   if(profiler){await profiler.send('Profiler.enable');await profiler.send('Profiler.start');}
    await p.evaluate(`globalThis.rapidFrames=[];globalThis.rapidClicks=[];globalThis.recordRapid=true;
     if(!globalThis.rapidListener){globalThis.rapidListener=true;document.querySelector('#worldCanvas').addEventListener('pointerdown',()=>{if(!globalThis.recordRapid)return;const d=__mareDiagnostics();globalThis.rapidClicks.push({t:performance.now(),x:d.hero.x,y:d.hero.y,target:globalThis.rapidTarget});});}
-    function sample(){if(!globalThis.recordRapid)return;const d=__mareDiagnostics();globalThis.rapidFrames.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y});requestAnimationFrame(sample);}requestAnimationFrame(sample);
+    function sample(){if(!globalThis.recordRapid)return;const d=__mareDiagnostics();globalThis.rapidFrames.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,available:MareGameSession.available,controlled:MareGameSession.controlled,busy:MareGameSession.busy,pending:MareGameSession.pending?.action,world:MareGameSession.data?.online.world});requestAnimationFrame(sample);}requestAnimationFrame(sample);
    `);
    for(let i=0;i<8;i++){
     const destination=i%2?target:{x:screen.x,y:screen.y};
@@ -99,7 +113,8 @@ await authDatabase(async f=>{
     const frame=globalThis.rapidFrames.find(f=>f.t>click.t&&f.t<next&&((f.x-click.x)*dx+(f.y-click.y)*dy)/length>.5);
     return frame?frame.t-click.t:null;
    });});
-   console.log(JSON.stringify({map:mapId,rapidClickToMotionMs:rapid}));
+   if(profiler){await writeFile(resolve(out,'cpu-'+mapId+'.json'),JSON.stringify(await profiler.send('Profiler.stop')));await profiler.detach();}
+   console.log(JSON.stringify({map:mapId,rapidClickToMotionMs:rapid}));await writeFile(resolve(out,'rapid-'+mapId+'.json'),JSON.stringify(await p.evaluate(()=>({frames:globalThis.rapidFrames,clicks:globalThis.rapidClicks,slowNavigation:globalThis.slowNavigation})),null,2));
    assert.equal(rapid.length,8);assert.ok(rapid.every(ms=>ms!==null&&ms<=80),'new clicks must turn immediately while earlier commands remain in flight');
    await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
    await p.waitForTimeout(3000);
@@ -178,6 +193,12 @@ await authDatabase(async f=>{
    await p.waitForFunction(q=>{const w=MareGameSession.data.online.world;return Math.hypot(w.position.x-q.x,w.position.y-q.y)<2;},heldOrigin,{timeout:15000});
    await p.waitForTimeout(300);
    await p.unroute('**/v1/**');
+   socketDelay=0;
+   if(useRealtime)await p.evaluate(()=>MareGameSession.disconnectRealtime());
+   // Compact motion deliberately does not promote the economic snapshot version.
+   // Establish a current committed baseline before rejecting the next input.
+   await p.evaluate(()=>MareGameSession.read(true));
+   await p.waitForFunction(()=>{const h=__mareDiagnostics().hero,w=MareGameSession.data.online.world;return !w.path.length&&Math.hypot(h.x-w.position.x,h.y-w.position.y)<2;},null,{timeout:15000});
    // Reject an actual UI command before it reaches the isolated backend.
    const original=await p.evaluate(()=>({world:structuredClone(MareGameSession.data.online.world),version:MareGameSession.data.online.state.version}));
    let rejected=0;
@@ -187,10 +208,12 @@ await authDatabase(async f=>{
    await p.waitForTimeout(1200);
    assert.equal(rejected,1);assert.equal(await p.evaluate(()=>MareGameSession.data.online.state.version),original.version);
    const corrected=await p.evaluate(()=>({x:__mareDiagnostics().hero.x,y:__mareDiagnostics().hero.y}));
+   console.log(JSON.stringify({map:mapId,rejectionProbe:{original:original.world.position,path:original.world.path,corrected,current:await p.evaluate(()=>MareGameSession.data.online.world.position)}}));
    assert.ok(Math.hypot(corrected.x-original.world.position.x,corrected.y-original.world.position.y)<2,'rejected prediction returns to the authoritative pose');
    await p.unroute('**/commands');
    console.log(JSON.stringify({map:mapId,rejectionReconciled:true}));
   }
+  if(useRealtime){await p.evaluate(()=>{MareGameSession.disconnectRealtime(false);return MareGameSession.connectRealtime();});await p.waitForFunction(()=>MareGameSession.realtime.connected);}
   await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
   await p.evaluate(()=>MareGameSession.command('battle.auto',{enabled:true}));
   await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
@@ -216,18 +239,19 @@ await authDatabase(async f=>{
    const last=new Map();let moves=0;
    for(const v of globalThis.monsterProbe){const prior=last.get(v.id);if(prior&&Math.hypot(v.x-prior.x,v.y-prior.y)>.01)moves++;last.set(v.id,v);}
    return moves>100;
-  },null,{timeout:30000,polling:250});
+  },null,{timeout:30000,polling:250}).catch(async(error:any)=>{console.log(JSON.stringify({battleProbe:await p.evaluate(()=>({auto:MareGameSession.data.online.battle.auto,events:MareGameSession.data.online.battle.events,frames:globalThis.monsterProbe.length})),workers:simulations.report()}));throw error;});
   const samples=await p.evaluate('globalThis.monsterProbe');let moves=0,sliding=0,rewinds=0;const last=new Map();
   for(const v of samples){const prev=last.get(v.id);if(prev){if(v.phase<prev.phase-.01)rewinds++;if(Math.hypot(v.x-prev.x,v.y-prev.y)>.01){moves++;if(!v.moving)sliding++;}}last.set(v.id,v);}
   console.log(JSON.stringify({monsterFrames:samples.length,moves,sliding,phaseRewinds:rewinds}));
   assert.ok(moves>100,'real monster movement observed');assert.equal(sliding,0,'moving monsters animate their steps');assert.equal(rewinds,0,'walk animation clock never rewinds on snapshots');
+  if(useRealtime){assert.ok(socketFrames>200,'real HTTPS snapshots delivered');console.log(JSON.stringify({socketFrames,transport:realtime!.report()}));await p.evaluate(()=>MareGameSession.disconnectRealtime());}
   const disconnected=/\/(?:online-state|frame)$/;await p.route(disconnected,(r:any)=>r.abort());await p.evaluate(()=>MareGameSession.read(true).catch(()=>{}));
   await p.waitForFunction(()=>/Sem conexão/.test(document.querySelector('#onlinePerformance')?.textContent||''),null,{timeout:5000});
   await p.unroute(disconnected);await p.evaluate(()=>MareGameSession.read(true));
   // Polling and the one-second meter have independent clocks. Assert recovery
   // itself with a bound, rather than assuming both complete in a fixed 1100ms.
   await p.waitForFunction(()=>MareGameSession.available&&/Ping HTTP:/.test(document.querySelector('#onlinePerformance')?.textContent||''),null,{timeout:10000});
-  assert.ok(compactReads>5,'current server advertises compact frames, renderer consumes them');
+  assert.ok(useRealtime?socketFrames>200:compactReads>5,'renderer consumes compact frames');
   assert.deepEqual(errors,[]);assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');await p.screenshot({path:resolve(out,'combat.png')});
   await p.setViewportSize({width:640,height:900});
   await p.waitForFunction(()=>MareGameSession.available&&Number.isFinite(__mareDiagnostics().hero.x),null,{timeout:10000});
@@ -255,5 +279,5 @@ await authDatabase(async f=>{
   assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');
   console.log('Optional depth failure allowed entry; a missing base map reported the specific failure without exposing the creation form.');
   assert.deepEqual(keyboardResponseFailures,[],'WASD turns and release must respond within 80ms before the delayed ACK');
- }catch(error){await context?.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw error;}finally{await writeFile(resolve(out,'http-timing.json'),JSON.stringify({browserTimeOrigin,requests:httpProbe},null,2));await simulations?.stop();await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
+ }catch(error){await context?.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw error;}finally{await writeFile(resolve(out,'http-timing.json'),JSON.stringify({browserTimeOrigin,requests:httpProbe},null,2));await simulations?.stop();await context?.close();await browser?.close();await realtime?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
 });

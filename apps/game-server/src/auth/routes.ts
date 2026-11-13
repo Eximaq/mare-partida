@@ -33,6 +33,7 @@ function cookies(request: IncomingMessage) {
   }
   return result;
 }
+export const sessionCookie = (request: IncomingMessage) => cookies(request).get(SESSION);
 function setCookie(
   response: ServerResponse,
   name: string,

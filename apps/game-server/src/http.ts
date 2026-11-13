@@ -5,6 +5,7 @@ import {
 } from "node:http";
 import type { HealthResponse } from "@mare/shared";
 import { httpRouteGroup, type HttpRouteGroup } from "./metrics.js";
+export {attachRealtime} from './realtime.js';
 
 export function createHttpServer(options: {
   isReady: () => Promise<boolean>;

@@ -29,3 +29,14 @@ test('frequent combat snapshots and a delayed frame cannot create a speed burst'
  for(let t=20;t<=4000;t+=20){if(t%200===0){x+=20;p.update(world(x),t,{buffered:true});}const v=p.sample(t);assert.ok(v.x-prior.x<=2.000001);prior=v;}
  const late=p.sample(9000);assert.ok(late.x-prior.x<=10.000001,'paused rendering resumes with a bounded step');
 });
+
+test('100ms realtime combat uses a short bounded buffer without changing walking speed',()=>{
+ const p=createWorldPresentation({walk:true});const options={buffered:true,realtime:true};p.update(world(0),0,options);let prior=p.sample(0);
+ for(let t=20;t<=3000;t+=20){
+  if(t%100===0)p.update(world(t/10),t,options);
+  const next=p.sample(t);assert.ok(next.x-prior.x<=2.000001,'never speed up to catch up');prior=next;
+  if(t>1000)assert.ok(t/10-next.x<=25,'do not retain the 400/900ms polling buffer on a 100ms stream');
+ }
+ for(let t=3020;t<=4000;t+=20)p.sample(t);
+ assert.equal(p.sample(4000).x,300,'lost updates stop at the last authoritative point');
+});

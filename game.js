@@ -1838,7 +1838,7 @@
       const battle=ONLINE_GAME.data.online.battle,effects=battle?.fruit?.effects,special=!!(effects?.action||effects?.dash);
       const presentation=onlineWorldFrame?.special===special?onlineWorldFrame.presentation:MareOnlineGameUI.createWorldPresentation({walk:!special,route:(from,to)=>navigator().path(from,to)}),received=performance.now();
       const respawn=onlineBattleSeq!==null&&battle?.events.some(e=>e.seq>onlineBattleSeq&&e.type==='respawn');
-      const snap=presentation.update(w,received,{buffered:!!battle?.auto&&!w.path.length,reset:!!respawn,quickHunt:MareOnlineGameUI.quickHuntUpdates?.(ONLINE_GAME)});
+      const snap=presentation.update(w,received,{buffered:!!battle?.auto&&!w.path.length,reset:!!respawn,quickHunt:MareOnlineGameUI.quickHuntUpdates?.(ONLINE_GAME),realtime:!!ONLINE_GAME.realtime?.connected});
       onlineWorldFrame={snapshot:w,received,presentation,special};
       if(snap){Object.assign(world.hero,w.position,{direction:w.direction});camera.update(world.hero,activeMap(),0,true);}
     }
@@ -1921,7 +1921,7 @@
       const old=previous.get(m.id),oldHp=old?.hp,skin=m.source!=='weekly-boss'&&activeMap().id==='dawn'?MareEmber.skins.cesar:null;
       const presentation=old?.alive===m.alive&&old.onlinePresentation?old.onlinePresentation:MareOnlineGameUI.createWorldPresentation();
       const w=ONLINE_GAME.data.online.world;
-      presentation.update({...w,position:{x:m.x,y:m.y},path:[]},performance.now(),{buffered:true,quickHunt});
+      presentation.update({...w,position:{x:m.x,y:m.y},path:[]},performance.now(),{buffered:true,quickHunt,realtime:!!ONLINE_GAME.realtime?.connected});
       const pose=presentation.sample(performance.now());
       const visualClock=old?.alive===m.alive?old.emberElapsed:0;
       const actor=Object.assign(old||{},{...MareOnlineGameUI.fruitTimeline(m,b.fruit?.time,world.time),emberElapsed:visualClock||0,x:old?.alive===m.alive?old.x:pose.x,y:old?.alive===m.alive?old.y:pose.y,source:m.source||'world',name:b.prison||b.dungeon||b.weeklyBossInstanceId?m.name:m.type==='boss'?MareHunt.get(b.area)?.boss:skin?.name||monsterTypes[m.type]?.name,skin:skin?.id,hit:0,onlinePresentation:presentation});

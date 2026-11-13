@@ -438,14 +438,15 @@ test('a newer compact request can return full progress and Dawn positions in one
 });
 test('an older failed read cannot undo a newer successful connection; authentication failure still closes it',async()=>{
  const pending:Array<{resolve:(value:Response)=>void;reject:(reason:Error)=>void}>=[];
- const c=createSession({storage:{getItem(){return null;},removeItem(){}},fetch:async(path:string)=>path==='/v1/me'?Response.json({character:{id,name:'Fixture',classId:'sword',factionId:'pirate'}}):new Promise<Response>((resolve,reject)=>pending.push({resolve,reject}))});
+ let sessionRevoked=false;
+ const c=createSession({storage:{getItem(){return null;},removeItem(){}},fetch:async(path:string)=>path==='/v1/me'?(sessionRevoked?Response.json({error:'session_expired'},{status:401}):Response.json({character:{id,name:'Fixture',classId:'sword',factionId:'pirate'}})):new Promise<Response>((resolve,reject)=>pending.push({resolve,reject}))});
  const snapshot=(version:number)=>Response.json({state:{characterId:id,version,level:1,experience:'0',gold:'0'}});
  const load=c.load();await new Promise(r=>setImmediate(r));pending[0]!.resolve(snapshot(0));await load;
  const stale=c.read(true),denied=assert.rejects(stale,/offline/),fresh=c.read(true);pending[2]!.resolve(snapshot(2));await fresh;
  pending[1]!.reject(new Error('offline'));await denied;
  assert.equal(c.available,true,'late network error must not hide newer authorized state');assert.equal(c.data.online.state.version,2);
  const oldAuth=c.read(true),rejected=assert.rejects(oldAuth,{status:401}),latest=c.read(true);pending[4]!.resolve(snapshot(3));await latest;
- pending[3]!.resolve(Response.json({error:'session_expired'},{status:401}));await rejected;
+ sessionRevoked=true;pending[3]!.resolve(Response.json({error:'session_expired'},{status:401}));await rejected;
  assert.equal(c.available,false,'401 remains fail-closed even when responses are reordered');assert.equal(c.data,null);
 });
 

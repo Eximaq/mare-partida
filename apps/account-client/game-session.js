@@ -201,6 +201,8 @@
     uuid = () => root.crypto.randomUUID(),
     now = () => Date.now(),
     monotonic = () => root.performance.now(),
+    socketFactory = root.location?.protocol==='https:'&&typeof root.WebSocket==='function'
+      ? ()=>new root.WebSocket('wss://'+root.location.host+'/v1/realtime','mare.realtime.v1') : null,
   }) {
     let data = null,
       control = null,
@@ -211,6 +213,73 @@
       readVersion = 0;
     let confirmedMovementVersion = -1;
     let networkSample=null;
+    let stream=null,streamOpening=false,streamDisabled=false,streamRetryAt=0,streamTimer=null,streamSeq=0;
+    let streamFrameAt=null,streamInterval=null,streamRtt=null,streamPing=null,lastMotionFrame=null;
+    const streamPending=new Map();
+    const streamReady=()=>!!stream&&stream.readyState===1&&streamFrameAt!==null&&monotonic()-streamFrameAt<1500;
+    function disconnectRealtime(disable=true){
+      streamDisabled=disable;clearInterval(streamTimer);streamTimer=null;
+      const old=stream;stream=null;streamFrameAt=null;streamPing=null;
+      for(const pending of streamPending.values()){clearTimeout(pending.timer);pending.reject(fault('realtime_disconnected'));}streamPending.clear();
+      if(old)old.close();
+    }
+    function acceptMotionFrame(f){
+      if(!data?.online?.world||f?.protocol!==2||f.characterId!==data.character.id||!Number.isSafeInteger(f.version)||f.version<0||!Number.isFinite(Date.parse(f.serverNow))||!f.world||!('battle' in f)||!('lobby' in f)||!('partyMotion' in f)||'fullState' in f)throw fault('invalid_server_state');
+      const current=data.online;
+      if(f.version<current.state.version||f.version<confirmedMovementVersion||Date.parse(f.world.serverNow)<Date.parse(current.world.serverNow))return;
+      const party=mergePartyMotion(current.party,f.partyMotion);
+      // Membership/economy remains on the full snapshot. Never fabricate a roster.
+      if(f.partyMotion&&!party)return;
+      const completed=monotonic();streamInterval=streamFrameAt===null?null:completed-streamFrameAt;streamFrameAt=completed;
+      lastMotionFrame=f;
+      data={...data,online:{...current,world:f.world,battle:f.battle,lobby:f.lobby,party,weeklyBoss:f.weeklyBoss??null}};
+      available=true;notify();
+    }
+    async function connectRealtime(){
+      if(!socketFactory||streamDisabled||stream||streamOpening||now()<streamRetryAt||!available||!control||!data?.online?.world)return;
+      streamOpening=true;
+      const characterId=data.character.id;
+      try{
+        const csrf=await csrfToken();
+        if(streamDisabled||!control||data?.character?.id!==characterId)return;
+        const socket=socketFactory();stream=socket;
+        const dropped=()=>{if(stream!==socket)return;streamRetryAt=now()+2000;disconnectRealtime(false);};
+        socket.onclose=dropped;socket.onerror=dropped;
+        socket.onopen=()=>{
+          if(stream!==socket)return;
+          socket.send(JSON.stringify({type:'subscribe',characterId,csrfToken:csrf}));
+          const heartbeat=()=>{
+            if(stream!==socket||socket.readyState!==1)return;
+            if(streamPing&&monotonic()-streamPing.at>5000||streamFrameAt!==null&&monotonic()-streamFrameAt>2000){dropped();return;}
+            if(!streamPing){streamPing={seq:++streamSeq,at:monotonic()};socket.send(JSON.stringify({type:'ping',seq:streamPing.seq}));}
+          };
+          heartbeat();streamTimer=setInterval(heartbeat,2000);
+        };
+        socket.onmessage=event=>{
+          if(stream!==socket||data?.character?.id!==characterId)return;
+          try{
+            const value=JSON.parse(event.data);
+            if(value.type==='frame'){acceptMotionFrame(value.frame);return;}
+            if(value.type==='pong'){if(streamPing?.seq===value.seq){streamRtt=Math.max(0,monotonic()-streamPing.at);streamPing=null;}return;}
+            if(value.type==='error'&&value.status===401){available=false;control=null;data=null;readVersion++;disconnectRealtime();discard();notify();return;}
+            const pending=streamPending.get(value.seq);
+            if(pending&&(value.type==='ack'||value.type==='error')){
+              clearTimeout(pending.timer);streamPending.delete(value.seq);
+              if(value.type==='ack')pending.resolve(value.result);
+              else pending.reject(Object.assign(fault(value.error||'unavailable'),{status:value.status}));
+            }else if(value.type==='error')dropped();
+          }catch{dropped();}
+        };
+      }catch{streamRetryAt=now()+2000;disconnectRealtime(false);}finally{streamOpening=false;}
+    }
+    function streamCommand(command){
+      const seq=++streamSeq;
+      return new Promise((resolve,reject)=>{
+        const timer=setTimeout(()=>{streamRetryAt=now()+2000;disconnectRealtime(false);},2500);
+        streamPending.set(seq,{resolve,reject,timer});
+        try{stream.send(JSON.stringify({type:'command',seq,command}));}catch{disconnectRealtime(false);}
+      });
+    }
     let csrfCache=null,csrfFlight=null,csrfGeneration=0,csrfWarmAt=0;
     const clearCsrf=()=>{csrfGeneration++;csrfCache=null;csrfFlight=null;csrfWarmAt=0;};
     function csrfToken(refresh=false){
@@ -252,8 +321,15 @@
           body: JSON.stringify(payload),
         });
       }
-      const response = await fetch(path, options),
-        result = response.status === 204 ? {} : await response.json();
+      let response = await fetch(path, options);
+      if(response.status===401&&payload===undefined&&/^\/v1\/characters\/[a-f0-9-]+\/(online-state|frame)(\?.*)?$/.test(path)){
+        await response.arrayBuffer();
+        // A presentation can straddle JWT expiry. Confirm the BFF session via
+        // its locked refresh path, then retry this read once. Never retry writes.
+        await api('/v1/me',undefined,{},signal);
+        response=await fetch(path,options);
+      }
+      const result = response.status === 204 ? {} : await response.json();
       // Cookie changes invalidate the binding, including an uncertain reset.
       if(payload!==undefined&&path.startsWith('/v1/auth/'))clearCsrf();
       if (!response.ok) {
@@ -296,6 +372,10 @@
     }
     const stopAuto = (battle) => battle?.auto ? { ...battle, auto: false } : battle;
     function preserveConfirmedMovement(online) {
+      if(online&&lastMotionFrame?.characterId===online.state.characterId&&lastMotionFrame.version>=online.state.version&&Date.parse(lastMotionFrame.world.serverNow)>Date.parse(online.world?.serverNow)){
+        const f=lastMotionFrame,party=mergePartyMotion(online.party,f.partyMotion);
+        online={...online,world:f.world,battle:f.battle,lobby:f.lobby,weeklyBoss:f.weeklyBoss??null,...(party?{party}:{})};
+      }
       if (!online || online.state.version >= confirmedMovementVersion) return online;
       const current = data.online;
       const battle = online.world?.mapId === current.world.mapId ? stopAuto(online.battle) : current.battle;
@@ -325,6 +405,7 @@
       }
       if (revision !== readVersion) return;
       if (data?.character?.id !== me.character?.id) {
+        disconnectRealtime(false);lastMotionFrame=null;
         clearCsrf();
         control = null;
         pending = null;
@@ -351,6 +432,7 @@
         }
       }
       notify();
+      void connectRealtime();
       return data;
     }
     let frameFlight=null;
@@ -400,6 +482,7 @@
         payload,
       );
       notify();
+      void connectRealtime();
       return control;
     }
     async function send(intent) {
@@ -409,13 +492,22 @@
       notify();
       try {
         const sentControl = control;
-        const receipt=await api(`/v1/characters/${data.character.id}/commands`, {
+        const command={
           requestId: intent.requestId,
           expectedVersion: intent.expectedVersion,
           action: intent.action,
           payload: intent.payload,
           control: { epoch: control.epoch, token: control.token },
-        });
+        };
+        let receipt;
+        if(streamReady()&&['world.move','world.stop'].includes(intent.action)){
+          try{receipt=await streamCommand(command);}catch(error){
+            if(error.code!=='realtime_disconnected')throw error;
+            // Same requestId: a committed response lost during disconnect must
+            // replay the durable receipt, never create another mutation.
+            receipt=await api(`/v1/characters/${intent.characterId}/commands`,command);
+          }
+        }else receipt=await api(`/v1/characters/${data.character.id}/commands`,command);
         discard();
         const online = data?.online;
         const world = receipt.world;
@@ -428,9 +520,13 @@
             receipt.state.version === intent.expectedVersion + 1 &&
             receipt.state.version >= online.state.version && world.mapId === online.world.mapId &&
             world.rulesHash === online.world.rulesHash &&
-            Date.parse(world.serverNow) >= Date.parse(online.world.serverNow)) {
+            (Date.parse(world.serverNow) >= Date.parse(online.world.serverNow) ||
+             lastMotionFrame?.characterId===intent.characterId && lastMotionFrame.version>=receipt.state.version)) {
           confirmedMovementVersion = receipt.state.version;
-          data = { ...data, online: { ...online, world, battle: stopAuto(online.battle) } };
+          // An already received committed frame may be newer than this ACK.
+          // Confirm the receipt without rewinding its pose or forcing a full read.
+          if(Date.parse(world.serverNow)>=Date.parse(online.world.serverNow))
+            data = { ...data, online: { ...online, world, battle: stopAuto(online.battle) } };
           return receipt;
         }
         await read(intent.action!=='profile.identity');
@@ -450,6 +546,8 @@
       get network() {
         return networkSample?{rttMs:networkSample.rttMs,ageMs:Math.max(0,monotonic()-networkSample.at),intervalMs:networkSample.intervalMs}:{rttMs:null,ageMs:null,intervalMs:null};
       },
+      get realtime(){return {connected:streamReady(),rttMs:streamRtt,intervalMs:streamInterval,ageMs:streamFrameAt===null?null:Math.max(0,monotonic()-streamFrameAt)};},
+      connectRealtime,disconnectRealtime,
       get available() {
         return available;
       },
@@ -518,6 +616,7 @@
       },
       async logout() {
         await api("/v1/auth/logout", { scope: "local" });
+        disconnectRealtime();lastMotionFrame=null;
         readVersion++;
         control = null;
         data = null;

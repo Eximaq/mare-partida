@@ -9,6 +9,27 @@ import { join } from "node:path";
 import type { AddressInfo } from "node:net";
 import { generate } from "selfsigned";
 import { createDevGateway } from "../../tools/dev-gateway.mjs";
+import {WebSocket,WebSocketServer} from 'ws';
+
+test('HTTPS gateway forwards only the realtime upgrade and strips spoofed proxy identity', {timeout:10000}, async()=>{
+  const cert=await generate([{name:'commonName',value:'localhost'}],{extensions:[{name:'subjectAltName',altNames:[{type:7,ip:'127.0.0.1'}]}]});
+  const upstream=createServer(),wss=new WebSocketServer({server:upstream});
+  wss.on('connection',(ws,req)=>ws.send(JSON.stringify({cookie:req.headers.cookie,origin:req.headers.origin,forwarded:req.headers['x-forwarded-for']??null,identity:req.headers['x-mare-client-ip']??null})));
+  upstream.listen(0,'127.0.0.1');await once(upstream,'listening');
+  const gateway=createDevGateway({key:cert.private,cert:cert.cert,staticRoot:'.',onlineRoot:'.',upstream:new URL(`http://127.0.0.1:${(upstream.address() as AddressInfo).port}`)});
+  gateway.listen(0,'127.0.0.1');await once(gateway,'listening');
+  const url=`wss://127.0.0.1:${(gateway.address() as AddressInfo).port}`;
+  const clients:WebSocket[]=[];
+  try{
+    const ws=new WebSocket(url+'/v1/realtime','mare.realtime.v1',{ca:cert.cert,handshakeTimeout:2000,headers:{origin:'https://localhost',cookie:'opaque-fixture','x-forwarded-for':'forged','x-mare-client-ip':'forged'}});clients.push(ws);
+    const [message]=await once(ws,'message');
+    assert.deepEqual(JSON.parse(message.toString()),{cookie:'opaque-fixture',origin:'https://localhost',forwarded:null,identity:null});
+    for(const path of ['/v1/me','/v1/realtime?token=forbidden']){
+      const bad=new WebSocket(url+path,'mare.realtime.v1',{ca:cert.cert,handshakeTimeout:2000});clients.push(bad);bad.on('error',()=>{});
+      const [,response]=await once(bad,'unexpected-response');assert.equal(response.statusCode,404);response.resume();bad.terminate();
+    }
+  }finally{for(const ws of clients)ws.terminate();for(const ws of wss.clients)ws.terminate();await new Promise<void>(r=>wss.close(()=>r()));gateway.closeAllConnections();await new Promise<void>(r=>gateway.close(()=>r()));await new Promise<void>(r=>upstream.close(()=>r()));}
+});
 
 test("one HTTPS origin serves only built files and forwards Secure cookies to the private API", async (t) => {
   const dir = await mkdtemp(join(tmpdir(), "mare-gateway-"));

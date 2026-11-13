@@ -4,6 +4,13 @@ import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
 const {createWorldPresentation,worldPosition}=require('../../apps/account-client/game-ui.js');
 const world=(x=0,patch={})=>({mapId:'lobby',position:{x,y:100},path:[{x:x+400,y:100}],speed:100,direction:'right',serverNow:'2026-01-01T00:00:00Z',motionUntil:'2026-01-01T00:00:04Z',...patch});
+test('duplicate realtime positions do not shorten the interval represented by the next combat sample',()=>{
+ const p=createWorldPresentation(),options={buffered:true,realtime:true},idle=(x:number)=>world(x,{path:[]});
+ p.update(idle(0),0,options);p.update(idle(0),100,options);p.update(idle(0),200,options);
+ p.update(idle(25),250,options);
+ assert.ok(p.sample(450).x<20,'a 250ms simulation step must not be squeezed into the last 50ms delivery interval');
+ assert.equal(p.sample(600).x,25);
+});
 test('presentation preserves continuity on delayed snapshots and converges without changing authority',()=>{
  assert.equal(typeof createWorldPresentation,'function');
  const p=createWorldPresentation(),a=world(),b=world(70),copy=structuredClone(b);

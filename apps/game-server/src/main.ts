@@ -10,7 +10,7 @@ import { SupabaseProvider } from "./auth/supabase.js";
 import { Vault } from "./auth/vault.js";
 import { AuthService } from "./auth/service.js";
 import { createAuthHandler } from "./auth/routes.js";
-import { createHttpServer } from "./http.js";
+import { createHttpServer, attachRealtime } from "./http.js";
 
 async function main() {
   const config = readConfig(process.env);
@@ -62,6 +62,7 @@ async function main() {
     }));
     eventLoop.reset();
     if(simulations)console.log(JSON.stringify(simulations.report()));
+    if(realtime)console.log(JSON.stringify(realtime.report()));
   },60000);reporter.unref();
   const server = createHttpServer({
     onRequest:metrics.record,
@@ -78,12 +79,14 @@ async function main() {
         }
       : {}),
   });
+  const realtime=auth&&vault&&service?attachRealtime(server,{service,vault,origin:auth.origin,...(config.trustedProxyIp?{trustedProxyIp:config.trustedProxyIp}:{})}):undefined;
   try {
     await simulations?.start();
     server.listen(config.port, config.host);
     await once(server, "listening");
   } catch (error) {
     clearInterval(revocations);clearInterval(reporter);eventLoop.disable();await simulations?.stop();
+    await realtime?.close();
     await pool.end();
     throw error;
   }
@@ -102,6 +105,7 @@ async function main() {
     clearInterval(reporter);
     eventLoop.disable();
     const simulationStopped=simulations?.stop();
+    void realtime?.close();
     const deadline = setTimeout(() => {
       server.closeAllConnections();
       process.exitCode = 1;

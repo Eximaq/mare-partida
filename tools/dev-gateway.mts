@@ -168,6 +168,39 @@ export function createDevGateway(options: {
     },
   );
   server.requestTimeout = 10000;
+  // Upgrade is an explicit route, with the same private host/peer boundary as HTTP.
+  const upgraded = new Set<import('node:stream').Duplex>();
+  server.on('upgrade', (req, socket, head) => {
+    socket.on('error', () => socket.destroy());
+    const reject = (status:number) => socket.end(`HTTP/1.1 ${status} Rejected\r\nConnection: close\r\nContent-Length: 0\r\n\r\n`);
+    if (req.method !== 'GET' || req.url !== '/v1/realtime') return void reject(404);
+    if (options.access && (req.headers.host !== options.access.host || !options.access.peers.includes(req.socket.remoteAddress ?? ''))) return void reject(421);
+    const headers = {...req.headers};
+    for(const key of ['host','forwarded','x-forwarded-for','x-forwarded-host','x-forwarded-proto','x-mare-client-ip','proxy-authorization','proxy-connection']) delete headers[key];
+    headers.connection = 'Upgrade'; headers.upgrade = 'websocket';
+    const upstream = proxyRequest(new URL(options.upstream.origin + '/v1/realtime'), {method:'GET',headers,timeout:5000});
+    upgraded.add(socket);socket.once('close',()=>{upgraded.delete(socket);upstream.destroy();});
+    upstream.on('timeout',()=>upstream.destroy());
+    upstream.on('error',()=>{if(!socket.destroyed)socket.destroy();});
+    upstream.on('response',response=>{response.resume();reject(response.statusCode ?? 502);});
+    upstream.on('upgrade',(response,peer,upstreamHead)=>{
+      upstream.setTimeout(0);peer.setTimeout(0);(socket as Socket).setTimeout(0);
+      upgraded.add(peer);
+      const close=()=>{upgraded.delete(peer);peer.destroy();socket.destroy();};
+      peer.on('error',close);peer.once('close',close);socket.once('close',close);
+      if(socket.destroyed)return close();
+      socket.write('HTTP/1.1 101 Switching Protocols\r\n'+response.rawHeaders.reduce((s,_v,i,a)=>i%2?s:s+a[i]+': '+a[i+1]+'\r\n','')+'\r\n');
+      if(upstreamHead.length)socket.write(upstreamHead);
+      if(head.length)peer.write(head);
+      peer.pipe(socket);socket.pipe(peer);
+    });
+    upstream.end();
+  });
+  const close = server.close.bind(server);
+  server.close = ((callback?: (error?:Error)=>void) => {
+    for(const socket of upgraded)socket.destroy();
+    return close(callback);
+  }) as typeof server.close;
   if (options.access) server.on("connection", socket => {
     if (!options.access!.peers.includes((socket as Socket).remoteAddress ?? ""))
       socket.destroy();

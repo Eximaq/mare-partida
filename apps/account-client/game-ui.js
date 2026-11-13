@@ -33,7 +33,7 @@
     return {x,y,direction,moving:moving&&elapsedMs<duration};
   }
   // Cover the observed full-state fallback gap while keeping the blend bounded.
-  const combatBlendDuration = (gap, quickHunt) => Math.min(1250, Math.max(quickHunt ? 400 : 900, gap + 100));
+  const combatBlendDuration = (gap, quickHunt, realtime=false) => Math.min(1250, Math.max(realtime ? 120 : quickHunt ? 400 : 900, gap + (realtime ? 50 : 100)));
   function quickHuntUpdates(client) {
     const { battle, world, sync } = client.data?.online ?? {};
     return client.controlled && sync?.protocol === 2 && !!world?.area &&
@@ -56,22 +56,22 @@
       return {...pose,x:pose.x+offset.x*weight,y:pose.y+offset.y*weight,
         moving:pose.moving||(weight>0&&Math.hypot(offset.x,offset.y)>.1)};
     }
-    return {sample,update(next,now,{buffered=false,quickHunt=false}={}){
+    return {sample,update(next,now,{buffered=false,quickHunt=false,realtime=false}={}){
       if(next===snapshot)return false;
       const gap=now-observed;
-      observed=now;
       if(buffered&&wasBuffered&&gap<=5000&&sameCombatPoint(snapshot,next)){
         // Keep the in-flight blend but accept the latest facing for this point.
         snapshot=next;
         return false;
       }
+      observed=now;
       const previous=sample(now),target=worldPosition(next,0);
       // A peer can start moving between polls. Allow that observed progress,
       // while still snapping large teleports and never retaining stale offsets.
       const limit=Math.min(512,Math.max(128,next.speed*Math.min(3,Math.max(0,gap)/1000)+32));
       const snap=!previous||snapshot.mapId!==next.mapId||gap>5000||Math.hypot(previous.x-target.x,previous.y-target.y)>limit;
       offset=snap?{x:0,y:0}:{x:previous.x-target.x,y:previous.y-target.y};
-      duration=buffered?combatBlendDuration(gap,quickHunt):200;
+      duration=buffered?combatBlendDuration(gap,quickHunt,realtime):200;
       wasBuffered=buffered;
       snapshot=next;received=now;return snap;
     }};
@@ -101,21 +101,21 @@
       if(dt>0)state.moving=!state.stationaryCorrection&&moved>1e-8;
       return {x:state.x,y:state.y,direction:state.direction,moving:state.moving};
     }
-    function update(next,now,{buffered=false,reset=false,quickHunt=false,preview=false,force=false}={}){
+    function update(next,now,{buffered=false,reset=false,quickHunt=false,realtime=false,preview=false,force=false}={}){
       if(!preview){
-        confirmed=next;confirmedOptions={buffered,reset,quickHunt};
+        confirmed=next;confirmedOptions={buffered,reset,quickHunt,realtime};
         if(prediction&&snapshot.mapId===next.mapId&&!reset)return false;
         if(reset||snapshot&&snapshot.mapId!==next.mapId){windowUntil=null;latestTicket=null;settledSerial=serial;intentGoal=null;}
         prediction=null;
       }
       if(next===snapshot&&!reset&&!force)return false;
       const gap=now-observed;
-      observed=now;
       if(!reset&&buffered&&state?.buffered&&sameCombatPoint(snapshot,next)&&snapshot.speed===next.speed){
         snapshot=next;
         if(!state.points.length)state.direction=next.direction;
         return false;
       }
+      observed=now;
       const previous=sample(now),snap=!previous||snapshot.mapId!==next.mapId||reset;
       const origin=snap?next.position:previous;
       const connect=point=>{
@@ -152,7 +152,7 @@
         // An idle authoritative pose may need positional reconciliation, but
         // that correction is not an instruction to turn and walk backwards.
         stationaryCorrection:!buffered&&!next.path.length,
-        buffered:buffered&&!next.path.length,duration:combatBlendDuration(gap,quickHunt)};
+        buffered:buffered&&!next.path.length,duration:combatBlendDuration(gap,quickHunt,realtime)};
       snapshot=next;received=now;return snap;
     }
     function cancel(now,expired=false,acceptedIntent=false){
@@ -372,11 +372,11 @@
     meter.id='onlinePerformance';meter.setAttribute('aria-label','Conexão e desempenho');
     meter.textContent='Ping HTTP: — · FPS: —';document.body.append(meter);
     function renderPerformance(){
-      const n=client.network||{},f=frameMeter.sample(),ms=v=>Number.isFinite(v)?Math.round(v)+' ms':'—';
+      const realtime=client.realtime?.connected,n=(realtime?client.realtime:client.network)||{},f=frameMeter.sample(),ms=v=>Number.isFinite(v)?Math.round(v)+' ms':'—';
       const stale = n.ageMs > 5000;
       const updates = stale ? 'Sem atualizar há '+ms(n.ageMs) : 'Atualizações: '+ms(n.intervalMs);
-      meter.textContent=(client.available?'Ping HTTP: '+ms(n.rttMs):'Sem conexão')+' · FPS: '+(document.hidden?'—':f.fps??'—')+' · '+updates;
-      meter.title='Ping HTTP inclui rede e processamento do servidor. Atualizações mostra o intervalo entre as duas últimas leituras válidas. Última leitura há '+ms(n.ageMs)+'. Maior intervalo entre frames: '+ms(f.maxFrameMs)+'.';
+      meter.textContent=(client.available?(realtime?'Ping WS: ':'Ping HTTP: ')+ms(n.rttMs):'Sem conexão')+' · FPS: '+(document.hidden?'—':f.fps??'—')+' · '+updates;
+      meter.title=(realtime?'Ping WS mede a ida e volta de uma mensagem curta. ':'Ping HTTP inclui rede e processamento do servidor. ')+'Atualizações mostra o intervalo entre os dois últimos estados válidos. Última atualização há '+ms(n.ageMs)+'. Maior intervalo entre frames: '+ms(f.maxFrameMs)+'.';
       meter.dataset.stale=String(!client.available||stale);
     }
     const performanceTimer=setInterval(renderPerformance,1000);
@@ -616,11 +616,13 @@
       if (!pollingStopped) pollTimer = setTimeout(pollState, delay);
     };
     async function pollState() {
+      void client.connectRealtime?.();
       if (redirecting || document.hidden || client.busy) {
         schedulePoll();
         return;
       }
       const started = performance.now();
+      if(client.realtime?.connected&&started-lastFullRead<3000){schedulePoll();return;}
       const remaining = lastRead + pollPeriod() - started;
       if (readFailures === 0 && remaining > 0) {
         schedulePoll(Math.min(250, Math.ceil(remaining)));
@@ -658,6 +660,7 @@
       clearInterval(performanceTimer);meter.remove();
       document.removeEventListener("visibilitychange",resetPerformance);
       pollingStopped = true;
+      client.disconnectRealtime?.();
       clearTimeout(pollTimer);
       clearInterval(renewal);
       document.removeEventListener("visibilitychange", resumePresence);
