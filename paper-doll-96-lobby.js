@@ -82,7 +82,7 @@
     let draws=0,lastPose=null,pending=null,preparing=null,wanted=null,bundles=new Map(),previews=new Map(),failed=new Set();
     const images=new Map(),inflight=new Map(),imageFailures=new Map(),diagnostics=new Map();let loading=0,peakLoads=0,imageBytes=0;const waiting=[];
     const pause=()=>new Promise(resolve=>setTimeout(resolve,0));
-    const snapshot=()=>({nativeHD:nativeHD?.snapshot(),defaultHD:defaultHD?.snapshot(),rework:rework?.snapshot()||{state:'disabled'},renderer:defaultHD?.snapshot()?.last?.state==='rendered'?'rework-default-hd':['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'native-hd':rework?.active?'rework':'native96',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'ready':state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:previews.size,peakLoads});
+    const snapshot=()=>({nativeHD:nativeHD?.snapshot(),defaultHD:defaultHD?.snapshot(),rework:rework?.snapshot()||{state:'disabled'},renderer:['rendered','holding-native-while-loading'].includes(defaultHD?.snapshot()?.last?.state)?'rework-default-hd':['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'native-hd':rework?.active?'rework':'native96',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'ready':state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:previews.size,peakLoads});
     function diagnose(error,context={}){
       const detail={component:context.consumer||'player',...context,...error.spriteContext,status:'failed',message:error.message};
       const key=[detail.asset||detail.component,detail.code||'load-failed'].join(':');
@@ -257,7 +257,7 @@
       return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(point.y-spec.pivot.y)*scale,frame:4,weapon:value.look.weapon};
     }
     async function prepareVisual(player,options={}){
-      if(await nativeHD?.prepareFamily(player)&&await nativeHD.prepareClip(player,options))return true;
+      if(await nativeHD?.prepareClip(player,options))return true;
       return defaultHD?.prepare(player,options)||false;
     }
     const height=player=>active&&!player?.zoanTransformed?(nativeHD?.height(player)||96):null;

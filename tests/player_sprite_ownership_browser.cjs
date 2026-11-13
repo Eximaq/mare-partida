@@ -17,7 +17,7 @@ async function prepared(q){
  await q.p.waitForFunction(()=>{const pixels=__ownershipQA.probe(),s=__ownershipQA.runtime.snapshot(),a=s.defaultHD?.last||s.nativeHD?.last;return pixels>0&&a?.state==='rendered';},null,{timeout:120000});
  assert.equal(await q.p.evaluate(()=>JSON.stringify([__ownershipQA.game.appearance96,__ownershipQA.game.equipment])),before,'rendering preserves the saved identity and items');
  const snapshot=await q.p.evaluate(()=>__ownershipQA.runtime.snapshot());assert(['native-hd','rework-default-hd'].includes(snapshot.renderer));
- if(snapshot.renderer==='rework-default-hd')assert.equal(snapshot.defaultHD.last.mode,'bare-rework-base');
+ if(snapshot.renderer==='rework-default-hd')assert(['partial-native','native'].includes(snapshot.defaultHD.last.mode)); if(snapshot.renderer==='rework-default-hd')assert.equal(snapshot.defaultHD.last.savedIdentityUnchanged,true);
  assert.equal(await q.p.evaluate(()=>__oldPlayerEngines),0);assert.deepEqual(q.obsolete,[]);assert.deepEqual(q.errors,[]);
 }
 const nativeIndex=/\/tools\/rework-base-hd\/index\.json(?:\?|$)/;

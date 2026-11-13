@@ -1,0 +1,18 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const cv=require('@napi-rs/canvas');
+vm.runInThisContext(fs.readFileSync(path.join(__dirname,'..','tools/rework-accessories/vendor.js'),'utf8'));
+global.MareReworkBaseHD=require('../player-rework-base-hd.js');
+global.MareFemaleNamedHairHD=require('../player-rework-female-named-hair-hd.js');
+global.MareReworkWeaponNativeHD=require('../player-rework-weapon-native-hd.js');
+global.MareReworkFemaleEquipmentHD=require('../player-rework-female-equipment-hd.js');
+global.MareReworkHead=require('../player-rework-head-family.js');
+global.MareNativeHeadCompat=require('../native-head-compat.js');
+global.MareReworkModularOutfitsHD=require('../player-rework-modular-outfits-hd.js');
+global.MareReworkWeaponCarryHD=require('../player-rework-weapon-carry-hd.js');
+global.MareReworkOutfitOverlayHD=require('../player-rework-outfit-overlay-hd.js');
+global.MareReworkOutfitCarryOverlayHD=require('../player-rework-outfit-carry-overlay-hd.js');
+const {create}=require('../player-rework-native-hd.js');
+global.MareReworkZip=require('../player-rework-zip.js');global.MareReworkHDAssets=require('../player-rework-hd-assets.js');
+const make=(options={})=>create({fetchJSON:async p=>{const file=path.join(__dirname,'..',p);return JSON.parse(fs.existsSync(file)?fs.readFileSync(file):require('node:zlib').gunzipSync(fs.readFileSync(file+'.gz')));},loadImage:require('../tools/rework-hd-test-loader.cjs').create(path.join(__dirname,'..')),makeCanvas:cv.createCanvas,...options});
+
+global.MareHeadgear=require('../headgear-visibility.js');global.MareAppearance96=require('../tools/paper-doll-96-v3/appearance.js');global.MareOriginalHairHelmetsHD=require('../player-rework-original-hair-helmets-hd.js');module.exports={make,cv};

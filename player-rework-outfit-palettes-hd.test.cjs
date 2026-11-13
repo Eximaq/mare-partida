@@ -10,7 +10,7 @@ test('three real palettes preserve source alpha and all unmasked pixels in idle 
   const frame=action==='attack-unarmed'?3:0,c=createCanvas(r.pack.frame.width*4,r.pack.frame.height*4);api.render(c.getContext('2d'),r,images,{frame,makeCanvas:createCanvas});
   const x=['south','north','east','west'].indexOf(direction)*640,y=['idle','walk','attack-unarmed'].indexOf(action)*640;gc.drawImage(c,x+(640-c.width)/2,y+(640-c.height)/2);gc.fillStyle='white';gc.font='24px sans-serif';gc.fillText(skin+'/'+hairColor+' '+direction+' '+action,x+10,y+30);
  }
- fs.writeFileSync('/tmp/outfit-palette-'+skin+'.png',gallery.toBuffer('image/png'));
+ fs.writeFileSync(require('node:os').tmpdir()+'/outfit-palette-'+skin+'.png',gallery.toBuffer('image/png'));
  }
  assert.ok(checks>100);console.log(checks+' recolor calls verified, no unmasked pixel or alpha altered');
 });
