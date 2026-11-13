@@ -82,7 +82,7 @@
     let draws=0,lastPose=null,pending=null,preparing=null,wanted=null,bundles=new Map(),previews=new Map(),failed=new Set();
     const images=new Map(),inflight=new Map(),imageFailures=new Map(),diagnostics=new Map();let loading=0,peakLoads=0,imageBytes=0;const waiting=[];
     const pause=()=>new Promise(resolve=>setTimeout(resolve,0));
-    const snapshot=()=>({nativeHD:nativeHD?.snapshot(),defaultHD:defaultHD?.snapshot(),rework:rework?.snapshot()||{state:'disabled'},renderer:['rendered','holding-native-while-loading'].includes(defaultHD?.snapshot()?.last?.state)?'rework-default-hd':['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'native-hd':rework?.active?'rework':'native96',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'ready':state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:previews.size,peakLoads});
+    const snapshot=()=>({nativeHD:nativeHD?.snapshot(),defaultHD:defaultHD?.snapshot(),rework:rework?.snapshot()||{state:'disabled'},worldVisual:worldVisual(),renderer:lastPose?.consumer==='world'?'native96':['rendered','holding-native-while-loading'].includes(defaultHD?.snapshot()?.last?.state)?'rework-default-hd':['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'native-hd':rework?.active?'rework':'native96',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'ready':state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:previews.size,peakLoads});
     function diagnose(error,context={}){
       const detail={component:context.consumer||'player',...context,...error.spriteContext,status:'failed',message:error.message};
       const key=[detail.asset||detail.component,detail.code||'load-failed'].join(':');
@@ -142,7 +142,7 @@
       const strip=Object.assign(document.createElement('canvas'),{width:renderSpec.width*sel.clip.frames*density,height:renderSpec.height*density}),ctx=strip.getContext('2d'),emissions=[];
       const tile=Object.assign(document.createElement('canvas'),{width:renderSpec.width*density,height:renderSpec.height*density}),tc=tile.getContext('2d');tc.imageSmoothingEnabled=false;tc.scale(density,density);tc.translate(pad.x,pad.top);
       for(let frame=0;frame<sel.clip.frames;frame++){
-        if(cancel())return null;
+        if(cancel()){strip.width=0;strip.height=0;return null;}
         tc.clearRect(-pad.x,-pad.top,renderSpec.width,renderSpec.height);emissions.push(wardrobe.draw(tc,loaded,sel,frame,spec,[],look));ctx.drawImage(tile,frame*renderSpec.width*density,0);await pause();
       }
       return {strip,spec:renderSpec,nativeSpec:spec,clip:sel.clip,emissions,density};
@@ -155,7 +155,17 @@
       }
     }
     function releaseBundle(bundle){for(const value of new Set(bundle?.values())){const strip=value?.strip;if(strip){strip.width=0;strip.height=0;}}}
+    const directionalPreparations=new Map();
+    function prepareWorldDirections(player){
+      if(!nativeHD?.prepareStablePose||!player||player.zoanTransformed)return;
+      const key=JSON.stringify([player.appearance96,player.equipment,!!root.MareHeadgear?.hidden(player),!!root.MareAppearance96,!!root.MareCharacterAppearance]);
+      if(directionalPreparations.has(key))return;
+      const preparedPlayer={...player,appearance96:{...player.appearance96},equipment:{...player.equipment},preferences:{...player.preferences}};
+      const task=(async()=>{for(const direction of ['south','east','west','north']){const options={action:'idle',direction,consumer:'world'};if(!await nativeHD.prepareStablePose(preparedPlayer,options))await defaultHD?.prepareStablePose(preparedPlayer,options);}})().catch(()=>{directionalPreparations.delete(key);});
+      directionalPreparations.set(key,task);while(directionalPreparations.size>8)directionalPreparations.delete(directionalPreparations.keys().next().value);
+    }
     function ensure(player,{consumer='player-prepare'}={}){
+      prepareWorldDirections(player);
       if(state!=='ready')return Promise.resolve(false);
       const target=resolve(player);
       // Public peers share a bounded idle/walk cache; do not cancel another peer while composing.
@@ -194,7 +204,9 @@
     }
     function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;
+      if(worldView&&consumer==='world'&&worldRequest)return drawWorldVisual(ctx,{scene,action,direction,time,progress,timing,x,y,scale,consumer,weaponless});
       if(root.MareVisualCompletoRenderer?.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer})){draws++;return true;}
+      if(consumer==='world')prepareWorldDirections(player);
       // Trim legacy preparation sources even when HD owns the early-return draw.
       if(scene==='hunt'&&!pending&&!previewPending)trimSourceImages();
       if(nativeHD?.drawStable(ctx,player,{action:['combat-idle','guard','hurt','death'].includes(action)?'idle':action,direction,time,progress,x,y,consumer,weaponless})){defaultHD?.clear();draws++;return true;}
@@ -247,6 +259,7 @@
       paint(ctx,entry.value,direction,frame,ctx.canvas.width/2,ctx.canvas.height-24,2);return true;
     }
     function projectileOrigin(player,hero,pose={},scale=1){
+      if(worldReady(player)&&worldBundle.projectileOrigin)return worldBundle.projectileOrigin(hero,{...pose,direction:directionOf(pose.direction||hero.direction)},scale);
 
       if(rework?.active&&!player?.zoanTransformed)return rework.projectileOrigin(player,hero,pose,scale);
       if(!active||state!=='ready'||player?.zoanTransformed)return null;
@@ -260,8 +273,162 @@
       if(await nativeHD?.prepareClip(player,options))return true;
       return defaultHD?.prepare(player,options)||false;
     }
-    const height=player=>active&&!player?.zoanTransformed?(nativeHD?.height(player)||96):null;
-    return {ready,snapshot,draw,height,ensure,prepareVisual,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
+    // Only the local map consumer owns this gate. Portraits and remote actors
+    // retain their existing independent loading paths.
+    let worldRequest=null,worldBundle=null;
+    const visualIdentity=player=>JSON.stringify([
+      player.classId,player.factionId,player.appearance96,player.paperDollLook,
+      Object.entries(player.equipment||{}).filter(([,item])=>item!=null).sort(([a],[b])=>a.localeCompare(b)).map(([slot,item])=>[slot,item.def??item]),
+      Headgear.hidden(player),!!player.zoanTransformed
+    ]);
+    function clearWorldVisual(){
+      worldRequest?.controller.abort();worldRequest=null;
+      worldBundle?.release();worldBundle=null;
+    }
+    const worldVisual=()=>worldRequest?{key:worldRequest.key,state:worldRequest.state,error:worldRequest.error,coverage:worldRequest.coverage,preparedAt:worldRequest.preparedAt,firstDrawAt:worldRequest.firstDrawAt,publishedKey:worldBundle?.key}:null;
+    const worldReady=player=>!!player&&!!worldBundle&&worldRequest?.state==='ready'&&worldBundle.identity===visualIdentity(player);
+    function requestWorldVisual(player,{actions:combatActions,fruit,scope,prepareEffects}){
+      const identity=visualIdentity(player),key=JSON.stringify([scope,identity]);
+      if(worldRequest?.key===key)return worldVisual();
+      worldRequest?.controller.abort();
+      const request={key,state:'loading',controller:new AbortController()};
+      worldRequest=request;
+      if(worldBundle?.identity===identity){
+        Object.assign(request,{state:'ready',coverage:worldBundle.coverage,preparedAt:performance.now()});
+        return worldVisual();
+      }
+      const signal=request.controller.signal;
+      const snapshot={...player,appearance96:{...player.appearance96},equipment:Object.fromEntries(Object.entries(player.equipment||{}).map(([slot,item])=>[slot,item&&typeof item==='object'?{...item}:item])),preferences:{...player.preferences}};
+      // A failed request remains visible until an explicit retry or a new identity.
+      const timeout=setTimeout(()=>{
+        const error=Error('Tempo de preparação do visual excedido');
+        request.controller.abort(error);
+        if(worldRequest===request)Object.assign(request,{state:'failed',error:error.message});
+      },90000);
+      void (async()=>{
+        let bundle;
+        try{
+          await prepareEffects?.();
+          signal.throwIfAborted();
+          if(fruit){
+            const key=root.MareSpriteCombatV2.fruits[fruit.id];
+            if(!await root.MareSpriteCombatV2.prepare(key))throw Error('Animações da transformação indisponíveis: '+fruit.id);
+            if(root.MareZoanTransition?.preload)await root.MareZoanTransition.preload()?.decode();
+          }
+          if(root.MareVisualCompletoRenderer?.equipped(snapshot)){
+            await root.MareVisualCompletoRenderer.prepare();
+            const status=root.MareVisualCompletoRenderer.snapshot();
+            if(!status.ready)throw Error(status.error||'Visual Completo indisponível');
+          }
+          signal.throwIfAborted();
+          const actions=new Set(['idle','walk',...combatActions]);
+          const basePlayer={...snapshot,zoanTransformed:false};
+          const useSkin=root.MareVisualCompletoRenderer?.equipped(snapshot);
+          const poses=[];
+          for(const direction of ['south','north','east','west']){
+            for(const action of actions)if(!useSkin||action==='idle')poses.push({player:basePlayer,options:{action,direction,consumer:'world'}});
+            if(!useSkin&&combatActions.includes('attack-unarmed'))poses.push({player:basePlayer,options:{action:'attack-unarmed',direction,consumer:'world',weaponless:true}});
+          }
+          // Native selection reads the appearance registries loaded by the lobby.
+          await Promise.all([ready,nativeHD.ready]);
+          signal.throwIfAborted();
+          const native=[],modular=[];
+          for(const pose of poses)(nativeHD.select(pose.player,pose.options)?native:modular).push(pose);
+          if(modular.length)request.coverage=modular.map(({options})=>({action:options.action,direction:options.direction,weaponless:!!options.weaponless,source:null}));
+          let hd,layered;
+          try{
+            if(modular.length)layered=await prepareModularWorld(basePlayer,modular,signal);
+            if(native.length)hd=await nativeHD.prepareConfiguration(native,{signal});
+          }catch(error){layered?.release();hd?.release();throw error;}
+          bundle={
+            coverage:[...(hd?.coverage||[]),...(layered?.coverage||[])],
+            draw(ctx,player,options){
+              if(hd?.draw(ctx,player,options)){this.visualHeight=hd.visualHeight;return true;}
+              return layered?.draw(ctx,player,options)||false;
+            },
+            projectileOrigin:layered?.projectileOrigin,
+            release(){hd?.release();layered?.release();}
+          };
+          signal.throwIfAborted();
+          if(worldRequest!==request)return;
+          worldBundle?.release();
+          worldBundle={...bundle,scope,identity,key,player:snapshot};
+          bundle=null;
+          Object.assign(request,{state:'ready',coverage:worldBundle.coverage,preparedAt:performance.now()});
+        }catch(error){
+          if(worldRequest===request)Object.assign(request,{state:'failed',error:error.message});
+        }finally{clearTimeout(timeout);bundle?.release();}
+      })();
+      return worldVisual();
+    }
+    async function prepareModularWorld(player,poses,signal){
+      await ready;
+      signal.throwIfAborted();
+      if(state!=='ready')throw Error(message);
+      const value=resolve(player),look=value.look;
+      if(!value.supported||value.missing.length)throw Error('Equipamento sem fonte: '+value.missing.map(m=>m.slot+' '+m.def).join(', '));
+      if(look.hair!=='original'&&look.hair!=='none'&&!catalog.styles.some(s=>s.kind==='hair'&&s.id===look.hair))throw Error('Cabelo sem fonte: '+look.hair);
+      if(look.face!=='original'&&!catalog.styles.some(s=>s.kind==='face'&&s.id===look.face))throw Error('Rosto sem fonte: '+look.face);
+      const clips=new Map(),routes=new Map(),coverage=[];
+      const key=o=>JSON.stringify([o.action,o.direction,!!o.weaponless]);
+      try{
+        for(const {options:o} of poses){
+          signal.throwIfAborted();
+          const weaponless=o.weaponless&&look.weapon!=='original';
+          const action=weaponless?'attack-unarmed':actions.includes(o.action)?o.action:look.weapon==='original'?'attack-unarmed':value.attack;
+          const mirror=o.direction==='west'&&manifest.bodies[value.body].clips[action].west.mirror?.source==='east';
+          const direction=mirror?'east':o.direction;
+          const clipKey=JSON.stringify([action,direction,weaponless]);
+          if(!clips.has(clipKey)){
+            const clip=await compose(value.body,action,direction,{...look,...(weaponless?{weapon:'original'}:{})},()=>signal.aborted,'world-preparation');
+            if(clip)clips.set(clipKey,clip);
+            signal.throwIfAborted();
+            if(!weaponless&&look.weapon!=='original'&&clip.emissions.some(frame=>!frame.some(entry=>entry.itemId===player.equipment.weapon.def))){
+              clip.strip.width=0;clip.strip.height=0;
+              throw Error('Arma sem encaixe: '+player.equipment.weapon.def+' / '+action+' / '+direction);
+            }
+          }
+          routes.set(key(o),{clipKey,mirror});
+          coverage.push({action:o.action,direction:o.direction,weaponless:!!o.weaponless,source:'native96/'+value.body+'/'+action+'/'+direction,frames:clips.get(clipKey).clip.frames,omitted:[],unsupported:[]});
+        }
+      }catch(error){releaseBundle(clips);throw error;}
+      return {coverage,
+        draw(ctx,player,o){
+          const route=routes.get(key(o)),value=clips.get(route?.clipKey);if(!value)return false;
+
+          const hit=Math.max(.001,Math.min(.999,o.timing?.hitFrameRatio??.5));
+          const p=Number.isFinite(o.progress)&&!value.clip.loop?(o.progress<=hit?o.progress/hit*.5:.5+(o.progress-hit)/(1-hit)*.5):null;
+          const frame=frameAt(value.clip,o.time,p);
+          paint(ctx,value,route.mirror?'west':o.direction==='west'?'east':o.direction,frame,o.x,o.y,o.scale==null?1:o.scale*46/96);
+          lastPose={consumer:'world',assetRevision,body:player.appearance96?.gender,action:o.action,direction:o.direction,frame,source:'native96',state:'rendered',weaponIds:value.emissions[frame].map(entry=>entry.itemId)};
+          return true;
+        },
+        projectileOrigin(hero,pose,scale){
+          const route=routes.get(key({action:pose.action||'attack',direction:pose.direction}));
+          const clip=clips.get(route?.clipKey),frame=clip&&Math.min(4,clip.emissions.length-1),emission=clip?.emissions[frame]?.[0]?.point;
+          if(!emission||!['firearm','tech','focus'].includes(value.category))return null;
+          const spec=clip.nativeSpec,x=route.mirror?spec.width+1-emission.x:emission.x;
+          return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(emission.y-spec.pivot.y)*scale,frame,weapon:look.weapon};
+        },
+        release(){releaseBundle(clips);clips.clear();routes.clear();}
+      };
+    }
+    function retryWorldVisual(){
+      if(worldRequest?.state!=='failed')return;
+      worldRequest.controller.abort();worldRequest=null;imageFailures.clear();
+    }
+    function drawWorldVisual(ctx,options){
+      if(!worldBundle)return false;
+      const player=worldBundle.player;
+      const drawOptions={...options,direction:directionOf(options.direction)};
+      const action=['combat-idle','guard','hurt','death'].includes(options.action)?'idle':options.action;
+      const result=root.MareVisualCompletoRenderer?.draw(ctx,player,drawOptions)||worldBundle.draw(ctx,player,{...drawOptions,action,weaponless:action!=='idle'&&options.weaponless});
+      if(result&&worldRequest?.state==='ready'&&worldRequest.firstDrawAt===undefined)worldRequest.firstDrawAt=performance.now();
+      if(result)defaultHD?.clear();
+      return result;
+    }
+    const height=player=>active&&!player?.zoanTransformed?(worldBundle?.visualHeight||nativeHD?.height(player)||96):null;
+    return {ready,snapshot,draw,height,ensure,prepareVisual,worldVisual,worldReady,requestWorldVisual,clearWorldVisual,retryWorldVisual,drawWorldVisual,worldPlayer:()=>worldBundle?.player,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
   }
   root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,appearanceLook,assetReferences,validateRelease,frameAt,directionOf};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.MarePaperDoll96Lobby;

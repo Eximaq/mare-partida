@@ -35,6 +35,8 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build && npm run typecheck
+      - name: Materialize native rework indexes
+        run: python3 tools/materialize_native_indexes.py
       - name: Full unit and legacy suite
         run: npm test
       - name: Install archive tools for real database backup tests

@@ -1,0 +1,1102 @@
+{
+  "baseCommit": "1c63826f530ff367a08f9e66a6431bc21e08267a",
+  "build": "python tools/build_pages.py",
+  "moduleSHA256": "669e6e3aa18ec6db903e2be74460caa1207c6bc42afd67a1d772a7e7799f86c0",
+  "headIndexSHA256": "0b827193592e9dadf43f5e2708021d7fdccc54ae6bbd5e3081f1d902a641a03e",
+  "scope": "Original hair, helmets alone. Male run preceded addition of female source hash diagnostic; female run used final build. No asset/index overrides.",
+  "evidence": [
+    {
+      "gender": "masculino",
+      "item": 18,
+      "direction": "south",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:18:original:original",
+        "action": "idle",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "source-alpha-only",
+        "headGearScale": 1,
+        "headGearSource": "0e356b45e7776fb12fe647a4ee59515b0179c1643e01c40fffd6819a3a74657c",
+        "headGearId": "original-hair-gear-only-18-south"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 18,
+      "direction": "south",
+      "phase": "attack",
+      "world": {
+        "source": "male-attack-unarmed-south-drawn8:original:18:original:original",
+        "action": "attack-unarmed",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "state": "holding-native-while-loading",
+        "requestedAction": "attack",
+        "requestedDirection": "south",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 18,
+      "direction": "north",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "male-idle-original-north-from-walk0:original:18:original:original",
+        "action": "idle",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "source-alpha-only",
+        "headGearScale": 1,
+        "headGearSource": "0387168d7c7a58a317c117b245034fdfdfe692cc5e376c7a2e147f71ef4375ac",
+        "headGearId": "original-hair-gear-only-18-north"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 18,
+      "direction": "north",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-punch-north-drawn8-north:original:18:original:original",
+        "action": "attack-unarmed",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "source-alpha-only",
+        "headGearScale": 1,
+        "headGearSource": "0387168d7c7a58a317c117b245034fdfdfe692cc5e376c7a2e147f71ef4375ac",
+        "headGearId": "original-hair-gear-only-18-north"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 18,
+      "direction": "east",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "male-idle-original-east-from-walk0:original:18:original:original",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "source-alpha-only",
+        "headGearScale": 1,
+        "headGearSource": "b329c4104a447ae4b59c90ab1ea744595cb8c979ed66c1ccfee49094fdf5a74a",
+        "headGearId": "original-hair-gear-only-18-east"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 18,
+      "direction": "east",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-punch-east-drawn8-east:original:18:original:original",
+        "action": "attack-unarmed",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "source-alpha-only",
+        "headGearScale": 1,
+        "headGearSource": "b329c4104a447ae4b59c90ab1ea744595cb8c979ed66c1ccfee49094fdf5a74a",
+        "headGearId": "original-hair-gear-only-18-east"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 18,
+      "direction": "west",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "male-idle-original-west-from-walk0:original:18:original:original",
+        "action": "idle",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "source-alpha-only",
+        "headGearScale": 1,
+        "headGearSource": "b519407b8441f8c998a12dedd3d97ecaac0a916260005d75c963f8bf98bea8d9",
+        "headGearId": "original-hair-gear-only-18-west"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 18,
+      "direction": "west",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-punch-west-drawn8-west:original:18:original:original",
+        "action": "attack-unarmed",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "source-alpha-only",
+        "headGearScale": 1,
+        "headGearSource": "b519407b8441f8c998a12dedd3d97ecaac0a916260005d75c963f8bf98bea8d9",
+        "headGearId": "original-hair-gear-only-18-west"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 18,
+      "phase": "hidden",
+      "world": {
+        "state": "rendered",
+        "source": "male-idle-original-east-from-walk0:original:none:original:original",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 18,
+      "phase": "unequipped"
+    },
+    {
+      "gender": "masculino",
+      "item": 19,
+      "direction": "south",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:19:original:original",
+        "action": "idle",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "full-hair-hidden",
+        "headGearScale": 1,
+        "headGearSource": "dd21b9ddc99c7dd5e85a821cf3522349c3d5a53a1b2cae587fd6b1033b328e17",
+        "headGearId": "original-hair-gear-only-19-south"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 19,
+      "direction": "south",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "male-attack-unarmed-south-drawn8:original:19:original:original",
+        "action": "attack-unarmed",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "source-reconstructed-runtime-candidate",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "full-hair-hidden",
+        "headGearScale": 1,
+        "headGearSource": "dd21b9ddc99c7dd5e85a821cf3522349c3d5a53a1b2cae587fd6b1033b328e17",
+        "headGearId": "original-hair-gear-only-19-south"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 19,
+      "direction": "north",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "male-idle-original-north-from-walk0:original:19:original:original",
+        "action": "idle",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "full-hair-hidden",
+        "headGearScale": 1,
+        "headGearSource": "83b1773195422ed173f872b6350d725fac38d42cb6667a85b0a04d8ea7c5048c",
+        "headGearId": "original-hair-gear-only-19-north"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 19,
+      "direction": "north",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-punch-north-drawn8-north:original:19:original:original",
+        "action": "attack-unarmed",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "full-hair-hidden",
+        "headGearScale": 1,
+        "headGearSource": "83b1773195422ed173f872b6350d725fac38d42cb6667a85b0a04d8ea7c5048c",
+        "headGearId": "original-hair-gear-only-19-north"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 19,
+      "direction": "east",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "male-idle-original-east-from-walk0:original:19:original:original",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "full-hair-hidden",
+        "headGearScale": 1,
+        "headGearSource": "c4fc3d89206760fb6582b1108257994556d68c35c01944d1c8ded20e7a9c45f4",
+        "headGearId": "original-hair-gear-only-19-east"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 19,
+      "direction": "east",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-punch-east-drawn8-east:original:19:original:original",
+        "action": "attack-unarmed",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "full-hair-hidden",
+        "headGearScale": 1,
+        "headGearSource": "c4fc3d89206760fb6582b1108257994556d68c35c01944d1c8ded20e7a9c45f4",
+        "headGearId": "original-hair-gear-only-19-east"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 19,
+      "direction": "west",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "male-idle-original-west-from-walk0:original:19:original:original",
+        "action": "idle",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "full-hair-hidden",
+        "headGearScale": 1,
+        "headGearSource": "b9b2776cffdf0f515df6a26ddb67c57fa85dcdec0da57f1c44a6887158275ddf",
+        "headGearId": "original-hair-gear-only-19-west"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 19,
+      "direction": "west",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-punch-west-drawn8-west:original:19:original:original",
+        "action": "attack-unarmed",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headStatus": "gear-only-candidate-calibration",
+        "headIdentity": "exact-head-original-hair-preserved",
+        "headOcclusion": "full-hair-hidden",
+        "headGearScale": 1,
+        "headGearSource": "b9b2776cffdf0f515df6a26ddb67c57fa85dcdec0da57f1c44a6887158275ddf",
+        "headGearId": "original-hair-gear-only-19-west"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 19,
+      "phase": "hidden",
+      "world": {
+        "state": "rendered",
+        "source": "male-idle-original-east-from-walk0:original:none:original:original",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "masculino",
+      "item": 19,
+      "phase": "unequipped"
+    },
+    {
+      "gender": "feminino",
+      "item": 18,
+      "direction": "south",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:18:original:original",
+        "action": "idle",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "c0929cbfba4f5c567446eed1e6994cc2ab1fe11c5ef1fbe4056f295e933495ac"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 18,
+      "direction": "south",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-female-punch-south-ownership-candidate-south:original:18:original:original",
+        "action": "attack-unarmed",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "c0929cbfba4f5c567446eed1e6994cc2ab1fe11c5ef1fbe4056f295e933495ac"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 18,
+      "direction": "north",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "female-idle-original-north-from-walk0:original:18:original:original",
+        "action": "idle",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "0387168d7c7a58a317c117b245034fdfdfe692cc5e376c7a2e147f71ef4375ac"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 18,
+      "direction": "north",
+      "phase": "attack",
+      "world": {
+        "source": "v7-female-punch-north-ownership-candidate-north:original:18:original:original",
+        "action": "attack-unarmed",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "state": "holding-native-while-loading",
+        "requestedAction": "attack",
+        "requestedDirection": "north",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 18,
+      "direction": "east",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "female-idle-original-east-from-walk0:original:18:original:original",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "b329c4104a447ae4b59c90ab1ea744595cb8c979ed66c1ccfee49094fdf5a74a"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 18,
+      "direction": "east",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-female-punch-east-ownership-candidate-east:original:18:original:original",
+        "action": "attack-unarmed",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "b329c4104a447ae4b59c90ab1ea744595cb8c979ed66c1ccfee49094fdf5a74a"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 18,
+      "direction": "west",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "female-idle-original-west-from-walk0:original:18:original:original",
+        "action": "idle",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "b519407b8441f8c998a12dedd3d97ecaac0a916260005d75c963f8bf98bea8d9"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 18,
+      "direction": "west",
+      "phase": "attack",
+      "world": {
+        "source": "v7-female-punch-west-ownership-candidate-west:original:18:original:original",
+        "action": "attack-unarmed",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "state": "holding-native-while-loading",
+        "requestedAction": "attack",
+        "requestedDirection": "west",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 18,
+      "phase": "hidden",
+      "world": {
+        "state": "rendered",
+        "source": "female-idle-original-east-from-walk0:original:none:original:original",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 18,
+      "phase": "unequipped"
+    },
+    {
+      "gender": "feminino",
+      "item": 19,
+      "direction": "south",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:19:original:original",
+        "action": "idle",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "bf288432d59c1fe81afcad6fe042d50671882d050a2ee658274661f0783f72cc"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 19,
+      "direction": "south",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-female-punch-south-ownership-candidate-south:original:19:original:original",
+        "action": "attack-unarmed",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "bf288432d59c1fe81afcad6fe042d50671882d050a2ee658274661f0783f72cc"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 19,
+      "direction": "north",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "female-idle-original-north-from-walk0:original:19:original:original",
+        "action": "idle",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "83b1773195422ed173f872b6350d725fac38d42cb6667a85b0a04d8ea7c5048c"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 19,
+      "direction": "north",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-female-punch-north-ownership-candidate-north:original:19:original:original",
+        "action": "attack-unarmed",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "83b1773195422ed173f872b6350d725fac38d42cb6667a85b0a04d8ea7c5048c"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 19,
+      "direction": "east",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "female-idle-original-east-from-walk0:original:19:original:original",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "c4fc3d89206760fb6582b1108257994556d68c35c01944d1c8ded20e7a9c45f4"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 19,
+      "direction": "east",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-female-punch-east-ownership-candidate-east:original:19:original:original",
+        "action": "attack-unarmed",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "c4fc3d89206760fb6582b1108257994556d68c35c01944d1c8ded20e7a9c45f4"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 19,
+      "direction": "west",
+      "phase": "idle-after-walk",
+      "world": {
+        "state": "rendered",
+        "source": "female-idle-original-west-from-walk0:original:19:original:original",
+        "action": "idle",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "b9b2776cffdf0f515df6a26ddb67c57fa85dcdec0da57f1c44a6887158275ddf"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 19,
+      "direction": "west",
+      "phase": "attack",
+      "world": {
+        "state": "rendered",
+        "source": "v7-female-punch-west-ownership-candidate-west:original:19:original:original",
+        "action": "attack-unarmed",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "existing-study-runtime-candidate-NOT-global-art-approval",
+        "faceProtectedExact": true,
+        "faceProtectedExceptIris": false,
+        "headSourceScale": 1,
+        "headStatus": "semantic-fringe-ownership-candidate",
+        "headIdentity": "original-face-protected-exact",
+        "headOcclusion": "source-alpha-only",
+        "headGearSource": "b9b2776cffdf0f515df6a26ddb67c57fa85dcdec0da57f1c44a6887158275ddf"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 19,
+      "phase": "hidden",
+      "world": {
+        "state": "rendered",
+        "source": "female-idle-original-east-from-walk0:original:none:original:original",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "feminino",
+      "item": 19,
+      "phase": "unequipped"
+    }
+  ],
+  "errors": []
+}

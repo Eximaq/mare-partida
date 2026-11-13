@@ -125,6 +125,7 @@
   <script defer src="tools/rework-accessories/vendor.js"></script>
   <script defer src="player-rework-hd-assets.js"></script>
   <script defer src="player-rework-hair-anatomy-hd.js"></script>
+  <script defer src="player-rework-skin-hd.js"></script>
   <script defer src="player-rework-base-hd.js"></script>
   <script defer src="player-rework-head-family.js"></script>
   <script defer src="native-head-compat.js"></script>
@@ -135,6 +136,7 @@
   <script defer src="player-rework-weapon-carry-hd.js"></script>
   <script defer src="player-rework-outfit-overlay-hd.js"></script>
   <script defer src="player-rework-outfit-carry-overlay-hd.js"></script>
+  <script defer src="player-rework-eye-styles-hd.js"></script>
   <script defer src="player-rework-female-named-hair-hd.js"></script>
   <script defer src="player-rework-native-hd.js"></script>
   <script defer src="player-rework-default-hd.js"></script>
@@ -341,7 +343,7 @@
         <div class="scene-switcher"><span id="factionChip" class="scene-faction-chip">◆ PIRATA</span><button id="navLobby" class="scene-tab active" type="button">⌂ <span>PORTO / LOBBY</span></button><button id="navHunt" class="scene-tab" type="button">◈ <span>MAPA</span></button><span class="scene-info" id="sceneInfo">ÁREA SEGURA · CLIQUE PARA CAMINHAR</span></div><div class="map-top-strip"><div><span class="diamond">◆</span><span id="mapTitle">ENSEADA DAS CONCHAS QUEBRADAS</span></div><div class="danger-rating" id="dangerRating">ZONA INICIAL · NV. 1–12</div></div>
         <div class="game-frame" id="gameFrame">
           <canvas id="worldCanvas" width="960" height="570" aria-label="Mundo de Kaizoku Idle"></canvas>
-          <div id="worldLoading" class="world-loading hidden" role="status" aria-live="polite"><span>Preparando o mapa…</span></div>
+          <div id="worldLoading" class="world-loading hidden" role="status" aria-live="polite"><div><span>Preparando o mapa…</span><button id="retryPlayerVisual" type="button" hidden>Tentar novamente</button></div></div>
           <div class="world-vignette"></div>
           <div class="map-label"><span id="sceneEyebrow">REGIÃO DE CAÇA</span><strong id="overlayArea">COSTA DOS DESTROÇOS</strong></div>
           <div class="world-side-stats"><span id="combatState"><i class="pulse-dot"></i> CAÇADA AUTOMÁTICA</span><span id="targetHint">PROCURANDO ALVO...</span></div>

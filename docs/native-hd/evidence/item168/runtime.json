@@ -1,0 +1,197 @@
+{
+  "archiveSHA256": "8e2b38950236ce6447bd00a475fe83e0ac0570439dd339ad6262b0f9fd22ff8b",
+  "buildIndexSHA256": "559cac0ad584f3db412ae9d8622c61687728f3680ac079e5ea6606e7c706a01a",
+  "errors": [],
+  "evidence": [
+    {
+      "phase": "idle",
+      "direction": "south",
+      "source": "female-pants168-idle-south",
+      "actualDirection": "south",
+      "frame": 0,
+      "walkFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "legs": 168
+    },
+    {
+      "phase": "idle",
+      "direction": "north",
+      "source": "female-pants168-idle-north",
+      "actualDirection": "north",
+      "frame": 0,
+      "walkFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "legs": 168
+    },
+    {
+      "phase": "idle",
+      "direction": "east",
+      "source": "female-pants168-idle-east",
+      "actualDirection": "east",
+      "frame": 0,
+      "walkFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "legs": 168
+    },
+    {
+      "phase": "idle",
+      "direction": "west",
+      "source": "female-pants168-idle-west",
+      "actualDirection": "west",
+      "frame": 0,
+      "walkFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "legs": 168
+    },
+    {
+      "phase": "attack",
+      "direction": "south",
+      "source": "female-pants168-attack-unarmed-south",
+      "actualDirection": "south",
+      "frame": 0,
+      "renderedFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "legs": 168
+    },
+    {
+      "phase": "after-attack",
+      "direction": "south",
+      "source": "female-pants168-idle-north",
+      "actualDirection": "north",
+      "frame": 0,
+      "legs": 168
+    },
+    {
+      "phase": "attack",
+      "direction": "north",
+      "source": "female-pants168-attack-unarmed-north",
+      "actualDirection": "north",
+      "frame": 7,
+      "renderedFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "legs": 168
+    },
+    {
+      "phase": "after-attack",
+      "direction": "north",
+      "source": "female-pants168-idle-south",
+      "actualDirection": "south",
+      "frame": 0,
+      "legs": 168
+    },
+    {
+      "phase": "attack",
+      "direction": "east",
+      "source": "female-pants168-attack-unarmed-east",
+      "actualDirection": "east",
+      "frame": 3,
+      "renderedFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "legs": 168
+    },
+    {
+      "phase": "after-attack",
+      "direction": "east",
+      "source": "female-pants168-idle-west",
+      "actualDirection": "west",
+      "frame": 0,
+      "legs": 168
+    },
+    {
+      "phase": "attack",
+      "direction": "west",
+      "source": "female-pants168-attack-unarmed-west",
+      "actualDirection": "west",
+      "frame": 4,
+      "renderedFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "legs": 168
+    },
+    {
+      "phase": "after-attack",
+      "direction": "west",
+      "source": "female-pants168-idle-east",
+      "actualDirection": "east",
+      "frame": 0,
+      "legs": 168
+    },
+    {
+      "phase": "reload-equipped",
+      "source": "female-pants168-idle-south",
+      "actualDirection": "south",
+      "frame": 0,
+      "legs": 168
+    },
+    {
+      "phase": "unequipped",
+      "source": "female-idle-original-south-from-walk0:original:none:original:original",
+      "actualDirection": "south",
+      "frame": 0,
+      "legs": null
+    }
+  ]
+}

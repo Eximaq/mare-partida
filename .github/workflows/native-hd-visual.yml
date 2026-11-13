@@ -12,6 +12,9 @@ on:
       - 'tests/rework_inventory_game_browser.cjs'
       - 'tests/rework-v5-binding.test.cjs'
       - 'tests/rework_v5_game_browser.cjs'
+      - 'tests/rework_v5_ui_browser.cjs'
+      - 'tests/rework_movement_ui_browser.cjs'
+      - 'tests/rework-direction-retention.test.cjs'
       - 'tools/audit_rework_integration.cjs'
       - 'tools/verify_native_hd_archives.py'
       - '.github/workflows/native-hd-visual.yml'
@@ -33,7 +36,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: python tools/verify_native_hd_archives.py
       - run: npm run test:rework-hd
-      - run: node --test player-rework-default-hd.test.cjs tests/rework-integration.test.cjs tests/rework-v5-binding.test.cjs
+      - run: node --test player-rework-default-hd.test.cjs tests/rework-integration.test.cjs tests/rework-v5-binding.test.cjs tests/rework-direction-retention.test.cjs
       - run: node tools/audit_rework_integration.cjs
       - name: Cache Chromium
         uses: actions/cache@v4
@@ -67,6 +70,24 @@ jobs:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/
           MARE_EVIDENCE_DIR: artifacts/rework-v5
         run: node tests/rework_v5_game_browser.cjs
+      - name: Real keyboard movement and static idle, both bodies
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8157/dist/
+          MARE_EVIDENCE_DIR: artifacts/rework-movement-ui
+        run: node tests/rework_movement_ui_browser.cjs
+      - name: Five V5 states initiated only by pointer combat
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8157/dist/
+          MARE_EVIDENCE_DIR: artifacts/rework-v5-ui
+        run: node tests/rework_v5_ui_browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rework-user-flow-evidence
+          path: |
+            artifacts/rework-movement-ui/
+            artifacts/rework-v5-ui/
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:

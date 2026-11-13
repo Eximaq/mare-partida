@@ -64,6 +64,7 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
             const draw=result?.worldDraw;
             if(!draw?.returned||draw.at<stageStarted||draw.viewport[0]!==innerWidth||draw.viewport[1]!==innerHeight)return false;
             const snapshot = draw.snapshot;
+            if(snapshot?.renderer==='native96')return snapshot.worldVisual?.state==='ready'&&snapshot.worldVisual.preparedAt<=draw.at&&snapshot.lastPose?.consumer==='world'&&snapshot.lastPose.direction===MarePaperDoll96Lobby.directionOf(draw.direction)&&snapshot.lastPose.weaponIds?.includes(result.identity.equippedIds.weapon)?result:false;
             if (!['native-hd', 'rework-default-hd'].includes(snapshot?.renderer)) return false;
             const active = snapshot.renderer === 'native-hd' ? snapshot.nativeHD : snapshot.defaultHD;
             return active?.last?.state === 'rendered' && active.last.physicalScale === 105 / 374 && active.last.consumer==='world' && active.last.direction===MarePaperDoll96Lobby.directionOf(draw.direction) ? result : false;
@@ -72,9 +73,15 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
           assert.deepEqual(state.identity, original, 'Rendering/reload must not rewrite saved appearance or equipment');
           const worldSnapshot=state.worldDraw.snapshot;
           const active = worldSnapshot.renderer === 'native-hd' ? worldSnapshot.nativeHD : worldSnapshot.defaultHD;
-          assert.equal(active.last.physicalScale, scale);
-          assert.equal(active.last.sourceScale,1,'native pixels stay intact');
-          assert.equal(active.last.consumer,'world','a portrait cannot satisfy world replacement');
+          if(worldSnapshot.renderer==='native96'){
+            assert.equal(worldSnapshot.lastPose.consumer,'world');
+            assert(worldSnapshot.lastPose.weaponIds.includes(weapon));
+            assert(worldSnapshot.worldVisual.coverage.every(p=>p.omitted.length===0&&p.unsupported.length===0));
+          }else{
+            assert.equal(active.last.physicalScale, scale);
+            assert.equal(active.last.sourceScale,1,'native pixels stay intact');
+            assert.equal(active.last.consumer,'world','a portrait cannot satisfy world replacement');
+          }
           assert(await page.locator('#worldCanvas').isVisible(),'actual game canvas is visible');
           // A successful draw call can still be clipped, cleared by resize, or hidden
           // by presentation. Require real bitmap pixels, then inspect the screenshot

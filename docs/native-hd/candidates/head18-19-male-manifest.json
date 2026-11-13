@@ -1,0 +1,180 @@
+{
+  "status": "candidate-needs-visual-approval-and-runtime-registration",
+  "density": 4,
+  "sourceSize": [
+    512,
+    512
+  ],
+  "logicalFrame": [
+    128,
+    128
+  ],
+  "pivot": [
+    64,
+    112
+  ],
+  "records": [
+    {
+      "def": 18,
+      "slot": "head",
+      "body": "male",
+      "direction": "north",
+      "file": "18/male/north.png",
+      "sourceSHA256": "0387168d7c7a58a317c117b245034fdfdfe692cc5e376c7a2e147f71ef4375ac",
+      "sourceRecord": "equipment-feminino-idle-north-18-source-only",
+      "maleHeadBaseSHA256": "fa57ef721f1cdcc98e743a388e19fa282f8f224539061b8db164f6688867a69d",
+      "maleRest": {
+        "NECK": {
+          "x": 64,
+          "y": 41.5
+        },
+        "NOSE": {
+          "x": 64,
+          "y": 31.5
+        }
+      },
+      "proposedPhysicalOffset": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "hairPolicy": "partial",
+      "approval": false
+    },
+    {
+      "def": 18,
+      "slot": "head",
+      "body": "male",
+      "direction": "east",
+      "file": "18/male/east.png",
+      "sourceSHA256": "b329c4104a447ae4b59c90ab1ea744595cb8c979ed66c1ccfee49094fdf5a74a",
+      "sourceRecord": "equipment-feminino-idle-east-18-source-only",
+      "maleHeadBaseSHA256": "33186e033f1280b8ffc7f569558b8a4caa653f0356cf67650b210a4621410b74",
+      "maleRest": {
+        "NECK": {
+          "x": 64.75,
+          "y": 42
+        },
+        "NOSE": {
+          "x": 72.5,
+          "y": 35.5
+        }
+      },
+      "proposedPhysicalOffset": [
+        -1,
+        0
+      ],
+      "scale": 1,
+      "hairPolicy": "partial",
+      "approval": false
+    },
+    {
+      "def": 18,
+      "slot": "head",
+      "body": "male",
+      "direction": "west",
+      "file": "18/male/west.png",
+      "sourceSHA256": "b519407b8441f8c998a12dedd3d97ecaac0a916260005d75c963f8bf98bea8d9",
+      "sourceRecord": "equipment-feminino-idle-west-18-source-only",
+      "maleHeadBaseSHA256": "bd26dacb39f9a9b9b96d4bcabfc7283f00440f7a603d8068d0ce37932ac020b7",
+      "maleRest": {
+        "NECK": {
+          "x": 63.25,
+          "y": 42
+        },
+        "NOSE": {
+          "x": 55.5,
+          "y": 35.5
+        }
+      },
+      "proposedPhysicalOffset": [
+        1,
+        0
+      ],
+      "scale": 1,
+      "hairPolicy": "partial",
+      "approval": false
+    },
+    {
+      "def": 19,
+      "slot": "head",
+      "body": "male",
+      "direction": "north",
+      "file": "19/male/north.png",
+      "sourceSHA256": "83b1773195422ed173f872b6350d725fac38d42cb6667a85b0a04d8ea7c5048c",
+      "sourceRecord": "equipment-feminino-idle-north-19-source-only",
+      "maleHeadBaseSHA256": "fa57ef721f1cdcc98e743a388e19fa282f8f224539061b8db164f6688867a69d",
+      "maleRest": {
+        "NECK": {
+          "x": 64,
+          "y": 41.5
+        },
+        "NOSE": {
+          "x": 64,
+          "y": 31.5
+        }
+      },
+      "proposedPhysicalOffset": [
+        0,
+        0
+      ],
+      "scale": 1,
+      "hairPolicy": "full",
+      "approval": false
+    },
+    {
+      "def": 19,
+      "slot": "head",
+      "body": "male",
+      "direction": "east",
+      "file": "19/male/east.png",
+      "sourceSHA256": "c4fc3d89206760fb6582b1108257994556d68c35c01944d1c8ded20e7a9c45f4",
+      "sourceRecord": "equipment-feminino-idle-east-19-source-only",
+      "maleHeadBaseSHA256": "33186e033f1280b8ffc7f569558b8a4caa653f0356cf67650b210a4621410b74",
+      "maleRest": {
+        "NECK": {
+          "x": 64.75,
+          "y": 42
+        },
+        "NOSE": {
+          "x": 72.5,
+          "y": 35.5
+        }
+      },
+      "proposedPhysicalOffset": [
+        -1,
+        0
+      ],
+      "scale": 1,
+      "hairPolicy": "full",
+      "approval": false
+    },
+    {
+      "def": 19,
+      "slot": "head",
+      "body": "male",
+      "direction": "west",
+      "file": "19/male/west.png",
+      "sourceSHA256": "b9b2776cffdf0f515df6a26ddb67c57fa85dcdec0da57f1c44a6887158275ddf",
+      "sourceRecord": "equipment-feminino-idle-west-19-source-only",
+      "maleHeadBaseSHA256": "bd26dacb39f9a9b9b96d4bcabfc7283f00440f7a603d8068d0ce37932ac020b7",
+      "maleRest": {
+        "NECK": {
+          "x": 63.25,
+          "y": 42
+        },
+        "NOSE": {
+          "x": 55.5,
+          "y": 35.5
+        }
+      },
+      "proposedPhysicalOffset": [
+        1,
+        0
+      ],
+      "scale": 1,
+      "hairPolicy": "full",
+      "approval": false
+    }
+  ]
+}

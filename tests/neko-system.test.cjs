@@ -44,7 +44,7 @@ for(const [action,dirs] of Object.entries(N.clips))for(const [direction,clip] of
  assert.ok(clip.feet.every(y=>y>0&&y<=96),action+direction);
 }
 const game=fs.readFileSync(require.resolve('../game.js'),'utf8');
-assert.ok(game.includes("key==='neko'?MareNeko.visuals.worldScale")&&game.includes('if(game.zoanTransformed&&zoan)return drawUpdatedZoan'));
+assert.ok(game.includes("key==='neko'?MareNeko.visuals.worldScale")&&game.includes('visualPlayer?.zoanTransformed?equippedZoan(visualPlayer):null')&&game.includes('if(zoan)return drawUpdatedZoan'));
 for(const name of ['MareNeko','MareUshi','MareWolf'])assert.ok(game.includes('74+'+name+'.visuals.labelLift'),'shared overhead uses native form height');
 const hero=game.slice(game.indexOf('  function drawTalentedHero('),game.indexOf('  function drawForegroundLayer('));
 assert.ok(hero.indexOf("supaImages.shield")<hero.indexOf('drawPlayerSprite'),'retaliation draws behind the hero');

@@ -45,4 +45,4 @@
 .skill-button[data-hoya-action="cancel"] .hoya-action-label{border-color:#edab79;color:#ffe0c7}
 
 /* Finite map readiness shares the HUD surface; blocks interaction with unseen art. */
-.world-loading{position:absolute;inset:0;display:grid;place-items:center;z-index:5;background:#151217;color:#f6dfab;font:600 16px Georgia,serif;pointer-events:auto}.world-loading span{max-width:360px;padding:16px;border:1px solid #9b773d;background:var(--rpg-surface,#211a17);text-align:center}
+.world-loading{position:absolute;inset:0;display:grid;place-items:center;z-index:5;background:#151217;color:#f6dfab;font:600 16px Georgia,serif;pointer-events:auto}.world-loading div{display:grid;justify-items:center;gap:12px}.world-loading span{max-width:360px;padding:16px;border:1px solid #9b773d;background:var(--rpg-surface,#211a17);text-align:center}

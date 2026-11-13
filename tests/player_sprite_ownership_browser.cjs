@@ -14,9 +14,10 @@ async function open(q){await q.p.goto(new URL(q.query,base).href,{waitUntil:'dom
 async function create(q,gender='feminino'){const p=q.p;await p.locator('#characterName').fill('Visual Atual');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#creation-gender').selectOption(gender);await p.locator('#creation-hairStyle').selectOption('hair-topknot');await p.locator('#creation-hairColor').selectOption('violet');await p.locator('#creation-skinColor').selectOption('ebony');await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__ownershipQA.game);}
 async function prepared(q){
  const before=await q.p.evaluate(()=>JSON.stringify([__ownershipQA.game.appearance96,__ownershipQA.game.equipment]));
- await q.p.waitForFunction(()=>{const pixels=__ownershipQA.probe(),s=__ownershipQA.runtime.snapshot(),a=s.defaultHD?.last||s.nativeHD?.last;return pixels>0&&a?.state==='rendered';},null,{timeout:120000});
+ await q.p.waitForFunction(()=>{const pixels=__ownershipQA.probe(),s=__ownershipQA.runtime.snapshot(),a=s.renderer==='native96'?s.lastPose:s.renderer==='rework-default-hd'?s.defaultHD?.last:s.nativeHD?.last;return pixels>0&&s.worldVisual?.state==='ready'&&a?.state==='rendered'&&a.consumer==='world';},null,{timeout:120000});
  assert.equal(await q.p.evaluate(()=>JSON.stringify([__ownershipQA.game.appearance96,__ownershipQA.game.equipment])),before,'rendering preserves the saved identity and items');
- const snapshot=await q.p.evaluate(()=>__ownershipQA.runtime.snapshot());assert(['native-hd','rework-default-hd'].includes(snapshot.renderer));
+ const snapshot=await q.p.evaluate(()=>__ownershipQA.runtime.snapshot());assert(['native-hd','rework-default-hd','native96'].includes(snapshot.renderer));
+ if(snapshot.renderer==='native96'){assert.equal(snapshot.lastPose.source,'native96');assert.equal(snapshot.lastPose.body,(await q.p.evaluate(()=>__ownershipQA.game.appearance96.gender)));assert.equal(snapshot.worldVisual.key,snapshot.worldVisual.publishedKey);}
  if(snapshot.renderer==='rework-default-hd')assert(['partial-native','native'].includes(snapshot.defaultHD.last.mode)); if(snapshot.renderer==='rework-default-hd')assert.equal(snapshot.defaultHD.last.savedIdentityUnchanged,true);
  assert.equal(await q.p.evaluate(()=>__oldPlayerEngines),0);assert.deepEqual(q.obsolete,[]);assert.deepEqual(q.errors,[]);
 }

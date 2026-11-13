@@ -1,0 +1,827 @@
+{
+  "checkout": "387a038ea6ff3fd414c10c7b0dc69cfaa33a6e8c",
+  "buildCommand": "python tools/build_pages.py",
+  "buildGameSha256": "ef95c7d3860b0bb6984ea32525bfde497807c36bd8ef453efd23116a0d68009e",
+  "candidateArchiveSha256": "2d88e0783737eaf7e7963aad8ddca7c4ab31bbce17d252e35454c7dbc801f943",
+  "mode": "test-only route overrides, not permanent item registration",
+  "errors": [],
+  "phases": [
+    {
+      "phase": "idle",
+      "direction": "south",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-idle-south",
+        "action": "idle",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-retarget-candidate",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-south": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      }
+    },
+    {
+      "phase": "idle",
+      "direction": "north",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-idle-north",
+        "action": "idle",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-retarget-candidate",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-south": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "candidate-male-pants22-walk-north": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "candidate-male-pants22-idle-north": [
+          0
+        ]
+      }
+    },
+    {
+      "phase": "idle",
+      "direction": "east",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-idle-east",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-profile-texture-recovery",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-south": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "candidate-male-pants22-walk-north": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "candidate-male-pants22-idle-north": [
+          0
+        ],
+        "candidate-male-pants22-walk-east": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "candidate-male-pants22-idle-east": [
+          0
+        ]
+      }
+    },
+    {
+      "phase": "idle",
+      "direction": "west",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-idle-west",
+        "action": "idle",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-profile-texture-recovery",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-south": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "candidate-male-pants22-walk-north": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "candidate-male-pants22-idle-north": [
+          0
+        ],
+        "candidate-male-pants22-walk-east": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "candidate-male-pants22-idle-east": [
+          0
+        ],
+        "candidate-male-pants22-walk-west": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "candidate-male-pants22-idle-west": [
+          0
+        ]
+      }
+    },
+    {
+      "phase": "attack",
+      "direction": "south",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-attack-unarmed-south",
+        "action": "attack-unarmed",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 7,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-retarget-candidate",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-south": [
+          3
+        ],
+        "candidate-male-pants22-attack-unarmed-south": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "phase": "after-attack",
+      "direction": "south",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-idle-north",
+        "action": "idle",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-retarget-candidate",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-south": [
+          3
+        ],
+        "candidate-male-pants22-attack-unarmed-south": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "candidate-male-pants22-walk-north": [
+          7,
+          9,
+          11,
+          12
+        ],
+        "candidate-male-pants22-idle-north": [
+          0
+        ]
+      }
+    },
+    {
+      "phase": "attack",
+      "direction": "north",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-attack-unarmed-north",
+        "action": "attack-unarmed",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 7,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-retarget-candidate",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-north": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "candidate-male-pants22-attack-unarmed-north": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "phase": "after-attack",
+      "direction": "north",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-idle-south",
+        "action": "idle",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-retarget-candidate",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-north": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "candidate-male-pants22-attack-unarmed-north": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "candidate-male-pants22-walk-south": [
+          1,
+          7,
+          8,
+          9,
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      }
+    },
+    {
+      "phase": "attack",
+      "direction": "east",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-attack-unarmed-east",
+        "action": "attack-unarmed",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 7,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-profile-texture-recovery",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-east": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "candidate-male-pants22-attack-unarmed-east": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "phase": "after-attack",
+      "direction": "east",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-idle-west",
+        "action": "idle",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-profile-texture-recovery",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-east": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "candidate-male-pants22-attack-unarmed-east": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "candidate-male-pants22-walk-west": [
+          1,
+          7,
+          8,
+          9,
+          11,
+          12,
+          13,
+          14
+        ],
+        "candidate-male-pants22-idle-west": [
+          0
+        ]
+      }
+    },
+    {
+      "phase": "attack",
+      "direction": "west",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-attack-unarmed-west",
+        "action": "attack-unarmed",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 7,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-profile-texture-recovery",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-west": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "candidate-male-pants22-attack-unarmed-west": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "phase": "after-attack",
+      "direction": "west",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-idle-east",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-profile-texture-recovery",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-walk-west": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "candidate-male-pants22-attack-unarmed-west": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "candidate-male-pants22-walk-east": [
+          1,
+          7,
+          8,
+          9,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "candidate-male-pants22-idle-east": [
+          0
+        ]
+      }
+    },
+    {
+      "phase": "reload-equipped",
+      "world": {
+        "state": "rendered",
+        "source": "candidate-male-pants22-idle-south:palette:light:black",
+        "action": "idle",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "unvalidated-retarget-candidate",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": 22,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-idle-south:palette:light:black": [
+          0
+        ]
+      }
+    },
+    {
+      "phase": "unequipped",
+      "world": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:none:light:black",
+        "action": "idle",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 512,
+        "height": 512,
+        "pivot": {
+          "x": 256,
+          "y": 448
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-from-authored-walk-frame0",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      },
+      "equippedDef": null,
+      "drawnFrames": {
+        "candidate-male-pants22-idle-south": [
+          0
+        ],
+        "candidate-male-pants22-idle-south:palette:light:black": [
+          0
+        ]
+      }
+    }
+  ],
+  "notValidated": [
+    "visual approval of all seams",
+    "other attack families",
+    "torso and boots combinations",
+    "permanent binding"
+  ]
+}

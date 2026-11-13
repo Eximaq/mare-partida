@@ -1,5 +1,6 @@
 /* Full authored rework source renderer. No resampling, inferred limbs or old body. */
 (function(root){'use strict';
+const skinMaterials=root.MareNativeSkinHD||(typeof require==='function'?require('./player-rework-skin-hd.js'):null);
 const hairAnatomy=root.MareHairAnatomyHD||(typeof require==='function'?require('./player-rework-hair-anatomy-hd.js'):null);
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-base-hd/assets/'}={}){
  if(index?.schema!=='rework-full-hd-v1'||!vendor?.compositor)throw Error('Missing HD base dependencies');
@@ -14,16 +15,25 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
  }
  const sources=(r,frame)=>frame===undefined?r.sourceRefs:[...new Set(r.pack.directions[r.direction].layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean))];
  const requiredFiles=(r,{frame}={})=>r?sources(r,frame).map(s=>prefix+s+'.png'):[];
- function render(ctx,r,images,{frame=0,hiddenSlots=[],appearance={},makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h}),appearanceAPI=root.MareAppearance96}={}){
+ function render(ctx,r,images,{frame=0,hiddenSlots=[],appearance={},femaleAnatomyPalette=false,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h}),appearanceAPI=root.MareAppearance96}={}){
   if(!r)throw Error('Missing supported HD source');const p=r.pack,d=p.directions[r.direction];
   if(!Number.isInteger(frame)||frame<0||frame>=d.clip.frames)throw Error('HD source frame unavailable');
   const map=new Map();for(const s of sources(r,frame)){const im=images.get(prefix+s+'.png')||images.get(s);if(!im)throw Error('Missing original asset '+s);map.set(s,im);}
+  const eyes=root.MareReworkEyeStylesHD;
+  const expression=eyes?.supports(appearance.face)&&eyes.maleSource(r);
+  if(expression?.source){
+   const image=map.get(expression.source);
+   const tile=makeCanvas(image.width,image.height),face=tile.getContext('2d');
+   face.drawImage(image,0,0);
+   eyes.reshape(face,appearance.face,expression.direction,expression.boxes);
+   map.set(expression.source,tile);
+  }
   // Palette changes preserve native dimensions/alpha; source PNGs stay immutable.
   const skin=appearance.skin||appearance.skinColor,hair=appearance.hairColor;
   if((skin&&skin!=='original'||hair&&hair!=='original')&&appearanceAPI){
-   for(const source of sources(r,frame)){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),hairLayer=uses.some(l=>l.slot==='hair'),skinLayer=uses.some(l=>['body','headBase','face'].includes(l.slot));
-    const ramp=hairLayer?appearanceAPI.hairs[hair]?.ramp:skinLayer?appearanceAPI.skins[skin]?.ramp:null;if(!ramp&&!(hairLayer&&hairAnatomy?.records[source]))continue;
-    const image=map.get(source),w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,tile=makeCanvas(w,h),cx=tile.getContext('2d');cx.drawImage(image,0,0);const data=cx.getImageData(0,0,w,h);const anatomical=hairLayer?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;data.data.set(anatomical||appearanceAPI.recolor(data.data,appearanceAPI.materialMask(data.data,hairLayer?'hair':'skin'),ramp));cx.putImageData(data,0,0);map.set(source,tile);
+   for(const source of sources(r,frame)){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),hairLayer=uses.some(l=>l.slot==='hair'),skinKind=femaleAnatomyPalette&&uses.some(l=>l.slot==='headBase')?null:skinMaterials?.ownership(uses);
+    const ramp=hairLayer?appearanceAPI.hairs[hair]?.ramp:skinKind?appearanceAPI.skins[skin]?.ramp:null;if(!ramp&&!(hairLayer&&hairAnatomy?.records[source]))continue;
+    const image=map.get(source),w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,tile=makeCanvas(w,h),cx=tile.getContext('2d');cx.drawImage(image,0,0);const data=cx.getImageData(0,0,w,h);const anatomical=hairLayer?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;data.data.set(anatomical||appearanceAPI.recolor(data.data,hairLayer?appearanceAPI.materialMask(data.data,'hair'):skinMaterials.mask(data.data,w,skinKind),ramp));cx.putImageData(data,0,0);map.set(source,tile);
    }
   }
   // compositor consumes original density4 PNGs, with no intermediate 1x canvas.

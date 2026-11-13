@@ -15,7 +15,7 @@ for(const [kind,file]of Object.entries(names)){const index=read(file);for(const 
  if(kind==='weapon')equipment.weapon={def:r.item};
  if(r.id==='rifle115-v5-south-native-layers'){equipment.coat={def:151};equipment.head={def:157};}
  if(kind==='head'&&r.item!=null)equipment.head={def:r.item};
- const appearance96={body,gender:body,hairStyle:r.hairStyle||r.style||'original',hairColor:'original',skinColor:'original',eyeStyle:'original',eyeColor:'original'};
+ const appearance96={body,gender:body,hairStyle:r.id==='rifle115-v5-south-native-layers'?'hair-spiky':r.hairStyle||r.style||'original',hairColor:'original',skinColor:'original',eyeStyle:'original',eyeColor:'original'};
  const selected=api.select({appearance96,equipment},{action,direction});
  const id=r.id||[r.package,r.snapshot,r.style,r.item??'hair',direction].join(':');
  const selectedHead=selected?.headRecord||selected?.gearOnlyRecord?.sourceRecord||(r.item!=null?selected?.femaleNamedHairRecord?.gearRecord:selected?.femaleNamedHairRecord?.source);

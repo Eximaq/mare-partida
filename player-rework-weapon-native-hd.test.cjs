@@ -12,3 +12,14 @@ test('109 timing is the exact delivered preview clock and never selects unapprov
 test('action resolves exact runtime weapon family and rejects cross-weapon attack action',()=>{const api=make();assert(api.resolve({item:115,body:'male',direction:'north',action:'attack-firearm'}));assert(api.resolve({item:109,body:'male',direction:'south',action:'attack-unarmed'}));assert.equal(api.resolve({item:115,body:'male',direction:'south',action:'attack-unarmed'}),null);assert.equal(api.resolve({item:109,body:'male',direction:'south',action:'attack-firearm'}),null);assert.equal(api.resolve({item:115,body:'male',direction:'south',action:'attack-focus'}),null);});
 
 test('clothed approved115 backing is never selected for an original unarmored avatar',()=>{const r=index.records.find(r=>r.id==='rifle115-v5-south-native-layers');assert.equal(r.originalAppearanceCompatible,false);assert.notEqual(make().resolve({item:115,body:'male',direction:'south',action:'attack-firearm'})?.id,r.id);});
+
+test('item zero resolves only as an equipped sword and retains the outfit guard',()=>{
+ const api=make();
+ for(const direction of ['south','north','east','west']){
+  const query={item:0,body:'male',direction,action:'attack-sword'};
+  assert.equal(api.resolve(query)?.item,0);
+  assert.equal(api.resolve({...query,item:null}),null);
+  assert.equal(api.resolve({...query,equipment:{coat:151}}),null);
+  assert.equal(api.resolve({...query,action:'attack-unarmed'}),null);
+ }
+});

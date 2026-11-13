@@ -11,14 +11,14 @@ test('offscreen portal drawing is culled while an edge-overlapping label remains
 test('unchanged map status does not rewrite DOM each frame; load/failure/recovery still update',()=>{
  let state='loading',writes=0,draws=0;
  const text={set textContent(v){writes++;}},loading={dataset:{},classList:{toggle(){}},querySelector:()=>text};
- const c=vm.createContext({game:{},mapArtState:()=>state,$:()=>loading,ctx:{fillRect(){}},W:100,H:100,drawWorld:()=>draws++,drawPaperDollDiagnostics(){}});
+ const c=vm.createContext({game:{},lobby96:{worldVisual:()=>({state:'ready'}),worldPlayer:()=>({})},mapArtState:()=>state,$:()=>loading,ctx:{fillRect(){}},W:100,H:100,drawWorld:()=>draws++,drawPaperDollDiagnostics(){}});
  vm.runInContext(fn('presentWorld'),c);for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);
  assert.equal(writes,1);state='failed';vm.runInContext('presentWorld()',c);assert.equal(writes,2);
  state='ready';for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);assert.equal(writes,3);assert.equal(draws,60);
 });
 test('unchanged player status does not rewrite its text and accessibility state every frame',()=>{
  let state='loading',writes=0,busyWrites=0;const node={dataset:{},classList:{toggle(){}},set textContent(v){writes++;}};
- const c=vm.createContext({game:{},lobby96:{snapshot:()=>({visualState:state})},$:id=>id==='playerVisualStatus'?node:{setAttribute(){busyWrites++;}}});
+ const c=vm.createContext({game:{},lobby96:{worldVisual:()=>({state})},$:id=>id==='playerVisualStatus'?node:{setAttribute(){busyWrites++;}}});
  vm.runInContext(fn('updatePlayerVisualStatus'),c);for(let i=0;i<60;i++)vm.runInContext('updatePlayerVisualStatus()',c);
  assert.equal(writes,1);assert.equal(busyWrites,1);state='ready';vm.runInContext('updatePlayerVisualStatus()',c);assert.equal(writes,2);
  state='failed';vm.runInContext('updatePlayerVisualStatus()',c);assert.equal(writes,3);

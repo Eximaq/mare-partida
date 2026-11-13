@@ -1,0 +1,536 @@
+{
+  "evidence": [
+    {
+      "gender": "masculino",
+      "direction": "south",
+      "action": "walk",
+      "world": {
+        "state": "rendered",
+        "source": "carry0-male-walk-south-r7",
+        "action": "walk",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 2,
+        "width": 768,
+        "height": 768,
+        "pivot": {
+          "x": 384,
+          "y": 576
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-needs-visual-calibration",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "masculino",
+      "direction": "south",
+      "action": "idle",
+      "world": {
+        "state": "rendered",
+        "source": "carry0-male-idle-original-south-from-walk0",
+        "action": "idle",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 768,
+        "height": 768,
+        "pivot": {
+          "x": 384,
+          "y": 576
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-needs-visual-calibration",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "masculino",
+      "direction": "south",
+      "action": "attack-sword",
+      "world": {
+        "source": "sword0-south-historical-attack",
+        "action": "attack-sword",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "state": "holding-native-while-loading",
+        "requestedAction": "attack",
+        "requestedDirection": "south",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "masculino",
+      "direction": "north",
+      "action": "walk",
+      "world": {
+        "source": "carry0-v7-male-walk-drawn-north-north",
+        "action": "walk",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 12,
+        "state": "holding-native-while-loading",
+        "requestedAction": "walk",
+        "requestedDirection": "north",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "masculino",
+      "direction": "north",
+      "action": "idle",
+      "world": {
+        "state": "rendered",
+        "source": "carry0-male-idle-original-north-from-walk0",
+        "action": "idle",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "width": 768,
+        "height": 768,
+        "pivot": {
+          "x": 384,
+          "y": 576
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-needs-visual-calibration",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "masculino",
+      "direction": "north",
+      "action": "attack-sword",
+      "world": {
+        "source": "sword0-north-historical-attack",
+        "action": "attack-sword",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "state": "holding-native-while-loading",
+        "requestedAction": "attack",
+        "requestedDirection": "north",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "masculino",
+      "direction": "east",
+      "action": "walk",
+      "world": {
+        "source": "carry0-v7-male-walk-drawn-east-east",
+        "action": "walk",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 2,
+        "state": "holding-native-while-loading",
+        "requestedAction": "walk",
+        "requestedDirection": "east",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "masculino",
+      "direction": "east",
+      "action": "idle",
+      "world": {
+        "state": "rendered",
+        "source": "carry0-male-idle-original-east-from-walk0",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 768,
+        "height": 768,
+        "pivot": {
+          "x": 384,
+          "y": 576
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-needs-visual-calibration",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "masculino",
+      "direction": "east",
+      "action": "attack-sword",
+      "world": {
+        "source": "sword0-east-native-attachment",
+        "action": "attack-sword",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 1,
+        "state": "holding-native-while-loading",
+        "requestedAction": "attack",
+        "requestedDirection": "east",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "masculino",
+      "direction": "west",
+      "action": "walk",
+      "world": {
+        "source": "carry0-v7-male-walk-drawn-east-east-mirror-west-candidate",
+        "action": "walk",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 3,
+        "state": "holding-native-while-loading",
+        "requestedAction": "walk",
+        "requestedDirection": "west",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "masculino",
+      "direction": "west",
+      "action": "idle",
+      "world": {
+        "state": "rendered",
+        "source": "carry0-male-idle-original-west-from-walk0",
+        "action": "idle",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "width": 768,
+        "height": 768,
+        "pivot": {
+          "x": 384,
+          "y": 576
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "status": "candidate-needs-visual-calibration",
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "masculino",
+      "direction": "west",
+      "action": "attack-sword",
+      "world": {
+        "source": "sword0-west-native-attachment",
+        "action": "attack-sword",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "state": "holding-native-while-loading",
+        "requestedAction": "attack",
+        "requestedDirection": "west",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "south",
+      "action": "walk",
+      "world": {
+        "state": "rendered",
+        "source": "female0-walk-south-candidate",
+        "action": "walk",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 2,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "south",
+      "action": "idle",
+      "world": {
+        "state": "rendered",
+        "source": "female0-idle-south-candidate",
+        "action": "idle",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "south",
+      "action": "attack-sword",
+      "world": {
+        "source": "female0-attack-sword-south-candidate",
+        "action": "attack-sword",
+        "direction": "south",
+        "consumer": "world",
+        "frame": 2,
+        "state": "holding-native-while-loading",
+        "requestedAction": "attack",
+        "requestedDirection": "south",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "north",
+      "action": "walk",
+      "world": {
+        "source": "female0-walk-north-candidate",
+        "action": "walk",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 1,
+        "state": "holding-native-while-loading",
+        "requestedAction": "walk",
+        "requestedDirection": "north",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "north",
+      "action": "idle",
+      "world": {
+        "state": "rendered",
+        "source": "female0-idle-north-candidate",
+        "action": "idle",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "north",
+      "action": "attack-sword",
+      "world": {
+        "state": "rendered",
+        "source": "female0-attack-sword-north-candidate",
+        "action": "attack-sword",
+        "direction": "north",
+        "consumer": "world",
+        "frame": 1,
+        "width": 768,
+        "height": 768,
+        "pivot": {
+          "x": 384,
+          "y": 576
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "east",
+      "action": "walk",
+      "world": {
+        "state": "rendered",
+        "source": "female0-walk-east-candidate",
+        "action": "walk",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 1,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "east",
+      "action": "idle",
+      "world": {
+        "state": "rendered",
+        "source": "female0-idle-east-candidate",
+        "action": "idle",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "east",
+      "action": "attack-sword",
+      "world": {
+        "state": "rendered",
+        "source": "female0-attack-sword-east-candidate",
+        "action": "attack-sword",
+        "direction": "east",
+        "consumer": "world",
+        "frame": 1,
+        "width": 768,
+        "height": 768,
+        "pivot": {
+          "x": 384,
+          "y": 576
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "west",
+      "action": "walk",
+      "world": {
+        "state": "rendered",
+        "source": "female0-walk-west-candidate",
+        "action": "walk",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 7,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "west",
+      "action": "idle",
+      "world": {
+        "state": "rendered",
+        "source": "female0-idle-west-candidate",
+        "action": "idle",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "width": 640,
+        "height": 640,
+        "pivot": {
+          "x": 320,
+          "y": 512
+        },
+        "density": 4,
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1,
+        "faceProtectedExact": false,
+        "faceProtectedExceptIris": false,
+        "headIdentity": "authored-original"
+      }
+    },
+    {
+      "gender": "feminino",
+      "direction": "west",
+      "action": "attack-sword",
+      "world": {
+        "source": "female0-attack-sword-west-candidate",
+        "action": "attack-sword",
+        "direction": "west",
+        "consumer": "world",
+        "frame": 0,
+        "state": "holding-native-while-loading",
+        "requestedAction": "attack",
+        "requestedDirection": "west",
+        "physicalScale": 0.2807486631016043,
+        "sourceScale": 1
+      }
+    }
+  ],
+  "errors": [],
+  "build": {
+    "command": "python tools/build_pages.py",
+    "indexSHA256": "71b1a2643a5bd68586e3dcc3cdc7eaaa39220f3e1ca658ff9ff06ccb35680b29",
+    "carrySHA256": "c623f6a9c46836e4a203be32d95a602326807d6591a8e176376c62fc763f6cfd",
+    "archiveSHA256": "2996f4c7a80550f1a4f347bab582ef40bcb47b5077fd1fba499b141aee9fa042"
+  }
+}

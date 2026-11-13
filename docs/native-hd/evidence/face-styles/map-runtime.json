@@ -1,0 +1,418 @@
+{
+  "build": "python tools/build_pages.py",
+  "evidence": [
+    {
+      "body": "masculino",
+      "label": "bare",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "original",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:none:light:black"
+      }
+    },
+    {
+      "body": "masculino",
+      "label": "eyeStyle",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-calm",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:none:light:black:face-calm",
+        "eyeStyle": "face-calm"
+      }
+    },
+    {
+      "body": "masculino",
+      "label": "eyeStyle-reload",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-calm",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:none:light:black:face-calm",
+        "eyeStyle": "face-calm"
+      }
+    },
+    {
+      "body": "masculino",
+      "label": "eyeStyle",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-resolute",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:none:light:black:face-resolute",
+        "eyeStyle": "face-resolute"
+      }
+    },
+    {
+      "body": "masculino",
+      "label": "eyeStyle-reload",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-resolute",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:none:light:black:face-resolute",
+        "eyeStyle": "face-resolute"
+      }
+    },
+    {
+      "body": "masculino",
+      "label": "eyeStyle",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-almond",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:none:light:black:face-almond",
+        "eyeStyle": "face-almond"
+      }
+    },
+    {
+      "body": "masculino",
+      "label": "eyeStyle-reload",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-almond",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:none:light:black:face-almond",
+        "eyeStyle": "face-almond"
+      }
+    },
+    {
+      "body": "masculino",
+      "label": "eyeStyle",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-focused",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:none:light:black:face-focused",
+        "eyeStyle": "face-focused"
+      }
+    },
+    {
+      "body": "masculino",
+      "label": "eyeStyle-reload",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-focused",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "male-idle-original-south-from-walk0:original:none:light:black:face-focused",
+        "eyeStyle": "face-focused"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "bare",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "original",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:light:black",
+        "eyeStyle": null,
+        "skinPalette": "light",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "eyeStyle",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-calm",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:light:black:face-calm",
+        "eyeStyle": "face-calm",
+        "skinPalette": "light",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "eyeStyle-reload",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-calm",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:light:black:face-calm",
+        "eyeStyle": "face-calm",
+        "skinPalette": "light",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "eyeStyle",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-resolute",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:light:black:face-resolute",
+        "eyeStyle": "face-resolute",
+        "skinPalette": "light",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "eyeStyle-reload",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-resolute",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:light:black:face-resolute",
+        "eyeStyle": "face-resolute",
+        "skinPalette": "light",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "eyeStyle",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-almond",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:light:black:face-almond",
+        "eyeStyle": "face-almond",
+        "skinPalette": "light",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "eyeStyle-reload",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-almond",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:light:black:face-almond",
+        "eyeStyle": "face-almond",
+        "skinPalette": "light",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "eyeStyle",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-focused",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:light:black:face-focused",
+        "eyeStyle": "face-focused",
+        "skinPalette": "light",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "eyeStyle-reload",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-focused",
+        "eyeColor": "blue"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:light:black:face-focused",
+        "eyeStyle": "face-focused",
+        "skinPalette": "light",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "eyeColor",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-focused",
+        "eyeColor": "green"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:light:black:eye-palette:green:face-focused",
+        "eyeStyle": "face-focused",
+        "skinPalette": "light",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "eyeColor-reload",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "light",
+        "eyeStyle": "face-focused",
+        "eyeColor": "green"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:light:black:eye-palette:green:face-focused",
+        "eyeStyle": "face-focused",
+        "skinPalette": "light",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "skinColor",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "dark",
+        "eyeStyle": "face-focused",
+        "eyeColor": "green"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:dark:black:eye-palette:green:face-focused",
+        "eyeStyle": "face-focused",
+        "skinPalette": "dark",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "skinColor-reload",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "black",
+        "skinColor": "dark",
+        "eyeStyle": "face-focused",
+        "eyeColor": "green"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:dark:black:eye-palette:green:face-focused",
+        "eyeStyle": "face-focused",
+        "skinPalette": "dark",
+        "hairPalette": "black"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "hairColor",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "pink",
+        "skinColor": "dark",
+        "eyeStyle": "face-focused",
+        "eyeColor": "green"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:dark:pink:eye-palette:green:face-focused",
+        "eyeStyle": "face-focused",
+        "skinPalette": "dark",
+        "hairPalette": "pink"
+      }
+    },
+    {
+      "body": "feminino",
+      "label": "hairColor-reload",
+      "appearance": {
+        "hairStyle": "original",
+        "hairColor": "pink",
+        "skinColor": "dark",
+        "eyeStyle": "face-focused",
+        "eyeColor": "green"
+      },
+      "draw": {
+        "state": "rendered",
+        "source": "female-idle-original-south-from-walk0:original:none:dark:pink:eye-palette:green:face-focused",
+        "eyeStyle": "face-focused",
+        "skinPalette": "dark",
+        "hairPalette": "pink"
+      }
+    }
+  ]
+}
