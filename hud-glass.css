@@ -1925,3 +1925,96 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   @media (pointer:coarse) { & #dialogBody button { min-height: 44px; } }
   @media (prefers-reduced-motion:reduce) { & #dialogBody button { transition: none; } }
 }
+
+/* Settings: shared inventory geometry, vector categories, and native preference controls. */
+#app #panelOverlay.hud-density.captain-hd-mode[data-ui-panel=settings] {
+  --rpg-font: var(--glass-type);
+  --rpg-hd-heading: var(--glass-type);
+  padding: max(8px,var(--rpg-safe-top)) 8px max(8px,var(--rpg-safe-bottom));
+  background: #0005;
+  backdrop-filter: blur(3px);
+  & > .dialog { display: flex; flex-direction: column; width: min(var(--glass-window-width),100%); max-width: none; height: calc(var(--glass-window-limit) - 18px); max-height: calc(var(--glass-window-limit) - 18px); padding: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 12px; background: var(--glass-surface); backdrop-filter: blur(8px); box-shadow: var(--glass-shadow); overflow: hidden; }
+  & .dialog-header { flex: none; min-height: 48px; padding: 2px 8px 2px 14px; gap: 12px; border: 0; border-bottom: 1px solid #ffffff18; background: #ffffff03; }
+  & .dialog-header > div { gap: 8px; }
+  & .dialog-header > div::before { width: 24px; height: 24px; }
+  & #dialogTitle { margin: 0; color: #f5f6f8; font: 700 20px/1.2 var(--glass-type); text-transform: none; letter-spacing: 0; text-shadow: 0 1px 2px #0006; }
+  & #closePanel { width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0; border: 0; border-image: none; border-radius: 8px; background: transparent; font: 26px/1 var(--glass-type); color: var(--glass-muted); box-shadow: none; }
+  & #closePanel:hover { background: #ffffff12; }
+  & #dialogBody { flex: 1; min-width: 0; min-height: 0; padding: 10px; overflow: hidden; font: 13px/1.4 var(--glass-type); font-variant-numeric: tabular-nums; }
+  & .dialog-header small { display: none; }
+  & .captain-settings { height: 100%; min-height: 0; display: grid; grid-template-columns: 215px minmax(0,1fr); grid-template-rows: minmax(0,1fr); gap: 14px; color: #f5f6f8; font: 14px/1.5 var(--glass-type); }
+  & .settings-icon { flex: none; width: 24px; height: 24px; color: var(--glass-gold); }
+  & .settings-nav { display: flex; flex-direction: column; gap: 5px; min-width: 0; min-height: 0; padding: 6px; overflow: auto; border: 1px solid #ffffff14; border-radius: 10px; background: #ffffff03; scrollbar-width: thin; }
+  & #dialogBody button { border-image: none; }
+  & #dialogBody .settings-category { display: flex; flex: none; align-items: center; justify-content: flex-start; gap: 12px; min-width: 0; min-height: 68px; width: 100%; padding: 10px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--glass-muted); box-shadow: none; text-align: left; text-transform: none; font: 600 13px/1.35 var(--glass-type); transition: background-color .15s,border-color .15s; }
+  & .settings-category > span { min-width: 0; }
+  & .settings-category strong { display: block; font: inherit; color: inherit; }
+  & .settings-category em { display: block; margin-top: 4px; font: 400 11px/1.4 var(--glass-type); color: var(--glass-muted); overflow-wrap: anywhere; }
+  & #dialogBody .settings-category[aria-pressed=true] { border-color: #d8c18a88; background: #d4af3720; color: #f8e3af; box-shadow: inset 2px 0 #e4ce96; }
+  & #dialogBody .settings-category:hover { border-color: var(--glass-line); background: #ffffff0c; }
+  & #dialogBody :is(button,a,input,select):focus-visible, & #closePanel:focus-visible { outline: 2px solid var(--glass-gold); outline-offset: -2px; }
+  & .settings-content { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #a38b58 #ffffff08; border: 1px solid #ffffff14; border-radius: 10px; padding: 24px; background: #ffffff03; }
+  & .settings-intro { display: flex; align-items: center; gap: 14px; padding-bottom: 20px; border-bottom: 1px solid #ffffff14; margin-bottom: 16px; }
+  & .settings-intro > .settings-icon { width: 30px; height: 30px; }
+  & .settings-intro h3 { margin: 0 0 4px; font: 700 21px/1.3 var(--glass-type); color: #f5f6f8; letter-spacing: 0; text-transform: none; }
+  & .settings-intro p { margin: 0; font: 400 13px/1.5 var(--glass-type); color: var(--glass-muted); }
+  & .captain-settings-detail { display: grid; grid-template-columns: minmax(0,1fr); padding: 0; border: 0; background: transparent; gap: 12px; }
+  & .captain-settings-detail > p { margin: 4px 0 0; font: 400 13px/1.6 var(--glass-type); color: var(--glass-muted); }
+  & .captain-fact { display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 14px; border: 1px solid #ffffff18; border-radius: 8px; background: #0002; box-shadow: none; }
+  & .captain-fact > div { min-width: 0; }
+  & .captain-fact small { display: block; font: 400 12px/1.4 var(--glass-type); color: var(--glass-muted); }
+  & .captain-fact strong { display: block; margin-top: 4px; font: 600 15px/1.4 var(--glass-type); color: #f5f6f8; overflow-wrap: anywhere; }
+  & .captain-setting-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; min-width: 0; gap: 12px; margin: 0; padding: 16px; min-height: 70px; border: 1px solid #ffffff18; border-radius: 8px; background: #0002; font: 500 14px/1.5 var(--glass-type); color: #f5f6f8; }
+  & .captain-setting-line > span { min-width: 0; }
+  & .captain-setting-line select { min-height: 40px; max-width: 100%; padding: 7px 34px 7px 12px; border: 1px solid #ffffff26; border-radius: 8px; background: #171a1e; color: #f5f6f8; font: 500 13px/1.4 var(--glass-type); cursor: pointer; }
+  & .captain-setting-line select option { background: #171a1e; color: #f5f6f8; }
+  & .settings-audio-channel { min-width: 0; padding: 6px 14px; border: 1px solid #ffffff18; border-radius: 8px; background: #0002; }
+  & .settings-audio-channel .captain-setting-line { min-height: 56px; padding: 10px 0; border: 0; border-radius: 0; background: transparent; }
+  & .settings-audio-channel .captain-setting-line + .captain-setting-line { border-top: 1px solid #ffffff10; }
+  & .captain-setting-line:has(input[type=range]) { align-items: stretch; }
+  & .captain-setting-line:has(input[type=range]) > span { display: flex; justify-content: space-between; width: 100%; gap: 12px; }
+  & .captain-setting-line output { font-weight: 700; color: var(--glass-gold); font-variant-numeric: tabular-nums; }
+  & #dialogBody input[type=checkbox] { appearance: none; position: relative; flex: none; width: 42px; height: 26px; margin: 0; border: 1px solid #ffffff40; border-radius: 20px; background: #06080a; cursor: pointer; transition: background-color .15s,border-color .15s; }
+  & input[type=checkbox]::before { content: ''; position: absolute; width: 16px; height: 16px; top: 4px; left: 4px; border-radius: 50%; background: #aab0b9; transition: transform .15s; }
+  & #dialogBody input[type=checkbox]:checked { background: #44b99935; border-color: #7de0bc; }
+  & input[type=checkbox]:checked::before { transform: translateX(16px); background: #a5efd5; }
+  & #dialogBody input[type=range] { width: 100%; min-width: 0; min-height: 32px; margin: 0; accent-color: #e4ce96; cursor: pointer; }
+  & .settings-storage-note { margin: auto 0 0; padding-top: 20px; color: var(--glass-muted); font: 400 11px/1.5 var(--glass-type); }
+  & .captain-discord { align-items: flex-start; gap: 18px; padding: 22px; border: 1px solid #afa8ff40; border-radius: 10px; background: #8883ed0b; }
+  & .captain-discord > .settings-icon { width: 40px; height: 40px; color: #bbb6ff; }
+  & .captain-discord h3 { margin: 0 0 8px; font: 700 18px/1.4 var(--glass-type); color: #f5f6f8; }
+  & .captain-discord p { margin: 0 0 18px; font: 400 14px/1.6 var(--glass-type); color: var(--glass-muted); }
+  & .captain-discord a, & #dialogBody [data-online-action=logout] { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: fit-content; min-height: 44px; padding: 10px 16px; border: 1px solid #b9afff88; border-radius: 8px; background: #8f83e62b; color: #e4dfff; font: 600 13px/1.4 var(--glass-type); text-decoration: none; box-shadow: none; transition: background-color .15s,border-color .15s; }
+  & .captain-discord a:hover { background: #8f83e64d; border-color: #d6ceff; }
+  & #dialogBody [data-online-action=logout] { color: #ffb7b0; border-color: #e67e7355; background: #e67e7310; }
+  & #dialogBody [data-online-action=logout]:hover { background: #e67e7320; }
+  @media (max-width:1100px) {
+    & .captain-settings { grid-template-columns: 185px minmax(0,1fr); gap: 10px; }
+    & .settings-content { padding: 18px; }
+  }
+  @media (max-width:760px) {
+    & #dialogTitle { font-size: 18px; }
+    & #dialogBody { padding: 8px; }
+    & .captain-settings { grid-template-columns: minmax(0,1fr); grid-template-rows: auto minmax(0,1fr); gap: 8px; }
+    & .settings-nav { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); padding: 4px; gap: 4px; overflow: visible; }
+    & #dialogBody .settings-category { flex-direction: column; justify-content: center; gap: 5px; padding: 7px 3px; min-height: 62px; text-align: center; font-size: 11px; }
+    & .settings-category em { display: none; }
+    & .settings-category .settings-icon { width: 20px; height: 20px; }
+    & .settings-content { padding: 14px; }
+    & .settings-intro { gap: 10px; margin-bottom: 12px; padding-bottom: 12px; }
+    & .settings-intro h3 { font-size: 18px; }
+    & .settings-intro p { font-size: 12px; }
+    & .captain-setting-line { padding: 12px; gap: 10px; font-size: 13px; }
+    & .captain-setting-line select { width: 100%; min-height: 44px; }
+    & .captain-setting-line:has(input[type=checkbox]) { flex-wrap: nowrap; }
+    & .captain-discord { flex-direction: column; padding: 16px; gap: 12px; }
+    & .captain-fact { padding: 12px; gap: 12px; }
+    & .captain-fact strong { font-size: 13px; }
+  }
+  @media (prefers-reduced-motion:reduce) { & #dialogBody :is(button,a,input), & input::before { transition: none; } }
+}
+[data-mare-text=large] #app #panelOverlay.hud-density.captain-hd-mode[data-ui-panel=settings] {
+  & .captain-setting-line { font-size: 17px; }
+  & .captain-settings-detail > p, & .captain-fact strong { font-size: 17px; }
+  & .captain-fact small, & .captain-setting-line select { font-size: 15px; }
+}
