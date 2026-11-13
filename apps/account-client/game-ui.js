@@ -80,7 +80,7 @@
   // it. Bridge only through the same collision map, then follow the approved path.
   function createWalkingPresentation(route=(from,to)=>[{x:to.x,y:to.y}]) {
     let snapshot=null,received=0,observed=0,state=null;
-    let confirmed=null,confirmedOptions={},prediction=null,serial=0,settledSerial=0,windowUntil=null,latestTicket=null;
+    let confirmed=null,confirmedOptions={},prediction=null,intentGoal=null,serial=0,settledSerial=0,windowUntil=null,latestTicket=null;
     const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
     const length=(from,points)=>{let n=0;for(const p of points){n+=distance(from,p);from=p;}return n;};
     function sample(now){
@@ -105,7 +105,7 @@
       if(!preview){
         confirmed=next;confirmedOptions={buffered,reset,quickHunt};
         if(prediction&&snapshot.mapId===next.mapId&&!reset)return false;
-        if(reset||snapshot&&snapshot.mapId!==next.mapId){windowUntil=null;latestTicket=null;settledSerial=serial;}
+        if(reset||snapshot&&snapshot.mapId!==next.mapId){windowUntil=null;latestTicket=null;settledSerial=serial;intentGoal=null;}
         prediction=null;
       }
       if(next===snapshot&&!reset&&!force)return false;
@@ -125,7 +125,14 @@
       };
       let join=next.position,bridge=null;
       const first=next.path[0];
-      if(!snap&&first){
+      const goal=next.path.at(-1);
+      if(!preview&&intentGoal&&(intentGoal.mapId!==next.mapId||!goal||distance(intentGoal,goal)>1e-6))intentGoal=null;
+      // A confirmed local turn can start from a different point than the
+      // predicted turn. Do not insert an old lateral segment if navigation
+      // proves a straight, unobstructed continuation to the next waypoint.
+      const continuation=!preview&&!snap&&intentGoal&&first?connect(first):null;
+      const directIntent=continuation?.length===1;
+      if(!directIntent&&!snap&&first){
         const dx=first.x-join.x,dy=first.y-join.y;
         const along=((origin.x-join.x)*dx+(origin.y-join.y)*dy)/(dx*dx+dy*dy);
         // Join the confirmed segment ahead instead of continuing in the old direction.
@@ -138,17 +145,18 @@
           }
         }
       }
-      bridge??=connect(join);
-      const points=bridge?[...bridge,...next.path].map(p=>({x:p.x,y:p.y})):[];
-      state={x:origin.x,y:origin.y,direction:next.direction,moving:false,last:now,points,travel:0,
-        bridge:bridge?length(origin,bridge):0,pathLength:bridge?length(join,next.path):0,
+      if(!directIntent)bridge??=connect(join);
+      const points=(directIntent?[...continuation,...next.path.slice(1)]:bridge?[...bridge,...next.path]:[]).map(p=>({x:p.x,y:p.y}));
+      state={x:origin.x,y:origin.y,direction:directIntent?origin.direction:next.direction,moving:Boolean((preview||directIntent)&&origin.moving&&points.length),last:now,points,travel:0,
+        bridge:directIntent?0:bridge?length(origin,bridge):0,pathLength:directIntent?length(origin,points):bridge?length(join,next.path):0,
         // An idle authoritative pose may need positional reconciliation, but
         // that correction is not an instruction to turn and walk backwards.
         stationaryCorrection:!buffered&&!next.path.length,
         buffered:buffered&&!next.path.length,duration:combatBlendDuration(gap,quickHunt)};
       snapshot=next;received=now;return snap;
     }
-    function cancel(now,expired=false){
+    function cancel(now,expired=false,acceptedIntent=false){
+      intentGoal=acceptedIntent&&confirmed?.path.length?{...confirmed.path.at(-1),mapId:confirmed.mapId}:null;
       if(!expired){windowUntil=null;latestTicket=null;settledSerial=serial;}
       if(!prediction)return;
       prediction=null;
@@ -165,7 +173,9 @@
         // Local presentation only. Never send this pose or mutate the confirmed
         // snapshot. Repeated clicks cannot extend an unacknowledged window.
         const until=windowUntil??now+750,id=++serial;
-        const next={...confirmed,position:{x:origin.x,y:origin.y},path:points.map(p=>({x:p.x,y:p.y})),speed,direction:stop?origin.direction:confirmed.direction,
+        const first=points.find(p=>distance(origin,p)>1e-8),dx=first?first.x-origin.x:0,dy=first?first.y-origin.y:0;
+        const direction=first?(Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'back':'front')):origin.direction;
+        const next={...confirmed,position:{x:origin.x,y:origin.y},path:points.map(p=>({x:p.x,y:p.y})),speed,direction,
           motionUntil:new Date(Date.parse(confirmed.serverNow)+Math.max(0,until-now)).toISOString()};
         update(next,now,{preview:true,force:true});
         prediction={id,until};windowUntil=until;latestTicket=id;return id;
@@ -173,7 +183,7 @@
       settle(id,now,{accepted=true}={}){
         if(latestTicket===null||id<=settledSerial||id>latestTicket)return;
         settledSerial=id;
-        if(!accepted||latestTicket===id){cancel(now);return;}
+        if(!accepted||latestTicket===id){cancel(now,false,accepted);return;}
         // An earlier acknowledged command proves the connection is progressing.
         // Keep the newer queued intent, without letting clicks alone renew it.
         windowUntil=now+750;

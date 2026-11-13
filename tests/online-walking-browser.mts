@@ -16,10 +16,15 @@ await authDatabase(async f=>{
  const handler=createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9445',cookieSeconds:3600});
  const api=createHttpServer({isReady:async()=>true,handle:handler});api.listen(0,'127.0.0.1');await once(api,'listening');
  const gateway=createDevGateway({key:await readFile('infra/local/localhost.key','utf8'),cert:await readFile('infra/local/localhost.crt','utf8'),staticRoot:resolve(process.env.MARE_QA_STATIC_ROOT||'dist'),onlineRoot:resolve('apps/account-client'),upstream:new URL(`http://127.0.0.1:${(api.address() as any).port}`)});
- let simulations:any;let browser:any,context:any;const errors:string[]=[];
+ let simulations:any;let browser:any,context:any;const errors:string[]=[],httpProbe:any[]=[];let browserTimeOrigin=0;
  try{
   gateway.listen(9445,'127.0.0.1');await once(gateway,'listening');browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});context=await browser.newContext({viewport:{width:1366,height:900}});const p=await context.newPage();p.on('dialog',async(d:any)=>{assert.equal(d.type(),'confirm');assert.match(d.message(),/Este personagem está sob controle/);await d.accept();});p.on('pageerror',(e:any)=>errors.push(e.stack||e.message));await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-final-acceptance'));
   await p.route(/^https?:\/\/(?!localhost:9445\/)/,(r:any)=>r.abort());
+  const pendingHttp=new Map();
+  p.on('request',(r:any)=>{const path=new URL(r.url()).pathname;if(!path.startsWith('/v1/'))return;const row={kind:path.split('/').at(-1),method:r.method(),start:Date.now(),end:null,status:null};pendingHttp.set(r,row);httpProbe.push(row);});
+  p.on('response',(r:any)=>{const row=pendingHttp.get(r.request());if(row)row.status=r.status();});
+  p.on('requestfinished',(r:any)=>{const row=pendingHttp.get(r);if(row)row.end=Date.now();pendingHttp.delete(r);});
+  p.on('requestfailed',(r:any)=>{const row=pendingHttp.get(r);if(row){row.end=Date.now();row.failed=true;}pendingHttp.delete(r);});
   p.on('framenavigated',(frame:any)=>{if(frame===p.mainFrame())console.log(JSON.stringify({navigation:new URL(frame.url()).pathname}));});
   let blockedDepth=0;
   await p.route('**/assets/map-depth/objects/export-14436f8b05ddc40898b1f60d.png',(r:any)=>{
@@ -31,6 +36,10 @@ await authDatabase(async f=>{
   assert.ok(blockedDepth>0,'the test must block an optional object mask');
   assert.equal(await p.locator('.online-boot-error').count(),0,'a missing optional object mask must not block entry to the port');
   await p.waitForFunction(()=>globalThis.__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});
+  browserTimeOrigin=await p.evaluate(()=>performance.timeOrigin);
+  await p.evaluate(`globalThis.slowNavigation=[];globalThis.keyEvents=[];
+   for(const method of ['path','move']){const original=MareWorld.Navigation.prototype[method];MareWorld.Navigation.prototype[method]=function(...args){const started=performance.now(),from={x:args[0]?.x,y:args[0]?.y};try{return original.apply(this,args);}finally{const ms=performance.now()-started;if(ms>20)globalThis.slowNavigation.push({method,map:this.map.id,from,to:args[1],dy:args[2],t:started,ms});}};}
+  `);
 
 
   simulations=createSimulationPool({databaseUrl:f.pool.options.connectionString!,counts:{solo:2,party:1},workerUrl:new URL('../apps/game-server/dist/simulation-worker.js',import.meta.url)});await simulations.start();
@@ -95,28 +104,46 @@ await authDatabase(async f=>{
    await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
    await p.waitForTimeout(3000);
    // Keyboard has its own input path: test actual key events under the same RTT.
-   for(let keyboardRound=0;keyboardRound<3;keyboardRound++){
+   for(let keyboardRound=0;keyboardRound<5;keyboardRound++){
+   let restoreCornerOrigin:any=null;
+   if(keyboardRound>=3){
+    restoreCornerOrigin=await p.evaluate(()=>({x:__mareDiagnostics().hero.x,y:__mareDiagnostics().hero.y}));
+    let open:any=null;
+    for(let radius=0;radius<=240&&!open;radius+=48)for(let x=-radius;x<=radius&&!open;x+=48)for(let y=-radius;y<=radius&&!open;y+=48){
+     const q={x:restoreCornerOrigin.x+x,y:restoreCornerOrigin.y+y};
+     if([-48,0,48].every(dx=>[-48,0,48].every(dy=>nav.clear(q,{x:q.x+dx,y:q.y+dy}))))open=q;
+    }
+    assert.ok(open,'corner sequence requires an open collision-checked test area');
+    if(Math.hypot(open.x-restoreCornerOrigin.x,open.y-restoreCornerOrigin.y)>1){await p.evaluate(q=>MareGameSession.command('world.move',q),open);await p.waitForFunction(q=>Math.hypot(__mareDiagnostics().hero.x-q.x,__mareDiagnostics().hero.y-q.y)<2,open,{timeout:15000});}
+   }
    const keyOrigin=await p.evaluate(()=>({x:__mareDiagnostics().hero.x,y:__mareDiagnostics().hero.y}));
    const axis=[[1,0,'d','a'],[0,1,'s','w']].find(([dx,dy])=>[-45,-30,-15,15,30,45].every(n=>nav.walkable(keyOrigin.x+Number(dx)*n,keyOrigin.y+Number(dy)*n)));
    assert.ok(axis,'keyboard probe needs a clear corridor on both sides');
    await p.evaluate(`globalThis.keyFrames=[];globalThis.keyInputs=[];globalThis.keyCommands=[];globalThis.recordKeys=true;globalThis.recordRelease=false;globalThis.keyboardPointerEvents=0;
-    if(!globalThis.commandProbeInstalled){globalThis.commandProbeInstalled=true;const command=MareGameSession.command;MareGameSession.command=function(action,...args){const row={action,start:performance.now()};if(globalThis.recordKeys)globalThis.keyCommands.push(row);return command.call(this,action,...args).then(value=>{row.end=performance.now();return value;},error=>{row.end=performance.now();row.error=error.code;throw error;});};}
+    if(!globalThis.commandProbeInstalled){globalThis.commandProbeInstalled=true;const command=MareGameSession.command;MareGameSession.command=function(action,...args){const row={action,payload:args[0],worldAtStart:MareGameSession.data.online.world,start:performance.now()};if(globalThis.recordKeys)globalThis.keyCommands.push(row);return command.call(this,action,...args).then(value=>{row.end=performance.now();row.world=value?.world;return value;},error=>{row.end=performance.now();row.error=error.code;throw error;});};}
     if(!globalThis.keyProbeInstalled){globalThis.keyProbeInstalled=true;
      window.addEventListener('pointerdown',()=>{if(globalThis.recordKeys)globalThis.keyboardPointerEvents++;},true);
      window.addEventListener('keydown',e=>{const vectors={w:[0,-1],a:[-1,0],s:[0,1],d:[1,0]};const v=vectors[e.key];if(!globalThis.recordKeys||!v||e.repeat)return;const h=__mareDiagnostics().hero;globalThis.keyInputs.push({t:performance.now(),x:h.x,y:h.y,dx:v[0],dy:v[1]});},true);
+     for(const type of ['keydown','keyup'])window.addEventListener(type,e=>{if(globalThis.recordKeys&&!e.repeat)globalThis.keyEvents.push({t:performance.now(),type,key:e.key});},true);
      window.addEventListener('keyup',()=>{if(globalThis.recordRelease)globalThis.releasedAt=performance.now();},true);
     }
-    function keySample(){if(!globalThis.recordKeys)return;const d=__mareDiagnostics();globalThis.keyFrames.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,moving:d.hero.walking>0,clickMarker:d.destination!==null,busy:MareGameSession.busy,available:MareGameSession.available,controlled:MareGameSession.controlled});requestAnimationFrame(keySample);}requestAnimationFrame(keySample);
+    function keySample(){if(!globalThis.recordKeys)return;const d=__mareDiagnostics();globalThis.keyFrames.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,moving:d.hero.walking>0,direction:d.hero.direction,clickMarker:d.destination!==null,busy:MareGameSession.busy,available:MareGameSession.available,controlled:MareGameSession.controlled});requestAnimationFrame(keySample);}requestAnimationFrame(keySample);
    `);
-   let held='';for(let i=0;i<8;i++){if(held)await p.keyboard.up(held);held=String(axis[i%2?3:2]);await p.keyboard.down(held);await p.waitForTimeout(110);}
+   let held='';for(let i=0;i<8;i++){
+    const next=keyboardRound>=3?['w','a','s','d','w','d','s','a'][i]:String(axis[i%2?3:2]);
+    if(keyboardRound===4&&held){await p.keyboard.down(next);await p.waitForTimeout(30);await p.keyboard.up(held);held=next;await p.waitForTimeout(80);}
+    else{if(held)await p.keyboard.up(held);held=next;await p.keyboard.down(held);await p.waitForTimeout(110);}
+   }
    await p.evaluate(()=>{globalThis.recordRelease=true;});await p.keyboard.up(held);await p.waitForTimeout(100);
-   const keyboard=await p.evaluate(()=>{globalThis.recordKeys=false;globalThis.recordRelease=false;return {pointerEvents:globalThis.keyboardPointerEvents,markerFrames:globalThis.keyFrames.filter(f=>f.t>globalThis.keyInputs[0].t+50&&f.clickMarker).length,responses:globalThis.keyInputs.map((input,i,all)=>{const next=all[i+1]?.t??globalThis.releasedAt;const frame=globalThis.keyFrames.find(f=>f.t>input.t&&f.t<next&&(f.x-input.x)*input.dx+(f.y-input.y)*input.dy>.5);return frame?frame.t-input.t:null;}),stopMs:(globalThis.keyFrames.find(f=>f.t>globalThis.releasedAt&&!f.moving)?.t??Infinity)-globalThis.releasedAt};});
-   console.log(JSON.stringify({map:mapId,keyboardRound,keyboard}));await writeFile(resolve(out,'keyboard-'+mapId+'-'+keyboardRound+'.json'),JSON.stringify(await p.evaluate(()=>({frames:globalThis.keyFrames,inputs:globalThis.keyInputs,commands:globalThis.keyCommands})),null,2));assert.equal(keyboard.pointerEvents,0,'keyboard must not synthesize mouse inputs');assert.equal(keyboard.markerFrames,0,'keyboard must not create or restore a click destination');assert.equal(keyboard.responses.length,8);
+   const keyboard=await p.evaluate(()=>{globalThis.recordKeys=false;globalThis.recordRelease=false;return {wrongFacingFrames:globalThis.keyInputs.reduce((count,input,i,all)=>{const until=all[i+1]?.t??globalThis.releasedAt;const direction=input.dx<0?'left':input.dx>0?'right':input.dy<0?'back':'front';return count+globalThis.keyFrames.filter(f=>f.t>input.t+50&&f.t<until&&f.direction!==direction).length;},0),pointerEvents:globalThis.keyboardPointerEvents,markerFrames:globalThis.keyFrames.filter(f=>f.t>globalThis.keyInputs[0].t+50&&f.clickMarker).length,responses:globalThis.keyInputs.map((input,i,all)=>{const next=all[i+1]?.t??globalThis.releasedAt;const frame=globalThis.keyFrames.find(f=>f.t>input.t&&f.t<next&&(f.x-input.x)*input.dx+(f.y-input.y)*input.dy>.5);return frame?frame.t-input.t:null;}),stopMs:(globalThis.keyFrames.find(f=>f.t>globalThis.releasedAt&&!f.moving)?.t??Infinity)-globalThis.releasedAt};});
+   console.log(JSON.stringify({map:mapId,keyboardRound,keyboard}));await writeFile(resolve(out,'keyboard-'+mapId+'-'+keyboardRound+'.json'),JSON.stringify(await p.evaluate(()=>({frames:globalThis.keyFrames,inputs:globalThis.keyInputs,commands:globalThis.keyCommands,events:globalThis.keyEvents,slowNavigation:globalThis.slowNavigation})),null,2));assert.equal(keyboard.pointerEvents,0,'keyboard must not synthesize mouse inputs');assert.equal(keyboard.markerFrames,0,'keyboard must not create or restore a click destination');assert.equal(keyboard.responses.length,8);
    // Collect latency failures without skipping the independent marker, combat
    // and reconnect regressions. The same strict assertions fail the run below.
    if(!keyboard.responses.every(ms=>ms!==null&&ms<=80))keyboardResponseFailures.push(mapId+':'+keyboardRound+':turn');
    if(!(keyboard.stopMs<=80))keyboardResponseFailures.push(mapId+':'+keyboardRound+':release');
+   if(keyboardRound>=3&&keyboard.wrongFacingFrames!==0)keyboardResponseFailures.push(mapId+':'+keyboardRound+':stale_facing');
    await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);await p.waitForTimeout(3000);
+   if(restoreCornerOrigin){await p.evaluate(q=>MareGameSession.command('world.move',q),restoreCornerOrigin);await p.waitForFunction(q=>Math.hypot(__mareDiagnostics().hero.x-q.x,__mareDiagnostics().hero.y-q.y)<2,restoreCornerOrigin,{timeout:15000});await p.waitForTimeout(300);}
    }
    const heldOrigin=await p.evaluate(()=>({x:__mareDiagnostics().hero.x,y:__mareDiagnostics().hero.y}));
    await p.evaluate(`
@@ -228,5 +255,5 @@ await authDatabase(async f=>{
   assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');
   console.log('Optional depth failure allowed entry; a missing base map reported the specific failure without exposing the creation form.');
   assert.deepEqual(keyboardResponseFailures,[],'WASD turns and release must respond within 80ms before the delayed ACK');
- }catch(error){await context?.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw error;}finally{await simulations?.stop();await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
+ }catch(error){await context?.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw error;}finally{await writeFile(resolve(out,'http-timing.json'),JSON.stringify({browserTimeOrigin,requests:httpProbe},null,2));await simulations?.stop();await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
 });

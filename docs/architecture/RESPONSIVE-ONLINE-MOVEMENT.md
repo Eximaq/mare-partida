@@ -299,3 +299,74 @@ Reconexão, viewport estreito, carregamento progressivo de 26,9 s, falha de mapa
 base e preservação do save demo passaram na execução completa. PostgreSQL de
 teste encerrado. Esses ensaios usam backend/worker reais e identidade fictícia
 local; não representam uma nova medição do ping dos convidados pela Internet.
+
+## Sequências rápidas com mudanças de eixo
+
+A sequência W/A/S/D/W reproduziu uma transição que os ensaios anteriores de
+inversão no mesmo eixo não cobriam: depois do ACK, a apresentação caminhava
+lateralmente até a linha do servidor antes de continuar na direção pedida.
+Outro caso reproduziu a orientação antiga por um quadro, tanto ao criar uma
+nova previsão quanto ao receber a confirmação.
+
+Uma intenção local aceita agora pode continuar diretamente até o próximo ponto
+da rota confirmada quando a navegação comprova que esse segmento está livre.
+O comportamento acompanha o mesmo destino confirmado nos polls seguintes e é
+descartado em rejeição, cancelamento, mudança de destino/mapa ou respawn. Se há
+obstáculo, conserva o caminho de reconciliação anterior. O trecho direto consome
+o orçamento da rota e respeita o prazo de movimento: não vira uma ponte sem
+limite de duração. A direção exibida não é substituída por uma orientação antiga
+antes do primeiro passo da nova rota.
+
+O controlador também publicava a pose antes de tratar a nova tecla. Agora
+publica a orientação resultante no mesmo tick, sem inserir um quadro parado
+entre duas rotas contínuas. Regressões reproduziram a orientação anterior e
+a animação interrompida antes da correção.
+
+O ensaio misto com 30 ms de sobreposição entre teclas revelou outra causa:
+`Navigation.move` projetava 2,5 segundos deslizando o destino em obstáculos;
+`predict` depois tentava chegar a esse ponto por A*. O perfil registrou buscas
+de 242,0/241,4 ms no porto e 224,2 ms em Dawn, bloqueando o navegador. Uma
+execução também registrou `world_route_unavailable` (409) no comando e a
+reconciliação subsequente, distinguindo essa rejeição de atraso HTTP genérico.
+
+O destino de teclado agora termina no primeiro obstáculo do corredor da direção
+pressionada, usando o mesmo teste `clear` de colisão. Não projeta um deslizamento
+distante que transforma WASD em um clique com desvio automático. A previsão
+continua até esse ponto livre; a decisão final sobre a rota e a posição segue
+no servidor. Regressões usam as coordenadas capturadas nos dois mapas para
+exigir uma rota visual direta, além de uma parede sintética. Mouse, deslocamento
+offline e a movimentação especial do gênio mantêm seus próprios controles.
+
+Não há novo comando de posição, mudança de velocidade, persistência, colisão ou
+economia. O protocolo de intents continua coalescendo a última intenção enquanto
+uma requisição está em voo; esta correção não equivale a implementar um protocolo
+de histórico completo de inputs.
+
+Validação final de navegador, com API, worker e PostgreSQL descartável reais,
+identidade fictícia e 250 ms de atraso artificial:
+
+- 80 teclas em porto/Dawn, incluindo W/A/S/D/W/D/S/A com e sem sobreposição:
+  resposta visual p95 45,5 ms, máximo 46,9 ms; zero quadros com orientação
+  incompatível após a tolerância de 50 ms, zero eventos/marcadores de mouse.
+- Os 40 comandos associados às sequências terminaram com HTTP 200. O perfil
+  não registrou chamadas de navegação acima de 20 ms nessas sequências, contra
+  os 224–242 ms capturados antes. Os limites de resposta não foram ampliados.
+- Soltura preservou a direção. A correção posicional máxima após soltar D foi
+  4,15 px no porto e zero em Dawn: há reconciliação com a posição real, não
+  garantia de posição visual absolutamente imóvel sob qualquer atraso.
+- Clique, rejeição deliberada e reconciliação, velocidade limitada, perseguição,
+  116 amostras de monstros em movimento sem deslize/reinício de fase,
+  reconexão, viewport estreito, carga progressiva de 27,2 s e preservação do
+  save demo passaram. O PostgreSQL descartável foi encerrado.
+
+As execuções intermediárias reprovadas estão registradas como diagnóstico:
+um comando acima da janela de previsão e erros/orientações nas sequências
+mistas, seguidos do perfil que identificou o A*. A aprovação da execução final
+não certifica ausência de jitter em qualquer rede nem elimina a limitação já
+documentada para confirmações acima de 750 ms. Essas latências são de resposta
+visual em bancada; não são uma medição do ping de Internet dos convidados.
+
+Verificação geral após a correção do corredor: `npm test` passou 301 testes
+de fundação e 188 arquivos legados. Build estático, sintaxe dos dois scripts
+alterados e `git diff --check` passaram. Nenhuma migração ou alteração de
+API, autenticação, banco, save ou regra econômica faz parte deste ajuste.

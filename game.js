@@ -213,7 +213,12 @@
     if(!ONLINE_GAME.controlled||!ONLINE_GAME.available)return false;
     const now=performance.now(),actor=onlineWorldFrame.presentation.sample(now),target={x:actor.x,y:actor.y};
     const length=Math.hypot(dx,dy);if(!length)return stopOnlineWalk(preview);
-    navigator().move(target,dx/length*getDerived().moveSpeed*2.5,dy/length*getDerived().moveSpeed*2.5);
+    const nav=navigator(),distance=getDerived().moveSpeed*2.5,point=n=>({x:actor.x+dx/length*n,y:actor.y+dy/length*n});
+    let reach=distance;
+    // A keyboard direction is a clear corridor, not a far click destination.
+    // Sliding a 2.5s target around a corner invokes A* and may turn before contact.
+    if(!nav.clear(actor,point(reach))){let blocked=reach;reach=0;while(blocked-reach>.5){const middle=(reach+blocked)/2;if(nav.clear(actor,point(middle)))reach=middle;else blocked=middle;}}
+    Object.assign(target,point(reach));
     if(Math.hypot(target.x-actor.x,target.y-actor.y)<=1)return stopOnlineWalk();
     lobbyAction=null;lobbyDestination=null;
     if(onlineMoveWorking==='world.move'||onlineMoveWorking==='world.stop'){
@@ -1854,6 +1859,11 @@
       }else if(previous&&previous!=='0,0'){
         if(session.genie)void onlineWorldCommand('fruit.move',{x:session.genie.x,y:session.genie.y});else stopOnlineWalk();
       }
+      // Publish the new keyboard pose in this frame, including turns with no
+      // displacement yet. Rendering the earlier sample adds a stale-facing frame.
+      const inputAt=performance.now(),inputPose=onlineWorldFrame.presentation.sample(inputAt);
+      Object.assign(world.hero,{x:inputPose.x,y:inputPose.y,direction:inputPose.direction,walking:inputPose.moving?.2:0,onlineSampledAt:inputAt});
+      if(inputPose.direction==='left')world.hero.facing=-1;if(inputPose.direction==='right')world.hero.facing=1;
     }
     if(!pose.moving&&lobbyAction&&lobbyDestination&&Math.hypot(pose.x-lobbyDestination.x,pose.y-lobbyDestination.y)<5){const action=lobbyAction;lobbyAction=null;lobbyDestination=null;if(Math.hypot(pose.x-action.x,pose.y-action.y)<80)activateNPC(action);}
   }

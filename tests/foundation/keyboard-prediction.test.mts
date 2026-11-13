@@ -11,7 +11,7 @@ function fixture(){
  const initial={mapId:'lobby',position:{x:100,y:100},path:[],speed:100,direction:'right',serverNow:'2026-01-01T00:00:00Z',motionUntil:'2026-01-01T00:00:03Z'};
  const presentation=ui.createWorldPresentation({walk:true});presentation.update(initial,0);
  const gameSession:any={controlled:true,available:true,busy:false,pending:false,data:{character:{id:'fixture'},online:{world:initial}},command(action:string,payload:any){this.busy=true;return new Promise((resolve,reject)=>commands.push({action,payload,resolve,reject}));}};
- const c=vm.createContext({performance:{now:()=>now},MareOnlineGameUI:ui,ONLINE_GAME:gameSession,onlineWorldFrame:{snapshot:initial,received:0,presentation,special:false},onlineMoveKeys:'',onlineNextMove:0,onlineMoveWorking:null,queuedOnlineWalk:null,keys:new Set(),game:{hp:100},session:{respawn:0},world:{hero:{x:100,y:100}},currentPanel:null,lobbyAction:null,lobbyDestination:null,actionLocked:()=>false,getDerived:()=>({moveSpeed:100}),navigator:()=>({move:(p:any,x:number,y:number)=>{p.x+=x;p.y+=y;}}),onlineUI:{error:()=>{}},closePanel:()=>{},activateNPC:()=>{}});
+ const c=vm.createContext({performance:{now:()=>now},MareOnlineGameUI:ui,ONLINE_GAME:gameSession,onlineWorldFrame:{snapshot:initial,received:0,presentation,special:false},onlineMoveKeys:'',onlineNextMove:0,onlineMoveWorking:null,queuedOnlineWalk:null,keys:new Set(),game:{hp:100},session:{respawn:0},world:{hero:{x:100,y:100}},currentPanel:null,lobbyAction:null,lobbyDestination:null,actionLocked:()=>false,getDerived:()=>({moveSpeed:100}),navigator:()=>({clear:()=>true,move:(p:any,x:number,y:number)=>{p.x+=x;p.y+=y;}}),onlineUI:{error:()=>{}},closePanel:()=>{},activateNPC:()=>{}});
  vm.runInContext(section('  function previewOnlineWalk(', '  function navigateEntity(')+section('  async function onlineWorldCommand(', '  function syncOnlineWorld(')+section('  function tickOnlineWorld(', '  function applyOnlineEquipment('),c);
  return {c,commands,initial,step(t:number,keys:string[]){now=t;c.keys=new Set(keys);c.tickOnlineWorld();return {...c.world.hero};},async ack(index:number,accepted=true){const cmd=commands[index];gameSession.busy=false;if(accepted)cmd.resolve();else cmd.reject(Error('rejected'));await Promise.resolve();await Promise.resolve();}};
 }
@@ -21,6 +21,13 @@ test('WASD starts and reverses before the first command acknowledgement',()=>{
  const turning=f.step(40,['a']);const west=f.step(60,['a']);assert.ok(west.x<turning.x,'the newer key must win while the previous move is in flight');
  assert.equal(f.commands.length,1,'one network command at a time');assert.equal(f.c.queuedOnlineWalk.point.x<100,true);
  assert.deepEqual(f.initial.position,{x:100,y:100});
+});
+test('rapid orthogonal keys reach the rendered hero in the same input tick',()=>{
+ const f=fixture();
+ for(const [t,key,direction] of [[0,'d','right'],[100,'w','back'],[200,'a','left'],[300,'s','front'],[400,'d','right'],[500,'w','back']] as const){
+  const hero=f.step(t,[key]);assert.equal(hero.direction,direction,'render must not retain the previous key for a frame');
+ }
+ assert.equal(f.commands.length,1,'same-frame presentation does not add parallel network commands');
 });
 test('releasing keys stops presentation and coalesces the queued stop',async()=>{
  const f=fixture();f.step(0,['d']);f.step(40,['d']);f.step(60,[]);const a=f.step(80,[]),b=f.step(100,[]);
@@ -33,6 +40,21 @@ test('only the latest keyboard intent is dispatched after the current command',a
 });
 test('diagonal prediction keeps the normal movement speed',()=>{
  const f=fixture();f.step(0,['w','d']);const p=f.step(20,['w','d']);assert.ok(Math.abs(Math.hypot(p.x-100,p.y-100)-2)<1e-6);
+});
+test('a held diagonal stops at its first obstacle instead of sliding a distant target around it',()=>{
+ const f=fixture();f.c.navigator=()=>({clear:(_from:any,to:any)=>to.x>=90,move:(p:any,dx:number,dy:number)=>{p.x=Math.max(90,p.x+dx);p.y+=dy;}});
+ f.step(0,['w','a']);const goal=f.commands[0].payload;
+ assert.ok(goal.x>=90&&goal.y>=90,'a future keyboard target must remain inside the clear diagonal corridor');
+ assert.ok(Math.abs(goal.x-goal.y)<1e-6,'the target must retain the requested axis, without an automatic detour');
+});
+test('captured mixed-key corners in Porto and Dawn require only a direct preview route',()=>{
+ const catalog=require('../../world-catalog.cjs').load();
+ for(const [map,x,y,letters] of [['lobby',1268.6916384088431,1593.3213806690933,['a','s']],['dawn',1244.9436931410185,1578.2368970974524,['s','d']]] as const){
+  const f=fixture(),nav=catalog.originalNavigation(map);f.initial.mapId=map;f.initial.position={x,y};f.initial.speed=164;
+  f.c.onlineWorldFrame.presentation=ui.createWorldPresentation({walk:true,route:(from:any,to:any)=>{assert.ok(nav.clear(from,to),'keyboard preview must not invoke a detour search at the captured corner');return nav.path(from,to);}});
+  f.c.onlineWorldFrame.presentation.update(f.initial,0);f.c.navigator=()=>nav;f.c.getDerived=()=>({moveSpeed:164});
+  f.step(0,[...letters]);assert.equal(f.commands.length,1);assert.ok(nav.clear({x,y},f.commands[0].payload));
+ }
 });
 
 
