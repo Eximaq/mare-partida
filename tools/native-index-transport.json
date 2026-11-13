@@ -1,0 +1,14 @@
+{
+  "schema": "native-index-gzip-v1",
+  "policy": "Lossless transport only. Materialized JSON is byte-identical and is published at its original path. No record, sprite or runtime contract is removed.",
+  "indexes": [
+    {
+      "source": "tools/rework-modular-outfits-hd/index.json.gz",
+      "target": "tools/rework-modular-outfits-hd/index.json",
+      "bytes": 21970133,
+      "sha256": "ab3b0c88a91591ce6616c4d3743fdbc87bf18e513697af96f56ea3e0582ecb3e",
+      "compressedBytes": 3059861,
+      "compressedSha256": "7ca2cf12bad4c598ae1629facc316bdfea4cf48c60d7af1b3388bddffc074c8a"
+    }
+  ]
+}

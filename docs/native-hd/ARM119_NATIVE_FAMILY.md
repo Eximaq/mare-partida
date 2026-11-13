@@ -1,0 +1,5 @@
+119 original robotic-arm family:36attack poses+68idle/walk states,104 frames rendered.
+Attack SOUTH12 from approved-male-119-south-library.zip; NORTH/EAST/WEST8 each from approved multiview source. Whole original body+equipment composites preserved640RGBA. Original palettes only, no unrelated outfit substitution.
+Clocks: SOUTH24fps and20ticks from original MANIFEST; NORTH/EAST/WEST12fps0..7 plus12additional holds on7 from PREVIEW_CLOCK.json. Preview clocks, not certified gameplay timing.
+Carry candidate: existing original initial robotic arm isolated from same-direction source; canonical head differences excluded. Two source-pixel segments split at authored elbow plane,2px overlap. Upper segment follows shoulder→elbow; lower elbow→wrist. No raster scaling. Each part replaceBoundLayer=true suppresses ONLY the corresponding original body arm layer by exact binding; torso, head, opposite arm and legs remain. WEST uses EAST source once before global reflection.
+104frames rendered in Canvas; SOUTH/NORTH/EASTwalk screenshots inspected. Shoulder, elbow and wrist connect; seam calibration remains candidate. No generation or replacement of character identity.

@@ -1,0 +1,14 @@
+{
+  "head": "e43deeb22ef5d53b7c731f14ffc7324d4b9a6ae3",
+  "run": 43326896969,
+  "artifact": 13993321949,
+  "artifactSHA256": "a05ee227de6c5dd7dd68d307c0f478cd03d20153f2c5eeb9f304247643e633c5",
+  "poses": 149,
+  "pageErrors": [],
+  "scale": 1,
+  "scope": "26 male original weapon families plus base, pants133 boots9, three actual skin/hair palettes. Later families and female111 not covered by this checkpoint.",
+  "visuallyInspected": [
+    "game-native-palette-ebony-pink-attack.png",
+    "game-native-112-attack-north.png"
+  ]
+}

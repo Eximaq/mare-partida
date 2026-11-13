@@ -1,0 +1,150 @@
+name: Rework HD nativo — jogo real e capturas
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'player-rework-*hd*'
+      - 'tools/rework-*-hd/**'
+      - 'paper-doll-96-lobby.js'
+      - 'tests/native_hd_game_browser.cjs'
+      - '.github/workflows/native-hd-visual.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-hd-visual-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  native-world:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/verify_native_hd_archives.py
+      - run: npm run test:rework-hd
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: chromium-${{ runner.os }}-playwright-1.62.1
+      - name: Chromium and actual Pages build
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
+          bash tools/install_ci_chromium.sh npx playwright
+          python tools/build_pages.py
+          python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/native-hd-server.txt" 2>&1 &
+          curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
+      - name: Capture normal world renderer without touching owner saves
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8157/dist/
+          MARE_EVIDENCE_DIR: artifacts/native-hd-game
+        run: node tests/native_hd_game_browser.cjs
+      - name: Split evidence into downloadable native-resolution groups
+        if: always()
+        run: python tools/split_native_hd_evidence.py artifacts/native-hd-game artifacts/native-hd-parts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-runtime-report
+          path: artifacts/native-hd-game/*.json
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part0
+          path: artifacts/native-hd-parts/part0
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part1
+          path: artifacts/native-hd-parts/part1
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part2
+          path: artifacts/native-hd-parts/part2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part3
+          path: artifacts/native-hd-parts/part3
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part4
+          path: artifacts/native-hd-parts/part4
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part5
+          path: artifacts/native-hd-parts/part5
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part6
+          path: artifacts/native-hd-parts/part6
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part7
+          path: artifacts/native-hd-parts/part7
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part8
+          path: artifacts/native-hd-parts/part8
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part9
+          path: artifacts/native-hd-parts/part9
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part10
+          path: artifacts/native-hd-parts/part10
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part11
+          path: artifacts/native-hd-parts/part11
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part12
+          path: artifacts/native-hd-parts/part12
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part13
+          path: artifacts/native-hd-parts/part13
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part14
+          path: artifacts/native-hd-parts/part14
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part15
+          path: artifacts/native-hd-parts/part15
+          if-no-files-found: ignore

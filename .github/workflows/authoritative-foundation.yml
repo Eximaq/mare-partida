@@ -38,6 +38,7 @@ jobs:
       - run: npm run typecheck
       - run: node tools/server-completeness.mts
       - run: npm run test:foundation
+      - run: npm run test:rework-hd
       - name: PostgreSQL archive tools
         run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client-18
       - run: npm run test:integration

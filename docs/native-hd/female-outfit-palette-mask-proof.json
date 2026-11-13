@@ -1,0 +1,1582 @@
+{
+  "tracesNative640": {
+    "south": [
+      [
+        [
+          300,
+          171
+        ],
+        [
+          309,
+          171
+        ],
+        [
+          309,
+          181
+        ],
+        [
+          300,
+          181
+        ]
+      ],
+      [
+        [
+          343,
+          186
+        ],
+        [
+          356,
+          186
+        ],
+        [
+          356,
+          207
+        ],
+        [
+          343,
+          207
+        ]
+      ],
+      [
+        [
+          288,
+          216
+        ],
+        [
+          341,
+          216
+        ],
+        [
+          341,
+          224
+        ],
+        [
+          288,
+          224
+        ]
+      ]
+    ],
+    "north": [
+      [
+        [
+          310,
+          222
+        ],
+        [
+          335,
+          222
+        ],
+        [
+          335,
+          232
+        ],
+        [
+          310,
+          232
+        ]
+      ]
+    ],
+    "east": [
+      [
+        [
+          307,
+          194
+        ],
+        [
+          321,
+          194
+        ],
+        [
+          322,
+          215
+        ],
+        [
+          307,
+          215
+        ]
+      ],
+      [
+        [
+          343,
+          171
+        ],
+        [
+          353,
+          171
+        ],
+        [
+          353,
+          186
+        ],
+        [
+          343,
+          186
+        ]
+      ],
+      [
+        [
+          315,
+          216
+        ],
+        [
+          337,
+          216
+        ],
+        [
+          337,
+          233
+        ],
+        [
+          315,
+          233
+        ]
+      ],
+      [
+        [
+          337,
+          223
+        ],
+        [
+          363,
+          201
+        ],
+        [
+          365,
+          208
+        ],
+        [
+          346,
+          228
+        ],
+        [
+          337,
+          228
+        ]
+      ]
+    ],
+    "west": [
+      [
+        [
+          333,
+          194
+        ],
+        [
+          319,
+          194
+        ],
+        [
+          318,
+          215
+        ],
+        [
+          333,
+          215
+        ]
+      ],
+      [
+        [
+          297,
+          171
+        ],
+        [
+          287,
+          171
+        ],
+        [
+          287,
+          186
+        ],
+        [
+          297,
+          186
+        ]
+      ],
+      [
+        [
+          325,
+          216
+        ],
+        [
+          303,
+          216
+        ],
+        [
+          303,
+          233
+        ],
+        [
+          325,
+          233
+        ]
+      ],
+      [
+        [
+          303,
+          223
+        ],
+        [
+          277,
+          201
+        ],
+        [
+          275,
+          208
+        ],
+        [
+          294,
+          228
+        ],
+        [
+          303,
+          228
+        ]
+      ]
+    ]
+  },
+  "proof": [
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "3743c7021de908d427384fb765c4aec93df96a3836094c90f742b5f0e4c5a802",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "78d7052e20c410ebd01e390a41017c10347102aa634e5685ee3dd2b3724c6780",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "07ce499b5bfefd0b2af0749b56aeb0966e48fef278fbd4ccd8b9bdccde3c4a7b",
+      "mask": "f4b152192a7f8578c4183000291f288ed10237d95964b4e2b34ace93224085ba",
+      "material": "hair",
+      "pixels": 3787,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "55a6f5215737e7d901d041a0bf26b3cf0ffca3aa0d9f78b0e4df3f5824852f92",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "6760f73718ad309643db47737628c418e0873d91096d33d6e5c82a33d7363ae2",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "c01bbc2f8ebe4b657d035a82ed286ecac5e4d2c61dbf14bcfa90085137bc9ad7",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "7660c4c64013b62a951af3f4f7222283f3ea9fde597fe67754148dbfb76f9b04",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "ad17bd3eceb881f5bf723fb024d199f060822369d707d55dceff2059cafbd1d0",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "7f9645dcc6ac836a1df25063508712435bbf5bdd91d24c299e6a8c0da6bbaaea",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "bfe455eda6ef46801a71628716b30e77461bd402158249b9420a05c88dce34ae",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "acc7b6eeae1495092d7a70ebddef6ed7ce68231979ddf1be7e420273a96b59d4",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "23c18f0262626edea2e0ba3a18e4df3d72fafd4725d3d385941c4db2a63b4cc9",
+      "mask": "f4b152192a7f8578c4183000291f288ed10237d95964b4e2b34ace93224085ba",
+      "material": "hair",
+      "pixels": 3787,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "18d71dfbe2a79b0f672811e0f0d34d0d67f798701d103f683987e6113b589716",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack",
+      "source": "d16ae9b58d22fa5920bc9af7ff38654ecbfeae85076407bf975ee73ab602aeea",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_east_v42_source-pack-idle-frame0",
+      "source": "3743c7021de908d427384fb765c4aec93df96a3836094c90f742b5f0e4c5a802",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "7697351577ab89bd2caae561e6dfb31e08b40682b6fec6370d6a7ffe4ceebedc",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "18b9002ab7de80b5bb50e5aecfec4fcccc555cd0e629b0f167adfa8ef4a491f9",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "4f24c8346805a57fcde31aff534f894a9611e7607617d20437ed3d802b26e70f",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "c88d6514b6835bf998cc8bc680452236e73cdd222e59f7551077f2586d9b9c38",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "900372ae940dbbf35b1db579c12108a18da9540d0abe8ccd838ed175c7bea89a",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "7416d586365b017c3dc225554b9fc43a0edd335248bba957a223541a17623816",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "1ddcd7f9d8197797a8bdfcb2121e33dc935991add88e14b4c2ff766b5cda4005",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "479d9f970a60f8d54c4cfa8712fcedc193022a849525bfe5e30b77507aa32419",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "5704b1795780a7d57ed02e6838f3f49cdf531f801ac47d56ce34e0319dafa5e2",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "0c2514db87c255cda40ee08d590e4129bbcc85791bca3de9e20de807f40fac25",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "47db8a7c9c1c6389214b74f5c0865e65438da3c95042b0498b6a98020b666e93",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack",
+      "source": "d3ba1e3fdb1eb56257f00780767176023538803f2f15646f662bcd7ace07989a",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_north_v24_source-pack-idle-frame0",
+      "source": "7697351577ab89bd2caae561e6dfb31e08b40682b6fec6370d6a7ffe4ceebedc",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_south_v24_source-pack",
+      "source": "be493f616c652d3be276cae2440349cd0da402b77c43639e1a6559ca0a1934f4",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_south_v24_source-pack",
+      "source": "d13fa84d51378c00ac17ee58d3f1cc3057fa7beb491137931dfbb0561f93ae19",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_south_v24_source-pack",
+      "source": "fa28d1031469d74513b13a698f09e8bf31a5fee7e4037becbecf9768a87c4204",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_south_v24_source-pack",
+      "source": "b905d0e64c0a907de540b943e9bb77a362a0cd3daaa96eeb34b2542cbea74581",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_south_v24_source-pack",
+      "source": "b8212a48673843d1259382c2d99d6c91f725928dfc07e95eeec61096416c82d3",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_south_v24_source-pack",
+      "source": "7b03f3e7f539aa94b456ea835a6ecce4367b63c2bf2c884cf9c14447c108d946",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_south_v24_source-pack",
+      "source": "68116c4a74dd9b14631f5f290f1357db122d0a76d330b772ca0fc1fe3c332b9a",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_south_v24_source-pack",
+      "source": "f334bda7c1d0731e719987686f25e29c6f9b169e706264cdd8bad1a2ccb8c30f",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_south_v24_source-pack",
+      "source": "4b62014e3d73dc3764c2243331cab3e8bde2dce62189a2386270f0dae50262aa",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_south_v24_source-pack",
+      "source": "bacc20670c77bc382483c822e46a9daab853a4d8ad22f4b97d87e4123709f6c5",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_south_v24_source-pack-idle-frame0",
+      "source": "be493f616c652d3be276cae2440349cd0da402b77c43639e1a6559ca0a1934f4",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "142c6cfbfa7ba66ed9f78625341a73c3b308efc923a7b84c9c8eefc738c8e52a",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "c503d85a14f65c921e9849f786e7dd2874e02ddd2882cb5fef5698782f2453c9",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "5cf4a98d9682b66df0ab443f2411489d41f0fcac6d321b5230b5181fadb462db",
+      "mask": "465fbba3b21b0e3237537a03f2bcb3ca160318d5e2a530fca0d066bbfff21a37",
+      "material": "hair",
+      "pixels": 3764,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "77975742af8bc2757c714ca97d081b67716c9dbefc427baac6fa1014e45703d3",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "de5f04763bf01bdfe846cc85070011fb721b8a9bf18bc13fe5221efaddbb5c47",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "8fd5ec87e62d126a77aa45fb618d38e4ea2f972c126598c4f224158e203b7ce5",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "c8e6af28f3621bf626a872bbdf2742d70735a37c844d16f142c0bc9891a66adc",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "9d7e431f79db24fcf0ade5af8f2a9485bc9935515d6368a6b3cbdc040b8d57df",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "c472bc7994f66df22ad5cdf21dc92df48479eb412905c79c9191056329ed4f66",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "8a7de74e0b60f58c414f62d593d7171f413336cb8fea6794b53e5cb921ced6ef",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "d6fce346974cb603e08d865c9795511eabfc4742247359d049a342730e691427",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "305dd5aed0f3f386286910d9eb4484cd9817b5fc0dbf26e46442835a0b00a07f",
+      "mask": "465fbba3b21b0e3237537a03f2bcb3ca160318d5e2a530fca0d066bbfff21a37",
+      "material": "hair",
+      "pixels": 3764,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "96b355072c5ba5c11cff123a12c89b528d0302b11a8d72c481b37a1fb24022d6",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack",
+      "source": "e49b5a1844866a7abd0e48f21e7496aed6b6af2c8e9aa40ab3f466b9c4023f96",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_6_west_v42_source-pack-idle-frame0",
+      "source": "142c6cfbfa7ba66ed9f78625341a73c3b308efc923a7b84c9c8eefc738c8e52a",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "cc38bf20f44e094839694691b507aeac7f0c74c881dc51a1312e63944cbe4951",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "5871ef7f245bc46d4e005d64f09831ace58a4b228c7e229a2168458b3ada1a71",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "9b50dd1b7a4d25e8906bf6d072202184b3f6dc268372f5ef7ff42553429a85e9",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "1dcd76818e2abd45a820e16d4150f32e679b70c8e260f9998115852cf1a73b8b",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "72938f6113bf07e4fc1530830001370ce80f05a2e611394d93c7366b10f6fdea",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "a56381821ace40e0b30891ece3493b8568e030d04cbc21af5edef3132159c8f0",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "bf56cdbde85e4559d32c50146ddf2434933d893244a194dced2882f1dacf0665",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "deff7f199d248c0a362b5516b0446bc71e71356a4007d092e5be1c7f1d21d8a9",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "d65457364e3caf3f01a9067208da55b7cb2aa9a8030d8a00406129d3d9df7329",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "b617fa4862a748bfacb1c47311bf1da3b2111ad02442e4fa91bfdbbff5a2248a",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "94809cb3ef98ec6a33a391db2c534e21c5d1c8706e1c09375ec9fe9b3d8f6882",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack",
+      "source": "025fc5f59ae43049bcf34caac343fd952b5c1bfc22c6fe6a30a2efbba97b160e",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_east_materials-v3_source-pack-idle-frame0",
+      "source": "cc38bf20f44e094839694691b507aeac7f0c74c881dc51a1312e63944cbe4951",
+      "mask": "09cd068fe997940283d742b916ffa0fb20d2a6c83ab781043770e5420a3dabcb",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "7697351577ab89bd2caae561e6dfb31e08b40682b6fec6370d6a7ffe4ceebedc",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "18b9002ab7de80b5bb50e5aecfec4fcccc555cd0e629b0f167adfa8ef4a491f9",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "4f24c8346805a57fcde31aff534f894a9611e7607617d20437ed3d802b26e70f",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "c88d6514b6835bf998cc8bc680452236e73cdd222e59f7551077f2586d9b9c38",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "900372ae940dbbf35b1db579c12108a18da9540d0abe8ccd838ed175c7bea89a",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "7416d586365b017c3dc225554b9fc43a0edd335248bba957a223541a17623816",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "1ddcd7f9d8197797a8bdfcb2121e33dc935991add88e14b4c2ff766b5cda4005",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "479d9f970a60f8d54c4cfa8712fcedc193022a849525bfe5e30b77507aa32419",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "5704b1795780a7d57ed02e6838f3f49cdf531f801ac47d56ce34e0319dafa5e2",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "0c2514db87c255cda40ee08d590e4129bbcc85791bca3de9e20de807f40fac25",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "47db8a7c9c1c6389214b74f5c0865e65438da3c95042b0498b6a98020b666e93",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack",
+      "source": "d3ba1e3fdb1eb56257f00780767176023538803f2f15646f662bcd7ace07989a",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_north_materials-v3_source-pack-idle-frame0",
+      "source": "7697351577ab89bd2caae561e6dfb31e08b40682b6fec6370d6a7ffe4ceebedc",
+      "mask": "4768a1be6a26cb55052009fc4075eaacf6b514c9d93ebc41e56eb54ab800431b",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_south_materials-v3_source-pack",
+      "source": "be493f616c652d3be276cae2440349cd0da402b77c43639e1a6559ca0a1934f4",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_south_materials-v3_source-pack",
+      "source": "d13fa84d51378c00ac17ee58d3f1cc3057fa7beb491137931dfbb0561f93ae19",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_south_materials-v3_source-pack",
+      "source": "fa28d1031469d74513b13a698f09e8bf31a5fee7e4037becbecf9768a87c4204",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_south_materials-v3_source-pack",
+      "source": "b905d0e64c0a907de540b943e9bb77a362a0cd3daaa96eeb34b2542cbea74581",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_south_materials-v3_source-pack",
+      "source": "b8212a48673843d1259382c2d99d6c91f725928dfc07e95eeec61096416c82d3",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_south_materials-v3_source-pack",
+      "source": "7b03f3e7f539aa94b456ea835a6ecce4367b63c2bf2c884cf9c14447c108d946",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_south_materials-v3_source-pack",
+      "source": "68116c4a74dd9b14631f5f290f1357db122d0a76d330b772ca0fc1fe3c332b9a",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_south_materials-v3_source-pack",
+      "source": "f334bda7c1d0731e719987686f25e29c6f9b169e706264cdd8bad1a2ccb8c30f",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_south_materials-v3_source-pack",
+      "source": "4b62014e3d73dc3764c2243331cab3e8bde2dce62189a2386270f0dae50262aa",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_south_materials-v3_source-pack",
+      "source": "bacc20670c77bc382483c822e46a9daab853a4d8ad22f4b97d87e4123709f6c5",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_south_materials-v3_source-pack-idle-frame0",
+      "source": "be493f616c652d3be276cae2440349cd0da402b77c43639e1a6559ca0a1934f4",
+      "mask": "e149c615ff9d807b317be6dcbdb0840c3b1c1c21256af396c24b6ae709f5dbec",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "849691c798df6d24a99cd058aff3e81572aa5a17a28a3b7bf97c8e85bd1f1059",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "3a5c1fcb163274a8bedf68198c8a30f6fa838bddb65ee21bcad657271c4a1435",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "bd2fb8426463f9e1d1646b516535a1eb4e81b95321a687d4dcf6f8ce3526a194",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "67226216b23d8ecf2d812e8de255efb39ef6e9b74503a357f803d2571955ceb2",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "ccfce3d8da2ecb24f821f52aa761dff8574ccbd260b533b1ce3bf3c56084dbb4",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "dfd245e0991b8373aa2d5cc4e1246d93efc868c001a715f2411df7b42682c1b5",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "c8b74add027edd64f54112ee3856b85639951af7a3e7c4aae3e0a465371bdede",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "2817f81c6bc51d3384181836bd542b5229846096472441a7662a56ab16b5df07",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "a306e586f27fb8f89a97d2b9580182dae3986089c1eac670026166f2fba0603e",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "1e66ee8438d6120fc51ce5b29e81278ecf29e8993307b80a44750cf6ebd5562f",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "ceaec38ed15133f8ac1c6f5023f5faf43ed16af170610ec5719bd13c71f736cc",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+      "source": "074df8fc8f9dbf24da6b4bd2a4c43077a3756d740102873d2def4c0049bb06b0",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female_outfit151-154-152-155_west_materials-v3_source-pack-idle-frame0",
+      "source": "849691c798df6d24a99cd058aff3e81572aa5a17a28a3b7bf97c8e85bd1f1059",
+      "mask": "c1c93a212e61503c59027ec511aa5084c4f7344b8cf4e7abb8e3c533ed7e00fd",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-south-registered-punch-native-candidate",
+      "source": "cc51d6ad65409fc7794153d58319fac5b6fd4ce951e4cda455ae351a8860d241",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-south-registered-punch-native-candidate",
+      "source": "c08a285c51e74386af9b84b9621604e7413aea4dc12ae7f955c30388b0dfd089",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-south-registered-punch-native-candidate",
+      "source": "974cdbdb6b8f52f92443871f7529794e83a101d5f2a055ee1388d4849c4cd5c3",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-south-registered-punch-native-candidate",
+      "source": "ba8a44fb908cc3ef5997533b87681cc792b3ce43dad7877d54f9c0757bda7d07",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-south-registered-punch-native-candidate",
+      "source": "a82b00bba9829182ef0d28589ea46bea60202656ddc0a06ea6dc76fcc30a0678",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-south-registered-punch-native-candidate",
+      "source": "092fdffc748f23d1c6af5632ba0137fbd7ef276e55824f2e1246a0e652d0b258",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-south-registered-punch-native-candidate",
+      "source": "8cf0891b002e334db7595c4f48e95f0b530156d4484e5dd5877cf07e73944c77",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-south-registered-punch-native-candidate",
+      "source": "22fba5938805090a07752b53ca96f789998ba026f83f812ac4279c5fd2d0b886",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-north-registered-punch-native-candidate",
+      "source": "4398217c65709f69272d6e16b198b1bb710cbf1c1d044eff5717d091acd7d33a",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-north-registered-punch-native-candidate",
+      "source": "068e881b3357b3aa5301dd61bb500bf8c08bb28238226f7b0f19010ef73a0d68",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-north-registered-punch-native-candidate",
+      "source": "e5d809d29bd2065f9f729e2a7cceed3b795b9932ddbfc32a7e54216089df3c05",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-north-registered-punch-native-candidate",
+      "source": "3bc439d910b1700564437844a4917b6c70ebd774b049908ed6a649cea5487f2e",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-north-registered-punch-native-candidate",
+      "source": "114dc5e02c3c50e0bbd22f2128d02a3b7a3b3cca1b6c8e16cbb35b20a2d94f33",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-north-registered-punch-native-candidate",
+      "source": "9f7d27febdd3c7552d73c8a41c000aaa35ec288908430154177c230f28188999",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-north-registered-punch-native-candidate",
+      "source": "46cbbfc3000da633caca71ed42e85fd8b40b8a7d2d3f16ab78e82e77dafaca31",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-north-registered-punch-native-candidate",
+      "source": "05f2be13c505a9a6621490afaade3be24e143928fef75ae86619a95473e34715",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-east-registered-punch-native-candidate",
+      "source": "acc072564771cfff3caea9e956fa42f2294b70c6e89d71f52dcf4d9b160be21b",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-east-registered-punch-native-candidate",
+      "source": "65e49163759e71edd5eacb18e91c6a8250fddcab44c308161e15b61a08b039ca",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-east-registered-punch-native-candidate",
+      "source": "46508a1d9ee3e402afc6b2dedbca74add457a95b38c3592e2486ea716c473338",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-east-registered-punch-native-candidate",
+      "source": "e67817982cf76b7f3034ec404c209ca9ed0decd1850e4a7f6d2070e93bc30cc1",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-east-registered-punch-native-candidate",
+      "source": "569ed63beea157b21bbfac07cf6f78f8fa95377710a3a178d038a0a43fe02f8b",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-east-registered-punch-native-candidate",
+      "source": "15ad9cb47a3cad779980f438111bcdc7136a298b38c554a2f7252336c17962b0",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-east-registered-punch-native-candidate",
+      "source": "28d3f574fe7fa216807b26c4837fe7961855bae062e02ba52fc0c580e6126e12",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-east-registered-punch-native-candidate",
+      "source": "72607ebb21381dc4df6fb649863b68602af69ae4ea795b2659910236807cdeb1",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-west-registered-punch-native-candidate",
+      "source": "556d0c396c0566853763ef9b3cfeef8610f00b60c49d22c0ce2f3046c8ba2e48",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-west-registered-punch-native-candidate",
+      "source": "5d9c08d6eed511f6b33f9758546033ac61b0c10a14a5bb0c2cbf134797812139",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-west-registered-punch-native-candidate",
+      "source": "ba2f167e920156951e38ce2f2b234c89b98972d1fe167293a912661ce4e916f3",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-west-registered-punch-native-candidate",
+      "source": "d3491f021581bc28adef2b3ac65eefef74aa7f768126c7890a22993f90aae3cb",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-west-registered-punch-native-candidate",
+      "source": "18c9e0cec45f2157298b26bfa6199709a0fed7ec6b2462b28f4962592c96b48c",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-west-registered-punch-native-candidate",
+      "source": "67d88f28e060aae460e156bfc902032ca8245a229ded98354d21d21f5861ad42",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-west-registered-punch-native-candidate",
+      "source": "bdbf5cf507961ed94ce0932006cd0ccbde6e76427700850333465c7ac1d8a4d6",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit151-154-152-155-west-registered-punch-native-candidate",
+      "source": "2c980427531da6740b1cf7e5286b2e985cdeffce4850c9b818edae04ebe3a2ec",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-south-registered-punch-native-candidate",
+      "source": "5efac7557dd396c3312dfefc14dca4af3134817f134d4e1615d6005b9a8a7374",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-south-registered-punch-native-candidate",
+      "source": "3ec86f6385c63d7965fb123c7e22a15d0b617f1600c0e2fd04da6eac0d7b4ba3",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-south-registered-punch-native-candidate",
+      "source": "9d186c832ac7913c7774afd1423908d2619bea58d0ee7a577ea8a3698bdf785f",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-south-registered-punch-native-candidate",
+      "source": "b8b78220fff60eb10057b52505e71f603a72df3b655cb7af4696670fa89884a0",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-south-registered-punch-native-candidate",
+      "source": "f03d264aa2c19df0f3095a8712d699d7002092e19e67bfe5a36fccaf8cc38b3a",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-south-registered-punch-native-candidate",
+      "source": "df6ced578e2e3c55050be6140644d5989e895fabeeee4ef31e9d9a0b8d7fb822",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-south-registered-punch-native-candidate",
+      "source": "a781f6f217c349ade12253161bc7a3476e48164189142c33f25f1accb66374ad",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-south-registered-punch-native-candidate",
+      "source": "f304233082479c655b6b3329ea4cf06de4d77a60efecb96b464ee3c040e2e982",
+      "mask": "2fdcbe9927798989b91894a57e5365c9a20013ee1fb13b2d496a3fd8b13f236b",
+      "material": "hair",
+      "pixels": 3775,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-north-registered-punch-native-candidate",
+      "source": "6eb6e74d0fb26b5ec294dd6b765c4aeb87a1ef8de1fc447a884b5ac12655f553",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-north-registered-punch-native-candidate",
+      "source": "80045bfb03a7f6cd4c1cda594e242d70eff6f6db14da6aedfb19f00ddbb9c199",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-north-registered-punch-native-candidate",
+      "source": "a7754f8b8deabb39c6a8600984329ac4da27eda57868a1efbc1f5fdea27100e4",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-north-registered-punch-native-candidate",
+      "source": "d382d29f8bc9043460f79027b377107e20866a71e5fd9ef0ba5d6af44476726e",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-north-registered-punch-native-candidate",
+      "source": "6b3d5ce1a7cb79f1b332e80c5cf17178932022e362750f1827e6e64e6b95495f",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-north-registered-punch-native-candidate",
+      "source": "c47957440fba89d6a529e5a0ad46385f4cab419a9ee5a5f07456755f1d599b8b",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-north-registered-punch-native-candidate",
+      "source": "a97b1733d334d1f6aafdbf4bfbe1c06bbb48547d8da7d6ce7f04c5db864fae6b",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-north-registered-punch-native-candidate",
+      "source": "3d6e82a3c485b349eb1970dc045c08f884e4f769db23b6f297e4c5804b9af79c",
+      "mask": "079c5f35dad7f8f1f677c254fcb8a16f6bea2a58631224e9cc665683a9e50b13",
+      "material": "hair",
+      "pixels": 5784,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-east-registered-punch-native-candidate",
+      "source": "ea1718791226e78f145b0107680df6b504f605ec923ef8faf2e3bfd2a6735ffa",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-east-registered-punch-native-candidate",
+      "source": "4898552039368fcc50cf8e2a04b1b81d8a8c0337343ac0c1e4d9b41f794b3298",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-east-registered-punch-native-candidate",
+      "source": "ef2f8602250b2fddd1bb6d1a2f7c9a9e48a1b8ec655fb3aa2403f58c493dcc8d",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-east-registered-punch-native-candidate",
+      "source": "1e9752b8766635eb7818104c72bccb1febfc53ed17a8a37fdf560e766467bb41",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-east-registered-punch-native-candidate",
+      "source": "56263e8ad48804e657f628c5e5ffee345acafb7805cdee6699b5467c7f0293d9",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-east-registered-punch-native-candidate",
+      "source": "7dfd8d875b6c3095e18954859edf50660516636750b5afd4e4a485d8fdcffed3",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-east-registered-punch-native-candidate",
+      "source": "dbe2b6d0b5f37a773d8c6187f8e208425da265f9b5563b23f694a64fcfd8434b",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-east-registered-punch-native-candidate",
+      "source": "4914579979e4d85935669887774c22809c3a6cc9851e14f4acce9505798170d5",
+      "mask": "a95264d7311146db7066ea6e47ced15a2718017513c4e8cd2d30bc2945544d1f",
+      "material": "hair",
+      "pixels": 3788,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-west-registered-punch-native-candidate",
+      "source": "9704ee0488db4ca96a6db95d4d26ee536a3e7bb02c1187a9ab10913a317f0b06",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-west-registered-punch-native-candidate",
+      "source": "3b49c8625e6225252de227439d14397360ee62861ccf8f70b56f4ef27a997d10",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-west-registered-punch-native-candidate",
+      "source": "8802de2d6173cd5f17024902585659586cb727bf78d0ba124a6e467f2cdde1d4",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-west-registered-punch-native-candidate",
+      "source": "a3690b88c3b42b388d78689d530bca4f7589555ab921e6632a58fc4af706b6f6",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-west-registered-punch-native-candidate",
+      "source": "62404650b9ca33834553e0ac8789d348589dfc2a4f78a915c8235b86f3151b40",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-west-registered-punch-native-candidate",
+      "source": "64ddcfc1ec613bf42809ea42576ed61f3fb5e8beae992cb17524e609970302e6",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-west-registered-punch-native-candidate",
+      "source": "c0397f9171a158cc1b0d1a1faffe2ab469511793900cd64ec38269037f37ba3c",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    },
+    {
+      "record": "female-outfit6-147-152-155-west-registered-punch-native-candidate",
+      "source": "dcc5f2796d18765acee4d3b369e6cbac9859a55dc1ae3b4a726bbe29b04615d2",
+      "mask": "239171a82e9e4af4465d22556531454912908eb6ad7c28d96dc4c957d9e1b414",
+      "material": "hair",
+      "pixels": 3765,
+      "authority": "exact spatial RGBA match (Canvas tolerance2) to isolated class anatomy; source hair ear/neck anatomical traces"
+    }
+  ]
+}

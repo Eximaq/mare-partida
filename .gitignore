@@ -54,3 +54,12 @@ Thumbs.db
 # Disposable local validation environments and repository-audit output
 /.party-test-runtime/
 /.maintenance-local/
+
+# Native HD PNGs are distributed losslessly through verified same-origin archives.
+/tools/rework-base-hd/assets/
+/tools/rework-modular-outfits-hd/assets/
+
+/tools/rework-weapon-layers-hd/assets/
+
+# Materialized lossless JSON; canonical Git transport is index.json.gz.
+/tools/rework-modular-outfits-hd/index.json

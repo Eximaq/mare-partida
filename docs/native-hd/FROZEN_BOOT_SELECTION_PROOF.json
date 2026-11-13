@@ -1,0 +1,2282 @@
+[
+  {
+    "body": "male",
+    "item": 9,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "male-coat151-pants133-gloves152-boots9-walk-south-source-v18",
+    "preservedExisting": true,
+    "sourceSHA256": "c30275f5cc77b49a9a01126e4fca30ee248a752b276852a27c6f487b54ea2c04",
+    "portableSHA256": "352e00b9bd38c9e526c370205d29b438ec470d0b3ce179e71fe92d0a61c58132",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 9,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "male-coat151-pants133-gloves152-boots9-walk-south-source-v18-idle-frame0",
+    "preservedExisting": true,
+    "sourceSHA256": "c30275f5cc77b49a9a01126e4fca30ee248a752b276852a27c6f487b54ea2c04",
+    "portableSHA256": "352e00b9bd38c9e526c370205d29b438ec470d0b3ce179e71fe92d0a61c58132",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 9,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "male-coat151-pants133-gloves152-boots9-walk-north-source-v18",
+    "preservedExisting": true,
+    "sourceSHA256": "b35fa44539860a18ccba39f63fddd0a14fcf5c3ba44afedf8cb51cfe4d811318",
+    "portableSHA256": "2b5b2fd099d3671fd03d8e8e79cab0e450daeaa218c96ef258e5a25cf5238316",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 9,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "male-coat151-pants133-gloves152-boots9-walk-north-source-v18-idle-frame0",
+    "preservedExisting": true,
+    "sourceSHA256": "b35fa44539860a18ccba39f63fddd0a14fcf5c3ba44afedf8cb51cfe4d811318",
+    "portableSHA256": "2b5b2fd099d3671fd03d8e8e79cab0e450daeaa218c96ef258e5a25cf5238316",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 9,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "male-coat151-pants133-gloves152-boots9-walk-east-source-v18",
+    "preservedExisting": true,
+    "sourceSHA256": "895b76a30e95c305a77f7cd99a9344b9f9e3cc4d14d31f611272119bc0e731a4",
+    "portableSHA256": "a27f0d5aaed70fe098261c371294566e14086d082793043e4212ed03a12423c4",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 9,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "male-coat151-pants133-gloves152-boots9-walk-east-source-v18-idle-frame0",
+    "preservedExisting": true,
+    "sourceSHA256": "895b76a30e95c305a77f7cd99a9344b9f9e3cc4d14d31f611272119bc0e731a4",
+    "portableSHA256": "a27f0d5aaed70fe098261c371294566e14086d082793043e4212ed03a12423c4",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 9,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "male-coat151-pants133-gloves152-boots9-walk-west-source-v18",
+    "preservedExisting": true,
+    "sourceSHA256": "895b76a30e95c305a77f7cd99a9344b9f9e3cc4d14d31f611272119bc0e731a4",
+    "portableSHA256": "a27f0d5aaed70fe098261c371294566e14086d082793043e4212ed03a12423c4",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 9,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "male-coat151-pants133-gloves152-boots9-walk-west-source-v18-idle-frame0",
+    "preservedExisting": true,
+    "sourceSHA256": "895b76a30e95c305a77f7cd99a9344b9f9e3cc4d14d31f611272119bc0e731a4",
+    "portableSHA256": "a27f0d5aaed70fe098261c371294566e14086d082793043e4212ed03a12423c4",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 148,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "male-coat151-pants133-gloves152-boots148-walk-south-source-v18",
+    "preservedExisting": true,
+    "sourceSHA256": "5dd6ebd4968c7aa1176ed67a7294ddd35767f5bbdbc15943b181fa9b838ac886",
+    "portableSHA256": "403af551d7c85c05cca42d13e880dfc0d2f99c356b26077979244b7ccf814736",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 148,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "male-coat151-pants133-gloves152-boots148-walk-south-source-v18-idle-frame0",
+    "preservedExisting": true,
+    "sourceSHA256": "5dd6ebd4968c7aa1176ed67a7294ddd35767f5bbdbc15943b181fa9b838ac886",
+    "portableSHA256": "403af551d7c85c05cca42d13e880dfc0d2f99c356b26077979244b7ccf814736",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 148,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "male-coat151-pants133-gloves152-boots148-walk-north-source-v18",
+    "preservedExisting": true,
+    "sourceSHA256": "e88b79e15b206d3c4ab28ed8e0d89a63569a78517040faef744813c736398aad",
+    "portableSHA256": "50f78cdf897315cb6a3c328d95248b927f6afc3c8feb4c76573aa4fdab21d5b2",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 148,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "male-coat151-pants133-gloves152-boots148-walk-north-source-v18-idle-frame0",
+    "preservedExisting": true,
+    "sourceSHA256": "e88b79e15b206d3c4ab28ed8e0d89a63569a78517040faef744813c736398aad",
+    "portableSHA256": "50f78cdf897315cb6a3c328d95248b927f6afc3c8feb4c76573aa4fdab21d5b2",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 148,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot148-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "33a8545a33be5f295511fb7c68cf22379d56b09a889e0d5224f59e3ae34da897",
+    "portableSHA256": "7fc7a45ad64843d85c849d35ec608c91230bd2136a1c4e2ef1074fb7cc7ea7e2",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 148,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot148-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "33a8545a33be5f295511fb7c68cf22379d56b09a889e0d5224f59e3ae34da897",
+    "portableSHA256": "7fc7a45ad64843d85c849d35ec608c91230bd2136a1c4e2ef1074fb7cc7ea7e2",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 148,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot148-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "33a8545a33be5f295511fb7c68cf22379d56b09a889e0d5224f59e3ae34da897",
+    "portableSHA256": "7fc7a45ad64843d85c849d35ec608c91230bd2136a1c4e2ef1074fb7cc7ea7e2",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 148,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot148-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "33a8545a33be5f295511fb7c68cf22379d56b09a889e0d5224f59e3ae34da897",
+    "portableSHA256": "7fc7a45ad64843d85c849d35ec608c91230bd2136a1c4e2ef1074fb7cc7ea7e2",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 8,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot8-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "37abc54028b5311d60298157a0f3546bae65fc34c5f2dbb17dc7fce63acd2848",
+    "portableSHA256": "fe19b166ac02155eeade7aac1ae201cbf11d523c24cfb4be0124c195c74a3da9",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 8,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot8-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "37abc54028b5311d60298157a0f3546bae65fc34c5f2dbb17dc7fce63acd2848",
+    "portableSHA256": "fe19b166ac02155eeade7aac1ae201cbf11d523c24cfb4be0124c195c74a3da9",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 8,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot8-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "13b7dab947a7e2c2c1fc1a768b00c3d1a423441ae5932b996346bf1738b0c18d",
+    "portableSHA256": "1fe4899a39273937d15f7a372c5b5e057adb2b261f9f58ccd84702486f711738",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 8,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot8-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "13b7dab947a7e2c2c1fc1a768b00c3d1a423441ae5932b996346bf1738b0c18d",
+    "portableSHA256": "1fe4899a39273937d15f7a372c5b5e057adb2b261f9f58ccd84702486f711738",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 8,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot8-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "0e5225ef8a6b6d459decd862151d0bdaf933ae5d2205171dfb00b545d512c847",
+    "portableSHA256": "e0b0a143d18aa323065b392c964ccac0738fd05a571975f068fc3a61224846d9",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 8,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot8-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "0e5225ef8a6b6d459decd862151d0bdaf933ae5d2205171dfb00b545d512c847",
+    "portableSHA256": "e0b0a143d18aa323065b392c964ccac0738fd05a571975f068fc3a61224846d9",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 8,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot8-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "0e5225ef8a6b6d459decd862151d0bdaf933ae5d2205171dfb00b545d512c847",
+    "portableSHA256": "e0b0a143d18aa323065b392c964ccac0738fd05a571975f068fc3a61224846d9",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 8,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot8-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "0e5225ef8a6b6d459decd862151d0bdaf933ae5d2205171dfb00b545d512c847",
+    "portableSHA256": "e0b0a143d18aa323065b392c964ccac0738fd05a571975f068fc3a61224846d9",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 162,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot162-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "c24dce0f11c0c1ac1043a560e1d4992080ad38f3de7ede2808f46b31ee159068",
+    "portableSHA256": "bd6e41dc76ad0cc8d584061407d75bd03ca9e9eec0c45b6401d2ba23f20344a7",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 162,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot162-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "c24dce0f11c0c1ac1043a560e1d4992080ad38f3de7ede2808f46b31ee159068",
+    "portableSHA256": "bd6e41dc76ad0cc8d584061407d75bd03ca9e9eec0c45b6401d2ba23f20344a7",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 162,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot162-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "0e4e4f7683cf21b67bd82c21f19f40cdc95ed1333199326e6ba1ff810732e891",
+    "portableSHA256": "f3d0e91dbda5984719cc5d51673ef944110ac75aa5033a84084a40badbf0162d",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 162,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot162-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "0e4e4f7683cf21b67bd82c21f19f40cdc95ed1333199326e6ba1ff810732e891",
+    "portableSHA256": "f3d0e91dbda5984719cc5d51673ef944110ac75aa5033a84084a40badbf0162d",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 162,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot162-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "9ae5451e07c79e5d2ef8e5a5ab6e22c93a6006df2a25841002fc2759fd3029f5",
+    "portableSHA256": "17a1b452dc53a239b89a9b2eabc0f84f7919d31b008943ae6b1ef52df99e333b",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 162,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot162-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "9ae5451e07c79e5d2ef8e5a5ab6e22c93a6006df2a25841002fc2759fd3029f5",
+    "portableSHA256": "17a1b452dc53a239b89a9b2eabc0f84f7919d31b008943ae6b1ef52df99e333b",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 162,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot162-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "9ae5451e07c79e5d2ef8e5a5ab6e22c93a6006df2a25841002fc2759fd3029f5",
+    "portableSHA256": "17a1b452dc53a239b89a9b2eabc0f84f7919d31b008943ae6b1ef52df99e333b",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 162,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot162-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "9ae5451e07c79e5d2ef8e5a5ab6e22c93a6006df2a25841002fc2759fd3029f5",
+    "portableSHA256": "17a1b452dc53a239b89a9b2eabc0f84f7919d31b008943ae6b1ef52df99e333b",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 176,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot176-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "8e2ac2eb45d18ce25a5d3ae98bad987c0650ca020def342ec093ba0fe721b704",
+    "portableSHA256": "99f43b3350960e74b3b3ecdfcfc55d013ebad888fbbc1dc5a3817393afdd2fb3",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 176,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot176-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "8e2ac2eb45d18ce25a5d3ae98bad987c0650ca020def342ec093ba0fe721b704",
+    "portableSHA256": "99f43b3350960e74b3b3ecdfcfc55d013ebad888fbbc1dc5a3817393afdd2fb3",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 176,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot176-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "8ff8215a2fe3a64b56f0b6faf517c2aec04b921a3fa1869f48aa088509ddc357",
+    "portableSHA256": "c8b4f1ddfe96b65e5bbdd66560c627deef52ec917db7b2f7ce394a5619ce246f",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 176,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot176-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "8ff8215a2fe3a64b56f0b6faf517c2aec04b921a3fa1869f48aa088509ddc357",
+    "portableSHA256": "c8b4f1ddfe96b65e5bbdd66560c627deef52ec917db7b2f7ce394a5619ce246f",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 176,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot176-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "0556b1c7819efe16ddd4de67479e0bb9bcc13f4189696e542752bc7e4a3687a5",
+    "portableSHA256": "698f0e57585100ea2ef013b592333f168a148d148931fd76b9607bdfa15854ae",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 176,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot176-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "0556b1c7819efe16ddd4de67479e0bb9bcc13f4189696e542752bc7e4a3687a5",
+    "portableSHA256": "698f0e57585100ea2ef013b592333f168a148d148931fd76b9607bdfa15854ae",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 176,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot176-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "0556b1c7819efe16ddd4de67479e0bb9bcc13f4189696e542752bc7e4a3687a5",
+    "portableSHA256": "698f0e57585100ea2ef013b592333f168a148d148931fd76b9607bdfa15854ae",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 176,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot176-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "0556b1c7819efe16ddd4de67479e0bb9bcc13f4189696e542752bc7e4a3687a5",
+    "portableSHA256": "698f0e57585100ea2ef013b592333f168a148d148931fd76b9607bdfa15854ae",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 183,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot183-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "fb5788ee0bbe5aea802a1672c1ff4bca4da4365610929a28ba7fd785f06126e9",
+    "portableSHA256": "a06ed6bc646de9895e4bb72a2ce733019a11753e95a3efe9478646b4d630fb5e",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 183,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot183-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "fb5788ee0bbe5aea802a1672c1ff4bca4da4365610929a28ba7fd785f06126e9",
+    "portableSHA256": "a06ed6bc646de9895e4bb72a2ce733019a11753e95a3efe9478646b4d630fb5e",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 183,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot183-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "7e26dbf7e199de73070cbfe740d8c30ccbe401f326a353aadaa395d965a84cf5",
+    "portableSHA256": "409e0dc59afe314514b8b51cccda6ad813df358845cc766a184083dced940832",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 183,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot183-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "7e26dbf7e199de73070cbfe740d8c30ccbe401f326a353aadaa395d965a84cf5",
+    "portableSHA256": "409e0dc59afe314514b8b51cccda6ad813df358845cc766a184083dced940832",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 183,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot183-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "14cf7e2d3f7b9cc70b96b707a80524ecafc3edac14be0408172dbccf309db1f2",
+    "portableSHA256": "fe5f89b01130d2d6bc26a5d8fdea653349647c265be563d7b433d4af23881d20",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 183,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot183-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "14cf7e2d3f7b9cc70b96b707a80524ecafc3edac14be0408172dbccf309db1f2",
+    "portableSHA256": "fe5f89b01130d2d6bc26a5d8fdea653349647c265be563d7b433d4af23881d20",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 183,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot183-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "14cf7e2d3f7b9cc70b96b707a80524ecafc3edac14be0408172dbccf309db1f2",
+    "portableSHA256": "fe5f89b01130d2d6bc26a5d8fdea653349647c265be563d7b433d4af23881d20",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 183,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot183-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "14cf7e2d3f7b9cc70b96b707a80524ecafc3edac14be0408172dbccf309db1f2",
+    "portableSHA256": "fe5f89b01130d2d6bc26a5d8fdea653349647c265be563d7b433d4af23881d20",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 141,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot141-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "be8fc743bcf336b8a6f2149c07d261a69f34557d04b82c5c5ebe0ab4c89c4831",
+    "portableSHA256": "5e5ed42ed6d89abbdc09b8ab9bf6f76ec28d8a4c90ecec0b0c4f46d66c17c3be",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 141,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot141-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "be8fc743bcf336b8a6f2149c07d261a69f34557d04b82c5c5ebe0ab4c89c4831",
+    "portableSHA256": "5e5ed42ed6d89abbdc09b8ab9bf6f76ec28d8a4c90ecec0b0c4f46d66c17c3be",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 141,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot141-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "d0944471c6b33949d1b7a52b5b4d35a203998090d37216a0205a25b611c49ca8",
+    "portableSHA256": "9cae4d85a578a9ab22cba0276963e009bb610c94358e8ec2c42cf148d818150d",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 141,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot141-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "d0944471c6b33949d1b7a52b5b4d35a203998090d37216a0205a25b611c49ca8",
+    "portableSHA256": "9cae4d85a578a9ab22cba0276963e009bb610c94358e8ec2c42cf148d818150d",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 141,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot141-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "afa9a9112f732d505d9b49d66391c7f4e264648c539a0424e441e9d6dfa8cb00",
+    "portableSHA256": "70a6f4ba4308813bbed6f6391637e9d654e6f2b7029c1973053c9b1b948d547e",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 141,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot141-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "afa9a9112f732d505d9b49d66391c7f4e264648c539a0424e441e9d6dfa8cb00",
+    "portableSHA256": "70a6f4ba4308813bbed6f6391637e9d654e6f2b7029c1973053c9b1b948d547e",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 141,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot141-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "afa9a9112f732d505d9b49d66391c7f4e264648c539a0424e441e9d6dfa8cb00",
+    "portableSHA256": "70a6f4ba4308813bbed6f6391637e9d654e6f2b7029c1973053c9b1b948d547e",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 141,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot141-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "afa9a9112f732d505d9b49d66391c7f4e264648c539a0424e441e9d6dfa8cb00",
+    "portableSHA256": "70a6f4ba4308813bbed6f6391637e9d654e6f2b7029c1973053c9b1b948d547e",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 169,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot169-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "9366a46c4d799001bd7a33072a31f51cb1795ff52e76e3a44fe4af6da1df5f9b",
+    "portableSHA256": "65b806abfb1bfdd8c4170c0c81071d6d48ef8ef6e8aabb44f8b63d8f94c0fae9",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 169,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot169-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "9366a46c4d799001bd7a33072a31f51cb1795ff52e76e3a44fe4af6da1df5f9b",
+    "portableSHA256": "65b806abfb1bfdd8c4170c0c81071d6d48ef8ef6e8aabb44f8b63d8f94c0fae9",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 169,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot169-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "45617fa1288e278af858e75530a79ba259b80f79a7d4522abe4626fb29f19688",
+    "portableSHA256": "db95332aeb02418b1295437bf2c003c8bfca21b292e923b10870e628f5f7651f",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 169,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot169-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "45617fa1288e278af858e75530a79ba259b80f79a7d4522abe4626fb29f19688",
+    "portableSHA256": "db95332aeb02418b1295437bf2c003c8bfca21b292e923b10870e628f5f7651f",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 169,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot169-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "6b8118f4aef68043fbe205fd37a4fc9e07e7411638bf587a008262a01fa26ef6",
+    "portableSHA256": "4a18accca9e1710672efc3e3132a6b832c68bd5ddd7c89257795ecfb578a6178",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 169,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot169-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "6b8118f4aef68043fbe205fd37a4fc9e07e7411638bf587a008262a01fa26ef6",
+    "portableSHA256": "4a18accca9e1710672efc3e3132a6b832c68bd5ddd7c89257795ecfb578a6178",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 169,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot169-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "6b8118f4aef68043fbe205fd37a4fc9e07e7411638bf587a008262a01fa26ef6",
+    "portableSHA256": "4a18accca9e1710672efc3e3132a6b832c68bd5ddd7c89257795ecfb578a6178",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 169,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot169-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "6b8118f4aef68043fbe205fd37a4fc9e07e7411638bf587a008262a01fa26ef6",
+    "portableSHA256": "4a18accca9e1710672efc3e3132a6b832c68bd5ddd7c89257795ecfb578a6178",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 134,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "male-coat151-pants133-gloves152-boots134-walk-north-source-v18",
+    "preservedExisting": true,
+    "sourceSHA256": "b6f25a7eff8c004631cab4fc9d1281d8f2058f423482a500e76f6df27026e6cd",
+    "portableSHA256": "7b63620435479c1f75d034bc95f191a2cd27a4b0c98eddb9273814297c1f6921",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 134,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",
+    "preservedExisting": true,
+    "sourceSHA256": "b6f25a7eff8c004631cab4fc9d1281d8f2058f423482a500e76f6df27026e6cd",
+    "portableSHA256": "7b63620435479c1f75d034bc95f191a2cd27a4b0c98eddb9273814297c1f6921",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 134,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "male-coat151-pants133-gloves152-boots134-walk-east-source-v18",
+    "preservedExisting": true,
+    "sourceSHA256": "0d99a47be1436b888033cf34245bbadf62933a5bbda93d6916d74d236f8577c5",
+    "portableSHA256": "c842a4127ec5e7ab17f41b663bc561a3c42b80a7ba2dec89484f57ca6c962340",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 134,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "male-coat151-pants133-gloves152-boots134-walk-east-source-v18-idle-frame0",
+    "preservedExisting": true,
+    "sourceSHA256": "0d99a47be1436b888033cf34245bbadf62933a5bbda93d6916d74d236f8577c5",
+    "portableSHA256": "c842a4127ec5e7ab17f41b663bc561a3c42b80a7ba2dec89484f57ca6c962340",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 134,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "male-coat151-pants133-gloves152-boots134-walk-west-source-v18",
+    "preservedExisting": true,
+    "sourceSHA256": "0d99a47be1436b888033cf34245bbadf62933a5bbda93d6916d74d236f8577c5",
+    "portableSHA256": "c842a4127ec5e7ab17f41b663bc561a3c42b80a7ba2dec89484f57ca6c962340",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 134,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "male-coat151-pants133-gloves152-boots134-walk-west-source-v18-idle-frame0",
+    "preservedExisting": true,
+    "sourceSHA256": "0d99a47be1436b888033cf34245bbadf62933a5bbda93d6916d74d236f8577c5",
+    "portableSHA256": "c842a4127ec5e7ab17f41b663bc561a3c42b80a7ba2dec89484f57ca6c962340",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 134,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-male-151-boot134-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "6b1ad45dbc46d9c25e69684dea1ae8544a13cac76f2ee16de49dceaea6701f33",
+    "portableSHA256": "929bdea5c8ed3dc3250daf4b27059502b910833438641082d059f5c33cb34650",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "male",
+    "item": 134,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-male-151-boot134-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "6b1ad45dbc46d9c25e69684dea1ae8544a13cac76f2ee16de49dceaea6701f33",
+    "portableSHA256": "929bdea5c8ed3dc3250daf4b27059502b910833438641082d059f5c33cb34650",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 8,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot8-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "f31c6f1b58f6d09c3c05327057320c47ea8a69e0ddbfccc49579ea294549eeb4",
+    "portableSHA256": "d70d12dfc74088c3d9cf0a16899a5c1b945a83d7d7352f081962cd8740185532",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 8,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot8-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "f31c6f1b58f6d09c3c05327057320c47ea8a69e0ddbfccc49579ea294549eeb4",
+    "portableSHA256": "d70d12dfc74088c3d9cf0a16899a5c1b945a83d7d7352f081962cd8740185532",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 8,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot8-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "5c716dcd2e6b816af05a00dce4d7ccface43c7dd6cd3ad7c4d41d16a662f68b5",
+    "portableSHA256": "ae67b1f7918c77f63fb8eb3579cbc5422c17ff3d867b0731f4b11c3622b90d1d",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 8,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot8-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "5c716dcd2e6b816af05a00dce4d7ccface43c7dd6cd3ad7c4d41d16a662f68b5",
+    "portableSHA256": "ae67b1f7918c77f63fb8eb3579cbc5422c17ff3d867b0731f4b11c3622b90d1d",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 8,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot8-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "1059b47d886a62ab32363703213a91b66524b77cbd3d36c15895cdaa7ace62b0",
+    "portableSHA256": "9d75ad82eac843cfc453efede2d63006991d982b450b1ae148959ac089596e31",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 8,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot8-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "1059b47d886a62ab32363703213a91b66524b77cbd3d36c15895cdaa7ace62b0",
+    "portableSHA256": "9d75ad82eac843cfc453efede2d63006991d982b450b1ae148959ac089596e31",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 8,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot8-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "3e258f2ffc6fd5874015f5793e190aea5bf1942617d9d1f9df0d77151d312f74",
+    "portableSHA256": "801cb8038bd6ce863b90d073482674f5ff58766dcd1de4a92b24f2d3312b1c57",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 8,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot8-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "3e258f2ffc6fd5874015f5793e190aea5bf1942617d9d1f9df0d77151d312f74",
+    "portableSHA256": "801cb8038bd6ce863b90d073482674f5ff58766dcd1de4a92b24f2d3312b1c57",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 9,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot9-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "b4e3d4abe4c6a32d8b559eb0ecd9988af70e474171921748e71f9cc806f0b88d",
+    "portableSHA256": "3cec11dd7153e0f8e5fd0d78af0847d44e8e20fc2ad5979c42e8c155d6b9bb06",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 9,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot9-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "b4e3d4abe4c6a32d8b559eb0ecd9988af70e474171921748e71f9cc806f0b88d",
+    "portableSHA256": "3cec11dd7153e0f8e5fd0d78af0847d44e8e20fc2ad5979c42e8c155d6b9bb06",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 9,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot9-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "35a1244a3a30540158e7279cc494c111a410011c6aa0b425e5886895472fb179",
+    "portableSHA256": "7bad9de791a63b09cf39d69be34bc7b1662189397303aec9d4cb8b0e3592ce39",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 9,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot9-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "35a1244a3a30540158e7279cc494c111a410011c6aa0b425e5886895472fb179",
+    "portableSHA256": "7bad9de791a63b09cf39d69be34bc7b1662189397303aec9d4cb8b0e3592ce39",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 9,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot9-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "ea2f6ba9df655b64fe1465d9d40cefe33226360773edda66666ead94f731885d",
+    "portableSHA256": "5cbc383e7728ce87349ce86391cc9530466b6a37822c077c2c99587811407c19",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 9,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot9-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "ea2f6ba9df655b64fe1465d9d40cefe33226360773edda66666ead94f731885d",
+    "portableSHA256": "5cbc383e7728ce87349ce86391cc9530466b6a37822c077c2c99587811407c19",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 9,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot9-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "75ce7f7ae4669aa8eed6b82e0181777772bef7e0ffe526efa3546081362b6cda",
+    "portableSHA256": "3e7be103df10e89f2b87e387eb6b8cd4d63c581756e759998b8dcbfd86b2525d",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 9,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot9-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "75ce7f7ae4669aa8eed6b82e0181777772bef7e0ffe526efa3546081362b6cda",
+    "portableSHA256": "3e7be103df10e89f2b87e387eb6b8cd4d63c581756e759998b8dcbfd86b2525d",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 134,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot134-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "11c9fb9adbdf084b0292ae847544b85124b5162c267936bba7552cfef74cd131",
+    "portableSHA256": "7aa127dfdb9711bdf0f8ec228889cc63120085eaa00f3a9b5ca194b620760a39",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 134,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot134-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "11c9fb9adbdf084b0292ae847544b85124b5162c267936bba7552cfef74cd131",
+    "portableSHA256": "7aa127dfdb9711bdf0f8ec228889cc63120085eaa00f3a9b5ca194b620760a39",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 134,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot134-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "a38e532b431f3e5b3f7d0b246f5a83eb0f9e7a0a2526eefcb0ab8964bf460e10",
+    "portableSHA256": "46949a3bd1970d3b2f35a278a9d91b15b8adf9fc03304bd6185f23c05827c52c",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 134,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot134-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "a38e532b431f3e5b3f7d0b246f5a83eb0f9e7a0a2526eefcb0ab8964bf460e10",
+    "portableSHA256": "46949a3bd1970d3b2f35a278a9d91b15b8adf9fc03304bd6185f23c05827c52c",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 134,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot134-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "c069635ff9891201a200a2757e89aac443aa2c3ad825227b68df861701331b84",
+    "portableSHA256": "0818370cca4934891bcb24aa15f7bb52f81c65e6fdc35c1cf292adbf0cbd74c4",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 134,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot134-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "c069635ff9891201a200a2757e89aac443aa2c3ad825227b68df861701331b84",
+    "portableSHA256": "0818370cca4934891bcb24aa15f7bb52f81c65e6fdc35c1cf292adbf0cbd74c4",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 134,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot134-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "3339fd9db1325a84345271a4dc8ff409b4322c75f3db696d9d52e1215d72e27b",
+    "portableSHA256": "01ea3b74cf28e3060609fc536cba60df683336db86a046f9131139b2b78eb5d7",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 134,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot134-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "3339fd9db1325a84345271a4dc8ff409b4322c75f3db696d9d52e1215d72e27b",
+    "portableSHA256": "01ea3b74cf28e3060609fc536cba60df683336db86a046f9131139b2b78eb5d7",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 141,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot141-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "9a1b2f28c86cba1b739fd1f012ad7feee5bd4168173fc1756615defb636533e0",
+    "portableSHA256": "6028183c621250366896d7b97f14c952805faa8caee53d32f1294767ad80defd",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 141,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot141-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "9a1b2f28c86cba1b739fd1f012ad7feee5bd4168173fc1756615defb636533e0",
+    "portableSHA256": "6028183c621250366896d7b97f14c952805faa8caee53d32f1294767ad80defd",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 141,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot141-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "beb5789022d012cf503306c1b90e38c33b270ce0f3cee7d9a1fc70ee4a2b5ed2",
+    "portableSHA256": "a049ecff6c4df6ef7e3ae4afa207cc923ec94102aac236ef5919d7bba1173dc2",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 141,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot141-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "beb5789022d012cf503306c1b90e38c33b270ce0f3cee7d9a1fc70ee4a2b5ed2",
+    "portableSHA256": "a049ecff6c4df6ef7e3ae4afa207cc923ec94102aac236ef5919d7bba1173dc2",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 141,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot141-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "9b1d3bef9c9f8e1a5299d7c7e59ee62d866b31d779ffd1cfd178821890b84846",
+    "portableSHA256": "dc8c61707e9decd4f4cd3c9fe98028858e5b89407aaad5d720317f141ef0d733",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 141,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot141-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "9b1d3bef9c9f8e1a5299d7c7e59ee62d866b31d779ffd1cfd178821890b84846",
+    "portableSHA256": "dc8c61707e9decd4f4cd3c9fe98028858e5b89407aaad5d720317f141ef0d733",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 141,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot141-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "30a77c58fbc9b39ece9dc3ecf6a3bc42420ee56bba719fb01ecd203167830ea1",
+    "portableSHA256": "ce4511304c29364b0de942ebd4d2836f98412c65f5a5a53461ed3a7a8936b1f5",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 141,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot141-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "30a77c58fbc9b39ece9dc3ecf6a3bc42420ee56bba719fb01ecd203167830ea1",
+    "portableSHA256": "ce4511304c29364b0de942ebd4d2836f98412c65f5a5a53461ed3a7a8936b1f5",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 148,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot148-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "c108b74524281efbbacfc1df97f385967cb73fb6a54b517aaae384badc45f430",
+    "portableSHA256": "c251f73e0cf0d11d83c90bb4bf5f2cb63a613b83785b17c7ddaf9a3a26098c1a",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 148,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot148-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "c108b74524281efbbacfc1df97f385967cb73fb6a54b517aaae384badc45f430",
+    "portableSHA256": "c251f73e0cf0d11d83c90bb4bf5f2cb63a613b83785b17c7ddaf9a3a26098c1a",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 148,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot148-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "b9ce19e553671187e2d46f5a1b00423af6640e0b51cb4f5bf615a00855f64a73",
+    "portableSHA256": "d040ac5ef19161ed6ad7c86495ff82d3ea172abe57c4f39c4673cecd8bf8720e",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 148,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot148-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "b9ce19e553671187e2d46f5a1b00423af6640e0b51cb4f5bf615a00855f64a73",
+    "portableSHA256": "d040ac5ef19161ed6ad7c86495ff82d3ea172abe57c4f39c4673cecd8bf8720e",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 148,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot148-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "009de17de321f8de4ca48f260abc2aed6b69a9be07fb743a79a7d66cc6ba3e56",
+    "portableSHA256": "1ad4ed108220ac687462cc40258673626fc65c1e135b6b502186d35d348357c0",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 148,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot148-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "009de17de321f8de4ca48f260abc2aed6b69a9be07fb743a79a7d66cc6ba3e56",
+    "portableSHA256": "1ad4ed108220ac687462cc40258673626fc65c1e135b6b502186d35d348357c0",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 148,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot148-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "114acf3b09002ccb26a422b90babfa8790901571e50eceeae2da9785c78977bb",
+    "portableSHA256": "f147edb112d14c2eedbf4f9c319312b2b78287f6d75f8c4b0c73b552b46e0191",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 148,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot148-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "114acf3b09002ccb26a422b90babfa8790901571e50eceeae2da9785c78977bb",
+    "portableSHA256": "f147edb112d14c2eedbf4f9c319312b2b78287f6d75f8c4b0c73b552b46e0191",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 155,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot155-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "5b394ee8283e3692f714a75cb9f9050474749dc8bd8e6bef56435eb7903f7027",
+    "portableSHA256": "e9cb2f9fac8a2862d988e1b0921117ce8eb4a222f18498bc12ef48d5a8e1b69f",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 155,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot155-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "5b394ee8283e3692f714a75cb9f9050474749dc8bd8e6bef56435eb7903f7027",
+    "portableSHA256": "e9cb2f9fac8a2862d988e1b0921117ce8eb4a222f18498bc12ef48d5a8e1b69f",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 155,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot155-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "87176ce3aabb752d6423f4c62f9098f7e74d1ccd802311bd86f1b97a0f012fbd",
+    "portableSHA256": "78b05bc453f676dd968730272a18aa17011ddba64213d744535fc84ca5a853a4",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 155,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot155-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "87176ce3aabb752d6423f4c62f9098f7e74d1ccd802311bd86f1b97a0f012fbd",
+    "portableSHA256": "78b05bc453f676dd968730272a18aa17011ddba64213d744535fc84ca5a853a4",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 155,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot155-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "67421c1c7cec790ec84854e4a2bbf6006e05303f5a6367399543defd263ef93c",
+    "portableSHA256": "e9b7434531c824cd799be4649373ee5936c050d07e93941ba4777c8ee70d60a5",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 155,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot155-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "67421c1c7cec790ec84854e4a2bbf6006e05303f5a6367399543defd263ef93c",
+    "portableSHA256": "e9b7434531c824cd799be4649373ee5936c050d07e93941ba4777c8ee70d60a5",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 155,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot155-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "f8b65f53bb2410ad75cf0c7f2e799589fd04e2583a223333aeb37c16221d58f5",
+    "portableSHA256": "a03f13bf55667061007fff34df35829ae985e94039839fd92ce5a8fb8a7f947e",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 155,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot155-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "f8b65f53bb2410ad75cf0c7f2e799589fd04e2583a223333aeb37c16221d58f5",
+    "portableSHA256": "a03f13bf55667061007fff34df35829ae985e94039839fd92ce5a8fb8a7f947e",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 162,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot162-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "381237bb472308c868775ab142108656519358c66269cc7e7c0403b0df18592c",
+    "portableSHA256": "b01bc179db0fd628e46e9c8b9d42f96a7a03e828f7773d4e12edbda3648f5dcc",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 162,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot162-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "381237bb472308c868775ab142108656519358c66269cc7e7c0403b0df18592c",
+    "portableSHA256": "b01bc179db0fd628e46e9c8b9d42f96a7a03e828f7773d4e12edbda3648f5dcc",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 162,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot162-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "eceb0adf7561d266c425291a564ecf551b211363995eb6f2a54c8f61604d3b14",
+    "portableSHA256": "bd0fda7d349ccf68a0202c1b5587a30c3cf4644692cf2677287976dd4d4456f7",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 162,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot162-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "eceb0adf7561d266c425291a564ecf551b211363995eb6f2a54c8f61604d3b14",
+    "portableSHA256": "bd0fda7d349ccf68a0202c1b5587a30c3cf4644692cf2677287976dd4d4456f7",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 162,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot162-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "39d163d8aef21d0dd82addc6953265eb5cc68397477825d609cd201a8990e9d3",
+    "portableSHA256": "7f4a419cc4a0db81f7e4861974e32930fa274c4fb6bcf5bb72fda4dea7d2a54d",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 162,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot162-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "39d163d8aef21d0dd82addc6953265eb5cc68397477825d609cd201a8990e9d3",
+    "portableSHA256": "7f4a419cc4a0db81f7e4861974e32930fa274c4fb6bcf5bb72fda4dea7d2a54d",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 162,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot162-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "b6c8faae3be631518ecc3d551e80f548d2afc4509ac07e6d5ed12e55e079771e",
+    "portableSHA256": "b4e4e1ca2031272c8b8c76d6626c79dd053b7732ae76d4401eb15ddab50012ab",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 162,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot162-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "b6c8faae3be631518ecc3d551e80f548d2afc4509ac07e6d5ed12e55e079771e",
+    "portableSHA256": "b4e4e1ca2031272c8b8c76d6626c79dd053b7732ae76d4401eb15ddab50012ab",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 169,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot169-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "76a272698839a6cf4bd7cb7b8a55d4a8339063fe5803394e7313646bf6181abc",
+    "portableSHA256": "bd48804c08067110371045c0c06cefe864424c43fc091e726510e6cedfc8d0c3",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 169,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot169-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "76a272698839a6cf4bd7cb7b8a55d4a8339063fe5803394e7313646bf6181abc",
+    "portableSHA256": "bd48804c08067110371045c0c06cefe864424c43fc091e726510e6cedfc8d0c3",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 169,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot169-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "f5f076819194ea0f50513d6101664a5a6147fd2e6c6c6152f60dec0ca9dc30aa",
+    "portableSHA256": "54ba1e1190cd01d0bd20dfe3e7c3c4835d1bed97d6e89f9d514378f9db88a253",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 169,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot169-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "f5f076819194ea0f50513d6101664a5a6147fd2e6c6c6152f60dec0ca9dc30aa",
+    "portableSHA256": "54ba1e1190cd01d0bd20dfe3e7c3c4835d1bed97d6e89f9d514378f9db88a253",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 169,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot169-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "e59bf4e40b6a923a37ec082b1cfc70f5330a83ec3206b4f3fda8d51f48d4bb59",
+    "portableSHA256": "96ab1f638f17b30342f85426db67aaeaff8d0e68c66be6e95271a1dc45fdbe2c",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 169,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot169-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "e59bf4e40b6a923a37ec082b1cfc70f5330a83ec3206b4f3fda8d51f48d4bb59",
+    "portableSHA256": "96ab1f638f17b30342f85426db67aaeaff8d0e68c66be6e95271a1dc45fdbe2c",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 169,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot169-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "8ee7b50e3934fd27dae7723ceac4e699515c81befd631cf7ed80986580a30384",
+    "portableSHA256": "bc0897d8bbc4d126b2a251a8a71c4fadf7af3807e6f36d0e92a43f52585c5bee",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 169,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot169-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "8ee7b50e3934fd27dae7723ceac4e699515c81befd631cf7ed80986580a30384",
+    "portableSHA256": "bc0897d8bbc4d126b2a251a8a71c4fadf7af3807e6f36d0e92a43f52585c5bee",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 176,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot176-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "3009aa550bb34d93e914518f5ac55d36e5e2ace8900fc9b546149db7df8aec4d",
+    "portableSHA256": "4f5bcc2bb5e139d789aee1e87abc184e0b8a3f703cf98d03064f0e8314898ef2",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 176,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot176-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "3009aa550bb34d93e914518f5ac55d36e5e2ace8900fc9b546149db7df8aec4d",
+    "portableSHA256": "4f5bcc2bb5e139d789aee1e87abc184e0b8a3f703cf98d03064f0e8314898ef2",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 176,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot176-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "36c8ab4a95ecdbe3b821dd345c494832c7084e0c73e24ab60b5a39749ad85c08",
+    "portableSHA256": "9d54c5032e40f4d1034dcb734fde5d7e8fe897c9738d3fcfbaec2aa9cbd0c068",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 176,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot176-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "36c8ab4a95ecdbe3b821dd345c494832c7084e0c73e24ab60b5a39749ad85c08",
+    "portableSHA256": "9d54c5032e40f4d1034dcb734fde5d7e8fe897c9738d3fcfbaec2aa9cbd0c068",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 176,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot176-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "3ac7fb17b27794ea1d726b85caaa86fe016d4c4dfcae63e996783674f224d224",
+    "portableSHA256": "b9c0131d675560981447bd8b02e7bceafc850c5753ffc5ede3b0fa6941fcdbd9",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 176,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot176-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "3ac7fb17b27794ea1d726b85caaa86fe016d4c4dfcae63e996783674f224d224",
+    "portableSHA256": "b9c0131d675560981447bd8b02e7bceafc850c5753ffc5ede3b0fa6941fcdbd9",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 176,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot176-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "25813e72cf7360d23c32c24f6431f8bdc7d5a7e624ecdf1b497421f7e2b20a23",
+    "portableSHA256": "afa6054b2039bb3d26b95919051b36de3cc8a34af2614df7e98b6438ea96b018",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 176,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot176-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "25813e72cf7360d23c32c24f6431f8bdc7d5a7e624ecdf1b497421f7e2b20a23",
+    "portableSHA256": "afa6054b2039bb3d26b95919051b36de3cc8a34af2614df7e98b6438ea96b018",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 183,
+    "direction": "south",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot183-south-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "bec85a2076f10b99528e2c352dc05b2bfaa3454c7bc861864289ec6c743cf0a7",
+    "portableSHA256": "d76fdebd7fd4e3cc4e33f0dc4725b73fdf370c74252adc5bbf0c168bc8b14d79",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 183,
+    "direction": "south",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot183-south-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "bec85a2076f10b99528e2c352dc05b2bfaa3454c7bc861864289ec6c743cf0a7",
+    "portableSHA256": "d76fdebd7fd4e3cc4e33f0dc4725b73fdf370c74252adc5bbf0c168bc8b14d79",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 183,
+    "direction": "north",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot183-north-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "f5a6dfecb3ed623d8356c9c40c6a593c4ff2f65323bcd59a5d05cb47ef1fe282",
+    "portableSHA256": "9cc3342bb6b40746ecaa967332478a83bc0f2f2e2f1b4651c7a537ab71d6f59f",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 183,
+    "direction": "north",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot183-north-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "f5a6dfecb3ed623d8356c9c40c6a593c4ff2f65323bcd59a5d05cb47ef1fe282",
+    "portableSHA256": "9cc3342bb6b40746ecaa967332478a83bc0f2f2e2f1b4651c7a537ab71d6f59f",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 183,
+    "direction": "east",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot183-east-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "132a9bcc805d8b661b743ae2644d39e6538e0feafe52059ed50455b42d812257",
+    "portableSHA256": "54a6c5f540de2c48062108f451b467f18cab6fdf1defb524f7d82fee93b87f5a",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 183,
+    "direction": "east",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot183-east-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "132a9bcc805d8b661b743ae2644d39e6538e0feafe52059ed50455b42d812257",
+    "portableSHA256": "54a6c5f540de2c48062108f451b467f18cab6fdf1defb524f7d82fee93b87f5a",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 183,
+    "direction": "west",
+    "action": "walk",
+    "recordId": "frozen-v47-female-151-boot183-west-walk",
+    "preservedExisting": false,
+    "sourceSHA256": "3cee4016d07658adcb9cd938f6c71a63372a86a4b9ca592eab8cd1e6276ce98c",
+    "portableSHA256": "a63992ddfaeb1a85cd6dcb501dbc65b76801bd1f0998d36ad1a4fcc6027bdc08",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  },
+  {
+    "body": "female",
+    "item": 183,
+    "direction": "west",
+    "action": "idle",
+    "recordId": "frozen-v47-female-151-boot183-west-idle",
+    "preservedExisting": false,
+    "sourceSHA256": "3cee4016d07658adcb9cd938f6c71a63372a86a4b9ca592eab8cd1e6276ce98c",
+    "portableSHA256": "a63992ddfaeb1a85cd6dcb501dbc65b76801bd1f0998d36ad1a4fcc6027bdc08",
+    "nativeFrame": {
+      "width": 128,
+      "height": 128
+    },
+    "density": 4
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "direction": "east",
+    "target": "0a9fa04d3dd33ccbec2cfe2469449773910426c49b2d2c4d85ad240379624bc5",
+    "ref": "fef32b0442219b1fd0380d1f0bd6d4e7f58f0f1e2865845320f9033a551a9116",
+    "dx": -24,
+    "dy": 9,
+    "score": 0.8263473053892215,
+    "pixels": 501
+  },
+  {
+    "direction": "east",
+    "target": "32f3cbedee35be1bea4fa913f6de431cdae4766dce6992563bf46f9431d43c4a",
+    "ref": "3201c2e3b7390a8c7d11d5cdb2915fb728cb57becd98aa3f4cf840b5162eb265",
+    "dx": 25,
+    "dy": 0,
+    "score": 0.866481223922114,
+    "pixels": 719
+  },
+  {
+    "direction": "east",
+    "target": "bf40c4c0b7f3c306ac30e2ea3382e7431d023f3c12acd6c50c64ec3abfac8399",
+    "ref": "088841132f67ac72b8ba2ff8cd243ca69853f88e1285baa03e999e6722cbb455",
+    "dx": 18,
+    "dy": 0,
+    "score": 0.8545780969479354,
+    "pixels": 557
+  },
+  {
+    "direction": "east",
+    "target": "1d048a14fc7039dffc8f5dfe66c73777f4a903f654c3ad818a8a6c33c4023659",
+    "ref": "fef32b0442219b1fd0380d1f0bd6d4e7f58f0f1e2865845320f9033a551a9116",
+    "dx": -28,
+    "dy": 5,
+    "score": 0.8363273453093812,
+    "pixels": 501
+  },
+  {
+    "direction": "west",
+    "target": "6027331229205dca49b7551b73dc11fdb112012e36fdebf0d3ac68efb627ff07",
+    "ref": "0edea92d7e9502ef202bfcdb7634438e680aa19bceee74317f2aaf97baca85b5",
+    "dx": 28,
+    "dy": 5,
+    "score": 0.8263473053892215,
+    "pixels": 501
+  },
+  {
+    "direction": "west",
+    "target": "43cc2fef59ac5149253fdc87396839380ec758094d15766acd986d05ee79a95c",
+    "ref": "0edea92d7e9502ef202bfcdb7634438e680aa19bceee74317f2aaf97baca85b5",
+    "dx": 32,
+    "dy": 1,
+    "score": 0.8363273453093812,
+    "pixels": 501
+  },
+  {
+    "direction": "west",
+    "target": "0da54f74504683846389148f65a1596fbcec336ab895f4508d5fd293460e3c16",
+    "ref": "68dab1fe0f9905176a4fca550399bd25edaa829810001878e92dc4b491d40c02",
+    "dx": -18,
+    "dy": 0,
+    "score": 0.8545780969479354,
+    "pixels": 557
+  },
+  {
+    "direction": "west",
+    "target": "f126f612564122954445b31edbc9e4808969d0249f8dee3926ae72e42791c226",
+    "ref": "397353a66e8e9a867a520bfcae30202cd419b1003727cb19a992ace62113cc6a",
+    "dx": -25,
+    "dy": 0,
+    "score": 0.866481223922114,
+    "pixels": 719
+  }
+]
