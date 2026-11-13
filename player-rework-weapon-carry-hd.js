@@ -21,8 +21,10 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   if(item==null)return null;
   if(![0,123,124,125,126,127,128,14,16,110,121,31,32,118,119,120,112,71,72,73,74,12,13,2,3,15,1,68,67,70,69,117,109,111,17,122,4,5,113,114,115,116].includes(Number(item))||!['male','masculino'].includes(body)||!['walk','idle'].includes(action))return null;
   if(Object.entries(equipment).some(([k,v])=>k!=='weapon'&&v!=null&&!['original','none'].includes(v)))return null;
-  if([123,124,125,126,127,128,14,16,110,121,31,32,118,119,120,112,2,3,15,17,122,111,117].includes(Number(item))&&[appearance.skin,appearance.skinColor].some(v=>v&&v!=='original'))return null;
   let plan=carryIndex.records.find(r=>r.item===Number(item)&&r.direction===direction);if(!plan)return null;
+  const skin=appearance.skin||appearance.skinColor;
+  const skinLocked=[123,124,125,126,127,128,14,16,110,121,31,32,118,119,120,112,2,3,15,17,122,111,117].includes(Number(item));
+  if(skin&&skin!=='original'&&skinLocked&&!plan.parts.every(p=>p.skinMaterial?.sourceSHA256===p.source.sha256&&p.skinMaterial?.url))return null;
   const hair=(appearance.hairStyle||appearance.hair||'original').replace(/^hair-/,'');
   const base=baseIndex.records.find(r=>r.body==='male'&&r.direction===direction&&r.action===action&&r.hairStyle==='original');if(!base)return null;
   const hairLayers=resolveHair(base,hair);
@@ -32,7 +34,20 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   for(const part of plan.parts)for(const name of [part.binding.a,part.binding.b])if(!rest[name]||Math.hypot(rest[name].x-part.targetRestBone[name].x,rest[name].y-part.targetRestBone[name].y)>.001)return null;
   return {id:`carry${item}-${base.id}${hair==='original'?'':':hair-'+hair}`,...hairLayers,item:Number(item),action,direction,base,plan,colorAppearance:appearance,status:'candidate-needs-visual-calibration'};
  }
- function requiredFiles(r,{frame}={}){const refs=r?(frame===undefined?[...r.base.sourceRefs]:r.base.pack.directions[r.direction].layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean)):[];if(r?.hairLayers)refs.push(...r.hairLayers.map(l=>l.source));return r?[...new Set([...refs.map(s=>basePrefix+s+'.png'),...r.plan.parts.map(p=>weaponPrefix+p.source.url)])]:[];}
+ function requiredFiles(r,{frame}={}){const refs=r?(frame===undefined?[...r.base.sourceRefs]:r.base.pack.directions[r.direction].layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean)):[];if(r?.hairLayers)refs.push(...r.hairLayers.map(l=>l.source));return r?[...new Set([...refs.map(s=>basePrefix+s+'.png'),...r.plan.parts.flatMap(p=>[p.source.url,...(p.skinMaterial?[p.skinMaterial.url]:[])].map(url=>weaponPrefix+url))])]:[];}
+ function applySkinMaterial(source,part,images,ramp,appearanceAPI){
+  const mask=images.get(weaponPrefix+part.skinMaterial.url);
+  if(part.skinMaterial.sourceSHA256!==part.source.sha256||!mask||mask.width!==source.width||mask.height!==source.height)throw Error('Invalid carry skin material');
+  const tile=makeCanvas(source.width,source.height),ctx=tile.getContext('2d');
+  ctx.drawImage(mask,0,0);
+  const material=ctx.getImageData(0,0,source.width,source.height).data;
+  ctx.clearRect(0,0,source.width,source.height);ctx.drawImage(source,0,0);
+  const pixels=ctx.getImageData(0,0,source.width,source.height);
+  const tones=new Uint8Array(material.length/4);
+  for(let p=0;p<tones.length;p++){const i=p*4;if(material[i]&&pixels.data[i+3])tones[p]=skinMaterials.tone(pixels.data[i],pixels.data[i+1],pixels.data[i+2]);}
+  pixels.data.set(appearanceAPI.recolor(pixels.data,tones,ramp));ctx.putImageData(pixels,0,0);
+  return tile;
+ }
  function render(ctx,r,images,{frame=0,hiddenSlots=[],appearance=r?.colorAppearance||{},appearanceAPI=root.MareAppearance96}={}){
   if(!r)throw Error('Unsupported carry identity');const source=r.base.pack,original=source.directions[r.direction],d=r.hairLayers?{...original,layers:original.layers.filter(l=>l.slot!=='hair').concat(r.hairLayers)}:original,p=r.hairLayers?{...source,directions:{...source.directions,[r.direction]:d}}:source,pose=d.poses[frame];if(!pose)throw Error('No authored frame');const padding=r.plan.paddingPhysical??0;if(!Number.isInteger(padding)||padding<0)throw Error('Carry padding must be a nonnegative integer');const w=p.frame.width*4+2*padding,h=p.frame.height*4+2*padding;ctx.canvas.width=w;ctx.canvas.height=h;
   const canvas=r.base.mirrorX?makeCanvas(w,h):ctx.canvas,target=r.base.mirrorX?canvas.getContext('2d'):ctx;target.clearRect(0,0,w,h);target.imageSmoothingEnabled=false;target.save();target.translate(padding,padding);try{
@@ -54,9 +69,11 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   // base canvas reflection only when drawing those registered layers.
   for(const op of operations.sort((a,b)=>a.depth-b.depth)){
    if(op.layer){const original=d.layers.find(l=>l.id===op.layer.id);if(original.slot==='body'&&r.plan.parts.some(q=>q.replaceBoundLayer&&original.binding?.a===q.binding.a&&original.binding?.b===q.binding.b))continue;const pack={...p,directions:{[r.direction]:{...d,layers:[original]}}};const cover=r.plan.parts.find(q=>q.hideHandBeyondWrist&&original.binding?.a===q.binding.a&&original.binding?.b===q.binding.b);target.save();if(cover){const a=pose[cover.binding.a],b=pose[cover.binding.b],dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy),ux=dx/len,uy=dy/len,nx=-uy,ny=ux,L=2000,x=b.x*4,y=b.y*4;target.beginPath();target.moveTo(x+nx*L,y+ny*L);target.lineTo(x-nx*L,y-ny*L);target.lineTo(x-nx*L-ux*L,y-ny*L-uy*L);target.lineTo(x+nx*L-ux*L,y+ny*L-uy*L);target.closePath();target.clip();}if(r.preMirroredLayers?.includes(original.id)){target.translate(p.frame.width*4,0);target.scale(-1,1);}if(r.plan.paddingPhysical!==undefined){const bodyTile=makeCanvas(p.frame.width*4,p.frame.height*4);V.render(bodyTile.getContext('2d'),pack,map,{direction:r.direction,frame,density:4,clear:false});target.drawImage(bodyTile,0,0);}else V.render(target,pack,map,{direction:r.direction,frame,density:4,clear:false});target.restore();continue;}
-   const q=op.part,im=images.get(weaponPrefix+q.source.url);if(!im)throw Error('Missing isolated gauntlet');const a=q.binding.a,b=q.binding.b;
+   const q=op.part,im=images.get(weaponPrefix+q.source.url);if(!im)throw Error('Missing isolated equipment');
+   const palette=appearanceAPI?.skins[skin]?.ramp;
+   const partImage=palette&&q.skinMaterial?applySkinMaterial(im,q,images,palette,appearanceAPI):im;const a=q.binding.a,b=q.binding.b;
    // Wrist anchored rigid transform: no weapon raster scaling/stretch; follow authored wrist and forearm rotation.
-   const m=V.rigid(q.sourceBone[b],q.sourceBone[a],pose[b],pose[a]);target.save();const offset=q.calibrationOffsetPhysical||[0,0];target.transform(m[0],m[1],m[2],m[3],m[4]*4+offset[0],m[5]*4+offset[1]);if(q.source.sourceClip){const [x,y,cw,ch]=q.source.sourceClip;target.beginPath();target.rect(x,y,cw,ch);target.clip();}if(q.mirrorSource){target.translate(q.source.nativeSize?.[0]||640,0);target.scale(-1,1);}target.drawImage(im,0,0);target.restore();
+   const m=V.rigid(q.sourceBone[b],q.sourceBone[a],pose[b],pose[a]);target.save();const offset=q.calibrationOffsetPhysical||[0,0];target.transform(m[0],m[1],m[2],m[3],m[4]*4+offset[0],m[5]*4+offset[1]);if(q.source.sourceClip){const [x,y,cw,ch]=q.source.sourceClip;target.beginPath();target.rect(x,y,cw,ch);target.clip();}if(q.mirrorSource){target.translate(q.source.nativeSize?.[0]||640,0);target.scale(-1,1);}target.drawImage(partImage,0,0);target.restore();
   }
   }finally{target.restore();}if(r.base.mirrorX){ctx.clearRect(0,0,w,h);ctx.save();ctx.translate(w,0);ctx.scale(-1,1);ctx.drawImage(canvas,0,0);ctx.restore();}
   return {width:w,height:h,density:4,pivot:{x:p.pivot.x*4+padding,y:p.pivot.y*4+padding},frames:d.clip.frames,fps:d.clip.fps,frame,status:r.status,physicalScale:1,source:r.id,calibrationRequired:true};

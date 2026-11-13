@@ -107,7 +107,7 @@ Nos seis ZIPs de 133 r15, 161 r27 e 21 r3, os 72 quadros têm fundo opaco unifor
 
 O pacote BASE127 foi cruzado com os dois arquivos multipartes de origem do Cajado 127. A variante feminina usa um corpo 768×768 com botas e chapéu incorporados e o registro portátil ancora no fundo do canvas, abaixo dos pés. No masculino, o cabelo incorporado não coincide com a fonte modular NORTH nas nove fases. Falta localizar a geometria e o contrato de aparência desses conjuntos para substituir a seleção divergente do 128.
 
-A interface de porte SOUTH da Orbe 17 inclui a mão e o aro dourado no mesmo PNG. O cruzamento de RGBA na posição da anatomia atual identificou apenas sete pixels de propriedade comum. Essa amostra é insuficiente para recolorir a mão integralmente sem afetar o aro.
+A interface de porte SOUTH da Orbe 17 inclui a mão e o aro dourado no mesmo PNG. A correspondência de sete pixels na anatomia foi descartada como máscara. O vínculo atual usa uma máscara de propriedade desenhada na grade de pixels da fonte, vinculada pelo SHA-256 do PNG e independente dos ajustes de posição. A validação do compositor exercitou repouso e 16 quadros da caminhada SOUTH sem modificar alfa ou núcleo azul. Outras direções com pele personalizada ainda precisam de máscaras equivalentes.
 
 A matriz registra os ciclos portáteis de roupa e arma por corpo, ação, direção e versão, incluindo as oito variantes do BASE127. Os status de inventário, seleção automática e execução no mapa são independentes.
 
@@ -125,3 +125,5 @@ Foram exercitadas as dez combinações masculinas com peitoral 151, 158, 165, 17
 | 116 | [Comparativo dos cinco trajes, estado 4](evidence/approved-poses/Kaizoku-116-south-comparativo.png) |
 
 O navegador criou o Atirador e usou o inventário para equipar as peças. O teste recarregou o save, iniciou combate ao clicar no alvo, observou os cinco estados e verificou dano. Retirar o capacete desativou a composição fechada. A comparação no compositor conferiu todos os 50 quadros e o teste negativo rejeitou a assinatura incorreta. A build e o verificador de arquivos nativos passaram. Os frames da comparação mantêm a resolução nativa, com recorte da área transparente ao redor.
+
+O teste no mapa observou a pose estática, dez quadros da caminhada SOUTH e as oito fases de ataque com a pele escura e cabelo Chanel rosa. A máscara preserva a tonalidade do centro azul e separa o metal na composição. [Porte SOUTH, fonte e raster do mapa](evidence/approved-poses/Kaizoku-17-south-porte-comparativo.png).
