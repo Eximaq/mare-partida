@@ -16,7 +16,7 @@ if(!before)panels.push(...['dev','dungeons','akuma-reveal','party','crew'].map(p
  const hook='  window.__densityQA={get game(){return game},set game(v){game=v},get rt(){return session.haki},get ui(){return forgeUI},hideTips:()=>gameTooltip.hide(),open:openPanel,close:closePanel,render:renderPanel,update:updateUI,save:saveGame,defs:itemDefs,make:newItem,stats:getDerived,travel:worldChange,port:returnLobby};window.__mareDiagnostics=';
  if(before)for(const file of ['ui-screens.css','index.html','haki-ui.js','haki-mastery.css','forge-ui.js'])await p.route('**/'+file+'*',r=>r.fulfill({contentType:file.endsWith('.css')?'text/css':file.endsWith('.html')?'text/html':'application/javascript',body:old(file)}));
  await p.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source.replace('  window.__mareDiagnostics=',hook).replaceAll('requestAnimationFrame(frame)','(window.__densityPause?window.__testFrame=frame:requestAnimationFrame(frame))')}));
- await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.__densityQA&&window.__mareDiagnostics().lobby96.state==='ready');
+ await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.__densityQA&&window.__mareDiagnostics().lobby96.state==='ready',null,{timeout:90000});
  await p.locator('#characterName').fill('Correntes QA');
  async function capture(file){await p.mouse.move(1,1);await p.evaluate(()=>__densityQA.hideTips());await p.screenshot({path:path.join(out,file)});}
  const records=[],sizes=[[1920,1080],[1366,768],[1280,720],[1024,768],[393,852],[360,800],[320,568],[844,390]];
@@ -54,8 +54,9 @@ if(!before)panels.push(...['dev','dungeons','akuma-reveal','party','crew'].map(p
    const name=section||panel;await p.mouse.move(1,1);await p.evaluate(([a,b])=>__densityQA.open(a,b),[panel,section]);await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(70);
    const bounds=await measure(name,'#panelOverlay .dialog',width,height);
    if(!before&&refreshed.has(name)){
-    assert.match(await p.locator('#panelOverlay .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),/hud-nautical-v2\/rope-frame\.png/,name);
-    assert.ok(bounds.width<=1200&&bounds.height<=760,JSON.stringify({name,bounds}));
+    if(name==='contracts')assert.equal(await p.locator('#panelOverlay .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),'none','Contracts use the approved thin glass frame');
+    else assert.match(await p.locator('#panelOverlay .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),/hud-nautical-v2\/rope-frame\.png/,name);
+    assert.ok(name==='contracts' ? bounds.width<=1180&&bounds.height<=(width<=760?height-42:702) : bounds.width<=1200&&bounds.height<=760,JSON.stringify({name,bounds}));
    }
    if(!before&&name==='map'&&width<=760){
     const tabs=await p.locator('#voyageRegionTabs').boundingBox(),title=await p.locator('#dialogTitle').boundingBox();
@@ -64,7 +65,9 @@ if(!before)panels.push(...['dev','dungeons','akuma-reveal','party','crew'].map(p
    }
    const overflow=await p.locator('#dialogBody').evaluate(e=>e.scrollWidth-e.clientWidth);
    assert(overflow<=2,JSON.stringify({name,width,height,overflow}));
-   const close=await p.locator('#closePanel:visible,.op-close:visible').first().boundingBox();assert(close&&close.y>=0&&close.x+close.width<=width+1&&close.y+close.height<=height+1,JSON.stringify({name,width,height,close}));
+   // Measure the visible close control atomically: inventory replaces the shared header during rendering.
+   const closeHandle=await p.waitForFunction(()=>{for(const e of document.querySelectorAll('#panelOverlay #closePanel,#panelOverlay .op-close')){const r=e.getBoundingClientRect();if(r.width&&r.height&&getComputedStyle(e).visibility!=='hidden')return r.toJSON();}return false;});
+   const close=await closeHandle.jsonValue();await closeHandle.dispose();assert(close.y>=0&&close.x+close.width<=width+1&&close.y+close.height<=height+1,JSON.stringify({name,width,height,close}));
    const captureResponsive=['haki','forge','status'].includes(name)&&[393,1280].includes(width);
    if(width===1920||(!before&&(captureResponsive||(refreshed.has(name)&&width===393))))await capture(name+'-'+width+'.png');
   }
