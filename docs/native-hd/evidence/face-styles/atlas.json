@@ -1,0 +1,535 @@
+{
+  "status": "first-pass-art-prototypes-not-in-runtime",
+  "density": 4,
+  "canvas": [
+    640,
+    640
+  ],
+  "pivot": [
+    320,
+    512
+  ],
+  "north": "No visible eyes; original back of head retained",
+  "styleIds": {
+    "sereno": "face-calm",
+    "determinado": "face-resolute",
+    "amendoado": "face-almond",
+    "atento": "face-focused"
+  },
+  "sharedStyleParameters": {
+    "sereno": {
+      "open": 0.65,
+      "slope": 0,
+      "brow": 1.5
+    },
+    "determinado": {
+      "open": 0.83,
+      "slope": 3,
+      "brow": -1
+    },
+    "amendoado": {
+      "open": 0.95,
+      "slope": -1,
+      "brow": 0
+    },
+    "atento": {
+      "open": 1.13,
+      "slope": 0,
+      "brow": -2
+    }
+  },
+  "tiles": [
+    {
+      "body": "male",
+      "direction": "south",
+      "style": "sereno",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "male-attack-unarmed-south-drawn8",
+      "baseHeadSources": [
+        "e29ac6a7d7759516e6733c811635a4c2b6087fdc4702002823bfa86655c9295d",
+        "6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a"
+      ]
+    },
+    {
+      "body": "male",
+      "direction": "south",
+      "style": "determinado",
+      "rect": {
+        "x": 285,
+        "y": 0,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "male-attack-unarmed-south-drawn8",
+      "baseHeadSources": [
+        "e29ac6a7d7759516e6733c811635a4c2b6087fdc4702002823bfa86655c9295d",
+        "6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a"
+      ]
+    },
+    {
+      "body": "male",
+      "direction": "south",
+      "style": "amendoado",
+      "rect": {
+        "x": 570,
+        "y": 0,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "male-attack-unarmed-south-drawn8",
+      "baseHeadSources": [
+        "e29ac6a7d7759516e6733c811635a4c2b6087fdc4702002823bfa86655c9295d",
+        "6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a"
+      ]
+    },
+    {
+      "body": "male",
+      "direction": "south",
+      "style": "atento",
+      "rect": {
+        "x": 855,
+        "y": 0,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "male-attack-unarmed-south-drawn8",
+      "baseHeadSources": [
+        "e29ac6a7d7759516e6733c811635a4c2b6087fdc4702002823bfa86655c9295d",
+        "6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a"
+      ]
+    },
+    {
+      "body": "male",
+      "direction": "east",
+      "style": "sereno",
+      "rect": {
+        "x": 0,
+        "y": 85,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-punch-east-drawn8-east",
+      "baseHeadSources": [
+        "e1a62125f08b88d3875261638bf09a2ec736e93b687df59a19014f5dab146154",
+        "9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2"
+      ]
+    },
+    {
+      "body": "male",
+      "direction": "east",
+      "style": "determinado",
+      "rect": {
+        "x": 285,
+        "y": 85,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-punch-east-drawn8-east",
+      "baseHeadSources": [
+        "e1a62125f08b88d3875261638bf09a2ec736e93b687df59a19014f5dab146154",
+        "9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2"
+      ]
+    },
+    {
+      "body": "male",
+      "direction": "east",
+      "style": "amendoado",
+      "rect": {
+        "x": 570,
+        "y": 85,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-punch-east-drawn8-east",
+      "baseHeadSources": [
+        "e1a62125f08b88d3875261638bf09a2ec736e93b687df59a19014f5dab146154",
+        "9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2"
+      ]
+    },
+    {
+      "body": "male",
+      "direction": "east",
+      "style": "atento",
+      "rect": {
+        "x": 855,
+        "y": 85,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-punch-east-drawn8-east",
+      "baseHeadSources": [
+        "e1a62125f08b88d3875261638bf09a2ec736e93b687df59a19014f5dab146154",
+        "9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2"
+      ]
+    },
+    {
+      "body": "male",
+      "direction": "west",
+      "style": "sereno",
+      "rect": {
+        "x": 0,
+        "y": 170,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-punch-west-drawn8-west",
+      "baseHeadSources": [
+        "550e876bc65b387f14977734f71f6d4ae681ebdab0d2cf515faa2fa6bf98d888",
+        "0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464"
+      ]
+    },
+    {
+      "body": "male",
+      "direction": "west",
+      "style": "determinado",
+      "rect": {
+        "x": 285,
+        "y": 170,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-punch-west-drawn8-west",
+      "baseHeadSources": [
+        "550e876bc65b387f14977734f71f6d4ae681ebdab0d2cf515faa2fa6bf98d888",
+        "0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464"
+      ]
+    },
+    {
+      "body": "male",
+      "direction": "west",
+      "style": "amendoado",
+      "rect": {
+        "x": 570,
+        "y": 170,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-punch-west-drawn8-west",
+      "baseHeadSources": [
+        "550e876bc65b387f14977734f71f6d4ae681ebdab0d2cf515faa2fa6bf98d888",
+        "0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464"
+      ]
+    },
+    {
+      "body": "male",
+      "direction": "west",
+      "style": "atento",
+      "rect": {
+        "x": 855,
+        "y": 170,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-punch-west-drawn8-west",
+      "baseHeadSources": [
+        "550e876bc65b387f14977734f71f6d4ae681ebdab0d2cf515faa2fa6bf98d888",
+        "0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "south",
+      "style": "sereno",
+      "rect": {
+        "x": 0,
+        "y": 255,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-south-ownership-candidate-south",
+      "baseHeadSources": [
+        "cf8014d043420104bd0064c845f679a8ebc3f97eb0dcad18d67d4faa91c05978",
+        "6d384f15686c7712798355a90bb26b378e479d7bb728f8b00a6d1eeca1e53283",
+        "f6be0704c6dd7e6347ccf48d60249904f77399801bcf2148701d695e6b342064"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "south",
+      "style": "determinado",
+      "rect": {
+        "x": 285,
+        "y": 255,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-south-ownership-candidate-south",
+      "baseHeadSources": [
+        "cf8014d043420104bd0064c845f679a8ebc3f97eb0dcad18d67d4faa91c05978",
+        "6d384f15686c7712798355a90bb26b378e479d7bb728f8b00a6d1eeca1e53283",
+        "f6be0704c6dd7e6347ccf48d60249904f77399801bcf2148701d695e6b342064"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "south",
+      "style": "amendoado",
+      "rect": {
+        "x": 570,
+        "y": 255,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-south-ownership-candidate-south",
+      "baseHeadSources": [
+        "cf8014d043420104bd0064c845f679a8ebc3f97eb0dcad18d67d4faa91c05978",
+        "6d384f15686c7712798355a90bb26b378e479d7bb728f8b00a6d1eeca1e53283",
+        "f6be0704c6dd7e6347ccf48d60249904f77399801bcf2148701d695e6b342064"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "south",
+      "style": "atento",
+      "rect": {
+        "x": 855,
+        "y": 255,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-south-ownership-candidate-south",
+      "baseHeadSources": [
+        "cf8014d043420104bd0064c845f679a8ebc3f97eb0dcad18d67d4faa91c05978",
+        "6d384f15686c7712798355a90bb26b378e479d7bb728f8b00a6d1eeca1e53283",
+        "f6be0704c6dd7e6347ccf48d60249904f77399801bcf2148701d695e6b342064"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "east",
+      "style": "sereno",
+      "rect": {
+        "x": 0,
+        "y": 340,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-east-ownership-candidate-east",
+      "baseHeadSources": [
+        "d2084f721229f645fafb7c4e31d18000b70a60376ee33e60ad99a22364b982b5",
+        "5843eab2f9d0d5f4520abf1b5d605301a1f80887422caeb252ca8073f7cef773",
+        "3c8fcb083ab48610c42b34b6bdb0dcdc324331509b908c0dd7cbb724b5b37141"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "east",
+      "style": "determinado",
+      "rect": {
+        "x": 285,
+        "y": 340,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-east-ownership-candidate-east",
+      "baseHeadSources": [
+        "d2084f721229f645fafb7c4e31d18000b70a60376ee33e60ad99a22364b982b5",
+        "5843eab2f9d0d5f4520abf1b5d605301a1f80887422caeb252ca8073f7cef773",
+        "3c8fcb083ab48610c42b34b6bdb0dcdc324331509b908c0dd7cbb724b5b37141"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "east",
+      "style": "amendoado",
+      "rect": {
+        "x": 570,
+        "y": 340,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-east-ownership-candidate-east",
+      "baseHeadSources": [
+        "d2084f721229f645fafb7c4e31d18000b70a60376ee33e60ad99a22364b982b5",
+        "5843eab2f9d0d5f4520abf1b5d605301a1f80887422caeb252ca8073f7cef773",
+        "3c8fcb083ab48610c42b34b6bdb0dcdc324331509b908c0dd7cbb724b5b37141"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "east",
+      "style": "atento",
+      "rect": {
+        "x": 855,
+        "y": 340,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-east-ownership-candidate-east",
+      "baseHeadSources": [
+        "d2084f721229f645fafb7c4e31d18000b70a60376ee33e60ad99a22364b982b5",
+        "5843eab2f9d0d5f4520abf1b5d605301a1f80887422caeb252ca8073f7cef773",
+        "3c8fcb083ab48610c42b34b6bdb0dcdc324331509b908c0dd7cbb724b5b37141"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "west",
+      "style": "sereno",
+      "rect": {
+        "x": 0,
+        "y": 425,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-west-ownership-candidate-west",
+      "baseHeadSources": [
+        "b3f9526fb7eefad1214b39f56a0f05a68131f7236048ea563b99ae5d86c8b9f9",
+        "9f2d13b556a604d9bd162d00386e788b9fe0c482a6d1bac35c67e5a9992d2032",
+        "5f757e230cf80547097912d391f7acb3f2ce3e98ece852f3f43969f657c1c963"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "west",
+      "style": "determinado",
+      "rect": {
+        "x": 285,
+        "y": 425,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-west-ownership-candidate-west",
+      "baseHeadSources": [
+        "b3f9526fb7eefad1214b39f56a0f05a68131f7236048ea563b99ae5d86c8b9f9",
+        "9f2d13b556a604d9bd162d00386e788b9fe0c482a6d1bac35c67e5a9992d2032",
+        "5f757e230cf80547097912d391f7acb3f2ce3e98ece852f3f43969f657c1c963"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "west",
+      "style": "amendoado",
+      "rect": {
+        "x": 570,
+        "y": 425,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-west-ownership-candidate-west",
+      "baseHeadSources": [
+        "b3f9526fb7eefad1214b39f56a0f05a68131f7236048ea563b99ae5d86c8b9f9",
+        "9f2d13b556a604d9bd162d00386e788b9fe0c482a6d1bac35c67e5a9992d2032",
+        "5f757e230cf80547097912d391f7acb3f2ce3e98ece852f3f43969f657c1c963"
+      ]
+    },
+    {
+      "body": "female",
+      "direction": "west",
+      "style": "atento",
+      "rect": {
+        "x": 855,
+        "y": 425,
+        "width": 114,
+        "height": 85
+      },
+      "offset": [
+        265,
+        153
+      ],
+      "base": "v7-female-punch-west-ownership-candidate-west",
+      "baseHeadSources": [
+        "b3f9526fb7eefad1214b39f56a0f05a68131f7236048ea563b99ae5d86c8b9f9",
+        "9f2d13b556a604d9bd162d00386e788b9fe0c482a6d1bac35c67e5a9992d2032",
+        "5f757e230cf80547097912d391f7acb3f2ce3e98ece852f3f43969f657c1c963"
+      ]
+    }
+  ]
+}
