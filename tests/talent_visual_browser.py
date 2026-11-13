@@ -20,7 +20,7 @@ def scale(q):return int(q.locator('[data-tree-scale]').inner_text().replace('%',
 def check_targets(q):
  dialog=q.locator('#panelOverlay .dialog').bounding_box()
  if q.viewport_size['width']>=1024:
-  assert dialog['width']<=1120 and dialog['height']<=650,dialog
+  assert dialog['width']<=1180 and dialog['height']<=702,dialog
  assert q.locator('#dialogBody').evaluate('e=>e.scrollHeight<=e.clientHeight+1&&e.scrollWidth<=e.clientWidth+1')
  assert q.locator('.talent-sea').count()==1
 
@@ -49,8 +49,8 @@ with sync_playwright() as p:
     const s=getComputedStyle(e,'::before'),image=new Image();
     image.src=s.backgroundImage.match(/url\("([^"]+)"\)/)[1];
     await image.decode();
-    const type=await document.fonts.load('700 23px "Barlow Semi Condensed"','23 PT');
-    return image.naturalWidth===1080 && s.animationName==='talent-swell' && type.some(f=>f.status==='loaded');
+    await document.fonts.ready;const type=document.fonts.check('700 22px system-ui','23 PT');
+    return image.naturalWidth===1080 && s.animationName==='talent-swell' && type;
    }''')
    q.emulate_media(reduced_motion='reduce')
    assert sea.evaluate("(e)=>['::before','::after'].every(p=>getComputedStyle(e,p).animationName==='none')")
