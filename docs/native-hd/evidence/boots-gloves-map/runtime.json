@@ -1,0 +1,1304 @@
+{
+  "build": "4256869311a16abd4b2cbb815d279c7d467e002b",
+  "browser": "Microsoft Edge (Playwright)",
+  "appearance": "original",
+  "attack": "unarmed",
+  "errors": [],
+  "sets": [
+    {
+      "key": "male-boots9-gloves152-pants133-torso151",
+      "body": "male",
+      "equipment": {
+        "torso": 151,
+        "pants": 133,
+        "gloves": 152,
+        "boots": 9
+      },
+      "poses": [
+        {
+          "action": "walk",
+          "direction": "south",
+          "sources": {
+            "male-coat151-pants133-gloves152-boots9-walk-south-source-v18": [
+              11,
+              4
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "south",
+          "sources": {
+            "male-coat151-pants133-gloves152-boots9-walk-south-source-v18-idle-frame0": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "sources": {
+            "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate-coat151-south-registered-gloves152-visible-native-candidate": [
+              2,
+              3
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "sources": {
+            "male-coat151-pants133-gloves152-boots9-walk-north-source-v18": [
+              3,
+              6
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "sources": {
+            "male-coat151-pants133-gloves152-boots9-walk-north-source-v18-idle-frame0": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "sources": {
+            "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate-coat151-existing-gloves152-visible-native-candidate": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "sources": {
+            "male-coat151-pants133-gloves152-boots9-walk-east-source-v18": [
+              1,
+              4
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "sources": {
+            "male-coat151-pants133-gloves152-boots9-walk-east-source-v18-idle-frame0": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "sources": {
+            "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate-coat151-existing-gloves152-visible-native-candidate": [
+              1,
+              2
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "sources": {
+            "male-coat151-pants133-gloves152-boots9-walk-west-source-v18": [
+              3,
+              6
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "sources": {
+            "male-coat151-pants133-gloves152-boots9-walk-west-source-v18-idle-frame0": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "sources": {
+            "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate-coat151-existing-gloves152-visible-native-candidate": [
+              0,
+              1
+            ]
+          }
+        }
+      ],
+      "failures": []
+    },
+    {
+      "key": "male-boots9-pants133",
+      "body": "male",
+      "equipment": {
+        "pants": 133,
+        "boots": 9
+      },
+      "poses": [
+        {
+          "action": "walk",
+          "direction": "south",
+          "sources": {
+            "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate": [
+              14,
+              0
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "south",
+          "sources": {
+            "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "sources": {
+            "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "sources": {
+            "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate": [
+              11,
+              13
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "sources": {
+            "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "sources": {
+            "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "sources": {
+            "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate": [
+              6,
+              7
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "sources": {
+            "male-pants133-idle-east-source-v18-candidate-boots9-isolated-candidate": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "sources": {
+            "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "sources": {
+            "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "sources": {
+            "male-pants133-idle-west-source-v18-candidate-boots9-isolated-candidate": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "sources": {
+            "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate": [
+              0,
+              1
+            ]
+          }
+        }
+      ],
+      "failures": []
+    },
+    {
+      "key": "male-boots9-pants133-torso151",
+      "body": "male",
+      "equipment": {
+        "pants": 133,
+        "boots": 9,
+        "torso": 151
+      },
+      "poses": [
+        {
+          "action": "walk",
+          "direction": "south",
+          "sources": {
+            "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate-coat151-existing": [
+              5,
+              11
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "south",
+          "sources": {
+            "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate-coat151-existing": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "sources": {
+            "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate-coat151-south-registered": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "sources": {
+            "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate-coat151-existing": [
+              9,
+              11
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "sources": {
+            "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate-coat151-existing": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "sources": {
+            "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate-coat151-existing": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "sources": {
+            "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate-coat151-existing": [
+              10,
+              13
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "sources": {
+            "male-pants133-idle-east-source-v18-candidate-boots9-isolated-candidate-coat151-existing": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "sources": {
+            "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate-coat151-existing": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "preloaded": true,
+          "sources": {
+            "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate-coat151-existing": [
+              1,
+              2
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "sources": {
+            "male-pants133-idle-west-source-v18-candidate-boots9-isolated-candidate-coat151-existing": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "sources": {
+            "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate-coat151-existing": [
+              0,
+              1
+            ]
+          }
+        }
+      ],
+      "failures": []
+    },
+    {
+      "key": "male-boots8-gloves152-pants133-torso151",
+      "body": "male",
+      "equipment": {
+        "torso": 151,
+        "pants": 133,
+        "gloves": 152,
+        "boots": 8
+      },
+      "poses": [
+        {
+          "action": "walk",
+          "direction": "south",
+          "sources": {
+            "frozen-v47-male-151-boot8-south-walk": [
+              9,
+              2
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "south",
+          "sources": {
+            "frozen-v47-male-151-boot8-south-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "sources": {
+            "frozen-male-boots8-south-attack-native-registration": [
+              1,
+              2
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "preloaded": true,
+          "sources": {
+            "frozen-v47-male-151-boot8-north-walk": [
+              4,
+              5
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "sources": {
+            "frozen-v47-male-151-boot8-north-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "sources": {
+            "frozen-male-boots8-north-attack-native-registration": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "preloaded": true,
+          "sources": {
+            "frozen-v47-male-151-boot8-east-walk": [
+              13,
+              14
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "sources": {
+            "frozen-v47-male-151-boot8-east-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "sources": {
+            "frozen-male-boots8-east-attack-native-registration": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "preloaded": true,
+          "sources": {
+            "frozen-v47-male-151-boot8-west-walk": [
+              10,
+              1
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "sources": {
+            "frozen-v47-male-151-boot8-west-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "sources": {
+            "frozen-male-boots8-west-attack-native-registration": [
+              0,
+              1
+            ]
+          }
+        }
+      ],
+      "failures": []
+    },
+    {
+      "key": "female-boots8-torso151",
+      "body": "female",
+      "equipment": {
+        "torso": 151,
+        "boots": 8
+      },
+      "poses": [
+        {
+          "action": "walk",
+          "direction": "south",
+          "sources": {
+            "frozen-v47-female-151-boot8-south-walk": [
+              25,
+              0
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "south",
+          "sources": {
+            "frozen-v47-female-151-boot8-south-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "sources": {
+            "frozen-v47-female-151-boot8-south-attack-unarmed": [
+              1,
+              2
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "sources": {
+            "frozen-v47-female-151-boot8-north-walk": [
+              20,
+              23
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "sources": {
+            "frozen-v47-female-151-boot8-north-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "sources": {
+            "frozen-v47-female-151-boot8-north-attack-unarmed": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "sources": {
+            "frozen-v47-female-151-boot8-east-walk": [
+              20,
+              34
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "sources": {
+            "frozen-v47-female-151-boot8-east-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "sources": {
+            "frozen-v47-female-151-boot8-east-attack-unarmed": [
+              2,
+              3
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "preloaded": true,
+          "sources": {
+            "frozen-v47-female-151-boot8-west-walk": [
+              16,
+              35
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "sources": {
+            "frozen-v47-female-151-boot8-west-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "sources": {
+            "frozen-v47-female-151-boot8-west-attack-unarmed": [
+              0,
+              1
+            ]
+          }
+        }
+      ],
+      "failures": []
+    },
+    {
+      "key": "female-boots9-torso151",
+      "body": "female",
+      "equipment": {
+        "torso": 151,
+        "boots": 9
+      },
+      "poses": [
+        {
+          "action": "walk",
+          "direction": "south",
+          "sources": {
+            "frozen-v47-female-151-boot9-south-walk": [
+              25,
+              30
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "south",
+          "sources": {
+            "frozen-v47-female-151-boot9-south-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "sources": {
+            "frozen-v47-female-151-boot9-south-attack-unarmed": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "sources": {
+            "frozen-v47-female-151-boot9-north-walk": [
+              10,
+              12
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "sources": {
+            "frozen-v47-female-151-boot9-north-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "sources": {
+            "frozen-v47-female-151-boot9-north-attack-unarmed": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "sources": {
+            "frozen-v47-female-151-boot9-east-walk": [
+              33,
+              7
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "sources": {
+            "frozen-v47-female-151-boot9-east-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "sources": {
+            "frozen-v47-female-151-boot9-east-attack-unarmed": [
+              1,
+              2
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "sources": {
+            "frozen-v47-female-151-boot9-west-walk": [
+              19,
+              33
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "sources": {
+            "frozen-v47-female-151-boot9-west-idle": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "sources": {
+            "frozen-v47-female-151-boot9-west-attack-unarmed": [
+              1,
+              2
+            ]
+          }
+        }
+      ],
+      "failures": []
+    },
+    {
+      "key": "male-boots155-gloves25-pants133-torso151",
+      "body": "male",
+      "equipment": {
+        "torso": 151,
+        "pants": 133,
+        "gloves": 25,
+        "boots": 155
+      },
+      "poses": [
+        {
+          "action": "walk",
+          "direction": "south",
+          "sources": {
+            "frozen-male-glove25-south-walk-native-layers": [
+              6,
+              12
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "south",
+          "sources": {
+            "frozen-male-glove25-south-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "sources": {
+            "frozen-male-glove25-south-attack-unarmed-native-layers": [
+              4,
+              5
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "preloaded": true,
+          "sources": {
+            "frozen-male-glove25-north-walk-native-layers": [
+              14,
+              15
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "sources": {
+            "frozen-male-glove25-north-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "sources": {
+            "frozen-male-glove25-north-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "sources": {
+            "frozen-male-glove25-east-walk-native-layers": [
+              9,
+              12
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "sources": {
+            "frozen-male-glove25-east-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "sources": {
+            "frozen-male-glove25-east-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "preloaded": true,
+          "sources": {
+            "frozen-male-glove25-west-walk-native-layers": [
+              15,
+              0
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "sources": {
+            "frozen-male-glove25-west-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "sources": {
+            "frozen-male-glove25-west-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        }
+      ],
+      "failures": []
+    },
+    {
+      "key": "male-boots155-gloves26-pants133-torso151",
+      "body": "male",
+      "equipment": {
+        "torso": 151,
+        "pants": 133,
+        "gloves": 26,
+        "boots": 155
+      },
+      "poses": [
+        {
+          "action": "walk",
+          "direction": "south",
+          "preloaded": true,
+          "sources": {
+            "frozen-male-glove26-south-walk-native-layers": [
+              8,
+              9
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "south",
+          "sources": {
+            "frozen-male-glove26-south-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "sources": {
+            "frozen-male-glove26-south-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "preloaded": true,
+          "sources": {
+            "frozen-male-glove26-north-walk-native-layers": [
+              2,
+              10
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "sources": {
+            "frozen-male-glove26-north-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "sources": {
+            "frozen-male-glove26-north-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "sources": {
+            "frozen-male-glove26-east-walk-native-layers": [
+              11,
+              12
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "sources": {
+            "frozen-male-glove26-east-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "sources": {
+            "frozen-male-glove26-east-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "preloaded": true,
+          "sources": {
+            "frozen-male-glove26-west-walk-native-layers": [
+              12,
+              15
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "sources": {
+            "frozen-male-glove26-west-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "sources": {
+            "frozen-male-glove26-west-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        }
+      ],
+      "failures": []
+    },
+    {
+      "key": "female-boots155-gloves25-pants154-torso151",
+      "body": "female",
+      "equipment": {
+        "torso": 151,
+        "pants": 154,
+        "gloves": 25,
+        "boots": 155
+      },
+      "poses": [
+        {
+          "action": "walk",
+          "direction": "south",
+          "preloaded": true,
+          "sources": {
+            "frozen-female-glove25-south-walk-native-layers": [
+              12,
+              15
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "south",
+          "sources": {
+            "frozen-female-glove25-south-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "sources": {
+            "frozen-female-glove25-south-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "sources": {
+            "frozen-female-glove25-north-walk-native-layers": [
+              29,
+              33
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "sources": {
+            "frozen-female-glove25-north-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "sources": {
+            "frozen-female-glove25-north-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "sources": {
+            "frozen-female-glove25-east-walk-native-layers": [
+              19,
+              26
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "sources": {
+            "frozen-female-glove25-east-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "sources": {
+            "frozen-female-glove25-east-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "sources": {
+            "frozen-female-glove25-west-walk-native-layers": [
+              25,
+              26
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "sources": {
+            "frozen-female-glove25-west-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "sources": {
+            "frozen-female-glove25-west-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        }
+      ],
+      "failures": []
+    },
+    {
+      "key": "female-boots155-gloves26-pants154-torso151",
+      "body": "female",
+      "equipment": {
+        "torso": 151,
+        "pants": 154,
+        "gloves": 26,
+        "boots": 155
+      },
+      "poses": [
+        {
+          "action": "walk",
+          "direction": "south",
+          "preloaded": true,
+          "sources": {
+            "frozen-female-glove26-south-walk-native-layers": [
+              4,
+              5
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "south",
+          "sources": {
+            "frozen-female-glove26-south-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "sources": {
+            "frozen-female-glove26-south-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "sources": {
+            "frozen-female-glove26-north-walk-native-layers": [
+              3,
+              9
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "sources": {
+            "frozen-female-glove26-north-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "sources": {
+            "frozen-female-glove26-north-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "sources": {
+            "frozen-female-glove26-east-walk-native-layers": [
+              21,
+              5
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "sources": {
+            "frozen-female-glove26-east-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "sources": {
+            "frozen-female-glove26-east-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "sources": {
+            "frozen-female-glove26-west-walk-native-layers": [
+              26,
+              19
+            ]
+          }
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "sources": {
+            "frozen-female-glove26-west-idle-native-layers": [
+              0
+            ]
+          }
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "sources": {
+            "frozen-female-glove26-west-attack-unarmed-native-layers": [
+              0,
+              1
+            ]
+          }
+        }
+      ],
+      "failures": []
+    }
+  ]
+}
