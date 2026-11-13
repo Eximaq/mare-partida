@@ -53,7 +53,7 @@ Os hashes dos PNGs de aprovação de 0, 109 e 17 correspondem aos respectivos es
 
 ## Pendências da primeira bateria
 
-- Verificar as fontes finais e testar no mapa 69/15 NORTH e 4/111/5/119 SOUTH. A aprovação localizada no histórico ainda precisa ser ligada aos arquivos específicos e à composição efetivamente desenhada.
+- Restaurar e testar 69 NORTH e 5/111/119 SOUTH. Os casos 4 SOUTH e 15 NORTH constam da matriz com os resultados da bateria seguinte.
 - Retestar na revisão atual 151 nas laterais, calças 140/147/154/161/175/182 nos dois corpos, Grevas 21, capacetes 18/19/157 e troca de ações ou equipamento durante a preparação. A regressão automatizada da seleção é mais estreita que essa bateria no mapa.
 - Fechar o encaixe de pele na interface da 17, o porte com a aparência usada no teste e a comparação alinhada de todas as variantes com vídeos e PNGs aprovados.
 
@@ -64,3 +64,20 @@ Os hashes dos PNGs de aprovação de 0, 109 e 17 correspondem aos respectivos es
 - Foram lidos 287 pacotes de `art-approved/CATALOG.json` e quatro ZIPs originais de cabelo e capacete em `art-sources/user-adjustments`. Nenhuma parte de ZIP ficou sem associação. As 27.703 entradas PNG incluem quadros, camadas e materiais auxiliares. Dos 291 pacotes, 278 têm referência por hash nos catálogos ou índices. Desses, 149 cruzam também com os índices HD. Os índices e catálogos referenciam 13.560 entradas PNG. As tabelas de assets HD publicados contêm 4.635 entradas por identidade de bytes. Os resultados incluem correspondências parciais.
 - Os dez ZIPs de `clothing/female-historical-cycles` correspondem ao SHA-256 do índice histórico. Os quatro source packs femininos do peitoral 6 têm correspondência de todos os 560 PNGs nos índices locais. As seis composições finais `133 r15`, `161 r27` e `21 r3` em EAST/WEST constam exatamente no catálogo portátil de revisão, com 12 PNGs e relógio de 40 ticks a 40 fps por vista. As versões congeladas do renderizador normal têm outros hashes. O mapa ainda precisa de prova de equivalência ou vínculo com essas composições.
 - O pacote `128 NORTH BASE127` aparece no catálogo portátil com as oito variantes e 144 entradas PNG por hash, incluindo referências compartilhadas. Nenhum dos 435 PNGs está identificado nas tabelas HD usadas pelo renderizador normal. Para `69 NORTH V6`, 24 de 34 têm correspondência. Para `15 NORTH Aros`, 20 de 42. Para `4 SOUTH V3 M151/157`, 15 de 26. Os três últimos são cruzamentos parciais, com a prova por fase no mapa pendente.
+
+## Validação da integração em mapa
+
+A [matriz do acervo](approved-pose-runtime-matrix.csv) cruza os 287 pacotes e quatro exports com os registros existentes. As linhas de execução incluem ID, corpo, combinação, ação, direção, ciclo e captura. As linhas sem execução registram a situação da fonte. Correspondências por hash podem apontar uma revisão anterior ou uma composição diferente.
+
+| Caso | Exercício no mapa | Evidência |
+| --- | --- | --- |
+| 4 SOUTH V3 | Criação do Atirador pela interface. Equipagem dos itens 151, 157 e 4 pelo inventário, recarga do save descartável, ataque pelo clique no alvo e verificação dos cinco estados 0, 1, 2, 4 e R. Retirar o 157 desativa essa combinação. | [Aprovado e raster do mapa, estados 4 e R](evidence/approved-poses/Kaizoku-4-south-comparativo.png) |
+| 15 NORTH | Ciborgue no mapa com arma 15, Chanel rosa e pele escura. Oito estados 0–7 durante ataque com a fonte dos aros fechados. A personalização usa a anatomia e o cabelo separados. | [Aprovado e raster do mapa, estado 2](evidence/approved-poses/Kaizoku-15-north-comparativo.png) |
+
+As seis adagas 12, 13, 71, 72, 73 e 74 em NORTH preservam a ordem original de oclusão da arma atrás do corpo. A base modular referenciada no JSON de origem recompôs os oito quadros de cada arma sem diferenças de pixel na configuração da fonte. A prova no mapa observou as oito fases de cada arma em combate com cabelo Chanel rosa, pele escura e olhos verdes. [Comparativo dos seis IDs no estado 2](evidence/approved-poses/Kaizoku-adagas-north-comparativo.png).
+
+O Mosquete 4 usa os três PNGs nativos de cada estado, com os backings e mãos de mesmo SHA-256 da 115 V5. O teste de compositor compara os cinco estados com os PNGs aprovados. Na captura do navegador, os cinco têm alfa e pixels opacos iguais. Nos pixels translúcidos, a diferença RGB pré-multiplicada ficou abaixo de 1 unidade de canal. O relógio visual de 43 ticks a 24 fps e o pivô de [80, 128] foram preservados. O teste de combate confirmou o dano pelo fluxo habitual.
+
+O Canhão 15 mantém o PNG da peça e as oito fases aprovadas. A camada de interface pode conter pele da mão. A aplicação da paleta exige coincidência dessa amostra com a anatomia de origem na mesma coordenada. Esse vínculo cobre o registro masculino de arma isolada, com as âncoras de cabeça disponíveis.
+
+A build passou com `python tools/build_pages.py`. Os 22 testes do conjunto focado passaram. A execução no navegador usou Edge e a build publicável em loopback, com um perfil descartável por variante. Nenhum deploy foi executado.

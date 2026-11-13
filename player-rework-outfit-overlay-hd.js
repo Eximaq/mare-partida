@@ -41,23 +41,40 @@ function bindHair(layers,{style,dir,p,d,baseIndex,images,padding}){
  }
  return layers;
 }
-function adaptSouth109Or17(weapon,{baseIndex,appearance}){
- if(!['gauntlet109-south-native-layers','orb17-south-native-layers'].includes(weapon?.id))return null;
- const {pack:p,images:sourceImages}=weapon.basePack,d=p.directions.south;
+const separatedArmsSources=new Set(['gauntlet109-south-native-layers','orb17-south-native-layers','cannon15-north-native-layers']);
+function adaptSeparatedArms(weapon,{baseIndex,appearance}){
+ if(!separatedArmsSources.has(weapon?.id)||!weapon.basePack)return null;
+ const dir=weapon.direction,{pack:p,images:sourceImages}=weapon.basePack,d=p.directions[dir];
+ const anatomy=d?.layers.find(l=>l.id==='skin-arms-phase'&&l.binding.kind==='fixed');
+ if(!anatomy||!weapon.states.every(s=>sourceImages[anatomy.frames?.[Number(s.state)]]))return null;
  if(p.density!==4||p.frame.width!==160||p.frame.height!==160||!weapon.hairSeparated)return null;
  const style=(appearance.hair||'original').replace(/^hair-/,'');
  const images={...sourceImages},padding={};
- const layers=bindHair(d.layers,{style,dir:'south',p,d,baseIndex,images,padding});
+ const layers=bindHair(d.layers,{style,dir,p,d,baseIndex,images,padding});
  if(!layers)return null;
  const adjusted=style!=='original'||[appearance.skin,appearance.hairColor,appearance.eyeColor,appearance.face].some(value=>value&&value!=='original');
  if(!adjusted)return weapon;
  const states=weapon.states.map(state=>({...state,
   layers:state.layers.filter(layer=>style==='original'||layer.role!=='rounding-correction').map(layer=>
-   layer.role==='authored-hand-and-orb'?{...layer,skinFromAnatomy:true}:layer),
+   [15,17].includes(weapon.item)&&layer.role==='authored-hand-and-orb'?{...layer,skinFromAnatomy:true}:layer),
   canvasRoundingPatch:style==='original'?state.canvasRoundingPatch:undefined,
  }));
  return {...weapon,id:weapon.id+'-appearance-'+style,states,sourceRasterPadding:padding,colorAppearance:appearance,
-  basePack:{pack:{...p,directions:{south:{...d,layers}}},images}};
+  basePack:{pack:{...p,directions:{[dir]:{...d,layers}}},images}};
+}
+function adaptNorthDaggers(weapon,{baseIndex,appearance}){
+ const contract=weapon?.approvedModularBody;
+ if(!contract||contract.id!=='v7-daggers-north-modular8-north'||contract.placement!=='behind-body')return null;
+ const base=baseIndex.records.find(r=>r.id===contract.id),p=base?.pack,d=p?.directions.north;
+ if(!d||d.clip.frames!==weapon.states.length||d.clip.fps!==weapon.fps||
+    !weapon.states.every((s,i)=>Number(s.state)===i&&s.approvedEquipmentLayer))return null;
+ const style=(appearance.hair||'original').replace(/^hair-/,'');
+ const padding={},images=Object.fromEntries(base.sourceRefs.map(hash=>[hash,'../rework-base-hd/assets/'+hash+'.png']));
+ const layers=bindHair(d.layers,{style,dir:'north',p,d,baseIndex,images,padding});
+ if(!layers)return null;
+ return {...weapon,id:weapon.id+'-appearance-'+style,hairSeparated:true,sourceRasterPadding:padding,
+  states:weapon.states.map(s=>({...s,layers:[s.approvedEquipmentLayer]})),colorAppearance:appearance,
+  basePack:{pack:{...p,directions:{north:{...d,layers}}},images},equipmentBehindBody:true};
 }
 function adaptSword(weapon,outfits,{coat,baseIndex,appearance}){
  const dir=weapon?.direction;
@@ -106,5 +123,5 @@ function adaptSword(weapon,outfits,{coat,baseIndex,appearance}){
  return {...weapon,states,id:weapon.id+(coat==null?'':'-coat'+coat)+'-adapted-'+style,basePack:{...b,images,pack:{...p,directions:{...p.directions,[dir]:{...d,layers,rest,poses}}}},
   adaptedCoat:outfit?.id,sourceRasterPadding:padding,mirrorLayerIDs:mirrors,colorAppearance:appearance};
 }
-const api={adapt,adaptSword,adaptSouth109Or17};root.MareReworkOutfitOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
+const api={adapt,adaptSword,adaptSeparatedArms,adaptNorthDaggers};root.MareReworkOutfitOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
