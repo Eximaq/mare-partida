@@ -1,4 +1,4 @@
-/* Pants-only carry composition; never imports a clothed/baked body background. */
+/* Attach isolated authored garment layers without importing a baked body. */
 (function(root){'use strict';
 function adaptCarry(carry,outfits,{boots=null}={}){
  if(!Number.isInteger(carry?.item)||carry.base?.body!=='male'||!['idle','walk'].includes(carry.action))return null;
@@ -39,9 +39,28 @@ function adaptCarry(carry,outfits,{boots=null}={}){
  const refs=[...new Set([...(layer.frames||[]),layer.source,...added].filter(Boolean))];r.base.sourceRefs=[...new Set([...r.base.sourceRefs,...refs])];
  r.outfitOverlay={item:133,sourceRecord:outfit.id,sourceRefs:refs,lowerBodyPoseVerified:true,forearmPoseDifferencesAllowed:true,candidate:true};r.id+='-pants133-candidate';return r;
 }
+function adaptStarterCoat(carry,outfits){
+ if(carry?.item!==0||carry.base?.body!=='male')return null;
+ const {direction,action,base}=carry;
+ const outfit=outfits.records.find(r=>r.id==='male-torso6-'+direction+'-frozen-'+action+'-native');
+ if(!outfit||outfit.equipment.torso!==6||Object.keys(outfit.equipment).length!==1)return null;
+ const d=base.pack.directions[direction],o=outfit.pack.directions[direction];
+ const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ // A single static frame has no cadence to reconcile. Keep the base clip.
+ const compatibleClip=equal(d.clip,o.clip)||action==='idle'&&d.clip.frames===1&&o.clip.frames===1&&!d.clip.loop&&!o.clip.loop;
+ const anatomy=o.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)}));
+ if(!equal(base.pack.frame,outfit.pack.frame)||!equal(base.pack.pivot,outfit.pack.pivot)||base.pack.density!==outfit.pack.density||
+    !equal(d.rest,o.rest)||!equal(d.poses,o.poses)||!compatibleClip||!equal(d.layers,anatomy))return null;
+ const layers=o.layers.filter(l=>!l.id.startsWith('base:'));
+ if(!layers.length||layers.some(l=>!l.id.startsWith('coat6-')||!['top','underArms'].includes(l.slot)||base.mirrorX&&l.binding.kind!=='fixed'))return null;
+ const sourceRefs=[...new Set(layers.flatMap(l=>l.frames||[l.source]))];
+ if(sourceRefs.some(s=>!outfit.sourceRefs.includes(s)||base.sourceRefs.includes(s)))return null;
+ return {...carry,id:carry.id+'-coat6-native',base:{...base,sourceRefs:[...base.sourceRefs,...sourceRefs],pack:{...base.pack,directions:{...base.pack.directions,[direction]:{...d,layers:[...d.layers,...layers]}}}},
+  outfitOverlay:{item:6,sourceRecord:outfit.id,sourceRefs},preMirroredLayers:base.mirrorX?layers.map(l=>l.id):[]};
+}
 function create(carryAPI,outfits,{basePrefix='tools/rework-base-hd/assets/',outfitPrefix='tools/rework-modular-outfits-hd/assets/'}={}){
  const alias=(r,url)=>r.outfitOverlay.sourceRefs.some(s=>url===basePrefix+s+'.png')?outfitPrefix+url.slice(basePrefix.length):url;
- return {adapt:(r,opts)=>adaptCarry(r,outfits,opts),requiredFiles:(r,opts)=>carryAPI.requiredFiles(r,opts).map(url=>alias(r,url)),render:(ctx,r,images,opts)=>{const map=new Map(images);for(const sha of r.outfitOverlay.sourceRefs){const im=images.get(outfitPrefix+sha+'.png');if(im)map.set(basePrefix+sha+'.png',im);}return carryAPI.render(ctx,r,map,opts);}};
+ return {adapt:(r,opts)=>adaptCarry(r,outfits,opts),adaptStarterCoat:r=>adaptStarterCoat(r,outfits),requiredFiles:(r,opts)=>carryAPI.requiredFiles(r,opts).map(url=>alias(r,url)),render:(ctx,r,images,opts)=>{const map=new Map(images);for(const sha of r.outfitOverlay.sourceRefs){const im=images.get(outfitPrefix+sha+'.png');if(im)map.set(basePrefix+sha+'.png',im);}return carryAPI.render(ctx,r,map,opts);}};
 }
-const api={adaptCarry,create};root.MareReworkOutfitCarryOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
+const api={adaptCarry,adaptStarterCoat,create};root.MareReworkOutfitCarryOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

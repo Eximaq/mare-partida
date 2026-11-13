@@ -10,6 +10,7 @@ const catalogOnly=process.env.MARE_CATALOG_EQUIPMENT==='1';
 const powers=process.env.MARE_CATALOG_POWERS==='1';
 const start=Number(process.env.MARE_CATALOG_START||0);
 const end=Number(process.env.MARE_CATALOG_END||(powers?1:catalogOnly?7:14));
+const expectStarterHD=process.env.MARE_EXPECT_STARTER_HD==='1';
 const onlyGender=process.env.MARE_CATALOG_GENDER;
 const onlyItems=new Set((process.env.MARE_CATALOG_ITEMS||'').split(',').filter(Boolean).map(Number));
 const directions=[['d','east'],['a','west'],['w','north'],['s','south']];
@@ -108,6 +109,12 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
      result.weapon=initial.weapon;
      if(classId in starter)assert.equal(initial.weapon,starter[classId]);
      assert.equal(initial.visual.state,'ready',initial.visual.error);
+     const verifyStarterHD=expectStarterHD&&gender==='masculino'&&classId==='sword'&&expected.hairStyle==='original';
+     if(verifyStarterHD){
+      const poses=initial.visual.coverage.filter(p=>['idle','walk'].includes(p.action));
+      assert.equal(poses.length,8);
+      for(const pose of poses)assert.match(pose.source,/^carry0-.*-coat6-native$/);
+     }
      for(const [key,direction] of directions){
       await page.evaluate(d=>__appearanceCatalogQA.lane(d),direction);
       await page.keyboard.down(key);
@@ -118,6 +125,7 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
       const data=(await read()).frames.filter(f=>f.direction===direction);
       for(const frame of data){
        assert(frame.opaque>0,'empty rendered raster');
+       if(verifyStarterHD)assert.match(frame.source,/^carry0-.*-coat6-native$/);
        for(const [field,value] of Object.entries(expected))assert.equal(frame.look[field],value);
        if(frame.weaponIds)assert(frame.weaponIds.includes(initial.weapon),'starter weapon absent from drawn frame');
       }
