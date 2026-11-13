@@ -40,8 +40,14 @@ const sizes = [[1920,1080],[1366,768],[1280,720],[1024,768],[768,1024],[390,844]
     for(const [width,height] of sizes) {
       await page.setViewportSize({width,height});
       await open('inventory');
-      await page.locator('.op-inventory-shell').waitFor({state:'visible'});
-      const inventory=await page.locator('.op-inventory-shell').boundingBox();
+      // ResizeObserver may replace the grid between separate visibility/box calls.
+      const inventoryBox=await page.waitForFunction(()=>{
+        const node=document.querySelector('#panelOverlay.inventory-mode .op-inventory-shell');
+        const rect=node?.getBoundingClientRect();
+        return rect?.width&&rect?.height?rect.toJSON():false;
+      });
+      const inventory=await inventoryBox.jsonValue();
+      await inventoryBox.dispose();
       await open('character');
       await page.evaluate(()=>document.fonts.ready);
       const character=await page.locator('#panelOverlay > .dialog').boundingBox();
