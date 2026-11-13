@@ -5,6 +5,8 @@ on:
     paths:
       - 'character-hud.js'
       - 'hud-nautical.css'
+      - 'hud-glass.css'
+      - 'apps/account-client/game-ui.js'
       - 'assets/ui/hud-nautical-v2/**'
       - 'assets/ui/character-hud/**'
       - 'ui-hud.css'
@@ -16,6 +18,8 @@ on:
       - 'ui-preview.html'
       - 'tools/build_pages.py'
       - 'tests/character_hud_browser.cjs'
+      - 'tests/glass-hud-browser.cjs'
+      - 'tests/hud-telemetry-display.test.cjs'
       - '.github/workflows/character-hud.yml'
   workflow_dispatch:
 permissions:
@@ -50,6 +54,7 @@ jobs:
         run: |
           node --check character-hud.js
           node --check game.js
+          node --test tests/hud-telemetry-display.test.cjs
           node --test tests/ui-system.test.cjs tests/ui-mobile-preview.test.cjs tests/inventory-compact.test.cjs tests/hud-zoom-xph.test.cjs tests/player-hub.test.cjs tests/character-hud-hierarchy.test.cjs tests/hierarchy.test.cjs
           python3 tools/build_pages.py
       - name: HUD em oito resoluções
@@ -60,6 +65,7 @@ jobs:
           python3 -m http.server 8165 --bind 127.0.0.1 > /tmp/character-hud.log 2>&1 &
           sleep 2
           node tests/character_hud_browser.cjs
+          node tests/glass-hud-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
