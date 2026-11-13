@@ -100,3 +100,15 @@ A espada 0 foi executada em save descartável carregado pela rotina normal, que 
 O mapa apresentou o peitoral 130 feminino com pele escura, cabelo Chanel rosa e olhos verdes em repouso, caminhada e ataque nas quatro direções. Os oito estados de ataque de cada direção foram observados. Na caminhada, o teste conferiu a seleção e amostras desenhadas. A evidência é da integração no mapa. A equivalência integral dos quatro pacotes editáveis da roupa com esses ciclos ainda precisa de comparação por fase. [Captura do ataque SOUTH](evidence/approved-poses/Kaizoku-peitoral130-feminino-mapa.png).
 
 O teste de composição conferiu as mesmas camadas de roupa em 120 combinações de peitoral, direção e ação. A paleta usa somente camadas de anatomia que coincidem por identidade e hash com a base. Para os 837 ajustes dos quatro exports, a consulta do seletor normal escolheu a identidade exata em 2.511 de 2.511 cenários de repouso, caminhada e ataque sem outras peças. Isso verifica a seleção, e a validação visual de cada ciclo permanece pendente. A consulta é reproduzível com `node tests/rework_approved_head_selection_audit.cjs <saida.json>`.
+
+## Lacunas das referências laterais e do Cajado 128
+
+Nos seis ZIPs de 133 r15, 161 r27 e 21 r3, os 72 quadros têm fundo opaco uniforme. A base transparente v42 coincide com a cabeça das prévias, mas diverge nas pernas e no alfa das fases 3 e 9. O registro v47 também diverge em todas as amostras comparadas. A integração requer recuperar o alfa e as camadas dessas revisões.
+
+O pacote BASE127 foi cruzado com os dois arquivos multipartes de origem do Cajado 127. A variante feminina usa um corpo 768×768 com botas e chapéu incorporados e o registro portátil ancora no fundo do canvas, abaixo dos pés. No masculino, o cabelo incorporado não coincide com a fonte modular NORTH nas nove fases. Falta localizar a geometria e o contrato de aparência desses conjuntos para substituir a seleção divergente do 128.
+
+A interface de porte SOUTH da Orbe 17 inclui a mão e o aro dourado no mesmo PNG. O cruzamento de RGBA na posição da anatomia atual identificou apenas sete pixels de propriedade comum. Essa amostra é insuficiente para recolorir a mão integralmente sem afetar o aro.
+
+A matriz registra os ciclos portáteis de roupa e arma por corpo, ação, direção e versão, incluindo as oito variantes do BASE127. Os status de inventário, seleção automática e execução no mapa são independentes.
+
+O check de save padrão em `6a970284` ainda esperava que o fallback feminino descartasse a paleta. A regressão agora compara todos os quadros com o peitoral 6 na aparência salva e exige que somente a arma sintética sem fonte seja omitida. [Execução que identificou a divergência](https://github.com/Eximaq/mare-partida/actions/runs/43517640716).
