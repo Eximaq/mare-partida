@@ -77,3 +77,28 @@ atuais intactos; não restaurar um dump antigo sobre progresso feito após a mud
 Entrega SMTP e criação real de uma nova conta permanecem dependentes de uma janela
 autorizada com destinatário específico. As verificações públicas após aplicação
 devem usar apenas convites inválidos/ausentes e não enviar e-mails.
+
+## Aplicação verificada na VPS
+
+Código `4e8e9376`, imagem `mare-staging-server:invite-4e8e9376`, aplicada em
+`https://teste.kaizokuidle2d.com.br`. Backup privado em
+`/srv/mare-staging/incoming/rollback-invite-20261113T035717Z`; dump conferido por
+`pg_restore --list`. API pronta (200), mesmo container PostgreSQL, cinco contas e
+quatro personagens antes/depois, cliente de movimento com o mesmo SHA-256.
+
+Pelo Chromium em sessão nova sem Basic Auth: página e script 200; `/v1/me` 401 sem
+sessão; cadastro sem código 403 `invitation_invalid`; código inválido pela interface
+exibiu a recusa esperada. Script público com SHA-256 idêntico ao artefato local;
+formulário inspecionado em desktop e celular, sem overflow horizontal ou erros JS.
+O cliente HTTP Python sem navegador recebeu 403 da borda; a validação do fluxo foi
+feita no navegador real, não interpretando esse bloqueio como resposta da API.
+
+Na primeira tentativa de ativação, a sonda HTTP direta omitiu o cabeçalho de
+identidade exigido do proxy confiável e recebeu 400 `invalid_proxy_identity`. O
+procedimento restaurou a imagem compatível e o gateway anteriores automaticamente,
+com readiness 200, preservando a migração e os dados. A sonda local foi corrigida
+para representar o proxy; a aplicação subsequente passou. Não houve relaxamento
+da validação de identidade nem alteração da configuração do Supabase.
+
+Nenhum cadastro hospedado ou envio SMTP foi executado nesta entrega. O PR continua
+Draft, sem merge; site principal, DNS, gameplay e saves não foram alterados.
