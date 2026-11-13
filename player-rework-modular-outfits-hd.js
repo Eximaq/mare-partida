@@ -20,6 +20,20 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
  }
  const sources=(r,frame)=>frame===undefined?r.sourceRefs:[...new Set(r.pack.directions[r.direction].layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean))];
  const requiredFiles=(r,{frame}={})=>r?[...new Set([...sources(r,frame),...(r.paletteRefs||[])])].map(s=>prefix+s+'.png'):[];
+ function bindAnatomy(r,baseIndex){
+  const d=r?.pack.directions[r.direction];
+  if(r?.body!=='female'||!d||Object.keys(r.equipment||{}).length!==1||r.equipment.torso==null)return null;
+  const original=baseIndex.records.find(b=>b.body===r.body&&b.direction===r.direction&&b.action===r.action&&b.hairStyle==='original');
+  if(!original)return null;
+  const authors=original.pack.directions[r.direction].layers;
+  const skinLayers=d.layers.filter(l=>l.id.startsWith('base:')&&['body','foreground'].includes(l.slot));
+  if(!skinLayers.length||!skinLayers.every(l=>authors.some(a=>a.id===l.id.slice(5)&&a.slot===l.slot&&
+     (l.frames||[l.source]).every(source=>(a.frames||[a.source]).includes(source))&&skinMaterials.ownership([a])==='anatomy')))return null;
+  const sources=[...new Set(skinLayers.flatMap(l=>l.frames||[l.source]))];
+  // A raster shared with a non-anatomy layer cannot be tinted through this route.
+  if(d.layers.some(l=>!skinLayers.includes(l)&&(l.frames||[l.source]).some(s=>sources.includes(s))))return null;
+  return sources;
+ }
  function render(ctx,r,images,{frame=0,hiddenSlots=[],appearance=r.colorAppearance||{},makeCanvas}={}){
   appearanceAPI=appearanceAPI||root.MareAppearance96;
   const p=r?.pack,d=p?.directions?.[r.direction];if(!d||!Number.isInteger(frame)||frame<0||frame>=d.clip.frames)throw Error('Invalid modular authored frame');
@@ -31,6 +45,20 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
     if(padding.sourceSize!==512||padding.offset!==64||image.width!==512||image.height!==512||ctx.canvas.width!==640||ctx.canvas.height!==640)throw Error('Invalid native source padding');
     const surface=makeCanvas?makeCanvas(640,640):ctx.canvas.ownerDocument?Object.assign(ctx.canvas.ownerDocument.createElement('canvas'),{width:640,height:640}):typeof OffscreenCanvas!=='undefined'?new OffscreenCanvas(640,640):require('@napi-rs/canvas').createCanvas(640,640);
     surface.getContext('2d').drawImage(image,64,64);map.set(source,surface);
+   }
+  }
+  if(r.skinAnatomySources?.length){
+   const ramp=appearanceAPI?.skins[appearance.skin||appearance.skinColor]?.ramp;
+   if(!ramp)throw Error('Missing outfit anatomy palette');
+   for(const source of r.skinAnatomySources){
+    const image=map.get(source);
+    if(!image)continue;
+    const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d');
+    tc.drawImage(image,0,0);
+    const data=tc.getImageData(0,0,tile.width,tile.height);
+    data.data.set(appearanceAPI.recolor(data.data,skinMaterials.mask(data.data,tile.width,'anatomy'),ramp));
+    tc.putImageData(data,0,0);
+    map.set(source,tile);
    }
   }
   if(r.isolatedPants21){
@@ -99,7 +127,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
   map.set(prefix+source+'.png',headTile);
   return render(ctx,adapted,map,options);
  }
- return {resolve,requiredFiles,render,renderWithHead};
+ return {resolve,bindAnatomy,requiredFiles,render,renderWithHead};
 }
 const api={create};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

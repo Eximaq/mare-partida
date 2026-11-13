@@ -43,11 +43,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // A separated original head can carry the existing named hair/helmet while
   // the exact outfit keeps its own layers, source archive and authored poses.
   // Do not infer a clean head from a baked clothed composite.
-  if(canonical(a.body)==='female'&&(customFemaleFace||equipment.head!=null||a.hair&&a.hair!=='original'||a.eyeColor&&!['original','blue'].includes(a.eyeColor))){
+  const hasFemaleSkin=canonical(a.body)==='female'&&a.skin&&a.skin!=='original';
+  if(canonical(a.body)==='female'&&(hasFemaleSkin||a.hairColor&&a.hairColor!=='original'||customFemaleFace||equipment.head!=null||a.hair&&a.hair!=='original'||a.eyeColor&&!['original','blue'].includes(a.eyeColor))){
    const clothes=Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head'));
-   const originalOutfit=outfitRegistry?.resolve({body:'female',action:o.action,direction:o.direction,appearance:{...a,hair:'original',face:'original',eyeColor:'original'},equipment:clothes});
-   const named=originalOutfit&&femaleNamedHairRegistry?.resolve(originalOutfit,{hair:a.hair||'original',head:equipment.head?.def??equipment.head,appearance:a});
-   if(named)return {...originalOutfit,id:named.id,sourceId:originalOutfit.id,hdKind:'outfit',femaleNamedHairRecord:named,colorAppearance:a};
+   const originalOutfit=outfitRegistry?.resolve({body:'female',action:o.action,direction:o.direction,appearance:{...a,hair:'original',face:'original',eyeColor:'original',skin:'original',skinColor:'original',hairColor:'original'},equipment:clothes});
+   const anatomy=hasFemaleSkin&&originalOutfit?outfitRegistry?.bindAnatomy(originalOutfit,baseIndex):null;
+   const cosmeticOutfit=originalOutfit&&(!hasFemaleSkin||anatomy)?{...originalOutfit,skinAnatomySources:anatomy}:null;
+   const named=cosmeticOutfit&&femaleNamedHairRegistry?.resolve(cosmeticOutfit,{hair:a.hair||'original',head:equipment.head?.def??equipment.head,appearance:a});
+   if(named)return {...cosmeticOutfit,id:named.id,sourceId:originalOutfit.id,hdKind:'outfit',femaleNamedHairRecord:named,colorAppearance:a};
   }
   // Reuse an isolated outfit only with a pixel-identical authored head contract.
   if(canonical(a.body)==='male'&&(equipment.head!=null||a.hair&&a.hair!=='original')){

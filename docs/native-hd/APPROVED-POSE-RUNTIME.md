@@ -94,3 +94,9 @@ O Nodachi 69 NORTH V6 usa a própria arma e o rig NORTH espelhado do pacote de o
 | 119 | `cyborg119-south-authored-layers-appearance-bob` | 0–11 | [Arte aprovada e mapa](evidence/approved-poses/Kaizoku-119-south-comparativo.png) |
 
 A espada 0 foi executada em save descartável carregado pela rotina normal, que gravou cabelo Original preto, pele clara e olhos azuis. A camada frontal do estado 3 preserva a oclusão da lâmina. O 5 usa a ordem de `normal.txt`, com a pose 0 ampliada na própria fonte e a 9 preservada. A 111 e a 119 mantêm 20 ticks a 24 fps, com 12 PNGs de referência. A 119 tem a camada frontal do braço onde ele encobre a cabeça. As máscaras de pele atuam nos pixels compatíveis com a anatomia de origem. A igualdade de raster foi testada sem recoloração.
+
+## Peitorais femininos e ajustes de cabeça
+
+O mapa apresentou o peitoral 130 feminino com pele escura, cabelo Chanel rosa e olhos verdes em repouso, caminhada e ataque nas quatro direções. Os oito estados de ataque de cada direção foram observados. Na caminhada, o teste conferiu a seleção e amostras desenhadas. A evidência é da integração no mapa. A equivalência integral dos quatro pacotes editáveis da roupa com esses ciclos ainda precisa de comparação por fase. [Captura do ataque SOUTH](evidence/approved-poses/Kaizoku-peitoral130-feminino-mapa.png).
+
+O teste de composição conferiu as mesmas camadas de roupa em 120 combinações de peitoral, direção e ação. A paleta usa somente camadas de anatomia que coincidem por identidade e hash com a base. Para os 837 ajustes dos quatro exports, a consulta do seletor normal escolheu a identidade exata em 2.511 de 2.511 cenários de repouso, caminhada e ataque sem outras peças. Isso verifica a seleção, e a validação visual de cada ciclo permanece pendente. A consulta é reproduzível com `node tests/rework_approved_head_selection_audit.cjs <saida.json>`.
