@@ -96,6 +96,25 @@ function attachPants168(record,outfit){
  return {...record,id:record.id+'-pants168-native',pack:combined,baseRecord:{...base,pack:combined,sourceRefs:[...base.sourceRefs,...refs]},
   outfitSources:[...(record.outfitSources||[]),...refs],outfitSourceId:outfit.id,coatSourceId:record.outfitSourceId};
 }
+const swordPants=new Set([140,147,154,161,175,182]);
+function attachSwordPants(record,outfit,def){
+ if(record.item!==0||!outfit||outfit.sourceSwordRecord!==record.id.split('-coat')[0]||
+    outfit.equipment.pants!==def)return null;
+ const {direction,baseRecord:base}=record,pack=base.pack,d=pack.directions[direction],donor=outfit.pack.directions[direction];
+ const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ const layer=donor.layers[0],stride=d.clip.frames/donor.clip.frames;
+ if(!same(pack.frame,outfit.pack.frame)||!same(pack.pivot,outfit.pack.pivot)||pack.density!==outfit.pack.density||
+    !Number.isInteger(stride)||stride<1||d.clip.loop!==donor.clip.loop||d.clip.fps!==donor.clip.fps*stride||
+    donor.layers.length!==1||layer.id!=='pants'+def+'-independent-sword'||layer.binding.kind!=='fixed'||
+    layer.frames.length!==donor.clip.frames||layer.frames.some(sha=>!outfit.sourceRefs.includes(sha))||
+    !d.layers.some(l=>l.id==='shorts')||record.states.some(s=>s.hideBaseLayers?.includes('shorts')||s.baseMasks?.shorts))return null;
+ const pants={...layer,frames:Array.from({length:d.clip.frames},(_,i)=>layer.frames[Math.floor(i/stride)])};
+ const layers=d.layers.map(l=>l.id==='shorts'?pants:l);
+ const combined={...pack,directions:{...pack.directions,[direction]:{...d,layers}}};
+ return {...record,id:record.id+'-pants'+def+'-native-sword',pack:combined,
+  baseRecord:{...base,pack:combined,sourceRefs:[...base.sourceRefs,...outfit.sourceRefs]},
+  outfitSources:[...(record.outfitSources||[]),...outfit.sourceRefs],pantsSourceId:outfit.id};
+}
 const asset=(r,sha)=>'tools/'+(r.outfitSources?.includes(sha)?'rework-modular-outfits-hd':'rework-base-hd')+'/assets/'+sha+'.png';
 function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVendor?.compositor,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){if(index?.schema!=='female-native-equipment-registration-v1'||!vendor)throw Error('Missing female equipment sources');return {
  resolve({item,body,action,direction,appearance={},equipment={}}={}){if(item==null||!index.records.some(r=>r.item===Number(item))||!['female','feminino'].includes(body))return null;const extra=Object.entries(equipment).filter(([k,v])=>k!=='weapon'&&v!=null&&!['none','original'].includes(v));const clothing=extra.filter(([slot])=>slot!=='head'),head=extra.find(([slot])=>slot==='head')?.[1];if(clothing.some(([slot])=>!['coat','legs','pants'].includes(slot))||clothing.filter(([slot])=>slot!=='coat').length>1)return null;if(equipment.weapon!=null&&Number(equipment.weapon?.def??equipment.weapon)!==Number(item))return null;const customized=['hair','hairStyle','skin','skinColor','hairColor','face','eyeStyle','eyeColor'].some(k=>appearance[k]&&appearance[k]!=='original'&&!((k==='eyeColor')&&appearance[k]==='blue'));if(['attack','punch','shoot','focus','cast'].includes(action))action=index.records.find(r=>r.item===Number(item)&&r.action.startsWith('attack-'))?.action||action;const r=index.records.find(r=>r.item===Number(item)&&r.body==='female'&&r.action===action&&r.direction===direction);if(!r)return null;const coat=clothing.find(([slot])=>slot==='coat')?.[1],pants=clothing.find(([slot])=>slot!=='coat')?.[1];
@@ -107,7 +126,7 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
  }
  if(combined&&pants!=null){
   const def=Number(pants.def??pants),outfit=def===168&&outfits?.records.find(row=>row.id==='female-pants168-'+action+'-'+direction);
-  combined=attachPants168(combined,outfit);
+  combined=swordPants.has(def)&&Number(item)===0?attachSwordPants(combined,outfits?.records.find(row=>row.id==='female-pants'+def+'-sword-'+action+'-'+direction),def):attachPants168(combined,outfit);
  }
  if(!combined)return null;if(!customized&&head==null)return combined;const material=appearanceRegistry?.resolve(combined.baseRecord,{hair:appearance.hair||appearance.hairStyle,head:head?.def??head,appearance});if(!material)return null;return {...combined,id:combined.id+':'+material.id,material,colorAppearance:appearance};},
  requiredFiles(r,{frame}={}){const d=r.baseRecord.pack.directions[r.direction],states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid female equipment frame');const refs=frame===undefined?r.baseRecord.sourceRefs:d.layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean);return [...new Set([...refs.map(s=>asset(r,s)),...(r.material?appearanceRegistry.requiredFiles(r.material):[]),...states.flatMap(s=>[...s.parts.map(p=>p.url),...Object.values(s.baseMasks||{})])])]},

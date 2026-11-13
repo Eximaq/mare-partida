@@ -190,7 +190,7 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
       }
       result.directions[direction]=data;
      }
-     async function exerciseAttacks(coat){
+     async function exerciseAttacks(coat,legs){
       const attacks={};
       for(const [,direction] of directions){
        await page.evaluate(()=>__appearanceCatalogQA.clear());
@@ -199,12 +199,16 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
        const size=await canvas.evaluate(c=>({width:c.width,height:c.height}));
        await canvas.click({position:{x:target.x*box.width/size.width,y:target.y*box.height/size.height}});
        await page.waitForFunction(d=>__appearanceCatalogQA.read().frames.filter(f=>f.action.startsWith('attack')&&f.direction===d).length>=3,direction,{timeout:10000});
+       if(direction==='south'||direction==='east'&&legs!=null)await page.locator('#worldCanvas').screenshot({path:path.join(out,gender+'-attack-'+direction+(legs==null?'':'-'+legs)+'.png')});
+       if(checkCreationColor&&gender==='masculino'&&classId==='sword'&&direction==='south')
+        await page.waitForFunction(()=>new Set(__appearanceCatalogQA.read().frames.filter(f=>f.action.startsWith('attack')&&f.direction==='south').map(f=>f.frame)).size===9,null,{timeout:12000});
        const frames=(await read()).frames.filter(f=>f.action.startsWith('attack')&&f.direction===direction);
        assert(frames.every(frame=>frame.opaque>0&&(!frame.weaponIds||frame.weaponIds.includes(initial.weapon))));
-       if(checkCreationColor&&gender==='masculino'&&classId==='sword'&&['east','west','north'].includes(direction))
-        for(const frame of frames)assert.match(frame.source,/^sword0-.*-(?:native-attachment|historical-attack)-coat6-adapted-bob/);
+       if(checkCreationColor&&gender==='masculino'&&classId==='sword')
+        for(const frame of frames)assert.match(frame.source,/^sword0-.*-(?:native-attachment|historical-attack|modular-nine)-coat6-adapted-bob/);
        if(coat!=null&&gender==='feminino'&&classId==='sword')
         for(const frame of frames)assert.match(frame.source,new RegExp('^female0-attack-sword-.*-coat'+coat+'-native-sword'));
+       if(legs!=null)for(const frame of frames)assert.match(frame.source,new RegExp('pants'+legs+'-native-sword'));
        attacks[direction]=frames;
       }
       return attacks;
@@ -300,6 +304,7 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
           record.directions[direction]=frames;
          }
          if(strictAssets)assert.deepEqual(result.assetErrors,[]);
+         if(process.env.MARE_CAPTURE_EQUIPMENT==='1')await page.locator('#worldCanvas').screenshot({path:path.join(out,gender+'-equipped-'+item.def+'.png')});
          record.nativeDirections=Object.entries(record.directions).filter(([,frames])=>frames.every(frame=>!frame.source.startsWith('native96'))).map(([direction])=>direction);
          if(item.slot==='head'&&keepStarterCoat)for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,new RegExp('(?:head:|bob:)'+item.def+'(?:[:]|$)'));
          if((item.def===133||item.def===9&&onlyItems.has(133))&&gender==='masculino'&&!keepStarterCoat)for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,/pants133-candidate/);
@@ -312,6 +317,11 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
           assert.match(frame.source,/pants168-native.*hair-palette:pink.*eye-palette:green/);
           if(keepStarterCoat)assert.match(frame.source,/coat6-native-pants168-native/);
          }
+        }
+        if(gender==='feminino'&&initial.weapon===0&&[140,147,154,161,175,182].includes(item.def)){
+         if(itemMovement)for(const frames of Object.values(record.directions))
+          for(const frame of frames)assert.match(frame.source,new RegExp('pants'+item.def+'-native-sword'));
+         if(checkItemAttacks)record.attacks=await exerciseAttacks(keepStarterCoat?6:null,item.def);
         }
         if(checkItemAttacks&&item.slot==='coat')record.attacks=await exerciseAttacks(item.def);
         record.status='EXERCITADO';

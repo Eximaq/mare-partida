@@ -201,3 +201,44 @@ test('sword carry reuses only the 151 lateral coat and each recovered pants laye
   }
  }
 });
+
+test('sword 0 south retains all nine modular historical phases with the selected coat and hair',async()=>{
+ const {make,cv}=require('./rework-integration-support.cjs'),api=make();
+ await api.ready;
+ const player={appearance96:{gender:'masculino',hairStyle:'hair-bob',hairColor:'pink',skinColor:'dark',eyeStyle:'face-almond',eyeColor:'green'},equipment:{weapon:{def:0},coat:{def:6}}};
+ const options={action:'attack-sword',direction:'south',x:100,y:145};
+ const source=api.select(player,options);
+ assert.match(source.id,/sword0-south-modular-nine-coat6-adapted-bob/);
+ assert.deepEqual(source.timeline,['0','1','2','2','3','3','4','4','5','5','6','6','7','7','8','8']);
+ assert.equal(source.fps,24);
+ assert.equal(new Set(source.basePack.pack.directions.south.poses.map(p=>JSON.stringify(p['RIGHT ARM']))).size,9);
+ assert(source.states.every(state=>state.attachment&&state.layers.length===1&&state.layers[0].skinOnly));
+ const ready=await api.prepareConfiguration([{player,options}]),ctx=cv.createCanvas(200,200).getContext('2d');
+ try{
+  assert.equal(ready.coverage[0].frames,9);
+  const frames=new Set();
+  for(let tick=0;tick<source.timeline.length;tick++){
+   ctx.clearRect(0,0,200,200);
+   assert(ready.draw(ctx,player,{...options,progress:(tick+.25)/source.timeline.length}));
+   frames.add(api.snapshot().last.frame);
+  }
+  assert.equal(frames.size,9);
+ }finally{ready.release();}
+});
+
+test('female sword uses all six independent pants without replacing its weapon states',async()=>{
+ const {make}=require('./rework-integration-support.cjs'),api=make();
+ await api.ready;
+ const appearance96={gender:'feminino',hairStyle:'hair-bob',hairColor:'pink',skinColor:'dark'};
+ for(const def of [140,147,154,161,175,182])for(const direction of ['south','north','east','west'])for(const action of ['idle','walk','attack-sword']){
+  const options={action,direction};
+  const equipment={weapon:{def:0},coat:{def:6}};
+  const original=api.select({appearance96,equipment},options);
+  const fitted=api.select({appearance96,equipment:{...equipment,legs:{def}}},options);
+  assert.equal(fitted?.pantsSourceId,'female-pants'+def+'-sword-'+action+'-'+direction);
+  assert.deepEqual(fitted.states,original.states);
+  const layers=fitted.pack.directions[direction].layers;
+  assert(!layers.some(layer=>layer.id==='shorts'));
+  assert.equal(layers.filter(layer=>layer.slot==='pants').length,1);
+ }
+});

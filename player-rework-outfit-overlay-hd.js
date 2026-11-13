@@ -27,7 +27,8 @@ function adaptSword(weapon,outfits,{coat,baseIndex,appearance}){
  const dir=weapon?.direction;
  if(weapon?.body!=='male')return null;
  const north=weapon.id==='sword0-north-historical-attack';
- if(!north&&(!['east','west'].includes(dir)||!weapon.states.every(s=>s.attachment&&!s.layers.length&&!s.canvasRoundingPatch?.length)))return null;
+ const south=weapon.id==='sword0-south-modular-nine'&&dir==='south'&&weapon.item===0;
+ if(!north&&!south&&(!['east','west'].includes(dir)||!weapon.states.every(s=>s.attachment&&!s.layers.length&&!s.canvasRoundingPatch?.length)))return null;
  const base=north&&baseIndex.records.find(r=>r.id==='v7-sword-north-modular8-north');
  if(north&&(!base||weapon.states.length!==base.pack.directions[dir].clip.frames||
     !weapon.states.every((s,i)=>s.state===String(i)&&s.layers.length===2&&s.layers.every(l=>l.operation==='source-over'))))return null;
