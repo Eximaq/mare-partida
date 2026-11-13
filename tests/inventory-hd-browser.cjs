@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');const {chromium}=require('playwright'
 await p.route('**/api/akuma/catalog',r=>r.fulfill({status:404,body:'{}'}));
 await p.route('**/__dev_version',r=>r.fulfill({body:'stable'}));
 await p.route('**/game.js*',async r=>{const a=await r.fetch();
-await r.fulfill({response:a,body:(await a.text()).replace('  window.__mareDiagnostics=','  window.__invQA={get game(){return game},defs:itemDefs,newItem,openPanel,renderPanel,get ui(){return inventoryUI},stats:getDerived,get forge(){return forgeUI},save:saveGame,refresh:updateUI,select(id){selectedItem=id;renderPanel()}};\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')})});
+await r.fulfill({response:a,body:(await a.text()).replace('  window.__mareDiagnostics=','  window.__invQA={get game(){return game},defs:itemDefs,newItem,openPanel,renderPanel,get ui(){return inventoryUI},get feedback(){return activeEquipmentFeedback()},stats:getDerived,get forge(){return forgeUI},save:saveGame,refresh:updateUI,select(id){selectedItem=id;renderPanel()}};\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')})});
 await p.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8159/');
 await p.waitForFunction(()=>window.__invQA&&__mareDiagnostics().lobby96.state==='ready',null,{timeout:90000});
 await p.locator('#characterName').fill('Papacapim');
@@ -106,16 +106,35 @@ assert.equal(await p.locator('.op-grid > .op-item.empty').count(),fullPage-1);
 await verifySlotSpace();
 await p.screenshot({path:out+'/inventory-partial.png'});
 await p.evaluate(()=>{const q=__invQA;q.game.inventory=Array.from({length:120},(_,n)=>q.newItem(q.defs[n%q.defs.length],20));q.ui.page=0;q.renderPanel()});assert.equal(await p.locator('.op-bag-capacity b').innerText(),'120 / 120');assert(await p.locator('[data-inv-page="1"]').first().isEnabled());
+// ResizeObserver finishes pagination on a later animation frame. Wait for the
+// measured grid and rendered page to agree before capturing a resize anchor.
+async function settleGrid(){
+  await p.waitForFunction(()=>{
+    const grid=document.querySelector('.op-grid'),rect=grid.getBoundingClientRect();
+    const measured=MareUI.inventoryGrid(innerWidth,{width:grid.clientWidth,height:grid.clientHeight,gap:parseFloat(getComputedStyle(grid).columnGap)||0});
+    const key=[rect.width,rect.height,__invQA.ui.pageSize,__invQA.ui.page].join(':');
+    const now=performance.now(),last=window.__invGridSettled;
+    if(!last||last.key!==key)window.__invGridSettled={key,since:now};
+    return measured.pageSize===__invQA.ui.pageSize&&grid.children.length===measured.pageSize&&last?.key===key&&now-last.since>=250;
+  });
+}
+// Earlier item actions leave timed feedback and toast messages inside the dialog.
+// Let those finish so only viewport height changes during this resize assertion.
+await p.waitForFunction(()=>!__invQA.feedback&&!document.querySelector('#toastContainer')?.childElementCount);
+await p.evaluate(()=>__invQA.renderPanel());
+await settleGrid();
 await p.locator('[data-inv-page="1"]').first().click();assert.equal(await p.evaluate(()=>__invQA.ui.page),1);
 const resizeAnchor=await p.locator('.op-grid [data-item]').first().getAttribute('data-item');
 const beforeResize=await p.evaluate(()=>__invQA.ui.pageSize);
 await p.locator('#invSearch').focus();
 await p.setViewportSize({width:1672,height:640});
 await p.waitForFunction(previous=>__invQA.ui.pageSize!==previous,beforeResize);
+await settleGrid();
 assert(await p.locator('.op-grid [data-item="'+resizeAnchor+'"]').count(),'Height-only resize retains the previously first visible item');
 assert(await p.locator('#invSearch').evaluate(e=>e===document.activeElement),'Height-only resize preserves search focus');
 await p.setViewportSize({width:1672,height:941});
 await p.waitForFunction(previous=>__invQA.ui.pageSize===previous,beforeResize);
+await settleGrid();
 await p.evaluate(()=>{let q=__invQA;q.ui.page=0;q.ui.sort='recent';q.game.inventory=q.defs.filter(x=>x.type==='akuma_no_mi').slice(0,16).concat(q.defs.filter(x=>x.slot&&x.type!=='akuma_no_mi').slice(-49)).map(x=>q.newItem(x,20));q.game.name='Capitão de Nome Bastante Comprido';q.renderPanel();q.select(q.game.equipment.akuma_no_mi.id)});
 for(const [width,height] of [[1920,1080],[1672,941],[1366,768],[1280,720],[1024,768],[393,852],[360,800],[320,568],[844,390]]){await p.setViewportSize({width,height});
 await p.evaluate(()=>__invQA.renderPanel());
