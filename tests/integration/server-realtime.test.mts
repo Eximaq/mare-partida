@@ -96,11 +96,11 @@ test('real game client receives compact movement without polling and falls back 
  const transport=typeof attach==='function'?attach(server,{service,vault,origin:'https://localhost:9443'}):null;
  server.listen(0,'127.0.0.1');await once(server,'listening');
  const base=`http://127.0.0.1:${(server.address() as any).port}`,storage=new Map(),paths:string[]=[],sockets:WebSocket[]=[];
- let dropAck=false,delayAck=false,expireRead=false;
+ let dropAck=false,delayAck=false,expireRead=false,frameVersion=-1;
  const client=createSession({storage:{getItem:(k:string)=>storage.get(k),setItem:(k:string,v:string)=>storage.set(k,v),removeItem:(k:string)=>storage.delete(k)},socketFactory:()=>{
   const ws=new WebSocket(base.replace('http:','ws:')+'/v1/realtime','mare.realtime.v1',{headers:{origin:'https://localhost:9443',cookie:`__Host-mare_session=${login.token}`}});
   const emit=ws.emit.bind(ws);
-  ws.emit=((event:string,...args:any[])=>{if(event==='message'&&JSON.parse(args[0].toString()).type==='ack'){
+  ws.emit=((event:string,...args:any[])=>{if(event==='message'&&JSON.parse(args[0].toString()).type==='frame')frameVersion=JSON.parse(args[0].toString()).frame.version;if(event==='message'&&JSON.parse(args[0].toString()).type==='ack'){
     if(dropAck){dropAck=false;ws.terminate();return true;}
     if(delayAck){delayAck=false;setTimeout(()=>emit(event,...args),180);return true;}
   }return emit(event,...args);}) as typeof ws.emit;
@@ -109,7 +109,7 @@ test('real game client receives compact movement without polling and falls back 
   if(expireRead&&path.endsWith('/online-state')){expireRead=false;await response.arrayBuffer();await pool.query("UPDATE mare_game.app_sessions SET provider_valid_until=clock_timestamp()-interval '1 second'");return Response.json({error:'unauthorized'},{status:401});}return response;}});
  const until=async(fn:()=>unknown)=>{const end=Date.now()+5000;while(!fn()){if(Date.now()>end)assert.fail('realtime client did not become ready');await sleep(10);}};
  try{
-  await client.load();await client.acquire();await client.command('items.initialize');await client.command('world.initialize');await client.command('battle.start');
+  await client.load();const lease=await client.acquire();await client.command('items.initialize');await client.command('world.initialize');await client.command('battle.start');
   await until(()=>client.realtime?.connected);
   expireRead=true;await client.read(true);assert.ok(client.data&&client.available,'revalidate a provider boundary before discarding a still valid BFF session');
   const before=structuredClone(client.data.online),reads=paths.filter(p=>p.endsWith('/online-state')).length;
@@ -123,13 +123,22 @@ test('real game client receives compact movement without polling and falls back 
   assert.equal((await service.characterState(login.token,client.data.character.id)).version,receipt.state.version);
   assert.ok(client.realtime.intervalMs<400,'active snapshots must not wait for the old 750 ms timer');
   assert.ok(client.realtime.rttMs>=0);
+  // An independent committed update must not make the next movement use the
+  // old full/economic snapshot after its newer compact version has arrived.
+  const advanced=await service.command(login.token,client.data.character.id,{requestId:randomUUID(),expectedVersion:receipt.state.version,action:'world.stop',payload:{},control:lease});
+  await until(()=>frameVersion===advanced.state.version);
+  assert.equal(client.data.online.state.version,before.state.version,'compact frames do not relabel economic data');
+  const resumed=await client.command('world.move',{x:before.world.position.x,y:before.world.position.y+16});
+  assert.equal(resumed.state.version,advanced.state.version+1,'movement uses the latest committed compact version');
+  assert.equal(paths.filter(p=>p.endsWith('/online-state')).length,reads,'newer compact versions need no full-state read for movement');
+  assert.equal(client.data.online.state.version,before.state.version,'movement must not relabel the economic snapshot');
   // Drop an ACK after COMMIT. HTTP retry must reuse the same durable command.
   dropAck=true;
   const stopped=await client.command('world.stop');
   assert.equal(client.data.online.world.path.length,0);
   assert.equal(paths.filter(p=>p.endsWith('/commands')).length,posts+1,'HTTP remains the authenticated fallback');
   assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.character_commands WHERE character_id=$1 AND request_id=$2',[client.data.character.id,stopped.requestId])).rows[0].n,1);
-  assert.equal(stopped.state.version,receipt.state.version+1,'lost committed ACK must not apply movement twice');
+  assert.equal(stopped.state.version,resumed.state.version+1,'lost committed ACK must not apply movement twice');
   const row=(await pool.query('SELECT gold::text FROM mare_game.character_progression WHERE character_id=$1',[client.data.character.id])).rows[0];assert.equal(row.gold,before.state.gold);
  }finally{client.disconnectRealtime?.();for(const ws of sockets)ws.terminate();await transport?.close();server.closeAllConnections();await new Promise<void>(r=>server.close(()=>r()));}
 },undefined,true));

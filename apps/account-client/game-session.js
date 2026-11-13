@@ -578,10 +578,14 @@
         if (pending || busy) throw fault("pending_command");
         if (!available || !control || !data?.character)
           throw fault("control_required");
+        // Compact frames carry a committed version but no economic snapshot.
+        // Only movement can use it without pretending progress was refreshed.
+        const motionVersion = (action === 'world.move' || action === 'world.stop') &&
+          lastMotionFrame?.characterId === data.character.id ? lastMotionFrame.version : -1;
         const intent = {
           characterId: data.character.id,
           requestId: uuid(),
-          expectedVersion: Math.max(data.online.state.version, confirmedMovementVersion),
+          expectedVersion: Math.max(data.online.state.version, confirmedMovementVersion, motionVersion),
           action,
           payload: JSON.parse(JSON.stringify(payload)),
         };

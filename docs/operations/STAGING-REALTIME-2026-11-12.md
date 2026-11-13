@@ -54,6 +54,26 @@ Este é um transporte limitado para homologação. Não certifica capacidade par
 
 O harness também passou integralmente com WebSocket desabilitado: fallback HTTP, 80 teclas, rejeição/reconciliação, velocidades, 53.298 amostras de monstros sem reinício/deslizamento, desconexão/reconexão, viewports e carregamento. O teste de rejeição agora espera o personagem renderizado alcançar a pose parada do servidor antes de tirar a referência; não compara uma pose ainda caminhando com uma posição final.
 
-São resultados de bancada, não medições de capacidade nem garantia de latência na Internet. A aplicação pela origem pública tem resultados próprios abaixo, quando executada.
+São resultados de bancada, não medições de capacidade nem garantia de latência na Internet.
+
+## Aplicação e observação na VPS em 13/11/2026
+
+O commit `3e167c54` foi ativado às 03:11 UTC somente em `teste.kaizokuidle2d.com.br`. Imagem `sha256:2bbd36e1fca0bb3ce58cb520ab298e1a115d795d314fd475daa96f4d95590510`, construída e testada com Docker na VPS. O container PostgreSQL permaneceu com o mesmo ID, sem migrations. Readiness 200, `nginx -t` aprovado e hashes dos três scripts conferidos pela origem HTTPS real, com `private/no-store`.
+
+Backup anterior: `/srv/mare-staging/incoming/rollback-realtime-3e167c54.iRYOcr`, contendo dump customizado com índice verificado, configuração, scripts e identificação da imagem anterior. A conta e os personagens foram usados somente pelo fluxo normal do jogo; não houve reset, importação nem alteração direta de progressão.
+
+No Opera do usuário, na origem de testes, foram observados porto, viagem a Dawn, movimento, combate automático e retorno ao porto. O HUD exibiu amostras de Ping WS de 41–49 ms, 60 FPS e intervalos de atualização de aproximadamente 92–116 ms. São leituras pontuais da tela, não percentis; não equivalem ao antigo Ping HTTP nem certificam ausência de trancos em todos os frames.
+
+Janelas agregadas do servidor com duas conexões mostraram cerca de 1.192 frames/minuto, projeção média de 15–26 ms, comandos confirmados em média de 34–45 ms, fila do pool zero e event-loop máximo de até 50 ms nas janelas observadas. Uma amostra de recursos mostrou API em 13,44% de CPU/402 MiB e PostgreSQL em 30,49%/86 MiB. Esses dados não demonstram saturação da VPS nesse ensaio. Não houve 5xx, 429 nem consumidor lento nas janelas consultadas.
+
+Algumas janelas tiveram recusas 4xx de comandos (uma delas: cinco recusas em 51 tentativas). O contador agregado ainda não distingue seus códigos: não atribuir todas as recusas a uma causa sem evidência adicional. A sessão automatizada isolada teve login 401 e não serviu como teste público; a observação real usou a sessão do usuário já aberta no Opera, com autorização.
+
+### Regressão adicional de versão do movimento
+
+A investigação reproduziu em PostgreSQL real um conflito evitável: uma alteração já confirmada chegava em frame compacto, mas o próximo movimento ainda usava a versão da progressão completa ou do último ACK. O teste falhou com `409 state_version_conflict` antes da correção. Movimento/parada agora consideram também a versão compacta validada do mesmo personagem. Isso não promove a versão dos dados econômicos, não dispensa o controle/epoch e não remove a verificação de versão no servidor. Recibos perdidos continuam usando o mesmo requestId.
+
+O teste confirma movimento aceito, ausência de leitura completa extra, versão econômica intacta e replay único após perda do ACK. Conflitos legítimos continuam possíveis se o estado mudar depois do frame; esta correção elimina a reutilização comprovada de uma versão que o cliente já sabia estar desatualizada.
+
+Após esse ajuste, `npm test` repetido passou com 307 testes de fundação e 188 arquivos legados; typecheck e 22 integrações do transporte, cliente e snapshots passaram. O harness completo de navegador passou novamente: 80 teclas, 1.100 frames recebidos, 69 comandos confirmados sem erros/limitações, 54.172 amostras de monstros sem deslizamento ou reinício, desktop/estreito, reconexão, assets atrasados e save demo preservado. Essa repetição continua usando 125 ms artificiais em cada sentido do WebSocket.
 
 Referências técnicas: [ws](https://github.com/websockets/ws/blob/master/doc/ws.md), [Cloudflare WebSockets](https://developers.cloudflare.com/network/websockets/), [interceptação de WebSocket no Playwright](https://playwright.dev/docs/api/class-websocketroute).
