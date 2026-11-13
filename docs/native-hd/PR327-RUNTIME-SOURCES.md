@@ -36,8 +36,109 @@ As matrizes cobrem 166 combinações derivadas de registros e os 102 itens dos s
 
 `python tools/build_pages.py` prepara a build para o navegador. `tests/rework_catalog_creation_browser.cjs` usa a criação real, controles de movimento e clique no alvo para o ataque. Os testes com `MARE_CHECK_CREATION_COLOR=1` e `MARE_CHECK_STARTER_ATTACKS=1` verificam a mudança de pixels na prévia, as fontes desenhadas no mapa e as poses alcançadas pelo ataque. `tests/rework-starter-coat.test.cjs` verifica o carregamento e a composição dos clipes de teste.
 
+O reteste local dos dois espadachins capturou 25 poses de repouso e caminhada com a fonte HD e 25 amostras de ataque nas quatro direções. No ataque masculino, EAST, WEST e NORTH desenharam a lâmina original reaproveitada com o peitoral 6 e cabelo Chanel rosa. Os 46 testes Node selecionados passaram.
+
 ## Pendências de integração
 
 - Item 0 SOUTH masculino usa uma composição que contém corpo e lâmina no mesmo PNG. A separação precisa preservar os pixels e a empunhadura do ciclo. A base modular SOUTH contém âncoras de braço estáticas durante o ataque e não serve para vincular a lâmina do porte a todos os quadros.
 - O ataque de espada feminino com peitoral 6 usa uma base diferente da do peitoral de punhos. Ainda exige adaptação dos quadros da roupa às poses da espada. O navegador registra native96 nessas rotas.
 - O relatório gerado identifica os demais equipamentos e combinações que ainda não selecionam o rework. A matriz não representa todas as combinações legais ou todas as cores. Nenhuma dessas lacunas foi convertida em aprovação por visibilidade.
+
+## Cobertura por ID equipado isoladamente
+
+Cada célula conta as poses HD resolvidas entre 12 por corpo, com três ações e quatro direções. Uma célula abaixo de 12 identifica uma lacuna de integração com aquela aparência. A execução em combinações exige a matriz detalhada gerada pelo comando acima.
+
+| ID | Item | Slot | Masc. original | Fem. original | Masc. personalizado | Fem. personalizado |
+| ---: | --- | --- | ---: | ---: | ---: | ---: |
+| 0 | Espada de Ferro Salgado | weapon | 12 | 12 | 11 | 12 |
+| 1 | Sabre de Coral | weapon | 12 | 12 | 10 | 12 |
+| 2 | Punhos de Bronze | weapon | 12 | 12 | 0 | 12 |
+| 3 | Luvas de Marfim | weapon | 12 | 12 | 0 | 12 |
+| 4 | Mosquete de Convés | weapon | 12 | 12 | 8 | 11 |
+| 5 | Mosquete dos Faróis | weapon | 12 | 12 | 8 | 11 |
+| 6 | Casaco de Marinheiro | coat | 12 | 12 | 0 | 0 |
+| 7 | Casaco da Bruma | coat | 12 | 12 | 0 | 0 |
+| 8 | Botas de Navegante | boots | 0 | 0 | 0 | 0 |
+| 9 | Botas do Recifal | boots | 0 | 0 | 0 | 0 |
+| 12 | Adagas da Bruma | weapon | 12 | 12 | 8 | 8 |
+| 13 | Lâminas Acrobáticas | weapon | 12 | 12 | 8 | 8 |
+| 14 | Manopla de Aço | weapon | 12 | 12 | 0 | 12 |
+| 15 | Canhão de Pulso | weapon | 12 | 12 | 0 | 12 |
+| 16 | Compasso de Tempestade | weapon | 12 | 12 | 0 | 12 |
+| 17 | Orbe das Correntes | weapon | 12 | 12 | 0 | 12 |
+| 18 | Bandana das Correntes | head | 12 | 12 | 12 | 12 |
+| 19 | Capacete do Corsário | head | 12 | 12 | 12 | 12 |
+| 21 | Grevas de Navegante | legs | 0 | 12 | 0 | 0 |
+| 22 | Calças da Maré Alta | legs | 12 | 12 | 0 | 0 |
+| 25 | Luvas de Cordame | gloves | 0 | 0 | 0 | 0 |
+| 26 | Luvas do Vigia | gloves | 0 | 0 | 0 | 0 |
+| 31 | Cajado do Farol | weapon | 12 | 12 | 0 | 12 |
+| 32 | Relicário da Maré Viva | weapon | 12 | 12 | 0 | 12 |
+| 67 | Katana da Maelstrom | weapon | 12 | 12 | 10 | 12 |
+| 68 | Nodachi de Kairouseki | weapon | 12 | 12 | 10 | 12 |
+| 69 | Nodachi de Fogo | weapon | 12 | 12 | 10 | 12 |
+| 70 | Meito: Ame no Habakiri | weapon | 12 | 12 | 10 | 12 |
+| 71 | Adaga de Cristal | weapon | 12 | 12 | 8 | 8 |
+| 72 | Punhal de Netuno | weapon | 12 | 12 | 8 | 8 |
+| 73 | Punhal Flamejante | weapon | 12 | 12 | 8 | 8 |
+| 74 | Lâmina das Trevas | weapon | 12 | 12 | 8 | 8 |
+| 109 | Manoplas do Coral Negro | weapon | 12 | 12 | 8 | 12 |
+| 110 | Punhos do Dragão Carmesim | weapon | 12 | 12 | 0 | 12 |
+| 111 | Luva do Abalo Sísmico | weapon | 12 | 12 | 0 | 12 |
+| 112 | Manoplas da Ruptura dos Mares | weapon | 12 | 12 | 0 | 12 |
+| 113 | Mosquete do Vento Cortante | weapon | 12 | 12 | 8 | 11 |
+| 114 | Pistolas Gêmeas do Corsário | weapon | 12 | 12 | 8 | 11 |
+| 115 | Rifle do Horizonte da Grand Line | weapon | 12 | 12 | 8 | 11 |
+| 116 | Arcabuz do Juízo Celestial | weapon | 12 | 12 | 8 | 11 |
+| 117 | Braço Mecânico de Ferro Salgado | weapon | 12 | 12 | 0 | 12 |
+| 118 | Canhão de Luz Pacifista | weapon | 12 | 12 | 0 | 12 |
+| 119 | Punho Hidráulico do Colosso | weapon | 12 | 12 | 0 | 12 |
+| 120 | Arsenal Final: Protocolo Serafim | weapon | 12 | 12 | 0 | 12 |
+| 121 | Cetro das Monções | weapon | 12 | 12 | 0 | 12 |
+| 122 | Orbe do Trovão de Skypiea | weapon | 12 | 12 | 0 | 12 |
+| 123 | Cajado da Tempestade Carmesim | weapon | 12 | 12 | 0 | 12 |
+| 124 | Cetro da Calamidade dos Quatro Mares | weapon | 12 | 12 | 0 | 12 |
+| 125 | Bastão Medicinal de Drum | weapon | 12 | 12 | 0 | 12 |
+| 126 | Báculo das Flores de Sakura | weapon | 12 | 12 | 0 | 12 |
+| 127 | Cajado das Marés Restauradoras | weapon | 12 | 12 | 0 | 12 |
+| 128 | Báculo do Milagre dos Mil Mares | weapon | 12 | 12 | 0 | 12 |
+| 129 | Chapéu do Corsário | head | 12 | 12 | 12 | 12 |
+| 130 | Casaco das Marés | coat | 12 | 12 | 0 | 0 |
+| 131 | Luvas do Navegante | gloves | 0 | 0 | 0 | 0 |
+| 133 | Calças do Convés | legs | 12 | 12 | 0 | 0 |
+| 134 | Botas do Corsário | boots | 0 | 0 | 0 | 0 |
+| 136 | Capuz das Dunas | head | 12 | 12 | 12 | 12 |
+| 137 | Túnica do Peregrino | coat | 12 | 12 | 0 | 0 |
+| 138 | Luvas de Areia | gloves | 0 | 0 | 0 | 0 |
+| 140 | Calças do Deserto | legs | 0 | 12 | 0 | 0 |
+| 141 | Botas do Oásis | boots | 0 | 0 | 0 | 0 |
+| 143 | Chapéu do Navegador Arcano | head | 12 | 12 | 12 | 12 |
+| 144 | Manto das Correntes Celestes | coat | 12 | 12 | 0 | 0 |
+| 145 | Luvas do Cartógrafo Elemental | gloves | 0 | 0 | 0 | 0 |
+| 147 | Calças do Observador dos Ventos | legs | 0 | 12 | 0 | 0 |
+| 148 | Botas de Maré Serena | boots | 0 | 0 | 0 | 0 |
+| 150 | Chapéu Carmesim | head | 12 | 12 | 12 | 12 |
+| 151 | Sobretudo do Almirante | coat | 0 | 12 | 0 | 0 |
+| 152 | Manoplas da Autoridade | gloves | 0 | 0 | 0 | 0 |
+| 154 | Calças de Comando | legs | 0 | 12 | 0 | 0 |
+| 155 | Botas Imperiais | boots | 0 | 0 | 0 | 0 |
+| 157 | Diadema da Tormenta | head | 12 | 12 | 12 | 12 |
+| 158 | Manto das Tempestades | coat | 12 | 12 | 0 | 0 |
+| 159 | Braçadeiras do Trovão | gloves | 0 | 0 | 0 | 0 |
+| 161 | Calças da Monção | legs | 0 | 12 | 0 | 0 |
+| 162 | Botas do Vendaval | boots | 0 | 0 | 0 | 0 |
+| 164 | Tiara da Maré Sagrada | head | 12 | 12 | 12 | 12 |
+| 165 | Vestes do Santuário Oceânico | coat | 12 | 12 | 0 | 0 |
+| 166 | Manoplas da Cura Profunda | gloves | 0 | 0 | 0 | 0 |
+| 168 | Saia/Pernas do Rito Marinho | legs | 0 | 12 | 0 | 0 |
+| 169 | Sandálias da Ressurgência | boots | 0 | 0 | 0 | 0 |
+| 171 | Tricórnio do Soberano | head | 12 | 12 | 12 | 12 |
+| 172 | Casaco da Grand Line | coat | 12 | 12 | 0 | 0 |
+| 173 | Manoplas Reais | gloves | 0 | 0 | 0 | 0 |
+| 175 | Calças do Conquistador | legs | 0 | 12 | 0 | 0 |
+| 176 | Botas da Supremacia | boots | 0 | 0 | 0 | 0 |
+| 178 | Coroa do Horizonte Final | head | 12 | 12 | 12 | 12 |
+| 179 | Armadura do Imperador | coat | 12 | 12 | 0 | 0 |
+| 180 | Manoplas da Vontade Absoluta | gloves | 0 | 0 | 0 | 0 |
+| 182 | Calças do Trono dos Mares | legs | 0 | 12 | 0 | 0 |
+| 183 | Botas do Horizonte Eterno | boots | 0 | 0 | 0 | 0 |
