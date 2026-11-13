@@ -21,14 +21,14 @@ await authDatabase(async f=>{
   gateway.listen(9445,'127.0.0.1');await once(gateway,'listening');browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});context=await browser.newContext({viewport:{width:1366,height:900}});const p=await context.newPage();p.on('dialog',async(d:any)=>{assert.equal(d.type(),'confirm');assert.match(d.message(),/Este personagem está sob controle/);await d.accept();});p.on('pageerror',(e:any)=>errors.push(e.stack||e.message));await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-final-acceptance'));
   await p.route(/^https?:\/\/(?!localhost:9445\/)/,(r:any)=>r.abort());
   await p.goto('https://localhost:9445/online/');await p.locator('#email').fill('acceptance@example.invalid');await p.locator('#password').fill('Fixture password only 123');await p.locator('#login-submit').click();await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#classStep [data-class=sword]').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();
-  await p.waitForFunction(()=>globalThis.MareGameSession?.data?.online?.battle&&globalThis.__mareDiagnostics?.().map.navigation.ready);await p.waitForFunction(()=>globalThis.__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});
+  await p.waitForFunction(()=>globalThis.MareGameSession?.data?.online?.battle&&globalThis.__mareDiagnostics?.().map.navigation.ready);await p.waitForFunction(()=>globalThis.__mareDiagnostics().lobby96.worldVisual?.state==='ready',null,{timeout:90000});
 
 
   simulations=createSimulationPool({databaseUrl:f.pool.options.connectionString!,counts:{solo:2,party:1},workerUrl:new URL('../apps/game-server/dist/simulation-worker.js',import.meta.url)});await simulations.start();
   await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
   await p.evaluate(()=>MareGameSession.command('world.travel',{islandId:'dawn'}));
   await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
-  await p.waitForTimeout(2000);
+  await p.waitForFunction(()=>__mareDiagnostics().lobby96.worldVisual?.state==='ready'&&Number.isFinite(__mareDiagnostics().onlineSampledAt),null,{timeout:90000});
   await p.waitForFunction(()=>/^\d+ ms$/.test(document.querySelector('#onlinePerformance strong')?.textContent||'')&&/^\d+ FPS$/.test(document.querySelector('#onlinePerformance span:not(.online-updates)')?.textContent||''));
   await p.evaluate(()=>{const original=globalThis.MareEmberRenderer.monster;globalThis.monsterProbe=[];globalThis.MareEmberRenderer.monster=function(ctx,m,...args){if(m.alive)globalThis.monsterProbe.push({id:m.id,x:m.x,y:m.y,moving:m.moving,phase:m.emberElapsed});return original.call(this,ctx,m,...args);};});
   assert.equal(await p.evaluate(()=>Number.isFinite(__mareDiagnostics().onlineSampledAt)),true,'motion probes need the time associated with the drawn pose');
@@ -38,7 +38,7 @@ await authDatabase(async f=>{
    await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
    await p.evaluate(id=>MareGameSession.command(id==='lobby'?'world.return':'world.travel',id==='lobby'?{}:{islandId:'dawn'}),mapId);
    await p.waitForFunction(id=>__mareDiagnostics().map.id===id&&__mareDiagnostics().map.navigation.ready,mapId);
-   await p.waitForTimeout(1000);
+   await p.waitForFunction(()=>__mareDiagnostics().lobby96.worldVisual?.state==='ready',null,{timeout:90000});
    const screen=await p.evaluate(()=>{const d=__mareDiagnostics(),r=document.querySelector('#worldCanvas').getBoundingClientRect();return {x:d.hero.x,y:d.hero.y,camera:d.camera,rect:{x:r.x,y:r.y,width:r.width,height:r.height}};});
    const nav=require('../world-catalog.cjs').load().navigation(mapId);
    let target:any;
