@@ -2,9 +2,9 @@
 
 Actual select()+prepareFamily() gate for M/F, original/light+black and registered clothing sets. Resolver coverage is NOT visual approval, complete render verification, or arbitrary wardrobe support. Item0 means unarmed base, not equipment.
 
-Generated: 2026-11-12T23:43:30.526Z
+Generated: 2026-11-13T00:01:20.187Z
 
-104/2016 tested identity/clothing cases pass the complete idle+walk+attack gate. This is not a visual-pass rate.
+112/2016 tested identity/clothing cases pass the complete idle+walk+attack gate. This is not a visual-pass rate.
 
 | Item | Male original | Male light/black | Female original | Female light/black |
 |---|---|---|---|---|
@@ -55,12 +55,12 @@ Generated: 2026-11-12T23:43:30.526Z
 
 - {}: 90/168 complete cases.
 - {"pants":133}: 8/168 complete cases.
-- {"boots":155,"gloves":152,"pants":147,"torso":6}: 0/168 complete cases.
-- {"boots":155,"gloves":152,"pants":154,"torso":151}: 0/168 complete cases.
+- {"boots":155,"gloves":152,"pants":147,"torso":6}: 1/168 complete cases.
+- {"boots":155,"gloves":152,"pants":154,"torso":151}: 1/168 complete cases.
 - {"boots":134,"gloves":152,"pants":133,"torso":151}: 0/168 complete cases.
 - {"boots":9,"gloves":152,"pants":133,"torso":151}: 0/168 complete cases.
 - {"boots":148,"gloves":152,"pants":133,"torso":151}: 0/168 complete cases.
-- {"boots":9,"pants":133}: 2/168 complete cases.
+- {"boots":9,"pants":133}: 8/168 complete cases.
 - {"boots":148,"pants":133}: 0/168 complete cases.
 - {"boots":9,"pants":133,"torso":151}: 2/168 complete cases.
 - {"pants":133,"torso":151}: 2/168 complete cases.

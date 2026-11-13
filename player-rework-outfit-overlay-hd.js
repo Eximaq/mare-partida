@@ -1,7 +1,7 @@
 /* Strict native overlay adapter. Original body/weapon PNGs are never modified. */
 (function(root){'use strict';
 const hash=s=>String(s||'').match(/[a-f0-9]{64}/)?.[0];
-function adapt(weapon,outfit,{assetPrefix='../rework-modular-outfits-hd/assets/'}={}){
+function adapt(weapon,outfit,{assetPrefix='../rework-modular-outfits-hd/assets/',bootsOutfit=null}={}){
  const c=outfit?.overlayContract,b=weapon?.basePack,p=b?.pack,d=p?.directions?.[weapon?.direction];
  if(!Number.isInteger(weapon?.item)||weapon.body!=='male'||!p||!d||!c||c.schema!=='native-equipment-overlay-v1'||c.item!==133||c.slot!=='pants'||c.action!=='attack-unarmed'||outfit.body!==weapon.body||c.direction!==weapon.direction||c.density!==p.density||c.binding?.kind!=='fixed')return null;
  const bodyLayer=d.layers.find(l=>l.id==='skin-arms-phase'),frames=bodyLayer?.frames;
@@ -14,7 +14,13 @@ function adapt(weapon,outfit,{assetPrefix='../rework-modular-outfits-hd/assets/'
  // Drop only naked-source rounding corrections. Authored replacement masks may be
  // the entire weapon/hand and MUST remain above the garment.
  r.states=r.states.map(s=>({...s,layers:s.layers.filter(l=>l.role!=='rounding-correction'),canvasRoundingPatch:[],rgbaExact:false}));
- r.id+='-pants133-candidate';r.equipment={weapon:weapon.item,pants:133};r.outfitOverlay={id:outfit.id,sourceSHA256:key,bodyFramesVerified:true,candidate:true,requiresVisualCalibration:true};
+ if(bootsOutfit){
+  if(bootsOutfit.equipment?.boots!==9||bootsOutfit.equipment?.pants!==133||Object.keys(bootsOutfit.equipment).length!==2||bootsOutfit.body!==weapon.body||bootsOutfit.direction!==weapon.direction||bootsOutfit.action!=='attack-unarmed'||bootsOutfit.bootsOverlay?.baseRecord!==outfit.id)return null;
+  const bd=bootsOutfit.pack.directions[weapon.direction],ids=bootsOutfit.bootsOverlay.sourceLayerIds,layers=bd.layers.filter(l=>ids.includes(l.id));if(layers.length!==ids.length||layers.some(l=>l.binding?.kind!=='fixed'||l.frames||!hash(l.source)))return null;
+  for(const layer of layers){rd.layers.push({...layer,slot:'pants',depth:2.5});r.basePack.images[layer.source]=assetPrefix+layer.source+'.png';}
+  r.bootsOverlay={item:9,sourceRecord:bootsOutfit.id,sourceLayerIds:ids,candidate:true};
+ }
+ r.id+='-pants133-candidate';r.equipment={weapon:weapon.item,pants:133,...(bootsOutfit?{boots:9}:{})};r.outfitOverlay={id:outfit.id,sourceSHA256:key,bodyFramesVerified:true,candidate:true,requiresVisualCalibration:true};
  return r;
 }
 const api={adapt};root.MareReworkOutfitOverlayHD=api;if(typeof module!=='undefined')module.exports=api;

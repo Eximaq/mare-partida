@@ -1,7 +1,7 @@
 {
   "catalogCycles": 1000,
   "items": 42,
-  "scope": "Audit of approved catalog versus current nativeHD integration; NOT claim all implemented",
+  "scope": "Historical approved-source catalog evidence plus current measured native runtime family gates. A resolvable family is not a visual approval or arbitrary outfit compatibility.",
   "records": [
     {
       "item": 0,
@@ -40,12 +40,19 @@
           "otherLayerPNGs": 176
         }
       ],
-      "nativeHD": "base/unarmed source ID, not an equipped weapon",
-      "gap": "Native base coverage is tracked independently from equipment families.",
+      "nativeHD": "Base/unarmed (not an equipable weapon); current complete families: male/original, male/light_black, female/original",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": true,
         "female-original": true,
-        "male-light_black": true
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "base/unarmed source ID, not an equipped weapon",
+        "gap": "Native base coverage is tracked independently from equipment families.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -99,12 +106,19 @@
           "otherLayerPNGs": 20
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
-      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+        "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -137,12 +151,19 @@
           "otherLayerPNGs": 128
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -175,12 +196,19 @@
           "otherLayerPNGs": 128
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -248,12 +276,19 @@
           "otherLayerPNGs": 15
         }
       ],
-      "nativeHD": "complete male ORIGINAL idle/walk/attack four directions; new original-body registration candidates, not new approval",
-      "gap": "Other saved palettes/outfits remain identity-restricted. Prior dressed SOUTH source remains archived and excluded for original body.",
+      "nativeHD": "Current complete runtime families: male/original, male/light_black, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": true,
         "female-original": true,
-        "male-light_black": true
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male ORIGINAL idle/walk/attack four directions; new original-body registration candidates, not new approval",
+        "gap": "Other saved palettes/outfits remain identity-restricted. Prior dressed SOUTH source remains archived and excluded for original body.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -293,12 +328,19 @@
           "otherLayerPNGs": 11
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack four directions; explicit registration candidates, original raster preserved",
-      "gap": "Other palettes/outfits remain restricted. Adapted placements are candidates, not new approval.",
+      "nativeHD": "Current complete runtime families: male/original, male/light_black, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": true,
         "female-original": true,
-        "male-light_black": true
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack four directions; explicit registration candidates, original raster preserved",
+        "gap": "Other palettes/outfits remain restricted. Adapted placements are candidates, not new approval.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -338,12 +380,19 @@
           "otherLayerPNGs": 192
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -390,12 +439,19 @@
           "otherLayerPNGs": 192
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -435,12 +491,19 @@
           "otherLayerPNGs": 8
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -465,12 +528,19 @@
           "otherLayerPNGs": 8
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -488,12 +558,19 @@
       ],
       "archives": 5,
       "layerEvidence": [],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -533,12 +610,19 @@
           "otherLayerPNGs": 64
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack all4directions; existing orb/hand interface adapted, head-source differences explicit",
-      "gap": "Other saved skins/outfits/hair need matching identity; candidate grip calibration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack all4directions; existing orb/hand interface adapted, head-source differences explicit",
+        "gap": "Other saved skins/outfits/hair need matching identity; candidate grip calibration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -571,12 +655,19 @@
           "otherLayerPNGs": 36
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -616,12 +707,19 @@
           "otherLayerPNGs": 36
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -661,12 +759,19 @@
           "otherLayerPNGs": 176
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
-      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+        "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -720,12 +825,19 @@
           "otherLayerPNGs": 20
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
-      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+        "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -758,12 +870,19 @@
           "otherLayerPNGs": 17
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack four directions; explicit registration candidates, original raster preserved",
-      "gap": "Other palettes/outfits remain restricted. Adapted placements are candidates, not new approval.",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack four directions; explicit registration candidates, original raster preserved",
+        "gap": "Other palettes/outfits remain restricted. Adapted placements are candidates, not new approval.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -803,12 +922,19 @@
           "otherLayerPNGs": 176
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
-      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+        "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -855,12 +981,19 @@
           "otherLayerPNGs": 192
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -907,12 +1040,19 @@
           "otherLayerPNGs": 192
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -959,12 +1099,19 @@
           "otherLayerPNGs": 192
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1011,12 +1158,19 @@
           "otherLayerPNGs": 192
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1056,12 +1210,19 @@
           "otherLayerPNGs": 40
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack; supported identity only",
-      "gap": "Other identities and outfits need matching sources",
+      "nativeHD": "Current complete runtime families: male/original, male/light_black, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": true,
         "female-original": true,
-        "male-light_black": true
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack; supported identity only",
+        "gap": "Other identities and outfits need matching sources",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1094,12 +1255,19 @@
           "otherLayerPNGs": 96
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1139,12 +1307,19 @@
           "otherLayerPNGs": 32
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack all4directions; existing-source registration candidates",
-      "gap": "Custom skin compatibility requires separate hand-interface masks.",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack all4directions; existing-source registration candidates",
+        "gap": "Custom skin compatibility requires separate hand-interface masks.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1184,12 +1359,19 @@
           "otherLayerPNGs": 32
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1250,12 +1432,19 @@
           "otherLayerPNGs": 13
         }
       ],
-      "nativeHD": "complete male ORIGINAL idle/walk/attack four directions; new original-body registration candidates, not new approval",
-      "gap": "Other saved palettes/outfits remain identity-restricted. Prior dressed SOUTH source remains archived and excluded for original body.",
+      "nativeHD": "Current complete runtime families: male/original, male/light_black, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": true,
         "female-original": true,
-        "male-light_black": true
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male ORIGINAL idle/walk/attack four directions; new original-body registration candidates, not new approval",
+        "gap": "Other saved palettes/outfits remain identity-restricted. Prior dressed SOUTH source remains archived and excluded for original body.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1273,12 +1462,19 @@
       ],
       "archives": 4,
       "layerEvidence": [],
-      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
-      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+        "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1332,12 +1528,19 @@
           "otherLayerPNGs": 12
         }
       ],
-      "nativeHD": "complete male ORIGINAL idle/walk/attack four directions; new original-body registration candidates, not new approval",
-      "gap": "Other saved palettes/outfits remain identity-restricted. Prior dressed SOUTH source remains archived and excluded for original body.",
+      "nativeHD": "Current complete runtime families: male/original, male/light_black, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": true,
         "female-original": true,
-        "male-light_black": true
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male ORIGINAL idle/walk/attack four directions; new original-body registration candidates, not new approval",
+        "gap": "Other saved palettes/outfits remain identity-restricted. Prior dressed SOUTH source remains archived and excluded for original body.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1398,12 +1601,19 @@
           "otherLayerPNGs": 12
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack four directions; original SOUTH composite, candidate lateral registration",
-      "gap": "Other palettes/outfits remain restricted; no new approval inferred.",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack four directions; original SOUTH composite, candidate lateral registration",
+        "gap": "Other palettes/outfits remain restricted; no new approval inferred.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1436,12 +1646,19 @@
           "otherLayerPNGs": 32
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
-      "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack four directions; source identity retained, explicit registration candidates",
+        "gap": "Other palettes/outfits remain restricted. Female variants tracked separately. No new approval inferred.",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1467,12 +1684,19 @@
           "otherLayerPNGs": 48
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1490,12 +1714,19 @@
       ],
       "archives": 5,
       "layerEvidence": [],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1513,12 +1744,19 @@
       ],
       "archives": 5,
       "layerEvidence": [],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1551,12 +1789,19 @@
           "otherLayerPNGs": 36
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1596,12 +1841,19 @@
           "otherLayerPNGs": 64
         }
       ],
-      "nativeHD": "complete male original idle/walk/attack all4directions; existing orb/hand interface adapted, head-source differences explicit",
-      "gap": "Other saved skins/outfits/hair need matching identity; candidate grip calibration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "complete male original idle/walk/attack all4directions; existing orb/hand interface adapted, head-source differences explicit",
+        "gap": "Other saved skins/outfits/hair need matching identity; candidate grip calibration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1634,12 +1886,19 @@
           "otherLayerPNGs": 36
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1672,12 +1931,19 @@
           "otherLayerPNGs": 36
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1710,12 +1976,19 @@
           "otherLayerPNGs": 36
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1748,12 +2021,19 @@
           "otherLayerPNGs": 36
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1786,12 +2066,19 @@
           "otherLayerPNGs": 36
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     },
     {
@@ -1824,32 +2111,41 @@
           "otherLayerPNGs": 73
         }
       ],
-      "nativeHD": "not wired to native HD renderer",
-      "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+      "nativeHD": "Current complete runtime families: male/original, female/original. Resolver coverage only; derived registrations remain candidates.",
+      "gap": "Only identities and clothing combinations measured in RENDERER_FAMILY_MATRIX.json are covered. Unsupported palettes/outfits remain explicit gaps, not rejected source art. No new visual approval inferred.",
       "nativeRuntimeFamily": {
         "male-original": true,
+        "male-light_black": false,
         "female-original": true,
-        "male-light_black": false
+        "female-light_black": false
+      },
+      "historicalIntegrationAssessment": {
+        "nativeHD": "not wired to native HD renderer",
+        "gap": "Need matching base identity, layer registration and complete directional carry/action family; archive/composite presence is not integration",
+        "evidenceDate": "historical snapshot; exact date not recorded",
+        "currentRuntimeEvidence": false
       }
     }
   ],
-  "completeOriginalIdentityFamilies": [
-    1,
-    4,
-    5,
-    17,
-    67,
-    68,
-    69,
-    70,
-    109,
-    111,
-    113,
-    114,
-    115,
-    116,
-    117,
-    122
-  ],
-  "catalogIdNote": "42 catalog IDs include ID0 (unarmed/base); this is not a count of42 equipped weapons."
+  "completeOriginalIdentityFamilies": {
+    "male": 41,
+    "female": 41
+  },
+  "catalogIdNote": "42 catalog IDs include ID0 (unarmed/base); this is not a count of42 equipped weapons.",
+  "equipmentItemCount": 41,
+  "catalogIdCount": 42,
+  "runtimeEvidence": {
+    "file": "RENDERER_FAMILY_MATRIX.json",
+    "generatedAt": "2026-11-13T00:01:20.187Z",
+    "method": "select() and prepareFamily(), idle/walk/attack in four directions",
+    "fingerprints": {
+      "tools/rework-base-hd/index.json": "baef34f1ab9de0e3a1d4ca46a6ec907caa3fd61b9366f39a79b722a139c7e7a0",
+      "tools/rework-weapon-layers-hd/index.json": "c966c9c1b17ada459702a2d2db47938063fb1bf5152c0c7b7fe785c2ac8e8807",
+      "tools/rework-weapon-layers-hd/carry-binding-plan.json": "c2b1794b112d266518c88a3fa719c03316a42ea58b7dc3546cac0dc2d2df46a2",
+      "tools/rework-modular-outfits-hd/index.json": "5128b3978796da65aec1da204485a3f4c1a864c54111aa5df6429ff507e485e4",
+      "player-rework-native-hd.js": "eb8f85c0c0b1c59b6996bfc926b8d55b8474d41d0ac11f56981ec55d45bcbcfd",
+      "player-rework-weapon-native-hd.js": "7a602be72603e5ee172f519c5f076f9ff8a9bfd73ce331777b0610752f7a462f",
+      "player-rework-weapon-carry-hd.js": "146b29f43f8ed361b8092fe782800795da2f09f1a91198b58334523bb4335e0e"
+    }
+  }
 }

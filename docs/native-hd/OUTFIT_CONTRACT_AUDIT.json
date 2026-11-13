@@ -1,8 +1,8 @@
 {
   "schema": "native-outfit-contract-audit-v1",
-  "records": 97,
+  "records": 105,
   "sets": 11,
-  "completeUnarmedSets": 4,
+  "completeUnarmedSets": 6,
   "scope": "Exact saved equipment sets only. Candidate flags are not artistic approval. No universal armor coverage or absent-art inference.",
   "families": [
     {
@@ -61,9 +61,17 @@
         "female_6_south_v24_source-pack",
         "female_6_south_v24_source-pack-idle-frame0",
         "female_6_west_v42_source-pack",
-        "female_6_west_v42_source-pack-idle-frame0"
+        "female_6_west_v42_source-pack-idle-frame0",
+        "female-outfit6-147-152-155-south-registered-punch-native-candidate",
+        "female-outfit6-147-152-155-north-registered-punch-native-candidate",
+        "female-outfit6-147-152-155-east-registered-punch-native-candidate",
+        "female-outfit6-147-152-155-west-registered-punch-native-candidate"
       ],
       "states": [
+        "attack-unarmed:east",
+        "attack-unarmed:north",
+        "attack-unarmed:south",
+        "attack-unarmed:west",
         "idle:east",
         "idle:north",
         "idle:south",
@@ -73,15 +81,10 @@
         "walk:south",
         "walk:west"
       ],
-      "candidateRecords": 8,
-      "missingFamilyStates": [
-        "attack-unarmed:south",
-        "attack-unarmed:north",
-        "attack-unarmed:east",
-        "attack-unarmed:west"
-      ],
-      "completeUnarmedFamily": false,
-      "scope": "partial-only-no-complete-family"
+      "candidateRecords": 12,
+      "missingFamilyStates": [],
+      "completeUnarmedFamily": true,
+      "scope": "native-unarmed-family-contract"
     },
     {
       "body": "female",
@@ -99,9 +102,17 @@
         "female_outfit151-154-152-155_south_materials-v3_source-pack",
         "female_outfit151-154-152-155_south_materials-v3_source-pack-idle-frame0",
         "female_outfit151-154-152-155_west_materials-v3_source-pack",
-        "female_outfit151-154-152-155_west_materials-v3_source-pack-idle-frame0"
+        "female_outfit151-154-152-155_west_materials-v3_source-pack-idle-frame0",
+        "female-outfit151-154-152-155-south-registered-punch-native-candidate",
+        "female-outfit151-154-152-155-north-registered-punch-native-candidate",
+        "female-outfit151-154-152-155-east-registered-punch-native-candidate",
+        "female-outfit151-154-152-155-west-registered-punch-native-candidate"
       ],
       "states": [
+        "attack-unarmed:east",
+        "attack-unarmed:north",
+        "attack-unarmed:south",
+        "attack-unarmed:west",
         "idle:east",
         "idle:north",
         "idle:south",
@@ -111,15 +122,10 @@
         "walk:south",
         "walk:west"
       ],
-      "candidateRecords": 8,
-      "missingFamilyStates": [
-        "attack-unarmed:south",
-        "attack-unarmed:north",
-        "attack-unarmed:east",
-        "attack-unarmed:west"
-      ],
-      "completeUnarmedFamily": false,
-      "scope": "partial-only-no-complete-family"
+      "candidateRecords": 12,
+      "missingFamilyStates": [],
+      "completeUnarmedFamily": true,
+      "scope": "native-unarmed-family-contract"
     },
     {
       "body": "male",
@@ -422,26 +428,6 @@
     }
   ],
   "engineeringGaps": [
-    {
-      "body": "female",
-      "equipmentSets": [
-        {
-          "torso": 6,
-          "pants": 147,
-          "gloves": 152,
-          "boots": 155
-        },
-        {
-          "torso": 151,
-          "pants": 154,
-          "gloves": 152,
-          "boots": 155
-        }
-      ],
-      "exists": "Native512 authored walk4dirs plus exact first-frame idle",
-      "missing": "Registered attack sources for the same full saved equipment identity. Existing clothed composites include baked torso/lower-body; cannot substitute naked attack or arbitrary donor body.",
-      "familyGateEffect": "Not normal-world enabled until attack closure. Source and review availability is not live integration."
-    },
     {
       "body": "male",
       "equipmentSets": [

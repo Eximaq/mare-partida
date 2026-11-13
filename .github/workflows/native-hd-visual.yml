@@ -43,9 +43,60 @@ jobs:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/
           MARE_EVIDENCE_DIR: artifacts/native-hd-game
         run: node tests/native_hd_game_browser.cjs
+      - name: Split evidence into downloadable native-resolution groups
+        if: always()
+        run: python tools/split_native_hd_evidence.py artifacts/native-hd-game artifacts/native-hd-parts
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: native-hd-real-game
-          path: artifacts/native-hd-game
+          name: native-hd-runtime-report
+          path: artifacts/native-hd-game/*.json
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part0
+          path: artifacts/native-hd-parts/part0
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part1
+          path: artifacts/native-hd-parts/part1
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part2
+          path: artifacts/native-hd-parts/part2
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part3
+          path: artifacts/native-hd-parts/part3
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part4
+          path: artifacts/native-hd-parts/part4
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part5
+          path: artifacts/native-hd-parts/part5
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part6
+          path: artifacts/native-hd-parts/part6
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part7
+          path: artifacts/native-hd-parts/part7
           if-no-files-found: ignore

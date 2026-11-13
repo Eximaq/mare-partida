@@ -11,6 +11,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
   if(appearance.hair&&!['original'].includes(appearance.hair)||appearance.face&&!['original','face-gentle'].includes(appearance.face)||appearance.eyeColor&&!['original','blue'].includes(appearance.eyeColor))return null;
   const r=index.records.find(r=>r.body===canonical(body)&&r.direction===direction&&r.action===action&&(!r.candidate||allowCandidates)&&Object.keys(canonicalEquipment).length===Object.keys(r.equipment).length&&Object.entries(r.equipment).every(([slot,item])=>canonicalEquipment[slot]===item))||null;
   if(!r)return null;const skin=appearance.skin||appearance.skinColor,hair=appearance.hairColor;
+  if(r.paletteSupportedMaterials&&(skin&&skin!=='original'&&!r.paletteSupportedMaterials.includes('skin')||hair&&hair!=='original'&&!r.paletteSupportedMaterials.includes('hair')))return null;
   if(skin&&skin!=='original'||hair&&hair!=='original'){if(!r.paletteSourceMasks||skin&&skin!=='original'&&!appearanceAPI?.skins[skin]||hair&&hair!=='original'&&!appearanceAPI?.hairs[hair])return null;return {...r,id:r.id+':palette:'+String(skin||'original')+':'+String(hair||'original'),sourceId:r.id,colorAppearance:{skin:skin||'original',hairColor:hair||'original'}};}return r;
  }
  const sources=(r,frame)=>frame===undefined?r.sourceRefs:[...new Set(r.pack.directions[r.direction].layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean))];

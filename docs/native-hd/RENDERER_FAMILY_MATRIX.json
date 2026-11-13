@@ -1,17 +1,17 @@
 {
   "schema": "native-world-family-coverage-v1",
-  "generatedAt": "2026-11-12T23:43:30.526Z",
+  "generatedAt": "2026-11-13T00:01:20.187Z",
   "scope": "Actual select()+prepareFamily() gate for M/F, original/light+black and registered clothing sets. Resolver coverage is NOT visual approval, complete render verification, or arbitrary wardrobe support. Item0 means unarmed base, not equipment.",
   "equipmentItemCount": 41,
   "clothingSetCount": 12,
   "caseCount": 2016,
-  "completeCaseCount": 104,
+  "completeCaseCount": 112,
   "fingerprints": {
     "tools/rework-base-hd/index.json": "baef34f1ab9de0e3a1d4ca46a6ec907caa3fd61b9366f39a79b722a139c7e7a0",
     "tools/rework-weapon-layers-hd/index.json": "c966c9c1b17ada459702a2d2db47938063fb1bf5152c0c7b7fe785c2ac8e8807",
     "tools/rework-weapon-layers-hd/carry-binding-plan.json": "c2b1794b112d266518c88a3fa719c03316a42ea58b7dc3546cac0dc2d2df46a2",
-    "tools/rework-modular-outfits-hd/index.json": "17bfbd38ff120d8d9f5dc76fba22bd6e64cc2da991f7d3f892095b54e2c8304f",
-    "player-rework-native-hd.js": "02e38a84e272938619f1b70628868039a679ffd487302066b96497cf29a3831c",
+    "tools/rework-modular-outfits-hd/index.json": "5128b3978796da65aec1da204485a3f4c1a864c54111aa5df6429ff507e485e4",
+    "player-rework-native-hd.js": "eb8f85c0c0b1c59b6996bfc926b8d55b8474d41d0ac11f56981ec55d45bcbcfd",
     "player-rework-weapon-native-hd.js": "7a602be72603e5ee172f519c5f076f9ff8a9bfd73ce331777b0610752f7a462f",
     "player-rework-weapon-carry-hd.js": "146b29f43f8ed361b8092fe782800795da2f09f1a91198b58334523bb4335e0e"
   },
@@ -1532,12 +1532,10 @@
         "pants": 147,
         "torso": 6
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
       "sources": [
         {
           "action": "idle",
@@ -1586,6 +1584,30 @@
           "direction": "west",
           "id": "female_6_west_v42_source-pack",
           "provider": "outfit"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "female-outfit6-147-152-155-south-registered-punch-native-candidate",
+          "provider": "outfit"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "female-outfit6-147-152-155-north-registered-punch-native-candidate",
+          "provider": "outfit"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "female-outfit6-147-152-155-east-registered-punch-native-candidate",
+          "provider": "outfit"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "female-outfit6-147-152-155-west-registered-punch-native-candidate",
+          "provider": "outfit"
         }
       ]
     },
@@ -1599,12 +1621,10 @@
         "pants": 154,
         "torso": 151
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
       "sources": [
         {
           "action": "idle",
@@ -1652,6 +1672,30 @@
           "action": "walk",
           "direction": "west",
           "id": "female_outfit151-154-152-155_west_materials-v3_source-pack",
+          "provider": "outfit"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "female-outfit151-154-152-155-south-registered-punch-native-candidate",
+          "provider": "outfit"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "female-outfit151-154-152-155-north-registered-punch-native-candidate",
+          "provider": "outfit"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "female-outfit151-154-152-155-east-registered-punch-native-candidate",
+          "provider": "outfit"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "female-outfit151-154-152-155-west-registered-punch-native-candidate",
           "provider": "outfit"
         }
       ]
@@ -13213,21 +13257,84 @@
         "boots": 9,
         "pants": 133
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "carry15-male-idle-original-south-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "carry15-male-idle-original-north-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "carry15-male-idle-original-east-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "carry15-male-idle-original-west-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "carry15-male-walk-south-r7-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "carry15-v7-male-walk-drawn-north-north-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "carry15-v7-male-walk-drawn-east-east-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "carry15-v7-male-walk-drawn-east-east-mirror-west-candidate-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "cannon15-south-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "cannon15-north-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "cannon15-east-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "cannon15-west-native-layers-pants133-candidate",
+          "provider": "weapon"
+        }
+      ]
     },
     {
       "item": 15,
@@ -30634,21 +30741,84 @@
         "boots": 9,
         "pants": 133
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "carry109-male-idle-original-south-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "carry109-male-idle-original-north-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "carry109-male-idle-original-east-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "carry109-male-idle-original-west-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "carry109-male-walk-south-r7-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "carry109-v7-male-walk-drawn-north-north-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "carry109-v7-male-walk-drawn-east-east-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "carry109-v7-male-walk-drawn-east-east-mirror-west-candidate-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "gauntlet109-south-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "gauntlet109-north-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "gauntlet109-east-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "gauntlet109-west-native-layers-pants133-candidate",
+          "provider": "weapon"
+        }
+      ]
     },
     {
       "item": 109,
@@ -31056,21 +31226,84 @@
         "boots": 9,
         "pants": 133
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "carry109-male-idle-original-south-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "carry109-male-idle-original-north-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "carry109-male-idle-original-east-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "carry109-male-idle-original-west-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "carry109-male-walk-south-r7-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "carry109-v7-male-walk-drawn-north-north-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "carry109-v7-male-walk-drawn-east-east-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "carry109-v7-male-walk-drawn-east-east-mirror-west-candidate-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "gauntlet109-south-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "gauntlet109-north-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "gauntlet109-east-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "gauntlet109-west-native-layers-pants133-candidate",
+          "provider": "weapon"
+        }
+      ]
     },
     {
       "item": 109,
@@ -33443,21 +33676,84 @@
         "boots": 9,
         "pants": 133
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "carry111-male-idle-original-south-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "carry111-male-idle-original-north-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "carry111-male-idle-original-east-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "carry111-male-idle-original-west-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "carry111-male-walk-south-r7-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "carry111-v7-male-walk-drawn-north-north-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "carry111-v7-male-walk-drawn-east-east-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "carry111-v7-male-walk-drawn-east-east-mirror-west-candidate-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "gauntlet111-south-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "gauntlet111-north-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "gauntlet111-east-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "gauntlet111-west-native-layers-pants133-candidate",
+          "provider": "weapon"
+        }
+      ]
     },
     {
       "item": 111,
@@ -34816,21 +35112,84 @@
         "boots": 9,
         "pants": 133
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "carry112-male-idle-original-south-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "carry112-male-idle-original-north-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "carry112-male-idle-original-east-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "carry112-male-idle-original-west-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "carry112-male-walk-south-r7-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "carry112-v7-male-walk-drawn-north-north-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "carry112-v7-male-walk-drawn-east-east-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "carry112-v7-male-walk-drawn-east-east-mirror-west-candidate-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "gauntlet112-south-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "gauntlet112-north-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "gauntlet112-east-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "gauntlet112-west-native-layers-pants133-candidate",
+          "provider": "weapon"
+        }
+      ]
     },
     {
       "item": 112,
@@ -41637,21 +41996,84 @@
         "boots": 9,
         "pants": 133
       },
-      "completeFamily": false,
-      "attack": null,
-      "missing": [
-        "idle/south",
-        "idle/north",
-        "idle/east",
-        "idle/west",
-        "walk/south",
-        "walk/north",
-        "walk/east",
-        "walk/west",
-        "four-direction-attack"
-      ],
-      "reason": "Incomplete native family: no compatible four-direction attack",
-      "sources": []
+      "completeFamily": true,
+      "attack": "attack-unarmed",
+      "missing": [],
+      "reason": null,
+      "sources": [
+        {
+          "action": "idle",
+          "direction": "south",
+          "id": "carry117-male-idle-original-south-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "north",
+          "id": "carry117-male-idle-original-north-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "east",
+          "id": "carry117-male-idle-original-east-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "idle",
+          "direction": "west",
+          "id": "carry117-male-idle-original-west-from-walk0-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "south",
+          "id": "carry117-male-walk-south-r7-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "north",
+          "id": "carry117-v7-male-walk-drawn-north-north-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "east",
+          "id": "carry117-v7-male-walk-drawn-east-east-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "walk",
+          "direction": "west",
+          "id": "carry117-v7-male-walk-drawn-east-east-mirror-west-candidate-pants133-candidate",
+          "provider": "outfit-carry"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "south",
+          "id": "arm117-south-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "north",
+          "id": "arm117-north-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "east",
+          "id": "arm117-east-native-layers-pants133-candidate",
+          "provider": "weapon"
+        },
+        {
+          "action": "attack-unarmed",
+          "direction": "west",
+          "id": "arm117-west-native-layers-pants133-candidate",
+          "provider": "weapon"
+        }
+      ]
     },
     {
       "item": 117,

@@ -30,3 +30,12 @@ Original bytes are delivered through same-origin ZIPs with ZIP SHA256, CRC and p
 Female fused head+hair sources do not yet have a proven removable ownership mask matching named hairstyles. Original male hairstyle is not pixel-identical to named adjusted styles. Head18/19 lack four-direction records. Some female clothing attack ownership/identity contracts are unresolved even though their approved walking PNGs exist. These are not silently relabeled as mere calibration or completed replacement. Source catalogs are preserved for continued recovery without unnecessary regeneration.
 
 PR307 remains a draft integration checkpoint, without merge. Full task completion is distinct from publication of this checkpoint.
+
+## Consolidated wardrobe / head checkpoint after 4ec945d
+
+- F6/147/152/155 and F151/154/152/155 now have complete original-skin idle/walk/unarmed-attack families.64 attack frames are explicitly derived native640 candidate registrations, not newly approved source artwork. The F6 core occlusion of original forearms was corrected and regression-tested.
+- Both female outfit families preserve clothing and skin while recoloring proven original-hair ownership only (392 states). Other skin colors remain refused, not aliased to original.
+- Original male hair supports eight existing helmet IDs129/136/143/150/157/164/171/178 via exact-head proof and native gear-only alpha composition. This candidate calibration does not hide original hair outside actual gear alpha or replace the hairstyle.
+- Five proven male gauntlet families15/109/111/112/117 now compose pants133+boots9 without changing body, equipment, or source PNGs.
+- Local verification:147 native HD tests,152 archives/7467 PNG entries with size/SHA/CRC checks, actual Pages build. Expanded real-game capture workflow must run on the new commit; local canvas tests are not gameplay screenshots.
+- Complete-family gate stays in force. No silent old-body attack switch or save mutation. Named female hair/headgear requires further legitimate head ownership: current fused original face does not match the alternate authored headBase. This is not universal wardrobe/palette support.
