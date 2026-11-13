@@ -148,6 +148,8 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(r.basePack){const p=r.basePack.pack,d=p.directions[r.direction],map=new Map();
    const underBody=r.equipmentBehindBody||r.approvedSouthHead;
    const target=underBody?makeCanvas(w,h).getContext('2d'):ctx;
+   const headOffset=r.headOverlayOffset??[0,0];
+   if(!Array.isArray(headOffset)||headOffset.length!==2||headOffset.some(v=>!Number.isInteger(v)||v<0)||headOffset.some(Boolean)&&(!r.approvedSouthHead||p.frame.width*4+2*headOffset[0]!==w||p.frame.height*4+2*headOffset[1]!==h))throw Error('Invalid approved head overlay padding');
    if(r.equipmentBehindBody)for(const l of s.layers)ctx.drawImage(image(l),0,0);
    for(const key of new Set(d.layers.filter(l=>!hiddenSlots.includes(l.slot)).map(l=>l.frames?.[Number(s.state)]||l.source))){const url=r.basePack.images[key],im=images.get(resource(url))||images.get(url);if(!im)throw Error('Missing base asset '+url);
    const pad=r.sourceRasterPadding?.[key];
@@ -179,7 +181,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   }
   const paletteImage=l=>{const original=image(l);if(!recolored||!l.paletteMask)return original;const api=root.MareAppearance96;if(!api)throw Error('Native material palette API unavailable');const tile=makeCanvas(original.width,original.height),tc=tile.getContext('2d');tc.drawImage(original,0,0);const pixels=tc.getImageData(0,0,tile.width,tile.height);tc.clearRect(0,0,tile.width,tile.height);tc.drawImage(image(l.paletteMask),0,0);const material=tc.getImageData(0,0,tile.width,tile.height).data;let rgba=pixels.data;for(const [channel,ramp]of [[0,api.skins[appearance.skin||appearance.skinColor]?.ramp],[1,api.hairs[appearance.hairColor]?.ramp]]){if(!ramp)continue;const mask=new Uint8Array(rgba.length/4);for(let p=0;p<mask.length;p++){const value=material[p*4+channel];mask[p]=l.skinMaskMode==='binary'&&channel===0&&value?root.MareNativeSkinHD.tone(rgba[p*4],rgba[p*4+1],rgba[p*4+2]):value;}rgba=api.recolor(rgba,mask,ramp);}pixels.data.set(rgba);tc.putImageData(pixels,0,0);return tile;};
   for(const l of r.equipmentBehindBody?[]:[...s.layers].sort((a,b)=>a.depth-b.depth)){
-   if(l.inFrontOfHead&&headOverlay){ctx.drawImage(headOverlay,0,0);headOverlay=null;}
+   if(l.inFrontOfHead&&headOverlay){ctx.drawImage(headOverlay,...(r.headOverlayOffset??[0,0]));headOverlay=null;}
    if(l.operation==='source-over'){ctx.save();if(l.mirrorX){ctx.translate(w,0);ctx.scale(-1,1);}let tile=paletteImage(l);
     const ramp=l.skinOnly&&root.MareAppearance96?.skins[appearance.skin||appearance.skinColor]?.ramp;
     if(ramp){const c=makeCanvas(w,h),cx=c.getContext('2d');cx.drawImage(tile,0,0);const d=cx.getImageData(0,0,w,h),api=root.MareAppearance96;d.data.set(api.recolor(d.data,root.MareNativeSkinHD.mask(d.data,w,'anatomy'),ramp));cx.putImageData(d,0,0);tile=c;}
@@ -205,7 +207,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
     sc.clearRect(0,0,w,h);sc.drawImage(image(l.mask),0,0);const mask=sc.getImageData(0,0,w,h).data,out=ctx.getImageData(0,0,w,h);for(let i=0;i<out.data.length;i+=4)if(mask[i]>0)out.data.set(patch.subarray(i,i+4),i);ctx.putImageData(out,0,0);
    }else throw Error('Unsupported atomic operation');
   }
-  if(headOverlay)ctx.drawImage(headOverlay,0,0);
+  if(headOverlay)ctx.drawImage(headOverlay,...(r.headOverlayOffset??[0,0]));
   if(!hiddenSlots.length&&!recolored&&s.canvasRoundingPatch?.length){const out=ctx.getImageData(0,0,w,h);for(const [pixel,red,green,blue,alpha] of s.canvasRoundingPatch){const i=pixel*4;out.data[i]=red;out.data[i+1]=green;out.data[i+2]=blue;out.data[i+3]=alpha;}ctx.putImageData(out,0,0);}
   return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4+renderOffset[0],y:r.pivot[1]*4+renderOffset[1]},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalScale:1,hairSeparated:r.hairSeparated,roundingCorrection:!hiddenSlots.length&&!recolored,roundingTolerance:hiddenSlots.length?1:0};}finally{ctx.restore();}
  }

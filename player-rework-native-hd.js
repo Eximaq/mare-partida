@@ -113,7 +113,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     if(approved?.id==='sword0-south-historical-attack')return {...approved,hdKind:'weapon'};
    }
   }
-  const approvedSouthAction={0:'attack-sword',5:'attack-firearm',111:'attack-unarmed',119:'attack-unarmed'}[weapon];
+  const approvedSouthAction={0:'attack-sword',1:'attack-sword',5:'attack-firearm',67:'attack-sword',68:'attack-sword',69:'attack-sword',111:'attack-unarmed',119:'attack-unarmed'}[weapon];
   if(canonical(a.body)==='male'&&o.direction==='south'&&o.action===approvedSouthAction&&
      Object.keys(equipment).length===1&&!player.__reworkSubset){
    const source=weaponRegistry?.approvedSouth(weapon);
