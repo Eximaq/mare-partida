@@ -11,6 +11,9 @@ const out=process.env.MARE_FORGE_EVIDENCE||path.join(os.tmpdir(),'mare-forge-hd'
 const errors=[];p.on('pageerror',e=>errors.push(e.message));
 const snapshot=()=>p.evaluate(()=>JSON.stringify({equipment:__forgeQA.game.equipment,inventory:__forgeQA.game.inventory,gold:__forgeQA.game.gold,materials:__forgeQA.game.materials,forgeSeq:__forgeQA.game.forgeSeq}));
 const before=await snapshot();
+const glass=await p.locator('#panelOverlay > .dialog').evaluate(e=>({width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height,border:getComputedStyle(e).borderImageSource,blur:getComputedStyle(e).backdropFilter}));
+assert.ok(glass.width<=1120&&glass.height<=660,'Forge stays compact on desktop: '+JSON.stringify(glass));
+assert.equal(glass.border,'none');assert.match(glass.blur,/blur/);
 const priorUpgrade=await p.evaluate(()=>{
  const q=__forgeQA, weapon=q.game.equipment.weapon, plus=weapon.plus;
  weapon.plus=7;q.render();return plus;
@@ -50,14 +53,19 @@ for(const [width,height] of [[1920,1080],[1672,940],[1448,1086],[1366,768],[1280
   assert.ok(!/Maré Partida/i.test(await p.locator('#panelOverlay').innerText()));
   assert.equal(await p.locator('[data-forge-tab][aria-selected=true]').count(),1);
   const overflow=await p.locator('.forge2-operation-content').evaluate(e=>e.scrollWidth-e.clientWidth);assert.ok(overflow<=2,JSON.stringify({width,height,tab,overflow}));
-  const fields=await p.locator('#dialogBody input,#dialogBody .ui-select-trigger').evaluateAll(xs=>xs.map(e=>getComputedStyle(e).backgroundColor));assert.ok(fields.every(x=>x==='rgb(7, 28, 37)'),'Forge fields use the approved petrol-blue surface');
+  const fields=await p.locator('#dialogBody input,#dialogBody .ui-select-trigger').evaluateAll(xs=>xs.map(e=>({frame:getComputedStyle(e).borderImageSource,font:getComputedStyle(e).fontFamily})));assert.ok(fields.every(x=>x.frame==='none'&&x.font.includes('Inter')),'Forge controls share the modern glass treatment');
   const legacy=await p.locator('#dialogBody img.item-icon').evaluateAll(xs=>xs.filter(i=>!i.getAttribute('src').includes('items-hd/')).map(i=>i.getAttribute('src')));assert.deepEqual(legacy,[]);
   for(const sel of ['.forge2-tabs','.forge2-operation']){
    const rect=await p.locator(sel).boundingBox();assert.ok(rect.x>=0&&rect.x+rect.width<=width+1,JSON.stringify({width,height,tab,sel,rect}));
   }
-  if(tab==='upgrade'&&width>=1280){
+  if(['upgrade','imbue','reforge'].includes(tab)&&width>=1280){
    const vertical=await p.locator('.forge2-operation-content').evaluate(e=>e.scrollHeight-e.clientHeight);
-   assert.ok(vertical<=2,JSON.stringify({width,height,vertical}));
+   assert.ok(vertical<=2,JSON.stringify({width,height,tab,vertical}));
+  }
+  if(tab==='upgrade'&&width===768){
+   const operation=await p.locator('.forge2-operation').boundingBox(),comparison=await p.locator('.forge-reference-sidebar').boundingBox(),action=await p.locator('[data-forge-action=upgrade]').boundingBox();
+   assert.ok(action.y+action.height<=operation.y+operation.height+1,'Tablet action stays inside its panel');
+   assert.ok(comparison.y>=operation.y+operation.height,'Tablet comparison cannot overlap the upgrade');
   }
   const action=p.locator('.forge2-operation-content [data-forge-action]').last();await action.scrollIntoViewIfNeeded();const rect=await action.boundingBox();assert.ok(rect.y>=0&&rect.y+rect.height<=height+1,JSON.stringify({width,height,tab,rect}));
   if(tab==='imbue'){await p.locator('.forge2-imbue-preview summary').click();assert.ok(await p.locator('.forge2-imbue-preview .forge2-preview').isVisible());await p.locator('.forge2-imbue-preview summary').click()}
@@ -66,23 +74,9 @@ for(const [width,height] of [[1920,1080],[1672,940],[1448,1086],[1366,768],[1280
    const operation=await p.locator('.forge2-operation').boundingBox();
    assert.ok(comparison.x>=operation.x+operation.width,'Comparison stays to the right of the upgrade');
    await p.locator('.forge2-operation-content').evaluate(e=>e.scrollTop=0);
-   const framePairs=[
-    ['#panelOverlay > .dialog','window'],
-    ['.forge2-selection','equipment'],
-    ['.forge2-operation','upgrade'],
-    ['.forge-reference-sidebar','comparison-panel'],
-    ['.forge-hd-art','smith'],
-   ];
-   for(const [selector,frame] of framePairs){
-    const result=await p.locator(selector).evaluate(async e=>{
-     const css=getComputedStyle(e), url=css.borderImageSource.slice(5,-2);
-     const image=new Image();image.src=url;await image.decode();
-     const box=e.getBoundingClientRect();
-     return {url,imageWidth:image.naturalWidth,imageHeight:image.naturalHeight,width:Math.round(box.width),height:Math.round(box.height)};
-    });
-    assert.ok(result.url.includes('/forge-reference/frames/'+frame+'.png'),JSON.stringify(result));
-    assert.equal(result.imageWidth,result.width*2);
-    assert.equal(result.imageHeight,result.height*2);
+   for(const selector of ['#panelOverlay > .dialog','.forge2-selection','.forge2-operation','.forge-reference-sidebar','.forge-hd-art']){
+    const frame=await p.locator(selector).evaluate(e=>({image:getComputedStyle(e).borderImageSource,width:parseFloat(getComputedStyle(e).borderTopWidth)}));
+    assert.ok(frame.image==='none'&&frame.width<=1,selector+' uses thin glass borders: '+JSON.stringify(frame));
    }
    await p.screenshot({path:path.join(out,'upgrade-desktop.png')});
    const chosen=await p.evaluate(()=>({head:__forgeQA.game.equipment.head.id,weapon:__forgeQA.game.equipment.weapon.id}));
@@ -129,6 +123,7 @@ assert.ok((await p.locator('.forge-fusion-stat-preview').innerText()).includes('
 await p.evaluate(()=>{const old=Math.random;Math.random=()=>{throw Error('Visual preview must not draw RNG')};try{__forgeQA.render()}finally{Math.random=old}});
 let buttonBox=await p.locator('[data-forge-action=fuseEquipment]').boundingBox();assert.ok(buttonBox.y+buttonBox.height<=940);
 let materialBox=await p.locator('.forge2-fusion-materials').boundingBox(),resultBox=await p.locator('.forge2-fusion-details').boundingBox();assert.ok(resultBox.x>=materialBox.x+materialBox.width);
+assert.ok(await p.locator('.forge-fusion-equipment .forge-result-scroll').evaluate(e=>e.scrollHeight<=e.clientHeight+2),'Desktop fusion shows costs, chance and result without scrolling');
 await p.locator('[data-forge-clear]').click();await p.locator('[data-forge-fusion-mode=pearls]').click();
 for(let i=0;i<5;i++)await p.locator('[data-forge-fusion-pearl=pearl_for_1]').click();
 assert.ok((await p.locator('.forge-pearl-result-bonus').innerText()).includes('+4%'));
