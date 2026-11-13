@@ -100,6 +100,10 @@ for(const [width,height] of [[1920,1080],[1672,940],[1448,1086],[1366,768],[1280
    await p.locator('[data-forge-item="'+chosen.weapon+'"]').click();
 
   }
+  if(tab==='reforge'){
+   const rows=await p.locator('.forge2-reforge-lines li').evaluateAll(xs=>xs.map(e=>({value:e.querySelector('span b').getBoundingClientRect().right,action:e.querySelector('[data-forge-action]').getBoundingClientRect().left})));
+   assert.ok(rows.every(r=>r.value+4<=r.action),JSON.stringify({width,height,rows}));
+  }
   if(width===390&&tab==='reforge')await p.screenshot({path:path.join(out,'mobile-reforge.png')});
  }
  console.log(width+'x'+height+': four tabs, HD images, reachable actions, no horizontal overflow');
