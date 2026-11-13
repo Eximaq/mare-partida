@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'contracts-board.js'
+      - 'crew-ui.*'
+      - 'tests/crew-online-browser.cjs'
       - 'contract-system.js'
       - 'apps/account-client/**'
       - 'game.js'
@@ -56,6 +58,8 @@ jobs:
           NODE_PATH=/tmp/mare-contracts-node/node_modules MARE_TEST_URL=http://127.0.0.1:8123/dist/ MARE_QA_DIR=/tmp/mare-contracts-visual node tests/contracts-board-browser.cjs
           NODE_PATH=/tmp/mare-contracts-node/node_modules MARE_TEST_URL=http://127.0.0.1:8123/dist/ MARE_QA_DIR=/tmp/mare-contracts-online node tests/contracts-online-browser.cjs
           NODE_PATH=/tmp/mare-contracts-node/node_modules MARE_TEST_URL=http://127.0.0.1:8123/dist/ MARE_QA_DIR=/tmp/mare-contracts-glass node tests/contracts-glass-browser.cjs
+      - name: Tripulação — navegação, bandeira e vidro responsivo
+        run: NODE_PATH=/tmp/mare-contracts-node/node_modules MARE_QA_DIR=/tmp/mare-crew-glass python tests/run_honors_hd_browser.py tests/crew-online-browser.cjs --offline --dist
       - name: Capturas reais
         if: always()
         uses: actions/upload-artifact@v4
@@ -65,5 +69,6 @@ jobs:
             /tmp/mare-contracts-visual/
             /tmp/mare-contracts-online/
             /tmp/mare-contracts-glass/
+            /tmp/mare-crew-glass/
           if-no-files-found: warn
           retention-days: 14
