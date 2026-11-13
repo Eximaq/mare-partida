@@ -8,6 +8,10 @@ on:
       - 'paper-doll-96-lobby.js'
       - 'tests/native_hd_game_browser.cjs'
       - 'tests/rework_default_game_browser.cjs'
+      - 'tests/rework-integration*.cjs'
+      - 'tests/rework_inventory_game_browser.cjs'
+      - 'tools/audit_rework_integration.cjs'
+      - 'tools/verify_native_hd_archives.py'
       - '.github/workflows/native-hd-visual.yml'
   workflow_dispatch:
 permissions:
@@ -27,7 +31,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: python tools/verify_native_hd_archives.py
       - run: npm run test:rework-hd
-      - run: node --test player-rework-default-hd.test.cjs
+      - run: node --test player-rework-default-hd.test.cjs tests/rework-integration.test.cjs
+      - run: node tools/audit_rework_integration.cjs
       - name: Cache Chromium
         uses: actions/cache@v4
         with:
@@ -50,6 +55,17 @@ jobs:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/
           MARE_EVIDENCE_DIR: artifacts/rework-default-game
         run: node tests/rework_default_game_browser.cjs
+      - name: Real inventory canonical bindings
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8157/dist/
+          MARE_EVIDENCE_DIR: artifacts/rework-inventory
+        run: node tests/rework_inventory_game_browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rework-inventory-evidence
+          path: artifacts/rework-inventory/
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: always()
         with:

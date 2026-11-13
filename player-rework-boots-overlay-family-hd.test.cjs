@@ -33,7 +33,7 @@ test('all new combinations render through actual archive loader and padding pres
    gc.drawImage(canvas,x+(640-canvas.width)/2,y+(640-canvas.height)/2);gc.fillStyle='white';gc.font='24px sans-serif';gc.fillText(r.action+' '+r.direction,x+20,y+30);
   }
  }
- require('fs').writeFileSync('/tmp/isolated-boots-runtime.png',gallery.toBuffer('image/png'));
+ require('fs').writeFileSync(require('node:os').tmpdir()+'/isolated-boots-runtime.png',gallery.toBuffer('image/png'));
  assert.equal(count,166);console.log(count+' frames rendered at native density via real runtime');
 });
 
