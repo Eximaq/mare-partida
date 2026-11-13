@@ -16,7 +16,7 @@ const cases=[
  await page.route('**/api/**',route=>route.fulfill({status:404,body:'{}'}));
  await page.route('**/game.js*',async route=>{
   const response=await route.fetch(),source=await response.text();
-  const hook=`window.__rangedQA={get g(){return game},get w(){return world},get s(){return session},r:lobby96,nav:navigator,stats:getDerived,enterHunt,heroAttack,stepCombatVfx,faceCombatTarget,combatChest,draw:presentWorld,tick,center(){camera.update(world.hero,activeMap(),0,true)},equip(){cancelBasicAttack();game.classId='healer';configureFactionVisual();const item=newItem(itemDefs[31],1,false);game.inventory.push(item);equipItem(item.id);},auto(){autoPlay=true;autoSkills=false},stop(){autoPlay=false;autoSkills=false}};`;
+  const hook=`window.__rangedQA={get g(){return game},get w(){return world},get s(){return session},r:lobby96,nav:navigator,stats:getDerived,prepareMap(){lastTime=performance.now();const visual=localVisualState();return mapArtState()==='ready'&&visual==='ready'},enterHunt,heroAttack,stepCombatVfx,faceCombatTarget,combatChest,draw:presentWorld,tick,center(){camera.update(world.hero,activeMap(),0,true)},equip(){cancelBasicAttack();game.classId='healer';configureFactionVisual();const item=newItem(itemDefs[31],1,false);game.inventory.push(item);equipItem(item.id);},auto(){autoPlay=true;autoSkills=false},stop(){autoPlay=false;autoSkills=false}};`;
   assert(source.includes('  window.__mareDiagnostics='),'test bridge insertion point');
   await route.fulfill({response,body:source.replace('  window.__mareDiagnostics=',hook+'\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')});
  });
@@ -28,8 +28,10 @@ const cases=[
  await page.evaluate(async()=>{const q=__rangedQA;q.equip();q.g.appearance96={...MareCharacterAppearance.read(q.g),gender:'feminino'};if(!await q.r.ensure(q.g))throw Error('Native weapon composition failed');});
  if(evidence)await fs.mkdir(evidence,{recursive:true});
  for(const scenario of cases){
+  await page.evaluate(()=>{__rangedQA.enterHunt();__rangedQA.stop();});
+  await page.waitForFunction(()=>__rangedQA.prepareMap(),null,{timeout:90000});
   const result=await page.evaluate(scenario=>{
-   const q=__rangedQA;q.enterHunt();q.stop();q.w.spawnClock=1e9;q.g.hp=q.stats().maxHP;
+   const q=__rangedQA;q.w.spawnClock=1e9;q.g.hp=q.stats().maxHP;
    const hero=q.w.hero;Object.assign(hero,scenario.hero);
    const target={...q.w.mobs[0],id:'ranged-regression',...scenario.target,anchorX:scenario.anchor.x,anchorY:scenario.anchor.y,alive:true,hp:10000,maxHP:10000,defense:0,magicDefense:0,speed:0,patrolClock:1e9,attackClock:1e9,engaged:false,returning:false};
    q.w.mobs=[target];q.w.target=target;q.faceCombatTarget(target);
