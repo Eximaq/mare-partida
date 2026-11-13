@@ -62,9 +62,9 @@ function adaptSeparatedArms(weapon,{baseIndex,appearance}){
  return {...weapon,id:weapon.id+'-appearance-'+style,states,sourceRasterPadding:padding,colorAppearance:appearance,
   basePack:{pack:{...p,directions:{[dir]:{...d,layers}}},images}};
 }
-function adaptNorthDaggers(weapon,{baseIndex,appearance}){
+function adaptApprovedNorth(weapon,{baseIndex,appearance}){
  const contract=weapon?.approvedModularBody;
- if(!contract||contract.id!=='v7-daggers-north-modular8-north'||contract.placement!=='behind-body')return null;
+ if(!contract||contract.placement!=='behind-body')return null;
  const base=baseIndex.records.find(r=>r.id===contract.id),p=base?.pack,d=p?.directions.north;
  if(!d||d.clip.frames!==weapon.states.length||d.clip.fps!==weapon.fps||
     !weapon.states.every((s,i)=>Number(s.state)===i&&s.approvedEquipmentLayer))return null;
@@ -73,8 +73,8 @@ function adaptNorthDaggers(weapon,{baseIndex,appearance}){
  const layers=bindHair(d.layers,{style,dir:'north',p,d,baseIndex,images,padding});
  if(!layers)return null;
  return {...weapon,id:weapon.id+'-appearance-'+style,hairSeparated:true,sourceRasterPadding:padding,
-  states:weapon.states.map(s=>({...s,layers:[s.approvedEquipmentLayer]})),colorAppearance:appearance,
-  basePack:{pack:{...p,directions:{north:{...d,layers}}},images},equipmentBehindBody:true};
+  states:weapon.states.map(s=>({...s,layers:[s.approvedEquipmentLayer],bodyPatch:s.approvedBodyPatch})),colorAppearance:appearance,
+  basePack:{pack:{...p,directions:{north:{...d,layers}}},images},equipmentBehindBody:true,mirrorBody:!!contract.mirror};
 }
 function adaptSword(weapon,outfits,{coat,baseIndex,appearance}){
  const dir=weapon?.direction;
@@ -123,5 +123,5 @@ function adaptSword(weapon,outfits,{coat,baseIndex,appearance}){
  return {...weapon,states,id:weapon.id+(coat==null?'':'-coat'+coat)+'-adapted-'+style,basePack:{...b,images,pack:{...p,directions:{...p.directions,[dir]:{...d,layers,rest,poses}}}},
   adaptedCoat:outfit?.id,sourceRasterPadding:padding,mirrorLayerIDs:mirrors,colorAppearance:appearance};
 }
-const api={adapt,adaptSword,adaptSeparatedArms,adaptNorthDaggers};root.MareReworkOutfitOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
+const api={adapt,adaptSword,adaptSeparatedArms,adaptApprovedNorth};root.MareReworkOutfitOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

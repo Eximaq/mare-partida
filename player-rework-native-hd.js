@@ -119,10 +119,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    if(adapted)return {...adapted,hdKind:'weapon'};
   }
   if(nativeWeapon?.timeline?.length&&nativeWeapon.fps)return {...nativeWeapon,hdKind:'weapon'};
-  if(canonical(a.body)==='male'&&o.action==='attack-daggers'&&o.direction==='north'&&
-     [12,13,71,72,73,74].includes(Number(weapon))&&Object.keys(equipment).length===1){
+  const approvedNorth=o.direction==='north'&&(
+   o.action==='attack-daggers'&&[12,13,71,72,73,74].includes(Number(weapon))||
+   o.action==='attack-sword'&&Number(weapon)===69);
+  if(canonical(a.body)==='male'&&approvedNorth&&Object.keys(equipment).length===1){
    const source=weaponRegistry?.resolve({item:weapon,body:'male',action:o.action,direction:o.direction});
-   const adapted=root.MareReworkOutfitOverlayHD?.adaptNorthDaggers(source,{baseIndex,appearance:a});
+   const adapted=root.MareReworkOutfitOverlayHD?.adaptApprovedNorth(source,{baseIndex,appearance:a});
    if(adapted)return {...adapted,hdKind:'weapon'};
   }
   // Unknown saved identities are NOT a wildcard. Never hide equipped items in an unarmed base.

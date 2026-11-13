@@ -53,7 +53,7 @@ Os hashes dos PNGs de aprovação de 0, 109 e 17 correspondem aos respectivos es
 
 ## Pendências da primeira bateria
 
-- Restaurar e testar 69 NORTH e 5/111/119 SOUTH. Os casos 4 SOUTH e 15 NORTH constam da matriz com os resultados da bateria seguinte.
+- Restaurar e testar 5/111/119 SOUTH. Os casos 4 SOUTH, 15 NORTH e 69 NORTH constam da matriz com os resultados da bateria seguinte.
 - Retestar na revisão atual 151 nas laterais, calças 140/147/154/161/175/182 nos dois corpos, Grevas 21, capacetes 18/19/157 e troca de ações ou equipamento durante a preparação. A regressão automatizada da seleção é mais estreita que essa bateria no mapa.
 - Fechar o encaixe de pele na interface da 17, o porte com a aparência usada no teste e a comparação alinhada de todas as variantes com vídeos e PNGs aprovados.
 
@@ -81,3 +81,5 @@ O Mosquete 4 usa os três PNGs nativos de cada estado, com os backings e mãos d
 O Canhão 15 mantém o PNG da peça e as oito fases aprovadas. A camada de interface pode conter pele da mão. A aplicação da paleta exige coincidência dessa amostra com a anatomia de origem na mesma coordenada. Esse vínculo cobre o registro masculino de arma isolada, com as âncoras de cabeça disponíveis.
 
 A build passou com `python tools/build_pages.py`. Os 22 testes do conjunto focado passaram. A execução no navegador usou Edge e a build publicável em loopback, com um perfil descartável por variante. Nenhum deploy foi executado.
+
+O Nodachi 69 NORTH V6 usa a própria arma e o rig NORTH espelhado do pacote de origem. As fases 1–6 da base são iguais pixel a pixel. Em 0 e 7, o teste isolou a alteração da mão em retângulos de 28×30 e 28×31 pixels. O compositor recompõe os oito PNGs aprovados na paleta da fonte. No mapa, as oito fases exibiram a identidade com cabelo Chanel rosa, pele escura e olhos verdes. [Comparativo da fase 2](evidence/approved-poses/Kaizoku-69-north-v6-comparativo.png).
