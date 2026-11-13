@@ -46,17 +46,27 @@ test('explicit visual preparation loads every current attack frame without mutat
  }
 });
 
-test('bare fallback pixels equal independent authored pack composition at world scale',async()=>{
+test('original-appearance bare fallback pixels equal independent authored pack composition at world scale',async()=>{
  const native=make(),renderer=require('./player-rework-default-hd.js').create({native}),index=JSON.parse(fs.readFileSync('tools/rework-base-hd/index.json')),load=require('./tools/rework-hd-test-loader.cjs').create(__dirname);
  for(const gender of ['masculino','feminino'])for(const action of ['idle','walk'])for(const direction of ['south','north','east','west']){
-  const p={appearance96:{gender,hairStyle:'hair-wavy',eyeStyle:'face-calm',skinColor:'dark',hairColor:'black'},equipment:{weapon:{def:0},coat:{def:6}}},r=index.records.find(r=>r.body===(gender==='feminino'?'female':'male')&&r.action===action&&r.direction===direction&&r.hairStyle==='original'),pack=r.pack,d=pack.directions[direction];
+  const p={appearance96:{gender,hairStyle:'original',eyeStyle:'face-calm',skinColor:'original',hairColor:'original'},equipment:{weapon:{def:0}}},r=index.records.find(r=>r.body===(gender==='feminino'?'female':'male')&&r.action===action&&r.direction===direction&&r.hairStyle==='original'),pack=r.pack,d=pack.directions[direction];
   assert(await renderer.prepare(p,{action,direction}));
   for(let frame=0;frame<d.clip.frames;frame++){
    const images=new Map();for(const l of d.layers){const sha=l.frames?.[frame]||l.source;if(sha&&!images.has(sha))images.set(sha,await load('tools/rework-base-hd/assets/'+sha+'.png'));}
    const source=cv.createCanvas(pack.frame.width*pack.density,pack.frame.height*pack.density);ReworkAccessoryVendor.compositor.render(source.getContext('2d'),pack,images,{direction,frame,density:pack.density});let image=source;
    if(r.mirrorX){image=cv.createCanvas(source.width,source.height);const c=image.getContext('2d');c.imageSmoothingEnabled=false;c.translate(source.width,0);c.scale(-1,1);c.drawImage(source,0,0);}
    const expected=cv.createCanvas(512,512),ctx=expected.getContext('2d'),scale=105/374;ctx.imageSmoothingEnabled=false;ctx.drawImage(image,256-pack.pivot.x*pack.density*scale,400-pack.pivot.y*pack.density*scale,source.width*scale,source.height*scale);
-   const actual=cv.createCanvas(512,512);renderer.draw(actual.getContext('2d'),p,{action,direction,progress:(frame+.25)/d.clip.frames,x:256,y:400});assert.equal(renderer.snapshot().last.frame,frame);assert.deepEqual(actual.getContext('2d').getImageData(0,0,512,512).data,expected.getContext('2d').getImageData(0,0,512,512).data,`${gender}/${action}/${direction}/${frame}`);
+   const actual=cv.createCanvas(512,512);renderer.draw(actual.getContext('2d'),p,{action,direction,progress:(frame+.25)/d.clip.frames,x:256,y:400});assert.equal(renderer.snapshot().last.frame,frame);assert.equal(require('node:crypto').createHash('sha256').update(actual.getContext('2d').getImageData(0,0,512,512).data).digest('hex'),require('node:crypto').createHash('sha256').update(expected.getContext('2d').getImageData(0,0,512,512).data).digest('hex'),`${gender}/${action}/${direction}/${frame}`);
   }
+ }
+});
+
+test('partial appearance fallback preserves compatible wavy hair and coat6 pixels on both bodies',async()=>{
+ global.MareAppearance96=require('./tools/paper-doll-96-v3/appearance.js');const native=make(),renderer=require('./player-rework-default-hd.js').create({native}),hash=c=>require('node:crypto').createHash('sha256').update(c.getContext('2d').getImageData(0,0,512,512).data).digest('hex');await native.ready;
+ for(const gender of ['masculino','feminino'])for(const action of ['idle','walk'])for(const direction of ['south','north','east','west']){
+ const p={appearance96:{gender,hairStyle:'hair-wavy',eyeStyle:'face-calm',skinColor:'dark',hairColor:'black'},equipment:{weapon:{def:0},coat:{def:6}}},before=JSON.stringify(p),female=gender==='feminino',reference={appearance96:{...p.appearance96,eyeStyle:'original',skinColor:'original',hairColor:'original'},equipment:{coat:{def:6}}},o={action,direction,x:256,y:400};
+ const source=native.select(reference,o);assert(source,'Explicit compatible reference must exist');assert.match(source.id,female?/female-torso6-.*:female-original-face:wavy:none/:/male-torso6-.*:head:hair-wavy:none/);assert(await renderer.prepare(p,o));assert(await native.prepareClip(reference,o));const count=source.pack.directions[direction].clip.frames;
+ for(let frame=0;frame<count;frame++){const pose={...o,progress:(frame+.25)/count},expected=cv.createCanvas(512,512),actual=cv.createCanvas(512,512);assert(await native.prepare(reference,pose));assert(native.draw(expected.getContext('2d'),reference,pose));renderer.draw(actual.getContext('2d'),p,pose);const diagnostic=renderer.snapshot().last;assert.equal(diagnostic.source,source.id);assert.deepEqual(diagnostic.unrepresentedSlots,['weapon']);assert.equal(hash(actual),hash(expected),gender+'/'+action+'/'+direction+'/'+frame);}
+ assert.equal(JSON.stringify(p),before);
  }
 });

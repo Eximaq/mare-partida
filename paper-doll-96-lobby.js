@@ -155,7 +155,17 @@
       }
     }
     function releaseBundle(bundle){for(const value of new Set(bundle?.values())){const strip=value?.strip;if(strip){strip.width=0;strip.height=0;}}}
+    const directionalPreparations=new Map();
+    function prepareWorldDirections(player){
+      if(!nativeHD?.prepareStablePose||!player||player.zoanTransformed)return;
+      const key=JSON.stringify([player.appearance96,player.equipment,!!root.MareHeadgear?.hidden(player),!!root.MareAppearance96,!!root.MareCharacterAppearance]);
+      if(directionalPreparations.has(key))return;
+      const preparedPlayer={...player,appearance96:{...player.appearance96},equipment:{...player.equipment},preferences:{...player.preferences}};
+      const task=(async()=>{for(const direction of ['south','east','west','north']){const options={action:'idle',direction,consumer:'world'};if(!await nativeHD.prepareStablePose(preparedPlayer,options))await defaultHD?.prepareStablePose(preparedPlayer,options);}})().catch(()=>{directionalPreparations.delete(key);});
+      directionalPreparations.set(key,task);while(directionalPreparations.size>8)directionalPreparations.delete(directionalPreparations.keys().next().value);
+    }
     function ensure(player,{consumer='player-prepare'}={}){
+      prepareWorldDirections(player);
       if(state!=='ready')return Promise.resolve(false);
       const target=resolve(player);
       // Public peers share a bounded idle/walk cache; do not cancel another peer while composing.
@@ -195,6 +205,7 @@
     function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;
       if(root.MareVisualCompletoRenderer?.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer})){draws++;return true;}
+      if(consumer==='world')prepareWorldDirections(player);
       // Trim legacy preparation sources even when HD owns the early-return draw.
       if(scene==='hunt'&&!pending&&!previewPending)trimSourceImages();
       if(nativeHD?.drawStable(ctx,player,{action:['combat-idle','guard','hurt','death'].includes(action)?'idle':action,direction,time,progress,x,y,consumer,weaponless})){defaultHD?.clear();draws++;return true;}

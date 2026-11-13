@@ -1,0 +1,46 @@
+{
+  "archive": "Kaizoku_capacetes_18_19_candidatos.zip",
+  "archiveSHA256": "3afc8eb716e86cb0e98b8481306be67c7268a7e33290b0219c4d9bf078a395b0",
+  "status": "candidate-head-signature-validated-not-runtime-approved",
+  "pngChecks": {
+    "count": 6,
+    "dimensions": [
+      512,
+      512
+    ],
+    "format": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "hashesMatch": true,
+    "alreadyPresent": true,
+    "pngsModified": false
+  },
+  "poseChecks": {
+    "total": 390,
+    "passed": 390,
+    "failed": 0,
+    "scope": "Exact head-source pixels and NECK/NOSE anchors on male original base, idle, walk and six attack families, NORTH/EAST/WEST. Does not prove gear fit, hair occlusion or world rendering."
+  },
+  "pending": [
+    "Visual verification of lateral offsets in actual game",
+    "Partial hair clipping policy for 18 on original and named hairstyles",
+    "Full hair hiding for 19 and restoration on hide/unequip",
+    "Inventory equip/reload and compatible multi-slot combinations"
+  ],
+  "resultsByDirection": {
+    "north": {
+      "checked": 130,
+      "passed": 130
+    },
+    "east": {
+      "checked": 130,
+      "passed": 130
+    },
+    "west": {
+      "checked": 130,
+      "passed": 130
+    }
+  }
+}
