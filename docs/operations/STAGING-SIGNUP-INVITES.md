@@ -62,8 +62,9 @@ desenvolvimento informou `mailer_autoconfirm=false`. A identidade mais recente,
 criada na janela do relato, teve o e-mail confirmado no provedor às 19:49:29 UTC;
 a conta interna e a sessão do jogo foram criadas às 19:50:59 UTC. Consulta somente
 de leitura com a sessão dessa identidade, sem chave administrativa nem refresh.
-Esses horários **não** demonstram entrada antes da confirmação. O vínculo dessa
-identidade com o convidado ainda depende de confirmar o personagem informado.
+O proprietário confirmou que o personagem dessa identidade é o convidado do relato.
+Esses registros demonstram que seu e-mail foi confirmado antes da entrada no jogo;
+o aviso de callback não significava que o endereço continuava sem confirmação.
 
 Na mesma revisão publicada, uma tentativa sem convite foi recusada com
 403 `invitation_invalid`, antes da chamada ao provedor. O desvio de convite
