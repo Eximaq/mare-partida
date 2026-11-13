@@ -29,6 +29,7 @@ GRANT SELECT ON mare_game.character_commands TO mare_runtime;
 GRANT INSERT (character_id, request_id, request_hash, result) ON mare_game.character_commands TO mare_runtime;
 GRANT SELECT, INSERT, UPDATE, DELETE ON mare_game.app_sessions, mare_game.auth_flows,
     mare_game.character_control, mare_game.auth_rate_limits, mare_game.provider_revocations TO mare_runtime;
+GRANT SELECT, INSERT, UPDATE, DELETE ON mare_game.signup_admissions TO mare_runtime;
 
 GRANT SELECT ON mare_game.progression_levels,mare_game.character_level_ledger TO mare_runtime;
 GRANT INSERT (character_id,level,request_id,experience_total,version_before) ON mare_game.character_level_ledger TO mare_runtime;

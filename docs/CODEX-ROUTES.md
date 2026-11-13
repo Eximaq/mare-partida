@@ -3,6 +3,7 @@
 - Aceite do servidor atual: `docs/architecture/FINAL-SERVER-ACCEPTANCE.md`; manifesto executável `FULL-SERVER-SCOPE.json`; instalação local `docs/operations/CONTINUOUS-LOCAL-SERVER.md`.
 - Apresentação e capacidade atuais: `docs/architecture/AUTHORIZED-PRESENTATION-SIMULATION.md`; `auth/service.ts`, `characters/battle.ts`, `party-worker.ts`, `simulation-worker.ts`, `tick-lane.ts`, `tools/load/`; regressões `server-presentation-snapshot`, `server-combat-reads`, `server-capacity-runtime`. Não confundir ensaios curtos/fixture com certificação de 3.000.
 - Movimento por WebSocket em staging: `apps/game-server/src/realtime.ts`, `apps/account-client/game-session.js`, `game-ui.js`; `docs/operations/STAGING-REALTIME-2026-11-12.md`; regressões `server-realtime` e `online-walking-browser`. Transporte autenticado e limitado; não altera ticks nem certifica capacidade.
+- Convites no cadastro de staging: `docs/operations/STAGING-SIGNUP-INVITES.md`; `auth/service.ts`, `login.js`, migração0057; testes `server-signup-invite` e `signup-invite-browser`. Contas existentes preservadas; sem envios reais automáticos.
 
 Este índice é **mapa de navegação**, não descrição confiável do estado atual. Confirme caminhos, exports e regras no código da branch antes de implementar. Use somente a(s) rota(s) correspondentes à solicitação.
 

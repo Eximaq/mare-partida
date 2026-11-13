@@ -1,0 +1,55 @@
+// Disposable database and provider fixture only: never sends hosted email.
+import assert from 'node:assert/strict';
+import {once} from 'node:events';
+import {readFile,mkdir} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {createRequire} from 'node:module';
+import {authDatabase} from './integration/auth-support.mjs';
+import {AuthService} from '../apps/game-server/src/auth/service.js';
+import {AuthFault} from '../apps/game-server/src/auth/errors.js';
+import {digest} from '../apps/game-server/src/auth/vault.js';
+import {createHttpServer} from '../apps/game-server/src/http.js';
+import {createAuthHandler} from '../apps/game-server/src/auth/routes.js';
+import {createDevGateway} from '../tools/dev-gateway.mjs';
+const {chromium}=createRequire(import.meta.url)('playwright');
+const out=process.env.MARE_QA_DIR||'tmp/signup-invite';await mkdir(out,{recursive:true});
+await authDatabase(async f=>{
+ const origin='https://localhost:9446',code='isolated-browser-invitation';let sends=0,confirmed=false;
+ const login=f.provider.login.bind(f.provider),start=f.provider.start.bind(f.provider);
+ f.provider.login=async(email,password)=>{if(!confirmed)throw new AuthFault(401,'authentication_failed');return login(email,password);};
+ f.provider.start=async(...args)=>{sends++;return start(...args);};
+ const service=new AuthService({pool:f.pool,provider:f.provider,vault:f.vault,origin,signupInviteHash:digest(code),policy:{absoluteMs:86400000,idleMs:7200000,recheckMs:900000}});
+ const api=createHttpServer({isReady:async()=>true,handle:createAuthHandler({service,vault:f.vault,origin,cookieSeconds:86400})});
+ api.listen(0,'127.0.0.1');await once(api,'listening');
+ const gateway=createDevGateway({key:await readFile('infra/local/localhost.key','utf8'),cert:await readFile('infra/local/localhost.crt','utf8'),staticRoot:resolve('dist'),onlineRoot:resolve('apps/account-client'),upstream:new URL(`http://127.0.0.1:${(api.address() as any).port}`)});
+ let browser:any;
+ try{
+  gateway.listen(9446,'127.0.0.1');await once(gateway,'listening');
+  browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});
+  const context=await browser.newContext({viewport:{width:1280,height:900}}),p=await context.newPage(),errors:string[]=[];
+  p.on('pageerror',e=>errors.push(e.message));
+  await p.route(/^https?:\/\/(?!localhost:9446\/)/,r=>r.abort());
+  await p.goto(origin+'/online/');assert.equal(await p.locator('#invite-field').isVisible(),false);
+  await p.getByRole('button',{name:'Criar conta',exact:true}).click();
+  assert.equal(await p.getByLabel('Código de convite',{exact:true}).isVisible(),true);
+  await p.getByLabel('E-mail',{exact:true}).fill('browser-invite@example.invalid');await p.getByLabel('Senha',{exact:true}).fill('Isolated fixture password');
+  await p.getByRole('button',{name:'Cadastrar',exact:true}).click();assert.equal(sends,0);assert.equal(await p.locator('#invite-code:invalid').count(),1);
+  await p.locator('#invite-code').fill('wrong');
+  const invalid=p.waitForResponse(r=>r.url().endsWith('/v1/auth/signup'));await p.locator('#login-submit').click();assert.equal((await invalid).status(),403);
+  await p.waitForFunction(()=>document.querySelector('#status')?.textContent?.includes('convite inválido'));assert.equal(sends,0);
+  await p.getByLabel('Senha',{exact:true}).fill('Isolated fixture password');await p.locator('#invite-code').fill(code);
+  const accepted=p.waitForResponse(r=>r.url().endsWith('/v1/auth/signup'));await p.locator('#login-submit').click();assert.equal((await accepted).status(),202);
+  await p.waitForFunction(()=>document.querySelector('#status')?.textContent?.includes('e-mail'));assert.equal(sends,1);
+  await p.screenshot({path:resolve(out,'confirmation-requested.png')});
+  await p.getByRole('button',{name:'Entrar',exact:true}).click();assert.equal(await p.locator('#invite-field').isVisible(),false);
+  await p.getByLabel('Senha',{exact:true}).fill('Isolated fixture password');const refused=p.waitForResponse(r=>r.url().endsWith('/v1/auth/login'));await p.locator('#login-submit').click();assert.equal((await refused).status(),401);
+  confirmed=true;
+  await p.goto(origin+'/v1/auth/callback?code=fixture-confirmation');await p.waitForURL('**/game');
+  assert.equal(await p.evaluate(async()=> (await fetch('/v1/me')).status),200);
+  const mobile=await browser.newContext({viewport:{width:390,height:844}}),m=await mobile.newPage();
+  await m.route(/^https?:\/\/(?!localhost:9446\/)/,r=>r.abort());await m.goto(origin+'/online/');await m.getByRole('button',{name:'Criar conta',exact:true}).click();
+  await m.locator('#invite-code').scrollIntoViewIfNeeded();assert.ok(await m.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  await m.screenshot({path:resolve(out,'signup-mobile.png'),fullPage:true});assert.deepEqual(errors,[]);assert.equal(sends,1);
+  console.log('Invite form desktop/mobile, invalid code with zero sends, single valid request, confirmation-required login, callback and authenticated entry passed; fixture provider only.');
+ }finally{await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
+});

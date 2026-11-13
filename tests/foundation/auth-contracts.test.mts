@@ -98,6 +98,7 @@ test("auth stays off without opt-in and refuses insecure origins, secret provide
     PROVIDER_RECHECK_SECONDS: "900",
   };
   assert.equal(readAuthConfig(base)?.origin, base.AUTH_PUBLIC_ORIGIN);
+  assert.equal(readAuthConfig({...base,SIGNUP_INVITE_CODE_SHA256:'a'.repeat(64)})?.signupInviteHash,'a'.repeat(64));
   for (const bad of [
     { AUTH_PUBLIC_ORIGIN: "http://localhost:9443" },
     { AUTH_PUBLIC_ORIGIN: "https://user:secret@localhost:9443" },
@@ -106,6 +107,8 @@ test("auth stays off without opt-in and refuses insecure origins, secret provide
     { SESSION_ABSOLUTE_SECONDS: "" },
     { AUTH_ENCRYPTION_KEY: "not-a-key" },
     { SUPABASE_URL: "https://attacker.invalid" },
+    { SIGNUP_INVITE_CODE_SHA256: "plain-invitation-must-not-be-stored-here" },
+    { SIGNUP_INVITE_CODE_SHA256: "" },
   ]) {
     assert.throws(
       () => readAuthConfig({ ...base, ...bad }),

@@ -36,6 +36,7 @@ const schema = z
     SESSION_IDLE_SECONDS: seconds(300, 86400),
     PROVIDER_RECHECK_SECONDS: seconds(60, 900),
     SUPABASE_JWT_ALGORITHM: z.enum(["ES256", "RS256"]).default("ES256"),
+    SIGNUP_INVITE_CODE_SHA256: z.string().regex(/^[0-9a-f]{64}$/).optional(),
   })
   .refine(
     (value) =>
@@ -61,6 +62,7 @@ export function readAuthConfig(env: NodeJS.ProcessEnv) {
     publishableKey: c.SUPABASE_PUBLISHABLE_KEY,
     encryptionKey: Buffer.from(c.AUTH_ENCRYPTION_KEY, "base64"),
     algorithm: c.SUPABASE_JWT_ALGORITHM,
+    signupInviteHash: c.SIGNUP_INVITE_CODE_SHA256,
     policy: {
       absoluteMs: c.SESSION_ABSOLUTE_SECONDS * 1000,
       idleMs: c.SESSION_IDLE_SECONDS * 1000,

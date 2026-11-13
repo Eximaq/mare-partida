@@ -38,7 +38,7 @@ import {
   type AuthProvider,
   type ProviderSession,
 } from "./provider.js";
-import { digest, opaque, Vault } from "./vault.js";
+import { digest, equal, opaque, Vault } from "./vault.js";
 import type { SessionPolicy } from "./config.js";
 import { initializeCharacterState, readCharacterState } from "../characters/state.js";
 import { executeCharacterCommand } from "../characters/commands.js";
@@ -79,6 +79,7 @@ export class AuthService {
       vault: Vault;
       policy: SessionPolicy;
       origin: string;
+      signupInviteHash?: string;
     },
   ) {}
   private async tx<T>(
@@ -122,8 +123,21 @@ export class AuthService {
     client: PoolClient,
     tokens: ProviderSession,
     kind: "play" | "recovery",
+    admissionKey?: string,
   ) {
     if (tokens.expiresAt <= Date.now()) return unauthorized();
+    let consumeAdmission=false;
+    if(this.options.signupInviteHash){
+      const exists=async()=>!!(await client.query('SELECT 1 FROM mare_game.accounts WHERE provider=$1 AND subject=$2',[tokens.provider,tokens.subject])).rowCount;
+      if(!await exists()){
+        consumeAdmission=!!admissionKey && !!(await client.query('SELECT email_hash FROM mare_game.signup_admissions WHERE email_hash=$1 AND expires_at>clock_timestamp() FOR UPDATE',[admissionKey])).rowCount;
+        // Another login can consume the same admission while this one waits.
+        if(!consumeAdmission&&!await exists()){
+          await this.queue(client,tokens,'local');
+          return new AuthFault(403,'invitation_required');
+        }
+      }
+    }
     await client.query(
       "INSERT INTO mare_game.accounts(id,provider,subject) VALUES($1,$2,$3) ON CONFLICT(provider,subject) DO NOTHING",
       [randomUUID(), tokens.provider, tokens.subject],
@@ -156,6 +170,7 @@ export class AuthService {
         this.options.policy.recheckMs,
       ],
     );
+    if(consumeAdmission)await client.query('DELETE FROM mare_game.signup_admissions WHERE email_hash=$1',[admissionKey]);
     return { token, kind };
   }
   private async withSession<T>(
@@ -269,7 +284,8 @@ export class AuthService {
           await this.queue(client, this.tokens(old), "local");
         }
       }
-      return this.makeSession(client, tokens, "play");
+      // Provider login has already verified these email/password credentials.
+      return this.makeSession(client, tokens, "play", this.admissionKey(email));
     });
   }
   async me(token: string) {
@@ -583,12 +599,25 @@ export class AuthService {
       await this.queue(client, this.tokens(row), scope);
     });
   }
+  private admissionKey(email:string){
+    return this.options.vault.rateKey('signup-admission:'+email.trim().toLowerCase());
+  }
   async startFlow(
     kind: "signup" | "recovery",
     email: string,
     password: string | undefined,
     binding: string,
+    inviteCode?: string,
   ) {
+    let admissionKey:string|undefined;
+    if(kind==='signup'&&this.options.signupInviteHash){
+      if(!inviteCode||!equal(digest(inviteCode.trim()),this.options.signupInviteHash))throw new AuthFault(403,'invitation_invalid');
+      admissionKey=this.admissionKey(email);
+      // Record only an HMAC, never the email or the shared code. The provider
+      // must still verify email confirmation before any session is accepted.
+      await this.options.pool.query(`INSERT INTO mare_game.signup_admissions(email_hash,expires_at)
+        VALUES($1,clock_timestamp()+interval '24 hours') ON CONFLICT(email_hash) DO UPDATE SET expires_at=EXCLUDED.expires_at`,[admissionKey]);
+    }
     const token = opaque();
     let state: Record<string, string> = {};
     try {
@@ -601,6 +630,7 @@ export class AuthService {
     } catch {
       /* Same response for unknown/existing/unavailable accounts. */
     }
+    if(admissionKey)state.__mare_admission=admissionKey;
     await this.options.pool.query(
       `INSERT INTO mare_game.auth_flows(token_hash,binding_hash,kind,payload_ciphertext,expires_at)
       VALUES($1,$2,$3,$4,clock_timestamp()+interval '10 minutes')`,
@@ -635,11 +665,14 @@ export class AuthService {
               "flow:" + digest(token),
             ),
           );
+        const admissionKey=flow.kind==='signup'?state.__mare_admission:undefined;
+        delete state.__mare_admission;
         const session = await this.options.provider.exchange(state, code);
         return this.makeSession(
           client,
           session,
           flow.kind === "recovery" ? "recovery" : "play",
+          admissionKey,
         );
       } catch {
         return new AuthFault(400, "invalid_auth_flow");
@@ -732,6 +765,7 @@ export class AuthService {
     await this.options.pool.query(
       "DELETE FROM mare_game.auth_flows WHERE token_hash IN (SELECT token_hash FROM mare_game.auth_flows WHERE expires_at<now() LIMIT 1000)",
     );
+    if(this.options.signupInviteHash)await this.options.pool.query('DELETE FROM mare_game.signup_admissions WHERE email_hash IN (SELECT email_hash FROM mare_game.signup_admissions WHERE expires_at<now() LIMIT 1000)');
     await this.options.pool.query(
       "DELETE FROM mare_game.auth_rate_limits WHERE key IN (SELECT key FROM mare_game.auth_rate_limits WHERE expires_at<now() LIMIT 1000)",
     );

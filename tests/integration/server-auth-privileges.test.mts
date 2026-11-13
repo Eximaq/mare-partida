@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import pg from "pg";
 import { AuthService } from "../../apps/game-server/src/auth/service.js";
+import {digest} from '../../apps/game-server/src/auth/vault.js';
 import {tickWorldBattles} from '../../apps/game-server/src/characters/battle.js';
 import { authDatabase } from "./auth-support.mjs";
 
@@ -33,6 +34,10 @@ test("login, control and journey work with minimum grants, with narrow economic 
       url.password = password;
       const runtime = new pg.Pool({ connectionString: url.toString(), max: 4 });
       try {
+        const invited=new AuthService({pool:runtime,provider,vault,origin:'https://localhost:9443',policy:{absoluteMs:86400000,idleMs:7200000,recheckMs:900000},signupInviteHash:digest('runtime-fixture-invite')});
+        const flow=await invited.startFlow('signup','invited-runtime@example.invalid','fixture','browser','runtime-fixture-invite');
+        const admitted=await invited.callback(flow.token,'browser','fixture');
+        assert.ok((await invited.me(admitted.token)).account.id,'the restricted runtime can consume an invitation');
         const service = new AuthService({
           pool: runtime,
           provider,

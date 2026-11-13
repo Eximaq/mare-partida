@@ -9,6 +9,9 @@ export const loginSchema = z.strictObject({
   email: emailSchema,
   password: passwordSchema,
 });
+export const signupSchema = loginSchema.extend({
+  inviteCode: z.string().trim().min(1).max(128).optional(),
+});
 export const recoverSchema = z.strictObject({ email: emailSchema });
 export const resetSchema = z.strictObject({ password: passwordSchema });
 export const emptySchema = z.strictObject({});

@@ -49,6 +49,8 @@ const messages = {
   csrf_rejected: "A sessão mudou em outra aba. Tente novamente.",
   rate_limited: "Muitas tentativas. Aguarde antes de tentar novamente.",
   invalid_request: "Confira os campos informados.",
+  invitation_invalid: "Código de convite inválido. Confira o código recebido.",
+  invitation_required: "Para participar do teste, use Criar conta e informe seu código de convite.",
   character_exists: "Esta conta já possui um personagem.",
   control_conflict:
     "Outra aba ou dispositivo está controlando este personagem.",
@@ -443,6 +445,9 @@ function selectMode(next) {
   $("#password").required = mode !== "recover";
   $("#password").autocomplete =
     mode === "signup" ? "new-password" : "current-password";
+  $("#invite-field").hidden = mode !== "signup";
+  $("#invite-code").required = mode === "signup";
+  $("#invite-code").disabled = mode !== "signup";
   const titles = {
     login: "Entrar na conta",
     signup: "Criar uma conta",
@@ -481,6 +486,7 @@ $("#auth-form").addEventListener("submit", (event) => {
       const data = {
         email: $("#email").value.trim(),
         ...(mode === "recover" ? {} : { password: $("#password").value }),
+        ...(mode === "signup" ? {inviteCode:$("#invite-code").value.trim()} : {}),
       };
       const result = await api("/v1/auth/" + mode, data);
       if (mode === "login") {
@@ -489,6 +495,7 @@ $("#auth-form").addEventListener("submit", (event) => {
       } else status(result.message);
     } finally {
       $("#password").value = "";
+      $("#invite-code").value = "";
     }
   });
 });

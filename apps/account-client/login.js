@@ -12,6 +12,8 @@
       "A sessão mudou. Atualize a página antes de tentar novamente.",
     character_exists: "A conta já possui um personagem. Entre novamente.",
     invalid_request: "Confira os campos informados.",
+    invitation_invalid: "Código de convite inválido. Confira o código recebido.",
+    invitation_required: "Para participar do teste, use Criar conta e informe seu código de convite.",
   };
   async function api(path, data) {
     const options = { cache: "no-store", signal: AbortSignal.timeout(10000) };
@@ -69,6 +71,10 @@
       $("password").required = mode !== "recover";
       $("password").autocomplete =
         mode === "signup" ? "new-password" : "current-password";
+      $("invite-field").hidden = mode !== "signup";
+      $("invite-code").required = mode === "signup";
+      $("invite-code").disabled = mode !== "signup";
+      if(mode!=="signup")$("invite-code").value="";
       $("panel-title").textContent = {
         login: "Entrar no jogo",
         signup: "Criar conta",
@@ -76,7 +82,7 @@
       }[mode];
       $("login-submit").textContent = {
         login: "Entrar no jogo",
-        signup: "Criar conta",
+        signup: "Cadastrar",
         recover: "Enviar instruções",
       }[mode];
       $("status").textContent = "";
@@ -89,11 +95,13 @@
           const result = await api("/v1/auth/" + mode, {
             email: $("email").value.trim(),
             ...(mode === "recover" ? {} : { password: $("password").value }),
+            ...(mode === "signup" ? {inviteCode:$("invite-code").value.trim()} : {}),
           });
           if (mode === "login") await enter();
           else $("status").textContent = result.message;
         } finally {
           $("password").value = "";
+          $("invite-code").value = "";
         }
       }),
   );

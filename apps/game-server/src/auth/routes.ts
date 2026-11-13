@@ -3,6 +3,7 @@ import {clientAddress} from "../client-address.js";
 import { z } from "zod";
 import {
   loginSchema,
+  signupSchema,
   recoverSchema,
   resetSchema,
   logoutSchema,
@@ -303,7 +304,7 @@ export function createAuthHandler(options: {
         const kind = path.endsWith("signup") ? "signup" : "recovery";
         const credentials =
           kind === "signup"
-            ? parse(loginSchema, value)
+            ? parse(signupSchema, value)
             : parse(recoverSchema, value);
         await service.rateLimit(
           "email-ip:" + ip,
@@ -318,6 +319,7 @@ export function createAuthHandler(options: {
             ? credentials.password
             : undefined,
           binding,
+          "inviteCode" in credentials && typeof credentials.inviteCode === "string" ? credentials.inviteCode : undefined,
         );
         setCookie(response, FLOW, flow.token, 600);
         await new Promise((resolve) =>

@@ -16,6 +16,7 @@ function page(authenticated = false) {
         value: "",
         hidden: false,
         textContent: "",
+        setAttribute() {},
         addEventListener(n: string, fn: any) {
           listeners[id + ":" + n] = fn;
         },
@@ -23,13 +24,14 @@ function page(authenticated = false) {
     return elements.get(id);
   };
   const requests: any[] = [];
+  const modes=['login','signup','recover'].map(mode=>Object.assign(get('mode-'+mode),{dataset:{mode}}));
   runInNewContext(
     readFileSync(
       new URL("../../apps/account-client/login.js", import.meta.url),
       "utf8",
     ),
     {
-      document: { getElementById: get, querySelectorAll: () => [] },
+      document: { getElementById: get, querySelectorAll: () => modes },
       URL,
       AbortSignal,
       location: {
@@ -49,6 +51,7 @@ function page(authenticated = false) {
               );
         if (path === "/v1/auth/csrf")
           return Response.json({ csrfToken: "fixture" });
+        if(path==='/v1/auth/signup'||path==='/v1/auth/recover')return Response.json({message:'Confira seu e-mail.'},{status:202});
         if (path === "/v1/auth/login") {
           authenticated = true;
           return Response.json({ authenticated: true });
@@ -81,6 +84,22 @@ test("successful login goes directly to the original game with no extra account/
   assert.equal(p.get("password").value, "");
   assert.ok(p.paths.includes("/v1/auth/login"));
   assert.ok(p.paths.every((path) => !path.includes("commands")));
+});
+
+test('invitation belongs only to signup and double submission cannot duplicate confirmation',async()=>{
+ const p=page();await settle();
+ p.listeners['mode-signup:click']();
+ assert.equal(p.get('invite-field').hidden,false);assert.equal(p.get('invite-code').required,true);
+ p.get('email').value='invite@example.invalid';p.get('password').value='Isolated fixture password';p.get('invite-code').value='fixture invitation';
+ const event={preventDefault(){},submitter:p.get('login-submit')};
+ p.listeners['login-form:submit'](event);p.listeners['login-form:submit'](event);await settle();
+ const signups=p.requests.filter(r=>r.path==='/v1/auth/signup');assert.equal(signups.length,1);
+ assert.equal(JSON.parse(signups[0].body).inviteCode,'fixture invitation');assert.equal(p.get('invite-code').value,'');
+ assert.deepEqual(p.redirects,[],'confirmation is required before entering the game');
+ p.listeners['mode-login:click']();assert.equal(p.get('invite-field').hidden,true);assert.equal(p.get('invite-code').required,false);
+ p.get('password').value='Isolated fixture password';p.get('invite-code').value='stale value';p.listeners['login-form:submit'](event);await settle();
+ assert.equal('inviteCode' in JSON.parse(p.requests.find(r=>r.path==='/v1/auth/login').body),false);
+ assert.deepEqual(p.redirects,['/game']);
 });
 test("an existing session goes directly to the game; normal entry contains no duplicate gameplay forms", async () => {
   const p = page(true);

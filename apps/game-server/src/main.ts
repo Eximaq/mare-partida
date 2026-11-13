@@ -24,6 +24,7 @@ async function main() {
           vault,
           policy: auth.policy,
           origin: auth.origin,
+          ...(auth.signupInviteHash ? {signupInviteHash:auth.signupInviteHash} : {}),
           provider: new SupabaseProvider({
             url: auth.providerUrl,
             publishableKey: auth.publishableKey,
