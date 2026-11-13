@@ -281,6 +281,7 @@
   const itemDefs=catalog.items,slotNames=catalog.slotNames,inventorySlotsLeft=catalog.inventorySlotsLeft,inventorySlotsRight=catalog.inventorySlotsRight,BAG_CAPACITY=catalog.capacity,healerWeaponIndex=catalog.healerWeaponIndex;
   const rarityNames = Object.fromEntries(Object.entries(MareForge.rarity).map(([id,r])=>[id,r.name]));
   const inventoryUI={query:'',category:'all',sort:'recent',rarity:'all',page:0,tab:'equipment'};
+  let inventoryGridObserver=null,inventoryGridFrame=0;
   let inventoryForgeReturn=null;
   const questDefs = MareContracts.quests;
 
@@ -2479,7 +2480,7 @@
   }
   function batchToolbar(shown){for(const id of inventorySelection.ids)if(!game.inventory.some(i=>i.id===id))inventorySelection.ids.delete(id);const ids=inventorySelection.ids,off=[...ids].filter(id=>!shown.some(e=>e.id===id)).length,items=game.inventory.filter(i=>ids.has(i.id));const button=(label,action,disabled=false)=>MareUI.button({label,disabled,attributes:{'data-batch':action}});return '<div class="inventory-batch-toolbar">'+button(inventorySelection.active?'Sair da seleção':'Selecionar','toggle')+(inventorySelection.active?'<p role="status">'+ids.size+' selecionados · '+off+' fora desta página. Pilhas: todas as unidades. Poções e Ferro Salgado usam os controles próprios.</p>'+button('Selecionar esta página ('+shown.filter(e=>e.item).length+' itens)','page')+button('Limpar seleção','clear',!ids.size)+button('Ver detalhes do último item','details',!selectedItem)+(!batchPlan().error?button('Vender selecionados','sell'):'')+(items.some(i=>!i.locked)?button('Bloquear selecionados','lock'):'')+(items.some(i=>i.locked)?button('Desbloquear selecionados','unlock'):''):'')+'</div>';}
   function renderInventory(body){
-    const {pageSize:BAG_PER_PAGE}=MareUI.inventoryGrid(innerWidth);
+    const {pageSize:BAG_PER_PAGE}=inventoryGridLayout();
     if(inventoryUI.pageSize&&inventoryUI.pageSize!==BAG_PER_PAGE)inventoryUI.page=MareUI.inventoryPageAtResize(inventoryUI.page,inventoryUI.pageSize,BAG_PER_PAGE);
     inventoryUI.pageSize=BAG_PER_PAGE;
     if(!invSelected())selectedItem=game.equipment.weapon?.id||game.inventory[0]?.id||(game.potions>0?'virtual-potion':game.manaPotions>0?'virtual-mana-potion':game.materials>0?'virtual-material':null);
@@ -2533,6 +2534,9 @@ ${avatarExtra}
       </div>
     </div>`;
     layoutInventoryDetail();
+    inventoryGridObserver?.disconnect();
+    inventoryGridObserver=new ResizeObserver(scheduleInventoryGrid);
+    inventoryGridObserver.observe(body.querySelector('.op-grid-wrap'));
     const preview=$('inventorySprite');
     const redraw=()=>{if(currentPanel==='inventory'&&preview.isConnected)drawCurrentPreview(preview,185,{aura:false});};
     redraw();void lobby96.ready.then(()=>lobby96.ensure(game)).then(redraw);
@@ -2550,11 +2554,23 @@ ${avatarExtra}
     for(const button of $('dialogBody').querySelectorAll('[data-item],[data-inv-slot]')){const chosen=button.dataset.item?button.dataset.item===id:game.equipment[button.dataset.invSlot]?.id===id;button.classList.toggle('selected',chosen);button.setAttribute('aria-pressed',String(chosen));}
     const panel=$('inventory-detail');panel.innerHTML=inventoryHeading('DETALHES DO ITEM')+inventoryDetail(invSelected());layoutInventoryDetail();
   }
-  // Recalculate the visible page only when the responsive column tier changes.
-  // Keep search, selected item, save data, and all inventory actions intact.
-  window.addEventListener('resize',()=>{
-    if(currentPanel==='inventory'&&inventoryUI.pageSize!==MareUI.inventoryGrid(innerWidth).pageSize)renderPanel();
-  },{passive:true});
+  function inventoryGridLayout(){
+    const grid=$('inventory-bag')?.querySelector('.op-grid');
+    return MareUI.inventoryGrid(innerWidth,grid?{width:grid.clientWidth,height:grid.clientHeight,gap:parseFloat(getComputedStyle(grid).columnGap)||0}:undefined);
+  }
+  function scheduleInventoryGrid(){
+    cancelAnimationFrame(inventoryGridFrame);
+    inventoryGridFrame=requestAnimationFrame(()=>{
+      if(currentPanel!=='inventory'||$('panelOverlay').classList.contains('hidden')){inventoryGridObserver?.disconnect();return;}
+      if(inventoryUI.pageSize===inventoryGridLayout().pageSize)return;
+      const active=document.activeElement,id=active?.id,start=active?.selectionStart,end=active?.selectionEnd;
+      renderPanel();
+      // Resizing must not interrupt typing in the inventory search field.
+      const restored=id&&document.getElementById(id);
+      if(restored){restored.focus({preventScroll:true});if(typeof start==='number')restored.setSelectionRange(start,end);}
+    });
+  }
+  window.addEventListener('resize',scheduleInventoryGrid,{passive:true});
   function inventoryIcon(name){
     if(name==='close')return '<img class="inv-ui-icon" src="assets/ui/inventory-reference/close.png" alt="" draggable="false">';
     if(name==='previous'||name==='next'){const d=name==='previous'?'m20 7-9 9 9 9':'m12 7 9 9-9 9';return '<svg class="inv-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="'+d+'" fill="none" stroke="#f5d38a" stroke-width="3" stroke-linejoin="round"/></svg>';}

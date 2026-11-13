@@ -10,17 +10,29 @@ OUT=Path(os.environ.get('MARE_INVENTORY_EVIDENCE','/tmp/mare-inventory-visual'))
 OUT.mkdir(parents=True,exist_ok=True)
 SIZES=[(1440,900,9),(1280,800,9),(1180,800,8),(1024,768,7),(768,900,7),(390,844,6),(360,800,5)]
 def verify_grid(page, columns):
+    page.clock.run_for(100)
     result=page.locator('#panelOverlay.inventory-mode .op-grid').evaluate("""e=>{
       const wrap=e.parentElement, item=e.querySelector('.op-item');
       const r=e.getBoundingClientRect(),p=wrap.getBoundingClientRect(),s=item.getBoundingClientRect();
       return {grid:r.width,wrap:p.width,slotWidth:s.width,slotHeight:s.height,
+        fillsHeight:innerWidth>760,gridGap:p.height-r.height,
+        rows:innerWidth>760?Math.max(1,Math.floor((r.height+6)/(s.width+6))):7,
+        lastRowGap:r.bottom-e.lastElementChild.getBoundingClientRect().bottom,
+        iconFits:[...e.querySelectorAll('.item-icon')].every(i=>getComputedStyle(i).objectFit==='contain'),
         visibleColumns:getComputedStyle(e).gridTemplateColumns.split(' ').length,
         count:e.children.length};
     }""")
     assert result['visibleColumns']==columns,result
-    assert result['count']==columns*7,result
+    assert result['count']==columns*result['rows'],result
     assert result['grid']/result['wrap']>.9,result
+    # Extra rows fill the panel, including empty sockets, without stretching cells.
     assert abs(result['slotWidth']-result['slotHeight'])<1.5,result
+    if result['fillsHeight']:
+        assert result['gridGap']<=14 and abs(result['lastRowGap'])<2,result
+    assert result['iconFits'],result
+    if page.viewport_size['width']>1100:
+        tops=page.locator('.op-body-grid > .op-panel').evaluate_all('xs=>xs.map(e=>e.getBoundingClientRect().top)')
+        assert max(tops)-min(tops)<2,('desktop panels must share one row',tops)
     frames=page.locator('#panelOverlay.inventory-mode .op-equip-slot.filled')
     assert frames.count()>0
     for i in range(frames.count()):
@@ -137,7 +149,7 @@ def verify_equipment_profile(page, viewport_width):
     assert min(layout['labelFontSizes'])>=10,layout
     assert not layout['labelClipping'],layout
     assert not layout['labelOverlaps'],layout
-    assert min(layout['slotWidths'])>=54 and min(layout['slotHeights'])>=44,layout
+    assert min(layout['slotWidths'])>=54 and min(layout['slotHeights'])>=54,layout
     assert page.locator('.op-fruit-equipped [data-inv-slot=akuma_no_mi]').count()==1
     assert page.locator('#panelOverlay [data-inv-slot]').count()==12
     assert layout['icons'] and all(i['dx']<=4 and i['dy']<=4 for i in layout['icons']),layout
@@ -178,15 +190,17 @@ with sync_playwright() as p:
         assert {key:saved(q).get(key) for key in keys}==before,'UI changed persistent inventory/equipment data'
         results.append({'size':[width,height],'columns':columns,'grid':r,'equipment':equipment})
         c.close()
-    # Exercise in-place responsive pagination: page 2 at 9x7 -> page 2 at 6x7.
+    # Responsive pagination keeps the previously first visible item on its new page.
     c,q=page_for(browser,copy.deepcopy(data),(1440,900))
     q.locator('#mainMenu [data-panel=inventory]').click()
+    previous_page_size=verify_grid(q,9)['count']
     q.locator('.op-pagination [data-inv-page="1"]').first.click()
-    assert verify_grid(q,9)['count']==63
+    first_item=q.locator('.op-grid [data-item]').first.get_attribute('data-item')
     q.set_viewport_size({'width':390,'height':844})
     q.wait_for_function("document.querySelectorAll('#panelOverlay .op-grid > .op-item').length===42")
     verify_grid(q,6)
-    assert q.locator('.op-pagination [data-inv-page="1"].active').count()==1
+    assert q.locator(f'.op-pagination [data-inv-page="{previous_page_size//42}"].active').count()==1
+    assert q.locator(f'.op-grid [data-item="{first_item}"]').count()==1
     q.screenshot(path=str(OUT/'inventory-after-resize-390.png'),full_page=True)
     c.close();browser.close()
     (OUT/'results.json').write_text(json.dumps(results,indent=2),encoding='utf-8')

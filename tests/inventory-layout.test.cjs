@@ -9,6 +9,10 @@ const read=name=>fs.readFileSync(path.join(root,name),'utf8');
 for(const [width,columns] of [[320,5],[360,5],[389,5],[390,6],[760,6],[761,7],[1024,7],[1025,8],[1180,8],[1181,9],[1440,9]]){
   assert.deepEqual(ui.inventoryGrid(width),{columns,rows:7,pageSize:columns*7},'grid at '+width+'px');
 }
+assert.deepEqual(ui.inventoryGrid(1440,{width:480,height:540,gap:6}),{columns:9,rows:10,pageSize:90},'add square rows instead of stretching seven rows');
+assert.deepEqual(ui.inventoryGrid(1440,{width:480,height:360,gap:6}),{columns:9,rows:6,pageSize:54},'short windows fit fewer square rows');
+assert.deepEqual(ui.inventoryGrid(390,{width:300,height:540,gap:6}),{columns:6,rows:7,pageSize:42},'stacked phone layout keeps natural height');
+assert.deepEqual(ui.inventoryGrid(1440,{width:0,height:0,gap:6}),{columns:9,rows:7,pageSize:63},'unmounted grid uses a safe initial page');
 assert.equal(ui.inventoryPageAtResize(2,49,63),1,'keep first visible item when grid grows');
 assert.equal(ui.inventoryPageAtResize(1,63,35),1,'keep first visible item when grid shrinks');
 assert.equal(ui.inventoryPageAtResize(0,49,63),0,'first page is stable');
@@ -16,9 +20,9 @@ assert.equal(ui.inventoryPageAtResize(4,0,63),4,'no previous size is safe');
 assert.equal(ui.inventoryPageAtResize(-4,49,63),0,'negative page is rejected');
 
 const gameplay=read('game.js');
-assert.match(gameplay,/MareUI\.inventoryGrid\(innerWidth\)/,'game rendering follows layout tokens');
+assert.match(gameplay,/MareUI\.inventoryGrid\(innerWidth,/,'game rendering follows measured layout tokens');
 assert.match(gameplay,/MareUI\.inventoryPageAtResize\(/,'page count migration on resize');
-assert.match(gameplay,/inventoryUI\.pageSize!==MareUI\.inventoryGrid\(innerWidth\)\.pageSize/,'resize when modal is open');
+assert.match(gameplay,/new ResizeObserver\(scheduleInventoryGrid\)/,'resize the page with the actual available panel space');
 assert.match(read('item-catalog.js'),/BAG_CAPACITY=120/,'preserve inventory storage capacity in canonical catalog');
 assert.match(gameplay,/BAG_CAPACITY=catalog.capacity/,'game must consume the canonical capacity');
 

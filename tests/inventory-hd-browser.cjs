@@ -31,7 +31,7 @@ const compact=await p.locator('.op-inventory-shell').evaluate(shell=>{
   const label=document.createRange();
   label.selectNodeContents(tab.querySelector('span'));
   const parts=[tab.querySelector('img').getBoundingClientRect(),...label.getClientRects()];
-  return {slots:shell.querySelector('.op-grid').children.length,pageSize:MareUI.inventoryGrid(innerWidth).pageSize,
+  return {slots:shell.querySelector('.op-grid').children.length,pageSize:__invQA.ui.pageSize,
     equipmentFits:parts.every(part=>part.left>=button.left+2&&part.right<=button.right-2&&part.top>=button.top&&part.bottom<=button.bottom),
     trayGap:tray.height-grid.height,profileGap:character.bottom-privacy.bottom,
     crestOverlaps:title.top<frame.top&&title.bottom>frame.top,
@@ -40,6 +40,24 @@ const compact=await p.locator('.op-inventory-shell').evaluate(shell=>{
 assert.deepEqual({slots:compact.slots,equipmentFits:compact.equipmentFits},{slots:compact.pageSize,equipmentFits:true},'Empty results fill a complete page and the Equipment tab contains its label and icon');
 assert(compact.trayGap<28&&compact.profileGap<32,JSON.stringify(compact));
 assert(compact.crestOverlaps&&compact.crestOffset<3,JSON.stringify(compact));
+async function verifySlotSpace(){
+  const layout=await p.locator('.op-body-grid').evaluate(body=>{
+    const rect=e=>e.getBoundingClientRect(),bag=body.querySelector('.op-bag-panel');
+    const grid=bag.querySelector('.op-grid'),wrap=grid.parentElement,items=[...grid.children];
+    const g=rect(grid),w=rect(wrap),last=rect(items.at(-1)),b=rect(bag);
+    const equipment=[...body.querySelectorAll('.op-equip-side .op-equip-slot')];
+    return {bottomGap:rect(body).bottom-b.bottom,gridGap:w.height-g.height,
+      slotsGap:g.bottom-last.bottom,heights:items.map(e=>rect(e).height),square:items.every(e=>Math.abs(rect(e).width-rect(e).height)<1),
+      equipment:equipment.map(e=>({height:rect(e).height,label:e.querySelector('.op-slot-label').scrollWidth-e.querySelector('.op-slot-label').clientWidth})),
+      icons:equipment.flatMap(e=>{const i=e.querySelector('.item-icon');return i?[{width:rect(i).width,height:rect(i).height}]:[]})};
+  });
+  assert(layout.bottomGap<=10&&layout.gridGap<=14&&Math.abs(layout.slotsGap)<=2,'Backpack and last slot row reach the available bottom: '+JSON.stringify(layout));
+  assert(Math.max(...layout.heights)-Math.min(...layout.heights)<1,'Filled and empty slots have equal height');
+  assert(layout.square,'Every backpack slot stays square, including empty slots: '+JSON.stringify(layout));
+  assert(layout.equipment.every(e=>e.height>=54&&e.label<=2),'Equipment has room for icons and full labels');
+  assert(layout.icons.every(i=>i.width>=30&&Math.abs(i.width-i.height)<1),'Equipment icons retain square proportions');
+}
+await verifySlotSpace();
 const glows=await p.locator('.op-equip-slot.filled').first().evaluate(slot=>{
   const styles={};
   const initial=slot.className;
@@ -79,14 +97,25 @@ await p.locator('[data-unequip="head"]').click();assert.equal(await p.evaluate((
 const countBefore=await p.evaluate(()=>__invQA.game.inventory.length+Object.values(__invQA.game.equipment).filter(Boolean).length);const powerBefore=await p.evaluate(()=>__invQA.stats().power);await p.locator('[data-auto-equip]').click();assert((await p.evaluate(()=>__invQA.stats().power))>=powerBefore);assert.equal(await p.evaluate(()=>__invQA.game.inventory.length+Object.values(__invQA.game.equipment).filter(Boolean).length),countBefore,'Equip best conserves inventory items');
 await p.evaluate(()=>{__invQA.game.hp=1;__invQA.game.potions=4;__invQA.select('virtual-potion')});await p.locator('[data-inv-use-potion]').click();assert((await p.evaluate(()=>__invQA.game.hp))>1);
 await p.evaluate(()=>{const q=__invQA;q.game.inventory=[];q.game.potions=q.game.materials=0;q.renderPanel()});assert.equal(await p.locator('[data-item]').count(),0);assert.match(await p.locator('.op-page-count').innerText(),/0.+0 de 0/);
-const fullPage=await p.evaluate(()=>MareUI.inventoryGrid(innerWidth).pageSize);
+const fullPage=await p.evaluate(()=>__invQA.ui.pageSize);
 assert.equal(await p.locator('.op-grid > .op-item.empty').count(),fullPage);
+await verifySlotSpace();
 await p.evaluate(()=>{const q=__invQA;q.game.inventory=[q.newItem(q.defs[0],1)];q.renderPanel()});
 assert.equal(await p.locator('.op-grid > .op-item:not(.empty)').count(),1);
 assert.equal(await p.locator('.op-grid > .op-item.empty').count(),fullPage-1);
+await verifySlotSpace();
 await p.screenshot({path:out+'/inventory-partial.png'});
 await p.evaluate(()=>{const q=__invQA;q.game.inventory=Array.from({length:120},(_,n)=>q.newItem(q.defs[n%q.defs.length],20));q.ui.page=0;q.renderPanel()});assert.equal(await p.locator('.op-bag-capacity b').innerText(),'120 / 120');assert(await p.locator('[data-inv-page="1"]').first().isEnabled());
 await p.locator('[data-inv-page="1"]').first().click();assert.equal(await p.evaluate(()=>__invQA.ui.page),1);
+const resizeAnchor=await p.locator('.op-grid [data-item]').first().getAttribute('data-item');
+const beforeResize=await p.evaluate(()=>__invQA.ui.pageSize);
+await p.locator('#invSearch').focus();
+await p.setViewportSize({width:1672,height:640});
+await p.waitForFunction(previous=>__invQA.ui.pageSize!==previous,beforeResize);
+assert(await p.locator('.op-grid [data-item="'+resizeAnchor+'"]').count(),'Height-only resize retains the previously first visible item');
+assert(await p.locator('#invSearch').evaluate(e=>e===document.activeElement),'Height-only resize preserves search focus');
+await p.setViewportSize({width:1672,height:941});
+await p.waitForFunction(previous=>__invQA.ui.pageSize===previous,beforeResize);
 await p.evaluate(()=>{let q=__invQA;q.ui.page=0;q.ui.sort='recent';q.game.inventory=q.defs.filter(x=>x.type==='akuma_no_mi').slice(0,16).concat(q.defs.filter(x=>x.slot&&x.type!=='akuma_no_mi').slice(-49)).map(x=>q.newItem(x,20));q.game.name='Capitão de Nome Bastante Comprido';q.renderPanel();q.select(q.game.equipment.akuma_no_mi.id)});
 for(const [width,height] of [[1920,1080],[1672,941],[1366,768],[1280,720],[1024,768],[393,852],[360,800],[320,568],[844,390]]){await p.setViewportSize({width,height});
 await p.evaluate(()=>__invQA.renderPanel());

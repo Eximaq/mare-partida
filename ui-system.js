@@ -265,10 +265,13 @@
     },true);
   }
   // Inventory is a visual layout only: never modify the 120-item save capacity.
-  const inventoryGrid=(viewportWidth)=>{
+  const inventoryGrid=(viewportWidth,{width:gridWidth=0,height=0,gap=6}={})=>{
     const width=Number(viewportWidth)||0;
     const columns=width>1180?9:width>1024?8:width>760?7:width>=390?6:5;
-    const rows=7;
+    // On the shared desktop/tablet row, fill the measured height with square
+    // sockets. Stacked phone panels retain their natural seven-row height.
+    const cell=(gridWidth-(columns-1)*gap)/columns;
+    const rows=width>760&&cell>0&&height>0?Math.max(1,Math.floor((height+gap)/(cell+gap))):7;
     return {columns,rows,pageSize:columns*rows};
   };
   const inventoryPageAtResize=(page,oldPageSize,newPageSize)=>{
