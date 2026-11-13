@@ -4,7 +4,7 @@
 ((root)=>{
  const potions=Object.freeze({
    health:Object.freeze({id:"potion",name:"Poção de Vida",resource:"Vida",stock:"potions",price:35,icon:"assets/ui/items-hd/potion.png",key:"Q"}),
-   mana:Object.freeze({id:"mana-potion",name:"Poção de Mana",resource:"Energia",stock:"manaPotions",price:35,icon:"assets/ui/items-hd/mana-potion.svg",key:"E"}),
+   mana:Object.freeze({id:"mana-potion",name:"Porção de Energia",resource:"Energia",stock:"manaPotions",price:35,icon:"assets/ui/items-hd/mana-potion.svg",key:"E"}),
  });
  const potionRules=Object.freeze({restorePercent:25,cooldownMs:5000,maxPurchase:99,maxStock:1000000000,merchantReach:80});
  const potionRecovery=max=>Math.round(max*potionRules.restorePercent/100);

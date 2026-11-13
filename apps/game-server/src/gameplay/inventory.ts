@@ -358,7 +358,16 @@ export async function mutateOriginalInventory(
     delta = created.delta;
   } else {
     if (!i) throw new AuthFault(409, "original_inventory_required");
-    if (
+    if(input.action==='items.sell-batch'){
+      const rules=require('../../../../inventory-batch.js'),plan=rules.preview(i,input.payload.items.map(row=>row.itemId),defs);
+      if(plan.error)throw new AuthFault(409,'item_protected');
+      if(JSON.stringify(plan.items)!==JSON.stringify(input.payload.items))throw new AuthFault(409,'inventory_preview_changed');
+      const ids=new Set(input.payload.items.map(row=>row.itemId));i.inventory=i.inventory.filter(item=>!ids.has(item.id));delta=BigInt(plan.total);outcome={items:plan.items,total:plan.total};
+    }else if(input.action==='items.lock-batch'){
+      const ids=input.payload.itemIds;if(new Set(ids).size!==ids.length)throw new AuthFault(400,'invalid_request');
+      for(const itemId of ids){const item=i.inventory.find(row=>row.id===itemId);if(!item)throw new AuthFault(404,'item_not_found');item.locked=input.payload.locked;}
+      outcome={items:ids,locked:input.payload.locked};
+    }else if (
       input.action === "items.equip" ||
       input.action === "items.sell" ||
       input.action === "items.lock"
@@ -373,12 +382,9 @@ export async function mutateOriginalInventory(
       } else if (input.action === "items.sell") {
         if (!i.inventory.some((x) => x.id === item.id))
           throw new AuthFault(409, "item_equipped");
-        if (
-          item.locked || item.boundToCharacter ||
-          ["visual-completo", "pearl-box", "haki-fragment"].includes(String(def.kind))
-        )
+        if (require('../../../../inventory-batch.js').reason(item,defs,i.equipment))
           throw new AuthFault(409, "item_protected");
-        delta = BigInt(Math.round(14 + item.level * 7 + item.plus * 18));
+        delta = BigInt(require('../../../../inventory-batch.js').price(item))*BigInt(require('../../../../inventory-batch.js').quantity(item));
         i.inventory = i.inventory.filter((x) => x.id !== item.id);
       } else {
         if (!i.inventory.some((x) => x.id === item.id))

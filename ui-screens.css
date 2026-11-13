@@ -1053,3 +1053,5 @@
  #app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt]) #dialogBody{padding:8px}
  #app #panelOverlay.hud-density[data-ui-panel=help] .help-sections{grid-template-columns:minmax(0,1fr)}
 }
+
+.equipment-pearls{margin:10px 0;padding:8px 0;border-top:1px solid #88704e;font-size:12px;overflow-wrap:anywhere}.equipment-pearl-sockets{display:flex;gap:6px;margin:7px 0}.equipment-pearl-dot{display:inline-block;flex:none;width:10px;height:10px;border-radius:50%;border:1px solid #b7a582;background:transparent}.equipment-pearl-dot.filled{background:var(--pearl-color);box-shadow:0 0 3px var(--pearl-color)}.equipment-pearl-line{display:flex;align-items:center;gap:6px;margin:5px 0;line-height:1.4}.inventory-batch-toolbar{display:flex;flex-wrap:wrap;gap:6px;padding:8px}.inventory-batch-toolbar p{flex-basis:100%;margin:0}.op-item.batch-selected{outline:3px solid #f8cf73;outline-offset:-3px}.batch-marker{position:absolute;left:3px;top:3px;background:#152d34;color:#ffe6a2;padding:2px;border:1px solid #e7bd68}.batch-details{font-size:10px}.attribute-build{margin:12px 0;display:grid;gap:8px}.attribute-build p{margin:0;line-height:1.5}

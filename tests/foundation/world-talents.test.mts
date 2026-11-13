@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),engine=require('../../world-battle.cjs'),C=require('../../character-system.js');
 function fixture(classId='sword',keystone:string|null=null,ultimate:string|null=null){
- const stats={...C.derive({classId,level:1,attributes:C.empty()},engine.catalog.classes[classId],engine.catalog.factions.pirate,{attack:0,defense:0,hp:0}),physical:100,elemental:100,attack:100,maxHP:1000,maxEnergy:1000,healthRegen:0,energyRegen:0,accuracy:1,crit:0,evasion:0,defense:0,speed:1,range:180};
+ const stats={...C.derive({classId,level:1,attributes:C.empty()},engine.catalog.classes[classId],engine.catalog.factions.pirate,{attack:0,defense:0,hp:0}),physical:100,elemental:100,attack:100,maxHP:1000,maxEnergy:1000,healthRegen:0,vitalityHealthRegen:0,vitalityRegenRate:0,energyRegen:0,accuracy:1,crit:0,evasion:0,defense:0,speed:1,range:180};
  let b=engine.create('beach',stats,1000,()=>.5);const m=b.mobs[0];Object.assign(m,{type:'cesar',level:6,maxHP:10000,hp:10000,defense:0,magicDefense:0,attack:100,attackClock:999,patrolClock:999});b.mobs=[m];b.autoSkills=false;
  const hero={x:m.x-30,y:m.y,direction:'right'},nav={map:{width:4000,height:4000,spawn:{...hero}},walkable:(_x?:number,_y?:number)=>true,projectileClear:(_a:any,_z:any)=>true,path:(_:any,p:any)=>[{...p}],follow(a:any,p:any[],speed:number,dt:number){if(!p.length)return;const v=p[0],d=Math.hypot(v.x-a.x,v.y-a.y),n=Math.min(d,speed*dt);if(d){a.x+=(v.x-a.x)/d*n;a.y+=(v.y-a.y)/d*n;}if(n===d)p.shift();}};
  let now=1000;const context={hero,nav,stats,baseStats:stats,classId,factionId:'pirate',level:100,build:{nodes:{},keystone,ultimate},rng:()=>0};

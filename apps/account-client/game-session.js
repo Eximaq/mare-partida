@@ -141,6 +141,10 @@
     if(action==='world.move')return keys==='x,y'&&['x','y'].every(k=>Number.isFinite(p[k])&&p[k]>=0&&p[k]<=100000);
     if(action==='world.travel')return keys==='islandId'&&typeof p.islandId==='string'&&/^[a-z0-9-]{1,40}$/.test(p.islandId);
     if(action==='items.initialize')return keys==='';
+    if(action==='attributes.build')return keys==='automatic,profile'&&['brawler','sword','gunner','rogue','cyborg','strategist','healer'].includes(p.profile)&&typeof p.automatic==='boolean';
+    if(action==='attributes.distribute')return keys==='count,profile'&&['brawler','sword','gunner','rogue','cyborg','strategist','healer'].includes(p.profile)&&Number.isInteger(p.count)&&p.count>0&&p.count<=1000000;
+    if(action==='items.lock-batch')return keys==='itemIds,locked'&&typeof p.locked==='boolean'&&Array.isArray(p.itemIds)&&p.itemIds.length>0&&p.itemIds.length<=120&&new Set(p.itemIds).size===p.itemIds.length&&p.itemIds.every(instanceId);
+    if(action==='items.sell-batch')return keys==='items'&&Array.isArray(p.items)&&p.items.length>0&&p.items.length<=120&&new Set(p.items.map(i=>i?.itemId)).size===p.items.length&&p.items.every(i=>i&&Object.keys(i).sort().join()==='itemId,quantity,unitPrice'&&instanceId(i.itemId)&&Number.isInteger(i.quantity)&&i.quantity>0&&i.quantity<=99999&&Number.isInteger(i.unitPrice)&&i.unitPrice>=0&&i.unitPrice<=1000000000);
     const potionKind=()=>!Object.hasOwn(p,'kind')||['health','mana'].includes(p.kind);
     if(action==='potions.buy')return ['', 'kind', 'quantity', 'kind,quantity'].includes(keys)&&potionKind()&&(!Object.hasOwn(p,'quantity')||Number.isInteger(p.quantity)&&p.quantity>=1&&p.quantity<=99);
     if(action==='potions.use')return ['', 'kind'].includes(keys)&&potionKind();

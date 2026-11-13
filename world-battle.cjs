@@ -12,12 +12,13 @@ const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
 const Policy=require('./combat-action-policy.js');
 const {potionRules,potionRecovery}=require('./item-catalog.js');
-const sources=['item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const sources=['attribute-rules.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 const balanceVersion=characters.monsterBalance.version;
 const previousBalanceHash='c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b';
 const priorBalanceHashes=new Set([previousBalanceHash,'3c3abd53210f73539fe46107f4d91449212ffa6a9ec47f077aba96823e1c1743','8a7832817164137faed714a2ead01559c6c5801e6989c2a1a3aed55d3f2b383a','c9880d32ec0c0e161200b4f17a08b6a2b762360ae35ebdc40c414ce36c43d240','af7565fe0be56f7430216ed4d617953ccc25eea962245cb09f93dd21796c8b34','6ec1642796a685e114cdc27e528bc2f9ff82cc18123f6dce68e639ee6bc890a8','79cf407896a79045951d84214601438b80b1b121dea598f6a66619f76935a82f','c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46','33f5c37bd55b0dc9a052d31c9e7d68f760bb31122337fb1da73058050083fa6a','063ad6d7e40b3146f8542e122e64cff8078b7eb61c49b0722d7e32044be2b461']);
 function upgradeBalance(b){
+ if(b?.rulesHash==='f48377155e997f7d41c76e0d6264e321603376094b73132ef8ebbd13be5cf0f7'){b.rulesHash=rulesHash;return;}
  if(b?.rulesHash==='8a7832817164137faed714a2ead01559c6c5801e6989c2a1a3aed55d3f2b383a'){b.rulesHash=rulesHash;return;}
  if(!b||!priorBalanceHashes.has(b.rulesHash))return;
  const prisonSpec=b.prison&&prison.resolveEncounter(b.prison.spec,prisonCatalog);
@@ -56,7 +57,7 @@ function hakiGame(b){
  return {has_haki_unlocked:b.haki.unlocked,haki:b.haki};
 }
 function resetHaki(b){hakiGame(b);b.hakiRuntime=H.start();fruits.reset(b);}
-function combatStats(b,c,rt){return fruits.stats(b,c,H.stats(talents.stats(b,c,rt),hakiGame(b),b.hakiRuntime));}
+function combatStats(b,c,rt){return require('./attribute-rules.js').finalize(fruits.stats(b,c,H.stats(talents.stats(b,c,rt),hakiGame(b),b.hakiRuntime)));}
 function hakiCast(b,c){return H.cast(hakiGame(b),b.hakiRuntime,c.hero,b.mobs,{alive:b.hp>0,inHunt:!!b.area,now:c.now,clear:(a,z)=>c.nav.projectileClear(a,z)});}
 function hakiToggle(b,id){return H.toggle(hakiGame(b),b.hakiRuntime,id,{alive:b.hp>0,inHunt:!!b.area});}
 function populate(b,now,rng,hero){
@@ -101,7 +102,7 @@ function skill(b,index,c){
  const ally=(c.allies||[]).filter(a=>a.b.hp>0&&a.b.hp<a.stats.maxHP&&distance(c.hero,a.hero)<=180&&c.nav.projectileClear(c.hero,a.hero)).sort((a,z)=>a.b.hp/a.stats.maxHP-z.b.hp/z.stats.maxHP)[0];
  if(s.type==='heal'&&!ally&&b.hp>=stats.maxHP&&!(U.selected(g)==='eternalBlessing'&&(b.talents?.combatRemaining>0||m))||s.type==='blessing'&&b.blessing>0)return false;
  if(!self&&(!m||distance(c.hero,m)>stats.range||!c.nav.projectileClear(c.hero,m)))return false;
- b.energy-=cost;b.cooldowns[index]=s.cd*(c.factionId==='government'?.92:1);
+ b.energy-=cost;b.cooldowns[index]=require('./attribute-rules.js').cooldown(s.cd,s,stats)*(c.factionId==='government'?.92:1);
  const duration=Math.max(.2,1/stats.speed);if(m&&!self)face(c.hero,m);c.hero.moving=0;
  b.actionLockUntil=(c.now??0)+duration*1000;b.skillJob={index,targetId:m?.id??null,remaining:duration*.5};event(b,'skill',{index,duration,id:m?.id});return true;
 }
@@ -212,7 +213,7 @@ function step(b,c){
   if(b.hp>0)actions(U.tick(g,rt.ultimate,dt,{hero,stats,inCombat:!!b.area&&(rt.combatRemaining>0||!!target(b)),inHunt:!!b.area,enemies:enemies(),clear,move:(m,dx,dy)=>{const p={x:m.x+dx,y:m.y+dy},n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/4));for(let i=1;i<=n;i++)if(!nav.walkable(m.x+dx*i/n,m.y+dy*i/n))return;if(clear(m,p))Object.assign(m,p);}}));
   b.cooldowns=b.cooldowns.map(n=>Math.max(0,n-dt));b.guard=Math.max(0,b.guard-dt);b.blessing=Math.max(0,b.blessing-dt);b.attackClock=Math.max(0,b.attackClock-dt);
   if(b.hp<=0){b.respawn=Math.max(0,b.respawn-dt);if(b.respawn<=1e-8){b.hp=stats.maxHP;b.energy=stats.maxEnergy;if(c.shared){Object.assign(hero,nav.map.spawn);}else if(b.prison){const m=b.mobs[0],auto=b.auto;enterPrison(b,b.prison.spec,stats,hero,{id:m.id,stolen:m.talentStolen||0});b.auto=auto;rt=talents.load(b);}else if(b.dungeon){const m=b.mobs[0],auto=b.auto;enterDungeon(b,b.dungeon.id,b.dungeon.record,stats,hero,{stolen:m?.talentStolen||0});b.auto=auto;rt=talents.load(b);}else Object.assign(hero,nav.map.spawn);b.targetId=null;event(b,'respawn');}}
-  else{heal(dt*((stats.healthRegen||0)+(b.area?0:1.9)+(b.blessing>0?stats.regenBuff:0)));b.energy=Math.min(stats.maxEnergy,b.energy+dt*stats.energyRegen);}
+  else{heal(dt*((stats.healthRegen||0)-(stats.vitalityHealthRegen||0)+(b.area?0:1.9)+(b.blessing>0?stats.regenBuff:0)));heal(dt*(stats.vitalityHealthRegen||0),true);b.energy=Math.min(stats.maxEnergy,b.energy+dt*stats.energyRegen);}
   if(!c.shared)populate(b,now,rng,hero);
   if(!b.pending&&!b.skillJob&&(b.actionLockUntil||0)<=now&&!b.fruit?.job&&!b.fruit?.effects.genie&&!b.fruit?.effects.action&&!b.fruit?.effects.dash&&c.manualPath?.length&&b.hp>0&&now>=(c.manualStart||0))nav.follow(hero,c.manualPath,stats.moveSpeed,Math.min(dt,(now-(c.manualStart||0))/1000));
   const fruitBusy=!!(b.fruit?.job||b.fruit?.effects.action||b.fruit?.effects.dash||b.fruit?.effects.jikiCharge||b.fruit?.effects.genie);if(fruitBusy){b.pending=null;b.skillJob=null;}

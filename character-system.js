@@ -1,11 +1,12 @@
 'use strict';
 /* Character balance and point accounting, shared by combat, previews and saves. */
 (() => {
+  const R=globalThis.MareAttributeRules||(typeof require==='function'?require('./attribute-rules.js'):null);
   const attributes={
     strength:{name:'Força',short:'FOR',description:'Dano físico, principalmente em golpes corpo a corpo.'},
-    dexterity:{name:'Destreza',short:'DES',description:'Precisão, crítico, esquiva e mobilidade. A cadência recebe 70% do bônus de Destreza no Gatuno, 40% no Atirador e nenhum nas demais classes.'},
+    dexterity:{name:'Destreza',short:'DES',description:'Velocidade de ataque, esquiva, crítico e redução de recarga de habilidades de dano.'},
     vitality:{name:'Vitalidade',short:'VIT',description:'Vida máxima e defesa; maior eficiência no Ciborgue.'},
-    intelligence:{name:'Inteligência',short:'INT',description:'Dano elemental e potência de cura.'},
+    intelligence:{name:'Inteligência',short:'INT',description:'Dano elemental e Energia máxima.'},
     spirit:{name:'Espírito',short:'ESP',description:'Energia, regeneração, cura e proteção.'}
   };
   const keys=Object.keys(attributes),empty=()=>Object.fromEntries(keys.map(k=>[k,0]));
@@ -35,7 +36,7 @@
   const roles={
     sword:{role:'DPS físico',primary:'strength',secondary:'dexterity',physical:[1.6,.45,0],huntSpeed:126},
     brawler:{role:'DPS corpo a corpo / resistência',primary:'strength',secondary:'vitality',physical:[1.55,.15,.25],huntSpeed:100},
-    gunner:{role:'DPS à distância',primary:'dexterity',secondary:'strength',physical:[.35,1.55,0],huntSpeed:116},
+    gunner:{role:'DPS à distância',primary:'strength',secondary:'dexterity',physical:[.35,1.55,0],huntSpeed:116},
     rogue:{role:'DPS ágil / evasão',primary:'dexterity',secondary:'vitality',physical:[.25,1.5,.1],huntSpeed:158},
     cyborg:{role:'Tanque',primary:'vitality',secondary:'strength',physical:[.65,.15,.15],huntSpeed:104},
     strategist:{role:'Mago elemental',primary:'intelligence',secondary:'spirit',physical:[.3,.15,0],huntSpeed:116,magic:true},
@@ -52,7 +53,7 @@
       {name:'Chama Concentrada',cost:18,cd:7,type:'strike',damageType:'elemental',element:'fire',multiplier:2.4,desc:'Fogo de 240% do dano elemental; escala com Inteligência.'},
       {name:'Tempestade das Correntes',cost:28,cd:14,type:'area',damageType:'elemental',element:'lightning',multiplier:1.7,desc:'Eletricidade em área de 170% do dano elemental; lentidão por 4,5s.'}]};
     classes.healer={name:'Suporte / Curandeiro',baseHP:135,hpStep:11,attack:10,attackStep:1.8,defense:6,defenseStep:1.1,speed:1.05,range:180,energy:130,energyStep:7,crit:.10,color:'#8ce0b5',symbol:'✚',skills:[
-      {name:'Maré Restauradora',cost:24,cd:10,type:'heal',desc:'Restaura vida pela potência de cura; escala com Espírito e Inteligência.'},
+      {name:'Maré Restauradora',cost:24,cd:10,type:'heal',desc:'Restaura vida pela potência de cura; escala com Espírito.'},
       {name:'Bênção do Farol',cost:27,cd:16,type:'blessing',desc:'Proteção e regeneração por 8s; potência aumenta com Espírito.'}]};
     return classes;
   }
@@ -61,24 +62,24 @@
     const r=roles[g.classId],lvl=g.level-1;
     const compendiumBonus=compendiumMultiplier(gear.akumaRegistered);
     const preAttributes=Object.fromEntries(keys.map(k=>[k,((birth[g.classId]||birth.sword)[k]+integer(g.attributes?.[k]))*(k==='strength'?compendiumBonus:1)+Math.max(0,Number(gear.attributes?.[k])||0)]));
-    const a=Object.fromEntries(keys.map(k=>[k,Math.round(preAttributes[k]*(1+Math.max(0,Number(gear.pearlPercent?.[k])||0))*(k==='vitality'?1+crewVitality:1)*1e6)/1e6]));
+    const a=Object.fromEntries(keys.map(k=>[k,preAttributes[k]*(1+Math.max(0,Number(gear.pearlPercent?.[k])||0))*(k==='vitality'?1+crewVitality:1)]));
     const {strength:S,dexterity:D,vitality:V,intelligence:I,spirit:E}=a;
-    const physical=Math.round((c.attack+lvl*c.attackStep+gear.attack+S*r.physical[0]+D*r.physical[1]+V*r.physical[2])*f.attack);
-    const elemental=Math.round((c.attack+lvl*c.attackStep+gear.attack*.8+I*(g.classId==='strategist'?2.1: .9)+E*(g.classId==='healer'?.65:.35))*f.attack);
-    const defense=Math.round((c.defense+lvl*c.defenseStep+gear.defense+V*(g.classId==='cyborg'?1.05:.55)+S*.08)*f.defense*(1+(gear.physicalDefensePercent||0)));
-    const maxHP=Math.round(((c.baseHP+lvl*c.hpStep+V*(g.classId==='cyborg'?12:8))*compendiumBonus+gear.hp)*f.hp*(1+(gear.maxHpPercent||0)));
-    const maxEnergy=Math.round((c.energy+lvl*c.energyStep+E*4+I*.5+(gear.energy||0))*f.energy);
-    const speed=Math.min(3,(c.speed+Math.min(.5,lvl*.009)+D*.006*(legacyCadence?1:dexterityCadence[g.classId]??0))*f.speed*(1+(gear.attackSpeedPercent||0)));
-    const crit=cap(c.crit+f.crit+lvl*.001+D*.0015+(gear.crit||0),0,.5),evasion=cap((g.classId==='rogue'?.12:0)+D*.0015+(gear.evasionPercent||0),0,.35);
-    const healing=Math.round(12+I*1.1+E*2.3+lvl*.8);
-    const attack=r.magic?elemental:physical;
-    return {critMultiplier:1.65+(gear.critDamage||0),attributes:a,preAttributes,pearlPercent:gear.pearlPercent||{},physical,elemental,attack,defense,maxHP,maxEnergy,speed,crit,evasion,range:c.range,
-      accuracy:Math.min(.99,.90+D*.0015),healing,healingReceivedPercent:gear.healingReceivedPercent||0,impactResistancePercent:gear.impactResistancePercent||0,energyRegen:2.2+E*.04,
-      healthRegen:.9+E*.015,protection:cap((g.classId==='cyborg'?.38:.30)+E*.001,0,.65),
-      mitigation:g.classId==='cyborg'?.12:0,regenBuff:1.5+E*.06+I*.02,
-      moveSpeed:((g.classId==='rogue'?180:158)+Math.min(36,D*.3))*(1+(gear.moveSpeedPercent||0)),huntSpeed:(r.huntSpeed+Math.min(36,D*.3))*(1+(gear.moveSpeedPercent||0)),
-      power:Math.round(attack*8+defense*5+maxHP*.22+maxEnergy*.1+crit*100+evasion*100+(g.classId==='healer'?healing*2:0))};
+    const b=R.bonuses(a,g.classId);
+    const physical=(c.attack+lvl*c.attackStep+gear.attack)*f.attack*(1+b.physical);
+    const elemental=(c.attack+lvl*c.attackStep+gear.attack*.8)*f.attack*(1+b.elemental);
+    const defense=(c.defense+lvl*c.defenseStep+gear.defense+b.strengthDefense)*(1+b.defense)*f.defense*(1+(gear.physicalDefensePercent||0));
+    const maxHP=((c.baseHP+lvl*c.hpStep)*compendiumBonus+gear.hp)*(1+b.hp)*f.hp*(1+(gear.maxHpPercent||0));
+    const maxEnergy=(c.energy+lvl*c.energyStep+(gear.energy||0))*(1+b.energy)*f.energy;
+    const speed=Math.min(3,(c.speed+Math.min(.5,lvl*.009))*f.speed*(1+b.speed)*(1+(gear.attackSpeedPercent||0)));
+    const crit=cap(c.crit+f.crit+lvl*.001+b.crit+(gear.crit||0),0,.65),evasion=cap((g.classId==='rogue'?.12:0)+b.evasion+(gear.evasionPercent||0),0,.45);
+    const healing=(12+lvl*.8)*(1+b.healing),attack=r.magic?elemental:physical;
+    return R.finalize({critMultiplier:1.65+(gear.critDamage||0),attributes:a,preAttributes,pearlPercent:gear.pearlPercent||{},physical,elemental,attack,defense,maxHP,maxEnergy,speed,crit,evasion,range:c.range,
+      accuracy:Math.min(.99,.90+D*.0015),healing,healingReceivedPercent:gear.healingReceivedPercent||0,impactResistancePercent:gear.impactResistancePercent||0,energyRegen:2.2*(1+b.energyRegen),spiritRegenBonus:b.energyRegen,spiritHealingBonus:b.healing,
+      healthRegen:.9,vitalityRegenRate:b.vitalityRegen,damageCooldownReduction:b.damageCooldown,protection:cap((g.classId==='cyborg'?.38:.30)+b.protection,0,R.rules.protectionCap),
+      mitigation:g.classId==='cyborg'?.12:0,regenBuff:1.5*(1+b.healing),
+      moveSpeed:((g.classId==='rogue'?180:158)+Math.min(36,D*.3))*(1+(gear.moveSpeedPercent||0)),huntSpeed:(r.huntSpeed+Math.min(36,D*.3))*(1+(gear.moveSpeedPercent||0))});
   }
+
   function damage(stats,armor,{type='physical',multiplier=1,variance=1,critical=false}={}){
     const raw=(type==='elemental'?stats.elemental:stats.physical)*multiplier*variance-armor*(type==='elemental'?.15:.30);
     return Math.max(1,Math.floor(Math.max(1,raw)*(critical?(stats.critMultiplier||1.65):1)));

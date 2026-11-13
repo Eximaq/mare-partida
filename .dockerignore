@@ -20,6 +20,8 @@
 !boss-dungeon-system.js
 !bounty-system.js
 !character-catalog.js
+!attribute-rules.js
+!inventory-batch.js
 !character-system.js
 !item-catalog.js
 !forge-system.js

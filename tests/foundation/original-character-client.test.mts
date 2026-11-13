@@ -13,7 +13,7 @@ test('original HUD uses the authorized formulas and does not alias the server sn
 });
 test('native attribute confirmation sends only the draft and never commits local progress',async()=>{
  const calls:any[]=[],draft={...chars.empty(),strength:5};
- const box:any={ONLINE_GAME:{},attributeDraft:draft,performance:{now:()=>1},allocationMessage:'',attributeSuccessUntil:0,
+ const box:any={attributeBuildPreview:null,ONLINE_GAME:{},attributeDraft:draft,performance:{now:()=>1},allocationMessage:'',attributeSuccessUntil:0,
   MareCharacters:{empty:chars.empty,commit(){throw Error('Local mutation forbidden');}},
   onlineItemCommand:async(a:string,p:any)=>{calls.push([a,JSON.parse(JSON.stringify(p))]);return true;},renderPanel(){},toast(){}};
  const a=source.search(/  (?:async )?function confirmAttributes\(/),b=source.indexOf('  let mapReturnFocus',a);

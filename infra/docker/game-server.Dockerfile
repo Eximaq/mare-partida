@@ -18,7 +18,7 @@ RUN npm ci --omit=dev --ignore-scripts
 COPY --from=build /app/apps/game-server/dist apps/game-server/dist
 COPY --from=build /app/packages/shared/dist packages/shared/dist
 COPY apps/game-server/migrations apps/game-server/migrations
-COPY bounty-system.js character-appearance.js boss-dungeon-system.js character-catalog.js character-system.js item-catalog.js forge-system.js prison-system.js haki-system.js haki-progression.js akuma-system.js neko-system.js ushi-system.js ushi-rules.js ushi-art-data.js doru-system.js doru-data.js wolf-system.js wolf-data.js akuma-passives.js rank-c-system.js rank-c-data.js rank-c-expansion.js rank-c-expansion-data.js rank-b-system.js rank-b-data.js hoya-system.js hoya-data.js combat-animation.js jiki-system.js jiki-data.js ryu-system.js ryu-data.js rank-a-system.js rank-a-data.js rank-a-expansion.js rank-s-system.js rank-s-data.js ./
+COPY attribute-rules.js inventory-batch.js bounty-system.js character-appearance.js boss-dungeon-system.js character-catalog.js character-system.js item-catalog.js forge-system.js prison-system.js haki-system.js haki-progression.js akuma-system.js neko-system.js ushi-system.js ushi-rules.js ushi-art-data.js doru-system.js doru-data.js wolf-system.js wolf-data.js akuma-passives.js rank-c-system.js rank-c-data.js rank-c-expansion.js rank-c-expansion-data.js rank-b-system.js rank-b-data.js hoya-system.js hoya-data.js combat-animation.js jiki-system.js jiki-data.js ryu-system.js ryu-data.js rank-a-system.js rank-a-data.js rank-a-expansion.js rank-s-system.js rank-s-data.js ./
 COPY paramecia-rework-data.js paramecia-rework-manifest.js rank-s-rework-data.js rank-s-rework.js ./
 COPY visual-completo.js ./
 COPY akainu-combat.js weekly-boss-rules.cjs weekly-boss-battle.cjs ./

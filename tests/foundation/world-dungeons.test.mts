@@ -4,7 +4,7 @@ import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),E=require('../../world-battle.cjs'),D=require('../../boss-dungeon-system.js'),C=require('../../character-system.js'),maps=require('../../world-catalog.cjs').load();
 const arena=require('../../world-map-exports.js').get('quest-dungeons');
 function setup(id='alvida'){
- const stats={...C.derive({classId:'sword',level:10,attributes:C.empty()},E.catalog.classes.sword,E.catalog.factions.pirate,{attack:0,defense:0,hp:0}),maxHP:10000,maxEnergy:100,accuracy:1,crit:0,evasion:0,healthRegen:0,energyRegen:0};
+ const stats={...C.derive({classId:'sword',level:10,attributes:C.empty()},E.catalog.classes.sword,E.catalog.factions.pirate,{attack:0,defense:0,hp:0}),maxHP:10000,maxEnergy:100,accuracy:1,crit:0,evasion:0,healthRegen:0,vitalityHealthRegen:0,vitalityRegenRate:0,energyRegen:0};
  const b=E.create(null,stats,1000,()=>.5),hero={...maps.maps['quest-dungeons'].spawn},nav=maps.navigation('quest-dungeons');
  b.energy=42;b.cooldowns=[3,7];b.talentCooldowns={immortalUntil:90000};
  E.enterDungeon(b,id,{runId:'11111111-1111-4111-8111-111111111111',encounterId:'enemy',spawnId:'22222222-2222-4222-8222-222222222222',phase:'running'},stats,hero);
