@@ -50,6 +50,7 @@ Os status `candidate`/`provisional` originais são conservados. A auditoria de r
 - Revisões de luvas: seleção/preparação nas quatro direções, masculino/feminino, idle/walk.
 - Bateria focada de runtime/armas/cabeça/fallback: **50/50**; após a correção adicional do cache, núcleo/armas/fallback **44/44**.
 - Build Pages: passou.
+- `combat-targeted-browser.cjs`: passou na build publicada localmente, incluindo golpe desarmado real, restauração exata de weapon5, retenção dos IDs, HUD e bloqueio de movimento durante ataque. Duas asserções antigas foram corrigidas: ler `action` do renderer nativo e aceitar a fonte exata carry5 quando disponível, sem exigir sua omissão.
 - Inventário/mapa: **56 capturas**, equipar/retirar, cabeça, movimento e reload; passou.
 - Teste de propriedade visual: atraso de carregamento, flags antigas, fonte ausente/corrompida e troca tardia de identidade; passou.
 - V5: equipados151,157 e115 pelos botões reais do inventário, reload com as mesmas instâncias e aparência; ataque oficial `heroAttack` contra alvo local controlado em SOUTH, com dano positivo; cinco estados0,1,2,4,R desenhados pelo renderer nativo. Sem substituição artificial da pose nesse teste.
@@ -62,7 +63,7 @@ O cenário de combate usa um personagem local descartável, alvo controlado e RN
 - `regressions`/`testes`: o suporte novo lia `index.json` inexistente no checkout limpo; agora também lê o transporte `index.json.gz`.
 - `lobby96`: expectativa antiga de `bare-rework-base`; substituída pela validação do modo nativo/parcial com identidade preservada.
 - `weapons96`/`otherWeapons96`: o diagnóstico confundia a ação genérica solicitada com a ação nativa resolvida. Agora informa a ação efetivamente selecionada.
-- `shared-lobby-browser`: mapa e retrato expulsavam as poses um do outro. A chave do cache usava a instância inteira, incluindo atributos e slots não desenhados, duplicando a mesma fonte. Agora a chave usa fonte resolvida + aparência da composição, com LRU de quatro fontes. A retenção visual continua vinculada à identidade salva. A regressão de três poses simultâneas falhou antes e passou depois.
+- `shared-lobby-browser`: mapa e retrato expulsavam as poses um do outro. A chave do cache usava a instância inteira, incluindo atributos e slots não desenhados, duplicando a mesma fonte. Agora a chave usa fonte resolvida + aparência da composição, com LRU de quatro fontes. A retenção visual continua vinculada à identidade salva. A regressão de três poses simultâneas falhou antes e passou depois. O cenário completo no navegador também passou após atualizar as asserções antigas descritas acima.
 
 Os resultados remotos pertencem ao commit consultado, não à branch em abstrato. Consulte a atualização no PR para o último SHA.
 
