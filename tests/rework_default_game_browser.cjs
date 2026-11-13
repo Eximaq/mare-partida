@@ -34,7 +34,11 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
         // A new browser context isolates storage; no DEV or renderer opt-in is needed.
         await page.goto(new URL(url).href, { waitUntil: 'networkidle', timeout: 90000 });
         await page.waitForFunction(() => window.__reworkDefaultQA, null, { timeout: 60000 });
-        await page.locator('#characterName').fill(`Default rework ${classId}`);
+        // New characters accept 3–12 graphemes; an invalid fixture cannot leave step 1.
+        await page.locator('#characterName').fill(`QA ${classId}`);
+        await page.locator('#factionStep [data-faction="pirate"]').click();
+        assert.equal(await page.locator('#characterName').getAttribute('aria-invalid'), 'false', 'Fixture name must be accepted by the real creation validator');
+        assert.equal(await page.locator('#creationError').textContent(), '', 'Creation must not be blocked by invalid input');
         await page.locator('#nextToClass').click();
         await page.locator(`#classStep [data-class="${classId}"]`).click();
         await page.locator('#nextToAppearance').click();
