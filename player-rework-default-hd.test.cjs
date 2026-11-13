@@ -14,6 +14,8 @@ global.MareReworkModularOutfitsHD=require('./player-rework-modular-outfits-hd.js
 global.MareReworkWeaponCarryHD=require('./player-rework-weapon-carry-hd.js');
 global.MareReworkOutfitOverlayHD=require('./player-rework-outfit-overlay-hd.js');
 global.MareReworkOutfitCarryOverlayHD=require('./player-rework-outfit-carry-overlay-hd.js');
+global.MareCharacterAppearance=require('./character-appearance.js');
+global.MareReworkEyeStylesHD=require('./player-rework-eye-styles-hd.js');
 const {create}=require('./player-rework-native-hd.js');
 global.MareReworkZip=require('./player-rework-zip.js');global.MareReworkHDAssets=require('./player-rework-hd-assets.js');
 const make=()=>create({fetchJSON:async p=>JSON.parse(fs.readFileSync(path.join(__dirname,p))),loadImage:require('./tools/rework-hd-test-loader.cjs').create(__dirname),makeCanvas:cv.createCanvas});
@@ -64,9 +66,9 @@ test('original-appearance bare fallback pixels equal independent authored pack c
 test('fallback preserves the best source pixels and reports unsupported slots on both bodies',async()=>{
  global.MareAppearance96=require('./tools/paper-doll-96-v3/appearance.js');const native=make(),renderer=require('./player-rework-default-hd.js').create({native}),hash=c=>require('node:crypto').createHash('sha256').update(c.getContext('2d').getImageData(0,0,512,512).data).digest('hex');await native.ready;
  for(const gender of ['masculino','feminino'])for(const action of ['idle','walk'])for(const direction of ['south','north','east','west']){
- const p={appearance96:{gender,hairStyle:'hair-wavy',eyeStyle:'face-calm',skinColor:'dark',hairColor:'black'},equipment:{weapon:{def:9999},coat:{def:6}}},before=JSON.stringify(p),female=gender==='feminino',reference={appearance96:{...p.appearance96,eyeStyle:'original',skinColor:'original',hairColor:'original'},equipment:{coat:{def:6}}},o={action,direction,x:256,y:400};
- const source=native.select(reference,o);assert(source,'Explicit compatible reference must exist');assert.match(source.id,female?/female-torso6-.*:female-original-face:wavy:none/:/male-torso6-.*:head:hair-wavy:none/);assert(await renderer.prepare(p,o));assert(await native.prepareClip(reference,o));const count=source.pack.directions[direction].clip.frames;
- for(let frame=0;frame<count;frame++){const pose={...o,progress:(frame+.25)/count},expected=cv.createCanvas(512,512),actual=cv.createCanvas(512,512);assert(await native.prepare(reference,pose));assert(native.draw(expected.getContext('2d'),reference,pose));renderer.draw(actual.getContext('2d'),p,pose);const diagnostic=renderer.snapshot().last;assert.equal(diagnostic.source,source.id);assert.deepEqual(diagnostic.unrepresentedSlots,['weapon']);assert.equal(hash(actual),hash(expected),gender+'/'+action+'/'+direction+'/'+frame);}
+ const p={appearance96:{gender,hairStyle:'hair-wavy',eyeStyle:'face-calm',skinColor:'dark',hairColor:'black'},equipment:{weapon:{def:9999},coat:{def:6}}},before=JSON.stringify(p),female=gender==='feminino',reference={appearance96:p.appearance96,equipment:{coat:{def:6}}},o={action,direction,x:256,y:400};
+ const source=native.select(reference,o);assert(source,'Explicit compatible reference must exist for '+[gender,action,direction].join('/'));if(female){assert.equal(source.femaleNamedHairRecord.skinColor,'dark');assert.equal(source.femaleNamedHairRecord.hairColor,'black');assert.equal(source.femaleNamedHairRecord.eyeStyle,'face-calm');}assert.match(source.id,female?/female-torso6-.*:female-original-face:wavy:none/:/male-torso6-.*:head:hair-wavy:none/);assert(await renderer.prepare(p,o));assert(await native.prepareClip(reference,o));const count=source.pack.directions[direction].clip.frames;
+ for(let frame=0;frame<count;frame++){const pose={...o,progress:(frame+.25)/count},expected=cv.createCanvas(512,512),actual=cv.createCanvas(512,512);assert(await native.prepare(reference,pose));assert(native.draw(expected.getContext('2d'),reference,pose));renderer.draw(actual.getContext('2d'),p,pose);const diagnostic=renderer.snapshot().last;assert.equal(diagnostic.source,source.id);assert.deepEqual(diagnostic.unrepresentedSlots,['weapon']);assert.deepEqual(diagnostic.unrepresentedAppearance,[]);assert.equal(hash(actual),hash(expected),gender+'/'+action+'/'+direction+'/'+frame);}
  assert.equal(JSON.stringify(p),before);
  }
 });

@@ -20,6 +20,30 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
  }
  const sources=(r,frame)=>frame===undefined?r.sourceRefs:[...new Set(r.pack.directions[r.direction].layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean))];
  const requiredFiles=(r,{frame}={})=>r?[...new Set([...sources(r,frame),...(r.paletteRefs||[])])].map(s=>prefix+s+'.png'):[];
+ function bindAnatomy(r,baseIndex){
+  const d=r?.pack.directions[r.direction];
+  if(!d||Object.keys(r.equipment||{}).length!==1||r.equipment.torso==null)return null;
+  const original=baseIndex.records.find(b=>b.body===r.body&&b.direction===r.direction&&b.action===r.action&&b.hairStyle==='original');
+  if(!original)return null;
+  const authors=original.pack.directions[r.direction].layers;
+  const ownership=new Map();
+  for(const layer of d.layers.filter(l=>l.id.startsWith('base:'))){
+   const author=authors.find(a=>a.id===layer.id.slice(5)&&a.slot===layer.slot&&
+      (layer.frames||[layer.source]).every(source=>(a.frames||[a.source]).includes(source)));
+   if(!author)return null;
+   const kind=author.slot==='hair'?'hair':skinMaterials.ownership([author]);
+   if(!kind||r.body==='female'&&!['body','foreground'].includes(author.slot))continue;
+   ownership.set(layer,kind);
+  }
+  const sources=new Map();
+  for(const [layer,kind] of ownership)for(const source of layer.frames||[layer.source]){
+   if(sources.has(source)&&sources.get(source)!==kind)return null;
+   sources.set(source,kind);
+  }
+  // Never apply a body's palette to a raster reused by clothing.
+  if(d.layers.some(l=>!ownership.has(l)&&(l.frames||[l.source]).some(s=>sources.has(s))))return null;
+  return sources.size?Object.fromEntries(sources):null;
+ }
  function render(ctx,r,images,{frame=0,hiddenSlots=[],appearance=r.colorAppearance||{},makeCanvas}={}){
   appearanceAPI=appearanceAPI||root.MareAppearance96;
   const p=r?.pack,d=p?.directions?.[r.direction];if(!d||!Number.isInteger(frame)||frame<0||frame>=d.clip.frames)throw Error('Invalid modular authored frame');
@@ -31,6 +55,28 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
     if(padding.sourceSize!==512||padding.offset!==64||image.width!==512||image.height!==512||ctx.canvas.width!==640||ctx.canvas.height!==640)throw Error('Invalid native source padding');
     const surface=makeCanvas?makeCanvas(640,640):ctx.canvas.ownerDocument?Object.assign(ctx.canvas.ownerDocument.createElement('canvas'),{width:640,height:640}):typeof OffscreenCanvas!=='undefined'?new OffscreenCanvas(640,640):require('@napi-rs/canvas').createCanvas(640,640);
     surface.getContext('2d').drawImage(image,64,64);map.set(source,surface);
+   }
+  }
+  if(r.baseMaterialSources){
+   const eyes=root.MareReworkEyeStylesHD;
+   const expression=r.body==='male'&&(eyes?.supports(appearance.face)||
+    appearance.eyeColor&&!['original','blue'].includes(appearance.eyeColor))&&eyes?.maleSource(r);
+   for(const [source,kind] of Object.entries(r.baseMaterialSources)){
+    const image=map.get(source),palette=kind==='hair'?appearanceAPI?.hairs[appearance.hairColor]:appearanceAPI?.skins[appearance.skin||appearance.skinColor];
+    if(!image||!palette&&expression?.source!==source)continue;
+    const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d');
+    tc.drawImage(image,0,0);
+    if(expression?.source===source){
+     eyes.reshape(tc,appearance.face,expression.direction,expression.boxes);
+     eyes.recolorIris(tc,expression,appearance.eyeColor);
+    }
+    if(palette){
+     const data=tc.getImageData(0,0,tile.width,tile.height);
+     const mask=kind==='hair'?appearanceAPI.materialMask(data.data,'hair'):skinMaterials.mask(data.data,tile.width,kind);
+     data.data.set(appearanceAPI.recolor(data.data,mask,palette.ramp));
+     tc.putImageData(data,0,0);
+    }
+    map.set(source,tile);
    }
   }
   if(r.isolatedPants21){
@@ -99,7 +145,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
   map.set(prefix+source+'.png',headTile);
   return render(ctx,adapted,map,options);
  }
- return {resolve,requiredFiles,render,renderWithHead};
+ return {resolve,bindAnatomy,requiredFiles,render,renderWithHead};
 }
 const api={create};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
