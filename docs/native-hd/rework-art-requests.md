@@ -1,5 +1,7 @@
 # Artes e contratos pendentes — lista para produção
 
+**Escopo atualizado:** capas (slot cloak; defs 23, 24, 135, 142, 149, 156, 163, 170, 177 e 184) não têm impacto visual, conforme orientação do proprietário. Foram retiradas dos pedidos de arte e dos bloqueios visuais. Os resultados históricos de testes não foram reescritos: ocorrências de cloak omitido nessas rodadas deixam de ser pendências visuais. Esta revisão altera apenas o relatório, sem remover itens ou modificar atributos.
+
 Auditoria parcial sobre a base b0d7cf81e7be357e7e4c2a6d1ff4c5f727a804d6, índices runtime atuais, catálogos de roupas/armas/cabeça e acervo histórico 2801902fa2dad8e83069815faeaa3f53f90bc1b6. Não equivale a aprovação de todas as combinações nem à conclusão do PR. Nenhuma imagem foi regenerada.
 
 ## Fontes não localizadas no acervo auditado
@@ -10,20 +12,10 @@ SOUTH = sul, NORTH = norte, EAST = leste, WEST = oeste. Nos itens abaixo, a font
 |---|---|---|---|---|
 | 21 | Grevas de Navegante | masculino | quatro direções | Repouso, caminhada e ataque com camada de calça própria; os ciclos femininos não substituem esta base |
 | 22 | Calças da Maré Alta | masculino | quatro direções | Repouso, caminhada e ataque com camada de calça própria |
-| 23 | Manto do Faroleiro | ambos | quatro direções | Camada do slot cloak para repouso, caminhada e ataque |
-| 24 | Capa do Horizonte | ambos | quatro direções | Camada do slot cloak para repouso, caminhada e ataque |
-| 135 | Capa do Corsário das Marés | ambos | quatro direções | Camada do slot cloak para repouso, caminhada e ataque |
-| 142 | Capa do Peregrino de Alabasta | ambos | quatro direções | Camada do slot cloak para repouso, caminhada e ataque |
-| 149 | Capa do Navegador Arcano | ambos | quatro direções | Camada do slot cloak para repouso, caminhada e ataque |
-| 156 | Capa do Almirante Carmesim | ambos | quatro direções | Camada do slot cloak para repouso, caminhada e ataque |
-| 163 | Capa do Arauto das Tempestades | ambos | quatro direções | Camada do slot cloak para repouso, caminhada e ataque |
-| 170 | Capa da Maré Sagrada | ambos | quatro direções | Camada do slot cloak para repouso, caminhada e ataque |
-| 177 | Capa do Soberano da Grand Line | ambos | quatro direções | Camada do slot cloak para repouso, caminhada e ataque |
-| 184 | Capa do Horizonte Final | ambos | quatro direções | Camada do slot cloak para repouso, caminhada e ataque |
 | 0 | Espada de Ferro Salgado | ambos | quatro direções | Fonte de porte em repouso/caminhada; o ataque histórico existe e está separado abaixo |
 | 168 | Saia/Pernas do Rito Marinho | feminino | quatro direções | Fonte compatível de ataque; caminhada histórica existe e está separada abaixo |
 
-As capas desenhadas dentro de um peitoral não comprovam a existência de uma camada separada para um item do slot cloak. Para ataques, cada pedido exige compatibilidade com o gesto/família real da classe; não há aprovação automática de combinações arbitrárias.
+Para ataques, cada pedido exige compatibilidade com o gesto/família real da classe; não há aprovação automática de combinações arbitrárias.
 
 ## Não gerar novamente: fonte histórica já encontrada
 
@@ -56,8 +48,8 @@ A lista será complementada com incompatibilidades encontradas na rodada de toda
 
 ## Falhas de integração observadas, não pedidos de nova arte
 
-- Peitorais 6 e 7, ambos os corpos: primeiro sample de EAST após equipar pode ficar em loading sem camada visível. As fontes direcionais existem.
-- Peitorais 6 e 7, feminino: primeiro sample de SOUTH pode reter idle NORTH durante carga. Não gerar outra caminhada para contornar cache/seleção.
+- Peitorais 6 e 7, ambos os corpos, e capacete 18 feminino: a repetição na última candidata ainda encontrou slots omitidos durante carga inicial. As fontes existem; não são pedidos de nova arte.
+- Direção/transparência: os 12 cenários repetidos na última candidata não reproduziram a direção incorreta nem a ausência do corpo. A omissão de peças permanece separada; não declarar todas as combinações resolvidas.
 - Botas 8 e 9 isoladas, ambos os corpos: slot omitido no mapa. Há registros em conjuntos; verificar se existe camada independente compatível antes de pedir nova arte.
 - Personalização: na candidata native96-8d6ab865bc7ffa0d, hair-bob, pink e green passaram pela aplicação e recarga no mapa. A regressão continua vermelha em eyeStyle=face-focused e skinColor=dark, antes/depois de recarregar. Não foi enfraquecida para declarar a personagem completamente funcional.
 

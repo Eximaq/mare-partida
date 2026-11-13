@@ -1,5 +1,7 @@
 # Rework do personagem — progresso e bloqueios
 
+**Escopo atualizado:** capas (slot cloak; defs 23, 24, 135, 142, 149, 156, 163, 170, 177 e 184) não têm impacto visual, conforme orientação do proprietário. Foram retiradas dos pedidos de arte e dos bloqueios visuais. Os resultados históricos de testes não foram reescritos: ocorrências de cloak omitido nessas rodadas deixam de ser pendências visuais. Esta revisão altera apenas o relatório, sem remover itens ou modificar atributos.
+
 PR em rascunho, solicitado para preservar o trabalho acumulado. Não pronto para merge. Continuação do #321, que já foi integrado; base main b0d7cf81e7be357e7e4c2a6d1ff4c5f727a804d6. Nenhum merge/deploy foi executado nesta atualização.
 
 ## Correções acumuladas

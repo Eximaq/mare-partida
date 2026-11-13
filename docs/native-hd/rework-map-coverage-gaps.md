@@ -1,5 +1,7 @@
 # Lacunas de cobertura do rework — auditoria em andamento
 
+**Escopo atualizado:** capas (slot cloak; defs 23, 24, 135, 142, 149, 156, 163, 170, 177 e 184) não têm impacto visual, conforme orientação do proprietário. Foram retiradas dos pedidos de arte e dos bloqueios visuais. Os resultados históricos de testes não foram reescritos: ocorrências de cloak omitido nessas rodadas deixam de ser pendências visuais. Esta revisão altera apenas o relatório, sem remover itens ou modificar atributos.
+
 Base: `b0d7cf81e7be357e7e4c2a6d1ff4c5f727a804d6`. Branch: `fix/rework-map-user-flows`.
 
 Este relatório não declara a integração concluída. As linhas abaixo indicam ausência de registro por item nos índices runtime de corpo, roupas, cabeça, armas e porte. Ausência de registro não comprova ausência do PNG nos arquivos históricos; procurar a fonte histórica antes de gerar arte nova. Registros estáticos de cabeça também não certificam compatibilidade com ataques ou caminhada.
@@ -32,69 +34,9 @@ Consulte também [Artes e contratos pendentes](rework-art-requests.md): a revis�
 | 22 | Calças da Maré Alta | legs | male | idle | south, north, east, west |
 | 22 | Calças da Maré Alta | legs | male | walk | south, north, east, west |
 | 22 | Calças da Maré Alta | legs | male | attack | south, north, east, west |
-| 23 | Manto do Faroleiro | cloak | male | idle | south, north, east, west |
-| 23 | Manto do Faroleiro | cloak | male | walk | south, north, east, west |
-| 23 | Manto do Faroleiro | cloak | male | attack | south, north, east, west |
-| 23 | Manto do Faroleiro | cloak | female | idle | south, north, east, west |
-| 23 | Manto do Faroleiro | cloak | female | walk | south, north, east, west |
-| 23 | Manto do Faroleiro | cloak | female | attack | south, north, east, west |
-| 24 | Capa do Horizonte | cloak | male | idle | south, north, east, west |
-| 24 | Capa do Horizonte | cloak | male | walk | south, north, east, west |
-| 24 | Capa do Horizonte | cloak | male | attack | south, north, east, west |
-| 24 | Capa do Horizonte | cloak | female | idle | south, north, east, west |
-| 24 | Capa do Horizonte | cloak | female | walk | south, north, east, west |
-| 24 | Capa do Horizonte | cloak | female | attack | south, north, east, west |
-| 135 | Capa do Corsário das Marés | cloak | male | idle | south, north, east, west |
-| 135 | Capa do Corsário das Marés | cloak | male | walk | south, north, east, west |
-| 135 | Capa do Corsário das Marés | cloak | male | attack | south, north, east, west |
-| 135 | Capa do Corsário das Marés | cloak | female | idle | south, north, east, west |
-| 135 | Capa do Corsário das Marés | cloak | female | walk | south, north, east, west |
-| 135 | Capa do Corsário das Marés | cloak | female | attack | south, north, east, west |
-| 142 | Capa do Peregrino de Alabasta | cloak | male | idle | south, north, east, west |
-| 142 | Capa do Peregrino de Alabasta | cloak | male | walk | south, north, east, west |
-| 142 | Capa do Peregrino de Alabasta | cloak | male | attack | south, north, east, west |
-| 142 | Capa do Peregrino de Alabasta | cloak | female | idle | south, north, east, west |
-| 142 | Capa do Peregrino de Alabasta | cloak | female | walk | south, north, east, west |
-| 142 | Capa do Peregrino de Alabasta | cloak | female | attack | south, north, east, west |
-| 149 | Capa do Navegador Arcano | cloak | male | idle | south, north, east, west |
-| 149 | Capa do Navegador Arcano | cloak | male | walk | south, north, east, west |
-| 149 | Capa do Navegador Arcano | cloak | male | attack | south, north, east, west |
-| 149 | Capa do Navegador Arcano | cloak | female | idle | south, north, east, west |
-| 149 | Capa do Navegador Arcano | cloak | female | walk | south, north, east, west |
-| 149 | Capa do Navegador Arcano | cloak | female | attack | south, north, east, west |
-| 156 | Capa do Almirante Carmesim | cloak | male | idle | south, north, east, west |
-| 156 | Capa do Almirante Carmesim | cloak | male | walk | south, north, east, west |
-| 156 | Capa do Almirante Carmesim | cloak | male | attack | south, north, east, west |
-| 156 | Capa do Almirante Carmesim | cloak | female | idle | south, north, east, west |
-| 156 | Capa do Almirante Carmesim | cloak | female | walk | south, north, east, west |
-| 156 | Capa do Almirante Carmesim | cloak | female | attack | south, north, east, west |
-| 163 | Capa do Arauto das Tempestades | cloak | male | idle | south, north, east, west |
-| 163 | Capa do Arauto das Tempestades | cloak | male | walk | south, north, east, west |
-| 163 | Capa do Arauto das Tempestades | cloak | male | attack | south, north, east, west |
-| 163 | Capa do Arauto das Tempestades | cloak | female | idle | south, north, east, west |
-| 163 | Capa do Arauto das Tempestades | cloak | female | walk | south, north, east, west |
-| 163 | Capa do Arauto das Tempestades | cloak | female | attack | south, north, east, west |
 | 168 | Saia/Pernas do Rito Marinho | legs | female | idle | south, north, east, west |
 | 168 | Saia/Pernas do Rito Marinho | legs | female | walk | south, north, east, west |
 | 168 | Saia/Pernas do Rito Marinho | legs | female | attack | south, north, east, west |
-| 170 | Capa da Maré Sagrada | cloak | male | idle | south, north, east, west |
-| 170 | Capa da Maré Sagrada | cloak | male | walk | south, north, east, west |
-| 170 | Capa da Maré Sagrada | cloak | male | attack | south, north, east, west |
-| 170 | Capa da Maré Sagrada | cloak | female | idle | south, north, east, west |
-| 170 | Capa da Maré Sagrada | cloak | female | walk | south, north, east, west |
-| 170 | Capa da Maré Sagrada | cloak | female | attack | south, north, east, west |
-| 177 | Capa do Soberano da Grand Line | cloak | male | idle | south, north, east, west |
-| 177 | Capa do Soberano da Grand Line | cloak | male | walk | south, north, east, west |
-| 177 | Capa do Soberano da Grand Line | cloak | male | attack | south, north, east, west |
-| 177 | Capa do Soberano da Grand Line | cloak | female | idle | south, north, east, west |
-| 177 | Capa do Soberano da Grand Line | cloak | female | walk | south, north, east, west |
-| 177 | Capa do Soberano da Grand Line | cloak | female | attack | south, north, east, west |
-| 184 | Capa do Horizonte Final | cloak | male | idle | south, north, east, west |
-| 184 | Capa do Horizonte Final | cloak | male | walk | south, north, east, west |
-| 184 | Capa do Horizonte Final | cloak | male | attack | south, north, east, west |
-| 184 | Capa do Horizonte Final | cloak | female | idle | south, north, east, west |
-| 184 | Capa do Horizonte Final | cloak | female | walk | south, north, east, west |
-| 184 | Capa do Horizonte Final | cloak | female | attack | south, north, east, west |
 
 ## Personalização feminina comprovada no navegador
 
