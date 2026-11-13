@@ -1,4 +1,17 @@
-# Calça 22 masculina — candidata independente, ainda não liberada
+# Calça 22 masculina — integração do ciclo essencial
+
+## Atualização: índice publicado
+
+Conforme a orientação de testar somente o essencial por peça, o vínculo def 22 → legs → pants está registrado no índice publicável, como camada independente. A build e o navegador passaram sem interceptar índices ou imagens: idle e caminhada nas quatro direções, os oito quadros de combate desarmado em cada direção, equipar, retirar e recarregar. Quatro testes Node passaram.
+
+[Registro da execução](evidence/pants22-candidate/published-index-runtime.json) · [Mapa EAST](evidence/pants22-candidate/published-east-map.png). A primeira tentativa encontrou o servidor local desligado; após iniciá-lo a rodada completa passou.
+
+Fontes: os mesmos pixels e metadados da candidata abaixo; pacote `tools/rework-modular-outfits-hd/archives/pants22-male-independent-v1.zip`. Não houve nova arte nem alteração de escala, pivôs ou combate. O teste `tests/pants22_live_ui_browser.cjs` utiliza o inventário real e instrumentação somente no navegador de teste.
+
+**Limite:** este vínculo cobre a peça isolada e ataque desarmado. Famílias armadas e combinações adicionais ainda exigem suas próprias camadas compatíveis; a compatibilidade não foi relaxada. A aprovação artística exaustiva não é alegada. Capacetes e demais pendências continuam abertos.
+
+## Histórico da candidata (estado anterior ao vínculo)
+
 
 PR #322, branch fix/rework-map-user-flows. Checkout usado: 387a038ea6ff3fd414c10c7b0dc69cfaa33a6e8c. Build local publicável gerada com python tools/build_pages.py; a identificação SHA-256 de dist/game.js e do pacote candidato está em [runtime.json](evidence/pants22-candidate/runtime.json). Não é uma prova da produção.
 
