@@ -144,7 +144,7 @@
   ctx.imageSmoothingEnabled = false;
   const portrait = $('portrait').getContext('2d');
   portrait.imageSmoothingEnabled = false;
-  let W = canvas.width, H = canvas.height, viewportMapId=null;
+  let W = canvas.width, H = canvas.height, viewportMapId=null,phoneMenuInset=0;
   const {Camera, Navigation} = MareWorld;
   const ambientWeather=MareAmbientWeather.create(),ambientMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)');
   const ambientReduced=()=>reducedFX||ambientMotion?.matches||document.documentElement.dataset.mareMotion==='reduced';
@@ -171,9 +171,18 @@
     W=Math.max(1,Math.round(rect.width/zoom));H=Math.max(1,Math.round(rect.height/zoom));
     canvas.width=W;canvas.height=H;ctx.imageSmoothingEnabled=false;
     camera.width=W;camera.height=H;viewportMapId=game?mapKey():null;
-    if(game)camera.update(world.hero,activeMap(),0,true);
+    phoneMenuInset=rect.width<=640&&rect.height>rect.width?Math.max(0,$('mainMenu').getBoundingClientRect().bottom-rect.top+4)/zoom:0;
+    if(game)camera.update(nameplateCameraFocus(),activeMap(),0,true,world.hero);
   }
-  new ResizeObserver(resizeViewport).observe(canvas);
+  const viewportObserver=new ResizeObserver(resizeViewport);
+  viewportObserver.observe(canvas);viewportObserver.observe($('mainMenu'));
+  function nameplateCameraFocus(){
+    const focus=combatFocus();
+    // Reserve the title/name/level stack below the stacked portrait menu.
+    // Only the camera framing moves; actor positions and zoom stay unchanged.
+    const offset=phoneMenuInset?Math.max(0,phoneMenuInset+combatVisualHeight(world.hero)+60-H/2):0;
+    return offset?{x:focus.x,y:focus.y-offset}:focus;
+  }
   function walkTo(point,action=null){
     if(ONLINE_GAME?.data?.online.world){
       if(!ONLINE_GAME.controlled||ONLINE_GAME.busy||ONLINE_GAME.pending)return false;
@@ -3507,7 +3516,14 @@ ${avatarExtra}
     const box=MareCombatVfx.layout(x,y,{height:combatVisualHeight(world.hero),nameWidth:MareMapPlayerHud.measure(ctx,game.name)});
     // The stacked menu can cover a name at the default offset on phones.
     const nameY=box.nameY+(innerWidth<=640?23:12);
-    return {...box,nameY,iconY:nameY+10,ccY:nameY-26};
+    return {...box,nameY,iconY:nameY+10,ccY:nameY-51};
+  }
+  function mapPlayerIdentity(player,crew,self=false){
+    const faction=player.factionId,tier=player.hierarchyTier;
+    const insignia=MareHierarchy.art(faction,tier);
+    return {self,level:player.level,crewTag:crew?.tag,insignia,
+      title:insignia?MareHierarchy.title(faction,tier):null,
+      titleColor:{pirate:'#f6d180',marine:'#83d7f0',revolutionary:'#ffac92',government:'#cab4ff'}[faction]};
   }
   function drawForegroundLayer(actors){
     const height=combatVisualHeight(world.hero),regions=MareWorldDepth.regions(activeMap().id);
@@ -3516,7 +3532,7 @@ ${avatarExtra}
     }
     const box=playerMapHudBox();
     const {maxHP,maxEnergy}=getDerived();
-    MareMapPlayerHud.draw(ctx,world.hero.x,box.nameY,game.name,{hp:game.hp,maxHP,energy:game.energy,maxEnergy});
+    MareMapPlayerHud.draw(ctx,world.hero.x,box.nameY,game.name,{hp:game.hp,maxHP,energy:game.energy,maxEnergy},mapPlayerIdentity(game,crewIdentity,true));
   }
   function sharedLobbyPlayers(){
     const group=ONLINE_GAME?.data?.online.party?.group,weekly=ONLINE_GAME?.data?.online.weeklyBoss,instance=ONLINE_GAME?.data?.online.battle?.weeklyBossInstanceId||ONLINE_GAME?.data?.online.battle?.partyInstanceId;
@@ -3541,7 +3557,7 @@ ${avatarExtra}
     const body=(c,x,y)=>entry?MareSpriteCombatV2.draw(c,key,x,y,{action:peer.action==='attack'?'attack':peer.moving?'walk':'idle',direction:peer.direction,time:world.time,scale:zoanVisualScale(key)*(entry.world_scale??1),height:key==='ryu'?entry.worldHeight:null}):sharedLobbyRenderer.draw(c,peer,{scene,action:peer.action==='attack'?'attack':peer.moving?'walk':'idle',direction:peer.direction,time:world.time,x,y,consumer:'shared-lobby'});
     const aura=layer=>{if(!fruit)return;if(MareRankS.has(fruit.id)){if(!partyAuraLoaded.has(fruit.id)){partyAuraLoaded.add(fruit.id);MareRankS.preload(fruit.id);}MareRankS.drawAura(ctx,fruit.id,peer.x,peer.y,world.time,fruit.id===MareRankS.rules.phoenix.id&&!peer.zoanTransformed?.7:1,layer);}else vfx_aura.draw(ctx,peer.x,peer.y,world.time,1,fruit,layer);};
     aura('back');body(ctx,peer.x,peer.y);aura('front');if(peer.haki)MareHakiArt.draw(ctx,peer.haki,peer,world.time,false,body);
-    MareMapPlayerHud.draw(ctx,peer.x,peer.y-102,peer.name);
+    MareMapPlayerHud.draw(ctx,peer.x,peer.y-102,peer.name,null,mapPlayerIdentity(peer,peer.crew||peer.crewIdentity));
     ctx.restore();
   }
   function drawEntityLayer(){
@@ -3665,7 +3681,7 @@ ${avatarExtra}
     node.textContent=state==='failed'?'Visual indisponível. Recarregue a página.':state==='degraded'?'Há equipamento sem arte disponível.':'Carregando personagem…';
     $('wantedPortrait').setAttribute('aria-busy',String(visible&&state==='loading'));
   }
-  function frame(t){onlineUI?.frame(t);if(ONLINE_GAME&&!ONLINE_GAME.data){requestAnimationFrame(frame);return;}if(!lastTime)lastTime=t;const dt=Math.min(.25,Math.max(0,(t-lastTime)/1000));lastTime=t;if(game&&!document.hidden&&saveWriter.owner&&mapArtState()==='ready'){for(let remaining=dt;remaining>0;remaining-=.05)tick(Math.min(.05,remaining));renderUIClock+=dt;saveClock+=dt;if(renderUIClock>.27){renderUIClock=0;updateUI();}if(saveClock>(game.has_haki_unlocked?1:7)){saveClock=0;saveGame();}if(viewportMapId!==mapKey())resizeViewport();camera.update(combatFocus(),activeMap(),dt,false,world.hero);}ambientWeather.update(game?mapKey():'',dt,{reduced:ambientReduced(),hidden:document.hidden,width:W,height:H,frameMs:dt*1000});presentWorld();drawVfxPanels();drawCreationAppearance(t/1000);updatePlayerVisualStatus();requestAnimationFrame(frame);}
+  function frame(t){onlineUI?.frame(t);if(ONLINE_GAME&&!ONLINE_GAME.data){requestAnimationFrame(frame);return;}if(!lastTime)lastTime=t;const dt=Math.min(.25,Math.max(0,(t-lastTime)/1000));lastTime=t;if(game&&!document.hidden&&saveWriter.owner&&mapArtState()==='ready'){for(let remaining=dt;remaining>0;remaining-=.05)tick(Math.min(.05,remaining));renderUIClock+=dt;saveClock+=dt;if(renderUIClock>.27){renderUIClock=0;updateUI();}if(saveClock>(game.has_haki_unlocked?1:7)){saveClock=0;saveGame();}if(viewportMapId!==mapKey())resizeViewport();camera.update(nameplateCameraFocus(),activeMap(),dt,false,world.hero);}ambientWeather.update(game?mapKey():'',dt,{reduced:ambientReduced(),hidden:document.hidden,width:W,height:H,frameMs:dt*1000});presentWorld();drawVfxPanels();drawCreationAppearance(t/1000);updatePlayerVisualStatus();requestAnimationFrame(frame);}
 
 
 const targetHud=document.createElement('div');
