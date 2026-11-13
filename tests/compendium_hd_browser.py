@@ -22,7 +22,8 @@ with sync_playwright() as p:
  seed=copy.deepcopy(template)
  seed['akumaCompendium']=['akuma_kuku_kuku','akuma_beri_beri','akuma_gura_gura','akuma_mera_mera','akuma_ope_ope','akuma_mero_mero','akuma_supa_supa','akuma_ryu_ryu']
  c,q=page_for(b,seed,size=(1672,990),errors=errors)
- q.clock.run_for(6000)
+ q.wait_for_function("__mareDiagnostics().lobby96.worldVisual?.state === 'ready'", timeout=90000)
+ q.clock.run_for(7500)
  requests=[];q.on('request',lambda r:requests.append(r.url))
  before=saved(q);stats=q.evaluate('__mareDiagnostics().stats')
  open_comp(q);ready(q)
