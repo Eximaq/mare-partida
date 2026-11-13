@@ -19,6 +19,12 @@ O seletor recusava o cabelo e/ou a pele das fixtures de 109 e 17. Os índices es
 
 A 109 manteve porte HD em SOUTH. A 17 ainda teve `native96/masculino/idle/south` e `native96/masculino/walk/south` com essa aparência. A correção não afirma restauração das demais vistas, roupas, capacetes ou armas.
 
+### Comparação da Manopla 109 em SOUTH
+
+![Estado 2 da Manopla 109 na arte aprovada, no Pages e na build corretiva](evidence/approved-poses/Kaizoku-109-fase-2.png)
+
+[Abrir o PNG em resolução original](evidence/approved-poses/Kaizoku-109-fase-2.png)
+
 ## Fontes recuperadas
 
 | Caso | Caminho na branch `feature/approved-weapon-art` em `2801902fa2dad8e83069815faeaa3f53f90bc1b6` | SHA-256 |
