@@ -23,6 +23,42 @@ function adapt(weapon,outfit,{assetPrefix='../rework-modular-outfits-hd/assets/'
  r.id+='-pants133-candidate';r.equipment={weapon:weapon.item,pants:133,...(bootsOutfit?{boots:9}:{})};r.outfitOverlay={id:outfit.id,sourceSHA256:key,bodyFramesVerified:true,candidate:true,requiresVisualCalibration:true};
  return r;
 }
+function bindHair(layers,{style,dir,p,d,baseIndex,images,padding}){
+ if(style!=='original'){
+  const hair=layers.find(l=>l.slot==='hair');
+  if(!hair||hair.binding.kind!=='rigid'||hair.binding.a!=='NECK'||hair.binding.b!=='NOSE')return null;
+  layers=layers.filter(l=>l!==hair);
+  if(style!=='none'){
+   const source=baseIndex.records.find(r=>r.body==='male'&&r.action==='idle'&&r.direction===dir&&r.hairStyle===style);
+   const sd=source?.pack.directions[dir],layer=sd?.layers.find(l=>l.slot==='hair');
+   if(!layer||layer.binding.kind!=='fixed'||layer.frames||source.pack.density!==4||
+      p.frame.width-source.pack.frame.width!==32||p.frame.height-source.pack.frame.height!==32||
+      !['NECK','NOSE'].every(k=>d.rest[k].x-sd.rest[k].x===16&&d.rest[k].y-sd.rest[k].y===16))return null;
+   images[layer.source]='../rework-base-hd/assets/'+layer.source+'.png';
+   padding[layer.source]=64;
+   layers.push({...hair,source:layer.source});
+  }
+ }
+ return layers;
+}
+function adaptSouth109Or17(weapon,{baseIndex,appearance}){
+ if(!['gauntlet109-south-native-layers','orb17-south-native-layers'].includes(weapon?.id))return null;
+ const {pack:p,images:sourceImages}=weapon.basePack,d=p.directions.south;
+ if(p.density!==4||p.frame.width!==160||p.frame.height!==160||!weapon.hairSeparated)return null;
+ const style=(appearance.hair||'original').replace(/^hair-/,'');
+ const images={...sourceImages},padding={};
+ const layers=bindHair(d.layers,{style,dir:'south',p,d,baseIndex,images,padding});
+ if(!layers)return null;
+ const adjusted=style!=='original'||[appearance.skin,appearance.hairColor,appearance.eyeColor,appearance.face].some(value=>value&&value!=='original');
+ if(!adjusted)return weapon;
+ const states=weapon.states.map(state=>({...state,
+  layers:state.layers.filter(layer=>style==='original'||layer.role!=='rounding-correction').map(layer=>
+   layer.role==='authored-hand-and-orb'?{...layer,skinFromAnatomy:true}:layer),
+  canvasRoundingPatch:style==='original'?state.canvasRoundingPatch:undefined,
+ }));
+ return {...weapon,id:weapon.id+'-appearance-'+style,states,sourceRasterPadding:padding,colorAppearance:appearance,
+  basePack:{pack:{...p,directions:{south:{...d,layers}}},images}};
+}
 function adaptSword(weapon,outfits,{coat,baseIndex,appearance}){
  const dir=weapon?.direction;
  if(weapon?.body!=='male')return null;
@@ -62,26 +98,13 @@ function adaptSword(weapon,outfits,{coat,baseIndex,appearance}){
   mirrors.push(...(outfit.mirrorLayerIDs||[]));
  }
  const style=(appearance.hair||'original').replace(/^hair-/,'');
- if(style!=='original'){
-  const hair=layers.find(l=>l.slot==='hair');
-  if(!hair||hair.binding.kind!=='rigid'||hair.binding.a!=='NECK'||hair.binding.b!=='NOSE')return null;
-  layers=layers.filter(l=>l!==hair);
-  if(style!=='none'){
-   const source=baseIndex.records.find(r=>r.body==='male'&&r.action==='idle'&&r.direction===dir&&r.hairStyle===style);
-   const sd=source?.pack.directions[dir],layer=sd?.layers.find(l=>l.slot==='hair');
-   if(!layer||layer.binding.kind!=='fixed'||layer.frames||source.pack.density!==4||
-      p.frame.width-source.pack.frame.width!==32||p.frame.height-source.pack.frame.height!==32||
-      !['NECK','NOSE'].every(k=>d.rest[k].x-sd.rest[k].x===16&&d.rest[k].y-sd.rest[k].y===16))return null;
-   images[layer.source]='../rework-base-hd/assets/'+layer.source+'.png';
-   padding[layer.source]=64;
-   layers.push({...hair,source:layer.source});
-  }
- }
+ layers=bindHair(layers,{style,dir,p,d,baseIndex,images,padding});
+ if(!layers)return null;
  // NORTH stores the blade and an already composed body separately. Keep the
  // blade behind the modular body, as in the original layer order.
  const states=north?weapon.states.map(s=>({...s,layers:[],attachment:{...s.layers[0],depth:-1,matrix:[1,0,0,1,0,0]}})):weapon.states;
  return {...weapon,states,id:weapon.id+(coat==null?'':'-coat'+coat)+'-adapted-'+style,basePack:{...b,images,pack:{...p,directions:{...p.directions,[dir]:{...d,layers,rest,poses}}}},
   adaptedCoat:outfit?.id,sourceRasterPadding:padding,mirrorLayerIDs:mirrors,colorAppearance:appearance};
 }
-const api={adapt,adaptSword};root.MareReworkOutfitOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
+const api={adapt,adaptSword,adaptSouth109Or17};root.MareReworkOutfitOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

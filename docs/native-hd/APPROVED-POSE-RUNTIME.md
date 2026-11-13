@@ -1,0 +1,60 @@
+# Restauração de poses históricas no mapa
+
+Base do patch e deploy observado `58b7df142e7fac3ee0a1c3450a34a4946aaa1804`. A [execução do Pages](https://github.com/Eximaq/mare-partida/actions/runs/43503273289) registrou implantação bem-sucedida. A build corretiva foi servida apenas em loopback. O navegador usou perfis descartáveis e a mesma fixture de save no site e na build local em cada comparação principal. A fixture define classe, arma, roupa, corpo e aparência. O teste dispara o ataque por clique no alvo no mapa Ilha Dawn. O cenário de combate usa um alvo descartável para observar a sequência, sem alterar o seletor ou o compositor.
+
+## Diagnóstico e resultado
+
+| ID / identidade | Ação e vista | Aprovação e fonte | Site | Build corretiva |
+| --- | --- | --- | --- | --- |
+| 109 / M, sem outros slots visuais, Chanel rosa, pele clara, olhos azuis | Básico SOUTH | a227079d → 4542de58. V3 de encaixe inicial, sete estados apresentados. | `native96`, oito quadros | `gauntlet109-south-native-layers-appearance-bob`, estados 0–6 |
+| 17 / M, sem outros slots visuais, Chanel rosa, pele clara, olhos azuis | Básico SOUTH | a227079d → 4542de58. Textura v2, ressalva no quadro 5. | `native96`, oito quadros | `orb17-south-native-layers-appearance-bob`, estados 0–7 |
+| 0 / M, arma isolada, aparência original sem paleta explícita | Básico SOUTH | e06ebec3 → e433c1d8, com ressalva histórica. Nove composições originais. | O jogo normaliza o save carregado para uma paleta explícita. | A rota original seleciona `sword0-south-historical-attack` no teste de compositor. Os 16 ticks recompõem exatamente os nove PNGs no canvas nativo. |
+| 0 / M, arma isolada, cabelo Original, preto, pele clara, íris azul | Básico SOUTH | A identidade normalizada possui cores que a composição histórica fechada não representa. | `sword0-south-modular-nine-adapted-original` | Mesma fonte, nove fases no mapa. A identidade da fixture continua preservada. |
+| 0 / M, peitoral 6, Chanel rosa, porcelana | Básico SOUTH | A adaptação modular é candidata para esse traje e aparência. | `sword0-south-modular-nine-coat6-adapted-bob`, nove estados | Continua adaptação. A comparação da adaptação sem peitoral, com paleta original, encontrou de 57 a 1.370 pixels divergentes por fase, em canvas 640×640. |
+| 0 / F, peitoral 6, Chanel rosa, porcelana | Básico SOUTH | Nenhuma aprovação de ciclo completo identificada para essa composição exata. | `female0-attack-sword-south-candidate-coat6-native-sword`, oito estados | Mesma família. Controle de criação, caminhada e ataque exercitado no mapa. |
+| 115 / M, peitoral 151, capacete 157 visível, cabelo Espetado, preto, pele clara, íris azul | Básico SOUTH | b16d162f, provisória. V5 com identidade exata. | Não exercitado nesta bateria. | `rifle115-v5-south-native-layers`, cinco estados. Repouso e caminhada mantêm a família de porte. |
+| 128 / M e F, trajes 151/158/165/179 | NORTH | b923836a → 89646436. Pacote BASE127 reconstruído e seus 444 hashes conferidos. | Não exercitado nesta bateria. | O seletor mantém o registro anterior `staff128-north-native-base17-attachment-candidate` para identidades compatíveis. A fonte correta BASE127 permanece sem vínculo comprovado. |
+
+O seletor recusava o cabelo e/ou a pele das fixtures de 109 e 17. Os índices estavam disponíveis e o mapa preparou o fallback de propósito. A correção reutiliza a base e as fases aprovadas em SOUTH. O cabelo separado segue o contrato de pivô e âncoras da cabeça. Na 17, a substituição de pixels da mão aplica cor somente quando a amostra RGBA coincide com a anatomia no mesmo pixel. O teste não certifica o restante dos pixels de interface como pele. A 109 conserva o quadro de encaixe inicial V3, sem introduzir a pose 7 do DRAWN8. O relógio de apresentação existente foi preservado. O jogo ainda usa sua cadência lógica para executar o golpe.
+
+A 109 manteve porte HD em SOUTH. A 17 ainda teve `native96/masculino/idle/south` e `native96/masculino/walk/south` com essa aparência. A correção não afirma restauração das demais vistas, roupas, capacetes ou armas.
+
+## Fontes recuperadas
+
+| Caso | Caminho na branch `feature/approved-weapon-art` em `2801902fa2dad8e83069815faeaa3f53f90bc1b6` | SHA-256 |
+| --- | --- | --- |
+| 0 SOUTH | `art-approved/weapons/sword0-south/male_sword0_south_approved-cycle_presentation-v2.zip` | `9e95e9dcea550cadf43c3aa36bd12a6604d92c287a1058bf0d8c210baf8c5991` |
+| 109 SOUTH | `art-approved/weapons/manopla109-south-initial-fit-v3-approved/109_SOUTH_INITIAL_FIT_V3/Manopla109_EncaixeInicial_v3_Editavel.zip` | `be620e66e06ea2b9c943b92600abae46e0ef7f473e9917b6491cbf545cd06f8c` |
+| 17 SOUTH | `art-approved/weapons/orbe17-south-frame5-caveat-approved/17_SOUTH_PRESENTED_FRAME5_CAVEAT/Orbe17_SOUTH_Textura_3_4_v2_Aprovada_Somente17.zip` | `99c55ef65e110a3340d0f889b77b5036cc03391711586bcb481ddb1d6765f0c5` |
+| 115 SOUTH V5 | Registro `rifle115-v5-south-native-layers` e contrato de hashes no seletor. Pacote histórico externo não localizado nesta bateria. | `d87a8ccc05a8aff100db2c7454dd40355c7dfef65e7fbc45d164005f3535d585` |
+| 128 NORTH | `art-approved/weapons/staff128-north-base127-approved/128_N_BASE127/Cajado128_BASE127_Editavel_Backup_QA.zip.part001–003`. 72 quadros M640×640/F768×768, com camadas 127, máscara de remoção e arma 128. | `218ef49345deb0b68186a5d1f171f71697a541f5bbfa1b4edac4bdc2be3bc6f6` |
+
+Os hashes dos PNGs de aprovação de 0, 109 e 17 correspondem aos respectivos estados em `tools/rework-weapon-layers-hd/index.json`. O pacote 128 contém cabeça e roupa incorporadas, incluindo botas e chapéu na variante feminina. O vínculo depende de confirmar os slots e o pivô de cada conjunto. O relógio do vídeo de revisão não foi adotado como relógio de combate.
+
+## Build, cache e integridade
+
+- O Pages serviu `game.js?v=abbf42936ae91c41`, `item-catalog.js?v=8be36692f0470c60`, o índice HD e seu índice de arquivos com HTTP 200, `max-age=600` e respostas fora de service worker nos cenários instrumentados. O SHA-256 do índice de armas servido coincide com o checkout (`1093c7fec5666bb74a40599b074276c3b6e98af95a3655acdaf0ead954067604`). Índice de armas com ETag `W/"6af77553-b8e981"`. A build de revisão foi servida com `Cache-Control: no-store` e zero registros de service worker nos perfis de teste.
+- `python tools/build_pages.py` passou. `node --test tests/rework-starter-coat.test.cjs player-rework-weapon-native-hd.test.cjs player-rework-outfit-overlay-hd.test.cjs` passou com 24 testes. O teste de integração cobre os estados, ordem, tempos registrados, poses e rejeição de outros trajes.
+- `node tools/audit_rework_map_coverage.cjs <diretório>` exercitou 189 arranjos e 4.536 consultas por paleta. Essa matriz mede a seleção e mantém as lacunas como não restauradas.
+- Os quatro exports locais de posicionamento foram conferidos antes e depois. Os mesmos SHA-256 valem para as duas leituras.
+
+| Export em `tools/rework-accessories` | SHA-256 antes e depois |
+| --- | --- |
+| `hair_user_adjustments_source-only_v1/adjustments.json` | `f17aeda3998dbdc17bf5e3cc65956999554e50a6fc0173e0b693ee9426c0162c` |
+| `headgear_user_adjustments_source-only_v1/adjustments.json` | `f30fd5f27c9c72efa8d034ffc4ce8669a317783854047021893870298b3d48ee` |
+| `male_hair_user_adjustments_source-only_v1/adjustments.json` | `a342ff01b29442e022ca743be165dc46551ab1c8e0b262712583abe782360678` |
+| `male_headgear_user_adjustments_source-only_v1/adjustments.json` | `a4275461acdc3c6824b6d71329a21bacf278152291ea8595e30e1d145af0f685` |
+
+## Pendências da primeira bateria
+
+- Verificar as fontes finais e testar no mapa 69/15 NORTH e 4/111/5/119 SOUTH. A aprovação localizada no histórico ainda precisa ser ligada aos arquivos específicos e à composição efetivamente desenhada.
+- Retestar na revisão atual 151 nas laterais, calças 140/147/154/161/175/182 nos dois corpos, Grevas 21, capacetes 18/19/157 e troca de ações ou equipamento durante a preparação. A regressão automatizada da seleção é mais estreita que essa bateria no mapa.
+- Fechar o encaixe de pele na interface da 17, o porte com a aparência usada no teste e a comparação alinhada de todas as variantes com vídeos e PNGs aprovados.
+
+## Cruzamento integral de art-approved
+
+`python tools/audit_art_approved.py . origin/feature/approved-weapon-art <diretório>` reconstrói os ZIPs multipartes, confere tamanho e SHA-256 do catálogo e cruza os membros com os índices HD. O CSV aponta a entrada original e os IDs de registro que a referenciam. O JSON conserva a origem, as partes e os metadados existentes. A presença de uma referência de hash não certifica que a variante inteira é selecionada no mapa.
+
+- Foram lidos 287 pacotes de `art-approved/CATALOG.json` e quatro ZIPs originais de cabelo e capacete em `art-sources/user-adjustments`. Nenhuma parte de ZIP ficou sem associação. As 27.703 entradas PNG incluem quadros, camadas e materiais auxiliares. Os índices referenciam hashes de 4.558 entradas. As tabelas de assets publicados contêm 4.635. Foram encontrados 149 pacotes com referência em registros por hash de pacote ou membro, incluindo referências parciais.
+- Os dez ZIPs de `clothing/female-historical-cycles` correspondem ao SHA-256 do índice histórico. Os quatro source packs femininos do peitoral 6 têm correspondência de todos os 560 PNGs nos índices locais. As seis composições finais `133 r15`, `161 r27` e `21 r3` em EAST/WEST ficaram sem correspondência por bytes. As versões congeladas locais têm outros hashes. A equivalência visual exige comparação dos quadros e da composição.
+- O pacote `128 NORTH BASE127` tem 435 PNGs sem correspondência de hash no runtime atual. Para `69 NORTH V6`, 24 de 34 têm correspondência. Para `15 NORTH Aros`, 20 de 42. Para `4 SOUTH V3 M151/157`, 15 de 26. Os três últimos são cruzamentos parciais, com a prova por fase no mapa pendente.

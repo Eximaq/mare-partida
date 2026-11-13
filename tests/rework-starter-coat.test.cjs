@@ -262,3 +262,68 @@ test('helmet 19 hides original and wavy hair independently of color and restores
   assert(!(await render('pink',false)).equals(await render('silver',false)),gender+'/'+hairStyle);
  }
 });
+
+test('sword 0 SOUTH prefers the historical nine-state raster only for the original identity',async()=>{
+ const {make,cv}=require('./rework-integration-support.cjs');
+ const api=make();
+ await api.ready;
+ const options={action:'attack-sword',direction:'south',consumer:'world'};
+ const appearance96={gender:'masculino',hairStyle:'original',hairColor:'original',skinColor:'original',eyeStyle:'original',eyeColor:'original'};
+ const player={appearance96,equipment:{weapon:{def:0}}};
+ const defaultLook=require('../character-appearance.js').defaults;
+ assert.match(api.select({...player,appearance96:defaultLook},options)?.id,/^sword0-south-modular-nine/);
+ const source=api.select(player,options);
+ assert.equal(source?.id,'sword0-south-historical-attack');
+ assert.equal(source.sourceArchiveSHA256,'9e95e9dcea550cadf43c3aa36bd12a6604d92c287a1058bf0d8c210baf8c5991');
+ assert.deepEqual(source.timeline,['0','1','2','2','3','3','4','4','5','5','6','6','7','7','8','8']);
+ assert.equal(source.fps,24);
+ const load=require('../tools/rework-hd-test-loader.cjs').create(require('node:path').resolve(__dirname,'..'));
+ const prepared=await api.prepareConfiguration([{player,options}]);
+ try{
+  const actual=cv.createCanvas(640,688),expected=cv.createCanvas(640,688);
+  const ax=actual.getContext('2d'),ex=expected.getContext('2d');
+  for(const [tick,phase] of source.timeline.entries()){
+   ax.clearRect(0,0,640,688);
+   ex.clearRect(0,0,640,688);
+   assert(prepared.draw(ax,player,{...options,preview:true,progress:(tick+.25)/source.timeline.length}));
+   const ref=await load('tools/rework-weapon-layers-hd/'+source.states[Number(phase)].approved.url);
+   ex.drawImage(ref,0,152);
+   assert.deepEqual(ax.getImageData(0,0,640,688).data,ex.getImageData(0,0,640,688).data,'phase '+phase);
+  }
+ }finally{prepared.release();}
+ for(const [look,equipment] of [
+  [{...appearance96,hairStyle:'hair-bob',hairColor:'pink'},player.equipment],
+  [appearance96,{...player.equipment,coat:{def:6}}],
+ ]){
+  assert.match(api.select({appearance96:look,equipment},options)?.id,/^sword0-south-modular-nine/);
+ }
+});
+
+test('109 and 17 SOUTH retain approved phase order with a saved hairstyle',async()=>{
+ const {make,cv}=require('./rework-integration-support.cjs'),api=make();
+ await api.ready;
+ const appearance96={gender:'masculino',hairStyle:'hair-bob',hairColor:'pink',skinColor:'dark',eyeStyle:'original',eyeColor:'blue'};
+ for(const [item,action,expected] of [[109,'attack-unarmed',7],[17,'attack-focus',8]]){
+  const options={action,direction:'south',consumer:'world',x:100,y:145};
+  const player={appearance96,equipment:{weapon:{def:item}}};
+  const base=api.select({...player,appearance96:{gender:'masculino'}},options);
+  const source=api.select(player,options);
+  assert.match(source?.id,/-south-native-layers-appearance-bob$/);
+  assert.equal(source.states.length,expected);
+  assert.deepEqual(source.timeline,base.timeline);
+  assert.equal(source.fps,base.fps);
+  assert.deepEqual(source.basePack.pack.directions.south.poses,base.basePack.pack.directions.south.poses);
+  assert.equal(api.select({...player,equipment:{...player.equipment,coat:{def:151}}},options),null);
+  const prepared=await api.prepareConfiguration([{player,options}]);
+  try{
+   assert.equal(prepared.coverage[0].frames,expected);
+   const ctx=cv.createCanvas(200,200).getContext('2d');
+   const phases=new Set();
+   for(let tick=0;tick<source.timeline.length;tick++){
+    assert(prepared.draw(ctx,player,{...options,progress:(tick+.25)/source.timeline.length}));
+    phases.add(api.snapshot().last.frame);
+   }
+   assert.equal(phases.size,expected);
+  }finally{prepared.release();}
+ }
+});

@@ -128,7 +128,23 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
     ctx.drawImage(tile,0,0);ctx.restore();}
    else if(l.operation==='replace-rgba-under-mask'){
     if((hiddenSlots.length||recolored)&&l.role!=='authored-hand-and-orb')continue; // never reintroduce authored head pixels into a dynamic head composition
-    const scratch=makeCanvas(w,h),sc=scratch.getContext('2d');sc.drawImage(image(l),0,0);const patch=sc.getImageData(0,0,w,h).data;sc.clearRect(0,0,w,h);sc.drawImage(image(l.mask),0,0);const mask=sc.getImageData(0,0,w,h).data,out=ctx.getImageData(0,0,w,h);for(let i=0;i<out.data.length;i+=4)if(mask[i]>0)out.data.set(patch.subarray(i,i+4),i);ctx.putImageData(out,0,0);
+    const scratch=makeCanvas(w,h),sc=scratch.getContext('2d');sc.drawImage(image(l),0,0);let patch=sc.getImageData(0,0,w,h).data;
+    if(l.skinFromAnatomy&&r.item===17&&r.direction==='south'){
+     const ramp=root.MareAppearance96?.skins[appearance.skin||appearance.skinColor]?.ramp;
+     if(ramp){
+      const anatomy=r.basePack.pack.directions.south.layers.find(layer=>layer.id==='skin-arms-phase');
+      const anatomyURL=r.basePack.images[anatomy.frames[Number(s.state)]];
+      sc.clearRect(0,0,w,h);sc.drawImage(image({url:anatomyURL}),0,0);
+      const source=sc.getImageData(0,0,w,h).data;
+      const ownership=new Uint8Array(w*h);
+      // Only pixels matching the original arm are proven skin here.
+      for(let i=0;i<patch.length;i+=4)if(patch[i+3]&&source[i+3]===patch[i+3]&&
+       Math.abs(source[i]-patch[i])<=1&&Math.abs(source[i+1]-patch[i+1])<=1&&Math.abs(source[i+2]-patch[i+2])<=1)
+        ownership[i/4]=root.MareNativeSkinHD.tone(patch[i],patch[i+1],patch[i+2]);
+      patch=root.MareAppearance96.recolor(patch,ownership,ramp);
+     }
+    }
+    sc.clearRect(0,0,w,h);sc.drawImage(image(l.mask),0,0);const mask=sc.getImageData(0,0,w,h).data,out=ctx.getImageData(0,0,w,h);for(let i=0;i<out.data.length;i+=4)if(mask[i]>0)out.data.set(patch.subarray(i,i+4),i);ctx.putImageData(out,0,0);
    }else throw Error('Unsupported atomic operation');
   }
   if(!hiddenSlots.length&&!recolored&&s.canvasRoundingPatch?.length){const out=ctx.getImageData(0,0,w,h);for(const [pixel,red,green,blue,alpha] of s.canvasRoundingPatch){const i=pixel*4;out.data[i]=red;out.data[i+1]=green;out.data[i+2]=blue;out.data[i+3]=alpha;}ctx.putImageData(out,0,0);}

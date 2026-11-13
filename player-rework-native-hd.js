@@ -88,11 +88,30 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const carried=carryRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head').map(([k,v])=>[k,v?.def??v]))});
   const carryWithHead=withCarryHead(carried,'carry');
   if(carryWithHead)return carryWithHead;
+  // The archived sword-0 cycle is already exact for its original identity.
+  // Use the modular registration only for identities the archive cannot express.
+  if(canonical(a.body)==='male'&&Number(weapon)===0&&o.action==='attack-sword'&&o.direction==='south'&&
+     Object.keys(equipment).length===1&&!player.__reworkSubset){
+   const nativeField=(aliases,defaults)=>aliases.every(key=>a[key]==null||defaults.includes(a[key]));
+   // Fixed-palette archives must not override an explicit saved color.
+   if(nativeField(['hair','hairStyle','face','eyeStyle'],['original'])&&
+      nativeField(['skin','skinColor'],['original'])&&nativeField(['hairColor'],['original'])&&
+      nativeField(['eyeColor'],['original'])){
+    const approved=weaponRegistry?.resolve({item:0,body:'male',action:o.action,direction:'south'});
+    if(approved?.id==='sword0-south-historical-attack')return {...approved,hdKind:'weapon'};
+   }
+  }
   if(canonical(a.body)==='male'&&[0,1,67,68,69,70].includes(Number(weapon))&&o.action==='attack-sword'&&
      (['east','west'].includes(o.direction)||Number(weapon)===0&&['north','south'].includes(o.direction))&&(o.direction==='south'||equipment.coat!=null||[a.hair,a.skin,a.hairColor,a.eyeColor].some(v=>v&&!['original','blue'].includes(v)))&&
      Object.keys(equipment).every(slot=>['weapon','coat'].includes(slot))){
    const original=o.direction==='south'?swordSouth:weaponRegistry?.resolve({item:weapon,body:'male',action:o.action,direction:o.direction});
    const adapted=root.MareReworkOutfitOverlayHD?.adaptSword(original,outfitIndex,{coat:equipment.coat?.def??equipment.coat,baseIndex,appearance:a});
+   if(adapted)return {...adapted,hdKind:'weapon'};
+  }
+  if(canonical(a.body)==='male'&&o.direction==='south'&&Object.keys(equipment).length===1&&
+     (Number(weapon)===109&&o.action==='attack-unarmed'||Number(weapon)===17&&o.action==='attack-focus')){
+   const source=weaponRegistry?.resolve({item:weapon,body:'male',action:o.action,direction:'south'});
+   const adapted=root.MareReworkOutfitOverlayHD?.adaptSouth109Or17(source,{baseIndex,appearance:a});
    if(adapted)return {...adapted,hdKind:'weapon'};
   }
   if(weapon!=null&&weaponRegistry){const other=Object.fromEntries(Object.entries(equipment).filter(([k])=>k!=='weapon').map(([k,v])=>[k,v?.def??v]));const r=weaponRegistry.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:other,allowExactComposite:!player.__reworkSubset});if(r?.timeline?.length&&r.fps)return {...r,hdKind:'weapon'};}
