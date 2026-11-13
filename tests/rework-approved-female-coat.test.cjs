@@ -13,7 +13,7 @@ test('female isolated torsos preserve authored garment layers with saved skin an
    assert.equal(source?.sourceId,expected.id,[def,direction,action].join('/'));
    assert.equal(source.femaleNamedHairRecord.skinColor,'dark');
    assert.equal(source.femaleNamedHairRecord.style,'bob');
-   assert(source.skinAnatomySources.length>0);
+   assert(Object.keys(source.baseMaterialSources).length>0);
    const pack=source.pack.directions[direction];
    const cloth=pack.layers.filter(layer=>!layer.id.startsWith('base:'));
    assert.deepEqual(cloth,expected.pack.directions[direction].layers.filter(layer=>!layer.id.startsWith('base:')));

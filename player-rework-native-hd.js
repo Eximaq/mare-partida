@@ -28,7 +28,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!record)return null;
   const base=['carry','outfit-carry'].includes(record.hdKind)?record.base:
     record.hdKind==='weapon'&&record.sourceRasterPadding?{...record,pack:record.basePack.pack}:record;
-  if(!base.pack||!eyes?.maleSource(base)||record.hdKind&&!['carry','outfit-carry','weapon'].includes(record.hdKind))return null;
+  const supportsEyes=!record.hdKind||['carry','outfit-carry','weapon'].includes(record.hdKind)||record.hdKind==='outfit'&&record.baseMaterialSources;
+  if(!supportsEyes||!base.pack||!eyes?.maleSource(base))return null;
   return {...record,id:record.id+':eyes:'+(style||'original')+':'+(color||'original'),eyeStyle:style,colorAppearance:{...record.colorAppearance,face:style,eyeColor:color}};
  }
  function selectBase(player,o){
@@ -48,19 +49,24 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const clothes=Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head'));
    const originalOutfit=outfitRegistry?.resolve({body:'female',action:o.action,direction:o.direction,appearance:{...a,hair:'original',face:'original',eyeColor:'original',skin:'original',skinColor:'original',hairColor:'original'},equipment:clothes});
    const anatomy=hasFemaleSkin&&originalOutfit?outfitRegistry?.bindAnatomy(originalOutfit,baseIndex):null;
-   const cosmeticOutfit=originalOutfit&&(!hasFemaleSkin||anatomy)?{...originalOutfit,skinAnatomySources:anatomy}:null;
+   const cosmeticOutfit=originalOutfit&&(!hasFemaleSkin||anatomy)?{...originalOutfit,baseMaterialSources:anatomy}:null;
    const named=cosmeticOutfit&&femaleNamedHairRegistry?.resolve(cosmeticOutfit,{hair:a.hair||'original',head:equipment.head?.def??equipment.head,appearance:a});
    if(named)return {...cosmeticOutfit,id:named.id,sourceId:originalOutfit.id,hdKind:'outfit',femaleNamedHairRecord:named,colorAppearance:a};
   }
-  // Reuse an isolated outfit only with a pixel-identical authored head contract.
-  if(canonical(a.body)==='male'&&(equipment.head!=null||a.hair&&a.hair!=='original')){
+  // A saved palette can use a different head only if the outfit's source rig agrees.
+  if(canonical(a.body)==='male'){
    const clothes=Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head'));
-   const garment=outfitRegistry?.resolve({body:'male',action:o.action,direction:o.direction,appearance:{...a,hair:'original'},equipment:clothes});
+   const garment=outfitRegistry?.resolve({body:'male',action:o.action,direction:o.direction,appearance:{hair:'original'},equipment:clothes});
    if(garment?.pack.directions[garment.direction].layers.some(l=>l.slot==='headBase')){
     const hair=a.hair||'original',headItem=equipment.head?.def??equipment.head,headLook={...a,hair,head:headItem!=null?'head-'+headItem:'original'};
     const head=Number(headItem)===19?null:headRegistry?.resolve({body:'male',direction:o.direction,look:headLook});
     const gear=!head&&hair==='original'&&headItem!=null?originalHairGearRegistry?.resolve({body:'male',direction:o.direction,item:headItem,look:headLook}):null;
-    if(head||gear)return {...garment,id:garment.id+':head:'+hair+':'+(headItem??'none'),hdKind:'outfit',colorAppearance:a,headRecord:head,gearOnlyRecord:gear,headLook};
+    const baseMaterialSources=outfitRegistry.bindAnatomy(garment,baseIndex);
+    const palette=[a.skin,a.hairColor].some(v=>v&&v!=='original');
+    const customHead=headItem!=null||hair!=='original';
+    if((!palette||baseMaterialSources)&&(!customHead||head||gear))return {...garment,
+     id:garment.id+':head:'+hair+':'+(headItem??'none')+(palette?':palette:'+a.skin+':'+a.hairColor:''),
+     hdKind:'outfit',sourceId:garment.id,colorAppearance:a,baseMaterialSources,headRecord:head,gearOnlyRecord:gear,headLook};
    }
   }
   const weapon=equipment.weapon?.def??equipment.weapon;

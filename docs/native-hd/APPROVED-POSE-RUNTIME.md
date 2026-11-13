@@ -112,3 +112,5 @@ A interface de porte SOUTH da Orbe 17 inclui a mão e o aro dourado no mesmo PNG
 A matriz registra os ciclos portáteis de roupa e arma por corpo, ação, direção e versão, incluindo as oito variantes do BASE127. Os status de inventário, seleção automática e execução no mapa são independentes.
 
 O check de save padrão em `6a970284` ainda esperava que o fallback feminino descartasse a paleta. A regressão agora compara todos os quadros com o peitoral 6 na aparência salva e exige que somente a arma sintética sem fonte seja omitida. [Execução que identificou a divergência](https://github.com/Eximaq/mare-partida/actions/runs/43517640716).
+
+O peitoral 130 masculino preservou a pele escura, o cabelo Chanel rosa e os olhos verdes nas quatro direções. A prova de seleção e identidade de camadas cobre 108 combinações de nove peitorais masculinos isolados. O Sobretudo 151 masculino possui contratos próprios com roupa e arma e permanece em verificação por composição. [Captura do peitoral 130 no mapa](evidence/approved-poses/Kaizoku-peitoral130-masculino-mapa.png).
