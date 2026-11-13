@@ -114,7 +114,19 @@ function reshape(context, style, direction, boxes) {
  }
  context.putImageData(result,0,0);
 }
-const api = {supports,maleSource,reshape,femaleBoxes};
+function recolorIris(context,expression,color){
+ const ramp=root.MareCharacterAppearance?.eyes[color]?.ramp,api=root.MareAppearance96;
+ if(!ramp||!api||!expression?.boxes)return;
+ const {width,height}=context.canvas;
+ const data=context.getImageData(0,0,width,height),mask=api.materialMask(data.data,'iris');
+ for(let i=0;i<mask.length;i++)if(mask[i]){
+  const x=i%width,y=Math.floor(i/width);
+  if(!expression.boxes.some(([l,t,r,b])=>x>=l&&x<=r&&y>=t&&y<=b))mask[i]=0;
+ }
+ data.data.set(api.recolor(data.data,mask,ramp));
+ context.putImageData(data,0,0);
+}
+const api = {supports,maleSource,reshape,recolorIris,femaleBoxes};
 root.MareReworkEyeStylesHD = api;
 if (typeof module !== 'undefined') module.exports = api;
 })(globalThis);

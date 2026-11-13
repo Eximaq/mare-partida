@@ -20,12 +20,13 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
   if(!Number.isInteger(frame)||frame<0||frame>=d.clip.frames)throw Error('HD source frame unavailable');
   const map=new Map();for(const s of sources(r,frame)){const im=images.get(prefix+s+'.png')||images.get(s);if(!im)throw Error('Missing original asset '+s);map.set(s,im);}
   const eyes=root.MareReworkEyeStylesHD;
-  const expression=eyes?.supports(appearance.face)&&eyes.maleSource(r);
+  const expression=eyes&&(eyes.supports(appearance.face)||appearance.eyeColor&&!['original','blue'].includes(appearance.eyeColor))&&eyes.maleSource(r);
   if(expression?.source){
    const image=map.get(expression.source);
    const tile=makeCanvas(image.width,image.height),face=tile.getContext('2d');
    face.drawImage(image,0,0);
    eyes.reshape(face,appearance.face,expression.direction,expression.boxes);
+   eyes.recolorIris(face,expression,appearance.eyeColor);
    map.set(expression.source,tile);
   }
   // Palette changes preserve native dimensions/alpha; source PNGs stay immutable.

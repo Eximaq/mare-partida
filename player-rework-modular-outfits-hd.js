@@ -2,6 +2,7 @@
 (function(root){'use strict';
 const canonical=b=>({masculino:'male',feminino:'female'})[b]||b;
 const id=x=>x?.def??x;
+const skinMaterials=root.MareNativeSkinHD||(typeof require==='function'?require('./player-rework-skin-hd.js'):null);
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-modular-outfits-hd/assets/',allowCandidates=false,appearanceAPI=root.MareAppearance96}={}){
  if(index?.schema!=='rework-modular-outfits-hd-v1'||!vendor?.compositor)throw Error('Missing modular outfit dependencies');
  function resolve({body,direction,action,equipment={},appearance={}}={}){
@@ -15,7 +16,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
   const visited=new Set();while(r&&!visited.has(r.id)){visited.add(r.id);const parent=r,d=parent.pack.directions[direction];const child=index.records.find(c=>c.sourceOutfitId===parent.id&&matches(c)&&JSON.stringify(c.pack.frame)===JSON.stringify(parent.pack.frame)&&JSON.stringify(c.pack.pivot)===JSON.stringify(parent.pack.pivot)&&c.pack.density===parent.pack.density&&JSON.stringify({...c.pack.directions[direction],layers:undefined})===JSON.stringify({...d,layers:undefined}));if(!child)break;r=child;}
   if(!r)return null;const skin=appearance.skin||appearance.skinColor,hair=appearance.hairColor;
   if(r.paletteSupportedMaterials&&(skin&&skin!=='original'&&!r.paletteSupportedMaterials.includes('skin')||hair&&hair!=='original'&&!r.paletteSupportedMaterials.includes('hair')))return null;
-  if(skin&&skin!=='original'||hair&&hair!=='original'){if(!r.paletteSourceMasks||skin&&skin!=='original'&&!appearanceAPI?.skins[skin]||hair&&hair!=='original'&&!appearanceAPI?.hairs[hair])return null;return {...r,id:r.id+':palette:'+String(skin||'original')+':'+String(hair||'original'),sourceId:r.id,colorAppearance:{skin:skin||'original',hairColor:hair||'original'}};}return r;
+  if(skin&&skin!=='original'||hair&&hair!=='original'){const isolatedPants21=r.item===21&&r.body==='male'&&r.id.startsWith('male-pants21-');if(!r.paletteSourceMasks&&!isolatedPants21||skin&&skin!=='original'&&!appearanceAPI?.skins[skin]||hair&&hair!=='original'&&!appearanceAPI?.hairs[hair])return null;return {...r,isolatedPants21,id:r.id+':palette:'+String(skin||'original')+':'+String(hair||'original'),sourceId:r.id,colorAppearance:{skin:skin||'original',hairColor:hair||'original'}};}return r;
  }
  const sources=(r,frame)=>frame===undefined?r.sourceRefs:[...new Set(r.pack.directions[r.direction].layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean))];
  const requiredFiles=(r,{frame}={})=>r?[...new Set([...sources(r,frame),...(r.paletteRefs||[])])].map(s=>prefix+s+'.png'):[];
@@ -30,6 +31,21 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
     if(padding.sourceSize!==512||padding.offset!==64||image.width!==512||image.height!==512||ctx.canvas.width!==640||ctx.canvas.height!==640)throw Error('Invalid native source padding');
     const surface=makeCanvas?makeCanvas(640,640):ctx.canvas.ownerDocument?Object.assign(ctx.canvas.ownerDocument.createElement('canvas'),{width:640,height:640}):typeof OffscreenCanvas!=='undefined'?new OffscreenCanvas(640,640):require('@napi-rs/canvas').createCanvas(640,640);
     surface.getContext('2d').drawImage(image,64,64);map.set(source,surface);
+   }
+  }
+  if(r.isolatedPants21){
+   for(const [source,image] of map){
+    const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source);
+    const hair=uses.every(l=>l.slot==='hair'),kind=skinMaterials.ownership(uses);
+    const ramp=hair?appearanceAPI.hairs[appearance.hairColor]?.ramp:kind?appearanceAPI.skins[appearance.skin]?.ramp:null;
+    if(!ramp)continue;
+    const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d');
+    tc.drawImage(image,0,0);
+    const data=tc.getImageData(0,0,tile.width,tile.height);
+    const mask=hair?appearanceAPI.materialMask(data.data,'hair'):skinMaterials.mask(data.data,tile.width,kind);
+    data.data.set(appearanceAPI.recolor(data.data,mask,ramp));
+    tc.putImageData(data,0,0);
+    map.set(source,tile);
    }
   }
   if(r.paletteSourceMasks&&appearanceAPI){

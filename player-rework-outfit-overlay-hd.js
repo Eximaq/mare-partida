@@ -23,5 +23,65 @@ function adapt(weapon,outfit,{assetPrefix='../rework-modular-outfits-hd/assets/'
  r.id+='-pants133-candidate';r.equipment={weapon:weapon.item,pants:133,...(bootsOutfit?{boots:9}:{})};r.outfitOverlay={id:outfit.id,sourceSHA256:key,bodyFramesVerified:true,candidate:true,requiresVisualCalibration:true};
  return r;
 }
-const api={adapt};root.MareReworkOutfitOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
+function adaptSword(weapon,outfits,{coat,baseIndex,appearance}){
+ const dir=weapon?.direction;
+ if(weapon?.body!=='male')return null;
+ const north=weapon.id==='sword0-north-historical-attack';
+ const south=weapon.id==='sword0-south-modular-nine'&&dir==='south'&&weapon.item===0;
+ if(!north&&!south&&(!['east','west'].includes(dir)||!weapon.states.every(s=>s.attachment&&!s.layers.length&&!s.canvasRoundingPatch?.length)))return null;
+ const base=north&&baseIndex.records.find(r=>r.id==='v7-sword-north-modular8-north');
+ if(north&&(!base||weapon.states.length!==base.pack.directions[dir].clip.frames||
+    !weapon.states.every((s,i)=>s.state===String(i)&&s.layers.length===2&&s.layers.every(l=>l.operation==='source-over'))))return null;
+ const b=north?{pack:base.pack,images:Object.fromEntries(base.sourceRefs.map(sha=>[sha,'../rework-base-hd/assets/'+sha+'.png']))}:weapon.basePack;
+ const p=b?.pack,d=p?.directions[dir];
+ if(!d)return null;
+ const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ const outfit=coat==null?null:outfits.records.find(r=>r.id==='male-torso'+coat+'-'+dir+'-frozen-attack-native-candidate');
+ if(coat!=null&&(!outfit||outfit.equipment.torso!==coat||!eq(outfit.pack.frame,p.frame)||!eq(outfit.pack.pivot,p.pivot)))return null;
+ const images={...b.images},padding={},mirrors=[];
+ let layers=[...d.layers];
+ const rest={...d.rest},poses=d.poses.map(pose=>({...pose}));
+ if(outfit){
+  const donor=outfit.pack.directions[dir];
+  const cloth=donor.layers.filter(l=>!l.id.startsWith('base:'));
+  for(const layer of cloth){
+   const {kind,a,b:other}=layer.binding;
+   const pad=outfit.sourceRasterPadding?.[layer.source];
+   if(!layer.id.startsWith('coat'+coat+'-')||kind!=='rigid'||layer.frames||!a?.startsWith('cloth:')||!other?.startsWith('cloth:')||pad?.sourceSize!==512||pad.offset!==64)return null;
+   for(const name of [a,other]){
+    const bone=name.slice(6);
+    if(!donor.rest[name]||!poses.every(pose=>pose[bone]))return null;
+    rest[name]=donor.rest[name];
+    for(const pose of poses)pose[name]=pose[bone];
+   }
+   images[layer.source]='../rework-modular-outfits-hd/assets/'+layer.source+'.png';
+   padding[layer.source]=64;
+  }
+  if(!cloth.length)return null;
+  layers.push(...cloth);
+  mirrors.push(...(outfit.mirrorLayerIDs||[]));
+ }
+ const style=(appearance.hair||'original').replace(/^hair-/,'');
+ if(style!=='original'){
+  const hair=layers.find(l=>l.slot==='hair');
+  if(!hair||hair.binding.kind!=='rigid'||hair.binding.a!=='NECK'||hair.binding.b!=='NOSE')return null;
+  layers=layers.filter(l=>l!==hair);
+  if(style!=='none'){
+   const source=baseIndex.records.find(r=>r.body==='male'&&r.action==='idle'&&r.direction===dir&&r.hairStyle===style);
+   const sd=source?.pack.directions[dir],layer=sd?.layers.find(l=>l.slot==='hair');
+   if(!layer||layer.binding.kind!=='fixed'||layer.frames||source.pack.density!==4||
+      p.frame.width-source.pack.frame.width!==32||p.frame.height-source.pack.frame.height!==32||
+      !['NECK','NOSE'].every(k=>d.rest[k].x-sd.rest[k].x===16&&d.rest[k].y-sd.rest[k].y===16))return null;
+   images[layer.source]='../rework-base-hd/assets/'+layer.source+'.png';
+   padding[layer.source]=64;
+   layers.push({...hair,source:layer.source});
+  }
+ }
+ // NORTH stores the blade and an already composed body separately. Keep the
+ // blade behind the modular body, as in the original layer order.
+ const states=north?weapon.states.map(s=>({...s,layers:[],attachment:{...s.layers[0],depth:-1,matrix:[1,0,0,1,0,0]}})):weapon.states;
+ return {...weapon,states,id:weapon.id+(coat==null?'':'-coat'+coat)+'-adapted-'+style,basePack:{...b,images,pack:{...p,directions:{...p.directions,[dir]:{...d,layers,rest,poses}}}},
+  adaptedCoat:outfit?.id,sourceRasterPadding:padding,mirrorLayerIDs:mirrors,colorAppearance:appearance};
+}
+const api={adapt,adaptSword};root.MareReworkOutfitOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
