@@ -72,7 +72,15 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
    }
   }else vendor.compositor.render(ctx,pack,map,{direction:r.direction,frame,density:4});return {width:ctx.canvas.width,height:ctx.canvas.height,density:4,pivot:{x:p.pivot.x*4,y:p.pivot.y*4},logicalFrame:p.frame,source:r.id,frames:d.clip.frames,rest:d.rest,pose:d.poses[frame],status:r.status};
  }
- return {resolve,requiredFiles,render};
+ function renderWithHead(ctx,r,images,headTile,options={}){
+  const d=r.pack.directions[r.direction],anchor=d.layers.find(l=>l.slot==='headBase');
+  if(!anchor||headTile.width!==ctx.canvas.width||headTile.height!==ctx.canvas.height)throw Error('Separated native outfit head required');
+  const source='native-outfit-head:'+r.id,layers=d.layers.filter(l=>!['headBase','face','hair'].includes(l.slot)).concat({...anchor,source,frames:undefined});
+  const pack={...r.pack,directions:{[r.direction]:{...d,layers}}},adapted={...r,pack,sourceRefs:[...new Set(layers.flatMap(l=>l.frames||[l.source]).filter(Boolean))]},map=new Map(images);
+  map.set(prefix+source+'.png',headTile);
+  return render(ctx,adapted,map,options);
+ }
+ return {resolve,requiredFiles,render,renderWithHead};
 }
 const api={create};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
