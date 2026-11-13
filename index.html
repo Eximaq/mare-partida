@@ -200,6 +200,7 @@
   <link rel="stylesheet" href="forge-reference.css">
   <link rel="stylesheet" href="character-status-nautical.css">
   <link rel="stylesheet" href="nautical-windows.css">
+  <link rel="stylesheet" href="hud-glass.css">
 </head>
 <body>
   <div class="ambient-noise" aria-hidden="true"></div>
@@ -220,6 +221,7 @@
           <span id="hudFactionName"></span>
         </div>
         <div class="profile-level"><span>Nv.</span><strong id="miniLevel">1</strong></div>
+        <div class="hud-attributes"><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div>
       </div>
       <div class="hud-meta"><div class="profile-power"><span>Poder</span><strong id="miniPower">0</strong></div><span id="hudClassName"></span></div>
       <div class="hud-rank-metadata" hidden aria-hidden="true"><img id="hudRankArt" alt="" hidden><span id="hudRankInsignia" hidden></span><span id="hudHierarchyTier"></span></div>
@@ -239,7 +241,6 @@
         <button type="button" id="hakiKing" aria-label="Haki do Rei (K)" aria-keyshortcuts="K"><img class="haki-icon" src="assets/haki/mastery/conqueror.png" width="32" height="32" alt=""><kbd>K</kbd><span class="haki-cooldown-sweep" aria-hidden="true"></span><span class="haki-quick-state" aria-hidden="true"></span></button>
         <span id="hakiQuickStatus" class="haki-quick-caption">Haki pronto</span>
       </div>
-      <div class="hud-attributes"><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div>
       <span id="crewHudIdentity" class="crew-hud-identity" hidden></span>
       <section id="characterPoster" class="character-poster" hidden aria-label="Cartaz do personagem">
         <div class="wanted-sheet">

@@ -1,0 +1,318 @@
+/* The four gameplay overlays share a quiet glass surface. Window/chat art stays independent. */
+#app.hud-nautical {
+  --glass-type: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --glass-surface: rgba(20, 22, 25, .85);
+  --glass-line: rgba(212, 175, 55, .35);
+  --glass-gold: #e4ce96;
+  --glass-muted: #b9bec5;
+  --glass-shadow: 0 6px 20px #0004, inset 0 1px 0 #ffffff0a;
+  --hud-profile: 336px;
+}
+#app.hud-nautical :is(.topbar.nautical-profile, #mainMenu, #onlinePerformance),
+#app.hud-nautical #mainMenu .character-menu-anchor > .character-quick-menu {
+  border: 1px solid var(--glass-line);
+  border-image: none;
+  border-radius: 12px;
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--glass-shadow);
+  color: #f5f6f8;
+  font-family: var(--glass-type);
+  text-shadow: 0 1px 2px #0008;
+}
+
+/* Player identity: emblem, real title/faction, and a small steel level shield. */
+#app.hud-nautical .topbar.nautical-profile {
+  width: var(--hud-profile);
+  max-width: calc(100vw - 2 * var(--hud-edge));
+  padding: 12px;
+  gap: 8px;
+}
+#app.hud-nautical .nautical-profile .hud-captain {
+  position: relative;
+  grid-template-columns: 58px minmax(0, 1fr) 42px;
+  gap: 10px;
+  min-height: 62px;
+}
+#app.hud-nautical .nautical-profile #characterPosterToggle,
+#app.hud-nautical .nautical-profile #characterPosterToggle:has(img[src$="/pirate.png"]) {
+  width: 58px;
+  height: 58px;
+  border: 1px solid #adc1ce40;
+  border-radius: 50%;
+  background: #08111859;
+  box-shadow: inset 0 1px 1px #ffffff0a;
+}
+#app.hud-nautical .nautical-profile #characterPosterToggle::before,
+#app.hud-nautical .nautical-profile #characterPosterToggle:has(img[src$="/pirate.png"])::before { content: none; }
+#app.hud-nautical .nautical-profile #hudFactionEmblem,
+#app.hud-nautical .nautical-profile #characterPosterToggle img[src$="/pirate.png"] {
+  width: 46px;
+  height: 46px;
+  margin: 5px;
+  opacity: 1;
+  filter: drop-shadow(0 1px 2px #0008);
+}
+#app.hud-nautical .nautical-profile .hud-identity { gap: 3px; }
+#app.hud-nautical .nautical-profile #hudPlayerName {
+  color: #f7f8fa;
+  font: 750 20px/1.15 var(--glass-type);
+  letter-spacing: -.4px;
+}
+#app.hud-nautical .nautical-profile #hudHierarchyTitle {
+  color: var(--glass-gold);
+  font: 650 14px/1.2 var(--glass-type);
+}
+#app.hud-nautical .nautical-profile #hudFactionName {
+  color: var(--glass-muted);
+  font: 400 12px/1.2 var(--glass-type);
+}
+#app.hud-nautical .nautical-profile .profile-level {
+  align-self: center;
+  width: 42px;
+  height: 58px;
+  padding: 5px 0 10px;
+}
+#app.hud-nautical .nautical-profile .profile-level::before,
+#app.hud-nautical .nautical-profile .profile-level::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  transform: none;
+  z-index: -1;
+  clip-path: polygon(50% 0, 100% 16%, 100% 75%, 50% 100%, 0 75%, 0 16%);
+  background: linear-gradient(135deg, #aab7c6, #d5e0e6 25%, #526174 50%, #b0bbc9 80%, #637386);
+  pointer-events: none;
+}
+#app.hud-nautical .nautical-profile .profile-level::after {
+  inset: 2px;
+  background: linear-gradient(130deg, #394554, #191e26 65%, #293544);
+}
+#app.hud-nautical .nautical-profile .profile-level > span { font: 600 10px/1.3 var(--glass-type); color: #dce2e8; }
+#app.hud-nautical .nautical-profile #miniLevel { font: 750 23px/1.1 var(--glass-type); color: #fff; }
+#app.hud-nautical .nautical-profile .hud-meta { min-height: 20px; gap: 12px; }
+#app.hud-nautical .nautical-profile .profile-power > span { font: 500 13px/1.3 var(--glass-type); color: #e5e7eb; }
+#app.hud-nautical .nautical-profile #miniPower { font: 750 16px/1.3 var(--glass-type); color: var(--glass-gold); }
+#app.hud-nautical .nautical-profile #hudClassName { font: 400 13px/1.3 var(--glass-type); color: var(--glass-muted); }
+
+/* Keep the original meter elements and percentage fills; only their presentation changes. */
+#app.hud-nautical .nautical-profile .hud-vitals { gap: 6px; }
+#app.hud-nautical .nautical-profile .parchment-meter {
+  height: 23px;
+  padding: 0 8px 0 29px;
+  border: 1px solid #ddc78a9c;
+  border-radius: 999px;
+  background: #0e1117d9;
+  box-shadow: inset 0 1px 2px #0008, 0 1px 2px #0005;
+}
+#app.hud-nautical .nautical-profile .parchment-meter .mini-meter {
+  inset: 2px;
+  border-radius: 999px;
+}
+#app.hud-nautical .nautical-profile .parchment-meter .mini-meter i {
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ed4871, #ba1243 45%, #7f0c2d);
+  box-shadow: inset 0 1px 1px #ffffff55;
+}
+#app.hud-nautical .nautical-profile .parchment-energy .mini-meter i { background: linear-gradient(180deg, #b365f5, #7c2ad1 45%, #481879); }
+#app.hud-nautical .nautical-profile .parchment-xp .mini-meter i { background: linear-gradient(180deg, #f2cf7d, #c39337 45%, #886023); }
+#app.hud-nautical .nautical-profile .parchment-meter :is(.parchment-meter-label, #miniHPText, #miniEnergyText, #miniXPText) {
+  color: #fff;
+  font: 700 14px/1 var(--glass-type);
+  text-shadow: 0 1px 2px #000b;
+}
+#app.hud-nautical .nautical-profile .parchment-meter-label::before { width: 25px; height: 25px; left: 0; }
+#app.hud-nautical .nautical-profile .hud-resources { gap: 6px; padding-top: 7px; border-color: #cbb67c30; }
+#app.hud-nautical .nautical-profile .profile-berry { flex-basis: 100%; height: 24px; gap: 8px; color: #d8dce2; font: 500 13px/1.2 var(--glass-type); }
+#app.hud-nautical .nautical-profile .berry-coin { width: 23px; height: 23px; }
+#app.hud-nautical .nautical-profile #miniGold { color: var(--glass-gold); font: 750 16px/1.2 var(--glass-type); }
+#app.hud-nautical .nautical-profile #miniWillpower { padding: 4px 0 0; border: 0; justify-content: space-between; }
+#app.hud-nautical .nautical-profile #miniWillpower :is(b, span:first-child),
+#app.hud-nautical .nautical-profile #miniTalentResource :is(b, span:first-child) { color: var(--glass-muted); font: 500 14px/1.2 var(--glass-type); }
+#app.hud-nautical .nautical-profile #crewHudIdentity:not([hidden]) {
+  min-height: 28px;
+  padding: 4px 9px;
+  border: 1px solid #d6dce22e;
+  border-radius: 999px;
+  background: #080c1159;
+  color: var(--glass-gold);
+  font: 650 12px/1.3 var(--glass-type);
+}
+#app.hud-nautical .nautical-profile #crewHudIdentity .crew-identity { gap: 5px; }
+#app.hud-nautical .nautical-profile .hud-attributes { top: calc(50% + 7px); left: -12px; }
+#app.hud-nautical .nautical-profile #attributePointsHud { text-decoration: none; }
+#app.hud-nautical .nautical-profile #attributePointsHud::after {
+  content: '+';
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  border: 1px solid #cdb778aa;
+  border-radius: 50%;
+  background: #242930;
+  color: #f6f3ea;
+  font: 500 22px/1 var(--glass-type);
+  filter: none;
+  box-shadow: 0 2px 5px #0005;
+}
+#app.hud-nautical .nautical-profile #attributePointsHud.has-points::after { filter: none; border-color: #ebd69e; box-shadow: 0 0 8px #e4be6240; }
+#app.hud-nautical .nautical-profile :is(#characterPosterToggle, #attributePointsHud):focus-visible { outline: 2px solid #e4ce96; outline-offset: 3px; border-radius: 50%; }
+
+/* Connected telemetry follows the measured card, including optional crew/Haki rows. */
+#app.hud-nautical #onlinePerformance {
+  inset: calc(var(--profile-bottom) + 8px) auto auto max(var(--hud-edge), env(safe-area-inset-left));
+  transform: none;
+  width: max-content;
+  max-width: calc(100vw - 2 * var(--hud-edge));
+  min-height: 30px;
+  padding: 6px 9px;
+  gap: 6px;
+  border-radius: 10px;
+  font: 500 11px/1.4 var(--glass-type);
+  color: #d2d7df;
+  white-space: nowrap;
+}
+#app.hud-nautical #onlinePerformance::before { width: 5px; height: 5px; flex: none; }
+#app.hud-nautical #onlinePerformance strong { color: #e6ebf1; font-weight: 500; }
+#app.hud-nautical #onlinePerformance strong::before { content: 'Ping HTTP: '; color: #aeb6c2; }
+#app.hud-nautical #onlinePerformance span { display: inline; padding-inline-start: 6px; border-color: #d6dce22e; }
+#app.hud-nautical #onlinePerformance[data-stale=true] strong { color: #ffb6a9; }
+
+/* Navigation icons retain their three-state art and every existing control. */
+#app.hud-nautical #mainMenu {
+  height: 64px;
+  gap: 6px;
+  padding: 8px 10px;
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+/* Blur only the dock's backplate so nested popovers can sample the world behind them. */
+#app.hud-nautical #mainMenu::before {
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+#app.hud-nautical #mainMenu::after { content: none; }
+#app.hud-nautical #mainMenu :is([data-panel], #socialMenuTrigger) {
+  width: 44px;
+  height: 46px;
+  min-height: 44px;
+  border: 1px solid #ffffff16;
+  border-radius: 8px;
+  background: #ffffff05;
+  box-shadow: inset 0 1px #ffffff08;
+  transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+#app.hud-nautical #mainMenu :is([data-panel], #socialMenuTrigger) > img { width: 35px; height: 35px; border-radius: 6px; }
+#app.hud-nautical #mainMenu :is([data-panel], #socialMenuTrigger):is(:hover, :focus-visible, [aria-expanded=true], [aria-pressed=true]) {
+  border-color: #d5bf7a85;
+  background: #d4af3720;
+  box-shadow: inset 0 1px #fff2;
+}
+#app.hud-nautical #mainMenu :is([data-panel], #socialMenuTrigger):is([aria-expanded=true], [aria-pressed=true])::after {
+  content: '';
+  position: absolute;
+  inset: auto 4px -6px;
+  height: 3px;
+  border-radius: 3px;
+  background: #ecd9a0;
+  box-shadow: 0 0 6px #e8cf8060;
+}
+#app.hud-nautical #mainMenu :is([data-panel], #socialMenuTrigger):focus-visible { outline: 2px solid #ead69b; outline-offset: 2px; }
+#app.hud-nautical #mainMenu :is(.character-menu-anchor, .social-menu-anchor, .captain-menu-anchor) { position: relative; height: 46px; }
+#app.hud-nautical #mainMenu :is(.hud-notification-badge, .party-invite-badge):not([hidden]),
+#app.hud-nautical #mainMenu :is([data-panel], #socialMenuTrigger) > :is(.hud-notification-badge, .party-invite-badge):not([hidden]) {
+  top: -6px;
+  right: -5px;
+  min-width: 21px;
+  height: 21px;
+  padding: 0 4px;
+  border: 1px solid #d3bd7bba;
+  border-radius: 999px;
+  background: #292c2bf5;
+  box-shadow: 0 2px 4px #0006;
+  color: #f9f5e9;
+  font: 700 12px/1 var(--glass-type);
+  font-variant-numeric: tabular-nums;
+}
+#app.hud-nautical #mainMenu .menu-tooltip { border-color: var(--glass-line); border-radius: 8px; background: #171a20f2; font: 600 12px/1.4 var(--glass-type); }
+
+/* Positioning/viewport flipping stays with MareUI.positionQuickMenu. */
+#app.hud-nautical #mainMenu .character-menu-anchor > .character-quick-menu {
+  width: min(288px, calc(100vw - 16px));
+  padding: 6px;
+  scrollbar-color: #7f7555 #141619;
+}
+#app.hud-nautical #mainMenu .character-quick-menu::before { content: none; }
+#app.hud-nautical #mainMenu .character-menu-anchor:has(> .character-quick-menu:not(.hidden))::after { border-color: #a59153; background: #202225; }
+#app.hud-nautical #mainMenu .character-quick-menu button[role=menuitem] {
+  position: relative;
+  min-height: 56px;
+  gap: 11px;
+  padding: 8px 32px 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #f6f7f9;
+  font: 650 15px/1.2 var(--glass-type);
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+#app.hud-nautical #mainMenu .character-quick-menu button[role=menuitem] img { width: 28px; height: 28px; object-fit: contain; filter: drop-shadow(0 1px 2px #0005); }
+#app.hud-nautical #mainMenu .character-quick-menu button[role=menuitem] > span:not([class]),
+#app.hud-nautical #mainMenu .character-quick-menu button[role=menuitem] :is(b, strong) { font: 650 15px/1.25 var(--glass-type); }
+#app.hud-nautical #mainMenu .character-quick-menu button[role=menuitem] > span:not([class]) { min-width: 0; gap: 3px; color: inherit; }
+#app.hud-nautical #mainMenu .character-quick-menu button[role=menuitem] small { color: var(--glass-muted); font: 400 13px/1.35 var(--glass-type); }
+#app.hud-nautical #mainMenu .character-quick-menu button[role=menuitem]:is(:hover, :focus-visible, [aria-current=true]) {
+  border-color: #d5bf7a70;
+  background: #ffffff0c;
+  color: var(--glass-gold);
+  outline: none;
+  box-shadow: inset 0 1px #ffffff08;
+}
+#app.hud-nautical #mainMenu .character-quick-menu .hud-notification-badge:not([hidden]) { top: 10px; right: 6px; }
+
+@media (max-width: 760px) {
+  #app.hud-nautical { --hud-profile: 320px; }
+  #app.hud-nautical .topbar.nautical-profile { padding: 10px; gap: 6px; }
+  #app.hud-nautical .nautical-profile #hudPlayerName { font-size: 18px; }
+  #app.hud-nautical #mainMenu {
+    left: max(var(--hud-edge), env(safe-area-inset-left));
+    right: auto;
+    width: max-content;
+    max-width: calc(100vw - 2 * var(--hud-edge));
+    height: 60px;
+    gap: 0;
+    padding: 6px;
+  }
+  #app.hud-nautical:has(#onlinePerformance) #mainMenu { top: calc(var(--profile-bottom) + 46px); }
+  #app.hud-nautical #mainMenu :is([data-panel], #socialMenuTrigger) { width: clamp(38px, calc((100vw - 38px) / 8), 44px); }
+  #app.hud-nautical #mainMenu :is([data-panel], #socialMenuTrigger) > img { width: 32px; height: 32px; }
+  #app.hud-nautical #onlinePerformance { padding-inline: 8px; gap: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #app.hud-nautical #mainMenu :is([data-panel], #socialMenuTrigger, button[role=menuitem]) { transition: none; }
+}
+@media (min-width: 761px) and (max-width: 900px) {
+  #app.hud-nautical #mainMenu { gap: 2px; padding-inline: 8px; }
+  #app.hud-nautical #mainMenu :is([data-panel], #socialMenuTrigger) { width: 44px; }
+  #app.hud-nautical #mainMenu :is([data-panel], #socialMenuTrigger) > img { width: 32px; height: 32px; }
+}
+/* Keep the left status clear of the existing centered combat controls in phone landscape. */
+@media (min-width: 761px) and (max-height: 500px) {
+  #app.hud-nautical { --hud-profile: 296px; }
+  #app.hud-nautical .topbar.nautical-profile { padding: 10px; gap: 6px; }
+  #app.hud-nautical .nautical-profile #hudPlayerName { font-size: 18px; }
+}

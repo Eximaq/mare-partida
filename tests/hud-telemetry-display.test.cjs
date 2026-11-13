@@ -1,0 +1,30 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+
+test('telemetry displays the measured update interval and preserves connection, FPS and stale status',()=>{
+  const timers=[],elements=new Map();
+  const element=()=>({children:[],attrs:{},dataset:{},textContent:'',append(...nodes){this.children.push(...nodes);for(const n of nodes)if(n.id)elements.set(n.id,n);},setAttribute(k,v){this.attrs[k]=v;}});
+  const app=element();
+  const client={available:true,data:{online:{}},network:{rttMs:92.7,ageMs:120,intervalMs:756.4},subscribe(){}};
+  const context={document:{createElement:element,body:app,getElementById:id=>id==='app'?app:null,addEventListener(){}},setInterval:fn=>timers.push(fn),clearInterval(){},addEventListener(){}};
+  vm.runInNewContext(fs.readFileSync('apps/account-client/game-ui.js','utf8'),context);
+  context.MareOnlineGameUI.mount(client,{sync(){},message(){}});
+  const tick=timers[0];tick();
+  const meter=elements.get('onlinePerformance');
+  assert.equal(meter.children[0].textContent,'93 ms');
+  assert.match(meter.children[1].textContent,/FPS$/);
+  assert.equal(meter.children[2]?.textContent,'Atualizações: 756 ms');
+  assert.match(meter.attrs['aria-label'],/Atualizações: 756 ms/);
+  assert.equal(meter.dataset.stale,'false');
+  client.network.intervalMs=undefined;client.available=false;tick();
+  assert.equal(meter.children[0].textContent,'Sem conexão');
+  assert.equal(meter.children[2].textContent,'Atualizações: —');
+  assert.equal(meter.dataset.stale,'true');
+  client.available=true;client.network={rttMs:47.2,ageMs:6000,intervalMs:1000};tick();
+  assert.equal(meter.children[0].textContent,'47 ms');
+  assert.equal(meter.children[2].textContent,'Atualizações: 1000 ms');
+  assert.equal(meter.dataset.stale,'true');
+});

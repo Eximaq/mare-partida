@@ -49,10 +49,12 @@ with sync_playwright() as p:
     if not opts.baseline:
         for sample in results:
             m=sample['components']
-            assert m['profile']['width']<=320
+            # Glass status keeps 23px meters and a separate Berry/Willpower footer.
+            # The portrait-phone budget stays 320px; desktop is a 336px card.
+            assert m['profile']['width']<=(320 if sample['viewport'][0]<=760 else 336)
             assert m['potion']['width']>=44 and m['potion']['height']>=44
             if sample['viewport'][0]>=1280:
-                assert m['profile']['height']<=214
+                assert m['profile']['height']<=284
                 assert m['hotbar']['height']<=80
         q.set_viewport_size(dict(width=1366,height=768));q.clock.run_for(200)
         assert q.locator('#hudPlayerName').inner_text()=='Nauta'
@@ -108,6 +110,9 @@ with sync_playwright() as p:
         q.locator('#chatInput').press('Enter')
         assert 'anotação local' in q.locator('#gameLog').inner_text()
         q.locator('#chatInput').blur()
+        # Keep screenshots/merchant interactions from consuming the 5s cooldown on slower runners.
+        # Advance the application clock explicitly for both sides of the cooldown boundary below.
+        q.clock.pause_at(q.evaluate('Date.now()+1'))
         q.evaluate('__compactQA.game.hp=__compactQA.stats().maxHP/2;__compactQA.refresh()')
         old=q.evaluate('({potions:__compactQA.game.potions,gold:__compactQA.game.gold,hp:__compactQA.game.hp})')
         q.locator('#usePotion').click()
