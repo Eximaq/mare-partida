@@ -1,0 +1,418 @@
+[
+  {
+    "item": 133,
+    "direction": "south",
+    "sourcePackSHA256": "2673dc3dd575f9513c98d096db529afdc53ff62a901f7f9067d7e3cc60468eb1",
+    "portableSHA256": "1a76e27e388de41fa3a6a85f1dc9e9152a68676113bd2734cd1845ffd2f52b7d",
+    "sourceStatus": "derivada S151/133/152/155: base S aprovada, equipamento n\u00e3o",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-selected-collection-v1/01_Caminhadas_M_5_Revisoes.zip",
+        "member": "south-151-pants133-cycle-r3.json"
+      }
+    ]
+  },
+  {
+    "item": 133,
+    "direction": "north",
+    "sourcePackSHA256": "0b928ada070a41d8b097bb5754e8fa7dd528d3836cb34345b285c41a947af0b7",
+    "portableSHA256": "b1f73333cc55787b7f769b146801acb34db01015aa6f945b7447c9e17e7462ea",
+    "sourceStatus": "derivada N151/133/152/155: candidata",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-selected-collection-v1/01_Caminhadas_M_5_Revisoes.zip",
+        "member": "north-151-pants133-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 133,
+    "direction": "east",
+    "sourcePackSHA256": "54bc2199fc864e88dea91e8556297c13bd4c6cedcb433577c751c37f54d7d913",
+    "portableSHA256": "87cddec2f65635742fc4184604534483df287462b0805138791dfb4a38c840f2",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_01.zip",
+        "member": "pants_133_east-west_54bc2199fc86.json"
+      }
+    ]
+  },
+  {
+    "item": 133,
+    "direction": "west",
+    "sourcePackSHA256": "54bc2199fc864e88dea91e8556297c13bd4c6cedcb433577c751c37f54d7d913",
+    "portableSHA256": "87cddec2f65635742fc4184604534483df287462b0805138791dfb4a38c840f2",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_01.zip",
+        "member": "pants_133_east-west_54bc2199fc86.json"
+      }
+    ]
+  },
+  {
+    "item": 140,
+    "direction": "south",
+    "sourcePackSHA256": "79a7d7bbc9a34ff597229f071dbf8e5bc5eb7106882e83d6e98c53794c7414d0",
+    "portableSHA256": "a8c348eaf7c69c41c025144908d1a8a5b9d816bb98f03054978f0778a806b4b2",
+    "sourceStatus": "derivado provis\u00f3rio: base SOUTH r7 aprovada",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca140_SN_Derivada_Parte1.zip",
+        "member": "south-151-pants140-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 140,
+    "direction": "north",
+    "sourcePackSHA256": "faa75fd5a660e707deb09b4d8826c3dd02be276862d352367fb643d327e936d0",
+    "portableSHA256": "11e0e8c6079e973780a28d26ac60488464eaa580e3f6f81672652d5b28863013",
+    "sourceStatus": "derivado provis\u00f3rio: base NORTH r4 candidata",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca140_SN_Derivada_Parte1.zip",
+        "member": "north-151-pants140-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 140,
+    "direction": "east",
+    "sourcePackSHA256": "5a6d114b9a6ddbe07abc48c0c4a4ada19cca88b492eb82e324418accde2634c5",
+    "portableSHA256": "0af8e3fc69f8a6287c2ca4274f400bc6f7e342c529d04d0e91878189c206c560",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_01.zip",
+        "member": "pants_140_east-west_5a6d114b9a6d.json"
+      }
+    ]
+  },
+  {
+    "item": 140,
+    "direction": "west",
+    "sourcePackSHA256": "5a6d114b9a6ddbe07abc48c0c4a4ada19cca88b492eb82e324418accde2634c5",
+    "portableSHA256": "0af8e3fc69f8a6287c2ca4274f400bc6f7e342c529d04d0e91878189c206c560",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_01.zip",
+        "member": "pants_140_east-west_5a6d114b9a6d.json"
+      }
+    ]
+  },
+  {
+    "item": 147,
+    "direction": "south",
+    "sourcePackSHA256": "7addf29578c15425b0300dc5ce39471e252ea7c5a96c6974e7728b1beab0fafa",
+    "portableSHA256": "b16d0cfd8f065ac18982159c76a0668b0b29ef32ebd8f580035b30e3704f7ed9",
+    "sourceStatus": "derivado provis\u00f3rio: base SOUTH r7 aprovada",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca147_SN_Derivada_Parte1.zip",
+        "member": "south-151-pants147-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 147,
+    "direction": "north",
+    "sourcePackSHA256": "e3a54db8831a357904ebbbfc299c4a76d8354f2a95a1c72f23a84dd165a539ad",
+    "portableSHA256": "2b87fcf4b29c4d4abef3a1b55f85dbeac7a41c080c9a079c9fcc627a90293840",
+    "sourceStatus": "derivado provis\u00f3rio: base NORTH r4 candidata",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca147_SN_Derivada_Parte1.zip",
+        "member": "north-151-pants147-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 147,
+    "direction": "east",
+    "sourcePackSHA256": "02caeb9cbed7d52d5bd7607dfbe1f7194685802d91c848c8829966f9599aab1b",
+    "portableSHA256": "902ce58d3c2d1cfc7879f975bb0982fb3d0c0d457e1ac2d71aad62ef1f5151dc",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_02.zip",
+        "member": "pants_147_east-west_02caeb9cbed7.json"
+      }
+    ]
+  },
+  {
+    "item": 147,
+    "direction": "west",
+    "sourcePackSHA256": "02caeb9cbed7d52d5bd7607dfbe1f7194685802d91c848c8829966f9599aab1b",
+    "portableSHA256": "902ce58d3c2d1cfc7879f975bb0982fb3d0c0d457e1ac2d71aad62ef1f5151dc",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_02.zip",
+        "member": "pants_147_east-west_02caeb9cbed7.json"
+      }
+    ]
+  },
+  {
+    "item": 154,
+    "direction": "south",
+    "sourcePackSHA256": "3e2659cc9284aa3bdb29549eb5338452a7935c0385824ee235db46b0353f2c78",
+    "portableSHA256": "701a794116c6f2aea32c3e025c789ab7b270d3f7e463b73b8d757601004bfa41",
+    "sourceStatus": "derivado provis\u00f3rio: base SOUTH r7 aprovada",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca154_SN_Derivada_Parte1.zip",
+        "member": "south-151-pants154-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 154,
+    "direction": "north",
+    "sourcePackSHA256": "42a754c5d9e95a5b3f50258c2e6bac76890c8354fb0987286c9698d36b8bce3e",
+    "portableSHA256": "1cc2d8c2731cc6fe10466e91157fd8f7c681fd20d207561da3dadd317c327a13",
+    "sourceStatus": "derivado provis\u00f3rio: base NORTH r4 candidata",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca154_SN_Derivada_Parte1.zip",
+        "member": "north-151-pants154-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 154,
+    "direction": "east",
+    "sourcePackSHA256": "ddd6bd9473e160ad6ad9c39a89389e030af87ff89cb5686c2a6e9a4ed0431a8b",
+    "portableSHA256": "90a063f259ca9f3bfa0ca00aa3a27d14484d22f1d6142fae0c255a54565d24a3",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_02.zip",
+        "member": "pants_154_east-west_ddd6bd9473e1.json"
+      }
+    ]
+  },
+  {
+    "item": 154,
+    "direction": "west",
+    "sourcePackSHA256": "ddd6bd9473e160ad6ad9c39a89389e030af87ff89cb5686c2a6e9a4ed0431a8b",
+    "portableSHA256": "90a063f259ca9f3bfa0ca00aa3a27d14484d22f1d6142fae0c255a54565d24a3",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_02.zip",
+        "member": "pants_154_east-west_ddd6bd9473e1.json"
+      }
+    ]
+  },
+  {
+    "item": 161,
+    "direction": "south",
+    "sourcePackSHA256": "1ae303eabedb63c19898b93fdad5f91dc3d82beb46f33ff5e73b4af0ca7ece24",
+    "portableSHA256": "8a065db825226f403b5ed5432839b3cba0fc78edef0f3c37cee0695fd9a861a9",
+    "sourceStatus": "derivado provis\u00f3rio: base SOUTH r7 aprovada",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca161_SN_Derivada_Parte1.zip",
+        "member": "south-151-pants161-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 161,
+    "direction": "north",
+    "sourcePackSHA256": "2df0e4c31a5dba12cb11093986e51b00af3ba1bae6debac7bb153d7185b927ea",
+    "portableSHA256": "69c829b270851a79a9cb03f170197f88cbddf5895ddd4f8060ad86dca8fcfb5b",
+    "sourceStatus": "derivado provis\u00f3rio: base NORTH r4 candidata",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca161_SN_Derivada_Parte1.zip",
+        "member": "north-151-pants161-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 161,
+    "direction": "east",
+    "sourcePackSHA256": "d5a0d5b216bb54219ffafb66badd208a64f70c6e56c3e1dbae128130c49a8a2f",
+    "portableSHA256": "3c69f2f41ba71ad94c286d380157c39c58f72ace5b215ba72976cdd144bc7d95",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_03.zip",
+        "member": "pants_161_east-west_d5a0d5b216bb.json"
+      }
+    ]
+  },
+  {
+    "item": 161,
+    "direction": "west",
+    "sourcePackSHA256": "d5a0d5b216bb54219ffafb66badd208a64f70c6e56c3e1dbae128130c49a8a2f",
+    "portableSHA256": "3c69f2f41ba71ad94c286d380157c39c58f72ace5b215ba72976cdd144bc7d95",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_03.zip",
+        "member": "pants_161_east-west_d5a0d5b216bb.json"
+      }
+    ]
+  },
+  {
+    "item": 168,
+    "direction": "south",
+    "sourcePackSHA256": "ded9d6d19ae98192da75126b2d0c550edcfe5a5adef6f53e20845353ecfa6a14",
+    "portableSHA256": "ea2e8bf1c19c3e80911a6dbc1eb2e5a5b8e542818577c82f0a354f02824bed81",
+    "sourceStatus": "derivado provis\u00f3rio: base SOUTH r7 aprovada",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca168_SN_Derivada_Parte1.zip",
+        "member": "south-151-pants168-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 168,
+    "direction": "north",
+    "sourcePackSHA256": "4be7a9d5285cc382478068852cc36a521a4cdfe4840ccd6b345e0f429a88cea5",
+    "portableSHA256": "39692696d83c3f23f1494bf98f816c1ef361cb26e0006fc9b6b1a85b8ff06239",
+    "sourceStatus": "derivado provis\u00f3rio: base NORTH r4 candidata",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca168_SN_Derivada_Parte1.zip",
+        "member": "north-151-pants168-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 168,
+    "direction": "east",
+    "sourcePackSHA256": "b012e2627316cf28d6890211ed1a7ae33d0d22d6b939c55447d96d82d54c014c",
+    "portableSHA256": "1accdb2bfc41cb7c8f1178b39a83cb89f7f0eba9baecd943f9f14859abbbfbf1",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_03.zip",
+        "member": "pants_168_east-west_b012e2627316.json"
+      }
+    ]
+  },
+  {
+    "item": 168,
+    "direction": "west",
+    "sourcePackSHA256": "b012e2627316cf28d6890211ed1a7ae33d0d22d6b939c55447d96d82d54c014c",
+    "portableSHA256": "1accdb2bfc41cb7c8f1178b39a83cb89f7f0eba9baecd943f9f14859abbbfbf1",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_03.zip",
+        "member": "pants_168_east-west_b012e2627316.json"
+      }
+    ]
+  },
+  {
+    "item": 175,
+    "direction": "south",
+    "sourcePackSHA256": "b2892284ac1f46b9400f1b6040963c0e5234a96ca994834855a33398a9a09bb0",
+    "portableSHA256": "3f09f8ac77b70b5908d62cebde2100717922171ab97d95dba772db9d4fe38718",
+    "sourceStatus": "derivado provis\u00f3rio: base SOUTH r7 aprovada",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca175_SN_Derivada_Parte1.zip",
+        "member": "south-151-pants175-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 175,
+    "direction": "north",
+    "sourcePackSHA256": "6ba850b813158f0f6f232588b669f70c7a5a60ad613112f7055318686ccb5409",
+    "portableSHA256": "63ef3eaa8ad6c5811b76e60105b990637e342673cf71e5c1d7263daaa17c7f80",
+    "sourceStatus": "derivado provis\u00f3rio: base NORTH r4 candidata",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca175_SN_Derivada_Parte1.zip",
+        "member": "north-151-pants175-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 175,
+    "direction": "east",
+    "sourcePackSHA256": "9d0673a48021e7d3eaad6f0a8513fe738110ab22015ec8c7063a07c73e87d4c9",
+    "portableSHA256": "01209c948b75be5188ab9832f6c6ea5be5748d536bb9074ac0937995a20dbae8",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_04.zip",
+        "member": "pants_175_east-west_9d0673a48021.json"
+      }
+    ]
+  },
+  {
+    "item": 175,
+    "direction": "west",
+    "sourcePackSHA256": "9d0673a48021e7d3eaad6f0a8513fe738110ab22015ec8c7063a07c73e87d4c9",
+    "portableSHA256": "01209c948b75be5188ab9832f6c6ea5be5748d536bb9074ac0937995a20dbae8",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_04.zip",
+        "member": "pants_175_east-west_9d0673a48021.json"
+      }
+    ]
+  },
+  {
+    "item": 182,
+    "direction": "south",
+    "sourcePackSHA256": "01e7a6e1ee9f03a290e607020c733402eb3bda9747f8901ad6f259eeb6d63190",
+    "portableSHA256": "bccd4426af6938c7fda42299016205d6cefa69b69e79c8e14f811c59bde3d32a",
+    "sourceStatus": "derivado provis\u00f3rio: base SOUTH r7 aprovada",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca182_SN_Derivada_Parte1.zip",
+        "member": "south-151-pants182-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 182,
+    "direction": "north",
+    "sourcePackSHA256": "4ee4cefe61923d2157886da9362f269df91a0780bfd1e3f4bc276a8fd2b6d641",
+    "portableSHA256": "b99ffa1381856a4744204bfe141a92cec2a284e55a555779189340e72b4afe03",
+    "sourceStatus": "derivado provis\u00f3rio: base NORTH r4 candidata",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-pants-sn-collection-v1/M_Calca182_SN_Derivada_Parte1.zip",
+        "member": "north-151-pants182-cycle-r2.json"
+      }
+    ]
+  },
+  {
+    "item": 182,
+    "direction": "east",
+    "sourcePackSHA256": "00db86f2b5947f858228e6239efb004dc44823836dd60b97557cbb17847d21ba",
+    "portableSHA256": "32862b578ed5698e026c3b7a1b8b5b0c652b96e520f49286686a0b71453fccb3",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_04.zip",
+        "member": "pants_182_east-west_00db86f2b594.json"
+      }
+    ]
+  },
+  {
+    "item": 182,
+    "direction": "west",
+    "sourcePackSHA256": "00db86f2b5947f858228e6239efb004dc44823836dd60b97557cbb17847d21ba",
+    "portableSHA256": "32862b578ed5698e026c3b7a1b8b5b0c652b96e520f49286686a0b71453fccb3",
+    "sourceStatus": "candidato \u00b7 fitting vis\u00edvel \u00b7 pants",
+    "archiveLocations": [
+      {
+        "archiveId": "portable-current-equipment-collection-v3/Packs_Atuais_pants_04.zip",
+        "member": "pants_182_east-west_00db86f2b594.json"
+      }
+    ]
+  }
+]

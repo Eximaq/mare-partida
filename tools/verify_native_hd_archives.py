@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import zipfile
+from materialize_native_indexes import materialize
 
 ROOT = Path(__file__).resolve().parents[1]
 FOLDERS = ('rework-base-hd', 'rework-modular-outfits-hd', 'rework-weapon-layers-hd')
@@ -11,6 +12,7 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 def main():
+    materialize(ROOT)
     archives = sources = 0
     for folder in FOLDERS:
         path = ROOT / 'tools' / folder

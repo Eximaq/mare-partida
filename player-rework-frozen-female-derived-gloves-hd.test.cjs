@@ -1,0 +1,6 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),path=require('node:path'),root=__dirname,cv=require('@napi-rs/canvas'),vendor=require('./tools/rework-accessories/vendor.js'),load=require('./tools/rework-hd-test-loader.cjs').create(root),index=require('./tools/rework-modular-outfits-hd/index.json'),api=require('./player-rework-modular-outfits-hd').create(index,{vendor,allowCandidates:true});
+test('131 SOUTH and 180 SOUTH/EAST/WEST reuse existing native registrations without missing family states',async()=>{
+ const rows=index.records.filter(r=>r.derivedFemaleGloveDirection);assert.equal(rows.length,12);let frames=0;
+ for(const r of rows){assert.equal(r.derivedFemaleGloveDirection.nativeScale,1);assert.ok(api.resolve({body:r.body,direction:r.direction,action:r.action,equipment:r.equipment}));const images=new Map();for(const p of api.requiredFiles(r))images.set(p,await load(p));const size=r.pack.frame.width*4;assert.ok([512,640].includes(size));const canvas=cv.createCanvas(size,size);for(let frame=0;frame<r.pack.directions[r.direction].clip.frames;frame++){api.render(canvas.getContext('2d'),r,images,{frame});assert.ok(canvas.getContext('2d').getImageData(0,0,size,size).data.some(x=>x));frames++;}}
+ assert.equal(frames,196);
+});

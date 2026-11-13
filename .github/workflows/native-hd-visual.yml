@@ -17,7 +17,7 @@ concurrency:
 jobs:
   native-world:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -99,4 +99,52 @@ jobs:
         with:
           name: native-hd-real-game-part7
           path: artifacts/native-hd-parts/part7
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part8
+          path: artifacts/native-hd-parts/part8
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part9
+          path: artifacts/native-hd-parts/part9
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part10
+          path: artifacts/native-hd-parts/part10
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part11
+          path: artifacts/native-hd-parts/part11
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part12
+          path: artifacts/native-hd-parts/part12
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part13
+          path: artifacts/native-hd-parts/part13
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part14
+          path: artifacts/native-hd-parts/part14
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-hd-real-game-part15
+          path: artifacts/native-hd-parts/part15
           if-no-files-found: ignore

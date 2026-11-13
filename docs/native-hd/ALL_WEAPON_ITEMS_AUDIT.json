@@ -2136,14 +2136,14 @@
   "catalogIdCount": 42,
   "runtimeEvidence": {
     "file": "RENDERER_FAMILY_MATRIX.json",
-    "generatedAt": "2026-11-13T00:01:20.187Z",
+    "generatedAt": "2026-11-13T00:53:46.883Z",
     "method": "select() and prepareFamily(), idle/walk/attack in four directions",
     "fingerprints": {
       "tools/rework-base-hd/index.json": "baef34f1ab9de0e3a1d4ca46a6ec907caa3fd61b9366f39a79b722a139c7e7a0",
-      "tools/rework-weapon-layers-hd/index.json": "c966c9c1b17ada459702a2d2db47938063fb1bf5152c0c7b7fe785c2ac8e8807",
+      "tools/rework-weapon-layers-hd/index.json": "4171e24016e0b25ccbfdeeac0fcbbcef59f52ed076376fdf484dbc2d606195d6",
       "tools/rework-weapon-layers-hd/carry-binding-plan.json": "c2b1794b112d266518c88a3fa719c03316a42ea58b7dc3546cac0dc2d2df46a2",
-      "tools/rework-modular-outfits-hd/index.json": "5128b3978796da65aec1da204485a3f4c1a864c54111aa5df6429ff507e485e4",
-      "player-rework-native-hd.js": "eb8f85c0c0b1c59b6996bfc926b8d55b8474d41d0ac11f56981ec55d45bcbcfd",
+      "tools/rework-modular-outfits-hd/index.json": "ab3b0c88a91591ce6616c4d3743fdbc87bf18e513697af96f56ea3e0582ecb3e",
+      "player-rework-native-hd.js": "be00e9474bda472ee06061c5d23e4eacaa72f0a1e23ab4c5799870f700190d0c",
       "player-rework-weapon-native-hd.js": "7a602be72603e5ee172f519c5f076f9ff8a9bfd73ce331777b0610752f7a462f",
       "player-rework-weapon-carry-hd.js": "146b29f43f8ed361b8092fe782800795da2f09f1a91198b58334523bb4335e0e"
     }

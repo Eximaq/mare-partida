@@ -60,3 +60,6 @@ Thumbs.db
 /tools/rework-modular-outfits-hd/assets/
 
 /tools/rework-weapon-layers-hd/assets/
+
+# Materialized lossless JSON; canonical Git transport is index.json.gz.
+/tools/rework-modular-outfits-hd/index.json

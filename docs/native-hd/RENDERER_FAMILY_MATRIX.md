@@ -2,9 +2,9 @@
 
 Actual select()+prepareFamily() gate for M/F, original/light+black and registered clothing sets. Resolver coverage is NOT visual approval, complete render verification, or arbitrary wardrobe support. Item0 means unarmed base, not equipment.
 
-Generated: 2026-11-13T00:01:20.187Z
+Generated: 2026-11-13T00:53:46.883Z
 
-112/2016 tested identity/clothing cases pass the complete idle+walk+attack gate. This is not a visual-pass rate.
+189/11928 tested identity/clothing cases pass the complete idle+walk+attack gate. This is not a visual-pass rate.
 
 | Item | Male original | Male light/black | Female original | Female light/black |
 |---|---|---|---|---|
@@ -54,14 +54,73 @@ Generated: 2026-11-13T00:01:20.187Z
 ## Registered clothing sets
 
 - {}: 90/168 complete cases.
-- {"pants":133}: 8/168 complete cases.
-- {"boots":155,"gloves":152,"pants":147,"torso":6}: 1/168 complete cases.
-- {"boots":155,"gloves":152,"pants":154,"torso":151}: 1/168 complete cases.
-- {"boots":134,"gloves":152,"pants":133,"torso":151}: 0/168 complete cases.
-- {"boots":9,"gloves":152,"pants":133,"torso":151}: 0/168 complete cases.
-- {"boots":148,"gloves":152,"pants":133,"torso":151}: 0/168 complete cases.
+- {"pants":133}: 9/168 complete cases.
+- {"boots":155,"gloves":152,"pants":147,"torso":6}: 2/168 complete cases.
+- {"boots":155,"gloves":152,"pants":154,"torso":151}: 3/168 complete cases.
+- {"boots":134,"gloves":152,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":9,"gloves":152,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":148,"gloves":152,"pants":133,"torso":151}: 1/168 complete cases.
 - {"boots":9,"pants":133}: 8/168 complete cases.
-- {"boots":148,"pants":133}: 0/168 complete cases.
+- {"boots":148,"pants":133}: 1/168 complete cases.
 - {"boots":9,"pants":133,"torso":151}: 2/168 complete cases.
 - {"pants":133,"torso":151}: 2/168 complete cases.
-- {"boots":148,"pants":133,"torso":151}: 0/168 complete cases.
+- {"boots":148,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":152,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":152,"pants":140,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":152,"pants":147,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":152,"pants":161,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":152,"pants":168,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":152,"pants":175,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":152,"pants":182,"torso":151}: 1/168 complete cases.
+- {"boots":8,"gloves":152,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":162,"gloves":152,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":176,"gloves":152,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":183,"gloves":152,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":141,"gloves":152,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":169,"gloves":152,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":8,"torso":151}: 1/168 complete cases.
+- {"boots":9,"torso":151}: 1/168 complete cases.
+- {"boots":134,"torso":151}: 1/168 complete cases.
+- {"boots":141,"torso":151}: 1/168 complete cases.
+- {"boots":148,"torso":151}: 1/168 complete cases.
+- {"boots":155,"torso":151}: 1/168 complete cases.
+- {"boots":162,"torso":151}: 1/168 complete cases.
+- {"boots":169,"torso":151}: 1/168 complete cases.
+- {"boots":176,"torso":151}: 1/168 complete cases.
+- {"boots":183,"torso":151}: 1/168 complete cases.
+- {"torso":6}: 2/168 complete cases.
+- {"torso":7}: 2/168 complete cases.
+- {"torso":130}: 2/168 complete cases.
+- {"torso":137}: 2/168 complete cases.
+- {"torso":144}: 2/168 complete cases.
+- {"torso":158}: 2/168 complete cases.
+- {"torso":165}: 2/168 complete cases.
+- {"torso":172}: 2/168 complete cases.
+- {"torso":179}: 2/168 complete cases.
+- {"boots":155,"gloves":131,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":138,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":145,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":159,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":166,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":173,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":25,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":26,"pants":133,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":180,"pants":133,"torso":151}: 1/168 complete cases.
+- {"pants":21}: 1/168 complete cases.
+- {"pants":22}: 1/168 complete cases.
+- {"pants":140}: 1/168 complete cases.
+- {"pants":147}: 1/168 complete cases.
+- {"pants":154}: 1/168 complete cases.
+- {"pants":161}: 1/168 complete cases.
+- {"pants":175}: 1/168 complete cases.
+- {"pants":182}: 1/168 complete cases.
+- {"boots":155,"gloves":138,"pants":154,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":145,"pants":154,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":159,"pants":154,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":166,"pants":154,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":173,"pants":154,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":25,"pants":154,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":26,"pants":154,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":131,"pants":154,"torso":151}: 1/168 complete cases.
+- {"boots":155,"gloves":180,"pants":154,"torso":151}: 1/168 complete cases.
+- {"torso":151}: 1/168 complete cases.

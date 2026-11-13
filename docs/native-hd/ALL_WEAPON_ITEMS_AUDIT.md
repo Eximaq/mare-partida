@@ -2,7 +2,7 @@
 
 41 IDs equipáveis; ID0 é a base sem arma. O catálogo histórico tem 1000 registros, incluindo roupas e variações: isso não significa 1000 combinações intercambiáveis no jogo.
 
-Evidência atual: `RENDERER_FAMILY_MATRIX.json`, gerada em 2026-11-13T00:01:20.187Z. Consulta de `select/prepareFamily` para idle/walk/ataque nas quatro direções. **Família resolvível não é aprovação visual.**
+Evidência atual: `RENDERER_FAMILY_MATRIX.json`, gerada em 2026-11-13T00:53:46.883Z. Consulta de `select/prepareFamily` para idle/walk/ataque nas quatro direções. **Família resolvível não é aprovação visual.**
 
 |Item|Masculino original|Feminino original|Masculino light/black|Feminino light/black|
 |---|---|---|---|---|

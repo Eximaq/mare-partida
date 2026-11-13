@@ -21,6 +21,14 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
   const p=r?.pack,d=p?.directions?.[r.direction];if(!d||!Number.isInteger(frame)||frame<0||frame>=d.clip.frames)throw Error('Invalid modular authored frame');
   if(p.density!==4||ctx.canvas.width!==p.frame.width*4||ctx.canvas.height!==p.frame.height*4)throw Error('Native canvas dimensions required');
   const map=new Map();for(const s of sources(r,frame)){const image=images.get(prefix+s+'.png')||images.get(s);if(!image)throw Error('Missing original outfit asset '+s);map.set(s,image);}
+  if(r.sourceRasterPadding){
+   for(const [source,padding]of Object.entries(r.sourceRasterPadding)){
+    const image=map.get(source);if(!image)continue;
+    if(padding.sourceSize!==512||padding.offset!==64||image.width!==512||image.height!==512||ctx.canvas.width!==640||ctx.canvas.height!==640)throw Error('Invalid native source padding');
+    const surface=makeCanvas?makeCanvas(640,640):ctx.canvas.ownerDocument?Object.assign(ctx.canvas.ownerDocument.createElement('canvas'),{width:640,height:640}):typeof OffscreenCanvas!=='undefined'?new OffscreenCanvas(640,640):require('@napi-rs/canvas').createCanvas(640,640);
+    surface.getContext('2d').drawImage(image,64,64);map.set(source,surface);
+   }
+  }
   if(r.paletteSourceMasks&&appearanceAPI){
    for(const [source,materials]of Object.entries(r.paletteSourceMasks)){
     const im=map.get(source);if(!im)continue;let tile=null,data=null;
@@ -49,7 +57,20 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
    const sc=surface.getContext('2d');sc.imageSmoothingEnabled=false;sc.drawImage(im,0,0);sc.clearRect(0,o.belowPhysicalY,surface.width,surface.height-o.belowPhysicalY);map.set(key,surface);
   }
   const pack=hiddenSlots.length?{...p,directions:{[r.direction]:{...d,layers:d.layers.filter(l=>!hiddenSlots.includes(l.slot))}}}:p;
-  vendor.compositor.render(ctx,pack,map,{direction:r.direction,frame,density:4});return {width:ctx.canvas.width,height:ctx.canvas.height,density:4,pivot:{x:p.pivot.x*4,y:p.pivot.y*4},logicalFrame:p.frame,source:r.id,frames:d.clip.frames,rest:d.rest,pose:d.poses[frame],status:r.status};
+  if(r.mirrorLayerIDs?.length){
+   // WEST base rasters remain EAST originals; only these identified base layers
+   // are mirrored. Authored WEST garment frames are already facing WEST.
+   const ids=new Set(r.mirrorLayerIDs),layers=pack.directions[r.direction].layers;
+   if(r.direction!=='west'||[...ids].some(id=>!d.layers.some(l=>l.id===id)))throw Error('Invalid per-layer source mirror');
+   ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+   for(const planned of vendor.compositor.plan(pack,r.direction,frame)){
+    const l=layers.find(l=>l.id===planned.id);
+    ctx.save();
+    if(ids.has(l.id)){ctx.translate(p.pivot.x*8,0);ctx.scale(-1,1);}
+    vendor.compositor.render(ctx,{...pack,directions:{[r.direction]:{...pack.directions[r.direction],layers:[l]}}},map,{direction:r.direction,frame,density:4,clear:false});
+    ctx.restore();
+   }
+  }else vendor.compositor.render(ctx,pack,map,{direction:r.direction,frame,density:4});return {width:ctx.canvas.width,height:ctx.canvas.height,density:4,pivot:{x:p.pivot.x*4,y:p.pivot.y*4},logicalFrame:p.frame,source:r.id,frames:d.clip.frames,rest:d.rest,pose:d.poses[frame],status:r.status};
  }
  return {resolve,requiredFiles,render};
 }

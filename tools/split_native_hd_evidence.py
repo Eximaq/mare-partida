@@ -14,8 +14,8 @@ for path in sorted(source.glob('*.png')):
     if size and size + n > limit:
         part += 1
         size = 0
-    if part >= 8:
-        raise ValueError('More than eight evidence parts required; expand workflow upload steps')
+    if part >= 16:
+        raise ValueError('More than sixteen evidence parts required; expand workflow upload steps')
     dest = target / f'part{part}' / path.name
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(path, dest)

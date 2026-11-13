@@ -10,8 +10,8 @@ test('isolated boot9 and pants133 remain available across unarmed actions withou
   assert.ok(r.pack.directions[direction].layers.some(l=>l.id.startsWith('boot9')));
  }
 });
-test('unknown boot148 laterals do not claim coverage',()=>{
- for(const direction of ['east','west'])assert.equal(api.resolve({body:'male',direction,action:'attack-unarmed',equipment:{pants:133,boots:148}}),null);
+test('registered boot148 laterals use their exact native bare upper source',()=>{
+ for(const direction of ['east','west']){const r=api.resolve({body:'male',direction,action:'attack-unarmed',equipment:{pants:133,boots:148}});assert.ok(r.bareBoot148Closure);assert.equal(r.registration.scale,1);assert.equal(r.registration.noGloves,true);assert.deepEqual(r.equipment,{pants:133,boots:148});}
 });
 test('all new combinations render through actual archive loader and padding preserves every source RGBA pixel',async()=>{
  const {createCanvas}=require('@napi-rs/canvas'),load=require('./tools/rework-hd-test-loader.cjs').create(__dirname),proof=require('./docs/native-hd/isolated-boots-overlay.json');
