@@ -96,7 +96,7 @@ const mosquete4V3={
   return {...s,layers:[s.layers[0],weapon,s.layers[2]],approved};
  })
 };
-const exactSouthFirearm=new Map([[4,mosquete4V3],[115,rifle115V5]]);
+const exactSouthIdle=new Map([[4,mosquete4V3],[115,rifle115V5]]);
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-weapon-layers-hd/',makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
  if(index?.schema!=='native-hd-weapon-layers-v1'||!vendor?.compositor)throw Error('Missing native weapon dependencies');
  const approvedSouth=item=>index.records.find(r=>r.approvedSouthHead&&r.item===Number(item)&&r.body==='male'&&r.direction==='south');
@@ -105,21 +105,23 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
  function resolve({item,body:b,action='attack',direction,appearance={},equipment={},allowExactComposite=true}={}){
   if(item==null)return null;
   const allowed=[12,13,71,72,73,74].includes(Number(item))?["attack","attack-daggers"]:[0,1,67,68,69,70].includes(Number(item))?["attack","attack-sword"]:[14,110,112,2,3,15,109,111,117,118,119,120].includes(Number(item))?['attack','punch','attack-unarmed']:[4,5,113,114,115,116].includes(Number(item))?['attack','shoot','attack-firearm']:[123,124,125,126,127,128,16,121,17,122,31,32].includes(Number(item))?['attack','focus','attack-focus','cast']:[];
-  const exactSource=exactSouthFirearm.get(Number(item));
-  if(!allowed.includes(action)&&!(exactSource&&action==='idle'))return null;if([0,1,67,68,69,70].includes(Number(item))&&[appearance.skin,appearance.skinColor,appearance.hair,appearance.hairStyle,appearance.hairColor,appearance.eyeColor].some(v=>v&&v!=="original"))return null;
+  const id=v=>Number(v&&typeof v==='object'?v.def:v);
+  const idleSource=exactSouthIdle.get(Number(item));
+  const exactSource=idleSource??index.exactSouthFirearms?.find(r=>r.equipment.weapon===Number(item)&&r.equipment.coat===id(equipment.coat));
+  if(!allowed.includes(action)&&!(idleSource&&action==='idle'))return null;if([0,1,67,68,69,70].includes(Number(item))&&[appearance.skin,appearance.skinColor,appearance.hair,appearance.hairStyle,appearance.hairColor,appearance.eyeColor].some(v=>v&&v!=="original"))return null;
   const equippedWeapon=equipment.weapon&&typeof equipment.weapon==='object'?equipment.weapon.def:equipment.weapon;
   if(equippedWeapon!=null&&Number(equippedWeapon)!==Number(item))return null;
   if(allowExactComposite&&exactSource&&body(b)===exactSource.body&&direction===exactSource.direction){
    const id=v=>Number(v&&typeof v==='object'?v.def:v);
    const visible=Object.entries(equipment).filter(([k,v])=>v!=null&&!['none','original'].includes(v)&&!['necklace','ring','belt','charm','akuma_no_mi'].includes(k));
-   const exact=visible.every(([k,v])=>Object.hasOwn(exactSource.equipment,k)&&id(v)===exactSource.equipment[k])&&id(equipment.coat)===151&&id(equipment.head)===157;
+   const exact=visible.every(([k,v])=>Object.hasOwn(exactSource.equipment,k)&&id(v)===exactSource.equipment[k])&&id(equipment.coat)===exactSource.equipment.coat&&id(equipment.head)===exactSource.equipment.head;
    const palette=[appearance.skin,appearance.skinColor].every(v=>!v||['original','light'].includes(v))&&[appearance.face,appearance.eyeStyle].every(v=>!v||v==='original')&&(!appearance.eyeColor||['original','blue'].includes(appearance.eyeColor));
    // The baked head is registered to the reference hair selection and palette.
    const hair=(appearance.hair??appearance.hairStyle)==='hair-spiky'&&(!appearance.hairColor||['black','original'].includes(appearance.hairColor));
    const pilot=index.records.find(r=>r.id===exactSource.id);
    if(exact&&palette&&hair&&pilot&&pilot.item===Number(item)&&pilot.body===exactSource.body&&pilot.direction===exactSource.direction&&pilot.density===4&&JSON.stringify(pilot.nativeCanvas)==='[640,640]'&&JSON.stringify(pilot.pivot)==='[80,128]'&&pilot.fps===24&&JSON.stringify(pilot.timeline)===JSON.stringify(['0','1','2','4','R','4','2','1','0'].flatMap((s,i)=>Array([8,3,3,4,2,3,4,4,12][i]).fill(s)))&&pilot.sourceArchiveSHA256===exactSource.sourceArchiveSHA256&&pilot.states.length===exactSource.states.length&&exactSource.states.every(expected=>{
     const s=pilot.states.find(s=>s.state===expected.state);
-    return s?.atomic===true&&s.requiredBaseSHA256===expected.base&&s.approved?.sha256===expected.approved&&s.layers.length===3&&s.layers.every((l,i)=>l.sha256===expected.layers[i]&&l.url==='assets/'+expected.layers[i]+'.png'&&l.operation==='source-over')&&s.layers[0].sha256===s.requiredBaseSHA256;
+    return s?.atomic===true&&s.requiredBaseSHA256===expected.base&&s.approved?.sha256===expected.approved&&s.layers.length===expected.layers.length&&s.layers.every((l,i)=>l.sha256===expected.layers[i]&&l.url==='assets/'+expected.layers[i]+'.png'&&l.operation==='source-over')&&s.layers[0].sha256===s.requiredBaseSHA256;
    }))return {...pilot,timeline:action==='idle'?['0']:pilot.timeline,exactComposite:true,colorAppearance:{},equipmentContract:exactSource.equipment};
   }
   if(action==='idle')return null;
