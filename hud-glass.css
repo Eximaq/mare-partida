@@ -864,7 +864,9 @@
   }
   & .op-tabs button { min-height: 36px; padding: 5px 3px; gap: 4px; }
   & .op-tabs button .inv-ui-icon { width: 14px; height: 14px; }
-  & .op-character-core { grid-template-columns: 58px minmax(0,1fr) 58px; gap: 5px; }
+  /* Keep full equipment names readable in the glass system font, including
+     ACESSÓRIO; the avatar column absorbs narrow-screen width changes. */
+  & .op-character-core { grid-template-columns: 72px minmax(0,1fr) 72px; gap: 5px; }
   & .op-equip-side { gap: 3px; }
   & .op-equip-side .op-equip-slot { height: 44px; min-height: 44px; }
   & .op-equip-slot .op-slot-label { color: #e0e3e8; font: 600 10px/1.2 var(--glass-type); letter-spacing: 0; }

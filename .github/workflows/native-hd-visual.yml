@@ -7,6 +7,7 @@ on:
       - 'tools/rework-*-hd/**'
       - 'paper-doll-96-lobby.js'
       - 'tests/native_hd_game_browser.cjs'
+      - 'tests/rework_default_game_browser.cjs'
       - '.github/workflows/native-hd-visual.yml'
   workflow_dispatch:
 permissions:
@@ -26,6 +27,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: python tools/verify_native_hd_archives.py
       - run: npm run test:rework-hd
+      - run: node --test player-rework-default-hd.test.cjs
       - name: Cache Chromium
         uses: actions/cache@v4
         with:
@@ -43,6 +45,17 @@ jobs:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/
           MARE_EVIDENCE_DIR: artifacts/native-hd-game
         run: node tests/native_hd_game_browser.cjs
+      - name: Authentic starter saves use the replacement without editing equipment
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8157/dist/
+          MARE_EVIDENCE_DIR: artifacts/rework-default-game
+        run: node tests/rework_default_game_browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rework-default-save-evidence
+          path: artifacts/rework-default-game/
+          if-no-files-found: ignore
       - name: Split evidence into downloadable native-resolution groups
         if: always()
         run: python tools/split_native_hd_evidence.py artifacts/native-hd-game artifacts/native-hd-parts

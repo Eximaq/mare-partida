@@ -2,13 +2,25 @@
 const assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=require('node:path'),{chromium}=require('playwright');
 const origin=process.argv.find(s=>/^https?:/.test(s))||process.env.MARE_TEST_URL||'http://127.0.0.1:8159/';
 const out=process.argv.find(s=>s.startsWith('--evidence='))?.slice(11);
+async function settledPreview(p,direction){
+ await p.waitForFunction(direction=>{
+  const q=window.__appearanceQA,canvas=document.querySelector('#creationLookCanvas');if(!q||!canvas)return false;
+  // Probe the requested preview synchronously, then inspect its source state.
+  // The old status label becomes ready before asynchronous HD archives finish.
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
+  q.renderer.preview(ctx,{classId:'sword',equipment:{coat:{def:6}}},{action:'idle',direction,time:0,appearance:q.draft,consumer:'character-creation'});
+  const s=q.renderer.snapshot(),a=s.defaultHD?.last?.state==='rendered'?s.defaultHD.last:s.nativeHD?.last;
+  return a?.state==='rendered'&&a.physicalScale===1&&a.direction===direction&&a.consumer==='character-creation'&&[...ctx.getImageData(0,0,canvas.width,canvas.height).data].some((v,i)=>i%4===3&&v);
+ },direction,{timeout:120000});
+}
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{const p=await browser.newPage({viewport:{width:1366,height:900}}),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.route(/\/game\.js(?:\?|$)/,async route=>{const response=await route.fetch();let s=await response.text();s=s.replace('  requestAnimationFrame(frame);','  window.__appearanceQA={get player(){return game},get draft(){return creationAppearanceDraft},renderer:lobby96,openCreation,openPanel,closePanel,getDerived};\n  requestAnimationFrame(frame);');await route.fulfill({response,body:s});});
 await p.goto(origin);await p.waitForFunction(()=>window.__appearanceQA);await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click({timeout:3000});assert(await p.locator('#appearanceStep').isVisible());assert.equal(await p.evaluate(()=>__appearanceQA.player),null);
 const values={gender:'feminino',hairStyle:'hair-topknot',hairColor:'violet',eyeStyle:'face-almond',eyeColor:'green',skinColor:'ebony'};
 for(const [key,value]of Object.entries(values))await p.locator('#creation-'+key).selectOption(value);
 await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));
 await p.locator('#creation-gender').selectOption('masculino');assert.equal(await p.locator('#creation-hairStyle').inputValue(),'hair-topknot');await p.locator('[data-appearance-cycle="gender"][data-step="1"]').focus();await p.keyboard.press('Space');assert.equal(await p.locator('#creation-gender').inputValue(),'feminino');for(const color of ['blue','pink','green','blonde','violet'])await p.locator('[data-appearance-color="hairColor"][data-value="'+color+'"]').click();assert.equal(await p.locator('#creation-hairColor').inputValue(),'violet');await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));
-const front=await p.locator('#creationLookCanvas').evaluate(c=>c.toDataURL());for(const dir of ['north','east','west','south']){await p.locator('[data-appearance-direction="'+dir+'"]').click();await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));}assert(await p.locator('#creationLookCanvas').evaluate(c=>c.toDataURL())===front,'same direction must restore the same preview');
+await settledPreview(p,'south');
+const front=await p.locator('#creationLookCanvas').evaluate(c=>c.toDataURL());for(const dir of ['north','east','west','south']){await p.locator('[data-appearance-direction="'+dir+'"]').click();await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));await settledPreview(p,dir);}assert(await p.locator('#creationLookCanvas').evaluate(c=>c.toDataURL())===front,'same direction must restore the same preview');
 await p.locator('#backToClass').click();await p.locator('#backToFaction').click();await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();assert.equal(await p.locator('#creation-gender').inputValue(),'feminino');assert.equal(await p.locator('#creation-hairStyle').inputValue(),'hair-topknot');
 await p.locator('#createCharacter').click();assert(await p.locator('.confirmation-overlay').isVisible());assert.equal(await p.evaluate(()=>__appearanceQA.player),null);await p.locator('[data-confirm-cancel]').click();assert(await p.locator('#appearanceStep').isVisible());
 if(out){await fs.mkdir(out,{recursive:true});await p.screenshot({path:path.join(out,'appearance-desktop.png')});}

@@ -128,7 +128,7 @@
     const send=async()=>{const ok=await onlineItemCommand('party.'+action,payload);if(ok&&action==='start')closePanel();else if(currentPanel==='party')renderPartyPanel();return ok;};
     if(action==='leave'||action==='kick')showConfirmation(action==='leave'?'Sair do grupo?':'Remover membro?','A participação na atividade será encerrada e o personagem retornará ao porto. Recompensas pessoais pendentes serão preservadas.',send,action==='leave'?'SAIR':'REMOVER');else await send();
   }
-  const lobby96=MarePaperDoll96Lobby.create({search:location.search,onChange:()=>{if(game){renderPortrait();if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
+  const lobby96=MarePaperDoll96Lobby.create({search:location.search,onChange:()=>{if(game){renderPortrait();const inventoryPreview=$('inventorySprite');if(currentPanel==='inventory'&&inventoryPreview)drawCurrentPreview(inventoryPreview,185,{aura:false});if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
   let paperDollDebug=DEV_ACTIVE&&new URLSearchParams(location.search).get('paperDollDebug')==='1';
   const STORAGE_KEY=MareDev.key(location.search);
   const saveWriter=ONLINE_GAME?{ready:true,owner:true,exclusive:false}:MareSaveWriter.create(STORAGE_KEY);
@@ -169,7 +169,11 @@
     const rect=canvas.getBoundingClientRect(), fittedZoom=game?camera.fitZoom(activeMap(),rect.width,rect.height,worldZoom.value,world.hero):worldZoom.value;
     const zoom=Math.min(fittedZoom,MareHudTelemetry.maxZoom);
     W=Math.max(1,Math.round(rect.width/zoom));H=Math.max(1,Math.round(rect.height/zoom));
-    canvas.width=W;canvas.height=H;ctx.imageSmoothingEnabled=false;
+    // Assigning even the same canvas dimension clears its backing store. HUD
+    // ResizeObserver notifications must not erase the frame just presented.
+    if(canvas.width!==W)canvas.width=W;
+    if(canvas.height!==H)canvas.height=H;
+    ctx.imageSmoothingEnabled=false;
     camera.width=W;camera.height=H;viewportMapId=game?mapKey():null;
     phoneMenuInset=rect.width<=640&&rect.height>rect.width?Math.max(0,$('mainMenu').getBoundingClientRect().bottom-rect.top+4)/zoom:0;
     if(game)camera.update(nameplateCameraFocus(),activeMap(),0,true,world.hero);

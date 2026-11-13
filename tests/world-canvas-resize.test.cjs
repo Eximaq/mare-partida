@@ -1,0 +1,30 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const {createCanvas} = require('@napi-rs/canvas');
+
+test('viewport observer keeps rendered pixels when only HUD layout changes', () => {
+  const source = fs.readFileSync(require('node:path').join(__dirname, '../game.js'), 'utf8');
+  const start = source.indexOf('  function resizeViewport(){');
+  const end = source.indexOf('  const viewportObserver=', start);
+  assert(start >= 0 && end > start);
+  const canvas = createCanvas(1600, 1100), ctx = canvas.getContext('2d');
+  let rect = {width:390, height:844, top:0}, menuBottom=318, updates=0;
+  canvas.getBoundingClientRect = () => rect;
+  const camera = {fitZoom:()=>1, update:()=>updates++};
+  const env = {canvas, ctx, camera, worldZoom:{value:1}, MareHudTelemetry:{maxZoom:1.8}, game:{}, world:{hero:{}}, activeMap:()=>({}), mapKey:()=> 'lobby', nameplateCameraFocus:()=>({}), $:()=>({getBoundingClientRect:()=>({bottom:menuBottom})})};
+  vm.createContext(env); vm.runInContext(source.slice(start, end), env);
+  env.resizeViewport();
+  assert.equal(canvas.width,390); assert.equal(canvas.height,844);
+  ctx.fillStyle='#51ad73'; ctx.fillRect(0,0,390,844);
+  const painted = Array.from(ctx.getImageData(195,480,1,1).data);
+  menuBottom=330;
+  for(let i=0;i<3;i++)env.resizeViewport();
+  assert.deepEqual(Array.from(ctx.getImageData(195,480,1,1).data), painted, 'Repeated observer callbacks must not erase the world bitmap');
+  assert.equal(env.phoneMenuInset,334, 'HUD inset still updates without bitmap reset');
+  assert.equal(updates,4, 'Camera framing still updates for HUD layout changes');
+  rect={width:844,height:390,top:0}; env.resizeViewport();
+  assert.equal(canvas.width,844); assert.equal(canvas.height,390);
+  assert.equal(env.phoneMenuInset,0);
+});
