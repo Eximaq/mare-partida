@@ -8,7 +8,12 @@ const protectedPack=pack=>({...pack,directions:Object.fromEntries(Object.entries
   assert.equal(r.candidate,true);assert.equal(r.pack.density,4);assert.equal(r.pack.frame.width,128);
   const selected=api.resolve({body:r.body,direction:r.direction,action:r.action,equipment:r.equipment});assert(selected);
   if(selected.id!==r.id){
-   assert.equal(selected.sourceOutfitId,r.id,'revision must name the exact parent');assert.deepEqual(selected.equipment,r.equipment);
+   const visited=new Set();let parent=selected;
+   while(parent&&parent.id!==r.id&&!visited.has(parent.id)){
+    visited.add(parent.id);assert.deepEqual(parent.equipment,r.equipment);
+    parent=index.records.find(row=>row.id===parent.sourceOutfitId);
+   }
+   assert.equal(parent?.id,r.id,'selected native revision must descend from the exact source pack');
    assert.equal(selected.id,'frozen-female-glove152-'+r.direction+'-'+r.action+'-native-layers');assert.equal(selected.frozenFemaleGloveLayers,true);
    assert.equal(selected.frozenGloveSourceRef,{south:'ref-0633',east:'ref-0712',west:'ref-0713',north:'ref-0985'}[r.direction]);
    // SOUTH/NORTH have their own frozen glove revisions. Every non-glove source, pose,

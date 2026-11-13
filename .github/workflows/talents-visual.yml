@@ -5,6 +5,8 @@ on:
     paths:
       - 'talent-ui.js'
       - 'talents-hd.css'
+      - 'hud-glass.css'
+      - 'tests/talents-glass-browser.cjs'
       - 'assets/ui/talents-hd/**'
       - 'tests/talent-hd.test.cjs'
       - 'talent-system.js'
@@ -66,6 +68,7 @@ jobs:
           MARE_TEST_URL=http://127.0.0.1:8123/ MARE_QA_DIR=/tmp/mare-talent-visual/online node tests/talents-online-browser.cjs
           MARE_TEST_URL=http://127.0.0.1:8123/ python -X utf8 tests/talent_canvas_browser.py
           MARE_TEST_URL=http://127.0.0.1:8123/dist/ python -X utf8 tests/talent_visual_browser.py
+          MARE_TEST_URL=http://127.0.0.1:8123/dist/ MARE_QA_DIR=/tmp/mare-talent-visual/glass node tests/talents-glass-browser.cjs
       - name: Capturas da árvore
         if: always()
         uses: actions/upload-artifact@v4

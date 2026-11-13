@@ -85,7 +85,8 @@ test('server caps professional XP and applies the strongest offline specialist s
   assert.equal((await benefits()).cook,.02);
   const boosted=await fighter();
   assert.deepEqual(boosted.allocated,before.allocated);
-  assert.equal(boosted.total.vitality,Math.round(before.total.vitality*1.02*1e6)/1e6);
+  // Compare both sides at the same six-decimal precision, not IEEE-754 rounding noise.
+  assert.equal(Math.round(boosted.total.vitality*1e6)/1e6,Math.round(before.total.vitality*1.02*1e6)/1e6);
   await b.act('crew.leave');
   assert.equal((await benefits()).cook,.002);
   assert.equal((await transaction(pool,c=>readProfession(c,b.id)))!.level,10);
