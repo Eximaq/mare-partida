@@ -1,0 +1,236 @@
+{
+  "records": [
+    "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate-coat151-existing",
+    "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate-coat151-existing",
+    "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate-coat151-existing",
+    "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate-coat151-existing",
+    "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate-coat151-existing",
+    "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate-coat151-existing",
+    "male-pants133-idle-east-source-v18-candidate-boots9-isolated-candidate-coat151-existing",
+    "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate-coat151-existing",
+    "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate-coat151-existing",
+    "male-pants133-idle-west-source-v18-candidate-boots9-isolated-candidate-coat151-existing",
+    "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate-coat151-existing",
+    "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate-coat151-south-registered",
+    "male-pants133-walk-south-isolated-r2-coat151-native",
+    "male-pants133-idle-south-isolated-r2-coat151-native",
+    "male-pants133-walk-north-isolated-r2-coat151-native",
+    "male-pants133-idle-north-isolated-r2-coat151-native",
+    "male-pants133-attack-unarmed-north-drawn8-candidate-coat151-native",
+    "male-pants133-walk-east-source-v18-candidate-coat151-native",
+    "male-pants133-idle-east-source-v18-candidate-coat151-native",
+    "male-pants133-attack-unarmed-east-drawn8-candidate-coat151-native",
+    "male-pants133-walk-west-source-v18-candidate-coat151-native",
+    "male-pants133-idle-west-source-v18-candidate-coat151-native",
+    "male-pants133-attack-unarmed-west-drawn8-candidate-coat151-native",
+    "male-pants133-attack-unarmed-south-drawn8-candidate-coat151-native"
+  ],
+  "proof": [
+    {
+      "direction": "north",
+      "frame": 0,
+      "originalPNG": "52c525961536b43d91282d6ca67ae8d3cc97b95edc5ef64de8653163b45498e7",
+      "outputPNG": "820a0e8926ddd51882d26cdf9bcf5cabc7881280f3c65a431e786fd9419ff60f",
+      "operation": "crop-transparent-padding64"
+    },
+    {
+      "direction": "north",
+      "frame": 1,
+      "originalPNG": "fccb5921fd8b5d82db8c502e0f6aea21130798c7f62b4e2cdd7c457bf87ef0bd",
+      "outputPNG": "634f64cbe6a16f40b87fe33e9a2fec7833ce5ef6c462cc5c47575c1c5f195f36",
+      "operation": "crop-transparent-padding64"
+    },
+    {
+      "direction": "north",
+      "frame": 2,
+      "originalPNG": "7b6fc8e2fbacf9392afc395e6752234fa509bbd0804fd0e97a92a01fb2db7861",
+      "outputPNG": "e2d20d3cde0059db75aef1e7061f17e4beb0955f37f21de58c4b81419b4fc45f",
+      "operation": "crop-transparent-padding64"
+    },
+    {
+      "direction": "north",
+      "frame": 3,
+      "originalPNG": "94d901dec7edc899c313703fe3020c9de4bb31f0daae538eea9dbd9b02813f46",
+      "outputPNG": "d3fb4048fbaa64fc482c50cae853e2e06917d0b418feee4d7663279e4cd23a04",
+      "operation": "crop-transparent-padding64"
+    },
+    {
+      "direction": "north",
+      "frame": 4,
+      "originalPNG": "c0252589318151f4a663c3885b910287114db5639f3f38b8c2f760274b5ff305",
+      "outputPNG": "364b59953077cecd3587f58ccbc7253a176310ff2091e3953d5b8225c12b67f9",
+      "operation": "crop-transparent-padding64"
+    },
+    {
+      "direction": "north",
+      "frame": 5,
+      "originalPNG": "377bc965a7c9734830fdb4eaf229a36d45f35555dbed01b83630824ce23f904d",
+      "outputPNG": "33083f527bd3451525307b8a61b016e97b817bc055d8ea8b45576b79ca0f1036",
+      "operation": "crop-transparent-padding64"
+    },
+    {
+      "direction": "north",
+      "frame": 6,
+      "originalPNG": "bb4569389e0a56271c52d6de90bc3bd3b6e75ac53f24f1abef35b12a1c0a0bbb",
+      "outputPNG": "8a7411582dea53b225086b0b1ab57a46e3584ac40a755db76bf50646b62d4873",
+      "operation": "crop-transparent-padding64"
+    },
+    {
+      "direction": "north",
+      "frame": 7,
+      "originalPNG": "25b0964daaf62cc97806716b930fa3375378c0405395587a7498ff1205885e86",
+      "outputPNG": "3031fdf19fbee56a26db6185abe5fd3f2528f105fa782b7e4130d37e1a60ea57",
+      "operation": "crop-transparent-padding64"
+    },
+    {
+      "direction": "east",
+      "frame": 0,
+      "originalPNG": "c497ec8e9424662f4155dc944802081d5fe188e9dca5947593ad9ba7c66d2f8b",
+      "outputPNG": "c497ec8e9424662f4155dc944802081d5fe188e9dca5947593ad9ba7c66d2f8b",
+      "operation": "identity"
+    },
+    {
+      "direction": "east",
+      "frame": 1,
+      "originalPNG": "5492d5997b97463b8082c3db391af4a0f11fef8162ac57b921caff153ec9ef5c",
+      "outputPNG": "5492d5997b97463b8082c3db391af4a0f11fef8162ac57b921caff153ec9ef5c",
+      "operation": "identity"
+    },
+    {
+      "direction": "east",
+      "frame": 2,
+      "originalPNG": "88d67f345f6fee5b0f9b425a38c7cc0c12037d4f78f67bd6bf262038cb42ab47",
+      "outputPNG": "88d67f345f6fee5b0f9b425a38c7cc0c12037d4f78f67bd6bf262038cb42ab47",
+      "operation": "identity"
+    },
+    {
+      "direction": "east",
+      "frame": 3,
+      "originalPNG": "8f1cb26ef3dc4cc5750c326492223ba2662d75b45d5cc6287a051f77e3561ff0",
+      "outputPNG": "8f1cb26ef3dc4cc5750c326492223ba2662d75b45d5cc6287a051f77e3561ff0",
+      "operation": "identity"
+    },
+    {
+      "direction": "east",
+      "frame": 4,
+      "originalPNG": "f79aa7abaf99119ed2e8639be64fb36624178b0875f2f74a01827c6af92a764c",
+      "outputPNG": "f79aa7abaf99119ed2e8639be64fb36624178b0875f2f74a01827c6af92a764c",
+      "operation": "identity"
+    },
+    {
+      "direction": "east",
+      "frame": 5,
+      "originalPNG": "fe2e79b77ed959ff76a9b0d67384216f617f4ba320b9cc26689f82dd6381d3a5",
+      "outputPNG": "fe2e79b77ed959ff76a9b0d67384216f617f4ba320b9cc26689f82dd6381d3a5",
+      "operation": "identity"
+    },
+    {
+      "direction": "east",
+      "frame": 6,
+      "originalPNG": "3ea9308e7bbfc9e85dfa43f23d8cc97c55cefbb15233a365b91ef7a1afd3cc39",
+      "outputPNG": "3ea9308e7bbfc9e85dfa43f23d8cc97c55cefbb15233a365b91ef7a1afd3cc39",
+      "operation": "identity"
+    },
+    {
+      "direction": "east",
+      "frame": 7,
+      "originalPNG": "5775953f0ca1b13d1f58badc2fef9f4ec20a7ea9c61482559e634db038d3f95b",
+      "outputPNG": "5775953f0ca1b13d1f58badc2fef9f4ec20a7ea9c61482559e634db038d3f95b",
+      "operation": "identity"
+    },
+    {
+      "direction": "west",
+      "frame": 0,
+      "originalPNG": "c497ec8e9424662f4155dc944802081d5fe188e9dca5947593ad9ba7c66d2f8b",
+      "outputPNG": "6ea04ad7d585ca1e584791772e06da76056b6a4f33f76ded7ffb7c901f812e28",
+      "operation": "mirror-pixels"
+    },
+    {
+      "direction": "west",
+      "frame": 1,
+      "originalPNG": "5492d5997b97463b8082c3db391af4a0f11fef8162ac57b921caff153ec9ef5c",
+      "outputPNG": "46b19a35f3880cf90098b406173218b6246e1cced5456a073742a4356202f2b0",
+      "operation": "mirror-pixels"
+    },
+    {
+      "direction": "west",
+      "frame": 2,
+      "originalPNG": "88d67f345f6fee5b0f9b425a38c7cc0c12037d4f78f67bd6bf262038cb42ab47",
+      "outputPNG": "5de85e6b617b1e398c2a7773dbb5ab882294d9b5f19f2f4f66a60f31a42e1795",
+      "operation": "mirror-pixels"
+    },
+    {
+      "direction": "west",
+      "frame": 3,
+      "originalPNG": "8f1cb26ef3dc4cc5750c326492223ba2662d75b45d5cc6287a051f77e3561ff0",
+      "outputPNG": "a39df7a71d858ca4d56e3dfbb4467f3081c1850c569b5adb53a2516f2dc7efc2",
+      "operation": "mirror-pixels"
+    },
+    {
+      "direction": "west",
+      "frame": 4,
+      "originalPNG": "f79aa7abaf99119ed2e8639be64fb36624178b0875f2f74a01827c6af92a764c",
+      "outputPNG": "08f9992e96ff9791174f633ea3de74c1051b39697fcd7b97a31a7bd84c618ca5",
+      "operation": "mirror-pixels"
+    },
+    {
+      "direction": "west",
+      "frame": 5,
+      "originalPNG": "fe2e79b77ed959ff76a9b0d67384216f617f4ba320b9cc26689f82dd6381d3a5",
+      "outputPNG": "036378341006a9ea6fa198a559e7fb1eb78f082febd609ceb9740de4bdd234d5",
+      "operation": "mirror-pixels"
+    },
+    {
+      "direction": "west",
+      "frame": 6,
+      "originalPNG": "3ea9308e7bbfc9e85dfa43f23d8cc97c55cefbb15233a365b91ef7a1afd3cc39",
+      "outputPNG": "1fa5f96eb97b4e986d62e00677ca9dd8addb8b8a2ca5addcddd0a8a70762b017",
+      "operation": "mirror-pixels"
+    },
+    {
+      "direction": "west",
+      "frame": 7,
+      "originalPNG": "5775953f0ca1b13d1f58badc2fef9f4ec20a7ea9c61482559e634db038d3f95b",
+      "outputPNG": "fb0381f7863c7c7d8aa3a75c38fa1260cc9d966f3b26788f92e8c67289f3af79",
+      "operation": "mirror-pixels"
+    }
+  ],
+  "missing": [
+    "gloves152 attack"
+  ],
+  "southRegistration": {
+    "status": "candidate-manual-rigid-registration",
+    "frames": 8,
+    "source": "original coat151 SOUTH idle components; original DRAWN8 punch body",
+    "sourcePixels": "no scale or reduction; rigid nearest-neighbor rotations with proximal occlusion and hand ownership",
+    "proof": "coat151-south-registration.json"
+  },
+  "nativeCoverage": {
+    "records": 24,
+    "states": 200,
+    "equipmentSets": [
+      {
+        "torso": 151,
+        "pants": 133,
+        "boots": 9
+      },
+      {
+        "torso": 151,
+        "pants": 133
+      }
+    ],
+    "actions": [
+      "idle",
+      "walk",
+      "attack-unarmed"
+    ],
+    "directions": [
+      "south",
+      "north",
+      "east",
+      "west"
+    ],
+    "palette": "same proven original anatomy masks; garment sources excluded",
+    "approval": "candidate registration, no new approval inferred"
+  }
+}

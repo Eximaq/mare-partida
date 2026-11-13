@@ -1,0 +1,1020 @@
+{
+  "schema": "hd-family-coverage-v1",
+  "coverage": [
+    {
+      "body": "male",
+      "action": "idle",
+      "direction": "south",
+      "sourceIds": [
+        "male-idle-south-afro",
+        "male-idle-south-bob",
+        "male-idle-south-braided",
+        "male-idle-south-cropped",
+        "male-idle-south-curly",
+        "male-idle-south-long",
+        "male-idle-south-ponytail",
+        "male-idle-south-spiky",
+        "male-idle-south-swept",
+        "male-idle-south-topknot",
+        "male-idle-south-undercut",
+        "male-idle-south-wavy"
+      ],
+      "status": [
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "idle",
+      "direction": "north",
+      "sourceIds": [
+        "male-idle-north-afro",
+        "male-idle-north-bob",
+        "male-idle-north-braided",
+        "male-idle-north-cropped",
+        "male-idle-north-curly",
+        "male-idle-north-long",
+        "male-idle-north-ponytail",
+        "male-idle-north-spiky",
+        "male-idle-north-swept",
+        "male-idle-north-topknot",
+        "male-idle-north-undercut",
+        "male-idle-north-wavy"
+      ],
+      "status": [
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "idle",
+      "direction": "east",
+      "sourceIds": [
+        "male-idle-east-afro",
+        "male-idle-east-bob",
+        "male-idle-east-braided",
+        "male-idle-east-cropped",
+        "male-idle-east-curly",
+        "male-idle-east-long",
+        "male-idle-east-ponytail",
+        "male-idle-east-spiky",
+        "male-idle-east-swept",
+        "male-idle-east-topknot",
+        "male-idle-east-undercut",
+        "male-idle-east-wavy"
+      ],
+      "status": [
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "idle",
+      "direction": "west",
+      "sourceIds": [
+        "male-idle-west-afro",
+        "male-idle-west-bob",
+        "male-idle-west-braided",
+        "male-idle-west-cropped",
+        "male-idle-west-curly",
+        "male-idle-west-long",
+        "male-idle-west-ponytail",
+        "male-idle-west-spiky",
+        "male-idle-west-swept",
+        "male-idle-west-topknot",
+        "male-idle-west-undercut",
+        "male-idle-west-wavy"
+      ],
+      "status": [
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "walk",
+      "direction": "south",
+      "sourceIds": [
+        "male-walk-south-r7"
+      ],
+      "status": [
+        "source-approved-south-sidecar-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "walk",
+      "direction": "north",
+      "sourceIds": [
+        "v7-male-walk-drawn-north-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "walk",
+      "direction": "east",
+      "sourceIds": [
+        "v7-male-walk-drawn-east-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "walk",
+      "direction": "west",
+      "sourceIds": [
+        "v7-male-walk-drawn-east-east-mirror-west-candidate"
+      ],
+      "status": [
+        "east-drawn-source-mirrored-west-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-unarmed",
+      "direction": "south",
+      "sourceIds": [
+        "male-attack-unarmed-south-drawn8"
+      ],
+      "status": [
+        "source-reconstructed-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-unarmed",
+      "direction": "north",
+      "sourceIds": [
+        "v7-punch-north-drawn8-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-unarmed",
+      "direction": "east",
+      "sourceIds": [
+        "v7-punch-east-drawn8-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-unarmed",
+      "direction": "west",
+      "sourceIds": [
+        "v7-punch-west-drawn8-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-sword",
+      "direction": "south",
+      "sourceIds": [
+        "v7-sword-drawn8-south"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-sword",
+      "direction": "north",
+      "sourceIds": [
+        "v7-sword-north-modular8-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-sword",
+      "direction": "east",
+      "sourceIds": [
+        "v7-sword-east-modular8-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-sword",
+      "direction": "west",
+      "sourceIds": [
+        "v7-sword-west-modular8-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-focus",
+      "direction": "south",
+      "sourceIds": [
+        "male-attack-focus-south-drawn8"
+      ],
+      "status": [
+        "source-reconstructed-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-focus",
+      "direction": "north",
+      "sourceIds": [
+        "v7-focus-north-modular8-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-focus",
+      "direction": "east",
+      "sourceIds": [
+        "v7-focus-east-modular8-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-focus",
+      "direction": "west",
+      "sourceIds": [
+        "v7-focus-west-modular8-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-firearm",
+      "direction": "south",
+      "sourceIds": [
+        "v7-firearm-drawn8-south"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-firearm",
+      "direction": "north",
+      "sourceIds": [
+        "v7-firearm-north-modular8-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-firearm",
+      "direction": "east",
+      "sourceIds": [
+        "v7-firearm-east-modular8-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-firearm",
+      "direction": "west",
+      "sourceIds": [
+        "v7-firearm-west-modular8-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-daggers",
+      "direction": "south",
+      "sourceIds": [
+        "v7-daggers-drawn8-south"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-daggers",
+      "direction": "north",
+      "sourceIds": [
+        "v7-daggers-north-modular8-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-daggers",
+      "direction": "east",
+      "sourceIds": [
+        "v7-daggers-east-modular8-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-daggers",
+      "direction": "west",
+      "sourceIds": [
+        "v7-daggers-west-modular8-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-tech",
+      "direction": "south",
+      "sourceIds": [
+        "v7-tech-alias-firearm-south"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-tech",
+      "direction": "north",
+      "sourceIds": [
+        "v7-tech-alias-masculino-north-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-tech",
+      "direction": "east",
+      "sourceIds": [
+        "v7-tech-alias-masculino-east-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "male",
+      "action": "attack-tech",
+      "direction": "west",
+      "sourceIds": [
+        "v7-tech-alias-masculino-west-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "idle",
+      "direction": "south",
+      "sourceIds": [
+        "female-idle-south-cropped",
+        "female-idle-south-braided",
+        "female-idle-south-undercut",
+        "female-idle-south-bob",
+        "female-idle-south-swept",
+        "female-idle-south-spiky",
+        "female-idle-south-topknot",
+        "female-idle-south-afro",
+        "female-idle-south-ponytail",
+        "female-idle-south-wavy",
+        "female-idle-south-curly",
+        "female-idle-south-long"
+      ],
+      "status": [
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "idle",
+      "direction": "north",
+      "sourceIds": [
+        "female-idle-north-cropped",
+        "female-idle-north-braided",
+        "female-idle-north-undercut",
+        "female-idle-north-bob",
+        "female-idle-north-swept",
+        "female-idle-north-spiky",
+        "female-idle-north-topknot",
+        "female-idle-north-afro",
+        "female-idle-north-ponytail",
+        "female-idle-north-wavy",
+        "female-idle-north-curly",
+        "female-idle-north-long"
+      ],
+      "status": [
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "idle",
+      "direction": "east",
+      "sourceIds": [
+        "female-idle-east-cropped",
+        "female-idle-east-braided",
+        "female-idle-east-undercut",
+        "female-idle-east-bob",
+        "female-idle-east-swept",
+        "female-idle-east-spiky",
+        "female-idle-east-topknot",
+        "female-idle-east-afro",
+        "female-idle-east-ponytail",
+        "female-idle-east-wavy",
+        "female-idle-east-curly",
+        "female-idle-east-long"
+      ],
+      "status": [
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "idle",
+      "direction": "west",
+      "sourceIds": [
+        "female-idle-west-cropped",
+        "female-idle-west-braided",
+        "female-idle-west-undercut",
+        "female-idle-west-bob",
+        "female-idle-west-swept",
+        "female-idle-west-spiky",
+        "female-idle-west-topknot",
+        "female-idle-west-afro",
+        "female-idle-west-ponytail",
+        "female-idle-west-wavy",
+        "female-idle-west-curly",
+        "female-idle-west-long"
+      ],
+      "status": [
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate",
+        "source-approved-base-derived-runtime-candidate"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "walk",
+      "direction": "south",
+      "sourceIds": [
+        "v7-female-walk-drawn-all-south"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "walk",
+      "direction": "north",
+      "sourceIds": [
+        "v7-female-walk-drawn-all-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "walk",
+      "direction": "east",
+      "sourceIds": [
+        "v7-female-walk-drawn-all-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "walk",
+      "direction": "west",
+      "sourceIds": [
+        "v7-female-walk-drawn-all-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-unarmed",
+      "direction": "south",
+      "sourceIds": [
+        "v7-female-punch-south-ownership-candidate-south"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-unarmed",
+      "direction": "north",
+      "sourceIds": [
+        "v7-female-punch-north-ownership-candidate-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-unarmed",
+      "direction": "east",
+      "sourceIds": [
+        "v7-female-punch-east-ownership-candidate-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-unarmed",
+      "direction": "west",
+      "sourceIds": [
+        "v7-female-punch-west-ownership-candidate-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-sword",
+      "direction": "south",
+      "sourceIds": [
+        "v7-female-sword-south-ownership-candidate-south"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-sword",
+      "direction": "north",
+      "sourceIds": [
+        "v7-female-sword-north-ownership-candidate-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-sword",
+      "direction": "east",
+      "sourceIds": [
+        "v7-female-sword-east-ownership-candidate-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-sword",
+      "direction": "west",
+      "sourceIds": [
+        "v7-female-sword-west-ownership-candidate-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-focus",
+      "direction": "south",
+      "sourceIds": [
+        "v7-female-focus-south-ownership-candidate-south"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-focus",
+      "direction": "north",
+      "sourceIds": [
+        "v7-female-focus-north-ownership-candidate-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-focus",
+      "direction": "east",
+      "sourceIds": [
+        "v7-female-focus-east-ownership-candidate-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-focus",
+      "direction": "west",
+      "sourceIds": [
+        "v7-female-focus-west-ownership-candidate-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-firearm",
+      "direction": "south",
+      "sourceIds": [
+        "v7-female-firearm-south-ownership-candidate-south"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-firearm",
+      "direction": "north",
+      "sourceIds": [
+        "v7-female-firearm-north-ownership-candidate-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-firearm",
+      "direction": "east",
+      "sourceIds": [
+        "v7-female-firearm-east-ownership-candidate-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-firearm",
+      "direction": "west",
+      "sourceIds": [
+        "v7-female-firearm-west-ownership-candidate-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-daggers",
+      "direction": "south",
+      "sourceIds": [
+        "v7-female-daggers-south-ownership-candidate-south"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-daggers",
+      "direction": "north",
+      "sourceIds": [
+        "v7-female-daggers-north-ownership-candidate-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-daggers",
+      "direction": "east",
+      "sourceIds": [
+        "v7-female-daggers-east-ownership-candidate-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-daggers",
+      "direction": "west",
+      "sourceIds": [
+        "v7-female-daggers-west-ownership-candidate-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-tech",
+      "direction": "south",
+      "sourceIds": [
+        "v7-tech-alias-feminino-south-south"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-tech",
+      "direction": "north",
+      "sourceIds": [
+        "v7-tech-alias-feminino-north-north"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-tech",
+      "direction": "east",
+      "sourceIds": [
+        "v7-tech-alias-feminino-east-east"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    },
+    {
+      "body": "female",
+      "action": "attack-tech",
+      "direction": "west",
+      "sourceIds": [
+        "v7-tech-alias-feminino-west-west"
+      ],
+      "status": [
+        "existing-study-runtime-candidate-NOT-global-art-approval"
+      ],
+      "covered": true,
+      "noUniversalAppearanceClaim": true
+    }
+  ],
+  "limitations": [
+    "Coverage is source existence/renderability, not artistic approval",
+    "Original outfit only on movement; arbitrary garments need exact pack compatibility",
+    "WEST male walk explicitly mirrors EAST source",
+    "Static idle is one frame; not authored breathing animation",
+    "Aliases tech are historical source aliases, not independent motion"
+  ]
+}

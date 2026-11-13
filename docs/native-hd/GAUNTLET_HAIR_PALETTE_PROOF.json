@@ -1,0 +1,130 @@
+[
+  {
+    "item": 111,
+    "direction": "south",
+    "frames": 8,
+    "changed": 36240,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 111,
+    "direction": "north",
+    "frames": 8,
+    "changed": 40520,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 111,
+    "direction": "east",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 111,
+    "direction": "west",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 117,
+    "direction": "south",
+    "frames": 8,
+    "changed": 36240,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 117,
+    "direction": "north",
+    "frames": 8,
+    "changed": 40520,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 117,
+    "direction": "east",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 117,
+    "direction": "west",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 15,
+    "direction": "south",
+    "frames": 8,
+    "changed": 36240,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 15,
+    "direction": "north",
+    "frames": 8,
+    "changed": 40223,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 15,
+    "direction": "east",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 15,
+    "direction": "west",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 112,
+    "direction": "south",
+    "frames": 8,
+    "changed": 36240,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 112,
+    "direction": "north",
+    "frames": 8,
+    "changed": 40520,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 112,
+    "direction": "east",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  },
+  {
+    "item": 112,
+    "direction": "west",
+    "frames": 8,
+    "changed": 32384,
+    "outsideHairOwnership": 0,
+    "alpha": 0
+  }
+]

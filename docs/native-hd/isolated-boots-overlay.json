@@ -1,0 +1,494 @@
+{
+  "records": [
+    "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate",
+    "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate",
+    "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate",
+    "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate",
+    "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "male-pants133-idle-east-source-v18-candidate-boots9-isolated-candidate",
+    "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "male-pants133-idle-west-source-v18-candidate-boots9-isolated-candidate",
+    "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate",
+    "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate",
+    "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "male-pants133-walk-north-isolated-r2-boots148-isolated-candidate",
+    "male-pants133-idle-north-isolated-r2-boots148-isolated-candidate",
+    "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate"
+  ],
+  "pixelProof": [
+    {
+      "sourceSHA256": "0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada",
+      "paddedSHA256": "dc1bfeaf1538d98936f89618b458032266ea10eb871c3c040a646e53864a727e",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "796e293e5fbbc36eadbec9261a76fca58ca4d85801c22fb8e401a5c672689fa4",
+      "paddedSHA256": "14066ad91cd43e3a9d1f52177dc989a0d5df1e190f42302a2f718b084fcab843",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "6f5977a626f24f328ff175a567dedde4b4aef0659c6646c9d33ac0ca362df3fc",
+      "paddedSHA256": "3dfd1312d11c76fdcc7b0c3ad8ec35b9f4bbf0aca9bbf1e75f41b1b90e6b7016",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "fda0cc738ae969b1a27bd6dbef67405b34a2044a5c5af99101796bd189b2e1ce",
+      "paddedSHA256": "f9050f554556f64a964b1ea746935707f389e98d5b9d8009e984af17df61799b",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada",
+      "paddedSHA256": "dc1bfeaf1538d98936f89618b458032266ea10eb871c3c040a646e53864a727e",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "796e293e5fbbc36eadbec9261a76fca58ca4d85801c22fb8e401a5c672689fa4",
+      "paddedSHA256": "14066ad91cd43e3a9d1f52177dc989a0d5df1e190f42302a2f718b084fcab843",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "6f5977a626f24f328ff175a567dedde4b4aef0659c6646c9d33ac0ca362df3fc",
+      "paddedSHA256": "3dfd1312d11c76fdcc7b0c3ad8ec35b9f4bbf0aca9bbf1e75f41b1b90e6b7016",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "fda0cc738ae969b1a27bd6dbef67405b34a2044a5c5af99101796bd189b2e1ce",
+      "paddedSHA256": "f9050f554556f64a964b1ea746935707f389e98d5b9d8009e984af17df61799b",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "b4a4877960da60df6872d2a2340b0c5229e1140cd8670dbb3d50b0e2cba50b74",
+      "paddedSHA256": "61af01b1dd542dc5ad05172d6d398d7cbfbc1a0ac73b2e2b5c22d69e37913304",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "north"
+    },
+    {
+      "sourceSHA256": "d7d2eeb5866ffb0b4adf7c28823ea387e56fd7d2375f782024ee38c3f9cc1822",
+      "paddedSHA256": "1761f7a88f430ac85c6ff982e6220ed70d63582c3b10bc5c21fa4a3a7da8e0a3",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "north"
+    },
+    {
+      "sourceSHA256": "17d54a6b3950e9fc4fdb91c7b1f9ab61f7b968f2fe575c620df24867440d42a5",
+      "paddedSHA256": "3a427f965f64b3a3b256df5f78d42463ea6f6ed64eae343af5f186716f010eb5",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "north"
+    },
+    {
+      "sourceSHA256": "91e804f415373ce38c88e4029304ba1662363e18e771692dbebad1f94fa13510",
+      "paddedSHA256": "43b504179b980e2227c26d53364f91f80adcfe8eb4ebe789044a75d8eb4d989f",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 9,
+      "direction": "north"
+    },
+    {
+      "sourceSHA256": "b9fa23a3ed9d62ce1b157e62746b439093c9a670a4e5ca011adccf9d49a9f13a",
+      "paddedSHA256": "c4171ac18e5a038169b144fef082c0136ab88f0108bea558714ed22300c90d14",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "east"
+    },
+    {
+      "sourceSHA256": "1292714e563975ca0ce8ac9ff2814a2d2921140c2be488fa2431dc02e4310e0a",
+      "paddedSHA256": "0d8cf91b22adc4e6548d8fc3e6433509bbb370f12a0cc5375d12a1bf95c126d3",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "east"
+    },
+    {
+      "sourceSHA256": "156da60ec418a28aaeedeac9c2b7a499741bdcae898f1c1e54779f31cebb60c8",
+      "paddedSHA256": "5260a3f6a4e74c3682d5e4e8f07fa15f002f93157a513a1493511b5a18fdf4c3",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "east"
+    },
+    {
+      "sourceSHA256": "8578743827102540892ef4d65e3c2026382632c7968198a5a20797a26b194894",
+      "paddedSHA256": "95ad1d6b7e84b576eb4c544f5684532996e5e6627e1f0ae9d969d08017b1d4cf",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "east"
+    },
+    {
+      "sourceSHA256": "5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f",
+      "paddedSHA256": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "east"
+    },
+    {
+      "sourceSHA256": "5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f",
+      "paddedSHA256": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "east"
+    },
+    {
+      "sourceSHA256": "2f5ff3e1f63848edd7948b24c4b2298d50a52b2bbba0bddeb50ec5ecaf870339",
+      "paddedSHA256": "6c133f82d76bffbbcbb83e3854f8457da8d8ceea409489669bcc49ccb8122f1b",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "west"
+    },
+    {
+      "sourceSHA256": "fa355fc401940185e444d281a4bfb214bad1915ce90bea76adc8220379490e70",
+      "paddedSHA256": "bdf39378fa0e898a4dd3a009df39bede86e3f54fa641248acd942b50ae4178d6",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "west"
+    },
+    {
+      "sourceSHA256": "80ae5e5e12a0e7b54f1bd406555250961e8cf117bf6903da7db19c02e5dab93b",
+      "paddedSHA256": "781585a329082b513143659e0e91c523f9c4e605279fa1086b7aa976e85a36d2",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "west"
+    },
+    {
+      "sourceSHA256": "644608dc4b626f40b9012bd5b81e03bb67e4be7a5108b0a76396a3f70d0296e3",
+      "paddedSHA256": "abc358aee8a5cc3893f801ecf7cd1b668fb89b5360dec54f2081e31d3786ab51",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "west"
+    },
+    {
+      "sourceSHA256": "5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f",
+      "paddedSHA256": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "west"
+    },
+    {
+      "sourceSHA256": "5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f",
+      "paddedSHA256": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 12,
+      "boot": 9,
+      "direction": "west"
+    },
+    {
+      "sourceSHA256": "1fa15141275afadab63b0b448acc4d890010ec25007da2597c76101b582fdc15",
+      "paddedSHA256": "3d16e688abcec6d217fe04168d75fc4e566b73fe018f339612ee471ab0e7fcbd",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "f8a358aff47ca2ccc2068be9a46e7516cdc98b13313ad36f439bbb1f7bcadc37",
+      "paddedSHA256": "116e8408d5cdde57031f5961700fac32a4174caf5a4859ccf61b4e4a289e01a7",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "0e326b3af0774a6b9ca990fee0ed7e84bab2ac2b7fb5271c0ec5fd7ec433bcb1",
+      "paddedSHA256": "6cc21b33b6f90177d5b9317d29dbc102d0542d214cb11ffc7cf925ad0b067c67",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "bbecfca6a513f691cdc25205b0ff5ad0308bd5f72f9da6057ccb01c3d9dc6d88",
+      "paddedSHA256": "29fc6143a7fa334236c7ca780c66bd511f6bdec32d2522ba466da62d1d61ced9",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "8f574f6f75bcff7fd6252516c52345e05b950786895c124330e8615b44f4ef2f",
+      "paddedSHA256": "93f3ee656aaba8e5a70f10966db83c64d2f5e4a24d5de0b236d5eff222dd0ad2",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "9b32ca66251282b9054bfee9cb11361cdee422d2a5943a3b4b6bc562ccb6490e",
+      "paddedSHA256": "7237ddbca1da007cf0a472ee443a54f93648b5c703a91d3499a0188ae2a28669",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "1fa15141275afadab63b0b448acc4d890010ec25007da2597c76101b582fdc15",
+      "paddedSHA256": "3d16e688abcec6d217fe04168d75fc4e566b73fe018f339612ee471ab0e7fcbd",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "f8a358aff47ca2ccc2068be9a46e7516cdc98b13313ad36f439bbb1f7bcadc37",
+      "paddedSHA256": "116e8408d5cdde57031f5961700fac32a4174caf5a4859ccf61b4e4a289e01a7",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "0e326b3af0774a6b9ca990fee0ed7e84bab2ac2b7fb5271c0ec5fd7ec433bcb1",
+      "paddedSHA256": "6cc21b33b6f90177d5b9317d29dbc102d0542d214cb11ffc7cf925ad0b067c67",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "bbecfca6a513f691cdc25205b0ff5ad0308bd5f72f9da6057ccb01c3d9dc6d88",
+      "paddedSHA256": "29fc6143a7fa334236c7ca780c66bd511f6bdec32d2522ba466da62d1d61ced9",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "8f574f6f75bcff7fd6252516c52345e05b950786895c124330e8615b44f4ef2f",
+      "paddedSHA256": "93f3ee656aaba8e5a70f10966db83c64d2f5e4a24d5de0b236d5eff222dd0ad2",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "9b32ca66251282b9054bfee9cb11361cdee422d2a5943a3b4b6bc562ccb6490e",
+      "paddedSHA256": "7237ddbca1da007cf0a472ee443a54f93648b5c703a91d3499a0188ae2a28669",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "south"
+    },
+    {
+      "sourceSHA256": "09df08992f2d9148b4c8688ec367ab345f1753aacbced002459b61d02fab5f0b",
+      "paddedSHA256": "eca6d2768588c587f7dc01e83c51ec3fdda28bdd4f507f088b843e7501b727b5",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "north"
+    },
+    {
+      "sourceSHA256": "3991fd840a2f6064cb8d9773200e59379322a675a6a49f885dc2c6c6e24b5b5d",
+      "paddedSHA256": "99d6304ff600bd8292648fb31563d78f72fd85c6acadfc0009dede21c6c53d27",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "north"
+    },
+    {
+      "sourceSHA256": "fc153cbed29bca55d73a3644f8c6e9f044bd58ec79b136d08c3c6076fe7ef606",
+      "paddedSHA256": "81618db6e9980f16062b88974800a1319ea0dae638920978269860c65b822856",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "north"
+    },
+    {
+      "sourceSHA256": "9f0abeff01c4a5cae08e21a5703dff45b7877df6cb72ffb764b53978e6038504",
+      "paddedSHA256": "7d2dae36506f5b67e7b7ab285384cc0db7264a06e0b075b5d8d2bd5213b96081",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "north"
+    },
+    {
+      "sourceSHA256": "0a508dca298656af794b3535dbc6388e8129fd40bcece45b6bfe38a0f2ef8fc8",
+      "paddedSHA256": "9ed47b8b97c67bd2885d55d2eaf3ec897627f07ed73ac2033cc83b58f4d7ee1b",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "north"
+    },
+    {
+      "sourceSHA256": "5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f",
+      "paddedSHA256": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+      "translation": [
+        64,
+        64
+      ],
+      "sourceFrame": 0,
+      "boot": 148,
+      "direction": "north"
+    }
+  ],
+  "missing": [
+    "boots148 east/west source",
+    "armed combinations",
+    "coat151/gloves152 attack overlays"
+  ],
+  "notApproval": true
+}

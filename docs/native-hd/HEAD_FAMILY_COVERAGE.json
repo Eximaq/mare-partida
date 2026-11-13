@@ -1,0 +1,1853 @@
+{
+  "scope": "Normal world prepareFamily exact pixel-and-anchor compatibility; not visual approval or arbitrary weapon/clothing support",
+  "rows": [
+    {
+      "body": "male",
+      "hair": "afro",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "afro",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "afro",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "afro",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "afro",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "afro",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "afro",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "afro",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "afro",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "afro",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "afro",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "bob",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "bob",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "bob",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "bob",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "bob",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "bob",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "bob",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "bob",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "bob",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "bob",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "bob",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "braided",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "braided",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "braided",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "braided",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "braided",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "braided",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "braided",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "braided",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "braided",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "braided",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "braided",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "cropped",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "cropped",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "cropped",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "cropped",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "cropped",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "cropped",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "cropped",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "cropped",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "cropped",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "cropped",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "cropped",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "curly",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "curly",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "curly",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "curly",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "curly",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "curly",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "curly",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "curly",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "curly",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "curly",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "curly",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "long",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "long",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "long",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "long",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "long",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "long",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "long",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "long",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "long",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "long",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "long",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "ponytail",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "ponytail",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "ponytail",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "ponytail",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "ponytail",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "ponytail",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "ponytail",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "ponytail",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "ponytail",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "ponytail",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "ponytail",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "spiky",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "spiky",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "spiky",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "spiky",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "spiky",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "spiky",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "spiky",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "spiky",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "spiky",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "spiky",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "spiky",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "swept",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "swept",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "swept",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "swept",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "swept",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "swept",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "swept",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "swept",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "swept",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "swept",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "swept",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "topknot",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "topknot",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "topknot",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "topknot",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "topknot",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "topknot",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "topknot",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "topknot",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "topknot",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "topknot",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "topknot",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "undercut",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "undercut",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "undercut",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "undercut",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "undercut",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "undercut",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "undercut",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "undercut",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "undercut",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "undercut",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "undercut",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "wavy",
+      "head": null,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "wavy",
+      "head": 129,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "wavy",
+      "head": 136,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "wavy",
+      "head": 143,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "wavy",
+      "head": 150,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "wavy",
+      "head": 157,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "wavy",
+      "head": 164,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "wavy",
+      "head": 171,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "wavy",
+      "head": 178,
+      "completeFamily": true,
+      "reason": null
+    },
+    {
+      "body": "male",
+      "hair": "wavy",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "male",
+      "hair": "wavy",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "cropped",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "cropped",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "cropped",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "cropped",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "cropped",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "cropped",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "cropped",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "cropped",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "cropped",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "cropped",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "cropped",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "afro",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "afro",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "afro",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "afro",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "afro",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "afro",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "afro",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "afro",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "afro",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "afro",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "afro",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "long",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "long",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "long",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "long",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "long",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "long",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "long",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "long",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "long",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "long",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "long",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "braided",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "braided",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "braided",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "braided",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "braided",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "braided",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "braided",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "braided",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "braided",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "braided",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "braided",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "undercut",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "undercut",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "undercut",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "undercut",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "undercut",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "undercut",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "undercut",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "undercut",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "undercut",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "undercut",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "undercut",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "bob",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "bob",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "bob",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "bob",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "bob",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "bob",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "bob",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "bob",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "bob",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "bob",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "bob",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "swept",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "swept",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "swept",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "swept",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "swept",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "swept",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "swept",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "swept",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "swept",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "swept",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "swept",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "spiky",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "spiky",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "spiky",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "spiky",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "spiky",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "spiky",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "spiky",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "spiky",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "spiky",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "spiky",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "spiky",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "topknot",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "topknot",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "topknot",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "topknot",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "topknot",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "topknot",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "topknot",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "topknot",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "topknot",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "topknot",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "topknot",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "ponytail",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "ponytail",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "ponytail",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "ponytail",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "ponytail",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "ponytail",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "ponytail",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "ponytail",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "ponytail",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "ponytail",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "ponytail",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "wavy",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "wavy",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "wavy",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "wavy",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "wavy",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "wavy",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "wavy",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "wavy",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "wavy",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "wavy",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "wavy",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "curly",
+      "head": null,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "curly",
+      "head": 129,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "curly",
+      "head": 136,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "curly",
+      "head": 143,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "curly",
+      "head": 150,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "curly",
+      "head": 157,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "curly",
+      "head": 164,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "curly",
+      "head": 171,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "curly",
+      "head": 178,
+      "completeFamily": false,
+      "reason": "walk/south: headBase:head-shape-dimensions-differ"
+    },
+    {
+      "body": "female",
+      "hair": "curly",
+      "head": 18,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    },
+    {
+      "body": "female",
+      "hair": "curly",
+      "head": 19,
+      "completeFamily": false,
+      "reason": "Incomplete native family: no compatible four-direction attack"
+    }
+  ]
+}

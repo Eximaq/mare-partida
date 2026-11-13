@@ -1,0 +1,97 @@
+{
+  "addedRecords": 34,
+  "nativeOriginalFramesComparedToSources": 464,
+  "derivedIdleFrames": 17,
+  "nativeRuntimeFramesTested": 481,
+  "equipmentSets": [
+    {
+      "body": "female",
+      "equipment": {
+        "torso": 6,
+        "pants": 147,
+        "gloves": 152,
+        "boots": 155
+      },
+      "directions": [
+        "south",
+        "north",
+        "east",
+        "west"
+      ]
+    },
+    {
+      "body": "female",
+      "equipment": {
+        "torso": 151,
+        "pants": 154,
+        "gloves": 152,
+        "boots": 155
+      },
+      "directions": [
+        "south",
+        "north",
+        "east",
+        "west"
+      ]
+    },
+    {
+      "body": "male",
+      "equipment": {
+        "torso": 151,
+        "pants": 133,
+        "gloves": 152,
+        "boots": 134
+      },
+      "directions": [
+        "north",
+        "east",
+        "west"
+      ]
+    },
+    {
+      "body": "male",
+      "equipment": {
+        "torso": 151,
+        "pants": 133,
+        "gloves": 152,
+        "boots": 9
+      },
+      "directions": [
+        "south",
+        "north",
+        "east",
+        "west"
+      ]
+    },
+    {
+      "body": "male",
+      "equipment": {
+        "torso": 151,
+        "pants": 133,
+        "gloves": 152,
+        "boots": 148
+      },
+      "directions": [
+        "south",
+        "north"
+      ]
+    }
+  ],
+  "status": "Recovered authored source candidates, not new user approval",
+  "actions": [
+    "walk",
+    "idle-frame-zero"
+  ],
+  "resampling": false,
+  "limitations": [
+    "No attack contracts found for these sets",
+    "Exact equipment combinations only",
+    "Historical source status preserved",
+    "No global completeness claim"
+  ],
+  "runtimeTests": [
+    "player-rework-female-outfits-hd.test.cjs",
+    "player-rework-male-outfits-hd.test.cjs",
+    "player-rework-boots9-148-hd.test.cjs"
+  ]
+}

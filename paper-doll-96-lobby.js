@@ -71,6 +71,7 @@
   }
   function create({search='',baseURL=root.location?.href,onChange=()=>{},sharedLobby=false}={}){
     const active=enabled(search),rehearsal=false,base=new URL('tools/paper-doll-96-v3/',baseURL);
+    const nativeHD=root.MareReworkNativeHD?.create({baseURL,onChange});
     const accessoryPilot=root.MareReworkAccessoryTest?.create({search,baseURL,onChange});
     const weaponCycles=root.MareReworkWeapons?.create({search,baseURL,onChange});
     const outfitCycles=root.MareReworkWeapons?.create({search,baseURL,onChange,mode:'outfits',manifestPath:'tools/rework-outfits/catalog.json'});
@@ -80,7 +81,7 @@
     let draws=0,lastPose=null,pending=null,preparing=null,wanted=null,bundles=new Map(),previews=new Map(),failed=new Set();
     const images=new Map(),inflight=new Map(),imageFailures=new Map(),diagnostics=new Map();let loading=0,peakLoads=0,imageBytes=0;const waiting=[];
     const pause=()=>new Promise(resolve=>setTimeout(resolve,0));
-    const snapshot=()=>({rework:rework?.snapshot()||{state:'disabled'},renderer:rework?.active?'rework':'native96',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:previews.size,peakLoads});
+    const snapshot=()=>({nativeHD:nativeHD?.snapshot(),rework:rework?.snapshot()||{state:'disabled'},renderer:['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'native-hd':rework?.active?'rework':'native96',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'ready':state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:previews.size,peakLoads});
     function diagnose(error,context={}){
       const detail={component:context.consumer||'player',...context,...error.spriteContext,status:'failed',message:error.message};
       const key=[detail.asset||detail.component,detail.code||'load-failed'].join(':');
@@ -193,6 +194,7 @@
     function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;
       if(root.MareVisualCompletoRenderer?.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer})){draws++;return true;}
+      if(nativeHD?.drawStable(ctx,player,{action:['combat-idle','guard','hurt','death'].includes(action)?'idle':action,direction,time,progress,x,y,consumer,weaponless})){draws++;return true;}
       if(rework?.active&&!player?.zoanTransformed){rework.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale:scale===null?1:scale*46/96,consumer,weaponless});return true;}
       if(!active||state!=='ready'||player?.zoanTransformed||!['south','north','east','west'].includes(direction))return false;
       const value=resolve(player);if(scene!=='lobby'&&!(scene==='hunt'&&value.supported))return false;
@@ -223,6 +225,7 @@
     let previewPending=false,previewWanted=null;
     function preview(ctx,player,{action='idle',direction='south',time=0,appearance=null,consumer='appearance-preview'}={}){
       if(root.MareVisualCompletoRenderer?.draw(ctx,player,{action:'idle',direction,time:0,x:ctx.canvas.width/2,y:ctx.canvas.height-24,scale:192/46,consumer}))return true;
+      if(nativeHD?.draw(ctx,appearance?{...player,appearance96:appearance}:player,{action,direction,time,x:ctx.canvas.width/2,y:ctx.canvas.height-24,consumer,preview:true}))return true;
       if(rework?.active&&!player?.zoanTransformed){rework.draw(ctx,appearance?{...player,appearance96:appearance}:player,{action,direction,time,preview:true,x:ctx.canvas.width/2,y:ctx.canvas.height-24,scale:2,consumer});return true;}
       if(state!=='ready'||!actions.includes(action)||!['south','north','west','east'].includes(direction))return false;
       const value=appearance?resolve({...player,appearance96:appearance},current,true):resolve(player,draft,false),dir=direction==='west'?'east':direction,key=value.key+':'+clipKey(action,dir,value.look);
@@ -247,7 +250,7 @@
       const spec=clip.nativeSpec,x=direction==='west'?spec.width+1-point.x:point.x;
       return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(point.y-spec.pivot.y)*scale,frame:4,weapon:value.look.weapon};
     }
-    const height=player=>active&&!player?.zoanTransformed?96:null;
+    const height=player=>active&&!player?.zoanTransformed?(nativeHD?.height(player)||96):null;
     return {ready,snapshot,draw,height,ensure,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
   }
   root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,appearanceLook,assetReferences,validateRelease,frameAt,directionOf};

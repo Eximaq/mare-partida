@@ -1,0 +1,19 @@
+{
+  "state": "ready",
+  "error": null,
+  "last": {
+    "state": "rendered",
+    "source": "rifle115-v5-south-native-layers",
+    "frame": 3,
+    "width": 640,
+    "height": 640,
+    "pivot": {
+      "x": 320,
+      "y": 512
+    },
+    "density": 4,
+    "physicalScale": 1
+  },
+  "cachedSources": 4,
+  "failures": []
+}

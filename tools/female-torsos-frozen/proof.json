@@ -1,0 +1,482 @@
+[
+  {
+    "item": 6,
+    "direction": "south",
+    "source": "female-walk-torso-south_6_south_740b3c61b4c7.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-south",
+    "bodyAttack": "v7-female-punch-south-ownership-candidate-south"
+  },
+  {
+    "item": 7,
+    "direction": "south",
+    "source": "female-walk-torso-south_7_south_81860c11aff9.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-south",
+    "bodyAttack": "v7-female-punch-south-ownership-candidate-south"
+  },
+  {
+    "item": 130,
+    "direction": "south",
+    "source": "female-walk-torso-south_130_south_297ddc8ac0e8.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-south",
+    "bodyAttack": "v7-female-punch-south-ownership-candidate-south"
+  },
+  {
+    "item": 137,
+    "direction": "south",
+    "source": "female-walk-torso-south_137_south_f327f821340b.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-south",
+    "bodyAttack": "v7-female-punch-south-ownership-candidate-south"
+  },
+  {
+    "item": 144,
+    "direction": "south",
+    "source": "female-walk-torso-south_144_south_31facb762474.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-south",
+    "bodyAttack": "v7-female-punch-south-ownership-candidate-south"
+  },
+  {
+    "item": 158,
+    "direction": "south",
+    "source": "female-walk-torso-south_158_south_39c8cf2495a6.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-south",
+    "bodyAttack": "v7-female-punch-south-ownership-candidate-south"
+  },
+  {
+    "item": 165,
+    "direction": "south",
+    "source": "female-walk-torso-south_165_south_5cb38146b11e.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-south",
+    "bodyAttack": "v7-female-punch-south-ownership-candidate-south"
+  },
+  {
+    "item": 172,
+    "direction": "south",
+    "source": "female-walk-torso-south_172_south_32f9b33ad8f3.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-south",
+    "bodyAttack": "v7-female-punch-south-ownership-candidate-south"
+  },
+  {
+    "item": 179,
+    "direction": "south",
+    "source": "female-walk-torso-south_179_south_ba65194246df.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-south",
+    "bodyAttack": "v7-female-punch-south-ownership-candidate-south"
+  },
+  {
+    "item": 6,
+    "direction": "north",
+    "source": "female-walk-torso-north_6_north_7149dbc49b3a.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-north",
+    "bodyAttack": "v7-female-punch-north-ownership-candidate-north"
+  },
+  {
+    "item": 7,
+    "direction": "north",
+    "source": "female-walk-torso-north_7_north_77a0929b61ff.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-north",
+    "bodyAttack": "v7-female-punch-north-ownership-candidate-north"
+  },
+  {
+    "item": 130,
+    "direction": "north",
+    "source": "female-walk-torso-north_130_north_de017a18ae5a.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-north",
+    "bodyAttack": "v7-female-punch-north-ownership-candidate-north"
+  },
+  {
+    "item": 137,
+    "direction": "north",
+    "source": "female-walk-torso-north_137_north_d0374bb91a5f.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-north",
+    "bodyAttack": "v7-female-punch-north-ownership-candidate-north"
+  },
+  {
+    "item": 144,
+    "direction": "north",
+    "source": "female-walk-torso-north_144_north_1d1bce013855.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-north",
+    "bodyAttack": "v7-female-punch-north-ownership-candidate-north"
+  },
+  {
+    "item": 151,
+    "direction": "north",
+    "source": "female-walk-torso-north_151_north_8ff5bbeaa4a5.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-north",
+    "bodyAttack": "v7-female-punch-north-ownership-candidate-north"
+  },
+  {
+    "item": 158,
+    "direction": "north",
+    "source": "female-walk-torso-north_158_north_021fa18d4261.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-north",
+    "bodyAttack": "v7-female-punch-north-ownership-candidate-north"
+  },
+  {
+    "item": 165,
+    "direction": "north",
+    "source": "female-walk-torso-north_165_north_d46fdd9a0a04.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-north",
+    "bodyAttack": "v7-female-punch-north-ownership-candidate-north"
+  },
+  {
+    "item": 172,
+    "direction": "north",
+    "source": "female-walk-torso-north_172_north_0ca591d29f52.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-north",
+    "bodyAttack": "v7-female-punch-north-ownership-candidate-north"
+  },
+  {
+    "item": 179,
+    "direction": "north",
+    "source": "female-walk-torso-north_179_north_f004da942e70.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-north",
+    "bodyAttack": "v7-female-punch-north-ownership-candidate-north"
+  },
+  {
+    "item": 151,
+    "direction": "south",
+    "source": "female-walk-torso-south_151_south_835e1fc5c82e.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-south",
+    "bodyAttack": "v7-female-punch-south-ownership-candidate-south"
+  },
+  {
+    "item": 6,
+    "direction": "east",
+    "source": "female-profile-manual-current_6_east_99ca5da105a4.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-east",
+    "bodyAttack": "v7-female-punch-east-ownership-candidate-east"
+  },
+  {
+    "item": 6,
+    "direction": "west",
+    "source": "female-profile-manual-current_6_west_30f830837342.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-west",
+    "bodyAttack": "v7-female-punch-west-ownership-candidate-west"
+  },
+  {
+    "item": 7,
+    "direction": "east",
+    "source": "female-profile-manual-current_7_east_fbd97b22184e.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-east",
+    "bodyAttack": "v7-female-punch-east-ownership-candidate-east"
+  },
+  {
+    "item": 7,
+    "direction": "west",
+    "source": "female-profile-manual-current_7_west_b9aac2e10fd4.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-west",
+    "bodyAttack": "v7-female-punch-west-ownership-candidate-west"
+  },
+  {
+    "item": 130,
+    "direction": "east",
+    "source": "female-profile-manual-current_130_east_5f538af9270f.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-east",
+    "bodyAttack": "v7-female-punch-east-ownership-candidate-east"
+  },
+  {
+    "item": 130,
+    "direction": "west",
+    "source": "female-profile-manual-current_130_west_dbe5dcd71967.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-west",
+    "bodyAttack": "v7-female-punch-west-ownership-candidate-west"
+  },
+  {
+    "item": 137,
+    "direction": "east",
+    "source": "female-profile-manual-current_137_east_2189f65151c1.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-east",
+    "bodyAttack": "v7-female-punch-east-ownership-candidate-east"
+  },
+  {
+    "item": 137,
+    "direction": "west",
+    "source": "female-profile-manual-current_137_west_b04c816faef2.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-west",
+    "bodyAttack": "v7-female-punch-west-ownership-candidate-west"
+  },
+  {
+    "item": 144,
+    "direction": "east",
+    "source": "female-profile-manual-current_144_east_0baa2fe31f96.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-east",
+    "bodyAttack": "v7-female-punch-east-ownership-candidate-east"
+  },
+  {
+    "item": 144,
+    "direction": "west",
+    "source": "female-profile-manual-current_144_west_307c6daeafc3.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-west",
+    "bodyAttack": "v7-female-punch-west-ownership-candidate-west"
+  },
+  {
+    "item": 151,
+    "direction": "east",
+    "source": "female-profile-manual-current_151_east_eb3971ac835d.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-east",
+    "bodyAttack": "v7-female-punch-east-ownership-candidate-east"
+  },
+  {
+    "item": 151,
+    "direction": "west",
+    "source": "female-profile-manual-current_151_west_444a2f1d96b6.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-west",
+    "bodyAttack": "v7-female-punch-west-ownership-candidate-west"
+  },
+  {
+    "item": 158,
+    "direction": "east",
+    "source": "female-profile-manual-current_158_east_4209a72bc8ff.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-east",
+    "bodyAttack": "v7-female-punch-east-ownership-candidate-east"
+  },
+  {
+    "item": 158,
+    "direction": "west",
+    "source": "female-profile-manual-current_158_west_b5657c012383.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-west",
+    "bodyAttack": "v7-female-punch-west-ownership-candidate-west"
+  },
+  {
+    "item": 165,
+    "direction": "east",
+    "source": "female-profile-manual-current_165_east_da4e8b2aa69b.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-east",
+    "bodyAttack": "v7-female-punch-east-ownership-candidate-east"
+  },
+  {
+    "item": 165,
+    "direction": "west",
+    "source": "female-profile-manual-current_165_west_13aa1d4bc4ba.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-west",
+    "bodyAttack": "v7-female-punch-west-ownership-candidate-west"
+  },
+  {
+    "item": 172,
+    "direction": "east",
+    "source": "female-profile-manual-current_172_east_69624cec0fea.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-east",
+    "bodyAttack": "v7-female-punch-east-ownership-candidate-east"
+  },
+  {
+    "item": 172,
+    "direction": "west",
+    "source": "female-profile-manual-current_172_west_cb2f2b41826f.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-west",
+    "bodyAttack": "v7-female-punch-west-ownership-candidate-west"
+  },
+  {
+    "item": 179,
+    "direction": "east",
+    "source": "female-profile-manual-current_179_east_779685283627.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-east",
+    "bodyAttack": "v7-female-punch-east-ownership-candidate-east"
+  },
+  {
+    "item": 179,
+    "direction": "west",
+    "source": "female-profile-manual-current_179_west_97da42cc8af6.json",
+    "excluded": [
+      "visible-clothed-composite",
+      "visible-original-hands",
+      "native-visible-near-arm-manual"
+    ],
+    "bodyWalk": "v7-female-walk-drawn-all-west",
+    "bodyAttack": "v7-female-punch-west-ownership-candidate-west"
+  }
+]

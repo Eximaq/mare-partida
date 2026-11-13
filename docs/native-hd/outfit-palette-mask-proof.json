@@ -1,0 +1,3626 @@
+[
+  {
+    "record": "male-pants133-walk-south-isolated-r2",
+    "source": "f2c71a9ccd4edbe5c47af1972ea0086b1ffddf6c016ff4d67b89a05026fd8b91",
+    "material": "skin",
+    "mask": "4945daf469850611520a95a5b6813b2eb9dda4e7188a3af7054431d7249ea969",
+    "pixels": 6820,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2",
+    "source": "ebf5afbe1179277b6d64c25eb80fb3f7ca831809d6e4792d95a8592fddd400e1",
+    "material": "skin",
+    "mask": "6468936fd99bba0b650468b66aecb36d502ec31b1db5e640ea28a5325adfa169",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2",
+    "source": "2a207437a0a1a114a8cc40299c6614e8ae01bcebd0937c346b95fe316e7f6880",
+    "material": "skin",
+    "mask": "8e9ea4f1a97d4cb6e0d89f5ac02a4d519e13e1cc70a9ff7216b9acef5655f956",
+    "pixels": 1324,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2",
+    "source": "7ba8f25aadf7e805570f80c8ac8c5673e265d44bce3890b7e9a56662dad362ee",
+    "material": "skin",
+    "mask": "1f7e4787a2f7deff6ac4ed951b966523b40fd819940b25c92564eaac3aebfd36",
+    "pixels": 1308,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2",
+    "source": "14f439e96610b4ea34fdaf1b369b27da9ab1ee47680711a6eca95f2ace971e1b",
+    "material": "skin",
+    "mask": "504662d4b6873020d30540e7a8a391166de872f412b13bd936a2701b9a866703",
+    "pixels": 1343,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2",
+    "source": "2700c466e325cd34a4a99eaac334fe2fa345fa29e12d7fc24bb80f7f01fac1a0",
+    "material": "skin",
+    "mask": "009a4a1080abf646cc1a46893a101e420c9ead04ef0314db20a0f4639198a562",
+    "pixels": 1334,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2",
+    "source": "81ce2c74c6e8e05f2745223cdea70cfecee5b0ff49e4bcbf8d6ed25d62e72449",
+    "material": "skin",
+    "mask": "0661c468d18e245b3400f8cc212926aa7c5cc916b722b1dd35334abd939ed096",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "hair",
+    "mask": "1294801f31c25820a54fa5509fd774f42d5e7fa5e67e37acac02ae06822614dc",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "skin",
+    "mask": "3e5964c41588932d85bff2593c4edf7d604747ac39e65cefacd239b23e5d4114",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2",
+    "source": "be14f103baea2dfdf9b7558a4c70075252bd9a9f7ec08bdfe21e6acd3b7d271d",
+    "material": "skin",
+    "mask": "ba38e4f96616d5511c222edecc140da2277ea144fc054204a1c628d5e09cffe4",
+    "pixels": 5950,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2",
+    "source": "fa57ef721f1cdcc98e743a388e19fa282f8f224539061b8db164f6688867a69d",
+    "material": "skin",
+    "mask": "5fab33075ee7ee71de08f6394a21b4de7e9dd7030dec36ed85b3e19d21c6def4",
+    "pixels": 2624,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "hair",
+    "mask": "a3f3641c406dec245cd16001f8e0abaf629b8227bbc06eaa4a7b1dd268e4dd62",
+    "pixels": 5045,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "skin",
+    "mask": "a0524bf1964b5eb64bab16837002b21652c4cbfa67374202c02e6b8f96706665",
+    "pixels": 131,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2",
+    "source": "afc23e6fa348a0ca40e75a520703ce50b795d8a5250423b2eacf0b5befe43c01",
+    "material": "skin",
+    "mask": "b640b645d507a37a7c2bc72e8c2d1d7d80b1e15bb50e2d1ec573fd616d15ac7f",
+    "pixels": 1436,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2",
+    "source": "bac6e7dd0929962417f44fe6f7f97d04225e8d35103ebaa542ee185644c3f6ff",
+    "material": "skin",
+    "mask": "77da46f716272771bf2107144323ef64e590699544aed9e332b09374199b87a0",
+    "pixels": 1331,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2",
+    "source": "32a593ef7128b2d05d56191d7b36f3e0387b7b0f100c9f4702879f9778ba38f4",
+    "material": "skin",
+    "mask": "31b12b5dc981ea15cd24acec740ecd416940fa7f85ce9e1aa05af1312155be5d",
+    "pixels": 1463,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2",
+    "source": "e61dfb06ec13c8085a02dc5ffbd2cca8648d0a96f242a3bbd15884ab9baea3a1",
+    "material": "skin",
+    "mask": "d84837f02a2e351efb8d0d75b3a9eeb054899526219f5a243b89f300c5b8767b",
+    "pixels": 1372,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "059e39e9d0afe083e0d5e5d13bb53c4e215c4bbc1cf51c47f79483c5a16d1fbb",
+    "material": "skin",
+    "mask": "ed537089ee524cec3209515d13ebc8704f78b2a54981fa6af998bbc1d2655fe2",
+    "pixels": 5995,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "059e39e9d0afe083e0d5e5d13bb53c4e215c4bbc1cf51c47f79483c5a16d1fbb",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "c5aaf3118ec3994e6419eec4dc80039065f5a71ab2c03c69b4c278c2cf4c3e67",
+    "material": "skin",
+    "mask": "18392cf2e7fb8e427d99dbb76408105a05ffd87f426e1272fff2989cce50abf5",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "c5aaf3118ec3994e6419eec4dc80039065f5a71ab2c03c69b4c278c2cf4c3e67",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "d12019f56acb507d1f0c6feafddc922e76f4c54c00d5940c53cf206d14e59717",
+    "material": "skin",
+    "mask": "9aad5f38cf8d2c83d65e5f94b12ad94a7ae13f27cdca5162c7899f6bbf56b0ad",
+    "pixels": 5999,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "d12019f56acb507d1f0c6feafddc922e76f4c54c00d5940c53cf206d14e59717",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "209186fc75c199ab05becbf69f9325ddcd4c333e76b7415805e23e9f5dd3a80a",
+    "material": "skin",
+    "mask": "18392cf2e7fb8e427d99dbb76408105a05ffd87f426e1272fff2989cce50abf5",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "209186fc75c199ab05becbf69f9325ddcd4c333e76b7415805e23e9f5dd3a80a",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "6e68a577c2911753df87e3dd0953a884591cb51814f23914fb8dd1fde15f5104",
+    "material": "skin",
+    "mask": "41de49af2a8625caebd9389dbda0b0711023bc4bafc5b0e62253956c33757816",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "6e68a577c2911753df87e3dd0953a884591cb51814f23914fb8dd1fde15f5104",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "7fb5e27719d9085f44037e72c39aa969b983797bc8298ab74f130511727edcea",
+    "material": "skin",
+    "mask": "9425e4915efbe081dff07eb732913dd77654f3278b7df88e5b74e6c0ea081cac",
+    "pixels": 5999,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "7fb5e27719d9085f44037e72c39aa969b983797bc8298ab74f130511727edcea",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "4082005fd8fd5d273bccd1c4cdc9c9b09a5342ee40a53a86ab6b3710709ed906",
+    "material": "skin",
+    "mask": "e908a1604304ea35024d6c89f1edebf317091207d1d5a25aecc1b9d7a5de6e7e",
+    "pixels": 6004,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "4082005fd8fd5d273bccd1c4cdc9c9b09a5342ee40a53a86ab6b3710709ed906",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "bb54209b4af7d3dc10ed72b29620c0bccf5cc8c21cd7ded01f995cc7e05c7a5d",
+    "material": "skin",
+    "mask": "0802a53eaaeb1642f68a0df99f60aeaf3631534821db6b45c25de1b75955bd52",
+    "pixels": 5998,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "bb54209b4af7d3dc10ed72b29620c0bccf5cc8c21cd7ded01f995cc7e05c7a5d",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "874c9a6d866be38a6ffe5a99d9bf1f7efa240c0541b21a441267574fbcd35a33",
+    "material": "skin",
+    "mask": "3a70e23e5161c46eeaf3c0f48f912560cec201cf771e18f98d9e577bdda86c09",
+    "pixels": 5990,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "874c9a6d866be38a6ffe5a99d9bf1f7efa240c0541b21a441267574fbcd35a33",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "4500dac6e379b601c705fb86a2ca7a40f59316ae4e089cac89732aab76960448",
+    "material": "skin",
+    "mask": "f74f7ba01b687f66a86a37f74e00566d8bf22da4bab43c0a26dcf7978a7074de",
+    "pixels": 5998,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "4500dac6e379b601c705fb86a2ca7a40f59316ae4e089cac89732aab76960448",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "613410e17cb812a6d1ba0930ed147f41f398bec348466005a4121a693daff602",
+    "material": "skin",
+    "mask": "f7a0f9c10fc27cbcdf08beff97aad1d49b03d3430098baf6fce01e1a9bdfe472",
+    "pixels": 6002,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "613410e17cb812a6d1ba0930ed147f41f398bec348466005a4121a693daff602",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "2e56f0f63202e69bd3f4f6cd211c353743ad89514cedd7eedc1c61fb4189036e",
+    "material": "skin",
+    "mask": "b22e36cc9b74b40d972f165cbea8c9d2ee2217829b2b99c6b8760673aafcb38e",
+    "pixels": 6001,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "2e56f0f63202e69bd3f4f6cd211c353743ad89514cedd7eedc1c61fb4189036e",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "0baf1849845793a5b3453abd3b159143ba5856c06dc70bba84c4a4911a2a8eb7",
+    "material": "skin",
+    "mask": "b874d68803a85f380c9ae0798b315dca9f2051d2e11586caff4df15d1a4b9d7f",
+    "pixels": 5992,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "0baf1849845793a5b3453abd3b159143ba5856c06dc70bba84c4a4911a2a8eb7",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "1b6ac0665fcb243eb57ed2e83a2f5c6223944ef5cb5306ca2738e607ae5b61c6",
+    "material": "skin",
+    "mask": "41de49af2a8625caebd9389dbda0b0711023bc4bafc5b0e62253956c33757816",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "1b6ac0665fcb243eb57ed2e83a2f5c6223944ef5cb5306ca2738e607ae5b61c6",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "1379fe7446c504468d9bbd99eafa182de3e4adfcc67290079e693e345a511ff5",
+    "material": "skin",
+    "mask": "41de49af2a8625caebd9389dbda0b0711023bc4bafc5b0e62253956c33757816",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "1379fe7446c504468d9bbd99eafa182de3e4adfcc67290079e693e345a511ff5",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "d4fb8e936aa7c8e89615a1ee84a06556a219a00cda2a0acee0a7b4a0e0613317",
+    "material": "skin",
+    "mask": "d30262943fe3d9064431128881b10c0b65eeeb74ecb81c74a2f422a5fbca6152",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "d4fb8e936aa7c8e89615a1ee84a06556a219a00cda2a0acee0a7b4a0e0613317",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "a5902bf5b94b974af32cc3d3766bb9aea0d0635c7a6f3829f93ff3216fbaea5b",
+    "material": "skin",
+    "mask": "536f152ccdfe3c9f2ecf9b2ff6b4e83494764ce6fb3d788220c70333f61c87e1",
+    "pixels": 1911,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate",
+    "source": "ca872bcd74a517a5cb2118abede667ffc0b02f34983fa7eb6abb6b5ab232f08a",
+    "material": "skin",
+    "mask": "44cd09b49d74ca208cb79d535ca9b808de9428729c90e986d60fd41fc9e985fc",
+    "pixels": 1799,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "9608abd4bb112bd3ee465ffbf25704c72a7899eb7e1602c0b2a4833e402154b8",
+    "material": "skin",
+    "mask": "7e026029dd89858ba62f5cc6b4d06100498133a2d2fddb26d8574f354c781a06",
+    "pixels": 5995,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "9608abd4bb112bd3ee465ffbf25704c72a7899eb7e1602c0b2a4833e402154b8",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "8a4731783274170e928a4f8341fa66213783bcc5584b50d81992ec082effa4eb",
+    "material": "skin",
+    "mask": "de1bd6aed9ecf5367c240de41c20115efc5b7730aaafa355dbdd33385e7cb50b",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "8a4731783274170e928a4f8341fa66213783bcc5584b50d81992ec082effa4eb",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "36b505e4a7d9dd85ee6aac4bafdb5242477606e25da3ffab5cd0a1967838b2c2",
+    "material": "skin",
+    "mask": "86889e61a71d4e4537e186c73af52e3a9400cf15f49dd316748f907dce0eeb99",
+    "pixels": 5999,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "36b505e4a7d9dd85ee6aac4bafdb5242477606e25da3ffab5cd0a1967838b2c2",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "1c788a17ae1c047631f02abcfe10d5b1c80d27e0587577b38cd38ba34a458ff6",
+    "material": "skin",
+    "mask": "de1bd6aed9ecf5367c240de41c20115efc5b7730aaafa355dbdd33385e7cb50b",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "1c788a17ae1c047631f02abcfe10d5b1c80d27e0587577b38cd38ba34a458ff6",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "12919249fe8f74b97ae5fc78a04bd5f144cdabe2e058b36c1fb507154a901ae6",
+    "material": "skin",
+    "mask": "16335b2505e62c37316b1d6568461f4079cdc4874e2a31f636d5b6962b1af0c6",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "12919249fe8f74b97ae5fc78a04bd5f144cdabe2e058b36c1fb507154a901ae6",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "f88617cb9afadeba146f19967e50ac8bcb675efb71f3a16e914aaf79618f4ece",
+    "material": "skin",
+    "mask": "9bf91d4887ec67255bbbc8c4f6d6abc36e52f97af18c455f2eb0482858529059",
+    "pixels": 5999,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "f88617cb9afadeba146f19967e50ac8bcb675efb71f3a16e914aaf79618f4ece",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "ed4ab5310f3b06c058df700fa12bcd37bd756dada8fa4e2ce8766a5d9f474f13",
+    "material": "skin",
+    "mask": "24a26e8bab9539eee162a1b46835504bc243a4c290bc2cfc4db6dd78af5c1321",
+    "pixels": 6004,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "ed4ab5310f3b06c058df700fa12bcd37bd756dada8fa4e2ce8766a5d9f474f13",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "fd85cce21a2e4db36776f9df294f11754a9a89f6d25c3c84da4824cbbae996f9",
+    "material": "skin",
+    "mask": "bc86edf6c2ffcf2f527f665de27a7804534d588f186acec556ba059eaa2028ae",
+    "pixels": 5998,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "fd85cce21a2e4db36776f9df294f11754a9a89f6d25c3c84da4824cbbae996f9",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "6358b988e79037062a05f6c724e4aac4e5c1c745dd6a151fc42e3be69516d109",
+    "material": "skin",
+    "mask": "19b69a403581007d20eded951d63ae6c2dcab671e568a4e5c844065a7d1a2499",
+    "pixels": 5990,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "6358b988e79037062a05f6c724e4aac4e5c1c745dd6a151fc42e3be69516d109",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "76a772795b6df640422d38ca993f587eb134e186a32f658564d3d91dbcc70076",
+    "material": "skin",
+    "mask": "ca306047d654d642d844a5a91cf1a35b303333cc314646f511372cce325d4325",
+    "pixels": 5998,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "76a772795b6df640422d38ca993f587eb134e186a32f658564d3d91dbcc70076",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "877e992d6cea40c1e5a0469aa4143375b3bc3a8629bf1605a8a724b2f7a1ba49",
+    "material": "skin",
+    "mask": "0539c5576c4f8c9c911e36e6285fb632ebe82d5be9ecbf746af2bbe2420c5551",
+    "pixels": 6002,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "877e992d6cea40c1e5a0469aa4143375b3bc3a8629bf1605a8a724b2f7a1ba49",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "0679e0fc64b54be30c04a497199951204e995bfde470ac936e9980588f78eb79",
+    "material": "skin",
+    "mask": "1b10119377a8c9bc59ef8aef56cdbe38ed7f62844e36ac6a32c0a81d6f6bb6ee",
+    "pixels": 6001,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "0679e0fc64b54be30c04a497199951204e995bfde470ac936e9980588f78eb79",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "b55e358daee72183c8268ca8501cc2678853e603562fd3efdcba072dc9a20189",
+    "material": "skin",
+    "mask": "588a0f614cb239e5d0928092d55622c7ad2d216722019e25e23721e42e82a270",
+    "pixels": 5992,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "b55e358daee72183c8268ca8501cc2678853e603562fd3efdcba072dc9a20189",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "fdaf8c2c002be9904539519090d03eb29377ad19485d43d0787cdab4137c0c36",
+    "material": "skin",
+    "mask": "16335b2505e62c37316b1d6568461f4079cdc4874e2a31f636d5b6962b1af0c6",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "fdaf8c2c002be9904539519090d03eb29377ad19485d43d0787cdab4137c0c36",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "41efe43d7e0c2bb049db2fc6bb48666a1cd7df206c116caad4ca2defb5c7ab14",
+    "material": "skin",
+    "mask": "16335b2505e62c37316b1d6568461f4079cdc4874e2a31f636d5b6962b1af0c6",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "41efe43d7e0c2bb049db2fc6bb48666a1cd7df206c116caad4ca2defb5c7ab14",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "a3d574dd4c6e39b361d969404455ef99d64d9df0bd512b4797d2a38d419afaae",
+    "material": "skin",
+    "mask": "acbd712f4511a8a5333d437588059d9a06e002158d9e67a3af8b7ea717cf9a47",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "a3d574dd4c6e39b361d969404455ef99d64d9df0bd512b4797d2a38d419afaae",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "ea5e94e89f037ccc970d63e95ca231dd6219c4222d9b5afd1b2a004581875525",
+    "material": "skin",
+    "mask": "b94019519d3b7dfebe7c22e99749c5680fd0539b77f81609f8e2750131fd1248",
+    "pixels": 1915,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "8aca20f23fd887f113e4102458fa28848351a294a6ec6c0e57a190acdd683d96",
+    "material": "skin",
+    "mask": "63f8dd9aeb5dcacb7cb2cda9217d06a9d8dd54a234924368e569ea4dccb228d1",
+    "pixels": 1916,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "5054831b2c2528c4388dca56a810fb0a1031708fe91a8c1fd2a7339c5963945f",
+    "material": "skin",
+    "mask": "688cc6849f4e9b552d1ef960effcf57c0cdd82e4572244bd8c9e9e476eb7522b",
+    "pixels": 1912,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "de9a1b6255a7fc3af9cfc1fcca34ec4ec1409bac769c0e99bcb3615ebde2a2e1",
+    "material": "skin",
+    "mask": "88b107da4b180aeb701ede475c7a7351a9d327fbd118fe466697010279339bdd",
+    "pixels": 1910,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "aae469b8de37d58415c2396af9af528fccbbc2106905ac32a04f3d0c8c6d7135",
+    "material": "skin",
+    "mask": "9be134d9f8cfa9c035df0b6c97b8f8cb9b2b362046b70ec5598a518706df88b3",
+    "pixels": 1911,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "1bf2e44ffb14973b95cc2d4eed1b03fc35f810181358c60079a7e831dd9f7357",
+    "material": "skin",
+    "mask": "a504992938bb8a745d6f57eded35200ebcaa6c455fa41e51ab8b47ff5144b293",
+    "pixels": 1912,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "bc2b4fedcc75586221418ccb14ac3f42dbb777e8eed4989660e0faa340731b46",
+    "material": "skin",
+    "mask": "884b7bc725b85c449198a065870a0114db3201039526c08f9259ebdaa521da66",
+    "pixels": 1910,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "6b3da798d07d4e4edf591657faee394d5914d31402fe188d520fe6619dd1f219",
+    "material": "skin",
+    "mask": "3a98f2c8e0e9620b65afd892c816279a2d7ed45460f2e2f73243bcc6b8aa2106",
+    "pixels": 1911,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "301cd7faab636dbe17ee389da3557b92184839d1a4b8cca5d83e8901712b5ffe",
+    "material": "skin",
+    "mask": "f45f8dc4ca4d596209895f63f35b5b837ce524d3d5463d50927c6671a0bf8103",
+    "pixels": 1910,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "3ccb674a54605e902df3ca3cc261cc60a707709114a925c131ca3e997036e818",
+    "material": "skin",
+    "mask": "e737a7d0997114f69538f2a95b96c239f7999182238b9100f39bb218f15750e1",
+    "pixels": 1793,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "f8b26746780623cfed9758b1f02cff076fcff2824a515739cf249fb3d498b4cb",
+    "material": "skin",
+    "mask": "c34461b4a8e7de3eb9598ccea2f4a0749690a71b55dad2a96ef9e7a7d5b477be",
+    "pixels": 1799,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "e57456a89b06e13d2bb1ea10c28e8ea2fd2323ddfbcc7d7a400b76663fce2627",
+    "material": "skin",
+    "mask": "187a4cc67d3c7fe64f664324ec0241f85485b1452156e28de52cd8981a10fee9",
+    "pixels": 1799,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "9be61a4f05fded02bd3bf56863ff57c4bbd1521f56fd4c22e30b6fcf5b0f5868",
+    "material": "skin",
+    "mask": "eda69fea5191e2032e10b364381eb32dacd308e5928112f2c20d9bfa08d59cb1",
+    "pixels": 1799,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "e8f4cb26742951cd2485c00597ac2fd7533b7c677992df3b6e73eacd94c8a26e",
+    "material": "skin",
+    "mask": "1129337ca0a4b8e7faed637d4ed5f49263139b45ff6c350e9d49dc90743473c4",
+    "pixels": 1798,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "30faf542e657ba7a65ebaa8ea6a773be1949f93c915873cc94cf20a557a44c26",
+    "material": "skin",
+    "mask": "590b9e5d84242895242b7e2aa5fb1466787f70e89f32e499b11ad1713e8b0329",
+    "pixels": 1799,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "951bec172b15f0981a706624b553df309f1edf777180fe9017d07575ec7f6c71",
+    "material": "skin",
+    "mask": "2e84b8302b95cee83ebe64a086640dbb5bce1ef7ccc25a7924d6575594064cb0",
+    "pixels": 1797,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "5ebb81117dcf9024ecbdfd67ecb050c05e0d02914f0afd52695d9dac909064a7",
+    "material": "skin",
+    "mask": "773053f66fb415c3d8acf6f316e5033370a993fd8687a52d845af9dfc5571fd1",
+    "pixels": 1802,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "f761810d15863ef615a3f64a9c818477698c13a684c675113565aa1cc524b34d",
+    "material": "skin",
+    "mask": "e1339c409c1f51e6bf48b3bc7f688dcb804e8fa892284728c401013e7ac0cbc3",
+    "pixels": 1800,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "892a8f16a1516756cd9be3d7332fc22ce28c00aeb9b11e2e2d8eb8840cee52db",
+    "material": "skin",
+    "mask": "756969e22bcf599a853e4d68f2648fa57feeded2c41030f376dbd6076ad77872",
+    "pixels": 1796,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "16cc7e7b677fed9d70e85ed60e8830edde854d9582693d405119563f3fc3b919",
+    "material": "skin",
+    "mask": "4f79579bb89241c812bed4b9bd7cb3089c9fec68a1e0af139d031493d20999c1",
+    "pixels": 1797,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "362d3e5ffa91631454e70ba015f67135d998fb9b47bffe686c225e6aefbe3fcf",
+    "material": "skin",
+    "mask": "4e56fd23bbe8e7ff35e727825a86745b6e447ca3039d4a1fa4a0a75ccd9ce8d8",
+    "pixels": 1800,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "299b452e91c1c3046d493525056d1a407ab5b20fbdc22e31dd4dc7d5c3990038",
+    "material": "skin",
+    "mask": "0645113a09748337d1448f44ef82bc2e1d390afa52e005ffb410a35b4b79bfd8",
+    "pixels": 1798,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "9cdc43a55ca842e0a600e1d8b21ee7f3a1b63a2bd361f25e61f8b02d2b0a9ec5",
+    "material": "skin",
+    "mask": "46946e9598e513912ee11a9529bd93dd23a15a9fc31df349079688ceadf88b22",
+    "pixels": 1800,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "5641a959b30300b74d19ee5d9b768601cbf173074cc713a8573f757d5486f7aa",
+    "material": "skin",
+    "mask": "3c3eef56bf4a6e182b1f8b9c11ed75072daaeefc6cd21888d4f5e2fd051e374e",
+    "pixels": 1796,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate",
+    "source": "d160c5bb253b637d93dccd07c87484457121ff1f8c916e350d16d3f1f654048b",
+    "material": "skin",
+    "mask": "f40bdd6ac7ce08cd40c41b8e8b6e97a056ff6c5c0254e6338afb07bf59301159",
+    "pixels": 1798,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2",
+    "source": "f2c71a9ccd4edbe5c47af1972ea0086b1ffddf6c016ff4d67b89a05026fd8b91",
+    "material": "skin",
+    "mask": "4945daf469850611520a95a5b6813b2eb9dda4e7188a3af7054431d7249ea969",
+    "pixels": 6820,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2",
+    "source": "ebf5afbe1179277b6d64c25eb80fb3f7ca831809d6e4792d95a8592fddd400e1",
+    "material": "skin",
+    "mask": "6468936fd99bba0b650468b66aecb36d502ec31b1db5e640ea28a5325adfa169",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2",
+    "source": "2a207437a0a1a114a8cc40299c6614e8ae01bcebd0937c346b95fe316e7f6880",
+    "material": "skin",
+    "mask": "8e9ea4f1a97d4cb6e0d89f5ac02a4d519e13e1cc70a9ff7216b9acef5655f956",
+    "pixels": 1324,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2",
+    "source": "7ba8f25aadf7e805570f80c8ac8c5673e265d44bce3890b7e9a56662dad362ee",
+    "material": "skin",
+    "mask": "1f7e4787a2f7deff6ac4ed951b966523b40fd819940b25c92564eaac3aebfd36",
+    "pixels": 1308,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2",
+    "source": "14f439e96610b4ea34fdaf1b369b27da9ab1ee47680711a6eca95f2ace971e1b",
+    "material": "skin",
+    "mask": "504662d4b6873020d30540e7a8a391166de872f412b13bd936a2701b9a866703",
+    "pixels": 1343,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2",
+    "source": "2700c466e325cd34a4a99eaac334fe2fa345fa29e12d7fc24bb80f7f01fac1a0",
+    "material": "skin",
+    "mask": "009a4a1080abf646cc1a46893a101e420c9ead04ef0314db20a0f4639198a562",
+    "pixels": 1334,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2",
+    "source": "81ce2c74c6e8e05f2745223cdea70cfecee5b0ff49e4bcbf8d6ed25d62e72449",
+    "material": "skin",
+    "mask": "0661c468d18e245b3400f8cc212926aa7c5cc916b722b1dd35334abd939ed096",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "hair",
+    "mask": "1294801f31c25820a54fa5509fd774f42d5e7fa5e67e37acac02ae06822614dc",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "skin",
+    "mask": "3e5964c41588932d85bff2593c4edf7d604747ac39e65cefacd239b23e5d4114",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2",
+    "source": "be14f103baea2dfdf9b7558a4c70075252bd9a9f7ec08bdfe21e6acd3b7d271d",
+    "material": "skin",
+    "mask": "ba38e4f96616d5511c222edecc140da2277ea144fc054204a1c628d5e09cffe4",
+    "pixels": 5950,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2",
+    "source": "fa57ef721f1cdcc98e743a388e19fa282f8f224539061b8db164f6688867a69d",
+    "material": "skin",
+    "mask": "5fab33075ee7ee71de08f6394a21b4de7e9dd7030dec36ed85b3e19d21c6def4",
+    "pixels": 2624,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "hair",
+    "mask": "a3f3641c406dec245cd16001f8e0abaf629b8227bbc06eaa4a7b1dd268e4dd62",
+    "pixels": 5045,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "skin",
+    "mask": "a0524bf1964b5eb64bab16837002b21652c4cbfa67374202c02e6b8f96706665",
+    "pixels": 131,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2",
+    "source": "afc23e6fa348a0ca40e75a520703ce50b795d8a5250423b2eacf0b5befe43c01",
+    "material": "skin",
+    "mask": "b640b645d507a37a7c2bc72e8c2d1d7d80b1e15bb50e2d1ec573fd616d15ac7f",
+    "pixels": 1436,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2",
+    "source": "bac6e7dd0929962417f44fe6f7f97d04225e8d35103ebaa542ee185644c3f6ff",
+    "material": "skin",
+    "mask": "77da46f716272771bf2107144323ef64e590699544aed9e332b09374199b87a0",
+    "pixels": 1331,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2",
+    "source": "32a593ef7128b2d05d56191d7b36f3e0387b7b0f100c9f4702879f9778ba38f4",
+    "material": "skin",
+    "mask": "31b12b5dc981ea15cd24acec740ecd416940fa7f85ce9e1aa05af1312155be5d",
+    "pixels": 1463,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2",
+    "source": "e61dfb06ec13c8085a02dc5ffbd2cca8648d0a96f242a3bbd15884ab9baea3a1",
+    "material": "skin",
+    "mask": "d84837f02a2e351efb8d0d75b3a9eeb054899526219f5a243b89f300c5b8767b",
+    "pixels": 1372,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-east-source-v18-candidate",
+    "source": "059e39e9d0afe083e0d5e5d13bb53c4e215c4bbc1cf51c47f79483c5a16d1fbb",
+    "material": "skin",
+    "mask": "ed537089ee524cec3209515d13ebc8704f78b2a54981fa6af998bbc1d2655fe2",
+    "pixels": 5995,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-east-source-v18-candidate",
+    "source": "059e39e9d0afe083e0d5e5d13bb53c4e215c4bbc1cf51c47f79483c5a16d1fbb",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-east-source-v18-candidate",
+    "source": "a5902bf5b94b974af32cc3d3766bb9aea0d0635c7a6f3829f93ff3216fbaea5b",
+    "material": "skin",
+    "mask": "536f152ccdfe3c9f2ecf9b2ff6b4e83494764ce6fb3d788220c70333f61c87e1",
+    "pixels": 1911,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-east-source-v18-candidate",
+    "source": "ca872bcd74a517a5cb2118abede667ffc0b02f34983fa7eb6abb6b5ab232f08a",
+    "material": "skin",
+    "mask": "44cd09b49d74ca208cb79d535ca9b808de9428729c90e986d60fd41fc9e985fc",
+    "pixels": 1799,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-west-source-v18-candidate",
+    "source": "9608abd4bb112bd3ee465ffbf25704c72a7899eb7e1602c0b2a4833e402154b8",
+    "material": "skin",
+    "mask": "7e026029dd89858ba62f5cc6b4d06100498133a2d2fddb26d8574f354c781a06",
+    "pixels": 5995,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-west-source-v18-candidate",
+    "source": "9608abd4bb112bd3ee465ffbf25704c72a7899eb7e1602c0b2a4833e402154b8",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-west-source-v18-candidate",
+    "source": "ea5e94e89f037ccc970d63e95ca231dd6219c4222d9b5afd1b2a004581875525",
+    "material": "skin",
+    "mask": "b94019519d3b7dfebe7c22e99749c5680fd0539b77f81609f8e2750131fd1248",
+    "pixels": 1915,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-idle-west-source-v18-candidate",
+    "source": "3ccb674a54605e902df3ca3cc261cc60a707709114a925c131ca3e997036e818",
+    "material": "skin",
+    "mask": "e737a7d0997114f69538f2a95b96c239f7999182238b9100f39bb218f15750e1",
+    "pixels": 1793,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e",
+    "material": "skin",
+    "mask": "4f4dce3d1153a6d1fc362cb3ed6c1e3c01b6c28957efd5e8f326c21de20bc120",
+    "pixels": 14633,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "f9411a6cc7f6b38375a571819d9f906e40f0ddecb5595e21d3e1403ec28ce119",
+    "material": "skin",
+    "mask": "98e29868a266244053701400ab167a6cbbdccf6718dd5d3377f7e6f341b1e6a9",
+    "pixels": 12520,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "ed433ce8c8efe6df749ad243903413da36630b14760cf22c87d75ed29734761a",
+    "material": "skin",
+    "mask": "e2c3549c7735475f30441c02ef3fa8a38a90ae4a97f1f2353d20fd0891b766a8",
+    "pixels": 13368,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "1977d7c970d15d220632ec803c78eb419e83997272d4bcb3ea6ca87aaea42803",
+    "material": "skin",
+    "mask": "919774114a82c7f48337730f398620ea8fcff4238fcf97c3288777cc79fd380c",
+    "pixels": 13050,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "9efc6da402d1166151294ad571c6925478149afd453cca6efdb702d573603838",
+    "material": "skin",
+    "mask": "f3075947823ba329de10bd6cc23451e9bd26f86bff42ca541eee9dff7cf28e91",
+    "pixels": 12736,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "f2e724da3ef7bf1023285f5328df78b2c5ec6aea1aedbc0a3ad8bbef211e7204",
+    "material": "skin",
+    "mask": "e985a943726e587cc4e00885f7c1d4a8d189f95e2be66471a7ffa15941b2a97a",
+    "pixels": 13165,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "42a3dc85b1a8da61351dc72593255b1f6877a1440eeb9a22e4cec6248bb240fd",
+    "material": "skin",
+    "mask": "5ea19106bd4079e5ee22d14f9129f3d324666a081621e068792f12b8aa23d853",
+    "pixels": 12831,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "42d082fb974367ca44df08fe374512e388a1259120238c4944748ed29b41ba65",
+    "material": "skin",
+    "mask": "974c013725bd594244c45bf36f0ee7c80139e9ed659f540bb108506cb9174cd1",
+    "pixels": 15319,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "e29ac6a7d7759516e6733c811635a4c2b6087fdc4702002823bfa86655c9295d",
+    "material": "skin",
+    "mask": "24b325a3c4c2b1f815cc14f1aa7056ff6e739a2e888d7d4f059133f7948b8191",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a",
+    "material": "skin",
+    "mask": "47c4585f7c79fdf6d67207416b4a08c9b7322da3d9abc94cddf965bd6ed174a0",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "hair",
+    "mask": "dbe167d2e9103349e34109ea3ca90dfd0683b2bde79e322883c69c027c3a76f5",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "skin",
+    "mask": "3c24790b5028d8e3d31f8121a6a53b1518ba5774e6da106deede8ed4bca00a50",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "f1caddde86a513e7a9ea667451ec44ae54db0997c47a8b53d1e671a9e980e768",
+    "material": "skin",
+    "mask": "727cfc8fedc37fbc7c99d28c3781d46d31cfc25acfa2d0a54e30143edaf65060",
+    "pixels": 15876,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "bafd6e4ee5c076bcbd718598b7cf29e2c74a39db40176544d6eb167952c53f1e",
+    "material": "skin",
+    "mask": "1c590d71feb79fe77116eb434c3bf59bffcc31a76c54c60abbe1973193184c9e",
+    "pixels": 15956,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "17bf6665bf557365c02acde301d08512feca1acb5ec86bea737bfe305ea629a8",
+    "material": "skin",
+    "mask": "61ff647f8b4007df1258f1d90b7d37bf4fdb1fea606815f3cb3f150b712ad832",
+    "pixels": 14880,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "3cbcfc3072cd2994935be61620d04d93156cc8426bbfb3d1e8054d6e4f2d2ad6",
+    "material": "skin",
+    "mask": "1f231d70bcfdbd95228dd35c1778b82fa2297067b8c601e28fd064705612345d",
+    "pixels": 14775,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "58285e58eeec43ed678fd80ca3a3c3d66991f885a68f2e737ca221f12539e481",
+    "material": "skin",
+    "mask": "bc9e08e77980c3084299f072f0a5fb4d2e3145578689fd4eab012ef4d03a31c8",
+    "pixels": 13977,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "5959819bf4238079a0f72a28a4a00365c0a85d8e3d4d0f6e1bfeb23633db4def",
+    "material": "skin",
+    "mask": "d138b08d57b1dc50352bf5e64ff4f8bc80c00fb7dfb77387cc33c7f861641bff",
+    "pixels": 14738,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "c22e9d0683bf9f02c5902c424fabdffd64b2cfef46e0dfac7e0537ee2de4d5ee",
+    "material": "skin",
+    "mask": "ab3058ae49cfb537ecd1681e5297f37e54bb55a846a7e7129b9a38e2963c7fc8",
+    "pixels": 16166,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "2ff6a1ddc4bb9e2c18a49f17d8778c5229f527c2e5df1dbaa03f5b7c79a2889f",
+    "material": "skin",
+    "mask": "6e58cf1bdbffe7e1e91cec90658027074841fdc912fbe6977b573cac8c7c2ad9",
+    "pixels": 15810,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "e29ac6a7d7759516e6733c811635a4c2b6087fdc4702002823bfa86655c9295d",
+    "material": "skin",
+    "mask": "24b325a3c4c2b1f815cc14f1aa7056ff6e739a2e888d7d4f059133f7948b8191",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a",
+    "material": "skin",
+    "mask": "47c4585f7c79fdf6d67207416b4a08c9b7322da3d9abc94cddf965bd6ed174a0",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "hair",
+    "mask": "dbe167d2e9103349e34109ea3ca90dfd0683b2bde79e322883c69c027c3a76f5",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "skin",
+    "mask": "3c24790b5028d8e3d31f8121a6a53b1518ba5774e6da106deede8ed4bca00a50",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "b0979f9817371731bb761db0dfed65de422a64c6fdd053232e50dc8966a21b6a",
+    "material": "skin",
+    "mask": "a62916688887df1b32513d25d6b6bc59c829476ce8b2b5017e4489c83f5f9a4b",
+    "pixels": 9789,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "f87d911ae4e4725905f0dee7b460ad3b068a2785939a777017b4f9d4bcad846b",
+    "material": "skin",
+    "mask": "25689663a2aaae764b4fd2849e50dc82b62511b13e042a8c028281903536b173",
+    "pixels": 9371,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "d18e401a7a747f262286f4512e352717f13e46c440475808e680db24e3416830",
+    "material": "skin",
+    "mask": "0ef6a8922f352525fe55dea6c156c90b658f91c7424122b2a23cb1a8f5b4dcff",
+    "pixels": 10481,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "738338534b0e8e45915f7422a15d25f346748a58c0822ecb6fcfe1c508a004f8",
+    "material": "skin",
+    "mask": "d89807e9e937ae43faa2079753e50342e2c592840bb385e8c98e86682bbeed5e",
+    "pixels": 9668,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "475e09d0d85d793686d4a288059d439f055dc54410d3378b3b99a5ec8a8ebcd2",
+    "material": "skin",
+    "mask": "f2ecc755649e81466cf8c2cb2c064683bbe9dcd75324de9f94900651c1bed42c",
+    "pixels": 10630,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "f1f4470a9b70da3738a4719c57282820515cd2d00d9aa1c879ee007ec090b5a2",
+    "material": "skin",
+    "mask": "343be9671f79b12e215d61d8d68476d9b75a1bcc63064eda14e57c5a650e3e57",
+    "pixels": 10091,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "49dae24527acfe4ba2cdf49cfe55a62f052edfc7e46db29a64433778529d9deb",
+    "material": "skin",
+    "mask": "0e88f1af9f062e662ca2208b77e082326c15e97bcd7bf9ee19c5b89a42d2885a",
+    "pixels": 9607,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "d8bfee7bdae9094e25dba9c9d2076ab1d7069dd0afd689edf9b1bf22d8c95c35",
+    "material": "skin",
+    "mask": "324aba496c420fce388b34e0a500a138de96cd0be9d1337c545e3ca73f650fa8",
+    "pixels": 9990,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "e1a62125f08b88d3875261638bf09a2ec736e93b687df59a19014f5dab146154",
+    "material": "skin",
+    "mask": "781ad81a91ccf11ccfdcee5a167d95935e60fc683db585629ce57c3e12e5dd52",
+    "pixels": 3635,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2",
+    "material": "skin",
+    "mask": "8dd9fe84275a368d8fb8af83d0c64697f6ba08b8bd453b92891425f57c563b52",
+    "pixels": 1415,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "45de7576039c538aee29ff5a5d0def51143e8cbf90a33cdead504d88fd2ea713",
+    "material": "hair",
+    "mask": "fc4d94176143c1a1bace649e35262ec9f5e5b5aae0e7e932d2eeb1f882c5359a",
+    "pixels": 4040,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate",
+    "source": "45de7576039c538aee29ff5a5d0def51143e8cbf90a33cdead504d88fd2ea713",
+    "material": "skin",
+    "mask": "4660d2a08800b6e2f35a42dab8914705418ae37f9f37303d7ff8463388893d12",
+    "pixels": 377,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "4e70d3b6005b1e75c6365c35ed75f0677dbb011d20c0c6d9b45e1eaa62a5f7ed",
+    "material": "skin",
+    "mask": "d0af8f275c5cdaba700f2da0af24f769fc84d2a59cef8ac64682cbd457d6e6e3",
+    "pixels": 9789,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "49669cfe45413f0c6ddd5a24e65c7943d2e96db52a2d689f6cb97932207bc6bc",
+    "material": "skin",
+    "mask": "c4d0b6f5c0457ecb66ccbbed0cdb7e4c69c32157c590887845af284f9e0e5e0d",
+    "pixels": 9371,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "66cb7411df889fcf8cbb254c0aff57ba4164abe9109c456e31287f00fc47c81c",
+    "material": "skin",
+    "mask": "1bd9232bd0c9b74e2320bb11d3707dc29e0e43e51ce4e829b2925d4a305b19c6",
+    "pixels": 10481,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "45c4f65d5039a8164b0dd1120679ae8f88fa72da0b831d36a2465f201588f334",
+    "material": "skin",
+    "mask": "832eb2b69bcdad429138da53ba4c0ac97fa306c7553f7bd23f9ed02a94d49361",
+    "pixels": 9668,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "46bb35b150ad7ad09bd5e3eac6e0dde3218cca340def68bf5e8c1d9585b06d1a",
+    "material": "skin",
+    "mask": "4a51301c0e6ea337f51b72c4d4a7be6e8b739d489c47e8d6816184faf843b318",
+    "pixels": 10630,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "f2acc2b2f534cf3002d7ef1b9abb40ea2b88974e954b6e89b61924e63517c4b3",
+    "material": "skin",
+    "mask": "8c1b2f0dab07ea8ce5306f75d8aaedced2884c380bd9a7bf5a469728f776c506",
+    "pixels": 10091,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "38d5c1eb946e167aab27e077706cb502bf10716d0682dcbef9697ea4e8be7f73",
+    "material": "skin",
+    "mask": "b8279485d7237e9db9078f443757b541ec4e1a90fecb0cfbf9a08e3dff3e54f8",
+    "pixels": 9607,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "4342e94db6081451436f2e0b6f2e5ea9ea9f6f8babed1591528d1b904023065c",
+    "material": "skin",
+    "mask": "637beaaa45a226298e0b66b3a7cfb848857090797f6f8d88c0f869ab53326352",
+    "pixels": 9990,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "550e876bc65b387f14977734f71f6d4ae681ebdab0d2cf515faa2fa6bf98d888",
+    "material": "skin",
+    "mask": "34f038f7095efd7469817218d19e70b5f3f3fc2fb3fb78a86dbd7cc0f06bf770",
+    "pixels": 3635,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464",
+    "material": "skin",
+    "mask": "53d5a9e182501f77f8c046d9f166726261a3bb8a3ae8f6fefa6687094bcf9b85",
+    "pixels": 1415,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "a1359e16013832c487942d028404f7a5c59f4afd4a7e96eb480aa1a1d34db07e",
+    "material": "hair",
+    "mask": "fccea53415dc2acf040461dcc81b112d6275bf0dddf888b4f9d947ad552324c1",
+    "pixels": 4040,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate",
+    "source": "a1359e16013832c487942d028404f7a5c59f4afd4a7e96eb480aa1a1d34db07e",
+    "material": "skin",
+    "mask": "be1dbafe4e32c4988fb20d7f3f6f9d925976d0fc9bb16526245928fb5b74eb52",
+    "pixels": 377,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate",
+    "source": "9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97",
+    "material": "skin",
+    "mask": "8857a437f6daad7124a0092e4d3f338445e5a6be3c8f8024ef687a35e056a8ca",
+    "pixels": 15128,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate",
+    "source": "eebe26703d817b42082bb0a87755dae1add5303daae39016e31e595fe302ce4d",
+    "material": "skin",
+    "mask": "eddc2bede7424f0c0b003a7a1d3f990f12706d77c4812b066aa71feadb822af0",
+    "pixels": 14322,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate",
+    "source": "443a426a01956892e6d26c74e4e5c6e788f5e3685c671fe8646042fcdf728a03",
+    "material": "skin",
+    "mask": "e845503ac91a6d93f075ebf1836242a745811ef9057a54091b5c64e687bd930d",
+    "pixels": 14287,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate",
+    "source": "acf14879bd873ba084eed990b5299c8ca12ef7accf4088d61d37927122949742",
+    "material": "skin",
+    "mask": "a12dd112f4e644c73895920c015508caca5d49f1f8c498c220520117212e928d",
+    "pixels": 13901,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate",
+    "source": "1a0f2561bf6ddfdbe6167ac07ce569c5fb107136e722d05b919d35c62dd440be",
+    "material": "skin",
+    "mask": "6ed125e146cf42cdd39204a3e63b14fabaf9e361a240a87d097f35b654f6706c",
+    "pixels": 13581,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate",
+    "source": "ea78b3bbe7da1935c45a4d39ae73d8ab13a84c811f54da142145093d9f5efb07",
+    "material": "skin",
+    "mask": "0619ccca822eb82f6654a1a38016b8a335f8af2eef9de7e3f2e514063b2b3705",
+    "pixels": 14409,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate",
+    "source": "b072b3256a05b69c4a7f994c2f98503cf1ec968cd1ee710d7f8ebdd41b99a4fd",
+    "material": "skin",
+    "mask": "ea8465f4a2e17111a35c62ce95644b54385789bdaf42b849741fe87e86a4cdb1",
+    "pixels": 14394,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate",
+    "source": "fd2616f94952dca6049960e9847a46ab54bc8e72beca12ac2ab4dec23fad7659",
+    "material": "skin",
+    "mask": "39adce33bd4769afa7e4927c3abd2a00ece78f28496d0e8fe365dd645a2549b2",
+    "pixels": 15180,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate",
+    "source": "767c435b05d1f85eed23fde9603e1ca722ed095609b17af82634522024c95969",
+    "material": "skin",
+    "mask": "d29e73aaf8d10a387f13eddb2196f294d3af14a6c546a6feb0d69142b947e650",
+    "pixels": 2624,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate",
+    "source": "c5eb1d2d523d85acb584eee39a8e1e66b0ffbbf5cf2a118dc796f91b69bea8ea",
+    "material": "hair",
+    "mask": "b883b204fe3ce3198e503b06bc0626c711dbef320180801f85979a558598db3f",
+    "pixels": 5045,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate",
+    "source": "c5eb1d2d523d85acb584eee39a8e1e66b0ffbbf5cf2a118dc796f91b69bea8ea",
+    "material": "skin",
+    "mask": "db6add2cbacf81936156867f82260fee7fccbbae5d86663224089385760ddd39",
+    "pixels": 131,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate",
+    "source": "f2c71a9ccd4edbe5c47af1972ea0086b1ffddf6c016ff4d67b89a05026fd8b91",
+    "material": "skin",
+    "mask": "4945daf469850611520a95a5b6813b2eb9dda4e7188a3af7054431d7249ea969",
+    "pixels": 6820,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate",
+    "source": "ebf5afbe1179277b6d64c25eb80fb3f7ca831809d6e4792d95a8592fddd400e1",
+    "material": "skin",
+    "mask": "6468936fd99bba0b650468b66aecb36d502ec31b1db5e640ea28a5325adfa169",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate",
+    "source": "2a207437a0a1a114a8cc40299c6614e8ae01bcebd0937c346b95fe316e7f6880",
+    "material": "skin",
+    "mask": "8e9ea4f1a97d4cb6e0d89f5ac02a4d519e13e1cc70a9ff7216b9acef5655f956",
+    "pixels": 1324,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate",
+    "source": "7ba8f25aadf7e805570f80c8ac8c5673e265d44bce3890b7e9a56662dad362ee",
+    "material": "skin",
+    "mask": "1f7e4787a2f7deff6ac4ed951b966523b40fd819940b25c92564eaac3aebfd36",
+    "pixels": 1308,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate",
+    "source": "14f439e96610b4ea34fdaf1b369b27da9ab1ee47680711a6eca95f2ace971e1b",
+    "material": "skin",
+    "mask": "504662d4b6873020d30540e7a8a391166de872f412b13bd936a2701b9a866703",
+    "pixels": 1343,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate",
+    "source": "2700c466e325cd34a4a99eaac334fe2fa345fa29e12d7fc24bb80f7f01fac1a0",
+    "material": "skin",
+    "mask": "009a4a1080abf646cc1a46893a101e420c9ead04ef0314db20a0f4639198a562",
+    "pixels": 1334,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate",
+    "source": "81ce2c74c6e8e05f2745223cdea70cfecee5b0ff49e4bcbf8d6ed25d62e72449",
+    "material": "skin",
+    "mask": "0661c468d18e245b3400f8cc212926aa7c5cc916b722b1dd35334abd939ed096",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "hair",
+    "mask": "1294801f31c25820a54fa5509fd774f42d5e7fa5e67e37acac02ae06822614dc",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots9-isolated-candidate",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "skin",
+    "mask": "3e5964c41588932d85bff2593c4edf7d604747ac39e65cefacd239b23e5d4114",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate",
+    "source": "f2c71a9ccd4edbe5c47af1972ea0086b1ffddf6c016ff4d67b89a05026fd8b91",
+    "material": "skin",
+    "mask": "4945daf469850611520a95a5b6813b2eb9dda4e7188a3af7054431d7249ea969",
+    "pixels": 6820,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate",
+    "source": "ebf5afbe1179277b6d64c25eb80fb3f7ca831809d6e4792d95a8592fddd400e1",
+    "material": "skin",
+    "mask": "6468936fd99bba0b650468b66aecb36d502ec31b1db5e640ea28a5325adfa169",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate",
+    "source": "2a207437a0a1a114a8cc40299c6614e8ae01bcebd0937c346b95fe316e7f6880",
+    "material": "skin",
+    "mask": "8e9ea4f1a97d4cb6e0d89f5ac02a4d519e13e1cc70a9ff7216b9acef5655f956",
+    "pixels": 1324,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate",
+    "source": "7ba8f25aadf7e805570f80c8ac8c5673e265d44bce3890b7e9a56662dad362ee",
+    "material": "skin",
+    "mask": "1f7e4787a2f7deff6ac4ed951b966523b40fd819940b25c92564eaac3aebfd36",
+    "pixels": 1308,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate",
+    "source": "14f439e96610b4ea34fdaf1b369b27da9ab1ee47680711a6eca95f2ace971e1b",
+    "material": "skin",
+    "mask": "504662d4b6873020d30540e7a8a391166de872f412b13bd936a2701b9a866703",
+    "pixels": 1343,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate",
+    "source": "2700c466e325cd34a4a99eaac334fe2fa345fa29e12d7fc24bb80f7f01fac1a0",
+    "material": "skin",
+    "mask": "009a4a1080abf646cc1a46893a101e420c9ead04ef0314db20a0f4639198a562",
+    "pixels": 1334,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate",
+    "source": "81ce2c74c6e8e05f2745223cdea70cfecee5b0ff49e4bcbf8d6ed25d62e72449",
+    "material": "skin",
+    "mask": "0661c468d18e245b3400f8cc212926aa7c5cc916b722b1dd35334abd939ed096",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "hair",
+    "mask": "1294801f31c25820a54fa5509fd774f42d5e7fa5e67e37acac02ae06822614dc",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots9-isolated-candidate",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "skin",
+    "mask": "3e5964c41588932d85bff2593c4edf7d604747ac39e65cefacd239b23e5d4114",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e",
+    "material": "skin",
+    "mask": "4f4dce3d1153a6d1fc362cb3ed6c1e3c01b6c28957efd5e8f326c21de20bc120",
+    "pixels": 14633,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "f9411a6cc7f6b38375a571819d9f906e40f0ddecb5595e21d3e1403ec28ce119",
+    "material": "skin",
+    "mask": "98e29868a266244053701400ab167a6cbbdccf6718dd5d3377f7e6f341b1e6a9",
+    "pixels": 12520,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "ed433ce8c8efe6df749ad243903413da36630b14760cf22c87d75ed29734761a",
+    "material": "skin",
+    "mask": "e2c3549c7735475f30441c02ef3fa8a38a90ae4a97f1f2353d20fd0891b766a8",
+    "pixels": 13368,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "1977d7c970d15d220632ec803c78eb419e83997272d4bcb3ea6ca87aaea42803",
+    "material": "skin",
+    "mask": "919774114a82c7f48337730f398620ea8fcff4238fcf97c3288777cc79fd380c",
+    "pixels": 13050,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "9efc6da402d1166151294ad571c6925478149afd453cca6efdb702d573603838",
+    "material": "skin",
+    "mask": "f3075947823ba329de10bd6cc23451e9bd26f86bff42ca541eee9dff7cf28e91",
+    "pixels": 12736,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "f2e724da3ef7bf1023285f5328df78b2c5ec6aea1aedbc0a3ad8bbef211e7204",
+    "material": "skin",
+    "mask": "e985a943726e587cc4e00885f7c1d4a8d189f95e2be66471a7ffa15941b2a97a",
+    "pixels": 13165,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "42a3dc85b1a8da61351dc72593255b1f6877a1440eeb9a22e4cec6248bb240fd",
+    "material": "skin",
+    "mask": "5ea19106bd4079e5ee22d14f9129f3d324666a081621e068792f12b8aa23d853",
+    "pixels": 12831,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "42d082fb974367ca44df08fe374512e388a1259120238c4944748ed29b41ba65",
+    "material": "skin",
+    "mask": "974c013725bd594244c45bf36f0ee7c80139e9ed659f540bb108506cb9174cd1",
+    "pixels": 15319,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "e29ac6a7d7759516e6733c811635a4c2b6087fdc4702002823bfa86655c9295d",
+    "material": "skin",
+    "mask": "24b325a3c4c2b1f815cc14f1aa7056ff6e739a2e888d7d4f059133f7948b8191",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a",
+    "material": "skin",
+    "mask": "47c4585f7c79fdf6d67207416b4a08c9b7322da3d9abc94cddf965bd6ed174a0",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "hair",
+    "mask": "dbe167d2e9103349e34109ea3ca90dfd0683b2bde79e322883c69c027c3a76f5",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "skin",
+    "mask": "3c24790b5028d8e3d31f8121a6a53b1518ba5774e6da106deede8ed4bca00a50",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "f1caddde86a513e7a9ea667451ec44ae54db0997c47a8b53d1e671a9e980e768",
+    "material": "skin",
+    "mask": "727cfc8fedc37fbc7c99d28c3781d46d31cfc25acfa2d0a54e30143edaf65060",
+    "pixels": 15876,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "bafd6e4ee5c076bcbd718598b7cf29e2c74a39db40176544d6eb167952c53f1e",
+    "material": "skin",
+    "mask": "1c590d71feb79fe77116eb434c3bf59bffcc31a76c54c60abbe1973193184c9e",
+    "pixels": 15956,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "17bf6665bf557365c02acde301d08512feca1acb5ec86bea737bfe305ea629a8",
+    "material": "skin",
+    "mask": "61ff647f8b4007df1258f1d90b7d37bf4fdb1fea606815f3cb3f150b712ad832",
+    "pixels": 14880,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "3cbcfc3072cd2994935be61620d04d93156cc8426bbfb3d1e8054d6e4f2d2ad6",
+    "material": "skin",
+    "mask": "1f231d70bcfdbd95228dd35c1778b82fa2297067b8c601e28fd064705612345d",
+    "pixels": 14775,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "58285e58eeec43ed678fd80ca3a3c3d66991f885a68f2e737ca221f12539e481",
+    "material": "skin",
+    "mask": "bc9e08e77980c3084299f072f0a5fb4d2e3145578689fd4eab012ef4d03a31c8",
+    "pixels": 13977,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "5959819bf4238079a0f72a28a4a00365c0a85d8e3d4d0f6e1bfeb23633db4def",
+    "material": "skin",
+    "mask": "d138b08d57b1dc50352bf5e64ff4f8bc80c00fb7dfb77387cc33c7f861641bff",
+    "pixels": 14738,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "c22e9d0683bf9f02c5902c424fabdffd64b2cfef46e0dfac7e0537ee2de4d5ee",
+    "material": "skin",
+    "mask": "ab3058ae49cfb537ecd1681e5297f37e54bb55a846a7e7129b9a38e2963c7fc8",
+    "pixels": 16166,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "2ff6a1ddc4bb9e2c18a49f17d8778c5229f527c2e5df1dbaa03f5b7c79a2889f",
+    "material": "skin",
+    "mask": "6e58cf1bdbffe7e1e91cec90658027074841fdc912fbe6977b573cac8c7c2ad9",
+    "pixels": 15810,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "e29ac6a7d7759516e6733c811635a4c2b6087fdc4702002823bfa86655c9295d",
+    "material": "skin",
+    "mask": "24b325a3c4c2b1f815cc14f1aa7056ff6e739a2e888d7d4f059133f7948b8191",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a",
+    "material": "skin",
+    "mask": "47c4585f7c79fdf6d67207416b4a08c9b7322da3d9abc94cddf965bd6ed174a0",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "hair",
+    "mask": "dbe167d2e9103349e34109ea3ca90dfd0683b2bde79e322883c69c027c3a76f5",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots9-isolated-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "skin",
+    "mask": "3c24790b5028d8e3d31f8121a6a53b1518ba5774e6da106deede8ed4bca00a50",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate",
+    "source": "be14f103baea2dfdf9b7558a4c70075252bd9a9f7ec08bdfe21e6acd3b7d271d",
+    "material": "skin",
+    "mask": "ba38e4f96616d5511c222edecc140da2277ea144fc054204a1c628d5e09cffe4",
+    "pixels": 5950,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate",
+    "source": "fa57ef721f1cdcc98e743a388e19fa282f8f224539061b8db164f6688867a69d",
+    "material": "skin",
+    "mask": "5fab33075ee7ee71de08f6394a21b4de7e9dd7030dec36ed85b3e19d21c6def4",
+    "pixels": 2624,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "hair",
+    "mask": "a3f3641c406dec245cd16001f8e0abaf629b8227bbc06eaa4a7b1dd268e4dd62",
+    "pixels": 5045,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "skin",
+    "mask": "a0524bf1964b5eb64bab16837002b21652c4cbfa67374202c02e6b8f96706665",
+    "pixels": 131,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate",
+    "source": "afc23e6fa348a0ca40e75a520703ce50b795d8a5250423b2eacf0b5befe43c01",
+    "material": "skin",
+    "mask": "b640b645d507a37a7c2bc72e8c2d1d7d80b1e15bb50e2d1ec573fd616d15ac7f",
+    "pixels": 1436,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate",
+    "source": "bac6e7dd0929962417f44fe6f7f97d04225e8d35103ebaa542ee185644c3f6ff",
+    "material": "skin",
+    "mask": "77da46f716272771bf2107144323ef64e590699544aed9e332b09374199b87a0",
+    "pixels": 1331,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate",
+    "source": "32a593ef7128b2d05d56191d7b36f3e0387b7b0f100c9f4702879f9778ba38f4",
+    "material": "skin",
+    "mask": "31b12b5dc981ea15cd24acec740ecd416940fa7f85ce9e1aa05af1312155be5d",
+    "pixels": 1463,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots9-isolated-candidate",
+    "source": "e61dfb06ec13c8085a02dc5ffbd2cca8648d0a96f242a3bbd15884ab9baea3a1",
+    "material": "skin",
+    "mask": "d84837f02a2e351efb8d0d75b3a9eeb054899526219f5a243b89f300c5b8767b",
+    "pixels": 1372,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate",
+    "source": "be14f103baea2dfdf9b7558a4c70075252bd9a9f7ec08bdfe21e6acd3b7d271d",
+    "material": "skin",
+    "mask": "ba38e4f96616d5511c222edecc140da2277ea144fc054204a1c628d5e09cffe4",
+    "pixels": 5950,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate",
+    "source": "fa57ef721f1cdcc98e743a388e19fa282f8f224539061b8db164f6688867a69d",
+    "material": "skin",
+    "mask": "5fab33075ee7ee71de08f6394a21b4de7e9dd7030dec36ed85b3e19d21c6def4",
+    "pixels": 2624,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "hair",
+    "mask": "a3f3641c406dec245cd16001f8e0abaf629b8227bbc06eaa4a7b1dd268e4dd62",
+    "pixels": 5045,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "skin",
+    "mask": "a0524bf1964b5eb64bab16837002b21652c4cbfa67374202c02e6b8f96706665",
+    "pixels": 131,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate",
+    "source": "afc23e6fa348a0ca40e75a520703ce50b795d8a5250423b2eacf0b5befe43c01",
+    "material": "skin",
+    "mask": "b640b645d507a37a7c2bc72e8c2d1d7d80b1e15bb50e2d1ec573fd616d15ac7f",
+    "pixels": 1436,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate",
+    "source": "bac6e7dd0929962417f44fe6f7f97d04225e8d35103ebaa542ee185644c3f6ff",
+    "material": "skin",
+    "mask": "77da46f716272771bf2107144323ef64e590699544aed9e332b09374199b87a0",
+    "pixels": 1331,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate",
+    "source": "32a593ef7128b2d05d56191d7b36f3e0387b7b0f100c9f4702879f9778ba38f4",
+    "material": "skin",
+    "mask": "31b12b5dc981ea15cd24acec740ecd416940fa7f85ce9e1aa05af1312155be5d",
+    "pixels": 1463,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots9-isolated-candidate",
+    "source": "e61dfb06ec13c8085a02dc5ffbd2cca8648d0a96f242a3bbd15884ab9baea3a1",
+    "material": "skin",
+    "mask": "d84837f02a2e351efb8d0d75b3a9eeb054899526219f5a243b89f300c5b8767b",
+    "pixels": 1372,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "source": "9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97",
+    "material": "skin",
+    "mask": "8857a437f6daad7124a0092e4d3f338445e5a6be3c8f8024ef687a35e056a8ca",
+    "pixels": 15128,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "source": "eebe26703d817b42082bb0a87755dae1add5303daae39016e31e595fe302ce4d",
+    "material": "skin",
+    "mask": "eddc2bede7424f0c0b003a7a1d3f990f12706d77c4812b066aa71feadb822af0",
+    "pixels": 14322,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "source": "443a426a01956892e6d26c74e4e5c6e788f5e3685c671fe8646042fcdf728a03",
+    "material": "skin",
+    "mask": "e845503ac91a6d93f075ebf1836242a745811ef9057a54091b5c64e687bd930d",
+    "pixels": 14287,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "source": "acf14879bd873ba084eed990b5299c8ca12ef7accf4088d61d37927122949742",
+    "material": "skin",
+    "mask": "a12dd112f4e644c73895920c015508caca5d49f1f8c498c220520117212e928d",
+    "pixels": 13901,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "source": "1a0f2561bf6ddfdbe6167ac07ce569c5fb107136e722d05b919d35c62dd440be",
+    "material": "skin",
+    "mask": "6ed125e146cf42cdd39204a3e63b14fabaf9e361a240a87d097f35b654f6706c",
+    "pixels": 13581,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "source": "ea78b3bbe7da1935c45a4d39ae73d8ab13a84c811f54da142145093d9f5efb07",
+    "material": "skin",
+    "mask": "0619ccca822eb82f6654a1a38016b8a335f8af2eef9de7e3f2e514063b2b3705",
+    "pixels": 14409,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "source": "b072b3256a05b69c4a7f994c2f98503cf1ec968cd1ee710d7f8ebdd41b99a4fd",
+    "material": "skin",
+    "mask": "ea8465f4a2e17111a35c62ce95644b54385789bdaf42b849741fe87e86a4cdb1",
+    "pixels": 14394,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "source": "fd2616f94952dca6049960e9847a46ab54bc8e72beca12ac2ab4dec23fad7659",
+    "material": "skin",
+    "mask": "39adce33bd4769afa7e4927c3abd2a00ece78f28496d0e8fe365dd645a2549b2",
+    "pixels": 15180,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "source": "767c435b05d1f85eed23fde9603e1ca722ed095609b17af82634522024c95969",
+    "material": "skin",
+    "mask": "d29e73aaf8d10a387f13eddb2196f294d3af14a6c546a6feb0d69142b947e650",
+    "pixels": 2624,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "source": "c5eb1d2d523d85acb584eee39a8e1e66b0ffbbf5cf2a118dc796f91b69bea8ea",
+    "material": "hair",
+    "mask": "b883b204fe3ce3198e503b06bc0626c711dbef320180801f85979a558598db3f",
+    "pixels": 5045,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+    "source": "c5eb1d2d523d85acb584eee39a8e1e66b0ffbbf5cf2a118dc796f91b69bea8ea",
+    "material": "skin",
+    "mask": "db6add2cbacf81936156867f82260fee7fccbbae5d86663224089385760ddd39",
+    "pixels": 131,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "059e39e9d0afe083e0d5e5d13bb53c4e215c4bbc1cf51c47f79483c5a16d1fbb",
+    "material": "skin",
+    "mask": "ed537089ee524cec3209515d13ebc8704f78b2a54981fa6af998bbc1d2655fe2",
+    "pixels": 5995,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "059e39e9d0afe083e0d5e5d13bb53c4e215c4bbc1cf51c47f79483c5a16d1fbb",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "c5aaf3118ec3994e6419eec4dc80039065f5a71ab2c03c69b4c278c2cf4c3e67",
+    "material": "skin",
+    "mask": "18392cf2e7fb8e427d99dbb76408105a05ffd87f426e1272fff2989cce50abf5",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "c5aaf3118ec3994e6419eec4dc80039065f5a71ab2c03c69b4c278c2cf4c3e67",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "d12019f56acb507d1f0c6feafddc922e76f4c54c00d5940c53cf206d14e59717",
+    "material": "skin",
+    "mask": "9aad5f38cf8d2c83d65e5f94b12ad94a7ae13f27cdca5162c7899f6bbf56b0ad",
+    "pixels": 5999,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "d12019f56acb507d1f0c6feafddc922e76f4c54c00d5940c53cf206d14e59717",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "209186fc75c199ab05becbf69f9325ddcd4c333e76b7415805e23e9f5dd3a80a",
+    "material": "skin",
+    "mask": "18392cf2e7fb8e427d99dbb76408105a05ffd87f426e1272fff2989cce50abf5",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "209186fc75c199ab05becbf69f9325ddcd4c333e76b7415805e23e9f5dd3a80a",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "6e68a577c2911753df87e3dd0953a884591cb51814f23914fb8dd1fde15f5104",
+    "material": "skin",
+    "mask": "41de49af2a8625caebd9389dbda0b0711023bc4bafc5b0e62253956c33757816",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "6e68a577c2911753df87e3dd0953a884591cb51814f23914fb8dd1fde15f5104",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "7fb5e27719d9085f44037e72c39aa969b983797bc8298ab74f130511727edcea",
+    "material": "skin",
+    "mask": "9425e4915efbe081dff07eb732913dd77654f3278b7df88e5b74e6c0ea081cac",
+    "pixels": 5999,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "7fb5e27719d9085f44037e72c39aa969b983797bc8298ab74f130511727edcea",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "4082005fd8fd5d273bccd1c4cdc9c9b09a5342ee40a53a86ab6b3710709ed906",
+    "material": "skin",
+    "mask": "e908a1604304ea35024d6c89f1edebf317091207d1d5a25aecc1b9d7a5de6e7e",
+    "pixels": 6004,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "4082005fd8fd5d273bccd1c4cdc9c9b09a5342ee40a53a86ab6b3710709ed906",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "bb54209b4af7d3dc10ed72b29620c0bccf5cc8c21cd7ded01f995cc7e05c7a5d",
+    "material": "skin",
+    "mask": "0802a53eaaeb1642f68a0df99f60aeaf3631534821db6b45c25de1b75955bd52",
+    "pixels": 5998,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "bb54209b4af7d3dc10ed72b29620c0bccf5cc8c21cd7ded01f995cc7e05c7a5d",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "874c9a6d866be38a6ffe5a99d9bf1f7efa240c0541b21a441267574fbcd35a33",
+    "material": "skin",
+    "mask": "3a70e23e5161c46eeaf3c0f48f912560cec201cf771e18f98d9e577bdda86c09",
+    "pixels": 5990,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "874c9a6d866be38a6ffe5a99d9bf1f7efa240c0541b21a441267574fbcd35a33",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "4500dac6e379b601c705fb86a2ca7a40f59316ae4e089cac89732aab76960448",
+    "material": "skin",
+    "mask": "f74f7ba01b687f66a86a37f74e00566d8bf22da4bab43c0a26dcf7978a7074de",
+    "pixels": 5998,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "4500dac6e379b601c705fb86a2ca7a40f59316ae4e089cac89732aab76960448",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "613410e17cb812a6d1ba0930ed147f41f398bec348466005a4121a693daff602",
+    "material": "skin",
+    "mask": "f7a0f9c10fc27cbcdf08beff97aad1d49b03d3430098baf6fce01e1a9bdfe472",
+    "pixels": 6002,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "613410e17cb812a6d1ba0930ed147f41f398bec348466005a4121a693daff602",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "2e56f0f63202e69bd3f4f6cd211c353743ad89514cedd7eedc1c61fb4189036e",
+    "material": "skin",
+    "mask": "b22e36cc9b74b40d972f165cbea8c9d2ee2217829b2b99c6b8760673aafcb38e",
+    "pixels": 6001,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "2e56f0f63202e69bd3f4f6cd211c353743ad89514cedd7eedc1c61fb4189036e",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "0baf1849845793a5b3453abd3b159143ba5856c06dc70bba84c4a4911a2a8eb7",
+    "material": "skin",
+    "mask": "b874d68803a85f380c9ae0798b315dca9f2051d2e11586caff4df15d1a4b9d7f",
+    "pixels": 5992,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "0baf1849845793a5b3453abd3b159143ba5856c06dc70bba84c4a4911a2a8eb7",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "1b6ac0665fcb243eb57ed2e83a2f5c6223944ef5cb5306ca2738e607ae5b61c6",
+    "material": "skin",
+    "mask": "41de49af2a8625caebd9389dbda0b0711023bc4bafc5b0e62253956c33757816",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "1b6ac0665fcb243eb57ed2e83a2f5c6223944ef5cb5306ca2738e607ae5b61c6",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "1379fe7446c504468d9bbd99eafa182de3e4adfcc67290079e693e345a511ff5",
+    "material": "skin",
+    "mask": "41de49af2a8625caebd9389dbda0b0711023bc4bafc5b0e62253956c33757816",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "1379fe7446c504468d9bbd99eafa182de3e4adfcc67290079e693e345a511ff5",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "d4fb8e936aa7c8e89615a1ee84a06556a219a00cda2a0acee0a7b4a0e0613317",
+    "material": "skin",
+    "mask": "d30262943fe3d9064431128881b10c0b65eeeb74ecb81c74a2f422a5fbca6152",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "d4fb8e936aa7c8e89615a1ee84a06556a219a00cda2a0acee0a7b4a0e0613317",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "a5902bf5b94b974af32cc3d3766bb9aea0d0635c7a6f3829f93ff3216fbaea5b",
+    "material": "skin",
+    "mask": "536f152ccdfe3c9f2ecf9b2ff6b4e83494764ce6fb3d788220c70333f61c87e1",
+    "pixels": 1911,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "ca872bcd74a517a5cb2118abede667ffc0b02f34983fa7eb6abb6b5ab232f08a",
+    "material": "skin",
+    "mask": "44cd09b49d74ca208cb79d535ca9b808de9428729c90e986d60fd41fc9e985fc",
+    "pixels": 1799,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "059e39e9d0afe083e0d5e5d13bb53c4e215c4bbc1cf51c47f79483c5a16d1fbb",
+    "material": "skin",
+    "mask": "ed537089ee524cec3209515d13ebc8704f78b2a54981fa6af998bbc1d2655fe2",
+    "pixels": 5995,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "059e39e9d0afe083e0d5e5d13bb53c4e215c4bbc1cf51c47f79483c5a16d1fbb",
+    "material": "hair",
+    "mask": "9a83a81f6e24dcbed69fd2f57bdba47850c207e46c8a0b859c0e1de1e46b3071",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "a5902bf5b94b974af32cc3d3766bb9aea0d0635c7a6f3829f93ff3216fbaea5b",
+    "material": "skin",
+    "mask": "536f152ccdfe3c9f2ecf9b2ff6b4e83494764ce6fb3d788220c70333f61c87e1",
+    "pixels": 1911,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-east-source-v18-candidate-boots9-isolated-candidate",
+    "source": "ca872bcd74a517a5cb2118abede667ffc0b02f34983fa7eb6abb6b5ab232f08a",
+    "material": "skin",
+    "mask": "44cd09b49d74ca208cb79d535ca9b808de9428729c90e986d60fd41fc9e985fc",
+    "pixels": 1799,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "b0979f9817371731bb761db0dfed65de422a64c6fdd053232e50dc8966a21b6a",
+    "material": "skin",
+    "mask": "a62916688887df1b32513d25d6b6bc59c829476ce8b2b5017e4489c83f5f9a4b",
+    "pixels": 9789,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "f87d911ae4e4725905f0dee7b460ad3b068a2785939a777017b4f9d4bcad846b",
+    "material": "skin",
+    "mask": "25689663a2aaae764b4fd2849e50dc82b62511b13e042a8c028281903536b173",
+    "pixels": 9371,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "d18e401a7a747f262286f4512e352717f13e46c440475808e680db24e3416830",
+    "material": "skin",
+    "mask": "0ef6a8922f352525fe55dea6c156c90b658f91c7424122b2a23cb1a8f5b4dcff",
+    "pixels": 10481,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "738338534b0e8e45915f7422a15d25f346748a58c0822ecb6fcfe1c508a004f8",
+    "material": "skin",
+    "mask": "d89807e9e937ae43faa2079753e50342e2c592840bb385e8c98e86682bbeed5e",
+    "pixels": 9668,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "475e09d0d85d793686d4a288059d439f055dc54410d3378b3b99a5ec8a8ebcd2",
+    "material": "skin",
+    "mask": "f2ecc755649e81466cf8c2cb2c064683bbe9dcd75324de9f94900651c1bed42c",
+    "pixels": 10630,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "f1f4470a9b70da3738a4719c57282820515cd2d00d9aa1c879ee007ec090b5a2",
+    "material": "skin",
+    "mask": "343be9671f79b12e215d61d8d68476d9b75a1bcc63064eda14e57c5a650e3e57",
+    "pixels": 10091,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "49dae24527acfe4ba2cdf49cfe55a62f052edfc7e46db29a64433778529d9deb",
+    "material": "skin",
+    "mask": "0e88f1af9f062e662ca2208b77e082326c15e97bcd7bf9ee19c5b89a42d2885a",
+    "pixels": 9607,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "d8bfee7bdae9094e25dba9c9d2076ab1d7069dd0afd689edf9b1bf22d8c95c35",
+    "material": "skin",
+    "mask": "324aba496c420fce388b34e0a500a138de96cd0be9d1337c545e3ca73f650fa8",
+    "pixels": 9990,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "e1a62125f08b88d3875261638bf09a2ec736e93b687df59a19014f5dab146154",
+    "material": "skin",
+    "mask": "781ad81a91ccf11ccfdcee5a167d95935e60fc683db585629ce57c3e12e5dd52",
+    "pixels": 3635,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2",
+    "material": "skin",
+    "mask": "8dd9fe84275a368d8fb8af83d0c64697f6ba08b8bd453b92891425f57c563b52",
+    "pixels": 1415,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "45de7576039c538aee29ff5a5d0def51143e8cbf90a33cdead504d88fd2ea713",
+    "material": "hair",
+    "mask": "fc4d94176143c1a1bace649e35262ec9f5e5b5aae0e7e932d2eeb1f882c5359a",
+    "pixels": 4040,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-east-drawn8-candidate-boots9-isolated-candidate",
+    "source": "45de7576039c538aee29ff5a5d0def51143e8cbf90a33cdead504d88fd2ea713",
+    "material": "skin",
+    "mask": "4660d2a08800b6e2f35a42dab8914705418ae37f9f37303d7ff8463388893d12",
+    "pixels": 377,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "9608abd4bb112bd3ee465ffbf25704c72a7899eb7e1602c0b2a4833e402154b8",
+    "material": "skin",
+    "mask": "7e026029dd89858ba62f5cc6b4d06100498133a2d2fddb26d8574f354c781a06",
+    "pixels": 5995,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "9608abd4bb112bd3ee465ffbf25704c72a7899eb7e1602c0b2a4833e402154b8",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "8a4731783274170e928a4f8341fa66213783bcc5584b50d81992ec082effa4eb",
+    "material": "skin",
+    "mask": "de1bd6aed9ecf5367c240de41c20115efc5b7730aaafa355dbdd33385e7cb50b",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "8a4731783274170e928a4f8341fa66213783bcc5584b50d81992ec082effa4eb",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "36b505e4a7d9dd85ee6aac4bafdb5242477606e25da3ffab5cd0a1967838b2c2",
+    "material": "skin",
+    "mask": "86889e61a71d4e4537e186c73af52e3a9400cf15f49dd316748f907dce0eeb99",
+    "pixels": 5999,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "36b505e4a7d9dd85ee6aac4bafdb5242477606e25da3ffab5cd0a1967838b2c2",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "1c788a17ae1c047631f02abcfe10d5b1c80d27e0587577b38cd38ba34a458ff6",
+    "material": "skin",
+    "mask": "de1bd6aed9ecf5367c240de41c20115efc5b7730aaafa355dbdd33385e7cb50b",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "1c788a17ae1c047631f02abcfe10d5b1c80d27e0587577b38cd38ba34a458ff6",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "12919249fe8f74b97ae5fc78a04bd5f144cdabe2e058b36c1fb507154a901ae6",
+    "material": "skin",
+    "mask": "16335b2505e62c37316b1d6568461f4079cdc4874e2a31f636d5b6962b1af0c6",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "12919249fe8f74b97ae5fc78a04bd5f144cdabe2e058b36c1fb507154a901ae6",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "f88617cb9afadeba146f19967e50ac8bcb675efb71f3a16e914aaf79618f4ece",
+    "material": "skin",
+    "mask": "9bf91d4887ec67255bbbc8c4f6d6abc36e52f97af18c455f2eb0482858529059",
+    "pixels": 5999,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "f88617cb9afadeba146f19967e50ac8bcb675efb71f3a16e914aaf79618f4ece",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "ed4ab5310f3b06c058df700fa12bcd37bd756dada8fa4e2ce8766a5d9f474f13",
+    "material": "skin",
+    "mask": "24a26e8bab9539eee162a1b46835504bc243a4c290bc2cfc4db6dd78af5c1321",
+    "pixels": 6004,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "ed4ab5310f3b06c058df700fa12bcd37bd756dada8fa4e2ce8766a5d9f474f13",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "fd85cce21a2e4db36776f9df294f11754a9a89f6d25c3c84da4824cbbae996f9",
+    "material": "skin",
+    "mask": "bc86edf6c2ffcf2f527f665de27a7804534d588f186acec556ba059eaa2028ae",
+    "pixels": 5998,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "fd85cce21a2e4db36776f9df294f11754a9a89f6d25c3c84da4824cbbae996f9",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "6358b988e79037062a05f6c724e4aac4e5c1c745dd6a151fc42e3be69516d109",
+    "material": "skin",
+    "mask": "19b69a403581007d20eded951d63ae6c2dcab671e568a4e5c844065a7d1a2499",
+    "pixels": 5990,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "6358b988e79037062a05f6c724e4aac4e5c1c745dd6a151fc42e3be69516d109",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "76a772795b6df640422d38ca993f587eb134e186a32f658564d3d91dbcc70076",
+    "material": "skin",
+    "mask": "ca306047d654d642d844a5a91cf1a35b303333cc314646f511372cce325d4325",
+    "pixels": 5998,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "76a772795b6df640422d38ca993f587eb134e186a32f658564d3d91dbcc70076",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "877e992d6cea40c1e5a0469aa4143375b3bc3a8629bf1605a8a724b2f7a1ba49",
+    "material": "skin",
+    "mask": "0539c5576c4f8c9c911e36e6285fb632ebe82d5be9ecbf746af2bbe2420c5551",
+    "pixels": 6002,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "877e992d6cea40c1e5a0469aa4143375b3bc3a8629bf1605a8a724b2f7a1ba49",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "0679e0fc64b54be30c04a497199951204e995bfde470ac936e9980588f78eb79",
+    "material": "skin",
+    "mask": "1b10119377a8c9bc59ef8aef56cdbe38ed7f62844e36ac6a32c0a81d6f6bb6ee",
+    "pixels": 6001,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "0679e0fc64b54be30c04a497199951204e995bfde470ac936e9980588f78eb79",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "b55e358daee72183c8268ca8501cc2678853e603562fd3efdcba072dc9a20189",
+    "material": "skin",
+    "mask": "588a0f614cb239e5d0928092d55622c7ad2d216722019e25e23721e42e82a270",
+    "pixels": 5992,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "b55e358daee72183c8268ca8501cc2678853e603562fd3efdcba072dc9a20189",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "fdaf8c2c002be9904539519090d03eb29377ad19485d43d0787cdab4137c0c36",
+    "material": "skin",
+    "mask": "16335b2505e62c37316b1d6568461f4079cdc4874e2a31f636d5b6962b1af0c6",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "fdaf8c2c002be9904539519090d03eb29377ad19485d43d0787cdab4137c0c36",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "41efe43d7e0c2bb049db2fc6bb48666a1cd7df206c116caad4ca2defb5c7ab14",
+    "material": "skin",
+    "mask": "16335b2505e62c37316b1d6568461f4079cdc4874e2a31f636d5b6962b1af0c6",
+    "pixels": 6011,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "41efe43d7e0c2bb049db2fc6bb48666a1cd7df206c116caad4ca2defb5c7ab14",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "a3d574dd4c6e39b361d969404455ef99d64d9df0bd512b4797d2a38d419afaae",
+    "material": "skin",
+    "mask": "acbd712f4511a8a5333d437588059d9a06e002158d9e67a3af8b7ea717cf9a47",
+    "pixels": 5997,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "a3d574dd4c6e39b361d969404455ef99d64d9df0bd512b4797d2a38d419afaae",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "ea5e94e89f037ccc970d63e95ca231dd6219c4222d9b5afd1b2a004581875525",
+    "material": "skin",
+    "mask": "b94019519d3b7dfebe7c22e99749c5680fd0539b77f81609f8e2750131fd1248",
+    "pixels": 1915,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "8aca20f23fd887f113e4102458fa28848351a294a6ec6c0e57a190acdd683d96",
+    "material": "skin",
+    "mask": "63f8dd9aeb5dcacb7cb2cda9217d06a9d8dd54a234924368e569ea4dccb228d1",
+    "pixels": 1916,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "5054831b2c2528c4388dca56a810fb0a1031708fe91a8c1fd2a7339c5963945f",
+    "material": "skin",
+    "mask": "688cc6849f4e9b552d1ef960effcf57c0cdd82e4572244bd8c9e9e476eb7522b",
+    "pixels": 1912,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "de9a1b6255a7fc3af9cfc1fcca34ec4ec1409bac769c0e99bcb3615ebde2a2e1",
+    "material": "skin",
+    "mask": "88b107da4b180aeb701ede475c7a7351a9d327fbd118fe466697010279339bdd",
+    "pixels": 1910,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "aae469b8de37d58415c2396af9af528fccbbc2106905ac32a04f3d0c8c6d7135",
+    "material": "skin",
+    "mask": "9be134d9f8cfa9c035df0b6c97b8f8cb9b2b362046b70ec5598a518706df88b3",
+    "pixels": 1911,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "1bf2e44ffb14973b95cc2d4eed1b03fc35f810181358c60079a7e831dd9f7357",
+    "material": "skin",
+    "mask": "a504992938bb8a745d6f57eded35200ebcaa6c455fa41e51ab8b47ff5144b293",
+    "pixels": 1912,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "bc2b4fedcc75586221418ccb14ac3f42dbb777e8eed4989660e0faa340731b46",
+    "material": "skin",
+    "mask": "884b7bc725b85c449198a065870a0114db3201039526c08f9259ebdaa521da66",
+    "pixels": 1910,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "6b3da798d07d4e4edf591657faee394d5914d31402fe188d520fe6619dd1f219",
+    "material": "skin",
+    "mask": "3a98f2c8e0e9620b65afd892c816279a2d7ed45460f2e2f73243bcc6b8aa2106",
+    "pixels": 1911,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "301cd7faab636dbe17ee389da3557b92184839d1a4b8cca5d83e8901712b5ffe",
+    "material": "skin",
+    "mask": "f45f8dc4ca4d596209895f63f35b5b837ce524d3d5463d50927c6671a0bf8103",
+    "pixels": 1910,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "3ccb674a54605e902df3ca3cc261cc60a707709114a925c131ca3e997036e818",
+    "material": "skin",
+    "mask": "e737a7d0997114f69538f2a95b96c239f7999182238b9100f39bb218f15750e1",
+    "pixels": 1793,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "f8b26746780623cfed9758b1f02cff076fcff2824a515739cf249fb3d498b4cb",
+    "material": "skin",
+    "mask": "c34461b4a8e7de3eb9598ccea2f4a0749690a71b55dad2a96ef9e7a7d5b477be",
+    "pixels": 1799,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "e57456a89b06e13d2bb1ea10c28e8ea2fd2323ddfbcc7d7a400b76663fce2627",
+    "material": "skin",
+    "mask": "187a4cc67d3c7fe64f664324ec0241f85485b1452156e28de52cd8981a10fee9",
+    "pixels": 1799,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "9be61a4f05fded02bd3bf56863ff57c4bbd1521f56fd4c22e30b6fcf5b0f5868",
+    "material": "skin",
+    "mask": "eda69fea5191e2032e10b364381eb32dacd308e5928112f2c20d9bfa08d59cb1",
+    "pixels": 1799,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "e8f4cb26742951cd2485c00597ac2fd7533b7c677992df3b6e73eacd94c8a26e",
+    "material": "skin",
+    "mask": "1129337ca0a4b8e7faed637d4ed5f49263139b45ff6c350e9d49dc90743473c4",
+    "pixels": 1798,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "30faf542e657ba7a65ebaa8ea6a773be1949f93c915873cc94cf20a557a44c26",
+    "material": "skin",
+    "mask": "590b9e5d84242895242b7e2aa5fb1466787f70e89f32e499b11ad1713e8b0329",
+    "pixels": 1799,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "951bec172b15f0981a706624b553df309f1edf777180fe9017d07575ec7f6c71",
+    "material": "skin",
+    "mask": "2e84b8302b95cee83ebe64a086640dbb5bce1ef7ccc25a7924d6575594064cb0",
+    "pixels": 1797,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "5ebb81117dcf9024ecbdfd67ecb050c05e0d02914f0afd52695d9dac909064a7",
+    "material": "skin",
+    "mask": "773053f66fb415c3d8acf6f316e5033370a993fd8687a52d845af9dfc5571fd1",
+    "pixels": 1802,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "f761810d15863ef615a3f64a9c818477698c13a684c675113565aa1cc524b34d",
+    "material": "skin",
+    "mask": "e1339c409c1f51e6bf48b3bc7f688dcb804e8fa892284728c401013e7ac0cbc3",
+    "pixels": 1800,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "892a8f16a1516756cd9be3d7332fc22ce28c00aeb9b11e2e2d8eb8840cee52db",
+    "material": "skin",
+    "mask": "756969e22bcf599a853e4d68f2648fa57feeded2c41030f376dbd6076ad77872",
+    "pixels": 1796,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "16cc7e7b677fed9d70e85ed60e8830edde854d9582693d405119563f3fc3b919",
+    "material": "skin",
+    "mask": "4f79579bb89241c812bed4b9bd7cb3089c9fec68a1e0af139d031493d20999c1",
+    "pixels": 1797,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "362d3e5ffa91631454e70ba015f67135d998fb9b47bffe686c225e6aefbe3fcf",
+    "material": "skin",
+    "mask": "4e56fd23bbe8e7ff35e727825a86745b6e447ca3039d4a1fa4a0a75ccd9ce8d8",
+    "pixels": 1800,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "299b452e91c1c3046d493525056d1a407ab5b20fbdc22e31dd4dc7d5c3990038",
+    "material": "skin",
+    "mask": "0645113a09748337d1448f44ef82bc2e1d390afa52e005ffb410a35b4b79bfd8",
+    "pixels": 1798,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "9cdc43a55ca842e0a600e1d8b21ee7f3a1b63a2bd361f25e61f8b02d2b0a9ec5",
+    "material": "skin",
+    "mask": "46946e9598e513912ee11a9529bd93dd23a15a9fc31df349079688ceadf88b22",
+    "pixels": 1800,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "5641a959b30300b74d19ee5d9b768601cbf173074cc713a8573f757d5486f7aa",
+    "material": "skin",
+    "mask": "3c3eef56bf4a6e182b1f8b9c11ed75072daaeefc6cd21888d4f5e2fd051e374e",
+    "pixels": 1796,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-walk-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "d160c5bb253b637d93dccd07c87484457121ff1f8c916e350d16d3f1f654048b",
+    "material": "skin",
+    "mask": "f40bdd6ac7ce08cd40c41b8e8b6e97a056ff6c5c0254e6338afb07bf59301159",
+    "pixels": 1798,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-idle-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "9608abd4bb112bd3ee465ffbf25704c72a7899eb7e1602c0b2a4833e402154b8",
+    "material": "skin",
+    "mask": "7e026029dd89858ba62f5cc6b4d06100498133a2d2fddb26d8574f354c781a06",
+    "pixels": 5995,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "9608abd4bb112bd3ee465ffbf25704c72a7899eb7e1602c0b2a4833e402154b8",
+    "material": "hair",
+    "mask": "021d7f02e7cb9aa04ce2ff5dde7baa92b45af48108a726e12a3e2cf77f40de5b",
+    "pixels": 4040,
+    "authority": "exact spatial RGBA match to original anatomical layers"
+  },
+  {
+    "record": "male-pants133-idle-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "ea5e94e89f037ccc970d63e95ca231dd6219c4222d9b5afd1b2a004581875525",
+    "material": "skin",
+    "mask": "b94019519d3b7dfebe7c22e99749c5680fd0539b77f81609f8e2750131fd1248",
+    "pixels": 1915,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-idle-west-source-v18-candidate-boots9-isolated-candidate",
+    "source": "3ccb674a54605e902df3ca3cc261cc60a707709114a925c131ca3e997036e818",
+    "material": "skin",
+    "mask": "e737a7d0997114f69538f2a95b96c239f7999182238b9100f39bb218f15750e1",
+    "pixels": 1793,
+    "authority": "pixel-exact mirrored render of isolated original arm"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "4e70d3b6005b1e75c6365c35ed75f0677dbb011d20c0c6d9b45e1eaa62a5f7ed",
+    "material": "skin",
+    "mask": "d0af8f275c5cdaba700f2da0af24f769fc84d2a59cef8ac64682cbd457d6e6e3",
+    "pixels": 9789,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "49669cfe45413f0c6ddd5a24e65c7943d2e96db52a2d689f6cb97932207bc6bc",
+    "material": "skin",
+    "mask": "c4d0b6f5c0457ecb66ccbbed0cdb7e4c69c32157c590887845af284f9e0e5e0d",
+    "pixels": 9371,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "66cb7411df889fcf8cbb254c0aff57ba4164abe9109c456e31287f00fc47c81c",
+    "material": "skin",
+    "mask": "1bd9232bd0c9b74e2320bb11d3707dc29e0e43e51ce4e829b2925d4a305b19c6",
+    "pixels": 10481,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "45c4f65d5039a8164b0dd1120679ae8f88fa72da0b831d36a2465f201588f334",
+    "material": "skin",
+    "mask": "832eb2b69bcdad429138da53ba4c0ac97fa306c7553f7bd23f9ed02a94d49361",
+    "pixels": 9668,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "46bb35b150ad7ad09bd5e3eac6e0dde3218cca340def68bf5e8c1d9585b06d1a",
+    "material": "skin",
+    "mask": "4a51301c0e6ea337f51b72c4d4a7be6e8b739d489c47e8d6816184faf843b318",
+    "pixels": 10630,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "f2acc2b2f534cf3002d7ef1b9abb40ea2b88974e954b6e89b61924e63517c4b3",
+    "material": "skin",
+    "mask": "8c1b2f0dab07ea8ce5306f75d8aaedced2884c380bd9a7bf5a469728f776c506",
+    "pixels": 10091,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "38d5c1eb946e167aab27e077706cb502bf10716d0682dcbef9697ea4e8be7f73",
+    "material": "skin",
+    "mask": "b8279485d7237e9db9078f443757b541ec4e1a90fecb0cfbf9a08e3dff3e54f8",
+    "pixels": 9607,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "4342e94db6081451436f2e0b6f2e5ea9ea9f6f8babed1591528d1b904023065c",
+    "material": "skin",
+    "mask": "637beaaa45a226298e0b66b3a7cfb848857090797f6f8d88c0f869ab53326352",
+    "pixels": 9990,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "550e876bc65b387f14977734f71f6d4ae681ebdab0d2cf515faa2fa6bf98d888",
+    "material": "skin",
+    "mask": "34f038f7095efd7469817218d19e70b5f3f3fc2fb3fb78a86dbd7cc0f06bf770",
+    "pixels": 3635,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464",
+    "material": "skin",
+    "mask": "53d5a9e182501f77f8c046d9f166726261a3bb8a3ae8f6fefa6687094bcf9b85",
+    "pixels": 1415,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "a1359e16013832c487942d028404f7a5c59f4afd4a7e96eb480aa1a1d34db07e",
+    "material": "hair",
+    "mask": "fccea53415dc2acf040461dcc81b112d6275bf0dddf888b4f9d947ad552324c1",
+    "pixels": 4040,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-west-drawn8-candidate-boots9-isolated-candidate",
+    "source": "a1359e16013832c487942d028404f7a5c59f4afd4a7e96eb480aa1a1d34db07e",
+    "material": "skin",
+    "mask": "be1dbafe4e32c4988fb20d7f3f6f9d925976d0fc9bb16526245928fb5b74eb52",
+    "pixels": 377,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate",
+    "source": "f2c71a9ccd4edbe5c47af1972ea0086b1ffddf6c016ff4d67b89a05026fd8b91",
+    "material": "skin",
+    "mask": "4945daf469850611520a95a5b6813b2eb9dda4e7188a3af7054431d7249ea969",
+    "pixels": 6820,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate",
+    "source": "ebf5afbe1179277b6d64c25eb80fb3f7ca831809d6e4792d95a8592fddd400e1",
+    "material": "skin",
+    "mask": "6468936fd99bba0b650468b66aecb36d502ec31b1db5e640ea28a5325adfa169",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate",
+    "source": "2a207437a0a1a114a8cc40299c6614e8ae01bcebd0937c346b95fe316e7f6880",
+    "material": "skin",
+    "mask": "8e9ea4f1a97d4cb6e0d89f5ac02a4d519e13e1cc70a9ff7216b9acef5655f956",
+    "pixels": 1324,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate",
+    "source": "7ba8f25aadf7e805570f80c8ac8c5673e265d44bce3890b7e9a56662dad362ee",
+    "material": "skin",
+    "mask": "1f7e4787a2f7deff6ac4ed951b966523b40fd819940b25c92564eaac3aebfd36",
+    "pixels": 1308,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate",
+    "source": "14f439e96610b4ea34fdaf1b369b27da9ab1ee47680711a6eca95f2ace971e1b",
+    "material": "skin",
+    "mask": "504662d4b6873020d30540e7a8a391166de872f412b13bd936a2701b9a866703",
+    "pixels": 1343,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate",
+    "source": "2700c466e325cd34a4a99eaac334fe2fa345fa29e12d7fc24bb80f7f01fac1a0",
+    "material": "skin",
+    "mask": "009a4a1080abf646cc1a46893a101e420c9ead04ef0314db20a0f4639198a562",
+    "pixels": 1334,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate",
+    "source": "81ce2c74c6e8e05f2745223cdea70cfecee5b0ff49e4bcbf8d6ed25d62e72449",
+    "material": "skin",
+    "mask": "0661c468d18e245b3400f8cc212926aa7c5cc916b722b1dd35334abd939ed096",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "hair",
+    "mask": "1294801f31c25820a54fa5509fd774f42d5e7fa5e67e37acac02ae06822614dc",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-south-isolated-r2-boots148-isolated-candidate",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "skin",
+    "mask": "3e5964c41588932d85bff2593c4edf7d604747ac39e65cefacd239b23e5d4114",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate",
+    "source": "f2c71a9ccd4edbe5c47af1972ea0086b1ffddf6c016ff4d67b89a05026fd8b91",
+    "material": "skin",
+    "mask": "4945daf469850611520a95a5b6813b2eb9dda4e7188a3af7054431d7249ea969",
+    "pixels": 6820,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate",
+    "source": "ebf5afbe1179277b6d64c25eb80fb3f7ca831809d6e4792d95a8592fddd400e1",
+    "material": "skin",
+    "mask": "6468936fd99bba0b650468b66aecb36d502ec31b1db5e640ea28a5325adfa169",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate",
+    "source": "2a207437a0a1a114a8cc40299c6614e8ae01bcebd0937c346b95fe316e7f6880",
+    "material": "skin",
+    "mask": "8e9ea4f1a97d4cb6e0d89f5ac02a4d519e13e1cc70a9ff7216b9acef5655f956",
+    "pixels": 1324,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate",
+    "source": "7ba8f25aadf7e805570f80c8ac8c5673e265d44bce3890b7e9a56662dad362ee",
+    "material": "skin",
+    "mask": "1f7e4787a2f7deff6ac4ed951b966523b40fd819940b25c92564eaac3aebfd36",
+    "pixels": 1308,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate",
+    "source": "14f439e96610b4ea34fdaf1b369b27da9ab1ee47680711a6eca95f2ace971e1b",
+    "material": "skin",
+    "mask": "504662d4b6873020d30540e7a8a391166de872f412b13bd936a2701b9a866703",
+    "pixels": 1343,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate",
+    "source": "2700c466e325cd34a4a99eaac334fe2fa345fa29e12d7fc24bb80f7f01fac1a0",
+    "material": "skin",
+    "mask": "009a4a1080abf646cc1a46893a101e420c9ead04ef0314db20a0f4639198a562",
+    "pixels": 1334,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate",
+    "source": "81ce2c74c6e8e05f2745223cdea70cfecee5b0ff49e4bcbf8d6ed25d62e72449",
+    "material": "skin",
+    "mask": "0661c468d18e245b3400f8cc212926aa7c5cc916b722b1dd35334abd939ed096",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "hair",
+    "mask": "1294801f31c25820a54fa5509fd774f42d5e7fa5e67e37acac02ae06822614dc",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-south-isolated-r2-boots148-isolated-candidate",
+    "source": "9f6887a18e8b7a60e6dd512e9174f8f5a627b66036dc785e13567340b1a70d93",
+    "material": "skin",
+    "mask": "3e5964c41588932d85bff2593c4edf7d604747ac39e65cefacd239b23e5d4114",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e",
+    "material": "skin",
+    "mask": "4f4dce3d1153a6d1fc362cb3ed6c1e3c01b6c28957efd5e8f326c21de20bc120",
+    "pixels": 14633,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "f9411a6cc7f6b38375a571819d9f906e40f0ddecb5595e21d3e1403ec28ce119",
+    "material": "skin",
+    "mask": "98e29868a266244053701400ab167a6cbbdccf6718dd5d3377f7e6f341b1e6a9",
+    "pixels": 12520,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "ed433ce8c8efe6df749ad243903413da36630b14760cf22c87d75ed29734761a",
+    "material": "skin",
+    "mask": "e2c3549c7735475f30441c02ef3fa8a38a90ae4a97f1f2353d20fd0891b766a8",
+    "pixels": 13368,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "1977d7c970d15d220632ec803c78eb419e83997272d4bcb3ea6ca87aaea42803",
+    "material": "skin",
+    "mask": "919774114a82c7f48337730f398620ea8fcff4238fcf97c3288777cc79fd380c",
+    "pixels": 13050,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "9efc6da402d1166151294ad571c6925478149afd453cca6efdb702d573603838",
+    "material": "skin",
+    "mask": "f3075947823ba329de10bd6cc23451e9bd26f86bff42ca541eee9dff7cf28e91",
+    "pixels": 12736,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "f2e724da3ef7bf1023285f5328df78b2c5ec6aea1aedbc0a3ad8bbef211e7204",
+    "material": "skin",
+    "mask": "e985a943726e587cc4e00885f7c1d4a8d189f95e2be66471a7ffa15941b2a97a",
+    "pixels": 13165,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "42a3dc85b1a8da61351dc72593255b1f6877a1440eeb9a22e4cec6248bb240fd",
+    "material": "skin",
+    "mask": "5ea19106bd4079e5ee22d14f9129f3d324666a081621e068792f12b8aa23d853",
+    "pixels": 12831,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "42d082fb974367ca44df08fe374512e388a1259120238c4944748ed29b41ba65",
+    "material": "skin",
+    "mask": "974c013725bd594244c45bf36f0ee7c80139e9ed659f540bb108506cb9174cd1",
+    "pixels": 15319,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "e29ac6a7d7759516e6733c811635a4c2b6087fdc4702002823bfa86655c9295d",
+    "material": "skin",
+    "mask": "24b325a3c4c2b1f815cc14f1aa7056ff6e739a2e888d7d4f059133f7948b8191",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a",
+    "material": "skin",
+    "mask": "47c4585f7c79fdf6d67207416b4a08c9b7322da3d9abc94cddf965bd6ed174a0",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "hair",
+    "mask": "dbe167d2e9103349e34109ea3ca90dfd0683b2bde79e322883c69c027c3a76f5",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "skin",
+    "mask": "3c24790b5028d8e3d31f8121a6a53b1518ba5774e6da106deede8ed4bca00a50",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "f1caddde86a513e7a9ea667451ec44ae54db0997c47a8b53d1e671a9e980e768",
+    "material": "skin",
+    "mask": "727cfc8fedc37fbc7c99d28c3781d46d31cfc25acfa2d0a54e30143edaf65060",
+    "pixels": 15876,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "bafd6e4ee5c076bcbd718598b7cf29e2c74a39db40176544d6eb167952c53f1e",
+    "material": "skin",
+    "mask": "1c590d71feb79fe77116eb434c3bf59bffcc31a76c54c60abbe1973193184c9e",
+    "pixels": 15956,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "17bf6665bf557365c02acde301d08512feca1acb5ec86bea737bfe305ea629a8",
+    "material": "skin",
+    "mask": "61ff647f8b4007df1258f1d90b7d37bf4fdb1fea606815f3cb3f150b712ad832",
+    "pixels": 14880,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "3cbcfc3072cd2994935be61620d04d93156cc8426bbfb3d1e8054d6e4f2d2ad6",
+    "material": "skin",
+    "mask": "1f231d70bcfdbd95228dd35c1778b82fa2297067b8c601e28fd064705612345d",
+    "pixels": 14775,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "58285e58eeec43ed678fd80ca3a3c3d66991f885a68f2e737ca221f12539e481",
+    "material": "skin",
+    "mask": "bc9e08e77980c3084299f072f0a5fb4d2e3145578689fd4eab012ef4d03a31c8",
+    "pixels": 13977,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "5959819bf4238079a0f72a28a4a00365c0a85d8e3d4d0f6e1bfeb23633db4def",
+    "material": "skin",
+    "mask": "d138b08d57b1dc50352bf5e64ff4f8bc80c00fb7dfb77387cc33c7f861641bff",
+    "pixels": 14738,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "c22e9d0683bf9f02c5902c424fabdffd64b2cfef46e0dfac7e0537ee2de4d5ee",
+    "material": "skin",
+    "mask": "ab3058ae49cfb537ecd1681e5297f37e54bb55a846a7e7129b9a38e2963c7fc8",
+    "pixels": 16166,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "2ff6a1ddc4bb9e2c18a49f17d8778c5229f527c2e5df1dbaa03f5b7c79a2889f",
+    "material": "skin",
+    "mask": "6e58cf1bdbffe7e1e91cec90658027074841fdc912fbe6977b573cac8c7c2ad9",
+    "pixels": 15810,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "e29ac6a7d7759516e6733c811635a4c2b6087fdc4702002823bfa86655c9295d",
+    "material": "skin",
+    "mask": "24b325a3c4c2b1f815cc14f1aa7056ff6e739a2e888d7d4f059133f7948b8191",
+    "pixels": 4618,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a",
+    "material": "skin",
+    "mask": "47c4585f7c79fdf6d67207416b4a08c9b7322da3d9abc94cddf965bd6ed174a0",
+    "pixels": 1492,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "hair",
+    "mask": "dbe167d2e9103349e34109ea3ca90dfd0683b2bde79e322883c69c027c3a76f5",
+    "pixels": 4090,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate",
+    "source": "4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7",
+    "material": "skin",
+    "mask": "3c24790b5028d8e3d31f8121a6a53b1518ba5774e6da106deede8ed4bca00a50",
+    "pixels": 425,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots148-isolated-candidate",
+    "source": "be14f103baea2dfdf9b7558a4c70075252bd9a9f7ec08bdfe21e6acd3b7d271d",
+    "material": "skin",
+    "mask": "ba38e4f96616d5511c222edecc140da2277ea144fc054204a1c628d5e09cffe4",
+    "pixels": 5950,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots148-isolated-candidate",
+    "source": "fa57ef721f1cdcc98e743a388e19fa282f8f224539061b8db164f6688867a69d",
+    "material": "skin",
+    "mask": "5fab33075ee7ee71de08f6394a21b4de7e9dd7030dec36ed85b3e19d21c6def4",
+    "pixels": 2624,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots148-isolated-candidate",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "hair",
+    "mask": "a3f3641c406dec245cd16001f8e0abaf629b8227bbc06eaa4a7b1dd268e4dd62",
+    "pixels": 5045,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots148-isolated-candidate",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "skin",
+    "mask": "a0524bf1964b5eb64bab16837002b21652c4cbfa67374202c02e6b8f96706665",
+    "pixels": 131,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots148-isolated-candidate",
+    "source": "afc23e6fa348a0ca40e75a520703ce50b795d8a5250423b2eacf0b5befe43c01",
+    "material": "skin",
+    "mask": "b640b645d507a37a7c2bc72e8c2d1d7d80b1e15bb50e2d1ec573fd616d15ac7f",
+    "pixels": 1436,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots148-isolated-candidate",
+    "source": "bac6e7dd0929962417f44fe6f7f97d04225e8d35103ebaa542ee185644c3f6ff",
+    "material": "skin",
+    "mask": "77da46f716272771bf2107144323ef64e590699544aed9e332b09374199b87a0",
+    "pixels": 1331,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots148-isolated-candidate",
+    "source": "32a593ef7128b2d05d56191d7b36f3e0387b7b0f100c9f4702879f9778ba38f4",
+    "material": "skin",
+    "mask": "31b12b5dc981ea15cd24acec740ecd416940fa7f85ce9e1aa05af1312155be5d",
+    "pixels": 1463,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-walk-north-isolated-r2-boots148-isolated-candidate",
+    "source": "e61dfb06ec13c8085a02dc5ffbd2cca8648d0a96f242a3bbd15884ab9baea3a1",
+    "material": "skin",
+    "mask": "d84837f02a2e351efb8d0d75b3a9eeb054899526219f5a243b89f300c5b8767b",
+    "pixels": 1372,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots148-isolated-candidate",
+    "source": "be14f103baea2dfdf9b7558a4c70075252bd9a9f7ec08bdfe21e6acd3b7d271d",
+    "material": "skin",
+    "mask": "ba38e4f96616d5511c222edecc140da2277ea144fc054204a1c628d5e09cffe4",
+    "pixels": 5950,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots148-isolated-candidate",
+    "source": "fa57ef721f1cdcc98e743a388e19fa282f8f224539061b8db164f6688867a69d",
+    "material": "skin",
+    "mask": "5fab33075ee7ee71de08f6394a21b4de7e9dd7030dec36ed85b3e19d21c6def4",
+    "pixels": 2624,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots148-isolated-candidate",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "hair",
+    "mask": "a3f3641c406dec245cd16001f8e0abaf629b8227bbc06eaa4a7b1dd268e4dd62",
+    "pixels": 5045,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots148-isolated-candidate",
+    "source": "429fbd2edaed6ec4d1ad5aac24898967f731e2f30f522f73d2fb16931dcf3a06",
+    "material": "skin",
+    "mask": "a0524bf1964b5eb64bab16837002b21652c4cbfa67374202c02e6b8f96706665",
+    "pixels": 131,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots148-isolated-candidate",
+    "source": "afc23e6fa348a0ca40e75a520703ce50b795d8a5250423b2eacf0b5befe43c01",
+    "material": "skin",
+    "mask": "b640b645d507a37a7c2bc72e8c2d1d7d80b1e15bb50e2d1ec573fd616d15ac7f",
+    "pixels": 1436,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots148-isolated-candidate",
+    "source": "bac6e7dd0929962417f44fe6f7f97d04225e8d35103ebaa542ee185644c3f6ff",
+    "material": "skin",
+    "mask": "77da46f716272771bf2107144323ef64e590699544aed9e332b09374199b87a0",
+    "pixels": 1331,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots148-isolated-candidate",
+    "source": "32a593ef7128b2d05d56191d7b36f3e0387b7b0f100c9f4702879f9778ba38f4",
+    "material": "skin",
+    "mask": "31b12b5dc981ea15cd24acec740ecd416940fa7f85ce9e1aa05af1312155be5d",
+    "pixels": 1463,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-idle-north-isolated-r2-boots148-isolated-candidate",
+    "source": "e61dfb06ec13c8085a02dc5ffbd2cca8648d0a96f242a3bbd15884ab9baea3a1",
+    "material": "skin",
+    "mask": "d84837f02a2e351efb8d0d75b3a9eeb054899526219f5a243b89f300c5b8767b",
+    "pixels": 1372,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+    "source": "9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97",
+    "material": "skin",
+    "mask": "8857a437f6daad7124a0092e4d3f338445e5a6be3c8f8024ef687a35e056a8ca",
+    "pixels": 15128,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+    "source": "eebe26703d817b42082bb0a87755dae1add5303daae39016e31e595fe302ce4d",
+    "material": "skin",
+    "mask": "eddc2bede7424f0c0b003a7a1d3f990f12706d77c4812b066aa71feadb822af0",
+    "pixels": 14322,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+    "source": "443a426a01956892e6d26c74e4e5c6e788f5e3685c671fe8646042fcdf728a03",
+    "material": "skin",
+    "mask": "e845503ac91a6d93f075ebf1836242a745811ef9057a54091b5c64e687bd930d",
+    "pixels": 14287,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+    "source": "acf14879bd873ba084eed990b5299c8ca12ef7accf4088d61d37927122949742",
+    "material": "skin",
+    "mask": "a12dd112f4e644c73895920c015508caca5d49f1f8c498c220520117212e928d",
+    "pixels": 13901,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+    "source": "1a0f2561bf6ddfdbe6167ac07ce569c5fb107136e722d05b919d35c62dd440be",
+    "material": "skin",
+    "mask": "6ed125e146cf42cdd39204a3e63b14fabaf9e361a240a87d097f35b654f6706c",
+    "pixels": 13581,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+    "source": "ea78b3bbe7da1935c45a4d39ae73d8ab13a84c811f54da142145093d9f5efb07",
+    "material": "skin",
+    "mask": "0619ccca822eb82f6654a1a38016b8a335f8af2eef9de7e3f2e514063b2b3705",
+    "pixels": 14409,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+    "source": "b072b3256a05b69c4a7f994c2f98503cf1ec968cd1ee710d7f8ebdd41b99a4fd",
+    "material": "skin",
+    "mask": "ea8465f4a2e17111a35c62ce95644b54385789bdaf42b849741fe87e86a4cdb1",
+    "pixels": 14394,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+    "source": "fd2616f94952dca6049960e9847a46ab54bc8e72beca12ac2ab4dec23fad7659",
+    "material": "skin",
+    "mask": "39adce33bd4769afa7e4927c3abd2a00ece78f28496d0e8fe365dd645a2549b2",
+    "pixels": 15180,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+    "source": "767c435b05d1f85eed23fde9603e1ca722ed095609b17af82634522024c95969",
+    "material": "skin",
+    "mask": "d29e73aaf8d10a387f13eddb2196f294d3af14a6c546a6feb0d69142b947e650",
+    "pixels": 2624,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+    "source": "c5eb1d2d523d85acb584eee39a8e1e66b0ffbbf5cf2a118dc796f91b69bea8ea",
+    "material": "hair",
+    "mask": "b883b204fe3ce3198e503b06bc0626c711dbef320180801f85979a558598db3f",
+    "pixels": 5045,
+    "authority": "identical base source SHA"
+  },
+  {
+    "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+    "source": "c5eb1d2d523d85acb584eee39a8e1e66b0ffbbf5cf2a118dc796f91b69bea8ea",
+    "material": "skin",
+    "mask": "db6add2cbacf81936156867f82260fee7fccbbae5d86663224089385760ddd39",
+    "pixels": 131,
+    "authority": "identical base source SHA"
+  }
+]

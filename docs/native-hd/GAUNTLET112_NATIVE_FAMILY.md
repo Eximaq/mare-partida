@@ -1,0 +1,2 @@
+# Manopla112 native family
+32 attack,64 walk,4 idle states. Existing source PNG pixels only, no resize. Attack uses original punch base, owned glove/hand interface only. SOUTH and NORTH targets equal original sources. EAST/WEST retain original stable head, not approved-source head shift: sourceCompositeDifferencePixels stored per state. Carry uses rigid wrist transfer and clips only the old distal hand to avoid duplicated skin. Original skin only; no implicit original-to-light mapping. Position and timing are candidates, not newly approved compositions.

@@ -1,0 +1,4 @@
+120 original atomic-source family:36attack poses+68idle/walk states,104frames rendered.
+Attack SOUTH12 from approved-male-120-south-library.zip; NORTH/EAST/WEST8 each from approved multiview source. Complete body+weapon composites unchanged640RGBA. Original brown hair/skin/shorts are preserved; unrelated equipment/palettes must be rejected.
+Source clocks restored: SOUTH24fps,order0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,8,9,10,11,11 per original MANIFEST. NORTH/EAST/WEST12fps sequence0..7 plus12 extra holds on7 per PREVIEW_CLOCK.json. These are preview clocks, not gameplay combat certification.
+Carry candidate uses existing120 initial forearm/equipment ownership over unchanged512 original walk/idle. Distal bare hand clipped under cannon. No raster scaling. All104frames rendered in Canvas; selected SOUTH/EASTwalk inspected and anatomically connected. Minor calibration remains candidate.

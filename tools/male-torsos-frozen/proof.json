@@ -1,0 +1,964 @@
+{
+  "records": 72,
+  "assets": 557,
+  "evidence": [
+    {
+      "item": 6,
+      "direction": "south",
+      "base": "male-walk-south-r7",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat6-collar-core",
+        "coat6-left-sleeve-RIGHT-sleeve",
+        "coat6-right-sleeve-LEFT-sleeve",
+        "coat6-torso-core",
+        "coat6-torso-RIGHT-upper",
+        "coat6-torso-LEFT-upper",
+        "coat6-torso-hem",
+        "coat6-inner-lining-neck"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "armRight",
+        "armLeft",
+        "handRight",
+        "handLeft",
+        "face",
+        "hair",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 6,
+      "direction": "north",
+      "base": "v7-male-walk-drawn-north-north",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat6-own-core",
+        "coat6-own-LEFT-upper",
+        "coat6-own-RIGHT-upper",
+        "coat6-own-hem"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "hair",
+        "armRight",
+        "handRight",
+        "armLeft",
+        "handLeft",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 7,
+      "direction": "south",
+      "base": "male-walk-south-r7",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat7-rear-neck",
+        "coat7-front-core",
+        "coat7-front-RIGHT-upper",
+        "coat7-front-LEFT-upper",
+        "coat7-front-hem",
+        "sleeve-aperture-rear-RIGHT-sleeve",
+        "sleeve-aperture-rear-LEFT-sleeve"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "armRight",
+        "armLeft",
+        "handRight",
+        "handLeft",
+        "face",
+        "hair",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 7,
+      "direction": "north",
+      "base": "v7-male-walk-drawn-north-north",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat7-whole-core",
+        "coat7-whole-LEFT-upper",
+        "coat7-whole-RIGHT-upper",
+        "coat7-whole-hem",
+        "sleeve-aperture-rear-LEFT-sleeve",
+        "sleeve-aperture-rear-RIGHT-sleeve"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "hair",
+        "armRight",
+        "handRight",
+        "armLeft",
+        "handLeft",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 130,
+      "direction": "south",
+      "base": "male-walk-south-r7",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat130-rear-core",
+        "coat130-front-core",
+        "coat130-front-RIGHT-upper",
+        "coat130-front-LEFT-upper",
+        "coat130-front-RIGHT-lower",
+        "coat130-front-LEFT-lower",
+        "coat130-front-hem"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "armRight",
+        "armLeft",
+        "handRight",
+        "handLeft",
+        "face",
+        "hair",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 130,
+      "direction": "north",
+      "base": "v7-male-walk-drawn-north-north",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat130-north-core",
+        "coat130-north-LEFT-upper",
+        "coat130-north-RIGHT-upper",
+        "coat130-north-LEFT-lower",
+        "coat130-north-RIGHT-lower",
+        "coat130-north-hem"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "hair",
+        "armRight",
+        "handRight",
+        "armLeft",
+        "handLeft",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 137,
+      "direction": "south",
+      "base": "male-walk-south-r7",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat137-collar-rear-neck",
+        "coat137-front-core",
+        "coat137-front-RIGHT-upper",
+        "coat137-front-LEFT-upper",
+        "coat137-front-RIGHT-lower",
+        "coat137-front-LEFT-lower",
+        "coat137-front-hem",
+        "collar-depth-rear-neck",
+        "cuff-emergence-handRight-RIGHT-skin",
+        "cuff-emergence-handLeft-LEFT-skin"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "armRight",
+        "armLeft",
+        "handRight",
+        "handLeft",
+        "face",
+        "hair",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 137,
+      "direction": "north",
+      "base": "v7-male-walk-drawn-north-north",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat137-collar-rear-neck",
+        "coat137-front-core",
+        "coat137-front-LEFT-upper",
+        "coat137-front-RIGHT-upper",
+        "coat137-front-LEFT-lower",
+        "coat137-front-RIGHT-lower",
+        "coat137-front-hem",
+        "cuff-emergence-handRight-RIGHT-skin",
+        "cuff-emergence-handLeft-LEFT-skin"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "hair",
+        "armRight",
+        "handRight",
+        "armLeft",
+        "handLeft",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 144,
+      "direction": "south",
+      "base": "male-walk-south-r7",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat144-own-original-control-core",
+        "coat144-own-original-control-RIGHT-upper",
+        "coat144-own-original-control-LEFT-upper",
+        "coat144-own-original-control-RIGHT-lower",
+        "coat144-own-original-control-LEFT-lower",
+        "coat144-own-original-control-hem",
+        "collar-depth-rear-neck",
+        "south-visible-original-hands-RIGHT-skin",
+        "south-visible-original-hands-LEFT-skin"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "armRight",
+        "armLeft",
+        "handRight",
+        "handLeft",
+        "face",
+        "hair",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 144,
+      "direction": "north",
+      "base": "v7-male-walk-drawn-north-north",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat144-whole-core",
+        "coat144-whole-hem"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "hair",
+        "armRight",
+        "handRight",
+        "armLeft",
+        "handLeft",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 158,
+      "direction": "south",
+      "base": "male-walk-south-r7",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat158-own-original-control-core",
+        "coat158-own-original-control-RIGHT-upper",
+        "coat158-own-original-control-LEFT-upper",
+        "coat158-own-original-control-RIGHT-lower",
+        "coat158-own-original-control-LEFT-lower",
+        "coat158-own-original-control-hem",
+        "rear-collar-collar"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "armRight",
+        "armLeft",
+        "handRight",
+        "handLeft",
+        "face",
+        "hair",
+        "lower-redrawn",
+        "male-hand-through-apertures-skin-left",
+        "male-hand-through-apertures-skin-right"
+      ]
+    },
+    {
+      "item": 158,
+      "direction": "north",
+      "base": "v7-male-walk-drawn-north-north",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat158-whole-core",
+        "coat158-whole-LEFT-upper",
+        "coat158-whole-RIGHT-upper",
+        "coat158-whole-LEFT-lower",
+        "coat158-whole-RIGHT-lower",
+        "coat158-whole-hem",
+        "original-neck-coverage-only-collar"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "hair",
+        "armRight",
+        "handRight",
+        "armLeft",
+        "handLeft",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 165,
+      "direction": "south",
+      "base": "male-walk-south-r7",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat165-own-original-control-core",
+        "coat165-own-original-control-RIGHT-upper",
+        "coat165-own-original-control-LEFT-upper",
+        "coat165-own-original-control-RIGHT-lower",
+        "coat165-own-original-control-LEFT-lower",
+        "coat165-own-original-control-hem",
+        "rear-collar-collar"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "armRight",
+        "armLeft",
+        "handRight",
+        "handLeft",
+        "face",
+        "hair",
+        "lower-redrawn",
+        "male-distal-hands-skin-left",
+        "male-distal-hands-skin-right",
+        "male-hand-through-apertures-skin-left",
+        "male-hand-through-apertures-skin-right"
+      ]
+    },
+    {
+      "item": 165,
+      "direction": "north",
+      "base": "v7-male-walk-drawn-north-north",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat165-whole-core",
+        "coat165-whole-LEFT-upper",
+        "coat165-whole-RIGHT-upper",
+        "coat165-whole-LEFT-lower",
+        "coat165-whole-RIGHT-lower",
+        "coat165-whole-hem",
+        "original-neck-coverage-only-collar"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "hair",
+        "armRight",
+        "handRight",
+        "armLeft",
+        "handLeft",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 172,
+      "direction": "south",
+      "base": "male-walk-south-r7",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat172-rear-collar-collar",
+        "coat172-core-open-collar-collar",
+        "coat172-aligned-sleeves-right-upper",
+        "coat172-aligned-sleeves-left-upper",
+        "coat172-aligned-sleeves-right-lower",
+        "coat172-aligned-sleeves-left-lower",
+        "bilateral-collar-front-collar",
+        "left-front-cuff-rim-rim-left",
+        "right-front-cuff-rim-rim-right"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "armRight",
+        "armLeft",
+        "handRight",
+        "handLeft",
+        "face",
+        "hair",
+        "lower-redrawn",
+        "male-distal-hands-skin-left",
+        "male-distal-hands-skin-right",
+        "male-hand-through-apertures-skin-left",
+        "male-hand-through-apertures-skin-right"
+      ]
+    },
+    {
+      "item": 172,
+      "direction": "north",
+      "base": "v7-male-walk-drawn-north-north",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat-front-core",
+        "coat-front-LEFT-upper",
+        "coat-front-RIGHT-upper",
+        "coat-front-LEFT-lower",
+        "coat-front-RIGHT-lower",
+        "coat-front-hem",
+        "original-neck-coverage-only-collar"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "hair",
+        "armRight",
+        "handRight",
+        "armLeft",
+        "handLeft",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 179,
+      "direction": "south",
+      "base": "male-walk-south-r7",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat179-own-original-control-core",
+        "coat179-own-original-control-RIGHT-upper",
+        "coat179-own-original-control-LEFT-upper",
+        "coat179-own-original-control-RIGHT-lower",
+        "coat179-own-original-control-LEFT-lower",
+        "coat179-own-original-control-hem",
+        "rear-collar-collar"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "armRight",
+        "armLeft",
+        "handRight",
+        "handLeft",
+        "face",
+        "hair",
+        "lower-redrawn",
+        "male-distal-hands-skin-left",
+        "male-distal-hands-skin-right",
+        "male-hand-through-apertures-skin-left",
+        "male-hand-through-apertures-skin-right"
+      ]
+    },
+    {
+      "item": 179,
+      "direction": "north",
+      "base": "v7-male-walk-drawn-north-north",
+      "exactRest": true,
+      "posesIdentical": true,
+      "garmentLayers": [
+        "coat179-whole-core",
+        "coat179-whole-hem",
+        "original-neck-coverage-only-collar"
+      ],
+      "excludedSourceLayers": [
+        "torso",
+        "headBase",
+        "hair",
+        "armRight",
+        "handRight",
+        "armLeft",
+        "handLeft",
+        "lower-redrawn"
+      ]
+    },
+    {
+      "item": 6,
+      "direction": "east",
+      "base": "v7-male-walk-drawn-east-east",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat6-upper-sleeve-collar-core",
+        "coat6-upper-sleeve-collar-RIGHT-upper",
+        "coat6-lower-torso-core",
+        "coat6-lower-torso-hem"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "own-waist-fabric-coverage-core",
+        "own-waist-fabric-coverage-hem"
+      ]
+    },
+    {
+      "item": 6,
+      "direction": "west",
+      "base": "v7-male-walk-drawn-east-east-mirror-west-candidate",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat6-upper-sleeve-collar-core",
+        "coat6-upper-sleeve-collar-RIGHT-upper",
+        "coat6-lower-torso-core",
+        "coat6-lower-torso-hem"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "own-waist-fabric-coverage-core",
+        "own-waist-fabric-coverage-hem"
+      ]
+    },
+    {
+      "item": 7,
+      "direction": "east",
+      "base": "v7-male-walk-drawn-east-east",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat7-upper-core",
+        "coat7-upper-RIGHT-upper",
+        "coat7-lower-core",
+        "coat7-lower-hem",
+        "sleeve-front-lip-RIGHT-sleeve",
+        "sleeve-aperture-rear-RIGHT-sleeve"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "own-waist-fabric-coverage-core",
+        "own-waist-fabric-coverage-hem"
+      ]
+    },
+    {
+      "item": 7,
+      "direction": "west",
+      "base": "v7-male-walk-drawn-east-east-mirror-west-candidate",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat7-upper-core",
+        "coat7-upper-RIGHT-upper",
+        "coat7-lower-core",
+        "coat7-lower-hem",
+        "sleeve-front-lip-RIGHT-sleeve",
+        "sleeve-aperture-rear-RIGHT-sleeve"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "own-waist-fabric-coverage-core",
+        "own-waist-fabric-coverage-hem"
+      ]
+    },
+    {
+      "item": 130,
+      "direction": "east",
+      "base": "v7-male-walk-drawn-east-east",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat130-upper-sleeve-core",
+        "coat130-upper-sleeve-RIGHT-upper",
+        "coat130-upper-sleeve-RIGHT-lower",
+        "coat130-upper-sleeve-hem",
+        "coat130-lower-skirt-hem"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "own-waist-fabric-coverage-core",
+        "own-waist-fabric-coverage-hem",
+        "male-wrist-through-opening-RIGHT-skin"
+      ]
+    },
+    {
+      "item": 130,
+      "direction": "west",
+      "base": "v7-male-walk-drawn-east-east-mirror-west-candidate",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat130-upper-sleeve-core",
+        "coat130-upper-sleeve-RIGHT-upper",
+        "coat130-upper-sleeve-RIGHT-lower",
+        "coat130-upper-sleeve-hem",
+        "coat130-lower-skirt-hem"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "own-waist-fabric-coverage-core",
+        "own-waist-fabric-coverage-hem",
+        "male-wrist-through-opening-RIGHT-skin"
+      ]
+    },
+    {
+      "item": 137,
+      "direction": "east",
+      "base": "v7-male-walk-drawn-east-east",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat137-upper-core",
+        "coat137-upper-RIGHT-upper",
+        "coat137-upper-RIGHT-lower",
+        "coat137-upper-hem",
+        "coat137-lower-hem",
+        "profile-underlap"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "own-waist-fabric-coverage-core",
+        "own-waist-fabric-coverage-hem",
+        "male-wrist-through-opening-RIGHT-skin"
+      ]
+    },
+    {
+      "item": 137,
+      "direction": "west",
+      "base": "v7-male-walk-drawn-east-east-mirror-west-candidate",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat137-upper-core",
+        "coat137-upper-RIGHT-upper",
+        "coat137-upper-RIGHT-lower",
+        "coat137-upper-hem",
+        "coat137-lower-hem",
+        "profile-underlap"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "own-waist-fabric-coverage-core",
+        "own-waist-fabric-coverage-hem",
+        "male-wrist-through-opening-RIGHT-skin"
+      ]
+    },
+    {
+      "item": 144,
+      "direction": "east",
+      "base": "v7-male-walk-drawn-east-east",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat144-upper-core",
+        "coat144-upper-RIGHT-upper",
+        "coat144-upper-RIGHT-lower",
+        "coat144-upper-hem",
+        "coat144-lower-hem",
+        "profile-underlap"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "own-waist-fabric-coverage-core",
+        "own-waist-fabric-coverage-hem",
+        "male-wrist-through-opening-RIGHT-skin"
+      ]
+    },
+    {
+      "item": 144,
+      "direction": "west",
+      "base": "v7-male-walk-drawn-east-east-mirror-west-candidate",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat144-upper-core",
+        "coat144-upper-RIGHT-upper",
+        "coat144-upper-RIGHT-lower",
+        "coat144-upper-hem",
+        "coat144-lower-hem",
+        "profile-underlap"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "own-waist-fabric-coverage-core",
+        "own-waist-fabric-coverage-hem",
+        "male-wrist-through-opening-RIGHT-skin"
+      ]
+    },
+    {
+      "item": 158,
+      "direction": "east",
+      "base": "v7-male-walk-drawn-east-east",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat158-upper-core",
+        "coat158-upper-RIGHT-upper",
+        "coat158-upper-RIGHT-lower",
+        "coat158-upper-hem",
+        "coat158-lower-tail",
+        "original-neck-coverage-only-collar"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "male-hand-through-apertures-skin-left",
+        "male-hand-through-apertures-skin-right"
+      ]
+    },
+    {
+      "item": 158,
+      "direction": "west",
+      "base": "v7-male-walk-drawn-east-east-mirror-west-candidate",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat158-upper-core",
+        "coat158-upper-RIGHT-upper",
+        "coat158-upper-RIGHT-lower",
+        "coat158-upper-hem",
+        "coat158-lower-tail",
+        "original-neck-coverage-only-collar"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "male-hand-through-apertures-skin-right",
+        "male-hand-through-apertures-skin-left"
+      ]
+    },
+    {
+      "item": 165,
+      "direction": "east",
+      "base": "v7-male-walk-drawn-east-east",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat165-upper-core",
+        "coat165-upper-RIGHT-upper",
+        "coat165-upper-RIGHT-lower",
+        "coat165-upper-hem",
+        "coat165-lower-tail",
+        "original-neck-coverage-only-collar"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "male-hand-through-apertures-skin-left",
+        "male-hand-through-apertures-skin-right"
+      ]
+    },
+    {
+      "item": 165,
+      "direction": "west",
+      "base": "v7-male-walk-drawn-east-east-mirror-west-candidate",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat165-upper-core",
+        "coat165-upper-RIGHT-upper",
+        "coat165-upper-RIGHT-lower",
+        "coat165-upper-hem",
+        "coat165-lower-tail",
+        "original-neck-coverage-only-collar"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "male-hand-through-apertures-skin-right",
+        "male-hand-through-apertures-skin-left"
+      ]
+    },
+    {
+      "item": 172,
+      "direction": "east",
+      "base": "v7-male-walk-drawn-east-east",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat172-lower-tail",
+        "corrected-core-core",
+        "corrected-core-hem",
+        "corrected-sleeve-near-upper",
+        "corrected-sleeve-near-lower",
+        "front-cuff-rim-rim",
+        "original-neck-coverage-only-collar",
+        "own-torso-behind-sleeve"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "male-hand-through-apertures-skin-left",
+        "male-hand-through-apertures-skin-right"
+      ]
+    },
+    {
+      "item": 172,
+      "direction": "west",
+      "base": "v7-male-walk-drawn-east-east-mirror-west-candidate",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat172-lower-tail",
+        "corrected-core-core",
+        "corrected-core-hem",
+        "corrected-sleeve-near-upper",
+        "corrected-sleeve-near-lower",
+        "original-neck-coverage-only-collar",
+        "own-torso-behind-sleeve"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "male-hand-through-apertures-skin-right",
+        "male-hand-through-apertures-skin-left"
+      ]
+    },
+    {
+      "item": 179,
+      "direction": "east",
+      "base": "v7-male-walk-drawn-east-east",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat179-upper-core",
+        "coat179-upper-RIGHT-upper",
+        "coat179-upper-RIGHT-lower",
+        "coat179-upper-hem",
+        "coat179-lower-tail",
+        "original-neck-coverage-only-collar"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "male-hand-through-apertures-skin-left",
+        "male-hand-through-apertures-skin-right"
+      ]
+    },
+    {
+      "item": 179,
+      "direction": "west",
+      "base": "v7-male-walk-drawn-east-east-mirror-west-candidate",
+      "exactRest": true,
+      "posesIdentical": false,
+      "garmentLayers": [
+        "coat179-upper-core",
+        "coat179-upper-RIGHT-upper",
+        "coat179-upper-RIGHT-lower",
+        "coat179-upper-hem",
+        "coat179-lower-tail",
+        "original-neck-coverage-only-collar"
+      ],
+      "excludedSourceLayers": [
+        "clothed018-visible-background",
+        "near-upper-arm",
+        "near-forearm-hand",
+        "equip-boot155-far",
+        "equip-boot155-near",
+        "equip-glove-152",
+        "pants133-visible-cloth-only",
+        "male-hand-through-apertures-skin-right",
+        "male-hand-through-apertures-skin-left"
+      ]
+    }
+  ]
+}
