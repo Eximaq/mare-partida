@@ -5,6 +5,7 @@ Experimental and deliberately absent from production indexes. It is not a comple
 Run from repository root (dependencies installed):
 
 ```text
+python tools/materialize_native_indexes.py
 node --test tests/pants22-candidate.test.cjs
 node tools/pants22-native/build-candidate.cjs <temporary-output>
 node tools/pants22-native/build-profile-candidate.cjs <temporary-output>

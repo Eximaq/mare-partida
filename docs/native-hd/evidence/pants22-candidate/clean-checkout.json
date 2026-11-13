@@ -1,0 +1,131 @@
+{
+  "checkout": "502c9859a641b69112cbd50a91cb0b0f2125f671",
+  "cleanGitStatus": "",
+  "buildCommand": "python tools/build_pages.py",
+  "materializationCommand": "python tools/materialize_native_indexes.py",
+  "gameSha256": "ef95c7d3860b0bb6984ea32525bfde497807c36bd8ef453efd23116a0d68009e",
+  "candidateArchiveSha256": "2d88e0783737eaf7e7963aad8ddca7c4ab31bbce17d252e35454c7dbc801f943",
+  "identicalCandidateArchiveToInitialRun": true,
+  "nodeTests": {
+    "passed": 2,
+    "failed": 0
+  },
+  "compositedFrames": 100,
+  "browser": {
+    "passed": true,
+    "errors": [],
+    "phases": [
+      {
+        "phase": "idle",
+        "direction": "south",
+        "source": "candidate-male-pants22-idle-south",
+        "state": "rendered",
+        "frame": 0,
+        "equipped": 22
+      },
+      {
+        "phase": "idle",
+        "direction": "north",
+        "source": "candidate-male-pants22-idle-north",
+        "state": "rendered",
+        "frame": 0,
+        "equipped": 22
+      },
+      {
+        "phase": "idle",
+        "direction": "east",
+        "source": "candidate-male-pants22-idle-east",
+        "state": "rendered",
+        "frame": 0,
+        "equipped": 22
+      },
+      {
+        "phase": "idle",
+        "direction": "west",
+        "source": "candidate-male-pants22-idle-west",
+        "state": "rendered",
+        "frame": 0,
+        "equipped": 22
+      },
+      {
+        "phase": "attack",
+        "direction": "south",
+        "source": "candidate-male-pants22-attack-unarmed-south",
+        "state": "rendered",
+        "frame": 7,
+        "equipped": 22
+      },
+      {
+        "phase": "after-attack",
+        "direction": "south",
+        "source": "candidate-male-pants22-idle-north",
+        "state": "rendered",
+        "frame": 0,
+        "equipped": 22
+      },
+      {
+        "phase": "attack",
+        "direction": "north",
+        "source": "candidate-male-pants22-attack-unarmed-north",
+        "state": "rendered",
+        "frame": 7,
+        "equipped": 22
+      },
+      {
+        "phase": "after-attack",
+        "direction": "north",
+        "source": "candidate-male-pants22-idle-south",
+        "state": "rendered",
+        "frame": 0,
+        "equipped": 22
+      },
+      {
+        "phase": "attack",
+        "direction": "east",
+        "source": "candidate-male-pants22-attack-unarmed-east",
+        "state": "rendered",
+        "frame": 7,
+        "equipped": 22
+      },
+      {
+        "phase": "after-attack",
+        "direction": "east",
+        "source": "candidate-male-pants22-idle-west",
+        "state": "rendered",
+        "frame": 0,
+        "equipped": 22
+      },
+      {
+        "phase": "attack",
+        "direction": "west",
+        "source": "candidate-male-pants22-attack-unarmed-west",
+        "state": "rendered",
+        "frame": 7,
+        "equipped": 22
+      },
+      {
+        "phase": "after-attack",
+        "direction": "west",
+        "source": "candidate-male-pants22-idle-east",
+        "state": "rendered",
+        "frame": 0,
+        "equipped": 22
+      },
+      {
+        "phase": "reload-equipped",
+        "source": "candidate-male-pants22-idle-south:palette:light:black",
+        "state": "rendered",
+        "frame": 0,
+        "equipped": 22
+      },
+      {
+        "phase": "unequipped",
+        "source": "male-idle-original-south-from-walk0:original:none:light:black",
+        "state": "rendered",
+        "frame": 0,
+        "equipped": null
+      }
+    ]
+  },
+  "scope": "Candidate only; not final integration or visual approval"
+}

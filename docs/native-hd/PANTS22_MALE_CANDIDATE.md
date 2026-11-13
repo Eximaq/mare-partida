@@ -53,3 +53,9 @@ Ver tools/pants22-native/README.md. Foram executados os dois testes Node de impo
 3. Validar peitoral + calça e calça + bota pelo inventário; produzir as adaptações exigidas antes de ampliar a combinação.
 4. Só então publicar o vínculo canônico def 22 → legs → pants, repetir o fluxo sem interceptação de índice e obter a primeira entrega completa solicitada.
 5. Demais itens/aparências continuam no relatório geral. Capas seguem fora do escopo visual.
+
+## Reprodução em checkout limpo
+
+O commit 502c9859a641b69112cbd50a91cb0b0f2125f671 foi extraído em worktree separado, sem mudanças rastreadas. Após materializar os índices com o utilitário existente, foram repetidos os dois testes Node, a geração da candidata, o empacotamento, a composição dos 100 quadros, a build publicável e o teste de navegador completo descrito acima. Todos passaram; o pacote candidato teve o mesmo SHA-256. [Registro da reprodução limpa](evidence/pants22-candidate/clean-checkout.json). Dependências instaladas foram reutilizadas por junction, sem copiar código/saves do checkout anterior.
+
+Uma tentativa inicial do navegador começou antes do fim da cópia da build e recebeu HTML de 404 no lugar do índice JSON; ela não conta como aprovação. A rodada válida começou após a conclusão da build.
