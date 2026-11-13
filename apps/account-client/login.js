@@ -98,7 +98,9 @@
             ...(mode === "signup" ? {inviteCode:$("invite-code").value.trim()} : {}),
           });
           if (mode === "login") await enter();
-          else $("status").textContent = result.message;
+          else $("status").textContent = result.message + (mode === "signup"
+            ? " Se este e-mail já estiver vinculado a uma conta, use Entrar ou Recuperar acesso. Cadastrar novamente não altera sua senha."
+            : "");
         } finally {
           $("password").value = "";
           $("invite-code").value = "";

@@ -7,6 +7,12 @@ Somente **Criar conta** solicita e-mail, senha e código de convite. **Cadastrar
 envia uma única solicitação; a confirmação de e-mail do Supabase continua
 obrigatória. Login e recuperação de contas existentes não pedem convite.
 
+A resposta de cadastro orienta explicitamente: se o e-mail já estiver vinculado a
+uma conta, usar **Entrar** ou **Recuperar acesso**; repetir cadastro não altera a
+senha. Essa orientação é a mesma para todos os cadastros aceitos, preservando a
+proteção contra consulta pública de quais e-mails possuem conta. Não se apresenta
+uma mensagem de erro de duplicidade quando o provedor não fornece essa certeza.
+
 `SIGNUP_INVITE_CODE_SHA256` configura o SHA-256 hexadecimal de um código compartilhado
 de alta entropia no ambiente privado do backend. O código nunca integra o cliente,
 URLs, logs, documentação versionada ou banco. Ausência dessa variável mantém o

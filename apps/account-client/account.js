@@ -492,7 +492,9 @@ $("#auth-form").addEventListener("submit", (event) => {
       if (mode === "login") {
         status("Você entrou na sua conta.");
         await refresh();
-      } else status(result.message);
+      } else status(result.message + (mode === "signup"
+        ? " Se este e-mail já estiver vinculado a uma conta, use Entrar ou Recuperar acesso. Cadastrar novamente não altera sua senha."
+        : ""));
     } finally {
       $("#password").value = "";
       $("#invite-code").value = "";
