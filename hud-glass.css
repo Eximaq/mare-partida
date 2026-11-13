@@ -1721,3 +1721,110 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
     & .hm-tree-toolbar { font-size: 12px; }
   }
 }
+
+/* Contract ledger: the inventory frame, restrained glass, and readable reward states. */
+#app #panelOverlay.hud-density.contracts-mode[data-ui-panel=contracts] {
+  --rpg-font: var(--glass-type);
+  --rpg-hd-heading: var(--glass-type);
+  padding: max(8px,var(--rpg-safe-top)) 8px max(8px,var(--rpg-safe-bottom));
+  background: #0005;
+  backdrop-filter: blur(3px);
+  & > .dialog { display: flex; flex-direction: column; width: min(var(--glass-window-width),100%); max-width: none; height: calc(var(--glass-window-limit) - 18px); max-height: calc(var(--glass-window-limit) - 18px); padding: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 12px; background: var(--glass-surface); backdrop-filter: blur(8px); box-shadow: var(--glass-shadow); overflow: hidden; }
+  & .dialog-header { flex: none; min-height: 48px; padding: 2px 8px 2px 14px; gap: 12px; border: 0; border-bottom: 1px solid #ffffff18; background: #ffffff03; }
+  & .dialog-header > div { gap: 8px; }
+  & .dialog-header > div::before { width: 24px; height: 24px; }
+  & #dialogTitle { margin: 0; color: #f5f6f8; font: 700 20px/1.2 var(--glass-type); text-transform: none; letter-spacing: 0; text-shadow: 0 1px 2px #0006; }
+  & #closePanel { width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0; border: 0; border-image: none; border-radius: 8px; background: transparent; font: 26px/1 var(--glass-type); color: var(--glass-muted); box-shadow: none; }
+  & #closePanel:hover { background: #ffffff12; }
+  & #dialogBody { flex: 1; min-width: 0; min-height: 0; padding: 10px; overflow: hidden; font: 13px/1.4 var(--glass-type); font-variant-numeric: tabular-nums; }
+  & .contracts-board { grid-template-columns: minmax(0,1fr) 190px; gap: 10px; color: #f5f6f8; }
+  & .contracts-main { gap: 10px; grid-template-rows: auto minmax(0,1fr) auto; }
+  & #dialogBody .contracts-tabs { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; }
+  & #dialogBody .contracts-tabs:has([data-contract-period=professional]) { grid-template-columns: repeat(5,minmax(0,1fr)); }
+  & #dialogBody button { border-image: none; }
+  & .contract-tab, & .contract-claim, & .crew-button { min-height: 40px; padding: 7px 8px; border: 1px solid var(--glass-line); border-radius: 8px; background: #ffffff05; color: var(--glass-muted); font: 600 12px/1.25 var(--glass-type); text-transform: none; text-shadow: none; gap: 6px; box-shadow: none; transition: background-color .15s,border-color .15s; }
+  & #dialogBody .contract-tab[aria-pressed=true] { background: #d4af3724; border-color: #d8c18a99; color: #f8e3af; outline: 0; filter: none; box-shadow: inset 0 -2px #e4ce9670; }
+  & #dialogBody button:hover:not(:disabled) { background-color: #ffffff12; border-color: var(--glass-gold); filter: none; }
+  & #dialogBody button:focus-visible, & #closePanel:focus-visible { outline: 2px solid var(--glass-gold); outline-offset: -2px; }
+  & .contract-tab .contract-icon { width: 22px; height: 22px; }
+  & .contracts-list { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; padding: 0 3px 2px 0; scrollbar-color: #a38b58 #ffffff08; }
+  & .contract-card { padding: 12px; border: 1px solid #ffffff18; border-image: none; border-radius: 8px; background: #ffffff04; color: #f5f6f8; box-shadow: none; }
+  & .contract-card[data-state=ready] { border-color: #69dba560; background: #4bd79c0a; box-shadow: inset 2px 0 #69dba5; }
+  & .contract-card-head { grid-template-columns: 40px minmax(0,1fr); gap: 10px; min-height: 52px; }
+  & .contract-emblem { width: 40px; height: 40px; border: 1px solid #ffffff18; border-radius: 8px; background: #0003; box-shadow: none; }
+  & .contract-emblem .contract-icon { width: 34px; height: 34px; }
+  & .contract-card h3 { font: 700 14px/1.3 var(--glass-type); color: #f5f6f8; margin: 0 0 4px; }
+  & .contract-card p { font: 400 12px/1.45 var(--glass-type); color: var(--glass-muted); }
+  & .contract-progress-row { gap: 8px; margin-top: 10px; }
+  & .contract-progress-row > b { font: 600 11px/1.3 var(--glass-type); color: var(--glass-muted); }
+  & .contract-progress { height: 7px; border: 0; border-radius: 6px; background: #0006; box-shadow: none; }
+  & .contract-progress > i { background: linear-gradient(90deg,#2186a9,#67d9ed); box-shadow: none; transition: width .2s; }
+  & :is([data-state=ready],[data-state=claimed]) .contract-progress > i { background: linear-gradient(90deg,#31865f,#77dba5); }
+  & .contract-card-foot { min-height: 32px; margin-top: 10px; padding-top: 8px; border-color: #ffffff14; flex-wrap: wrap; }
+  & .contract-rewards { font: 500 11px/1.3 var(--glass-type); gap: 8px; color: var(--glass-gold); }
+  & .contract-rewards img { width: 18px; height: 18px; }
+  & .contract-action { margin-left: auto; }
+  & .contract-state { font: 600 10px/1.4 var(--glass-type); color: var(--glass-muted); }
+  & [data-state=claimed] .contract-state { color: #a5efd5; }
+  & .contract-state img { width: 16px; height: 16px; }
+  & .contract-claim { min-height: 36px; color: #a5efd5; border-color: #69dba560; background: #4bd79c16; }
+  & .contract-claim img { width: 18px; height: 18px; }
+  & .contracts-footer { grid-template-columns: minmax(0,1fr) minmax(190px,.8fr); gap: 12px; min-height: 0; padding: 12px; border: 1px solid #ffffff18; border-image: none; border-radius: 8px; background: #ffffff03; }
+  & .contracts-total-heading { gap: 6px; }
+  & .contracts-total-heading .contract-icon { width: 24px; height: 24px; }
+  & .contracts-total h3 { font: 600 11px/1.4 var(--glass-type); color: var(--glass-gold); }
+  & .contracts-footer .contract-progress-row { margin-top: 7px; }
+  & .contracts-footer .contract-progress { height: 7px; }
+  & .contracts-footer .contract-progress > i { background: linear-gradient(90deg,#b58a35,#e4ce96); }
+  & .contracts-footer .contract-progress-row > b { font: 700 14px/1.2 var(--glass-type); color: #f5f6f8; }
+  & .contracts-final { padding: 0 0 0 12px; border: 0; border-left: 1px solid #ffffff18; gap: 8px; }
+  & .contracts-final-slot { width: 36px; height: 36px; border: 1px solid #d4af3733; border-radius: 8px; background: #0003; box-shadow: none; }
+  & .contracts-final-slot img { width: 28px; height: 28px; }
+  & .contracts-final h3 { font: 600 11px/1.3 var(--glass-type); color: var(--glass-gold); margin: 0 0 3px; }
+  & .contracts-final strong { font: 600 12px/1.4 var(--glass-type); color: #f5f6f8; }
+  & .contracts-final small { display: block; font: 400 10px/1.4 var(--glass-type); color: var(--glass-muted); margin-top: 3px; }
+  & .contracts-art { border: 1px solid #ffffff18; border-radius: 8px; background: #0002; box-shadow: none; overflow: hidden; }
+  & .contracts-art > img { object-fit: cover; }
+  & .contracts-empty { padding: 24px 12px; border: 1px solid #ffffff18; border-radius: 8px; background: #ffffff03; color: var(--glass-muted); }
+  & .contracts-empty h3 { font: 600 16px/1.4 var(--glass-type); color: #f5f6f8; }
+  & .contracts-empty p { font: 400 13px/1.5 var(--glass-type); color: var(--glass-muted); }
+  & .contracts-professional { grid-template-columns: minmax(0,1fr); }
+  & .contracts-professional .contracts-main { grid-template-rows: auto minmax(0,1fr); }
+  & .contracts-professional .contracts-list { grid-template-columns: minmax(0,1fr); }
+  & .contracts-professional :is(.crew-cycle,.crew-objective,.crew-future,.crew-section,.crew-card,.crew-empty) { border: 1px solid #ffffff18; border-radius: 8px; background: #ffffff04; color: var(--glass-muted); padding: 12px; box-shadow: none; }
+  & .contracts-professional .crew-objective[data-completed=true] { border-color: #69dba560; }
+  & .contracts-professional .crew-objective strong { font: 600 14px/1.4 var(--glass-type); color: #f5f6f8; }
+  & .contracts-professional .crew-objective p { font: 400 12px/1.5 var(--glass-type); }
+  & .contracts-professional .crew-objective-xp { color: #a5efd5; font: 600 11px/1.4 var(--glass-type); }
+  & .contracts-professional .crew-cycle b { color: var(--glass-gold); font-size: 16px; }
+  & .contracts-professional :is(.crew-section,.crew-card) h3 { color: var(--glass-gold); font: 600 13px/1.4 var(--glass-type); }
+  & .contracts-professional .crew-contracts { font: 13px/1.4 var(--glass-type); }
+  & .contracts-professional .crew-progress progress { height: 7px; border: 0; border-radius: 6px; overflow: hidden; background: #0006; }
+  & .contracts-professional progress::-webkit-progress-bar { background: #0006; }
+  & .contracts-professional progress::-webkit-progress-value { background: linear-gradient(90deg,#2186a9,#67d9ed); }
+  & .contracts-professional progress::-moz-progress-bar { background: linear-gradient(90deg,#2186a9,#67d9ed); }
+  & .contracts-professional [data-completed=true] progress::-webkit-progress-value { background: linear-gradient(90deg,#31865f,#77dba5); }
+  & .contracts-professional [data-completed=true] progress::-moz-progress-bar { background: linear-gradient(90deg,#31865f,#77dba5); }
+  @media (max-width:1100px) { & .contracts-board { grid-template-columns: minmax(0,1fr); } & .contracts-art { display: none; } }
+  @media (max-width:760px) {
+    & #dialogTitle { font-size: 18px; }
+    & #dialogBody { padding: 8px; }
+    & .dialog-header { padding-left: 10px; }
+    & #dialogBody .contracts-tabs, & #dialogBody .contracts-tabs:has([data-contract-period=professional]) { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    & .contract-tab { flex-direction: row; min-height: 44px; font-size: 11px; padding: 5px; }
+    & .contracts-list, & .contracts-professional .crew-contracts { grid-template-columns: minmax(0,1fr); }
+    & .contract-claim { min-height: 44px; }
+    & .contracts-footer { grid-template-columns: minmax(0,1fr); gap: 8px; padding: 8px; }
+    & .contracts-final { border: 0; border-top: 1px solid #ffffff18; padding: 8px 0 0; }
+    & .contract-card { padding: 10px; }
+    & .contracts-professional .crew-objective { padding: 10px; }
+  }
+  @media (min-width:761px) and (max-height:500px) {
+    & .contracts-board { grid-template-columns: minmax(0,1fr); }
+    & .contracts-art { display: none; }
+    & .contracts-footer { padding: 6px 10px; }
+    & .contracts-total-heading .contract-icon { display: none; }
+    & .contracts-main { gap: 6px; }
+  }
+  @media (prefers-reduced-motion:reduce) { & button, & .contract-progress > i { transition: none; } }
+}
