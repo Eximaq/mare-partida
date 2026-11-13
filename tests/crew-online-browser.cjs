@@ -107,7 +107,7 @@ function createGroup(payload){
     });
     await page.route(url,async route=>{
       const response=await route.fetch(),html=await response.text();
-      const session='<script defer src="apps/account-client/game-session.js"></script><script defer src="apps/account-client/game-ui.js"></script>';
+      const session='<script defer src="/apps/account-client/game-session.js"></script><script defer src="/apps/account-client/game-ui.js"></script>';
       await route.fulfill({response,body:html.includes('account-client/game-session.js')?html:html.replace(/<script defer src="game\.js/,session+'<script defer src="game.js')});
     });
     await page.goto(url);
@@ -178,6 +178,25 @@ function createGroup(payload){
     await view.locator('.crew-vessel-art:not([hidden])').waitFor();
     await page.screenshot({path:path.join(out,'tripulacao-geral.png')});
     const crewBox=()=>page.locator('#panelOverlay > .dialog').boundingBox();
+    // All nine live views share the inventory frame; scrolling is contained to content.
+    for(const [width,height] of [[1920,1080],[1366,768],[1280,720],[1024,768],[768,1024],[390,844],[360,800],[844,390]]) {
+      await page.mouse.move(0,0);await page.setViewportSize({width,height});
+      for(const tab of ['overview','members','profession','missions','contracts','ship','treasury','store','recruitment']) {
+        await view.locator('[data-crew-view="'+tab+'"]').click();
+        const rect=await crewBox();
+        const expectedWidth=Math.min(width<=1100?800:1180,width-16);
+        const expectedHeight=width<=760?height-42:Math.min(720,height-40)-18;
+        assert(Math.abs(rect.width-expectedWidth)<2&&Math.abs(rect.height-expectedHeight)<2,'inventory frame '+width+' '+tab+' '+JSON.stringify(rect));
+        assert(await view.evaluate(e=>e.scrollWidth<=e.clientWidth+1),'content fits '+width+' '+tab);
+        assert(await page.locator('#dialogBody').evaluate(e=>e.scrollHeight<=e.clientHeight+1),'body contains scrolling');
+        assert.equal(await page.locator('#panelOverlay > .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),'none');
+        assert(await view.locator('button').evaluateAll(es=>es.every(e=>getComputedStyle(e).borderImageSource==='none')),'no old button frames');
+        assert(await view.locator('.crew-nav button').evaluateAll(es=>es.every(e=>getComputedStyle(e).fontFamily.includes('Inter')&&parseFloat(getComputedStyle(e).borderLeftWidth)<=1)),'modern navigation');
+        if(tab==='overview'||tab==='treasury')await page.screenshot({path:path.join(out,'crew-'+tab+'-'+width+'.png')});
+      }
+    }
+    await page.setViewportSize({width:1440,height:950});
+    await view.locator('[data-crew-view="overview"]').click();
     const overviewSize=await crewBox();
     await view.getByRole('button',{name:'Navio e instalações'}).click();
     const shipSize=await crewBox();

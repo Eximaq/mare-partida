@@ -54,9 +54,9 @@ if(!before)panels.push(...['dev','dungeons','akuma-reveal','party','crew'].map(p
    const name=section||panel;await p.mouse.move(1,1);await p.evaluate(([a,b])=>__densityQA.open(a,b),[panel,section]);await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(70);
    const bounds=await measure(name,'#panelOverlay .dialog',width,height);
    if(!before&&refreshed.has(name)){
-    if(name==='contracts')assert.equal(await p.locator('#panelOverlay .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),'none','Contracts use the approved thin glass frame');
+    if(['contracts','crew'].includes(name))assert.equal(await p.locator('#panelOverlay .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),'none','Uses the approved thin glass frame');
     else assert.match(await p.locator('#panelOverlay .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),/hud-nautical-v2\/rope-frame\.png/,name);
-    assert.ok(name==='contracts' ? bounds.width<=1180&&bounds.height<=(width<=760?height-42:702) : bounds.width<=1200&&bounds.height<=760,JSON.stringify({name,bounds}));
+    assert.ok(['contracts','crew'].includes(name) ? bounds.width<=1180&&bounds.height<=(width<=760?height-42:702) : bounds.width<=1200&&bounds.height<=760,JSON.stringify({name,bounds}));
    }
    if(!before&&name==='map'&&width<=760){
     const tabs=await p.locator('#voyageRegionTabs').boundingBox(),title=await p.locator('#dialogTitle').boundingBox();
