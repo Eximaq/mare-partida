@@ -242,3 +242,23 @@ test('female sword uses all six independent pants without replacing its weapon s
   assert.equal(layers.filter(layer=>layer.slot==='pants').length,1);
  }
 });
+
+test('helmet 19 hides original and wavy hair independently of color and restores it when hidden',async()=>{
+ const {make,cv}=require('./rework-integration-support.cjs'),api=make();
+ await api.ready;
+ const options={action:'idle',direction:'south',x:100,y:145};
+ for(const gender of ['masculino','feminino'])for(const hairStyle of ['original','hair-wavy']){
+  const render=async(hairColor,head)=>{
+   const player={appearance96:{gender,hairStyle,hairColor,skinColor:'dark',eyeStyle:'face-almond',eyeColor:'green'},
+    equipment:{weapon:{def:0},coat:{def:6},...(head?{head:{def:19}}:{})}};
+   const prepared=await api.prepareConfiguration([{player,options}]);
+   try{
+    const ctx=cv.createCanvas(200,200).getContext('2d');
+    assert(prepared.draw(ctx,player,options));
+    return Buffer.from(ctx.getImageData(0,0,200,200).data);
+   }finally{prepared.release();}
+  };
+  assert((await render('pink',true)).equals(await render('silver',true)),gender+'/'+hairStyle);
+  assert(!(await render('pink',false)).equals(await render('silver',false)),gender+'/'+hairStyle);
+ }
+});

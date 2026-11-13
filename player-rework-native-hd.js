@@ -55,7 +55,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const garment=outfitRegistry?.resolve({body:'male',action:o.action,direction:o.direction,appearance:{...a,hair:'original'},equipment:clothes});
    if(garment?.pack.directions[garment.direction].layers.some(l=>l.slot==='headBase')){
     const hair=a.hair||'original',headItem=equipment.head?.def??equipment.head,headLook={...a,hair,head:headItem!=null?'head-'+headItem:'original'};
-    const head=headRegistry?.resolve({body:'male',direction:o.direction,look:headLook});
+    const head=Number(headItem)===19?null:headRegistry?.resolve({body:'male',direction:o.direction,look:headLook});
     const gear=!head&&hair==='original'&&headItem!=null?originalHairGearRegistry?.resolve({body:'male',direction:o.direction,item:headItem,look:headLook}):null;
     if(head||gear)return {...garment,id:garment.id+':head:'+hair+':'+(headItem??'none'),hdKind:'outfit',colorAppearance:a,headRecord:head,gearOnlyRecord:gear,headLook};
    }
@@ -70,7 +70,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const carry={...record,hdKind:kind,pack:record.base.pack,body:record.base.body};
    if(headItem==null)return carry;
    const hair=a.hair||'original',headLook={...a,hair,head:'head-'+headItem};
-   const head=headRegistry?.resolve({body:'male',direction:o.direction,look:headLook});
+   const head=Number(headItem)===19?null:headRegistry?.resolve({body:'male',direction:o.direction,look:headLook});
    const gear=!head?originalHairGearRegistry?.resolve({body:'male',direction:o.direction,item:headItem,look:headLook,allowNamedHair:true}):null;
    if(!head&&!gear)return null;
    return {...carry,id:carry.id+':head:'+headItem,headRecord:head,gearOnlyRecord:gear,headLook,mirrorX:record.base.mirrorX};
