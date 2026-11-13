@@ -339,9 +339,9 @@
     current_fruit_vfx=fruit?.passive_aura_sheet||fruit?.vfx_sprite_sheet||null;
     fruitVfxImage=fruit?fruitAuraImages[fruit.id]:null;
   }
-  const vfx_aura={draw(c,x,y,time,scale=1,fruitOverride=null,layer='back'){
-    const fruit=fruitOverride||MareAkuma.itemData(game?.equipment?.akuma_no_mi,itemDefs);if(!fruit||(MareAkuma.isZoan(fruit)&&fruit.id!==MareRankS.rules.phoenix.id)||fruit.id==='akuma_supa_supa')return;
-    if(MareRankS.has(fruit.id)){const auraScale=fruit.id===MareRankS.rules.phoenix.id&&!game?.zoanTransformed?scale*.7:scale;return MareRankS.drawAura(c,fruit.id,x,y,time,auraScale,layer);}
+  const vfx_aura={draw(c,x,y,time,scale=1,fruitOverride=undefined,layer='back',transformed=!!game?.zoanTransformed){
+    const fruit=fruitOverride===undefined?MareAkuma.itemData(game?.equipment?.akuma_no_mi,itemDefs):fruitOverride;if(!fruit||(MareAkuma.isZoan(fruit)&&fruit.id!==MareRankS.rules.phoenix.id)||fruit.id==='akuma_supa_supa')return;
+    if(MareRankS.has(fruit.id)){const auraScale=fruit.id===MareRankS.rules.phoenix.id&&!transformed?scale*.7:scale;return MareRankS.drawAura(c,fruit.id,x,y,time,auraScale,layer);}
     if(layer==='front'||MareRankB.has(fruit.id)||fruit.id===MareHoya.rules.id)return;
     const auraImage=fruitAuraImages[fruit.id];
     c.save();c.imageSmoothingEnabled=false;c.globalAlpha*=fruit.id==='akuma_kuku_kuku'?.48:.85;
@@ -723,7 +723,7 @@
     MareHoya.drawActor(ctx,g,world.time);const stats=MareHoya.stats(g,world.time);drawCombatHeader(g,'Gênio · '+Math.ceil(Math.min(g.until-world.time,(g.realUntil-Date.now())/1000))+'s',g.hp,stats.maxHP,64,'#67d8f3');
   }
 
-  function betaEquipped(){return MareAkuma.itemData(game?.equipment?.akuma_no_mi,itemDefs)?.id===MareRankB.rules.beta.id;}
+  function betaEquipped(player=game){return MareAkuma.itemData(player?.equipment?.akuma_no_mi,itemDefs)?.id===MareRankB.rules.beta.id;}
   function clearRankB(){
     if(!session)return;const active=(session.rankBJobs||[]).length>0;session.rankBJobs=[];session.rankBBursts=[];session.rankBFruitId=null;
     for(const m of world?.mobs||[]){delete m.betaRootUntil;delete m.hanaStunFrom;delete m.hanaStunUntil;m.isRooted=MareDoru.isRooted(m,world.time);m.isStunned=m.talentControl?.remaining>0||m.bisonStunUntil>world.time;m.isImmobilized=false;}
@@ -2212,7 +2212,7 @@
     if(!hideItems&&game.zoanTransformed&&equippedZoan()){
       ready=MareZoanArt.draw(c,equippedZoan().id,x,y,{fit:200,time:world.time,scale:160/64});
     }else ready=lobby96.preview(c,player,{action:'idle',direction:'south',time:0,appearance:MareCharacterAppearance.read(player),consumer:'profile-portrait'});
-    const frontReady=hideItems||vfx_aura.draw(c,x,y,world.time,scale,null,'front');
+    const frontReady=hideItems||vfx_aura.draw(c,x,y,world.time,scale,undefined,'front');
     return !!ready&&auraReady!==false&&frontReady!==false;
   }
   // Prepare only the selected destination, before sailing or a direct transition.
@@ -3532,6 +3532,8 @@ ${avatarExtra}
     return Math.max(.65,Math.min(2.5,(height||96)/96));
   }
   function drawTalentedHero(x,y){
+    const visualPlayer=lobby96.worldPlayer();
+    const visualFruit=MareAkuma.itemData(visualPlayer?.equipment?.akuma_no_mi,itemDefs);
     if(ushiBuffActive())MareZoanArt.drawRework(ctx,'giraffe-back',x,y,(Date.now()-session.ushiBuffStartedAt)/1000);
     if(session.ushiAction)MareZoanArt.drawRework(ctx,'giraffe-sweep',x,y,world.time-session.ushiAction.started,{direction:world.hero.direction});
     if(session.wolfAction?.phase==='charge')MareZoanArt.drawRework(ctx,'wolf-trail',x,y,world.time-session.wolfAction.started,{direction:world.hero.direction});
@@ -3541,17 +3543,17 @@ ${avatarExtra}
     if(supaShieldActive())MareSupaArt.draw(ctx,supaImages.shield,'shield',x,y-32,Date.now()-session.supaShieldStartedAt,{loop:true,scale:120/MareSupaArt.animations.shield.frames[0].w});
     const u=MareUltimates.selected(game),rt=session.talents.ultimate;
     if(u==='shadowClone'){ctx.save();ctx.globalAlpha=.3;drawPlayerSprite(ctx,x-38,y+16);ctx.restore();}
-    if(world.hero.visible!==false)vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1);
+    if(world.hero.visible!==false)vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1,visualFruit,'back',visualPlayer?.zoanTransformed);
     drawHoruHealFx(false);
     drawBisonShell(false,x,y);
     ctx.save();if(rt.hidden)ctx.globalAlpha=.2;if(world.hero.visible===false){drawBeriSeparation(ctx,x,y,1-session.fruitBurst/1.5);}else if(u==='titan'){ctx.translate(x,y);ctx.scale(1.35,1.35);drawPlayerSprite(ctx,0,0);}else drawPlayerSprite(ctx,x,y);ctx.restore();
     if(horuBuffActive()){const aura=MareRankC.rules.horu.mutationVfx;MareRankC.draw(ctx,'mutation',x,y+aura.offsetY,Date.now()-session.horuBuffStarted,{width:aura.width,height:aura.height});}
-    vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1,null,'front');
+    vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1,visualFruit,'front',visualPlayer?.zoanTransformed);
     drawBisonShell(true,x,y);
     drawHoruHealFx(true);
     if(ushiBuffActive())MareZoanArt.drawRework(ctx,'giraffe-front',x,y,(Date.now()-session.ushiBuffStartedAt)/1000);
     globalThis.MareHakiArt?.draw(ctx,session.haki,world.hero,world.time,reducedFX,(c,x,y)=>{c.save();c.translate(x,y);if(u==='titan')c.scale(1.35,1.35);drawPlayerSprite(c,0,0);c.restore();},hakiVisualScale());
-    if(betaEquipped())MareRankB.drawLegs(ctx,{x,y},world.time*1000);
+    if(betaEquipped(visualPlayer))MareRankB.drawLegs(ctx,{x,y},world.time*1000);
     if(u==='armamentSkin'&&rt.vigor>0){px(ctx,x-30,y-94,60,6,'#10222a');px(ctx,x-29,y-93,58*rt.vigor/rt.vigorMax,4,'#e4c77b');}
   }
   function playerMapHudBox(){

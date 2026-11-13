@@ -10,7 +10,8 @@ test('Haki client accepts intentions only, never willpower, rank grants, time or
  for(const [a,p] of [['haki.unlock',{itemId:'book',level:50}],['haki.invest',{nodeId:'coating',expectedSeq:0,ranks:{coating:3}}],['haki.configure',{branch:'conqueror',enabled:true}],['haki.toggle',{branch:'armament',current:100}],['haki.cast',{now:1}],['haki.cast',{targets:[]}]])assert(!session.validIntent(a,p));
 });
 test('online Haki clicks send only intents and never call local rules or save',async()=>{
- const calls:any[]=[],box:any={game:{},itemDefs:[],selectedItem:null,openPanel(){},document:{addEventListener(){}},ONLINE_GAME:{},onlineItemCommand:async(a:string,p:any)=>{calls.push([a,p]);return true;},localStorage:{setItem(){throw Error('demo save');}},MareHaki:{unlock(){throw Error('local unlock');}}};
+ let visualReady=true;
+ const calls:any[]=[],box:any={lobby96:{worldReady:()=>visualReady},game:{},itemDefs:[],selectedItem:null,openPanel(){},document:{addEventListener(){}},ONLINE_GAME:{},onlineItemCommand:async(a:string,p:any)=>{calls.push([a,p]);return true;},localStorage:{setItem(){throw Error('demo save');}},MareHaki:{unlock(){throw Error('local unlock');}}};
  for(const name of ['consumeHakiBook','toggleHaki','castHakiKing'])runInNewContext(extract(name)+`;globalThis.${name}=${name};`,box);
- await box.consumeHakiBook('book');box.toggleHaki('armament');box.castHakiKing();assert.deepEqual(JSON.parse(JSON.stringify(calls)),[['haki.unlock',{itemId:'book'}],['haki.toggle',{branch:'armament'}],['haki.cast',{}]]);
+ await box.consumeHakiBook('book');box.toggleHaki('armament');visualReady=false;box.castHakiKing();visualReady=true;box.castHakiKing();assert.deepEqual(JSON.parse(JSON.stringify(calls)),[['haki.unlock',{itemId:'book'}],['haki.toggle',{branch:'armament'}],['haki.cast',{}]]);
 });

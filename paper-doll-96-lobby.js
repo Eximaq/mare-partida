@@ -329,7 +329,9 @@
             for(const action of actions)if(!useSkin||action==='idle')poses.push({player:basePlayer,options:{action,direction,consumer:'world'}});
             if(!useSkin&&combatActions.includes('attack-unarmed'))poses.push({player:basePlayer,options:{action:'attack-unarmed',direction,consumer:'world',weaponless:true}});
           }
-          await nativeHD.ready;
+          // Native selection reads the appearance registries loaded by the lobby.
+          await Promise.all([ready,nativeHD.ready]);
+          signal.throwIfAborted();
           const native=[],modular=[];
           for(const pose of poses)(nativeHD.select(pose.player,pose.options)?native:modular).push(pose);
           if(modular.length)request.coverage=modular.map(({options})=>({action:options.action,direction:options.direction,weaponless:!!options.weaponless,source:null}));
