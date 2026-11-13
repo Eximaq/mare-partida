@@ -226,12 +226,54 @@
       <div class="hud-meta"><div class="profile-power"><span>Poder</span><strong id="miniPower">0</strong></div><span id="hudClassName"></span></div>
       <div class="hud-rank-metadata" hidden aria-hidden="true"><img id="hudRankArt" alt="" hidden><span id="hudRankInsignia" hidden></span><span id="hudHierarchyTier"></span></div>
       <div class="hud-vitals">
-        <div class="parchment-meter parchment-hp" role="meter" aria-label="Vida" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="mini-meter"><i id="miniHP"></i></span><span class="parchment-meter-label">HP</span><b id="miniHPText">100 / 100</b></div>
-        <div class="parchment-meter parchment-energy" role="meter" aria-label="Energia" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="mini-meter"><i id="miniEnergy"></i></span><span class="parchment-meter-label">EN</span><b id="miniEnergyText">70 / 70</b></div>
-        <div class="parchment-meter parchment-xp" role="meter" aria-label="Experiência" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="mini-meter"><i id="miniXP"></i></span><span class="parchment-meter-label">XP</span><b id="miniXPText">0 / 80</b></div>
+        <div class="parchment-meter parchment-hp" role="meter" aria-label="Vida" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <span class="mini-meter"><i id="miniHP"></i></span>
+          <svg class="status-icon" width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <circle cx="16" cy="16" r="14.5" fill="#1C191D" stroke="#D4AF37" stroke-width="1.5"/>
+            <circle cx="16" cy="16" r="12.5" stroke="#991B1B" stroke-width="1" stroke-opacity="0.7"/>
+            <defs><linearGradient id="hpHeartGrad" x1="16" y1="9" x2="16" y2="24" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#FB7185"/><stop offset="50%" stop-color="#E11D48"/><stop offset="100%" stop-color="#881337"/></linearGradient></defs>
+            <path d="M16 24.2C16 24.2 8 18.9 8 13.4C8 10.8 10.1 8.8 12.6 8.8C14.1 8.8 15.4 9.5 16 10.6C16.6 9.5 17.9 8.8 19.4 8.8C21.9 8.8 24 10.8 24 13.4C24 18.9 16 24.2 16 24.2Z" fill="url(#hpHeartGrad)"/>
+          </svg>
+          <span class="parchment-meter-label">HP</span><b id="miniHPText">100 / 100</b>
+        </div>
+        <div class="parchment-meter parchment-energy" role="meter" aria-label="Energia" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <span class="mini-meter"><i id="miniEnergy"></i></span>
+          <svg class="status-icon" width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <circle cx="16" cy="16" r="14.5" fill="#1C191D" stroke="#D4AF37" stroke-width="1.5"/>
+            <circle cx="16" cy="16" r="12.5" stroke="#7E22CE" stroke-opacity="0.7"/>
+            <defs><linearGradient id="enBoltGrad" x1="13" y1="7" x2="19" y2="26" gradientUnits="userSpaceOnUse"><stop stop-color="#E9D5FF"/><stop offset="0.48" stop-color="#A855F7"/><stop offset="1" stop-color="#6B21A8"/></linearGradient></defs>
+            <path d="M15 6.5 9 18h6l-1 8 10-14h-7l3-5.5z" fill="url(#enBoltGrad)" stroke="#C084FC" stroke-width="0.6" stroke-linejoin="round"/>
+          </svg>
+          <span class="parchment-meter-label">EN</span><b id="miniEnergyText">70 / 70</b>
+        </div>
+        <div class="parchment-meter parchment-xp" role="meter" aria-label="Experiência" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span class="mini-meter"><i id="miniXP"></i></span>
+          <svg class="status-icon" width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <circle cx="16" cy="16" r="14.5" fill="#1C191D" stroke="#D4AF37" stroke-width="1.5"/>
+            <circle cx="16" cy="16" r="12.5" stroke="#B7791F" stroke-opacity="0.7"/>
+            <defs><linearGradient id="xpStarGrad" x1="13" y1="6" x2="20" y2="26" gradientUnits="userSpaceOnUse"><stop stop-color="#FFF0B3"/><stop offset="0.48" stop-color="#FBBF24"/><stop offset="1" stop-color="#B86616"/></linearGradient></defs>
+            <path d="m16 6 3.1 6.5 7.2 1-5.2 5.1 1.3 7.2-6.4-3.4-6.4 3.4 1.3-7.2-5.2-5.1 7.2-1z" fill="url(#xpStarGrad)" stroke="#FCD46D" stroke-width="0.6" stroke-linejoin="round"/>
+            <path d="m16 6 0 10.8-10.3-3.3 7.2-1z" fill="#FFF7D6" fill-opacity="0.28"/>
+          </svg>
+          <span class="parchment-meter-label">XP</span><b id="miniXPText">0 / 80</b>
+        </div>
       </div>
       <div class="hud-resources">
-        <div class="profile-berry"><span class="berry-coin" aria-hidden="true"></span><span>Berry</span><strong id="miniGold" title="Berry">0</strong></div>
+        <div class="profile-berry">
+          <svg class="berry-coin" width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="berryRimGrad" x1="7" y1="3" x2="25" y2="30" gradientUnits="userSpaceOnUse"><stop stop-color="#FFF2AB"/><stop offset="0.3" stop-color="#F8C54C"/><stop offset="0.65" stop-color="#B86713"/><stop offset="1" stop-color="#FFE399"/></linearGradient>
+              <radialGradient id="berryFaceGrad" cx="0" cy="0" r="1" gradientTransform="translate(12 10) rotate(60) scale(20)" gradientUnits="userSpaceOnUse"><stop stop-color="#FFDD73"/><stop offset="1" stop-color="#D88B20"/></radialGradient>
+            </defs>
+            <circle cx="16" cy="16.5" r="14.5" fill="#72400E"/>
+            <circle cx="16" cy="16" r="14" fill="url(#berryRimGrad)" stroke="#FFEAA2"/>
+            <circle cx="16" cy="16" r="11.5" fill="url(#berryFaceGrad)" stroke="#A96215"/>
+            <circle cx="16" cy="16" r="12.6" stroke="#FFF0A6" stroke-dasharray="1 2.3" stroke-width="0.8"/>
+            <path d="M12 8.5h5.5c5 0 5.5 7.5-.5 7.5H12m0 0h5.5c6 0 6 7.5 0 7.5H12m1-15v15M10 12h5M10 20h5M16 6v3m0 14v3" stroke="#9D5413" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 8h5.5c5 0 5.5 7.5-.5 7.5H12m0 0h5.5c6 0 6 7.5 0 7.5H12m1-15v15" stroke="#FFF1AE" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Berry</span><strong id="miniGold" title="Berry">0</strong>
+        </div>
       <div id="miniWillpower" class="profile-resource haki-will hidden" role="meter" aria-label="Força de Vontade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span>Vontade</span><span class="mini-meter"><i id="willpowerFill"></i></span><b id="willpowerText">100 / 100</b></div>
       </div>
       <div id="miniTalentResource" class="profile-resource talent-resource hidden"><span id="miniTalentLabel">Vigor</span><span class="mini-meter"><i id="miniTalentFill"></i></span><b id="miniTalentText"></b></div>
