@@ -73,7 +73,7 @@ test('Reforge changes extras only for six rarities and charges exact scalable re
 test('Seven classes apply primary extras and pearl effects once; derived caps and persistence remain safe',()=>{
  for(const id of Object.keys(box.data.classes)){
   const g=seed('supreme');g.classId=id;g.equipment.weapon.extras=[{stat:'strength',value:10},{stat:'dexterity',value:8},{stat:'vitality',value:6},{stat:'intelligence',value:7},{stat:'spirit',value:9},{stat:'crit',value:.04}];g.equipment.weapon.sockets=['pearl_for_5','pearl_des_5','pearl_vit_5','pearl_int_5','pearl_esp_5'];
-  const gear=F.aggregate(g.equipment,defs),d=C.derive(g,box.data.classes[id],box.data.factions.pirate,gear);assert(d.power>0);for(const k of C.keys)assert.equal(d.attributes[k],Math.round(d.preAttributes[k]*1.1*1e6)/1e6);assert(d.crit<=.5&&d.speed<=3&&d.evasion<=.35);assert.deepEqual(F.migrate(JSON.parse(JSON.stringify(g)),defs),g);
+  const gear=F.aggregate(g.equipment,defs),d=C.derive(g,box.data.classes[id],box.data.factions.pirate,gear);assert(d.power>0);for(const k of C.keys)assert(Math.abs(d.attributes[k]-d.preAttributes[k]*1.1)<1e-10);assert(d.crit<=.5&&d.speed<=3&&d.evasion<=.35);assert.deepEqual(F.migrate(JSON.parse(JSON.stringify(g)),defs),g);
  }
 });
 test('RNG failure and unknown commands do not consume resources or mutate original data',()=>{

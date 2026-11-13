@@ -4,10 +4,10 @@ import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
 const require=createRequire(import.meta.url);
 const characters=require('../../character-system.js');
-test('shared character catalog preserves all seven classes and four factions byte for byte',()=>{
+test('shared catalog keeps seven classes and four factions with the updated healing description',()=>{
   const rules=require('../../character-catalog.js');
   const catalog=rules.create({characters});
-  assert.equal(createHash('sha256').update(JSON.stringify(catalog)).digest('hex'),'47dcee47e14f33f51a089a639079ab4fce881050a0309c329be30562274fb9c9');
+  assert.equal(createHash('sha256').update(JSON.stringify(catalog)).digest('hex'),'8ca9251fe4f9527dd839eb88eaae943e5d481fbca0a9d77490ba32dc50892715');
   assert.equal(Object.keys(catalog.classes).length,7);assert.equal(Object.keys(catalog.factions).length,4);
   const again=rules.create({characters});catalog.classes.sword.attack=999;
   assert.equal(again.classes.sword.attack,14,'assembly must not share mutable definitions');

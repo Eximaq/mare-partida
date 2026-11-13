@@ -23,13 +23,11 @@ test('XP follows archipelago order across regions; normal iron is scaled once af
  const r=B.hunt.rewards('beach',{type:'boss',district:B.hunt.get('beach').sectors.at(-1).id},5);
  assert.equal(B.hunt.materialDropChance(r,2),1);
 });
-test('dexterity changes cadence only for the two authorized classes',()=>{
- const {classes,factions}=B.catalog,gear={attack:0,defense:0,hp:0};
+test('dexterity scales real cadence for every class with the configured class ceilings',()=>{
+ const {classes,factions}=B.catalog,gear={attack:0,defense:0,hp:0},rules=require('../attribute-rules.js');
  for(const id of Object.keys(classes)){
-   const get=dexterity=>C.derive({classId:id,level:1,attributes:{dexterity}},classes[id],factions.pirate,gear);
-   const a=get(0),b=get(20),factor={rogue:.7,gunner:.4}[id]??0;
-   assert(Math.abs(b.speed-a.speed-.12*factor)<1e-10,id);
-   assert(a.speed>=classes[id].speed&&b.evasion>a.evasion);
+ const get=dexterity=>C.derive({classId:id,level:1,attributes:{dexterity}},classes[id],factions.pirate,gear);
+ const a=get(0),b=get(20);assert(b.speed>a.speed,id);assert(Math.abs(b.speed/a.speed-(1+rules.bonuses(b.attributes,id).speed)/(1+rules.bonuses(a.attributes,id).speed))<1e-10,id);
  }
 });
 test('measured daily targets replace fixed estimates and legacy floor credit still works',()=>{

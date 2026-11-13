@@ -16,7 +16,7 @@ import { renewControlSchema,characterIdentitySchema } from "./auth.js";
 import { characterStateSchema } from "./character-state.js";
 import { combatSnapshotSchema } from "./combat.js";
 
-import {attributeAllocationSchema,attributeSnapshotSchema} from "./attributes.js";
+import {attributeAllocationSchema,attributeSnapshotSchema,attributeBuildProfileSchema} from "./attributes.js";
 
 const commandEnvelope = {
   requestId: z.uuid(),
@@ -91,6 +91,10 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
   control: renewControlSchema,
   payload: z.strictObject({}),
 }), z.strictObject({...commandEnvelope,action:z.literal("attributes.allocate"),payload:z.strictObject({allocation:attributeAllocationSchema})}),
+ z.strictObject({...commandEnvelope,action:z.literal('items.sell-batch'),payload:z.strictObject({items:z.array(z.strictObject({itemId:instanceIdSchema,quantity:z.number().int().min(1).max(99999),unitPrice:z.number().int().min(0).max(1000000000)})).min(1).max(120)})}),
+ z.strictObject({...commandEnvelope,action:z.literal('items.lock-batch'),payload:z.strictObject({itemIds:z.array(instanceIdSchema).min(1).max(120),locked:z.boolean()})}),
+ z.strictObject({...commandEnvelope,action:z.literal("attributes.build"),payload:z.strictObject({profile:attributeBuildProfileSchema,automatic:z.boolean()})}),
+ z.strictObject({...commandEnvelope,action:z.literal("attributes.distribute"),payload:z.strictObject({profile:attributeBuildProfileSchema,count:z.number().int().min(1).max(1000000)})}),
  z.strictObject({...commandEnvelope,action:z.enum(["inventory.buy","inventory.sell"]),payload:inventoryTradeSchema}),
  z.strictObject({...commandEnvelope,action:z.literal("equipment.equip"),payload:z.strictObject({itemId:equipmentItemSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal("equipment.unequip"),payload:z.strictObject({slot:equipmentSlotSchema})}),
@@ -112,7 +116,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["weeklyBoss.execute", "state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,'market.execute',...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
+  action: z.enum(["weeklyBoss.execute", "state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "attributes.build", "attributes.distribute", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,'market.execute',...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
   weeklyBoss:weeklyBossReceiptSchema.optional(),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),

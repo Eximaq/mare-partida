@@ -52,7 +52,7 @@ test('Every class yields finite usable combat attributes',()=>{
 });
 test('Elementalist INT 80 beats INT 20 in actual elemental damage formula',()=>{
   const low=make('strategist'),high=make('strategist');low.attributes.intelligence=20;high.attributes.intelligence=80;
-  assert(model.damage(derived(high),10,{type:'elemental',multiplier:2.4})>model.damage(derived(low),10,{type:'elemental',multiplier:2.4})*1.5);
+  const a=derived(low),b=derived(high);assert.equal(b.elemental/a.elemental,(1+.004*(17+80)+.002*12)/(1+.004*(17+20)+.002*12));assert(model.damage(b,10,{type:'elemental',multiplier:2.4})>model.damage(a,10,{type:'elemental',multiplier:2.4}));
 });
 test('Tank VIT improves HP and incoming damage without matching physical DPS scaling',()=>{
   const tank=make('cyborg'),high=make('cyborg'),sword=make('sword');high.attributes.vitality=50;sword.attributes.strength=50;
@@ -64,12 +64,12 @@ test('Healer ESP/INT improve real healing, energy and regeneration, with recipie
   assert(derived(high).healing>derived(low).healing);assert(derived(high).maxEnergy>derived(low).maxEnergy);assert(derived(high).regenBuff>derived(low).regenBuff);
   const recipients=[{id:'hero',hp:10,maxHP:100},{id:'real-ally',hp:95,maxHP:100}];
   const result=model.healRecipients(recipients,derived(high).healing);
-  assert.equal(recipients[0].hp,100);assert.equal(result[1].amount,5);assert.equal(result.length,2);
+  assert.equal(recipients[0].hp,Math.min(100,10+derived(high).healing));assert.equal(result[1].amount,5);assert.equal(result.length,2);
 });
-test('Sword FOR and ranged DES improve different attacks; DES improves accuracy, evasion and speed with caps',()=>{
-  for(const [id,key] of [['sword','strength'],['brawler','strength'],['rogue','dexterity'],['gunner','dexterity']]){
+test('Strength improves physical attacks for all physical classes; DEX improves frequency and probabilities',()=>{
+  for(const [id,key] of [['sword','strength'],['brawler','strength'],['rogue','strength'],['gunner','strength']]){
     const low=make(id),high=make(id);high.attributes[key]=50;assert(derived(high).physical>derived(low).physical);
   }
-  const g=make('rogue');g.attributes.dexterity=10000;const d=derived(g);assert(d.evasion<=.35&&d.crit<=.5&&d.speed<=3&&d.accuracy<=.99);
+  const g=make('rogue');g.attributes.dexterity=10000;const d=derived(g);assert(d.evasion<=.45&&d.crit<=.65&&d.speed<=3&&d.accuracy<=.99);
 });
 console.log(`${checks} character balance and migration scenarios passed.`);

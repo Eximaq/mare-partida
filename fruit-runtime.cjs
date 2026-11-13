@@ -54,7 +54,7 @@ function cast(b,key,c){
  const advanced=decode(f.advanced||R.create()),skill=R.has(f.id)?R.skill(f.id,key,advanced,c.now/1000):A.activeSkill(f.id,key),cd=R.has(f.id)?R.cooldownKey(f.id,key,advanced,c.now/1000):A.cooldownKey(f.id,key);
  const target=b.mobs.find(m=>m.id===b.targetId),free=f.id===globalThis.MareRankC.rules.mato.id&&key==='1'&&globalThis.MareRankC.marked(target,c.now)&&target.matoCharges>0,cost=free?0:skill.cost||0;
  if(b.energy<cost||!free&&(f.cooldowns[cd]||0)>c.now)return false;
- b.energy-=cost;if(free)target.matoCharges--;if(!free||target.matoCharges===0)f.cooldowns[cd]=Math.max(f.cooldowns[cd]||0,c.now+P.cooldown(skill.cooldown,f.id)*1000);
+ b.energy-=cost;if(free)target.matoCharges--;if(!free||target.matoCharges===0)f.cooldowns[cd]=Math.max(f.cooldowns[cd]||0,c.now+require('./attribute-rules.js').cooldown(P.cooldown(skill.cooldown,f.id),Policy.fruitMeta(f.id,key),c.stats)*1000);
  // Persist an intent. The worker owns effects, damage and the kill reward transaction.
  queue(b,f,key,c);return true;
 }

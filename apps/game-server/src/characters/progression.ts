@@ -1,3 +1,4 @@
+import {readAttributeBuild,distributeAttributes} from './attributes.js';
 import type {PoolClient} from "pg";
 import {levelProgressionSchema,type CharacterState} from "@mare/shared";
 import {AuthFault} from "../auth/errors.js";
@@ -17,6 +18,7 @@ export async function advanceLevel(client:PoolClient,id:string,requestId:string,
   const changed=await client.query(`UPDATE mare_game.character_progression SET level=$2,level_start_experience=$3
     WHERE character_id=$1 AND level=$4 RETURNING character_id`,[id,next.level,next.start.toString(),state.level]);
   if(!changed.rowCount)throw new AuthFault(409,"state_version_conflict");
+  const build=await readAttributeBuild(client,id);if(build?.automatic)await distributeAttributes(client,id,requestId,{...state,level:next.level},build.profile,(next.level-state.level)*5,true);
 }
 export async function readLevelProgression(client:PoolClient,state:CharacterState,original:boolean) {
   const row=(await client.query<{start:string}>(`SELECT level_start_experience::text AS start FROM mare_game.character_progression WHERE character_id=$1`,[state.characterId])).rows[0];

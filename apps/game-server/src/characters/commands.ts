@@ -30,7 +30,7 @@ import { beginJourney } from "./journey.js";
 import { mutateHunt } from "./hunt.js";
 import { mutateCombat } from "./combat.js";
 
-import {allocateAttributes} from "./attributes.js";
+import {allocateAttributes,configureAttributeBuild,distributeAttributes,readAttributes} from "./attributes.js";
 
 // Caller holds the account and character locks after authenticating and checking ownership.
 export async function executeCharacterCommand(
@@ -128,6 +128,8 @@ export async function executeCharacterCommand(
     state = await readCharacterState(client, characterId);
   }
   let attributes;
+  if(input.action==='attributes.build'){await configureAttributeBuild(client,characterId,input.payload.profile,input.payload.automatic);await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[characterId]);state=await readCharacterState(client,characterId);attributes=await readAttributes(client,characterId,state);}
+  if(input.action==='attributes.distribute'){attributes=await distributeAttributes(client,characterId,input.requestId,state,input.payload.profile,input.payload.count);state=await readCharacterState(client,characterId);}
   if(input.action === "attributes.allocate") {
     attributes=await allocateAttributes(client,characterId,input.requestId,state,input.payload.allocation);
     state=await readCharacterState(client,characterId);

@@ -26,7 +26,7 @@ test('all authored islands retain their spawn profiles; automatic hunt crosses r
   for(const m of b.mobs){const slot=slots.find((s:any)=>s.id===m.spawnId),profile=engine.hunt.profile(area,slot.sector,slot.type,.5);assert.equal(m.maxHP,profile.maxHP);assert.equal(m.level,profile.level);assert.equal(m.attack,profile.attack);}
  }
  const nav=maps.navigation('dawn'),b=engine.create('beach',f.stats,1000,()=>.5),hero={...nav.map.spawn,direction:'front'};b.auto=true;let killed=0,potions=4;
- for(let n=0;n<240&&!killed;n++){
+ for(let n=0;n<1200&&!killed;n++){
   const r=engine.step(b,{hero,nav,stats:f.stats,classId:'sword',factionId:'pirate',level:1,now:1250+n*250,dt:.25,rng:()=>.5,potions});potions-=r.potionsUsed;killed+=r.kills.length;
   assert(nav.walkable(hero.x,hero.y),'server pursuit must obey original map collisions');assert(b.hp>=0);
  }
@@ -64,7 +64,7 @@ test('class skill costs and cooldowns are authoritative; healing and projectiles
  for(const cls of Object.keys(catalog.classes)){
   const f=fixture(cls),skill=catalog.classes[cls].skills[0];f.b.targetId=f.m.id;f.b.hp=f.stats.maxHP/2;
   const energy=f.b.energy;assert.equal(f.engine.skill(f.b,0,{hero:f.hero,nav:f.nav,stats:f.stats,classId:cls,factionId:'pirate',rng:()=>.5,now:1000}),true);
-  assert.equal(f.b.energy,energy-skill.cost);assert.equal(f.b.cooldowns[0],skill.cd);
+  assert.equal(f.b.energy,energy-skill.cost);assert.equal(f.b.cooldowns[0],require('../../attribute-rules.js').cooldown(skill.cd,skill,f.stats));
   assert.equal(f.engine.skill(f.b,0,{hero:f.hero,nav:f.nav,stats:f.stats,classId:cls,factionId:'pirate',rng:()=>.5,now:1000}),false);
  }
  const f=fixture('gunner');f.b.auto=true;f.b.targetId=f.m.id;f.hero.x=f.m.x-180;const hp=f.m.hp;

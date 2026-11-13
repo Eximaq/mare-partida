@@ -102,14 +102,15 @@
   const keystone=g=>buildFor(g).keystone;
   function applyStats(base,g,runtime=null){
     const b=bonuses(g),d={...base},key=keystone(g);
-    d.physical+=b.physical||0;d.elemental+=b.elemental||0;d.maxHP=Math.round((d.maxHP+(b.maxHP||0))*(1+(b.hpPct||0)));d.maxEnergy=Math.round((d.maxEnergy+(b.maxEnergy||0))*(1+(b.energyPct||0)));
-    d.defense=Math.round((d.defense+(b.defense||0))*(1+(b.defPct||0)+(key==='adaptive'?(runtime?.adaptive||0)*.03:0)));
+    d.physical+=b.physical||0;d.elemental+=b.elemental||0;d.maxHP=((d.maxHP+(b.maxHP||0))*(1+(b.hpPct||0)));d.maxEnergy=((d.maxEnergy+(b.maxEnergy||0))*(1+(b.energyPct||0)));
+    d.defense=((d.defense+(b.defense||0))*(1+(b.defPct||0)+(key==='adaptive'?(runtime?.adaptive||0)*.03:0)));
     d.speed=Math.min(3,d.speed*(1+(b.speed||0)+(key==='bloodlust'&&runtime?.bloodlust>0?.20:0)));
     d.crit=Math.min(.65,d.crit+(b.crit||0));d.evasion=Math.min(.45,d.evasion+(b.evasion||0));d.accuracy=Math.min(1,d.accuracy+(b.accuracy||0));
     d.range+=b.range||0;d.moveSpeed=(d.moveSpeed+(b.moveSpeed||0))*(key==='bloodlust'&&runtime?.bloodlust>0?1.15:1);d.huntSpeed=(d.huntSpeed+(b.moveSpeed||0))*(key==='bloodlust'&&runtime?.bloodlust>0?1.15:1);
-    d.healing=Math.round((d.healing+(b.healing||0))*(1+(b.healingPct||0)));d.protection=Math.min(.8,d.protection*(1+(b.shieldBonus||0)));d.mitigation=Math.min(.6,d.mitigation+(b.mitigation||0));
-    d.energyRegen=(d.energyRegen+(b.energyRegen||0))*(key==='rejuvenation'?1.2:1);d.healthRegen=(d.healthRegen+(b.healthRegen||0))*(key==='rejuvenation'?1.2:1);
-    d.critMultiplier=1.65+(b.critDamage||0);d.penetration=Math.min(.6,b.penetration||0);d.magicPen=Math.min(.6,b.magicPen||0);d.lifesteal=Math.min(.3,b.lifesteal||0);d.energyEfficiency=Math.min(.4,b.energyEfficiency||0);d.aoeBonus=Math.min(.5,b.aoe||0);d.rareChance=Math.min(.5,(b.rareChance||0)+(key==='lightHands'?.2:0));
+    d.healing=((d.healing+(b.healing||0)*(1+(d.spiritHealingBonus||0)))*(1+(b.healingPct||0)));d.protection=Math.min(.8,d.protection*(1+(b.shieldBonus||0)));d.mitigation=Math.min(.6,d.mitigation+(b.mitigation||0));
+    d.energyRegen=(d.energyRegen+(b.energyRegen||0)*(1+(d.spiritRegenBonus||0)))*(key==='rejuvenation'?1.2:1);d.healthRegen=(d.healthRegen-(d.vitalityHealthRegen||0)+(b.healthRegen||0))*(key==='rejuvenation'?1.2:1);
+    d.vitalityHealthRegen=0;
+    d.critMultiplier=(base.critMultiplier||1.65)+(b.critDamage||0);d.penetration=Math.min(.6,b.penetration||0);d.magicPen=Math.min(.6,b.magicPen||0);d.lifesteal=Math.min(.3,b.lifesteal||0);d.energyEfficiency=Math.min(.4,b.energyEfficiency||0);d.aoeBonus=Math.min(.5,b.aoe||0);d.rareChance=Math.min(.5,(b.rareChance||0)+(key==='lightHands'?.2:0));
     Object.assign(d,U.stats(d,g,runtime?.ultimate));
     d.attack=['strategist','healer'].includes(g.classId)?d.elemental:d.physical;
     d.power=Math.round(d.attack*8+d.defense*5+d.maxHP*.22+d.maxEnergy*.1+d.crit*100+d.evasion*100+(g.classId==='healer'?d.healing*2:0));return d;

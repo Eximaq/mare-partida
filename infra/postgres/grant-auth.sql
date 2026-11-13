@@ -181,3 +181,5 @@ DO $$ BEGIN
   GRANT USAGE ON SEQUENCE mare_game.weekly_boss_audit_id_seq TO mare_runtime;
  END IF;
 END $$;
+
+GRANT SELECT, INSERT, UPDATE ON mare_game.character_attribute_builds TO mare_runtime;
