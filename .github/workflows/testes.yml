@@ -28,6 +28,8 @@ jobs:
         run: |
           python3 -m py_compile tools/codex_snapshot.py
           python3 tools/codex_snapshot.py --area game --compare HEAD > /dev/null
+      - name: Materializar índices do rework
+        run: python3 tools/materialize_native_indexes.py
       - name: Regressao de jogo
         run: |
           for file in tests/*.test.cjs; do
