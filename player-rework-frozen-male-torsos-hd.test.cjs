@@ -32,7 +32,7 @@ test('Game runtime completes nine torso families without mutating saved equipmen
   assert(await runtime.prepareFamily(p),item+JSON.stringify(runtime.snapshot()));
   for(const action of ['idle','walk','attack'])for(const direction of ['south','north','east','west']){
    const o={action,direction,progress:.4,x:500,y:700},r=runtime.select(p,o);assert(r,item+'/'+action+'/'+direction);
-   assert(await runtime.prepare(p,o),item+'/'+action+'/'+direction);assert(runtime.drawStable(cv.createCanvas(1000,1000).getContext('2d'),p,o));assert.equal(runtime.snapshot().last.physicalScale,1);
+   assert(await runtime.prepare(p,o),item+'/'+action+'/'+direction);assert(runtime.drawStable(cv.createCanvas(1000,1000).getContext('2d'),p,o));assert.equal(runtime.snapshot().last.sourceScale,1);
   }
   assert.equal(JSON.stringify(p),before);
  }
