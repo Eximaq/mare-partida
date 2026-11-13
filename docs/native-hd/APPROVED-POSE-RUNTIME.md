@@ -129,3 +129,11 @@ O navegador criou o Atirador e usou o inventário para equipar as peças. O test
 O teste no mapa observou a pose estática, dez quadros da caminhada SOUTH e as oito fases de ataque com a pele escura e cabelo Chanel rosa. A máscara preserva a tonalidade do centro azul e separa o metal na composição. [Porte SOUTH, fonte e raster do mapa](evidence/approved-poses/Kaizoku-17-south-porte-comparativo.png).
 
 O porte masculino da Orbe 17 foi exercitado também em repouso e caminhada NORTH, EAST e WEST com a mesma aparência. Os 64 quadros das quatro direções foram comparados automaticamente. A diferença de arredondamento chega a um valor de canal no núcleo azul NORTH e dois nas laterais. O alfa permanece igual. [Comparativo do porte nas quatro direções](evidence/approved-poses/Kaizoku-17-porte-quatro-direcoes.png).
+
+### Vestes em repouso e caminhada ainda divergentes
+
+Das 57 entradas de repouso comparadas, 53 selecionam um raster diferente do primeiro PNG do acervo e quatro vistas masculinas do 151 não têm rota HD direta na configuração isolada usada na comparação. As bases femininas com cabelo Curto rente coincidem com os limites da cabeça e das pernas do repouso 151 em todas as direções. No masculino, o cabelo Original apresenta o melhor encaixe de cabeça e as pernas da base neutra registrada correspondem aos pixels da vista de repouso. Para as cinco sequências de repouso femininas, a primeira comparação cobre somente a primeira pose.
+
+No peitoral 130 feminino, os 160 ticks de caminhada dos pacotes S36, N39 e EW44 foram compostos com os seus JSONs e comparados com as 160 seleções atuais. Todos divergem. A saída do mapa que já consta no relatório demonstra que a peça está presente e que mantém as cores salvas. A restauração desses ciclos históricos continua pendente. A primeira camada dos pacotes reúne roupa, cabeça e anatomia. As sobreposições restantes incluem costuras e mãos. Fazer a substituição exige separar a propriedade desses pixels por fase para preservar a personalização.
+
+Os hashes Git dos quatro arquivos originais de posicionamento conferem com a base do PR. A suíte nativa integral executada localmente após a correção do teste de propriedade da Manopla 111 passou em 190 casos. A nova cobertura de cores da Orbe passou em oito testes focados sobre a build correspondente.
