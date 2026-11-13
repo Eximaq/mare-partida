@@ -3,6 +3,14 @@
 (function(root){'use strict';
 function create({native}={}){
  let last=null;
+ async function prepare(p,o={}){
+  await native.ready;
+  const body=['female','feminino'].includes(p.appearance96?.gender??p.appearance96?.body)?'female':'male';
+  const appearance96={...(p.appearance96||{}),gender:body,body,hairStyle:'original',hair:'original',hairColor:'original',skinColor:'original',skin:'original',eyeStyle:'original',face:'original',eyeColor:'original'};
+  const options={...o,action:['walk','idle'].includes(o.action)?o.action:'attack-unarmed',weaponless:true};
+  for(const candidate of [{...p,equipment:{}},{...p,appearance96,equipment:{}}])if(native.select(candidate,options))return native.prepareClip(candidate,options);
+  return false;
+ }
  function draw(ctx,p,o={}){
   if(!p||p.zoanTransformed)return false;
   const body=['female','feminino'].includes(p.appearance96?.gender??p.appearance96?.body)?'female':'male';
@@ -19,7 +27,7 @@ function create({native}={}){
   }
   last={state:native?.snapshot().state==='failed'?'failed':'loading',mode:'bare-rework-base',reason:'Waiting for rework base; legacy disabled',error:native?.snapshot().error};return true;
  }
- return {draw,clear:()=>{last=null;},snapshot:()=>({last})};
+ return {draw,prepare,clear:()=>{last=null;},snapshot:()=>({last})};
 }
 root.MareReworkDefaultHD={create};if(typeof module!=='undefined')module.exports=root.MareReworkDefaultHD;
 })(globalThis);

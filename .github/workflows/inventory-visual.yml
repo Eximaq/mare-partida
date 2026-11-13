@@ -60,6 +60,8 @@ jobs:
           bash tools/install_ci_chromium.sh python -m playwright
           npm install --prefix /tmp/mare-inventory-node playwright@1.63.0
           /tmp/mare-inventory-node/node_modules/.bin/playwright install chromium
+      - name: Restaurar índices HD do transporte íntegro
+        run: python tools/materialize_native_indexes.py
       - name: Inventário desktop, tablet e mobile
         run: |
           python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-inventory-http.log 2>&1 &

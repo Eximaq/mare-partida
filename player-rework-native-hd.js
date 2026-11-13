@@ -61,6 +61,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   for(const p of files){const im=entry.images.get(p);entry.images.delete(p);entry.images.set(p,im);}while(entry.images.size>Math.max(64,files.length))entry.images.delete(entry.images.keys().next().value);
   cache.set(sourceKey,entry);while(cache.size>2)cache.delete(cache.keys().next().value);onChange();return true;}catch(e){failures.set(key,e.message);error=e.message;onChange();return false;}finally{pending.delete(key);}})();pending.set(key,job);return job;
  }
+ // Explicit preload for callers that advance simulation without the animation loop.
+ async function prepareClip(player,o={}){await ready;const r=select(player,o);if(!r)return false;const count=r.hdKind==='weapon'?r.timeline.length:r.pack.directions[r.direction].clip.frames;for(let frame=0;frame<count;frame++)if(!await prepare(player,{...o,progress:frame/count}))return false;return true;}
  function draw(ctx,player,o={}){
   const r=select(player,o);if(!r){last={state:state==='ready'?'uncovered':'loading',action:o.action,direction:o.direction,reason:'No exact whole-source identity; existing renderer retained, not mixed with rework.'};return false;}
   const frame=frameFor(r,o),sourceKey=r.id+'|'+identityKey(player),entry=cache.get(sourceKey);if(!entry||!entry.frames.has(frame)&&!filesFor(r,frame).every(p=>entry.images.has(p))){void prepare(player,o);last={state:failures.has(sourceKey+':'+frame)?'failed':'loading',source:r.id};return false;}
@@ -87,7 +89,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function drawStable(ctx,player,o={}){const key=identityKey(player),family=familyStates.get(key);if(family?.state!=='ready'){void prepareFamily(player);last={state:family?.state||'checking',reason:family?.reason||'Validating complete idle/walk/attack family before replacement'};return false;}if(draw(ctx,player,o))return true;const held=lastRendered.get(player);if(held?.key===key){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(held.canvas,(o.x||0)-held.info.pivot.x*WORLD_SCALE,(o.y||0)-held.info.pivot.y*WORLD_SCALE,held.info.width*WORLD_SCALE,held.info.height*WORLD_SCALE);ctx.restore();last={...last,state:'holding-native-while-loading',physicalScale:WORLD_SCALE,sourceScale:1};return true;}return false;}
  const height=player=>{const held=lastRendered.get(player);return held?.key===identityKey(player)&&familyStates.get(identityKey(player))?.state==='ready'?held.info.visualHeight*WORLD_SCALE:null;};
- return {ready,prepare,prepareFamily,draw,drawStable,height,select,snapshot:()=>({state,error,last,cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
+ return {ready,prepare,prepareClip,prepareFamily,draw,drawStable,height,select,snapshot:()=>({state,error,last,cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
 }
 const api={create};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

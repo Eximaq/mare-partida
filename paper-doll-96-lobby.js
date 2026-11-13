@@ -254,8 +254,12 @@
       const spec=clip.nativeSpec,x=direction==='west'?spec.width+1-point.x:point.x;
       return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(point.y-spec.pivot.y)*scale,frame:4,weapon:value.look.weapon};
     }
+    async function prepareVisual(player,options={}){
+      if(await nativeHD?.prepareFamily(player)&&await nativeHD.prepareClip(player,options))return true;
+      return defaultHD?.prepare(player,options)||false;
+    }
     const height=player=>active&&!player?.zoanTransformed?(nativeHD?.height(player)||96):null;
-    return {ready,snapshot,draw,height,ensure,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
+    return {ready,snapshot,draw,height,ensure,prepareVisual,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
   }
   root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,appearanceLook,assetReferences,validateRelease,frameAt,directionOf};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.MarePaperDoll96Lobby;
