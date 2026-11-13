@@ -30,6 +30,7 @@
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    if(action==='lobby.channel')return keys==='channelId'&&Number.isInteger(p.channelId)&&p.channelId>=1&&p.channelId<=4096;
     const socialId=v=>typeof v==='string'&&/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(v);
     const namedInvite=(keys==='targetId'&&socialId(p.targetId))||(keys==='name'&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=40);
     if(action==='weeklyBoss.execute'){
@@ -519,13 +520,13 @@
             receipt.state?.characterId === intent.characterId && online?.world && world &&
             receipt.state.version === intent.expectedVersion + 1 &&
             receipt.state.version >= online.state.version && world.mapId === online.world.mapId &&
-            world.rulesHash === online.world.rulesHash &&
-            (Date.parse(world.serverNow) >= Date.parse(online.world.serverNow) ||
-             lastMotionFrame?.characterId===intent.characterId && lastMotionFrame.version>=receipt.state.version)) {
+            world.rulesHash === online.world.rulesHash) {
           confirmedMovementVersion = receipt.state.version;
           // An already received committed frame may be newer than this ACK.
           // Confirm the receipt without rewinding its pose or forcing a full read.
-          if(Date.parse(world.serverNow)>=Date.parse(online.world.serverNow))
+          // A previous MVCC snapshot can be sampled after this command's clock
+          // while still carrying an older committed version. Version orders it.
+          if(receipt.state.version>Math.max(online.state.version,lastMotionFrame?.version??-1)||Date.parse(world.serverNow)>=Date.parse(online.world.serverNow))
             data = { ...data, online: { ...online, world, battle: stopAuto(online.battle) } };
           return receipt;
         }

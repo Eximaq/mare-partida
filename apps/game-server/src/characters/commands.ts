@@ -1,3 +1,4 @@
+import {ensureLobbyChannel} from './lobby-channels.js';
 import {authorizeWeeklyBoss,lockWeeklyBoss,weeklyRoom} from './weekly-boss-store.js';
 import {executeWeeklyBoss} from './weekly-boss.js';
 import {executeSocialContact,type SocialContactCommand} from './social-contacts.js';
@@ -104,6 +105,10 @@ export async function executeCharacterCommand(
     case 'crew.profession':
       await chooseProfession(client,characterId,input.payload.profession);
       await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[characterId]);break;
+  }
+  if(input.action==='lobby.channel'){
+    await ensureLobbyChannel(client,characterId,input.payload.channelId);
+    await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[characterId]);
   }
   state=await readCharacterState(client,characterId);
   const before=state,powerBefore=social||input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);

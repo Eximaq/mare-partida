@@ -553,3 +553,10 @@ body.scene-lobby #app.hud-nautical :is(.world-command,.journey-controls) {displa
 @media(prefers-reduced-motion:reduce) {
   #app.hud-nautical .nautical-profile .mini-meter i {transition:none}
 }
+
+/* Bounded online lobby channels; retain the existing nautical HUD and dialogs. */
+#app #lobbyChannel { position:fixed; left:var(--hud-edge,16px); top:calc(var(--profile-bottom,245px) + 50px); z-index:var(--rpg-z-hud,20); pointer-events:auto; min-height:44px; padding:6px 12px; border:1px solid #9c8357; border-radius:5px; background:#071e2bf2; color:#f1e9d6; font:600 12px/1.3 Georgia,serif; white-space:nowrap; }
+#app #lobbyChannel[hidden] { display:none; }
+.lobby-channel-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:12px; margin:18px 0; }
+.lobby-channel-list button { min-height:44px; white-space:normal; }
+body:has(#panelOverlay:not(.hidden) #dialogBody[data-view="lobby-channels"]) #onlinePerformance { visibility:hidden; }

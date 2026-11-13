@@ -11,7 +11,10 @@ import {readParty} from '../characters/party.js';
 import {readCrew,readCrewIdentity,readCrewRankings} from '../characters/crew.js';
 import {readProfession} from '../characters/crew-professions.js';
 import {lockParty} from '../characters/party-store.js';
-import {readLobby} from '../characters/lobby.js';
+import {readLobby,type LobbyCapabilities} from '../characters/lobby.js';
+import {readPersonalFrame} from '../characters/frame.js';
+import {projectPersonalBattle} from '../characters/battle.js';
+import {ensureLobbyChannel,renewLobbyChannel,readLobbyChannels} from '../characters/lobby-channels.js';
 import {initializeProfile,readProfile} from '../characters/profile.js';
 import {readFruits} from '../characters/fruits.js';
 import {readHierarchy,hierarchyRanking} from '../characters/hierarchy.js';
@@ -363,7 +366,7 @@ export class AuthService {
   }
   async crewRanking(token:string){return this.withSession(token,"play",async client=>({leaderboard:await readCrewRankings(client)}));}
   /** Only presentation is MVCC. Commands and provider refresh retain their locks. */
-  private async presentation<T>(token:string,id:string,run:(client:PoolClient,weeklyBoss:Awaited<ReturnType<typeof readWeeklyBoss>>|null)=>Promise<T>,prepareContracts=false):Promise<T>{
+  private async presentation<T>(token:string,id:string,run:(client:PoolClient,weeklyBoss:Awaited<ReturnType<typeof readWeeklyBoss>>|null,capabilities:LobbyCapabilities)=>Promise<T>,prepareContracts=false):Promise<T>{
     const hash=digest(token);
     const access=async(client:Pick<PoolClient,'query'>,provider=true,weekly=false)=>{
       const weeklyFields=weekly?`,
@@ -371,12 +374,12 @@ export class AuthService {
         EXISTS(SELECT 1 FROM mare_game.weekly_boss_members m WHERE m.character_id=$2) member,
         EXISTS(SELECT 1 FROM mare_game.weekly_boss_events e WHERE e.mode='official' AND e.status='active' AND e.closes_at>clock_timestamp()) public_active,
         (SELECT e.cycle_key::text FROM mare_game.weekly_boss_entitlements e WHERE e.character_id=$2 ORDER BY e.cycle_key DESC LIMIT 1) cycle`:
-        provider?'':", to_regclass('mare_game.weekly_boss_settings') IS NOT NULL weekly_available";
-      const row=(await client.query(`SELECT s.id,s.account_id,s.provider_valid_until,clock_timestamp() now,
+        provider?'':", to_regclass('mare_game.weekly_boss_settings') IS NOT NULL weekly_available, to_regclass('mare_game.character_profile') IS NOT NULL lobby_profile, to_regclass('mare_game.crews') IS NOT NULL lobby_crews, to_regclass('mare_game.lobby_channel_members') IS NOT NULL lobby_channels, to_regclass('mare_game.party_members') IS NOT NULL party_available";
+      const row=(await client.query({name:`mare-presentation-access-v1-${weekly?'weekly':provider?'final':'initial'}`,text:`SELECT s.id,s.account_id,s.provider_valid_until,clock_timestamp() now,
         EXISTS(SELECT 1 FROM mare_game.characters WHERE id=$2 AND account_id=s.account_id) owned${weeklyFields}
         FROM mare_game.app_sessions s JOIN mare_game.accounts a ON a.id=s.account_id AND a.auth_epoch=s.account_epoch
         WHERE s.token_hash=$1 AND s.kind='play' AND s.revoked_at IS NULL
-        AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp()`,[hash,id])).rows[0];
+        AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp()`,values:[hash,id]})).rows[0];
       if(!row||provider&&row.provider_valid_until<=row.now)throw unauthorized();
       if(!row.owned)throw new AuthFault(404,'character_not_found');
       return row;
@@ -388,16 +391,16 @@ export class AuthService {
     }else{
       // Best-effort idle heartbeat: do not queue behind a simulation/refresh lock.
       // Expiry is never bypassed; the snapshot and final check use the stored TTL.
-      await this.options.pool.query(`WITH heartbeat AS (
+      await this.options.pool.query({name:'mare-presentation-heartbeat-v1',text:`WITH heartbeat AS (
         SELECT s.id FROM mare_game.app_sessions s JOIN mare_game.accounts a ON a.id=s.account_id AND a.auth_epoch=s.account_epoch
         WHERE s.token_hash=$1 AND s.kind='play' AND s.revoked_at IS NULL AND s.expires_at>clock_timestamp()
         AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp() FOR UPDATE OF s SKIP LOCKED)
         UPDATE mare_game.app_sessions s SET idle_expires_at=LEAST(expires_at,clock_timestamp()+$2::bigint*interval '1 millisecond')
-        FROM heartbeat WHERE s.id=heartbeat.id`,[hash,this.options.policy.idleMs]);
+        FROM heartbeat WHERE s.id=heartbeat.id`,values:[hash,this.options.policy.idleMs]});
     }
     const pulse=await this.options.pool.connect();let staleParty:string|undefined;let missingContracts=false;
     try{
-      staleParty=await presentationParty(pulse,id);
+      staleParty=await presentationParty(pulse,id,initial.party_available);
       if(prepareContracts)missingContracts=await needsDailyContracts(pulse,id);
     }finally{pulse.release();}
     if(staleParty||missingContracts)await this.withSession(token,'play',async(client,row)=>{
@@ -417,7 +420,7 @@ export class AuthService {
       await client.query("SET LOCAL statement_timeout='3s'; SET LOCAL idle_in_transaction_session_timeout='10s'");
       const context=await access(client,true,initial.weekly_available);
       const weeklyBoss=initial.weekly_available?await readWeeklyBoss(client,id,context):null;
-      const result=await run(client,weeklyBoss);
+      const result=await run(client,weeklyBoss,{present:initial.lobby_profile,crews:initial.lobby_crews,channels:initial.lobby_channels,party:initial.party_available});
       await client.query('COMMIT');
       // A fresh READ COMMITTED statement, not the old snapshot: discard a response
       // if logout/recovery/rotation/expiry committed while it was being projected.
@@ -428,23 +431,27 @@ export class AuthService {
   }
   /** Compact, owner-only presentation from one committed database snapshot. */
   async onlineFrame(token:string,id:string,knownVersion?:number){
-    return this.presentation(token,id,async(client,weeklyBoss)=>{
-      const state=await readCharacterState(client,id);
+    return this.presentation(token,id,async(client,weeklyBoss,capabilities)=>{
+      const personal=capabilities.channels?await readPersonalFrame(client,id):null;
+      const state=personal?.state??await readCharacterState(client,id);
       if(knownVersion!==undefined&&knownVersion<state.version){
-        const fullState=await this.readOnlineState(client,id,weeklyBoss,state);
+        const fullState=await this.readOnlineState(client,id,weeklyBoss,state,capabilities);
         return {protocol:2,characterId:id,version:state.version,serverNow:new Date().toISOString(),fullState};
       }
-      const partyMotion=await readPartyMotion(client,id);
-      const world=await readWorld(client,id),battle=await readBattle(client,id),lobby=await readLobby(client,id,world);
-      const timing=(await client.query("SELECT clock_timestamp() now,tick_at FROM mare_game.character_battles WHERE character_id=$1",[id])).rows[0];
-      return {protocol:2,characterId:id,version:state.version,serverNow:(timing?.now??new Date()).toISOString(),simulationAgeMs:timing?Math.max(0,timing.now.getTime()-timing.tick_at.getTime()):null,world,battle,lobby,partyMotion,weeklyBoss};
+      const partyMotion=await readPartyMotion(client,id,capabilities.party);
+      const world=personal?personal.world:await readWorld(client,id);
+      const battle=personal&&!personal.battle?.partyInstanceId&&!personal.battle?.weeklyBossInstanceId?projectPersonalBattle(personal.battle):await readBattle(client,id);
+      const lobby=await readLobby(client,id,world,capabilities);
+      const timing=personal??(await client.query("SELECT clock_timestamp() now,tick_at FROM mare_game.character_battles WHERE character_id=$1",[id])).rows[0];
+      return {protocol:2,characterId:id,version:state.version,serverNow:(timing?.now??new Date()).toISOString(),simulationAgeMs:timing?.tick_at?Math.max(0,timing.now.getTime()-timing.tick_at.getTime()):null,world,battle,lobby,partyMotion,weeklyBoss};
     });
   }
+  async lobbyChannels(token:string,id:string){return this.presentation(token,id,client=>readLobbyChannels(client,id));}
   async onlineState(token: string, id: string) {
-    return this.presentation(token,id,async (client,weeklyBoss) =>
-      this.readOnlineState(client,id,weeklyBoss,await readCharacterState(client,id)),true);
+    return this.presentation(token,id,async (client,weeklyBoss,capabilities) =>
+      this.readOnlineState(client,id,weeklyBoss,await readCharacterState(client,id),capabilities),true);
   }
-  private async readOnlineState(client:PoolClient,id:string,weeklyBoss:Awaited<ReturnType<typeof readWeeklyBoss>>|null,state:Awaited<ReturnType<typeof readCharacterState>>) {
+  private async readOnlineState(client:PoolClient,id:string,weeklyBoss:Awaited<ReturnType<typeof readWeeklyBoss>>|null,state:Awaited<ReturnType<typeof readCharacterState>>,capabilities?:LobbyCapabilities) {
       const party=await readParty(client,id);
       const journey = (await client.query<{ started: boolean }>(
         "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started", [id],
@@ -455,7 +462,7 @@ export class AuthService {
       const inputs=profile?(await readCombatInputs(client,[id])).get(id):undefined;
       const originalInventory=inputs?inputs.inventory:await readOriginalInventory(client,id);
       const dungeons=await readDungeons(client,id);
-      const world=await readWorld(client,id),lobby=await readLobby(client,id,world);
+      const world=await readWorld(client,id),lobby=await readLobby(client,id,world,capabilities);
       const battle=await readBattle(client,id),haki=battle?hakiView(battle):null,prison=await readPrison(client,id);
       const fruits=inputs?.fruits??await readFruits(client,id),talents=inputs?.talents??await readTalents(client,id,state),power=inputs?.permanentPower();
       const combatPreview=inputs?.inventory?inputs.fighter(battle):await readFighter(client,id,state);
@@ -554,6 +561,7 @@ export class AuthService {
       SET session_id=EXCLUDED.session_id,token_hash=EXCLUDED.token_hash,epoch=EXCLUDED.epoch,expires_at=EXCLUDED.expires_at`,
         [id, row.id, digest(control), epoch + 1],
       );
+      await ensureLobbyChannel(client,id);
       return { epoch: epoch + 1, token: control, leaseSeconds: 120 };
     });
   }
@@ -570,6 +578,7 @@ export class AuthService {
         [id, row.id, digest(control.token), control.epoch],
       );
       if (!result.rowCount) return new AuthFault(409, "control_conflict");
+      await renewLobbyChannel(client,id);
       return { epoch: control.epoch, leaseSeconds: 120 };
     });
   }

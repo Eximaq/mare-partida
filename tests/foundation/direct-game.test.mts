@@ -153,6 +153,17 @@ test('confirmed movement and stop use the receipt version without fetching full 
   assert.equal(f.storage.size, 0);
 });
 
+test('a newer committed movement wins over an older MVCC snapshot sampled later',async()=>{
+ const world={rulesHash:'fixture',mapId:'lobby',position:{x:0,y:0},path:[],speed:100,direction:'right',serverNow:'2026-11-11T12:00:00.200Z',motionUntil:'2026-11-11T12:00:01.000Z'};
+ const accepted={...world,path:[{x:100,y:0}],serverNow:'2026-11-11T12:00:00.100Z'};
+ const f=fixture({world,commandWorld:accepted});await f.client.load();await f.client.acquire();
+ const reads=f.requests.filter(r=>r.path.endsWith('/online-state')).length;
+ await f.client.command('world.move',{x:100,y:0});
+ assert.equal(f.requests.filter(r=>r.path.endsWith('/online-state')).length,reads,'a committed version orders the route even if the previous snapshot was sampled later');
+ assert.deepEqual(f.client.data.online.world,accepted);
+ assert.equal(f.client.data.online.state.version,0,'route receipt must not relabel economic state');
+});
+
 test('a snapshot taken before an accepted movement cannot rewind the route or its version', async () => {
   const world = {
     mapId: 'lobby', rulesHash: 'fixture-world', position: { x: 0, y: 0 }, path: [],

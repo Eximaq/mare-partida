@@ -10,7 +10,7 @@ import {readFighter} from './fighter.js';
 import {readOriginalInventory,writeInventory} from '../gameplay/inventory.js';
 import {getGameCatalog} from '../gameplay/catalog.js';
 const require=createRequire(import.meta.url),A=require('../../../../character-appearance.js'),T=require('../../../../talent-system.js'),engine=require('../../../../world-battle.cjs'),forge=require('../../../../forge-system.js');
-const preferences={hideItems:false,hideHeadgear:false,healThreshold:.7};
+import {defaultAppearance,defaultPreferences as preferences} from './profile-defaults.js';
 async function available(client:PoolClient){return !!(await client.query("SELECT to_regclass('mare_game.character_profile') present")).rows[0].present;}
 export async function initializeProfile(client:PoolClient,id:string,appearance?:unknown){
  if(!await available(client))return;
@@ -24,7 +24,7 @@ export async function readProfile(client:PoolClient,id:string){
  if(!await available(client))return null;
  // Historical profiles are represented by the same defaults without writing
  // during presentation; creation and profile commands persist them explicitly.
- const row=(await client.query('SELECT appearance,preferences FROM mare_game.character_profile WHERE character_id=$1',[id])).rows[0]??{appearance:A.defaults,preferences},identity=(await client.query('SELECT name,class_id,faction_id,created_at FROM mare_game.characters WHERE id=$1',[id])).rows[0];
+ const row=(await client.query('SELECT appearance,preferences FROM mare_game.character_profile WHERE character_id=$1',[id])).rows[0]??{appearance:defaultAppearance,preferences},identity=(await client.query('SELECT name,class_id,faction_id,created_at FROM mare_game.characters WHERE id=$1',[id])).rows[0];
  return {rulesetId:'original-profile-v1',appearance:appearanceSchema.parse(row.appearance),preferences:preferencesSchema.parse(row.preferences),identity:{name:identity.name,classId:identity.class_id,factionId:identity.faction_id},createdAt:identity.created_at.toISOString()};
 }
 export async function mutateProfile(client:PoolClient,id:string,input:CharacterCommand,state:CharacterState){

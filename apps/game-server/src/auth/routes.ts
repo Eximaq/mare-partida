@@ -134,7 +134,7 @@ export function createAuthHandler(options: {
         /^\/v1\/characters\/([0-9a-f-]{36})(?:\/(control)(?:\/(renew))?)?$/.exec(
           path,
         );
-      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/(state|online-state|game-catalog|frame|crew|social|market)$/.exec(path);
+      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/(state|online-state|game-catalog|frame|crew|social|market|lobby-channels)$/.exec(path);
       const commandMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/commands$/.exec(path);
       const known = [
         "/v1/auth/csrf",
@@ -263,7 +263,7 @@ export function createAuthHandler(options: {
             reply(200, await service.onlineFrame(session, id, version));
             return;
           }
-          reply(200, stateMatch[2] === "game-catalog" ? await service.gameCatalog(session,id) : stateMatch[2] === "online-state" ? await service.onlineState(session, id) : await service.characterState(session, id));
+          reply(200, stateMatch[2] === "lobby-channels" ? await service.lobbyChannels(session,id) : stateMatch[2] === "game-catalog" ? await service.gameCatalog(session,id) : stateMatch[2] === "online-state" ? await service.onlineState(session, id) : await service.characterState(session, id));
           return;
         }
         if (path === "/v1/me") {

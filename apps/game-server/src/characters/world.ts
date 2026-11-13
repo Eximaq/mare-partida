@@ -4,12 +4,13 @@ import {worldActions,worldSnapshotSchema,type CharacterCommand,type CharacterSta
 import {AuthFault} from '../auth/errors.js';
 import {readFighter} from './fighter.js';
 import {syncBattleWorld,readBattle} from './battle.js';
+import {ensureLobbyChannel} from './lobby-channels.js';
 const require=createRequire(import.meta.url),catalog=require('../../../../world-catalog.cjs').load;
 type Point={x:number;y:number};
 type Row={rules_hash:string;map_id:string;area:string|null;x:number;y:number;path:Point[];speed:number;direction:WorldSnapshot['direction'];started_at:Date;motion_until:Date};
 export const isWorldAction=(action:string)=>(worldActions as readonly string[]).includes(action);
 async function clock(client:PoolClient):Promise<Date>{return (await client.query('SELECT clock_timestamp() now')).rows[0].now;}
-function snapshot(row:Row,now:Date):WorldSnapshot {
+export function projectWorld(row:Row,now:Date):WorldSnapshot {
  const rules=catalog();if(row.rules_hash!==rules.rulesHash)throw new AuthFault(503,'world_rules_changed');
  const nav=rules.navigation(row.map_id),actor={x:row.x,y:row.y,direction:row.direction},path=row.path.map(p=>({...p}));
  nav.follow(actor,path,row.speed,Math.max(0,Math.min(now.getTime(),row.motion_until.getTime())-row.started_at.getTime())/1000);
@@ -21,13 +22,16 @@ export async function readWorlds(client:PoolClient,ids:readonly string[],now?:Da
  const rows=(await client.query<Row&{character_id:string;sampled_at:Date}>(`SELECT w.*,clock_timestamp() sampled_at,least(w.motion_until,coalesce(c.expires_at,w.started_at),s.expires_at,s.idle_expires_at,s.revoked_at) AS motion_until
  FROM mare_game.character_world w LEFT JOIN mare_game.character_control c ON c.character_id=w.character_id
  LEFT JOIN mare_game.app_sessions s ON s.id=c.session_id WHERE w.character_id=ANY($1::uuid[])`,[ids])).rows;
- for(const row of rows)result.set(row.character_id,snapshot(row,now??row.sampled_at));return result;
+ for(const row of rows)result.set(row.character_id,projectWorld(row,now??row.sampled_at));return result;
 }
 export async function readWorld(client:PoolClient,id:string,now?:Date){return (await readWorlds(client,[id],now)).get(id)??null;}
 export async function storeWorld(client:PoolClient,id:string,w:WorldSnapshot){
- await client.query(`INSERT INTO mare_game.character_world(character_id,rules_hash,map_id,area,x,y,path,speed,direction,started_at,motion_until)
+ const change=await client.query(`WITH previous AS MATERIALIZED (SELECT map_id FROM mare_game.character_world WHERE character_id=$1),written AS (
+ INSERT INTO mare_game.character_world(character_id,rules_hash,map_id,area,x,y,path,speed,direction,started_at,motion_until)
  VALUES($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10,$11) ON CONFLICT(character_id) DO UPDATE
- SET rules_hash=EXCLUDED.rules_hash,map_id=EXCLUDED.map_id,area=EXCLUDED.area,x=EXCLUDED.x,y=EXCLUDED.y,path=EXCLUDED.path,speed=EXCLUDED.speed,direction=EXCLUDED.direction,started_at=EXCLUDED.started_at,motion_until=EXCLUDED.motion_until`,[id,w.rulesHash,w.mapId,w.area,w.position.x,w.position.y,JSON.stringify(w.path),w.speed,w.direction,w.serverNow,w.motionUntil]);
+ SET rules_hash=EXCLUDED.rules_hash,map_id=EXCLUDED.map_id,area=EXCLUDED.area,x=EXCLUDED.x,y=EXCLUDED.y,path=EXCLUDED.path,speed=EXCLUDED.speed,direction=EXCLUDED.direction,started_at=EXCLUDED.started_at,motion_until=EXCLUDED.motion_until RETURNING character_id)
+ SELECT previous.map_id FROM written LEFT JOIN previous ON true`,[id,w.rulesHash,w.mapId,w.area,w.position.x,w.position.y,JSON.stringify(w.path),w.speed,w.direction,w.serverNow,w.motionUntil]);
+ if(change.rows[0]?.map_id!==w.mapId)await ensureLobbyChannel(client,id);
 }
 const store=storeWorld;
 // Called under the same character lock as lease takeover: old motion cannot resume.

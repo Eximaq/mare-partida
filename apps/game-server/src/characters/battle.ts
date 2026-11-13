@@ -33,9 +33,9 @@ export async function readBattle(client:PoolClient,id:string){
  const b=row?.simulation??null;
  if(b?.partyInstanceId){const r=await partyRoom(client,b.partyInstanceId);if(r)b.mobs=r.simulation.mobs;}
  if(b?.weeklyBossInstanceId){const r=await weeklyRoom(client,b.weeklyBossInstanceId);if(r)b.mobs=r.simulation.mobs;}
- engine.upgradeBalance(b);
- return b;
+ return projectPersonalBattle(b);
 }
+export function projectPersonalBattle(b:any){engine.upgradeBalance(b);return b;}
 /** Batched current-schema personal state with the one canonical room projection.
  * Internal only: caller establishes locks for mutation or an authorized MVCC snapshot. */
 export async function readBattleRows(client:PoolClient,ids:readonly string[],options:{room?:any;motionOnly?:boolean}={}){

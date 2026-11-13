@@ -178,3 +178,9 @@ DO $$ BEGIN
   GRANT USAGE ON SEQUENCE mare_game.weekly_boss_audit_id_seq TO mare_runtime;
  END IF;
 END $$;
+
+DO $$ BEGIN
+ IF to_regclass('mare_game.lobby_channel_members') IS NOT NULL THEN
+  GRANT SELECT,INSERT,UPDATE,DELETE ON mare_game.lobby_channel_members TO mare_runtime;
+ END IF;
+END $$;

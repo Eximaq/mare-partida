@@ -147,8 +147,8 @@ export async function touchPartyPresence(c:PoolClient,id:string){
  await c.query(`UPDATE mare_game.party_members m SET last_seen=clock_timestamp() WHERE m.character_id=$1 AND EXISTS(SELECT 1 FROM mare_game.character_control cc JOIN mare_game.app_sessions s ON s.id=cc.session_id WHERE cc.character_id=$1 AND cc.expires_at>clock_timestamp() AND s.kind='play' AND s.revoked_at IS NULL AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp() AND s.account_epoch=(SELECT auth_epoch FROM mare_game.accounts WHERE id=s.account_id))`,[id]);
 }
 /** Heartbeat is independent of simulation locks; leader mutation remains serialized. */
-export async function presentationParty(c:PoolClient,id:string){
- if(!await partyAvailable(c))return undefined;
+export async function presentationParty(c:PoolClient,id:string,available?:boolean){
+ if(!(available??await partyAvailable(c)))return undefined;
  await touchPartyPresence(c,id);
  return (await c.query(`SELECT p.id FROM mare_game.parties p
  JOIN mare_game.party_members self ON self.party_id=p.id AND self.character_id=$1
@@ -167,8 +167,8 @@ function partyGroupView(g:any,members:any[]){
  activity:g.instance_id?{id:g.instance_id,kind:g.kind,destination:g.destination,density:g.density??1}:null};
 }
 /** Dynamic public member fields from the caller's authorized snapshot. */
-export async function readPartyMotion(c:PoolClient,id:string){
- if(!await partyAvailable(c))return null;
+export async function readPartyMotion(c:PoolClient,id:string,available?:boolean){
+ if(!(available??await partyAvailable(c)))return null;
  const g=await readPartyGroup(c,id);if(!g)return {group:null};
  const roster=await presence(c,g.id),members=[];
  const ids=roster.map(m=>m.character_id),battles=await readBattleRows(c,ids,{motionOnly:true}),worlds=await readWorlds(c,ids);
