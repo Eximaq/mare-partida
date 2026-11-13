@@ -1,7 +1,7 @@
 /* Resolve a compatible authored subset per pose; never mutate saved equipment or
  * combine unrelated baked cycles. Unsupported slots remain explicit diagnostics. */
 (function(root){'use strict';
-const invisible=new Set(['necklace','ring','belt','charm','akuma_no_mi']);
+const invisible=new Set(['necklace','ring','belt','charm','cloak','akuma_no_mi','visual_completo']);
 function create({native}={}){
  let last=null;const plans=new Map();
  function plan(p,o,rejected,availableOnly=false){

@@ -32,8 +32,7 @@ await page.route('**/game.js*',async route=>{
     game.equipment={};game.inventory=items.map(id=>newItem(itemDefs[id],1,false));
     autoPlay=false;autoSkills=false;keys.clear();saveGame();renderPanel();updateUI();
    },
-   read(){return {frames:window.__wardrobeQAFrames,hero:{x:world.hero.x,y:world.hero.y},world:window.__wardrobeQAWorld,equipment:Object.fromEntries(Object.entries(game.equipment).filter(([,v])=>v).map(([k,v])=>[k,v.def])),inventory:game.inventory.map(({id,def})=>({id,def})),screen:camera.worldToScreen(world.hero.x,world.hero.y)};},
-   prepareWalk(direction){return lobby96.prepareVisual(game,{action:'walk',direction,consumer:'world'});},
+   read(){return {visual:lobby96.worldVisual(),frames:window.__wardrobeQAFrames,hero:{x:world.hero.x,y:world.hero.y},world:window.__wardrobeQAWorld,equipment:Object.fromEntries(Object.entries(game.equipment).filter(([,v])=>v).map(([k,v])=>[k,v.def])),inventory:game.inventory.map(({id,def})=>({id,def})),screen:camera.worldToScreen(world.hero.x,world.hero.y)};},
    async clearLane(direction,combat=false,resetFrames=true){
     const [dx,dy]={south:[0,1],north:[0,-1],east:[1,0],west:[-1,0]}[direction].map(v=>v*(combat?65:210));
     if(resetFrames)window.__wardrobeQAFrames=[];cancelBasicAttack();if(scene!=='hunt')enterHunt();
@@ -125,27 +124,21 @@ try {
   evidence.push(testCase);
   for(const [keyCode,direction] of directions){
    const sources=action=>records.filter(r=>r.action===action&&r.direction===direction).map(r=>r.id);
-   // Cold clips may finish loading after the hero reaches the end of the lane.
-   // Repeat the same keyboard input on a fresh stretch while keeping frame evidence.
-   for(let pass=0;pass<2;pass++){
-    await page.evaluate(({direction,reset})=>__wardrobeQA.clearLane(direction,false,reset),{direction,reset:pass===0});
-    if(pass===1)assert(await page.evaluate(d=>__wardrobeQA.prepareWalk(d),direction),'Unable to preload exact walking clip');
+   {
+    await page.evaluate(({direction,reset})=>__wardrobeQA.clearLane(direction,false,reset),{direction,reset:true});
+    await page.waitForFunction(()=>__wardrobeQA.read().visual?.state==='ready',null,{timeout:90000});
     const before=(await read()).hero;
     await page.keyboard.down(keyCode);
     try{
-     const frames=await observed(sources('walk'),'walk',direction,2,3000);
+     const frames=await observed(sources('walk'),'walk',direction,2,15000);
      const after=(await read()).hero;
      const travel={south:after.y-before.y,north:before.y-after.y,east:after.x-before.x,west:before.x-after.x}[direction];
      assert(travel>5,'Expected movement in '+direction);
-     testCase.poses.push({action:'walk',direction,frames,preloaded:pass===1});
+     testCase.poses.push({action:'walk',direction,frames});
      if(direction==='east')await capture(key,'walk',direction);
-     break;
     }catch(error){
-     if(error.name!=='TimeoutError'||pass===1){
       const {world,frames,hero}=await read();
       testCase.failures.push({action:'walk',direction,world,frames,hero,reason:error.message});
-      break;
-     }
     }finally{await page.keyboard.up(keyCode);}
    }
    try{
@@ -154,6 +147,7 @@ try {
     if(direction==='south')await capture(key,'idle',direction);
    }catch(error){testCase.failures.push({action:'idle',direction,world:(await read()).world,reason:error.message});}
    const target=await page.evaluate(d=>__wardrobeQA.clearLane(d,true),direction);
+   await page.waitForFunction(()=>__wardrobeQA.read().visual?.state==='ready',null,{timeout:90000});
    await clickTarget(target);
    try{
     const frames=await observed(sources('attack-unarmed'),'attack-unarmed',direction,2);

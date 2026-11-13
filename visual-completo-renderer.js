@@ -28,12 +28,30 @@
  }
  let atlas=null,pending=null,failure=null,last=null;const images=new Map();
  function prepare(){
-  if(pending||atlas||failure)return pending;
+  if(pending||atlas)return pending;
+  failure=null;
   pending=fetch(base+'atlas.json').then(r=>{if(!r.ok)throw Error('Atlas Zoro HTTP '+r.status);return r.json();}).then(async data=>{
-   await Promise.all(Object.entries(data.sources).filter(([key])=>key!=='icon').map(([key,source])=>new Promise((resolve,reject)=>{
-    const im=new Image();im.onload=()=>{if(im.naturalWidth!==source.size[0]||im.naturalHeight!==source.size[1])return reject(Error('Dimensões inválidas: '+key));images.set(key,im);resolve();};im.onerror=()=>reject(Error('Falha ao carregar '+key));im.src=base+source.file;
-   })));atlas=data;
-  }).catch(error=>{failure=error.message;images.clear();console.error('[visual-completo]',failure);});
+   const decoded=await Promise.all(Object.entries(data.sources).filter(([key])=>key!=='icon').map(async ([key,source])=>{
+    const im=new Image();im.src=base+source.file;
+    try{await im.decode();}catch(error){throw Error(source.file+': '+error.message);}
+    if(im.naturalWidth!==source.size[0]||im.naturalHeight!==source.size[1])throw Error('Dimensões inválidas: '+key);
+    return [key,im];
+   }));
+   const prepared=new Map(decoded);
+   for(const [action,clip] of Object.entries(data.clips)){
+    const source=prepared.get(clip.source);
+    if(!source||!Number.isFinite(clip.scale)||clip.scale<=0)throw Error('Clipe inválido: '+action);
+    for(const direction of action==='hurt'?['south']:['south','north','east','west']){
+     const frames=clip.frames[direction];
+     if(!frames?.length)throw Error('Direção ausente: '+action+' / '+direction);
+     for(const {rect:[x,y,w,h],anchor} of frames){
+      if(![x,y,w,h].every(Number.isInteger)||x<0||y<0||w<=0||h<=0||x+w>source.naturalWidth||y+h>source.naturalHeight||anchor.length!==2||!anchor.every(Number.isFinite))throw Error('Quadro inválido: '+action+' / '+direction);
+     }
+    }
+   }
+   for(const [key,im] of prepared)images.set(key,im);
+   atlas=data;
+  }).catch(error=>{failure=error.message;console.error('[visual-completo]',failure);}).finally(()=>{pending=null;});
   return pending;
  }
  function draw(ctx,player,options={}){
