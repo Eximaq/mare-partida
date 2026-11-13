@@ -1,6 +1,6 @@
 /* Full authored rework source renderer. No resampling, inferred limbs or old body. */
 (function(root){'use strict';
-const femaleSkinLayers = new Set(['legs-anatomy','torso-anatomy','chest-neck-rigid','arms-phase','legs','torso','arms','left-leg','right-leg','legs-base','pelvis','left-upper','left-forearm','left-hand','right-upper','right-forearm','right-hand']);
+const skinMaterials=root.MareNativeSkinHD||(typeof require==='function'?require('./player-rework-skin-hd.js'):null);
 const hairAnatomy=root.MareHairAnatomyHD||(typeof require==='function'?require('./player-rework-hair-anatomy-hd.js'):null);
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-base-hd/assets/'}={}){
  if(index?.schema!=='rework-full-hd-v1'||!vendor?.compositor)throw Error('Missing HD base dependencies');
@@ -31,9 +31,9 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
   // Palette changes preserve native dimensions/alpha; source PNGs stay immutable.
   const skin=appearance.skin||appearance.skinColor,hair=appearance.hairColor;
   if((skin&&skin!=='original'||hair&&hair!=='original')&&appearanceAPI){
-   for(const source of sources(r,frame)){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),hairLayer=uses.some(l=>l.slot==='hair'),skinLayer=femaleAnatomyPalette?uses.every(l=>femaleSkinLayers.has(l.id)&&['body','foreground'].includes(l.slot)):uses.some(l=>['body','headBase','face'].includes(l.slot));
-    const ramp=hairLayer?appearanceAPI.hairs[hair]?.ramp:skinLayer?appearanceAPI.skins[skin]?.ramp:null;if(!ramp&&!(hairLayer&&hairAnatomy?.records[source]))continue;
-    const image=map.get(source),w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,tile=makeCanvas(w,h),cx=tile.getContext('2d');cx.drawImage(image,0,0);const data=cx.getImageData(0,0,w,h);const anatomical=hairLayer?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;data.data.set(anatomical||appearanceAPI.recolor(data.data,appearanceAPI.materialMask(data.data,hairLayer?'hair':'skin'),ramp));cx.putImageData(data,0,0);map.set(source,tile);
+   for(const source of sources(r,frame)){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),hairLayer=uses.some(l=>l.slot==='hair'),skinKind=femaleAnatomyPalette&&uses.some(l=>l.slot==='headBase')?null:skinMaterials?.ownership(uses);
+    const ramp=hairLayer?appearanceAPI.hairs[hair]?.ramp:skinKind?appearanceAPI.skins[skin]?.ramp:null;if(!ramp&&!(hairLayer&&hairAnatomy?.records[source]))continue;
+    const image=map.get(source),w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,tile=makeCanvas(w,h),cx=tile.getContext('2d');cx.drawImage(image,0,0);const data=cx.getImageData(0,0,w,h);const anatomical=hairLayer?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;data.data.set(anatomical||appearanceAPI.recolor(data.data,hairLayer?appearanceAPI.materialMask(data.data,'hair'):skinMaterials.mask(data.data,w,skinKind),ramp));cx.putImageData(data,0,0);map.set(source,tile);
    }
   }
   // compositor consumes original density4 PNGs, with no intermediate 1x canvas.

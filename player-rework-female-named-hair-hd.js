@@ -1,5 +1,6 @@
 /* Named female hair on the ORIGINAL face. Explicit semantic fringe ownership; no color guessing. */
 (function(root){'use strict';
+const skinMaterials=root.MareNativeSkinHD||(typeof require==='function'?require('./player-rework-skin-hd.js'):null);
 const BP='tools/rework-base-hd/assets/',HP='tools/rework-accessories/assets/';
 function create(index,ownership,{baseRegistry,makeCanvas}={}){
  if(ownership?.schema!=='female-original-face-named-hair-v1'||!baseRegistry||!makeCanvas)throw Error('Female original-face dependencies missing');
@@ -11,7 +12,7 @@ function create(index,ownership,{baseRegistry,makeCanvas}={}){
   const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d'),api=root.MareAppearance96;
   tc.drawImage(image,0,0);
   const pixels=tc.getImageData(0,0,tile.width,tile.height);
-  const mask=api.materialMask(pixels.data,'skin');
+  const mask=skinMaterials.mask(pixels.data,tile.width,l.slot==='headBase'?'anatomy':'mixed');
   const iris=o.attackLayers.find(layer=>layer.id==='iris');
   if(iris){
    const irisTile=makeCanvas(tile.width,tile.height),irisContext=irisTile.getContext('2d');
@@ -27,17 +28,23 @@ function create(index,ownership,{baseRegistry,makeCanvas}={}){
  if(r.eyeStyle)root.MareReworkEyeStylesHD.reshape(cx,r.eyeStyle,base.direction,root.MareReworkEyeStylesHD.femaleBoxes[base.direction]);
  if(r.style==='original')for(const layer of o.attackLayers.filter(l=>l.slot==='hair')){
   const image=get(images,BP+layer.source+'.png');
-  if(!r.hairColor){cx.drawImage(image,0,0);continue;}
+  if(!r.hairColor&&!r.skinColor){cx.drawImage(image,0,0);continue;}
   const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d'),api=root.MareAppearance96;
   tc.drawImage(image,0,0);
   const pixels=tc.getImageData(0,0,tile.width,tile.height);
-  pixels.data.set(api.recolor(pixels.data,api.materialMask(pixels.data,'hair'),api.hairs[r.hairColor].ramp));
+  const skin=skinMaterials.mask(pixels.data,tile.width,'mixed',skinMaterials.femaleHairSkinZones[base.direction]);
+  if(r.hairColor){
+   const hair=api.materialMask(pixels.data,'hair');
+   for(let i=0;i<skin.length;i++)if(skin[i])hair[i]=0;
+   pixels.data.set(api.recolor(pixels.data,hair,api.hairs[r.hairColor].ramp));
+  }
+  if(r.skinColor)pixels.data.set(api.recolor(pixels.data,skin,api.skins[r.skinColor].ramp));
   tc.putImageData(pixels,0,0);
   cx.drawImage(tile,0,0);
  }
- const data=cx.getImageData(0,0,640,640),back=cl.getImageData(0,0,640,640);for(const[y,x0,x1]of (r.style==='original'?[]:o.fringeSpans))for(let x=x0;x<=x1;x++){const i=(y*640+x)*4;if(back.data[i+3]!==255)throw Error('Fringe has no original opaque backing');data.data.set(back.data.subarray(i,i+4),i);}cx.putImageData(data,0,0);
+ const data=cx.getImageData(0,0,640,640),back=cl.getImageData(0,0,640,640);if(r.skinColor){const api=root.MareAppearance96;back.data.set(api.recolor(back.data,skinMaterials.mask(back.data,640,'anatomy'),api.skins[r.skinColor].ramp));}for(const[y,x0,x1]of (r.style==='original'?[]:o.fringeSpans))for(let x=x0;x<=x1;x++){const i=(y*640+x)*4;if(back.data[i+3]!==255)throw Error('Fringe has no original opaque backing');data.data.set(back.data.subarray(i,i+4),i);}cx.putImageData(data,0,0);
  const w=base.pack.frame.width*4,h=base.pack.frame.height*4,tile=makeCanvas(w,h),tc=tile.getContext('2d'),padding=r.fused?-64:0;tc.drawImage(composite,padding,padding);
- if(r.fused){const walk=makeCanvas(512,512),wc=walk.getContext('2d');wc.drawImage(get(images,BP+o.walkHead+'.png'),0,0);const wa=wc.getImageData(0,0,512,512),project=ox.getImageData(64,64,512,512),result=tc.getImageData(0,0,512,512),[x0,y0,x1,y1]=o.walkDifferenceBounds;for(let i=0;i<wa.data.length;i+=4){const different=wa.data[i+3]!==project.data[i+3]||(wa.data[i+3]&&[0,1,2].some(c=>wa.data[i+c]!==project.data[i+c]));if(different){const px=i/4,x=px%512,y=Math.floor(px/512);if(x<x0||x>x1||y<y0||y>y1)throw Error('Unexpected original neck ownership difference');result.data.set(wa.data.subarray(i,i+4),i);}}tc.putImageData(result,0,0);walk.width=1;}
+ if(r.fused){const walk=makeCanvas(512,512),wc=walk.getContext('2d');wc.drawImage(get(images,BP+o.walkHead+'.png'),0,0);const wa=wc.getImageData(0,0,512,512),project=ox.getImageData(64,64,512,512),result=tc.getImageData(0,0,512,512),[x0,y0,x1,y1]=o.walkDifferenceBounds;for(let i=0;i<wa.data.length;i+=4){const different=wa.data[i+3]!==project.data[i+3]||(wa.data[i+3]&&[0,1,2].some(c=>wa.data[i+c]!==project.data[i+c]));if(different){const px=i/4,x=px%512,y=Math.floor(px/512);if(x<x0||x>x1||y<y0||y>y1)throw Error('Unexpected original neck ownership difference');if(r.style==='original'&&r.hairColor&&wa.data[i+3]){const api=root.MareAppearance96;const pixel=wa.data.slice(i,i+4);const mask=api.materialMask(pixel,'hair');result.data.set(api.recolor(pixel,mask,api.hairs[r.hairColor].ramp),i);}else result.data.set(wa.data.subarray(i,i+4),i);}}tc.putImageData(result,0,0);walk.width=1;}
  const d=base.pack.directions[base.direction];
  if(r.source){const dx=Math.round((d.rest.NECK.x-r.source.rest.NECK.x)*4),dy=Math.round((d.rest.NECK.y-r.source.rest.NECK.y)*4);if(r.gearRecord&&r.gearPolicy==='approved-same-hairstyle-policy'){const g=r.gearRecord,a={...g.adjustmentRecord.adjustment,gearScale:100,hairScale:100},entry=JSON.parse(JSON.stringify(g.entry)),dir=entry.pack.directions[base.direction];dir.headgearPolicy.headAdjustment={x:0,y:0,...dir.headgearPolicy.headAdjustment,scale:100};const pack=root.ReworkAccessoryVendor.headFemale.apply(entry.pack,base.direction,a,entry),pd=pack.directions[base.direction];pd.layers=pd.layers.filter(l=>l.slot==='hair'||l.id===pd.headgearPolicy.gearId);const raw=new Map(pd.layers.map(l=>[l.source,get(images,HP+l.source+'.png')])),adjusted=root.ReworkAccessoryVendor.headPreview.imagesForHair(pack,base.direction,raw,a,makeCanvas),overlay=makeCanvas(512,512);root.ReworkAccessoryVendor.compositor.render(overlay.getContext('2d'),pack,adjusted,{direction:base.direction,frame:0,density:4});tc.drawImage(overlay,dx,dy);overlay.width=1;for(const[k,v]of adjusted)if(raw.get(k)!==v&&v.getContext)v.width=1;}else for(const l of r.source.layers.filter(l=>l.slot==='hair').sort((a,b)=>a.depth-b.depth))tc.drawImage(get(images,HP+l.source+'.png'),dx,dy);}
  if(r.gearRecord&&r.gearPolicy==='source-alpha-only'){const g=r.gearRecord,a=g.adjustmentRecord.adjustment,prior=g.headgearPolicy?.headAdjustment||{},gear=g.layers.find(l=>l.id===g.headgearPolicy?.gearId);if(!gear)throw Error('Missing native gear ownership');const dx=Math.round((d.rest.NECK.x-g.rest.NECK.x+(a.gearX||0)+(prior.x||0))*4),dy=Math.round((d.rest.NECK.y-g.rest.NECK.y+(a.gearY||0)+(prior.y||0))*4);tc.drawImage(get(images,HP+gear.source+'.png'),dx,dy);}

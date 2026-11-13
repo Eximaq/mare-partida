@@ -1,0 +1,417 @@
+{
+  "evidence": [
+    {
+      "gender": "masculino",
+      "direction": "south",
+      "frames": [
+        {
+          "source": "male-walk-south-r7:original:none:dark:original",
+          "frame": 3,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "male-walk-south-r7:original:none:dark:original",
+          "frame": 9,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "male-walk-south-r7:original:none:dark:original",
+          "frame": 12,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "male-walk-south-r7:original:none:dark:original",
+          "frame": 15,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "male-walk-south-r7:original:none:dark:original",
+          "frame": 2,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "male-walk-south-r7:original:none:dark:original",
+          "frame": 8,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "male-walk-south-r7:original:none:dark:original",
+          "frame": 11,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "male-walk-south-r7:original:none:dark:original",
+          "frame": 14,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "male-walk-south-r7:original:none:dark:original",
+          "frame": 1,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        }
+      ]
+    },
+    {
+      "gender": "masculino",
+      "direction": "north",
+      "frames": [
+        {
+          "source": "v7-male-walk-drawn-north-north:original:none:dark:original",
+          "frame": 1,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-north-north:original:none:dark:original",
+          "frame": 4,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-north-north:original:none:dark:original",
+          "frame": 5,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-north-north:original:none:dark:original",
+          "frame": 8,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-north-north:original:none:dark:original",
+          "frame": 10,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-north-north:original:none:dark:original",
+          "frame": 13,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-north-north:original:none:dark:original",
+          "frame": 15,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-north-north:original:none:dark:original",
+          "frame": 3,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        }
+      ]
+    },
+    {
+      "gender": "masculino",
+      "direction": "east",
+      "frames": [
+        {
+          "source": "v7-male-walk-drawn-east-east:original:none:dark:original",
+          "frame": 5,
+          "action": "walk",
+          "direction": "east",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east:original:none:dark:original",
+          "frame": 15,
+          "action": "walk",
+          "direction": "east",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east:original:none:dark:original",
+          "frame": 2,
+          "action": "walk",
+          "direction": "east",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east:original:none:dark:original",
+          "frame": 4,
+          "action": "walk",
+          "direction": "east",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east:original:none:dark:original",
+          "frame": 8,
+          "action": "walk",
+          "direction": "east",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east:original:none:dark:original",
+          "frame": 10,
+          "action": "walk",
+          "direction": "east",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east:original:none:dark:original",
+          "frame": 12,
+          "action": "walk",
+          "direction": "east",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east:original:none:dark:original",
+          "frame": 14,
+          "action": "walk",
+          "direction": "east",
+          "state": "rendered"
+        }
+      ]
+    },
+    {
+      "gender": "masculino",
+      "direction": "west",
+      "frames": [
+        {
+          "source": "v7-male-walk-drawn-east-east-mirror-west-candidate:original:none:dark:original",
+          "frame": 0,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east-mirror-west-candidate:original:none:dark:original",
+          "frame": 2,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east-mirror-west-candidate:original:none:dark:original",
+          "frame": 4,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east-mirror-west-candidate:original:none:dark:original",
+          "frame": 7,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east-mirror-west-candidate:original:none:dark:original",
+          "frame": 10,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east-mirror-west-candidate:original:none:dark:original",
+          "frame": 12,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east-mirror-west-candidate:original:none:dark:original",
+          "frame": 14,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-male-walk-drawn-east-east-mirror-west-candidate:original:none:dark:original",
+          "frame": 3,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        }
+      ]
+    },
+    {
+      "gender": "feminino",
+      "direction": "south",
+      "frames": [
+        {
+          "source": "v7-female-walk-drawn-all-south:original:none:dark:original",
+          "frame": 1,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-south:original:none:dark:original",
+          "frame": 0,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-south:original:none:dark:original",
+          "frame": 3,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-south:original:none:dark:original",
+          "frame": 4,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-south:original:none:dark:original",
+          "frame": 7,
+          "action": "walk",
+          "direction": "south",
+          "state": "rendered"
+        }
+      ]
+    },
+    {
+      "gender": "feminino",
+      "direction": "north",
+      "frames": [
+        {
+          "source": "v7-female-walk-drawn-all-north:original:none:dark:original",
+          "frame": 4,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-north:original:none:dark:original",
+          "frame": 6,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-north:original:none:dark:original",
+          "frame": 7,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-north:original:none:dark:original",
+          "frame": 0,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-north:original:none:dark:original",
+          "frame": 1,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-north:original:none:dark:original",
+          "frame": 2,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-north:original:none:dark:original",
+          "frame": 3,
+          "action": "walk",
+          "direction": "north",
+          "state": "rendered"
+        }
+      ]
+    },
+    {
+      "gender": "feminino",
+      "direction": "east",
+      "frames": [
+        {
+          "source": "v7-female-walk-drawn-all-east:original:none:dark:original",
+          "frame": 0,
+          "action": "walk",
+          "direction": "east",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-east:original:none:dark:original",
+          "frame": 2,
+          "action": "walk",
+          "direction": "east",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-east:original:none:dark:original",
+          "frame": 3,
+          "action": "walk",
+          "direction": "east",
+          "state": "rendered"
+        }
+      ]
+    },
+    {
+      "gender": "feminino",
+      "direction": "west",
+      "frames": [
+        {
+          "source": "v7-female-walk-drawn-all-west:original:none:dark:original",
+          "frame": 2,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-west:original:none:dark:original",
+          "frame": 3,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-west:original:none:dark:original",
+          "frame": 4,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        },
+        {
+          "source": "v7-female-walk-drawn-all-west:original:none:dark:original",
+          "frame": 5,
+          "action": "walk",
+          "direction": "west",
+          "state": "rendered"
+        }
+      ]
+    }
+  ],
+  "errors": []
+}
