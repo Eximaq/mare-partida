@@ -27,15 +27,15 @@ records={}
 byhash=defaultdict(set); byarchive=defaultdict(set)
 asset_hashes=set()
 hash_re=re.compile(r'(?<![a-f0-9])[a-f0-9]{64}(?![a-f0-9])')
-for family,filename in [('rework-base-hd','index.json'),('rework-modular-outfits-hd','index.json'),('rework-weapon-layers-hd','index.json'),('rework-accessories','head-layer-index.json'),('rework-weapon-layers-hd','carry-binding-plan.json')]:
+for family,filename in [('rework-base-hd','index.json'),('rework-modular-outfits-hd','index.json'),('rework-weapon-layers-hd','index.json'),('rework-accessories','head-layer-index.json'),('rework-weapon-layers-hd','carry-binding-plan.json'),('rework-weapons','catalog.json'),('rework-outfits','catalog.json')]:
  base=root+family+'/'
  idx=local(base+filename)
- rows=idx if isinstance(idx,list) else [*idx.get('records',[]),*idx.get('femaleRegistrations',[]),*([idx['modularSwordSouth']] if idx.get('modularSwordSouth') else [])]
+ rows=idx if isinstance(idx,list) else [*idx.get('records',[]),*idx.get('femaleRegistrations',[]),*idx.get('maleOriginalGear',[]),*idx.get('cycles',[]),*([idx['modularSwordSouth']] if idx.get('modularSwordSouth') else [])]
  for r in rows:
   if not isinstance(r,dict):continue
   identifier=r.get('id') or '/'.join(str(r.get(k,'')) for k in ('body','item','direction','style','targetWalkRecord','snapshot'))
   key=family+':'+identifier
-  records[key]={k:r[k] for k in ('id','body','item','direction','action','equipment','style','hairStyle','status','approval','candidate','sourceArchiveSHA256','sourcePortableSHA256','sourcePackSHA256') if k in r}
+  records[key]={k:r[k] for k in ('id','body','item','direction','action','equipment','style','hairStyle','status','approval','candidate','sourceArchiveSHA256','sourcePortableSHA256','sourcePackSHA256','archiveSha256') if k in r}
   for h in hash_re.findall(json.dumps(r,separators=(',',':'))):byhash[h].add(key)
   for k in ('sourceArchiveSHA256','sourcePortableSHA256','sourcePackSHA256'):
    if r.get(k):byarchive[r[k]].add(key)
