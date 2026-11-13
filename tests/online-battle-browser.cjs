@@ -47,7 +47,7 @@ const engine=require('../world-battle.cjs');wire.battle=engine.create('beach',wi
    await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body)});
   });
   await p.route(process.env.MARE_TEST_URL,async route=>{const r=await route.fetch(),html=await r.text(),boot='<script defer src="/apps/account-client/game-session.js"></script><script defer src="/apps/account-client/game-ui.js"></script>';await route.fulfill({response:r,body:html.replace(/<script defer src="game\.js/,boot+'<script defer src="game.js')});});
-  await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready);
+  await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready&&window.__mareDiagnostics?.().lobby96.worldVisual?.state==='ready');
   assert.equal(await p.evaluate(()=>__mareDiagnostics().alive),14,'original mobs must be drawn from the server snapshot');
   const hp=wire.battle.mobs[0].hp;await p.locator('#autoToggle').click();await p.waitForFunction(()=>__mareDiagnostics().autoPlay);
   assert(commands.some(v=>v.action==='battle.auto'));await p.waitForTimeout(800);assert.equal(wire.battle.mobs[0].hp,hp,'browser cannot deal local damage');
@@ -74,9 +74,9 @@ const engine=require('../world-battle.cjs');wire.battle=engine.create('beach',wi
   assert(late.hero<=wire.world.position.x&&late.mob<=wire.battle.mobs[0].x,'visuals never extrapolate past confirmed combat points');
   assert.equal(wire.battle.mobs[0].hp,hp-12,'smoothing cannot apply local damage');
   await p.locator('#journeyToggle').click();await p.locator('#huntRoute').click();await p.waitForSelector('[data-hunt-sector]');assert.equal(await p.locator('[data-online-action="journey.begin"]').count(),0);await p.keyboard.press('Escape');
-  await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.screenshot({path:path.join(out,'original-online-monsters.png')});
+  await p.waitForFunction(()=>__mareDiagnostics().lobby96.worldVisual?.state==='ready',null,{timeout:90000});await p.screenshot({path:path.join(out,'original-online-monsters.png')});
   await p.reload();await p.waitForFunction(()=>window.__mareDiagnostics?.().alive===14);assert.equal(await p.evaluate(()=>__mareDiagnostics().hp),77);
-  await p.setViewportSize({width:393,height:852});await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.screenshot({path:path.join(out,'original-online-monsters-mobile.png')});
+  await p.setViewportSize({width:393,height:852});await p.waitForFunction(()=>__mareDiagnostics().lobby96.worldVisual?.state==='ready',null,{timeout:90000});await p.screenshot({path:path.join(out,'original-online-monsters-mobile.png')});
   assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-byte-for-byte');assert.deepEqual(errors,[]);
   console.log('Original online mobs, auto and skill intents, authoritative HP, continuous sampled combat, native hunt route, reload, mobile and demo preservation passed.');
  }catch(e){await p.screenshot({path:path.join(out,'failure.png')}).catch(()=>{});console.error({pageErrors:errors,commands:commands.map(v=>v.action)});throw e;}finally{holdMotion=false;for(const release of heldReplies)release();await context.close();await browser.close();}

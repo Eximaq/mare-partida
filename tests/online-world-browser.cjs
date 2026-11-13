@@ -50,7 +50,7 @@ arrive('lobby',null);
    await route.fulfill({response:r,body:html.replace(/<script defer src="game\.js/,boot+'<script defer src="game.js')});
   });
   await p.goto(process.env.MARE_TEST_URL);
-  await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready);
+  await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready&&window.__mareDiagnostics?.().lobby96.worldVisual?.state==='ready');
   assert.equal(await p.evaluate(()=>__mareDiagnostics().map.id),'lobby');
   const initial=await p.evaluate(()=>({x:__mareDiagnostics().hero.x,y:__mareDiagnostics().hero.y}));assert.deepEqual(initial,{x:1504,y:1568});
   // Physical keyboard drives the shipped input path, not a test-only command.
@@ -61,7 +61,7 @@ arrive('lobby',null);
   await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
   assert.equal(await p.locator('#panelOverlay').isHidden(),true);assert(commands.some(c=>c.action==='world.travel'));
   await p.locator('#journeyToggle').click();await p.locator('#huntRoute').click();await p.waitForSelector('[data-online-action="journey.begin"]');await p.keyboard.press('Escape');
-  await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.evaluate(()=>document.fonts.ready);
+  await p.waitForFunction(()=>__mareDiagnostics().lobby96.worldVisual?.state==='ready',null,{timeout:90000});await p.evaluate(()=>document.fonts.ready);
   await p.screenshot({path:path.join(out,'online-world-dawn.png')});
   wire.combat={...wire.combat,status:'lost',encounterId:'22222222-2222-4222-8222-222222222222',enemyName:'Saqueador',enemyHp:10,enemyMaxHp:36,worldMapId:'dawn',enemyPosition:{x:982,y:1608}};
   await p.reload();await p.waitForFunction(()=>window.__mareDiagnostics?.().map.id==='dawn');assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-byte-for-byte');assert.equal(await p.evaluate(()=>__mareDiagnostics().alive),0,'historical defeated encounter must not respawn as a live enemy');
