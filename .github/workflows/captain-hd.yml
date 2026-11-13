@@ -5,6 +5,8 @@ on:
     paths:
       - 'player-hub.*'
       - 'captain-hd.css'
+      - 'hud-glass.css'
+      - 'tests/settings-glass-browser.cjs'
       - 'game.js'
       - 'game-tooltips.js'
       - 'index.html'
@@ -54,6 +56,8 @@ jobs:
           python tools/build_pages.py
       - name: Navegador, controles e responsividade em dist
         run: python tests/run_honors_hd_browser.py tests/captain_hd_browser.cjs --dist --offline
+      - name: Configurações de vidro e categorias SVG
+        run: MARE_QA_DIR=/tmp/mare-captain-hd/settings-glass python tests/run_honors_hd_browser.py tests/settings-glass-browser.cjs --dist --offline
       - name: Original online profile and creation
         run: python tests/run_honors_hd_browser.py tests/profile-online-browser.cjs --dist --offline
       - name: Capturas reais

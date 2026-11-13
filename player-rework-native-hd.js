@@ -61,6 +61,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    }
   }
   const weapon=equipment.weapon?.def??equipment.weapon;
+  // Exact authored equipment composites retain priority over generic carry adapters.
+  const otherEquipment=Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='weapon').map(([slot,item])=>[slot,item?.def??item]));
+  const authoredWeapon=weapon!=null?weaponRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:otherEquipment,allowExactComposite:!player.__reworkSubset}):null;
+  if(authoredWeapon?.exactComposite)return {...authoredWeapon,hdKind:'weapon'};
   const female=femaleRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment});if(female)return {...female,hdKind:'female-equipment'};
   if(customFemaleFace&&Object.keys(equipment).some(slot=>slot!=='head'))return null;
   if([109,15,111,112,117].includes(Number(weapon))&&Number(equipment.legs?.def??equipment.pants?.def)===133&&Object.keys(equipment).every(k=>['weapon','legs','pants','boots'].includes(k))&&(equipment.boots==null||Number(equipment.boots?.def??equipment.boots)===9)){const garment=outfitRegistry?.resolve({body:canonical(a.body),direction:o.direction,action:o.action,appearance:{hair:'original'},equipment:{pants:133}}),baseWeapon=weaponRegistry?.resolve({item:Number(weapon),body:canonical(a.body),direction:o.direction,action:o.action,appearance:a,equipment:{}}),bootGarment=equipment.boots?outfitRegistry?.resolve({body:canonical(a.body),direction:o.direction,action:o.action,appearance:{hair:'original'},equipment:{pants:133,boots:9}}):null,combined=(!equipment.boots||bootGarment)?root.MareReworkOutfitOverlayHD?.adapt(baseWeapon,garment,{bootsOutfit:bootGarment}):null;if(combined)return {...combined,hdKind:'weapon'};const bareCarry=carryRegistry?.resolve({item:Number(weapon),body:canonical(a.body),direction:o.direction,action:o.action,appearance:a,equipment:{weapon:Number(weapon)}}),dressedCarry=combinedCarryRegistry?.adapt(bareCarry,{boots:equipment.boots?9:null});if(dressedCarry)return {...dressedCarry,hdKind:'outfit-carry',pack:dressedCarry.base.pack,body:dressedCarry.base.body};}
@@ -95,7 +99,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const adapted=root.MareReworkOutfitOverlayHD?.adaptSword(original,outfitIndex,{coat:equipment.coat?.def??equipment.coat,baseIndex,appearance:a});
    if(adapted)return {...adapted,hdKind:'weapon'};
   }
-  if(weapon!=null&&weaponRegistry){const other=Object.fromEntries(Object.entries(equipment).filter(([k])=>k!=='weapon').map(([k,v])=>[k,v?.def??v]));const r=weaponRegistry.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:other,allowExactComposite:!player.__reworkSubset});if(r?.timeline?.length&&r.fps)return {...r,hdKind:'weapon'};}
+  if(authoredWeapon?.timeline?.length&&authoredWeapon.fps)return {...authoredWeapon,hdKind:'weapon'};
   // Unknown saved identities are NOT a wildcard. Never hide equipped items in an unarmed base.
   if(Object.entries(equipment).some(([slot,item])=>slot!=='head'&&item!=null))return null;
   if(a.skin&&a.skin!=='original'&&!root.MareAppearance96?.skins[a.skin])return null;

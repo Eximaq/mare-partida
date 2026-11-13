@@ -14,11 +14,11 @@ test("one HTTPS origin serves only built files and forwards Secure cookies to th
   const dir = await mkdtemp(join(tmpdir(), "mare-gateway-"));
   await writeFile(join(dir, "index.html"), "<h1>Isolated frontend</h1>");
   await writeFile(join(dir, ".env"), "must-not-be-served");
-  for(const asset of ["portrait.jpg","portrait.jpeg","name.ttf"])await writeFile(join(dir,asset),"fixture asset");
+  for(const asset of ["portrait.jpg","portrait.jpeg","name.ttf","native-source.zip"])await writeFile(join(dir,asset),"fixture asset");
   t.after(async () => {
     await unlink(join(dir, "index.html"));
     await unlink(join(dir, ".env"));
-    for(const asset of ["portrait.jpg","portrait.jpeg","name.ttf"])await unlink(join(dir,asset));
+    for(const asset of ["portrait.jpg","portrait.jpeg","name.ttf","native-source.zip"])await unlink(join(dir,asset));
     await rmdir(dir);
   });
   const upstream = createServer((req, res) => {
@@ -100,7 +100,7 @@ test("one HTTPS origin serves only built files and forwards Secure cookies to th
     );
   assert.equal((await get("/")).body, "<h1>Isolated frontend</h1>");
   assert.equal((await get("/online/")).status, 200);
-  for(const asset of ["portrait.jpg","portrait.jpeg","name.ttf"])assert.equal((await get("/"+asset)).body,"fixture asset");
+  for(const asset of ["portrait.jpg","portrait.jpeg","name.ttf","native-source.zip"])assert.equal((await get("/"+asset)).body,"fixture asset");
   const gamePage=await get("/game");assert.equal(gamePage.status,200);assert.match(gamePage.body,/Isolated frontend/);assert.match(gamePage.body,/\/online\/game-session.js/);assert.match(gamePage.body,/\/online\/game-ui.js/);
   // An absolute request target must never override the private proxy destination.
   assert.equal(
