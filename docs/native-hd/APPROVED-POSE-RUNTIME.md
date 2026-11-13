@@ -132,7 +132,7 @@ O porte masculino da Orbe 17 foi exercitado também em repouso e caminhada NORTH
 
 ### Vestes em repouso e caminhada ainda divergentes
 
-Das 57 entradas de repouso comparadas, 53 selecionam um raster diferente do primeiro PNG do acervo e quatro vistas masculinas do 151 não têm rota HD direta na configuração isolada usada na comparação. As bases femininas com cabelo Curto rente coincidem com os limites da cabeça e das pernas do repouso 151 em todas as direções. No masculino, o cabelo Original apresenta o melhor encaixe de cabeça e as pernas da base neutra registrada correspondem aos pixels da vista de repouso. Para as cinco sequências de repouso femininas, a primeira comparação cobre somente a primeira pose.
+Das 57 entradas de repouso comparadas, 53 selecionam um raster diferente do primeiro PNG do acervo e quatro vistas masculinas do 151 não tinham rota HD direta na build auditada na configuração isolada usada na comparação. As bases femininas com cabelo Curto rente coincidem com os limites da cabeça e das pernas do repouso 151 em todas as direções. No masculino, o cabelo Original apresenta o melhor encaixe de cabeça e as pernas da base neutra registrada correspondem aos pixels da vista de repouso. Para as cinco sequências de repouso femininas, a primeira comparação cobre somente a primeira pose.
 
 No peitoral 130 feminino, os 160 ticks de caminhada dos pacotes S36, N39 e EW44 foram compostos com os seus JSONs e comparados com as 160 seleções atuais. Todos divergem. A saída do mapa que já consta no relatório demonstra que a peça está presente e que mantém as cores salvas. A restauração desses ciclos históricos continua pendente. A primeira camada dos pacotes reúne roupa, cabeça e anatomia. As sobreposições restantes incluem costuras e mãos. Fazer a substituição exige separar a propriedade desses pixels por fase para preservar a personalização.
 
@@ -145,3 +145,19 @@ O compositor feminino substituía a escala do capacete e do cabelo por 100% mesm
 ### Espadas 1, 67, 68 e 69 SOUTH
 
 O ataque masculino com arma isolada reutiliza os nove PNGs de cada fonte. O adaptador separa a cabeça onde os pixels coincidem e mantém em primeiro plano a oclusão que já aparece na composição aprovada. Os arquivos 1, 68 e 69 correspondem aos hashes do acervo. Para 67, a referência final disponível está nos ZIPs nativos históricos de 564ab8de. Cada ciclo preserva os 16 ticks a 24 fps. O 69 mantém o canvas de 896, o pivô de [112, 160] e a margem original de 128 pixels. O compositor comparou os 36 quadros com seus PNGs de referência. Os quatro ataques foram executados no mapa por clique num alvo, com pele escura, cabelo Chanel rosa e olhos verdes. Cada um exibiu os nove estados. A build, oito regressões focadas e a verificação de dimensões, CRC e SHA passaram. [Comparação lado a lado na fase 4](evidence/approved-poses/Kaizoku-espadas-south-1-67-68-69.png).
+
+### Sobretudo 151 masculino em repouso
+
+Os quatro PNGs nativos de v1 estão ligados ao traje isolado na aparência da referência. A seleção exige cabelo Original castanho, olhos castanhos e pele clara. O mundo desenhou os quatro ciclos estáticos após o carregamento do save. O canal alfa e os pixels opacos coincidem com a fonte em todas as direções. [Arte aprovada e mapa](evidence/approved-poses/Kaizoku-151-masculino-repouso.png).
+
+### Ataques laterais masculinos 109, 117 e 122
+
+Os pacotes editáveis dos quatro trajes 151, 158, 165 e 179 são selecionados por arma, peitoral, lado e aparência exata. O ciclo de cada lado usa oito poses nativas em 640×640, a 12 fps, com a última pose sustentada pelos 12 ticks adicionais da fonte. As composições estão restritas a cabelo Original castanho, olhos castanhos, pele clara e aos slots presentes na referência. Os PNGs WEST já vêm orientados para esse lado.
+
+Na build testada, os ataques foram iniciados por clique em alvo no mapa depois de carregar os saves de teste. Os 24 ciclos emitiram as oito poses e o ID previsto. Nos 192 quadros, foram comparados o canal alfa e todos os pixels opacos sob o mesmo recorte. Um reteste equipou 151 e 109 pelo inventário, recarregou o save e confirmou os oito quadros em EAST e WEST. Os comparativos exibem a fase 4. [Manopla 109](evidence/approved-poses/Kaizoku-lateral-109-masculino.png) · [Braço 117](evidence/approved-poses/Kaizoku-lateral-117-masculino.png) · [Orbe 122](evidence/approved-poses/Kaizoku-lateral-122-masculino.png).
+
+Nas versões femininas, a composição fechada contém pernas, botas e cabelo. Na reprodução inicial com o peitoral 151 e cabelo Curto rente, 109 e 117 selecionaram candidatos diferentes das referências aprovadas. A Orbe 122 selecionou native96. Faltam confirmar os slots que correspondem aos pixels incorporados antes de ligar os ciclos completos. A comparação masculina não cobre esse grupo.
+
+### Calças femininas com fonte bloqueada
+
+Os seis ZIPs de 133 r15, 161 r27 e 21 r3 EAST/WEST somam 72 quadros de apresentação com fundo opaco. A busca no acervo aprovado, nos registros de roupa e nos dois ZIPs pertinentes da pasta Correções recuperou as apresentações e as revisões posteriores v42/v47. Ainda faltam as camadas transparentes das três revisões exatas, ou uma fonte verificável que comprove a equivalência fase a fase. As linhas correspondentes permanecem abertas na matriz.

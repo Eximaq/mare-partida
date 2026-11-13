@@ -111,6 +111,10 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(!allowed.includes(action)&&!(idleSource&&action==='idle'))return null;if([0,1,67,68,69,70].includes(Number(item))&&[appearance.skin,appearance.skinColor,appearance.hair,appearance.hairStyle,appearance.hairColor,appearance.eyeColor].some(v=>v&&v!=="original"))return null;
   const equippedWeapon=equipment.weapon&&typeof equipment.weapon==='object'?equipment.weapon.def:equipment.weapon;
   if(equippedWeapon!=null&&Number(equippedWeapon)!==Number(item))return null;
+  if(allowExactComposite&&action!=='idle'){
+   const match=index.records.find(r=>r.approvedEquipment&&r.item===Number(item)&&r.body===body(b)&&r.direction===direction&&Object.keys(equipment).length===Object.keys(r.approvedEquipment).length&&Object.entries(r.approvedEquipment).every(([slot,value])=>id(equipment[slot])===value)&&Object.entries(r.approvedAppearance).every(([key,value])=>appearance[key]===value));
+   if(match)return {...match,exactComposite:true,colorAppearance:{},equipmentContract:{weapon:Number(item),...match.approvedEquipment}};
+  }
   if(allowExactComposite&&exactSource&&body(b)===exactSource.body&&direction===exactSource.direction){
    const id=v=>Number(v&&typeof v==='object'?v.def:v);
    const visible=Object.entries(equipment).filter(([k,v])=>v!=null&&!['none','original'].includes(v)&&!['necklace','ring','belt','charm','akuma_no_mi'].includes(k));

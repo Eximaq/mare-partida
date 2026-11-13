@@ -5,12 +5,14 @@ const id=x=>x?.def??x;
 const skinMaterials=root.MareNativeSkinHD||(typeof require==='function'?require('./player-rework-skin-hd.js'):null);
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-modular-outfits-hd/assets/',allowCandidates=false,appearanceAPI=root.MareAppearance96}={}){
  if(index?.schema!=='rework-modular-outfits-hd-v1'||!vendor?.compositor)throw Error('Missing modular outfit dependencies');
- function resolve({body,direction,action,equipment={},appearance={}}={}){
+ function resolve({body,direction,action,equipment={},appearance={},allowApprovedAppearance=false}={}){
   appearanceAPI=appearanceAPI||root.MareAppearance96;
   if(!['walk','idle','attack-unarmed','attack-focus'].includes(action))return null;
   const canonicalEquipment={};for(const [key,value]of Object.entries(equipment)){const slot=({legs:'pants',coat:'torso'})[key]||key,selected=id(value);if(selected!=null&&!['none','original'].includes(selected))canonicalEquipment[slot]=Number(selected);}
+  const exact=index.records.find(r=>r.approvedAppearance&&allowApprovedAppearance&&r.body===canonical(body)&&r.action===action&&r.direction===direction&&Object.keys(canonicalEquipment).length===Object.keys(r.equipment).length&&Object.entries(r.equipment).every(([slot,item])=>canonicalEquipment[slot]===item)&&Object.entries(r.approvedAppearance).every(([name,expected])=>appearance[name]===expected));
+  if(exact)return exact;
   if(appearance.hair&&!['original'].includes(appearance.hair)||appearance.face&&!['original','face-gentle'].includes(appearance.face)||appearance.eyeColor&&!['original','blue'].includes(appearance.eyeColor))return null;
-  const matches=r=>r.body===canonical(body)&&r.direction===direction&&r.action===action&&(!r.candidate||allowCandidates)&&Object.keys(canonicalEquipment).length===Object.keys(r.equipment).length&&Object.entries(r.equipment).every(([slot,item])=>canonicalEquipment[slot]===item);
+  const matches=r=>!r.approvedAppearance&&r.body===canonical(body)&&r.direction===direction&&r.action===action&&(!r.candidate||allowCandidates)&&Object.keys(canonicalEquipment).length===Object.keys(r.equipment).length&&Object.entries(r.equipment).every(([slot,item])=>canonicalEquipment[slot]===item);
   let r=index.records.find(matches)||null;
   // A declared derived revision may supersede its exact parent, never another outfit.
   const visited=new Set();while(r&&!visited.has(r.id)){visited.add(r.id);const parent=r,d=parent.pack.directions[direction];const child=index.records.find(c=>c.sourceOutfitId===parent.id&&matches(c)&&JSON.stringify(c.pack.frame)===JSON.stringify(parent.pack.frame)&&JSON.stringify(c.pack.pivot)===JSON.stringify(parent.pack.pivot)&&c.pack.density===parent.pack.density&&JSON.stringify({...c.pack.directions[direction],layers:undefined})===JSON.stringify({...d,layers:undefined}));if(!child)break;r=child;}

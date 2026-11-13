@@ -18,11 +18,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const raw=player?.appearance96||{},style=raw.eyeStyle??raw.face;
   const eyes=root.MareReworkEyeStylesHD;
   const color=raw.eyeColor,customColor=color&&!['original','blue'].includes(color);
-  if(!eyes?.supports(style)&&!customColor)return selectBase(player,o);
+  if(!eyes?.supports(style)&&!customColor)return selectBase(player,o,true);
   if(style&&!['original','face-gentle'].includes(style)&&!eyes?.supports(style))return null;
   const isFemale=canonical(raw.gender??raw.body)==='female';
   if(isFemale)return selectBase(player,o);
   if(customColor&&!root.MareCharacterAppearance?.eyes[color])return null;
+  if(!player.__reworkSubset&&['idle','attack','attack-unarmed','attack-focus'].includes(o.action)){const exact=selectBase(player,o,true,true);if(exact)return exact;}
   const original={...player,appearance96:{...raw,eyeStyle:'original',face:'original',eyeColor:'original'}};
   const record=selectBase(original,o);
   if(!record)return null;
@@ -32,11 +33,19 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!supportsEyes||!base.pack||!eyes?.maleSource(base))return null;
   return {...record,id:record.id+':eyes:'+(style||'original')+':'+(color||'original'),eyeStyle:style,colorAppearance:{...record.colorAppearance,face:style,eyeColor:color}};
  }
- function selectBase(player,o){
+ function selectBase(player,o,allowApprovedAppearance=false,onlyApprovedAppearance=false){
   if(!registry||player?.zoanTransformed)return null;
   if(['combat-idle','guard','hurt','death'].includes(o.action))return select(player,{...o,action:'idle'});
-  if(['attack','skill','skill-1','skill-2','combo','cast','heal','reload','dodge'].includes(o.action)){const candidates=o.weaponless||player.equipment?.weapon==null?['attack-unarmed']:['attack-unarmed','attack-firearm','attack-focus','attack-sword','attack-daggers','attack-tech'];for(const action of candidates){const r=select(player,{...o,action});if(r)return {...r,resolvedAction:action};}return null;}
+  if(['attack','skill','skill-1','skill-2','combo','cast','heal','reload','dodge'].includes(o.action)){const candidates=o.weaponless||player.equipment?.weapon==null?['attack-unarmed']:['attack-unarmed','attack-firearm','attack-focus','attack-sword','attack-daggers','attack-tech'];for(const action of candidates){const r=onlyApprovedAppearance?selectBase(player,{...o,action},true,true):select(player,{...o,action});if(r)return {...r,resolvedAction:action};}return null;}
   const raw=player.appearance96||{};const a={...raw,body:raw.gender??raw.body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin};const equipment=Object.fromEntries(Object.entries(player.equipment||{}).filter(([slot])=>!['necklace','ring','belt','charm','cloak','akuma_no_mi','visual_completo'].includes(slot)));for(const [k,v]of Object.entries(equipment))if(v==null||['none','original'].includes(v))delete equipment[k];if(o.weaponless)delete equipment.weapon;if(root.MareHeadgear?.hidden(player))delete equipment.head;
+  const approved=allowApprovedAppearance&&!player.__reworkSubset?outfitRegistry?.resolve({body:canonical(a.body),action:o.action,direction:o.direction,appearance:{...a,eyes:a.face},equipment,allowApprovedAppearance:true}):null;
+  if(approved?.approvedAppearance)return {...approved,hdKind:'outfit'};
+  if(onlyApprovedAppearance){
+   const weapon=equipment.weapon?.def??equipment.weapon;
+   const other=Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='weapon'));
+   const attack=weaponRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:other,allowExactComposite:!player.__reworkSubset});
+   return attack?.approvedAppearance?{...attack,hdKind:'weapon'}:null;
+  }
   const customFemaleFace=canonical(a.body)==='female'&&root.MareReworkEyeStylesHD?.supports(a.face);
   if(a.face&&!['original','face-gentle'].includes(a.face)&&!customFemaleFace||a.eyeColor&&!['original','blue'].includes(a.eyeColor)&&(canonical(a.body)!=='female'||!root.MareCharacterAppearance?.eyes[a.eyeColor]))return null;
   if(a.skin&&a.skin!=='original'&&!root.MareAppearance96?.skins[a.skin]||a.hairColor&&a.hairColor!=='original'&&!root.MareAppearance96?.hairs[a.hairColor])return null;
