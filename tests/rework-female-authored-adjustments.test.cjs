@@ -40,6 +40,8 @@ test('female NORTH uses the approved 157 scale without losing its offset and hid
  };
  const [left,right]=bounds(a),[unscaledLeft,unscaledRight]=bounds(b);
  assert(right-left>unscaledRight-unscaledLeft,[left,right,unscaledLeft,unscaledRight]);
+ const nape=[...a.getContext('2d').getImageData(259,132,1,1).data];
+ assert(nape[2]>nape[0]+12 && nape[3]>240, 'approved embossed nape pixel '+nape.join(','));
  assert(await api.prepare(p,o));
  assert(api.draw(cv.createCanvas(512,512).getContext('2d'),p,{...o,x:256,y:448}));
 });
