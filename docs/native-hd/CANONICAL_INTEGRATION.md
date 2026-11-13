@@ -1,5 +1,7 @@
 # Integração canônica do rework — revisão após o revert
 
+> Atualização no mesmo PR: [vínculo V5, variantes e testes atuais](V5_BINDING_FOLLOWUP.md). O texto abaixo registra a entrega inicial em a7346636; suas pendências e contagens são históricas. O CSV foi atualizado pela continuação.
+
 **Estado: rascunho; não pronto para merge.** Há correções verificadas de seleção/carregamento, mas a cobertura das variantes e combinações não é completa. Não houve merge nem comando de deploy.
 
 ## Base e comparação histórica
