@@ -195,6 +195,8 @@
     function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;
       if(root.MareVisualCompletoRenderer?.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer})){draws++;return true;}
+      // Trim legacy preparation sources even when HD owns the early-return draw.
+      if(scene==='hunt'&&!pending&&!previewPending)trimSourceImages();
       if(nativeHD?.drawStable(ctx,player,{action:['combat-idle','guard','hurt','death'].includes(action)?'idle':action,direction,time,progress,x,y,consumer,weaponless})){defaultHD?.clear();draws++;return true;}
       if(!rework?.active&&defaultHD?.draw(ctx,player,{action:['combat-idle','guard','hurt','death'].includes(action)?'idle':action,direction,time,progress,x,y,consumer,weaponless})){draws++;return true;}
       if(rework?.active&&!player?.zoanTransformed){rework.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale:scale===null?1:scale*46/96,consumer,weaponless});return true;}

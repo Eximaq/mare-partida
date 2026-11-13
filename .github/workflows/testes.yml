@@ -18,7 +18,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: '.node-version'
+      - name: Instalar dependências dos testes
+        run: npm ci --ignore-scripts
       - name: Validar sintaxe
         run: |
           for file in *.js; do node --check "$file"; done
