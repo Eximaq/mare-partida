@@ -52,12 +52,13 @@ const out=process.env.STUDIO_EVIDENCE||'tmp/character-hd';
  await p.evaluate(()=>{__studioQA.level(6);__studioQA.openPanel('character','status');});
  const typography=await p.locator('#characterPower').evaluate(async e=>{
   const style=getComputedStyle(e);
-  const faces=await document.fonts.load('700 32px "Barlow Semi Condensed"','7.201');
-  return {family:style.fontFamily,numbers:style.fontVariantNumeric,loaded:faces.some(face=>face.status==='loaded')};
+  await document.fonts.ready;
+  return {family:style.fontFamily,numbers:style.fontVariantNumeric,ready:document.fonts.check(style.fontWeight+' '+style.fontSize+' '+style.fontFamily,'7.201')};
  });
- assert.match(typography.family,/^"?Barlow Semi Condensed/);
+ assert.match(typography.family,/^"?Inter/);
  assert.match(typography.numbers,/tabular-nums/);
- assert(typography.loaded,'local webfont loaded for combat power');
+ assert.match(typography.family,/system-ui/);
+ assert(typography.ready,'shared glass font stack is ready for combat power');
  const dock=p.locator('.studio-dock');
  await dock.evaluate(async e=>{
   const src=getComputedStyle(e).backgroundImage.match(/url\("([^"]+)"\)/)?.[1];
@@ -113,8 +114,8 @@ await auditSymbols('.attribute-row>.studio-icon,.studio-derived-groups h4 img');
   const noScroll=async label=>assert(await body.evaluate(e=>e.scrollHeight<=e.clientHeight+1),label);
   if(width>1050){
    const dialog=await p.locator('#panelOverlay .dialog').boundingBox();
-   assert(dialog.width<=1120 && dialog.width<=width*.89,'compact desktop width '+width);
-   assert(dialog.height<=650 && dialog.height<=height*.89,'compact desktop height '+height+' (got '+dialog.height+')');
+   assert(dialog.width<=1180 && dialog.width<=width-16,'inventory-standard desktop width '+width);
+   assert(dialog.height<=702 && dialog.height<=height-40,'inventory-standard desktop height '+height+' (got '+dialog.height+')');
    const cards=await p.locator('.studio-card').evaluateAll(els=>els.map(e=>e.getBoundingClientRect().top));
    assert(cards.every(y=>y===cards[0]),'three aligned desktop columns '+width);
    await noScroll('all desktop status panels fit at '+width);
@@ -149,7 +150,7 @@ await auditSymbols('.attribute-row>.studio-icon,.studio-derived-groups h4 img');
  await p.setViewportSize({width:1448,height:1086});
  await p.evaluate(()=>__studioQA.openPanel('character','appearance'));
  assert.deepEqual(await p.locator('.studio-appearance').evaluate(e=>[...e.querySelectorAll('[data-appearance]')].map(n=>n.dataset.appearance)),sharedCreation);
- assert((await p.locator('#profile-hairColor').evaluate(e=>getComputedStyle(e).backgroundImage)).includes('workshop-surface.png'));
+ assert.equal(await p.locator('#profile-hairColor').evaluate(e=>getComputedStyle(e).backgroundImage),'none');
 await auditSymbols('.studio-control-icon');await checkSelectorAlignment();
  const cosmeticsBefore=await p.evaluate(()=>JSON.stringify(__studioQA.player.appearance96));
  await p.locator('#profile-gender').selectOption('feminino');await p.locator('#profile-hairStyle').selectOption('hair-topknot');
@@ -160,7 +161,7 @@ await auditSymbols('.studio-control-icon');await checkSelectorAlignment();
   await p.locator('[data-appearance-direction='+dir+']').click();
   await p.waitForFunction(dir=>{
    const selected=document.querySelector('#profileAppearance [data-appearance-direction="'+dir+'"][aria-pressed=true]');
-   return selected&&getComputedStyle(selected).borderImageSource.includes('primary.png')&&document.querySelector('#profileAppearanceState').textContent.includes('Prévia atualizada');
+   return selected&&getComputedStyle(selected).borderImageSource==='none'&&document.querySelector('#profileAppearanceState').textContent.includes('Prévia atualizada');
   },dir);
   assert(await p.locator('#profileAppearanceCanvas').evaluate(c=>c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0)));
  }
