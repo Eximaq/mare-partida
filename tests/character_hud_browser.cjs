@@ -72,8 +72,8 @@ const hook="  window.__hudQA={get game(){return game},get world(){return world},
  }
  for(const gender of ['masculino','feminino']){
   const [visible,hidden]=portraits.filter(p=>p.gender===gender);
-  if(visible.renderer==='rework-default-hd'&&hidden.renderer==='rework-default-hd'){
-   assert(visible.last.unrepresentedSlots.includes('head')&&hidden.last.unrepresentedSlots.includes('head'),'bare fallback must explicitly report the missing helmet');
+  if(hidden.renderer==='rework-default-hd')assert(!hidden.last.unrepresentedSlots.includes('head'),'an intentionally hidden helmet is not an unsupported slot');
+  if(visible.renderer==='rework-default-hd'&&visible.last.unrepresentedSlots.includes('head')){
    assert.equal(visible.portrait,hidden.portrait,'no invisible helmet is invented on the authorized bare base');
   }else assert.notEqual(visible.portrait,hidden.portrait,'supported headgear visibility alters the actual portrait');
  }
