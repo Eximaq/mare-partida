@@ -165,3 +165,30 @@ A matriz anterior é histórica. Rode a auditoria novamente para obter os totais
 ### Personalização aplicada no mapa
 
 O editor de personagem foi usado para aplicar uma opção por vez. No espadachim inicial, as cinco opções de formato dos olhos e as seis cores produziram rasters distintos em SOUTH, EAST e WEST nos dois corpos, com repouso e caminhada observados nas quatro direções. NORTH manteve o mesmo raster entre opções de olhos. As dez cores do cabelo Chanel masculino produziram rasters distintos nas quatro direções. Essa prova mede as opções no conjunto testado, sem equivalência presumida para os outros estilos, capacetes ou clipes.
+
+Nos dois corpos, o lote com os 14 estilos de cabelo produziu 14 rasters distintos em cada direção. O Chanel também produziu dez rasters distintos ao alternar suas dez cores nos dois corpos. São amostras de repouso e caminhada no espadachim inicial. As 140 combinações de estilo e cor por corpo e os encaixes durante ataques ainda exigem exercício próprio.
+
+O teste da peça 21 isolada confirmou os 16 quadros de caminhada e oito quadros de ataque de punhos em cada direção, além de retirar e recarregar equipada. O primeiro reteste após recarga expôs perda do vínculo quando o save normalizou as paletas para cabelo preto e pele clara. A versão corrigida usa apenas as máscaras de anatomia da base e preserva o raster da peça.
+
+### Retestes de conjuntos
+
+- Os dez conjuntos originais de botas 8 e 9 e luvas 25 e 26 passaram no mapa. São 120 cenários de repouso, caminhada e ataque de punhos. As combinações isoladas e os demais cruzamentos ainda precisam de vínculos específicos.
+- A peça 168 passou no mapa com peitoral 6 e punhos 2 nas quatro direções em repouso e caminhada. O compositor também preparou e desenhou os 12 clipes de repouso, caminhada e punhos com o peitoral 151.
+- O Sobretudo 151 masculino com espada 0 passou em SOUTH e NORTH. EAST e WEST ainda exigem adaptação dos quadros das mangas à pose original de porte.
+
+### Auditoria de seleção após as adaptações
+
+| Paleta | Configurações | Consultas | Fonte HD selecionada | Fonte existente sem vínculo compatível | Sem combinação no índice |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Original | 174 | 4.176 | 2.807 | 696 | 673 |
+| Personalizada de teste | 174 | 4.176 | 1.362 | 1.925 | 889 |
+
+Fontes selecionadas automaticamente e equipagens exercitadas no mapa são provas diferentes. Continuam pendentes os cruzamentos de todas as cores com todos os cabelos, os encaixes nas famílias de ataque e as demais combinações de equipamentos permitidas.
+
+Os capacetes 18, 19, 129 e 157 foram equipados pelo inventário em ambos os corpos com espada 0, peitoral 6 e personalização. Os oito casos desenharam a fonte HD identificada em repouso e caminhada nas quatro direções. A Bandana 18 usa cobertura parcial. O Capacete 19 oculta o cabelo pela regra da peça. Os demais IDs de capacete e combinações de combate seguem na matriz de trabalho.
+
+A regressão do retrato encontrou o capacete fora do canvas de 72 px quando o sprite HD usava a mesma origem do mapa. O retrato ajusta a origem vertical pelos limites reais do sprite e conserva a escala. A regressão aguarda a identidade do capacete antes de comparar o retrato visível e oculto.
+
+O seletor também passou a reutilizar a camada de calça 133 e bota 9 junto a outras armas de porte compatível. A regressão automatizada verifica as oito poses com espada 0.
+
+O reteste do retrato passou com 18 e 19 nos dois corpos, incluindo dez alternâncias, persistência após recarga e restauração dos pixels. O lote de pernas com espada confirmou retorno a native96 nos IDs 133, 140, 147, 154, 161, 175 e 182 nos dois corpos na build anterior à extensão de porte da 133. O 168 manteve a fonte HD no corpo feminino e caiu para native96 no masculino.

@@ -106,12 +106,13 @@ test('female pants 168 replaces only shorts in compatible equipped weapon clips'
  const {make,cv}=require('./rework-integration-support.cjs'),api=make();
  await api.ready;
  const appearance96={gender:'feminino',hairStyle:'hair-bob',hairColor:'pink',skinColor:'dark',eyeStyle:'face-almond',eyeColor:'green'};
- const player={appearance96,equipment:{weapon:{def:2},legs:{def:168}}};
+ const player={appearance96,equipment:{weapon:{def:2},legs:{def:168},coat:{def:151}}};
  const options=[];
  for(const direction of ['south','north','east','west'])for(const action of ['idle','walk','attack-unarmed']){
   const o={action,direction,x:100,y:145};
   const source=api.select(player,o);
   assert.equal(source?.outfitSourceId,'female-pants168-'+action+'-'+direction);
+  assert.match(source.coatSourceId,/female-torso151-/);
   assert.equal(source.material.eyeStyle,'face-almond');
   assert.equal(source.material.eyeColor,'green');
   options.push({player,options:o});
@@ -139,4 +140,15 @@ test('male pants 21 renders independent generated layers in all supported direct
    assert(ctx.getImageData(0,0,200,200).data.some((value,i)=>i%4===3&&value));
   }
  }finally{prepared.release();}
+});
+
+test('male pants 133 and boots 9 use verified lower poses with sword carry',async()=>{
+ const {make}=require('./rework-integration-support.cjs'),api=make();
+ await api.ready;
+ const player={appearance96:{gender:'masculino',hairStyle:'hair-bob',hairColor:'pink',eyeColor:'green',skinColor:'dark'},equipment:{weapon:{def:0},legs:{def:133},boots:{def:9}}};
+ for(const direction of ['south','north','east','west'])for(const action of ['idle','walk']){
+  const source=api.select(player,{direction,action});
+  assert.equal(source?.outfitOverlay.item,133,direction+'/'+action);
+  assert.equal(source?.bootsOverlay.item,9);
+ }
 });

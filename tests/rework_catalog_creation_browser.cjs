@@ -17,6 +17,7 @@ const cosmeticsField=process.env.MARE_COSMETICS_FIELD;
 const cosmeticStart=Number(process.env.MARE_COSMETICS_START||0);
 const cosmeticLimit=Number(process.env.MARE_COSMETICS_LIMIT||Infinity);
 const itemMovement=process.env.MARE_CHECK_ITEM_MOVEMENT==='1';
+const keepStarterCoat=process.env.MARE_KEEP_STARTER_COAT==='1';
 const strictAssets=process.env.MARE_STRICT_VISUAL_ASSETS==='1';
 const onlyGender=process.env.MARE_CATALOG_GENDER;
 const onlyItems=new Set((process.env.MARE_CATALOG_ITEMS||'').split(',').filter(Boolean).map(Number));
@@ -240,7 +241,7 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
      }
      if(catalogOnly){
       result.items=[];
-      if(itemMovement){
+      if(itemMovement&&!keepStarterCoat){
        await page.locator('#mainMenu [data-panel=inventory]').click();
        await page.locator('[data-inv-slot=coat]').click();
        await page.locator('[data-unequip=coat]').click();
@@ -290,8 +291,12 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
          }
          if(strictAssets)assert.deepEqual(result.assetErrors,[]);
          record.nativeDirections=Object.entries(record.directions).filter(([,frames])=>frames.every(frame=>!frame.source.startsWith('native96'))).map(([direction])=>direction);
+         if(item.slot==='head'&&keepStarterCoat)for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,new RegExp('(?:head:|bob:)'+item.def+'(?:[:]|$)'));
          if(item.def===21&&gender==='masculino')for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,/pants21-native/);
-         if(item.def===168&&gender==='feminino')for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,/pants168-native.*hair-palette:pink.*eye-palette:green/);
+         if(item.def===168&&gender==='feminino')for(const frames of Object.values(record.directions))for(const frame of frames){
+          assert.match(frame.source,/pants168-native.*hair-palette:pink.*eye-palette:green/);
+          if(keepStarterCoat)assert.match(frame.source,/coat6-native-pants168-native/);
+         }
         }
         record.status='EXERCITADO';
        }catch(error){
