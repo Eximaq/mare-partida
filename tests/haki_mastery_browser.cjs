@@ -3,11 +3,15 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{
  const page=await browser.newPage({viewport:{width:1672,height:1086}}),errors=[];page.on('pageerror',e=>{errors.push(e.message);console.error(e.stack)});
  const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
- const hook="  window.__hakiQA={get game(){return game},set game(v){game=v},get rt(){return session.haki},get world(){return world},get session(){return session},open:openPanel,close:closePanel,update:updateUI,save:saveGame,stats:getDerived,make:newItem,defs:itemDefs,travel:worldChange,port:returnLobby,attack:heroAttack,damage:takeDamage,spawn:devSpawn,initialize:initializeSession,draw:drawPlayerSprite,hakiScale:hakiVisualScale,get scene(){return scene},set auto(v){autoPlay=v;autoSkills=v},toggle:toggleHaki,cast:castHakiKing};window.__mareDiagnostics=";
+ const hook="  window.__hakiQA={get game(){return game},set game(v){game=v},get rt(){return session.haki},get world(){return world},get session(){return session},open:openPanel,close:closePanel,update:updateUI,visualReady(){const nav=navigator();if(!nav.ready)nav.buildCells(1024);return localVisualState()==='ready'&&mapArtState()==='ready'},save:saveGame,stats:getDerived,make:newItem,defs:itemDefs,travel:worldChange,port:returnLobby,attack:heroAttack,damage:takeDamage,spawn:devSpawn,initialize:initializeSession,draw:drawPlayerSprite,hakiScale:hakiVisualScale,get scene(){return scene},set auto(v){autoPlay=v;autoSkills=v},toggle:toggleHaki,cast:castHakiKing};window.__mareDiagnostics=";
  await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source.replace('  window.__mareDiagnostics=',hook)}));
  await page.goto(process.env.MARE_TEST_URL);await page.waitForFunction(()=>window.__hakiQA);
  await page.locator('#characterName').fill('Papacapim');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.waitForFunction(()=>__hakiQA.game);
  await page.clock.install({time:new Date('2026-11-01T12:00:00Z')});await page.clock.pauseAt(new Date('2026-11-01T12:00:01Z'));
+ const waitVisual=async()=>{
+  for(let i=0;i<300;i++){if(await page.evaluate(()=>__hakiQA.visualReady()))return;await page.clock.runFor(16);await new Promise(resolve=>setTimeout(resolve,25));}
+  throw Error(JSON.stringify(await page.evaluate(()=>__mareDiagnostics().lobby96.worldVisual)));
+ };
  const frozen=await page.evaluate(()=>{const q=__hakiQA;q.game.level=50;q.game.inventory.push({...q.make(MareHaki.book),id:'qa-book'});q.update();return JSON.stringify({talents:q.game.talentBuilds,attributes:q.game.attributes,points:q.game.achievements.claimed,equipment:q.game.equipment});});
  await page.evaluate(()=>__hakiQA.open('inventory'));await page.locator('[data-item=qa-book]').click();await page.locator('[data-use-haki-book]').click();await page.locator('[data-confirm-accept]').click();
  assert.equal(await page.locator('.hm-node').count(),16);assert.equal(await page.locator('#characterTabs').count(),0);assert(await page.locator('[data-haki-invest=coating]').isDisabled());assert(await page.locator('[data-haki-toggle=armament]').last().isDisabled());
@@ -79,7 +83,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  assert.equal(await page.evaluate(()=>__hakiQA.game.haki.mastery.seq),learnedSave.haki.mastery.seq);
  await page.evaluate(()=>__hakiQA.open('character','haki'));assert.equal(await page.locator('.haki-mastery').count(),1);
  await page.evaluate(()=>{const q=__hakiQA;q.travel('beach');q.auto=false;q.world.mobs=[];q.world.spawnClock=1000;q.game.hp=q.stats().maxHP;q.game.haki.current=100;q.game.haki.auto=null;q.update();});
- await page.evaluate(()=>__hakiQA.close());await page.keyboard.press('h');assert.equal(await page.evaluate(()=>__hakiQA.rt.active),'armament');
+ await page.evaluate(()=>__hakiQA.close());await waitVisual();await page.keyboard.press('h');assert.equal(await page.evaluate(()=>__hakiQA.rt.active),'armament');
  await page.clock.runFor(1000);assert.equal(Math.round(await page.evaluate(()=>__hakiQA.game.haki.current)),95);
  await page.keyboard.press('j');assert.equal(await page.evaluate(()=>__hakiQA.rt.active),'observation');
  await page.keyboard.press('j');assert.equal(await page.evaluate(()=>__hakiQA.rt.active),null);
@@ -87,13 +91,14 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await page.clock.runFor(22000);assert.equal(await page.evaluate(()=>__hakiQA.rt.active),null); // combat expiry clears the continuous effect.
  await page.evaluate(()=>{const q=__hakiQA;q.game.haki.current=100;q.game.haki.auto=null;MareHaki.stop(q.rt);q.toggle('armament');q.port();});assert.equal(await page.evaluate(()=>__hakiQA.rt.active),null);
  await page.evaluate(()=>{const q=__hakiQA;q.travel('beach');q.auto=false;q.world.mobs=[];q.world.spawnClock=1000;q.game.haki.current=100;q.game.haki.auto=null;q.game.haki.kingReadyAt=0;q.update();q.close();});
- await page.keyboard.press('k');assert.equal(await page.evaluate(()=>__hakiQA.game.haki.current),50);assert(await page.evaluate(()=>__hakiQA.rt.kingFX>0));await page.clock.runFor(900);assert.equal(await page.evaluate(()=>__hakiQA.rt.kingFX),0);
+ await waitVisual();await page.keyboard.press('k');assert.equal(await page.evaluate(()=>__hakiQA.game.haki.current),50);assert(await page.evaluate(()=>__hakiQA.rt.kingFX>0));await page.clock.runFor(900);assert.equal(await page.evaluate(()=>__hakiQA.rt.kingFX),0);
  // Actual player compositor and actual exported effect renderer, all four facings.
  await page.waitForFunction(()=>Object.values(MareHakiArt.stats()).length===3&&Object.values(MareHakiArt.stats()).every(i=>i.loaded));
  await page.evaluate(()=>{const q=__hakiQA;MareHaki.stop(q.rt);q.toggle('armament');});await page.clock.runFor(50);await page.screenshot({path:process.env.MARE_QA_DIR+'/haki-live-map.png'});
  for(const gender of ['masculino','feminino']){
   await page.evaluate(gender=>{const q=__hakiQA;q.game=MareCharacterAppearance.apply(q.game,{...MareCharacterAppearance.read(q.game),gender});q.update();},gender);
   await page.clock.runFor(100);
+  await waitVisual();
   for(let attempt=0;attempt<50;attempt++){const ready=await page.evaluate(()=>{const q=__hakiQA,c=document.createElement('canvas').getContext('2d');return ['south','north','east','west'].map(d=>{q.world.hero.direction=d;return q.draw(c,0,0)}).every(Boolean)});if(ready)break;await page.clock.runFor(100);await page.waitForTimeout(100);if(attempt===49)throw Error('Directional sprites did not load: '+gender);}
   await page.waitForTimeout(200);
   for(const id of ['armament','observation','conqueror']){
@@ -130,6 +135,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  if(process.env.MARE_HAKI_FAST!=='1'){
  // A sustained real expedition, followed by frame-duration measurement in the same renderer.
  await page.evaluate(()=>{const q=__hakiQA;q.game.hp=q.stats().maxHP;q.game.attributes.strength=200;q.game.attributes.vitality=45;q.travel('beach');q.game.hp=q.stats().maxHP;q.auto=true;});
+ await waitVisual();
  await page.clock.runFor(60000);if(await page.evaluate(()=>__hakiQA.game.stats.kills)<20)await page.clock.runFor(60000);
  const kills=await page.evaluate(()=>__hakiQA.game.stats.kills);assert(kills>=20,'sustained hunt kills: '+kills);
  await page.evaluate(()=>{const q=__hakiQA;q.auto=false;q.close();q.world.mobs=[];q.world.fx=[];q.world.projectiles=[];q.world.spawnClock=1000;q.session.respawn=0;q.game.hp=q.stats().maxHP;q.game.haki.auto=null;q.game.haki.current=100;MareHaki.stop(q.rt);});
@@ -140,7 +146,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await nativePage.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source.replace('  window.__mareDiagnostics=',hook)}));
  await nativePage.goto(process.env.MARE_TEST_URL);await nativePage.waitForFunction(()=>window.__hakiQA?.game);
  await nativePage.evaluate(()=>{const q=__hakiQA;q.travel('beach');q.auto=false;q.world.mobs=[];q.world.fx=[];q.world.projectiles=[];q.world.spawnClock=1000;q.game.hp=q.stats().maxHP;q.game.haki.auto=null;q.game.haki.current=100;MareHaki.stop(q.rt);q.close();});
- await nativePage.waitForFunction(()=>Object.keys(MareHakiArt.stats()).length===3&&Object.values(MareHakiArt.stats()).every(x=>x.loaded));await nativePage.waitForTimeout(500);
+ await nativePage.waitForFunction(()=>Object.keys(MareHakiArt.stats()).length===3&&Object.values(MareHakiArt.stats()).every(x=>x.loaded));await nativePage.waitForFunction(()=>__mareDiagnostics().lobby96.worldVisual?.state==='ready',{},{timeout:90000});
 
  const performanceMatrix=await nativePage.evaluate(async()=>{
   const q=__hakiQA,rows=[],canvasCount=document.querySelectorAll('canvas').length;

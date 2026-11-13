@@ -40,6 +40,9 @@ with sync_playwright() as p:
     results=[]
     for w,h in SIZES:
         c,q=page_for(b,copy.deepcopy(seed),(w,h),errors)
+        # Flush the loaded save's normalization before measuring presentation changes.
+        q.wait_for_function("__mareDiagnostics().lobby96.worldVisual?.state === 'ready'", timeout=90000)
+        q.clock.run_for(7500)
         before={k:saved(q).get(k) for k in KEYS}
         trigger=q.locator('#characterMenuTrigger');menu=q.locator('#characterQuickMenu')
         assert q.locator('#characterMenuBrowse').count()==0,'no secondary arrow control'
