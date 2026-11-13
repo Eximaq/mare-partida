@@ -37,9 +37,11 @@ test('preview loading does not report readiness and stop portrait retries',()=>{
 
 test('explicit visual preparation loads every current attack frame without mutating save',async()=>{
  global.MareAppearance96=require('./tools/paper-doll-96-v3/appearance.js');const native=make(),renderer=require('./player-rework-default-hd.js').create({native});
- const p={appearance96:{gender:'masculino',hairStyle:'original',hairColor:'black',skinColor:'light'},equipment:{weapon:{def:2},coat:{def:6}}},before=JSON.stringify(p),o={action:'attack',direction:'east',x:150,y:180};
+ for(const gender of ['masculino','feminino']){
+ const p={appearance96:{gender,hairStyle:'original',hairColor:'black',skinColor:'light'},equipment:{weapon:{def:2},coat:{def:6}}},before=JSON.stringify(p),o={action:'attack',direction:'east',x:150,y:180};
  assert(await renderer.prepare(p,o));
  const canvas=cv.createCanvas(300,300),ctx=canvas.getContext('2d'),frames=new Set();
- for(let i=0;i<16;i++){ctx.clearRect(0,0,300,300);renderer.draw(ctx,p,{...o,progress:i/16});const s=renderer.snapshot().last;assert.equal(s.state,'rendered');assert.equal(s.sourceScale,1);frames.add(s.frame);assert(ctx.getImageData(0,0,300,300).data.some((v,j)=>j%4===3&&v));}
+ for(let i=0;i<16;i++){ctx.clearRect(0,0,300,300);renderer.draw(ctx,p,{...o,progress:i/16});const s=renderer.snapshot().last;assert.equal(s.state,'rendered',JSON.stringify({i,s,diag:native.snapshot()}));assert.equal(s.sourceScale,1);frames.add(s.frame);assert(ctx.getImageData(0,0,300,300).data.some((v,j)=>j%4===3&&v));}
  assert(frames.size>1);assert.equal(JSON.stringify(p),before);
+ }
 });

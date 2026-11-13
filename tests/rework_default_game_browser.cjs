@@ -27,7 +27,7 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
         const source = await response.text();
         const marker = '  window.__mareDiagnostics=';
         assert.ok(source.includes(marker), 'Read-only game diagnostic insertion point missing');
-        const hook = `let __lastRealWorldDraw=null,__realWorldDraws=0;const __observeWorldDraw=lobby96.draw.bind(lobby96);lobby96.draw=function(c,p,o){const result=__observeWorldDraw(c,p,o);if(o.consumer==='world'&&c.canvas.id==='worldCanvas'){const snapshot=lobby96.snapshot();__lastRealWorldDraw={count:++__realWorldDraws,at:performance.now(),returned:result,action:o.action,direction:o.direction,scene:o.scene,viewport:[innerWidth,innerHeight],canvas:[c.canvas.width,c.canvas.height],snapshot};}return result;};window.__reworkDefaultQA=Object.freeze({read(){return JSON.parse(JSON.stringify({identity:game?{classId:game.classId,appearance:game.appearance96,equipment:game.equipment,equippedIds:Object.fromEntries(Object.entries(game.equipment).map(([slot,item])=>[slot,item?.def??null]))}:null,snapshot:lobby96.snapshot(),worldDraw:__lastRealWorldDraw}));}});`;
+        const hook = `let __lastRealWorldDraw=null,__realWorldDraws=0;const __observeWorldDraw=lobby96.draw.bind(lobby96);lobby96.draw=function(c,p,o){const result=__observeWorldDraw(c,p,o);if(o.consumer==='world'&&c.canvas.id==='worldCanvas'){const snapshot=lobby96.snapshot();__lastRealWorldDraw={count:++__realWorldDraws,at:performance.now(),returned:result,action:o.action,direction:o.direction,scene:o.scene,viewport:[innerWidth,innerHeight],canvas:[c.canvas.width,c.canvas.height],snapshot,heroScreen:camera.worldToScreen(world.hero.x,world.hero.y),camera:{x:camera.x,y:camera.y,width:camera.width,height:camera.height,masked:camera.masked}};}return result;};window.__reworkDefaultQA=Object.freeze({read(){return JSON.parse(JSON.stringify({identity:game?{classId:game.classId,appearance:game.appearance96,equipment:game.equipment,equippedIds:Object.fromEntries(Object.entries(game.equipment).map(([slot,item])=>[slot,item?.def??null]))}:null,snapshot:lobby96.snapshot(),worldDraw:__lastRealWorldDraw}));}});`;
         await route.fulfill({ response, body: source.replace(marker, hook + '\n' + marker) });
       });
       try {
@@ -53,7 +53,11 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
 
         for (const stage of ['created', 'reloaded', 'narrow']) {
           if (stage === 'reloaded') await page.reload({ waitUntil: 'networkidle', timeout: 90000 });
-          if (stage === 'narrow') await page.setViewportSize({ width: 390, height: 844 });
+          if (stage === 'narrow') {
+            await page.setViewportSize({ width: 390, height: 844 });
+            // ResizeObserver can clear the backing store after a successful draw.
+            await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+          }
           const stageStarted=await page.evaluate(()=>performance.now());
           const handle = await page.waitForFunction(stageStarted => {
             const result = window.__reworkDefaultQA?.read();
@@ -72,7 +76,54 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
           assert.equal(active.last.sourceScale,1,'native pixels stay intact');
           assert.equal(active.last.consumer,'world','a portrait cannot satisfy world replacement');
           assert(await page.locator('#worldCanvas').isVisible(),'actual game canvas is visible');
-          await page.screenshot({ path: path.join(out, `${classId}-${stage}.png`), fullPage: true });
+          // A successful draw call can still be clipped, cleared by resize, or hidden
+          // by presentation. Require real bitmap pixels, then inspect the screenshot
+          // only where hit-testing says the world canvas is actually exposed.
+          const bitmapReady = await page.waitForFunction(() => {
+            const c = document.getElementById('worldCanvas');
+            const data = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+            let bright = 0, samples = 0;
+            for (let y = 4; y < c.height; y += 8) for (let x = 4; x < c.width; x += 8) {
+              const i = (y * c.width + x) * 4; samples++;
+              if (data[i + 3] > 0 && Math.max(data[i], data[i + 1], data[i + 2]) > 40) bright++;
+            }
+            return bright > samples * .05;
+          }, null, {timeout: 15000}).then(() => true, () => false);
+          // Keep the raw bitmap even on failure rather than losing the diagnostic.
+          const pixels = await page.evaluate(() => {
+            const canvas = document.getElementById('worldCanvas');
+            const rect = canvas.getBoundingClientRect();
+            const ctx = canvas.getContext('2d');
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            const exposed = []; let bright = 0, opaque = 0, samples = 0;
+            for (let y = 4; y < canvas.height; y += 8) for (let x = 4; x < canvas.width; x += 8) {
+              const i = (y * canvas.width + x) * 4; samples++;
+              if (data[i + 3] > 0) opaque++;
+              if (data[i + 3] > 0 && Math.max(data[i], data[i + 1], data[i + 2]) > 40) bright++;
+              const sx = rect.left + x * rect.width / canvas.width, sy = rect.top + y * rect.height / canvas.height;
+              if (document.elementFromPoint(sx, sy) === canvas) exposed.push([Math.floor(sx), Math.floor(sy)]);
+            }
+            return {samples, opaque, bright, exposed, png: canvas.toDataURL('image/png')};
+          });
+          await fs.writeFile(path.join(out, `${classId}-${stage}-bitmap.png`), Buffer.from(pixels.png.split(',')[1], 'base64'));
+          assert(bitmapReady && pixels.opaque > pixels.samples * .5 && pixels.bright > pixels.samples * .05, 'World bitmap must contain visible map pixels, not a cleared or black canvas');
+          const screenshot = await page.screenshot({ path: path.join(out, `${classId}-${stage}.png`), fullPage: true });
+          const presented = await page.evaluate(async ({png, points}) => {
+            const response = await fetch('data:image/png;base64,' + png);
+            const bitmap = await createImageBitmap(await response.blob());
+            const surface = new OffscreenCanvas(bitmap.width, bitmap.height), ctx = surface.getContext('2d');
+            ctx.drawImage(bitmap, 0, 0);
+            const data = ctx.getImageData(0, 0, bitmap.width, bitmap.height).data;
+            let bright = 0, samples = 0;
+            for (const [x, y] of points) if (x >= 0 && y >= 0 && x < bitmap.width && y < bitmap.height) {
+              const i = (y * bitmap.width + x) * 4; samples++;
+              if (Math.max(data[i], data[i + 1], data[i + 2]) > 40) bright++;
+            }
+            bitmap.close(); return {samples, bright};
+          }, {png: screenshot.toString('base64'), points: pixels.exposed});
+          state.pixelProof = {samples: pixels.samples, opaque: pixels.opaque, bright: pixels.bright, exposed: presented};
+          await fs.writeFile(path.join(out, `${classId}-${stage}-pixels.json`), JSON.stringify({state}, null, 2));
+          assert(presented.samples > 30 && presented.bright > presented.samples * .05, 'Screenshot must show the world in exposed canvas areas, not a black mobile viewport');
           await page.locator('#worldCanvas').screenshot({path:path.join(out,`${classId}-${stage}-world.png`)});
           evidence.push({ classId, weapon, stage, state, errors: [...errors] });
           await fs.writeFile(path.join(out, 'runtime.json'), JSON.stringify({ url, evidence }, null, 2));
