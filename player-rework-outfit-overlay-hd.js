@@ -62,6 +62,16 @@ function adaptSeparatedArms(weapon,{baseIndex,appearance}){
  return {...weapon,id:weapon.id+'-appearance-'+style,states,sourceRasterPadding:padding,colorAppearance:appearance,
   basePack:{pack:{...p,directions:{[dir]:{...d,layers}}},images}};
 }
+function adaptApprovedSouth(weapon,{baseIndex,appearance}){
+ if(!weapon?.approvedSouthHead||!weapon.basePack)return null;
+ const {pack:p,images:sourceImages}=weapon.basePack,d=p.directions.south;
+ const style=(appearance.hair||'original').replace(/^hair-/,'');
+ const images={...sourceImages},padding={};
+ const layers=bindHair(d.layers,{style,dir:'south',p,d,baseIndex,images,padding});
+ if(!layers)return null;
+ return {...weapon,id:weapon.id+'-appearance-'+style,sourceRasterPadding:padding,colorAppearance:appearance,
+  basePack:{pack:{...p,directions:{south:{...d,layers}}},images}};
+}
 function adaptApprovedNorth(weapon,{baseIndex,appearance}){
  const contract=weapon?.approvedModularBody;
  if(!contract||contract.placement!=='behind-body')return null;
@@ -123,5 +133,5 @@ function adaptSword(weapon,outfits,{coat,baseIndex,appearance}){
  return {...weapon,states,id:weapon.id+(coat==null?'':'-coat'+coat)+'-adapted-'+style,basePack:{...b,images,pack:{...p,directions:{...p.directions,[dir]:{...d,layers,rest,poses}}}},
   adaptedCoat:outfit?.id,sourceRasterPadding:padding,mirrorLayerIDs:mirrors,colorAppearance:appearance};
 }
-const api={adapt,adaptSword,adaptSeparatedArms,adaptApprovedNorth};root.MareReworkOutfitOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
+const api={adapt,adaptSword,adaptSeparatedArms,adaptApprovedNorth,adaptApprovedSouth};root.MareReworkOutfitOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

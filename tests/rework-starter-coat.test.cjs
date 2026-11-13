@@ -263,7 +263,7 @@ test('helmet 19 hides original and wavy hair independently of color and restores
  }
 });
 
-test('sword 0 SOUTH prefers the historical nine-state raster only for the original identity',async()=>{
+test('sword 0 SOUTH retains the historical nine-state raster and respects the identity contract',async()=>{
  const {make,cv}=require('./rework-integration-support.cjs');
  const api=make();
  await api.ready;
@@ -271,7 +271,7 @@ test('sword 0 SOUTH prefers the historical nine-state raster only for the origin
  const appearance96={gender:'masculino',hairStyle:'original',hairColor:'original',skinColor:'original',eyeStyle:'original',eyeColor:'original'};
  const player={appearance96,equipment:{weapon:{def:0}}};
  const defaultLook=require('../character-appearance.js').defaults;
- assert.match(api.select({...player,appearance96:defaultLook},options)?.id,/^sword0-south-modular-nine/);
+ assert.equal(api.select({...player,appearance96:defaultLook},options)?.id,'sword0-south-historical-layers-appearance-original');
  const source=api.select(player,options);
  assert.equal(source?.id,'sword0-south-historical-attack');
  assert.equal(source.sourceArchiveSHA256,'9e95e9dcea550cadf43c3aa36bd12a6604d92c287a1058bf0d8c210baf8c5991');
@@ -291,11 +291,11 @@ test('sword 0 SOUTH prefers the historical nine-state raster only for the origin
    assert.deepEqual(ax.getImageData(0,0,640,688).data,ex.getImageData(0,0,640,688).data,'phase '+phase);
   }
  }finally{prepared.release();}
- for(const [look,equipment] of [
-  [{...appearance96,hairStyle:'hair-bob',hairColor:'pink'},player.equipment],
-  [appearance96,{...player.equipment,coat:{def:6}}],
+ for(const [look,equipment,expected] of [
+  [{...appearance96,hairStyle:'hair-bob',hairColor:'pink'},player.equipment,'sword0-south-historical-layers-appearance-bob'],
+  [appearance96,{...player.equipment,coat:{def:6}},'sword0-south-modular-nine-coat6-adapted-original'],
  ]){
-  assert.match(api.select({appearance96:look,equipment},options)?.id,/^sword0-south-modular-nine/);
+  assert.equal(api.select({appearance96:look,equipment},options)?.id,expected);
  }
 });
 

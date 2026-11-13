@@ -9,7 +9,7 @@ Base do patch e deploy observado `58b7df142e7fac3ee0a1c3450a34a4946aaa1804`. A [
 | 109 / M, sem outros slots visuais, Chanel rosa, pele clara, olhos azuis | Básico SOUTH | a227079d → 4542de58. V3 de encaixe inicial, sete estados apresentados. | `native96`, oito quadros | `gauntlet109-south-native-layers-appearance-bob`, estados 0–6 |
 | 17 / M, sem outros slots visuais, Chanel rosa, pele clara, olhos azuis | Básico SOUTH | a227079d → 4542de58. Textura v2, ressalva no quadro 5. | `native96`, oito quadros | `orb17-south-native-layers-appearance-bob`, estados 0–7 |
 | 0 / M, arma isolada, aparência original sem paleta explícita | Básico SOUTH | e06ebec3 → e433c1d8, com ressalva histórica. Nove composições originais. | O jogo normaliza o save carregado para uma paleta explícita. | A rota original seleciona `sword0-south-historical-attack` no teste de compositor. Os 16 ticks recompõem exatamente os nove PNGs no canvas nativo. |
-| 0 / M, arma isolada, cabelo Original, preto, pele clara, íris azul | Básico SOUTH | A identidade normalizada possui cores que a composição histórica fechada não representa. | `sword0-south-modular-nine-adapted-original` | Mesma fonte, nove fases no mapa. A identidade da fixture continua preservada. |
+| 0 / M, arma isolada, cabelo Original, preto, pele clara, íris azul | Básico SOUTH | A identidade normalizada possui cores que a composição histórica fechada não representa. | `sword0-south-modular-nine-adapted-original` | `sword0-south-historical-layers-appearance-original`, nove estados do pacote no mapa. |
 | 0 / M, peitoral 6, Chanel rosa, porcelana | Básico SOUTH | A adaptação modular é candidata para esse traje e aparência. | `sword0-south-modular-nine-coat6-adapted-bob`, nove estados | Continua adaptação. A comparação da adaptação sem peitoral, com paleta original, encontrou de 57 a 1.370 pixels divergentes por fase, em canvas 640×640. |
 | 0 / F, peitoral 6, Chanel rosa, porcelana | Básico SOUTH | Nenhuma aprovação de ciclo completo identificada para essa composição exata. | `female0-attack-sword-south-candidate-coat6-native-sword`, oito estados | Mesma família. Controle de criação, caminhada e ataque exercitado no mapa. |
 | 115 / M, peitoral 151, capacete 157 visível, cabelo Espetado, preto, pele clara, íris azul | Básico SOUTH | b16d162f, provisória. V5 com identidade exata. | Não exercitado nesta bateria. | `rifle115-v5-south-native-layers`, cinco estados. Repouso e caminhada mantêm a família de porte. |
@@ -53,7 +53,7 @@ Os hashes dos PNGs de aprovação de 0, 109 e 17 correspondem aos respectivos es
 
 ## Pendências da primeira bateria
 
-- Restaurar e testar 5/111/119 SOUTH. Os casos 4 SOUTH, 15 NORTH e 69 NORTH constam da matriz com os resultados da bateria seguinte.
+- A prova da fonte histórica é limitada às combinações exercitadas. Os casos 4/5/0/111/119 SOUTH, 15 NORTH, 69 NORTH e adagas NORTH constam da matriz.
 - Retestar na revisão atual 151 nas laterais, calças 140/147/154/161/175/182 nos dois corpos, Grevas 21, capacetes 18/19/157 e troca de ações ou equipamento durante a preparação. A regressão automatizada da seleção é mais estreita que essa bateria no mapa.
 - Fechar o encaixe de pele na interface da 17, o porte com a aparência usada no teste e a comparação alinhada de todas as variantes com vídeos e PNGs aprovados.
 
@@ -83,3 +83,14 @@ O Canhão 15 mantém o PNG da peça e as oito fases aprovadas. A camada de inter
 A build passou com `python tools/build_pages.py`. Os 22 testes do conjunto focado passaram. A execução no navegador usou Edge e a build publicável em loopback, com um perfil descartável por variante. Nenhum deploy foi executado.
 
 O Nodachi 69 NORTH V6 usa a própria arma e o rig NORTH espelhado do pacote de origem. As fases 1–6 da base são iguais pixel a pixel. Em 0 e 7, o teste isolou a alteração da mão em retângulos de 28×30 e 28×31 pixels. O compositor recompõe os oito PNGs aprovados na paleta da fonte. No mapa, as oito fases exibiram a identidade com cabelo Chanel rosa, pele escura e olhos verdes. [Comparativo da fase 2](evidence/approved-poses/Kaizoku-69-north-v6-comparativo.png).
+
+### Ciclos SOUTH confirmados no mapa
+
+| ID | Fonte efetivamente desenhada | Estados | Comparativo |
+| --- | --- | --- | --- |
+| 0 | `sword0-south-historical-layers-appearance-original` | 0–8 | [Aprovado e save normalizado no mapa](evidence/approved-poses/Kaizoku-0-south-comparativo.png) |
+| 5 | `mosquete5-south-initial-v2-appearance-bob` | 0–9 | [Arte aprovada e mapa](evidence/approved-poses/Kaizoku-5-south-comparativo.png) |
+| 111 | `gauntlet111-south-initial-v2-appearance-bob` | 0–11 | [Arte aprovada e mapa](evidence/approved-poses/Kaizoku-111-south-comparativo.png) |
+| 119 | `cyborg119-south-authored-layers-appearance-bob` | 0–11 | [Arte aprovada e mapa](evidence/approved-poses/Kaizoku-119-south-comparativo.png) |
+
+A espada 0 foi executada em save descartável carregado pela rotina normal, que gravou cabelo Original preto, pele clara e olhos azuis. A camada frontal do estado 3 preserva a oclusão da lâmina. O 5 usa a ordem de `normal.txt`, com a pose 0 ampliada na própria fonte e a 9 preservada. A 111 e a 119 mantêm 20 ticks a 24 fps, com 12 PNGs de referência. A 119 tem a camada frontal do braço onde ele encobre a cabeça. As máscaras de pele atuam nos pixels compatíveis com a anatomia de origem. A igualdade de raster foi testada sem recoloração.

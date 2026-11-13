@@ -104,6 +104,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     if(approved?.id==='sword0-south-historical-attack')return {...approved,hdKind:'weapon'};
    }
   }
+  const approvedSouthAction={0:'attack-sword',5:'attack-firearm',111:'attack-unarmed',119:'attack-unarmed'}[weapon];
+  if(canonical(a.body)==='male'&&o.direction==='south'&&o.action===approvedSouthAction&&
+     Object.keys(equipment).length===1&&!player.__reworkSubset){
+   const source=weaponRegistry?.approvedSouth(weapon);
+   const adapted=root.MareReworkOutfitOverlayHD?.adaptApprovedSouth(source,{baseIndex,appearance:a});
+   if(adapted)return {...adapted,hdKind:'weapon'};
+  }
   if(canonical(a.body)==='male'&&[0,1,67,68,69,70].includes(Number(weapon))&&o.action==='attack-sword'&&
      (['east','west'].includes(o.direction)||Number(weapon)===0&&['north','south'].includes(o.direction))&&(o.direction==='south'||equipment.coat!=null||[a.hair,a.skin,a.hairColor,a.eyeColor].some(v=>v&&!['original','blue'].includes(v)))&&
      Object.keys(equipment).every(slot=>['weapon','coat'].includes(slot))){
