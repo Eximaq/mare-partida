@@ -143,6 +143,7 @@ with sync_playwright() as p:
         q.keyboard.press('e')
         assert q.evaluate('__compactQA.game.manaPotions')==1
         assert q.evaluate('__compactQA.game.energy')>=q.evaluate('Math.round(__compactQA.stats().maxEnergy*.25)')
+        q.clock.resume()
         # A self-targeted class skill exercises the real button and cooldown
         # without a timing dependency on enemy navigation.
         q.evaluate('''() => {const x=__compactQA;x.game.equipment.akuma_no_mi=null;
