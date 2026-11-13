@@ -49,7 +49,7 @@ test('explicit visual preparation loads every current attack frame without mutat
 test('original-appearance bare fallback pixels equal independent authored pack composition at world scale',async()=>{
  const native=make(),renderer=require('./player-rework-default-hd.js').create({native}),index=JSON.parse(fs.readFileSync('tools/rework-base-hd/index.json')),load=require('./tools/rework-hd-test-loader.cjs').create(__dirname);
  for(const gender of ['masculino','feminino'])for(const action of ['idle','walk'])for(const direction of ['south','north','east','west']){
-  const p={appearance96:{gender,hairStyle:'original',eyeStyle:'face-calm',skinColor:'original',hairColor:'original'},equipment:{weapon:{def:0}}},r=index.records.find(r=>r.body===(gender==='feminino'?'female':'male')&&r.action===action&&r.direction===direction&&r.hairStyle==='original'),pack=r.pack,d=pack.directions[direction];
+  const p={appearance96:{gender,hairStyle:'original',eyeStyle:'unsupported-eye-style',skinColor:'original',hairColor:'original'},equipment:{weapon:{def:999999}}},r=index.records.find(r=>r.body===(gender==='feminino'?'female':'male')&&r.action===action&&r.direction===direction&&r.hairStyle==='original'),pack=r.pack,d=pack.directions[direction];
   assert(await renderer.prepare(p,{action,direction}));
   for(let frame=0;frame<d.clip.frames;frame++){
    const images=new Map();for(const l of d.layers){const sha=l.frames?.[frame]||l.source;if(sha&&!images.has(sha))images.set(sha,await load('tools/rework-base-hd/assets/'+sha+'.png'));}

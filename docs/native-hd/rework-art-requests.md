@@ -117,3 +117,11 @@ O navegador validou as quatro direções, todos os quadros de caminhada e ataque
 ## Primeiros protótipos dos rostos
 
 Sereno, Determinado, Amendoado e Atento têm 24 camadas transparentes para SOUTH, EAST e WEST nos dois corpos. As expressões usam os mesmos parâmetros de abertura, inclinação e sobrancelha, com caixas próprias de cada cabeça. Os pixels vêm das bases atuais. NORTH preserva a nuca original, pois os olhos não aparecem. O atlas é um protótipo. O próximo passo é avaliar a distinção entre expressões no tamanho do jogo e ligar as camadas aos campos de aparência, mantendo a recoloração da íris e a sobreposição do cabelo. [Comparação](evidence/face-styles/comparison.png) · [Atlas](evidence/face-styles/eye-overlays.png) · [Metadados](evidence/face-styles/atlas.json).
+
+## Expressões no renderizador e primeiras paletas femininas
+
+Sereno, Determinado, Amendoado e Atento usam a mesma regra de deformação nas duas cabeças, com caixas registradas por fonte. O renderizador preserva o alfa da camada. As cabeças masculinas usam as camadas separadas e o espelhamento já declarado para WEST. O feminino aplica a forma do olho antes do cabelo e após a paleta da íris. NORTH mantém a nuca original. A cobertura verificada é a base original dos dois corpos em repouso, caminhada e ataque desarmado. Composições de armas e roupas com rosto fundido continuam sujeitas ao contrato de cada fonte.
+
+A primeira paleta de pele feminina usa máscaras por camada de anatomia. A recomposição da cabeça protege a íris e a franja com o contrato de regiões existente. Para o cabelo original, a mesma camada de cabelo do ataque é usada na cabeça fundida de repouso e caminhada, com a diferença de pescoço restaurada. A pele, a íris e as roupas ficam fora da recoloração de cabelo. As variantes com roupas equipadas ainda precisam de máscaras por fonte.
+
+A interface confirmou os quatro estilos nos dois corpos após aplicar e recarregar. No feminino também foram exercitados Atento, íris verde, pele escura e cabelo original rosa. Os testes do compositor verificam pixels distintos nas direções visíveis, alfa preservado e a combinação das paletas. [Capturas e diagnóstico](evidence/face-styles/map-runtime.json).
