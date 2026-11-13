@@ -196,3 +196,38 @@ O reteste do retrato passou com 18 e 19 nos dois corpos, incluindo dez alternân
 A auditoria de cabelo para espada 0 e peitoral 6 cruzou 14 estilos, dez cores, dois corpos, quatro direções e duas ações. A opção feminina sem cabelo causava as 80 lacunas iniciais. O seletor agora usa a cabeça limpa já registrada e resolve 2.240 de 2.240 consultas de repouso e caminhada. Esse número mede seleção. A execução pelo editor mediu individualmente os 14 estilos e as dez cores no Chanel.
 
 O inventário confirmou repouso e caminhada HD nas quatro direções para todos os dez IDs de capacete nos dois corpos, com espada 0 e peitoral 6. O reteste da calça 133, primeiro sem bota e depois com a bota 9, passou no corpo masculino com espada 0 e personalização nas quatro direções. A opção feminina sem cabelo também foi aplicada pelo editor e desenhou a cabeça limpa em todas as direções.
+
+## Reteste das lacunas de espada e equipamento
+
+Base de trabalho `bb3f5f1d`. A validação usou a build estática de `tools/build_pages.py`, com personagem descartável criado pela interface. Os equipamentos dos lotes foram disponibilizados por fixture e equipados no inventário. O teste movimentou o personagem pelos controles e iniciou os ataques clicando em alvos no mapa. A instrumentação registrou o ID da fonte desenhada, direção, ação e quadro.
+
+| Equipamento | Corpo | Resultado | Escopo da prova |
+| --- | --- | --- | --- |
+| Espada 0 + Sobretudo 151 | Masculino | Porte HD nas quatro direções | Repouso e caminhada no mapa. EAST usa as camadas do 151 separadas do conjunto com calça 133. WEST usa o espelhamento registrado da base. |
+| Espada 0 + calças 140, 147, 154, 161, 175 e 182 | Masculino | Porte HD nas quatro direções | Repouso e caminhada no mapa. As camadas são selecionadas pelo ID da calça. O teste automatizado confere os 16 quadros de caminhada por direção no registro. |
+| Espada 0 + peitorais 6, 7, 130, 137, 144, 151, 158, 165, 172 e 179 | Feminino | Fontes de ataque vinculadas nas quatro direções | A espada mantém seus oito estados, posições e tempos. Os dez peitorais apareceram no mapa nas quatro direções, com três quadros de ataque observados por direção. O compositor também desenhou os oito quadros por direção com o peitoral 6. |
+| Espada 0 em SOUTH | Masculino | Ataque modular pendente | O pacote `sword0-historical-native.zip` contém nove estados com arma e corpo na mesma imagem. A base `v7-sword-drawn8-south` tem oito poses com âncoras estáticas dos braços. O próximo passo é separar os pixels da lâmina e registrar os pontos de encaixe do golpe por fase para aplicar mangas e cabelo. |
+| Espada 0 + calças 140, 147, 154, 161, 175 e 182 | Feminino | Porte HD pendente | Os registros congelados individuais de caminhada são composições fechadas. Os conjuntos de 147 e 154 já trazem partes separadas, incluindo camadas distais; é necessário validar o limite com as botas e reconstruir as regiões ocluídas para uso independente. |
+
+A adaptação dos peitorais femininos reutiliza as camadas da roupa do ataque desarmado e reposiciona as mangas pelas âncoras do braço do golpe de espada. As partes fixas do peitoral, a cadência do ataque, o pivô e a escala permanecem os registrados. A regressão comprova a identidade da arma e da roupa. A revisão fina de sobreposição das mangas ainda é pendente.
+
+### Matriz de cabelo deste lote
+
+`node tools/audit_rework_sword_hair.cjs <diretório>` gera `hair-source-matrix.json` com cada corpo, peça, estilo, cor, direção, ação e ID de fonte. O lote tem espada 0, dois corpos, 14 estilos, dez cores e 20 arranjos de equipamento por corpo. Os arranjos cobrem os dez peitorais, as seis calças da tabela e o peitoral 6 combinado separadamente com os capacetes 18, 19, 129 e 157. A pele escura, o rosto Amendoado e a íris verde são mantidos no cruzamento.
+
+| Ação | Consultas | Fonte HD selecionada | Sem fonte HD compatível |
+| --- | ---: | ---: | ---: |
+| Repouso | 22.400 | 19.040 | 3.360 |
+| Caminhada | 22.400 | 19.040 | 3.360 |
+| Ataque de espada | 22.400 | 8.820 | 13.580 |
+
+As 67.200 consultas correspondem a 5.600 configurações. A matriz mede seleção do renderizador. Cor aplicada, encaixe, oclusão e restauração de cada cabelo com cada equipamento ainda exigem prova de pixels e teste no mapa. As combinações com outras armas também seguem pendentes.
+
+A auditoria de catálogo ampliada testou 189 arranjos em 4.536 consultas por paleta. Selecionou 3.063 fontes com a paleta original e 1.618 com a paleta personalizada.
+
+### Reprodução
+
+- `python tools/build_pages.py`
+- `node --test tests/rework-starter-coat.test.cjs player-rework-weapon-carry-hd.test.cjs player-rework-outfit-carry-overlay-hd.test.cjs player-rework-female111-family-hd.test.cjs`
+- `node tests/rework_catalog_creation_browser.cjs` com `MARE_CATALOG_END=1`, `MARE_STRICT_VISUAL_ASSETS=1`, `MARE_TEST_URL`, `MARE_EVIDENCE_DIR` e `CHROME_PATH`. Para equipagem, usar `MARE_CATALOG_EQUIPMENT=1`, `MARE_CHECK_ITEM_MOVEMENT=1`, `MARE_CATALOG_GENDER` e `MARE_CATALOG_ITEMS`. Para confirmar os ataques após equipar os peitorais femininos, acrescentar `MARE_CHECK_ITEM_ATTACKS=1`. O cenário de criação com peitoral 6 usa `MARE_CHECK_CREATION_COLOR=1` e `MARE_CHECK_STARTER_ATTACKS=1`.
+- `node tools/audit_rework_map_coverage.cjs <diretório>` com e sem `MARE_AUDIT_SAVED_APPEARANCE=1`.

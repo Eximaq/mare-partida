@@ -78,7 +78,31 @@ test('female equipment resolves authored coat walk and matching punch without tr
    assert.equal(prepared.coverage[0].frames,8);
    assert(prepared.draw(ctx,look(2),options));
   }finally{prepared.release();}
-  assert.equal(api.select(look(0),{action:'attack-sword',direction}),null);
+  const swordOptions={...options,action:'attack-sword'};
+  const bare=api.select({appearance96,equipment:{weapon:{def:0}}},swordOptions);
+  for(const def of [6,7,130,137,144,151,158,165,172,179]){
+   const equipped={appearance96,equipment:{weapon:{def:0},coat:{def}}};
+   const record=api.select(equipped,swordOptions);
+   assert.equal(record.outfitSourceId,'female-torso'+def+'-'+direction+'-frozen-attack-native');
+   assert.deepEqual(record.states,bare.states);
+   const base=record.baseRecord.pack.directions[direction];
+   assert.deepEqual(base.clip,bare.baseRecord.pack.directions[direction].clip);
+   assert(base.layers.some(layer=>layer.id.startsWith('coat'+def+'-')));
+  }
+  const sword=api.select(look(0),swordOptions);
+  assert.match(sword.id,new RegExp('^female0-attack-sword-'+direction+'-candidate-coat6-native-sword'));
+  assert.equal(sword.states.length,8);
+  assert.equal(sword.material.skinColor,'dark');
+  const preparedSword=await api.prepareConfiguration([{player:look(0),options:swordOptions}]);
+  try{
+   assert.equal(preparedSword.coverage[0].frames,8);
+   const ctx=cv.createCanvas(200,200).getContext('2d');
+   for(let frame=0;frame<8;frame++){
+    ctx.clearRect(0,0,200,200);
+    assert(preparedSword.draw(ctx,look(0),{...swordOptions,progress:(frame+.25)/8}));
+    assert(ctx.getImageData(0,0,200,200).data.some((value,i)=>i%4===3&&value));
+   }
+  }finally{preparedSword.release();}
  }
 });
 
@@ -161,4 +185,19 @@ test('female no-hair uses the clean authored head instead of falling back',async
  const prepared=await api.prepareConfiguration(poses);
  try{assert(prepared.coverage.every(p=>p.source.includes(':female-original-face:none:')));}
  finally{prepared.release();}
+});
+
+test('sword carry reuses only the 151 lateral coat and each recovered pants layer',async()=>{
+ const {make}=require('./rework-integration-support.cjs'),api=make();
+ await api.ready;
+ for(const [slot,items] of [['coat',[151]],['legs',[140,147,154,161,175,182]]])for(const def of items){
+  const player={appearance96:{gender:'masculino',hairStyle:'hair-bob',hairColor:'pink',eyeStyle:'face-almond',eyeColor:'green',skinColor:'dark'},equipment:{weapon:{def:0},[slot]:{def}}};
+  for(const direction of ['south','north','east','west'])for(const action of ['idle','walk']){
+   const source=api.select(player,{direction,action});
+   assert.equal(source?.outfitOverlay.item,def,def+'/'+direction+'/'+action);
+   assert(source.id.includes((slot==='coat'?'coat':'pants')+def+'-native'));
+   assert.equal(source.base.pack.directions[direction].clip.frames,action==='idle'?1:16);
+   if(slot==='legs')assert(source.outfitOverlay.sourceRecord.includes('pants'+def));
+  }
+ }
 });

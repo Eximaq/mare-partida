@@ -28,6 +28,47 @@ function attachIsolatedCoat(record,outfit,coat){
  const states=o.poses.map((_,i)=>record.states[sourceFrame(i)]);
  return {...record,states,id:record.id+'-coat'+coat+'-native',pack:combined,baseRecord:{...base,pack:combined,sourceRefs:[...base.sourceRefs,...refs]},outfitSources:refs,outfitSourceId:outfit.id,skinRepairLayers:layers.filter(l=>l.id.startsWith('original-neck-coverage-only')).map(l=>l.id),sourceRasterPadding:outfit.sourceRasterPadding};
 }
+function attachSwordCoat(record,outfit,coat){
+ if(record.item!==0||record.action!=='attack-sword'||!outfit||
+    outfit.equipment.torso!==coat||Object.keys(outfit.equipment).length!==1)return null;
+ const {direction,baseRecord:base}=record,pack=base.pack,d=pack.directions[direction],o=outfit.pack.directions[direction];
+ const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ if(!same(pack.frame,outfit.pack.frame)||!same(pack.pivot,outfit.pack.pivot)||pack.density!==outfit.pack.density||
+    d.clip.frames!==o.clip.frames||d.clip.fps!==o.clip.fps||d.clip.contactFrame!==o.clip.contactFrame||
+    !same(d.rest.NECK,o.rest.NECK)||!same(d.rest.NOSE,o.rest.NOSE))return null;
+ const layers=o.layers.filter(l=>!l.id.startsWith('base:'));
+ const refs=[...new Set(layers.map(l=>l.source))];
+ if(!layers.length||layers.some(l=>!['top','underArms'].includes(l.slot)||l.frames||
+    !['fixed','rigid'].includes(l.binding.kind))||refs.some(sha=>!outfit.sourceRefs.includes(sha)||
+    base.sourceRefs.includes(sha)||outfit.sourceRasterPadding?.[sha]?.offset!==64))return null;
+ const rest={...d.rest},poses=d.poses.map(pose=>({...pose}));
+ // Retarget the authored sleeve pair around the shoulder without moving
+ // the base anatomy, the sword attachment, or the donor garment pixels.
+ for(const {binding} of layers){
+  if(binding.kind==='fixed')continue;
+  const {a,b}=binding;
+  const first=o.poses[0],point=first[a];
+  if(!point||!first[b]||!o.rest[a]||!o.rest[b])return null;
+  const distance=side=>Math.hypot(point.x-first[side+'_SHOULDER'].x,point.y-first[side+'_SHOULDER'].y);
+  if(!first.LEFT_SHOULDER||!first.RIGHT_SHOULDER)return null;
+  const side=distance('LEFT')<distance('RIGHT')?'LEFT':'RIGHT';
+  const shoulder=side+'_SHOULDER',elbow=side+'_ELBOW';
+  if(!d.poses.every(pose=>pose[shoulder]&&pose[elbow])||!o.poses.every(pose=>pose[a]&&pose[b]&&pose[shoulder]&&pose[elbow]))return null;
+  rest[a]=o.rest[a];rest[b]=o.rest[b];
+  for(let i=0;i<poses.length;i++){
+   const src=o.poses[i],dest=poses[i],from=src[shoulder],to=dest[shoulder];
+   const angle=Math.atan2(dest[elbow].y-to.y,dest[elbow].x-to.x)-Math.atan2(src[elbow].y-from.y,src[elbow].x-from.x);
+   const sin=Math.sin(angle),cos=Math.cos(angle);
+   for(const key of [a,b]){
+    const x=src[key].x-from.x,y=src[key].y-from.y;
+    dest[key]={x:to.x+x*cos-y*sin,y:to.y+x*sin+y*cos};
+   }
+  }
+ }
+ const combined={...pack,directions:{...pack.directions,[direction]:{...d,rest,poses,layers:[...d.layers,...layers]}}};
+ return {...record,id:record.id+'-coat'+coat+'-native-sword',pack:combined,baseRecord:{...base,pack:combined,sourceRefs:[...base.sourceRefs,...refs]},
+  outfitSources:refs,outfitSourceId:outfit.id,sourceRasterPadding:outfit.sourceRasterPadding};
+}
 function attachPants168(record,outfit){
  if(!outfit||outfit.equipment.pants!==168||Object.keys(outfit.equipment).length!==1)return null;
  const {direction,baseRecord:base}=record,pack=base.pack,d=pack.directions[direction],o=outfit.pack.directions[direction];
@@ -61,8 +102,8 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
  let combined={...r,pack:r.baseRecord.pack};
  if(coat!=null){
   const def=Number(coat.def??coat);
-  const outfit=outfits?.records.find(row=>row.id==='female-torso'+def+'-'+direction+'-frozen-'+(action==='attack-unarmed'?'attack':action)+'-native');
-  combined=attachIsolatedCoat(r,outfit,def);
+  const outfit=outfits?.records.find(row=>row.id==='female-torso'+def+'-'+direction+'-frozen-'+(['attack-unarmed','attack-sword'].includes(action)?'attack':action)+'-native');
+  combined=action==='attack-sword'?attachSwordCoat(r,outfit,def):attachIsolatedCoat(r,outfit,def);
  }
  if(combined&&pants!=null){
   const def=Number(pants.def??pants),outfit=def===168&&outfits?.records.find(row=>row.id==='female-pants168-'+action+'-'+direction);

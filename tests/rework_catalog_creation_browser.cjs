@@ -12,6 +12,7 @@ const start=Number(process.env.MARE_CATALOG_START||0);
 const end=Number(process.env.MARE_CATALOG_END||(powers?1:catalogOnly?7:14));
 const expectStarterHD=process.env.MARE_EXPECT_STARTER_HD==='1';
 const checkStarterAttacks=process.env.MARE_CHECK_STARTER_ATTACKS==='1';
+const checkItemAttacks=process.env.MARE_CHECK_ITEM_ATTACKS==='1';
 const checkCreationColor=process.env.MARE_CHECK_CREATION_COLOR==='1';
 const cosmeticsField=process.env.MARE_COSMETICS_FIELD;
 const cosmeticStart=Number(process.env.MARE_COSMETICS_START||0);
@@ -189,8 +190,8 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
       }
       result.directions[direction]=data;
      }
-     if(checkStarterAttacks){
-      result.attacks={};
+     async function exerciseAttacks(coat){
+      const attacks={};
       for(const [,direction] of directions){
        await page.evaluate(()=>__appearanceCatalogQA.clear());
        const target=await page.evaluate(d=>__appearanceCatalogQA.encounter(d),direction);
@@ -202,9 +203,13 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
        assert(frames.every(frame=>frame.opaque>0&&(!frame.weaponIds||frame.weaponIds.includes(initial.weapon))));
        if(checkCreationColor&&gender==='masculino'&&classId==='sword'&&['east','west','north'].includes(direction))
         for(const frame of frames)assert.match(frame.source,/^sword0-.*-(?:native-attachment|historical-attack)-coat6-adapted-bob/);
-       result.attacks[direction]=frames;
+       if(coat!=null&&gender==='feminino'&&classId==='sword')
+        for(const frame of frames)assert.match(frame.source,new RegExp('^female0-attack-sword-.*-coat'+coat+'-native-sword'));
+       attacks[direction]=frames;
       }
+      return attacks;
      }
+     if(checkStarterAttacks)result.attacks=await exerciseAttacks(checkCreationColor?6:null);
      assert.deepEqual(errors,[]);
      if(strictAssets)assert.deepEqual(result.assetErrors,[]);
      result.status='EXERCITADO'; // Emitted pixels and identities, not an independent visual comparison.
@@ -298,12 +303,17 @@ const appearance=(gender,i)=>Object.fromEntries(Object.entries(choices).map(([ke
          record.nativeDirections=Object.entries(record.directions).filter(([,frames])=>frames.every(frame=>!frame.source.startsWith('native96'))).map(([direction])=>direction);
          if(item.slot==='head'&&keepStarterCoat)for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,new RegExp('(?:head:|bob:)'+item.def+'(?:[:]|$)'));
          if((item.def===133||item.def===9&&onlyItems.has(133))&&gender==='masculino'&&!keepStarterCoat)for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,/pants133-candidate/);
+         if(gender==='masculino'&&initial.weapon===0&&[140,147,154,161,175,182].includes(item.def))
+          for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,new RegExp('pants'+item.def+'-native'));
+         if(gender==='masculino'&&initial.weapon===0&&item.def===151)
+          for(const direction of ['east','west'])for(const frame of record.directions[direction])assert.match(frame.source,/coat151-native/);
          if(item.def===21&&gender==='masculino')for(const frames of Object.values(record.directions))for(const frame of frames)assert.match(frame.source,/pants21-native/);
          if(item.def===168&&gender==='feminino')for(const frames of Object.values(record.directions))for(const frame of frames){
           assert.match(frame.source,/pants168-native.*hair-palette:pink.*eye-palette:green/);
           if(keepStarterCoat)assert.match(frame.source,/coat6-native-pants168-native/);
          }
         }
+        if(checkItemAttacks&&item.slot==='coat')record.attacks=await exerciseAttacks(item.def);
         record.status='EXERCITADO';
        }catch(error){
         record.status='FALHOU';record.error=error.message;

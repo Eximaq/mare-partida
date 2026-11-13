@@ -76,12 +76,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    return {...carry,id:carry.id+':head:'+headItem,headRecord:head,gearOnlyRecord:gear,headLook,mirrorX:record.base.mirrorX};
   };
   const pants=equipment.legs??equipment.pants,pantsId=Number(pants?.def??pants);
-  if(weapon!=null&&(equipment.coat!=null||[21,22,133].includes(pantsId))&&Object.keys(equipment).every(slot=>['weapon','coat','legs','pants','head','boots'].includes(slot))&&
+  if(weapon!=null&&(equipment.coat!=null||[21,22,133,140,147,154,161,175,182].includes(pantsId))&&Object.keys(equipment).every(slot=>['weapon','coat','legs','pants','head','boots'].includes(slot))&&
      (equipment.boots==null||pantsId===133&&Number(equipment.boots.def??equipment.boots)===9)){
    let dressed=carryRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:{weapon}});
    if(equipment.coat!=null)dressed=combinedCarryRegistry?.adaptIsolatedCoat(dressed,{coat:Number(equipment.coat.def??equipment.coat)});
    if(pantsId===133&&equipment.coat==null)dressed=combinedCarryRegistry?.adapt(dressed,{boots:equipment.boots!=null?9:null});
-   else if(pants!=null)dressed=[21,22].includes(pantsId)?combinedCarryRegistry?.adaptIsolatedPants(dressed,pantsId):null;
+   else if(pants!=null)dressed=combinedCarryRegistry?.adaptIsolatedPants(dressed,pantsId);
    const equipped=withCarryHead(dressed,'outfit-carry');
    if(equipped)return equipped;
   }

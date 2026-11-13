@@ -39,33 +39,43 @@ function adaptCarry(carry,outfits,{boots=null}={}){
  const refs=[...new Set([...(layer.frames||[]),layer.source,...added].filter(Boolean))];r.base.sourceRefs=[...new Set([...r.base.sourceRefs,...refs])];
  r.outfitOverlay={item:133,sourceRecord:outfit.id,sourceRefs:refs,lowerBodyPoseVerified:true,forearmPoseDifferencesAllowed:true,candidate:true};r.id+='-pants133-candidate';return r;
 }
+const recoveredPants=new Set([140,147,154,161,175,182]);
+const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+function samePoseExceptNearArm(d,o){
+ const nearArm=new Set(['RIGHT ELBOW','RIGHT ARM']);
+ return d.poses.length===o.poses.length&&d.poses.every((pose,i)=>
+  Object.entries(pose).every(([key,point])=>nearArm.has(key)||same(point,o.poses[i][key])));
+}
 function adaptIsolatedCoat(carry,outfits,{coat}={}){
  if(!Number.isInteger(coat)||!Number.isInteger(carry?.item)||carry.base?.body!=='male')return null;
  const {direction,action,base}=carry,d=base.pack.directions[direction];
  const isolated=outfits.records.find(r=>r.id==='male-torso'+coat+'-'+direction+'-frozen-'+action+'-native');
  // The 151 donor declares its garment layers separately from the 133 pants.
  // Reuse those layers only where the pose and frame contract actually match.
- const outfit=isolated||(coat===151&&outfits.records.find(r=>r.body==='male'&&r.direction===direction&&r.action===action&&
+ const sourceDirection=coat===151&&base.mirrorX?'east':direction;
+ const retarget=coat===151&&['east','west'].includes(direction);
+ const outfit=isolated||(coat===151&&outfits.records.find(r=>r.body==='male'&&r.direction===sourceDirection&&r.action===action&&
   r.equipment?.torso===151&&r.equipment?.pants===133&&Object.keys(r.equipment).length===2&&r.id.endsWith('-coat151-native')));
  if(!outfit||outfit.equipment.torso!==coat||isolated&&Object.keys(outfit.equipment).length!==1)return null;
- const o=outfit.pack.directions[direction],equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ const o=outfit.pack.directions[sourceDirection],equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
  const compatibleClip=equal(d.clip,o.clip)||action==='idle'&&d.clip.frames===1&&o.clip.frames===1&&!d.clip.loop&&!o.clip.loop;
  if(!equal(base.pack.frame,outfit.pack.frame)||!equal(base.pack.pivot,outfit.pack.pivot)||base.pack.density!==outfit.pack.density||
-    !equal(d.rest,o.rest)||!equal(d.poses,o.poses)||!compatibleClip)return null;
+    !equal(d.rest,o.rest)||!(retarget?samePoseExceptNearArm(d,o):equal(d.poses,o.poses))||!compatibleClip)return null;
  if(isolated){
   const anatomy=o.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)}));
   if(!equal(d.layers,anatomy))return null;
  }
- const layers=isolated?o.layers.filter(l=>!l.id.startsWith('base:')):o.layers.filter(l=>l.id.startsWith('coat151-'));
- if(!layers.length||layers.some(l=>!['top','underArms',...(isolated?[]:['body'])].includes(l.slot)||base.mirrorX&&l.binding.kind!=='fixed'))return null;
+ const layers=isolated?o.layers.filter(l=>!l.id.startsWith('base:')):o.layers.filter(l=>l.id.startsWith(retarget?'equip-coat151-':'coat151-')||retarget&&l.id==='equip-original-neck-coverage-only');
+ if(!layers.length||layers.some(l=>!['top','underArms',...(isolated?[]:['body'])].includes(l.slot)||base.mirrorX&&!retarget&&l.binding.kind!=='fixed'))return null;
  const sourceRefs=[...new Set(layers.flatMap(l=>[l.source,...(l.frames||[])]).filter(Boolean))];
  if(sourceRefs.some(s=>!outfit.sourceRefs.includes(s)||base.sourceRefs.includes(s)))return null;
  return {...carry,id:carry.id+'-coat'+coat+'-native',base:{...base,sourceRefs:[...base.sourceRefs,...sourceRefs],pack:{...base.pack,directions:{...base.pack.directions,[direction]:{...d,layers:[...d.layers,...layers]}}}},
-  outfitOverlay:{item:coat,sourceRecord:outfit.id,sourceRefs,layerIds:layers.map(l=>l.id)},skinRepairLayers:layers.filter(l=>/^(?:cuff-emergence-hand|south-visible-original-hands-).*?-skin$|^original-neck-coverage-only/.test(l.id)).map(l=>l.id),preMirroredLayers:base.mirrorX?layers.map(l=>l.id):[]};
+  outfitOverlay:{item:coat,sourceRecord:outfit.id,sourceRefs,layerIds:layers.map(l=>l.id)},skinRepairLayers:layers.filter(l=>/^(?:cuff-emergence-hand|south-visible-original-hands-).*?-skin$|^(?:equip-)?original-neck-coverage-only/.test(l.id)).map(l=>l.id),preMirroredLayers:base.mirrorX&&sourceDirection===direction?layers.map(l=>l.id):[]};
 }
 function adaptIsolatedPants(carry,outfits,item){
  if(carry?.base?.body!=='male'||!['idle','walk'].includes(carry.action)||carry.bootsOverlay)return null;
  const {direction,action,base}=carry;
+ if(recoveredPants.has(item))return adaptRecoveredPants(carry,outfits,item);
  const outfit=outfits.records.find(r=>r.id==='male-pants'+item+'-'+action+'-'+direction);
  if(outfit?.equipment.pants!==item||Object.keys(outfit.equipment).length!==1)return null;
  const d=base.pack.directions[direction],o=outfit.pack.directions[direction];
@@ -85,6 +95,24 @@ function adaptIsolatedPants(carry,outfits,item){
  const layers=d.layers.map(l=>l.id===lower.id?lower:l).concat(material);
  return {...carry,id:carry.id+'-pants'+item+'-native',base:{...base,sourceRefs:[...new Set([...base.sourceRefs,...refs])],pack:{...base.pack,directions:{...base.pack.directions,[direction]:{...d,layers}}}},
   outfitOverlay:{item,sourceRecord:outfit.id,sourceRefs:refs},preMirroredLayers:[...(carry.preMirroredLayers||[]),...(base.mirrorX?material.map(l=>l.id):[])]};
+}
+function adaptRecoveredPants(carry,outfits,item){
+ const {direction,action,base}=carry,d=base.pack.directions[direction];
+ const sourceDirection=base.mirrorX?'east':direction;
+ const outfit=outfits.records.find(r=>r.id==='frozen-male-pants'+item+'-'+sourceDirection+'-'+action+'-v47');
+ if(!outfit||outfit.equipment.pants!==item)return null;
+ const o=outfit.pack.directions[sourceDirection];
+ if(!same(base.pack.frame,outfit.pack.frame)||!same(base.pack.pivot,outfit.pack.pivot)||
+    base.pack.density!==outfit.pack.density||!same(d.clip,o.clip)||!same(d.rest,o.rest)||!samePoseExceptNearArm(d,o))return null;
+ const pants=o.layers.filter(l=>l.slot==='pants'&&l.id.startsWith('pants'+item+'-'));
+ if(!pants.length||pants.some(l=>l.frames&&l.frames.length!==d.clip.frames||
+    l.binding.kind!=='fixed'&&(l.binding.a!=='NECK'||l.binding.b!=='HIP')))return null;
+ const refs=[...new Set(pants.flatMap(l=>[l.source,...(l.frames||[])]).filter(Boolean))];
+ if(refs.some(sha=>!outfit.sourceRefs.includes(sha)||base.sourceRefs.includes(sha)))return null;
+ const sourceRefs=[...new Set([...(carry.outfitOverlay?.sourceRefs||[]),...refs])];
+ return {...carry,id:carry.id+'-pants'+item+'-native',
+  base:{...base,sourceRefs:[...base.sourceRefs,...refs],pack:{...base.pack,directions:{...base.pack.directions,[direction]:{...d,layers:[...d.layers,...pants]}}}},
+  outfitOverlay:{item,sourceRecord:outfit.id,sourceRefs}};
 }
 const adaptPants22=(carry,outfits)=>adaptIsolatedPants(carry,outfits,22);
 function create(carryAPI,outfits,{basePrefix='tools/rework-base-hd/assets/',outfitPrefix='tools/rework-modular-outfits-hd/assets/'}={}){
