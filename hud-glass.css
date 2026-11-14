@@ -2519,6 +2519,75 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   @media (prefers-reduced-motion:reduce) { & button { transition: none; } }
 }
 
+/* Native weekly dialog lives outside #app, so it receives the same glass tokens. */
+#weeklyBossDialog, #weeklyBossHUD {
+  --glass-type: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --glass-surface: rgba(20,22,25,.85);
+  --glass-line: rgba(212,175,55,.35);
+  --glass-gold: #e4ce96;
+  --glass-muted: #b9bec5;
+  border: 1px solid var(--glass-line); border-radius: 12px; background: var(--glass-surface);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 6px 20px #0004,inset 0 1px 0 #ffffff0a;
+  color: #f5f6f8; font: 400 13px/1.5 var(--glass-type);
+}
+#weeklyBossDialog {
+  width: min(760px,calc(100vw - 16px)); height: fit-content; max-width: none; max-height: calc(min(720px,100dvh - 40px) - 18px); padding: 0; overflow: hidden;
+  &[open] { display: flex; flex-direction: column; }
+  &::backdrop { background: #080b104d; backdrop-filter: blur(2px); }
+  & .weekly-heading { flex: none; align-items: center; gap: 8px; margin: 0; padding: 12px 16px; border-bottom: 1px solid #ffffff18; background: #ffffff03; }
+  & .weekly-heading h2 { font: 700 23px/1.2 var(--glass-type); color: var(--glass-gold); margin: 3px 0; }
+  & .weekly-heading small { font: 600 10px/1.4 var(--glass-type); letter-spacing: .5px; color: var(--glass-muted); }
+  & .weekly-heading p { margin: 0; color: var(--glass-muted); font-size: 12px; }
+  & .weekly-heading button { align-self: flex-start; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; font: 26px/1 var(--glass-type); color: var(--glass-muted); }
+  & .weekly-content { flex: 0 1 auto; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 12px; padding: 16px; scrollbar-width: thin; scrollbar-color: #d8c18a70 transparent; }
+  & p { margin: 0; font: 400 13px/1.5 var(--glass-type); color: var(--glass-muted); }
+  & h3 { margin: 0; font: 650 16px/1.3 var(--glass-type); color: var(--glass-gold); }
+  & .weekly-message { flex: none; min-height: 0; margin: 0; color: var(--glass-gold); }
+  & .weekly-message:empty { display: none; }
+  & :is(.weekly-event,.weekly-admin) { flex: none; display: grid; gap: 12px; margin: 0; padding: 16px; border: 1px solid #ffffff20; border-radius: 8px; background: #ffffff03; }
+  & .weekly-event { grid-template-columns: minmax(0,1fr) auto; border-left: 2px solid #d4af3780; }
+  & .weekly-event h3, & .weekly-event p { grid-column: 1; }
+  & .weekly-event [data-weekly-countdown] { grid-column: 2; grid-row: 1/3; align-self: start; padding: 6px 10px; border: 1px solid #65e99540; border-radius: 8px; background: #65e9950a; color: #a5efd5; font-variant-numeric: tabular-nums; }
+  & .weekly-event button { margin: 0; }
+  & .weekly-note { padding: 12px 16px; border: 1px solid #ffffff16; border-radius: 8px; background: #ffffff03; color: var(--glass-muted); }
+  & .weekly-closed { padding: 20px; border: 1px dashed #ffffff25; border-radius: 8px; color: var(--glass-muted); }
+  & button { min-height: 44px; padding: 8px 14px; border: 1px solid var(--glass-line); border-radius: 8px; background: #d4af371a; color: var(--glass-gold); font: 600 13px/1.3 var(--glass-type); transition: background-color .15s,border-color .15s; }
+  & button:disabled { opacity: .45; cursor: not-allowed; }
+  & .weekly-danger { border-color: #f1787855; background: #f1787812; color: #ffb4b4; }
+  & .weekly-actions { margin: 0; gap: 8px; }
+  & details { padding: 12px; border: 1px solid #ffffff20; border-radius: 8px; background: #00000018; }
+  & summary { margin: 0; min-height: 36px; padding: 6px 0; color: var(--glass-gold); font-weight: 600; }
+  & details[open] > p { margin: 4px 0 12px; }
+  & .weekly-fields { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; }
+  & label { font: 400 12px/1.4 var(--glass-type); color: var(--glass-muted); }
+  & input[type=number] { min-height: 40px; padding: 8px; border: 1px solid #ffffff25; border-radius: 8px; background: #080b104d; color: #f5f6f8; font: 500 13px/1.4 var(--glass-type); }
+  & input[type=checkbox] { accent-color: #d4af37; }
+  & .weekly-confirm { margin: 14px 0; gap: 8px; }
+  & :is(button,input,summary):focus-visible { outline: 2px solid var(--glass-gold); outline-offset: 2px; }
+  @media (hover:hover) { & button:hover:not(:disabled) { background-color: #ffffff14; border-color: var(--glass-gold); } }
+  @media (max-width:1100px) { & .weekly-fields { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+  @media (max-width:760px) {
+    max-height: calc(100dvh - 42px);
+    & .weekly-heading { padding: 10px; }
+    & .weekly-content { padding: 10px; gap: 10px; }
+    & .weekly-event { grid-template-columns: minmax(0,1fr); padding: 12px; gap: 10px; }
+    & .weekly-event [data-weekly-countdown] { grid-column: 1; grid-row: auto; justify-self: start; }
+    & .weekly-admin { padding: 12px; }
+    & .weekly-actions button { flex: 1 1 180px; }
+    & .weekly-fields { gap: 8px; }
+  }
+  @media (prefers-reduced-motion:reduce) { & button { transition: none; } }
+}
+#weeklyBossHUD {
+  padding: 8px 12px;
+  & strong { font: 650 14px/1.4 var(--glass-type); }
+  & small { color: var(--glass-gold); font: 500 10px/1.3 var(--glass-type); }
+  & span { font-size: 11px; font-variant-numeric: tabular-nums; }
+  & .weekly-life { height: 12px; border: 1px solid #ffffff20; border-radius: 999px; background: #100b10; margin: 6px 0 3px; }
+  & .weekly-life i { border-radius: inherit; background: linear-gradient(#fb7185,#be123c 50%,#881337); }
+}
+
 /* Boss dungeons: shared inventory geometry, independent selection scroll, pinned entry. */
 #app #panelOverlay.hud-density.boss-dungeons-mode[data-ui-panel="dungeons"] {
   padding: max(8px, var(--rpg-safe-top)) 8px max(8px, var(--rpg-safe-bottom));
@@ -2743,4 +2812,53 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
     & .prison-hero-monster { bottom: 28px; }
   }
   @media (prefers-reduced-motion:reduce) { & button { transition: none; } }
+}
+
+/* Port merchant: compact consumables shop, using the existing purchase forms. */
+#app #panelOverlay.hud-density[data-ui-panel="shop"] {
+  padding: 8px; background: #080b104d; backdrop-filter: blur(2px);
+  & > .dialog {
+    width: min(720px,calc(100vw - 16px)); height: auto; max-height: calc(100dvh - 32px); min-height: 0;
+    padding: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 12px;
+    background: var(--glass-surface); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: var(--glass-shadow); color: #f5f6f8; font: 400 13px/1.5 var(--glass-type); overflow: hidden;
+  }
+  & .dialog-header { padding: 10px 16px; min-height: 64px; background: #ffffff03; border-bottom: 1px solid #ffffff18; }
+  & .dialog-header small { font: 600 10px/1.4 var(--glass-type); color: var(--glass-muted); letter-spacing: .5px; }
+  & #dialogTitle { font: 700 23px/1.2 var(--glass-type); color: var(--glass-gold); text-shadow: none; }
+  & #dialogTitle::before { content: none; }
+  & #closePanel { width: 44px; height: 44px; border: 0; border-image: none; border-radius: 8px; background: transparent; box-shadow: none; color: var(--glass-muted); font: 24px/1 var(--glass-type); }
+  & #dialogBody { padding: 16px; min-height: 0; overflow: auto; scrollbar-width: thin; scrollbar-color: #d8c18a70 transparent; }
+  & #dialogBody .mini-heading { margin: 0 0 12px; font: 600 12px/1.5 var(--glass-type); color: var(--glass-muted); }
+  & #dialogBody .mini-heading strong { color: var(--glass-gold); font-variant-numeric: tabular-nums; }
+  & #dialogBody .merchant-catalog { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+  & #dialogBody .merchant-item { display: grid; grid-template-columns: 44px minmax(0,1fr); align-content: start; gap: 10px; margin: 0; padding: 14px; min-width: 0; border: 1px solid #ffffff20; border-image: none; border-radius: 8px; background: #ffffff03; box-shadow: none; }
+  & #dialogBody .merchant-item > .item-icon { width: 44px; height: 44px; grid-row: 1/3; border-radius: 8px; }
+  & #dialogBody .merchant-item h3 { align-self: center; margin: 0; color: #f5f6f8; font: 650 16px/1.3 var(--glass-type); }
+  & #dialogBody .merchant-item p { grid-column: 1/-1; margin: 0; font: 400 13px/1.6 var(--glass-type); color: var(--glass-muted); }
+  & #dialogBody .merchant-item p strong { color: var(--glass-gold); }
+  & #dialogBody .merchant-order-controls { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px; padding-top: 12px; border-color: #ffffff18; }
+  & #dialogBody .merchant-order-controls label { display: grid; gap: 5px; color: var(--glass-muted); font-size: 12px; }
+  & #dialogBody .merchant-order-controls input { width: 80px; min-height: 44px; padding: 8px; border: 1px solid #ffffff25; border-radius: 8px; background: #080b104d; color: #f5f6f8; font: 500 14px/1.4 var(--glass-type); }
+  & #dialogBody .merchant-order-controls > span { align-self: end; text-align: right; color: var(--glass-muted); }
+  & #dialogBody .merchant-order-controls > span strong { display: block; color: var(--glass-gold); font-size: 17px; font-variant-numeric: tabular-nums; }
+  & #dialogBody .dialog-button { min-height: 44px; padding: 9px 14px; border: 1px solid var(--glass-line); border-image: none; border-radius: 8px; background: #d4af371a; box-shadow: none; color: var(--glass-gold); font: 600 13px/1.3 var(--glass-type); text-shadow: none; transition: background-color .15s,border-color .15s; }
+  & #dialogBody [data-buy-potion] { grid-column: 1/-1; width: 100%; margin: 0; }
+  & #dialogBody button:disabled { opacity: .45; cursor: not-allowed; }
+  & #dialogBody .merchant-market-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; padding: 12px; border: 1px solid #ffffff20; border-radius: 8px; background: #ffffff03; }
+  & #dialogBody .merchant-market-link small { color: var(--glass-muted); }
+  & #dialogBody :is(button,input):focus-visible { outline: 2px solid var(--glass-gold); outline-offset: 2px; }
+  @media (hover:hover) { & #dialogBody button:hover:not(:disabled) { border-color: var(--glass-gold); background-color: #ffffff14; } }
+  @media (max-width:600px) {
+    & .dialog-header { padding: 8px 12px; }
+    & #dialogTitle { font-size: 20px; }
+    & #dialogBody { padding: 12px; }
+    & #dialogBody .merchant-catalog { grid-template-columns: minmax(0,1fr); gap: 10px; }
+    & #dialogBody .merchant-item { padding: 12px; gap: 8px; }
+    & #dialogBody .merchant-order-controls { grid-template-columns: minmax(0,1fr) auto auto; align-items: end; gap: 8px; }
+    & #dialogBody [data-buy-potion] { grid-column: auto; width: auto; }
+    & #dialogBody .merchant-order-controls > span strong { font-size: 14px; }
+    & #dialogBody .merchant-market-link { flex-wrap: wrap; }
+  }
+  @media (prefers-reduced-motion:reduce) { & #dialogBody button { transition: none; } }
 }

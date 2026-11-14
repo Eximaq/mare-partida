@@ -24,6 +24,9 @@ on:
       - 'party.css'
       - 'tests/party-online-browser.cjs'
       - 'hud-glass.css'
+      - 'weekly-boss-ui.*'
+      - 'tests/weekly-glass-browser.cjs'
+      - 'tests/merchant-glass-browser.cjs'
       - 'tests/online-world-browser.cjs'
       - 'tests/online-battle-browser.cjs'
       - 'apps/account-client/game-*.js'
@@ -88,6 +91,10 @@ jobs:
         run: |
           MARE_QA_DIR="$MARE_QA_DIR/social" python tests/run_honors_hd_browser.py tests/social-online-browser.cjs --dist --offline
           MARE_QA_DIR="$MARE_QA_DIR/market" python tests/run_honors_hd_browser.py tests/market-online-browser.cjs --dist --offline
+      - name: Boss semanal e Mercador do Porto
+        run: |
+          python tests/run_honors_hd_browser.py tests/weekly-glass-browser.cjs --dist --offline
+          python tests/run_honors_hd_browser.py tests/merchant-glass-browser.cjs --dist --offline
       - name: Grupo compacto e comandos online
         run: MARE_QA_DIR="$MARE_QA_DIR/party" python tests/run_honors_hd_browser.py tests/party-online-browser.cjs --dist --offline
       - name: Original online world and travel UI contract

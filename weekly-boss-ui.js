@@ -11,7 +11,7 @@
  const get=(o,key)=>key.split('.').reduce((v,k)=>v?.[k],o);
  function render(data={},state={}){
   data=data||{};const m=model(data,state),disabled=m.ready?'':' disabled';
-  let html='<header class="weekly-heading"><div><small>EVENTO SEMANAL</small><h2 id="weeklyBossTitle">Akainu</h2><p>Marineford · vida compartilhada</p></div><button type="button" data-weekly-close aria-label="Fechar evento">×</button></header><p class="weekly-message" role="status" data-weekly-message></p>';
+  let html='<header class="weekly-heading"><div><small>EVENTO SEMANAL</small><h2 id="weeklyBossTitle">Akainu</h2><p>Marineford · vida compartilhada</p></div><button type="button" data-weekly-close aria-label="Fechar evento">×</button></header><div class="weekly-content"><p class="weekly-message" role="status" data-weekly-message></p>';
   if(!state.available)html+='<p>Conecte-se ao servidor para consultar o evento.</p>';
   else if(!m.events.length&&!m.current)html+='<p class="weekly-closed">Evento fechado. Nenhum chefe está disponível nos mapas.</p>';
   for(const e of m.events){const isCurrent=m.current?.id===e.id;html+='<article class="weekly-event"><h3>'+(e.mode==='test'?'Ensaio privado · sem recompensas':'Akainu · Boss semanal')+'</h3><p>'+number(e.members)+' / '+number(e.maxPlayers)+' participantes · nível '+number(e.minLevel)+'+</p><p data-weekly-countdown="'+escape(e.endsAt)+'">Horário informado pelo servidor</p><p>Recompensas sem configuração; nenhum prêmio é criado pelo navegador.</p><button type="button" data-weekly-op="'+(isCurrent?'leave':'join')+'" data-event="'+escape(e.id)+'"'+disabled+(m.current&&!isCurrent?' disabled':'')+'>'+(isCurrent?'Sair do encontro':'Entrar no encontro')+'</button>'+(m.admin?'<button type="button" class="weekly-danger" data-weekly-op="cancel" data-event="'+escape(e.id)+'" data-version="'+number(e.version).replace(/\./g,'')+'"'+disabled+'>Encerrar encontro</button>':'')+'</article>';}
@@ -23,7 +23,7 @@
    for(const [key,label,min,max] of fields)html+='<label>'+label+'<input name="'+key+'" type="number" min="'+min+'" max="'+max+'" step="'+(['profile.aoeWindup','profile.aoeMultiplier','profile.attackSec'].includes(key)?'0.1':'1')+'" required value="'+escape(get(data.config,key)??'')+'"></label>';
    html+='</div><label class="weekly-confirm"><input type="checkbox" name="balanceApproved" required'+(data.config?.balanceApproved?' checked':'')+'>Confirmo que o balanceamento foi revisado.</label><button type="submit" data-weekly-op="configure">Salvar configuração</button></fieldset></form></details></section>';
   }
-  return html;
+  return html+'</div>';
  }
  const API={model,render};root.MareWeeklyBossUI=API;if(typeof module==='object')module.exports=API;
  if(!root.document)return;
