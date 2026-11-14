@@ -19,6 +19,8 @@ on:
       - 'market-online-ui.*'
       - 'tests/market-online-browser.cjs'
       - 'tests/social-online-browser.cjs'
+      - 'social-ui.*'
+      - 'hud-glass.css'
       - 'tests/online-world-browser.cjs'
       - 'tests/online-battle-browser.cjs'
       - 'apps/account-client/game-*.js'

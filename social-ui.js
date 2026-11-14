@@ -29,7 +29,19 @@
   };
   const status=p=>p.online?'Online':p.lastActivity?'Última atividade: '+stamp(p.lastActivity):'Presença indisponível';
   const attr=(key,value)=>' '+key+'="'+esc(value)+'"';
-  const button=(label,action,id='',opts={})=>'<button type="button" class="social-button'+(opts.primary?' social-primary':'')+'"'+attr('data-social-action',action)+attr('data-social-id',id)+(opts.disabled?' disabled':'')+(opts.title?attr('title',opts.title):'')+(opts.label?attr('aria-label',opts.label):'')+'>'+esc(label)+'</button>';
+  // Original inline vectors for negotiation controls; item artwork remains canonical.
+  const tradeIcons={
+    exchange:'<path d="M4 7h15m-4-4 4 4-4 4M20 17H5m4-4-4 4 4 4"/>',
+    edit:'<path d="m14 5 5 5M4 20l5-1L20 8a2 2 0 0 0-5-5L4 14Z"/>',
+    lock:'<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/>',
+    check:'<path d="m5 12 4 4L19 6"/>',
+    close:'<path d="m6 6 12 12M18 6 6 18"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    bag:'<rect x="4" y="7" width="16" height="14" rx="3"/><path d="M8 7V5a4 4 0 0 1 8 0v2M4 12h16m-9-2v4h2v-4"/>'
+  };
+  const tradeIcon=name=>'<svg class="trade-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'+tradeIcons[name]+'</svg>';
+  const tradeActionIcon={'trade-lock':'lock','trade-confirm':'check','trade-accept':'check','trade-cancel':'close','trade-decline':'close','offer-close':'close'};
+  const button=(label,action,id='',opts={})=>'<button type="button" class="social-button'+(opts.primary?' social-primary':'')+'"'+attr('data-social-action',action)+attr('data-social-id',id)+(opts.disabled?' disabled':'')+(opts.title?attr('title',opts.title):'')+(opts.label?attr('aria-label',opts.label):'')+'>'+(tradeActionIcon[action]?tradeIcon(tradeActionIcon[action]):'')+esc(label)+'</button>';
   const blank=text=>'<p class="social-empty">'+esc(text)+'</p>';
   const sections = [
     ['friends','Amigos','Solicitações e lista de amigos.'],
@@ -138,7 +150,7 @@
       else if(inventorySort==='rarity'){const order=['common','uncommon','rare','epic','legendary','supreme'];items.sort((a,b)=>order.indexOf(o.item(b).rarity)-order.indexOf(o.item(a).rarity));}
       else items.sort((a,b)=>(b.obtainedAt||0)-(a.obtainedAt||0));
       const summary=rows=>rows.map(({item,quantity})=>esc(o.item(item)?.name||'Item')+' ×'+quantity).join(', ')||'Nenhum item';
-      const pill=(icon,label)=>'<span class="trade-pill"><span aria-hidden="true">'+icon+'</span> '+label+'</span>';
+      const pill=(icon,label)=>'<span class="trade-pill">'+tradeIcon({'✓':'check','◆':'lock','✎':'edit','◷':'clock'}[icon]||'exchange')+label+'</span>';
       const offer=(title,who,rows,locked,confirmed,own)=>{
         const tone=confirmed?'confirmed':locked?'accepted':'proposed';
         const state=confirmed?pill('✓','Confirmada'):locked?pill('◆','Travada'):pill('✎','Em edição');
@@ -193,7 +205,7 @@
       else if(t.peerLocked)guidance='O outro jogador travou a oferta. Revise os itens e trave a sua.';
       const steps=['Propor itens','Travar ofertas','Confirmar troca'].map((label,n)=>'<li'+
         (n===current?' aria-current="step"':n<current?' class="trade-step-done"':'')+
-        '><span aria-hidden="true">'+(n<current?'✓':n+1)+'</span>'+label+'</li>').join('');
+        '><span class="trade-step-icon">'+tradeIcon(n<current?'check':['bag','lock','exchange'][n])+'</span>'+label+'</li>').join('');
       const inventory='<section class="social-inventory trade-stock"><header><h3>Seu inventário negociável</h3><small>'+
         items.length+(items.length===1?' opção':' opções')+'</small></header><div class="social-tools trade-filters">'+
         '<label class="social-field">Buscar <input id="socialInventorySearch" type="search" data-social-filter="inventory" maxlength="40" placeholder="Nome do item" value="'+esc(inventorySearch)+'"></label>'+
@@ -205,11 +217,11 @@
       const reviewPanel='<section class="social-review trade-review"><div><b>Você entrega</b><p>'+summary(t.ownItems)+
         '</p></div><div><b>Você recebe</b><p>'+summary(t.peerItems)+'</p></div></section>';
       const editable=!t.ownLocked;
-      return '<div class="trade-desk trade-desk-active"><ol class="trade-steps" aria-label="Etapas da troca">'+steps+'</ol>'+
+      return '<div class="trade-desk trade-desk-active"><div class="trade-workspace"><ol class="trade-steps" aria-label="Etapas da troca">'+steps+'</ol>'+
         '<p class="trade-guidance" role="status">'+guidance+'</p><div class="social-offers">'+
         offer('Sua oferta',o.selfName(),t.ownItems,t.ownLocked,t.ownConfirmed,true)+
         offer('Outra oferta',t.partnerName,t.peerItems,t.peerLocked,t.peerConfirmed,false)+'</div>'+
-        (review?reviewPanel:inventory)+'<footer class="trade-actions">'+
+        (review?reviewPanel:inventory)+'</div><footer class="trade-actions">'+
         button('Cancelar troca','trade-cancel',t.id,{disabled:!canWrite()})+
         button(editable?'Travar minha oferta':'Destravar minha oferta','trade-lock',t.id,{disabled:!canWrite(),primary:editable})+
         button('Confirmar troca','trade-confirm',t.id,{disabled:!canWrite()||!review||!hasItems||t.ownConfirmed,primary:review&&!t.ownConfirmed})+
@@ -218,7 +230,7 @@
     function refreshPortraits(rootNode){for(const c of rootNode.querySelectorAll('[data-social-portrait]')){const p=people.get(c.dataset.socialPortrait);if(p)o.draw(c,p);}}
     function replace(node,html){
       const focus=document.activeElement,focused=node.contains(focus);
-      const list=[...node.querySelectorAll('.social-bag-grid, .social-content')],scrolls=list.map(el=>el.scrollTop);
+      const list=[...node.querySelectorAll('.social-bag-grid, .social-content, .trade-workspace')],scrolls=list.map(el=>el.scrollTop);
       const controls='button,input,select,summary,[tabindex]';
       const locator=focused&&[...node.querySelectorAll(controls)].indexOf(focus);
       const tradeControl=focused&&focus.closest('.trade-desk')?
@@ -233,7 +245,7 @@
         tradeControl?.length?nextControls.find(x=>tradeControl.every(([name,value])=>x.getAttribute(name)===value)):
         focused?nextControls[locator]:null;
       if(el&&focused){el.focus({preventScroll:true});if(edit&&el.id===edit.id){el.value=edit.value;if(edit.pos!=null)el.setSelectionRange(edit.pos,edit.end);}}
-      [...node.querySelectorAll('.social-bag-grid, .social-content')].forEach((x,n)=>x.scrollTop=scrolls[n]||0);
+      [...node.querySelectorAll('.social-bag-grid, .social-content, .trade-workspace')].forEach((x,n)=>x.scrollTop=scrolls[n]||0);
       refreshPortraits(node);
     }
     function paint(){
