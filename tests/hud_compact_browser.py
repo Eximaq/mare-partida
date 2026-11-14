@@ -1,5 +1,5 @@
 """Measured before/after HUD review and contextual expedition regression."""
-import argparse, json, os
+import argparse, json, os, time
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 from polish_support import create
@@ -152,7 +152,18 @@ with sync_playwright() as p:
             q.locator('#autoToggle').click()
         # enterHunt loads map art and builds navigation asynchronously. The
         # production RAF intentionally suspends simulation/HUD ticks until ready.
-        q.wait_for_function("__mareDiagnostics().lobby96.worldVisual?.state === 'ready' && document.querySelector('#worldLoading')?.dataset.state === 'ready'", timeout=60000)
+        # The mocked clock was paused for potion cooldown assertions. Drive its
+        # RAF explicitly during loading; a wall-clock wait cannot advance it.
+        ready="__mareDiagnostics().lobby96.worldVisual?.state === 'ready' && document.querySelector('#worldLoading')?.dataset.state === 'ready'"
+        try:
+            deadline=time.monotonic()+120
+            while not q.evaluate(ready) and time.monotonic()<deadline:
+                q.clock.run_for(100)
+                q.wait_for_timeout(50)
+            assert q.evaluate(ready), 'Map and character must be ready before using the skill'
+        except Exception:
+            print('Compact HUD loading diagnostics:', q.evaluate("({navigation:__mareDiagnostics().map.navigation,visual:__mareDiagnostics().lobby96.worldVisual,loading:document.querySelector('#worldLoading')?.dataset.state})"), errors, flush=True)
+            raise
         q.evaluate('__compactQA.session.cooldowns[1]=0;__compactQA.game.energy=__compactQA.stats().maxEnergy;__compactQA.refresh()')
         q.locator('#classSkill2').click()
         q.wait_for_function("document.querySelector('#classSkill2').classList.contains('is-cooling')", timeout=10000)
