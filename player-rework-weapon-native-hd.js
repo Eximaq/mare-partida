@@ -102,10 +102,10 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
  const approvedSouth=item=>index.records.find(r=>r.approvedSouthHead&&r.item===Number(item)&&r.body==='male'&&r.direction==='south');
  const resource=url=>{const p=new URL(url,'https://native.invalid/'+prefix).pathname.slice(1);if(!/^tools\/(rework-weapon-layers-hd|rework-modular-outfits-hd|rework-base-hd)\/assets\/[a-f0-9]{64}\.png$/.test(p))throw Error('Invalid native weapon source path');return p;};
  const body=b=>({masculino:'male',feminino:'female'})[b]||b;
- function resolveSeparable({item,body:b,action,direction,appearance={},equipment={},allowExactComposite=true}={}){
+ function resolveSeparable({item,body:b,sourceBody,classId,weaponVariant,action,direction,appearance={},equipment={},allowExactComposite=true}={}){
   // Ordered source profiles retain their authored anatomy/depth; no generic eight-pose rig coercion.
   const ordered=allowExactComposite&&(index.orderedAttackProfiles||[]).find(r=>r.schema==='approved-native-ordered-attack-v1'&&r.item===Number(item&&typeof item==='object'?item.def:item)&&r.body===body(b)&&r.action===action&&r.direction===direction);
-  if(ordered&&Object.values(equipment).every(v=>v==null||['none','original'].includes(v))&&['hair','hairColor','face','eyeColor','skin'].every(k=>typeof ordered.approvedAppearance?.[k]==='string'&&appearance[k]===ordered.approvedAppearance[k])){
+  if(ordered&&(!ordered.strictSourceIdentity||(classId===ordered.requiredClass&&['male','masculino'].includes(sourceBody??b)&&(weaponVariant==null||weaponVariant==='original')))&&Object.values(equipment).every(v=>v==null||['none','original'].includes(v))&&['hair','hairColor','face','eyeColor','skin'].every(k=>typeof ordered.approvedAppearance?.[k]==='string'&&appearance[k]===ordered.approvedAppearance[k])){
    const states=ordered.states,timeline=ordered.timeline;
    if(ordered.approvedAppearance&&states?.length===ordered.phaseCount&&timeline?.length&&timeline.every(t=>states.some(s=>s.state===String(t)))&&Number.isInteger(ordered.contactTick)&&ordered.contactTick>0&&ordered.contactTick<timeline.length)
     return {...ordered,orderedAttack:true,separableAttack:true,equipmentContract:{weapon:ordered.item},colorAppearance:{}};

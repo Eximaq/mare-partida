@@ -31,7 +31,7 @@ test('44 original ordered frames preserve source alpha geometry and exact equipm
  const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),index=require('../tools/rework-weapon-layers-hd/index.json'),api=require('../player-rework-weapon-native-hd.js').create(index,{makeCanvas:cv.createCanvas}),load=require('../tools/rework-hd-test-loader.cjs').create(path.resolve(__dirname,'..'));
  const raw=fs.readFileSync(path.join(__dirname,'fixtures/approved-attacks-14-16-31-fixtures.zip'));assert.equal(crypto.createHash('sha256').update(raw).digest('hex'),'eac040fa176edf490530d189f618e6c4e06bd978d4bdfe0f78fa80ba424868a4');const zip=await require('../player-rework-zip.js').loadArchive(raw,'eac040fa176edf490530d189f618e6c4e06bd978d4bdfe0f78fa80ba424868a4');
  let count=0,report=[];
- for(const r of index.orderedAttackProfiles){const images=new Map(await Promise.all(api.requiredFiles(r).map(async p=>[p,await load(p)])));
+ for(const r of index.orderedAttackProfiles.filter(r=>[14,16,31].includes(r.item))){const images=new Map(await Promise.all(api.requiredFiles(r).map(async p=>[p,await load(p)])));
   for(let frame=0;frame<r.states.length;frame++){
    const source=await zip.read(r.item+'/'+r.direction+'/'+String(frame).padStart(2,'0')+'.png');assert.equal(crypto.createHash('sha256').update(source).digest('hex'),r.states[frame].approvedReferenceSHA256);
    const a=cv.createCanvas(640,640).getContext('2d'),b=cv.createCanvas(640,640).getContext('2d');api.render(a,r,images,{frame});b.drawImage(await cv.loadImage(Buffer.from(source)),0,0);const x=a.getImageData(0,0,640,640).data,y=b.getImageData(0,0,640,640).data;let max=0,premul=0,channels=0,alphas={};

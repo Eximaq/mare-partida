@@ -23,6 +23,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const isFemale=canonical(raw.gender??raw.body)==='female';
   if(isFemale)return selectBase(player,o,true);
   if(customColor&&!root.MareCharacterAppearance?.eyes[color])return null;
+  if(!player.__reworkSubset&&o.action==='attack-daggers'){const ordered=selectBase(player,o,true,true);if(ordered?.orderedAttack&&ordered.strictSourceIdentity)return ordered;}
   if(!player.__reworkSubset&&['idle','attack','attack-unarmed','attack-focus'].includes(o.action)){const exact=selectBase(player,o,true,true);if(exact)return exact;}
   const original={...player,appearance96:{...raw,eyeStyle:'original',face:'original',eyeColor:'original'}};
   const record=selectBase(original,o);
@@ -41,7 +42,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // Resolve optional independent slots before outfit candidates. Pass the original
   // visible equipment, not a subset that could silently swallow an unsupported slot.
   const independentEquipment=Object.fromEntries(Object.entries(player.equipment||{}).filter(([slot,v])=>slot!=='weapon'&&v!=null&&!['none','original'].includes(v)));
-  const independent=!player.__reworkSubset&&weaponRegistry?.resolveSeparable?.({item:o.weaponless?undefined:(player.equipment?.weapon?.def??player.equipment?.weapon),body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:independentEquipment});
+  const independent=!player.__reworkSubset&&weaponRegistry?.resolveSeparable?.({item:o.weaponless?undefined:(player.equipment?.weapon?.def??player.equipment?.weapon),body:canonical(a.body),sourceBody:a.body,classId:player.classId,weaponVariant:player.equipment?.weapon?.variant??player.equipment?.weapon?.variantId??player.equipment?.weapon?.appearanceVariant,action:o.action,direction:o.direction,appearance:a,equipment:independentEquipment});
   if(independent)return {...independent,hdKind:'weapon'};
   const independentPants=!player.__reworkSubset&&outfitRegistry?.resolveIndependentPants?.({body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:player.equipment||{}});
   if(independentPants)return {...independentPants,hdKind:'outfit'};
