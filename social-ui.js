@@ -135,13 +135,18 @@
     }
     function mail(data){
       const current=mailTab==='pending';
-      return '<div class="social-tools social-tools-wrap">'+button('A resgatar · '+data.pending,'mail-tab','pending',{primary:current})+
-        button('Resgatadas','mail-tab','claimed',{primary:!current})+
+      const envelope='<svg class="mail-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>';
+      const tab=(label,id,selected)=>button(label,'mail-tab',id,{primary:selected}).replace('type="button"','type="button" aria-pressed="'+selected+'"');
+      return '<section class="mail-desk" aria-label="Entregas do Correio"><div class="mail-toolbar"><div class="mail-tabs" role="group" aria-label="Filtrar entregas">'+
+        tab('A resgatar · '+data.pending,'pending',current)+tab('Resgatadas','claimed',!current)+'</div>'+
         (current?button('Resgatar tudo','mail-claim-all','',{primary:true,disabled:!canWrite()||!data.pending}):button('Arquivar resgatadas','mail-archive-claimed','',{disabled:!canWrite()||!data.letters.length}))+'</div>'+
-        (data.letters.map(l=>'<article class="social-letter"><header><div><b>'+esc(l.title)+'</b><small>'+esc({dungeon:'Masmorra de Chefes',event:'Evento oficial',system:'Sistema',market:'Mercado dos Mares'}[l.source]||'Entrega oficial')+' · '+esc(stamp(l.createdAt))+'</small></div><span class="social-tag">'+(l.claimedAt?'Resgatada':l.readAt?'Pendente':'Nova · Pendente')+'</span></header><p>'+esc(l.message)+'</p><div class="social-actions"><div class="social-grid">'+l.attachments.map(item=>tile(item,null,'mail:'+l.id)).join('')+'</div>'+
+        '<p class="mail-hint">'+(current?'Suas recompensas e entregas oficiais. Selecione um item para ver os detalhes.':'Recompensas já recebidas. Arquivar organiza seu Correio sem remover os itens resgatados.')+'</p>'+
+        '<div class="mail-list" tabindex="0" role="region" aria-label="Lista de entregas"><div class="mail-cards">'+
+        (data.letters.map(l=>'<article class="social-letter" data-mail-state="'+(l.claimedAt?'claimed':l.readAt?'read':'new')+'"><header><span class="mail-emblem">'+envelope+'</span><div class="mail-heading"><h3>'+esc(l.title)+'</h3><small>'+esc({dungeon:'Masmorra de Chefes',event:'Evento oficial',system:'Sistema',market:'Mercado dos Mares'}[l.source]||'Entrega oficial')+' · '+esc(stamp(l.createdAt))+'</small></div><span class="social-tag">'+(l.claimedAt?'Resgatada':l.readAt?'Pendente':'Nova · Pendente')+'</span></header><p>'+esc(l.message)+'</p><div class="mail-attachments"><span>Conteúdo da entrega</span><div class="social-grid">'+l.attachments.map(item=>tile(item,null,'mail:'+l.id)).join('')+'</div></div><div class="social-actions">'+
           (!l.readAt&&!l.claimedAt?button('Marcar como lida','mail-read',l.id,{disabled:!canWrite()}):'')+
-          (l.claimedAt?button('Arquivar','mail-archive',l.id,{disabled:!canWrite()}):button('Resgatar','mail-claim',l.id,{primary:true,disabled:!canWrite()}))+'</div></article>').join('')||blank(current?'Nenhuma recompensa pendente.':'Nenhuma recompensa resgatada.'))+
-        (data.nextCursor?button('Carregar mais','mail-more',data.nextCursor):'');
+          (l.claimedAt?button('Arquivar','mail-archive',l.id,{disabled:!canWrite()}):button('Resgatar','mail-claim',l.id,{primary:true,disabled:!canWrite()}))+'</div></article>').join('')||
+          '<div class="mail-empty">'+envelope+blank(current?'Nenhuma recompensa pendente.':'Nenhuma recompensa resgatada.')+'<span>'+(current?'Novas entregas aparecerão aqui.':'As entregas resgatadas ficam disponíveis nesta aba.')+'</span></div>')+'</div>'+
+        (data.nextCursor?button('Carregar mais','mail-more',data.nextCursor):'')+'</div></section>';
     }
     function trade(data){
       const t=data.trade, active=t?.status==='active',history=data.history||[];
@@ -230,7 +235,7 @@
     function refreshPortraits(rootNode){for(const c of rootNode.querySelectorAll('[data-social-portrait]')){const p=people.get(c.dataset.socialPortrait);if(p)o.draw(c,p);}}
     function replace(node,html){
       const focus=document.activeElement,focused=node.contains(focus);
-      const list=[...node.querySelectorAll('.social-bag-grid, .social-content, .trade-workspace')],scrolls=list.map(el=>el.scrollTop);
+      const list=[...node.querySelectorAll('.social-bag-grid, .social-content, .trade-workspace, .mail-list')],scrolls=list.map(el=>el.scrollTop);
       const controls='button,input,select,summary,[tabindex]';
       const locator=focused&&[...node.querySelectorAll(controls)].indexOf(focus);
       const tradeControl=focused&&focus.closest('.trade-desk')?
@@ -245,7 +250,7 @@
         tradeControl?.length?nextControls.find(x=>tradeControl.every(([name,value])=>x.getAttribute(name)===value)):
         focused?nextControls[locator]:null;
       if(el&&focused){el.focus({preventScroll:true});if(edit&&el.id===edit.id){el.value=edit.value;if(edit.pos!=null)el.setSelectionRange(edit.pos,edit.end);}}
-      [...node.querySelectorAll('.social-bag-grid, .social-content, .trade-workspace')].forEach((x,n)=>x.scrollTop=scrolls[n]||0);
+      [...node.querySelectorAll('.social-bag-grid, .social-content, .trade-workspace, .mail-list')].forEach((x,n)=>x.scrollTop=scrolls[n]||0);
       refreshPortraits(node);
     }
     function paint(){

@@ -36,6 +36,7 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
   const page=await browser.newPage({viewport:{width:1440,height:900}});
   const errors=[],commands=[],faults=[];
   let unread=1, claimed=false, accepted=false, locked=false, peerLocked=false, confirmed=false, offered=false, completed=false, cancelled=false, offerVersion=2;
+  let mailLetters=[{id:letterId,source:'dungeon',title:'Baú de Morgan',message:'Recompensa por vencer Morgan.',createdAt:now,readAt:null,claimedAt:null,attachments:[armor]}];
   let messages=[{id:'1',senderId:peer.id,body:'<b>Olá!</b> Tudo pronto para zarpar?',sentAt:now}];
   const last=()=>messages.at(-1);
   const availableTrade=()=>({id:tradeId,status:accepted?'active':'pending',initiatorId:peer.id,partnerId:peer.id,partnerName:peer.name,expiresAt:new Date(Date.now()+80000).toISOString(),offerVersion,ownLocked:locked,peerLocked,ownConfirmed:confirmed,peerConfirmed:false,ownItems:offered?[{item:weapon,quantity:1}]:[],peerItems:accepted?[{item:armor,quantity:1}]:[]});
@@ -49,7 +50,7 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
       const scripts='<script defer src="/apps/account-client/game-session.js"></script><script defer src="/apps/account-client/game-ui.js"></script>';
       await r.fulfill({response,body:html.includes('account-client/game-session.js')?html:html.replace(/<script defer src="game\.js/,scripts+'<script defer src="game.js')});
     });
-    await page.route('**/v1/**',r=>{
+    await page.route('**/v1/**',async r=>{
       const request=new URL(r.request().url()),p=request.pathname,q=request.searchParams;
       const reply=body=>r.fulfill({json:body});
       if(p==='/v1/me')return reply({character:player});
@@ -61,14 +62,24 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
         if(view==='badge')return reply({friendRequests:0,unreadMessages:unread,pending:claimed?0:1,tradeInvites:accepted?0:1});
         if(view==='contacts')return reply({friends:[peer],incoming:[],outgoing:[],blocked:[],matches:q.get('q')?[{...peer,friendState:'accepted'}]:[],onlineCount:1,conversations:[{character:peer,lastMessage:last(),unread}]});
         if(view==='messages')return reply({character:peer,messages:messages.filter(m=>!q.has('after')||+m.id>+q.get('after')),hasMore:false});
-        if(view==='mail')return reply({pending:claimed?0:1,unread:claimed?0:1,nextCursor:null,letters:(q.get('tab')==='claimed')===claimed?[{id:letterId,source:'dungeon',title:'Baú de Morgan',message:'Recompensa por vencer Morgan.',createdAt:now,readAt:null,claimedAt:claimed?now:null,attachments:[armor]}]:[]});
+        if(view==='mail'){
+          if(q.has('before'))await new Promise(resolve=>setTimeout(resolve,250));
+          const filtered=mailLetters.filter(l=>!l.archived&&(q.get('tab')==='claimed')===!!l.claimedAt),offset=q.has('before')?6:0;
+          return reply({pending:mailLetters.filter(l=>!l.claimedAt).length,unread:mailLetters.filter(l=>!l.readAt&&!l.claimedAt).length,nextCursor:filtered.length>6&&!offset?'older':null,letters:filtered.slice(offset,offset+6)});
+        }
         if(view==='trade')return reply({trade:completed||cancelled?null:availableTrade(),eligibleItems:offered?[extra,...stock]:[weapon,extra,...stock],invites:[],history:completed?[{id:tradeId,partnerName:peer.name,completedAt:now,sent:[{item:weapon,quantity:1}],received:[{item:armor,quantity:1}]}]:[]});
       }
       if(p.endsWith('/commands')){
         const c=r.request().postDataJSON();commands.push(c);
         if(c.action==='message.read')unread=0;
         if(c.action==='message.send')messages.push({id:'2',senderId:player.id,body:c.payload.body,sentAt:now});
-        if(c.action==='mail.claim'||c.action==='mail.claim-all'){claimed=true;return reply({mail:{claimed:[letterId],pending:[]}});}
+        if(c.action==='mail.read')mailLetters.find(l=>l.id===c.payload.mailId).readAt=now;
+        if(c.action==='mail.archive')mailLetters.find(l=>l.id===c.payload.mailId).archived=true;
+        if(c.action==='mail.archive-claimed')mailLetters.filter(l=>l.claimedAt).forEach(l=>l.archived=true);
+        if(c.action==='mail.claim'||c.action==='mail.claim-all'){
+          const rows=mailLetters.filter(l=>!l.claimedAt&&(c.action==='mail.claim-all'||l.id===c.payload.mailId));
+          rows.forEach(l=>l.claimedAt=now);claimed=true;return reply({mail:{claimed:rows.map(l=>l.id),pending:[]}});
+        }
         if(c.action==='trade.respond')accepted=true;
         if(c.action==='trade.offer'){offered=true;offerVersion++;}
         if(c.action==='trade.lock')locked=c.payload.locked;
@@ -116,11 +127,55 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     assert.equal(await page.locator('.social-thread').isVisible(),false);
     await page.locator('#floatingChat [data-close-window]').click();
     await open('mail');await page.getByText('Baú de Morgan',{exact:true}).waitFor();
+    const mailGlass=await page.locator('.social-mode .dialog').evaluate(el=>{
+      const s=getComputedStyle(el),r=el.getBoundingClientRect();
+      return {width:r.width,height:r.height,border:s.borderTopWidth,image:s.borderImageSource,radius:s.borderTopLeftRadius,blur:s.backdropFilter};
+    });
+    assert(Math.abs(mailGlass.width-1180)<2&&Math.abs(mailGlass.height-702)<2,'Mail shares inventory dimensions: '+JSON.stringify(mailGlass));
+    assert.equal(mailGlass.border,'1px');assert.equal(mailGlass.image,'none');assert.equal(mailGlass.radius,'12px');assert.match(mailGlass.blur,/blur/);
     await screenshot('04-correio.png');
+    await page.getByRole('button',{name:'Marcar como lida',exact:true}).click();
+    await page.locator('.social-letter[data-mail-state=read]').waitFor();
+    assert.equal(commands.find(c=>c.action==='mail.read').payload.mailId,letterId);
+    assert.equal(await page.locator('.social-letter .rarity-rare').count(),1,'Mail attachment keeps rarity');
     await page.getByRole('button',{name:'Resgatar',exact:true}).click();
     await page.getByText('Nenhuma recompensa pendente.',{exact:true}).waitFor();
     await page.getByRole('button',{name:'Resgatadas',exact:true}).click();
     await page.getByText('Baú de Morgan',{exact:true}).waitFor();
+    await page.getByRole('button',{name:'Arquivar',exact:true}).click();
+    await page.getByText('Nenhuma recompensa resgatada.',{exact:true}).waitFor();
+    assert.equal(commands.find(c=>c.action==='mail.archive').payload.mailId,letterId);
+    mailLetters=Array.from({length:9},(_,i)=>({id:'33333333-3333-4333-8333-'+String(i+10).padStart(12,'0'),source:['dungeon','event','system','market'][i%4],title:['Baú de Morgan','Recompensa da temporada','Entrega do porto','Venda concluída'][i%4]+' · '+(i+1),message:'Sua recompensa está pronta para resgate. Obrigado por navegar conosco.',createdAt:now,readAt:i%2?now:null,claimedAt:null,attachments:[armor,weapon]}));
+    await page.locator('[data-social-action=mail-tab][data-social-id=pending]').click();
+    await page.locator('.social-letter').nth(5).waitFor();
+    await screenshot('04a-correio-entregas.png');
+    for(const [width,height] of [[1920,1080],[1366,768],[1024,768],[768,1024],[390,844],[360,800],[844,390]]){
+      await page.setViewportSize({width,height});
+      const layout=await page.locator('.mail-desk').evaluate(el=>{
+        const list=el.querySelector('.mail-list'),toolbar=el.querySelector('.mail-toolbar'),dialog=el.closest('.dialog'),r=dialog.getBoundingClientRect();
+        return {overflow:el.scrollWidth>el.clientWidth+1,listHeight:list.clientHeight,toolbarBottom:toolbar.getBoundingClientRect().bottom,bottom:r.bottom,left:r.left,right:r.right};
+      });
+      assert(!layout.overflow&&layout.listHeight>80&&layout.toolbarBottom<height&&layout.bottom<=height&&layout.left>=0&&layout.right<=width,'Mail fits '+width+': '+JSON.stringify(layout));
+      assert(await page.locator('.social-tile').first().evaluate(el=>Math.abs(el.offsetWidth-el.offsetHeight)<1),'Square attachment slots');
+      if(width===390||width===844)await screenshot('04b-correio-'+width+'.png');
+    }
+    await page.setViewportSize({width:1440,height:900});
+    await page.getByRole('button',{name:'Carregar mais',exact:true}).click();
+    await page.locator('.social-letter').nth(8).waitFor();
+    assert.equal(await page.locator('.social-letter').count(),9,'Pagination preserves previous deliveries');
+    await page.locator('.mail-list').evaluate(el=>el.scrollTop=100);
+    await page.locator('[data-social-action=mail-read]').first().click();
+    await page.waitForFunction(()=>document.querySelector('.social-letter')?.dataset.mailState==='read');
+    assert(await page.locator('.mail-list').evaluate(el=>el.scrollTop>=95),'Reading preserves the delivery list position');
+    await page.locator('[data-social-action=mail-claim-all]').click();
+    await page.getByText('Nenhuma recompensa pendente.',{exact:true}).waitFor();
+    assert.equal(await page.locator('[data-social-action=mail-claim-all]').isDisabled(),true);
+    await page.locator('[data-social-action=mail-tab][data-social-id=claimed]').click();
+    await page.locator('.social-letter[data-mail-state=claimed]').nth(5).waitFor();
+    await screenshot('04c-correio-resgatadas.png');
+    await page.locator('[data-social-action=mail-archive-claimed]').click();
+    await page.getByText('Nenhuma recompensa resgatada.',{exact:true}).waitFor();
+    assert(commands.some(c=>c.action==='mail.claim-all')&&commands.some(c=>c.action==='mail.archive-claimed'));
     await open('trade');
     await page.locator('.trade-invite[data-trade-tone="proposed"]').waitFor();
     await page.getByRole('button',{name:'Aceitar',exact:true}).click();
