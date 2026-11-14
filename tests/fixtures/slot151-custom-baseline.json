@@ -1,0 +1,177 @@
+{
+  "tree": "2fbf9029b29b61006526b0b6684ba268f5d55633",
+  "look": {
+    "gender": "feminino",
+    "hairStyle": "hair-bob",
+    "hairColor": "pink",
+    "eyeStyle": "face-focused",
+    "eyeColor": "green",
+    "skinColor": "dark"
+  },
+  "cases": [
+    {
+      "pants": 147,
+      "draws": [
+        {
+          "direction": "east",
+          "tick": 0,
+          "headSHA": "9633e41bcb6b02e20e3398f9e422dc22d97db8bdc5c19a1ce0be053e1ab7225e",
+          "fullSHA": "4fb26e225765b82877db469cf89b54b2ee935f5b5306cf844dfa0fc599a6cd20"
+        },
+        {
+          "direction": "east",
+          "tick": 4,
+          "headSHA": "923caf1220673f41d1ff19601d5cd37b4b63bdb6377856426bfb4a4bf4859594",
+          "fullSHA": "a624398246898bebec9bc9519fd59631ec369e4cc6f676fcee2559c1586eff1e"
+        },
+        {
+          "direction": "east",
+          "tick": 7,
+          "headSHA": "fdf556a926ef36436da6af569512fcdeb1ae400d35a5955a509eb324b3e006a2",
+          "fullSHA": "be113613f88ebc09f11ce9b4bd2239543add7ff42f91aec62d2c04b51deab641"
+        },
+        {
+          "direction": "west",
+          "tick": 0,
+          "headSHA": "977f82fc1306e6c7b57bb38dc7e92c1c65a2b34ef17f486b5a975f3bba11b599",
+          "fullSHA": "6aac432bac692a81f8c1d100039cac5cc940803375b56862e9ecc2712cd50048"
+        },
+        {
+          "direction": "west",
+          "tick": 4,
+          "headSHA": "9eb7f6d5a825a32794e074836189523a68871046cb91613d6af0248d102660e7",
+          "fullSHA": "38b206ebea8e1286c6ec9c3cbf1be6033985afb8b83cc7e77de5d8289f9f53c7"
+        },
+        {
+          "direction": "west",
+          "tick": 7,
+          "headSHA": "9be5cee991e55074ef6a8830155cd081bcb31ca4bf1501e81b4dbd13a67d174d",
+          "fullSHA": "7ff7866daabc27bfd69c23af3e34bd0b51580026a57dc972b4904bf9ba8fc988"
+        }
+      ]
+    },
+    {
+      "pants": 168,
+      "draws": [
+        {
+          "direction": "east",
+          "tick": 0,
+          "headSHA": "9633e41bcb6b02e20e3398f9e422dc22d97db8bdc5c19a1ce0be053e1ab7225e",
+          "fullSHA": "05bc4588af1785d3b7a04f0f37619cd0fcda4bc38e34127549dc1a82522c724b"
+        },
+        {
+          "direction": "east",
+          "tick": 4,
+          "headSHA": "923caf1220673f41d1ff19601d5cd37b4b63bdb6377856426bfb4a4bf4859594",
+          "fullSHA": "d37391f55ecb7db43cc61676f8261ad39209e85a0d83108b4677110e7c85fb73"
+        },
+        {
+          "direction": "east",
+          "tick": 7,
+          "headSHA": "fdf556a926ef36436da6af569512fcdeb1ae400d35a5955a509eb324b3e006a2",
+          "fullSHA": "b21653b4173964ec4ec90671cfd400bab29683caa01ce12da9df974ce03d2405"
+        },
+        {
+          "direction": "west",
+          "tick": 0,
+          "headSHA": "977f82fc1306e6c7b57bb38dc7e92c1c65a2b34ef17f486b5a975f3bba11b599",
+          "fullSHA": "ba95650f328e8a2470a5a00a07d826a771042d3afa2fbabb907ae48ccbba6cff"
+        },
+        {
+          "direction": "west",
+          "tick": 4,
+          "headSHA": "9eb7f6d5a825a32794e074836189523a68871046cb91613d6af0248d102660e7",
+          "fullSHA": "f721a167d407151ee940771ec2ba19c1a9594b44064d9bad4e4b449ea387dc1b"
+        },
+        {
+          "direction": "west",
+          "tick": 7,
+          "headSHA": "9be5cee991e55074ef6a8830155cd081bcb31ca4bf1501e81b4dbd13a67d174d",
+          "fullSHA": "fef10df37858d9a639f2c75355d71d2c99d856ce79fc957e8612ce076198e028"
+        }
+      ]
+    },
+    {
+      "pants": null,
+      "draws": [
+        {
+          "direction": "east",
+          "tick": 0,
+          "headSHA": "f90c8b005a8c75151e381e520207b3f3914fecbabe3c0201a249600adb712155",
+          "fullSHA": "35af5a9e8c1b596ae85b5e7d3fcab50d8df838f37b75fe2ab3cd62c03f4d172c"
+        },
+        {
+          "direction": "east",
+          "tick": 4,
+          "headSHA": "eeb2b1931a545fe0761f199159047ec94b8268697f20e5c300e7d72dac5b5cc2",
+          "fullSHA": "540d71e544ae2675a98f391fb829094c40d4b47a3c82b6cfd1a510868a0f7bd7"
+        },
+        {
+          "direction": "east",
+          "tick": 7,
+          "headSHA": "11cacaf87d4ae1d8f67cb50a55be1cefa0e17a1cda42d53a90f7c1aac39dd369",
+          "fullSHA": "b98df846fb8c98db77fb74cd4b7a62a47f0f037320543c4852bf0ffbbebc7588"
+        },
+        {
+          "direction": "west",
+          "tick": 0,
+          "headSHA": "a24c14e7075e6f07dea4f47386e085cc830e8c64fe8d5c6063a7def025d3cf3c",
+          "fullSHA": "a6e7ab1fc7beea97d385c19eab8606d070aa93476aa3d596d6efe116a2268073"
+        },
+        {
+          "direction": "west",
+          "tick": 4,
+          "headSHA": "ecbcdf981220efb399e547609244fbdaf6d0ff865f4c607f93b15034537a26dc",
+          "fullSHA": "06270ba1fb8cf4be8fd99ff0c5dd937b8866ccace9acf2970f2b780555520e84"
+        },
+        {
+          "direction": "west",
+          "tick": 7,
+          "headSHA": "e013dd29b2b33ae15cbabe64a25ea8ab7f7237b7c06fb24ec968db852e800324",
+          "fullSHA": "326f9bb5c86e9dfdb2e667d988c155d64431f5bfa08e32f571a0fb67ab0ea2bd"
+        }
+      ]
+    },
+    {
+      "pants": 147,
+      "draws": [
+        {
+          "direction": "east",
+          "tick": 0,
+          "headSHA": "9633e41bcb6b02e20e3398f9e422dc22d97db8bdc5c19a1ce0be053e1ab7225e",
+          "fullSHA": "4fb26e225765b82877db469cf89b54b2ee935f5b5306cf844dfa0fc599a6cd20"
+        },
+        {
+          "direction": "east",
+          "tick": 4,
+          "headSHA": "923caf1220673f41d1ff19601d5cd37b4b63bdb6377856426bfb4a4bf4859594",
+          "fullSHA": "a624398246898bebec9bc9519fd59631ec369e4cc6f676fcee2559c1586eff1e"
+        },
+        {
+          "direction": "east",
+          "tick": 7,
+          "headSHA": "fdf556a926ef36436da6af569512fcdeb1ae400d35a5955a509eb324b3e006a2",
+          "fullSHA": "be113613f88ebc09f11ce9b4bd2239543add7ff42f91aec62d2c04b51deab641"
+        },
+        {
+          "direction": "west",
+          "tick": 0,
+          "headSHA": "977f82fc1306e6c7b57bb38dc7e92c1c65a2b34ef17f486b5a975f3bba11b599",
+          "fullSHA": "6aac432bac692a81f8c1d100039cac5cc940803375b56862e9ecc2712cd50048"
+        },
+        {
+          "direction": "west",
+          "tick": 4,
+          "headSHA": "9eb7f6d5a825a32794e074836189523a68871046cb91613d6af0248d102660e7",
+          "fullSHA": "38b206ebea8e1286c6ec9c3cbf1be6033985afb8b83cc7e77de5d8289f9f53c7"
+        },
+        {
+          "direction": "west",
+          "tick": 7,
+          "headSHA": "9be5cee991e55074ef6a8830155cd081bcb31ca4bf1501e81b4dbd13a67d174d",
+          "fullSHA": "7ff7866daabc27bfd69c23af3e34bd0b51580026a57dc972b4904bf9ba8fc988"
+        }
+      ]
+    }
+  ]
+}

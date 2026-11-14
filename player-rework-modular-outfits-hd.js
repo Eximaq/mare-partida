@@ -16,9 +16,10 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
   if(!['east','west'].includes(direction)){
    const selectedValue=visible[0][1];
    if(selectedValue&&typeof selectedValue==='object'&&['variant','variantId','appearanceVariant'].some(k=>selectedValue[k]!=null&&selectedValue[k]!=='original'))return null;
-   // Only the separately approved original SN147/168 cohort uses these native holds.
+   // Only separately approved original SN147/168/182 sources use these native holds.
+   if(selected===182&&record.sourceRevision!=='EW38_SN3')return null;
    const expected=direction==='south'?[125,125,125,75,50,125,125,125,75,50]:direction==='north'?[125,75,50,125,75,50,125,75,50,125,75,50]:null,t=record.authoredWalkTimeline;
-   if(![147,168].includes(selected)||!expected||t?.schema!=='approved-female-sn-ms-v1'||t.cycleMs!==1000||t.phaseCount!==expected.length||JSON.stringify(t.durationMs)!==JSON.stringify(expected)||JSON.stringify(t.frameToPhase)!==JSON.stringify(expected.flatMap((ms,i)=>Array(ms/25).fill(i))))return null;
+   if(![147,168,182].includes(selected)||!expected||t?.schema!=='approved-female-sn-ms-v1'||t.cycleMs!==1000||t.phaseCount!==expected.length||JSON.stringify(t.durationMs)!==JSON.stringify(expected)||JSON.stringify(t.frameToPhase)!==JSON.stringify(expected.flatMap((ms,i)=>Array(ms/25).fill(i))))return null;
   }
   const p=record.pack,d=p?.directions?.[direction];
   if(p.density!==4||p.frame.width!==128||p.frame.height!==128||p.pivot.x!==64||p.pivot.y!==112||d?.clip.frames!==40||d.clip.fps!==40||d.clip.loop!==true)return null;
@@ -28,7 +29,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
   appearanceAPI=appearanceAPI||root.MareAppearance96;
   if(!['walk','idle','attack-unarmed','attack-focus'].includes(action))return null;
   const canonicalEquipment={};for(const [key,value]of Object.entries(equipment)){const slot=({legs:'pants',coat:'torso'})[key]||key,selected=id(value);if(selected!=null&&!['none','original'].includes(selected))canonicalEquipment[slot]=Number(selected);}
-  const exact=index.records.find(r=>r.approvedAppearance&&allowApprovedAppearance&&r.body===canonical(body)&&r.action===action&&r.direction===direction&&Object.keys(canonicalEquipment).length===Object.keys(r.equipment).length&&Object.entries(r.equipment).every(([slot,item])=>canonicalEquipment[slot]===item)&&Object.entries(r.approvedAppearance).every(([name,expected])=>appearance[name]===expected));
+  const exact=index.records.find(r=>r.approvedAppearance&&allowApprovedAppearance&&(!r.slotComposition151||Object.values(equipment).every(v=>!v||typeof v!=='object'||['variant','variantId','appearanceVariant'].every(k=>v[k]==null||v[k]==='original')))&&r.body===canonical(body)&&r.action===action&&r.direction===direction&&Object.keys(canonicalEquipment).length===Object.keys(r.equipment).length&&Object.entries(r.equipment).every(([slot,item])=>canonicalEquipment[slot]===item)&&Object.entries(r.approvedAppearance).every(([name,expected])=>appearance[name]===expected));
   if(exact)return exact;
   if(appearance.hair&&!['original'].includes(appearance.hair)||appearance.face&&!['original','face-gentle'].includes(appearance.face)||appearance.eyeColor&&!['original','blue'].includes(appearance.eyeColor))return null;
   const matches=r=>!r.approvedAppearance&&r.body===canonical(body)&&r.direction===direction&&r.action===action&&(!r.candidate||allowCandidates)&&Object.keys(canonicalEquipment).length===Object.keys(r.equipment).length&&Object.entries(r.equipment).every(([slot,item])=>canonicalEquipment[slot]===item);
