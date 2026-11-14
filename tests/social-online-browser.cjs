@@ -50,7 +50,7 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
       const scripts='<script defer src="/apps/account-client/game-session.js"></script><script defer src="/apps/account-client/game-ui.js"></script>';
       await r.fulfill({response,body:html.includes('account-client/game-session.js')?html:html.replace(/<script defer src="game\.js/,scripts+'<script defer src="game.js')});
     });
-    await page.route('**/v1/**',r=>{
+    await page.route('**/v1/**',async r=>{
       const request=new URL(r.request().url()),p=request.pathname,q=request.searchParams;
       const reply=body=>r.fulfill({json:body});
       if(p==='/v1/me')return reply({character:player});
@@ -63,6 +63,7 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
         if(view==='contacts')return reply({friends:[peer],incoming:[],outgoing:[],blocked:[],matches:q.get('q')?[{...peer,friendState:'accepted'}]:[],onlineCount:1,conversations:[{character:peer,lastMessage:last(),unread}]});
         if(view==='messages')return reply({character:peer,messages:messages.filter(m=>!q.has('after')||+m.id>+q.get('after')),hasMore:false});
         if(view==='mail'){
+          if(q.has('before'))await new Promise(resolve=>setTimeout(resolve,250));
           const filtered=mailLetters.filter(l=>!l.archived&&(q.get('tab')==='claimed')===!!l.claimedAt),offset=q.has('before')?6:0;
           return reply({pending:mailLetters.filter(l=>!l.claimedAt).length,unread:mailLetters.filter(l=>!l.readAt&&!l.claimedAt).length,nextCursor:filtered.length>6&&!offset?'older':null,letters:filtered.slice(offset,offset+6)});
         }
@@ -144,7 +145,7 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     await page.getByRole('button',{name:'Arquivar',exact:true}).click();
     await page.getByText('Nenhuma recompensa resgatada.',{exact:true}).waitFor();
     assert.equal(commands.find(c=>c.action==='mail.archive').payload.mailId,letterId);
-    mailLetters=Array.from({length:9},(_,i)=>({id:letterId+'-'+i,source:['dungeon','event','system','market'][i%4],title:['Baú de Morgan','Recompensa da temporada','Entrega do porto','Venda concluída'][i%4]+' · '+(i+1),message:'Sua recompensa está pronta para resgate. Obrigado por navegar conosco.',createdAt:now,readAt:i%2?now:null,claimedAt:null,attachments:[armor,weapon]}));
+    mailLetters=Array.from({length:9},(_,i)=>({id:'33333333-3333-4333-8333-'+String(i+10).padStart(12,'0'),source:['dungeon','event','system','market'][i%4],title:['Baú de Morgan','Recompensa da temporada','Entrega do porto','Venda concluída'][i%4]+' · '+(i+1),message:'Sua recompensa está pronta para resgate. Obrigado por navegar conosco.',createdAt:now,readAt:i%2?now:null,claimedAt:null,attachments:[armor,weapon]}));
     await page.locator('[data-social-action=mail-tab][data-social-id=pending]').click();
     await page.locator('.social-letter').nth(5).waitFor();
     await screenshot('04a-correio-entregas.png');
@@ -160,10 +161,11 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     }
     await page.setViewportSize({width:1440,height:900});
     await page.getByRole('button',{name:'Carregar mais',exact:true}).click();
+    await page.locator('.social-letter').nth(8).waitFor();
     assert.equal(await page.locator('.social-letter').count(),9,'Pagination preserves previous deliveries');
     await page.locator('.mail-list').evaluate(el=>el.scrollTop=100);
     await page.locator('[data-social-action=mail-read]').first().click();
-    await page.locator('.social-letter[data-mail-state=read]').first().waitFor();
+    await page.waitForFunction(()=>document.querySelector('.social-letter')?.dataset.mailState==='read');
     assert(await page.locator('.mail-list').evaluate(el=>el.scrollTop>=95),'Reading preserves the delivery list position');
     await page.locator('[data-social-action=mail-claim-all]').click();
     await page.getByText('Nenhuma recompensa pendente.',{exact:true}).waitFor();
