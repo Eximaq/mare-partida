@@ -1,5 +1,5 @@
 """Owner's native Dawn export: real game, old saves, combat and pixel-fidelity checks."""
-import copy,json,os
+import copy,json,os,time
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1];OUT=Path(os.environ.get('MARE_QA_DIR',str(ROOT/'docs/evidence-dawn-manual/after')));OUT.mkdir(parents=True,exist_ok=True)
@@ -11,9 +11,20 @@ def page(b,seed=None,size=(1366,768)):
  c.add_init_script('Math.random=(()=>{let x=17391;return()=>{x=(Math.imul(1664525,x)+1013904223)>>>0;return x/4294967296}})()')
  if seed:c.add_init_script('if(!sessionStorage.seeded){localStorage.setItem('+json.dumps(KEY)+','+json.dumps(json.dumps(seed))+');sessionStorage.seeded="1"}')
  q=c.new_page();q.on('pageerror',lambda e:errors.append(str(e)));q.clock.install(time=1792500000000);q.goto(URL);q.wait_for_function('typeof __mareDiagnostics==="function"');q.evaluate('Promise.all([MareDawnRenderer.boot,MareEmberRenderer.boot])');assert q.evaluate('MareDawnRenderer.stats().ready');return c,q
+def ready_world(q):
+ # The virtual combat clock does not wait for real image decoding. Wait for
+ # the same loading gate that enables player input, without bypassing it.
+ deadline=time.monotonic()+90
+ while time.monotonic()<deadline:
+  q.clock.run_for(100)
+  if q.locator('#worldLoading').get_attribute('data-state')=='ready':return
+  time.sleep(.1)
+ raise AssertionError(q.locator('#worldLoading').inner_text())
+
 def travel(q):
  q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.clock.run_for(100)
  if state(q)['autoPlay']:q.locator('#autoToggle').click()
+ ready_world(q)
 def route(q,id):
  if q.locator('#journeyToggle').get_attribute('aria-expanded')=='false':q.locator('#journeyToggle').click()
  q.locator('#huntRoute').click();q.locator('[data-hunt-sector='+id+']').click()
@@ -37,7 +48,7 @@ with sync_playwright() as p:
  ready=copy.deepcopy(high);ready['hunts']['areas']['beach']['kills']=12
  c,q=page(b,ready);q.locator('#devLauncher').click();q.locator('[data-dev-enter]').click();q.wait_for_url('**/?dev=1');q.wait_for_function('__mareDiagnostics().dev.active');q.locator('#devLauncher').click();q.locator('[data-dev-option=godMode]').check();q.locator('[data-dev-travel=beach]').click();q.evaluate('Promise.all([MareDawnRenderer.boot,MareEmberRenderer.boot])')
  if state(q)['autoPlay']:q.locator('#autoToggle').click()
- q.clock.run_for(100);q.screenshot(path=str(OUT/'chegada.png'))
+ ready_world(q);q.clock.run_for(100);q.screenshot(path=str(OUT/'chegada.png'))
  for id in ['cais','corsarios','estaleiro','mercado','ancoras','farol','caldeira']:route(q,id);q.screenshot(path=str(OUT/(id+'.png')))
  # Main's East Blue rebalance keeps Dawn's boss at the end of levels1-5.
  assert any(m['type']=='boss' and m['level']==5 for m in state(q)['mobs']);warned=False
