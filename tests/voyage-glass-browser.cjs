@@ -20,8 +20,12 @@ const out=process.env.MARE_QA_DIR||'tmp/voyage-glass';
   const open=name=>page.evaluate(name=>__voyageGlassQA.open(name),name);
   for(const [width,height] of [[1920,1080],[1366,768],[1280,720],[1024,768],[768,1024],[390,844],[360,800],[844,390]]){
    await page.setViewportSize({width,height});await open('inventory');
-   await page.locator('.op-inventory-shell').waitFor({state:'visible'});
-   const inventory=await page.locator('.op-inventory-shell').boundingBox();
+   // ResizeObserver can replace the inventory between visibility and boundingBox.
+   // Capture visibility and geometry atomically in the browser's current frame.
+   const inventory=await (await page.waitForFunction(()=>{
+    const r=document.querySelector('.op-inventory-shell')?.getBoundingClientRect();
+    return r?.width&&r?.height?r.toJSON():false;
+   })).jsonValue();
    await open('map');await page.evaluate(()=>document.fonts.ready);
    const dialog=await page.locator('#panelOverlay > .dialog').boundingBox();
    assert.equal(await page.locator('#panelOverlay > .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),'none','Map uses the approved thin glass frame');
