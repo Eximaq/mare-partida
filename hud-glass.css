@@ -2862,6 +2862,88 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   }
   @media (prefers-reduced-motion:reduce) { & #dialogBody button { transition: none; } }
 }
+/* My Profile: the live portrait anchors a compact, read-only captain dossier. */
+#app #panelOverlay.hud-density.captain-hd-mode[data-ui-panel=myprofile] {
+  padding: max(8px,var(--rpg-safe-top)) 8px max(8px,var(--rpg-safe-bottom)); background: #080b104d; backdrop-filter: blur(2px);
+  & > .dialog { display: flex; flex-direction: column; width: min(var(--glass-window-width),100%); height: calc(var(--glass-window-limit) - 18px); max-height: calc(var(--glass-window-limit) - 18px); max-width: none; min-height: 0; padding: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 12px; background: var(--glass-surface); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: var(--glass-shadow); color: #f5f6f8; font: 400 13px/1.45 var(--glass-type); overflow: hidden; }
+  & .dialog-header { display: flex; flex: none; align-items: center; min-height: 58px; padding: 8px 14px; gap: 12px; margin: 0; border: 0; border-bottom: 1px solid #ffffff18; background: #ffffff03; }
+  & .dialog-header::before, & #dialogTitle::before { content: none; }
+  & .dialog-header > div:first-child { padding: 0; min-width: 0; text-shadow: none; }
+  & .dialog-header small { display: none; }
+  & #dialogTitle { margin: 0; color: var(--glass-gold); font: 700 22px/1.2 var(--glass-type); text-shadow: none; text-transform: none; letter-spacing: 0; }
+  & #closePanel { width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0; border: 0; border-image: none; border-radius: 8px; background: transparent; box-shadow: none; color: var(--glass-muted); font: 26px/1 var(--glass-type); }
+  & #dialogBody { flex: 1; min-height: 0; padding: 12px; overflow: auto; background: none; scrollbar-width: thin; scrollbar-color: #d8c18a70 transparent; }
+  & .captain-profile { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-content: start; gap: 10px; color: #f5f6f8; font: 400 13px/1.45 var(--glass-type); }
+  & .captain-profile > :is(header,nav,.captain-empty), & .captain-profile > .captain-section:first-of-type { grid-column: 1/-1; }
+  & .captain-profile-banner { grid-template-columns: 110px minmax(0,1fr) 160px; min-height: 0; padding: 10px 14px; gap: 16px; border: 1px solid #ffffff20; border-image: none; border-radius: 8px; background: #ffffff03; }
+  & .captain-profile-avatar { width: 110px; height: 110px; min-width: 0; border: 1px solid #ffffff20; border-image: none; border-radius: 8px; background: #080b1059; overflow: hidden; }
+  /* The portrait renderer sets native raster dimensions inline; only constrain its display. */
+  & .captain-profile-avatar canvas { position: absolute; inset: 0; display: block; width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100%; min-height: 0; object-fit: contain; }
+  & #captainPortraitState { font: 10px/1.3 var(--glass-type); color: var(--glass-muted); }
+  & .captain-profile-name { gap: 6px; min-width: 0; }
+  & .captain-profile-name h2 { margin: 0; font: 700 26px/1.15 var(--glass-type); color: #f5f6f8; text-shadow: none; overflow-wrap: anywhere; }
+  & .captain-profile-name > small { color: var(--glass-gold); font: 500 12px/1.4 var(--glass-type); }
+  & .captain-profile-name > small:last-child { color: var(--glass-muted); font-size: 11px; }
+  & .captain-profile-name > span { gap: 6px; font: 500 13px/1.4 var(--glass-type); color: var(--glass-muted); }
+  & .captain-class-icon { width: 20px; height: 20px; }
+  & .captain-profile-power { grid-template-columns: 34px auto; column-gap: 10px; min-height: 0; padding: 12px; border: 0; border-left: 1px solid #ffffff20; background: none; text-align: left; justify-items: start; }
+  & .captain-faction-seal { grid-row: 1/3; align-self: center; width: 34px; height: 34px; filter: none; }
+  & .captain-profile-power small { font: 500 11px/1.4 var(--glass-type); color: var(--glass-muted); }
+  & .captain-profile-power strong { font: 750 28px/1.2 var(--glass-type); color: var(--glass-gold); text-shadow: none; font-variant-numeric: tabular-nums; }
+  & .captain-tabs { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; }
+  & .captain-tabs button, & [data-profile-identity] { min-height: 40px; height: auto; padding: 7px 10px; gap: 7px; border: 1px solid #ffffff24; border-image: none; border-radius: 8px; background: #ffffff05; color: var(--glass-muted); font: 600 13px/1.35 var(--glass-type); text-shadow: none; transition: background-color .15s,border-color .15s; }
+  & .captain-tabs button[aria-pressed=true], & [data-profile-identity] { border-color: var(--glass-line); background: #d4af371a; color: var(--glass-gold); box-shadow: none; }
+  & .captain-tabs .captain-icon { width: 20px; height: 20px; filter: none; }
+  & .captain-section { min-width: 0; padding: 10px; border: 1px solid #ffffff20; border-image: none; border-radius: 8px; background: #ffffff03; }
+  & .captain-section-head { display: flex; flex-wrap: wrap; gap: 5px 7px; padding: 0 0 8px; margin: 0 0 8px; border-color: #ffffff18; }
+  & .captain-section-head > .captain-icon { width: 20px; height: 20px; filter: none; }
+  & .captain-section h3 { margin: 0; font: 650 14px/1.4 var(--glass-type); color: var(--glass-gold); }
+  & .captain-section-head p { flex-basis: 100%; margin: 0; font: 400 11px/1.4 var(--glass-type); color: var(--glass-muted); }
+  & .captain-facts { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; }
+  & :is(.captain-rank-facts,.captain-combat-facts) { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
+  & .captain-fact, & .captain-combat-facts .captain-fact { min-width: 0; min-height: 48px; gap: 8px; padding: 6px 8px; border: 1px solid #ffffff10; border-radius: 6px; background: #00000018; }
+  & .captain-fact .captain-icon { width: 22px; height: 22px; filter: none; }
+  & .captain-fact small { font: 400 11px/1.4 var(--glass-type); color: var(--glass-muted); }
+  & .captain-fact strong { font: 650 16px/1.25 var(--glass-type); color: #f5f6f8; font-variant-numeric: tabular-nums; }
+  & .captain-muted { font: 400 11px/1.5 var(--glass-type); color: var(--glass-muted); }
+  & .captain-rank-facts > p { grid-column: 1/-1; margin: 4px 0 0; }
+  & .captain-equipment-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+  & .captain-equipment-card { --profile-rarity: #9ca3af; min-height: 78px; height: auto; gap: 10px; padding: 8px; border: 1px solid color-mix(in srgb,var(--profile-rarity) 65%,transparent); border-image: none; border-radius: 8px; background: #080b1033; box-shadow: inset 0 0 12px color-mix(in srgb,var(--profile-rarity) 7%,transparent); color: #f5f6f8; text-shadow: none; }
+  & .captain-equipment-card.rarity-uncommon { --profile-rarity: #67dd94; }
+  & .captain-equipment-card.rarity-rare { --profile-rarity: #58bbff; }
+  & .captain-equipment-card.rarity-epic { --profile-rarity: #bf89ff; }
+  & .captain-equipment-card.rarity-legendary { --profile-rarity: #ebc65c; }
+  & .captain-equipment-card.rarity-supreme { --profile-rarity: #ff687d; }
+  & .captain-equipment-art { width: 54px; height: 54px; max-height: none; aspect-ratio: 1; border: 1px solid #ffffff20; border-radius: 6px; background: #0002; box-shadow: none; }
+  & .captain-equipment-art > .captain-icon { width: 32px; height: 32px; filter: none; }
+  & .captain-equipment-copy { gap: 3px; text-align: left; }
+  & .captain-equipment-copy small { font: 400 10px/1.3 var(--glass-type); color: var(--glass-muted); text-transform: none; }
+  & .captain-equipment-copy strong { font: 600 13px/1.3 var(--glass-type); }
+  & .captain-equipment-copy > span { font: 400 11px/1.3 var(--glass-type); color: var(--profile-rarity); }
+  & .captain-equipment-card.is-empty { opacity: .6; border-color: #ffffff20; box-shadow: none; }
+  & .captain-empty { min-height: 180px; align-content: center; gap: 10px; padding: 22px 16px; border: 1px solid #ffffff20; border-radius: 8px; background: #ffffff03; color: var(--glass-muted); text-align: center; }
+  & .captain-empty > .captain-icon { width: 36px; height: 36px; }
+  & .captain-empty h3 { font: 650 17px/1.35 var(--glass-type); color: var(--glass-gold); }
+  & .captain-empty p { max-width: 60ch; font: 400 13px/1.5 var(--glass-type); }
+  & :is(button,select):focus-visible { outline: 2px solid var(--glass-gold); outline-offset: 2px; }
+  @media (hover:hover) { & button:hover:not(:disabled) { border-color: var(--glass-gold); background-color: #ffffff12; filter: none; } }
+  @media (max-width:1100px) { & .captain-profile-banner { grid-template-columns: 96px minmax(0,1fr) 140px; gap: 12px; } & .captain-profile-avatar { width: 96px; height: 96px; } & .captain-facts { grid-template-columns: repeat(3,minmax(0,1fr)); } & .captain-equipment-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+  @media (max-width:760px) {
+    & .dialog-header { padding: 7px 10px; } & #dialogTitle { font-size: 19px; } & #dialogBody { padding: 8px; }
+    & .captain-profile { grid-template-columns: minmax(0,1fr); gap: 8px; }
+    & .captain-profile-banner { grid-template-columns: 80px minmax(0,1fr); gap: 10px; padding: 10px; }
+    & .captain-profile-avatar { width: 80px; height: 80px; } & .captain-profile-name { gap: 4px; } & .captain-profile-name h2 { font-size: 21px; }
+    & .captain-profile-name > span { font-size: 12px; } & .captain-profile-name > small { font-size: 11px; }
+    & .captain-profile-power { grid-column: 1/-1; display: flex; align-items: center; justify-content: end; gap: 8px; padding: 8px 0 0; border: 0; border-top: 1px solid #ffffff18; }
+    & .captain-faction-seal { width: 24px; height: 24px; margin-right: auto; } & .captain-profile-power strong { font-size: 24px; }
+    & .captain-tabs { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    & .captain-tabs button, & [data-profile-identity] { min-height: 44px; font-size: 12px; }
+    & .captain-facts { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    & .captain-fact strong { font-size: 14px; } & .captain-fact .captain-icon { width: 18px; height: 18px; }
+    & .captain-equipment-grid { grid-template-columns: minmax(0,1fr); }
+  }
+  @media (prefers-reduced-motion:reduce) { & button { transition: none; } }
+}
 /* Fruit collection and sea hierarchy: the inventory glass frame, original art and state. */
 #app #panelOverlay.hud-density:is(.compendium-hd-mode,.hierarchy-hd-mode) {
   --comp-title: var(--glass-type); --comp-body: var(--glass-type);
