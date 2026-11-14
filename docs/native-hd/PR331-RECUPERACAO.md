@@ -1,6 +1,6 @@
 # PR #331 — Pranchas recuperadas do lote local
 
-Os quadros abaixo saíram do renderizador do mapa na build local preparada após `1b4cdfe4`. Este commit preserva as capturas e seus resultados. O vínculo das armas desse lote e seus arquivos de produção continuam na árvore local. O SHA publicado por este commit contém documentação e imagens de evidência.
+Os quadros abaixo saíram do renderizador do mapa na build local preparada após `1b4cdfe4`. Este commit preserva as capturas e seus resultados. O commit inicial de recuperação publicou somente documentação e imagens de evidência. O lote seguinte inclui os vínculos das armas e os ZIPs usados pelo jogo.
 
 | Peça | Configuração exercitada | Comparação com a fonte | Evidência |
 | --- | --- | --- | --- |
@@ -17,5 +17,5 @@ Fontes [Cajado 128 BASE127](https://github.com/Eximaq/mare-partida/blob/2801902f
 ## Bloqueios confirmados na recuperação
 
 - Os seis ZIPs de 133 r15, 161 r27 e 21 r3 EAST/WEST contêm cada um 12 PNGs 512×512 opacos, além de `METADATA.json` e `SHA256.json`. A inspeção confirmou que os 72 quadros têm fundo opaco. A busca pelos identificadores dessas revisões na árvore do acervo e nos snapshots históricos dos PRs #307 e #322 localizou apenas as composições finais do acervo. As camadas transparentes exatas continuam pendentes. [Pacotes das calças](https://github.com/Eximaq/mare-partida/blob/2801902fa2dad8e83069815faeaa3f53f90bc1b6/art-approved/clothing/female-historical-cycles)
-- O processo PowerShell fornecido pelo ambiente termina na inicialização com `Your Windows doesn't fully support CET. Please install all available Windows updates.`. A leitura direta recuperou capturas e pranchas, mas a inspeção integral do diff e o acesso aos bytes dos ZIPs locais de produção ainda dependem de um terminal funcional.
+- O processo PowerShell fornecido pelo ambiente termina na inicialização com `Your Windows doesn't fully support CET. Please install all available Windows updates.`. A execução direta do Git permitiu inspecionar o diff e recuperar os ZIPs de produção.
 - O levantamento das variantes de armas, do peitoral 130 por fase e das combinações de roupa, cabelo e capacete continua aberto na matriz.

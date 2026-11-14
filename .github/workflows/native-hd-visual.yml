@@ -14,6 +14,7 @@ on:
       - 'tests/rework-approved-rifles.test.cjs'
       - 'tests/rework-approved-orb17-carry.test.cjs'
       - 'tests/rework-female-authored-adjustments.test.cjs'
+      - 'tests/rework-approved-staff128.test.cjs'
       - 'tests/rework-approved-torso130-walk.test.cjs'
       - 'tests/rework-approved-outfit-idle.test.cjs'
       - 'tests/rework-approved-coat151-idle.test.cjs'
@@ -44,7 +45,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: python tools/verify_native_hd_archives.py
       - run: npm run test:rework-hd
-      - run: node --test player-rework-default-hd.test.cjs tests/rework-integration.test.cjs tests/rework-v5-binding.test.cjs tests/rework-approved-rifles.test.cjs tests/rework-approved-orb17-carry.test.cjs tests/rework-female-authored-adjustments.test.cjs tests/rework-approved-swords-south.test.cjs tests/rework-approved-coat151-idle.test.cjs tests/rework-approved-outfit-idle.test.cjs tests/rework-approved-torso130-walk.test.cjs tests/rework-approved-lateral-attacks.test.cjs tests/rework-direction-retention.test.cjs
+      - run: node --test player-rework-default-hd.test.cjs tests/rework-integration.test.cjs tests/rework-v5-binding.test.cjs tests/rework-approved-rifles.test.cjs tests/rework-approved-orb17-carry.test.cjs tests/rework-female-authored-adjustments.test.cjs tests/rework-approved-swords-south.test.cjs tests/rework-approved-coat151-idle.test.cjs tests/rework-approved-outfit-idle.test.cjs tests/rework-approved-torso130-walk.test.cjs tests/rework-approved-staff128.test.cjs tests/rework-approved-lateral-attacks.test.cjs tests/rework-direction-retention.test.cjs
       - run: node tools/audit_rework_integration.cjs
       - name: Cache Chromium
         uses: actions/cache@v4
