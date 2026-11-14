@@ -127,12 +127,27 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     await page.getByText('Seu inventário negociável',{exact:true}).waitFor();
     await page.locator('.trade-steps [aria-current="step"]').getByText('Propor itens').waitFor();
     await page.locator('.social-offer[data-trade-tone="proposed"]').first().waitFor();
+    const glass=await page.locator('.social-mode .dialog').evaluate(el=>{
+      const s=getComputedStyle(el),r=el.getBoundingClientRect();
+      return {width:r.width,height:r.height,border:s.borderTopWidth,image:s.borderImageSource,radius:s.borderTopLeftRadius,blur:s.backdropFilter,font:getComputedStyle(document.querySelector('.trade-desk')).fontFamily};
+    });
+    assert(Math.abs(glass.width-1180)<2&&Math.abs(glass.height-702)<2,'Trade shares inventory dimensions: '+JSON.stringify(glass));
+    assert.equal(glass.border,'1px');assert.equal(glass.image,'none');assert.equal(glass.radius,'12px');assert.match(glass.blur,/blur/);assert.match(glass.font,/Inter|system-ui/);
+    assert.equal(await page.locator('.trade-steps svg').count(),3,'Steps use crisp vector icons');
     await screenshot('05a-troca-proposta.png');
-    for(const [width,height] of [[768,1024],[390,844]]){
+    for(const [width,height] of [[1920,1080],[1366,768],[1024,768],[768,1024],[390,844],[360,800],[844,390]]){
       await page.setViewportSize({width,height});
       assert(await page.locator('.trade-actions').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight),'Ações visíveis durante a edição');
       assert(await page.locator('.social-content').evaluate(el=>el.scrollWidth<=el.clientWidth+2),'Troca cabe sem rolagem horizontal');
       assert(await page.locator('.social-bag-grid').evaluate(el=>el.scrollHeight>el.clientHeight),'Mochila extensa rola dentro da grade');
+      assert(await page.locator('.social-tile').first().evaluate(el=>Math.abs(el.offsetWidth-el.offsetHeight)<=1),'Item slots stay square');
+      if(height===390){
+        await page.locator('.trade-workspace').evaluate(el=>el.scrollTop=50);
+        peer.name='Lia do Farol — navegadora';
+        await page.locator('.trade-offer-head').getByText(peer.name,{exact:true}).waitFor();
+        assert(await page.locator('.trade-workspace').evaluate(el=>el.scrollTop>=45),'Live refresh preserves the negotiation scroll position');
+        peer.name='Lia do Farol';
+      }
       await screenshot('05b-troca-'+width+'.png');
     }
     await page.setViewportSize({width:1440,height:900});
