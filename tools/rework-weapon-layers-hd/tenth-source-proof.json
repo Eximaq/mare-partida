@@ -1,0 +1,1932 @@
+{
+  "scope": "67/70 male E/W bare;17/122 male E/W only151/158/165/179; no carry/universal wardrobes",
+  "swords": {
+    "67": {
+      "scope": "original male sword67 E/W only; no coats, later nape correction, runtime or map claim",
+      "clip": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "contactFrame": 4
+      },
+      "canvas": [
+        768,
+        768
+      ],
+      "constantPadding": 64,
+      "logicalFrame": {
+        "width": 160,
+        "height": 160
+      },
+      "pivot": {
+        "x": 80,
+        "y": 128
+      },
+      "density": 4,
+      "pivotEvidence": "Exact c996c409 base pack; no body/canvas scale or translation beyond documented original head-only offsets; WEST literal 768px mirror; original640 body padded64 each edge. No new registration guessed.",
+      "weaponSourceSHA256": "364c6310e159af44b6f8e32c32eb9e276f84696af6ddd94c61611ed01c73c542",
+      "baseSourceSHA256": "c996c409c12a64d4182385b737dff1f0df651f51771231c15f1cabe5da074887",
+      "recipeMember": "recipes/historical_scripts/sword67_v2_build.py",
+      "approvalPreview": "Sentinel_948cf5e833948191bf2e88a93fa11e0a",
+      "approvalResponse": "Sentinel_3a7e31d2aed481918a33e83d12611903",
+      "approvalLimit": "Authenticated corrected0/67/70 delivery and positive continue response; historical attachments not re-fetched. Exact16PNG hashes match preserved original67/70 approved-work archive.",
+      "verifiedFrames": 16,
+      "states": [
+        {
+          "item": 67,
+          "direction": "east",
+          "phase": 0,
+          "body": {
+            "member": "9f2742953952b778854f09212c9c663029dfc58a8992162344a217b817291d42.png",
+            "sha256": "9f2742953952b778854f09212c9c663029dfc58a8992162344a217b817291d42"
+          },
+          "gear": {
+            "member": "7513a7a6621b0528379731d352cb79682b71ccb7c3229dfb737b75cf40392033.png",
+            "sha256": "7513a7a6621b0528379731d352cb79682b71ccb7c3229dfb737b75cf40392033"
+          },
+          "contactMask": {
+            "member": "b017e4eb582faa7656eda7107b8ef588fedf5b5e65025278a5473a30f43da10b.png",
+            "sha256": "b017e4eb582faa7656eda7107b8ef588fedf5b5e65025278a5473a30f43da10b"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "839ad3f9beb17a4070e33c6c01a0e12f2efb30828856e84d6823bfc7ca128948"
+        },
+        {
+          "item": 67,
+          "direction": "west",
+          "phase": 0,
+          "body": {
+            "member": "dd9aa2b31a095914aa5ae642764dde1b00623aac994a5078858b1c41115f83a8.png",
+            "sha256": "dd9aa2b31a095914aa5ae642764dde1b00623aac994a5078858b1c41115f83a8"
+          },
+          "gear": {
+            "member": "bbe9ec462dfa4d14dcd58e6454878af2d6bf2c4eedbfd31848f5eb2b366ce409.png",
+            "sha256": "bbe9ec462dfa4d14dcd58e6454878af2d6bf2c4eedbfd31848f5eb2b366ce409"
+          },
+          "contactMask": {
+            "member": "62d0503fab319671eacccc89d585f3c02a244fbb449b731392888bd13d9d4d2d.png",
+            "sha256": "62d0503fab319671eacccc89d585f3c02a244fbb449b731392888bd13d9d4d2d"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "f96a09e738e1f49c28af6258f0eb9b73114244e13711294674930752e6884564"
+        },
+        {
+          "item": 67,
+          "direction": "east",
+          "phase": 1,
+          "body": {
+            "member": "a51c4991a63d345de7a3c938e54104bea9ab0c7d750538cd67048d40361869db.png",
+            "sha256": "a51c4991a63d345de7a3c938e54104bea9ab0c7d750538cd67048d40361869db"
+          },
+          "gear": {
+            "member": "ccb152c6f00685974e7e7d127d2ef7a0299376d5b8a6fe3ee08bcfcab761fc1a.png",
+            "sha256": "ccb152c6f00685974e7e7d127d2ef7a0299376d5b8a6fe3ee08bcfcab761fc1a"
+          },
+          "contactMask": {
+            "member": "6b1acfe5002a1b89d4ce0905f73aa9e245941b1f0e4ddc8d0e8e3bafc72d59f5.png",
+            "sha256": "6b1acfe5002a1b89d4ce0905f73aa9e245941b1f0e4ddc8d0e8e3bafc72d59f5"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "52bed5b28bd8411dfe0d3955471c533aead0f70cff3bae5f411f4533429e34e2"
+        },
+        {
+          "item": 67,
+          "direction": "west",
+          "phase": 1,
+          "body": {
+            "member": "0f5f8eb992815395bac9422732c369887d56045b46b85f096fd8889effc4033d.png",
+            "sha256": "0f5f8eb992815395bac9422732c369887d56045b46b85f096fd8889effc4033d"
+          },
+          "gear": {
+            "member": "9604c19f5fafe7fe27ad30ec1d141bed62553fdb2b95793fa07ff54095c91929.png",
+            "sha256": "9604c19f5fafe7fe27ad30ec1d141bed62553fdb2b95793fa07ff54095c91929"
+          },
+          "contactMask": {
+            "member": "495d2cfa165a96087d03570cefa9f0d1b7df38dcc4784771c454eabefa4320cc.png",
+            "sha256": "495d2cfa165a96087d03570cefa9f0d1b7df38dcc4784771c454eabefa4320cc"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "745cef007edd56949e2d9043132fa411f26be215fed8b900431fdbc29ab0ec21"
+        },
+        {
+          "item": 67,
+          "direction": "east",
+          "phase": 2,
+          "body": {
+            "member": "18c741d6adc38f75cb86cf673afa267ae924bb562c0d1513d1054595ee2675f6.png",
+            "sha256": "18c741d6adc38f75cb86cf673afa267ae924bb562c0d1513d1054595ee2675f6"
+          },
+          "gear": {
+            "member": "6144b88ec516c751cb15fc254e61f8a53894394c0b5a65790af8bb7b280ebe0b.png",
+            "sha256": "6144b88ec516c751cb15fc254e61f8a53894394c0b5a65790af8bb7b280ebe0b"
+          },
+          "contactMask": {
+            "member": "d7aa90f194c9722d5487d7737fec8ea64f799d82c7faff4abce85dd2a0a0796a.png",
+            "sha256": "d7aa90f194c9722d5487d7737fec8ea64f799d82c7faff4abce85dd2a0a0796a"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "58fec0940f54f9f306e47f47a76ff355c8601b8cccfbf8a1ec7535e46050acbf"
+        },
+        {
+          "item": 67,
+          "direction": "west",
+          "phase": 2,
+          "body": {
+            "member": "99abe309995120ca7f46ddbcbcd578565940d7ba8225376d4fe7196647db6efe.png",
+            "sha256": "99abe309995120ca7f46ddbcbcd578565940d7ba8225376d4fe7196647db6efe"
+          },
+          "gear": {
+            "member": "90c898faf8930294416ece65128eb7fefdc74426aee9217f11d533cfd7e6434f.png",
+            "sha256": "90c898faf8930294416ece65128eb7fefdc74426aee9217f11d533cfd7e6434f"
+          },
+          "contactMask": {
+            "member": "c81b71ebdad913d30c2ea398229a9241d5b7cf52a889146618e1faafca16bb0f.png",
+            "sha256": "c81b71ebdad913d30c2ea398229a9241d5b7cf52a889146618e1faafca16bb0f"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "9b63a6da13b2af0b22342534e69b6772231745ba88ccf9cbd2b8383e6b843401"
+        },
+        {
+          "item": 67,
+          "direction": "east",
+          "phase": 3,
+          "body": {
+            "member": "1dcbfcdd093a8b9fca364ecd95cf7ae04af5db2269b486f9a8b77f02d6e44a70.png",
+            "sha256": "1dcbfcdd093a8b9fca364ecd95cf7ae04af5db2269b486f9a8b77f02d6e44a70"
+          },
+          "gear": {
+            "member": "4f4373b90044b1e8400e365064e15bb52c16439e72e6d91955c4126a3aa2e2a9.png",
+            "sha256": "4f4373b90044b1e8400e365064e15bb52c16439e72e6d91955c4126a3aa2e2a9"
+          },
+          "contactMask": {
+            "member": "b49d0ce627d8abd3574762dbd3c77fe86511776f926183122b191dcf47650cc4.png",
+            "sha256": "b49d0ce627d8abd3574762dbd3c77fe86511776f926183122b191dcf47650cc4"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "6409835ae8f2b06324b5f83f21752bb76654519391a14a16c74364d52acd6fd8"
+        },
+        {
+          "item": 67,
+          "direction": "west",
+          "phase": 3,
+          "body": {
+            "member": "cc01838c4128af5c0ecc37cb03915b7ba53f8a1c7aa50fc7c3f7a398e0bebdfe.png",
+            "sha256": "cc01838c4128af5c0ecc37cb03915b7ba53f8a1c7aa50fc7c3f7a398e0bebdfe"
+          },
+          "gear": {
+            "member": "a99c3c4437f945892f13872e1345a91e4f99eb8c9bb0f618ebea8913f1fe4429.png",
+            "sha256": "a99c3c4437f945892f13872e1345a91e4f99eb8c9bb0f618ebea8913f1fe4429"
+          },
+          "contactMask": {
+            "member": "4373dcddce09206a0a07f74a108449078d505cdc92845679bef43a0e93b10806.png",
+            "sha256": "4373dcddce09206a0a07f74a108449078d505cdc92845679bef43a0e93b10806"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "61ad9a4c91d1c530d78fa4342dbd3d562e73cdbac832a028e0c538c7557b3815"
+        },
+        {
+          "item": 67,
+          "direction": "east",
+          "phase": 4,
+          "body": {
+            "member": "85b5751f19a045f4a754a74785df9303dfbd2f59103b3dfebd2c8462f1c07fe5.png",
+            "sha256": "85b5751f19a045f4a754a74785df9303dfbd2f59103b3dfebd2c8462f1c07fe5"
+          },
+          "gear": {
+            "member": "98244c6f848fcf3837937a8bc94f6d616d78726d2569628d945be1521c8890bc.png",
+            "sha256": "98244c6f848fcf3837937a8bc94f6d616d78726d2569628d945be1521c8890bc"
+          },
+          "contactMask": {
+            "member": "5ee9de44813bf378df5a7e2c9119eeb2c3c140e8cfacdf5879462a0d4e8fe36c.png",
+            "sha256": "5ee9de44813bf378df5a7e2c9119eeb2c3c140e8cfacdf5879462a0d4e8fe36c"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "d590ca040e9dd8ec4f7d96066fd24e6ea5af78c3ccefd33fa0acbb8139f046ec"
+        },
+        {
+          "item": 67,
+          "direction": "west",
+          "phase": 4,
+          "body": {
+            "member": "2a7554076a85bab8a0fd9822ccfbadb7b8870c2045e968b3bec595045ca0528e.png",
+            "sha256": "2a7554076a85bab8a0fd9822ccfbadb7b8870c2045e968b3bec595045ca0528e"
+          },
+          "gear": {
+            "member": "ade2647f95753bceb4c460e6b7c93fad835d7c715a62bfc25036fe2f87276f94.png",
+            "sha256": "ade2647f95753bceb4c460e6b7c93fad835d7c715a62bfc25036fe2f87276f94"
+          },
+          "contactMask": {
+            "member": "ecbdaa8d3f47964e92952621f27bc58ee40ee88dc8fe503110bce736429aa3ea.png",
+            "sha256": "ecbdaa8d3f47964e92952621f27bc58ee40ee88dc8fe503110bce736429aa3ea"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "3d8d04b4d09ac3d0b33339f98b054bb53eb8c022e13ae2694a63ab7b125e0e57"
+        },
+        {
+          "item": 67,
+          "direction": "east",
+          "phase": 5,
+          "body": {
+            "member": "f28c06fdf90f13bf168da2d0328f9f6ed38d86c289c1c220b763eee3f41a948a.png",
+            "sha256": "f28c06fdf90f13bf168da2d0328f9f6ed38d86c289c1c220b763eee3f41a948a"
+          },
+          "gear": {
+            "member": "b8433bb75533b49151b5f97ed7e4167e5b0aba8530b838c67c911f8b47fd618d.png",
+            "sha256": "b8433bb75533b49151b5f97ed7e4167e5b0aba8530b838c67c911f8b47fd618d"
+          },
+          "contactMask": {
+            "member": "29b122595d48d679483be026e7e882055221f2ff4a33c9a72e91ae32a75d061d.png",
+            "sha256": "29b122595d48d679483be026e7e882055221f2ff4a33c9a72e91ae32a75d061d"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "009e303cb5b9c0d59cbca5880c742738f9e1ecf4e4c1b926c8f16640e9a45c14"
+        },
+        {
+          "item": 67,
+          "direction": "west",
+          "phase": 5,
+          "body": {
+            "member": "d2f957d53017219706f084acdf1cc8ef56fbddb4cce670f8c605088812c0c30e.png",
+            "sha256": "d2f957d53017219706f084acdf1cc8ef56fbddb4cce670f8c605088812c0c30e"
+          },
+          "gear": {
+            "member": "aa5e716ddec9ea01e6a8b75dce0a6c0e8a3e909018fbd9b7b20334b16a007c7f.png",
+            "sha256": "aa5e716ddec9ea01e6a8b75dce0a6c0e8a3e909018fbd9b7b20334b16a007c7f"
+          },
+          "contactMask": {
+            "member": "06c58bc19719127e73fd8d19487c63f4ad661d159910f12725c9e6785f1c65ce.png",
+            "sha256": "06c58bc19719127e73fd8d19487c63f4ad661d159910f12725c9e6785f1c65ce"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "1b6b807901a98e297339c49c6e308ca2a547b4d0b43b8b0e2fec615163de344c"
+        },
+        {
+          "item": 67,
+          "direction": "east",
+          "phase": 6,
+          "body": {
+            "member": "0de28b19da0f624129a9a4abc418c506fad11e26fb3c46598732c61736ef7385.png",
+            "sha256": "0de28b19da0f624129a9a4abc418c506fad11e26fb3c46598732c61736ef7385"
+          },
+          "gear": {
+            "member": "00cb7e5d1c9ba169777c148d4250aa852b5c09ea0fdf1a9e09895ca5a4475bb6.png",
+            "sha256": "00cb7e5d1c9ba169777c148d4250aa852b5c09ea0fdf1a9e09895ca5a4475bb6"
+          },
+          "contactMask": {
+            "member": "494792efd8e28df41dcdcfec0dccf0d6495a1e5c7553aa71d1d547891e3ee651.png",
+            "sha256": "494792efd8e28df41dcdcfec0dccf0d6495a1e5c7553aa71d1d547891e3ee651"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "f55f496095caebd32c002c6c9e776fcb9fce3ed976e9ad23a9643177225ac0b4"
+        },
+        {
+          "item": 67,
+          "direction": "west",
+          "phase": 6,
+          "body": {
+            "member": "f8def3287463beac46f18b569736ec79ca47ca0677aa6c86d15e2b7619c6a719.png",
+            "sha256": "f8def3287463beac46f18b569736ec79ca47ca0677aa6c86d15e2b7619c6a719"
+          },
+          "gear": {
+            "member": "3e3bc3b4f3238a27d94d0dd5e7d059b1dbc7b6ebabb192edf1e87014b20367af.png",
+            "sha256": "3e3bc3b4f3238a27d94d0dd5e7d059b1dbc7b6ebabb192edf1e87014b20367af"
+          },
+          "contactMask": {
+            "member": "ec94dcc72cdcdb6c1ac5cbb3f7bff1462df17cbcc9e121290c77a0e8c217e7f1.png",
+            "sha256": "ec94dcc72cdcdb6c1ac5cbb3f7bff1462df17cbcc9e121290c77a0e8c217e7f1"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "16d4eb47a3d2ca5809949fbc522694010d2f6448668b13abfa849aae752590f1"
+        },
+        {
+          "item": 67,
+          "direction": "east",
+          "phase": 7,
+          "body": {
+            "member": "bbc6e24a35bdd342acd58982165a86ed1be592cb3fea0913d499e8426c957af5.png",
+            "sha256": "bbc6e24a35bdd342acd58982165a86ed1be592cb3fea0913d499e8426c957af5"
+          },
+          "gear": {
+            "member": "035afa40aafe68865cf21bb55b9c0e35c9d9f0fa065e86a4dcf5d846fa6bc1e3.png",
+            "sha256": "035afa40aafe68865cf21bb55b9c0e35c9d9f0fa065e86a4dcf5d846fa6bc1e3"
+          },
+          "contactMask": {
+            "member": "c19b25673f29e2d9de7d404db0c2dd083705854be487d5fedd47b9ef48f81a96.png",
+            "sha256": "c19b25673f29e2d9de7d404db0c2dd083705854be487d5fedd47b9ef48f81a96"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "f9524c70faf85f37cb91a10be9678b583fb48d3e261812677e07ba9eb1a7181e"
+        },
+        {
+          "item": 67,
+          "direction": "west",
+          "phase": 7,
+          "body": {
+            "member": "ced8e27dc0bf5e36deabed3c67923e297f251fc42236bf10222acf8032d30f07.png",
+            "sha256": "ced8e27dc0bf5e36deabed3c67923e297f251fc42236bf10222acf8032d30f07"
+          },
+          "gear": {
+            "member": "0bd32072567ef5ad29ccf76ac4a0389755452cd0417aafbf634fbf6220cd41ed.png",
+            "sha256": "0bd32072567ef5ad29ccf76ac4a0389755452cd0417aafbf634fbf6220cd41ed"
+          },
+          "contactMask": {
+            "member": "0f68f00bb6fc825bfb02e68a268dceaf8b752075d869f2a674f8e512b373c22d.png",
+            "sha256": "0f68f00bb6fc825bfb02e68a268dceaf8b752075d869f2a674f8e512b373c22d"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "361308c1c787e9cc6a2b4e5e4ce549aaa25be35b9e9d33f4dfa2225d7783a91e"
+        }
+      ],
+      "archives": [
+        {
+          "file": "sword67-independent-components.zip",
+          "members": 48,
+          "sha256": "ed7b3d10c0d08d32c5ccd46c42372889b7a444baf85a1c00b0d29b7b806fe9b5"
+        },
+        {
+          "file": "sword67-approved-references.zip",
+          "members": 16,
+          "sha256": "5dfc8e283acef026366878a261540cdcbd90291ee69199fc52ff2327236b4a42"
+        }
+      ]
+    },
+    "70": {
+      "scope": "original male sword70 E/W only; no coats, later nape correction, runtime or map claim",
+      "clip": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "contactFrame": 4
+      },
+      "canvas": [
+        768,
+        768
+      ],
+      "constantPadding": 64,
+      "logicalFrame": {
+        "width": 160,
+        "height": 160
+      },
+      "pivot": {
+        "x": 80,
+        "y": 128
+      },
+      "density": 4,
+      "pivotEvidence": "Exact c996c409 base pack; no body/canvas scale or translation beyond documented original head-only offsets; WEST literal 768px mirror; original640 body padded64 each edge. No new registration guessed.",
+      "weaponSourceSHA256": "3bf533053830fcd8442133c3d4a97b36f111c8f3b57c6e497942ea0b218d4441",
+      "baseSourceSHA256": "c996c409c12a64d4182385b737dff1f0df651f51771231c15f1cabe5da074887",
+      "recipeMember": "recipes/historical_scripts/sword70_v2_build.py",
+      "approvalPreview": "Sentinel_948cf5e833948191bf2e88a93fa11e0a",
+      "approvalResponse": "Sentinel_3a7e31d2aed481918a33e83d12611903",
+      "approvalLimit": "Authenticated corrected0/67/70 delivery and positive continue response; historical attachments not re-fetched. Exact16PNG hashes match preserved original67/70 approved-work archive.",
+      "verifiedFrames": 16,
+      "states": [
+        {
+          "item": 70,
+          "direction": "east",
+          "phase": 0,
+          "body": {
+            "member": "9f2742953952b778854f09212c9c663029dfc58a8992162344a217b817291d42.png",
+            "sha256": "9f2742953952b778854f09212c9c663029dfc58a8992162344a217b817291d42"
+          },
+          "gear": {
+            "member": "c063a2fbfcde011f3c54b6598a1591328a837ffaf822ae3fb61e68c54d653b4a.png",
+            "sha256": "c063a2fbfcde011f3c54b6598a1591328a837ffaf822ae3fb61e68c54d653b4a"
+          },
+          "contactMask": {
+            "member": "b017e4eb582faa7656eda7107b8ef588fedf5b5e65025278a5473a30f43da10b.png",
+            "sha256": "b017e4eb582faa7656eda7107b8ef588fedf5b5e65025278a5473a30f43da10b"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "bec66fc78445000bef1c80d6b476a6677febd34bfeea8d02236f2427ba9eb936"
+        },
+        {
+          "item": 70,
+          "direction": "west",
+          "phase": 0,
+          "body": {
+            "member": "dd9aa2b31a095914aa5ae642764dde1b00623aac994a5078858b1c41115f83a8.png",
+            "sha256": "dd9aa2b31a095914aa5ae642764dde1b00623aac994a5078858b1c41115f83a8"
+          },
+          "gear": {
+            "member": "3681214623d21e528128266d4ee834cb6a2c68d33379da88a98154814d3b4211.png",
+            "sha256": "3681214623d21e528128266d4ee834cb6a2c68d33379da88a98154814d3b4211"
+          },
+          "contactMask": {
+            "member": "62d0503fab319671eacccc89d585f3c02a244fbb449b731392888bd13d9d4d2d.png",
+            "sha256": "62d0503fab319671eacccc89d585f3c02a244fbb449b731392888bd13d9d4d2d"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "e1856c9e2ad4cc156e7e7ee98e4e7ea22d7017acf56ce94a1da17369b82213ec"
+        },
+        {
+          "item": 70,
+          "direction": "east",
+          "phase": 1,
+          "body": {
+            "member": "a51c4991a63d345de7a3c938e54104bea9ab0c7d750538cd67048d40361869db.png",
+            "sha256": "a51c4991a63d345de7a3c938e54104bea9ab0c7d750538cd67048d40361869db"
+          },
+          "gear": {
+            "member": "6620f43182cdc73011ec1cbb23ea0c3111f18fdbdf1eb57efc83e5268055236d.png",
+            "sha256": "6620f43182cdc73011ec1cbb23ea0c3111f18fdbdf1eb57efc83e5268055236d"
+          },
+          "contactMask": {
+            "member": "6b1acfe5002a1b89d4ce0905f73aa9e245941b1f0e4ddc8d0e8e3bafc72d59f5.png",
+            "sha256": "6b1acfe5002a1b89d4ce0905f73aa9e245941b1f0e4ddc8d0e8e3bafc72d59f5"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "6e7c26c89ff83ffc2376bdcd0f0657594a38f30f681504c56626fc6ac0a77f31"
+        },
+        {
+          "item": 70,
+          "direction": "west",
+          "phase": 1,
+          "body": {
+            "member": "0f5f8eb992815395bac9422732c369887d56045b46b85f096fd8889effc4033d.png",
+            "sha256": "0f5f8eb992815395bac9422732c369887d56045b46b85f096fd8889effc4033d"
+          },
+          "gear": {
+            "member": "e9a14201f4eb04c26c2ae00573863091d0a3edaa7ed8d41a7c21214c535bd57e.png",
+            "sha256": "e9a14201f4eb04c26c2ae00573863091d0a3edaa7ed8d41a7c21214c535bd57e"
+          },
+          "contactMask": {
+            "member": "495d2cfa165a96087d03570cefa9f0d1b7df38dcc4784771c454eabefa4320cc.png",
+            "sha256": "495d2cfa165a96087d03570cefa9f0d1b7df38dcc4784771c454eabefa4320cc"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "d9eb0bb2854e78b2406f629c971b2683b616eb3f176f1634e7a9f1d272e03fca"
+        },
+        {
+          "item": 70,
+          "direction": "east",
+          "phase": 2,
+          "body": {
+            "member": "18c741d6adc38f75cb86cf673afa267ae924bb562c0d1513d1054595ee2675f6.png",
+            "sha256": "18c741d6adc38f75cb86cf673afa267ae924bb562c0d1513d1054595ee2675f6"
+          },
+          "gear": {
+            "member": "77441abc50eb611ae8a8482149e5d29809ee0b1154ccf4d9789781818f73bb6e.png",
+            "sha256": "77441abc50eb611ae8a8482149e5d29809ee0b1154ccf4d9789781818f73bb6e"
+          },
+          "contactMask": {
+            "member": "d7aa90f194c9722d5487d7737fec8ea64f799d82c7faff4abce85dd2a0a0796a.png",
+            "sha256": "d7aa90f194c9722d5487d7737fec8ea64f799d82c7faff4abce85dd2a0a0796a"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "7d4f49fd57391307ee5592cbcee88c5e22da098c49fe34863fd69cc3865e2cdd"
+        },
+        {
+          "item": 70,
+          "direction": "west",
+          "phase": 2,
+          "body": {
+            "member": "99abe309995120ca7f46ddbcbcd578565940d7ba8225376d4fe7196647db6efe.png",
+            "sha256": "99abe309995120ca7f46ddbcbcd578565940d7ba8225376d4fe7196647db6efe"
+          },
+          "gear": {
+            "member": "e469a90fa38423932a56fdf6575eef01d90dd4e03841ba50088f57c90ae2e66d.png",
+            "sha256": "e469a90fa38423932a56fdf6575eef01d90dd4e03841ba50088f57c90ae2e66d"
+          },
+          "contactMask": {
+            "member": "c81b71ebdad913d30c2ea398229a9241d5b7cf52a889146618e1faafca16bb0f.png",
+            "sha256": "c81b71ebdad913d30c2ea398229a9241d5b7cf52a889146618e1faafca16bb0f"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "9947bd864528706c3f7cd8cc840f33db7236d4d3e17cbf1ccdcd621e6037a742"
+        },
+        {
+          "item": 70,
+          "direction": "east",
+          "phase": 3,
+          "body": {
+            "member": "1dcbfcdd093a8b9fca364ecd95cf7ae04af5db2269b486f9a8b77f02d6e44a70.png",
+            "sha256": "1dcbfcdd093a8b9fca364ecd95cf7ae04af5db2269b486f9a8b77f02d6e44a70"
+          },
+          "gear": {
+            "member": "4430ca81d58e94e92fd3c739eeb16b589d0ac99d08285a690512d0bdc9e22fbd.png",
+            "sha256": "4430ca81d58e94e92fd3c739eeb16b589d0ac99d08285a690512d0bdc9e22fbd"
+          },
+          "contactMask": {
+            "member": "b49d0ce627d8abd3574762dbd3c77fe86511776f926183122b191dcf47650cc4.png",
+            "sha256": "b49d0ce627d8abd3574762dbd3c77fe86511776f926183122b191dcf47650cc4"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "1c7ed6b83b58641393a44065630346a606750444514f0eb922c4e0d71eae3924"
+        },
+        {
+          "item": 70,
+          "direction": "west",
+          "phase": 3,
+          "body": {
+            "member": "cc01838c4128af5c0ecc37cb03915b7ba53f8a1c7aa50fc7c3f7a398e0bebdfe.png",
+            "sha256": "cc01838c4128af5c0ecc37cb03915b7ba53f8a1c7aa50fc7c3f7a398e0bebdfe"
+          },
+          "gear": {
+            "member": "1e8acc55c18eabca3297bd802cf839644760a2b830aa9db68ff9105401922e52.png",
+            "sha256": "1e8acc55c18eabca3297bd802cf839644760a2b830aa9db68ff9105401922e52"
+          },
+          "contactMask": {
+            "member": "4373dcddce09206a0a07f74a108449078d505cdc92845679bef43a0e93b10806.png",
+            "sha256": "4373dcddce09206a0a07f74a108449078d505cdc92845679bef43a0e93b10806"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "eacfdc6ccd39f925969f1dec65a26b610c3cbbffbd01b7e827f932da12a16007"
+        },
+        {
+          "item": 70,
+          "direction": "east",
+          "phase": 4,
+          "body": {
+            "member": "85b5751f19a045f4a754a74785df9303dfbd2f59103b3dfebd2c8462f1c07fe5.png",
+            "sha256": "85b5751f19a045f4a754a74785df9303dfbd2f59103b3dfebd2c8462f1c07fe5"
+          },
+          "gear": {
+            "member": "561793906e4b2f8575e28de403ffe0baa762267cc0e73ac12be0009c720885a7.png",
+            "sha256": "561793906e4b2f8575e28de403ffe0baa762267cc0e73ac12be0009c720885a7"
+          },
+          "contactMask": {
+            "member": "5ee9de44813bf378df5a7e2c9119eeb2c3c140e8cfacdf5879462a0d4e8fe36c.png",
+            "sha256": "5ee9de44813bf378df5a7e2c9119eeb2c3c140e8cfacdf5879462a0d4e8fe36c"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "1d34ceff263d05350622c08f0578d14d3cce53f83e7abf94430693d2020d245f"
+        },
+        {
+          "item": 70,
+          "direction": "west",
+          "phase": 4,
+          "body": {
+            "member": "2a7554076a85bab8a0fd9822ccfbadb7b8870c2045e968b3bec595045ca0528e.png",
+            "sha256": "2a7554076a85bab8a0fd9822ccfbadb7b8870c2045e968b3bec595045ca0528e"
+          },
+          "gear": {
+            "member": "6f1968e132bd541f9a8b468f05cebd12d4df93da154195a3716fbc5a19509cb3.png",
+            "sha256": "6f1968e132bd541f9a8b468f05cebd12d4df93da154195a3716fbc5a19509cb3"
+          },
+          "contactMask": {
+            "member": "ecbdaa8d3f47964e92952621f27bc58ee40ee88dc8fe503110bce736429aa3ea.png",
+            "sha256": "ecbdaa8d3f47964e92952621f27bc58ee40ee88dc8fe503110bce736429aa3ea"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "3d00d13c7e3c45b79c06d741d5f005ffb3d177df2e4e36411871db4328c2c2e5"
+        },
+        {
+          "item": 70,
+          "direction": "east",
+          "phase": 5,
+          "body": {
+            "member": "f28c06fdf90f13bf168da2d0328f9f6ed38d86c289c1c220b763eee3f41a948a.png",
+            "sha256": "f28c06fdf90f13bf168da2d0328f9f6ed38d86c289c1c220b763eee3f41a948a"
+          },
+          "gear": {
+            "member": "c37a266029b29e64982f1925c73aac4748e7c203e002bc46f1bcb78473c3c1fd.png",
+            "sha256": "c37a266029b29e64982f1925c73aac4748e7c203e002bc46f1bcb78473c3c1fd"
+          },
+          "contactMask": {
+            "member": "29b122595d48d679483be026e7e882055221f2ff4a33c9a72e91ae32a75d061d.png",
+            "sha256": "29b122595d48d679483be026e7e882055221f2ff4a33c9a72e91ae32a75d061d"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "0e4f383192e6e8fd213616fac1ae0806f26d830485b0a4d37a814bb83987df7a"
+        },
+        {
+          "item": 70,
+          "direction": "west",
+          "phase": 5,
+          "body": {
+            "member": "d2f957d53017219706f084acdf1cc8ef56fbddb4cce670f8c605088812c0c30e.png",
+            "sha256": "d2f957d53017219706f084acdf1cc8ef56fbddb4cce670f8c605088812c0c30e"
+          },
+          "gear": {
+            "member": "f8396ab451d8bf59232ae1e529e1d5a7068db59ff753e4b282862cd84d581d7b.png",
+            "sha256": "f8396ab451d8bf59232ae1e529e1d5a7068db59ff753e4b282862cd84d581d7b"
+          },
+          "contactMask": {
+            "member": "06c58bc19719127e73fd8d19487c63f4ad661d159910f12725c9e6785f1c65ce.png",
+            "sha256": "06c58bc19719127e73fd8d19487c63f4ad661d159910f12725c9e6785f1c65ce"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "9596778deb41f37b411ee414570c856988f963584c343ac1738162c84516e5d9"
+        },
+        {
+          "item": 70,
+          "direction": "east",
+          "phase": 6,
+          "body": {
+            "member": "0de28b19da0f624129a9a4abc418c506fad11e26fb3c46598732c61736ef7385.png",
+            "sha256": "0de28b19da0f624129a9a4abc418c506fad11e26fb3c46598732c61736ef7385"
+          },
+          "gear": {
+            "member": "63e2811160e5f7907ae10df53bcd68df81817d4f93293f69fedc432192fd1973.png",
+            "sha256": "63e2811160e5f7907ae10df53bcd68df81817d4f93293f69fedc432192fd1973"
+          },
+          "contactMask": {
+            "member": "494792efd8e28df41dcdcfec0dccf0d6495a1e5c7553aa71d1d547891e3ee651.png",
+            "sha256": "494792efd8e28df41dcdcfec0dccf0d6495a1e5c7553aa71d1d547891e3ee651"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "e6352d239f698ac5f7d2b37a93887c3633e0e887e53aaa6cdcb4209777bde7c7"
+        },
+        {
+          "item": 70,
+          "direction": "west",
+          "phase": 6,
+          "body": {
+            "member": "f8def3287463beac46f18b569736ec79ca47ca0677aa6c86d15e2b7619c6a719.png",
+            "sha256": "f8def3287463beac46f18b569736ec79ca47ca0677aa6c86d15e2b7619c6a719"
+          },
+          "gear": {
+            "member": "cc8f4b29eb1b114d767bc3bf3374d3b1e2b4b76cdc0aaddeb2c821f2c60f50d0.png",
+            "sha256": "cc8f4b29eb1b114d767bc3bf3374d3b1e2b4b76cdc0aaddeb2c821f2c60f50d0"
+          },
+          "contactMask": {
+            "member": "ec94dcc72cdcdb6c1ac5cbb3f7bff1462df17cbcc9e121290c77a0e8c217e7f1.png",
+            "sha256": "ec94dcc72cdcdb6c1ac5cbb3f7bff1462df17cbcc9e121290c77a0e8c217e7f1"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "dc655b8cd5d01e1635c22a8e01bfed058360826f5583d4a8f622ab4ec3eb1563"
+        },
+        {
+          "item": 70,
+          "direction": "east",
+          "phase": 7,
+          "body": {
+            "member": "bbc6e24a35bdd342acd58982165a86ed1be592cb3fea0913d499e8426c957af5.png",
+            "sha256": "bbc6e24a35bdd342acd58982165a86ed1be592cb3fea0913d499e8426c957af5"
+          },
+          "gear": {
+            "member": "ce91dd15c37d23bb3795788e84f820c1a029b67381a70b1066d7708a2c25510f.png",
+            "sha256": "ce91dd15c37d23bb3795788e84f820c1a029b67381a70b1066d7708a2c25510f"
+          },
+          "contactMask": {
+            "member": "c19b25673f29e2d9de7d404db0c2dd083705854be487d5fedd47b9ef48f81a96.png",
+            "sha256": "c19b25673f29e2d9de7d404db0c2dd083705854be487d5fedd47b9ef48f81a96"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "097c9420a2cfeef338c29ea152546c6f3c875b95dd4d706a1cc5beb10a728799"
+        },
+        {
+          "item": 70,
+          "direction": "west",
+          "phase": 7,
+          "body": {
+            "member": "ced8e27dc0bf5e36deabed3c67923e297f251fc42236bf10222acf8032d30f07.png",
+            "sha256": "ced8e27dc0bf5e36deabed3c67923e297f251fc42236bf10222acf8032d30f07"
+          },
+          "gear": {
+            "member": "b0c05459985aa971f7eae0395cf4a33787b412fc602689ba76948d2ef6b1becf.png",
+            "sha256": "b0c05459985aa971f7eae0395cf4a33787b412fc602689ba76948d2ef6b1becf"
+          },
+          "contactMask": {
+            "member": "0f68f00bb6fc825bfb02e68a268dceaf8b752075d869f2a674f8e512b373c22d.png",
+            "sha256": "0f68f00bb6fc825bfb02e68a268dceaf8b752075d869f2a674f8e512b373c22d"
+          },
+          "order": [
+            "body source-over",
+            "gear source-over",
+            "body replace-rgba-under-mask"
+          ],
+          "referenceSHA256": "92c0728e2c6943614025ed6c20ff5abce72bdbcdbf7443a53f964a7bf2e41216"
+        }
+      ],
+      "archives": [
+        {
+          "file": "sword70-independent-components.zip",
+          "members": 48,
+          "sha256": "f30f69f60c19c9cc91370cf40ef4f861ec465b35f87a28a266c4eb3611666a1b"
+        },
+        {
+          "file": "sword70-approved-references.zip",
+          "members": 16,
+          "sha256": "2fa8d9661fa831cf4e79e456da36095f1151f3535f68ebf32fcbb646897042a4"
+        }
+      ]
+    }
+  },
+  "orbs": {
+    "17": {
+      "rows": [
+        {
+          "coat": 151,
+          "phase": 0,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "810a15e53c3942b5c6ac08a639aec7a57d4f97cc62ebc0ea0f6e2448953b0532"
+        },
+        {
+          "coat": 158,
+          "phase": 0,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "31794ff3db04301571e15931eea5bb2b933179296eefc966f4b77cfd7524aed7"
+        },
+        {
+          "coat": 165,
+          "phase": 0,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "7c7851fc6210c5a67ee54089a4aa07f3409b9b0f3e6e85b208878a94983993aa"
+        },
+        {
+          "coat": 179,
+          "phase": 0,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "d775afdace5667473e6d59a3897ad9198e471db81a0d860333f3a177e2c7c1bd"
+        },
+        {
+          "coat": 151,
+          "phase": 1,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "217941c2bc2a548136fbc6ab4f91dc280899c6a6926fb7b1d9cfee9d4fc6d216"
+        },
+        {
+          "coat": 158,
+          "phase": 1,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "383764c78901b3441715e90b54f98a704cff42cccb142113d01576a858232cd0"
+        },
+        {
+          "coat": 165,
+          "phase": 1,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "a21c1f2aa969ea8aa0c8c13151d4ee33ced178480345b1c8f1067d6ea496b73d"
+        },
+        {
+          "coat": 179,
+          "phase": 1,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "3a17ab40780cf967db762fea2079573d3b0440908770eba97c8358b4d08ad561"
+        },
+        {
+          "coat": 151,
+          "phase": 2,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "96566501a1e8d5b009d898310f7e7522fb958a9e99919818f532b4a52bcbf92a"
+        },
+        {
+          "coat": 158,
+          "phase": 2,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "51a649ee1c8306f1c76d7cb39fdc9646b00fd04a6799aa948414b85664227c11"
+        },
+        {
+          "coat": 165,
+          "phase": 2,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "ecda28e0ed83cd3b08249589b43441b9363e75487211a779c4ce6a209e5a521d"
+        },
+        {
+          "coat": 179,
+          "phase": 2,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "9ab64824c80bdb9f5a2849a5be134cdd59140cdc638465cb68b0ad952cf103f0"
+        },
+        {
+          "coat": 151,
+          "phase": 3,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "5a3ff9deb4fc016d8295c3815c03fbf15764e8e85dc91655a8696a49263d9ef1"
+        },
+        {
+          "coat": 158,
+          "phase": 3,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "fa1132e35a5cf31a5a83d0024d11793829c517453288c57891578819b1b29c98"
+        },
+        {
+          "coat": 165,
+          "phase": 3,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "8af3f2f1638bd079e5ac3f36feaa3b237baaf7e9f360fc27eada69e19ab43c20"
+        },
+        {
+          "coat": 179,
+          "phase": 3,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "7eaf0642a0a3a42efe2cbae2420b12241ddf7044d34fb0e8a3814d7d606e9420"
+        },
+        {
+          "coat": 151,
+          "phase": 4,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "617397b61b0055d31c8c064d899ad90c188d242f665f1bdc08ed6b57c348e9c8"
+        },
+        {
+          "coat": 158,
+          "phase": 4,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "3d8487e43f520c68bfb49feafb370bf89cf9aba3326fcd460a72d8955c3645a0"
+        },
+        {
+          "coat": 165,
+          "phase": 4,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "716d315e2ca9669461aeaad370484051d12f6ebe39388439f6f5e94f8d1ca4b9"
+        },
+        {
+          "coat": 179,
+          "phase": 4,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "74bb37f6599bb541a3154e90841286dc77ce8d3aa2fb69443eb72f31969d5522"
+        },
+        {
+          "coat": 151,
+          "phase": 5,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "780690ea53d5be4906c7f072573aaacbbdbeea219826a564bb2fd66216af894d"
+        },
+        {
+          "coat": 158,
+          "phase": 5,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "fbf2d5470d05d771c48e194af93d364b115c312e8dcd7d609d1dbad77b4985c3"
+        },
+        {
+          "coat": 165,
+          "phase": 5,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "eeb91f7360629a9e47f9e9f5d4f1b9b1279c1322278b049f9896befb87f7c998"
+        },
+        {
+          "coat": 179,
+          "phase": 5,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "49997428f533b89f960cbdab5871abe37efeae5f4de17c1f4e2254d2e75a21bf"
+        },
+        {
+          "coat": 151,
+          "phase": 6,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "aec49cf280781767d280f81d4c20004e8bc85e8b739aa7d9be2ef885afc7a766"
+        },
+        {
+          "coat": 158,
+          "phase": 6,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "4942546b6bbb0f4f941316bdef9f3f118a734ea6d8bab036a4229ac62031096c"
+        },
+        {
+          "coat": 165,
+          "phase": 6,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "3ed565ff79bec39ab7b859f3564363130a4f9e8c662eed3fad40b86b2d3c155d"
+        },
+        {
+          "coat": 179,
+          "phase": 6,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "0b596b7a15cd703d383b6be5f96c049e1a676f6267375561a7e9b562c791e67c"
+        },
+        {
+          "coat": 151,
+          "phase": 7,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "0b1f8d84970ef866f0b1a9a773415c1e396132cc88b4bb5535d364fce736706d"
+        },
+        {
+          "coat": 158,
+          "phase": 7,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "32ad26b4eef3e31c65eaeb5b349b2fbf18fc63855e9bdcb70699f492cd488edb"
+        },
+        {
+          "coat": 165,
+          "phase": 7,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "88b6e7840d449db256ac7d7fe65d2020c56af38de6076491d11ef9a5da7679d1"
+        },
+        {
+          "coat": 179,
+          "phase": 7,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "c63c9211a56aa919235424a92d7dd309bead2c04ca33b37a47ed254ea2765c0b"
+        },
+        {
+          "coat": 151,
+          "phase": 0,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "f65d8b862064e0fd211de61deac491ca3a7c97915cd398a0c0727d55cbb85c76"
+        },
+        {
+          "coat": 158,
+          "phase": 0,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "92a0717fdc73eb529d246b188dbe6a1c460fa7939bc0566abdd3dcffd7e638cf"
+        },
+        {
+          "coat": 165,
+          "phase": 0,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "a71d8b7e9787e5a05f55ea70f7c4cf23eb27650ef34fbb5aa814159747228416"
+        },
+        {
+          "coat": 179,
+          "phase": 0,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "4baf860af5e122499f8e71b1b365afad661cc3f85199256c5e15a9aef3749d20"
+        },
+        {
+          "coat": 151,
+          "phase": 1,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "ec97af19647f8b9e2ec22452f8af37aa28e3770c5ca669079e14a96bcfef1134"
+        },
+        {
+          "coat": 158,
+          "phase": 1,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "94f19178e4ccc031c029b6536827974e6bb936201fd29725b1991f5d7b0fce6a"
+        },
+        {
+          "coat": 165,
+          "phase": 1,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "0eda8bbbe27ebffe6c0374e1999ad3d867a84414c0353f571dd66dd94e0727a2"
+        },
+        {
+          "coat": 179,
+          "phase": 1,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "2bbd53c7eb8304a21726e6587858c7131e13ec824a9e612833d6800e00b84a65"
+        },
+        {
+          "coat": 151,
+          "phase": 2,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "7be195c415c0c85badf0591a0ece7e4854ff3734afa6bc77282700a084169db7"
+        },
+        {
+          "coat": 158,
+          "phase": 2,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "bd33432742f721a1ebca2ce7957c4d81fc3ab119e03a5b0645fac8da3a58eb7c"
+        },
+        {
+          "coat": 165,
+          "phase": 2,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "2590cef9863748da96067e742b22d1382a6c541426643df04f0b75d1c2d9da2a"
+        },
+        {
+          "coat": 179,
+          "phase": 2,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "bd6a2ee8637cec4cc440240d87304d38595f9d3d744361c790199c039d0cffc3"
+        },
+        {
+          "coat": 151,
+          "phase": 3,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "83bb50edb50b81f92e6b14be32cc80a619efbe8f837a00bd03601689543a883c"
+        },
+        {
+          "coat": 158,
+          "phase": 3,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "d1b0ed92eb5a0ae38c4a51e5ef9f9eebd48e22d8a3a12dada9f623afe5175d98"
+        },
+        {
+          "coat": 165,
+          "phase": 3,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "31d006617dfe3f25b72b397618b19ceda706e2809f877b5e592a5d0f530f15c3"
+        },
+        {
+          "coat": 179,
+          "phase": 3,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "ecf1b66c8a95d733f28bc59751369131dc4c1d227048f979e231b19bcf0e1cb3"
+        },
+        {
+          "coat": 151,
+          "phase": 4,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "98633ec957357826c621b8ddb22a76e02b5721d0f52e93c21492aa350d29d258"
+        },
+        {
+          "coat": 158,
+          "phase": 4,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "21717d59fe555dbe887b3cce49715052a4df1c023a0f38876c0cebc33b05cf11"
+        },
+        {
+          "coat": 165,
+          "phase": 4,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "6d7e2c0d650ed46ad2b340ac05f01b4358d2a662a7ca6b14bfa70fe126d64cc5"
+        },
+        {
+          "coat": 179,
+          "phase": 4,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "1e467492a08e9b433509939c841dbbbfbd2b08ee2b0d54f0f6d1cf0c3f2030e8"
+        },
+        {
+          "coat": 151,
+          "phase": 5,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "2a0db4ed28522179e59ba1118996c3fc125eceef32cdc6bfa25011ae7867d469"
+        },
+        {
+          "coat": 158,
+          "phase": 5,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "477deb875b7a10c111a80650a88b0eb7b51af824f620999ec444eccf91c0ec51"
+        },
+        {
+          "coat": 165,
+          "phase": 5,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "817aa7d4bf81f1d044659718fa95175460a324e0b74acbc5fbbf0bcc2396440b"
+        },
+        {
+          "coat": 179,
+          "phase": 5,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "f7f8dc00997874d9a0c1740520cd6535e958f2dd13871a64af949ceba5d98c6d"
+        },
+        {
+          "coat": 151,
+          "phase": 6,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "179dcb4f7ab46389ea9ba57134056d967ade14513b6866a87dfd6dc9f0b8bf27"
+        },
+        {
+          "coat": 158,
+          "phase": 6,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "2549ac2bf03925a40c0ae4753acde957a0560a8c5d9a62a12910070bf4a0c813"
+        },
+        {
+          "coat": 165,
+          "phase": 6,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "aced6eeed2df431df47d334915aa999fca412fa40085372d0a940210d0bfd507"
+        },
+        {
+          "coat": 179,
+          "phase": 6,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "f0ce1201e45e5d8eb9b58eb2ba263d301c6479ec68bd1c13f47ae50bffaf7335"
+        },
+        {
+          "coat": 151,
+          "phase": 7,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "d1c938377249ae783b27a1e783098468916150038710ee5afc45c8a76e590c73"
+        },
+        {
+          "coat": 158,
+          "phase": 7,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "533c93e3d3710ca4ed16384a3dceef4d6023c9364e80f66c2e103be71cf5d5ee"
+        },
+        {
+          "coat": 165,
+          "phase": 7,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "c1ab851c20070b16f33945f13f0f3f6ab58a8fe9d718affcdd592598907fa305"
+        },
+        {
+          "coat": 179,
+          "phase": 7,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "92cea15d3fda60a5d3dfd030684312741d67d84228fd6c108dfd1aa4cb2b4578"
+        }
+      ],
+      "sourceSHA256": "c1f831f405e5a97ce0ca43d11c5d29bb53e43fea610545502fd84171ecf677dd",
+      "cohortSHA256": "949573ea1f0fafdfc574858338becda9d8cdacf34f1b93883ee560eea96aee85",
+      "files": {
+        "references.zip": {
+          "sha256": "e54a5a9fdae91a563f54a410aa8aa7f8e812ea7a12c8e2274ae06b7ab7f1ad09",
+          "bytes": 4625201
+        },
+        "components.zip": {
+          "sha256": "310dae47bdaed59114b86d11c555b0f7aae6368a80c1533240654e004da40d57",
+          "bytes": 3437794
+        }
+      }
+    },
+    "122": {
+      "rows": [
+        {
+          "coat": 151,
+          "phase": 0,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "0d2a8df74c878b957c39635f0ce271e234f45c2136fa53facb65582fe8c55d8c"
+        },
+        {
+          "coat": 158,
+          "phase": 0,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "f2e28aa12d59d3f8c1453fd708e80f584f37d0eee0904d386e4d9501e8b3fe02"
+        },
+        {
+          "coat": 165,
+          "phase": 0,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "0b2a50b2ef6d1df0e815786f6fb10a1a6b7a4555dd2322614410f90925567429"
+        },
+        {
+          "coat": 179,
+          "phase": 0,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "019563969351d9bba5f9be1fda449b063022a3ab15f18ffd045d6f43aa5321ef"
+        },
+        {
+          "coat": 151,
+          "phase": 1,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "8f01ec9934630031f99bfde7a391fe75a8b75f4b599bc4c5f8dc071b05d67c74"
+        },
+        {
+          "coat": 158,
+          "phase": 1,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "f7c57c32a65bd5d0ea09d275ed4ad582d51ff23ae1da76919775cef55490e26a"
+        },
+        {
+          "coat": 165,
+          "phase": 1,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "4ec9272698a76e12444a12bbc66f9bab3e674ffcfe3138749618f3d75b822260"
+        },
+        {
+          "coat": 179,
+          "phase": 1,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "6f4a4fd9e76126861757be64b3490087ddeeb54e721fc34bdb9edbf26f202bf1"
+        },
+        {
+          "coat": 151,
+          "phase": 2,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "2aa39335c7f06e29d892fc70ef127207ee162b771ef0c9b018ca4d8a0470619f"
+        },
+        {
+          "coat": 158,
+          "phase": 2,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "0b657a630810a07118998325400a7c23fdc86103655e0ae15d92db6bd856f52e"
+        },
+        {
+          "coat": 165,
+          "phase": 2,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "ae5bf15e551873c4c9f0e1b57da370865f4e240a7803a9009dcdf33771fcb678"
+        },
+        {
+          "coat": 179,
+          "phase": 2,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "aebdbe7d3e85f7d6f9281b4837cbb406176587936ebf88ecf2b3eddd7c040426"
+        },
+        {
+          "coat": 151,
+          "phase": 3,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "376af413438e8994a95b8a49ecd5e5695b0088cbf3aaa8f02be21e701dd64d90"
+        },
+        {
+          "coat": 158,
+          "phase": 3,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "e8f02462602afab2e5dac515f5f60c294559c50e147aa2b731a65571e525d51e"
+        },
+        {
+          "coat": 165,
+          "phase": 3,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "bd164bd5a2cb46c85db44bbac8c517798891978a57b0ac967eaa79acbab80d57"
+        },
+        {
+          "coat": 179,
+          "phase": 3,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "6809b367689b11681423ed059c1f5f56d52462fc2ac7fc9d62a0e5ac2cfaa078"
+        },
+        {
+          "coat": 151,
+          "phase": 4,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "0e2de506fb4876a509cca0f2e20949010ce0bf6a340bdeecabde489ccffaa78a"
+        },
+        {
+          "coat": 158,
+          "phase": 4,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "ace04a923ce4a8a3acc4babe04fa2126b985c509663c6f5ec3f2ff8adc57da02"
+        },
+        {
+          "coat": 165,
+          "phase": 4,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "c795dd337ab924b473effb47fc4f536346e560af60674b49ef2e71d689dab8a8"
+        },
+        {
+          "coat": 179,
+          "phase": 4,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "504e7fea886c60a304a8b71fd7c8af7a876cbe2cfb608edeb1fa9a89b2382d38"
+        },
+        {
+          "coat": 151,
+          "phase": 5,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "44e950b3f385e700ff4cebec800e4d4f040a5f74d0256a614a33e3b85f4d1883"
+        },
+        {
+          "coat": 158,
+          "phase": 5,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "11ff4342553980b8e4525943fe4c300ed1cd11e411cacc00e868efc75038c195"
+        },
+        {
+          "coat": 165,
+          "phase": 5,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "113949e4b143bdf793fc0afa3dc2d8898a774711ee447b43a669b46a0216fc52"
+        },
+        {
+          "coat": 179,
+          "phase": 5,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "8c153796fda5b35cf45ddc41903831fee1b66aeae8581d456edb73711ec7f865"
+        },
+        {
+          "coat": 151,
+          "phase": 6,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "bacf45650a90a31dd7bf2514893106046eaceae5b5b37274d77c2e4aacf50432"
+        },
+        {
+          "coat": 158,
+          "phase": 6,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "a323537638c52dbbbdd0db7d9e00a84d19d03a789f829af2f5fab03b707efacb"
+        },
+        {
+          "coat": 165,
+          "phase": 6,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "82a010e66d3d394205bd7d8250e04f787c75b6e66dd8058edb7bc6fc3261d7d1"
+        },
+        {
+          "coat": 179,
+          "phase": 6,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "a51d6e5daa5b282f6fa343171db3deb71aeefd0177e3487f67879662183efc54"
+        },
+        {
+          "coat": 151,
+          "phase": 7,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "a6cc461ab56ef6721dc6329cce528250049d250aaee2e62af6bdc9f8551f9983"
+        },
+        {
+          "coat": 158,
+          "phase": 7,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "45f793fca472b901201cbf2b5752d5f9a86dbe8c436f223b7114f77d8e1d8790"
+        },
+        {
+          "coat": 165,
+          "phase": 7,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "3c8856666c6487870921b967901f8f55152f71fee0e0cbffc0ef2db09476c622"
+        },
+        {
+          "coat": 179,
+          "phase": 7,
+          "side": "east",
+          "diff": 0,
+          "referenceSHA256": "86dac8500ccfa0451a4dadd97180734d71ef738de626beacd679b4e9093bbf8f"
+        },
+        {
+          "coat": 151,
+          "phase": 0,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "8e3554d8262b230c28b12fb0ad30385e134dad2361c36aa132f15011f8024823"
+        },
+        {
+          "coat": 158,
+          "phase": 0,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "0a3f8b7f188c6f71abcbabcc4914943424bd01a10252ab9e09f1088aa407077e"
+        },
+        {
+          "coat": 165,
+          "phase": 0,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "d6a99f671ea63890629ccca4ae40b0b2e215a31791ab144c11585ab008c64899"
+        },
+        {
+          "coat": 179,
+          "phase": 0,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "2180b39b1e1df05dff05e021d33c61b3000a4818457c404c1b009d7388d0b669"
+        },
+        {
+          "coat": 151,
+          "phase": 1,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "778bd05eda487e07196f44866d8bfb81b327813727500f9238fe211b5eb5335d"
+        },
+        {
+          "coat": 158,
+          "phase": 1,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "637409e8fcc11a27eae7b43bdf68b3cfa9987e09e826c3d80afbe3bfc1216d62"
+        },
+        {
+          "coat": 165,
+          "phase": 1,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "47e74161561d863ac28db9c0e53ed623ffc30bedeba74f224877d6a4ce0d84ce"
+        },
+        {
+          "coat": 179,
+          "phase": 1,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "ffb66ecff49f50adae6d3d86cbd49febac1f73dadca08f00543e2b2eb04aafe6"
+        },
+        {
+          "coat": 151,
+          "phase": 2,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "de59066848a256275d3f0a5d15147c1283b87a2b06f4c794b809d93763e2fab7"
+        },
+        {
+          "coat": 158,
+          "phase": 2,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "5f52c2de2bd74cb451ad15aa456eb5ddbd2b83732e25bdb096ea8f59302bd2dd"
+        },
+        {
+          "coat": 165,
+          "phase": 2,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "fd88b86a8fa14f0578de4dc66d54a7fd82d68c3106db9aa60cfd505c0715c983"
+        },
+        {
+          "coat": 179,
+          "phase": 2,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "85f1eec1d8a44e8dfa9d1e69086a634c933db892e6024c1a164b907bacc44659"
+        },
+        {
+          "coat": 151,
+          "phase": 3,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "3115d5d9bb68e82deaf1b8add403818b31b71a54b6582101de3f7afadfba598f"
+        },
+        {
+          "coat": 158,
+          "phase": 3,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "2c5407d31c6dc112e68410ad471aaaf4ed33ff3691c164a9dbaefe85c836545b"
+        },
+        {
+          "coat": 165,
+          "phase": 3,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "0d20c6f4180bac87e27551fcc11135d2764206b4f2045a1d511ef94de40b9c72"
+        },
+        {
+          "coat": 179,
+          "phase": 3,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "376cb81d78302a9617e04b529feaabf5cd5fbadd455e1ca44434a283f433972d"
+        },
+        {
+          "coat": 151,
+          "phase": 4,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "ba1f06539a91fe3049376ce91ccc6665dacbb9f7d2d9b28f6273c6a96e2f97df"
+        },
+        {
+          "coat": 158,
+          "phase": 4,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "eabf17297cef8299450e282a6a1b3c1e5be33a4bbd11a3819db241a85d9a1e4c"
+        },
+        {
+          "coat": 165,
+          "phase": 4,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "db4ffc851de521ceced7040bc86824af3c1cb931d7d23c0a20af33ff422c9d7b"
+        },
+        {
+          "coat": 179,
+          "phase": 4,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "9a9d438233a65aacc756e7969084ef5ff6da57f76209011ef0c03bcea212a016"
+        },
+        {
+          "coat": 151,
+          "phase": 5,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "3ce57abaf259a593e09c97c55cb7a41bc3f5e32e9f95e5df235b97223caf4f23"
+        },
+        {
+          "coat": 158,
+          "phase": 5,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "c3205a5a4f6b2f44395e1cabc4fae1940cdb0a4860e1ae63d3b97f201c766a5c"
+        },
+        {
+          "coat": 165,
+          "phase": 5,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "2e7838e7d0c8f25c59f5f5af76614e839ccbd7760242eb9e0b4a227e4c82afda"
+        },
+        {
+          "coat": 179,
+          "phase": 5,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "2a3dbafb9b8769ef6514fe1fbef5af98ab1c89c55b29aa5de74d05473935b85a"
+        },
+        {
+          "coat": 151,
+          "phase": 6,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "e398578cd20b4b8dffe11bb94063b9b2cf43ac0e1cc5ab7c8e08e18f64cb31d7"
+        },
+        {
+          "coat": 158,
+          "phase": 6,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "77a15914615856a176d09fd8b5fa174a0b46601d2bfc133e07de1cac1459a8ec"
+        },
+        {
+          "coat": 165,
+          "phase": 6,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "7dd6dfb63852b062c73419a99206fff6b8b91fb9a4bb019b074f5909383c6557"
+        },
+        {
+          "coat": 179,
+          "phase": 6,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "59ca677eab676775a7ebc9f9e7a1f8efb65aafff4231a36f518c6ccadd90fb4f"
+        },
+        {
+          "coat": 151,
+          "phase": 7,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "058beb839f9dad3edf01fbb034d0b221605a9c6af6584be232dab032b2d8ad95"
+        },
+        {
+          "coat": 158,
+          "phase": 7,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "c8981cbc70d28740c6ba940fabca23826e54d2346ca3e5cad969d250ae6bece1"
+        },
+        {
+          "coat": 165,
+          "phase": 7,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "3e49a4a863d16c6827860c748a3d0ac079b23d43a2266155ed904761283515dd"
+        },
+        {
+          "coat": 179,
+          "phase": 7,
+          "side": "west",
+          "diff": 0,
+          "referenceSHA256": "e7b99784f62e9b06cf9ee6498d6838eb46abf34b2500fefc2f7049a97dfe96a9"
+        }
+      ],
+      "originalReplayChecks": [
+        {
+          "phase": 0,
+          "folder": "body-east",
+          "diff": 0
+        },
+        {
+          "phase": 0,
+          "folder": "equipment",
+          "diff": 0
+        },
+        {
+          "phase": 0,
+          "folder": "east",
+          "diff": 0
+        },
+        {
+          "phase": 0,
+          "folder": "west",
+          "diff": 0
+        },
+        {
+          "phase": 1,
+          "folder": "body-east",
+          "diff": 0
+        },
+        {
+          "phase": 1,
+          "folder": "equipment",
+          "diff": 0
+        },
+        {
+          "phase": 1,
+          "folder": "east",
+          "diff": 0
+        },
+        {
+          "phase": 1,
+          "folder": "west",
+          "diff": 0
+        },
+        {
+          "phase": 2,
+          "folder": "body-east",
+          "diff": 0
+        },
+        {
+          "phase": 2,
+          "folder": "equipment",
+          "diff": 0
+        },
+        {
+          "phase": 2,
+          "folder": "east",
+          "diff": 0
+        },
+        {
+          "phase": 2,
+          "folder": "west",
+          "diff": 0
+        },
+        {
+          "phase": 3,
+          "folder": "body-east",
+          "diff": 0
+        },
+        {
+          "phase": 3,
+          "folder": "equipment",
+          "diff": 0
+        },
+        {
+          "phase": 3,
+          "folder": "east",
+          "diff": 0
+        },
+        {
+          "phase": 3,
+          "folder": "west",
+          "diff": 0
+        },
+        {
+          "phase": 4,
+          "folder": "body-east",
+          "diff": 0
+        },
+        {
+          "phase": 4,
+          "folder": "equipment",
+          "diff": 0
+        },
+        {
+          "phase": 4,
+          "folder": "east",
+          "diff": 0
+        },
+        {
+          "phase": 4,
+          "folder": "west",
+          "diff": 0
+        },
+        {
+          "phase": 5,
+          "folder": "body-east",
+          "diff": 0
+        },
+        {
+          "phase": 5,
+          "folder": "equipment",
+          "diff": 0
+        },
+        {
+          "phase": 5,
+          "folder": "east",
+          "diff": 0
+        },
+        {
+          "phase": 5,
+          "folder": "west",
+          "diff": 0
+        },
+        {
+          "phase": 6,
+          "folder": "body-east",
+          "diff": 0
+        },
+        {
+          "phase": 6,
+          "folder": "equipment",
+          "diff": 0
+        },
+        {
+          "phase": 6,
+          "folder": "east",
+          "diff": 0
+        },
+        {
+          "phase": 6,
+          "folder": "west",
+          "diff": 0
+        },
+        {
+          "phase": 7,
+          "folder": "body-east",
+          "diff": 0
+        },
+        {
+          "phase": 7,
+          "folder": "equipment",
+          "diff": 0
+        },
+        {
+          "phase": 7,
+          "folder": "east",
+          "diff": 0
+        },
+        {
+          "phase": 7,
+          "folder": "west",
+          "diff": 0
+        }
+      ],
+      "sourceSHA256": "c1f831f405e5a97ce0ca43d11c5d29bb53e43fea610545502fd84171ecf677dd",
+      "cohortSHA256": "949573ea1f0fafdfc574858338becda9d8cdacf34f1b93883ee560eea96aee85",
+      "recipeArchiveSHA256": "7b0a85d9df7dbdcab72d3621f8f479583c1c5e4ff2eeae28886ab16efdedee7c",
+      "recipeSHA256": "80edc2f9fe17c90f7405976b53d714e56da1a5d8e591e7bbb1d0ce5aab7ab298",
+      "files": {
+        "references.zip": {
+          "sha256": "dec5dd4d67e189b4350bfeea09782b24303adc5d4a733aa3ee1bff9d2b9f5983",
+          "bytes": 4614972
+        },
+        "components.zip": {
+          "sha256": "57ce26024af91cfe8e3cd80e19067ea803a2c297cfeed8e95f0d4607964e6a4b",
+          "bytes": 3421448
+        }
+      }
+    }
+  },
+  "orbApproval": {
+    "preview": "Sentinel_d706bf9dce5c8191bff866393ef1ef17",
+    "response": "Sentinel_f402eb4410288191952de98866fc9b58",
+    "quote": "Todas aprovadas",
+    "utc": "2026-11-11T22:45Z"
+  },
+  "orbMaskProvenance": "17 source original mask untouched;122 exact original palm hand predicate union authentic wrist repair mask1/2/6; no inferred new pixels"
+}

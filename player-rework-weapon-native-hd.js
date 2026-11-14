@@ -105,10 +105,22 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
  function resolveSeparable({item,body:b,sourceBody,classId,weaponVariant,action,direction,appearance={},equipment={},allowExactComposite=true}={}){
   // Ordered source profiles retain their authored anatomy/depth; no generic eight-pose rig coercion.
   const ordered=allowExactComposite&&(index.orderedAttackProfiles||[]).find(r=>r.schema==='approved-native-ordered-attack-v1'&&r.item===Number(item&&typeof item==='object'?item.def:item)&&r.body===body(b)&&r.action===action&&r.direction===direction);
-  if(ordered&&(!ordered.strictSourceIdentity||(classId===ordered.requiredClass&&['male','masculino'].includes(sourceBody??b)&&(weaponVariant==null||weaponVariant==='original')))&&Object.values(equipment).every(v=>v==null||['none','original'].includes(v))&&['hair','hairColor','face','eyeColor','skin'].every(k=>typeof ordered.approvedAppearance?.[k]==='string'&&appearance[k]===ordered.approvedAppearance[k])){
+  const visibleOrdered=Object.entries(equipment).filter(([,v])=>v!=null&&!['none','original'].includes(v));
+  const coatValue=equipment.coat,coatId=Number(coatValue&&typeof coatValue==='object'?coatValue.def:coatValue);
+  const coatVariant=coatValue&&typeof coatValue==='object'?(coatValue.variant??coatValue.variantId??coatValue.appearanceVariant):null;
+  const authoredCoats=ordered?.requiredAuthoredCoats;
+  const coatFrames=authoredCoats?.[coatId];
+  // Only these reviewed orb profiles own a required four-coat overlay contract.
+  // Do not reinterpret existing bare profiles or accept an unseen wardrobe.
+  const wardrobeOK=authoredCoats
+   ? [17,122].includes(ordered.item)&&ordered.action==='attack-focus'&&['east','west'].includes(direction)&&visibleOrdered.length===1&&visibleOrdered[0][0]==='coat'&&[151,158,165,179].includes(coatId)&&(coatVariant==null||coatVariant==='original')&&Array.isArray(coatFrames)&&coatFrames.length===ordered.phaseCount&&coatFrames.every(f=>f.layer?.operation==='source-over'&&f.layer?.url&&f.approvedReferenceSHA256)
+   : visibleOrdered.length===0;
+  if(ordered&&wardrobeOK&&(!ordered.strictSourceIdentity||(classId===ordered.requiredClass&&['male','masculino'].includes(sourceBody??b)&&(weaponVariant==null||weaponVariant==='original')))&&['hair','hairColor','face','eyeColor','skin'].every(k=>typeof ordered.approvedAppearance?.[k]==='string'&&appearance[k]===ordered.approvedAppearance[k])){
    const states=ordered.states,timeline=ordered.timeline;
-   if(ordered.approvedAppearance&&states?.length===ordered.phaseCount&&timeline?.length&&timeline.every(t=>states.some(s=>s.state===String(t)))&&Number.isInteger(ordered.contactTick)&&ordered.contactTick>0&&ordered.contactTick<timeline.length)
-    return {...ordered,orderedAttack:true,separableAttack:true,equipmentContract:{weapon:ordered.item},colorAppearance:{}};
+   if(ordered.approvedAppearance&&states?.length===ordered.phaseCount&&timeline?.length&&timeline.every(t=>states.some(s=>s.state===String(t)))&&Number.isInteger(ordered.contactTick)&&ordered.contactTick>0&&ordered.contactTick<timeline.length){
+    const resolved=authoredCoats?{...ordered,id:ordered.id+'-coat-'+coatId,states:states.map((s,i)=>({...s,layers:[...s.layers,coatFrames[i].layer],approvedReferenceSHA256:coatFrames[i].approvedReferenceSHA256}))}:ordered;
+    return {...resolved,orderedAttack:true,separableAttack:true,equipmentContract:{weapon:ordered.item,...(authoredCoats?{coat:coatId}:{})},colorAppearance:{}};
+   }
   }
   const matchesAction=s=>s.action?action===s.action:['attack','punch','attack-unarmed'].includes(action);
   const spec=[index.separableAttacks,...(index.separableAttackRigs||[])].find(s=>s?.schema==='approved-separable-attacks-v1'&&matchesAction(s)&&body(b)===s.body&&s.directions?.[direction]&&(item==null||s.directions[direction].weapons?.[Number(item&&typeof item==='object'?item.def:item)])),d=spec?.directions?.[direction];
