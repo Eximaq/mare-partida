@@ -19,7 +19,12 @@ const out=process.env.MARE_QA_DIR||'tmp/dungeons-glass';
   const state=()=>p.evaluate(()=>JSON.stringify({gold:__dungeonsGlassQA.game.gold,xp:__dungeonsGlassQA.game.xp,items:__dungeonsGlassQA.game.inventory,dungeons:__dungeonsGlassQA.game.bossDungeons}));
   await open('dungeons');const initial=await state();
   for(const [width,height] of [[1920,1080],[1366,768],[1280,720],[1024,768],[768,1024],[390,844],[360,800],[844,390]]){
-   await p.setViewportSize({width,height});await open('inventory');await p.locator('.op-inventory-shell').waitFor({state:'visible'});const inventory=await p.locator('.op-inventory-shell').boundingBox();
+   await p.setViewportSize({width,height});await open('inventory');
+   // Inventory may be replaced by its resize observer; read a visible rectangle atomically.
+   const inventory=await (await p.waitForFunction(()=>{
+    const r=document.querySelector('.op-inventory-shell')?.getBoundingClientRect();
+    return r?.width&&r?.height?r.toJSON():false;
+   })).jsonValue();
    await open('dungeons');await p.evaluate(()=>document.fonts.ready);
    const dialog=await p.locator('#panelOverlay > .dialog').boundingBox();
    assert(Math.abs(dialog.width-inventory.width)<2&&Math.abs(dialog.height-inventory.height)<2,'Dungeon window matches inventory at '+width);
