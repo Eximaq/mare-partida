@@ -1,0 +1,284 @@
+{
+  "reviewOnly": true,
+  "productionEnabled": false,
+  "approved": false,
+  "generated_images": 0,
+  "garment": "Existing navy outfit only; rust outfit movement not created yet.",
+  "weapon": "Existing Coral Sabre candidate; original source pixels and existing south sockets reused.",
+  "pivot": [
+    42,
+    65
+  ],
+  "frames": [
+    {
+      "action": "idle",
+      "frameIndex": 0,
+      "socket": {
+        "x": 30,
+        "y": 49
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        10,
+        13
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "action": "idle",
+      "frameIndex": 1,
+      "socket": {
+        "x": 28,
+        "y": 48
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        8,
+        12
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "action": "idle",
+      "frameIndex": 2,
+      "socket": {
+        "x": 30,
+        "y": 49
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        10,
+        13
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "action": "idle",
+      "frameIndex": 3,
+      "socket": {
+        "x": 29,
+        "y": 48
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        9,
+        12
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "action": "walk",
+      "frameIndex": 0,
+      "socket": {
+        "x": 32,
+        "y": 48
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        12,
+        12
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "action": "walk",
+      "frameIndex": 1,
+      "socket": {
+        "x": 31,
+        "y": 48
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        11,
+        11
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -1
+      }
+    },
+    {
+      "action": "walk",
+      "frameIndex": 2,
+      "socket": {
+        "x": 32,
+        "y": 49
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        12,
+        10
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -3
+      }
+    },
+    {
+      "action": "walk",
+      "frameIndex": 3,
+      "socket": {
+        "x": 33,
+        "y": 49
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        13,
+        10
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -3
+      }
+    },
+    {
+      "action": "walk",
+      "frameIndex": 4,
+      "socket": {
+        "x": 32,
+        "y": 48
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        12,
+        10
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -2
+      }
+    },
+    {
+      "action": "walk",
+      "frameIndex": 5,
+      "socket": {
+        "x": 31,
+        "y": 48
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        11,
+        11
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -1
+      }
+    },
+    {
+      "action": "walk",
+      "frameIndex": 6,
+      "socket": {
+        "x": 32,
+        "y": 49
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        12,
+        10
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -3
+      }
+    },
+    {
+      "action": "walk",
+      "frameIndex": 7,
+      "socket": {
+        "x": 32,
+        "y": 49
+      },
+      "anchor": [
+        20,
+        36
+      ],
+      "offset": [
+        12,
+        10
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -3
+      }
+    }
+  ],
+  "timing": {
+    "idle_gif_ms": [
+      250,
+      250,
+      250,
+      250
+    ],
+    "walk_runtime_ms": [
+      125,
+      125,
+      125,
+      125,
+      125,
+      125,
+      125,
+      125
+    ],
+    "walk_gif_ms": [
+      120,
+      130,
+      120,
+      130,
+      120,
+      130,
+      120,
+      130
+    ],
+    "walk_gif_duration_ms": 1000,
+    "note": "GIF stores centiseconds; alternating 120/130ms preserves the native 8FPS cycle average. PNG frame order is unchanged."
+  }
+}

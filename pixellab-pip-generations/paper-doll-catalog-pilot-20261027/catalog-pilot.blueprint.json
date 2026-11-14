@@ -1,0 +1,61 @@
+[
+  {
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-catalog-pilot-replay",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment_prompt": "Certo prossiga â€” teste frontal aprovado de Topete Cobre, Colete de ConvÃ©s e Sabre de Coral, atÃ© trÃªs geraÃ§Ãµes sem retries.",
+    "TASK": {
+      "description": "Verify explicit approval for the named three-call run and an authenticated PixelLab MCP connection; create a unique empty output directory. Source is the supplied approved native 64x64 body, without scaling.",
+      "inputs": [
+        "body-south-idle-00.png"
+      ]
+    }
+  },
+  {
+    "_comment": "copper-quiff; one static south-facing edit, no retries.",
+    "MCP edit_image_pixen": {
+      "image_url": "body-south-idle-00.png",
+      "description": "Add only a short copper swept-back quiff with close-cropped sides to this south-facing human. Keep the face and ears readable. Preserve the body, pose, feet, pixel scale and palette shading outside natural hair coverage. Same transparent canvas.",
+      "width": 64,
+      "height": 64,
+      "no_background": true
+    }
+  },
+  {
+    "_comment": "deck-rust; one static south-facing edit, no retries.",
+    "MCP edit_image_pixen": {
+      "image_url": "body-south-idle-00.png",
+      "description": "Add only a fitted rust-red short waistcoat over an ivory linen shirt with rolled sleeves, a slim diagonal leather strap and brass clasp. Fit the existing south-facing torso and arms; keep hands visible. Preserve anatomy, pose, shorts, feet and all pixels outside clothing coverage. Same crisp pixel scale and transparency.",
+      "width": 64,
+      "height": 64,
+      "no_background": true
+    }
+  },
+  {
+    "_comment": "coral-sabre; one static south-facing edit, no retries.",
+    "MCP edit_image_pixen": {
+      "image_url": "body-south-idle-00.png",
+      "description": "Add only a curved ivory-steel sailor sabre with coral-orange spine details and a brass guard, held in this human's right hand on the viewer's left. Angle the blade down-left, clear of the leg. Preserve the existing hand, body, pose and canvas outside the weapon. Match the native crisp pixel scale; transparent background.",
+      "width": 64,
+      "height": 64,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": {
+      "description": "Preserve all raw results. Reject the quiff if body pose changes. Use the supplied extraction masks to select only existing generated outfit/weapon pixels on transparency; composite onto the unmodified source for static inspection. Keep original hair only in the combined fitting preview. Do not paint repairs or enable production. Review every derived candidate visually; results can differ in a replay.",
+      "inputs": [
+        "deck-rust-extraction-mask.png",
+        "coral-sabre-extraction-mask.png",
+        "existing-hair-south-idle-00.png"
+      ],
+      "outputs": [
+        "comparison-fits.png",
+        "combined-fit-candidate.png",
+        "review.json"
+      ]
+    }
+  }
+]
