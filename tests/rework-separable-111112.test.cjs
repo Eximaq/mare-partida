@@ -1,13 +1,13 @@
 'use strict';
 const assert=require('node:assert/strict'),{test}=require('node:test');
 const{make,cv}=require('./rework-integration-support.cjs');
-test('111/112 retain source eight-state clock and only claim verified bare equipment',async()=>{
+test('111/112 retain source eight-state clock and bare equipment while rejecting unproven slots',async()=>{
  const world=make();await world.ready;
  for(const item of [111,112])for(const direction of ['east','west']){
   const p={appearance96:{gender:'male',hairStyle:'original',hairColor:'brown',skinColor:'light',eyeStyle:'original',eyeColor:'brown'},equipment:{weapon:{def:item}}},o={consumer:'world',action:'attack-unarmed',direction},r=world.select(p,o);
   assert(r?.separableAttack);assert(r.id.includes('male-authored-gauntlet'+item+'-eight'));assert.equal(r.fps,12);assert.deepEqual(r.timeline,['0','1','2','3','4','5','6','7']);assert.deepEqual(r.equipmentContract,{weapon:item});assert.equal(r.states[0].layers.length,2);assert(await world.prepareClip(p,o));
   for(let frame=0;frame<8;frame++)assert(world.draw(cv.createCanvas(640,640).getContext('2d'),p,{...o,progress:(frame+.1)/8,x:320,y:512}));
-  for(const slot of ['coat','gloves','boots','legs','head','cloak'])assert(!world.select({...p,equipment:{...p.equipment,[slot]:{def:slot==='coat'?151:152}}},o)?.separableAttack,slot);
+  for(const slot of ['gloves','boots','legs','head','cloak'])assert(!world.select({...p,equipment:{...p.equipment,[slot]:{def:slot==='coat'?151:152}}},o)?.separableAttack,slot);
   assert(!world.select({...p,__reworkSubset:true},o)?.separableAttack);assert(!world.select({...p,appearance96:{...p.appearance96,hairColor:'pink'}},o)?.separableAttack);
   for(const action of ['idle','walk','attack-focus'])assert(!world.select(p,{...o,action})?.separableAttack);
  }
