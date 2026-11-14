@@ -24,19 +24,28 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(pants!=null&&!Object.hasOwn(s.items,String(pants)))return null;
   if(pants==null&&!['coat','boots','gloves'].some(k=>values[k]!=null))return null;
   if(Object.entries(equipment).some(([slot,value])=>!['legs','pants','coat','boots','gloves','head'].includes(slot)||value&&typeof value==='object'&&['variant','variantId','appearanceVariant'].some(k=>value[k]!=null&&value[k]!=='original')))return null;
-  if(values.coat!=null&&values.coat!==151||values.boots!=null&&values.boots!==155||values.gloves!=null&&values.gloves!==152)return null;
+  if(values.coat!=null&&![6,7,137,144,151,158,165,172,179].includes(values.coat)||values.boots!=null&&values.boots!==155||values.gloves!=null&&values.gloves!==152)return null;
   if(!s.controlsApproved&&(values.coat===151||values.boots!=null||values.gloves!=null))return null;
   const base=selectBase({...player,__southAnatomy:true,equipment:equipment.head!=null?{head:equipment.head}:{}},o,true);
   if(!base||base.sourceId!==s.bodyRecord||base.headRecord||base.gearOnlyRecord)return null;
   const durations=[125,125,125,75,50,125,125,125,75,50];
   if(JSON.stringify(s.durationMs)!==JSON.stringify(durations)||JSON.stringify(s.frameToPhase)!==JSON.stringify(durations.flatMap((ms,k)=>Array(ms/25).fill(k)))||JSON.stringify(s.phaseMap)!=='[0,1,2,3,3,4,5,6,7,7]')return null;
+  let mappedCoat=null;
+  if([6,7,137,144,158,165,172,179].includes(values.coat)){
+   mappedCoat=selectBase({...player,__southAnatomy:true,equipment:{coat:equipment.coat}},o,true);
+   const expected='female-torso'+values.coat+'-south-frozen-walk-native',raw=outfitIndex.records.find(x=>x.id===expected),bd=base.pack.directions.south,cd=raw?.pack?.directions?.south,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+   if(!mappedCoat||mappedCoat.sourceId!==expected||!cd||cd.clip.frames!==40||cd.clip.fps!==40||cd.clip.loop!==true||bd.clip.frames!==8||bd.clip.fps!==8||bd.clip.loop!==true||!eq(cd.rest,bd.rest)||!eq(cd.poses,bd.poses.flatMap(p=>Array(5).fill(p)))||!eq(raw.pack.frame,base.pack.frame)||!eq(raw.pack.pivot,base.pack.pivot)||raw.pack.density!==base.pack.density)return null;
+   if(cd.layers.filter(l=>!l.id.startsWith('base:')).some(l=>!['top','underArms'].includes(l.slot)||l.frames&&(l.frames.length!==40||l.frames.some(f=>!f))))return null;
+   const anatomy=cd.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5),...(l.frames?{frames:l.frames.filter((_,i)=>i%5===0)}:{})}));
+   if(!eq(anatomy,bd.layers)||cd.layers.filter(l=>l.id.startsWith('base:')&&l.frames).some(l=>l.frames.some((f,i)=>f!==l.frames[Math.floor(i/5)*5])))return null;
+  }
   const layers=s.layers.filter(l=>values[l.slot]!=null&&(l.slot!=='coat'||values.coat===151)),refs=[...new Set([...layers.flatMap(l=>l.frames),...(pants!=null?s.items[pants].flatMap(f=>[f.cloth,f.owner].filter(Boolean)):[]),...s.contacts.map(c=>c.mask)])];
   const d=base.pack.directions.south;
-  return {id:'authored-female-south:'+JSON.stringify(values)+':'+base.id,body:'female',action:'walk',direction:'south',hdKind:'authored-pants',colorAppearance:base.colorAppearance,anatomyBase:base,equipment:values,sourceRefs:refs,authoredPantsLayer:{item:pants??null,spec:s,layers},pack:{...base.pack,directions:{south:{...d,clip:{frames:40,fps:40,loop:true}}}}};
+  return {id:'authored-female-south:'+JSON.stringify(values)+':'+base.id,body:'female',action:'walk',direction:'south',hdKind:'authored-pants',colorAppearance:base.colorAppearance,anatomyBase:base,equipment:values,sourceRefs:refs,authoredPantsLayer:{item:pants??null,spec:s,layers,mappedCoat},pack:{...base.pack,directions:{south:{...d,clip:{frames:40,fps:40,loop:true}}}}};
  }
  function southFiles(r,frame){
   const s=r.authoredPantsLayer.spec,k=s.frameToPhase[frame],contact=s.contacts.find(c=>c.targetAuthoredPhase===k),phases=[s.phaseMap[k],...(contact?[contact.incomingPhase]:[])];
-  return [...new Set([...r.sourceRefs.map(h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png'),...phases.flatMap(p=>filesFor(r.anatomyBase,p))])];
+  return [...new Set([...r.sourceRefs.map(h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png'),...phases.flatMap(p=>filesFor(r.anatomyBase,p)),...(r.authoredPantsLayer.mappedCoat?filesFor(r.authoredPantsLayer.mappedCoat,s.phaseMap[k]*5):[])])];
  }
  function composeSouthPants(r,frame,entry){
   const s=r.authoredPantsLayer.spec,k=s.frameToPhase[frame],sourcePhase=s.phaseMap[k],base=r.anatomyBase,W=512,H=512;
@@ -48,15 +57,19 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(contact){const data=bc.getImageData(0,0,W,H),donor=anatomy(contact.incomingPhase).canvas.getContext('2d').getImageData(0,0,W,H).data,mask=pixels(contact.mask);for(let p=0;p<W*H;p++)if(mask[p*4])data.data.set(donor.subarray(p*4,p*4+4),p*4);bc.putImageData(data,0,0);}
   const bodyPixels=bc.getImageData(0,0,W,H).data,canvas=makeCanvas(W,H),ctx=canvas.getContext('2d'),pants=r.authoredPantsLayer.item;
   const operations=[{depth:0,kind:'body'},...r.authoredPantsLayer.layers.map(l=>({...l,kind:l.id==='visible-original-hands'?'hands':'source',hash:l.frames[k]}))];
+  const mappedCoat=r.authoredPantsLayer.mappedCoat;
+  if(mappedCoat)for(const layer of mappedCoat.pack.directions.south.layers.filter(l=>!l.id.startsWith('base:')))operations.push({depth:layer.depth,kind:'mapped-coat',layer});
   if(pants!=null){operations.push({depth:46,kind:'source',hash:s.items[pants][k].cloth});if(s.items[pants][k].owner)operations.push({depth:47,kind:'owner',hash:s.items[pants][k].owner});}
   for(const op of operations.sort((a,b)=>a.depth-b.depth)){
    if(op.kind==='body')ctx.drawImage(body,0,0);
    else if(op.kind==='owner'){const data=ctx.getImageData(0,0,W,H),mask=pixels(op.hash);for(let p=0;p<W*H;p++)if(mask[p*4])data.data.set(bodyPixels.subarray(p*4,p*4+4),p*4);ctx.putImageData(data,0,0);}
    else if(op.kind==='hands'){const tile=makeCanvas(W,H),tc=tile.getContext('2d'),data=tc.createImageData(W,H),mask=pixels(op.hash);for(let p=0;p<W*H;p++)if(mask[p*4+3])data.data.set(bodyPixels.subarray(p*4,p*4+4),p*4);tc.putImageData(data,0,0);ctx.drawImage(tile,0,0);}
+   else if(op.kind==='mapped-coat'){const d=mappedCoat.pack.directions.south,q={...mappedCoat,pack:{...mappedCoat.pack,directions:{south:{...d,layers:[op.layer]}}}},tile=makeCanvas(W,H);outfitRegistry.render(tile.getContext('2d'),q,entry.images,{frame:sourcePhase*5,appearance:mappedCoat.colorAppearance,makeCanvas});ctx.drawImage(tile,0,0);}
    else ctx.drawImage(image(op.hash),0,0);
   }
-  // Existing semantic face ownership wins over clothing backing. Never crop by Y.
-  if(r.equipment.coat!=null&&base.femaleNamedHairRecord){
+  // The approved151 backing needs its proven semantic face restoration.
+  // Mapped frozen coats retain their existing face/occlusion contract unchanged.
+  if(r.equipment.coat===151&&base.femaleNamedHairRecord){
    if(!entry.southHeads.has(sourcePhase)){const d=base.pack.directions.south,q={...base,pack:{...base.pack,directions:{south:{...d,layers:d.layers.filter(l=>['headBase','face','hair'].includes(l.slot))}}}},c=makeCanvas(W,H);femaleNamedHairRegistry.render(c.getContext('2d'),q,base.femaleNamedHairRecord,entry.images,{frame:sourcePhase,appearance:base.colorAppearance,makeCanvas});entry.southHeads.set(sourcePhase,c.getContext('2d').getImageData(0,0,W,H).data);}
    const head=entry.southHeads.get(sourcePhase),own=base.femaleNamedHairRecord.ownership,rest=base.pack.directions.south.rest,dx=Math.round((rest.NECK.x-own.attackRest.NECK.x)*4),dy=Math.round((rest.NECK.y-own.attackRest.NECK.y)*4),data=ctx.getImageData(0,0,W,H);
    for(const[x0,y0,x1,y1]of own.protectedFaceBoxes)for(let y=y0+dy;y<=y1+dy;y++)for(let x=x0+dx;x<=x1+dx;x++){const p=(y*W+x)*4;if(head[p+3])data.data.set(bodyPixels.subarray(p,p+4),p);}ctx.putImageData(data,0,0);
