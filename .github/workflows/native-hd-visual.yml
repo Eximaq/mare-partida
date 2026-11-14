@@ -9,7 +9,7 @@ on:
       - 'tools/rework-f182-sn/**'
       - 'tests/rework-slot151-*.test.cjs'
       - 'tests/fixtures/slot151-*'
-      - 'tools/package-slot151.py'
+      - 'tools/package-slot151*.py'
       - 'tests/rework-f182-*.test.cjs'
       - 'tests/fixtures/f182-*'
       - 'paper-doll-96-lobby.js'
