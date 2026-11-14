@@ -2019,8 +2019,8 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & .captain-fact small, & .captain-setting-line select { font-size: 15px; }
 }
 
-/* Trades: inventory-sized glass, semantic offers, and persistent review actions. */
-#app #panelOverlay.social-mode.hud-density[data-ui-panel="social-trade"] {
+/* Social windows share the inventory glass frame; view-specific rules stay scoped. */
+#app #panelOverlay.social-mode.hud-density:is([data-ui-panel="social-trade"],[data-ui-panel="social-mail"]) {
   --rpg-font: var(--glass-type);
   --rpg-hd-heading: var(--glass-type);
   padding: max(8px,var(--rpg-safe-top)) 8px max(8px,var(--rpg-safe-bottom));
@@ -2111,4 +2111,58 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
     & .trade-links details > summary { padding:2px; }
   }
   @media (prefers-reduced-motion:reduce) { & .trade-desk .social-button { transition:none; } }
+}
+
+/* Mail: fixed controls, responsive delivery cards, and one scrollable list. */
+#app #panelOverlay.social-mode.hud-density[data-ui-panel="social-mail"] {
+  & .social-content { overflow:hidden; }
+  & .mail-desk { display:flex; flex:1; flex-direction:column; min-height:0; gap:10px; }
+  & .mail-toolbar { display:flex; flex:none; align-items:center; justify-content:space-between; gap:10px; }
+  & .mail-tabs { display:flex; gap:4px; padding:4px; border:1px solid #ffffff16; border-radius:10px; background:#080a0d40; }
+  & .mail-hint { flex:none; margin:0; color:var(--glass-muted); font-size:12px; line-height:1.5; }
+  & .mail-list { flex:1; min-height:0; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#737984 #17191d; padding:2px; }
+  & .mail-cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:12px; }
+  & .social-letter { display:flex; flex-direction:column; gap:12px; min-width:0; margin:0; padding:16px; border:1px solid #ffffff20; border-radius:10px; background:#ffffff04; box-shadow:none; }
+  & .social-letter[data-mail-state=new] { border-color:#d4af375c; background:linear-gradient(120deg,#d4af3709,transparent),#ffffff03; }
+  & .social-letter header { align-items:start; gap:10px; }
+  & .mail-emblem { display:grid; flex:none; place-items:center; width:36px; height:36px; border:1px solid #d4af3745; border-radius:9px; color:var(--glass-gold); background:#d4af370b; }
+  & .mail-heading { flex:1; min-width:0; }
+  & .social-letter h3 { margin:0 0 4px; color:#f5f6f8; font:650 15px/1.35 var(--glass-type); letter-spacing:0; text-shadow:none; overflow-wrap:anywhere; }
+  & .social-letter small { color:var(--glass-muted); font:400 11px/1.5 var(--glass-type); }
+  & .social-letter p { margin:0; color:#d8dce3; font:400 13px/1.55 var(--glass-type); white-space:pre-wrap; }
+  & .social-tag { flex:none; padding:4px 7px; border:1px solid #d4af3750; border-radius:20px; background:#d4af3710; color:#e4ce96; font:600 10px/1.3 var(--glass-type); }
+  & [data-mail-state=claimed] .social-tag { border-color:#68b99a55; background:#46a07b10; color:#9de3c6; }
+  & .mail-attachments { display:flex; flex-direction:column; gap:7px; padding-top:10px; border-top:1px solid #ffffff10; }
+  & .mail-attachments > span { font-size:11px; color:var(--glass-muted); }
+  & .social-grid { gap:8px; }
+  & .social-tile { flex:none; width:48px; height:48px; aspect-ratio:1; padding:4px; border:1px solid var(--rarity-color,#8d929a); border-radius:8px; background:#0d101580; box-shadow:inset 0 0 8px color-mix(in srgb,var(--rarity-color,#8d929a) 12%,transparent); }
+  & .social-tile:hover { box-shadow:0 0 0 1px var(--rarity-color,#e4ce96); background:#ffffff10; }
+  & .social-tile small { color:white; padding:1px 3px; border-radius:3px; font:700 10px/1.2 var(--glass-type); background:#11151de6; }
+  & .social-actions { justify-content:flex-end; gap:8px; margin:0; }
+  & .mail-desk .social-button { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:8px 12px; border:1px solid #ffffff24; border-image:none; border-radius:8px; background:#ffffff06; box-shadow:none; color:#e6e8ec; font:600 12px/1.3 var(--glass-type); text-shadow:none; transition:background-color .15s,border-color .15s; touch-action:manipulation; }
+  & .mail-desk .social-button.social-primary:enabled { border-color:#d4af3777; background:#d4af371c; color:#f2dba0; }
+  & .mail-desk .social-button:hover:enabled { filter:none; box-shadow:none; background:#ffffff14; border-color:currentColor; }
+  & .mail-desk .social-button:disabled { opacity:.45; cursor:not-allowed; }
+  & .mail-tabs .social-button { border-color:transparent; background:transparent; }
+  & .mail-list > .social-button { display:flex; margin:14px auto 4px; }
+  & .mail-empty { grid-column:1 / -1; display:flex; flex-direction:column; align-items:center; gap:8px; padding:64px 16px; color:var(--glass-muted); text-align:center; }
+  & .mail-empty .mail-icon { width:40px; height:40px; color:var(--glass-gold); margin-bottom:8px; }
+  & .mail-empty .social-empty { margin:0; padding:0; color:#f5f6f8; font:600 15px/1.4 var(--glass-type); }
+  & .mail-empty > span { font-size:12px; }
+  @media (max-width:760px) {
+    & .mail-toolbar { flex-wrap:wrap; gap:8px; }
+    & .mail-tabs { flex:1; }
+    & .mail-tabs .social-button { flex:1; }
+    & .mail-cards { grid-template-columns:1fr; gap:10px; }
+    & .social-letter { padding:12px; }
+    & .mail-desk .social-button { min-height:44px; }
+    & .social-letter header { flex-wrap:wrap; }
+    & .social-tag { margin-left:46px; }
+  }
+  @media (max-height:500px) {
+    & .mail-hint { display:none; }
+    & .mail-desk { gap:6px; }
+    & .mail-empty { padding:20px 12px; }
+  }
+  @media (prefers-reduced-motion:reduce) { & .mail-desk .social-button { transition:none; } }
 }
