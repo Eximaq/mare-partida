@@ -103,8 +103,9 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
  const resource=url=>{const p=new URL(url,'https://native.invalid/'+prefix).pathname.slice(1);if(!/^tools\/(rework-weapon-layers-hd|rework-modular-outfits-hd|rework-base-hd)\/assets\/[a-f0-9]{64}\.png$/.test(p))throw Error('Invalid native weapon source path');return p;};
  const body=b=>({masculino:'male',feminino:'female'})[b]||b;
  function resolveSeparable({item,body:b,action,direction,appearance={},equipment={},allowExactComposite=true}={}){
-  const spec=index.separableAttacks,d=spec?.directions?.[direction];
-  if(!allowExactComposite||spec?.schema!=='approved-separable-attacks-v1'||body(b)!==spec.body||!d||!['attack','punch','attack-unarmed'].includes(action))return null;
+  const matchesAction=s=>s.action?action===s.action:['attack','punch','attack-unarmed'].includes(action);
+  const spec=[index.separableAttacks,...(index.separableAttackRigs||[])].find(s=>s?.schema==='approved-separable-attacks-v1'&&matchesAction(s)&&body(b)===s.body&&s.directions?.[direction]&&(item==null||s.directions[direction].weapons?.[Number(item&&typeof item==='object'?item.def:item)])),d=spec?.directions?.[direction];
+  if(!allowExactComposite||!spec||!d||!spec.approvedAppearance)return null;
   if(!Object.entries(spec.approvedAppearance).every(([k,v])=>appearance[k]===v))return null;
   const id=v=>Number(v&&typeof v==='object'?v.def:v);
   const visible=Object.fromEntries(Object.entries(equipment).filter(([,v])=>v!=null&&!['none','original'].includes(v)));
@@ -113,11 +114,24 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(weapon==null&&coat==null||weapon!=null&&!d.weapons?.[weapon]||coat!=null&&!d.coats?.[coat])return null;
   const sources=[d.base,...(coat==null?[]:[d.coats[coat]]),...(weapon==null?[]:[d.weapons[weapon]])];
   if(sources.some(frames=>!Array.isArray(frames)||frames.length!==8||frames.some(a=>!a?.url||JSON.stringify(a.size)!=='[640,640]')))return null;
-  return {id:'separable-'+spec.body+'-'+direction+'-weapon'+(weapon??'none')+'-coat'+(coat??'none'),item:weapon,body:spec.body,direction,
+  const states=[];
+  for(let n=0;n<8;n++){
+   const gear=weapon==null?null:d.weapons[weapon][n],socket=coat==null?null:d.coats[coat][n].socket,attachment=gear?.attachment;
+   let offset;
+   if(attachment){
+    const pair=v=>Array.isArray(v)&&v.length===2&&v.every(Number.isInteger);
+    if(!pair(attachment.anchor)||!pair(attachment.fallbackOffset)||socket&&(!pair(socket.position)||socket.name!==attachment.name))return null;
+    offset=socket?socket.position.map((v,i)=>v-attachment.anchor[i]):attachment.fallbackOffset;
+   }
+   states.push({state:String(n),layers:sources.map((frames,depth)=>({...frames[n],operation:'source-over',depth,
+    ...(coat!=null&&depth===1&&gear?.occludesCoat?{occludedBy:gear}:{}),
+    ...(offset&&depth===sources.length-1?{offset}:{})}))});
+  }
+  return {id:'separable-'+(spec.rig?spec.rig+'-':'')+spec.body+'-'+direction+'-weapon'+(weapon??'none')+'-coat'+(coat??'none'),item:weapon,body:spec.body,direction,
    nativeCanvas:spec.nativeCanvas,logicalFrame:spec.logicalFrame,pivot:spec.pivot,density:spec.density,fps:spec.fps,timeline:spec.timeline,
    approvedAppearance:spec.approvedAppearance,separableAttack:true,colorAppearance:{},
    equipmentContract:{...(weapon==null?{}:{weapon}),...(coat==null?{}:{coat})},
-   states:Array.from({length:8},(_,n)=>({state:String(n),layers:sources.map((frames,depth)=>({...frames[n],operation:'source-over',depth}))}))};
+   states};
  }
  function resolve({item,body:b,action='attack',direction,appearance={},equipment={},allowExactComposite=true}={}){
   if(item==null)return null;
@@ -156,7 +170,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if([112,15,109,111,117,17,122].includes(r.item)&&[appearance.hair,appearance.hairStyle].some(v=>v&&v!=='original'))return null;
   return {...r,colorAppearance:appearance};
  }
- function requiredFiles(r,{frame}={}){if(!r)return [];const states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid native weapon frame');const files=new Set();for(const s of states){for(const l of [...s.layers,...(s.attachment?[s.attachment]:[])]){files.add(resource(l.url));if(l.mask)files.add(resource(l.mask.url));if(l.paletteMask)files.add(resource(l.paletteMask.url));}if(s.bodyPatch)files.add(resource(s.bodyPatch.url));if(r.basePack){const d=r.basePack.pack.directions[r.direction];for(const l of d.layers){const key=l.frames?.[Number(s.state)]||l.source,url=r.basePack.images[key];if(!url)throw Error('Missing authored base frame reference');files.add(resource(url));}}}return [...files];}
+ function requiredFiles(r,{frame}={}){if(!r)return [];const states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid native weapon frame');const files=new Set();for(const s of states){for(const l of [...s.layers,...(s.attachment?[s.attachment]:[])]){files.add(resource(l.url));if(l.mask)files.add(resource(l.mask.url));if(l.occludedBy)files.add(resource(l.occludedBy.url));if(l.paletteMask)files.add(resource(l.paletteMask.url));}if(s.bodyPatch)files.add(resource(s.bodyPatch.url));if(r.basePack){const d=r.basePack.pack.directions[r.direction];for(const l of d.layers){const key=l.frames?.[Number(s.state)]||l.source,url=r.basePack.images[key];if(!url)throw Error('Missing authored base frame reference');files.add(resource(url));}}}return [...files];}
  function render(ctx,r,images,{frame=0,state,hiddenSlots=[],appearance=r?.colorAppearance||{}}={}){
   if(!r)throw Error('Missing native weapon source');let s=state===undefined?r.states[frame]:r.states.find(s=>s.state===String(state));if(!s)throw Error('Unapproved native weapon state');
   if([123,124,125,126,127,128,2,3,4,5,12,13,14,16,31,32,110,121,71,72,73,74,113,114,115,116,118,119,120].includes(r.item)&&!r.hairSeparated&&hiddenSlots.length)throw Error('115 backing has baked head/hair; hiding slots is unsupported');
@@ -204,9 +218,16 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   for(const l of r.equipmentBehindBody?[]:[...s.layers].sort((a,b)=>a.depth-b.depth)){
    if(l.inFrontOfHead&&headOverlay){ctx.drawImage(headOverlay,...(r.headOverlayOffset??[0,0]));headOverlay=null;}
    if(l.operation==='source-over'){ctx.save();if(l.mirrorX){ctx.translate(w,0);ctx.scale(-1,1);}let tile=paletteImage(l);
+    if(l.occludedBy){
+     // Ownership comes from this weapon's authored alpha, never from a coat pair.
+     const c=makeCanvas(w,h),cx=c.getContext('2d');cx.drawImage(tile,0,0);const pixels=cx.getImageData(0,0,w,h);
+     cx.clearRect(0,0,w,h);cx.drawImage(image(l.occludedBy),0,0);const ownership=cx.getImageData(0,0,w,h).data;
+     for(let p=0;p<pixels.data.length;p+=4)if(ownership[p+3])pixels.data.fill(0,p,p+4);
+     cx.putImageData(pixels,0,0);tile=c;
+    }
     const ramp=l.skinOnly&&root.MareAppearance96?.skins[appearance.skin||appearance.skinColor]?.ramp;
     if(ramp){const c=makeCanvas(w,h),cx=c.getContext('2d');cx.drawImage(tile,0,0);const d=cx.getImageData(0,0,w,h),api=root.MareAppearance96;d.data.set(api.recolor(d.data,root.MareNativeSkinHD.mask(d.data,w,'anatomy'),ramp));cx.putImageData(d,0,0);tile=c;}
-    ctx.drawImage(tile,0,0);ctx.restore();}
+    ctx.drawImage(tile,...(l.offset??[0,0]));ctx.restore();}
    else if(l.operation==='replace-rgba-under-mask'){
     if((hiddenSlots.length||recolored)&&l.role!=='authored-hand-and-orb')continue; // never reintroduce authored head pixels into a dynamic head composition
     const scratch=makeCanvas(w,h),sc=scratch.getContext('2d');sc.drawImage(image(l),0,0);let patch=sc.getImageData(0,0,w,h).data;

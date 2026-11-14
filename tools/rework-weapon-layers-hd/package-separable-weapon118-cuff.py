@@ -1,0 +1,23 @@
+from pathlib import Path
+from PIL import Image
+import zipfile,json,hashlib,io,numpy as np,argparse
+parser=argparse.ArgumentParser();parser.add_argument('--source-zip',type=Path,required=True);parser.add_argument('--output-dir',type=Path,required=True);args=parser.parse_args();o=args.output_dir;o.mkdir(parents=True,exist_ok=True);sha=hashlib.sha256(args.source_zip.read_bytes()).hexdigest();assert sha=='55b2ab8f948c726a6d9cc9861c941475867cb8f13ec8d12eedfdc3b2b7f69525';z=zipfile.ZipFile(args.source_zip);recipe=json.loads(z.read('RECIPE.json'));assets={};proof=[];spec={'schema':'approved-separable-attacks-v1','rig':'male-punch-native-right-cuff','action':'attack-unarmed','body':'male','nativeCanvas':[640,640],'logicalFrame':[160,160],'pivot':[80,128],'density':4,'fps':12,'timeline':list(map(str,recipe['sequence'])),'approvedAppearance':{'hair':'original','hairColor':'brown','face':'original','eyeColor':'brown','skin':'light'},'directions':{d:{'base':[],'coats':{str(c):[]for c in[151,158,165,179]},'weapons':{'118':[]}}for d in['east','west']},'sourceProvenance':{'sourceCommit':'2801902fa2dad8e83069815faeaa3f53f90bc1b6','manifest':'art-approved/weapons/male118-four-torsos-ew-v2/parts/MANIFEST.json','archiveSHA256':sha,'contactPolicy':'118 native cloth layers masked only under authored contacts/head/top205, clean base restored; optional native-right-cuff socket from documented perOutfitOffsets. No fixed coat prerequisite. Bare fallback uses native cuff; pose4 common -3,0. Gear source-over, no synthesized pixels.','note':'This rig scopes source118 cloth variants and preserves existing15/109/117 cloth layers. Bare118 is a technical source-layer combination, not a separate historical approval.'}}
+def ar(n):return np.array(Image.open(io.BytesIO(z.read(n))).convert('RGBA'))
+def ma(n):return np.array(Image.open(io.BytesIO(z.read(n))))>0
+def store(a):
+ b=io.BytesIO();Image.fromarray(a).save(b,format='PNG');b=b.getvalue();h=hashlib.sha256(b).hexdigest();assets[h]=b;return {'url':'assets/'+h+'.png','sha256':h,'size':[640,640]}
+def move(a,dx,dy):
+ b=Image.new('RGBA',(640,640));b.paste(Image.fromarray(a),(dx,dy));return np.array(b)
+for k in range(8):
+ base=ar(f'base/{k}.png');gear=ar(f'equipment/{k}.png');src=ar(f'source/{k}.png');mask=ma(f'contacts/{k}.png')|ma('head-mask.png');mask[:205]=True;assert np.array_equal(base[mask],src[mask]);anchor=recipe['cuffAnchors'][k];fallback=[-3,0]if k==4 else[0,0]
+ for d in spec['directions']:
+  flip=lambda a:a if d=='east'else a[:,::-1].copy();body=spec['directions'][d];body['base'].append(store(flip(base)));asset=store(flip(gear));asset['attachment']={'name':'native-right-cuff','anchor':anchor if d=='east'else[640-anchor[0],anchor[1]],'fallbackOffset':fallback if d=='east'else[-fallback[0],fallback[1]]};body['weapons']['118'].append(asset)
+ for c in[151,158,165,179]:
+  cloth=ar(f'clothing/{c}/{k}.png');cloth[mask]=0;offset=recipe['perOutfitOffsets']['rest0and7'][str(c)]if k in[0,7]else recipe['perOutfitOffsets']['attack4']if k==4 else[0,0];socket=[anchor[0]+offset[0],anchor[1]+offset[1]];out=np.array(Image.alpha_composite(Image.alpha_composite(Image.fromarray(base),Image.fromarray(cloth)),Image.fromarray(move(gear,*offset))))
+  for d in spec['directions']:
+   flip=lambda a:a if d=='east'else a[:,::-1].copy();ref=ar(f'{c}/{k}-{d}.png');diff=int(np.count_nonzero(np.any(flip(out)!=ref,axis=2)));assert diff==0;asset=store(flip(cloth));asset['socket']={'name':'native-right-cuff','position':socket if d=='east'else[640-socket[0],socket[1]]};spec['directions'][d]['coats'][str(c)].append(asset);proof.append({'coat':c,'state':k,'direction':d,'rgbaDifferencePixels':diff,'newSkinPixelsVsReference':0,'gearSourceSHA256':hashlib.sha256(z.read(f'equipment/{k}.png')).hexdigest(),'clothSourceSHA256':hashlib.sha256(z.read(f'clothing/{c}/{k}.png')).hexdigest(),'sourceOffsetNative':offset})
+name='separable-weapon118-native-cuff.zip'
+with zipfile.ZipFile(o/name,'w',compression=zipfile.ZIP_STORED)as zz:
+ for h,b in sorted(assets.items()):
+  info=zipfile.ZipInfo(h+'.png',date_time=(2026,1,1,0,0,0));info.compress_type=zipfile.ZIP_STORED;zz.writestr(info,b)
+a={'file':name,'sha256':hashlib.sha256((o/name).read_bytes()).hexdigest(),'bytes':(o/name).stat().st_size,'pngCount':len(assets),'compression':'stored'};(o/'rig.json').write_text(json.dumps(spec,indent=2)+'\n');(o/'archive-additions.json').write_text(json.dumps({'archives':[a],'sources':{h:{'archive':name,'path':h+'.png','bytes':len(b)}for h,b in assets.items()}},indent=2)+'\n');(o/'proof.json').write_text(json.dumps({'sourceArchiveSHA256':sha,'independentBareSupported':True,'sourceMatches':proof,'newSkinAtRest0and7':0},indent=2)+'\n');print(a)

@@ -62,3 +62,31 @@ test('production separable sources draw through normal renderer and reproduce in
  }
  assert.equal(comparedFrames,64);assert.equal(maxRGBDelta,1);
 });
+test('authored gear ownership excludes coat even under translucent gear pixels',()=>{
+ const custom=structuredClone(spec);custom.directions.east.weapons[109]=frames(5).map(a=>({...a,occludesCoat:true}));
+ const h=api.create({schema:'native-hd-weapon-layers-v1',records:[],separableAttacks:custom},{makeCanvas:cv.createCanvas}),images=new Map();
+ for(let n=1;n<=5;n++){const c=cv.createCanvas(640,640),x=c.getContext('2d');x.fillStyle=n===5?'rgba(90,30,120,0.5)':n===1?'#e0b090':n===2?'red':'blue';x.fillRect(0,0,n===5?20:40,40);images.set('tools/rework-weapon-layers-hd/'+asset(n).url,c);}
+ let reference;for(const coat of [undefined,151,158]){
+  const r=h.resolveSeparable({item:109,body:'male',direction:'east',action:'attack-unarmed',appearance:approvedAppearance,equipment:coat?{coat}:{}}),c=cv.createCanvas(640,640),x=c.getContext('2d');h.render(x,r,images,{frame:0});const pixels=x.getImageData(0,0,20,40).data;
+  if(reference)assert.deepEqual(pixels,reference,'coat must not tint authored gear edges');else reference=pixels;
+  if(coat){const external=x.getImageData(30,20,1,1).data;assert.deepEqual([...external],coat===151?[255,0,0,255]:[0,0,255,255]);}
+ }
+});
+test('focus rig stays separate from punch geometry and its twenty-tick clock',()=>{
+ const focus={...structuredClone(spec),rig:'male-focus-east-modular8',action:'attack-focus',timeline:['0','1','2','3','4','5','6','7']};focus.directions.east.weapons={32:frames(6)};
+ const h=api.create({schema:'native-hd-weapon-layers-v1',records:[],separableAttacks:spec,separableAttackRigs:[focus]},{makeCanvas:cv.createCanvas});
+ const q={item:32,body:'male',direction:'east',action:'attack-focus',appearance:approvedAppearance,equipment:{coat:158}},r=h.resolveSeparable(q);assert(r);assert.equal(r.timeline.length,8);assert(r.id.includes('male-focus-east-modular8'));assert.equal(r.states[0].layers.at(-1).sha256,asset(6).sha256);
+ for(const action of ['attack-unarmed','walk','idle','attack-firearm'])assert.equal(h.resolveSeparable({...q,action}),null);
+ assert.equal(h.resolveSeparable({...q,item:15}),null);assert.equal(h.resolveSeparable({...q,equipment:{coat:158,gloves:152}}),null);
+ assert.equal(h.resolveSeparable({...q,item:15,action:'attack-unarmed'})?.timeline.length,20);
+});
+test('optional authored cuff sockets translate gear without requiring a coat or changing other rigs',()=>{
+ const cuff={...structuredClone(spec),rig:'male-punch-native-right-cuff',action:'attack-unarmed'};cuff.directions.east.weapons={118:frames(5).map(a=>({...a,attachment:{name:'native-right-cuff',anchor:[30,30],fallbackOffset:[0,0]}}))};
+ cuff.directions.east.coats[151]=frames(2).map(a=>({...a,socket:{name:'native-right-cuff',position:[26,23]}}));
+ const h=api.create({schema:'native-hd-weapon-layers-v1',records:[],separableAttacks:spec,separableAttackRigs:[cuff]},{makeCanvas:cv.createCanvas}),q={item:118,body:'male',direction:'east',action:'attack-unarmed',appearance:approvedAppearance};
+ const bare=h.resolveSeparable({...q,equipment:{}}),dressed=h.resolveSeparable({...q,equipment:{coat:151}});
+ assert.deepEqual(bare.states[0].layers.at(-1).offset,[0,0]);assert.deepEqual(dressed.states[0].layers.at(-1).offset,[-4,-7]);
+ assert(!h.resolveSeparable({...q,item:15,equipment:{coat:151}}).states[0].layers.at(-1).offset);
+ const images=new Map();for(let n=1;n<=5;n++){const c=cv.createCanvas(640,640),x=c.getContext('2d');x.fillStyle=n===5?'purple':'blue';x.fillRect(n===5?30:0,n===5?30:0,1,1);images.set('tools/rework-weapon-layers-hd/'+asset(n).url,c);}
+ const c=cv.createCanvas(640,640),x=c.getContext('2d');h.render(x,dressed,images,{frame:0});assert.deepEqual([...x.getImageData(26,23,1,1).data],[128,0,128,255]);assert.equal(x.getImageData(30,30,1,1).data[3],0);
+});

@@ -9,9 +9,15 @@ test('approved lateral attacks select the matching weapon, torso, direction and 
   const fitted=body==='female'?{legs:{def:154},boots:{def:155}}:{};
   const equipment={weapon:{def:weapon},coat:{def:torso},...fitted};
   const p={appearance96,equipment},o={action,direction,consumer:'world'};
-  const expected='approved-lateral-'+body+'-'+weapon+'-'+torso+'-'+direction;
+  const independent=body==='male'&&[109,117].includes(weapon);
+  const expected=independent?'separable-male-punch-source-sleeves-'+weapon+'-male-'+direction+'-weapon'+weapon+'-coat'+torso:'approved-lateral-'+body+'-'+weapon+'-'+torso+'-'+direction;
   const record=hd.select(p,o);
+  if(independent){assert(record?.separableAttack);assert.deepEqual(record.equipmentContract,{weapon,coat:torso});}
   assert.equal(record?.id,expected);
+  // Male109/117 use source-original independent sleeve profiles.
+  // Female and122 retain their exact legacy routes.
+  if(!independent)assert(!record.separableAttack);
+  if(independent){const old=require('../tools/rework-weapon-layers-hd/index.json').records.find(r=>r.id==='approved-lateral-male-'+weapon+'-'+torso+'-'+direction);assert(old,'legacy source reference must remain available');}
   assert.equal(record.fps,12);
   assert.equal(record.timeline.length,20);
   assert.equal(record.states.length,8);

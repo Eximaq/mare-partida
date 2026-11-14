@@ -1,0 +1,260 @@
+{
+  "schema": "separable-weapons109117-proof-v1",
+  "sourcePixelPolicy": "Native RGBA unscaled;109 far+near authored source-over;117 authored singlegear;WEST literal mirror. Binary alpha>0 occlusion applies to optional coat only, never base. No coat ID dependency.",
+  "evidence": {
+    "109": {
+      "sourceArchive": "Manopla109_Masculino_Quatro_Trajes_EW_Editavel.zip",
+      "sourceArchiveSHA256": "7ee8b53eb631139192cd3bedce8c7fb2a0dc007813b583136aafce7e92ad1eac",
+      "sourceCommit": "2801902fa2dad8e83069815faeaa3f53f90bc1b6",
+      "frames": [
+        {
+          "state": 0,
+          "sourceMembers": [
+            {
+              "path": "inputs/00-far.png",
+              "sha256": "f1f951fd1513baf343053acc6b50d8e1289ecbb87923296a07ba570e274b5bab"
+            },
+            {
+              "path": "inputs/00-near.png",
+              "sha256": "5dec856bc116a8e7d3fae8d930ef882b36c68e7ba61a73367896e2faac8e0462"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "b7b27ade7db4f2858e35a7e313ad53e5639275dfdec56e452480dc93567cb02f",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 1,
+          "sourceMembers": [
+            {
+              "path": "inputs/01-far.png",
+              "sha256": "d8a54e0ed1fd74030b1d476f14af3b12b68899006e41fb928dfa6741e1a53240"
+            },
+            {
+              "path": "inputs/01-near.png",
+              "sha256": "2064813ef9148c55b30703ac928933d84298e41417514f0dd888b58ba0e3f203"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "6cf0926fcbe2e01ba8d01d8121079ca3bdd0545afa8449e73871532360b5a32b",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 2,
+          "sourceMembers": [
+            {
+              "path": "inputs/02-far.png",
+              "sha256": "d8a54e0ed1fd74030b1d476f14af3b12b68899006e41fb928dfa6741e1a53240"
+            },
+            {
+              "path": "inputs/02-near.png",
+              "sha256": "c2e0dc723d1c4bfda7e5aea41cc42e6e22fba0aa4e0351c6319d603272ce6947"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "b6b035e3a7cd138206a19ab4d29c0021557505760abc475c532e4ac4886358c2",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 3,
+          "sourceMembers": [
+            {
+              "path": "inputs/03-far.png",
+              "sha256": "d8a54e0ed1fd74030b1d476f14af3b12b68899006e41fb928dfa6741e1a53240"
+            },
+            {
+              "path": "inputs/03-near.png",
+              "sha256": "31d0f8567f169583d3d76f36ae59850227beaeb4352a87519e3c1a2c59d6df43"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "b81e9ee771b12cfe735821a6cf35b5d62924acf66e5524d6ee57b8b3d6f52117",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 4,
+          "sourceMembers": [
+            {
+              "path": "inputs/04-far.png",
+              "sha256": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c"
+            },
+            {
+              "path": "inputs/04-near.png",
+              "sha256": "1edcdbe3d555b80a4da51c7d46f5cc74d4a021abe37c9e09f07fd4d79b648734"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "e4991ef62e3a26a123f50036afe0e7df167e4d6c62d4e1d066c26408c2cee93f",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 5,
+          "sourceMembers": [
+            {
+              "path": "inputs/05-far.png",
+              "sha256": "d8a54e0ed1fd74030b1d476f14af3b12b68899006e41fb928dfa6741e1a53240"
+            },
+            {
+              "path": "inputs/05-near.png",
+              "sha256": "7401133594b559e4e860a25bb634756d4a3f5840878c89fcf25fe2dadfeca61f"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "8dc139d948c6b246c492e5abd8f4fb6c66f6e74e828fcce58b76dc00130ff7f6",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 6,
+          "sourceMembers": [
+            {
+              "path": "inputs/06-far.png",
+              "sha256": "d8a54e0ed1fd74030b1d476f14af3b12b68899006e41fb928dfa6741e1a53240"
+            },
+            {
+              "path": "inputs/06-near.png",
+              "sha256": "2064813ef9148c55b30703ac928933d84298e41417514f0dd888b58ba0e3f203"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "9e01bf664544f85d5a6c127f840aba83c20707ba19df0b0fcc3bfeddca87762c",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 7,
+          "sourceMembers": [
+            {
+              "path": "inputs/07-far.png",
+              "sha256": "f1f951fd1513baf343053acc6b50d8e1289ecbb87923296a07ba570e274b5bab"
+            },
+            {
+              "path": "inputs/07-near.png",
+              "sha256": "2b136e55ebc602b8fceca44dac716fe418de3a7059839746647c0191613971a2"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "acc3bd18496edf7454faabef74bb527ec716876dec9152241b8e07efd4c1eb96",
+          "originalClothedReferencesNotClaimedExact": true
+        }
+      ]
+    },
+    "117": {
+      "sourceArchive": "Braco117_M_EW_QuatroTrajes_Editavel.zip",
+      "sourceArchiveSHA256": "3cdfb435942dc2ee134311de64c8ad69805e47944d53be1e319d2fd433a5e912",
+      "sourceCommit": "2801902fa2dad8e83069815faeaa3f53f90bc1b6",
+      "frames": [
+        {
+          "state": 0,
+          "sourceMembers": [
+            {
+              "path": "original/117/v1/east/layers/00-right-gear.png",
+              "sha256": "4577ab047ecdde54c165b5322df7525a1296f8e6a236c94e1cfe22628e4c8472"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "21c5fa2865d337fe02da5a8987ee475bac2e652cc2f6eac0d08a68c80c10a211",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 1,
+          "sourceMembers": [
+            {
+              "path": "original/117/v1/east/layers/01-right-gear.png",
+              "sha256": "2778e02c49d0803f334fb3449cd58b73fb8afcc9ea586545fd265a3dff01f2f5"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "cdd3bfa063415226fe7eb7886c69e73880d584a148b62563b81f0f7df468cca2",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 2,
+          "sourceMembers": [
+            {
+              "path": "original/117/v1/east/layers/02-right-gear.png",
+              "sha256": "057b34a73b1d48c7a1e355aa0e8f13ca60ebbc6be57d71e1a80510896ef61d96"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "125ea5315cd6d5e0c43e05f883f498f559cfbaaa3ef064be7508aa938e90979e",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 3,
+          "sourceMembers": [
+            {
+              "path": "original/117/v1/east/layers/03-right-gear.png",
+              "sha256": "561e4f67c46f3ad4aaf8b014a3c49b44ca9e1a47ee2d25f1aff24bfa7ea5e911"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "c72f74bbc2a1cdc5bb02befc363ba7d957de720b632ba7d6b69b11e665942b1c",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 4,
+          "sourceMembers": [
+            {
+              "path": "original/117/v1/east/layers/04-right-gear.png",
+              "sha256": "2d980f38e7c931fec28762383a852a410f0ce40f537c9b5d946a95ba1240228c"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "9248e493e2c931aa183cc1f228ffe484d1809d786acc8590fa5b889852f49b4a",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 5,
+          "sourceMembers": [
+            {
+              "path": "original/117/v1/east/layers/05-right-gear.png",
+              "sha256": "d88cefe3c6ba36100b24587b91b0b2a323b3139f72a571d4a6511f90bdddf724"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "123deba0223d2c61ca1851bdaeb11de7a8c0489cd5847deb426d6c4876c350f2",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 6,
+          "sourceMembers": [
+            {
+              "path": "original/117/v1/east/layers/06-right-gear.png",
+              "sha256": "2778e02c49d0803f334fb3449cd58b73fb8afcc9ea586545fd265a3dff01f2f5"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "d310a296502ab49bc139fa753527f544500b3804ea913bd4c44292850ed7d154",
+          "originalClothedReferencesNotClaimedExact": true
+        },
+        {
+          "state": 7,
+          "sourceMembers": [
+            {
+              "path": "original/117/v1/east/layers/07-right-gear.png",
+              "sha256": "cd595796e1637b1b932346c7499166b0d13258acdb9d453925dc73b4909650c6"
+            }
+          ],
+          "baseMatchesPublishedRig": true,
+          "approvedBareSourceRgbaDifferencePixels": 0,
+          "referenceRgbaSHA256": "e320abb11aea681d5b17492d0b93011ecd611cf6c112fec1cbc685d3c6a36c11",
+          "originalClothedReferencesNotClaimedExact": true
+        }
+      ]
+    }
+  }
+}
