@@ -1,0 +1,1453 @@
+{
+  "scope": "male original bare0/1/68/69EAST/WEST only; no generic clothing, appearance or browser claim",
+  "sword0": {
+    "scope": "original male sword0 E/W only; no coats, later nape correction, runtime or map claim",
+    "clip": {
+      "frames": 8,
+      "fps": 12,
+      "loop": false,
+      "contactFrame": 4
+    },
+    "canvas": [
+      640,
+      640
+    ],
+    "weaponSourceSHA256": "34ad5ed9eae08c5d4b3789f5ff743cd1c761422b4c1082ec0f60d386386bd538",
+    "baseSourceSHA256": "c996c409c12a64d4182385b737dff1f0df651f51771231c15f1cabe5da074887",
+    "recipeMember": "recipes/historical_scripts/sword0_v2_build.py",
+    "approvalLimit": "Authenticated corrected0/67/70 delivery and positive continue response; historical attachments not re-fetched. Exact16PNG hashes match preserved original0 approved-work archive.",
+    "verifiedFrames": 16,
+    "states": [
+      {
+        "item": 0,
+        "direction": "east",
+        "phase": 0,
+        "body": {
+          "member": "9c641dc2c7f517ecce2a85b5a6ca753d5e9d55c44c316748344bad9a8a5bbda6.png",
+          "sha256": "9c641dc2c7f517ecce2a85b5a6ca753d5e9d55c44c316748344bad9a8a5bbda6"
+        },
+        "gear": {
+          "member": "085194b1850148216cc8d3da21cadad3079fd91fcdf456e4664a58150b505fc2.png",
+          "sha256": "085194b1850148216cc8d3da21cadad3079fd91fcdf456e4664a58150b505fc2"
+        },
+        "contactMask": {
+          "member": "b1873e9d30b392c742f1f8595bee1a361ee2bcf0ba397fe3249d636e5130182c.png",
+          "sha256": "b1873e9d30b392c742f1f8595bee1a361ee2bcf0ba397fe3249d636e5130182c"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "09d74625cf517b11ba1f5a216b468891de6f837dc8f0e2c22e1d105f0684f030"
+      },
+      {
+        "item": 0,
+        "direction": "west",
+        "phase": 0,
+        "body": {
+          "member": "36d527a56982d97f61ce63913feb9007f7ca04635f7515742c962052fa6e2018.png",
+          "sha256": "36d527a56982d97f61ce63913feb9007f7ca04635f7515742c962052fa6e2018"
+        },
+        "gear": {
+          "member": "9483170330d426eab265d1f191c1a6c52ea314963f57c06f5ce67f06826fb2b4.png",
+          "sha256": "9483170330d426eab265d1f191c1a6c52ea314963f57c06f5ce67f06826fb2b4"
+        },
+        "contactMask": {
+          "member": "092d1c91ae20c469fad81dce65bba2fa875080f62ebf351f163646a275a758c3.png",
+          "sha256": "092d1c91ae20c469fad81dce65bba2fa875080f62ebf351f163646a275a758c3"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "988445b9a1a135b294bea83204e6df6b0f23e50e0c3bae3a615b59e35dd22542"
+      },
+      {
+        "item": 0,
+        "direction": "east",
+        "phase": 1,
+        "body": {
+          "member": "c16cc81115173274b7d9e38b570a5895fb5a5e72e7dd8ac99b6e6ff25124cd1f.png",
+          "sha256": "c16cc81115173274b7d9e38b570a5895fb5a5e72e7dd8ac99b6e6ff25124cd1f"
+        },
+        "gear": {
+          "member": "0ec22fa21d098d08173ec6a5ea884a441d4f52017ad58a2d22c55aabe7717481.png",
+          "sha256": "0ec22fa21d098d08173ec6a5ea884a441d4f52017ad58a2d22c55aabe7717481"
+        },
+        "contactMask": {
+          "member": "b76a99c50d514579ee3f7e51b6bde6348b7ad6abe0f5dccf6bc8fcb9d6148525.png",
+          "sha256": "b76a99c50d514579ee3f7e51b6bde6348b7ad6abe0f5dccf6bc8fcb9d6148525"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "aee20087638e9c9d4031a260d798411cdabd9bd0d18002b1faa20654793289a3"
+      },
+      {
+        "item": 0,
+        "direction": "west",
+        "phase": 1,
+        "body": {
+          "member": "680018979504eeb60c51352f93c66e8508b0c4fa3875bdaac2848291804bca7f.png",
+          "sha256": "680018979504eeb60c51352f93c66e8508b0c4fa3875bdaac2848291804bca7f"
+        },
+        "gear": {
+          "member": "4732ed9054412217659a9f60794247c318ebab53bb923e61a1840ab6d95a7020.png",
+          "sha256": "4732ed9054412217659a9f60794247c318ebab53bb923e61a1840ab6d95a7020"
+        },
+        "contactMask": {
+          "member": "a6c8e63eab13f7e047cdd96a80cd292af8f250b973d4e0369d99092a67c3f3e7.png",
+          "sha256": "a6c8e63eab13f7e047cdd96a80cd292af8f250b973d4e0369d99092a67c3f3e7"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "be4a980226e8892ffe5bb36791aee23374358fa36a18a923078b07a00e431bad"
+      },
+      {
+        "item": 0,
+        "direction": "east",
+        "phase": 2,
+        "body": {
+          "member": "b5dd4e1e1c469a18c4db43feba7899f35738b2b0256306615b01b22c6e111be0.png",
+          "sha256": "b5dd4e1e1c469a18c4db43feba7899f35738b2b0256306615b01b22c6e111be0"
+        },
+        "gear": {
+          "member": "18bb06ec6795e7ee8fe0aee40ee2090bd44b26e21717eafbed805e7e76f57b2c.png",
+          "sha256": "18bb06ec6795e7ee8fe0aee40ee2090bd44b26e21717eafbed805e7e76f57b2c"
+        },
+        "contactMask": {
+          "member": "d94806f38d1934508da3d0c32ce2cf351bc4bcafcb3af9344243be56b9348148.png",
+          "sha256": "d94806f38d1934508da3d0c32ce2cf351bc4bcafcb3af9344243be56b9348148"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "99ce80ea72cef408cf7624fea32f3dca76ae5643c4a8e51b618e6da7ecf16e50"
+      },
+      {
+        "item": 0,
+        "direction": "west",
+        "phase": 2,
+        "body": {
+          "member": "49f302b6ade176cfb8f3a27003e108fe5f23928739033424087d1a02d2034476.png",
+          "sha256": "49f302b6ade176cfb8f3a27003e108fe5f23928739033424087d1a02d2034476"
+        },
+        "gear": {
+          "member": "ff67f8b3aabb28101041df947d0ca9c7d16a4ccdfe83f84eb9bddc7e9d85744f.png",
+          "sha256": "ff67f8b3aabb28101041df947d0ca9c7d16a4ccdfe83f84eb9bddc7e9d85744f"
+        },
+        "contactMask": {
+          "member": "be6a9cc4513af1cc6fc1fd5a293bae3c24a437540a402c5d1ea52f3c27d36f92.png",
+          "sha256": "be6a9cc4513af1cc6fc1fd5a293bae3c24a437540a402c5d1ea52f3c27d36f92"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "2a399e88d9bce715ac593bc4a1d3db8e451cf49fc710c4342c4eb1c292172ecc"
+      },
+      {
+        "item": 0,
+        "direction": "east",
+        "phase": 3,
+        "body": {
+          "member": "92acd1f9973f93eac4e8dfd0cd310e060d901a1398afe4e83ba6c281d4569dab.png",
+          "sha256": "92acd1f9973f93eac4e8dfd0cd310e060d901a1398afe4e83ba6c281d4569dab"
+        },
+        "gear": {
+          "member": "5a15292ffa0964cf40ba81c4f70fdd56482242b3cd14167327e0ca3f7c8405e2.png",
+          "sha256": "5a15292ffa0964cf40ba81c4f70fdd56482242b3cd14167327e0ca3f7c8405e2"
+        },
+        "contactMask": {
+          "member": "24ad7d8352553e2ce721df5f683c3e03692190876d5128b0f6be108380849e22.png",
+          "sha256": "24ad7d8352553e2ce721df5f683c3e03692190876d5128b0f6be108380849e22"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "0ab0d6facfe28590671d7182d20c262c3537c9a514e6689e7bfc58835460b03d"
+      },
+      {
+        "item": 0,
+        "direction": "west",
+        "phase": 3,
+        "body": {
+          "member": "05521c2e0721965aee72c82d9b0e0ce4ce36ba5ecda2e299d3443c01bab8c706.png",
+          "sha256": "05521c2e0721965aee72c82d9b0e0ce4ce36ba5ecda2e299d3443c01bab8c706"
+        },
+        "gear": {
+          "member": "99136b59a8aed01d4f9f78b125da9dbf9c37fe09d1e5a26e53fa4a4216e93dbe.png",
+          "sha256": "99136b59a8aed01d4f9f78b125da9dbf9c37fe09d1e5a26e53fa4a4216e93dbe"
+        },
+        "contactMask": {
+          "member": "b6758cb9a8b4c1f8defb913a27f9c30c0baea140d38c755aaff8d365a01df435.png",
+          "sha256": "b6758cb9a8b4c1f8defb913a27f9c30c0baea140d38c755aaff8d365a01df435"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "81294690b00b2f332465e242e1b4bad8ff3cfbaa9673f89189975794e704d4fd"
+      },
+      {
+        "item": 0,
+        "direction": "east",
+        "phase": 4,
+        "body": {
+          "member": "9176d7026e331d340a77275fd297167cf40280695af50aac64f6831a2b5ecd28.png",
+          "sha256": "9176d7026e331d340a77275fd297167cf40280695af50aac64f6831a2b5ecd28"
+        },
+        "gear": {
+          "member": "b4955424c2c17d68725e9c9e720797d845ab19da34d586444f2a3f884ddc1b40.png",
+          "sha256": "b4955424c2c17d68725e9c9e720797d845ab19da34d586444f2a3f884ddc1b40"
+        },
+        "contactMask": {
+          "member": "195abd02fbf762e3526441b3baace74f4bcf77d77439392b9a455387c9d86fc8.png",
+          "sha256": "195abd02fbf762e3526441b3baace74f4bcf77d77439392b9a455387c9d86fc8"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "fb7c907d810ba46713e8aa33c83be555a5ee7aa705c575037e8f74021db039a6"
+      },
+      {
+        "item": 0,
+        "direction": "west",
+        "phase": 4,
+        "body": {
+          "member": "8ea61a148164685a553b539a320c969220568a44ba4be0658ad1c46691221f7a.png",
+          "sha256": "8ea61a148164685a553b539a320c969220568a44ba4be0658ad1c46691221f7a"
+        },
+        "gear": {
+          "member": "0988c1ea55e6ed1ef13d8193c33cc076c866854f53baf931b06e55ed88791608.png",
+          "sha256": "0988c1ea55e6ed1ef13d8193c33cc076c866854f53baf931b06e55ed88791608"
+        },
+        "contactMask": {
+          "member": "26388d61579a6693647ea7ca26eb018a5d24f5a36cee787ad0b55b4fd23ac147.png",
+          "sha256": "26388d61579a6693647ea7ca26eb018a5d24f5a36cee787ad0b55b4fd23ac147"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "68ec53810ce7025b1d8171b2ee0a7d49fb8f99a3a9eb39a825fe10c0ea198019"
+      },
+      {
+        "item": 0,
+        "direction": "east",
+        "phase": 5,
+        "body": {
+          "member": "8b25726456a52231949ea1ad5a688ea54aa075bf499f51371c18f93ca61df39b.png",
+          "sha256": "8b25726456a52231949ea1ad5a688ea54aa075bf499f51371c18f93ca61df39b"
+        },
+        "gear": {
+          "member": "1ffca65b7b0af5e9cf958b857c4522984639c799a052d9ac902b1053ffea42bb.png",
+          "sha256": "1ffca65b7b0af5e9cf958b857c4522984639c799a052d9ac902b1053ffea42bb"
+        },
+        "contactMask": {
+          "member": "6069fe661e1494f55b268dc3a6a16e225becc0b8927609880b6b56de71854774.png",
+          "sha256": "6069fe661e1494f55b268dc3a6a16e225becc0b8927609880b6b56de71854774"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "cd371fc33d8edd23b31392168b01f503a564ee4d61efa6de78973f1997518ec9"
+      },
+      {
+        "item": 0,
+        "direction": "west",
+        "phase": 5,
+        "body": {
+          "member": "1c1188ecd958b71c7c844894a6843b2a8ff6740cb14c8f3be11fe412b027a027.png",
+          "sha256": "1c1188ecd958b71c7c844894a6843b2a8ff6740cb14c8f3be11fe412b027a027"
+        },
+        "gear": {
+          "member": "f2744b1da9cf061e2cc859b01d7338d5eeccfed8e6c22bf8d066ca6ac0fdbb14.png",
+          "sha256": "f2744b1da9cf061e2cc859b01d7338d5eeccfed8e6c22bf8d066ca6ac0fdbb14"
+        },
+        "contactMask": {
+          "member": "cd7fcf16ed3f4a29b64510c56f07b1154fb9d37ceeb833b9987ad6537371a6d0.png",
+          "sha256": "cd7fcf16ed3f4a29b64510c56f07b1154fb9d37ceeb833b9987ad6537371a6d0"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "21c8b19aeb52ce2d9c0841585fabe4ad0cbdcc2c7d468a89eefa258d8f42c056"
+      },
+      {
+        "item": 0,
+        "direction": "east",
+        "phase": 6,
+        "body": {
+          "member": "c3be692ebcc82ae3d01966e2efa2c4e6e6116b2dcec22e9d23f0c33fcaa9f973.png",
+          "sha256": "c3be692ebcc82ae3d01966e2efa2c4e6e6116b2dcec22e9d23f0c33fcaa9f973"
+        },
+        "gear": {
+          "member": "3a2fdfdd6ede2472f55abb11526c208f988ebb993184ac4517975e68dffd6625.png",
+          "sha256": "3a2fdfdd6ede2472f55abb11526c208f988ebb993184ac4517975e68dffd6625"
+        },
+        "contactMask": {
+          "member": "80578231fdb0fbb1637fb3787305b4c96cf7d2862a73f00c720e6ed6d3660ecf.png",
+          "sha256": "80578231fdb0fbb1637fb3787305b4c96cf7d2862a73f00c720e6ed6d3660ecf"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "378410fe4223db4c61c72b1ddd2cd11bbaf553ff88246386f2448d97cfd3af55"
+      },
+      {
+        "item": 0,
+        "direction": "west",
+        "phase": 6,
+        "body": {
+          "member": "9765e93b9c2b2220224149e2b2e40138a4d9de8e47851f87972eeda721e2c2e7.png",
+          "sha256": "9765e93b9c2b2220224149e2b2e40138a4d9de8e47851f87972eeda721e2c2e7"
+        },
+        "gear": {
+          "member": "cd89bea02b21adbb57475a53262c04ed2bee56bdac910f68e3947a77871b77db.png",
+          "sha256": "cd89bea02b21adbb57475a53262c04ed2bee56bdac910f68e3947a77871b77db"
+        },
+        "contactMask": {
+          "member": "1debfded6ce7b21aee5c29e2c74ef3e531048de50a5ea21121da8a50b23596d7.png",
+          "sha256": "1debfded6ce7b21aee5c29e2c74ef3e531048de50a5ea21121da8a50b23596d7"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "ddb935e108f9ffcaa5b5b6b87e4ec8a517a689b090bbbeb94009bd271600aa47"
+      },
+      {
+        "item": 0,
+        "direction": "east",
+        "phase": 7,
+        "body": {
+          "member": "bca4dafb911a8b42e5f25751e3101bce1d3a38dc28233f402fd05db0e856baaa.png",
+          "sha256": "bca4dafb911a8b42e5f25751e3101bce1d3a38dc28233f402fd05db0e856baaa"
+        },
+        "gear": {
+          "member": "47cdfd4ef25468ddcca5b354dca7556d91b9ff2276868834dfb45db6a9a0084b.png",
+          "sha256": "47cdfd4ef25468ddcca5b354dca7556d91b9ff2276868834dfb45db6a9a0084b"
+        },
+        "contactMask": {
+          "member": "dfb73080b081b65da54d86c3816520c782fbb2b803553a7b6c7f9ebc2cdfcb77.png",
+          "sha256": "dfb73080b081b65da54d86c3816520c782fbb2b803553a7b6c7f9ebc2cdfcb77"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "7ed37bf07ca74735dd28a8245c1bef0730b20387018e8f134d77e14a7a8cab79"
+      },
+      {
+        "item": 0,
+        "direction": "west",
+        "phase": 7,
+        "body": {
+          "member": "47a92d27041d8c9e3b46dab68a7948ee1e5c76b98a835709389ca08fa0473dc3.png",
+          "sha256": "47a92d27041d8c9e3b46dab68a7948ee1e5c76b98a835709389ca08fa0473dc3"
+        },
+        "gear": {
+          "member": "5292b4a9b953941ba84e460859aab246669665d08cbee3d035d010ae776da17f.png",
+          "sha256": "5292b4a9b953941ba84e460859aab246669665d08cbee3d035d010ae776da17f"
+        },
+        "contactMask": {
+          "member": "6313f0408ff9281dff8df25367399a450efbe2228c3475e5bfba6ecec09f24b2.png",
+          "sha256": "6313f0408ff9281dff8df25367399a450efbe2228c3475e5bfba6ecec09f24b2"
+        },
+        "order": [
+          "body source-over",
+          "gear source-over",
+          "body replace-rgba-under-mask"
+        ],
+        "referenceSHA256": "eb21b24c8b6aa6b001b3ca9ede6c57f7867b4fd8d01ec6be6b95820b53e9f711"
+      }
+    ],
+    "archives": [
+      {
+        "file": "sword0-independent-components.zip",
+        "members": 48,
+        "sha256": "8a82914a413030c198a110aee99b670f3d467c1447cc79012e2b27ae081c74f9"
+      },
+      {
+        "file": "sword0-approved-references.zip",
+        "members": 16,
+        "sha256": "e3fdc9e30c72c76b7cf373a3591cfcb8b5617ffe6d37603f8b5926be985420a4"
+      }
+    ],
+    "logicalFrame": {
+      "width": 160,
+      "height": 160
+    },
+    "pivot": {
+      "x": 80,
+      "y": 128
+    },
+    "density": 4,
+    "pivotEvidence": "Exact c996c409 base pack; no body/canvas scale or translation beyond documented original head-only offsets; WEST literal 640px mirror. No new registration guessed."
+  },
+  "swords1and68": {
+    "sourceSHA256": "3b3ff09ef98716f5d4b0faff6c9b90c3d3b366a7822c33a137ecb5981056ad84",
+    "recipeSourceSHA256": "168bc00e1509c0cde4f33106e8e45945ff6512441736965806d1ce82fbd6bfc4",
+    "clip": {
+      "frames": 8,
+      "fps": 12,
+      "loop": false,
+      "contactFrame": 4
+    },
+    "canvas": [
+      768,
+      768
+    ],
+    "constantPadding": 64,
+    "mirror": "literal EAST flip",
+    "composition": "body then authentic equipment then restore original body under authentic near-hand alpha within original 24px grip radius",
+    "scope": "bare male original source; no torso combination or runtime/browser claim",
+    "approvalEvidence": "SOURCE_APPROVAL records; later authenticated linkage not independently reread in this replay",
+    "verified": 32,
+    "rows": [
+      {
+        "item": 1,
+        "direction": "east",
+        "phase": 0,
+        "sha256": "1efd64ae2bce71881c354b94cb4e0d5855a54673b8b179aa649251989ae9ab1b",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "west",
+        "phase": 0,
+        "sha256": "b258ba2cb92372ca3c089b5ce46c4f54bf21e19dfce4ccd01a57c5f09565ca37",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "east",
+        "phase": 0,
+        "sha256": "f6a7fb80731aa69e9387a4453127f6cab8edeb36d9e9cb02c031fc5614b53235",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "west",
+        "phase": 0,
+        "sha256": "f6cdafcb113469ffacbfed36006828047f2613aca5d15cafc4d50e8be7b591ce",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "east",
+        "phase": 1,
+        "sha256": "d6cb19829de29478466860a5d8ce84c7f14fd885ad5a969d926ed316785d486a",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "west",
+        "phase": 1,
+        "sha256": "eb80afb4e507dfdca0af0ff809830691f4696ce28d3d53527ad2ecd1fd9392e1",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "east",
+        "phase": 1,
+        "sha256": "d12fab32edd681ff6f298163f5f25c0d94985f9623d548b83468ec055d2f4fd4",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "west",
+        "phase": 1,
+        "sha256": "c1b0e89ff86aebd4a5051860931e618a22c13e3be1b1af2cd60fcf3ea8b6a6da",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "east",
+        "phase": 2,
+        "sha256": "76d94e056decc28ef6c7d7051db6e754ffcc8e1f992b87fa1c7e34e8a80b34db",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "west",
+        "phase": 2,
+        "sha256": "2535839b2e61f34d9e62499a6bdf201a244050689ad0b7334c3b43fb32e18743",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "east",
+        "phase": 2,
+        "sha256": "4aa2ccadd1634ae16d747ae2827bcd33b919dba48c09fe00f15c7417a8df827a",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "west",
+        "phase": 2,
+        "sha256": "2e643ec50eb7230da08cba906706da17ab9d140af9c5cb5841a5a30953ba31e6",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "east",
+        "phase": 3,
+        "sha256": "92bbd88c15516306c308b8b2450badc2d284ba4848805fb73d1f46e6f31fce81",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "west",
+        "phase": 3,
+        "sha256": "4b8b40e1576c973e8f584e32daaabfb1da983bf147f4a32513b9eecc9e163c27",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "east",
+        "phase": 3,
+        "sha256": "9799ce0db538f271f484c0f4d6caa3bf81a62dd74682e5b4a4448171c28e4a30",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "west",
+        "phase": 3,
+        "sha256": "a3e3b20fa70f0eaf1ddf32656f11082ce906dae96f6e9f01fcbe23547b0d45cf",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "east",
+        "phase": 4,
+        "sha256": "49845443331ef58df2fb60d797376849550967107936b2263f64573cbb2773b2",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "west",
+        "phase": 4,
+        "sha256": "85a8b4354c1dd5adf940ae73fa32d4d13c1f1800847c7971f2f7db4f6086b4c6",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "east",
+        "phase": 4,
+        "sha256": "49e322ab9ad7de82cfda4d281d5bb708d95dd941e79df5ba0868e0673d9a87ad",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "west",
+        "phase": 4,
+        "sha256": "add3d78aa8328f6255bab59af184310b055abbd0611bbfca3d02f8fe35e00c65",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "east",
+        "phase": 5,
+        "sha256": "9ef017d623b112c804964883484cabc325f9739608900bb1655489495ccc4ddf",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "west",
+        "phase": 5,
+        "sha256": "c15e49f930e6437705530181ab3232d8d5295434466ebd1ed2ba64b4847ba671",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "east",
+        "phase": 5,
+        "sha256": "9535ca6c9c4368cdc6d087f72a43f336bfd553f0ff3464748e503966044b10b5",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "west",
+        "phase": 5,
+        "sha256": "7170925dec9b020f35cce1170d8e86c47515cbb0c1dc07ed236e8bf9c92aaff3",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "east",
+        "phase": 6,
+        "sha256": "8b5dd2a25c7ba5131e5517f4f04cd34a673816a59ff933bff3aa4f178419f60a",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "west",
+        "phase": 6,
+        "sha256": "3ff0822322d1e55f1204d864eba7726983552f9f214d3c7c94ca78bf2fb8c75b",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "east",
+        "phase": 6,
+        "sha256": "4beeba3ff0cb3b60dea5bd0d761ccaa8d8770d94e48e8400fcb43cc0c914f8ec",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "west",
+        "phase": 6,
+        "sha256": "f70926d0ac96f830d47ef910ef1194556bf24c6d41d88bf076f9f113080f4606",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "east",
+        "phase": 7,
+        "sha256": "935805189bc153eace997b24afe00b55de8fbbd6edb4963b101adf7dbbb7a625",
+        "referenceHashExact": true
+      },
+      {
+        "item": 1,
+        "direction": "west",
+        "phase": 7,
+        "sha256": "930d0378cd1fb33ffa79fbe52ae52c6c8decb78378eaf0bb800ff76ec62223a4",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "east",
+        "phase": 7,
+        "sha256": "d52ff9589298ddd6f45d624009c50719cd82fbabc7a04e78e91ad4f4eb6c45dd",
+        "referenceHashExact": true
+      },
+      {
+        "item": 68,
+        "direction": "west",
+        "phase": 7,
+        "sha256": "b8c2faefe5d6714e775379f1347e6da072d1e3de0d02964b7a285dd37e22e171",
+        "referenceHashExact": true
+      }
+    ]
+  },
+  "sword69": {
+    "item": 69,
+    "body": "male",
+    "canvas": [
+      1024,
+      1024
+    ],
+    "sourcePadding": 128,
+    "sourceSHA256": "168bc00e1509c0cde4f33106e8e45945ff6512441736965806d1ce82fbd6bfc4",
+    "clock": {
+      "frames": 8,
+      "fps": 12,
+      "loop": false,
+      "contactFrame": 4
+    },
+    "directions": {
+      "east": [
+        {
+          "phase": 0,
+          "body": {
+            "sha256": "d544f113401206609202361df9611bf4be2ae4c3fc18bcca35aa1f26e0f3d863",
+            "url": "assets/d544f113401206609202361df9611bf4be2ae4c3fc18bcca35aa1f26e0f3d863.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "99f6a6d656880901158227e36e55489865e5c5847106084ba5cfde388788abfe",
+            "url": "assets/99f6a6d656880901158227e36e55489865e5c5847106084ba5cfde388788abfe.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "6af8775471d24892fdf1ed03211413d635d334f10c16ed0a36de42ea83f9542e",
+            "url": "assets/6af8775471d24892fdf1ed03211413d635d334f10c16ed0a36de42ea83f9542e.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "828e6e729de1958374a7fb5396a3241c541a74b9747a2e1fa56b6381ac5c829f",
+          "originalHandEvidenceSHA256": "cf05254cedd4982fa83918685c443708aeb4b2a6512455f22e1737e76bc854e8"
+        },
+        {
+          "phase": 1,
+          "body": {
+            "sha256": "0254ad55f1e2c47085969ce8fde251db35215b460bef10a72b43d04817e35da4",
+            "url": "assets/0254ad55f1e2c47085969ce8fde251db35215b460bef10a72b43d04817e35da4.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "61c5b1f05340eebfa7ad5a92524daddb1ec6a83fea7c24cbf9b18f11475d0db1",
+            "url": "assets/61c5b1f05340eebfa7ad5a92524daddb1ec6a83fea7c24cbf9b18f11475d0db1.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "19fdee56af9dd2c19c190bfc5094cf538a3ee4eca5ec81d7f3eeff19d01ab7dc",
+            "url": "assets/19fdee56af9dd2c19c190bfc5094cf538a3ee4eca5ec81d7f3eeff19d01ab7dc.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "f84b2bddd85b09413e9aa1f25157517379419a73130602bef3d953b10f900201",
+          "originalHandEvidenceSHA256": "cc0fdd8fc678c16e390c0718ef9079528f278e97635f763ee10fb9d3fcfe5460"
+        },
+        {
+          "phase": 2,
+          "body": {
+            "sha256": "6ea144013bd5bcad6fbe70f902e3debe61d656200726ac39b9b39e49ba4dd52c",
+            "url": "assets/6ea144013bd5bcad6fbe70f902e3debe61d656200726ac39b9b39e49ba4dd52c.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "c328542f63b378f1473e103c6523e1154d832db27b6036cffd2e30a8feac25bb",
+            "url": "assets/c328542f63b378f1473e103c6523e1154d832db27b6036cffd2e30a8feac25bb.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "b54fb4209c1ba530c68e2d6d1dc740ed2f033dcf6c72083cce83cbf21dbc084b",
+            "url": "assets/b54fb4209c1ba530c68e2d6d1dc740ed2f033dcf6c72083cce83cbf21dbc084b.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "2d33cc2a97ec1b144bce2cb060d67ef4ec002aeae8c473b41961ee9f976603a3",
+          "originalHandEvidenceSHA256": "7727674fcaf7393aebc282f903d702d59f3b0c3b833477cf0643e4ed26fdd95a"
+        },
+        {
+          "phase": 3,
+          "body": {
+            "sha256": "ccb9858bea665b863542d65dbd4f98ff6885320325126becf9fd866952b9c5c1",
+            "url": "assets/ccb9858bea665b863542d65dbd4f98ff6885320325126becf9fd866952b9c5c1.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "b2090611b84f9f318d1ae302ddd2964f9a9580ff567b31c47c3a71a00f3d70ba",
+            "url": "assets/b2090611b84f9f318d1ae302ddd2964f9a9580ff567b31c47c3a71a00f3d70ba.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "11e369e19ff63a6fda33ba83736274d43c81f3e803be13ec6f1541c8f256e211",
+            "url": "assets/11e369e19ff63a6fda33ba83736274d43c81f3e803be13ec6f1541c8f256e211.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "06244417be4d48a4c55ff06aade97befc5e88efe342d2a8f7450456f6be3abc1",
+          "originalHandEvidenceSHA256": "d65870a65964c4abd75ed26176daf5a62e37f99a707e0836bd9a3aa19fb68931"
+        },
+        {
+          "phase": 4,
+          "body": {
+            "sha256": "f8c9c9c79f208615b296a81386e9452e61d6446e9d78e412fd2a9dbd611790b7",
+            "url": "assets/f8c9c9c79f208615b296a81386e9452e61d6446e9d78e412fd2a9dbd611790b7.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "95bb58a71358ca5efcb8ac077e862f5e1ea445dc6c7c1b891235f49b5cd82d4c",
+            "url": "assets/95bb58a71358ca5efcb8ac077e862f5e1ea445dc6c7c1b891235f49b5cd82d4c.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "dbf3acb8e7316bfcbf51990cb945ee2282e7fe2b04f44adffebe7ee2b9d41680",
+            "url": "assets/dbf3acb8e7316bfcbf51990cb945ee2282e7fe2b04f44adffebe7ee2b9d41680.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "9671cd94f12817e1d888a4cb766443fcf211a8ab3b5ff916beca0dc668de0d5b",
+          "originalHandEvidenceSHA256": "74e6524f98e23242f7df6aade88cf8717901bc10921db403883b532705b9ca15"
+        },
+        {
+          "phase": 5,
+          "body": {
+            "sha256": "23a6945079c56098d7e7a40689c9d9e038d334ce6abf5d00d873bfa746d4595a",
+            "url": "assets/23a6945079c56098d7e7a40689c9d9e038d334ce6abf5d00d873bfa746d4595a.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "fe7e551185503885582515c2fe778539cfb29d748655c8f106ff102927d4dcaa",
+            "url": "assets/fe7e551185503885582515c2fe778539cfb29d748655c8f106ff102927d4dcaa.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "5fe37fd7b787799551d2813ab3b69e3606e763c83c9065cf7b8f78068f71295b",
+            "url": "assets/5fe37fd7b787799551d2813ab3b69e3606e763c83c9065cf7b8f78068f71295b.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "bfbe34680965d3c31613c0e911095396d5010ba5eb19969ad179e02a586958a2",
+          "originalHandEvidenceSHA256": "77b2510a41f20cf805daab719db6ede48d192698ee8b2fe43cb409e3dfa68ffd"
+        },
+        {
+          "phase": 6,
+          "body": {
+            "sha256": "83a041b7eaad997a7481bc3cc4bbc8b0e59e713fc2756a216412b61359816e14",
+            "url": "assets/83a041b7eaad997a7481bc3cc4bbc8b0e59e713fc2756a216412b61359816e14.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "8c6cda1f53b396ade357339c11d5f51cfa00ea689156f6db59221a0b5f0ec0af",
+            "url": "assets/8c6cda1f53b396ade357339c11d5f51cfa00ea689156f6db59221a0b5f0ec0af.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "9354a68fc26ae20ce01f51d0fd8e7f18e97b10632720255c6f142a062c75e060",
+            "url": "assets/9354a68fc26ae20ce01f51d0fd8e7f18e97b10632720255c6f142a062c75e060.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "b07fc509a4657d2138ae43ecede1146dd79dad09cddf711f3ab1ca7b552443f4",
+          "originalHandEvidenceSHA256": "508be265c51a31b4a0609c224e4d49310c7244a9f43049205482a16298d6fb1d"
+        },
+        {
+          "phase": 7,
+          "body": {
+            "sha256": "11f82266ac598dcfe71e73add01d64fc03b2e1b19c4c8c4efb597469b5c31a4f",
+            "url": "assets/11f82266ac598dcfe71e73add01d64fc03b2e1b19c4c8c4efb597469b5c31a4f.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "bd2e71c16ab7cd734584019cd8d16190755c8709555f40cd140c39f69031e827",
+            "url": "assets/bd2e71c16ab7cd734584019cd8d16190755c8709555f40cd140c39f69031e827.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "622f31da5d0be30766521df499b83cca94cb3f8b2fcbbd1ccab7a715ff784ae3",
+            "url": "assets/622f31da5d0be30766521df499b83cca94cb3f8b2fcbbd1ccab7a715ff784ae3.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "ac0df958903a527d29dd027c222e06ca59d48dfa4e160fcb4acdc3cdea9d814c",
+          "originalHandEvidenceSHA256": "37965053ec7a26c5c51e42943a723280f3a7f345373b313c7de848bc7fd5104c"
+        }
+      ],
+      "west": [
+        {
+          "phase": 0,
+          "body": {
+            "sha256": "e85fa847762de3ece69101e5d789b7e2b67d98dcbd3021c20e6bc5badf141b92",
+            "url": "assets/e85fa847762de3ece69101e5d789b7e2b67d98dcbd3021c20e6bc5badf141b92.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "83d3230b5640e80ab73f0c1fbe5a8c158d9fb9709825cd99cfb632d8d722ee28",
+            "url": "assets/83d3230b5640e80ab73f0c1fbe5a8c158d9fb9709825cd99cfb632d8d722ee28.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "29fa370c351f4e4ccbe53c8dfa30efb77aeaa05e5e5798728af458dd871781b9",
+            "url": "assets/29fa370c351f4e4ccbe53c8dfa30efb77aeaa05e5e5798728af458dd871781b9.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "47cc6c050d41823a16f50d4623e98ef0f0b6290899b3299a710bd15d2856997e",
+          "originalHandEvidenceSHA256": "dc43eedd57b7618a5b499798ba6f9d9a65794cbdbd951f041149417e4a631779"
+        },
+        {
+          "phase": 1,
+          "body": {
+            "sha256": "f765f2b34e6476f65d1974baab079db214bcd2afa66e962de8329f00b6cc7828",
+            "url": "assets/f765f2b34e6476f65d1974baab079db214bcd2afa66e962de8329f00b6cc7828.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "5c52c870570a3ead700bd53da3da3790f4648bb851338958ef88be8d176dbd08",
+            "url": "assets/5c52c870570a3ead700bd53da3da3790f4648bb851338958ef88be8d176dbd08.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "5fbc88a21315152b58a3f5d1cb418f2709523b2854d24cbe39be8e356dbd3c25",
+            "url": "assets/5fbc88a21315152b58a3f5d1cb418f2709523b2854d24cbe39be8e356dbd3c25.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "577f38137017ff0c82fae9ca891f798200901fad5d0624cfb4a9f7a27140c65e",
+          "originalHandEvidenceSHA256": "d30bc12a8711528bc5513e86f9797eafef95ca2a5ac7a75486e1cf195d575c36"
+        },
+        {
+          "phase": 2,
+          "body": {
+            "sha256": "8c713e16b08227410b0a4244075f5edc6ae58f53b859e6d361de92efb1b91382",
+            "url": "assets/8c713e16b08227410b0a4244075f5edc6ae58f53b859e6d361de92efb1b91382.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "0401b1b0590b133ed69723a2b07d90e4fda3d384235e8bd61c46793f9f80c57d",
+            "url": "assets/0401b1b0590b133ed69723a2b07d90e4fda3d384235e8bd61c46793f9f80c57d.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "6d8254087fb961d2ffd42bf463792a371786fc3b030342ccd30df7861be0b3b2",
+            "url": "assets/6d8254087fb961d2ffd42bf463792a371786fc3b030342ccd30df7861be0b3b2.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "b3c4054a3b14b5f46e0789743ca272afe6efd500433119c50c80d7ec47e74aa7",
+          "originalHandEvidenceSHA256": "6fcc1e0a17d3b4a5eddbf1446eea38f10f80bf87cbc5867af18041d66cd5ed7d"
+        },
+        {
+          "phase": 3,
+          "body": {
+            "sha256": "313ad45fee0c9cea8363e2ae447bbd3bf4f363e7935953eba4ff1aafb19b2fd9",
+            "url": "assets/313ad45fee0c9cea8363e2ae447bbd3bf4f363e7935953eba4ff1aafb19b2fd9.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "e66069fdfff948d70b1eb8313fe28c15ee60bd9bc61c0342ca9ef504aa37c89a",
+            "url": "assets/e66069fdfff948d70b1eb8313fe28c15ee60bd9bc61c0342ca9ef504aa37c89a.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "c0c1af49fac7e058dfa7c9ac2a9050009e0fe4e079f8f603c2adbb43d1c61155",
+            "url": "assets/c0c1af49fac7e058dfa7c9ac2a9050009e0fe4e079f8f603c2adbb43d1c61155.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "7186cb55e124490d58cf3b00c471119af48c98b67a52d048c0651006a63a2c39",
+          "originalHandEvidenceSHA256": "4c1ab8a98ce894143c83faa34ae4b2ea57c45f8f14b2dd4f27496723397bc43f"
+        },
+        {
+          "phase": 4,
+          "body": {
+            "sha256": "4afa982b947c55c0b194349517921db8e347f39c0a4e6bdbd626644bdca77c45",
+            "url": "assets/4afa982b947c55c0b194349517921db8e347f39c0a4e6bdbd626644bdca77c45.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "41548aede51539adae46396f924e1124dc7d10f7690c81c275bc6a11a569925e",
+            "url": "assets/41548aede51539adae46396f924e1124dc7d10f7690c81c275bc6a11a569925e.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "9d9e078d26880ef40f43ef7213ec046339930b52e65c9a8e19f6aa6c52585164",
+            "url": "assets/9d9e078d26880ef40f43ef7213ec046339930b52e65c9a8e19f6aa6c52585164.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "8e85b172e35d5d54d86b5dc2f934bf64d99fdbd04697e81540e4afe8b0a9bf75",
+          "originalHandEvidenceSHA256": "0b2e5b66fb27b22563d62c37dd9d7e4c6306323c816b07fa10ed8ffc9338ac87"
+        },
+        {
+          "phase": 5,
+          "body": {
+            "sha256": "16e5179147fcd657b858f8c4371cb1975b23b36dfe995c60388805862769c66c",
+            "url": "assets/16e5179147fcd657b858f8c4371cb1975b23b36dfe995c60388805862769c66c.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "25d5fa647460fa4840b266cd5db2cbe798551b10b0f3b035b7364a05e39f4f22",
+            "url": "assets/25d5fa647460fa4840b266cd5db2cbe798551b10b0f3b035b7364a05e39f4f22.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "cbb3740877bef0b04dae3171cde9d6b565dd6111a8b79ad84603cfacf39afda2",
+            "url": "assets/cbb3740877bef0b04dae3171cde9d6b565dd6111a8b79ad84603cfacf39afda2.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "c359c1a5019995b82170e245a0999ec71c5f9565543990d67fbf93cc54171991",
+          "originalHandEvidenceSHA256": "91a00a3a714df1fb7b38043961e7f1d2d87bb40a8007f6aaa204938c1484a7ec"
+        },
+        {
+          "phase": 6,
+          "body": {
+            "sha256": "8f83ebaabb03bfdb15d68a591f8ecb417b79602baa9759686ea61928368a0e27",
+            "url": "assets/8f83ebaabb03bfdb15d68a591f8ecb417b79602baa9759686ea61928368a0e27.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "81799b73ce967fd1c0a6db575d54e0075d1e33e20f5f80b64bfbd21ab2a367aa",
+            "url": "assets/81799b73ce967fd1c0a6db575d54e0075d1e33e20f5f80b64bfbd21ab2a367aa.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "9143ce4875bc458030effc73e36a3ceb311c35ca8085fed6bc96ee6adcd10736",
+            "url": "assets/9143ce4875bc458030effc73e36a3ceb311c35ca8085fed6bc96ee6adcd10736.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "7ec0b2278faffc9c4db03a0c3a10cc94dd533719dd818c050dbf00cfc5056731",
+          "originalHandEvidenceSHA256": "2d2f96caa0be365f4f7d680b57616aa0ed8e54191b571cfc2292f421b06e4a8e"
+        },
+        {
+          "phase": 7,
+          "body": {
+            "sha256": "ad5b145d8c0f29f60f491eb19dd1a1316d0dbede2c452c7480a076d3b3d1d9e0",
+            "url": "assets/ad5b145d8c0f29f60f491eb19dd1a1316d0dbede2c452c7480a076d3b3d1d9e0.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "gear": {
+            "sha256": "f0c718b9226443b14edb9da755af8a2d11656431e8ee7b122e6e774af99be4dd",
+            "url": "assets/f0c718b9226443b14edb9da755af8a2d11656431e8ee7b122e6e774af99be4dd.png",
+            "size": [
+              1024,
+              1024
+            ]
+          },
+          "anatomicalRestoreMask": {
+            "sha256": "1a58e1200ea99677c4ac7e2d4f11df8c1195d2ea90ec3bbc26641063b3f72aa4",
+            "url": "assets/1a58e1200ea99677c4ac7e2d4f11df8c1195d2ea90ec3bbc26641063b3f72aa4.png",
+            "size": [
+              1024,
+              1024
+            ],
+            "encoding": "L; red>0 iff original hand alpha>0"
+          },
+          "operations": [
+            "source-over body",
+            "source-over gear",
+            "replace-rgba-under-mask body using binary anatomicalRestoreMask red>0"
+          ],
+          "referenceSHA256": "28f603c39e84b0b18588823a56a0ceb755aeffbe2fb7a72bcdf192f6254cff6d",
+          "originalHandEvidenceSHA256": "bf16ba156eb1e87972f286fd3806a390a70c7c6767a75c89bb4e0a8ab507f3a8"
+        }
+      ]
+    },
+    "nativePivot": [
+      512,
+      704
+    ],
+    "totalPadding": 192,
+    "logicalPivot": [
+      128,
+      176
+    ],
+    "maskProof": {
+      "maskConversion": "L=255 iff authentic hand RGBA alpha>0; exact boolean mask equivalence",
+      "referenceCount": 16,
+      "sourceReplay": "../proof.json; zero RGBA difference; binary mask preserves same predicate",
+      "files": {
+        "references.zip": {
+          "sha256": "dd1313f03f7b4f324067faf35fc2a1a03d80a155eca47c79917c4aab9cfa2b72",
+          "bytes": 1705498
+        },
+        "original-hand-evidence.zip": {
+          "sha256": "2c1f32a62c8bd2f4452337a5e6484ede878162586f77e060d40b2acb2414f658",
+          "bytes": 94157
+        },
+        "components.zip": {
+          "sha256": "0e7261d5e66e3e3d6133b6d5e904d32cfefbe18f645a1f883e3e1fd641fb9106",
+          "bytes": 1876737
+        }
+      }
+    },
+    "directReplayProof": {
+      "checks": [
+        {
+          "side": "east",
+          "phase": 0,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "east",
+          "phase": 1,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "east",
+          "phase": 2,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "east",
+          "phase": 3,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "east",
+          "phase": 4,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "east",
+          "phase": 5,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "east",
+          "phase": 6,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "east",
+          "phase": 7,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "west",
+          "phase": 0,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "west",
+          "phase": 1,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "west",
+          "phase": 2,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "west",
+          "phase": 3,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "west",
+          "phase": 4,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "west",
+          "phase": 5,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "west",
+          "phase": 6,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        },
+        {
+          "side": "west",
+          "phase": 7,
+          "pixelDiff": 0,
+          "bodyPadding128Exact": true,
+          "maskPredicateExact": true
+        }
+      ],
+      "paddingProof": {
+        "inner64Source": "source68/build.py",
+        "outer128Source": "build.py and byte-exact RGBA re-embedding8/8",
+        "sourcePivot": [
+          80,
+          128
+        ],
+        "density": 4,
+        "nativePivot": [
+          512,
+          704
+        ]
+      },
+      "files": {
+        "references.zip": {
+          "sha256": "dd1313f03f7b4f324067faf35fc2a1a03d80a155eca47c79917c4aab9cfa2b72",
+          "bytes": 1705498
+        },
+        "original-hand-evidence.zip": {
+          "sha256": "2c1f32a62c8bd2f4452337a5e6484ede878162586f77e060d40b2acb2414f658",
+          "bytes": 94157
+        },
+        "components.zip": {
+          "sha256": "0e7261d5e66e3e3d6133b6d5e904d32cfefbe18f645a1f883e3e1fd641fb9106",
+          "bytes": 1876737
+        }
+      }
+    }
+  },
+  "canvasMeasurement": {
+    "frames": 64,
+    "alphaDelta": 0,
+    "maxRGBDelta": 1
+  },
+  "registration": {
+    "0": {
+      "canvas": [
+        640,
+        640
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "padding": 0
+    },
+    "1and68": {
+      "canvas": [
+        768,
+        768
+      ],
+      "pivot": [
+        96,
+        144
+      ],
+      "padding": 64
+    },
+    "69": {
+      "canvas": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        128,
+        176
+      ],
+      "padding": 192
+    }
+  },
+  "approvalProvenance": "Authenticated original-art approvals verified by coordinating review; source archive hashes and exact final references retained. No new artistic approval inferred from tests."
+}
