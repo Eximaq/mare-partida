@@ -2317,3 +2317,107 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   }
   @media (prefers-reduced-motion:reduce) { & :is(.market-button,.market-listing,.market-tile) { transition:none; } }
 }
+
+/* Party: a vertical companion window with separate team, invite and adventure views. */
+#app #panelOverlay.party-mode.hud-density[data-ui-panel="party"] {
+  --rpg-font:var(--glass-type); --rpg-hd-heading:var(--glass-type);
+  & > .dialog { display:flex; flex-direction:column; width:min(440px,100%); max-width:none; height:min(620px,calc(100dvh - 40px)); max-height:calc(100dvh - 40px); padding:0; border:1px solid var(--glass-line); border-image:none; border-radius:12px; background:var(--glass-surface); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:var(--glass-shadow); overflow:hidden; }
+  & .dialog-header { flex:none; min-height:48px; padding:2px 8px 2px 14px; border:0; border-bottom:1px solid #ffffff18; background:#ffffff03; }
+  & #dialogTitle { margin:0; color:#f5f6f8; font:650 20px/1.25 var(--glass-type); letter-spacing:0; text-shadow:none; }
+  & #closePanel { width:36px; min-width:36px; height:36px; min-height:36px; padding:0; border:1px solid #ffffff20; border-image:none; border-radius:8px; background:#ffffff05; box-shadow:none; color:#e6e8ec; font:500 22px/1 var(--glass-type); }
+  & #dialogBody { display:flex; flex:1; min-height:0; padding:10px; overflow:hidden; background:none; }
+  & .party-layout { display:flex; flex:1; flex-direction:column; min-width:0; min-height:0; gap:10px; color:#f0f2f5; font:400 13px/1.4 var(--glass-type); }
+  & .party-tabs { display:flex; flex:none; gap:4px; padding:4px; border:1px solid #ffffff16; border-radius:10px; background:#080a0d40; }
+  & .party-tabs > button { flex:1; }
+  & .party-tab-count { display:inline-grid; place-items:center; min-width:18px; height:18px; padding:0 4px; border-radius:20px; background:#d4af3720; color:var(--glass-gold); font-size:10px; }
+  & .party-tab-dot { width:6px; height:6px; border-radius:50%; background:#7ce5ac; }
+  & .party-pane { flex:1; min-height:0; overflow:auto; padding:2px; border:0; background:none; box-shadow:none; scrollbar-width:thin; scrollbar-color:#737984 #17191d; overscroll-behavior:contain; }
+  & .party-pane[hidden] { display:none!important; }
+  & :is(.party-layout h3,.party-empty h3) { color:#f0f2f5; font:650 14px/1.35 var(--glass-type); letter-spacing:0; text-shadow:none; margin:0 0 8px; }
+  & .party-section { padding:0 0 8px; border:0; }
+  & .party-summary { display:flex; flex-wrap:wrap; gap:4px 10px; padding:10px; margin-bottom:12px; border:1px solid #ffffff1c; border-radius:9px; background:#ffffff04; }
+  & .party-summary > div { min-width:0; flex:1; }
+  & .party-summary h3 { margin:2px 0 0; font-size:15px; overflow-wrap:anywhere; }
+  & .party-summary > b { color:var(--glass-gold); font:650 18px/1.2 var(--glass-type); font-variant-numeric:tabular-nums; }
+  & .party-summary > span { color:#9de3c6; font-size:11px; }
+  & .party-layout small, & .party-muted { color:var(--glass-muted); font:400 11px/1.4 var(--glass-type); }
+  & .party-roster { display:flex; flex-direction:column; overflow:hidden; }
+  & .party-roster > :not(.party-members) { flex:none; }
+  & .party-members { display:grid; flex:1; min-height:68px; align-content:start; gap:5px; overflow:auto; scrollbar-width:thin; scrollbar-color:#737984 #17191d; overscroll-behavior:contain; }
+  & .party-roster .party-summary { margin-bottom:8px; }
+  & .party-roster .party-section { padding:0; margin-bottom:8px; }
+  & .party-activities:has(.party-preparation) { display:flex; flex-direction:column; }
+  & .party-activities > * { flex:none; }
+  & .party-activities .party-preparation { order:-1; margin:0 0 12px; }
+  & .party-member { display:flex; flex-wrap:wrap; gap:6px; min-height:64px; padding:5px; border:1px solid #ffffff1c; border-radius:8px; background:#ffffff04; }
+  & .party-faction { width:23px; height:23px; }
+  & .party-member canvas { width:36px; height:46px; flex:none; }
+  & .party-member-info { flex:1; min-width:100px; }
+  & .party-member strong { color:#f5f6f8; font:650 13px/1.3 var(--glass-type); }
+  & .party-member small { font:400 10px/1.35 var(--glass-type); }
+  & .party-status { max-width:70px; color:#9de3c6; font:500 10px/1.35 var(--glass-type); }
+  & .party-life { height:7px; margin:4px 0; border:1px solid #ffffff24; border-radius:5px; background:#1a0e13; }
+  & .party-life i { background:linear-gradient(#f14362,#a91535); }
+  & .party-offline { opacity:.65; }
+  & .party-command-row { display:grid; grid-template-columns:minmax(0,1fr) 116px 76px; align-items:end; gap:6px; margin-top:8px; }
+  & .party-command-row > label { min-width:0; }
+  & .party-command-row button { padding:7px 5px; font-size:11px; }
+  & .party-layout label { color:var(--glass-muted); font:500 11px/1.4 var(--glass-type); }
+  & .party-layout :is(input:not([type=radio]),select,.ui-select-trigger) { width:100%; min-width:0; height:auto; min-height:36px; padding:7px 9px; margin:4px 0 0; border:1px solid #ffffff24; border-image:none; border-radius:7px; background:#0c0e1266; color:#e6e8ec; font:400 12px/1.4 var(--glass-type); box-shadow:none; }
+  & .party-layout .ui-select { width:100%; }
+  & .party-layout input::placeholder { color:#a6adb7; opacity:1; }
+  & .party-layout button { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:36px; padding:7px 9px; border:1px solid #ffffff24; border-image:none; border-radius:8px; color:#e6e8ec; background:#ffffff06; box-shadow:none; font:600 12px/1.3 var(--glass-type); text-shadow:none; letter-spacing:0; transition:background-color .15s,border-color .15s; touch-action:manipulation; }
+  & .party-layout button:is(.party-primary,[aria-pressed=true]):not(:disabled) { border:1px solid #d4af3777; border-image:none; background:#d4af371c; box-shadow:none; color:#f2dba0; }
+  & .party-layout button:hover:not(:disabled), & #closePanel:hover { filter:none; background:#ffffff14; border-color:currentColor; }
+  & .party-layout button:disabled { filter:none; opacity:.45; }
+  & .party-layout .party-primary { margin:8px 0 0; }
+  & .party-layout .party-leave { margin:10px 0 0; color:#ffb4ba!important; border-color:#e77b8559; background:#df67710c; }
+  & .party-tabs button:not([aria-pressed=true]) { border-color:transparent; background:transparent; }
+  & .party-invite-form { border:0; padding:0; }
+  & .party-invite-form > div { align-items:center; margin-top:4px; }
+  & .party-invite-form input { margin:0; }
+  & .party-invitations { margin-top:18px; }
+  & .party-invite { flex-wrap:wrap; gap:8px; margin-bottom:8px; padding:10px; border:1px solid #ffffff1c; border-radius:8px; background:#ffffff04; }
+  & .party-invite > div { min-width:140px; overflow-wrap:anywhere; }
+  & .party-invite button[data-accept=true] { color:#9de3c6; border-color:#68b99a70; background:#46a07b18; }
+  & .party-empty { align-self:stretch; padding:22px 12px; color:var(--glass-muted); font:400 13px/1.5 var(--glass-type); }
+  & .party-empty h3 { font-size:17px; }
+  & .party-destination-tabs { gap:6px; margin:0 0 8px; }
+  & .party-destination-tabs button { min-height:40px; font-size:11px; }
+  & .party-destination-tabs img { width:20px; height:20px; }
+  & .party-region-tabs { gap:5px; margin-bottom:8px; }
+  & .party-region-tabs button { padding:6px; min-height:32px; font-size:11px; }
+  & .party-destination-grid { max-height:140px; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; scrollbar-color:#737984 #17191d; }
+  & .party-layout .party-destination-card { position:relative; display:block; min-height:85px; padding:0; border:1px solid #ffffff24; border-image:none; border-radius:8px; background:#111419; box-shadow:none; text-align:left; }
+  & .party-destination-card > img { height:48px; }
+  & .party-destination-copy { padding:6px 8px; background:#101318; }
+  & .party-destination-copy strong { font:600 12px/1.3 var(--glass-type); color:#f0f2f5; }
+  & .party-destination-copy small { font:400 10px/1.4 var(--glass-type); color:var(--glass-muted); }
+  & .party-card-check { color:var(--glass-gold); font:700 14px/1 var(--glass-type); }
+  & .party-destination-preview { height:100px; margin:8px 0; border:1px solid #ffffff24; border-radius:8px; }
+  & .party-destination-preview > div { padding:9px; }
+  & .party-destination-preview h3 { margin:3px 0; font:650 16px/1.2 var(--glass-type); }
+  & .party-destination-preview small { font:500 9px/1.3 var(--glass-type); letter-spacing:0; }
+  & .party-destination-preview p { margin:0; font-size:11px; }
+  & .party-prepare-action p { margin:8px 0 0; color:var(--glass-muted); font:400 11px/1.4 var(--glass-type); }
+  & .party-preparation { margin-top:10px; padding:10px; border:1px solid #68b99a66; border-radius:9px; background:#46a07b0a; }
+  & .party-preparation h3 { font-size:15px; margin:4px 0; }
+  & .party-preparation p { margin:6px 0; color:var(--glass-muted); font-size:11px; }
+  & .party-preparation [data-party-action=ready] { color:#9de3c6; border-color:#68b99a70; background:#46a07b18; }
+  & .party-individual { padding:7px; margin-top:10px; gap:8px; border:1px solid #ffffff16; border-radius:8px; background:#ffffff03; color:var(--glass-muted); }
+  & .party-individual b { font:600 12px/1.4 var(--glass-type); }
+  & .party-individual img { border-radius:5px; border-color:#ffffff20; }
+  & :is(button,input,select,.ui-select-trigger):focus-visible { outline:2px solid #edd89f; outline-offset:2px; }
+  @media (pointer:coarse), (max-width:760px) {
+    & .party-layout button, & #closePanel { min-height:44px; }
+    & #closePanel { width:44px; }
+    & .party-layout input:not([type=radio]) { min-height:44px; font-size:16px; }
+    & .party-layout .ui-select-trigger { min-height:44px; padding-right:26px; }
+  }
+  @media (max-height:500px) {
+    & > .dialog { height:calc(100dvh - 24px); max-height:calc(100dvh - 24px); }
+    & .party-roster { display:block; overflow:auto; }
+    & .party-members { overflow:visible; }
+  }
+  @media (prefers-reduced-motion:reduce) { & .party-layout button { transition:none; } }
+}

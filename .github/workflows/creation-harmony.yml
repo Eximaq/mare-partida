@@ -20,6 +20,9 @@ on:
       - 'tests/market-online-browser.cjs'
       - 'tests/social-online-browser.cjs'
       - 'social-ui.*'
+      - 'party-ui.js'
+      - 'party.css'
+      - 'tests/party-online-browser.cjs'
       - 'hud-glass.css'
       - 'tests/online-world-browser.cjs'
       - 'tests/online-battle-browser.cjs'
@@ -85,6 +88,8 @@ jobs:
         run: |
           MARE_QA_DIR="$MARE_QA_DIR/social" python tests/run_honors_hd_browser.py tests/social-online-browser.cjs --dist --offline
           MARE_QA_DIR="$MARE_QA_DIR/market" python tests/run_honors_hd_browser.py tests/market-online-browser.cjs --dist --offline
+      - name: Grupo compacto e comandos online
+        run: MARE_QA_DIR="$MARE_QA_DIR/party" python tests/run_honors_hd_browser.py tests/party-online-browser.cjs --dist --offline
       - name: Original online world and travel UI contract
         run: python tests/run_honors_hd_browser.py tests/online-world-browser.cjs --dist --offline
       - name: Original online monsters and combat UI contract
