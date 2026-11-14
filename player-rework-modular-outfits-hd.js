@@ -7,12 +7,19 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
  if(index?.schema!=='rework-modular-outfits-hd-v1'||!vendor?.compositor)throw Error('Missing modular outfit dependencies');
  function resolveIndependentPants({body,direction,action,equipment={},appearance={}}={}){
   const source=index.independentPants;
-  if(source?.schema!=='independent-female-pants-v1'||canonical(body)!=='female'||action!=='walk'||!['east','west'].includes(direction))return null;
+  if(source?.schema!=='independent-female-pants-v1'||canonical(body)!=='female'||action!=='walk')return null;
   const visible=Object.entries(equipment).filter(([,v])=>v!=null&&!['none','original'].includes(v));
   if(visible.length!==1||!['pants','legs'].includes(visible[0][0]))return null;
   const selected=Number(id(visible[0][1]));
   const record=source.records.find(r=>r.body==='female'&&r.action===action&&r.direction===direction&&r.equipment?.pants===selected&&Object.keys(r.equipment).length===1&&r.approvedAppearance&&Object.entries(r.approvedAppearance).every(([k,v])=>appearance[k]===v));
   if(!record)return null;
+  if(!['east','west'].includes(direction)){
+   const selectedValue=visible[0][1];
+   if(selectedValue&&typeof selectedValue==='object'&&['variant','variantId','appearanceVariant'].some(k=>selectedValue[k]!=null&&selectedValue[k]!=='original'))return null;
+   // Only the separately approved original SN147/168 cohort uses these native holds.
+   const expected=direction==='south'?[125,125,125,75,50,125,125,125,75,50]:direction==='north'?[125,75,50,125,75,50,125,75,50,125,75,50]:null,t=record.authoredWalkTimeline;
+   if(![147,168].includes(selected)||!expected||t?.schema!=='approved-female-sn-ms-v1'||t.cycleMs!==1000||t.phaseCount!==expected.length||JSON.stringify(t.durationMs)!==JSON.stringify(expected)||JSON.stringify(t.frameToPhase)!==JSON.stringify(expected.flatMap((ms,i)=>Array(ms/25).fill(i))))return null;
+  }
   const p=record.pack,d=p?.directions?.[direction];
   if(p.density!==4||p.frame.width!==128||p.frame.height!==128||p.pivot.x!==64||p.pivot.y!==112||d?.clip.frames!==40||d.clip.fps!==40||d.clip.loop!==true)return null;
   return {...record,independentPants:true,colorAppearance:{}};

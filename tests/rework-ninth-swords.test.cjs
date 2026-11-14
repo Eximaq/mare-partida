@@ -7,7 +7,7 @@ test('authored original lateral swords select exact bare source without consumin
  for(const item of [0,1,68,69])for(const direction of ['east','west']){
   const p={classId:'sword',appearance96:look,equipment:{weapon:{def:item}}},o={action:'attack-sword',direction,consumer:'world'};
   const r=world.select(p,o);assert.equal(r?.id,`authored-ordered-${item}-${direction}`);assert(r.orderedAttack);assert(r.strictSourceIdentity);assert.equal(r.contactTick,4);assert.equal(r.fps,12);assert.equal(r.phaseCount,8);assert.deepEqual(r.nativeCanvas,item===0?[640,640]:item===69?[1024,1024]:[768,768]);assert.deepEqual(r.pivot,item===0?[80,128]:item===69?[128,176]:[96,144]);assert.equal(r.density,4);
-  for(const q of [{classId:'gunner'},{classId:undefined},{appearance96:{...look,gender:'female'}},{appearance96:{...look,hairColor:'pink'}},{equipment:{weapon:{def:item,variant:'alternate'}}},{equipment:{weapon:{def:item},coat:{def:151}}},{equipment:{weapon:{def:item},gloves:{def:152}}},{__reworkSubset:true}])assert(!world.select({...p,...q},o)?.orderedAttack,JSON.stringify(q));
+  for(const q of [{classId:'gunner'},{classId:undefined},{appearance96:{...look,gender:'female'}},{appearance96:{...look,hairColor:'pink'}},{equipment:{weapon:{def:item,variant:'alternate'}}},...([1,68].includes(item)?[]:[{equipment:{weapon:{def:item},coat:{def:151}}}]),{equipment:{weapon:{def:item},gloves:{def:152}}},{__reworkSubset:true}])assert(!world.select({...p,...q},o)?.orderedAttack,JSON.stringify(q));
   for(const action of ['idle','walk','attack-focus','attack-firearm'])assert(!world.select(p,{...o,action})?.orderedAttack);
   for(const side of ['north','south'])assert(!world.select(p,{...o,direction:side})?.orderedAttack);
  }
@@ -23,6 +23,7 @@ test('64 original sword references retain alpha, native geometry and source pixe
   }
  }assert.equal(count,64);
 });
+// Sixteen original1/68 coat combinations are now positive controls in eleventh-production/raster; all other old controls remain.
 test('legacy bare and clothed swords retain identical fallback records outside the new strict source signature',async()=>{
  const fs=require('fs'),path=require('path'),zlib=require('zlib');
  const current=make(),baseline=make({fetchJSON:async p=>{const f=path.join(__dirname,'..',p),j=JSON.parse(fs.existsSync(f)?fs.readFileSync(f):zlib.gunzipSync(fs.readFileSync(f+'.gz')));if(p==='tools/rework-weapon-layers-hd/index.json')j.orderedAttackProfiles=j.orderedAttackProfiles.filter(r=>![0,1,68,69].includes(r.item));return j;}});await Promise.all([current.ready,baseline.ready]);let count=0;
@@ -30,9 +31,9 @@ test('legacy bare and clothed swords retain identical fallback records outside t
   const p={classId:'sword',appearance96:look,equipment:{weapon:{def:item}}},o={action:'attack-sword',direction};
   const qs=[{...p,appearance96:{...look,hairColor:'pink'}},{...p,appearance96:{...look,gender:'female'}},{...p,__reworkSubset:true},...[151,158,165,179].map(c=>({...p,equipment:{weapon:{def:item},coat:{def:c}}})),{...p,equipment:{weapon:{def:item},gloves:{def:152}}}];
   if([67,70].includes(item)||['north','south'].includes(direction))qs.push(p);
-  for(const q of qs){assert.deepEqual(current.select(q,o),baseline.select(q,o),`${item}/${direction}/${JSON.stringify(q)}`);count++;}
+  for(const q of qs){if([1,68].includes(item)&&['east','west'].includes(direction)&&q.equipment.coat&&q.appearance96===look&&q.classId==='sword'&&!q.__reworkSubset)continue;assert.deepEqual(current.select(q,o),baseline.select(q,o),`${item}/${direction}/${JSON.stringify(q)}`);count++;}
   assert(!current.select(p,{...o,weaponless:true})?.orderedAttack);
- }assert.equal(count,208);
+ }assert.equal(count,192);
 });
 test('69 padded anatomy is exactly the 768 original within128 margins and has the same physical world anchor',async()=>{
  const {cv}=require('./rework-integration-support.cjs'),path=require('path'),index=require('../tools/rework-weapon-layers-hd/index.json'),load=require('../tools/rework-hd-test-loader.cjs').create(path.resolve(__dirname,'..'));
