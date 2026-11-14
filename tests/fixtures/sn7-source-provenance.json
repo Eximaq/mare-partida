@@ -1,0 +1,344 @@
+{
+  "parent": "840f2facf55c1f33cc93a378f411b4c1c82f970d",
+  "publishedEquivalent": "00ced76",
+  "items": [
+    147,
+    168,
+    182
+  ],
+  "direction": "south",
+  "phaseCount": 10,
+  "newSpriteFiles": 0,
+  "oldIndexRawSHA256": "430c71478a595803893de636b548186a9c4afba6a89cebb5c1168d0af717fec3",
+  "entries": {
+    "147": [
+      {
+        "cloth": "a6af37a0feca82954029af6888ed4e8137f7cca1f35bcb992cfae93a308ff8e2"
+      },
+      {
+        "cloth": "f2192725f8d4bd9be63ca9bdd40e883ae0af2f69640ac82aec9951893c25a293"
+      },
+      {
+        "cloth": "52b2b7ce831741a668abcbe0dd9ed426e5a0b75e39a51d438f273d677b59e671"
+      },
+      {
+        "cloth": "ad48cd5f58ecaa4c209149261406e05af02a674e7cbd9680d4136a70ffb9827c"
+      },
+      {
+        "cloth": "624692ea29be39689681257eadbb6ad0f14cb65f40976af6e08bc758adac1ca5"
+      },
+      {
+        "cloth": "d686564bc3171ddfa330f3b23e796dd6a55a97c6c71fca1ab8a5b6fcddb90b23"
+      },
+      {
+        "cloth": "7d422a8fcd22d830c7e7a85a0a6e4e93ae4e280b2105e31fee2a8ce88ffc6e3a"
+      },
+      {
+        "cloth": "16565c82df95ab706db223042b83e6def6054e5219c3ce34caeab80ffef1e850"
+      },
+      {
+        "cloth": "0c0d013a0199049b33fece95f77d42a05acfb211b8e6a5fbb83e5f0f9caaa97a"
+      },
+      {
+        "cloth": "15182b950e8a58e89d4be9ff6eef87d940f2aab0dfb7a2bac3c03026bbbc3e1b"
+      }
+    ],
+    "168": [
+      {
+        "cloth": "fdf487a5c257cdeb1adecc823ad4a2ab143f15eb1d744aa6dbe56575bf65aab7",
+        "ownerAlpha": "434a293f43750f8d09085f4258a45f835fe2199c44cecc2ad727e365d2a3b7e6"
+      },
+      {
+        "cloth": "8ce83980d62ac1605e51fce3fed48f3778995fdc2dae9624ff6ea291ec21af35",
+        "ownerAlpha": "698f2c805cae5433fe119be791816986935f45b2053878fbab1cf033c95e96dc"
+      },
+      {
+        "cloth": "93a4f2923f6aaaddb2c57083c8b351ad5705e8c71c7ed1fdd0fff1dcbd0c521f",
+        "ownerAlpha": "9cbe5527929cb9aa2c44a920012263ec12d39c346af3c1b619d13d208c74544b"
+      },
+      {
+        "cloth": "4d89769061cac2869f266a12e5584de4927d0e3a2e322639a6f66558b3604643",
+        "ownerAlpha": "afd4c18068a4a72667965ddf0189439544a078e4ce42495fb4f80a2fbd865a1f"
+      },
+      {
+        "cloth": "d645dafb25ff2f1edd6d4c013b9f98812b6b4468c8c78336c2cd33c8732fa052",
+        "ownerAlpha": "afd4c18068a4a72667965ddf0189439544a078e4ce42495fb4f80a2fbd865a1f"
+      },
+      {
+        "cloth": "fccbffa66a18044bbc6fc364be55376c2c6e5f6d196e309a0bc6e2c5bf33c1ae",
+        "ownerAlpha": "55d28a2eee19451fc1e7a4d90f7d519ba0281153f10a9005f9ca0a0c7e048d6a"
+      },
+      {
+        "cloth": "7a8640c31e4815f4c00c2095107c337683ed8ccd70211f3dd538b51f8dd317d6",
+        "ownerAlpha": "f36c9d28ae0e2dc5e5c2bfa28b01689c8124c66d2931b0773b7ca2faf81deb45"
+      },
+      {
+        "cloth": "c1fd6925a35bd91327f4b91b5dfefeef55cab56e7f19c7f178d243ba55849a3f",
+        "ownerAlpha": "434f644619ffa45eece6a90e71d0f94f28edc120477683109dde59b0fa95b88a"
+      },
+      {
+        "cloth": "5d0419d524a496df397f26699888e79c3f07a23909b8c27e6973cd27879fe63c",
+        "ownerAlpha": "1a465015ad4445dddc46c7819d880920b6c1c4f733f68dbaef2ccc1293f219a7"
+      },
+      {
+        "cloth": "1f1da3ce9c3286219fc3d58b5dfce1c4f16e884307a260870d494fbc7e0299ad",
+        "ownerAlpha": "1a465015ad4445dddc46c7819d880920b6c1c4f733f68dbaef2ccc1293f219a7"
+      }
+    ],
+    "182": [
+      {
+        "cloth": "b533431ca9b60e5050c244e8ab6be476949047aee9fabadff8f6b42d10f5a544",
+        "ownerAlpha": "434a293f43750f8d09085f4258a45f835fe2199c44cecc2ad727e365d2a3b7e6"
+      },
+      {
+        "cloth": "ea6f8bef73c103f4e204cd4855a30790cc29daa86f3af685444ab7a5f51987c3",
+        "ownerAlpha": "698f2c805cae5433fe119be791816986935f45b2053878fbab1cf033c95e96dc"
+      },
+      {
+        "cloth": "b4bbfe4cd9f6f15b0d471af33ea2e5c10130b6d30eb12b80a697ed31ddc4ee34",
+        "ownerAlpha": "9cbe5527929cb9aa2c44a920012263ec12d39c346af3c1b619d13d208c74544b"
+      },
+      {
+        "cloth": "32489cec15c02a057c5c0cabb08a0557fa20d5ee1731478056965481091a61cb",
+        "ownerAlpha": "afd4c18068a4a72667965ddf0189439544a078e4ce42495fb4f80a2fbd865a1f"
+      },
+      {
+        "cloth": "c901ff40c0d2b54b84e4d109f4fb2d2e5d317c621fd7519eb13177bb83df4aa5",
+        "ownerAlpha": "afd4c18068a4a72667965ddf0189439544a078e4ce42495fb4f80a2fbd865a1f"
+      },
+      {
+        "cloth": "088fa4d04565229a2ccbb01b8af816b6ef04b26fc6ec9576fe5de5cd7eb4814b",
+        "ownerAlpha": "55d28a2eee19451fc1e7a4d90f7d519ba0281153f10a9005f9ca0a0c7e048d6a"
+      },
+      {
+        "cloth": "ddf60c19fd124f350f0236e216b441eee24651e2de6a2243121caf5c4ab48fb2",
+        "ownerAlpha": "f36c9d28ae0e2dc5e5c2bfa28b01689c8124c66d2931b0773b7ca2faf81deb45"
+      },
+      {
+        "cloth": "b3f3733b083be92d80ffebb72e19e9ffdcabcdd24366de366c6445b30ab5aafd",
+        "ownerAlpha": "434f644619ffa45eece6a90e71d0f94f28edc120477683109dde59b0fa95b88a"
+      },
+      {
+        "cloth": "53c171c92ff627249d795d5022163289820d1a7dea90212f7245cb2fc38c4ece",
+        "ownerAlpha": "1a465015ad4445dddc46c7819d880920b6c1c4f733f68dbaef2ccc1293f219a7"
+      },
+      {
+        "cloth": "1f8a6ed466f2e9c19d3e84d7c7bb77a4a667b89223d74cb4994d4f4c25da87d8",
+        "ownerAlpha": "1a465015ad4445dddc46c7819d880920b6c1c4f733f68dbaef2ccc1293f219a7"
+      }
+    ]
+  },
+  "ownerPolicy": "Raw source owner alpha is exactly0/255; visible RGBA equals original anatomy. Zero only the garment at that mask before source-over, never paste original skin or uncovered body over other equipment.",
+  "references": [
+    {
+      "item": 147,
+      "phase": 0,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 147,
+      "phase": 1,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 147,
+      "phase": 2,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 147,
+      "phase": 3,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 147,
+      "phase": 4,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 147,
+      "phase": 5,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 147,
+      "phase": 6,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 147,
+      "phase": 7,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 147,
+      "phase": 8,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 147,
+      "phase": 9,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 168,
+      "phase": 0,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 168,
+      "phase": 1,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 168,
+      "phase": 2,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 168,
+      "phase": 3,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 168,
+      "phase": 4,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 168,
+      "phase": 5,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 168,
+      "phase": 6,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 168,
+      "phase": 7,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 168,
+      "phase": 8,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 168,
+      "phase": 9,
+      "differentChannels": 0,
+      "max": 0,
+      "alphaDiff": 0
+    },
+    {
+      "item": 182,
+      "phase": 0,
+      "differentChannels": 9383,
+      "max": 1,
+      "alphaDiff": 0
+    },
+    {
+      "item": 182,
+      "phase": 1,
+      "differentChannels": 8827,
+      "max": 1,
+      "alphaDiff": 0
+    },
+    {
+      "item": 182,
+      "phase": 2,
+      "differentChannels": 8415,
+      "max": 1,
+      "alphaDiff": 0
+    },
+    {
+      "item": 182,
+      "phase": 3,
+      "differentChannels": 9302,
+      "max": 1,
+      "alphaDiff": 0
+    },
+    {
+      "item": 182,
+      "phase": 4,
+      "differentChannels": 9532,
+      "max": 1,
+      "alphaDiff": 0
+    },
+    {
+      "item": 182,
+      "phase": 5,
+      "differentChannels": 9329,
+      "max": 1,
+      "alphaDiff": 0
+    },
+    {
+      "item": 182,
+      "phase": 6,
+      "differentChannels": 8689,
+      "max": 1,
+      "alphaDiff": 0
+    },
+    {
+      "item": 182,
+      "phase": 7,
+      "differentChannels": 8286,
+      "max": 1,
+      "alphaDiff": 0
+    },
+    {
+      "item": 182,
+      "phase": 8,
+      "differentChannels": 9199,
+      "max": 1,
+      "alphaDiff": 0
+    },
+    {
+      "item": 182,
+      "phase": 9,
+      "differentChannels": 9336,
+      "max": 1,
+      "alphaDiff": 0
+    }
+  ]
+}

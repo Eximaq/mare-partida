@@ -43,5 +43,6 @@
       "id": "female-torso179-south-frozen-walk-native",
       "sha256": "3c004adf73bde5830ea3c3dbf37d38b935e6d4855f2bb06646e37a0dcdf0a10b"
     }
-  ]
+  ],
+  "indexCanonicalSHA256BeforeSouthExtension": "ac96c248bda77003a1cac1c63d996249d45322fde1ecd549b66aedfc295d93fc"
 }

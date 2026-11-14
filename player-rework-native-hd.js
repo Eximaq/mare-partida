@@ -24,7 +24,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(pants!=null&&!Object.hasOwn(s.items,String(pants)))return null;
   if(pants==null&&!['coat','boots','gloves'].some(k=>values[k]!=null))return null;
   if(Object.entries(equipment).some(([slot,value])=>!['legs','pants','coat','boots','gloves','head'].includes(slot)||value&&typeof value==='object'&&['variant','variantId','appearanceVariant'].some(k=>value[k]!=null&&value[k]!=='original')))return null;
-  if(values.coat!=null&&![6,7,137,144,151,158,165,172,179].includes(values.coat)||values.boots!=null&&values.boots!==155||values.gloves!=null&&values.gloves!==152)return null;
+  if(values.coat!=null&&![6,7,130,137,144,151,158,165,172,179].includes(values.coat)||values.boots!=null&&values.boots!==155||values.gloves!=null&&values.gloves!==152)return null;
   if(!s.controlsApproved&&(values.coat===151||values.boots!=null||values.gloves!=null))return null;
   const base=selectBase({...player,__southAnatomy:true,equipment:equipment.head!=null?{head:equipment.head}:{}},o,true);
   if(!base||base.sourceId!==s.bodyRecord||base.headRecord||base.gearOnlyRecord)return null;
@@ -39,7 +39,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const anatomy=cd.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5),...(l.frames?{frames:l.frames.filter((_,i)=>i%5===0)}:{})}));
    if(!eq(anatomy,bd.layers)||cd.layers.filter(l=>l.id.startsWith('base:')&&l.frames).some(l=>l.frames.some((f,i)=>f!==l.frames[Math.floor(i/5)*5])))return null;
   }
-  const layers=s.layers.filter(l=>values[l.slot]!=null&&(l.slot!=='coat'||values.coat===151)),refs=[...new Set([...layers.flatMap(l=>l.frames),...(pants!=null?s.items[pants].flatMap(f=>[f.cloth,f.owner].filter(Boolean)):[]),...s.contacts.map(c=>c.mask)])];
+  const layers=s.layers.filter(l=>values[l.slot]!=null&&(l.slot!=='coat'||values.coat===(l.item??151))),refs=[...new Set([...layers.flatMap(l=>l.frames),...(pants!=null?s.items[pants].flatMap(f=>[f.cloth,f.owner,f.ownerAlpha].filter(Boolean)):[]),...s.contacts.map(c=>c.mask)])];
   const d=base.pack.directions.south;
   return {id:'authored-female-south:'+JSON.stringify(values)+':'+base.id,body:'female',action:'walk',direction:'south',hdKind:'authored-pants',colorAppearance:base.colorAppearance,anatomyBase:base,equipment:values,sourceRefs:refs,authoredPantsLayer:{item:pants??null,spec:s,layers,mappedCoat},pack:{...base.pack,directions:{south:{...d,clip:{frames:40,fps:40,loop:true}}}}};
  }
@@ -59,10 +59,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const operations=[{depth:0,kind:'body'},...r.authoredPantsLayer.layers.map(l=>({...l,kind:l.id==='visible-original-hands'?'hands':'source',hash:l.frames[k]}))];
   const mappedCoat=r.authoredPantsLayer.mappedCoat;
   if(mappedCoat)for(const layer of mappedCoat.pack.directions.south.layers.filter(l=>!l.id.startsWith('base:')))operations.push({depth:layer.depth,kind:'mapped-coat',layer});
-  if(pants!=null){operations.push({depth:46,kind:'source',hash:s.items[pants][k].cloth});if(s.items[pants][k].owner)operations.push({depth:47,kind:'owner',hash:s.items[pants][k].owner});}
+  if(pants!=null){operations.push({depth:46,kind:s.items[pants][k].ownerAlpha?'pants-owned':'source',hash:s.items[pants][k].cloth,ownerAlpha:s.items[pants][k].ownerAlpha});if(s.items[pants][k].owner)operations.push({depth:47,kind:'owner',hash:s.items[pants][k].owner});}
   for(const op of operations.sort((a,b)=>a.depth-b.depth)){
    if(op.kind==='body')ctx.drawImage(body,0,0);
    else if(op.kind==='owner'){const data=ctx.getImageData(0,0,W,H),mask=pixels(op.hash);for(let p=0;p<W*H;p++)if(mask[p*4])data.data.set(bodyPixels.subarray(p*4,p*4+4),p*4);ctx.putImageData(data,0,0);}
+   else if(op.kind==='pants-owned'){
+    // The authored opaque owner identifies anatomy, not light-colored pixels to paste.
+    // Remove only that domain from this garment BEFORE blending, preserving boots/other layers below it.
+    const tile=makeCanvas(W,H),tc=tile.getContext('2d');tc.drawImage(image(op.hash),0,0);const data=tc.getImageData(0,0,W,H),owner=pixels(op.ownerAlpha);
+    for(let p=0;p<W*H;p++)if(owner[p*4+3]){if(owner[p*4+3]!==255)throw Error('Nonbinary authored pants owner');data.data.fill(0,p*4,p*4+4);}tc.putImageData(data,0,0);ctx.drawImage(tile,0,0);
+   }
    else if(op.kind==='hands'){const tile=makeCanvas(W,H),tc=tile.getContext('2d'),data=tc.createImageData(W,H),mask=pixels(op.hash);for(let p=0;p<W*H;p++)if(mask[p*4+3])data.data.set(bodyPixels.subarray(p*4,p*4+4),p*4);tc.putImageData(data,0,0);ctx.drawImage(tile,0,0);}
    else if(op.kind==='mapped-coat'){const d=mappedCoat.pack.directions.south,q={...mappedCoat,pack:{...mappedCoat.pack,directions:{south:{...d,layers:[op.layer]}}}},tile=makeCanvas(W,H);outfitRegistry.render(tile.getContext('2d'),q,entry.images,{frame:sourcePhase*5,appearance:mappedCoat.colorAppearance,makeCanvas});ctx.drawImage(tile,0,0);}
    else ctx.drawImage(image(op.hash),0,0);

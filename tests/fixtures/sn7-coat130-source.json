@@ -1,0 +1,127 @@
+{
+  "sourceRecord": "approved-female130-walk-s36-south",
+  "sourcePackSHA256": "c5f6bc28df55939f8acffde98b305547fa1df979d6db6610777a2cbf1f50c1ff",
+  "sourceRecordCanonicalSHA256": "4408ce00a9ea1599933dc79d470d2a48a474d5186b67d86af3d8ca74e0dea0e5",
+  "sourcePackage": "female_130_south_S36_source-pack.zip",
+  "rawAppearancePolicy": "Existing approved S36 route draws the raw source body without applying saved palettes. Independent raw replay remains RGBA exact.",
+  "savedAppearancePolicy": "New shared route uses the existing anatomy/head/material renderer and saved appearance. Cloth images unchanged; hand owner uses current anatomy before glove152 at depth102.",
+  "newVisualApproval": "Sentinel_9ceedc9c4e08819197773dbc17966b19, replying to preview8f920a: saved appearance on130 S36 explicitly approved; no connector authorization implied.",
+  "layers": [
+    {
+      "id": "coat130-rear-torso",
+      "slot": "coat",
+      "item": 130,
+      "depth": -5,
+      "frames": [
+        "ea1c3bc3271fb2c2bebd13a6ae48c7cc4bb16e0a76ad56be742fab79dea9d9e4",
+        "ea1c3bc3271fb2c2bebd13a6ae48c7cc4bb16e0a76ad56be742fab79dea9d9e4",
+        "ea1c3bc3271fb2c2bebd13a6ae48c7cc4bb16e0a76ad56be742fab79dea9d9e4",
+        "ea1c3bc3271fb2c2bebd13a6ae48c7cc4bb16e0a76ad56be742fab79dea9d9e4",
+        "ea1c3bc3271fb2c2bebd13a6ae48c7cc4bb16e0a76ad56be742fab79dea9d9e4",
+        "ea1c3bc3271fb2c2bebd13a6ae48c7cc4bb16e0a76ad56be742fab79dea9d9e4",
+        "ea1c3bc3271fb2c2bebd13a6ae48c7cc4bb16e0a76ad56be742fab79dea9d9e4",
+        "ea1c3bc3271fb2c2bebd13a6ae48c7cc4bb16e0a76ad56be742fab79dea9d9e4",
+        "ea1c3bc3271fb2c2bebd13a6ae48c7cc4bb16e0a76ad56be742fab79dea9d9e4",
+        "ea1c3bc3271fb2c2bebd13a6ae48c7cc4bb16e0a76ad56be742fab79dea9d9e4"
+      ]
+    },
+    {
+      "id": "coat130-front-leftUpper",
+      "slot": "coat",
+      "item": 130,
+      "depth": 100,
+      "frames": [
+        "0878492bc0fc2846cab96d4538c0b6fa52303217a7748ae910bb1630e10f2678",
+        "c804cf1e7ea364371cca9bdfafa83065ed378d3f9b32ae642e251abeccf05304",
+        "8a49d0677450705c31c0b186229770c82992c056cf4e515ff154cad12ec331fe",
+        "a446f6f5aec546d436ebb88d79daa8571c5e51fbc530f6d9e8023ffbb05a4b8f",
+        "a446f6f5aec546d436ebb88d79daa8571c5e51fbc530f6d9e8023ffbb05a4b8f",
+        "4de4d64ec7b270676b1e31746eedcd33c23f7768121ddbceae111e2155a12808",
+        "4b2d7123bd59015071c2607c3a2db0633e04d9476d6206b8c4e55bad1f044428",
+        "9d3e21d04de607a9fece968fbbab87e6ab66084a1dcee8360efa8cccc743a8f5",
+        "97238945907c476d7a6a896d73e0f992caac9105c22ba99741fc2a95b48f48bb",
+        "97238945907c476d7a6a896d73e0f992caac9105c22ba99741fc2a95b48f48bb"
+      ]
+    },
+    {
+      "id": "coat130-front-rightUpper",
+      "slot": "coat",
+      "item": 130,
+      "depth": 100,
+      "frames": [
+        "ee3d4b096dea4beffe4ad784568b07d9ada80328fb5242acd366bceaad500fd8",
+        "9ff7224f860b9267cd7806692df00d8e4f2184a2563068f934b728cefef9e5c4",
+        "45bcfa3a8b26cec50bc657a3e5778f68821a6c87a46c786727610dd345ae1f5d",
+        "e04316d60784c85bdebdf5288dac9c2e8ae99f5762c9a326f89fddd086f89f32",
+        "e04316d60784c85bdebdf5288dac9c2e8ae99f5762c9a326f89fddd086f89f32",
+        "ea951830997549573c30b467af2123abc0c76acf1627d7e9aa9e7a3ac2771ea0",
+        "b3ca9124e98c42bf86bd96efcea2c7958571a3cea6bc36dec70fbb5aac3b1bc0",
+        "c253c230a43a9a7cc5fa2c15b0319f027bc45825cf798791b5c5093351699ef2",
+        "f408ce8430bb5960a3cda995c7b77756d73149749243ac2231b5684f2d9b2b39",
+        "f408ce8430bb5960a3cda995c7b77756d73149749243ac2231b5684f2d9b2b39"
+      ]
+    },
+    {
+      "id": "visible-original-hands",
+      "slot": "coat",
+      "item": 130,
+      "depth": 101,
+      "frames": [
+        "4ce395bf3e1372dca528418bfe48d6040b31ed45674c8a4aa3f3fd7c440e712d",
+        "a4905904b63ddd58a4305f87fa1aad9fbb2093aa23c3be86073644b02bdca4e3",
+        "a67047775e167d8f461eeaa0e54d6259967bce492d74edaf80caa432b91ea0d7",
+        "dced694c17e1a2a4d709c1ebd51e81252f3bd134e3e0835065b7bbea87e9b9a1",
+        "dced694c17e1a2a4d709c1ebd51e81252f3bd134e3e0835065b7bbea87e9b9a1",
+        "9271a47d20972943e1349706ec531a6e7415edffb69781bb11f494f8f10bf397",
+        "cbae0cbeccd78f6a3862245aaeb8df96c6d3195b0c219eb49a683650c253ab88",
+        "dc8b6386ff5f0ab735f04c742f030155e76bd6bd8af7e7137e5347c92d50cfe4",
+        "ec812539dca4f7ef326c1fcd5df668367c0bdc2cfcb5bae6b4684f9d1d5b9794",
+        "ec812539dca4f7ef326c1fcd5df668367c0bdc2cfcb5bae6b4684f9d1d5b9794"
+      ]
+    },
+    {
+      "id": "coat130-front-original-proportion-core",
+      "slot": "coat",
+      "item": 130,
+      "depth": 100,
+      "frames": [
+        "1890d8d0b9f5335ba25736441d7791dfa5dfbd501d90c3e8f290849988d24d3a",
+        "1890d8d0b9f5335ba25736441d7791dfa5dfbd501d90c3e8f290849988d24d3a",
+        "1890d8d0b9f5335ba25736441d7791dfa5dfbd501d90c3e8f290849988d24d3a",
+        "1890d8d0b9f5335ba25736441d7791dfa5dfbd501d90c3e8f290849988d24d3a",
+        "1890d8d0b9f5335ba25736441d7791dfa5dfbd501d90c3e8f290849988d24d3a",
+        "1890d8d0b9f5335ba25736441d7791dfa5dfbd501d90c3e8f290849988d24d3a",
+        "1890d8d0b9f5335ba25736441d7791dfa5dfbd501d90c3e8f290849988d24d3a",
+        "1890d8d0b9f5335ba25736441d7791dfa5dfbd501d90c3e8f290849988d24d3a",
+        "1890d8d0b9f5335ba25736441d7791dfa5dfbd501d90c3e8f290849988d24d3a",
+        "1890d8d0b9f5335ba25736441d7791dfa5dfbd501d90c3e8f290849988d24d3a"
+      ]
+    },
+    {
+      "id": "coat130-front-own-proportion-side-root-lining",
+      "slot": "coat",
+      "item": 130,
+      "depth": 99.8,
+      "frames": [
+        "95e1456da8594e9cff095e81445e9e9a07c4295403366bad376339b98c96f0db",
+        "95e1456da8594e9cff095e81445e9e9a07c4295403366bad376339b98c96f0db",
+        "95e1456da8594e9cff095e81445e9e9a07c4295403366bad376339b98c96f0db",
+        "95e1456da8594e9cff095e81445e9e9a07c4295403366bad376339b98c96f0db",
+        "95e1456da8594e9cff095e81445e9e9a07c4295403366bad376339b98c96f0db",
+        "95e1456da8594e9cff095e81445e9e9a07c4295403366bad376339b98c96f0db",
+        "95e1456da8594e9cff095e81445e9e9a07c4295403366bad376339b98c96f0db",
+        "95e1456da8594e9cff095e81445e9e9a07c4295403366bad376339b98c96f0db",
+        "95e1456da8594e9cff095e81445e9e9a07c4295403366bad376339b98c96f0db",
+        "95e1456da8594e9cff095e81445e9e9a07c4295403366bad376339b98c96f0db"
+      ]
+    }
+  ],
+  "knownExistingNeckIssue": {
+    "domain": "authored chest-neck-rigid, cropped/blonde/olive/amber phase0",
+    "visiblePixels": 633,
+    "introducedBy130": 0,
+    "stillRawSourceRGB": 340,
+    "existingPaletteRGB": 293,
+    "note": "Existing named-hair restoration issue, separate audit. Not a garment recolor or new130 regression."
+  }
+}

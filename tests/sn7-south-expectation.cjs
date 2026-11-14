@@ -1,0 +1,5 @@
+'use strict';const assert=require('node:assert/strict');
+function source(item,direction){return direction==='south'&&[147,168,182].includes(item)?'authored-female-south:'+JSON.stringify({legs:item})+':v7-female-walk-drawn-all-south:original:none:light:brown:eye-palette:brown':`independent-female-pants${item}-${direction}-walk`;}
+function check(record,item,direction){assert.equal(record?.id,source(item,direction));assert.equal(record.body,'female');assert.equal(record.direction,direction);assert.equal(record.action,'walk');assert.deepEqual(record.pack.directions[direction].clip,{frames:40,fps:40,loop:true});if(direction==='south'&&[147,168,182].includes(item)){assert.equal(record.authoredPantsLayer.item,item);assert.deepEqual(record.equipment,{legs:item});assert.equal(record.anatomyBase.sourceId,'v7-female-walk-drawn-all-south');assert.equal(record.authoredPantsLayer.spec.frameToPhase.length,40);}else assert.equal(record.equipment.pants,item);return record;}
+function phases(record){return record.authoredPantsLayer?record.authoredPantsLayer.spec.frameToPhase:record.authoredWalkTimeline.frameToPhase;}
+module.exports={source,check,phases};
