@@ -1,0 +1,175 @@
+{
+  "sourceSHA256": "dd0536a3ffeaf724ca559bb1dbcca73117ddca5af6a2736ede8671ed894057b7",
+  "exit": 0,
+  "output": "",
+  "matches": [
+    {
+      "frame": "candidate-east-phase0.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase0-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-east-phase1.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase1-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-east-phase2.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase2-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-east-phase3.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase3-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-east-phase4.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase4-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-east-phase5.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase5-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-east-phase6.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase6-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-east-phase7.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase7-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-east-phase8.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase8-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-east-phase9.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase9-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-east-phase10.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase10-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-east-phase11.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-east-phase11-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase0.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase0-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase1.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase1-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase2.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase2-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase3.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase3-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase4.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase4-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase5.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase5-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase6.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase6-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase7.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase7-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase8.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase8-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase9.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase9-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase10.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase10-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    },
+    {
+      "frame": "candidate-west-phase11.png",
+      "replayDifferentPixels": 0,
+      "approvedByteExact": true,
+      "approvedFrame": "candidate-west-phase11-opaque.png",
+      "approvedReplayDifferentPixels": 0
+    }
+  ]
+}

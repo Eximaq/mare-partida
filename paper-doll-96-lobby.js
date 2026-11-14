@@ -209,8 +209,8 @@
       if(consumer==='world')prepareWorldDirections(player);
       // Trim legacy preparation sources even when HD owns the early-return draw.
       if(scene==='hunt'&&!pending&&!previewPending)trimSourceImages();
-      if(nativeHD?.drawStable(ctx,player,{action:['combat-idle','guard','hurt','death'].includes(action)?'idle':action,direction,time,progress,x,y,consumer,weaponless})){defaultHD?.clear();draws++;return true;}
-      if(!rework?.active&&defaultHD?.draw(ctx,player,{action:['combat-idle','guard','hurt','death'].includes(action)?'idle':action,direction,time,progress,x,y,consumer,weaponless})){draws++;return true;}
+      if(nativeHD?.drawStable(ctx,player,{action:['combat-idle','guard','hurt','death'].includes(action)?'idle':action,direction,time,progress,timing,x,y,consumer,weaponless})){defaultHD?.clear();draws++;return true;}
+      if(!rework?.active&&defaultHD?.draw(ctx,player,{action:['combat-idle','guard','hurt','death'].includes(action)?'idle':action,direction,time,progress,timing,x,y,consumer,weaponless})){draws++;return true;}
       if(rework?.active&&!player?.zoanTransformed){rework.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale:scale===null?1:scale*46/96,consumer,weaponless});return true;}
       if(!active||state!=='ready'||player?.zoanTransformed||!['south','north','east','west'].includes(direction))return false;
       const value=resolve(player);if(scene!=='lobby'&&!(scene==='hunt'&&value.supported))return false;

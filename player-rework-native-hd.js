@@ -183,7 +183,18 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(needHead&&((!head&&!gearOnly&&!femaleNamed)||(!femaleNamed&&!headCompat)))return null;
   return {...r,id:r.id+':'+hair+':'+(headItem??'none')+':'+(a.skin||'original')+':'+(a.hairColor||'original')+(femaleNamed?.eyeColor?':eye-palette:'+femaleNamed.eyeColor:'')+(femaleNamed?.eyeStyle?':'+femaleNamed.eyeStyle:''),eyeStyle:femaleNamed?.eyeStyle,sourceId:r.id,colorAppearance:a,headRecord:head,gearOnlyRecord:gearOnly,femaleNamedHairRecord:femaleNamed,headLook};
  }
- function frameFor(r,o){const timeline=r.hdKind==='weapon'?r.timeline:null,clip=r.hdKind==='weapon'?{frames:timeline.length,fps:r.fps,loop:false}:r.pack.directions[r.direction].clip;const tick=Number.isFinite(o.progress)?Math.floor(Math.max(0,Math.min(1,o.progress))*clip.frames):Math.floor(Math.max(0,o.time||0)*clip.fps),position=clip.loop?tick%clip.frames:Math.min(clip.frames-1,tick);return timeline?r.states.findIndex(s=>s.state===String(timeline[position])):position;}
+ function frameFor(r,o){
+  const timeline=r.hdKind==='weapon'?r.timeline:null,clip=timeline?{frames:timeline.length,fps:r.fps,loop:false}:r.pack.directions[r.direction].clip;
+  let progress=o.progress;
+  // Opt-in art-only mapping. Gameplay owns progress/hit/duration; never retime its clock.
+  const mapping=r.orderedAttack&&r.visualSampling,t=o.timing;
+  if(mapping?.schema==='authored-contact-progress-v1'&&Number.isFinite(progress)&&progress>=0&&progress<=1&&t?.locked===true&&Number.isFinite(t.hitFrameRatio)&&t.hitFrameRatio>0&&t.hitFrameRatio<1&&Number.isFinite(t.duration)&&t.duration>0){
+   const contact=mapping.contactTick/clip.frames,hit=t.hitFrameRatio;
+   if(contact>0&&contact<1)progress=progress<=hit?progress*contact/hit:contact+(progress-hit)*(1-contact)/(1-hit);
+  }
+  const tick=Number.isFinite(progress)?Math.floor(Math.max(0,Math.min(1,progress))*clip.frames+(r.orderedAttack?1e-9:0)):Math.floor(Math.max(0,o.time||0)*clip.fps),position=clip.loop?tick%clip.frames:Math.min(clip.frames-1,tick);
+  return timeline?r.states.findIndex(s=>s.state===String(timeline[position])):position;
+ }
  function filesFor(r,frame){return [...new Set([...(r.hdKind==='female-equipment'?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).requiredFiles(r,{frame}),...(r.headRecord?headRegistry.requiredFiles(r.headRecord):[]),...(r.gearOnlyRecord?originalHairGearRegistry.requiredFiles(r.gearOnlyRecord):[]),...(r.femaleNamedHairRecord?femaleNamedHairRegistry.requiredFiles(r.femaleNamedHairRecord):[])])];}
  async function prepare(player,o,clipFileLimit=0){await ready;const r=select(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
   const job=(async()=>{try{entry=entry||{images:new Map(),proofs:[],frames:new Map(),imageLimit:Math.max(64,clipFileLimit)};await Promise.all(files.map(async p=>{if(!entry.images.has(p))entry.images.set(p,await loadShared(p));}));
