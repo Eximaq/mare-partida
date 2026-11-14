@@ -199,7 +199,7 @@ for folder in ['tools/rework-weapons','tools/rework-outfits']:
         shutil.copytree(source,OUT/folder,dirs_exist_ok=True)
 
 # Native-density source modules: deploy original PNG bytes, never review-only workspaces.
-for folder in ['tools/rework-base-hd','tools/rework-weapon-layers-hd','tools/rework-modular-outfits-hd']:
+for folder in ['tools/rework-base-hd','tools/rework-weapon-layers-hd','tools/rework-modular-outfits-hd','tools/rework-female-north-rig','tools/rework-female-profile-rig']:
     source=ROOT/folder
     if source.is_dir():
         for p in source.rglob('*'):

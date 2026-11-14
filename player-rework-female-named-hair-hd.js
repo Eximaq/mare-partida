@@ -3,6 +3,31 @@
 const skinMaterials=root.MareNativeSkinHD||(typeof require==='function'?require('./player-rework-skin-hd.js'):null);
 const BP='tools/rework-base-hd/assets/',HP='tools/rework-accessories/assets/';
 const SOUTH_NECK_SOURCE='961e610a5767deace01e30068b84874cda5a3701aaf2b2aaceff40314d02af7c',SOUTH_WALK_HEAD_SOURCE='b4dc10ba2d5cf91f2b3217536e4d6beee5d915bef54707390fc076129d3147e6';
+function northNeckContact(base,r,images,back,tc,makeCanvas){
+ const o=r.ownership;
+ if(!r.northNeckContact||!r.fused||base.direction!=='north'||base.pack.density!==4||base.pack.frame.width!==128||base.pack.frame.height!==128||o.walkHead!=='510d5b548e70298448280c92c96495542aaa267096e832c1a4c370b499416960'||o.cleanHead!=='166331e5140203e0a448d8e0f9f189b16948787f25335066e4e17b19977cbdcb')return;
+ const source=images.get(BP+o.walkHead+'.png');if(!source||source.width!==512||source.height!==512)throw Error('Invalid NORTH neck contact source');
+ const walk=makeCanvas(512,512),wc=walk.getContext('2d');wc.drawImage(source,0,0);
+ const old=wc.getImageData(0,0,512,512).data,result=tc.getImageData(0,0,512,512),out=result.data;
+ // Use the separated neck already in the clean head, positioned five native
+ // pixels lower. Do not move the head, reshape hair, or scale a source layer.
+ for(let y=165;y<=169;y++)for(let x=241;x<=273;x++){
+  const i=(y*512+x)*4,donor=((y-5+64)*640+x+64)*4;
+  const gap=r.style!=='original'&&y<=166&&x>=244&&x<=269&&out[i+3]===0;
+  const restore=r.style!=='original'&&y>=167&&x>=242&&x<=270&&out[i+3]===255&&old[i+3]===255&&[0,1,2].every(c=>out[i+c]===old[i+c]);
+  if(!gap&&!restore)continue;
+  if(back[donor+3]!==255)throw Error('NORTH neck contact has no opaque original backing');
+  out.set(back.subarray(donor,donor+4),i);
+ }
+ tc.putImageData(result,0,0);walk.width=1;
+}
+function profileNeckRestore(base,r,wa,i,x,y){
+ if(!r.profileNeckRestore||!r.skinColor||!['east','west'].includes(base.direction))return null;
+ const sources={east:'202352cb972f4fe437ca7fd43aa4d848b88a4fc98dcfc6393bb5fd0b4c1e16bd',west:'33cd3e581abb50daa48b73e462fb0e267d492b91eb061fafc075dad6a0a4421b'};
+ if(r.ownership.walkHead!==sources[base.direction]||y<166||y>169||wa[i+3]!==255)return null;
+ const api=root.MareAppearance96,pixel=wa.slice(i,i+4),tone=skinMaterials.tone(...pixel.subarray(0,3));
+ return api.recolor(pixel,new Uint8Array([tone]),api.skins[r.skinColor].ramp);
+}
 function create(index,ownership,{baseRegistry,makeCanvas}={}){
  if(ownership?.schema!=='female-original-face-named-hair-v1'||!baseRegistry||!makeCanvas)throw Error('Female original-face dependencies missing');
  const cache=new Map();
@@ -50,10 +75,25 @@ function create(index,ownership,{baseRegistry,makeCanvas}={}){
  }
  const data=cx.getImageData(0,0,640,640),back=cl.getImageData(0,0,640,640);if(r.skinColor){const api=root.MareAppearance96;back.data.set(api.recolor(back.data,skinMaterials.mask(back.data,640,'anatomy'),api.skins[r.skinColor].ramp));}for(const[y,x0,x1]of (r.style==='original'?[]:o.fringeSpans))for(let x=x0;x<=x1;x++){const i=(y*640+x)*4;if(back.data[i+3]!==255)throw Error('Fringe has no original opaque backing');data.data.set(back.data.subarray(i,i+4),i);}cx.putImageData(data,0,0);
  const w=base.pack.frame.width*4,h=base.pack.frame.height*4,tile=makeCanvas(w,h),tc=tile.getContext('2d'),padding=r.fused?-64:0;tc.drawImage(composite,padding,padding);
- if(r.fused){const walk=makeCanvas(512,512),wc=walk.getContext('2d');wc.drawImage(get(images,BP+o.walkHead+'.png'),0,0);const wa=wc.getImageData(0,0,512,512),project=ox.getImageData(64,64,512,512),result=tc.getImageData(0,0,512,512),[x0,y0,x1,y1]=o.walkDifferenceBounds;const {neckPixels,neckColored}=southNeckMaterial(base,r,images);for(let i=0;i<wa.data.length;i+=4){const different=wa.data[i+3]!==project.data[i+3]||(wa.data[i+3]&&[0,1,2].some(c=>wa.data[i+c]!==project.data[i+c]));if(different){const px=i/4,x=px%512,y=Math.floor(px/512);if(x<x0||x>x1||y<y0||y>y1)throw Error('Unexpected original neck ownership difference');if(neckPixels&&neckPixels[i+3]===255&&wa.data[i+3]===255&&[0,1,2].every(c=>neckPixels[i+c]===wa.data[i+c])){result.data.set(neckColored.subarray(i,i+4),i);}else if(r.style==='original'&&r.hairColor&&wa.data[i+3]){const api=root.MareAppearance96;const pixel=wa.data.slice(i,i+4);const mask=api.materialMask(pixel,'hair');result.data.set(api.recolor(pixel,mask,api.hairs[r.hairColor].ramp),i);}else result.data.set(wa.data.subarray(i,i+4),i);}}tc.putImageData(result,0,0);walk.width=1;}
+ if(r.fused){const walk=makeCanvas(512,512),wc=walk.getContext('2d');wc.drawImage(get(images,BP+o.walkHead+'.png'),0,0);const wa=wc.getImageData(0,0,512,512),project=ox.getImageData(64,64,512,512),result=tc.getImageData(0,0,512,512),[x0,y0,x1,y1]=o.walkDifferenceBounds;const {neckPixels,neckColored}=southNeckMaterial(base,r,images);for(let i=0;i<wa.data.length;i+=4){const different=wa.data[i+3]!==project.data[i+3]||(wa.data[i+3]&&[0,1,2].some(c=>wa.data[i+c]!==project.data[i+c]));if(different){const px=i/4,x=px%512,y=Math.floor(px/512);if(x<x0||x>x1||y<y0||y>y1)throw Error('Unexpected original neck ownership difference');const profileNeck=profileNeckRestore(base,r,wa.data,i,x,y);if(profileNeck){result.data.set(profileNeck,i);}else if(neckPixels&&neckPixels[i+3]===255&&wa.data[i+3]===255&&[0,1,2].every(c=>neckPixels[i+c]===wa.data[i+c])){result.data.set(neckColored.subarray(i,i+4),i);}else if(r.style==='original'&&r.hairColor&&wa.data[i+3]){const api=root.MareAppearance96;const pixel=wa.data.slice(i,i+4);const mask=api.materialMask(pixel,'hair');result.data.set(api.recolor(pixel,mask,api.hairs[r.hairColor].ramp),i);}else result.data.set(wa.data.subarray(i,i+4),i);}}tc.putImageData(result,0,0);walk.width=1;}
  const d=base.pack.directions[base.direction];
  if(r.source){const dx=Math.round((d.rest.NECK.x-r.source.rest.NECK.x)*4),dy=Math.round((d.rest.NECK.y-r.source.rest.NECK.y)*4);if(r.gearRecord&&r.gearPolicy==='approved-same-hairstyle-policy'){const g=r.gearRecord,a=root.ReworkAccessoryVendor.headFemale.adjustment(g.adjustmentRecord.adjustment),entry=JSON.parse(JSON.stringify(g.entry)),dir=entry.pack.directions[base.direction];dir.headgearPolicy.headAdjustment={x:0,y:0,scale:100,...dir.headgearPolicy.headAdjustment};const pack=root.ReworkAccessoryVendor.headFemale.apply(entry.pack,base.direction,a,entry),pd=pack.directions[base.direction];pd.layers=pd.layers.filter(l=>l.slot==='hair'||l.id===pd.headgearPolicy.gearId);const raw=new Map(pd.layers.map(l=>[l.source,get(images,HP+(l.id===pd.headgearPolicy.gearId?gearRaster(g,l):l.source)+'.png')])),adjusted=root.ReworkAccessoryVendor.headPreview.imagesForHair(pack,base.direction,raw,a,makeCanvas),overlay=makeCanvas(512,512);root.ReworkAccessoryVendor.compositor.render(overlay.getContext('2d'),pack,adjusted,{direction:base.direction,frame:0,density:4});tc.drawImage(overlay,dx,dy);overlay.width=1;for(const[k,v]of adjusted)if(raw.get(k)!==v&&v.getContext)v.width=1;}else for(const l of r.source.layers.filter(l=>l.slot==='hair').sort((a,b)=>a.depth-b.depth))tc.drawImage(get(images,HP+l.source+'.png'),dx,dy);}
  if(r.gearRecord&&r.gearPolicy==='source-alpha-only'){const g=r.gearRecord,a=g.adjustmentRecord.adjustment,prior=g.headgearPolicy?.headAdjustment||{},gear=g.layers.find(l=>l.id===g.headgearPolicy?.gearId);if(!gear)throw Error('Missing native gear ownership');const dx=Math.round((d.rest.NECK.x-g.rest.NECK.x+(a.gearX||0)+(prior.x||0))*4),dy=Math.round((d.rest.NECK.y-g.rest.NECK.y+(a.gearY||0)+(prior.y||0))*4);tc.drawImage(get(images,HP+gear.source+'.png'),dx,dy);}
+ // Candidate directional neck attachment: native pixels translated only into
+ // the transparent junction, never replace face, hair or a clothing pixel.
+ if(r.profileNeckBridge&&r.fused&&['east','west'].includes(base.direction)){
+  const expected={east:'202352cb972f4fe437ca7fd43aa4d848b88a4fc98dcfc6393bb5fd0b4c1e16bd',west:'33cd3e581abb50daa48b73e462fb0e267d492b91eb061fafc075dad6a0a4421b'};
+  if(o.walkHead!==expected[base.direction])throw Error('Profile neck bridge source mismatch');
+  const neck=makeCanvas(512,512),nx=neck.getContext('2d');nx.drawImage(get(images,BP+o.walkHead+'.png'),0,0);const source=nx.getImageData(0,0,512,512).data,result=tc.getImageData(0,0,512,512),[left,,right]=o.walkDifferenceBounds,api=root.MareAppearance96;
+  for(let y=163;y<=165;y++)for(let x=left;x<=right;x++){
+   const target=(y*512+x)*4,donor=((y+3)*512+x)*4;
+   if(result.data[target+3]!==0||source[donor+3]!==255)continue;
+   let pixel=source.slice(donor,donor+4);if(r.skinColor)pixel=api.recolor(pixel,new Uint8Array([skinMaterials.tone(...pixel.subarray(0,3))]),api.skins[r.skinColor].ramp);
+   result.data.set(pixel,target);
+  }
+  tc.putImageData(result,0,0);neck.width=1;
+ }
+ northNeckContact(base,r,images,back.data,tc,makeCanvas);
  composite.width=1;original.width=1;clean.width=1;cache.set(key,tile);while(cache.size>24){const old=cache.keys().next().value;cache.get(old).width=1;cache.delete(old);}return tile;}
  function render(ctx,base,r,images,options={}){const d=base.pack.directions[base.direction],head=d.layers.find(l=>l.slot==='headBase'),source='female-original-face-memory:'+r.id,tile=compose(base,r,images),layers=d.layers.filter(l=>!['headBase','face','hair'].includes(l.slot)).concat({...head,source,frames:undefined}),pack={...base.pack,directions:{[base.direction]:{...d,layers}}},adapted={...base,pack,sourceRefs:[...new Set(layers.flatMap(l=>l.frames||[l.source]))]},map=new Map(images);map.set(BP+source+'.png',tile);return baseRegistry.render(ctx,adapted,map,{...options,femaleAnatomyPalette:!!r.skinColor});}
  return {resolve,requiredFiles,compose,render};
