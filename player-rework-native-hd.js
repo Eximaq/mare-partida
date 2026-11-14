@@ -43,6 +43,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const independentEquipment=Object.fromEntries(Object.entries(player.equipment||{}).filter(([slot,v])=>slot!=='weapon'&&v!=null&&!['none','original'].includes(v)));
   const independent=!player.__reworkSubset&&weaponRegistry?.resolveSeparable?.({item:o.weaponless?undefined:(player.equipment?.weapon?.def??player.equipment?.weapon),body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:independentEquipment});
   if(independent)return {...independent,hdKind:'weapon'};
+  const independentPants=!player.__reworkSubset&&outfitRegistry?.resolveIndependentPants?.({body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:player.equipment||{}});
+  if(independentPants)return {...independentPants,hdKind:'outfit'};
   const approved=allowApprovedAppearance&&!player.__reworkSubset?outfitRegistry?.resolve({body:canonical(a.body),action:o.action,direction:o.direction,appearance:{...a,eyes:a.face},equipment,allowApprovedAppearance:true}):null;
   if(approved?.approvedAppearance)return {...approved,hdKind:'outfit'};
   if(onlyApprovedAppearance){

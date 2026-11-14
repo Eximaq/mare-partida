@@ -5,6 +5,18 @@ const id=x=>x?.def??x;
 const skinMaterials=root.MareNativeSkinHD||(typeof require==='function'?require('./player-rework-skin-hd.js'):null);
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-modular-outfits-hd/assets/',allowCandidates=false,appearanceAPI=root.MareAppearance96}={}){
  if(index?.schema!=='rework-modular-outfits-hd-v1'||!vendor?.compositor)throw Error('Missing modular outfit dependencies');
+ function resolveIndependentPants({body,direction,action,equipment={},appearance={}}={}){
+  const source=index.independentPants;
+  if(source?.schema!=='independent-female-pants-v1'||canonical(body)!=='female'||action!=='walk'||!['east','west'].includes(direction))return null;
+  const visible=Object.entries(equipment).filter(([,v])=>v!=null&&!['none','original'].includes(v));
+  if(visible.length!==1||!['pants','legs'].includes(visible[0][0]))return null;
+  const selected=Number(id(visible[0][1]));
+  const record=source.records.find(r=>r.body==='female'&&r.action===action&&r.direction===direction&&r.equipment?.pants===selected&&Object.keys(r.equipment).length===1&&r.approvedAppearance&&Object.entries(r.approvedAppearance).every(([k,v])=>appearance[k]===v));
+  if(!record)return null;
+  const p=record.pack,d=p?.directions?.[direction];
+  if(p.density!==4||p.frame.width!==128||p.frame.height!==128||p.pivot.x!==64||p.pivot.y!==112||d?.clip.frames!==40||d.clip.fps!==40||d.clip.loop!==true)return null;
+  return {...record,independentPants:true,colorAppearance:{}};
+ }
  function resolve({body,direction,action,equipment={},appearance={},allowApprovedAppearance=false}={}){
   appearanceAPI=appearanceAPI||root.MareAppearance96;
   if(!['walk','idle','attack-unarmed','attack-focus'].includes(action))return null;
@@ -147,7 +159,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
   map.set(prefix+source+'.png',headTile);
   return render(ctx,adapted,map,options);
  }
- return {resolve,bindAnatomy,requiredFiles,render,renderWithHead};
+ return {resolve,resolveIndependentPants,bindAnatomy,requiredFiles,render,renderWithHead};
 }
 const api={create};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
