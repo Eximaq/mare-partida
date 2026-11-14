@@ -115,10 +115,21 @@ function attachSwordPants(record,outfit,def){
   baseRecord:{...base,pack:combined,sourceRefs:[...base.sourceRefs,...outfit.sourceRefs]},
   outfitSources:[...(record.outfitSources||[]),...outfit.sourceRefs],pantsSourceId:outfit.id};
 }
+const orbSkinPath='tools/rework-weapon-layers-hd/assets/e4a2f3c434849aabc41cb6037bc16c54ef3130ff21838c355bde9356c6ad287f.png';
+function approvedSouthCarry(r){
+ if(r.action!=='walk'||r.direction!=='south'||![0,5,17].includes(r.item)||r.sourceBaseId!=='v7-female-walk-drawn-all-south')return r;
+ const hashes={0:'823474b4f6a0782ef39eca0dc176630df7ab6886e7b1cb70f800c0baa04b51bd',5:'d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d',17:'ae249c8a9e349b827a6d91a5951c10ef63edf91be9649cd8c0b48645d194d65b'};
+ if(r.states.length!==8||r.states.some(s=>s.parts.length!==1||hashes[r.item]&&s.parts[0].sha256!==hashes[r.item]))return r;
+ return {...r,id:r.id+':south-carry-calibrated',approvedSouthCarry:true,states:r.states.map(s=>({...s,parts:s.parts.map(p=>{
+  if(r.item!==0)return p;const v=p.targetForearmCenter.map((x,i)=>x-p.targetHandCenter[i]),length=Math.hypot(...v);
+  if(!length)throw Error('Missing female sword anchor');const matrix=p.matrix.slice();matrix[4]+=8*v[0]/length;matrix[5]+=8*v[1]/length;return {...p,matrix};
+ })}))};
+}
 const asset=(r,sha)=>'tools/'+(r.outfitSources?.includes(sha)?'rework-modular-outfits-hd':'rework-base-hd')+'/assets/'+sha+'.png';
 function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVendor?.compositor,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){if(index?.schema!=='female-native-equipment-registration-v1'||!vendor)throw Error('Missing female equipment sources');return {
  resolve({item,body,action,direction,appearance={},equipment={}}={}){if(item==null||!index.records.some(r=>r.item===Number(item))||!['female','feminino'].includes(body))return null;const extra=Object.entries(equipment).filter(([k,v])=>k!=='weapon'&&v!=null&&!['none','original'].includes(v));const clothing=extra.filter(([slot])=>slot!=='head'),head=extra.find(([slot])=>slot==='head')?.[1];if(clothing.some(([slot])=>!['coat','legs','pants'].includes(slot))||clothing.filter(([slot])=>slot!=='coat').length>1)return null;if(equipment.weapon!=null&&Number(equipment.weapon?.def??equipment.weapon)!==Number(item))return null;const customized=['hair','hairStyle','skin','skinColor','hairColor','face','eyeStyle','eyeColor'].some(k=>appearance[k]&&appearance[k]!=='original'&&!((k==='eyeColor')&&appearance[k]==='blue'));if(['attack','punch','shoot','focus','cast'].includes(action))action=index.records.find(r=>r.item===Number(item)&&r.action.startsWith('attack-'))?.action||action;const r=index.records.find(r=>r.item===Number(item)&&r.body==='female'&&r.action===action&&r.direction===direction);if(!r)return null;const coat=clothing.find(([slot])=>slot==='coat')?.[1],pants=clothing.find(([slot])=>slot!=='coat')?.[1];
  let combined={...r,pack:r.baseRecord.pack};
+ if(!clothing.length&&head==null)combined=approvedSouthCarry(combined);
  if(coat!=null){
   const def=Number(coat.def??coat);
   const outfit=outfits?.records.find(row=>row.id==='female-torso'+def+'-'+direction+'-frozen-'+(['attack-unarmed','attack-sword'].includes(action)?'attack':action)+'-native');
@@ -129,9 +140,18 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   combined=swordPants.has(def)&&Number(item)===0?attachSwordPants(combined,outfits?.records.find(row=>row.id==='female-pants'+def+'-sword-'+action+'-'+direction),def):attachPants168(combined,outfit);
  }
  if(!combined)return null;if(!customized&&head==null)return combined;const material=appearanceRegistry?.resolve(combined.baseRecord,{hair:appearance.hair||appearance.hairStyle,head:head?.def??head,appearance});if(!material)return null;return {...combined,id:combined.id+':'+material.id,material,colorAppearance:appearance};},
- requiredFiles(r,{frame}={}){const d=r.baseRecord.pack.directions[r.direction],states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid female equipment frame');const refs=frame===undefined?r.baseRecord.sourceRefs:d.layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean);return [...new Set([...refs.map(s=>asset(r,s)),...(r.material?appearanceRegistry.requiredFiles(r.material):[]),...states.flatMap(s=>[...s.parts.map(p=>p.url),...Object.values(s.baseMasks||{})])])]},
- render(ctx,r,images,{frame=0,makeCanvas:frameCanvas=makeCanvas}={}){let p=r.baseRecord.pack,d=p.directions[r.direction];
+ requiredFiles(r,{frame}={}){const d=r.baseRecord.pack.directions[r.direction],states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid female equipment frame');const refs=frame===undefined?r.baseRecord.sourceRefs:d.layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean);return [...new Set([...(r.approvedSouthCarry&&r.item===17?[orbSkinPath]:[]),...refs.map(s=>asset(r,s)),...(r.material?appearanceRegistry.requiredFiles(r.material):[]),...states.flatMap(s=>[...s.parts.map(p=>p.url),...Object.values(s.baseMasks||{})])])]},
+ render(ctx,r,images,{frame=0,captureOps,makeCanvas:frameCanvas=makeCanvas}={}){let p=r.baseRecord.pack,d=p.directions[r.direction];
  const map=new Map(r.baseRecord.sourceRefs.map(s=>[s,images.get(asset(r,s))]));
+ let gearImages=images;
+ if(r.approvedSouthCarry&&r.item===17&&r.material?.skinColor){
+  const part=r.states[frame].parts[0],source=images.get(part.url),mask=images.get(orbSkinPath);
+  if(!source||!mask||source.width!==mask.width||source.height!==mask.height)throw Error('Missing SHA-bound Orbe17 skin material');
+  const tile=frameCanvas(source.width,source.height),tc=tile.getContext('2d'),mc=frameCanvas(mask.width,mask.height).getContext('2d');tc.drawImage(source,0,0);mc.drawImage(mask,0,0);
+  const data=tc.getImageData(0,0,source.width,source.height),m=mc.getImageData(0,0,mask.width,mask.height).data,tones=new Uint8Array(m.length/4),api=root.MareAppearance96;
+  for(let n=0;n<m.length;n+=4)if(m[n]&&data.data[n+3])tones[n/4]=skinMaterials.tone(...data.data.subarray(n,n+3));
+  data.data.set(api.recolor(data.data,tones,api.skins[r.material.skinColor].ramp));tc.putImageData(data,0,0);gearImages=new Map(images);gearImages.set(part.url,tile);
+ }
  for(const [sha,padding] of Object.entries(r.sourceRasterPadding||{})){
   const image=map.get(sha);
   if(!image)continue;
@@ -157,6 +177,6 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
     c.putImageData(data,0,0);map.set(sha,tile);
    }
   }
- }const pad=r.paddingPhysical||0;ctx.canvas.width=p.frame.width*4+pad*2;ctx.canvas.height=p.frame.height*4+pad*2;ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.imageSmoothingEnabled=false;ctx.save();ctx.translate(pad,pad);const ops=[...d.layers.filter(l=>!r.states[frame].hideBaseLayers?.includes(l.id)).map(layer=>({depth:layer.depth,layer})),...r.states[frame].parts.map(part=>({depth:part.depth,part}))];for(const op of ops.sort((a,b)=>a.depth-b.depth)){if(op.layer){const mask=r.states[frame].baseMasks?.[op.layer.id],tile=mask?frameCanvas(p.frame.width*4,p.frame.height*4):null,c=tile?tile.getContext('2d'):ctx;vendor.render(c,{...p,directions:{[r.direction]:{...d,layers:[op.layer]}}},map,{direction:r.direction,frame,density:4,clear:false});if(mask){c.globalCompositeOperation='destination-out';c.drawImage(images.get(mask),0,0);ctx.drawImage(tile,0,0)}}else{ctx.save();ctx.transform(...op.part.matrix);if(op.part.sourceClip){ctx.beginPath();ctx.rect(...op.part.sourceClip);ctx.clip()}ctx.drawImage(images.get(op.part.url),0,0);ctx.restore()}}ctx.restore();return {width:ctx.canvas.width,height:ctx.canvas.height,physicalScale:1,density:4,pivot:{x:p.pivot.x*4+pad,y:p.pivot.y*4+pad},frames:d.clip.frames,fps:d.clip.fps,source:r.id,sourceBaseId:r.sourceBaseId}}};}
+ }const pad=r.paddingPhysical||0;ctx.canvas.width=p.frame.width*4+pad*2;ctx.canvas.height=p.frame.height*4+pad*2;ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.imageSmoothingEnabled=false;ctx.save();ctx.translate(pad,pad);const ops=[...d.layers.filter(l=>!r.states[frame].hideBaseLayers?.includes(l.id)).map(layer=>({depth:layer.depth,layer})),...r.states[frame].parts.map(part=>({depth:part.depth,part}))];for(const op of ops.sort((a,b)=>a.depth-b.depth)){const tileOp=captureOps?frameCanvas(ctx.canvas.width,ctx.canvas.height):null,oc=tileOp?tileOp.getContext('2d'):ctx;if(tileOp){oc.save();oc.imageSmoothingEnabled=false;oc.translate(pad,pad);}if(op.layer){const mask=r.states[frame].baseMasks?.[op.layer.id],tile=mask?frameCanvas(p.frame.width*4,p.frame.height*4):null,c=tile?tile.getContext('2d'):oc;vendor.render(c,{...p,directions:{[r.direction]:{...d,layers:[op.layer]}}},map,{direction:r.direction,frame,density:4,clear:false});if(mask){c.globalCompositeOperation='destination-out';c.drawImage(images.get(mask),0,0);oc.drawImage(tile,0,0)}}else{oc.save();oc.transform(...op.part.matrix);if(op.part.sourceClip){oc.beginPath();oc.rect(...op.part.sourceClip);oc.clip()}oc.drawImage(gearImages.get(op.part.url),0,0);oc.restore()}if(tileOp){oc.restore();ctx.drawImage(tileOp,-pad,-pad);captureOps({op,canvas:tileOp});}}ctx.restore();return {width:ctx.canvas.width,height:ctx.canvas.height,physicalScale:1,density:4,pivot:{x:p.pivot.x*4+pad,y:p.pivot.y*4+pad},frames:d.clip.frames,fps:d.clip.fps,source:r.id,sourceBaseId:r.sourceBaseId}}};}
 const api={create};root.MareReworkFemaleEquipmentHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

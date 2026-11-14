@@ -14,8 +14,23 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return imageRequests.get(path);
  }
  const ready=Promise.all([fetchJSON('tools/rework-base-hd/index.json'),fetchJSON('tools/rework-weapon-layers-hd/index.json'),fetchJSON('tools/rework-accessories/head-layer-index.json'),fetchJSON('tools/rework-base-hd/archives/archive-index.json'),fetchJSON('tools/rework-modular-outfits-hd/index.json'),fetchJSON('tools/rework-modular-outfits-hd/archives/archive-index.json'),fetchJSON('tools/rework-weapon-layers-hd/carry-binding-plan.json'),fetchJSON('tools/rework-weapon-layers-hd/archives/archive-index.json'),fetchJSON('tools/rework-accessories/female-original-face-ownership.json')]).then(([index,weapons,heads,archives,outfits,outfitArchives,carry,weaponArchives,femaleOwnership])=>{baseIndex=index;outfitIndex=outfits;swordSouth=weapons.modularSwordSouth;registry=root.MareReworkBaseHD.create(index);femaleNamedHairRegistry=root.MareFemaleNamedHairHD?.create(heads,femaleOwnership,{baseRegistry:registry,makeCanvas});femaleRegistry=root.MareReworkFemaleEquipmentHD?.create({schema:'female-native-equipment-registration-v1',records:weapons.femaleRegistrations||[]},{outfits,appearanceRegistry:femaleNamedHairRegistry});assetStore=root.MareReworkHDAssets?.create(archives,{baseURL});weaponRegistry=root.MareReworkWeaponNativeHD?.create(weapons,{makeCanvas});headRegistry=root.MareReworkHead?.create(heads,{appearanceAPI:{recolor:(...a)=>root.MareAppearance96.recolor(...a),materialMask:(...a)=>root.MareAppearance96.materialMask(...a)},makeCanvas});headCompat=root.MareNativeHeadCompat?.create({makeCanvas});originalHairGearRegistry=root.MareOriginalHairHelmetsHD?.create(heads,{compat:headCompat,makeCanvas});outfitRegistry=root.MareReworkModularOutfitsHD?.create(outfits,{allowCandidates:true});carryRegistry=root.MareReworkWeaponCarryHD?.create(index,carry,{makeCanvas});combinedCarryRegistry=root.MareReworkOutfitCarryOverlayHD?.create(carryRegistry,outfits);weaponStore=root.MareReworkHDAssets?.create(weaponArchives,{baseURL,prefix:'tools/rework-weapon-layers-hd/archives/'});outfitStore=root.MareReworkHDAssets?.create(outfitArchives,{baseURL,prefix:'tools/rework-modular-outfits-hd/archives/'});state='ready';onChange();}).catch(e=>{state='failed';error=e.message;onChange();});
+ function resolveSouthCarry(player,o,a,equipment){
+  const item=Number(equipment.weapon?.def??equipment.weapon),pants=Number(equipment.legs?.def??equipment.legs??equipment.pants?.def??equipment.pants);
+  // Deliberately narrow approval: these three weapons + pants21, no invented
+  // combinations with gloves, boots, coats, helmets, another direction or attack.
+  if(![0,5,17].includes(item)||pants!==21||Object.keys(equipment).some(k=>!['weapon','legs','pants'].includes(k))||equipment.legs!=null&&equipment.pants!=null)return null;
+  if(Object.values(equipment).some(v=>v&&typeof v==='object'&&['variant','variantId','appearanceVariant'].some(k=>v[k]!=null&&v[k]!=='original')))return null;
+  const without={...equipment};delete without.weapon;
+  const pantsRecord=resolveSouthPants(player,o,a,without);
+  const carry=femaleRegistry?.resolve({item,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:{weapon:item}});
+  if(!pantsRecord||!carry||carry.sourceBaseId!=='v7-female-walk-drawn-all-south'||!carry.approvedSouthCarry||carry.states.length!==8||carry.paddingPhysical!==(item===0?64:0))return null;
+  const expected={0:'823474b4f6a0782ef39eca0dc176630df7ab6886e7b1cb70f800c0baa04b51bd',5:'d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d',17:'ae249c8a9e349b827a6d91a5951c10ef63edf91be9649cd8c0b48645d194d65b'};
+  if(carry.states.some(state=>state.parts.length!==1||expected[item]&&state.parts[0].sha256!==expected[item]||state.parts[0].depth!==(item===17?5.01:4.81)))return null;
+  return {...pantsRecord,id:pantsRecord.id+':approved-carry:'+item,carrySouth:carry,equipment:{...pantsRecord.equipment,weapon:item}};
+ }
  function resolveSouthPants(player,o,a,equipment){
   const s=outfitIndex?.authoredPantsSouth;
+  if(equipment.weapon!=null)return resolveSouthCarry(player,o,a,equipment);
   if(player.__southAnatomy||player.__reworkSubset||canonical(a.body)!=='female'||o.action!=='walk'||o.direction!=='south'||s?.schema!=='authored-female-south-pants-v1')return null;
   const values=Object.fromEntries(Object.entries(equipment).map(([slot,value])=>[slot,Number(value?.def??value)]));
   // Two visible aliases are ambiguous, even when their IDs happen to agree.
@@ -45,9 +60,28 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function southFiles(r,frame){
   const s=r.authoredPantsLayer.spec,k=s.frameToPhase[frame],contact=s.contacts.find(c=>c.targetAuthoredPhase===k),phases=[s.phaseMap[k],...(contact?[contact.incomingPhase]:[])];
-  return [...new Set([...r.sourceRefs.map(h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png'),...phases.flatMap(p=>filesFor(r.anatomyBase,p)),...(r.authoredPantsLayer.mappedCoat?filesFor(r.authoredPantsLayer.mappedCoat,s.phaseMap[k]*5):[])])];
+  return [...new Set([...(r.carrySouth?femaleRegistry.requiredFiles(r.carrySouth):[]),...(r.carrySouth?.item===17?['tools/rework-weapon-layers-hd/assets/e4a2f3c434849aabc41cb6037bc16c54ef3130ff21838c355bde9356c6ad287f.png']:[]),...r.sourceRefs.map(h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png'),...phases.flatMap(p=>filesFor(r.anatomyBase,p)),...(r.authoredPantsLayer.mappedCoat?filesFor(r.authoredPantsLayer.mappedCoat,s.phaseMap[k]*5):[])])];
+ }
+ function composeSouthCarry(r,frame,entry){
+  const bare=composeSouthPants({...r,carrySouth:null},frame,entry),carry=r.carrySouth,s=r.authoredPantsLayer.spec,k=s.frameToPhase[frame],phase=s.phaseMap[k],pad=carry.paddingPhysical||0,W=512+2*pad;
+  const canvas=()=>makeCanvas(W,W),pixels=c=>c.getContext('2d').getImageData(0,0,W,W).data;
+  const images=entry.images;
+  const capture=p=>{const ops=[];femaleRegistry.render(canvas().getContext('2d'),carry,images,{frame:p,makeCanvas,captureOps:o=>ops.push(o)});return ops;};
+  const ops=capture(phase),body=ops.filter(o=>o.op.layer),gear=ops.filter(o=>o.op.part),contact=s.contacts.find(c=>c.targetAuthoredPhase===k);
+  if(contact){const donor=capture(contact.incomingPhase),mc=makeCanvas(512,512).getContext('2d');mc.drawImage(images.get('tools/rework-modular-outfits-hd/assets/'+contact.mask+'.png'),0,0);const mask=mc.getImageData(0,0,512,512).data;
+   for(const b of body){const d=pixels(donor.find(o=>o.op.layer?.id===b.op.layer.id).canvas),ctx=b.canvas.getContext('2d'),data=ctx.getImageData(0,0,W,W);for(let y=0;y<512;y++)for(let x=0;x<512;x++)if(mask[(y*512+x)*4]){const n=((y+pad)*W+x+pad)*4;data.data.set(d.subarray(n,n+4),n);}ctx.putImageData(data,0,0);}
+  }
+  const def=s.items[21][k],cloth=canvas(),cc=cloth.getContext('2d');cc.drawImage(images.get('tools/rework-modular-outfits-hd/assets/'+def.cloth+'.png'),pad,pad);
+  if(def.owner||def.ownerAlpha){const mc=makeCanvas(512,512).getContext('2d');mc.drawImage(images.get('tools/rework-modular-outfits-hd/assets/'+(def.owner||def.ownerAlpha)+'.png'),0,0);const mask=mc.getImageData(0,0,512,512).data,d=cc.getImageData(0,0,W,W);for(let y=0;y<512;y++)for(let x=0;x<512;x++)if(mask[(y*512+x)*4+(def.owner?0:3)]){const n=((y+pad)*W+x+pad)*4;d.data.fill(0,n,n+4);}cc.putImageData(d,0,0);}
+  // Approved order is confined to the alpha contribution of the real weapon,
+  // after occlusion by native foreground anatomy. No color-key subtraction.
+  const visible=canvas(),vc=visible.getContext('2d');for(const g of gear)vc.drawImage(g.canvas,0,0);vc.globalCompositeOperation='destination-out';for(const b of body)if(b.op.depth>gear[0].op.depth)vc.drawImage(b.canvas,0,0);
+  const lower=canvas(),lc=lower.getContext('2d');for(const o of [...body,...gear,{op:{depth:4.6},canvas:cloth}].sort((a,b)=>a.op.depth-b.op.depth))lc.drawImage(o.canvas,0,0);
+  const result=canvas(),rc=result.getContext('2d');rc.drawImage(bare.canvas,pad,pad);const d=rc.getImageData(0,0,W,W),v=pixels(visible),l=pixels(lower);for(let n=0;n<v.length;n+=4)if(v[n+3])d.data.set(l.subarray(n,n+4),n);rc.putImageData(d,0,0);
+  return {canvas:result,info:{...bare.info,width:W,height:W,pivot:{x:bare.info.pivot.x+pad,y:bare.info.pivot.y+pad}}};
  }
  function composeSouthPants(r,frame,entry){
+  if(r.carrySouth)return composeSouthCarry(r,frame,entry);
   const s=r.authoredPantsLayer.spec,k=s.frameToPhase[frame],sourcePhase=s.phaseMap[k],base=r.anatomyBase,W=512,H=512;
   entry.southAnatomy ||=new Map();entry.southPixels ||=new Map();entry.southHeads ||=new Map();
   const anatomy=p=>{if(!entry.southAnatomy.has(p))entry.southAnatomy.set(p,composeFrame(base,p,entry));return entry.southAnatomy.get(p);};
