@@ -102,6 +102,23 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
  const approvedSouth=item=>index.records.find(r=>r.approvedSouthHead&&r.item===Number(item)&&r.body==='male'&&r.direction==='south');
  const resource=url=>{const p=new URL(url,'https://native.invalid/'+prefix).pathname.slice(1);if(!/^tools\/(rework-weapon-layers-hd|rework-modular-outfits-hd|rework-base-hd)\/assets\/[a-f0-9]{64}\.png$/.test(p))throw Error('Invalid native weapon source path');return p;};
  const body=b=>({masculino:'male',feminino:'female'})[b]||b;
+ function resolveSeparable({item,body:b,action,direction,appearance={},equipment={},allowExactComposite=true}={}){
+  const spec=index.separableAttacks,d=spec?.directions?.[direction];
+  if(!allowExactComposite||spec?.schema!=='approved-separable-attacks-v1'||body(b)!==spec.body||!d||!['attack','punch','attack-unarmed'].includes(action))return null;
+  if(!Object.entries(spec.approvedAppearance).every(([k,v])=>appearance[k]===v))return null;
+  const id=v=>Number(v&&typeof v==='object'?v.def:v);
+  const visible=Object.fromEntries(Object.entries(equipment).filter(([,v])=>v!=null&&!['none','original'].includes(v)));
+  if(Object.keys(visible).some(k=>k!=='coat'))return null;
+  const weapon=item==null?null:id(item),coat=visible.coat==null?null:id(visible.coat);
+  if(weapon==null&&coat==null||weapon!=null&&!d.weapons?.[weapon]||coat!=null&&!d.coats?.[coat])return null;
+  const sources=[d.base,...(coat==null?[]:[d.coats[coat]]),...(weapon==null?[]:[d.weapons[weapon]])];
+  if(sources.some(frames=>!Array.isArray(frames)||frames.length!==8||frames.some(a=>!a?.url||JSON.stringify(a.size)!=='[640,640]')))return null;
+  return {id:'separable-'+spec.body+'-'+direction+'-weapon'+(weapon??'none')+'-coat'+(coat??'none'),item:weapon,body:spec.body,direction,
+   nativeCanvas:spec.nativeCanvas,logicalFrame:spec.logicalFrame,pivot:spec.pivot,density:spec.density,fps:spec.fps,timeline:spec.timeline,
+   approvedAppearance:spec.approvedAppearance,separableAttack:true,colorAppearance:{},
+   equipmentContract:{...(weapon==null?{}:{weapon}),...(coat==null?{}:{coat})},
+   states:Array.from({length:8},(_,n)=>({state:String(n),layers:sources.map((frames,depth)=>({...frames[n],operation:'source-over',depth}))}))};
+ }
  function resolve({item,body:b,action='attack',direction,appearance={},equipment={},allowExactComposite=true}={}){
   if(item==null)return null;
   const allowed=[12,13,71,72,73,74].includes(Number(item))?["attack","attack-daggers"]:[0,1,67,68,69,70].includes(Number(item))?["attack","attack-sword"]:[14,110,112,2,3,15,109,111,117,118,119,120].includes(Number(item))?['attack','punch','attack-unarmed']:[4,5,113,114,115,116].includes(Number(item))?['attack','shoot','attack-firearm']:[123,124,125,126,127,128,16,121,17,122,31,32].includes(Number(item))?['attack','focus','attack-focus','cast']:[];
@@ -213,9 +230,9 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   }
   if(headOverlay)ctx.drawImage(headOverlay,...(r.headOverlayOffset??[0,0]));
   if(!hiddenSlots.length&&!recolored&&s.canvasRoundingPatch?.length){const out=ctx.getImageData(0,0,w,h);for(const [pixel,red,green,blue,alpha] of s.canvasRoundingPatch){const i=pixel*4;out.data[i]=red;out.data[i+1]=green;out.data[i+2]=blue;out.data[i+3]=alpha;}ctx.putImageData(out,0,0);}
-  return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4+renderOffset[0],y:r.pivot[1]*4+renderOffset[1]},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalScale:1,hairSeparated:r.hairSeparated,roundingCorrection:!hiddenSlots.length&&!recolored,roundingTolerance:hiddenSlots.length?1:0};}finally{ctx.restore();}
+  return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4+renderOffset[0],y:r.pivot[1]*4+renderOffset[1]},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalScale:1,hairSeparated:r.hairSeparated,roundingCorrection:!r.separableAttack&&!hiddenSlots.length&&!recolored,roundingTolerance:r.separableAttack||hiddenSlots.length?1:0};}finally{ctx.restore();}
  }
- return {resolve,approvedSouth,requiredFiles,render};
+ return {resolve,resolveSeparable,approvedSouth,requiredFiles,render};
 }
 const api={create};root.MareReworkWeaponNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

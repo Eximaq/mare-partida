@@ -38,6 +38,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(['combat-idle','guard','hurt','death'].includes(o.action))return select(player,{...o,action:'idle'});
   if(['attack','skill','skill-1','skill-2','combo','cast','heal','reload','dodge'].includes(o.action)){const candidates=o.weaponless||player.equipment?.weapon==null?['attack-unarmed']:['attack-unarmed','attack-firearm','attack-focus','attack-sword','attack-daggers','attack-tech'];for(const action of candidates){const r=onlyApprovedAppearance?selectBase(player,{...o,action},true,true):select(player,{...o,action});if(r)return {...r,resolvedAction:action};}return null;}
   const raw=player.appearance96||{};const a={...raw,body:raw.gender??raw.body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin};const equipment=Object.fromEntries(Object.entries(player.equipment||{}).filter(([slot])=>!['necklace','ring','belt','charm','cloak','akuma_no_mi','visual_completo'].includes(slot)));for(const [k,v]of Object.entries(equipment))if(v==null||['none','original'].includes(v))delete equipment[k];if(o.weaponless)delete equipment.weapon;if(root.MareHeadgear?.hidden(player))delete equipment.head;
+  // Resolve optional independent slots before outfit candidates. Pass the original
+  // visible equipment, not a subset that could silently swallow an unsupported slot.
+  const independentEquipment=Object.fromEntries(Object.entries(player.equipment||{}).filter(([slot,v])=>slot!=='weapon'&&v!=null&&!['none','original'].includes(v)));
+  const independent=!player.__reworkSubset&&weaponRegistry?.resolveSeparable?.({item:o.weaponless?undefined:(player.equipment?.weapon?.def??player.equipment?.weapon),body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:independentEquipment});
+  if(independent)return {...independent,hdKind:'weapon'};
   const approved=allowApprovedAppearance&&!player.__reworkSubset?outfitRegistry?.resolve({body:canonical(a.body),action:o.action,direction:o.direction,appearance:{...a,eyes:a.face},equipment,allowApprovedAppearance:true}):null;
   if(approved?.approvedAppearance)return {...approved,hdKind:'outfit'};
   if(onlyApprovedAppearance){
