@@ -64,7 +64,9 @@ for(const branch of H.progression.ids)wire.originalInventory.inventory.push({...
  }
  await p.screenshot({path:path.join(out,'haki-online-tree.png')});
  await p.setViewportSize({width:393,height:852});assert(await p.locator('#dialogBody').evaluate(e=>e.scrollWidth<=e.clientWidth+2));await p.screenshot({path:path.join(out,'haki-online-mobile.png')});await p.setViewportSize({width:1366,height:900});
- await p.locator('[data-haki-auto=armament]').check();await p.waitForFunction(()=>__mareDiagnostics().haki.auto==='armament');await p.reload();await p.waitForFunction(()=>MareGameSession?.controlled&&__mareDiagnostics?.().haki.mastery.completedVersions.conqueror===1);
+ // The state notification can precede command settlement. Reloading in that gap
+ // restores a pending intent, so wait for acknowledgement before the next intent.
+ await p.locator('[data-haki-auto=armament]').check();await p.waitForFunction(()=>__mareDiagnostics().haki.auto==='armament'&&!MareGameSession.busy&&!MareGameSession.pending);await p.reload();await p.waitForFunction(()=>MareGameSession?.controlled&&__mareDiagnostics?.().haki.mastery.completedVersions.conqueror===1&&!MareGameSession.busy&&!MareGameSession.pending);
  // Travel uses the public BFF intent; controls themselves are exercised through H/J/K.
  await p.evaluate(()=>MareGameSession.command('world.travel',{islandId:'dawn'}));await p.waitForFunction(()=>__mareDiagnostics().scene==='hunt'&&__mareDiagnostics().map.navigation.ready&&__mareDiagnostics().lobby96.worldVisual?.state==='ready');
  await p.keyboard.press('h');await p.waitForFunction(()=>__mareDiagnostics().haki.active==='armament');await p.keyboard.press('j');await p.waitForFunction(()=>__mareDiagnostics().haki.active==='observation');await p.keyboard.press('k');await p.waitForFunction(()=>__mareDiagnostics().haki.current===50);assert(await p.locator('#hakiKing').isDisabled());
