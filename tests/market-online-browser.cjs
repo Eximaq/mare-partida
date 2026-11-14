@@ -138,7 +138,33 @@ const wire={marketAvailable:true,socialAvailable:true,combatPreview:{rulesetId:'
     await page.locator('.market-listing').first().waitFor();
     assert.equal(await page.locator('.market-tabs button:not([data-market-action=help])').count(),5);
     await page.waitForFunction(()=>[...document.querySelectorAll('.market-results .market-item-art img')].some(i=>i.complete&&i.naturalWidth>0));
+    const glass=await page.locator('.market-mode .dialog').evaluate(el=>{
+      const s=getComputedStyle(el),r=el.getBoundingClientRect();
+      return {width:r.width,height:r.height,border:s.borderTopWidth,image:s.borderImageSource,radius:s.borderTopLeftRadius,blur:s.backdropFilter,font:getComputedStyle(el.querySelector('.market-shell')).fontFamily};
+    });
+    assert(Math.abs(glass.width-1180)<2&&Math.abs(glass.height-702)<2,'Market shares inventory dimensions: '+JSON.stringify(glass));
+    assert.equal(glass.border,'1px');assert.equal(glass.image,'none');assert.equal(glass.radius,'12px');assert.match(glass.blur,/blur/);assert.match(glass.font,/Inter|system-ui/);
+    const buyVisible=await page.getByRole('button',{name:'Comprar',exact:true}).evaluate(el=>el.getBoundingClientRect().bottom<=document.querySelector('.market-scroll').getBoundingClientRect().bottom);
+    assert(buyVisible,'Desktop purchase action is visible without scrolling');
     await screenshot('02-mercado.png');
+    const rarityColors=await page.locator('.market-results .market-item-art').evaluateAll(els=>els.map(el=>{
+      const r=el.getBoundingClientRect();
+      return {color:getComputedStyle(el).borderTopColor,square:Math.abs(r.width-r.height)<1};
+    }));
+    assert(rarityColors.every(x=>x.square),'Market item art keeps square proportions');
+    assert(new Set(rarityColors.map(x=>x.color)).size>=3,'Rare, epic and supreme retain distinct borders');
+    for(const [width,height] of [[1920,1080],[1280,720],[1024,768],[768,1024],[390,844],[430,932],[844,390]]){
+      await page.setViewportSize({width,height});
+      const layout=await page.locator('.market-mode .dialog').evaluate(el=>{
+        const r=el.getBoundingClientRect(),tabs=el.querySelector('.market-tabs').getBoundingClientRect(),scroll=el.querySelector('.market-scroll');
+        return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,tabsBottom:tabs.bottom,scrollHeight:scroll.clientHeight,overflow:scroll.scrollWidth-scroll.clientWidth};
+      });
+      assert(layout.x>=0&&layout.y>=0&&layout.right<=width+1&&layout.bottom<=height+1,'Window fits viewport '+JSON.stringify({width,height,layout}));
+      assert(layout.tabsBottom<layout.bottom&&layout.scrollHeight>=80,'Tabs and market content remain accessible '+JSON.stringify({width,height,layout}));
+      assert(layout.overflow<=1,'No horizontal scroll '+JSON.stringify({width,height,layout}));
+      if(width===390||width===844||width===768)await screenshot('responsive-'+width+'x'+height+'.png');
+    }
+    await page.setViewportSize({width:1440,height:900});
     const socialRows=await page.locator('.market-listing').allTextContents();
     const socialWallet=await page.locator('.market-wallet').textContent();
     const socialQuery=queries.find(q=>q.view==='market');
@@ -187,6 +213,8 @@ const wire={marketAvailable:true,socialAvailable:true,combatPreview:{rulesetId:'
     assert.equal(cmd('market_withdraw').proposalVersion,2);
     await tab('Anunciar').click();
     await page.locator('.market-publish-form [name=price]').fill('10019');
+    await page.locator('.market-scroll').evaluate(el=>el.scrollTop=0);
+    assert(await page.getByRole('button',{name:'Revisar anúncio'}).evaluate(el=>el.getBoundingClientRect().bottom<=document.querySelector('.market-scroll').getBoundingClientRect().bottom),'Desktop publication action fits without scrolling');
     await screenshot('04-anunciar.png');
     await page.getByRole('button',{name:'Revisar anúncio'}).click();
     assert.match(await page.locator('.confirmation-result').textContent(),/taxa 10% \(1\.001 Berry\).*9\.018 Berry/);
