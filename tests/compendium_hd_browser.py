@@ -30,7 +30,7 @@ with sync_playwright() as p:
  assert q.locator('[data-compendium-fruit]').count()==30
  q.wait_for_function("[...document.querySelectorAll('.compendium-hd img')].every(i=>i.complete)")
  assert q.locator('.compendium-hd img').evaluate_all("nodes=>nodes.every(i=>i.naturalWidth>0)"), 'No broken navigation or detail icons'
- assert q.locator('.comp-fruit-grid').evaluate("e=>getComputedStyle(e).gridTemplateColumns.split(' ').length")==5
+ assert q.locator('.comp-fruit-grid').evaluate("e=>getComputedStyle(e).gridTemplateColumns.split(' ').length")==4
  assert not any('sprites-combat-v2' in url for url in requests),'Compendium must not request transformation sheets'
  assert q.locator('[data-compendium-art][data-art-error]').count()==0
  coverage=q.locator('.comp-fruit-grid [data-compendium-art]').evaluate_all("nodes=>nodes.map(c=>{const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let n=0;for(let i=3;i<d.length;i+=4)if(d[i]>240)n++;return {id:c.dataset.compendiumArt,ratio:n/(c.width*c.height)}})")
@@ -39,6 +39,8 @@ with sync_playwright() as p:
   assert rarity in q.locator('[data-compendium-rank='+rank+']').inner_text()
  # Names and counters remain canonical; hover/focus do not write.
  target=q.locator('[data-compendium-fruit=akuma_tori_phoenix]')
+ target.scroll_into_view_if_needed()
+ q.clock.run_for(100)
  target.hover()
  tip=q.locator('#gameTooltip')
  assert tip.is_visible() and 'zoan' in tip.inner_text().casefold() and 'supremo' in tip.inner_text().casefold()
@@ -121,7 +123,7 @@ with sync_playwright() as p:
   q.locator('.comp-workspace').evaluate('(e)=>e.scrollTop=0')
   dims=q.evaluate("""()=>{const d=document.querySelector('#dialogBody'),s=document.querySelector('.comp-workspace'),g=document.querySelector('.comp-gallery'),c=document.querySelector('.comp-fruit-card');return {body:[d.clientWidth,d.scrollWidth],workspace:[s.clientWidth,s.scrollWidth],gallery:[g.clientWidth,g.scrollWidth],card:c.getBoundingClientRect().height}}""")
   assert dims['body'][1]<=dims['body'][0]+1 and dims['workspace'][1]<=dims['workspace'][0]+1 and dims['gallery'][1]<=dims['gallery'][0]+1,dims
-  assert dims['card']>=200
+  assert dims['card']>=100, 'Compact cards retain readable art and labels'
   q.mouse.move(1,1);q.screenshot(path=str(OUT/f'compendium-{width}.png'))
  assert not errors,errors
  c.close()

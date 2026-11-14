@@ -68,11 +68,17 @@ for(const branch of H.progression.ids)wire.originalInventory.inventory.push({...
  // restores a pending intent, so wait for acknowledgement before the next intent.
  await p.locator('[data-haki-auto=armament]').check();await p.waitForFunction(()=>__mareDiagnostics().haki.auto==='armament'&&!MareGameSession.busy&&!MareGameSession.pending);await p.reload();await p.waitForFunction(()=>MareGameSession?.controlled&&__mareDiagnostics?.().haki.mastery.completedVersions.conqueror===1&&!MareGameSession.busy&&!MareGameSession.pending);
  // Travel uses the public BFF intent; controls themselves are exercised through H/J/K.
- await p.evaluate(()=>MareGameSession.command('world.travel',{islandId:'dawn'}));await p.waitForFunction(()=>__mareDiagnostics().scene==='hunt'&&__mareDiagnostics().map.navigation.ready&&__mareDiagnostics().lobby96.worldVisual?.state==='ready');
+ await p.evaluate(()=>MareGameSession.command('world.travel',{islandId:'dawn'}));
+ // Cold sprite preparation has a 90s runtime deadline; the default 30s browser
+ // wait can expire first on CI. Still require the map and visual to be ready.
+ await p.waitForFunction(()=>__mareDiagnostics().scene==='hunt'&&__mareDiagnostics().map.navigation.ready&&__mareDiagnostics().lobby96.worldVisual?.state==='ready',null,{timeout:120000});
  await p.keyboard.press('h');await p.waitForFunction(()=>__mareDiagnostics().haki.active==='armament');await p.keyboard.press('j');await p.waitForFunction(()=>__mareDiagnostics().haki.active==='observation');await p.keyboard.press('k');await p.waitForFunction(()=>__mareDiagnostics().haki.current===50);assert(await p.locator('#hakiKing').isDisabled());
  await p.screenshot({path:path.join(out,'haki-online-active.png')});const cd=wire.haki.state.kingReadyAt;
  await p.evaluate(()=>MareGameSession.command('world.return',{}));await p.waitForFunction(()=>__mareDiagnostics().scene==='lobby');assert.equal(wire.haki.state.kingReadyAt,cd);assert.equal(wire.haki.runtime.active,null);assert.equal(wire.haki.state.current,50);
  assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-haki');assert.deepEqual(errors,[]);assert.equal(sent.filter(v=>v.action==='haki.unlock').length,1);assert.equal(sent.filter(v=>v.action==='haki.invest').length,42);
  console.log('Online Haki passed: original book confirmation,16 nodes/42 graduations, persistence, auto preference, H/J/K, cooldown, desktop/mobile and demo save. BFF fixture only.');
+ }catch(error){
+  console.error('Haki browser diagnostics',await p.evaluate(()=>({scene:__mareDiagnostics().scene,navigation:__mareDiagnostics().map.navigation,visual:__mareDiagnostics().lobby96.worldVisual,busy:MareGameSession.busy,pending:MareGameSession.pending})).catch(()=>null));
+  throw error;
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});

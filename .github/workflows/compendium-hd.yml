@@ -5,6 +5,7 @@ on:
     paths:
       - 'compendium-ui.js'
       - 'compendium-hd.css'
+      - 'hud-glass.css'
       - 'assets/ui/compendium-hd/**'
       - 'akuma-system.js'
       - 'character-system.js'
