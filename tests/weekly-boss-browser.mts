@@ -41,7 +41,21 @@ await authDatabase(async f=>{
   const resources=await p.evaluate(()=>performance.getEntriesByType('resource').filter(r=>r.name.includes('/assets/weekly-boss/akainu/')).map(r=>r.name));const draws=await p.evaluate(()=>globalThis.__weeklyTextureDraws);console.log('Weekly texture requests',resources,'actual canvas draws',draws);assert(resources.length>=2,'real sprite textures must be requested');assert(draws.some((s:string)=>s.includes('magma-area.webp')),'real area texture must be drawn');assert(draws.some((s:string)=>/\/(idle|walk|punch|aoe)\.webp/.test(s)),'real body texture must be drawn');
   const hp=await p.evaluate(()=>MareGameSession.data.online.battle.mobs[0].hp);await q.reload();await q.waitForFunction(()=>globalThis.MareGameSession?.data?.online?.weeklyBoss?.current,null,{timeout:30000});assert.equal(await q.evaluate(()=>MareGameSession.data.online.weeklyBoss.current.id),id);assert(await q.evaluate(()=>MareGameSession.data.online.battle.mobs[0].hp)<=hp);
   await p.setViewportSize({width:390,height:844});await p.locator('#modesMenuTrigger').click();await p.locator('#weeklyBossMenu').click();await p.screenshot({path:resolve(out,'admin-mobile.png')});assert(await p.locator('#weeklyBossDialog').evaluate((d:any)=>{const b=d.getBoundingClientRect();return b.width<=390&&b.x>=0&&b.right<=390;}));
-  await p.locator('[data-weekly-op=cancel]').click();for(const page of [p,q])await page.waitForFunction(()=>MareGameSession.data.online.world.mapId==='lobby'&&!MareGameSession.data.online.battle.weeklyBossInstanceId,null,{timeout:20000});
+  // The live worker and both heartbeats can hold a peer lock or advance the
+  // character version between render and click. Retry only explicit conflicts,
+  // through the same UI, and require a successful authoritative receipt.
+  let cancelled=false;
+  for(let attempt=0;attempt<4&&!cancelled;attempt++){
+   const [response]=await Promise.all([p.waitForResponse((r:any)=>r.url().endsWith('/commands')&&r.request().postDataJSON()?.action==='weeklyBoss.execute'&&r.request().postDataJSON()?.payload?.op==='cancel'),p.locator('[data-weekly-op=cancel]').click()]);
+   const receipt=await response.json();cancelled=response.ok();
+   if(!cancelled){
+    console.log('Weekly cancellation response',response.status(),receipt.error);
+    assert.equal(response.status(),409);assert(['party_member_busy','state_version_conflict'].includes(receipt.error),'Unexpected cancellation error: '+receipt.error);
+    await p.waitForFunction(()=>!MareGameSession.busy);await p.evaluate(()=>MareGameSession.read());await p.waitForTimeout(300);
+   }
+  }
+  assert(cancelled,'Cancellation must be accepted by the server');
+  for(const page of [p,q])await page.waitForFunction(()=>MareGameSession.data.online.world.mapId==='lobby'&&!MareGameSession.data.online.battle.weeklyBossInstanceId,null,{timeout:20000});
   for(const page of pages)assert.equal(await page.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'sentinel-weekly-test');
   for(const table of ['weekly_boss_victories','weekly_boss_entitlements'])assert.equal((await f.pool.query(`SELECT count(*)::int n FROM mare_game.${table}`)).rows[0].n,0);
   assert.deepEqual(errors,[]);assert.deepEqual(workerErrors,[]);assert.deepEqual(missing,[]);
