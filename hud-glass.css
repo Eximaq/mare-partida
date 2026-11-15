@@ -2862,6 +2862,70 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   }
   @media (prefers-reduced-motion:reduce) { & #dialogBody button { transition: none; } }
 }
+/* Morgan's journal: fixed editorial and filters, independently scrollable news. */
+#app #panelOverlay.hud-density.captain-hd-mode[data-ui-panel=journal] {
+  padding: max(8px,var(--rpg-safe-top)) 8px max(8px,var(--rpg-safe-bottom)); background: #080b104d; backdrop-filter: blur(2px);
+  & > .dialog { display: flex; flex-direction: column; width: min(var(--glass-window-width),100%); height: calc(var(--glass-window-limit) - 18px); max-height: calc(var(--glass-window-limit) - 18px); max-width: none; min-height: 0; padding: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 12px; background: var(--glass-surface); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: var(--glass-shadow); color: #f5f6f8; font: 400 13px/1.45 var(--glass-type); overflow: hidden; }
+  & .dialog-header { display: flex; flex: none; align-items: center; min-height: 58px; padding: 8px 14px; gap: 12px; margin: 0; border: 0; border-bottom: 1px solid #ffffff18; background: #ffffff03; }
+  & .dialog-header::before, & #dialogTitle::before { content: none; }
+  & .dialog-header > div:first-child { padding: 0; min-width: 0; text-shadow: none; }
+  & .dialog-header small { display: none; }
+  & #dialogTitle { margin: 0; color: var(--glass-gold); font: 700 22px/1.2 var(--glass-type); text-shadow: none; text-transform: none; letter-spacing: 0; }
+  & #closePanel { width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0; border: 0; border-image: none; border-radius: 8px; background: transparent; box-shadow: none; color: var(--glass-muted); font: 26px/1 var(--glass-type); }
+  & #dialogBody { display: flex; flex: 1; min-height: 0; padding: 12px; overflow: hidden; background: none; }
+  & .captain-journal { display: grid; grid-template-rows: 180px auto minmax(0,1fr); width: 100%; min-height: 0; gap: 12px; color: #f5f6f8; font: 400 13px/1.5 var(--glass-type); }
+  & .captain-editorial { display: grid; grid-template-columns: 32% 68%; min-height: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 8px; background: #080b104d; }
+  & .captain-editorial-copy { padding: 18px 22px; background: linear-gradient(110deg,#202329,#14191ddd); color: #f5f6f8; box-shadow: none; }
+  & .captain-editorial-copy small { color: var(--glass-muted); font: 600 10px/1.5 var(--glass-type); letter-spacing: .08em; }
+  & .captain-editorial-copy h2 { margin: 10px 0; font: 500 21px/1.15 var(--glass-type); color: #f5f6f8; text-shadow: none; }
+  & .captain-editorial-copy h2 b { display: block; font: 750 38px/1.15 var(--glass-type); color: var(--glass-gold); text-transform: none; letter-spacing: -.03em; }
+  & .captain-editorial-copy p { margin: 0; color: var(--glass-muted); font: 400 11px/1.5 var(--glass-type); }
+  & .captain-morgan { display: block; position: absolute; left: 32%; top: 0; width: 68%; height: 100%; aspect-ratio: auto; object-fit: cover; object-position: center; }
+  & .captain-tabs { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; }
+  & .captain-tabs button { min-height: 44px; height: auto; padding: 7px 10px; gap: 7px; border: 1px solid #ffffff24; border-image: none; border-radius: 8px; background: #ffffff05; color: var(--glass-muted); font: 600 13px/1.35 var(--glass-type); text-shadow: none; box-shadow: none; transition: background-color .15s,border-color .15s; }
+  & .captain-tabs button[aria-pressed=true] { border-color: var(--glass-line); background: #d4af371a; color: var(--glass-gold); }
+  & .captain-tabs button:hover, & #closePanel:hover { background: #ffffff10; color: #fff; }
+  & :is(.captain-tabs button,#closePanel):focus-visible { outline: 2px solid var(--glass-gold); outline-offset: -3px; }
+  & .captain-tabs .captain-icon { width: 20px; height: 20px; filter: none; }
+  & .captain-news { display: grid; grid-auto-rows: max-content; align-content: start; gap: 10px; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-right: 4px; scrollbar-width: thin; scrollbar-color: #d8c18a70 transparent; overscroll-behavior: contain; }
+  & .captain-news-item { padding: 16px 18px; min-height: 0; border: 1px solid #ffffff20; border-image: none; border-radius: 8px; background: #ffffff03; overflow-wrap: anywhere; }
+  & .captain-news-meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--glass-muted); font: 400 11px/1.4 var(--glass-type); }
+  & .captain-tag { padding: 4px 8px; border: 1px solid var(--glass-line); border-radius: 999px; background: #d4af3710; color: var(--glass-gold); font: 650 10px/1.3 var(--glass-type); letter-spacing: .04em; }
+  & .captain-news-item h3 { margin: 10px 0 6px; color: #f5f6f8; font: 650 18px/1.35 var(--glass-type); text-shadow: none; }
+  & .captain-news-item p { margin: 0; max-width: 85ch; color: var(--glass-muted); font: 400 14px/1.6 var(--glass-type); }
+  & .captain-empty { gap: 10px; padding: 30px 16px; border: 1px solid #ffffff20; border-radius: 8px; background: #ffffff03; color: var(--glass-muted); text-align: center; }
+  & .captain-empty > .captain-icon { width: 36px; height: 36px; }
+  & .captain-empty h3 { color: var(--glass-gold); font: 650 18px/1.4 var(--glass-type); }
+  & .captain-empty p { font: 400 13px/1.5 var(--glass-type); }
+  @media (max-width:760px) {
+    & #dialogBody { padding: 8px; }
+    & .captain-journal { grid-template-rows: 138px auto minmax(0,1fr); gap: 8px; }
+    & .captain-editorial { grid-template-columns: 48% 52%; }
+    & .captain-editorial-copy { padding: 10px; }
+    & .captain-editorial-copy small { font-size: 8px; }
+    & .captain-editorial-copy h2 { font-size: 17px; margin: 7px 0; }
+    & .captain-editorial-copy h2 b { font-size: 27px; }
+    & .captain-editorial-copy p { font-size: 10px; }
+    & .captain-morgan { left: 48%; width: 52%; object-position: 46% center; }
+    & .captain-tabs { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    & .captain-tabs button { font-size: 12px; }
+    & .captain-news-item { padding: 12px; }
+    & .captain-news-item h3 { font-size: 16px; }
+    & .captain-news-item p { font-size: 13px; }
+  }
+  @media (max-height:600px) {
+    & .dialog-header { min-height: 46px; padding-block: 0; }
+    & #dialogBody { padding: 8px; }
+    & .captain-journal { grid-template-rows: 72px auto minmax(0,1fr); gap: 6px; }
+    & .captain-editorial-copy { padding: 6px 12px; }
+    & .captain-editorial-copy small, & .captain-editorial-copy p { display: none; }
+    & .captain-editorial-copy h2 { margin: 0; font-size: 16px; }
+    & .captain-editorial-copy h2 b { font-size: 22px; }
+    & .captain-tabs { grid-template-columns: repeat(4,minmax(0,1fr)); }
+    & .captain-tabs button { padding: 4px; font-size: 11px; gap: 4px; }
+  }
+  @media (prefers-reduced-motion:reduce) { & .captain-tabs button { transition: none; } }
+}
 /* My Profile: the live portrait anchors a compact, read-only captain dossier. */
 #app #panelOverlay.hud-density.captain-hd-mode[data-ui-panel=myprofile] {
   padding: max(8px,var(--rpg-safe-top)) 8px max(8px,var(--rpg-safe-bottom)); background: #080b104d; backdrop-filter: blur(2px);
