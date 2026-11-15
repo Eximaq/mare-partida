@@ -27,6 +27,17 @@ source=source.replace('  window.__mareDiagnostics=',"  window.__dungeonQA={pause
  const itemId=await page.evaluate(()=>__dungeonQA.game.inventory.find(i=>i.materialId==='akuma_fragment_e').id);await page.locator('#invCategory').selectOption('materials');await page.locator('[data-item="'+itemId+'"]').click();await page.locator('[data-form-akuma]').waitFor();if(out)await page.screenshot({path:path.join(out,'fragments-inventory.png')});
  // Exercise the exact contextual form action even when the current inventory page is not the material page.
  await page.locator('[data-form-akuma]').click();await page.locator('[data-confirm-accept]').click();await page.locator('.dungeon-reveal').waitFor();if(out)await page.screenshot({path:path.join(out,'akuma-formed-reveal.png')});
+ for(const [width,height] of [[1366,768],[1024,768],[768,1024],[393,852],[360,800],[844,390]]){
+  await page.setViewportSize({width,height});
+  const panel=page.locator('#panelOverlay > .dialog'),r=await panel.boundingBox();
+  assert(r.width<=440&&r.x>=0&&r.y>=0&&r.x+r.width<=width+1&&r.y+r.height<=height+1,'Compact reveal stays in viewport');
+  assert.equal(await panel.evaluate(e=>getComputedStyle(e).borderImageSource),'none');
+  assert(await page.locator('#dialogBody').evaluate(e=>e.scrollWidth<=e.clientWidth+1),'No horizontal overflow');
+  await page.locator('[data-akuma-reveal-continue]').scrollIntoViewIfNeeded();
+  if(out)await page.screenshot({path:path.join(out,'reveal-'+width+'.png')});
+ }
+ await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await page.locator('.dungeon-reveal > img').evaluate(e=>getComputedStyle(e).animationName),'none');await page.emulateMedia({reducedMotion:'no-preference'});
+ await page.setViewportSize({width:1366,height:768});
  const formed=await page.evaluate(()=>({id:__dungeonQA.game.bossDungeons.reveal.itemId,fruit:__dungeonQA.game.bossDungeons.reveal.fruitId,owner:__dungeonQA.game.characterId,count:__dungeonQA.game.inventory.length}));
  assert.equal(await page.evaluate(()=>MareBossDungeons.count(__dungeonQA.game)),0);assert.equal(await page.evaluate(id=>__dungeonQA.game.inventory.filter(i=>i.id===id).length,formed.id),1);
  const second=await context.newPage();await attach(second);await second.goto(process.env.MARE_TEST_URL,{waitUntil:'domcontentloaded'});await second.waitForFunction(()=>__dungeonQA?.game&&__dungeonQA.writer.ready);assert.equal(await second.evaluate(()=>__dungeonQA.writer.owner),false,'second tab cannot become a stale save writer');await second.locator('#saveReadonlyBanner').waitFor();assert.equal(await second.evaluate(id=>__dungeonQA.game.inventory.filter(i=>i.id===id).length,formed.id),1);await second.close();

@@ -3260,3 +3260,37 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   }
   @media (prefers-reduced-motion:reduce) { & #dialogBody .help-copy .dialog-button { transition: none; } }
 }
+
+/* A compact result card; formation and acknowledgement remain unchanged. */
+#app #panelOverlay.hud-density.akuma-reveal-mode[data-ui-panel=akuma-reveal] {
+  padding: max(8px,var(--rpg-safe-top)) 8px max(8px,var(--rpg-safe-bottom)); background: #080b104d; backdrop-filter: blur(2px);
+  & > .dialog { display: flex; flex-direction: column; width: min(440px,100%); height: auto; max-height: calc(100dvh - 32px); max-width: none; min-height: 0; padding: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 12px; background: var(--glass-surface); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: var(--glass-shadow); color: #f5f6f8; font: 400 13px/1.45 var(--glass-type); overflow: hidden; }
+  & .dialog-header { display: flex; flex: none; align-items: center; min-height: 58px; padding: 8px 14px; gap: 12px; margin: 0; border: 0; border-bottom: 1px solid #ffffff18; background: #ffffff03; }
+  & .dialog-header::before, & #dialogTitle::before { content: none; }
+  & .dialog-header > div:first-child { padding: 0; min-width: 0; text-shadow: none; }
+  & .dialog-header small { display: none; }
+  & #dialogTitle { margin: 0; color: var(--glass-gold); font: 700 22px/1.2 var(--glass-type); text-shadow: none; text-transform: none; letter-spacing: 0; }
+  & #closePanel { width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0; border: 0; border-image: none; border-radius: 8px; background: transparent; box-shadow: none; color: var(--glass-muted); font: 26px/1 var(--glass-type); }
+  & #dialogBody { flex: 1; min-height: 0; padding: 12px; overflow: auto; background: none; scrollbar-width: thin; scrollbar-color: #d8c18a70 transparent; }
+
+  & #dialogBody { flex: 0 1 auto; }
+  & #dialogBody .dungeon-reveal { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 8px 12px 12px; color: #f5f6f8; font: 400 13px/1.5 var(--glass-type); text-align: center; }
+  & #dialogBody .dungeon-reveal > small { color: var(--glass-muted); font: 600 10px/1.4 var(--glass-type); letter-spacing: .12em; }
+  & #dialogBody .dungeon-reveal > img { display: block; flex: none; width: 140px; height: 140px; margin: 8px auto; padding: 18px; object-fit: contain; border: 1px solid #d4af3740; border-radius: 50%; background: radial-gradient(circle,#d4af371a,transparent 72%); box-shadow: 0 0 28px #d4af3710,inset 0 0 20px #ffffff05; filter: drop-shadow(0 5px 8px #0008); animation: glass-fruit-arrive .6s ease-out both; }
+  & #dialogBody .dungeon-reveal h2 { margin: 0; color: var(--glass-gold); font: 700 24px/1.25 var(--glass-type); text-shadow: none; overflow-wrap: anywhere; }
+  & #dialogBody .dungeon-reveal > strong { padding: 4px 14px; border: 1px solid #8edaff55; border-radius: 999px; background: #8edaff0c; color: #8edaff; font: 650 13px/1.4 var(--glass-type); }
+  & #dialogBody .dungeon-reveal p { margin: 0; color: var(--glass-muted); font: 400 13px/1.5 var(--glass-type); }
+  & #dialogBody .dungeon-reveal button { width: 100%; min-height: 44px; height: auto; margin: 10px 0 0; padding: 10px; border: 1px solid var(--glass-line); border-image: none; border-radius: 8px; background: #d4af371a; color: var(--glass-gold); font: 650 13px/1.4 var(--glass-type); box-shadow: none; text-shadow: none; transition: background-color .15s,border-color .15s; }
+  & #dialogBody .dungeon-reveal button:enabled:hover { background: #d4af3730; border-color: var(--glass-gold); filter: none; }
+  & #dialogBody .dungeon-reveal button:focus-visible, & #closePanel:focus-visible { outline: 2px solid var(--glass-gold); outline-offset: -3px; }
+  & #dialogBody .dungeon-reveal button:disabled { opacity: .5; cursor: not-allowed; }
+  @media (max-height:600px) {
+    & .dialog-header { min-height: 46px; padding-block: 0; }
+    & #dialogBody .dungeon-reveal { gap: 6px; padding: 0 4px 4px; }
+    & #dialogBody .dungeon-reveal > img { width: 84px; height: 84px; padding: 10px; margin: 2px auto; }
+    & #dialogBody .dungeon-reveal h2 { font-size: 20px; }
+  }
+}
+@keyframes glass-fruit-arrive { from { opacity: 0; transform: translateY(8px) scale(.94); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion:reduce) { #app #panelOverlay.hud-density.akuma-reveal-mode[data-ui-panel=akuma-reveal] #dialogBody .dungeon-reveal > img { animation: none; } #app #panelOverlay.hud-density.akuma-reveal-mode[data-ui-panel=akuma-reveal] #dialogBody button { transition: none; } }
+html[data-mare-motion=reduced] #app #panelOverlay.hud-density.akuma-reveal-mode[data-ui-panel=akuma-reveal] #dialogBody .dungeon-reveal > img { animation: none; }
