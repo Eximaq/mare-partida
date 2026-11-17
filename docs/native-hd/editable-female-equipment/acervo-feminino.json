@@ -1,0 +1,1643 @@
+{
+  "schema": "kaizoku-approval-source-retention-v1",
+  "archiveOnly": true,
+  "productionEnabled": false,
+  "existingReviewBase": "74b107722d407992c5e280d7be4fc67686a328de",
+  "immutableSourceCommit": "2801902fa2dad8e83069815faeaa3f53f90bc1b6",
+  "torsoIdsWithOriginalMaterialsInBase": [
+    6,
+    7,
+    130,
+    137,
+    144,
+    151,
+    158,
+    165,
+    172,
+    179
+  ],
+  "historicalExactScopes": [
+    {
+      "scope": "Tiro Norte, base azul corrigida histórica de três chaves",
+      "paths": [
+        {
+          "path": "art-approved/weapons/female-blue-north-v2/INDEX.json",
+          "gitBlob": "123683f156b9e4c6cef4df8b7510c912ed769fd8"
+        },
+        {
+          "path": "art-approved/weapons/female-blue-north-v2/female_blue_north_3keys_4-115-116_corrected-v2.zip",
+          "gitBlob": "e074e737be73f7b93df1faeb39c3f6208b24f885"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/female-blue-north-v2/INDEX.json",
+      "authoredArchiveData": {}
+    },
+    {
+      "scope": "Adagas 12/13/71/72/73/74 Leste/Oeste, quatro peitorais",
+      "paths": [
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/METADATA.json",
+          "gitBlob": "228719450519ef87f3f6c4e5b47c6a1afcffa67e"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/MANIFEST.json",
+          "gitBlob": "6d4560bff8ace69bf84cda41249903f86c4a4787"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/RECONSTRUCT.py",
+          "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part000",
+          "gitBlob": "6e08fee95cef93c2797f56282d767b6a8a71bb45"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part001",
+          "gitBlob": "77526421daa4b7f61f60b83d4888f3d756954c8d"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part002",
+          "gitBlob": "9231155030baca6c51ba937785e45dd4deee637f"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part003",
+          "gitBlob": "c7e6564fe04362c41d3adc466fb7fa1eb53d7cb6"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part004",
+          "gitBlob": "1dd427ad71578d9b4417e85c15b78eeb8e8d4316"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part005",
+          "gitBlob": "0e46c24e639e944f6262c886c8a5b6b9fc3651bd"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part006",
+          "gitBlob": "2232c9876df4fe9979181cf4f409d6ae9c04b445"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part007",
+          "gitBlob": "867c37a5214e5d7fdb2ff5270b22f640f5e9cd48"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part008",
+          "gitBlob": "3d05513a27522139f53d0e0e25f6904f0a7da978"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part009",
+          "gitBlob": "3c8b68ee3b0ebbff61855a5a57bcf39c71f0c422"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part010",
+          "gitBlob": "998315420c08ef328c8ede2691245800467e3a1f"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part011",
+          "gitBlob": "401c51ec915058ca88f3a3b9b76a66b75b010962"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part012",
+          "gitBlob": "a82a88940614aea29597133895a1ab57e5dff6fb"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part013",
+          "gitBlob": "3e0afe70432bb0afbc917b7acb7effaa6160c9d6"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part014",
+          "gitBlob": "1b6a5db1266cffa4939fc5394700db0b6c0f6a93"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part015",
+          "gitBlob": "be74ece52609472a0be6caa976d1d0f1567f9cef"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part016",
+          "gitBlob": "3e29ad4b4d974f23f4dec1295cfbd9df978ab760"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part017",
+          "gitBlob": "a49bec590b106f753698d1fb9d85b1d547e74582"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part018",
+          "gitBlob": "2f2e5878423a1975a1d50cbc00e9ef7a7fd2d259"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part019",
+          "gitBlob": "b0e77a33cf81614334099f6ce1c9bc15acbbc0f1"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part020",
+          "gitBlob": "654a0f39e5cbfc238ab1d17cd6e789901e67e914"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part021",
+          "gitBlob": "28c24715ca67174dd6eabd3f9c95e3eec88fdf6e"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part022",
+          "gitBlob": "5a6f6c9b3e089fcc2fb17e3a45c58aaffa52c271"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part023",
+          "gitBlob": "6af4a0d557e1441643e3fbeb4b2203370da1ec7e"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part024",
+          "gitBlob": "84fee5c46fa4f7c3eef3a4e09d2782faa385ab64"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part025",
+          "gitBlob": "b997e631846b300e35c1f249ea7689ab801c13f3"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part026",
+          "gitBlob": "26246bb94b45a2ebcdc2e8cc07e33e16d9a023c8"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part027",
+          "gitBlob": "da61febef5875579b19f6c928c8ed06509208e14"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part028",
+          "gitBlob": "593801f33c515cc151c6a5e65a15bb7536dd9fca"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part029",
+          "gitBlob": "38c9b22b899206272a7c680ab31047244cff6763"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part030",
+          "gitBlob": "72e6ca76dfe075948b6efddd64bf1732d16c8c14"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part031",
+          "gitBlob": "c81d9f6a6ed980475c0516990061bb2528746b95"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part032",
+          "gitBlob": "7d65ce850547c6c6140bcfe0da1e48fd0523be8d"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part033",
+          "gitBlob": "a5d460943fa3d6381dcef1bfbbe5d600cf3d810b"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part034",
+          "gitBlob": "672852f91ef5749463f9974c086a4281b434b268"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part035",
+          "gitBlob": "756b60e2d335102e3f11bce94d2630d4f82670a5"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part036",
+          "gitBlob": "5a3e4ea1e1d89e3f1c71da184c250eca1521efd5"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part037",
+          "gitBlob": "b9b5697915a71633562f010cd4bb917ea4467057"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part038",
+          "gitBlob": "2e4a9381e7ad9360d06f1aed4b98997a96af346d"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part039",
+          "gitBlob": "c6f14bef7079c89a3bac929ee3be3b261770954a"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part040",
+          "gitBlob": "68b439641fa55bf26caee1abe0202fddeb1e3b7f"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part041",
+          "gitBlob": "ce5099ebb214bc4d7757af94cf0c6f76a40b9da1"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part042",
+          "gitBlob": "193eabf19fb20595e9660f14a7e11bba4ec9afe4"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part043",
+          "gitBlob": "81ff0460a98564d864db782f120389f03ed904d0"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part044",
+          "gitBlob": "ca68713092f601c549e6a9b26bcf2f6db9f3be28"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part045",
+          "gitBlob": "ae35a85836002440ff9f8a759b15e5fa060993c3"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part046",
+          "gitBlob": "b7a878c61ab5f40a7b4c67bdc7ad71c7da67e842"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part047",
+          "gitBlob": "62f5a51b3d3d6b4d98ebca8211ef5381331568b3"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part048",
+          "gitBlob": "4783ffd6153ed2e646b6e77b3631561d46aefb18"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part049",
+          "gitBlob": "8a8e57a2f41ea81fae0d120626a342e8e958f68c"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part050",
+          "gitBlob": "476d696c48bf1604791a1c0171769fe166e6bc02"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part051",
+          "gitBlob": "f46031791e58c7dc200b385916211f2057d8c37b"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part052",
+          "gitBlob": "48968fe29848d5190130c968a1e35300ce9960c9"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part053",
+          "gitBlob": "09b483bd9b308502ba47e88bcbf8dcac61ba826b"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part054",
+          "gitBlob": "9343038615452235035557dca6903cdfd0f54250"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part055",
+          "gitBlob": "180667fc36ceacdcd720444be0bd496ffbbf76d8"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part056",
+          "gitBlob": "7e00624e0f617c7fda3ee235df5a3ea82547bbaa"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part057",
+          "gitBlob": "394b23bc18e12966156de63c0a07fa50ba4d0b5f"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part058",
+          "gitBlob": "aa1dc18f56e5fb99e690866747b088d6525dfeb2"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part059",
+          "gitBlob": "e93c47830cd8d84a70959548ce0a74c05c72c1cd"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part060",
+          "gitBlob": "a665e6afd95765adab51b3c5cc8e1aef305918e2"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part061",
+          "gitBlob": "355e6b6b0cb0276105322b702b43ce7bf2d32819"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part062",
+          "gitBlob": "34b7eb34aed3ef81cfb268f331938377a9d996ab"
+        },
+        {
+          "path": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/parts/archive.part063",
+          "gitBlob": "31d39afc199cc3f7307d7de9ad8975da2df5827c"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/female-daggers12-13-71-74-four-torsos-ew/METADATA.json",
+      "authoredArchiveData": {
+        "sha256": "09c90ccf548883e39e9397a6b3de196294fd07b68f987b3aec7c16e85670ac99",
+        "bytes": 47754994,
+        "productionEnabled": false,
+        "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+        "archiveNote": "Exact final presented editable ZIP; no rejected111 variants included.",
+        "weapons": [
+          12,
+          13,
+          71,
+          72,
+          73,
+          74
+        ],
+        "directions": [
+          "EAST",
+          "WEST"
+        ],
+        "finalFrames": 384
+      }
+    },
+    {
+      "scope": "Repouso Leste/Oeste com armas 4/5/113/115/116; não é ataque",
+      "paths": [
+        {
+          "path": "art-approved/weapons/female-firearms-idle-v2/INDEX.json",
+          "gitBlob": "615a15582f8cf2a2723b1c0ae8295f86cca0aa34"
+        },
+        {
+          "path": "art-approved/weapons/female-firearms-idle-v2/female_weapon113_idle-east-west-v2_approved.zip",
+          "gitBlob": "e0181ad1f95315b7f582b74f5bfd0ffc22793988"
+        },
+        {
+          "path": "art-approved/weapons/female-firearms-idle-v2/female_weapon115_idle-east-west-v2_approved.zip",
+          "gitBlob": "dbedce365bef8f4432d88669a48526dbb24489b2"
+        },
+        {
+          "path": "art-approved/weapons/female-firearms-idle-v2/female_weapon116_idle-east-west-v2_approved.zip",
+          "gitBlob": "a0d0819f032adfc502f0d480001e3e2d127a37c3"
+        },
+        {
+          "path": "art-approved/weapons/female-firearms-idle-v2/female_weapon4_idle-east-west-v2_approved.zip",
+          "gitBlob": "3fa9671ac8caf27e7c1eabe8bbc1b0efb3b28162"
+        },
+        {
+          "path": "art-approved/weapons/female-firearms-idle-v2/female_weapon5_idle-east-west-v2_approved.zip",
+          "gitBlob": "05b924f172635306b1309ca0481370042c107d94"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/female-firearms-idle-v2/INDEX.json",
+      "authoredArchiveData": {}
+    },
+    {
+      "scope": "Sabre 1 e Nodachi 68 Leste/Oeste, quatro peitorais",
+      "paths": [
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/METADATA.json",
+          "gitBlob": "06129ea59625c2b9ec76aff97bccc5714f916fe6"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/MANIFEST.json",
+          "gitBlob": "783d54adcc1b0f78555e9cd120a7249b624b77d6"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/RECONSTRUCT.py",
+          "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part000",
+          "gitBlob": "90e1d84c929356c7a04175a24adf7b6233f18eae"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part001",
+          "gitBlob": "de6ebe848046ed8f5e45aeebcefb085e8788ec19"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part002",
+          "gitBlob": "d98863dcc40693f44f69b9e4dad3a46402114bab"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part003",
+          "gitBlob": "e7403b933ff90a7075bc29ae6e8397479bb48e7b"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part004",
+          "gitBlob": "f4825e95cce07db557d4cfc87dfb0004c6f8d12f"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part005",
+          "gitBlob": "f326be6b94cb0680acde3ada6d5dab9075429a19"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part006",
+          "gitBlob": "d84763c7a0a0acb2c6188b01c985a5e390f5ab9d"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part007",
+          "gitBlob": "20e32f98d7d59e185622ede927848dc1f7502fe0"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part008",
+          "gitBlob": "523c70671ba1be612213d0a7f582537d0ee86757"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part009",
+          "gitBlob": "7c7b2c21696763780087facaec27aa1ee1d07f34"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part010",
+          "gitBlob": "a2a5aaffcc8e3d7bc71b223348d7cc64488e80ad"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part011",
+          "gitBlob": "0714d7940b0743efc991d96805d2b1ca75aeb633"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part012",
+          "gitBlob": "fc5b8802acd5b56667213ad20ef92db3bc8f7ef2"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part013",
+          "gitBlob": "159d2fec2ddd6caffd3da59c69ff288ed151b868"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part014",
+          "gitBlob": "0766670a00eb6e0b9eab2a5e188e03e08f970995"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part015",
+          "gitBlob": "6e6036ac9807b2b55a081f9055278d6cc6e74431"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part016",
+          "gitBlob": "768b34c24717f3503c1f2641f0015c432486c595"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part017",
+          "gitBlob": "a66026e29a8f96bf8872d5dab52d41fb60ab78d1"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part018",
+          "gitBlob": "2341f147039e5aacd923991a05d7a88902ea46f1"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part019",
+          "gitBlob": "a81eeae9233d3cafeed477aba50c0ff468fb3eb1"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part020",
+          "gitBlob": "4c9cb4ae42d4207e242358e718caf742fc89e1f8"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part021",
+          "gitBlob": "02d3716177afe493f4e07b6744b28d95194bb6b8"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part022",
+          "gitBlob": "aea4b527df11fc9513c26f4c5bfa00fd95e4472c"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part023",
+          "gitBlob": "aa021d06c76a9999cf2fbe098743fe3ed3651853"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part024",
+          "gitBlob": "2fe72cecf5338d5823e3aa9af8ad872aaa1bb073"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part025",
+          "gitBlob": "bf4d9ee125a5c48a0a9c8d459fd12814566b808d"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part026",
+          "gitBlob": "3f412ceb118b80b7944e77f19b1341396388fb19"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part027",
+          "gitBlob": "6926080a7684122f11b7c41bd0fb2b929d1ef33d"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part028",
+          "gitBlob": "95a043ac9850f436bae3d837c6eeab022d315eef"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part029",
+          "gitBlob": "0d93efc161e639a52a00e089c2c29f3e9f3f9f4c"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part030",
+          "gitBlob": "e4ed7aecde93d11957fe2632500d416ee70d694e"
+        },
+        {
+          "path": "art-approved/weapons/female1-68-four-torsos-ew-v2/parts/archive.part031",
+          "gitBlob": "94bb05e92ea6d4462efd874718100d8754c130b3"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/female1-68-four-torsos-ew-v2/METADATA.json",
+      "authoredArchiveData": {
+        "sha256": "6d1add6c614e9cfe71b48010413d23e4d1c17cfd39c27a029e756fb81c06d59c",
+        "bytes": 23910028,
+        "productionEnabled": false,
+        "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+        "archiveNote": "Exact corrected V2 female sword ZIP; previous uncorrected delivery excluded.",
+        "weapons": [
+          1,
+          68
+        ],
+        "directions": [
+          "EAST",
+          "WEST"
+        ],
+        "finalFrames": 128
+      }
+    },
+    {
+      "scope": "Manopla 111 Leste/Oeste, quatro peitorais",
+      "paths": [
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/METADATA.json",
+          "gitBlob": "5c8f9fa55baa29ba18f0f7675c42f8886981e8d6"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/MANIFEST.json",
+          "gitBlob": "6addfd08f122014b37c8ce34745e5144073d15db"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/RECONSTRUCT.py",
+          "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/archive.part000",
+          "gitBlob": "4dae059382935ac5994bfa15cb9a4c7ca1247315"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/archive.part001",
+          "gitBlob": "72708e4323ba1956587c528b444082bdc4808b63"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/archive.part002",
+          "gitBlob": "92408dd205f6400eaa5f971654011ac0f833ff69"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/archive.part003",
+          "gitBlob": "e656453b5c2256f012195ee36b642cdf74c295d9"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/archive.part004",
+          "gitBlob": "1d4efea375dc7287af86882b1431d77575565e8e"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/archive.part005",
+          "gitBlob": "3ac8003374cba55fbfc97028f7bab060b654ba66"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/archive.part006",
+          "gitBlob": "5853bf836db0b73462317a4fdcc076fa3807e7f8"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/archive.part007",
+          "gitBlob": "5255ec94da351913d42dc2c8ca243462381fc3de"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/archive.part008",
+          "gitBlob": "3b8b49383fc3c1ba4f46fd6c979eea3553258d2b"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/archive.part009",
+          "gitBlob": "d16ad4f0f958c0c1c8a7cff4ddd79e8a02fb7d76"
+        },
+        {
+          "path": "art-approved/weapons/female111-four-torsos-ew-v3/parts/archive.part010",
+          "gitBlob": "b9f9b6bf5e7166fa41842bdcf2f407c6d56e770c"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/female111-four-torsos-ew-v3/METADATA.json",
+      "authoredArchiveData": {
+        "sha256": "a3afd7d6e388e2449ca65f970286b51ecc06422eba97fbad7394af8b8e5295c3",
+        "bytes": 8036217,
+        "productionEnabled": false,
+        "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+        "archiveNote": "Exact presented and approved111V3 editable ZIP; V1/V2 rejected and excluded.",
+        "weapons": [
+          111
+        ],
+        "directions": [
+          "EAST",
+          "WEST"
+        ],
+        "finalFrames": 64
+      }
+    },
+    {
+      "scope": "Manopla 112 Leste/Oeste, quatro peitorais",
+      "paths": [
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/METADATA.json",
+          "gitBlob": "7a1122bed77c25ebf365fffc2db70dbef88afa94"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/MANIFEST.json",
+          "gitBlob": "05c34498244f6805731a4ca17d8d073cedaf85a8"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/RECONSTRUCT.py",
+          "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/archive.part000",
+          "gitBlob": "759af76e46a3a85abb363bf49b37105a6f938d31"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/archive.part001",
+          "gitBlob": "f228bd8d65921b101f692939caebda80148ba5c4"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/archive.part002",
+          "gitBlob": "5bd3c27ecb005e294b7f63ae02c79a59ca5f0b28"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/archive.part003",
+          "gitBlob": "b166614753c349c1b821c99c649c33aae0d04c4c"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/archive.part004",
+          "gitBlob": "9319eb1a9c642514e0e18856d383b459c098bf3f"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/archive.part005",
+          "gitBlob": "70c787ee6f450432a62ba05d78db4484c953507f"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/archive.part006",
+          "gitBlob": "f312d8437db8ccbfb5eddacfb2dec9d822bf5658"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/archive.part007",
+          "gitBlob": "59e42b14f0771a66e775e1483ea96286c1f936a9"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/archive.part008",
+          "gitBlob": "929d5230bf24c9e92a4d639923da2a4544ec153c"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/archive.part009",
+          "gitBlob": "f6038d55976f331e6233ac8357a1ea4f392d70e6"
+        },
+        {
+          "path": "art-approved/weapons/female112-four-torsos-ew/parts/archive.part010",
+          "gitBlob": "e3d5f01ced7428f16f3f5633fa57377c34a7971d"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/female112-four-torsos-ew/METADATA.json",
+      "authoredArchiveData": {
+        "sha256": "96da69e85d094726e94aeaba80c4095725d517972509cc4849248b6a007d5a42",
+        "bytes": 7763676,
+        "productionEnabled": false,
+        "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+        "archiveNote": "Exact final presented editable ZIP; no rejected111 variants included.",
+        "weapons": [
+          112
+        ],
+        "directions": [
+          "EAST",
+          "WEST"
+        ],
+        "finalFrames": 64
+      }
+    },
+    {
+      "scope": "Rifles 113/116 Sul, cinco peitorais: revisão de fonte histórica",
+      "paths": [
+        {
+          "path": "art-approved/weapons/female113-116-five-torsos-south-v2/INDEX.json",
+          "gitBlob": "92c4409ea2a760424bcde427b846ab7860e302b2"
+        },
+        {
+          "path": "art-approved/weapons/female113-116-five-torsos-south-v2/female113_south_five-torsos_corrected-approved-v2.zip",
+          "gitBlob": "f4ede872f6ba719b7d6398b71c9141e50a741432"
+        },
+        {
+          "path": "art-approved/weapons/female113-116-five-torsos-south-v2/female116_south_five-torsos_corrected-approved-v2.zip",
+          "gitBlob": "657c4c39081fd3234d6e516073ccb9568c6fd957"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/female113-116-five-torsos-south-v2/INDEX.json",
+      "authoredArchiveData": {}
+    },
+    {
+      "scope": "Rifles 113/116 Leste/Oeste, quatro peitorais: revisão de fonte histórica",
+      "paths": [
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/INDEX.json",
+          "gitBlob": "8f825acf99ed43f72eeeae4d6c040b22a2639fb2"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/MANIFEST.json",
+          "gitBlob": "3e159ab85bd6ab778aba3a68e49dff9bc684ca41"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/RECONSTRUCT.py",
+          "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part000",
+          "gitBlob": "9b3780c7a9c7613c481834c33540d625dc5febd0"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part001",
+          "gitBlob": "dc8e8d43d8cdd5341c45a1e83c48e72a427685bc"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part002",
+          "gitBlob": "fa1eb88a349cccf30ae572d047cf1613252d71da"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part003",
+          "gitBlob": "59dc9836d6dca1a32e69ed386b4a009a4f52a135"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part004",
+          "gitBlob": "199f5068b4f44cec112420fb65a80682cd87f576"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part005",
+          "gitBlob": "53d987390cdc9b89a3fab0ec0ef018735399e3a5"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part006",
+          "gitBlob": "4f0c8446e2da1d9922fc4069cc67efb2c541dd90"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part007",
+          "gitBlob": "5ab47629aa9dc9dfb05b7756f8e680d9270500f4"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part008",
+          "gitBlob": "523f94a50ba1829c9aacc2b35378108f4ba41b51"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part009",
+          "gitBlob": "1662b12a5a9553296fa73a2749d821dee190bd18"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part010",
+          "gitBlob": "26f44abf28bf1dfef023ed5f3478f5a0b1e5d6cf"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part011",
+          "gitBlob": "ad903aab84d93fab6875e4a6193b74cddd24e832"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part012",
+          "gitBlob": "03685e90d1854388009ef9f23b32ecfd92c09079"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part013",
+          "gitBlob": "9bf6df768b8231bdb0eac12474c83acbc95b573a"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part014",
+          "gitBlob": "1525aba24660c484b90326f2cfbe9f8cef8245f3"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part015",
+          "gitBlob": "828345aeaef0225c02758e7f290cedc39e67e8d8"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part016",
+          "gitBlob": "61f05f5187d01c259f96799b48a754a94492db0a"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part017",
+          "gitBlob": "3a75e610bebac2b2a9ed399a1184cc4fa6b7d73d"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part018",
+          "gitBlob": "35fcb1c7c9a2f8663e63c6b8f5a984bde972cf15"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part019",
+          "gitBlob": "ec2bb084472b45c3383a903c8f5aaba49132dd46"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part020",
+          "gitBlob": "142772eef6dcee10ef883ef10f52cc4e66cd24ec"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part021",
+          "gitBlob": "f8879d3439a8bb3205a6320f97d37dc821ca3482"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part022",
+          "gitBlob": "2bf2d3b7df51dbaaf7d333628ca25e472dc98c05"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part023",
+          "gitBlob": "6ce679a8ebd473a1a021bfd5dc5ebfc29f78c18e"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part024",
+          "gitBlob": "2ddbeb2bf9bbd10cb58a3f692ead9b84161440fc"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part025",
+          "gitBlob": "d11a83a11e2cf63c9715c70514d5aa5101313ba7"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part026",
+          "gitBlob": "7dc87856c26c1b36a15e5ae1c2f688d8e467ac0c"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part027",
+          "gitBlob": "8f5b5f2cebc5f332dd4331d3b9456b8209a6c7a6"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part028",
+          "gitBlob": "9ca4b59b8d64a64e6bfae7525cd2a5a4ba9893f6"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part029",
+          "gitBlob": "220f481c59eadb01a031fb5d2380f76961695cf5"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part030",
+          "gitBlob": "dbb402a61e132765dba30debd8cb7bfbdd89b29a"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part031",
+          "gitBlob": "3f0cf2845f2829743846120f2fa1053cf1d9d6cc"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part032",
+          "gitBlob": "536b35a6517ee27cef5ec41746779e470f4a8416"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part033",
+          "gitBlob": "4c78457f806d1d81ce2650aaf2d61382e0424e7b"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part034",
+          "gitBlob": "5ea4ea6edcdea287dc659620173f2a8b06f9cbc5"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part035",
+          "gitBlob": "e6bf8c97921dcc36ec6f5992c766def9151769c8"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part036",
+          "gitBlob": "7f6d22d2312c2a5870bc3a49254dfe77675a0731"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part037",
+          "gitBlob": "18d49b78c3f5fbe985f4eae7668eb5765f434938"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part038",
+          "gitBlob": "7f065a6a7897c7ca5da89f5180ac045ddb91bc8e"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part039",
+          "gitBlob": "7c9da6ea6971a3d7e8af673c6cf46eccdca1bb9f"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part040",
+          "gitBlob": "16bf3cfbeef2aeca94a918896843e847a3d79edc"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part041",
+          "gitBlob": "a846d2feb77e2e6b2054c82b7afb96aedff48371"
+        },
+        {
+          "path": "art-approved/weapons/female113116-four-torsos-ew/parts/archive.part042",
+          "gitBlob": "482bcdd3d7c7dc9f36ba2df35ecc1bdeab0801ff"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/female113116-four-torsos-ew/INDEX.json",
+      "authoredArchiveData": {
+        "sha256": "827392fa97aeef6d01687afb1688bfbcd81511fa133825d97b0a335354e80741",
+        "bytes": 31528354,
+        "productionEnabled": false,
+        "approval": "Owner approved the presented female113 and female116 complete lateral cycles with four torsos.",
+        "archiveNote": "Original editable backup preserved byte-for-byte. Internal candidate labels reflect pre-approval packaging; this index records subsequent owner approval. Approval covers only these equipped combinations.",
+        "weapons": [
+          113,
+          116
+        ],
+        "directions": [
+          "EAST",
+          "WEST"
+        ],
+        "finalFrames": 144
+      }
+    },
+    {
+      "scope": "Orbes 17 e 122 Leste/Oeste, quatro peitorais",
+      "paths": [
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/METADATA.json",
+          "gitBlob": "92223213899c1d9264294045917d2b8a5c767bf7"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/MANIFEST.json",
+          "gitBlob": "e12a5b74d657d464135ca310faa0997269da487c"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/RECONSTRUCT.py",
+          "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part000",
+          "gitBlob": "25673ba93c3c2983b8f4989bba2151c40fe9d944"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part001",
+          "gitBlob": "bdc9e4cfd27de4b56371948d0d9265766dc5ff9c"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part002",
+          "gitBlob": "b176b2f214a6413167971cead7daf6340dea1fbd"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part003",
+          "gitBlob": "d5191b8c295f6242b3644dca68fd4e360fa975c9"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part004",
+          "gitBlob": "46b4ef10e83f90f564cec79d0e507dcb51931886"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part005",
+          "gitBlob": "489a75506cf75bb791b91b7d139caa06fb74781c"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part006",
+          "gitBlob": "42f9502b8b5c8dbb61226622aec3b69fd3cffe32"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part007",
+          "gitBlob": "b4cbe9da85139f00e8f675833024ebf09a979c77"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part008",
+          "gitBlob": "df5044c55040fa142552857d24b006d49c0bec1e"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part009",
+          "gitBlob": "a01fe12420fc4410e9096e33c6cdf7be1f5d333a"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part010",
+          "gitBlob": "2b034c19c7146cbc280677391b3cbe3ba9cf282c"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part011",
+          "gitBlob": "9bb05fea58fb8da75ab243df0e12d2fb71ab998f"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part012",
+          "gitBlob": "157e65386057c134f93cd3853e61add34ce6a08a"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part013",
+          "gitBlob": "9bb68baff7fa62d5b1109a975346a8e4ab3fbbaf"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part014",
+          "gitBlob": "8d978ab3aa44da61efed51fed2c6463b141b7d9d"
+        },
+        {
+          "path": "art-approved/weapons/female17-122-four-torsos-ew/parts/archive.part015",
+          "gitBlob": "864fd482c005fb21365ed32e6542df6ff263c6ff"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/female17-122-four-torsos-ew/METADATA.json",
+      "authoredArchiveData": {
+        "sha256": "594f3087ebe45565752447294c967719c6de7223dc5f76157ab0156ae7935980",
+        "bytes": 11768347,
+        "productionEnabled": false,
+        "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+        "archiveNote": "Exact final presented editable ZIP; no rejected111 variants included.",
+        "weapons": [
+          17,
+          122
+        ],
+        "directions": [
+          "EAST",
+          "WEST"
+        ],
+        "finalFrames": 128
+      }
+    },
+    {
+      "scope": "Mosquetes 4/115 Leste/Oeste, quatro peitorais: revisão de fonte histórica",
+      "paths": [
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/METADATA.json",
+          "gitBlob": "91c4f44a5d3878a66f7548fdc8a8715275774385"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/MANIFEST.json",
+          "gitBlob": "abe7fcdf721b0fdd570f2cf20eeba555ae069b21"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/RECONSTRUCT.py",
+          "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part000",
+          "gitBlob": "a57547cc1600e72f50744735037cff765b18dfae"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part001",
+          "gitBlob": "533de98e623d6ab92c90d474aedd47b2edf42bd7"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part002",
+          "gitBlob": "53f4c60a07b74418161c9f492cf52235d7d3c940"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part003",
+          "gitBlob": "f72a01fb0ed7d1ff1568d1a3361a627e966537e0"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part004",
+          "gitBlob": "96fdda1e682c77b068ec8bc3028400176b05c209"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part005",
+          "gitBlob": "7fd3bf85a8a3ba695d4d074384a61f7261c2a552"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part006",
+          "gitBlob": "f33171101b09f332347cb1f70d8ee676eed003b4"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part007",
+          "gitBlob": "4240b9cf98f5a93c191204bc4b5c0bc4fa760cce"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part008",
+          "gitBlob": "efe888d74d8aad4a86a61fffd1b5b1ca6f046d62"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part009",
+          "gitBlob": "4d01b9a0653244c7e58ebe953f39c2f33cb7a5d6"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part010",
+          "gitBlob": "6b8599f31e9057c2663da2577688bf8337ae873f"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part011",
+          "gitBlob": "63d68e0f16baba3a142fd0afc91d166454d12d9a"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part012",
+          "gitBlob": "9f0b14bdf30aa0c2eb7447bb23e20cd265efcb90"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part013",
+          "gitBlob": "7def34bb75ea45d6a1dc57b6b6561ccbe0fd03fc"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part014",
+          "gitBlob": "dd25fb3578d991e023f8030aaefdac5c5991dbbf"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part015",
+          "gitBlob": "5dfbac6abf56c9557efca0d7e42856bd35381aa9"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part016",
+          "gitBlob": "cfaea5bc53ab22fe0718908ca509c94c62992bb9"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part017",
+          "gitBlob": "d2d03b879a52d2a5853c27a5d491ce1874c6fa5e"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part018",
+          "gitBlob": "3d4c8efef401207bab28ada104bcd9ac78a02efd"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part019",
+          "gitBlob": "bae52f3c7f84e86d2f531eed60edd31c2aa5eb87"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part020",
+          "gitBlob": "8c508ccfa02054b2d45fef6a2d4f7b0ee27ba842"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part021",
+          "gitBlob": "1c019b80b3a13aa5d8e888b5dcac50e35ead379c"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part022",
+          "gitBlob": "ed7e05647246c646b5f0775d1bc847b14894bb6d"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part023",
+          "gitBlob": "28a01f9cc79a7ceeb59b21301260794cb997cd86"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part024",
+          "gitBlob": "f82e814c731ae4dc7258e21f1a2559a44cebe38a"
+        },
+        {
+          "path": "art-approved/weapons/female4-115-four-torsos-ew/parts/archive.part025",
+          "gitBlob": "3b44c7be73ea9faa3a63e495e7c8e270e500411d"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/female4-115-four-torsos-ew/METADATA.json",
+      "authoredArchiveData": {
+        "sha256": "16598f83a5fe6ae7d1c39518034ab7bf746be26819b5f6d3ae9448f03f5b6808",
+        "bytes": 19392977,
+        "productionEnabled": false,
+        "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+        "archiveNote": "Exact original editable ZIP preserved; internal candidate labels predate owner approval.",
+        "weapons": [
+          4,
+          115
+        ],
+        "directions": [
+          "EAST",
+          "WEST"
+        ],
+        "finalFrames": 144
+      }
+    },
+    {
+      "scope": "Tiro 4/116 Norte, três chaves originais aprovadas",
+      "paths": [
+        {
+          "path": "art-approved/weapons/female4-116-north-three-keys/METADATA.json",
+          "gitBlob": "72cf3ab7c2e3ecc06da53a1f4f91efa77d278430"
+        },
+        {
+          "path": "art-approved/weapons/female4-116-north-three-keys/parts/MANIFEST.json",
+          "gitBlob": "a012cf7b904b2f791e6dd88e069c7ab03e76bd93"
+        },
+        {
+          "path": "art-approved/weapons/female4-116-north-three-keys/parts/RECONSTRUCT.py",
+          "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+        },
+        {
+          "path": "art-approved/weapons/female4-116-north-three-keys/parts/archive.part000",
+          "gitBlob": "d8969ff2ab93b5541c609408edd023cb2a7866a4"
+        },
+        {
+          "path": "art-approved/weapons/female4-116-north-three-keys/parts/archive.part001",
+          "gitBlob": "5ba45c0150c4db27eeae132e4616177823c360ef"
+        },
+        {
+          "path": "art-approved/weapons/female4-116-north-three-keys/parts/archive.part002",
+          "gitBlob": "db9796b397a011769ef23d400ee8bb6c6d117c92"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/female4-116-north-three-keys/METADATA.json",
+      "authoredArchiveData": {
+        "sha256": "503e5388293dc15a5c8b600e987821e5f59f1cd7f9bc48e2f8bfbf460c9a89f7",
+        "bytes": 2050300,
+        "productionEnabled": false,
+        "approval": "Owner approved the exact presented NORTH three-key sequence and timing.",
+        "archiveNote": "Original presented ZIP preserved exactly; internal candidate labels predate approval. Historical uniform19 eight-state videos remain rejected.",
+        "weapons": [
+          4,
+          116
+        ],
+        "directions": [
+          "NORTH"
+        ],
+        "distinctKeyFrames": 6
+      }
+    },
+    {
+      "scope": "Espadas 1/68 e manoplas 111/112, Norte, quatro trajes femininos",
+      "paths": [
+        {
+          "path": "art-approved/weapons/clothing-batch-20261112/1-68-111-112_N_F/Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part001",
+          "gitBlob": "41aab567cbbc1138cd5e50eb3f63ef6f72355e50"
+        },
+        {
+          "path": "art-approved/weapons/clothing-batch-20261112/1-68-111-112_N_F/Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part002",
+          "gitBlob": "a1d026efa1bbae9630f7c425806cf84918f14e85"
+        },
+        {
+          "path": "art-approved/weapons/clothing-batch-20261112/1-68-111-112_N_F/Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part003",
+          "gitBlob": "0067ecf003b8dd0e0b24d7f38a63adf066931ee2"
+        },
+        {
+          "path": "art-approved/weapons/clothing-batch-20261112/1-68-111-112_N_F/Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part004",
+          "gitBlob": "0c57a15bc16a97d9f405ef2fbe15ffb12a4a6f1d"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/clothing-batch-20261112/MANIFEST.json",
+      "authoredArchiveData": [
+        {
+          "key": "1-68-111-112_N_F",
+          "filename": "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+          "bytes": 25180214,
+          "sha256": "16055abee490179d90ad1300cd8f2c4331b4d4816eef8a63fde2fb45685905d7",
+          "pngEntries": 257,
+          "entries": 261,
+          "parts": [
+            {
+              "path": "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part001",
+              "bytes": 7864320,
+              "git_blob_sha": "41aab567cbbc1138cd5e50eb3f63ef6f72355e50",
+              "sha256": "287a3aafb16c37ec4b3de8fe8a738ffb1865c10f1e0cb7a3b0f2d0fa60138594"
+            },
+            {
+              "path": "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part002",
+              "bytes": 7864320,
+              "git_blob_sha": "a1d026efa1bbae9630f7c425806cf84918f14e85",
+              "sha256": "04ca67e341de675fd0e79d3eccfbc9c56ac6fd4a03aa7b4ecba5e883d0dab995"
+            },
+            {
+              "path": "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part003",
+              "bytes": 7864320,
+              "git_blob_sha": "0067ecf003b8dd0e0b24d7f38a63adf066931ee2",
+              "sha256": "3aba98788643f2bc46877a0054082aabd4700c488bcdb8027af967b6383e8eaa"
+            },
+            {
+              "path": "Espadas1_68_Manoplas111_112_Feminino_NORTH_QuatroTrajes_Editavel.zip.part004",
+              "bytes": 1587254,
+              "git_blob_sha": "0c57a15bc16a97d9f405ef2fbe15ffb12a4a6f1d",
+              "sha256": "5881aec72bf2bf6a3b02af597dc74374df6cbb1a68b3755a39b681ae1b9c3d9d"
+            }
+          ],
+          "approval": "approved",
+          "productionEnabled": false,
+          "inGameTested": false
+        }
+      ]
+    },
+    {
+      "scope": "Espadas 0/67/70 Leste/Oeste, conjunto feminino histórico em quatro trajes",
+      "paths": [
+        {
+          "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+          "gitBlob": "3f8d65f5a7ccfea9d2df3057b0746eeee26aa180"
+        },
+        {
+          "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+          "gitBlob": "60906e8ddf6bd2d2c1bd6d310c08705dca2b0bf5"
+        },
+        {
+          "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part003",
+          "gitBlob": "67e335d7b6aac1fca3e5c111ccfe358705296800"
+        },
+        {
+          "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part004",
+          "gitBlob": "aa4f85ee59c2e54f678ad0322450c9081971c63b"
+        },
+        {
+          "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part005",
+          "gitBlob": "703d040b1b0a1d0de96eed5c8e66707bd141be93"
+        },
+        {
+          "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part006",
+          "gitBlob": "e7ba59814b8d876cb889912cb8fd73d411d83c6e"
+        },
+        {
+          "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part007",
+          "gitBlob": "caedbefc6eb757d9576f769c81fa52b18a6c6e8e"
+        },
+        {
+          "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part008",
+          "gitBlob": "06a992bb29e1ea561ef732257f89408b212f2daf"
+        },
+        {
+          "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_F/Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part009",
+          "gitBlob": "70c5672aaef03b0ddccb29d1677c9cb14d63241c"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/swords0-67-70-ew-approved/MANIFEST.json",
+      "authoredArchiveData": [
+        {
+          "key": "0-67-70_EW_F",
+          "filename": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip",
+          "bytes": 63089207,
+          "sha256": "27aaf381440afce9a0e0d41d3dfc55415a3753c5efff0a8412a853f7e8d8773a",
+          "pngEntries": 1112,
+          "entries": 1132,
+          "parts": [
+            {
+              "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+              "bytes": 7864320,
+              "sha256": "c25a3f3913c1e608833039a0b2efd657f62bbe5b76cd3f80394d6f633bdfedb2",
+              "git_blob_sha": "3f8d65f5a7ccfea9d2df3057b0746eeee26aa180"
+            },
+            {
+              "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+              "bytes": 7864320,
+              "sha256": "84fbc2918dc35eb94c274c85dea600405fb0150183caa0369fd14655cfad9011",
+              "git_blob_sha": "60906e8ddf6bd2d2c1bd6d310c08705dca2b0bf5"
+            },
+            {
+              "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part003",
+              "bytes": 7864320,
+              "sha256": "c321b627d60b501202c78f4df966dc18315549da6f3b1e84aaac9eae70d094bb",
+              "git_blob_sha": "67e335d7b6aac1fca3e5c111ccfe358705296800"
+            },
+            {
+              "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part004",
+              "bytes": 7864320,
+              "sha256": "6d03983b0e41d73c755826f072029d1582d30bb25468254bf899825c5ec026f3",
+              "git_blob_sha": "aa4f85ee59c2e54f678ad0322450c9081971c63b"
+            },
+            {
+              "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part005",
+              "bytes": 7864320,
+              "sha256": "9a0dec443fb0b32c3ef2908fc66495693a216868a7fbf4f7f2bcc81ec0a58dde",
+              "git_blob_sha": "703d040b1b0a1d0de96eed5c8e66707bd141be93"
+            },
+            {
+              "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part006",
+              "bytes": 7864320,
+              "sha256": "2fc3efcf08ca3bda2d926b4076b8f17e317d94d30f3bd8891e1519f88af8153a",
+              "git_blob_sha": "e7ba59814b8d876cb889912cb8fd73d411d83c6e"
+            },
+            {
+              "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part007",
+              "bytes": 7864320,
+              "sha256": "9d5946ae3b89d960e8d8e49c5d17ed66b9581654f7a9b8ad84804c7a13d63a3d",
+              "git_blob_sha": "caedbefc6eb757d9576f769c81fa52b18a6c6e8e"
+            },
+            {
+              "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part008",
+              "bytes": 7864320,
+              "sha256": "5667a05171968643d00ce275f1b269af61d07cb4c8985f5747d8e8390e776275",
+              "git_blob_sha": "06a992bb29e1ea561ef732257f89408b212f2daf"
+            },
+            {
+              "path": "Espadas0_67_70_female_EAST_WEST_QuatroTrajes_Editavel.zip.part009",
+              "bytes": 174647,
+              "sha256": "532521c7512fd1aab12d0fbef0d8f11f2ce254fa7e2f84b85e7e01916259fdbc",
+              "git_blob_sha": "70c5672aaef03b0ddccb29d1677c9cb14d63241c"
+            }
+          ],
+          "approval": "approved",
+          "productionEnabled": false,
+          "inGameTested": false
+        }
+      ]
+    },
+    {
+      "scope": "Nodachi 69 Leste/Oeste, quatro trajes femininos históricos",
+      "paths": [
+        {
+          "path": "art-approved/weapons/nodachi69-ew-four-outfits-approved/69_EW_F_4TRAJES/Nodachi69_F_QuatroTrajes_EW_Editavel.zip.part001",
+          "gitBlob": "521562ba2cb0428be357a8e73dc0533bde6fa3ce"
+        },
+        {
+          "path": "art-approved/weapons/nodachi69-ew-four-outfits-approved/69_EW_F_4TRAJES/Nodachi69_F_QuatroTrajes_EW_Editavel.zip.part002",
+          "gitBlob": "11384d97472f4d539e1be55cddf692148e0babd0"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/nodachi69-ew-four-outfits-approved/MANIFEST.json",
+      "authoredArchiveData": [
+        {
+          "key": "69_EW_F_4TRAJES",
+          "filename": "Nodachi69_F_QuatroTrajes_EW_Editavel.zip",
+          "bytes": 11978168,
+          "sha256": "17378d4a11b7d1e3004e77fb9f95c380a3ffe4d4ff347c04ce3d8904fc9a39a2",
+          "pngEntries": 162,
+          "entries": 169,
+          "parts": [
+            {
+              "path": "Nodachi69_F_QuatroTrajes_EW_Editavel.zip.part001",
+              "bytes": 7864320,
+              "sha256": "3736de5359173563fe5a3d45885b492dab2717fb6be69c9db98eb9d0f43b54da",
+              "git_blob_sha": "521562ba2cb0428be357a8e73dc0533bde6fa3ce"
+            },
+            {
+              "path": "Nodachi69_F_QuatroTrajes_EW_Editavel.zip.part002",
+              "bytes": 4113848,
+              "sha256": "a6b3bed7c469a7739b45bb4709932770f7ae218df008d14760bedcfe38e06517",
+              "git_blob_sha": "11384d97472f4d539e1be55cddf692148e0babd0"
+            }
+          ],
+          "approval": "approved",
+          "productionEnabled": false,
+          "inGameTested": false
+        }
+      ]
+    },
+    {
+      "scope": "Pistola 114 Norte em quatro trajes, revisão histórica original",
+      "paths": [
+        {
+          "path": "art-approved/weapons/clothing-batch-20261112/114_N_F/Pistolas114_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+          "gitBlob": "ff8f38d68ca1b27e3cb0eeeb454e3a9c3ea4f454"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/clothing-batch-20261112/MANIFEST.json",
+      "authoredArchiveData": [
+        {
+          "key": "114_N_F",
+          "filename": "Pistolas114_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+          "bytes": 5581193,
+          "sha256": "ce29a1be500dd3a3ebbd00e7d69f47310a69d99b3911021365cabe3c7f4f2f88",
+          "pngEntries": 65,
+          "entries": 69,
+          "parts": [
+            {
+              "path": "Pistolas114_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+              "bytes": 5581193,
+              "git_blob_sha": "ff8f38d68ca1b27e3cb0eeeb454e3a9c3ea4f454",
+              "sha256": "ce29a1be500dd3a3ebbd00e7d69f47310a69d99b3911021365cabe3c7f4f2f88"
+            }
+          ],
+          "approval": "approved",
+          "productionEnabled": false,
+          "inGameTested": false
+        }
+      ]
+    },
+    {
+      "scope": "Compasso 16 Norte, quatro trajes",
+      "paths": [
+        {
+          "path": "art-approved/weapons/clothing-batch-20261112/16_N_F/Compasso16_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+          "gitBlob": "dd8b4e2ccc3cef5758b049add734d8246deec929"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/clothing-batch-20261112/MANIFEST.json",
+      "authoredArchiveData": [
+        {
+          "key": "16_N_F",
+          "filename": "Compasso16_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+          "bytes": 5427751,
+          "sha256": "cca79e220d26c7e834474975b68591b7697f198e8233f31957353634214b208e",
+          "pngEntries": 65,
+          "entries": 69,
+          "parts": [
+            {
+              "path": "Compasso16_Feminino_NORTH_QuatroTrajes_Editavel.zip",
+              "bytes": 5427751,
+              "git_blob_sha": "dd8b4e2ccc3cef5758b049add734d8246deec929",
+              "sha256": "cca79e220d26c7e834474975b68591b7697f198e8233f31957353634214b208e"
+            }
+          ],
+          "approval": "approved",
+          "productionEnabled": false,
+          "inGameTested": false
+        }
+      ]
+    },
+    {
+      "scope": "Manopla 109 Leste/Oeste, quatro trajes femininos",
+      "paths": [
+        {
+          "path": "art-approved/weapons/clothing-batch-20261112-followup/109_EW_F/Manopla109_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "gitBlob": "d3421b64f771208ab0ac48f9356a13eb843268f9"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/clothing-batch-20261112-followup/MANIFEST.json",
+      "authoredArchiveData": [
+        {
+          "key": "109_EW_F",
+          "filename": "Manopla109_Feminino_Quatro_Trajes_EW_Editavel.zip",
+          "bytes": 7108741,
+          "sha256": "bff5c811284d01392c1ef56ecc14467e1cd790ba6148fab3a36e4a96dd285fa7",
+          "pngEntries": 192,
+          "entries": 197,
+          "parts": [
+            {
+              "path": "Manopla109_Feminino_Quatro_Trajes_EW_Editavel.zip",
+              "bytes": 7108741,
+              "git_blob_sha": "d3421b64f771208ab0ac48f9356a13eb843268f9",
+              "sha256": "bff5c811284d01392c1ef56ecc14467e1cd790ba6148fab3a36e4a96dd285fa7"
+            }
+          ],
+          "approval": "approved",
+          "productionEnabled": false,
+          "inGameTested": false
+        }
+      ]
+    },
+    {
+      "scope": "Braço 117 Norte, quatro trajes, v7",
+      "paths": [
+        {
+          "path": "art-approved/weapons/clothing-batch-20261112-followup/117_N_F/Braco117_F_NORTH_QuatroTrajes_v7_Editavel.zip.part001",
+          "gitBlob": "452679a5d87b7b73bf136367af6d66b76f7ba418"
+        },
+        {
+          "path": "art-approved/weapons/clothing-batch-20261112-followup/117_N_F/Braco117_F_NORTH_QuatroTrajes_v7_Editavel.zip.part002",
+          "gitBlob": "15976a6da3ff51ae72fa1088d199efffb7e2fefc"
+        }
+      ],
+      "archiveManifest": "art-approved/weapons/clothing-batch-20261112-followup/MANIFEST.json",
+      "authoredArchiveData": [
+        {
+          "key": "117_N_F",
+          "filename": "Braco117_F_NORTH_QuatroTrajes_v7_Editavel.zip",
+          "bytes": 12426646,
+          "sha256": "5e9739c9fc8ee7629a8d0fbcfa8f20398f39a81ca460e2e1af65f816709ba5f6",
+          "pngEntries": 147,
+          "entries": 153,
+          "parts": [
+            {
+              "path": "Braco117_F_NORTH_QuatroTrajes_v7_Editavel.zip.part001",
+              "bytes": 7864320,
+              "git_blob_sha": "452679a5d87b7b73bf136367af6d66b76f7ba418",
+              "sha256": "1e0fc3921f5b5bcf29cb74506d7a3824645dd9e289e83dfb649261e1bac0d55c"
+            },
+            {
+              "path": "Braco117_F_NORTH_QuatroTrajes_v7_Editavel.zip.part002",
+              "bytes": 4562326,
+              "git_blob_sha": "15976a6da3ff51ae72fa1088d199efffb7e2fefc",
+              "sha256": "772ee843aec1afc9a880611c78fb8cb986642b079e80d5404d739681aa50be6a"
+            }
+          ],
+          "approval": "approved",
+          "productionEnabled": false,
+          "inGameTested": false
+        }
+      ]
+    },
+    {
+      "scope": "Peitoral 130, fontes originais da caminhada S36/N39/EW44",
+      "paths": [
+        {
+          "path": "art-approved/clothing/female-torso130-source/female_130_east_EW44_source-pack.zip",
+          "gitBlob": "232b48fa91f297bd2a30273bda72f4d8f6d46364"
+        },
+        {
+          "path": "art-approved/clothing/female-torso130-source/female_130_north_N39_source-pack.zip",
+          "gitBlob": "3690b12dfd8f9f59e790303b9bf186b8403a4a92"
+        },
+        {
+          "path": "art-approved/clothing/female-torso130-source/female_130_south_S36_source-pack.zip",
+          "gitBlob": "77c2a63da2041dd64a959f9134c0ae6e4e6dd3ae"
+        },
+        {
+          "path": "art-approved/clothing/female-torso130-source/female_130_west_EW44_source-pack.zip",
+          "gitBlob": "581b3855c1e2e8e7ffa7cf78a1bc112d2679d883"
+        }
+      ],
+      "archiveManifest": null,
+      "authoredArchiveData": null
+    },
+    {
+      "scope": "Peitorais femininos: repouso original e correção estática de pescoço",
+      "paths": [
+        {
+          "path": "art-approved/clothing/static-and-idle-v1/female_151_idle_north_v1.zip",
+          "gitBlob": "bf00cf0fd1d21df39d1bbd12eda5afa8f888e055"
+        },
+        {
+          "path": "art-approved/clothing/static-and-idle-v1/female_151_idle_south_v1.zip",
+          "gitBlob": "fb5438920111c1bffa9ef2997ffb4a4d55cf3c8f"
+        },
+        {
+          "path": "art-approved/clothing/static-and-idle-v1/female_151_static_south-neck-only_v1.zip",
+          "gitBlob": "09e488d361ee285053a7f29aeb8003db29135c00"
+        },
+        {
+          "path": "art-approved/clothing/static-and-idle-v1/female_158_idle_south_v1.zip",
+          "gitBlob": "ce3057123708f067df00ea2103f021c448e7a07c"
+        },
+        {
+          "path": "art-approved/clothing/static-and-idle-v1/female_158_static_south-neck-only_v1.zip",
+          "gitBlob": "0357b97ddebef09b6722fe4c25333383f6f55641"
+        },
+        {
+          "path": "art-approved/clothing/static-and-idle-v1/female_165_static_south-neck-only_v1.zip",
+          "gitBlob": "83c3160da13000122e6d359f37148e639488246e"
+        },
+        {
+          "path": "art-approved/clothing/static-and-idle-v1/female_172_idle_south_v1.zip",
+          "gitBlob": "0a3e07a26481b4db3f924a4debf16485e93cd5f6"
+        },
+        {
+          "path": "art-approved/clothing/static-and-idle-v1/female_172_static_south-neck-only_v1.zip",
+          "gitBlob": "2fe282a9877e0f59d5d8c7ebb167b3d4f5f323b0"
+        },
+        {
+          "path": "art-approved/clothing/static-and-idle-v1/female_179_idle_south_v1.zip",
+          "gitBlob": "d0f2dfa953a6d9c167522bb45a71f7d20c0e0c2f"
+        },
+        {
+          "path": "art-approved/clothing/static-and-idle-v1/female_179_static_south-neck-only_v1.zip",
+          "gitBlob": "ac948e08d6de4bc3a16015ed393033b180d34a62"
+        }
+      ],
+      "archiveManifest": "art-approved/clothing/static-and-idle-v1/INDEX.json",
+      "authoredArchiveData": null
+    },
+    {
+      "scope": "Peitoral 158 feminino: punhos Leste/Oeste da revisão v13",
+      "paths": [
+        {
+          "path": "art-approved/clothing/recent-approved/female_158_east_cuff-occlusion-v13.zip",
+          "gitBlob": "28f118e81e822c65a943c2fb66e8ad0585195c64"
+        },
+        {
+          "path": "art-approved/clothing/recent-approved/female_158_west_cuff-occlusion-v13.zip",
+          "gitBlob": "c59298e9e57347519485417721bfad230b54523c"
+        }
+      ],
+      "archiveManifest": "art-approved/clothing/recent-approved/INDEX.json",
+      "authoredArchiveData": null
+    },
+    {
+      "scope": "Camisa 6 feminina: fontes históricas de caminhada",
+      "paths": [
+        {
+          "path": "art-approved/clothing/female-historical-cycles/female_6_east_v42_source-pack.zip",
+          "gitBlob": "857e279874f466427c60e7272a43d4cb2b680c2f"
+        },
+        {
+          "path": "art-approved/clothing/female-historical-cycles/female_6_north_v24_source-pack.zip",
+          "gitBlob": "e169982f927c7f6f67e48702cfca2c8e386f4846"
+        },
+        {
+          "path": "art-approved/clothing/female-historical-cycles/female_6_south_v24_source-pack.zip",
+          "gitBlob": "29aef2cf811570075ff1a7d44ed2840bcf347c9e"
+        },
+        {
+          "path": "art-approved/clothing/female-historical-cycles/female_6_west_v42_source-pack.zip",
+          "gitBlob": "f734554916b4f1f3d54cadbc94779f4405838a3e"
+        }
+      ],
+      "archiveManifest": "art-approved/clothing/female-historical-cycles/INDEX.json",
+      "authoredArchiveData": null
+    }
+  ],
+  "notRecoveredExactEditable": [
+    "latest female sword motion approved separately from fit preview; including lateral edge correction",
+    "latest female firearm eight-phase full skin/body and clothing ownership, Fuzil113/F151",
+    "later authored fixes: female 7/137/144 walk collars L/E, 7 NORTH walking sleeves, sword 137/144 lateral shoulders"
+  ]
+}

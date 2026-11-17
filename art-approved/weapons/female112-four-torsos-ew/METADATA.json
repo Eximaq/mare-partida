@@ -1,0 +1,34 @@
+{
+  "path": "weapons/female112-four-torsos-ew/Manopla112_Feminino_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 7763676,
+  "sha256": "96da69e85d094726e94aeaba80c4095725d517972509cc4849248b6a007d5a42",
+  "pngEntries": 168,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+  "weapons": [
+    112
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "female",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 64,
+  "manifestHashesVerified": 171,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/female112-four-torsos-ew/parts/MANIFEST.json",
+    "reconstruct": "weapons/female112-four-torsos-ew/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  },
+  "archiveNote": "Exact final presented editable ZIP; no rejected111 variants included."
+}

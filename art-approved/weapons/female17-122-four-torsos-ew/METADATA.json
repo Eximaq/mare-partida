@@ -1,0 +1,35 @@
+{
+  "path": "weapons/female17-122-four-torsos-ew/Orbes17_122_Femininos_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 11768347,
+  "sha256": "594f3087ebe45565752447294c967719c6de7223dc5f76157ab0156ae7935980",
+  "pngEntries": 200,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+  "weapons": [
+    17,
+    122
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "female",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 128,
+  "manifestHashesVerified": 206,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/female17-122-four-torsos-ew/parts/MANIFEST.json",
+    "reconstruct": "weapons/female17-122-four-torsos-ew/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  },
+  "archiveNote": "Exact final presented editable ZIP; no rejected111 variants included."
+}

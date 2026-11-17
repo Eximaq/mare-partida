@@ -1,0 +1,32 @@
+[
+  {
+    "file": "female_weapon4_idle-east-west-v2_approved.zip",
+    "bytes": 2723010,
+    "sha256": "d90ff4f8261c0399a5fec51ea596bbc3295d0fd4ceceee9d0959a22d619f4837",
+    "finalFrames": 36
+  },
+  {
+    "file": "female_weapon5_idle-east-west-v2_approved.zip",
+    "bytes": 2442281,
+    "sha256": "06c86ff18489c61ce9a83e89964757b3980cfb305e067dfa5c920e7d88a5f8a9",
+    "finalFrames": 36
+  },
+  {
+    "file": "female_weapon113_idle-east-west-v2_approved.zip",
+    "bytes": 2792292,
+    "sha256": "499b7849f10c52fdafc3f99c11ef90cfdafbc6e2c227c2a7c3f04d31f9ad9ef4",
+    "finalFrames": 36
+  },
+  {
+    "file": "female_weapon115_idle-east-west-v2_approved.zip",
+    "bytes": 3138038,
+    "sha256": "64f7276364d2385f586e988d68a13e6e87e56e9dd941e08103245045e4feacdc",
+    "finalFrames": 36
+  },
+  {
+    "file": "female_weapon116_idle-east-west-v2_approved.zip",
+    "bytes": 2913850,
+    "sha256": "c777815f16ee7abd9c59ae04cbb6fc9707b8b2418940ec6ebfc8ffe317184ba7",
+    "finalFrames": 36
+  }
+]

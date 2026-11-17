@@ -1,0 +1,45 @@
+{
+  "path": "weapons/female4-116-north-three-keys/Armas4_116_Feminino_NORTH_Editavel.zip",
+  "bytes": 2050300,
+  "sha256": "503e5388293dc15a5c8b600e987821e5f59f1cd7f9bc48e2f8bfbf460c9a89f7",
+  "pngEntries": 35,
+  "productionEnabled": false,
+  "approval": "Owner approved the exact presented NORTH three-key sequence and timing.",
+  "weapons": [
+    4,
+    116
+  ],
+  "gender": "female",
+  "directions": [
+    "NORTH"
+  ],
+  "distinctKeyFrames": 6,
+  "timing": {
+    "sequence": [
+      0,
+      1,
+      2,
+      1,
+      0
+    ],
+    "ticks": [
+      15,
+      8,
+      3,
+      5,
+      17
+    ],
+    "fps": 24
+  },
+  "scope": "4F exact3keys plus116F constant scale equipment, exact approved female base and timing",
+  "excluded": "historical uniform19 rejected8state cycles; game integration/test not performed",
+  "archiveNote": "Original presented ZIP preserved exactly; internal candidate labels predate approval. Historical uniform19 eight-state videos remain rejected.",
+  "runtimeIntegrated": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/female4-116-north-three-keys/parts/MANIFEST.json",
+    "reconstruct": "weapons/female4-116-north-three-keys/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  }
+}
