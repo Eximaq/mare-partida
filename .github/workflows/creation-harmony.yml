@@ -102,9 +102,9 @@ jobs:
       - name: Original online monsters and combat UI contract
         run: python tests/run_honors_hd_browser.py tests/online-battle-browser.cjs --dist --offline
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           name: criacao-harmonia-hd
           path: /tmp/mare-creation-harmony/
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 3

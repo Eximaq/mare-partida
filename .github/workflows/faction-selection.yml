@@ -46,8 +46,9 @@ jobs:
       - name: Validar emblemas, seleção e criação
         run: node tests/faction_selection_browser.cjs http://127.0.0.1:8159/dist/ --evidence="$RUNNER_TEMP/faction-selection"
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: faction-selection
           path: ${{ runner.temp }}/faction-selection
           if-no-files-found: ignore

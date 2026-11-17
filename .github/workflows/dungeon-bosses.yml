@@ -61,9 +61,9 @@ jobs:
       - name: Janela de vidro responsiva
         run: python tests/run_honors_hd_browser.py tests/dungeons-glass-browser.cjs --dist --offline
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           name: nove-chefes-masmorras
           path: /tmp/mare-dungeon-bosses/
           if-no-files-found: warn
-          retention-days: 7
+          retention-days: 3

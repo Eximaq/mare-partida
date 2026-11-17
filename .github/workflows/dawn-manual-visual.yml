@@ -46,10 +46,10 @@ jobs:
           sleep 2
           python tests/dawn_manual_browser.py
       - name: Capturas para revisão
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         uses: actions/upload-artifact@v4
         with:
           name: dawn-manual-capturas
           path: docs/evidence-dawn-manual/after/
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 3
