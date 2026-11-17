@@ -3,12 +3,12 @@ on:
   pull_request:
     paths:
       - '.github/workflows/**'
-      - 'tests/artifact_retention_test.py'
+      - 'tools/check_artifact_retention.py'
   push:
     branches: [main]
     paths:
       - '.github/workflows/**'
-      - 'tests/artifact_retention_test.py'
+      - 'tools/check_artifact_retention.py'
 permissions:
   contents: read
 jobs:
@@ -21,4 +21,4 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install PyYAML==6.0.3
-      - run: python tests/artifact_retention_test.py
+      - run: python tools/check_artifact_retention.py

@@ -10,7 +10,7 @@ conforme a política do repositório.
 
 O upload de GitHub Pages é independente e permanece inalterado. Não alterar
 orçamentos, caches, código, assets ou saves para liberar a cota de artefatos.
-O teste `python tests/artifact_retention_test.py` (PyYAML 6.0.3) verifica todos os
+O teste `python tools/check_artifact_retention.py` (PyYAML 6.0.3) verifica todos os
 uploads de diagnóstico, evitando regressão para uploads incondicionais/90 dias.
 
 Na limpeza autorizada de 16/11/2026, o inventário tinha 4.840 artefatos (80,87 GiB
