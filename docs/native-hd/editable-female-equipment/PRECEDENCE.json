@@ -1,0 +1,27 @@
+{
+  "schema": "kaizoku-editable-source-precedence-v1",
+  "enabledInGame": false,
+  "baseReviewCommit": "74b107722d407992c5e280d7be4fc67686a328de",
+  "scopeKey": ["body", "slot", "item", "action", "direction", "phase"],
+  "priority": [
+    "verified-editable-layer-for-the-exact-scope",
+    "earlier-approved-source-for-that-scope",
+    "existing-fallback-only-where-no-verified-layer-exists"
+  ],
+  "neverReplaceExistingWith": ["flattened-registration-preview", "different-action", "different-pose-or-clock", "unverified-body-or-weapon"],
+  "preserveAllOtherScopes": true,
+  "exactOverridesForFutureVerifiedIntegration": [
+    {
+      "body": "female",
+      "slot": "pants",
+      "item": 22,
+      "action": "attack-sword",
+      "direction": "north",
+      "phases": [0, 1, 2, 3, 4, 5, 6, 7],
+      "sourceKind": "authorized-own-material-local-fit",
+      "requiresTargetMotionEquivalenceProof": true,
+      "mustPreserve": ["boots155", "selected-skin", "approved-sword-motion", "east", "west"]
+    }
+  ],
+  "notReadyForRuntime": ["female-firearm-eight-phase-skin-clothing-ownership", "sword-preview-as-motion-authority"]
+}
