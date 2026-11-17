@@ -61,7 +61,7 @@ jobs:
       - name: Tripulação — navegação, bandeira e vidro responsivo
         run: NODE_PATH=/tmp/mare-contracts-node/node_modules MARE_QA_DIR=/tmp/mare-crew-glass python tests/run_honors_hd_browser.py tests/crew-online-browser.cjs --offline --dist
       - name: Capturas reais
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         uses: actions/upload-artifact@v4
         with:
           name: contratos-quadro-hd
@@ -71,4 +71,4 @@ jobs:
             /tmp/mare-contracts-glass/
             /tmp/mare-crew-glass/
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 3

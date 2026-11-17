@@ -72,10 +72,10 @@ jobs:
           NODE_PATH=/tmp/mare-inventory-node/node_modules MARE_TEST_URL=http://127.0.0.1:8123/ node tests/main-menu-reachability-browser.cjs
           NODE_PATH=/tmp/mare-inventory-node/node_modules MARE_TEST_URL=http://127.0.0.1:8123/ MARE_QA_DIR=/tmp/mare-inventory-visual/hd node tests/inventory-hd-browser.cjs
       - name: Capturas e métricas de revisão
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         uses: actions/upload-artifact@v4
         with:
           name: inventario-layout-capturas
           path: /tmp/mare-inventory-visual/
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 3
