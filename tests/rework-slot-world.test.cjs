@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 
-function fixture({layered=true,exact=false}={}){
+function fixture({layered=true,exact=false,canonical=false}={}){
   const drawn=[];
   const context=vm.createContext({
     URL,AbortController,performance,setTimeout,clearTimeout,console:{error(){}},
@@ -13,6 +13,7 @@ function fixture({layered=true,exact=false}={}){
     MareReworkNativeHD:{create:()=>({
       ready:Promise.resolve(),snapshot:()=>({}),
       select:(_p,o)=>o.action!=='attack-unarmed'||o.direction!=='south'||exact?{id:'strict-hd'}:null,
+      ...(canonical?{selectVisual:function(p,o){if(o.action==='walk'&&o.direction==='north')return {id:'canonical-hd'};return this.select(p,o)||this.selectLayered(p,o);}}:{}),
       selectLayered:(p,o)=>layered&&o.action==='attack-unarmed'&&o.direction==='south'?{
         id:'registered-layered-pilot',
         omitted:p.equipment.coat?['coat']:[]
@@ -70,4 +71,12 @@ test('an unregistered pose still follows the existing route rather than inventin
   assert.ok(state.coverage.every(c=>c.source===null&&c.action==='attack-unarmed'&&c.direction==='south'));
   assert.equal(lobby.worldReady(player),false);
   assert.equal(lobby.drawWorldVisual({}, {action:'attack-unarmed',direction:'south'}),false);
+});
+
+test('canonical per-slot precedence is honored by the map consumer',async()=>{
+  const {lobby,player}=fixture({exact:true,canonical:true});
+  const state=await prepare(lobby,player);
+  assert.equal(state.state,'ready',state.error);
+  const route=state.coverage.find(x=>x.action==='walk'&&x.direction==='north');
+  assert.equal(route?.source,'canonical-hd');
 });

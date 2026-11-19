@@ -163,13 +163,12 @@ test('slot registrations reuse both native body models without changing authored
    const d=empty.pack.directions[direction];
    for(const item of [8,9,134,141,148,155,162,169,176,183]){
     const player={...male,equipment:{...male.equipment,boots:{def:item}}},r=api.selectLayered(player,o);
-    if(item===155&&['north','south'].includes(direction)){assert.ok(!r||r.slotRoutes.boots.item===155&&r.slotRoutes.boots.source.startsWith('frozen-male-glove'));continue;}
     assert.equal(r?.slotRoutes?.boots?.quality,'hd',`${action}/${direction}/${item}: ${JSON.stringify(r?.slotRoutes)}`);
     const selected=r.pack.directions[direction];
     assert.deepEqual(selected.clip,d.clip);
     assert.deepEqual(selected.layers.filter(l=>!l.id.startsWith('boot'+item+'-')&&!l.id.startsWith('equip-boot'+item+'-')),d.layers);
    }
-   const mixed={...male,appearance96:{...male.appearance96,hairColor:'pink'}};
+   const mixed={...male,appearance96:{...male.appearance96,hairStyle:'hair-cropped',hairColor:'pink'}};
    assert.equal(api.selectLayered(mixed,o),null,'baked head must not reset requested hairstyle or color');
   }
   for(const gender of ['masculino','feminino'])for(const direction of ['north','south','east','west'])for(const action of ['idle','walk','attack-unarmed']){
@@ -211,4 +210,208 @@ test('slot registrations reuse both native body models without changing authored
   global.MareCharacterAppearance=prior.appearance;
   global.MareHeadgear=prior.headgear;
  }
+});
+
+test('B155 in four directions keeps authored pixels and only changes boot pixels when swapped for B9',async()=>{
+ const prior={palette:global.MareAppearance96,appearance:global.MareCharacterAppearance,headgear:global.MareHeadgear};
+ global.MareCharacterAppearance=require('./character-appearance.js');
+ global.MareHeadgear=require('./headgear-visibility.js');
+ global.MareAppearance96=require('./tools/paper-doll-96-v3/appearance.js');
+ try{
+  const runtime=make();await runtime.ready;
+  const index=require('./tools/rework-modular-outfits-hd/index.json');
+  const author=global.MareReworkModularOutfitsHD.create(index,{vendor:global.ReworkAccessoryVendor});
+  const load=require('./tools/rework-hd-test-loader.cjs').create(__dirname),images=new Map();
+  const player={classId:'brawler',appearance96:{gender:'masculino',hairStyle:'original',eyeStyle:'original',skinColor:'original',hairColor:'original',eyeColor:'original'},equipment:{coat:{def:151},legs:{def:133},gloves:{def:152}}};
+  const withBoots=id=>id==null?player:{...player,equipment:{...player.equipment,boots:{def:id}}};
+  const boots=l=>/^(?:equip-)?boot[0-9]+-/.test(l.id);
+  const rgba=async(record,frame)=>{
+   const {width,height}=record.pack.frame,{density}=record.pack;
+   const c=cv.createCanvas(width*density,height*density),ctx=c.getContext('2d');
+   for(const file of author.requiredFiles(record,{frame}))if(!images.has(file))images.set(file,await load(file));
+   author.render(ctx,record,images,{frame});
+   return ctx.getImageData(0,0,c.width,c.height).data;
+  };
+  for(const direction of ['north','south','east','west'])for(const action of ['idle','walk']){
+   const o={action,direction},side=['east','west'].includes(direction),original=runtime.select(withBoots(155),o);
+   assert.equal(original?.id,`frozen-male-glove152-${direction}-${action}-native-layers`);
+   const [a,b,c,r]=[155,null,9,155].map(id=>runtime.selectVisual(withBoots(id),o));
+   const d=r=>r.pack.directions[direction],onlyBoots=r=>({...r,pack:{...r.pack,directions:{[direction]:{...d(r),layers:d(r).layers.filter(boots)}}}});
+   const core=d(b).layers.filter(l=>!boots(l));
+   for(const item of [c,runtime.selectLayered(withBoots(155),o)])assert.deepEqual(d(item).layers.filter(l=>!boots(l)),core);
+   const front=d(a).layers.filter(boots);
+   if(!side){
+    assert.equal(front.length,4);
+    assert.deepEqual(front.map(l=>l.depth).sort((x,y)=>x-y),[-1,-1,99,99]);
+    assert.deepEqual(front,d(original).layers.filter(boots),'B155 original sources, matrices and depth retained');
+   }else{
+    // The exact indexed outfit may use another G152 revision. Keep the
+    // latest glove, but all ten registered boot artworks themselves match.
+    const bare=await rgba(b,0);
+    for(const id of [8,9,134,141,148,155,162,169,176,183]){
+     const p=withBoots(id),exact=runtime.select(p,o),layered=runtime.selectVisual(p,o);
+     assert.ok(exact&&layered?.slotRoutes?.boots?.quality==='hd');
+     assert.deepEqual(d(layered).layers.filter(l=>!boots(l)),core);
+     const [oldBoot,newBoot,worn]=await Promise.all([onlyBoots(exact),onlyBoots(layered),layered].map(r=>rgba(r,0)));
+     assert.deepEqual(oldBoot,newBoot,`${direction}/${action}/${id} boot artwork`);
+     let changed=0;
+     for(let i=0;i<bare.length;i++)if(worn[i]!==bare[i]){
+      changed++;assert.notEqual(newBoot[(i&~3)+3],0,`${direction}/${action}/${id} outside boot artwork`);
+     }
+     assert.ok(changed>0);
+    }
+    const attack={action:'attack-unarmed',direction};
+    assert.equal(runtime.selectVisual(withBoots(155),attack)?.id,runtime.select(withBoots(155),attack)?.id);
+   }
+   for(let frame=0;frame<d(a).clip.frames;frame++){
+    const [old,before,off,swapped,after,mask155,mask9]=await Promise.all([original,a,b,c,r,onlyBoots(a),onlyBoots(c)].map(record=>rgba(record,frame)));
+    assert.deepEqual(before,old,`${direction}/${action}/${frame} B155 approved pixels`);
+    assert.deepEqual(before,after,`${direction}/${action}/${frame} B155 restoration`);
+    for(const [worn,mask] of [[before,mask155],[swapped,mask9]]){
+     let changed=0;
+     for(let i=0;i<off.length;i++)if(worn[i]!==off[i]){changed++;assert.notEqual(mask[(i&~3)+3],0,'outside boot artwork');}
+     assert.ok(changed>0,'worn boot must be visible');
+    }
+   }
+  }
+ }finally{
+  global.MareAppearance96=prior.palette;
+  global.MareCharacterAppearance=prior.appearance;
+  global.MareHeadgear=prior.headgear;
+ }
+});
+
+test('eight approved pants and ten gloves compose by slot on the south idle rig',async()=>{
+ const api=make();await api.ready;
+ const a={gender:'masculino',hairStyle:'original',eyeStyle:'original',skinColor:'original',hairColor:'original',eyeColor:'original'};
+ const player=(p,g,appearance96=a)=>({appearance96,classId:'brawler',equipment:{coat:{def:151},boots:{def:155},legs:{def:p},gloves:{def:g}}});
+ const o={action:'idle',direction:'south'};
+ const pants=[133,140,147,154,161,168,175,182],gloves=[25,26,131,138,145,152,159,166,173,180];
+ const piece=(r,prefix)=>r.pack.directions.south.layers.filter(l=>prefix.some(x=>l.id.startsWith(x)));
+ let added=0;
+ for(const p of pants)for(const g of gloves){
+  const actor=player(p,g),candidate=api.selectLayered(actor,o),winner=api.selectVisual(actor,o),native=api.select(actor,o);
+  assert.ok(candidate&&winner,`${p}/${g}`);
+  if(native)assert.equal(winner.id,native.id);else{
+   assert.equal(candidate.slotRoutes.legs.item,p);
+   assert.equal(candidate.slotRoutes.gloves.item,g);
+   assert.deepEqual(candidate.omitted,[]);
+   assert.equal(winner.id,candidate.id);
+   assert.deepEqual(piece(candidate,['boot155-','equip-boot155-']),piece(api.selectLayered(player(133,25),o),['boot155-','equip-boot155-']));
+   added++;
+  }
+ }
+ assert.equal(added,63);
+ const unsupported=player(140,25,{...a,hairColor:'pink'});
+ assert.equal(api.selectLayered(unsupported,o),null);
+ assert(!api.selectLayered(player(140,25),{action:'walk',direction:'south'})?.slotRoutes?.legs);
+});
+
+test('nine authored South coats swap over the exact isolated P133 walk and idle tracks',async()=>{
+ const api=make();await api.ready;
+ const a={gender:'masculino',hairStyle:'original',eyeStyle:'original',hairColor:'original',eyeColor:'original',skinColor:'original'};
+ const actor=(id,boot,appearance96=a)=>({appearance96,classId:'brawler',equipment:{legs:{def:133},...(id==null?{}:{coat:{def:id}}),...(boot==null?{}:{boots:{def:boot}})}});
+ for(const action of ['idle','walk']){
+  const o={action,direction:'south'},bare=api.selectVisual(actor(null),o);
+  const d=r=>r.pack.directions.south;
+  assert.equal(bare?.id,`male-pants133-${action}-south-isolated-r2`);
+  for(const boot of [null,9,148])for(const id of [6,7,130,137,144,158,165,172,179]){
+   const p=actor(id,boot),now=api.selectVisual(p,o),noCoat=api.selectVisual(actor(null,boot),o);
+   assert.equal(now?.slotRoutes?.coat?.item,id);
+   assert.equal(now?.slotRoutes?.legs?.item,133);
+   assert.equal(now?.slotRoutes?.boots?.item,boot??undefined);
+   assert.deepEqual(now.omitted,[]);
+   assert.deepEqual(d(now).clip,d(bare).clip);
+   assert.deepEqual(d(now).layers.filter(l=>d(noCoat).layers.some(x=>x.id===l.id)),d(noCoat).layers);
+   assert.equal(api.selectLayered(actor(id,boot,{...a,skinColor:'olive'}),o),null);
+  }
+ }
+});
+
+test('authored Original coats compose with P21/P22 on the three phase-equivalent idle and walk directions',async()=>{
+ const api=make();await api.ready;
+ const a={gender:'masculino',hairStyle:'original',eyeStyle:'original',hairColor:'original',eyeColor:'original',skinColor:'original'};
+ const player=(p,c)=>({appearance96:a,classId:'brawler',equipment:{...(p==null?{}:{legs:{def:p}}),...(c==null?{}:{coat:{def:c}})}});
+ for(const p of [21,22])for(const c of [6,7,130,137,144,158,165,172,179])
+ for(const action of ['idle','walk'])for(const direction of ['south','east','west']){
+  const o={action,direction},both=api.selectVisual(player(p,c),o),co=api.selectVisual(player(null,c),o),pa=api.selectVisual(player(p,null),o);
+  assert.equal(both?.slotRoutes?.coat?.item,c);
+  assert.equal(both?.slotRoutes?.legs?.item,p);
+  assert.deepEqual(both.omitted,[]);
+  const d=r=>r.pack.directions[direction],pants=l=>l.id.startsWith('pants'+p+'-');
+  assert.deepEqual(d(both).layers.filter(pants),d(pa).layers.filter(pants));
+  assert.deepEqual(d(both).layers.filter(l=>!pants(l)),d(co).layers);
+  assert.equal(api.selectLayered(player(p,c),{action,direction:'north'}),null);
+ }
+});
+
+test('approved punch coats leave the isolated P21/P22/P133 layers and authored motion intact',async()=>{
+ const api=make();await api.ready;
+ const a={gender:'masculino',hairStyle:'original',eyeStyle:'original',hairColor:'original',eyeColor:'original',skinColor:'original'};
+ const player=(p,c)=>({appearance96:a,classId:'brawler',equipment:{...(p==null?{}:{legs:{def:p}}),...(c==null?{}:{coat:{def:c}})}});
+ for(const p of [21,22,133])for(const c of [6,7,130,137,144,158,165,172,179])
+ for(const direction of ['north','south','east','west']){
+  const o={action:'attack-unarmed',direction};
+  const both=api.selectVisual(player(p,c),o),co=api.select(player(null,c),o),pa=api.select(player(p,null),o);
+  assert.equal(both?.slotRoutes?.coat?.item,c);
+  assert.equal(both?.slotRoutes?.legs?.item,p);
+  assert.equal(both.resolvedAction,'attack-unarmed');
+  const d=r=>r.pack.directions[direction],pants=l=>l.id.startsWith('pants'+p+'-');
+  assert.deepEqual(d(both).layers.filter(pants),d(pa).layers.filter(pants));
+  assert.deepEqual(d(both).layers.filter(l=>!pants(l)),d(co).layers);
+  assert.deepEqual(d(both).clip,d(co).clip);
+  assert.equal(d(both).clip.frames,8);
+ }
+});
+
+test('north boot removal keeps normalized hair and skin, including the exposed feet',async()=>{
+ const prior={palette:global.MareAppearance96,appearance:global.MareCharacterAppearance};
+ global.MareCharacterAppearance=require('./character-appearance.js');
+ global.MareAppearance96=require('./tools/paper-doll-96-v3/appearance.js');
+ try{
+  const runtime=make();await runtime.ready;
+  const renderer=global.MareReworkModularOutfitsHD.create({schema:'rework-modular-outfits-hd-v1'},{vendor:global.ReworkAccessoryVendor});
+  const loader=require('./tools/rework-hd-test-loader.cjs').create(__dirname),cache=new Map();
+  const actor=(id,appearance96=global.MareCharacterAppearance.normalize())=>({appearance96,classId:'brawler',equipment:{coat:{def:151},legs:{def:133},gloves:{def:152},...(id?{boots:{def:id}}:{})}});
+  const boots=l=>/^boot(?:9|155)-/.test(l.id),lower=l=>l.id==='lower-redrawn';
+  function select(id,opts,look){const r=runtime.selectVisual(actor(id,look),opts);assert.ok(r);return r;}
+  async function pixels(r,frame,keep){
+   const d=r.pack.directions.north,record=keep?{...r,pack:{...r.pack,directions:{north:{...d,layers:d.layers.filter(keep)}}}}:r;
+   const sources=renderer.requiredFiles(record,{frame}),images=new Map();
+   for(const source of sources){
+    if(!cache.has(source))cache.set(source,await loader(source));
+    images.set(source,cache.get(source));while(cache.size>60)cache.delete(cache.keys().next().value);
+   }
+   const c=cv.createCanvas(512,512),ctx=c.getContext('2d');
+   renderer.render(ctx,record,images,{frame,makeCanvas:cv.createCanvas});
+   return ctx.getImageData(0,0,512,512).data;
+  }
+  for(const action of ['idle','walk']){
+   const o={action,direction:'north'},def=select(null,o),olive=select(null,o,global.MareCharacterAppearance.normalize({skinColor:'olive',hairColor:'auburn'}));
+   assert.equal(def.colorAppearance.eyeColor,'blue');
+   assert.equal(olive.colorAppearance.skin,'olive');
+   assert.equal(olive.colorAppearance.hairColor,'auburn');
+   assert(!def.pack.directions.north.layers.some(l=>l.slot==='face'||l.slot==='iris'));
+   const original=runtime.selectLayered(actor(null,{gender:'masculino'}),o);
+   for(let i=0;i<def.pack.directions.north.clip.frames;i++){
+    const a=await pixels(def,i),b=await pixels(olive,i),feet=await pixels(olive,i,lower),uncolored=await pixels(original,i,lower);
+    assert.notDeepEqual(a,b);
+    const skin=global.MareNativeSkinHD.mask(uncolored,512,'mixed'),ramp=new Set(global.MareAppearance96.skins.olive.ramp);
+    let covered=0;
+    for(let k=0;k<skin.length;k++)if(skin[k]){
+     const css='#'+[feet[k*4],feet[k*4+1],feet[k*4+2]].map(v=>v.toString(16).padStart(2,'0')).join('');
+     assert(ramp.has(css));covered++;
+    }
+    assert(covered>0);
+    for(const item of [9,155]){
+     const worn=select(item,o),w=await pixels(worn,i),m=await pixels(worn,i,boots);
+     assert.equal(worn.slotRoutes.boots.item,item);
+     let diff=0;
+     for(let k=0;k<a.length;k++)if(a[k]!==w[k]){assert(m[(k&~3)+3]);diff++;}
+     assert(diff>0);
+    }
+   }
+   assert.equal(runtime.selectLayered(actor(155,global.MareCharacterAppearance.normalize({hairStyle:'hair-cropped'})),o),null);
+  }
+ }finally{global.MareAppearance96=prior.palette;global.MareCharacterAppearance=prior.appearance;}
 });

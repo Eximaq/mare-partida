@@ -64,3 +64,24 @@ test('another slot cannot claim overlapping draw order without a certified compo
  }});
  assert.equal(result,null);
 });
+
+test('an east-walk coat exported with a different pair of pants can be swapped without bringing them along',()=>{
+ const c0=l('coat-1','coat-1-hash',3),c1=l('coat-2','coat-2-hash',3),p0=l('pants-133','pants-133-hash',2),p1=l('pants-140','pants-140-hash',2);
+ const body=l('body','body-hash',0);
+ const dressed=(id,c,p,coat,pants)=>({...record(id,[body,coat,pants],null),equipment:{torso:c,pants:p}});
+ const current=dressed('existing-outfit',1,133,c0,p0),cross=dressed('other-outfit',2,140,c1,p1);
+ const compose=(coat,source=cross,declared=true)=>composeSlots({anchor:current,fixed:{},equipment:{pants:133,...(coat==null?{}:{torso:coat})},slots:{
+  torso:{anchorLayers:[c0.id],uncoveredBaseVerified:true,records:{
+   1:{record:current,layers:[c0.id],otherOwnedLayers:{pants:[p0.id]}},
+   2:{record:source,layers:[c1.id],...(declared?{otherOwnedLayers:{pants:[p1.id]}}:{})}
+  }},
+  pants:{anchorLayers:[p0.id],records:{133:{record:current,layers:[p0.id],otherOwnedLayers:{torso:[c0.id]}}}}
+ }});
+ assert.deepEqual(compose(2).pack.directions.east.layers,[body,c1,p0]);
+ assert.deepEqual(compose(null).pack.directions.east.layers,[body,p0]);
+ assert.deepEqual(compose(1).pack.directions.east.layers,[body,c0,p0]);
+ assert.deepEqual(compose(2,cross,false).omitted,['torso'],'another item ID without explicit ownership must not be ignored');
+ const bad=structuredClone(cross);
+ bad.pack.directions.east.layers[0].source='alien-body';
+ assert.deepEqual(compose(2,bad).omitted,['torso'],'explicit sibling ownership still cannot mask a changed base');
+});

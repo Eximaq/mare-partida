@@ -335,9 +335,11 @@
           signal.throwIfAborted();
           const native=[],modular=[];
           for(const pose of poses){
-            // An exact HD outfit wins. If it misses, a registered independent
-            // HD route keeps the body and the supported slots on this pose.
-            const source=nativeHD.select(pose.player,pose.options)||nativeHD.selectLayered(pose.player,pose.options);
+            // Keep HD route precedence in one place. Registered families may
+            // use the same unchanged slots regardless of the equipped item.
+            const source=nativeHD.selectVisual
+              ?nativeHD.selectVisual(pose.player,pose.options)
+              :nativeHD.select(pose.player,pose.options)||nativeHD.selectLayered(pose.player,pose.options);
             if(source)native.push({...pose,source});else modular.push(pose);
           }
           if(modular.length)request.coverage=modular.map(({options})=>({action:options.action,direction:options.direction,weaponless:!!options.weaponless,source:null}));

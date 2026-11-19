@@ -41,7 +41,13 @@ function composeSlots({anchor,equipment,fixed,slots}){
   const others=d.layers.filter(l=>owners.get(l.id)!==slot&&!shared.has(owners.get(l.id)));
   const donorLayers=c?.layers?.filter(l=>ids.has(l.id))||[];
   const core=c?.layers?.filter(l=>!ids.has(l.id)&&!ignore.has(l.id))||[];
-  const otherSlotsMatch=Object.entries(anchor.equipment).every(([k,v])=>k===slot||r?.equipment?.[k]===v)&&Object.keys(r?.equipment||{}).length===Object.keys(anchor.equipment).length;
+  // A donor may have been captured with a different sibling item. Only
+  // ignore that item when its complete layer ownership was registered above;
+  // the full remaining body, timeline, palette and pivot still must match.
+  const foreign=r?.equipment||{};
+  const otherSlotsMatch=Object.keys(foreign).length===Object.keys(anchor.equipment).length&&
+   Object.entries(anchor.equipment).every(([k,v])=>k===slot||foreign[k]===v||
+    (shared.has(k)&&Number.isSafeInteger(foreign[k])&&foreign[k]>=0));
   const compatible=otherSlotsMatch&&r.equipment[slot]===item&&ids.size&&ids.size===donorLayers.length&&
    r.body===anchor.body&&r.action===anchor.action&&r.direction===anchor.direction&&
    same(c&&clock(c),clock(d))&&same(r.pack.frame,anchor.pack.frame)&&same(r.pack.pivot,anchor.pack.pivot)&&r.pack.density===anchor.pack.density&&
