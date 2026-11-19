@@ -6,14 +6,14 @@ const identityKey=p=>JSON.stringify([p.appearance96||{},p.equipment||{},!!p.zoan
 const WORLD_SCALE=105/374;
 const canonical=b=>['female','feminino'].includes(b)?'female':'male';
 function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async path=>{const r=await fetch(new URL(path,baseURL));if(!r.ok)throw Error('HD index HTTP '+r.status);return r.json();},loadImage=null,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
- let northRig,profileStore,profileRig,baseIndex,outfitIndex,swordSouth,registry,femaleNamedHairRegistry,femaleRegistry,weaponRegistry,headRegistry,headCompat,originalHairGearRegistry,assetStore,outfitRegistry,outfitStore,carryRegistry,combinedCarryRegistry,weaponStore,state='loading',last=null,error=null;const cache=new Map(),pending=new Map(),failures=new Map(),lastRendered=new Map();
+ let northRig,profileStore,profileRig,baseIndex,outfitIndex,outfitById,swordSouth,registry,femaleNamedHairRegistry,femaleRegistry,weaponRegistry,headRegistry,headCompat,originalHairGearRegistry,assetStore,outfitRegistry,outfitStore,carryRegistry,combinedCarryRegistry,weaponStore,state='loading',last=null,error=null;const cache=new Map(),pending=new Map(),failures=new Map(),lastRendered=new Map();
  const imageLoader=loadImage||(async path=>{if(path.startsWith('tools/rework-female-profile-rig/assets/'))return profileStore.load(path);if(path.startsWith('tools/rework-base-hd/assets/'))return assetStore.load(path);if(path.startsWith('tools/rework-modular-outfits-hd/assets/'))return outfitStore.load(path);if(path.startsWith('tools/rework-weapon-layers-hd/assets/'))return weaponStore.load(path);const im=new Image();im.src=new URL(path,baseURL);await im.decode();return im;});
  const imageRequests=new Map();
  function loadShared(path){
   if(!imageRequests.has(path))imageRequests.set(path,Promise.resolve().then(()=>imageLoader(path)).finally(()=>imageRequests.delete(path)));
   return imageRequests.get(path);
  }
- const ready=Promise.all([fetchJSON('tools/rework-base-hd/index.json'),fetchJSON('tools/rework-weapon-layers-hd/index.json'),fetchJSON('tools/rework-accessories/head-layer-index.json'),fetchJSON('tools/rework-base-hd/archives/archive-index.json'),fetchJSON('tools/rework-modular-outfits-hd/index.json'),fetchJSON('tools/rework-modular-outfits-hd/archives/archive-index.json'),fetchJSON('tools/rework-weapon-layers-hd/carry-binding-plan.json'),fetchJSON('tools/rework-weapon-layers-hd/archives/archive-index.json'),fetchJSON('tools/rework-accessories/female-original-face-ownership.json'),fetchJSON('tools/rework-female-profile-rig/index.json').catch(e=>({loadError:e.message})),fetchJSON('tools/rework-female-north-rig/index.json').catch(e=>({loadError:e.message}))]).then(([index,weapons,heads,archives,outfits,outfitArchives,carry,weaponArchives,femaleOwnership,profile,north])=>{northRig=north;profileRig=profile;if(profile.archiveIndex)profileStore=root.MareReworkHDAssets?.create(profile.archiveIndex,{baseURL,prefix:'tools/rework-female-profile-rig/archives/'});baseIndex=index;outfitIndex=outfits;swordSouth=weapons.modularSwordSouth;registry=root.MareReworkBaseHD.create(index);femaleNamedHairRegistry=root.MareFemaleNamedHairHD?.create(heads,femaleOwnership,{baseRegistry:registry,makeCanvas});femaleRegistry=root.MareReworkFemaleEquipmentHD?.create({schema:'female-native-equipment-registration-v1',records:weapons.femaleRegistrations||[]},{outfits,appearanceRegistry:femaleNamedHairRegistry});assetStore=root.MareReworkHDAssets?.create(archives,{baseURL});weaponRegistry=root.MareReworkWeaponNativeHD?.create(weapons,{makeCanvas});headRegistry=root.MareReworkHead?.create(heads,{appearanceAPI:{recolor:(...a)=>root.MareAppearance96.recolor(...a),materialMask:(...a)=>root.MareAppearance96.materialMask(...a)},makeCanvas});headCompat=root.MareNativeHeadCompat?.create({makeCanvas});originalHairGearRegistry=root.MareOriginalHairHelmetsHD?.create(heads,{compat:headCompat,makeCanvas});outfitRegistry=root.MareReworkModularOutfitsHD?.create(outfits,{allowCandidates:true});carryRegistry=root.MareReworkWeaponCarryHD?.create(index,carry,{makeCanvas});combinedCarryRegistry=root.MareReworkOutfitCarryOverlayHD?.create(carryRegistry,outfits);weaponStore=root.MareReworkHDAssets?.create(weaponArchives,{baseURL,prefix:'tools/rework-weapon-layers-hd/archives/'});outfitStore=root.MareReworkHDAssets?.create(outfitArchives,{baseURL,prefix:'tools/rework-modular-outfits-hd/archives/'});state='ready';onChange();}).catch(e=>{state='failed';error=e.message;onChange();});
+ const ready=Promise.all([fetchJSON('tools/rework-base-hd/index.json'),fetchJSON('tools/rework-weapon-layers-hd/index.json'),fetchJSON('tools/rework-accessories/head-layer-index.json'),fetchJSON('tools/rework-base-hd/archives/archive-index.json'),fetchJSON('tools/rework-modular-outfits-hd/index.json'),fetchJSON('tools/rework-modular-outfits-hd/archives/archive-index.json'),fetchJSON('tools/rework-weapon-layers-hd/carry-binding-plan.json'),fetchJSON('tools/rework-weapon-layers-hd/archives/archive-index.json'),fetchJSON('tools/rework-accessories/female-original-face-ownership.json'),fetchJSON('tools/rework-female-profile-rig/index.json').catch(e=>({loadError:e.message})),fetchJSON('tools/rework-female-north-rig/index.json').catch(e=>({loadError:e.message}))]).then(([index,weapons,heads,archives,outfits,outfitArchives,carry,weaponArchives,femaleOwnership,profile,north])=>{northRig=north;profileRig=profile;if(profile.archiveIndex)profileStore=root.MareReworkHDAssets?.create(profile.archiveIndex,{baseURL,prefix:'tools/rework-female-profile-rig/archives/'});baseIndex=index;outfitIndex=outfits;outfitById=new Map(outfits.records.map(r=>[r.id,r]));swordSouth=weapons.modularSwordSouth;registry=root.MareReworkBaseHD.create(index);femaleNamedHairRegistry=root.MareFemaleNamedHairHD?.create(heads,femaleOwnership,{baseRegistry:registry,makeCanvas});femaleRegistry=root.MareReworkFemaleEquipmentHD?.create({schema:'female-native-equipment-registration-v1',records:weapons.femaleRegistrations||[]},{outfits,appearanceRegistry:femaleNamedHairRegistry});assetStore=root.MareReworkHDAssets?.create(archives,{baseURL});weaponRegistry=root.MareReworkWeaponNativeHD?.create(weapons,{makeCanvas});headRegistry=root.MareReworkHead?.create(heads,{appearanceAPI:{recolor:(...a)=>root.MareAppearance96.recolor(...a),materialMask:(...a)=>root.MareAppearance96.materialMask(...a)},makeCanvas});headCompat=root.MareNativeHeadCompat?.create({makeCanvas});originalHairGearRegistry=root.MareOriginalHairHelmetsHD?.create(heads,{compat:headCompat,makeCanvas});outfitRegistry=root.MareReworkModularOutfitsHD?.create(outfits,{allowCandidates:true});carryRegistry=root.MareReworkWeaponCarryHD?.create(index,carry,{makeCanvas});combinedCarryRegistry=root.MareReworkOutfitCarryOverlayHD?.create(carryRegistry,outfits);weaponStore=root.MareReworkHDAssets?.create(weaponArchives,{baseURL,prefix:'tools/rework-weapon-layers-hd/archives/'});outfitStore=root.MareReworkHDAssets?.create(outfitArchives,{baseURL,prefix:'tools/rework-modular-outfits-hd/archives/'});state='ready';onChange();}).catch(e=>{state='failed';error=e.message;onChange();});
  function resolveProfileLayers(player,o,a,equipment){
   const s=profileRig,dir=o.direction;
   if(player.__reworkSubset||canonical(a.body)!=='female'||o.action!=='walk'||!['east','west'].includes(dir)||s?.schema!=='female-profile-separated-rig-candidate-v1')return null;
@@ -374,7 +374,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  // A single source-registered partial-slot pilot. Never reinterpret a baked actor
  // as removable anatomy, opt in an unrelated source, or reset a saved cosmetic.
- function selectLayered(player,o={}){
+ function selectUnarmedSouthPilot(player,o={}){
   if(state!=='ready'||!player||player.__reworkSubset||player.zoanTransformed||player.classId!=='brawler'||o.direction!=='south'||!['attack-unarmed','attack','skill'].includes(o.action))return null;
   const a=player.appearance96||{},eq=player.equipment||{},present=v=>v!=null&&!['none','original'].includes(v),same=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
   const vals=names=>names.map(k=>a[k]).filter(v=>v!=null),plain=names=>vals(names).every(v=>v==='original');
@@ -412,6 +412,141 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...exact,id:exact.id+':slot-pilot:'+legs[0][0]+(coat?':missing-'+coat[0]+'-6':''),
    layeredPilot:true,action:'attack-unarmed',resolvedAction:'attack-unarmed',slotRoutes,omitted};
  }
+ // Source-specific registrations feed one slot-selection entry point. New
+ // records cannot opt in by dimensions alone, or rewrite the actor's look.
+ const slotOf=k=>({coat:'torso',legs:'pants'})[k]||k;
+ const storedId=v=>v?.def??v;
+ const slotEntry=v=>v!=null&&!['none','original'].includes(v);
+ function registeredEquipment(player,o){
+  const visible={};
+  for(const [key,value] of Object.entries(player.equipment||{})){
+   if(!slotEntry(value)||['ring','necklace','belt','charm','akuma_no_mi'].includes(key)||key==='head'&&root.MareHeadgear?.hidden(player)||key==='weapon'&&o.weaponless)continue;
+   const slot=slotOf(key),item=storedId(value);
+   if(!['torso','pants','boots','gloves','head','weapon'].includes(slot)||Object.hasOwn(visible,slot)||!Number.isSafeInteger(item)||item<0||
+      typeof value==='object'&&['variant','variantId','appearanceVariant'].some(k=>value[k]!=null&&value[k]!=='original'))return null;
+   visible[slot]={key,value,item};
+  }
+  return visible;
+ }
+ const describeSlots=(source,visible,pending)=>{
+  const slotRoutes={},omitted=[];
+  for(const [slot,{key,item}] of Object.entries(visible)){
+   if(pending.includes(slot)){slotRoutes[key]={item,quality:'missing'};omitted.push(key);}
+   else slotRoutes[key]={item,quality:'hd',source:source.id};
+  }
+  return {...source,id:source.id+':slots:'+JSON.stringify(slotRoutes),slotRoutes,omitted,layeredSlots:true};
+ };
+ const maleGloves=(r,item,d)=>r.pack.directions[d].layers.filter(l=>l.id.startsWith('glove'+item+'-')||
+  l.id==='equip-glove-'+item||l.id.startsWith('equip-glove-'+item+'-')||
+  ['explicit-native-glove-west-mirror','registered-frozen-glove-native-attack'].includes(l.id)).map(l=>l.id);
+ function selectBootsOnRegisteredWalk(player,o,a,visible){
+  const isSide=['east','west'].includes(o.direction),fixed={torso:151,pants:133,...(isSide?{}:{gloves:152})};
+  if(a.body!=='male'||!['south','north','east','west'].includes(o.direction)||!['idle','walk'].includes(o.action)||
+   Object.entries(fixed).some(([slot,id])=>visible[slot]?.item!==id)||Object.keys(visible).some(k=>!Object.hasOwn(fixed,k)&&k!=='boots'&&!(isSide&&k==='gloves'))||
+   Object.entries({...a,body:'male'}).some(([k,v])=>k!=='body'&&v!=null&&v!=='original'))return null;
+  const dir=o.direction,action=o.action,side=['east','west'].includes(dir),anchorItem=side?155:9;
+  // S/N B155 has a different lower-body source. It is not a donor and its
+  // existing exact route is untouched; never hide B155 on an incompatible rig.
+  if(!side&&visible.boots?.item===155)return null;
+  const bootIds=[8,9,134,141,148,162,169,176,183,...(side?[155]:[])];
+  const byId=n=>outfitById.get(n);
+  const portable=item=>`male-coat151-pants133-gloves152-boots${item}-walk-${dir}-source-v18${action==='idle'?'-idle-frame0':''}`;
+  const owned=(r,item)=>r.pack.directions[dir].layers.filter(l=>l.id.startsWith((item===155?'equip-':'')+'boot'+item+'-')).map(l=>l.id);
+  const anchor=byId(side?`frozen-male-pants133-${dir}-${action}-v47`:portable(9));
+  if(!anchor||(side?!anchor.frozenPantsSource:!anchor.equipmentLayerGroups?.boots))return null;
+  const records={};
+  for(const item of bootIds){
+   const r=item===anchorItem?anchor:item===9||item===148&&!side||item===134&&dir!=='south'?byId(portable(item)):
+    byId(`frozen-v47-male-151-boot${item}-${dir}-${action}`);
+   if(r&&(item===anchorItem||r.frozenBootContract||r.equipmentLayerGroups?.boots)&&r.productionEnabled!==false&&r.equipment.boots===item)records[item]={record:r,layers:owned(r,item)};
+  }
+  const slots={boots:{anchorLayers:owned(anchor,anchorItem),uncoveredBaseVerified:true,records}};
+  if(side){
+   const gloveRecords={},boot155=r=>r.pack.directions[dir].layers.filter(l=>l.id.startsWith('equip-boot155-')).map(l=>l.id);
+   for(const candidate of Object.values(records))candidate.otherOwnedLayers={gloves:['equip-glove-152']};
+   for(const item of [25,26,131,138,145,152,159,166,173,180]){
+    const r=outfitById.get(`frozen-male-glove${item}-${dir}-${action}-native-layers`);
+    if(r?.frozenGloveLayers&&r.productionEnabled!==false&&r.equipment?.gloves===item&&r.equipment?.boots===155)gloveRecords[item]={
+     record:r,layers:maleGloves(r,item,dir),otherOwnedLayers:{boots:boot155(r)}
+    };
+   }
+   slots.gloves={anchorLayers:['equip-glove-152'],uncoveredBaseVerified:true,records:gloveRecords};
+  }
+  const equipment=Object.fromEntries(Object.entries(visible).map(([k,v])=>[k,v.item]));
+  const composed=root.MareReworkModularOutfitsHD?.composeSlots({anchor,equipment,fixed,slots});
+  if(!composed)return null;
+  const slotRoutes=Object.fromEntries(Object.entries(composed.slotRoutes).map(([k,v])=>[visible[k].key,v]));
+  return {...composed,slotRoutes,omitted:composed.omitted.map(k=>visible[k].key),hdKind:'outfit'};
+ }
+ function selectGlovesOnRegisteredKit(player,o,a,visible){
+  const d=o.direction,action=['attack','skill'].includes(o.action)?'attack-unarmed':o.action;
+  if(!['east','west','north','south'].includes(d)||!['idle','walk','attack-unarmed'].includes(action)||
+     Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original'))return null;
+  const female=a.body==='female',fixed={torso:151,pants:female?154:133,boots:155};
+  if(Object.entries(fixed).some(([slot,id])=>visible[slot]?.item!==id)||
+     Object.keys(visible).some(k=>!Object.hasOwn(fixed,k)&&k!=='gloves'))return null;
+  const skip=item=>female&&(item===131&&d==='south'||item===180&&d!=='north');
+  if(skip(visible.gloves?.item))return null;
+  const records={},owned=(r,item)=>female?r.pack.directions[d].layers.filter(l=>
+   l.id.startsWith('own-female'+item+'-')||l.id==='native-frozen-glove-attack'
+  ).map(l=>l.id):maleGloves(r,item,d);
+  for(const item of [25,26,131,138,145,152,159,166,173,180]){
+   if(skip(item))continue;
+   const id=`frozen-${a.body}-glove${item}-${d}-${action}-native-layers`,r=outfitById.get(id);
+   if(r?.[female?'frozenFemaleGloveLayers':'frozenGloveLayers']&&r.productionEnabled!==false&&r.equipment?.gloves===item)records[item]={record:r,layers:owned(r,item)};
+  }
+  const a25=records[25];
+  if(!a25?.layers.length)return null;
+  const equipment=Object.fromEntries(Object.entries(visible).map(([k,v])=>[k,v.item]));
+  const composed=root.MareReworkModularOutfitsHD?.composeSlots({anchor:a25.record,equipment,fixed,slots:{gloves:{
+   anchorLayers:a25.layers,uncoveredBaseVerified:true,records
+  }}});
+  if(!composed)return null;
+  const slotRoutes=Object.fromEntries(Object.entries(composed.slotRoutes).map(([k,v])=>[visible[k].key,v]));
+  return {...composed,slotRoutes,omitted:composed.omitted.map(k=>visible[k].key),hdKind:'outfit',resolvedAction:action};
+ }
+ function selectFemaleWalkSlots(player,o,visible){
+  if(o.action!=='walk'||o.direction!=='south'||o.weaponless||!visible.boots||Object.keys(visible).some(slot=>!['boots','pants','weapon'].includes(slot)))return null;
+  const pants=visible.pants?.item,weapon=visible.weapon?.item;
+  if(![21,133,147,161,168,175,182].includes(pants)||weapon!=null&&(pants!==21||![0,5,17].includes(weapon)))return null;
+  const source=select({...player,equipment:{...player.equipment,[visible.boots.key]:null}},o),clip=source?.pack?.directions?.south?.clip;
+  if(source?.hdKind!=='authored-pants'||source.authoredPantsLayer?.item!==pants||source.body!=='female'||source.action!=='walk'||source.direction!=='south'||
+     clip?.frames!==40||clip.fps!==40||clip.loop!==true||(weapon==null?!!source.carrySouth:source.carrySouth?.item!==weapon))return null;
+  return describeSlots(source,visible,['boots']);
+ }
+ function selectOrderedWeaponSlots(player,o,a,visible){
+  const item=visible.weapon?.item,coat=visible.torso?.item,d=o.direction,original={hair:'original',face:'original',skin:'light',hairColor:'brown',eyeColor:'brown'};
+  const classes={15:'cyborg',123:'strategist',124:'strategist',125:'healer',126:'healer',127:'healer'};
+  const staff=item!==15,action=staff?'attack-focus':'attack-unarmed';
+  if(!classes[item]||player.classId!==classes[item]||!['east','west'].includes(d)||!['attack','skill',action].includes(o.action)||
+     Object.entries(original).some(([k,v])=>a[k]!==v)||o.weaponless||
+     Object.keys(visible).some(k=>!['weapon','torso','pants','boots','gloves'].includes(k)))return null;
+  const keepCoat=!staff&&[151,158,165,179].includes(coat),equipment=keepCoat?{coat:visible.torso.value}:{};
+  if(!staff&&!keepCoat)return null;
+  const source=weaponRegistry?.resolveSeparable({item,body:'male',sourceBody:'male',classId:player.classId,
+   weaponVariant:'original',action,direction:d,appearance:original,equipment});
+  const id=staff?`authored-ordered-${item}-${d}`:`separable-male-${d}-weapon15-coat${keepCoat?coat:'none'}`;
+  if(source?.id!==id||!source.separableAttack||source.density!==4||source.fps!==12||source.states.length!==8||
+     source.timeline.length!==(staff?8:20)||staff&&!source.orderedAttack)return null;
+  const pending=Object.keys(visible).filter(k=>k!=='weapon'&&!(keepCoat&&k==='torso'));
+  if(!pending.length)return null;
+  return describeSlots({...source,hdKind:'weapon',action,resolvedAction:action},visible,pending);
+ }
+ function selectLayered(player,o={}){
+  if(state!=='ready'||!player||player.__reworkSubset||player.zoanTransformed||slotEntry(player.equipment?.visual_completo))return null;
+  const raw=player.appearance96||{},body={masculino:'male',feminino:'female',male:'male',female:'female'}[raw.gender??raw.body];
+  if(!body)return null;
+  for(const [x,y]of [['gender','body'],['hairStyle','hair'],['eyeStyle','face'],['skinColor','skin']]){
+   if(raw[x]!=null&&raw[y]!=null&&(x==='gender'?canonical(raw[x])!==canonical(raw[y]):raw[x]!==raw[y]))return null;
+  }
+  const visible=registeredEquipment(player,o);
+  if(!visible)return null;
+  const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
+   hairColor:raw.hairColor,eyeColor:raw.eyeColor};
+  if(body==='female')return selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
+  return selectBootsOnRegisteredWalk(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
+ }
+ function selectVisual(player,o){return select(player,o)||selectLayered(player,o);}
  function frameFor(r,o){
   const timeline=r.hdKind==='weapon'?r.timeline:null,clip=timeline?{frames:timeline.length,fps:r.fps,loop:false}:r.pack.directions[r.direction].clip;
   let progress=o.progress;
@@ -425,7 +560,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return timeline?r.states.findIndex(s=>s.state===String(timeline[position])):position;
  }
  function filesFor(r,frame){if(r.northLayers)return northFiles(r,frame);if(r.profileLayers)return profileFiles(r,frame);if(r.authoredPantsLayer)return southFiles(r,frame);return [...new Set([...(r.hdKind==='female-equipment'?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).requiredFiles(r,{frame}),...(r.headRecord?headRegistry.requiredFiles(r.headRecord):[]),...(r.gearOnlyRecord?originalHairGearRegistry.requiredFiles(r.gearOnlyRecord):[]),...(r.femaleNamedHairRecord?femaleNamedHairRegistry.requiredFiles(r.femaleNamedHairRecord):[])])];}
- async function prepare(player,o,clipFileLimit=0){await ready;const r=select(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
+ async function prepare(player,o,clipFileLimit=0){await ready;const r=selectVisual(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
   const job=(async()=>{try{entry=entry||{images:new Map(),proofs:[],frames:new Map(),imageLimit:Math.max(64,clipFileLimit)};await Promise.all(files.map(async p=>{if(!entry.images.has(p))entry.images.set(p,await loadShared(p));}));
   if(r.femaleNamedHairRecord)femaleNamedHairRegistry.compose(r,r.femaleNamedHairRecord,entry.images);
   if(r.headRecord||r.gearOnlyRecord){const proof=headCompat.validate({basePack:r.pack,baseMirrorX:!!r.mirrorX||!!r.mirrorLayerIDs?.includes(r.pack.directions[r.direction].layers.find(l=>l.slot==='headBase')?.id),baseBody:r.body,baseDirection:r.direction,baseFrame:frame,baseImages:new Map([...entry.images].flatMap(([path,image])=>[[path,image],[path.split('/').pop().replace('.png',''),image]])),headRecord:r.headRecord||r.gearOnlyRecord.sourceRecord,headImages:entry.images,replaceFace:false});if(!proof.compatible)throw Error('Head identity: '+proof.reason);entry.proofs[frame]=proof;}
@@ -433,7 +568,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   cache.set(sourceKey,entry);while(cache.size>4)cache.delete(cache.keys().next().value);onChange();return true;}catch(e){failures.set(key,e.message);error=e.message;onChange();return false;}finally{pending.delete(key);}})();pending.set(key,job);return job;
  }
  // Explicit preload for callers that advance simulation without the animation loop.
- async function prepareClip(player,o={}){await ready;const r=select(player,o);if(!r)return false;const count=r.hdKind==='weapon'?r.timeline.length:r.pack.directions[r.direction].clip.frames;const retainedFiles=new Set();for(let frame=0;frame<count;frame++)for(const file of filesFor(r,frameFor(r,{...o,progress:frame/count})))retainedFiles.add(file);for(let frame=0;frame<count;frame++)if(!await prepare(player,{...o,progress:frame/count},retainedFiles.size))return false;return true;}
+ async function prepareClip(player,o={}){await ready;const r=selectVisual(player,o);if(!r)return false;const count=r.hdKind==='weapon'?r.timeline.length:r.pack.directions[r.direction].clip.frames;const retainedFiles=new Set();for(let frame=0;frame<count;frame++)for(const file of filesFor(r,frameFor(r,{...o,progress:frame/count})))retainedFiles.add(file);for(let frame=0;frame<count;frame++)if(!await prepare(player,{...o,progress:frame/count},retainedFiles.size))return false;return true;}
  function composeFrame(r,frame,entry){
   if(r.northLayers)return composeNorthLayers(r,frame,entry);
   if(r.profileLayers)return composeProfileLayers(r,frame,entry);
@@ -496,7 +631,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      }
     }
     routes.set(slot,{r,key,options});
-    coverage.push({action:pose.options.action,direction:pose.options.direction,weaponless:!!pose.options.weaponless,source:r.id,frames:sources.get(key).size,omitted:resolved.omitted||r.omitted||[],unsupported:resolved.unsupported||[],...(r.layeredPilot?{slotRoutes:r.slotRoutes}:{})});
+    coverage.push({action:pose.options.action,direction:pose.options.direction,weaponless:!!pose.options.weaponless,source:r.id,frames:sources.get(key).size,omitted:resolved.omitted||r.omitted||[],unsupported:resolved.unsupported||[],...(r.slotRoutes?{slotRoutes:r.slotRoutes}:{})});
    }
   }catch(e){clearSources();throw e;}
   return {coverage,
@@ -512,7 +647,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   };
  }
  function draw(ctx,player,o={}){
-  const r=select(player,o);if(!r){last={state:state==='ready'?'uncovered':'loading',action:o.action,direction:o.direction,reason:'No exact whole-source identity; existing renderer retained, not mixed with rework.'};return false;}
+  const r=selectVisual(player,o);if(!r){last={state:state==='ready'?'uncovered':'loading',action:o.action,direction:o.direction,reason:'No compatible exact or registered layered source for this pose.'};return false;}
   const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),entry=cache.get(sourceKey);if(!entry||!entry.frames.has(frame)&&!filesFor(r,frame).every(p=>entry.images.has(p))){void prepare(player,o);last={state:failures.has(sourceKey+':'+frame)?'failed':'loading',source:r.id};return false;}
   cache.delete(sourceKey);cache.set(sourceKey,entry);
   let result=entry.frames.get(frame);if(!result){try{result=composeFrame(r,frame,entry);entry.frames.set(frame,result);while(entry.frames.size>3)entry.frames.delete(entry.frames.keys().next().value);}catch(e){failures.set(sourceKey+':'+frame,e.message);error=e.message;last={state:'failed',source:r.id,reason:e.message};onChange();return false;}}
@@ -531,7 +666,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(o.consumer==='portrait')y=Math.max(y,result.info.visualHeight*physicalScale+3);
   ctx.save();try{ctx.imageSmoothingEnabled=false;ctx.drawImage(result.canvas,x-result.info.pivot.x*physicalScale,y-result.info.pivot.y*physicalScale,result.info.width*physicalScale,result.info.height*physicalScale);}finally{ctx.restore();}
   if(hold&&player&&typeof player==='object'){const key=identityKey(player)+'|'+(o.consumer||'world'),held={...result,key:identityKey(player),pose:{source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame}};lastRendered.set(key,held);lastRendered.set(key+'|'+o.direction,held);while(lastRendered.size>32)lastRendered.delete(lastRendered.keys().next().value);}
-  last={state:'rendered',source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame,width:result.info.width,height:result.info.height,pivot:result.info.pivot,density:result.info.density,physicalScale,sourceScale:1,status:r.status,approval:r.approval,eyeStyle:r.eyeStyle||r.femaleNamedHairRecord?.eyeStyle,skinPalette:r.femaleNamedHairRecord?.skinColor,hairPalette:r.femaleNamedHairRecord?.hairColor,faceProtectedExact:!!r.femaleNamedHairRecord?.faceProtectedExact,faceProtectedExceptIris:!!r.femaleNamedHairRecord?.faceProtectedExceptIris,headSourceScale:r.femaleNamedHairRecord?.sourceScale,headStatus:r.femaleNamedHairRecord?'semantic-fringe-ownership-candidate':r.gearOnlyRecord?'gear-only-candidate-calibration':r.headRecord?.status,headIdentity:r.femaleNamedHairRecord?(r.femaleNamedHairRecord.eyeStyle?'original-face-with-eye-style':'original-face-protected-exact'):r.gearOnlyRecord?'exact-head-original-hair-preserved':r.headRecord?'exact-head-source-pixels':'authored-original',headOcclusion:r.femaleNamedHairRecord?.gearRecord?r.femaleNamedHairRecord.gearPolicy:r.gearOnlyRecord?.occlusion,headGearScale:r.gearOnlyRecord?.sourceScale,headGearSource:r.gearOnlyRecord?.gear.source||r.femaleNamedHairRecord?.gearRecord?.layers.find(l=>l.id===r.femaleNamedHairRecord.gearRecord.headgearPolicy?.gearId)?.source,headGearId:r.gearOnlyRecord?.id,...(r.layeredPilot?{omitted:r.omitted,slotRoutes:r.slotRoutes}:{})};return true;
+  last={state:'rendered',source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame,width:result.info.width,height:result.info.height,pivot:result.info.pivot,density:result.info.density,physicalScale,sourceScale:1,status:r.status,approval:r.approval,eyeStyle:r.eyeStyle||r.femaleNamedHairRecord?.eyeStyle,skinPalette:r.femaleNamedHairRecord?.skinColor,hairPalette:r.femaleNamedHairRecord?.hairColor,faceProtectedExact:!!r.femaleNamedHairRecord?.faceProtectedExact,faceProtectedExceptIris:!!r.femaleNamedHairRecord?.faceProtectedExceptIris,headSourceScale:r.femaleNamedHairRecord?.sourceScale,headStatus:r.femaleNamedHairRecord?'semantic-fringe-ownership-candidate':r.gearOnlyRecord?'gear-only-candidate-calibration':r.headRecord?.status,headIdentity:r.femaleNamedHairRecord?(r.femaleNamedHairRecord.eyeStyle?'original-face-with-eye-style':'original-face-protected-exact'):r.gearOnlyRecord?'exact-head-original-hair-preserved':r.headRecord?'exact-head-source-pixels':'authored-original',headOcclusion:r.femaleNamedHairRecord?.gearRecord?r.femaleNamedHairRecord.gearPolicy:r.gearOnlyRecord?.occlusion,headGearScale:r.gearOnlyRecord?.sourceScale,headGearSource:r.gearOnlyRecord?.gear.source||r.femaleNamedHairRecord?.gearRecord?.layers.find(l=>l.id===r.femaleNamedHairRecord.gearRecord.headgearPolicy?.gearId)?.source,headGearId:r.gearOnlyRecord?.id,...(r.slotRoutes?{omitted:r.omitted,slotRoutes:r.slotRoutes}:{})};return true;
  }
  const familyStates=new Map();
  async function prepareFamily(player){await ready;const raw=player.appearance96||{};if(!root.MareAppearance96&&[raw.skinColor,raw.skin,raw.hairColor].some(v=>v&&v!=='original'))return false;const key=identityKey(player);if(familyStates.has(key))return familyStates.get(key).promise;const record={state:'checking',reason:null};familyStates.set(key,record);while(familyStates.size>8)familyStates.delete(familyStates.keys().next().value);
@@ -541,11 +676,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  async function prepareForPlayer(player,o={}){if(!o.consumer||o.consumer==='world'){const key=identityKey(player)+'|'+!!root.MareAppearance96+'|'+!!root.MareCharacterAppearance;if(!preparedDirections.has(key)){const task=(async()=>{for(const direction of ['south','east','west','north'])await prepareStablePose(player,{action:'idle',direction,consumer:'world'});})();preparedDirections.set(key,task);while(preparedDirections.size>8)preparedDirections.delete(preparedDirections.keys().next().value);}await preparedDirections.get(key);}return prepare(player,o);}
  // Prepare the exact directional rest pose without claiming it was drawn in the world.
  async function prepareStablePose(player,o={}){if(!await prepare(player,o))return false;const key=identityKey(player)+'|'+(o.consumer||'world'),previous=last,held=lastRendered.get(key);try{return draw(makeCanvas(1,1).getContext('2d'),player,{...o,x:0,y:0,preview:false});}finally{last=previous;if(held)lastRendered.set(key,held);else lastRendered.delete(key);}}
- function canDrawStable(player,o={}){if(!select(player,o)||failureFor(player,o))return false;const prepared=pose=>{const r=select(player,pose);if(!r||failureFor(player,pose))return false;const frame=frameFor(r,pose),entry=cache.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}));return !!entry&&(entry.frames.has(frame)||filesFor(r,frame).every(p=>entry.images.has(p)));};return prepared(o)||lastRendered.has(identityKey(player)+'|'+(o.consumer||'world')+'|'+o.direction)||o.action!=='idle'&&prepared({...o,action:'idle',time:0,progress:0});}
- function drawStable(ctx,player,o={}){const key=identityKey(player);if(!select(player,o)){last={state:'uncovered',action:o.action,direction:o.direction,reason:'No compatible source for this pose'};return false;}if(draw(ctx,player,o))return true;if(failureFor(player,o))return false;const consumerKey=key+'|'+(o.consumer||'world'),held=lastRendered.get(consumerKey+'|'+o.direction);if(!held&&o.action!=='idle'){const loading=last;if(draw(ctx,player,{...o,action:'idle',time:0,progress:0})){last={...last,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction};return true;}last=loading;}if(held?.key===key){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(held.canvas,(o.x||0)-held.info.pivot.x*WORLD_SCALE,(o.y||0)-held.info.pivot.y*WORLD_SCALE,held.info.width*WORLD_SCALE,held.info.height*WORLD_SCALE);ctx.restore();last={...held.pose,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction,physicalScale:WORLD_SCALE,sourceScale:1};return true;}return false;}
+ function canDrawStable(player,o={}){if(!selectVisual(player,o)||failureFor(player,o))return false;const prepared=pose=>{const r=selectVisual(player,pose);if(!r||failureFor(player,pose))return false;const frame=frameFor(r,pose),entry=cache.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}));return !!entry&&(entry.frames.has(frame)||filesFor(r,frame).every(p=>entry.images.has(p)));};return prepared(o)||lastRendered.has(identityKey(player)+'|'+(o.consumer||'world')+'|'+o.direction)||o.action!=='idle'&&prepared({...o,action:'idle',time:0,progress:0});}
+ function drawStable(ctx,player,o={}){const key=identityKey(player);if(!selectVisual(player,o)){last={state:'uncovered',action:o.action,direction:o.direction,reason:'No compatible source for this pose'};return false;}if(draw(ctx,player,o))return true;if(failureFor(player,o))return false;const consumerKey=key+'|'+(o.consumer||'world'),held=lastRendered.get(consumerKey+'|'+o.direction);if(!held&&o.action!=='idle'){const loading=last;if(draw(ctx,player,{...o,action:'idle',time:0,progress:0})){last={...last,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction};return true;}last=loading;}if(held?.key===key){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(held.canvas,(o.x||0)-held.info.pivot.x*WORLD_SCALE,(o.y||0)-held.info.pivot.y*WORLD_SCALE,held.info.width*WORLD_SCALE,held.info.height*WORLD_SCALE);ctx.restore();last={...held.pose,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction,physicalScale:WORLD_SCALE,sourceScale:1};return true;}return false;}
  const height=player=>{const held=lastRendered.get(identityKey(player)+'|world');return held?.key===identityKey(player)?held.info.visualHeight*WORLD_SCALE:null;};
- function failureFor(player,o={}){const r=select(player,o);return r?failures.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{})+':'+frameFor(r,o)):null;}
- return {ready,prepare:prepareForPlayer,prepareClip,prepareConfiguration,prepareStablePose,prepareFamily,draw,drawStable,canDrawStable,height,select,selectLayered,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
+ function failureFor(player,o={}){const r=selectVisual(player,o);return r?failures.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{})+':'+frameFor(r,o)):null;}
+ return {ready,prepare:prepareForPlayer,prepareClip,prepareConfiguration,prepareStablePose,prepareFamily,draw,drawStable,canDrawStable,height,select,selectLayered,selectVisual,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
 }
 const api={create};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

@@ -279,7 +279,7 @@
     let worldRequest=null,worldBundle=null;
     const visualIdentity=player=>JSON.stringify([
       player.classId,player.factionId,player.appearance96,player.paperDollLook,
-      Object.entries(player.equipment||{}).filter(([,item])=>item!=null).sort(([a],[b])=>a.localeCompare(b)).map(([slot,item])=>[slot,item.def??item]),
+      Object.entries(player.equipment||{}).filter(([,item])=>item!=null).sort(([a],[b])=>a.localeCompare(b)).map(([slot,item])=>[slot,item.def??item,item.variant??item.variantId??item.appearanceVariant??null]),
       Headgear.hidden(player),!!player.zoanTransformed
     ]);
     function clearWorldVisual(){
@@ -372,7 +372,9 @@
       signal.throwIfAborted();
       if(state!=='ready')throw Error(message);
       const value=resolve(player),look=value.look;
-      if(!value.supported||value.missing.length)throw Error('Equipamento sem fonte: '+value.missing.map(m=>m.slot+' '+m.def).join(', '));
+      if(!value.supported||value.missing.some(m=>m.slot==='weapon'))throw Error('Equipamento sem fonte: '+value.missing.map(m=>m.slot+' '+m.def).join(', '));
+      // Unmapped clothing only removes its own slot. A missing weapon still
+      // needs an authored action/attachment contract; never invent a swing.
       if(look.hair!=='original'&&look.hair!=='none'&&!catalog.styles.some(s=>s.kind==='hair'&&s.id===look.hair))throw Error('Cabelo sem fonte: '+look.hair);
       if(look.face!=='original'&&!catalog.styles.some(s=>s.kind==='face'&&s.id===look.face))throw Error('Rosto sem fonte: '+look.face);
       const clips=new Map(),routes=new Map(),coverage=[];
@@ -395,7 +397,7 @@
             }
           }
           routes.set(key(o),{clipKey,mirror});
-          coverage.push({action:o.action,direction:o.direction,weaponless:!!o.weaponless,source:'native96/'+value.body+'/'+action+'/'+direction,frames:clips.get(clipKey).clip.frames,omitted:[],unsupported:[]});
+          coverage.push({action:o.action,direction:o.direction,weaponless:!!o.weaponless,source:'native96/'+value.body+'/'+action+'/'+direction,frames:clips.get(clipKey).clip.frames,omitted:value.missing.map(m=>m.slot),unsupported:[],...(value.missing.length?{slotRoutes:Object.fromEntries(value.missing.map(m=>[m.slot,{item:m.def,quality:'missing'}]))}:{})});
         }
       }catch(error){releaseBundle(clips);throw error;}
       return {coverage,

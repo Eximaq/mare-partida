@@ -3,6 +3,87 @@
 const canonical=b=>({masculino:'male',feminino:'female'})[b]||b;
 const id=x=>x?.def??x;
 const skinMaterials=root.MareNativeSkinHD||(typeof require==='function'?require('./player-rework-skin-hd.js'):null);
+const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const sourceOf=layers=>layers.flatMap(l=>l.frames||[l.source]).filter(Boolean);
+const slotNames=new Set(['torso','pants','boots','gloves','head','weapon']);
+const renderFields=['approvedAppearance','colorAppearance','palettePolicy','paletteSupportedMaterials','mirrorX','mirrorLayerIDs','sourceRasterPadding','bodyOcclusion','isolatedPants21','baseMaterialSources','headRecord','headLook','gearOnlyRecord','femaleNamedHairRecord'];
+// An explicit registration is a proof that these layer IDs belong to the slot.
+// Verify remaining rasters, pose clock, pivot and depth/order before selecting
+// an attachment. A matching size alone cannot identify a body or a fitting.
+function composeSlots({anchor,equipment,fixed,slots}){
+ const d=anchor?.pack?.directions?.[anchor.direction];
+ if(!d?.layers?.length||!equipment||!fixed||!slots||
+    !Object.entries(fixed).every(([k,item])=>equipment[k]===item&&anchor.equipment?.[k]===item)||
+    Object.keys(equipment).some(k=>!Object.hasOwn(fixed,k)&&!Object.hasOwn(slots,k))||
+    Object.keys(anchor.equipment).some(k=>!Object.hasOwn(fixed,k)&&!Object.hasOwn(slots,k)))return null;
+ const owners=new Map();
+ for(const [slot,rule] of Object.entries(slots)){
+  if(!slotNames.has(slot)||Object.hasOwn(fixed,slot)||!rule.anchorLayers?.length||anchor.equipment[slot]==null)return null;
+  for(const id of rule.anchorLayers){
+   if(owners.has(id)||d.layers.filter(l=>l.id===id).length!==1)return null;
+   owners.set(id,slot);
+  }
+ }
+ const stable=d.layers.filter(l=>!owners.has(l.id)),slotRoutes={},omitted=[],sources=[];
+ const clock=({layers,...rest})=>rest;
+ const masks=(record,layers)=>Object.fromEntries([...new Set(sourceOf(layers))].sort().filter(x=>record.paletteSourceMasks?.[x]).map(x=>[x,record.paletteSourceMasks[x]]));
+ for(const [slot,item] of Object.entries(fixed))slotRoutes[slot]={item,quality:'hd',source:anchor.id};
+ for(const [slot,rule] of Object.entries(slots)){
+  const item=equipment[slot];
+  if(item==null){if(!rule.uncoveredBaseVerified)return null;continue;}
+  const candidate=rule.records[item],r=candidate?.record,c=r?.pack?.directions?.[r.direction],ids=new Set(candidate?.layers||[]);
+  const ignore=new Set(),shared=new Set();
+  for(const [name,list] of Object.entries(candidate?.otherOwnedLayers||{})){
+   if(!Object.hasOwn(slots,name)||name===slot||!Array.isArray(list)||!list.length)return null;
+   shared.add(name);
+   for(const id of list){if(ignore.has(id)||ids.has(id)||c?.layers?.filter(l=>l.id===id).length!==1)return null;ignore.add(id);}
+  }
+  const others=d.layers.filter(l=>owners.get(l.id)!==slot&&!shared.has(owners.get(l.id)));
+  const donorLayers=c?.layers?.filter(l=>ids.has(l.id))||[];
+  const core=c?.layers?.filter(l=>!ids.has(l.id)&&!ignore.has(l.id))||[];
+  const otherSlotsMatch=Object.entries(anchor.equipment).every(([k,v])=>k===slot||r?.equipment?.[k]===v)&&Object.keys(r?.equipment||{}).length===Object.keys(anchor.equipment).length;
+  const compatible=otherSlotsMatch&&r.equipment[slot]===item&&ids.size&&ids.size===donorLayers.length&&
+   r.body===anchor.body&&r.action===anchor.action&&r.direction===anchor.direction&&
+   same(c&&clock(c),clock(d))&&same(r.pack.frame,anchor.pack.frame)&&same(r.pack.pivot,anchor.pack.pivot)&&r.pack.density===anchor.pack.density&&
+   renderFields.every(k=>same(r[k],anchor[k]))&&same(core,others)&&same(masks(r,core),masks(anchor,others))&&
+   donorLayers.every(l=>Number.isFinite(l.depth)&&sourceOf([l]).length&&(!l.frames||l.frames.length===d.clip.frames));
+  if(!compatible){
+   if(!rule.uncoveredBaseVerified)return null;
+   omitted.push(slot);slotRoutes[slot]={item,quality:'missing'};
+  }else{
+   sources.push([r,donorLayers]);slotRoutes[slot]={item,quality:'hd',source:r.id};
+  }
+ }
+ // Preserve authored tie order against the common base. A pass may
+ // occur on either side of existing layers, even within a single slot.
+ const order=new Map(stable.map((l,i)=>[l.id,i])),buckets=Array.from({length:stable.length+1},()=>[]);
+ const interacting=(x,y)=>{
+  for(let frame=0;frame<d.clip.frames;frame++)if((x.depthTrack?.[frame]??x.depth)===(y.depthTrack?.[frame]??y.depth))return true;
+  return false;
+ };
+ for(let i=0;i<sources.length;i++){
+  const [r,group]=sources[i],set=new Set(group.map(l=>l.id));
+  if(sources.some(([,other],j)=>j<i&&other.some(x=>group.some(y=>interacting(x,y)))))return null;
+  let next=0;
+  for(const l of r.pack.directions[anchor.direction].layers){
+   if(set.has(l.id))buckets[next].push(l);
+   else if(order.has(l.id))next=order.get(l.id)+1;
+  }
+ }
+ const layers=stable.flatMap((l,i)=>[...buckets[i],l]).concat(buckets[stable.length]);
+ if(new Set(layers.map(l=>l.id)).size!==layers.length)return null;
+ const paletteSourceMasks={...masks(anchor,stable)};
+ for(const [r,group]of sources)for(const [src,mask]of Object.entries(masks(r,group))){
+  if(paletteSourceMasks[src]&&!same(paletteSourceMasks[src],mask))return null;
+  paletteSourceMasks[src]=mask;
+ }
+ const paletteRefs=[...new Set(Object.values(paletteSourceMasks).flatMap(Object.values))];
+ const pack={...anchor.pack,directions:{[anchor.direction]:{...d,layers}}};
+ const key=Object.entries(equipment).sort(([a],[b])=>a.localeCompare(b));
+ return {...anchor,id:anchor.id+':slots:'+JSON.stringify([key,slotRoutes]),sourceId:anchor.id,pack,
+  equipment:Object.fromEntries(key.filter(([slot])=>!omitted.includes(slot))),sourceRefs:[...new Set(sourceOf(layers))],
+  paletteSourceMasks,paletteRefs,slotRoutes,omitted,layeredSlots:true};
+}
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-modular-outfits-hd/assets/',allowCandidates=false,appearanceAPI=root.MareAppearance96}={}){
  if(index?.schema!=='rework-modular-outfits-hd-v1'||!vendor?.compositor)throw Error('Missing modular outfit dependencies');
  function resolveIndependentPants({body,direction,action,equipment={},appearance={}}={}){
@@ -169,5 +250,5 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
  }
  return {resolve,resolveIndependentPants,bindAnatomy,requiredFiles,render,renderWithHead};
 }
-const api={create};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
+const api={create,composeSlots};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
