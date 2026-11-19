@@ -372,6 +372,46 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(needHead&&((!head&&!gearOnly&&!femaleNamed)||(!femaleNamed&&!headCompat)))return null;
   return {...r,id:r.id+':'+hair+':'+(headItem??'none')+':'+(a.skin||'original')+':'+(a.hairColor||'original')+(femaleNamed?.eyeColor?':eye-palette:'+femaleNamed.eyeColor:'')+(femaleNamed?.eyeStyle?':'+femaleNamed.eyeStyle:''),eyeStyle:femaleNamed?.eyeStyle,sourceId:r.id,colorAppearance:a,headRecord:head,gearOnlyRecord:gearOnly,femaleNamedHairRecord:femaleNamed,headLook};
  }
+ // A single source-registered partial-slot pilot. Never reinterpret a baked actor
+ // as removable anatomy, opt in an unrelated source, or reset a saved cosmetic.
+ function selectLayered(player,o={}){
+  if(state!=='ready'||!player||player.__reworkSubset||player.zoanTransformed||player.classId!=='brawler'||o.direction!=='south'||!['attack-unarmed','attack','skill'].includes(o.action))return null;
+  const a=player.appearance96||{},eq=player.equipment||{},present=v=>v!=null&&!['none','original'].includes(v),same=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const vals=names=>names.map(k=>a[k]).filter(v=>v!=null),plain=names=>vals(names).every(v=>v==='original');
+  const male=vals(['gender','body']);
+  if(!male.length||male.some(v=>!['male','masculino'].includes(v))||!plain(['hair','hairStyle','eyeStyle','face'])||vals(['eyeColor']).some(v=>!['original','blue'].includes(v))||present(eq.weapon))return null;
+  const skin=vals(['skinColor','skin']),hair=vals(['hairColor']);
+  if(new Set(skin).size>1||skin.some(v=>v!=='original'&&!root.MareAppearance96?.skins[v])||hair.some(v=>v!=='original'&&!root.MareAppearance96?.hairs[v]))return null;
+  const visible=Object.entries(eq).filter(([k,v])=>present(v)&&!['ring','necklace','belt','charm','akuma_no_mi'].includes(k)&&!(k==='head'&&root.MareHeadgear?.hidden(player)));
+  const legs=visible.filter(([k])=>k==='legs'||k==='pants'),coat=visible.find(([k])=>k==='coat'||k==='torso');
+  const exactItem=(v,id)=>Number(v?.def??v)===id&&(typeof v!=='object'||['variant','variantId','appearanceVariant'].every(k=>v[k]==null||v[k]==='original'));
+  // P133 and the separately pending C6 are the only mixed actual request proved.
+  if(legs.length!==1||!exactItem(legs[0][1],133)||visible.length!==(coat?2:1)||coat&&!exactItem(coat[1],6))return null;
+  const baseId='male-attack-unarmed-south-drawn8',p133Id='male-pants133-attack-unarmed-south-drawn8-candidate';
+  const baseHash='ae9f25a9f6982fe6ee02c08f1c323c228955d97c176c28958aca639fa6af0964',pantsHash='8a93e44b2f1bc0abd95b342f31808776e5aa53db4c7d15a2c5975d8f2a20d0f5';
+  const anatomy=select({...player,equipment:{}},{...o,action:'attack-unarmed'});
+  const original=baseIndex?.records.find(r=>r.id===baseId),p133=outfitIndex?.records.find(r=>r.id===p133Id),d=original?.pack.directions.south,p=p133?.pack,layerSpec=p?.directions.south,c=p133?.overlayContract;
+  if(!anatomy||anatomy.sourceId!==baseId||anatomy.hdKind||anatomy.mirrorX||anatomy.headRecord||anatomy.gearOnlyRecord||anatomy.femaleNamedHairRecord||
+     !original?.bodyClothingSeparated||!original.headHairSeparated||original.sourcePackSHA256!==baseHash||!same(anatomy.pack,original.pack)||
+     original.pack.density!==4||!same(original.pack.frame,{width:160,height:160})||!same(original.pack.pivot,{x:80,y:128})||
+     !same(d.clip,{frames:8,fps:12,loop:false,contactFrame:4})||d.layers.length!==5||!same(d.layers.map(l=>l.slot),['body','pants','headBase','face','hair'])||
+     !c||c.schema!=='native-equipment-overlay-v1'||c.baseRecordId!==baseId||c.baseSourcePackSHA256!==baseHash||c.item!==133||c.slot!=='pants'||c.direction!=='south'||c.action!=='attack-unarmed'||
+     c.paddedSourceSHA256!==pantsHash||c.density!==4||c.depth!==2||!same(c.physicalTranslation,[64,64])||!same(c.bodyFrames,d.layers[0].frames)||!same(c.binding,{kind:'fixed'})||
+     !same(p133.equipment,{pants:133})||p133.item!==133||p?.density!==4||!same(p.frame,original.pack.frame)||!same(p.pivot,original.pack.pivot)||
+     !same(layerSpec?.rest,d.rest)||!same(layerSpec?.poses,d.poses)||!same(layerSpec?.clip,d.clip)||layerSpec.layers.length!==d.layers.length+1||
+     !same(layerSpec.layers.slice(0,d.layers.length),d.layers))return null;
+  const pants=layerSpec.layers[d.layers.length];
+  if(pants.id!=='pants133-translated-candidate'||pants.source!==pantsHash||pants.slot!=='pants'||pants.depth!==2||pants.frames||!same(pants.binding,{kind:'fixed'}))return null;
+  // Reuse the exact existing P133 record with the unchanged appearance. In
+  // particular, 'blue' follows the existing native Original iris display; this
+  // feature does not touch, correct or add any iris styling.
+  const exact=select({...player,equipment:{[legs[0][0]]:legs[0][1]}},{...o,action:'attack-unarmed'});
+  if(!exact||exact.hdKind!=='outfit'||(exact.sourceId||exact.id)!==p133Id||!same(exact.pack,p)||
+     !same(exact.equipment,{pants:133})||exact.headRecord||exact.gearOnlyRecord||exact.femaleNamedHairRecord)return null;
+  const omitted=coat?[coat[0]]:[],slotRoutes={[legs[0][0]]:{item:133,quality:'hd',source:p133Id},...(coat?{[coat[0]]:{item:6,quality:'missing'}}:{})};
+  return {...exact,id:exact.id+':slot-pilot:'+legs[0][0]+(coat?':missing-'+coat[0]+'-6':''),
+   layeredPilot:true,action:'attack-unarmed',resolvedAction:'attack-unarmed',slotRoutes,omitted};
+ }
  function frameFor(r,o){
   const timeline=r.hdKind==='weapon'?r.timeline:null,clip=timeline?{frames:timeline.length,fps:r.fps,loop:false}:r.pack.directions[r.direction].clip;
   let progress=o.progress;
@@ -456,7 +496,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      }
     }
     routes.set(slot,{r,key,options});
-    coverage.push({action:pose.options.action,direction:pose.options.direction,weaponless:!!pose.options.weaponless,source:r.id,frames:sources.get(key).size,omitted:resolved.omitted||[],unsupported:resolved.unsupported||[]});
+    coverage.push({action:pose.options.action,direction:pose.options.direction,weaponless:!!pose.options.weaponless,source:r.id,frames:sources.get(key).size,omitted:resolved.omitted||r.omitted||[],unsupported:resolved.unsupported||[],...(r.layeredPilot?{slotRoutes:r.slotRoutes}:{})});
    }
   }catch(e){clearSources();throw e;}
   return {coverage,
@@ -491,7 +531,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(o.consumer==='portrait')y=Math.max(y,result.info.visualHeight*physicalScale+3);
   ctx.save();try{ctx.imageSmoothingEnabled=false;ctx.drawImage(result.canvas,x-result.info.pivot.x*physicalScale,y-result.info.pivot.y*physicalScale,result.info.width*physicalScale,result.info.height*physicalScale);}finally{ctx.restore();}
   if(hold&&player&&typeof player==='object'){const key=identityKey(player)+'|'+(o.consumer||'world'),held={...result,key:identityKey(player),pose:{source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame}};lastRendered.set(key,held);lastRendered.set(key+'|'+o.direction,held);while(lastRendered.size>32)lastRendered.delete(lastRendered.keys().next().value);}
-  last={state:'rendered',source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame,width:result.info.width,height:result.info.height,pivot:result.info.pivot,density:result.info.density,physicalScale,sourceScale:1,status:r.status,approval:r.approval,eyeStyle:r.eyeStyle||r.femaleNamedHairRecord?.eyeStyle,skinPalette:r.femaleNamedHairRecord?.skinColor,hairPalette:r.femaleNamedHairRecord?.hairColor,faceProtectedExact:!!r.femaleNamedHairRecord?.faceProtectedExact,faceProtectedExceptIris:!!r.femaleNamedHairRecord?.faceProtectedExceptIris,headSourceScale:r.femaleNamedHairRecord?.sourceScale,headStatus:r.femaleNamedHairRecord?'semantic-fringe-ownership-candidate':r.gearOnlyRecord?'gear-only-candidate-calibration':r.headRecord?.status,headIdentity:r.femaleNamedHairRecord?(r.femaleNamedHairRecord.eyeStyle?'original-face-with-eye-style':'original-face-protected-exact'):r.gearOnlyRecord?'exact-head-original-hair-preserved':r.headRecord?'exact-head-source-pixels':'authored-original',headOcclusion:r.femaleNamedHairRecord?.gearRecord?r.femaleNamedHairRecord.gearPolicy:r.gearOnlyRecord?.occlusion,headGearScale:r.gearOnlyRecord?.sourceScale,headGearSource:r.gearOnlyRecord?.gear.source||r.femaleNamedHairRecord?.gearRecord?.layers.find(l=>l.id===r.femaleNamedHairRecord.gearRecord.headgearPolicy?.gearId)?.source,headGearId:r.gearOnlyRecord?.id};return true;
+  last={state:'rendered',source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame,width:result.info.width,height:result.info.height,pivot:result.info.pivot,density:result.info.density,physicalScale,sourceScale:1,status:r.status,approval:r.approval,eyeStyle:r.eyeStyle||r.femaleNamedHairRecord?.eyeStyle,skinPalette:r.femaleNamedHairRecord?.skinColor,hairPalette:r.femaleNamedHairRecord?.hairColor,faceProtectedExact:!!r.femaleNamedHairRecord?.faceProtectedExact,faceProtectedExceptIris:!!r.femaleNamedHairRecord?.faceProtectedExceptIris,headSourceScale:r.femaleNamedHairRecord?.sourceScale,headStatus:r.femaleNamedHairRecord?'semantic-fringe-ownership-candidate':r.gearOnlyRecord?'gear-only-candidate-calibration':r.headRecord?.status,headIdentity:r.femaleNamedHairRecord?(r.femaleNamedHairRecord.eyeStyle?'original-face-with-eye-style':'original-face-protected-exact'):r.gearOnlyRecord?'exact-head-original-hair-preserved':r.headRecord?'exact-head-source-pixels':'authored-original',headOcclusion:r.femaleNamedHairRecord?.gearRecord?r.femaleNamedHairRecord.gearPolicy:r.gearOnlyRecord?.occlusion,headGearScale:r.gearOnlyRecord?.sourceScale,headGearSource:r.gearOnlyRecord?.gear.source||r.femaleNamedHairRecord?.gearRecord?.layers.find(l=>l.id===r.femaleNamedHairRecord.gearRecord.headgearPolicy?.gearId)?.source,headGearId:r.gearOnlyRecord?.id,...(r.layeredPilot?{omitted:r.omitted,slotRoutes:r.slotRoutes}:{})};return true;
  }
  const familyStates=new Map();
  async function prepareFamily(player){await ready;const raw=player.appearance96||{};if(!root.MareAppearance96&&[raw.skinColor,raw.skin,raw.hairColor].some(v=>v&&v!=='original'))return false;const key=identityKey(player);if(familyStates.has(key))return familyStates.get(key).promise;const record={state:'checking',reason:null};familyStates.set(key,record);while(familyStates.size>8)familyStates.delete(familyStates.keys().next().value);
@@ -505,7 +545,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function drawStable(ctx,player,o={}){const key=identityKey(player);if(!select(player,o)){last={state:'uncovered',action:o.action,direction:o.direction,reason:'No compatible source for this pose'};return false;}if(draw(ctx,player,o))return true;if(failureFor(player,o))return false;const consumerKey=key+'|'+(o.consumer||'world'),held=lastRendered.get(consumerKey+'|'+o.direction);if(!held&&o.action!=='idle'){const loading=last;if(draw(ctx,player,{...o,action:'idle',time:0,progress:0})){last={...last,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction};return true;}last=loading;}if(held?.key===key){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(held.canvas,(o.x||0)-held.info.pivot.x*WORLD_SCALE,(o.y||0)-held.info.pivot.y*WORLD_SCALE,held.info.width*WORLD_SCALE,held.info.height*WORLD_SCALE);ctx.restore();last={...held.pose,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction,physicalScale:WORLD_SCALE,sourceScale:1};return true;}return false;}
  const height=player=>{const held=lastRendered.get(identityKey(player)+'|world');return held?.key===identityKey(player)?held.info.visualHeight*WORLD_SCALE:null;};
  function failureFor(player,o={}){const r=select(player,o);return r?failures.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{})+':'+frameFor(r,o)):null;}
- return {ready,prepare:prepareForPlayer,prepareClip,prepareConfiguration,prepareStablePose,prepareFamily,draw,drawStable,canDrawStable,height,select,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
+ return {ready,prepare:prepareForPlayer,prepareClip,prepareConfiguration,prepareStablePose,prepareFamily,draw,drawStable,canDrawStable,height,select,selectLayered,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
 }
 const api={create};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

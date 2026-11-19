@@ -334,12 +334,17 @@
           await Promise.all([ready,nativeHD.ready]);
           signal.throwIfAborted();
           const native=[],modular=[];
-          for(const pose of poses)(nativeHD.select(pose.player,pose.options)?native:modular).push(pose);
+          for(const pose of poses){
+            // An exact HD outfit wins. If it misses, a registered independent
+            // HD route keeps the body and the supported slots on this pose.
+            const source=nativeHD.select(pose.player,pose.options)||nativeHD.selectLayered(pose.player,pose.options);
+            if(source)native.push({...pose,source});else modular.push(pose);
+          }
           if(modular.length)request.coverage=modular.map(({options})=>({action:options.action,direction:options.direction,weaponless:!!options.weaponless,source:null}));
           let hd,layered;
           try{
             if(modular.length)layered=await prepareModularWorld(basePlayer,modular,signal);
-            if(native.length)hd=await nativeHD.prepareConfiguration(native,{signal});
+            if(native.length)hd=await nativeHD.prepareConfiguration(native,{signal,resolve:pose=>({...pose,omitted:pose.source.omitted||[]})});
           }catch(error){layered?.release();hd?.release();throw error;}
           bundle={
             coverage:[...(hd?.coverage||[]),...(layered?.coverage||[])],

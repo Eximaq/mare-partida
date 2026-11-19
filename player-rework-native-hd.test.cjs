@@ -102,3 +102,48 @@ test('loading hold retains approved monster scale and scaled label height',async
  assert(await api.prepareFamily(p));assert(await api.prepare(p,o));const c=cv.createCanvas(800,800),ctx=c.getContext('2d');assert(api.drawStable(ctx,p,o));const height=api.height(p);assert(height>70&&height<150,'visible world height matches ordinary monsters, not native HD pixels');
  const calls=[],original=ctx.drawImage.bind(ctx);ctx.drawImage=(...args)=>{calls.push(args);original(...args);};assert(api.drawStable(ctx,p,{...o,action:'walk',direction:'north'}));assert.equal(api.snapshot().last.state,'holding-native-while-loading');assert.equal(calls[0][3],calls[0][0].width*105/374);assert.equal(api.height(p),height);
 });
+
+test('registered missing coat 6 keeps every native P133 punch frame and its appearance',async()=>{
+ const prior={palette:global.MareAppearance96,appearance:global.MareCharacterAppearance,headgear:global.MareHeadgear};
+ global.MareCharacterAppearance=require('./character-appearance.js');
+ global.MareHeadgear=require('./headgear-visibility.js');
+ global.MareAppearance96=require('./tools/paper-doll-96-v3/appearance.js');
+ try{
+  const api=make();await api.ready;
+  const options={action:'attack-unarmed',direction:'south',consumer:'world'};
+  for(const look of [{},{skinColor:'dark',hairColor:'pink'}]){
+   const appearance96=global.MareCharacterAppearance.normalize({gender:'masculino',...look});
+   const alone={classId:'brawler',appearance96,equipment:{legs:{def:133}}};
+   const mixed={...alone,equipment:{...alone.equipment,coat:{def:6}}},saved=structuredClone(mixed);
+   assert.equal(api.select(mixed,options),null,'strict selection remains strict');
+   const source=api.selectLayered(mixed,options);
+   assert.equal(source?.layeredPilot,true,JSON.stringify(api.snapshot()));
+   assert.equal(api.selectLayered(mixed,{...options,direction:'north'}),null);
+   assert.equal(api.selectLayered({...mixed,equipment:{...mixed.equipment,weapon:{def:0}}},options),null);
+   assert.equal(api.selectLayered({...mixed,equipment:{...mixed.equipment,boots:{def:148}}},options),null);
+   assert.equal(api.selectLayered({...mixed,appearance96:{...appearance96,eyeColor:'green'}},options),null);
+   const a=await api.prepareConfiguration([{player:alone,options}]);
+   const b=await api.prepareConfiguration([{player:mixed,options,source}],{resolve:x=>x});
+   try{
+    assert.equal(b.coverage[0].frames,8);
+    assert.deepEqual(b.coverage[0].omitted,['coat']);
+    assert.equal(b.coverage[0].slotRoutes.coat.item,6);
+    const pixels=(bundle,player,phase)=>{
+     const ctx=cv.createCanvas(400,400).getContext('2d');
+     assert.ok(bundle.draw(ctx,player,{...options,x:180,y:180,progress:(phase+.2)/8}));
+     return ctx.getImageData(0,0,400,400).data;
+    };
+    for(let phase=0;phase<8;phase++){
+     const before=pixels(a,alone,phase),after=pixels(b,mixed,phase);
+     assert.ok(before.some(v=>v>0),'native frame is not empty');
+     assert.deepEqual(after,before,'only the missing slot may differ; current source has no coat');
+    }
+    assert.deepEqual(mixed,saved,'the visual omission must not change the equipment or appearance');
+   }finally{a.release();b.release();}
+  }
+ }finally{
+  global.MareAppearance96=prior.palette;
+  global.MareCharacterAppearance=prior.appearance;
+  global.MareHeadgear=prior.headgear;
+ }
+});
