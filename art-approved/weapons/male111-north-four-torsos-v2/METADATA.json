@@ -1,0 +1,33 @@
+{
+  "path": "weapons/male111-north-four-torsos-v2/Manopla111_NORTH_M151_M158_M165_M179_V2_Editavel.zip",
+  "bytes": 7149745,
+  "sha256": "eddd3ede4f049a9004cda56e438bdc1e1a72aaee38dbe851c9d921b0327b93d5",
+  "pngEntries": 128,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete NORTH cycles for this specific weapon and outfit set.",
+  "weapons": [
+    111
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "male",
+  "directions": [
+    "NORTH"
+  ],
+  "finalFrames": 32,
+  "manifestHashesVerified": 130,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male111-north-four-torsos-v2/parts/MANIFEST.json",
+    "reconstruct": "weapons/male111-north-four-torsos-v2/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  },
+  "archiveNote": "Exact approved NORTH V2 ZIP. Prior NORTH clothing V1 excluded; separate lateral V3 approval unchanged."
+}

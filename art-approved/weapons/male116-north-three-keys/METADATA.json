@@ -1,0 +1,44 @@
+{
+  "path": "weapons/male116-north-three-keys/Arma116_NORTH_Backup_Editavel.zip",
+  "bytes": 1947449,
+  "sha256": "8865192c6a7a7633c3f22bdfa7a154feead941808986e3664727eed1ec277df1",
+  "pngEntries": 35,
+  "productionEnabled": false,
+  "approval": "Owner approved the exact presented NORTH three-key sequence and timing.",
+  "weapons": [
+    116
+  ],
+  "gender": "male",
+  "directions": [
+    "NORTH"
+  ],
+  "distinctKeyFrames": 3,
+  "timing": {
+    "sequence": [
+      0,
+      1,
+      2,
+      1,
+      0
+    ],
+    "ticks": [
+      15,
+      8,
+      3,
+      5,
+      17
+    ],
+    "fps": 24
+  },
+  "scope": "116M neck equipment fit, exact approved3key base and timing",
+  "excluded": "historical uniform19 rejected8state cycles; game integration/test not performed",
+  "archiveNote": "Original presented ZIP preserved exactly; internal candidate labels predate approval. Historical uniform19 eight-state videos remain rejected.",
+  "runtimeIntegrated": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male116-north-three-keys/parts/MANIFEST.json",
+    "reconstruct": "weapons/male116-north-three-keys/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  }
+}

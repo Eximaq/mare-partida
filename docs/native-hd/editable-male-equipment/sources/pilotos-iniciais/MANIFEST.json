@@ -1,0 +1,62 @@
+{
+  "name": "masculino-pilotos-iniciais.zip",
+  "bytes": 5282267,
+  "sha256": "a9e622b463e15a3e7627272441ab4f6e5d58955580bd0ebfce08ee77bb4e4a79",
+  "parts": [
+    {
+      "file": "acervo.zip.part000",
+      "bytes": 524286,
+      "sha256": "08f96e68f897e9b25fc472adb91b14c91f4048b65a7980e8fd225d024ffd65a4"
+    },
+    {
+      "file": "acervo.zip.part001",
+      "bytes": 524286,
+      "sha256": "276d947a99260e9ef55fc947408940b5426094a8c517901f543cb99bab607b3b"
+    },
+    {
+      "file": "acervo.zip.part002",
+      "bytes": 524286,
+      "sha256": "83b40684767f25ef7c919e700cf2d06cc883f2dd53ea0829e1c01c1f0b96abd8"
+    },
+    {
+      "file": "acervo.zip.part003",
+      "bytes": 524286,
+      "sha256": "0b59b4133e4f297f273ee7bf85c850cc0d1e89e21d1bfd1dfd1a087c27f52ccf"
+    },
+    {
+      "file": "acervo.zip.part004",
+      "bytes": 524286,
+      "sha256": "ff21ff6d9b609516b1959b4da25a793c0b2fe089a935e90989a8c882d3eb9141"
+    },
+    {
+      "file": "acervo.zip.part005",
+      "bytes": 524286,
+      "sha256": "e468f1b3bc221c2df20527f6c15ab02d403a85809584ecc2e26b85be3101de44"
+    },
+    {
+      "file": "acervo.zip.part006",
+      "bytes": 524286,
+      "sha256": "87c77e04951216c4dbe89d01973ffcd362d62ff797ae60b87a1b6793ec730056"
+    },
+    {
+      "file": "acervo.zip.part007",
+      "bytes": 524286,
+      "sha256": "4cfe1db4fef0d164ba443ec967d3438bcde03e7b06e23fd30286df57b7e01d3a"
+    },
+    {
+      "file": "acervo.zip.part008",
+      "bytes": 524286,
+      "sha256": "5cd772c3860d0672a37bf362fc24a215b56f9bcb195690ae524d122c9a62624e"
+    },
+    {
+      "file": "acervo.zip.part009",
+      "bytes": 524286,
+      "sha256": "d42c0c6626c3260ae5a14847390b181e1b59d151b20cfdf101989a67359d48da"
+    },
+    {
+      "file": "acervo.zip.part010",
+      "bytes": 39407,
+      "sha256": "3388aa89639c928b00dc57d89a8d2ceaa21e800ab06fdae245dbe6a1a2b7c38a"
+    }
+  ]
+}

@@ -1,0 +1,2185 @@
+{
+  "sourceCommit": "2801902fa2dad8e83069815faeaa3f53f90bc1b6",
+  "prPreviousHead": "e80b31f6c617ada51cab81dcc11f471d3d288c76",
+  "added": 544,
+  "alreadySame": 0,
+  "retainedConflictingPaths": [],
+  "newPaths": [
+    {
+      "path": "art-approved/RECOVERED_MALE_PACKAGES.json",
+      "gitBlob": "f6722f196b86e86ab45e71237a669d2cc0db0b94"
+    },
+    {
+      "path": "art-approved/clothing/male-historical-cycles/INDEX.json",
+      "gitBlob": "1c5a49d2cefad99f69130b23d2d551aa0e2f1e0e"
+    },
+    {
+      "path": "art-approved/clothing/male-historical-cycles/male_133_east_equipped-r1.zip",
+      "gitBlob": "eb0d5e29977512f2f6bbbbf23face8f889067f43"
+    },
+    {
+      "path": "art-approved/clothing/male-historical-cycles/male_133_north_equipped-r1.zip",
+      "gitBlob": "2f51040ba5cffa090517daf6c6147942d9d09c6a"
+    },
+    {
+      "path": "art-approved/clothing/male-historical-cycles/male_133_north_isolated-r2.zip",
+      "gitBlob": "5af83fc7ea2fddb7998b52809a30cd353ae0871d"
+    },
+    {
+      "path": "art-approved/clothing/male-historical-cycles/male_133_south_equipped-r1.zip",
+      "gitBlob": "2a295736fe708490a5ca766810aff83d333ac0f5"
+    },
+    {
+      "path": "art-approved/clothing/male-historical-cycles/male_133_south_isolated-r2.zip",
+      "gitBlob": "899c5c47e41a50bba10f1713baece7938105ce3d"
+    },
+    {
+      "path": "art-approved/clothing/male-historical-cycles/male_133_west_equipped-r1.zip",
+      "gitBlob": "5b718ea39fa7d0283c4b645d98e9bccec981972d"
+    },
+    {
+      "path": "art-approved/clothing/male-historical-cycles/male_147_east_visible-r1.zip",
+      "gitBlob": "82f3683323a3fcbc7ccc61977dfefc9018eb36cc"
+    },
+    {
+      "path": "art-approved/clothing/male-historical-cycles/male_147_north_visible-r1.zip",
+      "gitBlob": "5174d8bb0c190d3587eed55d8d15ff6a9ddab86d"
+    },
+    {
+      "path": "art-approved/clothing/male-historical-cycles/male_147_south_visible-r1.zip",
+      "gitBlob": "adab7b312d2891ebf5a92b449b97cc41c54dfc8b"
+    },
+    {
+      "path": "art-approved/clothing/male-historical-cycles/male_147_west_visible-r1.zip",
+      "gitBlob": "308685162e7e02da6f13a109d510b9c0a24f00f4"
+    },
+    {
+      "path": "art-approved/clothing/male-pants-154/male_154_east_occlusion-r3.zip",
+      "gitBlob": "fe63e7b6131ff2e7aa023dcb6de9d3275bb9b8dc"
+    },
+    {
+      "path": "art-approved/clothing/male-pants-154/male_154_north_occlusion-r3.zip",
+      "gitBlob": "1878249def4e351084215663dd63afe73cc4b680"
+    },
+    {
+      "path": "art-approved/clothing/male-pants-154/male_154_south_occlusion-r3.zip",
+      "gitBlob": "669c7be0308bd117e7feaab537b54b6236c3bbbd"
+    },
+    {
+      "path": "art-approved/clothing/male-pants-154/male_154_west_occlusion-r3.zip",
+      "gitBlob": "aa7901dfb9947391c7ea2c09bdcb6760e79de579"
+    },
+    {
+      "path": "art-approved/clothing/male-torso151/male_151_static_four-views_v1.zip",
+      "gitBlob": "ad881e86bb58b0f7b2eca7ba1799ba24bcf3e2ab"
+    },
+    {
+      "path": "art-approved/clothing/male-torsos-7-137-144/male_137_static_corrected_v1.zip",
+      "gitBlob": "5cb39142d0a49326491dff7419a8b00690841c56"
+    },
+    {
+      "path": "art-approved/clothing/male-torsos-7-137-144/male_144_static_corrected_v2.zip",
+      "gitBlob": "734d24c0abb71fa1cf88cd73c0739f107f0e7a56"
+    },
+    {
+      "path": "art-approved/clothing/male-torsos-7-137-144/male_7_static_corrected_v2.zip",
+      "gitBlob": "9cdde7c277cd48c4d0e51fe4ae3d0e982c4e4918"
+    },
+    {
+      "path": "art-approved/clothing/male140-revised/INDEX.json",
+      "gitBlob": "420dd73b65173ef66947fab97bed45931a59f228"
+    },
+    {
+      "path": "art-approved/clothing/male140-revised/male_140_east_r3.zip",
+      "gitBlob": "83b370f475473d6d4d0325c3735ebbc34887aa7f"
+    },
+    {
+      "path": "art-approved/clothing/male140-revised/male_140_north_r6.zip",
+      "gitBlob": "6ea02c25b780657149e4d8a4c3df030cdcde1255"
+    },
+    {
+      "path": "art-approved/clothing/male140-revised/male_140_south_r6.zip",
+      "gitBlob": "bdd3d142d3987dd9ab30e8479d6ed533d930f0c0"
+    },
+    {
+      "path": "art-approved/clothing/male140-revised/male_140_west_r3.zip",
+      "gitBlob": "d27d3be85531bb1c850ac6f1c37b58618fd571bb"
+    },
+    {
+      "path": "art-approved/clothing/recent-approved/male_172_pants147-boot176_shown-states_upperarm-v2.zip",
+      "gitBlob": "bf302fa5c3e71708eabc1af7d794c0348fd0e857"
+    },
+    {
+      "path": "art-approved/clothing/recent-approved/male_172_pants161-boot183_shown-states_upperarm-v2.zip",
+      "gitBlob": "aa5228d6e4022bb430454c9b845d62f90d5f0f51"
+    },
+    {
+      "path": "art-approved/clothing/recent-approved/male_172_pants161-boot8_shown-states_upperarm-v2.zip",
+      "gitBlob": "6cc7b0ed28fac173bba3493d2d010c6af38412cf"
+    },
+    {
+      "path": "art-approved/clothing/static-and-idle-v1/male_158_static_four-views_v1.zip",
+      "gitBlob": "c44f81093b4d2bb861610709f60ba93ebc838e88"
+    },
+    {
+      "path": "art-approved/clothing/static-and-idle-v1/male_165_static_four-views_v1.zip",
+      "gitBlob": "b365da86cfd43b09f85487bc9dbbcc0e905d6024"
+    },
+    {
+      "path": "art-approved/clothing/static-and-idle-v1/male_172_static_four-views_v1.zip",
+      "gitBlob": "1a82463d7ced44b0f94b1cb06fd04f0f82a4c5bf"
+    },
+    {
+      "path": "art-approved/clothing/static-and-idle-v1/male_179_static_four-views_v1.zip",
+      "gitBlob": "32e67b09d18cd37a30183b0bd6cdb84998d25a16"
+    },
+    {
+      "path": "art-approved/clothing/walk-and-collar-history/male_172_south_collar-cuff-v2.zip",
+      "gitBlob": "ea20cb23660b8fd1fb351e5b57d3aff74c999e6b"
+    },
+    {
+      "path": "art-approved/clothing/walk-and-collar-history/male_walk_south_16phases_r7.zip",
+      "gitBlob": "b61b50089b3fc5fde4a78a4b622b8fa2f6ca62db"
+    },
+    {
+      "path": "art-approved/weapons/117-south/male_117_south_full-return-v2.zip",
+      "gitBlob": "423d64dc017a253fc35d008a879d005d03e1bfaa"
+    },
+    {
+      "path": "art-approved/weapons/approved-north-history/male_weapon0_north_original-restored-v2.zip",
+      "gitBlob": "797f7a77592815165ae1519cccbd48ae64c08a1d"
+    },
+    {
+      "path": "art-approved/weapons/approved-north-history/male_weapon128_north_historical-v1.zip",
+      "gitBlob": "f2b623595da56aded61d571705f11f8cfba8a653"
+    },
+    {
+      "path": "art-approved/weapons/approved-north-history/male_weapon67_north_original-restored-v1.zip",
+      "gitBlob": "f622b22e3f28d4c974927b799407a6af66d49d9a"
+    },
+    {
+      "path": "art-approved/weapons/approved-north-history/male_weapon70_north_original-restored-v2.zip",
+      "gitBlob": "9c84e8a24065d0df22f0c41b5e484b5150e2f38d"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon121_south_v1.zip",
+      "gitBlob": "72ea17b1a5110b604f13e53824810a96bcdd3109"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon122_south_v1.zip",
+      "gitBlob": "1f4ec3561428e2dc3589787a2ab5be291a766c66"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon123_south_v1.zip",
+      "gitBlob": "89a23c035812c56aa2740acbd1d3a79748ffa059"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon124_south_v1.zip",
+      "gitBlob": "3000b81c431195231e29b15e4fe08d1c354fd4df"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon125_south_v1.zip",
+      "gitBlob": "420883fc1b96ed6ee7d3adc4432727c25bb3d386"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon126_south_v1.zip",
+      "gitBlob": "70de1fe95e293e8b277e8e91a8ffe0d75089326f"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon127_south_v1.zip",
+      "gitBlob": "9cbf1df6e2b0e4bbbb67c54f8c9b0f8f6d2a77fa"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon128_south_v1.zip",
+      "gitBlob": "0af5f76200d87f17b4ff55d6d0ef340154f70fb4"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon12_south_v1.zip",
+      "gitBlob": "5e3b2773719af82e1ed2c83a139d1a1c0dbcd449"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon16_south_v1.zip",
+      "gitBlob": "03929010d7a4ddd0ac0477a71e1315e84ebaf750"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon31_south_v1.zip",
+      "gitBlob": "697a0a5f039d9500e3c7211893d0e09af3d56798"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon32_south_v1.zip",
+      "gitBlob": "1d2822db3cfd3a07dc72d85af8e3b45ff7cdf143"
+    },
+    {
+      "path": "art-approved/weapons/approved-south-history/male_weapon70_south_sharpness-v2.zip",
+      "gitBlob": "a5535f472376b35fc24e73f5f9d8d2c89afe1542"
+    },
+    {
+      "path": "art-approved/weapons/arm117-ew-approved/117_EW_M/Braco117_M_EW_QuatroTrajes_Editavel.zip",
+      "gitBlob": "c8bdc4cdb97540b382fcdffef81f3e934d13afc7"
+    },
+    {
+      "path": "art-approved/weapons/bronze2-south/male_2_south_v1.zip",
+      "gitBlob": "9953edf50ef20c325245ff49d7317ed410a55cef"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112-followup/109_EW_M/Manopla109_Masculino_Quatro_Trajes_EW_Editavel.zip.part001",
+      "gitBlob": "37556a9a8b2ad23d57301ca3ef9cc6169ffa64bc"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112-followup/109_EW_M/Manopla109_Masculino_Quatro_Trajes_EW_Editavel.zip.part002",
+      "gitBlob": "f4cf83a13578893938504efa19985c6621896b50"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/0-67-70_N_M/Itens0_67_70_Masculino_NORTH_QuatroTrajes_Editavel.zip.part001",
+      "gitBlob": "fe360ecc9553f03e6cbb1cb258ef3c0468507d96"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/0-67-70_N_M/Itens0_67_70_Masculino_NORTH_QuatroTrajes_Editavel.zip.part002",
+      "gitBlob": "3bf3a53b2c00fc5f65f18ec56ad166277394a16c"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/0-67-70_N_M/Itens0_67_70_Masculino_NORTH_QuatroTrajes_Editavel.zip.part003",
+      "gitBlob": "ba221afaf36a302e12f6d7c2355c273ea60e89b0"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/112_N_M/Manopla112_NORTH_M151_M158_M165_M179_V1_Editavel.zip",
+      "gitBlob": "90171fec3c46ad85a226c73f6be87c34ae35c6cf"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/114_N_M/Pistolas114_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+      "gitBlob": "ac99390c0de9950a90355be5e198088328d3dabe"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/117_N_M/Braco117_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+      "gitBlob": "97b12d6107cba5395288ea4e08a9d1e86d9b2ca3"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/117_N_M/Braco117_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+      "gitBlob": "d876b057b968e7e62d16358c3c5c9996ed8a41f8"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/118-119-120_N_M/Itens118_119_120_Masculino_NORTH_QuatroTrajes_Editavel.zip.part001",
+      "gitBlob": "37586accc8a8518290d421c4cd5286951c04b425"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/118-119-120_N_M/Itens118_119_120_Masculino_NORTH_QuatroTrajes_Editavel.zip.part002",
+      "gitBlob": "34e6ef2ad711056ec2bd4756185cfe653f849810"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/118-119-120_N_M/Itens118_119_120_Masculino_NORTH_QuatroTrajes_Editavel.zip.part003",
+      "gitBlob": "5f7c023b39cf85d5ef775b06f69f1f511474c23b"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/121_EW_M/Cetro121_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+      "gitBlob": "2a0aff381656f272b61b0f82b0fc4c205191952e"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/121_EW_M/Cetro121_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+      "gitBlob": "c6c1cd308f79989f7af481c1a02081d75bb472fd"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/121_N_M/Cetro121_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+      "gitBlob": "c1a0248440ef002a0dc9cbf76615240c9b19a104"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/121_N_M/Cetro121_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+      "gitBlob": "2be272502189b21a90b09b1f77893fdfd312e59c"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/121_N_M/Cetro121_Masculino_NORTH_4Trajes_Editavel.zip.part003",
+      "gitBlob": "a389d0380c70308d1fbd1580f34c3eb7432db8cd"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/123_EW_M/Cetro123_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+      "gitBlob": "bb14ec0fd500db8025ce338fc8226104c803fdd1"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/123_EW_M/Cetro123_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+      "gitBlob": "5fea82709ba3fe3dcc9f352c16d446a3cdbbe5f2"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/123_N_M/Cetro123_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+      "gitBlob": "12bb61b22856ba5c9d7d7b8ee0bc2124e025286a"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/123_N_M/Cetro123_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+      "gitBlob": "158cf264bcee839e08b2f4af5ec2b2d1511a4ab3"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/123_N_M/Cetro123_Masculino_NORTH_4Trajes_Editavel.zip.part003",
+      "gitBlob": "0b1a362af7ab45f6c1e7a57b0fa421aba5ab3a85"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/124_EW_M/Cajado124_Masculino_EW_QuatroTrajes_Editavel.zip",
+      "gitBlob": "978437d7dea85051d9e7a9bc616f8e8533fb880c"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/124_N_M151-158-165/Cajado124_Masculino_NORTH_Trajes151_158_165_Editavel.zip.part001",
+      "gitBlob": "4a5a3084784317485e71027392aec3030f631ac4"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/124_N_M151-158-165/Cajado124_Masculino_NORTH_Trajes151_158_165_Editavel.zip.part002",
+      "gitBlob": "0a7dea8b04ea78eb2269fa8d0a1bc607b5e8bf53"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/124_N_M179/Cajado124_Masculino_NORTH_Traje179_Editavel.zip",
+      "gitBlob": "707f18bef96361a8e20fe528fc75515bdf44c179"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/125_EW_M/Cajado125_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+      "gitBlob": "59ab60e26658dc954715c8e5d75365c0f2cbf31b"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/125_EW_M/Cajado125_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+      "gitBlob": "38b2929ba31c8ec6d49e2dfe4fc1025fd92ad349"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/125_N_M/Cajado125_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+      "gitBlob": "5868cf0682c8636ba32c99835aa3e9694fc44601"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/125_N_M/Cajado125_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+      "gitBlob": "5d67e10af3cbaa0a87240b1c322db33173cac144"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/126_EW_M/Cajado126_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+      "gitBlob": "5a7992c54d7e13c5894fffba2cb47a83c6bd931d"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/126_EW_M/Cajado126_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+      "gitBlob": "b66f5a4d4504c765ab2686c440f441f56af829af"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/126_N_M/Cajado126_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+      "gitBlob": "8ffcb5402f31f76fa6d988a10a97780096d8b22b"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/126_N_M/Cajado126_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+      "gitBlob": "7a8312e754cca833d3da331f080713e3bbed0590"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/126_N_M/Cajado126_Masculino_NORTH_4Trajes_Editavel.zip.part003",
+      "gitBlob": "994c8fa9d8b95d43fa4e972a0a87a383d4e80ccc"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/127_EW_M/Cajado127_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+      "gitBlob": "257a2c90d46c268a8543f0219a99a483709f244a"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/127_EW_M/Cajado127_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+      "gitBlob": "58658411bc2a9ba03a98203572c2dce464e254af"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/127_N_M/Cajado127_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+      "gitBlob": "3081799f34270be9c1c722995b142e8a8e27567d"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/127_N_M/Cajado127_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+      "gitBlob": "6cc3f9c2173bbb5809eca061e7fa5b0ef6a53342"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/127_N_M/Cajado127_Masculino_NORTH_4Trajes_Editavel.zip.part003",
+      "gitBlob": "b038aec399ba0fef24cad4a4eb60b19c674e02a3"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/128_EW_M/Cajado128_Masculino_EW_QuatroTrajes_Editavel.zip",
+      "gitBlob": "8af33f79eef085fbd79b7d04f8591eb7bdb58a87"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/14_N_M151-158-179/Manopla14_NORTH_M151_M158_M179_Editavel.zip",
+      "gitBlob": "a40c108e89d2eb75e262d160799d9b3ac959bb13"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/14_N_M165/Manopla14_NORTH_M165_Final_Editavel.zip",
+      "gitBlob": "7b1d02209c36d36f600b500f4422061691036326"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/16_EW_M/Compasso16_Masculino_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+      "gitBlob": "09ee956e2a466ba7612e5d0ea0749db171c10d2f"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/16_EW_M/Compasso16_Masculino_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+      "gitBlob": "d52b13bb74cbcd917b73aacc5dc4a6c8d5f89a82"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/16_N_M/Compasso16_Masculino_NORTH_QuatroTrajes_Editavel.zip",
+      "gitBlob": "03d115c1ea4fdb203b6e35fb28ca2ba9a598fe30"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/2-3-110_N_M/Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip.part001",
+      "gitBlob": "7aabf6aa83f13214bc87a06594760b519859d639"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/2-3-110_N_M/Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip.part002",
+      "gitBlob": "c3f6f409aa565ad439ca9121472bcbc9ea6d1e0c"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/2-3-110_N_M/Manoplas2_3_110_NORTH_Quatro_Trajes_Editavel.zip.part003",
+      "gitBlob": "682bb80c889cf420f47059c82de71deb9ee65b15"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/2-3-14-110_EW_M/Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part001",
+      "gitBlob": "8e57170070166560551193776c7e584211a22aaf"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/2-3-14-110_EW_M/Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part002",
+      "gitBlob": "2f3c28b8daf8a0d20fe9b6296b5e82f73c91a64c"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/2-3-14-110_EW_M/Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part003",
+      "gitBlob": "ce36237c19e38cbfc7b6b6d7effda2182aa53a96"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/2-3-14-110_EW_M/Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part004",
+      "gitBlob": "dcb01e5e5a1a1e6821e96cfcd1b4fd4752045529"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/2-3-14-110_EW_M/Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part005",
+      "gitBlob": "740e159bb7aee680df0f5c8f560ef7019fae471c"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/2-3-14-110_EW_M/Manoplas2_3_14_110_Masculino_Quatro_Trajes_EW_Editavel.zip.part006",
+      "gitBlob": "6c414135357bf2b8cec6fb539551064023b5caa8"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/31_EW_M/Cajado31_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+      "gitBlob": "55f52e2a2cf7f37ea44428393a96508b6c40e74c"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/31_EW_M/Cajado31_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+      "gitBlob": "57993159747b402da30e4e2355de1d42c4e1c0fd"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/31_N_M/Cajado31_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+      "gitBlob": "1c7236f94d2d0c84e2f96b3d6c38c10ba14508fa"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/31_N_M/Cajado31_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+      "gitBlob": "0256b02ac9b6c113e6c2014e80bf16e9237c0d13"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/32_EW_M/Relicario32_Masculino_EAST_WEST_4Trajes_Editavel.zip.part001",
+      "gitBlob": "2e45a3e9913107f10ec53f1156f33ff8e7fed65d"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/32_EW_M/Relicario32_Masculino_EAST_WEST_4Trajes_Editavel.zip.part002",
+      "gitBlob": "be6cbaebb03f352b2bf0ef8d56f6e35434bd09ac"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/32_N_M/Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part001",
+      "gitBlob": "7e914f1e1ffb2c814793cbeaf790d88cbbd540ad"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/32_N_M/Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part002",
+      "gitBlob": "6e1ab041b280ca8edb318abe3601c5337614a048"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/32_N_M/Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part003",
+      "gitBlob": "e16751466342b4b41c5ca69314a8dd13f1cc78c4"
+    },
+    {
+      "path": "art-approved/weapons/clothing-batch-20261112/32_N_M/Relicario32_Masculino_NORTH_4Trajes_Editavel.zip.part004",
+      "gitBlob": "c5779e21a40855abce02c9533ba3677aad405cd0"
+    },
+    {
+      "path": "art-approved/weapons/daggers12-13-71-74-north-presented-approved/12-13-71-74_NORTH_M_PRESENTED/Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip.part001",
+      "gitBlob": "cee08a902ac1852dc22a5fcf3681dc1da832303d"
+    },
+    {
+      "path": "art-approved/weapons/daggers12-13-71-74-north-presented-approved/12-13-71-74_NORTH_M_PRESENTED/Adagas_12_13_71_74_NORTH_Editavel_Candidata.zip.part002",
+      "gitBlob": "52a9dd5497091f28a40df1aedf3695896c238f5f"
+    },
+    {
+      "path": "art-approved/weapons/lateral-four-torsos-approved/male119_east-west_four-torsos_approved-v1.zip",
+      "gitBlob": "810a869130ffbf269eb1bcbf99d778df18ac455e"
+    },
+    {
+      "path": "art-approved/weapons/m113-four-outfits-south/male113_south_M172_M158v3_M165v3_M179_head157_approved.zip",
+      "gitBlob": "52c540b61375098acc94caf808ca0f844d676b0d"
+    },
+    {
+      "path": "art-approved/weapons/m113-m151-equipped-south/INDEX.json",
+      "gitBlob": "f9b56c9f25916c4e03a0b7fc1db6421f8512f057"
+    },
+    {
+      "path": "art-approved/weapons/m113-m151-equipped-south/male113_south_M151_head157_equipped-approved-v1.zip",
+      "gitBlob": "ff3557be2fcae2a216b78911bee4f07c36806c3d"
+    },
+    {
+      "path": "art-approved/weapons/m151-equipped-approved/INDEX.json",
+      "gitBlob": "956f1527f99a24a854a47c941dd6675933fdba85"
+    },
+    {
+      "path": "art-approved/weapons/m151-equipped-approved/male116_south_M151_head157_equipped-approved-v1.zip",
+      "gitBlob": "78038dfae9612bba0072705e8c70c8b914a01b3c"
+    },
+    {
+      "path": "art-approved/weapons/m151-equipped-approved/male151_north_3keys_approved-reuse-v1.zip",
+      "gitBlob": "afad9f3ad5123b3dd7c9988b4a89ed2d5c3f5c06"
+    },
+    {
+      "path": "art-approved/weapons/m158-equipped-south-v3/INDEX.json",
+      "gitBlob": "7ea7c8a1e46cd09d64b17eb377d8b10837a384d5"
+    },
+    {
+      "path": "art-approved/weapons/m158-equipped-south-v3/male116_south_M158_head157_equipped-approved-v3.zip",
+      "gitBlob": "f2e5f7e9387e521d0ad723d4c5b9fd98dff81996"
+    },
+    {
+      "path": "art-approved/weapons/m165-172-179-equipped-south/INDEX.json",
+      "gitBlob": "6136f9255bca832dbca4ecb84eb8061b6e99fa6c"
+    },
+    {
+      "path": "art-approved/weapons/m165-172-179-equipped-south/male116_south_M165_head157_equipped-approved-v3.zip",
+      "gitBlob": "5b1e8f6cae56a75ee069644500d892f3e074dd85"
+    },
+    {
+      "path": "art-approved/weapons/m165-172-179-equipped-south/male116_south_M172_head157_equipped-approved-v1.zip",
+      "gitBlob": "adede683954fcc674b491c361470195b873c8201"
+    },
+    {
+      "path": "art-approved/weapons/m165-172-179-equipped-south/male116_south_M179_head157_equipped-approved-v1.zip",
+      "gitBlob": "c03149dff61d8d41cc8c03ceea8851d6668db140"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/METADATA.json",
+      "gitBlob": "02743e2945a7b8b7fa575103111e71ae4ab4f42b"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/MANIFEST.json",
+      "gitBlob": "fe61cf279e825d946b3b53717e35d629185a5c6f"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part000",
+      "gitBlob": "172c9a95ef9cf9f181a6bc9c9f969f85ea966648"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part001",
+      "gitBlob": "121ce8f1f45e5a43db900610cefa1de32e7b630c"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part002",
+      "gitBlob": "efd0c422ced8d99ac038d616d8702ffcdbea73e5"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part003",
+      "gitBlob": "ff6b6e4e94a7044a0b5358288d34d6df0bd60499"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part004",
+      "gitBlob": "6f2c728b84026840b3b6bfc3758393297e1242c0"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part005",
+      "gitBlob": "72d6f7c61a80d528bdb7f89bdcb70a0bbec548ab"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part006",
+      "gitBlob": "b8bee747191efd0e5a1a931a382902f771a39045"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part007",
+      "gitBlob": "e1143cb736f650cf02eb69c61d629f7fbecb7c20"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part008",
+      "gitBlob": "6a318c6edeb85670e64af93ed9b7ec0d9e2ac6a3"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part009",
+      "gitBlob": "14c05f1b6d17ec34422240d1b45987021d55724e"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part010",
+      "gitBlob": "e7a298c99a8e19f30bf2758921d6c0a97f500e8a"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part011",
+      "gitBlob": "710f5f5a5d944eeaee71e835b66a0126a39d6438"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part012",
+      "gitBlob": "32957c7b270eebfb445d4be67f6d49ac11b74414"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part013",
+      "gitBlob": "e6c830061aaa214e1cc3c3a30452dece36393fc8"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part014",
+      "gitBlob": "cab472c69f66bb1078a855f8838309e6c035b1f9"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part015",
+      "gitBlob": "981946584c6ba3f0f23c549f1a2bf3d350fc55b2"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part016",
+      "gitBlob": "3a65aa72b2eec8307989235435de6fcd6ce7eb86"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part017",
+      "gitBlob": "616102ce7e38cd491ba15e8d568f7d9c0093da20"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part018",
+      "gitBlob": "ad2afe4245f356ae093d1160874e70d07de53081"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part019",
+      "gitBlob": "2300df1a4636abd344efc4c39dd8644452a970fc"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part020",
+      "gitBlob": "c845cfe05bd70a80b2cc887a205cd5fa86647559"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part021",
+      "gitBlob": "e12f5bfa40c588ef14f79b7ffed805a0e8ff06f9"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part022",
+      "gitBlob": "a8c12fef570e21c3b565bfc74b15920665a3a91a"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part023",
+      "gitBlob": "046143cf410738bda613f92e78671a51d4c6a507"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part024",
+      "gitBlob": "9f0190be4a2b1a4dd09704897f8e70f6a6f8d25c"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part025",
+      "gitBlob": "edb5ebaf405b5fe3d833a0ecf73375134ae53781"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part026",
+      "gitBlob": "a58c8397ec130869551dfed4933c0865edfef3a0"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part027",
+      "gitBlob": "65972ca9a347597679f3debb588c898e1d1397f4"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part028",
+      "gitBlob": "4409bac2504410ae39f49a6a7371aad3c50b33d3"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part029",
+      "gitBlob": "65dd2f63b676aed33e2d60a7d4df84384c1e1002"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part030",
+      "gitBlob": "d44208dae1576857fa8b4e0991811b5ffbd377ca"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part031",
+      "gitBlob": "3c4f7a09fd9ad063f901ae67f2459de0884690d1"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part032",
+      "gitBlob": "bad7699df8e6ea8c77c9d0e24f1e9cbd0214d95a"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part033",
+      "gitBlob": "a93397f7b4128765a80bc65b2d17ad2dfefb23aa"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part034",
+      "gitBlob": "c37d8fe6d800cea09aecba09a8b5383fd91b5016"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part035",
+      "gitBlob": "d848cfd02117bb86e4607e9f2163ddf330c11c7f"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part036",
+      "gitBlob": "5a98785a3ed47816e1361e5ff9833fc71ce75ba8"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part037",
+      "gitBlob": "a08741c44aec0725c156ae0b08b1fc32c214f1d7"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part038",
+      "gitBlob": "16e42cdc54a0d59bd74c03210a0afe9c68dd3691"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part039",
+      "gitBlob": "5c0db66fd32ae5cce727578668b3e5a0be79c332"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part040",
+      "gitBlob": "0683e269a9c83728e4b9d42833830d38eecc8ebb"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part041",
+      "gitBlob": "1936f5c9e9f6c7895e0aa51337bd58f80ff99cda"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part042",
+      "gitBlob": "20619fa883f4c88905f972e6c859c8d7abaa69af"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part043",
+      "gitBlob": "c9c93134c1d7194b8312f8c3581dcfd2eae6c8c6"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part044",
+      "gitBlob": "2afa6b1e7eecfc4a7afc29fd322b6d5f9bb6e98e"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part045",
+      "gitBlob": "3f1fe7e77f49d6a4de837420df80dd8771bd709b"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part046",
+      "gitBlob": "86114ea4df2c06cd265c60de3f800cbe3a58683b"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part047",
+      "gitBlob": "49b81a7e58694cbf535d29f78920acf43198fad2"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part048",
+      "gitBlob": "81f165d97204dec5715a0f0744eb2ce86ed4f6ee"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part049",
+      "gitBlob": "e986b43d1e230a3943d4e8473713ead79c8022c6"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part050",
+      "gitBlob": "4a1ff13ce7f95b73760e515763344d5775318808"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part051",
+      "gitBlob": "eec7973e8dbfd225b30f6ecc8e5628f05eb73373"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part052",
+      "gitBlob": "9bda16f1f4ebaf4df85443791e6281911a54b276"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part053",
+      "gitBlob": "ee578c4f93ab80f37c4ae965f6f1525696f85bb9"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part054",
+      "gitBlob": "7e443d83f2fa09d88600e84b9a74ff29213facc5"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part055",
+      "gitBlob": "f7f2e97fa6b9f7b6cf7e20948a8fb157e7506bb9"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part056",
+      "gitBlob": "991ee55a1225c39eb6773f54caa280e70917f6b1"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part057",
+      "gitBlob": "645b97b512755c68651fe15523fb3a791458f4b1"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part058",
+      "gitBlob": "2e1d072638cc5817abfddef6cf442b6757fdd3f5"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part059",
+      "gitBlob": "add4de641bb67e998d714724839693f325a54c62"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part060",
+      "gitBlob": "649b1bb6dc5f0871c7788bb011c1a502ae93bb06"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part061",
+      "gitBlob": "62f2bc9a6dc5a2e0483e18b9e156761ad4b5ce9a"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part062",
+      "gitBlob": "3064bda24b0958c51b4009a9b3f8b2a172b9cbaa"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part063",
+      "gitBlob": "83cb07be83e075515d6f96c95d7976bf1896a2ba"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part064",
+      "gitBlob": "fe47201d980e9fa87b6c989ae853069530c1e6af"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part065",
+      "gitBlob": "03c7d9b3d325892b031ddbf9813f88844975ae85"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part066",
+      "gitBlob": "ab7aa9e2dde1f26dbecbb344078aacd626ed4a2e"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part067",
+      "gitBlob": "28687ae6d28b1aacad3b6b764bf3d5f17afa610d"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part068",
+      "gitBlob": "9aff40985883c25b91fb85c93457b08fea46a55d"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part069",
+      "gitBlob": "c2849316607db087383261b649d56e52c86817a1"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part070",
+      "gitBlob": "bdc4e762725d9378edcd85594b7174933301a5f3"
+    },
+    {
+      "path": "art-approved/weapons/male-daggers12-13-71-74-four-torsos-ew-v2/parts/archive.part071",
+      "gitBlob": "76e98ba26176ca1b590401edced3e455bf0e8a86"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/METADATA.json",
+      "gitBlob": "04fd2009ccfaf14c519509b6797dd1bc40069dd7"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/MANIFEST.json",
+      "gitBlob": "8cf1ebaaa4555453cd81cd3152fc5fd902c11fd8"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part000",
+      "gitBlob": "97d472a63b136098d33b09033461fbe507923100"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part001",
+      "gitBlob": "786206118baf2216a4d99675a5c7f5a8968573d0"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part002",
+      "gitBlob": "86f90ef1c70de1501121a1a8997f16d24986f515"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part003",
+      "gitBlob": "cb5f543740d80111c48318a449886b2c2895f9cc"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part004",
+      "gitBlob": "0052696d9dd4063b0316d92cb2e1b7f8f6f471bf"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part005",
+      "gitBlob": "6ffb389b7fa48c67eb1d10226333dfb715c199b2"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part006",
+      "gitBlob": "6c6d32fa3eba51cc085107e5300e880e68048d97"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part007",
+      "gitBlob": "6e66ac9ab3408456ab958801d9a9ee5b632962cb"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part008",
+      "gitBlob": "ec5b5998b81ee6d0643df9c7e42e8a97bdc9153a"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part009",
+      "gitBlob": "bfeefb46c42c8c7c26a37353d631e3593b7abe6d"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part010",
+      "gitBlob": "a0626307f48be9947f29a4d1085c6c8ae93523f8"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part011",
+      "gitBlob": "5c78dae4f1ea4179fd7e87c1b8bafe9bff8001d6"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part012",
+      "gitBlob": "48a2c580424044047342dd7678d6fdbf622bbb6d"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part013",
+      "gitBlob": "e28c0a4e9c9885d1be430e854c481faafd033a30"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part014",
+      "gitBlob": "b24b10c9726cfefb6c559fd9475235289dc25d58"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part015",
+      "gitBlob": "c2073d4e32267c50bb809afa19c1ea5959e1d2d6"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part016",
+      "gitBlob": "e054ca1f2ca3ff3c9342f497ca4bdca0d35ebce2"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part017",
+      "gitBlob": "610c6a425e089781bc1eca80c3d2f986e869555a"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part018",
+      "gitBlob": "9ae79cc644cd0facc61594b2ca1327f81b55ddb3"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part019",
+      "gitBlob": "322c989f6f0351dfbabbf36420ee5a047896d071"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part020",
+      "gitBlob": "e2d588c4f70b2915eee153496d68711458ef3444"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part021",
+      "gitBlob": "738d3a1ec040ea51b630be50ca61f7ca5ce6f24a"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part022",
+      "gitBlob": "e7d45dcaadad15adfaa5c753b0d347c1fb780fd5"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part023",
+      "gitBlob": "b66432345e9f76543ca791f6025ad729bc3b67b1"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part024",
+      "gitBlob": "b1a7420cc9fcdbed045c0eefcf80089f7aa8f914"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-four-torsos-ew/parts/archive.part025",
+      "gitBlob": "27ec87debef258cbfbd1b6033ca410ac33784016"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/METADATA.json",
+      "gitBlob": "f0c03123486d8797ea1cf4b96cd70bd376b770ba"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/MANIFEST.json",
+      "gitBlob": "3fe5985b64da6ae913b532c9babd1e5778964d78"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part000",
+      "gitBlob": "f1e32b104f6622951ff842428a4c061df109f3b1"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part001",
+      "gitBlob": "46212637614d81dc848247807c3696756353221f"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part002",
+      "gitBlob": "0bb6c4fa2fb3c9cdcb423cbd536a36e205fd73fe"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part003",
+      "gitBlob": "4296333c0ccba0264d7cce1ed7dec891b89bd322"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part004",
+      "gitBlob": "6721b7fd98e0d9b816d37a3844fa2e663c6f866b"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part005",
+      "gitBlob": "8165c5c90c6325e29da3f54824ddbfa3340a4822"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part006",
+      "gitBlob": "538e67551b0405a5cbd28b26e1d625e0808ec236"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part007",
+      "gitBlob": "c67e2f02130f6cb4091762a842e23f1af887a7ae"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part008",
+      "gitBlob": "0d1e0dbb3ce8cdaad518af58e77a8841dd0a9318"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part009",
+      "gitBlob": "df4e13b11eca0099234251287383827ef4f1b51a"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part010",
+      "gitBlob": "27e8d562001aaada4766b1e8a3e8570443d400ad"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part011",
+      "gitBlob": "2d611ee40aca4d7b1e8469aa156d64d716507c99"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part012",
+      "gitBlob": "73fb616666f20b216f5e04c90aaac913109ba92f"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part013",
+      "gitBlob": "08f29cc1d9caf700289696a986f31e3b3d4d443b"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part014",
+      "gitBlob": "e4b6fc195cf8e9031c54c70f6e1621f9335f4f13"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part015",
+      "gitBlob": "4ec6fa9f9f07fe03c20c7bad7da27b3b26011fdd"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part016",
+      "gitBlob": "672222f7148c1fa08575f7c84bd3dcd26703d1c0"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-three-torsos/parts/archive.part017",
+      "gitBlob": "bfdc6dedea03ffee8146315c1566460cf4539666"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-torso165/METADATA.json",
+      "gitBlob": "8a8ac6e4a9f606b886aa79eda4f4930c33c6ccc0"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-torso165/parts/MANIFEST.json",
+      "gitBlob": "a686fe49095f991e619b3804b66922ce1b1e7e1e"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-torso165/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-torso165/parts/archive.part000",
+      "gitBlob": "2d823d05c5c85f8f45815312ecf8e3af6414e713"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-torso165/parts/archive.part001",
+      "gitBlob": "06bc4f465b4f939890a2ffb9477a985555adf89f"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-torso165/parts/archive.part002",
+      "gitBlob": "a8f2ea81bc5650b94b486da1be58baf3bb87d46c"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-torso165/parts/archive.part003",
+      "gitBlob": "123be75338400cd6212e41688af8014cc015da46"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-torso165/parts/archive.part004",
+      "gitBlob": "4b358eddbbb5bf2f5ff3eb21bd956f490399a00a"
+    },
+    {
+      "path": "art-approved/weapons/male1-68-north-torso165/parts/archive.part005",
+      "gitBlob": "dedcf2275cef3619d983f473a8c6c4f45fad7b3c"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/METADATA.json",
+      "gitBlob": "eb99b6291601a5160236dd8dfa14da3c8b91c696"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/parts/MANIFEST.json",
+      "gitBlob": "af69c2b692a588a8aece2bbac1fac3b79d372543"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/parts/archive.part000",
+      "gitBlob": "5c1e65e8c9409fe16b582a7e887b7eb92e0973e1"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/parts/archive.part001",
+      "gitBlob": "8f4b2f32e98ba6a8edef50815450e7220e832ffa"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/parts/archive.part002",
+      "gitBlob": "5c700380bf0ace5570851872ecca58f00031fe20"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/parts/archive.part003",
+      "gitBlob": "12a449c836de7343f720676de73c08a03d101338"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/parts/archive.part004",
+      "gitBlob": "8fe1aaf46227fbf124cf76b8edb4a2ba4bfb983d"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/parts/archive.part005",
+      "gitBlob": "0f51f546ad59c22b7a307bc3da3742d128ca1f14"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/parts/archive.part006",
+      "gitBlob": "266cb16871906656ed93d026621f7194d8b09b0e"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/parts/archive.part007",
+      "gitBlob": "6ac1eab78de92f4d09e37b2f2a530ffd8728db32"
+    },
+    {
+      "path": "art-approved/weapons/male111-four-torsos-ew-v3/parts/archive.part008",
+      "gitBlob": "62228b926b4a3cb403877b6313876cd9dcb9fdf3"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/METADATA.json",
+      "gitBlob": "d646882ca48904881c4a0adfcc79261e53d4e1d9"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/MANIFEST.json",
+      "gitBlob": "c373ed9b4a20d00429bdf2451c030de99750dc25"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/archive.part000",
+      "gitBlob": "67670b1527bb8952cbcba81afc6abd35b707088c"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/archive.part001",
+      "gitBlob": "5d78d3dd0ce5baa47cf2b838b7d1975f609de10b"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/archive.part002",
+      "gitBlob": "8dc77301865a9f3c7026bbcce2c65aa3461d98d0"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/archive.part003",
+      "gitBlob": "dbeb560e24e31a8e97a3d0a0dd203b9c24a9a3b8"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/archive.part004",
+      "gitBlob": "90fc239215703503887e396dfbb29a9f2e9d96b0"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/archive.part005",
+      "gitBlob": "78fd1068a1d24ef1e94775f83a523469c4b89676"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/archive.part006",
+      "gitBlob": "4f897ac1b0bbb3e626c5926489796b317a6edd47"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/archive.part007",
+      "gitBlob": "9ca67829bdb8d11b20e36aa88c0786944ce4a8c9"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/archive.part008",
+      "gitBlob": "02c7387586cf204bf82e5802ed155b10e692b9c2"
+    },
+    {
+      "path": "art-approved/weapons/male111-north-four-torsos-v2/parts/archive.part009",
+      "gitBlob": "549dd04a0a479f961c2a27a8be36291ab20b195b"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/METADATA.json",
+      "gitBlob": "3d0a47187b913bfc543290767d84e8e88f1d6c56"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/parts/MANIFEST.json",
+      "gitBlob": "392a4654936d4aa6a688967d56e0e61800f94bd9"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/parts/archive.part000",
+      "gitBlob": "f52c00b7a5acc7c762d630a32eaca74035522dde"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/parts/archive.part001",
+      "gitBlob": "5c3d8afa5dc3e8ec649708f500dc8f50f8cc5489"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/parts/archive.part002",
+      "gitBlob": "46cb8675f04f96356564d15988263e0b4e7df895"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/parts/archive.part003",
+      "gitBlob": "914bd43cd574880c3293495953709022fd519122"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/parts/archive.part004",
+      "gitBlob": "0b3f0761fc632905b85a4feaf0a2330fd690021c"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/parts/archive.part005",
+      "gitBlob": "cbac781150db7a4939ec4d001889e889baf00a27"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/parts/archive.part006",
+      "gitBlob": "9b3bfcbe12e8187b9c3471b43522a8cdfe4dc5f0"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/parts/archive.part007",
+      "gitBlob": "7772f446da20ed461621a097ad5e50ea90ff5bd8"
+    },
+    {
+      "path": "art-approved/weapons/male112-four-torsos-ew/parts/archive.part008",
+      "gitBlob": "7f042c9f679e2f7cf9205f93441b9614065f4097"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/METADATA.json",
+      "gitBlob": "7bcd667515f8435dbb128360194115116a66a099"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/MANIFEST.json",
+      "gitBlob": "2f8d18f2f5cce68ba1676ba38f669d0fa6652bd1"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part000",
+      "gitBlob": "8ab7469356cdc9f61c0d0ff6503c9ab282b6749a"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part001",
+      "gitBlob": "ee5a63007221abaf774fe6256141e1fa3a4c0dc4"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part002",
+      "gitBlob": "93175ce446c1f798381a070cdda89bd83089e2c1"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part003",
+      "gitBlob": "b9c42093072939d263a76cfccab982c1c302236e"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part004",
+      "gitBlob": "7590cdfa26181076d688744252a895329e32c978"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part005",
+      "gitBlob": "3862156257fe56a9d93e83ddddd1866219fa2831"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part006",
+      "gitBlob": "9164a2da23bf83b9b137ed3efeb0f11ac3f0f796"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part007",
+      "gitBlob": "6cb63ccf28f0bdf35b58b0f3a64322090bba6d31"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part008",
+      "gitBlob": "91eaa92d8b3f3071b0cff6b73adc9249c1354114"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part009",
+      "gitBlob": "5bc7d465a80c3509588e9f08b08254100b743ba2"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part010",
+      "gitBlob": "0783e4f89ac1acd7ad6d74801e1ac8a6102da12a"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part011",
+      "gitBlob": "7f071577e72e85adbc7f30c3835cd030bb364795"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part012",
+      "gitBlob": "22bb08809f36b7c4f9f1792bac77d5f3992b71b4"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part013",
+      "gitBlob": "80567ed8cb835afb16e6e2053d4ae964153723d1"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part014",
+      "gitBlob": "a4afacd95349a19e6cde56b6faf70d9212902764"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part015",
+      "gitBlob": "63748737580e4a8b86d41731178e0a2dac0fda53"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part016",
+      "gitBlob": "b9e4b6863e97ee8d19ebaad639785cf39b774a33"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part017",
+      "gitBlob": "56f8295bf2872dcc65a2e86a9a8fa3da4bcd454d"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part018",
+      "gitBlob": "733200df602e962aa3a6be4270a2dde388c0c0a2"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part019",
+      "gitBlob": "bafe5fedbed6832c15a8f94e9360d546f54a664b"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part020",
+      "gitBlob": "2ea54866ad3257ad867cc03f16918e64797cf2d5"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part021",
+      "gitBlob": "a14e31f9dd477d1dc7c83eac94465f95faaf2b12"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part022",
+      "gitBlob": "e4941d644131ebabdcb13c69cb6cbd423bcb714a"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part023",
+      "gitBlob": "998c8db25905843673bf1928e3912219e9e9b0ca"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part024",
+      "gitBlob": "e974b196ca971be2fc333d9bce1195890c985319"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part025",
+      "gitBlob": "24951bc5e749e0579c637757b293abbc845650c5"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part026",
+      "gitBlob": "08b3182e486aeac873d7b653de6ec76174d0e4cd"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part027",
+      "gitBlob": "7f579462287825902923be57db01c871e2419f4e"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part028",
+      "gitBlob": "938f265fd456c465dec2deefe03cb650929dd016"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part029",
+      "gitBlob": "32bce5e75de15725f4591597fe1b1d453c7b4bbf"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part030",
+      "gitBlob": "622faf447b1de3cd169665ac39be0415b01cc882"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part031",
+      "gitBlob": "1d2c11b3b10531e6c165ce9a4b57ea763e139c46"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part032",
+      "gitBlob": "4a1bda61cdcb5cbef7940d0387e242502ca3d377"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part033",
+      "gitBlob": "e0af67c0d35f11ecdfaf94e4b5b33b5556a3b580"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part034",
+      "gitBlob": "1eccd22a3e566419c2d89e9e36d10a685f484331"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part035",
+      "gitBlob": "0f502c42b718d2b06907dde967db798b4213e672"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part036",
+      "gitBlob": "2b0216d6767fa43fe04439e944d843acb77c6919"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part037",
+      "gitBlob": "f777c0f0c7d8b77dc195b03e24f0983c47776858"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part038",
+      "gitBlob": "8359c976736fdefdb5a72ca142e43e72089edca0"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part039",
+      "gitBlob": "f20c855b770bc2f967cce6f85e3fc383e262e4c7"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part040",
+      "gitBlob": "6c0178310c9111208dc13ae8afa95d074db30a6f"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part041",
+      "gitBlob": "acf5c49f46f16271a539675e349ee8778c209a54"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part042",
+      "gitBlob": "cb0cd151b39d2fe33d5b5a2f300513360df88f56"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part043",
+      "gitBlob": "a03c1459f2d6b50c76623ecf29a9cc55625c6712"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part044",
+      "gitBlob": "712cdf2debc83d441c038a8aee17663c1d9e4ef7"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part045",
+      "gitBlob": "f8b42ba1363befde82b62e38a9c68541f0789922"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part046",
+      "gitBlob": "8b39e6a6d610401c54cea2bcc6f1643bdd944b44"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part047",
+      "gitBlob": "e0cda78d366fe8f06ea781e0c847f632cb0c79ff"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part048",
+      "gitBlob": "4eca166e294cc930c14bff8e592307ebbb4a09e2"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part049",
+      "gitBlob": "ad1bdf37fad308591cf5868b17824bc3bac4cf83"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part050",
+      "gitBlob": "06fff1ce32f9b49e8f7686685ac2c02a04ccf3c0"
+    },
+    {
+      "path": "art-approved/weapons/male113116-four-torsos-ew-v2/parts/archive.part051",
+      "gitBlob": "2c6746a477078e7bb773fd26b73ac6ac7848ada6"
+    },
+    {
+      "path": "art-approved/weapons/male116-north-three-keys/METADATA.json",
+      "gitBlob": "002e9785ae9ca563a1cc9578f9e507a65a4e2d60"
+    },
+    {
+      "path": "art-approved/weapons/male116-north-three-keys/parts/MANIFEST.json",
+      "gitBlob": "91f58cd6bcc25bd1bf875ab069614f49d4d63f7c"
+    },
+    {
+      "path": "art-approved/weapons/male116-north-three-keys/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male116-north-three-keys/parts/archive.part000",
+      "gitBlob": "f10ede08becebea2531bfb7ef9046d3c3a0b718e"
+    },
+    {
+      "path": "art-approved/weapons/male116-north-three-keys/parts/archive.part001",
+      "gitBlob": "4942fb9e4703fb11c70f38ce5bf64cb35eb5735c"
+    },
+    {
+      "path": "art-approved/weapons/male116-north-three-keys/parts/archive.part002",
+      "gitBlob": "06b40e64eab6978e2c4e35ab0deb1572c23f0fa1"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/METADATA.json",
+      "gitBlob": "df139da58595755f1e734f4fe8ea9423e4b228ad"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/MANIFEST.json",
+      "gitBlob": "95782dd2bf9fd30220eb82cca81c22d0f2bd4f7f"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/archive.part000",
+      "gitBlob": "aaa0a6af1a87c5bbfd4dbe20af93f2ca2d98e4e0"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/archive.part001",
+      "gitBlob": "f6729d675636e5169f9779d562adb9072911cd7b"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/archive.part002",
+      "gitBlob": "65c6a05e91c6975b6900d9b166a3026eb5341a74"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/archive.part003",
+      "gitBlob": "fc3800bbb60405ec06e83fac394e41adff962b80"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/archive.part004",
+      "gitBlob": "1391b776f2138bcc9e0f26d0eef9b847e7cb88a7"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/archive.part005",
+      "gitBlob": "dabd9dabfb0b01c7070f9a47aa6f119f3f61398a"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/archive.part006",
+      "gitBlob": "669c990051acdc0dc400e00b1a7a9de03b4e3b2c"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/archive.part007",
+      "gitBlob": "383653049720ace74195150b0a254715dfc4d128"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/archive.part008",
+      "gitBlob": "c6bf3054bfd4a4fae2eef0e72360fc67559087e5"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/archive.part009",
+      "gitBlob": "4f304c33ab34d88dc2e9a5e16df085f9d3a4352b"
+    },
+    {
+      "path": "art-approved/weapons/male118-four-torsos-ew-v2/parts/archive.part010",
+      "gitBlob": "840f65701ce33090eb7deeab476c0bc22b0554b6"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/METADATA.json",
+      "gitBlob": "2e3379c98fe03278f4ef6656b6cf773070eba424"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/MANIFEST.json",
+      "gitBlob": "2249a9ee243b421510c48cf2795c60db3dae0ad3"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/archive.part000",
+      "gitBlob": "d063a49d677465e3b69ac5ff3d416108d5bceba2"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/archive.part001",
+      "gitBlob": "c1acb8606effdd9d0dc841fe375284d6ad561451"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/archive.part002",
+      "gitBlob": "c71c97ee294f888e0df458bfc687955e2f054da5"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/archive.part003",
+      "gitBlob": "d5343fd50fc000319a8fddec7e252c8d7998b1f8"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/archive.part004",
+      "gitBlob": "51b46563d1fd34aa2d7dc05ec894729c6c311b17"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/archive.part005",
+      "gitBlob": "1d106d11c37df187f71f2dee9ad5b46da5783ea6"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/archive.part006",
+      "gitBlob": "2c3dcef9a8176ae0db99c179e096a55c93bdfbb7"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/archive.part007",
+      "gitBlob": "90e69d64c14c8b913789225c416b84abaee4b2f0"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/archive.part008",
+      "gitBlob": "02478c531ea9e57828101ee2763f29587fa2dde9"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/archive.part009",
+      "gitBlob": "5d76d838c6cfc62497b596d642ba0cf608ab89f8"
+    },
+    {
+      "path": "art-approved/weapons/male15-four-torsos-ew/parts/archive.part010",
+      "gitBlob": "82d0030e53d09c8cfad3f2dfa2dc709761b67520"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/METADATA.json",
+      "gitBlob": "69954151b6cdb5379f5ca89891438b840782d6ec"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/MANIFEST.json",
+      "gitBlob": "79088303d31239e185bf65ecdd62be8c4006794e"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part000",
+      "gitBlob": "4515194b3ce15ed9fec58a70e295030fbc114244"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part001",
+      "gitBlob": "882a58d91fa788e965815f34428bd48d45e5a0dc"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part002",
+      "gitBlob": "3b4925c0928d7beec519d09f2a57b8fe62c29fd9"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part003",
+      "gitBlob": "47bf91e081f083040b72da4d0d57b58a239d9f74"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part004",
+      "gitBlob": "0a1d76fecf2f09b5d0f7ce2848384275ee4ed373"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part005",
+      "gitBlob": "7a31cedce25d62762dadf485f7a3fe164d8618c8"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part006",
+      "gitBlob": "c1fcdd422c1655752669fc045cf4534200296c22"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part007",
+      "gitBlob": "7636b4060f08d5444076b757a70eff04c446afb6"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part008",
+      "gitBlob": "b41ccb2bd2a2fc7592f931cae07eae833339fc29"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part009",
+      "gitBlob": "8797c05eb3387b7ee8580abe9d500ab3a8c03034"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part010",
+      "gitBlob": "67e91e06361d2eb856df80d8814ccf4d56aed18e"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part011",
+      "gitBlob": "8b89425f87214e3d65a1adcb8ec060e532a169db"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part012",
+      "gitBlob": "c6cd951ac3ea003524f820054451e0aef61874b3"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part013",
+      "gitBlob": "2e8bc1b03446f40a81a511c12828fc4e5d839edf"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part014",
+      "gitBlob": "fdf6c28ab1205d568d764ab18c050307f6725ec5"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part015",
+      "gitBlob": "3a7c6b9dcfd115bc8212e5ac29e1622ac3ef9c50"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-four-torsos-ew/parts/archive.part016",
+      "gitBlob": "afecbb0f58fb088c1faa32723c559d96a9db2e44"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/METADATA.json",
+      "gitBlob": "b781a7592129343905e6f4080cd23a3ca2efca3a"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/MANIFEST.json",
+      "gitBlob": "b71383bcdbbf7e343bba1f85f8c65bdc2ec1db47"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part000",
+      "gitBlob": "56bddf0553ff48d1cab76ed61055837f8097ba51"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part001",
+      "gitBlob": "d53abae94785321f7f4d4da002d00fa66a960012"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part002",
+      "gitBlob": "22ae9da3b448ce3ee30d3fc6ecc8afd46ce07833"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part003",
+      "gitBlob": "ba5ffa0a3555eb9ef683d3a26dcabb2e05d538d2"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part004",
+      "gitBlob": "fc06d2e09daa924a644265bbb684d40aca7d616c"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part005",
+      "gitBlob": "60dda3a30bb6f4f897fd9468b5bd6463f2dde6f0"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part006",
+      "gitBlob": "134d4284cd908dbc909cc1c475d1a5017c36b32d"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part007",
+      "gitBlob": "a9ec24c5b408f93b1b21c0687e3ba28905ac511c"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part008",
+      "gitBlob": "dc538fe25575bc90809f3159bd4b60ad4bdf92f8"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part009",
+      "gitBlob": "4bfed630d603341a1fcd295c7dcd75067f3191e4"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part010",
+      "gitBlob": "a12fd20e75edcee88fccdbd0d8933bbf319abba0"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part011",
+      "gitBlob": "472aa1e631e6fd99af27c9ff4a293a65be82c83f"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part012",
+      "gitBlob": "d5d5692cb40ebc076388842279bf79120df98b28"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part013",
+      "gitBlob": "f3610000dd0b20a5c7deda934ff6aa25b3ee56ca"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part014",
+      "gitBlob": "a7bb5a4f3914620ff5406b9466919504ec2686d0"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part015",
+      "gitBlob": "251fae180f1412bc3c34d73bc2ba68a8863e78eb"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part016",
+      "gitBlob": "129c1bb49db4eeb1db73d1d73d507d3063583474"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part017",
+      "gitBlob": "07d9bf0169569e2f279518a274626cce608473fa"
+    },
+    {
+      "path": "art-approved/weapons/male17-122-north-four-torsos/parts/archive.part018",
+      "gitBlob": "bd11de40221a469df115f2a1346ff472a4cda450"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/METADATA.json",
+      "gitBlob": "10df741d2aef9205a856c65b7ed75304a85918d7"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/MANIFEST.json",
+      "gitBlob": "286373224781ed2b08817b95a4047dfed4c8ba7e"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part000",
+      "gitBlob": "36e3c2faac48b99fbc12e69c43fc4f00808c8ca2"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part001",
+      "gitBlob": "adbc63f06b15dcc254e76d0985c6e5145e995b52"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part002",
+      "gitBlob": "4855a33515f5b2f31f4d941be7bb552049790ff6"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part003",
+      "gitBlob": "4817d569f3638c196fe9c28cc0b4999dab991357"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part004",
+      "gitBlob": "9e742753d273ccb48807538f0e8b45a3824d09d5"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part005",
+      "gitBlob": "fa2cae053d4d53a3f02d3cc041cf64e5e176f37c"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part006",
+      "gitBlob": "e819e61f2237c3540ea2c3ecfda787f74417dc94"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part007",
+      "gitBlob": "01fc48bc08170965fdfb5df0f409f59ca9d19f20"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part008",
+      "gitBlob": "c00197fbd485b5ff972039146785f74bd65395cf"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part009",
+      "gitBlob": "7688a64556ebfe4efec069d0da9d3908643a4d05"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part010",
+      "gitBlob": "5df8e94bb8312716e09e34c9de02f267c2b704e6"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part011",
+      "gitBlob": "f2b0dc0d42303e877f4324083a28e1b62263ecfd"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part012",
+      "gitBlob": "80dc0c5e2bfaae1de44205e4e00a3b4a7d349a0f"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part013",
+      "gitBlob": "0bd5c32966386836910bc5ea6ff1a487746eb1f1"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part014",
+      "gitBlob": "1e3de869692dd7b4c5f25e35367259d5a32f76db"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part015",
+      "gitBlob": "89ef0c092b0511fc23708ee90fbdf5a068d69631"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part016",
+      "gitBlob": "97ac44b490c80b4e02fae4da2884e2a8342282d4"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part017",
+      "gitBlob": "f37f1d49c53ef276ed0754cd548f5cb6f62a40c8"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part018",
+      "gitBlob": "b0e4850d2f1a42f898309e8b38116f0873929405"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part019",
+      "gitBlob": "a52a0eeebad9a4d124fc11a6a31f1f9afc529a6a"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part020",
+      "gitBlob": "9cbde90a2b75b25668f2a1c9a9998cafb69a469b"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part021",
+      "gitBlob": "c819d0c88a977ef00d49f77df1fe2ef1c2ce0d81"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part022",
+      "gitBlob": "85fdf7f9e789227b25a2d9d49e4762cf37de634b"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part023",
+      "gitBlob": "5389d48478c559e7a65253819b5c07b341a639b0"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part024",
+      "gitBlob": "d360cfef7f08beea1079614faf15d973789dd97b"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part025",
+      "gitBlob": "0fb4949e7864b96a4f58d3cb7115fe8221ba065c"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part026",
+      "gitBlob": "f0e7699d28a295a7c2a5b38df8bd9da921165ca5"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part027",
+      "gitBlob": "b217c0072304eee1e575e1304542cdfd63a4278f"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part028",
+      "gitBlob": "38182955f6a4b94023ec5021e3b1b720f63fea2d"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part029",
+      "gitBlob": "d287a98b39348ccd12cefe19de649ec77c4972e2"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part030",
+      "gitBlob": "da535d9828ae2d3880404dfb6c73ce064849d77f"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part031",
+      "gitBlob": "bca71bcf766d2278cdce7a650a54018d5a7dab15"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part032",
+      "gitBlob": "f24ed9ec471d650b52723761bc6516dd6584d2a7"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part033",
+      "gitBlob": "5cd6ebf15306b1bc6fc5c66d450c4c502e2965e2"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part034",
+      "gitBlob": "8662031026b1e55e2caaff98872077bee89f4d00"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part035",
+      "gitBlob": "4afcd0d8cdc3a82aae8b1ee13051a3c443fcac73"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part036",
+      "gitBlob": "eafe1c0029b3ecbec4af5be366675ad838251977"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part037",
+      "gitBlob": "f4d262bb358f73587a3fb0e8eb98faf738c8a23c"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part038",
+      "gitBlob": "0f9da101b8e844d9ac1a327e2d67e1fec7a62d2d"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part039",
+      "gitBlob": "753321e1070b085d5a31ab521eb409b57412b78d"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part040",
+      "gitBlob": "4cecc0403205a4a09ec8b180b149a697862ed8d0"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part041",
+      "gitBlob": "a42f2057eff94c7548c95d4a491648c9c5861117"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part042",
+      "gitBlob": "04257aff884b83fc624efa54592ef834de534a12"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part043",
+      "gitBlob": "dc9f101690f68b7584312a56c26ade52035f4973"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part044",
+      "gitBlob": "1502a96fe91f39012f2dbedf1d454d77e8b14bdf"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part045",
+      "gitBlob": "3e32a3dd4ad7765c597bf9eb41d69993b1a7149e"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part046",
+      "gitBlob": "3c6ae479f4f70256458b111c307a1a9b9533fb0d"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part047",
+      "gitBlob": "4aead13eb80bc3983d88862e0ac4882242887eb3"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part048",
+      "gitBlob": "c25d537e35e77047e1959a16da18a0c70ca5a20b"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part049",
+      "gitBlob": "94f44eb1db1dd4c94558050633e97e256951933d"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part050",
+      "gitBlob": "d4ee2d2eb4a72d893e65a934966e1322633077a0"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part051",
+      "gitBlob": "fb15df099957043b78934107a0b53849f35f8255"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part052",
+      "gitBlob": "a6dca1d73617cf4a6e8a582d38e4aacc5d71543d"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part053",
+      "gitBlob": "7d03dd6254652e2e295c8a709bebb15146f7db81"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part054",
+      "gitBlob": "6f3f8daa83f001b547f3e9bdeacfab3bc6056842"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part055",
+      "gitBlob": "81b95337915020dacf9a2aedfd99e22a8d827c8a"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part056",
+      "gitBlob": "6303cf8d30caaa1f077f17e368d36bba315c1d28"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part057",
+      "gitBlob": "5bde6ac9bd04f898937ca83a767a31c20e7d86ab"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part058",
+      "gitBlob": "566771cc6a3efabd4a1cc2c91b97e6ef019e21da"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part059",
+      "gitBlob": "1d01ed14a6c165a3dc6b6dd218f2b04997ddfb45"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part060",
+      "gitBlob": "2e47cacd6c409aa42573e6b08d4fcf6dbe79db02"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part061",
+      "gitBlob": "c64881377fafebae3889aa4b45bc266ebd412f9b"
+    },
+    {
+      "path": "art-approved/weapons/male4-115-four-torsos-ew/parts/archive.part062",
+      "gitBlob": "5baa74f12cdf159775968d0b21b604c0bf3f3726"
+    },
+    {
+      "path": "art-approved/weapons/male4-north-three-keys/METADATA.json",
+      "gitBlob": "89957f1d3f57f4e4aba9412861ca7f7c36e94396"
+    },
+    {
+      "path": "art-approved/weapons/male4-north-three-keys/parts/MANIFEST.json",
+      "gitBlob": "152db438277bd0cb9d95c29e35923f9e30458bcd"
+    },
+    {
+      "path": "art-approved/weapons/male4-north-three-keys/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male4-north-three-keys/parts/archive.part000",
+      "gitBlob": "510a75832f5655c8c4a1e7cd44f901cc67c56a54"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/METADATA.json",
+      "gitBlob": "dbd1c8fca8424e14c4157f940229fc39e301de45"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/MANIFEST.json",
+      "gitBlob": "f3ed6a453cb9d7a40d69a3be8ce3b698bdc579fe"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/RECONSTRUCT.py",
+      "gitBlob": "8b125279d267f843111474e51ae8443ed1a2ed24"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/archive.part000",
+      "gitBlob": "a5b53270ee468927cd6b17e27ce842d3042a374a"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/archive.part001",
+      "gitBlob": "d42dfd5969023303a16bf18f571117b3cbf6e544"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/archive.part002",
+      "gitBlob": "14e3a59814833503f341dd58d164c70adfd0ffda"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/archive.part003",
+      "gitBlob": "735cdc75965b23b9204b8385881e90fc7415ae7c"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/archive.part004",
+      "gitBlob": "31c9f6d1324fcce76da541aca23895bfb0191082"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/archive.part005",
+      "gitBlob": "c73538ce3f6380df3209c638d63a46fc98791db6"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/archive.part006",
+      "gitBlob": "48608644864526aabba47dbb37c7886495299ca4"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/archive.part007",
+      "gitBlob": "c7cbef0e2772332ebefda958e49953297961d425"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/archive.part008",
+      "gitBlob": "397965e9bc95bd258521aa5a3adbe3fc5c549dde"
+    },
+    {
+      "path": "art-approved/weapons/male5-four-torsos-ew/parts/archive.part009",
+      "gitBlob": "3883ae624f4ce34ca2c66b9aa516394942aa1376"
+    },
+    {
+      "path": "art-approved/weapons/mosquete4-south-v3-approved/4_SOUTH_V3_M151_157/Mosquete4_SOUTH_CanoFrontal_Editavel_Candidato.zip",
+      "gitBlob": "fa31ce539b2d92c8e16d9f6f611c8dbfe122c44d"
+    },
+    {
+      "path": "art-approved/weapons/nodachi69-ew-four-outfits-approved/69_EW_M_4TRAJES/Nodachi69_M_QuatroTrajes_EW_Editavel.zip.part001",
+      "gitBlob": "654b001dc1322085d2361c12077d7ad74073efd2"
+    },
+    {
+      "path": "art-approved/weapons/nodachi69-ew-four-outfits-approved/69_EW_M_4TRAJES/Nodachi69_M_QuatroTrajes_EW_Editavel.zip.part002",
+      "gitBlob": "e01fdbbf97c5ded375691e1f6aae532427f25fb0"
+    },
+    {
+      "path": "art-approved/weapons/nodachi69-ew-male-base-v2-approved/69_EW_M_BASE_V2/Nodachi69_EW_FonteAnterior_Intacta_Candidato_Editavel_v2.zip.part001",
+      "gitBlob": "2286059f6d6bde0f3e140a8bb7f9af3bed9f13c6"
+    },
+    {
+      "path": "art-approved/weapons/nodachi69-ew-male-base-v2-approved/69_EW_M_BASE_V2/Nodachi69_EW_FonteAnterior_Intacta_Candidato_Editavel_v2.zip.part002",
+      "gitBlob": "a01601ffb77a286f668484e72c9e95a271f5ce0b"
+    },
+    {
+      "path": "art-approved/weapons/nodachi69-ew-male-base-v2-approved/MANIFEST.json",
+      "gitBlob": "3ba172a47d560a2afa5c28b11aa95ad972660745"
+    },
+    {
+      "path": "art-approved/weapons/nodachi69-ew-male-base-v2-approved/README.md",
+      "gitBlob": "80ac02f3375169cd3b5aeae2c0564f7abadc8e92"
+    },
+    {
+      "path": "art-approved/weapons/nodachi69-ew-male-base-v2-approved/RESTORE.py",
+      "gitBlob": "60323428c6e3825bf1ba359a77d3d4ff8e528c98"
+    },
+    {
+      "path": "art-approved/weapons/nodachi69-south-presented-approved/69_SOUTH_M_PRESENTED/Nodachi69_SOUTH_FonteAnterior_Editavel.zip",
+      "gitBlob": "cd86c673d901dd5739e4c5eb987834c302342333"
+    },
+    {
+      "path": "art-approved/weapons/south-historical-110-114/male_110_south_v6.zip",
+      "gitBlob": "b4b366ed64b8ad44604e92cdbf729d30be9e6977"
+    },
+    {
+      "path": "art-approved/weapons/south-historical-110-114/male_114_south_v1.zip",
+      "gitBlob": "a02f06ccfbe37a8c384425ad4fca625a6126d2f5"
+    },
+    {
+      "path": "art-approved/weapons/staff-north/male_staff121_north_v1.zip",
+      "gitBlob": "b191e185ae2a73b7d919fa7d6958a6d464d7f3cd"
+    },
+    {
+      "path": "art-approved/weapons/staff-north/male_staff123_north_v1.zip",
+      "gitBlob": "3b9350c9b5938a214c437c33807c2d69db6c5e95"
+    },
+    {
+      "path": "art-approved/weapons/staff-north/male_staff124_north_v1.zip",
+      "gitBlob": "cdb1f9ca42ad74bba7da3f346151b4650486a099"
+    },
+    {
+      "path": "art-approved/weapons/staff-north/male_staff125_north_v1.zip",
+      "gitBlob": "1ffce22667c078d14d5d75a8f90d62cb9dddb5ed"
+    },
+    {
+      "path": "art-approved/weapons/staff-north/male_staff126_north_v1.zip",
+      "gitBlob": "074db253f4f1806972e94f451bcaa2d9f81f9ca8"
+    },
+    {
+      "path": "art-approved/weapons/staff-north/male_staff127_north_v1.zip",
+      "gitBlob": "193cea2674690f5c5f723dd4c25c4718829ca33e"
+    },
+    {
+      "path": "art-approved/weapons/staff-north/male_staff31_north_right-diagonal-v3.zip",
+      "gitBlob": "d87ec80a34d3b573e169f1ff185d130d86aa267f"
+    },
+    {
+      "path": "art-approved/weapons/sword0-south/male_sword0_south_approved-cycle_presentation-v2.zip",
+      "gitBlob": "480e368875a269d6453a18503eef655e5d74a225"
+    },
+    {
+      "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_M/Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part001",
+      "gitBlob": "21e4ecc9042fafba4f24db01af61786212000a46"
+    },
+    {
+      "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_M/Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part002",
+      "gitBlob": "e57658ce39b526c35700d22331049ec59947527c"
+    },
+    {
+      "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_M/Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part003",
+      "gitBlob": "f958148ffeff25e87d9e3eae33f307b08411fd92"
+    },
+    {
+      "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_M/Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part004",
+      "gitBlob": "b1a5cf3a5bfe2be70bd867a86399739c66c2b97e"
+    },
+    {
+      "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_M/Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part005",
+      "gitBlob": "68604eec326aa1ba17c3664ef5a3d4cdcfae13b8"
+    },
+    {
+      "path": "art-approved/weapons/swords0-67-70-ew-approved/0-67-70_EW_M/Espadas0_67_70_male_EAST_WEST_QuatroTrajes_Editavel.zip.part006",
+      "gitBlob": "e2c424a1ef78c1c48e43907cbc466e5f31dd6a73"
+    }
+  ]
+}

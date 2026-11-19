@@ -1,0 +1,465 @@
+{
+  "schema": "kaizoku-equipment-local-approved-v1",
+  "baseRevision": "e80b31f6c617ada51cab81dcc11f471d3d288c76",
+  "scope": "Approved source bundle; no registration in game or approval outside exact route.",
+  "productionEnabled": false,
+  "archiveFiles": 17,
+  "routes": [
+    {
+      "body": "male",
+      "action": "attack-focus",
+      "direction": "south",
+      "weapon": 123,
+      "baseNativeRecordId": "staff123-south-native-original-source",
+      "nativeCanvas": [
+        640,
+        640
+      ],
+      "density": 4,
+      "pivot": [
+        80,
+        128
+      ],
+      "fps": 12,
+      "timeline": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frames": [
+        {
+          "phase": "0",
+          "baseSha256": "f307512b241bd5ecc789b111dcf1b5fbc643b22a64586d3a38cfea667932cbae",
+          "slots": {
+            "torso": {
+              "id": 6,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "38dc1f8e56f027fc6526dc409c172314575a2246f6a6eb792b3e5d074a5389a8.png"
+                }
+              ]
+            },
+            "gloves": {
+              "id": 25,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "replace-rgb-where-mask-preserve-alpha",
+                  "path": "9865803f841b836df1685a89fc60384af57cab91f853342f063d0d5872eede5e.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "1",
+          "baseSha256": "9ac1c06416dc24c2cc86a4d0614e7622911af814b60c93cd3e9b26f0ad0cb6b8",
+          "slots": {
+            "torso": {
+              "id": 6,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "6136fa1822d18d0c3a8c158c6611f4c301189b23d1425e575a5e03109141f52a.png"
+                }
+              ]
+            },
+            "gloves": {
+              "id": 25,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "replace-rgb-where-mask-preserve-alpha",
+                  "path": "9c532763472e14cf4c66fc16054d67cc842b935fb72ce2bb1b6e110b11706823.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "2",
+          "baseSha256": "101189ede70410a64191433c6d9199195a6769fd78dcdfa3ece9002f2b786067",
+          "slots": {
+            "torso": {
+              "id": 6,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "3c9f18f42afef9b6302c4da8d023959398870d44fcde738783d429b36adcb0ac.png"
+                }
+              ]
+            },
+            "gloves": {
+              "id": 25,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "replace-rgb-where-mask-preserve-alpha",
+                  "path": "ae1ce2aeee166026d7e42c083f3603a817b186acd3c077ed4b2eccbb420715d1.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "3",
+          "baseSha256": "40e64384cdca75a9739885f69dd2622c5a90e04a765acfad94fffdc7b6d0ca27",
+          "slots": {
+            "torso": {
+              "id": 6,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "f2932bd980ec543122890541e5a66532020b507a98bf3447340f0d2947e2db1b.png"
+                }
+              ]
+            },
+            "gloves": {
+              "id": 25,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "replace-rgb-where-mask-preserve-alpha",
+                  "path": "980f0efd8ec2472832fad6d9ae8ce304d7aba57004ac325c255f54821961ea46.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "4",
+          "baseSha256": "89dae37c6cb9026214ea8c4229c553e0bdfc78877547d2ca512f4c1ae53be628",
+          "slots": {
+            "torso": {
+              "id": 6,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "84a4d47e648672baceef0688364c4b9dc26ab8be336cef1ed5fbab68aa1e7e33.png"
+                }
+              ]
+            },
+            "gloves": {
+              "id": 25,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "replace-rgb-where-mask-preserve-alpha",
+                  "path": "55422126f82694d5f598635a14f8c6e025b4664339e55506b517399bfec3a0cc.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "5",
+          "baseSha256": "d6ab86a80d3ecbfbcbd8657788b2d320899af611dcf837c19eee5163ee12c062",
+          "slots": {
+            "torso": {
+              "id": 6,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "23571bcbee1b82c7cc842b356b01b06d08c0134a2768f8b61c4fd151286771fd.png"
+                }
+              ]
+            },
+            "gloves": {
+              "id": 25,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "replace-rgb-where-mask-preserve-alpha",
+                  "path": "b92e1d45bd24fbd2bee5df155e0d8709aa37338d96a295821fa8bc547642ede6.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "6",
+          "baseSha256": "fd52a3e89b23e8ea35f3d54a0e5e7cb0bd6552e995210b4af756781bbe00fe78",
+          "slots": {
+            "torso": {
+              "id": 6,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "c11f1867e56c2545ccb34d38c011cc1fd5602f998a8ec6c32bd140ae9bb9e1c2.png"
+                }
+              ]
+            },
+            "gloves": {
+              "id": 25,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "replace-rgb-where-mask-preserve-alpha",
+                  "path": "b6e14c914046a92aec4cc3d87d95c688c1ba472ffffd2ca1f3565c4cc26a0a59.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "7",
+          "baseSha256": "b8960650173893d1e25f10e6b44dde2deb17ffd82002eeb77d077973446224da",
+          "slots": {
+            "torso": {
+              "id": 6,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "38dc1f8e56f027fc6526dc409c172314575a2246f6a6eb792b3e5d074a5389a8.png"
+                }
+              ]
+            },
+            "gloves": {
+              "id": 25,
+              "passes": [
+                {
+                  "stage": "over-base",
+                  "operation": "replace-rgb-where-mask-preserve-alpha",
+                  "path": "3f136afe746dc0ed0df9ec9763a8fefcc5978433bf4c54eff1b6fa99f686da28.png"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "body": "male",
+      "action": "attack-focus",
+      "direction": "north",
+      "weapon": 126,
+      "baseNativeRecordId": "staff126-north-native-original-source",
+      "nativeCanvas": [
+        640,
+        640
+      ],
+      "density": 4,
+      "pivot": [
+        80,
+        128
+      ],
+      "fps": 12,
+      "timeline": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "frames": [
+        {
+          "phase": "0",
+          "baseSha256": "41f434f9e1a72f4672d8f184a423ac7e7e7aa9e080581ac9993c52aca32cd587",
+          "slots": {
+            "boots": {
+              "id": 148,
+              "passes": [
+                {
+                  "stage": "under-base",
+                  "operation": "source-over",
+                  "path": "83787214ae645465d0305884904669b298db1142c8774af0bcde2ed1453c0b92.png"
+                },
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "76686e879191b8c941d739005a0e887a8b023581b68a08e351777bdc31a6efbe.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "1",
+          "baseSha256": "4007e628e14aadc7dd6a3ad596a2ebda7ee6ff293776003d6b8d1fc31c2d6e3b",
+          "slots": {
+            "boots": {
+              "id": 148,
+              "passes": [
+                {
+                  "stage": "under-base",
+                  "operation": "source-over",
+                  "path": "83787214ae645465d0305884904669b298db1142c8774af0bcde2ed1453c0b92.png"
+                },
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "76686e879191b8c941d739005a0e887a8b023581b68a08e351777bdc31a6efbe.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "2",
+          "baseSha256": "58d4de526b14c4708a8b1753301c844f410a2451dd6e5cd2f5fe7a2d830abb19",
+          "slots": {
+            "boots": {
+              "id": 148,
+              "passes": [
+                {
+                  "stage": "under-base",
+                  "operation": "source-over",
+                  "path": "83787214ae645465d0305884904669b298db1142c8774af0bcde2ed1453c0b92.png"
+                },
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "76686e879191b8c941d739005a0e887a8b023581b68a08e351777bdc31a6efbe.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "3",
+          "baseSha256": "cc6305ebd56cce9995c37bc86c7ac1e7039284f702e1d8203dfb379003a503d9",
+          "slots": {
+            "boots": {
+              "id": 148,
+              "passes": [
+                {
+                  "stage": "under-base",
+                  "operation": "source-over",
+                  "path": "83787214ae645465d0305884904669b298db1142c8774af0bcde2ed1453c0b92.png"
+                },
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "76686e879191b8c941d739005a0e887a8b023581b68a08e351777bdc31a6efbe.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "4",
+          "baseSha256": "aa6ad1d470bd045519f7eae22d0a10f26d3b2a0158b11f630838b19548a12afc",
+          "slots": {
+            "boots": {
+              "id": 148,
+              "passes": [
+                {
+                  "stage": "under-base",
+                  "operation": "source-over",
+                  "path": "83787214ae645465d0305884904669b298db1142c8774af0bcde2ed1453c0b92.png"
+                },
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "76686e879191b8c941d739005a0e887a8b023581b68a08e351777bdc31a6efbe.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "5",
+          "baseSha256": "c46806289ad7c6287398e5e219b3f601b9929120d53650dc979f9da027db9fe6",
+          "slots": {
+            "boots": {
+              "id": 148,
+              "passes": [
+                {
+                  "stage": "under-base",
+                  "operation": "source-over",
+                  "path": "83787214ae645465d0305884904669b298db1142c8774af0bcde2ed1453c0b92.png"
+                },
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "76686e879191b8c941d739005a0e887a8b023581b68a08e351777bdc31a6efbe.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "6",
+          "baseSha256": "0d243f14f7bf0a7c9ff6c3013214ae2e1b9208178054f28bac307fd742358698",
+          "slots": {
+            "boots": {
+              "id": 148,
+              "passes": [
+                {
+                  "stage": "under-base",
+                  "operation": "source-over",
+                  "path": "83787214ae645465d0305884904669b298db1142c8774af0bcde2ed1453c0b92.png"
+                },
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "76686e879191b8c941d739005a0e887a8b023581b68a08e351777bdc31a6efbe.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "7",
+          "baseSha256": "a364fe7e474e60241c21d6c40be13e914f77fafa961f122fd1742369deb12625",
+          "slots": {
+            "boots": {
+              "id": 148,
+              "passes": [
+                {
+                  "stage": "under-base",
+                  "operation": "source-over",
+                  "path": "83787214ae645465d0305884904669b298db1142c8774af0bcde2ed1453c0b92.png"
+                },
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "76686e879191b8c941d739005a0e887a8b023581b68a08e351777bdc31a6efbe.png"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "phase": "8",
+          "baseSha256": "d750c60a44e290d755528f354d80b3609d9ac4e0c841a63598a9e2a130d6743d",
+          "slots": {
+            "boots": {
+              "id": 148,
+              "passes": [
+                {
+                  "stage": "under-base",
+                  "operation": "source-over",
+                  "path": "83787214ae645465d0305884904669b298db1142c8774af0bcde2ed1453c0b92.png"
+                },
+                {
+                  "stage": "over-base",
+                  "operation": "source-over",
+                  "path": "76686e879191b8c941d739005a0e887a8b023581b68a08e351777bdc31a6efbe.png"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
