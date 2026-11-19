@@ -90,6 +90,87 @@ function composeSlots({anchor,equipment,fixed,slots}){
   equipment:Object.fromEntries(key.filter(([slot])=>!omitted.includes(slot))),sourceRefs:[...new Set(sourceOf(layers))],
   paletteSourceMasks,paletteRefs,slotRoutes,omitted,layeredSlots:true};
 }
+// Exact versioned male Original South eye/hand sources; conservative opt-in only.
+const strictSouthFaces={"81ce2c74c6e8e05f2745223cdea70cfecee5b0ff49e4bcbf8d6ed25d62e72449":{"w":512,"skin":"0661c468d18e245b3400f8cc212926aa7c5cc916b722b1dd35334abd939ed096"},"6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a":{"w":640,"skin":"47c4585f7c79fdf6d67207416b4a08c9b7322da3d9abc94cddf965bd6ed174a0"}};
+const strictSouthIris=[[303,205,40,5,0,255,1],[304,205,50,20,14,255,1],[303,206,41,4,0,255,1],[304,206,53,21,13,255,1],[303,207,71,25,13,255,2],[304,207,82,40,29,255,2],[307,207,40,21,16,255,1],[308,207,62,24,15,255,2],[303,208,88,37,22,255,2],[304,208,103,53,38,255,3],[305,208,38,17,11,255,1],[307,208,85,43,33,255,2],[308,208,78,31,18,255,2],[303,209,57,22,13,255,1],[304,209,95,46,31,255,3],[305,209,92,44,31,255,3],[306,209,92,43,30,255,3],[307,209,108,52,38,255,3],[308,209,66,20,7,255,2],[303,210,66,50,44,255,2],[304,210,55,17,9,255,1],[305,210,80,34,22,255,2],[306,210,84,34,22,255,2],[307,210,82,32,19,255,2],[332,206,50,7,0,255,1],[332,207,84,31,18,255,2],[333,207,43,20,14,255,1],[336,207,63,29,19,255,2],[337,207,47,18,11,255,1],[332,208,81,29,15,255,2],[333,208,77,38,26,255,2],[335,208,49,22,15,255,1],[336,208,91,45,32,255,3],[337,208,62,28,17,255,2],[332,209,70,22,10,255,2],[333,209,93,46,33,255,3],[334,209,87,41,27,255,2],[335,209,95,45,30,255,3],[336,209,98,49,33,255,3],[337,209,58,27,17,255,1],[332,210,38,5,0,255,1],[333,210,67,29,19,255,2],[334,210,69,29,18,255,2],[335,210,75,33,21,255,2],[336,210,47,11,3,255,1]];
+const knownRepairHands={"5ac179932f16e9e0884f57463303f7f40fa77b95d1f57a5f0e74b84f05389f40":[137,"south","cuff-emergence-handRight-RIGHT-skin",512,512],"55ac07f9dc92cc9130ab27a55cb48c7c6ff547d448f66c713085502fc0be5e67":[137,"south","cuff-emergence-handLeft-LEFT-skin",512,512],"d383b7148a8226b5cd7706249db11e14b1932689c3c9a5bcafcf5f0c0ef78db9":[137,"north","cuff-emergence-handRight-RIGHT-skin",512,512],"58a31b7aeb417bfadd1362702e8c8814cbcd196da65cf9946a6ab3ca3ccaccf3":[137,"north","cuff-emergence-handLeft-LEFT-skin",512,512],"64f3dce9f28769a460346360ade91e072e39618741b89aaff092971bdbc23d0e":[144,"south","south-visible-original-hands-RIGHT-skin",512,512],"9281f2be9b2d3d735c1e48c690bd57a152bbd2283115df453f7af05440076284":[144,"south","south-visible-original-hands-LEFT-skin",512,512]};
+
+function applyStrictSouthLayers(r,appearance,images,map,prefix,makeCanvas,appearanceAPI){
+ const {face,repairs}=r.strictSouthAppearance;
+ const known=strictSouthFaces[face];
+ if(!known||!appearanceAPI||!makeCanvas)throw Error('Missing exact South appearance authority');
+ const im=map.get(face),maskImage=images.get(prefix+known.skin+'.png')||images.get(known.skin);
+ if(!im||!maskImage||im.width!==known.w||im.height!==known.w||maskImage.width!==known.w||maskImage.height!==known.w)throw Error('Mismatched verified South face');
+ const copy=image=>{
+  const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d');
+  tc.drawImage(image,0,0);
+  return [tile,tc,tc.getImageData(0,0,tile.width,tile.height)];
+ };
+ const [tile,tc,data]=copy(im);
+ const off=(640-known.w)/2;
+ const indices=strictSouthIris.map(([x,y,R,G,B,A,rank])=>{
+  const k=(y-off)*known.w+(x-off),q=k*4;
+  if(data.data[q]!==R||data.data[q+1]!==G||data.data[q+2]!==B||data.data[q+3]!==A)throw Error('Unverified original South iris pixels');
+  return [k,rank];
+ });
+ const skin=appearance.skin||appearance.skinColor,skinRamp=appearanceAPI.skins[skin]?.ramp;
+ if(skin&&skin!=='original'){
+  if(!skinRamp)throw Error('Unsupported saved skin');
+  const md=copy(maskImage)[2].data,mask=new Uint8Array(known.w*known.w);
+  for(let i=0;i<mask.length;i++)mask[i]=md[i*4];
+  for(const [k] of indices)mask[k]=0;
+  data.data.set(appearanceAPI.recolor(data.data,mask,skinRamp));
+ }
+ if(appearance.eyeColor&&appearance.eyeColor!=='original'){
+  const ramp=root.MareCharacterAppearance?.eyes?.[appearance.eyeColor]?.ramp;
+  if(!ramp)throw Error('Unsupported saved eye color');
+  for(const [k,rank] of indices){
+   const q=k*4,n=parseInt(ramp[rank-1].slice(1),16);
+   data.data[q]=n>>>16;data.data[q+1]=(n>>>8)&255;data.data[q+2]=n&255;
+  }
+ }
+ tc.putImageData(data,0,0);
+ map.set(face,tile);
+ if(!skinRamp)return;
+ for(const source of repairs){
+  const dimensions=knownRepairHands[source],image=map.get(source);
+  if(!image||!dimensions)throw Error('Missing exact repair-hand pixels');
+  const padding=r.sourceRasterPadding?.[source]?.offset||0;
+  if(image.width!==dimensions[3]+2*padding||image.height!==dimensions[4]+2*padding)throw Error('Unverified repair-hand dimensions');
+  const [rt,rc,rd]=copy(image);
+  const mask=skinMaterials.mask(rd.data,image.width,'anatomy');
+  rd.data.set(appearanceAPI.recolor(rd.data,mask,skinRamp));
+  rc.putImageData(rd,0,0);
+  map.set(source,rt);
+ }
+}
+function withStrictSouthAppearance(record,appearance){
+ if(record.body!=='male'||record.direction!=='south'||
+   (appearance.hair??appearance.hairStyle??'original')!=='original'||
+   (appearance.face??appearance.eyeStyle??'original')!=='original')return null;
+ const d=record.pack?.directions?.south;
+ if(!d)return null;
+ const faceLayers=d.layers.filter(l=>l.slot==='face');
+ if(faceLayers.length!==1)return null;
+ const face=faceLayers[0].source,known=strictSouthFaces[face];
+ if(!known||faceLayers[0].frames?.some(s=>s!==face)||record.sourceRasterPadding?.[face])return null;
+ const repairLayers=d.layers.filter(l=>l.id.endsWith('-skin'));
+ const expected=Object.entries(knownRepairHands).filter(([,defs])=>defs[0]===record.equipment?.torso&&defs[1]===record.direction);
+ if(repairLayers.length!==expected.length||!expected.every(([src,def])=>repairLayers.some(l=>l.source===src&&l.id===def[2])))return null;
+ const repairs=[];
+ for(const l of repairLayers){
+  const b=knownRepairHands[l.source];
+  if(!b||b[0]!==record.equipment?.torso||b[1]!==record.direction||b[2]!==l.id||l.frames?.some(s=>s!==l.source))return null;
+  repairs.push(l.source);
+ }
+ const protectedSources=new Set([face,...repairs]);
+ if(d.layers.some(l=>l!==faceLayers[0]&&!repairLayers.includes(l)&&[l.source,...(l.frames||[])].some(s=>protectedSources.has(s))))return null;
+ const own=r=>r?Object.fromEntries(Object.entries(r).filter(([s])=>s!==face&&!repairs.includes(s))):undefined;
+ const paletteRefs=[...new Set([...(record.paletteRefs||[]),known.skin])];
+ return {...record,id:record.id+':strict-south-material-v1',paletteSourceMasks:own(record.paletteSourceMasks),
+         baseMaterialSources:own(record.baseMaterialSources),paletteRefs,strictSouthAppearance:{face,repairs},colorAppearance:appearance};
+}
+
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-modular-outfits-hd/assets/',allowCandidates=false,appearanceAPI=root.MareAppearance96}={}){
  if(index?.schema!=='rework-modular-outfits-hd-v1'||!vendor?.compositor)throw Error('Missing modular outfit dependencies');
  function resolveIndependentPants({body,direction,action,equipment={},appearance={}}={}){
@@ -166,6 +247,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
     surface.getContext('2d').drawImage(image,64,64);map.set(source,surface);
    }
   }
+  if(r.strictSouthAppearance)applyStrictSouthLayers(r,appearance,images,map,prefix,makeCanvas,appearanceAPI);
   if(r.baseMaterialSources){
    const eyes=root.MareReworkEyeStylesHD;
    const expression=r.body==='male'&&(eyes?.supports(appearance.face)||
@@ -190,6 +272,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
   }
   if(r.isolatedPants21){
    for(const [source,image] of map){
+    if(r.strictSouthAppearance?.face===source)continue;
     const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source);
     const hair=uses.every(l=>l.slot==='hair'),kind=skinMaterials.ownership(uses);
     const ramp=hair?appearanceAPI.hairs[appearance.hairColor]?.ramp:kind?appearanceAPI.skins[appearance.skin]?.ramp:null;
@@ -256,5 +339,5 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
  }
  return {resolve,resolveIndependentPants,bindAnatomy,requiredFiles,render,renderWithHead};
 }
-const api={create,composeSlots};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
+const api={create,composeSlots,withStrictSouthAppearance};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

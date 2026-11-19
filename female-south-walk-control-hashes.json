@@ -1,0 +1,45 @@
+{
+  "head": "PR #348 acfde4af: C151 worn with B155 or barefoot, 40 concatenated native 512 RGBA frames per control",
+  "groups": {
+    "0:none": {
+      "155": "f74400ce53421f5bf19e2aa29a9cc18f21d48747e4b59050fb646659b9794206",
+      "bare": "b1a56b8b6d5c0301f2c5aafdd45ceb78c99a0d53a23bc0ede5e162e3a0bee9df"
+    },
+    "1:none": {
+      "155": "6c8df1877b56955db8b57887001533ad4f68e3b5b4e980be0e4c0ac6eb5e6ec5",
+      "bare": "29283da7c0dd17033d7b81a9adf1af649509f133182d8b19ead2ae2c0680a41b"
+    },
+    "2:none": {
+      "155": "2395be326345997a121652ffb32a0b9db624470e1b875d3cc4a74d756426f910",
+      "bare": "4508e28e60eaac0889671777b010d79ec26c936748057fe89d27e720ab7c1bee"
+    },
+    "0:21": {
+      "155": "e7acb6c021cdc6754d5fbaf96718f1165498f399020f16338828378fd32836fd",
+      "bare": "10c7c8aea51abb8f0152ac5b4bfcb76f35ed7740617ede25b4de64fa9115a09e"
+    },
+    "2:133": {
+      "155": "8db77edd66bebb168b4e34f2e13b92f8e64e2f6b04da10029e0b1e51c087c493",
+      "bare": "02a341f31add47b3b4a1c8ced22f7bdafc9181feacae98167232c9c983671e95"
+    },
+    "1:147": {
+      "155": "8153b3ea05b056a95c81f5df7d3154ef778ad3ea792543752263f8752eb294d5",
+      "bare": "51b95ee763cbcaa3176bcaa9066383eee938e410083116b93fc4914462379842"
+    },
+    "1:161": {
+      "155": "3139043e49f496431e2dc8913d0496e5d7c09997b102bd195648f6f4d489e3fa",
+      "bare": "d03f28448e62be5b506fb8789d648ac00e492a5469019d6f1912861bc3f3fb6b"
+    },
+    "1:168": {
+      "155": "81cdb90450f3b0b8f05efdd419c43d6415fb883656b92c698f74b12a9db59da1",
+      "bare": "e388211ee56a6491d79fef6a792daac3df985cb4f63a6f01048a77e0a21bae43"
+    },
+    "1:175": {
+      "155": "cb789ee3684e44a66fe75001f625e8b03e834e7408827cded80d4c25bb90b618",
+      "bare": "1acadd7bc6d35df656e729cb84383f813a93807a066c1f1fbb657c840807c457"
+    },
+    "1:182": {
+      "155": "7c958effb693ef262bfedd62ae9202f66168b5cfa93e26142bee3a718d34eb72",
+      "bare": "b82e3b614995154358ba6610d9eb5e72eb7bab9a30a3412872cedfbf35ab0c84"
+    }
+  }
+}
