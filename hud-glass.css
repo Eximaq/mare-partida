@@ -1474,8 +1474,8 @@
     & .studio-character .attribute-row { min-height: 40px; padding-block: 3px; }
   }
 }
-/* The in-game appearance editor uses the same glass; creation stays untouched. */
-#app #panelOverlay.hud-density.character-studio-mode {
+/* Both appearance editors use the same fields and full-resolution preview. */
+#app :is(#panelOverlay.hud-density.character-studio-mode, #startOverlay.hud-density) {
   & .studio-appearance { flex: 1; min-height: 0; grid-template-columns: minmax(0,1.1fr) minmax(0,1fr); gap: 10px; color: var(--character-text); font: 400 13px/1.4 var(--glass-type); }
   & .studio-look-controls header { gap: 8px; padding-bottom: 8px; margin-bottom: 8px; border-color: var(--character-rule); }
   & .studio-faction { width: 34px; height: 34px; }
@@ -3296,3 +3296,133 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
 @keyframes glass-fruit-arrive { from { opacity: 0; transform: translateY(8px) scale(.94); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion:reduce) { #app #panelOverlay.hud-density.akuma-reveal-mode[data-ui-panel=akuma-reveal] #dialogBody .dungeon-reveal > img { animation: none; } #app #panelOverlay.hud-density.akuma-reveal-mode[data-ui-panel=akuma-reveal] #dialogBody button { transition: none; } }
 html[data-mare-motion=reduced] #app #panelOverlay.hud-density.akuma-reveal-mode[data-ui-panel=akuma-reveal] #dialogBody .dungeon-reveal > img { animation: none; }
+
+/* Character creation shares the inventory frame. Each step owns its scroll area. */
+#app #startOverlay.hud-density {
+  --character-rule: #ffffff20;
+  --character-text: #e5e7eb;
+  padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
+    max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  background: #080b1059;
+  backdrop-filter: blur(2px);
+  color-scheme: dark;
+
+  & > .creation-dialog {
+    width: min(var(--glass-window-width), 100%);
+    height: calc(var(--glass-window-limit) - 18px);
+    max-height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    padding: 14px 18px 8px;
+    border: 1px solid var(--glass-line);
+    border-image: none;
+    border-radius: 12px;
+    background: var(--glass-surface);
+    backdrop-filter: blur(8px);
+    box-shadow: var(--glass-shadow);
+    color: #f5f6f8;
+    font: 400 13px/1.4 var(--glass-type);
+  }
+  & .creation-top { gap: 10px; padding: 0; border: 0; }
+  & .creation-emblem, & .studio-brand-icon { height: 34px; width: 34px; border: 0; background: none; }
+  & .creation-top h1 { margin: 0; color: #f5f6f8; font: 700 clamp(19px, 2vw, 26px)/1.2 var(--glass-type); }
+  & .creation-progress {
+    grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px;
+    padding: 3px; margin: 8px 0 12px; background: #080a0e66;
+    border: 1px solid var(--character-rule); border-radius: 8px; box-shadow: none;
+  }
+  & .creation-progress .progress-rule { display: none; }
+  & .creation-progress .step { display: flex; gap: 6px; min-height: 30px; padding: 2px 4px; font: 600 12px/1.2 var(--glass-type); color: var(--glass-muted); }
+  & .creation-progress .step.active { color: var(--glass-gold); background: #d4af3715; border-radius: 5px; }
+  & .creation-progress .step b { display: none; }
+  & .creation-progress .studio-step-icon { width: 20px; height: 20px; }
+  & .creation-progress .studio-step-label { min-height: 0; letter-spacing: 0; }
+  & :is(#factionStep,#classStep,#appearanceStep):not(.hidden) { display: flex; flex: 1; flex-direction: column; gap: 8px; min-height: 0; overflow: hidden; }
+  & :is(.creation-origin-body,#creationAppearanceStudio,.creation-class-layout) {
+    flex: 1; min-height: 0; min-width: 0; overflow: auto; overscroll-behavior: contain;
+    scrollbar-width: thin; scrollbar-color: #746947 transparent; padding: 3px;
+  }
+  & .creation-origin-body { display: flex; flex-direction: column; gap: 10px; }
+  & .creation-section-heading h2 { margin: 0; color: #f5f6f8; font: 650 17px/1.3 var(--glass-type); }
+  & .creation-section-heading small, & .creation-faction-summary p { font: 400 13px/1.4 var(--glass-type); color: var(--glass-muted); }
+  & .creation-name-field { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 8px; }
+  & .name-label, & #characterNameCount { font: 600 11px/1.3 var(--glass-type); color: var(--glass-muted); }
+  & #characterName { grid-area: 2 / 1 / 3 / -1; height: 38px; padding: 6px 10px; font: 500 16px var(--glass-type); }
+  & #characterNameCount { grid-area: 1 / 2; }
+  & #characterName, & #creationClassDetail, & #nextToClass,
+  & :is(.faction-choice,.class-choice,.creation-faction-summary,.creation-special,
+        .studio-look-controls,.studio-look-preview,.appearance-selector button,.appearance-directions button,.creation-actions button) {
+    border: 1px solid #ffffff26; border-image: none; border-radius: 8px; box-shadow: none;
+    background: #ffffff07; color: #f5f6f8; font-family: var(--glass-type);
+  }
+  & #appearanceStep .studio-appearance :is(.appearance-directions button,.appearance-selector button,.appearance-field select),
+  & :is(#backToClass,#backToFaction) {
+    border: 1px solid var(--glass-line); border-radius: 8px;
+    background: #20242a; box-shadow: none; color: #f5f6f8;
+    text-shadow: none; font-family: var(--glass-type);
+  }
+  & :is(.faction-choice,.class-choice).chosen, & #appearanceStep .studio-appearance .appearance-directions button[aria-pressed=true] {
+    border: 1px solid #dabc79; border-image: none; background: #d4af3715; box-shadow: inset 0 0 0 1px #d4af3722;
+  }
+  & :is(button,input,select):focus-visible { outline: 2px solid var(--glass-gold); outline-offset: -2px; }
+  & .faction-choices { grid-template-columns: repeat(4,minmax(0,1fr)); flex: 1 0 auto; gap: 8px; }
+  & .faction-art { height: auto; min-height: 76px; max-height: none; flex: 1; border-radius: 7px 7px 0 0; }
+  & .faction-art .faction-emblem { width: auto; height: calc(100% - 12px); max-height: 116px; max-width: 75%; }
+  & .faction-details { min-height: 0; padding: 9px; gap: 3px; }
+  & :is(.faction-details,.creation-class-label) strong { font: 650 15px/1.25 var(--glass-type); color: #f5f6f8; }
+  & :is(.faction-details,.class-choice) small { font: 400 12px/1.35 var(--glass-type); color: var(--glass-muted); }
+  & .faction-details em { margin-top: 3px; padding-top: 5px; border-color: var(--character-rule); color: var(--glass-gold); font: 600 12px/1.3 var(--glass-type); }
+  & .creation-faction-summary { flex: none; min-height: 80px; padding: 8px 12px; grid-template-columns: 1fr 1fr; gap: 10px; }
+  & .creation-faction-summary small { color: var(--glass-gold); font: 650 10px/1.3 var(--glass-type); }
+  & .creation-faction-summary h3 { color: #f5f6f8; font: 650 20px/1.2 var(--glass-type); }
+  & .creation-faction-identity { gap: 9px; }
+  & .creation-faction-identity > img { width: 52px; height: 52px; }
+  & .creation-faction-benefit { gap: 3px; padding: 0 16% 0 0; }
+  & .creation-faction-benefit strong { color: #a1e3c2; font: 650 14px/1.3 var(--glass-type); }
+  & .creation-class-layout { gap: 10px; grid-template-columns: minmax(170px,.55fr) minmax(0,1.5fr); }
+  & .class-choice { flex: 1 0 44px; min-height: 44px; padding: 5px 10px; gap: 9px; }
+  & .class-choice .class-art { width: 34px; height: 34px; }
+  & .creation-class-label { gap: 2px; }
+  & .creation-class-detail { min-height: 0; gap: 10px; padding: 12px; }
+  & .creation-class-intro { min-height: 148px; }
+  & .creation-class-copy h2 { font: 650 22px/1.2 var(--glass-type); }
+  & .creation-class-copy p, & .creation-class-chips span { font: 400 13px/1.4 var(--glass-type); }
+  & .creation-class-copy .creation-class-lead { font-size: 15px; }
+  & :is(.creation-birth,.creation-specials) h3 { font: 650 15px/1.3 var(--glass-type); }
+  & .creation-special { min-height: 78px; padding: 7px; gap: 7px; }
+  & .creation-special img { width: 36px; height: 36px; }
+  & .creation-special strong { font: 650 13px/1.2 var(--glass-type); }
+  & .creation-special > span > span { font: 400 12px/1.35 var(--glass-type); }
+  & .creation-actions { flex: none; display: grid; grid-template-columns: auto minmax(0,1fr); gap: 8px; margin: 0; padding: 0; }
+  & :is(.creation-actions button,#nextToClass) { flex: none; min-height: 42px; padding: 6px 16px; font: 650 13px/1.25 var(--glass-type); }
+  & :is(#nextToClass,#nextToAppearance,#createCharacter) {
+    border: 1px solid #ddba6d; border-image: none; border-radius: 8px;
+    background: linear-gradient(#ecd6a1,#ccaa66); color: #201c15;
+    text-shadow: none; font: 650 13px/1.25 var(--glass-type);
+  }
+  & .creation-actions button { width: 100%; min-width: 0; max-width: 100%; white-space: normal; }
+  & .local-only { margin: 4px 0 0; font: 500 10px/1.3 var(--glass-type); color: var(--glass-muted); }
+  @media (max-width: 760px) {
+    & > .creation-dialog { padding: 8px; }
+    & .creation-progress { margin: 6px 0; }
+    & .creation-progress .step { gap: 3px; font-size: 10px; }
+    & .creation-section-heading small { display: block; }
+    & .faction-choices { grid-template-columns: repeat(2,minmax(0,1fr)); flex: none; }
+    & .faction-art { flex: none; height: 76px; }
+    & .creation-faction-summary { grid-template-columns: 1fr; }
+    & .creation-faction-benefit { padding: 0; }
+    & .creation-class-layout { display: block; }
+    & .class-choices { grid-template-columns: repeat(2,minmax(0,1fr)); margin-bottom: 8px; }
+    & .class-choice { align-items: center; gap: 4px; padding: 5px; }
+    & .class-choice strong { font-size: 13px; }
+    & .class-choice .class-art { width: 26px; height: 26px; }
+    & :is(.creation-actions button,#nextToClass) { min-height: 44px; padding: 5px 8px; }
+  }
+  @media (max-height: 480px) {
+    & > .creation-dialog { padding-block: 6px; }
+    & .creation-top h1 { font-size: 17px; }
+    & .creation-emblem, & .studio-brand-icon { width: 24px; height: 24px; }
+    & .creation-progress { margin-block: 4px; padding: 0; }
+    & .faction-choices { flex: none; }
+  }
+}
