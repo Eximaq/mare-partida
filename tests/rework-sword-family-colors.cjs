@@ -7,7 +7,7 @@ const cp=require(p.join(dist,material)),api=make({baseURL:'https://fixture.test/
  fetchJSON:async f=>f===material?cp:JSON.parse(fs.readFileSync(p.join(root,f))),
  loadImage:f=>f.startsWith('tools/rework-sword0-checkpoint/')?cv.loadImage(p.join(dist,f)):loader(f)
 });
-const dirs=['south','north','east','west'],ids=[0,1,67,68,69,70],eyes=['brown','green','gray','amber','violet'];
+const dirs=['south','north','east','west'],ids=[0,1,67,68,69,70],eyes=['blue','brown','green','gray','amber','violet'];
 const profile=look=>global.MareCharacterAppearance.normalize({...cp.appearance96,...look});
 const avatar=(weapon,look,boots)=>({classId:'sword',appearance96:profile(look),equipment:{weapon:{def:weapon},coat:{def:151},...(boots?{boots:{def:boots}}:{})}});
 const stage=async (player,options,source)=>api.prepareConfiguration([{player,options,source}],{resolve:q=>q});
@@ -35,7 +35,7 @@ function pixels(bundle,p,o,k){
     a.deepEqual(source.material,body.material);a.deepEqual(source.states,body.states);
     selection++;
    }
-   for(const request of [{hairStyle:'hair-wavy'},{eyeColor:'blue'},{eyeStyle:'face-focused'}]){
+   for(const request of [{hairStyle:'hair-wavy'},{eyeStyle:'face-focused'}]){
     a(!api.selectVisual(avatar(0,request,9),o)?.checkpointSources?.length,JSON.stringify(request));
    }
   }

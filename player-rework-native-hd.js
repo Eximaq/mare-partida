@@ -298,11 +298,28 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return root.MareReworkModularOutfitsHD?.withStrictSouthAppearance(r,look)||r;
  }
 
+ // The archived named-female Sword 0 reference is Amber; the legacy
+ // Blue alias renders visible brown. Use the separately authored iris for
+ // these exact female sword bodies, before the independent slot selector.
+ const swordBlueIris={"south":"f6be0704c6dd7e6347ccf48d60249904f77399801bcf2148701d695e6b342064","north":"ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","east":"3c8fcb083ab48610c42b34b6bdb0dcdc324331509b908c0dd7cbb724b5b37141","west":"5f757e230cf80547097912d391f7acb3f2ce3e98ece852f3f43969f657c1c963"};
+ function preserveSwordBlueEyes(r,raw){
+  const d=r?.direction,m=r?.material,c=r?.colorAppearance,sha=swordBlueIris[d];
+  if(!sha||r.body!=='female'||r.hdKind!=='female-equipment'||r.action!=='attack-sword'||
+     ![0,1,67,68,69,70].includes(r.item)||r.sourceBaseId!=='v7-female-sword-'+d+'-ownership-candidate-'+d||
+     (r.outfitSourceId!=null&&r.outfitSourceId!=='female-torso151-'+d+'-frozen-attack-native')||
+     raw.eyeColor!=='blue'||raw.gender!=='feminino'||raw.hairStyle!=='hair-cropped'||raw.eyeStyle!=='original'||
+     !m||m.style!=='cropped'||m.eyeStyle!==null||m.eyeColor!==null||m.gearRecord||m.sourceScale!==1||m.fused!==false||
+     c?.eyeColor!=='blue'||m.hairColor!==raw.hairColor||m.skinColor!==raw.skinColor||
+     m?.ownership?.attackLayers?.filter(l=>l.id==='iris'&&l.slot==='face'&&l.source===sha).length!==1)return r;
+  return {...r,id:r.id+':registered-blue-iris',
+    material:{...m,eyeColor:'blue',registeredBlueIris:sha,faceProtectedExact:false,faceProtectedExceptIris:!m.skinColor,id:m.id+':registered-blue-iris'}};
+ }
+
  function select(player,o){
   const raw=player?.appearance96||{},style=raw.eyeStyle??raw.face;
   const eyes=root.MareReworkEyeStylesHD;
   const color=raw.eyeColor,customColor=color&&!['original','blue'].includes(color);
-  if(!eyes?.supports(style)&&!customColor)return strictSouthOutfit(selectBase(player,o,true),raw,o);
+  if(!eyes?.supports(style)&&!customColor)return preserveSwordBlueEyes(strictSouthOutfit(selectBase(player,o,true),raw,o),raw);
   if(style&&!['original','face-gentle'].includes(style)&&!eyes?.supports(style))return null;
   const isFemale=canonical(raw.gender??raw.body)==='female';
   if(isFemale)return selectBase(player,o,true);
@@ -539,55 +556,69 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  const maleGloves=(r,item,d)=>r.pack.directions[d].layers.filter(l=>l.id.startsWith('glove'+item+'-')||
   l.id==='equip-glove-'+item||l.id.startsWith('equip-glove-'+item+'-')||
   ['explicit-native-glove-west-mirror','registered-frozen-glove-native-attack'].includes(l.id)).map(l=>l.id);
- function selectSouthPantsBoot155(o,a,visible){
-  const pants=visible.pants?.item,boot=visible.boots?.item;
+ function selectRegisteredPantsBoot155(o,a,visible){
+  const pants=visible.pants?.item,boot=visible.boots?.item,{direction:dir,action}=o;
+  const southWalk=dir==='south'&&action==='walk',idle=action==='idle',frames=idle?1:16;
+  const layersByDirection={
+   south:{'boot155-mouth-rear-0':-1,'boot155-mouth-rear-1':-1,'boot155-screen-0':99,'boot155-screen-1':99},
+   north:{'boot155-rear-mouth-0':-1,'boot155-shell-0':99,'boot155-rear-mouth-1':-1,'boot155-shell-1':99}
+  };
   const palette=Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original');
-  if(a.body!=='male'||o.direction!=='south'||o.action!=='walk'||
+  if(a.body!=='male'||!Object.hasOwn(layersByDirection,dir)||!['idle','walk'].includes(action)||
      palette&&!strictSouthRequested(a)||
      ![140,147,154,161,168,175,182].includes(pants)||visible.torso?.item!==151||visible.gloves?.item!==152||
      boot!=null&&boot!==155||Object.keys(visible).length!==(boot==null?3:4))return null;
-  // In these packs the front passes are cut for each trouser hem.
-  // Remove just the four existing boot passes; never borrow a cuff or sole
-  // from another pair, and leave the old exact artwork as fallback.
-  const anchor=outfitById.get(`frozen-male-pants${pants}-south-walk-v47`),d=anchor?.pack?.directions?.south;
-  const fixed={torso:151,pants,gloves:152},ids=['boot155-mouth-rear-0','boot155-mouth-rear-1','boot155-screen-0','boot155-screen-1'];
-  const expected=ids.map(id=>d?.layers.find(l=>l.id===id));
-  if(!anchor?.frozenPantsSource||anchor.productionEnabled===false||anchor.body!=='male'||anchor.direction!=='south'||anchor.action!=='walk'||
-     d?.clip.frames!==16||d.clip.fps!==16||d.clip.loop!==true||
-     d.layers.filter(l=>l.id.startsWith('boot155-')).length!==ids.length||
-     expected.some((l,i)=>!l||l.depth!==(i<2?-1:99)||l.frames?.length!==16||!Array.from(l.frames).every(Boolean)))return null;
+  // Remove only the authored boot passes from this exact trouser rig.
+  // Each phase retains its previous fore/rear and near/far occlusion.
+  const anchor=outfitById.get(`frozen-male-pants${pants}-${dir}-${action}-v47`),d=anchor?.pack?.directions?.[dir];
+  const fixed={torso:151,pants,gloves:152},ids=Object.keys(layersByDirection[dir]);
+  if(!anchor?.frozenPantsSource||anchor.productionEnabled===false||anchor.body!=='male'||anchor.direction!==dir||anchor.action!==action||
+     d?.clip.frames!==frames||d.clip.fps!==frames||d.clip.loop!==!idle||
+     d.layers.filter(l=>/^(equip-)?boot155-/.test(l.id)).length!==ids.length||
+     ids.some(id=>{
+      const l=d.layers.find(layer=>layer.id===id);
+      return !l||l.depth!==layersByDirection[dir][id]||l.binding?.kind!=='fixed'||
+       l.frames?.length!==frames||!Array.from(l.frames).every(Boolean);
+     }))return null;
   const equipment={...fixed,...(boot==null?{}:{boots:boot})};
   const composed=root.MareReworkModularOutfitsHD?.composeSlots({anchor,equipment,fixed,slots:{boots:{
    anchorLayers:ids,uncoveredBaseVerified:true,records:{155:{record:anchor,layers:ids}}
   }}});
   if(!composed||composed.omitted.length)return null;
   const slotRoutes=Object.fromEntries(Object.entries(composed.slotRoutes).map(([k,v])=>[visible[k].key,v]));
-  const record={...composed,slotRoutes,omitted:[],hdKind:'outfit',southPantsBoot155:true};
+  const record={...composed,slotRoutes,omitted:[],hdKind:'outfit',registeredPantsBoot155:true,...(southWalk?{southPantsBoot155:true}:{})};
   if(!palette)return record;
   // The P133 isolated rig provides masks for exactly these eight unchanged
   // upper-body sources. Bare feet use the identical per-frame lower layer
   // from that rig, with its mixed skin/cloth boundary rather than a full tint.
-  const authority=outfitById.get('male-pants133-walk-south-isolated-r2'),
-   own=record.pack.directions.south,src=authority?.pack.directions.south;
-  const owned=['torso','headBase','armRight','armLeft','handRight','handLeft','face','hair'],
+  const authority=outfitById.get(`male-pants133-${action}-${dir}-isolated-r2`),
+   own=record.pack.directions[dir],src=authority?.pack?.directions?.[dir];
+  const owned=['torso','headBase','armRight','armLeft','handRight','handLeft','hair',...(dir==='south'?['face']:[])],
    originals=src?.layers.filter(l=>owned.includes(l.id)),
    lower=own.layers.find(l=>l.id==='lower-redrawn'),
    same=(x,y)=>JSON.stringify(x)===JSON.stringify(y),
    geometry=({layers,...rest})=>rest,
-   masks=authority?.paletteSourceMasks;
+   masks=authority?.paletteSourceMasks,
+   effectiveLower=l=>{
+    if(!l||l.frames?.length!==frames||!Array.from(l.frames).every(Boolean))return l;
+    // The renderer never consults a static fallback for a fully keyed track.
+    const {source,...effective}=l;return effective;
+   };
   if(!src||authority.palettePolicy!=='verified-original-anatomy-only'||!same(geometry(src),geometry(own))||
      !same(authority.pack.frame,record.pack.frame)||!same(authority.pack.pivot,record.pack.pivot)||authority.pack.density!==record.pack.density||
      originals?.length!==owned.length||!originals.every(l=>!!l.source&&!l.frames&&masks?.[l.source]?.skin&&
        (l.id!=='hair'||masks[l.source].hair)&&own.layers.filter(x=>same(x,l)).length===1)||
-     !lower||!same(lower,src.layers.find(l=>l.id==='lower-redrawn'))||root.MareNativeSkinHD?.ownership([lower])!=='mixed'||
-     lower.frames?.length!==16||!Array.from(lower.frames).every(h=>/^[a-f0-9]{64}$/.test(h)))return null;
+     !lower||!same(effectiveLower(lower),effectiveLower(src.layers.find(l=>l.id==='lower-redrawn')))||root.MareNativeSkinHD?.ownership([lower])!=='mixed'||
+     lower.frames?.length!==frames||!Array.from(lower.frames).every(h=>/^[a-f0-9]{64}$/.test(h))||
+     dir==='north'&&own.layers.some(l=>l.slot==='face'||l.slot==='iris'))return null;
   const anatomical=new Set([...originals.map(l=>l.source),...lower.frames]);
   if(own.layers.some(l=>l!==lower&&!owned.includes(l.id)&&[l.source,...(l.frames||[])].some(s=>anatomical.has(s))))return null;
   const paletteSourceMasks=Object.fromEntries(originals.map(l=>[l.source,masks[l.source]]));
   const paletteRefs=[...new Set(Object.values(paletteSourceMasks).flatMap(Object.values))];
   const baseMaterialSources=Object.fromEntries(lower.frames.map(h=>[h,'mixed']));
-  return root.MareReworkModularOutfitsHD?.withStrictSouthAppearance({...record,paletteSourceMasks,paletteRefs,baseMaterialSources,
-   palettePolicy:authority.palettePolicy},a)||null;
+  const decorated={...record,paletteSourceMasks,paletteRefs,baseMaterialSources,palettePolicy:authority.palettePolicy};
+  return dir==='south'?root.MareReworkModularOutfitsHD?.withStrictSouthAppearance(decorated,a)||null:
+   {...decorated,id:record.id+':verified-north',colorAppearance:a};
  }
 // South idle only: other poses lack a single source-stable G152/boot revision.
 // Deliberately no fallbacks: pants/no glove/no boot are not proven in all poses.
@@ -1052,7 +1083,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
   if(body==='female')return selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
-  return selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectSouthPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
+  return selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
  }
  function selectVisual(player,o={}){
   const exact=select(player,o);
@@ -1071,9 +1102,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const registered=swordCheckpoint.resolve(base,o.direction,visible,authority);
    return registered&&o.action!=='attack-sword'?{...registered,resolvedAction:'attack-sword'}:registered;
   }
-  if(exact.frozenPantsSource&&exact.body==='male'&&o.direction==='south'&&o.action==='walk'&&exact.equipment?.boots===155){
+  if(exact.frozenPantsSource&&exact.body==='male'&&['north','south'].includes(o.direction)&&['idle','walk'].includes(o.action)&&exact.equipment?.boots===155){
    const layered=selectLayered(player,o);
-   if(layered?.southPantsBoot155&&layered.sourceId===exact.id)return layered;
+   if(layered?.registeredPantsBoot155&&layered.sourceId===exact.id)return layered;
   }
   if(exact.hdKind==='outfit'&&exact.body==='male'&&['north','east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&
      exact.equipment?.torso===151&&exact.equipment?.pants===133&&exact.equipment?.gloves===152){

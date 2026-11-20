@@ -32,15 +32,15 @@ function ownWeaponStates(origin,direction,item,{reference,donor}={}){
  return states;
 }
 const geometry=({id,material,colorAppearance,...source})=>JSON.stringify(source);
-const materialIdentity=({id,skinColor,hairColor,eyeColor,...source})=>JSON.stringify(source);
-const supportedEyePastes=new Set(['brown','green','gray','amber','violet']);
+const materialIdentity=({id,skinColor,hairColor,eyeColor,registeredBlueIris,...source})=>JSON.stringify(source);
+const supportedEyePalettes=new Set(['blue','brown','green','gray','amber','violet']);
 function matchesSavedColors(origin,proof){
  const m=origin?.material,c=origin?.colorAppearance;
  if(!proof||!m||!c||m.sourceScale!==1||m.style!=='cropped'||m.eyeStyle!==null||m.gearRecord||
     c.gender!=='feminino'||c.hairStyle!=='hair-cropped'||c.eyeStyle!=='original'||c.skinStyle!=='natural'||
     c.skinColor!==m.skinColor||c.hairColor!==m.hairColor||c.eyeColor!==m.eyeColor||
     !Object.hasOwn(root.MareAppearance96?.skins||{},m.skinColor)||!Object.hasOwn(root.MareAppearance96?.hairs||{},m.hairColor)||
-    !supportedEyePastes.has(m.eyeColor)||!Object.hasOwn(root.MareCharacterAppearance?.eyes||{},m.eyeColor))return false;
+    (m.eyeColor==='blue')!==!!m.registeredBlueIris||!supportedEyePalettes.has(m.eyeColor)||!Object.hasOwn(root.MareCharacterAppearance?.eyes||{},m.eyeColor))return false;
  return geometry(origin)===proof.geometry&&materialIdentity(m)===proof.material;
 }
 function create(catalog,accepted,normalizedGloves,colors){
