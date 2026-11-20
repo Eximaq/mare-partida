@@ -1,9 +1,9 @@
 'use strict';
-const g=Number(process.env.GLOVE||26);
+const g=Number(process.env.GLOVE||26),pantsId=Number(process.env.PANTS||182);
 const p=require('path'),a=require('node:assert/strict'),C=require('crypto');
 if(!process.argv[2]){
- for(const item of (process.env.GLOVE?[g]:[25,26,145,152,159,166,173]))for(const d of ['east','west']){
-  const r=require('node:child_process').spawnSync(process.execPath,[__filename,d],{stdio:'inherit',env:{...process.env,GLOVE:String(item)}});
+ for(const def of (process.env.PANTS?[pantsId]:process.env.GLOVE?[182]:[182,147]))for(const item of (process.env.GLOVE?[g]:def===147?[26,138,166,173]:[25,26,138,145,152,159,166,173]))for(const d of ['east','west']){
+  const r=require('node:child_process').spawnSync(process.execPath,[__filename,d],{stdio:'inherit',env:{...process.env,GLOVE:String(item),PANTS:String(def)}});
   if(r.error)throw r.error;if(r.status!==0)process.exit(r.status||1);
  }
  process.exit(0);
@@ -17,9 +17,9 @@ const hash=b=>C.createHash('sha256').update(b).digest('hex');
 const d=process.argv[2]||'east',o={action:'walk',direction:d,consumer:'world'};
 a(['east','west'].includes(d));
 const r=rows.find(r=>r.id===`frozen-female-glove${g}-${d}-walk-native-layers`);
-const ownRefs={173:{east:'ref-0718',west:'ref-0719'},152:{east:'ref-0712',west:'ref-0713'},25:{east:'ref-0978',west:'ref-0979'}};
+const ownRefs={138:{east:'ref-0708',west:'ref-0709'},173:{east:'ref-0718',west:'ref-0719'},152:{east:'ref-0712',west:'ref-0713'},25:{east:'ref-0978',west:'ref-0979'}};
 if(ownRefs[g])a.equal(r.frozenGloveSourceRef,ownRefs[g][d]);
-const q=rows.find(r=>r.id===`approved-female151-v64-walk-${d}-pants182`);
+const q=rows.find(r=>r.id===`approved-female151-v64-walk-${d}-pants${pantsId}`);
 const x=q.pack.directions[d],y=r.pack.directions[d],gloves=y.layers.filter(l=>l.id.startsWith(`own-female${g}-`));
 const pants=l=>l.id.startsWith('approved-'),extras=l=>l.id.startsWith('pants154-')||l.id.startsWith('boot155-')||gloves.includes(l);
 const bootFront=y.layers.filter(l=>l.id.startsWith('boot155-')&&l.depth>29.5);
@@ -29,7 +29,7 @@ a.deepEqual(gloves.map(l=>l.depth),[29.5,9.5]);a.deepEqual(gloves.map(l=>l.bindi
 a.deepEqual(q.pack.frame,r.pack.frame);a.deepEqual(q.pack.pivot,r.pack.pivot);
 const refs=[...new Set(gloves.flatMap(l=>l.frames))];a(refs.every(h=>r.sourceRefs.includes(h)));
 const appearance96=global.MareCharacterAppearance.normalize({gender:'feminino',hairStyle:'original',hairColor:'brown',eyeStyle:'original',eyeColor:'brown',skinColor:'light'});
-const actor={appearance96,classId:'sword',equipment:{coat:{def:151},legs:{def:182}}};
+const actor={appearance96,classId:'sword',equipment:{coat:{def:151},legs:{def:pantsId}}};
 const raw=f=>'tools/rework-modular-outfits-hd/assets/'+f+'.png';
 const mask=async (width,height,z,f)=>{
  const c=cv.createCanvas(width,height),cx=c.getContext('2d');
@@ -45,20 +45,21 @@ async function stage(actor,source){
  const gloveActor={...actor,equipment:{...actor.equipment,gloves:{def:g}}};
  const combo=run.selectVisual(gloveActor,o);
  a.deepEqual(combo?.slotRoutes?.gloves,{item:g,quality:'hd',source:r.id});
- a.deepEqual(combo.omitted,[]);a.equal(combo.slotRoutes.legs.item,182);a.equal(combo.slotRoutes.coat.item,151);
+ a.deepEqual(combo.omitted,[]);a.equal(combo.slotRoutes.legs.item,pantsId);a.equal(combo.slotRoutes.coat.item,151);
  a.deepEqual(combo.pack.directions[d].layers,[...x.layers,...gloves]);
  a.deepEqual({...combo.pack.directions[d],layers:x.layers},x);
  a.deepEqual(combo.pack.pivot,native.pack.pivot);
- const swapId=g===26?145:26;
+ const swapId=g===26?(pantsId===147?166:145):26;
  const swapped={...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:swapId}}},other=run.selectVisual(swapped,o);
  a.equal(other.slotRoutes.gloves.item,swapId);
  a.deepEqual(other.pack.directions[d].layers.filter(l=>!l.id.startsWith('own-female')),x.layers);
  a.notDeepEqual(other.pack.directions[d].layers.slice(-2),gloves);
+ if(pantsId===147)for(const id of [25,145,152,159])a.notEqual(run.selectVisual({...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:id}}},o)?.slotRoutes?.gloves?.item,id);
  const controls=[
   {...gloveActor,appearance96:{...appearance96,skinColor:'ebony'}},
   {...gloveActor,appearance96:{...appearance96,hairStyle:'hair-bob'}},
   {...gloveActor,appearance96:{...appearance96,eyeColor:'green'}},
-  {...gloveActor,equipment:{...gloveActor.equipment,legs:{def:147}}},
+  {...gloveActor,equipment:{...gloveActor.equipment,legs:{def:175}}},
   {...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:180}}},
   {...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:g,variant:'other'}}},
   {...gloveActor,equipment:{...gloveActor.equipment,boots:{def:155}}}];
@@ -89,7 +90,7 @@ async function stage(actor,source){
   a(covered&&changed);
   delete gloveActor.equipment.gloves;
   a.equal(run.selectVisual(gloveActor,o).id,native.id);
-  a(u0.equals(px(u.draw(f,gloveActor))),'un-equipping glove restores approved P182 and C151 RGBA');
+  a(u0.equals(px(u.draw(f,gloveActor))),'un-equipping glove restores approved pants and C151 RGBA');
   gloveActor.equipment.gloves={def:g};
   a.equal(run.selectVisual(gloveActor,o).id,combo.id);
   a(u1.equals(px(v.draw(f,gloveActor))),'re-equipping glove restores the same HD combination');a.equal(out,0,'other body/material changes');

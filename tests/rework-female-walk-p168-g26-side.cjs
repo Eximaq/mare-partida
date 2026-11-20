@@ -2,7 +2,7 @@
 const g=Number(process.env.GLOVE||26);
 const p=require('path'),a=require('node:assert/strict'),C=require('crypto');
 if(!process.argv[2]){
- for(const item of (process.env.GLOVE?[g]:[25,26,145,152,159,166,173]))for(const d of ['east','west']){
+ for(const item of (process.env.GLOVE?[g]:[25,26,138,145,152,159,166,173]))for(const d of ['east','west']){
   const r=require('node:child_process').spawnSync(process.execPath,[__filename,d],{stdio:'inherit',env:{...process.env,GLOVE:String(item)}});
   if(r.error)throw r.error;if(r.status!==0)process.exit(r.status||1);
  }
@@ -17,7 +17,7 @@ const hash=b=>C.createHash('sha256').update(b).digest('hex');
 const d=process.argv[2]||'east',o={action:'walk',direction:d,consumer:'world'};
 a(['east','west'].includes(d));
 const r=rows.find(r=>r.id===`frozen-female-glove${g}-${d}-walk-native-layers`);
-const ownRefs={173:{east:'ref-0718',west:'ref-0719'},152:{east:'ref-0712',west:'ref-0713'},25:{east:'ref-0978',west:'ref-0979'}};
+const ownRefs={138:{east:'ref-0708',west:'ref-0709'},173:{east:'ref-0718',west:'ref-0719'},152:{east:'ref-0712',west:'ref-0713'},25:{east:'ref-0978',west:'ref-0979'}};
 if(ownRefs[g])a.equal(r.frozenGloveSourceRef,ownRefs[g][d]);
 const q=rows.find(r=>r.id===`approved-female151-v64-walk-${d}-pants168`);
 const x=q.pack.directions[d],y=r.pack.directions[d],gloves=y.layers.filter(l=>l.id.startsWith(`own-female${g}-`));
