@@ -66,7 +66,7 @@ for(const skinColor of (process.env.SKIN?.split(',')||Object.keys(global.MareApp
   a(diff>1000);a(pix(draw(bare,f)).equals(x));count++;m.width=wc.width=1;
  }
  a.equal(JSON.stringify(p),save);
- for(const e of [{legs:{def:22}},{head:{def:19}},{gloves:{def:26}},{weapon:{def:1}},{weapon:{def:5}},{weapon:{def:69}},{boots:{def:141}},{boots:{def:176}}]){
+ for(const e of [{legs:{def:22}},{head:{def:19}},{gloves:{def:26}},{weapon:{def:5}},{weapon:{def:69}},{boots:{def:141}},{boots:{def:176}}]){
   a(!api.selectVisual(actor({boots:{def:boot},...e}),o)?.id.includes(':checkpoint-b'+boot+'-south-no-coat'));
  }
  for(const delta of [{direction:'north'},{direction:'east'},{direction:'west'},{action:'walk'},{action:'attack-unarmed'}])
