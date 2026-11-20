@@ -1815,7 +1815,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function selectSouthPunchBare(o,a,visible){
   const item=visible.gloves?.item,noCoat=visible.torso==null;
   if(a.body!=='male'||o.direction!=='south'||!['attack','attack-unarmed'].includes(o.action)||
-     Object.keys(visible).length!==(noCoat?2:3)||(noCoat?item!==26:visible.torso.item!==151)||visible.pants?.item!==133||![26,131,138,145,152,159,166,173,180].includes(item)||
+     Object.keys(visible).length!==(noCoat?2:3)||(noCoat?![26,131,138,145,152,159,166,173,180].includes(item):visible.torso.item!==151)||visible.pants?.item!==133||![26,131,138,145,152,159,166,173,180].includes(item)||
      !['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||!strictSouthRequested(a))return null;
   const id='male-pants133-attack-unarmed-south-drawn8-candidate',bare=outfitById.get(id),base=outfitById.get(id+'-coat151-native'),
    donor=outfitById.get(`frozen-male-glove${item}-south-attack-unarmed-native-layers`),src=outfitById.get(id+'-boots9-isolated-candidate-coat151-south-registered-gloves152-visible-native-candidate');
@@ -1835,7 +1835,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!eq(l.frames,authority)||authority.some(h=>!donor.sourceRefs.includes(h)||base.sourceRefs.includes(h)||base.paletteSourceMasks?.[h]))return null;
   const target=noCoat?bare:base,dirTarget=dir(target);
   const pack={...target.pack,directions:{...target.pack.directions,south:{...dirTarget,layers:[...dirTarget.layers,l]}}};
-  const next={...target,id:target.id+(noCoat?':own-p133-g26-south-no-coat':':own-south-punch-g'+item+'-bare'),hdKind:'outfit',equipment:{...target.equipment,gloves:item},pack,sourceRefs:[...target.sourceRefs,...authority],
+  const next={...target,id:target.id+(noCoat?':own-p133-g'+item+'-south-no-coat':':own-south-punch-g'+item+'-bare'),hdKind:'outfit',equipment:{...target.equipment,gloves:item},pack,sourceRefs:[...target.sourceRefs,...authority],
    slotRoutes:Object.fromEntries(Object.entries(visible).map(([k,v])=>[v.key,{item:v.item,quality:'hd',source:k==='gloves'?donor.id:target.id}])),omitted:[],resolvedAction:'attack-unarmed'};
   return root.MareReworkModularOutfitsHD?.withStrictSouthAppearance(next,{...a,hair:'original',face:'original'})||null;
  }
