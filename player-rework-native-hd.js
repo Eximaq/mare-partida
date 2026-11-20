@@ -1659,6 +1659,30 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const unbooted={...r.pack,directions:{...r.pack.directions,north:{...d,layers:d.layers.filter(l=>!eligible.includes(l))}}};
   return {...verified,id:verified.id+':unbooted',pack:unbooted,equipment,hdKind:'outfit',omitted:[],slotRoutes:slots};
  }
+ // Use only pairs verified on their receiving trousers, never import P133 clothing.
+ const northPantsVerifiedGloves={154:[26,131,166],161:[26]};
+ function selectNorthRegisteredPantsGlove(o,a,visible){
+  const pants=visible.pants?.item,item=visible.gloves?.item;
+  if(o.direction!=='north'||!['idle','walk'].includes(o.action)||!northPantsVerifiedGloves[pants]?.includes(item))return null;
+  const base=selectRegisteredPantsBoot155(o,a,{...visible,gloves:{...visible.gloves,item:152}}),
+        donor=selectNorthGlovePalette(o,a,{...visible,pants:{...visible.pants,item:133}});
+  if(!base?.colorAppearance||!donor?.colorAppearance)return null;
+  const b=base.pack.directions.north,g=donor.pack.directions.north,same=(x,y)=>JSON.stringify(x)===JSON.stringify(y),
+   geometry=({layers,...rest})=>rest,isG=l=>l.id.startsWith('glove'),isP=l=>l.id.startsWith('pants133-')||l.id.startsWith('pants'+pants+'-'),
+   effective=l=>{if(!Array.isArray(l.frames)||l.frames.length!==b.clip.frames||!Array.from(l.frames).every(Boolean))return l;
+     const {source,...rest}=l;return rest;},
+   core=layers=>layers.filter(l=>!isG(l)&&!isP(l)).map(effective);
+  const target=b.layers.filter(isG),pair=g.layers.filter(isG);
+  if(target.length!==2||pair.length!==2||!['frame','pivot','density'].every(k=>same(base.pack[k],donor.pack[k]))||
+     !same(geometry(b),geometry(g))||!same(core(b.layers),core(g.layers))||
+     !['paletteSourceMasks','baseMaterialSources'].every(k=>same(base[k],donor[k]))||
+     pair.some(l=>!donor.sourceRefs.includes(l.source)||base.sourceRefs.includes(l.source)||base.paletteSourceMasks[l.source]||base.baseMaterialSources[l.source]))return null;
+  const layers=b.layers.map(l=>target.includes(l)?pair[target.indexOf(l)]:l);
+  return {...base,id:base.id+':p'+pants+'-g'+item+'-owned:'+donor.id,equipment:{...base.equipment,gloves:item},
+   pack:{...base.pack,directions:{...base.pack.directions,north:{...b,layers}}},
+   sourceRefs:[...base.sourceRefs,...pair.map(l=>l.source)],
+   slotRoutes:{...base.slotRoutes,[visible.gloves.key]:donor.slotRoutes[visible.gloves.key]}};
+ }
  function selectLayered(player,o={}){
   if(state!=='ready'||!player||player.__reworkSubset||player.zoanTransformed||slotEntry(player.equipment?.visual_completo))return null;
   const raw=player.appearance96||{},body={masculino:'male',feminino:'female',male:'male',female:'female'}[raw.gender??raw.body];
@@ -1671,7 +1695,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
   if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectFemaleApprovedGloveWalk(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
-  return selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
+  return selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
  }
  function selectVisual(player,o={}){
   const exact=select(player,o);
