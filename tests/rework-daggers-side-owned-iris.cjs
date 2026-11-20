@@ -8,7 +8,7 @@ const save=(def,eyeColor,mods)=>JSON.parse(JSON.stringify(A.commit({id:'dagger-p
  for(const c of ['blue','green','gray','amber','violet']){const p=save(item,c),before=JSON.stringify(p),r=api.selectVisual(p,o);a.equal(r?.orderedDaggerIris,c);
   for(const k of ['states','timeline','pivot','nativeCanvas','approvedAppearance','equipmentContract','visualSampling'])a.deepEqual(r[k],r0[k]);
   a.equal(r.fps,12);a.equal(r.contactTick,4);a.deepEqual(r.timeline,['0','1','2','3','4','5','6','7']);
-  for(const q of [save(item,c,{skinColor:'ebony'}),save(item,c,{hairColor:'black'}),save(item,c,{eyeStyle:'face-focused'}),save(item,c,{hairStyle:'hair-bob'}),{...p,classId:'assassin'},{...p,zoanTransformed:true},{...p,equipment:{weapon:{def:item,variant:'other'}}},{...p,equipment:{...p.equipment,coat:{def:151}}},save(12,c)])a(!api.selectVisual(q,o)?.orderedDaggerIris);
+  for(const q of [save(item,c,{skinColor:'ebony'}),{...p,appearance96:{...p.appearance96,hairColor:'unregistered-literal'}},save(item,c,{eyeStyle:'face-focused'}),save(item,c,{hairStyle:'hair-bob'}),{...p,classId:'assassin'},{...p,zoanTransformed:true},{...p,equipment:{weapon:{def:item,variant:'other'}}},{...p,equipment:{...p.equipment,coat:{def:151}}},save(12,c)])a(!api.selectVisual(q,o)?.orderedDaggerIris);
   for(const direction of ['north','south'])a(!api.selectVisual(p,{...o,direction})?.orderedDaggerIris);
   a(!api.selectVisual(p,{...o,action:'walk'})?.orderedDaggerIris);a.equal(JSON.stringify(p),before);selections++;
  }
