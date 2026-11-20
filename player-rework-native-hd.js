@@ -209,17 +209,29 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(player.__southAnatomy||player.__reworkSubset||o.weaponless||canonical(a.body)!=='female'||
      o.action!=='idle'||o.direction!=='south'||keys.some(k=>!['legs','pants','boots'].includes(k))||
      (equipment.legs!=null&&equipment.pants!=null))return null;
-  // The B176 seam and sole are certified against the P168 phase-zero
-  // geometry. P182 keeps its pants-only path, not this boot registration.
+  // The B176 and B183 seams are certified against the single P168 idle
+  // geometry. P182 remains pants-only; no additional walk routes.
   if(boot==null?(keys.length!==1||![168,182].includes(def)):
-    (boot!==176||value!=null&&def!==168))return null;
+    (![176,183].includes(boot)||value!=null&&def!==168))return null;
   const idle=selectBase({...player,equipment:{}},o,true);
-  const anchorEquipment=value!=null?equipment:{...equipment,legs:{def:168}};
+  // B183 is a new position registration, not a new walking combination.
+  const b183=boot===183;
+  if(b183&&typeof bolt==='object'&&['variant','variantId','appearanceVariant'].some(k=>bolt[k]!=null&&bolt[k]!=='original'))return null;
+  const anchorEquipment={...(value!=null?equipment:{...equipment,legs:{def:168}}),...(b183?{boots:{def:176}}:{})};
   const walk=resolveSouthPants(player,{...o,action:'walk'},a,anchorEquipment);
-  const target=walk?.authoredPantsLayer;
+  let target=walk?.authoredPantsLayer;
+  if(b183&&target){
+   const layers=southWalkBootLayers(target.spec,183),donor=outfitById.get('frozen-v47-female-151-boot183-south-idle');
+   const d=donor?.pack?.directions?.south;
+   if(!donor?.frozenBootContract||donor.productionEnabled===false||d?.clip.frames!==1||d.clip.loop!==false||
+      !['frame','pivot','density'].every(k=>JSON.stringify(donor.pack[k])===JSON.stringify(idle?.pack[k]))||
+      !layers||layers.some(l=>!d.layers.some(idleBoot=>idleBoot.id===l.id&&idleBoot.depth===l.depth&&
+       idleBoot.binding?.kind==='fixed'&&idleBoot.frames?.length===1&&idleBoot.frames[0]===l.frames[0])))return null;
+   target={...target,layers};
+  }
   if(!target||idle?.sourceId!=='female-idle-original-south-from-walk0'||idle.headRecord||idle.gearOnlyRecord||
      target.item!==(value!=null?def:168)||target.layers.length!==(boot==null?0:4)||
-     (boot!=null&&target.layers.some(l=>l.slot!=='boots'||!l.id.startsWith('boot176-')||
+     (boot!=null&&target.layers.some(l=>l.slot!=='boots'||!l.id.startsWith('boot'+boot+'-')||
        !/^[a-f0-9]{64}$/.test(l.frames?.[0])||l.depth!==(l.id.endsWith('-rear')?-1:45)))||
      target.spec.items[target.item]?.[0]?.ownerAlpha!==
       '434a293f43750f8d09085f4258a45f835fe2199c44cecc2ad727e365d2a3b7e6'||
@@ -231,7 +243,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      !eq(I.poses,W.poses.slice(0,1))||!eq(I.layers,W.layers.map(l=>l.frames?{...l,frames:l.frames.slice(0,1)}:l))||
      !eq(idle.colorAppearance,base.colorAppearance))return null;
   const bridge=boot==null?walk:{
-   ...walk,id:walk.id+(value==null?':boots-only':''),equipment:value==null?{boots:boot}:walk.equipment,
+   ...walk,id:walk.id+(b183?':b183-source':'')+(value==null?':boots-only':''),equipment:value==null?{boots:boot}:{...walk.equipment,boots:boot},
    sourceRefs:[...target.layers.map(l=>l.frames[0]),...(value==null?[]:[target.spec.items[def][0].cloth,target.spec.items[def][0].ownerAlpha])],
    authoredPantsLayer:{...target,item:value==null?null:def}};
   return {...bridge,id:bridge.id+':idle-phase0',action:'idle',
@@ -974,11 +986,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  // Exact North lower cloth ownership check: these coat passes never intersect
  // the 1,034–5,399 pixels where the two registered lower bodies differ.
  const north133CoatRegistration={"idle":{"pants":["053730953e48350059aa0c22f1f23e448838da8b20e32b4317613b2d64adbeb3"],"lower":["4c778f703da2c5b7cbf03c25969027c7daa4ec6527c52b1cd7adc4867a04f508"],"donors":{"6":"f6f5ca961e1ff6b316372f65a9c4b0c303789861528b79e156eabcb19b1610ed","7":"b42a54e476c269a3aded654eafdc19f36a8411dbe0d0e6da18edb4acde63a9df","130":"c5cb57830bacd189b4157595dad58b682f9a4b69d4830e17daace0c2fcd2fd80","137":"d90df4f478667c89095a0a4347bc90dae9a2e87848e4dfb543d2175a6108df3c","144":"d141872240ab905755de4afc05c196b432f2280dd76dae1337cf7d570199e169","158":"54f55026995fe5fd4a34fe15034bdcd51f40ec7a4f695bc981a8b4862b70af01","165":"97cd92550221f3ba4bf15e8d0e44e98b486a26372a1b28de16cc78d790e69d2e","172":"954303a8d311d73532a487c58386f8dc6e6923fb3dcc898193f6b7407e276d44","179":"e073365d82e2ba62147fcbbabc4dd7b145ebeec535d9e4f933fa5a024c9b7405"}},"walk":{"pants":["053730953e48350059aa0c22f1f23e448838da8b20e32b4317613b2d64adbeb3","35c97c82e3052a3d1c1a9669901f6200e1cb6e9bfe4cf6d8982dcb04cf1078ad","ba49c4b1bf3fa544a9d3d44d2f739e2171fcc7b75c6dda3092551d2aca0d8eb4","da7d5d903f068a1806ceeed3d23941030333d80aa7510f6f6c94538c7122d32e","41e98a86e0bddee8acccc56d72b2c233b6aeb8ffae4add96476124270d419cc7","8b9544b9b743027f8d39c0cc550285ba0aacabfdbc7ca3b1cb68cdb5dd44bbcb","cd82d4e71462f35c2d51d6dc0bab1687318458dba0c6ff1ef24c69c77533c199","32baa3b753179e6d71f7087ba00b226ba81fdfcde97f34386d68a142cd5410b9","7eaded8b71ba91fe0c5bd3b2d59e726fa947c4db38ed467128cc6de83fcf439b","7f08c3a1d1517df6ddacb6bfe357c3a804a192bbb90f174c677aa3725435e5a0","fd56f17bea728e7a8f4e069ef49fa8f32c143c24fb7a8236f5e79cac5caa5364","337690dd15d07fe2a6cf9bf360bb2391707b3f32048d4a46a91c55f67130ff3b","eeed1a84abcb5b4d49d748769c18b247b1c36c1cc614df973204ed042069ecee","fb0a4d801edef0d031b2514398da42fe380bc1400102e7b3cf5b0338494190b0","d444cfdd629d693e63095903ce702450e73ea87b147660ab8ecbde971a370019","0dda1b3ab48dd13d6fb05f75d04ede5b6857de04d3a80f2c5d505e1a07895baa"],"lower":["4c778f703da2c5b7cbf03c25969027c7daa4ec6527c52b1cd7adc4867a04f508","d9d9857f715f503361cc1f11e7f6b7721d1cc48759fb99e84a9467ea6f68a488","8022f32a86db1e76021f21ff4825ef7b81abce17c548860c178ae5eff70c979d","ce606ae7b08be263486cb869f389f6e3cdae4a6e5b97c9c982800b2d739cf831","32e637dcb0cdbfd7d5cdc8492d10b57928f49cfc8c5c849c12b4b21ce32e3cd7","1c2a8fd11848869996d76f4ba6c32f4b0909838816fdbc1dcb7363dc7dab2ac5","58023b831d6b1d2157be6b4ae3616d50ec1182f36eafa54f7aa38fa156058bb5","97a2a36fb032b87d2217a7b0fe9d52fd030b1d496a94c44856c929f3444ef295","bb94cc4f963c00e71ddc1a9d33940cb373f919d79bff1db75a3a7b9f30350664","61b8d1c969304fde769983b2602a08b3b44628426855a2e0abbee745e755599e","7d15bb25e681b6eb913d0d7b280f4c8c5aab93d1d69a0d0686346f136aa1547e","78def7a35d6d7e899cf42ac38f31f80cf27869be1938c06e5f63a773623836fe","5ecfb3f44da69c1089bbba6c5242f362041a09f663829232b766b466cdf10360","8f4f4368fa4313b3e5966ccccdded838695094f1ab67a9b0e5f3768f96b48aeb","372273a4e2842d36aa9a893ceb60248a43b7b2ca482bb624896992dbbc6dc932","51bfe05fec654b2a6764d661b9c1a81156717f24254613d35efdd898143a2ff4"],"donors":{"6":"f6f5ca961e1ff6b316372f65a9c4b0c303789861528b79e156eabcb19b1610ed","7":"b42a54e476c269a3aded654eafdc19f36a8411dbe0d0e6da18edb4acde63a9df","137":"d90df4f478667c89095a0a4347bc90dae9a2e87848e4dfb543d2175a6108df3c","144":"d141872240ab905755de4afc05c196b432f2280dd76dae1337cf7d570199e169"}}};
+ // The two verified C144 passes own only cloth, lining and embroidery.
+ const northCoatPalettePasses={"144":{"idle":{"coat144-whole-core":["8dded90fa3aa52ba1459a58e18019695a8e67a451a68f9a7cfdc872df0010ac1"],"coat144-whole-hem":["6da15db7423418d43923bbdad8ec314c75d196c6dd785009f23b8d6d21050868"]},"walk":{"coat144-whole-core":["8dded90fa3aa52ba1459a58e18019695a8e67a451a68f9a7cfdc872df0010ac1"],"coat144-whole-hem":["6da15db7423418d43923bbdad8ec314c75d196c6dd785009f23b8d6d21050868"]}}};
  function selectNorthTorsoOnPants133(o,a,visible){
   const d='north',action=o.action,item=visible.torso?.item,boot=visible.boots?.item,contract=north133CoatRegistration[action];
   const palette=Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original');
   const known=(name,index)=>name==null||name==='original'||Object.hasOwn(index||{},name);
-  if(palette&&(![6,7].includes(item)||!['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||
+  if(palette&&(![6,7,144].includes(item)||!['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||
      !known(a.skin,root.MareAppearance96?.skins)||!known(a.hairColor,root.MareAppearance96?.hairs)||
      !known(a.eyeColor,root.MareCharacterAppearance?.eyes)))return null;
   if(a.body!=='male'||o.direction!==d||!contract?.donors[item]||visible.pants?.item!==133||
@@ -1015,16 +1029,24 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     anchorLayers:owned.map(l=>l.id),records:{[item]:{record:registered,layers:clothing.map(l=>l.id)}}
    }}});
   if(!source)return null;
+
+  const clothAuthority=northCoatPalettePasses[item]?.[action];
+  if(palette&&clothAuthority){
+   if(clothing.length!==Object.keys(clothAuthority).length||
+    clothing.some(l=>clothAuthority[l.id]?.[0]!==l.source||l.frames?.some(h=>!clothAuthority[l.id].includes(h))))return null;
+
+  }
   const slotRoutes=Object.fromEntries(Object.entries(source.slotRoutes).map(([k,v])=>[visible[k].key,v]));
   const dressed={...source,slotRoutes,omitted:[],hdKind:'outfit'};
   if(!palette)return dressed;
-  // C6/C7 use cloth-only passes, including the two C7 rear aperture pieces.
+  // Apply the shared authored anatomy masks; garment pixels stay unchanged.
   // Attach the exact North anatomy authority already used on P133/B9. The
   // actual North pack cannot show an iris; never drop the saved color.
   const boot9=outfitById.get(id+'-boots9-isolated-candidate');
   const colored=northBootAppearance(dressed,{...a,eyeColor:'original'},anchor,boot9,true);
   if(!colored)return null;
-  return {...colored,colorAppearance:{...colored.colorAppearance,eyeColor:a.eyeColor||'original'}};
+  return {...colored,
+   colorAppearance:{...colored.colorAppearance,eyeColor:a.eyeColor||'original'}};
  }
  // Verified South original eye material, not a brightness or rectangle mask.
  const southPunchFace='6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a',southPunchSkin='47c4585f7c79fdf6d67207416b4a08c9b7322da3d9abc94cddf965bd6ed174a0';
