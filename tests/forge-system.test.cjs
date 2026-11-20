@@ -18,7 +18,7 @@ test('All 1000 rarity outcomes match boundaries and never drop Supreme',()=>{
 });
 test('All six rarities apply base multiplier once, apply refinement bonus to the refinable base, unique scalable extras and sockets',()=>{
  for(const [id,r] of Object.entries(F.rarity)){
-  const g=seed(id),i=g.equipment.weapon,s=F.itemStats(i,defs);assert.equal(i.extras.length,r.extras);assert.equal(new Set(i.extras.map(e=>e.stat)).size,r.extras);assert.equal(i.sockets.length,r.sockets);assert.equal(s.attack,Math.round((10*r.mult+6)*1.81*1.012));
+  const g=seed(id),i=g.equipment.weapon,s=F.itemStats(i,defs);assert.equal(i.extras.length,r.extras);assert.equal(new Set(i.extras.map(e=>e.stat)).size,r.extras);assert.equal(i.sockets.length,r.sockets);assert.equal(s.attack,Math.round((10*r.mult+6)*1.81*1.0048));
   const bounds=F.extraRange(i.level,id);for(const x of i.extras){if(F.keys.includes(x.stat))assert(x.value>=bounds.min&&x.value<=bounds.max);if(x.stat==='crit')assert(x.value<=.04);}
  }
  assert(F.extraRange(30,'supreme').max>F.extraRange(1,'common').max);

@@ -22,7 +22,7 @@
   });
   const fragmentYield=Object.freeze({common:2,uncommon:5,rare:10,epic:20,legendary:35,supreme:60});
   const fragmentCapacity=1_000_000_000;
-  const refinementBonuses=[[0,0,0],[.03,.02,.02],[.08,.05,.05],[.15,.08,.08],[.20,.10,.10]];
+  const refinementBonuses=[[0,0,0],[.012,.01,.01],[.025,.025,.025],[.04,.04,.04],[.055,.05,.05]];
   function refinementBonus(plus){
     const level=Math.min(refinement.max,int(plus)),step=Math.floor(level/5),fraction=(level%5)/5;
     const base=refinementBonuses[step],next=refinementBonuses[step+1]||base;

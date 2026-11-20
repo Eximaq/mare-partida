@@ -2408,7 +2408,7 @@
     if(currentPanel!=='inventory')return null;
     const potion=element.dataset.item==='virtual-potion'?potions.health:element.dataset.item==='virtual-mana-potion'?potions.mana:null;
     if(potion)return {kind:'item',item:{name:potion.name,rarity:'uncommon',rarityName:'Incomum',level:1,stats:{},description:potionDescription(potion)}};
-    if(element.dataset.item==='virtual-material')return {kind:'item',item:{name:MareForge.itemFragment.name,rarity:'common',rarityName:'Comum',level:1,stats:{},description:MareForge.itemFragment.description}};
+    if(element.dataset.item===MareForge.itemFragment.id)return {kind:'item',item:{name:MareForge.itemFragment.name,rarity:'common',rarityName:'Comum',level:1,stats:{},description:MareForge.itemFragment.description}};
     const item=element.dataset.item?game.inventory.find(entry=>entry.id===element.dataset.item):element.dataset.invSlot?game.equipment[element.dataset.invSlot]:null;
     const data=tooltipItem(item);if(!data)return null;
     const equipped=element.dataset.item?game.equipment[data.slot]:null;
@@ -2427,7 +2427,7 @@
       const qty=game[potion.stock]||0;
       if(qty>0)items.push({kind:'potion',id:'virtual-'+potion.id,potion,category:'consumables',name:potion.name,rarity:'uncommon',qty,index:-1-index});
     }
-    if(game.materials>0)items.push({kind:'material',id:'virtual-material',category:MareForge.itemFragment.category,name:MareForge.itemFragment.name,rarity:MareForge.itemFragment.rarity,qty:game.materials,index:-3});
+    if(game.materials>0)items.push({kind:'material',id:MareForge.itemFragment.id,category:MareForge.itemFragment.category,name:MareForge.itemFragment.name,rarity:MareForge.itemFragment.rarity,qty:game.materials,index:-3});
     let found=items.filter(entry=>{
       const q=inventoryUI.query.trim().toLocaleLowerCase('pt-BR');
       return(!q||entry.name.toLocaleLowerCase('pt-BR').includes(q))&&(inventoryUI.category==='all'||inventoryUI.category===entry.category)&&(inventoryUI.rarity==='all'||inventoryUI.rarity===entry.rarity);
@@ -2471,7 +2471,7 @@
   function invSelected(){
     for(const [kind,potion] of Object.entries(potions))
       if(selectedItem==='virtual-'+potion.id&&game[potion.stock]>0)return {kind:'potion',id:selectedItem,potion,potionKind:kind};
-    if(selectedItem==='virtual-material'&&game.materials>0)return {kind:'material',id:'virtual-material'};
+    if(selectedItem===MareForge.itemFragment.id&&game.materials>0)return {kind:'material',id:MareForge.itemFragment.id};
     const item=getInventoryItem(selectedItem);
     return item?{kind:'gear',item,id:item.id}:null;
   }
@@ -2489,7 +2489,7 @@
     const {pageSize:BAG_PER_PAGE}=inventoryGridLayout();
     if(inventoryUI.pageSize&&inventoryUI.pageSize!==BAG_PER_PAGE)inventoryUI.page=MareUI.inventoryPageAtResize(inventoryUI.page,inventoryUI.pageSize,BAG_PER_PAGE);
     inventoryUI.pageSize=BAG_PER_PAGE;
-    if(!invSelected())selectedItem=game.equipment.weapon?.id||game.inventory[0]?.id||(game.potions>0?'virtual-potion':game.manaPotions>0?'virtual-mana-potion':game.materials>0?'virtual-material':null);
+    if(!invSelected())selectedItem=game.equipment.weapon?.id||game.inventory[0]?.id||(game.potions>0?'virtual-potion':game.manaPotions>0?'virtual-mana-potion':game.materials>0?MareForge.itemFragment.id:null);
     const overlay=$('panelOverlay');overlay.classList.add('inventory-mode','pirate-hd');
     const headMeta=$('inventoryHeadMeta');if(headMeta)headMeta.classList.add('hidden');
     const stats=getDerived();const f=factions[game.factionId]||factions.pirate;

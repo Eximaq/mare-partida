@@ -60,8 +60,9 @@ def expected_release():
 
 def verify_release():
     actual = json.loads((BASE / 'player-pack.json').read_text(encoding='utf-8'))
-    if actual != expected_release():
-        raise ValueError('Current player release is stale. Run python tools/player96_release.py --write')
+    expected = expected_release()
+    if actual != expected:
+        raise ValueError(f"Current player release is stale ({actual['assetRevision']} != {expected['assetRevision']}). Run python tools/player96_release.py --write")
     return actual
 
 
