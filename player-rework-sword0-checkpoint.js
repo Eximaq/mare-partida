@@ -9,6 +9,8 @@ const claims={
 // The warmed points are gold/copper/red glove trim, not the original bare hand.
 // Use this limited material exemption only for the exact four-direction source rows.
 const extraGloveFingerprints={"145":"de6be91100239389ce4b517e72d187243b0f749741167e284e8fe054e89069aa","166":"30c5dee6760ccb8a3ab6dbae45c2e361e0f8d667f26573d4e5442e4c2f2c804e","173":"09e4059dbf57a69bda4a4aacb94e73277eddaf3f1e597c29c9c10b1df3c5ff95"};
+const northGloveOnlyIds=[26,145,159,166,173];
+const northGloveOnlyAuthority="32fc92593d9ee231e034c851160d07b2936e8e8995b400b229579dd928abf3eb";
 const family=new Set([1,67,68,69,70]);
 function ownWeaponStates(origin,direction,item,{reference,donor}={}){
  if(!family.has(item)||!reference||!donor||reference.item!==0||donor.item!==item||
@@ -43,7 +45,7 @@ function matchesSavedColors(origin,proof){
     (m.eyeColor==='blue')!==!!m.registeredBlueIris||!supportedEyePalettes.has(m.eyeColor)||!Object.hasOwn(root.MareCharacterAppearance?.eyes||{},m.eyeColor))return false;
  return geometry(origin)===proof.geometry&&materialIdentity(m)===proof.material;
 }
-function create(catalog,accepted,normalizedGloves,colors){
+function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
  const rows=new Map(catalog.records.map(r=>[[r.direction,r.slot,r.item].join('/'),r]));
  const allowed=new Set(catalog.assetHashes);
  const applies=(origin,direction)=>accepted[direction]?.includes(JSON.stringify(origin))||matchesSavedColors(origin,colors[direction]);
@@ -117,7 +119,37 @@ function create(catalog,accepted,normalizedGloves,colors){
    checkpointSources:refs,slotRoutes:{[visible.weapon.key]:{item,quality:'hd',source:bare.id},
     [visible.boots.key]:{item:9,quality:'hd',source:checked.id}},layeredSlots:true,omitted:[]};
  }
- return {resolve,resolveBootOnly,hasAsset:hash=>allowed.has(hash)};
+ function resolveNorthGloveOnly(origin,bare,direction,visible){
+  const item=visible.weapon?.item,g=visible.gloves?.item;
+  if(!gloveOnlyVerified||direction!=='north'||item!==0||!northGloveOnlyIds.includes(g)||
+     Object.keys(visible).length!==2||!origin||!bare||bare.item!==0||bare.body!=='female'||
+     bare.action!=='attack-sword'||bare.direction!==direction||bare.outfitSourceId||bare.checkpointSources)return null;
+  const checked=resolve(origin,direction,{...visible,torso:{item:151,key:'coat'}});
+  if(!checked)return null;
+  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),x=bare.pack.directions.north,y=origin.pack.directions.north;
+  const nonCoat=y.layers.filter(l=>!l.id.startsWith('coat151-whole-')),coats=y.layers.filter(l=>!nonCoat.includes(l));
+  const owned=[...new Set(coats.flatMap(l=>l.frames||[l.source]))];
+  const shape=({id,baseRecord,pack,outfitSourceId,outfitSources,sourceRasterPadding,...r})=>r;
+  const joints=(a,b)=>Object.entries(a).every(([k,v])=>eq(v,b[k]))&&Object.keys(b).every(k=>Object.hasOwn(a,k)||/^cloth[23][AB]$/.test(k));
+  if(coats.length!==4||coats.some(l=>l.depth!==100)||!eq(owned,origin.outfitSources)||
+     !eq(owned,Object.keys(origin.sourceRasterPadding||{}))||!eq(shape(bare),shape(origin))||
+     !['frame','pivot','density'].every(k=>eq(bare.pack[k],origin.pack[k]))||!eq(x.clip,y.clip)||!joints(x.rest,y.rest)||
+     !eq(x.layers,nonCoat)||x.poses.length!==8||x.poses.some((pose,i)=>!joints(pose,y.poses[i]))||
+     !eq(bare.baseRecord.pack,bare.pack)||!eq(checked.states,bare.states))return null;
+  const layers=rows.get(['north','gloves',g].join('/'))?.layers;
+  if(layers?.length!==2||!['left-hand','right-hand'].every((id,i)=>{
+   const l=layers[i],b=x.layers.find(q=>q.id===id);
+   return l.id===id&&b?.binding?.kind==='fixed'&&l.binding?.kind==='fixed'&&l.depth===b.depth&&l.frames.length===8;
+  }))return null;
+  const refs=[...new Set(layers.flatMap(l=>l.frames))];
+  if(!eq(refs,checked.checkpointSources))return null;
+  const pack={...bare.pack,directions:{...bare.pack.directions,north:{...x,layers:x.layers.map(l=>layers.find(q=>q.id===l.id)||l)}}};
+  return {...bare,id:bare.id+':checkpoint-g'+g+'-north-no-coat',pack,
+   baseRecord:{...bare.baseRecord,pack,sourceRefs:[...new Set([...bare.baseRecord.sourceRefs,...refs])]},
+   checkpointSources:refs,slotRoutes:{[visible.weapon.key]:{item,quality:'hd',source:bare.id},
+    [visible.gloves.key]:{item:g,quality:'hd',source:checked.id}},layeredSlots:true,omitted:[]};
+ }
+ return {resolve,resolveBootOnly,resolveNorthGloveOnly,hasAsset:hash=>allowed.has(hash)};
 }
 async function verify(catalog,trusted,{subtle=root.crypto?.subtle,saved=[]}={}){
  if(!subtle||!trusted||catalog.weapon!==0||catalog.coat!==151||catalog.records?.length!==120||catalog.assetHashes?.length!==1503)return null;
@@ -158,7 +190,10 @@ async function verify(catalog,trusted,{subtle=root.crypto?.subtle,saved=[]}={}){
   const actual=Array.from(new Uint8Array(bytes),v=>v.toString(16).padStart(2,'0')).join('');
   if(actual===expected)normalizedGloves.add(item);
  }
- return create(catalog,accepted,normalizedGloves,colors);
+ const materialRows=northGloveOnlyIds.map(id=>catalog.records.filter(r=>r.direction==='north'&&r.slot==='gloves'&&r.item===id));
+ const gloveDigest=await subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(materialRows.map((r,i)=>[northGloveOnlyIds[i],r[0]?.layers]))));
+ const gloveOnlyVerified=materialRows.every(r=>r.length===1)&&Array.from(new Uint8Array(gloveDigest),v=>v.toString(16).padStart(2,'0')).join('')===northGloveOnlyAuthority;
+ return create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified);
 }
 const api={verify};root.MareSword0Checkpoint=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

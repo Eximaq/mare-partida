@@ -1,0 +1,4 @@
+# P182 nas quatro direções e luvas na Espada 0 Norte
+
+- Feminino, Calça 182 com Espadas 1, 67, 68, 69, 70 no Norte, Leste e Oeste, sem equipamentos extras. Cada direção reutiliza só a própria camada da calça sobre o corpo idêntico; não altera a arte, matriz, cadência ou oclusão da lâmina. A prova ordenada usa RGBA da contribuição visível da arma, incluindo alfa parcial. 360 quadros novos e 72 da Espada 0 como controle; Sul continua intacto e já estava validado.
+- Feminino, Espada 0 Norte, sem C151: luvas 26, 145, 159, 166 e 173 com as oito fases próprias das duas mãos. Os 80 rasters correspondem em alfa à mão nua, sem mudar qualquer camada fora das mãos. Em 120 renderizações (Original, Oliva e Ébano), retirar a luva restaura o ataque pixel a pixel. Não inclui outros slots/direções nem altera as versões publicadas.

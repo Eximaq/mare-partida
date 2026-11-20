@@ -34,7 +34,6 @@ for(const fields of [{},{skinColor:'ebony',hairStyle:'hair-bob',hairColor:'pink'
  }
  for(const equipment of [{weapon:{def:1},legs:{def:168}},{weapon:{def:1,variant:'other'},legs:{def:182}},{weapon:{def:1},legs:{def:182,variant:'other'}},
    {...q.equipment,head:{def:129}},{...q.equipment,coat:{def:151}},{...q.equipment,boots:{def:9}}])a(!w.selectVisual(actor(equipment),o)?.pantsSourceId);
- for(const direction of ['north','east','west'])a(!w.selectVisual(q,{...o,direction})?.pantsSourceId);
  a.equal(JSON.stringify(q),saved);before.release();next.release();console.log('sword1/p182',appearance96.skinColor,'8');
 }
 a.equal(tested,16);console.log('PASS',tested);

@@ -97,10 +97,10 @@ function attachPants168(record,outfit){
   outfitSources:[...(record.outfitSources||[]),...refs],outfitSourceId:outfit.id,coatSourceId:record.outfitSourceId};
 }
 const swordPants=new Set([140,147,154,161,175,182]);
-const southSwordP182=new Set([1,67,68,69,70]);
+const swordFamilyP182=new Set([1,67,68,69,70]);
 function attachSwordPants(record,outfit,def,authority){
  const original=record.item===0,
-  verified=southSwordP182.has(record.item)&&def===182&&record.direction==='south'&&record.action==='attack-sword'&&authority?.item===0&&
+  verified=swordFamilyP182.has(record.item)&&def===182&&['north','south','east','west'].includes(record.direction)&&record.action==='attack-sword'&&authority?.item===0&&
    authority.direction===record.direction&&authority.sourceBaseId===record.sourceBaseId&&
    JSON.stringify(authority.baseRecord)===JSON.stringify(record.baseRecord);
  if((!original&&!verified)||!outfit||outfit.sourceSwordRecord!==(original?record.id.split('-coat')[0]:authority.id)||
@@ -237,9 +237,9 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   const def=Number(pants.def??pants),outfit=def===168&&outfits?.records.find(row=>row.id==='female-pants168-'+action+'-'+direction);
   // Use the P182 cloth authority, never the Sword 0 weapon matrices.
   const v=x=>['variant','variantId','appearanceVariant'].some(k=>x?.[k]!=null&&x[k]!=='original');
-  const w0=southSwordP182.has(Number(item))&&def===182&&action==='attack-sword'&&direction==='south'&&coat==null&&head==null&&glove==null&&
+  const w0=swordFamilyP182.has(Number(item))&&def===182&&action==='attack-sword'&&['north','south','east','west'].includes(direction)&&coat==null&&head==null&&glove==null&&
    !v(pants)&&!v(equipment.weapon)?index.records.find(x=>x.item===0&&x.body==='female'&&x.action===action&&x.direction===direction):null;
-  combined=w0?attachSwordPants(combined,outfits?.records.find(row=>row.id==='female-pants182-sword-attack-sword-south'),def,w0):
+  combined=w0?attachSwordPants(combined,outfits?.records.find(row=>row.id==='female-pants182-sword-attack-sword-'+direction),def,w0):
    swordPants.has(def)&&Number(item)===0?attachSwordPants(combined,outfits?.records.find(row=>row.id==='female-pants'+def+'-sword-'+action+'-'+direction),def):attachPants168(combined,outfit);
  }
  if(glove!=null){
