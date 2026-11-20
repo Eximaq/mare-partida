@@ -216,7 +216,10 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
  if(!combined)return null;if(!customized&&head==null)return combined;
   // These Norte firearms use the same fixed source and the same exact +9px
   // recoil in state 4. Validate all source hashes before enabling that pose.
-  const recoil=(!clothing.length||combined.northFirearmCoatSources)&&head==null?northFirearmRecoil(combined):null;
+  const approvedFirearmHeadgear=!clothing.length&&glove==null&&
+   [129,136,143,150,157,164,171,178].includes(Number(head?.def??head))&&
+   !['variant','variantId','appearanceVariant'].some(k=>head?.[k]!=null&&head[k]!=='original');
+  const recoil=(!clothing.length||combined.northFirearmCoatSources)&&(head==null||approvedFirearmHeadgear)?northFirearmRecoil(combined):null;
   const material=appearanceRegistry?.resolve(recoil?.reference||combined.baseRecord,{hair:appearance.hair||appearance.hairStyle,head:head?.def??head,appearance});
   if(!material)return null;
   return {...combined,id:combined.id+':'+material.id,material,colorAppearance:appearance,...(recoil?{northFirearmHeadRecoil:recoil.offsets,...(material.skinColor?{northFirearmVisibleSkin}:{} )}:{})};},
