@@ -56,7 +56,7 @@ const draw=async(a,s)=>{
    console.log(look.skinColor,b,touched);
   }
   assert(old.equals(await draw(bare,api.selectVisual(bare,o))),'removal altered body');
-  assert(!api.selectVisual(actor(look,176),o)?.fixedIdleBoots,'B176 leaked into B9 registration');
+  assert(!api.selectVisual(actor(look,169),o)?.fixedIdleBoots,'B169 leaked through the certified boot allowlist');
   for(const options of [{...o,action:'walk'},{...o,action:'attack-unarmed'},{...o,direction:'south'},{...o,direction:'east'},{...o,direction:'west'}]){
    assert(!api.selectVisual(actor(look,9),options)?.fixedIdleBoots,'proof escaped direction or action');
   }

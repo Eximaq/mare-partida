@@ -909,7 +909,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function selectCoatsOnRegisteredPants(player,o,a,visible){
   const dir=o.direction,action=['attack','skill'].includes(o.action)?'attack-unarmed':o.action,coat=visible.torso?.item,pants=visible.pants?.item,boot=visible.boots?.item;
-  const strict=dir==='south'&&pants===21&&[6,7,130,137,144,158,165,172,179].includes(coat)&&strictSouthRequested(a);
+  const ownSouth=dir==='south'&&[22,133].includes(pants)&&[158,165,172,179].includes(coat);
+  const strict=dir==='south'&&(pants===21||ownSouth)&&[6,7,130,137,144,158,165,172,179].includes(coat)&&strictSouthRequested(a);
   if(a.body!=='male'||!['idle','walk','attack-unarmed'].includes(action)||!['north','south','east','west'].includes(dir)||
    !(action==='attack-unarmed'?[21,22,133]:[21,22]).includes(pants)||![6,7,130,137,144,158,165,172,179].includes(coat)||
    Object.keys(visible).some(k=>!['pants','torso','boots'].includes(k))||
@@ -962,6 +963,21 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    pack:{...coatRecord.pack,directions:{[dir]:{...cd,layers}}}};
   const described=describeSlots({...record,hdKind:'outfit',resolvedAction:action},visible,[]);
   if(!strict)return described;
+  if(ownSouth){
+   // P22/P133 use their own authored maps. Do not apply the generic
+   // P21 mixed material classifier or paint coat, trousers or boots.
+   const sibling=outfitById.get(pants===22?`male-pants133-${action}-south${attack?'-drawn8-candidate':'-isolated-r2'}`:`male-pants22-${action}-south`);
+   const own=sibling?.pack?.directions?.south;
+   const mask=pantsRecord.paletteSourceMasks;
+   const all=l=>l.frames||[l.source];
+   const coreRefs=new Set(basePants.flatMap(all));
+   if(!own||!mask||pantsRecord.palettePolicy!=='verified-original-anatomy-only'||
+      sibling.palettePolicy!==pantsRecord.palettePolicy||!same(mask,sibling.paletteSourceMasks)||
+      !same(pantsRecord.paletteRefs,sibling.paletteRefs)||!same(timing(pd),timing(own))||
+      !same(basePants,own.layers.filter(l=>!(/^(?:pants22-|pants133-|own133-)/).test(l.id)))||
+      Object.keys(mask).some(h=>!coreRefs.has(h))||[...extraCoat,...extraPants,...bootLayers].some(l=>all(l).some(h=>mask[h])))return null;
+   return root.MareReworkModularOutfitsHD.withStrictSouthAppearance(described,a);
+  }
   const materials=outfitRegistry.bindAnatomy(coatRecord,baseIndex);
   if(!materials)return null;
   return root.MareReworkModularOutfitsHD.withStrictSouthAppearance({...described,baseMaterialSources:materials},a);
@@ -1278,9 +1294,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...upper,colorAppearance,id:`partitioned-male-punch:${upper.id}:${lower.id}`,equipment,slotRoutes,omitted:[],layeredSlots:true,
    resolvedAction:options.action,partitionedMalePunch:{upper,lower,splitY:400,paletteParts}};
  }
+ // The open B169 has a palette-sensitive gap at the authored pants hem.
+ const standaloneFemaleNorthBoots=[8,9,134,141,148,155,162,176,183];
  function selectFemaleNorthBootsOnly(player,o,visible){
   const boot=visible.boots?.item;
-  if(o.action!=='idle'||o.direction!=='north'||Object.keys(visible).length!==1||boot!==9)return null;
+  if(o.action!=='idle'||o.direction!=='north'||Object.keys(visible).length!==1||!standaloneFemaleNorthBoots.includes(boot)||
+     boot!==9&&!root.MareCharacterAppearance?.skins?.[player.appearance96?.skinColor])return null;
   const body={...player,equipment:{...player.equipment,[visible.boots.key]:null}},
    base=select(body,o),coated=selectFemaleIdleBoots({...body,equipment:{coat:{def:151},boots:visible.boots.value}},o,
      {torso:{item:151,key:'coat'},boots:{...visible.boots,key:'boots'}});
@@ -1296,15 +1315,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    fixedIdleBoots={base,layers};
   return describeSlots({...base,id:base.id+':bare-north-boot'+boot,equipment:{boots:boot},fixedIdleBoots},visible,[]);
  }
- function selectFemaleNorthBoot9OnPants(player,o,visible){
+ function selectFemaleNorthBootOnPants(player,o,visible){
   if(o.action!=='idle'||o.direction!=='north'||Object.keys(visible).length!==2||
-     visible.boots?.item!==9||![168,182].includes(visible.pants?.item))return null;
+     !standaloneFemaleNorthBoots.includes(visible.boots?.item)||![168,182].includes(visible.pants?.item))return null;
   const boots=selectFemaleNorthBootsOnly({...player,equipment:{[visible.boots.key]:visible.boots.value}},o,{boots:visible.boots}),
    base=select({...player,equipment:{[visible.pants.key]:visible.pants.value}},o),d=base?.pack?.directions?.north;
   if(!boots?.fixedIdleBoots||!base?.authoredNorthIdlePants||base.equipment?.pants!==visible.pants.item||
      JSON.stringify(boots.pack)!==JSON.stringify(base.pack)||d?.clip.frames!==1||d.clip.loop!==false)return null;
-  const {authoredNorthIdlePants,...look}=base,layers=boots.fixedIdleBoots.layers;
-  return describeSlots({...look,id:base.id+':fixed-north-idle-b9',equipment:{pants:visible.pants.item,boots:9},
+  const {authoredNorthIdlePants,...look}=base,layers=boots.fixedIdleBoots.layers,boot=visible.boots.item;
+  return describeSlots({...look,id:base.id+':fixed-north-idle-b'+boot,equipment:{pants:visible.pants.item,boots:boot},
     fixedIdleBoots:{base,layers}},visible,[]);
  }
  function selectFemaleIdleBoots(player,o,visible){
@@ -1351,7 +1370,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!visible)return null;
   const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
-  if(body==='female')return selectFemaleNorthBoot9OnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
+  if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
   return selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
  }
  function selectVisual(player,o={}){

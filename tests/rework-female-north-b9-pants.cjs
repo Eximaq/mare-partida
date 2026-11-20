@@ -36,7 +36,7 @@ let seamPalette=0,colDelta=0,weak=0;const first=baselinePairs.get(legs);
 for(let i=0;i<domain.length;i+=4)if(domain[i+3]&&cloth[i+3]&&qm.readUInt32LE(i)!==first.readUInt32LE(i)){seamPalette++;colDelta=Math.max(colDelta,...[0,1,2].map(k=>Math.abs(qm[i+k]-first[i+k])));a.equal(qm[i+3],first[i+3]);if(front[i+3]===255||cloth[i+3]===255)weak++;}
 a(weak<=1&&colDelta<=(legs===168?2:3),'seam palette energy exceeds existing antialias tolerance');
 a.equal(JSON.stringify(q),save);
-for(const bad of [{boots:176,legs},{legs:147,boots:9},{legs,boots:9,coat:151},{legs,boots:9,head:129},{legs,boots:9,gloves:152}])a(!api.selectVisual(actor(bad),o)?.id.includes('idle-north-frame0:fixed'));
+for(const bad of [{boots:169,legs},{legs:147,boots:9},{legs,boots:9,coat:151},{legs,boots:9,head:129},{legs,boots:9,gloves:152}])a(!api.selectVisual(actor(bad),o)?.id.includes('idle-north-frame0:fixed'));
 frames++;console.log(legs,appearance96.skinColor,'boot',bootChanges,'pants',pantChanges,'seam',seam,'sole',sole,'seam palette blends',seamPalette,'max',colDelta);
 }}
 a.equal(frames,18);console.log('PASS',frames);
