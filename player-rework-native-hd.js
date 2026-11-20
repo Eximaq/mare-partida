@@ -369,12 +369,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  // Same complete authored punch rig: replace the shorts slot only.
  function resolveFemaleOwnedPants(player,o,a,equipment){
   const keys=Object.keys(equipment),v=equipment.legs??equipment.pants,dir=o.direction,cv=equipment.coat,coat=cv==null?null:Number(cv.def??cv);
+  const h=equipment.head,style=String(a.hair??'original').replace(/^hair-/,''),helmet=h!=null&&Number(h?.def??h)===157&&dir==='north'&&coat==null&&o.action==='attack-unarmed'&&['original','bob'].includes(style)&&
+    [a.face,a.eyeStyle].every(v=>v==null||v==='original')&&
+    ['variant','variantId','appearanceVariant'].every(k=>h?.[k]==null||h[k]==='original');
   const idle=o.action==='idle'&&['east','west'].includes(dir),count=idle?1:8;
   if(player.__reworkSubset||o.weaponless||canonical(a.body)!=='female'||o.action!=='attack-unarmed'&&!idle||
-     !['north','south','east','west'].includes(dir)||keys.length!==(coat==null?1:2)||keys.some(k=>!['legs','pants','coat'].includes(k))||(equipment.legs!=null&&equipment.pants!=null)||
+     !['north','south','east','west'].includes(dir)||keys.length!==((coat==null?1:2)+(helmet?1:0))||keys.some(k=>!['legs','pants','coat',...(helmet?['head']:[])].includes(k))||(equipment.legs!=null&&equipment.pants!=null)||
      (coat!=null&&(![6,7,130,137,144,151,158,165,172,179].includes(coat)||['variant','variantId','appearanceVariant'].some(k=>cv?.[k]!=null&&cv[k]!=='original')))||
      Number(v?.def??v)!==168||['variant','variantId','appearanceVariant'].some(k=>v?.[k]!=null&&v[k]!=='original'))return null;
-  const base=selectBase({...player,equipment:{}},o,true),id=idle?`female-idle-original-${dir}-from-walk0`:`v7-female-punch-${dir}-ownership-candidate-${dir}`,donor=outfitById.get(`female-pants168-${o.action}-${dir}`);
+  const base=selectBase({...player,equipment:helmet?{head:h}:{}},o,true),id=idle?`female-idle-original-${dir}-from-walk0`:`v7-female-punch-${dir}-ownership-candidate-${dir}`,donor=outfitById.get(`female-pants168-${o.action}-${dir}`);
   if(base?.sourceId!==id||base.hdKind||base.headRecord||base.gearOnlyRecord||
      donor?.adaptation?.targetBase!==id||donor.body!=='female'||donor.action!==o.action||
      donor.direction!==dir||donor.equipment?.pants!==168||Object.keys(donor.equipment).length!==1)return null;
@@ -397,10 +400,18 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       hd.layers.filter(l=>!l.id.startsWith('base:')).some(l=>!['top','underArms'].includes(l.slot)))return null;
    index=hd.layers.findIndex(l=>l.id==='base:shorts');
   }
+  if(helmet){
+   const material=base.femaleNamedHairRecord,gear=material?.gearRecord;
+   const authority={original:['f24f832fec352fe8f2b64f7fe54a543e22381c3146d27ba6297d41301cdfe9fe','source-alpha-only'],
+    bob:['2cd7faae891aa44461660c400d5cda20124a5671c4e0937a2dd516bc6b812808','approved-same-hairstyle-policy']}[style];
+   if(!material||material.fused||material.style!==style||material.gearPolicy!==authority[1]||
+      gear?.item!==157||gear.snapshot!==authority[0]||gear.direction!==dir||
+      !gear.layers.some(l=>l.id===gear.headgearPolicy?.gearId&&l.source==='6f38ce6e1badcc2004674e699593d07205179c4b878a7fa793c498925d7e4b81'))return null;
+  }
   const slot=equipment.legs!=null?'legs':'pants';
-  return {...host,id:host.id+':own-pants168',equipment:{...(coat==null?{}:{torso:coat}),pants:168},
+  return {...host,id:host.id+':own-pants168',equipment:{...(helmet?{head:157}:{}),...(coat==null?{}:{torso:coat}),pants:168},
    [idle?'authoredSideIdlePants':'authoredPunchPants']:{base:host,cloth,index},slotRoutes:{[slot]:{item:168,quality:'hd',source:donor.id},
-    ...(coat==null?{}:{coat:{item:coat,quality:'hd',source:host.sourceId}})},omitted:[]};
+    ...(coat==null?{}:{coat:{item:coat,quality:'hd',source:host.sourceId}}),...(helmet?{head:{item:157,quality:'hd',source:host.femaleNamedHairRecord.gearRecord.snapshot}}:{})},omitted:[]};
  }
  function southFiles(r,frame){
   const s=r.authoredPantsLayer.spec,k=s.frameToPhase[frame],contact=s.contacts.find(c=>c.targetAuthoredPhase===k),phases=[s.phaseMap[k],...(contact?[contact.incomingPhase]:[])];
