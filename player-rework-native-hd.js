@@ -356,7 +356,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const keys=Object.keys(equipment),v=equipment.legs??equipment.pants,dir=o.direction,cv=equipment.coat,coat=cv==null?null:Number(cv.def??cv);
   if(player.__reworkSubset||o.weaponless||canonical(a.body)!=='female'||o.action!=='attack-unarmed'||
      !['north','south','east','west'].includes(dir)||keys.length!==(coat==null?1:2)||keys.some(k=>!['legs','pants','coat'].includes(k))||(equipment.legs!=null&&equipment.pants!=null)||
-     (coat!=null&&(dir!=='south'||![6,7,130,137,144,151,158,165,172,179].includes(coat)||['variant','variantId','appearanceVariant'].some(k=>cv?.[k]!=null&&cv[k]!=='original')))||
+     (coat!=null&&(![6,7,130,137,144,151,158,165,172,179].includes(coat)||['variant','variantId','appearanceVariant'].some(k=>cv?.[k]!=null&&cv[k]!=='original')))||
      Number(v?.def??v)!==168||['variant','variantId','appearanceVariant'].some(k=>v?.[k]!=null&&v[k]!=='original'))return null;
   const base=selectBase({...player,equipment:{}},o,true),id=`v7-female-punch-${dir}-ownership-candidate-${dir}`,donor=outfitById.get(`female-pants168-attack-unarmed-${dir}`);
   if(base?.sourceId!==id||base.hdKind||base.headRecord||base.gearOnlyRecord||
@@ -370,9 +370,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      cloth.frames?.length!==8||cloth.frames.some(h=>!donor.sourceRefs.includes(h)||base.sourceRefs.includes(h)))return null;
   let host=base,index=i;
   if(coat!=null){
-   const expected=`female-torso${coat}-south-frozen-attack-native`;
+   const expected=`female-torso${coat}-${dir}-frozen-attack-native`;
    host=selectBase({...player,equipment:{coat:cv}},o,true);
-   const hp=host?.pack,hd=hp?.directions?.south;
+   const hp=host?.pack,hd=hp?.directions?.[dir];
    if(host?.sourceId!==expected||host.hdKind!=='outfit'||host.equipment?.torso!==coat||host.headRecord||host.gearOnlyRecord||
       host.bodyOcclusion||cloth.frames.some(h=>host.sourceRasterPadding?.[h])||!['density','frame','pivot'].every(k=>same(p[k],hp[k]))||
       !same(aDir.clip,hd.clip)||!Object.entries(aDir.rest).every(([k,v])=>same(v,hd.rest[k]))||
