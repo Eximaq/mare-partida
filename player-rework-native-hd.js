@@ -722,11 +722,17 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowArm117SideAttack:!player.__reworkSubset&&player.classId==='cyborg'&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
+   allowOwnSouthDaggers:[71,72,73,74].includes(Number(weapon))&&!player.__reworkSubset&&player.classId==='rogue'&&o.consumer==='world'&&!o.weaponless&&
+    Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowCyborgForearmSouthAttack:[118,120].includes(Number(weapon))&&!player.__reworkSubset&&player.classId==='cyborg'&&o.consumer==='world'&&!o.weaponless&&
+    Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
+   allowCompass16NorthAttack:Number(weapon)===16&&!player.__reworkSubset&&player.classId==='strategist'&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowRelic31NorthAttack:Number(weapon)===31&&!player.__reworkSubset&&['healer','strategist'].includes(player.classId)&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowRelic32NorthAttack:Number(weapon)===32&&!player.__reworkSubset&&['healer','strategist'].includes(player.classId)&&o.consumer==='world'&&!o.weaponless&&
+    Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
+   allowOrb17NorthRestoredAttack:Number(weapon)===17&&!player.__reworkSubset&&player.classId==='strategist'&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowNorthSwordDefault:!player.__reworkSubset&&player.classId==='sword'&&Object.keys(player.equipment||{}).length===1&&
     [null,undefined,'original'].includes(player.equipment?.weapon?.variant??player.equipment?.weapon?.variantId??player.equipment?.weapon?.appearanceVariant)});
@@ -871,6 +877,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
    const own3=carryRegistry?.resolve({item:3,joinedLuvas3Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:3}});
    if(own3?.luvas3SavedPalette)return withCarryHead(own3,'carry');
+  }
+  const w112=player.equipment?.weapon;
+  if((w112?.def??w112)===112&&player.classId==='brawler'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&o.direction==='south'&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w112?.[k]==null||w112[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const own112=carryRegistry?.resolve({item:112,joinedRuptura112Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:112}});
+   if(own112?.ruptura112SavedPalette)return withCarryHead(own112,'carry');
   }
   const w120=player.equipment?.weapon;
   if((w120?.def??w120)===120&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
