@@ -751,6 +751,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowGauntlet14NorthOwnAttack:Number(weapon)===14&&!player.__reworkSubset&&player.classId==='cyborg'&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
+   allowOwnW70South:Number(weapon)===70&&!player.__reworkSubset&&player.classId==='sword'&&o.consumer==='world'&&!o.weaponless&&
+    Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowOwnRestoredRearSword:[67,70].includes(Number(weapon))&&!player.__reworkSubset&&player.classId==='sword'&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowNorthSwordDefault:!player.__reworkSubset&&player.classId==='sword'&&Object.keys(player.equipment||{}).length===1&&
@@ -869,6 +871,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
    const own111=carryRegistry?.resolve({item:111,joinedGauntlet111Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:111}});
    if(own111?.gauntlet111SouthSavedPalette||own111?.gauntlet111NorthSavedPalette)return withCarryHead(own111,'carry');
+  }
+  const gauntlet23=player.equipment?.weapon, gauntlet23Id=gauntlet23?.def??gauntlet23;
+  if(gauntlet23Id===3&&player.classId==='brawler'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&(['east','west'].includes(o.direction)||gauntlet23Id===3&&o.direction==='north')&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>gauntlet23?.[k]==null||gauntlet23[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const ownGauntlet23=carryRegistry?.resolve({item:gauntlet23Id,previewGauntlet23Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:gauntlet23Id}});
+   if(ownGauntlet23?.gauntlet23PreviewCarry)return withCarryHead(ownGauntlet23,'carry');
   }
   const gauntletPair=player.equipment?.weapon, gauntletPairId=gauntletPair?.def??gauntletPair;
   if([111,112].includes(gauntletPairId)&&player.classId==='brawler'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
