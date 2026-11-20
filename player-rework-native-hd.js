@@ -1821,6 +1821,39 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    slotRoutes:Object.fromEntries(Object.entries(visible).map(([k,v])=>[v.key,{item:v.item,quality:'hd',source:k==='gloves'?gloveRecord.slotRoutes[v.key].source:k==='torso'?coat.id:pants.id}]))};
   return root.MareReworkModularOutfitsHD?.withStrictSouthAppearance(record,{...a,hair:'original',face:'original'})||null;
  }
+ function selectNorthPunchP22Coat(o,a,visible){
+  const d=o.direction,action=['attack','attack-unarmed'].includes(o.action)?'attack-unarmed':o.action;
+  if(a.body!=='male'||d!=='north'||action!=='attack-unarmed'||visible.pants?.item!==22||visible.torso?.item!==151||Object.keys(visible).length!==2||
+     !['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||
+     !['original','blue',undefined].includes(a.eyeColor)||
+     (a.skin&&a.skin!=='original'&&!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))||
+     (a.hairColor&&a.hairColor!=='original'&&!Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)))return null;
+  const id=`male-pants133-attack-unarmed-north-drawn8-candidate`,
+   base=outfitById.get(`male-pants22-${action}-${d}`),ref=outfitById.get(id),coat=outfitById.get(id+'-coat151-native');
+  const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y),dir=r=>r.pack?.directions?.[d],
+   context=({layers,...rest})=>rest,frame=r=>[r.pack.frame,r.pack.pivot,r.pack.density];
+  if(![base,ref,coat].every(r=>r&&r.productionEnabled!==false&&r.body==='male'&&r.direction===d&&r.action===action&&
+        r.palettePolicy==='verified-original-anatomy-only'&&r.paletteSourceMasks&&!r.bodyOcclusion&&!r.sourceRasterPadding&&
+        eq(r.paletteSourceMasks,base.paletteSourceMasks)&&dir(r)&&eq(frame(r),frame(base))&&eq(context(dir(r)),context(dir(base))))||
+     !eq(base.equipment,{pants:22})||!eq(ref.equipment,{pants:133})||!eq(coat.equipment,{pants:133,torso:151})||
+     base.adaptation?.sourceManifest!=='87d85db3bb42067425f9ff6f93faf7a2ea95e57b2352697a5af6513cbc32f205')return null;
+  const clip={frames:8,fps:12,loop:false,contactFrame:4};
+  const b=dir(base),q=dir(ref),c=dir(coat),owned=b.layers.filter(l=>l.id==='pants22-independent-candidate'),garment=c.layers.filter(l=>l.id.startsWith('coat151-'));
+  if(!eq(b.clip,clip)||owned.length!==1||owned[0].frames?.length!==clip.frames||new Set(owned[0].frames).size!==clip.frames||
+     owned[0].binding?.kind!=='fixed'||owned[0].depth!==2||base.adaptation.targetGeometry!==id||
+     !eq(b.layers.filter(l=>l!==owned[0]),q.layers.filter(l=>!l.id.startsWith('pants133-')&&!l.id.startsWith('own133-')))||
+     !eq(c.layers.filter(l=>!garment.includes(l)),q.layers)||
+     garment.length!==1||
+     [...owned[0].frames,...garment.flatMap(l=>l.frames||[l.source])].some(h=>base.paletteSourceMasks[h])||
+     owned[0].frames.some(h=>!base.sourceRefs.includes(h))||garment.some(l=>!(l.frames||[l.source]).every(h=>coat.sourceRefs.includes(h))))return null;
+  const out={...base,id:base.id+':own-p22-c151:'+d+':'+action,hdKind:'outfit',
+   equipment:{pants:22,torso:151},resolvedAction:action,
+   sourceRefs:[...new Set([...base.sourceRefs,...garment.flatMap(l=>l.frames||[l.source])])],
+   pack:{...base.pack,directions:{...base.pack.directions,[d]:{...b,layers:[...b.layers,...garment]}}},
+   omitted:[],slotRoutes:Object.fromEntries(Object.entries(visible).map(([k,v])=>[v.key,{item:v.item,quality:'hd',source:k==='torso'?coat.id:base.id}]))};
+  return {...out,id:out.id+':palette:'+String(a.skin||'original')+':'+String(a.hairColor||'original'),
+   colorAppearance:{skin:a.skin||'original',hairColor:a.hairColor||'original',eyeColor:a.eyeColor||'original'}};
+ }
  function selectLayered(player,o={}){
   if(state!=='ready'||!player||player.__reworkSubset||player.zoanTransformed||slotEntry(player.equipment?.visual_completo))return null;
   const raw=player.appearance96||{},body={masculino:'male',feminino:'female',male:'male',female:'female'}[raw.gender??raw.body];
@@ -1833,7 +1866,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
   if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectFemaleApprovedGloveWalk(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
-  return selectSouthPunchP22Coat(o,look,visible)||selectSouthPunchBare(o,look,visible)||selectNorthPunchBare(o,look,visible)||selectNorthPunchB9(player,o,look,visible)||selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
+  return selectNorthPunchP22Coat(o,look,visible)||selectSouthPunchP22Coat(o,look,visible)||selectSouthPunchBare(o,look,visible)||selectNorthPunchBare(o,look,visible)||selectNorthPunchB9(player,o,look,visible)||selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
  }
  function selectVisual(player,o={}){
   const exact=select(player,o);
