@@ -118,12 +118,20 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
    : optionalCoats
     ? [1,68].includes(ordered.item)&&ordered.action==='attack-sword'&&ordered.requiredClass==='sword'&&['east','west'].includes(direction)&&ordered.phaseCount===8&&ordered.density===4&&JSON.stringify(ordered.nativeCanvas)==='[768,768]'&&JSON.stringify(ordered.pivot)==='[96,144]'&&(visibleOrdered.length===0||visibleOrdered.length===1&&visibleOrdered[0][0]==='coat'&&[151,158,165,179].includes(coatId)&&(coatVariant==null||coatVariant==='original')&&Array.isArray(coatFrames)&&coatFrames.length===8&&coatFrames.every(f=>f.layer?.operation==='source-over'&&f.layer?.url&&f.approvedReferenceSHA256))
     : visibleOrdered.length===0;
-  if(ordered&&wardrobeOK&&(!ordered.strictSourceIdentity||(classId===ordered.requiredClass&&['male','masculino'].includes(sourceBody??b)&&(weaponVariant==null||weaponVariant==='original')))&&['hair','hairColor','face','eyeColor','skin'].every(k=>typeof ordered.approvedAppearance?.[k]==='string'&&appearance[k]===ordered.approvedAppearance[k])){
+  const sideIris=ordered?.strictSourceIdentity&&[13,71,72,73,74].includes(ordered.item)&&ordered.body==='male'&&ordered.action==='attack-daggers'&&
+    ordered.requiredClass==='rogue'&&['east','west'].includes(direction)&&appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&
+    appearance.eyeColor!=='brown'&&Object.hasOwn(root.MareCharacterAppearance?.eyes||{},appearance.eyeColor)&&
+    ordered.approvedAppearance?.eyeColor==='brown'&&ordered.approvedAppearance.hair==='original'&&ordered.approvedAppearance.face==='original'&&
+    ordered.approvedAppearance.hairColor==='brown'&&ordered.approvedAppearance.skin==='light'&&ordered.phaseCount===8&&ordered.fps===12&&
+    ordered.contactTick===4&&ordered.density===4&&JSON.stringify(ordered.nativeCanvas)==='[640,640]'&&JSON.stringify(ordered.pivot)==='[80,128]'&&
+    ordered.states?.every(f=>f.layers?.length===4&&f.layers[1].id==='authored-body'&&f.layers[3].sha256===f.layers[1].sha256&&f.layers[3].operation==='replace-rgba-under-mask')
+    ?appearance.eyeColor:null;
+  if(ordered&&wardrobeOK&&(!ordered.strictSourceIdentity||(classId===ordered.requiredClass&&['male','masculino'].includes(sourceBody??b)&&(weaponVariant==null||weaponVariant==='original')))&&['hair','hairColor','face','eyeColor','skin'].every(k=>typeof ordered.approvedAppearance?.[k]==='string'&&(appearance[k]===ordered.approvedAppearance[k]||(k==='eyeColor'&&sideIris)))){
    const states=ordered.states,timeline=ordered.timeline;
    if(ordered.approvedAppearance&&states?.length===ordered.phaseCount&&timeline?.length&&timeline.every(t=>states.some(s=>s.state===String(t)))&&Number.isInteger(ordered.contactTick)&&ordered.contactTick>0&&ordered.contactTick<timeline.length){
     const withCoat=!!((authoredCoats||optionalCoats)&&visibleOrdered.length===1&&coatFrames);
     const resolved=withCoat?{...ordered,id:ordered.id+'-coat-'+coatId,states:states.map((s,i)=>({...s,layers:[...s.layers,coatFrames[i].layer],approvedReferenceSHA256:coatFrames[i].approvedReferenceSHA256}))}:ordered;
-    return {...resolved,orderedAttack:true,separableAttack:true,equipmentContract:{weapon:ordered.item,...(withCoat?{coat:coatId}:{})},colorAppearance:{}};
+    return {...resolved,orderedAttack:true,separableAttack:true,equipmentContract:{weapon:ordered.item,...(withCoat?{coat:coatId}:{})},colorAppearance:{},...(sideIris?{id:resolved.id+':owned-dagger-iris:'+sideIris,orderedDaggerIris:sideIris}:{})};
    }
   }
   const matchesAction=s=>s.action?action===s.action:['attack','punch','attack-unarmed'].includes(action);
@@ -274,6 +282,19 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   }
   if(headOverlay)ctx.drawImage(headOverlay,...(r.headOverlayOffset??[0,0]));
   if(!hiddenSlots.length&&!recolored&&s.canvasRoundingPatch?.length){const out=ctx.getImageData(0,0,w,h);for(const [pixel,red,green,blue,alpha] of s.canvasRoundingPatch){const i=pixel*4;out.data[i]=red;out.data[i+1]=green;out.data[i+2]=blue;out.data[i+3]=alpha;}ctx.putImageData(out,0,0);}
+  if(r.orderedDaggerIris){
+   const points=root.MareReworkModularOutfitsHD?.sideIrisSamples?.(r.direction),ramp=root.MareCharacterAppearance?.eyes?.[r.orderedDaggerIris]?.ramp;
+   if(!points||points.length!==18||!ramp||w!==640||h!==640||recolored||hiddenSlots.length||renderOffset.some(Boolean))throw Error('Invalid ordered dagger iris authority');
+   const dx=r.direction==='east'?56:72;
+   // Check every final sample before committing a single pixel. Never recolor a bounding box.
+   const changes=points.map(([x,y,R,G,B,A,tone])=>{
+    const a=x+dx,b=y+68,p=ctx.getImageData(a,b,1,1),color=ramp[tone-1];
+    if(p.data[0]!==R||p.data[1]!==G||p.data[2]!==B||p.data[3]!==A||!color)throw Error('Dagger iris no longer matches author pixels');
+    const rgb=parseInt(color.slice(1),16);p.data[0]=rgb>>>16;p.data[1]=(rgb>>>8)&255;p.data[2]=rgb&255;
+    return {p,a,b};
+   });
+   for(const {p,a,b} of changes)ctx.putImageData(p,a,b);
+  }
   return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4+renderOffset[0],y:r.pivot[1]*4+renderOffset[1]},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalScale:1,hairSeparated:r.hairSeparated,roundingCorrection:!r.separableAttack&&!hiddenSlots.length&&!recolored,roundingTolerance:r.separableAttack||hiddenSlots.length?1:0};}finally{ctx.restore();}
  }
  return {resolve,resolveSeparable,approvedSouth,requiredFiles,render};

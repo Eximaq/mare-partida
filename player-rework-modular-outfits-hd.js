@@ -361,5 +361,5 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
  }
  return {resolve,resolveIndependentPants,bindAnatomy,requiredFiles,render,renderWithHead};
 }
-const api={create,composeSlots,withStrictSouthAppearance};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
+const api={create,composeSlots,withStrictSouthAppearance,sideIrisSamples:side=>strictSideIrisPoints[side]?.map(p=>p.slice())};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
