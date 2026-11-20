@@ -30,7 +30,7 @@ await authDatabase(async f=>{
   await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
   await p.waitForFunction(()=>__mareDiagnostics().lobby96.worldVisual?.state==='ready'&&Number.isFinite(__mareDiagnostics().onlineSampledAt),null,{timeout:90000});
   await p.waitForFunction(()=>/^\d+ ms$/.test(document.querySelector('#onlinePerformance strong')?.textContent||'')&&/^\d+ FPS$/.test(document.querySelector('#onlinePerformance span:not(.online-updates)')?.textContent||''));
-  await p.evaluate(()=>{const original=globalThis.MareEmberRenderer.monster;globalThis.monsterProbe=[];globalThis.MareEmberRenderer.monster=function(ctx,m,...args){if(m.alive)globalThis.monsterProbe.push({id:m.id,x:m.x,y:m.y,moving:m.moving,phase:m.emberElapsed});return original.call(this,ctx,m,...args);};});
+  await p.evaluate(()=>{globalThis.monsterProbe=[];for(const renderer of [globalThis.MareNewIslandArt,globalThis.MareEmberRenderer]){const draw=renderer.monster;renderer.monster=function(ctx,m,...args){const drawn=draw.call(this,ctx,m,...args);if(drawn&&m.alive)globalThis.monsterProbe.push({id:m.id,x:m.x,y:m.y,moving:m.moving,phase:m.emberElapsed});return drawn;};}});
   assert.equal(await p.evaluate(()=>Number.isFinite(__mareDiagnostics().onlineSampledAt)),true,'motion probes need the time associated with the drawn pose');
   let compactReads=0;p.on('response',r=>{if(r.url().endsWith('/frame')&&r.status()===200)compactReads++;});
   const captures=[];

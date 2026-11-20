@@ -42,7 +42,7 @@ refreshFighter();
      assert.deepEqual(Object.keys(input.payload),['itemId']);const item=wire.originalInventory.inventory.find(i=>i.id===input.payload.itemId);assert(item);
      const slot=catalog.items[item.def].slot,old=wire.originalInventory.equipment[slot];wire.originalInventory.inventory=wire.originalInventory.inventory.filter(i=>i.id!==item.id);wire.originalInventory.equipment[slot]=item;if(old)wire.originalInventory.inventory.push(old);
     }else if(input.action==='forge.execute'){
-     assert.deepEqual(Object.keys(input.payload.operation).sort(),['expectedSeq','itemId','type']);
+     assert.deepEqual(Object.keys(input.payload.operation).sort(),['expectedSeq',input.payload.operation.type==='dismantle'?'itemIds':'itemId','type']);
      const result=forge.execute({...wire.originalInventory,gold:Number(wire.state.gold),classId:'sword'},input.payload.operation,catalog.items,()=>0,1);assert(result.ok,result.message);
      const {gold,classId,...next}=result.state;wire.state.gold=String(gold);wire.originalInventory=next;
     }else if(input.action==='attributes.allocate'){
@@ -74,7 +74,7 @@ refreshFighter();
   assert.equal(await p.locator('[data-forge-tab="imbue"]').isEnabled(),true);
   await p.screenshot({path:path.join(out,'original-online-forge.png')});
   // Revalidation never sends a changed intention; failed responses keep the dialog.
-  wire.state.gold='5000';wire.originalInventory.materials=100;wire.state.version++;await p.evaluate(()=>MareGameSession.read());
+  wire.state.gold='10000';wire.originalInventory.materials=100;wire.state.version++;await p.evaluate(()=>MareGameSession.read());
   await p.locator('[data-forge-action="upgrade"]').click();const beforeStale=commands.length;
   wire.state.version++;await p.evaluate(()=>MareGameSession.read());await p.locator('[data-confirm-accept]').click();
   assert.equal(commands.length,beforeStale);assert.match(await p.locator('.confirmation-card').innerText(),/dados foram atualizados/i);await p.locator('[data-confirm-cancel]').click();
@@ -113,7 +113,23 @@ refreshFighter();
   await p.waitForFunction(()=>{const c=document.getElementById('inventorySprite');return c&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0);},null,{timeout:90000});
   await p.evaluate(()=>document.fonts.ready);
   await p.screenshot({path:path.join(out,'original-online-inventory.png')});
-  assert.deepEqual(commands.map(c=>c.action),['items.equip','forge.execute','forge.execute','forge.execute','forge.execute','forge.execute','attributes.allocate']);assert.deepEqual(errors,[]);
+  assert.deepEqual(commands.map(c=>c.action),['items.equip','forge.execute','forge.execute','forge.execute','forge.execute','forge.execute','attributes.allocate']);
+  const scraps=[make(8,'salvage-a'),{...make(6,'salvage-b'),level:41}];
+  wire.originalInventory.inventory.push(...scraps);
+  wire.state.version++;await p.evaluate(()=>MareGameSession.read());
+  await p.keyboard.press('Escape');await p.setViewportSize({width:390,height:844});await p.keyboard.press('f');
+  await p.locator('[data-forge-tab="dismantle"]').click();
+  for(const item of scraps)await p.locator('[data-forge-item="'+item.id+'"]').click();
+  assert.match(await p.locator('.forge2-operation-content').innerText(),/5 fragmento/);
+  const before=wire.originalInventory.materials;
+  await p.locator('[data-forge-action="dismantle"]').click();
+  assert.match(await p.locator('.confirmation-card').innerText(),/Fragmento de Item/);
+  await p.locator('[data-confirm-accept]').click();
+  await p.waitForFunction(()=>MareGameSession.data.online.originalInventory.forgeSeq===4&&!MareGameSession.busy);
+  assert.deepEqual(commands.at(-1).payload.operation,{type:'dismantle',expectedSeq:3,itemIds:scraps.map(i=>i.id)});
+  assert.equal(wire.originalInventory.materials,before+5);
+  assert(wire.originalInventory.inventory.every(i=>!scraps.some(s=>s.id===i.id)));
+  assert.deepEqual(errors,[]);
   console.log('Original online HUD contract: native inventory/forge, strict intents, stock, equipment, stale confirmation, rejection, double click, same-request recovery and reload passed. Provider is a UI fixture; PostgreSQL is tested separately.');
   await context.close();
  }catch(error){if(activePage)await activePage.screenshot({path:path.join(out,'original-online-failure.png')}).catch(()=>{});throw error;}finally{await browser.close();}
