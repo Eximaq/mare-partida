@@ -1853,7 +1853,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function selectSouthPunchP22Coat(o,a,visible){
   const g=visible.gloves?.item,noCoat=visible.torso==null;
   if(a.body!=='male'||o.direction!=='south'||!['attack','attack-unarmed'].includes(o.action)||
-     (noCoat?g!==26:visible.torso.item!==151)||visible.pants?.item!==22||Object.keys(visible).length!==(noCoat?2:g!=null?3:2)||
+     (noCoat?![26,131,138,145,152,159,166,173,180].includes(g):visible.torso.item!==151)||visible.pants?.item!==22||Object.keys(visible).length!==(noCoat?2:g!=null?3:2)||
      (g!=null&&![26,131,138,145,152,159,166,173,180].includes(g))||!strictSouthRequested(a))return null;
   const id='male-pants133-attack-unarmed-south-drawn8-candidate',reference=outfitById.get(id),coat=outfitById.get(id+'-coat151-native'),
     pants=outfitById.get('male-pants22-attack-unarmed-south');
@@ -1877,7 +1877,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const extra=gloveRecord?dir(gloveRecord).layers.filter(l=>l.id==='registered-frozen-glove-native-attack'):[];
   if(gloveRecord&&(extra.length!==1||!eq(dir(gloveRecord).layers.filter(l=>l!==extra[0]),donor)))return null;
   const coats=noCoat?[]:clothe, layers=[...originals,...coats,...extra], pack={...pants.pack,directions:{...pants.pack.directions,south:{...dir(pants),layers}}};
-  const record={...pants,id:pants.id+(noCoat?':own-p22-g26-south-no-coat':':own-south-punch-p22-c151'+(gloveRecord?'-g'+g:'')),hdKind:'outfit',pack,equipment:{pants:22,...(noCoat?{}:{torso:151}),...(gloveRecord?{gloves:g}:{})},
+  const record={...pants,id:pants.id+(noCoat?':own-p22-g'+g+'-south-no-coat':':own-south-punch-p22-c151'+(gloveRecord?'-g'+g:'')),hdKind:'outfit',pack,equipment:{pants:22,...(noCoat?{}:{torso:151}),...(gloveRecord?{gloves:g}:{})},
    sourceRefs:[...pants.sourceRefs,...coats.flatMap(l=>l.frames),...extra.flatMap(l=>l.frames)],resolvedAction:'attack-unarmed',omitted:[],
    slotRoutes:Object.fromEntries(Object.entries(visible).map(([k,v])=>[v.key,{item:v.item,quality:'hd',source:k==='gloves'?gloveRecord.slotRoutes[v.key].source:k==='torso'?coat.id:pants.id}]))};
   return root.MareReworkModularOutfitsHD?.withStrictSouthAppearance(record,{...a,hair:'original',face:'original'})||null;
