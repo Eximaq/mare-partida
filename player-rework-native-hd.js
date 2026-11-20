@@ -1823,7 +1823,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function selectNorthPunchP22Coat(o,a,visible){
   const g=visible.gloves?.item,noCoat=visible.torso==null,d=o.direction,action=['attack','attack-unarmed'].includes(o.action)?'attack-unarmed':o.action;
-  if(a.body!=='male'||d!=='north'||action!=='attack-unarmed'||visible.pants?.item!==22||(noCoat?g!==26:visible.torso.item!==151)||Object.keys(visible).length!==(noCoat?2:g!=null?3:2)||(g!=null&&![25,26,131,138,145,152,159,166,173,180].includes(g))||
+  if(a.body!=='male'||d!=='north'||action!=='attack-unarmed'||visible.pants?.item!==22||(noCoat?![26,131,138,145,152,159,166,173,180].includes(g):visible.torso.item!==151)||Object.keys(visible).length!==(noCoat?2:g!=null?3:2)||(g!=null&&![25,26,131,138,145,152,159,166,173,180].includes(g))||
      !['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||
      !['original','blue',undefined].includes(a.eyeColor)||
      (a.skin&&a.skin!=='original'&&!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))||
@@ -1851,7 +1851,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const extra=glove?dir(glove).layers.filter(l=>l.id==='registered-frozen-glove-native-attack'):[];
   if(glove&&(extra.length!==1||!eq(dir(glove).layers.filter(l=>l!==extra[0]),c.layers)))return null;
   const coatLayers=noCoat?[]:garment;
-  const out={...base,id:base.id+(noCoat?':own-p22-g26-north-no-coat':':own-p22-c151:'+d+':'+action+(glove?'-g'+g:'')),hdKind:'outfit',
+  const out={...base,id:base.id+(noCoat?':own-p22-g'+g+'-north-no-coat':':own-p22-c151:'+d+':'+action+(glove?'-g'+g:'')),hdKind:'outfit',
    equipment:{pants:22,...(noCoat?{}:{torso:151}),...(glove?{gloves:g}:{})},resolvedAction:action,
    sourceRefs:[...new Set([...base.sourceRefs,...coatLayers.flatMap(l=>l.frames||[l.source]),...extra.flatMap(l=>l.frames)])],
    pack:{...base.pack,directions:{...base.pack.directions,[d]:{...b,layers:[...b.layers,...coatLayers,...extra]}}},
