@@ -2183,11 +2183,15 @@
       if(activeMap().id==='dawn')$('overlayArea').textContent=MareDawn.nearestDistrict(world.hero).name.toUpperCase();
       if(activeMap().id==='embers')$('overlayArea').textContent=MareEmber.nearestDistrict(world.hero).name.toUpperCase();
       const ratio=hasTarget?clamp(world.target.hp/world.target.maxHP,0,1):0;
-      $('targetHudState').textContent=session.respawn>0?'RENASCENDO':autoPlay?'ALVO EM COMBATE':'CAÇADA PAUSADA';
-      $('targetHudLevel').textContent=hasTarget?(world.target.type==='boss'?'CHEFE · NV '+world.target.level:'NV '+world.target.level):'—';
-      $('targetHudName').textContent=hasTarget?monsterName(world.target).toUpperCase():'SEM ALVO';
+      $('targetHudState').textContent=session.respawn>0?'Renascendo':autoPlay?'Em combate':'Caçada pausada';
+      $('targetHudBoss').hidden=!(hasTarget && world.target.type==='boss');
+      $('targetHudLevel').textContent=hasTarget?'Nv. '+world.target.level:'—';
+      $('targetHudName').textContent=hasTarget?monsterName(world.target):'Sem alvo';
       $('targetHudFill').style.width=(ratio*100).toFixed(1)+'%';
-      $('targetHudHPText').textContent=hasTarget?fmt(world.target.hp)+' / '+fmt(world.target.maxHP):'PROCURANDO MONSTRO';
+      const targetHealth=hasTarget?fmt(world.target.hp)+' / '+fmt(world.target.maxHP):'—';
+      $('targetHudHPText').textContent=targetHealth;
+      $('targetHudBar').setAttribute('aria-valuenow',String(Math.round(ratio*100)));
+      $('targetHudBar').setAttribute('aria-valuetext',targetHealth);
       $('targetHudHint').textContent=hasTarget?'ALVO BLOQUEADO · AUTO-ATAQUE':'SELECIONE OU AGUARDE O AUTO-ALVO';
     }
     const versionCaption=document.querySelector('.version-caption'); if(versionCaption)versionCaption.textContent='VERSÃO 1.3 · DEMO LOCAL';
@@ -3745,7 +3749,17 @@ ${avatarExtra}
 const targetHud=document.createElement('div');
 targetHud.className='target-hud hidden';
 targetHud.id='targetHud';
-targetHud.innerHTML=`<div class="target-hud-top"><span id="targetHudState">PORTO SEGURO</span><strong id="targetHudLevel">—</strong></div><div class="target-hud-name" id="targetHudName">SEM ALVO</div><div class="target-hud-bar"><i id="targetHudFill"></i></div><div class="target-hud-meta"><span id="targetHudHPText">—</span><span id="targetHudHint">Aguardando combate</span></div>`;
+targetHud.innerHTML=`
+  <div class="target-hud-top">
+    <strong class="target-hud-name" id="targetHudName">Sem alvo</strong>
+    <span id="targetHudLevel">—</span>
+  </div>
+  <div id="targetHudBar" class="target-hud-bar" role="meter" aria-label="Vida do alvo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="targetHudFill"></i></div>
+  <div class="target-hud-meta">
+    <span class="target-hud-status"><b id="targetHudBoss" hidden>Chefe</b><span id="targetHudState">No porto</span></span>
+    <span id="targetHudHPText">—</span>
+  </div>
+  <span id="targetHudHint">Aguardando combate</span>`;
 $('gameFrame').appendChild(targetHud);
 
   // Janelas flutuantes: nada é fixado nas laterais do mapa.
