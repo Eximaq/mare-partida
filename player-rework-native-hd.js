@@ -571,7 +571,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function exactCoat67SideLook(player,o,a){
   return !player.__reworkSubset&&!player.zoanTransformed&&!player.equipment?.visual_completo&&player.equipment?.head==null&&o.action==='walk'&&Object.hasOwn(coat67SideNeck,o.direction)&&o.consumer==='world'&&!o.weaponless&&
      a.gender==='feminino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.face==='original'&&
-     a.hairColor==='black'&&a.eyeColor==='green'&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&
+     Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)&&Object.hasOwn(root.MareCharacterAppearance?.hairs||{},a.hairColor)&&
+     a.eyeColor!=='blue'&&Object.hasOwn(root.MareCharacterAppearance?.eyes||{},a.eyeColor)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin);
  }
  function restoreCoat67SideExactNeck(record,material,a){
@@ -580,7 +581,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      JSON.stringify(material.ownership.walkDifferenceBounds)!==auth.bounds||
      head?.length!==1||head[0].source!==auth.sha||head[0].frames||head[0].binding?.kind!=='rigid'||
      head[0].binding.a!=='NECK'||head[0].binding.b!=='NOSE'||material.style!=='original'||
-     material.hairColor!=='black'||material.eyeColor!=='green'||material.skinColor!==a.skin||
+     material.hairColor!==a.hairColor||material.eyeColor!==a.eyeColor||material.skinColor!==a.skin||
      material.gearRecord||material.profileNeckBridge||material.profileNeckRestore)return null;
   if(dir==='west')return {...material,id:material.id+':authored-west-neck',profileNeckRestore:true};
   return {...material,id:material.id+':authored-east-neck',profileNeckRestore:true};
