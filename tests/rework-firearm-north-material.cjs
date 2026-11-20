@@ -32,7 +32,7 @@ function requireOnly(before,after,mask,min){
   const clip=r0.pack.directions.north.clip;
   a.equal(clip.frames,8);a.equal(clip.fps,12);a.equal(clip.contactFrame,4);
   if(!isRaw)a.deepEqual(r0.northFirearmHeadRecoil,[0,0,0,0,9,0,0,0]);
-  if(item!==113)a.equal(r1,null);else{
+  if(![113,114].includes(item))a.equal(r1,null);else{
    a.equal(r1?.northFirearmCoatSources?.length,18);
    a.deepEqual(r1.states,r0.states);a.deepEqual(r1.material,r0.material);
    const x=r0.pack.directions.north,y=r1.pack.directions.north;
@@ -55,5 +55,5 @@ function requireOnly(before,after,mask,min){
   }}finally{original.release();skin.release();coat?.release();}
   a.equal(JSON.stringify(p1),before);
  }
- a.equal(rendered,144);console.log({rendered,weaponStatesUnchanged:true,guardedCoatOnly113:true});
+ a.equal(rendered,144);console.log({rendered,weaponStatesUnchanged:true,guardedCoatOnly113And114:true});
 })().catch(e=>{console.error(e);process.exitCode=1;});

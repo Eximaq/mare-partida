@@ -1085,6 +1085,42 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const slotRoutes=Object.fromEntries(Object.entries(composed.slotRoutes).map(([k,v])=>[visible[k].key,v]));
   return {...composed,slotRoutes,omitted:composed.omitted.map(k=>visible[k].key),hdKind:'outfit',resolvedAction:action};
  }
+ const femaleSideG26WalkAuthority={
+  east:'944955105f510cb49bdaa64bc8e7bf83dc56eb691dd32aade35dd85f288c1cf4',
+  west:'2d1bccc8f07fde945577e1a9e92f0526ce84091e5d99629f7cc24c5dc08c31bf'
+ };
+ function selectFemaleP168G26Walk(player,o,visible){
+  const d=o.direction;
+  if(o.action!=='walk'||!Object.hasOwn(femaleSideG26WalkAuthority,d)||o.weaponless||
+     visible.torso?.item!==151||visible.pants?.item!==168||visible.gloves?.item!==26||Object.keys(visible).length!==3||
+     ![undefined,null,'natural'].includes(player.appearance96?.skinStyle))return null;
+  // This is the approved Original walk as-is, not a fallback to another body.
+  const equipment={...player.equipment};delete equipment[visible.gloves.key];
+  const source=select({...player,equipment},o);
+  const donor=outfitById.get(`frozen-female-glove26-${d}-walk-native-layers`);
+  if(source?.id!==`approved-female151-v64-walk-${d}-pants168`||source.hdKind!=='outfit'||
+     source.slotComposition151!==true||source.sourceRevision!=='F151-v64-native-12'||
+     !donor?.frozenFemaleGloveLayers||donor.sourceAuthoritySHA256!==femaleSideG26WalkAuthority[d]||
+     donor.body!=='female'||donor.direction!==d||donor.action!=='walk'||donor.productionEnabled===false||
+     donor.equipment?.torso!==151||donor.equipment.pants!==154||donor.equipment.boots!==155||donor.equipment.gloves!==26||
+     source.mirrorX||source.mirrorLayerIDs||source.sourceRasterPadding||donor.mirrorX||donor.mirrorLayerIDs||donor.sourceRasterPadding)return null;
+  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  const {layers:x,...pose}=source.pack.directions[d],{layers:y,...authority}=donor.pack.directions[d];
+  const upper=x.filter(l=>!l.id.startsWith('approved-'));
+  const gloves=y.filter(l=>l.id.startsWith('own-female26-'));
+  const refs=[...new Set(gloves.flatMap(l=>l.frames||[]))];
+  if(pose.clip.frames!==40||pose.clip.fps!==40||pose.clip.loop!==true||!same(pose,authority)||
+     !['frame','pivot','density'].every(k=>same(source.pack[k],donor.pack[k]))||
+     upper.length!==12||!same(upper,y.filter(l=>!l.id.startsWith('pants154-')&&!l.id.startsWith('boot155-')&&!gloves.includes(l)))||
+     gloves.length!==2||!gloves.every((l,j)=>l.id===`own-female26-${j?'far':'near'}`&&l.depth===(j?9.5:29.5)&&
+       l.slot==='foreground'&&l.binding?.kind==='fixed'&&l.frames?.length===40&&!l.depthTrack)||
+     refs.length!==16||!refs.every(h=>donor.sourceRefs.includes(h)&&!source.sourceRefs.includes(h)))return null;
+  const pack={...source.pack,directions:{...source.pack.directions,[d]:{...pose,layers:[...x,...gloves]}}};
+  const composed=describeSlots({...source,pack,equipment:{...source.equipment,gloves:26},
+   sourceRefs:[...source.sourceRefs,...refs]},visible,[]);
+  composed.slotRoutes[visible.gloves.key]={item:26,quality:'hd',source:donor.id};
+  return composed;
+ }
  function selectFemaleWalkSlots(player,o,visible){
   if(o.action!=='walk'||o.direction!=='south'||o.weaponless||!visible.boots||Object.keys(visible).some(slot=>!['boots','pants','weapon'].includes(slot)))return null;
   const pants=visible.pants?.item,weapon=visible.weapon?.item;
@@ -1604,7 +1640,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!visible)return null;
   const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
-  if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
+  if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectFemaleP168G26Walk(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
   return selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
  }
  function selectVisual(player,o={}){
