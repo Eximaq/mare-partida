@@ -2167,7 +2167,7 @@
       tracker.hidden=!telemetry.active;
       if(telemetry.active){
         $('huntXpTime').textContent=telemetry.duration;
-        $('huntXpRate').textContent=telemetry.rate===null?'Calculando…':fmt(telemetry.rate)+' XP/h'+(ONLINE_GAME?.data?.online.party?.group?.activity?.kind==='hunt'?' · Party':'');
+        $('huntXpRate').textContent=telemetry.rate===null?'Calculando…':fmt(telemetry.rate)+(ONLINE_GAME?.data?.online.party?.group?.activity?.kind==='hunt'?' · Party':'');
         $('huntXpEarned').textContent=fmt(telemetry.earned)+' XP';
         $('huntXpProgress').style.width=(telemetry.progress*100).toFixed(1)+'%';
         $('huntXpLevel').textContent='Próximo nível: '+fmt(game.xp)+' / '+fmt(xpNeeded(game.level))+' XP';
