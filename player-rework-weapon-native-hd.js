@@ -260,10 +260,42 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
     eq(d.weapons[118][f],{url:'assets/'+gear+'.png',sha256:gear,size:[640,640],attachment});
   });
  }
- function resolveSeparable({item,body:b,sourceBody,classId,weaponVariant,action,direction,appearance={},equipment={},allowExactComposite=true,allowOrb122BarePreview=false,allowOrb17BarePreview=false,allowGauntlet14South=false}={}){
+
+ // Each live composite maps 1:1 to its own signed body/gear passes. W2 and W3
+ // use PRIMARY→SECONDARY; W110 owns an aggregate gear pass. None of their
+ // gear planes has alpha over the 4,090 hair/45 iris samples on the signed
+ // Light anatomy, so changing these samples after the original composite is
+ // exactly equivalent to dying the body before all gear, with no edge resample.
+ const gauntletsSouthLight={"lightAnatomy":["816234b2769e3cbadaf130a174f015fe1c586a903764be9fda4f91c71f6f2990","553c2187b794a88f6e4df8eb59e7e72e31cd19b46537ce18764a3d61b44da0d7","13a2c945c76a5900c182bcf86c1f32ef85433db56cc73ff9c26bd06d21e73c6e","f2c496f0c9349690f0fdfb38af67c915495ccf8e88a4bb5d8e08455d2b0f9373","e2fe6f45cb7c475a542ef6e0d320b64f9d9a8f0b30c8005af567722a295b34fe","1ca77bc58d1f46bca7455c0731dd2c82c180597dd3ca6d4ac29c9a0eac11c72e","2ef56479b38586028c2b00d510cee5f4ae0aaa2c09568d18a28472c257771ab9","5e80a7fa1101b8586031a02de374e4ac42a2a43534836e3c825acb8827da4779","09cd47dfad42d5bda53a9d5c9b32e9267b2a7f997f4bbeb1cdd50aaa375ca2b2","23e390f4df05121664b489fb3c0acff4a1e30522ef48b2e7c930cc029e1ec07d","742e54c0ba17c912923002efcb4b52ad43647b983e392aa3671f660bfe0f7f98","31642d6deb398b7416a646c04fda5148f12dc1431ce65ca1bf88fef1fd1bf65c"],"arms":{"2":{"archive":"b4b0e75167fdd4e8a498e9ec94e6373755f198afae5ccc8afdd67d8944b89d07","frames":["d6c151261deaf332ce933047497487ddae0a62ba7614db25bfb718ec9b8f54fb","ce23f4fb73f8c7612c0dc8290a2afe47c5d3c94397d0d2679d63b8f4aa1ecdd4","2b77acdd308eb9103d378c8385949bdf036d9622c911e110094f799b8ed63a44","8dd35360e4db02157b115042dfa71b789d7af3bb65e9513aca2653e74d4c29fd","8862a370a21024d3ddf24c2f1e4309a88f10edf01755a3392ce47a25a35b850d","9973e3f36d2398abf4fcd1fcefa4fe5f6a89eb7ea76dd0f0ea9f027fb2ba88f5","29583b41cb82554b632efa1419fe88b387990596463516f6dfbccb47ed87df2a","92a3631f669eed3d09416aec14bb40da2376c95b44bb6d432d0a1e3711b7dc1b","7c408788d0933b6fad41eae9584d05b6db0269ab68f6f658932650195b737bbc","de6e1d0f125103c1e066c9a309d9944192354c17d91a262dddb56300310e34e0","58fa94fa80683f2ad5840b1e193de39401c9cc62e749e3c9b95f79dc85bdce31","e148cb6d7d9ff873e205b3dd3710bbcec7f4b96eeb3d82ca09c35e2bff927727"]},"3":{"archive":"6d2ba4d842322a22ecd40c6f4b8e48a925ac06c86c3b9df8d9a9bc265dff3938","frames":["2303f2c88790042b206da47eae43c72dc64eee881070ad43155d15f3b39478c7","0837bbf3ed600e21554923535146fc09a792e2a650d19456592ffb6009a1e31e","acd336c2bcd58e7735feaf06ae94724ef468965544883dcf4d125e75abaf21d2","0bdc9e69e603df413ea7323852575fd8c944580b2fb8382a2b46751bed44d28d","0316ae65e800c3429100bbaac80cb32d0984736c8d36eeda8cd546d0e6273c2e","693cac2a9d3a0f5928089dde2bc04dfb6137327329a386c7c6cf1ff181519500","5ddf68d2082558bed85cdbf30bc0d859d373e114a07d488ca4bd68229044469d","68b46b22fe616560154660bb6df7f964eb75bf189aac4e9cd21359a5b6247f54","46d04ce70cadd969219685f31e2f9db564f52cb49deae39dd2b1c4d523b026eb","d67f981b3960fcea726af338e5a990a56350ffcbc3a3639662ae2e331aa17695","7061a007f3a0d5e4ce950c622a902027a9ff8fdf3cbdfeb54ee09701d387fedd","a8b29cdc39b32c8cdacc0466d320e5e6c439f077ae231aefedf2c1503cf45c3b"]},"110":{"archive":"aad481b9aa4a43d42039c4b227a23d6d42ce3237b1f9f7537d59097a356ec436","frames":["d0bf5ba3009b74c800405c298e6735a30d36d726cfb9f22c9b93353425d2f97f","b068f8a68b69c4ecf7cfd2d0ebb4d38e4839bc3c06b9ca30fe9ed62fc4f5b009","918bfaf0a2d81c94a19f4da7e86d8121ddb5a85a3d018eedb23d330e862e22d4","adbc785d606e75c3e50281b30d27994f7af7dd4f5fae013a3eabcc46b87046e2","c55c7d3f484075db47b79842af2789491501b16d65ace2e95076d5e42db5c04f","b9aa38d5d88a2bae191f7ba7aacfb9dcaf6992fc6ed790dd41850c4d3d437035","aa76197c26dde6dee1c0d271a79d42a70d6518feebf011c9323e0f03e6a7e233","ba9dd4420788bad4400c0fb4124b5d1c285d40dad467ca17a302a6166665e443","277f939ac411f8c0e04d593d1af36f7c108568e8814973afadef0f8442cc8d3c","03950171ada3285b39a1bea945a90bbc7bd689f0aa87b2ad733f82a3daeac688","44f3416ac4e953179e7ca425c6cb3f1a51c1cadd1b4a262d840a5df3b56acae0","d0bc2ad20bf2e6187f4c1440cf81e29ab8d8de936313964df84690d840a27045"]}}};
+ function resolveGauntletsSouthLight(item){
+  const h=gauntletsSouthLight.arms[item],eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!h)return null;
+  const body=index.orderedAttackProfiles?.find(r=>r.id==='authored-ordered-14-south');
+  const source=index.records.find(r=>r.id==='gauntlet'+item+'-south-native-original-source');
+  if(body?.approvedAppearance?.skin!=='light'||body.approvedAppearance.hairColor!=='brown'||body.approvedAppearance.eyeColor!=='brown'||
+     !eq(body.states?.map(v=>v.layers?.[0]?.sha256),gauntletsSouthLight.lightAnatomy)||
+     source?.item!==item||source.body!=='male'||source.direction!=='south'||source.sourceArchiveSHA256!==h.archive||
+     source.replacementMode!=='atomic-approved-original-composite'||source.hairSeparated!==false||source.density!==4||source.fps!==12||source.basePack||
+     source.mirrorBody||source.renderOffsetPhysical||source.sourceRasterPadding||
+     !eq(source.nativeCanvas,[640,640])||!eq(source.logicalFrame,[160,160])||!eq(source.pivot,[80,128])||!eq(source.timeline,h.frames.map((_,j)=>String(j)))||
+     source.states?.length!==h.frames.length||!source.states.every((v,j)=>{const l=v.layers[0],sha=h.frames[j];return v.state===String(j)&&v.atomic===true&&v.rgbaExact===true&&
+      v.baseSourceModified===false&&v.layers.length===1&&v.approved?.sha256===sha&&v.approved?.url==='assets/'+sha+'.png'&&
+      l.sha256===sha&&l.url===v.approved.url&&l.operation==='source-over'&&l.depth===0&&!l.offset&&!l.mirrorX&&!v.attachment&&!v.bodyPatch&&!v.canvasRoundingPatch;}))return null;
+  return {...source,id:source.id+':saved-light-black-blue',gauntletsSouthSavedHead:true,separableAttack:true,
+   equipmentContract:{weapon:item},colorAppearance:{},dagger13SouthIris:'blue',orderedDaggerHair:'black'};
+ }
+ function resolveSeparable({item,body:b,sourceBody,classId,weaponVariant,action,direction,appearance={},equipment={},allowExactComposite=true,allowOrb122BarePreview=false,allowOrb17BarePreview=false,allowGauntlet14South=false,allowGauntletLightSouth=false}={}){
   // Ordered source profiles retain their authored anatomy/depth; no generic eight-pose rig coercion.
   const ordered=allowExactComposite&&(index.orderedAttackProfiles||[]).find(r=>r.schema==='approved-native-ordered-attack-v1'&&r.item===Number(item&&typeof item==='object'?item.def:item)&&r.body===body(b)&&r.action===action&&r.direction===direction);
   const visibleOrdered=Object.entries(equipment).filter(([,v])=>v!=null&&!['none','original'].includes(v));
+
+  if(allowExactComposite&&allowGauntletLightSouth&&body(b)==='male'&&['male','masculino'].includes(sourceBody??b)&&classId==='brawler'&&action==='attack-unarmed'&&direction==='south'&&
+     visibleOrdered.length===0&&(weaponVariant==null||weaponVariant==='original')&&
+     appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin==='light'&&appearance.skinColor==='light'&&
+     appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.hairColor==='black'&&
+     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'){
+   const southGauntlets=resolveGauntletsSouthLight(Number(item));if(southGauntlets)return southGauntlets;
+  }
 
   // The public W14 South ordered archive certifies Light for the exact stock phases;
   // mutate only its independently signed head samples and retain the stock clock.
@@ -833,7 +865,32 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   ctx.putImageData(out,0,0);
   for(const c of [old,saved,tmp])c.width=c.height=1;
  }
-  function resolve({item,body:b,action='attack',direction,appearance={},equipment={},allowExactComposite=true,allowNorthSavedBlue=false,allowNorthSwordDefault=false,allowCannon15SideAttack=false,allowArm117SideAttack=false,allowRelic31NorthAttack=false,allowRelic32NorthAttack=false,allowOrb17NorthRestoredAttack=false,allowCyborgForearmSouthAttack=false,allowCompass16NorthAttack=false,allowOwnSouthDaggers=false}={}){
+
+ // Ruptura 112 NORTH: the author's original separated equipment replay is
+ // RGBA-exact over the same signed body/shorts/head/hair in all eight poses.
+ const gauntlet112NorthAuthority={"original":[["7ab51ebe4a06978e3c8667fe010b55355adee81256f3daecb3244145cc4d0ff4","62813d7d8a8778592c06dacb95302444b74242999368c4e2c9144d3402392d86","dec6df407d3bed818f6379c6356e8a3b14d51eba99b673d7b042d91ce666ddba"],["810237c3bf36a124aa248278da9052d6c550ddb994bb603a83fd3eb97d9980aa","ebcc0bd714ecec72e53de8df9b9c88b51b4ada04ed0de2d03e48954f8e0e64e1","09062d5aea6db1c07d136285312102830147178e0d5eb9edf157baebb6e507db"],["d2bd488b751c2f3fa1146227c0f77e275787841888cd1039c8322ab8afe257dc","0e9faa9f71fbfcfbabc81a9c9f185abc5b79481b7730fe57cf679ba998fbd2ee","fe6641eb26798714d95576608b7643bd75e1b5d7d4cd9669d12eb1175d0d11d1"],["fa129338a59c90e31b947f81142408b8d28dd820fe0ab106a58175c6da59fe2a","db064e8747b93e5a3c57502f66b9c720ef1f8cf70357f4fb6b335fef69275092","69eb1183876af9eb87103f1cf29fa25d0f46d38099829f12cc8b094f5a4fd795"],["b497ffc0c303e67f03ada24ae97b8d429ce86d0dd5778a7da768eb4903d5a6ac","dca7af0450acd6ef299fe1d318d89d717aad340c35b49374d77ca0298a627a35","19e42711c1361a37d3e1444a6333e2f6a69c3bb9f91b8fe04e14f093bab91d44"],["78fd30b96947d901bcf5c73ab4e079268d481939a5481393a6118b7ad0d5f3fa","c3c1f10597ae7dfa5db96055873f2aa5d99fa4cb44e8bfe261405928fb7c45be","4d287d573fa57cc6f90c540e6e078773ff7be10840c858b693a592b011a3ef1c"],["0ebf42e9a871c344f39a8165610e8e7dfa1f0217df2d5594a981f800cfd26289","3760fd643e47c11581b46167d8218aac81fbfe8753cf358c71982a80a8b7ecc7","4f945b988fa85ce1f06d38161806d20953a243e8c5ea13e738ba717e61d4af71"],["df5832a389a11feafba926c34663f2a7f066417b73a999437b0014b5fa8d47cd","34b9e1cef64c0779abc583e63efc2d1eae2f472774bc21cd7c59b17a04a0121a","fc804955d784389c73ef1f014b1f1425a39ec4d94c7dda85616fe05b66d3bfda"]],"gear":["764438c4dcf05bf9a8492b231796c6c8bee28dfbb4431e909dcba04199b63a6a","671b775dcc1aafefa62cd7d53bbbecc33bd3cf9e6b2179339c75005942d5d3c8","81dc30c1ef8eaee4105faeb910373853b1b2aaafbff348edc2fb2b96e6717527","28a06ef869eef38b19dcd86a7b239d00637c588c5239e9ba9684c9424ad652ee","1f777c4ee7cf9ff11d67121f5462cb527c70b5609f3db387c4c602669ed16ba9","b6dc56047729214e7dad00c129897065abdcfaab49efaa66d7df1ba3d5111a34","4752200d8ff893a4c15b80b9125d0605bde9fd6a67c4bc98c1ad07925a74201f","0ed72f0c056ab56071a6c5a98ebc1c0d90db484ca87259113290b74608ac0ab3"],"layers":[["skin-arms-phase",0,"body",{"kind":"fixed"},["9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97","eebe26703d817b42082bb0a87755dae1add5303daae39016e31e595fe302ce4d","443a426a01956892e6d26c74e4e5c6e788f5e3685c671fe8646042fcdf728a03","acf14879bd873ba084eed990b5299c8ca12ef7accf4088d61d37927122949742","1a0f2561bf6ddfdbe6167ac07ce569c5fb107136e722d05b919d35c62dd440be","ea78b3bbe7da1935c45a4d39ae73d8ab13a84c811f54da142145093d9f5efb07","b072b3256a05b69c4a7f994c2f98503cf1ec968cd1ee710d7f8ebdd41b99a4fd","fd2616f94952dca6049960e9847a46ab54bc8e72beca12ac2ab4dec23fad7659"]],["shorts-phase",1,"pants",{"kind":"fixed"},["2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0","fd1acb385298ed7810492a1a0006a535a88cebd100a75785f877607bf092dd42","66887ada4079168f708e3e9809e5a30ea44b8933e515e806682ae0f254147d10","86b93f073aa216486917498e0ddbea0c3e32d6871a480e912507f7636e7b31cd","2150163bf95ba720e58a245c7fffb4da8a8f711c43a8ea6f80e740f6be12b100","273aecb6f044a8562e9f2fad52b00ea806d2e8623dd678fef9d139b88c68771a","00bc3f2822584f6653bf98ccc9dd5a3a0a33c9126f54a7cf76c89e5f44adf6e9","4a33b516a75d40a893cf7ceaa159f243a5512d250633ab854dfffb477ea11438"]],["headBase",4,"headBase",{"kind":"rigid","a":"NECK","b":"NOSE"},["767c435b05d1f85eed23fde9603e1ca722ed095609b17af82634522024c95969"]],["hair",6,"hair",{"kind":"rigid","a":"NECK","b":"NOSE"},["c5eb1d2d523d85acb584eee39a8e1e66b0ffbbf5cf2a118dc796f91b69bea8ea"]]],"anchors":[[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}]]};
+ function ownGauntlet112NorthAttack(r,a,action,equipment){
+  const p=gauntlet112NorthAuthority,b=r?.basePack?.pack,d=b?.directions?.north,eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(r?.id!=='gauntlet112-north-native-layers'||r.item!==112||r.body!=='male'||r.direction!=='north'||action!=='attack-unarmed'||Object.keys(equipment).length||
+     a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
+     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     r.replacementMode!=='matching-drawn8-base-plus-weapon'||r.sourceArchiveSHA256!=='8ce0916d6b0b9b82ff56fd1b3ce1ea60cf4fd19999e69eb8b43039b568722f43'||
+     r.interfaceSkinLocked!==true||r.hairSeparated!==true||r.density!==4||r.fps!==12||!eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||
+     r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.mirrorLayerIDs||!eq(b?.frame,{width:160,height:160})||!eq(b?.pivot,{x:80,y:128})||b.density!==4||
+     !eq(d?.clip,{frames:8,fps:12,loop:false,contactFrame:4})||!eq(r.timeline,['0','1','2','3','4','5','6','7'])||r.states?.length!==8||
+     !eq(d.layers?.map(l=>[l.id,l.depth,l.slot,l.binding,l.frames||[l.source]]),p.layers)||!eq([d.rest,...d.poses].map(v=>[v.NECK,v.NOSE]),p.anchors)||
+     !p.layers.every(l=>l[4].every(h=>r.basePack.images[h]==='assets/'+h+'.png')))return null;
+  if(!r.states.every((v,i)=>{
+   const l=v.layers?.[0],[f,m,ap]=p.original[i];
+   return v.state===String(i)&&v.layers?.length===1&&!v.attachment&&!v.bodyPatch&&!v.canvasRoundingPatch&&v.rgbaExact===true&&
+    v.approved?.sha256===ap&&v.approved.url==='assets/'+ap+'.png'&&l.sha256===f&&l.url==='assets/'+f+'.png'&&
+    l.mask?.sha256===m&&l.mask.url==='assets/'+m+'.png'&&l.role==='authored-hand-and-orb'&&
+    l.operation==='replace-rgba-under-mask'&&l.depth===12&&eq(l.size,[640,640])&&eq(l.mask.size,[640,640])&&!l.offset&&!l.mirrorX;
+  }))return null;
+  return {...r,id:r.id+':own-gear:'+a.skin,gauntlet112NorthOwnAttack:true,separableAttack:true,colorAppearance:a,equipmentContract:{weapon:112},
+   states:r.states.map((v,i)=>({...v,layers:[{url:'assets/'+p.gear[i]+'.png',sha256:p.gear[i],size:[640,640],role:'equipment',depth:12,operation:'source-over'}]}))};
+ }
+  function resolve({item,body:b,action='attack',direction,appearance={},equipment={},allowExactComposite=true,allowNorthSavedBlue=false,allowNorthSwordDefault=false,allowCannon15SideAttack=false,allowArm117SideAttack=false,allowRelic31NorthAttack=false,allowRelic32NorthAttack=false,allowGauntlet112NorthOwnAttack=false,allowOrb17NorthRestoredAttack=false,allowCyborgForearmSouthAttack=false,allowCompass16NorthAttack=false,allowOwnSouthDaggers=false}={}){
   if(item==null)return null;
   const allowed=[12,13,71,72,73,74].includes(Number(item))?["attack","attack-daggers"]:[0,1,67,68,69,70].includes(Number(item))?["attack","attack-sword"]:[14,110,112,2,3,15,109,111,117,118,119,120].includes(Number(item))?['attack','punch','attack-unarmed']:[4,5,113,114,115,116].includes(Number(item))?['attack','shoot','attack-firearm']:[123,124,125,126,127,128,16,121,17,122,31,32].includes(Number(item))?['attack','focus','attack-focus','cast']:[];
   const id=v=>Number(v&&typeof v==='object'?v.def:v);
@@ -874,6 +931,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const relic31=allowRelic31NorthAttack&&ownedRelic31NorthAttack(r,appearance,action,equipment);if(relic31)return relic31;
   const relic32=allowRelic32NorthAttack&&ownedRelic32NorthAttack(r,appearance,action,equipment);if(relic32)return relic32;
   const orb17=allowOrb17NorthRestoredAttack&&ownOrb17NorthRestoredAttack(r,appearance,action,equipment);if(orb17)return orb17;
+  const north112=allowGauntlet112NorthOwnAttack&&ownGauntlet112NorthAttack(r,appearance,action,equipment);if(north112)return north112;
   if(r.interfaceSkinLocked&&!ownRearSwordDefault&&[appearance.skin,appearance.skinColor].some(v=>v&&v!=='original'))return null;
   for(const slot of ['torso','coat','pants','legs','gloves','boots','cloak','head'])if(equipment[slot]!=null&&!['original','none'].includes(equipment[slot]))return null;
   const ownRearBlue=allowNorthSavedBlue&&verifiedNorthFirearmBlue(r,appearance,equipment);
