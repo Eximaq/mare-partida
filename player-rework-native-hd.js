@@ -786,8 +786,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    layersByDirection.west=layersByDirection.east;
   }
   const palette=Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original');
+  const northPalette=dir==='north'&&[168,182].includes(pants)&&boot===155&&
+   ['original',undefined].includes(a.hair)&&['original',undefined].includes(a.face)&&
+   ['original','blue',undefined].includes(a.eyeColor)&&
+   (!a.skin||a.skin==='original'||Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))&&
+   (!a.hairColor||a.hairColor==='original'||Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor));
   if(a.body!=='male'||!Object.hasOwn(layersByDirection,dir)||!['idle','walk'].includes(action)||
-     palette&&(side||!strictSouthRequested(a))||side&&boot!=null&&!sideBoot9||
+     palette&&(dir==='north'?!northPalette:side||!strictSouthRequested(a))||side&&boot!=null&&!sideBoot9||
      ![140,147,154,161,168,175,182].includes(pants)||visible.torso?.item!==151||visible.gloves?.item!==152||
      boot!=null&&boot!==155&&!sideBoot9||Object.keys(visible).length!==(boot==null?3:4))return null;
   // Remove only the authored boot passes from this exact trouser rig.
@@ -802,6 +807,20 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       return !l||l.depth!==layersByDirection[dir][id]||l.binding?.kind!=='fixed'||
        l.frames?.length!==frames||!Array.from(l.frames).every(Boolean);
      }))return null;
+  if(palette&&northPalette){
+   const reference=outfitById.get('frozen-male-pants133-north-'+action+'-v47'),r=reference?.pack?.directions?.north;
+   const own=(layers,id)=>layers.filter(l=>l.id.startsWith('pants'+id+'-'));
+   const [waist,left,right,...extra]=own(d.layers,pants);
+   const waistband={168:'31c92ade5ec4d8fe849bb7e0cd862ed3c1e1ce48f184fb073d9a4303a811879b',182:'22e7502d3d0aa7ee38128f25d92563276649182a3f485da1eefb85d7ae374854'};
+   const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+   if(!r||extra.length||!waist||!left||!right||own(r.layers,133).length!==3||
+      !same(d.layers.filter(l=>!own(d.layers,pants).includes(l)),r.layers.filter(l=>!own(r.layers,133).includes(l)))||
+      ![waist,left,right].every(l=>l.slot==='pants'&&l.depth===50&&!l.depthTrack)||
+      waist.id!=='pants'+pants+'-waist'||waist.source!==waistband[pants]||waist.frames||!anchor.sourceRefs.includes(waist.source)||
+      !same(waist.binding,{kind:'bone',a:'NECK',b:'HIP'})||
+      ![left,right].every((l,i)=>l.id==='pants'+pants+'-leg-'+(i?'right':'left')&&l.binding?.kind==='fixed'&&l.frames?.length===frames&&
+       Array.from(l.frames).every(h=>/^[0-9a-f]{64}$/.test(h)&&anchor.sourceRefs.includes(h))))return null;
+  }
   let registeredSideBoot9;
   if(side){
    const source=outfitById.get(`frozen-male-pants133-${dir}-${action}-v47`),ref=source?.pack?.directions?.[dir];
@@ -1618,7 +1637,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
        ['east','west'].includes(o.direction)&&visible.weapon?.item===0)||visible?.boots?.item===148&&(o.direction==='north'&&[0,1,67,68,69,70].includes(visible.weapon?.item)||
        o.direction==='south'&&[0,1,67,68,70].includes(visible.weapon?.item)||
        ['east','west'].includes(o.direction)&&visible.weapon?.item===0)||
-       o.direction==='north'&&[0,1,67].includes(visible?.weapon?.item)&&visible.boots?.item===183)&&Object.keys(visible).length===2&&o.action==='attack-sword'){
+       visible?.boots?.item===183&&(o.direction==='north'&&[0,1,67].includes(visible.weapon?.item)||o.direction==='south'&&visible.weapon?.item===0))&&Object.keys(visible).length===2&&o.action==='attack-sword'){
     const bare={...player,equipment:{weapon:visible.weapon.value}};
     const reference=visible.weapon.item===0?bare:{...bare,equipment:{weapon:{def:0}}};
     const coated={...reference,equipment:{...reference.equipment,coat:{def:151}}};
