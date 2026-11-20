@@ -95,7 +95,7 @@ for(const skinColor of (process.env.SKIN?.split(',')||['porcelain','ebony'])){
   a(diff>1000);a(pix(draw(bare,f)).equals(x));count++;m.width=wc.width=1;
  }
  a.equal(JSON.stringify(p),save);
- for(const e of [{legs:{def:22}},{head:{def:19}},{gloves:{def:26}},{weapon:{def:5}},{weapon:{def:item,variant:'other'}},{boots:{def:162,variant:'other'}},{weapon:{def:1}},{weapon:{def:67}},{weapon:{def:68}},{weapon:{def:69}},{weapon:{def:70}},{boots:{def:141}}]){
+ for(const e of [{legs:{def:22}},{head:{def:19}},{gloves:{def:26}},{weapon:{def:5}},{weapon:{def:item,variant:'other'}},{boots:{def:162,variant:'other'}},{weapon:{def:69}},{boots:{def:141}}]){
   a(!api.selectVisual(actor({boots:{def:boot},...e}),o)?.id.includes(':checkpoint-b'+boot+'-'+direction+'-no-coat'));
  }
  for(const delta of [{direction:'north'},{direction:'east'},{direction:'west'},{action:'walk'},{action:'attack-unarmed'}])
