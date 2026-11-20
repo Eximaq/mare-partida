@@ -62,7 +62,7 @@ const noneRoute=(q,p,opt=o)=>!q.selectVisual(p,opt)?.id.includes(own)&&!q.select
  const original={appearance96:{...look,version:1,hairColor:'original',eyeColor:'original',skinColor:'original'},equipment:{}};
  for(const coat of [null,6,7]){original.equipment=coat?{coat:{def:coat}}:{};assert(noneRoute(api,original));}
  for(const e of [{gloves:{def:26}},{legs:{def:133}},{boots:{def:155}},{weapon:{def:0}},{head:{def:19}},{coat:{def:6,variant:'alt'}}])assert(noneRoute(api,{...saved(tone,null,e),preferences:{hideHeadgear:true}}));
- for(const p of [{hairStyle:'hair-bob'},{eyeStyle:'face-calm'},{eyeColor:'blue'},{hairColor:'outside-palette',hairStyle:'hair-bob'},{gender:'masculino'}])assert(noneRoute(api,saved(tone,null,{},p)));
+ for(const p of [{hairStyle:'hair-bob'},{eyeStyle:'face-calm'},{hairColor:'outside-palette',hairStyle:'hair-bob'},{gender:'masculino'}])assert(noneRoute(api,saved(tone,null,{},p)));
  for(const p of [{direction:'north'},{direction:'south'},{action:'idle'},{consumer:'portrait'},{weaponless:true}])assert(noneRoute(api,saved(tone),{...o,...p}));
  if(process.env.SELECT_ONLY){console.log('8 saves and strict route guards');return;}
  const off=control();await off.ready;

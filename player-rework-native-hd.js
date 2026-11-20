@@ -572,17 +572,20 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return !player.__reworkSubset&&!player.zoanTransformed&&!player.equipment?.visual_completo&&player.equipment?.head==null&&o.action==='walk'&&Object.hasOwn(coat67SideNeck,o.direction)&&o.consumer==='world'&&!o.weaponless&&
      a.gender==='feminino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.face==='original'&&
      Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)&&Object.hasOwn(root.MareCharacterAppearance?.hairs||{},a.hairColor)&&
-     a.eyeColor!=='blue'&&Object.hasOwn(root.MareCharacterAppearance?.eyes||{},a.eyeColor)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&
+     Object.hasOwn(root.MareCharacterAppearance?.eyes||{},a.eyeColor)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin);
  }
  function restoreCoat67SideExactNeck(record,material,a){
   const dir=record.direction,auth=coat67SideNeck[dir],d=record.pack?.directions?.[dir],head=d?.layers.filter(l=>l.slot==='headBase');
+  const blue=a.eyeColor==='blue',blueSource=blue?swordBlueIris[dir]:null;
+  if(blue&&(!blueSource||material?.eyeStyle!==null||material?.eyeColor!==null||material.ownership?.attackLayers?.filter(l=>l.id==='iris'&&l.slot==='face'&&l.source===blueSource).length!==1))return null;
   if(!auth||!material||material.sourceScale!==1||!material.fused||material.ownership?.walkHead!==auth.sha||
      JSON.stringify(material.ownership.walkDifferenceBounds)!==auth.bounds||
      head?.length!==1||head[0].source!==auth.sha||head[0].frames||head[0].binding?.kind!=='rigid'||
      head[0].binding.a!=='NECK'||head[0].binding.b!=='NOSE'||material.style!=='original'||
-     material.hairColor!==a.hairColor||material.eyeColor!==a.eyeColor||material.skinColor!==a.skin||
+     material.hairColor!==a.hairColor||material.eyeColor!==(blue?null:a.eyeColor)||material.skinColor!==a.skin||
      material.gearRecord||material.profileNeckBridge||material.profileNeckRestore)return null;
+  if(blue)return {...material,eyeColor:'blue',registeredBlueIris:blueSource,faceProtectedExact:false,faceProtectedExceptIris:!material.skinColor,id:material.id+':registered-blue-iris:authored-'+dir+'-neck',profileNeckRestore:true};
   if(dir==='west')return {...material,id:material.id+':authored-west-neck',profileNeckRestore:true};
   return {...material,id:material.id+':authored-east-neck',profileNeckRestore:true};
  }
