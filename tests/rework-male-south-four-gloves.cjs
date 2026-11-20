@@ -10,7 +10,7 @@ global.MareCharacterAppearance=imp('character-appearance.js');
 global.MareAppearance96=imp('tools/paper-doll-96-v3/appearance.js');
 const load=imp('tools/rework-hd-test-loader.cjs').create(repo),rt=imp('player-rework-native-hd.js').create({fetchJSON:async p=>JSON.parse(fs.readFileSync(path.join(repo,p))),loadImage:load,makeCanvas:cv.createCanvas});
 const eq=(g,b)=>({appearance96:{gender:'masculino',hairStyle:'original',eyeStyle:'original',hairColor:'original',eyeColor:'original',skinColor:'original'},equipment:{legs:{def:133},coat:{def:151},gloves:{def:g},boots:b?{def:b}:null}});
-const gloves=[145,166,173,180],boots=[8,134,141,148,155,162,169,176,183];
+const additional=[131,138,152],gloves=[...additional,145,166,173,180],boots=[8,134,141,148,155,162,169,176,183];
 const options={direction:'south',action:'attack',consumer:'world'};
 const actor=(g,b,look)=>({...eq(g,b),appearance96:global.MareCharacterAppearance.normalize(look)});
 const baseline=process.env.KAIZOKU_BASELINE_NATIVE?require(process.env.KAIZOKU_BASELINE_NATIVE).create({fetchJSON:async p=>JSON.parse(fs.readFileSync(path.join(repo,p))),loadImage:load,makeCanvas:cv.createCanvas}):null;
@@ -36,12 +36,12 @@ async function run(api,player,source,visit){
   }
  }finally{bundle.release();}
 }
-require('node:test')('Southern palette: four audited gloves keep their own material on every pose',async()=>{
+require('node:test')('Southern palette: seven audited gloves keep their own material on every pose',async()=>{
  await Promise.all([rt.ready,baseline?.ready]);
  let count=0,world=0,early=0,sourceRecomposed=0,otherBootFrames=0;
  for(const g of gloves)for(const b of boots)for(const eyeColor of ['blue','brown','green','gray','amber','violet']){
   const p=actor(g,b,{skinColor:'ebony',hairColor:'silver',eyeColor});
-  if(baseline)assert(!baseline.selectVisual(p,options)?.partitionedMalePunch?.paletteParts);
+  if(baseline&&additional.includes(g))assert(!baseline.selectVisual(p,options)?.partitionedMalePunch?.paletteParts);
   const s=rt.selectVisual(p,options);
   assert(s?.partitionedMalePunch?.paletteParts?.strictSouthEyes,[g,b,eyeColor]);
   assert.equal(s.slotRoutes.gloves.item,g);assert.equal(s.slotRoutes.boots.item,b);
@@ -102,8 +102,8 @@ require('node:test')('Southern palette: four audited gloves keep their own mater
    world++;
   });
  }
- for(const [g,b,direction] of [[25,8,'south'],[131,8,'south'],[138,8,'south'],[152,8,'south'],[145,9,'south'],[145,null,'south'],[145,8,'east'],[145,8,'west']])
+ for(const [g,b,direction] of [[25,8,'south'],[145,9,'south'],[145,null,'south'],[145,8,'east'],[145,8,'west']])
   assert(!rt.selectVisual(actor(g,b,{skinColor:'ebony',hairColor:'silver',eyeColor:'green'}),{...options,direction})?.partitionedMalePunch?.paletteParts);
- assert.deepEqual({count,world,early,sourceRecomposed,otherBootFrames},{count:216,world:96,early:baseline?64:32,sourceRecomposed:32,otherBootFrames:64});
+ assert.deepEqual({count,world,early,sourceRecomposed,otherBootFrames},{count:gloves.length*54,world:gloves.length*24,early:gloves.length*(baseline?16:8),sourceRecomposed:gloves.length*8,otherBootFrames:gloves.length*16});
  console.log({count,world,early,sourceRecomposed,otherBootFrames});
 });
