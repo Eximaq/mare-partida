@@ -1093,7 +1093,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function selectFemaleApprovedGloveWalk(player,o,visible){
   const d=o.direction,g=visible.gloves?.item,pants=visible.pants?.item;
   if(o.action!=='walk'||!Object.hasOwn(femaleSideWalkGloveAuthority,d)||o.weaponless||
-     visible.torso?.item!==151||![147,161,168,175,182].includes(pants)||![25,26,131,138,145,152,159,166,173].includes(g)||Object.keys(visible).length!==3||
+     visible.torso?.item!==151||!([147,161,168,175,182].includes(pants)||pants===133&&[26,131].includes(g))||![25,26,131,138,145,152,159,166,173].includes(g)||Object.keys(visible).length!==3||
      ![undefined,null,'natural'].includes(player.appearance96?.skinStyle))return null;
   // This is the approved Original walk as-is, not a fallback to another body.
   const equipment={...player.equipment};delete equipment[visible.gloves.key];
@@ -1108,6 +1108,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      source.mirrorX||source.mirrorLayerIDs||source.sourceRasterPadding||donor.mirrorX||donor.mirrorLayerIDs||donor.sourceRasterPadding)return null;
   const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
   const {layers:x,...pose}=source.pack.directions[d],{layers:y,...authority}=donor.pack.directions[d];
+  if(pants===133){
+   const cloth=x.find(l=>l.id==='approved-cloth');
+   const start=d==='east'?'1296f5081e8686c4d64933d7ef115ea00c6a0a2ac2730f91a8e23b6aead1f17d':
+    'a7804b5790a1066c0e9597cda88c4cd53637f430f78f6cbe7e05b4b7f0bb9e9f';
+   if(cloth?.slot!=='pants'||cloth.binding?.kind!=='fixed'||cloth.depth!==5||cloth.frames?.length!==40||
+      cloth.frames[0]!==start||!cloth.frames.every(h=>source.sourceRefs.includes(h)))return null;
+  }
   const upper=x.filter(l=>!l.id.startsWith('approved-'));
   const gloves=y.filter(l=>l.id.startsWith(`own-female${g}-`));
   const refs=[...new Set(gloves.flatMap(l=>l.frames||[]))];
