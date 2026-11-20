@@ -1683,15 +1683,26 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    sourceRefs:[...base.sourceRefs,...pair.map(l=>l.source)],
    slotRoutes:{...base.slotRoutes,[visible.gloves.key]:donor.slotRoutes[visible.gloves.key]}};
  }
- function selectNorthPunchG26B9(player,o,a,visible){
+ const northB9PunchGloveAuthority={
+  26:["60966818a123a979695c5465f1bb9b307e2836a099b52be1c23ec1df02826973","6b742afe6ae8cd905e19dedd222e0cc6db205fa14b91b3ae0ac3b4a54d28a1f6","86682b4ff4e453495af7f5796ef72fc1765ddc86eb289c21f46f5aa14a8a2b5d","b969076da7b278f35f4b3ba27a6fdbcb69350cf35d25a72980ca46d0e7264a99","878c7fd33ffa44ef749e51422204213ff4bf1c449828fdb66ba0095dc292fc85","a3f6ffcf8b71efcda24e5a1eaae418aacfe93df7287b01a3296d7d4a4c6e1501","1bd502b1869120cbf0a69e8cfa90efd4068ef4288ac256837d9838d16080da8a","2267aa9833a82b4aaeaea7e68af87f816a37ebfca425aa771072c5869a7740d5"],
+  131:["d3d21dae7052351d00da9d9a745af1ee157b427de11d22ea13b241cbd589f468","c1e3434b1755a88b64808a9fb1c0a3400c8fec1da015ad51233174bcea47ff90","023428f626b7e528c744cee425f65a4d5b2f316adebfcad779bf372f2d9720c8","797c9a88647bedbcb315c427914a6f031c345b531fc3b812eefacb79aaad4a29","89a49ac33689f8f07a72df4d20260a57148ef0a1b52905e21747097ebcc94336","baa20b2583fdf770cfb2e08c89b1dc62790d028f01dd94b227b6961b6d0ca911","99586cd2523beda81d285ba69a3e27974140f4f4af7304cb2d229936db988e95","dd573a11cfd3dff8b1b62aabb39d827a6ad58ec796a0ad72de45cec1bbc57905"],
+  138:["e5d967a0b222f4e2b46442be7a0565c6b9975d639fcf9be7320f04f3069a9dc7","12d8a2f4247b63264fd01db12f1416651ea1dac6ffcc23a8b14bc70520a9c94e","71a490152d5aff972e580271511b16e3dbd89f4eda0c35a912c12b23beaff20e","7bec68f7588a0106b742736afef64b2c2579338771b60608a940bf0dd81f84fc","c00ac3290a33e5dbe8f3587ab86d839caf0f6dedbcaa2ed41b5f8a575a4b96c0","5b5200e94c21e064051e1a9b6539fda4d5aa8b268021ea39c77eff8e840a6771","729547e40db9440ba069958af40c16e00caeff3fb96f6ecb358b629f711b91da","5881270019b8730ff7743d5b25a30766f02c75471dbd597a1f5479de07df88fb"],
+  145:["ad0374056de79c1392308633a068bcb5b7407bbec5400db1f93992403ae5639e","9046e1f582f842954a354aa1110022a46b43eb48efc8eda1b77a5b1d0e1c6824","69a7d354ec08ebd1761a36499975a1e74a9edab8c5e862c84269227bcbc8c8ff","dd2371204d7fcd7a53e78835c5df1d75ffaba5798c7d854765a10f28e4a0ad99","754d20c84b5d67faf166cf0decb1d7c2bccb9191445a89be19971eafdc510069","360e9577fa9d5e4b54438f4c0818dfa9670ec2f2f7f2c636178ab6fa81a09e27","0f4eb959f5be0b6b33387d183d400947dceeffe288f13590cf8779b736c4e8ea","d1a17dcf136897a7be996359fc255ecf63bc8c57afeac26e18933aa5e40ce28e"],
+  159:["568c7bee4719a7ecc08f3108338bbb1b1b22b59bc4d400b8ae39df186d23e589","71744f3753ea6b55fc0a389048773eb7a568766a207afd7636997482ccbf3749","5b0a7c26d3ec0601ac94f5a7e065e533f5be55c45fea0aa3d161c59bef591d40","cc112d4ec87d1fdf3685f9ba007a110010ecad12d215e70e7dd05f9b6b9e2d94","886045e6c49c0380e1de96ce37d68abef72aae11c25982d02141909dfb14de85","f2ff4a8e15b455ed4ff2c429ff4e9c8b369b77ce6bd598d3ebd02c601a6bf7a4","b09f64a16d9b5916fcc2402f8610e93f072a8fc790c856c1c8bf9d146b5556fa","4621e98da09174104d8e6d68c0562130fde192c376fc597abcf4f43a28e10323"],
+  166:["c6cdd4fc2e287454bc66376b42054e1a433716de09ba56ce70c6c890f361d143","7b4492b7e6906ecae0cb1f58c49b69d63aeccc8088a430b38288409cd976d591","8edd9c26a10fafb5742ef589e9f0206f6d659202e6d8624729b15565c8df2939","540fab706fd1e01d269648d505701beccf02d0d99664b4c3bef99f412a65f8ab","54f50736185b3315ba14ebd01d98b8ee7d01b31ecfee705485915a9d7fc5d9d5","e9685ced7510083cc7797df35849bac566855365b097a9916c1b3901c3980d41","02c7190e8729870666b311abfdd24d977de21edaf0128ed86fa0e2e771ecb71a","4106907247cc51738e23005a8e7bd4bba51e18854693ba337a46c616be44169b"],
+  173:["2a499da6c540f02949ef9466533022ba71900967cada30f5d083060516497af4","c6ebfa670185a65eec6d910ee3264b24d89d41c9c59221589801795fc0d80781","5578ea92c9550c450a3a3ef46873dc437274ec0293b3f2b66979b6b6dd4aff15","d02f894b15ab69de8f6d7f44c1495ae9566e81e4e993018d2bd86b3aa92c8c8f","f1659724590567cee6856b9f9603085444a88d5651bed4345a370ce23b024ec3","454623107a1d21325c4c9f4e9ef04c3f9023ba4aeff5612166b264ff6cdf8759","e12f1c0502852ebc092489621b74a138dd65d94574a4797b2a83ec340cccaa37","e6d7ccc4d3475a94c5934be1c47aa2319278321cae9a4442730b0abc7740c9d7"],
+  180:["4b8f2e2d8c1a8e8573d738b5dee50252f387efffa5e99f474fd644eb35916cb7","82fb23ec13976fa3408dc4c0ab2a1c38ff2d5d437f33cda717fc3936bf6bd407","631f6e910e47d5f7cb8575967f84af68bb70093c037bb1a574a799d018433dff","420dbaa50cef8c16c3ae8c5faf43ef12ee86b6844ba14ec84d003263a3c308ca","e3d1a17ef05f4aa92b648f242df63a6f1d197f9cbe79ae0d58e5663298dfa38b","aaec55d5371fa7225fc2f8c8e2116f25428a1d5ec158a14767300ef0e919afa0","33f8dbfc1ed575d55227740fbf5458422a7a278f06d445d61eb05c4374432a42","c06f1210ce94e2057614deeaafb6b4d79f3bab94da429d4147f723ce22a950b3"],
+ };
+ function selectNorthPunchB9(player,o,a,visible){
+  const item=visible.gloves?.item;
   if(a.body!=='male'||o.direction!=='north'||!['attack','attack-unarmed'].includes(o.action)||
      Object.keys(visible).length!==4||visible.torso?.item!==151||visible.pants?.item!==133||
-     visible.boots?.item!==9||visible.gloves?.item!==26||!['original',undefined].includes(a.hair)||
+     visible.boots?.item!==9||![26,131,138,145,159,166,173,180].includes(item)||!['original',undefined].includes(a.hair)||
      !['original',undefined].includes(a.face)||!['original','blue',undefined].includes(a.eyeColor)||
      (a.skin&&a.skin!=='original'&&!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))||
      (a.hairColor&&a.hairColor!=='original'&&!Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)))return null;
   const id='male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate-coat151-existing-gloves152-visible-native-candidate';
-  const donor=outfitById.get('frozen-male-glove26-north-attack-unarmed-native-layers'),base=outfitById.get(id);
+  const donor=outfitById.get(`frozen-male-glove${item}-north-attack-unarmed-native-layers`),base=outfitById.get(id);
   const key=visible.gloves.key,opts={...o,action:'attack-unarmed'},
    proven=select({...player,equipment:{...player.equipment,[key]:{def:152}}},opts);
   const dir=r=>r?.pack?.directions?.north,d=dir(proven),ref=dir(base),g=dir(donor),
@@ -1704,7 +1715,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       !same(proven.bootsOverlay,base.bootsOverlay)||!same(proven.bodyOcclusion,base.bodyOcclusion)||
       !same(proven.paletteSourceMasks,base.paletteSourceMasks)||proven.palettePolicy!=='verified-original-anatomy-only')return null;
   const old=d.layers.filter(l=>l.id==='gloves152-visible-native-overlay'),src=g.layers[1];
-  const sh=['60966818a123a979695c5465f1bb9b307e2836a099b52be1c23ec1df02826973','6b742afe6ae8cd905e19dedd222e0cc6db205fa14b91b3ae0ac3b4a54d28a1f6','86682b4ff4e453495af7f5796ef72fc1765ddc86eb289c21f46f5aa14a8a2b5d','b969076da7b278f35f4b3ba27a6fdbcb69350cf35d25a72980ca46d0e7264a99','878c7fd33ffa44ef749e51422204213ff4bf1c449828fdb66ba0095dc292fc85','a3f6ffcf8b71efcda24e5a1eaae418aacfe93df7287b01a3296d7d4a4c6e1501','1bd502b1869120cbf0a69e8cfa90efd4068ef4288ac256837d9838d16080da8a','2267aa9833a82b4aaeaea7e68af87f816a37ebfca425aa771072c5869a7740d5'];
+  const sh=northB9PunchGloveAuthority[item];
   if(old.length!==1||g.layers.length!==2||src?.id!=='registered-frozen-glove-native-attack'||!same(src.frames,sh)||
      ![old[0],src].every(l=>l.slot==='foreground'&&l.depth===100&&!l.depthTrack&&same(l.binding,{kind:'fixed'})&&l.frames?.length===8)||
      sh.some(h=>!donor.sourceRefs.includes(h)||proven.sourceRefs.includes(h)||proven.paletteSourceMasks?.[h]))return null;
@@ -1712,9 +1723,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const rear=d.layers.filter(l=>rearNames.includes(l.id)),pants=d.layers.find(l=>l.id==='pants133-translated-candidate');
   if(!same(rear.map(l=>l.id),rearNames)||!same(rear.map(l=>l.source),rearHashes)||!rear.every(l=>l.slot==='body'&&l.depth===2.5&&!l.frames&&same(l.binding,{kind:'fixed'}))||
     pants?.depth!==2||d.layers.some(l=>l!==pants&&l.depth>1&&l.depth<2.5)||!same(proven.bodyOcclusion,{layerId:'skin-arms-phase',belowPhysicalY:400,reason:'Clothed lower legs replace naked calves; upper body and all source PNG bytes retained'}))return null;
-  // Behind the trousers only for this proved G26 route; the front and sole are untouched.
+  // Behind the trousers only for these proved glove routes; the front and sole are untouched.
   const layers=d.layers.map(l=>l===old[0]?src:rear.includes(l)?{...l,depth:1.5}:l),{registeredMale151Gloves152,gloveRegistration,sourceGloveOutfitId,...record}=proven;
-  return {...record,id:record.id+':own-north-punch-g26-b9',equipment:{...record.equipment,gloves:26},
+  return {...record,id:record.id+':own-north-punch-g'+item+'-b9',equipment:{...record.equipment,gloves:item},
    pack:{...record.pack,directions:{...record.pack.directions,north:{...d,layers}}},
    sourceRefs:[...new Set(layers.flatMap(l=>l.frames||[l.source]).filter(Boolean))],
    slotRoutes:Object.fromEntries(Object.entries(visible).map(([k,v])=>[v.key,{item:v.item,quality:'hd',source:k==='gloves'?donor.id:base.id}])),
@@ -1758,7 +1769,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
   if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectFemaleApprovedGloveWalk(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
-  return selectSouthPunchBare(o,look,visible)||selectNorthPunchG26B9(player,o,look,visible)||selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
+  return selectSouthPunchBare(o,look,visible)||selectNorthPunchB9(player,o,look,visible)||selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
  }
  function selectVisual(player,o={}){
   const exact=select(player,o);
