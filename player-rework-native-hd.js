@@ -1823,7 +1823,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function selectNorthPunchP22Coat(o,a,visible){
   const g=visible.gloves?.item,noCoat=visible.torso==null,d=o.direction,action=['attack','attack-unarmed'].includes(o.action)?'attack-unarmed':o.action;
-  if(a.body!=='male'||d!=='north'||action!=='attack-unarmed'||visible.pants?.item!==22||(noCoat?![26,131,138,145,152,159,166,173,180].includes(g):visible.torso.item!==151)||Object.keys(visible).length!==(noCoat?2:g!=null?3:2)||(g!=null&&![25,26,131,138,145,152,159,166,173,180].includes(g))||
+  if(a.body!=='male'||d!=='north'||action!=='attack-unarmed'||visible.pants?.item!==22||(noCoat?![25,26,131,138,145,152,159,166,173,180].includes(g):visible.torso.item!==151)||Object.keys(visible).length!==(noCoat?2:g!=null?3:2)||(g!=null&&![25,26,131,138,145,152,159,166,173,180].includes(g))||
      !['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||
      !['original','blue',undefined].includes(a.eyeColor)||
      (a.skin&&a.skin!=='original'&&!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))||
