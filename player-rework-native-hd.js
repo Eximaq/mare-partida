@@ -1660,7 +1660,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...verified,id:verified.id+':unbooted',pack:unbooted,equipment,hdKind:'outfit',omitted:[],slotRoutes:slots};
  }
  // Use only pairs verified on their receiving trousers, never import P133 clothing.
- const northPantsVerifiedGloves={154:[26,131,166],161:[26]};
+ const northPantsVerifiedGloves={154:[26,131,138,145,159,166,173,180],161:[26,131,138,145,159,166,173,180]};
  function selectNorthRegisteredPantsGlove(o,a,visible){
   const pants=visible.pants?.item,item=visible.gloves?.item;
   if(o.direction!=='north'||!['idle','walk'].includes(o.action)||!northPantsVerifiedGloves[pants]?.includes(item))return null;

@@ -1,3 +1,12 @@
+if(!process.env.PANTS_TRIAL){
+ const {spawnSync}=require('node:child_process');
+ for(const pants of [154,161]){
+  const r=spawnSync(process.execPath,['--expose-gc',__filename],{stdio:'inherit',env:{...process.env,PANTS_TRIAL:String(pants)}});
+  if(r.error)throw r.error;
+  if(r.status!==0)process.exit(r.status??1);
+ }
+ console.log('PASS 1024 saved transitions and 544 registered-pants Canvas comparisons');process.exit(0);
+}
 const a=require('node:assert/strict'),p=require('node:path'),R=p.dirname(__dirname),{make,cv}=require(p.join(R,'tests/rework-integration-support.cjs'));
 const load=require(p.join(R,'tools/rework-hd-test-loader.cjs')).create(R),A=require(p.join(R,'character-appearance.js'));
 const api=make();
@@ -6,7 +15,8 @@ const player=(pants,glove,boot,skinColor)=>JSON.parse(JSON.stringify(A.commit({i
 const layerBoot=l=>l.id.startsWith('boot155-'),sk=l=>l.id.startsWith('glove');
 const pix=c=>Buffer.from(c.getContext('2d').getImageData(0,0,c.width,c.height).data);
 (async()=>{await api.ready;let count=0;
-for(const [pants,gloves] of [[154,[26,131,166]],[161,[26]]])for(const action of ['idle','walk'])for(const glove of gloves){
+const pants=Number(process.env.PANTS_TRIAL);a([154,161].includes(pants));
+for(const action of ['idle','walk'])for(const glove of [26,131,138,145,159,166,173,180]){
  const o=opts(action),contrast=[];
  for(const skin of Object.keys(A.skins)){
   const a0=player(pants,glove,null,skin),save=JSON.stringify(a0),ids=[];
@@ -17,7 +27,7 @@ for(const [pants,gloves] of [[154,[26,131,166]],[161,[26]]])for(const action of 
   delete a0.equipment.boots;a.equal(JSON.stringify(a0),save);a.equal(ids[0],ids[2]);a.equal(ids[1],ids[3]);
  }
  for(const [equipment,options] of [
-  [{boots:I(9)},o],[{legs:I(147)},o],[{head:I(129)},o],[{gloves:I(999)},o],[{weapon:I(0)},o],[{}, {...o,direction:'south'}],[{}, {...o,action:'attack-unarmed'}]
+  [{boots:I(9)},o],[{legs:I(147)},o],[{head:I(129)},o],[{gloves:I(25)},o],[{weapon:I(0)},o],[{}, {...o,direction:'south'}],[{}, {...o,action:'attack-unarmed'}]
  ]){const x=player(pants,glove,null,'ebony'); x.equipment={...x.equipment,...equipment};a(!/:p(?:154|161)-g\d+-owned:/.test(api.selectVisual(x,options)?.id||''));}
 
  for(const skin of ['porcelain','ebony']){
@@ -48,5 +58,5 @@ for(const [pants,gloves] of [[154,[26,131,166]],[161,[26]]])for(const action of 
  }contrast.push(...per);}finally{qs.forEach(q=>q.release());global.gc?.();}
  }
 }
-if(!process.env.SELECT_ONLY)a.equal(count,136);console.log('PASS 256 saved selection transitions and '+count+' verified pants/glove Canvas comparisons');
+if(!process.env.SELECT_ONLY)a.equal(count,272);console.log('PASS P'+pants+' 512 saved transitions / '+count+' Canvas');
 })().catch(e=>{console.error(e);process.exitCode=1});
