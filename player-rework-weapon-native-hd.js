@@ -969,7 +969,36 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    if(removed!==cutPixels)throw Error('Unexpected W2 distal ownership support');
    ctx.putImageData(out,64,64);for(const c of [old,saved,tmp])c.width=c.height=1;
   }
-   function resolve({item,body:b,action='attack',direction,appearance={},equipment={},allowExactComposite=true,allowNorthSavedBlue=false,allowNorthSwordDefault=false,allowCannon15SideAttack=false,allowArm117SideAttack=false,allowRelic31NorthAttack=false,allowRelic32NorthAttack=false,allowGauntlet112NorthOwnAttack=false,allowW2NorthOwnAttack=false,allowGauntlet112SouthOwnAttack=false,allowGauntlet111NorthOwnAttack=false,allowOrb17NorthRestoredAttack=false,allowOrb122NorthRestoredAttack=false,allowCyborgForearmSouthAttack=false,allowCompass16NorthAttack=false,allowOwnSouthDaggers=false}={}){
+ 
+ // The historical W14 v3 NORTH archive provides own gear over the exact
+ // drawn8 anatomy also signed in the W112 record. Retain the 64px pad/pivot.
+ const gauntlet14NorthAuthority={"original":["56d221e060310fa06b5b37d55d9ad279fde789b5ae05740b2234ac8298bc25ab","4d42dd14d3f225e552507c62326ff6ac414a3a5adb03697a25e2035effd8d351","b7e8db087f758554d85917c50d011e224b4b80e632919102b9b6dbbfeeba90fe","ab50f2e6b2e22682795236b9fc074e2547b1e802150e017387300249aef613af","1cee780131c2e21f1112d295689686b1b34e021a1c2dae9c350dc58a3dfd2c3e","6eceb1ee83c0fa278605050fbd2d346f8d476fa51e31077d1444aedc3ac0cbd8","df3b41a36886e2a5fbed1749b3fbe09c2f41431385a8777108f3f5a4d42156f8","0f2fd859d8414cbef97684eec2c995538a090b22dd9affa5e80385fc7876e52e"],"gear":["ac01458a434dc2ffb05168c22651e6631f7977101db543f886cdd6386950145b","466deadd155086eb001e9f9f03adbd05dbac56183dceff35ceab249537cb166e","4d0d9ead18191ec4d6c6cf6f73bd3d1c1aca1cc99c8e54b7021cc4d8fe23d8a0","09a0d968ba655c74649b2aab24d6fd41f4d3960637021e21c04388cdaab4f46d","88b7bfbec9aab1c1718af5092f779c217bf6305c4c35e2fe64137389239cfc7d","4432a37e90bfd10c06fb7b4c6aaf931ffa21c838065758d98c2a3177f838f970","0707c727810986e448c03fd1034d2993810be2381445eb218a5d50a3aeb42732","ac01458a434dc2ffb05168c22651e6631f7977101db543f886cdd6386950145b"]};
+ function ownGauntlet14NorthAttack(r,a,action,equipment){
+  const p=gauntlet14NorthAuthority,eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(r?.id!=='gauntlet14-north-native-original-source'||r.item!==14||r.body!=='male'||r.direction!=='north'||action!=='attack-unarmed'||Object.keys(equipment).length||
+     a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
+     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     r.replacementMode!=='atomic-approved-original-composite'||r.sourceArchiveSHA256!=='d045797424bad472a587c2c013a61c7416bfdcdfe23f584684b935790eaf95fa'||
+     r.basePack||r.hairSeparated!==false||r.density!==4||r.fps!==12||!eq(r.nativeCanvas,[768,768])||!eq(r.pivot,[96,144])||
+     r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.mirrorLayerIDs||
+     !eq(r.timeline,['0','1','2','3','4','5','6','7'])||r.states?.length!==8)return null;
+  const basePack=index.records.find(r=>r.id==='gauntlet112-north-native-layers')?.basePack;
+  const b=basePack?.pack,d=b?.directions?.north,shared=gauntlet112NorthAuthority;
+  if(!eq(b?.frame,{width:160,height:160})||!eq(b?.pivot,{x:80,y:128})||b.density!==4||
+     !eq(d?.clip,{frames:8,fps:12,loop:false,contactFrame:4})||!eq(d.layers?.map(l=>[l.id,l.depth,l.slot,l.binding,l.frames||[l.source]]),shared.layers)||
+     !eq([d.rest,...d.poses].map(v=>[v.NECK,v.NOSE]),shared.anchors)||
+     !shared.layers.every(l=>l[4].every(h=>basePack.images[h]==='assets/'+h+'.png')))return null;
+  if(!r.states.every((v,i)=>{
+   const l=v.layers?.[0],h=p.original[i];
+   return v.state===String(i)&&v.layers?.length===1&&!v.attachment&&!v.bodyPatch&&!v.canvasRoundingPatch&&v.rgbaExact===true&&v.atomic===true&&v.baseSourceModified===false&&
+    v.approved?.sha256===h&&v.approved.url==='assets/'+h+'.png'&&l.sha256===h&&l.url==='assets/'+h+'.png'&&
+    l.role==='original-approved-body-weapon-composite'&&l.operation==='source-over'&&l.depth===0&&eq(l.size,[768,768])&&!l.offset&&!l.mirrorX;
+  }))return null;
+  return {...r,id:r.id+':own-gear:'+a.skin,basePack,gauntlet14NorthOwnAttack:true,separableAttack:true,hairSeparated:true,colorAppearance:a,equipmentContract:{weapon:14},
+   pivot:[80,128],renderOffsetPhysical:[64,64],states:r.states.map((v,i)=>({...v,layers:[],attachment:{url:'assets/'+p.gear[i]+'.png',
+    sha256:p.gear[i],size:[640,640],depth:12,matrix:[1,0,0,1,0,0]}}))};
+ }
+  function resolve({item,body:b,action='attack',direction,appearance={},equipment={},allowExactComposite=true,allowNorthSavedBlue=false,allowNorthSwordDefault=false,allowCannon15SideAttack=false,allowArm117SideAttack=false,allowRelic31NorthAttack=false,allowRelic32NorthAttack=false,allowGauntlet112NorthOwnAttack=false,allowGauntlet14NorthOwnAttack=false,allowW2NorthOwnAttack=false,allowGauntlet112SouthOwnAttack=false,allowGauntlet111NorthOwnAttack=false,allowOrb17NorthRestoredAttack=false,allowOrb122NorthRestoredAttack=false,allowCyborgForearmSouthAttack=false,allowCompass16NorthAttack=false,allowOwnSouthDaggers=false}={}){
   if(item==null)return null;
   const allowed=[12,13,71,72,73,74].includes(Number(item))?["attack","attack-daggers"]:[0,1,67,68,69,70].includes(Number(item))?["attack","attack-sword"]:[14,110,112,2,3,15,109,111,117,118,119,120].includes(Number(item))?['attack','punch','attack-unarmed']:[4,5,113,114,115,116].includes(Number(item))?['attack','shoot','attack-firearm']:[123,124,125,126,127,128,16,121,17,122,31,32].includes(Number(item))?['attack','focus','attack-focus','cast']:[];
   const id=v=>Number(v&&typeof v==='object'?v.def:v);
@@ -1014,6 +1043,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const north2=allowW2NorthOwnAttack&&ownW2North(r,appearance,action,equipment);if(north2)return north2;
   const ownNorthGauntlets=((Number(item)===112&&allowGauntlet112NorthOwnAttack)||(Number(item)===111&&allowGauntlet111NorthOwnAttack))&&ownGauntletNorthAttack(r,appearance,action,equipment);if(ownNorthGauntlets)return ownNorthGauntlets;
   const south112=allowGauntlet112SouthOwnAttack&&ownGauntlet112SouthAttack(r,appearance,action,equipment);if(south112)return south112;
+  const north14=allowGauntlet14NorthOwnAttack&&ownGauntlet14NorthAttack(r,appearance,action,equipment);if(north14)return north14;
   if(r.interfaceSkinLocked&&!ownRearSwordDefault&&[appearance.skin,appearance.skinColor].some(v=>v&&v!=='original'))return null;
   for(const slot of ['torso','coat','pants','legs','gloves','boots','cloak','head'])if(equipment[slot]!=null&&!['original','none'].includes(equipment[slot]))return null;
   const ownRearBlue=allowNorthSavedBlue&&verifiedNorthFirearmBlue(r,appearance,equipment);
