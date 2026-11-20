@@ -56,7 +56,7 @@ def materialize(checkpoint, masks, out):
         if len(g159_refs) != 4 or g159_refs & naked:
             raise ValueError("Wrong W113 G159 phase-owned glove assets")
         glove_refs.update(g159_refs)
-        for item in (145, 173):
+        for item in (131, 138, 145, 152, 173, 180):
             additional = [row for row in cat["northGloves"] if row["item"] == item]
             if len(additional) != 16 or {(row["side"], row["phase"]) for row in additional} != {(side, i) for side in ("left", "right") for i in range(8)}:
                 raise ValueError("Missing W113 supplemental glove phase-owned glove assets")

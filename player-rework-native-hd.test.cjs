@@ -288,11 +288,41 @@ test('eight approved pants and ten gloves compose by slot on the south idle rig'
  const o={action:'idle',direction:'south'};
  const pants=[133,140,147,154,161,168,175,182],gloves=[25,26,131,138,145,152,159,166,173,180];
  const piece=(r,prefix)=>r.pack.directions.south.layers.filter(l=>prefix.some(x=>l.id.startsWith(x)));
- let added=0;
+ const phase0=async (actor,source)=>{
+  const prepared=await api.prepareConfiguration([{player:actor,options:o,source}],{resolve:q=>q});
+  const canvas=cv.createCanvas(640,640),ctx=canvas.getContext('2d'),draw=ctx.drawImage.bind(ctx);
+  let capture;
+  ctx.drawImage=(image,...xy)=>{
+   capture={xy,pixels:Buffer.from(image.getContext('2d').getImageData(0,0,image.width,image.height).data)};
+   return draw(image,...xy);
+  };
+  assert(prepared.draw(ctx,actor,{...o,x:320,y:512,progress:0}));
+  assert(capture);canvas.width=1;
+  return capture;
+ };
+ let added=0,wrapped=0;
  for(const p of pants)for(const g of gloves){
   const actor=player(p,g),candidate=api.selectLayered(actor,o),winner=api.selectVisual(actor,o),native=api.select(actor,o);
   assert.ok(candidate&&winner,`${p}/${g}`);
-  if(native)assert.equal(winner.id,native.id);else{
+  if(native){
+   if(p!==133&&g===152){
+    // Boot 155's verified removal route decorates 7 full registrations;
+    // equipping it must keep the exact authored raster and layer order.
+    assert(winner.registeredPantsBoot155);
+    assert.equal(winner.id,candidate.id);
+    assert.equal(winner.sourceId,native.id);
+    assert.deepEqual(winner.equipment,native.equipment);
+    assert.deepEqual(winner.pack,native.pack);
+    const plan=r=>global.ReworkAccessoryVendor.compositor.plan(r.pack,'south',0);
+    assert.deepEqual(plan(winner),plan(native));
+    assert.deepEqual(new Set(winner.sourceRefs),new Set(native.sourceRefs));
+    assert.deepEqual(winner.omitted,[]);
+    assert.deepEqual(Object.fromEntries(Object.entries(winner.slotRoutes).map(([key,v])=>[key,v.item])),
+      {coat:151,legs:p,gloves:152,boots:155});
+    assert.deepEqual(await phase0(actor,winner),await phase0(actor,native));
+    wrapped++;
+   }else assert.equal(winner.id,native.id);
+  }else{
    assert.equal(candidate.slotRoutes.legs.item,p);
    assert.equal(candidate.slotRoutes.gloves.item,g);
    assert.deepEqual(candidate.omitted,[]);
@@ -302,6 +332,7 @@ test('eight approved pants and ten gloves compose by slot on the south idle rig'
   }
  }
  assert.equal(added,63);
+ assert.equal(wrapped,7);
  const unsupported=player(140,25,{...a,hairColor:'pink'});
  assert.equal(api.selectLayered(unsupported,o),null);
  assert(!api.selectLayered(player(140,25),{action:'walk',direction:'south'})?.slotRoutes?.legs);
