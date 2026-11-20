@@ -738,6 +738,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const equipped=withCarryHead(dressed,'outfit-carry');
    if(equipped)return equipped;
   }
+  const w16=player.equipment?.weapon;
+  if((w16?.def??w16)===16&&player.classId==='strategist'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&['north','south','east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w16?.[k]==null||w16[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     ['light','ebony'].includes(a.skin)){
+   const pureCompass=carryRegistry?.resolve({item:16,pureCompass16Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:16}});
+   if(pureCompass?.compass16SavedPalette)return withCarryHead(pureCompass,'carry');
+  }
   const ownRelic=selectSavedRelic32Carry(player,o,a);if(ownRelic)return ownRelic;
   const carried=carryRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head').map(([k,v])=>[k,v?.def??v]))});
   const carryWithHead=withCarryHead(carried,'carry');

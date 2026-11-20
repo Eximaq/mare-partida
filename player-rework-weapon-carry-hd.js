@@ -17,7 +17,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
      !same(base.pack.pivot,hair.pack.pivot)||!['NECK','NOSE'].every(k=>same(d.rest[k],source.rest[k])))return null;
   return {hairLayers:[{...target[0],id:layer.id,source:layer.source}],hairSource:hair.id};
  }
- function resolve({item,body,action,direction,appearance={},equipment={},pureRelic32Saved=false}={}){
+ function resolve({item,body,action,direction,appearance={},equipment={},pureRelic32Saved=false,pureCompass16Saved=false}={}){
   if(item==null)return null;
   if(![0,123,124,125,126,127,128,14,16,110,121,31,32,118,119,120,112,71,72,73,74,12,13,2,3,15,1,68,67,70,69,117,109,111,17,122,4,5,113,114,115,116].includes(Number(item))||!['male','masculino'].includes(body)||!['walk','idle'].includes(action))return null;
   if(Object.entries(equipment).some(([k,v])=>k!=='weapon'&&v!=null&&!['original','none'].includes(v)))return null;
@@ -34,11 +34,25 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
     JSON.stringify(part.source.nativeSize)==='[640,640]'&&part.side===side&&part.binding?.kind==='rigid'&&part.binding.a===side+' ELBOW'&&part.binding.b===side+' ARM'&&
     !part.skinMaterial&&!part.replaceBoundLayer&&!part.source.sourceClip&&!part.hideHandBeyondWrist&&part.mirrorSource===(direction==='west')&&part.depthOffset===-0.1&&
     JSON.stringify(part.calibrationOffsetPhysical)==='[0,18]';
-  if(skin&&skin!=='original'&&skinLocked&&!pure&&!plan.parts.every(p=>p.skinMaterial?.sourceSHA256===p.source.sha256&&p.skinMaterial?.url))return null;
+  const compass=Number(item)===16&&Object.hasOwn(walks,direction)&&pureCompass16Saved&&Object.keys(equipment).length===1&&equipment.weapon===16&&
+    plan.item===16&&plan.body==='male'&&plan.sourceDirection==='east'&&plan.targetWalkRecord===walks[direction]&&plan.interfaceSkinLocked===false&&plan.parts.length===1&&
+    part?.source?.sourceMember==='Original equipment pixels under approved authored protection mask'&&
+    part.source.sha256==='a5d7c7ee814eaf3c1e4ec9ae32c074eb6f53e879288b7b6eab65e468b73e91bd'&&part.source.url==='assets/'+part.source.sha256+'.png'&&
+    JSON.stringify(part.source.nativeSize)==='[640,640]'&&part.side===side&&part.binding?.kind==='rigid'&&part.binding.a===side+' ELBOW'&&part.binding.b===side+' ARM'&&
+    [[part.binding.a,76],[part.binding.b,89]].every(([k,y])=>part.sourceBone?.[k]?.x===(direction==='west'?71.25:88.75)&&part.sourceBone[k]?.y===y)&&
+    !part.skinMaterial&&!part.replaceBoundLayer&&!part.source.sourceClip&&!part.hideHandBeyondWrist&&part.mirrorSource===(direction==='west')&&part.depthOffset===-0.1&&
+    JSON.stringify(part.calibrationOffsetPhysical)==='[0,14]';
+  if(compass){
+   // Original full equipment layer from the same W16 EAST F0 composite as the
+   // former masked carry source, including pixels concealed by its original palm.
+   const sha256='b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd';
+   plan={...plan,parts:[{...part,source:{...part.source,sha256,url:'assets/'+sha256+'.png',sourceMember:'authored-ordered-16-east/0/equipment'}}]};
+  }
+  if(skin&&skin!=='original'&&skinLocked&&!pure&&!compass&&!plan.parts.every(p=>p.skinMaterial?.sourceSHA256===p.source.sha256&&p.skinMaterial?.url))return null;
   const hair=(appearance.hairStyle||appearance.hair||'original').replace(/^hair-/,'');
   const base=baseIndex.records.find(r=>r.body==='male'&&r.direction===direction&&r.action===action&&r.hairStyle==='original');if(!base)return null;
   let relicEyes;
-  if(pure){
+  if(pure||compass){
    const d=base.pack.directions[direction],faces=d.layers.filter(x=>x.slot==='face'),north=direction==='north';
    if(base.id!==(action==='walk'?walks[direction]:'male-idle-original-'+direction+'-from-walk0')||!!base.mirrorX!==(direction==='west')||hair!=='original'||
       !base.headHairSeparated||!['headBase','hair','lower-redrawn',...(lateral?['handNear']:['handRight','handLeft'])].every(k=>d.layers.some(x=>x.id===k)))return null;
@@ -61,7 +75,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   if(direction==='west'&&!base.mirrorX){plan={...plan,parts:plan.parts.map(p=>({...p,mirrorSource:true,sourceBone:Object.fromEntries(Object.entries(p.sourceBone).map(([k,v])=>[k,{x:(p.source.nativeSize?.[0]||640)/4-v.x,y:v.y}])),targetRestBone:Object.fromEntries(Object.entries(p.targetRestBone).map(([k,v])=>[k,{x:128-v.x,y:v.y}]))}))};}
   const rest=base.pack.directions[direction].rest;
   for(const part of plan.parts)for(const name of [part.binding.a,part.binding.b])if(!rest[name]||Math.hypot(rest[name].x-part.targetRestBone[name].x,rest[name].y-part.targetRestBone[name].y)>.001)return null;
-  return {id:`carry${item}-${base.id}${hair==='original'?'':':hair-'+hair}`,...hairLayers,...(pure?{relic32SavedPalette:true}:{}),...(relicEyes?{relicEyes}:{}),item:Number(item),action,direction,base,plan,colorAppearance:appearance,status:'candidate-needs-visual-calibration'};
+  return {id:`carry${item}-${base.id}${hair==='original'?'':':hair-'+hair}`,...hairLayers,...(pure?{relic32SavedPalette:true}:{}),...(compass?{compass16SavedPalette:true}:{}),...(relicEyes?{relicEyes}:{}),item:Number(item),action,direction,base,plan,colorAppearance:appearance,status:'candidate-needs-visual-calibration'};
  }
  function requiredFiles(r,{frame}={}){const refs=r?(frame===undefined?[...r.base.sourceRefs]:r.base.pack.directions[r.direction].layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean)):[];if(r?.hairLayers)refs.push(...r.hairLayers.map(l=>l.source));return r?[...new Set([...refs.map(s=>basePrefix+s+'.png'),...r.plan.parts.flatMap(p=>[p.source.url,...(p.skinMaterial?[p.skinMaterial.url]:[])].map(url=>weaponPrefix+url))])]:[];}
  function applySkinMaterial(source,part,images,ramp,appearanceAPI){
@@ -96,7 +110,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
    cx.putImageData(changed,0,0);map.set(sha,c);raw.width=1;
   }
   const eyes=root.MareReworkEyeStylesHD;
-  const expression=!r.relic32SavedPalette&&eyes&&(eyes.supports(appearance.face)||appearance.eyeColor&&!['original','blue'].includes(appearance.eyeColor))&&eyes.maleSource(r.base);
+  const expression=!r.relic32SavedPalette&&!r.compass16SavedPalette&&eyes&&(eyes.supports(appearance.face)||appearance.eyeColor&&!['original','blue'].includes(appearance.eyeColor))&&eyes.maleSource(r.base);
   if(expression?.source){
    const image=map.get(expression.source),tile=makeCanvas(image.width,image.height),face=tile.getContext('2d');
    face.drawImage(image,0,0);
