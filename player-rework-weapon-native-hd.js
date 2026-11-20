@@ -446,6 +446,16 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   }
   if(headOverlay)ctx.drawImage(headOverlay,...(r.headOverlayOffset??[0,0]));
   if(!hiddenSlots.length&&!recolored&&s.canvasRoundingPatch?.length){const out=ctx.getImageData(0,0,w,h);for(const [pixel,red,green,blue,alpha] of s.canvasRoundingPatch){const i=pixel*4;out.data[i]=red;out.data[i+1]=green;out.data[i+2]=blue;out.data[i+3]=alpha;}ctx.putImageData(out,0,0);}
+  if(r.relic32SideBlue){
+   const points=root.MareReworkModularOutfitsHD?.sideIrisSamples?.(r.direction),ramp=root.MareCharacterAppearance?.eyes?.blue?.ramp;
+   if(!r.basePack||r.item!==32||w!==640||h!==640||!points||points.length!==18||!ramp||hiddenSlots.length||renderOffset.some(Boolean))throw Error('Invalid Relic32 iris authority');
+   const patch=points.map(([x,y,R,G,B,A,tone])=>{
+    x+=64;y+=64;const p=ctx.getImageData(x,y,1,1),color=ramp[tone-1];
+    if(p.data[0]!==R||p.data[1]!==G||p.data[2]!==B||p.data[3]!==A||!color)throw Error('Relic32 iris no longer matches the author source');
+    const rgb=parseInt(color.slice(1),16);p.data[0]=rgb>>>16;p.data[1]=(rgb>>>8)&255;p.data[2]=rgb&255;return [p,x,y];
+   });
+   for(const [p,x,y] of patch)ctx.putImageData(p,x,y);
+  }
   if(r.orderedDaggerHair||r.orderedDaggerIris||r.dagger13SouthIris){
    if(w!==640||h!==640||recolored||hiddenSlots.length||renderOffset.some(Boolean))throw Error('Invalid ordered dagger appearance authority');
    const changes=[],focusY=r.orderedFocusHead&&r.item===16?focusHeadY[Number(s.state)]:0;

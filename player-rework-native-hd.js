@@ -636,6 +636,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // Resolve optional independent slots before outfit candidates. Pass the original
   // visible equipment, not a subset that could silently swallow an unsupported slot.
   const independentEquipment=Object.fromEntries(Object.entries(player.equipment||{}).filter(([slot,v])=>slot!=='weapon'&&v!=null&&!['none','original'].includes(v)));
+  const relic32=selectRelic32FocusSide(player,o,a,equipment);if(relic32)return relic32;
   const independent=!player.__reworkSubset&&weaponRegistry?.resolveSeparable?.({item:o.weaponless?undefined:(player.equipment?.weapon?.def??player.equipment?.weapon),body:canonical(a.body),sourceBody:a.body,classId:player.classId,weaponVariant:player.equipment?.weapon?.variant??player.equipment?.weapon?.variantId??player.equipment?.weapon?.appearanceVariant,action:o.action,direction:o.direction,appearance:a,equipment:independentEquipment});
   if(independent)return {...independent,hdKind:'weapon'};
   const independentPants=!player.__reworkSubset&&outfitRegistry?.resolveIndependentPants?.({body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:player.equipment||{}});
@@ -2032,6 +2033,35 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
   if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectFemaleApprovedGloveWalk(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
   return selectSouthPunchP22OwnCoatsG26(player,o,look,visible)||selectNorthPunchP22OwnCoats(player,o,look,visible)||selectNorthPunchP22Coat(o,look,visible)||selectSouthPunchP22Coat(o,look,visible)||selectSouthPunchBare(o,look,visible)||selectNorthPunchBare(o,look,visible)||selectNorthPunchB9(player,o,look,visible)||selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
+ }
+ // Exact, own lateral Focus body and eight separate Relic32 phases. Skin stays the authored Light.
+ const relic32FocusSideSources={"east":["122dbaea5701916017e4dbeb23ce136567ad2d3629bea058629dae204f317b8a","9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2","45de7576039c538aee29ff5a5d0def51143e8cbf90a33cdead504d88fd2ea713",["a8302704750a3814209d97264562f620e1a024cde4ca0e1d5516949d8857dd78","4687bc10bb763fc59dbaa8163070de61e4d9b6e0c3afdd52f95f19a8b50b2fea","fb00113270ec6410ff0cbc5be92697a4ca147356524b414e472f6ad53b0c4888","2840fa65e15e017833715fb979df9baf7ce06b60832a73adc0cf8382def8e6c6","0f22fef7774401ff83d70c65a7d8b8f0b2927bd5fe4bb672e0c630382b388af1","93b92c3d7c00f605d14dce668a3b915de7938948c62b72345fec8d1446a98d6f","affe0bf396b58d25641a96f510aab19fb30abded06bacd155463b56792d7fc26","dadd479f2c28a6a0cbe18e7ce59d736bab0fc9fff116413eea9d110d596345d8"]],"west":["98da585b5061c22cc4c17f5d10b67ab3416321628e79e60c29f3ae8fce81fb72","0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464","a1359e16013832c487942d028404f7a5c59f4afd4a7e96eb480aa1a1d34db07e",["63581e58c702d175faa51ae27669eee8a99a5d43cdb55612274de201c1f86b2d","d7ab94fa87a7359fe0dcd20b257b172ae07248d98280edf46c46619431054c11","27d21115d990fcb889a5d11525f618cd2498cb1c547a14d5ae82a9307ab435e2","3c73045fd578990a9ed8a8c7ee0db64b638a97d16725a76a22830587beb3d017","179837f7ad574be32a0f2af9d406b28ec66181359a9d6d5c082502db9261e9de","ead3c68ec8d199c9d50e120db18dbaf2478a4fb05d23bad12e912cf499017b39","ef70507bfcdb9615dbb8e6c428fbb4f105b996ee58b2dc6d532ff940feeb4d3d","ab754ea54ab15a81183a1c732db033503000c346a0e403be1ef42e1d88361ab2"]]};
+ function selectRelic32FocusSide(player,o,a,kits){
+  const d=o.direction,own=Object.hasOwn(relic32FocusSideSources,d)&&relic32FocusSideSources[d],w=kits.weapon;
+  if(!own||o.action!=='attack-focus'||o.weaponless||player.__reworkSubset||player.classId!=='healer'||!root.MareAppearance96?.hairs?.black||
+     (w?.def??w)!==32||Object.keys(kits).length!==1||['visual_completo','cloak'].some(k=>player.equipment?.[k]!=null&&!['none','original'].includes(player.equipment[k]))||
+     [w?.variant,w?.variantId,w?.appearanceVariant].some(v=>v!=null&&v!=='original')||
+     a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!=='light'||a.hair!=='original'||
+     a.face!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue')return null;
+  const source=weaponRegistry?.resolveSeparable({item:32,body:'male',action:o.action,direction:d,
+    appearance:{hair:'original',face:'original',skin:'light',hairColor:'brown',eyeColor:'brown'}});
+  const body=baseIndex?.records.find(r=>r.id===`v7-focus-${d}-modular8-${d}`),p=body?.pack,dir=p?.directions?.[d],
+    same=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!source?.separableAttack||source.id!==`separable-male-focus-east-modular8-male-${d}-weapon32-coatnone`||
+     source.density!==4||source.fps!==12||!same(source.timeline,['0','1','2','3','4','5','6','7'])||
+     !same(source.nativeCanvas,[640,640])||!same(source.pivot,[80,128])||source.states.length!==8||
+     body?.sourcePackSHA256!==own[0]||body.body!=='male'||body.action!==o.action||body.direction!==d||
+     !body.headHairSeparated||!body.bodyClothingSeparated||p.density!==4||!same(p.frame,{width:160,height:160})||
+     !same(p.pivot,{x:80,y:128})||!same(dir?.clip,{frames:8,fps:12,loop:false,contactFrame:4})||
+     dir.renderMirrorFrom||!same(dir.layers.map(l=>l.id),['underbody','torso','legs','upper-arm-far','forearm-hand-far','upper-arm-near','forearm-hand-near','shorts','headBase','face','hair'])||
+     dir.layers[9].source!==own[1]||dir.layers[10].source!==own[2]||
+     !source.states.every((s,f)=>{const g=s.layers[1];return s.state===String(f)&&s.layers.length===2&&g.sha256===own[3][f]&&
+       g.url==='assets/'+g.sha256+'.png'&&g.operation==='source-over'&&g.depth===1&&!g.offset&&!g.mirrorX&&!g.paletteMask;}))return null;
+  const refs=[...new Set(dir.layers.flatMap(l=>l.frames||[l.source]))];
+  if(!refs.every(h=>body.sourceRefs.includes(h)))return null;
+  return {...source,id:source.id+':saved-own-side',hdKind:'weapon',hairSeparated:true,relic32SideBlue:true,contactTick:4,
+    colorAppearance:{hairColor:'black'},basePack:{pack:p,images:Object.fromEntries(refs.map(h=>[h,'/tools/rework-base-hd/assets/'+h+'.png']))},
+    states:source.states.map(s=>({...s,layers:[s.layers[1]]}))};
  }
  function selectVisual(player,o={}){
   const exact=select(player,o);
