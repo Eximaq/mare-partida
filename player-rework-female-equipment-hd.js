@@ -173,8 +173,10 @@ const north113P154={"id":"candidate-pants154","slot":"pants","depth":3.1,"bindin
 // Independent P154 fitted in the same W113 North archive. Do not import
 // the checkpoint's alternate weapon transforms, boots or glove layers.
 function attachNorth113Pants154(r,{standalone=false}={}){
- if(r?.item!==113||r.direction!=='north'||r.action!=='attack-firearm'||!sameNorth113Contact(r)||
-    (!r.northFirearmCoatSources&&(!standalone||!attachNorthFirearmCoat(r,151))))return null;
+ if(!r||r.direction!=='north'||r.action!=='attack-firearm')return null;
+ if(r.item===113){
+  if(!sameNorth113Contact(r)||(!r.northFirearmCoatSources&&(!standalone||!attachNorthFirearmCoat(r,151))))return null;
+ }else if(!standalone||r.northFirearmCoatSources||!sameNorthP154SiblingContact(r))return null;
  const {baseRecord:b,pack:p}=r,d=p.directions.north,refs=north113P154.frames;
  if(refs.some(h=>b.sourceRefs.includes(h))||d.layers.some(l=>l.slot==='pants'))return null;
  const pack={...p,directions:{...p.directions,north:{...d,layers:[...d.layers,north113P154]}}};
@@ -211,6 +213,25 @@ function attachNorth114Glove(r,id){
  const refs=[...new Set(gloves.flatMap(l=>l.frames))].filter(h=>!r.baseRecord.sourceRefs.includes(h));
  const pack={...p,directions:{...p.directions,north:{...d,layers}}};
  return {...r,id:r.id+'-glove'+id+'-native',pack,baseRecord:{...r.baseRecord,pack,sourceRefs:[...r.baseRecord.sourceRefs,...refs]},northFirearmCoatSources:refs,north114GloveContact:gloves};
+}
+const northP154SiblingMatrices={
+ 4:null,
+ 5:[[0.9961573047933397,-0.08758209923762544,0.08758209923762544,0.9961573047933397,12.45658770627038,15.63287402989448],
+  [0.9968858338708226,-0.07885831742863064,0.07885831742863064,0.9968858338708226,11.472902249715514,12.385747876511687]],
+ 115:[[0.9961573047933397,-0.08758209923762544,0.08758209923762544,0.9961573047933397,85.06712777634505,76.50741280212736],
+  [0.9968858338708226,-0.07885831742863064,0.07885831742863064,0.9968858338708226,83.5477603867789,73.89359147813855]],
+ 116:null
+};
+function sameNorthP154SiblingContact(r){
+ // The four verified rifles use their own SHA/URL and exact raw body.
+ // 4 and 116 share the two W113 contacts, not its weapon artwork.
+ if(!Object.hasOwn(northP154SiblingMatrices,r.item)||!northFirearmRecoil(r))return false;
+ const matrices=northP154SiblingMatrices[r.item],size={4:[207,66],5:[640,640],115:[512,512],116:[207,66]}[r.item];
+ return [0,7].every((i,j)=>{
+  const p=r.states[i].parts[0],contact=north113G26Weapon[j];
+  return p.side==='right'&&p.depth===5.81&&p.sourceClip===null&&p.handMaskSHA256===contact.handMaskSHA256&&
+   JSON.stringify(p.sourceNativeSize)===JSON.stringify(size)&&JSON.stringify(p.matrix)===JSON.stringify(matrices?matrices[j]:contact.matrix);
+ });
 }
 function sameNorth113Contact(r){
  const fingerprint=part=>Object.fromEntries(Object.keys(north113G26Weapon[0]).map(key=>[key,part[key]]));
@@ -257,7 +278,7 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   const northCoat=(!pants||p154)&&head==null&&(r.item===113||!alternate(coat)&&!alternate(equipment.weapon))?attachNorthFirearmCoat(r,def):null;
   combined=p154?attachNorth113Pants154(northCoat):action==='attack-sword'?attachSwordCoat(r,outfit,def):northCoat||attachIsolatedCoat(r,outfit,def);
  }
- if(coat==null&&pants!=null&&Number(pants.def??pants)===154&&Number(item)===113&&action==='attack-firearm'&&direction==='north'&&head==null&&glove==null&&
+ if(coat==null&&pants!=null&&Number(pants.def??pants)===154&&(Number(item)===113||Object.hasOwn(northP154SiblingMatrices,Number(item)))&&action==='attack-firearm'&&direction==='north'&&head==null&&glove==null&&
   ![pants,equipment.weapon].some(x=>['variant','variantId','appearanceVariant'].some(k=>x?.[k]!=null&&x[k]!=='original')))
   combined=attachNorth113Pants154(combined,{standalone:true});
  if(combined&&pants!=null&&!combined.northFirearmPants154){
@@ -279,7 +300,9 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   const approvedFirearmHeadgear=!clothing.length&&glove==null&&
    [129,136,143,150,157,164,171,178].includes(Number(head?.def??head))&&
    !['variant','variantId','appearanceVariant'].some(k=>head?.[k]!=null&&head[k]!=='original');
-  const recoil=(!clothing.length||combined.northFirearmCoatSources)&&(head==null||approvedFirearmHeadgear)?northFirearmRecoil(combined):null;
+  // These four receivers keep the exact approved recoil contract of their bare records.
+  const recoilSource=combined.northFirearmPants154&&Object.hasOwn(northP154SiblingMatrices,combined.item)?r:combined;
+  const recoil=(!clothing.length||combined.northFirearmCoatSources)&&(head==null||approvedFirearmHeadgear)?northFirearmRecoil(recoilSource):null;
   const material=appearanceRegistry?.resolve(recoil?.reference||combined.baseRecord,{hair:appearance.hair||appearance.hairStyle,head:head?.def??head,appearance});
   if(!material)return null;
   return {...combined,id:combined.id+':'+material.id,material,colorAppearance:appearance,...(recoil?{northFirearmHeadRecoil:recoil.offsets,...(material.skinColor?{northFirearmVisibleSkin}:{} )}:{})};},
