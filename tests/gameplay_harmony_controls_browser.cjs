@@ -24,14 +24,16 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
  await p.evaluate(()=>__controlsQA.enter());await p.locator('#autoToggle').click();
  assert.equal(await p.locator('#expeditionState').innerText(),'EM PAUSA');assert.equal(await p.locator('#floatingExpedition .rates-card .micro-light').innerText(),'● EM PAUSA');
  await p.evaluate(()=>{const q=__controlsQA;q.session.elapsed=19;q.session.xp=100;q.session.gold=50;q.update();});
+ assert.equal(await p.locator('#huntXpRate').innerText(),'Calculando…');
  assert.equal(await p.locator('#xpPerHour').innerText(),'—');assert.equal(await p.locator('#goldPerHour').innerText(),'—');
  await p.evaluate(()=>{const q=__controlsQA;q.session.elapsed=21;q.update();});
+ assert.match(await p.locator('#huntXpRate').innerText(),/^[0-9.]+/);
  assert.notEqual(await p.locator('#xpPerHour').innerText(),'—');assert.notEqual(await p.locator('#goldPerHour').innerText(),'—');
  await p.locator('#autoToggle').click();assert.equal(await p.locator('#floatingExpedition .rates-card .micro-light').innerText(),'● AO VIVO');
  await p.locator('#journeyToggle').click();assert(await p.locator('#floatingExpedition').isVisible());await p.locator('#floatingExpedition [data-close-window]').click();assert(await p.locator('#floatingExpedition').isHidden());
  // Main #312/#315 replaced the rope/expedition textures with the shared glass HUD.
  // Keep checking the actual material rather than accepting any empty border.
- for(const selector of ['#floatingExpedition','.action-panel']){
+ for(const selector of ['#huntXpTracker','#floatingExpedition','.action-panel']){
   const material=await p.locator(selector).evaluate(e=>{const s=getComputedStyle(e);return{border:s.borderImageSource,background:s.backgroundColor,blur:s.backdropFilter,radius:s.borderRadius,width:s.borderTopWidth};});
   assert.equal(material.border,'none',`${selector}: current glass surface has no legacy texture`);
   assert.equal(material.background,'rgba(20, 22, 25, 0.85)',`${selector}: shared glass background`);
