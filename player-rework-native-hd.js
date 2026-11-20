@@ -1683,6 +1683,43 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    sourceRefs:[...base.sourceRefs,...pair.map(l=>l.source)],
    slotRoutes:{...base.slotRoutes,[visible.gloves.key]:donor.slotRoutes[visible.gloves.key]}};
  }
+ function selectNorthPunchG26B9(player,o,a,visible){
+  if(a.body!=='male'||o.direction!=='north'||!['attack','attack-unarmed'].includes(o.action)||
+     Object.keys(visible).length!==4||visible.torso?.item!==151||visible.pants?.item!==133||
+     visible.boots?.item!==9||visible.gloves?.item!==26||!['original',undefined].includes(a.hair)||
+     !['original',undefined].includes(a.face)||!['original','blue',undefined].includes(a.eyeColor)||
+     (a.skin&&a.skin!=='original'&&!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))||
+     (a.hairColor&&a.hairColor!=='original'&&!Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)))return null;
+  const id='male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate-coat151-existing-gloves152-visible-native-candidate';
+  const donor=outfitById.get('frozen-male-glove26-north-attack-unarmed-native-layers'),base=outfitById.get(id);
+  const key=visible.gloves.key,opts={...o,action:'attack-unarmed'},
+   proven=select({...player,equipment:{...player.equipment,[key]:{def:152}}},opts);
+  const dir=r=>r?.pack?.directions?.north,d=dir(proven),ref=dir(base),g=dir(donor),
+   same=(a,b)=>JSON.stringify(a)===JSON.stringify(b),clock=({layers,...rest})=>rest;
+  if(!base?.registeredMale151Gloves152||!donor?.frozenGloveLayers||donor.productionEnabled===false||donor.sourceUpperRecord!==id||
+      !proven||proven.hdKind!=='outfit'||(proven.sourceId??proven.id)!==id||!d||!ref||!g||
+      !same(proven.equipment,base.equipment)||!same(d,ref)||
+      !same([proven.pack.frame,proven.pack.pivot,proven.pack.density],[donor.pack.frame,donor.pack.pivot,donor.pack.density])||
+      !same(d.clip,{frames:8,fps:12,loop:false,contactFrame:4})||!same(clock(d),clock(g))||
+      !same(proven.bootsOverlay,base.bootsOverlay)||!same(proven.bodyOcclusion,base.bodyOcclusion)||
+      !same(proven.paletteSourceMasks,base.paletteSourceMasks)||proven.palettePolicy!=='verified-original-anatomy-only')return null;
+  const old=d.layers.filter(l=>l.id==='gloves152-visible-native-overlay'),src=g.layers[1];
+  const sh=['60966818a123a979695c5465f1bb9b307e2836a099b52be1c23ec1df02826973','6b742afe6ae8cd905e19dedd222e0cc6db205fa14b91b3ae0ac3b4a54d28a1f6','86682b4ff4e453495af7f5796ef72fc1765ddc86eb289c21f46f5aa14a8a2b5d','b969076da7b278f35f4b3ba27a6fdbcb69350cf35d25a72980ca46d0e7264a99','878c7fd33ffa44ef749e51422204213ff4bf1c449828fdb66ba0095dc292fc85','a3f6ffcf8b71efcda24e5a1eaae418aacfe93df7287b01a3296d7d4a4c6e1501','1bd502b1869120cbf0a69e8cfa90efd4068ef4288ac256837d9838d16080da8a','2267aa9833a82b4aaeaea7e68af87f816a37ebfca425aa771072c5869a7740d5'];
+  if(old.length!==1||g.layers.length!==2||src?.id!=='registered-frozen-glove-native-attack'||!same(src.frames,sh)||
+     ![old[0],src].every(l=>l.slot==='foreground'&&l.depth===100&&!l.depthTrack&&same(l.binding,{kind:'fixed'})&&l.frames?.length===8)||
+     sh.some(h=>!donor.sourceRefs.includes(h)||proven.sourceRefs.includes(h)||proven.paletteSourceMasks?.[h]))return null;
+  const rearNames=['boot9-left-rear','boot9-right-rear'],rearHashes=['61af01b1dd542dc5ad05172d6d398d7cbfbc1a0ac73b2e2b5c22d69e37913304','3a427f965f64b3a3b256df5f78d42463ea6f6ed64eae343af5f186716f010eb5'];
+  const rear=d.layers.filter(l=>rearNames.includes(l.id)),pants=d.layers.find(l=>l.id==='pants133-translated-candidate');
+  if(!same(rear.map(l=>l.id),rearNames)||!same(rear.map(l=>l.source),rearHashes)||!rear.every(l=>l.slot==='body'&&l.depth===2.5&&!l.frames&&same(l.binding,{kind:'fixed'}))||
+    pants?.depth!==2||d.layers.some(l=>l!==pants&&l.depth>1&&l.depth<2.5)||!same(proven.bodyOcclusion,{layerId:'skin-arms-phase',belowPhysicalY:400,reason:'Clothed lower legs replace naked calves; upper body and all source PNG bytes retained'}))return null;
+  // Behind the trousers only for this proved G26 route; the front and sole are untouched.
+  const layers=d.layers.map(l=>l===old[0]?src:rear.includes(l)?{...l,depth:1.5}:l),{registeredMale151Gloves152,gloveRegistration,sourceGloveOutfitId,...record}=proven;
+  return {...record,id:record.id+':own-north-punch-g26-b9',equipment:{...record.equipment,gloves:26},
+   pack:{...record.pack,directions:{...record.pack.directions,north:{...d,layers}}},
+   sourceRefs:[...new Set(layers.flatMap(l=>l.frames||[l.source]).filter(Boolean))],
+   slotRoutes:Object.fromEntries(Object.entries(visible).map(([k,v])=>[v.key,{item:v.item,quality:'hd',source:k==='gloves'?donor.id:base.id}])),
+   omitted:[],resolvedAction:opts.action};
+ }
  function selectLayered(player,o={}){
   if(state!=='ready'||!player||player.__reworkSubset||player.zoanTransformed||slotEntry(player.equipment?.visual_completo))return null;
   const raw=player.appearance96||{},body={masculino:'male',feminino:'female',male:'male',female:'female'}[raw.gender??raw.body];
@@ -1695,7 +1732,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
   if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectFemaleApprovedGloveWalk(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
-  return selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
+  return selectNorthPunchG26B9(player,o,look,visible)||selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
  }
  function selectVisual(player,o={}){
   const exact=select(player,o);
