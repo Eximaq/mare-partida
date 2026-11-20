@@ -85,8 +85,8 @@ function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
  // Verified sword poses may omit the coat without substituting the lower pose.
  function resolveBootOnly(origin,bare,direction,visible,reference){
   const item=visible.weapon?.item;
-  const north=direction==='north';
-  if(!['north','south'].includes(direction)||![0,1,67,68,70].includes(item)||visible.boots?.item!==9||
+  const north=direction==='north',side=['east','west'].includes(direction);
+  if(!(side?item===0:['north','south'].includes(direction)&&[0,1,67,68,70].includes(item))||visible.boots?.item!==9||
      Object.keys(visible).length!==2||!origin||!bare||bare.item!==item||bare.body!=='female'||
      bare.action!=='attack-sword'||bare.direction!==direction||bare.outfitSourceId||bare.checkpointSources)return null;
   const expected=item===0?bare:reference;
@@ -98,8 +98,13 @@ function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
   const shared=({id,item,states,sourcePixelPolicy,paddingPhysical,...r})=>r;
   if(item!==0&&(!eq(checked.states,bare.states)||!eq(shared(bare),shared(expected))||
      checked.paddingPhysical!==bare.paddingPhysical))return null;
-  const joints=(a,b)=>Object.entries(a).every(([k,v])=>eq(v,b[k]))&&Object.keys(b).every(k=>Object.hasOwn(a,k)||(north?/^cloth[23][AB]$/:/^cloth[36][AB]$/).test(k));
-  const coats=y.layers.filter(l=>l.id.startsWith(north?'coat151-whole-':'coat151-'));
+  const joints=(a,b)=>Object.entries(a).every(([k,v])=>eq(v,b[k]))&&Object.keys(b).every(k=>Object.hasOwn(a,k)||(side?/^cloth1[AB]$/:north?/^cloth[23][AB]$/:/^cloth[36][AB]$/).test(k));
+  const expectedSide={
+   'coat151-far-derived-sleeve':10,'coat151-near-derived-sleeve':30,'coat151-native-fabric-side-lining':20,
+   'coat151-upper-core':20,'coat151-lower-core':20,'coat151-lower-hem':20,'coat151-rear-openings-lower':-1,
+   'original-neck-coverage-only-core':20,'original-neck-coverage-only-upper':31
+  };
+  const coats=y.layers.filter(l=>side?Object.hasOwn(expectedSide,l.id):l.id.startsWith(north?'coat151-whole-':'coat151-'));
   const owned=[...new Set(coats.flatMap(l=>l.frames||[l.source]))];
   if(!eq(owned,origin.outfitSources)||!eq(owned,Object.keys(origin.sourceRasterPadding||{})))return null;
   const nonCoat=y.layers.filter(l=>!coats.includes(l));
@@ -107,10 +112,10 @@ function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
   const shape=({id,baseRecord,pack,outfitSourceId,outfitSources,sourceRasterPadding,...r})=>r;
   if(!eq(shape(expected),shape(origin))||!['frame','pivot','density'].every(k=>eq(bare.pack[k],origin.pack[k]))||
      !eq(x.clip,y.clip)||!joints(x.rest,y.rest)||x.poses.length!==y.poses.length||
-     x.poses.some((pose,i)=>!joints(pose,y.poses[i]))||!eq(x.layers,nonCoat)||coats.length!==(north?4:7)||
-     coats.some(l=>l.depth!==100&&(north||l.depth!==-1))||pieces.length!==4||
-     !['left-rear','left-front','right-rear','right-front'].every(id=>pieces.some(l=>l.id==='boot9-'+id&&
-       l.depth===(id.endsWith('-rear')?-1:north?4.1:45)&&l.binding?.kind==='fixed'&&l.frames?.length===8))||
+     x.poses.some((pose,i)=>!joints(pose,y.poses[i]))||!eq(x.layers,nonCoat)||coats.length!==(side?9:north?4:7)||
+     coats.some(l=>side?l.depth!==expectedSide[l.id]:l.depth!==100&&(north||l.depth!==-1))||pieces.length!==(side?2:4)||
+     !(side?['rear','front']:['left-rear','left-front','right-rear','right-front']).every(id=>pieces.some(l=>l.id==='boot9-'+id&&
+       l.depth===(id.endsWith('rear')?-1:side?3.01:north?4.1:45)&&l.binding?.kind==='fixed'&&l.frames?.length===8))||
      !eq(bare.baseRecord.pack,bare.pack))return null;
   const pack={...bare.pack,directions:{...bare.pack.directions,[direction]:{...x,layers:[...x.layers,...pieces]}}};
   const refs=checked.checkpointSources;
@@ -119,20 +124,23 @@ function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
    checkpointSources:refs,slotRoutes:{[visible.weapon.key]:{item,quality:'hd',source:bare.id},
     [visible.boots.key]:{item:9,quality:'hd',source:checked.id}},layeredSlots:true,omitted:[]};
  }
- function resolveNorthGloveOnly(origin,bare,direction,visible){
+ function resolveNorthGloveOnly(origin,bare,direction,visible,reference){
   const item=visible.weapon?.item,g=visible.gloves?.item;
-  if(!gloveOnlyVerified||direction!=='north'||item!==0||!northGloveOnlyIds.includes(g)||
-     Object.keys(visible).length!==2||!origin||!bare||bare.item!==0||bare.body!=='female'||
+  if(!gloveOnlyVerified||direction!=='north'||![0,1].includes(item)||!northGloveOnlyIds.includes(g)||
+     Object.keys(visible).length!==2||!origin||!bare||bare.item!==item||bare.body!=='female'||
      bare.action!=='attack-sword'||bare.direction!==direction||bare.outfitSourceId||bare.checkpointSources)return null;
-  const checked=resolve(origin,direction,{...visible,torso:{item:151,key:'coat'}});
-  if(!checked)return null;
+  const expected=item===0?bare:reference;
+  if(!expected||expected.item!==0)return null;
+  const checked=resolve(origin,direction,{...visible,torso:{item:151,key:'coat'}},
+   item===0?undefined:{reference:expected,donor:bare});
+  if(!checked||item===1&&checked.paddingPhysical!==bare.paddingPhysical)return null;
   const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),x=bare.pack.directions.north,y=origin.pack.directions.north;
   const nonCoat=y.layers.filter(l=>!l.id.startsWith('coat151-whole-')),coats=y.layers.filter(l=>!nonCoat.includes(l));
   const owned=[...new Set(coats.flatMap(l=>l.frames||[l.source]))];
   const shape=({id,baseRecord,pack,outfitSourceId,outfitSources,sourceRasterPadding,...r})=>r;
   const joints=(a,b)=>Object.entries(a).every(([k,v])=>eq(v,b[k]))&&Object.keys(b).every(k=>Object.hasOwn(a,k)||/^cloth[23][AB]$/.test(k));
   if(coats.length!==4||coats.some(l=>l.depth!==100)||!eq(owned,origin.outfitSources)||
-     !eq(owned,Object.keys(origin.sourceRasterPadding||{}))||!eq(shape(bare),shape(origin))||
+     !eq(owned,Object.keys(origin.sourceRasterPadding||{}))||!eq(shape(expected),shape(origin))||
      !['frame','pivot','density'].every(k=>eq(bare.pack[k],origin.pack[k]))||!eq(x.clip,y.clip)||!joints(x.rest,y.rest)||
      !eq(x.layers,nonCoat)||x.poses.length!==8||x.poses.some((pose,i)=>!joints(pose,y.poses[i]))||
      !eq(bare.baseRecord.pack,bare.pack)||!eq(checked.states,bare.states))return null;
