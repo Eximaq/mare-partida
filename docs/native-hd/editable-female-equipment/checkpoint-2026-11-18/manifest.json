@@ -1,0 +1,146 @@
+{
+  "schema": "kaizoku-feminino-checkpoint-v1",
+  "runtimeActivated": false,
+  "browserValidated": false,
+  "baseCommit": "7b14da8f7e8273421ac00b4ea5f0756d3ddc1b2a",
+  "archives": [
+    {
+      "file": "adaga-12-13-71-74-camadas.zip",
+      "bytes": 20351986,
+      "sha256": "afc7c746f731b2939d04692017b7a999f93884a9c7b386e9d0d0557f8ca8fa46",
+      "parts": [
+        {
+          "file": "adaga-12-13-71-74-camadas.zip.part000",
+          "bytes": 7340032,
+          "sha256": "ce0a317a1e294870e4583bdefd3897f5112f5f5df33973c7f4d29698297c8e32"
+        },
+        {
+          "file": "adaga-12-13-71-74-camadas.zip.part001",
+          "bytes": 7340032,
+          "sha256": "394e57c8f8e94694b9682cf026d7b5ee7cc3d3e3590c76f919145ae335c8f1df"
+        },
+        {
+          "file": "adaga-12-13-71-74-camadas.zip.part002",
+          "bytes": 5671922,
+          "sha256": "d130aa930736895723947118ac5bb79d9a2317d389eef9eca67df6f144078576"
+        }
+      ]
+    },
+    {
+      "file": "espada-0-camadas.zip",
+      "bytes": 12859284,
+      "sha256": "5454aa97b46f66909090225d0f023f327d48b42cc0846c31afbda5d3533da24e",
+      "parts": [
+        {
+          "file": "espada-0-camadas.zip.part000",
+          "bytes": 7340032,
+          "sha256": "ec5cf5d121c98fd36b9793ce9d2ed1fe805c679384054b8812d80b5388d31e0b"
+        },
+        {
+          "file": "espada-0-camadas.zip.part001",
+          "bytes": 5519252,
+          "sha256": "1d4f9cb9e9245ff17e921e738a4dae7ad32bfc14962f9d7f9c5a599bdaf16388"
+        }
+      ]
+    },
+    {
+      "file": "focus-editable-sources.tgz",
+      "bytes": 16091120,
+      "sha256": "958a96547f8943671ee64f9419e2f26f00f93b770a8f883e39908917ecba1e91",
+      "parts": [
+        {
+          "file": "focus-editable-sources.tgz.part000",
+          "bytes": 7340032,
+          "sha256": "71206cc93fd4cfd712c831fec8f4970c6d05327950bfb70093633cd3c6fd414d"
+        },
+        {
+          "file": "focus-editable-sources.tgz.part001",
+          "bytes": 7340032,
+          "sha256": "2cd9f6541e97600fac3438bed7638201faa9511e9c238c3d2e736b30c4ad9aeb"
+        },
+        {
+          "file": "focus-editable-sources.tgz.part002",
+          "bytes": 1411056,
+          "sha256": "12ec57a852d154f2fd5166eb9ca400c560b2db00c2c3073c8c4ada6e17ad63c2"
+        }
+      ]
+    },
+    {
+      "file": "fuzil113-ns.zip",
+      "bytes": 5639905,
+      "sha256": "cdd9889e5d96f92f826536779298fa86b9af0e0b52f2af2af41ac382a0087377"
+    },
+    {
+      "file": "locomotion-north-gloves.zip",
+      "bytes": 38015,
+      "sha256": "88ff71f0b186fed2ff084d51abd7cc4e24521f15fcd319c95b65a481f2354edf"
+    },
+    {
+      "file": "locomotion-profile-gloves.zip",
+      "bytes": 95443,
+      "sha256": "68f84573977082213035a9280753e8f88c098d8046c79de8d668688b616a1b25"
+    },
+    {
+      "file": "pistol114-south-lower-source-only.zip",
+      "bytes": 954122,
+      "sha256": "693f91a1a6a2fbd37e9e033654f2d85b4b52e2dbf1b62c0794507ff94213a8ba"
+    },
+    {
+      "file": "pistola114-canonical.zip",
+      "bytes": 1544590,
+      "sha256": "679cc57356007c55e76878385813fa48a2b952ed68318d0c1e1f2debde33f1ef"
+    },
+    {
+      "file": "pistola114-gloves.zip",
+      "bytes": 783575,
+      "sha256": "796959319c5603ac7f5afb9d5fe5ffc1be92ca93b7e469a23999cf520d4ea6ec"
+    },
+    {
+      "file": "pistola114-north-lower.zip",
+      "bytes": 563626,
+      "sha256": "8e19f59786d73b3e083d37c488a43ff29b3f3a0846d77c517873ba768a284856"
+    },
+    {
+      "file": "pistolas114-laterais.zip",
+      "bytes": 10140389,
+      "sha256": "c21e95336154c31508dffbebdff65c5703cff1b8499b9da8cfbb9310acf86fc0"
+    },
+    {
+      "file": "profile-g180-fit.zip",
+      "bytes": 326788,
+      "sha256": "86fa2de4c01525fad30c4a50cf503c665f616fa04b7f6c7a1754b251a3d36cce"
+    },
+    {
+      "file": "soco-editable-sources.tgz",
+      "bytes": 20702792,
+      "sha256": "e3c4d0cad2a2727a74aef567468eb3e337391e25f7e3eab363dc49d16fc69c91",
+      "parts": [
+        {
+          "file": "soco-editable-sources.tgz.part000",
+          "bytes": 7340032,
+          "sha256": "f652e12eb4878bda26cce5fa2af675f282fc2d7fb77dd64195e1376121c1aa74"
+        },
+        {
+          "file": "soco-editable-sources.tgz.part001",
+          "bytes": 7340032,
+          "sha256": "bf7fe9552a9bb7e91c5acbbdb6ee2dc7c640a00e3e64953405e92ee3c202a7cd"
+        },
+        {
+          "file": "soco-editable-sources.tgz.part002",
+          "bytes": 6022728,
+          "sha256": "cc815fd21996959edb0b358778cc60f03e417d2e5c9d48d862903a9ce82a9392"
+        }
+      ]
+    },
+    {
+      "file": "sword-ordinary-selector.zip",
+      "bytes": 30268,
+      "sha256": "1aed86ad4da0520ec034f76c74580ca1126ac4d9af303614b499e5030492649d"
+    },
+    {
+      "file": "walk-south-boots10-source-only.zip",
+      "bytes": 22808,
+      "sha256": "d1acefde079f8cb3ed8bafeb8a7768a2c03d0744fba7f03ba777e7c216ff2a56"
+    }
+  ]
+}
