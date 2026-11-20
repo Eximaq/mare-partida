@@ -63,7 +63,7 @@ for(const direction of (process.env.DIRS?.split(',')||['south','east','west']))f
   a(diff>1000);a(pix(draw(bare,f,o)).equals(x));count++;m.width=wc.width=1;
  }
  a.equal(JSON.stringify(p),save);
- for(const e of [{legs:{def:22}},{head:{def:19}},{gloves:{def:26}},{weapon:{def:1}},{weapon:{def:5}},{weapon:{def:69}},{boots:{def:176}}]){
+ for(const e of [{legs:{def:22}},{head:{def:19}},{gloves:{def:26}},...(direction==='south'?[]:[{weapon:{def:1}}]),{weapon:{def:5}},{weapon:{def:69}},{boots:{def:176}}]){
   a(!api.selectVisual(actor({boots:{def:148},...e}),o)?.id.includes(':checkpoint-b148-'+direction+'-no-coat'));
  }
  for(const delta of [{direction:'north'},{action:'walk'},{action:'attack-unarmed'}])

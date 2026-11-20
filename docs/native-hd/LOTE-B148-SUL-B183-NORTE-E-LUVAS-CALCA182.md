@@ -1,0 +1,5 @@
+# Equipamentos independentes nos ataques de espada
+
+- B148 avulsa, Sul feminino, Espadas 1, 67, 68 e 70. Os quatro passes da bota já registrados no Sul são usados sem mover sola ou lâmina. Em 256 quadros, oito fases e oito tons por espada, a própria contribuição RGBA da lâmina é preservada. O teste inclui 64 controles da Espada 0. A Espada 69 fica bloqueada no Sul porque a bota ocultaria pixels de alfa parcial em três quadros; o Norte mantém a rota aprovada.
+- B183 avulsa, Norte feminino da Espada 0. Em 64 quadros os próprios passes da bota repetem a referência com peitoral sem tocar na espada/sola. Um ponto de alfa 1/255 no contorno permanece exatamente igual ao pé descalço em oito tons; a arte não é recolorida. B176 não entra: o pé transparecia na sola.
+- Norte feminino da Espada 0: P182 com G145/G159/G166/G173, mais G26 de regressão. Em 120 quadros no total, equipar/retirar calça e luva alternadamente preserva a outra e a contribuição RGBA da arma. Não exige peitoral, não ativa outros slots e não modifica as rotas publicadas.

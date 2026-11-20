@@ -1,6 +1,6 @@
 if(!process.env.GLOVE){
  const {spawnSync}=require('node:child_process');
- for(const id of [26])for(const tone of ['original','olive','ebony']){
+ for(const id of [26,145,159,166,173])for(const tone of ['original','olive','ebony']){
   const child=spawnSync(process.execPath,[__filename],{stdio:'inherit',env:{...process.env,GLOVE:String(id),TONE:tone}});
   if(child.error)throw child.error;if(child.status!==0)process.exit(child.status||1);
  }
@@ -42,7 +42,7 @@ const o={direction:'north',action:'attack-sword',consumer:'world'},pix=c=>Buffer
 const source=async(p,o)=>{const r=api.selectVisual(p,o);a(r,JSON.stringify([p,o]));return {r,b:await api.prepareConfiguration([{player:p,options:o,source:r}],{resolve:x=>x}),p};};
 const draw=(s,f)=>{let c;a(s.b.draw({save(){},restore(){},drawImage(t){c=t;}},s.p,{...o,progress:(f+.25)/8}));return c;};
 const handIds=['left-hand','right-hand'];
-const ids=[26],gloves=process.env.GLOVE?[Number(process.env.GLOVE)]:ids;
+const ids=[26,145,159,166,173],gloves=process.env.GLOVE?[Number(process.env.GLOVE)]:ids;
 a(gloves.every(g=>ids.includes(g)));
 (async()=>{await api.ready;let count=0,partialCount=0;
 const profiles=process.env.TONE?[process.env.TONE]:['original','olive','ebony'];
@@ -104,7 +104,7 @@ for(const skinColor of profiles){
   count++;M.width=1;
  }
  a.equal(JSON.stringify(p),save);
- for(const e of [{legs:{def:22}},{legs:{def:182,variant:'candidate'}},{gloves:{def:145}},{head:{def:19}},{boots:{def:9}},{weapon:{def:5}},{gloves:{def:25}},{gloves:{def:g,variant:'candidate'}}]){
+ for(const e of [{legs:{def:22}},{legs:{def:182,variant:'candidate'}},{gloves:{def:25}},{head:{def:19}},{boots:{def:9}},{weapon:{def:5}},{gloves:{def:25}},{gloves:{def:g,variant:'candidate'}}]){
   a(!api.selectVisual(actor({legs:{def:182},gloves:{def:g},...e}),o)?.id.endsWith(':pants182'));
  }
  for(const delta of [{direction:'south'},{direction:'east'},{direction:'west'},{action:'walk'},{action:'attack-unarmed'}])
