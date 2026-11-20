@@ -1684,6 +1684,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    slotRoutes:{...base.slotRoutes,[visible.gloves.key]:donor.slotRoutes[visible.gloves.key]}};
  }
  const northPunchGloveAuthority={
+  25:["ea58c7d3d806651ac0419800fc80874fed2adca35fa31677bb3b0608dcbb1e40","487b549010a5b4ac30fe6cf6028d3ab08dc31cae0f748cda1cfc3a7d0e19702e","2f7a6533b1ab232e0161e53ccb22bcd5b7be791294971c60945744d613cc2334","123afde6e8e34768cb9e9569e7babc993d08a63da7819cfddb838db49f2f6e5e","d6a749560f9bd50e1c5f36d650a9c6ef6df897f2a6075bf4930525c00d1597a9","bd3c8fa936b3b67d39ceff859b2f3c81cb56cb0ed412b5009a67f50563006693","f136ddd5020896db93f242f7d9d14ce0e7fccc5cc7aafe8c032c99280f24450c","ac6ee7bb928e6409d02296832fcd051d0cbe69217be2bffc7540ccef7fa652aa"],
   152:["cd80fb1986827cdef48a65f6f6c96778148a9bc7307cb3a1a7a5d21ed12efbe1","75c8aa95064cd91a4a720019d9e06c492e32ecd96ebc90a995c45c8320b49804","20ed9a42791abad233651174dc64bece5b4aa6710b36d1c945a5e07f3d2aeee0","d67518e92212b9733eac0ec0d9f93a10fa8a0570dad4d5d0b8b691a1be9b68b3","d30b4abb9392f30180b680bbd0fb12002718bb742cea935ba0381f7f44229793","ee31b389be7632f444e50d0c92d5361c2c356083074d38511f88168c92d61228","ef8cfe129ce2e7fbfb9d26612d9de32ba34bca9101f8c916797a8ffba2b43c4f","39f41c380371c93ccb10e784cd384ea4d637491c832551a0e8f498dee16314a2"],
   26:["60966818a123a979695c5465f1bb9b307e2836a099b52be1c23ec1df02826973","6b742afe6ae8cd905e19dedd222e0cc6db205fa14b91b3ae0ac3b4a54d28a1f6","86682b4ff4e453495af7f5796ef72fc1765ddc86eb289c21f46f5aa14a8a2b5d","b969076da7b278f35f4b3ba27a6fdbcb69350cf35d25a72980ca46d0e7264a99","878c7fd33ffa44ef749e51422204213ff4bf1c449828fdb66ba0095dc292fc85","a3f6ffcf8b71efcda24e5a1eaae418aacfe93df7287b01a3296d7d4a4c6e1501","1bd502b1869120cbf0a69e8cfa90efd4068ef4288ac256837d9838d16080da8a","2267aa9833a82b4aaeaea7e68af87f816a37ebfca425aa771072c5869a7740d5"],
   131:["d3d21dae7052351d00da9d9a745af1ee157b427de11d22ea13b241cbd589f468","c1e3434b1755a88b64808a9fb1c0a3400c8fec1da015ad51233174bcea47ff90","023428f626b7e528c744cee425f65a4d5b2f316adebfcad779bf372f2d9720c8","797c9a88647bedbcb315c427914a6f031c345b531fc3b812eefacb79aaad4a29","89a49ac33689f8f07a72df4d20260a57148ef0a1b52905e21747097ebcc94336","baa20b2583fdf770cfb2e08c89b1dc62790d028f01dd94b227b6961b6d0ca911","99586cd2523beda81d285ba69a3e27974140f4f4af7304cb2d229936db988e95","dd573a11cfd3dff8b1b62aabb39d827a6ad58ec796a0ad72de45cec1bbc57905"],
@@ -1698,7 +1699,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const item=visible.gloves?.item;
   if(a.body!=='male'||o.direction!=='north'||!['attack','attack-unarmed'].includes(o.action)||
      Object.keys(visible).length!==4||visible.torso?.item!==151||visible.pants?.item!==133||
-     visible.boots?.item!==9||![26,131,138,145,159,166,173,180].includes(item)||!['original',undefined].includes(a.hair)||
+     visible.boots?.item!==9||![25,26,131,138,145,159,166,173,180].includes(item)||!['original',undefined].includes(a.hair)||
      !['original',undefined].includes(a.face)||!['original','blue',undefined].includes(a.eyeColor)||
      (a.skin&&a.skin!=='original'&&!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))||
      (a.hairColor&&a.hairColor!=='original'&&!Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)))return null;
@@ -1718,6 +1719,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const old=d.layers.filter(l=>l.id==='gloves152-visible-native-overlay'),src=g.layers[1];
   const sh=northPunchGloveAuthority[item];
   if(old.length!==1||g.layers.length!==2||src?.id!=='registered-frozen-glove-native-attack'||!same(src.frames,sh)||
+     item===25&&donor.frozenGloveSourceRef!=='ref-0605'||
      ![old[0],src].every(l=>l.slot==='foreground'&&l.depth===100&&!l.depthTrack&&same(l.binding,{kind:'fixed'})&&l.frames?.length===8)||
      sh.some(h=>!donor.sourceRefs.includes(h)||proven.sourceRefs.includes(h)||proven.paletteSourceMasks?.[h]))return null;
   const rearNames=['boot9-left-rear','boot9-right-rear'],rearHashes=['61af01b1dd542dc5ad05172d6d398d7cbfbc1a0ac73b2e2b5c22d69e37913304','3a427f965f64b3a3b256df5f78d42463ea6f6ed64eae343af5f186716f010eb5'];
@@ -1761,14 +1763,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function selectNorthPunchBare(o,a,visible){
   const item=visible.gloves?.item;
   if(a.body!=='male'||o.direction!=='north'||!['attack','attack-unarmed'].includes(o.action)||
-     Object.keys(visible).length!==3||visible.torso?.item!==151||visible.pants?.item!==133||![26, 131, 138, 145, 152, 159, 166, 173, 180].includes(item)||
+     Object.keys(visible).length!==3||visible.torso?.item!==151||visible.pants?.item!==133||![25, 26, 131, 138, 145, 152, 159, 166, 173, 180].includes(item)||
      !['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||!['original','blue',undefined].includes(a.eyeColor)||
      (a.skin&&a.skin!=='original'&&!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))||
      (a.hairColor&&a.hairColor!=='original'&&!Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)))return null;
   const id='male-pants133-attack-unarmed-north-drawn8-candidate',bare=outfitById.get(id),base=outfitById.get(id+'-coat151-native'),
    donor=outfitById.get(`frozen-male-glove${item}-north-attack-unarmed-native-layers`),src=outfitById.get(id+'-boots9-isolated-candidate-coat151-existing-gloves152-visible-native-candidate');
   if(![bare,base,donor,src].every(r=>r&&r.productionEnabled!==false&&r.body==='male'&&r.direction==='north'&&r.action==='attack-unarmed')||
-     !donor.frozenGloveLayers||donor.sourceUpperRecord!==src.id||base.bodyOcclusion||bare.bodyOcclusion||
+     !donor.frozenGloveLayers||donor.sourceUpperRecord!==src.id||item===25&&donor.frozenGloveSourceRef!=='ref-0605'||base.bodyOcclusion||bare.bodyOcclusion||
      ![bare,base,src].every(r=>r.palettePolicy==='verified-original-anatomy-only'))return null;
   const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y),dir=x=>x.pack.directions.north,
    geom=({layers,...rest})=>rest,d=dir(base),parts=dir(donor).layers,l=parts[1],raster=r=>[r.pack.frame,r.pack.density,r.pack.pivot];
