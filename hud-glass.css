@@ -177,6 +177,51 @@
 #app.hud-nautical .nautical-profile #attributePointsHud.has-points::after { filter: none; border-color: #ebd69e; box-shadow: 0 0 8px #e4be6240; }
 #app.hud-nautical .nautical-profile :is(#characterPosterToggle, #attributePointsHud):focus-visible { outline: 2px solid #e4ce96; outline-offset: 3px; border-radius: 50%; }
 
+/* The printed poster keeps its own paper, ink, portrait and lettering. */
+#app.hud-nautical .topbar .character-poster {
+  inset: 0 auto auto calc(100% + 10px);
+  width: min(226px, 25vw, calc((100dvh - 40px) * .74));
+  max-height: none;
+  padding: 3px;
+  border: 1px solid var(--glass-line);
+  border-radius: 9px;
+  background: var(--glass-surface);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--glass-shadow);
+  text-shadow: none;
+}
+#app.hud-nautical .topbar .wanted-sheet { container-type: inline-size; }
+#app.hud-nautical .topbar #wantedPortrait {
+  left: 20.5%; top: 14%; width: 59%;
+  clip-path: inset(33% 19% 5%);
+}
+#app.hud-nautical .topbar .wanted-heading strong { font-size: 16cqw; }
+#app.hud-nautical .topbar .wanted-heading span { font-size: 5.6cqw; }
+#app.hud-nautical .topbar .wanted-bounty-label { gap: 4px; font-size: 6cqw; }
+#app.hud-nautical .topbar #wantedBounty { height: auto; }
+#app.hud-nautical .topbar #characterPosterClose {
+  position: absolute; inset: 0 0 auto auto;
+  display: grid; justify-items: end; align-items: start;
+  width: 44px; height: 44px; margin: 0; padding: 3px;
+  border: 0; border-radius: 8px; background: transparent; box-shadow: none;
+  color: #f8e9c5; font: 500 20px/1 var(--glass-type);
+}
+#app.hud-nautical .topbar #characterPosterClose span {
+  display: grid; place-items: center; width: 25px; height: 25px;
+  background: #221e19f2; border: 1px solid #ae8c51; border-radius: 50%;
+}
+#app.hud-nautical .topbar #characterPosterClose:is(:hover,:focus-visible) span {
+  background: #43341f; border-color: var(--glass-gold);
+}
+@media (max-width: 640px) {
+  #app.hud-nautical .topbar .character-poster {
+    /* The map label occupies the 44px directly above the visible channel control. */
+    --poster-base: calc(var(--channel-top, 85dvh) - 46px);
+    inset: auto auto calc(var(--profile-bottom) - var(--poster-base)) 0;
+    width: min(192px, 54vw, calc((var(--poster-base) - 16px) * .74));
+  }
+}
+
 /* Connected telemetry follows the measured card, including optional crew/Haki rows. */
 #app.hud-nautical #onlinePerformance {
   inset: calc(var(--profile-bottom) + 8px) auto auto max(var(--hud-edge), env(safe-area-inset-left));
