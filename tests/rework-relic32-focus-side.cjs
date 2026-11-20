@@ -24,7 +24,7 @@ for(const direction of (process.env.SIDE?[process.env.SIDE]:['east','west'])){
   a.deepEqual(api.selectVisual(old,opts),stock.selectVisual(old,opts));}
  for(const tone of Object.keys(A.skins).filter(t=>t!=='light'))a(!api.selectVisual(save({skinColor:tone}),opts)?.relic32SideBlue);
  for(const look of [{eyeColor:'green'},{hairColor:'brown'},{hairStyle:'hair-spiky'},{gender:'feminino'}])a(!api.selectVisual(save(look),opts)?.relic32SideBlue);
- for(const equipment of [{},{weapon:{def:32,variant:'not-original'}},{weapon:{def:32},coat:{def:151}},{weapon:{def:32},boots:{def:9}}])a(!api.selectVisual(save({},equipment),opts)?.relic32SideBlue);
+ for(const equipment of [{},{weapon:{def:32,variant:'not-original'}},{weapon:{def:32},coat:{def:137}},{weapon:{def:32},boots:{def:9}}])a(!api.selectVisual(save({},equipment),opts)?.relic32SideBlue);
  for(const d of ['north','south'])a(!api.selectVisual(player,{...opts,direction:d})?.relic32SideBlue);
  for(const action of ['idle','walk','attack-unarmed'])a(!api.selectVisual(player,{...opts,action})?.relic32SideBlue);
  a(!api.selectVisual(save({},player.equipment,'strategist'),opts)?.relic32SideBlue);
