@@ -795,6 +795,24 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const own15=carryRegistry?.resolve({item:15,joinedCannon15Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:15}});
    if(own15?.cannon15SavedPalette)return withCarryHead(own15,'carry');
   }
+  const w118=player.equipment?.weapon;
+  if((w118?.def??w118)===118&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&o.direction==='south'&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w118?.[k]==null||w118[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const own118=carryRegistry?.resolve({item:118,joinedCannon118Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:118}});
+   if(own118?.cannon118SouthSavedPalette)return withCarryHead(own118,'carry');
+  }
+  const w120=player.equipment?.weapon;
+  if((w120?.def??w120)===120&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&o.direction==='south'&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w120?.[k]==null||w120[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const own120=carryRegistry?.resolve({item:120,joinedCyborgFringeSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:120}});
+   if(own120?.cyborgFringeSavedPalette)return withCarryHead(own120,'carry');
+  }
   const ownRelic=selectSavedRelic32Carry(player,o,a);if(ownRelic)return ownRelic;
   const carried=carryRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head').map(([k,v])=>[k,v?.def??v]))});
   const carryWithHead=withCarryHead(carried,'carry');
