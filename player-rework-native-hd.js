@@ -855,6 +855,23 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const ownSouthGauntlet=carryRegistry?.resolve({item:southGauntletId,joinedGauntletSouthSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:southGauntletId}});
    if(ownSouthGauntlet?.gauntletsSouthSavedPalette)return withCarryHead(ownSouthGauntlet,'carry');
   }
+  if(southGauntletId===2&&player.classId==='brawler'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&o.direction==='north'&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>wSouthGauntlet?.[k]==null||wSouthGauntlet[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const ownNorthGauntlet=carryRegistry?.resolve({item:southGauntletId,joinedGauntlet2NorthSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:southGauntletId}});
+   if(ownNorthGauntlet?.gauntlet2NorthSavedPalette)return withCarryHead(ownNorthGauntlet,'carry');
+  }
+  const w3=player.equipment?.weapon;
+  if((w3?.def??w3)===3&&player.classId==='brawler'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&o.direction==='south'&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w3?.[k]==null||w3[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const own3=carryRegistry?.resolve({item:3,joinedLuvas3Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:3}});
+   if(own3?.luvas3SavedPalette)return withCarryHead(own3,'carry');
+  }
   const w120=player.equipment?.weapon;
   if((w120?.def??w120)===120&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
      o.consumer==='world'&&!o.weaponless&&o.direction==='south'&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
