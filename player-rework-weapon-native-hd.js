@@ -155,6 +155,35 @@ function focusHeadAuthority(ordered,classId,sourceBody,weaponVariant){
  });
 }
 
+const focusSouthSources={
+ "16": {
+  "archive": "d849e9302787966635056b273982b4f2cd80c1c9858418d3fdc8d6910f3ef032",
+  "phases": [
+   "6ed1832f451a5aa040cb93c1714270baeddbc7a500e87e41dc369e71641e62a6",
+   "fee5837ae7d19ee4d1c95e709a36c2187b9e38aa607028e47fd0ff10115cbf74",
+   "3d46d83783c22a4d580d818bd1221470bdd77f69f8a15e6dec7177f934736967",
+   "46d79bae853b929726993e8527ffc2047478a2f6fdf7879d217f92daf42d1cb4",
+   "83f6a53280d1dcd93c30cf56049fa2de521beb71a5442f587cf9d093c9c56cc4",
+   "d80410343499881543c0cc3ed7fc93bc4956312d88437e7c56e710a9bcdd90e2",
+   "ffc8fbbabdc5d70cf8e287e25c364a284284e0238f1efcea77e0f10d41c3539b",
+   "fc245b9946f1cd90bbbc19a7e404ce0196c39dbfab5095da03567359f5b24604"
+  ]
+ },
+ "31": {
+  "archive": "73eaf48e6a8840b8da0aae4acb2b80ee6c89d1bc3437fb154722bca71ea3cd8c",
+  "phases": [
+   "3ffb314d9076495c8c5ed96fd6e9cd88f314c1c401e042fd697dbbc2cb1a0447",
+   "f7c19211715f5a7d6b504e95060b17cfd32f2145ce7d04caf10440e11b7fb50b",
+   "2b876efa0186c724bc94be67234e1dea822301a6bd54adf027158eb2564bb04e",
+   "61113c681590029cfca93ec68efc03e57b0be4dc26cd83a8dab8be13443e044e",
+   "34ee28d90f4b5957c971cff4932654729584bb2d51e3aff2ee9dfe82ec70674c",
+   "be1e675676780b6847cef083a6a64fd92eb5670ac3eaaba403c6577f981d2e40",
+   "db18ad1b69aaffdb9fc8b8f28960c51de3ce9221ea9dbcf745531059a82aaff9",
+   "7fb00e78a3f0319eeceb71b72a506455e8608e203ea7dd20dcae9d4512fbb19f"
+  ]
+ }
+};
+
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-weapon-layers-hd/',makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
  if(index?.schema!=='native-hd-weapon-layers-v1'||!vendor?.compositor)throw Error('Missing native weapon dependencies');
  const approvedSouth=item=>index.records.find(r=>r.approvedSouthHead&&r.item===Number(item)&&r.body==='male'&&r.direction==='south');
@@ -191,6 +220,21 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
    const signs=southDagger===12?['13f37e8000ed137b4b9a1d33a12d2e45e50ff262cec9ffaaa316bf8b6a741f01','5c038f321e0023a9e87c48abc6936ede2265adec91f17d3dc36d5f287d65fe87','fc034ee9c250e99f97fc82a2eb595fef53505935766ca3ff002fc301a3cd7be0','646df6c921046d0069bf686c568a04b5c8473dc604ba77d436b29f71dad2f3de','a280ae398d6d80f17a478ff5f31e046811646189b13e6e279fc57240ca0748dc','b8a49ede29d316f865cbc45951b73d41c9aece7d168bd913393bcfc9d7bf9c09','ed3731494d658d5d385cda398690be0a33cbac8d7cd7ec0347199cd2cded63ad','f0d709c98a52ac89d94e275ed7fa89c8a5f09a2f02cb6b5aeefe9177fb6e8d1c','76576e1831f50badc59a15137cc1a1a169fe83ae9ad3ef0ca6df10d191660017']:['e3845fb31abf88a6130b8db89778aa63b7008e9c383b5528fd616b62be8e2273','3f5fe0b31d13d8755273875a694d01cc48d17b7b7e68c691b3f6c7f54ffb02fc','23757f2aeb7dbb59bc7df2163f4131c050a9556d04982479b00af0bf241c04a4','44b4359fcad2e6441cd19e17b3a38d83e7abc581fca3f1b049740d466137bae5','d1110ffdc199e0d1ffa77c15739ee44c7226de9de28a61ea1a8e86e306499adb','42e48e8a4fc09f9368c55a971087ca42c867a466562f4d6020f3f0e747c5f7f9','b5259767fdbfc2df5daa459f828fc42bcbcac4bf9a8ce8f7426466165fe8f320','6543d7b3bd9e3cd24383ec9a2e9ffac514940298d7f48f13dc273ad0315676c2','29b6f7b9b5973304ffeae30f53532d31748414e809d7e5a3d5c3404fe890624f'];
    const r=index.records.find(x=>x.id===`daggers${southDagger}-south-native-original-source`);
    if(r?.item===southDagger&&r.body==='male'&&r.direction==='south'&&r.density===4&&r.fps===12&&JSON.stringify(r.nativeCanvas)==='[640,640]'&&JSON.stringify(r.pivot)==='[80,128]'&&r.sourceArchiveSHA256==='301acc694d772a67e3f6311f2db914b87bedc784dddc73ff30fb22c7ea174dce'&&r.replacementMode==='atomic-approved-original-composite'&&r.hairSeparated===false&&r.timeline?.length===9&&r.timeline.every((t,i)=>t===String(i))&&r.states?.length===9&&r.states.every((s,i)=>{const l=s.layers?.[0];return s.state===String(i)&&s.atomic===true&&s.rgbaExact===true&&s.baseSourceModified===false&&s.approved?.sha256===signs[i]&&s.layers?.length===1&&l.sha256===signs[i]&&l.url==='assets/'+signs[i]+'.png'&&l.operation==='source-over'&&l.depth===0&&l.role==='original-approved-body-weapon-composite'&&!l.offset&&!l.mirrorX&&!s.attachment&&!s.bodyPatch&&!s.canvasRoundingPatch;}))return {...r,id:r.id+':owned-south-dagger-iris:'+appearance.eyeColor+(appearance.hairColor==='brown'?'':':owned-dagger-hair:'+appearance.hairColor),approvedDagger13South:true,separableAttack:true,equipmentContract:{weapon:southDagger},colorAppearance:{},...(appearance.eyeColor!=='brown'?{dagger13SouthIris:appearance.eyeColor}:{}),...(appearance.hairColor!=='brown'?{orderedDaggerHair:appearance.hairColor}:{})};
+  }
+  // Bare historic SOUTH uses its exact native composite. Only own immutable
+  // head samples may be changed; this is not a modular weapon/torso route.
+  if(allowExactComposite&&Object.hasOwn(focusSouthSources,southDagger)&&body(b)==='male'&&['male','masculino'].includes(sourceBody??b)&&
+     (classId==='strategist'||southDagger===31&&classId==='healer')&&(weaponVariant==null||weaponVariant==='original')&&action==='attack-focus'&&direction==='south'&&
+     visibleOrdered.length===0&&appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&
+     appearance.skin==='light'&&appearance.hair==='original'&&appearance.face==='original'&&Object.hasOwn(root.MareCharacterAppearance?.hairs||{},appearance.hairColor)&&Object.hasOwn(root.MareCharacterAppearance?.eyes||{},appearance.eyeColor)){
+   const {archive,phases}=focusSouthSources[southDagger];
+   const r=index.records.find(x=>x.id===`daggers${southDagger}-south-native-original-source`);
+   if(r?.item===southDagger&&r.body==='male'&&r.direction==='south'&&r.density===4&&r.fps===12&&
+      JSON.stringify(r.nativeCanvas)==='[640,640]'&&JSON.stringify(r.pivot)==='[80,128]'&&r.sourceArchiveSHA256===archive&&
+      r.replacementMode==='atomic-approved-original-composite'&&r.hairSeparated===false&&r.timeline?.length===8&&r.timeline.every((t,i)=>t===String(i))&&
+      r.states?.length===8&&r.states.every((f,i)=>{const l=f.layers?.[0],h=phases[i];return f.state===String(i)&&f.atomic===true&&f.rgbaExact===true&&f.baseSourceModified===false&&f.approved?.sha256===h&&
+       f.layers?.length===1&&l.sha256===h&&l.url===`assets/${h}.png`&&l.operation==='source-over'&&l.depth===0&&l.role==='original-approved-body-weapon-composite'&&!l.offset&&!l.mirrorX&&!f.attachment&&!f.bodyPatch&&!f.canvasRoundingPatch;}))
+    return {...r,id:r.id+':owned-south-focus-iris:'+appearance.eyeColor+':hair:'+appearance.hairColor,approvedFocusSouth:true,separableAttack:true,equipmentContract:{weapon:southDagger},colorAppearance:{},...(appearance.eyeColor!=='brown'?{dagger13SouthIris:appearance.eyeColor}:{}),...(appearance.hairColor!=='brown'?{orderedDaggerHair:appearance.hairColor}:{})};
   }
   if(ordered&&wardrobeOK&&(!ordered.strictSourceIdentity||(classId===ordered.requiredClass&&['male','masculino'].includes(sourceBody??b)&&(weaponVariant==null||weaponVariant==='original')))&&['hair','hairColor','face','eyeColor','skin'].every(k=>typeof ordered.approvedAppearance?.[k]==='string'&&(appearance[k]===ordered.approvedAppearance[k]||(k==='eyeColor'&&sideIris)||(k==='hairColor'&&sideHair)))){
    const states=ordered.states,timeline=ordered.timeline;
