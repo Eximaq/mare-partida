@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),p=require('node:path'),R=p.resolve(process.env.KAIZOKU_REPO||p.dirname(__dirname)),C=process.env.CANDIDATE_DIR;
 const {make,cv}=require(p.join(R,'tests/rework-integration-support.cjs')),V=global.ReworkAccessoryVendor.compositor,A=require(p.join(R,'character-appearance.js')),loader=require(p.join(R,'tools/rework-hd-test-loader.cjs')).create(R);
 const idx=require(p.join(R,'tools/rework-base-hd/index.json')),plan=require(p.join(R,'tools/rework-weapon-layers-hd/carry-binding-plan.json')),stock=make();
-const save=(skinColor='light',look={},equipment={weapon:{def:31}},classId='strategist')=>A.commit({id:'w31-carry-regression',classId,equipment},{...look,skinColor},()=>true);
+const save=(skinColor='light',look={},equipment={weapon:{def:31}},classId='healer')=>JSON.parse(JSON.stringify(A.commit({id:'w31-carry-regression',classId,equipment},{...look,skinColor},()=>true)));
 const N=512,cap=()=>cv.createCanvas(N,N),rgba=c=>Buffer.from(c.getContext('2d').getImageData(0,0,N,N).data);
 const orient=(slot,c)=>{if(!slot.base.mirrorX)return c;const o=cap(),x=o.getContext('2d');x.translate(N,0);x.scale(-1,1);x.drawImage(c,0,0);return o;};
 const rgbaEq=(got,exp)=>assert.equal(Buffer.compare(got,exp),0);
@@ -12,13 +12,16 @@ const rgbaEq=(got,exp)=>assert.equal(Buffer.compare(got,exp),0);
  for(const direction of ['north','south','east','west'])for(const action of ['idle','walk']){
   const o={direction,action,consumer:'world'},light=save(),ebony=save('ebony'),slot=world.selectVisual(light,o),darkSlot=world.selectVisual(ebony,o);
   assert(slot?.relic31SavedCarry,'W31 in actual normalized Light save');assert(darkSlot?.relic31SavedCarry);
-  if(C)assert(!stock.selectVisual(light,o)?.relic31SavedCarry);
+  const historian=save('light',{},undefined,'strategist');
+  assert.deepEqual(world.selectVisual(historian,o),slot,'the historical strategist alias stays pixel-identical');
+  if(C){assert(!stock.selectVisual(light,o)?.relic31SavedCarry);assert.deepEqual(world.selectVisual(historian,o),stock.selectVisual(historian,o));}
   assert.deepEqual(slot.plan,darkSlot.plan);assert.deepEqual(slot.base,darkSlot.base);
+  assert(!world.selectVisual(light,{...o,action:'attack-focus'})?.relic31SavedCarry);
   const d=slot.base.pack.directions[direction],n=d.clip.frames;
   assert.equal(n,action==='idle'?1:16);if(action==='walk')assert.equal(d.clip.fps,16);
   for(const [who,opt] of [[save('porcelain'),o],[save('light',{hairStyle:'hair-spiky'}),o],[save('light',{eyeColor:'green'}),o],[save('light',{hairColor:'brown'}),o],
-   [save('light',{},{weapon:{def:31},coat:{def:151}}),o],[save('light',{},{weapon:{def:31,variant:'alt'}}),o],[save('light',{},{weapon:{def:31}},'healer'),o],
-   [save('light',{},{weapon:{def:32}}),o],[light,{...o,action:'attack-focus'}],[light,{...o,consumer:'preview'}],[light,{...o,weaponless:true}]]){
+   [save('light',{},{weapon:{def:31},coat:{def:151}}),o],[save('light',{},{weapon:{def:31,variant:'alt'}}),o],[save('light',{},{weapon:{def:31}},'sword'),o],
+   [save('light',{},{weapon:{def:32}}),o],[light,{...o,consumer:'preview'}],[light,{...o,weaponless:true}]]){
    assert(!world.selectVisual(who,opt)?.relic31SavedCarry);if(C)assert.deepEqual(world.selectVisual(who,opt),stock.selectVisual(who,opt));
   }
   const [piece]=slot.plan.parts,a=piece.binding.a,b=piece.binding.b,lateral=['east','west'].includes(direction);

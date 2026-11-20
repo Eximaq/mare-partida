@@ -662,7 +662,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const allowReviewedBareOrb=o.consumer==='world'&&!o.weaponless&&['variant','variantId','appearanceVariant'].every(k=>
    player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original');
   const independent=!player.__reworkSubset&&weaponRegistry?.resolveSeparable?.({item:o.weaponless?undefined:(player.equipment?.weapon?.def??player.equipment?.weapon),body:canonical(a.body),sourceBody:a.body,classId:player.classId,weaponVariant:player.equipment?.weapon?.variant??player.equipment?.weapon?.variantId??player.equipment?.weapon?.appearanceVariant,action:o.action,direction:o.direction,appearance:a,equipment:independentEquipment,
-   allowOrb122BarePreview:allowReviewedBareOrb,allowOrb17BarePreview:allowReviewedBareOrb});
+   allowOrb122BarePreview:allowReviewedBareOrb,allowOrb17BarePreview:allowReviewedBareOrb,
+   allowGauntlet14South:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1});
   if(independent)return {...independent,hdKind:'weapon'};
   const independentPants=!player.__reworkSubset&&outfitRegistry?.resolveIndependentPants?.({body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:player.equipment||{}});
   if(independentPants)return {...independentPants,hdKind:'outfit'};
@@ -721,7 +722,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowArm117SideAttack:!player.__reworkSubset&&player.classId==='cyborg'&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
-   allowRelic31NorthAttack:Number(weapon)===31&&!player.__reworkSubset&&player.classId==='strategist'&&o.consumer==='world'&&!o.weaponless&&
+   allowCyborgForearmSouthAttack:[118,120].includes(Number(weapon))&&!player.__reworkSubset&&player.classId==='cyborg'&&o.consumer==='world'&&!o.weaponless&&
+    Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
+   allowRelic31NorthAttack:Number(weapon)===31&&!player.__reworkSubset&&['healer','strategist'].includes(player.classId)&&o.consumer==='world'&&!o.weaponless&&
+    Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
+   allowRelic32NorthAttack:Number(weapon)===32&&!player.__reworkSubset&&['healer','strategist'].includes(player.classId)&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowNorthSwordDefault:!player.__reworkSubset&&player.classId==='sword'&&Object.keys(player.equipment||{}).length===1&&
     [null,undefined,'original'].includes(player.equipment?.weapon?.variant??player.equipment?.weapon?.variantId??player.equipment?.weapon?.appearanceVariant)});
@@ -779,8 +784,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const ownOrb=carryRegistry?.resolve({item:122,pureOrb122SideSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:122}});
    if(ownOrb?.orb122SideSavedCarry)return withCarryHead(ownOrb,'carry');
   }
+  if(weapon===122&&player.classId==='strategist'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     ['north','south'].includes(o.direction)&&['idle','walk'].includes(o.action)&&o.consumer==='world'&&!o.weaponless&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>orb122?.[k]==null||orb122[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&a.skin===a.skinColor){
+   const ownOrb=carryRegistry?.resolve({item:122,pureOrb122NorthSouthSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:122}});
+   if(ownOrb?.orb122NorthSouthSavedCarry)return withCarryHead(ownOrb,'carry');
+  }
   const w31=equipment.weapon;
-  if(weapon===31&&player.classId==='strategist'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+  if(weapon===31&&['healer','strategist'].includes(player.classId)&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
      ['north','south','east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&o.consumer==='world'&&!o.weaponless&&Object.keys(equipment).length===1&&
      ['variant','variantId','appearanceVariant'].every(k=>w31?.[k]==null||w31[k]==='original')&&
      a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
@@ -814,6 +827,33 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
    const own118=carryRegistry?.resolve({item:118,joinedCannon118Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:118}});
    if(own118?.cannon118SouthSavedPalette)return withCarryHead(own118,'carry');
+  }
+  const w111=player.equipment?.weapon;
+  if((w111?.def??w111)===111&&player.classId==='brawler'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&['south','north'].includes(o.direction)&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w111?.[k]==null||w111[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const own111=carryRegistry?.resolve({item:111,joinedGauntlet111Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:111}});
+   if(own111?.gauntlet111SouthSavedPalette||own111?.gauntlet111NorthSavedPalette)return withCarryHead(own111,'carry');
+  }
+  const w14=player.equipment?.weapon;
+  if((w14?.def??w14)===14&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&['north','south','east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w14?.[k]==null||w14[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const own14=carryRegistry?.resolve({item:14,joinedManopla14Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:14}});
+   if(own14?.manopla14SavedPalette)return withCarryHead(own14,'carry');
+  }
+  const wSouthGauntlet=player.equipment?.weapon, southGauntletId=wSouthGauntlet?.def??wSouthGauntlet;
+  if([2,110].includes(southGauntletId)&&player.classId==='brawler'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&o.direction==='south'&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>wSouthGauntlet?.[k]==null||wSouthGauntlet[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const ownSouthGauntlet=carryRegistry?.resolve({item:southGauntletId,joinedGauntletSouthSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:southGauntletId}});
+   if(ownSouthGauntlet?.gauntletsSouthSavedPalette)return withCarryHead(ownSouthGauntlet,'carry');
   }
   const w120=player.equipment?.weapon;
   if((w120?.def??w120)===120&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
