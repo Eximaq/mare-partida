@@ -17,7 +17,7 @@ for(const action of ['idle','walk'])for(const glove of [25,26,131,138,145,159,16
   delete a0.equipment.boots;a.equal(JSON.stringify(a0),save);a.equal(ids[0],ids[2]);a.equal(ids[1],ids[3]);
  }
  for(const [equipment,options] of [
-  [{boots:I(9)},o],[{legs:I(140)},o],[{head:I(129)},o],[{gloves:{def:25,variant:"other"}},o],[{weapon:I(0)},o],[{}, {...o,direction:'south'}],[{}, {...o,action:'attack-unarmed'}]
+  [{boots:I(9)},o],[{legs:I(21)},o],[{head:I(129)},o],[{gloves:{def:25,variant:"other"}},o],[{weapon:I(0)},o],[{}, {...o,direction:'south'}],[{}, {...o,action:'attack-unarmed'}]
  ]){const x=player(glove,null,'ebony'); x.equipment={...x.equipment,...equipment};a(!api.selectVisual(x,options)?.id.endsWith(':unbooted'));}
 
  for(const skin of ['porcelain','ebony']){

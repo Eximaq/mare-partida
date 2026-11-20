@@ -5,7 +5,7 @@ if(!process.env.PANTS_TRIAL){
   if(r.error)throw r.error;
   if(r.status!==0)process.exit(r.status??1);
  }
- console.log('PASS 1152 saved transitions and 612 registered-pants Canvas comparisons');process.exit(0);
+ console.log(process.env.SELECT_ONLY?'PASS 1152 saved transitions (selector only)':'PASS 1152 saved transitions and 612 registered-pants Canvas comparisons');process.exit(0);
 }
 const a=require('node:assert/strict'),p=require('node:path'),R=p.dirname(__dirname),{make,cv}=require(p.join(R,'tests/rework-integration-support.cjs'));
 const load=require(p.join(R,'tools/rework-hd-test-loader.cjs')).create(R),A=require(p.join(R,'character-appearance.js'));
@@ -27,7 +27,7 @@ for(const action of ['idle','walk'])for(const glove of [25,26,131,138,145,159,16
   delete a0.equipment.boots;a.equal(JSON.stringify(a0),save);a.equal(ids[0],ids[2]);a.equal(ids[1],ids[3]);
  }
  for(const [equipment,options] of [
-  [{boots:I(9)},o],[{legs:I(147)},o],[{head:I(129)},o],[{gloves:{def:25,variant:"other"}},o],[{weapon:I(0)},o],[{}, {...o,direction:'south'}],[{}, {...o,action:'attack-unarmed'}]
+  [{boots:I(9)},o],[{legs:I(21)},o],[{head:I(129)},o],[{gloves:{def:25,variant:"other"}},o],[{weapon:I(0)},o],[{}, {...o,direction:'south'}],[{}, {...o,action:'attack-unarmed'}]
  ]){const x=player(pants,glove,null,'ebony'); x.equipment={...x.equipment,...equipment};a(!/:p(?:154|161)-g\d+-owned:/.test(api.selectVisual(x,options)?.id||''));}
 
  for(const skin of ['porcelain','ebony']){
