@@ -1,8 +1,9 @@
 'use strict';
+const g=Number(process.env.GLOVE||26);
 const p=require('path'),a=require('node:assert/strict'),C=require('crypto');
 if(!process.argv[2]){
- for(const d of ['east','west']){
-  const r=require('node:child_process').spawnSync(process.execPath,[__filename,d],{stdio:'inherit'});
+ for(const item of (process.env.GLOVE?[g]:[25,26,145,152,159,166,173]))for(const d of ['east','west']){
+  const r=require('node:child_process').spawnSync(process.execPath,[__filename,d],{stdio:'inherit',env:{...process.env,GLOVE:String(item)}});
   if(r.error)throw r.error;if(r.status!==0)process.exit(r.status||1);
  }
  process.exit(0);
@@ -15,9 +16,11 @@ const px=c=>Buffer.from(c.getContext('2d').getImageData(0,0,c.width,c.height).da
 const hash=b=>C.createHash('sha256').update(b).digest('hex');
 const d=process.argv[2]||'east',o={action:'walk',direction:d,consumer:'world'};
 a(['east','west'].includes(d));
-const r=rows.find(r=>r.id===`frozen-female-glove26-${d}-walk-native-layers`);
+const r=rows.find(r=>r.id===`frozen-female-glove${g}-${d}-walk-native-layers`);
+const ownRefs={173:{east:'ref-0718',west:'ref-0719'},152:{east:'ref-0712',west:'ref-0713'},25:{east:'ref-0978',west:'ref-0979'}};
+if(ownRefs[g])a.equal(r.frozenGloveSourceRef,ownRefs[g][d]);
 const q=rows.find(r=>r.id===`approved-female151-v64-walk-${d}-pants168`);
-const x=q.pack.directions[d],y=r.pack.directions[d],gloves=y.layers.filter(l=>l.id.startsWith('own-female26-'));
+const x=q.pack.directions[d],y=r.pack.directions[d],gloves=y.layers.filter(l=>l.id.startsWith(`own-female${g}-`));
 const pants=l=>l.id.startsWith('approved-'),extras=l=>l.id.startsWith('pants154-')||l.id.startsWith('boot155-')||gloves.includes(l);
 const bootFront=y.layers.filter(l=>l.id.startsWith('boot155-')&&l.depth>29.5);
 const {layers:lx,...gx}=x,{layers:ly,...gy}=y;
@@ -39,24 +42,29 @@ async function stage(actor,source){
 }
 (async()=>{await run.ready;
  const native=run.selectVisual(actor,o);a.equal(native?.id,q.id);
- const gloveActor={...actor,equipment:{...actor.equipment,gloves:{def:26}}};
+ const gloveActor={...actor,equipment:{...actor.equipment,gloves:{def:g}}};
  const combo=run.selectVisual(gloveActor,o);
- a.deepEqual(combo?.slotRoutes?.gloves,{item:26,quality:'hd',source:r.id});
+ a.deepEqual(combo?.slotRoutes?.gloves,{item:g,quality:'hd',source:r.id});
  a.deepEqual(combo.omitted,[]);a.equal(combo.slotRoutes.legs.item,168);a.equal(combo.slotRoutes.coat.item,151);
  a.deepEqual(combo.pack.directions[d].layers,[...x.layers,...gloves]);
  a.deepEqual({...combo.pack.directions[d],layers:x.layers},x);
  a.deepEqual(combo.pack.pivot,native.pack.pivot);
+ const swapped={...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:g===26?145:26}}},other=run.selectVisual(swapped,o);
+ a.notEqual(other.slotRoutes.gloves.item,g);
+ a.deepEqual(other.pack.directions[d].layers.filter(l=>!l.id.startsWith('own-female')),x.layers);
+ a.notDeepEqual(other.pack.directions[d].layers.slice(-2),gloves);
  const controls=[
   {...gloveActor,appearance96:{...appearance96,skinColor:'ebony'}},
   {...gloveActor,appearance96:{...appearance96,hairStyle:'hair-bob'}},
   {...gloveActor,appearance96:{...appearance96,eyeColor:'green'}},
   {...gloveActor,equipment:{...gloveActor.equipment,legs:{def:182}}},
-  {...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:26,variant:'other'}}},
+  {...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:180}}},
+  {...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:g,variant:'other'}}},
   {...gloveActor,equipment:{...gloveActor.equipment,boots:{def:155}}}];
  for(const a0 of controls)a.notEqual(run.selectVisual(a0,o)?.slotRoutes?.gloves?.source,r.id);
  for(const delta of [{action:'idle'},{action:'attack-unarmed'},{direction:'north'},{direction:'south'}])
   a.notEqual(run.selectVisual(gloveActor,{...o,...delta})?.slotRoutes?.gloves?.source,r.id);
- const oldActor={...actor,equipment:{coat:{def:151},legs:{def:154},boots:{def:155},gloves:{def:26}}};
+ const oldActor={...actor,equipment:{coat:{def:151},legs:{def:154},boots:{def:155},gloves:{def:g}}};
  const old={...r,hdKind:'outfit'};
  const kitBareActor={...oldActor,equipment:{coat:{def:151},legs:{def:154},boots:{def:155}}};
  const oldBare={...old,id:r.id+':local-bare-control',pack:{...r.pack,directions:{...r.pack.directions,[d]:{...y,layers:y.layers.filter(l=>!gloves.includes(l))}}}};
@@ -80,15 +88,15 @@ async function stage(actor,source){
   a(covered&&changed);
   delete gloveActor.equipment.gloves;
   a.equal(run.selectVisual(gloveActor,o).id,native.id);
-  a(u0.equals(px(u.draw(f,gloveActor))),'un-equipping G26 restores approved P168 and C151 RGBA');
-  gloveActor.equipment.gloves={def:26};
+  a(u0.equals(px(u.draw(f,gloveActor))),'un-equipping glove restores approved P168 and C151 RGBA');
+  gloveActor.equipment.gloves={def:g};
   a.equal(run.selectVisual(gloveActor,o).id,combo.id);
-  a(u1.equals(px(v.draw(f,gloveActor))),'re-equipping G26 restores the same HD combination');a.equal(out,0,'other body/material changes');
+  a(u1.equals(px(v.draw(f,gloveActor))),'re-equipping glove restores the same HD combination');a.equal(out,0,'other body/material changes');
   a.equal(opaqueDiff+footOverlap+armDiff+foreignBG,0,'skin/opaque glove/depth or unknown background changed');
   results.push({f,covered,overlap,baseDiff,touchDiff,changed,opaqueDiff,footOverlap,armDiff,foreignBG,base:hash(u0),withGlove:hash(u1)});
  }
  for(const s of [u,v,j,k])s.release();
  const output={direction:d,approvedPants:q.id,gloveSource:r.id,gloveAssetCount:refs.length,poses:results,allMatched:results.every(z=>!z.opaqueDiff&&!z.footOverlap&&!z.armDiff&&!z.foreignBG)};
  a(output.allMatched);a.equal(results.length,40);
- console.log(d,output.allMatched,Object.fromEntries(['overlap','baseDiff','touchDiff','changed','opaqueDiff','footOverlap','armDiff'].map(k=>[k,Math.max(...results.map(r=>r[k]))])));
+ console.log(g,d,output.allMatched,Object.fromEntries(['overlap','baseDiff','touchDiff','changed','opaqueDiff','footOverlap','armDiff'].map(k=>[k,Math.max(...results.map(r=>r[k]))])));
 })().catch(e=>{console.error(e);process.exitCode=1});
