@@ -40,7 +40,7 @@ const api=(url,corrupt=false)=>make({baseURL:url,fetchJSON:async f=>{if(f===mate
    const p={...normalized,equipment:{...normalized.equipment,[row.slot]:{def:row.item}}};
    const r=enabled.selectVisual(p,o),prev=def.selectVisual(p,o);
    if(prev){a.deepEqual(r,prev);continue;}
-   if(row.slot==='gloves'&&![26,159].includes(row.item)){a(!r?.checkpointSources);continue;}
+   if(row.slot==='gloves'&&![26,145,159,166,173].includes(row.item)){a(!r?.checkpointSources);continue;}
    a(r?.checkpointSources?.length,'normal saved profile must select checkpoint in '+direction+': '+row.slot+row.item);
    a.equal(r.material.skinColor,normalized.appearance96.skinColor);
    a.deepEqual(r.states,ordinary.states,'changing equipment cannot change weapon frames');
@@ -67,5 +67,5 @@ const api=(url,corrupt=false)=>make({baseURL:url,fetchJSON:async f=>{if(f===mate
  global.MareAppearance96=palette;
  a(await late.warmSwordCheckpoint(),'the lobby palette may load after the warrior indexes');
  a(late.selectVisual(sample,opt)?.checkpointSources?.length);
- a.equal(newSlots,96);a.equal(existing,24);a.equal(frames,96);a.equal(savedSlots,64);a.equal(savedFrames,96);a(logs.imageLoads>0);console.log({newSlots,existing,frames,savedSlots,savedFrames,logs});
+ a.equal(newSlots,96);a.equal(existing,24);a.equal(frames,96);a.equal(savedSlots,76);a.equal(savedFrames,96);a(logs.imageLoads>0);console.log({newSlots,existing,frames,savedSlots,savedFrames,logs});
 })().catch(e=>{console.error(e);process.exit(1)});

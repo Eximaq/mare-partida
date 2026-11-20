@@ -9,7 +9,7 @@ Conjunto: 0, 1, 67, 68, 69 e 70. As outras cinco já têm oito estados nativos d
 
 Espadas **1, 67, 68, 69 e 70**: o Peitoral 151 e os encaixes independentes da família entram nas quatro direções, somente quando a rota exata ou modular anterior não atende ao conjunto. A arma usa os oito estados nativos e a margem de tela da própria espada, sem aplicar as rotações experimentais da prova. A troca da roupa não troca a posição, o PNG ou o relógio da arma. A rota de espada sozinha permanece exata; adicionar o peitoral ou as peças autorizadas não altera cabelo, olhos, pele nem save.
 
-Escopo do acervo: aparência feminina de referência (cabelo curto loiro, olhos âmbar, pele Clara no save normal e o perfil literal legado). G26/G159 no perfil Clara. Para combinações simultâneas de calça e bota, P22/B9 já comprovada; outras como P21/B9 continuam recusadas, não são ajustadas por transparência.
+Escopo do acervo: aparência feminina de referência (cabelo curto loiro, olhos âmbar, os oito tons de pele no save normal, além do perfil literal legado). G26/G145/G159/G166/G173 no perfil normalizado. Para combinações simultâneas de calça e bota, P22/B9 já comprovada; outras como P21/B9 continuam recusadas, não são ajustadas por transparência.
 
 `node tests/rework-sword-family-active.cjs` após `python tools/build_pages.py` verifica as cinco espadas, 80 seleções de peças representativas e 160 quadros, incluindo troca do conjunto e integridade da origem e da aparência.
 

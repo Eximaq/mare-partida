@@ -6,6 +6,9 @@ const claims={
  boots:new Set(),
  gloves:new Set(['left-hand','right-hand','left-hand-foreground','right-hand-foreground'])
 };
+// The warmed points are gold/copper/red glove trim, not the original bare hand.
+// Use this limited material exemption only for the exact four-direction source rows.
+const extraGloveFingerprints={"145":"de6be91100239389ce4b517e72d187243b0f749741167e284e8fe054e89069aa","166":"30c5dee6760ccb8a3ab6dbae45c2e361e0f8d667f26573d4e5442e4c2f2c804e","173":"09e4059dbf57a69bda4a4aacb94e73277eddaf3f1e597c29c9c10b1df3c5ff95"};
 const family=new Set([1,67,68,69,70]);
 function ownWeaponStates(origin,direction,item,{reference,donor}={}){
  if(!family.has(item)||!reference||!donor||reference.item!==0||donor.item!==item||
@@ -28,7 +31,7 @@ function ownWeaponStates(origin,direction,item,{reference,donor}={}){
     s.parts[0].matrix?.length===6&&s.parts[0].matrix.every(Number.isFinite)))return null;
  return states;
 }
-function create(catalog,accepted){
+function create(catalog,accepted,normalizedGloves){
  const rows=new Map(catalog.records.map(r=>[[r.direction,r.slot,r.item].join('/'),r]));
  const allowed=new Set(catalog.assetHashes);
  const applies=(origin,direction)=>accepted[direction]?.includes(JSON.stringify(origin));
@@ -40,8 +43,9 @@ function create(catalog,accepted){
   // Individually sourced hems/cuffs do not prove contact between both slots.
   // P22+B9 is the only pair checked frame by frame; P21+B9 has an exposed gap.
   if(visible.pants&&visible.boots&&!(visible.pants.item===22&&visible.boots.item===9))return null;
-  // G26/G159 were inspected on both hands, every phase and direction.
-  if(origin.material?.skinColor&&visible.gloves&&![26,159].includes(visible.gloves.item))return null;
+  if(origin.material?.skinColor&&visible.gloves&&
+     (!normalizedGloves.has(visible.gloves.item)||
+      [...claims.gloves].some(id=>origin.skinRepairLayers?.includes(id))))return null;
   const selected=requested.map(([slot,v])=>rows.get([direction,slot,v.item].join('/')));
   // Do not omit an unknown requested piece or substitute an old one.
   if(selected.some(r=>!r))return null;
@@ -63,7 +67,7 @@ function create(catalog,accepted){
  }
  return {resolve,hasAsset:hash=>allowed.has(hash)};
 }
-async function verify(catalog,trusted,{subtle=root.crypto?.subtle,saved={}}={}){
+async function verify(catalog,trusted,{subtle=root.crypto?.subtle,saved=[]}={}){
  if(!subtle||!trusted||catalog.weapon!==0||catalog.coat!==151||catalog.records?.length!==120||catalog.assetHashes?.length!==1503)return null;
  const accepted={};
  // The normalized saved profile may change only the proven material, not
@@ -74,15 +78,28 @@ async function verify(catalog,trusted,{subtle=root.crypto?.subtle,saved={}}={}){
   const source=JSON.stringify(trusted[dir]),bytes=await subtle.digest('SHA-256',new TextEncoder().encode(source));
   const digest=Array.from(new Uint8Array(bytes),v=>v.toString(16).padStart(2,'0')).join('');
   if(digest!==catalog.guards[dir])return null;
-  const current=saved[dir];
   accepted[dir]=[source];
-  if(current?.material?.skinColor==='light'&&current.material.sourceScale===1&&
-     current.material.hairColor===trusted[dir].material?.hairColor&&
-     current.material.eyeColor===trusted[dir].material?.eyeColor&&
-     current.material.style===trusted[dir].material?.style&&
-     geometry(current)===geometry(trusted[dir]))accepted[dir].push(JSON.stringify(current));
+  const trustedShape=geometry(trusted[dir]);
+  for(const skinProfile of saved){
+   const current=skinProfile?.[dir],skin=current?.material?.skinColor;
+   if(!skin||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},skin)||current.colorAppearance?.skinColor!==skin||
+      current.material.sourceScale!==1||current.material.hairColor!==trusted[dir].material?.hairColor||
+      current.material.eyeColor!==trusted[dir].material?.eyeColor||current.material.style!==trusted[dir].material?.style||
+      geometry(current)!==trustedShape)continue;
+   accepted[dir].push(JSON.stringify(current));
+  }
  }
- return create(catalog,accepted);
+ const normalizedGloves=new Set([26,159]);
+ for(const [key,expected] of Object.entries(extraGloveFingerprints)){
+  const item=Number(key),rows=['north','south','east','west'].map(direction=>catalog.records.filter(r=>r.direction===direction&&r.slot==='gloves'&&r.item===item));
+  if(rows.some(set=>set.length!==1||set[0].layers.length!==2||
+      set[0].layers.some(l=>l.slot!=='top'||l.binding?.kind!=='fixed'||l.frames?.length!==8)))continue;
+  const payload=JSON.stringify(rows.map(([r])=>[r.direction,r.layers]));
+  const bytes=await subtle.digest('SHA-256',new TextEncoder().encode(payload));
+  const actual=Array.from(new Uint8Array(bytes),v=>v.toString(16).padStart(2,'0')).join('');
+  if(actual===expected)normalizedGloves.add(item);
+ }
+ return create(catalog,accepted,normalizedGloves);
 }
 const api={verify};root.MareSword0Checkpoint=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

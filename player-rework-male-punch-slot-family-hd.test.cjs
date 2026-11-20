@@ -26,7 +26,7 @@ require('node:test')('derived male punch keeps each glove and boot in its verifi
    assert.equal(r?.resolvedAction,'attack-unarmed');
    assert.equal(r?.pack?.directions[direction].clip.frames,8);
    const colored=rt.selectVisual({...player,appearance96:global.MareCharacterAppearance.normalize({})},o)?.partitionedMalePunch;
-   assert.equal(!!colored?.paletteParts,direction==='north'&&verifiedNorthGloves.includes(g));
+   assert.equal(!!colored?.paletteParts,(direction==='north'&&verifiedNorthGloves.includes(g))||(direction==='south'&&[26,159].includes(g)));
    count++;
  }
  for(const [g,b] of [[25,155],[152,8],[152,155],[25,9],[25,null]]){

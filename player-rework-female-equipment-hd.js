@@ -115,6 +115,27 @@ function attachSwordPants(record,outfit,def){
   baseRecord:{...base,pack:combined,sourceRefs:[...base.sourceRefs,...outfit.sourceRefs]},
   outfitSources:[...(record.outfitSources||[]),...outfit.sourceRefs],pantsSourceId:outfit.id};
 }
+const northFirearmHeadSources={
+ 'head-clean':['166331e5140203e0a448d8e0f9f189b16948787f25335066e4e17b19977cbdcb','57efd749034b064b73acff0dfa47549045be55473cab3d1ba47798cddb3f56b2'],
+ hair:['82ca2b667b9ac9fb3bc49f6c6c48f19a74105d6868a0954f5fef049e0bc9c0e8','7c4dd413a8c81f5ffad3a1dec21fb4ff060ecdc837614d83a7888e898cce9260'],
+ face:['ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c'],
+ iris:['ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c']
+};
+function northFirearmRecoil(r){
+ if(![113,114].includes(r.item)||r.body!=='female'||r.direction!=='north'||r.action!=='attack-firearm'||
+    r.sourceBaseId!=='v7-female-firearm-north-ownership-candidate-north'||r.paddingPhysical!==0)return null;
+ const base=r.baseRecord,pack=base.pack,d=pack.directions.north,head=d.layers.filter(l=>['headBase','face','hair'].includes(l.slot));
+ if(pack.density!==4||pack.frame.width!==160||pack.frame.height!==160||d.clip.frames!==8||d.clip.contactFrame!==4||d.clip.fps!==12||head.length!==4||
+    !Object.keys(northFirearmHeadSources).every(id=>head.filter(l=>l.id===id).length===1))return null;
+ for(const l of head){
+  const [initial,recoil]=northFirearmHeadSources[l.id];
+  if(l.binding?.kind!=='fixed'||l.source!==initial||l.frames?.length!==8||
+     l.frames.some((sha,i)=>sha!==(i===4&&recoil?recoil:initial)))return null;
+ }
+ const heads=new Set(head);
+ const reference={...base,pack:{...pack,directions:{...pack.directions,north:{...d,layers:d.layers.map(l=>heads.has(l)?{...l,frames:undefined}:l)}}}};
+ return {reference,offsets:[0,0,0,0,9,0,0,0]};
+}
 const orbSkinPath='tools/rework-weapon-layers-hd/assets/e4a2f3c434849aabc41cb6037bc16c54ef3130ff21838c355bde9356c6ad287f.png';
 function approvedSouthCarry(r){
  if(r.action!=='walk'||r.direction!=='south'||![0,5,17].includes(r.item)||r.sourceBaseId!=='v7-female-walk-drawn-all-south')return r;
@@ -139,7 +160,13 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   const def=Number(pants.def??pants),outfit=def===168&&outfits?.records.find(row=>row.id==='female-pants168-'+action+'-'+direction);
   combined=swordPants.has(def)&&Number(item)===0?attachSwordPants(combined,outfits?.records.find(row=>row.id==='female-pants'+def+'-sword-'+action+'-'+direction),def):attachPants168(combined,outfit);
  }
- if(!combined)return null;if(!customized&&head==null)return combined;const material=appearanceRegistry?.resolve(combined.baseRecord,{hair:appearance.hair||appearance.hairStyle,head:head?.def??head,appearance});if(!material)return null;return {...combined,id:combined.id+':'+material.id,material,colorAppearance:appearance};},
+ if(!combined)return null;if(!customized&&head==null)return combined;
+  // Both Norte firearms use the same fixed source and the same exact +9px
+  // recoil in state 4. Validate all source hashes before enabling that pose.
+  const recoil=!clothing.length&&head==null?northFirearmRecoil(combined):null;
+  const material=appearanceRegistry?.resolve(recoil?.reference||combined.baseRecord,{hair:appearance.hair||appearance.hairStyle,head:head?.def??head,appearance});
+  if(!material)return null;
+  return {...combined,id:combined.id+':'+material.id,material,colorAppearance:appearance,...(recoil?{northFirearmHeadRecoil:recoil.offsets}:{})};},
  requiredFiles(r,{frame}={}){const d=r.baseRecord.pack.directions[r.direction],states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid female equipment frame');const refs=frame===undefined?r.baseRecord.sourceRefs:d.layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean);return [...new Set([...(r.approvedSouthCarry&&r.item===17?[orbSkinPath]:[]),...refs.map(s=>asset(r,s)),...(r.material?appearanceRegistry.requiredFiles(r.material):[]),...states.flatMap(s=>[...s.parts.map(p=>p.url),...Object.values(s.baseMasks||{})])])]},
  render(ctx,r,images,{frame=0,captureOps,makeCanvas:frameCanvas=makeCanvas}={}){let p=r.baseRecord.pack,d=p.directions[r.direction];
  const map=new Map(r.baseRecord.sourceRefs.map(s=>[s,images.get(asset(r,s))]));
@@ -163,7 +190,9 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
  }
  if(r.material){
   const head=d.layers.find(layer=>layer.slot==='headBase'),source='custom-head';
-  const tile=appearanceRegistry.compose(r.baseRecord,r.material,images);
+  const composed=appearanceRegistry.compose(r.baseRecord,r.material,images),recoil=r.northFirearmHeadRecoil?.[frame]||0;
+  const tile=recoil?frameCanvas(composed.width,composed.height):composed;
+  if(recoil)tile.getContext('2d').drawImage(composed,0,recoil);
   const layers=d.layers.filter(layer=>!['headBase','face','hair'].includes(layer.slot)).concat({...head,source,frames:undefined});
   d={...d,layers};p={...p,directions:{...p.directions,[r.direction]:d}};map.set(source,tile);
   if(r.material.skinColor){
