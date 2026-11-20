@@ -165,9 +165,11 @@ function attachNorth113Coat(r,coat){
   baseRecord:{...b,pack,sourceRefs:[...b.sourceRefs,...refs]},northFirearmCoatSources:refs};
 }
 const north113G26Layers=[{"id":"candidate-glove26-left","slot":"foreground","depth":6.1,"binding":{"kind":"fixed"},"frames":["634885d19620df45c8e7c6224290809deb1bfe738570285416adb13bce4a63f5","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","0696acbb6ce4e5864e01cca44690f613a52c1c53ecce4e660c8c9f69835e50b6"],"source":"634885d19620df45c8e7c6224290809deb1bfe738570285416adb13bce4a63f5"},{"id":"candidate-glove26-right","slot":"foreground","depth":6.1,"binding":{"kind":"fixed"},"frames":["323b7c53f0375269d6f3828ab948a41668d2e9861249759b3e83b0c7380b1421","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","1e9e7c122f1cf2cdeaec8788b85f2ac406e233d9d4f0ef435f0a42a6fd9eb120"],"source":"323b7c53f0375269d6f3828ab948a41668d2e9861249759b3e83b0c7380b1421"}];
+const north113G166Layers=[{"id":"candidate-glove166-left","slot":"foreground","depth":6.1,"binding":{"kind":"fixed"},"frames":["36eb578917ac4cd5abb817191280571f17f92a801d4857953b5b82f0afb3ec61","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","8ceed39a7837b0454328ee8e04c41cb7f263d24d5f2f551a4a80d02b193988a2"],"source":"36eb578917ac4cd5abb817191280571f17f92a801d4857953b5b82f0afb3ec61"},{"id":"candidate-glove166-right","slot":"foreground","depth":6.1,"binding":{"kind":"fixed"},"frames":["5242742d79b557b18b34b633fae316537498f5064fd17111db9fd12055c8682e","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","a6a4fffb041755717a076bd67c39f7ef4c4c177f0e83f62064ada678586d93c7"],"source":"5242742d79b557b18b34b633fae316537498f5064fd17111db9fd12055c8682e"}];
 const north113G26Weapon=[{"side":"right","depth":5.81,"handMaskSHA256":"8cc025f28e8a9272ea5ef3f4c2c591546d49d3022cb6bbe3f8d3176a03b7e968","sourceClip":null,"sha256":"0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4","matrix":[-0.08758209923762537,-0.9961573047933397,0.9961573047933397,-0.08758209923762537,338.7618361436837,438.6800166064613]},{"side":"right","depth":5.81,"handMaskSHA256":"c188a5bff197e6dc63add237d9f7a8935864d3d401d9a89aa0a960bc54670be4","sourceClip":null,"sha256":"0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4","matrix":[-0.07885831742863057,-0.9968858338708226,0.9968858338708226,-0.07885831742863057,334.0622652473962,438.27317769893625]}];
 function attachNorth113Glove(r,id){
- if(id!==26||!r?.northFirearmCoatSources||r.item!==113)return null;
+ const glove=id===26?north113G26Layers:id===166?north113G166Layers:null;
+ if(!glove||!r?.northFirearmCoatSources||r.item!==113)return null;
  const p=r.pack,d=p.directions.north;
  const fingerprint=part=>Object.fromEntries(Object.keys(north113G26Weapon[0]).map(key=>[key,part[key]]));
  if(r.states.some((state,i)=>{
@@ -175,10 +177,10 @@ function attachNorth113Glove(r,id){
   return state.hideBaseLayers||state.baseMasks||state.parts.length!==+!!expected||
    expected&&JSON.stringify(fingerprint(state.parts[0]))!==JSON.stringify(expected);
  }))return null;
- const layers=d.layers.filter(l=>l.id!=='left-hand'&&l.id!=='right-hand').concat(north113G26Layers);
- const refs=[...new Set(north113G26Layers.flatMap(l=>l.frames))].filter(h=>!r.baseRecord.sourceRefs.includes(h));
+ const layers=d.layers.filter(l=>l.id!=='left-hand'&&l.id!=='right-hand').concat(glove);
+ const refs=[...new Set(glove.flatMap(l=>l.frames))].filter(h=>!r.baseRecord.sourceRefs.includes(h));
  const pack={...p,directions:{...p.directions,north:{...d,layers}}};
- return {...r,id:r.id+'-glove26-native',pack,
+ return {...r,id:r.id+'-glove'+id+'-native',pack,
   baseRecord:{...r.baseRecord,pack,sourceRefs:[...r.baseRecord.sourceRefs,...refs]},
   northFirearmCoatSources:[...r.northFirearmCoatSources,...refs]};
 }
@@ -207,7 +209,10 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   const def=Number(pants.def??pants),outfit=def===168&&outfits?.records.find(row=>row.id==='female-pants168-'+action+'-'+direction);
   combined=swordPants.has(def)&&Number(item)===0?attachSwordPants(combined,outfits?.records.find(row=>row.id==='female-pants'+def+'-sword-'+action+'-'+direction),def):attachPants168(combined,outfit);
  }
- if(glove!=null)combined=attachNorth113Glove(combined,Number(glove.def??glove));
+ if(glove!=null){
+  if(typeof glove==='object'&&['variant','variantId','appearanceVariant'].some(k=>glove[k]!=null&&glove[k]!=='original'))return null;
+  combined=attachNorth113Glove(combined,Number(glove.def??glove));
+ }
  if(!combined)return null;if(!customized&&head==null)return combined;
   // These Norte firearms use the same fixed source and the same exact +9px
   // recoil in state 4. Validate all source hashes before enabling that pose.

@@ -46,5 +46,8 @@ const take=(s,p,i)=>{let c;a(s.draw({save(){},restore(){},drawImage(x){c=x;}},p,
  for(const [weapon,glove,coat,direction] of [[113,26,false,'north'],[114,26,true,'north'],[113,25,true,'north'],[113,26,true,'south'],[113,26,true,'east'],[113,26,true,'west']]){
   a(!api.selectVisual(player(norm(),glove,weapon,coat),{...options,direction})?.id.includes('-glove26-native'));
  }
+ const variant=player(norm(),26);
+ variant.equipment.gloves.variant='test-unregistered';
+ a(!api.selectVisual(variant,options)?.id.includes('-glove26-native'));
  a.equal(render.length,24);console.log({rendered:render.length,exactMiddleSix:true,weaponPreserved:true,saveUnchanged:true});
 })().catch(e=>{console.error(e);process.exitCode=1});

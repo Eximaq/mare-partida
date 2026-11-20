@@ -34,13 +34,19 @@ def materialize(checkpoint, masks, out):
         refs = {v for l in parts.values() for v in l["frames"]}
         if len(refs) != 18:
             raise ValueError("Unexpected number of coat PNGs")
-        gloves = [row for row in cat["northGloves"] if row["item"] == 26]
-        if {(row["side"], row["phase"]) for row in gloves} != {(side, i) for side in ("left", "right") for i in range(8)}:
-            raise ValueError("Missing W113 G26 phase-owned glove assets")
         naked = {h for l in source["pack"]["directions"]["north"]["layers"][:11] for h in l["frames"]}
+        gloves = [row for row in cat["northGloves"] if row["item"] == 26]
+        if len(gloves) != 16 or {(row["side"], row["phase"]) for row in gloves} != {(side, i) for side in ("left", "right") for i in range(8)}:
+            raise ValueError("Missing W113 G26 phase-owned glove assets")
         glove_refs = {row["sha"] for row in gloves} - naked
         if len(glove_refs) != 4:
             raise ValueError("Wrong W113 G26 phase-owned glove assets")
+        g166_ids = {"candidate-glove166-left", "candidate-glove166-right"}
+        g166 = [l for l in source["pack"]["directions"]["north"]["layers"] if l["id"] in g166_ids]
+        g166_refs = {v for l in g166 for v in l["frames"]}
+        if {l["id"] for l in g166} != g166_ids or any(len(l["frames"]) != 8 for l in g166) or len(g166_refs) != 5:
+            raise ValueError("Wrong W113 G166 phase-owned glove assets")
+        glove_refs.update(g166_refs)
         for h in sorted(refs | glove_refs):
             (assets / f"{h}.png").write_bytes(png(bundle.read(f"fuzil113-ns/assets/{h}.png"), h))
     mapping = json.loads((masks / "skin-masks.json").read_text())

@@ -296,6 +296,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const scope=coat==null?[21,22,133].includes(pants):[6,7,130,137,144,158,165,172,179].includes(coat)&&(pants==null||pants===21);
   const action=r.action;
   if(!['idle','walk','attack-unarmed'].includes(action))return r;
+  if(coat===151&&pants===133&&['idle','walk'].includes(action)){
+   const boot=r.equipment.boots,suffix=boot===9?'-boots9-isolated-candidate-coat151-existing':
+     boot===148?'-boots148-isolated-candidate-coat151-native':boot==null?'-coat151-native':null;
+   if(suffix==null||Object.keys(r.equipment).length!==(boot==null?2:3))return r;
+   const id=`male-pants133-${action}-south-isolated-r2`,auth=outfitById.get(id+suffix),core=outfitById.get(id);
+   const same=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+   if((r.sourceId||r.id)!==id+suffix||!auth||!core?.paletteSourceMasks||
+      !same(r.pack,auth.pack)||!same(r.paletteSourceMasks,core.paletteSourceMasks))return r;
+   return root.MareReworkModularOutfitsHD?.withStrictSouthAppearance(r,{...a,skin:a.skinColor??a.skin,face:'original',hair:'original'})||r;
+  }
   const prefix=coat==null?`male-pants${pants}-${action}-south${pants!==133?'':action==='attack-unarmed'?'-drawn8-candidate':'-isolated-r2'}`:
     `male-torso${coat}-south-frozen-${action==='attack-unarmed'?'attack':action}-native${action==='attack-unarmed'?'-candidate':''}`;
   const id=r.sourceId||r.id;
@@ -822,11 +832,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return describeSlots(source,visible,['boots']);
  }
  function selectCoatsOnRegisteredPants(player,o,a,visible){
-  const dir=o.direction,action=['attack','skill'].includes(o.action)?'attack-unarmed':o.action,coat=visible.torso?.item,pants=visible.pants?.item;
+  const dir=o.direction,action=['attack','skill'].includes(o.action)?'attack-unarmed':o.action,coat=visible.torso?.item,pants=visible.pants?.item,boot=visible.boots?.item;
   const strict=dir==='south'&&pants===21&&[6,7,130,137,144,158,165,172,179].includes(coat)&&strictSouthRequested(a);
   if(a.body!=='male'||!['idle','walk','attack-unarmed'].includes(action)||!['north','south','east','west'].includes(dir)||
    !(action==='attack-unarmed'?[21,22,133]:[21,22]).includes(pants)||![6,7,130,137,144,158,165,172,179].includes(coat)||
-   Object.keys(visible).some(k=>k!=='pants'&&k!=='torso')||
+   Object.keys(visible).some(k=>!['pants','torso','boots'].includes(k))||
+   boot!=null&&(pants!==133||action!=='attack-unarmed'||!(boot===9||boot===148&&['north','south'].includes(dir)))||
    !strict&&Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original'))return null;
   const attack=action==='attack-unarmed';
   const coatRecord=outfitById.get(`male-torso${coat}-${dir}-frozen-${attack?'attack':action}-native${attack?'-candidate':''}`);
@@ -851,10 +862,27 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    attack&&basePants.some(l=>JSON.stringify(l.binding).includes('cloth:'))||extraCoat.some(x=>extraPants.some(y=>x.depth===y.depth||x.depthTrack||y.depthTrack)))return null;
   // The initial body and identified trouser layer retain their exact art and bindings.
   // Only validated partners on this pose acquire the approved coat layers.
-  const layers=[...cd.layers,...extraPants];
+  let bootLayers=[];
+  if(boot!=null){
+   const suffix=boot===148?'native':dir==='south'?'south-registered':'existing';
+   const anchor=outfitById.get(pantsRecord.id+'-boots'+boot+'-isolated-candidate-coat151-'+suffix);
+   const ad=anchor?.pack.directions[dir],boots=l=>l.id.startsWith('boot'+boot+'-'),coat151=l=>l.id.startsWith('coat151-');
+   if(!anchor||anchor.productionEnabled===false||anchor.equipment?.boots!==boot||
+    anchor.equipment.torso!==151||anchor.equipment.pants!==133||Object.keys(anchor.equipment).length!==3||
+    !same(anchor.pack.frame,pantsRecord.pack.frame)||!same(anchor.pack.pivot,pantsRecord.pack.pivot)||
+    anchor.pack.density!==pantsRecord.pack.density||!same(timing(ad),timing(pd))||
+    !same(ad.layers.filter(l=>!boots(l)&&!coat151(l)),pd.layers)||
+    ad.layers.filter(coat151).length!==1||anchor.mirrorLayerIDs||anchor.sourceRasterPadding)return null;
+   bootLayers=ad.layers.filter(boots);
+   if(!bootLayers.length||bootLayers.some(l=>l.binding?.kind!=='fixed'||l.depthTrack||
+    l.frames&&l.frames.length!==ad.clip.frames||!(l.frames||[l.source]).every(h=>anchor.sourceRefs.includes(h))||
+    (l.frames||[l.source]).some(h=>coatRecord.sourceRasterPadding?.[h])||
+    [...cd.layers,...extraPants].some(other=>l.depth===other.depth||other.depthTrack)))return null;
+  }
+  const layers=[...cd.layers,...extraPants,...bootLayers];
   const sourceRefs=[...new Set(layers.flatMap(l=>l.frames||[l.source]).filter(Boolean))];
-  const record={...coatRecord,id:`layered-torso:${coatRecord.id}:${pantsRecord.id}`,
-   equipment:{torso:coat,pants},sourceRefs,paletteSourceMasks:pantsRecord.paletteSourceMasks,palettePolicy:pantsRecord.palettePolicy,paletteRefs:pantsRecord.paletteRefs,
+  const record={...coatRecord,id:`layered-torso:${coatRecord.id}:${pantsRecord.id}`+(boot==null?'':':boot'+boot),
+   equipment:{torso:coat,pants,...(boot==null?{}:{boots:boot})},sourceRefs,paletteSourceMasks:pantsRecord.paletteSourceMasks,palettePolicy:pantsRecord.palettePolicy,paletteRefs:pantsRecord.paletteRefs,
    pack:{...coatRecord.pack,directions:{[dir]:{...cd,layers}}}};
   const described=describeSlots({...record,hdKind:'outfit',resolvedAction:action},visible,[]);
   if(!strict)return described;
@@ -882,10 +910,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function selectSouthTorsoOnPants133(o,a,visible){
   const d=o.direction,action=o.action,item=visible.torso?.item,boot=visible.boots?.item;
-  const items=[6,7,130,137,144,158,165,172,179];
+  const items=[6,7,130,137,144,158,165,172,179],strict=strictSouthRequested(a);
   if(a.body!=='male'||d!=='south'||!['idle','walk'].includes(action)||visible.pants?.item!==133||
     ![null,9,148].includes(boot??null)||Object.keys(visible).length!==(boot==null?2:3)||!items.includes(item)||
-    Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original'))return null;
+    !strict&&Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original'))return null;
   const id=`male-pants133-${action}-south-isolated-r2`,anchor=outfitById.get(id+({9:'-boots9-isolated-candidate-coat151-existing',148:'-boots148-isolated-candidate-coat151-native'}[boot]||'-coat151-native')),
     clean=outfitById.get(id),donor=outfitById.get(`male-torso${item}-south-frozen-${action}-native`);
   if([anchor,clean,donor].some(r=>!r||r.productionEnabled===false||r.body!==a.body||r.direction!==d||r.action!==action)||
@@ -921,7 +949,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    }}});
   if(!composed)return null;
   const slotRoutes=Object.fromEntries(Object.entries(composed.slotRoutes).map(([k,v])=>[visible[k].key,v]));
-  return {...composed,slotRoutes,omitted:[],hdKind:'outfit'};
+  const described={...composed,slotRoutes,omitted:[],hdKind:'outfit'};
+  if(!strict)return described;
+  if(!clean.paletteSourceMasks||!same(clean.paletteSourceMasks,anchor.paletteSourceMasks)||
+     !same(Object.entries(clean.paletteSourceMasks).sort(),Object.entries(composed.paletteSourceMasks).sort()))return null;
+  return root.MareReworkModularOutfitsHD?.withStrictSouthAppearance(described,a)||null;
  }
  // Verified South original eye material, not a brightness or rectangle mask.
  const southPunchFace='6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a',southPunchSkin='47c4585f7c79fdf6d67207416b4a08c9b7322da3d9abc94cddf965bd6ed174a0';
