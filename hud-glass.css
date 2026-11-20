@@ -15,6 +15,7 @@
 #app.hud-nautical :is(.topbar.nautical-profile, #mainMenu, #onlinePerformance, #floatingChat, #chatCornerToggle, .action-panel, #floatingExpedition, #targetHud),
 #app.hud-nautical #journeyHud :is(.journey-heading, .auto-button),
 #app.hud-nautical #huntXpTracker.hunt-xp-tracker,
+#app.hud-nautical .world-command #returnLobby,
 #app.hud-nautical #mainMenu .character-menu-anchor > .character-quick-menu {
   border: 1px solid var(--glass-line);
   border-image: none;
@@ -336,6 +337,23 @@
 @media (min-width: 761px) and (max-height: 500px) {
   #app.hud-nautical #huntXpTracker.hunt-xp-tracker { width: 184px; padding: 6px 8px; }
 }
+
+/* Return to port stays at the existing HUD anchor and sizes to its label. */
+#app.hud-nautical .world-command { width: max-content; max-width: calc(100% - 2 * var(--hud-edge)); }
+#app.hud-nautical .world-command #returnLobby {
+  width: auto; flex: none; height: 44px; min-height: 44px; padding: 0 12px;
+  align-items: center; justify-content: center; gap: 7px; white-space: nowrap;
+  font: 600 13px/1.2 var(--glass-type); color: #edece8; text-transform: none;
+}
+#app.hud-nautical .world-command #returnLobby:not(.hidden) { display: inline-flex; }
+#app.hud-nautical #returnLobby svg { flex: none; color: var(--glass-gold); }
+#app.hud-nautical .world-command #returnLobby::before,
+#app.hud-nautical .world-command #returnLobby::after { content: none; }
+@media (hover: hover) {
+  #app.hud-nautical .world-command #returnLobby:hover { border-color: #c6ac70; color: #fff0c9; }
+}
+#app.hud-nautical .world-command #returnLobby:focus-visible { outline: 2px solid var(--glass-gold); outline-offset: 2px; }
+#app.hud-nautical .world-command #returnLobby:active { border-color: var(--glass-gold); background: #383024; color: #ffebbc; }
 
 /* Navigation icons retain their three-state art and every existing control. */
 #app.hud-nautical #mainMenu {
