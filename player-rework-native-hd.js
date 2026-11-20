@@ -550,12 +550,67 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!supportsEyes||!base.pack||!eyes?.maleSource(base))return null;
   return {...record,id:record.id+':eyes:'+(style||'original')+':'+(color||'original'),eyeStyle:style,colorAppearance:{...record.colorAppearance,face:style,eyeColor:color}};
  }
+ // Opt in only the saved female East walk look audited with both C6 and C7.
+ // Their ungarmented basis is the same authored scene graph, not a flattened render.
+ let verifiedCoat67EastBare;
+ const coat67EastNeckSHA='202352cb972f4fe437ca7fd43aa4d848b88a4fc98dcfc6393bb5fd0b4c1e16bd';
+ function exactCoat67EastLook(player,o,a){
+  return !player.__reworkSubset&&!player.zoanTransformed&&!player.equipment?.visual_completo&&player.equipment?.head==null&&o.action==='walk'&&o.direction==='east'&&o.consumer==='world'&&!o.weaponless&&
+     a.gender==='feminino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.face==='original'&&
+     a.hairColor==='black'&&a.eyeColor==='green'&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin);
+ }
+ function restoreCoat67EastExactNeck(record,material,a){
+  const d=record.pack?.directions?.east,head=d?.layers.filter(l=>l.slot==='headBase');
+  if(!material||material.sourceScale!==1||!material.fused||material.ownership?.walkHead!==coat67EastNeckSHA||
+     JSON.stringify(material.ownership.walkDifferenceBounds)!=='[246,166,271,169]'||
+     head?.length!==1||head[0].source!==coat67EastNeckSHA||head[0].frames||head[0].binding?.kind!=='rigid'||
+     head[0].binding.a!=='NECK'||head[0].binding.b!=='NOSE'||material.style!=='original'||
+     material.hairColor!=='black'||material.eyeColor!=='green'||material.skinColor!==a.skin||
+     material.gearRecord||material.profileNeckBridge||material.profileNeckRestore)return null;
+  return {...material,id:material.id+':authored-east-neck',profileNeckRestore:true};
+ }
+ function selectFemaleCoat67EastBare(player,o,a,equipment){
+  if(!exactCoat67EastLook(player,o,a)||Object.keys(equipment).length)return null;
+  if(verifiedCoat67EastBare===undefined){
+   verifiedCoat67EastBare=null;
+   const same=(x,y)=>JSON.stringify(x)===JSON.stringify(y), id='v7-female-walk-drawn-all-east',
+    [c6,c7]=[6,7].map(i=>outfitById.get('female-torso'+i+'-east-frozen-walk-native')),
+    base=baseIndex?.records.find(r=>r.id===id),d=r=>r?.pack?.directions?.east,
+    sources=l=>l.frames||[l.source],core=r=>d(r).layers.filter(l=>l.id.startsWith('base:')),
+    info=r=>[r.pack.frame,r.pack.pivot,r.pack.density],context=({layers,...rest})=>rest;
+   if(!d(base)||!d(c6)||!d(c7)||!base.bodyClothingSeparated)return null;
+   if(![c6,c7].every((r,i)=>r.body==='female'&&r.action==='walk'&&r.direction==='east'&&r.baseRecord===id&&
+        r.productionEnabled!==false&&same(r.equipment,{torso:i?7:6})&&same(info(r),info(base))&&
+        !r.bodyOcclusion&&!r.mirrorX&&!r.mirrorLayerIDs&&!r.sourceRasterPadding)||
+      !same(context(d(c6)),context(d(c7)))||!same(core(c6),core(c7)))return null;
+   const x=d(c6),b=d(base),layers=core(c6),layerShape=({id:id,frames,...rest})=>rest;
+   if(!same(x.clip,{frames:40,fps:40,loop:true})||!same(b.clip,{frames:8,fps:8,loop:true})||
+      !same(x.rest,b.rest)||x.poses.length!==40||b.poses.length!==8||
+      !same(layers.map(l=>l.id),['base:legs','base:torso','base:shorts','base:top','base:arms','base:head-rigid'])||
+      b.layers.length!==layers.length||!layers.every((l,i)=>l.id==='base:'+b.layers[i].id&&
+        same(layerShape(l),layerShape(b.layers[i]))&&sources(l).every(h=>c6.sourceRefs.includes(h)&&c7.sourceRefs.includes(h)&&base.sourceRefs.includes(h)))||
+      !x.poses.every((p,f)=>{const j=(f/5)|0;return same(p,b.poses[j])&&layers.every((l,i)=>(l.frames?.[f]||l.source)===(b.layers[i].frames?.[j]||b.layers[i].source));}))return null;
+   const material=outfitRegistry.bindAnatomy(c6,baseIndex),material7=outfitRegistry.bindAnatomy(c7,baseIndex);
+   if(!material||!same(material,material7)||Object.keys(material).length!==24||Object.values(material).some(x=>x!=='anatomy'))return null;
+   verifiedCoat67EastBare={id:'female-coat67-east-own-bare-v1',body:'female',action:'walk',direction:'east',equipment:{},hdKind:'outfit',
+    pack:{...c6.pack,directions:{east:{...x,layers}}},sourceRefs:[...new Set(layers.flatMap(sources))],baseMaterialSources:material,
+    slotRoutes:{},omitted:[]};
+  }
+  const basis=verifiedCoat67EastBare;
+  if(!basis)return null;
+  const named=restoreCoat67EastExactNeck(basis,femaleNamedHairRegistry?.resolve(basis,{hair:a.hair,appearance:a}),a);
+  if(!named)return null;
+  return {...basis,id:named.id,sourceId:basis.id,femaleNamedHairRecord:named,colorAppearance:a};
+ }
+
  function selectBase(player,o,allowApprovedAppearance=false,onlyApprovedAppearance=false){
   if(!registry||player?.zoanTransformed)return null;
   if(['combat-idle','guard','hurt','death'].includes(o.action))return select(player,{...o,action:'idle'});
   if(['attack','skill','skill-1','skill-2','combo','cast','heal','reload','dodge'].includes(o.action)){const candidates=o.weaponless||player.equipment?.weapon==null?['attack-unarmed']:['attack-unarmed','attack-firearm','attack-focus','attack-sword','attack-daggers','attack-tech'];for(const action of candidates){const r=onlyApprovedAppearance?selectBase(player,{...o,action},true,true):select(player,{...o,action});if(r)return {...r,resolvedAction:action};}return null;}
   const raw=player.appearance96||{};const a={...raw,body:raw.gender??raw.body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin};const equipment=Object.fromEntries(Object.entries(player.equipment||{}).filter(([slot])=>!nonVisualEquipment.has(slot)&&slot!=='visual_completo'));for(const [k,v]of Object.entries(equipment))if(v==null||['none','original'].includes(v))delete equipment[k];if(o.weaponless)delete equipment.weapon;if(root.MareHeadgear?.hidden(player))delete equipment.head;
   const north=resolveNorthLayers(player,o,a,equipment);if(north)return north;
+  const ownBare=selectFemaleCoat67EastBare(player,o,a,equipment);if(ownBare)return ownBare;
   const profile=resolveProfileLayers(player,o,a,equipment);if(profile)return profile;
   const southPants=resolveSouthPants(player,o,a,equipment);if(southPants)return southPants;
   // Resolve optional independent slots before outfit candidates. Pass the original
@@ -587,7 +642,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const anatomy=hasFemaleSkin&&originalOutfit?outfitRegistry?.bindAnatomy(originalOutfit,baseIndex):null;
    const cosmeticOutfit=originalOutfit&&(!hasFemaleSkin||anatomy)?{...originalOutfit,baseMaterialSources:anatomy}:null;
    const named=cosmeticOutfit&&femaleNamedHairRegistry?.resolve(cosmeticOutfit,{hair:a.hair||'original',head:equipment.head?.def??equipment.head,appearance:a});
-   if(named)return {...cosmeticOutfit,id:named.id,sourceId:originalOutfit.id,hdKind:'outfit',femaleNamedHairRecord:named,colorAppearance:a};
+   if(named){
+    const c=equipment.coat?.def??equipment.coat;
+    const shared=[6,7].includes(c)&&Object.keys(equipment).length===1&&['variant','variantId','appearanceVariant'].every(k=>equipment.coat?.[k]==null||equipment.coat[k]==='original')&&originalOutfit.id==='female-torso'+c+'-east-frozen-walk-native'&&exactCoat67EastLook(player,o,a)?
+     selectFemaleCoat67EastBare({...player,equipment:{}},o,a,{}):null;
+    const repaired=shared?restoreCoat67EastExactNeck(cosmeticOutfit,named,a)||named:named;
+    return {...cosmeticOutfit,id:repaired.id,sourceId:originalOutfit.id,hdKind:'outfit',femaleNamedHairRecord:repaired,colorAppearance:a};
+   }
   }
   // A saved palette can use a different head only if the outfit's source rig agrees.
   if(canonical(a.body)==='male'){
