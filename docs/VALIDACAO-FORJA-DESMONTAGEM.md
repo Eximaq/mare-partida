@@ -113,3 +113,11 @@ No cenário Nv. 1, +1 equivale a cerca de 19 abates pelo rendimento médio de fr
 - `paper-doll-96-lobby.js`, `game.js`, os renderizadores de skin e Zoan e o registro de recursos desacoplam o carregamento visual da simulação. Os avisos do personagem foram retirados da HUD e da cena. O mapa preserva sua própria preparação.
 - As regressões focadas cobrem as seis raridades, lote, mochila cheia, bloqueios, migração 1:1, sequência anterior, custos e refino. A simulação visual controlada cobre cache, recurso com falha, nova tentativa e A → B → C fora de ordem.
 - Os checks do PR são a referência para execução de Chromium, PostgreSQL e build. Nenhum teste usou saves reais.
+
+## Opção de ajuste por monstro
+
+`ataqueNovo = arredondar(ataqueBase × (1 + bônusAtaque))`
+
+`defesaNova = arredondar(defesaBase × (1 + bônusDefesa))`
+
+Use bônus separados por monstro ou faixa de nível. Um bônus de ataque de 5% leva 200 a 210. Um bônus de defesa de 8% leva 150 a 162. Para um encontro com dano elemental, o mesmo fator pode ser aplicado à defesa mágica se esse for o atributo a calibrar. A implementação da forja usa os atributos atuais dos monstros.
