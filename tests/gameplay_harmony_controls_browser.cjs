@@ -33,12 +33,28 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
  await p.locator('#journeyToggle').click();assert(await p.locator('#floatingExpedition').isVisible());await p.locator('#floatingExpedition [data-close-window]').click();assert(await p.locator('#floatingExpedition').isHidden());
  // Main #312/#315 replaced the rope/expedition textures with the shared glass HUD.
  // Keep checking the actual material rather than accepting any empty border.
- for(const selector of ['#huntXpTracker','#floatingExpedition','.action-panel']){
+ for(const selector of ['#huntXpTracker','#floatingExpedition','.action-panel','#returnLobby']){
   const material=await p.locator(selector).evaluate(e=>{const s=getComputedStyle(e);return{border:s.borderImageSource,background:s.backgroundColor,blur:s.backdropFilter,radius:s.borderRadius,width:s.borderTopWidth};});
   assert.equal(material.border,'none',`${selector}: current glass surface has no legacy texture`);
   assert.equal(material.background,'rgba(20, 22, 25, 0.85)',`${selector}: shared glass background`);
   assert.equal(material.blur,'blur(8px)',`${selector}: shared glass blur`);
   assert.equal(material.radius,'12px');assert.equal(material.width,'1px');
  }
+ const portButton=p.getByRole('button',{name:'Voltar ao porto',exact:true});
+ await p.evaluate(()=>__controlsQA.toggle('chat',false));
+ for(const [width,height] of [[1366,768],[768,1024],[390,844],[320,568],[844,390]]){
+  await p.setViewportSize({width,height});
+  const box=await portButton.boundingBox();
+  assert(box && box.height>=44 && box.width<170,'compact return button with a full touch target at '+width);
+  assert(box.x>=0 && box.y>=0 && box.x+box.width<=width && box.y+box.height<=height,'return button within screen');
+  for(const selector of ['.action-panel','#chatCornerToggle']){
+   const other=await p.locator(selector).boundingBox();
+   if(other)assert(box.x+box.width<=other.x || other.x+other.width<=box.x || box.y+box.height<=other.y || other.y+other.height<=box.y,'return button clears '+selector+' at '+width);
+  }
+ }
+ await portButton.focus();
+ await p.keyboard.press('Enter');
+ await p.locator('body.scene-lobby').waitFor();
+ assert(await portButton.isHidden(),'return control disappears in port');
  assert.deepEqual(errors,[]);console.log('Gameplay controls: exclusive menus, local notes, keyboard typing guards, chat shortcut, rates threshold, real activity state, minimization and shared material passed.');
 }finally{await b.close();}})().catch(e=>{console.error(e);process.exitCode=1});
