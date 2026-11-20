@@ -775,12 +775,21 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   const w117=player.equipment?.weapon;
   if((w117?.def??w117)===117&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.visual_completo&&
-     o.consumer==='world'&&!o.weaponless&&['east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     o.consumer==='world'&&!o.weaponless&&['south','east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
      ['variant','variantId','appearanceVariant'].every(k=>w117?.[k]==null||w117[k]==='original')&&
      a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
-     ['light','ebony'].includes(a.skin)){
+     (o.direction==='south'?['light','ebony'].includes(a.skin):Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))){
    const own117=carryRegistry?.resolve({item:117,joinedArm117Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:117}});
    if(own117?.arm117SavedPalette)return withCarryHead(own117,'carry');
+  }
+  const w15=player.equipment?.weapon;
+  if((w15?.def??w15)===15&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&['east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w15?.[k]==null||w15[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     ['light','ebony'].includes(a.skin)){
+   const own15=carryRegistry?.resolve({item:15,joinedCannon15Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:15}});
+   if(own15?.cannon15SavedPalette)return withCarryHead(own15,'carry');
   }
   const ownRelic=selectSavedRelic32Carry(player,o,a);if(ownRelic)return ownRelic;
   const carried=carryRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head').map(([k,v])=>[k,v?.def??v]))});

@@ -8,8 +8,8 @@ const basePix=(c,w=c.width)=>Buffer.from(c.getContext('2d').getImageData(0,0,w,w
 (async()=>{await api.ready;
  const o={direction:s,action:act,consumer:'world'},actor=save(),r=api.select(actor,o),bytes=JSON.stringify(actor);
  a(r?.arm117SavedPalette);a.equal(r.hdKind,'carry');
- for(const g of [save({classId:'brawler'}),save({equipment:{weapon:{def:117,variant:'test'}}}),save({equipment:{weapon:{def:117},coat:{def:151}}}),save({equipment:{weapon:{def:117},gloves:{def:26}}}),save({equipment:{weapon:{def:117},legs:{def:133}}}),save({equipment:{weapon:{def:117},head:{def:157}}}),save({}, {hairStyle:'hair-bob'}),save({}, {skinColor:'porcelain'}),save({equipment:{weapon:{def:31}}})]) a(!api.select(g,o)?.arm117SavedPalette);
- for(const dir of ['south','north'])a(!api.select(actor,{...o,direction:dir})?.arm117SavedPalette);
+ for(const g of [save({classId:'brawler'}),save({equipment:{weapon:{def:117,variant:'test'}}}),save({equipment:{weapon:{def:117},coat:{def:151}}}),save({equipment:{weapon:{def:117},gloves:{def:26}}}),save({equipment:{weapon:{def:117},legs:{def:133}}}),save({equipment:{weapon:{def:117},head:{def:157}}}),save({}, {hairStyle:'hair-bob'}),save({equipment:{weapon:{def:31}}})]) a(!api.select(g,o)?.arm117SavedPalette);
+ for(const dir of ['north'])a(!api.select(actor,{...o,direction:dir})?.arm117SavedPalette);
  for(const opt of [{action:'attack-unarmed'},{consumer:'portrait'},{weaponless:true}])a(!api.select(actor,{...o,...opt})?.arm117SavedPalette);
  const q=r.plan.parts[0],vanilla={...r,id:r.id+':control',plan:{...r.plan,parts:[{...q,joined117Sources:null}]}};
  const bare=save({equipment:{}}),plain=api.select(bare,o);a.deepEqual(plain.pack,r.pack);
