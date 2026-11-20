@@ -80,10 +80,11 @@ function create(catalog,accepted,normalizedGloves,colors){
    baseRecord:{...origin.baseRecord,pack,sourceRefs:[...new Set([...origin.baseRecord.sourceRefs,...refs])]},
    checkpointSources:refs};
  }
- // North B9 may omit the coat without substituting the lower pose.
+ // Verified sword poses may omit the coat without substituting the lower pose.
  function resolveBootOnly(origin,bare,direction,visible,reference){
   const item=visible.weapon?.item;
-  if(direction!=='north'||![0,1,67,68,70].includes(item)||visible.boots?.item!==9||
+  const north=direction==='north';
+  if(!['north','south'].includes(direction)||![0,1,67,68,70].includes(item)||visible.boots?.item!==9||
      Object.keys(visible).length!==2||!origin||!bare||bare.item!==item||bare.body!=='female'||
      bare.action!=='attack-sword'||bare.direction!==direction||bare.outfitSourceId||bare.checkpointSources)return null;
   const expected=item===0?bare:reference;
@@ -91,27 +92,27 @@ function create(catalog,accepted,normalizedGloves,colors){
   const authority=item===0?undefined:{reference:expected,donor:bare};
   const checked=resolve(origin,direction,{...visible,torso:{item:151,key:'coat'}},authority);
   if(!checked)return null;
-  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),x=bare.pack.directions.north,y=origin.pack.directions.north;
+  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),x=bare.pack.directions[direction],y=origin.pack.directions[direction];
   const shared=({id,item,states,sourcePixelPolicy,paddingPhysical,...r})=>r;
   if(item!==0&&(!eq(checked.states,bare.states)||!eq(shared(bare),shared(expected))||
      checked.paddingPhysical!==bare.paddingPhysical))return null;
-  const joints=(a,b)=>Object.entries(a).every(([k,v])=>eq(v,b[k]))&&Object.keys(b).every(k=>Object.hasOwn(a,k)||/^cloth[23][AB]$/.test(k));
-  const coats=y.layers.filter(l=>l.id.startsWith('coat151-whole-'));
+  const joints=(a,b)=>Object.entries(a).every(([k,v])=>eq(v,b[k]))&&Object.keys(b).every(k=>Object.hasOwn(a,k)||(north?/^cloth[23][AB]$/:/^cloth[36][AB]$/).test(k));
+  const coats=y.layers.filter(l=>l.id.startsWith(north?'coat151-whole-':'coat151-'));
   const owned=[...new Set(coats.flatMap(l=>l.frames||[l.source]))];
   if(!eq(owned,origin.outfitSources)||!eq(owned,Object.keys(origin.sourceRasterPadding||{})))return null;
   const nonCoat=y.layers.filter(l=>!coats.includes(l));
-  const pieces=checked.pack.directions.north.layers.filter(l=>!y.layers.includes(l));
+  const pieces=checked.pack.directions[direction].layers.filter(l=>!y.layers.includes(l));
   const shape=({id,baseRecord,pack,outfitSourceId,outfitSources,sourceRasterPadding,...r})=>r;
   if(!eq(shape(expected),shape(origin))||!['frame','pivot','density'].every(k=>eq(bare.pack[k],origin.pack[k]))||
      !eq(x.clip,y.clip)||!joints(x.rest,y.rest)||x.poses.length!==y.poses.length||
-     x.poses.some((pose,i)=>!joints(pose,y.poses[i]))||!eq(x.layers,nonCoat)||coats.length!==4||
-     coats.some(l=>l.depth!==100)||pieces.length!==4||
+     x.poses.some((pose,i)=>!joints(pose,y.poses[i]))||!eq(x.layers,nonCoat)||coats.length!==(north?4:7)||
+     coats.some(l=>l.depth!==100&&(north||l.depth!==-1))||pieces.length!==4||
      !['left-rear','left-front','right-rear','right-front'].every(id=>pieces.some(l=>l.id==='boot9-'+id&&
-       l.depth===(id.endsWith('-rear')?-1:4.1)&&l.binding?.kind==='fixed'&&l.frames?.length===8))||
+       l.depth===(id.endsWith('-rear')?-1:north?4.1:45)&&l.binding?.kind==='fixed'&&l.frames?.length===8))||
      !eq(bare.baseRecord.pack,bare.pack))return null;
-  const pack={...bare.pack,directions:{...bare.pack.directions,north:{...x,layers:[...x.layers,...pieces]}}};
+  const pack={...bare.pack,directions:{...bare.pack.directions,[direction]:{...x,layers:[...x.layers,...pieces]}}};
   const refs=checked.checkpointSources;
-  return {...bare,id:bare.id+':checkpoint-b9-north-no-coat',pack,
+  return {...bare,id:bare.id+':checkpoint-b9-'+direction+'-no-coat',pack,
    baseRecord:{...bare.baseRecord,pack,sourceRefs:[...new Set([...bare.baseRecord.sourceRefs,...refs])]},
    checkpointSources:refs,slotRoutes:{[visible.weapon.key]:{item,quality:'hd',source:bare.id},
     [visible.boots.key]:{item:9,quality:'hd',source:checked.id}},layeredSlots:true,omitted:[]};
