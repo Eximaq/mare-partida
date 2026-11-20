@@ -86,7 +86,7 @@ function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
  function resolveBootOnly(origin,bare,direction,visible,reference){
   const item=visible.weapon?.item,boot=visible.boots?.item;
   const north=direction==='north',side=['east','west'].includes(direction);
-  if(!(boot===9&&(side?item===0:['north','south'].includes(direction)&&[0,1,67,68,70].includes(item))||boot===148&&(north&&[0,1,67,68,69,70].includes(item)||direction==='south'&&[0,1,67,68,70].includes(item)||side&&item===0)||boot===183&&['north','south'].includes(direction)&&[0,1,67].includes(item))||
+  if(!(boot===9&&(side?item===0:['north','south'].includes(direction)&&[0,1,67,68,70].includes(item))||boot===148&&(north&&[0,1,67,68,69,70].includes(item)||direction==='south'&&[0,1,67,68,70].includes(item)||side&&item===0)||boot===183&&(north&&[0,1,67,68,70].includes(item)||direction==='south'&&[0,1,67].includes(item)))||
      Object.keys(visible).length!==2||!origin||!bare||bare.item!==item||bare.body!=='female'||
      bare.action!=='attack-sword'||bare.direction!==direction||bare.outfitSourceId||bare.checkpointSources)return null;
   const expected=item===0?bare:reference;
