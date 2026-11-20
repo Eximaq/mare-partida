@@ -22,11 +22,12 @@ const clothes=o=>o?.hdKind==='carry'&&o.item===32;
    player(tone,{weapon:{def:32},head:{def:19}}),player(tone,undefined,{hairStyle:'hair-bob'}),
    player(tone,undefined,{hairColor:'blonde'}),player(tone,undefined,{eyeStyle:'face-calm'}),player(tone,undefined,{eyeColor:'amber'}),
   ])a(!clothes(api.selectVisual(q,opt)));
-  for(const opts of [{direction:'south'},{direction:'east'},{direction:'west'},{consumer:'portrait'},{weaponless:true}])a(!clothes(api.selectVisual(player(tone),{...opt,...opts})));
+  for(const direction of ['south','east','west'])a(clothes(api.selectVisual(player(tone),{...opt,direction})),'owned side now supported '+direction);
+  for(const opts of [{action:'attack-focus'},{consumer:'portrait'},{weaponless:true}])a(!clothes(api.selectVisual(player(tone),{...opt,...opts})));
  }
  console.log('8 x 2 real saved routes W32 North, no iris pixels in this direction; negative coverage stays stock');
  if(process.env.SELECT_ONLY)return;
- const sk=process.env.SKIN,action=process.env.ACTION||'walk',opt={...o,action},p0=player(sk),p1=player(sk,{}),r=api.selectVisual(p0,opt),d=r.base.pack.directions.north,n=d.clip.frames;
+ const sk=process.env.SKIN||'light',action=process.env.ACTION||'walk',opt={...o,action},p0=player(sk),p1=player(sk,{}),r=api.selectVisual(p0,opt),d=r.base.pack.directions.north,n=d.clip.frames;
  const gear=await load('tools/rework-weapon-layers-hd/'+piece.source.url),noGear={...r,id:r.id+':no-pure-w32-for-test',plan:{...r.plan,parts:[]}};
  const off=await api.prepareConfiguration([{player:p0,source:noGear,options:opt}],{resolve:v=>v});
  const both=await api.prepareConfiguration([{player:p0,source:r,options:opt}],{resolve:v=>v});
