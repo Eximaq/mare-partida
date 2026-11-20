@@ -117,6 +117,7 @@
         [manifest,catalog,rigs,weaponCatalog]=await Promise.all(['manifest.json','appearance-catalog.json','appearance-rig.json','weapons.json'].map(json));
         validateRelease(release,manifest,catalog,rigs,weaponCatalog);
         for(const name of ['rig','layers','motion','surface','torso','appearance','weapons','wardrobe'])await script(name+'.js');
+        await nativeHD?.warmSwordCheckpoint?.();
         root.MareLayers96.validate(manifest);
         if(catalog.productionEnabled!==false||catalog.canonicalMirror?.allLayers!==true)throw Error('Contrato de revisão incompatível.');
         for(const body of ['masculino','feminino'])for(const action of actions)for(const dir of ['south','north','east','west']){
@@ -334,7 +335,7 @@
           await Promise.all([ready,nativeHD.ready]);
           signal.throwIfAborted();
           const native=[],modular=[];
-          for(const pose of poses)(nativeHD.select(pose.player,pose.options)?native:modular).push(pose);
+          for(const pose of poses)(nativeHD.selectVisual(pose.player,pose.options)?native:modular).push(pose);
           if(modular.length)request.coverage=modular.map(({options})=>({action:options.action,direction:options.direction,weaponless:!!options.weaponless,source:null}));
           let hd,layered;
           try{

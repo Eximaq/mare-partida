@@ -6,14 +6,36 @@ const identityKey=p=>JSON.stringify([p.appearance96||{},p.equipment||{},!!p.zoan
 const WORLD_SCALE=105/374;
 const canonical=b=>['female','feminino'].includes(b)?'female':'male';
 function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async path=>{const r=await fetch(new URL(path,baseURL));if(!r.ok)throw Error('HD index HTTP '+r.status);return r.json();},loadImage=null,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
- let baseIndex,outfitIndex,swordSouth,registry,femaleNamedHairRegistry,femaleRegistry,weaponRegistry,headRegistry,headCompat,originalHairGearRegistry,assetStore,outfitRegistry,outfitStore,carryRegistry,combinedCarryRegistry,weaponStore,state='loading',last=null,error=null;const cache=new Map(),pending=new Map(),failures=new Map(),lastRendered=new Map();
+ let swordCheckpoint,baseIndex,outfitIndex,swordSouth,registry,femaleNamedHairRegistry,femaleRegistry,weaponRegistry,headRegistry,headCompat,originalHairGearRegistry,assetStore,outfitRegistry,outfitStore,carryRegistry,combinedCarryRegistry,weaponStore,state='loading',last=null,error=null;const cache=new Map(),pending=new Map(),failures=new Map(),lastRendered=new Map();
  const imageLoader=loadImage||(async path=>{if(path.startsWith('tools/rework-base-hd/assets/'))return assetStore.load(path);if(path.startsWith('tools/rework-modular-outfits-hd/assets/'))return outfitStore.load(path);if(path.startsWith('tools/rework-weapon-layers-hd/assets/'))return weaponStore.load(path);const im=new Image();im.src=new URL(path,baseURL);await im.decode();return im;});
  const imageRequests=new Map();
  function loadShared(path){
   if(!imageRequests.has(path))imageRequests.set(path,Promise.resolve().then(()=>imageLoader(path)).finally(()=>imageRequests.delete(path)));
   return imageRequests.get(path);
  }
- const ready=Promise.all([fetchJSON('tools/rework-base-hd/index.json'),fetchJSON('tools/rework-weapon-layers-hd/index.json'),fetchJSON('tools/rework-accessories/head-layer-index.json'),fetchJSON('tools/rework-base-hd/archives/archive-index.json'),fetchJSON('tools/rework-modular-outfits-hd/index.json'),fetchJSON('tools/rework-modular-outfits-hd/archives/archive-index.json'),fetchJSON('tools/rework-weapon-layers-hd/carry-binding-plan.json'),fetchJSON('tools/rework-weapon-layers-hd/archives/archive-index.json'),fetchJSON('tools/rework-accessories/female-original-face-ownership.json')]).then(([index,weapons,heads,archives,outfits,outfitArchives,carry,weaponArchives,femaleOwnership])=>{baseIndex=index;outfitIndex=outfits;swordSouth=weapons.modularSwordSouth;registry=root.MareReworkBaseHD.create(index);femaleNamedHairRegistry=root.MareFemaleNamedHairHD?.create(heads,femaleOwnership,{baseRegistry:registry,makeCanvas});femaleRegistry=root.MareReworkFemaleEquipmentHD?.create({schema:'female-native-equipment-registration-v1',records:weapons.femaleRegistrations||[]},{outfits,appearanceRegistry:femaleNamedHairRegistry});assetStore=root.MareReworkHDAssets?.create(archives,{baseURL});weaponRegistry=root.MareReworkWeaponNativeHD?.create(weapons,{makeCanvas});headRegistry=root.MareReworkHead?.create(heads,{appearanceAPI:{recolor:(...a)=>root.MareAppearance96.recolor(...a),materialMask:(...a)=>root.MareAppearance96.materialMask(...a)},makeCanvas});headCompat=root.MareNativeHeadCompat?.create({makeCanvas});originalHairGearRegistry=root.MareOriginalHairHelmetsHD?.create(heads,{compat:headCompat,makeCanvas});outfitRegistry=root.MareReworkModularOutfitsHD?.create(outfits,{allowCandidates:true});carryRegistry=root.MareReworkWeaponCarryHD?.create(index,carry,{makeCanvas});combinedCarryRegistry=root.MareReworkOutfitCarryOverlayHD?.create(carryRegistry,outfits);weaponStore=root.MareReworkHDAssets?.create(weaponArchives,{baseURL,prefix:'tools/rework-weapon-layers-hd/archives/'});outfitStore=root.MareReworkHDAssets?.create(outfitArchives,{baseURL,prefix:'tools/rework-modular-outfits-hd/archives/'});state='ready';onChange();}).catch(e=>{state='failed';error=e.message;onChange();});
+ // Load the optional extension in parallel with the native indexes. A missing
+ // or invalid archive must never block the older exact or modular routes.
+ const swordCatalog=root.MareSword0Checkpoint
+  ?Promise.resolve().then(()=>fetchJSON('tools/rework-sword0-checkpoint/sword-catalog.json')).catch(()=>null)
+  :Promise.resolve(null);
+ const indexesReady=Promise.all([fetchJSON('tools/rework-base-hd/index.json'),fetchJSON('tools/rework-weapon-layers-hd/index.json'),fetchJSON('tools/rework-accessories/head-layer-index.json'),fetchJSON('tools/rework-base-hd/archives/archive-index.json'),fetchJSON('tools/rework-modular-outfits-hd/index.json'),fetchJSON('tools/rework-modular-outfits-hd/archives/archive-index.json'),fetchJSON('tools/rework-weapon-layers-hd/carry-binding-plan.json'),fetchJSON('tools/rework-weapon-layers-hd/archives/archive-index.json'),fetchJSON('tools/rework-accessories/female-original-face-ownership.json')]).then(([index,weapons,heads,archives,outfits,outfitArchives,carry,weaponArchives,femaleOwnership])=>{baseIndex=index;outfitIndex=outfits;swordSouth=weapons.modularSwordSouth;registry=root.MareReworkBaseHD.create(index);femaleNamedHairRegistry=root.MareFemaleNamedHairHD?.create(heads,femaleOwnership,{baseRegistry:registry,makeCanvas});femaleRegistry=root.MareReworkFemaleEquipmentHD?.create({schema:'female-native-equipment-registration-v1',records:weapons.femaleRegistrations||[]},{outfits,appearanceRegistry:femaleNamedHairRegistry});assetStore=root.MareReworkHDAssets?.create(archives,{baseURL});weaponRegistry=root.MareReworkWeaponNativeHD?.create(weapons,{makeCanvas});headRegistry=root.MareReworkHead?.create(heads,{appearanceAPI:{recolor:(...a)=>root.MareAppearance96.recolor(...a),materialMask:(...a)=>root.MareAppearance96.materialMask(...a)},makeCanvas});headCompat=root.MareNativeHeadCompat?.create({makeCanvas});originalHairGearRegistry=root.MareOriginalHairHelmetsHD?.create(heads,{compat:headCompat,makeCanvas});outfitRegistry=root.MareReworkModularOutfitsHD?.create(outfits,{allowCandidates:true});carryRegistry=root.MareReworkWeaponCarryHD?.create(index,carry,{makeCanvas});combinedCarryRegistry=root.MareReworkOutfitCarryOverlayHD?.create(carryRegistry,outfits);weaponStore=root.MareReworkHDAssets?.create(weaponArchives,{baseURL,prefix:'tools/rework-weapon-layers-hd/archives/'});outfitStore=root.MareReworkHDAssets?.create(outfitArchives,{baseURL,prefix:'tools/rework-modular-outfits-hd/archives/'});});
+ let swordRegistration;
+ function warmSwordCheckpoint(){
+  if(!registry||!root.MareSword0Checkpoint||!root.MareAppearance96||!root.MareCharacterAppearance)return Promise.resolve(false);
+  if(!swordRegistration)swordRegistration=(async()=>{
+   try{
+    const catalog=await swordCatalog;
+    if(!catalog)return false;
+    const control={appearance96:catalog.appearance96,equipment:{weapon:{def:0},coat:{def:151}}};
+    const controls=player=>Object.fromEntries(['north','south','east','west'].map(direction=>[direction,select(player,{action:'attack-sword',direction})]));
+    const trusted=controls(control),standard=root.MareCharacterAppearance.normalize(control.appearance96);
+    swordCheckpoint=await root.MareSword0Checkpoint.verify(catalog,trusted,{saved:controls({...control,appearance96:standard})});
+    return !!swordCheckpoint;
+   }catch(_){return false;}
+  })();
+  return swordRegistration;
+ }
+ const ready=indexesReady.then(warmSwordCheckpoint).then(()=>{state='ready';onChange();}).catch(e=>{state='failed';error=e.message;onChange();});
  function select(player,o){
   const raw=player?.appearance96||{},style=raw.eyeStyle??raw.face;
   const eyes=root.MareReworkEyeStylesHD;
@@ -124,9 +146,33 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(needHead&&((!head&&!gearOnly&&!femaleNamed)||(!femaleNamed&&!headCompat)))return null;
   return {...r,id:r.id+':'+hair+':'+(headItem??'none')+':'+(a.skin||'original')+':'+(a.hairColor||'original')+(femaleNamed?.eyeColor?':eye-palette:'+femaleNamed.eyeColor:'')+(femaleNamed?.eyeStyle?':'+femaleNamed.eyeStyle:''),eyeStyle:femaleNamed?.eyeStyle,sourceId:r.id,colorAppearance:a,headRecord:head,gearOnlyRecord:gearOnly,femaleNamedHairRecord:femaleNamed,headLook};
  }
+ function selectVisual(player,o={}){
+  const exact=select(player,o);
+  if(exact||!swordCheckpoint||!player||player.zoanTransformed||player.__reworkSubset||o.weaponless||
+      !['attack-sword','attack','skill'].includes(o.action))return exact;
+  const visible={};
+  for(const [key,value] of Object.entries(player.equipment||{})){
+   if(value==null||['none','original'].includes(value)||['ring','necklace','belt','charm','akuma_no_mi'].includes(key))continue;
+   if(key==='head'&&root.MareHeadgear?.hidden(player))continue;
+   const slot=({coat:'torso',legs:'pants'})[key]||key;
+   const item=value?.def??value;
+   if(!['weapon','torso','pants','boots','gloves'].includes(slot)||Object.hasOwn(visible,slot)||!Number.isSafeInteger(item)||item<0||
+      typeof value==='object'&&['variant','variantId','appearanceVariant'].some(k=>value[k]!=null&&value[k]!=='original'))return null;
+   visible[slot]={key,value,item};
+  }
+  if(![0,1,67,68,69,70].includes(visible?.weapon?.item)||visible.torso?.item!==151||Object.keys(visible).some(k=>!['weapon','torso','pants','boots','gloves'].includes(k)))return null;
+  const item=visible.weapon.item,options={...o,action:'attack-sword'};
+  const anchor={...player,equipment:{weapon:item===0?visible.weapon.value:{def:0},coat:visible.torso.value}};
+  const bare={...player,equipment:{weapon:visible.weapon.value}};
+  if(o.action!=='attack-sword'&&select(item===0?anchor:bare,o)?.resolvedAction!=='attack-sword')return null;
+  const base=select(anchor,options);
+  const authority=item===0?undefined:{reference:select({...player,equipment:{weapon:{def:0}}},options),donor:select(bare,options)};
+  const registered=swordCheckpoint.resolve(base,o.direction,visible,authority);
+  return registered&&o.action!=='attack-sword'?{...registered,resolvedAction:'attack-sword'}:registered;
+ }
  function frameFor(r,o){const timeline=r.hdKind==='weapon'?r.timeline:null,clip=r.hdKind==='weapon'?{frames:timeline.length,fps:r.fps,loop:false}:r.pack.directions[r.direction].clip;const tick=Number.isFinite(o.progress)?Math.floor(Math.max(0,Math.min(1,o.progress))*clip.frames):Math.floor(Math.max(0,o.time||0)*clip.fps),position=clip.loop?tick%clip.frames:Math.min(clip.frames-1,tick);return timeline?r.states.findIndex(s=>s.state===String(timeline[position])):position;}
  function filesFor(r,frame){return [...new Set([...(r.hdKind==='female-equipment'?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).requiredFiles(r,{frame}),...(r.headRecord?headRegistry.requiredFiles(r.headRecord):[]),...(r.gearOnlyRecord?originalHairGearRegistry.requiredFiles(r.gearOnlyRecord):[]),...(r.femaleNamedHairRecord?femaleNamedHairRegistry.requiredFiles(r.femaleNamedHairRecord):[])])];}
- async function prepare(player,o,clipFileLimit=0){await ready;const r=select(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
+ async function prepare(player,o,clipFileLimit=0){await ready;const r=selectVisual(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
   const job=(async()=>{try{entry=entry||{images:new Map(),proofs:[],frames:new Map(),imageLimit:Math.max(64,clipFileLimit)};await Promise.all(files.map(async p=>{if(!entry.images.has(p))entry.images.set(p,await loadShared(p));}));
   if(r.femaleNamedHairRecord)femaleNamedHairRegistry.compose(r,r.femaleNamedHairRecord,entry.images);
   if(r.headRecord||r.gearOnlyRecord){const proof=headCompat.validate({basePack:r.pack,baseMirrorX:!!r.mirrorX||!!r.mirrorLayerIDs?.includes(r.pack.directions[r.direction].layers.find(l=>l.slot==='headBase')?.id),baseBody:r.body,baseDirection:r.direction,baseFrame:frame,baseImages:new Map([...entry.images].flatMap(([path,image])=>[[path,image],[path.split('/').pop().replace('.png',''),image]])),headRecord:r.headRecord||r.gearOnlyRecord.sourceRecord,headImages:entry.images,replaceFace:false});if(!proof.compatible)throw Error('Head identity: '+proof.reason);entry.proofs[frame]=proof;}
@@ -134,7 +180,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   cache.set(sourceKey,entry);while(cache.size>4)cache.delete(cache.keys().next().value);onChange();return true;}catch(e){failures.set(key,e.message);error=e.message;onChange();return false;}finally{pending.delete(key);}})();pending.set(key,job);return job;
  }
  // Explicit preload for callers that advance simulation without the animation loop.
- async function prepareClip(player,o={}){await ready;const r=select(player,o);if(!r)return false;const count=r.hdKind==='weapon'?r.timeline.length:r.pack.directions[r.direction].clip.frames;const retainedFiles=new Set();for(let frame=0;frame<count;frame++)for(const file of filesFor(r,frameFor(r,{...o,progress:frame/count})))retainedFiles.add(file);for(let frame=0;frame<count;frame++)if(!await prepare(player,{...o,progress:frame/count},retainedFiles.size))return false;return true;}
+ async function prepareClip(player,o={}){await ready;const r=selectVisual(player,o);if(!r)return false;const count=r.hdKind==='weapon'?r.timeline.length:r.pack.directions[r.direction].clip.frames;const retainedFiles=new Set();for(let frame=0;frame<count;frame++)for(const file of filesFor(r,frameFor(r,{...o,progress:frame/count})))retainedFiles.add(file);for(let frame=0;frame<count;frame++)if(!await prepare(player,{...o,progress:frame/count},retainedFiles.size))return false;return true;}
  function composeFrame(r,frame,entry){
   const canvas=makeCanvas(r.hdKind==='weapon'?r.nativeCanvas[0]:r.pack.frame.width*r.pack.density,r.hdKind==='weapon'?r.nativeCanvas[1]:r.pack.frame.height*r.pack.density);const info=(r.femaleNamedHairRecord?{render:(cx,base,imgs,opts)=>base.hdKind==='outfit'?outfitRegistry.renderWithHead(cx,base,imgs,femaleNamedHairRegistry.compose(base,base.femaleNamedHairRecord,imgs),opts):femaleNamedHairRegistry.render(cx,base,base.femaleNamedHairRecord,imgs,opts)}:r.hdKind==='female-equipment'?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).render(canvas.getContext('2d'),r,entry.images,{frame,appearance:r.colorAppearance,makeCanvas,hiddenSlots:r.headRecord||r.gearOnlyRecord?.hideHair?['hair']:[]});
   if(r.headRecord){const pixels=headRegistry.composeNative(r.headRecord,entry.images,{width:r.pack.frame.width,height:r.pack.frame.height,targetNeck:entry.proofs[frame].targetNeck,look:r.headLook,hairRamp:root.MareAppearance96?.hairs[r.colorAppearance.hairColor]?.ramp});for(const slot of ['hair','head']){const tile=makeCanvas(info.width,info.height),cx=tile.getContext('2d'),data=cx.createImageData(info.width,info.height);data.data.set(pixels[slot]);cx.putImageData(data,0,0);canvas.getContext('2d').drawImage(tile,0,0);}}
@@ -146,7 +192,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  // A committed bundle owns rendered frame surfaces, outside the opportunistic
  // preview cache. Share decoded sources across all poses of one preparation.
- async function prepareConfiguration(poses,{signal,resolve=({player,options})=>({player,options,source:select(player,options)})}={}){
+ async function prepareConfiguration(poses,{signal,resolve=({player,options})=>({player,options,source:selectVisual(player,options)})}={}){
   await ready;
   if(state!=='ready')throw Error(error||'Índices HD indisponíveis');
   const sources=new Map(),routes=new Map(),decoded=new Map(),coverage=[];
@@ -186,7 +232,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      }
     }
     routes.set(slot,{r,key,options});
-    coverage.push({action:pose.options.action,direction:pose.options.direction,weaponless:!!pose.options.weaponless,source:r.id,frames:sources.get(key).size,omitted:resolved.omitted||[],unsupported:resolved.unsupported||[]});
+    coverage.push({action:pose.options.action,direction:pose.options.direction,weaponless:!!pose.options.weaponless,source:r.id,frames:sources.get(key).size,omitted:resolved.omitted||r.omitted||[],unsupported:resolved.unsupported||[],...(r.slotRoutes?{slotRoutes:r.slotRoutes}:{})});
    }
   }catch(e){for(const frames of sources.values())for(const {canvas} of frames.values()){canvas.width=0;canvas.height=0;}throw e;}
   return {coverage,
@@ -202,7 +248,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   };
  }
  function draw(ctx,player,o={}){
-  const r=select(player,o);if(!r){last={state:state==='ready'?'uncovered':'loading',action:o.action,direction:o.direction,reason:'No exact whole-source identity; existing renderer retained, not mixed with rework.'};return false;}
+  const r=selectVisual(player,o);if(!r){last={state:state==='ready'?'uncovered':'loading',action:o.action,direction:o.direction,reason:'No exact whole-source identity; existing renderer retained, not mixed with rework.'};return false;}
   const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),entry=cache.get(sourceKey);if(!entry||!entry.frames.has(frame)&&!filesFor(r,frame).every(p=>entry.images.has(p))){void prepare(player,o);last={state:failures.has(sourceKey+':'+frame)?'failed':'loading',source:r.id};return false;}
   cache.delete(sourceKey);cache.set(sourceKey,entry);
   let result=entry.frames.get(frame);if(!result){try{result=composeFrame(r,frame,entry);entry.frames.set(frame,result);while(entry.frames.size>3)entry.frames.delete(entry.frames.keys().next().value);}catch(e){failures.set(sourceKey+':'+frame,e.message);error=e.message;last={state:'failed',source:r.id,reason:e.message};onChange();return false;}}
@@ -231,11 +277,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  async function prepareForPlayer(player,o={}){if(!o.consumer||o.consumer==='world'){const key=identityKey(player)+'|'+!!root.MareAppearance96+'|'+!!root.MareCharacterAppearance;if(!preparedDirections.has(key)){const task=(async()=>{for(const direction of ['south','east','west','north'])await prepareStablePose(player,{action:'idle',direction,consumer:'world'});})();preparedDirections.set(key,task);while(preparedDirections.size>8)preparedDirections.delete(preparedDirections.keys().next().value);}await preparedDirections.get(key);}return prepare(player,o);}
  // Prepare the exact directional rest pose without claiming it was drawn in the world.
  async function prepareStablePose(player,o={}){if(!await prepare(player,o))return false;const key=identityKey(player)+'|'+(o.consumer||'world'),previous=last,held=lastRendered.get(key);try{return draw(makeCanvas(1,1).getContext('2d'),player,{...o,x:0,y:0,preview:false});}finally{last=previous;if(held)lastRendered.set(key,held);else lastRendered.delete(key);}}
- function canDrawStable(player,o={}){if(!select(player,o)||failureFor(player,o))return false;const prepared=pose=>{const r=select(player,pose);if(!r||failureFor(player,pose))return false;const frame=frameFor(r,pose),entry=cache.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}));return !!entry&&(entry.frames.has(frame)||filesFor(r,frame).every(p=>entry.images.has(p)));};return prepared(o)||lastRendered.has(identityKey(player)+'|'+(o.consumer||'world')+'|'+o.direction)||o.action!=='idle'&&prepared({...o,action:'idle',time:0,progress:0});}
- function drawStable(ctx,player,o={}){const key=identityKey(player);if(!select(player,o)){last={state:'uncovered',action:o.action,direction:o.direction,reason:'No compatible source for this pose'};return false;}if(draw(ctx,player,o))return true;if(failureFor(player,o))return false;const consumerKey=key+'|'+(o.consumer||'world'),held=lastRendered.get(consumerKey+'|'+o.direction);if(!held&&o.action!=='idle'){const loading=last;if(draw(ctx,player,{...o,action:'idle',time:0,progress:0})){last={...last,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction};return true;}last=loading;}if(held?.key===key){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(held.canvas,(o.x||0)-held.info.pivot.x*WORLD_SCALE,(o.y||0)-held.info.pivot.y*WORLD_SCALE,held.info.width*WORLD_SCALE,held.info.height*WORLD_SCALE);ctx.restore();last={...held.pose,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction,physicalScale:WORLD_SCALE,sourceScale:1};return true;}return false;}
+ function canDrawStable(player,o={}){if(!selectVisual(player,o)||failureFor(player,o))return false;const prepared=pose=>{const r=selectVisual(player,pose);if(!r||failureFor(player,pose))return false;const frame=frameFor(r,pose),entry=cache.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}));return !!entry&&(entry.frames.has(frame)||filesFor(r,frame).every(p=>entry.images.has(p)));};return prepared(o)||lastRendered.has(identityKey(player)+'|'+(o.consumer||'world')+'|'+o.direction)||o.action!=='idle'&&prepared({...o,action:'idle',time:0,progress:0});}
+ function drawStable(ctx,player,o={}){const key=identityKey(player);if(!selectVisual(player,o)){last={state:'uncovered',action:o.action,direction:o.direction,reason:'No compatible source for this pose'};return false;}if(draw(ctx,player,o))return true;if(failureFor(player,o))return false;const consumerKey=key+'|'+(o.consumer||'world'),held=lastRendered.get(consumerKey+'|'+o.direction);if(!held&&o.action!=='idle'){const loading=last;if(draw(ctx,player,{...o,action:'idle',time:0,progress:0})){last={...last,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction};return true;}last=loading;}if(held?.key===key){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(held.canvas,(o.x||0)-held.info.pivot.x*WORLD_SCALE,(o.y||0)-held.info.pivot.y*WORLD_SCALE,held.info.width*WORLD_SCALE,held.info.height*WORLD_SCALE);ctx.restore();last={...held.pose,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction,physicalScale:WORLD_SCALE,sourceScale:1};return true;}return false;}
  const height=player=>{const held=lastRendered.get(identityKey(player)+'|world');return held?.key===identityKey(player)?held.info.visualHeight*WORLD_SCALE:null;};
- function failureFor(player,o={}){const r=select(player,o);return r?failures.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{})+':'+frameFor(r,o)):null;}
- return {ready,prepare:prepareForPlayer,prepareClip,prepareConfiguration,prepareStablePose,prepareFamily,draw,drawStable,canDrawStable,height,select,failureFor,snapshot:()=>({state,error,last,cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
+ function failureFor(player,o={}){const r=selectVisual(player,o);return r?failures.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{})+':'+frameFor(r,o)):null;}
+ return {ready,warmSwordCheckpoint,prepare:prepareForPlayer,prepareClip,prepareConfiguration,prepareStablePose,prepareFamily,draw,drawStable,canDrawStable,height,select,selectVisual,failureFor,snapshot:()=>({state,error,last,cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
 }
 const api={create};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
