@@ -18,7 +18,9 @@ async function read(h){const c=cv.createCanvas(640,640);c.getContext('2d').drawI
   a.equal(r.fps,12);a.equal(r.contactTick,4);a.equal(r.timeline.length,8);
   const baseFiles=W.requiredFiles(baseline),actual=W.requiredFiles(r);a.deepEqual(actual.filter(f=>!baseFiles.includes(f)),[path+reg.source+'.png',path+reg.mask+'.png']);
   for(const bad of [makeSave(def,hair,eye,{skinColor:'ebony'}),makeSave(def,hair,eye,{hairStyle:'hair-bob'}),makeSave(def,hair,eye,{eyeStyle:'face-focused'}),{...actor,classId:'fighter'},{...actor,equipment:{weapon:{def,variant:'other'}}},{...actor,equipment:{...actor.equipment,coat:{def:151}}},makeSave(12,hair,eye)])a(!go(bad)?.orderedDaggerHair);
-  a(!api.selectVisual(actor,{...o,direction:'north'})?.orderedDaggerHair);a(!api.selectVisual(actor,{...o,direction:'south'})?.orderedDaggerHair);a(!api.selectVisual(actor,{...o,action:'idle'})?.orderedDaggerHair);
+  a(!api.selectVisual(actor,{...o,direction:'north'})?.orderedDaggerHair);const southRoute=api.selectVisual(actor,{...o,direction:'south'});
+  if(def===13){a(southRoute?.approvedDagger13South);a.equal(southRoute.orderedDaggerHair,hair);a(!southRoute.orderedDaggerIris);}
+  else a(!southRoute?.orderedDaggerHair);a(!api.selectVisual(actor,{...o,action:'idle'})?.orderedDaggerHair);
   a.equal(JSON.stringify(actor),copy);selects++;
  }
  const rows=[['brown','brown'],['silver','brown'],['pink','amber']].map(([hair,eye])=>{const player=makeSave(def,hair,eye);return {hair,eye,player,source:go(player)};});

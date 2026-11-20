@@ -98,6 +98,7 @@ const mosquete4V3={
 };
 const exactSouthIdle=new Map([[4,mosquete4V3],[115,rifle115V5]]);
 const daggerHairAuthority={
+ south:{x:0,y:0,count:4090,source:'4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7',mask:'dbe167d2e9103349e34109ea3ca90dfd0683b2bde79e322883c69c027c3a76f5'},
  east:{x:-8,y:4,source:'45de7576039c538aee29ff5a5d0def51143e8cbf90a33cdead504d88fd2ea713',mask:'fc4d94176143c1a1bace649e35262ec9f5e5b5aae0e7e932d2eeb1f882c5359a'},
  west:{x:8,y:4,source:'a1359e16013832c487942d028404f7a5c59f4afd4a7e96eb480aa1a1d34db07e',mask:'fccea53415dc2acf040461dcc81b112d6275bf0dddf888b4f9d947ad552324c1'}
 };
@@ -133,10 +134,10 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
     ;
   const sideIris=sidePalette&&appearance.eyeColor!=='brown'&&Object.hasOwn(root.MareCharacterAppearance?.eyes||{},appearance.eyeColor)?appearance.eyeColor:null;
   const sideHair=sidePalette&&appearance.hairColor!=='brown'&&Object.hasOwn(root.MareCharacterAppearance?.hairs||{},appearance.hairColor)?appearance.hairColor:null;
-  if(allowExactComposite&&Number(item&&typeof item==='object'?item.def:item)===13&&body(b)==='male'&&['male','masculino'].includes(sourceBody??b)&&classId==='rogue'&&(weaponVariant==null||weaponVariant==='original')&&action==='attack-daggers'&&direction==='south'&&Object.values(equipment).every(v=>v==null||['none','original'].includes(v))&&appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin==='light'&&appearance.hair==='original'&&appearance.face==='original'&&appearance.hairColor==='brown'&&Object.hasOwn(root.MareCharacterAppearance?.eyes||{},appearance.eyeColor)){
+  if(allowExactComposite&&Number(item&&typeof item==='object'?item.def:item)===13&&body(b)==='male'&&['male','masculino'].includes(sourceBody??b)&&classId==='rogue'&&(weaponVariant==null||weaponVariant==='original')&&action==='attack-daggers'&&direction==='south'&&Object.values(equipment).every(v=>v==null||['none','original'].includes(v))&&appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin==='light'&&appearance.hair==='original'&&appearance.face==='original'&&Object.hasOwn(root.MareCharacterAppearance?.hairs||{},appearance.hairColor)&&Object.hasOwn(root.MareCharacterAppearance?.eyes||{},appearance.eyeColor)){
    const signs=['e3845fb31abf88a6130b8db89778aa63b7008e9c383b5528fd616b62be8e2273','3f5fe0b31d13d8755273875a694d01cc48d17b7b7e68c691b3f6c7f54ffb02fc','23757f2aeb7dbb59bc7df2163f4131c050a9556d04982479b00af0bf241c04a4','44b4359fcad2e6441cd19e17b3a38d83e7abc581fca3f1b049740d466137bae5','d1110ffdc199e0d1ffa77c15739ee44c7226de9de28a61ea1a8e86e306499adb','42e48e8a4fc09f9368c55a971087ca42c867a466562f4d6020f3f0e747c5f7f9','b5259767fdbfc2df5daa459f828fc42bcbcac4bf9a8ce8f7426466165fe8f320','6543d7b3bd9e3cd24383ec9a2e9ffac514940298d7f48f13dc273ad0315676c2','29b6f7b9b5973304ffeae30f53532d31748414e809d7e5a3d5c3404fe890624f'];
    const r=index.records.find(x=>x.id==='daggers13-south-native-original-source');
-   if(r?.item===13&&r.body==='male'&&r.direction==='south'&&r.density===4&&r.fps===12&&JSON.stringify(r.nativeCanvas)==='[640,640]'&&JSON.stringify(r.pivot)==='[80,128]'&&r.sourceArchiveSHA256==='301acc694d772a67e3f6311f2db914b87bedc784dddc73ff30fb22c7ea174dce'&&r.replacementMode==='atomic-approved-original-composite'&&r.hairSeparated===false&&r.timeline?.length===9&&r.timeline.every((t,i)=>t===String(i))&&r.states?.length===9&&r.states.every((s,i)=>{const l=s.layers?.[0];return s.state===String(i)&&s.atomic===true&&s.rgbaExact===true&&s.baseSourceModified===false&&s.approved?.sha256===signs[i]&&s.layers?.length===1&&l.sha256===signs[i]&&l.url==='assets/'+signs[i]+'.png'&&l.operation==='source-over'&&l.depth===0&&l.role==='original-approved-body-weapon-composite'&&!l.offset&&!l.mirrorX&&!s.attachment&&!s.bodyPatch&&!s.canvasRoundingPatch;}))return {...r,id:r.id+':owned-south-dagger-iris:'+appearance.eyeColor,approvedDagger13South:true,separableAttack:true,equipmentContract:{weapon:13},colorAppearance:{},...(appearance.eyeColor!=='brown'?{dagger13SouthIris:appearance.eyeColor}:{})};
+   if(r?.item===13&&r.body==='male'&&r.direction==='south'&&r.density===4&&r.fps===12&&JSON.stringify(r.nativeCanvas)==='[640,640]'&&JSON.stringify(r.pivot)==='[80,128]'&&r.sourceArchiveSHA256==='301acc694d772a67e3f6311f2db914b87bedc784dddc73ff30fb22c7ea174dce'&&r.replacementMode==='atomic-approved-original-composite'&&r.hairSeparated===false&&r.timeline?.length===9&&r.timeline.every((t,i)=>t===String(i))&&r.states?.length===9&&r.states.every((s,i)=>{const l=s.layers?.[0];return s.state===String(i)&&s.atomic===true&&s.rgbaExact===true&&s.baseSourceModified===false&&s.approved?.sha256===signs[i]&&s.layers?.length===1&&l.sha256===signs[i]&&l.url==='assets/'+signs[i]+'.png'&&l.operation==='source-over'&&l.depth===0&&l.role==='original-approved-body-weapon-composite'&&!l.offset&&!l.mirrorX&&!s.attachment&&!s.bodyPatch&&!s.canvasRoundingPatch;}))return {...r,id:r.id+':owned-south-dagger-iris:'+appearance.eyeColor+(appearance.hairColor==='brown'?'':':owned-dagger-hair:'+appearance.hairColor),approvedDagger13South:true,separableAttack:true,equipmentContract:{weapon:13},colorAppearance:{},...(appearance.eyeColor!=='brown'?{dagger13SouthIris:appearance.eyeColor}:{}),...(appearance.hairColor!=='brown'?{orderedDaggerHair:appearance.hairColor}:{})};
   }
   if(ordered&&wardrobeOK&&(!ordered.strictSourceIdentity||(classId===ordered.requiredClass&&['male','masculino'].includes(sourceBody??b)&&(weaponVariant==null||weaponVariant==='original')))&&['hair','hairColor','face','eyeColor','skin'].every(k=>typeof ordered.approvedAppearance?.[k]==='string'&&(appearance[k]===ordered.approvedAppearance[k]||(k==='eyeColor'&&sideIris)||(k==='hairColor'&&sideHair)))){
    const states=ordered.states,timeline=ordered.timeline;
@@ -294,14 +295,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   }
   if(headOverlay)ctx.drawImage(headOverlay,...(r.headOverlayOffset??[0,0]));
   if(!hiddenSlots.length&&!recolored&&s.canvasRoundingPatch?.length){const out=ctx.getImageData(0,0,w,h);for(const [pixel,red,green,blue,alpha] of s.canvasRoundingPatch){const i=pixel*4;out.data[i]=red;out.data[i+1]=green;out.data[i+2]=blue;out.data[i+3]=alpha;}ctx.putImageData(out,0,0);}
-  if(r.dagger13SouthIris){
-   const points=root.MareReworkModularOutfitsHD?.southIrisSamples?.(),ramp=root.MareCharacterAppearance?.eyes?.[r.dagger13SouthIris]?.ramp;
-   if(w!==640||h!==640||recolored||hiddenSlots.length||renderOffset.some(Boolean)||!points||points.length!==45||!ramp)throw Error('Invalid South dagger iris authority');
-   const samples=points.map(([x,y,R,G,B,A,tone])=>({x,y,R,G,B,A,p:ctx.getImageData(x,y,1,1),c:ramp[tone-1]}));
-   if(samples.some(({R,G,B,A,p,c})=>!c||p.data[0]!==R||p.data[1]!==G||p.data[2]!==B||p.data[3]!==A))throw Error('South dagger iris no longer matches author pixels');
-   for(const {x,y,p,c} of samples){const rgb=parseInt(c.slice(1),16);p.data[0]=rgb>>>16;p.data[1]=(rgb>>>8)&255;p.data[2]=rgb&255;ctx.putImageData(p,x,y);}
-  }
-  if(r.orderedDaggerHair||r.orderedDaggerIris){
+  if(r.orderedDaggerHair||r.orderedDaggerIris||r.dagger13SouthIris){
    if(w!==640||h!==640||recolored||hiddenSlots.length||renderOffset.some(Boolean))throw Error('Invalid ordered dagger appearance authority');
    const changes=[];
    if(r.orderedDaggerHair){
@@ -324,15 +318,16 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      }
      changes.push({p:patch,a:start,b:row});
     }
-    if(count!==4040)throw Error('Unexpected number of dagger hair samples');
+    if(count!==(reg.count??4040))throw Error('Unexpected number of dagger hair samples');
    }
-   if(r.orderedDaggerIris){
-    const points=root.MareReworkModularOutfitsHD?.sideIrisSamples?.(r.direction),ramp=root.MareCharacterAppearance?.eyes?.[r.orderedDaggerIris]?.ramp;
-    if(!points||points.length!==18||!ramp)throw Error('Invalid ordered dagger iris authority');
-    const dx=r.direction==='east'?56:72;
+   if(r.orderedDaggerIris||r.dagger13SouthIris){
+    const south=!!r.dagger13SouthIris,api=root.MareReworkModularOutfitsHD;
+    const points=south?api?.southIrisSamples?.():api?.sideIrisSamples?.(r.direction),ramp=root.MareCharacterAppearance?.eyes?.[r.dagger13SouthIris??r.orderedDaggerIris]?.ramp;
+    if(!points||points.length!==(south?45:18)||!ramp)throw Error('Invalid ordered dagger iris authority');
+    const dx=south?0:r.direction==='east'?56:72,dy=south?0:68;
     for(const [x,y,R,G,B,A,tone] of points){
-     const a=x+dx,b=y+68,p=ctx.getImageData(a,b,1,1),color=ramp[tone-1];
-     if(p.data[0]!==R||p.data[1]!==G||p.data[2]!==B||p.data[3]!==A||!color)throw Error('Dagger iris no longer matches author pixels');
+     const a=x+dx,b=y+dy,p=ctx.getImageData(a,b,1,1),color=ramp[tone-1];
+     if(p.data[0]!==R||p.data[1]!==G||p.data[2]!==B||p.data[3]!==A||!color)throw Error(south?'South dagger iris no longer matches author pixels':'Dagger iris no longer matches author pixels');
      const rgb=parseInt(color.slice(1),16);p.data[0]=rgb>>>16;p.data[1]=(rgb>>>8)&255;p.data[2]=rgb&255;changes.push({p,a,b});
     }
    }
