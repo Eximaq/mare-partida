@@ -353,9 +353,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  // Same complete authored punch rig: replace the shorts slot only.
  function resolveFemaleOwnedPunchPants(player,o,a,equipment){
-  const keys=Object.keys(equipment),v=equipment.legs??equipment.pants,dir=o.direction;
+  const keys=Object.keys(equipment),v=equipment.legs??equipment.pants,dir=o.direction,cv=equipment.coat,coat=cv==null?null:Number(cv.def??cv);
   if(player.__reworkSubset||o.weaponless||canonical(a.body)!=='female'||o.action!=='attack-unarmed'||
-     !['north','south','east','west'].includes(dir)||keys.length!==1||!['legs','pants'].includes(keys[0])||
+     !['north','south','east','west'].includes(dir)||keys.length!==(coat==null?1:2)||keys.some(k=>!['legs','pants','coat'].includes(k))||(equipment.legs!=null&&equipment.pants!=null)||
+     (coat!=null&&(dir!=='south'||![6,7,130,137,144,151,158,165,172,179].includes(coat)||['variant','variantId','appearanceVariant'].some(k=>cv?.[k]!=null&&cv[k]!=='original')))||
      Number(v?.def??v)!==168||['variant','variantId','appearanceVariant'].some(k=>v?.[k]!=null&&v[k]!=='original'))return null;
   const base=selectBase({...player,equipment:{}},o,true),id=`v7-female-punch-${dir}-ownership-candidate-${dir}`,donor=outfitById.get(`female-pants168-attack-unarmed-${dir}`);
   if(base?.sourceId!==id||base.hdKind||base.headRecord||base.gearOnlyRecord||
@@ -367,8 +368,23 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      !same(aDir,bDir)||layers.length!==source.length||!layers.every((l,j)=>i===j||same(l,source[j]))||
      cloth?.slot!=='pants'||cloth.id!=='pants168-independent'||cloth.depth!==layers[i].depth||cloth.binding?.kind!=='fixed'||
      cloth.frames?.length!==8||cloth.frames.some(h=>!donor.sourceRefs.includes(h)||base.sourceRefs.includes(h)))return null;
-  return {...base,id:base.id+':own-pants168',equipment:{pants:168},
-   authoredPunchPants:{base,cloth,index:i},slotRoutes:{[keys[0]]:{item:168,quality:'hd',source:donor.id}},omitted:[]};
+  let host=base,index=i;
+  if(coat!=null){
+   const expected=`female-torso${coat}-south-frozen-attack-native`;
+   host=selectBase({...player,equipment:{coat:cv}},o,true);
+   const hp=host?.pack,hd=hp?.directions?.south;
+   if(host?.sourceId!==expected||host.hdKind!=='outfit'||host.equipment?.torso!==coat||host.headRecord||host.gearOnlyRecord||
+      host.bodyOcclusion||cloth.frames.some(h=>host.sourceRasterPadding?.[h])||!['density','frame','pivot'].every(k=>same(p[k],hp[k]))||
+      !same(aDir.clip,hd.clip)||!Object.entries(aDir.rest).every(([k,v])=>same(v,hd.rest[k]))||
+      hd.poses.length!==8||!aDir.poses.every((pose,n)=>Object.entries(pose).every(([k,v])=>same(v,hd.poses[n][k])))||
+      !same(layers,hd.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)})))||
+      hd.layers.filter(l=>!l.id.startsWith('base:')).some(l=>!['top','underArms'].includes(l.slot)))return null;
+   index=hd.layers.findIndex(l=>l.id==='base:shorts');
+  }
+  const slot=equipment.legs!=null?'legs':'pants';
+  return {...host,id:host.id+':own-pants168',equipment:{...(coat==null?{}:{torso:coat}),pants:168},
+   authoredPunchPants:{base:host,cloth,index},slotRoutes:{[slot]:{item:168,quality:'hd',source:donor.id},
+    ...(coat==null?{}:{coat:{item:coat,quality:'hd',source:host.sourceId}})},omitted:[]};
  }
  function southFiles(r,frame){
   const s=r.authoredPantsLayer.spec,k=s.frameToPhase[frame],contact=s.contacts.find(c=>c.targetAuthoredPhase===k),phases=[s.phaseMap[k],...(contact?[contact.incomingPhase]:[])];
@@ -1045,7 +1061,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function selectCoatsOnRegisteredPants(player,o,a,visible){
   const dir=o.direction,action=['attack','skill'].includes(o.action)?'attack-unarmed':o.action,coat=visible.torso?.item,pants=visible.pants?.item,boot=visible.boots?.item;
-  const ownSouth=dir==='south'&&[22,133].includes(pants)&&[158,165,172,179].includes(coat);
+  const ownSouth=dir==='south'&&[22,133].includes(pants)&&[137,144,158,165,172,179].includes(coat);
   const strict=dir==='south'&&(pants===21||ownSouth)&&[6,7,130,137,144,158,165,172,179].includes(coat)&&strictSouthRequested(a);
   if(a.body!=='male'||!['idle','walk','attack-unarmed'].includes(action)||!['north','south','east','west'].includes(dir)||
    !(action==='attack-unarmed'?[21,22,133]:[21,22]).includes(pants)||![6,7,130,137,144,158,165,172,179].includes(coat)||
@@ -1596,7 +1612,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const {base,cloth,index}=r.authoredPunchPants,d=base.pack.directions[base.direction],
     sha=cloth.frames[frame],image=entry.images.get('tools/rework-modular-outfits-hd/assets/'+sha+'.png');
    if(image?.width!==base.pack.frame.width*4||image.height!==base.pack.frame.height*4)throw Error('Invalid punch pants raster');
-   const images=new Map(entry.images);images.set('tools/rework-base-hd/assets/'+sha+'.png',image);
+   const images=new Map(entry.images);
+   if(base.hdKind!=='outfit')images.set('tools/rework-base-hd/assets/'+sha+'.png',image);
    const adapted={...base,pack:{...base.pack,directions:{[base.direction]:{...d,layers:d.layers.map((l,i)=>i===index?cloth:l)}}}};
    return composeFrame(adapted,frame,{...entry,images});
   }
