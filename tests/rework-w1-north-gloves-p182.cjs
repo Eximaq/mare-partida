@@ -104,7 +104,7 @@ for(const skinColor of profiles){
   count++;M.width=1;
  }
  a.equal(JSON.stringify(p),save);
- for(const e of [{legs:{def:22}},{legs:{def:182,variant:'candidate'}},{head:{def:19}},{boots:{def:9}},{weapon:{def:5}},{weapon:{def:67}},{gloves:{def:25}},{gloves:{def:g,variant:'candidate'}}]){
+ for(const e of [{legs:{def:22}},{legs:{def:182,variant:'candidate'}},{head:{def:19}},{boots:{def:9}},{weapon:{def:5}},{gloves:{def:25}},{gloves:{def:g,variant:'candidate'}}]){
   a(!api.selectVisual(actor({legs:{def:182},gloves:{def:g},...e}),o)?.id.endsWith(':pants182'));
  }
  for(const delta of [{direction:'south'},{direction:'east'},{direction:'west'},{action:'walk'},{action:'attack-unarmed'}])

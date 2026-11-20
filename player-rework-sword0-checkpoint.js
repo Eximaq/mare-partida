@@ -159,7 +159,7 @@ function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
  }
  function resolveNorthGlovePants182(gloved,panted,direction,visible){
   const item=visible.weapon?.item,g=visible.gloves?.item,p=visible.pants?.item;
-  if(direction!=='north'||![0,1].includes(item)||!northGloveOnlyIds.includes(g)||p!==182||Object.keys(visible).length!==3||
+  if(direction!=='north'||![0,1,67,68,69,70].includes(item)||!northGloveOnlyIds.includes(g)||p!==182||Object.keys(visible).length!==3||
      !gloved||!panted||gloved.item!==item||panted.item!==item||gloved.body!=='female'||panted.body!=='female'||
      gloved.action!=='attack-sword'||panted.action!==gloved.action||gloved.direction!==direction||panted.direction!==direction||
      gloved.slotRoutes?.[visible.gloves.key]?.item!==g||gloved.outfitSources||panted.checkpointSources||

@@ -20,7 +20,7 @@ const pixels=(q,p,opt,i,n)=>{
   a.deepEqual(x.pack,y.pack);a.deepEqual(x.equipment,y.equipment);a.deepEqual(y.omitted,[]);
   a.equal(y.slotRoutes.gloves.item,152);a.equal(y.slotRoutes.legs.item,item);a.equal(y.slotRoutes.boots.item,155);
   a.equal(y.colorAppearance.skin,look.skinColor);a.equal(y.colorAppearance.hairColor,look.hairColor);a.equal(y.colorAppearance.eyeColor,look.eyeColor);
-  for(const bad of [player({...look,hairStyle:'hair-cropped'},item),player({...look,eyeStyle:'face-calm'},item),player({...look,eyeColor:'amber'},item),player(look,140)]){
+  for(const bad of [player({...look,hairStyle:'hair-cropped'},item),player({...look,eyeStyle:'face-calm'},item),player({...look,eyeColor:'amber'},item),player(look,133)]){
    a(!api.selectVisual(bad,opt)?.id.endsWith(':verified-north'));
   }
   const n=y.pack.directions.north.clip.frames;

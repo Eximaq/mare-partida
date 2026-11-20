@@ -786,7 +786,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    layersByDirection.west=layersByDirection.east;
   }
   const palette=Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original');
-  const northPalette=dir==='north'&&[168,182].includes(pants)&&boot===155&&
+  const northPalette=dir==='north'&&[140,147,154,161,168,175,182].includes(pants)&&boot===155&&
    ['original',undefined].includes(a.hair)&&['original',undefined].includes(a.face)&&
    ['original','blue',undefined].includes(a.eyeColor)&&
    (!a.skin||a.skin==='original'||Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))&&
@@ -811,7 +811,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const reference=outfitById.get('frozen-male-pants133-north-'+action+'-v47'),r=reference?.pack?.directions?.north;
    const own=(layers,id)=>layers.filter(l=>l.id.startsWith('pants'+id+'-'));
    const [waist,left,right,...extra]=own(d.layers,pants);
-   const waistband={168:'31c92ade5ec4d8fe849bb7e0cd862ed3c1e1ce48f184fb073d9a4303a811879b',182:'22e7502d3d0aa7ee38128f25d92563276649182a3f485da1eefb85d7ae374854'};
+   const waistband={140:'7e002d073f8a245d92db64a23e693fd4062cc4e3f41adf754461db1012816965',147:'1bec30db8a75d62b02fd23cafcd2bf18d65b0843feabf958dc2b4f6614a1397f',154:'494d067aa21390c06e8b21adb85c1dd6193e6ed4182daa7c607ed8aab632e9d4',161:'ee8d39b25777e6ab363af77e22dfc79845bd76a47fa2ca56a06091226ee4058c',175:'f221e170639c67ed747cd7f29ede5b2fc3744426a7091ebe00466f440ff323ae',168:'31c92ade5ec4d8fe849bb7e0cd862ed3c1e1ce48f184fb073d9a4303a811879b',182:'22e7502d3d0aa7ee38128f25d92563276649182a3f485da1eefb85d7ae374854'};
    const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
    if(!r||extra.length||!waist||!left||!right||own(r.layers,133).length!==3||
       !same(d.layers.filter(l=>!own(d.layers,pants).includes(l)),r.layers.filter(l=>!own(r.layers,133).includes(l)))||
@@ -1614,7 +1614,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    if(!swordCheckpoint||!player||player.zoanTransformed||player.__reworkSubset||o.weaponless||
       !['attack-sword','attack','skill'].includes(o.action))return null;
    const visible=registeredEquipment(player,o);
-   if(o.direction==='north'&&o.action==='attack-sword'&&[0,1].includes(visible?.weapon?.item)&&[26,145,159,166,173].includes(visible.gloves?.item)&&
+   if(o.direction==='north'&&o.action==='attack-sword'&&[0,1,67,68,69,70].includes(visible?.weapon?.item)&&[26,145,159,166,173].includes(visible.gloves?.item)&&
       visible.pants?.item===182&&Object.keys(visible).length===3){
     const bare={...player,equipment:{weapon:visible.weapon.value}};
     const reference=visible.weapon.item===0?bare:{...player,equipment:{weapon:{def:0}}};
