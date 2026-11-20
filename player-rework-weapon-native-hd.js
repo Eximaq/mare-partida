@@ -189,6 +189,23 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
  const approvedSouth=item=>index.records.find(r=>r.approvedSouthHead&&r.item===Number(item)&&r.body==='male'&&r.direction==='south');
  const resource=url=>{const p=new URL(url,'https://native.invalid/'+prefix).pathname.slice(1);if(!/^tools\/(rework-weapon-layers-hd|rework-modular-outfits-hd|rework-base-hd)\/assets\/[a-f0-9]{64}\.png$/.test(p))throw Error('Invalid native weapon source path');return p;};
  const body=b=>({masculino:'male',feminino:'female'})[b]||b;
+ // The released light-skin gauntlet clips already own their body/gear and contact.
+ // Only the independently authenticated hair/iris pixels differ for the default save.
+ const gauntletSideAuthority={"111:east":[["2e92c76386aaaf40252a2e5d26846a84eca93ef31ff140657bb6dcd4cf61f346","a6d22114df7503df1b489e64567e4620c96099fa065f69f3988bb807c5423b06","eacf09fbeee7f3f46852c516a4b05f6d2fc2d542c07b4ce91e99ea03e5e80abc","69996d30451eb37e0ba2d4959ad993ba20d6b934c42014795be067474b500043","2930e201b2657da99bed40d85ab2ec3dc293b5f56489336bb71978aa464d201f","cf739b81f6ab8be1eddd4c18d6b9448ab4c057aa4e91550bf069048d1d9ed7c0","821bc13dd3548164c7f96d23e8f8637feafe6b2e56e0230560b02bd56c56b133","4c30183c9d1ab082c01655e210db9ef56d12a22884439d6f35749ea177de692f"],["3129a4d595d0d93b4748271446eabb63480c0ea2cff1353ce74be3c9b7a76c7b","2dc8cc41f4b5f9ace43c0069cc5e47cf9a429af69e20977701ec9f5af0a29d13","f89b5f0fd1275b1c5b9f88e19d26fdc10434bfdbff78ab9c0c4db2c0428569bc","ac0d9da6ff7f0352f42d076a2aee95f433d452a8c51ce635517d692da7dbd4da","2cc62562f90331751ac8b4bf3cfb9a11ae43fc2599ff036e85c83c282eb32149","a3d6ff2bc3448d4a6cfc713bc6b60e013e480e56ff159158d3e123bf666ac306","2dc8cc41f4b5f9ace43c0069cc5e47cf9a429af69e20977701ec9f5af0a29d13","3129a4d595d0d93b4748271446eabb63480c0ea2cff1353ce74be3c9b7a76c7b"]],"111:west":[["09b278017b35fa1f4af444658b220c7617317a74dfd6ddcd8d51b236b3c94307","9a29b0fa3f2158c44f93b74c4cd9616a39963d53fa76bf3dc96807ea733d17dd","96c5bbe596b7d17e2b31846f24b5c57ac2bbfabc3a177d36e0f662b3baaab05e","de64db3082b6c21c455f2408e78b03e2a747a00248ba982cf1a1ef7a742d8a8b","9dadac60938e3ba16886b2e7b6b3f92eeeaaee14ad814852e1587dd580ae608e","fe2561e42ae4a7bc247589841f37447e95f7f9ef66d1167e18540ff1f960bfa1","8f6b6a9079b9f106f02605a8be13ef452d2f7d93bcd96d250a54cdcfdab67e3f","235f3beaa71fbc5c4c731462d20e0f13c4f1bb889428ea643c9163a349d11f7a"],["e066777fafbf1e3d370ffd6d958b718890dbf2a19a7360e32f7e0c2777271eb9","3257c1c57da0ee8f5ab0aba51cd651b610b2c591adb28aaf9c57896e13d4f952","055f053062ea56776bdcf475981ba3ead3aec1db10f9cc91a7344127976e2397","144d53f7a8cf321a2bd8c6c55404f8c3ac50b998c996c5bb3b48bbe7313d8a86","fdcbf111505cb50aab708d0f90bb21ab76678ea18e89be8993f05aa7a512f45e","f2d470149a7deb9416c66d44411203f00a022b18ee6440fc11be2a455379794b","3257c1c57da0ee8f5ab0aba51cd651b610b2c591adb28aaf9c57896e13d4f952","e066777fafbf1e3d370ffd6d958b718890dbf2a19a7360e32f7e0c2777271eb9"]],"112:east":[["fd5d2352841b47c1b498bf952e89a352dfacbc23963004a7dbe90257589021e5","ee6d766ed6de64cbccacad9c98cb313a4f586c1a609b782bf50bc55bfd3fef5b","0836ac9a467bb00437ee0f9312602a1bf6b2d4c20d5e19aec3417c845d7f9ad4","a9e310b273924aaeffbf0fe02e59f9d9ee6f4de8828833ce1e211ded12dc8584","2930e201b2657da99bed40d85ab2ec3dc293b5f56489336bb71978aa464d201f","084e77f44de44450cc8d937367c41219b621b0dd6c45b9c85fbf7bc46be26ee9","c54b62f26763d794bd3e8fdec5935ff77328defb3e610e0abe58c7d1b52913c0","36de8e7b62fb0d8ee1f530f9a0824fea1e528ebc2ca4dcd54eec9a2617fbec2d"],["4cca0b5fcec84540637ec699bc749334a3edf82003c829037467798526814ab4","40455063389d3770298b37aafcb58139ae2e28061bb79d1d2c8a2adb5c1faf93","9fcabd9e89b961cee21cc079cc2a586fea90790adc84e9b961bd74b762e34b2e","41c41e22b953d331215dde8cfd6e8d24e06f363f50a22b1fcac5258a7278ab44","40bf4b84e02bd23e8839bd07557089daeb9cac1530e55c7f6a7d167b594fdf27","1b22199ee2c59e8b4524fbc5151d8b7f906000e82a776d5eb7e35325107054ad","40455063389d3770298b37aafcb58139ae2e28061bb79d1d2c8a2adb5c1faf93","4cca0b5fcec84540637ec699bc749334a3edf82003c829037467798526814ab4"]],"112:west":[["417fddf42b95def116114c670789c00d99f89f1bb80a7c91fa24351e70c94a46","1d22cd583f6738a47714976f5d0997dd08a1f5b97d98c7e2da20b5b014ab99a7","9724df6e4df0479c9836f97d935a36f94d531514275acfe57c2a0aaad9878e11","bd2278a555569747f36eec065d7436f4768d36cc09c9fd35e4d3e0b433ea1e16","9dadac60938e3ba16886b2e7b6b3f92eeeaaee14ad814852e1587dd580ae608e","5fb2d14f71024a2385a6ee7ce1f6f452e1e743b7fa291c7c12392c4cbc14f92e","771e7fe7da3fabcb9cb1ca3ec6ba6baddd9beda9af3af03ebabcbdbb8ab79913","9d114c2baea0fd545005e0d315d485328f0c463275772027f518019bc664dcf3"],["e426316391d68895bd24d9896dc82c1b06589e38d91d0775a0513d3a5a4b89f3","455e398265f6606e4cb853d29752bbfe4a2f1681651e11813f28339020849feb","29166a3b13373abc3da6692ce675d4b3778bca457687573f3700ce5c9cc51e81","33bde0b57b3dbf09b6112a60429fd3d19df77d90e92ccf877bf7d36a368e6147","344de130e29ab9368219a6d792f7bc9ab3b9f5996b6329a278eb016f0e3bcdee","e985a404375dcb6ff0d82da141bb4795aa56ea38e57a48b5547507f4543e5d38","455e398265f6606e4cb853d29752bbfe4a2f1681651e11813f28339020849feb","e426316391d68895bd24d9896dc82c1b06589e38d91d0775a0513d3a5a4b89f3"]]};
+ function gauntletSideSavedDefault(spec,d,item,direction,sourceBody,classId,variant,action,a,equipment){
+  const ids=gauntletSideAuthority[item+':'+direction],same=(m,n)=>JSON.stringify(m)===JSON.stringify(n);
+  if(!ids||!['male','masculino'].includes(sourceBody)||classId!=='brawler'||action!=='attack-unarmed'||
+     variant!=null&&variant!=='original'||Object.keys(equipment).length||
+     a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!=='light'||
+     a.hair!=='original'||a.face!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     spec.item!==item||spec.rig!=='male-authored-gauntlet'+item+'-eight'||spec.action!==action||
+     !same(spec.approvedAppearance,{hair:'original',hairColor:'brown',face:'original',eyeColor:'brown',skin:'light'})||
+     spec.fps!==12||spec.sourceFPS!==12||spec.density!==4||!same(spec.nativeCanvas,[640,640])||
+     !same(spec.logicalFrame,[160,160])||!same(spec.pivot,[80,128])||
+     !same(spec.sourceSequence,[0,1,2,3,4,5,6,7])||!same(spec.timeline,['0','1','2','3','4','5','6','7']))return false;
+  return [d.base,d.weapons[item]].every((ss,n)=>ss?.length===8&&ss.every((p,f)=>
+   same(p,{url:'assets/'+ids[n][f]+'.png',sha256:ids[n][f],size:[640,640]})));
+ }
  function resolveSeparable({item,body:b,sourceBody,classId,weaponVariant,action,direction,appearance={},equipment={},allowExactComposite=true}={}){
   // Ordered source profiles retain their authored anatomy/depth; no generic eight-pose rig coercion.
   const ordered=allowExactComposite&&(index.orderedAttackProfiles||[]).find(r=>r.schema==='approved-native-ordered-attack-v1'&&r.item===Number(item&&typeof item==='object'?item.def:item)&&r.body===body(b)&&r.action===action&&r.direction===direction);
@@ -247,7 +264,8 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   const matchesAction=s=>s.action?action===s.action:['attack','punch','attack-unarmed'].includes(action);
   const spec=[index.separableAttacks,...(index.separableAttackRigs||[])].find(s=>s?.schema==='approved-separable-attacks-v1'&&matchesAction(s)&&body(b)===s.body&&s.directions?.[direction]&&(item==null||s.directions[direction].weapons?.[Number(item&&typeof item==='object'?item.def:item)])),d=spec?.directions?.[direction];
   if(!allowExactComposite||!spec||!d||!spec.approvedAppearance)return null;
-  if(!Object.entries(spec.approvedAppearance).every(([k,v])=>appearance[k]===v))return null;
+  const ownedGauntletSide=gauntletSideSavedDefault(spec,d,Number(item&&typeof item==='object'?item.def:item),direction,sourceBody,classId,weaponVariant,action,appearance,equipment);
+  if(!ownedGauntletSide&&!Object.entries(spec.approvedAppearance).every(([k,v])=>appearance[k]===v))return null;
   const id=v=>Number(v&&typeof v==='object'?v.def:v);
   const visible=Object.fromEntries(Object.entries(equipment).filter(([,v])=>v!=null&&!['none','original'].includes(v)));
   if(Object.keys(visible).some(k=>k!=='coat'))return null;
@@ -268,9 +286,10 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
     ...(coat!=null&&depth===1&&gear?.occludesCoat?{occludedBy:gear}:{}),
     ...(offset&&depth===sources.length-1?{offset}:{})}))});
   }
-  return {id:'separable-'+(spec.rig?spec.rig+'-':'')+spec.body+'-'+direction+'-weapon'+(weapon??'none')+'-coat'+(coat??'none'),item:weapon,body:spec.body,direction,
+  return {id:'separable-'+(spec.rig?spec.rig+'-':'')+spec.body+'-'+direction+'-weapon'+(weapon??'none')+'-coat'+(coat??'none')+(ownedGauntletSide?':saved-black-blue':''),item:weapon,body:spec.body,direction,
    nativeCanvas:spec.nativeCanvas,logicalFrame:spec.logicalFrame,pivot:spec.pivot,density:spec.density,fps:spec.fps,timeline:spec.timeline,
    approvedAppearance:spec.approvedAppearance,separableAttack:true,colorAppearance:{},
+   ...(ownedGauntletSide?{ownedGauntletSide:true,orderedDaggerHair:'black',orderedDaggerIris:'blue'}:{}),
    equipmentContract:{...(weapon==null?{}:{weapon}),...(coat==null?{}:{coat})},
    states};
  }
@@ -504,7 +523,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
    if(w!==640||h!==640||recolored||hiddenSlots.length||renderOffset.some(Boolean))throw Error('Invalid ordered dagger appearance authority');
    const changes=[],focusY=r.orderedFocusHead&&r.item===16?focusHeadY[Number(s.state)]:0;
    if(r.orderedDaggerHair){
-    const authority=daggerHairAuthority[r.direction],reg=r.orderedFocusHead&&authority?{...authority,x:0,y:focusY}:authority,ramp=root.MareCharacterAppearance?.hairs?.[r.orderedDaggerHair]?.ramp;
+    const authority=daggerHairAuthority[r.direction],reg=r.ownedGauntletSide&&authority?{...authority,x:0,y:2}:r.orderedFocusHead&&authority?{...authority,x:0,y:focusY}:authority,ramp=root.MareCharacterAppearance?.hairs?.[r.orderedDaggerHair]?.ramp;
     if(!reg||!ramp)throw Error('Invalid saved dagger hair color');
     const source=images.get(daggerHairPath(reg.source)),mask=images.get(daggerHairPath(reg.mask));
     if([source,mask].some(i=>!i||i.width!==640||i.height!==640))throw Error('Missing dagger hair source');
@@ -529,7 +548,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
     const south=!!r.dagger13SouthIris,api=root.MareReworkModularOutfitsHD;
     const points=south?api?.southIrisSamples?.():api?.sideIrisSamples?.(r.direction),ramp=root.MareCharacterAppearance?.eyes?.[r.dagger13SouthIris??r.orderedDaggerIris]?.ramp;
     if(!points||points.length!==(south?45:18)||!ramp)throw Error('Invalid ordered dagger iris authority');
-    const dx=south?0:r.orderedFocusHead?64:r.direction==='east'?56:72,dy=south?0:r.orderedFocusHead?64+focusY:68;
+    const dx=south?0:r.ownedGauntletSide||r.orderedFocusHead?64:r.direction==='east'?56:72,dy=south?0:r.ownedGauntletSide?66:r.orderedFocusHead?64+focusY:68;
     for(const [x,y,R,G,B,A,tone] of points){
      const a=x+dx,b=y+dy,p=ctx.getImageData(a,b,1,1),color=ramp[tone-1];
      if(p.data[0]!==R||p.data[1]!==G||p.data[2]!==B||p.data[3]!==A||!color)throw Error(south?'South dagger iris no longer matches author pixels':'Dagger iris no longer matches author pixels');
