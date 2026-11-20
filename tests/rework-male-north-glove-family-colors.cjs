@@ -13,14 +13,14 @@ const pixels=(q,p,opt,i,n)=>{
 };
 (async()=>{
  await api.ready;let count=0;
- for(const item of [26,159,166])for(const action of ['idle','walk'])for(const look of profiles){
+ for(const item of [26,159,166,25,131,138,145,173,180])for(const action of ['idle','walk'])for(const look of profiles){
   const opt={action,direction:'north',consumer:'world'},before=player(raw,item),after=player(look,item),save=JSON.stringify(after);
   const x=api.selectVisual(before,opt),y=api.selectVisual(after,opt);
   a(y?.id.startsWith('frozen-male-glove'+item+'-north-'+action+'-native-layers:verified-north-palette:'),y?.id);
   a.deepEqual(x.pack,y.pack);a.deepEqual(x.equipment,y.equipment);a.deepEqual(y.omitted,[]);
   a.equal(y.slotRoutes.gloves.item,item);a.equal(y.slotRoutes.boots.item,155);
   a.equal(y.colorAppearance.skin,look.skinColor);a.equal(y.colorAppearance.hairColor,look.hairColor);a.equal(y.colorAppearance.eyeColor,look.eyeColor);
-  for(const bad of [player({...look,hairStyle:'hair-cropped'},item),player({...look,eyeStyle:'face-calm'},item),player({...look,eyeColor:'amber'},item),player(look,25)]){
+  for(const bad of [player({...look,hairStyle:'hair-cropped'},item),player({...look,eyeStyle:'face-calm'},item),player({...look,eyeColor:'amber'},item),player(look,24)]){
    a(!api.selectVisual(bad,opt)?.id.startsWith('frozen-male-glove'+item+'-north-'+action+'-native-layers:verified-north-palette:'));
   }
   const n=y.pack.directions.north.clip.frames;
@@ -43,5 +43,5 @@ const pixels=(q,p,opt,i,n)=>{
   } finally {for(const q of group)q.release();}
   a.equal(JSON.stringify(after),save);global.gc?.();
  }
- a.equal(count,102);console.log('PASS',count);
+ a.equal(count,306);console.log('PASS',count);
 })().catch(e=>{console.error(e);process.exitCode=1;});

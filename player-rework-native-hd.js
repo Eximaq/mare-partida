@@ -1532,7 +1532,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  const northGlovePaletteSources={
   26:['f985f4335bf337d0cbb0bf06a6d0ee13452ccd6402850e3608adb09166b18f0a','db7de3e5bdd7e6f89da3c203bf82c7fc540c97030ed66ad56748b856ff342840'],
   159:['17bf738b2cad863b0d0c69adfea222fc315a30b7eeac59d9f12f6facd4032dfd','bda8ee9688510e1485b4d0e102ebf8bff5f427845914ad1e27e29e5226ddce34'],
-  166:['883f6a953d5c53264a18a2e1c643f67d6a4767cc281f3b8d546e15cc9a31d45c','7beed3eb98555b3f04866ceb4cce5d68adaf8aa381b78e1ecdb60add41acd416']
+  166:['883f6a953d5c53264a18a2e1c643f67d6a4767cc281f3b8d546e15cc9a31d45c','7beed3eb98555b3f04866ceb4cce5d68adaf8aa381b78e1ecdb60add41acd416'],
+  25:['fd1de38775295e8b487868365e8fbae337c29235c94a7f65aaf18a8f0478d39a', 'da332118e27be7d6c0d5d77f2307170df54a235e2de0fd20648861238219a216'],
+  131:['b25687aaf3091f6d6181426492b3afd17250109857a9049b96ae90c953d21444', '99d92b2ded043aabba04f7058502840c5d92aee26263f286230942cae02edf67'],
+  138:['d5359abf78c50a1c042fdae5fedc4fdf9d22453621663188c7d41bd736e6e47b', '5ea55c61f1906ae3eb063036afd90bceb61e305872982780385233a908e4c2c3'],
+  145:['0a416a7ea2224d4e78d794ad169dd211d6639a28663a8fa2cc1fa188c2910e5d', 'd4245b2cc5856a634f59d8ef6ddbb36c3fb099156d9e0e26327df8398244358f'],
+  173:['11d9aa7827f07f72e96c9c8859bdbab8ac0464600ef2d48566dac969e519510b', '1e08bd74d76e772034cc72464d7bf71754d4469e9e74d9be21a5006411d63a4d'],
+  180:['bf312d58679b26e95562da837eb628c53191e47a59c80ccd2427b75be0f4fefc', 'f912b0cca5407653a7709721530a81ee7ff36d79d41ff0b343578492706c2397']
  };
  function selectNorthGlovePalette(o,a,visible){
   const action=o.action,item=visible.gloves?.item,idle=action==='idle',refs=northGlovePaletteSources[item];
@@ -1589,12 +1595,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    if(!swordCheckpoint||!player||player.zoanTransformed||player.__reworkSubset||o.weaponless||
       !['attack-sword','attack','skill'].includes(o.action))return null;
    const visible=registeredEquipment(player,o);
-   if(o.direction==='north'&&o.action==='attack-sword'&&visible?.weapon?.item===0&&[26,145,159,166,173].includes(visible.gloves?.item)&&
+   if(o.direction==='north'&&o.action==='attack-sword'&&[0,1].includes(visible?.weapon?.item)&&[26,145,159,166,173].includes(visible.gloves?.item)&&
       visible.pants?.item===182&&Object.keys(visible).length===3){
     const bare={...player,equipment:{weapon:visible.weapon.value}};
-    const coated={...bare,equipment:{...bare.equipment,coat:{def:151}}};
+    const reference=visible.weapon.item===0?bare:{...player,equipment:{weapon:{def:0}}};
+    const coated={...reference,equipment:{...reference.equipment,coat:{def:151}}};
     const panted={...bare,equipment:{...bare.equipment,[visible.pants.key]:visible.pants.value}};
-    const gloved=swordCheckpoint.resolveNorthGloveOnly(select(coated,o),select(bare,o),o.direction,{weapon:visible.weapon,gloves:visible.gloves});
+    const gloved=swordCheckpoint.resolveNorthGloveOnly(select(coated,o),select(bare,o),o.direction,{weapon:visible.weapon,gloves:visible.gloves},
+     visible.weapon.item===0?undefined:select(reference,o));
     const resolved=swordCheckpoint.resolveNorthGlovePants182(gloved,select(panted,o),o.direction,visible);
     if(resolved)return resolved;
    }
@@ -1610,7 +1618,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
        ['east','west'].includes(o.direction)&&visible.weapon?.item===0)||visible?.boots?.item===148&&(o.direction==='north'&&[0,1,67,68,69,70].includes(visible.weapon?.item)||
        o.direction==='south'&&[0,1,67,68,70].includes(visible.weapon?.item)||
        ['east','west'].includes(o.direction)&&visible.weapon?.item===0)||
-       o.direction==='north'&&visible?.weapon?.item===0&&visible.boots?.item===183)&&Object.keys(visible).length===2&&o.action==='attack-sword'){
+       o.direction==='north'&&[0,1,67].includes(visible?.weapon?.item)&&visible.boots?.item===183)&&Object.keys(visible).length===2&&o.action==='attack-sword'){
     const bare={...player,equipment:{weapon:visible.weapon.value}};
     const reference=visible.weapon.item===0?bare:{...bare,equipment:{weapon:{def:0}}};
     const coated={...reference,equipment:{...reference.equipment,coat:{def:151}}};
