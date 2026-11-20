@@ -715,7 +715,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const equipped=withCarryHead(dressed,'outfit-carry');
    if(equipped)return equipped;
   }
-  const carried=carryRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head').map(([k,v])=>[k,v?.def??v]))});
+  const pureRelic32North=weapon===32&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.visual_completo&&
+   ['idle','walk'].includes(o.action)&&o.direction==='north'&&o.consumer==='world'&&!o.weaponless&&Object.keys(equipment).length===1&&
+   ['variant','variantId','appearanceVariant'].every(k=>equipment.weapon?.[k]==null||equipment.weapon[k]==='original')&&
+   raw.gender==='masculino'&&raw.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+   Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin);
+  const carried=carryRegistry?.resolve({item:weapon,pureRelic32North,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head').map(([k,v])=>[k,v?.def??v]))});
   const carryWithHead=withCarryHead(carried,'carry');
   if(carryWithHead)return carryWithHead;
   // The archived sword-0 cycle is already exact for its original identity.

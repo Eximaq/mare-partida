@@ -17,16 +17,30 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
      !same(base.pack.pivot,hair.pack.pivot)||!['NECK','NOSE'].every(k=>same(d.rest[k],source.rest[k])))return null;
   return {hairLayers:[{...target[0],id:layer.id,source:layer.source}],hairSource:hair.id};
  }
- function resolve({item,body,action,direction,appearance={},equipment={}}={}){
+ function resolve({item,body,action,direction,appearance={},equipment={},pureRelic32North=false}={}){
   if(item==null)return null;
   if(![0,123,124,125,126,127,128,14,16,110,121,31,32,118,119,120,112,71,72,73,74,12,13,2,3,15,1,68,67,70,69,117,109,111,17,122,4,5,113,114,115,116].includes(Number(item))||!['male','masculino'].includes(body)||!['walk','idle'].includes(action))return null;
   if(Object.entries(equipment).some(([k,v])=>k!=='weapon'&&v!=null&&!['original','none'].includes(v)))return null;
   let plan=carryIndex.records.find(r=>r.item===Number(item)&&r.direction===direction);if(!plan)return null;
   const skin=appearance.skin||appearance.skinColor;
   const skinLocked=[123,124,125,126,127,128,14,16,110,121,31,32,118,119,120,112,2,3,15,17,122,111,117].includes(Number(item));
-  if(skin&&skin!=='original'&&skinLocked&&!plan.parts.every(p=>p.skinMaterial?.sourceSHA256===p.source.sha256&&p.skinMaterial?.url))return null;
+  const item32SHA='b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8',part=plan.parts[0];
+  const pure=Number(item)===32&&direction==='north'&&pureRelic32North&&
+    Object.keys(equipment).length===1&&equipment.weapon===32&&plan.targetWalkRecord==='v7-male-walk-drawn-north-north'&&
+    plan.item===32&&plan.body==='male'&&plan.sourceDirection==='east'&&plan.interfaceSkinLocked===false&&plan.parts.length===1&&
+    part?.source?.sourceMember==='original/equipment/00-unoccluded.png'&&part.source.sha256===item32SHA&&part.source.url==='assets/'+item32SHA+'.png'&&
+    JSON.stringify(part.source.nativeSize)==='[640,640]'&&part.side==='LEFT'&&part.binding?.kind==='rigid'&&part.binding.a==='LEFT ELBOW'&&part.binding.b==='LEFT ARM'&&
+    !part.skinMaterial&&!part.replaceBoundLayer&&!part.source.sourceClip&&!part.hideHandBeyondWrist&&!part.mirrorSource&&part.depthOffset===-0.1&&
+    JSON.stringify(part.calibrationOffsetPhysical)==='[0,18]';
+  if(skin&&skin!=='original'&&skinLocked&&!pure&&!plan.parts.every(p=>p.skinMaterial?.sourceSHA256===p.source.sha256&&p.skinMaterial?.url))return null;
   const hair=(appearance.hairStyle||appearance.hair||'original').replace(/^hair-/,'');
   const base=baseIndex.records.find(r=>r.body==='male'&&r.direction===direction&&r.action===action&&r.hairStyle==='original');if(!base)return null;
+  if(pure){
+   const d=base.pack.directions.north;
+   if(base.id!==(action==='walk'?'v7-male-walk-drawn-north-north':'male-idle-original-north-from-walk0')||base.mirrorX||hair!=='original'||
+      !base.headHairSeparated||d.layers.some(x=>x.slot==='face')||
+      !['headBase','hair','handRight','handLeft','lower-redrawn'].every(k=>d.layers.some(x=>x.id===k)))return null;
+  }
   const hairLayers=resolveHair(base,hair);
   if(!hairLayers)return null;
   if(direction==='west'&&!base.mirrorX){plan={...plan,parts:plan.parts.map(p=>({...p,mirrorSource:true,sourceBone:Object.fromEntries(Object.entries(p.sourceBone).map(([k,v])=>[k,{x:(p.source.nativeSize?.[0]||640)/4-v.x,y:v.y}])),targetRestBone:Object.fromEntries(Object.entries(p.targetRestBone).map(([k,v])=>[k,{x:128-v.x,y:v.y}]))}))};}
