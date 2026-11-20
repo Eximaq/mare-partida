@@ -737,6 +737,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowGauntlet112NorthOwnAttack:Number(weapon)===112&&!player.__reworkSubset&&player.classId==='brawler'&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
+   allowW3NorthOwnAttack:Number(weapon)===3&&!player.__reworkSubset&&player.classId==='brawler'&&o.consumer==='world'&&!o.weaponless&&
+    Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
+   allowOwnGauntletsSide:[2,3].includes(Number(weapon))&&!player.__reworkSubset&&player.classId==='brawler'&&o.consumer==='world'&&!o.weaponless&&
+    Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowW2NorthOwnAttack:Number(weapon)===2&&!player.__reworkSubset&&player.classId==='brawler'&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowOrb122NorthRestoredAttack:Number(weapon)===122&&!player.__reworkSubset&&player.classId==='strategist'&&o.consumer==='world'&&!o.weaponless&&
