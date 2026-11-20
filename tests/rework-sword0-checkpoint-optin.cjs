@@ -53,7 +53,7 @@ const api=(url,corrupt=false)=>make({baseURL:url,fetchJSON:async f=>{if(f===mate
    }
   }
   const p={...normalized,equipment:{...normalized.equipment,boots:{def:9}}};
-  const far={...p,appearance96:{...normalized.appearance96,hairColor:'silver'}};
+  const far={...p,appearance96:{...normalized.appearance96,hairStyle:'hair-wavy'}};
   a(!enabled.selectVisual(far,o)?.checkpointSources,'unverified look cannot alias into this registration');
   a(!enabled.selectVisual({...p,equipment:{...p.equipment,legs:{def:21}}},o)?.checkpointSources,'unverified cuff cannot be registered');
   a(enabled.selectVisual({...p,equipment:{...p.equipment,legs:{def:22}}},o)?.checkpointSources,'P22/B9 must use the verified hem');

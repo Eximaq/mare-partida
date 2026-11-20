@@ -31,10 +31,22 @@ function ownWeaponStates(origin,direction,item,{reference,donor}={}){
     s.parts[0].matrix?.length===6&&s.parts[0].matrix.every(Number.isFinite)))return null;
  return states;
 }
-function create(catalog,accepted,normalizedGloves){
+const geometry=({id,material,colorAppearance,...source})=>JSON.stringify(source);
+const materialIdentity=({id,skinColor,hairColor,eyeColor,...source})=>JSON.stringify(source);
+const supportedEyePastes=new Set(['brown','green','gray','amber','violet']);
+function matchesSavedColors(origin,proof){
+ const m=origin?.material,c=origin?.colorAppearance;
+ if(!proof||!m||!c||m.sourceScale!==1||m.style!=='cropped'||m.eyeStyle!==null||m.gearRecord||
+    c.gender!=='feminino'||c.hairStyle!=='hair-cropped'||c.eyeStyle!=='original'||c.skinStyle!=='natural'||
+    c.skinColor!==m.skinColor||c.hairColor!==m.hairColor||c.eyeColor!==m.eyeColor||
+    !Object.hasOwn(root.MareAppearance96?.skins||{},m.skinColor)||!Object.hasOwn(root.MareAppearance96?.hairs||{},m.hairColor)||
+    !supportedEyePastes.has(m.eyeColor)||!Object.hasOwn(root.MareCharacterAppearance?.eyes||{},m.eyeColor))return false;
+ return geometry(origin)===proof.geometry&&materialIdentity(m)===proof.material;
+}
+function create(catalog,accepted,normalizedGloves,colors){
  const rows=new Map(catalog.records.map(r=>[[r.direction,r.slot,r.item].join('/'),r]));
  const allowed=new Set(catalog.assetHashes);
- const applies=(origin,direction)=>accepted[direction]?.includes(JSON.stringify(origin));
+ const applies=(origin,direction)=>accepted[direction]?.includes(JSON.stringify(origin))||matchesSavedColors(origin,colors[direction]);
  function resolve(origin,direction,visible,authority){
   const item=visible.weapon?.item;
   if(!origin||!applies(origin,direction)||item!==catalog.weapon&&!family.has(item)||visible.torso?.item!==catalog.coat)return null;
@@ -69,10 +81,9 @@ function create(catalog,accepted,normalizedGloves){
 }
 async function verify(catalog,trusted,{subtle=root.crypto?.subtle,saved=[]}={}){
  if(!subtle||!trusted||catalog.weapon!==0||catalog.coat!==151||catalog.records?.length!==120||catalog.assetHashes?.length!==1503)return null;
- const accepted={};
+ const accepted={},colors={};
  // The normalized saved profile may change only the proven material, not
  // the geometry, contact timing, frame sources, or equipment.
- const geometry=({id,material,colorAppearance,...source})=>JSON.stringify(source);
  for(const dir of ['north','south','east','west']){
   if(!trusted[dir])return null;
   const source=JSON.stringify(trusted[dir]),bytes=await subtle.digest('SHA-256',new TextEncoder().encode(source));
@@ -87,6 +98,14 @@ async function verify(catalog,trusted,{subtle=root.crypto?.subtle,saved=[]}={}){
       current.material.eyeColor!==trusted[dir].material?.eyeColor||current.material.style!==trusted[dir].material?.style||
       geometry(current)!==trustedShape)continue;
    accepted[dir].push(JSON.stringify(current));
+   if(current.colorAppearance?.hairStyle==='hair-cropped'&&current.colorAppearance?.eyeStyle==='original'&&current.material.eyeStyle===null&&
+      current.material.style==='cropped'&&current.colorAppearance.hairColor===current.material.hairColor&&
+      current.colorAppearance.eyeColor===current.material.eyeColor&&!current.material.gearRecord){
+    const proof={geometry:trustedShape,material:materialIdentity(current.material)};
+    // The standard skin variants all share this explicit head-layer authority.
+    if(colors[dir]&&colors[dir].material!==proof.material){colors[dir]=null;break;}
+    colors[dir]=proof;
+   }
   }
  }
  const normalizedGloves=new Set([26,159]);
@@ -99,7 +118,7 @@ async function verify(catalog,trusted,{subtle=root.crypto?.subtle,saved=[]}={}){
   const actual=Array.from(new Uint8Array(bytes),v=>v.toString(16).padStart(2,'0')).join('');
   if(actual===expected)normalizedGloves.add(item);
  }
- return create(catalog,accepted,normalizedGloves);
+ return create(catalog,accepted,normalizedGloves,colors);
 }
 const api={verify};root.MareSword0Checkpoint=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

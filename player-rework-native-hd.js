@@ -172,10 +172,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(pants!=null&&!Object.hasOwn(s.items,String(pants)))return null;
   if(pants==null&&!['coat','boots','gloves'].some(k=>values[k]!=null))return null;
   if(Object.entries(equipment).some(([slot,value])=>!['legs','pants','coat','boots','gloves','head'].includes(slot)||value&&typeof value==='object'&&['variant','variantId','appearanceVariant'].some(k=>value[k]!=null&&value[k]!=='original')))return null;
-  // P168 keeps the same proven boot/hem composition with or without C151.
-  // Other trouser/shaft pairs retain their old routes.
-  const certifiedHem=pants===168&&(values.coat==null||values.coat===151)&&(values.boots===9||values.boots===176);
-  if(values.coat!=null&&![6,7,130,137,144,151,158,165,172,179].includes(values.coat)||values.boots!=null&&values.boots!==155&&values.coat!==151&&!certifiedHem||values.gloves!=null&&values.gloves!==152)return null;
+  const registeredCoat=values.coat==null||[6,7,130,137,144,151,158,165,172,179].includes(values.coat);
+  // A registered upper layer preserves the same validated P168 cuff on the
+  // 40-frame South rig. Other trouser/shaft pairs retain their prior routes.
+  const certifiedHem=pants===168&&registeredCoat&&(values.boots===9||values.boots===176);
+  if(!registeredCoat||values.boots!=null&&values.boots!==155&&values.coat!==151&&!certifiedHem||values.gloves!=null&&values.gloves!==152)return null;
   if(pants!=null&&values.boots!=null&&values.boots!==155&&!certifiedHem)return null;
   if(!s.controlsApproved&&(values.coat===151||values.boots!=null||values.gloves!=null))return null;
   const base=selectBase({...player,__southAnatomy:true,equipment:equipment.head!=null?{head:equipment.head}:{}},o,true);
@@ -889,8 +890,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function selectStaticMalePunchSlots(player,o,a,visible){
   const d=o.direction,g=visible.gloves?.item,b=visible.boots?.item;
   const palette=Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original');
-  const colors=palette&&(d==='north'&&[26,131,138,145,152,159,166,173,180].includes(g)||d==='south'&&[26,159].includes(g)&&a.eyeColor==='blue'&&root.MareCharacterAppearance?.eyes.blue)&&['original',undefined].includes(a.hair)&&
-   ['original',undefined].includes(a.face)&&['blue','original',undefined].includes(a.eyeColor)&&
+  const colors=palette&&(d==='north'&&[26,131,138,145,152,159,166,173,180].includes(g)||d==='south'&&[26,159].includes(g)&&Object.hasOwn(root.MareCharacterAppearance?.eyes||{},a.eyeColor))&&['original',undefined].includes(a.hair)&&
+   ['original',undefined].includes(a.face)&&(d==='south'||['blue','original',undefined].includes(a.eyeColor))&&
    (!a.skin||a.skin==='original'||root.MareAppearance96?.skins[a.skin])&&(!a.hairColor||a.hairColor==='original'||root.MareAppearance96?.hairs[a.hairColor]);
   if(a.body!=='male'||!['north','south','east','west'].includes(d)||!['attack','attack-unarmed'].includes(o.action)||
      visible.torso?.item!==151||visible.pants?.item!==133||Object.keys(visible).length!==4||
