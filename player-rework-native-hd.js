@@ -1090,16 +1090,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   east:'944955105f510cb49bdaa64bc8e7bf83dc56eb691dd32aade35dd85f288c1cf4',
   west:'2d1bccc8f07fde945577e1a9e92f0526ce84091e5d99629f7cc24c5dc08c31bf'
  };
- function selectFemaleP168GloveWalk(player,o,visible){
-  const d=o.direction,g=visible.gloves?.item;
+ function selectFemaleApprovedGloveWalk(player,o,visible){
+  const d=o.direction,g=visible.gloves?.item,pants=visible.pants?.item;
   if(o.action!=='walk'||!Object.hasOwn(femaleSideWalkGloveAuthority,d)||o.weaponless||
-     visible.torso?.item!==151||visible.pants?.item!==168||![25,26,145,152,159,166,173].includes(g)||Object.keys(visible).length!==3||
+     visible.torso?.item!==151||![168,182].includes(pants)||![25,26,145,152,159,166,173].includes(g)||Object.keys(visible).length!==3||
      ![undefined,null,'natural'].includes(player.appearance96?.skinStyle))return null;
   // This is the approved Original walk as-is, not a fallback to another body.
   const equipment={...player.equipment};delete equipment[visible.gloves.key];
   const source=select({...player,equipment},o);
   const donor=outfitById.get(`frozen-female-glove${g}-${d}-walk-native-layers`);
-  if(source?.id!==`approved-female151-v64-walk-${d}-pants168`||source.hdKind!=='outfit'||
+  if(source?.id!==`approved-female151-v64-walk-${d}-pants${pants}`||source.hdKind!=='outfit'||
      source.slotComposition151!==true||source.sourceRevision!=='F151-v64-native-12'||
      !donor?.frozenFemaleGloveLayers||donor.sourceAuthoritySHA256!==femaleSideWalkGloveAuthority[d]||
      donor.body!=='female'||donor.direction!==d||donor.action!=='walk'||donor.productionEnabled===false||
@@ -1641,7 +1641,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!visible)return null;
   const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
-  if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectFemaleP168GloveWalk(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
+  if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectFemaleApprovedGloveWalk(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
   return selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
  }
  function selectVisual(player,o={}){
@@ -1674,7 +1674,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
        ['east','west'].includes(o.direction)&&visible.weapon?.item===0)||visible?.boots?.item===148&&(o.direction==='north'&&[0,1,67,68,69,70].includes(visible.weapon?.item)||
        o.direction==='south'&&[0,1,67,68,70].includes(visible.weapon?.item)||
        ['east','west'].includes(o.direction)&&visible.weapon?.item===0)||
-       visible?.boots?.item===183&&(o.direction==='north'&&[0,1,67,68,70].includes(visible.weapon?.item)||o.direction==='south'&&[0,1,67].includes(visible.weapon?.item)))&&Object.keys(visible).length===2&&o.action==='attack-sword'){
+       visible?.boots?.item===183&&(o.direction==='north'&&[0,1,67,68,69,70].includes(visible.weapon?.item)||o.direction==='south'&&[0,1,67,70].includes(visible.weapon?.item)))&&Object.keys(visible).length===2&&o.action==='attack-sword'){
     const bare={...player,equipment:{weapon:visible.weapon.value}};
     const reference=visible.weapon.item===0?bare:{...bare,equipment:{weapon:{def:0}}};
     const coated={...reference,equipment:{...reference.equipment,coat:{def:151}}};

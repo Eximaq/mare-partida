@@ -57,7 +57,7 @@ async function stage(actor,source){
   {...gloveActor,appearance96:{...appearance96,skinColor:'ebony'}},
   {...gloveActor,appearance96:{...appearance96,hairStyle:'hair-bob'}},
   {...gloveActor,appearance96:{...appearance96,eyeColor:'green'}},
-  {...gloveActor,equipment:{...gloveActor.equipment,legs:{def:182}}},
+  {...gloveActor,equipment:{...gloveActor.equipment,legs:{def:175}}},
   {...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:180}}},
   {...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:g,variant:'other'}}},
   {...gloveActor,equipment:{...gloveActor.equipment,boots:{def:155}}}];
