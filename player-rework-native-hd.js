@@ -1840,7 +1840,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function selectNorthPunchBare(o,a,visible){
   const item=visible.gloves?.item,noCoat=visible.torso==null;
   if(a.body!=='male'||o.direction!=='north'||!['attack','attack-unarmed'].includes(o.action)||
-     Object.keys(visible).length!==(noCoat?2:3)||(noCoat?![26,131,138,145,152,159,166,173,180].includes(item):visible.torso.item!==151)||visible.pants?.item!==133||![25, 26, 131, 138, 145, 152, 159, 166, 173, 180].includes(item)||
+     Object.keys(visible).length!==(noCoat?2:3)||(noCoat?![25,26,131,138,145,152,159,166,173,180].includes(item):visible.torso.item!==151)||visible.pants?.item!==133||![25, 26, 131, 138, 145, 152, 159, 166, 173, 180].includes(item)||
      !['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||!['original','blue',undefined].includes(a.eyeColor)||
      (a.skin&&a.skin!=='original'&&!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))||
      (a.hairColor&&a.hairColor!=='original'&&!Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)))return null;
