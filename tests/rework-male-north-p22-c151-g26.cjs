@@ -19,7 +19,7 @@ for(const tone of Object.keys(A.skins)){
  for(const k of ['clip','rest','poses'])a.deepEqual(d(r)[k],d(target)[k]);
  a.deepEqual(r.paletteSourceMasks,target.paletteSourceMasks);a(!test(actor(tone,'amber',add))?.id.includes(sig));
  const p133=actor(tone,'blue',{...add,legs:I(133)}); if(gl)a(test(p133)?.id.includes(':own-north-punch-g'+item+'-bare:'));
- for(const extra of [{boots:I(9)},{boots:I(148)},{boots:I(155)},{gloves:I(25)},{weapon:I(0)},{legs:I(21)},{coat:I(6)}])a(!test(actor(tone,'blue',{...add,...extra}))?.id.includes(':own-p22-c151:north:attack-unarmed-g26:'));
+ for(const extra of [{boots:I(9)},{boots:I(148)},{boots:I(155)},{gloves:{def:25,variant:'other'}},{weapon:I(0)},{legs:I(21)},{coat:I(6)}])a(!test(actor(tone,'blue',{...add,...extra}))?.id.includes(':own-p22-c151:north:attack-unarmed-g26:'));
  for(const o of [{...opts,action:'walk'},{...opts,direction:'south'},{...opts,direction:'east'},{...opts,direction:'west'}])a(!api.selectVisual(q,o)?.id.includes(sig));
  for(const look of [{hairStyle:'hair-bob'},{eyeStyle:'face-calm'}])a(!test({...q,appearance96:{...q.appearance96,...look}})?.id.includes(sig));
  if(gl){q.equipment.gloves={def:item,variant:'other'};a(!test(q)?.id.includes(sig));delete q.equipment.gloves;a(test(q)?.id.includes(':own-p22-c151:north:attack-unarmed:'));q.equipment.gloves=I(item);}
