@@ -22,9 +22,17 @@ const beforeConfirmation=await snapshot();
 const upgrade=p.locator('[data-forge-action=upgrade]');
 await upgrade.click();
 const confirmation=p.getByRole('alertdialog');
-assert.match(await confirmation.evaluate(e=>getComputedStyle(e).borderImageSource),/hud-nautical-v2\/rope-frame\.png/);
-assert.match(await confirmation.locator('#confirmationMessage').evaluate(e=>getComputedStyle(e).fontFamily),/Barlow Semi Condensed/);
-assert.equal(await confirmation.locator('.confirmation-chance b').innerText(),'75%');
+const cardStyle=await confirmation.evaluate(e=>({
+ frame:getComputedStyle(e).borderImageSource,
+ blur:getComputedStyle(e).backdropFilter,
+ border:getComputedStyle(e).borderTopWidth
+}));
+assert.equal(cardStyle.frame,'none','The confirmation uses a thin glass frame');
+assert.equal(cardStyle.border,'1px');
+assert.match(cardStyle.blur,/blur/);
+assert.match(await confirmation.locator('#confirmationMessage').evaluate(e=>getComputedStyle(e).fontFamily),/system-ui/);
+const successChance=await p.evaluate(()=>MareForge.upgradeChance(__forgeQA.game.equipment.weapon));
+assert.equal(await confirmation.locator('.confirmation-chance b').innerText(),Math.round(successChance*100)+'%');
 assert.ok(await confirmation.locator('.confirmation-risk').isVisible());
 for(const [width,height] of [[1440,900],[768,1024],[390,844],[844,390]]){
  await p.setViewportSize({width,height});
@@ -41,6 +49,15 @@ await p.keyboard.press('Escape');
 assert.ok(await confirmation.isHidden());
 assert.equal(await snapshot(),beforeConfirmation,'Cancelling must preserve resources and refinement');
 assert.ok(await upgrade.evaluate(e=>document.activeElement===e));
+await p.evaluate(()=>__forgeQA.openPanel('help'));
+const restart=p.locator('[data-reset]');
+await restart.click();
+assert.equal(await confirmation.locator('[data-confirm-accept]').getAttribute('data-variant'),'danger');
+assert.match(await confirmation.innerText(),/será apagado/);
+await confirmation.getByRole('button',{name:'VOLTAR'}).click();
+assert.equal(await snapshot(),beforeConfirmation);
+assert.ok(await restart.evaluate(e=>e===document.activeElement));
+await p.evaluate(()=>__forgeQA.openPanel('forge'));
 await p.evaluate(plus=>{__forgeQA.game.equipment.weapon.plus=plus;__forgeQA.render();},priorUpgrade);
 for(const [width,height] of [[1920,1080],[1672,940],[1448,1086],[1366,768],[1280,720],[1024,768],[768,1024],[390,844],[360,740]]){
  await p.setViewportSize({width,height});
