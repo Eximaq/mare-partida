@@ -21,7 +21,7 @@ const data=async path=>{const c=cap();c.drawImage(await load(path),0,0);return p
   for(const [who,opt] of [[save({skinColor:'ebony'}),o],[save({hairColor:'brown'}),o],[save({eyeColor:'brown'}),o],
     [save({hairStyle:'hair-spiky'}),o],[save({eyeStyle:'face-calm'}),o],[save({},{weapon:{def:122,variant:'other'}}),o],
     [save({},{weapon:{def:122},coat:{def:151}}),o],[save({},{weapon:{def:122},head:{def:19}}),o],
-    [save({},{weapon:{def:17}}),o],[save({},{weapon:{def:122}},'healer'),o],[q,{...o,action:'attack-unarmed'}],
+    [save({},{weapon:{def:16}}),o],[save({},{weapon:{def:122}},'healer'),o],[q,{...o,action:'attack-unarmed'}],
     [q,{...o,consumer:'preview'}],[q,{...o,direction:'north'}],[q,{...o,direction:'south'}],[q,{...o,weaponless:true}]]){
    a(!api.selectVisual(who,opt)?.orb122ApprovedPreview); if(C)a.deepEqual(api.selectVisual(who,opt),stock.selectVisual(who,opt));
   }

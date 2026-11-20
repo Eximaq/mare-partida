@@ -659,9 +659,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // visible equipment, not a subset that could silently swallow an unsupported slot.
   const independentEquipment=Object.fromEntries(Object.entries(player.equipment||{}).filter(([slot,v])=>slot!=='weapon'&&v!=null&&!['none','original'].includes(v)));
   const relic32=selectRelic32FocusSide(player,o,a,equipment);if(relic32)return relic32;
+  const allowReviewedBareOrb=o.consumer==='world'&&!o.weaponless&&['variant','variantId','appearanceVariant'].every(k=>
+   player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original');
   const independent=!player.__reworkSubset&&weaponRegistry?.resolveSeparable?.({item:o.weaponless?undefined:(player.equipment?.weapon?.def??player.equipment?.weapon),body:canonical(a.body),sourceBody:a.body,classId:player.classId,weaponVariant:player.equipment?.weapon?.variant??player.equipment?.weapon?.variantId??player.equipment?.weapon?.appearanceVariant,action:o.action,direction:o.direction,appearance:a,equipment:independentEquipment,
-   allowOrb122BarePreview:o.consumer==='world'&&!o.weaponless&&['variant','variantId','appearanceVariant'].every(k=>
-    player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original')});
+   allowOrb122BarePreview:allowReviewedBareOrb,allowOrb17BarePreview:allowReviewedBareOrb});
   if(independent)return {...independent,hdKind:'weapon'};
   const independentPants=!player.__reworkSubset&&outfitRegistry?.resolveIndependentPants?.({body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:player.equipment||{}});
   if(independentPants)return {...independentPants,hdKind:'outfit'};
@@ -762,6 +763,24 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      ['light','ebony'].includes(a.skin)){
    const ownMech=carryRegistry?.resolve({item:119,mechanical119SouthSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:119}});
    if(ownMech?.mechanical119SouthSavedPalette)return withCarryHead(ownMech,'carry');
+  }
+  const w31=equipment.weapon;
+  if(weapon===31&&player.classId==='strategist'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     ['north','south','east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&o.consumer==='world'&&!o.weaponless&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w31?.[k]==null||w31[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     ['light','ebony'].includes(a.skin)){
+   const wholeRelic=carryRegistry?.resolve({item:31,pureRelic31Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:31}});
+   if(wholeRelic?.relic31SavedCarry)return withCarryHead(wholeRelic,'carry');
+  }
+  const w117=player.equipment?.weapon;
+  if((w117?.def??w117)===117&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&['east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w117?.[k]==null||w117[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     ['light','ebony'].includes(a.skin)){
+   const own117=carryRegistry?.resolve({item:117,joinedArm117Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:117}});
+   if(own117?.arm117SavedPalette)return withCarryHead(own117,'carry');
   }
   const ownRelic=selectSavedRelic32Carry(player,o,a);if(ownRelic)return ownRelic;
   const carried=carryRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head').map(([k,v])=>[k,v?.def??v]))});
