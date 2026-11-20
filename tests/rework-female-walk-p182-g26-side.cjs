@@ -2,7 +2,7 @@
 const g=Number(process.env.GLOVE||26),pantsId=Number(process.env.PANTS||182);
 const p=require('path'),a=require('node:assert/strict'),C=require('crypto');
 if(!process.argv[2]){
- for(const def of (process.env.PANTS?[pantsId]:process.env.GLOVE?[182]:[182,147,161]))for(const item of (process.env.GLOVE?[g]:[25,26,131,138,145,152,159,166,173]))for(const d of ['east','west']){
+ for(const def of (process.env.PANTS?[pantsId]:process.env.GLOVE?[182]:[182,147,161,175]))for(const item of (process.env.GLOVE?[g]:def===175?[26,138,166]:[25,26,131,138,145,152,159,166,173]))for(const d of ['east','west']){
   const r=require('node:child_process').spawnSync(process.execPath,[__filename,d],{stdio:'inherit',env:{...process.env,GLOVE:String(item),PANTS:String(def)}});
   if(r.error)throw r.error;if(r.status!==0)process.exit(r.status||1);
  }
@@ -54,8 +54,9 @@ async function stage(actor,source){
  a.deepEqual(combo.pack.directions[d].layers,[...x.layers,...gloves]);
  a.deepEqual({...combo.pack.directions[d],layers:x.layers},x);
  a.deepEqual(combo.pack.pivot,native.pack.pivot);
- const swapId=g===26?([147,161].includes(pantsId)?166:145):26;
+ const swapId=g===26?([147,161,175].includes(pantsId)?166:145):26;
  const swapped={...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:swapId}}},other=run.selectVisual(swapped,o);
+ if(pantsId===175)for(const id of [25,131,145,152,159,173])a.notEqual(run.selectVisual({...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:id}}},o)?.slotRoutes?.gloves?.item,id);
  a.equal(other.slotRoutes.gloves.item,swapId);
  a.deepEqual(other.pack.directions[d].layers.filter(l=>!l.id.startsWith('own-female')),x.layers);
  a.notDeepEqual(other.pack.directions[d].layers.slice(-2),gloves);
@@ -63,7 +64,7 @@ async function stage(actor,source){
   {...gloveActor,appearance96:{...appearance96,skinColor:'ebony'}},
   {...gloveActor,appearance96:{...appearance96,hairStyle:'hair-bob'}},
   {...gloveActor,appearance96:{...appearance96,eyeColor:'green'}},
-  {...gloveActor,equipment:{...gloveActor.equipment,legs:{def:175}}},
+  {...gloveActor,equipment:{...gloveActor.equipment,legs:{def:133}}},
   {...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:180}}},
   {...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:g,variant:'other'}}},
   {...gloveActor,equipment:{...gloveActor.equipment,boots:{def:155}}}];
@@ -81,13 +82,22 @@ async function stage(actor,source){
   const oldLower=await mask(oc.width,oc.height,y.layers.filter(l=>extras(l)&&!gloves.includes(l)),f);
   const gm=await mask(oc.width,oc.height,gloves,f),lower=await mask(oc.width,oc.height,x.layers.filter(pants),f),arm=await mask(oc.width,oc.height,x.layers.filter(l=>l.id==='native-visible-near-arm-manual'),f),foot=await mask(oc.width,oc.height,bootFront,f);
   let covered=0,overlap=0,baseDiff=0,touchDiff=0,changed=0,out=0,opaqueDiff=0,footOverlap=0,armDiff=0,foreignBG=0;
-  let exposed=0,exposedDiff=0;
+  let exposed=0,exposedDiff=0,nearEdge=0,nearEdgeDiff=0;
   for(let i=0;i<u0.length;i+=4){
    if(arm[i+3]===255&&!gm[i+3]){
     exposed++;if(u1.readUInt32LE(i)!==j1.readUInt32LE(i))exposedDiff++;
    }
    if(u0.readUInt32LE(i)!==u1.readUInt32LE(i)){changed++;if(!gm[i+3])out++;}
    if(arm[i+3]===255&&u1.readUInt32LE(i)!==j1.readUInt32LE(i))armDiff++;
+   // A lower garment may change what is seen through the fringe, never
+   // any entirely exposed source hand pixel or a pixel outside that lower domain.
+   if(pantsId===175&&!gm[i+3]&&!lower[i+3]&&!oldLower[i+3]){
+    const k=i>>>2,W=oc.width;
+    if(k%W>1&&k%W<W-2&&k/W>=2&&k/W<oc.height-2&&
+        [-2,-1,1,2,-W,W,-2*W,2*W].some(offset=>gm[(k+offset)*4+3])){
+     nearEdge++;if(u1.readUInt32LE(i)!==j1.readUInt32LE(i))nearEdgeDiff++;
+    }
+   }
    if(!gm[i+3])continue;
    if(foot[i+3])footOverlap++;
    if(gm[i+3]===255&&u1.readUInt32LE(i)!==j1.readUInt32LE(i))opaqueDiff++;
@@ -102,11 +112,11 @@ async function stage(actor,source){
   gloveActor.equipment.gloves={def:g};
   a.equal(run.selectVisual(gloveActor,o).id,combo.id);
   a(u1.equals(px(v.draw(f,gloveActor))),'re-equipping glove restores the same HD combination');a.equal(out,0,'other body/material changes');
-  a.equal(opaqueDiff+footOverlap+armDiff+foreignBG+exposedDiff,0,'skin/opaque glove/depth or unknown background changed');
-  results.push({f,covered,overlap,baseDiff,touchDiff,changed,opaqueDiff,footOverlap,armDiff,foreignBG,exposed,exposedDiff,base:hash(u0),withGlove:hash(u1)});
+  a.equal(opaqueDiff+footOverlap+armDiff+foreignBG+exposedDiff+nearEdgeDiff,0,'skin/opaque glove/depth or unknown background changed');
+  results.push({f,covered,overlap,baseDiff,touchDiff,changed,opaqueDiff,footOverlap,armDiff,foreignBG,exposed,exposedDiff,nearEdge,nearEdgeDiff,base:hash(u0),withGlove:hash(u1)});
  }
  for(const s of [u,v,j,k])s.release();
  const output={direction:d,approvedPants:q.id,gloveSource:r.id,gloveAssetCount:refs.length,poses:results,allMatched:results.every(z=>!z.opaqueDiff&&!z.footOverlap&&!z.armDiff&&!z.foreignBG)};
  a(output.allMatched);a.equal(results.length,40);
- console.log(g,d,output.allMatched,Object.fromEntries(['overlap','baseDiff','touchDiff','changed','opaqueDiff','footOverlap','armDiff','exposed','exposedDiff'].map(k=>[k,Math.max(...results.map(r=>r[k]))])));
+ console.log(g,d,output.allMatched,Object.fromEntries(['overlap','baseDiff','touchDiff','changed','opaqueDiff','footOverlap','armDiff','exposed','exposedDiff','nearEdge','nearEdgeDiff'].map(k=>[k,Math.max(...results.map(r=>r[k]))])));
 })().catch(e=>{console.error(e);process.exitCode=1});
