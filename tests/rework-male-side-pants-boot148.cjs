@@ -7,7 +7,7 @@ if(!process.env.PANTS){
   if(r.error)throw r.error;
   if(r.status!==0)process.exit(r.status??1);
  }
- console.log('PASS 136 distinct lateral B148 poses');
+ console.log(process.env.SELECT_ONLY?'PASS lateral B148 save gate':'PASS 136 distinct lateral B148 poses');
  process.exit(0);
 }
 const a=require('node:assert/strict'),fs=require('node:fs'),p=require('node:path'),root=p.resolve(process.env.KAIZOKU_REPO||p.join(__dirname,'..')),{make,cv}=require(p.join(root,'tests/rework-integration-support.cjs'));
@@ -36,6 +36,10 @@ const src=h=>{if(!memo.has(h))memo.set(h,load('tools/rework-modular-outfits-hd/a
   a.deepEqual(b148.pack.pivot,no.pack.pivot);a.deepEqual(b148.pack.frame,no.pack.frame);
   const shape=[...equipped].sort((x,y)=>x.depth-y.depth).map(l=>l.depth);a.deepEqual(shape,[4.3,4.3,4.39,4.39,5,6]);
   a.deepEqual(b148.colorAppearance,no.colorAppearance);
+  // This proof is for the literal archive look, not a selectable saved palette.
+  const normalized=global.MareCharacterAppearance.normalize(look);
+  a.notEqual(normalized.skinColor,'original');
+  a(!api.selectLayered({...worn,appearance96:normalized},o)?.id.includes(':boot148:'),'literal archive look must not alias a real save');
   const saved={...worn,appearance96:{...look,skinColor:'ebony'}};
   a(!api.selectLayered(saved,o)?.id.includes(':boot148:'),'new route claimed unverified saved colors');
   for(const x of [140,147,182])a(!api.selectLayered(player(x,148),o)?.id.includes(':boot148:'),'unselected variants were promoted');

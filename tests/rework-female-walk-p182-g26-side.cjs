@@ -2,7 +2,7 @@
 const g=Number(process.env.GLOVE||26),pantsId=Number(process.env.PANTS||182);
 const p=require('path'),a=require('node:assert/strict'),C=require('crypto');
 if(!process.argv[2]){
- for(const def of (process.env.PANTS?[pantsId]:process.env.GLOVE?[182]:[182,147]))for(const item of (process.env.GLOVE?[g]:def===147?[26,138,166,173]:[25,26,138,145,152,159,166,173]))for(const d of ['east','west']){
+ for(const def of (process.env.PANTS?[pantsId]:process.env.GLOVE?[182]:[182,147]))for(const item of (process.env.GLOVE?[g]:def===147?[26,131,138,166,173]:[25,26,131,138,145,152,159,166,173]))for(const d of ['east','west']){
   const r=require('node:child_process').spawnSync(process.execPath,[__filename,d],{stdio:'inherit',env:{...process.env,GLOVE:String(item),PANTS:String(def)}});
   if(r.error)throw r.error;if(r.status!==0)process.exit(r.status||1);
  }
@@ -17,7 +17,7 @@ const hash=b=>C.createHash('sha256').update(b).digest('hex');
 const d=process.argv[2]||'east',o={action:'walk',direction:d,consumer:'world'};
 a(['east','west'].includes(d));
 const r=rows.find(r=>r.id===`frozen-female-glove${g}-${d}-walk-native-layers`);
-const ownRefs={138:{east:'ref-0708',west:'ref-0709'},173:{east:'ref-0718',west:'ref-0719'},152:{east:'ref-0712',west:'ref-0713'},25:{east:'ref-0978',west:'ref-0979'}};
+const ownRefs={131:{east:'ref-1029',west:'ref-1030'},138:{east:'ref-0708',west:'ref-0709'},173:{east:'ref-0718',west:'ref-0719'},152:{east:'ref-0712',west:'ref-0713'},25:{east:'ref-0978',west:'ref-0979'}};
 if(ownRefs[g])a.equal(r.frozenGloveSourceRef,ownRefs[g][d]);
 const q=rows.find(r=>r.id===`approved-female151-v64-walk-${d}-pants${pantsId}`);
 const x=q.pack.directions[d],y=r.pack.directions[d],gloves=y.layers.filter(l=>l.id.startsWith(`own-female${g}-`));
@@ -26,6 +26,10 @@ const bootFront=y.layers.filter(l=>l.id.startsWith('boot155-')&&l.depth>29.5);
 const {layers:lx,...gx}=x,{layers:ly,...gy}=y;
 a.deepEqual(gx,gy);a.deepEqual(lx.filter(l=>!pants(l)),ly.filter(l=>!extras(l)));
 a.deepEqual(gloves.map(l=>l.depth),[29.5,9.5]);a.deepEqual(gloves.map(l=>l.binding.kind),['fixed','fixed']);
+if(g===131){
+ a.deepEqual(gloves.map(l=>new Set(l.frames).size),[10,9]);
+ a.equal(hash(JSON.stringify(gloves)),{east:'4f2bd9bac4f0f3dfda6755954a5f7b75763ed7e00c975f12015b07a11f44ad47',west:'426036e20a109c355d26fd87596b8a0b1fbda130292e7beead84e9ec239b00a7'}[d]);
+}
 a.deepEqual(q.pack.frame,r.pack.frame);a.deepEqual(q.pack.pivot,r.pack.pivot);
 const refs=[...new Set(gloves.flatMap(l=>l.frames))];a(refs.every(h=>r.sourceRefs.includes(h)));
 const appearance96=global.MareCharacterAppearance.normalize({gender:'feminino',hairStyle:'original',hairColor:'brown',eyeStyle:'original',eyeColor:'brown',skinColor:'light'});

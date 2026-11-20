@@ -1093,7 +1093,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function selectFemaleApprovedGloveWalk(player,o,visible){
   const d=o.direction,g=visible.gloves?.item,pants=visible.pants?.item;
   if(o.action!=='walk'||!Object.hasOwn(femaleSideWalkGloveAuthority,d)||o.weaponless||
-     visible.torso?.item!==151||!([168,182].includes(pants)||pants===147&&[26,138,166,173].includes(g))||![25,26,138,145,152,159,166,173].includes(g)||Object.keys(visible).length!==3||
+     visible.torso?.item!==151||!([168,182].includes(pants)||pants===147&&[26,131,138,166,173].includes(g))||![25,26,131,138,145,152,159,166,173].includes(g)||Object.keys(visible).length!==3||
      ![undefined,null,'natural'].includes(player.appearance96?.skinStyle))return null;
   // This is the approved Original walk as-is, not a fallback to another body.
   const equipment={...player.equipment};delete equipment[visible.gloves.key];
@@ -1102,6 +1102,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(source?.id!==`approved-female151-v64-walk-${d}-pants${pants}`||source.hdKind!=='outfit'||
      source.slotComposition151!==true||source.sourceRevision!=='F151-v64-native-12'||
      !donor?.frozenFemaleGloveLayers||donor.sourceAuthoritySHA256!==femaleSideWalkGloveAuthority[d]||
+     g===131&&donor.frozenGloveSourceRef!==(d==='east'?'ref-1029':'ref-1030')||
      donor.body!=='female'||donor.direction!==d||donor.action!=='walk'||donor.productionEnabled===false||
      donor.equipment?.torso!==151||donor.equipment.pants!==154||donor.equipment.boots!==155||donor.equipment.gloves!==g||
      source.mirrorX||source.mirrorLayerIDs||source.sourceRasterPadding||donor.mirrorX||donor.mirrorLayerIDs||donor.sourceRasterPadding)return null;
@@ -1115,7 +1116,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      upper.length!==12||!same(upper,y.filter(l=>!l.id.startsWith('pants154-')&&!l.id.startsWith('boot155-')&&!gloves.includes(l)))||
      gloves.length!==2||!gloves.every((l,j)=>l.id===`own-female${g}-${j?'far':'near'}`&&l.depth===(j?9.5:29.5)&&
        l.slot==='foreground'&&l.binding?.kind==='fixed'&&l.frames?.length===40&&!l.depthTrack)||
-     refs.length!==16||!refs.every(h=>donor.sourceRefs.includes(h)&&!source.sourceRefs.includes(h)))return null;
+     (g===131?(refs.length!==19||new Set(gloves[0].frames).size!==10||new Set(gloves[1].frames).size!==9):refs.length!==16)||
+     !refs.every(h=>donor.sourceRefs.includes(h)&&!source.sourceRefs.includes(h)))return null;
   const pack={...source.pack,directions:{...source.pack.directions,[d]:{...pose,layers:[...x,...gloves]}}};
   const composed=describeSlots({...source,pack,equipment:{...source.equipment,gloves:g},
    sourceRefs:[...source.sourceRefs,...refs]},visible,[]);

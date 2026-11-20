@@ -1,3 +1,5 @@
 # B148 com quatro calças masculinas
 
 No visual Original, com Peitoral 151 e Luva 152, a B148 mantém os próprios seis passes ao lado das Calças 154, 161, 168 e 175. A frente e o cano de trás têm a ordem da fonte aprovada, sem copiar a camada de apoio da B9. Cada calça é testada em repouso e na caminhada Leste/Oeste; a retirada altera só o que a bota cobre, preserva o contorno da sola e restaura o quadro exato. A versão com tom personalizado ou com outra calça não foi habilitada.
+
+Status do save: esta prova é de bancada, com as cores autorais literais. O carregamento do save preserva os estilos Original, mas grava cores válidas (por exemplo cabelo Preto, olho Azul, pele Clara), que não passam neste registro. A B148 não foi habilitada para esses perfis nas laterais. Não tratar o visual literal como alias de Claro: um pixel opaco da pele muda de #F4A56B para #EDB17D ao aplicar Clara. As máscaras laterais v18 existentes misturam íris e pele e não cobrem a perna em movimento; falta fonte autoral ou separação de material validada por fase.
