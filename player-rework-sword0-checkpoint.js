@@ -126,14 +126,14 @@ function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
  }
  function resolveNorthGloveOnly(origin,bare,direction,visible,reference){
   const item=visible.weapon?.item,g=visible.gloves?.item;
-  if(!gloveOnlyVerified||direction!=='north'||![0,1].includes(item)||!northGloveOnlyIds.includes(g)||
+  if(!gloveOnlyVerified||direction!=='north'||![0,1,67,68,69,70].includes(item)||!northGloveOnlyIds.includes(g)||
      Object.keys(visible).length!==2||!origin||!bare||bare.item!==item||bare.body!=='female'||
      bare.action!=='attack-sword'||bare.direction!==direction||bare.outfitSourceId||bare.checkpointSources)return null;
   const expected=item===0?bare:reference;
   if(!expected||expected.item!==0)return null;
   const checked=resolve(origin,direction,{...visible,torso:{item:151,key:'coat'}},
    item===0?undefined:{reference:expected,donor:bare});
-  if(!checked||item===1&&checked.paddingPhysical!==bare.paddingPhysical)return null;
+  if(!checked||item!==0&&checked.paddingPhysical!==bare.paddingPhysical)return null;
   const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),x=bare.pack.directions.north,y=origin.pack.directions.north;
   const nonCoat=y.layers.filter(l=>!l.id.startsWith('coat151-whole-')),coats=y.layers.filter(l=>!nonCoat.includes(l));
   const owned=[...new Set(coats.flatMap(l=>l.frames||[l.source]))];

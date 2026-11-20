@@ -54,7 +54,7 @@ for(const skinColor of profiles){
   a(diff>10);a(pix(draw(bare,f)).equals(x));count++;M.width=1;
  }
  a.equal(JSON.stringify(p),save);
- for(const e of [{legs:{def:22}},{head:{def:19}},{boots:{def:9}},{weapon:{def:67}},{gloves:{def:25}},{gloves:{def:g,variant:'candidate'}}]){
+ for(const e of [{legs:{def:22}},{head:{def:19}},{boots:{def:9}},{weapon:{def:5}},{gloves:{def:25}},{gloves:{def:g,variant:'candidate'}}]){
   a(!api.selectVisual(actor({gloves:{def:g},...e}),o)?.id.includes('-north-no-coat'));
  }
  for(const delta of [{direction:'south'},{direction:'east'},{direction:'west'},{action:'walk'},{action:'attack-unarmed'}])
