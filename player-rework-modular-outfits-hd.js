@@ -95,6 +95,27 @@ const strictSouthFaces={"81ce2c74c6e8e05f2745223cdea70cfecee5b0ff49e4bcbf8d6ed25
 const strictSouthIris=[[303,205,40,5,0,255,1],[304,205,50,20,14,255,1],[303,206,41,4,0,255,1],[304,206,53,21,13,255,1],[303,207,71,25,13,255,2],[304,207,82,40,29,255,2],[307,207,40,21,16,255,1],[308,207,62,24,15,255,2],[303,208,88,37,22,255,2],[304,208,103,53,38,255,3],[305,208,38,17,11,255,1],[307,208,85,43,33,255,2],[308,208,78,31,18,255,2],[303,209,57,22,13,255,1],[304,209,95,46,31,255,3],[305,209,92,44,31,255,3],[306,209,92,43,30,255,3],[307,209,108,52,38,255,3],[308,209,66,20,7,255,2],[303,210,66,50,44,255,2],[304,210,55,17,9,255,1],[305,210,80,34,22,255,2],[306,210,84,34,22,255,2],[307,210,82,32,19,255,2],[332,206,50,7,0,255,1],[332,207,84,31,18,255,2],[333,207,43,20,14,255,1],[336,207,63,29,19,255,2],[337,207,47,18,11,255,1],[332,208,81,29,15,255,2],[333,208,77,38,26,255,2],[335,208,49,22,15,255,1],[336,208,91,45,32,255,3],[337,208,62,28,17,255,2],[332,209,70,22,10,255,2],[333,209,93,46,33,255,3],[334,209,87,41,27,255,2],[335,209,95,45,30,255,3],[336,209,98,49,33,255,3],[337,209,58,27,17,255,1],[332,210,38,5,0,255,1],[333,210,67,29,19,255,2],[334,210,69,29,18,255,2],[335,210,75,33,21,255,2],[336,210,47,11,3,255,1]];
 const knownRepairHands={"5ac179932f16e9e0884f57463303f7f40fa77b95d1f57a5f0e74b84f05389f40":[137,"south","cuff-emergence-handRight-RIGHT-skin",512,512],"55ac07f9dc92cc9130ab27a55cb48c7c6ff547d448f66c713085502fc0be5e67":[137,"south","cuff-emergence-handLeft-LEFT-skin",512,512],"d383b7148a8226b5cd7706249db11e14b1932689c3c9a5bcafcf5f0c0ef78db9":[137,"north","cuff-emergence-handRight-RIGHT-skin",512,512],"58a31b7aeb417bfadd1362702e8c8814cbcd196da65cf9946a6ab3ca3ccaccf3":[137,"north","cuff-emergence-handLeft-LEFT-skin",512,512],"64f3dce9f28769a460346360ade91e072e39618741b89aaff092971bdbc23d0e":[144,"south","south-visible-original-hands-RIGHT-skin",512,512],"9281f2be9b2d3d735c1e48c690bd57a152bbd2283115df453f7af05440076284":[144,"south","south-visible-original-hands-LEFT-skin",512,512]};
 
+const strictSideIrisPoints={"east":[[279,130,81,50,37,255,2],[279,131,70,34,23,255,2],[280,131,54,27,21,255,1],[279,132,69,31,21,255,2],[280,132,66,34,23,255,2],[281,132,43,27,21,255,1],[279,133,70,31,21,255,2],[280,133,70,34,23,255,2],[281,133,51,31,24,255,1],[279,134,81,42,29,255,2],[280,134,83,39,24,255,2],[281,134,73,42,29,255,2],[279,135,77,29,17,255,2],[280,135,90,37,19,255,3],[281,135,95,50,37,255,3],[282,135,49,30,27,255,1],[280,136,105,49,31,255,3],[281,136,75,39,30,255,2]],"west":[[232,130,81,50,37,255,2],[232,131,70,34,23,255,2],[231,131,54,27,21,255,1],[232,132,69,31,21,255,2],[231,132,66,34,23,255,2],[230,132,43,27,21,255,1],[232,133,70,31,21,255,2],[231,133,70,34,23,255,2],[230,133,51,31,24,255,1],[232,134,81,42,29,255,2],[231,134,83,39,24,255,2],[230,134,73,42,29,255,2],[232,135,77,29,17,255,2],[231,135,90,37,19,255,3],[230,135,95,50,37,255,3],[229,135,49,30,27,255,1],[231,136,105,49,31,255,3],[230,136,75,39,30,255,2]]};
+function applyStrictSideIris(record,d,frame,a,images,map,prefix,makeCanvas){
+ const layer=d.layers.find(l=>l.id===record.strictSideIris.background),key=layer?.frames?.[frame],
+  points=strictSideIrisPoints[record.direction];
+ const original=images.get(prefix+key+'.png')||images.get(key),colored=map.get(key);
+ if(!points||!makeCanvas||original?.width!==512||original.height!==512||!colored||colored.width!==512||colored.height!==512)throw Error('Invalid authored lateral iris source');
+ const source=makeCanvas(512,512),sc=source.getContext('2d');sc.drawImage(original,0,0);
+ const raw=sc.getImageData(0,0,512,512).data;
+ const out=makeCanvas(512,512),oc=out.getContext('2d');oc.drawImage(colored,0,0);
+ const data=oc.getImageData(0,0,512,512),eye=a.eyeColor||'original',ramp=root.MareCharacterAppearance?.eyes?.[eye]?.ramp;
+ if(eye!=='original'&&!ramp)throw Error('Unverified saved lateral iris palette');
+ for(const [x,y,R,G,B,A,tone] of points){
+  const i=(y*512+x)*4;
+  if(raw[i]!==R||raw[i+1]!==G||raw[i+2]!==B||raw[i+3]!==A||data.data[i+3]!==A)throw Error('Unregistered lateral iris pixel');
+  const v=ramp?parseInt(ramp[tone-1].slice(1),16):(R<<16)|(G<<8)|B;
+  data.data[i]=v>>>16;data.data[i+1]=(v>>>8)&255;data.data[i+2]=v&255;
+ }
+ oc.putImageData(data,0,0);map.set(key,out);
+ source.width=source.height=1;
+}
+
 function applyStrictSouthLayers(r,appearance,images,map,prefix,makeCanvas,appearanceAPI){
  const {face,repairs}=r.strictSouthAppearance;
  const known=strictSouthFaces[face];
@@ -301,6 +322,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
     if(tile){tile.getContext('2d').putImageData(data,0,0);map.set(source,tile);}
    }
   }
+  if(r.strictSideIris)applyStrictSideIris(r,d,frame,appearance,images,map,prefix,makeCanvas);
   // Garment silhouettes can be narrower than the naked calves in drawn attacks.
   // Occlude only that body layer at native resolution, never resize or rewrite assets.
   if(r.bodyOcclusion){

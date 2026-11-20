@@ -351,6 +351,25 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...base,id:base.id+':pants'+def+':idle-north-frame0',equipment:{pants:def},
    authoredNorthIdlePants:{base,cloth:expected[1][1],ownerAlpha:expected[2][1]}};
  }
+ // Same complete authored punch rig: replace the shorts slot only.
+ function resolveFemaleOwnedPunchPants(player,o,a,equipment){
+  const keys=Object.keys(equipment),v=equipment.legs??equipment.pants,dir=o.direction;
+  if(player.__reworkSubset||o.weaponless||canonical(a.body)!=='female'||o.action!=='attack-unarmed'||
+     !['north','south','east','west'].includes(dir)||keys.length!==1||!['legs','pants'].includes(keys[0])||
+     Number(v?.def??v)!==168||['variant','variantId','appearanceVariant'].some(k=>v?.[k]!=null&&v[k]!=='original'))return null;
+  const base=selectBase({...player,equipment:{}},o,true),id=`v7-female-punch-${dir}-ownership-candidate-${dir}`,donor=outfitById.get(`female-pants168-attack-unarmed-${dir}`);
+  if(base?.sourceId!==id||base.hdKind||base.headRecord||base.gearOnlyRecord||
+     donor?.adaptation?.targetBase!==id||donor.body!=='female'||donor.action!==o.action||
+     donor.direction!==dir||donor.equipment?.pants!==168||Object.keys(donor.equipment).length!==1)return null;
+  const same=(x,y)=>JSON.stringify(x)===JSON.stringify(y),p=base.pack,q=donor.pack,
+   {layers,...aDir}=p.directions[dir],{layers:source,...bDir}=q.directions[dir],i=layers.findIndex(l=>l.id==='shorts'&&l.slot==='pants'),cloth=source[i];
+  if(i<0||p.density!==4||aDir.clip.frames!==8||!['density','frame','pivot'].every(k=>same(p[k],q[k]))||
+     !same(aDir,bDir)||layers.length!==source.length||!layers.every((l,j)=>i===j||same(l,source[j]))||
+     cloth?.slot!=='pants'||cloth.id!=='pants168-independent'||cloth.depth!==layers[i].depth||cloth.binding?.kind!=='fixed'||
+     cloth.frames?.length!==8||cloth.frames.some(h=>!donor.sourceRefs.includes(h)||base.sourceRefs.includes(h)))return null;
+  return {...base,id:base.id+':own-pants168',equipment:{pants:168},
+   authoredPunchPants:{base,cloth,index:i},slotRoutes:{[keys[0]]:{item:168,quality:'hd',source:donor.id}},omitted:[]};
+ }
  function southFiles(r,frame){
   const s=r.authoredPantsLayer.spec,k=s.frameToPhase[frame],contact=s.contacts.find(c=>c.targetAuthoredPhase===k),phases=[s.phaseMap[k],...(contact?[contact.incomingPhase]:[])];
   return [...new Set([...(r.carrySouth?femaleRegistry.requiredFiles(r.carrySouth):[]),...(r.carrySouth?.item===17?['tools/rework-weapon-layers-hd/assets/e4a2f3c434849aabc41cb6037bc16c54ef3130ff21838c355bde9356c6ad287f.png']:[]),...r.sourceRefs.map(h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png'),...phases.flatMap(p=>filesFor(r.anatomyBase,p)),...(r.authoredPantsLayer.mappedCoat?filesFor(r.authoredPantsLayer.mappedCoat,s.phaseMap[k]*5):[])])];
@@ -560,6 +579,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(nativeWeapon?.exactComposite&&nativeWeapon.timeline?.length&&nativeWeapon.fps)return {...nativeWeapon,hdKind:'weapon'};
   const female=femaleRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment});if(female)return {...female,hdKind:'female-equipment'};
   const idlePants=(o.direction==='north'?resolveNorthOwnedPantsIdle:resolveSouthOwnedPantsIdle)(player,o,a,equipment);if(idlePants)return idlePants;
+  const punchPants=resolveFemaleOwnedPunchPants(player,o,a,equipment);if(punchPants)return punchPants;
   if(customFemaleFace&&Object.keys(equipment).some(slot=>slot!=='head'))return null;
   if([109,15,111,112,117].includes(Number(weapon))&&Number(equipment.legs?.def??equipment.pants?.def)===133&&Object.keys(equipment).every(k=>['weapon','legs','pants','boots'].includes(k))&&(equipment.boots==null||Number(equipment.boots?.def??equipment.boots)===9)){const garment=outfitRegistry?.resolve({body:canonical(a.body),direction:o.direction,action:o.action,appearance:{hair:'original'},equipment:{pants:133}}),baseWeapon=weaponRegistry?.resolve({item:Number(weapon),body:canonical(a.body),direction:o.direction,action:o.action,appearance:a,equipment:{}}),bootGarment=equipment.boots?outfitRegistry?.resolve({body:canonical(a.body),direction:o.direction,action:o.action,appearance:{hair:'original'},equipment:{pants:133,boots:9}}):null,combined=(!equipment.boots||bootGarment)?root.MareReworkOutfitOverlayHD?.adapt(baseWeapon,garment,{bootsOutfit:bootGarment}):null;if(combined)return {...combined,hdKind:'weapon'};const bareCarry=carryRegistry?.resolve({item:Number(weapon),body:canonical(a.body),direction:o.direction,action:o.action,appearance:a,equipment:{weapon:Number(weapon)}}),dressedCarry=combinedCarryRegistry?.adapt(bareCarry,{boots:equipment.boots?9:null});if(dressedCarry)return {...dressedCarry,hdKind:'outfit-carry',pack:dressedCarry.base.pack,body:dressedCarry.base.body};}
   const headItem=equipment.head?.def??equipment.head;
@@ -722,8 +742,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   ['explicit-native-glove-west-mirror','registered-frozen-glove-native-attack'].includes(l.id)).map(l=>l.id);
  function selectRegisteredPantsBoot155(o,a,visible){
   const pants=visible.pants?.item,boot=visible.boots?.item,{direction:dir,action}=o;
-  // These three trouser hems retain the original B9 lateral seam in every pose.
-  const side=['east','west'].includes(dir),sideBoot9=side&&boot===9&&[154,161,168].includes(pants);
+  // These trouser hems retain the original B9 lateral seam in every pose.
+  const side=['east','west'].includes(dir),sideBoot9=side&&boot===9&&[147,154,161,168,175,182].includes(pants);
   const southWalk=dir==='south'&&action==='walk',idle=action==='idle',frames=idle?1:16;
   const layersByDirection={
    south:{'boot155-mouth-rear-0':-1,'boot155-mouth-rear-1':-1,'boot155-screen-0':99,'boot155-screen-1':99},
@@ -878,9 +898,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    colorAppearance:{skin:a.skin||'original',hairColor:a.hairColor||'original',eyeColor:a.eyeColor||'original'},
    paletteSourceMasks,paletteRefs,baseMaterialSources,palettePolicy:authority.palettePolicy};
  }
+ const sideIrisBackgroundSources={"east":["059e39e9d0afe083e0d5e5d13bb53c4e215c4bbc1cf51c47f79483c5a16d1fbb","c5aaf3118ec3994e6419eec4dc80039065f5a71ab2c03c69b4c278c2cf4c3e67","d12019f56acb507d1f0c6feafddc922e76f4c54c00d5940c53cf206d14e59717","209186fc75c199ab05becbf69f9325ddcd4c333e76b7415805e23e9f5dd3a80a","6e68a577c2911753df87e3dd0953a884591cb51814f23914fb8dd1fde15f5104","7fb5e27719d9085f44037e72c39aa969b983797bc8298ab74f130511727edcea","4082005fd8fd5d273bccd1c4cdc9c9b09a5342ee40a53a86ab6b3710709ed906","bb54209b4af7d3dc10ed72b29620c0bccf5cc8c21cd7ded01f995cc7e05c7a5d","874c9a6d866be38a6ffe5a99d9bf1f7efa240c0541b21a441267574fbcd35a33","4500dac6e379b601c705fb86a2ca7a40f59316ae4e089cac89732aab76960448","613410e17cb812a6d1ba0930ed147f41f398bec348466005a4121a693daff602","2e56f0f63202e69bd3f4f6cd211c353743ad89514cedd7eedc1c61fb4189036e","0baf1849845793a5b3453abd3b159143ba5856c06dc70bba84c4a4911a2a8eb7","1b6ac0665fcb243eb57ed2e83a2f5c6223944ef5cb5306ca2738e607ae5b61c6","1379fe7446c504468d9bbd99eafa182de3e4adfcc67290079e693e345a511ff5","d4fb8e936aa7c8e89615a1ee84a06556a219a00cda2a0acee0a7b4a0e0613317"],"west":["9608abd4bb112bd3ee465ffbf25704c72a7899eb7e1602c0b2a4833e402154b8","8a4731783274170e928a4f8341fa66213783bcc5584b50d81992ec082effa4eb","36b505e4a7d9dd85ee6aac4bafdb5242477606e25da3ffab5cd0a1967838b2c2","1c788a17ae1c047631f02abcfe10d5b1c80d27e0587577b38cd38ba34a458ff6","12919249fe8f74b97ae5fc78a04bd5f144cdabe2e058b36c1fb507154a901ae6","f88617cb9afadeba146f19967e50ac8bcb675efb71f3a16e914aaf79618f4ece","ed4ab5310f3b06c058df700fa12bcd37bd756dada8fa4e2ce8766a5d9f474f13","fd85cce21a2e4db36776f9df294f11754a9a89f6d25c3c84da4824cbbae996f9","6358b988e79037062a05f6c724e4aac4e5c1c745dd6a151fc42e3be69516d109","76a772795b6df640422d38ca993f587eb134e186a32f658564d3d91dbcc70076","877e992d6cea40c1e5a0469aa4143375b3bc3a8629bf1605a8a724b2f7a1ba49","0679e0fc64b54be30c04a497199951204e995bfde470ac936e9980588f78eb79","b55e358daee72183c8268ca8501cc2678853e603562fd3efdcba072dc9a20189","fdaf8c2c002be9904539519090d03eb29377ad19485d43d0787cdab4137c0c36","41efe43d7e0c2bb049db2fc6bb48666a1cd7df206c116caad4ca2defb5c7ab14","a3d574dd4c6e39b361d969404455ef99d64d9df0bd512b4797d2a38d419afaae"]};
  function selectBootsOnRegisteredWalk(player,o,a,visible){
   const palette=Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original');
-  if(palette&&(o.direction!=='north'||![9,155,undefined].includes(visible.boots?.item)||
+  const sideColor=['east','west'].includes(o.direction)&&visible.boots?.item===155&&visible.gloves?.item===152&&
+   a.skin==='original'&&['original',undefined].includes(a.hair)&&['original',undefined].includes(a.face)&&
+   (a.hairColor==null||a.hairColor==='original'||Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor))&&
+   (a.eyeColor==null||a.eyeColor==='original'||Object.hasOwn(root.MareCharacterAppearance?.eyes||{},a.eyeColor));
+  if(palette&&!sideColor&&(o.direction!=='north'||![9,155,undefined].includes(visible.boots?.item)||
     !['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||
     !['blue','original',undefined].includes(a.eyeColor)||
     a.skin&&a.skin!=='original'&&!root.MareAppearance96?.skins[a.skin]||
@@ -965,6 +990,21 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   const slotRoutes=Object.fromEntries(Object.entries(composed.slotRoutes).map(([k,v])=>[visible[k].key,v]));
   const record={...composed,slotRoutes,omitted:composed.omitted.map(k=>visible[k].key),hdKind:'outfit',canonicalNorthBootGloves};
+  if(palette&&sideColor){
+   const authority=byId(`male-pants133-${action}-${dir}-source-v18-candidate-coat151-native`);
+   const live=record.pack.directions[dir],owned=authority?.pack?.directions?.[dir],same=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+   const background=live.layers.find(l=>l.id==='clothed018-visible-background'),auth=owned?.layers.find(l=>l.id===background?.id);
+   const known=sideIrisBackgroundSources[dir];
+   if(!authority||authority.palettePolicy!=='verified-original-anatomy-only'||!auth||
+    record.omitted.length||!same(background,auth)||background.binding?.kind!=='fixed'||
+    background.frames?.length!==live.clip.frames||!background.frames.every(h=>known.includes(h)&&authority.paletteSourceMasks?.[h]?.hair)||
+    live.layers.some(l=>l!==background&&(l.frames||[l.source]).some(h=>known.includes(h))))return null;
+   const paletteSourceMasks=Object.fromEntries(background.frames.map(h=>[h,{hair:authority.paletteSourceMasks[h].hair}]));
+   const paletteRefs=[...new Set(Object.values(paletteSourceMasks).map(s=>s.hair))];
+   const colorAppearance={skin:'original',hairColor:a.hairColor||'original',eyeColor:a.eyeColor||'original'};
+   return {...record,id:record.id+':side-original-skin:'+colorAppearance.hairColor+':'+colorAppearance.eyeColor,
+    paletteSourceMasks,paletteRefs,palettePolicy:authority.palettePolicy,strictSideIris:{background:background.id},colorAppearance};
+  }
   return palette?northBootAppearance(record,a,byId(`male-pants133-${action}-north-isolated-r2-coat151-native`),anchor):record;
  }
  function selectGlovesOnRegisteredKit(player,o,a,visible){
@@ -1511,7 +1551,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const tick=Number.isFinite(progress)?Math.floor(Math.max(0,Math.min(1,progress))*clip.frames+(r.orderedAttack?1e-9:0)):Math.floor(Math.max(0,o.time||0)*clip.fps),position=clip.loop?tick%clip.frames:Math.min(clip.frames-1,tick);
   return timeline?r.states.findIndex(s=>s.state===String(timeline[position])):position;
  }
- function filesFor(r,frame){if(r.authoredNorthIdlePants){const q=r.authoredNorthIdlePants,p='tools/rework-modular-outfits-hd/assets/';return [...new Set([...filesFor(q.base,frame),p+q.cloth+'.png',p+q.ownerAlpha+'.png'])];}if(r.authoredIdleCoatPants){const q=r.authoredIdleCoatPants;return [...new Set([...filesFor(q.record,frame),...['cloth','ownerAlpha'].map(k=>'tools/rework-modular-outfits-hd/assets/'+q[k]+'.png')])];}if(r.fixedIdleBoots)return [...filesFor(r.fixedIdleBoots.base,frame),...r.fixedIdleBoots.layers.map(l=>'tools/rework-modular-outfits-hd/assets/'+l.frames[0]+'.png')];if(r.partitionedMalePunch)return filesForPartitionedMalePunch(r,frame);if(r.northLayers)return northFiles(r,frame);if(r.profileLayers)return profileFiles(r,frame);if(r.authoredPantsLayer)return southFiles(r,frame);return [...new Set([...(r.hdKind==='female-equipment'?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).requiredFiles(r,{frame}),...(r.headRecord?headRegistry.requiredFiles(r.headRecord):[]),...(r.gearOnlyRecord?originalHairGearRegistry.requiredFiles(r.gearOnlyRecord):[]),...(r.femaleNamedHairRecord?femaleNamedHairRegistry.requiredFiles(r.femaleNamedHairRecord):[])])];}
+ function filesFor(r,frame){if(r.authoredPunchPants){const q=r.authoredPunchPants;return [...filesFor(q.base,frame),'tools/rework-modular-outfits-hd/assets/'+q.cloth.frames[frame]+'.png'];}if(r.authoredNorthIdlePants){const q=r.authoredNorthIdlePants,p='tools/rework-modular-outfits-hd/assets/';return [...new Set([...filesFor(q.base,frame),p+q.cloth+'.png',p+q.ownerAlpha+'.png'])];}if(r.authoredIdleCoatPants){const q=r.authoredIdleCoatPants;return [...new Set([...filesFor(q.record,frame),...['cloth','ownerAlpha'].map(k=>'tools/rework-modular-outfits-hd/assets/'+q[k]+'.png')])];}if(r.fixedIdleBoots)return [...filesFor(r.fixedIdleBoots.base,frame),...r.fixedIdleBoots.layers.map(l=>'tools/rework-modular-outfits-hd/assets/'+l.frames[0]+'.png')];if(r.partitionedMalePunch)return filesForPartitionedMalePunch(r,frame);if(r.northLayers)return northFiles(r,frame);if(r.profileLayers)return profileFiles(r,frame);if(r.authoredPantsLayer)return southFiles(r,frame);return [...new Set([...(r.hdKind==='female-equipment'?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).requiredFiles(r,{frame}),...(r.headRecord?headRegistry.requiredFiles(r.headRecord):[]),...(r.gearOnlyRecord?originalHairGearRegistry.requiredFiles(r.gearOnlyRecord):[]),...(r.femaleNamedHairRecord?femaleNamedHairRegistry.requiredFiles(r.femaleNamedHairRecord):[])])];}
  async function prepare(player,o,clipFileLimit=0){await ready;const r=selectVisual(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
   const job=(async()=>{try{entry=entry||{images:new Map(),proofs:[],frames:new Map(),imageLimit:Math.max(64,clipFileLimit)};await Promise.all(files.map(async p=>{if(!entry.images.has(p))entry.images.set(p,await loadShared(p));}));
   if(r.femaleNamedHairRecord)femaleNamedHairRegistry.compose(r,r.femaleNamedHairRecord,entry.images);
@@ -1552,6 +1592,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {canvas,info};
  }
  function composeFrame(r,frame,entry){
+  if(r.authoredPunchPants){
+   const {base,cloth,index}=r.authoredPunchPants,d=base.pack.directions[base.direction],
+    sha=cloth.frames[frame],image=entry.images.get('tools/rework-modular-outfits-hd/assets/'+sha+'.png');
+   if(image?.width!==base.pack.frame.width*4||image.height!==base.pack.frame.height*4)throw Error('Invalid punch pants raster');
+   const images=new Map(entry.images);images.set('tools/rework-base-hd/assets/'+sha+'.png',image);
+   const adapted={...base,pack:{...base.pack,directions:{[base.direction]:{...d,layers:d.layers.map((l,i)=>i===index?cloth:l)}}}};
+   return composeFrame(adapted,frame,{...entry,images});
+  }
   if(r.authoredNorthIdlePants){
    const q=r.authoredNorthIdlePants,p='tools/rework-modular-outfits-hd/assets/',body=composeFrame(q.base,frame,entry),
     canvas=makeCanvas(512,512),ctx=canvas.getContext('2d'),tile=makeCanvas(512,512),tc=tile.getContext('2d'),

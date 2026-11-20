@@ -1,0 +1,5 @@
+# Nova cobertura de soco feminino e laterais masculinas
+
+- Feminino, soco nas quatro direções: a Calça 168 usa as oito fases da sua própria camada independente. Em 64 quadros (padrão e uma aparência personalizada), a troca só muda pixels do próprio tecido; pose, pele, olhos e cabelo ficam intactos. A rota Original não muda. A Calça 182 não entra: sua arte de soco ainda combina calça e anatomia.
+- Masculino, Leste/Oeste em repouso e caminhada: Bota 9 com as Calças 147/175/182, Peitoral 151 e Luva 152 no perfil Original. Preserva poses e seis passes da bota, sola e outras camadas. 102 quadros novos; o teste combinado cobre 204 das seis calças. A calça 140 fica fora.
+- Masculino, conjunto C151/P133/G152/B155 em repouso e caminhada Leste/Oeste: com tom de pele explicitamente Original e formatos originais, as cores salvas de cabelo e íris agora usam exclusivamente os mapas autorais. 102 quadros e 1.224 verificações de íris; pele e equipamento não mudam. Outros tons de pele permanecem nas rotas anteriores, porque o contato inferior ainda não tem domínio autoral integral.

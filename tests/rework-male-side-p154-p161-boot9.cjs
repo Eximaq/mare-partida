@@ -11,7 +11,7 @@ const boot=l=>l.id.startsWith('boot9-');
 const src=h=>{if(!memo.has(h))memo.set(h,load('tools/rework-modular-outfits-hd/assets/'+h+'.png'));return memo.get(h);};
 (async()=>{
  await api.ready;let selected=0,rendered=0;
- const roster=process.env.PANTS?.split(',').map(Number)||[154,161],sheets={};
+ const roster=process.env.PANTS?.split(',').map(Number)||[147,154,161,168,175,182],sheets={};
  for(const direction of ['east','west'])for(const action of ['idle','walk'])for(const pants of roster){
   const o={action,direction,consumer:'world'},worn=player(pants,9),bare=player(pants),reference=player(133,9);
   const b9=api.selectVisual(worn,o),no=api.selectVisual(bare,o),ref=api.selectVisual(reference,o);
@@ -26,7 +26,7 @@ const src=h=>{if(!memo.has(h))memo.set(h,load('tools/rework-modular-outfits-hd/a
   a.deepEqual(b9.colorAppearance,no.colorAppearance);
   const saved={...worn,appearance96:{...look,skinColor:'ebony'}};
   a(!api.selectLayered(saved,o)?.id.includes(':boot9:'),'new route claimed unverified saved colors');
-  for(const x of [140,147,175,182])a(!api.selectLayered(player(x,9),o)?.id.includes(':boot9:'),'unselected variants were promoted');
+  for(const x of [140])a(!api.selectLayered(player(x,9),o)?.id.includes(':boot9:'),'unselected variants were promoted');
   selected++;
   if(process.env.SELECT_ONLY)continue;
   const saves=[JSON.stringify(worn),JSON.stringify(bare)],n=x.clip.frames;
