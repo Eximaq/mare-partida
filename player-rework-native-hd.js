@@ -1838,9 +1838,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return root.MareReworkModularOutfitsHD?.withStrictSouthAppearance(next,{...a,hair:'original',face:'original'})||null;
  }
  function selectNorthPunchBare(o,a,visible){
-  const item=visible.gloves?.item;
+  const item=visible.gloves?.item,noCoat=visible.torso==null;
   if(a.body!=='male'||o.direction!=='north'||!['attack','attack-unarmed'].includes(o.action)||
-     Object.keys(visible).length!==3||visible.torso?.item!==151||visible.pants?.item!==133||![25, 26, 131, 138, 145, 152, 159, 166, 173, 180].includes(item)||
+     Object.keys(visible).length!==(noCoat?2:3)||(noCoat?item!==26:visible.torso.item!==151)||visible.pants?.item!==133||![25, 26, 131, 138, 145, 152, 159, 166, 173, 180].includes(item)||
      !['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||!['original','blue',undefined].includes(a.eyeColor)||
      (a.skin&&a.skin!=='original'&&!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))||
      (a.hairColor&&a.hairColor!=='original'&&!Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)))return null;
@@ -1860,9 +1860,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      l?.id!=='registered-frozen-glove-native-attack'||l.slot!=='foreground'||l.depth!==100||l.depthTrack||!eq(l.binding,{kind:'fixed'}))return null;
   const authority=northPunchGloveAuthority[item];
   if(!eq(l.frames,authority)||authority.some(h=>!donor.sourceRefs.includes(h)||base.sourceRefs.includes(h)||base.paletteSourceMasks?.[h]))return null;
-  const pack={...base.pack,directions:{...base.pack.directions,north:{...d,layers:[...d.layers,l]}}};
-  const next={...base,id:base.id+':own-north-punch-g'+item+'-bare',hdKind:'outfit',equipment:{...base.equipment,gloves:item},pack,sourceRefs:[...base.sourceRefs,...authority],
-   slotRoutes:Object.fromEntries(Object.entries(visible).map(([k,v])=>[v.key,{item:v.item,quality:'hd',source:k==='gloves'?donor.id:base.id}])),omitted:[],resolvedAction:'attack-unarmed'};
+  const target=noCoat?bare:base,dirTarget=dir(target);
+  const pack={...target.pack,directions:{...target.pack.directions,north:{...dirTarget,layers:[...dirTarget.layers,l]}}};
+  const next={...target,id:target.id+(noCoat?':own-p133-g26-north-no-coat':':own-north-punch-g'+item+'-bare'),hdKind:'outfit',equipment:{...target.equipment,gloves:item},pack,sourceRefs:[...target.sourceRefs,...authority],
+   slotRoutes:Object.fromEntries(Object.entries(visible).map(([k,v])=>[v.key,{item:v.item,quality:'hd',source:k==='gloves'?donor.id:target.id}])),omitted:[],resolvedAction:'attack-unarmed'};
   return {...next,id:next.id+':palette:'+String(a.skin||'original')+':'+String(a.hairColor||'original'),
    colorAppearance:{skin:a.skin||'original',hairColor:a.hairColor||'original',eyeColor:a.eyeColor||'original'}};
  }
