@@ -1,0 +1,5 @@
+# Caminhada Norte, luvas do tiro e retirada lateral de bota
+
+- Feminino, caminhada Norte: Bota 9 com Calças 168/182. As 12 poses distintas coincidem com a mesma cadência de 40 ticks, mantendo passes de cano traseiro e dianteiro. Em 160 quadros, a troca preservou as outras camadas, o ritmo, a personalização e a sola. A rota Original castanho já exata continua intacta. Não autoriza B169, P21 ou slots extras.
+- Feminino, Pistola 114 Norte sem peitoral na animação 8/12: luvas 131, 138, 145, 152, 159, 166, 173, 180 usam a guarda de contato da G26 e os PNGs autorais reaproveitados. Em 192 renderizações e 24 de regressão G26, arma preservada fora da mão original, regiões recortadas idênticas ao controle sem luva e invariantes entre tons. G25, versão alternativa de 30 ticks e outros equipamentos não ganham essa rota.
+- Masculino Original, Leste/Oeste em repouso e caminhada: a B155 pode ser removida com C151, G152 e as Calças 140/147/154/161/168/175/182. Em 238 quadros as camadas que não são da bota ficaram exatas e os pés autorais reaparecem; reequipar restaura o original. Não estende ao soco, outros peitorais, outros tons ou formatos de cabeça.

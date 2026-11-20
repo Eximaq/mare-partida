@@ -88,7 +88,7 @@ const take=(s,p,i)=>{let c;a(s.draw({save(){},restore(){},drawImage(x){c=x;}},p,
   }finally{q0.release();q1.release();}
   a.equal(JSON.stringify(worn),save);
  }
- for(const [w,g,c,d] of [[114,26,true,'north'],[114,159,false,'north'],[114,26,false,'south'],[114,26,false,'east'],[114,26,false,'west'],[115,26,false,'north']])
+ for(const [w,g,c,d] of [[114,26,true,'north'],[114,25,false,'north'],[114,26,false,'south'],[114,26,false,'east'],[114,26,false,'west'],[115,26,false,'north']])
   a(!api.selectVisual(player(norm(),g,w,c),{...options,direction:d})?.id.includes('-glove'+g+'-native'));
  for(const variant of ['test-unregistered']) {
  const p=player(norm(),item);p.equipment.gloves.variant=variant;

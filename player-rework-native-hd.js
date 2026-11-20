@@ -79,9 +79,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function resolveNorthLayers(player,o,a,equipment){
   const s=northRig;
   if(player.__reworkSubset||canonical(a.body)!=='female'||o.action!=='walk'||o.direction!=='north'||s?.schema!=='female-north-author-layered-rig-v1')return null;
-  if(Object.entries(equipment).some(([key,v])=>!['weapon','legs','pants'].includes(key)||v&&typeof v==='object'&&['variant','variantId','appearanceVariant'].some(k=>v[k]!=null&&v[k]!=='original'))||equipment.legs!=null&&equipment.pants!=null)return null;
+  if(Object.entries(equipment).some(([key,v])=>!['weapon','legs','pants','boots'].includes(key)||v&&typeof v==='object'&&['variant','variantId','appearanceVariant'].some(k=>v[k]!=null&&v[k]!=='original'))||equipment.legs!=null&&equipment.pants!=null)return null;
   const raw=equipment.weapon?.def??equipment.weapon,item=raw==null?null:Number(raw),trousers=equipment.legs??equipment.pants,pants=trousers==null?null:Number(trousers.def??trousers);
-  if(item!=null&&![0,5,17].includes(item)||pants!=null&&pants!==21)return null;
+  const bootVal=equipment.boots,boot=bootVal==null?null:Number(bootVal.def??bootVal),
+   ownPants=[168,182].includes(pants),lowerKit=ownPants||boot!=null;
+  if(item!=null&&![0,5,17].includes(item)||pants!=null&&!ownPants&&pants!==21||
+     lowerKit&&(item!=null||pants===21||boot!=null&&boot!==9||!root.MareCharacterAppearance?.skins?.[a.skin]))return null;
   const duration=[125,75,50,125,75,50,125,75,50,125,75,50],equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
   if(!equal(s.phaseMap,[0,1,1,2,3,3,4,5,5,6,7,7])||!equal(s.durationMs,duration)||!equal(s.frameToPhase,duration.flatMap((n,k)=>Array(n/25).fill(k)))||s.legs?.length!==12||s.armOcclusion?.length!==12||s.equipmentLayers?.[21]?.cloth?.length!==12||s.equipmentLayers?.[21]?.owner?.length!==12)return null;
   const native=femaleRegistry?.resolve({body:'female',action:'walk',direction:'north',item:item??0,equipment:{weapon:item??0},appearance:a});
@@ -91,11 +94,36 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const body=item==null?{...native,item:null,paddingPhysical:0,states:native.states.map(st=>({...st,parts:[]}))}:{...native};
   if(body.material)body.material={...body.material,id:body.material.id+':north-neck-contact-v1',northNeckContact:true};
   const d=body.pack.directions.north;
-  return {...body,id:'authored-north-layered:'+String(item)+':'+String(pants)+':'+body.id,hdKind:'authored-north-layered',equipment:{...(item==null?{}:{weapon:item}),...(pants==null?{}:{legs:pants})},northLayers:{spec:s,body,pants},colorAppearance:a,pack:{...body.pack,directions:{north:{...d,clip:{frames:40,fps:40,loop:true}}}}};
+  let lower=null;
+  if(lowerKit){
+   const resource='tools/rework-modular-outfits-hd/assets/', donor=boot==null?null:outfitById.get('frozen-v47-female-151-boot9-north-walk'),
+    bd=donor?.pack?.directions?.north, clock={frames:40,fps:40,loop:true};
+   const gear=bd?.layers.filter(l=>l.id.startsWith('boot9-'))||[];
+   const spans=l=>l.frames?.length===40&&s.frameToPhase.every((n,i)=>l.frames[i]===l.frames[s.frameToPhase.indexOf(n)])&&l.frames.every(h=>/^[a-f0-9]{64}$/.test(h));
+   if(boot!=null&&(!donor?.frozenBootContract||donor.sourceAuthoritySHA256!=='35a1244a3a30540158e7279cc494c111a410011c6aa0b425e5886895472fb179'||
+      !['frame','pivot','density'].every(k=>equal(body.pack[k],donor.pack[k]))||!equal(bd.clip,clock)||gear.length!==4||
+      !['left-rear','left-front','right-rear','right-front'].every(k=>gear.some(l=>l.id==='boot9-'+k&&l.depth===(k.endsWith('-rear')?-1:45)&&l.binding?.kind==='fixed'&&spans(l)))))return null;
+   let cloth=null,owner=null;
+   if(ownPants){
+    // Exact castanho source already covers this stand-alone selection. Do
+    // not replace it or synthesize a boot composition without that identity.
+    const opts={body:'female',direction:'north',action:'walk',equipment:trousers===equipment.legs?{legs:trousers}:{pants:trousers}};
+    if(outfitRegistry?.resolveIndependentPants({...opts,appearance:a}))return null;
+    const p=outfitRegistry?.resolveIndependentPants({...opts,appearance:{hair:'original',face:'original',hairColor:'brown',eyeColor:'brown',skin:'light'}}),
+     pd=p?.pack?.directions?.north;
+    if(!pd||p.equipment?.pants!==pants||!equal(p.authoredWalkTimeline?.frameToPhase,s.frameToPhase)||
+       !['frame','pivot','density'].every(k=>equal(body.pack[k],p.pack[k]))||!equal(pd.clip,clock))return null;
+    cloth=pd.layers.find(l=>l.slot==='pants');
+    owner=pd.layers.find(l=>l.id===(pants===168?'approved-original-owner-RGBA':'f182-original-owners'));
+    if(!cloth||!owner||![cloth,owner].every(l=>l.binding?.kind==='fixed'&&spans(l)))return null;
+   }
+   lower={gear,cloth,owner,prefix:resource};
+  }
+  return {...body,id:'authored-north-layered:'+String(item)+':'+String(pants)+':'+body.id+(boot==null?'':':boot'+boot),hdKind:'authored-north-layered',equipment:{...(item==null?{}:{weapon:item}),...(pants==null?{}:{legs:pants}),...(boot==null?{}:{boots:boot})},northLayers:{spec:s,body,pants:ownPants?null:pants,lower},...(lower?{slotRoutes:{...(ownPants?{[equipment.legs!=null?'legs':'pants']:{item:pants,quality:'hd',source:'independent-female-pants'+pants+'-north-walk'}}:{}),...(boot!=null?{boots:{item:boot,quality:'hd',source:'frozen-v47-female-151-boot9-north-walk'}}:{})},omitted:[]}:{} ),colorAppearance:a,pack:{...body.pack,directions:{north:{...d,clip:{frames:40,fps:40,loop:true}}}}};
  }
  function northFiles(r,frame){
-  const {spec:s,body,pants}=r.northLayers,k=s.frameToPhase[frame],f=s.phaseMap[k];
-  return [...new Set([...femaleRegistry.requiredFiles(body,{frame:f}),s.legs[k],s.armOcclusion[k],...(pants==null?[]:[s.equipmentLayers[pants].cloth[k],s.equipmentLayers[pants].owner[k]]),...(body.item===17?[s.orb17Skin.mask]:[])])];
+  const {spec:s,body,pants,lower}=r.northLayers,k=s.frameToPhase[frame],f=s.phaseMap[k];
+  return [...new Set([...femaleRegistry.requiredFiles(body,{frame:f}),s.legs[k],s.armOcclusion[k],...(lower?[...lower.gear,lower.cloth,lower.owner].filter(Boolean).map(l=>lower.prefix+l.frames[frame]+'.png'):[]),...(pants==null?[]:[s.equipmentLayers[pants].cloth[k],s.equipmentLayers[pants].owner[k]]),...(body.item===17?[s.orb17Skin.mask]:[])])];
  }
  function composeNorthLayers(r,frame,entry){
   const {spec:s,body:rBody,pants}=r.northLayers,k=s.frameToPhase[frame],phase=s.phaseMap[k],pad=rBody.paddingPhysical||0,W=512+2*pad,C=(w=W)=>makeCanvas(w,w),pixels=c=>c.getContext('2d').getImageData(0,0,c.width,c.height).data;
@@ -115,6 +143,21 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   const ops=[],native=C(),info=femaleRegistry.render(native.getContext('2d'),rBody,images,{frame:phase,makeCanvas,captureOps:x=>ops.push(x)}),anatomy=ops.filter(x=>x.op.layer),gear=ops.filter(x=>x.op.part);
   const naked=C();for(const op of anatomy)naked.getContext('2d').drawImage(op.canvas,0,0);
+  if(r.northLayers.lower){
+   const {gear,cloth,owner,prefix}=r.northLayers.lower,read=l=>{const im=images.get(prefix+l.frames[frame]+'.png');if(im?.width!==512||im.height!==512)throw Error('Missing North walk lower-kit raster');return im;},
+    target=C(),tc=target.getContext('2d');
+   for(const l of gear.filter(l=>l.depth===-1))tc.drawImage(read(l),0,0);
+   tc.drawImage(native,0,0);
+   if(cloth){
+    const shape=C(),sc=shape.getContext('2d');sc.drawImage(read(owner),0,0);
+    const mask=sc.getImageData(0,0,512,512).data;sc.clearRect(0,0,512,512);sc.drawImage(read(cloth),0,0);
+    const data=sc.getImageData(0,0,512,512);
+    for(let n=0;n<mask.length;n+=4)if(mask[n+3]){if(mask[n+3]!==255)throw Error('Nonbinary North walk pants owner');data.data.fill(0,n,n+4);}
+    sc.putImageData(data,0,0);tc.drawImage(shape,0,0);shape.width=1;
+   }
+   for(const l of gear.filter(l=>l.depth===45))tc.drawImage(read(l),0,0);
+   native.width=1;info.frames=40;info.fps=40;return northResult(target,info);
+  }
   if(pants==null){info.frames=40;info.fps=40;return northResult(native,info);}
   const cloth=images.get(s.equipmentLayers[pants].cloth[k]),owner=images.get(s.equipmentLayers[pants].owner[k]);if(!cloth||cloth.width!==512||cloth.height!==512||!owner||owner.width!==512||owner.height!==512)throw Error('Missing NORTH garment layers');
   const oc=C(512).getContext('2d');oc.drawImage(owner,0,0);const ownership=oc.getImageData(0,0,512,512).data,baseline=C(),bc=baseline.getContext('2d');bc.drawImage(naked,0,0);bc.drawImage(cloth,pad,pad);const bp=bc.getImageData(0,0,W,W),np=pixels(naked);
@@ -668,14 +711,19 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   ['explicit-native-glove-west-mirror','registered-frozen-glove-native-attack'].includes(l.id)).map(l=>l.id);
  function selectRegisteredPantsBoot155(o,a,visible){
   const pants=visible.pants?.item,boot=visible.boots?.item,{direction:dir,action}=o;
+  const side=['east','west'].includes(dir);
   const southWalk=dir==='south'&&action==='walk',idle=action==='idle',frames=idle?1:16;
   const layersByDirection={
    south:{'boot155-mouth-rear-0':-1,'boot155-mouth-rear-1':-1,'boot155-screen-0':99,'boot155-screen-1':99},
    north:{'boot155-rear-mouth-0':-1,'boot155-shell-0':99,'boot155-rear-mouth-1':-1,'boot155-shell-1':99}
   };
+  if(side){
+   layersByDirection.east={'equip-boot155-far':5,'equip-boot155-near':6};
+   layersByDirection.west=layersByDirection.east;
+  }
   const palette=Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original');
   if(a.body!=='male'||!Object.hasOwn(layersByDirection,dir)||!['idle','walk'].includes(action)||
-     palette&&!strictSouthRequested(a)||
+     palette&&(side||!strictSouthRequested(a))||side&&boot!=null||
      ![140,147,154,161,168,175,182].includes(pants)||visible.torso?.item!==151||visible.gloves?.item!==152||
      boot!=null&&boot!==155||Object.keys(visible).length!==(boot==null?3:4))return null;
   // Remove only the authored boot passes from this exact trouser rig.
@@ -690,6 +738,23 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       return !l||l.depth!==layersByDirection[dir][id]||l.binding?.kind!=='fixed'||
        l.frames?.length!==frames||!Array.from(l.frames).every(Boolean);
      }))return null;
+  if(side){
+   const source=outfitById.get(`frozen-male-pants133-${dir}-${action}-v47`),ref=source?.pack?.directions?.[dir];
+   const same=(x,y)=>JSON.stringify(x)===JSON.stringify(y),timing=({layers,...rest})=>rest;
+   const pantsOwner=(layers,id)=>layers.filter(l=>l.slot==='pants'&&l.id.startsWith('pants'+id+'-'));
+   const verified=Object.fromEntries([
+    [140,[]],[147,[]],[154,['independent-original-panel']],[161,['independent-original-panel']],
+    [168,['original-panel-independent']],[175,['independent-original-panel']],[182,['independent-original-panel']]
+   ]),own=pantsOwner(d.layers,pants),reference=ref&&pantsOwner(ref.layers,133);
+   const expected=['visible-cloth-only',...verified[pants]].map(id=>'pants'+pants+'-'+id);
+   if(!source?.frozenPantsSource||source.productionEnabled===false||!ref||
+    Object.keys(source.equipment).length!==4||source.equipment.torso!==151||source.equipment.pants!==133||source.equipment.gloves!==152||source.equipment.boots!==155||
+    !same(anchor.pack.frame,source.pack.frame)||!same(anchor.pack.pivot,source.pack.pivot)||anchor.pack.density!==source.pack.density||
+    !same(timing(d),timing(ref))||!same(own.map(l=>l.id),expected)||
+    !own.every((l,i)=>l.binding?.kind==='fixed'&&l.depth===(i?4.45:4.4)&&l.frames?.length===frames&&l.frames.every(h=>anchor.sourceRefs.includes(h)))||
+    reference.length!==1||reference[0].id!=='pants133-visible-cloth-only'||
+    !same(d.layers.filter(l=>!own.includes(l)),ref.layers.filter(l=>!reference.includes(l))))return null;
+  }
   const equipment={...fixed,...(boot==null?{}:{boots:boot})};
   const composed=root.MareReworkModularOutfitsHD?.composeSlots({anchor,equipment,fixed,slots:{boots:{
    anchorLayers:ids,uncoveredBaseVerified:true,records:{155:{record:anchor,layers:ids}}
