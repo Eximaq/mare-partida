@@ -1789,6 +1789,38 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...next,id:next.id+':palette:'+String(a.skin||'original')+':'+String(a.hairColor||'original'),
    colorAppearance:{skin:a.skin||'original',hairColor:a.hairColor||'original',eyeColor:a.eyeColor||'original'}};
  }
+ function selectSouthPunchP22Coat(o,a,visible){
+  const g=visible.gloves?.item;
+  if(a.body!=='male'||o.direction!=='south'||!['attack','attack-unarmed'].includes(o.action)||
+     visible.torso?.item!==151||visible.pants?.item!==22||Object.keys(visible).length!==(g===26?3:2)||
+     (g!=null&&g!==26)||!strictSouthRequested(a))return null;
+  const id='male-pants133-attack-unarmed-south-drawn8-candidate',reference=outfitById.get(id),coat=outfitById.get(id+'-coat151-native'),
+    pants=outfitById.get('male-pants22-attack-unarmed-south');
+  const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y),dir=x=>x.pack?.directions?.south,
+    context=({layers,...rest})=>rest,frame=x=>[x.pack.frame,x.pack.pivot,x.pack.density];
+  if(![pants,reference,coat].every(x=>x&&x.productionEnabled!==false&&x.body==='male'&&x.direction==='south'&&x.action==='attack-unarmed'&&
+        x.palettePolicy==='verified-original-anatomy-only'&&!x.bodyOcclusion&&!x.sourceRasterPadding&&eq(x.paletteSourceMasks,reference.paletteSourceMasks)&&
+        eq(frame(x),frame(reference))&&eq(context(dir(x)),context(dir(reference))))||
+     !eq(dir(pants).clip,{frames:8,fps:12,loop:false,contactFrame:4})||
+     !eq(pants.equipment,{pants:22})||!eq(reference.equipment,{pants:133})||!eq(coat.equipment,{pants:133,torso:151})||
+     pants.adaptation?.targetGeometry!==id)return null;
+  const originals=dir(pants).layers,current=dir(reference).layers,donor=dir(coat).layers,
+   own=originals.filter(l=>l.id==='pants22-independent-candidate'),clothe=donor.filter(l=>l.id==='coat151-registered-south');
+  if(own.length!==1||clothe.length!==1||!eq(originals.filter(l=>l!==own[0]),current.filter(l=>l.id!=='pants133-translated-candidate'))||
+     !eq(donor.filter(l=>l!==clothe[0]),current)||own[0].depth!==2||own[0].frames?.length!==8||new Set(own[0].frames).size!==8||
+     clothe[0].depth!==100||clothe[0].frames?.length!==8||clothe[0].frames.some(h=>!coat.sourceRefs.includes(h)||pants.paletteSourceMasks[h])||
+     ![own[0],clothe[0]].every(l=>eq(l.binding,{kind:'fixed'})&&!l.depthTrack)||
+     own[0].frames.some(h=>!pants.sourceRefs.includes(h)||pants.paletteSourceMasks[h])||pants.paletteSourceMasks[clothe[0].source])return null;
+  const g26=g===26?selectSouthPunchBare(o,a,{...visible,pants:{...visible.pants,item:133}}):null;
+  if(g===26&&!g26)return null;
+  const extra=g26?dir(g26).layers.filter(l=>l.id==='registered-frozen-glove-native-attack'):[];
+  if(g26&&(extra.length!==1||!eq(dir(g26).layers.filter(l=>l!==extra[0]),donor)))return null;
+  const layers=[...originals,...clothe,...extra], pack={...pants.pack,directions:{...pants.pack.directions,south:{...dir(pants),layers}}};
+  const record={...pants,id:pants.id+':own-south-punch-p22-c151'+(g26?'-g26':''),hdKind:'outfit',pack,equipment:{pants:22,torso:151,...(g26?{gloves:26}:{})},
+   sourceRefs:[...pants.sourceRefs,...clothe[0].frames,...extra.flatMap(l=>l.frames)],resolvedAction:'attack-unarmed',omitted:[],
+   slotRoutes:Object.fromEntries(Object.entries(visible).map(([k,v])=>[v.key,{item:v.item,quality:'hd',source:k==='gloves'?g26.slotRoutes[v.key].source:k==='torso'?coat.id:pants.id}]))};
+  return root.MareReworkModularOutfitsHD?.withStrictSouthAppearance(record,{...a,hair:'original',face:'original'})||null;
+ }
  function selectLayered(player,o={}){
   if(state!=='ready'||!player||player.__reworkSubset||player.zoanTransformed||slotEntry(player.equipment?.visual_completo))return null;
   const raw=player.appearance96||{},body={masculino:'male',feminino:'female',male:'male',female:'female'}[raw.gender??raw.body];
@@ -1801,7 +1833,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
   if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectFemaleApprovedGloveWalk(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
-  return selectSouthPunchBare(o,look,visible)||selectNorthPunchBare(o,look,visible)||selectNorthPunchB9(player,o,look,visible)||selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
+  return selectSouthPunchP22Coat(o,look,visible)||selectSouthPunchBare(o,look,visible)||selectNorthPunchBare(o,look,visible)||selectNorthPunchB9(player,o,look,visible)||selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
  }
  function selectVisual(player,o={}){
   const exact=select(player,o);
