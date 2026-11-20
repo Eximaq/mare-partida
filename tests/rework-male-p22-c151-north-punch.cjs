@@ -20,7 +20,7 @@ for(const [direction,action,frames] of cases){
   for(const k of ['rest','poses','clip'])a.deepEqual(d(x)[k],d(plain)[k]);a.equal(d(x).clip.frames,frames);
   delete q.equipment.coat;const bare=api.selectVisual(q,o);a.deepEqual(d(bare).layers,d(plain).layers);
   q.equipment.coat=I(151);a.deepEqual(api.selectVisual(q,o),x);a.equal(JSON.stringify(q),save);count++;
-  for(const e of [{legs:I(133)},{coat:I(6)},{coat:{def:151,variant:'other'}},{boots:I(9)},{boots:I(155)},{gloves:I(26)},{weapon:I(0)}])
+  for(const e of [{legs:I(133)},{coat:I(6)},{coat:{def:151,variant:'other'}},{boots:I(9)},{boots:I(155)},{gloves:{def:26,variant:'other'}},{weapon:I(0)}])
    a(!api.selectVisual(player(skin,e),o)?.id.includes(':own-p22-c151:'));
   for(const look of [{head:'custom',hairStyle:'hair-bob'},{eyeStyle:'face-calm'},...(direction==='north'?[{eyeColor:'amber'}]:[])])
    a(!api.selectVisual(player(skin,{},look),o)?.id.includes(':own-p22-c151:'));
