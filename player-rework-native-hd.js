@@ -694,9 +694,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const slotRoutes=Object.fromEntries(Object.entries(composed.slotRoutes).map(([k,v])=>[visible[k].key,v]));
   return {...composed,slotRoutes,omitted:[],hdKind:'outfit'};
  }
- function northBootAppearance(record,a,authority,boot9){
-  if(!record.canonicalNorthBootGloves||record.direction!=='north'||record.body!=='male'||
-    ![9,155,undefined].includes(record.equipment.boots)||
+ function northBootAppearance(record,a,authority,boot9,provedCoat=false){
+  if(!(provedCoat||record.canonicalNorthBootGloves)||record.direction!=='north'||record.body!=='male'||
+    !(provedCoat?[9,148,undefined]:[9,155,undefined]).includes(record.equipment.boots)||
     !['original','blue',undefined].includes(a.eyeColor)||a.hair&&a.hair!=='original'||a.face&&a.face!=='original'||
     !authority||authority.body!=='male'||authority.direction!=='north'||authority.action!==record.action||
     authority.equipment?.torso!==151||authority.equipment?.pants!==133||
@@ -976,9 +976,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  const north133CoatRegistration={"idle":{"pants":["053730953e48350059aa0c22f1f23e448838da8b20e32b4317613b2d64adbeb3"],"lower":["4c778f703da2c5b7cbf03c25969027c7daa4ec6527c52b1cd7adc4867a04f508"],"donors":{"6":"f6f5ca961e1ff6b316372f65a9c4b0c303789861528b79e156eabcb19b1610ed","7":"b42a54e476c269a3aded654eafdc19f36a8411dbe0d0e6da18edb4acde63a9df","130":"c5cb57830bacd189b4157595dad58b682f9a4b69d4830e17daace0c2fcd2fd80","137":"d90df4f478667c89095a0a4347bc90dae9a2e87848e4dfb543d2175a6108df3c","144":"d141872240ab905755de4afc05c196b432f2280dd76dae1337cf7d570199e169","158":"54f55026995fe5fd4a34fe15034bdcd51f40ec7a4f695bc981a8b4862b70af01","165":"97cd92550221f3ba4bf15e8d0e44e98b486a26372a1b28de16cc78d790e69d2e","172":"954303a8d311d73532a487c58386f8dc6e6923fb3dcc898193f6b7407e276d44","179":"e073365d82e2ba62147fcbbabc4dd7b145ebeec535d9e4f933fa5a024c9b7405"}},"walk":{"pants":["053730953e48350059aa0c22f1f23e448838da8b20e32b4317613b2d64adbeb3","35c97c82e3052a3d1c1a9669901f6200e1cb6e9bfe4cf6d8982dcb04cf1078ad","ba49c4b1bf3fa544a9d3d44d2f739e2171fcc7b75c6dda3092551d2aca0d8eb4","da7d5d903f068a1806ceeed3d23941030333d80aa7510f6f6c94538c7122d32e","41e98a86e0bddee8acccc56d72b2c233b6aeb8ffae4add96476124270d419cc7","8b9544b9b743027f8d39c0cc550285ba0aacabfdbc7ca3b1cb68cdb5dd44bbcb","cd82d4e71462f35c2d51d6dc0bab1687318458dba0c6ff1ef24c69c77533c199","32baa3b753179e6d71f7087ba00b226ba81fdfcde97f34386d68a142cd5410b9","7eaded8b71ba91fe0c5bd3b2d59e726fa947c4db38ed467128cc6de83fcf439b","7f08c3a1d1517df6ddacb6bfe357c3a804a192bbb90f174c677aa3725435e5a0","fd56f17bea728e7a8f4e069ef49fa8f32c143c24fb7a8236f5e79cac5caa5364","337690dd15d07fe2a6cf9bf360bb2391707b3f32048d4a46a91c55f67130ff3b","eeed1a84abcb5b4d49d748769c18b247b1c36c1cc614df973204ed042069ecee","fb0a4d801edef0d031b2514398da42fe380bc1400102e7b3cf5b0338494190b0","d444cfdd629d693e63095903ce702450e73ea87b147660ab8ecbde971a370019","0dda1b3ab48dd13d6fb05f75d04ede5b6857de04d3a80f2c5d505e1a07895baa"],"lower":["4c778f703da2c5b7cbf03c25969027c7daa4ec6527c52b1cd7adc4867a04f508","d9d9857f715f503361cc1f11e7f6b7721d1cc48759fb99e84a9467ea6f68a488","8022f32a86db1e76021f21ff4825ef7b81abce17c548860c178ae5eff70c979d","ce606ae7b08be263486cb869f389f6e3cdae4a6e5b97c9c982800b2d739cf831","32e637dcb0cdbfd7d5cdc8492d10b57928f49cfc8c5c849c12b4b21ce32e3cd7","1c2a8fd11848869996d76f4ba6c32f4b0909838816fdbc1dcb7363dc7dab2ac5","58023b831d6b1d2157be6b4ae3616d50ec1182f36eafa54f7aa38fa156058bb5","97a2a36fb032b87d2217a7b0fe9d52fd030b1d496a94c44856c929f3444ef295","bb94cc4f963c00e71ddc1a9d33940cb373f919d79bff1db75a3a7b9f30350664","61b8d1c969304fde769983b2602a08b3b44628426855a2e0abbee745e755599e","7d15bb25e681b6eb913d0d7b280f4c8c5aab93d1d69a0d0686346f136aa1547e","78def7a35d6d7e899cf42ac38f31f80cf27869be1938c06e5f63a773623836fe","5ecfb3f44da69c1089bbba6c5242f362041a09f663829232b766b466cdf10360","8f4f4368fa4313b3e5966ccccdded838695094f1ab67a9b0e5f3768f96b48aeb","372273a4e2842d36aa9a893ceb60248a43b7b2ca482bb624896992dbbc6dc932","51bfe05fec654b2a6764d661b9c1a81156717f24254613d35efdd898143a2ff4"],"donors":{"6":"f6f5ca961e1ff6b316372f65a9c4b0c303789861528b79e156eabcb19b1610ed","7":"b42a54e476c269a3aded654eafdc19f36a8411dbe0d0e6da18edb4acde63a9df","137":"d90df4f478667c89095a0a4347bc90dae9a2e87848e4dfb543d2175a6108df3c","144":"d141872240ab905755de4afc05c196b432f2280dd76dae1337cf7d570199e169"}}};
  function selectNorthTorsoOnPants133(o,a,visible){
   const d='north',action=o.action,item=visible.torso?.item,boot=visible.boots?.item,contract=north133CoatRegistration[action];
+  const palette=Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original');
+  const known=(name,index)=>name==null||name==='original'||Object.hasOwn(index||{},name);
+  if(palette&&(![6,7].includes(item)||!['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||
+     !known(a.skin,root.MareAppearance96?.skins)||!known(a.hairColor,root.MareAppearance96?.hairs)||
+     !known(a.eyeColor,root.MareCharacterAppearance?.eyes)))return null;
   if(a.body!=='male'||o.direction!==d||!contract?.donors[item]||visible.pants?.item!==133||
-    ![null,9,148].includes(boot??null)||Object.keys(visible).length!==(boot==null?2:3)||
-    Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original'))return null;
+    ![null,9,148].includes(boot??null)||Object.keys(visible).length!==(boot==null?2:3))return null;
   const id=`male-pants133-${action}-north-isolated-r2`,anchor=outfitById.get(id+({9:'-boots9-isolated-candidate-coat151-existing',148:'-boots148-isolated-candidate-coat151-native'}[boot]||'-coat151-native')),
     clean=outfitById.get(id),donor=outfitById.get(`male-torso${item}-north-frozen-${action}-native`);
   if([anchor,clean,donor].some(r=>!r||r.productionEnabled===false||r.body!==a.body||r.direction!==d||r.action!==action)||
@@ -1012,7 +1016,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    }}});
   if(!source)return null;
   const slotRoutes=Object.fromEntries(Object.entries(source.slotRoutes).map(([k,v])=>[visible[k].key,v]));
-  return {...source,slotRoutes,omitted:[],hdKind:'outfit'};
+  const dressed={...source,slotRoutes,omitted:[],hdKind:'outfit'};
+  if(!palette)return dressed;
+  // C6/C7 use cloth-only passes, including the two C7 rear aperture pieces.
+  // Attach the exact North anatomy authority already used on P133/B9. The
+  // actual North pack cannot show an iris; never drop the saved color.
+  const boot9=outfitById.get(id+'-boots9-isolated-candidate');
+  const colored=northBootAppearance(dressed,{...a,eyeColor:'original'},anchor,boot9,true);
+  if(!colored)return null;
+  return {...colored,colorAppearance:{...colored.colorAppearance,eyeColor:a.eyeColor||'original'}};
  }
  // Verified South original eye material, not a brightness or rectangle mask.
  const southPunchFace='6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a',southPunchSkin='47c4585f7c79fdf6d67207416b4a08c9b7322da3d9abc94cddf965bd6ed174a0';
@@ -1188,6 +1200,24 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...upper,colorAppearance,id:`partitioned-male-punch:${upper.id}:${lower.id}`,equipment,slotRoutes,omitted:[],layeredSlots:true,
    resolvedAction:options.action,partitionedMalePunch:{upper,lower,splitY:400,paletteParts}};
  }
+ function selectFemaleNorthBootsOnly(player,o,visible){
+  const boot=visible.boots?.item;
+  if(o.action!=='idle'||o.direction!=='north'||Object.keys(visible).length!==1||boot!==9)return null;
+  const body={...player,equipment:{...player.equipment,[visible.boots.key]:null}},
+   base=select(body,o),coated=selectFemaleIdleBoots({...body,equipment:{coat:{def:151},boots:visible.boots.value}},o,
+     {torso:{item:151,key:'coat'},boots:{...visible.boots,key:'boots'}});
+  if(base?.sourceId!=='female-idle-original-north-from-walk0'||base.hdKind||base.body!=='female'||base.headRecord||base.gearOnlyRecord||
+     !coated)return null;
+  const reference=outfitById.get('female-torso151-north-frozen-idle-native'),
+   d=base.pack.directions.north,r=reference?.pack.directions.north,
+   eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!r||!['frame','pivot','density'].every(k=>eq(base.pack[k],reference.pack[k]))||
+     [d.clip,r.clip].some(c=>c.frames!==1||c.loop!==false)||!eq(d.rest,r.rest)||!eq(d.poses,r.poses)||
+     !eq(d.layers,r.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)}))))return null;
+  const layers=coated.pack.directions.north.layers.filter(l=>l.id.startsWith('boot'+boot+'-')),
+   fixedIdleBoots={base,layers};
+  return describeSlots({...base,id:base.id+':bare-north-boot'+boot,equipment:{boots:boot},fixedIdleBoots},visible,[]);
+ }
  function selectFemaleIdleBoots(player,o,visible){
   const boots=visible.boots?.item,dir=o.direction;
   if(o.action!=='idle'||!['north','south'].includes(dir)||visible.torso?.item!==151||
@@ -1232,7 +1262,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!visible)return null;
   const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
-  if(body==='female')return selectFemaleIdleBoots(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
+  if(body==='female')return selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
   return selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||selectUnarmedSouthPilot(player,o);
  }
  function selectVisual(player,o={}){
@@ -1277,7 +1307,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const tick=Number.isFinite(progress)?Math.floor(Math.max(0,Math.min(1,progress))*clip.frames+(r.orderedAttack?1e-9:0)):Math.floor(Math.max(0,o.time||0)*clip.fps),position=clip.loop?tick%clip.frames:Math.min(clip.frames-1,tick);
   return timeline?r.states.findIndex(s=>s.state===String(timeline[position])):position;
  }
- function filesFor(r,frame){if(r.partitionedMalePunch)return filesForPartitionedMalePunch(r,frame);if(r.northLayers)return northFiles(r,frame);if(r.profileLayers)return profileFiles(r,frame);if(r.authoredPantsLayer)return southFiles(r,frame);return [...new Set([...(r.hdKind==='female-equipment'?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).requiredFiles(r,{frame}),...(r.headRecord?headRegistry.requiredFiles(r.headRecord):[]),...(r.gearOnlyRecord?originalHairGearRegistry.requiredFiles(r.gearOnlyRecord):[]),...(r.femaleNamedHairRecord?femaleNamedHairRegistry.requiredFiles(r.femaleNamedHairRecord):[])])];}
+ function filesFor(r,frame){if(r.fixedIdleBoots)return [...filesFor(r.fixedIdleBoots.base,frame),...r.fixedIdleBoots.layers.map(l=>'tools/rework-modular-outfits-hd/assets/'+l.frames[0]+'.png')];if(r.partitionedMalePunch)return filesForPartitionedMalePunch(r,frame);if(r.northLayers)return northFiles(r,frame);if(r.profileLayers)return profileFiles(r,frame);if(r.authoredPantsLayer)return southFiles(r,frame);return [...new Set([...(r.hdKind==='female-equipment'?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).requiredFiles(r,{frame}),...(r.headRecord?headRegistry.requiredFiles(r.headRecord):[]),...(r.gearOnlyRecord?originalHairGearRegistry.requiredFiles(r.gearOnlyRecord):[]),...(r.femaleNamedHairRecord?femaleNamedHairRegistry.requiredFiles(r.femaleNamedHairRecord):[])])];}
  async function prepare(player,o,clipFileLimit=0){await ready;const r=selectVisual(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
   const job=(async()=>{try{entry=entry||{images:new Map(),proofs:[],frames:new Map(),imageLimit:Math.max(64,clipFileLimit)};await Promise.all(files.map(async p=>{if(!entry.images.has(p))entry.images.set(p,await loadShared(p));}));
   if(r.femaleNamedHairRecord)femaleNamedHairRegistry.compose(r,r.femaleNamedHairRecord,entry.images);
@@ -1318,6 +1348,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {canvas,info};
  }
  function composeFrame(r,frame,entry){
+  if(r.fixedIdleBoots){
+   const {base,layers}=r.fixedIdleBoots,body=composeFrame(base,frame,entry),
+    canvas=makeCanvas(body.canvas.width,body.canvas.height),ctx=canvas.getContext('2d');
+   for(const l of layers.filter(l=>l.depth===-1))ctx.drawImage(entry.images.get('tools/rework-modular-outfits-hd/assets/'+l.frames[0]+'.png'),0,0);
+   ctx.drawImage(body.canvas,0,0);
+   for(const l of layers.filter(l=>l.depth===45))ctx.drawImage(entry.images.get('tools/rework-modular-outfits-hd/assets/'+l.frames[0]+'.png'),0,0);
+   return {...body,canvas};
+  }
   if(r.partitionedMalePunch)return composePartitionedMalePunch(r,frame,entry);
   if(r.northLayers)return composeNorthLayers(r,frame,entry);
   if(r.profileLayers)return composeProfileLayers(r,frame,entry);

@@ -1,0 +1,5 @@
+# B9 avulsa feminina e cores dos peitorais 6/7 masculinos
+
+- Repouso Norte feminino: B9 é a única peça visual necessária. A referência C151+B9 e a base sem peitoral têm a mesma pose, anatomia, escala e âncora. As quatro camadas autorais da bota preservam a ordem de cano traseiro/frontal. Dez perfis passaram: igualdade exata contra o controle dentro do alfa da bota, a base fica igual fora desse alfa e volta idêntica na retirada. B176 avulsa não foi habilitada devido a diferença de cor na borda da sola. As rotas já existentes com C151 continuam.
+- Repouso e caminhada Norte masculinos: peitorais 6/7 com P133, sem botas ou com B9/B148, reaproveitam as máscaras autorais de anatomia da mesma pose. Doze combinações, 102 quadros: as cores de pele/cabelo seguem o perfil, sem mudar roupa, alfa, pose, save ou materiais das botas. O formato Original de cabelo e olhos é o recorte testado; o rosto está de costas, mas a cor escolhida de olhos não é alterada. C137/C144 não foram promovidos.
+- Sem alteração em PNG, dados de personagem, PR de publicação, merge ou Pages.
