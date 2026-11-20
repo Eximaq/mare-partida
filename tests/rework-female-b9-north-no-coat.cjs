@@ -61,7 +61,12 @@ const draw=async(a,s)=>{
    assert(!api.selectVisual(actor(look,9),options)?.fixedIdleBoots,'proof escaped direction or action');
   }
   for(const [k,v] of Object.entries({coat:151,head:19,legs:168,weapon:0,gloves:152})){
-   const extra=actor(look,9);extra.equipment[k]={def:v};assert(!api.selectVisual(extra,o)?.fixedIdleBoots,'proof escaped supported slots');
+   const extra=actor(look,9);extra.equipment[k]={def:v};
+   const result=api.selectVisual(extra,o);
+   if(k==='legs'&&result?.fixedIdleBoots){
+    assert(result.id.includes(':pants168:idle-north-frame0:fixed-north-idle-b9'),'extra trousers must use the proven two-slot route');
+    assert.equal(result.slotRoutes.legs.item,168);assert.equal(result.slotRoutes.boots.item,9);
+   }else assert(!result?.fixedIdleBoots,'proof escaped supported slots');
   }
  }
  console.log(samples+' stable bare north-idle boot swaps');

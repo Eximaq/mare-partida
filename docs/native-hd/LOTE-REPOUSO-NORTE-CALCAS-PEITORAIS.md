@@ -1,0 +1,5 @@
+# Reaproveitamento das camadas no repouso Norte
+
+- Feminino: calças 168 e 182, sem outro equipamento visível, usam a fase zero de caminhada recortada pela máscara de pele autoral. A anatomia da fase coincide com a do repouso, e o Original exato permanece prioritário. Para as laterais a anatomia não coincide; a calça 147 não tem a máscara necessária. A Bota 9 é a única combinação nova nesse recorte. Não habilita outras botas, luvas ou peitorais.
+- Bota 9 no feminino: as Calças 168 e 182 preservam os passes originais da borda de trás e da frente do cano. Em 18 renderizações, equipar ou retirar a bota e a calça mudou somente os pixels de cada camada; a sola ficou pixel a pixel idêntica à da bota avulsa.
+- Masculino: peitorais 158, 165, 172 e 179 com P133, sem bota ou com B9/B148, mantêm os materiais autorais. Com penteado/rosto Original, cores de pele, cabelo e olhos seguem a aparência salva onde a anatomia visível é registrada. A aba muda o limite de contato com a perna durante a caminhada, então o encaixe fica restrito ao repouso.
