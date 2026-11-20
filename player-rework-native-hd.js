@@ -1093,7 +1093,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function selectFemaleApprovedGloveWalk(player,o,visible){
   const d=o.direction,g=visible.gloves?.item,pants=visible.pants?.item;
   if(o.action!=='walk'||!Object.hasOwn(femaleSideWalkGloveAuthority,d)||o.weaponless||
-     visible.torso?.item!==151||!([147,161,168,182].includes(pants)||pants===175&&[26,138,166].includes(g))||![25,26,131,138,145,152,159,166,173].includes(g)||Object.keys(visible).length!==3||
+     visible.torso?.item!==151||![147,161,168,175,182].includes(pants)||![25,26,131,138,145,152,159,166,173].includes(g)||Object.keys(visible).length!==3||
      ![undefined,null,'natural'].includes(player.appearance96?.skinStyle))return null;
   // This is the approved Original walk as-is, not a fallback to another body.
   const equipment={...player.equipment};delete equipment[visible.gloves.key];

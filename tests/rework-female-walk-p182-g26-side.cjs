@@ -2,7 +2,7 @@
 const g=Number(process.env.GLOVE||26),pantsId=Number(process.env.PANTS||182);
 const p=require('path'),a=require('node:assert/strict'),C=require('crypto');
 if(!process.argv[2]){
- for(const def of (process.env.PANTS?[pantsId]:process.env.GLOVE?[182]:[182,147,161,175]))for(const item of (process.env.GLOVE?[g]:def===175?[26,138,166]:[25,26,131,138,145,152,159,166,173]))for(const d of ['east','west']){
+ for(const def of (process.env.PANTS?[pantsId]:process.env.GLOVE?[182]:[182,147,161,175]))for(const item of (process.env.GLOVE?[g]:[25,26,131,138,145,152,159,166,173]))for(const d of ['east','west']){
   const r=require('node:child_process').spawnSync(process.execPath,[__filename,d],{stdio:'inherit',env:{...process.env,GLOVE:String(item),PANTS:String(def)}});
   if(r.error)throw r.error;if(r.status!==0)process.exit(r.status||1);
  }
@@ -56,7 +56,6 @@ async function stage(actor,source){
  a.deepEqual(combo.pack.pivot,native.pack.pivot);
  const swapId=g===26?([147,161,175].includes(pantsId)?166:145):26;
  const swapped={...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:swapId}}},other=run.selectVisual(swapped,o);
- if(pantsId===175)for(const id of [25,131,145,152,159,173])a.notEqual(run.selectVisual({...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:id}}},o)?.slotRoutes?.gloves?.item,id);
  a.equal(other.slotRoutes.gloves.item,swapId);
  a.deepEqual(other.pack.directions[d].layers.filter(l=>!l.id.startsWith('own-female')),x.layers);
  a.notDeepEqual(other.pack.directions[d].layers.slice(-2),gloves);
