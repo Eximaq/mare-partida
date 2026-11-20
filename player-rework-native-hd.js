@@ -1616,10 +1616,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   180:['bf312d58679b26e95562da837eb628c53191e47a59c80ccd2427b75be0f4fefc', 'f912b0cca5407653a7709721530a81ee7ff36d79d41ff0b343578492706c2397']
  };
  function selectNorthGlovePalette(o,a,visible){
-  const action=o.action,item=visible.gloves?.item,idle=action==='idle',refs=northGlovePaletteSources[item];
+  const action=o.action,item=visible.gloves?.item,idle=action==='idle',refs=northGlovePaletteSources[item],bare=visible.boots==null;
   if(!refs||a.body!=='male'||o.direction!=='north'||!['idle','walk'].includes(action)||
-     Object.keys(visible).length!==4||visible.torso?.item!==151||visible.pants?.item!==133||
-     visible.boots?.item!==155||!Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original')||
+     Object.keys(visible).length!==(bare?3:4)||visible.torso?.item!==151||visible.pants?.item!==133||
+     (bare?![26,166].includes(item):visible.boots.item!==155)||!Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original')||
      a.skin&&a.skin!=='original'&&!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
      a.hairColor&&a.hairColor!=='original'&&!Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor))return null;
   const get=id=>outfitById.get(id),r=get('frozen-male-glove'+item+'-north-'+action+'-native-layers'),
@@ -1647,7 +1647,17 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const record=northBootAppearance({...r,pack,canonicalNorthBootGloves:true},a,authority,boot9);
   if(!record)return null;
   const {canonicalNorthBootGloves,...verified}=record;
-  return {...verified,pack:r.pack,hdKind:'outfit',omitted:[],slotRoutes:Object.fromEntries(Object.values(visible).map(v=>[v.key,{item:v.item,quality:'hd',source:r.id}]))};
+  const slots=Object.fromEntries(Object.values(visible).map(v=>[v.key,{item:v.item,quality:'hd',source:r.id}]));
+  if(!bare)return {...verified,pack:r.pack,hdKind:'outfit',omitted:[],slotRoutes:slots};
+  const own={'boot155-rear-mouth-0':-1,'boot155-shell-0':99,'boot155-rear-mouth-1':-1,'boot155-shell-1':99};
+  const eligible=d.layers.filter(l=>l.id.startsWith('boot155-'));
+  if(!same(eligible.map(l=>l.id),Object.keys(own))||eligible.some(l=>l.depth!==own[l.id]||
+      l.binding?.kind!=='fixed'||l.depthTrack||l.atlas||l.alternates||l.frames?.length!==d.clip.frames||
+      l.frames.some(h=>!r.sourceRefs.includes(h))||
+      l.frames.some(h=>d.layers.some(v=>!eligible.includes(v)&&(v.frames||[v.source]).includes(h)))))return null;
+  const {boots,...equipment}=r.equipment;
+  const unbooted={...r.pack,directions:{...r.pack.directions,north:{...d,layers:d.layers.filter(l=>!eligible.includes(l))}}};
+  return {...verified,id:verified.id+':unbooted',pack:unbooted,equipment,hdKind:'outfit',omitted:[],slotRoutes:slots};
  }
  function selectLayered(player,o={}){
   if(state!=='ready'||!player||player.__reworkSubset||player.zoanTransformed||slotEntry(player.equipment?.visual_completo))return null;
