@@ -29,11 +29,11 @@ await authDatabase(async f=>{
   for(const page of [p,q])await page.waitForFunction(()=>globalThis.__mareDiagnostics?.().sharedLobby?.players.length===1,null,{timeout:15000});
   for(const page of [p,q])await page.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.draws>0,null,{timeout:90000});
   // Hidden load/status labels must not churn DOM on every animation frame.
-  await p.waitForFunction(()=>document.querySelector('#playerVisualStatus')?.getAttribute('data-state')==='ready');
+  await p.waitForFunction(()=>document.querySelector('#worldLoading')?.getAttribute('data-state')==='ready');
   await p.evaluate(`(() => {
     window.statusMutations=0;
     window.statusObserver=new MutationObserver(records=>window.statusMutations+=records.length);
-    for(const id of ['worldLoading','playerVisualStatus'])window.statusObserver.observe(document.getElementById(id),{subtree:true,childList:true,characterData:true,attributes:true});
+    window.statusObserver.observe(document.getElementById('worldLoading'),{subtree:true,childList:true,characterData:true,attributes:true});
   })()`);
   await p.waitForTimeout(1200);
   assert.equal(await p.evaluate('window.statusObserver.disconnect(); window.statusMutations'),0,'stable load labels do not rewrite DOM at frame rate');

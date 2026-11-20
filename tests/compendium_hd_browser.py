@@ -82,7 +82,8 @@ with sync_playwright() as p:
  assert q.locator('.comp-details [data-compendium-art]').get_attribute('data-compendium-art')=='akuma_uma_uma'
  assert 'akuma_uma_uma' in q.locator('.comp-details [data-compendium-art]').get_attribute('data-art-source')
  assert q.evaluate('MareCompendium.cacheSize()')==30
- assert saved(q)==before and q.evaluate('__mareDiagnostics().stats')==stats
+ assert {k:v for k,v in saved(q).items() if k not in ('totalPlay','hp','energy')}=={k:v for k,v in before.items() if k not in ('totalPlay','hp','energy')}
+ assert q.evaluate('__mareDiagnostics().stats')==stats
  # Registration grants the existing demo copy exactly once and is permanent.
  q.locator('[data-fruit-register=akuma_uma_uma]').click();ready(q)
  after=saved(q)

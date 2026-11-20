@@ -50,6 +50,13 @@ jobs:
           python tools/build_pages.py
           python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/native-hd-server.txt" 2>&1 &
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
+      - name: Carregamento visual com movimento e combate
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8157/dist/
+          MARE_EVIDENCE_DIR: artifacts/rework-visual-async
+        run: |
+          node tests/rework_visual_readiness_browser.cjs
+          MARE_FAIL_VISUAL=1 node tests/rework_visual_readiness_browser.cjs
       - name: Capture normal world renderer without touching owner saves
         env:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/
