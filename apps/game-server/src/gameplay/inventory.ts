@@ -50,7 +50,6 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
  }
  for(const k of kills){
   const r=k.reward;xp+=BigInt(r.xp);gold+=BigInt(crewMonsterBerry(r.gold,battle.catalog.factions[identity.faction_id].gold,passives.monsterBerryBonus));
-  if(random()<battle.hunt.materialDropChance(r,lootMultiplier))after.materials=Math.min(1000000000,after.materials+r.materials);
   if(after.inventory.length<120){const plan=forge.normalLoot(defs,state.level,battle.hunt.get(k.area),random);if(plan){const item=make(plan.def,plan.level,plan.rarity,battle.hunt.get(k.area).name);item.generation.source='map:'+k.area;after.inventory.unshift(item);}}
   if(forge.mapFragmentChance(k.monster)>0&&random()<forge.mapFragmentChance(k.monster)){
    const fragments=require('../../../../boss-dungeon-system.js'),origin='Caçada · '+battle.hunt.get(k.area).name;
@@ -253,7 +252,7 @@ async function initialize(
     equipment: Object.fromEntries(
       catalog.slots.map((s) => [s, null]),
     ) as OriginalInventory["equipment"],
-    materials: 3,
+    materials: 0,
     potions: 4,
     forgeVersion: 5,
     forgeSeq: 0,
@@ -504,7 +503,7 @@ export async function mutateOriginalInventory(
       );
       if (!result.ok) throw new AuthFault(409, "forge_operation_rejected");
       const { gold, classId, characterId, level, ...next } = result.state;
-      i = valid(next);
+      i = valid(next,id);
       delta = BigInt(gold) - BigInt(state.gold);
       outcome = result.result;
     } else throw new AuthFault(400, "invalid_request");

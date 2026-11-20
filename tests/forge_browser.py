@@ -35,7 +35,7 @@ with sync_playwright() as p:
         suffix=f'{size[0]}x{size[1]}';seed=seeded(template);c,q=page_for(browser,seed,size,errors);original=saved(q)
         assert original['forgeVersion']==4
         backup=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY+'-before-forge-v4')+')'));assert backup==seed
-        panel(q,'forge');assert q.get_by_role('tab').count()==4;assert not q.locator('#forgeEquipment,#forgePearlSelect,#forgeFusionSelect').count()
+        panel(q,'forge');assert q.get_by_role('tab').count()==5;assert not q.locator('#forgeEquipment,#forgePearlSelect,#forgeFusionSelect').count()
         assert q.locator('.forge2-tile').count()==16
         q.locator('[data-forge-page="1"]').click();assert '2 /' in q.locator('.forge2-pagination').inner_text()
         q.locator('[data-forge-page="-1"]').click()
@@ -85,7 +85,7 @@ with sync_playwright() as p:
         assert len({i['id'] for i in again['inventory']})==len(again['inventory'])
         record('visual_flows_transactions_reload_'+suffix);c.close()
     # Risky +5 failure and +19 success; confirmation cancellation has no RNG/payment.
-    seed=seeded(template);seed['equipment']['weapon']['plus']=5;c,q=page_for(browser,seed,errors=errors);panel(q,'forge');q.evaluate('Math.random=()=>0.999');before=saved(q);q.locator('[data-forge-action=upgrade]').click();same(q,before);confirm(q);after=saved(q);assert after['equipment']['weapon']['plus']==5 and after['gold']<before['gold'];assert q.locator('#forgeOperationResult.failure').is_visible();shot(q,'upgrade-failure');c.close()
+    seed=seeded(template);seed['equipment']['weapon']['plus']=5;c,q=page_for(browser,seed,errors=errors);panel(q,'forge');q.evaluate('Math.random=()=>0.999');before=saved(q);q.locator('[data-forge-action=upgrade]').click();same(q,before);confirm(q);after=saved(q);assert after['equipment']['weapon']['plus']==4 and after['gold']<before['gold'];assert q.locator('#forgeOperationResult.failure').is_visible();shot(q,'upgrade-failure');c.close()
     seed['equipment']['weapon']['plus']=19;c,q=page_for(browser,seed,errors=errors);panel(q,'forge');q.evaluate('Math.random=()=>0');q.locator('[data-forge-action=upgrade]').click();confirm(q);assert saved(q)['equipment']['weapon']['plus']==20;assert q.locator('[data-forge-action=upgrade]').is_disabled();shot(q,'upgrade-limit');c.close();record('upgrade_risk_failure_limit')
     seed=seeded(template);seed.update(gold=0,materials=0);seed['equipment']['weapon']['locked']=True;c,q=page_for(browser,seed,errors=errors);panel(q,'forge');assert q.locator('[data-forge-action=upgrade]').is_disabled();tab(q,'reforge');assert q.locator('[data-forge-action=reforgeLine]:enabled').count()==0;tab(q,'fusion');q.locator('[data-forge-auto]').click();assert q.locator('[data-forge-action=fuseEquipment]').is_disabled();c.close();record('locks_insufficient_budget')
     assert not errors,errors;record('no_javascript_errors');browser.close()

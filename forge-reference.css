@@ -404,3 +404,10 @@ html[data-mare-motion=reduced] #app #panelOverlay.hud-density.forge-hd-mode .for
   #app #panelOverlay.hud-density.forge-hd-mode .forge-anvil-stage :is(.forge-fire,.forge-embers i),
   #app #panelOverlay.hud-density.forge-hd-mode .forge-anvil-stage::before {animation:none}
 }
+
+/* Keep all forge operations reachable on narrow screens. */
+.forge-hd-workbench .forge2-tabs {grid-template-columns:repeat(5,minmax(0,1fr))}
+.forge2-fragment-yield {font-size:.75rem;color:var(--forge-gold,#e9bd77)}
+@media (max-width:600px) {
+  .forge-hd-workbench .forge2-tabs {grid-template-columns:repeat(3,minmax(0,1fr));flex-wrap:wrap}
+}

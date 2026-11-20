@@ -159,7 +159,7 @@ test("canonical inventory converts owned alpha copies once, preserves gold/XP an
     assert.equal(i.inventory.filter((x: any) => x.def === 0).length, 1);
     assert.equal(i.inventory.filter((x: any) => x.def === 6).length, 1);
     assert.equal(i.potions, 4);
-    assert.equal(i.materials, 8);
+    assert.equal(i.materials, 5);
     assert.equal(
       new Set(
         [...i.inventory, ...Object.values(i.equipment).filter(Boolean)].map(
@@ -385,6 +385,8 @@ test("original forge uses persisted gear and server costs, is replay-safe, and r
   fixture(async (f) => {
     assert.equal((await f.send(f.body("items.initialize"))).status, 200);
     const item = (await f.read()).originalInventory.equipment.weapon;
+    await f.pool.query("UPDATE mare_game.game_inventory SET materials=11 WHERE character_id=$1",[f.c.id]);
+    await f.pool.query("UPDATE mare_game.character_progression SET gold=570 WHERE character_id=$1",[f.c.id]);
     const upgrade = f.body(
       "forge.execute",
       { operation: { type: "upgrade", itemId: item.id, expectedSeq: 0 } },
@@ -526,7 +528,7 @@ test("combat rewards credit materials to canonical inventory and never write the
     assert.equal((await f.send(claim)).status, 200);
     const o = await f.read();
     assert.equal(o.state.gold, "140");
-    assert.equal(o.originalInventory.materials, 4);
+    assert.equal(o.originalInventory.materials, 1);
     assert.equal(o.inventory.items.length, 0);
   }));
 
@@ -850,4 +852,22 @@ test("a full potion stock refuses purchase as a conflict and preserves the walle
     await placeAtMerchant(f.pool, f.c.id);
     assert.equal((await f.send(f.body("potions.buy", {}, 1))).status, 409);
     assert.equal((await f.read()).state.gold, "120");
+  }));
+
+test("original forge dismantles owned gear once with a stable balance across retries", async () =>
+  fixture(async (f) => {
+    assert.equal((await f.send(f.body("items.initialize"))).status, 200);
+    const original = (await f.read()).originalInventory;
+    const id = original.inventory[0].id;
+    const wrong = f.body("forge.execute", {operation:{type:"dismantle",itemIds:[id,original.equipment.weapon.id],expectedSeq:0}},1);
+    assert.equal((await f.send(wrong)).status,409);
+    const make = () => f.body("forge.execute", {operation:{type:"dismantle",itemIds:[id],expectedSeq:0}},1);
+    const a=make(),b=make(),results=await Promise.all([f.send(a),f.send(b)]);
+    assert.deepEqual(results.map(x=>x.status).sort(),[200,409]);
+    const accepted=results.findIndex(x=>x.status===200);
+    assert.deepEqual(await f.send(accepted===0?a:b),results[accepted]);
+    const after = (await f.read()).originalInventory;
+    assert.equal(after.inventory.length,original.inventory.length-1);
+    assert.equal(after.materials,original.materials+2);
+    assert.equal(after.forgeSeq,1);
   }));
