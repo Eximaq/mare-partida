@@ -6,7 +6,7 @@ const player=(glove,boot,skinColor)=>JSON.parse(JSON.stringify(A.commit({id:'sam
 const layerBoot=l=>l.id.startsWith('boot155-'),sk=l=>l.id.startsWith('glove');
 const pix=c=>Buffer.from(c.getContext('2d').getImageData(0,0,c.width,c.height).data);
 (async()=>{await api.ready;let count=0;
-for(const action of ['idle','walk'])for(const glove of [26,131,166,173]){
+for(const action of ['idle','walk'])for(const glove of [26,131,138,145,159,166,173,180]){
  const o=opts(action),contrast=[];
  for(const skin of Object.keys(A.skins)){
   const a0=player(glove,null,skin),save=JSON.stringify(a0),ids=[];
@@ -17,7 +17,7 @@ for(const action of ['idle','walk'])for(const glove of [26,131,166,173]){
   delete a0.equipment.boots;a.equal(JSON.stringify(a0),save);a.equal(ids[0],ids[2]);a.equal(ids[1],ids[3]);
  }
  for(const [equipment,options] of [
-  [{boots:I(9)},o],[{legs:I(154)},o],[{head:I(129)},o],[{gloves:I(138)},o],[{weapon:I(0)},o],[{}, {...o,direction:'south'}],[{}, {...o,action:'attack-unarmed'}]
+  [{boots:I(9)},o],[{legs:I(154)},o],[{head:I(129)},o],[{gloves:I(25)},o],[{weapon:I(0)},o],[{}, {...o,direction:'south'}],[{}, {...o,action:'attack-unarmed'}]
  ]){const x=player(glove,null,'ebony'); x.equipment={...x.equipment,...equipment};a(!api.selectVisual(x,options)?.id.endsWith(':unbooted'));}
 
  for(const skin of ['porcelain','ebony']){
@@ -46,5 +46,5 @@ for(const action of ['idle','walk'])for(const glove of [26,131,166,173]){
  }contrast.push(...per);}finally{qs.forEach(q=>q.release());global.gc?.();}
  }
 }
-if(!process.env.SELECT_ONLY)a.equal(count,136);console.log('PASS 256 saved selection transitions and '+count+' Canvas comparisons');
+if(!process.env.SELECT_ONLY)a.equal(count,272);console.log('PASS 512 saved selection transitions and '+count+' Canvas comparisons');
 })().catch(e=>{console.error(e);process.exitCode=1});
