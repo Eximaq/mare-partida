@@ -747,6 +747,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const pureCompass=carryRegistry?.resolve({item:16,pureCompass16Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:16}});
    if(pureCompass?.compass16SavedPalette)return withCarryHead(pureCompass,'carry');
   }
+  const w119=equipment.weapon;
+  if(weapon===119&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.direction==='south'&&['idle','walk'].includes(o.action)&&o.consumer==='world'&&!o.weaponless&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w119?.[k]==null||w119[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     ['light','ebony'].includes(a.skin)){
+   const ownMech=carryRegistry?.resolve({item:119,mechanical119SouthSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:119}});
+   if(ownMech?.mechanical119SouthSavedPalette)return withCarryHead(ownMech,'carry');
+  }
   const ownRelic=selectSavedRelic32Carry(player,o,a);if(ownRelic)return ownRelic;
   const carried=carryRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head').map(([k,v])=>[k,v?.def??v]))});
   const carryWithHead=withCarryHead(carried,'carry');
