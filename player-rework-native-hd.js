@@ -9,8 +9,8 @@ const canonical=b=>['female','feminino'].includes(b)?'female':'male';
 // compatible visual route, including an independently registered slot.
 const nonVisualEquipment=new Set(['necklace','ring','belt','charm','cloak','akuma_no_mi']);
 function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async path=>{const r=await fetch(new URL(path,baseURL));if(!r.ok)throw Error('HD index HTTP '+r.status);return r.json();},loadImage=null,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
- let swordCheckpoint,northRig,profileStore,profileRig,baseIndex,outfitIndex,outfitById,swordSouth,registry,femaleNamedHairRegistry,femaleRegistry,weaponRegistry,headRegistry,headCompat,originalHairGearRegistry,assetStore,outfitRegistry,outfitStore,carryRegistry,combinedCarryRegistry,weaponStore,state='loading',last=null,error=null;const cache=new Map(),pending=new Map(),failures=new Map(),lastRendered=new Map();
- const imageLoader=loadImage||(async path=>{if(path.startsWith('tools/rework-female-profile-rig/assets/'))return profileStore.load(path);if(path.startsWith('tools/rework-base-hd/assets/'))return assetStore.load(path);if(path.startsWith('tools/rework-modular-outfits-hd/assets/'))return outfitStore.load(path);if(path.startsWith('tools/rework-weapon-layers-hd/assets/'))return weaponStore.load(path);const im=new Image();im.src=new URL(path,baseURL);await im.decode();return im;});
+ let daggerP22,daggerP22Store,swordCheckpoint,northRig,profileStore,profileRig,baseIndex,outfitIndex,outfitById,swordSouth,registry,femaleNamedHairRegistry,femaleRegistry,weaponRegistry,headRegistry,headCompat,originalHairGearRegistry,assetStore,outfitRegistry,outfitStore,carryRegistry,combinedCarryRegistry,weaponStore,state='loading',last=null,error=null;const cache=new Map(),pending=new Map(),failures=new Map(),lastRendered=new Map();
+ const imageLoader=loadImage||(async path=>{if(path.startsWith('tools/rework-female-dagger-p22/assets/'))return daggerP22Store.load(path);if(path.startsWith('tools/rework-female-profile-rig/assets/'))return profileStore.load(path);if(path.startsWith('tools/rework-base-hd/assets/'))return assetStore.load(path);if(path.startsWith('tools/rework-modular-outfits-hd/assets/'))return outfitStore.load(path);if(path.startsWith('tools/rework-weapon-layers-hd/assets/'))return weaponStore.load(path);const im=new Image();im.src=new URL(path,baseURL);await im.decode();return im;});
  const imageRequests=new Map();
  function loadShared(path){
   if(!imageRequests.has(path))imageRequests.set(path,Promise.resolve().then(()=>imageLoader(path)).finally(()=>imageRequests.delete(path)));
@@ -41,7 +41,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   })();
   return swordRegistration;
  }
- const ready=indexesReady.then(warmSwordCheckpoint).then(()=>{state='ready';onChange();}).catch(e=>{state='failed';error=e.message;onChange();});
+ const daggerP22Ready=Promise.resolve().then(()=>fetchJSON('tools/rework-female-dagger-p22/index.json')).then(c=>{
+  if(c?.schema!=='approved-female-dagger-p22-v1'||!c.frames||!c.targets||!c.geometry||!c.appearance||!root.MareReworkHDAssets)return;
+  daggerP22Store=root.MareReworkHDAssets.create(c.archiveIndex,{baseURL,prefix:'tools/rework-female-dagger-p22/archives/'});
+  daggerP22=c;
+ }).catch(()=>{});
+ const ready=Promise.all([indexesReady.then(warmSwordCheckpoint),daggerP22Ready]).then(()=>{state='ready';onChange();}).catch(e=>{state='failed';error=e.message;onChange();});
  function resolveProfileLayers(player,o,a,equipment){
   const s=profileRig,dir=o.direction;
   if(player.__reworkSubset||canonical(a.body)!=='female'||o.action!=='walk'||!['east','west'].includes(dir)||s?.schema!=='female-profile-separated-rig-candidate-v1')return null;
@@ -2099,8 +2104,29 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     colorAppearance:{hairColor:'black'},basePack:{pack:p,images:Object.fromEntries(refs.map(h=>[h,'/tools/rework-base-hd/assets/'+h+'.png']))},
     states:source.states.map(s=>({...s,layers:s.layers.slice(1)}))};
  }
+ // User-approved visual over the exact authored Original dagger rig.
+ // Normalized/personalized appearances are NOT an alias for this Original render.
+ function selectApprovedFemaleDaggerP22(player,o){
+  if(!daggerP22||!player||o.consumer!=='world'||o.action!=='attack-daggers'||player.zoanTransformed||player.__reworkSubset||o.weaponless)return null;
+  const v=registeredEquipment(player,o),look=player.appearance96||{},original=daggerP22.appearance;
+  if(!v||Object.keys(v).length!==2||v.pants?.item!==22||![12,13,71,72,73,74].includes(v.weapon?.item)||
+    Object.keys(look).length!==Object.keys(original).length||!Object.keys(original).every(k=>look[k]===original[k]))return null;
+  const direction=o.direction,r=select({...player,equipment:{...player.equipment,[v.pants.key]:null}},o);
+  const p=r?.baseRecord?.pack,d=p?.directions?.[direction],frames=daggerP22.frames[direction];
+  const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!r||r.body!=='female'||r.hdKind!=='female-equipment'||r.material||r.colorAppearance||!d||
+    !equal(daggerP22.targets[v.weapon.item+'/'+direction],[r.id,r.action,r.direction,r.body,r.item,r.states])||
+    !equal(daggerP22.geometry[direction],[d,p.density,p.frame,p.pivot])||d.clip.frames!==8||
+    frames?.length!==8||frames.some(h=>!/^[a-f0-9]{64}$/.test(h)||!daggerP22.archiveIndex.sources[h]||r.baseRecord.sourceRefs.includes(h))||
+    d.layers.some(l=>l.id==='adaga-overlap:pants:22'))return null;
+  const cloth={id:'adaga-overlap:pants:22',slot:'foreground',depth:.9,source:frames[0],frames,binding:{kind:'fixed'}};
+  const pack={...p,directions:{...p.directions,[direction]:{...d,layers:[...d.layers,cloth]}}};
+  return describeSlots({...r,id:r.id+':approved-dagger-p22',pack,
+   baseRecord:{...r.baseRecord,pack,sourceRefs:[...r.baseRecord.sourceRefs,...new Set(frames)]},
+   daggerP22Sources:frames},v,[]);
+ }
  function selectVisual(player,o={}){
-  const exact=select(player,o);
+  const exact=select(player,o)||selectApprovedFemaleDaggerP22(player,o);
   if(!exact){
    const layered=selectLayered(player,o);if(layered)return layered;
    if(!swordCheckpoint||!player||player.zoanTransformed||player.__reworkSubset||o.weaponless||
