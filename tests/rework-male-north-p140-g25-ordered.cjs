@@ -1,7 +1,7 @@
 const a=require('node:assert/strict'),p=require('node:path'),fs=require('node:fs'),crypto=require('node:crypto'),R=p.dirname(__dirname),{cv}=require(p.join(R,'tests/rework-integration-support.cjs'));
 const load=require(p.join(R,'tools/rework-hd-test-loader.cjs')).create(R),A=require(p.join(R,'character-appearance.js')),v=global.ReworkAccessoryVendor.compositor;
 const api=require(p.join(R,'player-rework-native-hd.js')).create({fetchJSON:async f=>JSON.parse(fs.existsSync(p.join(R,f))?fs.readFileSync(p.join(R,f)):require('node:zlib').gunzipSync(fs.readFileSync(p.join(R,f+'.gz')))),loadImage:load,makeCanvas:cv.createCanvas});
-const pants=Number(process.env.G25_TEST_PANTS||140);a([140,168].includes(pants));
+const pants=Number(process.env.G25_TEST_PANTS||140);a([140,168,175].includes(pants));
 const asset=h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png';
 const I=def=>({def}),d=x=>x.pack.directions.north,pix=c=>Buffer.from(c.getContext('2d').getImageData(0,0,c.width,c.height).data);
 const actor=(pants,boot,skin)=>JSON.parse(JSON.stringify(A.commit({id:'same-actor',classId:'fighter',equipment:{coat:I(151),legs:I(pants),gloves:I(25),...(boot?{boots:I(155)}:{})}},{skinColor:skin,hairColor:'black',eyeColor:'blue'},()=>true)));
