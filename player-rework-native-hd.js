@@ -1093,7 +1093,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function selectFemaleApprovedGloveWalk(player,o,visible){
   const d=o.direction,g=visible.gloves?.item,pants=visible.pants?.item;
   if(o.action!=='walk'||!Object.hasOwn(femaleSideWalkGloveAuthority,d)||o.weaponless||
-     visible.torso?.item!==151||![133,147,161,168,175,182].includes(pants)||![25,26,131,138,145,152,159,166,173].includes(g)||Object.keys(visible).length!==3||
+     visible.torso?.item!==151||!([133,147,161,168,175,182].includes(pants)||pants===21&&g===26)||![25,26,131,138,145,152,159,166,173].includes(g)||Object.keys(visible).length!==3||
      ![undefined,null,'natural'].includes(player.appearance96?.skinStyle))return null;
   // This is the approved Original walk as-is, not a fallback to another body.
   const equipment={...player.equipment};delete equipment[visible.gloves.key];
@@ -1108,6 +1108,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      source.mirrorX||source.mirrorLayerIDs||source.sourceRasterPadding||donor.mirrorX||donor.mirrorLayerIDs||donor.sourceRasterPadding)return null;
   const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
   const {layers:x,...pose}=source.pack.directions[d],{layers:y,...authority}=donor.pack.directions[d];
+  if(pants===21){
+   const cloth=x.find(l=>l.id==='approved-cloth'),owner=x.find(l=>l.id==='approved-derived');
+   const [cloth0,ownerA,ownerB]=d==='east'?
+    ['ea95e7f9b89de6ee3bb3b850b63d16027fbb260e3cd7fdeebb75471b0ad9d5b0','fdef1289b34199c5b0ca42331a8980c379ba7b4c6a76d9cee9ae624287b53738','f2427948ee6c76109eef61c791dec83d5ff931e2b184cdd5da72031a198b1073']:
+    ['76b1fca16d919ba2eba440e43bea453427b5f609600b76be33c19968630423ad','f07b1b736eb4ee339f379474d5806f4c66e00624b24520869635aba730354486','2b625961b90d08b6003b2828a226a4cda9b979fddaec6010c53115a22be93105'];
+   if(cloth?.binding?.kind!=='fixed'||cloth.slot!=='pants'||cloth.depth!==5||cloth.frames?.length!==40||
+      cloth.frames[0]!==cloth0||owner?.binding?.kind!=='fixed'||owner.depth!==5.3||owner.frames?.length!==40||
+      !owner.frames.every((h,i)=>h===(i>=7&&i<=10?ownerA:i===11?ownerB:
+       '5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f')&&source.sourceRefs.includes(h)))return null;
+  }
   if(pants===133){
    const cloth=x.find(l=>l.id==='approved-cloth');
    const start=d==='east'?'1296f5081e8686c4d64933d7ef115ea00c6a0a2ac2730f91a8e23b6aead1f17d':

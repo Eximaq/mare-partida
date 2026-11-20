@@ -2,7 +2,7 @@
 const g=Number(process.env.GLOVE||26),pantsId=Number(process.env.PANTS||182);
 const p=require('path'),a=require('node:assert/strict'),C=require('crypto');
 if(!process.argv[2]){
- for(const def of (process.env.PANTS?[pantsId]:process.env.GLOVE?[182]:[182,147,161,175,133]))for(const item of (process.env.GLOVE?[g]:[25,26,131,138,145,152,159,166,173]))for(const d of ['east','west']){
+ for(const def of (process.env.PANTS?[pantsId]:process.env.GLOVE?[182]:[182,147,161,175,133,21]))for(const item of (process.env.GLOVE?[g]:def===21?[26]:[25,26,131,138,145,152,159,166,173]))for(const d of ['east','west']){
   const r=require('node:child_process').spawnSync(process.execPath,[__filename,d],{stdio:'inherit',env:{...process.env,GLOVE:String(item),PANTS:String(def)}});
   if(r.error)throw r.error;if(r.status!==0)process.exit(r.status||1);
  }
@@ -21,6 +21,7 @@ const ownRefs={131:{east:'ref-1029',west:'ref-1030'},138:{east:'ref-0708',west:'
 if(ownRefs[g])a.equal(r.frozenGloveSourceRef,ownRefs[g][d]);
 const q=rows.find(r=>r.id===`approved-female151-v64-walk-${d}-pants${pantsId}`);
 const x=q.pack.directions[d],y=r.pack.directions[d],gloves=y.layers.filter(l=>l.id.startsWith(`own-female${g}-`));
+if(pantsId===21)a.equal(hash(JSON.stringify(x.layers.filter(l=>l.id.startsWith('approved-')).map(l=>[l.id,l.slot,l.depth,l.binding.kind,l.frames]))),{"east": "5250fecb575c9c01e3c35cabf578defd31124714a3b7800070a0a0ccaaf2bc32", "west": "e3eb444686ae52e57e6ca693dbe4a353c421381494a45a4032a2cc8c9958f80c"}[d]);
 if(pantsId===133)a.equal(hash(JSON.stringify(x.layers.filter(l=>l.id.startsWith('approved-')))),{
  east:'44cadd8e728f1e85deb7e3457ffbd6bb2ba89aff9966db34651d7e43d72b538f',
  west:'d8e4c5853a76a62a4807c43937403a5c698b957a496cf7453abd17a14dd207a0'
@@ -60,14 +61,18 @@ async function stage(actor,source){
  a.deepEqual(combo.pack.pivot,native.pack.pivot);
  const swapId=g===26?(pantsId===133?131:[147,161,175].includes(pantsId)?166:145):26;
  const swapped={...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:swapId}}},other=run.selectVisual(swapped,o);
+ if(pantsId===21){
+  for(const id of [25,131,138,145,152,159,166,173])a.notEqual(run.selectVisual({...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:id}}},o)?.slotRoutes?.gloves?.item,id);
+ }else{
  a.equal(other.slotRoutes.gloves.item,swapId);
  a.deepEqual(other.pack.directions[d].layers.filter(l=>!l.id.startsWith('own-female')),x.layers);
  a.notDeepEqual(other.pack.directions[d].layers.slice(-2),gloves);
+ }
  const controls=[
   {...gloveActor,appearance96:{...appearance96,skinColor:'ebony'}},
   {...gloveActor,appearance96:{...appearance96,hairStyle:'hair-bob'}},
   {...gloveActor,appearance96:{...appearance96,eyeColor:'green'}},
-  {...gloveActor,equipment:{...gloveActor.equipment,legs:{def:21}}},
+  {...gloveActor,equipment:{...gloveActor.equipment,legs:{def:22}}},
   {...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:180}}},
   {...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:g,variant:'other'}}},
   {...gloveActor,equipment:{...gloveActor.equipment,boots:{def:155}}}];
@@ -94,7 +99,7 @@ async function stage(actor,source){
    if(arm[i+3]===255&&u1.readUInt32LE(i)!==j1.readUInt32LE(i))armDiff++;
    // A lower garment may change what is seen through the fringe, never
    // any entirely exposed source hand pixel or a pixel outside that lower domain.
-   if([133,175].includes(pantsId)&&!gm[i+3]&&!lower[i+3]&&!oldLower[i+3]){
+   if([21,133,175].includes(pantsId)&&!gm[i+3]&&!lower[i+3]&&!oldLower[i+3]){
     const k=i>>>2,W=oc.width;
     if(k%W>1&&k%W<W-2&&k/W>=2&&k/W<oc.height-2&&
         [-2,-1,1,2,-W,W,-2*W,2*W].some(offset=>gm[(k+offset)*4+3])){
