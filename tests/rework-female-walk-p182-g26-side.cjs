@@ -2,7 +2,7 @@
 const g=Number(process.env.GLOVE||26),pantsId=Number(process.env.PANTS||182);
 const p=require('path'),a=require('node:assert/strict'),C=require('crypto');
 if(!process.argv[2]){
- for(const def of (process.env.PANTS?[pantsId]:process.env.GLOVE?[182]:[182,147]))for(const item of (process.env.GLOVE?[g]:[25,26,131,138,145,152,159,166,173]))for(const d of ['east','west']){
+ for(const def of (process.env.PANTS?[pantsId]:process.env.GLOVE?[182]:[182,147,161]))for(const item of (process.env.GLOVE?[g]:def===161?[26,166]:[25,26,131,138,145,152,159,166,173]))for(const d of ['east','west']){
   const r=require('node:child_process').spawnSync(process.execPath,[__filename,d],{stdio:'inherit',env:{...process.env,GLOVE:String(item),PANTS:String(def)}});
   if(r.error)throw r.error;if(r.status!==0)process.exit(r.status||1);
  }
@@ -32,7 +32,8 @@ if(g===131){
 }
 a.deepEqual(q.pack.frame,r.pack.frame);a.deepEqual(q.pack.pivot,r.pack.pivot);
 const refs=[...new Set(gloves.flatMap(l=>l.frames))];a(refs.every(h=>r.sourceRefs.includes(h)));
-const appearance96=global.MareCharacterAppearance.normalize({gender:'feminino',hairStyle:'original',hairColor:'brown',eyeStyle:'original',eyeColor:'brown',skinColor:'light'});
+const appearance96=JSON.parse(JSON.stringify(global.MareCharacterAppearance.normalize({gender:'feminino',hairStyle:'original',hairColor:'brown',eyeStyle:'original',eyeColor:'brown',skinColor:'light'})));
+for(const [key,value] of Object.entries({gender:'feminino',hairStyle:'original',hairColor:'brown',eyeStyle:'original',eyeColor:'brown',skinColor:'light'}))a.equal(appearance96[key],value);
 const actor={appearance96,classId:'sword',equipment:{coat:{def:151},legs:{def:pantsId}}};
 const raw=f=>'tools/rework-modular-outfits-hd/assets/'+f+'.png';
 const mask=async (width,height,z,f)=>{
@@ -53,11 +54,12 @@ async function stage(actor,source){
  a.deepEqual(combo.pack.directions[d].layers,[...x.layers,...gloves]);
  a.deepEqual({...combo.pack.directions[d],layers:x.layers},x);
  a.deepEqual(combo.pack.pivot,native.pack.pivot);
- const swapId=g===26?(pantsId===147?166:145):26;
+ const swapId=g===26?([147,161].includes(pantsId)?166:145):26;
  const swapped={...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:swapId}}},other=run.selectVisual(swapped,o);
  a.equal(other.slotRoutes.gloves.item,swapId);
  a.deepEqual(other.pack.directions[d].layers.filter(l=>!l.id.startsWith('own-female')),x.layers);
  a.notDeepEqual(other.pack.directions[d].layers.slice(-2),gloves);
+ if(pantsId===161)for(const id of [25,131,138,145,152,159,173])a.notEqual(run.selectVisual({...gloveActor,equipment:{...gloveActor.equipment,gloves:{def:id}}},o)?.slotRoutes?.gloves?.item,id);
  const controls=[
   {...gloveActor,appearance96:{...appearance96,skinColor:'ebony'}},
   {...gloveActor,appearance96:{...appearance96,hairStyle:'hair-bob'}},

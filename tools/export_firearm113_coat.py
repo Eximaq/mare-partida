@@ -66,7 +66,12 @@ def materialize(checkpoint, masks, out):
             if len(additional_refs) != 4 or additional_refs & naked:
                 raise ValueError("Wrong W113 supplemental glove phase-owned glove assets")
             glove_refs.update(additional_refs)
-        for h in sorted(refs | glove_refs):
+        p154 = next(l for l in source["pack"]["directions"]["north"]["layers"] if l["id"] == "candidate-pants154")
+        p154_variants = [v["frames"] for v in cat["northVariants"] if v["slot"] == "pants" and v["item"] == 154]
+        pants_refs = set(p154["frames"])
+        if p154_variants != [p154["frames"]] or len(pants_refs) != 8 or pants_refs & (refs | naked | glove_refs) or p154.get("slot") != "pants" or p154["depth"] != 3.1 or p154["binding"] != {"kind": "fixed"}:
+            raise ValueError("Wrong W113 P154 phase-owned cloth")
+        for h in sorted(refs | glove_refs | pants_refs):
             (assets / f"{h}.png").write_bytes(png(bundle.read(f"fuzil113-ns/assets/{h}.png"), h))
     mapping = json.loads((masks / "skin-masks.json").read_text())
     body = next(l for l in source["pack"]["directions"]["north"]["layers"] if l["id"] == "body-clothed")

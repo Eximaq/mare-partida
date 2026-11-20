@@ -169,6 +169,17 @@ function attachNorthFirearmCoat(r,coat){
  return {...r,id:r.id+'-coat151-eight-native',pack,
   baseRecord:{...b,pack,sourceRefs:[...b.sourceRefs,...refs]},northFirearmCoatSources:refs};
 }
+const north113P154={"id":"candidate-pants154","slot":"pants","depth":3.1,"binding":{"kind":"fixed"},"frames":["41e94088b60e88d6b98ca0c09478f891e36a0f39f59da69c87318859f15afef3","c9834f990f9e9afa6f0e6766d573d2bfa9f1d5ea128a6749ec273b0b56d6ee9e","bd4d27cb20973968a9fc1bbfe8458679179760bd99842f8ae5965b6f473b2816","262fa0086cdfc53e03c9fb52a7dd431f7ecac526125ff4292b7e8b4ad0f90ea3","a4319e35a1e07944be80b580ac28b52b29a0be795de6d8f2f40a26c06ccbf50c","9f8f5b2ac67398f658efe11b9e2a75a8a105de2f35ef00dc299b11e58b133410","c2951b09fa4dc5d78c7539f7fc9484325a6bc981db67b1ae84e3d4b38a1f6ca8","fc343cb7ab7e11104b5b6157d942421102fa9285e837937c393729d3e12da3f4"],"source":"41e94088b60e88d6b98ca0c09478f891e36a0f39f59da69c87318859f15afef3"};
+// Independent P154 fitted in the same W113 North archive. Do not import
+// the checkpoint's alternate weapon transforms, boots or glove layers.
+function attachNorth113Pants154(r){
+ if(r?.item!==113||r.direction!=='north'||r.action!=='attack-firearm'||!r.northFirearmCoatSources||!sameNorth113Contact(r))return null;
+ const {baseRecord:b,pack:p}=r,d=p.directions.north,refs=north113P154.frames;
+ if(refs.some(h=>b.sourceRefs.includes(h))||d.layers.some(l=>l.slot==='pants'))return null;
+ const pack={...p,directions:{...p.directions,north:{...d,layers:[...d.layers,north113P154]}}};
+ return {...r,id:r.id+':pants154-eight-native',northFirearmPants154:true,pack,
+  baseRecord:{...b,pack,sourceRefs:[...b.sourceRefs,...refs]},northFirearmCoatSources:[...r.northFirearmCoatSources,...refs]};
+}
 const north113G26Layers=[{"id":"candidate-glove26-left","slot":"foreground","depth":6.1,"binding":{"kind":"fixed"},"frames":["634885d19620df45c8e7c6224290809deb1bfe738570285416adb13bce4a63f5","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","0696acbb6ce4e5864e01cca44690f613a52c1c53ecce4e660c8c9f69835e50b6"],"source":"634885d19620df45c8e7c6224290809deb1bfe738570285416adb13bce4a63f5"},{"id":"candidate-glove26-right","slot":"foreground","depth":6.1,"binding":{"kind":"fixed"},"frames":["323b7c53f0375269d6f3828ab948a41668d2e9861249759b3e83b0c7380b1421","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","1e9e7c122f1cf2cdeaec8788b85f2ac406e233d9d4f0ef435f0a42a6fd9eb120"],"source":"323b7c53f0375269d6f3828ab948a41668d2e9861249759b3e83b0c7380b1421"}];
 const north113G166Layers=[{"id":"candidate-glove166-left","slot":"foreground","depth":6.1,"binding":{"kind":"fixed"},"frames":["36eb578917ac4cd5abb817191280571f17f92a801d4857953b5b82f0afb3ec61","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","8ceed39a7837b0454328ee8e04c41cb7f263d24d5f2f551a4a80d02b193988a2"],"source":"36eb578917ac4cd5abb817191280571f17f92a801d4857953b5b82f0afb3ec61"},{"id":"candidate-glove166-right","slot":"foreground","depth":6.1,"binding":{"kind":"fixed"},"frames":["5242742d79b557b18b34b633fae316537498f5064fd17111db9fd12055c8682e","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","a6a4fffb041755717a076bd67c39f7ef4c4c177f0e83f62064ada678586d93c7"],"source":"5242742d79b557b18b34b633fae316537498f5064fd17111db9fd12055c8682e"}];
 const north113G159Layers=[{"id":"candidate-glove159-left","slot":"foreground","depth":6.1,"binding":{"kind":"fixed"},"frames":["6737310b24e722883b10550869a1a3358b1dd6fade088d9c8d5e5bf84053588d","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","c41bed3bf5cb72619d48f3d303853f49b8531f6b016516fa892924736496850e"]},{"id":"candidate-glove159-right","slot":"foreground","depth":6.1,"binding":{"kind":"fixed"},"frames":["8b0ac3272abd5bdb9d89196382a55f60b29e1d48294650bd2953a21857a5ac0d","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a","c82d9ffa13a22985f5e2a121442ce5a74d808f69d547b8c89fa8716e2e4b0eae"]}];
@@ -200,16 +211,19 @@ function attachNorth114Glove(r,id){
  const pack={...p,directions:{...p.directions,north:{...d,layers}}};
  return {...r,id:r.id+'-glove'+id+'-native',pack,baseRecord:{...r.baseRecord,pack,sourceRefs:[...r.baseRecord.sourceRefs,...refs]},northFirearmCoatSources:refs,north114GloveContact:gloves};
 }
+function sameNorth113Contact(r){
+ const fingerprint=part=>Object.fromEntries(Object.keys(north113G26Weapon[0]).map(key=>[key,part[key]]));
+ return r.states?.length===8&&r.states.every((state,i)=>{
+  const expected=i===0?north113G26Weapon[0]:i===7?north113G26Weapon[1]:null;
+  return !state.hideBaseLayers&&!state.baseMasks&&state.parts.length===+!!expected&&
+   (!expected||JSON.stringify(fingerprint(state.parts[0]))===JSON.stringify(expected));
+ });
+}
 function attachNorth113Glove(r,id){
  const glove=northFirearmGloveLayers(id);
  if(!glove||!r?.northFirearmCoatSources||r.item!==113)return null;
  const p=r.pack,d=p.directions.north;
- const fingerprint=part=>Object.fromEntries(Object.keys(north113G26Weapon[0]).map(key=>[key,part[key]]));
- if(r.states.some((state,i)=>{
-  const expected=i===0?north113G26Weapon[0]:i===7?north113G26Weapon[1]:null;
-  return state.hideBaseLayers||state.baseMasks||state.parts.length!==+!!expected||
-   expected&&JSON.stringify(fingerprint(state.parts[0]))!==JSON.stringify(expected);
- }))return null;
+ if(!sameNorth113Contact(r))return null;
  const layers=d.layers.filter(l=>l.id!=='left-hand'&&l.id!=='right-hand').concat(glove);
  const refs=[...new Set(glove.flatMap(l=>l.frames))].filter(h=>!r.baseRecord.sourceRefs.includes(h));
  const pack={...p,directions:{...p.directions,north:{...d,layers}}};
@@ -237,10 +251,12 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   const def=Number(coat.def??coat);
   const outfit=outfits?.records.find(row=>row.id==='female-torso'+def+'-'+direction+'-frozen-'+(['attack-unarmed','attack-sword'].includes(action)?'attack':action)+'-native');
   const alternate=x=>['variant','variantId','appearanceVariant'].some(k=>x?.[k]!=null&&x[k]!=='original');
-  const northCoat=!pants&&head==null&&(r.item===113||!alternate(coat)&&!alternate(equipment.weapon))?attachNorthFirearmCoat(r,def):null;
-  combined=action==='attack-sword'?attachSwordCoat(r,outfit,def):northCoat||attachIsolatedCoat(r,outfit,def);
+  const p154=pants!=null&&Number(pants.def??pants)===154&&def===151&&Number(item)===113&&direction==='north'&&
+   action==='attack-firearm'&&glove==null&&!alternate(pants)&&!alternate(coat)&&!alternate(equipment.weapon);
+  const northCoat=(!pants||p154)&&head==null&&(r.item===113||!alternate(coat)&&!alternate(equipment.weapon))?attachNorthFirearmCoat(r,def):null;
+  combined=p154?attachNorth113Pants154(northCoat):action==='attack-sword'?attachSwordCoat(r,outfit,def):northCoat||attachIsolatedCoat(r,outfit,def);
  }
- if(combined&&pants!=null){
+ if(combined&&pants!=null&&!combined.northFirearmPants154){
   const def=Number(pants.def??pants),outfit=def===168&&outfits?.records.find(row=>row.id==='female-pants168-'+action+'-'+direction);
   // Use the P182 cloth authority, never the Sword 0 weapon matrices.
   const v=x=>['variant','variantId','appearanceVariant'].some(k=>x?.[k]!=null&&x[k]!=='original');
