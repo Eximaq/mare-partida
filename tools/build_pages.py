@@ -11,7 +11,6 @@ from materialize_native_indexes import materialize
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--include-reviews", action="store_true", help="Also export isolated historical art workbenches")
-parser.add_argument("--include-sword-checkpoint", action="store_true", help="Export opt-in archived Sword 0 integration review")
 args = parser.parse_args()
 include_reviews = args.include_reviews
 ROOT = Path(__file__).resolve().parent.parent
@@ -30,11 +29,10 @@ web_files += ['party-ui.js','party.css','crew-flag.js','crew-ui.js','crew-ui.css
 web_files += ['world-map-exports-data.js','world-map-exports.js','quest-dungeons-data.js','quest-dungeons-world.js','boss-dungeon-system.js','boss-dungeon-combat.js','dungeon-boss-art-data.js','boss-dungeon-ui.js','save-writer.js','boss-dungeons.css']
 web_files += ['rank-a-data.js', 'rank-a-expansion.js', 'rank-a-system.js', 'character-appearance.js', 'character-studio.js', 'character-studio.css', 'headgear-visibility.js', 'player-rework-runtime.js', 'player-rework-hair-anatomy-hd.js', 'player-rework-skin-hd.js', 'player-rework-base-hd.js', 'player-rework-hd-assets.js', 'player-rework-weapon-native-hd.js', 'player-rework-female-equipment-hd.js', 'player-rework-eye-styles-hd.js', 'player-rework-female-named-hair-hd.js', 'player-rework-native-hd.js', 'player-rework-default-hd.js', 'player-rework-outfit-carry-overlay-hd.js', 'player-rework-outfit-overlay-hd.js', 'player-rework-weapon-carry-hd.js', 'player-rework-modular-outfits-hd.js', 'player-rework-head-family.js', 'native-head-compat.js', 'player-rework-original-hair-helmets-hd.js', 'player-rework-test.js', 'player-rework-zip.js', 'player-rework-weapons.js', 'player-rework-accessory-pilot.js', 'player-rework-accessory-test.js', 'paper-doll-96-lobby.js', 'paper-doll-look-data.js', 'paper-doll-look.js', 'paper-doll-coverage.js', 'paper-doll-look.css', 'sprite-combat-v2-data.js', 'sprite-combat-v2.js', 'ui-navigator.css', 'character-hud.js', 'rank-s-data.js', 'rank-s-system.js', 'rank-s-rework-data.js', 'rank-s-rework.js', 'paramecia-rework-data.js', 'paramecia-rework-manifest.js', 'jiki-assembly-art.js']
 web_files += ['weekly-boss-ui.js','weekly-boss-ui.css','akainu-art-data.js','akainu-art.js']
-if args.include_sword_checkpoint:
-    from export_sword0_checkpoint import materialize as materialize_sword_checkpoint
-    materialize_sword_checkpoint(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
-                                 OUT/'tools/rework-sword0-checkpoint')
-    web_files.append('player-rework-sword0-checkpoint.js')
+from export_sword0_checkpoint import materialize as materialize_sword_checkpoint
+materialize_sword_checkpoint(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
+                             OUT/'tools/rework-sword0-checkpoint')
+web_files.append('player-rework-sword0-checkpoint.js')
 if not include_reviews:
     retired_scripts = {"paper-doll.js", "paper-doll-assets.js", "paper-doll-review.js", "paper-doll-look-data.js", "paper-doll-look.js", "paper-doll-coverage.js", "paper-doll-look.css"}
     web_files = [name for name in web_files if name not in retired_scripts]
@@ -68,11 +66,6 @@ def version_asset(match):
 for page in ['index.html', 'ui-preview.html']:
     entry = OUT / page
     html = entry.read_text(encoding='utf-8')
-    if page == 'index.html' and args.include_sword_checkpoint:
-        before = '<script defer src="player-rework-native-hd.js"></script>'
-        if html.count(before) != 1:
-            raise SystemExit('Sword 0 review could not locate native loading point')
-        html = html.replace(before, '<script defer src="player-rework-sword0-checkpoint.js"></script>\n  ' + before)
     html = re.sub(r'((?:src|href)=")([^"?]+)(")', version_asset, html)
     entry.write_text(html, encoding='utf-8')
 for folder in ['assets', 'icones_menu_pirata']:

@@ -1,4 +1,4 @@
-"""Materialize a verified, opt-in Sword 0 review bundle without duplicating source ZIPs."""
+"""Materialize a verified Sword 0 layer bundle without duplicating source ZIPs."""
 import argparse
 import hashlib
 import io

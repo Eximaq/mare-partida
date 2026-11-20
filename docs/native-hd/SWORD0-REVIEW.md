@@ -1,12 +1,16 @@
-# Espada 0 / Peitoral 151: integração opcional para revisão
+# Espada 0 + Peitoral 151 no jogo normal
 
-Escopo único: feminina, Espada 0 e Peitoral 151, pele original, cabelo cropped loiro, olhos âmbar, sem outro slot visual incompatível. Reaproveita 120 registros das quatro direções que já estão arquivados no PR. O jogo só usa a candidata se nenhuma rota exata ou em camadas existente resolver aquele quadro. Para este recorte, a versão atual guarda 24 rotas antigas de calças e a candidata cobre os 96 slots isolados restantes. Controle sem trocar peça preservado. Pedido de peça desconhecida não aceita fallback silencioso. Não adiciona nova arte, não ativa por padrão, não altera relógio do combate. A integração não afirma que as outras 5 espadas, outras aparências, armas ou visuais completos estejam cobertos.
+A compilação padrão carrega a família de ataque feminina da Espada 0 com o Peitoral 151, sem flag nem parâmetro de URL. A rota só é usada quando nenhuma fonte HD exata nem modular existente atende ao pedido. A sua pose, oito estados, trajetória da espada, material do personagem e as outras peças continuam vindo da fonte nativa. A rotação lateral experimental contida no acervo não é usada ao trocar equipamentos.
 
-Teste em uma cópia integral do PR (que já contém o acervo):
+## Aparência e peças
 
-1. `python tools/build_pages.py --include-sword-checkpoint`: valida SHA das partes e arquivo, exporta os 1.503 PNGs conferindo cada SHA e deduplica os estados da arma no catálogo emitido.
-2. `node tests/rework-sword0-checkpoint-optin.cjs .`: teste do renderizador Native com build emitido; verifica 96 slots novos, 24 rotas anteriores idênticas, 96 quadros Canvas e 161 imagens carregadas. Não usa Node crypto no caminho de seleção; a inicialização UMD verifica quatro fontes em WebCrypto, e a seleção compara o JSON previamente autenticado. Uma guarda inválida desativa toda a candidata.
-3. Servir o `dist` em contexto seguro e abrir `/?reviewSwordCheckpoint=1`. A rota sem query continua intacta. Build normal, sem a flag, não contém o JS, catálogo nem os PNGs de revisão.
-4. Validar no navegador antes de ativar uma entrega: abrir aparência alvo, trocar/retirar cada tipo de equipamento e testar combinações. Chromium do executor não abriu devido à restrição de socket; não declarar navegador confirmado a partir do smoke Canvas.
+- Perfil registrado: cabelo Curto loiro e olhos âmbar, pele Clara no save normalizado (também preserva o perfil original do acervo). Outros penteados, olhos e tons não são forçados para esse perfil.
+- No perfil padrão validado: **64 rotas novas** de peça isolada nas quatro direções, incluindo dez botas, calças validadas e Luvas 26/159. As outras luvas do acervo ainda não têm prova de separação entre material quente e pele para o perfil normalizado.
+- A combinação Calça 22 + Bota 9 foi validada nas quatro direções. A Calça 21 + Bota 9 deixa um vão na barra e não entra na rota. Não extrapolar a mesma bota para outras calças.
+- As 24 rotas anteriores de calça do recorte permanecem idênticas. A ausência do catálogo ou a falha nas assinaturas deixa as rotas existentes disponíveis.
 
-Nenhum ZIP ou PNG novo deve entrar no Git. `dist` é saída temporária.
+## Reprodução
+
+1. `python tools/build_pages.py`: valida as partes do ZIP já arquivado, extrai o catálogo e os 1.503 PNGs por SHA para o build. Nenhuma cópia de sprite é adicionada ao Git.
+2. `node tests/rework-sword0-checkpoint-optin.cjs .`: apesar do nome histórico, verifica a integração **padrão**, sem URL especial. Inclui 96 seleções no perfil do acervo, 64 no perfil normalizado, 192 quadros Canvas representativos, precedência das 24 rotas exatas, proteção de barra, vínculo de arma/identidade e inicialização após carregamento tardio da paleta.
+3. `node tests/rework-sword0-checkpoint-world.cjs`: os scripts de mapa do build padrão também renderizaram o conjunto Calça 22 + Bota 9 nas quatro direções, em 32 quadros locais com o save imutável. Não é afirmação de validação em navegador interativo ou de publicação no Pages.

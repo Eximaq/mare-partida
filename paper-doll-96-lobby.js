@@ -117,6 +117,8 @@
         [manifest,catalog,rigs,weaponCatalog]=await Promise.all(['manifest.json','appearance-catalog.json','appearance-rig.json','weapons.json'].map(json));
         validateRelease(release,manifest,catalog,rigs,weaponCatalog);
         for(const name of ['rig','layers','motion','surface','torso','appearance','weapons','wardrobe'])await script(name+'.js');
+        // The native indexes may have loaded before the shared palette API.
+        await nativeHD?.warmSwordCheckpoint?.();
         root.MareLayers96.validate(manifest);
         if(catalog.productionEnabled!==false||catalog.canonicalMirror?.allLayers!==true)throw Error('Contrato de revisão incompatível.');
         for(const body of ['masculino','feminino'])for(const action of actions)for(const dir of ['south','north','east','west']){
