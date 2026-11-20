@@ -1584,6 +1584,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    if(!swordCheckpoint||!player||player.zoanTransformed||player.__reworkSubset||o.weaponless||
       !['attack-sword','attack','skill'].includes(o.action))return null;
    const visible=registeredEquipment(player,o);
+   if(o.direction==='north'&&[0,1,67,68,70].includes(visible?.weapon?.item)&&visible.boots?.item===9&&Object.keys(visible).length===2&&o.action==='attack-sword'){
+    const bare={...player,equipment:{weapon:visible.weapon.value}};
+    const reference=visible.weapon.item===0?bare:{...bare,equipment:{weapon:{def:0}}};
+    const coated={...reference,equipment:{...reference.equipment,coat:{def:151}}};
+    const resolved=swordCheckpoint.resolveBootOnly(select(coated,o),select(bare,o),o.direction,visible,
+     visible.weapon.item===0?undefined:select(reference,o));
+    if(resolved)return resolved;
+   }
    if(![0,1,67,68,69,70].includes(visible?.weapon?.item)||visible.torso?.item!==151||Object.keys(visible).some(k=>!['weapon','torso','pants','boots','gloves'].includes(k)))return null;
    const item=visible.weapon.item,options={...o,action:'attack-sword'};
    const anchor={...player,equipment:{weapon:item===0?visible.weapon.value:{def:0},coat:visible.torso.value}};

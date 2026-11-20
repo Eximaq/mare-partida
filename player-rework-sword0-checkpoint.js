@@ -80,7 +80,43 @@ function create(catalog,accepted,normalizedGloves,colors){
    baseRecord:{...origin.baseRecord,pack,sourceRefs:[...new Set([...origin.baseRecord.sourceRefs,...refs])]},
    checkpointSources:refs};
  }
- return {resolve,hasAsset:hash=>allowed.has(hash)};
+ // North B9 may omit the coat without substituting the lower pose.
+ function resolveBootOnly(origin,bare,direction,visible,reference){
+  const item=visible.weapon?.item;
+  if(direction!=='north'||![0,1,67,68,70].includes(item)||visible.boots?.item!==9||
+     Object.keys(visible).length!==2||!origin||!bare||bare.item!==item||bare.body!=='female'||
+     bare.action!=='attack-sword'||bare.direction!==direction||bare.outfitSourceId||bare.checkpointSources)return null;
+  const expected=item===0?bare:reference;
+  if(!expected||expected.item!==0)return null;
+  const authority=item===0?undefined:{reference:expected,donor:bare};
+  const checked=resolve(origin,direction,{...visible,torso:{item:151,key:'coat'}},authority);
+  if(!checked)return null;
+  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),x=bare.pack.directions.north,y=origin.pack.directions.north;
+  const shared=({id,item,states,sourcePixelPolicy,paddingPhysical,...r})=>r;
+  if(item!==0&&(!eq(checked.states,bare.states)||!eq(shared(bare),shared(expected))||
+     checked.paddingPhysical!==bare.paddingPhysical))return null;
+  const joints=(a,b)=>Object.entries(a).every(([k,v])=>eq(v,b[k]))&&Object.keys(b).every(k=>Object.hasOwn(a,k)||/^cloth[23][AB]$/.test(k));
+  const coats=y.layers.filter(l=>l.id.startsWith('coat151-whole-'));
+  const owned=[...new Set(coats.flatMap(l=>l.frames||[l.source]))];
+  if(!eq(owned,origin.outfitSources)||!eq(owned,Object.keys(origin.sourceRasterPadding||{})))return null;
+  const nonCoat=y.layers.filter(l=>!coats.includes(l));
+  const pieces=checked.pack.directions.north.layers.filter(l=>!y.layers.includes(l));
+  const shape=({id,baseRecord,pack,outfitSourceId,outfitSources,sourceRasterPadding,...r})=>r;
+  if(!eq(shape(expected),shape(origin))||!['frame','pivot','density'].every(k=>eq(bare.pack[k],origin.pack[k]))||
+     !eq(x.clip,y.clip)||!joints(x.rest,y.rest)||x.poses.length!==y.poses.length||
+     x.poses.some((pose,i)=>!joints(pose,y.poses[i]))||!eq(x.layers,nonCoat)||coats.length!==4||
+     coats.some(l=>l.depth!==100)||pieces.length!==4||
+     !['left-rear','left-front','right-rear','right-front'].every(id=>pieces.some(l=>l.id==='boot9-'+id&&
+       l.depth===(id.endsWith('-rear')?-1:4.1)&&l.binding?.kind==='fixed'&&l.frames?.length===8))||
+     !eq(bare.baseRecord.pack,bare.pack))return null;
+  const pack={...bare.pack,directions:{...bare.pack.directions,north:{...x,layers:[...x.layers,...pieces]}}};
+  const refs=checked.checkpointSources;
+  return {...bare,id:bare.id+':checkpoint-b9-north-no-coat',pack,
+   baseRecord:{...bare.baseRecord,pack,sourceRefs:[...new Set([...bare.baseRecord.sourceRefs,...refs])]},
+   checkpointSources:refs,slotRoutes:{[visible.weapon.key]:{item,quality:'hd',source:bare.id},
+    [visible.boots.key]:{item:9,quality:'hd',source:checked.id}},layeredSlots:true,omitted:[]};
+ }
+ return {resolve,resolveBootOnly,hasAsset:hash=>allowed.has(hash)};
 }
 async function verify(catalog,trusted,{subtle=root.crypto?.subtle,saved=[]}={}){
  if(!subtle||!trusted||catalog.weapon!==0||catalog.coat!==151||catalog.records?.length!==120||catalog.assetHashes?.length!==1503)return null;
