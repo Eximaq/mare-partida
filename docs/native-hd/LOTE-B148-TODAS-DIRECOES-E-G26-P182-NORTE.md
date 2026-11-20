@@ -1,0 +1,4 @@
+# Bota 148 e duas peças separadas no ataque da Espada 0
+
+- B148 avulsa com Espada 0 no feminino, agora também Sul, Leste e Oeste. Cada direção usa os seus próprios passes e profundidades, sem mover a sola. Em 192 quadros (oito tons × oito fases × três direções), a bota inteira corresponde ao controle vestido; a contribuição RGBA da lâmina, inclusive borda parcial, permanece igual. Retirar a peça recupera o ataque sem bota. O Norte anterior fica intacto.
+- Feminino, Espada 0 Norte com P182 e G26: equipar ou retirar cada uma preserva a outra, a aparência escolhida, a cadência e a contribuição visível da espada. Prova em 24 quadros (oito fases, Original, Oliva e Ébano). Os mesmos recursos verificados das duas peças isoladas são utilizados, sem novo PNG. Não estende a outras luvas, armas ou slots.

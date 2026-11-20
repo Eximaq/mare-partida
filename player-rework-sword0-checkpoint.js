@@ -86,7 +86,7 @@ function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
  function resolveBootOnly(origin,bare,direction,visible,reference){
   const item=visible.weapon?.item,boot=visible.boots?.item;
   const north=direction==='north',side=['east','west'].includes(direction);
-  if(!(boot===9&&(side?item===0:['north','south'].includes(direction)&&[0,1,67,68,70].includes(item))||north&&boot===148&&[0,1,67,68,69,70].includes(item))||
+  if(!(boot===9&&(side?item===0:['north','south'].includes(direction)&&[0,1,67,68,70].includes(item))||boot===148&&(north&&[0,1,67,68,69,70].includes(item)||['south','east','west'].includes(direction)&&item===0))||
      Object.keys(visible).length!==2||!origin||!bare||bare.item!==item||bare.body!=='female'||
      bare.action!=='attack-sword'||bare.direction!==direction||bare.outfitSourceId||bare.checkpointSources)return null;
   const expected=item===0?bare:reference;
@@ -157,7 +157,33 @@ function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
    checkpointSources:refs,slotRoutes:{[visible.weapon.key]:{item,quality:'hd',source:bare.id},
     [visible.gloves.key]:{item:g,quality:'hd',source:checked.id}},layeredSlots:true,omitted:[]};
  }
- return {resolve,resolveBootOnly,resolveNorthGloveOnly,hasAsset:hash=>allowed.has(hash)};
+ function resolveNorthGlove26Pants182(gloved,panted,direction,visible){
+  const item=visible.weapon?.item,g=visible.gloves?.item,p=visible.pants?.item;
+  if(direction!=='north'||item!==0||g!==26||p!==182||Object.keys(visible).length!==3||
+     !gloved||!panted||gloved.item!==0||panted.item!==0||gloved.body!=='female'||panted.body!=='female'||
+     gloved.action!=='attack-sword'||panted.action!==gloved.action||gloved.direction!==direction||panted.direction!==direction||
+     gloved.slotRoutes?.[visible.gloves.key]?.item!==26||gloved.outfitSources||panted.checkpointSources||
+     panted.pantsSourceId!=='female-pants182-sword-attack-sword-north')return null;
+  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  const shape=({id,pack,baseRecord,outfitSources,pantsSourceId,checkpointSources,slotRoutes,layeredSlots,omitted,...r})=>r;
+  if(!eq(shape(gloved),shape(panted)))return null;
+  const a=gloved.pack.directions.north,b=panted.pack.directions.north;
+  const {layers:x,...poseX}=a,{layers:y,...poseY}=b,hands=new Set(['left-hand','right-hand']);
+  const cloth=y.find(l=>l.id==='pants182-independent-sword');
+  if(!eq(poseX,poseY)||!['frame','density','pivot'].every(k=>eq(gloved.pack[k],panted.pack[k]))||
+     !cloth||cloth.slot!=='pants'||cloth.binding?.kind!=='fixed'||cloth.frames?.length!==8||
+     x.find(l=>l.id==='shorts')?.depth!==cloth.depth||
+     ![...hands].every(id=>x.find(l=>l.id===id)?.depth===y.find(l=>l.id===id)?.depth&&
+       eq(x.find(l=>l.id===id)?.binding,y.find(l=>l.id===id)?.binding))||
+     !eq(x.filter(l=>!hands.has(l.id)&&l.slot!=='pants'),y.filter(l=>!hands.has(l.id)&&l.slot!=='pants'))||
+     !eq([...new Set(y.filter(l=>l.slot==='pants').flatMap(l=>l.frames||[l.source]))],[...new Set(cloth.frames)])||
+     !eq([...new Set(panted.outfitSources)].sort(),[...new Set(cloth.frames)].sort()))return null;
+  const pack={...panted.pack,directions:{...panted.pack.directions,north:{...b,layers:y.map(l=>hands.has(l.id)?x.find(g=>g.id===l.id):l)}}};
+  return {...panted,pack,id:gloved.id+':pants182',checkpointSources:gloved.checkpointSources,
+   baseRecord:{...panted.baseRecord,pack,sourceRefs:[...new Set([...panted.baseRecord.sourceRefs,...gloved.checkpointSources])]},
+   slotRoutes:{...gloved.slotRoutes,[visible.pants.key]:{item:p,quality:'hd',source:panted.id}},layeredSlots:true,omitted:[]};
+ }
+ return {resolve,resolveBootOnly,resolveNorthGloveOnly,resolveNorthGlove26Pants182,hasAsset:hash=>allowed.has(hash)};
 }
 async function verify(catalog,trusted,{subtle=root.crypto?.subtle,saved=[]}={}){
  if(!subtle||!trusted||catalog.weapon!==0||catalog.coat!==151||catalog.records?.length!==120||catalog.assetHashes?.length!==1503)return null;
