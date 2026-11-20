@@ -1597,8 +1597,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      visible.weapon.item===0?undefined:select(reference,o));
     if(resolved)return resolved;
    }
-   if((['north','south'].includes(o.direction)&&[0,1,67,68,70].includes(visible?.weapon?.item)||
-       ['east','west'].includes(o.direction)&&visible?.weapon?.item===0)&&visible.boots?.item===9&&Object.keys(visible).length===2&&o.action==='attack-sword'){
+   if((visible?.boots?.item===9&&(['north','south'].includes(o.direction)&&[0,1,67,68,70].includes(visible.weapon?.item)||
+       ['east','west'].includes(o.direction)&&visible.weapon?.item===0)||o.direction==='north'&&visible?.boots?.item===148&&[0,1,67,68,69,70].includes(visible.weapon?.item))&&Object.keys(visible).length===2&&o.action==='attack-sword'){
     const bare={...player,equipment:{weapon:visible.weapon.value}};
     const reference=visible.weapon.item===0?bare:{...bare,equipment:{weapon:{def:0}}};
     const coated={...reference,equipment:{...reference.equipment,coat:{def:151}}};

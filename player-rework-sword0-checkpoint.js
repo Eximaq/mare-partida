@@ -84,9 +84,9 @@ function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
  }
  // Verified sword poses may omit the coat without substituting the lower pose.
  function resolveBootOnly(origin,bare,direction,visible,reference){
-  const item=visible.weapon?.item;
+  const item=visible.weapon?.item,boot=visible.boots?.item;
   const north=direction==='north',side=['east','west'].includes(direction);
-  if(!(side?item===0:['north','south'].includes(direction)&&[0,1,67,68,70].includes(item))||visible.boots?.item!==9||
+  if(!(boot===9&&(side?item===0:['north','south'].includes(direction)&&[0,1,67,68,70].includes(item))||north&&boot===148&&[0,1,67,68,69,70].includes(item))||
      Object.keys(visible).length!==2||!origin||!bare||bare.item!==item||bare.body!=='female'||
      bare.action!=='attack-sword'||bare.direction!==direction||bare.outfitSourceId||bare.checkpointSources)return null;
   const expected=item===0?bare:reference;
@@ -114,15 +114,15 @@ function create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified){
      !eq(x.clip,y.clip)||!joints(x.rest,y.rest)||x.poses.length!==y.poses.length||
      x.poses.some((pose,i)=>!joints(pose,y.poses[i]))||!eq(x.layers,nonCoat)||coats.length!==(side?9:north?4:7)||
      coats.some(l=>side?l.depth!==expectedSide[l.id]:l.depth!==100&&(north||l.depth!==-1))||pieces.length!==(side?2:4)||
-     !(side?['rear','front']:['left-rear','left-front','right-rear','right-front']).every(id=>pieces.some(l=>l.id==='boot9-'+id&&
+     !(side?['rear','front']:['left-rear','left-front','right-rear','right-front']).every(id=>pieces.some(l=>l.id==='boot'+boot+'-'+id&&
        l.depth===(id.endsWith('rear')?-1:side?3.01:north?4.1:45)&&l.binding?.kind==='fixed'&&l.frames?.length===8))||
      !eq(bare.baseRecord.pack,bare.pack))return null;
   const pack={...bare.pack,directions:{...bare.pack.directions,[direction]:{...x,layers:[...x.layers,...pieces]}}};
   const refs=checked.checkpointSources;
-  return {...bare,id:bare.id+':checkpoint-b9-'+direction+'-no-coat',pack,
+  return {...bare,id:bare.id+':checkpoint-b'+boot+'-'+direction+'-no-coat',pack,
    baseRecord:{...bare.baseRecord,pack,sourceRefs:[...new Set([...bare.baseRecord.sourceRefs,...refs])]},
    checkpointSources:refs,slotRoutes:{[visible.weapon.key]:{item,quality:'hd',source:bare.id},
-    [visible.boots.key]:{item:9,quality:'hd',source:checked.id}},layeredSlots:true,omitted:[]};
+    [visible.boots.key]:{item:boot,quality:'hd',source:checked.id}},layeredSlots:true,omitted:[]};
  }
  function resolveNorthGloveOnly(origin,bare,direction,visible,reference){
   const item=visible.weapon?.item,g=visible.gloves?.item;
