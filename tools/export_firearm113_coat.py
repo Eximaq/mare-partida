@@ -47,6 +47,15 @@ def materialize(checkpoint, masks, out):
         if {l["id"] for l in g166} != g166_ids or any(len(l["frames"]) != 8 for l in g166) or len(g166_refs) != 5:
             raise ValueError("Wrong W113 G166 phase-owned glove assets")
         glove_refs.update(g166_refs)
+        g159 = [row for row in cat["northGloves"] if row["item"] == 159]
+        if len(g159) != 16 or {(row["side"], row["phase"]) for row in g159} != {(side, i) for side in ("left", "right") for i in range(8)}:
+            raise ValueError("Missing W113 G159 phase-owned glove assets")
+        if any(row["sha"] not in naked for row in g159 if row["phase"] not in (0, 7)):
+            raise ValueError("Unexpected intermediate W113 G159 material")
+        g159_refs = {row["sha"] for row in g159 if row["phase"] in (0, 7)}
+        if len(g159_refs) != 4 or g159_refs & naked:
+            raise ValueError("Wrong W113 G159 phase-owned glove assets")
+        glove_refs.update(g159_refs)
         for h in sorted(refs | glove_refs):
             (assets / f"{h}.png").write_bytes(png(bundle.read(f"fuzil113-ns/assets/{h}.png"), h))
     mapping = json.loads((masks / "skin-masks.json").read_text())
