@@ -1,0 +1,3 @@
+# Dez luvas nas Calças 154 e 161, com a Bota 155 removível
+
+Masculino, Peitoral 151, repouso e caminhada para o Norte. A Luva 25 passou agora em ambas as calças. Em cada uma, testamos separadamente a pele sob as aberturas e a franja translúcida das duas luvas no mesmo personagem com e sem bota. Os dedos visíveis mantêm o tom salvo, inclusive nos pixels parcialmente cobertos. O teste agregado verifica 1.152 transições de seletor, 612 quadros em dois tons de contraste e 68 máscaras mão/fase específicas da Luva 25. Conserva a Calça 154 ou 161 própria e não se estende a outras poses ou ao soco Sul.
