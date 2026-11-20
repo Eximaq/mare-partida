@@ -786,7 +786,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    layersByDirection.west=layersByDirection.east;
   }
   const palette=Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original');
-  const northPalette=dir==='north'&&[140,147,154,161,168,175,182].includes(pants)&&boot===155&&
+  const northPalette=dir==='north'&&[140,147,154,161,168,175,182].includes(pants)&&(boot===155||boot==null)&&
    ['original',undefined].includes(a.hair)&&['original',undefined].includes(a.face)&&
    ['original','blue',undefined].includes(a.eyeColor)&&
    (!a.skin||a.skin==='original'||Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))&&

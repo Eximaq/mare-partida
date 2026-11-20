@@ -41,12 +41,17 @@ test('existing B155 comes off all seven male trousers on exact North and South r
    assert(n>0,here+'/no visible bota');
   }
   const tune=(player,skinColor,hairColor,eyeColor)=>({...player,appearance96:{...appearance96,skinColor,hairColor,eyeColor}});
-  const colored=tune(actor,'olive','blonde','amber'),cWorn=tune(wornActor,'olive','blonde','amber');
+  const expectedEye=direction==='north'?'blue':'amber'; // the North rig has no authored iris layer
+  const colored=tune(actor,'olive','blonde',expectedEye),cWorn=tune(wornActor,'olive','blonde',expectedEye);
+  if(direction==='north')for(const p of [actor,wornActor]){
+   const unproved=tune(p,'olive','blonde','amber');
+   assert.equal(api.selectLayered(unproved,o)?.registeredPantsBoot155,undefined,here+' claimed an unsupported iris');
+  }
   const cBare=api.selectVisual(colored,o),cBoot=api.selectVisual(cWorn,o);
   assert.ok(cBare?.registeredPantsBoot155&&cBoot?.registeredPantsBoot155,here+' missing saved color route');
   assert.equal(cBare.colorAppearance.skin,'olive');
   assert.equal(cBare.colorAppearance.hairColor,'blonde');
-  assert.equal(cBare.colorAppearance.eyeColor,'amber');
+  assert.equal(cBare.colorAppearance.eyeColor,expectedEye);
   for(const alter of [{hairStyle:'hair-cropped'},{eyeStyle:'face-focused'}])
    assert.equal(api.selectLayered({...colored,appearance96:{...colored.appearance96,...alter}},o)?.registeredPantsBoot155,undefined);
   for(let f=0;f<d(old).clip.frames;f++){
