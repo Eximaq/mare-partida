@@ -9,6 +9,7 @@ for(const [k,f] of Object.entries({
 global.MareCharacterAppearance=imp('character-appearance.js');
 global.MareAppearance96=imp('tools/paper-doll-96-v3/appearance.js');
 const load=imp('tools/rework-hd-test-loader.cjs').create(repo),rt=imp('player-rework-native-hd.js').create({fetchJSON:async p=>JSON.parse(fs.readFileSync(path.join(repo,p))),loadImage:load,makeCanvas:cv.createCanvas});
+const verifiedNorthGloves=[26,131,138,145,152,159,166,173,180];
 const eq=(g,b)=>({appearance96:{gender:'masculino',hairStyle:'original',eyeStyle:'original',hairColor:'original',eyeColor:'original',skinColor:'original'},equipment:{legs:{def:133},coat:{def:151},gloves:{def:g},boots:b?{def:b}:null}});
 require('node:test')('derived male punch keeps each glove and boot in its verified region',async()=>{
  await rt.ready;
@@ -25,7 +26,7 @@ require('node:test')('derived male punch keeps each glove and boot in its verifi
    assert.equal(r?.resolvedAction,'attack-unarmed');
    assert.equal(r?.pack?.directions[direction].clip.frames,8);
    const colored=rt.selectVisual({...player,appearance96:global.MareCharacterAppearance.normalize({})},o)?.partitionedMalePunch;
-   assert.equal(!!colored?.paletteParts,direction==='north'&&[26,159].includes(g));
+   assert.equal(!!colored?.paletteParts,direction==='north'&&verifiedNorthGloves.includes(g));
    count++;
  }
  for(const [g,b] of [[25,155],[152,8],[152,155],[25,9],[25,null]]){
@@ -84,7 +85,7 @@ require('node:test')('North punch preserves normalized and custom skin/hair for 
   bundle.release();return captures;
  }
 
- for(const g of [26,159])for(const b of [8,134,141,148,155,162,169,176,183]){
+ for(const g of verifiedNorthGloves)for(const b of [8,134,141,148,155,162,169,176,183]){
   const actor={...eq(g,b),appearance96:global.MareCharacterAppearance.normalize({})},o={direction:'north',action:'attack'};
   const r=rt.selectVisual(actor,o);
   assert(r?.partitionedMalePunch?.paletteParts,`missing North palette route ${g}/${b}`);
@@ -103,9 +104,9 @@ require('node:test')('North punch preserves normalized and custom skin/hair for 
   worldFrames+=8;n++;
 
  }
- assert.equal(n,18);assert.equal(worldFrames,144);
+ assert.equal(n,81);assert.equal(worldFrames,648);
  let contrast=0;
- for(const [g,b] of [[26,148],[159,155]]){
+ for(const g of verifiedNorthGloves.filter(x=>![26,159].includes(x)))for(const b of [148,155]){
   for(const [skin,hair] of [['olive','auburn'],['ebony','silver']]){
    const actor=actorFor(g,b,skin,hair),source=rt.selectVisual(actor,options);
    assert.equal(source?.colorAppearance?.skin,skin);assert.equal(source?.colorAppearance?.hairColor,hair);
@@ -118,5 +119,5 @@ require('node:test')('North punch preserves normalized and custom skin/hair for 
  assert(!rt.selectLayered(actorFor(25,8),options)?.partitionedMalePunch);
  assert(!rt.selectLayered(actorFor(26,9),options)?.partitionedMalePunch);
  assert(!rt.selectLayered(actorFor(26,null),options)?.partitionedMalePunch);
- console.log({n,worldFrames,contrast});
+ assert.equal(contrast,224);console.log({n,worldFrames,contrast});
 });
