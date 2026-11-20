@@ -10,16 +10,16 @@ async function read(h){const c=cv.createCanvas(640,640);c.getContext('2d').drawI
  a.equal(rank.filter(x=>x).length,4040);
  for(const [x,y,R,G,B,A,t] of global.MareReworkModularOutfitsHD.sideIrisSamples(direction))iris[(y+68)*640+x+(direction==='east'?56:72)]=t;
  for(let j=0;j<rank.length;j++)if(rank[j])a(!iris[j]);a.equal(iris.filter(x=>x).length,18);
- for(const def of [13,71,72,73,74]){
+ for(const def of [12,13,71,72,73,74]){
  const o={direction,action:'attack-daggers',consumer:'world'},go=p=>api.selectVisual(p,o),baseline=go(makeSave(def,'brown','brown'));
  for(const hair of Object.keys(A.hairs).filter(k=>k!=='brown'))for(const eye of ['brown','green']){
   const actor=makeSave(def,hair,eye),copy=JSON.stringify(actor),r=go(actor);a.equal(r?.orderedDaggerHair,hair);a.equal(r.orderedDaggerIris,eye==='brown'?undefined:eye);
   for(const k of ['states','timeline','pivot','nativeCanvas','approvedAppearance','equipmentContract','visualSampling'])a.deepEqual(r[k],baseline[k]);
   a.equal(r.fps,12);a.equal(r.contactTick,4);a.equal(r.timeline.length,8);
   const baseFiles=W.requiredFiles(baseline),actual=W.requiredFiles(r);a.deepEqual(actual.filter(f=>!baseFiles.includes(f)),[path+reg.source+'.png',path+reg.mask+'.png']);
-  for(const bad of [makeSave(def,hair,eye,{skinColor:'ebony'}),makeSave(def,hair,eye,{hairStyle:'hair-bob'}),makeSave(def,hair,eye,{eyeStyle:'face-focused'}),{...actor,classId:'fighter'},{...actor,equipment:{weapon:{def,variant:'other'}}},{...actor,equipment:{...actor.equipment,coat:{def:151}}},makeSave(12,hair,eye)])a(!go(bad)?.orderedDaggerHair);
+  for(const bad of [makeSave(def,hair,eye,{skinColor:'ebony'}),makeSave(def,hair,eye,{hairStyle:'hair-bob'}),makeSave(def,hair,eye,{eyeStyle:'face-focused'}),{...actor,classId:'fighter'},{...actor,equipment:{weapon:{def,variant:'other'}}},{...actor,equipment:{...actor.equipment,coat:{def:151}}}])a(!go(bad)?.orderedDaggerHair);
   a(!api.selectVisual(actor,{...o,direction:'north'})?.orderedDaggerHair);const southRoute=api.selectVisual(actor,{...o,direction:'south'});
-  if(def===13){a(southRoute?.approvedDagger13South);a.equal(southRoute.orderedDaggerHair,hair);a(!southRoute.orderedDaggerIris);}
+  if([12,13].includes(def)){a(southRoute?.approvedDagger13South);a.equal(southRoute.orderedDaggerHair,hair);a(!southRoute.orderedDaggerIris);}
   else a(!southRoute?.orderedDaggerHair);a(!api.selectVisual(actor,{...o,action:'idle'})?.orderedDaggerHair);
   a.equal(JSON.stringify(actor),copy);selects++;
  }
@@ -37,5 +37,5 @@ async function read(h){const c=cv.createCanvas(640,640);c.getContext('2d').drawI
  }}finally{q.forEach(s=>s.release());}console.log('PASS',def,direction,16);global.gc?.();
  }
  }
- a.equal(count,160);a.equal(selects,180);console.log('PASS',selects,'saved combinations;',count,'Canvas vs 80 original controls; 4040 hair / max 18 iris samples');
+ a.equal(count,192);a.equal(selects,216);console.log('PASS',selects,'saved combinations;',count,'Canvas vs 96 original controls; 4040 hair / max 18 iris samples');
 })().catch(e=>{console.error(e);process.exitCode=1});
