@@ -369,7 +369,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  // Same complete authored punch rig: replace the shorts slot only.
  function resolveFemaleOwnedPants(player,o,a,equipment){
   const keys=Object.keys(equipment),v=equipment.legs??equipment.pants,dir=o.direction,cv=equipment.coat,coat=cv==null?null:Number(cv.def??cv);
-  const h=equipment.head,style=String(a.hair??'original').replace(/^hair-/,''),helmet=h!=null&&Number(h?.def??h)===157&&dir==='north'&&coat==null&&o.action==='attack-unarmed'&&['original','bob'].includes(style)&&
+  const h=equipment.head,style=String(a.hair??'original').replace(/^hair-/,''),helmet=h!=null&&Number(h?.def??h)===157&&['north','south'].includes(dir)&&coat==null&&o.action==='attack-unarmed'&&['original','bob'].includes(style)&&
     [a.face,a.eyeStyle].every(v=>v==null||v==='original')&&
     ['variant','variantId','appearanceVariant'].every(k=>h?.[k]==null||h[k]==='original');
   const idle=o.action==='idle'&&['east','west'].includes(dir),count=idle?1:8;
@@ -402,11 +402,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   if(helmet){
    const material=base.femaleNamedHairRecord,gear=material?.gearRecord;
-   const authority={original:['f24f832fec352fe8f2b64f7fe54a543e22381c3146d27ba6297d41301cdfe9fe','source-alpha-only'],
+   const authority={original:[dir==='south'?'8067e292e2d6a7fcce462400c14c5018a61e381165d1709ded241d43ad8e9be4':'f24f832fec352fe8f2b64f7fe54a543e22381c3146d27ba6297d41301cdfe9fe','source-alpha-only'],
     bob:['2cd7faae891aa44461660c400d5cda20124a5671c4e0937a2dd516bc6b812808','approved-same-hairstyle-policy']}[style];
    if(!material||material.fused||material.style!==style||material.gearPolicy!==authority[1]||
       gear?.item!==157||gear.snapshot!==authority[0]||gear.direction!==dir||
-      !gear.layers.some(l=>l.id===gear.headgearPolicy?.gearId&&l.source==='6f38ce6e1badcc2004674e699593d07205179c4b878a7fa793c498925d7e4b81'))return null;
+      !gear.layers.some(l=>l.id===gear.headgearPolicy?.gearId&&l.source===({north:'6f38ce6e1badcc2004674e699593d07205179c4b878a7fa793c498925d7e4b81',south:'9b932b8c53905d4c2f7534a44af5154253405e091ca79dd903491e8b4b72880c'})[dir]))return null;
   }
   const slot=equipment.legs!=null?'legs':'pants';
   return {...host,id:host.id+':own-pants168',equipment:{...(helmet?{head:157}:{}),...(coat==null?{}:{torso:coat}),pants:168},

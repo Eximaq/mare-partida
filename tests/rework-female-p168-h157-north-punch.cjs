@@ -34,7 +34,7 @@ async function hairSupport(base){
  a.equal(r.femaleNamedHairRecord.skinColor,l.skinColor);a.equal(r.femaleNamedHairRecord.eyeColor,l.eyeColor);a.equal(r.femaleNamedHairRecord.hairColor,l.hairColor);
  if(l.hairStyle==='hair-bob')a.equal(r.femaleNamedHairRecord.gearRecord.adjustmentRecord.adjustment.policy,'full');
  const claims=q=>q?.authoredPunchPants&&q?.slotRoutes?.head?.item===157;
- for(const [e,op,fields] of [[{coat:I(151)},o,{}],[{boots:I(155)},o,{}],[{gloves:I(26)},o,{}],[{weapon:I(114)},o,{}],[{legs:I(182)},o,{}],[{head:I(129)},o,{}],[{head:{def:157,variantId:'alt'}},o,{}],[{legs:{def:168,appearanceVariant:'alt'}},o,{}],[{},{...o,direction:'south'},{}],[{},{...o,action:'idle'},{}],[{},o,{hairStyle:'hair-spiky'}]]){
+ for(const [e,op,fields] of [[{coat:I(151)},o,{}],[{boots:I(155)},o,{}],[{gloves:I(26)},o,{}],[{weapon:I(114)},o,{}],[{legs:I(182)},o,{}],[{head:I(129)},o,{}],[{head:{def:157,variantId:'alt'}},o,{}],[{legs:{def:168,appearanceVariant:'alt'}},o,{}],[{},{...o,direction:'east'},{}],[{},{...o,action:'idle'},{}],[{},o,{hairStyle:'hair-spiky'}]]){
   a(!claims(api.selectVisual(actor({...equipment,...e},{...l,...fields}),op)));
  }
  if(process.env.SELECT_ONLY==='1')continue;
