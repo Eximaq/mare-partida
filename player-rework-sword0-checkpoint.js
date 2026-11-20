@@ -53,8 +53,11 @@ function create(catalog,accepted,normalizedGloves,colors){
   const requested=Object.entries(visible).filter(([slot])=>Object.hasOwn(claims,slot));
   if(!requested.length&&item===catalog.weapon||Object.keys(visible).some(s=>!(Object.hasOwn(claims,s)||s==='weapon'||s==='torso')))return null;
   // Individually sourced hems/cuffs do not prove contact between both slots.
-  // P22+B9 is the only pair checked frame by frame; P21+B9 has an exposed gap.
-  if(visible.pants&&visible.boots&&!(visible.pants.item===22&&visible.boots.item===9))return null;
+  // Independent shaft/sole pairs are gated by the tested seam. P21 has
+  // an uncovered gap; B148/B162/B183 are known only on the North P22 rig.
+  const checkedHem=visible.pants?.item===22&&(visible.boots?.item===9||
+    direction==='north'&&[148,162,183].includes(visible.boots?.item));
+  if(visible.pants&&visible.boots&&!checkedHem)return null;
   if(origin.material?.skinColor&&visible.gloves&&
      (!normalizedGloves.has(visible.gloves.item)||
       [...claims.gloves].some(id=>origin.skinRepairLayers?.includes(id))))return null;

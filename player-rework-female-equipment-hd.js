@@ -121,8 +121,9 @@ const northFirearmHeadSources={
  face:['ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c'],
  iris:['ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c']
 };
+const northFirearmStandaloneWeapons={"4":"26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6","5":"d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d","115":"313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b","116":"136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654"};
 function northFirearmRecoil(r){
- if(![113,114].includes(r.item)||r.body!=='female'||r.direction!=='north'||r.action!=='attack-firearm'||
+ if(![4,5,113,114,115,116].includes(r.item)||r.body!=='female'||r.direction!=='north'||r.action!=='attack-firearm'||
     r.sourceBaseId!=='v7-female-firearm-north-ownership-candidate-north'||r.paddingPhysical!==0)return null;
  const base=r.baseRecord,pack=base.pack,d=pack.directions.north,head=d.layers.filter(l=>['headBase','face','hair'].includes(l.slot));
  if(pack.density!==4||pack.frame.width!==160||pack.frame.height!==160||d.clip.frames!==8||d.clip.contactFrame!==4||d.clip.fps!==12||head.length!==4||
@@ -131,6 +132,15 @@ function northFirearmRecoil(r){
   const [initial,recoil]=northFirearmHeadSources[l.id];
   if(l.binding?.kind!=='fixed'||l.source!==initial||l.frames?.length!==8||
      l.frames.some((sha,i)=>sha!==(i===4&&recoil?recoil:initial)))return null;
+ }
+ if(![113,114].includes(r.item)){
+  const ids=Object.keys(north113BodyFrames),weapon=northFirearmStandaloneWeapons[r.item];
+  if(pack.pivot.x!==80||pack.pivot.y!==128||d.clip.loop!==false||d.layers.length!==ids.length||
+     !d.layers.every((l,i)=>l.id===ids[i]&&l.depth===i&&l.binding?.kind==='fixed'&&!l.depthTrack&&
+       JSON.stringify(l.frames||[l.source])===JSON.stringify(north113BodyFrames[l.id]))||
+     r.states?.length!==8||r.states.some((state,i)=>!!state.baseMasks||!!state.hideBaseLayers||
+       state.parts.length!==(i===0||i===7?1:0)||
+       state.parts.some(part=>part.sha256!==weapon||part.url!=='tools/rework-weapon-layers-hd/assets/'+weapon+'.png')))return null;
  }
  const heads=new Set(head);
  const reference={...base,pack:{...pack,directions:{...pack.directions,north:{...d,layers:d.layers.map(l=>heads.has(l)?{...l,frames:undefined}:l)}}}};
@@ -180,7 +190,7 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   combined=swordPants.has(def)&&Number(item)===0?attachSwordPants(combined,outfits?.records.find(row=>row.id==='female-pants'+def+'-sword-'+action+'-'+direction),def):attachPants168(combined,outfit);
  }
  if(!combined)return null;if(!customized&&head==null)return combined;
-  // Both Norte firearms use the same fixed source and the same exact +9px
+  // These Norte firearms use the same fixed source and the same exact +9px
   // recoil in state 4. Validate all source hashes before enabling that pose.
   const recoil=(!clothing.length||combined.northFirearmCoatSources)&&head==null?northFirearmRecoil(combined):null;
   const material=appearanceRegistry?.resolve(recoil?.reference||combined.baseRecord,{hair:appearance.hair||appearance.hairStyle,head:head?.def??head,appearance});

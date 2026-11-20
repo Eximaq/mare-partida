@@ -5,7 +5,7 @@ O critério para terminar não é ter um PNG, nem passar no seletor com um perfi
 ## Inventário ativo
 
 - São **92 equipamentos nos seis slots do seletor corporal HD**: 42 armas, dez peitorais, dez calças, dez botas, dez luvas e dez itens de cabeça.
-- **Capas** são 10 itens em trilha separada: o compositor atual desativa explicitamente `cloak` e `cloakFront`. Isso não é cobertura concluída. Hoje o catálogo modular registra duas artes de capa (23 e 24), ainda desativadas. Inventariar a arte restante das capas e o contrato de profundidade Norte/Sul antes de promover camadas; não habilitar a chave global às cegas.
+- **Capas equipáveis** (slot `cloak`, 10 itens) não contam como pendências visuais: o escopo registrado em `387a038e` exclui a renderização desse slot, e o compositor desativa `cloak` e `cloakFront` sem alterar itens ou atributos. Capa que faz parte do desenho de um **peitoral** continua no escopo do peitoral: preservar profundidade e cobertura por pose.
 - **Um Visual Completo** tem renderizador e contrato próprios. Frutas, cintos, anéis, colares e amuletos também são registrados à parte; não entram como peças corporais desse seletor. Não declarar ausência de arte ou falha só por não pertencerem ao recorte.
 
 ## Como localizar e fechar pendências
@@ -18,4 +18,4 @@ O relatório só mede a escolha de uma fonte pelo seletor HD. Ausência nessa am
 - **Luvas e botas:** priorizar as famílias que compartilham mãos/pernas comprovadas. Checar a borda frente/trás e a cor de pele com tons de contraste. Tratar as laterais do soco em separado: a máscara de íris existe, mas a base inferior ainda mistura roupa e pele.
 - **Calças e peitorais:** aprovar pares só com todas as fases e costura comprovadas. Manter Calça 147/182 + Botas 9/176 fora enquanto persistir uma faixa de pele nova.
 - **Cabeça e cosmética:** não substituir estilo nem paleta que já estão em uso. A largura/silhueta e a ordem de desenho importam mesmo quando o pivô coincide. Verificar a visibilidade de capacete e cabelo junto às ações.
-- Empilhar apenas lotes coerentes no PR #348 enquanto o PR #349, isolado, cuida da publicação das seis espadas. Não misturar os dois escopos nem contornar CI.
+- Empilhar apenas lotes coerentes no PR #348. O PR #349 publicou o perfil de referência das seis espadas isoladamente; paletas e outros lotes continuam separados. Não misturar os escopos nem contornar CI.

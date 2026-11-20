@@ -25,9 +25,14 @@ function requireOnly(before,after,mask,min){
 (async()=>{
  await api.ready;const normalize=o=>global.MareCharacterAppearance.normalize({gender:'feminino',...o});
  let rendered=0;
- for(const item of [113,114])for(const look of [raw,normalize({}),normalize({skinColor:'ebony',hairStyle:'hair-cropped',hairColor:'blonde',eyeColor:'amber'})]){
+ for(const item of [4,5,113,114,115,116])for(const look of [raw,normalize({}),normalize({skinColor:'ebony',hairStyle:'hair-cropped',hairColor:'blonde',eyeColor:'amber'})]){
   const p0=avatar(item,look,false),p1=avatar(item,look,true),before=JSON.stringify(p1),r0=api.selectVisual(p0,opt),r1=api.selectVisual(p1,opt),isRaw=look===raw;
-  a(r0);if(item===114)a.equal(r1,null);else{
+  const base=api.selectVisual(avatar(item,raw,false),opt);
+  a(r0);a.deepEqual(r0.states,base.states);a.deepEqual(r0.pack,base.pack);
+  const clip=r0.pack.directions.north.clip;
+  a.equal(clip.frames,8);a.equal(clip.fps,12);a.equal(clip.contactFrame,4);
+  if(!isRaw)a.deepEqual(r0.northFirearmHeadRecoil,[0,0,0,0,9,0,0,0]);
+  if(item!==113)a.equal(r1,null);else{
    a.equal(r1?.northFirearmCoatSources?.length,18);
    a.deepEqual(r1.states,r0.states);a.deepEqual(r1.material,r0.material);
    const x=r0.pack.directions.north,y=r1.pack.directions.north;
@@ -50,5 +55,5 @@ function requireOnly(before,after,mask,min){
   }}finally{original.release();skin.release();coat?.release();}
   a.equal(JSON.stringify(p1),before);
  }
- a.equal(rendered,48);console.log({rendered,weaponStatesUnchanged:true,guardedPistolCoat:true});
+ a.equal(rendered,144);console.log({rendered,weaponStatesUnchanged:true,guardedCoatOnly113:true});
 })().catch(e=>{console.error(e);process.exitCode=1;});
