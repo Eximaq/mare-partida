@@ -7,7 +7,27 @@
   const short={strength:'for',dexterity:'des',vitality:'vit',intelligence:'int',spirit:'esp'};
   const pearls=Object.freeze(keys.flatMap(attribute=>Array.from({length:5},(_,i)=>Object.freeze({id:`pearl_${short[attribute]}_${i+1}`,name:`Pérola de ${names[attribute]} Nv.${i+1}`,attribute,level:i+1,percent:(i+1)*.02,multiplier:1+(i+1)*.02,rarity:['common','uncommon','rare','epic','legendary'][i]}))));
   const pearlById=Object.fromEntries(pearls.map(p=>[p.id,p]));
-  const refinement=Object.freeze({max:20,guaranteed:5,chances:Object.freeze([1,1,1,1,1,.85,.80,.75,.70,.65,.60,.55,.50,.45,.40,.35,.30,.25,.20,.15])});
+  const refinement=Object.freeze({
+    max:20,
+    guaranteed:1,
+    chances:Object.freeze([1,.70,.68,.66,.64,.62,.60,.58,.56,.55,.54,.53,.52,.51,.50,.49,.48,.47,.46,.45]),
+    fragmentCosts:Object.freeze([10,12,15,18,22,27,33,40,48,57,67,78,90,103,117,132,148,165,183,202])
+  });
+  // The legacy materials field is the only stored stack for this character-bound
+  // resource. A saved Ferro Salgado balance is already the 1:1 fragment quantity.
+  const itemFragment=Object.freeze({
+    id:'item_fragment',name:'Fragmento de Item',category:'materials',rarity:'common',binding:'character',
+    iconKey:'material',iconPath:'assets/ui/items-hd/material.png',
+    description:'Obtido ao desmontar equipamentos. Utilizado para aprimorar itens na forja.'
+  });
+  const fragmentYield=Object.freeze({common:2,uncommon:5,rare:10,epic:20,legendary:35,supreme:60});
+  const fragmentCapacity=1_000_000_000;
+  const refinementBonuses=[[0,0,0],[.012,.01,.01],[.025,.025,.025],[.04,.04,.04],[.055,.05,.05]];
+  function refinementBonus(plus){
+    const level=Math.min(refinement.max,int(plus)),step=Math.floor(level/5),fraction=(level%5)/5;
+    const base=refinementBonuses[step],next=refinementBonuses[step+1]||base;
+    return base.map((value,i)=>value+(next[i]-value)*fraction);
+  }
   const fusion=Object.freeze([{chance:.8,gold:40},{chance:.5,gold:160},{chance:.1,gold:650},{chance:.05,gold:2500}]);
   const int=n=>Number.isSafeInteger(n)&&n>=0?n:0,clone=v=>JSON.parse(JSON.stringify(v));
   function draw(random){const n=random();if(!Number.isFinite(n)||n<0||n>=1)throw Error('RNG inválido');return n;}
@@ -86,7 +106,12 @@
   function itemStats(item,defs){
     const zero={attack:0,defense:0,hp:0,energy:0,crit:0,attackSpeedPercent:0,critDamage:0,attributes:Object.fromEntries(keys.map(k=>[k,0]))};if(!isGear(item,defs))return zero;
     const d=defs[item.def]||{},r=rarity[item.rarity||d.rarity]||rarity.common,quality=item.generation?.version===1,p=quality?Math.max(0,Math.min(100,item.potential||0)):0,q=1+p*generationRules.potentialGrowth,floor=quality?qualityFloors(defs,d,item.rarity,item.generation.family==='basic'&&item.rarity!=='common'):null,b=item.baseStats||d,core=k=>Math.max((keys.includes(k)?(item.baseAttributes||d.attributes)?.[k]:b[k])||0,0)*(item.generation?.baseMultiplier??r.mult),basis=k=>quality?Math.max(core(k),floor[k])*q:core(k),m=1+(item.generation?.version===1?Math.max(0,(item.level||1)-1):Math.min(20,Math.max(0,(item.level||1)-1)))*.09,plus=int(item.plus);
-    const result={...zero,attack:(quality?Math.ceil:Math.round)((basis('attack')+plus*3)*m),defense:(quality?Math.ceil:Math.round)((basis('defense')+plus*2)*m),hp:(quality?Math.ceil:Math.round)((basis('hp')+plus*10)*m+(quality?p*generationRules.potentialHpStep*r.mult:0))};
+    const [attackBonus,defenseBonus,hpBonus]=refinementBonus(plus),round=quality?Math.ceil:Math.round;
+    const result={...zero,
+      attack:round((basis('attack')+plus*3)*m*(1+attackBonus)),
+      defense:round((basis('defense')+plus*2)*m*(1+defenseBonus)),
+      hp:round((basis('hp')+plus*10)*m*(1+hpBonus)+(quality?p*generationRules.potentialHpStep*r.mult:0))
+    };
     // Intrinsic class attributes are separate from extras; quality stats always round upward.
     for(const key of keys)result.attributes[key]=quality?Math.ceil(basis(key)*m):Math.round(basis(key)*m);
     result.crit=(d.crit||0)*r.mult;
@@ -98,8 +123,38 @@
     for(const item of Object.values(equipment||{})){if(!isGear(item,defs))continue;const s=itemStats(item,defs);for(const k of ['attack','defense','hp','energy','crit','attackSpeedPercent','critDamage'])gear[k]+=s[k];for(const k of keys)gear.attributes[k]+=s.attributes[k];for(const id of item.sockets||[]){const p=pearlById[id];if(p)gear.pearlPercent[p.attribute]+=p.percent;}}
     return gear;
   }
-  function upgradeCost(item){const levelFactor=1+(Math.max(1,item.level||1)-1)*.04;return {gold:Math.ceil(50*(int(item.plus)+1)**2*levelFactor),materials:Math.ceil((2+int(item.plus)*2)*(1+(Math.max(1,item.level||1)-1)*.015))};}
+  const fragmentLevelFactor=item=>1000+15*(Math.max(1,int(item.level))-1);
+  function upgradeCost(item){
+    const plus=int(item.plus),base=refinement.fragmentCosts[plus];
+    if(base===undefined)return {gold:0,materials:0};
+    const oldLevelFactor=1+(Math.max(1,item.level||1)-1)*.04;
+    return {gold:10*Math.ceil(50*(plus+1)**2*oldLevelFactor),materials:Math.ceil(base*fragmentLevelFactor(item)/1000)};
+  }
   const upgradeChance=item=>refinement.chances[int(item.plus)]||0;
+  const failedRefinement=item=>Math.max(0,int(item.plus)-(int(item.plus)>=5?1:0));
+  function dismantleReturn(item,g,defs){
+    if(!isGear(item,defs)||item.locked||item.reserved||g.reservedItemIds?.includes(item.id)
+       ||item.dismantlable===false||defs[item.def].dismantlable===false
+       ||item.boundToCharacter&&item.boundToCharacter!==g.characterId
+       ||item.binding==='character'&&!item.boundToCharacter
+       ||item.sockets?.some(Boolean)||Object.values(g.equipment||{}).some(i=>i?.id===item.id))return 0;
+    const base=fragmentYield[item.rarity];
+    return base?Math.floor(base*fragmentLevelFactor(item)/1000):0;
+  }
+  function dismantlePlan(g,ids,defs){
+    if(!Array.isArray(ids)||!ids.length||ids.length>CAPACITY||new Set(ids).size!==ids.length)
+      return {error:'Selecione equipamentos diferentes da mochila.'};
+    const bag=new Map(g.inventory.map(item=>[item.id,item])),items=[];
+    for(const id of ids){
+      const item=bag.get(id),fragments=dismantleReturn(item,g,defs);
+      if(!fragments)return {error:'A seleção contém equipamento indisponível. Revise os itens equipados, bloqueados, reservados ou com pérolas.'};
+      items.push({item,fragments});
+    }
+    const total=items.reduce((sum,row)=>sum+row.fragments,0);
+    if(!Number.isSafeInteger(g.materials+total)||g.materials+total>fragmentCapacity)
+      return {error:'O saldo de Fragmento de Item está no limite.'};
+    return {items,total};
+  }
   function removalCost(item,p){return Math.ceil((20+item.level*4)*rarity[item.rarity].mult*(1+p.level*.75));}
   function reforgeCost(item,line=false){const r=rarity[item.rarity],factor=1.3**int(item.reforgeAttempts),portion=line?.45:1;return {gold:Math.ceil((30+item.level*12)*r.mult*(1+r.extras*.35)*factor*portion),materials:Math.ceil(((1+item.level/8)*Math.sqrt(r.mult)+r.extras)*factor*portion)};}
   function equipmentFusion(g,ids,slot,defs){
@@ -148,10 +203,17 @@
         const remaining=g.inventory.filter(i=>!consume.has(i.id)||int(i.quantity)>consume.get(i.id));if(remaining.length>=CAPACITY)return fail('Libere um espaço na mochila.');
         const def=pool[Math.floor(draw(random)*pool.length)];let suffix=0,id;do{id='forge-weapon-'+(g.forgeSeq+1)+'-'+suffix++;}while(find(g,id));const output=generateItem({id,def,level:Math.min(100,Math.max(1,int(g.level))),rarity:'epic',plus:0,locked:false,obtainedAt:int(now),origin:'Síntese de 20 Fragmentos de arma épica'},defs,random,{family:'native',source:'synthesis'});
         g.inventory=remaining.map(i=>consume.has(i.id)?{...i,quantity:i.quantity-consume.get(i.id)}:i);g.inventory.push(output);result={type,success:true,itemId:id,message:'Arma Épica formada: '+gearName(output,defs)+'. Negociável.',consumed:20};
+      }else if(type==='dismantle'){
+        const plan=dismantlePlan(g,command.itemIds,defs);
+        if(plan.error)return fail(plan.error);
+        const ids=new Set(command.itemIds);
+        g.inventory=g.inventory.filter(item=>!ids.has(item.id));
+        g.materials+=plan.total;
+        result={type,success:true,itemIds:[...ids],fragments:plan.total,
+          message:plan.items.length+' equipamento(s) desmontado(s). Fragmento de Item recebido: '+plan.total+'.'};
       }else if(type==='upgrade'){
-
-        if(!requireItem()||item.plus>=refinement.max)return fail('Selecione um equipamento desbloqueado abaixo de +20.');cost=upgradeCost(item);if(!pay(cost))return fail('Recursos insuficientes.');const before=item.plus,success=before<refinement.guaranteed||draw(random)<upgradeChance(item);if(success)item.plus++;
-        result={type,success,before,after:item.plus,cost,message:success?`Aprimoramento concluído: +${item.plus}.`:`Falha: equipamento preservado em +${item.plus}.`};
+        if(!requireItem()||item.plus>=refinement.max)return fail('Selecione um equipamento desbloqueado abaixo de +20.');cost=upgradeCost(item);if(!pay(cost))return fail('Recursos insuficientes.');const before=item.plus,success=before<refinement.guaranteed||draw(random)<upgradeChance(item);item.plus=success?before+1:failedRefinement(item);
+        result={type,success,before,after:item.plus,cost,message:success?`Aprimoramento concluído: +${item.plus}.`:before===item.plus?`Falha: equipamento preservado em +${item.plus}.`:`Falha: o aprimoramento voltou de +${before} para +${item.plus}.`};
       }else if(type==='imbue'){
         const pearl=g.inventory.find(i=>i.id===command.pearlItemId),p=pearlOf(pearl,defs),socket=command.socket;
         if(!requireItem()||!Number.isInteger(socket)||socket<0||socket>=rarity[item.rarity].sockets||item.sockets[socket]!==null)return fail('Escolha um socket livre.');
@@ -182,5 +244,5 @@
     }catch(error){return fail('A operação não foi concluída; nenhum recurso foi consumido.');}
   }
   function assertBudget(g){if(!Number.isFinite(g.gold)||!Number.isFinite(g.materials)||g.gold<0||g.materials<0||g.inventory.length>CAPACITY)throw Error('Saldo inválido');const ids=allGear(g).map(i=>i.id);if(new Set(ids).size!==ids.length)throw Error('IDs duplicados');}
-  const api={weaponFragment,weaponFragmentCount,epicWeaponPool,normalLoot,epicDropChance,mapFragmentChance,generationRules,generateItem,rollPotential,potentialProbabilities,lootLevel,gearName,VERSION,CAPACITY,refinement,equipmentFusion,pearlFusion,rarity,names,keys,pearls,pearlById,fusion,isGear,isPearl,pearlOf,normalizeItem,migrate,itemStats,aggregate,rarityFromRoll,rollRarity,rollExtras,extraRange,upgradeCost,upgradeChance,removalCost,reforgeCost,execute};root.MareForge=api;if(typeof module!=='undefined')module.exports=api;
+  const api={itemFragment,fragmentYield,dismantleReturn,dismantlePlan,failedRefinement,refinementBonus,weaponFragment,weaponFragmentCount,epicWeaponPool,normalLoot,epicDropChance,mapFragmentChance,generationRules,generateItem,rollPotential,potentialProbabilities,lootLevel,gearName,VERSION,CAPACITY,refinement,equipmentFusion,pearlFusion,rarity,names,keys,pearls,pearlById,fusion,isGear,isPearl,pearlOf,normalizeItem,migrate,itemStats,aggregate,rarityFromRoll,rollRarity,rollExtras,extraRange,upgradeCost,upgradeChance,removalCost,reforgeCost,execute};root.MareForge=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

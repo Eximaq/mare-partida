@@ -205,7 +205,7 @@
     }
     function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;
-      if(worldView&&consumer==='world'&&worldRequest)return drawWorldVisual(ctx,{scene,action,direction,time,progress,timing,x,y,scale,consumer,weaponless});
+      if(worldView&&consumer==='world')return drawWorldVisual(ctx,{scene,action,direction,time,progress,timing,x,y,scale,consumer,weaponless},player);
       if(root.MareVisualCompletoRenderer?.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer})){draws++;return true;}
       if(consumer==='world')prepareWorldDirections(player);
       // Trim legacy preparation sources even when HD owns the early-return draw.
@@ -261,12 +261,14 @@
       paint(ctx,entry.value,direction,frame,ctx.canvas.width/2,ctx.canvas.height-24,2);return true;
     }
     function projectileOrigin(player,hero,pose={},scale=1){
-      if(worldReady(player)&&worldBundle.projectileOrigin)return worldBundle.projectileOrigin(hero,{...pose,direction:directionOf(pose.direction||hero.direction)},scale);
+      const direction=directionOf(pose.direction||hero.direction);
+      const bundle=player&&worldPoses.get(worldPoseKey(player,{action:pose.action||'attack',direction}))?.bundle;
+      if(bundle?.projectileOrigin)return bundle.projectileOrigin(hero,{...pose,direction},scale);
 
       if(rework?.active&&!player?.zoanTransformed)return rework.projectileOrigin(player,hero,pose,scale);
       if(!active||state!=='ready'||player?.zoanTransformed)return null;
       const value=resolve(player);if(!value.supported||!['firearm','tech','focus'].includes(value.category)||value.look.weapon==='original')return null;
-      const direction=directionOf(pose.direction||hero.direction),clip=bundleFor(value.key)?.get(clipKey(value.attack,direction==='west'?'east':direction,value.look));
+      const clip=bundleFor(value.key)?.get(clipKey(value.attack,direction==='west'?'east':direction,value.look));
       const point=clip?.emissions[4]?.[0]?.point;if(!point)return null;
       const spec=clip.nativeSpec,x=direction==='west'?spec.width+1-point.x:point.x;
       return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(point.y-spec.pivot.y)*scale,frame:4,weapon:value.look.weapon};
@@ -275,93 +277,72 @@
       if(await nativeHD?.prepareClip(player,options))return true;
       return defaultHD?.prepare(player,options)||false;
     }
-    // Only the local map consumer owns this gate. Portraits and remote actors
-    // retain their existing independent loading paths.
-    let worldRequest=null,worldBundle=null;
+    // Retain exact poses so a cached swap draws synchronously. Loading a pose
+    // never changes the player state or publishes a different pose.
+    const worldPoses=new Map();
+    let worldRequest=null,worldIdentity=null;
     const visualIdentity=player=>JSON.stringify([
       player.classId,player.factionId,player.appearance96,player.paperDollLook,
-      Object.entries(player.equipment||{}).filter(([,item])=>item!=null).sort(([a],[b])=>a.localeCompare(b)).map(([slot,item])=>[slot,item.def??item]),
+      Object.entries(player.equipment||{}).filter(([,item])=>item!=null).sort(([a],[b])=>a.localeCompare(b)).map(([slot,item])=>[slot,item.def??item,item.variant,item.variantId,item.appearanceVariant]),
       Headgear.hidden(player),!!player.zoanTransformed
     ]);
-    function clearWorldVisual(){
-      worldRequest?.controller.abort();worldRequest=null;
-      worldBundle?.release();worldBundle=null;
+    const worldPoseKey=(player,o,identity=visualIdentity(player))=>JSON.stringify([identity,o.action,o.direction,!!o.weaponless]);
+    function releaseWorldPose(entry){
+      entry.controller.abort();
+      entry.bundle?.release();
+      worldPoses.delete(entry.key);
     }
-    const worldVisual=()=>worldRequest?{key:worldRequest.key,state:worldRequest.state,error:worldRequest.error,coverage:worldRequest.coverage,preparedAt:worldRequest.preparedAt,firstDrawAt:worldRequest.firstDrawAt,publishedKey:worldBundle?.key}:null;
-    const worldReady=player=>!!player&&!!worldBundle&&worldRequest?.state==='ready'&&worldBundle.identity===visualIdentity(player);
-    function requestWorldVisual(player,{actions:combatActions,fruit,scope,prepareEffects}){
-      const identity=visualIdentity(player),key=JSON.stringify([scope,identity]);
-      if(worldRequest?.key===key)return worldVisual();
-      worldRequest?.controller.abort();
-      const request={key,state:'loading',controller:new AbortController()};
-      worldRequest=request;
-      if(worldBundle?.identity===identity){
-        Object.assign(request,{state:'ready',coverage:worldBundle.coverage,preparedAt:performance.now()});
-        return worldVisual();
+    function clearWorldVisual(){
+      for(const entry of worldPoses.values())releaseWorldPose(entry);
+      worldRequest=null;
+      worldIdentity=null;
+    }
+    const worldVisual=()=>worldRequest?{key:worldRequest.key,state:worldRequest.state,error:worldRequest.error,coverage:worldRequest.bundle?.coverage||[],preparedAt:worldRequest.preparedAt,firstDrawAt:worldRequest.firstDrawAt,publishedKey:worldRequest.bundle?worldRequest.key:undefined}:null;
+    const worldReady=player=>!!player&&worldRequest?.state==='ready'&&worldRequest.identity===visualIdentity(player);
+    function requestWorldVisual(player,options){
+      const identity=visualIdentity(player),key=worldPoseKey(player,options,identity);
+      if(worldIdentity!==identity){
+        worldIdentity=identity;
+        for(const entry of worldPoses.values())if(entry.identity!==identity&&entry.state==='loading')releaseWorldPose(entry);
       }
-      const signal=request.controller.signal;
-      const snapshot={...player,appearance96:{...player.appearance96},equipment:Object.fromEntries(Object.entries(player.equipment||{}).map(([slot,item])=>[slot,item&&typeof item==='object'?{...item}:item])),preferences:{...player.preferences}};
-      // A failed request remains visible until an explicit retry or a new identity.
-      const timeout=setTimeout(()=>{
-        const error=Error('Tempo de preparação do visual excedido');
-        request.controller.abort(error);
-        if(worldRequest===request)Object.assign(request,{state:'failed',error:error.message});
-      },90000);
+      let entry=worldPoses.get(key),retried=false;
+      if(entry?.state==='failed'&&!entry.retried&&performance.now()-entry.failedAt>=1500){
+        releaseWorldPose(entry);
+        imageFailures.clear();
+        retried=true;
+        entry=null;
+      }
+      if(entry){
+        worldPoses.delete(key);worldPoses.set(key,entry);
+        worldRequest=entry;
+        return entry;
+      }
+      const controller=new AbortController(),signal=controller.signal;
+      const snapshot={...player,appearance96:player.appearance96&&{...player.appearance96},preferences:{...player.preferences},
+        equipment:Object.fromEntries(Object.entries(player.equipment||{}).map(([slot,item])=>[slot,item&&typeof item==='object'?{...item}:item]))};
+      entry={key,identity,player:snapshot,state:'loading',controller,retried};
+      worldPoses.set(key,entry);worldRequest=entry;
+      while(worldPoses.size>12)releaseWorldPose(worldPoses.values().next().value);
       void (async()=>{
         let bundle;
         try{
-          await prepareEffects?.();
+          // Both providers use the appearance registry loaded by the lobby.
+          await Promise.all([ready,nativeHD?.ready]);
           signal.throwIfAborted();
-          if(fruit){
-            const key=root.MareSpriteCombatV2.fruits[fruit.id];
-            if(!await root.MareSpriteCombatV2.prepare(key))throw Error('Animações da transformação indisponíveis: '+fruit.id);
-            if(root.MareZoanTransition?.preload)await root.MareZoanTransition.preload()?.decode();
-          }
-          if(root.MareVisualCompletoRenderer?.equipped(snapshot)){
-            await root.MareVisualCompletoRenderer.prepare();
-            const status=root.MareVisualCompletoRenderer.snapshot();
-            if(!status.ready)throw Error(status.error||'Visual Completo indisponível');
-          }
+          const pose={player:snapshot,options};
+          bundle=nativeHD?.selectVisual(snapshot,options)
+            ?await nativeHD.prepareConfiguration([pose],{signal})
+            :await prepareModularWorld(snapshot,[pose],signal);
           signal.throwIfAborted();
-          const actions=new Set(['idle','walk',...combatActions]);
-          const basePlayer={...snapshot,zoanTransformed:false};
-          const useSkin=root.MareVisualCompletoRenderer?.equipped(snapshot);
-          const poses=[];
-          for(const direction of ['south','north','east','west']){
-            for(const action of actions)if(!useSkin||action==='idle')poses.push({player:basePlayer,options:{action,direction,consumer:'world'}});
-            if(!useSkin&&combatActions.includes('attack-unarmed'))poses.push({player:basePlayer,options:{action:'attack-unarmed',direction,consumer:'world',weaponless:true}});
-          }
-          // Native selection reads the appearance registries loaded by the lobby.
-          await Promise.all([ready,nativeHD.ready]);
-          signal.throwIfAborted();
-          const native=[],modular=[];
-          for(const pose of poses)(nativeHD.selectVisual(pose.player,pose.options)?native:modular).push(pose);
-          if(modular.length)request.coverage=modular.map(({options})=>({action:options.action,direction:options.direction,weaponless:!!options.weaponless,source:null}));
-          let hd,layered;
-          try{
-            if(modular.length)layered=await prepareModularWorld(basePlayer,modular,signal);
-            if(native.length)hd=await nativeHD.prepareConfiguration(native,{signal});
-          }catch(error){layered?.release();hd?.release();throw error;}
-          bundle={
-            coverage:[...(hd?.coverage||[]),...(layered?.coverage||[])],
-            draw(ctx,player,options){
-              if(hd?.draw(ctx,player,options)){this.visualHeight=hd.visualHeight;return true;}
-              return layered?.draw(ctx,player,options)||false;
-            },
-            projectileOrigin:layered?.projectileOrigin,
-            release(){hd?.release();layered?.release();}
-          };
-          signal.throwIfAborted();
-          if(worldRequest!==request)return;
-          worldBundle?.release();
-          worldBundle={...bundle,scope,identity,key,player:snapshot};
-          bundle=null;
-          Object.assign(request,{state:'ready',coverage:worldBundle.coverage,preparedAt:performance.now()});
+          entry.bundle=bundle;bundle=null;
+          entry.state='ready';entry.preparedAt=performance.now();
         }catch(error){
-          if(worldRequest===request)Object.assign(request,{state:'failed',error:error.message});
-        }finally{clearTimeout(timeout);bundle?.release();}
+          if(signal.aborted)return;
+          Object.assign(entry,{state:'failed',error:error.message,failedAt:performance.now()});
+          diagnose(error,{consumer:'world',asset:options.action+'/'+options.direction});
+        }finally{bundle?.release();}
       })();
-      return worldVisual();
+      return entry;
     }
     async function prepareModularWorld(player,poses,signal){
       await ready;
@@ -416,21 +397,22 @@
       };
     }
     function retryWorldVisual(){
-      if(worldRequest?.state!=='failed')return;
-      worldRequest.controller.abort();worldRequest=null;imageFailures.clear();
+      for(const entry of worldPoses.values())if(entry.state==='failed')releaseWorldPose(entry);
+      imageFailures.clear();
     }
-    function drawWorldVisual(ctx,options){
-      if(!worldBundle)return false;
-      const player=worldBundle.player;
+    function drawWorldVisual(ctx,options,player=worldRequest?.player){
+      if(!player)return false;
       const drawOptions={...options,direction:directionOf(options.direction)};
+      if(root.MareVisualCompletoRenderer?.equipped(player))return root.MareVisualCompletoRenderer.draw(ctx,player,drawOptions);
       const action=['combat-idle','guard','hurt','death'].includes(options.action)?'idle':options.action;
-      const result=root.MareVisualCompletoRenderer?.draw(ctx,player,drawOptions)||worldBundle.draw(ctx,player,{...drawOptions,action,weaponless:action!=='idle'&&options.weaponless});
-      if(result&&worldRequest?.state==='ready'&&worldRequest.firstDrawAt===undefined)worldRequest.firstDrawAt=performance.now();
-      if(result)defaultHD?.clear();
+      const exact={...drawOptions,action,weaponless:action!=='idle'&&!!options.weaponless};
+      const entry=requestWorldVisual(player,{action,direction:exact.direction,weaponless:exact.weaponless,consumer:'world'});
+      const result=entry.bundle?.draw(ctx,player,exact)||false;
+      if(result){entry.firstDrawAt??=performance.now();defaultHD?.clear();}
       return result;
     }
-    const height=player=>active&&!player?.zoanTransformed?(worldBundle?.visualHeight||nativeHD?.height(player)||96):null;
-    return {ready,snapshot,draw,height,ensure,prepareVisual,worldVisual,worldReady,requestWorldVisual,clearWorldVisual,retryWorldVisual,drawWorldVisual,worldPlayer:()=>worldBundle?.player,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
+    const height=player=>active&&!player?.zoanTransformed?((worldReady(player)&&worldRequest.bundle?.visualHeight)||nativeHD?.height(player)||96):null;
+    return {ready,snapshot,draw,height,ensure,prepareVisual,worldVisual,worldReady,requestWorldVisual,clearWorldVisual,retryWorldVisual,drawWorldVisual,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
   }
   root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,appearanceLook,assetReferences,validateRelease,frameAt,directionOf};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.MarePaperDoll96Lobby;

@@ -16,12 +16,9 @@ test('unchanged map status does not rewrite DOM each frame; load/failure/recover
  assert.equal(writes,1);state='failed';vm.runInContext('presentWorld()',c);assert.equal(writes,2);
  state='ready';for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);assert.equal(writes,3);assert.equal(draws,60);
 });
-test('unchanged player status does not rewrite its text and accessibility state every frame',()=>{
- let state='loading',writes=0,busyWrites=0;const node={dataset:{},classList:{toggle(){}},set textContent(v){writes++;}};
- const c=vm.createContext({game:{},lobby96:{worldVisual:()=>({state})},$:id=>id==='playerVisualStatus'?node:{setAttribute(){busyWrites++;}}});
- vm.runInContext(fn('updatePlayerVisualStatus'),c);for(let i=0;i<60;i++)vm.runInContext('updatePlayerVisualStatus()',c);
- assert.equal(writes,1);assert.equal(busyWrites,1);state='ready';vm.runInContext('updatePlayerVisualStatus()',c);assert.equal(writes,2);
- state='failed';vm.runInContext('updatePlayerVisualStatus()',c);assert.equal(writes,3);
+test('visual preparation is absent from the world and HUD frame gates',()=>{
+ assert.doesNotMatch(source,/!lobby96\.worldReady\(game\)|updatePlayerVisualStatus\(/);
+ assert.doesNotMatch(fn('presentWorld'),/lobby96|Preparando as animações/);
 });
 test('NPCs outside the viewport skip sprite and label work without clipping edge labels',()=>{
  const calls=[],sprite={complete:true,naturalWidth:92};

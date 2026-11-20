@@ -3,7 +3,7 @@ const F=require('../forge-system.js'),C=require('../character-system.js');
 const source=fs.readFileSync(require.resolve('../game.js'),'utf8'),box={MareCharacters:C};vm.createContext(box);
 box.data=require('../character-catalog.js').create({characters:C});
 const defs=[{name:'Teste',slot:'weapon',type:'sword',attack:10,defense:2,hp:20,rarity:'common'},...F.pearls.map(p=>({name:p.name,slot:'pearl',kind:'pearl',pearlId:p.id,rarity:p.rarity}))];
-const original={name:'Legacy',level:10,gold:100000,materials:5000,equipment:{weapon:{id:'weapon',def:0,level:10,plus:2,locked:false,custom:'preserved'}},inventory:[],stats:{kills:77},attributeVersion:2,attributes:C.empty()};
+const original={name:'Legacy',level:10,gold:1000000,materials:5000,equipment:{weapon:{id:'weapon',def:0,level:10,plus:2,locked:false,custom:'preserved'}},inventory:[],stats:{kills:77},attributeVersion:2,attributes:C.empty()};
 let checks=0;function test(name,fn){fn();checks++;console.log(name+': passed');}
 const seed=(rarity='rare')=>F.migrate({...structuredClone(original),equipment:{weapon:{...original.equipment.weapon,rarity}}},defs);
 const pearl=(id,index)=>({id:'p-'+index,def:defs.findIndex(d=>d.pearlId===id),pearlId:id,level:1,plus:0,locked:false});
@@ -16,9 +16,9 @@ test('All 1000 rarity outcomes match boundaries and never drop Supreme',()=>{
  const counts={};for(let roll=1;roll<=1000;roll++){const r=F.rarityFromRoll(roll);counts[r]=(counts[r]||0)+1;}
  assert.deepEqual(counts,{common:600,uncommon:250,rare:100,epic:50});assert.throws(()=>F.rarityFromRoll(0));assert.throws(()=>F.rarityFromRoll(1001));
 });
-test('All six rarities apply base multiplier once, keep refinement additive, unique scalable extras and sockets',()=>{
+test('All six rarities apply base multiplier once, apply refinement bonus to the refinable base, unique scalable extras and sockets',()=>{
  for(const [id,r] of Object.entries(F.rarity)){
-  const g=seed(id),i=g.equipment.weapon,s=F.itemStats(i,defs);assert.equal(i.extras.length,r.extras);assert.equal(new Set(i.extras.map(e=>e.stat)).size,r.extras);assert.equal(i.sockets.length,r.sockets);assert.equal(s.attack,Math.round((10*r.mult+6)*1.81));
+  const g=seed(id),i=g.equipment.weapon,s=F.itemStats(i,defs);assert.equal(i.extras.length,r.extras);assert.equal(new Set(i.extras.map(e=>e.stat)).size,r.extras);assert.equal(i.sockets.length,r.sockets);assert.equal(s.attack,Math.round((10*r.mult+6)*1.81*1.0048));
   const bounds=F.extraRange(i.level,id);for(const x of i.extras){if(F.keys.includes(x.stat))assert(x.value>=bounds.min&&x.value<=bounds.max);if(x.stat==='crit')assert(x.value<=.04);}
  }
  assert(F.extraRange(30,'supreme').max>F.extraRange(1,'common').max);
@@ -33,10 +33,10 @@ test('Fixed-rarity upgrade migrates existing Nodachi copies to Legendary and pre
  const upgraded=F.migrate(old,nodachiDefs),item=upgraded.equipment.weapon;
  assert.equal(F.VERSION,5);assert.equal(item.rarity,'legendary');assert.equal(item.extras.length,F.rarity.legendary.extras);assert.deepEqual(item.extras.slice(0,4),oldExtras);assert.equal(item.sockets.length,F.rarity.legendary.sockets);assert.deepEqual(F.migrate(upgraded,nodachiDefs),upgraded);assert.deepEqual(old.equipment.weapon.extras,oldExtras);
 });
-test('Upgrade guarantees +1 through +5, supports +20, scales costs and rejects stale commands',()=>{
+test('Upgrade guarantees +1, charges for failures, regresses from +5, and supports +20',()=>{
  for(const plus of Array.from({length:20},(_,i)=>i)){
   let g=seed();g.equipment.weapon.plus=plus;const cost=F.upgradeCost(g.equipment.weapon),snapshot=JSON.stringify(g),win=run(g,{type:'upgrade',itemId:'weapon'},()=>0);assert(win.ok&&win.result.success);assert.equal(win.state.equipment.weapon.plus,plus+1);assert.equal(win.state.gold,g.gold-cost.gold);assert.equal(win.state.materials,g.materials-cost.materials);assert.equal(JSON.stringify(g),snapshot);
-  const lost=run(g,{type:'upgrade',itemId:'weapon'},()=>.999);assert.equal(lost.result.success,plus<5);assert.equal(lost.state.equipment.weapon.plus,plus+(plus<5?1:0));
+  const lost=run(g,{type:'upgrade',itemId:'weapon'},()=>.999);assert.equal(lost.result.success,plus===0);assert.equal(lost.state.equipment.weapon.plus,plus===0?1:plus>=5?plus-1:plus);assert.equal(lost.state.gold,g.gold-cost.gold);assert.equal(lost.state.materials,g.materials-cost.materials);
   assert(!F.execute(win.state,{type:'upgrade',itemId:'weapon',expectedSeq:g.forgeSeq},defs,()=>0).ok);
  }
  const g=seed();g.equipment.weapon.plus=20;assert(!run(g,{type:'upgrade',itemId:'weapon'}).ok);g.equipment.weapon.plus=0;g.gold=0;assert(!run(g,{type:'upgrade',itemId:'weapon'}).ok);
@@ -110,5 +110,42 @@ test('Pearl slots validate exact owned instances, duplicates, mixed attributes/l
  const equipped=structuredClone(g);equipped.equipment.charm=equipped.inventory.splice(1,1)[0];assert(!run(equipped,{type:'fuse',itemIds:ids}).ok);
  assert(!F.execute(t.state,{type:'fuse',itemIds:ids,expectedSeq:g.forgeSeq},defs).ok);
  const throwing=run(g,{type:'fuse',itemIds:ids},()=>{throw Error('rng');});assert(!throwing.ok);assert.equal(JSON.stringify(g),before);
+});
+test('New material conversion, restricted dismantling, rates, costs and replay',()=>((F)=>{
+ const check=(v,m)=>{if(!v)throw Error(m);};
+ const defs=[{name:'Espada de Ferro Salgado',slot:'weapon',type:'sword',attack:6,rarity:'common'}];
+ check(F.upgradeChance({plus:1})===.7,'+1 → +2 should be 70%');
+ check(F.upgradeCost({plus:1,level:1}).gold===2000,'Berry should be 10×');
+ const a=F.migrate({gold:1e7,materials:1e4,characterId:'own',inventory:[{id:'one',def:0,level:1,plus:4},{id:'two',def:0,level:41,plus:20,rarity:'epic',boundToCharacter:'own'}],equipment:{weapon:{id:'worn',def:0,level:1,plus:5}}},defs);
+ const run=(g,op,rng=.999)=>F.execute(g,{expectedSeq:g.forgeSeq,...op},defs,()=>rng,0);
+ const lose=run(a,{type:'upgrade',itemId:'worn'});
+ check(lose.ok&&!lose.result.success&&lose.state.equipment.weapon.plus===4&&lose.state.materials===a.materials-27,'+5 miss must charge and regress');
+ const lose4=run(a,{type:'upgrade',itemId:'one'});
+ check(lose4.ok&&!lose4.result.success&&lose4.result.after===4,'+4 miss must preserve');
+ const batch=run(a,{type:'dismantle',itemIds:['one','two']});
+ check(batch.ok&&batch.result.fragments===34&&batch.state.materials===a.materials+34&&batch.state.inventory.length===0,'batch must atomically grant equipment-level rewards');
+ check(JSON.stringify(F.migrate(batch.state,defs))===JSON.stringify(batch.state),'reload must preserve one balance');
+ for(const bad of [['one','worn'],['one','one'],['missing']])check(!run(a,{type:'dismantle',itemIds:bad}).ok,'invalid destruction accepted');
+ check(!F.execute(batch.state,{type:'dismantle',expectedSeq:a.forgeSeq,itemIds:['one','two']},defs).ok,'replay must fail locally');
+ for(const patch of [{locked:true},{sockets:['pearl_vit_1']},{boundToCharacter:'other'},{reserved:true},{dismantlable:false}]){
+  const invalid={...a,inventory:[{...a.inventory[0],...patch},a.inventory[1]]};
+  check(!run(invalid,{type:'dismantle',itemIds:['one','two']}).ok,'restricted piece accepted '+JSON.stringify(patch));
+ }
+ return {upgrade:true,dismantle:true,migration:true,replay:true,restrictions:true};
+})(F));
+test('Dismantling works at the inventory limit and every rarity uses its own level',()=>{
+ const g=seed();g.characterId='owner';
+ const yields=[2,5,10,20,35,60];
+ g.inventory=Array.from({length:120},(_,index)=>F.normalizeItem({
+  id:'salvage-'+index,def:0,level:index<6?41:1,rarity:Object.keys(F.rarity)[index%6],plus:20,
+ },defs));
+ const selected=g.inventory.slice(0,6).map(item=>item.id),plan=F.dismantlePlan(g,selected,defs);
+ assert.deepEqual(plan.items.map(x=>x.fragments),yields.map(n=>Math.floor(n*1.6)));
+ const done=run(g,{type:'dismantle',itemIds:selected});
+ assert(done.ok);
+ assert.equal(done.state.inventory.length,114);
+ assert.equal(done.state.materials,g.materials+plan.total);
+ assert.equal(done.state.equipment.weapon.id,g.equipment.weapon.id);
+ assert.equal(done.state.gold,g.gold);
 });
 console.log(`${checks} expanded forge model groups passed.`);

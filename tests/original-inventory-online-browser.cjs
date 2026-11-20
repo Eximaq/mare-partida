@@ -7,9 +7,9 @@ const chars=require('../character-system.js'),birth=require('../character-catalo
 const make=(def,id)=>forge.normalizeItem({def,id,level:1,plus:0,rarity:'common',locked:false,obtainedAt:1},catalog.items,()=>0);
 const character={id:'11111111-1111-4111-8111-111111111111',name:'Navegante',classId:'sword',factionId:'pirate'};
 const allocated={strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0};
-const original={catalogId:'original-game-v1',inventory:[make(8,'server-boots')],equipment:Object.fromEntries([...catalog.inventorySlotsLeft,...catalog.inventorySlotsRight].map(k=>[k,null])),potions:4,manaPotions:2,materials:3,forgeVersion:4,forgeSeq:0,forgeHistory:[]};
+const original={catalogId:'original-game-v1',inventory:[make(8,'server-boots')],equipment:Object.fromEntries([...catalog.inventorySlotsLeft,...catalog.inventorySlotsRight].map(k=>[k,null])),potions:4,manaPotions:2,materials:11,forgeVersion:4,forgeSeq:0,forgeHistory:[]};
 original.equipment.weapon=make(0,'server-weapon');original.equipment.coat=make(6,'server-coat');
-const wire={state:{characterId:character.id,version:1,level:2,experience:'80',gold:'85'},originalInventory:original,inventory:{items:[],equipped:{weapon:null,armor:null}},itemCatalog:[],attributes:{allocated,available:5},progression:{xpIntoLevel:'0',xpForNextLevel:'80'},journey:{started:false},hunt:{status:'locked'},combat:{status:'locked',playerHp:65,playerMaxHp:65},combatPreview:{maxHp:65,attackMin:19,armor:4,cooldownMs:1860,total:{strength:15,dexterity:14,vitality:9,intelligence:6,spirit:6}}};
+const wire={state:{characterId:character.id,version:1,level:2,experience:'80',gold:'535'},originalInventory:original,inventory:{items:[],equipped:{weapon:null,armor:null}},itemCatalog:[],attributes:{allocated,available:5},progression:{xpIntoLevel:'0',xpForNextLevel:'80'},journey:{started:false},hunt:{status:'locked'},combat:{status:'locked',playerHp:65,playerMaxHp:65},combatPreview:{maxHp:65,attackMin:19,armor:4,cooldownMs:1860,total:{strength:15,dexterity:14,vitality:9,intelligence:6,spirit:6}}};
 function refreshFighter(){
  const stats=chars.derive({classId:'sword',level:wire.state.level,attributes:wire.attributes.allocated},birth.classes.sword,birth.factions.pirate,forge.aggregate(wire.originalInventory.equipment,catalog.items));
  wire.combatPreview={rulesetId:'original-character-v1',stats,maxHp:stats.maxHP};
@@ -42,7 +42,7 @@ refreshFighter();
      assert.deepEqual(Object.keys(input.payload),['itemId']);const item=wire.originalInventory.inventory.find(i=>i.id===input.payload.itemId);assert(item);
      const slot=catalog.items[item.def].slot,old=wire.originalInventory.equipment[slot];wire.originalInventory.inventory=wire.originalInventory.inventory.filter(i=>i.id!==item.id);wire.originalInventory.equipment[slot]=item;if(old)wire.originalInventory.inventory.push(old);
     }else if(input.action==='forge.execute'){
-     assert.deepEqual(Object.keys(input.payload.operation).sort(),['expectedSeq','itemId','type']);
+     assert.deepEqual(Object.keys(input.payload.operation).sort(),['expectedSeq',input.payload.operation.type==='dismantle'?'itemIds':'itemId','type']);
      const result=forge.execute({...wire.originalInventory,gold:Number(wire.state.gold),classId:'sword'},input.payload.operation,catalog.items,()=>0,1);assert(result.ok,result.message);
      const {gold,classId,...next}=result.state;wire.state.gold=String(gold);wire.originalInventory=next;
     }else if(input.action==='attributes.allocate'){
@@ -74,7 +74,7 @@ refreshFighter();
   assert.equal(await p.locator('[data-forge-tab="imbue"]').isEnabled(),true);
   await p.screenshot({path:path.join(out,'original-online-forge.png')});
   // Revalidation never sends a changed intention; failed responses keep the dialog.
-  wire.state.gold='5000';wire.originalInventory.materials=100;wire.state.version++;await p.evaluate(()=>MareGameSession.read());
+  wire.state.gold='10000';wire.originalInventory.materials=100;wire.state.version++;await p.evaluate(()=>MareGameSession.read());
   await p.locator('[data-forge-action="upgrade"]').click();const beforeStale=commands.length;
   wire.state.version++;await p.evaluate(()=>MareGameSession.read());await p.locator('[data-confirm-accept]').click();
   assert.equal(commands.length,beforeStale);assert.match(await p.locator('.confirmation-card').innerText(),/dados foram atualizados/i);await p.locator('[data-confirm-cancel]').click();
@@ -113,7 +113,23 @@ refreshFighter();
   await p.waitForFunction(()=>{const c=document.getElementById('inventorySprite');return c&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0);},null,{timeout:90000});
   await p.evaluate(()=>document.fonts.ready);
   await p.screenshot({path:path.join(out,'original-online-inventory.png')});
-  assert.deepEqual(commands.map(c=>c.action),['items.equip','forge.execute','forge.execute','forge.execute','forge.execute','forge.execute','attributes.allocate']);assert.deepEqual(errors,[]);
+  assert.deepEqual(commands.map(c=>c.action),['items.equip','forge.execute','forge.execute','forge.execute','forge.execute','forge.execute','attributes.allocate']);
+  const scraps=[make(8,'salvage-a'),{...make(6,'salvage-b'),level:41}];
+  wire.originalInventory.inventory.push(...scraps);
+  wire.state.version++;await p.evaluate(()=>MareGameSession.read());
+  await p.keyboard.press('Escape');await p.setViewportSize({width:390,height:844});await p.keyboard.press('f');
+  await p.locator('[data-forge-tab="dismantle"]').click();
+  for(const item of scraps)await p.locator('[data-forge-item="'+item.id+'"]').click();
+  assert.match(await p.locator('.forge2-operation-content').innerText(),/5 fragmento/);
+  const before=wire.originalInventory.materials;
+  await p.locator('[data-forge-action="dismantle"]').click();
+  assert.match(await p.locator('.confirmation-card').innerText(),/Fragmento de Item/);
+  await p.locator('[data-confirm-accept]').click();
+  await p.waitForFunction(()=>MareGameSession.data.online.originalInventory.forgeSeq===4&&!MareGameSession.busy);
+  assert.deepEqual(commands.at(-1).payload.operation,{type:'dismantle',expectedSeq:3,itemIds:scraps.map(i=>i.id)});
+  assert.equal(wire.originalInventory.materials,before+5);
+  assert(wire.originalInventory.inventory.every(i=>!scraps.some(s=>s.id===i.id)));
+  assert.deepEqual(errors,[]);
   console.log('Original online HUD contract: native inventory/forge, strict intents, stock, equipment, stale confirmation, rejection, double click, same-request recovery and reload passed. Provider is a UI fixture; PostgreSQL is tested separately.');
   await context.close();
  }catch(error){if(activePage)await activePage.screenshot({path:path.join(out,'original-online-failure.png')}).catch(()=>{});throw error;}finally{await browser.close();}

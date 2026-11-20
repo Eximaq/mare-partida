@@ -2,13 +2,22 @@
 /* Read-only summaries. Prices, plans and validation come from the existing systems. */
 ((root)=>{
  const clone=x=>JSON.parse(JSON.stringify(x)),F=()=>root.MareForge;
- const moneyIcon='assets/ui/inventory-final/berry.png',metalIcon='assets/ui/items-hd/material.png';
+ const moneyIcon='assets/ui/inventory-final/berry.png';
  const find=(s,id)=>[...Object.values(s.equipment||{}).filter(Boolean),...(s.inventory||[])].find(i=>i.id===id);
  function item(i,defs){const d=defs[i?.def]||{},p=F().pearlOf(i,defs);return {id:i?.id,name:p?.name||(i&&F().isGear(i,defs)?F().gearName(i,defs):d.name)||'Item indisponível',icon:root.MareItemArt?.path(i?.def,d)||d.icon_path,detail:p?'':(i?'Refinamento +'+(i.plus||0)+' · '+(F().rarity[i.rarity]?.name||'')+(i.boundToCharacter?' · Vinculado':''):''),quantity:1};}
  function finish(m,evidence){m.fingerprint=JSON.stringify(evidence);return m;}
  function forge(s,c,defs){
-  const api=F(),i=find(s,c.itemId),m={title:'Confirmar operação',costs:[],changes:[],result:'',error:'',acceptLabel:'CONFIRMAR'},cost=price=>{if(price.gold>0)m.costs.push({name:'Berry',icon:moneyIcon,needed:price.gold,available:s.gold,remaining:s.gold-price.gold});if(price.materials>0)m.costs.push({name:'Ferro Salgado',icon:metalIcon,needed:price.materials,available:s.materials,remaining:s.materials-price.materials});},target=()=>{if(!api.isGear(i,defs)||i.locked)m.error='Selecione um equipamento existente e desbloqueado.';else m.subject=item(i,defs);};
-  if(c.type==='formEpicWeapon'){
+  const api=F(),i=find(s,c.itemId),m={title:'Confirmar operação',costs:[],changes:[],result:'',error:'',acceptLabel:'CONFIRMAR'},cost=price=>{if(price.gold>0)m.costs.push({name:'Berry',icon:moneyIcon,needed:price.gold,available:s.gold,remaining:s.gold-price.gold});if(price.materials>0)m.costs.push({name:api.itemFragment.name,icon:api.itemFragment.iconPath,needed:price.materials,available:s.materials,remaining:s.materials-price.materials});},target=()=>{if(!api.isGear(i,defs)||i.locked)m.error='Selecione um equipamento existente e desbloqueado.';else m.subject=item(i,defs);};
+  if(c.type==='dismantle'){
+   m.title='Desmontar equipamentos';m.acceptLabel='DESMONTAR';
+   const plan=api.dismantlePlan(s,c.itemIds,defs);
+   if(plan.error)m.error=plan.error;
+   else{
+    m.costs=plan.items.map(({item:gear,fragments})=>({...item(gear,defs),needed:1,available:1,remaining:0,
+     detail:api.rarity[gear.rarity].name+' · Nv. '+gear.level+' · +'+gear.plus+' · rende '+fragments+' fragmento(s)'}));
+    m.result='Você recebe '+plan.total+' × '+api.itemFragment.name+'. Os equipamentos serão destruídos.';
+   }
+  }else if(c.type==='formEpicWeapon'){
     const pool=api.epicWeaponPool(defs),available=api.weaponFragmentCount(s),d=defs.find(d=>d.kind==='weapon-fragment');m.title='Formar arma Épica';m.acceptLabel='FORMAR ARMA ÉPICA';m.subject={name:d?.name,icon:d?.icon_path};m.costs=[{name:d?.name,icon:d?.icon_path,needed:20,available,remaining:available-20}];m.result='Uma arma Épica nativa aleatória · LV. '+Math.min(100,Math.max(1,s.level||1));m.success='Negociável, de qualquer classe. A arma recebida vai para a mochila.';
     let left=20,removed=0;for(const x of s.inventory.filter(x=>x.materialId===api.weaponFragment.id&&!x.locked&&(!x.boundToCharacter||x.boundToCharacter===s.characterId))){const n=Math.min(left,x.quantity);left-=n;if(n===x.quantity)removed++;if(!left)break;}
     if(!pool.length)m.error='Nenhuma arma elegível disponível.';else if(available<20)m.error='Fragmentos desbloqueados insuficientes.';else if(s.inventory.length-removed+1>api.CAPACITY)m.error='Libere espaço na mochila.';
@@ -18,7 +27,7 @@
    m.title='Fusão de pérolas';m.acceptLabel='CONFIRMAR FUSÃO';const p=api.pearlFusion(s,c.itemIds,defs);if(p.error)m.error=p.error;else{m.subject={name:'Cinco pérolas selecionadas'};m.costs=p.items.map((x,n)=>({...item(x,defs),needed:1,available:1,remaining:0,detail:'Unidade '+(n+1)+(x.boundToCharacter?' · Vinculada':'')}));cost({gold:p.gold});m.chance=p.chance;m.result=p.next.name;m.success='Uma pérola do próximo nível será recebida.';m.failure='As cinco pérolas e os Berry são consumidos também em caso de falha.';}
   }else{
    target();if(!m.error){
-    if(c.type==='upgrade'){m.title='Aprimorar equipamento';m.acceptLabel='APRIMORAR';cost(api.upgradeCost(i));m.chance=api.upgradeChance(i);m.result='Refinamento +'+i.plus+' → +'+(i.plus+1);m.success='A peça recebe um nível de refinamento.';if(m.chance<1)m.failure='Os custos são consumidos. A peça permanece em +'+i.plus+', sem rebaixamento.';if(i.plus>=api.refinement.max)m.error='Este equipamento já atingiu o limite de refinamento.';}
+    if(c.type==='upgrade'){m.title='Aprimorar equipamento';m.acceptLabel='APRIMORAR';cost(api.upgradeCost(i));m.chance=api.upgradeChance(i);m.result='Refinamento +'+i.plus+' → +'+(i.plus+1);m.success='A peça recebe um nível de refinamento.';if(m.chance<1)m.failure='Os custos são consumidos. A peça '+(api.failedRefinement(i)===i.plus?'permanece em':'volta para')+' +'+api.failedRefinement(i)+'.';if(i.plus>=api.refinement.max)m.error='Este equipamento já atingiu o limite de refinamento.';}
     else if(c.type==='imbue'){
      m.title='Instalar pérola';m.acceptLabel='INSTALAR PÉROLA';const pi=s.inventory.find(x=>x.id===c.pearlItemId),p=api.pearlOf(pi,defs);if(!p||pi.locked||!Number.isInteger(c.socket)||c.socket<0||c.socket>=api.rarity[i.rarity].sockets||i.sockets[c.socket])m.error='Selecione uma pérola desbloqueada e um encaixe vazio válido.';else{m.transfer=true;m.costs=[{...item(pi,defs),needed:1,available:1,remaining:0}];m.result='Encaixe '+(c.socket+1)+' · +'+Number((p.percent*100).toFixed(2))+'% '+api.names[p.attribute];m.success='A pérola é transferida da mochila para o equipamento. Não é destruída.';m.notice='Instalação gratuita. A remoção posterior custa Berry.';}
     }else if(c.type==='remove'){
@@ -31,7 +40,7 @@
   if(c.expectedSeq!==s.forgeSeq)m.error='A Forja mudou. Reabra a operação para conferir a seleção.';
   if(m.costs.some(x=>x.available<x.needed))m.error='Recursos insuficientes para esta operação.';
   if(!Number.isFinite(s.gold)||!Number.isFinite(s.materials))m.error='Saldo inválido. Nenhum recurso será consumido.';
-  return finish(m,{command:c,seq:s.forgeSeq,classId:s.classId,target:i,materials:(c.itemIds||[]).map(id=>find(s,id)),pearl:find(s,c.pearlItemId),gold:s.gold,iron:s.materials,capacity:s.inventory.length,fragments:c.type==='formEpicWeapon'?s.inventory.filter(x=>x.materialId===api.weaponFragment.id):undefined,error:m.error});
+  return finish(m,{command:c,seq:s.forgeSeq,classId:s.classId,target:i,materials:(c.itemIds||[]).map(id=>find(s,id)),pearl:find(s,c.pearlItemId),gold:s.gold,fragmentBalance:s.materials,capacity:s.inventory.length,fragments:c.type==='formEpicWeapon'?s.inventory.filter(x=>x.materialId===api.weaponFragment.id):undefined,error:m.error});
  }
  function formation(s,seq,defs,catalog){
   const api=root.MareBossDungeons,r=api.recipes.E,stacks=s.inventory.filter(i=>i.materialId==='akuma_fragment_e'&&i.boundToCharacter===s.characterId&&!i.locked),available=api.count(s,r.rank),def=defs.find(d=>d.materialId==='akuma_fragment_e');
