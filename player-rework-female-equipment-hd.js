@@ -267,6 +267,11 @@ function approvedSouthCarry(r){
 const asset=(r,sha)=>'tools/'+(r.northFirearmCoatSources?.includes(sha)?'rework-firearm113-coat':r.checkpointSources?.includes(sha)?'rework-sword0-checkpoint':r.outfitSources?.includes(sha)?'rework-modular-outfits-hd':'rework-base-hd')+'/assets/'+sha+'.png';
 function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVendor?.compositor,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){if(index?.schema!=='female-native-equipment-registration-v1'||!vendor)throw Error('Missing female equipment sources');return {
  resolve({item,body,action,direction,appearance={},equipment={}}={}){if(item==null||!index.records.some(r=>r.item===Number(item))||!['female','feminino'].includes(body))return null;const extra=Object.entries(equipment).filter(([k,v])=>k!=='weapon'&&v!=null&&!['none','original'].includes(v));const glove=extra.find(([slot])=>slot==='gloves')?.[1],clothing=extra.filter(([slot])=>!['head','gloves'].includes(slot)),head=extra.find(([slot])=>slot==='head')?.[1];if(clothing.some(([slot])=>!['coat','legs','pants'].includes(slot))||clothing.filter(([slot])=>slot!=='coat').length>1)return null;if(equipment.weapon!=null&&Number(equipment.weapon?.def??equipment.weapon)!==Number(item))return null;const customized=['hair','hairStyle','skin','skinColor','hairColor','face','eyeStyle','eyeColor'].some(k=>appearance[k]&&appearance[k]!=='original'&&!((k==='eyeColor')&&appearance[k]==='blue'));if(['attack','punch','shoot','focus','cast'].includes(action))action=index.records.find(r=>r.item===Number(item)&&r.action.startsWith('attack-'))?.action||action;const r=index.records.find(r=>r.item===Number(item)&&r.body==='female'&&r.action===action&&r.direction===direction);if(!r)return null;const coat=clothing.find(([slot])=>slot==='coat')?.[1],pants=clothing.find(([slot])=>slot!=='coat')?.[1];
+ const isOriginal=v=>v==null||v==='original';
+ const exact113CoatHelmet=r.item===113&&direction==='north'&&action==='attack-firearm'&&
+   Number(head?.def??head)===157&&Number(coat?.def??coat)===151&&pants==null&&glove==null&&
+   [head,coat,equipment.weapon].every(e=>['variant','variantId','appearanceVariant'].every(k=>isOriginal(e?.[k])))&&
+   [appearance.hair,appearance.hairStyle,appearance.eyeStyle,appearance.face].every(isOriginal);
  let combined={...r,pack:r.baseRecord.pack};
  if(!clothing.length&&head==null)combined=approvedSouthCarry(combined);
  if(coat!=null){
@@ -275,7 +280,7 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   const alternate=x=>['variant','variantId','appearanceVariant'].some(k=>x?.[k]!=null&&x[k]!=='original');
   const p154=pants!=null&&Number(pants.def??pants)===154&&def===151&&Number(item)===113&&direction==='north'&&
    action==='attack-firearm'&&glove==null&&!alternate(pants)&&!alternate(coat)&&!alternate(equipment.weapon);
-  const northCoat=(!pants||p154)&&head==null&&(r.item===113||!alternate(coat)&&!alternate(equipment.weapon))?attachNorthFirearmCoat(r,def):null;
+  const northCoat=(!pants||p154)&&(head==null||exact113CoatHelmet)&&(r.item===113||!alternate(coat)&&!alternate(equipment.weapon))?attachNorthFirearmCoat(r,def):null;
   combined=p154?attachNorth113Pants154(northCoat):action==='attack-sword'?attachSwordCoat(r,outfit,def):northCoat||attachIsolatedCoat(r,outfit,def);
  }
  if(coat==null&&pants!=null&&Number(pants.def??pants)===154&&(Number(item)===113||Object.hasOwn(northP154SiblingMatrices,Number(item)))&&action==='attack-firearm'&&direction==='north'&&head==null&&glove==null&&
@@ -297,14 +302,16 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
  if(!combined)return null;if(!customized&&head==null)return combined;
   // These Norte firearms use the same fixed source and the same exact +9px
   // recoil in state 4. Validate all source hashes before enabling that pose.
-  const approvedFirearmHeadgear=!clothing.length&&glove==null&&
+  const approvedFirearmHeadgear=(!clothing.length||exact113CoatHelmet&&combined.northFirearmCoatSources)&&glove==null&&
    [129,136,143,150,157,164,171,178].includes(Number(head?.def??head))&&
    !['variant','variantId','appearanceVariant'].some(k=>head?.[k]!=null&&head[k]!=='original');
   // These four receivers keep the exact approved recoil contract of their bare records.
   const recoilSource=combined.northFirearmPants154&&Object.hasOwn(northP154SiblingMatrices,combined.item)?r:combined;
   const recoil=(!clothing.length||combined.northFirearmCoatSources)&&(head==null||approvedFirearmHeadgear)?northFirearmRecoil(recoilSource):null;
   const material=appearanceRegistry?.resolve(recoil?.reference||combined.baseRecord,{hair:appearance.hair||appearance.hairStyle,head:head?.def??head,appearance});
-  if(!material)return null;
+  if(!material||exact113CoatHelmet&&(!recoil||material.style!=='original'||material.gearPolicy!=='source-alpha-only'||
+     material.gearRecord?.snapshot!=='f24f832fec352fe8f2b64f7fe54a543e22381c3146d27ba6297d41301cdfe9fe'||
+     !material.gearRecord.layers.some(l=>l.id===material.gearRecord.headgearPolicy?.gearId&&l.source==='6f38ce6e1badcc2004674e699593d07205179c4b878a7fa793c498925d7e4b81')))return null;
   return {...combined,id:combined.id+':'+material.id,material,colorAppearance:appearance,...(recoil?{northFirearmHeadRecoil:recoil.offsets,...(material.skinColor?{northFirearmVisibleSkin}:{} )}:{})};},
  requiredFiles(r,{frame}={}){const d=r.baseRecord.pack.directions[r.direction],states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid female equipment frame');const refs=frame===undefined?r.baseRecord.sourceRefs:d.layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean);const skinFiles=r.northFirearmVisibleSkin?refs.filter(h=>r.northFirearmVisibleSkin[h]).map(h=>'tools/rework-firearm113-coat/assets/'+r.northFirearmVisibleSkin[h]+'.png'):[];return [...new Set([...skinFiles,...(r.approvedSouthCarry&&r.item===17?[orbSkinPath]:[]),...refs.map(s=>asset(r,s)),...(r.material?appearanceRegistry.requiredFiles(r.material):[]),...states.flatMap(s=>[...s.parts.map(p=>p.url),...(r.north114GloveContact?s.parts.map(p=>asset(r,p.handMaskSHA256)):[]),...Object.values(s.baseMasks||{})])])]},
  render(ctx,r,images,{frame=0,captureOps,makeCanvas:frameCanvas=makeCanvas}={}){let p=r.baseRecord.pack,d=p.directions[r.direction];
