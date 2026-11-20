@@ -540,10 +540,27 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     material:{...m,eyeColor:'blue',registeredBlueIris:sha,faceProtectedExact:false,faceProtectedExceptIris:!m.skinColor,id:m.id+':registered-blue-iris'}};
  }
 
+ function selectSavedRelic32Carry(player,o,a){
+  const e=player?.equipment||{},w=e.weapon;
+  if(!carryRegistry||player.zoanTransformed||player.__reworkSubset||e.head||e.visual_completo||
+     (w?.def??w)!==32||o.consumer!=='world'||o.weaponless||!['idle','walk'].includes(o.action)||
+     !['north','south','east','west'].includes(o.direction)||
+     Object.entries(e).some(([k,v])=>k!=='weapon'&&!nonVisualEquipment.has(k)&&v!=null&&!['none','original'].includes(v))||
+     ['variant','variantId','appearanceVariant'].some(k=>w?.[k]!=null&&w[k]!=='original')||
+     a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hair!=='original'||a.face!=='original'||
+     !Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)||!Object.hasOwn(root.MareCharacterAppearance?.hairs||{},a.hairColor)||
+     !Object.hasOwn(root.MareCharacterAppearance?.eyes||{},a.eyeColor)||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin))return null;
+  const carry=carryRegistry.resolve({item:32,pureRelic32Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:32}});
+  if(!carry?.relic32SavedPalette)return null;
+  return {...carry,hdKind:'carry',pack:carry.base.pack,body:carry.base.body};
+ }
  function select(player,o){
   const raw=player?.appearance96||{},style=raw.eyeStyle??raw.face;
   const eyes=root.MareReworkEyeStylesHD;
   const color=raw.eyeColor,customColor=color&&!['original','blue'].includes(color);
+  // A signed carry palette must precede generic male eye replacement.
+  if(customColor){const own=selectSavedRelic32Carry(player,o,{...raw,body:raw.gender,hair:raw.hairStyle??raw.hair,face:style,skin:raw.skinColor??raw.skin});if(own)return own;}
   if(!eyes?.supports(style)&&!customColor)return preserveSwordBlueEyes(strictSouthOutfit(selectBase(player,o,true),raw,o),raw);
   if(style&&!['original','face-gentle'].includes(style)&&!eyes?.supports(style))return null;
   const isFemale=canonical(raw.gender??raw.body)==='female';
@@ -721,12 +738,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const equipped=withCarryHead(dressed,'outfit-carry');
    if(equipped)return equipped;
   }
-  const pureRelic32Saved=weapon===32&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.visual_completo&&
-   ['idle','walk'].includes(o.action)&&['north','south','east','west'].includes(o.direction)&&o.consumer==='world'&&!o.weaponless&&Object.keys(equipment).length===1&&
-   ['variant','variantId','appearanceVariant'].every(k=>equipment.weapon?.[k]==null||equipment.weapon[k]==='original')&&
-   raw.gender==='masculino'&&raw.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
-   Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin);
-  const carried=carryRegistry?.resolve({item:weapon,pureRelic32Saved,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head').map(([k,v])=>[k,v?.def??v]))});
+  const ownRelic=selectSavedRelic32Carry(player,o,a);if(ownRelic)return ownRelic;
+  const carried=carryRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:Object.fromEntries(Object.entries(equipment).filter(([slot])=>slot!=='head').map(([k,v])=>[k,v?.def??v]))});
   const carryWithHead=withCarryHead(carried,'carry');
   if(carryWithHead)return carryWithHead;
   // The archived sword-0 cycle is already exact for its original identity.

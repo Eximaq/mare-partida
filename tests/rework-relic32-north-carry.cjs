@@ -20,7 +20,7 @@ const clothes=o=>o?.hdKind==='carry'&&o.item===32;
   for(const q of [
    player(tone,{weapon:{def:32,variant:'alt'}}),player(tone,{weapon:{def:32},coat:{def:151}}),
    player(tone,{weapon:{def:32},head:{def:19}}),player(tone,undefined,{hairStyle:'hair-bob'}),
-   player(tone,undefined,{hairColor:'blonde'}),player(tone,undefined,{eyeStyle:'face-calm'}),player(tone,undefined,{eyeColor:'amber'}),
+   player(tone,undefined,{eyeStyle:'face-calm'}),player(tone,undefined,{hairStyle:'none',hairColor:'blonde',eyeColor:'amber'}),
   ])a(!clothes(api.selectVisual(q,opt)));
   for(const direction of ['south','east','west'])a(clothes(api.selectVisual(player(tone),{...opt,direction})),'owned side now supported '+direction);
   for(const opts of [{action:'attack-focus'},{consumer:'portrait'},{weaponless:true}])a(!clothes(api.selectVisual(player(tone),{...opt,...opts})));
