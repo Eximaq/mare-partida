@@ -38,7 +38,9 @@ Uma cópia do código para os dois desenvolvedores, sem ZIPs a cada mudança. A 
 
 ## Prévia local
 
-Use `python tools/dev_server.py` e abra a URL indicada, ou `python tools/build_pages.py` para preparar `dist/` para hospedagem. `dist/` fica fora do Git e é reconstruída no CI.
+Para reproduzir o GitHub Pages, execute `python tools/build_pages.py --static-demo` e sirva `dist/` com `python -m http.server --directory dist`. A demonstração grava o personagem no navegador. O workflow do Pages testa criação, confirmação, hierarquia e recarga desse pacote antes da publicação.
+
+O modo multiplayer da VPS usa a sessão autenticada e o banco do servidor. Os testes de integração com serviços descartáveis no GitHub pertencem à validação do servidor. A publicação da demonstração estática depende da validação do pacote local. Para desenvolver com as APIs opcionais na máquina, use `python tools/dev_server.py`.
 
 ## Limitações
 

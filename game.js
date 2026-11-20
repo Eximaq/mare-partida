@@ -3,6 +3,7 @@
    Conteúdo original. Todo o progresso é salvo exclusivamente no navegador. */
 (async () => {
   const ONLINE_GAME=globalThis.MareGameSession?.enabled?globalThis.MareGameSession:null;
+  const STATIC_DEMO=!ONLINE_GAME && document.documentElement.dataset.runtime==='static-demo';
   if(location.pathname==='/game'&&!ONLINE_GAME){const message=document.createElement('p');message.textContent='Não foi possível carregar a sessão online. Atualize a página para tentar novamente.';message.setAttribute('role','alert');document.body.classList.remove('online-session-loading');document.body.replaceChildren(message);return;}
   const localStorage=ONLINE_GAME?{getItem(){throw Error('Online mode cannot read demo saves');},setItem(){throw Error('Online mode cannot write demo saves');},removeItem(){throw Error('Online mode cannot delete demo saves');}}:window.localStorage;
   if(ONLINE_GAME){
@@ -311,7 +312,7 @@
     const complete=()=>{if(akumaInitPending===pending)akumaInitPending=null;};pending.then(complete,complete);return pending;
   }
   async function initAkumaBackendNow(){
-    if(!game)return;
+    if(STATIC_DEMO||!game)return;
     try{const response=await fetch('/api/akuma/catalog',{cache:'no-store'});if(!response.ok)return;backendFruitCatalog=await response.json();akumaBackend=true;game.akumaPlayerId ||= crypto.randomUUID();
       const serverState=await akumaRequest('player',{});try{const vfxResponse=await fetch('/api/akuma/vfx-catalog',{cache:'no-store'});combatVfxBackend=vfxResponse.ok&&(await vfxResponse.json()).version===1;}catch{combatVfxBackend=false;}game.fruitCooldowns ||= {};for(const [id,readyAt] of Object.entries(serverState.cooldowns||{}))game.fruitCooldowns[id]=Math.max(game.fruitCooldowns[id]||0,readyAt*1000);session.fruitInvulnerable=Math.max(0,serverState.invulnerable_until-Date.now()/1000);game.zoanAltitudeUntil=Math.max(game.zoanAltitudeUntil||0,(serverState.high_altitude_until||0)*1000);for(const id of MareAkuma.registered(game))await akumaRequest('register',{fruit_id:id});
       const equipped=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs);if(equipped){await akumaRequest('equip',{fruit_id:equipped.id});if(MareAkuma.isZoan(equipped)&&(game.zoanTransformed||[MareUshi.rules.id,MareWolf.rules.id,MareRyu.rules.id].includes(equipped.id)))await akumaRequest('transform',{enabled:!!game.zoanTransformed});if([MareUshi.rules.id,MareWolf.rules.id,MareRankC.rules.horu.id,MareRankC.rules.mato.id,...Object.values(MareRankCExpansion.rules).map(r=>r.id),...Object.values(MareRankB.rules).map(r=>r.id),...Object.values(MareRankA.rules).map(r=>r.id),MareHoya.rules.id,MareJiki.rules.id,MareRyu.rules.id].includes(equipped.id))await akumaRequest('end-protection',{});}saveGame();
@@ -2712,10 +2713,16 @@ ${avatarExtra}
   }
   function resetHierarchyView(){
     hierarchyRankingAbort?.abort();hierarchyRequest++;
-    hierarchyView={faction:game.factionId,tier:game.hierarchyTier,scope:'faction',status:'loading',board:[],busy:hierarchyPromoting};hierarchyMessage='';
+    hierarchyView={faction:game.factionId,tier:game.hierarchyTier,scope:'faction',status:STATIC_DEMO?'local':'loading',board:[],busy:hierarchyPromoting};hierarchyMessage='';
   }
   async function loadHierarchyRanking(){
     if(!game||!hierarchyView)return;
+    if(STATIC_DEMO){
+      hierarchyView.status='local';
+      hierarchyView.board=[];
+      if(currentPanel==='character'&&characterTab==='hierarchy')renderPanel();
+      return;
+    }
     hierarchyRankingAbort?.abort();hierarchyRankingAbort=new AbortController();
     const request=++hierarchyRequest,selected=hierarchyView.faction,scope=hierarchyView.scope,signal=AbortSignal.any([hierarchyRankingAbort.signal,AbortSignal.timeout(8000)]);
     hierarchyView.status='loading';hierarchyView.board=[];if(currentPanel==='character'&&characterTab==='hierarchy')renderPanel();
@@ -2736,7 +2743,10 @@ ${avatarExtra}
   }
   async function syncHierarchy(){
     if(ONLINE_GAME)return;
-    if(!game)return;const sync=++hierarchySyncSeq;hierarchySyncing=true;MareHierarchy.migrate(game);renderPortrait();if(currentPanel==='character'&&characterTab==='hierarchy')renderPanel();
+    if(!game)return;
+    MareHierarchy.migrate(game);
+    if(STATIC_DEMO)return;
+    const sync=++hierarchySyncSeq;hierarchySyncing=true;renderPortrait();if(currentPanel==='character'&&characterTab==='hierarchy')renderPanel();
     const id=game.hierarchyPlayerId,faction=game.factionId,mutation=hierarchyMutation,priorTier=game.hierarchyTier;
     try{
       const result=await hierarchyPost('sync',hierarchySelf());
