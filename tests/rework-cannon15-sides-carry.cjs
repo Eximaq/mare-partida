@@ -14,8 +14,7 @@ const basePix=(c,w=c.width)=>Buffer.from(c.getContext('2d').getImageData(0,0,w,w
  const legacy=save({}, {skinColor:'light'});legacy.appearance96={...legacy.appearance96,skinColor:'original',hairColor:'original',eyeColor:'original'};
  if(C)a.deepEqual(api.select(legacy,o),old.select(legacy,o));
 a.equal(r.hdKind,'carry');
- for(const g of [save({classId:'brawler'}),save({equipment:{weapon:{def:15,variant:'test'}}}),save({equipment:{weapon:{def:15},coat:{def:151}}}),save({equipment:{weapon:{def:15},gloves:{def:26}}}),save({equipment:{weapon:{def:15},legs:{def:133}}}),save({equipment:{weapon:{def:15},head:{def:157}}}),save({equipment:{weapon:{def:15},cloak:{def:7}}}),save({}, {hairStyle:'hair-bob'}),save({}, {skinColor:'porcelain'}),save({equipment:{weapon:{def:31}}})]) a(!api.select(g,o)?.cannon15SavedPalette);
- for(const dir of ['south','north'])a(!api.select(actor,{...o,direction:dir})?.cannon15SavedPalette);
+ for(const g of [save({classId:'brawler'}),save({equipment:{weapon:{def:15,variant:'test'}}}),save({equipment:{weapon:{def:15},coat:{def:151}}}),save({equipment:{weapon:{def:15},gloves:{def:26}}}),save({equipment:{weapon:{def:15},legs:{def:133}}}),save({equipment:{weapon:{def:15},head:{def:157}}}),save({equipment:{weapon:{def:15},cloak:{def:7}}}),save({}, {hairStyle:'hair-bob'}),{...actor,appearance96:{...actor.appearance96,skinColor:'original',hairColor:'original',eyeColor:'original'}},save({equipment:{weapon:{def:31}}})]) a(!api.select(g,o)?.cannon15SavedPalette);
  for(const opt of [{action:'attack-unarmed'},{consumer:'portrait'},{weaponless:true}])a(!api.select(actor,{...o,...opt})?.cannon15SavedPalette);
  if(process.env.SELECT_ONLY){console.log(s,t,act,"SELECT PASS");return;}
  const q=r.plan.parts[0],vanilla={...r,id:r.id+':control',plan:{...r.plan,parts:[{...q,joined15Sources:null}]}};

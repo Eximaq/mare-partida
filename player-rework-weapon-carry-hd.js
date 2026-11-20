@@ -130,11 +130,41 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
    '34d57b1b89acb48177dbd83d05fdfc893ca5538fd9bf1984f80b397142c38b0b',
    '590bd6324117727edfef6806975ae1e82e3171015b544442472bea2dce699009'
   ].map(h=>'assets/'+h+'.png')}]};
-  if(skin&&skin!=='original'&&skinLocked&&!pure&&!compass&&!arm117&&!arm117South&&!cannon15&&!mech&&!rl31&&!plan.parts.every(p=>p.skinMaterial?.sourceSHA256===p.source.sha256&&p.skinMaterial?.url))return null;
+  // Approved Canhao15_Aros_Editavel_Backup.zip SHA46c48bda… / camada0.png.
+  // Preserve the live original joined NORTH crop; draw only its own skin contribution.
+  const cannon15North=Number(item)===15&&direction==='north'&&joinedCannon15Saved&&Object.keys(equipment).length===1&&equipment.weapon===15&&
+   plan.item===15&&plan.body==='male'&&plan.sourceDirection==='north'&&plan.targetWalkRecord===walks.north&&plan.parts.length===1&&
+   plan.mirrorEntireComposition===false&&JSON.stringify(plan.targetNativeCanvas)==='[512,512]'&&
+   part?.source?.sha256==='f5482aa957130425b88d61515857d12c139058eefdb7389acb845acb889f1efa'&&part.source.url==='assets/'+part.source.sha256+'.png'&&
+   JSON.stringify(part.source.nativeSize)==='[640,640]'&&part.side==='RIGHT'&&part.binding?.kind==='rigid'&&part.binding.a==='RIGHT ELBOW'&&part.binding.b==='RIGHT ARM'&&
+   JSON.stringify(part.sourceBone)==='{"RIGHT ELBOW":{"x":93.5,"y":74},"RIGHT ARM":{"x":95.25,"y":88.25}}'&&
+   !part.skinMaterial&&!part.replaceBoundLayer&&!part.source.sourceClip&&part.hideHandBeyondWrist===true&&!part.mirrorSource&&part.depthOffset===undefined&&
+   JSON.stringify(part.calibrationOffsetPhysical)==='[0,0]';
+  if(cannon15North)plan={...plan,parts:[{...part,joined15Sources:[
+   '9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97',
+   '2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0',
+   '42bc1a7c0d327a4506a3867c5188b4ab656d4788c9ffb5dd998391df6d9ea6ef'
+  ].map(h=>'assets/'+h+'.png'),joined15North:true}]};
+  // SOUTH own rest pose from archive SHA9255b3f0… / retracted-rest-study-v3,
+  // including the archive's approved composition match using the F0 hand path.
+  const cannon15South=Number(item)===15&&direction==='south'&&joinedCannon15Saved&&Object.keys(equipment).length===1&&equipment.weapon===15&&
+   plan.item===15&&plan.body==='male'&&plan.sourceDirection==='south'&&plan.targetWalkRecord===walks.south&&plan.parts.length===1&&
+   plan.mirrorEntireComposition===false&&JSON.stringify(plan.targetNativeCanvas)==='[512,512]'&&
+   part?.source?.sha256==='79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec'&&part.source.url==='assets/'+part.source.sha256+'.png'&&
+   JSON.stringify(part.source.nativeSize)==='[640,640]'&&part.side==='RIGHT'&&part.binding?.kind==='rigid'&&part.binding.a==='RIGHT ELBOW'&&part.binding.b==='RIGHT ARM'&&
+   JSON.stringify(part.sourceBone)==='{"RIGHT ELBOW":{"x":65.30143540669857,"y":75.86602870813397},"RIGHT ARM":{"x":63.464114832535884,"y":89.41626794258373}}'&&
+   !part.skinMaterial&&!part.replaceBoundLayer&&!part.source.sourceClip&&part.hideHandBeyondWrist===true&&!part.mirrorSource&&part.depthOffset===undefined&&
+   JSON.stringify(part.calibrationOffsetPhysical)==='[0,0]';
+  if(cannon15South)plan={...plan,parts:[{...part,joined15Sources:[
+   '0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e',
+   '3da05f94849279f5dd3cceb75958b0afaa4d7953429b614a542e248114da5f4f',
+   '3fc83f9af20f59a919cfe299e8f213aedc9b808af243d69ddd5388207c839377'
+  ].map(h=>'assets/'+h+'.png'),joined15South:true}]};
+  if(skin&&skin!=='original'&&skinLocked&&!pure&&!compass&&!arm117&&!arm117South&&!cannon15&&!cannon15North&&!cannon15South&&!mech&&!rl31&&!plan.parts.every(p=>p.skinMaterial?.sourceSHA256===p.source.sha256&&p.skinMaterial?.url))return null;
   const hair=(appearance.hairStyle||appearance.hair||'original').replace(/^hair-/,'');
   const base=baseIndex.records.find(r=>r.body==='male'&&r.direction===direction&&r.action===action&&r.hairStyle==='original');if(!base)return null;
   let relicEyes;
-  if(pure||compass||mech||rl31||arm117||arm117South||cannon15){
+  if(pure||compass||mech||rl31||arm117||arm117South||cannon15||cannon15North||cannon15South){
    const d=base.pack.directions[direction],faces=d.layers.filter(x=>x.slot==='face'),north=direction==='north';
    if(base.id!==(action==='walk'?walks[direction]:'male-idle-original-'+direction+'-from-walk0')||!!base.mirrorX!==(direction==='west')||hair!=='original'||
       !base.headHairSeparated||!['headBase','hair','lower-redrawn',...(lateral?['handNear']:['handRight','handLeft'])].every(k=>d.layers.some(x=>x.id===k)))return null;
@@ -159,7 +189,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   if(direction==='west'&&!base.mirrorX){plan={...plan,parts:plan.parts.map(p=>({...p,mirrorSource:true,sourceBone:Object.fromEntries(Object.entries(p.sourceBone).map(([k,v])=>[k,{x:(p.source.nativeSize?.[0]||640)/4-v.x,y:v.y}])),targetRestBone:Object.fromEntries(Object.entries(p.targetRestBone).map(([k,v])=>[k,{x:128-v.x,y:v.y}]))}))};}
   const rest=base.pack.directions[direction].rest;
   for(const part of plan.parts)for(const name of [part.binding.a,part.binding.b])if(!rest[name]||Math.hypot(rest[name].x-part.targetRestBone[name].x,rest[name].y-part.targetRestBone[name].y)>.001)return null;
-  return {id:`carry${item}-${base.id}${hair==='original'?'':':hair-'+hair}`,...hairLayers,...(pure?{relic32SavedPalette:true}:{}),...(compass?{compass16SavedPalette:true}:{}),...((arm117||arm117South)?{arm117SavedPalette:true}:{}),...(cannon15?{cannon15SavedPalette:true}:{}),...(mech?{mechanical119SouthSavedPalette:true}:{}),...(rl31?{relic31SavedCarry:true}:{}),...(relicEyes?{relicEyes}:{}),item:Number(item),action,direction,base,plan,colorAppearance:appearance,status:'candidate-needs-visual-calibration'};
+  return {id:`carry${item}-${base.id}${hair==='original'?'':':hair-'+hair}`,...hairLayers,...(pure?{relic32SavedPalette:true}:{}),...(compass?{compass16SavedPalette:true}:{}),...((arm117||arm117South)?{arm117SavedPalette:true}:{}),...((cannon15||cannon15North||cannon15South)?{cannon15SavedPalette:true}:{}),...(mech?{mechanical119SouthSavedPalette:true}:{}),...(rl31?{relic31SavedCarry:true}:{}),...(relicEyes?{relicEyes}:{}),item:Number(item),action,direction,base,plan,colorAppearance:appearance,status:'candidate-needs-visual-calibration'};
  }
  function requiredFiles(r,{frame}={}){const refs=r?(frame===undefined?[...r.base.sourceRefs]:r.base.pack.directions[r.direction].layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean)):[];if(r?.hairLayers)refs.push(...r.hairLayers.map(l=>l.source));return r?[...new Set([...refs.map(s=>basePrefix+s+'.png'),...r.plan.parts.flatMap(p=>[p.source.url,...(p.skinMaterial?[p.skinMaterial.url]:[]),...(p.joined117Sources||p.joined15Sources||[])].map(url=>weaponPrefix+url))])]:[];}
  function applySkinMaterial(source,part,images,ramp,appearanceAPI){
@@ -179,30 +209,42 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
  // against the approved original crop. Repaint the anatomy contribution, not
  // the flattened pixel's apparent color. Keep the old crop's exact alpha.
  function joinedCarryImage(source,part,images,ramp,api){
-  const item=part.joined15Sources?15:117,expected=item===15?[2218,1444]:part.joined117South?[907,854]:[2148,1354];
+  const item=part.joined15Sources?15:117,expected=item===15?(part.joined15North?[2997,730]:part.joined15South?[307,51]:[2218,1444]):part.joined117South?[907,854]:[2148,1354];
   const [skin,shorts,gear]=(part.joined15Sources||part.joined117Sources).map(f=>images.get(weaponPrefix+f));
   const dims=640;
   if([source,skin,shorts,gear].some(l=>l?.width!==dims||l?.height!==dims)||!ramp)throw Error('Missing 117 carry material');
   const c=makeCanvas(dims,dims),ctx=c.getContext('2d'),pix=im=>{ctx.clearRect(0,0,dims,dims);ctx.drawImage(im,0,0);return ctx.getImageData(0,0,dims,dims);};
   const orig=pix(source),skinData=pix(skin),shortData=pix(shorts),gearData=pix(gear);
   const make=()=>makeCanvas(dims,dims),t=make(),tc=t.getContext('2d');
-  tc.drawImage(skin,0,0);tc.drawImage(shorts,0,0);tc.drawImage(gear,0,0);
+  // Literal authored F0 restore path of tech15-retracted-rest-study-v3.
+  const path=part.joined15South?[[255,343],[270,344],[278,356],[279,369],[272,379],[256,379],[250,365]]:null;
+  const trace=(cx)=>{cx.beginPath();path.forEach(([x,y],i)=>i?cx.lineTo(x,y):cx.moveTo(x,y));cx.closePath();};
+  const restored=path?make():null,body=path?make():null;
+  if(restored){const cx=restored.getContext('2d');trace(cx);cx.fill();}
+  const mask=restored?.getContext('2d').getImageData(0,0,dims,dims).data;
+  const finish=()=>{
+   tc.drawImage(shorts,0,0);
+   if(body){const bc=body.getContext('2d');bc.clearRect(0,0,dims,dims);bc.drawImage(t,0,0);}
+   tc.drawImage(gear,0,0);
+   if(body){tc.save();trace(tc);tc.clip();tc.drawImage(body,0,0);tc.restore();}
+  };
+  tc.drawImage(skin,0,0);finish();
   const old=tc.getImageData(0,0,dims,dims);
   const tone=skinMaterials.mask(skinData.data,dims,'anatomy');
-  skinData.data.set(api.recolor(skinData.data,tone,ramp));tc.putImageData(skinData,0,0);tc.drawImage(shorts,0,0);tc.drawImage(gear,0,0);
+  skinData.data.set(api.recolor(skinData.data,tone,ramp));tc.putImageData(skinData,0,0);finish();
   const recolored=tc.getImageData(0,0,dims,dims).data;
   let owned=0,support=0;
   for(let i=0;i<orig.data.length;i+=4){
    if(!orig.data[i+3])continue;
    support++;
    if(orig.data[i+3]!==old.data[i+3])throw Error('117 carry silhouette changed');
-   if([0,1,2].some(j=>Math.abs(orig.data[i+j]-old.data[i+j])>2))throw Error('117 carry archive no longer matches');
-   if(!skinData.data[i+3]||shortData.data[i+3]===255||gearData.data[i+3]===255)continue;
+   if([0,1,2].some(j=>Math.abs(orig.data[i+j]-old.data[i+j])>(path?0:2)))throw Error('117 carry archive no longer matches');
+   if(!skinData.data[i+3]||shortData.data[i+3]===255||(gearData.data[i+3]===255&&!mask?.[i+3]))continue;
    for(let k=0;k<3;k++)orig.data[i+k]+=recolored[i+k]-old.data[i+k];
    owned++;
   }
   if(support!==expected[0]||owned!==expected[1])throw Error('Unexpected '+item+' carry material support');
-  ctx.putImageData(orig,0,0);t.width=t.height=1;return c;
+  ctx.putImageData(orig,0,0);t.width=t.height=1;if(body)body.width=body.height=1;if(restored)restored.width=restored.height=1;return c;
  }
  function render(ctx,r,images,{frame=0,hiddenSlots=[],appearance=r?.colorAppearance||{},appearanceAPI=root.MareAppearance96}={}){
   if(!r)throw Error('Unsupported carry identity');const source=r.base.pack,original=source.directions[r.direction],d=r.hairLayers?{...original,layers:original.layers.filter(l=>l.slot!=='hair').concat(r.hairLayers)}:original,p=r.hairLayers?{...source,directions:{...source.directions,[r.direction]:d}}:source,pose=d.poses[frame];if(!pose)throw Error('No authored frame');const padding=r.plan.paddingPhysical??0;if(!Number.isInteger(padding)||padding<0)throw Error('Carry padding must be a nonnegative integer');const w=p.frame.width*4+2*padding,h=p.frame.height*4+2*padding;ctx.canvas.width=w;ctx.canvas.height=h;
