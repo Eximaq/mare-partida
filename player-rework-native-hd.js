@@ -325,9 +325,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  // Only the North phase-zero sources whose original body and ownership
  // survive the exact Idle/Walk comparison. Keep the normalized Idle body.
  function resolveNorthOwnedPantsIdle(player,o,a,equipment){
-  const keys=Object.keys(equipment),v=equipment.legs??equipment.pants,def=Number(v?.def??v);
+  const keys=Object.keys(equipment),v=equipment.legs??equipment.pants,def=Number(v?.def??v),c=equipment.coat,coat=c==null?null:Number(c?.def??c);
   if(player.__reworkSubset||player.__southAnatomy||o.weaponless||canonical(a.body)!=='female'||
-     o.action!=='idle'||o.direction!=='north'||keys.length!==1||!['legs','pants'].includes(keys[0])||
+     o.action!=='idle'||o.direction!=='north'||keys.length!==(coat==null?1:2)||keys.some(k=>!['legs','pants','coat'].includes(k))||
+     (equipment.legs!=null&&equipment.pants!=null)||(coat!=null&&(![6,7,130,137,144,151,158,165,172,179].includes(coat)||
+      ['variant','variantId','appearanceVariant'].some(k=>c?.[k]!=null&&c[k]!=='original')))||
      ![168,182].includes(def)||['variant','variantId','appearanceVariant'].some(k=>v?.[k]!=null&&v[k]!=='original'))return null;
   const base=selectBase({...player,equipment:{}},o,true),dir=base?.pack?.directions?.north;
   if(base?.sourceId!=='female-idle-original-north-from-walk0'||
@@ -344,10 +346,23 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    ['f182-original-owners','69fafeff42bc5f41dc726642eaf567d54bca4ee7dbd354c515b85e2a68e134af'],
    ['f182-anatomy-uncovered','d0dc3fcfc095ea2a79c9f2c21c885dd44b57066b6df38ad4c4c8163bc2aaf025']
   ];
-  const donor=outfitRegistry?.resolveIndependentPants?.({body:'female',direction:'north',action:'walk',equipment,
+  const donor=outfitRegistry?.resolveIndependentPants?.({body:'female',direction:'north',action:'walk',equipment:{[equipment.legs!=null?'legs':'pants']:v},
    appearance:{hair:'original',hairColor:'brown',face:'original',eyeColor:'brown',skin:'light'}}),layers=donor?.pack?.directions?.north?.layers;
   if(!layers||layers.length!==expected.length||layers.some((l,i)=>l.id!==expected[i][0]||l.frames?.[0]!==expected[i][1]||
     l.depth!==i||l.binding?.kind!=='fixed'||l.slot!==(i===1?'pants':'body')))return null;
+  if(coat!=null){
+   const expectedCoat='female-torso'+coat+'-north-frozen-idle-native',
+    raw=outfitById.get(expectedCoat),cd=raw?.pack?.directions?.north,
+    host=selectBase({...player,equipment:{coat:c}},o,true),eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+   if(host?.sourceId!==expectedCoat||host.hdKind!=='outfit'||host.bodyOcclusion||host.sourceRasterPadding||
+      host.headRecord||host.gearOnlyRecord||!eq(host.pack,raw.pack)||!cd||cd.clip.frames!==1||cd.clip.loop!==false||
+      !['frame','pivot','density'].every(k=>eq(raw.pack[k],base.pack[k]))||!eq(cd.rest,dir.rest)||!eq(cd.poses,dir.poses)||
+      !eq(cd.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)})),dir.layers)||
+      cd.layers.filter(l=>!l.id.startsWith('base:')).some(l=>!['top','underArms'].includes(l.slot)||l.frames&&l.frames.length!==1))return null;
+   return {...host,id:host.id+':pants'+def+':idle-north-frame0',equipment:{torso:coat,pants:def},
+    authoredIdleCoatPants:{cloth:expected[1][1],ownerAlpha:expected[2][1],record:host},
+    slotRoutes:{coat:{item:coat,quality:'hd',source:expectedCoat},[equipment.legs!=null?'legs':'pants']:{item:def,quality:'hd',source:donor.id}},omitted:[]};
+  }
   return {...base,id:base.id+':pants'+def+':idle-north-frame0',equipment:{pants:def},
    authoredNorthIdlePants:{base,cloth:expected[1][1],ownerAlpha:expected[2][1]}};
  }
@@ -1061,7 +1076,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function selectCoatsOnRegisteredPants(player,o,a,visible){
   const dir=o.direction,action=['attack','skill'].includes(o.action)?'attack-unarmed':o.action,coat=visible.torso?.item,pants=visible.pants?.item,boot=visible.boots?.item;
-  const ownSouth=dir==='south'&&[22,133].includes(pants)&&[137,144,158,165,172,179].includes(coat);
+  const ownSouth=dir==='south'&&[22,133].includes(pants)&&[6,7,130,137,144,158,165,172,179].includes(coat);
   const strict=dir==='south'&&(pants===21||ownSouth)&&[6,7,130,137,144,158,165,172,179].includes(coat)&&strictSouthRequested(a);
   if(a.body!=='male'||!['idle','walk','attack-unarmed'].includes(action)||!['north','south','east','west'].includes(dir)||
    !(action==='attack-unarmed'?[21,22,133]:[21,22]).includes(pants)||![6,7,130,137,144,158,165,172,179].includes(coat)||
@@ -1637,8 +1652,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const data=tc.getImageData(0,0,512,512),mask=dc.getImageData(0,0,512,512).data;
    for(let i=0;i<mask.length;i+=4)if(mask[i+3]){if(mask[i+3]!==255)throw Error('Nonbinary authored pants owner');data.data.fill(0,i,i+4);}
    tc.putImageData(data,0,0);domain.width=1;
-   const source='south-idle-owned-pants',d=record.pack.directions.south;
-   const pack={...record.pack,directions:{south:{...d,layers:[...d.layers,{id:source,slot:'pants',source,binding:{kind:'fixed'},depth:46}]}}};
+   const source=record.direction+'-idle-owned-pants',d=record.pack.directions[record.direction];
+   const pack={...record.pack,directions:{[record.direction]:{...d,layers:[...d.layers,{id:source,slot:'pants',source,binding:{kind:'fixed'},depth:46}]}}};
    const images=new Map(entry.images);images.set(prefix+source+'.png',tile);
    const adapted={...record,pack,sourceRefs:[...record.sourceRefs,source]};
    const painted=composeFrame(adapted,frame,{...entry,images});tile.width=1;

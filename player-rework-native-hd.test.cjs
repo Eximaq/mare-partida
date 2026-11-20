@@ -103,7 +103,7 @@ test('loading hold retains approved monster scale and scaled label height',async
  const calls=[],original=ctx.drawImage.bind(ctx);ctx.drawImage=(...args)=>{calls.push(args);original(...args);};assert(api.drawStable(ctx,p,{...o,action:'walk',direction:'north'}));assert.equal(api.snapshot().last.state,'holding-native-while-loading');assert.equal(calls[0][3],calls[0][0].width*105/374);assert.equal(api.height(p),height);
 });
 
-test('registered missing coat 6 keeps every native P133 punch frame and its appearance',async()=>{
+test('registered coat 6 adds only clothing to every native P133 punch frame',async()=>{
  const prior={palette:global.MareAppearance96,appearance:global.MareCharacterAppearance,headgear:global.MareHeadgear};
  global.MareCharacterAppearance=require('./character-appearance.js');
  global.MareHeadgear=require('./headgear-visibility.js');
@@ -117,16 +117,22 @@ test('registered missing coat 6 keeps every native P133 punch frame and its appe
    const mixed={...alone,equipment:{...alone.equipment,coat:{def:6}}},saved=structuredClone(mixed);
    assert.equal(api.select(mixed,options),null,'strict selection remains strict');
    const source=api.selectLayered(mixed,options);
-   assert.equal(source?.layeredPilot,true,JSON.stringify(api.snapshot()));
+   assert.ok(source?.strictSouthAppearance,JSON.stringify(api.snapshot()));
+   assert.equal(source?.slotRoutes.coat.quality,'hd');
+   const dir=source.pack.directions.south,coatLayers=dir.layers.filter(l=>!l.id.startsWith('base:')&&!l.id.startsWith('pants133-'));
+   assert(coatLayers.length&&coatLayers.every(l=>['top','underArms'].includes(l.slot)));
+   const coatOnly={...source,strictSouthAppearance:null,paletteSourceMasks:{},paletteRefs:[],id:source.id+':regression-coat-only',pack:{...source.pack,directions:{south:{...dir,layers:coatLayers}}}};
    assert.equal(api.selectLayered(mixed,{...options,direction:'north'}),null);
    assert.equal(api.selectLayered({...mixed,equipment:{...mixed.equipment,weapon:{def:0}}},options),null);
-   assert.equal(api.selectLayered({...mixed,equipment:{...mixed.equipment,boots:{def:148}}},options),null);
-   assert.equal(api.selectLayered({...mixed,appearance96:{...appearance96,eyeColor:'green'}},options),null);
+   assert.equal(api.selectLayered({...mixed,equipment:{...mixed.equipment,boots:{def:148}}},options)?.slotRoutes.boots.quality,'hd');
+   assert.equal(api.selectLayered({...mixed,equipment:{...mixed.equipment,boots:{def:176}}},options),null);
+   assert.equal(api.selectLayered({...mixed,appearance96:{...appearance96,eyeColor:'green'}},options)?.colorAppearance.eyeColor,'green');
    const a=await api.prepareConfiguration([{player:alone,options}]);
    const b=await api.prepareConfiguration([{player:mixed,options,source}],{resolve:x=>x});
+   const c=await api.prepareConfiguration([{player:mixed,options,source:coatOnly}],{resolve:x=>x});
    try{
     assert.equal(b.coverage[0].frames,8);
-    assert.deepEqual(b.coverage[0].omitted,['coat']);
+    assert.deepEqual(b.coverage[0].omitted,[]);
     assert.equal(b.coverage[0].slotRoutes.coat.item,6);
     const pixels=(bundle,player,phase)=>{
      const ctx=cv.createCanvas(400,400).getContext('2d');
@@ -136,10 +142,14 @@ test('registered missing coat 6 keeps every native P133 punch frame and its appe
     for(let phase=0;phase<8;phase++){
      const before=pixels(a,alone,phase),after=pixels(b,mixed,phase);
      assert.ok(before.some(v=>v>0),'native frame is not empty');
-     assert.deepEqual(after,before,'only the missing slot may differ; current source has no coat');
+     const mask=pixels(c,mixed,phase);let delta=0;
+     for(let i=0;i<after.length;i+=4)if(after.subarray(i,i+4).some((v,k)=>v!==before[i+k])){
+      delta++; assert(mask[i+3], 'pixel outside coat 6 changed');
+     }
+     assert(delta>0,'coat 6 must be visibly present');
     }
     assert.deepEqual(mixed,saved,'the visual omission must not change the equipment or appearance');
-   }finally{a.release();b.release();}
+   }finally{a.release();b.release();c.release();}
   }
  }finally{
   global.MareAppearance96=prior.palette;
