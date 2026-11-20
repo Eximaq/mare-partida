@@ -1619,7 +1619,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const action=o.action,item=visible.gloves?.item,idle=action==='idle',refs=northGlovePaletteSources[item],bare=visible.boots==null;
   if(!refs||a.body!=='male'||o.direction!=='north'||!['idle','walk'].includes(action)||
      Object.keys(visible).length!==(bare?3:4)||visible.torso?.item!==151||visible.pants?.item!==133||
-     (bare?![26,131,138,145,159,166,173,180].includes(item):visible.boots.item!==155)||!Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original')||
+     (bare?![25,26,131,138,145,159,166,173,180].includes(item):visible.boots.item!==155)||!Object.entries(a).some(([k,v])=>k!=='body'&&v!=null&&v!=='original')||
      a.skin&&a.skin!=='original'&&!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
      a.hairColor&&a.hairColor!=='original'&&!Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor))return null;
   const get=id=>outfitById.get(id),r=get('frozen-male-glove'+item+'-north-'+action+'-native-layers'),
