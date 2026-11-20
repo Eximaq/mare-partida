@@ -1,6 +1,7 @@
 const a=require('node:assert/strict'),p=require('node:path'),fs=require('node:fs'),crypto=require('node:crypto'),R=p.dirname(__dirname),{cv}=require(p.join(R,'tests/rework-integration-support.cjs'));
 const load=require(p.join(R,'tools/rework-hd-test-loader.cjs')).create(R),A=require(p.join(R,'character-appearance.js')),v=global.ReworkAccessoryVendor.compositor;
 const api=require(p.join(R,'player-rework-native-hd.js')).create({fetchJSON:async f=>JSON.parse(fs.existsSync(p.join(R,f))?fs.readFileSync(p.join(R,f)):require('node:zlib').gunzipSync(fs.readFileSync(p.join(R,f+'.gz')))),loadImage:load,makeCanvas:cv.createCanvas});
+const pants=Number(process.env.G25_TEST_PANTS||140);a([140,168].includes(pants));
 const asset=h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png';
 const I=def=>({def}),d=x=>x.pack.directions.north,pix=c=>Buffer.from(c.getContext('2d').getImageData(0,0,c.width,c.height).data);
 const actor=(pants,boot,skin)=>JSON.parse(JSON.stringify(A.commit({id:'same-actor',classId:'fighter',equipment:{coat:I(151),legs:I(pants),gloves:I(25),...(boot?{boots:I(155)}:{})}},{skinColor:skin,hairColor:'black',eyeColor:'blue'},()=>true)));
@@ -27,8 +28,8 @@ async function ownVisible(r,f){
 }
 (async()=>{await api.ready;const rows=[];
  for(const action of ['idle','walk'])for(const skin of ['porcelain','ebony'])for(const boot of [0,155]){
-  const o={action,direction:'north',consumer:'world'},x=api.selectVisual(actor(140,boot,skin),o),y=api.selectVisual(actor(133,boot,skin),o);
-  a(x.id.includes(':p140-g25-owned:')); a.equal(y.slotRoutes.gloves.item,25);a.equal(x.slotRoutes?.boots?.item,boot||undefined);
+  const o={action,direction:'north',consumer:'world'},x=api.selectVisual(actor(pants,boot,skin),o),y=api.selectVisual(actor(133,boot,skin),o);
+  a(x.id.includes(`:p${pants}-g25-owned:`)); a.equal(y.slotRoutes.gloves.item,25);a.equal(x.slotRoutes?.boots?.item,boot||undefined);
   for(let f=0;f<d(x).clip.frames;f++){
    const candidate=await ownVisible(x,f),control=await ownVisible(y,f);
    a.deepEqual(candidate,control,[action,skin,boot,f].join('/'));

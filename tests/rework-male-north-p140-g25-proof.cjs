@@ -1,7 +1,7 @@
 const a=require('node:assert/strict'),p=require('node:path'),R=p.dirname(__dirname),{make,cv}=require(p.join(R,'tests/rework-integration-support.cjs'));
 const load=require(p.join(R,'tools/rework-hd-test-loader.cjs')).create(R),A=require(p.join(R,'character-appearance.js'));
 const api=make();
-const pants=140;
+const pants=Number(process.env.G25_TEST_PANTS||140);a([140,168].includes(pants));
 const I=id=>({def:id}),opts=action=>({action,direction:'north',consumer:'world'});
 const player=(glove,boot,skinColor)=>JSON.parse(JSON.stringify(A.commit({id:'same-actor',classId:'fighter',equipment:{coat:I(151),legs:I(pants),gloves:I(glove),...(boot?{boots:I(boot)}:{})}},{skinColor,hairColor:skinColor==='ebony'?'violet':'black',eyeColor:'blue'},()=>true)));
 const layerBoot=l=>l.id.startsWith('boot155-'),sk=l=>l.id.startsWith('glove');
@@ -49,5 +49,5 @@ for(const action of ['idle','walk'])for(const glove of [25]){
  }contrast.push(...per);}finally{qs.forEach(q=>q.release());global.gc?.();}
  }
 }
-if(!process.env.SELECT_ONLY)a.equal(count,34);console.log('PASS 64 real Save transitions and '+count+' P140/G25 boot comparisons');
+if(!process.env.SELECT_ONLY)a.equal(count,34);console.log('PASS 64 real Save transitions and '+count+' P'+pants+'/G25 boot comparisons');
 })().catch(e=>{console.error(e);process.exitCode=1});
