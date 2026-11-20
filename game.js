@@ -2321,8 +2321,16 @@
         button.textContent='PULAR ANIMAÇÃO';await wait(config.prepareMs);
       }
       stage.classList.remove('is-preparing');art.innerHTML=item?itemIcon(item.def,MareForge.gearName(item,itemDefs)):'';
-      title.textContent=outcome?.success?'Operação concluída':'Tentativa sem sucesso';
-      description.textContent=outcome?.message||'Confira o resultado na Forja.';
+      if(command.type==='upgrade' && item && Number.isInteger(outcome?.after) && Number.isInteger(outcome.before)){
+        const level='+'+outcome.after;
+        if(outcome.success)title.textContent='Aprimorado para '+level;
+        else if(outcome.after===outcome.before)title.textContent='Falhou · permaneceu em '+level;
+        else title.textContent='Falhou · voltou para '+level;
+        description.textContent=itemBase(item).name;
+      }else{
+        title.textContent=outcome?.success?'Operação concluída':'Tentativa sem sucesso';
+        description.textContent=outcome?.message||'Confira o resultado na Forja.';
+      }
       card.classList.add(outcome?.success?'is-success':'is-failure');
       button.textContent='CONTINUAR';await wait(config.revealMs);
       return true;
