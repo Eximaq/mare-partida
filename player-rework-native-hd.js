@@ -775,7 +775,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function selectRegisteredPantsBoot155(o,a,visible){
   const pants=visible.pants?.item,boot=visible.boots?.item,{direction:dir,action}=o;
   // These trouser hems retain the original B9 lateral seam in every pose.
-  const side=['east','west'].includes(dir),sideBoot9=side&&boot===9&&[147,154,161,168,175,182].includes(pants);
+  const side=['east','west'].includes(dir),sideBoot9=side&&boot===9&&[147,154,161,168,175,182].includes(pants),sideBoot148=side&&boot===148&&[154,161,168,175].includes(pants);
   const southWalk=dir==='south'&&action==='walk',idle=action==='idle',frames=idle?1:16;
   const layersByDirection={
    south:{'boot155-mouth-rear-0':-1,'boot155-mouth-rear-1':-1,'boot155-screen-0':99,'boot155-screen-1':99},
@@ -792,9 +792,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    (!a.skin||a.skin==='original'||Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))&&
    (!a.hairColor||a.hairColor==='original'||Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor));
   if(a.body!=='male'||!Object.hasOwn(layersByDirection,dir)||!['idle','walk'].includes(action)||
-     palette&&(dir==='north'?!northPalette:side||!strictSouthRequested(a))||side&&boot!=null&&!sideBoot9||
+     palette&&(dir==='north'?!northPalette:side||!strictSouthRequested(a))||side&&boot!=null&&!sideBoot9&&!sideBoot148||
      ![140,147,154,161,168,175,182].includes(pants)||visible.torso?.item!==151||visible.gloves?.item!==152||
-     boot!=null&&boot!==155&&!sideBoot9||Object.keys(visible).length!==(boot==null?3:4))return null;
+     boot!=null&&boot!==155&&!sideBoot9&&!sideBoot148||Object.keys(visible).length!==(boot==null?3:4))return null;
   // Remove only the authored boot passes from this exact trouser rig.
   // Each phase retains its previous fore/rear and near/far occlusion.
   const anchor=outfitById.get(`frozen-male-pants${pants}-${dir}-${action}-v47`),d=anchor?.pack?.directions?.[dir];
@@ -821,7 +821,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       ![left,right].every((l,i)=>l.id==='pants'+pants+'-leg-'+(i?'right':'left')&&l.binding?.kind==='fixed'&&l.frames?.length===frames&&
        Array.from(l.frames).every(h=>/^[0-9a-f]{64}$/.test(h)&&anchor.sourceRefs.includes(h))))return null;
   }
-  let registeredSideBoot9;
+  let registeredSideBoot;
   if(side){
    const source=outfitById.get(`frozen-male-pants133-${dir}-${action}-v47`),ref=source?.pack?.directions?.[dir];
    const same=(x,y)=>JSON.stringify(x)===JSON.stringify(y),timing=({layers,...rest})=>rest;
@@ -838,28 +838,29 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     !own.every((l,i)=>l.binding?.kind==='fixed'&&l.depth===(i?4.45:4.4)&&l.frames?.length===frames&&l.frames.every(h=>anchor.sourceRefs.includes(h)))||
     reference.length!==1||reference[0].id!=='pants133-visible-cloth-only'||
     !same(d.layers.filter(l=>!own.includes(l)),ref.layers.filter(l=>!reference.includes(l))))return null;
-   if(sideBoot9){
-    const donor=outfitById.get(`male-coat151-pants133-gloves152-boots9-walk-${dir}-source-v18${idle?'-idle-frame0':''}`),
-      dd=donor?.pack?.directions?.[dir], is9=l=>l.id.startsWith('boot9-'),
-      order={'boot9-near-front-pilot':6,'boot9-near-rear-pilot':4.3,'boot9-far-front-pilot':5,'boot9-far-rear-pilot':4.3,
-       'boot9-far-navy-local-backing':4.99,'boot9-near-navy-local-backing':5.99}, boots=dd?.layers.filter(is9);
-    if(!donor?.equipmentLayerGroups?.boots||donor.productionEnabled===false||donor.body!==anchor.body||donor.direction!==dir||donor.action!==action||
-     donor.equipment.torso!==151||donor.equipment.pants!==133||donor.equipment.gloves!==152||donor.equipment.boots!==9||
+   if(sideBoot9||sideBoot148){
+    const donor=outfitById.get(sideBoot148?`frozen-v47-male-151-boot148-${dir}-${action}`:`male-coat151-pants133-gloves152-boots9-walk-${dir}-source-v18${idle?'-idle-frame0':''}`),
+      dd=donor?.pack?.directions?.[dir], owns=l=>l.id.startsWith('boot'+boot+'-'),
+      order=Object.fromEntries(Object.entries({'near-front-pilot':6,'near-rear-pilot':4.3,'far-front-pilot':5,'far-rear-pilot':4.3,
+       'far-navy-local-backing':sideBoot148?4.39:4.99,'near-navy-local-backing':sideBoot148?4.39:5.99}).map(([k,v])=>['boot'+boot+'-'+k,v])),
+      boots=dd?.layers.filter(owns);
+    if(!(sideBoot148?donor?.frozenBootContract:donor?.equipmentLayerGroups?.boots)||donor.productionEnabled===false||donor.body!==anchor.body||donor.direction!==dir||donor.action!==action||
+     donor.equipment.torso!==151||donor.equipment.pants!==133||donor.equipment.gloves!==152||donor.equipment.boots!==boot||
      Object.keys(donor.equipment).length!==4||!same(donor.pack.frame,anchor.pack.frame)||!same(donor.pack.pivot,anchor.pack.pivot)||
      donor.pack.density!==anchor.pack.density||!same(timing(dd),timing(ref))||
-     !same(dd.layers.filter(l=>!is9(l)),ref.layers.filter(l=>!ids.includes(l.id)))||
+     !same(dd.layers.filter(l=>!owns(l)),ref.layers.filter(l=>!ids.includes(l.id)))||
      !same(boots.map(l=>l.id),Object.keys(order))||
      boots.some(l=>l.depth!==order[l.id]||l.binding?.kind!=='fixed'||l.depthTrack||
       l.frames?.length!==frames||l.frames.some(h=>!donor.sourceRefs.includes(h))||
       d.layers.some(v=>!ids.includes(v.id)&&(v.depth===l.depth||v.depthTrack))))return null;
     const layers=[...d.layers.filter(l=>!ids.includes(l.id)),...boots];
-    registeredSideBoot9={record:{...anchor,id:anchor.id+':boot9:'+donor.id,equipment:{...fixed,boots:9},
+    registeredSideBoot={record:{...anchor,id:anchor.id+':boot'+boot+':'+donor.id,equipment:{...fixed,boots:boot},
       pack:{...anchor.pack,directions:{[dir]:{...d,layers}}}},layers:boots.map(l=>l.id)};
    }
   }
   const equipment={...fixed,...(boot==null?{}:{boots:boot})};
   const composed=root.MareReworkModularOutfitsHD?.composeSlots({anchor,equipment,fixed,slots:{boots:{
-   anchorLayers:ids,uncoveredBaseVerified:true,records:{155:{record:anchor,layers:ids},...(registeredSideBoot9?{9:registeredSideBoot9}:{})}
+   anchorLayers:ids,uncoveredBaseVerified:true,records:{155:{record:anchor,layers:ids},...(registeredSideBoot?{[boot]:registeredSideBoot}:{})}
   }}});
   if(!composed||composed.omitted.length)return null;
   const slotRoutes=Object.fromEntries(Object.entries(composed.slotRoutes).map(([k,v])=>[visible[k].key,v]));
