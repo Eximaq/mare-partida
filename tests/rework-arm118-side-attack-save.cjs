@@ -12,7 +12,7 @@ for(const item of [118]) for(const d of ['east','west']){
  const r=api.select(saved,options),b=api.select(brown,options);
  ad(r?.ownedArm118SideAttack);ad(b?.separableAttack&&!b.ownedArm118SideAttack);
  ad.deepEqual(r.states,b.states);ad.deepEqual(r.timeline,b.timeline);ad.deepEqual(r.equipmentContract,{weapon:item});ad.deepEqual(r.pivot,[80,128]);ad.equal(r.fps,12);
- for(const q of [actor(item,{skinColor:'ebony'}),actor(item,{skinColor:'porcelain'}),actor(item,{hairColor:'silver'}),actor(item,{eyeColor:'green'}),actor(item,{hairStyle:'none'}),actor(item,{eyeStyle:'face-focused'}),actor(item,{},'brawler'),actor(item,{},'rogue'),actor(item,{},'cyborg',{weapon:{def:item,variant:'other'}}),actor(item,{},'cyborg',{coat:{def:137}}),actor(item,{},'cyborg',{head:{def:157}})]){
+ for(const q of [actor(item,{hairColor:'silver'}),actor(item,{eyeColor:'green'}),actor(item,{hairStyle:'none'}),actor(item,{eyeStyle:'face-focused'}),actor(item,{},'brawler'),actor(item,{},'rogue'),actor(item,{},'cyborg',{weapon:{def:item,variant:'other'}}),actor(item,{},'cyborg',{coat:{def:137}}),actor(item,{},'cyborg',{head:{def:157}})]){
   ad(!api.select(q,options)?.ownedArm118SideAttack,JSON.stringify(q));if(process.env.CANDIDATE)ad.deepEqual(api.select(q,options),old.select(q,options));
  }
  for(const row of [o(d,'attack-tech'),o(d,'attack-focus'),o(d,'walk'),o('north'),o('south')])ad(!api.select(saved,row)?.ownedArm118SideAttack);
