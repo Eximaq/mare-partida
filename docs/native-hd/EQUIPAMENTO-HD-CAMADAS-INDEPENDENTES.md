@@ -27,3 +27,26 @@ identidade das peças, a retirada exata e o inventário nos recortes acima.
 Os casos sem camada compatível continuam pendentes: ainda não é seguro retirar
 todo o modo de compatibilidade sem esconder peças. Não publicar essa remoção
 como concluída com base num resultado parcial.
+
+## Segundo lote
+- Casaco 6 + Calça 22 também preserva o corpo, o cabelo e a roupa no soco
+  Norte/Leste/Oeste. O repouso e a caminhada Norte dessa combinação ainda
+  não têm encaixe compatível comprovado na região da canela e do pé.
+- Calça 168 no repouso/caminhada Sul e Calça 133 na caminhada Leste/Oeste,
+  com Casaco 6. Somente os próprios pixels da calça são adicionados.
+- Luvas 25/26 masculinas avulsas em repouso Norte e caminhada Norte/Sul.
+  No feminino, botas 176/183 no repouso Sul com Peitoral 151 e penteados
+  salvos não alteram a aparência. Com Espada 0, a Bota 9 no repouso Sul
+  usa a própria camada com os Peitorais 7, 137 e 144.
+- Manopla 14: restaura a pose HD aprovada do Ciborgue masculino de cabelo
+  Original azul nos oito tons em repouso e caminhada nas quatro direções.
+  Não migra penteados diferentes, ataques ou conjuntos extras nessa rota.
+
+As suítes do segundo lote comparam retirada/restauração, assinatura de pose,
+paleta salva, limites da camada e silhueta. Não alteram as demais fontes
+do personagem nem afirmam que todo caso sem cobertura deixou o legado.
+
+Na mesma matriz de auditoria, este segundo lote evita mais 168 regressões para
+compatibilidade (11.438 → 11.270), sem trocar ou perder seleções HD existentes.
+A matriz de 516 casos por corpo permanece idêntica. As verificações abrangem
+o seletor e as poses testadas, não todas as combinações possíveis.

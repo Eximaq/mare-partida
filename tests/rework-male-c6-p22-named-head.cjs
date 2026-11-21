@@ -45,7 +45,7 @@ test('saved named-head C6 adds only its own independent P22 pixels on matched na
   const inv=cv.createCanvas(420,480),status=api.drawFittedAvatar(inv.getContext('2d'),p,{zoom:3});
   assert(status);assert.equal(status.source,api.selectVisual(p,turn).id);assert.equal(status.multiplier,3);
   assert.deepEqual(status.omitted,[]);assert.equal(JSON.stringify(p),before);
-  for(const o of [{...turn,direction:'north'},{...turn,direction:'east',action:'attack-unarmed'},{...turn,direction:'west',action:'attack-unarmed'}])
+  for(const o of [{...turn,direction:'north'},{...turn,direction:'north',action:'walk'}])
    assert(!api.selectVisual(p,o)?.id.includes(':own-p22'));
   assert(!api.selectVisual({...p,equipment:{...p.equipment,[key]:{def:22,variant:'unsupported'}}},turn)?.id.includes(':own-p22'));
  }
