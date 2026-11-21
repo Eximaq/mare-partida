@@ -25,10 +25,27 @@ body::before {
   grid-template-areas: "form logo"; gap: clamp(36px, 7vw, 100px);
 }
 .identity {
-  grid-area: logo; margin: 0 0 clamp(42px, 18vh, 180px);
+  grid-area: logo; margin: 0 0 clamp(12px, 6vh, 60px);
   max-width: 530px; width: 100%; justify-self: center;
 }
+.identity h1 { margin: 0 auto; }
 .identity img { display: block; width: 100%; height: auto; filter: drop-shadow(0 8px 14px #06171eb0); }
+.game-intro {
+  position: relative; isolation: isolate; text-align: center; text-wrap: pretty;
+  max-width: 44ch; margin: 16px auto 0; padding: 12px 6px;
+  color: #f7f2e7; font-size: clamp(.95rem, 1.2vw, 1.08rem); line-height: 1.55;
+  text-shadow: 0 1px 3px #04131c;
+}
+.game-intro::before {
+  content: ""; position: absolute; z-index: -1; inset: -3px -8%;
+  background: linear-gradient(90deg, transparent, #071923c9 14%, #071923d9 80%, transparent);
+  mask-image: linear-gradient(transparent, #000 14%, #000 85%, transparent);
+  pointer-events: none;
+}
+.game-intro strong {
+  display: block; margin-bottom: 7px;
+  color: #ffe1a6; font: 600 clamp(1.2rem, 2vw, 1.65rem)/1.18 Georgia, serif;
+}
 #account {
   grid-area: form; min-width: 0; padding: clamp(22px, 3vw, 36px);
   background: linear-gradient(155deg, #142c33ef, #0a1922f2);
@@ -94,12 +111,16 @@ input::placeholder { color: #91a3a7; }
     width: min(100%, 455px); margin: auto; align-content: center;
     padding: 24px 16px; grid-template-columns: minmax(0,1fr); grid-template-areas: "logo" "form"; gap: 18px;
   }
-  .identity { width: clamp(165px, 51vw, 245px); margin: 0; }
+  .identity { margin: 0; }
+  .identity h1 { width: clamp(165px, 51vw, 245px); }
+  .game-intro { max-width: 40ch; margin-top: 10px; padding: 8px 4px; font-size: .9rem; line-height: 1.45; }
+  .game-intro strong { margin-bottom: 4px; }
+  .game-intro::before { inset-inline: -4%; }
   #account { padding: 21px; }
   h2 { margin-bottom: 14px; }
   .modes { margin-bottom: 15px; }
 }
 @media (max-height: 550px) and (max-width: 760px) {
   .harbor { padding-block: 15px; gap: 12px; }
-  .identity { width: 140px; }
+  .identity h1 { width: 140px; }
 }
