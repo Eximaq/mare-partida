@@ -19,6 +19,7 @@ async function verify() {
       return route.continue();
     });
     await page.goto(url.href);
+    await page.locator('#gameLoading').waitFor({ state: 'hidden', timeout: 240000 });
     await page.locator('#characterName').fill('Nauta Local');
     await page.locator('#nextToClass').click();
     await page.locator('#nextToAppearance').click();

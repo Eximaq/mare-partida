@@ -22,7 +22,9 @@ jobs:
       - name: Preparar a demonstração local
         run: python3 tools/build_pages.py --static-demo
       - name: Verificar os arquivos publicados
-        run: python3 tests/production_pages_test.py
+        run: |
+          python3 tests/production_pages_test.py
+          python3 tests/loading_catalog_test.py
       - name: Preparar Chromium
         run: |
           npm install --prefix "$RUNNER_TEMP/pages-browser" playwright@1.56.1 --no-save --package-lock=false
@@ -30,7 +32,9 @@ jobs:
       - name: Jogar e recarregar o save pelo servidor estático
         env:
           NODE_PATH: ${{ runner.temp }}/pages-browser/node_modules
-        run: python3 tests/run_honors_hd_browser.py tests/pages-local-browser.cjs --offline --dist
+        run: |
+          python3 tests/run_honors_hd_browser.py tests/pages-local-browser.cjs --offline --dist
+          node tests/loading_offline_browser.cjs
       - name: Enviar o pacote validado
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
