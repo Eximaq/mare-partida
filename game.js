@@ -3,8 +3,8 @@
    Conteúdo original. Todo o progresso é salvo exclusivamente no navegador. */
 (async () => {
   const ONLINE_GAME=globalThis.MareGameSession?.enabled?globalThis.MareGameSession:null;
-  const STATIC_DEMO=!ONLINE_GAME && document.documentElement.dataset.runtime==='static-demo';
   if(location.pathname==='/game'&&!ONLINE_GAME){const message=document.createElement('p');message.textContent='Não foi possível carregar a sessão online. Atualize a página para tentar novamente.';message.setAttribute('role','alert');document.body.classList.remove('online-session-loading');document.body.replaceChildren(message);return;}
+  const STATIC_DEMO=!ONLINE_GAME && document.documentElement.dataset.runtime==='static-demo';
   const localStorage=ONLINE_GAME?{getItem(){throw Error('Online mode cannot read demo saves');},setItem(){throw Error('Online mode cannot write demo saves');},removeItem(){throw Error('Online mode cannot delete demo saves');}}:window.localStorage;
   if(ONLINE_GAME){
     try{await ONLINE_GAME.load();}
