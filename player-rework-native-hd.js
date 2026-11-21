@@ -1,5 +1,33 @@
 /* Whole authored HD bases in the normal player path. Source pixels stay native; only the final world draw uses the approved monster-scale transform. */
 (function(root){'use strict';
+// Inventory samples the visible sprite bounds, never magnifies the entire
+// HD source frame (which includes transparent author padding).
+const inventoryBounds=new WeakMap();
+function fitInventoryAvatar(ctx,source,referenceScale=1,{cache=true,zoom=3}={}){
+ const w=source.width,h=source.height;if(!w||!h)return null;
+ let bounds=cache&&inventoryBounds.get(source);
+ if(!bounds){
+  const pixels=source.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h).data;
+  let left=w,top=h,right=-1,bottom=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(pixels[(y*w+x)*4+3]){
+   if(x<left)left=x;if(x>right)right=x;if(y<top)top=y;if(y>bottom)bottom=y;
+  }
+  if(right<left)return null;
+  bounds={left,top,width:right-left+1,height:bottom-top+1};if(cache)inventoryBounds.set(source,bounds);
+ }
+ const cw=ctx.canvas.width,ch=ctx.canvas.height,{left,top,width,height}=bounds;
+ if(!Number.isFinite(zoom)||zoom<=0||!Number.isFinite(referenceScale)||referenceScale<=0)return null;
+ const margin=10,target=referenceScale*zoom;
+ if(cw<=margin*2||ch<=margin*2)return null;
+ const physicalScale=Math.min(target,(cw-margin*2)/width,(ch-margin*2)/height);
+ const dw=width*physicalScale,dh=height*physicalScale;
+ ctx.save();try{
+  ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,cw,ch);
+  ctx.drawImage(source,left,top,width,height,Math.floor((cw-dw)/2),Math.floor((ch-dh)/2),dw,dh);
+ }finally{ctx.restore();}
+ return {physicalScale,requestedScale:target,multiplier:physicalScale/referenceScale,limited:physicalScale<target,bounds};
+}
+
 const identityKey=p=>JSON.stringify([p.appearance96||{},p.equipment||{},!!p.zoanTransformed,!!root.MareHeadgear?.hidden(p)]);
 // Approved comparison: the 374px-tall rifle115 source draws at 105px, like the Marinheiro.
 // A fixed factor across every pose prevents frame-to-frame breathing; assets and composition stay HD.
@@ -2709,15 +2737,28 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return paint(ctx,player,o,r,frame,result);
  }
  function paint(ctx,player,o,r,frame,result,hold=true){
+  if(o.inventoryPresentation){
+   const fitted=fitInventoryAvatar(ctx,result.canvas,WORLD_SCALE,{zoom:o.avatarZoom});if(!fitted)return false;
+   last={state:'rendered',consumer:o.avatarConsumer,source:r.id,hdKind:r.hdKind,
+    omitted:r.omitted||[],slotRoutes:r.slotRoutes||{},frame,...fitted};return true;
+  }
   let x=o.x||0,y=o.y||0;
-  if(o.preview){
+  const creationFit=o.previewFit==='creation'&&o.consumer==='character-creation'&&o.action==='idle';
+  if(o.preview&&!creationFit){
    const w=Math.max(ctx.canvas.width,result.info.width),h=Math.max(ctx.canvas.height,result.info.height+48);
    if(ctx.canvas.width!==w)ctx.canvas.width=w;if(ctx.canvas.height!==h)ctx.canvas.height=h;
    if(ctx.canvas.style){ctx.canvas.style.width=w+'px';ctx.canvas.style.height=h+'px';ctx.canvas.style.maxWidth='none';}
    if(ctx.canvas.parentElement?.style)ctx.canvas.parentElement.style.overflow='auto';
    x=w/2;y=h-24;
   }
-  const physicalScale=o.preview?1:WORLD_SCALE;
+  // The creation studio already owns its 320×256 drawing surface and CSS.
+  // Fit the existing native raster around its authored foot pivot without
+  // enlarging the canvas, the harbor panel, or any other consumer's preview.
+  const physicalScale=creationFit?Math.min(
+   192/Math.max(1,result.info.visualHeight),
+   Math.max(1,ctx.canvas.height-48)/Math.max(1,result.info.visualHeight),
+   ctx.canvas.width/Math.max(1,result.info.width)
+  ):o.preview?1:WORLD_SCALE;
   if(o.consumer==='portrait')y=Math.max(y,result.info.visualHeight*physicalScale+3);
   ctx.save();try{ctx.imageSmoothingEnabled=false;ctx.drawImage(result.canvas,x-result.info.pivot.x*physicalScale,y-result.info.pivot.y*physicalScale,result.info.width*physicalScale,result.info.height*physicalScale);}finally{ctx.restore();}
   if(hold&&player&&typeof player==='object'){const key=identityKey(player)+'|'+(o.consumer||'world'),held={...result,key:identityKey(player),pose:{source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame}};lastRendered.set(key,held);lastRendered.set(key+'|'+o.direction,held);while(lastRendered.size>32)lastRendered.delete(lastRendered.keys().next().value);}
@@ -2726,6 +2767,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const renderedHead=r.femaleNamedHairRecord||(r.body==='female'&&
    ['female-equipment','authored-north-layered','profile-separated'].includes(r.hdKind)?r.material:null);
   last={state:'rendered',source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame,width:result.info.width,height:result.info.height,pivot:result.info.pivot,density:result.info.density,physicalScale,sourceScale:1,status:r.status,approval:r.approval,eyeStyle:r.eyeStyle||renderedHead?.eyeStyle,skinPalette:renderedHead?.skinColor,hairPalette:renderedHead?.hairColor,faceProtectedExact:!!renderedHead?.faceProtectedExact,faceProtectedExceptIris:!!renderedHead?.faceProtectedExceptIris,headSourceScale:renderedHead?.sourceScale,headStatus:renderedHead?'semantic-fringe-ownership-candidate':r.gearOnlyRecord?'gear-only-candidate-calibration':r.headRecord?.status,headIdentity:renderedHead?(renderedHead.eyeStyle?'original-face-with-eye-style':'original-face-protected-exact'):r.gearOnlyRecord?'exact-head-original-hair-preserved':r.headRecord?'exact-head-source-pixels':'authored-original',headOcclusion:renderedHead?.gearRecord?renderedHead.gearPolicy:r.gearOnlyRecord?.occlusion,headGearScale:r.gearOnlyRecord?.sourceScale,headGearSource:r.gearOnlyRecord?.gear.source||renderedHead?.gearRecord?.layers.find(l=>l.id===renderedHead.gearRecord.headgearPolicy?.gearId)?.source,headGearId:r.gearOnlyRecord?.id,...(r.slotRoutes?{omitted:r.omitted,slotRoutes:r.slotRoutes}:{})};return true;
+ }
+ // Use the exact normal-player idle selector but don't replace any of
+ // the world's last/held poses or request the full world pose preparation.
+ function drawFittedAvatar(ctx,player,{zoom=3,consumer='inventory'}={}){
+  const options={action:'idle',direction:'south',time:0,progress:0,consumer:'world',
+   avatarZoom:zoom,avatarConsumer:consumer,weaponless:false,inventoryPresentation:true};
+  if(failureFor(player,options))return null;
+  const prior=last;try{return draw(ctx,player,options)?last:null;}
+  finally{last=prior;}
  }
  const familyStates=new Map();
  async function prepareFamily(player){await ready;const raw=player.appearance96||{};if(!root.MareAppearance96&&[raw.skinColor,raw.skin,raw.hairColor].some(v=>v&&v!=='original'))return false;const key=identityKey(player);if(familyStates.has(key))return familyStates.get(key).promise;const record={state:'checking',reason:null};familyStates.set(key,record);while(familyStates.size>8)familyStates.delete(familyStates.keys().next().value);
@@ -2739,7 +2789,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function drawStable(ctx,player,o={}){const key=identityKey(player);if(!selectVisual(player,o)){last={state:'uncovered',action:o.action,direction:o.direction,reason:'No compatible source for this pose'};return false;}if(draw(ctx,player,o))return true;if(failureFor(player,o))return false;const consumerKey=key+'|'+(o.consumer||'world'),held=lastRendered.get(consumerKey+'|'+o.direction);if(!held&&o.action!=='idle'){const loading=last;if(draw(ctx,player,{...o,action:'idle',time:0,progress:0})){last={...last,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction};return true;}last=loading;}if(held?.key===key){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(held.canvas,(o.x||0)-held.info.pivot.x*WORLD_SCALE,(o.y||0)-held.info.pivot.y*WORLD_SCALE,held.info.width*WORLD_SCALE,held.info.height*WORLD_SCALE);ctx.restore();last={...held.pose,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction,physicalScale:WORLD_SCALE,sourceScale:1};return true;}return false;}
  const height=player=>{const held=lastRendered.get(identityKey(player)+'|world');return held?.key===identityKey(player)?held.info.visualHeight*WORLD_SCALE:null;};
  function failureFor(player,o={}){const r=selectVisual(player,o);return r?failures.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{})+':'+frameFor(r,o)):null;}
- return {ready,warmSwordCheckpoint,prepare:prepareForPlayer,prepareClip,prepareConfiguration,prepareStablePose,prepareFamily,draw,drawStable,canDrawStable,height,select,selectLayered,selectVisual,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
+ return {ready,warmSwordCheckpoint,prepare:prepareForPlayer,prepareClip,prepareConfiguration,prepareStablePose,prepareFamily,draw,drawFittedAvatar,drawStable,canDrawStable,height,select,selectLayered,selectVisual,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
 }
-const api={create};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports=api;
+const api={create,fitInventoryAvatar};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

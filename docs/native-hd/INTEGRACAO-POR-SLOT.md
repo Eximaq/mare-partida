@@ -32,3 +32,10 @@ Não há novos sprites, mudança da arma/roupa salva, das regras de classe, dos 
 136.224 consultas de seleção: 105.264 de equipamentos individuais e 30.960 de conjuntos com perfis de aparência. 38.719 mantiveram fonte HD exata, 36 passaram por composição HD de slots e 119 mantiveram HD com pelo menos um slot pendente. 97.350 não selecionaram fonte HD nessas amostras; isso não significa 97.350 artes faltantes. As consultas contam combinações, incluem controles repetidos e não demonstram que o compositor de 96 px falhou.
 
 Próximas lacunas distintas: roupa e bota ainda fundidas nos ataques; B155 Norte/Sul depende da calça diferente; mãos e botas em conjunto fora do Leste/Oeste precisam de âncora comum; as paletas de fontes fundidas não podem ser generalizadas; a revisão final da espada feminina e o tiro atual de oito fases pedem fonte editável exata. Não redesenhar o corpo inteiro para nenhuma dessas lacunas.
+
+## Retratos do jogador em HD
+
+- A criação usa a fonte HD da aparência escolhida, preservando a área de prévia existente.
+- Inventário e atributos usam a fonte HD exata do repouso Sul do personagem salvo, com os mesmos equipamentos. A figura é desenhada em 3× no inventário e 4× nos atributos, em relação à escala usada no mapa. Em espaços menores, o enquadramento reduz a escala para exibir a figura inteira sem suavização.
+- Arte HD registrada tem prioridade onde existe cobertura. Os caminhos de compatibilidade continuam onde ainda falta uma composição equivalente; não se retira um equipamento para forçar a seleção em HD. As 516 combinações básicas por corpo não cobrem todas as possíveis combinações de roupas, penteados e armas.
+- A exportação padrão não distribui as antigas pranchas de `assets/sprites`, os manifestos vazios de `assets/paper-doll` nem a bancada histórica. O pacote Native96 verificado fica publicado no caminho esperado pelo jogo para os casos que ainda precisam dele. NPCs, monstros, facções atuais, Zoans e visuais completos não são removidos.

@@ -128,7 +128,7 @@
     const send=async()=>{const ok=await onlineItemCommand('party.'+action,payload);if(ok&&action==='start')closePanel();else if(currentPanel==='party')renderPartyPanel();return ok;};
     if(action==='leave'||action==='kick')showConfirmation(action==='leave'?'Sair do grupo?':'Remover membro?','A participação na atividade será encerrada e o personagem retornará ao porto. Recompensas pessoais pendentes serão preservadas.',send,action==='leave'?'SAIR':'REMOVER');else await send();
   }
-  const lobby96=MarePaperDoll96Lobby.create({search:location.search,onChange:()=>{if(game){renderPortrait();const inventoryPreview=$('inventorySprite');if(currentPanel==='inventory'&&inventoryPreview)drawCurrentPreview(inventoryPreview,185,{aura:false});if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
+  const lobby96=MarePaperDoll96Lobby.create({search:location.search,onChange:()=>{if(game){renderPortrait();const inventoryPreview=$('inventorySprite');if(currentPanel==='inventory'&&inventoryPreview)drawInventoryAvatar(inventoryPreview,{force:true});if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
   let paperDollDebug=DEV_ACTIVE&&new URLSearchParams(location.search).get('paperDollDebug')==='1';
   const STORAGE_KEY=MareDev.key(location.search);
   const saveWriter=ONLINE_GAME?{ready:true,owner:true,exclusive:false}:MareSaveWriter.create(STORAGE_KEY);
@@ -1032,8 +1032,8 @@
   let forgeOutcome=null,forgeFusionStamp='';
   let inventoryFeedback=null,attributeSuccessUntil=0,forgeFeedback=null,rewardTimer=null;
   let factionShowcase=false,showcaseAction='idle',showcaseDirection='south';
-  window.addEventListener('mare-faction-sprite-ready',()=>{if(game){renderPortrait();if($('inventorySprite'))drawCurrentPreview($('inventorySprite'),185);if($('characterSprite'))drawCurrentPreview($('characterSprite'),175,{aura:false});}});
-  window.addEventListener('mare-zoan-sprite-ready',()=>{if(game){renderPortrait();if($('inventorySprite'))drawCurrentPreview($('inventorySprite'),185);if($('characterSprite'))drawCurrentPreview($('characterSprite'),175,{aura:false});}});
+  window.addEventListener('mare-faction-sprite-ready',()=>{if(game){renderPortrait();if($('inventorySprite'))drawInventoryAvatar($('inventorySprite'),{force:true});drawCharacterStatusPreview();}});
+  window.addEventListener('mare-zoan-sprite-ready',()=>{if(game){renderPortrait();if($('inventorySprite'))drawInventoryAvatar($('inventorySprite'),{force:true});drawCharacterStatusPreview();}});
   let impelRun=null,dungeonRun=null,selectedDungeon='alvida',dungeonCraftDraft=null;
   let scene = 'lobby', lobbyDestination = null, lobbyAction = null;
   const npcs = [
@@ -2453,12 +2453,54 @@
     const src=`assets/ui/items-pixellab/${artKey}.png?v=20261020`;
     return `<img class="item-icon" src="${src}" alt="${escapeHTML(name||pearl?.name||def?.name||'')}" draggable="false">`;
   }
+  function drawCharacterStatusPreview(){
+    const canvas=$('characterSprite');
+    if(!canvas||!game)return;
+    const c=canvas.getContext('2d'),zoom=4;
+    // Both panels use the same native selector and fit against visible pixels,
+    // without swapping the map actor or recoloring the saved equipment.
+    const avatar=game.zoanTransformed?{...game,zoanTransformed:false}:game;
+    if(!MareVisualCompletoRenderer.equipped(avatar)&&lobby96.drawFittedAvatar?.(c,avatar,{zoom,consumer:'character-status'})){
+      canvas.dataset.avatarRenderer='native-hd';return;
+    }
+    canvas.dataset.avatarRenderer='fallback';
+    c.clearRect(0,0,canvas.width,canvas.height);
+    c.save();
+    try{
+      // Draw the same equipped HD source at 4× before any canvas downsampling.
+      c.imageSmoothingEnabled=false;
+      c.scale(zoom,zoom);
+      const x=canvas.width/(2*zoom),y=canvas.height/zoom-10;
+      // The sheet shows the saved loadout, not a momentary combat mutation.
+      lobby96.draw(c,avatar,{scene,action:'idle',direction:'south',time:0,x,y,
+        scale:(canvas.height/zoom-18)/46,consumer:'characterSprite'});
+    }finally{c.restore();}
+  }
   function drawCurrentPreview(canvas,height,{aura=true}={}){
     const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
     if(aura&&world.hero.visible!==false)vfx_aura.draw(c,canvas.width/2,canvas.height-10,world.time,height/48);
     if(world.hero.visible===false)drawBeriSeparation(c,canvas.width/2,canvas.height-10,1-session.fruitBurst/1.5,height/48);
     else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(c,equippedZoan().id,canvas.width/2,canvas.height-10,{fit:Math.min(canvas.width-16,height),time:world.time,scale:equippedZoan().id===MareRyu.rules.id?height/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?height*1.25/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?height/64:height/48});
     else drawPaperDoll(c,canvas.width/2,canvas.height-10,'idle','south',world.time,height/46);
+  }
+  let inventoryAvatarLast=null,inventoryAvatarScratch=null;
+  function drawInventoryAvatar(canvas,{force=false}={}){
+    const width=canvas.clientWidth,height=canvas.clientHeight;
+    if(!width||!height)return;
+    const tick=Math.floor(world.time*10);
+    if(!force&&inventoryAvatarLast?.canvas===canvas&&inventoryAvatarLast.width===width&&inventoryAvatarLast.height===height&&inventoryAvatarLast.tick===tick)return;
+    inventoryAvatarLast={canvas,width,height,tick};
+    if(canvas.width!==width)canvas.width=width;if(canvas.height!==height)canvas.height=height;
+    const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;
+    const special=world.hero.visible===false||game.zoanTransformed||MareVisualCompletoRenderer.equipped(game);
+    const exact=!special&&lobby96.drawFittedAvatar(c,game,{zoom:3,consumer:'inventory'});
+    if(exact){canvas.dataset.avatarRenderer='native-hd';return;}
+    // Keep the game's existing transformation/full-skin and legacy fallbacks,
+    // and scale only what they actually draw. No re-equip or altered save.
+    inventoryAvatarScratch??=Object.assign(document.createElement('canvas'),{id:'inventorySprite',width:360,height:440});
+    drawCurrentPreview(inventoryAvatarScratch,185,{aura:false});
+    if(!MareReworkNativeHD.fitInventoryAvatar(c,inventoryAvatarScratch,1,{cache:false}))c.clearRect(0,0,width,height);
+    canvas.dataset.avatarRenderer='fallback';
   }
   function invSymbol(entry){return itemIcon(entry.kind==='gear'?entry.item.def:entry.potion?.id||entry.kind,entry.name,true);}
   function invSlotHtml(slot){
@@ -2541,7 +2583,7 @@ ${avatarExtra}
     inventoryGridObserver=new ResizeObserver(scheduleInventoryGrid);
     inventoryGridObserver.observe(body.querySelector('.op-grid-wrap'));
     const preview=$('inventorySprite');
-    const redraw=()=>{if(currentPanel==='inventory'&&preview.isConnected)drawCurrentPreview(preview,185,{aura:false});};
+    const redraw=()=>{if(currentPanel==='inventory'&&preview.isConnected)drawInventoryAvatar(preview,{force:true});};
     redraw();void lobby96.ready.then(()=>lobby96.ensure(game)).then(redraw);
   }
   function layoutInventoryDetail(){
@@ -2699,7 +2741,7 @@ ${avatarExtra}
     const value=(key,n)=>['crit','evasion','accuracy','protection','damageCooldownReduction'].includes(key)?(n*100).toFixed(1)+'%':['speed','energyRegen','healthRegen','regenBuff'].includes(key)?n.toFixed(2):fmt(n);
     body.innerHTML=MareCharacterStudio.status({game:{...game,factionName:factions[game.factionId].name},c,r,d,next,remaining,pending,draft:attributeDraft,quantity:attributeQuantity,message:allocationMessage,confirmed:performance.now()<attributeSuccessUntil,attributes:MareCharacters.attributes,birth:MareCharacters.birth[game.classId],keys:MareCharacters.keys,value,fmt,skillCooldown:skill=>(MareAttributeRules.cooldown(skill.cd,skill,d)*(game.factionId==='government'?.92:1)).toFixed(2),skillCost:skill=>MareUltimates.selected(game)==='archmage'?0:Math.round(skill.cost*(1-d.energyEfficiency)*100)/100});
     body.querySelector('.studio-allocation-status')?.insertAdjacentHTML('beforebegin',attributeBuildHTML(buildExpanded));
-    drawCurrentPreview($('characterSprite'),175,{aura:false});
+    drawCharacterStatusPreview();
   }
   function hierarchySelf(){return {player_id:game.hierarchyPlayerId,name:game.name,faction:game.factionId,class_id:game.classId,portrait:portrait.canvas.toDataURL('image/png'),level:game.level,power:getDerived().power,tier:game.hierarchyTier};}
   async function hierarchyPost(route,payload){
@@ -3732,8 +3774,8 @@ ${avatarExtra}
   function drawVfxPanels(){
     if(!game||document.hidden)return;
     renderPortrait();
-    if(currentPanel==='inventory'){const canvas=$('inventorySprite');if(canvas)drawCurrentPreview(canvas,185);}
-    if(currentPanel==='character'&&characterTab==='status'){const canvas=$('characterSprite');if(canvas)drawCurrentPreview(canvas,175,{aura:false});}
+    if(currentPanel==='inventory'){const canvas=$('inventorySprite');if(canvas)drawInventoryAvatar(canvas);}
+    if(currentPanel==='character'&&characterTab==='status')drawCharacterStatusPreview();
     if(currentPanel==='character'&&characterTab==='appearance'){
       const appearance=$('profileAppearanceCanvas');if(appearance){const c=appearance.getContext('2d');c.clearRect(0,0,appearance.width,appearance.height);const ok=lobby96.preview(c,game,{action:'idle',direction:profileDirection,time:0,appearance:appearanceDraft||MareCharacterAppearance.read(game),consumer:'appearance-editor'});$('profileAppearanceState').textContent=ok?'Prévia atualizada':lobby96.snapshot().previewMessage||lobby96.snapshot().message||'Carregando personagem…';}
 
@@ -3923,7 +3965,10 @@ function applySceneHudLayout(){
     const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
     const player={classId:selectedClass,factionId:selectedFaction,paperDollLook:creationLookDraft,equipment:{coat:{def:6}}};
     const drawn=lobby96.preview(c,player,{action:'idle',direction:creationDirection,time:0,appearance:creationAppearanceDraft,consumer:'character-creation'});
-    $('creationLookState').textContent=drawn?'Prévia atualizada · '+({north:'Norte',south:'Sul',east:'Leste',west:'Oeste'})[creationDirection]:lobby96.snapshot().previewMessage||lobby96.snapshot().message||'Carregando personagem…';
+    const nativeState=drawn?null:lobby96.snapshot().nativeHD;
+    const unavailable=nativeState?.state==='failed'||['failed','uncovered'].includes(nativeState?.last?.state);
+    $('creationLookState').textContent=drawn?'Prévia atualizada · '+({north:'Norte',south:'Sul',east:'Leste',west:'Oeste'})[creationDirection]:
+      unavailable?'Prévia HD indisponível para esta aparência.':'Carregando personagem…';
   }
   function appearanceControl(event){
     const creation=!!event.target.closest('#appearanceStep'),profile=!!event.target.closest('#profileAppearance');

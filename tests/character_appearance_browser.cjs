@@ -9,8 +9,8 @@ async function settledPreview(p,direction){
   // The old status label becomes ready before asynchronous HD archives finish.
   const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
   q.renderer.preview(ctx,{classId:'sword',equipment:{coat:{def:6}}},{action:'idle',direction,time:0,appearance:q.draft,consumer:'character-creation'});
-  const s=q.renderer.snapshot(),a=s.defaultHD?.last?.state==='rendered'?s.defaultHD.last:s.nativeHD?.last;
-  return a?.state==='rendered'&&a.physicalScale===1&&a.direction===direction&&a.consumer==='character-creation'&&[...ctx.getImageData(0,0,canvas.width,canvas.height).data].some((v,i)=>i%4===3&&v);
+  const a=q.renderer.snapshot().nativeHD?.last;
+  return a?.state==='rendered'&&a.physicalScale>0&&a.physicalScale<1&&canvas.width===320&&canvas.height===256&&canvas.style.width===''&&canvas.style.height===''&&a.direction===direction&&a.consumer==='character-creation'&&[...ctx.getImageData(0,0,canvas.width,canvas.height).data].some((v,i)=>i%4===3&&v);
  },direction,{timeout:120000});
 }
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{const p=await browser.newPage({viewport:{width:1366,height:900}}),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.route(/\/game\.js(?:\?|$)/,async route=>{const response=await route.fetch();let s=await response.text();s=s.replace('  requestAnimationFrame(frame);','  window.__appearanceQA={get player(){return game},get draft(){return creationAppearanceDraft},renderer:lobby96,openCreation,openPanel,closePanel,getDerived};\n  requestAnimationFrame(frame);');await route.fulfill({response,body:s});});
