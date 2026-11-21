@@ -66,7 +66,7 @@ for(const branch of H.progression.ids)wire.originalInventory.inventory.push({...
  await p.setViewportSize({width:393,height:852});assert(await p.locator('#dialogBody').evaluate(e=>e.scrollWidth<=e.clientWidth+2));await p.screenshot({path:path.join(out,'haki-online-mobile.png')});await p.setViewportSize({width:1366,height:900});
  // The state notification can precede command settlement. Reloading in that gap
  // restores a pending intent, so wait for acknowledgement before the next intent.
- await p.locator('[data-haki-auto=armament]').check();await p.waitForFunction(()=>__mareDiagnostics().haki.auto==='armament'&&!MareGameSession.busy&&!MareGameSession.pending);await p.reload();await p.waitForFunction(()=>MareGameSession?.controlled&&__mareDiagnostics?.().haki.mastery.completedVersions.conqueror===1&&!MareGameSession.busy&&!MareGameSession.pending);
+ await p.locator('[data-haki-auto=armament]').check();await p.waitForFunction(()=>__mareDiagnostics().haki.auto==='armament'&&!MareGameSession.busy&&!MareGameSession.pending);await p.reload();await p.locator('#gameLoading').waitFor({state:'hidden'});await p.waitForFunction(()=>MareGameSession?.controlled&&__mareDiagnostics?.().haki.mastery.completedVersions.conqueror===1&&!MareGameSession.busy&&!MareGameSession.pending);
  // Travel uses the public BFF intent; controls themselves are exercised through H/J/K.
  await p.evaluate(()=>MareGameSession.command('world.travel',{islandId:'dawn'}));
  // Cold sprite preparation has a 90s runtime deadline; the default 30s browser
