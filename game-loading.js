@@ -19,8 +19,6 @@
     const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', buffer));
     return Array.from(digest, n => n.toString(16).padStart(2, '0')).join('');
   }
-  let resolveEntry;
-  const firstEntry = new Promise(resolve => { resolveEntry = resolve; });
   let scenePending = false, failure = false, prepared = false, interfaceReady = false, generation = 0;
   function progress(value) {
     meter.value = value;
@@ -163,11 +161,10 @@
       if (generation !== current) return;
       screen.hidden = true; app.inert = false; app.removeAttribute('aria-busy');
       window.MareUI?.syncModals();
-      resolveEntry();
       if (!document.getElementById('startOverlay')?.classList.contains('hidden')) document.getElementById('characterName')?.focus();
     }));
   }
-  window.MareGameLoading = {prepare, scene, finish, fail, firstEntry,
+  window.MareGameLoading = {prepare, scene, finish, fail,
     get prepared() { return prepared; },
     get failed() { return failure; },
     get pending() { return scenePending && !failure; }};
