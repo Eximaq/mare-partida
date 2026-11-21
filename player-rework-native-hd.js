@@ -664,7 +664,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const independent=!player.__reworkSubset&&weaponRegistry?.resolveSeparable?.({item:o.weaponless?undefined:(player.equipment?.weapon?.def??player.equipment?.weapon),body:canonical(a.body),sourceBody:a.body,classId:player.classId,weaponVariant:player.equipment?.weapon?.variant??player.equipment?.weapon?.variantId??player.equipment?.weapon?.appearanceVariant,action:o.action,direction:o.direction,appearance:a,equipment:independentEquipment,
    allowOrb122BarePreview:allowReviewedBareOrb,allowOrb17BarePreview:allowReviewedBareOrb,
    allowGauntlet14South:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,
-   allowGauntletLightSouth:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,allowOwnW14Lateral:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1});
+   allowGauntletLightSouth:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,allowOwnW14Lateral:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,allowOwnStaff123Lateral:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1});
   if(independent)return {...independent,hdKind:'weapon'};
   const independentPants=!player.__reworkSubset&&outfitRegistry?.resolveIndependentPants?.({body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:player.equipment||{}});
   if(independentPants)return {...independentPants,hdKind:'outfit'};
