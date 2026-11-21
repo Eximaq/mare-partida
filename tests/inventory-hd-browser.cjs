@@ -64,12 +64,13 @@ assert.match(await summary.innerText(),/1 item marcado/);
 const initialViewport=p.viewportSize();
 for(const width of [320,390,768,1672]){
   await p.setViewportSize({width,height:width<400?844:941});
-  await batch('details').scrollIntoViewIfNeeded();
+  await settleGrid();
   const toolbar=p.locator('.inventory-batch-toolbar');
   assert(await toolbar.evaluate(el=>el.scrollWidth<=el.clientWidth+1),'Selection controls fit at '+width);
   await p.locator('#inventory-bag').screenshot({path:out+'/selection-'+width+'.png'});
 }
 await p.setViewportSize(initialViewport);
+await settleGrid();
 await batch('toggle').click();
 await p.evaluate(id=>{delete __invQA.game.inventory.find(i=>i.id===id).quantity},sale.id);
 await p.evaluate(()=>__invQA.select(__invQA.game.equipment.akuma_no_mi.id));
@@ -97,6 +98,8 @@ assert.deepEqual({slots:compact.slots,equipmentFits:compact.equipmentFits},{slot
 assert(compact.trayGap<28&&compact.profileGap<32,JSON.stringify(compact));
 assert(compact.crestOverlaps&&compact.crestOffset<3,JSON.stringify(compact));
 async function verifySlotSpace(){
+  await p.evaluate(()=>document.fonts.ready);
+  await settleGrid();
   const layout=await p.locator('.op-body-grid').evaluate(body=>{
     const rect=e=>e.getBoundingClientRect(),bag=body.querySelector('.op-bag-panel');
     const grid=bag.querySelector('.op-grid'),wrap=grid.parentElement,items=[...grid.children];
