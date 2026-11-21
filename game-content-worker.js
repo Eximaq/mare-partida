@@ -4,6 +4,7 @@ const scope = self.registration.scope;
 const metadata = 'kaizoku-content-index:' + scope;
 const storage = 'kaizoku-content-bytes:' + scope;
 const releases = new Map();
+const catalogs = new Map();
 const bindings = new Map();
 const metaKey = id => new URL('loading-session/' + id, scope).href;
 const byteKey = digest => new URL('loading-data/' + digest, scope).href;
@@ -34,7 +35,10 @@ async function cleanup(version, clientId) {
 async function readManifest(name) {
   const url = new URL(name, scope).href;
   if (!releases.has(url)) {
-    const reading = caches.open(metadata).then(cache => cache.match(url)).then(response => response.json());
+    const reading = caches.open(metadata).then(cache => cache.match(url)).then(response => response.json()).then(data => {
+      catalogs.set(name, data.files);
+      return data;
+    });
     releases.set(url, reading);
     reading.catch(() => releases.delete(url));
   }
@@ -69,8 +73,20 @@ async function serve(request, clientId, path) {
   const record = manifest.files[path];
   if (!Array.isArray(record)) return fetch(request);
   const [unit, offset, size, type] = record;
-  const stored = await (await caches.open(storage)).match(byteKey(manifest.units[unit][2]));
-  if (!stored) return fetch(request);
+  const hash = manifest.units[unit][2];
+  let stored = await (await caches.open(storage)).match(byteKey(hash));
+  if (!stored) {
+    const client = await self.clients.get(clientId);
+    if (!client) return fetch(request);
+    const channel = new MessageChannel();
+    const blob = await new Promise(resolve => {
+      const timer = setTimeout(() => { channel.port1.close(); resolve(null); }, 1200);
+      channel.port1.onmessage = event => { clearTimeout(timer); channel.port1.close(); resolve(event.data); };
+      client.postMessage({type:'read-unit', hash}, [channel.port2]);
+    });
+    if (!blob) return fetch(request);
+    stored = new Response(blob);
+  }
   const headers = {'Content-Type': type, 'Content-Length': String(size), 'Accept-Ranges': 'bytes'};
   const range = request.headers.get('Range');
   if (!range && offset === 0 && size === manifest.units[unit][1]) return new Response(stored.body, {headers});
@@ -109,5 +125,7 @@ self.addEventListener('fetch', event => {
   if (!event.clientId || event.request.method !== 'GET' || !event.request.url.startsWith(scope)) return;
   const path = decodeURI(new URL(event.request.url).pathname.slice(new URL(scope).pathname.length));
   if (!/^(?:assets\/|tools\/|icones_menu_pirata\/|pixellab-pip-generations\/|journal-feed\.json$)/.test(path)) return;
+  const files = catalogs.get(bindings.get(event.clientId));
+  if (files && !Object.hasOwn(files, path)) return;
   event.respondWith(serve(event.request, event.clientId, path));
 });

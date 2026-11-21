@@ -16,7 +16,7 @@ ROOTS = ('assets', 'icones_menu_pirata', 'tools/paper-doll-96-v3', 'tools/rework
          'tools/rework-female-dagger-p22', 'tools/rework-firearm113-coat', 'tools/rework-sword0-checkpoint')
 
 
-def build_catalog(root, compatibility_files=None, extra_files=()):
+def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS):
     units, files, batch = [], {}, bytearray()
     pack_dir = root / 'loading-packs'
     pack_dir.mkdir(exist_ok=True)
@@ -29,7 +29,7 @@ def build_catalog(root, compatibility_files=None, extra_files=()):
             units.append([target.relative_to(root).as_posix(), len(batch), digest])
             batch.clear()
 
-    paths = sorted({f for prefix in ROOTS for f in (root / prefix).rglob('*')
+    paths = sorted({f for prefix in roots for f in (root / prefix).rglob('*')
                     if f.is_file() and f.suffix.lower() in TYPES})
     paths.extend(root / path for path in extra_files)
     if (root / 'journal-feed.json').exists():
@@ -68,8 +68,11 @@ def build_catalog(root, compatibility_files=None, extra_files=()):
     return {'units': units, 'files': files}
 
 
-def write_catalog(root, compatibility_files, extra_files):
-    manifest = build_catalog(root, compatibility_files, extra_files)
+def write_catalog(root, compatibility_files, extra_files, renderer_fixture=False):
+    # Renderer suites intercept individual asset requests to exercise missing art and
+    # fallback behavior. Run the same installer with a small, real fixture catalog.
+    roots = ('assets/ui/loading',) if renderer_fixture else ROOTS
+    manifest = build_catalog(root, compatibility_files, () if renderer_fixture else extra_files, roots)
     data = json.dumps(manifest, separators=(',', ':'), ensure_ascii=True).encode()
     filename = 'game-content-' + hashlib.sha256(data).hexdigest()[:24] + '.json'
     (root / filename).write_bytes(data)

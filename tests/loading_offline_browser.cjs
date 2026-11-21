@@ -35,6 +35,8 @@ async function main() {
     const page = await browser.newPage();
     page.on('pageerror', e => console.error(e.message));
     const url = 'http://127.0.0.1:' + server.address().port + '/demo/';
+    const session = await page.context().newCDPSession(page);
+    await session.send('Storage.overrideQuotaForOrigin',{origin:new URL(url).origin, quotaSize: 2 * 1024 ** 3});
     await page.goto(url);
     const loading = page.locator('#gameLoading');
     const retry = loading.getByRole('button');
@@ -66,7 +68,27 @@ async function main() {
     await loading.waitFor({state:'hidden',timeout:60000});
     await page.locator('#characterMenuTrigger').click();
     assert.equal(await page.locator('#app').evaluate(el => el.inert),false);
-    console.log('Cold install, interrupted transfer, retry, cache-only sprite/range and warm reload passed.');
+    // Limit storage on the next visit. A verified unit can still be served by
+    // the current tab after its network endpoint becomes unavailable.
+    const unit = manifest.units[manifest.files[sample][0]];
+    await page.evaluate(async hash => {
+      const scope = new URL('./',location.href).href;
+      await (await caches.open('kaizoku-content-bytes:' + scope)).delete(new URL('loading-data/'+hash,scope));
+    }, unit[2]);
+    await page.addInitScript(hash => {
+      const put = Cache.prototype.put;
+      Cache.prototype.put = function(key,response) {
+        if (String(key).endsWith(hash)) return Promise.reject(new DOMException('Full','QuotaExceededError'));
+        return put.call(this,key,response);
+      };
+    }, unit[2]);
+    networkDisabled = false;
+    await page.reload();
+    await loading.waitFor({state:'hidden',timeout:90000});
+    assert.match(await page.locator('.loading-size').textContent(),/nesta aba/);
+    networkDisabled = true;
+    assert.equal(await page.evaluate(async name => (await (await fetch(name,{cache:'no-store'})).blob()).size,sample),manifest.files[sample][2]);
+    console.log('Cold install, retry, cache-only reads, warm reload, character creation and low-storage fallback passed.');
   } finally {
     await browser.close(); server.closeAllConnections(); await new Promise(r=>server.close(r));
   }

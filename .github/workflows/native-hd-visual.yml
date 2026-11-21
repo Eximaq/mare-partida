@@ -102,7 +102,7 @@ jobs:
         run: |
           npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
           bash tools/install_ci_chromium.sh npx playwright
-          python tools/build_pages.py
+          python tools/build_pages.py --renderer-fixture
           python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/native-hd-server.txt" 2>&1 &
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
       - name: Carregamento visual com movimento e combate

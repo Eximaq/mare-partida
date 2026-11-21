@@ -9,6 +9,11 @@
   const retry = screen.querySelector('button');
   const catalog = document.documentElement.dataset.gameContent;
   const scope = new URL('./', document.baseURI).href;
+  const temporary = new Map();
+  navigator.serviceWorker?.addEventListener('message', event => {
+    if (event.source !== navigator.serviceWorker.controller || event.data?.type !== 'read-unit') return;
+    event.ports[0]?.postMessage(temporary.get(event.data.hash) || null);
+  });
   const bytes = n => (n / 1048576).toLocaleString('pt-BR', {maximumFractionDigits: 1});
   async function digestOf(buffer) {
     const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', buffer));
@@ -78,15 +83,16 @@
     const queue = [];
     for (const [path, size, hash] of units) {
       const key = new URL('loading-data/' + hash, scope).href;
-      if (cached.has(key)) loaded += size; else queue.push({path, size, hash, key});
+      if (cached.has(key) || temporary.has(hash)) loaded += size; else queue.push({path, size, hash, key});
     }
     function update() {
       progress(96 * loaded / Math.max(1, total));
-      amount.textContent = bytes(loaded) + ' / ' + bytes(total) + ' MiB';
+      amount.textContent = bytes(loaded) + ' / ' + bytes(total) + ' MiB' +
+        (temporary.size ? ' · Parte dos arquivos fica nesta aba' : '');
     }
     update();
     phase.textContent = queue.length ? 'Preparando mapas, personagens e equipamentos' : 'Conferindo os arquivos desta versão';
-    let cursor = 0, stopped = false;
+    let cursor = 0, stopped = false, diskFull = false;
     async function download() {
       while (!stopped && cursor < queue.length) {
         const {path, size, hash, key} = queue[cursor++];
@@ -99,7 +105,15 @@
           if (buffer.byteLength !== size) throw Error('Um arquivo chegou incompleto.');
           if (await digestOf(buffer) !== hash)
             throw Error('Um arquivo não corresponde à versão do jogo.');
-          await storage.put(key, new Response(buffer));
+          const blob = new Blob([buffer]);
+          if (!diskFull) {
+            try { await storage.put(key, new Response(blob)); }
+            catch (error) {
+              if (error.name !== 'QuotaExceededError' && error.name !== 'UnknownError' && !(error instanceof TypeError)) throw error;
+              diskFull = true;
+            }
+          }
+          if (diskFull) temporary.set(hash, blob);
           loaded += size; update();
         } catch (error) { stopped = true; throw error; }
       }
