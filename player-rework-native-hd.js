@@ -905,7 +905,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   const own118=player.equipment?.weapon;
   if((own118?.def??own118)===118&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
-     o.action==='walk'&&o.direction==='north'&&o.consumer==='world'&&!o.weaponless&&Object.keys(equipment).length===1&&
+     ['walk','idle'].includes(o.action)&&o.direction==='north'&&o.consumer==='world'&&!o.weaponless&&Object.keys(equipment).length===1&&
      ['variant','variantId','appearanceVariant'].every(k=>own118?.[k]==null||own118[k]==='original')&&
      a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairStyle==='original'&&
      a.hairColor==='black'&&a.face==='original'&&a.eyeStyle==='original'&&a.eyeColor==='blue'&&a.skin===a.skinColor&&
@@ -915,7 +915,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   const wFinalTechWalk=player.equipment?.weapon;
   if([117,119].includes(wFinalTechWalk?.def??wFinalTechWalk)&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
-     o.consumer==='world'&&!o.weaponless&&o.action==='walk'&&((wFinalTechWalk?.def??wFinalTechWalk)===117?o.direction==='north':['east','west'].includes(o.direction))&&Object.keys(equipment).length===1&&
+     o.consumer==='world'&&!o.weaponless&&['walk','idle'].includes(o.action)&&((wFinalTechWalk?.def??wFinalTechWalk)===117?o.direction==='north':['east','west'].includes(o.direction))&&Object.keys(equipment).length===1&&
      ['variant','variantId','appearanceVariant'].every(k=>wFinalTechWalk?.[k]==null||wFinalTechWalk[k]==='original')&&
      a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
@@ -924,7 +924,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   const wTechWalk=player.equipment?.weapon;
   if([119,120].includes(wTechWalk?.def??wTechWalk)&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
-     o.consumer==='world'&&!o.weaponless&&o.action==='walk'&&(o.direction==='north'||(wTechWalk?.def??wTechWalk)===120&&['east','west'].includes(o.direction))&&Object.keys(equipment).length===1&&
+     o.consumer==='world'&&!o.weaponless&&['walk','idle'].includes(o.action)&&(o.direction==='north'||(wTechWalk?.def??wTechWalk)===120&&['east','west'].includes(o.direction))&&Object.keys(equipment).length===1&&
      ['variant','variantId','appearanceVariant'].every(k=>wTechWalk?.[k]==null||wTechWalk[k]==='original')&&
      a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
@@ -942,7 +942,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   const wSouthGauntlet=player.equipment?.weapon, southGauntletId=wSouthGauntlet?.def??wSouthGauntlet;
   if([2,110].includes(southGauntletId)&&player.classId==='brawler'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
-     o.consumer==='world'&&!o.weaponless&&['east','west'].includes(o.direction)&&o.action==='walk'&&Object.keys(equipment).length===1&&
+     o.consumer==='world'&&!o.weaponless&&['east','west'].includes(o.direction)&&['walk','idle'].includes(o.action)&&Object.keys(equipment).length===1&&
      ['variant','variantId','appearanceVariant'].every(k=>wSouthGauntlet?.[k]==null||wSouthGauntlet[k]==='original')&&
      a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
@@ -950,7 +950,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    if(ownWalkingGauntlet?.stockWalkingCuffSavedPalette)return withCarryHead(ownWalkingGauntlet,'carry');
   }
   if(southGauntletId===110&&player.classId==='brawler'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
-     o.consumer==='world'&&!o.weaponless&&o.direction==='north'&&o.action==='walk'&&Object.keys(equipment).length===1&&
+     o.consumer==='world'&&!o.weaponless&&o.direction==='north'&&['walk','idle'].includes(o.action)&&Object.keys(equipment).length===1&&
      ['variant','variantId','appearanceVariant'].every(k=>wSouthGauntlet?.[k]==null||wSouthGauntlet[k]==='original')&&
      a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){

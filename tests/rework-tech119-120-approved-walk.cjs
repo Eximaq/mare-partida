@@ -56,7 +56,7 @@ function draw(record,assets,frame,appearance){const c=cm();W.render(c.getContext
   a.equal(JSON.stringify(player),before);console.log(item,dir,skin,'16 PASS',min,max,'signed iris cosmetic deltas',eyesPixels);global.gc?.();
  }
  for(const [s,o] of [
-  [save('light'),{...opts,action:'idle'}],[save('light'),{...opts,direction:'south'}], [save('light'),{...opts,consumer:'portrait'}],
+  [save('light'),{...opts,action:'attack-unarmed'}],[save('light'),{...opts,direction:'south'}], [save('light'),{...opts,consumer:'portrait'}],
   [save('light'),{...opts,weaponless:true}], [save('light',{eyeColor:'brown'}),opts],
   [save('light',{hairColor:'brown'}),opts], [save('light',{}, {classId:'brawler'}),opts],
   [save('light',{}, {equipment:{weapon:{def:item,appearanceVariant:'unapproved'}}}),opts],
