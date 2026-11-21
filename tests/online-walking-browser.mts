@@ -84,7 +84,26 @@ await authDatabase(async f=>{
   await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
   await p.evaluate(()=>MareGameSession.command('battle.auto',{enabled:true}));
   await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
-  await p.waitForTimeout(18000);captures.push({kind:'auto',frames:await p.evaluate('window.captureMotion=false;window.motion')});
+  // Dawn monsters are neutral until hit. A swordsman who stays in melee range
+  // gives the monster no reason to walk once it reaches attack distance.
+  const engaged=await p.waitForFunction(()=>{
+   const b=MareGameSession.data.online.battle;
+   return b.mobs.find(m=>m.id===b.targetId&&m.alive&&m.engaged)?.id;
+  },null,{timeout:30000});
+  const pursuerId=await engaged.jsonValue();
+  captures.push({kind:'auto',frames:await p.evaluate('window.captureMotion=false;window.motion')});
+  // A loot credit can advance the server version between a frame and a command.
+  // Refresh the authoritative snapshot and retry only an explicitly rejected intent.
+  async function pursuitCommand(action:string,payload:Record<string,unknown>){
+   await p.evaluate(async({action,payload})=>{
+    for(let attempt=1;;attempt++){
+     await MareGameSession.read(true);
+     try{await MareGameSession.command(action,payload);return;}
+     catch(error){if(error.code!=='state_version_conflict'||attempt>=3)throw error;}
+    }
+   },{action,payload});
+  }
+  await pursuitCommand('battle.auto',{enabled:false});
   for(const run of captures){
    const frames=run.frames;let travel=0,maxWindowSpeed=0,windows=0;
    for(let i=1;i<frames.length;i++){
@@ -99,14 +118,6 @@ await authDatabase(async f=>{
    if(run.kind==='click'){const end=frames.at(-1);assert.ok(Math.hypot(end.x-run.target.x,end.y-run.target.y)<2,'distant click must eventually arrive by walking');}
    console.log(JSON.stringify({kind:run.kind,map:run.mapId,maxWindowSpeed,passed:true}));
   }
-  // Dawn monsters are neutral until hit. A swordsman who stays in melee range
-  // gives the monster no reason to walk once it reaches attack distance.
-  const engaged=await p.waitForFunction(()=>{
-   const b=MareGameSession.data.online.battle;
-   return b.mobs.find(m=>m.id===b.targetId&&m.alive&&m.engaged)?.id;
-  },null,{timeout:30000});
-  const pursuerId=await engaged.jsonValue();
-  await p.evaluate(()=>MareGameSession.command('battle.auto',{enabled:false}));
   await p.waitForFunction(()=>{
    const {battle,world}=MareGameSession.data.online;
    return !battle.pending&&!battle.skillJob&&(battle.actionLockUntil||0)<=Date.parse(world.serverNow);
@@ -123,7 +134,7 @@ await authDatabase(async f=>{
      .sort((a,b)=>Math.hypot(b.x-mob.x,b.y-mob.y)-Math.hypot(a.x-mob.x,a.y-mob.y))[0];
   assert.ok(retreat,'Dawn has a navigable retreat from the engaged monster');
   const start=await p.evaluate(id=>globalThis.monsterProbe.actors.get(id)?.moves||0,pursuerId);
-  await p.evaluate(goal=>MareGameSession.command('world.move',goal),retreat);
+  await pursuitCommand('world.move',retreat);
   await p.waitForFunction(({id,start})=>
    (globalThis.monsterProbe.actors.get(id)?.moves||0)-start>100,
    {id:pursuerId,start},{timeout:30000,polling:250});
