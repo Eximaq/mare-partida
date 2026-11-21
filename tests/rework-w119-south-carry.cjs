@@ -25,7 +25,7 @@ const stable=async(api,who,o,f,n)=>{let c;const opt={...o,progress:(f+.1)/n,x:0,
   const opt={...o,action},p0=player('light'),p1=player('ebony'),l=api.selectVisual(p0,opt),e=api.selectVisual(p1,opt);
   a(l?.mechanical119SouthSavedPalette,'real cyborg save');a(e?.mechanical119SouthSavedPalette);a.deepEqual(l.base,e.base);a.deepEqual(l.plan,e.plan);
   if(C)a(!stock.selectVisual(p0,opt)?.mechanical119SouthSavedPalette);
-  for(const [who,where] of [[player('porcelain'),opt],[player('light',{hairColor:'blonde'}),opt],[player('light',{},p0.equipment,'brawler'),opt],
+  for(const [who,where] of [[player('ebony',{skinStyle:'unregistered'}),{...opt,weaponless:true}],[player('light',{hairColor:'blonde'}),opt],[player('light',{},p0.equipment,'brawler'),opt],
    [player('light',{},{weapon:{def:119},coat:{def:151}}),opt],[player('light',{},{weapon:{def:119,variant:'alt'}}),opt],[player('light',{},{weapon:{def:118}}),opt],
    [p0,{...opt,action:'attack-unarmed'}],[p0,{...opt,consumer:'preview'}],[p0,{...opt,direction:'north'}],[p0,{...opt,direction:'east'}],[p0,{...opt,direction:'west'}],[p0,{...opt,weaponless:true}]]){
     const got=api.selectVisual(who,where);a(!got?.mechanical119SouthSavedPalette);if(C)a.deepEqual(got,stock.selectVisual(who,where));
@@ -41,6 +41,11 @@ const stable=async(api,who,o,f,n)=>{let c;const opt={...o,progress:(f+.1)/n,x:0,
   async function isolated(l,f,src){const c=canvas(),id=l.frames?.[f]||l.source;V.render(ctx(c),{...e.base.pack,directions:{south:{...d,layers:[l]}}},new Map([[id,src||await load('tools/rework-base-hd/assets/'+id+'.png')]]),{direction:'south',frame:f,density:4});return rgba(c);}
   for(let f=0;f<n;f++){
    const light=await stable(api,p0,opt,f,n),dark=await stable(api,p1,opt,f,n),bare=await stable(api,player('light',{},{}),opt,f,n),original=await stable(stock,sentinel,opt,f,n);
+   const other=[];for(const t of Object.keys(A.skins).filter(t=>!['light','ebony'].includes(t))){
+    const q=player(t),r=api.selectVisual(q,opt);a(r?.mechanical119SouthSavedPalette);a.deepEqual(r.base,l.base);a.deepEqual(r.plan,l.plan);
+    other.push(await stable(api,q,opt,f,n));
+   }
+   a.equal(other.length,6);
    const [upper,lower]=await Promise.all(limbs.map(q=>isolated(q,f))),eyes=await isolated(iris,f,iCanvas);
    const [lenA,lenB]=l.plan.parts.map((q,k)=>{const c=canvas(),x=ctx(c),pose=d.poses[f],m=V.rigid(q.sourceBone[q.binding.b],q.sourceBone[q.binding.a],pose[q.binding.b],pose[q.binding.a]);
     x.imageSmoothingEnabled=false;x.transform(...m.slice(0,4),m[4]*4,m[5]*4);x.drawImage(imgs[k],0,0);return rgba(c);});
@@ -53,7 +58,8 @@ const stable=async(api,who,o,f,n)=>{let c;const opt={...o,progress:(f+.1)/n,x:0,
     const mask=t.createImageData(N,N);for(let k=0;k<mat.length;k++)if(mat[k])mask.data[k*4+3]=255;t.putImageData(mask,0,0);
     const area=await isolated(l,f,c);for(let k=0;k<owned.length;k++)if(area[k*4+3])owned[k]=1;
    }
-   const pose=d.poses[f],el=pose['RIGHT ELBOW'];let overlap=0,edge=0,regions=0,gear=0,blue=0,material=0;
+   const pose=d.poses[f],el=pose['RIGHT ELBOW'],changeOther=Array(6).fill(0);
+   a.equal(new Set([light,dark,...other].map(z=>require('node:crypto').createHash('sha256').update(z).digest('hex'))).size,8);let overlap=0,edge=0,regions=0,gear=0,blue=0,material=0;
    for(let i=0;i<bare.length;i+=4){
     a.equal(light[i+3],original[i+3],'saved palette changed literal silhouette');a.equal(dark[i+3],original[i+3]);
     const arm=upper[i+3]||lower[i+3],aA=lenA[i+3],aB=lenB[i+3],has=light.readUInt32LE(i),before=bare.readUInt32LE(i);
@@ -66,12 +72,13 @@ const stable=async(api,who,o,f,n)=>{let c;const opt={...o,progress:(f+.1)/n,x:0,
      if(aA===255)overlap++;
      else if([i-4,i+4,i-N*4,i+N*4].some(j=>lenA[j+3]===255&&light[j+3]===255)&&light[i+3]===255)edge++;
     }
+    for(const [j,v] of other.entries()){a.equal(v[i+3],original[i+3]);if(eyes[i+3]||!owned[i/4])a.equal(v.readUInt32LE(i),has);else if(v.readUInt32LE(i)!==has)changeOther[j]++;}
     if(!owned[i/4]&&!eyes[i+3]){a.equal(has,original.readUInt32LE(i),'nonmaterial delta vs literal original');a.equal(dark.readUInt32LE(i),has);}
-    if((aA===255&&lenA.readUInt32LE(i)===has||aB===255&&lenB.readUInt32LE(i)===has)&&has!==before){a.equal(has,dark.readUInt32LE(i),'unmixed hardware changed for skin');gear++;}
+    if((aA===255&&lenA.readUInt32LE(i)===has||aB===255&&lenB.readUInt32LE(i)===has)&&has!==before){a.equal(has,dark.readUInt32LE(i),'unmixed hardware changed for skin');for(const v of other)a.equal(v.readUInt32LE(i),has);gear++;}
    }
    a.equal(blue,45);a(gear>100&&material>100&&regions>1000);a(overlap+edge>0,'mechanical elbow disconnected at authored seam '+f);
-   results.push({f,overlap,edge,blue,gear,material,regions});global.gc?.();
+   a(changeOther.every(v=>v>100));results.push({f,overlap,edge,blue,gear,material,regions,changeOther});global.gc?.();
   }
-  console.log(action,JSON.stringify(results));
+  console.log(action,'all 8 tones',JSON.stringify(results));
  }
 })().catch(e=>{console.error(e);process.exitCode=1});

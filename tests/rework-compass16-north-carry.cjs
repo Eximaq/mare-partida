@@ -9,7 +9,7 @@ const raw={gender:'masculino',skinStyle:'natural',hairStyle:'original',hairColor
  V=global.ReworkAccessoryVendor.compositor,pix=c=>Buffer.from(c.getContext('2d').getImageData(0,0,c.width,c.height).data);
 const clothes=o=>o?.hdKind==='carry'&&o.item===16;
 (async()=>{await base.ready;await api.ready;
- for(const tone of ['light','ebony'])for(const action of ['idle','walk']){
+ for(const tone of Object.keys(A.skins))for(const action of ['idle','walk']){
   const opt={...o,action},p0=player(tone),old=JSON.stringify(p0),x=api.selectVisual(p0,opt),plain=api.selectVisual(player(tone,{}),opt),shared=api.selectVisual(player(tone,{weapon:{def:5}}, {},'gunner'),opt);
   a(clothes(x),'missing default W16 North '+tone+'/'+action);a.deepEqual(api.select(p0,opt),x);a.deepEqual(x.base,shared.base);
   a.deepEqual(x.base.pack,plain.pack);a(!x.base.pack.directions.north.layers.some(l=>l.slot==='face'));a(x.base.headHairSeparated);
@@ -25,7 +25,7 @@ const clothes=o=>o?.hdKind==='carry'&&o.item===16;
   for(const direction of ['south','east','west'])a(clothes(api.selectVisual(player(tone),{...opt,direction})),'same W16 own material validated in '+direction);
   for(const opts of [{action:'attack-focus'},{consumer:'portrait'},{weaponless:true}])a(!clothes(api.selectVisual(player(tone),{...opt,...opts})));
  }
- console.log('2 x 2 real saved routes W16 North, no iris pixels in this direction; negative coverage stays stock');
+ console.log('8 x 2 real saved routes W16 North, no iris pixels in this direction; negative coverage stays stock');
  if(process.env.SELECT_ONLY)return;
  const sk=process.env.SKIN||'light',action=process.env.ACTION||'walk',opt={...o,action},p0=player(sk),p1=player(sk,{}),r=api.selectVisual(p0,opt),d=r.base.pack.directions.north,n=d.clip.frames;
  const gear=await load('tools/rework-weapon-layers-hd/'+pure.source.url),noGear={...r,id:r.id+':no-pure-w16-for-test',plan:{...r.plan,parts:[]}};

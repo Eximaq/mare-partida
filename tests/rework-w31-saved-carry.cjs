@@ -19,7 +19,7 @@ const rgbaEq=(got,exp)=>assert.equal(Buffer.compare(got,exp),0);
   assert(!world.selectVisual(light,{...o,action:'attack-focus'})?.relic31SavedCarry);
   const d=slot.base.pack.directions[direction],n=d.clip.frames;
   assert.equal(n,action==='idle'?1:16);if(action==='walk')assert.equal(d.clip.fps,16);
-  for(const [who,opt] of [[save('porcelain'),o],[save('light',{hairStyle:'hair-spiky'}),o],[save('light',{eyeColor:'green'}),o],[save('light',{hairColor:'brown'}),o],
+  for(const [who,opt] of [[save('porcelain',{},undefined,'strategist'),o],[save('light',{hairStyle:'hair-spiky'}),o],[save('light',{eyeColor:'green'}),o],[save('light',{hairColor:'brown'}),o],
    [save('light',{},{weapon:{def:31},coat:{def:151}}),o],[save('light',{},{weapon:{def:31,variant:'alt'}}),o],[save('light',{},{weapon:{def:31}},'sword'),o],
    [save('light',{},{weapon:{def:32}}),o],[light,{...o,consumer:'preview'}],[light,{...o,weaponless:true}]]){
    assert(!world.selectVisual(who,opt)?.relic31SavedCarry);if(C)assert.deepEqual(world.selectVisual(who,opt),stock.selectVisual(who,opt));
