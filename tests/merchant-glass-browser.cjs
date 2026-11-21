@@ -5,7 +5,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  const hook=`  window.__merchantQA={get game(){return game},open(){const npc=npcs.find(n=>n.kind==='shop');Object.assign(world.hero,{x:npc.x,y:npc.y});activateNPC(npc)},far(){world.hero.x=-9999;openPanel('shop')},refresh(){openPanel('shop')}};window.__mareDiagnostics=`;
  const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8').replace('  window.__mareDiagnostics=',hook);
  await p.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.__merchantQA);
- await p.locator('#characterName').fill('Nauta');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();
+ await p.locator('#characterName').fill('Nauta');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.locator('#gameLoading').waitFor({state:'hidden'});
  for(const [width,height] of [[1920,1080],[1366,768],[1024,768],[768,1024],[390,844],[360,800],[844,390]]){
   await p.setViewportSize({width,height});await p.evaluate(()=>__merchantQA.open());const panel=p.locator('#panelOverlay > .dialog'),r=await panel.boundingBox();assert(r&&r.x>=0&&r.y>=0&&r.x+r.width<=width+1&&r.y+r.height<=height+1);
   assert.equal(await panel.evaluate(e=>getComputedStyle(e).borderTopWidth),'1px');assert(await panel.evaluate(e=>getComputedStyle(e).backdropFilter.includes('blur')));

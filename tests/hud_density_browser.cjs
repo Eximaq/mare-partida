@@ -42,8 +42,10 @@ if(!before)panels.push(...['dev','dungeons','akuma-reveal','party','crew'].map(p
   const next=p.locator(step==='faction'?'#nextToClass':step==='class'?'#nextToAppearance':'#createCharacter');await next.scrollIntoViewIfNeeded();const nextBox=await next.boundingBox();assert(nextBox.y>=0&&nextBox.y+nextBox.height<=1080,'Creation action remains reachable');await p.locator('.creation-dialog').evaluate(e=>e.scrollTop=0);
  }
  await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>window.__densityQA?.game);
+ await p.locator('#gameLoading').waitFor({state:'hidden'});
+ await p.evaluate(()=>new Promise(resolve=>{window.__densityPause=true;requestAnimationFrame(resolve)}));
  await p.evaluate(()=>{
-  window.__densityPause=true;const q=__densityQA,g=q.game;let seed=781,prev=Math.random;Math.random=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);
+  const q=__densityQA,g=q.game;let seed=781,prev=Math.random;Math.random=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);
   g.level=50;g.gold=1000000;g.materials=10000;
   const weapon=q.make(q.defs.find(d=>d.slot==='weapon'&&d.type==='sword'),4,false,'epic');weapon.sockets=['pearl_int_1',null,null];g.equipment.weapon=weapon;
   g.inventory=q.defs.filter(d=>d.slot&&d.type!=='akuma_no_mi'&&!d.kind).slice(0,8).map((d,i)=>q.make(d,i+1,false,'common'));
