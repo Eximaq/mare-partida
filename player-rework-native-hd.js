@@ -782,6 +782,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     [null,undefined,'original'].includes(player.equipment?.weapon?.variant??player.equipment?.weapon?.variantId??player.equipment?.weapon?.appearanceVariant)});
   if(nativeWeapon?.orb122SouthOwn)return {...nativeWeapon,hdKind:'weapon'};
   if(nativeWeapon?.exactComposite&&nativeWeapon.timeline?.length&&nativeWeapon.fps)return {...nativeWeapon,hdKind:'weapon'};
+  const savedDaggers=selectFemaleDaggerSavedTones(player,o,a);if(savedDaggers)return savedDaggers;
   const female=femaleRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment});if(female)return {...female,hdKind:'female-equipment'};
   const idlePants=(o.direction==='north'?resolveNorthOwnedPantsIdle:resolveSouthOwnedPantsIdle)(player,o,a,equipment);if(idlePants)return idlePants;
   const punchPants=resolveFemaleOwnedPants(player,o,a,equipment);if(punchPants)return punchPants;
@@ -2421,6 +2422,28 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...source,id:source.id+':saved-own-side',hdKind:'weapon',hairSeparated:true,relic32SideBlue:true,contactTick:4,
     colorAppearance:{hairColor:'black',...(w32Tone?{focusSkin:a.skin}:{})},...(w32Tone?{w32SideSavedPalette:true,id:source.id+':saved-own-side:'+a.skin}:{}),basePack:{pack:p,images:Object.fromEntries(refs.map(h=>[h,'/tools/rework-base-hd/assets/'+h+'.png']))},
     states:source.states.map(s=>({...s,layers:s.layers.slice(1)}))};
+ }
+ // Reuse the exact registered pose/gear and the approved separate P22 layer.
+ function selectFemaleDaggerSavedTones(player,o,a){
+  const direction=o.direction,proof=daggerP22?.savedToneMaterials?.[direction];
+  if(!proof||o.action!=='attack-daggers'||o.consumer!=='world'||o.weaponless||player.__reworkSubset||
+     player.classId!=='rogue'||canonical(a.body)!=='female'||a.version!==1||a.skinStyle!=='natural'||
+     a.skin!==a.skinColor||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)||
+     ['variant','variantId','appearanceVariant'].some(k=>o[k]!=null&&o[k]!=='original'))return null;
+  const v=registeredEquipment(player,o),item=v?.weapon?.item;
+  if(![12,13,71,72,73,74].includes(item)||Object.keys(v).length!==(v.pants?2:1)||v.pants&&v.pants.item!==22)return null;
+  const r=femaleRegistry?.resolve({item,body:'female',action:o.action,direction,appearance:a,equipment:{weapon:v.weapon.value},
+   daggerToneAuthority:{target:daggerP22.targets[item+'/'+direction],geometry:daggerP22.geometry[direction],...proof}});
+  if(!r?.femaleDaggerSavedTones)return null;
+  const base={...r,hdKind:'female-equipment'};
+  if(!v.pants)return base;
+  const p=r.baseRecord.pack,d=p.directions[direction],frames=daggerP22.frames[direction];
+  if(frames?.length!==8||frames.some(h=>!daggerP22.archiveIndex.sources[h]||r.baseRecord.sourceRefs.includes(h))||
+     d.layers.some(l=>l.id==='adaga-overlap:pants:22'))return null;
+  const cloth={id:'adaga-overlap:pants:22',slot:'foreground',depth:.9,source:frames[0],frames,binding:{kind:'fixed'}};
+  const pack={...p,directions:{...p.directions,[direction]:{...d,layers:[...d.layers,cloth]}}};
+  return describeSlots({...base,id:r.id+':approved-dagger-p22',pack,
+   baseRecord:{...r.baseRecord,pack,sourceRefs:[...r.baseRecord.sourceRefs,...new Set(frames)]},daggerP22Sources:frames},v,[]);
  }
  // User-approved visual over the exact authored Original dagger rig.
  // Normalized/personalized appearances are NOT an alias for this Original render.

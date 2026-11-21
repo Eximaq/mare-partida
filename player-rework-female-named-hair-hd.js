@@ -83,7 +83,14 @@ tc.putImageData(pixels,0,0);image=tile;}if(r.skinColor && (l.slot==='headBase'||
    const irisPixels=irisContext.getImageData(0,0,tile.width,tile.height).data;
    for(let i=0;i<mask.length;i++)if(irisPixels[i*4+3])mask[i]=0;
   }
-  for(const [y,left,right] of o.fringeSpans)mask.fill(0,y*tile.width+left,y*tile.width+right+1);
+  if(!r.daggerNativeHead||l.id==='face')for(const [y,left,right] of o.fringeSpans)mask.fill(0,y*tile.width+left,y*tile.width+right+1);
+  if(r.daggerNativeHead&&l.id==='face'&&r.style==='original'&&r.hairColor){
+   const fringe=api.materialMask(pixels.data,'hair'),own=new Uint8Array(fringe.length);
+   for(const [y,left,right] of o.fringeSpans)for(let x=left;x<=right;x++){
+    const i=y*tile.width+x;if(!mask[i]&&pixels.data[4*i+3])own[i]=fringe[i];
+   }
+   pixels.data.set(api.recolor(pixels.data,own,api.hairs[r.hairColor].ramp));
+  }
   pixels.data.set(api.recolor(pixels.data,mask,api.skins[r.skinColor].ramp));
   tc.putImageData(pixels,0,0);
   image=tile;

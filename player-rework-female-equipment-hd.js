@@ -266,7 +266,7 @@ function approvedSouthCarry(r){
 }
 const asset=(r,sha)=>'tools/'+(r.daggerP22Sources?.includes(sha)?'rework-female-dagger-p22':r.northFirearmCoatSources?.includes(sha)?'rework-firearm113-coat':r.checkpointSources?.includes(sha)?'rework-sword0-checkpoint':r.outfitSources?.includes(sha)?'rework-modular-outfits-hd':'rework-base-hd')+'/assets/'+sha+'.png';
 function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVendor?.compositor,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){if(index?.schema!=='female-native-equipment-registration-v1'||!vendor)throw Error('Missing female equipment sources');return {
- resolve({item,body,action,direction,appearance={},equipment={}}={}){if(item==null||!index.records.some(r=>r.item===Number(item))||!['female','feminino'].includes(body))return null;const extra=Object.entries(equipment).filter(([k,v])=>k!=='weapon'&&v!=null&&!['none','original'].includes(v));const glove=extra.find(([slot])=>slot==='gloves')?.[1],clothing=extra.filter(([slot])=>!['head','gloves'].includes(slot)),head=extra.find(([slot])=>slot==='head')?.[1];if(clothing.some(([slot])=>!['coat','legs','pants'].includes(slot))||clothing.filter(([slot])=>slot!=='coat').length>1)return null;if(equipment.weapon!=null&&Number(equipment.weapon?.def??equipment.weapon)!==Number(item))return null;const customized=['hair','hairStyle','skin','skinColor','hairColor','face','eyeStyle','eyeColor'].some(k=>appearance[k]&&appearance[k]!=='original'&&!((k==='eyeColor')&&appearance[k]==='blue'));if(['attack','punch','shoot','focus','cast'].includes(action))action=index.records.find(r=>r.item===Number(item)&&r.action.startsWith('attack-'))?.action||action;const r=index.records.find(r=>r.item===Number(item)&&r.body==='female'&&r.action===action&&r.direction===direction);if(!r)return null;const coat=clothing.find(([slot])=>slot==='coat')?.[1],pants=clothing.find(([slot])=>slot!=='coat')?.[1];
+ resolve({item,body,action,direction,appearance={},equipment={},daggerToneAuthority=null}={}){if(item==null||!index.records.some(r=>r.item===Number(item))||!['female','feminino'].includes(body))return null;const extra=Object.entries(equipment).filter(([k,v])=>k!=='weapon'&&v!=null&&!['none','original'].includes(v));const glove=extra.find(([slot])=>slot==='gloves')?.[1],clothing=extra.filter(([slot])=>!['head','gloves'].includes(slot)),head=extra.find(([slot])=>slot==='head')?.[1];if(clothing.some(([slot])=>!['coat','legs','pants'].includes(slot))||clothing.filter(([slot])=>slot!=='coat').length>1)return null;if(equipment.weapon!=null&&Number(equipment.weapon?.def??equipment.weapon)!==Number(item))return null;const customized=['hair','hairStyle','skin','skinColor','hairColor','face','eyeStyle','eyeColor'].some(k=>appearance[k]&&appearance[k]!=='original'&&!((k==='eyeColor')&&appearance[k]==='blue'));if(['attack','punch','shoot','focus','cast'].includes(action))action=index.records.find(r=>r.item===Number(item)&&r.action.startsWith('attack-'))?.action||action;const r=index.records.find(r=>r.item===Number(item)&&r.body==='female'&&r.action===action&&r.direction===direction);if(!r)return null;const coat=clothing.find(([slot])=>slot==='coat')?.[1],pants=clothing.find(([slot])=>slot!=='coat')?.[1];
  const isOriginal=v=>v==null||v==='original';
  const exact113CoatHelmet=r.item===113&&direction==='north'&&action==='attack-firearm'&&
    Number(head?.def??head)===157&&Number(coat?.def??coat)===151&&pants==null&&glove==null&&
@@ -299,7 +299,34 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   if(typeof glove==='object'&&['variant','variantId','appearanceVariant'].some(k=>glove[k]!=null&&glove[k]!=='original'))return null;
   combined=attachNorth113Glove(combined,Number(glove.def??glove))||(!clothing.length&&head==null?attachNorth114Glove(combined,Number(glove.def??glove)):null);
  }
- if(!combined)return null;if(!customized&&head==null)return combined;
+ if(!combined)return null;
+ if(daggerToneAuthority){
+  const proof=daggerToneAuthority,pack=r.baseRecord.pack,dir=pack.directions[direction];
+  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!customized||extra.length||!dir||r.paddingPhysical!==0||action!=='attack-daggers'||
+     !eq(proof.target,[r.id,r.action,r.direction,r.body,r.item,r.states])||
+     !eq(proof.geometry,[dir,pack.density,pack.frame,pack.pivot])||dir.clip.frames!==8||
+     proof.headOffsets?.length!==8||proof.headOffsets.some(k=>k?.length!==2||!k.every(Number.isInteger)))return null;
+  const bodyLayer=dir.layers.find(l=>l.id==='body-clothed');
+  if(bodyLayer?.frames?.length!==8||bodyLayer.frames.some(h=>!proof.bodyMasks[h]))return null;
+  // All four head planes in every phase are exact integer translations of
+  // their own original. Compose the elected cosmetics once using the
+  // established ownership model, then apply only that authored translation.
+  const standing={...r.baseRecord,pack:{...pack,directions:{...pack.directions,[direction]:{...dir,
+   layers:dir.layers.map(l=>['headBase','face','hair'].includes(l.slot)?{...l,frames:undefined}:l)}}}};
+  const material=appearanceRegistry?.resolve(standing,{hair:appearance.hair||appearance.hairStyle,appearance});
+  if(!material?.skinColor||(appearance.hairColor&&appearance.hairColor!==material.hairColor))return null;
+  const daggerHead={...material,id:material.id+':dagger-native-head',daggerNativeHead:true};
+  let blue=daggerHead;
+  if(appearance.eyeColor==='blue'&&direction!=='north'){
+   const iris=dir.layers.find(v=>v.id==='iris');
+   if(!iris||!material.ownership.attackLayers.some(v=>v.id==='iris'&&v.source===iris.source))return null;
+   blue={...daggerHead,id:daggerHead.id+':dagger-signed-blue',eyeColor:'blue',registeredBlueIris:iris.source};
+  }
+  return {...combined,id:combined.id+':saved-dagger-tone:'+blue.id,colorAppearance:appearance,material:blue,
+   femaleDaggerSavedTones:{standing,offsets:proof.headOffsets,bodyMasks:proof.bodyMasks,armMasks:proof.armMasks||{}}};
+ }
+ if(!customized&&head==null)return combined;
   // These Norte firearms use the same fixed source and the same exact +9px
   // recoil in state 4. Validate all source hashes before enabling that pose.
   const approvedFirearmHeadgear=(!clothing.length||exact113CoatHelmet&&combined.northFirearmCoatSources)&&glove==null&&
@@ -313,7 +340,7 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
      material.gearRecord?.snapshot!=='f24f832fec352fe8f2b64f7fe54a543e22381c3146d27ba6297d41301cdfe9fe'||
      !material.gearRecord.layers.some(l=>l.id===material.gearRecord.headgearPolicy?.gearId&&l.source==='6f38ce6e1badcc2004674e699593d07205179c4b878a7fa793c498925d7e4b81')))return null;
   return {...combined,id:combined.id+':'+material.id,material,colorAppearance:appearance,...(recoil?{northFirearmHeadRecoil:recoil.offsets,...(material.skinColor?{northFirearmVisibleSkin}:{} )}:{})};},
- requiredFiles(r,{frame}={}){const d=r.baseRecord.pack.directions[r.direction],states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid female equipment frame');const refs=frame===undefined?r.baseRecord.sourceRefs:d.layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean);const skinFiles=r.northFirearmVisibleSkin?refs.filter(h=>r.northFirearmVisibleSkin[h]).map(h=>'tools/rework-firearm113-coat/assets/'+r.northFirearmVisibleSkin[h]+'.png'):[];return [...new Set([...skinFiles,...(r.approvedSouthCarry&&r.item===17?[orbSkinPath]:[]),...refs.map(s=>asset(r,s)),...(r.material?appearanceRegistry.requiredFiles(r.material):[]),...states.flatMap(s=>[...s.parts.map(p=>p.url),...(r.north114GloveContact?s.parts.map(p=>asset(r,p.handMaskSHA256)):[]),...Object.values(s.baseMasks||{})])])]},
+ requiredFiles(r,{frame}={}){const d=r.baseRecord.pack.directions[r.direction],states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid female equipment frame');const refs=frame===undefined?r.baseRecord.sourceRefs:d.layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean);const skinFiles=r.northFirearmVisibleSkin?refs.filter(h=>r.northFirearmVisibleSkin[h]).map(h=>'tools/rework-firearm113-coat/assets/'+r.northFirearmVisibleSkin[h]+'.png'):[];const daggerMasks=refs.flatMap(h=>{const m=r.femaleDaggerSavedTones?.bodyMasks[h]||r.femaleDaggerSavedTones?.armMasks[h];return m?['tools/rework-female-dagger-p22/assets/'+m+'.png']:[];});return [...new Set([...skinFiles,...daggerMasks,...(r.approvedSouthCarry&&r.item===17?[orbSkinPath]:[]),...refs.map(s=>asset(r,s)),...(r.material?appearanceRegistry.requiredFiles(r.material):[]),...states.flatMap(s=>[...s.parts.map(p=>p.url),...(r.north114GloveContact?s.parts.map(p=>asset(r,p.handMaskSHA256)):[]),...Object.values(s.baseMasks||{})])])]},
  render(ctx,r,images,{frame=0,captureOps,makeCanvas:frameCanvas=makeCanvas}={}){let p=r.baseRecord.pack,d=p.directions[r.direction];
  const map=new Map(r.baseRecord.sourceRefs.map(s=>[s,images.get(asset(r,s))]));
  let gearImages=images;
@@ -352,9 +379,11 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
  }
  if(r.material){
   const head=d.layers.find(layer=>layer.slot==='headBase'),source='custom-head';
-  const composed=appearanceRegistry.compose(r.baseRecord,r.material,images),recoil=r.northFirearmHeadRecoil?.[frame]||0;
-  const tile=recoil?frameCanvas(composed.width,composed.height):composed;
-  if(recoil)tile.getContext('2d').drawImage(composed,0,recoil);
+  const own=r.femaleDaggerSavedTones;
+  const composed=appearanceRegistry.compose(own?.standing||r.baseRecord,r.material,images),
+   [dx,dy]=own?.offsets[frame]||[0,r.northFirearmHeadRecoil?.[frame]||0];
+  const tile=dx||dy?frameCanvas(composed.width,composed.height):composed;
+  if(dx||dy)tile.getContext('2d').drawImage(composed,dx,dy);
   const layers=d.layers.filter(layer=>!['headBase','face','hair'].includes(layer.slot)).concat({...head,source,frames:undefined});
   d={...d,layers};p={...p,directions:{...p.directions,[r.direction]:d}};map.set(source,tile);
   if(r.material.skinColor){
@@ -362,12 +391,24 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
    for(const [sha,image] of map){
     const uses=d.layers.filter(layer=>(layer.frames?.[frame]||layer.source)===sha&&layer.slot!=='headBase');
     const owned=uses.length===1&&uses[0].id==='body-clothed'&&r.northFirearmVisibleSkin?.[sha];
-    const kind=uses.length&&uses.every(layer=>r.skinRepairLayers?.includes(layer.id))?'mixed':skin.ownership(uses);
-    if(!image||(!kind&&!owned))continue;
+    const arm=uses.length&&uses.every(l=>/^(left|right)-(upper|forearm|hand)$/.test(l.id));
+    const daggerMask=own&&(uses.length===1&&uses[0].id==='body-clothed'?own.bodyMasks[sha]:arm&&own.armMasks[sha]);
+    const kind=uses.length&&uses.every(layer=>r.skinRepairLayers?.includes(layer.id))||own&&arm?'mixed':skin.ownership(uses);
+    if(!image||(!kind&&!owned&&!daggerMask))continue;
     const tile=frameCanvas(image.width,image.height),c=tile.getContext('2d');c.drawImage(image,0,0);
     const data=c.getImageData(0,0,tile.width,tile.height);
     let tones;
-    if(owned){
+    if(daggerMask){
+     const im=images.get('tools/rework-female-dagger-p22/assets/'+daggerMask+'.png');
+     if(!im||im.width!==image.width||im.height!==image.height)throw Error('Missing own dagger skin material map');
+     const mc=frameCanvas(im.width,im.height),mx=mc.getContext('2d');mx.drawImage(im,0,0);
+     const material=mx.getImageData(0,0,im.width,im.height).data;tones=new Uint8Array(material.length/4);
+     for(let i=0;i<tones.length;i++)if(material[4*i+3]){
+      const k=material[4*i]; if(!k||k>5||!data.data[4*i+3])throw Error('Dagger material mask outside owned skin');
+      tones[i]=k;
+     }
+     mc.width=1;
+    }else if(owned){
      const im=images.get('tools/rework-firearm113-coat/assets/'+owned+'.png');
      if(!im||im.width!==image.width||im.height!==image.height)throw Error('Missing phase-owned North firearm skin mask');
      const ms=frameCanvas(im.width,im.height),mc=ms.getContext('2d');mc.drawImage(im,0,0);
