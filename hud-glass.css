@@ -1135,6 +1135,57 @@ body > #gameTooltip.game-tooltip,
   & > .ui-select-list .ui-select-option:is(.is-focused, :hover):not([aria-disabled=true]) { background: #ffffff12; outline-color: var(--glass-gold); }
   & .op-panel-head .op-best-btn { min-height: 36px; font: 600 11px/1.3 var(--glass-type); }
   & .op-best-btn .inv-ui-icon { width: 16px; height: 16px; }
+  & .inventory-batch-toolbar {
+    flex: none;
+    align-items: center;
+    padding: 0;
+    margin-block: 3px;
+    font: 500 12px/1.35 var(--glass-type);
+    color: var(--glass-muted);
+  }
+  & .inventory-batch-toolbar.is-active {
+    display: grid;
+    gap: 5px;
+    border: 1px solid #d4af374b;
+    border-radius: 8px;
+    padding: 6px 8px;
+    background: linear-gradient(110deg, #282720ed, #14171dec 72%);
+  }
+  & :is(.batch-heading, .batch-tools, .batch-actions) { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; }
+  & .batch-heading { flex-wrap: nowrap; justify-content: space-between; }
+  & .batch-heading [role=status] { min-width: 0; }
+  & .batch-heading strong { color: var(--glass-gold); }
+  & .batch-button {
+    min-height: 29px;
+    padding: 3px 9px;
+    border: 1px solid #ffffff29;
+    border-image: none;
+    border-radius: 6px;
+    background: #ffffff08;
+    box-shadow: none;
+    color: #ece9e2;
+    font: 600 12px/1.25 var(--glass-type);
+    text-transform: none;
+  }
+  & .batch-button[data-batch=toggle]::before { content: '✓'; margin-right: 6px; color: var(--glass-gold); }
+  & .batch-heading .batch-button::before { content: none; }
+  & .batch-heading .batch-button, & .batch-button[data-batch=clear] { background: transparent; border-color: transparent; color: var(--glass-muted); }
+  & .batch-actions { border-top: 1px solid #ffffff17; padding-top: 5px; }
+  & .batch-button[data-batch=sell]:enabled { margin-left: auto; color: #ffe4a0; border-color: #cba75b80; background: #a577232b; }
+  & .batch-button:hover:enabled { border-color: #cfba7e9e; background: #ffffff16; color: #fff5da; }
+  & .batch-button:focus-visible { outline: 2px solid var(--glass-gold); outline-offset: 1px; }
+  & .batch-button:disabled { opacity: .57; cursor: default; }
+  & .batch-warning { color: #eebc9b; font: 500 11px/1.3 var(--glass-type); }
+  & .op-grid .batch-marker {
+    position: absolute; z-index: 3; inset: auto auto 3px 3px;
+    display: grid; place-items: center; width: 13px; height: 13px; box-sizing: border-box;
+    padding: 0; border: 1px solid #cfc8acb0; border-radius: 3px;
+    background: #101318ed; font: 800 11px/1 var(--glass-type); pointer-events: none;
+  }
+  & .op-grid .op-item.batch-selected { outline: 1px solid #fbe3a6; outline-offset: 1px; }
+  & .batch-selected .batch-marker { background: #f6d88d; border-color: #fff0b6; color: #211c12; }
+  & .op-grid .op-item[aria-disabled=true] { opacity: .52; cursor: default; }
+  @media (pointer: coarse) { & .batch-button { min-height: 36px; } }
   & .op-grid-wrap { padding: 5px; border: 1px solid #ffffff14; border-radius: 8px; background: #080c1259; box-shadow: none; }
   & .op-grid > .op-item.empty, & .op-equip-slot:not(.filled), & .op-detail-icon:not([class*="rarity-"]) {
     border: 1px solid #ffffff26;

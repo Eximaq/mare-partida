@@ -2433,6 +2433,7 @@
     if(currentPanel==='myprofile'&&element.dataset.profileSlot){if(game.preferences?.hideItems)return null;const item=game.equipment?.[element.dataset.profileSlot];return item?{kind:'item',item:tooltipItem(item)}:null;}
     if(element.dataset.socialItem){const row=socialUI?.findItem(element.dataset.socialItem),detail=row&&tooltipItem(row.item);if(!detail)return null;const equipped=game.equipment?.[detail.slot];return {kind:'item',item:{...detail,quantity:row.qty,level:row.item.level,plus:row.item.plus,sockets:row.item.sockets},equipped:equipped&&equipped.id!==row.item.id?tooltipItem(equipped):null};}
     if(currentPanel!=='inventory')return null;
+    if(inventorySelection.active&&element.hasAttribute('data-item'))return null;
     const potion=element.dataset.item==='virtual-potion'?potions.health:element.dataset.item==='virtual-mana-potion'?potions.mana:null;
     if(potion)return {kind:'item',item:{name:potion.name,rarity:'uncommon',rarityName:'Incomum',level:1,stats:{},description:potionDescription(potion)}};
     if(element.dataset.item===MareForge.itemFragment.id)return {kind:'item',item:{name:MareForge.itemFragment.name,rarity:'common',rarityName:'Comum',level:1,stats:{},description:MareForge.itemFragment.description}};
@@ -2511,7 +2512,34 @@
     else{if(suppressSave||!saveWriter.owner)return false;const next=structuredClone(game);if(action==='sell'){const wanted=new Set(ids);next.inventory=next.inventory.filter(i=>!wanted.has(i.id));next.gold+=plan.total;next.stats.goldEarned+=plan.total;}else for(const id of ids){const item=next.inventory.find(i=>i.id===id);if(!item)return false;item.locked=action==='lock';}try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));}catch{toast('Falha ao salvar. Nenhum item foi alterado.','danger');return false;}game=next;}
     inventorySelection.ids.clear();renderPanel();updateUI();toast(action==='sell'?'Itens vendidos em uma única operação.':'Bloqueios atualizados.','good');return true;
   }
-  function batchToolbar(shown){for(const id of inventorySelection.ids)if(!game.inventory.some(i=>i.id===id))inventorySelection.ids.delete(id);const ids=inventorySelection.ids,off=[...ids].filter(id=>!shown.some(e=>e.id===id)).length,items=game.inventory.filter(i=>ids.has(i.id));const button=(label,action,disabled=false)=>MareUI.button({label,disabled,attributes:{'data-batch':action}});return '<div class="inventory-batch-toolbar">'+button(inventorySelection.active?'Sair da seleção':'Selecionar','toggle')+(inventorySelection.active?'<p role="status">'+ids.size+' selecionados · '+off+' fora desta página. Pilhas: todas as unidades. Poções e Fragmento de Item usam os controles próprios.</p>'+button('Selecionar esta página ('+shown.filter(e=>e.item).length+' itens)','page')+button('Limpar seleção','clear',!ids.size)+button('Ver detalhes do último item','details',!selectedItem)+(!batchPlan().error?button('Vender selecionados','sell'):'')+(items.some(i=>!i.locked)?button('Bloquear selecionados','lock'):'')+(items.some(i=>i.locked)?button('Desbloquear selecionados','unlock'):''):'')+'</div>';}
+  function batchButton(action,label,disabled=false){
+    return '<button type="button" class="batch-button" id="inventory-batch-'+action+'" data-batch="'+action+'"'+(disabled?' disabled':'')+'>'+label+'</button>';
+  }
+  function batchToolbar(shown){
+    const {active,ids}=inventorySelection;
+    if(!active)return '<div class="inventory-batch-toolbar">'+batchButton('toggle','Selecionar itens')+'</div>';
+    const items=game.inventory.filter(item=>ids.has(item.id));
+    if(items.length!==ids.size){
+      const present=new Set(items.map(item=>item.id));
+      for(const id of ids)if(!present.has(id))ids.delete(id);
+    }
+    const page=shown.filter(entry=>entry.item);
+    const marked=page.filter(entry=>ids.has(entry.id)).length;
+    const outside=ids.size-marked;
+    const units=items.reduce((sum,item)=>sum+MareInventoryBatch.quantity(item),0);
+    const count=ids.size===1?'1 item marcado':ids.size+' itens marcados';
+    const status=ids.size?'<strong>'+count+'</strong>'+(units>ids.size?' · '+units.toLocaleString('pt-BR')+' unidades (pilhas inteiras)':'')+(outside?' · '+outside+' fora desta página':''):'Marque os itens na grade.';
+    const plan=batchPlan();
+    const actions=ids.size?'<div class="batch-actions">'+batchButton('details','Detalhes')+
+      (items.some(item=>!item.locked)?batchButton('lock','Bloquear'):'')+
+      (items.some(item=>item.locked)?batchButton('unlock','Desbloquear'):'')+
+      batchButton('sell',plan.error?'Vender':'Vender · '+plan.total.toLocaleString('pt-BR')+' Berry',!!plan.error)+'</div>':'';
+    return '<section class="inventory-batch-toolbar is-active" aria-label="Seleção de itens">'+
+      '<div class="batch-heading"><span role="status">'+status+'</span>'+batchButton('toggle','Sair')+'</div>'+
+      '<div class="batch-tools">'+batchButton('page','Selecionar página ('+page.length+')',marked===page.length)+
+      (ids.size?batchButton('clear','Limpar'):'')+'</div>'+actions+
+      (ids.size&&plan.error?'<small class="batch-warning">Venda indisponível · '+escapeHTML(plan.error)+'</small>':'')+'</section>';
+  }
   function renderInventory(body){
     const {pageSize:BAG_PER_PAGE}=inventoryGridLayout();
     if(inventoryUI.pageSize&&inventoryUI.pageSize!==BAG_PER_PAGE)inventoryUI.page=MareUI.inventoryPageAtResize(inventoryUI.page,inventoryUI.pageSize,BAG_PER_PAGE);
@@ -2525,7 +2553,7 @@
     const shown=all.slice(inventoryUI.page*BAG_PER_PAGE,(inventoryUI.page+1)*BAG_PER_PAGE);
     const slots=shown.map(entry=>{
       const selected=inventorySelection.active?inventorySelection.ids.has(entry.id):selectedItem===entry.id; const item=entry.item; const icon=invSymbol(entry);
-      return `<button class="op-item rarity-${entry.rarity} ${inventorySelection.active&&selected?'batch-selected':''} ${selected?'selected':''}" type="button" aria-pressed="${selected}" aria-label="${escapeHTML(entry.name)}${rarityNames[entry.rarity]?` · ${rarityNames[entry.rarity]}`:''}" data-item="${entry.id}" ${item&&MareAkuma.isFruit(item,itemDefs)?'draggable="true" data-fruit-drag="'+escapeHTML(item.id)+'"':''}>${inventorySelection.active&&item?'<span class="batch-marker" aria-hidden="true">'+(selected?'✓':'□')+'</span>':''}<span class="op-item-icon">${icon}</span>${item&&item.plus?`<span class="op-item-refine">+${item.plus}</span>`:''}${item&&item.locked?'<span class="op-item-lock" role="img" aria-label="Item bloqueado"></span>':''}${entry.qty>1?`<span class="op-item-qty">x${entry.qty}</span>`:''}</button>`;
+      return `<button class="op-item rarity-${entry.rarity} ${inventorySelection.active&&selected?'batch-selected':''} ${selected?'selected':''}" type="button" aria-pressed="${selected}" aria-label="${escapeHTML(entry.name)}${rarityNames[entry.rarity]?` · ${rarityNames[entry.rarity]}`:''}" id="bag-item-${escapeHTML(entry.id)}" data-item="${escapeHTML(entry.id)}" ${inventorySelection.active&&!item?'aria-disabled="true" title="Use os controles individuais deste item."':''} ${!inventorySelection.active&&item&&MareAkuma.isFruit(item,itemDefs)?'draggable="true" data-fruit-drag="'+escapeHTML(item.id)+'"':''}>${inventorySelection.active&&item?'<span class="batch-marker" aria-hidden="true">'+(selected?'✓':'')+'</span>':''}<span class="op-item-icon">${icon}</span>${item&&item.plus?`<span class="op-item-refine">+${item.plus}</span>`:''}${item&&item.locked?'<span class="op-item-lock" role="img" aria-label="Item bloqueado"></span>':''}${entry.qty>1?`<span class="op-item-qty">x${entry.qty}</span>`:''}</button>`;
     }).join('') + Array.from({length:BAG_PER_PAGE-shown.length},()=>'<span class="op-item empty" aria-hidden="true"></span>').join('');
     const sel=invSelected(); const detail=inventoryDetail(sel);
     const left=inventorySlotsLeft.map(invSlotHtml).join('')+'<span class="op-equip-spacer" aria-hidden="true"></span>'; const right=inventorySlotsRight.filter(slot=>slot!=='akuma_no_mi').map(invSlotHtml).join('');
@@ -4094,8 +4122,48 @@ function applySceneHudLayout(){
     b=e.target.closest('[data-profession-retry]');if(b){void loadProfessionalContracts();return;}
     b=e.target.closest('[data-contract-period]');if(b){const period=b.dataset.contractPeriod;if(ONLINE_GAME&&(period==='professional'||contractPeriod==='professional')){contractPeriod=period;renderContractsPanel($('dialogBody'));$('dialogBody').querySelector('[data-contract-period="'+period+'"]')?.focus({preventScroll:true});if(period==='professional'&&crewProfessionStatus!=='loading')void loadProfessionalContracts();}else if(MareContractsBoard.periodConfig[period]){contractPeriod=period;refreshContractsBoard();}return;}
     b=e.target.closest('[data-claim]');if(b){claimQuest(b.dataset.claim);return;}
-    b=e.target.closest('[data-batch]');if(b){const action=b.dataset.batch;if(action==='toggle'){inventorySelection.active=!inventorySelection.active;inventorySelection.ids.clear();}else if(action==='clear')inventorySelection.ids.clear();else if(action==='page'){const entries=inventoryEntries(),size=inventoryUI.pageSize;for(const entry of entries.slice(inventoryUI.page*size,(inventoryUI.page+1)*size))if(entry.item)inventorySelection.ids.add(entry.id);}else if(action==='details'){$('inventory-detail')?.scrollIntoView({block:'nearest'});$('inventory-detail')?.focus();return;}else if(action==='sell'){showConfirmation('Vender selecionados?','Confira itens, quantidades e valores.',()=>runBatch('sell'),'VENDER LOTE',true,batchSummary);return;}else{void runBatch(action);return;}renderPanel();return;}
-    b=e.target.closest('[data-item]');if(b){if(inventorySelection.active){if(!game.inventory.some(i=>i.id===b.dataset.item))return;const ids=inventorySelection.ids;ids.has(b.dataset.item)?ids.delete(b.dataset.item):ids.add(b.dataset.item);selectedItem=b.dataset.item;renderPanel();}else selectInventoryItem(b.dataset.item);return;}
+    b=e.target.closest('[data-batch]');
+    if(b){
+      const action=b.dataset.batch;
+      const ids=inventorySelection.ids;
+      if(action==='toggle'){
+        inventorySelection.active=!inventorySelection.active;
+        ids.clear();
+      }else if(action==='clear'){
+        ids.clear();
+      }else if(action==='page'){
+        const size=inventoryUI.pageSize,start=inventoryUI.page*size;
+        for(const entry of inventoryEntries().slice(start,start+size))if(entry.item)ids.add(entry.id);
+      }else if(action==='details'){
+        selectedItem=ids.has(selectedItem)?selectedItem:[...ids].at(-1);
+        renderPanel();
+        $('inventory-detail')?.focus();
+        return;
+      }else if(action==='sell'){
+        showConfirmation('Vender selecionados?','Confira itens, quantidades e valores.',()=>runBatch('sell'),'VENDER LOTE',true,batchSummary);
+        return;
+      }else{
+        void runBatch(action);
+        return;
+      }
+      renderPanel();
+      const control=$(b.id);
+      (control&&!control.disabled?control:$('inventory-batch-toggle'))?.focus({preventScroll:true});
+      return;
+    }
+    b=e.target.closest('[data-item]');
+    if(b){
+      if(inventorySelection.active){
+        if(b.getAttribute('aria-disabled')==='true')return;
+        const id=b.dataset.item,ids=inventorySelection.ids;
+        if(ids.has(id))ids.delete(id);
+        else ids.add(id);
+        selectedItem=id;
+        renderPanel();
+        ($(b.id)||$('inventory-batch-toggle'))?.focus({preventScroll:true});
+      }else selectInventoryItem(b.dataset.item);
+      return;
+    }
     b=e.target.closest('[data-fruit-register]');if(b){registerFruit(b.dataset.fruitRegister);return;}
     b=e.target.closest('[data-equip]');if(b){equipItem(b.dataset.equip);return;}
     b=e.target.closest('[data-unequip]');if(b){unequip(b.dataset.unequip);return;}
