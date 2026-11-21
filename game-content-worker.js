@@ -104,6 +104,8 @@ async function serve(request, clientId, path) {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (url.searchParams.has('install')) return;
+  // Renderer fixtures use Playwright routes for navigation and all non-fixture artwork.
+  if (new URL(self.location.href).searchParams.has('renderer') && !url.href.startsWith(new URL('assets/ui/loading/', scope).href)) return;
   const entry = url.href.split(/[?#]/)[0];
   if (event.request.mode === 'navigate' && event.resultingClientId &&
       [scope, new URL('game', scope).href, new URL('index.html', scope).href, new URL('ui-preview.html', scope).href].includes(entry)) {

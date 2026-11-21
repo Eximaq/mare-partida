@@ -32,7 +32,7 @@ def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS):
     paths = sorted({f for prefix in roots for f in (root / prefix).rglob('*')
                     if f.is_file() and f.suffix.lower() in TYPES})
     paths.extend(root / path for path in extra_files)
-    if (root / 'journal-feed.json').exists():
+    if roots == ROOTS and (root / 'journal-feed.json').exists():
         paths.append(root / 'journal-feed.json')
     # Spend the small-file budget on the smallest files first to avoid thousands
     # of HTTP requests without duplicating large archives in the Pages export.
@@ -76,7 +76,8 @@ def write_catalog(root, compatibility_files, extra_files, renderer_fixture=False
     data = json.dumps(manifest, separators=(',', ':'), ensure_ascii=True).encode()
     filename = 'game-content-' + hashlib.sha256(data).hexdigest()[:24] + '.json'
     (root / filename).write_bytes(data)
+    fixture_attribute = ' data-renderer-fixture' if renderer_fixture else ''
     for name in ['index.html', 'ui-preview.html']:
         html = root / name
         html.write_text(html.read_text(encoding='utf-8').replace(
-            '<html ', f'<html data-game-content="{filename}" ', 1), encoding='utf-8')
+            '<html ', f'<html{fixture_attribute} data-game-content="{filename}" ', 1), encoding='utf-8')

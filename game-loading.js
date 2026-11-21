@@ -19,6 +19,8 @@
     const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', buffer));
     return Array.from(digest, n => n.toString(16).padStart(2, '0')).join('');
   }
+  let resolveEntry;
+  const firstEntry = new Promise(resolve => { resolveEntry = resolve; });
   let scenePending = false, failure = false, prepared = false, interfaceReady = false, generation = 0;
   function progress(value) {
     meter.value = value;
@@ -41,7 +43,9 @@
   async function worker() {
     if (!navigator.serviceWorker || !window.caches) throw Error('Abra o jogo por HTTPS para guardar os arquivos no dispositivo.');
     const sw = navigator.serviceWorker;
-    await sw.register(new URL('game-content-worker.js', scope), {scope});
+    const url = new URL('game-content-worker.js', scope);
+    if (document.documentElement.hasAttribute('data-renderer-fixture')) url.searchParams.set('renderer', '1');
+    await sw.register(url, {scope});
     await sw.ready;
     if (!sw.controller) await new Promise((resolve, reject) => {
       const done = () => { clearTimeout(timer); sw.removeEventListener('controllerchange', done); resolve(); };
@@ -159,10 +163,11 @@
       if (generation !== current) return;
       screen.hidden = true; app.inert = false; app.removeAttribute('aria-busy');
       window.MareUI?.syncModals();
+      resolveEntry();
       if (!document.getElementById('startOverlay')?.classList.contains('hidden')) document.getElementById('characterName')?.focus();
     }));
   }
-  window.MareGameLoading = {prepare, scene, finish, fail,
+  window.MareGameLoading = {prepare, scene, finish, fail, firstEntry,
     get prepared() { return prepared; },
     get failed() { return failure; },
     get pending() { return scenePending && !failure; }};
