@@ -17,6 +17,7 @@
 #app.hud-nautical #huntXpTracker.hunt-xp-tracker,
 #app.hud-nautical .world-command #returnLobby,
 #app.hud-nautical .location-heading .location-plaque,
+#app.hud-nautical #mareMusicDock > :is(summary,.music-controls),
 #app.hud-nautical #mainMenu .character-menu-anchor > .character-quick-menu {
   border: 1px solid var(--glass-line);
   border-image: none;
@@ -373,6 +374,34 @@
 #app.hud-nautical .location-heading:focus-visible .location-plaque { outline: 2px solid var(--glass-gold); outline-offset: 2px; }
 #app.hud-nautical .location-heading:active .location-plaque { background: #383024; border-color: var(--glass-gold); }
 
+/* Music uses the same settings as the Audio page; the desktop shortcut sits beside navigation. */
+@media (min-width: 901px) and (min-height: 501px) {
+  #app.hud-nautical #hudUtilities {
+    inset: var(--hud-edge) auto auto calc(var(--menu-left) - 52px);
+    transform: none;
+  }
+}
+#app.hud-nautical #mareMusicDock { position: relative; }
+#app.hud-nautical #mareMusicDock > summary {
+  display: grid; place-items: center; width: 44px; height: 44px;
+  color: var(--glass-gold); cursor: pointer; list-style: none; touch-action: manipulation;
+}
+#mareMusicDock summary::-webkit-details-marker { display: none; }
+#mareMusicDock[data-muted=true] [data-sound-on],
+#mareMusicDock:not([data-muted=true]) [data-sound-off] { display: none; }
+#app.hud-nautical #mareMusicDock:is([open],:hover) > summary { border-color: #c6ac70; }
+#app.hud-nautical #mareMusicDock :is(summary,input):focus-visible { outline: 2px solid var(--glass-gold); outline-offset: 2px; }
+#app.hud-nautical #mareMusicDock .music-controls {
+  position: absolute; top: max(calc(100% + 6px), calc(var(--menu-bottom) - var(--hud-edge) + 6px)); left: 0; width: 180px; padding: 12px;
+  display: grid; gap: 8px; font: 600 13px/1.3 var(--glass-type);
+}
+#mareMusicDock .music-controls label { display: flex; align-items: center; justify-content: space-between; }
+#mareMusicDock .music-controls output { color: var(--glass-gold); font-variant-numeric: tabular-nums; }
+#mareMusicDock .music-controls input { accent-color: var(--glass-gold); cursor: pointer; }
+#mareMusicDock input[type=range] { width: 100%; margin: 0; }
+@media (max-width: 900px), (max-height: 500px) {
+  #app.hud-nautical #mareMusicDock { display: none; }
+}
 /* Navigation icons retain their three-state art and every existing control. */
 #app.hud-nautical #mainMenu {
   height: 64px;

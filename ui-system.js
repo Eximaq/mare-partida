@@ -65,10 +65,52 @@
     for(const b of el.querySelectorAll('button'))if(!b.matches('.op-item,.op-equip-slot,.forge2-tile,.forge2-pearl,.forge2-material-slot,.talent-node,.constellation-node,[data-talent-node],.voyage-ship,.island-card,.class-choice,.faction-choice,.close-button,.op-close,.ui-close'))b.classList.add('ui-button');
     for(const tab of el.querySelectorAll('.forge2-tabs,.op-tabs,.op-category-tabs,.voyage-region-tabs,.akuma-rank-tabs'))tab.classList.add('ui-tabs');
   }
+  function mountMusicControl(utilities){
+    const dock=document.createElement('details');
+    dock.id='mareMusicDock';
+    dock.innerHTML=`
+      <summary aria-label="Controles de música" title="Controles de música">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9h4l5-4v14l-5-4H3z"/>
+          <path data-sound-on d="M16 8.5a5 5 0 0 1 0 7M19 5.5a9 9 0 0 1 0 13"/>
+          <path data-sound-off d="m16 9 6 6m0-6-6 6"/>
+        </svg>
+      </summary>
+      <div class="music-controls">
+        <label>Música <input type="checkbox"></label>
+        <label for="hudMusicVolume">Volume <output for="hudMusicVolume"></output></label>
+        <input id="hudMusicVolume" aria-label="Volume da música" type="range" min="0" max="100" step="1">
+      </div>`;
+    utilities.append(dock);
+    const trigger=dock.querySelector('summary'),enabled=dock.querySelector('[type=checkbox]');
+    const volume=dock.querySelector('[type=range]'),value=dock.querySelector('output');
+    function sync(state){
+      enabled.checked=!state.muted && state.volume>0;
+      dock.dataset.muted=String(!enabled.checked);
+      volume.value=String(Math.round(state.volume*100));
+      value.value=volume.value+'%';
+      volume.setAttribute('aria-valuetext',value.value);
+      trigger.setAttribute('aria-label',enabled.checked?'Controles de música, som ligado':'Controles de música, som desligado');
+    }
+    if(root.MareAudio)sync(root.MareAudio.getState());
+    else document.addEventListener('DOMContentLoaded',()=>{if(root.MareAudio)sync(root.MareAudio.getState());},{once:true});
+    document.addEventListener('mare-audio-change',event=>sync(event.detail));
+    enabled.addEventListener('change',()=>root.MareAudio.setMuted(!enabled.checked));
+    volume.addEventListener('input',()=>root.MareAudio.setVolume(Number(volume.value)/100));
+    dock.addEventListener('keydown',event=>{
+      event.stopPropagation();
+      if(event.key==='Escape' && dock.open){
+        event.preventDefault();dock.open=false;trigger.focus();
+      }
+    });
+    dock.addEventListener('focusout',event=>{if(!dock.contains(event.relatedTarget))dock.open=false;});
+    document.addEventListener('pointerdown',event=>{if(dock.open && !dock.contains(event.target))dock.open=false;});
+  }
   function mountHUD(){
     const app=document.getElementById('app'),action=document.querySelector('.action-row'),journey=document.getElementById('journeyHud');
     if(!app||!action||!journey||document.getElementById('hudUtilities'))return;
     const utilities=document.createElement('div');utilities.id='hudUtilities';app.append(utilities);
+    mountMusicControl(utilities);
     // All fixed HUD surfaces share one stacking context, independent of canvas wrappers.
     for(const el of [document.getElementById('mainMenu'),document.querySelector('.action-panel'),document.getElementById('floatingChat'),journey,document.querySelector('.world-command'),document.getElementById('targetHud'),document.getElementById('floatingExpedition'),document.getElementById('floatingStatus')])if(el)app.append(el);
     const location=document.querySelector('.location-heading');if(location)app.append(location);
@@ -124,7 +166,6 @@
     const resize=new ResizeObserver(measure);for(const el of [document.querySelector('.topbar'),document.querySelector('.action-panel'),document.getElementById('mainMenu'),journey,utilities,chat,chatToggle,document.getElementById('targetHud')])resize.observe(el);
     addEventListener('resize',measure,{passive:true});
     const observer=new MutationObserver(records=>{
-      const dock=document.getElementById('mareMusicDock');if(dock&&dock.parentElement!==utilities)utilities.append(dock);
       let changed=false;for(const r of records){if(r.target===log&&r.addedNodes.length){changed=true;if(!chat.classList.contains('hud-open'))unread+=r.addedNodes.length;}}
       if(changed)filter();if(chat.classList.contains('hud-open'))unread=0;
       const chatButton=document.getElementById('chatCornerToggle');if(chatButton.dataset.unread!==String(Math.min(99,unread)))chatButton.dataset.unread=String(Math.min(99,unread));
