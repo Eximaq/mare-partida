@@ -226,7 +226,20 @@
 </head>
 <body>
   <section id="gameLoading" aria-labelledby="loading-title">
-    <div class="loading-scene" aria-hidden="true"><div class="loading-art"></div><div class="loading-art"></div><div class="loading-art"></div></div>
+    <div class="loading-scene" aria-hidden="true">
+      <picture class="loading-art">
+        <source media="(orientation: portrait)" sizes="max(100vw, 56.3vh)" srcset="assets/ui/loading-art/porto-retrato-540.webp 540w, assets/ui/loading-art/porto-retrato-941.webp 941w, assets/ui/loading-art/porto-retrato-1440.webp 1440w, assets/ui/loading-art/porto-retrato-2160.webp 2160w">
+        <img alt="" sizes="max(100vw, 177.8vh)" srcset="assets/ui/loading-art/porto-paisagem-960.webp 960w, assets/ui/loading-art/porto-paisagem-1672.webp 1672w, assets/ui/loading-art/porto-paisagem-2560.webp 2560w, assets/ui/loading-art/porto-paisagem-3840.webp 3840w" src="assets/ui/loading-art/porto-paisagem-1672.webp">
+      </picture>
+      <picture class="loading-art">
+        <source media="(orientation: portrait)" sizes="max(100vw, 56.3vh)" srcset="assets/ui/loading-art/mar-retrato-540.webp 540w, assets/ui/loading-art/mar-retrato-941.webp 941w, assets/ui/loading-art/mar-retrato-1440.webp 1440w, assets/ui/loading-art/mar-retrato-2160.webp 2160w">
+        <img alt="" sizes="max(100vw, 177.8vh)" srcset="assets/ui/loading-art/mar-paisagem-960.webp 960w, assets/ui/loading-art/mar-paisagem-1672.webp 1672w, assets/ui/loading-art/mar-paisagem-2560.webp 2560w, assets/ui/loading-art/mar-paisagem-3840.webp 3840w" src="assets/ui/loading-art/mar-paisagem-1672.webp">
+      </picture>
+      <picture class="loading-art">
+        <source media="(orientation: portrait)" sizes="max(100vw, 56.3vh)" srcset="assets/ui/loading-art/alabasta-retrato-540.webp 540w, assets/ui/loading-art/alabasta-retrato-941.webp 941w, assets/ui/loading-art/alabasta-retrato-1440.webp 1440w, assets/ui/loading-art/alabasta-retrato-2160.webp 2160w">
+        <img alt="" sizes="max(100vw, 177.8vh)" srcset="assets/ui/loading-art/alabasta-paisagem-960.webp 960w, assets/ui/loading-art/alabasta-paisagem-1672.webp 1672w, assets/ui/loading-art/alabasta-paisagem-2560.webp 2560w, assets/ui/loading-art/alabasta-paisagem-3840.webp 3840w" src="assets/ui/loading-art/alabasta-paisagem-1672.webp">
+      </picture>
+    </div>
     <div class="loading-panel">
       <img class="loading-brand" src="apps/account-client/art/kaizoku-idle.webp" alt="Kaizoku Idle" width="1000" height="391">
       <h1 id="loading-title">Preparando a travessia</h1>

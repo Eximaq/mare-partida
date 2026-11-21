@@ -9,16 +9,16 @@
 .loading-scene { z-index: -1; overflow: hidden; }
 .loading-scene::after { content: ""; background: linear-gradient(0deg, #041117 3%, #07161de8 14%, #06162044 60%, #07151e33); }
 .loading-art {
-  background: center / cover no-repeat;
+  display: block;
   animation: harbor-crossing 21s linear infinite both;
 }
-.loading-art:nth-child(1) { background-image: url('assets/ui/character-studio/sunset-dock.jpg'); animation-delay: -1s; }
-.loading-art:nth-child(2) { background-image: url('assets/ui/talents-hd/open-sea.jpg'); animation-delay: -15s; }
-.loading-art:nth-child(3) { background-image: url('assets/ui/voyage-hd/alabasta-desert.png'); animation-delay: -8s; }
+.loading-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.loading-art:nth-child(1) { animation-delay: -1s; }
+.loading-art:nth-child(2) { animation-delay: -15s; }
+.loading-art:nth-child(3) { animation-delay: -8s; }
 @keyframes harbor-crossing {
-  0% { opacity: 0; transform: scale(1.015); }
+  0%, 40%, 100% { opacity: 0; }
   6%, 34% { opacity: 1; }
-  40%, 100% { opacity: 0; transform: scale(1.075); }
 }
 .loading-panel {
   position: absolute; inset-inline: max(7vw, env(safe-area-inset-left)) max(7vw, env(safe-area-inset-right));
