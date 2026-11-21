@@ -99,3 +99,13 @@ test("an existing session goes directly to the game; normal entry contains no du
   ])
     assert.equal(html.includes(marker), false, marker);
 });
+
+test("account entry serves the official logo and both community links before signing in", () => {
+  const entry = new URL("../../apps/account-client/index.html", import.meta.url);
+  const html = readFileSync(entry, "utf8");
+  assert.match(html, /<img[^>]+src="\.\/art\/kaizoku-idle\.webp"[^>]+alt="Kaizoku Idle"/);
+  assert.ok(readFileSync(new URL("./art/kaizoku-idle.webp", entry)).length > 0);
+  for (const href of ["https://discord.gg/uRnP79cp7h", "https://www.instagram.com/kaizokuidle2d"]) {
+    assert.ok(html.includes('href="' + href + '"'), href);
+  }
+});
