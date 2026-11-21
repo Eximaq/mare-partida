@@ -5,6 +5,20 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
  await p.route('**/game.js*',async r=>{const response=await r.fetch(),src=await response.text();await r.fulfill({response,body:src.replace('  window.__mareDiagnostics=','  window.__controlsQA={get game(){return game},get session(){return session},enter:enterHunt,update:updateUI,toggle:toggleFloating,log};window.__mareDiagnostics=')});});
  await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.__controlsQA);
  await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__controlsQA.game);
+ const music=p.locator('#mareMusicDock');
+ assert.equal(await music.count(),1,'one desktop music disclosure');
+ const trigger=music.locator('summary'),volume=music.getByRole('slider');
+ assert(await trigger.isVisible() && await volume.isHidden());
+ await trigger.focus();await p.keyboard.press('Enter');
+ await volume.press('End');await volume.press('ArrowLeft');
+ assert.equal(await p.evaluate(()=>MareAudio.getState().volume),.99);
+ const enabled=music.getByRole('checkbox');
+ await enabled.uncheck();assert(await p.evaluate(()=>MareAudio.getState().muted));
+ await p.evaluate(()=>MareAudio.setMuted(false));assert(await enabled.isChecked());
+ await p.keyboard.press('Escape');
+ assert(await volume.isHidden() && await trigger.evaluate(el=>el===document.activeElement));
+ await p.setViewportSize({width:390,height:844});assert(await music.isHidden());
+ await p.setViewportSize({width:1672,height:941});
  for(const id of ['characterMenuTrigger','modesMenuTrigger','captainMenuTrigger']){
   await p.locator('#'+id).click();const visible=await p.evaluate(()=>['characterQuickMenu','modesQuickMenu','captainQuickMenu'].filter(id=>!document.getElementById(id).classList.contains('hidden')));assert.equal(visible.length,1);assert.equal(visible[0],id.replace('MenuTrigger','QuickMenu'));
  }
