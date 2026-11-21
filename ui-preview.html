@@ -271,7 +271,14 @@
         <button type="button" id="characterPosterClose" aria-label="Recolher cartaz do personagem" title="Recolher cartaz"><span aria-hidden="true">×</span></button>
       </section>
       <button type="button" class="location-heading" data-panel="map" aria-controls="panelOverlay" aria-describedby="locationName" aria-label="Abrir mapa" title="Abrir mapa">
-        <span id="locationName">Porto das Correntes</span>
+        <span class="location-plaque">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="m17.5 6.5-3 8-5-5z" fill="currentColor"/>
+            <path d="m6.5 17.5 3-8 5 5z" fill="currentColor" opacity=".55"/>
+          </svg>
+          <span id="locationName">Porto das Correntes</span>
+        </span>
       </button>
     </header>
 

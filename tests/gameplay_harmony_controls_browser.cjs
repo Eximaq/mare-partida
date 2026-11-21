@@ -56,5 +56,24 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
  await p.keyboard.press('Enter');
  await p.locator('body.scene-lobby').waitFor();
  assert(await portButton.isHidden(),'return control disappears in port');
+ const mapButton=p.getByRole('button',{name:'Abrir mapa',exact:true});
+ for(const [width,height] of [[1366,768],[768,1024],[390,844],[320,568]]){
+  await p.setViewportSize({width,height});
+  for(const open of [true,false]){
+   await p.evaluate(value=>__controlsQA.toggle('chat',value),open);
+   await p.waitForFunction(open=>{
+    const anchor=document.getElementById(open?'floatingChat':'chatCornerToggle').getBoundingClientRect();
+    const button=document.querySelector('.location-heading').getBoundingClientRect();
+    return Math.abs(button.left-anchor.left)<=1 && Math.abs(button.bottom-anchor.top)<=1;
+   },open);
+   const hit=await mapButton.boundingBox();
+   const label=mapButton.locator('.location-plaque');
+   assert.equal(await label.evaluate(el=>getComputedStyle(el).backdropFilter),'blur(8px)','glass location plaque');
+   assert(hit.height>=44 && (await label.boundingBox()).height<44,'slim label and full touch target');
+  }
+ }
+ await mapButton.focus();
+ await p.keyboard.press('Enter');
+ await p.locator('#panelOverlay[data-ui-panel="map"]').waitFor();
  assert.deepEqual(errors,[]);console.log('Gameplay controls: exclusive menus, local notes, keyboard typing guards, chat shortcut, rates threshold, real activity state, minimization and shared material passed.');
 }finally{await b.close();}})().catch(e=>{console.error(e);process.exitCode=1});
