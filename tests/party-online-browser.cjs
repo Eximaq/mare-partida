@@ -55,6 +55,17 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
   await shot('01-empty');await action('create');await page.locator('.party-member').first().waitFor();
   await tab('invites');await page.locator('#partyInviteName').fill(peer.name);await tab('members');await tab('invites');assert.equal(await page.locator('#partyInviteName').inputValue(),peer.name);await action('invite');assert.equal(commands.at(-1).payload.name,peer.name);
   party.invites=[];party.group.members=[{...self},{...peer},member('55555555-5555-4555-8555-555555555555','Rui das Ilhas',{connected:false}),member('66666666-6666-4666-8666-666666666666','Joana da Maré')];await refresh();await tab('members');
+  await page.locator('#closePanel').click();
+  const compact=page.locator('#partyCompact');
+  await compact.waitFor();
+  assert.equal(await compact.evaluate(el=>getComputedStyle(el).backdropFilter),'blur(8px)');
+  const fold=compact.locator('[data-party-collapse]');
+  if(await fold.getAttribute('aria-expanded')==='false')await fold.click();
+  assert.equal(await compact.locator('.party-member:visible').count(),4);
+  assert.equal(await compact.locator('.party-offline .party-status').innerText(),'Desconectado');
+  await shot('grupo-hud');
+  await fold.click();assert(!await compact.locator('.party-compact-members').isVisible());
+  await fold.click();await compact.locator('[data-party-open]').click();await tab('members');
   assert.equal(await page.locator('.party-pane:visible .party-member').count(),4);assert.equal(await page.locator('#partyMemberSelection').inputValue(),peerId,'New roster selects an existing member, not an expired empty selection');assert(await page.locator('[data-party-action=leave]').evaluate(el=>el.getBoundingClientRect().bottom<=document.querySelector('#party-pane-members').getBoundingClientRect().bottom),'Team actions stay visible with four members');assert(await page.locator('#party-pane-members .party-member').last().evaluate(el=>el.getBoundingClientRect().bottom<=el.parentElement.getBoundingClientRect().bottom+1),'Four standard member rows fit on desktop');await shot('02-four-members');
   for(const [width,height] of [[1920,1080],[1280,720],[1024,768],[768,1024],[390,844],[430,932],[844,390]]){
    await page.setViewportSize({width,height});

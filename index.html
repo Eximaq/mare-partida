@@ -351,10 +351,11 @@
         <div class="game-frame" id="gameFrame">
           <canvas id="worldCanvas" width="960" height="570" aria-label="Mundo de Kaizoku Idle"></canvas>
           <div id="worldLoading" class="world-loading hidden" role="status" aria-live="polite"><div><span>Preparando o mapa…</span></div></div>
+          <div id="worldRecovery" class="world-recovery" hidden><div><strong role="status"></strong><span role="timer"></span></div></div>
           <div class="world-vignette"></div>
           <div class="map-label"><span id="sceneEyebrow">REGIÃO DE CAÇA</span><strong id="overlayArea">COSTA DOS DESTROÇOS</strong></div>
           <div class="world-side-stats"><span id="combatState"><i class="pulse-dot"></i> CAÇADA AUTOMÁTICA</span><span id="targetHint">PROCURANDO ALVO...</span></div>
-          <div class="boss-banner hidden" id="bossBanner">⚔ UM CHEFE SE APROXIMA</div>
+          <div class="boss-banner hidden" id="bossBanner" role="status"><img src="assets/ui/contracts-hd/boss.png" alt=""><div><small>Chefe à vista</small><strong>Um chefe se aproxima</strong></div></div>
           <div class="world-hint" id="worldHint">Clique para caminhar · Clique nos NPCs para interagir</div><div class="world-command"><button id="returnLobby" type="button" class="hidden">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="4" r="2"/><path d="M12 6v15M8.5 9h7M3 14c1 4 4 6 9 7 5-1 8-3 9-7M3 17v-3l3 1m12 0 3-1v3"/></svg>
             Voltar ao porto
