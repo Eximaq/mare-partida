@@ -662,10 +662,21 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const allowReviewedBareOrb=o.consumer==='world'&&!o.weaponless&&['variant','variantId','appearanceVariant'].every(k=>
    player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original');
   const independent=!player.__reworkSubset&&weaponRegistry?.resolveSeparable?.({item:o.weaponless?undefined:(player.equipment?.weapon?.def??player.equipment?.weapon),body:canonical(a.body),sourceBody:a.body,classId:player.classId,weaponVariant:player.equipment?.weapon?.variant??player.equipment?.weapon?.variantId??player.equipment?.weapon?.appearanceVariant,action:o.action,direction:o.direction,appearance:a,equipment:independentEquipment,
+   allowOwnCyborgTechSides:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>o[k]==null||o[k]==='original'),
+   allowOwnW114Sides:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>o[k]==null||o[k]==='original'),
+   allowOwnStaff124North:allowReviewedBareOrb&&['variant','variantId','appearanceVariant'].every(k=>o[k]==null||o[k]==='original')&&Object.keys(player.equipment||{}).length===1,
+   allowOwnStaffFamilySouth:allowReviewedBareOrb&&['variant','variantId','appearanceVariant'].every(k=>o[k]==null||o[k]==='original')&&Object.keys(player.equipment||{}).length===1,
+   allowOwn128SideAttack:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>o[k]==null||o[k]==='original'),
+   allowOwn128SouthTone:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,
+   allowOwn121SouthTone:allowReviewedBareOrb&&['variant','variantId','appearanceVariant'].every(k=>o[k]==null||o[k]==='original')&&Object.keys(player.equipment||{}).length===1,
+   allowOwn121SideTone:allowReviewedBareOrb&&['variant','variantId','appearanceVariant'].every(k=>o[k]==null||o[k]==='original')&&Object.keys(player.equipment||{}).length===1,
    allowOwn16SouthTone:allowReviewedBareOrb&&['variant','variantId','appearanceVariant'].every(k=>o[k]==null||o[k]==='original')&&Object.keys(player.equipment||{}).length===1,
+   allowOwn32SouthTone:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,
    allowOwn31SouthTone:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,
    allowOrb122BarePreview:allowReviewedBareOrb,allowOrb17BarePreview:allowReviewedBareOrb,
    allowGauntlet14South:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,
+   allowOwnW114North:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>o[k]==null||o[k]==='original'),
+   allowOwn110Attack:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>o[k]==null||o[k]==='original'),
    allowGauntletLightSouth:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,allowOwnW14Lateral:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,allowOwnDaggerSideTone:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,allowOwnW16SideTone:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1,allowOwnStaff123Lateral:allowReviewedBareOrb&&Object.keys(player.equipment||{}).length===1});
   if(independent)return {...independent,hdKind:'weapon'};
   const independentPants=!player.__reworkSubset&&outfitRegistry?.resolveIndependentPants?.({body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:player.equipment||{}});
@@ -737,6 +748,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowRelic31NorthAttack:Number(weapon)===31&&!player.__reworkSubset&&['healer','strategist'].includes(player.classId)&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
+   allowStaff121NorthAttack:Number(weapon)===121&&!player.__reworkSubset&&player.classId==='strategist'&&o.consumer==='world'&&!o.weaponless&&
+    Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original')&&
+    ['variant','variantId','appearanceVariant'].every(k=>o[k]==null||o[k]==='original'),
    allowRelic32NorthAttack:Number(weapon)===32&&!player.__reworkSubset&&['healer','strategist'].includes(player.classId)&&o.consumer==='world'&&!o.weaponless&&
     Object.keys(player.equipment||{}).length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowOrb17NorthRestoredAttack:Number(weapon)===17&&!player.__reworkSubset&&player.classId==='strategist'&&o.consumer==='world'&&!o.weaponless&&
