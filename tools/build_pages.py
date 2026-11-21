@@ -12,7 +12,10 @@ from materialize_native_indexes import materialize
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--include-reviews", action="store_true", help="Also export isolated historical art workbenches")
 parser.add_argument('--static-demo', action='store_true', help='Build the standalone demo without optional development APIs')
+parser.add_argument('--renderer-fixture', action='store_true', help='Use a small install catalog for isolated renderer tests that intercept asset requests')
 args = parser.parse_args()
+if args.renderer_fixture and args.static_demo:
+    parser.error('The public Pages demo requires the complete installation catalog.')
 include_reviews = args.include_reviews
 ROOT = Path(__file__).resolve().parent.parent
 materialize(ROOT)
@@ -33,7 +36,7 @@ web_files += ['weekly-boss-ui.js','weekly-boss-ui.css','akainu-art-data.js','aka
 from export_sword0_checkpoint import materialize as materialize_sword_checkpoint
 materialize_sword_checkpoint(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
                              OUT/'tools/rework-sword0-checkpoint')
-web_files.append('player-rework-sword0-checkpoint.js')
+web_files.extend(['player-rework-sword0-checkpoint.js', 'game-loading.js', 'game-loading.css', 'game-content-worker.js'])
 from export_firearm113_coat import materialize as materialize_firearm113_coat
 materialize_firearm113_coat(
     ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18/fuzil113-ns.zip',
@@ -233,3 +236,13 @@ for folder in ['tools/rework-base-hd','tools/rework-weapon-layers-hd','tools/rew
                 target=OUT/folder/p.relative_to(source)
                 target.parent.mkdir(parents=True,exist_ok=True)
                 shutil.copy2(p,target)
+
+# The content index is derived from the finished runtime export, after generated art exists.
+from game_loading_catalog import write_catalog
+logo = OUT / 'assets/ui/loading/kaizoku-idle.webp'
+logo.parent.mkdir(parents=True, exist_ok=True)
+shutil.copy2(ROOT / 'apps/account-client/art/kaizoku-idle.webp', logo)
+for name in ['index.html', 'ui-preview.html']:
+    entry = OUT / name
+    entry.write_text(entry.read_text(encoding='utf-8').replace('apps/account-client/art/kaizoku-idle.webp', 'assets/ui/loading/kaizoku-idle.webp'), encoding='utf-8')
+write_catalog(OUT, {'player-pack.json', *PLAYER96_DATA, *PLAYER96_MODULES, *player96_release['resources']}, art_paths, args.renderer_fixture)

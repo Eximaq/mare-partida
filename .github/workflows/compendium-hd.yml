@@ -53,7 +53,7 @@ jobs:
         run: |
           node --test tests/compendium-hd.test.cjs tests/akuma-system.test.cjs tests/character-system.test.cjs tests/game-tooltips.test.cjs tests/forge-system.test.cjs tests/rank-a-system.test.cjs tests/rank-a-expansion.test.cjs tests/rank-b-system.test.cjs tests/rank-s-system.test.cjs tests/rank-s-three.test.cjs tests/inventory-components.test.cjs tests/inventory-comparison.test.cjs tests/inventory-rarity-slots.test.cjs
           python tests/akuma_backend_test.py
-          python tools/build_pages.py
+          python tools/build_pages.py --renderer-fixture
       - name: Conferir o jogo e o pacote público
         run: |
           python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-compendium-http.log 2>&1 &

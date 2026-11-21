@@ -85,7 +85,7 @@ await auditSymbols('.attribute-row>.studio-icon,.studio-derived-groups h4 img');
  await p.locator('[data-attribute-quantity=max]').click();await p.locator('[data-attribute-add=strength]').click();assert.equal(await p.locator('#pointsAvailable').innerText(),'0');
  await p.locator('#confirmAttributes').click();assert.equal(await p.evaluate(()=>__studioQA.player.attributes.strength),25);
  assert((await p.evaluate(()=>__studioQA.getDerived().physical))>before.stats.physical);
- await p.reload();await p.waitForFunction(()=>window.__studioQA?.player);assert.equal(await p.evaluate(()=>__studioQA.player.attributes.strength),25);
+ await p.reload();await p.locator('#gameLoading').waitFor({state:'hidden'});await p.waitForFunction(()=>window.__studioQA?.player);assert.equal(await p.evaluate(()=>__studioQA.player.attributes.strength),25);
  await p.waitForTimeout(6500);
  await p.evaluate(()=>__studioQA.openPanel('character','status'));
  await p.locator('.character-allocation .studio-help').first().focus();assert(await p.locator('#gameTooltip').isVisible());

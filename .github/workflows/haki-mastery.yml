@@ -40,7 +40,7 @@ jobs:
           node tests/dev-tools.test.cjs
           node tests/paper-doll-96-other-weapons.test.cjs
           python3 tests/haki_mastery_art_test.py
-          python3 tools/build_pages.py
+          python3 tools/build_pages.py --renderer-fixture
       - name: Navegador no pacote estático
         env:
           MARE_QA_DIR: ${{ runner.temp }}/haki-capturas

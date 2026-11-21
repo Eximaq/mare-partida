@@ -26,6 +26,7 @@ await authDatabase(async f=>{
   await q.goto('https://localhost:9445/online/');await q.locator('#email').fill('companion@example.invalid');await q.locator('#password').fill('Fixture password only 123');await q.locator('#login-submit').click();
   await q.locator('#characterName').fill('Companheiro');await q.locator('#nextToClass').click();await q.locator('#classStep [data-class=sword]').click();await q.locator('#nextToAppearance').click();await q.locator('#createCharacter').click();await q.locator('[data-confirm-accept]').click();
   await q.waitForFunction(()=>globalThis.MareGameSession?.controlled&&globalThis.MareGameSession.data.online.battle);
+  for(const page of [p,q])await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
   for(const page of [p,q])await page.waitForFunction(()=>globalThis.__mareDiagnostics?.().sharedLobby?.players.length===1,null,{timeout:15000});
   for(const page of [p,q])await page.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.draws>0,null,{timeout:90000});
   // Hidden load/status labels must not churn DOM on every animation frame.

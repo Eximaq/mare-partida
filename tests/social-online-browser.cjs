@@ -109,6 +109,7 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     });
     await page.goto(url);
     await page.waitForFunction(()=>window.MareGameSession?.controlled&&document.querySelector('#socialMenuTrigger'),{},{timeout:12000}).catch(async e=>{console.error(await page.evaluate(()=>({text:document.body.innerText.slice(0,300),control:window.MareGameSession?.controlled,available:window.MareGameSession?.available,data:window.MareGameSession?.data?.character,title:document.title})));throw e;});
+    await page.locator('#gameLoading').waitFor({state:'hidden'});
     const chatClose=page.locator('#floatingChat.hud-open [data-close-window]');
     if(await chatClose.isVisible())await chatClose.click();
     const open=async(id)=>{

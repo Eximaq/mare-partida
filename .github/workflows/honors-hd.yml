@@ -60,7 +60,7 @@ jobs:
         run: |
           node --test tests/honors-hd.test.cjs tests/hierarchy.test.cjs tests/character-hud-hierarchy.test.cjs tests/achievements-ultimates.test.cjs tests/talent-system.test.cjs tests/notification-system.test.cjs tests/character-quick-menu.test.cjs tests/current-player-sprites.test.cjs tests/current-player-release.test.cjs
           python tests/test_hierarchy.py
-          python tools/build_pages.py
+          python tools/build_pages.py --renderer-fixture
       - name: Navegador e serviço temporário
         run: |
           python tests/run_honors_hd_browser.py tests/achievements-online-browser.cjs --offline

@@ -100,7 +100,7 @@ const sizes = [[1920,1080],[1366,768],[1280,720],[1024,768],[768,1024],[390,844]
     await page.locator('[data-attribute-add=strength]').click();
     await page.locator('#confirmAttributes').click();
     assert.equal(await page.evaluate(()=>__characterGlassQA.game.attributes.strength),25);
-    await page.reload();await page.waitForFunction(()=>__characterGlassQA.game);
+    await page.reload();await page.locator('#gameLoading').waitFor({state:'hidden'});await page.waitForFunction(()=>__characterGlassQA.game);
     assert.equal(await page.evaluate(()=>__characterGlassQA.game.attributes.strength),25,'allocation persists');
     await open('character');
     await page.locator('.character-allocation .studio-help').first().focus();

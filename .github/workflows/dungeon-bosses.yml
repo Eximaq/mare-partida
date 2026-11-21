@@ -51,7 +51,7 @@ jobs:
       - name: Perfis, animações, recompensas e pacote
         run: |
           node --test tests/boss-dungeons.test.cjs tests/boss-dungeon-combat.test.cjs tests/sprite-combat-v2.test.cjs tests/current-player-sprites.test.cjs tests/ui-mobile-preview.test.cjs
-          python tools/build_pages.py
+          python tools/build_pages.py --renderer-fixture
       - name: Combate dos nove chefes e recuperação de recursos
         run: python tests/run_honors_hd_browser.py tests/nine_dungeon_bosses_browser.cjs --dist --offline
       - name: Masmorras online na interface original
