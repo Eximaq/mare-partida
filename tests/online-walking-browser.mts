@@ -69,6 +69,8 @@ await authDatabase(async f=>{
    await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
    const canvas=await p.locator('#worldCanvas').boundingBox();
    await p.mouse.click(canvas.x+(target.x-Math.round(screen.camera.x))*canvas.width/screen.camera.width,canvas.y+(target.y-Math.round(screen.camera.y))*canvas.height/screen.camera.height);
+   // Sample the full speed window even on browsers that reach the goal early.
+   await p.waitForTimeout(5000);
    await p.waitForFunction(goal=>{
     const hero=__mareDiagnostics().hero;
     return Math.hypot(hero.x-goal.x,hero.y-goal.y)<2;
@@ -84,14 +86,15 @@ await authDatabase(async f=>{
   await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
   await p.evaluate(()=>MareGameSession.command('battle.auto',{enabled:true}));
   await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
+  await p.waitForTimeout(18000);
+  captures.push({kind:'auto',frames:await p.evaluate('window.captureMotion=false;window.motion')});
   // Dawn monsters are neutral until hit. A swordsman who stays in melee range
   // gives the monster no reason to walk once it reaches attack distance.
   const engaged=await p.waitForFunction(()=>{
    const b=MareGameSession.data.online.battle;
-   return b.mobs.find(m=>m.id===b.targetId&&m.alive&&m.engaged)?.id;
+   return b.mobs.find(m=>m.id===b.targetId&&m.alive&&m.engaged&&m.hp>m.maxHP/2)?.id;
   },null,{timeout:30000});
   const pursuerId=await engaged.jsonValue();
-  captures.push({kind:'auto',frames:await p.evaluate('window.captureMotion=false;window.motion')});
   // A loot credit can advance the server version between a frame and a command.
   // Refresh the authoritative snapshot and retry only an explicitly rejected intent.
   async function pursuitCommand(action:string,payload:Record<string,unknown>){
