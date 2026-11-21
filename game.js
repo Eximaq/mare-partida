@@ -1155,7 +1155,15 @@
     if(visibleAcquisition?.remaining<=0){visibleAcquisition=null;box.replaceChildren();}
     if(room&&!visibleAcquisition){
       const [row]=acquisitionBuffer.drain(1);
-      if(row){const el=document.createElement('div');el.className='toast acquisition'+(row.rarity?' reward-'+row.rarity:'');el.setAttribute('role','status');el.innerHTML=MareUI.art({icon:row.icon,name:row.name})+'<div><strong>+'+fmt(row.quantity)+' · '+escapeHTML(row.name)+'</strong></div>';el.title=row.detail||row.name;box.append(el);MareUI.inspectImages(el);visibleAcquisition={remaining:3100};}
+      if(row){
+        const el=document.createElement('div');
+        el.className='toast acquisition'+(row.rarity?' reward-'+row.rarity:'');
+        el.setAttribute('role','status');
+        el.innerHTML=MareUI.art({icon:row.icon,name:row.name})+'<div><strong>+'+fmt(row.quantity)+' · '+escapeHTML(row.name)+'</strong>'+
+          (rarityNames[row.rarity]?'<small>'+escapeHTML(rarityNames[row.rarity])+'</small>':'')+'</div>';
+        el.title=row.detail||row.name;
+        box.append(el);MareUI.inspectImages(el);visibleAcquisition={remaining:3100};
+      }
     }
     box.toggleAttribute('data-visible',room&&!!visibleAcquisition);
     if(visibleAcquisition||acquisitionBuffer.size)rewardTimer=setTimeout(flushAcquisitionNotices,250);
@@ -1350,7 +1358,13 @@
     for(const slot of slots){
       const sector=region.sectors.find(s=>s.id===slot.sector),type=slot.type,profile=MareHunt.profile(game.area,slot.sector,type,.5),skin=activeMap().id==='dawn'?MareEmber.skins.cesar:activeMap().id==='embers'?MareEmber.skins[type]:null;
       world.mobs.push({id:world.nextID++,spawnId:slot.id,area:game.area,source:'world',type,name:forceBoss?region.boss:skin?.name||monsterTypes[type]?.name,skin:skin?.id,district:sector.id,x:slot.x,y:slot.y,anchorX:slot.x,anchorY:slot.y,...profile,hp:profile.maxHP,engaged:false,returning:false,attackClock:1,attackCount:0,bob:rand(0,6.28),alive:true,hit:0,slow:0,telegraph:null,emberFacing:'south',emberElapsed:0,attackAnim:0,moving:0,patrolClock:0});
-      if(forceBoss){session.bossNotice=3.3;$('bossBanner').classList.remove('hidden');log(region.boss+' aguarda no setor final.','danger');}
+      if(forceBoss){
+        session.bossNotice=3.3;
+        const banner=$('bossBanner');
+        banner.querySelector('strong').textContent=region.boss;
+        banner.classList.remove('hidden');
+        log(region.boss+' aguarda no setor final.','danger');
+      }
     }
   }
   function spawnVisual(x,y,text,color='#f9e9bc',size=15){world.fx.push({x,y,text,color,life:1.25,max:1.25,dy:-28,size});if(world.fx.length>70)world.fx.splice(0,10);}
@@ -3685,8 +3699,26 @@ ${avatarExtra}
     if(!nav.ready&&navigationStepAt!==lastTime){navigationStepAt=lastTime;const until=performance.now()+2;do{nav.buildCells(24);}while(!nav.ready&&performance.now()<until);}
     return imageState==='failed'?'failed':imageState==='ready'&&nav.ready?'ready':'loading';
   }
+  const recoveryNotice=$('worldRecovery');
+  const recoveryTitle=recoveryNotice.querySelector('strong'), recoveryTimer=recoveryNotice.querySelector('[role=timer]');
+  function updateRecoveryNotice(mapReady){
+    const seconds=mapReady && scene==='hunt' ? Math.ceil(session?.respawn||0) : 0;
+    if(seconds<=0){
+      if(!recoveryNotice.hidden)recoveryNotice.hidden=true;
+      return;
+    }
+    const mode=classCombatController()?'respawn':'return';
+    if(recoveryNotice.hidden || recoveryNotice.dataset.mode!==mode){
+      recoveryNotice.dataset.mode=mode;
+      recoveryTitle.textContent=mode==='respawn'?'Renascendo em':'Retornando ao porto';
+      recoveryNotice.hidden=false;
+    }
+    const label=seconds+' s';
+    if(recoveryTimer.textContent!==label)recoveryTimer.textContent=label;
+  }
   function presentWorld(){
     const state=game?mapArtState():'ready',loading=$('worldLoading');
+    updateRecoveryNotice(state==='ready');
     if(loading&&loading.dataset.state!==state){
       loading.dataset.state=state;
       loading.classList.toggle('hidden',state==='ready');
@@ -3719,17 +3751,7 @@ ${avatarExtra}
     if(activeMap().id==='skypiea-01'){MareSkypiea.environment(ctx);MareSkypiea.foreground(ctx,camera,W,H,world.time,ambientReduced());}
     ambientWeather.draw(ctx,camera,W,H);
     ctx.restore();
-    if(scene==='hunt'&&session?.respawn>0){
-      if(classCombatController()){
-        const width=Math.min(360,W-28),top=H-164;
-        ctx.fillStyle='#06151be6';ctx.fillRect((W-width)/2,top,width,48);
-        ctx.strokeStyle='#b79454';ctx.strokeRect((W-width)/2,top,width,48);
-        ctx.textAlign='center';ctx.fillStyle='#f2d5b4';ctx.font='bold 18px Georgia';
-        ctx.fillText('RENASCENDO EM '+Math.ceil(session.respawn)+'s',W/2,top+30);
-      }else{
-        ctx.fillStyle='#06151bb8';ctx.fillRect(0,0,W,H);ctx.textAlign='center';ctx.fillStyle='#f2d5b4';ctx.font='32px Georgia';ctx.fillText('RETORNANDO AO PORTO',W/2,H/2-7);ctx.font='22px Georgia';ctx.fillText(Math.ceil(session.respawn)+'s',W/2,H/2+27);
-      }
-    }
+
   }
   function drawVfxPanels(){
     if(!game||document.hidden)return;

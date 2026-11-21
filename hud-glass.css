@@ -1,5 +1,5 @@
 /* Approved HUD surfaces and windows share a quiet glass material. */
-#app.hud-nautical, .confirmation-overlay, .forge-presentation-overlay {
+#app.hud-nautical, #gameTooltip, #toastContainer, .confirmation-overlay, .forge-presentation-overlay {
   --glass-type: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --glass-surface: rgba(20, 22, 25, .85);
   --glass-line: rgba(212, 175, 55, .35);
@@ -18,6 +18,11 @@
 #app.hud-nautical .world-command #returnLobby,
 #app.hud-nautical .location-heading .location-plaque,
 #app.hud-nautical #mareMusicDock > :is(summary,.music-controls),
+#app.hud-nautical :is(#worldLoading, #worldRecovery) > div,
+#app.hud-nautical :is(#bossBanner, #partyCompact),
+#app.hud-nautical :is(#toastContainer, #lootNotices) > .toast,
+body #toastContainer.toast-container > .toast,
+body > #gameTooltip.game-tooltip,
 #app.hud-nautical #mainMenu .character-menu-anchor > .character-quick-menu {
   border: 1px solid var(--glass-line);
   border-image: none;
@@ -3630,4 +3635,119 @@ html[data-mare-motion=reduced] #app #panelOverlay.hud-density.akuma-reveal-mode[
     & .creation-progress { margin-block: 4px; padding: 0; }
     & .faction-choices { flex: none; }
   }
+}
+
+/* Compact feedback on the playfield. Keep the receipt lane anchored by lootSpace. */
+#app.hud-nautical > #toastContainer {
+  inset: auto auto calc(var(--rpg-action-height, 65px) + var(--hud-edge) + 10px) 50%;
+  transform: translateX(-50%); width: max-content; max-width: min(300px, calc(100vw - 24px));
+  gap: 4px; pointer-events: none;
+}
+body #toastContainer > .toast {
+  align-self: flex-start; width: fit-content; min-width: 0; max-width: 100%;
+  padding: 8px 12px; min-height: 32px; border-radius: 9px;
+  font: 550 13px/1.35 var(--glass-type); overflow-wrap: anywhere;
+}
+body #toastContainer .good { border-inline-start: 3px solid #75dca8; }
+body #toastContainer .danger { border-inline-start: 3px solid #ff8589; }
+#app.hud-nautical #lootNotices { width: min(218px, calc(100vw - 32px)); }
+#app.hud-nautical #lootNotices .acquisition {
+  height: 40px; display: flex; align-items: center; gap: 8px; padding: 3px 9px;
+  border-inline-start: 3px solid var(--loot-tone, var(--glass-gold)); border-radius: 9px;
+}
+#lootNotices .acquisition.reward-common { --loot-tone: #b6c3cd; }
+#app #lootNotices .reward-uncommon { --loot-tone: #76db9e; }
+#app #lootNotices .reward-rare { --loot-tone: #73beff; }
+#app #lootNotices .reward-epic { --loot-tone: #d299ff; }
+#app #lootNotices .reward-legendary { --loot-tone: #ffc568; }
+#app #lootNotices .reward-supreme { --loot-tone: #ff8793; }
+#app #lootNotices .acquisition strong { font: 650 13px/1.2 var(--glass-type); }
+#app #lootNotices .acquisition small { color: var(--loot-tone); font: 550 11px/1.15 var(--glass-type); }
+#app #lootNotices .acquisition .ui-art { flex: none; width: 26px; height: 26px; }
+body > #gameTooltip { font: 500 13px/1.35 var(--glass-type); }
+#gameTooltip .game-tip-name { font: 700 15px/1.2 var(--glass-type); }
+#gameTooltip .game-tip-kicker, #gameTooltip .game-tip-meta { color: var(--glass-muted); letter-spacing: .04em; }
+#gameTooltip .game-tip-column { padding: 10px 12px; }
+#gameTooltip .with-comparison > .game-tip-column + .game-tip-column { background: #ffffff08; border-left: 1px solid var(--glass-line); }
+#gameTooltip .game-tip-compare { border-top: 1px solid var(--glass-line); gap: 3px; }
+#gameTooltip .game-tip-compare .positive { color: #80e5ae; }
+#gameTooltip .game-tip-compare .negative { color: #ff99a2; }
+#gameTooltip .with-comparison > .game-tip-compare {
+  grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px 16px;
+  margin: 0; padding: 8px 12px; background: #ffffff05;
+}
+#gameTooltip .game-tip-compare > :is(strong, .game-tip-score) { grid-column: 1 / -1; }
+#gameTooltip .game-tip-score { padding-block: 4px; }
+#gameTooltip .game-tip-class { display: inline-block; border-radius: 6px; }
+
+/* State labels sit above the painted world and remain readable at any camera zoom. */
+#app.hud-nautical #worldLoading { background: #101419cf; }
+#app.hud-nautical :is(#worldLoading, #worldRecovery) > div {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  max-width: min(340px, calc(100vw - 28px)); font: 600 14px/1.4 var(--glass-type);
+}
+#app #worldLoading span { padding: 0; border: 0; background: transparent; text-align: start; }
+#app #worldLoading > div::before {
+  content: ""; width: 14px; height: 14px; flex: none; border-radius: 50%;
+  border: 2px solid #d1bb792e; border-top-color: var(--glass-gold);
+  animation: hud-map-turn 1s linear infinite;
+}
+@keyframes hud-map-turn { to { transform: rotate(1turn); } }
+#app #worldLoading[data-state=failed] > div::before { animation: none; border-color: #ff8594; }
+#worldRecovery:not([hidden]) { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; pointer-events: none; }
+#worldRecovery[data-mode=return] { background: #0b101951; }
+#app #worldRecovery span { color: var(--glass-gold); font-variant-numeric: tabular-nums; }
+#app.hud-nautical #bossBanner:not(.hidden) {
+  display: flex; align-items: center; gap: 9px; padding: 7px 13px 7px 8px;
+  inset: auto auto 30% 50%; max-width: calc(100% - 20px); transform: translateX(-50%);
+  border-color: #e58a6480; pointer-events: none; text-align: start;
+  animation: hud-boss-arrival 260ms ease-out;
+}
+#bossBanner img { width: 30px; height: 30px; object-fit: contain; }
+#bossBanner small { display: block; color: #ffb58d; font: 650 10px/1.3 var(--glass-type); letter-spacing: .08em; text-transform: uppercase; }
+#bossBanner strong { font: 700 15px/1.25 var(--glass-type); }
+@keyframes hud-boss-arrival { from { opacity: 0; translate: 0 4px; } }
+
+/* The compass menu is also the destination of the M shortcut and navigation NPCs. */
+#app #mainMenu #modesQuickMenu button[role=menuitem] {
+  min-height: 46px; padding: 6px 45px 6px 8px; gap: 9px;
+}
+#app #mainMenu #modesQuickMenu button[role=menuitem] img {
+  box-sizing: border-box; width: 32px; height: 32px; flex: none; padding: 4px;
+  background: #ffffff08; border: 1px solid #e4ce963b; border-radius: 8px;
+}
+#app #mainMenu #modesQuickMenu button[role=menuitem]::after {
+  content: ""; position: absolute; right: 10px; top: 50%; width: 6px; height: 6px;
+  border: solid var(--glass-gold); border-width: 1.5px 1.5px 0 0; transform: translateY(-50%) rotate(45deg);
+}
+#app #mainMenu #modesQuickMenu .hud-notification-badge { top: 50%; right: 22px; translate: 0 -50%; }
+#app #mainMenu #modesQuickMenu button:focus-visible { outline: 2px solid var(--glass-gold); outline-offset: -2px; }
+
+#app.hud-nautical #partyCompact {
+  width: min(245px, calc(100vw - 24px)); overflow: hidden;
+  font: 550 12px/1.28 var(--glass-type);
+}
+#app #partyCompact button { color: var(--glass-gold); background: #ffffff08; border: 1px solid var(--glass-line); border-radius: 8px; box-shadow: none; font: inherit; }
+#app #partyCompact .party-compact-title { border: 0; border-radius: 0; padding: 6px 10px; min-height: 36px; }
+#app #partyCompact .party-compact-title span { margin-left: auto; }
+#app #partyCompact .party-compact-members { max-height: min(320px, 32dvh); overflow: auto; padding: 3px 7px 7px; scrollbar-width: thin; }
+#app #partyCompact .party-member { min-height: 46px; padding: 4px 1px; gap: 5px; background: transparent; border-color: #ffffff16; }
+#partyCompact .party-member-info { min-width: 0; }
+#app #partyCompact .party-member strong { font-size: 12px; line-height: 1.2; }
+#app #partyCompact .party-life { height: 5px; background: #25191e; border: 0; border-radius: 5px; }
+#app #partyCompact .party-life i { background: linear-gradient(90deg, #b42c53, #f27582); }
+#app #partyCompact .party-status { color: #8be4b3; font: 600 10px/1.25 var(--glass-type); }
+#app #partyCompact .party-offline .party-status { color: var(--glass-muted); }
+#app #partyCompact button:is(:hover,:focus-visible) { background: #e4ce961a; outline: 1px solid var(--glass-gold); outline-offset: -2px; }
+@media (max-width: 600px) {
+  #app #partyCompact { max-width: min(220px, calc(100vw - 24px)); }
+  #app #partyCompact button { min-height: 44px; }
+  #app #partyCompact .party-compact-title { min-height: 44px; }
+  #gameTooltip .game-tip-column { padding: 8px; }
+  #gameTooltip .game-tip-stats > div, #gameTooltip .game-tip-compare > div { gap: 5px; }
+}
+[data-mare-motion=reduced] #app #worldLoading > div::before,
+[data-mare-motion=reduced] #app.hud-nautical #bossBanner:not(.hidden) { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  #app #worldLoading > div::before, #app.hud-nautical #bossBanner:not(.hidden) { animation: none; }
 }

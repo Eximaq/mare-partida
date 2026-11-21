@@ -173,7 +173,7 @@
     });
     observer.observe(app,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});measure();
   }
-  const lootHud=':is(.topbar,.hud-launcher,.location-heading,.action-panel,#mainMenu,.character-quick-menu,.floating-window,.floating-chat,#chatCornerToggle,#targetHud,.utility-tray,#huntXpTracker,#journeyHud,.party-compact,#worldLoading,#toastContainer,.boss-banner,.world-hint,.world-command,#npcTooltip,#devLauncher)';
+  const lootHud=':is(.topbar,.hud-launcher,.location-heading,.action-panel,#mainMenu,.character-quick-menu,.floating-window,.floating-chat,#chatCornerToggle,#targetHud,.utility-tray,#huntXpTracker,#journeyHud,#partyCompact,#worldRecovery > div,#worldLoading,#toastContainer,.boss-banner,.world-hint,.world-command,#npcTooltip,#devLauncher)';
   function lootSpace(lane){
     if(topModal()||document.hidden)return false;
     const a=lane.getBoundingClientRect();

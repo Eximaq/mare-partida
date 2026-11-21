@@ -12,9 +12,19 @@ test('unchanged map status does not rewrite DOM each frame; load/failure/recover
  let state='loading',writes=0,draws=0;
  const text={set textContent(v){writes++;}},loading={dataset:{},classList:{toggle(){}},querySelector:()=>text};
  const c=vm.createContext({game:{},lobby96:{worldVisual:()=>({state:'ready'}),worldPlayer:()=>({})},mapArtState:()=>state,$:()=>loading,ctx:{fillRect(){}},W:100,H:100,drawWorld:()=>draws++,drawPaperDollDiagnostics(){}});
+ let timerValue='',timerWrites=0;
+ Object.assign(c,{scene:'hunt',session:{respawn:0},classCombatController:()=>true,
+   recoveryNotice:{hidden:true,dataset:{}}, recoveryTitle:{},
+   recoveryTimer:{get textContent(){return timerValue;},set textContent(value){timerWrites++;timerValue=value;}}});
+ vm.runInContext(fn('updateRecoveryNotice'),c);
  vm.runInContext(fn('presentWorld'),c);for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);
  assert.equal(writes,1);state='failed';vm.runInContext('presentWorld()',c);assert.equal(writes,2);
  state='ready';for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);assert.equal(writes,3);assert.equal(draws,60);
+ assert.equal(timerWrites,0);
+ c.session.respawn=2.8;
+ for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);
+ assert.equal(timerWrites,1);assert.equal(timerValue,'3 s');assert.equal(c.recoveryNotice.hidden,false);
+ c.session.respawn=0;vm.runInContext('presentWorld()',c);assert.equal(c.recoveryNotice.hidden,true);
 });
 test('visual preparation is absent from the world and HUD frame gates',()=>{
  assert.doesNotMatch(source,/!lobby96\.worldReady\(game\)|updatePlayerVisualStatus\(/);
