@@ -1,0 +1,254 @@
+[
+  {
+    "input_file": "body-idle-south-00.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 0
+    },
+    "action": "idle",
+    "frameIndex": 0,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  },
+  {
+    "input_file": "body-idle-south-01.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 1
+    },
+    "action": "idle",
+    "frameIndex": 1,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  },
+  {
+    "input_file": "body-idle-south-02.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 2
+    },
+    "action": "idle",
+    "frameIndex": 2,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  },
+  {
+    "input_file": "body-idle-south-03.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 3
+    },
+    "action": "idle",
+    "frameIndex": 3,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  },
+  {
+    "input_file": "body-walk-south-00.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 4
+    },
+    "action": "walk",
+    "frameIndex": 0,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  },
+  {
+    "input_file": "body-walk-south-01.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 5
+    },
+    "action": "walk",
+    "frameIndex": 1,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  },
+  {
+    "input_file": "body-walk-south-02.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 6
+    },
+    "action": "walk",
+    "frameIndex": 2,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  },
+  {
+    "input_file": "body-walk-south-03.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 7
+    },
+    "action": "walk",
+    "frameIndex": 3,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  },
+  {
+    "input_file": "body-walk-south-04.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 8
+    },
+    "action": "walk",
+    "frameIndex": 4,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  },
+  {
+    "input_file": "body-walk-south-05.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 9
+    },
+    "action": "walk",
+    "frameIndex": 5,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  },
+  {
+    "input_file": "body-walk-south-06.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 10
+    },
+    "action": "walk",
+    "frameIndex": 6,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  },
+  {
+    "input_file": "body-walk-south-07.png",
+    "existing_outfit_guide": {
+      "file": "existing-outfit-guides.png",
+      "frameIndex": 11
+    },
+    "action": "walk",
+    "frameIndex": 7,
+    "nativePivot": [
+      32,
+      52
+    ],
+    "runtimePivot": [
+      42,
+      65
+    ],
+    "padding": [
+      10,
+      13
+    ]
+  }
+]
