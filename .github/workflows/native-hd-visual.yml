@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'player-rework-*hd*'
+      - 'tests/rework-literal-null-equipment.cjs'
       - 'tests/rework-male-c6-p22-named-head.cjs'
       - 'tests/rework-male-independent-pants-locomotion.cjs'
       - 'tests/rework-male-south-idle-gloves-independent.cjs'
@@ -101,6 +102,8 @@ jobs:
           node-version: '24'
       - run: npm ci --ignore-scripts
       - run: python tools/verify_native_hd_archives.py
+      - name: HD de um save com espaços vazios no inventário
+        run: node --test tests/rework-literal-null-equipment.cjs
       - name: Camadas HD independentes, sem substituir o personagem
         run: node --test --test-concurrency=2 tests/rework-male-c6-p22-named-head.cjs tests/rework-male-independent-pants-locomotion.cjs tests/rework-male-south-idle-gloves-independent.cjs tests/rework-male-imperial-b183-south-idle.cjs tests/rework-male-w0-c6-b9-south-idle.cjs tests/rework-male-w0-c6-g25-north.cjs
       - name: Segundo lote de camadas e porte de arma HD

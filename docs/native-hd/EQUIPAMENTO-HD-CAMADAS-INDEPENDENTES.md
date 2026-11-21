@@ -50,3 +50,21 @@ Na mesma matriz de auditoria, este segundo lote evita mais 168 regressões para
 compatibilidade (11.438 → 11.270), sem trocar ou perder seleções HD existentes.
 A matriz de 516 casos por corpo permanece idêntica. As verificações abrangem
 o seletor e as poses testadas, não todas as combinações possíveis.
+
+
+## Slots vazios de um save normal
+O jogo grava slots vazios como valores literais `null`. Agora esses slots
+não contam como equipamento nas guardas que autorizam artes verificadas,
+sem alterar o save, o item vestido, o porte, as variantes nem o tempo da pose.
+
+- Na mesma matriz canônica de 516 casos por corpo, repetida com todos os
+  campos de equipamento preenchidos com `null` quando vazios, o masculino foi
+  de 392 para 516/516 nos oito tons. Foram restaurados 124 casos de ataque
+  completos e 970 seleções de tom. Feminino permaneceu 516/516.
+- 78 fases efetivamente compostas mostraram igualdade pixel a pixel entre
+  as duas formas do save em ataques e nos encaixes Bota 9/Luva 25 com
+  Espada 0 e Casaco 6. Há 90 casos negativos para valores que não são `null`
+  e variantes fora da autoridade.
+- Na matriz separada de trocas de equipamento, 28 consultas antes sem HD
+  passam a selecionar a arte; nenhuma das 27.216 seleções distintas
+  anteriores em HD mudou. Algumas trocas continuam sem encaixe validado.
