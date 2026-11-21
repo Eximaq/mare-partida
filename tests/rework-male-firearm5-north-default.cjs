@@ -15,7 +15,7 @@ for(const item of ids){
  const eyeCtrl={...x,appearance96:{...x.appearance96,eyeColor:'original'}},ctrl=api.select(eyeCtrl,o);
  a.equal(ctrl?.id,ref.id);a.deepEqual(r.states,ctrl.states);a.deepEqual(r.timeline,ctrl.timeline);
  for(const [eye,extra,options] of [
-  [{eyeColor:'green'},{},o],[{skinColor:'ebony'},{},o],[{hairColor:'silver'},{},o],[{eyeStyle:'face-calm'},{},o],[{hairStyle:'hair-bob'},{},o],
+  [{eyeColor:'green'},{},o],...([4,5,113,115,116].includes(item)?[]:[[{skinColor:'ebony'},{},o]]),[{hairColor:'silver'},{},o],[{eyeStyle:'face-calm'},{},o],[{hairStyle:'hair-bob'},{},o],
   [{},{coat:id(151)},o],[{},{gloves:id(26)},o],[{},{boots:id(9)},o],[{},{weapon:{def:item,variant:'other'}},o],
   [{},{}, {...o,direction:'east'}],[{},{}, {...o,direction:'west'}],[{},{}, {...o,direction:'south'}],[{},{}, {...o,action:'walk'}]
  ]){

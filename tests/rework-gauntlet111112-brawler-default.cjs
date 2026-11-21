@@ -12,7 +12,8 @@ for(const item of [111,112]) for(const d of ['east','west']){
  const r=api.select(saved,options),b=api.select(brown,options);
  ad(r?.ownedGauntletSide);ad(b?.separableAttack&&!b.ownedGauntletSide);
  ad.deepEqual(r.states,b.states);ad.deepEqual(r.timeline,b.timeline);ad.deepEqual(r.equipmentContract,{weapon:item});ad.deepEqual(r.pivot,[80,128]);ad.equal(r.fps,12);
- for(const q of [actor(item,{skinColor:'ebony'}),actor(item,{skinColor:'porcelain'}),actor(item,{hairColor:'silver'}),actor(item,{eyeColor:'green'}),actor(item,{hairStyle:'none'}),actor(item,{eyeStyle:'face-focused'}),actor(item,{},'cyborg'),actor(item,{},'rogue'),actor(item,{},'brawler',{weapon:{def:item,variant:'other'}}),actor(item,{},'brawler',{coat:{def:137}}),actor(item,{},'brawler',{head:{def:157}})]){
+ for(const tone of ['ebony','porcelain'])ad(api.select(actor(item,{skinColor:tone}),options)?.ownedGauntletSide);
+ for(const q of [actor(item,{hairColor:'silver'}),actor(item,{eyeColor:'green'}),actor(item,{hairStyle:'none'}),actor(item,{eyeStyle:'face-focused'}),actor(item,{},'cyborg'),actor(item,{},'rogue'),actor(item,{},'brawler',{weapon:{def:item,variant:'other'}}),actor(item,{},'brawler',{coat:{def:137}}),actor(item,{},'brawler',{head:{def:157}})]){
   ad(!api.select(q,options)?.ownedGauntletSide,JSON.stringify(q));if(process.env.CANDIDATE)ad.deepEqual(api.select(q,options),old.select(q,options));
  }
  for(const row of [o(d,'attack-tech'),o(d,'attack-focus'),o(d,'walk'),o('north'),o('south')])ad(!api.select(saved,row)?.ownedGauntletSide);

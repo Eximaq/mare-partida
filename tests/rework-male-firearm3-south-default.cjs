@@ -12,7 +12,8 @@ for(const item of ids)for(const direction of ['south']){
  a.equal(r.colorAppearance.eyeColor,'blue');a.equal(r.fps,12);a.equal(r.timeline.length,8);a.equal(r.states.length,8);
  for(const k of ['states','nativeCanvas','pivot','timeline','basePack'])a.deepEqual(r[k],actual[k]);
  const ctrlActor={...x,appearance96:{...x.appearance96,eyeColor:'original'}},control=old.select(ctrlActor,o);a.equal(control.id,actual.id);a.deepEqual(control.states,r.states);
- for(const [look,eq] of [[{eyeColor:'green'},{}],[{hairColor:'silver'},{}],[{skinColor:'ebony'},{}],[{hairStyle:'hair-bob'},{}],[{eyeStyle:'face-calm'},{}],[{},{coat:id(151)}],[{},{boots:id(155)}],[{},{weapon:{def:item,variant:'other'}}]]){
+ a(api.select(actor(item,{skinColor:'ebony'}),o)?.firearmSouthSignedPalette);
+ for(const [look,eq] of [[{eyeColor:'green'},{}],[{hairColor:'silver'},{}],[{hairStyle:'hair-bob'},{}],[{eyeStyle:'face-calm'},{}],[{},{coat:id(151)}],[{},{boots:id(155)}],[{},{weapon:{def:item,variant:'other'}}]]){
   const p=actor(item,look,eq),z=api.select(p,o);a(!z?.ownedSouthFirearmIris);
  }
  for(const off of [5,114,116]){const q=api.select(actor(off),o);a(!q?.ownedSouthFirearmIris);}cases++;

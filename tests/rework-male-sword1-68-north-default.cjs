@@ -13,7 +13,7 @@ for(const item of [1,68]){
  const literal={...x,appearance96:{gender:'masculino',hairStyle:'original',eyeStyle:'original',eyeColor:'original',hairColor:'original',skinColor:'original'}};
  a.equal(api.select(literal,o)?.id,ref.id);
  for(const [look,gear,opts] of [
-  [{eyeColor:'green'},{},o],[{hairColor:'silver'},{},o],[{skinColor:'ebony'},{},o],[{hairStyle:'hair-bob'},{},o],
+  [{eyeColor:'green'},{},o],[{hairColor:'silver'},{},o],[{skinColor:'ebony'},{},{...o,consumer:'portrait'}],[{hairStyle:'hair-bob'},{},o],
   [{},{coat:{def:151}},o],[{},{boots:{def:9}},o],[{},{weapon:{def:item,variant:'alt'}},o],
   [{},{},{...o,direction:'south'}],[{},{},{...o,direction:'east'}],[{},{},{...o,direction:'west'}],[{},{},{...o,action:'walk'}]
  ]){

@@ -17,7 +17,8 @@ async function read(h){const c=cv.createCanvas(640,640);c.getContext('2d').drawI
   for(const k of ['states','timeline','pivot','nativeCanvas','approvedAppearance','equipmentContract','visualSampling'])a.deepEqual(r[k],baseline[k]);
   a.equal(r.fps,12);a.equal(r.contactTick,4);a.equal(r.timeline.length,8);
   const baseFiles=W.requiredFiles(baseline),actual=W.requiredFiles(r);a.deepEqual(actual.filter(f=>!baseFiles.includes(f)),[path+reg.source+'.png',path+reg.mask+'.png']);
-  for(const bad of [makeSave(def,hair,eye,{skinColor:'ebony'}),makeSave(def,hair,eye,{hairStyle:'hair-bob'}),makeSave(def,hair,eye,{eyeStyle:'face-focused'}),{...actor,classId:'fighter'},{...actor,equipment:{weapon:{def,variant:'other'}}},{...actor,equipment:{...actor.equipment,coat:{def:151}}}])a(!go(bad)?.orderedDaggerHair);
+  a.equal(go(makeSave(def,hair,eye,{skinColor:'ebony'}))?.maleDaggerSideTone,'ebony');
+  for(const bad of [makeSave(def,hair,eye,{hairStyle:'hair-bob'}),makeSave(def,hair,eye,{eyeStyle:'face-focused'}),{...actor,classId:'fighter'},{...actor,equipment:{weapon:{def,variant:'other'}}},{...actor,equipment:{...actor.equipment,coat:{def:151}}}])a(!go(bad)?.orderedDaggerHair);
   a(!api.selectVisual(actor,{...o,direction:'north'})?.orderedDaggerHair);const southRoute=api.selectVisual(actor,{...o,direction:'south'});
   if([12,13].includes(def)){a(southRoute?.approvedDagger13South);a.equal(southRoute.orderedDaggerHair,hair);a(!southRoute.orderedDaggerIris);}
   else a(!southRoute?.orderedDaggerHair);a(!api.selectVisual(actor,{...o,action:'idle'})?.orderedDaggerHair);

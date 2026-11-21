@@ -23,7 +23,8 @@ const save=(opts={},def=12)=>JSON.parse(JSON.stringify(A.commit({id:'dagger12',c
    if(!south)assert.equal(q.r.contactTick,4);
   }
   const look=rows[1].p;
-  for(const q of [save({skinColor:'ebony'}),save({hairStyle:'hair-bob'}),save({eyeStyle:'face-focused'}),{...look,classId:'sword'},{...look,equipment:{weapon:{def:12,variant:'unreviewed'}}},{...look,equipment:{weapon:{def:12},coat:{def:151}}}]) assert(!api.select(q,o)?.[south?'approvedDagger13South':'orderedDaggerIris']);
+  if(!south) assert.equal(api.select(save({skinColor:'ebony'}),o)?.maleDaggerSideTone,'ebony');
+  for(const q of [...(south?[save({skinColor:'ebony'})]:[]),save({hairStyle:'hair-bob'}),save({eyeStyle:'face-focused'}),{...look,classId:'sword'},{...look,equipment:{weapon:{def:12,variant:'unreviewed'}}},{...look,equipment:{weapon:{def:12},coat:{def:151}}}]) assert(!api.select(q,o)?.[south?'approvedDagger13South':'orderedDaggerIris']);
   if(south)for(const item of [71,72,73,74])assert(!api.select(save({},item),o)?.approvedDagger13South);
   const [dx,dy,hash]=materials[direction],m=cv.createCanvas(640,640);m.getContext('2d').drawImage(await loader(wm+hash+'.png'),0,0);
   const mask=buf(m),allowed=new Map();

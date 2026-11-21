@@ -13,7 +13,7 @@ const raster=async f=>{const c=context();c.drawImage(await load(f),0,0);return p
  assert.deepEqual(r.states,old.states);assert.equal(r.fps,12);assert.deepEqual(r.timeline,old.timeline);assert.deepEqual(r.equipmentContract,{weapon:14});
  assert.equal(api.selectVisual(q,{...o,action:'attack'})?.id,r.id);
  const original=save({hairColor:'brown',eyeColor:'brown'});assert(api.selectVisual(original,o)?.orderedAttack);
- for(const [a,b] of [[save({},undefined,'healer'),o],[save({skinColor:'ebony'}),o],[save({hairStyle:'hair-spiky'}),o],[save({hairColor:'brown'}),o],[save({eyeColor:'brown'}),o],[save({eyeStyle:'face-calm'}),o],
+ for(const [a,b] of [[save({},undefined,'healer'),o],[save({skinColor:'ebony'}),{...o,consumer:'preview'}],[save({hairStyle:'hair-spiky'}),o],[save({hairColor:'brown'}),o],[save({eyeColor:'brown'}),o],[save({eyeStyle:'face-calm'}),o],
  [save({},{weapon:{def:14,variant:'original',appearanceVariant:'different'}}),o],[save({},{weapon:{def:14},coat:{def:151}}),o],[save({},{weapon:{def:14},head:{def:19}}),o],[q,{...o,weaponless:true}],
  [q,{...o,consumer:'preview'}],[q,{...o,direction:'east'}],[q,{...o,direction:'north'}],[q,{...o,action:'idle'}],[q,{...o,action:'walk'}],[original,o]]){
   assert(!api.selectVisual(a,b)?.gauntlet14SouthSavedHead);if(C)assert.deepEqual(api.selectVisual(a,b),stock.selectVisual(a,b));

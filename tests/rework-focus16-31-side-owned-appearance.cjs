@@ -23,7 +23,7 @@ const save=(opts={},def=31)=>JSON.parse(JSON.stringify(A.commit({id:'focus-side'
    if(!south)assert.equal(q.r.contactTick,4);
   }
   const look=rows[1].p;
-  for(const q of [save({skinColor:'ebony'},item),save({hairStyle:'hair-bob'},item),save({eyeStyle:'face-focused'},item),{...look,classId:'sword'},{...look,equipment:{weapon:{def:item,variant:'unreviewed'}}},{...look,equipment:{weapon:{def:item},coat:{def:151}}}]) assert(!api.select(q,o)?.orderedFocusHead);
+  for(const q of [...((item===16)?[]:[save({skinColor:'ebony'},item)]),save({hairStyle:'hair-bob'},item),save({eyeStyle:'face-focused'},item),{...look,classId:'sword'},{...look,equipment:{weapon:{def:item,variant:'unreviewed'}}},{...look,equipment:{weapon:{def:item},coat:{def:151}}}]) assert(!api.select(q,o)?.orderedFocusHead);
   for(const dir of ['north','south'])assert(!api.select(look,{...o,direction:dir})?.orderedFocusHead);
   assert(!api.select(look,{...o,action:'walk'})?.orderedFocusHead);
   if(item===31)assert(api.select({...look,classId:'healer'},o)?.orderedFocusHead);

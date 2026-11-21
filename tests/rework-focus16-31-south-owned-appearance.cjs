@@ -23,7 +23,8 @@ const save=(opts={},def=31)=>JSON.parse(JSON.stringify(A.commit({id:'focus-side'
    if(!south)assert.equal(q.r.contactTick,4);
   }
   const look=rows[1].p;
-  for(const q of [save({skinColor:'ebony'},item),save({hairStyle:'hair-bob'},item),save({eyeStyle:'face-focused'},item),{...look,classId:'sword'},{...look,equipment:{weapon:{def:item,variant:'unreviewed'}}},{...look,equipment:{weapon:{def:item},coat:{def:151}}}]) assert(!api.select(q,o)?.approvedFocusSouth);
+  if(item===16)assert(api.select(save({skinColor:'ebony'},item),o)?.compass16SouthSkin);
+  for(const q of [...(item===31?[save({skinColor:'ebony'},item)]:[]),save({hairStyle:'hair-bob'},item),save({eyeStyle:'face-focused'},item),{...look,classId:'sword'},{...look,equipment:{weapon:{def:item,variant:'unreviewed'}}},{...look,equipment:{weapon:{def:item},coat:{def:151}}}]) assert(!api.select(q,o)?.approvedFocusSouth);
   for(const dir of ['north','east','west'])assert(!api.select(look,{...o,direction:dir})?.approvedFocusSouth);
   assert(!api.select(look,{...o,action:'walk'})?.approvedFocusSouth);
   if(item===31)assert(api.select({...look,classId:'healer'},o)?.approvedFocusSouth);
