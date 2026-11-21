@@ -16,6 +16,7 @@
 #app.hud-nautical #journeyHud :is(.journey-heading, .auto-button),
 #app.hud-nautical #huntXpTracker.hunt-xp-tracker,
 #app.hud-nautical .world-command #returnLobby,
+#app.hud-nautical .location-heading .location-plaque,
 #app.hud-nautical #mainMenu .character-menu-anchor > .character-quick-menu {
   border: 1px solid var(--glass-line);
   border-image: none;
@@ -354,6 +355,23 @@
 }
 #app.hud-nautical .world-command #returnLobby:focus-visible { outline: 2px solid var(--glass-gold); outline-offset: 2px; }
 #app.hud-nautical .world-command #returnLobby:active { border-color: var(--glass-gold); background: #383024; color: #ffebbc; }
+
+/* The outer map button follows the channel; only the slim inner label is painted. */
+#app.hud-nautical .location-heading .location-plaque {
+  display: inline-grid; grid-template-columns: auto minmax(0,1fr);
+  align-items: center; gap: 7px; max-width: 100%; padding: 4px 10px 4px 8px;
+  font: 600 13px/18px var(--glass-type); text-align: left;
+}
+#app.hud-nautical .location-heading svg { color: var(--glass-gold); }
+#app.hud-nautical .location-heading #locationName {
+  min-width: 0; white-space: normal; overflow-wrap: anywhere;
+}
+@media (hover: hover) {
+  #app.hud-nautical .location-heading:hover .location-plaque { border-color: #c6ac70; }
+}
+#app.hud-nautical .location-heading:focus-visible { outline: none; }
+#app.hud-nautical .location-heading:focus-visible .location-plaque { outline: 2px solid var(--glass-gold); outline-offset: 2px; }
+#app.hud-nautical .location-heading:active .location-plaque { background: #383024; border-color: var(--glass-gold); }
 
 /* Navigation icons retain their three-state art and every existing control. */
 #app.hud-nautical #mainMenu {
