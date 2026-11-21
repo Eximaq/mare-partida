@@ -15,8 +15,11 @@ if(selectedIds)assert(selectedIds.length>0&&selectedIds.every(Number.isSafeInteg
 const seed=Number(process.argv.find(a=>a.startsWith('--seed='))?.slice(7)??1);
 assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32');
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{
- const p=await browser.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.text().startsWith('weapons-progress:'))console.log(m.text());});await p.goto(new URL('tools/paper-doll-96-v3/',origin).href);await p.waitForFunction(()=>window.__review96v3);
- const audit=combatOnly?null:await p.evaluate(async({materialsOnly,otherClasses})=>{
+ const errors=[];
+ if(materialsOnly&&combatOnly)throw Error('Choose either --materials-only or --combat-only');
+ if(!combatOnly){
+ const p=await browser.newPage();p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.text().startsWith('weapons-progress:'))console.log(m.text());});await p.goto(new URL('tools/paper-doll-96-v3/',origin).href);await p.waitForFunction(()=>window.__review96v3);
+ const audit=await p.evaluate(async({materialsOnly,otherClasses})=>{
   const q=__review96v3,items=q.weaponCatalog.items.filter(w=>!!w.attachment===otherClasses),issues=[],counts={materials:0,rotations:0,compositions:0,mirrors:0,handPixels:0,northOpaque:0,outsideWeapon:0,edgeDirections:0};
   const read=c=>c.getContext('2d').getImageData(0,0,c.width,c.height).data,same=(a,b,i,j=i)=>[0,1,2,3].every(k=>a[i+k]===b[j+k]);
   const componentSizes=(d,w,h)=>{const seen=new Uint8Array(w*h),parts=[];for(let p=0;p<seen.length;p++)if(d[p*4+3]&&!seen[p]){const todo=[p];seen[p]=1;for(let n=0;n<todo.length;n++){const v=todo[n],x=v%w,y=Math.floor(v/w);for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const xx=x+dx,yy=y+dy,k=yy*w+xx;if(xx>=0&&yy>=0&&xx<w&&yy<h&&d[k*4+3]&&!seen[k]){seen[k]=1;todo.push(k);}}}parts.push(todo.length);}return parts;};
@@ -86,7 +89,9 @@ assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32'
   return {counts,issues};
  },{materialsOnly,otherClasses});console.log(JSON.stringify({audit}));if(audit)assert.deepEqual(audit.issues,[]);
  if(output){await fs.mkdir(output,{recursive:true});if(audit)await fs.writeFile(path.join(output,'audit.json'),JSON.stringify(audit,null,2));}
- await p.close();if(materialsOnly)return;
+ await p.close();
+ }
+ if(materialsOnly)return;
  const game=await browser.newPage({viewport:{width:1366,height:768}});game.on('pageerror',e=>errors.push(e.message));
  await game.addInitScript(seed=>{let state=seed;Math.random=()=>((state=(Math.imul(state,1664525)+1013904223)>>>0)/4294967296);},seed);console.log('weapons-seed:'+seed);
  await game.route('**/api/akuma/catalog',r=>r.fulfill({status:404,body:'{}'}));

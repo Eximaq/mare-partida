@@ -2487,7 +2487,7 @@
   function drawCharacterStatusPreview(){
     const canvas=$('characterSprite');
     if(!canvas||!game)return;
-    const c=canvas.getContext('2d'),zoom=4;
+    const c=canvas.getContext('2d'),zoom=2;
     // Both panels use the same native selector and fit against visible pixels,
     // without swapping the map actor or recoloring the saved equipment.
     const avatar=game.zoanTransformed?{...game,zoanTransformed:false}:game;
@@ -2498,7 +2498,7 @@
     c.clearRect(0,0,canvas.width,canvas.height);
     c.save();
     try{
-      // Draw the same equipped HD source at 4× before any canvas downsampling.
+      // Draw the same equipped HD source at 2× before any canvas downsampling.
       c.imageSmoothingEnabled=false;
       c.scale(zoom,zoom);
       const x=canvas.width/(2*zoom),y=canvas.height/zoom-10;
