@@ -55,7 +55,7 @@ for(const branch of H.progression.ids)wire.originalInventory.inventory.push({...
  });
  await p.route(process.env.MARE_TEST_URL,async route=>{const r=await route.fetch(),html=await r.text(),boot='<script defer src="/apps/account-client/game-session.js"></script><script defer src="/apps/account-client/game-ui.js"></script>';await route.fulfill({response:r,body:html.replace(/<script defer src="game\.js/,boot+'<script defer src="game.js')});});
  await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready);
- await p.keyboard.press('i');await p.locator('[data-item="qa-book"]').click();await p.locator('[data-use-haki-book]').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__mareDiagnostics().haki.unlocked);
+ await p.locator('#gameLoading').waitFor({state:'hidden'});await p.keyboard.press('i');await p.locator('[data-item="qa-book"]').click();await p.locator('[data-use-haki-book]').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__mareDiagnostics().haki.unlocked);
  if(!await p.locator('.hm-node').count()){await p.keyboard.press('Escape');await p.locator('#characterMenuTrigger').click();await p.locator('[data-character-section="haki"]').click();}
  await p.waitForSelector('.hm-node');assert.equal(await p.locator('.hm-node').count(),16);assert(await p.locator('[data-haki-toggle=armament]').last().isDisabled());
  for(const node of H.progression.nodes){

@@ -112,7 +112,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await page.evaluate(()=>{__honorsQA.game.level=200;__honorsQA.update();});await page.evaluate(()=>__honorsQA.sync());const playerId=await page.evaluate(()=>__honorsQA.game.hierarchyPlayerId);for(const expected_tier of [2,3,4])assert((await page.request.post(new URL('/api/hierarchy/promote',process.env.MARE_TEST_URL).href,{data:{player_id:playerId,expected_tier}})).ok());await page.evaluate(()=>__honorsQA.sync());assert.equal(await page.evaluate(()=>__honorsQA.game.hierarchyTier),5);
  await open('hierarchy');assert(await page.locator('[data-hierarchy-promote]').isDisabled());assert((await page.locator('.hierarchy-locked').textContent()).includes('itens especiais'));
  await page.evaluate(()=>__honorsQA.save());
- await page.reload();await page.waitForFunction(()=>window.__honorsQA&&__honorsQA.game);
+ await page.reload();await page.locator('#gameLoading').waitFor({state:'hidden'});await page.waitForFunction(()=>window.__honorsQA&&__honorsQA.game);
  await open('achievements');assert.equal(await page.locator('[data-achievement-points]').textContent(),'1 PT');
  assert.equal(await page.locator('[data-achievement-claim="kills-0"]').count(),0);
  await page.keyboard.press('Escape');assert(await page.locator('#panelOverlay').evaluate(e=>e.classList.contains('hidden')));
