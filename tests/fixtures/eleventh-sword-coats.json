@@ -1,0 +1,2106 @@
+[
+  {
+    "item": 1,
+    "direction": "east",
+    "optionalAuthoredCoats": {
+      "151": [
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/0b858847095d9f83169f2ea1279630a9d358d9b48460de42734a1e2d531969c9.png",
+            "sha256": "0b858847095d9f83169f2ea1279630a9d358d9b48460de42734a1e2d531969c9",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "e2fbfa9e3766c43731733cde3527336897336fff497baebe24cb0f8f816652fc"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/a3b6834d3a487d7796b8287e38aa1b2d77f4b78de2877b31ea650b981af9a33b.png",
+            "sha256": "a3b6834d3a487d7796b8287e38aa1b2d77f4b78de2877b31ea650b981af9a33b",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "c63ade6884e4fb62870e1678e4e90a35677fadbb0c74e78d0cc7b2a67aad30da"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/ea3a73073afbbf68bb131a6f4e743afe03aa9ce89217bc6c957092395eb1dbef.png",
+            "sha256": "ea3a73073afbbf68bb131a6f4e743afe03aa9ce89217bc6c957092395eb1dbef",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "529d9b42bf9a1be4c7b24bc6f5ad915505520b68e9a78ecb9a00bb6743e4d1da"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/cc44205a55dbbea292076122be4162c5a210b3dc095772f9b904d32b9f108ce6.png",
+            "sha256": "cc44205a55dbbea292076122be4162c5a210b3dc095772f9b904d32b9f108ce6",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "d8a3a488aa51c54b443ce331f2dba8798e0be6e04d5d6052d8066af3702ed4ac"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/d691d949117b9c40dba37dbab9d6e24a40e916bbcef19544fcaa92afa395e817.png",
+            "sha256": "d691d949117b9c40dba37dbab9d6e24a40e916bbcef19544fcaa92afa395e817",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "a60d64ca9abdac91015d9645057b39f6b9e52603162f336ff47ca42a02bc8413"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/7067c1047ad3f724d7cb1f331ba8f2cfe2d3276a8fe793538a82c0c1accb82ad.png",
+            "sha256": "7067c1047ad3f724d7cb1f331ba8f2cfe2d3276a8fe793538a82c0c1accb82ad",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "4607a491888bfdf6fed9aa196c1a378cbbc0b2fa33cd4ee5d3fdaa279a0de598"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/4565e436167c74bda654175c64eaa3863a7669a5e52ad096496c9529b41a9944.png",
+            "sha256": "4565e436167c74bda654175c64eaa3863a7669a5e52ad096496c9529b41a9944",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "b8c51e4f409f58af68a576c7e7ec3a2d10e6ad7cbdf0840926dff926e2e91ec0"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/76efd964accdd98a8b0c5c6e8d648e139967e69b7937d8362692b92a7058795f.png",
+            "sha256": "76efd964accdd98a8b0c5c6e8d648e139967e69b7937d8362692b92a7058795f",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "a45c9dde965956e3024469e4a26c30b5403e7e77ae474fb63be7c7ca6e7e86f7"
+        }
+      ],
+      "158": [
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/26f990540a0489d32e1c27fc8874a9d5224ea2ee5bdbcc03ec68f9a6b63771f9.png",
+            "sha256": "26f990540a0489d32e1c27fc8874a9d5224ea2ee5bdbcc03ec68f9a6b63771f9",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "d2f3e9fcd28b9fff074e5bbc9711d09317a488f4493f9e5e7bae705f2542f73d"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/e50704f4068eb51458b64b8a4ac6173f48db16d3a066917212727f10d1d96173.png",
+            "sha256": "e50704f4068eb51458b64b8a4ac6173f48db16d3a066917212727f10d1d96173",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "848fd54ba00c68d0742f15bd42b69a0bdf789eb156f9065f481e9591d04899e1"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/3c945439a48b75bd1bd4f7230a15836606c23d52ac84df9abd922c1102ff1078.png",
+            "sha256": "3c945439a48b75bd1bd4f7230a15836606c23d52ac84df9abd922c1102ff1078",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "f1d0b2d73fdb514bd2e89c45354eaa0634051d49c256ac2c4e2658b6066111dc"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/593a98962831acf832b76e5da19fb280aa5229b73111d6c6b5bc471306954f9c.png",
+            "sha256": "593a98962831acf832b76e5da19fb280aa5229b73111d6c6b5bc471306954f9c",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "ffcdeed82040ba337802652275d7a5d83b90e593f170ead89ca02629ce716112"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/0d12fc1573b7022109f64fb6ed8ca0e7506c5f908cfc92a9edb68d79ac5b16b7.png",
+            "sha256": "0d12fc1573b7022109f64fb6ed8ca0e7506c5f908cfc92a9edb68d79ac5b16b7",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "29724c8afef3a095dd98210197d9ffd1a0e2c14125dfc9abae4beb8ef2b7f908"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/e19eaf7d931140784e7f5ec3392a4c52320fb565467dd824ec6e0a2728f5426f.png",
+            "sha256": "e19eaf7d931140784e7f5ec3392a4c52320fb565467dd824ec6e0a2728f5426f",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "d0337f2a831ec8521d48ab164ebdc2ecf4467569c3d58341c86b9f608613299f"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/32809fa5b1694949f5dd57aa54d2ec72ad41ae51126dfdef7203e519f502ee24.png",
+            "sha256": "32809fa5b1694949f5dd57aa54d2ec72ad41ae51126dfdef7203e519f502ee24",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "e878be31290450675252b08df0c6074f0b5028b9112f2383f609784a06ebe99e"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/12bfbe5888f23ab69aa9ea1a643ac7a9f53f8537b4529e2bd8f3095a383ba01c.png",
+            "sha256": "12bfbe5888f23ab69aa9ea1a643ac7a9f53f8537b4529e2bd8f3095a383ba01c",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "1cbffaec0d00b5da0fb82164174031793be38e609ec3c654023c3602dbe5c6ba"
+        }
+      ],
+      "165": [
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/ec2c2f2294076dce5a07fc6bfb44561608b3ea6568c4c16538c6d2c162e7fc82.png",
+            "sha256": "ec2c2f2294076dce5a07fc6bfb44561608b3ea6568c4c16538c6d2c162e7fc82",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "f524f9468aa9333861303e3317fb7599d4d739eacc15f96452bcf62be87d82b1"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/e6d7765023bb1d3107168dd8729b3423594ae6b52c457432f08f238abe0706fc.png",
+            "sha256": "e6d7765023bb1d3107168dd8729b3423594ae6b52c457432f08f238abe0706fc",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "56de8d15515b504b937a02e2d1d7142a2b1ca0b8f0b6d0c275dd0d99d62e5787"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/281eeb33c465c390a284c771a7a7a5329aa2e4bd99830f71e2c7dfc15f63cdb5.png",
+            "sha256": "281eeb33c465c390a284c771a7a7a5329aa2e4bd99830f71e2c7dfc15f63cdb5",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "1ae856d0337f2ef41a520131ac3c03b977b5d54ad020bd2eb7fda9a1060b2257"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/8e3c1f6325b3e8172a98121aa2ff7b7b85d144522f2cd8ee6864751beb83577c.png",
+            "sha256": "8e3c1f6325b3e8172a98121aa2ff7b7b85d144522f2cd8ee6864751beb83577c",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "17d631ff7546c9a8e35ddb7a14cc0d9beb602734a14c966f660857581a24b093"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/2594ea0ab3f65e91ded47f25b5d7336b3c4540b09933a86fc54a5a4c1b1ebca4.png",
+            "sha256": "2594ea0ab3f65e91ded47f25b5d7336b3c4540b09933a86fc54a5a4c1b1ebca4",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "17ad432d08ff48df57e37cdf935e7b1e6f27c4c04a0bf9eef99c1c5cc6796f93"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/342735ccdd8745f3c7d328cbcf7e6584b8cd217154c4af120a29ef6636d6db1c.png",
+            "sha256": "342735ccdd8745f3c7d328cbcf7e6584b8cd217154c4af120a29ef6636d6db1c",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "1e610eaa944abddd7ff537f198ba5bbae246ffa6758dfeb9f04fafaf086ae3e6"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/d4ef464b5c4fb9c875ab8c17e5519968be1fca59c738b91c77f2d127fe4e7ee9.png",
+            "sha256": "d4ef464b5c4fb9c875ab8c17e5519968be1fca59c738b91c77f2d127fe4e7ee9",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "108a8af8bca2850aa52e688e732c62484c4db3e8e35b5c4becbd0a82ee9fff6e"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/6fbe9575b68a088c81ffed8b3c006bd040d9562c610ae159046f04e61a0ff1b5.png",
+            "sha256": "6fbe9575b68a088c81ffed8b3c006bd040d9562c610ae159046f04e61a0ff1b5",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "3f9a905d505977142a1b80bc33bcab48ea093e38c5c662c00ec4557a6a67984f"
+        }
+      ],
+      "179": [
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/a5aeff769e3c0f89b2396a2e7f3321d2894e8d62c7b2274fa52e12ece8179749.png",
+            "sha256": "a5aeff769e3c0f89b2396a2e7f3321d2894e8d62c7b2274fa52e12ece8179749",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "2a39d1da644e12b61c7ead1efe1edcdf6067465823d0b9e48c143dbf96957f5f"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/3986819ebd33fe80657542991bde68595395e520f8eaa8f8cc80650d11d8ac13.png",
+            "sha256": "3986819ebd33fe80657542991bde68595395e520f8eaa8f8cc80650d11d8ac13",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "db52a8e53a425cb1de336108730fdcbf8f1bf1e355f68bda42a63a99d6201172"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/791cb9e727acec8fcb820ab9de99a40a954a4f19736c1ff72887325275ce1679.png",
+            "sha256": "791cb9e727acec8fcb820ab9de99a40a954a4f19736c1ff72887325275ce1679",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "ca5f3be6ab5b4c453a2a8937288a55363eb5666869ab8e3854139f02dc7a9132"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/06263d26ad6cc51e45674420230d3f2238756dc395d7c09ec003e0d189a59297.png",
+            "sha256": "06263d26ad6cc51e45674420230d3f2238756dc395d7c09ec003e0d189a59297",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "c52509af50bcfb2e74a0b54f1854909b6c1a7bace99343771d95ebcaf82c98a1"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/eab679a081760fe237ed286e28acba2f011365b85741496ea7a873b4c4b51830.png",
+            "sha256": "eab679a081760fe237ed286e28acba2f011365b85741496ea7a873b4c4b51830",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "a646e1669c2021ce1307aea2a3b207730b16c8ea1b9327f4df0a5e297441410d"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/45314237aeba9f19621e20b29fce6467a6067f190f36d1a6dc174a32ae657e84.png",
+            "sha256": "45314237aeba9f19621e20b29fce6467a6067f190f36d1a6dc174a32ae657e84",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "340741a049e44b717b6dd333c243bd6bdac90de51e6b33c4ff6b656f34cb6e33"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/b9907cc596e44e3927aa65f29b52f63121b39a437f4ebe1d6bad1193dd3292c7.png",
+            "sha256": "b9907cc596e44e3927aa65f29b52f63121b39a437f4ebe1d6bad1193dd3292c7",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "0ceecac522c93a02b15be851df83fd7bd0d42e9c968737b50945f65eb0781cbe"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/b68eb87e474e53fe912a3ea837a2d766c05112cfafc83c92c32117a0f5b6ac14.png",
+            "sha256": "b68eb87e474e53fe912a3ea837a2d766c05112cfafc83c92c32117a0f5b6ac14",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "4b45a6637d5deaa13908e29a5a49d54fc6a1d2c73e59887e8d6ec7627969a3a1"
+        }
+      ]
+    }
+  },
+  {
+    "item": 1,
+    "direction": "west",
+    "optionalAuthoredCoats": {
+      "151": [
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/8735437972cc4b39938c0c55760a26639d584e583f8d9e9e711fec9bbb54da1a.png",
+            "sha256": "8735437972cc4b39938c0c55760a26639d584e583f8d9e9e711fec9bbb54da1a",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "fd3996d3cce3addd38811a84bd326f36561ca40216d5354271149ce012afda03"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/4a38229736b0c06d2f58fe317840ad2ad913be2e4eb30198143ce8bc62482fe6.png",
+            "sha256": "4a38229736b0c06d2f58fe317840ad2ad913be2e4eb30198143ce8bc62482fe6",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "3222ac846e4d007a666889a04b0bcda2ed3af38726115b12d12b7bddebf7596f"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/262c91c3ed279fe797e5f47c92c35a212e22b8805c048169930def8c520ceb6f.png",
+            "sha256": "262c91c3ed279fe797e5f47c92c35a212e22b8805c048169930def8c520ceb6f",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "c472ea82f1f89f25c5930c4dfe9fef2ff3fc49f12e574d45cb0a6057211a2157"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/602f679e9f13cf9947693077475d9f35cca078a38277eee968067dbdcf1b4ca2.png",
+            "sha256": "602f679e9f13cf9947693077475d9f35cca078a38277eee968067dbdcf1b4ca2",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "612837754f970f11d8631cc2587610938149480483c73860542bda032b2230db"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/3760aab7954f46d07040000db7879781dfe425b95004738e724ae0d3cc2b5954.png",
+            "sha256": "3760aab7954f46d07040000db7879781dfe425b95004738e724ae0d3cc2b5954",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "a9df46b84f7db8d5383802fc695ff18c247acec40cb990079e23cf91a57c136e"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/fa85d05fb463aed7671cd0f124ae3df517ae56dc6a84007a0c88c36f56ec731f.png",
+            "sha256": "fa85d05fb463aed7671cd0f124ae3df517ae56dc6a84007a0c88c36f56ec731f",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "56871056cc5244f53a93d48834a0c9018021df9289ff8c88af41e220509bb6a3"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/44ae2e0dbfda617ca4bbcee09c4e075a3e6f89772e27f72521d3821ac7159ecd.png",
+            "sha256": "44ae2e0dbfda617ca4bbcee09c4e075a3e6f89772e27f72521d3821ac7159ecd",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "042f7ea81ff2d38d47a1a29e620b1f70c2965dc427e68aa7af3de339b18e090d"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/3f2945163912d22cead8550511a2685bd57b9d0984e5e735465d74376689ad49.png",
+            "sha256": "3f2945163912d22cead8550511a2685bd57b9d0984e5e735465d74376689ad49",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "7444dbe1a19dbfc22e559ff1e93cf6893926fcf526491edde2e734b2e41906fb"
+        }
+      ],
+      "158": [
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/f02bd3588bc6159cbe25d74cf981cfb2897d258339d987fd26a7ba41170d7055.png",
+            "sha256": "f02bd3588bc6159cbe25d74cf981cfb2897d258339d987fd26a7ba41170d7055",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "53b64bffab0b35e73c406f052dd3b2a225f819e757231af37a9ada441799dd3a"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/b172b7a3a18f04e9d1eb75ab7f8181559c143936ebc9568475cfda485e527746.png",
+            "sha256": "b172b7a3a18f04e9d1eb75ab7f8181559c143936ebc9568475cfda485e527746",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "49f2d8056c87e14e5470aad4f280c67ed1bc9642b1eccccbeb2153fcf880ae9a"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/1ad719a1e0b4a9e87cef94a6aaa922451759509288718184b99ae767dcc5034a.png",
+            "sha256": "1ad719a1e0b4a9e87cef94a6aaa922451759509288718184b99ae767dcc5034a",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "67916c30c8829d668aa809ee69f48401f0d77a27c0bc1b469cf9e3ea9fb346f7"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/fea7a467b81f75461db946b0b154df9889422d4d56cad6e70ae9b7784dcd2179.png",
+            "sha256": "fea7a467b81f75461db946b0b154df9889422d4d56cad6e70ae9b7784dcd2179",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "6c946f9e9099ef381c201f9b484f93cb7551fcd0737476a6d7c3314a6be8d1de"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/4aba9235c0b35c0aae3b7661b3497334a700221fbb20ff243c67db5c954c9333.png",
+            "sha256": "4aba9235c0b35c0aae3b7661b3497334a700221fbb20ff243c67db5c954c9333",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "78ab362ac281addfb9a5e7324de63f4656c684d44079a97be5b2d068af0c4881"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/574099ef9027b1a678246cb744ff7748c15dfc8b3beeb2d3f190dceea759574c.png",
+            "sha256": "574099ef9027b1a678246cb744ff7748c15dfc8b3beeb2d3f190dceea759574c",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "94b8f2f044fc965f0845b3f84c365bddd55dcf2d1ddf6cc6e470c66fc8aba9f0"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/3fe542050f83d6810056f06953b07cfd373a8630b087f8fd39d8c524b6be294e.png",
+            "sha256": "3fe542050f83d6810056f06953b07cfd373a8630b087f8fd39d8c524b6be294e",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "e7792f150880d40f9e0e4723143b3aba15fdbc92cc5912bebbcc6d0a5d0497a9"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/7e681ed5a96ee14319ff6294743cea4d7f1a51615035d7a2846f324010238d10.png",
+            "sha256": "7e681ed5a96ee14319ff6294743cea4d7f1a51615035d7a2846f324010238d10",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "b5d84206e24373fd7f927cb42eb66545e915a3d9de74705b8b3b65f5b8a7a22b"
+        }
+      ],
+      "165": [
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/26cab6e9bb4bc686b30d3a39289d367d232b0b2f22195bb83b78037d0ebddfb2.png",
+            "sha256": "26cab6e9bb4bc686b30d3a39289d367d232b0b2f22195bb83b78037d0ebddfb2",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "6cc8e96ec542f5d98ef5e247c024bb108cf855c29bafd2a41128045a271e4008"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/d69ca95cfbf1e1cd4e4aff3d3910d8aefac81ccbbafa11dd09d6d054a2d015fb.png",
+            "sha256": "d69ca95cfbf1e1cd4e4aff3d3910d8aefac81ccbbafa11dd09d6d054a2d015fb",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "f851fe3b92889e868a3c0308de82832ceddbf8f15b08398bbe423c1599812521"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/796062a8451fc63213349b4921218e8b465998fef44f1fa240ae9db3c9dd9fc0.png",
+            "sha256": "796062a8451fc63213349b4921218e8b465998fef44f1fa240ae9db3c9dd9fc0",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "c887b086b4e7720856cdfbab091bbf3477a903313d467620b3ad609255a5aa7e"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/409406f0ae9bce430297971f8504cb682660fdb538697a0e86c59d441e0ae670.png",
+            "sha256": "409406f0ae9bce430297971f8504cb682660fdb538697a0e86c59d441e0ae670",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "baaf973a54dd174789d4fc6bc98854ae42d0dec4b45353b58b4f0ae992ed828e"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/a9a96db3a1b88507df0c9705f128cebb726da74408a8fe1d6880fcba57502c05.png",
+            "sha256": "a9a96db3a1b88507df0c9705f128cebb726da74408a8fe1d6880fcba57502c05",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "a7d8bcb525c071f576869c7f0b80a39ffc12b74c105548c47acf578ca4c43a48"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/0985d90a7834e7a17a86d15ae818bb6572bf70e4618e6f158cb7b9396e43a6b7.png",
+            "sha256": "0985d90a7834e7a17a86d15ae818bb6572bf70e4618e6f158cb7b9396e43a6b7",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "39c18f901cfae7642091ddfe368eca6e7d6f53d1b703621fae181880ce04f9df"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/4b8bcae50146ac35bdb3438aca22ac6476b9479b4ae905a834ca7ec053045c95.png",
+            "sha256": "4b8bcae50146ac35bdb3438aca22ac6476b9479b4ae905a834ca7ec053045c95",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "74a21ba845397e6844478926071b6d37db0b7a5d53084d229270d61b0e5b83a8"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/4c76157ff1b97b898db63754cb506a7e7df8bb6464c0747ba6cba80ffa940897.png",
+            "sha256": "4c76157ff1b97b898db63754cb506a7e7df8bb6464c0747ba6cba80ffa940897",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "194932bba2d320a79e97773affded850f22206a81a418683c29b3e86e355e772"
+        }
+      ],
+      "179": [
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/aecfd24aaf5a80a6347cd88a5ead5efb1d48b3ee720b14cc77d4f7df10eb2f5c.png",
+            "sha256": "aecfd24aaf5a80a6347cd88a5ead5efb1d48b3ee720b14cc77d4f7df10eb2f5c",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "4500744dde70434cbf216a71ed1413b1648d4f4abf58370fa0a7ee19669a4223"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/9d78c4cb6d232adcfbf4f606b06b6d85b5a09d3cd384c92cc4d5bc6457e2c989.png",
+            "sha256": "9d78c4cb6d232adcfbf4f606b06b6d85b5a09d3cd384c92cc4d5bc6457e2c989",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "3ac38575999032e10dc14b0a1125d325efc0483ea0d2b740482f87edfe557f4d"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/634314b22c148b0e3ab7b482fbc466138fd7af8f1f0fc272ee835e35f5a76b8b.png",
+            "sha256": "634314b22c148b0e3ab7b482fbc466138fd7af8f1f0fc272ee835e35f5a76b8b",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "9c51085d546682eab25d8c45e1287bd5ab3bc040dd0ab58e409512482cdc1b33"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/e20974c36c57a909ab107932183eb01c9a9b17f14e743a85138268101d388d26.png",
+            "sha256": "e20974c36c57a909ab107932183eb01c9a9b17f14e743a85138268101d388d26",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "6f77ffcc39c2ebbeca96dd56e7271e22e400f43ab075dfa777c205ba8de3cebb"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/cf5231e0d0c006170b8b5d9f008993241581bec733e6bff90ae81745e181aa62.png",
+            "sha256": "cf5231e0d0c006170b8b5d9f008993241581bec733e6bff90ae81745e181aa62",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "0572b85ffe4f98d06c5660b4727871460a605fc44c65817481f14bd0be64a740"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/cc91a864d049a5e773b3d07ffb7f42f76c9eff2572b77c16f047af1141d556bf.png",
+            "sha256": "cc91a864d049a5e773b3d07ffb7f42f76c9eff2572b77c16f047af1141d556bf",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "818ee3306556c471b4c8aeac7840e65348ce8e03aa207cfb045ff4364f427a12"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/cf2b9bd44b0f2dbc4d06b7130d06a304aaf1ca0bf9decf1443f0dc24ac47760b.png",
+            "sha256": "cf2b9bd44b0f2dbc4d06b7130d06a304aaf1ca0bf9decf1443f0dc24ac47760b",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "1f3353eb0ac6e5f9cb6fd0a9f637c88c6142bf8a850a779a90d7a2b3a04bb651"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/e16215f2a16b607547495f347d5de884538d91d349cb23024577655e43be886a.png",
+            "sha256": "e16215f2a16b607547495f347d5de884538d91d349cb23024577655e43be886a",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "c1afda2637a9cc1e46f00d7f3d45ee53a5410346ddb6258525b14fc68871650e"
+        }
+      ]
+    }
+  },
+  {
+    "item": 68,
+    "direction": "east",
+    "optionalAuthoredCoats": {
+      "151": [
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/924c54d42800e9afe9002a42d3f45fade6e554048ab0449e46c2224dd3fa1c82.png",
+            "sha256": "924c54d42800e9afe9002a42d3f45fade6e554048ab0449e46c2224dd3fa1c82",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "7d15405e6ba4b15254d94b2f406a6ef7f4f2cc7d7fd614b06d056a541bbeef3b"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/69ee2f8bdd2154289b92e7ae3775547da808d209091f79ff5d95424dd1ff1404.png",
+            "sha256": "69ee2f8bdd2154289b92e7ae3775547da808d209091f79ff5d95424dd1ff1404",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "0183a55ab3e27854a33da9c54aaa03649754ecfd2084eb70e0c15eb372baefa3"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/8a40ec0891ab1413e3d08536bd58214ec4c1718d1fd1333684fa25d041772a0c.png",
+            "sha256": "8a40ec0891ab1413e3d08536bd58214ec4c1718d1fd1333684fa25d041772a0c",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "ae681cb149b8ba797f6a2243b90b5bcb5a54975031c723b7f2d929d6d3981052"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/78a39cb3b5f9720a2acbc664a7d1fe65c39fbb65b4c7b87fbf1cd48f666abe64.png",
+            "sha256": "78a39cb3b5f9720a2acbc664a7d1fe65c39fbb65b4c7b87fbf1cd48f666abe64",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "1ac4e5f67d4d03cb245d52435bc5c030780274a01f843af026291343b13ec5c0"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/b8940cb3c388b0d3934c78e4d6ef323c6dccf0e6b0b555f715ed0f9da8c83057.png",
+            "sha256": "b8940cb3c388b0d3934c78e4d6ef323c6dccf0e6b0b555f715ed0f9da8c83057",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "48c1499b3c9cb0904b048e62081d014b496c0087482fe3aa6f80596306f854a2"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/bcc949fde086825846b95f46dcdd105628c34eb1b523022a73fa326b1832f572.png",
+            "sha256": "bcc949fde086825846b95f46dcdd105628c34eb1b523022a73fa326b1832f572",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "eda35c4a05b41342b65f90d62c26030ca504df98fac0ab8523835164b934231d"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/df2cc56c0282a4c719534bb62ecb1692df3edfa10ab68fa3a71baf74e6cb97b1.png",
+            "sha256": "df2cc56c0282a4c719534bb62ecb1692df3edfa10ab68fa3a71baf74e6cb97b1",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "805de0e2b6211bf90e8b096a0ec95856c67eb239f29c8080842422b3e5fad27a"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/09853019b78e68c5401c4f24e3a09fa37851a2952b67a45342619681a8bb95f4.png",
+            "sha256": "09853019b78e68c5401c4f24e3a09fa37851a2952b67a45342619681a8bb95f4",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "eed55b94d8bef161672c8b2a158fcb07be5678da3548d3da45384265d64d979b"
+        }
+      ],
+      "158": [
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/416fa658ae8f4122b64fb2c97efa9d7e3ba2e7ec72f99aa19feac26bf6607ae9.png",
+            "sha256": "416fa658ae8f4122b64fb2c97efa9d7e3ba2e7ec72f99aa19feac26bf6607ae9",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "685ce3aa3fe75123e13f3ebe93b17fe001e901321811546ba40be44b3c8d7c75"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/c6c8424fa79fc54892d4b8056139da4cbedc49b8d71ba7b34b48ce5a07ebcd38.png",
+            "sha256": "c6c8424fa79fc54892d4b8056139da4cbedc49b8d71ba7b34b48ce5a07ebcd38",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "685fffb26a64b0c67d2c052a079a05a9ac2463fa4eedcb54cc33e8b2505fde2e"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/1840a0ac5ff6f04f9d898d444bfa78bd2e16e69a205a061a239c53918afdea2b.png",
+            "sha256": "1840a0ac5ff6f04f9d898d444bfa78bd2e16e69a205a061a239c53918afdea2b",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "23a191c1a48ed961e1cdb169711203eb5873d429bb76c03a9e07694c9342b648"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/014502f2342086c4d261565720b7aa907b69c1654204fb2e7d7002b70e1069d9.png",
+            "sha256": "014502f2342086c4d261565720b7aa907b69c1654204fb2e7d7002b70e1069d9",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "37cfc13911e8ae42daa6fb8d946b9097c204d7a04f86885f4e09ef336c15df0a"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/204aedf7208f1b20e51a95b8227fe01eda43a79de842ae173707e97c60b545f7.png",
+            "sha256": "204aedf7208f1b20e51a95b8227fe01eda43a79de842ae173707e97c60b545f7",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "fb8fbf39b6d9b3a0ead9c2b4e0dd46c0ee68cc0bb6d6ce93a39c7233727994ec"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/9849f08e61d5c14825afdc8f81614a6d9cd6f5c145876717d537d7f83d3e3620.png",
+            "sha256": "9849f08e61d5c14825afdc8f81614a6d9cd6f5c145876717d537d7f83d3e3620",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "037b3e5486d2b8f1e5c860eaa3d68abe63aff9fe4177a00251ac136c0696e032"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/f1aaa678e22204bd73599118574d0fb84f59e4b0077eebd49f3626c88478a7fb.png",
+            "sha256": "f1aaa678e22204bd73599118574d0fb84f59e4b0077eebd49f3626c88478a7fb",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "93e59470ef8ef46df774bdbbd51da797f4348ad0814f90d0d9d039d3bfba85c7"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/c19d8f030f517d7a3ceb1129765a0a12da9ce477cfa584d424d1da2a1d983ff8.png",
+            "sha256": "c19d8f030f517d7a3ceb1129765a0a12da9ce477cfa584d424d1da2a1d983ff8",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "723d3158b5ce156ffd3ef226a00ecc01eb0e5d5fa1faf24cc9b309e3d2c2454b"
+        }
+      ],
+      "165": [
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/dc7ce9d2ba4c1ea21615c367b9783cf4e4e572490db811f15c83e237dcd04e52.png",
+            "sha256": "dc7ce9d2ba4c1ea21615c367b9783cf4e4e572490db811f15c83e237dcd04e52",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "e42f0f1c355383c0301f53a8fd9aa61e28b52be60eb6122671e40b8b5ffa1470"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/b1d4f747c3bbb37ca8ba5e8ce63af05fb99afc04f98f565e001e2e35745882a4.png",
+            "sha256": "b1d4f747c3bbb37ca8ba5e8ce63af05fb99afc04f98f565e001e2e35745882a4",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "2dff97ddcdc89a207d2190b49ea27c3a114d8cd858ebb499de3983dfbaac42a7"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/ecb4194719933a389fb5f535d1f460e071f1edcd6a533e758cbe85234cfda2b2.png",
+            "sha256": "ecb4194719933a389fb5f535d1f460e071f1edcd6a533e758cbe85234cfda2b2",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "a9170cdaf1b283bbf86214b3a7b0789a0ff5b5869689bb51f9c4721b87ebd7fc"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/4c5815bd148ed87f1b083960671af1432b348acc6f3fcc4bcd165c30f3e4544d.png",
+            "sha256": "4c5815bd148ed87f1b083960671af1432b348acc6f3fcc4bcd165c30f3e4544d",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "f8f0dc8db0e11112f1c1c9eae0bbc5e4a38d28bcdc3918dd099b20cb0606d7f7"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/499acc06046cb492e22593da4cc16ccd77fb72c70dfae68f4d5abf0745ea881e.png",
+            "sha256": "499acc06046cb492e22593da4cc16ccd77fb72c70dfae68f4d5abf0745ea881e",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "eae9e31370ab04000dbec43705efb342fa02f1989db6d7e4c33d5021734a7989"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/ce057a6efaa757fef628bec1620f811bea3b8fda89cc1d8bd1ac828aa6aa19d5.png",
+            "sha256": "ce057a6efaa757fef628bec1620f811bea3b8fda89cc1d8bd1ac828aa6aa19d5",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "05999316e26919fc321b2088a616427aa860b4e940e7fae67a835ec7da9a9247"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/0771fabbefc97f3ae619e151333099fdb2719696a925f6a668481ba25c3e2b28.png",
+            "sha256": "0771fabbefc97f3ae619e151333099fdb2719696a925f6a668481ba25c3e2b28",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "baa3beedaee6f9f9ff2c53cea62bd5a6f60fd41e79ffd21564f930908395bb68"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/9621d1e095a83ca67657ab74c33407bb736bc851b9fc1fb4c1e7150de5beddab.png",
+            "sha256": "9621d1e095a83ca67657ab74c33407bb736bc851b9fc1fb4c1e7150de5beddab",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "2ff78446d2ef020577bb8447e1ee4bad7582f424e6fd419455db5daaada5ddd5"
+        }
+      ],
+      "179": [
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/6e1f0db59943fab346083af8bc4389e72a0e87270aad408834699634fe3f3429.png",
+            "sha256": "6e1f0db59943fab346083af8bc4389e72a0e87270aad408834699634fe3f3429",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "1567c438e22f516c3f22eaade950f6eec24829e5990e864ca4166d0d33fc1ccf"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/2791e9436a58e0a35cb7aa12aee5812d24647ac2bd27ef7a4ff75060b8770c82.png",
+            "sha256": "2791e9436a58e0a35cb7aa12aee5812d24647ac2bd27ef7a4ff75060b8770c82",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "43e51a8544698fead43ea45882ae93d0850f6319245fa911eeca9d48f79d7837"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/cc0db11ac84f57223ecadecee080c6384a41e601608c65852d8473c03ddd7030.png",
+            "sha256": "cc0db11ac84f57223ecadecee080c6384a41e601608c65852d8473c03ddd7030",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "8189934f5ff0fbd2eb85960e0e7a42672db1ff15234713996e86ec800c0595ca"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/8d6cf1c34fc5ea9dc7a14b6981736b026a28a4318d27bb48b3681dc51e449678.png",
+            "sha256": "8d6cf1c34fc5ea9dc7a14b6981736b026a28a4318d27bb48b3681dc51e449678",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "cf4b64ed03fb536e704c5c9f8cfe0d1f62e8f1b6b3ae5026c816b0ca53f47579"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/673abdd3bbff0f8b128e5920bf2ec9fd8003d7e8163b90a1b9319133f17778be.png",
+            "sha256": "673abdd3bbff0f8b128e5920bf2ec9fd8003d7e8163b90a1b9319133f17778be",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "541a7c4557168b99bea9f32815a0fced2d2b5b33d4ef6b4e27274ea658da1f31"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/c895c246230f31f366e6a0ca6e828fbacc24ca9f14ebfb331a9d0c762cd53c14.png",
+            "sha256": "c895c246230f31f366e6a0ca6e828fbacc24ca9f14ebfb331a9d0c762cd53c14",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "3d16b5b075f3842e0b747daba2d5743f599c579a0b296b534b6e02a92ee091e8"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/d0076892007f7cfde0bbce7fa492f091218eb7b5d00b3704147308f1cab3591a.png",
+            "sha256": "d0076892007f7cfde0bbce7fa492f091218eb7b5d00b3704147308f1cab3591a",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "14c115619f406966a6d5055f429247fc31ffe462a1b25b8a4c407e9790f1c69f"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/9b5c1b614374e7f8bff36b5ff33e291c36f3c526eaf60c3ea60f369a2117a2da.png",
+            "sha256": "9b5c1b614374e7f8bff36b5ff33e291c36f3c526eaf60c3ea60f369a2117a2da",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "ad57f1144eced3ee8d5ecf64cd1af4ed05034fd8b8764612b5865b7a4701c8d2"
+        }
+      ]
+    }
+  },
+  {
+    "item": 68,
+    "direction": "west",
+    "optionalAuthoredCoats": {
+      "151": [
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/ae7e611d52573f9ccd8a2fc4254aa25b291d24657d81270c2dc21b869b8ead8c.png",
+            "sha256": "ae7e611d52573f9ccd8a2fc4254aa25b291d24657d81270c2dc21b869b8ead8c",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "fd445e77abe2c5622b6f6421730d12843600a32fb927f8742fbcefd8d1caaa2e"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/71996ca657e439b77c2848fbbed537b23720305a1a928fb2d19324d93517fabe.png",
+            "sha256": "71996ca657e439b77c2848fbbed537b23720305a1a928fb2d19324d93517fabe",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "2aeef093354410f5adccaf1f33ca79e0d764190334ce30f756e2f570d87d9e64"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/9112d7111182f6d1d3e6d520bfdd5d9acaf062308c53db228c377a684426b2b9.png",
+            "sha256": "9112d7111182f6d1d3e6d520bfdd5d9acaf062308c53db228c377a684426b2b9",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "a1ccb4b726d387f57e9f0adfe33eb81176157ccba70685bbc6efa452e038f89b"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/97d6e1fe5d308d73d200bb6cd27f14d5129a352b8c4723d485efded3434946e8.png",
+            "sha256": "97d6e1fe5d308d73d200bb6cd27f14d5129a352b8c4723d485efded3434946e8",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "3aae4403676b29176fbe0a495f36b8774cab88ef9100a032505c05de2935cdac"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/5517684dbf5972c0624b4679457ae8ea687d9c2cca10492db4e48e7d7da40d3e.png",
+            "sha256": "5517684dbf5972c0624b4679457ae8ea687d9c2cca10492db4e48e7d7da40d3e",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "c28516b2462dac311c7dd827d89992670e459fd987b0159c9da8726890d17866"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/76eda6fff1bc3d58cc3a9b9b07a09cfa1d4157e7e4decc0d57dc413deb8c3814.png",
+            "sha256": "76eda6fff1bc3d58cc3a9b9b07a09cfa1d4157e7e4decc0d57dc413deb8c3814",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "f2a761313905bee848e4915a463c74f41c72e7ae6ac1a322d10c4d7641f9f8d4"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/0b4bdf32af03104146f3d58d6a4e40add01b27e9fd1410897baf244799ee21d1.png",
+            "sha256": "0b4bdf32af03104146f3d58d6a4e40add01b27e9fd1410897baf244799ee21d1",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "b57d6cbee6970fa1dc9c61f0c83ae1c0d1c6072fbdf50cd38bec78dcdee7e5a1"
+        },
+        {
+          "layer": {
+            "id": "coat-151",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/a81b51b44d8d17c7141c288e9635a5a2bbcebafaf7d943ca9ac2b90a85618369.png",
+            "sha256": "a81b51b44d8d17c7141c288e9635a5a2bbcebafaf7d943ca9ac2b90a85618369",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "21208c0aa65d8f03f1342bf0b468ae6141e028cd38781949fec31fd24b5bb54e"
+        }
+      ],
+      "158": [
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/5acf4cddbffa88bf9af530ec25457c56ee133e7fdd01848e46b8e14775eebede.png",
+            "sha256": "5acf4cddbffa88bf9af530ec25457c56ee133e7fdd01848e46b8e14775eebede",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "7c8bc6ead71065c0af9013ffcce2a95cabf29113545c1136d5ed2586a9c99d39"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/324750a9a9b5e09a4312acc378d0d5970e808680c5dd85b8006842452b49973b.png",
+            "sha256": "324750a9a9b5e09a4312acc378d0d5970e808680c5dd85b8006842452b49973b",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "600858922bd3e9427dcac40e40b56897e0613667eb33603270d6cc8119246c0f"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/37ff67888554d4fed8ca28723f35012924e6222640b71338d1b73337bdf12040.png",
+            "sha256": "37ff67888554d4fed8ca28723f35012924e6222640b71338d1b73337bdf12040",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "c96fe71411df9d464f9d10ca239218e0d2572a161ed38348b8699d9b6bb2ce13"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/7bb8aea9fb1b583f02a22e59cae8878812d1eba61b253ef68c263211d96aebc0.png",
+            "sha256": "7bb8aea9fb1b583f02a22e59cae8878812d1eba61b253ef68c263211d96aebc0",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "982eae25b0a1b25061c5ee8a9a9a7685b8ec120becc9285903720eab58b2d768"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/52cfc7af59a108367de42e4f412e371954b7483966ff27d2e5dd43e42d28a6a9.png",
+            "sha256": "52cfc7af59a108367de42e4f412e371954b7483966ff27d2e5dd43e42d28a6a9",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "03e5ff4ec25d5dfa6a76e87c2d986b48a43181981fce218b874cb4d533f3dd9c"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/aa44a451dd6d82b1b91ade4c42ac3becfc4ea404e34a7477ca072c29666e5c22.png",
+            "sha256": "aa44a451dd6d82b1b91ade4c42ac3becfc4ea404e34a7477ca072c29666e5c22",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "35030ea98d0c9628e0e15100cd2a243096d032907df848212ec815e74f420e0c"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/054de8939572389d8537694f7821d5d1b84cd15085ecbf905351b9d8ec76a6e3.png",
+            "sha256": "054de8939572389d8537694f7821d5d1b84cd15085ecbf905351b9d8ec76a6e3",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "f09361ed2e5f2b9926badd1514f1b80a465c64bd12e90f3a2694b9fe51836912"
+        },
+        {
+          "layer": {
+            "id": "coat-158",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/6104912a0bca818ff9319147a0ba07ba320c33a0950b9963b842d94cfab475f9.png",
+            "sha256": "6104912a0bca818ff9319147a0ba07ba320c33a0950b9963b842d94cfab475f9",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "a0840f5826d086de04a184e6f1705941407ee38ac38e87f92fa8a4966ea91dc9"
+        }
+      ],
+      "165": [
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/4b3473510288e213f98f4baae925032a3263b0bdcc7068d2672dabe7d076ca4a.png",
+            "sha256": "4b3473510288e213f98f4baae925032a3263b0bdcc7068d2672dabe7d076ca4a",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "e22b6a6a43814309d6dfcfcc3b9333fe3862a9f3b3017e0adaa833b8dd5696d2"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/3480d00971a89797ebd49c85805881d6c842de5769eabedb9c2a8051ef7bfccd.png",
+            "sha256": "3480d00971a89797ebd49c85805881d6c842de5769eabedb9c2a8051ef7bfccd",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "63e15109a37e48560fbeddde88ffd94a23bfcdf31ea47107fc2705f1f34658ef"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/b96169bd837c9cd0d38553e6c29c0324064ad724d6345dce11b8a1e6f93605d2.png",
+            "sha256": "b96169bd837c9cd0d38553e6c29c0324064ad724d6345dce11b8a1e6f93605d2",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "5d5f1e34e164d50540d04c29d3f4f661b1762b2ce54ecac0f22ec00efd1044d4"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/ff9f52d0f4e794d42e91d0f8feb4771af2a4e4fff413e8d01b8f5c71efc9f234.png",
+            "sha256": "ff9f52d0f4e794d42e91d0f8feb4771af2a4e4fff413e8d01b8f5c71efc9f234",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "e27354498c1ed6ecbe622f34cdae783b141bc9c6264b3cc6f0da0fe61992d378"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/783a5bce50b210e4d21bff1dfd5e979a9094b34ae4e80fe3629aa88b4e37d3a3.png",
+            "sha256": "783a5bce50b210e4d21bff1dfd5e979a9094b34ae4e80fe3629aa88b4e37d3a3",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "f29fd8e953f64f2ccbb4121cce6258d572a77e2750438c7f43adb086a4ca33a4"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/62f9ce9d2aac805f9ce134be05ba7d317b772be33f4135e20934949aa18fac14.png",
+            "sha256": "62f9ce9d2aac805f9ce134be05ba7d317b772be33f4135e20934949aa18fac14",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "546f0f2a6e9a8ecb76a75ecc7166e29346d5793f5db012ec9277c492ba9b3a06"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/29f3be9400386b14d2bfdc090eb46998dd8dcd0de863e174b872823944925ea3.png",
+            "sha256": "29f3be9400386b14d2bfdc090eb46998dd8dcd0de863e174b872823944925ea3",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "032ee669a42948d10c5f3a1a2ba1e37642019d450d10de893be9ac8fb9a8b805"
+        },
+        {
+          "layer": {
+            "id": "coat-165",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/538fc7b7fcdc9e41bdb7e9e81aac3544c153391ddc55f818678e73ce4f778a43.png",
+            "sha256": "538fc7b7fcdc9e41bdb7e9e81aac3544c153391ddc55f818678e73ce4f778a43",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "87f77e7ca96e2f456b95a645e273e0bc46bec7ffda2fc7c65a57d28461578ee5"
+        }
+      ],
+      "179": [
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/585a5d8a28ac616aa2bc813c0c5356f2ae8ed32092e728e1487ffe6346a5d36d.png",
+            "sha256": "585a5d8a28ac616aa2bc813c0c5356f2ae8ed32092e728e1487ffe6346a5d36d",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "2581b472dd5f45bf7da79f024d01668a174a4b051f6718e24559559571c9618d"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/945558c3e1a2c47914c7e25e1b8a97e5270e4006185969248cd75a28ec844bff.png",
+            "sha256": "945558c3e1a2c47914c7e25e1b8a97e5270e4006185969248cd75a28ec844bff",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "67c79395d61fd19b52114ea4ce2accb5e2b70ccc4cea1add0a0246e43c33d32d"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/4b7959fc0302b46cc0cc43e825ef6b00d89d0dd73db8530f846ba7587ab94097.png",
+            "sha256": "4b7959fc0302b46cc0cc43e825ef6b00d89d0dd73db8530f846ba7587ab94097",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "a952760f4d15619445b3e316bc66c067e36ec4873ec0a76f6c3cf7f301b945fc"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/ede25f19197453dce530df487f200eed90decbd78ff5918324d9a956d04411cb.png",
+            "sha256": "ede25f19197453dce530df487f200eed90decbd78ff5918324d9a956d04411cb",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "71fa2c31c791f8b45a24da9dc356e7edf04ac5d41e2ca0316df67f8048c7c5b9"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/320902755d0d3eb6af9c93ab50db7bd0018ad6b9facb77d06e12ab44a5225fb9.png",
+            "sha256": "320902755d0d3eb6af9c93ab50db7bd0018ad6b9facb77d06e12ab44a5225fb9",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "a3e7d83479f6ccac70b9dbcdfc2ef7767071caa81f4449c7775724c80dbf91fc"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/1a68987e7ed75cd9bc8a2efa7647bae121ba081aba0bb6a4d41b0d672188289c.png",
+            "sha256": "1a68987e7ed75cd9bc8a2efa7647bae121ba081aba0bb6a4d41b0d672188289c",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "f09d82afba9337d6faa3f3a37c461996c3f5ba62a35773a2c96b3f745d36d011"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/beb41b3d6e48e4a0d0bd138871dce0b06fac16a95137dbcf14a0dabc5449883e.png",
+            "sha256": "beb41b3d6e48e4a0d0bd138871dce0b06fac16a95137dbcf14a0dabc5449883e",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "9bb8c9fdf26fdefdee5f601a12688a226279f5670183f8165924724f6fc8afd3"
+        },
+        {
+          "layer": {
+            "id": "coat-179",
+            "role": "authored-coat",
+            "component": "clothing",
+            "operation": "source-over",
+            "depth": 3,
+            "url": "assets/ed71a670bbe6a07a18825cbcb38b108209263f4b31f8580ea26bcd423fa30a05.png",
+            "sha256": "ed71a670bbe6a07a18825cbcb38b108209263f4b31f8580ea26bcd423fa30a05",
+            "size": [
+              768,
+              768
+            ]
+          },
+          "approvedReferenceSHA256": "0747b8276d02b6391cb5f6433e27398c5717079e95fe00295da2005103ab0110"
+        }
+      ]
+    }
+  }
+]

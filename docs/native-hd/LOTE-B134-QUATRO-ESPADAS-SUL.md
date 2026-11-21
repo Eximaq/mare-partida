@@ -1,0 +1,3 @@
+# Bota 134 avulsa no ataque Sul de outras quatro espadas
+
+Feminino, Espadas 1, 67, 68 e 70, somente ataque Sul. São os mesmos quatro passes próprios da Bota 134 validados com a Espada 0, sem transplantar a lâmina de uma arma para outra. Em oito tons e oito fases por arma, a troca isolada mantém todo pixel da lâmina, inclusive na borda semitransparente; o contorno e o alfa da sola e o desenho do cano permanecem intactos. Retirar e reequipar restaura o mesmo personagem. A Espada 69 permanece fora porque a frente da bota pode encobrir a borda da lâmina. Nenhuma outra direção ou combinação foi habilitada.

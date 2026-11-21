@@ -1,0 +1,37 @@
+{
+  "original": "Sabre1_Nodachi68_NORTH_M165_Editavel.zip",
+  "bytes": 4323899,
+  "sha256": "2a9f5e01ee2c301fb9cdb918703506841ab658f7d1ad7e2f9c1f3322bfa40138",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "1a6b05bf0435ae275b2687e02f7c59cc368e49481a171a4c7970bfbec4540826"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "98ec6d56e7995294001e960a579bcb3c291a2f58347bff94ceb1a4ef9fa12076"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 750000,
+      "sha256": "0c9e4547d008aee71cec9494623fcec376f7dfe59ae584ad1af3a000c4a02399"
+    },
+    {
+      "path": "archive.part003",
+      "bytes": 750000,
+      "sha256": "61a40cb3025bcb4f3e58d8068c51d81082d9987dffa3cd5fde13bf4a8d0925f8"
+    },
+    {
+      "path": "archive.part004",
+      "bytes": 750000,
+      "sha256": "b8bab18fe76a2b51f7209c135bb670c34d7a3690c30990d43ba67bf51a80ce30"
+    },
+    {
+      "path": "archive.part005",
+      "bytes": 573899,
+      "sha256": "10ee15167d6ccc88cb3c9901168ce8744d0080e39cc8cbe9187ed5a387c2ca4c"
+    }
+  ]
+}

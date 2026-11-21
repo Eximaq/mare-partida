@@ -1,0 +1,4 @@
+# Botas independentes em movimento
+
+- Feminino em caminhada Norte: as Botas 8, 141, 176 e 183 encaixam nas Calças 168 e 182; a Bota 148 só na 168. São nove pares novos. O teste em 880 quadros inclui os dois pares anteriores da Bota 9 e compara troca, remoção, camadas originais atrás/à frente do cano, sola e os 40 ticks de movimento do perfil padrão e de um perfil personalizado. Não habilita B134/B155/B162/B169 ou B148 com P182, que falharam no contato da barra.
+- Masculino Original em repouso e caminhada Leste/Oeste, C151 e G152: Bota 9 com Calças 154, 161 e 168 usa os mesmos seis rasters autorais do controle P133, confere sola e contato em 102 quadros sem alterar as outras peças, o relógio ou o save. P140 fica fora por faixa bege ambígua junto ao cano. Não habilita soco ou novos tons laterais.

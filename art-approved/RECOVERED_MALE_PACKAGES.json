@@ -1,0 +1,121 @@
+[
+  {
+    "path": "art-approved/weapons/117-south/male_117_south_full-return-v2.zip",
+    "bytes": 999707,
+    "sha256": "ccb86565b0ac79846396debe2ce83ddc7607ab467740032ec147820ca9b3d2c8",
+    "pngCount": 12,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/male-torsos-7-137-144/male_137_static_corrected_v1.zip",
+    "bytes": 302944,
+    "sha256": "534e01cc3cacc225cc2372cc352f8fb075ba2da7b2d341a9a102ae3e313ff2a8",
+    "pngCount": 4,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/male-torsos-7-137-144/male_144_static_corrected_v2.zip",
+    "bytes": 309748,
+    "sha256": "43eaa6614ab895fe8b3f0f078d19f01b02b5592a65b2b98b768c24fc28a5b2e1",
+    "pngCount": 4,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/male-torso151/male_151_static_four-views_v1.zip",
+    "bytes": 291351,
+    "sha256": "1ef2f225fc298e6888947f89a4ac79523d09fc089e48a912c19de9ae9fd6a268",
+    "pngCount": 4,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/male-pants-154/male_154_east_occlusion-r3.zip",
+    "bytes": 1202802,
+    "sha256": "43e55fae45f3147f4de0abfd33ae4350c7f15f776c52c96b8f91d8e807abc99b",
+    "pngCount": 16,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/male-pants-154/male_154_north_occlusion-r3.zip",
+    "bytes": 1452118,
+    "sha256": "317ab37a204a6c49db2f70fa97cb3fe21e2a94edda783744fd2b1e294a29c3e7",
+    "pngCount": 16,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/male-pants-154/male_154_south_occlusion-r3.zip",
+    "bytes": 1613338,
+    "sha256": "6d641b2ed52d70538505195708cddc08c3acf80ae33e24ad78fd4e73b0564551",
+    "pngCount": 16,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/male-pants-154/male_154_west_occlusion-r3.zip",
+    "bytes": 1201664,
+    "sha256": "9f2200b783a152704f346632efd737a2e9eda87e2c9ecdcd89d26facdc8addea",
+    "pngCount": 16,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/clothing/male-torsos-7-137-144/male_7_static_corrected_v2.zip",
+    "bytes": 261318,
+    "sha256": "26bdafccf46cc63a5034b5e5868eda817d3c0b33811912df7479b47187c2064c",
+    "pngCount": 4,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/weapons/staff-north/male_staff121_north_v1.zip",
+    "bytes": 698597,
+    "sha256": "7a918e479a9b13b709696450159228542079d68b93f7b1dd00372bf55d2a644c",
+    "pngCount": 9,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/weapons/staff-north/male_staff123_north_v1.zip",
+    "bytes": 693192,
+    "sha256": "734be77c44d78bdb535145d9f663ca925075e76483a9b111cbfdae2b41b40d13",
+    "pngCount": 9,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/weapons/staff-north/male_staff124_north_v1.zip",
+    "bytes": 693037,
+    "sha256": "6910643b38e36f303815823b47943317e7e5b71d0f3784e9059d9cdcf40258b8",
+    "pngCount": 9,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/weapons/staff-north/male_staff125_north_v1.zip",
+    "bytes": 933916,
+    "sha256": "eaabfb2cb2be709987e250017c710f27119dd7b717a1fac204ae2514c2aefeff",
+    "pngCount": 9,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/weapons/staff-north/male_staff126_north_v1.zip",
+    "bytes": 1138397,
+    "sha256": "91bdb15a1f2d4e5fc110c37cb5fef0777b0784145a0149e3004d6339321aee78",
+    "pngCount": 9,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/weapons/staff-north/male_staff127_north_v1.zip",
+    "bytes": 1028868,
+    "sha256": "8b01a3985b517d65b82e928ae7fc18e3b0ec5991b08fd3a10a534f0ddbc559b1",
+    "pngCount": 9,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/weapons/staff-north/male_staff31_north_right-diagonal-v3.zip",
+    "bytes": 1027385,
+    "sha256": "ef520bb0cbcf96010d243c96e6a77e8771d6826b5d26b24c4ca3b6cfd23345de",
+    "pngCount": 9,
+    "productionEnabled": false
+  },
+  {
+    "path": "art-approved/weapons/sword0-south/male_sword0_south_approved-cycle_presentation-v2.zip",
+    "bytes": 1101706,
+    "sha256": "9e95e9dcea550cadf43c3aa36bd12a6604d92c287a1058bf0d8c210baf8c5991",
+    "pngCount": 9,
+    "productionEnabled": false
+  }
+]

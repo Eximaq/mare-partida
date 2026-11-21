@@ -1,0 +1,56 @@
+{
+  "scope": "Approved native review PNGs + independently verified published neck palette correction only",
+  "skin": "olive",
+  "hair": "cropped/blonde",
+  "eyes": "gentle/amber",
+  "rows": [
+    {
+      "item": 0,
+      "phase": 4,
+      "tick": 18,
+      "width": 640,
+      "height": 640,
+      "approvedFileSHA256": "615e2b02ebfae58ab95f8531367435952e4c407000b751dd7bc224335f3fb0fb",
+      "approvedRGBASHA256": "fe9fc7e794f94028a7fda8488bd3bdafe427bd7aebb9f6b192b993daf23a424d",
+      "approvedWithPublishedNeckRGBASHA256": "dd74b2bec74c18da26bfc4bc0a900497a6001d85d0eea4fd5b49d8367bc7ed05",
+      "neckOnlyPixels": 403
+    },
+    {
+      "item": 0,
+      "phase": 9,
+      "tick": 38,
+      "width": 640,
+      "height": 640,
+      "approvedFileSHA256": "5cfe242da2a316cf84833fc961810d422948561a464d545d4a3b28b854d7189c",
+      "approvedRGBASHA256": "04e4c1a346141405c0e468c0eae1c1e49e5aa1cea4b8d4f6746924c97fc86c7b",
+      "approvedWithPublishedNeckRGBASHA256": "79bd442ab0ea6f145d0019b89d565a1f9cba73946f957f658257d642dd9966e7",
+      "neckOnlyPixels": 403
+    },
+    {
+      "item": 17,
+      "phase": 4,
+      "tick": 18,
+      "width": 512,
+      "height": 512,
+      "approvedFileSHA256": "052dad4278e8524ec9d451aaf4805b94fce3c29fde8117e7a50750100882b9f3",
+      "approvedRGBASHA256": "baceb76747212c7b68bd15a128862bfc12c0c83406c3eb3f6f43553ec6721b0f",
+      "approvedWithPublishedNeckRGBASHA256": "627fd4811f72e014500ed97393dcc7c7945ac220addd692be0ec236c5eb22a25",
+      "neckOnlyPixels": 403
+    },
+    {
+      "item": 17,
+      "phase": 9,
+      "tick": 38,
+      "width": 512,
+      "height": 512,
+      "approvedFileSHA256": "46cedfcbad4eedb9e7d1a549c76176de7e6f81b612e7bcdb0dfcb979c74d5224",
+      "approvedRGBASHA256": "e8c00329c42311d7065595d4ce04c769315abc4d6a5e061ea1654cfc13451695",
+      "approvedWithPublishedNeckRGBASHA256": "13ccd11a550ca11e2d07060200944c0059abb91fcdb77e99ccdcdb269b7bc92e",
+      "neckOnlyPixels": 403
+    }
+  ],
+  "sourcePreviewFiles": [
+    "Orbe17-pele-light-olive-dark-nativo.png",
+    "Espada0-encaixe-antes-candidato-nativo.png"
+  ]
+}

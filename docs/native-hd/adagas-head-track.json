@@ -1,0 +1,218 @@
+{
+  "north": {
+    "offsets": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        15
+      ],
+      [
+        0,
+        22
+      ],
+      [
+        0,
+        7
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "layers": {
+      "head-clean": {
+        "firstSHA": "166331e5140203e0a448d8e0f9f189b16948787f25335066e4e17b19977cbdcb",
+        "transparent": false
+      },
+      "face": {
+        "firstSHA": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+        "transparent": true
+      },
+      "iris": {
+        "firstSHA": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+        "transparent": true
+      },
+      "hair": {
+        "firstSHA": "82ca2b667b9ac9fb3bc49f6c6c48f19a74105d6868a0954f5fef049e0bc9c0e8",
+        "transparent": false
+      }
+    }
+  },
+  "south": {
+    "offsets": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        15
+      ],
+      [
+        0,
+        8
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "layers": {
+      "head-clean": {
+        "firstSHA": "cf8014d043420104bd0064c845f679a8ebc3f97eb0dcad18d67d4faa91c05978",
+        "transparent": false
+      },
+      "face": {
+        "firstSHA": "6d384f15686c7712798355a90bb26b378e479d7bb728f8b00a6d1eeca1e53283",
+        "transparent": false
+      },
+      "iris": {
+        "firstSHA": "f6be0704c6dd7e6347ccf48d60249904f77399801bcf2148701d695e6b342064",
+        "transparent": false
+      },
+      "hair": {
+        "firstSHA": "a463cd9c0580f1a95cfe4f68cdb68f5caa89bcf959be58909df116bc97aba2fc",
+        "transparent": false
+      }
+    }
+  },
+  "east": {
+    "offsets": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        6,
+        14
+      ],
+      [
+        14,
+        27
+      ],
+      [
+        31,
+        37
+      ],
+      [
+        42,
+        47
+      ],
+      [
+        5,
+        8
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "layers": {
+      "head-clean": {
+        "firstSHA": "d2084f721229f645fafb7c4e31d18000b70a60376ee33e60ad99a22364b982b5",
+        "transparent": false
+      },
+      "face": {
+        "firstSHA": "5843eab2f9d0d5f4520abf1b5d605301a1f80887422caeb252ca8073f7cef773",
+        "transparent": false
+      },
+      "iris": {
+        "firstSHA": "3c8fcb083ab48610c42b34b6bdb0dcdc324331509b908c0dd7cbb724b5b37141",
+        "transparent": false
+      },
+      "hair": {
+        "firstSHA": "4eb69f74d24304b993bbf644c9da2c3a7cc8cbef2dd36dea626abd26cc3e5252",
+        "transparent": false
+      }
+    }
+  },
+  "west": {
+    "offsets": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        -6,
+        14
+      ],
+      [
+        -14,
+        27
+      ],
+      [
+        -31,
+        37
+      ],
+      [
+        -42,
+        47
+      ],
+      [
+        -5,
+        8
+      ],
+      [
+        -1,
+        0
+      ]
+    ],
+    "layers": {
+      "head-clean": {
+        "firstSHA": "b3f9526fb7eefad1214b39f56a0f05a68131f7236048ea563b99ae5d86c8b9f9",
+        "transparent": false
+      },
+      "face": {
+        "firstSHA": "9f2d13b556a604d9bd162d00386e788b9fe0c482a6d1bac35c67e5a9992d2032",
+        "transparent": false
+      },
+      "iris": {
+        "firstSHA": "5f757e230cf80547097912d391f7acb3f2ce3e98ece852f3f43969f657c1c963",
+        "transparent": false
+      },
+      "hair": {
+        "firstSHA": "dd6a15338078599da85c584d798e368069a02da8731c041929b57abcf011845d",
+        "transparent": false
+      }
+    }
+  }
+}

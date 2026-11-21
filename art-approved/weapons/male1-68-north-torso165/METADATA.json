@@ -1,0 +1,31 @@
+{
+  "path": "weapons/male1-68-north-torso165/Sabre1_Nodachi68_NORTH_M165_Editavel.zip",
+  "bytes": 4323899,
+  "sha256": "2a9f5e01ee2c301fb9cdb918703506841ab658f7d1ad7e2f9c1f3322bfa40138",
+  "pngEntries": 64,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete NORTH cycles for this specific weapon and outfit set.",
+  "weapons": [
+    1,
+    68
+  ],
+  "outfits": [
+    165
+  ],
+  "gender": "male",
+  "directions": [
+    "NORTH"
+  ],
+  "finalFrames": 16,
+  "manifestHashesVerified": 66,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male1-68-north-torso165/parts/MANIFEST.json",
+    "reconstruct": "weapons/male1-68-north-torso165/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  },
+  "archiveNote": "Exact approved male NORTH ZIP; no other pending artwork included."
+}

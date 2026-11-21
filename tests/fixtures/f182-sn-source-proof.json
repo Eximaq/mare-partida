@@ -1,0 +1,504 @@
+{
+  "sourceSHA256": "a6b4587a08d81992454aa943be584ba7a7fb03218598b5e590085c50a9fca5f2",
+  "selectedIndexSHA256": "e42bfdbd5787b513f08f823340cdfc45d20b5336379a17569c3d8e2ce547c5f4",
+  "revision": "EW38_SN3",
+  "policy": "Source body split into complementary covered/uncovered anatomy by cloth alpha==0 AND owner alpha==0; union RGBA exactly original. Original cloth and owners copied verbatim. No torso combination support.",
+  "directions": {
+    "south": {
+      "states": [
+        {
+          "phase": 0,
+          "durationMs": 125,
+          "baseSHA256": "be493f616c652d3be276cae2440349cd0da402b77c43639e1a6559ca0a1934f4",
+          "clothSHA256": "b533431ca9b60e5050c244e8ab6be476949047aee9fabadff8f6b42d10f5a544",
+          "ownerSHA256": "434a293f43750f8d09085f4258a45f835fe2199c44cecc2ad727e365d2a3b7e6",
+          "layers": [
+            "506aac970ad14fb34c04c5a4fa9e0fddfa53dcaa02ed8349be336f901ba190a8",
+            "b533431ca9b60e5050c244e8ab6be476949047aee9fabadff8f6b42d10f5a544",
+            "434a293f43750f8d09085f4258a45f835fe2199c44cecc2ad727e365d2a3b7e6",
+            "ac8f2b2232bf78e3a3fe6d2d9c09c36b43fbeb2d04b69169f2aa986ec685497a"
+          ],
+          "referenceSHA256": "76cbaa68aa71c8dc20301cfe767296615b38444a9870b58e933f3a7aa473c329",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 1,
+          "durationMs": 125,
+          "baseSHA256": "d13fa84d51378c00ac17ee58d3f1cc3057fa7beb491137931dfbb0561f93ae19",
+          "clothSHA256": "ea6f8bef73c103f4e204cd4855a30790cc29daa86f3af685444ab7a5f51987c3",
+          "ownerSHA256": "698f2c805cae5433fe119be791816986935f45b2053878fbab1cf033c95e96dc",
+          "layers": [
+            "6dd93a1aa6ab35b355c248da4a571779e3dc06643f13bcc13eb0f9c626e2ae40",
+            "ea6f8bef73c103f4e204cd4855a30790cc29daa86f3af685444ab7a5f51987c3",
+            "698f2c805cae5433fe119be791816986935f45b2053878fbab1cf033c95e96dc",
+            "6545d18c099b87d3800dd51cf1c1a4e66e2f6e7612e97309cd272c4b9ff61782"
+          ],
+          "referenceSHA256": "bd882a66aa56858dd5c856e0d4133a744df9488e5b28bc538bf9c76a888b48a9",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 2,
+          "durationMs": 125,
+          "baseSHA256": "fa28d1031469d74513b13a698f09e8bf31a5fee7e4037becbecf9768a87c4204",
+          "clothSHA256": "b4bbfe4cd9f6f15b0d471af33ea2e5c10130b6d30eb12b80a697ed31ddc4ee34",
+          "ownerSHA256": "9cbe5527929cb9aa2c44a920012263ec12d39c346af3c1b619d13d208c74544b",
+          "layers": [
+            "15c0ef9953e1550f583e9dcd0cc2be281ead74dacc7bc5212fc96c9c7cf31488",
+            "b4bbfe4cd9f6f15b0d471af33ea2e5c10130b6d30eb12b80a697ed31ddc4ee34",
+            "9cbe5527929cb9aa2c44a920012263ec12d39c346af3c1b619d13d208c74544b",
+            "9f84769506cb440b25820e90721a980416ec8f4a3dd8e0cff0b8fdab3b59df93"
+          ],
+          "referenceSHA256": "173c0feb91ebb6e43487c04cb8e55f969cb1246b75db27e69f73ed9b7423856c",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 3,
+          "durationMs": 75,
+          "baseSHA256": "b905d0e64c0a907de540b943e9bb77a362a0cd3daaa96eeb34b2542cbea74581",
+          "clothSHA256": "32489cec15c02a057c5c0cabb08a0557fa20d5ee1731478056965481091a61cb",
+          "ownerSHA256": "afd4c18068a4a72667965ddf0189439544a078e4ce42495fb4f80a2fbd865a1f",
+          "layers": [
+            "227eed23c3b9d9253ec12e6b11377278de17e1a041c13cbd68a643a930c197ab",
+            "32489cec15c02a057c5c0cabb08a0557fa20d5ee1731478056965481091a61cb",
+            "afd4c18068a4a72667965ddf0189439544a078e4ce42495fb4f80a2fbd865a1f",
+            "3e8031c7bbd3de139178a11ebea8e50c01120da76f2a392c50d4c9c86544d565"
+          ],
+          "referenceSHA256": "8beb9c6d8779e5679a128b39b2900e948dc19affd019f8251ea94b43fa1a8a09",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 4,
+          "durationMs": 50,
+          "baseSHA256": "b8212a48673843d1259382c2d99d6c91f725928dfc07e95eeec61096416c82d3",
+          "clothSHA256": "c901ff40c0d2b54b84e4d109f4fb2d2e5d317c621fd7519eb13177bb83df4aa5",
+          "ownerSHA256": "afd4c18068a4a72667965ddf0189439544a078e4ce42495fb4f80a2fbd865a1f",
+          "layers": [
+            "eb36fd54ff9991c5a21b6005aefcca6a7d7e4d465e8c1475d555b404ed335c4b",
+            "c901ff40c0d2b54b84e4d109f4fb2d2e5d317c621fd7519eb13177bb83df4aa5",
+            "afd4c18068a4a72667965ddf0189439544a078e4ce42495fb4f80a2fbd865a1f",
+            "e9aa80e88a165af5471f6165c9bdc004d5f73b85f6ed30397aff09b901d86d67"
+          ],
+          "referenceSHA256": "49b61e81733007c493687528a37d5b41b170dd6046bd14a8b2420661d62fe477",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 5,
+          "durationMs": 125,
+          "baseSHA256": "7b03f3e7f539aa94b456ea835a6ecce4367b63c2bf2c884cf9c14447c108d946",
+          "clothSHA256": "088fa4d04565229a2ccbb01b8af816b6ef04b26fc6ec9576fe5de5cd7eb4814b",
+          "ownerSHA256": "55d28a2eee19451fc1e7a4d90f7d519ba0281153f10a9005f9ca0a0c7e048d6a",
+          "layers": [
+            "155c5eb4b5e715e258be8a19d0c15d1eaf2c2a995fdbaaa5ddb0b94547770a7c",
+            "088fa4d04565229a2ccbb01b8af816b6ef04b26fc6ec9576fe5de5cd7eb4814b",
+            "55d28a2eee19451fc1e7a4d90f7d519ba0281153f10a9005f9ca0a0c7e048d6a",
+            "ed3e7508f36b3f6cba4dba9b4df28393840c43e07f5ed30596b8c84846a81267"
+          ],
+          "referenceSHA256": "848eef47c2496c599f1facec242ad14a034a5134eeab39eed74ead1167fb6996",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 6,
+          "durationMs": 125,
+          "baseSHA256": "68116c4a74dd9b14631f5f290f1357db122d0a76d330b772ca0fc1fe3c332b9a",
+          "clothSHA256": "ddf60c19fd124f350f0236e216b441eee24651e2de6a2243121caf5c4ab48fb2",
+          "ownerSHA256": "f36c9d28ae0e2dc5e5c2bfa28b01689c8124c66d2931b0773b7ca2faf81deb45",
+          "layers": [
+            "76c6b8397aac36696c4776ade96c4f896fe6bc016168dd6a0dcd19e4f44c8e84",
+            "ddf60c19fd124f350f0236e216b441eee24651e2de6a2243121caf5c4ab48fb2",
+            "f36c9d28ae0e2dc5e5c2bfa28b01689c8124c66d2931b0773b7ca2faf81deb45",
+            "53fa4d07ea1c83f374329c8e4fd2ac9aa8a23d719dc6f515ccef5ee7becddc87"
+          ],
+          "referenceSHA256": "60a64108e53cecdbd04c226277d3eaaa35c338199701477a96f5cc3a995bb04f",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 7,
+          "durationMs": 125,
+          "baseSHA256": "f334bda7c1d0731e719987686f25e29c6f9b169e706264cdd8bad1a2ccb8c30f",
+          "clothSHA256": "b3f3733b083be92d80ffebb72e19e9ffdcabcdd24366de366c6445b30ab5aafd",
+          "ownerSHA256": "434f644619ffa45eece6a90e71d0f94f28edc120477683109dde59b0fa95b88a",
+          "layers": [
+            "218d92f43b6885e68d499031df22bd1608eab3db0f6fa36bcf1f5ae20c94e881",
+            "b3f3733b083be92d80ffebb72e19e9ffdcabcdd24366de366c6445b30ab5aafd",
+            "434f644619ffa45eece6a90e71d0f94f28edc120477683109dde59b0fa95b88a",
+            "2965d74ffb0b8e6ab61d10e3556381b0f6a6855cf4a2bf5bb0c34da9e4a49267"
+          ],
+          "referenceSHA256": "0a972b2b1486f3cd270a2480a29a77ab1bc6ea6c9b44b88e276aa59f81b160e6",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 8,
+          "durationMs": 75,
+          "baseSHA256": "4b62014e3d73dc3764c2243331cab3e8bde2dce62189a2386270f0dae50262aa",
+          "clothSHA256": "53c171c92ff627249d795d5022163289820d1a7dea90212f7245cb2fc38c4ece",
+          "ownerSHA256": "1a465015ad4445dddc46c7819d880920b6c1c4f733f68dbaef2ccc1293f219a7",
+          "layers": [
+            "29719f89c1769454f03a745ae8f850fa6a2158ce67d8ac01ac0a65987ea2127a",
+            "53c171c92ff627249d795d5022163289820d1a7dea90212f7245cb2fc38c4ece",
+            "1a465015ad4445dddc46c7819d880920b6c1c4f733f68dbaef2ccc1293f219a7",
+            "c3021a95f577fe7cce0a789a978809e0b20c487e475443964750f035bf8e18e8"
+          ],
+          "referenceSHA256": "eee55d772e3db9e0591fe5732449feca6bbc99c0a0aea8b515d531314b2938c4",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 9,
+          "durationMs": 50,
+          "baseSHA256": "bacc20670c77bc382483c822e46a9daab853a4d8ad22f4b97d87e4123709f6c5",
+          "clothSHA256": "1f8a6ed466f2e9c19d3e84d7c7bb77a4a667b89223d74cb4994d4f4c25da87d8",
+          "ownerSHA256": "1a465015ad4445dddc46c7819d880920b6c1c4f733f68dbaef2ccc1293f219a7",
+          "layers": [
+            "a1e0a2391fa3e64460a41f064d0c0e17d030250e5cc8087183d91f4c20ee932e",
+            "1f8a6ed466f2e9c19d3e84d7c7bb77a4a667b89223d74cb4994d4f4c25da87d8",
+            "1a465015ad4445dddc46c7819d880920b6c1c4f733f68dbaef2ccc1293f219a7",
+            "ffffac3878779418c30dffd35f8113fb2a8fba3b1a20cf9b3ac2a499a9c10190"
+          ],
+          "referenceSHA256": "e2d1a7078a84ca5ff93f9fe4c3ff2aff7c60b6f1de3f0df9b88b57536cc51b76",
+          "anatomyUnionRGBAExact": true
+        }
+      ],
+      "durationMs": [
+        125,
+        125,
+        125,
+        75,
+        50,
+        125,
+        125,
+        125,
+        75,
+        50
+      ],
+      "ticks": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        4,
+        4,
+        5,
+        5,
+        5,
+        5,
+        5,
+        6,
+        6,
+        6,
+        6,
+        6,
+        7,
+        7,
+        7,
+        7,
+        7,
+        8,
+        8,
+        8,
+        9,
+        9
+      ],
+      "appearanceBinding": {
+        "record": "approved-female130-walk-s36-south",
+        "sourceBodySHA256": [
+          "be493f616c652d3be276cae2440349cd0da402b77c43639e1a6559ca0a1934f4",
+          "d13fa84d51378c00ac17ee58d3f1cc3057fa7beb491137931dfbb0561f93ae19",
+          "fa28d1031469d74513b13a698f09e8bf31a5fee7e4037becbecf9768a87c4204",
+          "b905d0e64c0a907de540b943e9bb77a362a0cd3daaa96eeb34b2542cbea74581",
+          "b8212a48673843d1259382c2d99d6c91f725928dfc07e95eeec61096416c82d3",
+          "7b03f3e7f539aa94b456ea835a6ecce4367b63c2bf2c884cf9c14447c108d946",
+          "68116c4a74dd9b14631f5f290f1357db122d0a76d330b772ca0fc1fe3c332b9a",
+          "f334bda7c1d0731e719987686f25e29c6f9b169e706264cdd8bad1a2ccb8c30f",
+          "4b62014e3d73dc3764c2243331cab3e8bde2dce62189a2386270f0dae50262aa",
+          "bacc20670c77bc382483c822e46a9daab853a4d8ad22f4b97d87e4123709f6c5"
+        ],
+        "policy": "Exact registered body raster and original appearance metadata; not inherited garment approval or walk interpolation"
+      }
+    },
+    "north": {
+      "states": [
+        {
+          "phase": 0,
+          "durationMs": 125,
+          "baseSHA256": "7697351577ab89bd2caae561e6dfb31e08b40682b6fec6370d6a7ffe4ceebedc",
+          "clothSHA256": "c878c762db9bf1dd444a9036afe449e5653850163e5c407db0ac7c04e0676b02",
+          "ownerSHA256": "69fafeff42bc5f41dc726642eaf567d54bca4ee7dbd354c515b85e2a68e134af",
+          "layers": [
+            "e4c98f38f3ab89e0e760a8d88595f76dc8bc68796a9f378e4c364f70c1775cca",
+            "c878c762db9bf1dd444a9036afe449e5653850163e5c407db0ac7c04e0676b02",
+            "69fafeff42bc5f41dc726642eaf567d54bca4ee7dbd354c515b85e2a68e134af",
+            "d0dc3fcfc095ea2a79c9f2c21c885dd44b57066b6df38ad4c4c8163bc2aaf025"
+          ],
+          "referenceSHA256": "8d2199341bb62687b0acf57dee66adde81477038449d279f1a257e966028d6f2",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 1,
+          "durationMs": 75,
+          "baseSHA256": "18b9002ab7de80b5bb50e5aecfec4fcccc555cd0e629b0f167adfa8ef4a491f9",
+          "clothSHA256": "298b0274352268ea154aa9f18db8b63a736ccdbd4c77330c32393a2573f679af",
+          "ownerSHA256": "080de49b43275c521bfcc5e65a41daa7242853deeea75f99024a452d71942667",
+          "layers": [
+            "616519e1dc070f5554b4563f45f385d907cb8069de5c95ac7f08acf6ea9ffccc",
+            "298b0274352268ea154aa9f18db8b63a736ccdbd4c77330c32393a2573f679af",
+            "080de49b43275c521bfcc5e65a41daa7242853deeea75f99024a452d71942667",
+            "148eb6240dcf80c182c13908bc782550539b6d726a5b2914be77c871cd93097c"
+          ],
+          "referenceSHA256": "b8e9210411fa5234f6a3dae617228a70524c5038e9935aef852abde98d7568b1",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 2,
+          "durationMs": 50,
+          "baseSHA256": "4f24c8346805a57fcde31aff534f894a9611e7607617d20437ed3d802b26e70f",
+          "clothSHA256": "d31702f3c952da9c0d66ffcd3c19069f1ac21e05e3e3c1c7a1cc0a889483b9bb",
+          "ownerSHA256": "080de49b43275c521bfcc5e65a41daa7242853deeea75f99024a452d71942667",
+          "layers": [
+            "6b69570174d263baee277cb0efca976109c96e2ec6eb23caff51c01b650f0334",
+            "d31702f3c952da9c0d66ffcd3c19069f1ac21e05e3e3c1c7a1cc0a889483b9bb",
+            "080de49b43275c521bfcc5e65a41daa7242853deeea75f99024a452d71942667",
+            "9ed60481ecc1fe8790790074694f76cc5ea6d3e6de912ebdf1e1738d2bb507f9"
+          ],
+          "referenceSHA256": "8be65a2f082da50c1d9a4f349d6e6b6b6341bbc72deab76a50fbc755805d3bdf",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 3,
+          "durationMs": 125,
+          "baseSHA256": "c88d6514b6835bf998cc8bc680452236e73cdd222e59f7551077f2586d9b9c38",
+          "clothSHA256": "96d989cd3fbf6d26ef1c93c9d9420b5fea1f52c2e7763c1a0a4106021a582367",
+          "ownerSHA256": "f2cc2356ad2577929fd852294b9d627b7ec497bf7a48c5a24f0ee11e8de0b78c",
+          "layers": [
+            "9e0b3853e3bce4ef6b8ff59504fa478e3823e835d63ebb31edaa1049323674c4",
+            "96d989cd3fbf6d26ef1c93c9d9420b5fea1f52c2e7763c1a0a4106021a582367",
+            "f2cc2356ad2577929fd852294b9d627b7ec497bf7a48c5a24f0ee11e8de0b78c",
+            "00ede7ffc866b00a42064ff1b830b2888249b8faaf8b969f59903faff44253dc"
+          ],
+          "referenceSHA256": "bb09a5a72ccc279d19ebb006327e1b37d57c5c1c664b83043f37b7ca91b38fb8",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 4,
+          "durationMs": 75,
+          "baseSHA256": "900372ae940dbbf35b1db579c12108a18da9540d0abe8ccd838ed175c7bea89a",
+          "clothSHA256": "2bf9f32911d4636e5bf1f4269c571c10f29a3bb2dc504b83560a8498f1149d8d",
+          "ownerSHA256": "2a5a260aec36d0258ab1643170bef24ad4dd3dfcb599b8da331e992c90ef75a2",
+          "layers": [
+            "0dc0c242a3567c33e6887d55091df542827db161c4fc51377bbcde168dc74861",
+            "2bf9f32911d4636e5bf1f4269c571c10f29a3bb2dc504b83560a8498f1149d8d",
+            "2a5a260aec36d0258ab1643170bef24ad4dd3dfcb599b8da331e992c90ef75a2",
+            "9ac07ee0e58bb3f39b8fe5d3cd3b8913998665740f9c5f0e1db5ec8a44b8a7c3"
+          ],
+          "referenceSHA256": "0cd4db2e99575300c2b25c565bfb3b611cac8ec2096f0455ff757ff08f5f5f3a",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 5,
+          "durationMs": 50,
+          "baseSHA256": "7416d586365b017c3dc225554b9fc43a0edd335248bba957a223541a17623816",
+          "clothSHA256": "2bf9f32911d4636e5bf1f4269c571c10f29a3bb2dc504b83560a8498f1149d8d",
+          "ownerSHA256": "2a5a260aec36d0258ab1643170bef24ad4dd3dfcb599b8da331e992c90ef75a2",
+          "layers": [
+            "0dc0c242a3567c33e6887d55091df542827db161c4fc51377bbcde168dc74861",
+            "2bf9f32911d4636e5bf1f4269c571c10f29a3bb2dc504b83560a8498f1149d8d",
+            "2a5a260aec36d0258ab1643170bef24ad4dd3dfcb599b8da331e992c90ef75a2",
+            "c4c9333b75fbc3a347e7c8dff6f88a37ec47dbe169dfd961530ff1a890533a4d"
+          ],
+          "referenceSHA256": "91054d8154ad799acf568483d0b19f9ff65e01b0ccdb4a50fadce4421873c56b",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 6,
+          "durationMs": 125,
+          "baseSHA256": "1ddcd7f9d8197797a8bdfcb2121e33dc935991add88e14b4c2ff766b5cda4005",
+          "clothSHA256": "e7a7248686e1675f5eb9643f2f94b9d4e14650469fda930d0a6ad6d67d344474",
+          "ownerSHA256": "66faa0133062a7b97f1a6f1e6b1dbf4d910e462e85ce12bb80f0d38813e5daa4",
+          "layers": [
+            "44f1a1ec8af0278ef4fb4191d5f00a4b0dd93311ae46e74b91866a297e4260e2",
+            "e7a7248686e1675f5eb9643f2f94b9d4e14650469fda930d0a6ad6d67d344474",
+            "66faa0133062a7b97f1a6f1e6b1dbf4d910e462e85ce12bb80f0d38813e5daa4",
+            "3d9b8dc22f51388fea90b3eb0aa6bcfe165872921bf029753058e36799e1f370"
+          ],
+          "referenceSHA256": "e94cc48bf918ba02bd7567ead074b5b4fe8c17f7d9069b8c20ea5f66d7989b69",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 7,
+          "durationMs": 75,
+          "baseSHA256": "479d9f970a60f8d54c4cfa8712fcedc193022a849525bfe5e30b77507aa32419",
+          "clothSHA256": "4665ab36568c062412c0ff17f4bd7650b6ad0b92ea28c07ac794033310e05300",
+          "ownerSHA256": "fa7ccf5db7747056e9f4fab36a45453552b9c5d54e1ea0508fb6a977aba259f3",
+          "layers": [
+            "90abfc08dff0c5dd387197ec35c5f910c2235b514d20aa0126b50dc3f47a2cd2",
+            "4665ab36568c062412c0ff17f4bd7650b6ad0b92ea28c07ac794033310e05300",
+            "fa7ccf5db7747056e9f4fab36a45453552b9c5d54e1ea0508fb6a977aba259f3",
+            "16244b3764f1cac3deddc20d249f00ec7a3524173a4445c5e7cd75e7bb3fdeba"
+          ],
+          "referenceSHA256": "f1eb9ab2d6da8124b5d044d86365d64de2a8e043f8d25a0947c49858e53a9b1a",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 8,
+          "durationMs": 50,
+          "baseSHA256": "5704b1795780a7d57ed02e6838f3f49cdf531f801ac47d56ce34e0319dafa5e2",
+          "clothSHA256": "7b324576decc92236bc268f547be01088ad0b0ed8addb5aaa4724ab7832eea22",
+          "ownerSHA256": "fa7ccf5db7747056e9f4fab36a45453552b9c5d54e1ea0508fb6a977aba259f3",
+          "layers": [
+            "963d2e4f73d847d6feaed7cba8a870024de6fd24bcf6fff085651043b31a8214",
+            "7b324576decc92236bc268f547be01088ad0b0ed8addb5aaa4724ab7832eea22",
+            "fa7ccf5db7747056e9f4fab36a45453552b9c5d54e1ea0508fb6a977aba259f3",
+            "a466c4a0b1e09143d06696b0815f4fb9fa0028c01f0a244b4ed3355d41240f20"
+          ],
+          "referenceSHA256": "389023417ba0af9d0f1eb65566e4e3f0b22955b6601162fb570c8b60cd7ce0ab",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 9,
+          "durationMs": 125,
+          "baseSHA256": "0c2514db87c255cda40ee08d590e4129bbcc85791bca3de9e20de807f40fac25",
+          "clothSHA256": "1942c551fedb7a4f5ecf2f80c20d68250400fe35557e6fd5992cf84ae7f24339",
+          "ownerSHA256": "b1e462466fee1e4b5831be79ca6a3d6cf7ed433836fafc16aa1254f6efd85300",
+          "layers": [
+            "aa434841f847ceddc5395cd9d4fc7bbfbaf1316178b255ca9d5272d0f3ef7a50",
+            "1942c551fedb7a4f5ecf2f80c20d68250400fe35557e6fd5992cf84ae7f24339",
+            "b1e462466fee1e4b5831be79ca6a3d6cf7ed433836fafc16aa1254f6efd85300",
+            "f5ad8d9f6159eb1dd1cba5677ffad643e93e16e300d509f12bde0a7c4cfb77e8"
+          ],
+          "referenceSHA256": "60410b869a4e3022a21ed093394040f613648bfc1d134bf15b09deb7e7a90fb3",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 10,
+          "durationMs": 75,
+          "baseSHA256": "47db8a7c9c1c6389214b74f5c0865e65438da3c95042b0498b6a98020b666e93",
+          "clothSHA256": "a91a764bffcf14a5cc7085a57c98558707a36ac8bcb90d19a6d4f991476df2ac",
+          "ownerSHA256": "2d615b8c91c3bc36ccd024ec90f7e650dadfa002b909c83ef4945774efb5f9ec",
+          "layers": [
+            "2443315253ae43a039bdf95d6846ca31aa319e75ef06ff809b98085d8c2ca2d7",
+            "a91a764bffcf14a5cc7085a57c98558707a36ac8bcb90d19a6d4f991476df2ac",
+            "2d615b8c91c3bc36ccd024ec90f7e650dadfa002b909c83ef4945774efb5f9ec",
+            "cfebcd6cbfb26f2deb2aa1b5e0cb1db6b489d209eb837b2e64f3d2d803e253b2"
+          ],
+          "referenceSHA256": "46c4c06b55cf1925a49219d3168068246e078dd2d81310e03dda9421c3b26687",
+          "anatomyUnionRGBAExact": true
+        },
+        {
+          "phase": 11,
+          "durationMs": 50,
+          "baseSHA256": "d3ba1e3fdb1eb56257f00780767176023538803f2f15646f662bcd7ace07989a",
+          "clothSHA256": "a91a764bffcf14a5cc7085a57c98558707a36ac8bcb90d19a6d4f991476df2ac",
+          "ownerSHA256": "2d615b8c91c3bc36ccd024ec90f7e650dadfa002b909c83ef4945774efb5f9ec",
+          "layers": [
+            "2443315253ae43a039bdf95d6846ca31aa319e75ef06ff809b98085d8c2ca2d7",
+            "a91a764bffcf14a5cc7085a57c98558707a36ac8bcb90d19a6d4f991476df2ac",
+            "2d615b8c91c3bc36ccd024ec90f7e650dadfa002b909c83ef4945774efb5f9ec",
+            "71f14ab0cc77f59eeb301d7a45acce871c6c02d3cbfb3ee63600a49d193a7e5e"
+          ],
+          "referenceSHA256": "410a18741f54e7a502ac4c600d82000f676de6e65728a7514f6da273d2c94766",
+          "anatomyUnionRGBAExact": true
+        }
+      ],
+      "durationMs": [
+        125,
+        75,
+        50,
+        125,
+        75,
+        50,
+        125,
+        75,
+        50,
+        125,
+        75,
+        50
+      ],
+      "ticks": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        5,
+        5,
+        6,
+        6,
+        6,
+        6,
+        6,
+        7,
+        7,
+        7,
+        8,
+        8,
+        9,
+        9,
+        9,
+        9,
+        9,
+        10,
+        10,
+        10,
+        11,
+        11
+      ],
+      "appearanceBinding": {
+        "record": "approved-female130-walk-n39-north",
+        "sourceBodySHA256": [
+          "7697351577ab89bd2caae561e6dfb31e08b40682b6fec6370d6a7ffe4ceebedc",
+          "18b9002ab7de80b5bb50e5aecfec4fcccc555cd0e629b0f167adfa8ef4a491f9",
+          "4f24c8346805a57fcde31aff534f894a9611e7607617d20437ed3d802b26e70f",
+          "c88d6514b6835bf998cc8bc680452236e73cdd222e59f7551077f2586d9b9c38",
+          "900372ae940dbbf35b1db579c12108a18da9540d0abe8ccd838ed175c7bea89a",
+          "7416d586365b017c3dc225554b9fc43a0edd335248bba957a223541a17623816",
+          "1ddcd7f9d8197797a8bdfcb2121e33dc935991add88e14b4c2ff766b5cda4005",
+          "479d9f970a60f8d54c4cfa8712fcedc193022a849525bfe5e30b77507aa32419",
+          "5704b1795780a7d57ed02e6838f3f49cdf531f801ac47d56ce34e0319dafa5e2",
+          "0c2514db87c255cda40ee08d590e4129bbcc85791bca3de9e20de807f40fac25",
+          "47db8a7c9c1c6389214b74f5c0865e65438da3c95042b0498b6a98020b666e93",
+          "d3ba1e3fdb1eb56257f00780767176023538803f2f15646f662bcd7ace07989a"
+        ],
+        "policy": "Exact registered body raster and original appearance metadata; not inherited garment approval or walk interpolation"
+      }
+    }
+  },
+  "archives": [
+    {
+      "file": "f182-sn-original-layers.zip",
+      "sha256": "fd99f7e56eae29575b33efdcdd6eb2c242534d75773c88cf852f8199ce95e1ee",
+      "bytes": 3880950,
+      "pngCount": 100
+    },
+    {
+      "file": "f182-sn-approved-references.zip",
+      "sha256": "d0d7832d0cf66e576bb29937a74c8507091ec1cac3ea10355ecb0cf5afc4763f",
+      "bytes": 1905043,
+      "pngCount": 22
+    }
+  ]
+}

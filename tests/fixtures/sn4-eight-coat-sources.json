@@ -1,0 +1,48 @@
+{
+  "parent": "933075ae79d6808871aab76c3a080a94ad64e721",
+  "remoteParent": "69db1b1",
+  "indexGzipSHA256": "f0178b99b63b9d8d6623e65e04bd153679d539b33d8e98223170320722e62c28",
+  "records": [
+    {
+      "item": 6,
+      "id": "female-torso6-south-frozen-walk-native",
+      "sha256": "ea6079557252535f486b112b3586b83212d70b5bc71f9b406d9cbf88a986aa78"
+    },
+    {
+      "item": 7,
+      "id": "female-torso7-south-frozen-walk-native",
+      "sha256": "3e47b7a057a08e7b051f6a1c8440ab323f3886266c38c2eb00b18153ff09a5bd"
+    },
+    {
+      "item": 137,
+      "id": "female-torso137-south-frozen-walk-native",
+      "sha256": "5c613512f3f459fc1102eaafc8c321381b78523631fd460690a5e4292d9e6b08"
+    },
+    {
+      "item": 144,
+      "id": "female-torso144-south-frozen-walk-native",
+      "sha256": "3ccb88ebebbba1a8beae782ed42991d9d1ce5b5c7dd27b314edc3644596ffbb0"
+    },
+    {
+      "item": 158,
+      "id": "female-torso158-south-frozen-walk-native",
+      "sha256": "4dd7c9b1d459d56d4556ae83c3afbfb4158090795ec81cda319432e96b933e9d"
+    },
+    {
+      "item": 165,
+      "id": "female-torso165-south-frozen-walk-native",
+      "sha256": "cb070dda16e298ffe37519b6205e724821bec4a76c901d07c74ad2a026221e0e"
+    },
+    {
+      "item": 172,
+      "id": "female-torso172-south-frozen-walk-native",
+      "sha256": "ad88dfa5179563b30ffd284e56cda9926c35997488b44e1154b8d480781247e8"
+    },
+    {
+      "item": 179,
+      "id": "female-torso179-south-frozen-walk-native",
+      "sha256": "3c004adf73bde5830ea3c3dbf37d38b935e6d4855f2bb06646e37a0dcdf0a10b"
+    }
+  ],
+  "indexCanonicalSHA256BeforeSouthExtension": "ac96c248bda77003a1cac1c63d996249d45322fde1ecd549b66aedfc295d93fc"
+}

@@ -6,7 +6,7 @@ import re
 import json
 import argparse
 from build_portal import version_portal_assets
-from player96_release import verify_release
+from player96_release import DATA as PLAYER96_DATA, MODULES as PLAYER96_MODULES, verify_release
 from materialize_native_indexes import materialize
 
 parser = argparse.ArgumentParser(description=__doc__)
@@ -16,7 +16,7 @@ args = parser.parse_args()
 include_reviews = args.include_reviews
 ROOT = Path(__file__).resolve().parent.parent
 materialize(ROOT)
-verify_release()
+player96_release = verify_release()
 OUT = ROOT / 'dist'
 if OUT.exists():
     shutil.rmtree(OUT)
@@ -34,6 +34,12 @@ from export_sword0_checkpoint import materialize as materialize_sword_checkpoint
 materialize_sword_checkpoint(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
                              OUT/'tools/rework-sword0-checkpoint')
 web_files.append('player-rework-sword0-checkpoint.js')
+from export_firearm113_coat import materialize as materialize_firearm113_coat
+materialize_firearm113_coat(
+    ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18/fuzil113-ns.zip',
+    ROOT/'tools/rework-firearm113-coat/masks',
+    OUT/'tools/rework-firearm113-coat')
+
 if not include_reviews:
     retired_scripts = {"paper-doll.js", "paper-doll-assets.js", "paper-doll-review.js", "paper-doll-look-data.js", "paper-doll-look.js", "paper-doll-coverage.js", "paper-doll-look.css"}
     web_files = [name for name in web_files if name not in retired_scripts]
@@ -81,8 +87,12 @@ for folder in ['assets', 'icones_menu_pirata']:
         'assets/ui/inventory-final/icons-source.png', 'assets/ui/inventory-hd/controls-v2-source.png',
         'assets/ui/inventory-hd/frame-v2-source.png', 'assets/ui/inventory-hd/source-kit.png',
     }
+    # These old faction sheets and empty paper-doll manifests have no game
+    # consumers. Keep source/history, and export only for explicit reviews.
+    retired_player_paths = {'assets/sprites', 'assets/paper-doll'}
     def ignore_generation_inputs(directory, names):
-        return [name for name in names if (Path(directory)/name).relative_to(ROOT).as_posix() in generation_inputs]
+        excluded = generation_inputs | retired_player_paths
+        return [name for name in names if (Path(directory)/name).relative_to(ROOT).as_posix() in excluded]
     ignored = None if include_reviews or folder != 'assets' else ignore_generation_inputs
     shutil.copytree(ROOT/folder, OUT/folder, ignore=ignored)
 # Apenas artes dos atlas realmente referenciadas no runtime.
@@ -143,22 +153,30 @@ for body in review96_pack['bodies'].values():
         for clip in directions.values():
             assert clip.get('modular') is True
             review96_files.update(clip['layers'].values())
-for name in sorted(review96_files):
-    if name not in {'index.html', 'preview.css', 'preview.js', 'headgear-editor.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}:
-        if not re.fullmatch(r'assets/[a-z0-9-]+\.png', name):
-            raise ValueError('Unsafe 96px review asset')
+# Publish the verified, actively referenced compatibility set at the path
+# the game requests. The editor/workbench is not part of the default site.
+for name in sorted({'player-pack.json', *PLAYER96_DATA, *PLAYER96_MODULES, *player96_release['resources']}):
     target = OUT/review96/name
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(ROOT/review96/name, target)
-def version_review96(match):
-    source = (OUT/review96/match.group(2)).resolve()
-    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
-        return match.group(0)
-    digest = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
-    return f'{match.group(1)}{match.group(2)}?v={digest}{match.group(3)}'
-review96_html = OUT/review96/'index.html'
-review96_html.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_review96,
-                                   review96_html.read_text(encoding='utf-8')), encoding='utf-8')
+
+if include_reviews:
+    for name in sorted(review96_files):
+        if name not in {'index.html', 'preview.css', 'preview.js', 'headgear-editor.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}:
+            if not re.fullmatch(r'assets/[a-z0-9-]+\.png', name):
+                raise ValueError('Unsafe 96px review asset')
+        target = OUT/review96/name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT/review96/name, target)
+    def version_review96(match):
+        source = (OUT/review96/match.group(2)).resolve()
+        if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+            return match.group(0)
+        digest = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+        return f'{match.group(1)}{match.group(2)}?v={digest}{match.group(3)}'
+    review96_html = OUT/review96/'index.html'
+    review96_html.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_review96,
+                                       review96_html.read_text(encoding='utf-8')), encoding='utf-8')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-96-V3.md', OUT/'docs/PAPER-DOLL-96-V3.md')
 
 shutil.copy2(ROOT/'docs/PAPER-DOLL-96-LOBBY.md', OUT/'docs/PAPER-DOLL-96-LOBBY.md')
@@ -207,7 +225,7 @@ for folder in ['tools/rework-weapons','tools/rework-outfits']:
         shutil.copytree(source,OUT/folder,dirs_exist_ok=True)
 
 # Native-density source modules: deploy original PNG bytes, never review-only workspaces.
-for folder in ['tools/rework-base-hd','tools/rework-weapon-layers-hd','tools/rework-modular-outfits-hd']:
+for folder in ['tools/rework-base-hd','tools/rework-weapon-layers-hd','tools/rework-modular-outfits-hd','tools/rework-female-north-rig','tools/rework-female-profile-rig','tools/rework-female-dagger-p22']:
     source=ROOT/folder
     if source.is_dir():
         for p in source.rglob('*'):

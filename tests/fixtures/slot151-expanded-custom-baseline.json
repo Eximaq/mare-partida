@@ -1,0 +1,152 @@
+{
+  "look": {
+    "gender": "feminino",
+    "hairStyle": "hair-bob",
+    "hairColor": "pink",
+    "eyeStyle": "face-focused",
+    "eyeColor": "green",
+    "skinColor": "dark"
+  },
+  "cases": [
+    {
+      "pants": 21,
+      "draws": [
+        {
+          "direction": "east",
+          "tick": 0,
+          "fullSHA": "51fafbc80bdd177af6b1cfbf50c9cce2a044cd6709bb7a7ad7573cc45b02da81"
+        },
+        {
+          "direction": "east",
+          "tick": 4,
+          "fullSHA": "799d74f5f079da9188b4fbf0dc57a7dcd84d2df9cf241ff95d2a94f12cbd4538"
+        },
+        {
+          "direction": "east",
+          "tick": 7,
+          "fullSHA": "e1a0d4d4d2f3f21bf01231dd55170904dc622060a4fbcfe10c4cfc287bf88e64"
+        },
+        {
+          "direction": "west",
+          "tick": 0,
+          "fullSHA": "8da6de7f07e3662e06a19c45a32b2aa2c76d387be44350a86ab6bcb67096c1ec"
+        },
+        {
+          "direction": "west",
+          "tick": 4,
+          "fullSHA": "2f14a4cded57082820b112e0cc8eef45ccb0bdee957ad0b0ea43976bffb79cbf"
+        },
+        {
+          "direction": "west",
+          "tick": 7,
+          "fullSHA": "036d7e3fd72dff6e0c295d70e7a53feab2db78f501878588eb1a87eb67ce1fda"
+        }
+      ]
+    },
+    {
+      "pants": 182,
+      "draws": [
+        {
+          "direction": "east",
+          "tick": 0,
+          "fullSHA": "c501d48859758fe05839decb103310b204036b54196e6c62338e03c40a5eb53d"
+        },
+        {
+          "direction": "east",
+          "tick": 4,
+          "fullSHA": "10ff6318f60f0cf93bb347cae648d18f01a5ffc76f6cb63ba7172d8e02a97c40"
+        },
+        {
+          "direction": "east",
+          "tick": 7,
+          "fullSHA": "6810e3513dcc35b23357e405474a94afaeeb75600a7056d58cd208879d142c59"
+        },
+        {
+          "direction": "west",
+          "tick": 0,
+          "fullSHA": "fafbd2ca7c92ba5eeb75525021097bc5c275931381c0c341298cdcd7fb2ed419"
+        },
+        {
+          "direction": "west",
+          "tick": 4,
+          "fullSHA": "fb5715b3d573b80fa91d0b1e18f238f81386da7678de8a4cfb7ae3640cf99e92"
+        },
+        {
+          "direction": "west",
+          "tick": 7,
+          "fullSHA": "d6ae1fbc2672872fdad7ad9be41954bf735d1c542f4aa5a109b5f98341d28767"
+        }
+      ]
+    },
+    {
+      "pants": null,
+      "draws": [
+        {
+          "direction": "east",
+          "tick": 0,
+          "fullSHA": "35af5a9e8c1b596ae85b5e7d3fcab50d8df838f37b75fe2ab3cd62c03f4d172c"
+        },
+        {
+          "direction": "east",
+          "tick": 4,
+          "fullSHA": "540d71e544ae2675a98f391fb829094c40d4b47a3c82b6cfd1a510868a0f7bd7"
+        },
+        {
+          "direction": "east",
+          "tick": 7,
+          "fullSHA": "b98df846fb8c98db77fb74cd4b7a62a47f0f037320543c4852bf0ffbbebc7588"
+        },
+        {
+          "direction": "west",
+          "tick": 0,
+          "fullSHA": "a6e7ab1fc7beea97d385c19eab8606d070aa93476aa3d596d6efe116a2268073"
+        },
+        {
+          "direction": "west",
+          "tick": 4,
+          "fullSHA": "06270ba1fb8cf4be8fd99ff0c5dd937b8866ccace9acf2970f2b780555520e84"
+        },
+        {
+          "direction": "west",
+          "tick": 7,
+          "fullSHA": "326f9bb5c86e9dfdb2e667d988c155d64431f5bfa08e32f571a0fb67ab0ea2bd"
+        }
+      ]
+    },
+    {
+      "pants": 21,
+      "draws": [
+        {
+          "direction": "east",
+          "tick": 0,
+          "fullSHA": "51fafbc80bdd177af6b1cfbf50c9cce2a044cd6709bb7a7ad7573cc45b02da81"
+        },
+        {
+          "direction": "east",
+          "tick": 4,
+          "fullSHA": "799d74f5f079da9188b4fbf0dc57a7dcd84d2df9cf241ff95d2a94f12cbd4538"
+        },
+        {
+          "direction": "east",
+          "tick": 7,
+          "fullSHA": "e1a0d4d4d2f3f21bf01231dd55170904dc622060a4fbcfe10c4cfc287bf88e64"
+        },
+        {
+          "direction": "west",
+          "tick": 0,
+          "fullSHA": "8da6de7f07e3662e06a19c45a32b2aa2c76d387be44350a86ab6bcb67096c1ec"
+        },
+        {
+          "direction": "west",
+          "tick": 4,
+          "fullSHA": "2f14a4cded57082820b112e0cc8eef45ccb0bdee957ad0b0ea43976bffb79cbf"
+        },
+        {
+          "direction": "west",
+          "tick": 7,
+          "fullSHA": "036d7e3fd72dff6e0c295d70e7a53feab2db78f501878588eb1a87eb67ce1fda"
+        }
+      ]
+    }
+  ]
+}

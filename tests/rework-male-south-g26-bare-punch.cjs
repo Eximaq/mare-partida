@@ -1,0 +1,38 @@
+const {make,cv}=require('./rework-integration-support.cjs'),A=require('../character-appearance'),a=require('node:assert/strict'),api=make(),rs=require('../tools/rework-modular-outfits-hd/index.json').records;
+const ground=rs.find(x=>x.id==='male-pants133-attack-unarmed-south-drawn8-candidate-coat151-native'),o={direction:'south',action:'attack-unarmed',consumer:'world'},I=def=>({def});
+const p=(skin,eyeColor='green',b,glove=26)=>JSON.parse(JSON.stringify(A.commit({id:'same-save',classId:'fighter',equipment:{coat:I(151),legs:I(133),...(glove?{gloves:I(glove)}:{}),...(b?{boots:I(b)}:{})}},{skinColor:skin,hairColor:'black',eyeColor},()=>true)));
+const load=require('../tools/rework-hd-test-loader.cjs').create(require('node:path').join(__dirname,'..')),D=r=>r.pack.directions.south,isGlove=l=>l.id==='registered-frozen-glove-native-attack',owner=l=>l.id==='skin-arms-phase',cloth=l=>/^coat|^pants|^shorts/.test(l.id);
+const re=/:own-south-punch-g26-bare:/,test=(player,opt=o)=>api.selectVisual(player,opt);
+const slice=(r,accept,s)=>({...r,id:r.id+':audit:'+s,strictSouthAppearance:undefined,pack:{...r.pack,directions:{south:{...D(r),layers:D(r).layers.filter(accept)}}}});
+const pixels=c=>Buffer.from(c.getContext('2d').getImageData(0,0,640,640).data);
+(async()=>{await api.ready;let checks=0;for(const tint of Object.keys(A.skins)){
+ const actor=p(tint),saved=JSON.stringify(actor),r=test(actor),d=D(r);a(re.test(r.id));a.equal(r.colorAppearance.skin,tint);a.equal(r.colorAppearance.eyeColor,'green');a(!r.bodyOcclusion);
+ for(const k of ['poses','rest','clip'])a.deepEqual(d[k],D(ground)[k]);a.deepEqual(d.clip,{frames:8,fps:12,loop:false,contactFrame:4});
+ a.deepEqual(d.layers.filter(l=>!isGlove(l)),D(ground).layers);a.equal(r.slotRoutes.gloves.item,26);a(!r.slotRoutes.boots);
+ delete actor.equipment.gloves;a(!re.test(test(actor)?.id));actor.equipment.gloves=I(26);a.deepEqual(test(actor),r);a.equal(JSON.stringify(actor),saved);
+ for(const q of [p(tint,'green',9),p(tint,'green',155),p(tint,'green',null,25),{...actor,equipment:{...actor.equipment,weapon:I(1)}},{...actor,equipment:{...actor.equipment,gloves:{def:26,appearanceVariant:'other'}}},{...actor,appearance96:{...actor.appearance96,hairStyle:'hair-bob'}},{...actor,appearance96:{...actor.appearance96,eyeStyle:'face-focused'}}])a(!re.test(test(q)?.id));
+ for(const direction of ['north','east','west'])a(!re.test(test(actor,{...o,direction})?.id));a(!re.test(test(actor,{...o,action:'walk'})?.id));checks++;
+ }
+ a.equal(checks,8);
+ const q=async(p,r)=>api.prepareConfiguration([{player:p,source:r,options:o}],{resolve:x=>x});
+ const pics=async(a0,a1,e0)=>{
+  const red=test(a0),dark=test(a1),eye=test(e0),ownR=slice(red,owner,'skin'),ownD=slice(dark,owner,'skin'),cR=slice(red,cloth,'cloth'),cD=slice(dark,cloth,'cloth'),gl=slice(red,isGlove,'glove'),ung={...red,id:red.id+':ungloved-audit',pack:{...red.pack,directions:{south:{...D(red),layers:D(red).layers.filter(l=>!isGlove(l))}}}};
+  return Promise.all([[a0,red],[a1,dark],[e0,eye],[a0,ownR],[a1,ownD],[a0,cR],[a1,cD],[a0,gl],[a0,ung]].map(async ([actor,r])=>({actor,r,session:await q(actor,r)})));
+ };
+ const Z=await pics(p('porcelain'),p('ebony'),p('porcelain','amber'));
+ const draw=(i,f)=>{const t=Z[i];let c;a(t.session.draw({save(){},restore(){},drawImage(out){c=out;}},t.actor,{...o,progress:(f+.2)/8}));return pixels(c);};
+ let raw=new Set(),skinLo=[Infinity,Infinity];try{for(let f=0;f<8;f++){
+  const [r,d,e,sk,dk,cloth0,cloth1,g,noG]=Z.map((_,i)=>draw(i,f));a.deepEqual(cloth0,cloth1);
+  const c=cv.createCanvas(640,640),ctx=c.getContext('2d');ctx.drawImage(await load('tools/rework-modular-outfits-hd/assets/'+D(Z[0].r).layers.find(isGlove).frames[f]+'.png'),0,0);a.deepEqual(pixels(c),g);c.width=1;
+  let eyes=0,glove=0,feet=[0,0],hands=0;
+  for(let j=0;j<r.length;j+=4){const y=Math.floor(j/2560),x=(j>>>2)%640,R=r.readUInt32LE(j),B=d.readUInt32LE(j);
+   a.equal(r[j+3],d[j+3]);if(R!==e.readUInt32LE(j)){eyes++;a(y<260);}
+   if(R!==noG.readUInt32LE(j)){glove++;a(g[j+3]);if(g[j+3]===255)a.equal(R,g.readUInt32LE(j));}
+   if(R!==B&&sk[j+3]===255&&dk[j+3]===255&&R===sk.readUInt32LE(j)&&B===dk.readUInt32LE(j)){
+    if(y>=400){feet[+(x>=320)]++;}else if(y>=250&&y<=386)hands++;
+   }
+  }
+  a.equal(eyes,45);a(glove>100);a(feet.every(n=>n>100),JSON.stringify({f,feet}));a(hands>0);skinLo=skinLo.map((v,j)=>Math.min(v,feet[j]));a.deepEqual(draw(0,f),r);
+  raw.add(D(Z[0].r).layers.find(owner).frames[f]);console.log('frame',f,{feet,hands,eyes,glove});
+ }}finally{Z.forEach(x=>x.session.release());}a.equal(raw.size,8);console.log('PASS 8 real saves; 16 Canvas contrast + 8 iris; 8 distinct lower sources; min left/right',skinLo);
+})().catch(e=>{console.error(e);process.exitCode=1});

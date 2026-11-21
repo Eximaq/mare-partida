@@ -1,0 +1,4 @@
+# Bota 9 no ataque lateral e luvas da Espada 1 para o Norte
+
+- Feminino, Bota 9 avulsa nos ataques Leste/Oeste da Espada 0, sem exigir peitoral. Cada lado conserva os dois passes autorais próprios de cano, profundidades −1 e 3,01. Os 128 quadros (oito fases em oito tons por lado) comparam posição e alfa da sola, o interior do cano com a referência e a lâmina com a rota sem bota. As direções Norte/Sul existentes não mudam.
+- Feminino, Espada 1 Norte: luvas 26, 145, 159, 166 e 173 sem peitoral. O mesmo formato/profundidade das mãos aprovado do original é checado por SHA; os próprios estados, matrizes e material da Espada 1 são preservados, inclusive a contribuição RGBA da borda translúcida. 120 quadros em Original, Oliva e Ébano e controle Espada 0. Remover a luva restaura o quadro original. Sem outros slots/direções.

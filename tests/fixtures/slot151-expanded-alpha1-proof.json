@@ -1,0 +1,9336 @@
+[
+  {
+    "id": 21,
+    "dir": "east",
+    "frames": 40,
+    "minOwnerY": 179,
+    "outsideOwnerDiff": 0,
+    "opaqueCoatDiff": 0,
+    "upperDiff": 29,
+    "lowerVsPantsDiff": 0,
+    "baseLowerDiff": 0,
+    "ownerCoatOverlap": 116901,
+    "upperPixels": [
+      {
+        "frame": 0,
+        "x": 170,
+        "y": 179,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 1,
+        "x": 170,
+        "y": 179,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 2,
+        "x": 315,
+        "y": 216,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 3,
+        "x": 315,
+        "y": 216,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 4,
+        "x": 315,
+        "y": 216,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 5,
+        "x": 315,
+        "y": 216,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 6,
+        "x": 315,
+        "y": 216,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 7,
+        "x": 126,
+        "y": 186,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 8,
+        "x": 126,
+        "y": 186,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 9,
+        "x": 126,
+        "y": 186,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 10,
+        "x": 126,
+        "y": 186,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 341,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 341,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 341,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 341,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 341,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 32,
+        "x": 204,
+        "y": 195,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 32,
+        "x": 337,
+        "y": 221,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 33,
+        "x": 204,
+        "y": 195,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 33,
+        "x": 337,
+        "y": 221,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 34,
+        "x": 204,
+        "y": 195,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 34,
+        "x": 337,
+        "y": 221,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 35,
+        "x": 204,
+        "y": 195,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 35,
+        "x": 337,
+        "y": 221,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 36,
+        "x": 204,
+        "y": 195,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 36,
+        "x": 337,
+        "y": 221,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 37,
+        "x": 170,
+        "y": 179,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 38,
+        "x": 170,
+        "y": 179,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 39,
+        "x": 170,
+        "y": 179,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 133,
+    "dir": "east",
+    "frames": 40,
+    "minOwnerY": 130,
+    "outsideOwnerDiff": 0,
+    "opaqueCoatDiff": 0,
+    "upperDiff": 83,
+    "lowerVsPantsDiff": 0,
+    "baseLowerDiff": 0,
+    "ownerCoatOverlap": 111020,
+    "upperPixels": [
+      {
+        "frame": 2,
+        "x": 313,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 2,
+        "x": 309,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 2,
+        "x": 309,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 2,
+        "x": 310,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 3,
+        "x": 313,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 3,
+        "x": 309,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 3,
+        "x": 309,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 3,
+        "x": 310,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 4,
+        "x": 313,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 4,
+        "x": 309,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 4,
+        "x": 309,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 4,
+        "x": 310,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 5,
+        "x": 313,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 5,
+        "x": 309,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 5,
+        "x": 309,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 5,
+        "x": 310,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 6,
+        "x": 313,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 6,
+        "x": 309,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 6,
+        "x": 309,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 6,
+        "x": 310,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 11,
+        "x": 149,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 11,
+        "x": 330,
+        "y": 199,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 11,
+        "x": 167,
+        "y": 206,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 11,
+        "x": 312,
+        "y": 217,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 11,
+        "x": 180,
+        "y": 220,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 311,
+        "y": 130,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 120,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 182,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 120,
+        "y": 193,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 192,
+        "y": 203,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 191,
+        "y": 204,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 146,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 194,
+        "y": 226,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 311,
+        "y": 130,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 120,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 182,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 120,
+        "y": 193,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 192,
+        "y": 203,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 191,
+        "y": 204,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 146,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 194,
+        "y": 226,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 311,
+        "y": 130,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 120,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 182,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 120,
+        "y": 193,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 192,
+        "y": 203,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 191,
+        "y": 204,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 146,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 194,
+        "y": 226,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 311,
+        "y": 130,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 120,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 182,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 120,
+        "y": 193,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 192,
+        "y": 203,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 191,
+        "y": 204,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 146,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 194,
+        "y": 226,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 311,
+        "y": 130,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 120,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 182,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 120,
+        "y": 193,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 192,
+        "y": 203,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 191,
+        "y": 204,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 146,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 194,
+        "y": 226,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 313,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 309,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 309,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 310,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 303,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 303,
+        "y": 227,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 313,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 309,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 309,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 310,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 303,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 303,
+        "y": 227,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 313,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 309,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 309,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 310,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 303,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 303,
+        "y": 227,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 175,
+    "dir": "east",
+    "frames": 40,
+    "minOwnerY": 211,
+    "outsideOwnerDiff": 0,
+    "opaqueCoatDiff": 0,
+    "upperDiff": 27,
+    "lowerVsPantsDiff": 0,
+    "baseLowerDiff": 0,
+    "ownerCoatOverlap": 113723,
+    "upperPixels": [
+      {
+        "frame": 7,
+        "x": 187,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 7,
+        "x": 187,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 7,
+        "x": 187,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 8,
+        "x": 187,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 8,
+        "x": 187,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 8,
+        "x": 187,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 9,
+        "x": 187,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 9,
+        "x": 187,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 9,
+        "x": 187,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 10,
+        "x": 187,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 10,
+        "x": 187,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 10,
+        "x": 187,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 187,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 187,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 187,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 187,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 187,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 187,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 187,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 187,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 187,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 187,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 187,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 187,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 187,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 187,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 187,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 168,
+    "dir": "east",
+    "frames": 40,
+    "minOwnerY": 215,
+    "outsideOwnerDiff": 0,
+    "opaqueCoatDiff": 0,
+    "upperDiff": 20,
+    "lowerVsPantsDiff": 0,
+    "baseLowerDiff": 0,
+    "ownerCoatOverlap": 106711,
+    "upperPixels": [
+      {
+        "frame": 12,
+        "x": 151,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 12,
+        "x": 151,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 13,
+        "x": 151,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 13,
+        "x": 151,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 14,
+        "x": 151,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 14,
+        "x": 151,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 15,
+        "x": 151,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 15,
+        "x": 151,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 16,
+        "x": 151,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 16,
+        "x": 151,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 17,
+        "x": 151,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 17,
+        "x": 151,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 18,
+        "x": 151,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 18,
+        "x": 151,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 19,
+        "x": 151,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 19,
+        "x": 151,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 20,
+        "x": 151,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 20,
+        "x": 151,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 21,
+        "x": 151,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 21,
+        "x": 151,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "dir": "west",
+    "frames": 40,
+    "minOwnerY": 179,
+    "outsideOwnerDiff": 0,
+    "opaqueCoatDiff": 0,
+    "upperDiff": 29,
+    "lowerVsPantsDiff": 0,
+    "baseLowerDiff": 0,
+    "ownerCoatOverlap": 116901,
+    "upperPixels": [
+      {
+        "frame": 0,
+        "x": 341,
+        "y": 179,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 1,
+        "x": 341,
+        "y": 179,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 2,
+        "x": 196,
+        "y": 216,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 3,
+        "x": 196,
+        "y": 216,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 4,
+        "x": 196,
+        "y": 216,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 5,
+        "x": 196,
+        "y": 216,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 6,
+        "x": 196,
+        "y": 216,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 7,
+        "x": 385,
+        "y": 186,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 8,
+        "x": 385,
+        "y": 186,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 9,
+        "x": 385,
+        "y": 186,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 10,
+        "x": 385,
+        "y": 186,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 170,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 170,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 170,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 170,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 170,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 32,
+        "x": 307,
+        "y": 195,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 32,
+        "x": 174,
+        "y": 221,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 33,
+        "x": 307,
+        "y": 195,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 33,
+        "x": 174,
+        "y": 221,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 34,
+        "x": 307,
+        "y": 195,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 34,
+        "x": 174,
+        "y": 221,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 35,
+        "x": 307,
+        "y": 195,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 35,
+        "x": 174,
+        "y": 221,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 36,
+        "x": 307,
+        "y": 195,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 36,
+        "x": 174,
+        "y": 221,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 37,
+        "x": 341,
+        "y": 179,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 38,
+        "x": 341,
+        "y": 179,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 39,
+        "x": 341,
+        "y": 179,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 133,
+    "dir": "west",
+    "frames": 40,
+    "minOwnerY": 130,
+    "outsideOwnerDiff": 0,
+    "opaqueCoatDiff": 0,
+    "upperDiff": 83,
+    "lowerVsPantsDiff": 0,
+    "baseLowerDiff": 0,
+    "ownerCoatOverlap": 111020,
+    "upperPixels": [
+      {
+        "frame": 2,
+        "x": 198,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 2,
+        "x": 202,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 2,
+        "x": 201,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 2,
+        "x": 202,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 3,
+        "x": 198,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 3,
+        "x": 202,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 3,
+        "x": 201,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 3,
+        "x": 202,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 4,
+        "x": 198,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 4,
+        "x": 202,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 4,
+        "x": 201,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 4,
+        "x": 202,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 5,
+        "x": 198,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 5,
+        "x": 202,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 5,
+        "x": 201,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 5,
+        "x": 202,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 6,
+        "x": 198,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 6,
+        "x": 202,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 6,
+        "x": 201,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 6,
+        "x": 202,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 11,
+        "x": 362,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 11,
+        "x": 181,
+        "y": 199,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 11,
+        "x": 344,
+        "y": 206,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 11,
+        "x": 199,
+        "y": 217,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 11,
+        "x": 331,
+        "y": 220,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 200,
+        "y": 130,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 329,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 391,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 391,
+        "y": 193,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 319,
+        "y": 203,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 320,
+        "y": 204,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 365,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 317,
+        "y": 226,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 200,
+        "y": 130,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 329,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 391,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 391,
+        "y": 193,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 319,
+        "y": 203,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 320,
+        "y": 204,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 365,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 317,
+        "y": 226,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 200,
+        "y": 130,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 329,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 391,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 391,
+        "y": 193,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 319,
+        "y": 203,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 320,
+        "y": 204,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 365,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 317,
+        "y": 226,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 200,
+        "y": 130,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 329,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 391,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 391,
+        "y": 193,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 319,
+        "y": 203,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 320,
+        "y": 204,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 365,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 317,
+        "y": 226,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 200,
+        "y": 130,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 329,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 391,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 391,
+        "y": 193,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 319,
+        "y": 203,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 320,
+        "y": 204,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 365,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 317,
+        "y": 226,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 198,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 202,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 201,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 202,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 208,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 27,
+        "x": 208,
+        "y": 227,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 198,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 202,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 201,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 202,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 208,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 28,
+        "x": 208,
+        "y": 227,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 198,
+        "y": 140,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 202,
+        "y": 191,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 201,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 202,
+        "y": 192,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 208,
+        "y": 215,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 29,
+        "x": 208,
+        "y": 227,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 175,
+    "dir": "west",
+    "frames": 40,
+    "minOwnerY": 211,
+    "outsideOwnerDiff": 0,
+    "opaqueCoatDiff": 0,
+    "upperDiff": 27,
+    "lowerVsPantsDiff": 0,
+    "baseLowerDiff": 0,
+    "ownerCoatOverlap": 113723,
+    "upperPixels": [
+      {
+        "frame": 7,
+        "x": 324,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 7,
+        "x": 324,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 7,
+        "x": 324,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 8,
+        "x": 324,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 8,
+        "x": 324,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 8,
+        "x": 324,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 9,
+        "x": 324,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 9,
+        "x": 324,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 9,
+        "x": 324,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 10,
+        "x": 324,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 10,
+        "x": 324,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 10,
+        "x": 324,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 324,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 324,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 22,
+        "x": 324,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 324,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 324,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 23,
+        "x": 324,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 324,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 324,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 24,
+        "x": 324,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 324,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 324,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 25,
+        "x": 324,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 324,
+        "y": 225,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 324,
+        "y": 232,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 26,
+        "x": 324,
+        "y": 233,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 168,
+    "dir": "west",
+    "frames": 40,
+    "minOwnerY": 215,
+    "outsideOwnerDiff": 0,
+    "opaqueCoatDiff": 0,
+    "upperDiff": 20,
+    "lowerVsPantsDiff": 0,
+    "baseLowerDiff": 0,
+    "ownerCoatOverlap": 106711,
+    "upperPixels": [
+      {
+        "frame": 12,
+        "x": 360,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 12,
+        "x": 360,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 13,
+        "x": 360,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 13,
+        "x": 360,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 14,
+        "x": 360,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 14,
+        "x": 360,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 15,
+        "x": 360,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 15,
+        "x": 360,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 16,
+        "x": 360,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 16,
+        "x": 360,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 17,
+        "x": 360,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 17,
+        "x": 360,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 18,
+        "x": 360,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 18,
+        "x": 360,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 19,
+        "x": 360,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 19,
+        "x": 360,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 20,
+        "x": 360,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 20,
+        "x": 360,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 21,
+        "x": 360,
+        "y": 235,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "frame": 21,
+        "x": 360,
+        "y": 237,
+        "coat": 0,
+        "before": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "after": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "layers": [
+          {
+            "id": "approved-cloth",
+            "rgba": [
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

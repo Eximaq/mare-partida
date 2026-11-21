@@ -1,0 +1,34 @@
+{
+  "path": "weapons/male118-four-torsos-ew-v2/male118_east-west_four-torsos_approved-v2.zip",
+  "bytes": 7933867,
+  "sha256": "55b2ab8f948c726a6d9cc9861c941475867cb8f13ec8d12eedfdc3b2b7f69525",
+  "pngEntries": 169,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented male118 complete lateral cycles with four torsos after cuff connection and equipment scale correction.",
+  "weapons": [
+    118
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "male",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 64,
+  "manifestHashesVerified": 171,
+  "archiveNote": "Original editable backup preserved byte-for-byte. Internal candidate labels reflect pre-approval packaging; this index records subsequent owner approval. Approval covers only these equipped combinations.",
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male118-four-torsos-ew-v2/parts/MANIFEST.json",
+    "reconstruct": "weapons/male118-four-torsos-ew-v2/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  }
+}

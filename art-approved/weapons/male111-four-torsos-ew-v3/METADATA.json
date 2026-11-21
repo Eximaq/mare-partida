@@ -1,0 +1,34 @@
+{
+  "path": "weapons/male111-four-torsos-ew-v3/Manopla111_Masculino_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 6356208,
+  "sha256": "9420e8e7a7d6f229ebfb85cf951125ac492e86a98e5eb20d5082bb5733d271a3",
+  "pngEntries": 144,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+  "weapons": [
+    111
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "male",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 64,
+  "manifestHashesVerified": 147,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male111-four-torsos-ew-v3/parts/MANIFEST.json",
+    "reconstruct": "weapons/male111-four-torsos-ew-v3/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  },
+  "archiveNote": "Exact presented and approved111V3 editable ZIP; V1/V2 rejected and excluded."
+}

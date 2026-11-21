@@ -1,0 +1,4 @@
+# Luvas independentes ao Norte
+
+- Feminino, ataque Norte com Espadas 67, 68, 69 e 70 sem peitoral: Luvas 26, 145, 159, 166 e 173. Em 480 renderizações (quatro armas, cinco luvas, três aparências e oito fases) só as duas mãos mudam. A contribuição RGBA da lâmina, inclusive o alfa parcial, mantém a arte e as matrizes próprias; retirar volta ao original. Espadas 0 e 1 passam na regressão. A restrição da Bota 9 com Espada 69 não muda, nem se amplia para outras direções.
+- Masculino, Luvas 159 e 166 com C151/P133/B155 em repouso e caminhada Norte: mais 68 quadros em duas aparências salvas. Usa o próprio par de camadas de cada luva e os hashes autorizados do corpo a cada fase. O alfa e o RGBA das peças não mudam. 34 quadros da Luva 26 repetidos como referência. Outros gestos, formatos/cores não registrados e combinações permanecem como antes.

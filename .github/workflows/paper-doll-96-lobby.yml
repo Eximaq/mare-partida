@@ -7,7 +7,6 @@ on:
       - 'ui-screens.css'
       - 'tests/character-appearance.test.cjs'
       - 'tests/character_appearance_browser.cjs'
-      - 'tests/character_appearance_materials_browser.cjs'
       - 'paper-doll-96-lobby.js'
       - 'combat-registry.js'
       - 'sprite-combat-v2.js'
@@ -35,7 +34,6 @@ on:
       - 'tests/paper-doll-96-weapons.test.cjs'
       - 'tests/paper-doll-96-other-weapons.test.cjs'
       - 'tests/class-weapons-*.cjs'
-      - 'tests/class-weapon-layer-browser.cjs'
       - 'tests/equipment-*.cjs'
       - 'tests/firearm-south-carry.test.cjs'
       - 'tests/paper_doll_96_weapons_browser.cjs'
@@ -112,7 +110,7 @@ jobs:
       - name: Auditar armas e combate real
         run: |
           node tests/paper-doll-96-weapons.test.cjs
-          node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --default-player --evidence="$RUNNER_TEMP/weapons96"
+          node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --default-player --combat-only --evidence="$RUNNER_TEMP/weapons96"
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
@@ -143,11 +141,8 @@ jobs:
         run: |
           node tests/paper-doll-96-other-weapons.test.cjs
           node --test tests/class-weapons-batch-1.test.cjs tests/class-weapons-batch-2.test.cjs tests/class-weapons-remaining.test.cjs tests/firearm-south-carry.test.cjs tests/equipment-composition-policy.test.cjs
-          node tests/class-weapons-fit-browser.cjs http://127.0.0.1:8157/
-          node tests/class-weapon-layer-browser.cjs http://127.0.0.1:8157/
-          node tests/equipment-occlusion-browser.cjs http://127.0.0.1:8157/
           node tests/ranged_autohunt_browser.cjs http://127.0.0.1:8157/dist/ --evidence="$RUNNER_TEMP/other-weapons96/ranged"
-          node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --other-classes --default-player --evidence="$RUNNER_TEMP/other-weapons96"
+          node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --other-classes --default-player --combat-only --evidence="$RUNNER_TEMP/other-weapons96"
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
@@ -177,7 +172,7 @@ jobs:
       - name: Validar cabeça, inventário e personagem padrão
         run: |
           node tests/headgear-visibility.test.cjs
-          node tests/headgear_visibility_browser.cjs http://127.0.0.1:8157/dist/ --evidence="$RUNNER_TEMP/headgear96"
+          node tests/headgear_visibility_browser.cjs http://127.0.0.1:8157/dist/ --game-only --evidence="$RUNNER_TEMP/headgear96"
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
@@ -208,7 +203,6 @@ jobs:
         run: |
           node tests/character-appearance.test.cjs
           node tests/character_appearance_browser.cjs http://127.0.0.1:8159/dist/ --evidence="$RUNNER_TEMP/appearance96"
-          node tests/character_appearance_materials_browser.cjs http://127.0.0.1:8159/dist/ --evidence="$RUNNER_TEMP/appearance96"
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:

@@ -1,0 +1,87 @@
+{
+  "original": "Orbes17_122_Femininos_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 11768347,
+  "sha256": "594f3087ebe45565752447294c967719c6de7223dc5f76157ab0156ae7935980",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "91d03533f98f9202e66045e9a9858482cde92010a12bb48c9119b81f32236e1a"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "be3d5015b744488114b8b3b4c302890a21f8c3f3d1a68edf92f95a1ef2b1ff13"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 750000,
+      "sha256": "4a1877e3f0d0e8f304b10b2c762b91b11f45a2a34ab4cea5c1f4ef67f2feabb4"
+    },
+    {
+      "path": "archive.part003",
+      "bytes": 750000,
+      "sha256": "611789e422882af5cb9c1f948b3c162078247e391da0f2dbd3e609e76576af01"
+    },
+    {
+      "path": "archive.part004",
+      "bytes": 750000,
+      "sha256": "761e074cab8b7d0edbca05c4ce91ad0b74008fc81116f009098bd3c4d287f852"
+    },
+    {
+      "path": "archive.part005",
+      "bytes": 750000,
+      "sha256": "6d1a43b243ea7c648b9b671cdc8109a4b8da5ffd5bcf1f4dd691cf4c59b14ca7"
+    },
+    {
+      "path": "archive.part006",
+      "bytes": 750000,
+      "sha256": "1d24bb7e184e67a7cad206214e10dde9074c59c7792031866dbb23bd4ff70822"
+    },
+    {
+      "path": "archive.part007",
+      "bytes": 750000,
+      "sha256": "9bdf00b4b477bf994679ee84635d3afba5ee7f872c13871020040d9d8f33e846"
+    },
+    {
+      "path": "archive.part008",
+      "bytes": 750000,
+      "sha256": "70882b1692852c1a3ef83a4f3f9ff5b54a480b71281ad1c440e7ce117136d4a6"
+    },
+    {
+      "path": "archive.part009",
+      "bytes": 750000,
+      "sha256": "78021fd4b3302564de916f5d52d4638bae23998d6225938cce3414ecc74ddb13"
+    },
+    {
+      "path": "archive.part010",
+      "bytes": 750000,
+      "sha256": "4264e18b706627dfd8ffc80605fe8ada3eb88dab1563cd3aa807712a92e2c6d2"
+    },
+    {
+      "path": "archive.part011",
+      "bytes": 750000,
+      "sha256": "5ffba9a1abf26afcd0a992e7ff4225907e73fb217fba2629e825eb7c35ff9244"
+    },
+    {
+      "path": "archive.part012",
+      "bytes": 750000,
+      "sha256": "0952d01d41b7e2f3914c497ae69695bfea46993fae15b5be4eceabad27f1f111"
+    },
+    {
+      "path": "archive.part013",
+      "bytes": 750000,
+      "sha256": "f75c31938e8c5d33d5c58ac30729432d71da53d95d016fcb5e325cb78de3f98e"
+    },
+    {
+      "path": "archive.part014",
+      "bytes": 750000,
+      "sha256": "73774e6d03d4e2d3173292bef46a9f6f6851f695d9ec7dec47aef943a73693ce"
+    },
+    {
+      "path": "archive.part015",
+      "bytes": 518347,
+      "sha256": "80688d3559976c9cba06dce934c42080546308918945472050901ed9c6745eef"
+    }
+  ]
+}

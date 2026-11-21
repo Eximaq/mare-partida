@@ -1,0 +1,39 @@
+{
+  "path": "weapons/female-daggers12-13-71-74-four-torsos-ew/Adagas12_13_71_72_73_74_Feminino_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 47754994,
+  "sha256": "09c90ccf548883e39e9397a6b3de196294fd07b68f987b3aec7c16e85670ac99",
+  "pngEntries": 840,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+  "weapons": [
+    12,
+    13,
+    71,
+    72,
+    73,
+    74
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "female",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 384,
+  "manifestHashesVerified": 844,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/female-daggers12-13-71-74-four-torsos-ew/parts/MANIFEST.json",
+    "reconstruct": "weapons/female-daggers12-13-71-74-four-torsos-ew/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  },
+  "archiveNote": "Exact final presented editable ZIP; no rejected111 variants included."
+}

@@ -1,0 +1,33 @@
+{
+  "path": "weapons/male1-68-north-three-torsos/Sabre1_Nodachi68_NORTH_M151_M158_M179_Editavel.zip",
+  "bytes": 13171623,
+  "sha256": "d77a96089aaf04ad28fb8de7b8a4cb1ec52ddcb8aea704a1dc32270b794315a9",
+  "pngEntries": 192,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete NORTH cycles with torsos 151,158,179.",
+  "weapons": [
+    1,
+    68
+  ],
+  "outfits": [
+    151,
+    158,
+    179
+  ],
+  "gender": "male",
+  "directions": [
+    "NORTH"
+  ],
+  "finalFrames": 48,
+  "manifestHashesVerified": 194,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male1-68-north-three-torsos/parts/MANIFEST.json",
+    "reconstruct": "weapons/male1-68-north-three-torsos/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  },
+  "archiveNote": "Exact approved male NORTH ZIP; pending torso165 excluded."
+}

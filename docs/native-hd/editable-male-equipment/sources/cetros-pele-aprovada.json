@@ -1,0 +1,1824 @@
+{
+  "schema": "staff-partial-skin-approval-manifest-v1",
+  "pr": 348,
+  "sourceCommit": "e80b31f6c617ada51cab81dcc11f471d3d288c76",
+  "approvals": {
+    "north": {
+      "item": "01",
+      "frozenProofSHA256": "e55e2a6905042e7c6a88085e2c69ee58b4896a4ece17721bfc7a51a9c15795cf",
+      "scope": "36 hand/wrist/forearm review crops only; compose only over a compatible modular body; do not enable partial recolor on a baked full actor"
+    },
+    "south": {
+      "item": "02",
+      "frozenProofSHA256": "552f06a115f3e6cbbd0bc88c67c99e7df95d4d6cc1d296efd5c2fb79fe0a4196",
+      "scope": "40 body/grip masks preserving rendered approved scope; head, alternate hair, eye styling, other clothing excluded"
+    }
+  },
+  "archive": {
+    "file": "approved-staff-north-south-skin-masks.zip",
+    "sha256": "849e5b4bc74ea6dac89198292b20e527d70a565e8550465d767a2ea7911d5e2f",
+    "bytes": 350866,
+    "pngCount": 76,
+    "compression": "stored"
+  },
+  "recordBindings": [
+    {
+      "id": "staff123-south-native-original-source",
+      "item": 123,
+      "direction": "south",
+      "action": "attack-focus",
+      "allowProduction": false,
+      "density": 4,
+      "fps": 12,
+      "timeline": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "states": [
+        {
+          "state": "0",
+          "sourceSHA256": "f307512b241bd5ecc789b111dcf1b5fbc643b22a64586d3a38cfea667932cbae",
+          "sourceURL": "assets/f307512b241bd5ecc789b111dcf1b5fbc643b22a64586d3a38cfea667932cbae.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon123_south_v1.zip::frames/00.png",
+          "approvalCrop": null,
+          "maskSHA256": "e7e6879ab541704b71315bb94807aa2f5db65430d2badda722d304331e0f04cb",
+          "maskURL": "assets/e7e6879ab541704b71315bb94807aa2f5db65430d2badda722d304331e0f04cb.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16938,
+          "expectedDarkDecodedRGBA_SHA256": "fb8c971b2c79821dadc016bd23949c06d87f8c83371468d32124ee85a7182907",
+          "originalDecodedRGBA_SHA256": "04c6e7ced6b98758162ec0f4d68c438cfbfbcab25159a3d498068a513bbc7955"
+        },
+        {
+          "state": "1",
+          "sourceSHA256": "9ac1c06416dc24c2cc86a4d0614e7622911af814b60c93cd3e9b26f0ad0cb6b8",
+          "sourceURL": "assets/9ac1c06416dc24c2cc86a4d0614e7622911af814b60c93cd3e9b26f0ad0cb6b8.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon123_south_v1.zip::frames/01.png",
+          "approvalCrop": null,
+          "maskSHA256": "0e9fd64e177cede52935e461471b6364e67a0b3840da941521340314865d8b7d",
+          "maskURL": "assets/0e9fd64e177cede52935e461471b6364e67a0b3840da941521340314865d8b7d.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16927,
+          "expectedDarkDecodedRGBA_SHA256": "687f6be11e2aa8da382b32f30be61f1ba168265276cf043f7bebceeea35ae3b1",
+          "originalDecodedRGBA_SHA256": "f2437187b4953500e601732b44fda1737b11a5dca3ad7199d2b294213774d125"
+        },
+        {
+          "state": "2",
+          "sourceSHA256": "101189ede70410a64191433c6d9199195a6769fd78dcdfa3ece9002f2b786067",
+          "sourceURL": "assets/101189ede70410a64191433c6d9199195a6769fd78dcdfa3ece9002f2b786067.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon123_south_v1.zip::frames/02.png",
+          "approvalCrop": null,
+          "maskSHA256": "8d5efbdf857ecbe4f3af89cd55a2c099a496b2855895aea2810dceec9ec4ccca",
+          "maskURL": "assets/8d5efbdf857ecbe4f3af89cd55a2c099a496b2855895aea2810dceec9ec4ccca.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15800,
+          "expectedDarkDecodedRGBA_SHA256": "2d0e88a225542831ce3d011b3d1c920cc41aa2ead1e543f3521677c41ff99681",
+          "originalDecodedRGBA_SHA256": "692f476f727ebac0b346528089c2f9d1b4cd27ec7f5df56454745c0ec1cb83de"
+        },
+        {
+          "state": "3",
+          "sourceSHA256": "40e64384cdca75a9739885f69dd2622c5a90e04a765acfad94fffdc7b6d0ca27",
+          "sourceURL": "assets/40e64384cdca75a9739885f69dd2622c5a90e04a765acfad94fffdc7b6d0ca27.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon123_south_v1.zip::frames/03.png",
+          "approvalCrop": null,
+          "maskSHA256": "6ca40f16a18a92082986a42c3859986512d75784ceae01ec08528fc24a87a06f",
+          "maskURL": "assets/6ca40f16a18a92082986a42c3859986512d75784ceae01ec08528fc24a87a06f.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15669,
+          "expectedDarkDecodedRGBA_SHA256": "a6e06574ea058ec018a455441b032dbe92c51e4d3350813707d1770d67012b01",
+          "originalDecodedRGBA_SHA256": "e064a36516c72d6d1f1200d76459ea9a49ba9bdcb2fb10504f0ae6c98ca37a3f"
+        },
+        {
+          "state": "4",
+          "sourceSHA256": "89dae37c6cb9026214ea8c4229c553e0bdfc78877547d2ca512f4c1ae53be628",
+          "sourceURL": "assets/89dae37c6cb9026214ea8c4229c553e0bdfc78877547d2ca512f4c1ae53be628.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon123_south_v1.zip::frames/04.png",
+          "approvalCrop": null,
+          "maskSHA256": "73d4473622c41102d4de5b6e3be95188224846c49d653c9b3c1924eb1eb5b67e",
+          "maskURL": "assets/73d4473622c41102d4de5b6e3be95188224846c49d653c9b3c1924eb1eb5b67e.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 14912,
+          "expectedDarkDecodedRGBA_SHA256": "5247e3c41b6f0095acba460a2ff963fdaed6c113e066c52ed0b3bdc59fcf623c",
+          "originalDecodedRGBA_SHA256": "c691c08be1e97a0d806b8e88352fcba12ada42a0b79ed1bfc681261eb3edc200"
+        },
+        {
+          "state": "5",
+          "sourceSHA256": "d6ab86a80d3ecbfbcbd8657788b2d320899af611dcf837c19eee5163ee12c062",
+          "sourceURL": "assets/d6ab86a80d3ecbfbcbd8657788b2d320899af611dcf837c19eee5163ee12c062.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon123_south_v1.zip::frames/05.png",
+          "approvalCrop": null,
+          "maskSHA256": "8cffeba3bab613b3638b481382da6c5951b52828e7f3c7e1adb1936776910b0b",
+          "maskURL": "assets/8cffeba3bab613b3638b481382da6c5951b52828e7f3c7e1adb1936776910b0b.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15596,
+          "expectedDarkDecodedRGBA_SHA256": "a787922cc69487fb6009b216ca28c69e569511fedecfdbddb3d76603e9248290",
+          "originalDecodedRGBA_SHA256": "6552191f5160652d84e7809b37a76c675700d45131fc13a238dae5c22ccfe3df"
+        },
+        {
+          "state": "6",
+          "sourceSHA256": "fd52a3e89b23e8ea35f3d54a0e5e7cb0bd6552e995210b4af756781bbe00fe78",
+          "sourceURL": "assets/fd52a3e89b23e8ea35f3d54a0e5e7cb0bd6552e995210b4af756781bbe00fe78.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon123_south_v1.zip::frames/06.png",
+          "approvalCrop": null,
+          "maskSHA256": "14693f9f0a3e1091ffa835eb60792a6785fbaa361467917febd5810e2e87df64",
+          "maskURL": "assets/14693f9f0a3e1091ffa835eb60792a6785fbaa361467917febd5810e2e87df64.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 17066,
+          "expectedDarkDecodedRGBA_SHA256": "38ce4f945bf654081a58b63c10827ff53de49e555c2eed5e9d3ceaf4d95aadf0",
+          "originalDecodedRGBA_SHA256": "0efa5a23958b91a652a93cb023e2dacef2a60731c3111c111de7e96cd7d5ce93"
+        },
+        {
+          "state": "7",
+          "sourceSHA256": "b8960650173893d1e25f10e6b44dde2deb17ffd82002eeb77d077973446224da",
+          "sourceURL": "assets/b8960650173893d1e25f10e6b44dde2deb17ffd82002eeb77d077973446224da.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon123_south_v1.zip::frames/07.png",
+          "approvalCrop": null,
+          "maskSHA256": "8ab873ac9b0ddc4d83a0801cbb16c64a4d88a73c47d8fdf9949e0dd11b10b51e",
+          "maskURL": "assets/8ab873ac9b0ddc4d83a0801cbb16c64a4d88a73c47d8fdf9949e0dd11b10b51e.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16859,
+          "expectedDarkDecodedRGBA_SHA256": "2f8fd05d7c422a37c6af275f3b78ad65e5d90740b84320f190ca9eaef33daf29",
+          "originalDecodedRGBA_SHA256": "df2746ccbe43428864af90f91fbc6e01f7a2a481ee1cc123412ebfcf5ff2233f"
+        }
+      ]
+    },
+    {
+      "id": "staff124-north-native-original-source",
+      "item": 124,
+      "direction": "north",
+      "action": "attack-focus",
+      "allowProduction": false,
+      "density": 4,
+      "fps": 12,
+      "timeline": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "states": [
+        {
+          "state": "0",
+          "sourceSHA256": "b54f7a569acd4ef0b2520387b2bc66d4e4c4aa2a79620811a706ff0df13013f8",
+          "sourceURL": "assets/b54f7a569acd4ef0b2520387b2bc66d4e4c4aa2a79620811a706ff0df13013f8.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff124_north_v1.zip::frames/00.png",
+          "approvalCrop": [
+            364,
+            324,
+            424,
+            368
+          ],
+          "maskSHA256": "224ad4d63b42d8a36a13d5bbab91b7809a994ed8bce67885e394963125dec560",
+          "maskURL": "assets/224ad4d63b42d8a36a13d5bbab91b7809a994ed8bce67885e394963125dec560.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 996,
+          "expectedDarkDecodedRGBA_SHA256": "a621c277e4a21f88f8aaa0e0ea22d6eeaa2c74ce62922d880108da4dd1db5d1b",
+          "originalDecodedRGBA_SHA256": "6a19c07e1c86c5ab710a842a3a7b8883105355a386b59184ac0f74f51dae9f8e"
+        },
+        {
+          "state": "1",
+          "sourceSHA256": "fb934490488c42c8566ba733aa651f1a87eb837cb7335addeb90f2714f695e11",
+          "sourceURL": "assets/fb934490488c42c8566ba733aa651f1a87eb837cb7335addeb90f2714f695e11.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff124_north_v1.zip::frames/01.png",
+          "approvalCrop": [
+            378,
+            287,
+            438,
+            331
+          ],
+          "maskSHA256": "66f2ad76f117388587de78ef37d5c737129831598dd6e946641e21b06d825fe7",
+          "maskURL": "assets/66f2ad76f117388587de78ef37d5c737129831598dd6e946641e21b06d825fe7.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1133,
+          "expectedDarkDecodedRGBA_SHA256": "56e76f5a5584d872cd695bcaae7f05b7b44df03c0255dc9522adc081838baf06",
+          "originalDecodedRGBA_SHA256": "3c59abec54edd35ebd10542a95870e751d9a2c30820131a743700460f1ce2631"
+        },
+        {
+          "state": "2",
+          "sourceSHA256": "a6bebe86b200b8a0dc9b8f4153a12061268d9f559d55d89ae7f2fbdb0887b29b",
+          "sourceURL": "assets/a6bebe86b200b8a0dc9b8f4153a12061268d9f559d55d89ae7f2fbdb0887b29b.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff124_north_v1.zip::frames/02.png",
+          "approvalCrop": [
+            374,
+            246,
+            434,
+            290
+          ],
+          "maskSHA256": "1d01c5163609484fc28a24e1fe62498648860ac2ff821f68c97b1a611261b72f",
+          "maskURL": "assets/1d01c5163609484fc28a24e1fe62498648860ac2ff821f68c97b1a611261b72f.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1045,
+          "expectedDarkDecodedRGBA_SHA256": "61b70263af36e4a4ddd9f6bd9bc2b5da907734b863ef885918125d698ed3ce9e",
+          "originalDecodedRGBA_SHA256": "823182459970a123b33bc6792a10f6edd7f775f70733c2d1a584359cbf90412a"
+        },
+        {
+          "state": "3",
+          "sourceSHA256": "ec59ee88892169bf47d7465a2b15ee6987efcc30c1d38f723807cd21e098d9b3",
+          "sourceURL": "assets/ec59ee88892169bf47d7465a2b15ee6987efcc30c1d38f723807cd21e098d9b3.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff124_north_v1.zip::frames/03.png",
+          "approvalCrop": [
+            378,
+            213,
+            438,
+            257
+          ],
+          "maskSHA256": "c5ccd5cdbd11fb762b9b7e9a1f8192560238d588ea200c478e08d5de52918055",
+          "maskURL": "assets/c5ccd5cdbd11fb762b9b7e9a1f8192560238d588ea200c478e08d5de52918055.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 828,
+          "expectedDarkDecodedRGBA_SHA256": "1c8d494c2cf7f995994f9427686aa41265b976d455b8ae693768edcf5d36153a",
+          "originalDecodedRGBA_SHA256": "2ef90afd4195dc098ad4991a3b03ce135ea96cc98e96c3a29c7410f50fd83f43"
+        },
+        {
+          "state": "4",
+          "sourceSHA256": "978f168b80bb430cf2c6350e86101e1eea1530f0e8242bf2b8144a85a03c4c0f",
+          "sourceURL": "assets/978f168b80bb430cf2c6350e86101e1eea1530f0e8242bf2b8144a85a03c4c0f.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff124_north_v1.zip::frames/04.png",
+          "approvalCrop": [
+            376,
+            186,
+            436,
+            230
+          ],
+          "maskSHA256": "0277a86670bc3f4ef061502bf389d8ec400eb8d6e886bd37521649901d9dba80",
+          "maskURL": "assets/0277a86670bc3f4ef061502bf389d8ec400eb8d6e886bd37521649901d9dba80.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 785,
+          "expectedDarkDecodedRGBA_SHA256": "d3a084a57e9b2030688fb6d026f14e790782056718871565f9775c062a87c598",
+          "originalDecodedRGBA_SHA256": "9c200472fb04b5d68f35ba9082ac15f1683ef00d46d818a14e2959d77b87355c"
+        },
+        {
+          "state": "5",
+          "sourceSHA256": "f48f6e28d2daea237b533c705290312b94db8d31cdfdf3389e1e19694d9904b1",
+          "sourceURL": "assets/f48f6e28d2daea237b533c705290312b94db8d31cdfdf3389e1e19694d9904b1.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff124_north_v1.zip::frames/05.png",
+          "approvalCrop": [
+            378,
+            208,
+            438,
+            252
+          ],
+          "maskSHA256": "d948fed8c50b18e82f1a3279464dd54c8660364fff6953c95437a3210e6407e2",
+          "maskURL": "assets/d948fed8c50b18e82f1a3279464dd54c8660364fff6953c95437a3210e6407e2.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 776,
+          "expectedDarkDecodedRGBA_SHA256": "4b6e8086a0d7c4b19720afb20b1cabbdc6e0062e7b6791a4f34364af03014877",
+          "originalDecodedRGBA_SHA256": "8eef6cdf6cb4ff82461566e331f1ae81b1e064ba541e3d3800f105923340816d"
+        },
+        {
+          "state": "6",
+          "sourceSHA256": "3d8f5e85bc5a4d53bc885206964499efa970aedbe8033f7a22827ea6a72d14d5",
+          "sourceURL": "assets/3d8f5e85bc5a4d53bc885206964499efa970aedbe8033f7a22827ea6a72d14d5.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff124_north_v1.zip::frames/06.png",
+          "approvalCrop": [
+            372,
+            226,
+            432,
+            270
+          ],
+          "maskSHA256": "e4f5e634adf501f01aa88a051a35304338f3ac3ad00a8e128fd93d47af8c9792",
+          "maskURL": "assets/e4f5e634adf501f01aa88a051a35304338f3ac3ad00a8e128fd93d47af8c9792.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 722,
+          "expectedDarkDecodedRGBA_SHA256": "836959a4001bd663fc83df5c94225b4c481af0b0207af98270c15ec865e79577",
+          "originalDecodedRGBA_SHA256": "6b220f881cad4829239788a45aa3c80501ed7b1c91541637dc804d4220841cbe"
+        },
+        {
+          "state": "7",
+          "sourceSHA256": "b8078ca01913e251232724efdddfc13130aef750cf42a219933594c18f8d78f7",
+          "sourceURL": "assets/b8078ca01913e251232724efdddfc13130aef750cf42a219933594c18f8d78f7.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff124_north_v1.zip::frames/07.png",
+          "approvalCrop": [
+            373,
+            290,
+            433,
+            334
+          ],
+          "maskSHA256": "0496f51195cab95877043c93ae4b607a9e295137808e327710ff831da8ccdcd8",
+          "maskURL": "assets/0496f51195cab95877043c93ae4b607a9e295137808e327710ff831da8ccdcd8.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1109,
+          "expectedDarkDecodedRGBA_SHA256": "c2370b171c6da90dd3d1c0fdbea48fa4c99500b168707dad12ffc4d68c8d8793",
+          "originalDecodedRGBA_SHA256": "88a6d4c31a055e13e568c2248afb99eccf9b0700f751bdda29af97ccc17a9b7f"
+        },
+        {
+          "state": "8",
+          "sourceSHA256": "60573c42601b45a989528fbbbda5c379c4224e8e3f0042f0ad862ce6c6e71da9",
+          "sourceURL": "assets/60573c42601b45a989528fbbbda5c379c4224e8e3f0042f0ad862ce6c6e71da9.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff124_north_v1.zip::frames/08.png",
+          "approvalCrop": [
+            370,
+            338,
+            430,
+            382
+          ],
+          "maskSHA256": "b577df0c5b3a0418645ba79086b35464f6fc77425343ce54e3d2cea65332b60a",
+          "maskURL": "assets/b577df0c5b3a0418645ba79086b35464f6fc77425343ce54e3d2cea65332b60a.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 854,
+          "expectedDarkDecodedRGBA_SHA256": "816c930a1d7a7ca1696b7ae31c261a863cbb571a04d4b1528a6c6ec19fcc168f",
+          "originalDecodedRGBA_SHA256": "d5ba9ff63cacb34e9a565f5eb295a977cf4ed35df1d913e4b4b9684b51430462"
+        }
+      ]
+    },
+    {
+      "id": "staff124-south-native-original-source",
+      "item": 124,
+      "direction": "south",
+      "action": "attack-focus",
+      "allowProduction": false,
+      "density": 4,
+      "fps": 12,
+      "timeline": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "states": [
+        {
+          "state": "0",
+          "sourceSHA256": "e80c8c335b8d873be109ae84e44774ccb50fe907b08eca717c5087bc61e7a78c",
+          "sourceURL": "assets/e80c8c335b8d873be109ae84e44774ccb50fe907b08eca717c5087bc61e7a78c.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon124_south_v1.zip::frames/00.png",
+          "approvalCrop": null,
+          "maskSHA256": "cc80627fbb7b0aa06e1acaab85511b3386af12252f748c180dff643dab2fd091",
+          "maskURL": "assets/cc80627fbb7b0aa06e1acaab85511b3386af12252f748c180dff643dab2fd091.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16933,
+          "expectedDarkDecodedRGBA_SHA256": "7a66039f5a40e0711368606b78486c3bfa3da9b665c2ae2bd1efa7bed782b78f",
+          "originalDecodedRGBA_SHA256": "d60443c52a329976f0ba6aa35bcf0a837cf54396ceb8ffdc50a367f5c599c021"
+        },
+        {
+          "state": "1",
+          "sourceSHA256": "238b0aae8d8c98458172352c1a2d3a36d9ff70ae2f614efffae83ae72dc6c5a6",
+          "sourceURL": "assets/238b0aae8d8c98458172352c1a2d3a36d9ff70ae2f614efffae83ae72dc6c5a6.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon124_south_v1.zip::frames/01.png",
+          "approvalCrop": null,
+          "maskSHA256": "ac8a1efc0f99707ada7225cac7727b9cab3f779277e60450d0a7535294a30bf3",
+          "maskURL": "assets/ac8a1efc0f99707ada7225cac7727b9cab3f779277e60450d0a7535294a30bf3.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16912,
+          "expectedDarkDecodedRGBA_SHA256": "dc365b84d8499ece63a7f9284983ae8bf3265e7a81a6c326577662b56f5967ca",
+          "originalDecodedRGBA_SHA256": "0200ee4a3ed2c09379ae6d31f0e438e08c865bf3988950bd9987104af276fba0"
+        },
+        {
+          "state": "2",
+          "sourceSHA256": "607a83c9c13b3fa22c1deafc4cc86043c3e668add1c9e27caec86682ac3d5b0b",
+          "sourceURL": "assets/607a83c9c13b3fa22c1deafc4cc86043c3e668add1c9e27caec86682ac3d5b0b.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon124_south_v1.zip::frames/02.png",
+          "approvalCrop": null,
+          "maskSHA256": "3ed2270093dab310e6225f335701a393da8564b16912d9ea829b25d1e79b3ee6",
+          "maskURL": "assets/3ed2270093dab310e6225f335701a393da8564b16912d9ea829b25d1e79b3ee6.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15794,
+          "expectedDarkDecodedRGBA_SHA256": "400c27daa60170099da9b0f75b8f67a5a11c4061e40ef9e591e510cc63fb63e1",
+          "originalDecodedRGBA_SHA256": "fe1b723b7d4234ffe75d5f3fb7818a4447b08f7005ec29146558cc25e6666caf"
+        },
+        {
+          "state": "3",
+          "sourceSHA256": "32b8724e7dfbccd7703078117033a56d74b6c47478a3270278f3c1611fe1573e",
+          "sourceURL": "assets/32b8724e7dfbccd7703078117033a56d74b6c47478a3270278f3c1611fe1573e.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon124_south_v1.zip::frames/03.png",
+          "approvalCrop": null,
+          "maskSHA256": "8e18b9d865789fe6b65efdf772e1b680988126f9ec353fc74246b48e690ee9db",
+          "maskURL": "assets/8e18b9d865789fe6b65efdf772e1b680988126f9ec353fc74246b48e690ee9db.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15668,
+          "expectedDarkDecodedRGBA_SHA256": "4621037e9a090b60a5e4f2e77978f65ffc71355cdc9a2bb01bd72d8385f17080",
+          "originalDecodedRGBA_SHA256": "f160f93e79f5cd8569b93ecdcf891b40efd1c3823a53e1942d4f61229aa82b7a"
+        },
+        {
+          "state": "4",
+          "sourceSHA256": "a18ec189d7b5c74551eff433030422ab7080afd9b41b32edaef4a765e517fe5f",
+          "sourceURL": "assets/a18ec189d7b5c74551eff433030422ab7080afd9b41b32edaef4a765e517fe5f.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon124_south_v1.zip::frames/04.png",
+          "approvalCrop": null,
+          "maskSHA256": "449783cab3ff73c577f4fb8a7abe401bc67b9308efcb1f56a1846a71bd1da965",
+          "maskURL": "assets/449783cab3ff73c577f4fb8a7abe401bc67b9308efcb1f56a1846a71bd1da965.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 14908,
+          "expectedDarkDecodedRGBA_SHA256": "7a0061d328ee2bc62e2404ac184178ef837867e6d1969045572aab96e83ba238",
+          "originalDecodedRGBA_SHA256": "7a5c1eef59bf74abc953c52cb9133f10b8a0281624a94b8703c4569917fb9ff5"
+        },
+        {
+          "state": "5",
+          "sourceSHA256": "8b6419ded750481c818d5fca4f41da1c5b5ddf1e06a1b9f07ad0e89e33d46848",
+          "sourceURL": "assets/8b6419ded750481c818d5fca4f41da1c5b5ddf1e06a1b9f07ad0e89e33d46848.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon124_south_v1.zip::frames/05.png",
+          "approvalCrop": null,
+          "maskSHA256": "40661c97cf30feeb7e27de0d3f9acdac2929210c3fd9cfb77f068a65fa3c4688",
+          "maskURL": "assets/40661c97cf30feeb7e27de0d3f9acdac2929210c3fd9cfb77f068a65fa3c4688.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15587,
+          "expectedDarkDecodedRGBA_SHA256": "5b17c542821c39a5c53185f6c33b0ae67f8fab33f2e7d4a115ebc1bddca27ff8",
+          "originalDecodedRGBA_SHA256": "9b8d67188f4f80bda1b5cde6a8eac8a07f154b5ac51fb432003d4e682893fd58"
+        },
+        {
+          "state": "6",
+          "sourceSHA256": "8014b037e09dd7266ec5ef02a932cddb1537a94214d4d319ca4ddab10166e88b",
+          "sourceURL": "assets/8014b037e09dd7266ec5ef02a932cddb1537a94214d4d319ca4ddab10166e88b.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon124_south_v1.zip::frames/06.png",
+          "approvalCrop": null,
+          "maskSHA256": "3bf4da1ba95dae297be2f550cdb3f7a48da7a5cf8a673380b88988c671fca85f",
+          "maskURL": "assets/3bf4da1ba95dae297be2f550cdb3f7a48da7a5cf8a673380b88988c671fca85f.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 17058,
+          "expectedDarkDecodedRGBA_SHA256": "ab8b630dd5cc2d0c96b4aeea7d13667651f9ae1853478afdf8be453b2cc3f3d6",
+          "originalDecodedRGBA_SHA256": "d41d29368178c720ba8612a97259c5f0f7678fd8ded40f9ab70c9a589b6fe9dd"
+        },
+        {
+          "state": "7",
+          "sourceSHA256": "5b175be310ceb05c1eb1ebaf5cfd690d28b879ed803f0ed7750c273cec49ac35",
+          "sourceURL": "assets/5b175be310ceb05c1eb1ebaf5cfd690d28b879ed803f0ed7750c273cec49ac35.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon124_south_v1.zip::frames/07.png",
+          "approvalCrop": null,
+          "maskSHA256": "a142e2f94122f417b5f49ef08f6ab8fc839fd366c4fb8b48989c299a6391a0ac",
+          "maskURL": "assets/a142e2f94122f417b5f49ef08f6ab8fc839fd366c4fb8b48989c299a6391a0ac.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16862,
+          "expectedDarkDecodedRGBA_SHA256": "551b03661d1048951c26aa5dc2f13d5a2566015537315522dd4e49738db69652",
+          "originalDecodedRGBA_SHA256": "4d7abc4f3adf73ef8175373b256882a981b07d0a11c909d8834377571eca661c"
+        }
+      ]
+    },
+    {
+      "id": "staff125-north-native-original-source",
+      "item": 125,
+      "direction": "north",
+      "action": "attack-focus",
+      "allowProduction": false,
+      "density": 4,
+      "fps": 12,
+      "timeline": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "states": [
+        {
+          "state": "0",
+          "sourceSHA256": "c7a006ded8fca7cfb7bbd6c154b3b2389203d40513786bb81b84569383876c0e",
+          "sourceURL": "assets/c7a006ded8fca7cfb7bbd6c154b3b2389203d40513786bb81b84569383876c0e.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff125_north_v1.zip::frames/00.png",
+          "approvalCrop": [
+            361,
+            326,
+            421,
+            370
+          ],
+          "maskSHA256": "ab21aae386149f4df3817c0e35402aff99a3aafa0cec1117a0c3842efcb09ab0",
+          "maskURL": "assets/ab21aae386149f4df3817c0e35402aff99a3aafa0cec1117a0c3842efcb09ab0.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 992,
+          "expectedDarkDecodedRGBA_SHA256": "6c367a14fef0235b95849c790fad62017727a3ff6db4055daec3640c66beb48c",
+          "originalDecodedRGBA_SHA256": "c11350461d46bdf6843b1ca0c8dc6150ee33b40f3072cdbea03188cb8bb5a70f"
+        },
+        {
+          "state": "1",
+          "sourceSHA256": "b027c69294d211f51db74e09086e9debeea0f07cb32800602598386ee5660e0f",
+          "sourceURL": "assets/b027c69294d211f51db74e09086e9debeea0f07cb32800602598386ee5660e0f.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff125_north_v1.zip::frames/01.png",
+          "approvalCrop": [
+            371,
+            286,
+            431,
+            330
+          ],
+          "maskSHA256": "63166f66400cf4be04e93d8be500dfbff8bd498e359470eedd1e3c5a08b9d368",
+          "maskURL": "assets/63166f66400cf4be04e93d8be500dfbff8bd498e359470eedd1e3c5a08b9d368.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1272,
+          "expectedDarkDecodedRGBA_SHA256": "343e985b075422f49951444263c3a2120c53ed588e7598febca35bced82177c7",
+          "originalDecodedRGBA_SHA256": "171bba54223050639025ea4e77031b988d9ffa2b39133766f875a639bbcb9c85"
+        },
+        {
+          "state": "2",
+          "sourceSHA256": "53050e3d293acdc7c470c476d8f405987318d3fe87b666e5656586a9ad241aeb",
+          "sourceURL": "assets/53050e3d293acdc7c470c476d8f405987318d3fe87b666e5656586a9ad241aeb.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff125_north_v1.zip::frames/02.png",
+          "approvalCrop": [
+            370,
+            247,
+            430,
+            291
+          ],
+          "maskSHA256": "073d2217f297abab6b53f784122145c22022659eaba524fa131d33c3b8966d31",
+          "maskURL": "assets/073d2217f297abab6b53f784122145c22022659eaba524fa131d33c3b8966d31.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1120,
+          "expectedDarkDecodedRGBA_SHA256": "81700a14fb70c1643d4a3909793121671fe9cc79efd2dc237625a3ffc45bfe8f",
+          "originalDecodedRGBA_SHA256": "5d9df3f6bf226f9d985f3e3864ab162bbbae1e1df5a702844a2e935fafda6ff4"
+        },
+        {
+          "state": "3",
+          "sourceSHA256": "70290f8369d13ffa96ecf1e3ab776cbd5f719e8faa3d7e8d1f08ee6726f8177d",
+          "sourceURL": "assets/70290f8369d13ffa96ecf1e3ab776cbd5f719e8faa3d7e8d1f08ee6726f8177d.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff125_north_v1.zip::frames/03.png",
+          "approvalCrop": [
+            373,
+            220,
+            433,
+            264
+          ],
+          "maskSHA256": "aa62ba7042d1d5d6a84e9ad6e49d8651d8ec584c5408c5542523b6434d61dc78",
+          "maskURL": "assets/aa62ba7042d1d5d6a84e9ad6e49d8651d8ec584c5408c5542523b6434d61dc78.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 949,
+          "expectedDarkDecodedRGBA_SHA256": "76fcc0c6e75d387c8a8a70a0a5ecd9651734cb1fe4bf16c4d380634794a2ad15",
+          "originalDecodedRGBA_SHA256": "572d2a3b78ec72b38698507f5e9f0c1db1f20bd5ba7d2585703cdd569cd494f0"
+        },
+        {
+          "state": "4",
+          "sourceSHA256": "07a7e23031d009b5e48b17d04aab51d6c8a9a341216c45199268053228b4507a",
+          "sourceURL": "assets/07a7e23031d009b5e48b17d04aab51d6c8a9a341216c45199268053228b4507a.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff125_north_v1.zip::frames/04.png",
+          "approvalCrop": [
+            371,
+            186,
+            431,
+            230
+          ],
+          "maskSHA256": "12442fae098c413e554ccb4da3d08e39ffac52a2a24594d8c07a9e0cafdb1cb5",
+          "maskURL": "assets/12442fae098c413e554ccb4da3d08e39ffac52a2a24594d8c07a9e0cafdb1cb5.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 959,
+          "expectedDarkDecodedRGBA_SHA256": "978c0b523870d52fdf739625ebd68d7a110cc6999e61ff03cce86a5c02d8d243",
+          "originalDecodedRGBA_SHA256": "8dcede4b44d2819a02f5847933132d26adedb837f4bffdc4ed752e84db1bb982"
+        },
+        {
+          "state": "5",
+          "sourceSHA256": "9179bedf298c2c85242c5e7011b3d5a5e1a1b1b4480aeedd5f66e7d4df9aefb7",
+          "sourceURL": "assets/9179bedf298c2c85242c5e7011b3d5a5e1a1b1b4480aeedd5f66e7d4df9aefb7.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff125_north_v1.zip::frames/05.png",
+          "approvalCrop": [
+            372,
+            216,
+            432,
+            260
+          ],
+          "maskSHA256": "dc9e27240cc727ea22a57775e850f8ba4df31e381465d4f8f41500310f9bf944",
+          "maskURL": "assets/dc9e27240cc727ea22a57775e850f8ba4df31e381465d4f8f41500310f9bf944.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 882,
+          "expectedDarkDecodedRGBA_SHA256": "ed016e3a3e972eda2eb775e44eade3520c14335c4e8968c516aff51d037ee627",
+          "originalDecodedRGBA_SHA256": "97d6836c1aca53842abef3b355f11a2023efc5eb4edfba55034adb4e275b9fda"
+        },
+        {
+          "state": "6",
+          "sourceSHA256": "0312b94794bea20d7e3fca2b81d0d8e55a9ef25e6df12143b555d0373bb4887d",
+          "sourceURL": "assets/0312b94794bea20d7e3fca2b81d0d8e55a9ef25e6df12143b555d0373bb4887d.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff125_north_v1.zip::frames/06.png",
+          "approvalCrop": [
+            369,
+            222,
+            429,
+            266
+          ],
+          "maskSHA256": "9beec32b76050e9561e9026e8cf8da394194db6bd118a89e41d1424c9d93e04c",
+          "maskURL": "assets/9beec32b76050e9561e9026e8cf8da394194db6bd118a89e41d1424c9d93e04c.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 718,
+          "expectedDarkDecodedRGBA_SHA256": "88c5de96902bbf3f30af20b48f94fa0079012b0cb041d906579d50155056d06a",
+          "originalDecodedRGBA_SHA256": "c6a2ad52648c9c1d56640e39b3532ba8a33a2ff3c71fdd2e544c1c638466120a"
+        },
+        {
+          "state": "7",
+          "sourceSHA256": "f352d5eae4b59a3cb24f68e16f6bba87f978cfd0c06db3051d411b51544e3b27",
+          "sourceURL": "assets/f352d5eae4b59a3cb24f68e16f6bba87f978cfd0c06db3051d411b51544e3b27.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff125_north_v1.zip::frames/07.png",
+          "approvalCrop": [
+            372,
+            290,
+            432,
+            334
+          ],
+          "maskSHA256": "7ca61f69b00f3c80a17b0d729dad0adaef2af0d30fa8842c556c1db5d0eea82e",
+          "maskURL": "assets/7ca61f69b00f3c80a17b0d729dad0adaef2af0d30fa8842c556c1db5d0eea82e.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1263,
+          "expectedDarkDecodedRGBA_SHA256": "a05545a852ad6db50cf82c0bb3e67142314bcd6589cb9abd2c3ab6f4cb1d74fe",
+          "originalDecodedRGBA_SHA256": "ef131e4191700059bf23925b5069aec36f4d7551c86e7b45706104b0b4bd81ea"
+        },
+        {
+          "state": "8",
+          "sourceSHA256": "992805720d8ebe1eec3b33f5e17855429d5cfa03e7c36debe44027063c48ca8f",
+          "sourceURL": "assets/992805720d8ebe1eec3b33f5e17855429d5cfa03e7c36debe44027063c48ca8f.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff125_north_v1.zip::frames/08.png",
+          "approvalCrop": [
+            373,
+            334,
+            433,
+            378
+          ],
+          "maskSHA256": "2bda3dace87e6fbaa57e01de694a86fe479d1b233d64b6c133e2acbdc9bc6b11",
+          "maskURL": "assets/2bda3dace87e6fbaa57e01de694a86fe479d1b233d64b6c133e2acbdc9bc6b11.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 977,
+          "expectedDarkDecodedRGBA_SHA256": "fa382ac486b36118c868e427f50c0a236e1216946ac5c8577c3e57b98deec34b",
+          "originalDecodedRGBA_SHA256": "a2e68b7d6407a9001b8395555af8c10c463e7709685200ee258f14ff2d13fb04"
+        }
+      ]
+    },
+    {
+      "id": "staff125-south-native-original-source",
+      "item": 125,
+      "direction": "south",
+      "action": "attack-focus",
+      "allowProduction": false,
+      "density": 4,
+      "fps": 12,
+      "timeline": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "states": [
+        {
+          "state": "0",
+          "sourceSHA256": "c6d6ec3a335c889a6600b1dc4ea3eb2ff2e3d14e19a354d22f2ae95bf31332f0",
+          "sourceURL": "assets/c6d6ec3a335c889a6600b1dc4ea3eb2ff2e3d14e19a354d22f2ae95bf31332f0.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon125_south_v1.zip::frames/00.png",
+          "approvalCrop": null,
+          "maskSHA256": "14f756ebd7a385d8b3305a72b28fc561541c8c77b2868ae59516e01a4e13dbbc",
+          "maskURL": "assets/14f756ebd7a385d8b3305a72b28fc561541c8c77b2868ae59516e01a4e13dbbc.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 17043,
+          "expectedDarkDecodedRGBA_SHA256": "c0c1e0276860dcb36353924ace2e67b630d6945f0400738dd98493a0853186d7",
+          "originalDecodedRGBA_SHA256": "9645d983faa2105c45b75e5ea0e79430f428771e4688b69bc1e986e3a058521c"
+        },
+        {
+          "state": "1",
+          "sourceSHA256": "e83578941d5ab0a9f5f2b46356f4e0a92cbe3cd94b11ef20a7d09d249c05768f",
+          "sourceURL": "assets/e83578941d5ab0a9f5f2b46356f4e0a92cbe3cd94b11ef20a7d09d249c05768f.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon125_south_v1.zip::frames/01.png",
+          "approvalCrop": null,
+          "maskSHA256": "78b3be5c1d984dfe60838a70e64ed21d058df32bfdda91ce8eeea3b48abc29b7",
+          "maskURL": "assets/78b3be5c1d984dfe60838a70e64ed21d058df32bfdda91ce8eeea3b48abc29b7.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 17022,
+          "expectedDarkDecodedRGBA_SHA256": "6fee6f20ded4e324f8cfde78913e05bf18ef678be2405a886aec4a02d8137235",
+          "originalDecodedRGBA_SHA256": "7bd7b03bed617bd98ed7e9f57df99fb2842d6a6fd205e16a77f169e71cdb138f"
+        },
+        {
+          "state": "2",
+          "sourceSHA256": "e87dbb461301dbe43ee16e6ededd77ba6747cecc111bc23755594fd2ef31f893",
+          "sourceURL": "assets/e87dbb461301dbe43ee16e6ededd77ba6747cecc111bc23755594fd2ef31f893.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon125_south_v1.zip::frames/02.png",
+          "approvalCrop": null,
+          "maskSHA256": "47975e5172dca1617a09469adb7f6f92a3168b2507d857804ba7f0b7462b2bb3",
+          "maskURL": "assets/47975e5172dca1617a09469adb7f6f92a3168b2507d857804ba7f0b7462b2bb3.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15908,
+          "expectedDarkDecodedRGBA_SHA256": "a219288372447296554f84226901bbc4bb9bc6febf580faafdd1d6ab905c291b",
+          "originalDecodedRGBA_SHA256": "c0dd1167a6dc40bc83d042ad6d513e3d76b940f43980f3a1feb58360414df81f"
+        },
+        {
+          "state": "3",
+          "sourceSHA256": "57c41fcf303166d2342854ad8adbfd6d82fc55d4ace577e89ff8ed935939ded6",
+          "sourceURL": "assets/57c41fcf303166d2342854ad8adbfd6d82fc55d4ace577e89ff8ed935939ded6.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon125_south_v1.zip::frames/03.png",
+          "approvalCrop": null,
+          "maskSHA256": "112f786811ac1126b18b4ea098809a5982ead3ec6a510c4dd2d91fa26a2294ca",
+          "maskURL": "assets/112f786811ac1126b18b4ea098809a5982ead3ec6a510c4dd2d91fa26a2294ca.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15781,
+          "expectedDarkDecodedRGBA_SHA256": "ef4a74392863a13b7952fe9be012d7ea07401af96e44f16c937c6164f1029e79",
+          "originalDecodedRGBA_SHA256": "5aa989cac2520fbd306d3b9c0583074643ce3096f2b8cebe18077c66145a8e3c"
+        },
+        {
+          "state": "4",
+          "sourceSHA256": "5ad632d4945511d9d485bea8e9782b92556e6c845cba489dd7d7ca2eb9785b92",
+          "sourceURL": "assets/5ad632d4945511d9d485bea8e9782b92556e6c845cba489dd7d7ca2eb9785b92.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon125_south_v1.zip::frames/04.png",
+          "approvalCrop": null,
+          "maskSHA256": "6443a008523ed6af85c91cb97a1dd2d4073ebb79ab57ca88f42bff546dde824f",
+          "maskURL": "assets/6443a008523ed6af85c91cb97a1dd2d4073ebb79ab57ca88f42bff546dde824f.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15023,
+          "expectedDarkDecodedRGBA_SHA256": "8583e657117ca463a30faa89f2079b9731c6d2ec149d77e090122e78146867ac",
+          "originalDecodedRGBA_SHA256": "76ed9a6e4efed34ae6886f19a224c0411112b80da3e57460dfc9ffefc5d8dcdc"
+        },
+        {
+          "state": "5",
+          "sourceSHA256": "43ca4afed7835983f33c79670eefdd032b0ac63d4cfa225d82fa2d1cf3ff3d36",
+          "sourceURL": "assets/43ca4afed7835983f33c79670eefdd032b0ac63d4cfa225d82fa2d1cf3ff3d36.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon125_south_v1.zip::frames/05.png",
+          "approvalCrop": null,
+          "maskSHA256": "00e8e269012ed6a8ba1b890abeebd5a06b1b26313377611183f77f1d61f779c2",
+          "maskURL": "assets/00e8e269012ed6a8ba1b890abeebd5a06b1b26313377611183f77f1d61f779c2.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15679,
+          "expectedDarkDecodedRGBA_SHA256": "8c0abcb58c38fe036abe02dd10c3193c2b54a37813e9468e020ed7363cb50fef",
+          "originalDecodedRGBA_SHA256": "f2a06205cbc2c6ecc659a4c58a1bc89c9876f5a1a13bed88bb42e02272a8189b"
+        },
+        {
+          "state": "6",
+          "sourceSHA256": "283a3aca4b608188343dbce66fb68d8ca9e003d5c34ec6ed869e72968da30938",
+          "sourceURL": "assets/283a3aca4b608188343dbce66fb68d8ca9e003d5c34ec6ed869e72968da30938.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon125_south_v1.zip::frames/06.png",
+          "approvalCrop": null,
+          "maskSHA256": "d03fb1f0631b3e2cff1d99dd7ba9c613bbc03495153da5745b34a311909fbf52",
+          "maskURL": "assets/d03fb1f0631b3e2cff1d99dd7ba9c613bbc03495153da5745b34a311909fbf52.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 17174,
+          "expectedDarkDecodedRGBA_SHA256": "aab6c327b15c11533fc8cad303d1dd0decce39f71a986a5e78a373b80c228386",
+          "originalDecodedRGBA_SHA256": "554bd7ea10b5c71babbd6e7085a2b6644a5d876a946ee45588aca7b1ad9922fb"
+        },
+        {
+          "state": "7",
+          "sourceSHA256": "96cdde597f57c73f903af27d143677f8c47a6c436bad551861a877cd518f2515",
+          "sourceURL": "assets/96cdde597f57c73f903af27d143677f8c47a6c436bad551861a877cd518f2515.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon125_south_v1.zip::frames/07.png",
+          "approvalCrop": null,
+          "maskSHA256": "3f6d4faf5629579b59fd904c6d4386519de58104256d5947e0f195f2a8c90e7c",
+          "maskURL": "assets/3f6d4faf5629579b59fd904c6d4386519de58104256d5947e0f195f2a8c90e7c.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16964,
+          "expectedDarkDecodedRGBA_SHA256": "38f085eebbc7835852fcce55fc4e6b9fa5cfc511fc186a62f4347fc880bd1528",
+          "originalDecodedRGBA_SHA256": "9c33252da400eb488cbd6d5a302d6193a34a378dd87729c19238802186446ab2"
+        }
+      ]
+    },
+    {
+      "id": "staff126-north-native-original-source",
+      "item": 126,
+      "direction": "north",
+      "action": "attack-focus",
+      "allowProduction": false,
+      "density": 4,
+      "fps": 12,
+      "timeline": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "states": [
+        {
+          "state": "0",
+          "sourceSHA256": "41f434f9e1a72f4672d8f184a423ac7e7e7aa9e080581ac9993c52aca32cd587",
+          "sourceURL": "assets/41f434f9e1a72f4672d8f184a423ac7e7e7aa9e080581ac9993c52aca32cd587.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff126_north_v1.zip::frames/00.png",
+          "approvalCrop": [
+            349,
+            328,
+            409,
+            372
+          ],
+          "maskSHA256": "544f48a7ddbedede87061f889377fae32ece175242c83af2ea1246949dcee52e",
+          "maskURL": "assets/544f48a7ddbedede87061f889377fae32ece175242c83af2ea1246949dcee52e.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1168,
+          "expectedDarkDecodedRGBA_SHA256": "2772fb95f2968164e7df39f815c700217cf6577a9f2b976420a1eb37b5d596f1",
+          "originalDecodedRGBA_SHA256": "733554a8289370c0dd54b79fce6ec8e2fe92cda1add31f253ed9126abc0e353d"
+        },
+        {
+          "state": "1",
+          "sourceSHA256": "4007e628e14aadc7dd6a3ad596a2ebda7ee6ff293776003d6b8d1fc31c2d6e3b",
+          "sourceURL": "assets/4007e628e14aadc7dd6a3ad596a2ebda7ee6ff293776003d6b8d1fc31c2d6e3b.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff126_north_v1.zip::frames/01.png",
+          "approvalCrop": [
+            359,
+            281,
+            419,
+            325
+          ],
+          "maskSHA256": "fd886efb0007dce3dd2b25302b66c438e5aa6ebdb7693838ff0ed033568fd28b",
+          "maskURL": "assets/fd886efb0007dce3dd2b25302b66c438e5aa6ebdb7693838ff0ed033568fd28b.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1340,
+          "expectedDarkDecodedRGBA_SHA256": "948a20cea1dd27392ff7a9e57c75448cfb130ee59ac4fa683504ba7eec7f450e",
+          "originalDecodedRGBA_SHA256": "13efd77cd3a03b42b0b63b1c8f6f8e94c219870bb4fd8bc86afe281de35115e2"
+        },
+        {
+          "state": "2",
+          "sourceSHA256": "58d4de526b14c4708a8b1753301c844f410a2451dd6e5cd2f5fe7a2d830abb19",
+          "sourceURL": "assets/58d4de526b14c4708a8b1753301c844f410a2451dd6e5cd2f5fe7a2d830abb19.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff126_north_v1.zip::frames/02.png",
+          "approvalCrop": [
+            360,
+            243,
+            420,
+            287
+          ],
+          "maskSHA256": "d74618fa54b35adb0a14a391c6cd82e9d57e6d3f4137a879fc382e2b3c842246",
+          "maskURL": "assets/d74618fa54b35adb0a14a391c6cd82e9d57e6d3f4137a879fc382e2b3c842246.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1071,
+          "expectedDarkDecodedRGBA_SHA256": "5882cd913551657c6c466c48cb4a252833c56092487633410bbd3fc4275afe20",
+          "originalDecodedRGBA_SHA256": "257d2b14257d79482dc7f149758bd3fe4e61f808a2b898ca4e772fdcd1c21e9e"
+        },
+        {
+          "state": "3",
+          "sourceSHA256": "cc6305ebd56cce9995c37bc86c7ac1e7039284f702e1d8203dfb379003a503d9",
+          "sourceURL": "assets/cc6305ebd56cce9995c37bc86c7ac1e7039284f702e1d8203dfb379003a503d9.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff126_north_v1.zip::frames/03.png",
+          "approvalCrop": [
+            363,
+            209,
+            423,
+            253
+          ],
+          "maskSHA256": "339cc0417c82fd7aa9c460bbca4ecbccf5fa9b7fa660ee0c0362ca1a9a163337",
+          "maskURL": "assets/339cc0417c82fd7aa9c460bbca4ecbccf5fa9b7fa660ee0c0362ca1a9a163337.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1010,
+          "expectedDarkDecodedRGBA_SHA256": "7c204c2d3508a8eeb75d4e33bb845173049115034e79d6451b03b55a5d21e7b5",
+          "originalDecodedRGBA_SHA256": "58c4cd138f49ea7da5185244fce4339f032db03a63ee86a977a2099f042a154d"
+        },
+        {
+          "state": "4",
+          "sourceSHA256": "aa6ad1d470bd045519f7eae22d0a10f26d3b2a0158b11f630838b19548a12afc",
+          "sourceURL": "assets/aa6ad1d470bd045519f7eae22d0a10f26d3b2a0158b11f630838b19548a12afc.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff126_north_v1.zip::frames/04.png",
+          "approvalCrop": [
+            359,
+            182,
+            419,
+            226
+          ],
+          "maskSHA256": "faacd1aafafa715c29f0c0628234d6eec73b3cbceaa0972f52234e334c155db4",
+          "maskURL": "assets/faacd1aafafa715c29f0c0628234d6eec73b3cbceaa0972f52234e334c155db4.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 924,
+          "expectedDarkDecodedRGBA_SHA256": "03f67ea56912e22d3311e344503410ba44bc207905c5b62586dc0d5453bf28c2",
+          "originalDecodedRGBA_SHA256": "f3edd6f07139086eea40f63e724d2509004a413c10b36a74395ddc6d2329f680"
+        },
+        {
+          "state": "5",
+          "sourceSHA256": "c46806289ad7c6287398e5e219b3f601b9929120d53650dc979f9da027db9fe6",
+          "sourceURL": "assets/c46806289ad7c6287398e5e219b3f601b9929120d53650dc979f9da027db9fe6.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff126_north_v1.zip::frames/05.png",
+          "approvalCrop": [
+            360,
+            209,
+            420,
+            253
+          ],
+          "maskSHA256": "5538043ac93bdef638b90e0e4b80e213937f310609c1bd1015cee802abf0777f",
+          "maskURL": "assets/5538043ac93bdef638b90e0e4b80e213937f310609c1bd1015cee802abf0777f.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 876,
+          "expectedDarkDecodedRGBA_SHA256": "dd362956aec826d67454dfa75fe814f4fc13fd54a462c24ac03c45794d765d17",
+          "originalDecodedRGBA_SHA256": "309038bed66aa1fea67d2e96d4d0dc26bf817c1ab2b055e2909044dbd431d4b8"
+        },
+        {
+          "state": "6",
+          "sourceSHA256": "0d243f14f7bf0a7c9ff6c3013214ae2e1b9208178054f28bac307fd742358698",
+          "sourceURL": "assets/0d243f14f7bf0a7c9ff6c3013214ae2e1b9208178054f28bac307fd742358698.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff126_north_v1.zip::frames/06.png",
+          "approvalCrop": [
+            354,
+            226,
+            414,
+            270
+          ],
+          "maskSHA256": "863f532bb52a0ad4ca9caaf42dffe7a3a844d20731a6a4d9f16c7a17a4904b8d",
+          "maskURL": "assets/863f532bb52a0ad4ca9caaf42dffe7a3a844d20731a6a4d9f16c7a17a4904b8d.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 810,
+          "expectedDarkDecodedRGBA_SHA256": "f59ddcb541d7fd1a67aaf6eeb84ea23b138c04dd89b606679f47c5da7a56b42a",
+          "originalDecodedRGBA_SHA256": "f21ffc88c477b9a77a335b4d5f6d81dbfce07f033cc4a195f20659dc20b091b0"
+        },
+        {
+          "state": "7",
+          "sourceSHA256": "a364fe7e474e60241c21d6c40be13e914f77fafa961f122fd1742369deb12625",
+          "sourceURL": "assets/a364fe7e474e60241c21d6c40be13e914f77fafa961f122fd1742369deb12625.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff126_north_v1.zip::frames/07.png",
+          "approvalCrop": [
+            357,
+            285,
+            417,
+            329
+          ],
+          "maskSHA256": "d06240962c88185fe5939fcbe3b0682ac2b9c0e5f9a8e9ed7f28072ab2baa965",
+          "maskURL": "assets/d06240962c88185fe5939fcbe3b0682ac2b9c0e5f9a8e9ed7f28072ab2baa965.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1294,
+          "expectedDarkDecodedRGBA_SHA256": "53fe56ac8823e147e5b3ecba3bc648f7546a524fb032e6d6d4a2b70fb2fd1b15",
+          "originalDecodedRGBA_SHA256": "22fd02b70be3194da2f9026ecb20f0b0d58a9ca1d810a7e5a3ad6db2e45f5935"
+        },
+        {
+          "state": "8",
+          "sourceSHA256": "d750c60a44e290d755528f354d80b3609d9ac4e0c841a63598a9e2a130d6743d",
+          "sourceURL": "assets/d750c60a44e290d755528f354d80b3609d9ac4e0c841a63598a9e2a130d6743d.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff126_north_v1.zip::frames/08.png",
+          "approvalCrop": [
+            360,
+            340,
+            420,
+            384
+          ],
+          "maskSHA256": "f2f488902fd00af02d97df390f2f76d49210640c2dd6ad84c2dab02fbe02e8e4",
+          "maskURL": "assets/f2f488902fd00af02d97df390f2f76d49210640c2dd6ad84c2dab02fbe02e8e4.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 902,
+          "expectedDarkDecodedRGBA_SHA256": "a5a63acb43bdd3126d5e5f8104ac01c95bcb3907f53cecb565b2f6238a09905f",
+          "originalDecodedRGBA_SHA256": "1fd33441e30fdcb38a1ce3883ec7ac36c3cdc9bdbae98f9034a4647f46cad2a9"
+        }
+      ]
+    },
+    {
+      "id": "staff126-south-native-original-source",
+      "item": 126,
+      "direction": "south",
+      "action": "attack-focus",
+      "allowProduction": false,
+      "density": 4,
+      "fps": 12,
+      "timeline": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "states": [
+        {
+          "state": "0",
+          "sourceSHA256": "f1c36a7b774848591f8591e09240d82f779fc41dceb3c3c1400b10a6027b86b8",
+          "sourceURL": "assets/f1c36a7b774848591f8591e09240d82f779fc41dceb3c3c1400b10a6027b86b8.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon126_south_v1.zip::frames/00.png",
+          "approvalCrop": null,
+          "maskSHA256": "c3188f369adc9bb1dfb3022105ad43d323b2dccc0162d09887ebfb45ba939188",
+          "maskURL": "assets/c3188f369adc9bb1dfb3022105ad43d323b2dccc0162d09887ebfb45ba939188.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16922,
+          "expectedDarkDecodedRGBA_SHA256": "a4de251bd5a8e8b88851e5eff26a1bd6b90d172000d0b60dbdbe550f05612509",
+          "originalDecodedRGBA_SHA256": "94e7611c5bd21fd22a5bed15a646c3ea31dde0d5b4ef0bc372511291861d3c2d"
+        },
+        {
+          "state": "1",
+          "sourceSHA256": "b0ba62c01b9eb2313f46e57bb7d500702c608f8660ce467e8106c02556bcb199",
+          "sourceURL": "assets/b0ba62c01b9eb2313f46e57bb7d500702c608f8660ce467e8106c02556bcb199.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon126_south_v1.zip::frames/01.png",
+          "approvalCrop": null,
+          "maskSHA256": "82b4bc7df420c775c8ebf5e88f5012059da6c956ca2119fc783ae0093825bd70",
+          "maskURL": "assets/82b4bc7df420c775c8ebf5e88f5012059da6c956ca2119fc783ae0093825bd70.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16919,
+          "expectedDarkDecodedRGBA_SHA256": "61b4ce505933ac4e218a0830bfddd9b59073d448d3e13afd680cf3fa5109fb96",
+          "originalDecodedRGBA_SHA256": "9c54d6a253bb96f4ad44423157d17334d6731a1ff0f76304b1bf17ea037a6c80"
+        },
+        {
+          "state": "2",
+          "sourceSHA256": "134d8158571f6e14738ca8b3f8795d6c460047c5f66ee8cad7e579affc9bd879",
+          "sourceURL": "assets/134d8158571f6e14738ca8b3f8795d6c460047c5f66ee8cad7e579affc9bd879.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon126_south_v1.zip::frames/02.png",
+          "approvalCrop": null,
+          "maskSHA256": "0ad9ddad1562795be05c72afb3f25d4da51349b92dac82ad723e284adf3b1038",
+          "maskURL": "assets/0ad9ddad1562795be05c72afb3f25d4da51349b92dac82ad723e284adf3b1038.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15783,
+          "expectedDarkDecodedRGBA_SHA256": "cbf0d9524d196bcee9e79bdd7e810e226d595c12d6c24018cae4874629299167",
+          "originalDecodedRGBA_SHA256": "1dda4c6363762a4fb1dd7337dac60f8655d7706ffa1bf4fe0be69ec749a86858"
+        },
+        {
+          "state": "3",
+          "sourceSHA256": "a60a2c2b785dc0e49e3f0c3671d250f032551e4ca02bcb8391cc484b51cfe70d",
+          "sourceURL": "assets/a60a2c2b785dc0e49e3f0c3671d250f032551e4ca02bcb8391cc484b51cfe70d.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon126_south_v1.zip::frames/03.png",
+          "approvalCrop": null,
+          "maskSHA256": "c0d3a85f54d6c26ad6c77f1eaea24fe2d417f7888942d4f57a56164f67eb9e5e",
+          "maskURL": "assets/c0d3a85f54d6c26ad6c77f1eaea24fe2d417f7888942d4f57a56164f67eb9e5e.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15661,
+          "expectedDarkDecodedRGBA_SHA256": "aab603c2a3daa7367a11d4a790c40c9bc98cf19660cc9c78a1e02c6264bc182b",
+          "originalDecodedRGBA_SHA256": "e7f915a16fecfd5c354bf059df8c34233d7114bb467070a11f4ef2fb5bcc2f52"
+        },
+        {
+          "state": "4",
+          "sourceSHA256": "84aab7332229c3adf1820acb6c33fb2c6bf301b89ed741f75d9184e07c2936ab",
+          "sourceURL": "assets/84aab7332229c3adf1820acb6c33fb2c6bf301b89ed741f75d9184e07c2936ab.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon126_south_v1.zip::frames/04.png",
+          "approvalCrop": null,
+          "maskSHA256": "2faf7cacc08a5b338026d217c82858b7734bb25aa8609252bd33e159cdb5496a",
+          "maskURL": "assets/2faf7cacc08a5b338026d217c82858b7734bb25aa8609252bd33e159cdb5496a.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 14902,
+          "expectedDarkDecodedRGBA_SHA256": "542a8af752f477ac269d4e3f8abcfdf7f65c57c58802b281cb20eaf4a4181085",
+          "originalDecodedRGBA_SHA256": "92d03bcfd1e9602debeb8fa87d78e5afdf7c1f20e96df0a65dae081a60da5195"
+        },
+        {
+          "state": "5",
+          "sourceSHA256": "e5ad04bd77cfdc7c24fb51dddde0519a57ca3693cbeedc578eb505d79c4a2930",
+          "sourceURL": "assets/e5ad04bd77cfdc7c24fb51dddde0519a57ca3693cbeedc578eb505d79c4a2930.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon126_south_v1.zip::frames/05.png",
+          "approvalCrop": null,
+          "maskSHA256": "90580f582928ca9c6b86bea218996b6a0b398388a7776c56f3c1fa6f4815ff8f",
+          "maskURL": "assets/90580f582928ca9c6b86bea218996b6a0b398388a7776c56f3c1fa6f4815ff8f.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15574,
+          "expectedDarkDecodedRGBA_SHA256": "1e62295c525237b7db85f329d568845cc22768b6bc39481348938d0fdf74fff9",
+          "originalDecodedRGBA_SHA256": "6834dc59fa2120d868d18cb79a164a7c0422e3752027587d61fbc19e06e0ba86"
+        },
+        {
+          "state": "6",
+          "sourceSHA256": "04195870f715a22f50330491263d11ef8ecb17344433519ae3863bfb69d9b037",
+          "sourceURL": "assets/04195870f715a22f50330491263d11ef8ecb17344433519ae3863bfb69d9b037.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon126_south_v1.zip::frames/06.png",
+          "approvalCrop": null,
+          "maskSHA256": "4d9f69ef8068ec4d725066ce00f48c12ca59c6265f38ccb1b64609fdff5a1125",
+          "maskURL": "assets/4d9f69ef8068ec4d725066ce00f48c12ca59c6265f38ccb1b64609fdff5a1125.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 17051,
+          "expectedDarkDecodedRGBA_SHA256": "df478d8ad3f38ad8f9a28e198f40777fbdfa192edc1d564da2ea80bb08c25464",
+          "originalDecodedRGBA_SHA256": "d0dde6446a45ccf1ce6fc75075bc6c3a4c6f9b44770946762f68dddd0f033f0a"
+        },
+        {
+          "state": "7",
+          "sourceSHA256": "37117bd751236650bbd22e49190d8de71be49ae2c55d71d3418baebe03857665",
+          "sourceURL": "assets/37117bd751236650bbd22e49190d8de71be49ae2c55d71d3418baebe03857665.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon126_south_v1.zip::frames/07.png",
+          "approvalCrop": null,
+          "maskSHA256": "6591709ca33d3c2380339d452f83778d9c59a1ae58c901352f001dd1f77a88e9",
+          "maskURL": "assets/6591709ca33d3c2380339d452f83778d9c59a1ae58c901352f001dd1f77a88e9.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16844,
+          "expectedDarkDecodedRGBA_SHA256": "7901a940e1b8c926eb88e8a3041bc75f7b4d0887d1b400d9896d58bc7f9c99db",
+          "originalDecodedRGBA_SHA256": "bb1c432260fae715304a23bbbb90ed7a43275991be30fd6df8be874bde23bffc"
+        }
+      ]
+    },
+    {
+      "id": "staff127-north-native-original-source",
+      "item": 127,
+      "direction": "north",
+      "action": "attack-focus",
+      "allowProduction": false,
+      "density": 4,
+      "fps": 12,
+      "timeline": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "states": [
+        {
+          "state": "0",
+          "sourceSHA256": "5ae9f1b6ee1e3fc990a3fd198fe7f9a41fa431b8e960e02f93ffb95fa8ba22b6",
+          "sourceURL": "assets/5ae9f1b6ee1e3fc990a3fd198fe7f9a41fa431b8e960e02f93ffb95fa8ba22b6.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff127_north_v1.zip::frames/00.png",
+          "approvalCrop": [
+            339,
+            339,
+            399,
+            383
+          ],
+          "maskSHA256": "aabd8a70d0312d9d62e747e5da2303da6b999249717074df79af84674d574c7b",
+          "maskURL": "assets/aabd8a70d0312d9d62e747e5da2303da6b999249717074df79af84674d574c7b.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1033,
+          "expectedDarkDecodedRGBA_SHA256": "60b0f65b232df8fc1b175b3d4349d7b78dbac25eb15fb52883a6d4e0de5f6f1b",
+          "originalDecodedRGBA_SHA256": "4708b196e2fc2eb25aa6d8207d7bb2143bdacec357bb4404645791c76d851c63"
+        },
+        {
+          "state": "1",
+          "sourceSHA256": "e01edeb5ecbcf59fa56356eaaa3dfbe08504685bbafc54e33f94c768819c33c0",
+          "sourceURL": "assets/e01edeb5ecbcf59fa56356eaaa3dfbe08504685bbafc54e33f94c768819c33c0.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff127_north_v1.zip::frames/01.png",
+          "approvalCrop": [
+            351,
+            300,
+            411,
+            344
+          ],
+          "maskSHA256": "bb72951fd24277e291f556a11c16c07e9d04357628c6136a53b330c31dc1f55e",
+          "maskURL": "assets/bb72951fd24277e291f556a11c16c07e9d04357628c6136a53b330c31dc1f55e.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1255,
+          "expectedDarkDecodedRGBA_SHA256": "0416de17709325d68cc2e91851379ca3bb717bf4607ee1f1468bf338de57e910",
+          "originalDecodedRGBA_SHA256": "34a4278a5b13e8c69263dfb6619a81dc4deef689fb1dd390b3f8404c538b8975"
+        },
+        {
+          "state": "2",
+          "sourceSHA256": "bb1447a9d3eefe1eee391ac50863d778d4dcdd761e649a54f01adb0763f7473f",
+          "sourceURL": "assets/bb1447a9d3eefe1eee391ac50863d778d4dcdd761e649a54f01adb0763f7473f.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff127_north_v1.zip::frames/02.png",
+          "approvalCrop": [
+            356,
+            248,
+            416,
+            292
+          ],
+          "maskSHA256": "e9676369f4319eee5b5beb2e79a516a22eff6a0d17c4f6663696b54dbc81c81b",
+          "maskURL": "assets/e9676369f4319eee5b5beb2e79a516a22eff6a0d17c4f6663696b54dbc81c81b.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 897,
+          "expectedDarkDecodedRGBA_SHA256": "3d0e1cc9d7603c2ddf41fac1d6311996e7e2d9163e6450c40d53ef1d14213817",
+          "originalDecodedRGBA_SHA256": "33a4c9cc1fbc07453b7c76630e127e47dad3573aa253c7723f330b0a3dcd51a4"
+        },
+        {
+          "state": "3",
+          "sourceSHA256": "2ea5f4f3d939477e1aef21ed7da8ac1b51b69b7f830911be7e8956b66ec12065",
+          "sourceURL": "assets/2ea5f4f3d939477e1aef21ed7da8ac1b51b69b7f830911be7e8956b66ec12065.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff127_north_v1.zip::frames/03.png",
+          "approvalCrop": [
+            356,
+            223,
+            416,
+            267
+          ],
+          "maskSHA256": "4d7535351252528044e23eef45b2de9184dc63fb94fc964bef1ffd4465aaa6c0",
+          "maskURL": "assets/4d7535351252528044e23eef45b2de9184dc63fb94fc964bef1ffd4465aaa6c0.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 966,
+          "expectedDarkDecodedRGBA_SHA256": "b58c4aff1c1f31e841c838b33e58cb2d0d8a6868a5d8c749fe0116dbec8092a3",
+          "originalDecodedRGBA_SHA256": "460ad78fe651b2ffbefb8fee1c50305b97ad5e3c6d46074038dec511a3d04d18"
+        },
+        {
+          "state": "4",
+          "sourceSHA256": "33ea964e160a544f515b5af37bac62f415512461a7a5771c67e200bc08313f6b",
+          "sourceURL": "assets/33ea964e160a544f515b5af37bac62f415512461a7a5771c67e200bc08313f6b.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff127_north_v1.zip::frames/04.png",
+          "approvalCrop": [
+            359,
+            191,
+            419,
+            235
+          ],
+          "maskSHA256": "8b2c68d7fdaaa674c14c66a222f9ae8233d074512aabc86ad9217ee3cfcf1dfe",
+          "maskURL": "assets/8b2c68d7fdaaa674c14c66a222f9ae8233d074512aabc86ad9217ee3cfcf1dfe.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 798,
+          "expectedDarkDecodedRGBA_SHA256": "63708186bf7b02c66d2c0963dc475d0437049e6ab9a83962721c49cc90069c13",
+          "originalDecodedRGBA_SHA256": "c21fd1bfe04b54bbce7c83ce0d31aa68c59783bcc008b245c199a19498bf8ea0"
+        },
+        {
+          "state": "5",
+          "sourceSHA256": "17545be8f63a9f5061a7024ab542aea6da2db5618d85d6b517586b4b622db5a2",
+          "sourceURL": "assets/17545be8f63a9f5061a7024ab542aea6da2db5618d85d6b517586b4b622db5a2.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff127_north_v1.zip::frames/05.png",
+          "approvalCrop": [
+            358,
+            215,
+            418,
+            259
+          ],
+          "maskSHA256": "23447621a13378ffc9d75a243cf958ade20b1fbbf8e356967f03c1b2bce5531f",
+          "maskURL": "assets/23447621a13378ffc9d75a243cf958ade20b1fbbf8e356967f03c1b2bce5531f.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 888,
+          "expectedDarkDecodedRGBA_SHA256": "debe4884ea1b758012a90080c8bc62ab3161b02f90d93545988249f6f930f187",
+          "originalDecodedRGBA_SHA256": "b2552d6405d30c7afd2d801560059c8df3e3215d3d1d22b6d702b94dc75a8d62"
+        },
+        {
+          "state": "6",
+          "sourceSHA256": "a9f00404874c894a98ef374fbcf058bbd4c101dae575f36e8bb52f3443c67b2b",
+          "sourceURL": "assets/a9f00404874c894a98ef374fbcf058bbd4c101dae575f36e8bb52f3443c67b2b.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff127_north_v1.zip::frames/06.png",
+          "approvalCrop": [
+            352,
+            234,
+            412,
+            278
+          ],
+          "maskSHA256": "a797a6d6d85b411169ec0e2f18fe3db2049852793d01a6960cefc7499bd8dcb3",
+          "maskURL": "assets/a797a6d6d85b411169ec0e2f18fe3db2049852793d01a6960cefc7499bd8dcb3.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 711,
+          "expectedDarkDecodedRGBA_SHA256": "2b30352a6895c275158cbed532e8ce6853f3891b860521ceb0fcbbf6760bd394",
+          "originalDecodedRGBA_SHA256": "d59aeeab9e743be91b7d7637c59cd89da1e786afb49956512b3a3148956c0931"
+        },
+        {
+          "state": "7",
+          "sourceSHA256": "81326c9080d80d74c00e5aacba9e4e0d2e6335759abc5a2beaa0e6070a850cf3",
+          "sourceURL": "assets/81326c9080d80d74c00e5aacba9e4e0d2e6335759abc5a2beaa0e6070a850cf3.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff127_north_v1.zip::frames/07.png",
+          "approvalCrop": [
+            349,
+            296,
+            409,
+            340
+          ],
+          "maskSHA256": "bdce213650691b9feb0366dfd3af07dca7d60f1794b34ab01a5825e7aea8299e",
+          "maskURL": "assets/bdce213650691b9feb0366dfd3af07dca7d60f1794b34ab01a5825e7aea8299e.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 1291,
+          "expectedDarkDecodedRGBA_SHA256": "d2bf54fece29343ceebde260732a92aea89f97dfe47fa31339d962376dc2c84f",
+          "originalDecodedRGBA_SHA256": "54b1f4b41f99ae050a9d8ec1d903f239c737d5540caf931a0038ce3fdc6db046"
+        },
+        {
+          "state": "8",
+          "sourceSHA256": "2f2ba559b6e7418e4b40d83fb28213a4d2c1218615f951e1d601e0c26e219031",
+          "sourceURL": "assets/2f2ba559b6e7418e4b40d83fb28213a4d2c1218615f951e1d601e0c26e219031.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/staff-north/male_staff127_north_v1.zip::frames/08.png",
+          "approvalCrop": [
+            338,
+            347,
+            398,
+            391
+          ],
+          "maskSHA256": "673d7147aa53d1c0993cb0f2482d5cd2cd90c40988404d8656ad37974e80162d",
+          "maskURL": "assets/673d7147aa53d1c0993cb0f2482d5cd2cd90c40988404d8656ad37974e80162d.png",
+          "maskMode": "continuous-v3",
+          "selectedPixels": 972,
+          "expectedDarkDecodedRGBA_SHA256": "808fe2cdc233fd5d38eb3192dd05083f7fdb6fdb256441f9d88b5d573aaa741a",
+          "originalDecodedRGBA_SHA256": "0a1b7dbb600e64925afd43289b8948de5c57f52c788d30040ace4d642ac47677"
+        }
+      ]
+    },
+    {
+      "id": "staff127-south-native-original-source",
+      "item": 127,
+      "direction": "south",
+      "action": "attack-focus",
+      "allowProduction": false,
+      "density": 4,
+      "fps": 12,
+      "timeline": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "pivot": [
+        80,
+        128
+      ],
+      "states": [
+        {
+          "state": "0",
+          "sourceSHA256": "26bbdb76dbc17e132b7fc1b7341a8effbe6569d5117d786abd110b65e59a044a",
+          "sourceURL": "assets/26bbdb76dbc17e132b7fc1b7341a8effbe6569d5117d786abd110b65e59a044a.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon127_south_v1.zip::frames/00.png",
+          "approvalCrop": null,
+          "maskSHA256": "562bb826456326837ce56edfe56ae0f54eee3d570578ad01b074bdb9a7df40da",
+          "maskURL": "assets/562bb826456326837ce56edfe56ae0f54eee3d570578ad01b074bdb9a7df40da.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16924,
+          "expectedDarkDecodedRGBA_SHA256": "c3dc7c207cbed2bcf22c9df47687e4c694cb10e0013cde4ada5f88185dea1c25",
+          "originalDecodedRGBA_SHA256": "dd1e28c8fa0615b535c81ecdd3909e5ba7587ed6dff30ab76f79aac9fc0d7974"
+        },
+        {
+          "state": "1",
+          "sourceSHA256": "9244b0098ecfec219323cf4c66bc19efc0b400cb2a86c3d7ff1fcfb9d4327c36",
+          "sourceURL": "assets/9244b0098ecfec219323cf4c66bc19efc0b400cb2a86c3d7ff1fcfb9d4327c36.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon127_south_v1.zip::frames/01.png",
+          "approvalCrop": null,
+          "maskSHA256": "91762b5a28415f4d91c2d8e6ead92ade14ac678c266ce66d485899fc04f3653f",
+          "maskURL": "assets/91762b5a28415f4d91c2d8e6ead92ade14ac678c266ce66d485899fc04f3653f.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16925,
+          "expectedDarkDecodedRGBA_SHA256": "54cac5f9d2126ebb8148bcfc08c56a2141354ddd08c132200301e49f11eb29ac",
+          "originalDecodedRGBA_SHA256": "302d842eb79b6dd8d3d2ddb002b3c01fddc600da7e6cc5706c3fd137780f40ab"
+        },
+        {
+          "state": "2",
+          "sourceSHA256": "0ae4ff6bc9660060336e6e85489c59deb8cc18ad1b42b92a501fd21933e8a3b8",
+          "sourceURL": "assets/0ae4ff6bc9660060336e6e85489c59deb8cc18ad1b42b92a501fd21933e8a3b8.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon127_south_v1.zip::frames/02.png",
+          "approvalCrop": null,
+          "maskSHA256": "8c0e493239a106a1ceac79ba4c366534f4b80ef15b8ea4ba1024af33788dd639",
+          "maskURL": "assets/8c0e493239a106a1ceac79ba4c366534f4b80ef15b8ea4ba1024af33788dd639.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15785,
+          "expectedDarkDecodedRGBA_SHA256": "77b22a6d2d766e89606ca52c2a4df1e21af40f0fd83452613e87249078b4636e",
+          "originalDecodedRGBA_SHA256": "eeb3e99175fdac94669a3fa271f52a8b83beda1d3e6ca86e38fde721a3dcc841"
+        },
+        {
+          "state": "3",
+          "sourceSHA256": "72b4b0a56a26397f4972a2199fbc01637de702c6b0c776df34e53499097acf90",
+          "sourceURL": "assets/72b4b0a56a26397f4972a2199fbc01637de702c6b0c776df34e53499097acf90.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon127_south_v1.zip::frames/03.png",
+          "approvalCrop": null,
+          "maskSHA256": "5c8ba38008b6442e46d2be723e5490935c2be3f5b22a426f6cb8c6cf8cd7fe10",
+          "maskURL": "assets/5c8ba38008b6442e46d2be723e5490935c2be3f5b22a426f6cb8c6cf8cd7fe10.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15659,
+          "expectedDarkDecodedRGBA_SHA256": "36398137b66657df2031662bedbcdd0c1af6a72d546183b489d5e0c81cdb2df6",
+          "originalDecodedRGBA_SHA256": "b1f334ee30f08dc43b168107ff4b38de1deefba80672da74051322b709c3e9f5"
+        },
+        {
+          "state": "4",
+          "sourceSHA256": "21397945701bfbbb1959fde5c09edc0def71400ea859326eb6cecc4ba5e42f14",
+          "sourceURL": "assets/21397945701bfbbb1959fde5c09edc0def71400ea859326eb6cecc4ba5e42f14.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon127_south_v1.zip::frames/04.png",
+          "approvalCrop": null,
+          "maskSHA256": "27c64ad7d74ff265ca3fa1da3ee8f70993fef9f85b3d5a86c6d5cbeda868f91e",
+          "maskURL": "assets/27c64ad7d74ff265ca3fa1da3ee8f70993fef9f85b3d5a86c6d5cbeda868f91e.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 14906,
+          "expectedDarkDecodedRGBA_SHA256": "540f5d42f7136e2b88f11e33ccd4ff80a8bbdabdf4cf26228e981e87ed8cbb93",
+          "originalDecodedRGBA_SHA256": "ed83090d3cdbdfba5b9162087aa2fcc775d7be2ac6f59c357fe60225c9804635"
+        },
+        {
+          "state": "5",
+          "sourceSHA256": "641ed42be60f1eaa1b61e561aed66dfe97c8372ecae1adc7342b05b9ec60a60c",
+          "sourceURL": "assets/641ed42be60f1eaa1b61e561aed66dfe97c8372ecae1adc7342b05b9ec60a60c.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon127_south_v1.zip::frames/05.png",
+          "approvalCrop": null,
+          "maskSHA256": "1efd774b474ef2ee875453c7272547313847960d66a2ffdf5a532333601b461f",
+          "maskURL": "assets/1efd774b474ef2ee875453c7272547313847960d66a2ffdf5a532333601b461f.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 15579,
+          "expectedDarkDecodedRGBA_SHA256": "bbe83d2ff2b6cdfe3bc8df6b871c98656e5a250a40d242a77893ace34ad0fc29",
+          "originalDecodedRGBA_SHA256": "47beb8df45c46da41a87bb84e98bb975215229ecf9994b01ceb208553634232e"
+        },
+        {
+          "state": "6",
+          "sourceSHA256": "d946c81987b1b0b0894f3a4c83b935f7277023a5d5608a775d38e8bd91a79f34",
+          "sourceURL": "assets/d946c81987b1b0b0894f3a4c83b935f7277023a5d5608a775d38e8bd91a79f34.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon127_south_v1.zip::frames/06.png",
+          "approvalCrop": null,
+          "maskSHA256": "58da7ad5b97660bd205551f4283ed3e12d35a34daa667b41d4b1bc0390646f25",
+          "maskURL": "assets/58da7ad5b97660bd205551f4283ed3e12d35a34daa667b41d4b1bc0390646f25.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 17056,
+          "expectedDarkDecodedRGBA_SHA256": "a8de9650935a38bf9fddd7d076516b26b653c9c310dde91f4002eb870aa91dbd",
+          "originalDecodedRGBA_SHA256": "fec3819a3b4818eead67ba361d005f9e58c789865b88d88b6a29cf13c831421e"
+        },
+        {
+          "state": "7",
+          "sourceSHA256": "1c6876bee6e3bddaf5222fa26a5a586734e8c499a3f5e8bd3ca2cd56c0c0b9f6",
+          "sourceURL": "assets/1c6876bee6e3bddaf5222fa26a5a586734e8c499a3f5e8bd3ca2cd56c0c0b9f6.png",
+          "originalSourceMember": "integrar109115/approved-source/art-approved/weapons/approved-south-history/male_weapon127_south_v1.zip::frames/07.png",
+          "approvalCrop": null,
+          "maskSHA256": "ce07ec8ddb2ed981e02eb167e3fa9283a95eb4f804488c6ac1d4aae476fd5b69",
+          "maskURL": "assets/ce07ec8ddb2ed981e02eb167e3fa9283a95eb4f804488c6ac1d4aae476fd5b69.png",
+          "maskMode": "native-binned-v1",
+          "selectedPixels": 16844,
+          "expectedDarkDecodedRGBA_SHA256": "ab688083d399718007f60f0367f57ba8906c70eaa8ac5029a679a59f8e8aa868",
+          "originalDecodedRGBA_SHA256": "9934ed23ce891bc94a42b403862716d03f5bd4774dcaf00b17c42c9259788cff"
+        }
+      ]
+    }
+  ],
+  "recordPolicy": {
+    "equipmentAndHeadShapes": "No inferred equipment contract, production enablement, helmet/hair/eyes, or separability on baked backing. Runtime must validate the existing source registration and preserve other appearance/equipment slots.",
+    "northActivation": "REQUIRES_MODULAR_BODY; otherwise data/source only. The crop is valid for local view, but overlaying on an unchanged full body would visibly recreate a patch. Full body diagnostic proof is source-only.",
+    "skinMaskEncoding": {
+      "native-binned-v1": "PNG red 1–5 selects native palette tone; red 0 untouched",
+      "continuous-v3": "PNG red 255=owned; source luminance interpolated at [33,70,112,157,202,240] across 5 native RGB skin stops plus brighten last RGB by [35,26,16] (clamp each channel), nearest-integer output. Original bypasses all."
+    }
+  },
+  "archiveIndexFragment": {
+    "archives": [
+      {
+        "file": "approved-staff-north-south-skin-masks.zip",
+        "sha256": "849e5b4bc74ea6dac89198292b20e527d70a565e8550465d767a2ea7911d5e2f",
+        "bytes": 350866,
+        "pngCount": 76,
+        "compression": "stored"
+      }
+    ],
+    "sources": {
+      "00e8e269012ed6a8ba1b890abeebd5a06b1b26313377611183f77f1d61f779c2": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "00e8e269012ed6a8ba1b890abeebd5a06b1b26313377611183f77f1d61f779c2.png",
+        "bytes": 6661
+      },
+      "0277a86670bc3f4ef061502bf389d8ec400eb8d6e886bd37521649901d9dba80": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "0277a86670bc3f4ef061502bf389d8ec400eb8d6e886bd37521649901d9dba80.png",
+        "bytes": 1846
+      },
+      "0496f51195cab95877043c93ae4b607a9e295137808e327710ff831da8ccdcd8": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "0496f51195cab95877043c93ae4b607a9e295137808e327710ff831da8ccdcd8.png",
+        "bytes": 1914
+      },
+      "073d2217f297abab6b53f784122145c22022659eaba524fa131d33c3b8966d31": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "073d2217f297abab6b53f784122145c22022659eaba524fa131d33c3b8966d31.png",
+        "bytes": 1872
+      },
+      "0ad9ddad1562795be05c72afb3f25d4da51349b92dac82ad723e284adf3b1038": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "0ad9ddad1562795be05c72afb3f25d4da51349b92dac82ad723e284adf3b1038.png",
+        "bytes": 6776
+      },
+      "0e9fd64e177cede52935e461471b6364e67a0b3840da941521340314865d8b7d": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "0e9fd64e177cede52935e461471b6364e67a0b3840da941521340314865d8b7d.png",
+        "bytes": 6774
+      },
+      "112f786811ac1126b18b4ea098809a5982ead3ec6a510c4dd2d91fa26a2294ca": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "112f786811ac1126b18b4ea098809a5982ead3ec6a510c4dd2d91fa26a2294ca.png",
+        "bytes": 6828
+      },
+      "12442fae098c413e554ccb4da3d08e39ffac52a2a24594d8c07a9e0cafdb1cb5": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "12442fae098c413e554ccb4da3d08e39ffac52a2a24594d8c07a9e0cafdb1cb5.png",
+        "bytes": 1902
+      },
+      "14693f9f0a3e1091ffa835eb60792a6785fbaa361467917febd5810e2e87df64": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "14693f9f0a3e1091ffa835eb60792a6785fbaa361467917febd5810e2e87df64.png",
+        "bytes": 6653
+      },
+      "14f756ebd7a385d8b3305a72b28fc561541c8c77b2868ae59516e01a4e13dbbc": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "14f756ebd7a385d8b3305a72b28fc561541c8c77b2868ae59516e01a4e13dbbc.png",
+        "bytes": 6618
+      },
+      "1d01c5163609484fc28a24e1fe62498648860ac2ff821f68c97b1a611261b72f": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "1d01c5163609484fc28a24e1fe62498648860ac2ff821f68c97b1a611261b72f.png",
+        "bytes": 1881
+      },
+      "1efd774b474ef2ee875453c7272547313847960d66a2ffdf5a532333601b461f": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "1efd774b474ef2ee875453c7272547313847960d66a2ffdf5a532333601b461f.png",
+        "bytes": 6619
+      },
+      "224ad4d63b42d8a36a13d5bbab91b7809a994ed8bce67885e394963125dec560": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "224ad4d63b42d8a36a13d5bbab91b7809a994ed8bce67885e394963125dec560.png",
+        "bytes": 1929
+      },
+      "23447621a13378ffc9d75a243cf958ade20b1fbbf8e356967f03c1b2bce5531f": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "23447621a13378ffc9d75a243cf958ade20b1fbbf8e356967f03c1b2bce5531f.png",
+        "bytes": 1860
+      },
+      "27c64ad7d74ff265ca3fa1da3ee8f70993fef9f85b3d5a86c6d5cbeda868f91e": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "27c64ad7d74ff265ca3fa1da3ee8f70993fef9f85b3d5a86c6d5cbeda868f91e.png",
+        "bytes": 6609
+      },
+      "2bda3dace87e6fbaa57e01de694a86fe479d1b233d64b6c133e2acbdc9bc6b11": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "2bda3dace87e6fbaa57e01de694a86fe479d1b233d64b6c133e2acbdc9bc6b11.png",
+        "bytes": 1906
+      },
+      "2faf7cacc08a5b338026d217c82858b7734bb25aa8609252bd33e159cdb5496a": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "2faf7cacc08a5b338026d217c82858b7734bb25aa8609252bd33e159cdb5496a.png",
+        "bytes": 6607
+      },
+      "339cc0417c82fd7aa9c460bbca4ecbccf5fa9b7fa660ee0c0362ca1a9a163337": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "339cc0417c82fd7aa9c460bbca4ecbccf5fa9b7fa660ee0c0362ca1a9a163337.png",
+        "bytes": 1883
+      },
+      "3bf4da1ba95dae297be2f550cdb3f7a48da7a5cf8a673380b88988c671fca85f": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "3bf4da1ba95dae297be2f550cdb3f7a48da7a5cf8a673380b88988c671fca85f.png",
+        "bytes": 6674
+      },
+      "3ed2270093dab310e6225f335701a393da8564b16912d9ea829b25d1e79b3ee6": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "3ed2270093dab310e6225f335701a393da8564b16912d9ea829b25d1e79b3ee6.png",
+        "bytes": 6867
+      },
+      "3f6d4faf5629579b59fd904c6d4386519de58104256d5947e0f195f2a8c90e7c": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "3f6d4faf5629579b59fd904c6d4386519de58104256d5947e0f195f2a8c90e7c.png",
+        "bytes": 6501
+      },
+      "40661c97cf30feeb7e27de0d3f9acdac2929210c3fd9cfb77f068a65fa3c4688": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "40661c97cf30feeb7e27de0d3f9acdac2929210c3fd9cfb77f068a65fa3c4688.png",
+        "bytes": 6696
+      },
+      "449783cab3ff73c577f4fb8a7abe401bc67b9308efcb1f56a1846a71bd1da965": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "449783cab3ff73c577f4fb8a7abe401bc67b9308efcb1f56a1846a71bd1da965.png",
+        "bytes": 6674
+      },
+      "47975e5172dca1617a09469adb7f6f92a3168b2507d857804ba7f0b7462b2bb3": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "47975e5172dca1617a09469adb7f6f92a3168b2507d857804ba7f0b7462b2bb3.png",
+        "bytes": 6857
+      },
+      "4d7535351252528044e23eef45b2de9184dc63fb94fc964bef1ffd4465aaa6c0": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "4d7535351252528044e23eef45b2de9184dc63fb94fc964bef1ffd4465aaa6c0.png",
+        "bytes": 1871
+      },
+      "4d9f69ef8068ec4d725066ce00f48c12ca59c6265f38ccb1b64609fdff5a1125": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "4d9f69ef8068ec4d725066ce00f48c12ca59c6265f38ccb1b64609fdff5a1125.png",
+        "bytes": 6575
+      },
+      "544f48a7ddbedede87061f889377fae32ece175242c83af2ea1246949dcee52e": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "544f48a7ddbedede87061f889377fae32ece175242c83af2ea1246949dcee52e.png",
+        "bytes": 1932
+      },
+      "5538043ac93bdef638b90e0e4b80e213937f310609c1bd1015cee802abf0777f": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "5538043ac93bdef638b90e0e4b80e213937f310609c1bd1015cee802abf0777f.png",
+        "bytes": 1881
+      },
+      "562bb826456326837ce56edfe56ae0f54eee3d570578ad01b074bdb9a7df40da": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "562bb826456326837ce56edfe56ae0f54eee3d570578ad01b074bdb9a7df40da.png",
+        "bytes": 6547
+      },
+      "58da7ad5b97660bd205551f4283ed3e12d35a34daa667b41d4b1bc0390646f25": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "58da7ad5b97660bd205551f4283ed3e12d35a34daa667b41d4b1bc0390646f25.png",
+        "bytes": 6597
+      },
+      "5c8ba38008b6442e46d2be723e5490935c2be3f5b22a426f6cb8c6cf8cd7fe10": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "5c8ba38008b6442e46d2be723e5490935c2be3f5b22a426f6cb8c6cf8cd7fe10.png",
+        "bytes": 6766
+      },
+      "63166f66400cf4be04e93d8be500dfbff8bd498e359470eedd1e3c5a08b9d368": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "63166f66400cf4be04e93d8be500dfbff8bd498e359470eedd1e3c5a08b9d368.png",
+        "bytes": 1907
+      },
+      "6443a008523ed6af85c91cb97a1dd2d4073ebb79ab57ca88f42bff546dde824f": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "6443a008523ed6af85c91cb97a1dd2d4073ebb79ab57ca88f42bff546dde824f.png",
+        "bytes": 6682
+      },
+      "6591709ca33d3c2380339d452f83778d9c59a1ae58c901352f001dd1f77a88e9": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "6591709ca33d3c2380339d452f83778d9c59a1ae58c901352f001dd1f77a88e9.png",
+        "bytes": 6413
+      },
+      "66f2ad76f117388587de78ef37d5c737129831598dd6e946641e21b06d825fe7": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "66f2ad76f117388587de78ef37d5c737129831598dd6e946641e21b06d825fe7.png",
+        "bytes": 1906
+      },
+      "673d7147aa53d1c0993cb0f2482d5cd2cd90c40988404d8656ad37974e80162d": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "673d7147aa53d1c0993cb0f2482d5cd2cd90c40988404d8656ad37974e80162d.png",
+        "bytes": 1882
+      },
+      "6ca40f16a18a92082986a42c3859986512d75784ceae01ec08528fc24a87a06f": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "6ca40f16a18a92082986a42c3859986512d75784ceae01ec08528fc24a87a06f.png",
+        "bytes": 6850
+      },
+      "73d4473622c41102d4de5b6e3be95188224846c49d653c9b3c1924eb1eb5b67e": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "73d4473622c41102d4de5b6e3be95188224846c49d653c9b3c1924eb1eb5b67e.png",
+        "bytes": 6668
+      },
+      "78b3be5c1d984dfe60838a70e64ed21d058df32bfdda91ce8eeea3b48abc29b7": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "78b3be5c1d984dfe60838a70e64ed21d058df32bfdda91ce8eeea3b48abc29b7.png",
+        "bytes": 6762
+      },
+      "7ca61f69b00f3c80a17b0d729dad0adaef2af0d30fa8842c556c1db5d0eea82e": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "7ca61f69b00f3c80a17b0d729dad0adaef2af0d30fa8842c556c1db5d0eea82e.png",
+        "bytes": 1923
+      },
+      "82b4bc7df420c775c8ebf5e88f5012059da6c956ca2119fc783ae0093825bd70": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "82b4bc7df420c775c8ebf5e88f5012059da6c956ca2119fc783ae0093825bd70.png",
+        "bytes": 6696
+      },
+      "863f532bb52a0ad4ca9caaf42dffe7a3a844d20731a6a4d9f16c7a17a4904b8d": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "863f532bb52a0ad4ca9caaf42dffe7a3a844d20731a6a4d9f16c7a17a4904b8d.png",
+        "bytes": 1861
+      },
+      "8ab873ac9b0ddc4d83a0801cbb16c64a4d88a73c47d8fdf9949e0dd11b10b51e": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "8ab873ac9b0ddc4d83a0801cbb16c64a4d88a73c47d8fdf9949e0dd11b10b51e.png",
+        "bytes": 6511
+      },
+      "8b2c68d7fdaaa674c14c66a222f9ae8233d074512aabc86ad9217ee3cfcf1dfe": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "8b2c68d7fdaaa674c14c66a222f9ae8233d074512aabc86ad9217ee3cfcf1dfe.png",
+        "bytes": 1835
+      },
+      "8c0e493239a106a1ceac79ba4c366534f4b80ef15b8ea4ba1024af33788dd639": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "8c0e493239a106a1ceac79ba4c366534f4b80ef15b8ea4ba1024af33788dd639.png",
+        "bytes": 6801
+      },
+      "8cffeba3bab613b3638b481382da6c5951b52828e7f3c7e1adb1936776910b0b": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "8cffeba3bab613b3638b481382da6c5951b52828e7f3c7e1adb1936776910b0b.png",
+        "bytes": 6676
+      },
+      "8d5efbdf857ecbe4f3af89cd55a2c099a496b2855895aea2810dceec9ec4ccca": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "8d5efbdf857ecbe4f3af89cd55a2c099a496b2855895aea2810dceec9ec4ccca.png",
+        "bytes": 6848
+      },
+      "8e18b9d865789fe6b65efdf772e1b680988126f9ec353fc74246b48e690ee9db": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "8e18b9d865789fe6b65efdf772e1b680988126f9ec353fc74246b48e690ee9db.png",
+        "bytes": 6828
+      },
+      "90580f582928ca9c6b86bea218996b6a0b398388a7776c56f3c1fa6f4815ff8f": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "90580f582928ca9c6b86bea218996b6a0b398388a7776c56f3c1fa6f4815ff8f.png",
+        "bytes": 6588
+      },
+      "91762b5a28415f4d91c2d8e6ead92ade14ac678c266ce66d485899fc04f3653f": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "91762b5a28415f4d91c2d8e6ead92ade14ac678c266ce66d485899fc04f3653f.png",
+        "bytes": 6699
+      },
+      "9beec32b76050e9561e9026e8cf8da394194db6bd118a89e41d1424c9d93e04c": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "9beec32b76050e9561e9026e8cf8da394194db6bd118a89e41d1424c9d93e04c.png",
+        "bytes": 1844
+      },
+      "a142e2f94122f417b5f49ef08f6ab8fc839fd366c4fb8b48989c299a6391a0ac": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "a142e2f94122f417b5f49ef08f6ab8fc839fd366c4fb8b48989c299a6391a0ac.png",
+        "bytes": 6516
+      },
+      "a797a6d6d85b411169ec0e2f18fe3db2049852793d01a6960cefc7499bd8dcb3": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "a797a6d6d85b411169ec0e2f18fe3db2049852793d01a6960cefc7499bd8dcb3.png",
+        "bytes": 1842
+      },
+      "aa62ba7042d1d5d6a84e9ad6e49d8651d8ec584c5408c5542523b6434d61dc78": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "aa62ba7042d1d5d6a84e9ad6e49d8651d8ec584c5408c5542523b6434d61dc78.png",
+        "bytes": 1873
+      },
+      "aabd8a70d0312d9d62e747e5da2303da6b999249717074df79af84674d574c7b": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "aabd8a70d0312d9d62e747e5da2303da6b999249717074df79af84674d574c7b.png",
+        "bytes": 1909
+      },
+      "ab21aae386149f4df3817c0e35402aff99a3aafa0cec1117a0c3842efcb09ab0": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "ab21aae386149f4df3817c0e35402aff99a3aafa0cec1117a0c3842efcb09ab0.png",
+        "bytes": 1916
+      },
+      "ac8a1efc0f99707ada7225cac7727b9cab3f779277e60450d0a7535294a30bf3": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "ac8a1efc0f99707ada7225cac7727b9cab3f779277e60450d0a7535294a30bf3.png",
+        "bytes": 6759
+      },
+      "b577df0c5b3a0418645ba79086b35464f6fc77425343ce54e3d2cea65332b60a": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "b577df0c5b3a0418645ba79086b35464f6fc77425343ce54e3d2cea65332b60a.png",
+        "bytes": 1901
+      },
+      "bb72951fd24277e291f556a11c16c07e9d04357628c6136a53b330c31dc1f55e": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "bb72951fd24277e291f556a11c16c07e9d04357628c6136a53b330c31dc1f55e.png",
+        "bytes": 1928
+      },
+      "bdce213650691b9feb0366dfd3af07dca7d60f1794b34ab01a5825e7aea8299e": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "bdce213650691b9feb0366dfd3af07dca7d60f1794b34ab01a5825e7aea8299e.png",
+        "bytes": 1939
+      },
+      "c0d3a85f54d6c26ad6c77f1eaea24fe2d417f7888942d4f57a56164f67eb9e5e": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "c0d3a85f54d6c26ad6c77f1eaea24fe2d417f7888942d4f57a56164f67eb9e5e.png",
+        "bytes": 6742
+      },
+      "c3188f369adc9bb1dfb3022105ad43d323b2dccc0162d09887ebfb45ba939188": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "c3188f369adc9bb1dfb3022105ad43d323b2dccc0162d09887ebfb45ba939188.png",
+        "bytes": 6541
+      },
+      "c5ccd5cdbd11fb762b9b7e9a1f8192560238d588ea200c478e08d5de52918055": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "c5ccd5cdbd11fb762b9b7e9a1f8192560238d588ea200c478e08d5de52918055.png",
+        "bytes": 1884
+      },
+      "cc80627fbb7b0aa06e1acaab85511b3386af12252f748c180dff643dab2fd091": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "cc80627fbb7b0aa06e1acaab85511b3386af12252f748c180dff643dab2fd091.png",
+        "bytes": 6648
+      },
+      "ce07ec8ddb2ed981e02eb167e3fa9283a95eb4f804488c6ac1d4aae476fd5b69": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "ce07ec8ddb2ed981e02eb167e3fa9283a95eb4f804488c6ac1d4aae476fd5b69.png",
+        "bytes": 6412
+      },
+      "d03fb1f0631b3e2cff1d99dd7ba9c613bbc03495153da5745b34a311909fbf52": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "d03fb1f0631b3e2cff1d99dd7ba9c613bbc03495153da5745b34a311909fbf52.png",
+        "bytes": 6652
+      },
+      "d06240962c88185fe5939fcbe3b0682ac2b9c0e5f9a8e9ed7f28072ab2baa965": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "d06240962c88185fe5939fcbe3b0682ac2b9c0e5f9a8e9ed7f28072ab2baa965.png",
+        "bytes": 1899
+      },
+      "d74618fa54b35adb0a14a391c6cd82e9d57e6d3f4137a879fc382e2b3c842246": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "d74618fa54b35adb0a14a391c6cd82e9d57e6d3f4137a879fc382e2b3c842246.png",
+        "bytes": 1898
+      },
+      "d948fed8c50b18e82f1a3279464dd54c8660364fff6953c95437a3210e6407e2": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "d948fed8c50b18e82f1a3279464dd54c8660364fff6953c95437a3210e6407e2.png",
+        "bytes": 1860
+      },
+      "dc9e27240cc727ea22a57775e850f8ba4df31e381465d4f8f41500310f9bf944": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "dc9e27240cc727ea22a57775e850f8ba4df31e381465d4f8f41500310f9bf944.png",
+        "bytes": 1873
+      },
+      "e4f5e634adf501f01aa88a051a35304338f3ac3ad00a8e128fd93d47af8c9792": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "e4f5e634adf501f01aa88a051a35304338f3ac3ad00a8e128fd93d47af8c9792.png",
+        "bytes": 1872
+      },
+      "e7e6879ab541704b71315bb94807aa2f5db65430d2badda722d304331e0f04cb": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "e7e6879ab541704b71315bb94807aa2f5db65430d2badda722d304331e0f04cb.png",
+        "bytes": 6632
+      },
+      "e9676369f4319eee5b5beb2e79a516a22eff6a0d17c4f6663696b54dbc81c81b": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "e9676369f4319eee5b5beb2e79a516a22eff6a0d17c4f6663696b54dbc81c81b.png",
+        "bytes": 1844
+      },
+      "f2f488902fd00af02d97df390f2f76d49210640c2dd6ad84c2dab02fbe02e8e4": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "f2f488902fd00af02d97df390f2f76d49210640c2dd6ad84c2dab02fbe02e8e4.png",
+        "bytes": 1884
+      },
+      "faacd1aafafa715c29f0c0628234d6eec73b3cbceaa0972f52234e334c155db4": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "faacd1aafafa715c29f0c0628234d6eec73b3cbceaa0972f52234e334c155db4.png",
+        "bytes": 1884
+      },
+      "fd886efb0007dce3dd2b25302b66c438e5aa6ebdb7693838ff0ed033568fd28b": {
+        "archive": "approved-staff-north-south-skin-masks.zip",
+        "path": "fd886efb0007dce3dd2b25302b66c438e5aa6ebdb7693838ff0ed033568fd28b.png",
+        "bytes": 1868
+      }
+    }
+  }
+}

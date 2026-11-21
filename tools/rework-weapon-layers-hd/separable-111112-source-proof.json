@@ -1,0 +1,286 @@
+{
+  "scope": "Original separate base and equipment only; no clothing compatibility asserted; E/W only. Source preview hold is not runtime timing approval.",
+  "items": {
+    "111": {
+      "recoveryArchive": "Manopla111_EAST_WEST_BaseLocal_v1_Candidata_Recuperavel.zip",
+      "recoverySHA256": "339d40aed7dd77c2ae4d49e1fc7540f9b32ea60bd4524d0da9ce544737aa2c7a",
+      "approvedArchive": "weapon111_east-west_local-base-v1_approved.zip",
+      "approvedSHA256": "7f51629bf8f9d09b1bb624381f2e365ea85be3f5fc85e7330a8964f89162e8b0",
+      "comparisons": [
+        {
+          "direction": "east",
+          "phase": 0,
+          "referenceMember": "frames/east/00.png",
+          "referenceSHA256": "5bf39794c5d42f533b053aaab073cfe1be2a0e5a0dbcb42acfe01c04c7e9107f",
+          "rgbaSHA256": "793c74754cf6460c43b2174468527b09ebe7c3c431c0367ff91dc04800fb47cc",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 1,
+          "referenceMember": "frames/east/01.png",
+          "referenceSHA256": "2c105a65036249ec618508c7229f28c21378273ddab4054af91b33c7d41c56f2",
+          "rgbaSHA256": "adcdc441accf597d77ddef11c4f600b473ae32ae274e037cb346af860398ec7d",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 2,
+          "referenceMember": "frames/east/02.png",
+          "referenceSHA256": "f064e96830f0c597f9bdabf3148a9228968937273813b46d874e8d0a6562a2ad",
+          "rgbaSHA256": "e4ee77801d58ee4f9bd2c0d9a49b7b7b562b619f5a8b7236dc1cd05eda58033b",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 3,
+          "referenceMember": "frames/east/03.png",
+          "referenceSHA256": "3cbed2f702a5ac15cbfd646c89e93e4b2fbb13ac92bafbd1e89dfdd80efefbc4",
+          "rgbaSHA256": "81f4f4c4da3756e00ac6cbf99065edebd23ed518214df964c560418778322902",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 4,
+          "referenceMember": "frames/east/04.png",
+          "referenceSHA256": "8dcfe55f61e8ed46ea5afd4175a75df146cb18b63ae5ac0ebe346e0a0d2ef7d3",
+          "rgbaSHA256": "3d0bbd9f972e8ed47981523c32879ce57692474979302e34865712910a096054",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 5,
+          "referenceMember": "frames/east/05.png",
+          "referenceSHA256": "f213d5ccbafa021eb42e89a1bb9479fcd354fd4ba64e403eadbfc7fb76926c9f",
+          "rgbaSHA256": "86cb09be81e1f90842791376191134c8e6dde7603d98512a251aeb448e38e9b0",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 6,
+          "referenceMember": "frames/east/06.png",
+          "referenceSHA256": "5e47703080e1e8ccfb2573e37986f1ee6fdf16544f46110067d1b57b8e2a02ee",
+          "rgbaSHA256": "359e633a1800de8c903ff38d0d5f148188ea9d69415fb8b2b39a7f0dd99b3d80",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 7,
+          "referenceMember": "frames/east/07.png",
+          "referenceSHA256": "6ee743f5aaed2bd80ea5627e04c4f2ebee8d444a794ff84038cb6dd0e53f0337",
+          "rgbaSHA256": "5563e7feb90188f647bdbb5f77176c8dcdcb0d6be95e630dbc75c5b3001e06ba",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 0,
+          "referenceMember": "frames/west/00.png",
+          "referenceSHA256": "fc4ba5fb7b67a579c06ef22d7f1f9e3861fcef51987aeb2ef82448f36a3cc00d",
+          "rgbaSHA256": "76c6cec0b8135d3fd1311fa49e90e76f94d7f15ddfd499b2288fa911e7dfff5c",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 1,
+          "referenceMember": "frames/west/01.png",
+          "referenceSHA256": "1e622dfe54554b830921bf9a231bb9fcf74d441ca829e28f294cac2f5f018156",
+          "rgbaSHA256": "46c2d710f551f59761dacd2f089542482786b90d6a9bfda3ebe1fd2b295f2e4d",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 2,
+          "referenceMember": "frames/west/02.png",
+          "referenceSHA256": "3c843bfb2aec475fe16d8c7da97c8de68f0342d7f7a30971c173da4a4e19df95",
+          "rgbaSHA256": "a2777ff026d9b0f71d496abfb06e663788ca15ff0f8a7397ab1e3fddfed33b38",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 3,
+          "referenceMember": "frames/west/03.png",
+          "referenceSHA256": "7897a56c3efdcd520f455a1f60ee9f728a42b20d344518261240ed4b5ed034cb",
+          "rgbaSHA256": "9bffaf4b5802263567b3fc2194acafcfc62df7d1fc8064f3a66ef9bab8184fe3",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 4,
+          "referenceMember": "frames/west/04.png",
+          "referenceSHA256": "e66ad4e3bd985e3eca266074c68e2a198e139369854de231edb4f98de7ec6a4a",
+          "rgbaSHA256": "1978b1bdeedb617b761d89515603ce0139f958f9a0bd7681743fb5311b1ccb11",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 5,
+          "referenceMember": "frames/west/05.png",
+          "referenceSHA256": "22f8103ced50ccc7bc7780e8063f67df8308eba8d1d3621155e054a888c76c77",
+          "rgbaSHA256": "4a2dc148162d3eb7ed0cfd272bf94256e4485a649f092ba2e462dbb01ed3403f",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 6,
+          "referenceMember": "frames/west/06.png",
+          "referenceSHA256": "c7e00f2a068f84af36e2749aa6790ea1d86e68d029f4dc7eb72ae550297f2ab7",
+          "rgbaSHA256": "27ac4456db1e589c20a95d8117a25b0609af8ae8d7b17913131a718763adf6e4",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 7,
+          "referenceMember": "frames/west/07.png",
+          "referenceSHA256": "833f96741ae9a07c7a66e3e0f584ccfd2d7c135501c30eaea63dffe5b812401e",
+          "rgbaSHA256": "86a6c682d73e0bd362743f92f03a6026041965669914c3290c17243e9d029aa1",
+          "changedPixels": 0
+        }
+      ],
+      "basePolicy": "Preserve original authored base repairs/hand occlusion; do not substitute generic punch base."
+    },
+    "112": {
+      "recoveryArchive": "Ruptura112_Encaixe_Recuperacao_Ciclo_20261111_v3.zip",
+      "recoverySHA256": "84937046c298b74bf5bc7ff1c760be292a66180345f7f893d6e88c9de24d9338",
+      "approvedArchive": "weapon112_north-east-west_approved-v3.zip",
+      "approvedSHA256": "e3d9dfdf8db3a53528a3bb90bfdb8e9f38984250ea8a5096e502d2dacec35815",
+      "comparisons": [
+        {
+          "direction": "east",
+          "phase": 0,
+          "referenceMember": "east/frames/00.png",
+          "referenceSHA256": "139fe9b76a16a758ee27db11fe7634fa2cf2d6606aefac15d9ae919cbf77993b",
+          "rgbaSHA256": "96f00de97bb2f434e5f13d01fba8312ec927e92be97eea6d0f3ea1b04bdc2ee0",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 1,
+          "referenceMember": "east/frames/01.png",
+          "referenceSHA256": "4724d97c5aa46156595edd2dd149332620945bd14675aa8b3d1ae3752cd06435",
+          "rgbaSHA256": "09682631b109040494847671cfa773b188240307c34910a252b9fad79dd03d13",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 2,
+          "referenceMember": "east/frames/02.png",
+          "referenceSHA256": "b8eaf04f9e639908a27aed6e013f12a8de7c2b9874528a9ee339078b16cb8c61",
+          "rgbaSHA256": "98a6cab79384b7569eec8eb893c6fa065435af41c6f69c9d07251ab93b8b4012",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 3,
+          "referenceMember": "east/frames/03.png",
+          "referenceSHA256": "107e0d0c6a9462fe6ab3fd8566315f370bb5f4f27c92660cb0fb4bc3849c3d81",
+          "rgbaSHA256": "446c4c07bc6b5bce2e4af2950295d63225fe6b7a0f7b20504bf88dee1c49927d",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 4,
+          "referenceMember": "east/frames/04.png",
+          "referenceSHA256": "29ebe7748d02c17d9f1f753e5abaf4a0700471308528f84ab033a38d587547c3",
+          "rgbaSHA256": "d94ec19cc63b00b17de3a7d38e240352e27eb5df46a7d28966048f06199648ba",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 5,
+          "referenceMember": "east/frames/05.png",
+          "referenceSHA256": "a580aa52fc77891754049c07110c54f5d626d5ec04def57567ae750d655b5090",
+          "rgbaSHA256": "acb7ed90b7ca098d8aeb1d73dd95b851f12b0b130ecc6e7a25a0c917b03f2761",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 6,
+          "referenceMember": "east/frames/06.png",
+          "referenceSHA256": "f16442f24eb340a4285e0eb4d00bc0e3f9cead4556d77c0e3faaf3483f97b03b",
+          "rgbaSHA256": "29fca7036be1788fcc334e1dbf1d17a236ea27300d861c5eceea24c9549bbdf7",
+          "changedPixels": 0
+        },
+        {
+          "direction": "east",
+          "phase": 7,
+          "referenceMember": "east/frames/07.png",
+          "referenceSHA256": "3bcc1557033584fe0e4f0871c1b53219571a5363e28cd958312b8a6333781503",
+          "rgbaSHA256": "c27ac1b97bca4202184d94b4507ca60f8940426fd9bd0666f643f14cca1f6be7",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 0,
+          "referenceMember": "west/frames/00.png",
+          "referenceSHA256": "0e91a07433107c40476668e3bf30cc0cf01d9d867f71d21a5964eb06cf25a5ce",
+          "rgbaSHA256": "7ea293d4812d137dce548c93d8a8d4dd63c086e557569f2f704809a368aa18ba",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 1,
+          "referenceMember": "west/frames/01.png",
+          "referenceSHA256": "f9436862dca1ad20a9761244fa63e97a7354a1570bdc01d28a8635a3d49497ef",
+          "rgbaSHA256": "176298bfa04b8b7accc4c6194daea706e7dcace0698ca1b8e5f9062d8d946b0b",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 2,
+          "referenceMember": "west/frames/02.png",
+          "referenceSHA256": "b447e12ad899a64ca35eb2280c866259c939871603f954f791e46bc79b6add50",
+          "rgbaSHA256": "8f290453d11cd4e6fb05b516127d52a2854a74970cf52dda1a6577bd8be8bc22",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 3,
+          "referenceMember": "west/frames/03.png",
+          "referenceSHA256": "900766c1e7c78ed251ffcaa42c4795eec616a0c25da45622e3e72941d452e56b",
+          "rgbaSHA256": "2487a9af8e4345800ffb27bbd1914653ebb3d7d3788afd45602bfd87220ccbd2",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 4,
+          "referenceMember": "west/frames/04.png",
+          "referenceSHA256": "b2bce6932e34f732c79d993a3233fec7bf5bc230c17f32ac07db1db1889bb6f5",
+          "rgbaSHA256": "6b1e620e43568441d9c8b6b4a6a82dbd7de87360a631f2134f7f029a7a2a32e0",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 5,
+          "referenceMember": "west/frames/05.png",
+          "referenceSHA256": "3c7ed455451915dbeef71c1b2e3a867ff0bf779c7bd9cf633cb247d82eae9079",
+          "rgbaSHA256": "a1a16985e89aaf249e5210a2e96f131a304fd5b84524489461ce789f731895de",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 6,
+          "referenceMember": "west/frames/06.png",
+          "referenceSHA256": "50630f8706263088c7df08c0d24ca98c7a547cc0ddad8f6920c53c65562f06b6",
+          "rgbaSHA256": "65b7b55bd6320cd4a1611864b18a4f7aab44cebb85fcaa80a37bca86adca8146",
+          "changedPixels": 0
+        },
+        {
+          "direction": "west",
+          "phase": 7,
+          "referenceMember": "west/frames/07.png",
+          "referenceSHA256": "039d3449c038390486748bdfd7f57c6a07b4dc5bfbf431fece610596ca5254fb",
+          "rgbaSHA256": "caf1acce55b92a83ef22ff4f04e87bd4ab3bf62bffbd141482d91606cc36b82c",
+          "changedPixels": 0
+        }
+      ],
+      "basePolicy": "Preserve original authored base repairs/hand occlusion; do not substitute generic punch base."
+    }
+  },
+  "archive": {
+    "file": "separable-111112-original-base-gear.zip",
+    "sha256": "1749c8bf13a2c434eda5bd6ae76e4f87326c25a7be5de84e30025846e70dd590",
+    "bytes": 1863613,
+    "pngCount": 54,
+    "compression": "stored"
+  }
+}

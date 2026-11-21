@@ -1,0 +1,57 @@
+{
+  "original": "Mosquete5_Masculino_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 7090380,
+  "sha256": "0059e3e29fee9dd30c40592f149543462405ab8074e4091dc76813bbd9b97caa",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "27e4cd067799748bd9038c9af2c184224e96d5a1ac8d16e9acb5cd72bbd77cae"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "f9685e0c7e722a489d326ceea2b33e032615e7c01db045c13df02e7e315f5ae4"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 750000,
+      "sha256": "f3d0e51cb60b312c7450a705ad4e69720b437b714bb3d48e7a1d5bee689d3516"
+    },
+    {
+      "path": "archive.part003",
+      "bytes": 750000,
+      "sha256": "816cb61b5195dfed9093433d16f4e0cbfe1f996bcaba1dd7e60688310a3ec716"
+    },
+    {
+      "path": "archive.part004",
+      "bytes": 750000,
+      "sha256": "ca3d28573c33b5d5d67a67c103e2254a794d0a595f5263376d7426788f9f35f5"
+    },
+    {
+      "path": "archive.part005",
+      "bytes": 750000,
+      "sha256": "fbf83e0ed0a6f8f6ad2394078b5728a198f5dcd21aba3267eeca545c21b97945"
+    },
+    {
+      "path": "archive.part006",
+      "bytes": 750000,
+      "sha256": "625c10ea8f510c71c9b566a012c2150bea13a93e31ee8fd596c435e42424a122"
+    },
+    {
+      "path": "archive.part007",
+      "bytes": 750000,
+      "sha256": "c5119d3fc0f03fa1f3fff9a002bc319d80e484e21b552610b5599c44f74ad726"
+    },
+    {
+      "path": "archive.part008",
+      "bytes": 750000,
+      "sha256": "af0db161a9e1fe54cabfa765ad8a704adbd7132659d887f857157af61a531247"
+    },
+    {
+      "path": "archive.part009",
+      "bytes": 340380,
+      "sha256": "980f70cc1d4bdde89b1bf608d2b49b4502af199cad531b08b9d09fe0bc59d791"
+    }
+  ]
+}

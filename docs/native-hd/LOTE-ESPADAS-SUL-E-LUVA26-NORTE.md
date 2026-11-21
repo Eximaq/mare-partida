@@ -1,0 +1,4 @@
+# Calça independente na família de espadas e paleta da G26
+
+- Feminino, ataque Sul: Calça 182 com Espadas 67, 68, 69 e 70, além da Espada 1 de controle. A camada autoral da calça usa a mesma base comprovada. Cada lâmina mantém seu próprio raster e todas as suas matrizes. Em 80 quadros o delta só aparece no alfa da calça/shorts e nenhum pixel opaco da arma muda. Outras direções e a versão publicada ficam intactas.
+- Masculino, repouso e caminhada Norte: Luva 26 com C151, P133 e B155 usa o mesmo registro Original, inclusive a posição, profundidade e duas texturas das luvas. Todos os 17 quadros têm backing validado pelos hashes de anatomia e pelo relógio da animação. 34 renderizações em dois perfis: pele e cabelo acompanham escolhas salvas compatíveis, e peitoral/calça/bota/luvas, alfa e posições não mudam. Não altera formas de cabelo/olhos incompatíveis, outros olhos ou o soco.

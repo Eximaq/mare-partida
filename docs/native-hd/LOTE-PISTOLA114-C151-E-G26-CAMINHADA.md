@@ -1,0 +1,4 @@
+# Peitoral e luva separados em dois movimentos
+
+- Feminino, ataque Norte da Pistola Dupla 114: C151 tem camadas próprias de torso/barra/manga verificadas contra sua geometria real. Em 72 quadros (aparência padrão e oito tons personalizados), trocar somente o peitoral preserva pele/cabelo/olhos, recuo, matrizes e toda a contribuição RGBA das duas partes da arma. Não altera W113, não habilita as outras quatro armas reprovadas por oclusão nem combina com os demais slots.
+- Feminino Original, caminhada Leste/Oeste: C151, P168 e G26. Os 80 ticks preservam o relógio, a própria calça, o peitoral e as partes opacas de braço/luva. As duas camadas de mão de cada lado têm arquivos próprios e profundidade original; tirar e reequipar respeita a independência. Não habilita paletas, outras peças ou ações.

@@ -1,0 +1,32 @@
+{
+  "file": "sn4-approved-technical-preview.zip",
+  "sha256": "8e6f31daa3bee71ca69cd4124befc34b04cb68c86e7efa1e08af846a9b05aee4",
+  "approval": "Sentinel_e216598b7a2481919c46204973585221",
+  "appearance": {
+    "gender": "female",
+    "hairStyle": "hair-bob",
+    "hairColor": "pink",
+    "eyeStyle": "face-focused",
+    "eyeColor": "green",
+    "skinColor": "dark"
+  },
+  "phase": 4,
+  "references": {
+    "175": {
+      "member": "175-south-phase4.png",
+      "sha256": "7c63f9fc7fa4ea9cdeb661c041c9502a2965cdf0b607d7c272ce4b85165ca29f"
+    },
+    "133": {
+      "member": "133-south-phase4.png",
+      "sha256": "6f34ad65807ca51a41b0e0f9516229d5f26c290f45036c8760e9fa8ae0486bb0"
+    },
+    "161": {
+      "member": "161-south-phase4.png",
+      "sha256": "9beb6c7be3cca299432cde618834e5ba8a48947337d78944ef8e612fee34fc40"
+    },
+    "21": {
+      "member": "21-south-phase4.png",
+      "sha256": "18b62eb3f3c3997a543f4eef2d30bab236b0f66fa917437cdab7ced950b90229"
+    }
+  }
+}

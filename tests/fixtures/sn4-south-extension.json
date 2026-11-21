@@ -1,0 +1,267 @@
+{
+  "descriptorSHA256": "bdffdec13c1b290c32608ec14c40c399bfbd4919627484e2881c24b4d6acfc95",
+  "archive": {
+    "file": "approved-female-four-pants-south-original-layers.zip",
+    "sha256": "41309ae8662e9d6e7bdda63fa96f32af39d147fc4dd7aa7d98d049e9e1c80cce",
+    "bytes": 1134201,
+    "pngCount": 51,
+    "compression": "deflated"
+  },
+  "sources": {
+    "a1f047bddc874058a97e6f50d616c1fac0788e5a4b02f20ae4cbc3551cdd71e6": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "a1f047bddc874058a97e6f50d616c1fac0788e5a4b02f20ae4cbc3551cdd71e6.png",
+      "bytes": 731
+    },
+    "3e16854c502b1a247febb5e0bd34784f2799b88fe39ccfdac80def0ffb17fcaa": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "3e16854c502b1a247febb5e0bd34784f2799b88fe39ccfdac80def0ffb17fcaa.png",
+      "bytes": 730
+    },
+    "b8ca0783c466cf7cbfcca849333a505069eeed1862e611640691bd11d0e76555": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "b8ca0783c466cf7cbfcca849333a505069eeed1862e611640691bd11d0e76555.png",
+      "bytes": 20452
+    },
+    "0292c21a101e76b165d356dfcb216938ba60c0fb238c013bc25e36118fa0cce9": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "0292c21a101e76b165d356dfcb216938ba60c0fb238c013bc25e36118fa0cce9.png",
+      "bytes": 20378
+    },
+    "aa0174472b754dcd539fadd47f6f00784226ff94947bc09fb210984c1d2af489": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "aa0174472b754dcd539fadd47f6f00784226ff94947bc09fb210984c1d2af489.png",
+      "bytes": 665
+    },
+    "d2d5879686da3772b7ed765edb26527849c7d072268fb458c945679e90f29499": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "d2d5879686da3772b7ed765edb26527849c7d072268fb458c945679e90f29499.png",
+      "bytes": 19428
+    },
+    "5ead23b9dbea2442e6b1682d8c14911832b42166f245ea410684eec814b060b8": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "5ead23b9dbea2442e6b1682d8c14911832b42166f245ea410684eec814b060b8.png",
+      "bytes": 672
+    },
+    "efb0ebfc480c1aa9833a0d33bd35a99d7634be93b012d13cad04c723027ab889": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "efb0ebfc480c1aa9833a0d33bd35a99d7634be93b012d13cad04c723027ab889.png",
+      "bytes": 19800
+    },
+    "b05deb03a97319c8beed9e279d8c322813a2c7b96e0b14b7e4effa4c16fec64a": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "b05deb03a97319c8beed9e279d8c322813a2c7b96e0b14b7e4effa4c16fec64a.png",
+      "bytes": 752
+    },
+    "dad989e1a1ad3dc8fd3de8422596c48cfea21d1057590c48d35d4a87c11cd5fe": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "dad989e1a1ad3dc8fd3de8422596c48cfea21d1057590c48d35d4a87c11cd5fe.png",
+      "bytes": 21202
+    },
+    "605a329b4f6f9e2e8a68a677b54e6fd0af669c7def2d8512a90af44e9b21889c": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "605a329b4f6f9e2e8a68a677b54e6fd0af669c7def2d8512a90af44e9b21889c.png",
+      "bytes": 730
+    },
+    "2fec505e967c273510b04263b8c9c3cfed4e1cc19c37f864fab1eb1b4ac706cf": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "2fec505e967c273510b04263b8c9c3cfed4e1cc19c37f864fab1eb1b4ac706cf.png",
+      "bytes": 20413
+    },
+    "0371ebe10943d9deff83c7005ba471c66fb3bb150ef24c9eb40b049064d8a0b7": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "0371ebe10943d9deff83c7005ba471c66fb3bb150ef24c9eb40b049064d8a0b7.png",
+      "bytes": 20399
+    },
+    "7a5579c4ea5617087f5999566f3952d2cefcc6e30b2da4ee89c02500b86e995a": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "7a5579c4ea5617087f5999566f3952d2cefcc6e30b2da4ee89c02500b86e995a.png",
+      "bytes": 704
+    },
+    "0fb660d8ee16fb71bc6ef06ae7ec611c5f5d96d31866079742f576a2570268fe": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "0fb660d8ee16fb71bc6ef06ae7ec611c5f5d96d31866079742f576a2570268fe.png",
+      "bytes": 19584
+    },
+    "efad20d95fc93e5a23c268f169d13cc6370746c797123136ce14cdac369520e0": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "efad20d95fc93e5a23c268f169d13cc6370746c797123136ce14cdac369520e0.png",
+      "bytes": 681
+    },
+    "aa75ab4836c3df639afa97a85dfbf0f558d31667fa5358dcc5dba98ac6285f00": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "aa75ab4836c3df639afa97a85dfbf0f558d31667fa5358dcc5dba98ac6285f00.png",
+      "bytes": 19881
+    },
+    "a6f7ab972525a79897323abc9e48e7a0060d07a1178cefa16ab448f57db8691b": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "a6f7ab972525a79897323abc9e48e7a0060d07a1178cefa16ab448f57db8691b.png",
+      "bytes": 736
+    },
+    "308a214cc7003289eb8592d298af9d6cb60aee84645ad33da66ad955ce34bfb3": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "308a214cc7003289eb8592d298af9d6cb60aee84645ad33da66ad955ce34bfb3.png",
+      "bytes": 21650
+    },
+    "21479825c71b33e54621363520da4291ab342fa80f444d80eda28c7e1069f4ac": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "21479825c71b33e54621363520da4291ab342fa80f444d80eda28c7e1069f4ac.png",
+      "bytes": 708
+    },
+    "d14ede723ba7e05675a59b499a045315446714718629c3750adf85f54dc19413": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "d14ede723ba7e05675a59b499a045315446714718629c3750adf85f54dc19413.png",
+      "bytes": 33419
+    },
+    "29b6e43bd3297af2003e8f3097a213d13e9f58024028f38c7ac87dcd7cc98572": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "29b6e43bd3297af2003e8f3097a213d13e9f58024028f38c7ac87dcd7cc98572.png",
+      "bytes": 33534
+    },
+    "e5ca0611b0513502a9b2aa8ebee0720c887f86e8d9d373a3caeb5d86af9aa385": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "e5ca0611b0513502a9b2aa8ebee0720c887f86e8d9d373a3caeb5d86af9aa385.png",
+      "bytes": 32512
+    },
+    "c0e233d4b0ff1b8a3b23259e1e4afa320a495e186478633d356d1b2a984b97c0": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "c0e233d4b0ff1b8a3b23259e1e4afa320a495e186478633d356d1b2a984b97c0.png",
+      "bytes": 32641
+    },
+    "679f11fbebd0a52d30db8641c54b12dadb8a432969ce09d4f00a90fb04278b1f": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "679f11fbebd0a52d30db8641c54b12dadb8a432969ce09d4f00a90fb04278b1f.png",
+      "bytes": 34613
+    },
+    "899bfd143352b9af3c243ab9b1e38b783bcb5cd686058e913e3178227934c9ce": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "899bfd143352b9af3c243ab9b1e38b783bcb5cd686058e913e3178227934c9ce.png",
+      "bytes": 33509
+    },
+    "d042a7521d93c895670c04b44cc66876ceca3c6cc43670f260679d6318c1d67d": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "d042a7521d93c895670c04b44cc66876ceca3c6cc43670f260679d6318c1d67d.png",
+      "bytes": 33593
+    },
+    "5b765ebdfe725b4abed4c850131797160b78ff6b106a9db328fb744011118699": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "5b765ebdfe725b4abed4c850131797160b78ff6b106a9db328fb744011118699.png",
+      "bytes": 32460
+    },
+    "c62f9c3e98733035a67d887a1276cfcebe4fbb9280f9d0989e73452a74ea1d3e": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "c62f9c3e98733035a67d887a1276cfcebe4fbb9280f9d0989e73452a74ea1d3e.png",
+      "bytes": 32564
+    },
+    "70def8275c4b5c5dbf47fabc879e5ce2cd186bd142ed05153e72bdfcf62e3905": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "70def8275c4b5c5dbf47fabc879e5ce2cd186bd142ed05153e72bdfcf62e3905.png",
+      "bytes": 34831
+    },
+    "bdbb9dfa407056e9584740d73a1ee3f6f25e9e349f1173281cbe6ef5bf0a137d": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "bdbb9dfa407056e9584740d73a1ee3f6f25e9e349f1173281cbe6ef5bf0a137d.png",
+      "bytes": 30747
+    },
+    "0a2d3b53e69bf5392c6c017934ec460bddcd9e4d33b0600d4150b115a2c0f1e2": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "0a2d3b53e69bf5392c6c017934ec460bddcd9e4d33b0600d4150b115a2c0f1e2.png",
+      "bytes": 30798
+    },
+    "4cdff927b228c85f6bc1f608668b0a2c1c8d184a8aa450389e3a901002b8fe31": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "4cdff927b228c85f6bc1f608668b0a2c1c8d184a8aa450389e3a901002b8fe31.png",
+      "bytes": 29821
+    },
+    "435c1fb0f7b00265b6e064cb1ecf3725be3ccb6e1340fb140dd80c35837f777b": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "435c1fb0f7b00265b6e064cb1ecf3725be3ccb6e1340fb140dd80c35837f777b.png",
+      "bytes": 29864
+    },
+    "9e5e5cdad3986317f780b05d169d779bdfc017d8fdffc7bbae556be41b066115": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "9e5e5cdad3986317f780b05d169d779bdfc017d8fdffc7bbae556be41b066115.png",
+      "bytes": 31242
+    },
+    "55cda796db62c349ce9f4bfc2599bde965750aa10f44ad594e497ae7013f9c7d": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "55cda796db62c349ce9f4bfc2599bde965750aa10f44ad594e497ae7013f9c7d.png",
+      "bytes": 30179
+    },
+    "50af9354c02c340908d8a02e2b25ad0440cfd1b3e5ebe13b8761eb797e95d943": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "50af9354c02c340908d8a02e2b25ad0440cfd1b3e5ebe13b8761eb797e95d943.png",
+      "bytes": 30357
+    },
+    "16b928172b41dfc2e2e2339bacf442c864c2a836be696770a6220b9f4e1a081a": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "16b928172b41dfc2e2e2339bacf442c864c2a836be696770a6220b9f4e1a081a.png",
+      "bytes": 29476
+    },
+    "7184a991caa0c7cec5b54073fe637fa012aa7eddd8c979f2fe07bef8ba2f7b7b": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "7184a991caa0c7cec5b54073fe637fa012aa7eddd8c979f2fe07bef8ba2f7b7b.png",
+      "bytes": 29656
+    },
+    "5526caa7b719d10e3034a28f81fd619d5433546a516e86912cf4838e58a2bb9c": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "5526caa7b719d10e3034a28f81fd619d5433546a516e86912cf4838e58a2bb9c.png",
+      "bytes": 31485
+    },
+    "7efd839681445251aad6697399ccdc748fa08da575ed7cf113548839b7381f57": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "7efd839681445251aad6697399ccdc748fa08da575ed7cf113548839b7381f57.png",
+      "bytes": 34677
+    },
+    "95569a8f3c2f0c88cf655f38428578f5902d9bf38884e86582e94f5ae0443a9c": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "95569a8f3c2f0c88cf655f38428578f5902d9bf38884e86582e94f5ae0443a9c.png",
+      "bytes": 34765
+    },
+    "99f0b27d29becd06e528a64bdc1a992e2a934b8e0ded4e7283263179b2fa584e": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "99f0b27d29becd06e528a64bdc1a992e2a934b8e0ded4e7283263179b2fa584e.png",
+      "bytes": 33964
+    },
+    "20c61bd12fea8b3e6b8da26b81569c3200ebccc79c8da8bf2cac7be8874f0b86": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "20c61bd12fea8b3e6b8da26b81569c3200ebccc79c8da8bf2cac7be8874f0b86.png",
+      "bytes": 34634
+    },
+    "f07801ca37f744d4d53ddf085ca6d356b2b41d1569055ccdf82406f887f435b0": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "f07801ca37f744d4d53ddf085ca6d356b2b41d1569055ccdf82406f887f435b0.png",
+      "bytes": 35108
+    },
+    "6c40dcdf5df8b87bd743c36e9cf42a84a3eb611e8be81f7582c60c04e1d6457d": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "6c40dcdf5df8b87bd743c36e9cf42a84a3eb611e8be81f7582c60c04e1d6457d.png",
+      "bytes": 34583
+    },
+    "b0914d451bd72a64de54592df36c57ec7c718cf8a1a2907a8e98977d20f00c62": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "b0914d451bd72a64de54592df36c57ec7c718cf8a1a2907a8e98977d20f00c62.png",
+      "bytes": 34742
+    },
+    "f42b3e7b683d49221773a4f308a7b5565ca03c38e8eb3f96e0d277f4c22e39a2": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "f42b3e7b683d49221773a4f308a7b5565ca03c38e8eb3f96e0d277f4c22e39a2.png",
+      "bytes": 33845
+    },
+    "632b1db70fa6a8f625a90a7d6f90b50e4568000c6ebea06bcf604e4f9735946b": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "632b1db70fa6a8f625a90a7d6f90b50e4568000c6ebea06bcf604e4f9735946b.png",
+      "bytes": 34402
+    },
+    "39c95ce0b1cdbc28e182d42d1f3aa963430bcd2c491368e6e1d9a7f9718ee342": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "39c95ce0b1cdbc28e182d42d1f3aa963430bcd2c491368e6e1d9a7f9718ee342.png",
+      "bytes": 35387
+    },
+    "ef2a4c8949cdab1ef24e678bdb88cc276b1fd75e62066e47011c2ce53996efe6": {
+      "archive": "approved-female-four-pants-south-original-layers.zip",
+      "path": "ef2a4c8949cdab1ef24e678bdb88cc276b1fd75e62066e47011c2ce53996efe6.png",
+      "bytes": 334
+    }
+  }
+}
