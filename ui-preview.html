@@ -196,7 +196,9 @@
   <script defer src="crew-ui.js"></script>
   <script defer src="social-ui.js"></script>
   <script defer src="market-online-ui.js"></script>
-<script defer src="game.js"></script>
+<link rel="stylesheet" href="game-loading.css">
+  <script defer src="game-loading.js"></script>
+  <script defer src="game.js"></script>
   <script defer src="audio-system.js"></script>
   <link rel="preload" href="assets/ui/navigator/fonts/alegreya-sans-400.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="ui-navigator.css" />
@@ -222,8 +224,19 @@
   <link rel="stylesheet" href="hud-glass.css">
 </head>
 <body>
+  <section id="gameLoading" aria-labelledby="loading-title">
+    <div class="loading-scene" aria-hidden="true"><div class="loading-art"></div><div class="loading-art"></div><div class="loading-art"></div></div>
+    <div class="loading-panel">
+      <img class="loading-brand" src="apps/account-client/art/kaizoku-idle.webp" alt="Kaizoku Idle" width="1000" height="391">
+      <h1 id="loading-title">Preparando a travessia</h1>
+      <div class="loading-line"><span role="status">Abrindo o jogo</span><output aria-live="off">0%</output></div>
+      <progress max="100" value="0" aria-label="Carregamento do jogo"></progress>
+      <div class="loading-size"></div>
+      <button type="button" hidden>Tentar novamente</button>
+    </div>
+  </section>
   <div class="ambient-noise" aria-hidden="true"></div>
-  <div id="app" class="app-shell hud-nautical">
+  <div id="app" inert aria-busy="true" class="app-shell hud-nautical">
     <section id="factionInspection" class="faction-inspection hidden" aria-label="Mostruário dos sprites de facção">
       <strong>Mostruário das facções</strong><span>Prévia visual · sem aliados de combate</span>
       <div><button type="button" data-faction-action="idle">Idle</button><button type="button" data-faction-action="walk">Caminhada</button>

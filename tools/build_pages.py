@@ -239,6 +239,7 @@ from game_loading_catalog import write_catalog
 logo = OUT / 'assets/ui/loading/kaizoku-idle.webp'
 logo.parent.mkdir(parents=True, exist_ok=True)
 shutil.copy2(ROOT / 'apps/account-client/art/kaizoku-idle.webp', logo)
-entry = OUT / 'index.html'
-entry.write_text(entry.read_text(encoding='utf-8').replace('apps/account-client/art/kaizoku-idle.webp', 'assets/ui/loading/kaizoku-idle.webp'), encoding='utf-8')
+for name in ['index.html', 'ui-preview.html']:
+    entry = OUT / name
+    entry.write_text(entry.read_text(encoding='utf-8').replace('apps/account-client/art/kaizoku-idle.webp', 'assets/ui/loading/kaizoku-idle.webp'), encoding='utf-8')
 write_catalog(OUT, {'player-pack.json', *PLAYER96_DATA, *PLAYER96_MODULES, *player96_release['resources']}, art_paths)

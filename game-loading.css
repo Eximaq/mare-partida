@@ -1,4 +1,5 @@
 #gameLoading[hidden] { display: none; }
+#app[aria-busy="true"] { visibility: hidden; }
 #gameLoading {
   position: fixed; inset: 0; z-index: 2147483600; isolation: isolate;
   overflow: hidden; background: #081a22; color: #faf4dd;

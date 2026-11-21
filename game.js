@@ -11,7 +11,7 @@
     catch(error){if(error.code==='authentication_required'){location.replace('/online/');return;}document.body.classList.remove('online-session-loading');const message=document.createElement('p');message.textContent='Não foi possível carregar seu personagem. Atualize a página para tentar novamente.';message.setAttribute('role','alert');document.body.replaceChildren(message);return;}
   }
   const loading = window.MareGameLoading;
-  if (loading) await loading.prepare();
+  loading?.prepare();
   let loadingHeroDrawn = false, loadingSceneTime = 0;
   let onlineWorldFrame=null,onlineMoveKeys='',onlineNextMove=0,onlineMoveWorking=false;
   let onlineUI=null,onlineAttackWorking=false,onlineEncounterId=null,onlineInventoryStamp=null;
@@ -3845,7 +3845,7 @@ ${avatarExtra}
     if(currentPanel==='character'&&characterTab==='akuma')for(const canvas of document.querySelectorAll('canvas[data-akuma-aura]')){const fruit=MareAkuma.byId(canvas.dataset.akumaAura),c=canvas.getContext('2d');c.clearRect(0,0,48,48);c.imageSmoothingEnabled=false;vfx_aura.draw(c,24,48,world.time,1,fruit);}
   }
   function frame(t){
-    if (loading?.failed) { lastTime = t; requestAnimationFrame(frame); return; }
+    if (loading && (!loading.prepared || loading.failed)) { lastTime = t; return void requestAnimationFrame(frame); }
     if (loading?.pending && game) {
       if (lastTime && !document.hidden) loadingSceneTime += Math.min(250, t - lastTime);
       lastTime = t;
@@ -3856,7 +3856,7 @@ ${avatarExtra}
         presentWorld();
         if (loadingHeroDrawn) loading.finish();
       }
-      requestAnimationFrame(frame); return;
+      return void requestAnimationFrame(frame);
     }
     onlineUI?.frame(t);if(ONLINE_GAME&&!ONLINE_GAME.data){requestAnimationFrame(frame);return;}if(!lastTime)lastTime=t;const dt=Math.min(.25,Math.max(0,(t-lastTime)/1000));lastTime=t;if(game&&!document.hidden&&saveWriter.owner&&mapArtState()==='ready'){for(let remaining=dt;remaining>0;remaining-=.05)tick(Math.min(.05,remaining));renderUIClock+=dt;saveClock+=dt;if(renderUIClock>.27){renderUIClock=0;updateUI();}if(saveClock>(game.has_haki_unlocked?1:7)){saveClock=0;saveGame();}if(viewportMapId!==mapKey())resizeViewport();camera.update(nameplateCameraFocus(),activeMap(),dt,false,world.hero);}ambientWeather.update(game?mapKey():'',dt,{reduced:ambientReduced(),hidden:document.hidden,width:W,height:H,frameMs:dt*1000});presentWorld();drawVfxPanels();drawCreationAppearance(t/1000);requestAnimationFrame(frame);}
 

@@ -17,7 +17,7 @@ async function main() {
     const rel = decodeURIComponent(url.pathname.slice('/demo/'.length)) || 'index.html';
     const file = path.resolve(root, rel);
     if (!url.pathname.startsWith('/demo/') || !file.startsWith(root + path.sep)) { res.writeHead(404).end(); return; }
-    if (units.has(rel) && url.searchParams.has('v')) {
+    if (units.has(rel) && url.searchParams.has('install')) {
       transfers++;
       if (interrupt && rel === manifest.units.at(-1)[0]) { interrupt = false; res.writeHead(503).end(); return; }
     }

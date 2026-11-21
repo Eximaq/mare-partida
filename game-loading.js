@@ -10,7 +10,11 @@
   const catalog = document.documentElement.dataset.gameContent;
   const scope = new URL('./', document.baseURI).href;
   const bytes = n => (n / 1048576).toLocaleString('pt-BR', {maximumFractionDigits: 1});
-  let scenePending = false, failure = false, generation = 0;
+  async function digestOf(buffer) {
+    const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', buffer));
+    return Array.from(digest, n => n.toString(16).padStart(2, '0')).join('');
+  }
+  let scenePending = false, failure = false, prepared = false, interfaceReady = false, generation = 0;
   function progress(value) {
     meter.value = value;
     percent.textContent = Math.floor(value) + '%';
@@ -61,6 +65,8 @@
     if (!response) {
       response = await fetch(indexURL, {cache: 'no-cache'});
       if (!response.ok) throw Error('Não foi possível obter a lista de arquivos.');
+      const hash = await digestOf(await response.clone().arrayBuffer());
+      if (catalog !== 'game-content-' + hash.slice(0, 24) + '.json') throw Error('A lista de arquivos está incompleta. Tente novamente.');
       await metadata.put(indexURL, response.clone());
     }
     const {units} = await response.json();
@@ -86,13 +92,12 @@
         const {path, size, hash, key} = queue[cursor++];
         try {
           const source = new URL(path, scope);
-          source.searchParams.set('v', hash.slice(0, 16));
-          const file = await fetch(source);
+          source.searchParams.set('install', hash.slice(0, 16));
+          const file = await fetch(source).catch(() => fetch(source, {cache: 'reload'}));
           if (!file.ok) throw Error('Não foi possível baixar um arquivo do jogo.');
           const buffer = await file.arrayBuffer();
           if (buffer.byteLength !== size) throw Error('Um arquivo chegou incompleto.');
-          const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', buffer));
-          if (Array.from(digest, n => n.toString(16).padStart(2, '0')).join('') !== hash)
+          if (await digestOf(buffer) !== hash)
             throw Error('Um arquivo não corresponde à versão do jogo.');
           await storage.put(key, new Response(buffer));
           loaded += size; update();
@@ -110,8 +115,10 @@
       try {
         if (catalog) await install();
         await document.fonts.ready;
-        progress(97);
-        phase.textContent = 'Preparando a cena de entrada';
+        prepared = true;
+        if (scenePending) scene();
+        else if (interfaceReady) finish();
+        else { progress(97); phase.textContent = 'Preparando a cena de entrada'; }
         return;
       } catch (error) {
         const message = error.name === 'QuotaExceededError'
@@ -122,11 +129,14 @@
     }
   }
   function scene() {
-    show(); scenePending = true; progress(98);
+    show(); scenePending = true;
+    if (!prepared) return;
+    progress(98);
     phase.textContent = 'Preparando o mapa e a animação do personagem';
   }
   function finish() {
-    if (failure || screen.hidden) return;
+    interfaceReady = true;
+    if (!prepared || failure || screen.hidden) return;
     scenePending = false;
     progress(100);
     phase.textContent = 'Tudo pronto';
@@ -139,6 +149,7 @@
     }));
   }
   window.MareGameLoading = {prepare, scene, finish, fail,
+    get prepared() { return prepared; },
     get failed() { return failure; },
     get pending() { return scenePending && !failure; }};
 })();

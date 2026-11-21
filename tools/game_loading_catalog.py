@@ -73,6 +73,7 @@ def write_catalog(root, compatibility_files, extra_files):
     data = json.dumps(manifest, separators=(',', ':'), ensure_ascii=True).encode()
     filename = 'game-content-' + hashlib.sha256(data).hexdigest()[:24] + '.json'
     (root / filename).write_bytes(data)
-    html = root / 'index.html'
-    html.write_text(html.read_text(encoding='utf-8').replace(
-        '<html ', f'<html data-game-content="{filename}" ', 1), encoding='utf-8')
+    for name in ['index.html', 'ui-preview.html']:
+        html = root / name
+        html.write_text(html.read_text(encoding='utf-8').replace(
+            '<html ', f'<html data-game-content="{filename}" ', 1), encoding='utf-8')
