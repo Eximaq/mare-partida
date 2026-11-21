@@ -41,7 +41,12 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  assert.equal(await page.locator('[data-profile-value=title]').textContent(),'Pirata Promissor');
  assert.equal(await page.locator('[data-profile-value=power]').first().textContent(),await page.evaluate(()=>Math.round(__captainQA.stats().power).toLocaleString('pt-BR')));
  const portraitRaster=await page.locator('#captainProfilePortrait').evaluate(c=>({width:c.width,height:c.height,opaque:[...c.getContext('2d').getImageData(0,0,c.width,c.height).data].some((v,i)=>i%4===3&&v)}));
- assert(portraitRaster.width>=512&&portraitRaster.height>=512&&portraitRaster.width<=2048&&portraitRaster.height<=2096,'profile retains native HD backing instead of the retired256px raster');
+ // PR327 preserves the selected appearance: incompatible authored HD palettes
+ // use the native96 compositor instead of silently substituting another look.
+ const profileSource=await page.evaluate(()=>__mareDiagnostics().lobby96.nativeHD?.last);
+ if(profileSource?.consumer==='profile-portrait'&&profileSource.state==='rendered'){
+  assert(portraitRaster.width>=512&&portraitRaster.height>=512&&portraitRaster.width<=2048&&portraitRaster.height<=2096,'authored HD profile retains its native backing');
+ }else assert.deepEqual([portraitRaster.width,portraitRaster.height],[256,256],'appearance-preserving native96 fallback retains its preview backing');
  assert(portraitRaster.opaque,'portrait contains rendered pixels after its loading state clears');
  const realState=await page.evaluate(()=>JSON.stringify({eq:__captainQA.game.equipment,appearance:__captainQA.game.appearance96,attributes:__captainQA.game.attributes}));
  await shot('profile-overview');

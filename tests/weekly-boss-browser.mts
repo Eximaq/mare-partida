@@ -22,7 +22,7 @@ await authDatabase(async f=>{
   async function login(email:string){
    const context=await browser.newContext({viewport:{width:1366,height:900}}),p=await context.newPage();pages.push(p);p.on('pageerror',(e:any)=>errors.push(e.message));p.on('response',(r:any)=>{if(r.status()===404&&/weekly-boss|akainu/.test(r.url()))missing.push(r.url());});p.on('dialog',(d:any)=>d.accept());await p.route(/^https?:\/\/(?!localhost:9445\/)/,(r:any)=>r.abort());
    await context.addInitScript(()=>{localStorage.setItem('mare-partida-save-v1','sentinel-weekly-test');performance.setResourceTimingBufferSize(10000);globalThis.__weeklyTextureDraws=[];const original=CanvasRenderingContext2D.prototype.drawImage;CanvasRenderingContext2D.prototype.drawImage=function(...args:any[]){const src=args[0]?.src;if(typeof src==='string'&&src.includes('/assets/weekly-boss/akainu/')&&!globalThis.__weeklyTextureDraws.includes(src))globalThis.__weeklyTextureDraws.push(src);return (original as any).apply(this,args);};});
-   await p.goto('https://localhost:9445/online/');await p.locator('#email').fill(email);await p.locator('#password').fill('Fixture password only 123');await p.locator('#login-submit').click();await p.waitForFunction(()=>globalThis.MareGameSession?.controlled&&globalThis.MareGameSession.data?.online?.battle,null,{timeout:60000});await p.waitForFunction(()=>globalThis.__mareDiagnostics?.().lobby96.visualState==='ready',null,{timeout:60000});return p;
+   await p.goto('https://localhost:9445/online/');await p.locator('#email').fill(email);await p.locator('#password').fill('Fixture password only 123');await p.locator('#login-submit').click();await p.waitForFunction(()=>globalThis.MareGameSession?.controlled&&globalThis.MareGameSession.data?.online?.battle,null,{timeout:60000});await p.waitForFunction(()=>globalThis.__mareDiagnostics?.().lobby96.worldVisual?.state==='ready',null,{timeout:60000});return p;
   }
   const p=await login('owner@example.invalid'),q=await login('collaborator@example.invalid'),r=await login('player@example.invalid');
   assert.equal(await r.locator('#weeklyBossMenu').isVisible(),false,'ordinary player must not see a closed event');
@@ -34,12 +34,28 @@ await authDatabase(async f=>{
   assert.equal(await p.locator('#locationName').textContent(),'Akainu · Teste privado');
   assert.equal(await r.locator('#weeklyBossMenu').isVisible(),false,'private event cannot leak into ordinary account UI');
   const row=(await f.pool.query('SELECT simulation FROM mare_game.weekly_boss_events WHERE id=$1',[id])).rows[0],room=row.simulation;room.mobs[0].attack=room.mobs[0].profile.attack=1;await f.pool.query('UPDATE mare_game.weekly_boss_events SET simulation=$2 WHERE id=$1',[id,JSON.stringify(room)]);
+  // Index/portrait readiness is earlier than publication of the playable world.
+  for(const page of [p,q])await page.waitForFunction(()=>__mareDiagnostics().lobby96.worldVisual?.state==='ready',null,{timeout:90000});
   await p.waitForFunction(()=>MareGameSession.data.online.battle.mobs[0]?.action?.kind==='aoe',null,{timeout:30000});
   await p.screenshot({path:resolve(out,'aoe-warning-real-game.png')});await p.waitForTimeout(1100);await p.screenshot({path:resolve(out,'aoe-impact-real-game.png')});
   const resources=await p.evaluate(()=>performance.getEntriesByType('resource').filter(r=>r.name.includes('/assets/weekly-boss/akainu/')).map(r=>r.name));const draws=await p.evaluate(()=>globalThis.__weeklyTextureDraws);console.log('Weekly texture requests',resources,'actual canvas draws',draws);assert(resources.length>=2,'real sprite textures must be requested');assert(draws.some((s:string)=>s.includes('magma-area.webp')),'real area texture must be drawn');assert(draws.some((s:string)=>/\/(idle|walk|punch|aoe)\.webp/.test(s)),'real body texture must be drawn');
   const hp=await p.evaluate(()=>MareGameSession.data.online.battle.mobs[0].hp);await q.reload();await q.waitForFunction(()=>globalThis.MareGameSession?.data?.online?.weeklyBoss?.current,null,{timeout:30000});assert.equal(await q.evaluate(()=>MareGameSession.data.online.weeklyBoss.current.id),id);assert(await q.evaluate(()=>MareGameSession.data.online.battle.mobs[0].hp)<=hp);
   await p.setViewportSize({width:390,height:844});await p.locator('#modesMenuTrigger').click();await p.locator('#weeklyBossMenu').click();await p.screenshot({path:resolve(out,'admin-mobile.png')});assert(await p.locator('#weeklyBossDialog').evaluate((d:any)=>{const b=d.getBoundingClientRect();return b.width<=390&&b.x>=0&&b.right<=390;}));
-  await p.locator('[data-weekly-op=cancel]').click();for(const page of [p,q])await page.waitForFunction(()=>MareGameSession.data.online.world.mapId==='lobby'&&!MareGameSession.data.online.battle.weeklyBossInstanceId,null,{timeout:20000});
+  // The live worker and both heartbeats can hold a peer lock or advance the
+  // character version between render and click. Retry only explicit conflicts,
+  // through the same UI, and require a successful authoritative receipt.
+  let cancelled=false;
+  for(let attempt=0;attempt<4&&!cancelled;attempt++){
+   const [response]=await Promise.all([p.waitForResponse((r:any)=>r.url().endsWith('/commands')&&r.request().postDataJSON()?.action==='weeklyBoss.execute'&&r.request().postDataJSON()?.payload?.op==='cancel'),p.locator('[data-weekly-op=cancel]').click()]);
+   const receipt=await response.json();cancelled=response.ok();
+   if(!cancelled){
+    console.log('Weekly cancellation response',response.status(),receipt.error);
+    assert.equal(response.status(),409);assert(['party_member_busy','state_version_conflict'].includes(receipt.error),'Unexpected cancellation error: '+receipt.error);
+    await p.waitForFunction(()=>!MareGameSession.busy);await p.evaluate(()=>MareGameSession.read());await p.waitForTimeout(300);
+   }
+  }
+  assert(cancelled,'Cancellation must be accepted by the server');
+  for(const page of [p,q])await page.waitForFunction(()=>MareGameSession.data.online.world.mapId==='lobby'&&!MareGameSession.data.online.battle.weeklyBossInstanceId,null,{timeout:20000});
   for(const page of pages)assert.equal(await page.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'sentinel-weekly-test');
   for(const table of ['weekly_boss_victories','weekly_boss_entitlements'])assert.equal((await f.pool.query(`SELECT count(*)::int n FROM mare_game.${table}`)).rows[0].n,0);
   assert.deepEqual(errors,[]);assert.deepEqual(workerErrors,[]);assert.deepEqual(missing,[]);

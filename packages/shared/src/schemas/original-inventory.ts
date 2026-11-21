@@ -27,6 +27,7 @@ export const originalItemSchema = z.strictObject({
   level: z.number().int().min(1).max(1000),
   plus: z.number().int().min(0).max(20),
   locked: z.boolean(),
+  dismantlable: z.boolean().optional(),
   obtainedAt: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
   rarity: z
     .enum(["common", "uncommon", "rare", "epic", "legendary", "supreme"])
@@ -103,6 +104,11 @@ const five = z
 export const forgeOperationSchema = z.discriminatedUnion("type", [
   z.strictObject({...revision,type:z.literal("formEpicWeapon")}),
   z.strictObject({ ...item, type: z.literal("upgrade") }),
+  z.strictObject({
+    ...revision,
+    type: z.literal("dismantle"),
+    itemIds: z.array(instanceIdSchema).min(1).max(120).refine(ids=>new Set(ids).size===ids.length),
+  }),
   z.strictObject({
     ...item,
     type: z.literal("imbue"),

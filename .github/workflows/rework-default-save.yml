@@ -36,8 +36,9 @@ jobs:
           MARE_EVIDENCE_DIR: artifacts/rework-default-game
         run: node tests/rework_default_game_browser.cjs
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: rework-default-save-real-world
           path: artifacts/rework-default-game/
           if-no-files-found: warn

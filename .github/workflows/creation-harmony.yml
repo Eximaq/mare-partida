@@ -15,10 +15,20 @@ on:
       - 'tools/build_pages.py'
       - 'tests/*creation*'
       - 'tests/*harmony*'
+      - 'tests/gameplay-feedback-glass-browser.cjs'
+      - 'game-tooltips.*'
       - 'tests/original-inventory-online-browser.cjs'
       - 'market-online-ui.*'
       - 'tests/market-online-browser.cjs'
       - 'tests/social-online-browser.cjs'
+      - 'social-ui.*'
+      - 'party-ui.js'
+      - 'party.css'
+      - 'tests/party-online-browser.cjs'
+      - 'hud-glass.css'
+      - 'weekly-boss-ui.*'
+      - 'tests/weekly-glass-browser.cjs'
+      - 'tests/merchant-glass-browser.cjs'
       - 'tests/online-world-browser.cjs'
       - 'tests/online-battle-browser.cjs'
       - 'apps/account-client/game-*.js'
@@ -67,6 +77,7 @@ jobs:
         run: |
           python tests/run_honors_hd_browser.py tests/creation_selection_hd_browser.cjs --dist --offline
           python tests/run_honors_hd_browser.py tests/gameplay_harmony_controls_browser.cjs --dist --offline
+          python tests/run_honors_hd_browser.py tests/gameplay-feedback-glass-browser.cjs --dist --offline
       - name: Composição náutica e controles em telas atuais
         env:
           MARE_TEST_URL: http://127.0.0.1:8172/dist/
@@ -83,14 +94,20 @@ jobs:
         run: |
           MARE_QA_DIR="$MARE_QA_DIR/social" python tests/run_honors_hd_browser.py tests/social-online-browser.cjs --dist --offline
           MARE_QA_DIR="$MARE_QA_DIR/market" python tests/run_honors_hd_browser.py tests/market-online-browser.cjs --dist --offline
+      - name: Boss semanal e Mercador do Porto
+        run: |
+          python tests/run_honors_hd_browser.py tests/weekly-glass-browser.cjs --dist --offline
+          python tests/run_honors_hd_browser.py tests/merchant-glass-browser.cjs --dist --offline
+      - name: Grupo compacto e comandos online
+        run: MARE_QA_DIR="$MARE_QA_DIR/party" python tests/run_honors_hd_browser.py tests/party-online-browser.cjs --dist --offline
       - name: Original online world and travel UI contract
         run: python tests/run_honors_hd_browser.py tests/online-world-browser.cjs --dist --offline
       - name: Original online monsters and combat UI contract
         run: python tests/run_honors_hd_browser.py tests/online-battle-browser.cjs --dist --offline
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           name: criacao-harmonia-hd
           path: /tmp/mare-creation-harmony/
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 3

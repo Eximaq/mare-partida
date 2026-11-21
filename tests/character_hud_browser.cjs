@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=require('node:path'),{chromium}=require('playwright');
 const base=process.env.MARE_TEST_URL||'http://127.0.0.1:8165/',out=process.env.MARE_QA_DIR||require('node:os').tmpdir();
-const hook="  window.__hudQA={get game(){return game},get world(){return world},stats:getDerived,refresh(){updateUI();renderPortrait();drawWorld();presentWorld()},portraitState(){renderPortrait();const s=lobby96.snapshot();return {last:[s.defaultHD?.last,s.nativeHD?.last].find(p=>p?.consumer==='wantedPortrait'&&p.state==='rendered')}},save:saveGame,enterHunt,returnLobby,openPanel,promote:promoteHierarchy,equipHead(){game.equipment.head=newItem(itemDefs[19]);updateUI();renderPortrait()}};\n  window.__mareDiagnostics=";
+const hook="  window.__hudQA={get game(){return game},get world(){return world},updateUI,stats:getDerived,refresh(){updateUI();renderPortrait();drawWorld();presentWorld()},portraitState(){renderPortrait();const s=lobby96.snapshot();return {last:[s.defaultHD?.last,s.nativeHD?.last].find(p=>p?.consumer==='wantedPortrait'&&p.state==='rendered')}},save:saveGame,enterHunt,returnLobby,openPanel,promote:promoteHierarchy,equipHead(){game.equipment.head=newItem(itemDefs[19]);updateUI();renderPortrait()}};\n  window.__mareDiagnostics=";
 (async()=>{await fs.mkdir(out,{recursive:true});const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{
  const ctx=await browser.newContext({viewport:{width:1366,height:768}}),p=await ctx.newPage(),errors=[],missing=[];
  p.on('pageerror',e=>errors.push(e.message));p.on('response',r=>{if(r.status()>=400&&/character-hud|Alabasta/.test(r.url()))missing.push(r.url())});
@@ -96,6 +96,28 @@ const hook="  window.__hudQA={get game(){return game},get world(){return world},
  await p.evaluate(()=>{__hudQA.game.name='Bento D’Água';__hudQA.game.haki.unlocked=true;__hudQA.game.has_haki_unlocked=true;__hudQA.game.hp=__hudQA.stats().maxHP;__hudQA.refresh()});await p.locator('#miniWillpower').waitFor({state:'visible'});assert(await p.locator('#hakiQuickCast').isVisible());
  await p.locator('#attributePointsHud').click();await p.locator('#panelOverlay').waitFor({state:'visible'});await p.keyboard.press('Escape');
  await p.locator('#characterPosterToggle').click();await p.evaluate(()=>__hudQA.enterHunt());assert(await p.locator('#characterPoster').isHidden(),'scene transition closes poster');assert(await p.locator('#classSkill1').isVisible());await p.setViewportSize({width:390,height:844});await p.waitForTimeout(100);if(await p.locator('#floatingChat').evaluate(e=>e.classList.contains('hud-open')))await p.locator('#floatingChat [data-close-window]').click();if(await p.locator('#journeyToggle').getAttribute('aria-expanded')==='false')await p.locator('#journeyToggle').click();await p.locator('#huntRoute').click({timeout:3000});assert(await p.locator('#panelOverlay').isVisible(),'hunt routes remain reachable above mobile navigation');await p.keyboard.press('Escape');
+ // Freeze the encounter inputs while exercising the real HUD update path.
+ const targetPanel=p.locator('#targetHud');
+ for(const [width,height,type] of [[1366,768,'common'],[768,1024,'common'],[390,844,'boss'],[844,390,'boss']]){
+  await p.setViewportSize({width,height});
+  await p.evaluate(type=>{
+   __hudQA.world.target={alive:true,type,name:'Capitão da Guarda',level:24,hp:375,maxHP:500};
+   __hudQA.updateUI();
+  },type);
+  await targetPanel.waitFor();
+  assert.match(await targetPanel.evaluate(e=>getComputedStyle(e).backdropFilter),/blur/);
+  assert.equal(await p.locator('#targetHudBoss').isVisible(),type==='boss');
+  assert.equal(await p.locator('#targetHudLevel').innerText(),'Nv. 24');
+  assert(await p.locator('#targetHudState').isVisible(),'combat state is visible at '+width);
+  assert.equal(await p.locator('#targetHudHPText').innerText(),'375 / 500');
+  assert.equal(await p.locator('#targetHudFill').evaluate(e=>e.style.width),'75%');
+  const box=await targetPanel.boundingBox();
+  assert(box.x>=0 && box.y>=0 && box.x+box.width<=width && box.y+box.height<=height);
+  assert(!(box.x<width/2 && box.x+box.width>width/2 && box.y<height/2 && box.y+box.height>height/2),'combat center clear');
+  await p.screenshot({path:path.join(out,'target-'+width+'.png')});
+ }
+ await p.evaluate(()=>{__hudQA.world.target=null;__hudQA.updateUI()});
+ assert(await targetPanel.isHidden(),'no card without a target');
  await p.evaluate(()=>{__hudQA.returnLobby();__hudQA.save()});const saved=await p.evaluate(()=>JSON.parse(localStorage.getItem('mare-partida-save-v1')));await p.reload();await p.waitForFunction(()=>window.__hudQA&&__hudQA.game);assert.equal(await p.locator('#wantedName').textContent(),'Bento D’Água');assert.equal(await p.locator('#hudHierarchyTitle').textContent(),'Supernova');assert.match(await p.locator('#wantedBounty').textContent(),/^[0-9.]+$/);assert.equal(await p.locator('#characterPosterToggle').getAttribute('aria-expanded'),'false');assert.equal((await p.evaluate(()=>__hudQA.game.gold)),saved.gold);
  const touch=await browser.newContext({viewport:{width:393,height:852},isMobile:true,hasTouch:true,storageState:await ctx.storageState(),reducedMotion:'reduce'}),tp=await touch.newPage();tp.on('pageerror',e=>errors.push(e.message));await tp.route('**/api/akuma/catalog',r=>r.fulfill({status:404,body:'{}'}));await tp.route('**/__dev_version',r=>r.fulfill({body:'stable'}));await tp.goto(base);await tp.waitForFunction(()=>window.__mareDiagnostics&&__mareDiagnostics().lobby96.state==='ready');await tp.evaluate(()=>window.__pauseFrames=true);await tp.locator('#characterPosterToggle').tap();assert(await tp.locator('#characterPoster').isVisible(),'touch opens poster');await tp.locator('#characterPosterClose').tap();assert(await tp.locator('#characterPoster').isHidden(),'touch closes poster');await tp.screenshot({path:path.join(out,'hud-touch-reduced-motion.png')});await touch.close();
  assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);await fs.writeFile(path.join(out,'results.json'),JSON.stringify({layouts,font:true,liveBars:true,bounty:true,reload:true,errors,missing},null,2));console.log(JSON.stringify({viewports:layouts.length,font:true,liveBars:true,bounty:true,keyboard:true,touch:true,reload:true,errors,missing}));

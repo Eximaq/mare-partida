@@ -31,11 +31,11 @@ for(const s of scripts)run(pathFor(s));
  const look=MareCharacterAppearance.normalize(data.appearance96);
  const actor={classId:'sword',appearance96:look,equipment:{weapon:{def:0},coat:{def:151},legs:{def:22},boots:{def:9}}};
  const saved=JSON.stringify(actor),action='attack-sword';
- core.requestWorldVisual(actor,{actions:[action],scope:'sword-default-proof'});
- while(core.worldVisual().state==='loading')await new Promise(r=>setTimeout(r,10));
- assert(core.worldReady(actor),JSON.stringify(core.worldVisual()));
  let frames=0;
  for(const direction of ['north','south','east','west']){
+  core.requestWorldVisual(actor,{action,direction,consumer:'world'});
+  while(core.worldVisual().state==='loading')await new Promise(r=>setTimeout(r,10));
+  assert(core.worldReady(actor),JSON.stringify(core.worldVisual()));
   const hit=core.worldVisual().coverage.find(c=>c.action===action&&c.direction===direction);
   assert.equal(hit?.slotRoutes?.boots?.item,9);
   assert.equal(hit?.slotRoutes?.legs?.item,22);

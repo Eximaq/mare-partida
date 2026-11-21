@@ -232,7 +232,6 @@
       <button type="button" id="closeFactionPreview" aria-label="Fechar mostruário">×</button></div>
     </section>
     <header class="topbar nautical-profile" aria-label="Perfil do aventureiro">
-      <span id="playerVisualStatus" class="player-visual-status hidden" role="status"></span>
       <div class="hud-captain">
         <button type="button" id="characterPosterToggle" aria-controls="characterPoster" aria-expanded="false" aria-label="Expandir cartaz do personagem" title="Expandir cartaz do personagem"><img id="hudFactionEmblem" width="912" height="912" alt="" hidden></button>
         <div class="hud-identity">
@@ -312,10 +311,17 @@
           <strong id="wantedName" translate="no">Aventureiro</strong>
           <div class="wanted-bounty-label">฿ Bounty: <output id="wantedBounty" aria-label="Bounty do personagem"></output></div>
         </div>
-        <button type="button" id="characterPosterClose" aria-label="Recolher cartaz do personagem">Recolher cartaz</button>
+        <button type="button" id="characterPosterClose" aria-label="Recolher cartaz do personagem" title="Recolher cartaz"><span aria-hidden="true">×</span></button>
       </section>
       <button type="button" class="location-heading" data-panel="map" aria-controls="panelOverlay" aria-describedby="locationName" aria-label="Abrir mapa" title="Abrir mapa">
-        <span id="locationName">Porto das Correntes</span>
+        <span class="location-plaque">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="m17.5 6.5-3 8-5-5z" fill="currentColor"/>
+            <path d="m6.5 17.5 3-8 5 5z" fill="currentColor" opacity=".55"/>
+          </svg>
+          <span id="locationName">Porto das Correntes</span>
+        </span>
       </button>
     </header>
 
@@ -344,12 +350,16 @@
         <div class="scene-switcher"><span id="factionChip" class="scene-faction-chip">◆ PIRATA</span><button id="navLobby" class="scene-tab active" type="button">⌂ <span>PORTO / LOBBY</span></button><button id="navHunt" class="scene-tab" type="button">◈ <span>MAPA</span></button><span class="scene-info" id="sceneInfo">ÁREA SEGURA · CLIQUE PARA CAMINHAR</span></div><div class="map-top-strip"><div><span class="diamond">◆</span><span id="mapTitle">ENSEADA DAS CONCHAS QUEBRADAS</span></div><div class="danger-rating" id="dangerRating">ZONA INICIAL · NV. 1–12</div></div>
         <div class="game-frame" id="gameFrame">
           <canvas id="worldCanvas" width="960" height="570" aria-label="Mundo de Kaizoku Idle"></canvas>
-          <div id="worldLoading" class="world-loading hidden" role="status" aria-live="polite"><div><span>Preparando o mapa…</span><button id="retryPlayerVisual" type="button" hidden>Tentar novamente</button></div></div>
+          <div id="worldLoading" class="world-loading hidden" role="status" aria-live="polite"><div><span>Preparando o mapa…</span></div></div>
+          <div id="worldRecovery" class="world-recovery" hidden><div><strong role="status"></strong><span role="timer"></span></div></div>
           <div class="world-vignette"></div>
           <div class="map-label"><span id="sceneEyebrow">REGIÃO DE CAÇA</span><strong id="overlayArea">COSTA DOS DESTROÇOS</strong></div>
           <div class="world-side-stats"><span id="combatState"><i class="pulse-dot"></i> CAÇADA AUTOMÁTICA</span><span id="targetHint">PROCURANDO ALVO...</span></div>
-          <div class="boss-banner hidden" id="bossBanner">⚔ UM CHEFE SE APROXIMA</div>
-          <div class="world-hint" id="worldHint">Clique para caminhar · Clique nos NPCs para interagir</div><div class="world-command"><button id="returnLobby" type="button" class="hidden">Voltar ao porto</button><button id="huntRoute" type="button" class="hidden" data-panel="hunt" data-notification="hunt">ROTA & RECOMPENSAS</button></div><div class="npc-tooltip hidden" id="npcTooltip"></div>
+          <div class="boss-banner hidden" id="bossBanner" role="status"><img src="assets/ui/contracts-hd/boss.png" alt=""><div><small>Chefe à vista</small><strong>Um chefe se aproxima</strong></div></div>
+          <div class="world-hint" id="worldHint">Clique para caminhar · Clique nos NPCs para interagir</div><div class="world-command"><button id="returnLobby" type="button" class="hidden">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="4" r="2"/><path d="M12 6v15M8.5 9h7M3 14c1 4 4 6 9 7 5-1 8-3 9-7M3 17v-3l3 1m12 0 3-1v3"/></svg>
+            Voltar ao porto
+          </button><button id="huntRoute" type="button" class="hidden" data-panel="hunt" data-notification="hunt">ROTA & RECOMPENSAS</button></div><div class="npc-tooltip hidden" id="npcTooltip"></div>
         </div>
         <nav id="mainMenu" class="bottom-nav" aria-label="Menu principal"><button type="button" data-panel="inventory" aria-label="Inventário" aria-keyshortcuts="I"><img src="assets/ui/nav-menu/inventory.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Inventário (I)</span></button><button type="button" data-panel="forge" data-notification="forge" aria-label="Forja" aria-keyshortcuts="F"><img src="assets/ui/nav-menu/forge.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Forja (F)</span></button><div class="character-menu-anchor"><button type="button" id="characterMenuTrigger" data-notification="character" data-panel="character" data-character-menu-trigger aria-label="Personagem" aria-keyshortcuts="P" aria-haspopup="menu" aria-expanded="false" aria-controls="characterQuickMenu"><img src="assets/ui/nav-menu/character.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Personagem (P)</span></button><div id="characterQuickMenu" class="character-quick-menu hidden" role="menu" aria-label="Seções do personagem"><button type="button" role="menuitem" data-character-section="status" data-notification="status"><img src="icones_menu_pirata/png/48/personagem.png" alt=""><span>Personagem<small>Status e atributos</small></span></button><button type="button" role="menuitem" data-character-section="talents" data-notification="talents"><img src="assets/ui/character-menu/talents.png" alt="" draggable="false"><span>Talentos<small>Árvore de habilidades</small></span></button><button type="button" role="menuitem" data-character-section="achievements" data-notification="achievements"><img src="assets/ui/character-menu/achievements.png" alt="" draggable="false"><span>Conquistas<small>Feitos e recompensas</small></span></button><button type="button" role="menuitem" data-character-section="haki"><img src="assets/haki/mastery/armament.png" alt=""><span>Haki<small id="characterMenuHakiHint">Requisitos de despertar</small></span></button><button type="button" role="menuitem" data-character-section="akuma"><img src="assets/ui/character-menu/akuma.png" alt="" draggable="false"><span>Akuma no Mi<small>Compêndio de frutas</small></span></button><button type="button" role="menuitem" data-character-section="hierarchy" data-notification="hierarchy"><img src="assets/ui/hierarchy/pirate-flag.png" alt="" draggable="false"><span>Hierarquia dos Mares<small>Cargos e ranking global</small></span></button></div></div><div class="character-menu-anchor modes-menu-anchor"><button type="button" id="modesMenuTrigger" data-notification="modes" data-panel="modes" data-modes-menu-trigger aria-label="Abrir menu Modos de Jogo" aria-keyshortcuts="M" aria-haspopup="menu" aria-expanded="false" aria-controls="modesQuickMenu"><img src="assets/ui/nav-menu/modes.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Modos de jogo (M)</span></button><div id="modesQuickMenu" class="character-quick-menu modes-quick-menu hidden" role="menu" aria-label="Modos de Jogo"><button type="button" role="menuitem" data-quick-mode="map"><img src="icones_menu_pirata/png/48/mapa.png" alt=""><span>Mapa do Arquipélago<small>Ilhas e expedições</small></span></button><button type="button" role="menuitem" data-quick-mode="prison" data-notification="prison"><img src="assets/ui/modes/impel-down.svg" alt=""><span>Impel Down<small>100 andares · Duelo por andar</small></span></button><button type="button" role="menuitem" data-quick-mode="dungeons" data-notification="dungeons"><img src="assets/ui/contracts-hd/boss.png" alt=""><span>Masmorra de Chefes<small>Confrontos únicos · Recompensas vinculadas</small></span></button></div></div><button type="button" data-panel="contracts" data-notification="contracts" aria-label="Contratos" aria-keyshortcuts="C"><img src="assets/ui/nav-menu/contracts.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Contratos (C)</span></button><button type="button" data-panel="help" aria-label="Ajuda"><img src="assets/ui/nav-menu/help.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Ajuda</span></button><div class="character-menu-anchor captain-menu-anchor"><button type="button" id="captainMenuTrigger" data-panel="captain" data-captain-menu-trigger aria-label="Abrir Central do Navegante" aria-haspopup="menu" aria-expanded="false" aria-controls="captainQuickMenu"><img src="assets/ui/nav-menu/captain.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Configurações</span></button><div id="captainQuickMenu" class="character-quick-menu captain-quick-menu hidden" role="menu" aria-label="Central do Navegante"><button type="button" role="menuitem" data-captain-section="journal"><span class="character-section-glyph" aria-hidden="true">▤</span><span>Jornal do Morgan<small>Eventos e anúncios</small></span></button><button type="button" role="menuitem" data-captain-section="myprofile"><img src="icones_menu_pirata/png/48/personagem.png" alt="" draggable="false"><span>Meu Perfil<small>Estatísticas e progresso</small></span></button><button type="button" role="menuitem" data-captain-section="settings"><img src="icones_menu_pirata/png/48/configuracoes.png" alt="" draggable="false"><span>Configurações<small>Áudio, gráficos e interface</small></span></button></div></div></nav>
       <div class="action-panel" role="toolbar" aria-label="Habilidades e consumíveis">
@@ -397,20 +407,24 @@
       <div class="creation-dialog">
         <div class="creation-top">
           <span class="creation-emblem"><img class="studio-brand-icon" src="assets/ui/character-studio/steps/faction.png?v=alpha-native-v1" alt=""></span>
-          <div><div class="creation-eyebrow">KAIZOKU IDLE • CRÔNICAS DAS CORRENTES</div><h1>ESCOLHA SEU <em>DESTINO</em></h1><p>Uma origem. Sete caminhos de batalha. Sua história começa aqui.</p></div>
+          <div><h1>Criação de personagem</h1></div>
         </div>
         <div class="creation-progress" role="list" aria-label="Etapas de criação"><span id="stepFaction" role="listitem" class="step active" aria-current="step"><img class="studio-step-icon" src="assets/ui/character-studio/steps/faction.png?v=alpha-native-v1" alt=""><b>01</b><span class="studio-step-label">SUA FACÇÃO</span></span><span class="progress-rule" aria-hidden="true"></span><span id="stepClass" role="listitem" class="step"><img class="studio-step-icon" src="assets/ui/character-studio/steps/class.png?v=alpha-native-v1" alt=""><b>02</b><span class="studio-step-label">SUA CLASSE</span></span><span class="progress-rule" aria-hidden="true"></span><span id="stepAppearance" role="listitem" class="step"><img class="studio-step-icon" src="assets/ui/character-studio/steps/appearance.png?v=alpha-native-v1" alt=""><b>03</b><span class="studio-step-label">SUA APARÊNCIA</span></span></div>
         <div id="factionStep">
-          <div class="creation-section-heading"><div><span>PRIMEIRO PASSO</span><h2>De qual lado dos mares você está?</h2></div><small>A facção define sua origem e seus bônus iniciais.</small></div>
-          <label class="name-label" for="characterName">NOME DO AVENTUREIRO</label>
-          <input id="characterName" aria-describedby="characterNameCount creationError" placeholder="Nome do seu personagem" autocomplete="off" spellcheck="false" /><output id="characterNameCount" for="characterName">0/12</output>
-          <div class="faction-choices">
-            <button class="faction-choice" data-faction="revolutionary" type="button"></button>
-            <button class="faction-choice chosen" data-faction="pirate" type="button"></button>
-            <button class="faction-choice" data-faction="marine" type="button"></button>
-            <button class="faction-choice" data-faction="government" type="button"></button>
+          <div class="creation-origin-body">
+            <div class="creation-section-heading"><div><h2>De qual lado dos mares você está?</h2></div><small>A facção define sua origem e seus bônus iniciais.</small></div>
+            <div class="creation-name-field">
+              <label class="name-label" for="characterName">NOME DO AVENTUREIRO</label>
+              <input id="characterName" aria-describedby="characterNameCount creationError" placeholder="Nome do seu personagem" autocomplete="off" spellcheck="false" /><output id="characterNameCount" for="characterName">0/12</output>
+            </div>
+            <div class="faction-choices">
+              <button class="faction-choice" data-faction="revolutionary" type="button"></button>
+              <button class="faction-choice chosen" data-faction="pirate" type="button"></button>
+              <button class="faction-choice" data-faction="marine" type="button"></button>
+              <button class="faction-choice" data-faction="government" type="button"></button>
+            </div>
+            <section id="creationFactionSummary" class="creation-faction-summary" aria-label="Resumo da facção selecionada"></section>
           </div>
-          <section id="creationFactionSummary" class="creation-faction-summary" aria-label="Resumo da facção selecionada"></section>
           <button id="nextToClass" class="primary-button" type="button">CONTINUAR PARA AS CLASSES <span>→</span></button>
         </div>
         <div id="classStep" class="hidden">

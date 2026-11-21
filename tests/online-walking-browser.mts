@@ -21,16 +21,33 @@ await authDatabase(async f=>{
   gateway.listen(9445,'127.0.0.1');await once(gateway,'listening');browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});context=await browser.newContext({viewport:{width:1366,height:900}});const p=await context.newPage();p.on('dialog',async(d:any)=>{assert.equal(d.type(),'confirm');assert.match(d.message(),/Este personagem está sob controle/);await d.accept();});p.on('pageerror',(e:any)=>errors.push(e.stack||e.message));await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-final-acceptance'));
   await p.route(/^https?:\/\/(?!localhost:9445\/)/,(r:any)=>r.abort());
   await p.goto('https://localhost:9445/online/');await p.locator('#email').fill('acceptance@example.invalid');await p.locator('#password').fill('Fixture password only 123');await p.locator('#login-submit').click();await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#classStep [data-class=sword]').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();
-  await p.waitForFunction(()=>globalThis.MareGameSession?.data?.online?.battle&&globalThis.__mareDiagnostics?.().map.navigation.ready);await p.waitForFunction(()=>globalThis.__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});
+  await p.waitForFunction(()=>globalThis.MareGameSession?.data?.online?.battle&&globalThis.__mareDiagnostics?.().map.navigation.ready);await p.waitForFunction(()=>globalThis.__mareDiagnostics().lobby96.worldVisual?.state==='ready',null,{timeout:90000});
 
 
   simulations=createSimulationPool({databaseUrl:f.pool.options.connectionString!,counts:{solo:2,party:1},workerUrl:new URL('../apps/game-server/dist/simulation-worker.js',import.meta.url)});await simulations.start();
   await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
   await p.evaluate(()=>MareGameSession.command('world.travel',{islandId:'dawn'}));
   await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
-  await p.waitForTimeout(2000);
+  await p.waitForFunction(()=>__mareDiagnostics().lobby96.worldVisual?.state==='ready'&&Number.isFinite(__mareDiagnostics().onlineSampledAt),null,{timeout:90000});
   await p.waitForFunction(()=>/^\d+ ms$/.test(document.querySelector('#onlinePerformance strong')?.textContent||'')&&/^\d+ FPS$/.test(document.querySelector('#onlinePerformance span:not(.online-updates)')?.textContent||''));
-  await p.evaluate(()=>{const original=globalThis.MareEmberRenderer.monster;globalThis.monsterProbe=[];globalThis.MareEmberRenderer.monster=function(ctx,m,...args){if(m.alive)globalThis.monsterProbe.push({id:m.id,x:m.x,y:m.y,moving:m.moving,phase:m.emberElapsed});return original.call(this,ctx,m,...args);};});
+  await p.evaluate(()=>{
+   const probe=globalThis.monsterProbe={frames:0,moves:0,sliding:0,rewinds:0,actors:new Map()};
+   for(const renderer of [globalThis.MareNewIslandArt,globalThis.MareEmberRenderer]){
+    const draw=renderer.monster;
+    renderer.monster=function(ctx,m,...args){
+     const drawn=draw.call(this,ctx,m,...args);
+     if(drawn&&m.alive){
+      const previous=probe.actors.get(m.id);
+      const moved=previous&&Math.hypot(m.x-previous.x,m.y-previous.y)>.01;
+      probe.frames++;
+      if(moved){probe.moves++;if(!m.moving)probe.sliding++;}
+      if(previous&&m.emberElapsed<previous.phase-.01)probe.rewinds++;
+      probe.actors.set(m.id,{x:m.x,y:m.y,phase:m.emberElapsed,moves:(previous?.moves||0)+(moved?1:0)});
+     }
+     return drawn;
+    };
+   }
+  });
   assert.equal(await p.evaluate(()=>Number.isFinite(__mareDiagnostics().onlineSampledAt)),true,'motion probes need the time associated with the drawn pose');
   let compactReads=0;p.on('response',r=>{if(r.url().endsWith('/frame')&&r.status()===200)compactReads++;});
   const captures=[];
@@ -38,7 +55,7 @@ await authDatabase(async f=>{
    await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
    await p.evaluate(id=>MareGameSession.command(id==='lobby'?'world.return':'world.travel',id==='lobby'?{}:{islandId:'dawn'}),mapId);
    await p.waitForFunction(id=>__mareDiagnostics().map.id===id&&__mareDiagnostics().map.navigation.ready,mapId);
-   await p.waitForTimeout(1000);
+   await p.waitForFunction(()=>__mareDiagnostics().lobby96.worldVisual?.state==='ready',null,{timeout:90000});
    const screen=await p.evaluate(()=>{const d=__mareDiagnostics(),r=document.querySelector('#worldCanvas').getBoundingClientRect();return {x:d.hero.x,y:d.hero.y,camera:d.camera,rect:{x:r.x,y:r.y,width:r.width,height:r.height}};});
    const nav=require('../world-catalog.cjs').load().navigation(mapId);
    let target:any;
@@ -52,7 +69,12 @@ await authDatabase(async f=>{
    await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
    const canvas=await p.locator('#worldCanvas').boundingBox();
    await p.mouse.click(canvas.x+(target.x-Math.round(screen.camera.x))*canvas.width/screen.camera.width,canvas.y+(target.y-Math.round(screen.camera.y))*canvas.height/screen.camera.height);
+   // Sample the full speed window even on browsers that reach the goal early.
    await p.waitForTimeout(5000);
+   await p.waitForFunction(goal=>{
+    const hero=__mareDiagnostics().hero;
+    return Math.hypot(hero.x-goal.x,hero.y-goal.y)<2;
+   },target,{timeout:20000});
    const meter=await p.evaluate(()=>MareGameSession.network);
    assert.ok(meter.rttMs>=240,'HTTP ping includes injected 250ms network delay');
    assert.match(await p.locator('#onlinePerformance strong').innerText(),/^\d+ ms$/);
@@ -64,7 +86,27 @@ await authDatabase(async f=>{
   await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
   await p.evaluate(()=>MareGameSession.command('battle.auto',{enabled:true}));
   await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
-  await p.waitForTimeout(18000);captures.push({kind:'auto',frames:await p.evaluate('window.captureMotion=false;window.motion')});
+  await p.waitForTimeout(18000);
+  captures.push({kind:'auto',frames:await p.evaluate('window.captureMotion=false;window.motion')});
+  // Dawn monsters are neutral until hit. A swordsman who stays in melee range
+  // gives the monster no reason to walk once it reaches attack distance.
+  const engaged=await p.waitForFunction(()=>{
+   const b=MareGameSession.data.online.battle;
+   return b.mobs.find(m=>m.id===b.targetId&&m.alive&&m.engaged&&m.hp>m.maxHP/2)?.id;
+  },null,{timeout:30000});
+  const pursuerId=await engaged.jsonValue();
+  // A loot credit can advance the server version between a frame and a command.
+  // Refresh the authoritative snapshot and retry only an explicitly rejected intent.
+  async function pursuitCommand(action:string,payload:Record<string,unknown>){
+   await p.evaluate(async({action,payload})=>{
+    for(let attempt=1;;attempt++){
+     await MareGameSession.read(true);
+     try{await MareGameSession.command(action,payload);return;}
+     catch(error){if(error.code!=='state_version_conflict'||attempt>=3)throw error;}
+    }
+   },{action,payload});
+  }
+  await pursuitCommand('battle.auto',{enabled:false});
   for(const run of captures){
    const frames=run.frames;let travel=0,maxWindowSpeed=0,windows=0;
    for(let i=1;i<frames.length;i++){
@@ -79,18 +121,34 @@ await authDatabase(async f=>{
    if(run.kind==='click'){const end=frames.at(-1);assert.ok(Math.hypot(end.x-run.target.x,end.y-run.target.y)<2,'distant click must eventually arrive by walking');}
    console.log(JSON.stringify({kind:run.kind,map:run.mapId,maxWindowSpeed,passed:true}));
   }
-  // The speed window above is fixed, but the neutral monsters may only start
-  // following near its end. Wait for the same movement evidence threshold,
-  // rather than assuming 18 seconds always contains 101 moving samples.
   await p.waitForFunction(()=>{
-   const last=new Map();let moves=0;
-   for(const v of globalThis.monsterProbe){const prior=last.get(v.id);if(prior&&Math.hypot(v.x-prior.x,v.y-prior.y)>.01)moves++;last.set(v.id,v);}
-   return moves>100;
-  },null,{timeout:30000,polling:250});
-  const samples=await p.evaluate('globalThis.monsterProbe');let moves=0,sliding=0,rewinds=0;const last=new Map();
-  for(const v of samples){const prev=last.get(v.id);if(prev){if(v.phase<prev.phase-.01)rewinds++;if(Math.hypot(v.x-prev.x,v.y-prev.y)>.01){moves++;if(!v.moving)sliding++;}}last.set(v.id,v);}
-  console.log(JSON.stringify({monsterFrames:samples.length,moves,sliding,phaseRewinds:rewinds}));
-  assert.ok(moves>100,'real monster movement observed');assert.equal(sliding,0,'moving monsters animate their steps');assert.equal(rewinds,0,'walk animation clock never rewinds on snapshots');
+   const {battle,world}=MareGameSession.data.online;
+   return !battle.pending&&!battle.skillJob&&(battle.actionLockUntil||0)<=Date.parse(world.serverNow);
+  });
+  const {hero,mob}=await p.evaluate(id=>{
+   const {battle,world}=MareGameSession.data.online;
+   return {hero:world.position,mob:battle.mobs.find(m=>m.id===id&&m.alive&&m.engaged)};
+  },pursuerId);
+  assert.ok(mob,'the retreat needs a living pursuer');
+  const nav=require('../world-catalog.cjs').load().navigation('dawn');
+  const retreat=Array.from({length:8},(_,i)=>({
+   x:Math.round(hero.x+640*Math.cos(i*Math.PI/4)),y:Math.round(hero.y+640*Math.sin(i*Math.PI/4))
+  })).filter(point=>nav.walkable(point.x,point.y)&&nav.path(hero,point).length)
+     .sort((a,b)=>Math.hypot(b.x-mob.x,b.y-mob.y)-Math.hypot(a.x-mob.x,a.y-mob.y))[0];
+  assert.ok(retreat,'Dawn has a navigable retreat from the engaged monster');
+  const start=await p.evaluate(id=>globalThis.monsterProbe.actors.get(id)?.moves||0,pursuerId);
+  await pursuitCommand('world.move',retreat);
+  await p.waitForFunction(({id,start})=>
+   (globalThis.monsterProbe.actors.get(id)?.moves||0)-start>100,
+   {id:pursuerId,start},{timeout:30000,polling:250});
+  const stats=await p.evaluate(()=>{
+   const {frames,moves,sliding,rewinds}=globalThis.monsterProbe;
+   return {monsterFrames:frames,moves,sliding,phaseRewinds:rewinds};
+  });
+  console.log(JSON.stringify(stats));
+  assert.ok(stats.moves>100,'real monster movement observed');
+  assert.equal(stats.sliding,0,'moving monsters animate their steps');
+  assert.equal(stats.phaseRewinds,0,'walk animation clock never rewinds on snapshots');
   const disconnected=/\/(?:online-state|frame)$/;await p.route(disconnected,(r:any)=>r.abort());await p.evaluate(()=>MareGameSession.read(true).catch(()=>{}));
   await p.waitForFunction(()=>/Sem conexão/.test(document.querySelector('#onlinePerformance')?.textContent||''),null,{timeout:5000});
   await p.unroute(disconnected);await p.evaluate(()=>MareGameSession.read(true));

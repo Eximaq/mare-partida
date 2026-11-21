@@ -1,7 +1,7 @@
 'use strict';
 /* Visual adapter for the existing renderers. No combat clock, callback or save data. */
 ((root)=>{
- const reactions=new WeakMap(),images=new Map(),lastDraw=new Map(),HURT_SECONDS=.18;
+ const reactions=new WeakMap(),images=new Map(),failedAt=new Map(),lastDraw=new Map(),HURT_SECONDS=.18;
  const directions={front:'south',back:'north',left:'west',right:'east'};
  const fruits={akuma_tori_albatroz:'tori',akuma_tori_phoenix:'phoenix',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko',akuma_ushi_giraffe:'ushi',akuma_inu_wolf:'wolf',akuma_ryu_ryu:'ryu',akuma_ushi_bison:'bison'};
  const data=()=>root.MareSpriteCombatV2Data||{};
@@ -35,9 +35,11 @@
  }
  function image(url,context={}){
   if(!/^assets\/sprites-combat-v2\/[a-z0-9-]+\/[a-zA-Z0-9_.-]+\.png$/.test(url)){reportMissing(context.consumer||'sprite-combat-v2',String(url),context.action,context.direction,'invalid-current-path');return null;}
+  if(failedAt.has(url)&&Date.now()-failedAt.get(url)>=3000)images.delete(url);
   if(!images.has(url)){
+   failedAt.delete(url);
    const im=new Image(),notify=()=>{if(typeof window!=='undefined')window.dispatchEvent(new Event('mare-zoan-sprite-ready'));};
-   im.addEventListener?.('load',notify);im.addEventListener?.('error',()=>{reportMissing(context.consumer||'sprite-combat-v2',url,context.action,context.direction,'image-load');notify();});im.src=resourceURL(url);images.set(url,im);
+   im.addEventListener?.('load',notify);im.addEventListener?.('error',()=>{failedAt.set(url,Date.now());reportMissing(context.consumer||'sprite-combat-v2',url,context.action,context.direction,'image-load');notify();});im.src=resourceURL(url);images.set(url,im);
   }return images.get(url);
  }
  function preload(key){const entry=data()[key];if(entry)for(const [action,ds]of Object.entries(entry.clips))for(const [direction,c]of Object.entries(ds))image(c.image,{consumer:'current-sprite-preload:'+key,action,direction});}

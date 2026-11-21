@@ -105,6 +105,13 @@ jobs:
           python tools/build_pages.py
           python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/native-hd-server.txt" 2>&1 &
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
+      - name: Carregamento visual com movimento e combate
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8157/dist/
+          MARE_EVIDENCE_DIR: artifacts/rework-visual-async
+        run: |
+          node tests/rework_visual_readiness_browser.cjs
+          MARE_FAIL_VISUAL=1 node tests/rework_visual_readiness_browser.cjs
       - name: Capture normal world renderer without touching owner saves
         env:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/
@@ -136,28 +143,32 @@ jobs:
           MARE_EVIDENCE_DIR: artifacts/rework-v5-ui
         run: node tests/rework_v5_ui_browser.cjs
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: rework-user-flow-evidence
           path: |
             artifacts/rework-movement-ui/
             artifacts/rework-v5-ui/
           if-no-files-found: warn
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: rework-v5-evidence
           path: artifacts/rework-v5/
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: rework-inventory-evidence
           path: artifacts/rework-inventory/
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: rework-default-save-evidence
           path: artifacts/rework-default-game/
           if-no-files-found: ignore
@@ -165,104 +176,121 @@ jobs:
         if: always()
         run: python tools/split_native_hd_evidence.py artifacts/native-hd-game artifacts/native-hd-parts
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-runtime-report
           path: artifacts/native-hd-game/*.json
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part0
           path: artifacts/native-hd-parts/part0
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part1
           path: artifacts/native-hd-parts/part1
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part2
           path: artifacts/native-hd-parts/part2
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part3
           path: artifacts/native-hd-parts/part3
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part4
           path: artifacts/native-hd-parts/part4
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part5
           path: artifacts/native-hd-parts/part5
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part6
           path: artifacts/native-hd-parts/part6
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part7
           path: artifacts/native-hd-parts/part7
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part8
           path: artifacts/native-hd-parts/part8
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part9
           path: artifacts/native-hd-parts/part9
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part10
           path: artifacts/native-hd-parts/part10
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part11
           path: artifacts/native-hd-parts/part11
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part12
           path: artifacts/native-hd-parts/part12
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part13
           path: artifacts/native-hd-parts/part13
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part14
           path: artifacts/native-hd-parts/part14
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
+          retention-days: 3
           name: native-hd-real-game-part15
           path: artifacts/native-hd-parts/part15
           if-no-files-found: ignore

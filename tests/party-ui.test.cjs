@@ -17,3 +17,17 @@ test('ready confirmation names the actual server plan and escapes character text
  const html=UI.render({...data,group:{...data.group,preparation:{kind:'hunt',destination:'dawn',nonce:'nonce'}}},{...context,selection:{kind:'dungeon',dungeonId:'alvida'}});
  assert.match(html,/CONFIRMAÇÃO DOS MEMBROS/);assert.ok(html.includes("<h3>Ilha Dawn</h3>"));assert.doesNotMatch(UI.render({...data,group:{...data.group,members:[{...data.group.members[0],name:'<img onerror=bad>'}]}},context),/<img onerror=bad>/);
 });
+
+test('compact party navigation keeps every command but exposes only the selected section',()=>{
+ const html=UI.render(data,context);
+ assert.match(html,/data-party-view="members"[^>]*aria-pressed="true"/);
+ assert.match(html,/id="party-pane-members"[^>]*class="party-pane party-roster"/);
+ assert.match(html,/id="party-pane-invites"[^>]*hidden/);
+ assert.match(html,/id="party-pane-adventure"[^>]*hidden/);
+ for(const action of ['promote','kick','leave','invite','prepare'])assert.ok(html.includes('data-party-action="'+action+'"'));
+ const adventure=UI.render(data,{...context,selection:{view:'adventure'}});
+ assert.match(adventure,/data-party-view="adventure"[^>]*aria-pressed="true"/);
+ assert.doesNotMatch(adventure,/id="party-pane-adventure"[^>]*hidden/);
+ const fallback=UI.render(data,{...context,selection:{view:'invalid'}});
+ assert.match(fallback,/data-party-view="members"[^>]*aria-pressed="true"/);
+});

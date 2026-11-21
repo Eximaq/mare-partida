@@ -45,6 +45,25 @@ const intersects=(a,b)=>a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+
       assert(await page.locator('#onlinePerformance .online-updates').isVisible(),'update interval remains visible on phones');
       // Emblem and the separate + action must remain independently clickable.
       await page.locator('#characterPosterToggle').click();assert(await page.locator('#characterPoster').isVisible());await page.keyboard.press('Escape');
+      if(width===1366 || width===390){
+        const chat=page.locator('#floatingChat');
+        if(width===390)await page.locator('#chatCornerToggle').click();
+        await page.locator('#characterPosterToggle').click();
+        const poster=page.locator('#characterPoster'),close=page.locator('#characterPosterClose');
+        assert.equal((await close.innerText()).trim(),'×','compact close control');
+        const frame=await poster.boundingBox(),button=await close.boundingBox();
+        assert(button.y<frame.y+10 && button.x>=frame.x+frame.width/2,'close at the upper right');
+        assert.equal(await poster.locator('.wanted-paper').evaluate(img=>img.complete && img.naturalWidth>0),true);
+        if(width===390){
+          assert(await chat.isVisible(),'opening the poster keeps the channel available');
+          assert(frame.y>=0 && frame.y+frame.height<=(await chat.boundingBox()).y,'poster fits above open channel');
+        }else assert(frame.x>=profile.x+profile.width,'poster opens beside status');
+        await page.screenshot({path:path.join(out,'wanted-'+width+'.png')});
+        await close.click();
+        assert(await poster.isHidden());
+        assert.equal(await page.evaluate(()=>document.activeElement.id),'characterPosterToggle');
+        if(width===390)await chat.locator('[data-close-window]').click();
+      }
       await page.locator('#attributePointsHud').click();assert(await page.locator('#panelOverlay').isVisible());await page.locator('#closePanel').click();
       for(const id of ['characterMenuTrigger','socialMenuTrigger','modesMenuTrigger','captainMenuTrigger']){
         const trigger=page.locator('#'+id);await trigger.click();

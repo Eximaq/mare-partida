@@ -5,6 +5,7 @@ on:
     paths:
       - 'compendium-ui.js'
       - 'compendium-hd.css'
+      - 'hud-glass.css'
       - 'assets/ui/compendium-hd/**'
       - 'akuma-system.js'
       - 'character-system.js'
@@ -60,10 +61,10 @@ jobs:
           MARE_TEST_URL=http://127.0.0.1:8123/ python -X utf8 tests/compendium_hd_browser.py
           MARE_TEST_URL=http://127.0.0.1:8123/dist/ python -X utf8 tests/compendium_hd_browser.py
       - name: Capturas reais
-        if: always()
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         uses: actions/upload-artifact@v4
         with:
           name: compendium-hd
           path: /tmp/mare-compendium-hd/
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 3

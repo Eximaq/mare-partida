@@ -29,7 +29,30 @@
   };
   const status=p=>p.online?'Online':p.lastActivity?'Última atividade: '+stamp(p.lastActivity):'Presença indisponível';
   const attr=(key,value)=>' '+key+'="'+esc(value)+'"';
-  const button=(label,action,id='',opts={})=>'<button type="button" class="social-button'+(opts.primary?' social-primary':'')+'"'+attr('data-social-action',action)+attr('data-social-id',id)+(opts.disabled?' disabled':'')+(opts.title?attr('title',opts.title):'')+(opts.label?attr('aria-label',opts.label):'')+'>'+esc(label)+'</button>';
+  // Original inline vectors for negotiation controls; item artwork remains canonical.
+  const tradeIcons={
+    exchange:'<path d="M4 7h15m-4-4 4 4-4 4M20 17H5m4-4-4 4 4 4"/>',
+    edit:'<path d="m14 5 5 5M4 20l5-1L20 8a2 2 0 0 0-5-5L4 14Z"/>',
+    lock:'<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/>',
+    check:'<path d="m5 12 4 4L19 6"/>',
+    close:'<path d="m6 6 12 12M18 6 6 18"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    bag:'<rect x="4" y="7" width="16" height="14" rx="3"/><path d="M8 7V5a4 4 0 0 1 8 0v2M4 12h16m-9-2v4h2v-4"/>'
+  };
+  const tradeIcon=name=>'<svg class="trade-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'+tradeIcons[name]+'</svg>';
+  const tradeActionIcon={'trade-lock':'lock','trade-confirm':'check','trade-accept':'check','trade-cancel':'close','trade-decline':'close','offer-close':'close'};
+  // Original vectors for the compact Friends action row.
+  const friendIcons={
+    private:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/>',
+    profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>',
+    party:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m1-15a3 3 0 0 1 0 6m2 3a6 6 0 0 1 3 5"/>',
+    crew:'<circle cx="12" cy="5" r="2"/><path d="M12 7v14M8 11h8M3 14v3l3-1m15-2v3l-3-1M3 17a10 10 0 0 0 18 0"/>',
+    'trade-person':'<path d="M4 7h15m-4-4 4 4-4 4M20 17H5m4-4-4 4 4 4"/>',
+    remove:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m2-8h5"/>',
+    block:'<circle cx="12" cy="12" r="9"/><path d="m6 6 12 12"/>'
+  };
+  const friendIcon=name=>'<svg class="friend-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+friendIcons[name]+'</svg>';
+  const button=(label,action,id='',opts={})=>'<button type="button" class="social-button'+(opts.primary?' social-primary':'')+'"'+attr('data-social-action',action)+attr('data-social-id',id)+(opts.disabled?' disabled':'')+(opts.title?attr('title',opts.title):'')+(opts.label?attr('aria-label',opts.label):'')+'>'+(opts.icon?friendIcon(opts.icon):tradeActionIcon[action]?tradeIcon(tradeActionIcon[action]):'')+esc(opts.icon&&opts.label?'':label)+'</button>';
   const blank=text=>'<p class="social-empty">'+esc(text)+'</p>';
   const sections = [
     ['friends','Amigos','Solicitações e lista de amigos.'],
@@ -87,27 +110,29 @@
     }
     const explain=value=>reasons[value]||'Indisponível para este contato.';
     function contactActions(p,{friend=false,trade=true}={}){
+      const control=(label,action,id,opts)=>button(label,action,id,{...opts,icon:view==='friends'?action:undefined});
       const why=p.actions||{},crew=why.crew;
-      return '<div class="social-actions">'+button('✉','private',p.id,{label:'Mensagem privada',title:why.message?explain(why.message):'Mensagem privada',disabled:!!why.message})+
-        button('◈','profile',p.id,{label:'Ver perfil',title:'Ver perfil'})+
-        button('♟','party',p.id,{label:'Convidar para Party',title:why.party?explain(why.party):'Convidar para Party',disabled:!!why.party||!canWrite()})+
-        (['crew_forbidden','crew_not_joined','crew_officer_required','contact_blocked'].includes(crew)?'':button('⚓','crew',p.id,{label:'Convidar para Tripulação',title:crew?explain(crew):'Convidar para Tripulação',disabled:!!crew||!canWrite()}))+
-        (trade?button('⇄','trade-person',p.id,{label:'Convidar para troca',title:p.online?'Convidar para troca':'Jogador offline',disabled:!p.online||p.blockedByYou||!canWrite()}):'')+
-        (friend?button('−','remove',p.id,{label:'Remover amigo',title:'Remover amigo',disabled:!canWrite()}):'')+
-        button(p.blockedByYou?'Desbloquear':'Bloquear','block',p.id,{disabled:!canWrite()})+'</div>';
+      return '<div class="social-actions">'+control('✉','private',p.id,{label:'Mensagem privada',title:why.message?explain(why.message):'Mensagem privada',disabled:!!why.message})+
+        control('◈','profile',p.id,{label:'Ver perfil',title:'Ver perfil'})+
+        control('♟','party',p.id,{label:'Convidar para Party',title:why.party?explain(why.party):'Convidar para Party',disabled:!!why.party||!canWrite()})+
+        (['crew_forbidden','crew_not_joined','crew_officer_required','contact_blocked'].includes(crew)?'':control('⚓','crew',p.id,{label:'Convidar para Tripulação',title:crew?explain(crew):'Convidar para Tripulação',disabled:!!crew||!canWrite()}))+
+        (trade?control('⇄','trade-person',p.id,{label:'Convidar para troca',title:p.online?'Convidar para troca':'Jogador offline',disabled:!p.online||p.blockedByYou||!canWrite()}):'')+
+        (friend?control('−','remove',p.id,{label:'Remover amigo',title:'Remover amigo',disabled:!canWrite()}):'')+
+        control(p.blockedByYou?'Desbloquear':'Bloquear','block',p.id,{disabled:!canWrite()})+'</div>';
     }
     const line=(p,content)=>'<article class="social-line">'+person(p)+content+'</article>';
     const group=(title,content)=>'<section class="social-group"><h3>'+esc(title)+'</h3>'+content+'</section>';
     function friends(data){
       const f=friendsFilter.toLocaleLowerCase('pt-BR'),list=data.friends.filter(p=>p.name.toLocaleLowerCase('pt-BR').includes(f));
-      const matches=search?group('Resultados da busca',data.matches.map(p=>line(p,p.friendState==='none'?button('Adicionar amigo','add',p.id,{disabled:!canWrite()}):'<small>'+esc({accepted:'Já é seu amigo',incoming:'Solicitação recebida',outgoing:'Solicitação enviada'}[p.friendState])+'</small>')).join('')||blank('Nenhum personagem encontrado.')):'';
+      const section=(id,title,content)=>'<section class="social-group" data-friends-section="'+id+'"><h3>'+esc(title)+'</h3>'+content+'</section>';
+      const matches=search?section('search','Resultados da busca',data.matches.map(p=>line(p,p.friendState==='none'?button('Adicionar amigo','add',p.id,{disabled:!canWrite()}):'<small>'+esc({accepted:'Já é seu amigo',incoming:'Solicitação recebida',outgoing:'Solicitação enviada'}[p.friendState])+'</small>')).join('')||blank('Nenhum personagem encontrado.')):'';
       const incoming=data.incoming.map(r=>line(r.character,'<div class="social-actions">'+button('Aceitar','friend-accept',r.id,{primary:true,disabled:!canWrite()})+button('Recusar','friend-decline',r.id,{disabled:!canWrite()})+'</div>'));
       const outgoing=data.outgoing.map(r=>line(r.character,button('Cancelar','friend-cancel',r.id,{disabled:!canWrite()})));
-      return '<form class="social-tools" data-social-form="friends"><label for="socialFriendSearch">Adicionar amigo</label><input id="socialFriendSearch" name="q" placeholder="Nome público do personagem" maxlength="40" required value="'+esc(search)+'"><button class="social-button social-primary">Buscar</button></form>'+matches+
-        group('Solicitações',incoming.concat(outgoing).join('')||blank('Nenhuma solicitação pendente.'))+
-        group('Lista de amigos · '+data.onlineCount+' de '+data.friends.length+' online','<label class="social-field">Filtrar amigos <input id="socialFriendsFilter" type="search" data-social-filter="friends" maxlength="40" value="'+esc(friendsFilter)+'"></label>'+
+      return '<section class="friends-desk" aria-label="Contatos e solicitações"><form class="social-tools friends-search" data-social-form="friends"><label for="socialFriendSearch">Adicionar amigo</label><input id="socialFriendSearch" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="Nome público do personagem…" maxlength="40" required value="'+esc(search)+'"><button class="social-button social-primary">Buscar</button></form><div class="friends-list" tabindex="0" role="region" aria-label="Lista de contatos">'+matches+
+        section('requests','Solicitações',incoming.concat(outgoing).join('')||blank('Nenhuma solicitação pendente.'))+
+        section('contacts','Lista de amigos · '+data.onlineCount+' de '+data.friends.length+' online','<label class="social-field">Filtrar amigos <input id="socialFriendsFilter" type="search" placeholder="Filtrar por nome…" autocomplete="off" data-social-filter="friends" maxlength="40" value="'+esc(friendsFilter)+'"></label>'+
           (list.map(p=>line(p,contactActions(p,{friend:true}))).join('')||blank(data.friends.length?'Nenhum amigo corresponde ao filtro.':'Você ainda não adicionou amigos.')))+
-        (data.blocked.length?group('Contatos bloqueados',data.blocked.map(p=>line(p,button('Desbloquear','block',p.id,{disabled:!canWrite()}))).join('')):'');
+        (data.blocked.length?section('blocked','Contatos bloqueados',data.blocked.map(p=>line(p,button('Desbloquear','block',p.id,{disabled:!canWrite()}))).join('')):'')+'</div></section>';
     }
     function messages(data){
       return group('Conversas privadas',data.conversations.map(({character:p,lastMessage,unread})=>line(p,'<div class="social-message-summary"><small>'+esc(stamp(lastMessage?.sentAt))+'</small><span>'+esc(lastMessage?.body||'')+'</span></div>'+
@@ -123,13 +148,18 @@
     }
     function mail(data){
       const current=mailTab==='pending';
-      return '<div class="social-tools social-tools-wrap">'+button('A resgatar · '+data.pending,'mail-tab','pending',{primary:current})+
-        button('Resgatadas','mail-tab','claimed',{primary:!current})+
+      const envelope='<svg class="mail-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>';
+      const tab=(label,id,selected)=>button(label,'mail-tab',id,{primary:selected}).replace('type="button"','type="button" aria-pressed="'+selected+'"');
+      return '<section class="mail-desk" aria-label="Entregas do Correio"><div class="mail-toolbar"><div class="mail-tabs" role="group" aria-label="Filtrar entregas">'+
+        tab('A resgatar · '+data.pending,'pending',current)+tab('Resgatadas','claimed',!current)+'</div>'+
         (current?button('Resgatar tudo','mail-claim-all','',{primary:true,disabled:!canWrite()||!data.pending}):button('Arquivar resgatadas','mail-archive-claimed','',{disabled:!canWrite()||!data.letters.length}))+'</div>'+
-        (data.letters.map(l=>'<article class="social-letter"><header><div><b>'+esc(l.title)+'</b><small>'+esc({dungeon:'Masmorra de Chefes',event:'Evento oficial',system:'Sistema',market:'Mercado dos Mares'}[l.source]||'Entrega oficial')+' · '+esc(stamp(l.createdAt))+'</small></div><span class="social-tag">'+(l.claimedAt?'Resgatada':l.readAt?'Pendente':'Nova · Pendente')+'</span></header><p>'+esc(l.message)+'</p><div class="social-actions"><div class="social-grid">'+l.attachments.map(item=>tile(item,null,'mail:'+l.id)).join('')+'</div>'+
+        '<p class="mail-hint">'+(current?'Suas recompensas e entregas oficiais. Selecione um item para ver os detalhes.':'Recompensas já recebidas. Arquivar organiza seu Correio sem remover os itens resgatados.')+'</p>'+
+        '<div class="mail-list" tabindex="0" role="region" aria-label="Lista de entregas"><div class="mail-cards">'+
+        (data.letters.map(l=>'<article class="social-letter" data-mail-state="'+(l.claimedAt?'claimed':l.readAt?'read':'new')+'"><header><span class="mail-emblem">'+envelope+'</span><div class="mail-heading"><h3>'+esc(l.title)+'</h3><small>'+esc({dungeon:'Masmorra de Chefes',event:'Evento oficial',system:'Sistema',market:'Mercado dos Mares'}[l.source]||'Entrega oficial')+' · '+esc(stamp(l.createdAt))+'</small></div><span class="social-tag">'+(l.claimedAt?'Resgatada':l.readAt?'Pendente':'Nova · Pendente')+'</span></header><p>'+esc(l.message)+'</p><div class="mail-attachments"><span>Conteúdo da entrega</span><div class="social-grid">'+l.attachments.map(item=>tile(item,null,'mail:'+l.id)).join('')+'</div></div><div class="social-actions">'+
           (!l.readAt&&!l.claimedAt?button('Marcar como lida','mail-read',l.id,{disabled:!canWrite()}):'')+
-          (l.claimedAt?button('Arquivar','mail-archive',l.id,{disabled:!canWrite()}):button('Resgatar','mail-claim',l.id,{primary:true,disabled:!canWrite()}))+'</div></article>').join('')||blank(current?'Nenhuma recompensa pendente.':'Nenhuma recompensa resgatada.'))+
-        (data.nextCursor?button('Carregar mais','mail-more',data.nextCursor):'');
+          (l.claimedAt?button('Arquivar','mail-archive',l.id,{disabled:!canWrite()}):button('Resgatar','mail-claim',l.id,{primary:true,disabled:!canWrite()}))+'</div></article>').join('')||
+          '<div class="mail-empty">'+envelope+blank(current?'Nenhuma recompensa pendente.':'Nenhuma recompensa resgatada.')+'<span>'+(current?'Novas entregas aparecerão aqui.':'As entregas resgatadas ficam disponíveis nesta aba.')+'</span></div>')+'</div>'+
+        (data.nextCursor?button('Carregar mais','mail-more',data.nextCursor):'')+'</div></section>';
     }
     function trade(data){
       const t=data.trade, active=t?.status==='active',history=data.history||[];
@@ -138,7 +168,7 @@
       else if(inventorySort==='rarity'){const order=['common','uncommon','rare','epic','legendary','supreme'];items.sort((a,b)=>order.indexOf(o.item(b).rarity)-order.indexOf(o.item(a).rarity));}
       else items.sort((a,b)=>(b.obtainedAt||0)-(a.obtainedAt||0));
       const summary=rows=>rows.map(({item,quantity})=>esc(o.item(item)?.name||'Item')+' ×'+quantity).join(', ')||'Nenhum item';
-      const pill=(icon,label)=>'<span class="trade-pill"><span aria-hidden="true">'+icon+'</span> '+label+'</span>';
+      const pill=(icon,label)=>'<span class="trade-pill">'+tradeIcon({'✓':'check','◆':'lock','✎':'edit','◷':'clock'}[icon]||'exchange')+label+'</span>';
       const offer=(title,who,rows,locked,confirmed,own)=>{
         const tone=confirmed?'confirmed':locked?'accepted':'proposed';
         const state=confirmed?pill('✓','Confirmada'):locked?pill('◆','Travada'):pill('✎','Em edição');
@@ -193,7 +223,7 @@
       else if(t.peerLocked)guidance='O outro jogador travou a oferta. Revise os itens e trave a sua.';
       const steps=['Propor itens','Travar ofertas','Confirmar troca'].map((label,n)=>'<li'+
         (n===current?' aria-current="step"':n<current?' class="trade-step-done"':'')+
-        '><span aria-hidden="true">'+(n<current?'✓':n+1)+'</span>'+label+'</li>').join('');
+        '><span class="trade-step-icon">'+tradeIcon(n<current?'check':['bag','lock','exchange'][n])+'</span>'+label+'</li>').join('');
       const inventory='<section class="social-inventory trade-stock"><header><h3>Seu inventário negociável</h3><small>'+
         items.length+(items.length===1?' opção':' opções')+'</small></header><div class="social-tools trade-filters">'+
         '<label class="social-field">Buscar <input id="socialInventorySearch" type="search" data-social-filter="inventory" maxlength="40" placeholder="Nome do item" value="'+esc(inventorySearch)+'"></label>'+
@@ -205,11 +235,11 @@
       const reviewPanel='<section class="social-review trade-review"><div><b>Você entrega</b><p>'+summary(t.ownItems)+
         '</p></div><div><b>Você recebe</b><p>'+summary(t.peerItems)+'</p></div></section>';
       const editable=!t.ownLocked;
-      return '<div class="trade-desk trade-desk-active"><ol class="trade-steps" aria-label="Etapas da troca">'+steps+'</ol>'+
+      return '<div class="trade-desk trade-desk-active"><div class="trade-workspace"><ol class="trade-steps" aria-label="Etapas da troca">'+steps+'</ol>'+
         '<p class="trade-guidance" role="status">'+guidance+'</p><div class="social-offers">'+
         offer('Sua oferta',o.selfName(),t.ownItems,t.ownLocked,t.ownConfirmed,true)+
         offer('Outra oferta',t.partnerName,t.peerItems,t.peerLocked,t.peerConfirmed,false)+'</div>'+
-        (review?reviewPanel:inventory)+'<footer class="trade-actions">'+
+        (review?reviewPanel:inventory)+'</div><footer class="trade-actions">'+
         button('Cancelar troca','trade-cancel',t.id,{disabled:!canWrite()})+
         button(editable?'Travar minha oferta':'Destravar minha oferta','trade-lock',t.id,{disabled:!canWrite(),primary:editable})+
         button('Confirmar troca','trade-confirm',t.id,{disabled:!canWrite()||!review||!hasItems||t.ownConfirmed,primary:review&&!t.ownConfirmed})+
@@ -218,7 +248,7 @@
     function refreshPortraits(rootNode){for(const c of rootNode.querySelectorAll('[data-social-portrait]')){const p=people.get(c.dataset.socialPortrait);if(p)o.draw(c,p);}}
     function replace(node,html){
       const focus=document.activeElement,focused=node.contains(focus);
-      const list=[...node.querySelectorAll('.social-bag-grid, .social-content')],scrolls=list.map(el=>el.scrollTop);
+      const list=[...node.querySelectorAll('.social-bag-grid, .social-content, .trade-workspace, .mail-list, .friends-list')],scrolls=list.map(el=>el.scrollTop);
       const controls='button,input,select,summary,[tabindex]';
       const locator=focused&&[...node.querySelectorAll(controls)].indexOf(focus);
       const tradeControl=focused&&focus.closest('.trade-desk')?
@@ -233,7 +263,7 @@
         tradeControl?.length?nextControls.find(x=>tradeControl.every(([name,value])=>x.getAttribute(name)===value)):
         focused?nextControls[locator]:null;
       if(el&&focused){el.focus({preventScroll:true});if(edit&&el.id===edit.id){el.value=edit.value;if(edit.pos!=null)el.setSelectionRange(edit.pos,edit.end);}}
-      [...node.querySelectorAll('.social-bag-grid, .social-content')].forEach((x,n)=>x.scrollTop=scrolls[n]||0);
+      [...node.querySelectorAll('.social-bag-grid, .social-content, .trade-workspace, .mail-list, .friends-list')].forEach((x,n)=>x.scrollTop=scrolls[n]||0);
       refreshPortraits(node);
     }
     function paint(){

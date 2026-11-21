@@ -50,7 +50,21 @@
   if(profileTab==='wall'||profileTab==='custom'&&!ctx.online)body+='<div class="captain-empty">'+icon(profileTab==='wall'?'bubble':'shirt')+'<h3>'+(profileTab==='wall'?'Mural público':'Personalização pública')+'</h3><p>'+(profileTab==='wall'?'Mural público em desenvolvimento.':'Personalização pública do perfil em desenvolvimento.')+'</p></div>';
   return body+'</section>';
  }
- const settingCards=[['general','GERAL','Idioma, conexão e conta.','flag'],['audio','ÁUDIO','Música e efeitos do jogo.','music'],['graphics','GRÁFICOS','Qualidade e quantidade de efeitos.','star'],['interface','INTERFACE E CONTROLES','Organização e atalhos.','swords'],['accessibility','ACESSIBILIDADE','Legibilidade e movimento.','eye']];
+ // Original vector line icons, scoped to Settings; gameplay and item artwork stay unchanged.
+ const settingPaths={
+  general:'<circle cx="12" cy="12" r="9"/><path d="m16 8-2.5 5.5L8 16l2.5-5.5Z"/>',
+  audio:'<path d="M4 9h4l4-4v14l-4-4H4Z"/><path d="M16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>',
+  graphics:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4m-6-8 4-4 3 3 3-4 2 3"/>',
+  interface:'<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 15h10"/>',
+  accessibility:'<circle cx="12" cy="4" r="2"/><path d="M4 8c5 2 11 2 16 0m-8 2v5m-4 6 4-6 4 6"/>',
+  discord:'<path d="M20 15a3 3 0 0 1-3 3H9l-5 3V6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3Z"/><path d="M8 8h8m-8 5h5"/>',
+  language:'<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/>',
+  connection:'<path d="M3 9a15 15 0 0 1 18 0M6 12a10 10 0 0 1 12 0m-9 3a5 5 0 0 1 6 0"/><circle cx="12" cy="19" r="1"/>',
+  account:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>'
+ };
+ function settingIcon(id){return '<svg class="settings-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'+(settingPaths[id]||settingPaths.general)+'</svg>';}
+ function settingFact(label,value,id){return '<div class="captain-fact">'+settingIcon(id)+'<div><small>'+E(label)+'</small><strong>'+E(value)+'</strong></div></div>';}
+ const settingCards=[['general','Geral','Idioma, conexão e conta.'],['audio','Áudio','Música e efeitos independentes.'],['graphics','Gráficos','Ajuste os efeitos visuais do jogo.'],['interface','Interface e controles','Densidade da HUD e atalhos.'],['accessibility','Acessibilidade','Legibilidade e movimento.']];
  const settingLabels={quality:'Efeitos visuais',density:'Densidade da HUD',motion:'Animações de interface'};
  const select=(id,options,current)=>'<select data-captain-setting="'+id+'" aria-label="'+E(settingLabels[id]||id)+'">'+options.map(([value,label])=>'<option value="'+value+'" '+(current===value?'selected':'')+'>'+E(label)+'</option>').join('')+'</select>';
  const audioState=()=>({muted:true,volume:0,effectsMuted:true,effectsVolume:0,...root.MareAudio?.getState?.()});
@@ -74,18 +88,21 @@
   }
  }
  function settingDetail(id,a){
-  if(id==='general')return '<div class="captain-settings-detail">'+field('Idioma','Português (Brasil)','flag')+field('Conexão',ctx.online?'Online · sessão autenticada':'Jogo local · navegador','anchor')+field('Conta',ctx.online?'Autenticada':'Não disponível nesta versão','gear')+(ctx.online?'<button type="button" data-online-action="logout">Sair da conta</button>':'')+'<p>'+(ctx.online?'Personagem persistido no servidor. Áudio e exibição são preferências deste navegador.':'Os saves continuam locais e independentes das preferências de interface.')+'</p></div>';
-  if(id==='audio')return '<div class="captain-settings-detail">'+audioControls.map(c=>audioMarkup(a,c)).join('')+'<p>Ajuste a trilha sem mudar o volume de passos, golpes e habilidades.</p></div>';
+  if(id==='general')return '<div class="captain-settings-detail">'+settingFact('Idioma','Português (Brasil)','language')+settingFact('Conexão',ctx.online?'Online · sessão autenticada':'Jogo local · navegador','connection')+settingFact('Conta',ctx.online?'Autenticada':'Não disponível nesta versão','account')+(ctx.online?'<button type="button" data-online-action="logout">Sair da conta</button>':'')+'<p>'+(ctx.online?'Personagem persistido no servidor. Áudio e exibição são preferências deste navegador.':'Os saves continuam locais e independentes das preferências de interface.')+'</p></div>';
+  if(id==='audio')return '<div class="captain-settings-detail">'+audioControls.map(c=>'<section class="settings-audio-channel">'+audioMarkup(a,c)+'</section>').join('')+'<p>Ajuste a trilha sem mudar o volume de passos, golpes e habilidades.</p></div>';
   if(id==='graphics')return '<div class="captain-settings-detail"><label class="captain-setting-line"><span>Efeitos visuais</span>'+select('quality',[['high','Alta qualidade'],['low','Reduzidos']],prefs.quality)+'</label><p>Reduzir efeitos preserva a jogabilidade e simplifica efeitos ambientais.</p></div>';
   if(id==='interface')return '<div class="captain-settings-detail"><label class="captain-setting-line"><span>Densidade da HUD</span>'+select('density',[['standard','Padrão'],['compact','Compacta']],prefs.density)+'</label><p>Atalhos: I inventário · F forja · P personagem · M modos · C contratos.</p></div>';
   if(id==='accessibility')return '<div class="captain-settings-detail"><label class="captain-setting-line"><span>Animações de interface</span>'+select('motion',[['normal','Normais'],['reduced','Reduzidas']],prefs.motion)+'</label><label class="captain-setting-line"><span>Textos maiores nos painéis</span><input type="checkbox" data-captain-larger '+(prefs.largerText?'checked':'')+'></label></div>';
   return '';
  }
  function settingsHTML(){
-  const a=audioState();
-  return '<section class="captain-settings"><nav class="captain-tabs" aria-label="Configurações">'+[['geral','GERAL','compass'],['discord','DISCORD','bubble']].map(([id,label,i])=>button(label,id,settingsTab,i).replace('data-captain-tab','data-settings-tab')).join('')+'</nav>'+
-   (settingsTab==='discord'?'<div class="captain-discord">'+icon('bubble')+'<div><h3>Comunidade Discord</h3><a href="https://discord.gg/uRnP79cp7h" target="_blank" rel="noopener noreferrer">Entrar no Discord</a></div></div>':
-   '<div class="captain-setting-cards">'+settingCards.map(([id,title,desc,i])=>'<section class="captain-setting-card" data-setting-section="'+id+'"><button type="button" class="captain-setting-heading" data-settings-card="'+id+'" aria-expanded="'+(settingsExpanded===id)+'" aria-controls="captain-detail-'+id+'"><span class="captain-setting-icon">'+icon(i)+'</span><span class="captain-setting-copy"><strong>'+title+'</strong><small>'+desc+'</small><em>'+E(({general:'Português · Salvo localmente',audio:audioSummary(a),graphics:prefs.quality==='high'?'Qualidade: Alta':'Efeitos reduzidos',interface:prefs.density==='compact'?'HUD compacta':'HUD padrão',accessibility:prefs.largerText?'Textos ampliados':'Visualização padrão'})[id])+'</em></span><span class="captain-chevron" aria-hidden="true">'+(settingsExpanded===id?'−':'›')+'</span></button>'+(settingsExpanded===id?'<div id="captain-detail-'+id+'">'+settingDetail(id,a)+'</div>':'')+'</section>').join('')+'</div>')+'</section>';
+  const a=audioState(),active=settingsTab==='discord'?'discord':settingsExpanded||'general';
+  const summaries={general:ctx.online?'Sessão online':'Neste navegador',audio:audioSummary(a),graphics:prefs.quality==='high'?'Qualidade alta':'Efeitos reduzidos',interface:prefs.density==='compact'?'HUD compacta':'HUD padrão',accessibility:prefs.largerText?'Textos ampliados':'Visualização padrão'};
+  const current=settingCards.find(([id])=>id===active)||['discord','Comunidade','Encontre outros capitães e acompanhe as novidades.'];
+  const nav=settingCards.map(([id,title])=>'<button type="button" class="settings-category" data-settings-card="'+id+'"'+(id==='general'?' data-settings-tab="geral"':'')+' aria-pressed="'+(active===id)+'" aria-expanded="'+(active===id)+'" aria-controls="settings-content">'+settingIcon(id)+'<span><strong>'+title+'</strong><em>'+E(summaries[id])+'</em></span></button>').join('')+
+   '<button type="button" class="settings-category" data-settings-tab="discord" aria-pressed="'+(active==='discord')+'" aria-controls="settings-content">'+settingIcon('discord')+'<span><strong>Discord</strong><em>Comunidade do jogo</em></span></button>';
+  return '<section class="captain-settings settings-glass"><nav class="settings-nav" aria-label="Categorias de configurações">'+nav+'</nav><section class="settings-content" id="settings-content" aria-labelledby="settings-category-title"><header class="settings-intro">'+settingIcon(active)+'<div><h3 id="settings-category-title">'+current[1]+'</h3><p>'+current[2]+'</p></div></header>'+
+   (active==='discord'?'<div class="captain-discord">'+settingIcon('discord')+'<div><h3>Comunidade Discord</h3><p>Converse com outros jogadores e fique por dentro do Kaizoku Idle.</p><a href="https://discord.gg/uRnP79cp7h" target="_blank" rel="noopener noreferrer">Entrar no Discord<span aria-hidden="true"> ↗</span></a></div></div>':'<div id="captain-detail-'+active+'">'+settingDetail(active,a)+'</div><p class="settings-storage-note">Preferências de áudio e exibição salvas neste navegador.</p>')+'</section></section>';
  }
  function unmount(){if(portraitFrame&&root.cancelAnimationFrame)root.cancelAnimationFrame(portraitFrame);portraitFrame=0;}
  function render(panel,snapshot){unmount();ctx={...snapshot,stamp:JSON.stringify([snapshot.game.equipment,snapshot.game.preferences?.hideItems,snapshot.game.appearance96,snapshot.game.paperDollLook,snapshot.game.zoanTransformed,snapshot.game.name,snapshot.game.classId,snapshot.game.factionId,snapshot.game.hierarchyTier])};if(panel==='journal')return journalHTML();if(panel==='myprofile')return profileHTML();if(panel==='settings')return settingsHTML();return '';}
@@ -110,7 +127,7 @@
   const journalTab=e.target.closest('[data-journal-tab]');if(journalTab){selectedJournal=journalTab.dataset.journalTab;focusedRedraw('[data-journal-tab="'+selectedJournal+'"]');return;}
   const profile=e.target.closest('[data-profile-tab]');if(profile){profileTab=profile.dataset.profileTab;focusedRedraw('[data-profile-tab="'+profileTab+'"]');return;}
   const settings=e.target.closest('[data-settings-tab]');if(settings){settingsTab=settings.dataset.settingsTab;settingsExpanded='';focusedRedraw('[data-settings-tab="'+settingsTab+'"]');return;}
-  const card=e.target.closest('[data-settings-card]');if(card){settingsExpanded=settingsExpanded===card.dataset.settingsCard?'':card.dataset.settingsCard;focusedRedraw('[data-settings-card="'+card.dataset.settingsCard+'"]');}
+  const card=e.target.closest('[data-settings-card]');if(card){settingsTab='geral';settingsExpanded=card.dataset.settingsCard;focusedRedraw('[data-settings-card="'+card.dataset.settingsCard+'"]');}
  });
  document.addEventListener('change',e=>{
   const setting=e.target.closest('[data-captain-setting]');if(setting){const id=setting.dataset.captainSetting;if(values[id]?.includes(setting.value)){prefs[id]=setting.value;store();focusedRedraw('[data-captain-setting="'+id+'"]');}return;}

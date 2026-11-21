@@ -25,11 +25,18 @@ if(!before)panels.push(...['dev','dungeons','akuma-reveal','party','crew'].map(p
   assert(row.x>=-1&&row.y>=-1&&row.x+row.width<=width+1&&row.y+row.height<=height+1,JSON.stringify({name,width,height,row}));
   records.push({name,viewport:[width,height],...row});return row;
  }
+ async function checkGlassFrame(selector,name){
+  const frame=await p.locator(selector).evaluate(el=>{
+   const css=getComputedStyle(el);
+   return [css.borderImageSource,css.borderTopWidth,css.backdropFilter];
+  });
+  assert.deepEqual(frame,['none','1px','blur(8px)'],name);
+ }
  for(const step of ['faction','class','appearance']){
   if(step==='class')await p.locator('#nextToClass').click();
   if(step==='appearance'){await p.locator('#nextToAppearance').click();await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));}
   await p.evaluate(()=>document.fonts.ready);
-  if(!before)assert.match(await p.locator('.creation-dialog').evaluate(e=>getComputedStyle(e).borderImageSource),/hud-nautical-v2\/rope-frame\.png/);
+  if(!before)await checkGlassFrame('.creation-dialog','Criação · '+step);
   for(const [w,h] of sizes){await p.setViewportSize({width:w,height:h});await measure('creation-'+step,'.creation-dialog',w,h);const over=await p.locator('.creation-dialog').evaluate(e=>e.scrollWidth-e.clientWidth);assert(over<=2,JSON.stringify({step,w,h,over}));}await p.setViewportSize({width:1920,height:1080});
   if(step==='appearance')fs.writeFileSync(path.join(out,'appearance-layout.json'),JSON.stringify(await p.locator('.studio-look-controls').evaluate(e=>[...e.querySelectorAll('.appearance-field')].map(a=>({html:a.outerHTML.slice(0,280),height:a.getBoundingClientRect().height,css:getComputedStyle(a).gridTemplateRows}))),null,2));await capture('creation-'+step+'.png');
   const next=p.locator(step==='faction'?'#nextToClass':step==='class'?'#nextToAppearance':'#createCharacter');await next.scrollIntoViewIfNeeded();const nextBox=await next.boundingBox();assert(nextBox.y>=0&&nextBox.y+nextBox.height<=1080,'Creation action remains reachable');await p.locator('.creation-dialog').evaluate(e=>e.scrollTop=0);
@@ -53,10 +60,12 @@ if(!before)panels.push(...['dev','dungeons','akuma-reveal','party','crew'].map(p
   for(const [panel,section]of panels){
    const name=section||panel;await p.mouse.move(1,1);await p.evaluate(([a,b])=>__densityQA.open(a,b),[panel,section]);await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(70);
    const bounds=await measure(name,'#panelOverlay .dialog',width,height);
+   if(!before&&name==='haki')await checkGlassFrame('#panelOverlay .dialog','Haki');
    if(!before&&refreshed.has(name)){
-    if(['contracts','crew'].includes(name))assert.equal(await p.locator('#panelOverlay .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),'none','Uses the approved thin glass frame');
+    if(['contracts','crew','settings','party','map','prison','dungeons','shop','akuma','hierarchy','myprofile','journal','hunt','help','akuma-reveal'].includes(name))assert.equal(await p.locator('#panelOverlay .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),'none','Uses the approved thin glass frame');
     else assert.match(await p.locator('#panelOverlay .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),/hud-nautical-v2\/rope-frame\.png/,name);
-    assert.ok(['contracts','crew'].includes(name) ? bounds.width<=1180&&bounds.height<=(width<=760?height-42:702) : bounds.width<=1200&&bounds.height<=760,JSON.stringify({name,bounds}));
+    assert.ok(['contracts','crew','settings','map','prison','dungeons','akuma','hierarchy','myprofile','journal','hunt','help'].includes(name) ? bounds.width<=1180&&bounds.height<=(width<=760?height-42:702) : bounds.width<=1200&&bounds.height<=760,JSON.stringify({name,bounds}));
+    if(name==='party')assert.ok(bounds.width<=440&&bounds.height<=620,'Party stays compact and vertical');
    }
    if(!before&&name==='map'&&width<=760){
     const tabs=await p.locator('#voyageRegionTabs').boundingBox(),title=await p.locator('#dialogTitle').boundingBox();

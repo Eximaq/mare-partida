@@ -26,39 +26,53 @@
   }
   return {action,direction,index,frame:frames[index],scale:clip.scale,source:clip.source};
  }
- let atlas=null,pending=null,failure=null,last=null;const images=new Map();
- function prepare(){
-  if(pending||atlas)return pending;
-  failure=null;
-  pending=fetch(base+'atlas.json').then(r=>{if(!r.ok)throw Error('Atlas Zoro HTTP '+r.status);return r.json();}).then(async data=>{
-   const decoded=await Promise.all(Object.entries(data.sources).filter(([key])=>key!=='icon').map(async ([key,source])=>{
-    const im=new Image();im.src=base+source.file;
-    try{await im.decode();}catch(error){throw Error(source.file+': '+error.message);}
-    if(im.naturalWidth!==source.size[0]||im.naturalHeight!==source.size[1])throw Error('Dimensões inválidas: '+key);
-    return [key,im];
-   }));
-   const prepared=new Map(decoded);
+ let atlas=null,pending=null,failure=null,last=null,atlasRetryAt=0;
+ const images=new Map(),requests=new Map(),retryAt=new Map();
+ function report(error){failure=error.message;console.error('[visual-completo]',failure);}
+ function loadAtlas(){
+  if(atlas)return Promise.resolve(atlas);
+  if(pending)return pending;
+  if(Date.now()<atlasRetryAt)return Promise.resolve(null);
+  const task=fetch(base+'atlas.json').then(r=>{if(!r.ok)throw Error('Atlas Zoro HTTP '+r.status);return r.json();}).then(data=>{
    for(const [action,clip] of Object.entries(data.clips)){
-    const source=prepared.get(clip.source);
+    const source=data.sources[clip.source];
     if(!source||!Number.isFinite(clip.scale)||clip.scale<=0)throw Error('Clipe inválido: '+action);
     for(const direction of action==='hurt'?['south']:['south','north','east','west']){
      const frames=clip.frames[direction];
      if(!frames?.length)throw Error('Direção ausente: '+action+' / '+direction);
      for(const {rect:[x,y,w,h],anchor} of frames){
-      if(![x,y,w,h].every(Number.isInteger)||x<0||y<0||w<=0||h<=0||x+w>source.naturalWidth||y+h>source.naturalHeight||anchor.length!==2||!anchor.every(Number.isFinite))throw Error('Quadro inválido: '+action+' / '+direction);
+      if(![x,y,w,h].every(Number.isInteger)||x<0||y<0||w<=0||h<=0||x+w>source.size[0]||y+h>source.size[1]||anchor.length!==2||!anchor.every(Number.isFinite))throw Error('Quadro inválido: '+action+' / '+direction);
      }
     }
    }
-   for(const [key,im] of prepared)images.set(key,im);
-   atlas=data;
-  }).catch(error=>{failure=error.message;console.error('[visual-completo]',failure);}).finally(()=>{pending=null;});
-  return pending;
+   atlas=data;failure=null;return atlas;
+  }).catch(error=>{atlasRetryAt=Date.now()+3000;report(error);return null;}).finally(()=>{pending=null;});
+  pending=task;
+  return task;
+ }
+ function loadSource(key){
+  if(images.has(key))return Promise.resolve(true);
+  if(requests.has(key))return requests.get(key);
+  if(Date.now()<(retryAt.get(key)||0))return Promise.resolve(false);
+  const source=atlas.sources[key],im=new Image();im.src=base+source.file;
+  const task=im.decode().then(()=>{
+   if(im.naturalWidth!==source.size[0]||im.naturalHeight!==source.size[1])throw Error('Dimensões inválidas: '+key);
+   images.set(key,im);retryAt.delete(key);
+   if(!retryAt.size)failure=null;
+   return true;
+  }).catch(error=>{retryAt.set(key,Date.now()+3000);report(Error(source.file+': '+error.message));return false;}).finally(()=>requests.delete(key));
+  requests.set(key,task);
+  return task;
+ }
+ async function prepare(){
+  if(!await loadAtlas())return false;
+  return (await Promise.all(Object.keys(atlas.sources).filter(key=>key!=='icon').map(loadSource))).every(Boolean);
  }
  function draw(ctx,player,options={}){
   if(!equipped(player)||player.zoanTransformed)return false;
-  if(!atlas){prepare();return false;}
+  if(!atlas){void loadAtlas();return false;}
   const p=pose(atlas,player,options);if(!p)return false;
-  const im=images.get(p.source);if(!im)return false;
+  const im=images.get(p.source);if(!im){void loadSource(p.source);return false;}
   const [sx,sy,w,h]=p.frame.rect,[ax,ay]=p.frame.anchor;
   const scale=p.scale*(options.scale==null?1:options.scale*46/96);
   ctx.save();ctx.imageSmoothingEnabled=false;

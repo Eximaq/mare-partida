@@ -23,8 +23,9 @@
     return `<div class="game-tip-compare"><strong>Comparando com ${escape(equipped.typeName||'o item')} equipado.</strong>${rows.map(([key,delta])=>`<div><span>${escape(labels[key])}</span><b class="${delta>0?'positive':'negative'}">${delta>0?'+':'−'}${escape(display(key,Math.abs(delta)))}</b></div>`).join('')||'<div class="game-tip-muted">Atributos iguais</div>'}<div class="game-tip-score"><span>⚡ Poder</span><b class="${score>0?'positive':score<0?'negative':'neutral'}">${score>0?'+':score<0?'−':''}${Math.abs(score)}</b></div></div>`;
   }
   function itemHTML(hovered,equipped){
-    const left=itemColumn(hovered).replace('</section>',`${equipped?comparison(hovered,equipped):''}</section>`);
-    return `<div class="game-tooltip-grid ${equipped?'with-comparison':''}">${left}${equipped?itemColumn(equipped,{equipped:true}):''}</div>`;
+    const details=itemColumn(hovered);
+    const equippedDetails=equipped?itemColumn(equipped,{equipped:true})+comparison(hovered,equipped):'';
+    return `<div class="game-tooltip-grid ${equipped?'with-comparison':''}">${details}${equippedDetails}</div>`;
   }
   function skillHTML(skill){
     const description=escape(skill.description||'').replace(/(\d+(?:[.,]\d+)?\s*(?:%|s|tiles?)?)/gi,'<strong class="game-tip-number">$1</strong>');

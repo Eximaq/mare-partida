@@ -2666,7 +2666,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  // A committed bundle owns rendered frame surfaces, outside the opportunistic
  // preview cache. Share decoded sources across all poses of one preparation.
- async function prepareConfiguration(poses,{signal,resolve=({player,options})=>({player,options,source:select(player,options)})}={}){
+ async function prepareConfiguration(poses,{signal,resolve=({player,options})=>({player,options,source:selectVisual(player,options)})}={}){
   await ready;
   if(state!=='ready')throw Error(error||'Índices HD indisponíveis');
   const sources=new Map(),routes=new Map(),decoded=new Map(),coverage=[];

@@ -8,6 +8,9 @@ const hook='  window.__creationQA={get game(){return game},classes,factions,crea
  await p.route('**/game.js*',async r=>{const response=await r.fetch(),source=await response.text();assert(source.includes('  window.__mareDiagnostics='));await r.fulfill({response,body:source.replace('  window.__mareDiagnostics=',hook)});});
  await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.__creationQA);
  await p.evaluate(()=>document.fonts.ready);
+ const dialog=p.locator('#startOverlay > .creation-dialog');
+ assert.equal(await dialog.evaluate(e=>getComputedStyle(e).borderImageSource),'none','creation uses the glass frame');
+ assert.match(await dialog.evaluate(e=>getComputedStyle(e).backdropFilter),/blur/);
  const factions=['revolutionary','pirate','marine','government'],classes=['sword','brawler','gunner','rogue','cyborg','strategist','healer'];
  assert.deepEqual(await p.locator('#factionStep [data-faction]').evaluateAll(es=>es.map(e=>e.dataset.faction)),factions);
  await p.locator('#characterName').fill('Navegante');
@@ -47,14 +50,19 @@ const hook='  window.__creationQA={get game(){return game},classes,factions,crea
  await p.locator('#backToFaction').click();assert.equal(await p.locator('#characterName').inputValue(),'Navegante');assert.equal(await p.locator('[data-faction="pirate"]').getAttribute('aria-pressed'),'true');
  for(const [width,height]of [[1920,1080],[1366,768],[1280,720],[1024,768],[760,900],[393,852],[320,568],[844,390]]){
   await p.setViewportSize({width,height});
-  for(const step of ['faction','class']){
+  for(const step of ['faction','class','appearance']){
    if(step==='class')await p.locator('#nextToClass').click();
+   if(step==='appearance')await p.locator('#nextToAppearance').click();
+   const actions={faction:'#nextToClass',class:'#nextToAppearance',appearance:'#createCharacter'};
+   const button=await p.locator(actions[step]).boundingBox();
+   assert(button && button.y>=0 && button.y+button.height<=height && button.x>=0 && button.x+button.width<=width,'footer visible '+width+'/'+step);
+   assert(await dialog.evaluate(e=>e.scrollHeight<=e.clientHeight+1),'outer dialog scroll '+width+'/'+step);
    assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'page overflow '+width+'/'+step);
-   const overflow=await p.locator(step==='class'?'.creation-class-layout':'.faction-choices').evaluate(e=>e.scrollWidth>e.clientWidth+1);
+   const overflow=await p.locator(step==='class'?'.creation-class-layout':step==='appearance'?'#creationAppearanceStudio':'.faction-choices').evaluate(e=>e.scrollWidth>e.clientWidth+1);
    assert(!overflow,'selection overflow '+width+'/'+step);
    if(width===393)await p.screenshot({path:path.join(out,'creation-'+step+'-mobile.png')});
   }
-  await p.locator('#backToFaction').click();
+  await p.locator('#backToClass').click();await p.locator('#backToFaction').click();
  }
  await p.setViewportSize({width:1672,height:941});await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();
  await p.locator('#createCharacter').click();assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),null,'confirmation required');

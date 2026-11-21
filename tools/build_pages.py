@@ -11,6 +11,7 @@ from materialize_native_indexes import materialize
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--include-reviews", action="store_true", help="Also export isolated historical art workbenches")
+parser.add_argument('--static-demo', action='store_true', help='Build the standalone demo without optional development APIs')
 args = parser.parse_args()
 include_reviews = args.include_reviews
 ROOT = Path(__file__).resolve().parent.parent
@@ -72,6 +73,8 @@ def version_asset(match):
 for page in ['index.html', 'ui-preview.html']:
     entry = OUT / page
     html = entry.read_text(encoding='utf-8')
+    if args.static_demo:
+        html = html.replace('<html ', '<html data-runtime="static-demo" ', 1)
     html = re.sub(r'((?:src|href)=")([^"?]+)(")', version_asset, html)
     entry.write_text(html, encoding='utf-8')
 for folder in ['assets', 'icones_menu_pirata']:

@@ -16,7 +16,7 @@ const cases=[
  await page.route('**/api/**',route=>route.fulfill({status:404,body:'{}'}));
  await page.route('**/game.js*',async route=>{
   const response=await route.fetch(),source=await response.text();
-  const hook=`window.__rangedQA={get g(){return game},get w(){return world},get s(){return session},r:lobby96,nav:navigator,stats:getDerived,prepareMap(){lastTime=performance.now();const visual=localVisualState();return mapArtState()==='ready'&&visual==='ready'},enterHunt,heroAttack,stepCombatVfx,faceCombatTarget,combatChest,draw:presentWorld,tick,center(){camera.update(world.hero,activeMap(),0,true)},equip(){cancelBasicAttack();game.classId='healer';configureFactionVisual();const item=newItem(itemDefs[31],1,false);game.inventory.push(item);equipItem(item.id);},auto(){autoPlay=true;autoSkills=false},stop(){autoPlay=false;autoSkills=false}};`;
+  const hook=`window.__rangedQA={get g(){return game},get w(){return world},get s(){return session},r:lobby96,nav:navigator,stats:getDerived,prepareMap(){lastTime=performance.now();return mapArtState()==='ready'},enterHunt,heroAttack,stepCombatVfx,faceCombatTarget,combatChest,draw:presentWorld,tick,center(){camera.update(world.hero,activeMap(),0,true)},equip(){cancelBasicAttack();game.classId='healer';configureFactionVisual();const item=newItem(itemDefs[31],1,false);game.inventory.push(item);equipItem(item.id);},auto(){autoPlay=true;autoSkills=false},stop(){autoPlay=false;autoSkills=false}};`;
   assert(source.includes('  window.__mareDiagnostics='),'test bridge insertion point');
   await route.fulfill({response,body:source.replace('  window.__mareDiagnostics=',hook+'\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')});
  });
