@@ -805,6 +805,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const ownMech=carryRegistry?.resolve({item:119,mechanical119SouthSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:119}});
    if(ownMech?.mechanical119SouthSavedPalette)return withCarryHead(ownMech,'carry');
   }
+  const w128=equipment.weapon;
+  if(weapon===128&&player.classId==='healer'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     ['north','south','east','west'].includes(o.direction)&&o.action==='walk'&&o.consumer==='world'&&!o.weaponless&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>w128?.[k]==null||w128[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairStyle==='original'&&a.hairColor==='black'&&
+     a.face==='original'&&a.eyeStyle==='original'&&a.eyeColor==='blue'&&a.skin===a.skinColor&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const own128=carryRegistry?.resolve({item:128,approvedW128WalkSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:128}});
+   if(own128?.baculo128WalkSavedPalette)return withCarryHead(own128,'carry');
+  }
   const orb122=equipment.weapon;
   if(weapon===122&&player.classId==='strategist'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
      ['east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&o.consumer==='world'&&!o.weaponless&&Object.keys(equipment).length===1&&
@@ -893,6 +903,34 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const ownPairSide=carryRegistry?.resolve({item:gauntletPairId,joinedGauntletPairSideSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:gauntletPairId}});
    if(ownPairSide?.gauntletPairSideSavedPalette)return withCarryHead(ownPairSide,'carry');
   }
+  const own118=player.equipment?.weapon;
+  if((own118?.def??own118)===118&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.action==='walk'&&o.direction==='north'&&o.consumer==='world'&&!o.weaponless&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>own118?.[k]==null||own118[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairStyle==='original'&&
+     a.hairColor==='black'&&a.face==='original'&&a.eyeStyle==='original'&&a.eyeColor==='blue'&&a.skin===a.skinColor&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const north118=carryRegistry?.resolve({item:118,approvedW118NorthWalkSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:118}});
+   if(north118?.stockW118NorthWalkSavedPalette)return withCarryHead(north118,'carry');
+  }
+  const wFinalTechWalk=player.equipment?.weapon;
+  if([117,119].includes(wFinalTechWalk?.def??wFinalTechWalk)&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&o.action==='walk'&&((wFinalTechWalk?.def??wFinalTechWalk)===117?o.direction==='north':['east','west'].includes(o.direction))&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>wFinalTechWalk?.[k]==null||wFinalTechWalk[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const ownFinalTechWalk=carryRegistry?.resolve({item:wFinalTechWalk?.def??wFinalTechWalk,approvedFinalTechWalk:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:wFinalTechWalk?.def??wFinalTechWalk}});
+   if(ownFinalTechWalk?.stockFinalTechWalkSavedPalette)return withCarryHead(ownFinalTechWalk,'carry');
+  }
+  const wTechWalk=player.equipment?.weapon;
+  if([119,120].includes(wTechWalk?.def??wTechWalk)&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&o.action==='walk'&&(o.direction==='north'||(wTechWalk?.def??wTechWalk)===120&&['east','west'].includes(o.direction))&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>wTechWalk?.[k]==null||wTechWalk[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const ownTechWalk=carryRegistry?.resolve({item:wTechWalk?.def??wTechWalk,approvedTechWalk:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:wTechWalk?.def??wTechWalk}});
+   if(ownTechWalk?.stockTechWalkSavedPalette)return withCarryHead(ownTechWalk,'carry');
+  }
   const w14=player.equipment?.weapon;
   if((w14?.def??w14)===14&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
      o.consumer==='world'&&!o.weaponless&&['north','south','east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
@@ -910,6 +948,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
    const ownWalkingGauntlet=carryRegistry?.resolve({item:southGauntletId,approvedWalkingCuff:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:southGauntletId}});
    if(ownWalkingGauntlet?.stockWalkingCuffSavedPalette)return withCarryHead(ownWalkingGauntlet,'carry');
+  }
+  if(southGauntletId===110&&player.classId==='brawler'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&o.direction==='north'&&o.action==='walk'&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>wSouthGauntlet?.[k]==null||wSouthGauntlet[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairColor==='black'&&a.face==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const ownNorth110Walk=carryRegistry?.resolve({item:southGauntletId,approvedNorth110Walk:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:southGauntletId}});
+   if(ownNorth110Walk?.stockNorth110WalkSavedPalette)return withCarryHead(ownNorth110Walk,'carry');
   }
   if([2,110].includes(southGauntletId)&&player.classId==='brawler'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
      o.consumer==='world'&&!o.weaponless&&o.direction==='south'&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
