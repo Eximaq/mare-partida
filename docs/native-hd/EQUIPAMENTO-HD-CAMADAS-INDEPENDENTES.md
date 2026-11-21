@@ -68,3 +68,27 @@ sem alterar o save, o item vestido, o porte, as variantes nem o tempo da pose.
 - Na matriz separada de trocas de equipamento, 28 consultas antes sem HD
   passam a selecionar a arte; nenhuma das 27.216 seleções distintas
   anteriores em HD mudou. Algumas trocas continuam sem encaixe validado.
+
+## Porte no mapa sem trocar o corpo do personagem
+O mapa preferia um conjunto HD completo. Quando uma aparência ou peça
+não entrava na mesma rota, ele trocava para o personagem inteiro Native96,
+incluindo o encaixe antigo da arma. O porte HD não foi reposicionado neste
+lote. As novas rotas usam o próprio plano de porte existente da arma
+(fonte, mão, profundidade, pivô e tempo) e compõem só a camada que faltava.
+
+- Punhos 2, Manopla 14 e Braço 117: porte masculino com os penteados
+  Espetado e Curto rente, em repouso e caminhada nas quatro direções.
+- Onze armas de foco: o porte original permanece com Curto rente e
+  Espetado. As âncoras aprovadas de cabeça e pescoço autorizam a troca
+  apenas do cabelo; a rota já existente da Orbe 17 não foi alterada.
+- Relicário 32 e Calça 22: repouso e caminhada S/L/O. O Norte não reutiliza
+  esta camada porque a base inferior não é idêntica.
+- Bota 9: reaproveita os quatro passes próprios atrás/à frente das pernas
+  com as seis espadas masculinas e os quatro casacos comprovados no
+  repouso Sul, sem substituir o peitoral ou o encaixe da arma.
+- Luva 25 e Casaco 6 na Espada 67: repouso Norte nos tons Claro e Ébano.
+  A caminhada ficou de fora porque há sobreposição com a lâmina.
+
+O lote não promove variantes inadequadas, não oculta itens equipados,
+não muda o save e não cobre todos os conjuntos. Os registros candidatos
+de ângulo de porte não foram declarados equivalentes às prévias aprovadas.

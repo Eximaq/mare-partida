@@ -588,8 +588,30 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!carry?.relic32SavedPalette)return null;
   return {...carry,hdKind:'carry',pack:carry.base.pack,body:carry.base.body};
  }
+ // The Relic32 saved carry and P22 share the exact existing male lower
+ // raster in S/E/W. Reuse only the pants pass; keep relic/anatomy intact.
+ function selectSavedRelic32Pants22(player,o,raw){
+  if(o.consumer!=='world'||o.weaponless||!['south','east','west'].includes(o.direction)||
+     !['idle','walk'].includes(o.action)||player?.classId!=='healer'||player.__reworkSubset||player.zoanTransformed)return null;
+  const visible=registeredEquipment(player,o);
+  if(!visible||Object.keys(visible).length!==2||visible.weapon?.item!==32||visible.pants?.item!==22||
+     !['legs','pants'].includes(visible.pants.key))return null;
+  const a={...raw,body:raw.gender,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin};
+  if(raw.skin!==undefined&&raw.skin!==a.skin||raw.hair!==undefined&&raw.hair!==a.hair||raw.face!==undefined&&raw.face!==a.face||
+     raw.body!==undefined&&canonical(raw.body)!=='male')return null;
+  const bare=selectSavedRelic32Carry({...player,equipment:{weapon:visible.weapon.value}},o,a);
+  if(!bare?.relic32SavedPalette||bare.plan.parts?.length!==1||
+     bare.plan.parts[0].source.sha256!=='b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8')return null;
+  const pants=combinedCarryRegistry?.adaptIsolatedPants(bare,22),d=bare.pack.directions[o.direction],p=pants?.base.pack;
+  const next=p?.directions[o.direction],old=d.layers.find(l=>l.id==='lower-redrawn'),lower=next?.layers.find(l=>l.id===old?.id);
+  const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y),own=pants?.outfitOverlay?.sourceRecord;
+  if(own!==`male-pants22-${o.action}-${o.direction}`||!old||!eq(old,lower)||next.layers.length!==d.layers.length+1||
+     !eq(d.layers,next.layers.slice(0,d.layers.length))||!/^pants22-(?:independent|profile)-candidate$/.test(next.layers.at(-1).id))return null;
+  return describeSlots({...pants,hdKind:'outfit-carry',pack:p,ownRelic32Pants22:true},visible,[]);
+ }
  function select(player,o){
   const raw=player?.appearance96||{},style=raw.eyeStyle??raw.face;
+  const p22=selectSavedRelic32Pants22(player,o,raw);if(p22)return p22;
   const eyes=root.MareReworkEyeStylesHD;
   const color=raw.eyeColor,customColor=color&&!['original','blue'].includes(color);
   // A signed carry palette must precede generic male eye replacement.
@@ -900,13 +922,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // registered bare lower, and the back of the shaft must stay behind it.
   if(o.consumer==='world'&&o.action==='idle'&&o.direction==='south'&&!o.weaponless&&!player.__reworkSubset&&
      player.classId==='sword'&&a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&
-     a.face==='original'&&a.hairColor==='blue'&&a.eyeColor==='blue'&&a.skin===a.skinColor&&
-     ((equipment.coat?.def??equipment.coat)===6?['light','ebony'].includes(a.skin):
-       Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))&&
-     weapon===0&&[6,7,137,144].includes(equipment.coat?.def??equipment.coat)&&(equipment.boots?.def??equipment.boots)===9&&
+     a.face==='original'&&['black','blue'].includes(a.hairColor)&&a.eyeColor==='blue'&&a.skin===a.skinColor&&
+     Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&
+     [0,1,67,68,69,70].includes(weapon)&&[6,7,137,144].includes(equipment.coat?.def??equipment.coat)&&(equipment.boots?.def??equipment.boots)===9&&
      Object.keys(equipment).length===3&&occupiedEquipmentKeys.every(k=>['weapon','coat','boots'].includes(k))&&
      Object.values(equipment).every(v=>['variant','variantId','appearanceVariant'].every(k=>v?.[k]==null||v[k]==='original'))){
-   const bare=carryRegistry?.resolve({item:0,body:'male',action:'idle',direction:'south',appearance:a,equipment:{weapon:0}});
+   const bare=carryRegistry?.resolve({item:weapon,body:'male',action:'idle',direction:'south',appearance:a,equipment:{weapon}});
    const coat=equipment.coat?.def??equipment.coat;
    const dressed=combinedCarryRegistry?.adaptIsolatedCoat(bare,{coat});
    const registered=outfitById.get('male-pants133-idle-south-isolated-r2-boots9-isolated-candidate');
@@ -917,7 +938,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const sha=['0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada','796e293e5fbbc36eadbec9261a76fca58ca4d85801c22fb8e401a5c672689fa4','6f5977a626f24f328ff175a567dedde4b4aef0659c6646c9d33ac0ca362df3fc','fda0cc738ae969b1a27bd6dbef67405b34a2044a5c5af99101796bd189b2e1ce'];
    const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
    const boots=ref?.layers.filter(l=>ids.includes(l.id));
-   if(dressed?.id==='carry0-male-idle-original-south-from-walk0-coat'+coat+'-native'&&dressed.plan.paddingPhysical===128&&
+   if(dressed?.id==='carry'+weapon+'-male-idle-original-south-from-walk0-coat'+coat+'-native'&&(dressed.plan.paddingPhysical??0)===(weapon===0?128:256)&&
       !dressed.base.mirrorX&&lower?.source==='e6824bfdd43d71b8690f90b0dc7cc19caf6d38591b8c4611cc172ede83ec97b9'&&
       lower.depth===4&&eq(lower,ref?.layers.find(l=>l.id===lower.id))&&
       eq([d.rest,d.poses,d.clip,pack.frame,pack.pivot,pack.density],[ref.rest,ref.poses,ref.clip,registered.pack.frame,registered.pack.pivot,registered.pack.density])&&
@@ -934,14 +955,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    }
   }
   // G25's two own North passes fit the exact arms of this W0/C6 idle/walk
-  // without changing the grip or importing any of the donor's clothing.
+  // without changing the grip or importing any of the donor's clothing. W67
+  // also passes at idle; its walk stays out because G25 meets the blade.
   if(o.consumer==='world'&&['idle','walk'].includes(o.action)&&o.direction==='north'&&!o.weaponless&&!player.__reworkSubset&&
      player.classId==='sword'&&a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&
      a.face==='original'&&a.hairColor==='blue'&&a.eyeColor==='blue'&&['light','ebony'].includes(a.skin)&&a.skin===a.skinColor&&
-     weapon===0&&(equipment.coat?.def??equipment.coat)===6&&(equipment.gloves?.def??equipment.gloves)===25&&
+     (weapon===0||weapon===67&&o.action==='idle')&&(equipment.coat?.def??equipment.coat)===6&&(equipment.gloves?.def??equipment.gloves)===25&&
      Object.keys(equipment).length===3&&occupiedEquipmentKeys.every(k=>['weapon','coat','gloves'].includes(k))&&
      Object.values(equipment).every(v=>['variant','variantId','appearanceVariant'].every(k=>v?.[k]==null||v[k]==='original'))){
-   const bare=carryRegistry?.resolve({item:0,body:'male',action:o.action,direction:'north',appearance:a,equipment:{weapon:0}});
+   const bare=carryRegistry?.resolve({item:weapon,body:'male',action:o.action,direction:'north',appearance:a,equipment:{weapon}});
    const dressed=combinedCarryRegistry?.adaptIsolatedCoat(bare,{coat:6});
    const own=outfitById.get('frozen-male-glove25-north-'+o.action+'-native-layers');
    const pack=dressed?.base?.pack,d=pack?.directions?.north,ref=own?.pack?.directions?.north;
@@ -950,9 +972,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const armIds=['armRight','handRight','armLeft','handLeft'];
    const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
    const gloves=ref?.layers.filter(l=>ids.includes(l.id));
-   if(dressed?.id===(o.action==='idle'?'carry0-male-idle-original-north-from-walk0-coat6-native':'carry0-v7-male-walk-drawn-north-north-coat6-native')&&
+   if(dressed?.id===(o.action==='idle'?`carry${weapon}-male-idle-original-north-from-walk0-coat6-native`:'carry0-v7-male-walk-drawn-north-north-coat6-native')&&
       own.frozenGloveLayers&&own.productionEnabled!==false&&own.equipment.gloves===25&&
-      !dressed.base.mirrorX&&dressed.plan.paddingPhysical===128&&
+      !dressed.base.mirrorX&&(dressed.plan.paddingPhysical??0)===(weapon===0?128:256)&&
       eq([d.rest,d.poses,d.clip,pack.frame,pack.pivot,pack.density],[ref.rest,ref.poses,ref.clip,own.pack.frame,own.pack.pivot,own.pack.density])&&
       armIds.every(id=>{const arm=d.layers.find(l=>l.id===id);return arm&&eq(arm,ref.layers.find(l=>l.id===id));})&&
       eq(gloves?.map(l=>l.id),ids)&&gloves.every((l,i)=>l.source===sha[i]&&!l.frames&&!l.depthTrack&&l.slot==='top'&&l.depth===99.5&&
@@ -1029,6 +1051,28 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))){
    const wholeRelic=carryRegistry?.resolve({item:31,pureRelic31Saved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:31}});
    if(wholeRelic?.relic31SavedCarry)return withCarryHead(wholeRelic,'carry');
+  }
+  // These signed carry plans own all terrain-facing skin and weapon passes.
+  // Use the existing separately composited named head, not a new grip/body.
+  const namedCarryId=equipment.weapon?.def??equipment.weapon;
+  if([2,14,117].includes(namedCarryId)&&player.classId===(namedCarryId===2?'brawler':'cyborg')&&
+     !player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>equipment.weapon?.[k]==null||equipment.weapon[k]==='original')&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair===a.hairStyle&&['hair-spiky','hair-cropped'].includes(a.hair)&&
+     a.face==='original'&&a.eyeStyle==='original'&&a.eyeColor==='blue'&&
+     Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)&&
+     a.skin===a.skinColor&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)){
+   const base=selectBase({...player,appearance96:{...raw,hairStyle:'original',hair:'original',hairColor:'black'}},o);
+   const flags={2:['stockWalkingCuffSavedPalette','gauntletsSouthSavedPalette','gauntlet2NorthSavedPalette'],
+    14:['manopla14SavedPalette'],117:['stockFinalTechWalkSavedPalette','arm117SavedPalette']}[namedCarryId];
+   const headLook={...a,head:'original'},head=headRegistry?.resolve({body:'male',direction:o.direction,look:headLook});
+   if(base?.hdKind==='carry'&&base.item===namedCarryId&&flags.some(k=>base[k])&&head&&headCompat&&
+      !base.headRecord&&!base.gearOnlyRecord&&base.base?.headHairSeparated&&
+      !!base.base.mirrorX===(o.direction==='west')&&base.pack.directions[o.direction]?.layers.some(l=>l.slot==='hair')){
+    return {...base,id:base.id+':named-carry-head:'+a.hair,headRecord:head,headLook,mirrorX:base.base.mirrorX,
+     colorAppearance:{...base.colorAppearance,hair:a.hair,hairColor:a.hairColor}};
+   }
   }
   const w117=player.equipment?.weapon;
   if((w117?.def??w117)===117&&player.classId==='cyborg'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.visual_completo&&
@@ -2823,10 +2867,31 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return describeSlots({...r,id:r.id+'-boots183-own-idle',pack,base:{...r.base,pack,sourceRefs:[...r.base.sourceRefs,...refs]},
    outfitOverlay:{...r.outfitOverlay,sourceRefs:[...r.outfitOverlay.sourceRefs,...refs]},ownImperial183SouthIdle:true},worn,[]);
  }
+ const focusCarryClasses=Object.freeze({16:'strategist',17:'strategist',31:'healer',32:'healer',121:'strategist',
+  122:'strategist',123:'strategist',124:'strategist',125:'healer',126:'healer',127:'healer',128:'healer'});
+ function selectNamedFocusCarry(player,o){
+  if(!player||player.zoanTransformed||player.__reworkSubset||o.consumer!=='world'||o.weaponless||!['idle','walk'].includes(o.action))return null;
+  const raw=player.appearance96||{},equipment=player.equipment||{},w=equipment.weapon,id=w?.def??w;
+  if(!Number.isInteger(id)||focusCarryClasses[id]!==player.classId||
+     Object.entries(equipment).some(([k,v])=>k!=='weapon'&&!nonVisualEquipment.has(k)&&v!=null&&v!=='none')||
+     ['variant','variantId','appearanceVariant'].some(k=>w?.[k]!=null&&w[k]!=='original')||
+     raw.version!==1||raw.gender!=='masculino'||raw.skinStyle!=='natural'||raw.skin!=null&&raw.skin!==raw.skinColor||
+     raw.hair!=null&&raw.hair!==raw.hairStyle||!['hair-cropped','hair-spiky'].includes(raw.hairStyle)||raw.face!=null&&raw.face!=='original'||raw.eyeStyle!=='original'||raw.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareCharacterAppearance?.skins||{},raw.skinColor)||!Object.hasOwn(root.MareAppearance96?.skins||{},raw.skinColor)||
+     !Object.hasOwn(root.MareCharacterAppearance?.hairs||{},raw.hairColor)||!Object.hasOwn(root.MareAppearance96?.hairs||{},raw.hairColor))return null;
+  // Reuse the exact accepted saved-tone attachment, not the old Native96 grip.
+  // The source and depth contain the item-specific hand treatment and stay intact.
+  const authority=select({...player,appearance96:{...raw,hair:'original',hairStyle:'original',hairColor:'black'}},o);
+  if(authority?.hdKind!=='carry'||authority.item!==id||authority.action!==o.action||authority.direction!==o.direction||
+     authority.base?.body!=='male'||authority.colorAppearance?.skin!==raw.skinColor||authority.colorAppearance?.eyeColor!==raw.eyeColor||
+     authority.headRecord||authority.gearOnlyRecord||authority.omitted?.length)return null;
+  return carryRegistry?.withNamedHair?.(authority,raw.hairStyle,raw.hairColor)||null;
+ }
  function selectVisual(player,o={}){
   const exact=select(player,o)||selectApprovedFemaleDaggerP22(player,o)||selectSouthIdleImperialBoots(player,o);
   if(!exact){
    const layered=selectLayered(player,o);if(layered)return layered;
+   const namedFocus=selectNamedFocusCarry(player,o);if(namedFocus)return namedFocus;
    if(!swordCheckpoint||!player||player.zoanTransformed||player.__reworkSubset||o.weaponless||
       !['attack-sword','attack','skill'].includes(o.action))return null;
    const visible=registeredEquipment(player,o);

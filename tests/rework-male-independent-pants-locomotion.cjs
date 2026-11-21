@@ -5,7 +5,7 @@ const {make,cv}=require(P+'/tests/rework-integration-support.cjs'),A=require(P+'
 const loader=require(P+'/tools/rework-hd-test-loader.cjs').create(P);
 async function frame(bundle,p,o,i,n){let im;assert(bundle.draw({save(){},restore(){},drawImage(v){im=v}},p,{...o,time:i/n,progress:(i+.1)/n}));assert(im);return [Buffer.from(im.getContext('2d').getImageData(0,0,im.width,im.height).data),im.width,im.height];}
 (async()=>{await rt.ready;let results={};for(const direction of ['south','north','east','west'])for(const action of ['idle','walk','attack-unarmed'])for(const item of [21,133])for(const c of [6])for(const skinColor of ['light','ebony']){const o={action,direction,consumer:'world'},profile=A.normalize({gender:'masculino',hairStyle:'hair-spiky',hairColor:'black',skinColor,eyeStyle:'original',eyeColor:'blue'}),off={classId:'brawler',appearance96:profile,equipment:{coat:{def:c}}},on={...off,equipment:{...off.equipment,legs:{def:item}}};const rb=rt.selectVisual(off,o),rf=rt.selectVisual(on,o);
- const expected=(item===21?['south','east','west']:['south']).includes(direction)&&['idle','walk'].includes(action);
+ const expected=['idle','walk'].includes(action)&&(direction==='south'||['east','west'].includes(direction)&&(item===21||action==='walk'));
  assert.equal(rf?.attachedOwnedPants?.item===item,expected,item+'/'+direction+'/'+action);if(!expected)continue;
  const pack=rf.pack.directions[direction],n=pack.clip.frames,fb=await rt.prepareConfiguration([{player:off,options:o}]),ff=await rt.prepareConfiguration([{player:on,options:o}]);try{
  const l=pack.layers.find(q=>new RegExp('^(?:pants'+item+'-|own'+item+'-)').test(q.id));let count=0, outside=0;
@@ -17,4 +17,4 @@ async function frame(bundle,p,o,i,n){let im;assert(bundle.draw({save(){},restore
  assert.equal(outside,0);assert(count>500);console.log('CHECK',item,direction,action,c,skinColor,n,count,outside);
  results[item+'/'+direction+'/'+action+'/'+c+'/'+skinColor]={n,count,outside};
  }finally{fb.release();ff.release();}
- }assert.equal(Object.keys(results).length,16);assert.equal(Object.values(results).reduce((n,r)=>n+r.n,0),136);console.log(JSON.stringify(results));})().catch(e=>{console.error(e);process.exitCode=1;});
+ }assert.equal(Object.keys(results).length,20);assert.equal(Object.values(results).reduce((n,r)=>n+r.n,0),200);console.log(JSON.stringify(results));})().catch(e=>{console.error(e);process.exitCode=1;});

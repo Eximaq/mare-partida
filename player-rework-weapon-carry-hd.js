@@ -760,7 +760,17 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   }finally{target.restore();}if(r.base.mirrorX){ctx.clearRect(0,0,w,h);ctx.save();ctx.translate(w,0);ctx.scale(-1,1);ctx.drawImage(canvas,0,0);ctx.restore();}
   return {width:w,height:h,density:4,pivot:{x:p.pivot.x*4+padding,y:p.pivot.y*4+padding},frames:d.clip.frames,fps:d.clip.fps,frame,status:r.status,physicalScale:1,source:r.id,calibrationRequired:true};
  }
- return {resolve,requiredFiles,render};
+ // Adapt only a preselected exact carry; do not resolve/rebind weapon, pose, or hand.
+ function withNamedHair(record,style,color){
+  if(record?.hdKind!=='carry'||record.hairLayers||!['hair-cropped','hair-spiky'].includes(style)||record.colorAppearance?.hair!=='original')return null;
+  const resolved=resolveHair(record.base,style.slice(5));
+  if(resolved?.hairLayers?.length!==1||!resolved.hairSource)return null;
+  const layer=resolved.hairLayers[0],d=record.base.pack.directions[record.direction];
+  if(d.layers.some(l=>l.slot!=='hair'&&(l.id===layer.id||l.source===layer.source||l.frames?.includes(layer.source))))return null;
+  return {...record,...resolved,id:record.id+':named-focus-'+style+':'+color,namedFocusCarry:true,
+   colorAppearance:{...record.colorAppearance,hair:style,hairStyle:style,hairColor:color}};
+ }
+ return {resolve,requiredFiles,render,withNamedHair};
 }
 const api={create};root.MareReworkWeaponCarryHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
