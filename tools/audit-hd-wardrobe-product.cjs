@@ -26,7 +26,7 @@ function fingerprint(){
  const h=crypto.createHash('sha256');
  const inputs=[__filename,path.join(__dirname,'audit-hd-slot-independence.cjs'),...fs.readdirSync(published)
   .filter(n=>/^(player-rework-|paper-doll-96-lobby|character-appearance|item-catalog).*\.js$/.test(n)).sort().map(n=>path.join(published,n))];
- for(const dir of ['rework-modular-outfits-hd','rework-base-hd','rework-weapon-layers-hd','rework-sword0-checkpoint']){
+ for(const dir of ['rework-modular-outfits-hd','rework-base-hd','rework-weapon-layers-hd','rework-sword0-checkpoint','rework-combat-wardrobe','rework-female-dagger-wardrobe']){
   const base=path.join(published,'tools',dir);
   inputs.push(...fs.readdirSync(base).filter(n=>/\.json(?:\.gz)?$/.test(n)).sort().map(n=>path.join(base,n)));
  }

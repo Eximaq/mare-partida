@@ -21,9 +21,9 @@ lobby96.draw=function(ctx,p,o){
  return drawn;
 };
 window.__hdSlotQA={
- seedSwordWardrobe(){
-  game.classId='sword';game.level=100;game.equipment={};
-  game.inventory=[1,67,6,151,168,22,25,159,18,157,148,183].map(id=>newItem(itemDefs[id],1,false));
+ seedWardrobe(role,items){
+  game.classId=role;game.level=100;game.equipment={};
+  game.inventory=items.map(id=>newItem(itemDefs[id],1,false));
   game.appearance96=MareCharacterAppearance.normalize({...game.appearance96,gender:'feminino',
    skinStyle:'natural',skinColor:'ebony',hairStyle:'original',hairColor:'blue',eyeStyle:'original',eyeColor:'green'});
   game.preferences={...game.preferences,hideHeadgear:false};
@@ -205,7 +205,7 @@ window.__hdSlotQA={
   await put(6);
   await observeAttack('attack-daggers','adaga73-peitoral6-leste','east',{...daggerKit,legs:22,coat:6});
   await observeAttack('attack-daggers','adaga73-peitoral6-oeste','west',{...daggerKit,legs:22,coat:6});
-  await page.evaluate(()=>__hdSlotQA.seedSwordWardrobe());
+  await page.evaluate(()=>__hdSlotQA.seedWardrobe('sword',[1,67,6,151,168,22,25,159,18,157,148,183]));
   const swordKit={weapon:1,coat:151,legs:168,boots:183,gloves:159,head:157};
   for(const id of Object.values(swordKit))await put(id);
   const savedLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
@@ -219,6 +219,13 @@ window.__hdSlotQA={
   await page.waitForFunction(()=>window.__hdSlotQA?.read().appearance);
   await observeAttack('attack-sword','espada-apos-reconectar','east',swordKit);
   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,savedLook);
+  for(const [role,weapon,action] of [['brawler',110,'attack-unarmed'],['cyborg',14,'attack-unarmed'],['healer',31,'attack-focus']]){
+   const kit={coat:130,legs:147,boots:141,gloves:166,head:143,weapon};
+   await page.evaluate(({role,kit})=>__hdSlotQA.seedWardrobe(role,Object.values(kit)),{role,kit});
+   for(const id of Object.values(kit))await put(id);
+   for(const direction of ['east','north','west','south'])await observeAttack(action,role+'-conjunto-'+direction,direction,kit);
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,savedLook);
+  }
   assert.deepEqual(errors,[]);
   console.log('Character creation, equipped movement, swaps, reload, Mera weapon visibility and armed attacks passed.');
  }finally{

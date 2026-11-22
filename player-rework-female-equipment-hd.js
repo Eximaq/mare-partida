@@ -56,7 +56,7 @@ function bendSwordSleeve(canvas,image,sleeve,pose,density){
  if(long)draw(joint,b,elbow,wrist,true);
 }
 function attachSwordCoat(record,outfit,coat){
- if(record.body!=='female'||record.action!=='attack-sword'||!outfit||
+ if(record.body!=='female'||!['attack-sword','attack-unarmed','attack-focus'].includes(record.action)||!outfit||
     outfit.equipment.torso!==coat||Object.keys(outfit.equipment).length!==1)return null;
  const {direction,baseRecord:base}=record,pack=base.pack,d=pack.directions[direction],o=outfit.pack.directions[direction];
  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -681,7 +681,7 @@ function placeSouthWalk14OverHand(r){
  });
  return {...r,id:r.id+':right-palm-overlay-flipped',states,southWalk14RightPalm:true,southWalk14PalmFlip:true};
 }
-const asset=(r,sha)=>'tools/'+(r.daggerTorso?.refs.includes(sha)?'rework-modular-outfits-hd':r.daggerWardrobeSources?.includes(sha)?'rework-female-dagger-wardrobe':r.daggerP22Sources?.includes(sha)?'rework-female-dagger-p22':r.northFirearmCoatSources?.includes(sha)?'rework-firearm113-coat':r.checkpointSources?.includes(sha)?'rework-sword0-checkpoint':r.outfitSources?.includes(sha)?'rework-modular-outfits-hd':'rework-base-hd')+'/assets/'+sha+'.png';
+const asset=(r,sha)=>'tools/'+(r.combatWardrobeSources?.includes(sha)?'rework-combat-wardrobe':r.daggerTorso?.refs.includes(sha)?'rework-modular-outfits-hd':r.daggerWardrobeSources?.includes(sha)?'rework-female-dagger-wardrobe':r.daggerP22Sources?.includes(sha)?'rework-female-dagger-p22':r.northFirearmCoatSources?.includes(sha)?'rework-firearm113-coat':r.checkpointSources?.includes(sha)?'rework-sword0-checkpoint':r.outfitSources?.includes(sha)?'rework-modular-outfits-hd':'rework-base-hd')+'/assets/'+sha+'.png';
 // Each approved dagger atlas is isolated equipment. Its left/right
 // raster halves belong to the item; wrist centres, matrices, z, and
 // intentional hidden phases belong only to the receiving action.
@@ -1479,6 +1479,13 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   const pixels=c.getImageData(0,0,tile.width,tile.height);
   for(let i=0;i<keep.length;i+=4)if(keep[i])pixels.data.fill(0,i,i+4);
   c.putImageData(pixels,0,0);map.set(hash,tile);
+ }
+ for(const fit of r.focusGloveFit||[]){
+  const hash=fit.frames[frame],image=map.get(hash);
+  if(!image)throw Object.assign(Error('Missing focus glove'),{asset:asset(r,hash)});
+  const tile=frameCanvas(image.width,image.height),ctx=tile.getContext('2d');
+  ctx.imageSmoothingEnabled=false;ctx.transform(...fit.matrices[frame]);ctx.drawImage(image,0,0);
+  map.set(hash,tile);
  }
  for(const sleeve of r.swordSleeves||[]){
   const image=map.get(sleeve.hash);

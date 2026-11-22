@@ -7,7 +7,8 @@ const world=require('../paper-doll-96-lobby.js'),look=require('../character-appe
 const weapons=require('../tools/paper-doll-96-v3/weapons.json');
 global.MareSword0Checkpoint=require('../player-rework-sword0-checkpoint.js');
 const {make}=require('./rework-integration-support.cjs');
-const swords=[0,1,67,68,69,70];
+const {weapons:catalog}=require('../tools/audit-hd-wardrobe-product.cjs');
+const poses={sword:['sword','attack-sword'],punch:['brawler','attack-unarmed'],tech:['cyborg','attack-unarmed'],focus:['healer','attack-focus']};
 const directions=['north','south','east','west'];
 async function main(){
  assert(process.env.HD_PUBLISHED_ROOT,'Set HD_PUBLISHED_ROOT to the exported site');
@@ -28,11 +29,14 @@ async function main(){
   }finally{bundle.release();}
  };
  const rows=[],failures=[];
- for(const direction of directions.filter(d=>!process.env.WARDROBE_DIRECTION||process.env.WARDROBE_DIRECTION===d)){
-  for(const action of ['idle','attack-sword']){
+ const selectedPoses=Object.entries(poses).filter(([name])=>!process.env.WARDROBE_FAMILY||name===process.env.WARDROBE_FAMILY);
+ assert(selectedPoses.length>0);
+ for(const [name,[role,attack]] of selectedPoses)for(const direction of directions.filter(d=>!process.env.WARDROBE_DIRECTION||process.env.WARDROBE_DIRECTION===d)){
+  for(const action of name==='sword'?['idle',attack]:[attack]){
    for(let variant=0;variant<10;variant++){
-    const def=swords[variant%swords.length],selected=slots.map((slot,i)=>[slot,gear[i][(variant+i*3)%10]]);
-    const actor=pieces=>look.commit({classId:'sword',equipment:Object.fromEntries([['weapon',{def}],
+    const choices=catalog.filter(w=>w.role===role||name==='focus'&&w.role==='strategist');
+    const {id:def,role:classId}=choices[(variant+directions.indexOf(direction)*3)%choices.length],selected=slots.map((slot,i)=>[slot,gear[i][(variant+i*3)%10]]);
+    const actor=pieces=>look.commit({classId,equipment:Object.fromEntries([['weapon',{def}],
      ...pieces.map(([slot,item])=>[slot,{def:item}])])},{gender:'feminino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',
      hairStyle:'original',eyeStyle:'original'},()=>true);
     const o={consumer:'world',action,direction},get=p=>world.selectWorldHDOnly(api,weapons,p,o);
@@ -44,7 +48,7 @@ async function main(){
      assert(complete(control,subset,def,o));
      for(const [key] of [...subset,['weapon',def]])assert.deepEqual(full.slotRoutes[key],control.slotRoutes[key]);
      const off=await paint(q,o,control),changed=on.map((hash,i)=>hash!==off[i]);
-     const row={action,direction,weapon:def,slot,item,source:full.slotRoutes[slot].source,changed};
+     const row={classId,action,direction,weapon:def,slot,item,source:full.slotRoutes[slot].source,changed};
      rows.push(row);
      if(!changed.some(Boolean))failures.push(row);
      assert.equal(get(p).id,full.id);
@@ -54,7 +58,7 @@ async function main(){
    }
   }
  }
- assert.equal(rows.length,process.env.WARDROBE_DIRECTION?100:400);
+ assert.equal(rows.length,(process.env.WARDROBE_DIRECTION?1:4)*50*selectedPoses.reduce((n,[name])=>n+(name==='sword'?2:1),0));
  if(process.env.WARDROBE_EVIDENCE)require('node:fs').writeFileSync(process.env.WARDROBE_EVIDENCE,JSON.stringify(rows));
  console.log(JSON.stringify({checks:rows.length,phases:rows.reduce((n,x)=>n+x.changed.length,0),invisible:failures}));
  assert.equal(failures.length,0,'A real equipment group made no visible contribution throughout its cycle');

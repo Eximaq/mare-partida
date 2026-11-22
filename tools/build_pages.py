@@ -40,6 +40,9 @@ materialize_firearm113_coat(
     ROOT/'tools/rework-firearm113-coat/masks',
     OUT/'tools/rework-firearm113-coat')
 
+from export_combat_wardrobe import materialize as materialize_combat_wardrobe
+materialize_combat_wardrobe(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
+                            OUT/'tools/rework-combat-wardrobe')
 from export_female_dagger_wardrobe import materialize as materialize_dagger_wardrobe
 materialize_dagger_wardrobe(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
                             OUT/'tools/rework-female-dagger-wardrobe')
