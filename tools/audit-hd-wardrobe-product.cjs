@@ -36,6 +36,15 @@ function fingerprint(){
 function ownRoute(record,slot){return record?.slotRoutes?.[slot]??record?.slotRoutes?.[{coat:'torso',legs:'pants'}[slot]];}
 function isNativeWeapon(record,weapon){
  if(record.item!==weapon||!record.id)return false;
+ const scene=record.hdKind==='profile-separated'?record.profileLayers:
+  record.hdKind==='authored-north-layered'?record.northLayers:null;
+ if(scene){
+  const body=scene.body;
+  return body?.item===weapon&&body.body===record.body&&body.action===record.action&&body.direction===record.direction&&
+   body.sourceBaseId===body.baseRecord?.id&&body.states===record.states&&body.states?.length>0&&
+   body.states.every(state=>state.parts?.length>0&&state.parts.every(p=>/^[a-f0-9]{64}$/.test(p.sha256)&&
+    p.url==='tools/rework-weapon-layers-hd/assets/'+p.sha256+'.png'&&p.matrix?.length===6&&p.matrix.every(Number.isFinite)));
+ }
  if(record.hdKind==='carry')return record.plan?.item===weapon&&record.plan.parts?.length>0&&!!record.base?.pack;
  if(record.hdKind==='female-equipment')return !!record.sourceBaseId&&record.baseRecord?.id===record.sourceBaseId&&
   record.states?.length>0&&record.states.every(s=>Array.isArray(s.parts));
@@ -135,7 +144,7 @@ async function main(){
      const tmp=file+'.'+process.pid+'.tmp';fs.writeFileSync(tmp,JSON.stringify(row));fs.renameSync(tmp,file);
     }
     assert(row.mode===mode&&row.body===body&&row.direction===direction&&row.action===action&&row.weapon===w.id);
-    if(Object.values(row.solo).some(x=>!x.selected)||row.pairs.some(x=>x.failed.length)||row.full.selected!==row.full.tested)failed++;
+    if(!row.empty.selected||Object.values(row.solo).some(x=>!x.selected)||row.pairs.some(x=>x.failed.length)||row.full.selected!==row.full.tested)failed++;
     processed++;
    }
  assert(expectedCount>0&&processed===expectedCount,'No contexts matched');

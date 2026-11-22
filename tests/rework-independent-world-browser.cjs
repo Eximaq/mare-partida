@@ -263,6 +263,19 @@ window.__hdSlotQA={
   for(const [key,dir] of [['d','east'],['a','west'],['s','south'],['w','north']])
    await walk(key,dir,cuffKit,'manoplas-roupas-'+dir,true);
   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,cuffLook);
+  const walkingCuffs={...cuffKit,weapon:109,gloves:25};
+  await page.evaluate(kit=>__hdSlotQA.seedWardrobe('brawler',[...Object.values(kit),159],{
+   gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'
+  }),walkingCuffs);
+  for(const id of Object.values(walkingCuffs))await put(id);
+  const savedCuffLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  for(const [key,dir] of [['d','east'],['w','north'],['a','west'],['s','south']])
+   await walk(key,dir,walkingCuffs,'manopla109-luva25-'+dir,true);
+  await put(159);walkingCuffs.gloves=159;
+  await walk('s','south',walkingCuffs,'manopla109-troca-luva',true);
+  await put(25);walkingCuffs.gloves=25;
+  await walk('s','south',walkingCuffs,'manopla109-restaura-luva',true);
+  assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,savedCuffLook);
   const daggerOutfit={weapon:73,coat:172,legs:168,boots:148,gloves:159,head:19};
   await page.evaluate(kit=>__hdSlotQA.seedWardrobe('rogue',Object.values(kit)),daggerOutfit);
   for(const id of Object.values(daggerOutfit))await put(id);
@@ -313,6 +326,18 @@ window.__hdSlotQA={
    await observeAttack('attack-unarmed','soco-desarmado-'+dir,dir,bareKit);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,unarmedLook);
   }
+  const armedPunch={...bareKit,weapon:112};
+  await page.evaluate(kit=>__hdSlotQA.seedWardrobe('brawler',[...Object.values(kit),25],{
+   gender:'masculino',hairColor:'blue',eyeColor:'green',skinColor:'ebony'
+  }),armedPunch);
+  for(const id of Object.values(armedPunch))await put(id);
+  const armedLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  await observeAttack('attack-unarmed','manopla112-roupas-norte','north',armedPunch);
+  await put(25);armedPunch.gloves=25;
+  await observeAttack('attack-unarmed','manopla112-troca-luva-norte','north',armedPunch);
+  await put(159);armedPunch.gloves=159;
+  await observeAttack('attack-unarmed','manopla112-restaura-luva-norte','north',armedPunch);
+  assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,armedLook);
   assert.deepEqual(errors,[]);
   console.log('Character creation, equipped movement, swaps, reload, Mera weapon visibility and armed attacks passed.');
  }finally{

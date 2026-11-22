@@ -241,7 +241,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      variant!=null&&variant!=='original'||Object.keys(equipment).some(k=>k!=='coat')||
      withCoat&&(!Object.hasOwn(gauntletSideCoats[item+':'+direction]||{},coatId)||coatVariant!=null&&coatVariant!=='original')||
      a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!=='light'||
-     a.hair!=='original'||a.face!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.hair!=='original'||a.face!=='original'||!savedHeadPalette(a)||
      spec.item!==item||spec.rig!=='male-authored-gauntlet'+item+'-eight'||spec.action!==action||
      !same(spec.approvedAppearance,{hair:'original',hairColor:'brown',face:'original',eyeColor:'brown',skin:'light'})||
      spec.fps!==12||spec.sourceFPS!==12||spec.density!==4||!same(spec.nativeCanvas,[640,640])||
@@ -285,7 +285,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      ordered.requiredClass!==classId||!['male','masculino'].includes(sourceBody)||equipment.length||
      weaponVariant!=null&&weaponVariant!=='original'||appearance.version!==1||appearance.gender!=='masculino'||
      appearance.skinStyle!=='natural'||appearance.hair!=='original'||appearance.face!=='original'||
-     appearance.skin!==appearance.skinColor||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)||appearance.hairColor!=='black'||appearance.eyeColor!=='blue'||
+     appearance.skin!==appearance.skinColor||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)||!savedHeadPalette(appearance)||
      ordered.approvedAppearance?.skin!=='light'||ordered.approvedAppearance.hair!=='original'||
      ordered.approvedAppearance.face!=='original'||ordered.approvedAppearance.hairColor!=='brown'||ordered.approvedAppearance.eyeColor!=='brown'||
      ordered.fps!==12||ordered.contactTick!==4||ordered.density!==4||ordered.loop!==false||
@@ -316,7 +316,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(!own||item!==118||!['male','masculino'].includes(sourceBody)||classId!=='cyborg'||action!=='attack-unarmed'||
      variant!=null&&variant!=='original'||Object.keys(equipment).length||a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||
      !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||a.skinColor!==a.skin||a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||
-     a.hairColor!=='black'||a.eyeColor!=='blue'||spec.rig!=='male-punch-native-right-cuff'||spec.body!=='male'||spec.action!==action||
+     !savedHeadPalette(a)||spec.rig!=='male-punch-native-right-cuff'||spec.body!=='male'||spec.action!==action||
      spec.sourceProvenance?.archiveSHA256!=='55b2ab8f948c726a6d9cc9861c941475867cb8f13ec8d12eedfdc3b2b7f69525'||
      spec.density!==4||spec.fps!==12||!eq(spec.nativeCanvas,[640,640])||!eq(spec.logicalFrame,[160,160])||!eq(spec.pivot,[80,128])||
      !eq(spec.timeline,['0','1','2','3','4','5','6',...Array(13).fill('7')])||
@@ -424,7 +424,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(allowExactComposite&&allowOwnW14Lateral&&Number(item)===14&&body(b)==='male'&&classId==='cyborg'&&action==='attack-unarmed'&&['east','west'].includes(direction)&&!visibleOrdered.length&&
      (weaponVariant==null||weaponVariant==='original')&&appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&
      Object.hasOwn(root.MareAppearance96?.skins||{},appearance.skin)&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&
-     appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.hairColor==='black'&&appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'){
+     appearance.hair==='original'&&appearance.hairStyle==='original'&&savedHeadPalette(appearance)&&appearance.face==='original'&&appearance.eyeStyle==='original'){
    const own=index.records.find(z=>z.id==='gauntlet14-'+direction+'-native-original-source');
    if(own?.sourceArchiveSHA256===ownW14Lateral.archive&&own.fps===12&&own.density===4&&JSON.stringify(own.nativeCanvas)==='[640,640]'&&JSON.stringify(own.pivot)==='[80,128]'&&
      own.timeline?.join(',')==='0,1,2,3,4,5,6,7'&&own.states?.length===8&&own.states.every((q,f)=>q.approved?.sha256===ownW14Lateral[direction][f]&&q.layers?.length===1&&q.layers[0].sha256===q.approved.sha256)){
@@ -468,8 +468,8 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(allowExactComposite&&allowGauntletLightSouth&&body(b)==='male'&&['male','masculino'].includes(sourceBody??b)&&classId==='brawler'&&action==='attack-unarmed'&&direction==='south'&&
      visibleOrdered.length===0&&(weaponVariant==null||weaponVariant==='original')&&
      appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},appearance.skin)&&
-     appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.hairColor==='black'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'){
+     appearance.hair==='original'&&appearance.hairStyle==='original'&&savedHeadPalette(appearance)&&
+     appearance.face==='original'&&appearance.eyeStyle==='original'){
    const itemId=Number(item),southGauntlets=resolveGauntletsSouthLight(itemId);
    if(southGauntlets&&appearance.skin==='light'&&![2,3].includes(itemId))return southGauntlets;
    if(southGauntlets){
@@ -493,8 +493,8 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      body(b)==='male'&&['male','masculino'].includes(sourceBody??b)&&classId==='cyborg'&&action==='attack-unarmed'&&direction==='south'&&
      visibleOrdered.length===0&&(weaponVariant==null||weaponVariant==='original')&&
      appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},appearance.skin)&&
-     appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.hairColor==='black'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'){
+     appearance.hair==='original'&&appearance.hairStyle==='original'&&savedHeadPalette(appearance)&&
+     appearance.face==='original'&&appearance.eyeStyle==='original'){
    const proof=[["ed7a638eb21a314dce2d878daf622a0d81dc132417e1c4d82df6e4df305b2578","816234b2769e3cbadaf130a174f015fe1c586a903764be9fda4f91c71f6f2990","393a9057810171c354946e1e2482d91eaaf0642f076abadc55361d4667e09291"],["b4ba163e6e492138222a49f65ff24fe47e87af7a18929d1513d30ace0361e16c","553c2187b794a88f6e4df8eb59e7e72e31cd19b46537ce18764a3d61b44da0d7","af56e10695652e57f6714fbf6e3e60f710db01926650313eb31b458554428c10"],["188a210c46cb0e547554afb58c8af9f7e61bee18c33058c303868c2980c360b5","13a2c945c76a5900c182bcf86c1f32ef85433db56cc73ff9c26bd06d21e73c6e","9ead097c0b1be815ef73757246d2297c9515cb8e2416a667be8f46a31006728c"],["0d5daa1027bb286a020887e52186369044f56c8e55bb830344aa945e28a12092","f2c496f0c9349690f0fdfb38af67c915495ccf8e88a4bb5d8e08455d2b0f9373","28ccf24899d0460f3c8f103b4a8d41016f3ef9ee44f1cb70171b86f9a3883e94"],["3efb5676f9d9ba31f9c2cda404156a15ea559f7a15ec827d81e78c626a889aff","e2fe6f45cb7c475a542ef6e0d320b64f9d9a8f0b30c8005af567722a295b34fe","dbce072d91ea468564104e656c957434b4a7317b1f1f0874759d503ffdb82233"],["b5f56a0da812a97bb64bc3455a1c898ab5f9b56ebbf3fc32f89f976b72a90f71","1ca77bc58d1f46bca7455c0731dd2c82c180597dd3ca6d4ac29c9a0eac11c72e","b0e100e1215e96cc6be42659ce18bae1efb67a84f193b27ba46796994572e52b"],["1403f0b58a596d7c3c3a9cc2f67b96be7c6670a74fd3b9d063d9120bfecf94a5","2ef56479b38586028c2b00d510cee5f4ae0aaa2c09568d18a28472c257771ab9","7ae75e13857f50bb6a9d02b0724dd7cc3ae023c084e9c877b13c3f95b62ae535"],["c82943d095e99b16523429c0050e37aa0ee7d079e37fc5e7bf87892f828576c0","5e80a7fa1101b8586031a02de374e4ac42a2a43534836e3c825acb8827da4779","018bda8a29436ef78ed6a75ccf6504040aae36267fa2df56e3fe3b6d74e07968"],["fde9316f9d1441d5f05088749ac86b16a8c5e3d89b8aa897dd08cc0c1cb5407f","09cd47dfad42d5bda53a9d5c9b32e9267b2a7f997f4bbeb1cdd50aaa375ca2b2","8c15bf1698ba3f08277b3ca9368b3f46205d6d564a7c24d0934646c4fca38234"],["b689fd174eb7c7384ba925540a3a35708748a7b3ad8350e1083f095aad82b660","23e390f4df05121664b489fb3c0acff4a1e30522ef48b2e7c930cc029e1ec07d","ee1cf77b195db39bc76cfd167332245678dc320d26c5b76fce904fce9cdaa74a"],["75c45c9aeaf00141454ae7b21fa65e8e6e8da15ccccb9c33c8d1409ce7c1af07","742e54c0ba17c912923002efcb4b52ad43647b983e392aa3671f660bfe0f7f98","6dc1017bf050b1bc10aa8ff51d32cc6549a7408ac1267e52eb499cec28b9b3a3"],["02a85f87594adb3a9cbada06228875dd1964e7de1f7e78a33c28a77713d0555c","31642d6deb398b7416a646c04fda5148f12dc1431ce65ca1bf88fef1fd1bf65c","23f1b080b6089cb71cb20e0a3d09b06e844f45b71694152cde33d067d6fc0570"]],eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
    const source=index.records.find(v=>v.id==='gauntlet14-south-native-original-source');
    if(ordered.approvedAppearance?.skin==='light'&&ordered.approvedAppearance?.hairColor==='brown'&&ordered.approvedAppearance?.eyeColor==='brown'&&
@@ -601,7 +601,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   const ownW31Side=allowOwnStaff123Lateral&&ordered?.item===31&&classId==='healer'&&visibleOrdered.length===0&&
     appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&
     Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&appearance.hair==='original'&&appearance.hairStyle==='original'&&
-    appearance.hairColor==='black'&&appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'&&
+    savedHeadPalette(appearance)&&appearance.face==='original'&&appearance.eyeStyle==='original'&&
     focusHeadAuthority(ordered,classId,sourceBody??b,weaponVariant)&&
     eq123(ordered.timeline,['0','1','2','3','4','5','6','7'])&&eq123(ordered.visualSampling,{schema:'authored-contact-progress-v1',contactTick:4})&&
     ordered.states.every((st,f)=>{
@@ -635,7 +635,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   const sideHair=(sidePalette||focusPalette)&&appearance.hairColor!=='brown'&&Object.hasOwn(root.MareCharacterAppearance?.hairs||{},appearance.hairColor)?appearance.hairColor:null;
   const w16Authority=ordered?.item===16&&allowOwnW16SideTone&&focusPalette&&wardrobeOK&&compass16SideToneAuthority[direction];
   if(w16Authority&&appearance.skin!=='light'&&appearance.skin===appearance.skinColor&&appearance.hair==='original'&&appearance.hairStyle==='original'&&
-     appearance.hairColor==='black'&&appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'&&
+     savedHeadPalette(appearance)&&appearance.face==='original'&&appearance.eyeStyle==='original'&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},appearance.skin)&&
      ordered.timeline?.join(',')==='0,1,2,3,4,5,6,7'&&ordered.states.every((f,i)=>f.approvedReferenceSHA256===w16Authority.states[i].v&&
        JSON.stringify(f.layers)===JSON.stringify(w16Authority.states[i].s)&&!f.attachment&&!f.bodyPatch&&!f.canvasRoundingPatch))
@@ -673,8 +673,8 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(registeredTech&&allowExactComposite&&classId==='cyborg'&&action==='attack-unarmed'&&['male','masculino'].includes(sourceBody??b)&&
      !visibleOrdered.length&&(weaponVariant==null||weaponVariant==='original')&&appearance.version===1&&appearance.gender==='masculino'&&
      appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&
-     appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.hairColor==='black'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'){
+     appearance.hair==='original'&&appearance.hairStyle==='original'&&savedHeadPalette(appearance)&&
+     appearance.face==='original'&&appearance.eyeStyle==='original'){
    const r=index.records.find(x=>x.id===`cyborg${southDagger}-${direction}-native-original-source`);
    if(r?.item===southDagger&&r.body==='male'&&r.direction===direction&&r.sourceArchiveSHA256===registeredTech.archive&&r.density===4&&r.fps===12&&
      eq123(r.nativeCanvas,[640,640])&&eq123(r.pivot,[80,128])&&r.timeline?.join(',')===['0','1','2','3','4','5','6',...Array(13).fill('7')].join(',')&&
@@ -690,8 +690,8 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(registeredTechNorth119&&southDagger===119&&direction==='north'&&allowExactComposite&&classId==='cyborg'&&action==='attack-unarmed'&&['male','masculino'].includes(sourceBody??b)&&
      !visibleOrdered.length&&(weaponVariant==null||weaponVariant==='original')&&appearance.version===1&&appearance.gender==='masculino'&&
      appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&
-     appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.hairColor==='black'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'){
+     appearance.hair==='original'&&appearance.hairStyle==='original'&&savedHeadPalette(appearance)&&
+     appearance.face==='original'&&appearance.eyeStyle==='original'){
    const r=index.records.find(x=>x.id===`cyborg${southDagger}-${direction}-native-original-source`);
    if(r?.item===southDagger&&r.body==='male'&&r.direction===direction&&r.sourceArchiveSHA256===registeredTechNorth119.archive&&r.density===4&&r.fps===12&&
      eq123(r.nativeCanvas,[640,640])&&eq123(r.pivot,[80,128])&&r.timeline?.join(',')===['0','1','2','3','4','5','6',...Array(13).fill('7')].join(',')&&
@@ -707,8 +707,8 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(registeredTechNorth&&southDagger===120&&direction==='north'&&allowExactComposite&&classId==='cyborg'&&action==='attack-unarmed'&&['male','masculino'].includes(sourceBody??b)&&
      !visibleOrdered.length&&(weaponVariant==null||weaponVariant==='original')&&appearance.version===1&&appearance.gender==='masculino'&&
      appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&
-     appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.hairColor==='black'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'){
+     appearance.hair==='original'&&appearance.hairStyle==='original'&&savedHeadPalette(appearance)&&
+     appearance.face==='original'&&appearance.eyeStyle==='original'){
    const r=index.records.find(x=>x.id===`cyborg${southDagger}-${direction}-native-original-source`);
    if(r?.item===southDagger&&r.body==='male'&&r.direction===direction&&r.sourceArchiveSHA256===registeredTechNorth.archive&&r.density===4&&r.fps===12&&
      eq123(r.nativeCanvas,[640,640])&&eq123(r.pivot,[80,128])&&r.timeline?.join(',')===['0','1','2','3','4','5','6',...Array(13).fill('7')].join(',')&&
@@ -743,8 +743,8 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(w118OwnNorth&&southDagger===118&&direction==='north'&&allowExactComposite&&classId==='cyborg'&&action==='attack-unarmed'&&['male','masculino'].includes(sourceBody??b)&&
      !visibleOrdered.length&&(weaponVariant==null||weaponVariant==='original')&&appearance.version===1&&appearance.gender==='masculino'&&
      appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&
-     appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.hairColor==='black'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'){
+     appearance.hair==='original'&&appearance.hairStyle==='original'&&savedHeadPalette(appearance)&&
+     appearance.face==='original'&&appearance.eyeStyle==='original'){
    const r=index.records.find(x=>x.id===`cyborg${southDagger}-${direction}-native-original-source`);
    if(r?.item===southDagger&&r.body==='male'&&r.direction===direction&&r.sourceArchiveSHA256===w118OwnNorth.archive&&r.density===4&&r.fps===12&&
      eq123(r.nativeCanvas,[640,640])&&eq123(r.pivot,[80,128])&&r.timeline?.join(',')===['0','1','2','3','4','5','6',...Array(13).fill('7')].join(',')&&
@@ -762,7 +762,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      (weaponVariant==null||weaponVariant==='original')&&visibleOrdered.length===0&&
      appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&appearance.hair==='original'&&appearance.hairStyle==='original'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.hairColor==='black'&&appearance.eyeColor==='blue'){
+     appearance.face==='original'&&appearance.eyeStyle==='original'&&savedHeadPalette(appearance)){
    const r=index.records.find(x=>x.id==='staff124-north-native-original-source');
    if(r?.item===124&&r.body==='male'&&r.direction===direction&&r.density===4&&r.fps===12&&
       eq123(r.nativeCanvas,[640,640])&&eq123(r.pivot,[80,128])&&eq123(r.timeline,ownStaff124NorthMaterial.map((_,i)=>String(i)))&&
@@ -780,7 +780,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      (weaponVariant==null||weaponVariant==='original')&&visibleOrdered.length===0&&
      appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&appearance.hair==='original'&&appearance.hairStyle==='original'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.hairColor==='black'&&appearance.eyeColor==='blue'){
+     appearance.face==='original'&&appearance.eyeStyle==='original'&&savedHeadPalette(appearance)){
    const r=index.records.find(x=>x.id===`staff${southDagger}-north-native-original-source`);
    if(r?.item===southDagger&&r.body==='male'&&r.direction===direction&&r.density===4&&r.fps===12&&r.sourceArchiveSHA256==="91bdb15a1f2d4e5fc110c37cb5fef0777b0784145a0149e3004d6339321aee78"&&
       eq123(r.nativeCanvas,[640,640])&&eq123(r.pivot,[80,128])&&eq123(r.timeline,staff126North.map((_,i)=>String(i)))&&
@@ -798,7 +798,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      (weaponVariant==null||weaponVariant==='original')&&visibleOrdered.length===0&&
      appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&appearance.hair==='original'&&appearance.hairStyle==='original'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.hairColor==='black'&&appearance.eyeColor==='blue'){
+     appearance.face==='original'&&appearance.eyeStyle==='original'&&savedHeadPalette(appearance)){
    const r=index.records.find(x=>x.id==='staff125-north-native-original-source');
    if(r?.item===125&&r.body==='male'&&r.direction===direction&&r.density===4&&r.fps===12&&
       eq123(r.nativeCanvas,[640,640])&&eq123(r.pivot,[80,128])&&eq123(r.timeline,ownStaff125NorthMaterial.map((_,i)=>String(i)))&&
@@ -816,7 +816,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      (weaponVariant==null||weaponVariant==='original')&&visibleOrdered.length===0&&
      appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&appearance.hair==='original'&&appearance.hairStyle==='original'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.hairColor==='black'&&appearance.eyeColor==='blue'){
+     appearance.face==='original'&&appearance.eyeStyle==='original'&&savedHeadPalette(appearance)){
    const r=index.records.find(x=>x.id==='staff123-north-native-original-source');
    if(r?.item===123&&r.body==='male'&&r.direction===direction&&r.density===4&&r.fps===12&&
       eq123(r.nativeCanvas,[640,640])&&eq123(r.pivot,[80,128])&&eq123(r.timeline,ownedStaff123NorthRanks.map((_,i)=>String(i)))&&
@@ -834,7 +834,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      (weaponVariant==null||weaponVariant==='original')&&visibleOrdered.length===0&&
      appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&appearance.hair==='original'&&appearance.hairStyle==='original'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.hairColor==='black'&&appearance.eyeColor==='blue'){
+     appearance.face==='original'&&appearance.eyeStyle==='original'&&savedHeadPalette(appearance)){
    const r=index.records.find(x=>x.id===`staff${southDagger}-north-native-original-source`);
    if(r?.item===southDagger&&r.body==='male'&&r.direction===direction&&r.density===4&&r.fps===12&&r.sourceArchiveSHA256==="8b01a3985b517d65b82e928ae7fc18e3b0ec5991b08fd3a10a534f0ddbc559b1"&&
       eq123(r.nativeCanvas,[640,640])&&eq123(r.pivot,[80,128])&&eq123(r.timeline,staff127North.map((_,i)=>String(i)))&&
@@ -852,7 +852,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      (weaponVariant==null||weaponVariant==='original')&&!visibleOrdered.length&&
      appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&appearance.hair==='original'&&appearance.hairStyle==='original'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.hairColor==='black'&&appearance.eyeColor==='blue'){
+     appearance.face==='original'&&appearance.eyeStyle==='original'&&savedHeadPalette(appearance)){
    const r=index.records.find(x=>x.id==='staff128-north-base127-male-151-approved');
    const body127=index.records.find(x=>x.id==='staff127-north-native-original-source');
    if(r?.item===128&&r.body==='male'&&r.direction==='north'&&r.sourceArchiveSHA256==='218ef49345deb0b68186a5d1f171f71697a541f5bbfa1b4edac4bdc2be3bc6f6'&&
@@ -878,7 +878,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      (weaponVariant==null||weaponVariant==='original')&&visibleOrdered.length===0&&
      appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&appearance.hair==='original'&&appearance.hairStyle==='original'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.hairColor==='black'&&appearance.eyeColor==='blue'){
+     appearance.face==='original'&&appearance.eyeStyle==='original'&&savedHeadPalette(appearance)){
    const r=index.records.find(x=>x.id===`staff${southDagger}-south-native-original-source`);
    if(r?.item===southDagger&&r.body==='male'&&r.direction===direction&&r.density===4&&r.fps===12&&
       eq123(r.nativeCanvas,[640,640])&&eq123(r.pivot,[80,128])&&eq123(r.timeline,staffOwnSouth.map((_,i)=>String(i)))&&
@@ -910,16 +910,16 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
    }
   }
   const compass16SouthTone=allowOwn16SouthTone&&classId==='strategist'&&southDagger===16&&appearance.skin!=='light'&&appearance.skin===appearance.skinColor&&
-   Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&appearance.hairColor==='black'&&appearance.eyeColor==='blue';
+   Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&savedHeadPalette(appearance);
   const staff121SouthTone=allowOwn121SouthTone&&classId==='strategist'&&southDagger===121&&appearance.skin===appearance.skinColor&&
-   Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&appearance.hairColor==='black'&&appearance.eyeColor==='blue';
+   Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&savedHeadPalette(appearance);
   const staff121ToneSide=staff121SideMaterial[direction];
   if(allowExactComposite&&allowOwn121SideTone&&Array.isArray(staff121ToneSide)&&classId==='strategist'&&southDagger===121&&
      body(b)==='male'&&['male','masculino'].includes(sourceBody??b)&&(weaponVariant==null||weaponVariant==='original')&&action==='attack-focus'&&
      visibleOrdered.length===0&&appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&
      appearance.skin===appearance.skinColor&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&
      appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.face==='original'&&appearance.eyeStyle==='original'&&
-     appearance.hairColor==='black'&&appearance.eyeColor==='blue'){
+     savedHeadPalette(appearance)){
    const r=index.records.find(x=>x.id==='daggers121-'+direction+'-native-original-source');
    if(r?.item===121&&r.body==='male'&&r.direction===direction&&r.density===4&&r.fps===12&&
       JSON.stringify(r.nativeCanvas)==='[640,640]'&&JSON.stringify(r.pivot)==='[80,128]'&&r.sourceArchiveSHA256==='10738d1986949711adaba0d2924c367481d29f2e0dc5555cb55ed83aa1e442a3'&&
@@ -938,7 +938,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
    }
   }
   const staff31SouthTone=allowOwn31SouthTone&&classId==='healer'&&southDagger===31&&appearance.skin!=='light'&&appearance.skin===appearance.skinColor&&
-   Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&appearance.hairColor==='black'&&appearance.eyeColor==='blue';
+   Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&savedHeadPalette(appearance);
   if(allowOwn32SouthTone&&southDagger===32&&classId==='healer'&&body(b)==='male'&&['male','masculino'].includes(sourceBody??b)&&
       (weaponVariant==null||weaponVariant==='original')&&action==='attack-focus'&&direction==='south'&&!visibleOrdered.length&&
       appearance.version===1&&appearance.gender==='masculino'&&appearance.hair==='original'&&appearance.hairStyle==='original'&&
@@ -1108,13 +1108,17 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(!states.every(Boolean))return null;
   return {...record,states,ownWeaponSource:own.source.id};
  }
+ function savedHeadPalette(look){
+  const colors=root.MareCharacterAppearance;
+  return !!colors?.hairs?.[look.hairColor]?.ramp && !!colors?.eyes?.[look.eyeColor]?.ramp;
+ }
  function verifiedNorthFirearmBlue(r,appearance,equipment,allowKnownFirearmSavedSkin){
   const a=northFirearmBlueAuthority[r.item],same=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
   if(!a||appearance.version!==1||appearance.gender!=='masculino'||appearance.skinStyle!=='natural'||
      !(appearance.skinColor==='light'&&appearance.skin==='light'||allowKnownFirearmSavedSkin&&[4,5,113,115,116].includes(r.item)&&
        appearance.skinColor===appearance.skin&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&
        Object.hasOwn(root.MareAppearance96?.skins||{},appearance.skin))||appearance.hairStyle!=='original'||appearance.hair!=='original'||
-     appearance.eyeStyle!=='original'||appearance.face!=='original'||appearance.hairColor!=='black'||appearance.eyeColor!=='blue'||
+     appearance.eyeStyle!=='original'||appearance.face!=='original'||!savedHeadPalette(appearance)||
      Object.keys(equipment).length!==0||r.id!==a[0]||r.sourceArchiveSHA256!==a[1]||r.body!=='male'||r.direction!=='north'||
      r.density!==4||r.fps!==24||!same(r.nativeCanvas,[640,640])||!same(r.pivot,[80,128])||
      !same(r.timeline,northFirearmBlueClock)||!same(r.paletteSupport,['skin','hairColor'])||r.hairSeparated!==false||
@@ -1142,7 +1146,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
  function savedFirearmSideBlue(r,look,equipment,allowKnownSideFirearmSkin){
   const own=firearmSideSource[r.direction+':'+r.item],face=firearmSideFace[r.direction],same=(a,b)=>JSON.stringify(a)===JSON.stringify(b),b=r.basePack,d=b?.pack?.directions?.[r.direction];
   if(!own||!face||!d||look.version!==1||look.gender!=='masculino'||look.skinStyle!=='natural'||!(look.skin==='light'&&look.skinColor==='light'||allowKnownSideFirearmSkin&&verifiedFirearmSideTone(r,look,d))||
-    look.hair!=='original'||look.hairStyle!=='original'||look.hairColor!=='black'||look.face!=='original'||look.eyeStyle!=='original'||look.eyeColor!=='blue'||
+    look.hair!=='original'||look.hairStyle!=='original'||!savedHeadPalette(look)||look.face!=='original'||look.eyeStyle!=='original'||
     Object.keys(equipment).length||r.id!==own[0]||r.sourceWeaponSHA256!==own[1]||r.body!=='male'||r.hairSeparated!==true||r.density!==4||r.fps!==12||
     !same(r.nativeCanvas,[640,640])||!same(r.pivot,[80,128])||!same(r.paletteSupport,['skin','hairColor'])||
     r.states?.length!==8||!same(r.timeline,['0','1','2','3','4','5','6','7'])||!same(d.clip,{frames:8,fps:12,loop:false,contactFrame:4})||d.renderMirrorFrom||
@@ -1162,7 +1166,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
  function savedFirearmSouthBlue(r,look,equipment){
   const own=firearmSouthAuthority[r.item],face=firearmSouthFace,same=(a,b)=>JSON.stringify(a)===JSON.stringify(b),b=r.basePack,d=b?.pack?.directions?.[r.direction];
   if(!own||r.direction!=='south'||!d||look.version!==1||look.gender!=='masculino'||look.skinStyle!=='natural'||look.skin!=='light'||look.skinColor!=='light'||
-    look.hair!=='original'||look.hairStyle!=='original'||look.hairColor!=='black'||look.face!=='original'||look.eyeStyle!=='original'||look.eyeColor!=='blue'||
+    look.hair!=='original'||look.hairStyle!=='original'||!savedHeadPalette(look)||look.face!=='original'||look.eyeStyle!=='original'||
     Object.keys(equipment).length||r.id!==own[0]||r.sourceArchiveSHA256!==own[1]||r.body!=='male'||r.hairSeparated!==true||r.density!==4||r.fps!==12||
     !same(r.nativeCanvas,[640,640])||!same(r.pivot,[80,128])||!same(r.paletteSupport,['skin','hairColor'])||
     r.states?.length!==8||!same(r.timeline,['0','1','2','3','4','5','6','7'])||!same(d.clip,{frames:8,fps:12,loop:false,contactFrame:4})||d.renderMirrorFrom||
@@ -1218,7 +1222,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   c.putImageData(px,0,0);return t;
  }
  function paintFirearmSideIris(source,old,item,makeCanvas){
-  const south=item.direction==='south',offset=south?0:64,points=south?firearmSouthIris:firearmSideIris[item.direction],ramp=root.MareCharacterAppearance?.eyes?.blue?.ramp;
+  const south=item.direction==='south',offset=south?0:64,points=south?firearmSouthIris:firearmSideIris[item.direction],ramp=root.MareCharacterAppearance?.eyes?.[item.colorAppearance?.eyeColor||'blue']?.ramp;
   if(!points||!ramp||source.width!==640||source.height!==640||old.width!==640||old.height!==640)throw Error('Missing exact lateral firearm iris');
   const c=makeCanvas(640,640),ctx=c.getContext('2d');ctx.drawImage(old,0,0);const raw=ctx.getImageData(0,0,640,640).data;
   ctx.clearRect(0,0,640,640);ctx.drawImage(source,0,0);const data=ctx.getImageData(0,0,640,640);
@@ -1245,7 +1249,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
     !eq(r.pivot,padded?[96,144]:[80,128])||!eq(r.timeline,[0,1,2,3,4,5,6,7])||r.states.length!==8||
     Object.keys(equipment).length||a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||
     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||
-    a.hairColor!=='black'||a.eyeColor!=='blue'||a.skin!==a.skinColor||
+    !savedHeadPalette(a)||a.skin!==a.skinColor||
     !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
     !r.states.every((s,i)=>Number(s.state)===i&&s.rgbaExact===true&&s.approved?.sha256===q.frames[i][1]&&
       s.approved?.url==='assets/'+q.frames[i][1]+'.png'&&s.layers.length===3&&s.layers.every((l,k)=>
@@ -1262,7 +1266,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      !same(r.timeline,[0,1,2,3,4,5,6,7])||!same(d.clip,{frames:8,fps:12,loop:false,contactFrame:4})||d.renderMirrorFrom||
      r.mirrorBody||r.mirrorLayerIDs||!same(r.renderOffsetPhysical,[192,192])||r.sourceRasterPadding||r.interfaceSkinLocked!==true||r.states?.length!==8||
      Object.keys(equipment).length!==0||a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hair!=='original'||a.hairStyle!=='original'||
-     a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.skin!==a.skinColor||a.eyeColor!=='blue'||
+     a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||a.skin!==a.skinColor||
      (a.skin!=='light'&&(!allowAllSkin||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)))||
      !same(d.layers.map(l=>[l.id,l.slot,l.depth,l.binding,l.frames||[l.source]]),northSwordLayers)||
      !same([d.rest,...d.poses].map(p=>[p.NECK,p.NOSE]),northSwordHeadPoses)||
@@ -1280,7 +1284,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(!proof||!d||r.item!==15||r.body!=='male'||r.id!=='cannon15-'+r.direction+'-native-layers'||
      r.sourceArchiveSHA256!==proof.sourceArchive||action!=='attack-unarmed'||Object.keys(equipment).length||
      a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hair!=='original'||a.hairStyle!=='original'||
-     a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||a.skin!==a.skinColor||
      r.density!==4||r.fps!==12||r.interfaceSkinLocked!==true||!r.hairSeparated||
      !eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.mirrorLayerIDs||
@@ -1310,7 +1314,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      JSON.stringify(r.pivot)!=='[80,128]'||JSON.stringify(r.timeline)!==JSON.stringify(p.timeline)||
      !d||d.clip.frames!==8||d.clip.fps!==12||d.clip.contactFrame!==4||d.clip.loop||Object.keys(equipment).length||
      a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!==a.skinColor||
-     a.hair!=='original'||a.hairStyle!=='original'||a.hairColor!=='black'||a.face!=='original'||a.eyeStyle!=='original'||a.eyeColor!=='blue'||
+     a.hair!=='original'||a.hairStyle!=='original'||!savedHeadPalette(a)||a.face!=='original'||a.eyeStyle!=='original'||
      !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||r.states.length!==8||
      !r.states.every((s,i)=>{const l=s.layers[0],h=p.poses[i];
        return s.state===String(i)&&s.layers.length===1&&l.sha256===h.source&&l.url==='assets/'+h.source+'.png'&&l.mask?.sha256===h.mask&&
@@ -1325,7 +1329,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(!d||r.direction!=='south'||r.item!==15||r.body!=='male'||r.id!=='cannon15-'+r.direction+'-native-layers'||
      r.sourceArchiveSHA256!==proof.sourceArchive||action!=='attack-unarmed'||Object.keys(equipment).length||
      a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hair!=='original'||a.hairStyle!=='original'||
-     a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||a.skin!==a.skinColor||
      r.density!==4||r.fps!==12||r.interfaceSkinLocked!==true||!r.hairSeparated||
      !eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.mirrorLayerIDs||
@@ -1351,7 +1355,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y),p=r?.basePack?.pack,d=p?.directions?.north, split=index.records.find(x=>x.id==='gauntlet111-north-native-layers');
   if(r?.id!=='arm117-north-native-layers'||r.item!==117||r.body!=='male'||r.direction!=='north'||action!=='attack-unarmed'||Object.keys(equipment).length||
      a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
-     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      r.sourceArchiveSHA256!=='01e1828be28963dc4d0a8e9e626903cd2b7627d5ef1b3717ef023a7bf127fd09'||r.replacementMode!=='matching-drawn8-base-plus-weapon'||
      !r.interfaceSkinLocked||!r.hairSeparated||r.density!==4||r.fps!==12||!eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||
      !eq(r.timeline,['0','1','2','3','4','5','6','7'])||r.states?.length!==8||r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.mirrorLayerIDs||
@@ -1378,7 +1382,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(!d||r.direction!=='south'||r.item!==117||r.body!=='male'||r.id!=='arm117-'+r.direction+'-native-layers'||
      r.sourceArchiveSHA256!==proof.sourceArchive||action!=='attack-unarmed'||Object.keys(equipment).length||
      a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hair!=='original'||a.hairStyle!=='original'||
-     a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||a.skin!==a.skinColor||
      r.density!==4||r.fps!==12||r.interfaceSkinLocked!==true||!r.hairSeparated||
      !eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.mirrorLayerIDs||
@@ -1401,7 +1405,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(!proof||!d||r.item!==117||r.body!=='male'||r.id!=='arm117-'+r.direction+'-native-layers'||
      r.sourceArchiveSHA256!==proof.sourceArchive||action!=='attack-unarmed'||Object.keys(equipment).length||
      a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hair!=='original'||a.hairStyle!=='original'||
-     a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||a.skin!==a.skinColor||
      r.density!==4||r.fps!==12||r.interfaceSkinLocked!==true||!r.hairSeparated||
      !eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.mirrorLayerIDs||
@@ -1426,7 +1430,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   const proof=relic31NorthAuthority,p=r?.basePack?.pack,d=p?.directions?.north;
   if(r?.body!=='male'||r.direction!=='north'||
      action!=='attack-focus'||Object.keys(equipment).length||a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||
-     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
      r.replacementMode!=='original-base-plus-existing-orb-interface'||r.interfaceSkinLocked!==true||r.hairSeparated!==true||
      r.density!==4||r.fps!==12||!eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||r.renderOffsetPhysical||r.mirrorBody||r.mirrorLayerIDs||r.sourceRasterPadding||
@@ -1493,7 +1497,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(!proof||r.id!=='cyborg'+r.item+'-south-native-original-source'||r.direction!=='south'||r.body!=='male'||
      r.sourceArchiveSHA256!==proof.archive||r.approval!=='approved-source-composition'||r.replacementMode!=='atomic-approved-original-composite'||
      action!=='attack-unarmed'||Object.keys(equipment).length||a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||
-     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||a.skin!==a.skinColor||
      r.density!==4||r.fps!==24||r.basePack||r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||
      !eq(r.nativeCanvas,[640,640])||!eq(r.logicalFrame,[160,160])||!eq(r.pivot,[80,128])||!eq(r.timeline,proof.timeline)||r.states.length!==12||
@@ -1689,7 +1693,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const own=compass16NorthAttackAuthority,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
   if(r?.id!=='daggers16-north-native-original-source'||r.item!==16||r.body!=='male'||r.direction!=='north'||action!=='attack-focus'||
      Object.keys(equipment).length||a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hair!=='original'||a.hairStyle!=='original'||
-     a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||a.skin!==a.skinColor||
+     a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||a.skin!==a.skinColor||
      !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)||
      r.sourceArchiveSHA256!==own.archive||r.replacementMode!=='atomic-approved-original-composite'||r.hairSeparated!==false||
      r.basePack||r.mirrorBody||r.renderOffsetPhysical||r.mirrorLayerIDs||r.sourceRasterPadding||
@@ -1756,7 +1760,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const proof=ownDaggersSouthProof.frames[r?.item],eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
   if(!proof||r.id!=='daggers'+r.item+'-south-native-original-source'||r.direction!=='south'||r.body!=='male'||r.sourceArchiveSHA256!==proof.archive||
      !['attack','attack-daggers'].includes(action)||Object.keys(equipment).length||a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||
-     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||a.skin!==a.skinColor||r.density!==4||r.fps!==12||r.basePack||r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||
      !eq(r.nativeCanvas,[640,640])||!eq(r.logicalFrame,[160,160])||!eq(r.pivot,[80,128])||!eq(r.timeline,proof.states.map((_,i)=>String(i)))||r.states.length!==9||
      !r.states.every((f,i)=>{const l=f.layers[0],o=proof.states[i][0];return f.rgbaExact===true&&f.state===String(i)&&f.layers.length===1&&!f.attachment&&!f.bodyPatch&&!f.canvasRoundingPatch&&l.url===o&&f.approved?.url===o&&l.sha256===o.slice(7,-4)&&f.approved?.sha256===l.sha256&&l.operation==='source-over'&&l.depth===0&&!l.offset&&!l.mirrorX&&!l.mask&&eq(l.size,[640,640]);}))return null;
@@ -1826,7 +1830,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const expectedArchive=r?.item===111?gauntlet111NorthAuthority.archive:'8ce0916d6b0b9b82ff56fd1b3ce1ea60cf4fd19999e69eb8b43039b568722f43';
   if(!p||r.id!=='gauntlet'+r.item+'-north-native-layers'||r.body!=='male'||r.direction!=='north'||action!=='attack-unarmed'||Object.keys(equipment).length||
      a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
-     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      r.replacementMode!=='matching-drawn8-base-plus-weapon'||r.sourceArchiveSHA256!==expectedArchive||
      r.interfaceSkinLocked!==true||r.hairSeparated!==true||r.density!==4||r.fps!==12||!eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||
      r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.mirrorLayerIDs||!eq(b?.frame,{width:160,height:160})||!eq(b?.pivot,{x:80,y:128})||b.density!==4||
@@ -1851,7 +1855,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const p=gauntlet112SouthAuthority,body=arm117SouthAttackAuthority,b=r?.basePack?.pack,d=b?.directions?.south,eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
   if(r?.id!=='gauntlet112-south-native-layers'||r.item!==112||r.body!=='male'||r.direction!=='south'||action!=='attack-unarmed'||Object.keys(equipment).length||
      a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
-     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      r.replacementMode!=='matching-drawn8-base-plus-weapon-and-rounding-mask'||r.sourceArchiveSHA256!==p.sourceArchive||
      r.interfaceSkinLocked!==true||r.hairSeparated!==true||r.density!==4||r.fps!==12||!eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||
      r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.mirrorLayerIDs||!eq(b?.frame,{width:160,height:160})||!eq(b?.pivot,{x:80,y:128})||b.density!==4||
@@ -1875,7 +1879,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
    if(r?.id!=='gauntlet2-north-native-original-source'||r.item!==2||r.body!=='male'||r.direction!=='north'||action!=='attack-unarmed'||Object.keys(equipment).length||
       a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
-      a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+      a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
       r.replacementMode!=='atomic-approved-original-composite'||r.sourceArchiveSHA256!=='cafd14818c0c41c7d622fa01f11f2b19ef036d1dd135352795cb7ccf8e33e10b'||
       r.basePack||r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.density!==4||r.fps!==12||r.interfaceSkinLocked!==true||
       !eq(r.nativeCanvas,[768,768])||!eq(r.logicalFrame,[192,192])||!eq(r.pivot,[96,144])||
@@ -1922,7 +1926,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const p=gauntlet14NorthAuthority,eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
   if(r?.id!=='gauntlet14-north-native-original-source'||r.item!==14||r.body!=='male'||r.direction!=='north'||action!=='attack-unarmed'||Object.keys(equipment).length||
      a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
-     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+     a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      r.replacementMode!=='atomic-approved-original-composite'||r.sourceArchiveSHA256!=='d045797424bad472a587c2c013a61c7416bfdcdfe23f584684b935790eaf95fa'||
      r.basePack||r.hairSeparated!==false||r.density!==4||r.fps!==12||!eq(r.nativeCanvas,[768,768])||!eq(r.pivot,[96,144])||
      r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.mirrorLayerIDs||
@@ -1949,7 +1953,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
    if(r?.id!=='gauntlet3-north-native-original-source'||r.item!==3||r.body!=='male'||r.direction!=='north'||action!=='attack-unarmed'||Object.keys(equipment).length||
       a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
-      a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+      a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
       r.replacementMode!=='atomic-approved-original-composite'||r.sourceArchiveSHA256!=='cafd14818c0c41c7d622fa01f11f2b19ef036d1dd135352795cb7ccf8e33e10b'||
       r.basePack||r.renderOffsetPhysical||r.sourceRasterPadding||r.mirrorBody||r.density!==4||r.fps!==12||r.interfaceSkinLocked!==true||
       !eq(r.nativeCanvas,[768,768])||!eq(r.logicalFrame,[192,192])||!eq(r.pivot,[96,144])||
@@ -1992,7 +1996,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  const d=ownGauntletsSideAuthority[r?.direction], frames=d?.items[r.item];
  if(!frames||r.id!==`gauntlet${r.item}-${r.direction}-native-original-source`||r.body!=='male'||action!=='attack-unarmed'||Object.keys(equipment).length||
     a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
-    a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+    a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
     r.density!==4||r.fps!==12||JSON.stringify(r.pivot)!=='[80,128]'||JSON.stringify(r.nativeCanvas)!=='[640,640]'||
     r.timeline?.join('')!=='01234567'||r.states?.length!==8||r.states.some((s,i)=>s.state!==String(i)||s.atomic!==true||s.rgbaExact!==true))return null;
  if([2,3].includes(r.item))return {...r,id:r.id+':own-w'+r.item+'-side-layer:'+a.skin,ownW2CleanSide:true,basePack:d.backing,
@@ -2035,7 +2039,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  const padded=r?.item===69, hashes=ownHomeSwordSouthSHA[r?.item]??(padded?ownW69SouthSHA:r?.item===67?ownW67SouthSHA:s.hashes);
  if(![1,67,68,69,70].includes(r?.item)||r.id!==(padded?'nodachi':'sword')+r.item+'-south-native-layers'||r.body!=='male'||r.direction!=='south'||action!=='attack-sword'||Object.keys(equipment).length||
   a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
-  a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue'||
+  a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
   r.density!==4||r.fps!==24||JSON.stringify(r.pivot)!==(padded?'[112,160]':'[80,128]')||JSON.stringify(r.nativeCanvas)!==(padded?'[896,896]':'[640,640]')||(padded&&r.paddingPhysical!==128)||
   r.timeline?.join(',')!=='0,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8'||r.states?.length!==9||r.states.some((r,i)=>Number(r.state)!==i||
   r.layers?.length!==3||r.layers.some((l,k)=>l.sha256!==hashes[i][k]||l.url!=='assets/'+l.sha256+'.png'||l.operation!=='source-over'||l.depth!==k||l.paletteMask||l.offset||l.mask)||
@@ -2218,7 +2222,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      record.sourceArchiveSHA256!==auth.archive||!record.hairSeparated||!record.interfaceSkinLocked||record.fps!==12||
      !eq(record.nativeCanvas,[640,640])||!eq(record.pivot,[80,128])||record.states.length!==8||!eq(record.timeline,['0','1','2','3','4','5','6','7'])||
      !clip||clip.frames!==8||clip.fps!==12||clip.contactFrame!==4||bp.density!==4||!eq(bp.frame,{width:160,height:160})||
-     Object.keys(kits).length||look.version!==1||look.skinStyle!=='natural'||look.hair!=='original'||look.face!=='original'||look.hairColor!=='black'||look.eyeColor!=='blue'||
+     Object.keys(kits).length||look.version!==1||look.skinStyle!=='natural'||look.hair!=='original'||look.face!=='original'||!savedHeadPalette(look)||
      !Object.hasOwn(root.MareCharacterAppearance?.skins||{},look.skin)||
      !Object.hasOwn(root.MareCharacterAppearance?.hairs||{},look.hairColor)||
      !Object.hasOwn(root.MareCharacterAppearance?.eyes||{},look.eyeColor))return null;
@@ -2341,8 +2345,8 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      JSON.stringify(r.nativeCanvas)==='[640,640]'&&r.sourceArchiveSHA256==='1c83f6be2d88dff6ac27f4cc6864ced5491781f5e9c9a7d414e7126e9d35f4e9'&&
      r.timeline?.join(',')==='0,1,2,4,R,4,2,1,0'&&r.states.length===5&&Object.keys(equipment).length===0&&
      appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skinColor===appearance.skin&&
-     appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.hairColor==='black'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'&&
+     appearance.hair==='original'&&appearance.hairStyle==='original'&&savedHeadPalette(appearance)&&
+     appearance.face==='original'&&appearance.eyeStyle==='original'&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&r.states.every((st,i)=>{
       const q=rifle116SouthLocalSource[st.state],l=st.layers?.[0];return st.state===['0','1','2','4','R'][i]&&st.atomic===true&&
        st.approved?.sha256===q?.ref&&st.layers?.length===1&&l.sha256===q.ref&&l.url==='assets/'+q.ref+'.png'&&l.operation==='source-over'&&
@@ -2358,8 +2362,8 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      JSON.stringify(r.nativeCanvas)==='[640,640]'&&r.sourceArchiveSHA256==='1531d7f1c5e3ecbe19cf8e5aeea64357d16733981eff8d7e6bf58b2348632f2f'&&
      r.timeline?.join(',')==='0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,6,5,5,4,4,3,3,2,2,1,1,0,0,0'&&r.states.length===8&&Object.keys(equipment).length===0&&
      appearance.version===1&&appearance.gender==='masculino'&&appearance.skinStyle==='natural'&&appearance.skinColor===appearance.skin&&
-     appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.hairColor==='black'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'&&
+     appearance.hair==='original'&&appearance.hairStyle==='original'&&savedHeadPalette(appearance)&&
+     appearance.face==='original'&&appearance.eyeStyle==='original'&&
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&r.states.every((st,i)=>{
       const q=rifle114SouthLocalSource[st.state],l=st.layers?.[0];return st.state===String(i)&&st.atomic===true&&
        st.approved?.sha256===q?.ref&&st.layers?.length===1&&l.sha256===q.ref&&l.url==='assets/'+q.ref+'.png'&&l.operation==='source-over'&&
@@ -2388,7 +2392,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const mount=r.body==='male'&&r.direction==='north'&&Object.hasOwn(northFirearmBlueAuthority,r.item)&&r.id===northFirearmBlueAuthority[r.item][0];
   const receiver=mount?mountOwnNorthRifle(r):r;
   if(!receiver)return null;
-  return {...receiver,colorAppearance:appearance,...(firearmSouthSignedPalette?{firearmSavedNatural:true,firearmSouthSignedPalette:true}:{}),...(ownRearBlue&&appearance.skin!=='light'?{firearmSavedNatural:true}:{}),...(ownSideBlue?{id:r.id+':owned-side-firearm-iris:blue',ownedSideFirearmIris:true,...(appearance.skin!=='light'?{ownedFirearmSideTone:true}:{})}:ownSouthBlue?{id:r.id+':owned-south-firearm-iris:blue',ownedSouthFirearmIris:true}:{})};
+  return {...receiver,colorAppearance:appearance,...(firearmSouthSignedPalette?{firearmSavedNatural:true,firearmSouthSignedPalette:true}:{}),...(ownRearBlue&&appearance.skin!=='light'?{firearmSavedNatural:true}:{}),...(ownSideBlue?{id:r.id+':owned-side-firearm-iris:'+appearance.eyeColor,ownedSideFirearmIris:true,...(appearance.skin!=='light'?{ownedFirearmSideTone:true}:{})}:ownSouthBlue?{id:r.id+':owned-south-firearm-iris:'+appearance.eyeColor,ownedSouthFirearmIris:true}:{})};
  }
  function requiredFiles(r,{frame}={}){if(!r)return [];const states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid native weapon frame');const files=new Set();if(r.w121IndependentNorth)files.add(resource('assets/'+r.w121IndependentNorth.grip+'.png'));if(r.ownW0SouthIndependent&&!r.case42SouthSkin)for(const s of states)for(const h of case42W0Material[Number(s.state)].layers)files.add(resource('assets/'+h+'.png'));if(r.case42SouthSkin)for(const s of states){for(const h of case42W0Material[Number(s.state)].layers)files.add(resource('assets/'+h+'.png'));for(const h of w70SouthKeys(ownW70SouthAuthority.phases[Number(s.state)]))files.add(resource(w70SouthPath(h)));}if(r.ownDaggerLightMaterials)for(const st of states)for(const url of ownDaggersSouthProof.frames[r.item].states[Number(st.state)])files.add(resource(url));if(r.w16SideTone)for(const [id,slot,kind,hs] of compass16SideToneAuthority[r.direction].refs)for(const st of states)files.add(resource('assets/'+(hs[Number(st.state)]||hs[0])+'.png'));if(r.firearmSouthSignedPalette){
   for(const st of states){const id=r.basePack.pack.directions.south.layers[0].frames[Number(st.state)];files.add(resource('assets/'+firearmSouthSavedMaterial.body[id].mask+'.png'));}
@@ -2811,7 +2815,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   if(r.ownStaff123North||r.ownStaff124North||r.ownStaff125North){
    if(w!==640||h!==640||hiddenSlots.length||recolored||renderOffset.some(Boolean))throw Error('Invalid North W124 source');
    const A=root.MareCharacterAppearance, rgb=s=>s.slice(1).match(/../g).map(c=>parseInt(c,16));
-   const ramp=A.skins[r.ownStaff123North||r.ownStaff124North||r.ownStaff125North].ramp.map(rgb),hair=A.hairs.black.ramp.map(rgb);
+   const ramp=A.skins[r.ownStaff123North||r.ownStaff124North||r.ownStaff125North].ramp.map(rgb),hair=A.hairs[r.pistolColors?.hair??'black'].ramp.map(rgb);
    const bases=[33,70,112,157,202,240],scale=[...ramp,ramp[4].map((v,k)=>v+[35,26,16][k]).map(v=>Math.min(v,255))];
    const mask=image({url:s.staffNorthRanks}), tile=makeCanvas(w,h),tc=tile.getContext('2d');
    tc.drawImage(mask,0,0); const rank=tc.getImageData(0,0,w,h).data, px=ctx.getImageData(0,0,w,h),out=px.data;
@@ -2859,8 +2863,36 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  function weaponActions(item){return [12,13,71,72,73,74].includes(item)?["attack","attack-daggers"]:[0,1,67,68,69,70].includes(item)?["attack","attack-sword"]:[14,110,112,2,3,15,109,111,117,118,119,120].includes(item)?['attack','punch','attack-unarmed']:[4,5,113,114,115,116].includes(item)?['attack','shoot','attack-firearm']:[123,124,125,126,127,128,16,121,17,122,31,32].includes(item)?['attack','focus','attack-focus','cast']:[];}
  // Many editable attacks store only their ordered states. Expose the
  // family's actual action after the resolver has accepted the source.
+ function maskSupportsSavedLook(r){
+  if(!r?.colorAppearance||!savedHeadPalette(r.colorAppearance))return false;
+  // Rear-facing packs expose hair and no iris. Front/profile weapons use an
+  // isolated face or an authored material rank table on the visible anatomy.
+  if(r.direction==='north'&&r.basePack?.pack?.directions?.north?.layers?.some(l=>l.slot==='hair')&&
+     !r.basePack.pack.directions.north.layers.some(l=>l.slot==='face'))return true;
+  return !!(r.firearmSavedNatural&&r.direction==='north'||r.ownedSideFirearmIris||r.ownedSouthFirearmIris||
+    r.ownedDaggersSouth||r.ownW70South||r.orb122SouthOwn||r.ownGauntletsSideFrames||r.ownW2CleanSide||
+    r.gauntlet112SouthOwnAttack||r.ownedCyborgForearmSouthAttack||r.ownedArm117SouthAttack||r.ownedArm117SideAttack||
+    r.ownedCannon15SideAttack||r.ownedCannon15SouthAttack);
+ }
  function withClock(resolver,request={}){
-  const record=resolver(request);
+  let record=resolver(request);
+  const look=request.appearance;
+  if(record&&look&&savedHeadPalette(look)){
+   const registeredHead=!!(record.orderedDaggerHair||record.orderedDaggerIris||record.dagger13SouthIris);
+   const materialRanks=record.states?.length&&record.states.every(s=>s.staffNorthRanks||s.staffSouthRanks);
+   if(registeredHead||materialRanks||maskSupportsSavedLook(record)){
+    record={...record,savedWeaponMaterials:true,savedWeaponAppearance:look,
+     ...(record.orderedDaggerHair?{orderedDaggerHair:look.hairColor}:{}),
+     ...(record.orderedDaggerIris?{orderedDaggerIris:look.eyeColor}:{}),
+     ...(record.dagger13SouthIris?{dagger13SouthIris:look.eyeColor}:{}),
+     ...(materialRanks?{pistolColors:{hair:look.hairColor,eyes:look.eyeColor}}:{})};
+    // An authored palette identity is also the receiver key for fitted clothing.
+    // Keep that key when both saved channels are already encoded by its provider.
+    const namedPalette=record.id.endsWith(':'+look.hairColor+':'+look.eyeColor);
+    if(!namedPalette&&(look.hairColor!=='black'||look.eyeColor!=='blue'))
+     record.id+=':materials:'+look.skin+':'+look.hairColor+':'+look.eyeColor;
+   }
+  }
   if(!record||record.action||!record.timeline?.length||!record.states?.length)return record;
   const actions=weaponActions(Number(record.item)),requested=request.action??'attack';
   const action=requested==='idle'&&record.timeline.length===1?'idle':

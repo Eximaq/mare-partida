@@ -15,6 +15,14 @@ DIGESTS = {
 
 def materialize(checkpoint, bank, native):
     fits = json.loads((Path(__file__).parent / 'rework-combat-wardrobe/firearm-hand-registration.json').read_bytes())
+    lower_path = Path(__file__).parent / 'rework-combat-wardrobe/firearm-leg-fits.zip'
+    with zipfile.ZipFile(lower_path) as archive:
+        lower = json.loads(archive.read('registration.json'))
+        for key in sorted({h for track in lower['tracks'].values() for _, h in track}):
+            data = archive.read(key + '.png')
+            if hashlib.sha256(data).hexdigest() != key or struct.unpack('>II', data[16:24]) != (640,640):
+                raise ValueError('Invalid fitted rifle leg pass ' + key)
+            (bank / (key + '.png')).write_bytes(data)
     rows, rigs, assets = [], {}, set()
     for direction in ('south', 'east', 'west'):
         south = direction == 'south'
@@ -53,6 +61,9 @@ def materialize(checkpoint, bank, native):
                                 abs(p['x'] + b[key]['x'] - 2 * pack['pivot']['x']) > 1e-6 or p['y'] != b[key]['y']):
                             raise ValueError('Lateral rifle joint registration changed')
                 canonical = q['layers']
+                target_body = next(l for l in d['layers'] if l['id'] == 'body-clothed')
+                if lower['body'][direction] != target_body['frames']:
+                    raise ValueError('Rifle lower-body recoil source changed')
 
             calibration = fits[direction]
             for i, pair in enumerate(calibration):
@@ -110,6 +121,15 @@ def materialize(checkpoint, bank, native):
                         own=[('legs',.75,parts['5'],None)]
                     else:
                         raise ValueError('Unknown lateral pass '+key)
+                    if slot in ('boots', 'pants'):
+                        names = ('2','4') if slot == 'boots' else ('5',)
+                        for j, part in enumerate(names):
+                            track = lower['tracks'][f'{key}/{part}']
+                            if [v[0] for v in track] != parts[part]:
+                                raise ValueError('Fitted garment belongs to another source ' + key)
+                            role, depth, _, hand = own[j]
+                            own[j] = (role, depth, [v[1] for v in track], hand)
+                            assets.update(v[1] for v in track)
                     add(slot,int(index),own)
     for di in ('south','east','west'):
         if Counter(r['slot'] for r in rows if r['direction']==di)!=dict(pants=10,boots=10,gloves=10,**({'torso':1} if di=='south' else {})):
