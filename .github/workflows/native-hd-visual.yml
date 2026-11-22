@@ -6,6 +6,8 @@ on:
       - 'player-rework-*hd*'
       - 'tests/rework-wardrobe-map-action.test.cjs'
       - 'tests/rework-male-dagger-coat-cycles.cjs'
+      - 'tests/rework-registered-weapon-coats.cjs'
+      - 'tests/rework-male-weapon-material-cycles.cjs'
       - 'tools/export_male_dagger_coats.py'
       - 'tools/export_combat_wardrobe.py'
       - 'tests/rework-literal-null-equipment.cjs'
@@ -119,6 +121,10 @@ jobs:
         run: |
           node --test tests/rework-wardrobe-map-action.test.cjs
           node tests/rework-male-dagger-coat-cycles.cjs
+      - name: Peitorais nas duas manoplas e no braço tecnológico
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: node tests/rework-registered-weapon-coats.cjs
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
@@ -126,6 +132,20 @@ jobs:
           path: ${{ runner.temp }}/adagas-384.json
           retention-days: 3
           if-no-files-found: warn
+  weapon-materials:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Comparar os ciclos das sete classes com três combinações de cores
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: node tests/rework-male-weapon-material-cycles.cjs
   native-world:
     runs-on: ubuntu-latest
     timeout-minutes: 60

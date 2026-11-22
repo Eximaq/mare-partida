@@ -141,6 +141,7 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
+  if(process.argv.includes('--registered-coats')){await observeRegisteredCoats();assert.deepEqual(errors,[]);return;}
   await page.evaluate(()=>__hdSlotQA.seed());
   await draw('porto-sem-equipamento','idle','south',{});
 
@@ -349,6 +350,7 @@ window.__hdSlotQA={
    for(const dir of ['east','west'])await observeAttack('attack-daggers','adaga73-masculino-peitoral-'+coat+'-'+dir,dir,sideDagger);
   }
   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,daggerCoatLook);
+  await observeRegisteredCoats();
   assert.deepEqual(errors,[]);
   console.log('Character creation, equipped movement, swaps, reload, Mera weapon visibility and armed attacks passed.');
  }finally{
@@ -356,6 +358,23 @@ window.__hdSlotQA={
   await fs.writeFile(path.join(out,'navegador.json'),JSON.stringify({url,trace,errors,state},null,2));
   await page.screenshot({path:path.join(out,'ultimo-estado.png')}).catch(()=>{});
   await context.close();await browser.close();
+ }
+ async function observeRegisteredCoats(){
+  for(const weapon of [111,112,118]){
+   await page.evaluate(w=>__hdSlotQA.seedWardrobe(w===118?'cyborg':'brawler',[w,151,165],{
+    gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'
+   }),weapon);
+   await put(weapon);
+   const look=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   for(const coat of [151,165,151]){
+    await put(coat);
+    for(const dir of ['east','west'])await observeAttack('attack-unarmed','manopla'+weapon+'-peitoral'+coat+'-'+dir,dir,{weapon,coat});
+   }
+   await remove('coat');
+   const bare=await observeAttack('attack-unarmed','manopla'+weapon+'-sem-peitoral','west',{weapon});
+   assert.equal(bare.visual.coverage[0].slotRoutes.coat,undefined);
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,look);
+  }
  }
  async function observePower(kit){
   await page.evaluate(async()=>{__hdSlotQA.readyMera();await __hdSlotQA.target('south');});
@@ -396,6 +415,7 @@ window.__hdSlotQA={
   assert(attack,JSON.stringify((await page.evaluate(()=>__hdSlotQA.read())).draw?.visual));
   trace.push({label,draw:attack});
   if(Object.keys(expected).length)await page.screenshot({path:path.join(out,label+'.png')});
+  return attack;
  }
  async function walk(key,direction,kit,label,save=false){
   let failure;
