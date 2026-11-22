@@ -60,10 +60,23 @@ function inspect(api,weapon,body,action,direction,mode){
  const select=entries=>world.selectWorldHDOnly(api,weaponCatalog,{...player,equipment:{...base,
   ...Object.fromEntries(entries.map(([slot,def])=>[slot,{def}]))}},o);
  const solo={},pairs=[],full={tested:0,selected:0,perItem:{}},baseRecord=select([]);
+ const receiverOK=complete(baseRecord,[],id,o);
+ // Compare geometry at the stock palette for diagnosis only. The catalog measurements
+ // below always keep the player's saved materials and requested action.
+ let receiverCause=null,referenceSource=null;
+ if(!receiverOK){
+  const reference=appearance.commit({classId:role,equipment:base},
+   {gender:body,skinColor:'original',eyeColor:'blue',hairColor:'black',hairStyle:'original',eyeStyle:'original'},()=>true);
+  const ref=world.selectWorldHDOnly(api,weaponCatalog,reference,o);
+  referenceSource=ref?.id??null;
+  receiverCause=complete(ref,[],id,o)?'receiver-saved-materials':baseRecord?'receiver-action-or-source-unverified':'receiver-route-unresolved';
+ }
  for(const [s,slot] of slots.entries())for(const item of gear[s]){
   const one=[[slot,item]],r=select(one),route=ownRoute(r,slot);
-  solo[item]={slot,selected:complete(r,one,id,o),source:route?.source??null,
-   reason:r?.slotResolution?.[slot]?.reason??(route?'':'missing-route'),pose:r?.resolvedAction??r?.action??null};
+  const selected=complete(r,one,id,o);
+  const reason=selected?null:receiverCause||r?.slotResolution?.[slot]?.reason||
+   (r&&(r.resolvedAction??r.action)!==action?'slot-action-mismatch':route?'slot-source-unverified':'slot-binding-unresolved');
+  solo[item]={slot,selected,source:route?.source??null,stage:selected?null:receiverCause?1:2,reason,pose:r?.resolvedAction??r?.action??null};
   full.perItem[item]={tested:0,selected:0};
  }
  for(let x=0;x<slots.length;x++)for(let y=x+1;y<slots.length;y++){
@@ -72,7 +85,8 @@ function inspect(api,weapon,body,action,direction,mode){
    const entries=[[slots[x],a],[slots[y],b]],r=select(entries);
    if(!complete(r,entries,id,o))failures.push([a,b]);
   }
-  pairs.push({slots:[slots[x],slots[y]],tested:100,failed:failures});
+  pairs.push({slots:[slots[x],slots[y]],tested:100,failed:failures,
+   conflicts:failures.filter(([a,b])=>solo[a].selected&&solo[b].selected)});
  }
  // Deterministic mixed cases cover each item at every slot. Exhaustive mode
  // streams the entire product through the normal game selector for this pose.
@@ -85,7 +99,7 @@ function inspect(api,weapon,body,action,direction,mode){
  else for(let i=0;i<100;i++)check(gear.map((items,j)=>items[(i%10+[0,1,3,7,9][j]*Math.floor(i/10))%10]));
  assert.equal(Object.keys(solo).length,50);assert.equal(pairs.reduce((s,p)=>s+p.tested,0),1000);
  assert.equal(full.tested,mode==='direct'?100000:100);
- return {weapon:id,role,body,action,direction,mode,empty:{source:baseRecord?.id,selected:complete(baseRecord,[],id,o)},
+ return {weapon:id,role,body,action,direction,mode,empty:{source:baseRecord?.id??null,selected:receiverOK,reason:receiverCause,referenceSource},
   solo,pairs,full};
 }
 async function main(){

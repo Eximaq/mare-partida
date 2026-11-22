@@ -56,7 +56,9 @@ function bendSwordSleeve(canvas,image,sleeve,pose,density){
  if(long)draw(joint,b,elbow,wrist,true);
 }
 function attachSwordCoat(record,outfit,coat){
- if(record.body!=='female'||!['attack-sword','attack-unarmed','attack-focus'].includes(record.action)||!outfit||
+ if(record.body!=='female'||!(['attack-sword','attack-unarmed','attack-focus'].includes(record.action)||
+    (record.action==='attack-firearm'&&record.direction==='north'&&northFirearmRecoil(record))||
+    (record.action==='attack-daggers'&&record.femaleDaggerSavedTones))||!outfit||
     outfit.equipment.torso!==coat||Object.keys(outfit.equipment).length!==1)return null;
  const {direction,baseRecord:base}=record,pack=base.pack,d=pack.directions[direction],o=outfit.pack.directions[direction];
  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);

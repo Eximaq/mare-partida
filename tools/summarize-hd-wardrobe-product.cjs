@@ -8,7 +8,8 @@ const items=new Map(gear.flatMap((group,i)=>group.map(id=>[id,{id,slot:slots[i],
  masculino:0,feminino:0,bare:0,pairs:0,mixed:0}])));
 const total={armed:{},bare:{}},contexts=new Set();
 const detailFile=process.argv[4];
-const detailRows=detailFile?['ID\tSlot\tCorpo\tArma\tClasse\tAcao\tDirecao\tSelecao\tPoseResolvida\tFonteDoSlot\tMotivoDoSlot']:null;
+const detailRows=detailFile?['ID\tSlot\tCorpo\tArma\tClasse\tAcao\tDirecao\tSelecao\tPoseResolvida\tFonteDoSlot\tEtapa\tMotivoDoSlot']:null;
+const queue=[];
 for(const name of fs.readdirSync(folder).filter(n=>n.endsWith('.json')).sort()){
  const row=JSON.parse(fs.readFileSync(path.join(folder,name)));
  assert.equal(row.mode,'sample');assert.equal(row.full.tested,100);
@@ -17,6 +18,13 @@ for(const name of fs.readdirSync(folder).filter(n=>n.endsWith('.json')).sort()){
  assert.equal(name,key+'.json');assert(!contexts.has(key));contexts.add(key);
  const armed=row.weapon!==null,bucket=armed?total.armed:total.bare;
  const counts=bucket[row.body]??={contexts:0,emptyRoute:0,wardrobeComplete:0,solo:0,pairs:0,mixed:0};
+ const groups={};
+ for(const [item,v] of Object.entries(row.solo))if(!v.selected){
+  const cause=v.reason||row.empty.reason||'unclassified';(groups[cause]??=[]).push(Number(item));
+ }
+ const conflicts=row.pairs.flatMap(p=>p.conflicts||p.failed.filter(pair=>pair.every(id=>row.solo[id].selected)));
+ if(Object.keys(groups).length||conflicts.length||row.full.selected!==row.full.tested)queue.push({context:key,
+  receiver:row.empty,itemsByCause:groups,conflicts,sampledSets:{selected:row.full.selected,tested:row.full.tested}});
  counts.contexts++;if(row.empty.selected)counts.emptyRoute++;let whole=true;
  for(const [id,item] of items){
   const single=row.solo[id],full=row.full.perItem[id];
@@ -26,7 +34,7 @@ for(const name of fs.readdirSync(folder).filter(n=>n.endsWith('.json')).sort()){
   if(!single.selected)whole=false;
   if(detailRows){
    const columns=[id,item.slot,row.body,row.weapon??'desarmado',row.role,row.action,row.direction,
-    single.selected?'completa':'pendente',single.pose??'',single.source??'',single.reason];
+    single.selected?'completa':'pendente',single.pose??'',single.source??'',single.stage??'',single.reason??''];
    detailRows.push(columns.map(value=>String(value).replace(/[\t\r\n]/g,' ')).join('\t'));
   }
  }
@@ -49,5 +57,9 @@ for(const body of ['masculino','feminino']){
 }
 const report={fingerprint:path.basename(path.dirname(folder)),contexts:contexts.size,total,items:[...items.values()]};
 if(process.argv[3])fs.writeFileSync(process.argv[3],JSON.stringify(report,null,2)+'\n');
-if(detailRows)fs.writeFileSync(detailFile,detailRows.join('\n')+'\n');
+function save(file,data){
+ fs.writeFileSync(file,file.endsWith('.gz')?require('node:zlib').gzipSync(data,{level:9}):data);
+}
+if(detailRows)save(detailFile,detailRows.join('\n')+'\n');
+if(process.argv[5])save(process.argv[5],JSON.stringify({fingerprint:report.fingerprint,queue})+'\n');
 console.log(JSON.stringify(total));

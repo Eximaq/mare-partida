@@ -209,6 +209,14 @@ window.__hdSlotQA={
   const swordKit={weapon:1,coat:151,legs:168,boots:183,gloves:159,head:157};
   for(const id of Object.values(swordKit))await put(id);
   const savedLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  await walk('s','south',swordKit,'armada-antes-de-retirar');
+  await remove('weapon');
+  const {weapon:held,...clothes}=swordKit;
+  const bare=await draw('repouso-desarmada-com-cinco-pecas','idle','south',clothes,true);
+  assert(!Object.hasOwn(bare.equipment,'weapon'));
+  assert.deepEqual(bare.appearance,savedLook);
+  await put(held);
+  await draw('repouso-arma-restaurada','idle','south',swordKit,true);
   for(const [key,direction] of [['d','east'],['s','south'],['a','west'],['w','north']])
    await walk(key,direction,swordKit,'espada-caminhada-'+direction,true);
   for(const direction of ['east','north','west','south'])
@@ -246,11 +254,28 @@ window.__hdSlotQA={
   await put(26);blades.gloves=26;await walk('a','west',blades,'adagas-troca-luva-oeste',true);
   await put(25);blades.gloves=25;await walk('a','west',blades,'adagas-restaura-luva-oeste',true);
   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,bladeLook);
+  const cuffKit={weapon:2,coat:165,legs:21,boots:141,gloves:159,head:178};
+  await page.evaluate(kit=>__hdSlotQA.seedWardrobe('brawler',Object.values(kit),{gender:'masculino'}),cuffKit);
+  for(const id of Object.values(cuffKit))await put(id);
+  const cuffLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  for(const [key,dir] of [['d','east'],['a','west'],['s','south'],['w','north']])
+   await walk(key,dir,cuffKit,'manoplas-roupas-'+dir,true);
+  assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,cuffLook);
+  const daggerOutfit={weapon:73,coat:172,legs:168,boots:148,gloves:159,head:19};
+  await page.evaluate(kit=>__hdSlotQA.seedWardrobe('rogue',Object.values(kit)),daggerOutfit);
+  for(const id of Object.values(daggerOutfit))await put(id);
+  const daggerLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  for(const dir of ['north','south','west','east'])await observeAttack('attack-daggers','adagas-traje-completo-'+dir,dir,daggerOutfit);
+  assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,daggerLook);
   const rifleKit={weapon:113,coat:151,legs:168,boots:148,gloves:25,head:129};
-  await page.evaluate(kit=>__hdSlotQA.seedWardrobe('gunner',[...Object.values(kit),26],{gender:'feminino'}),rifleKit);
+  await page.evaluate(kit=>__hdSlotQA.seedWardrobe('gunner',[...Object.values(kit),26,6,179],{gender:'feminino'}),rifleKit);
   for(const id of Object.values(rifleKit))await put(id);
   const rifleLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
   await observeAttack('attack-firearm','fuzil113-feminino-norte','north',rifleKit);
+  for(const coat of [6,179,151]){
+   await put(coat);rifleKit.coat=coat;
+   await observeAttack('attack-firearm','fuzil113-peitoral-'+coat,'north',rifleKit);
+  }
   await put(26);rifleKit.gloves=26;
   await observeAttack('attack-firearm','fuzil113-troca-luva','north',rifleKit);
   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,rifleLook);

@@ -31,7 +31,7 @@ test('real starter saves render base rework at native source dimensions, all dir
 });
 
 test('preview loading does not report readiness and stop portrait retries',()=>{
- let rendered=false;const context={URL,URLSearchParams,console,fetch:()=>new Promise(()=>{}),MareReworkNativeHD:{create:()=>({draw:()=>false})},MareReworkDefaultHD:{create:()=>({draw:()=>true,snapshot:()=>({last:{state:rendered?'rendered':'loading'}})})}};
+ let rendered=false;const context={URL,URLSearchParams,console,fetch:()=>new Promise(()=>{}),MareReworkNativeHD:{create:()=>({draw:(ctx,player)=>{assert.equal(player.equipment.weapon.def,0);return rendered;}})},MareReworkDefaultHD:{create:()=>({clear(){},draw(){throw Error('Substituted preview while loading');}})}};
  vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'paper-doll-96-lobby.js'),'utf8'),context);
  const runtime=context.MarePaperDoll96Lobby.create({baseURL:'http://localhost/'}),ctx={canvas:{width:256,height:256}};
  assert.equal(runtime.preview(ctx,{equipment:{weapon:{def:0}}}),false);rendered=true;assert.equal(runtime.preview(ctx,{equipment:{weapon:{def:0}}}),true);
