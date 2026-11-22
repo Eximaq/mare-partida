@@ -301,6 +301,26 @@ function applyStrictSideIris(record,d,frame,a,images,map,prefix,makeCanvas){
  source.width=source.height=1;
 }
 
+// Exact authored male South lower-redrawn rasters: the fitted blue shorts and
+// exposed calves/feet share this source. Rank only anatomical warm material in
+// each signed frame's foot domain; never rank the boot, trousers or outlines.
+const strictSouthLegBounds={"e6824bfdd43d71b8690f90b0dc7cc19caf6d38591b8c4611cc172ede83ec97b9":[340,447,217,293],"a62ed580c0a0a0fc52cf3395859c99307de00564c4b58b606e96cc7a8248e56a":[334,447,217,295],"cdb5eb952af959abbe55e84214d325328b9375c81a9b783d5de60b27df4ec8eb":[323,447,217,295],"8294caad435ed761266df83970f9921db9e0bf6bdd601008cb3245d8aa9f3322":[328,447,217,295],"25ed36d38255027fe149b7c50e9d67bbd8e951a9d1a14ee9d5d0bc511e6bd432":[328,447,217,295],"e254ba009a0fa1f66f0877cef3116b5598f0e19c1cd6eb8ca041dfb93a1c858f":[328,447,217,298],"81d1eb4a6626a4117987d139c1500f805f0263d6dcbca49d02b02ac838b5f2e3":[328,447,217,298],"b871e4556c314154b29375285375ee9864e8f267132e693400ebb437be9860c1":[328,446,217,295],"f20b8196453e77fa3cb6d67f2ad9d6605766db35744acf9dd628a7e6ea33e262":[336,446,217,295],"27ee347af26d1284e6ff9ccd42dbb3da3516494352fe3fd4330d850cb3c1a083":[336,446,217,295],"f28de4b8b035c8c263c4aadc9615a8137921175a2faa9276c4a97de4906a9e24":[336,446,217,295],"060c3a4aa23403dadbe79177a15bfbd271319d76ecf2abd06f12f5fb2199bb54":[322,446,217,298],"93427325e22ba2b1809d2300f8e020e51c30933eff9ecb92a138a7708d9bb63b":[338,446,215,297],"17aa2b9758aabfe923d8ee50a9b71d0c5208655c74a00a3e8687772249d7dc05":[338,446,213,297],"c333de20209e54bb41ab5dc0c7d0081760a6be4281db025d62066c9670b69adc":[338,447,213,297],"3c407342d71c0a0f1c6322516356e3ff405bbfea297c52cee58e74bc36935d3a":[338,447,217,297]};
+function applyStrictSouthLegs(r,d,frame,appearance,map,makeCanvas,appearanceAPI){
+ const ramp=appearanceAPI.skins[appearance.skin||appearance.skinColor]?.ramp;
+ if(!ramp)return;
+ const l=d.layers.find(x=>x.id==='lower-redrawn'&&x.slot==='pants');
+ if(!l||l.binding?.kind!=='fixed'||l.depth!==4)return;
+ const key=l.frames?.[frame]||l.source,b=strictSouthLegBounds[key];
+ if(!b||r.paletteSourceMasks?.[key]||r.sourceRasterPadding?.[key]||
+    d.layers.some(x=>x!==l&&(x.frames?.[frame]||x.source)===key))return;
+ const image=map.get(key);
+ if(!image||image.width!==512||image.height!==512)throw Error('Unverified South lower material raster');
+ const tile=makeCanvas(512,512),tc=tile.getContext('2d');
+ tc.drawImage(image,0,0);const data=tc.getImageData(0,0,512,512);
+ const mask=skinMaterials.mask(data.data,512,'mixed',[[b[2],b[0],b[3],b[1]]]);
+ data.data.set(appearanceAPI.recolor(data.data,mask,ramp));
+ tc.putImageData(data,0,0);map.set(key,tile);
+}
 function applyStrictSouthLayers(r,appearance,images,map,prefix,makeCanvas,appearanceAPI){
  const {face,repairs}=r.strictSouthAppearance;
  const known=strictSouthFaces[face];
@@ -312,6 +332,9 @@ function applyStrictSouthLayers(r,appearance,images,map,prefix,makeCanvas,appear
   tc.drawImage(image,0,0);
   return [tile,tc,tc.getImageData(0,0,tile.width,tile.height)];
  };
+ const skin=appearance.skin||appearance.skinColor,skinRamp=appearanceAPI.skins[skin]?.ramp;
+ // The native body already resolved its signed face, separate from the garment.
+ if(!r.strictSouthAppearance.nativeFace){
  const [tile,tc,data]=copy(im);
  const off=(640-known.w)/2;
  const indices=strictSouthIris.map(([x,y,R,G,B,A,rank])=>{
@@ -319,7 +342,6 @@ function applyStrictSouthLayers(r,appearance,images,map,prefix,makeCanvas,appear
   if(data.data[q]!==R||data.data[q+1]!==G||data.data[q+2]!==B||data.data[q+3]!==A)throw Error('Unverified original South iris pixels');
   return [k,rank];
  });
- const skin=appearance.skin||appearance.skinColor,skinRamp=appearanceAPI.skins[skin]?.ramp;
  if(skin&&skin!=='original'){
   if(!skinRamp)throw Error('Unsupported saved skin');
   const md=copy(maskImage)[2].data,mask=new Uint8Array(known.w*known.w);
@@ -337,6 +359,7 @@ function applyStrictSouthLayers(r,appearance,images,map,prefix,makeCanvas,appear
  }
  tc.putImageData(data,0,0);
  map.set(face,tile);
+ }
  if(!skinRamp)return;
  for(const source of repairs){
   const dimensions=knownRepairHands[source],image=map.get(source);
@@ -453,7 +476,10 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
     surface.getContext('2d').drawImage(image,64,64);map.set(source,surface);
    }
   }
-  if(r.strictSouthAppearance)applyStrictSouthLayers(r,appearance,images,map,prefix,makeCanvas,appearanceAPI);
+  if(r.strictSouthAppearance){
+   applyStrictSouthLayers(r,appearance,images,map,prefix,makeCanvas,appearanceAPI);
+   applyStrictSouthLegs(r,d,frame,appearance,map,makeCanvas,appearanceAPI);
+  }
   if(r.baseMaterialSources){
    const eyes=root.MareReworkEyeStylesHD;
    const expression=r.body==='male'&&(eyes?.supports(appearance.face)||
@@ -470,7 +496,9 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
     if(palette){
      const data=tc.getImageData(0,0,tile.width,tile.height);
      const mask=kind==='hair'?appearanceAPI.materialMask(data.data,'hair'):skinMaterials.mask(data.data,tile.width,kind);
-     data.data.set(appearanceAPI.recolor(data.data,mask,palette.ramp));
+     const hairAnatomy=root.MareHairAnatomyHD||(typeof require==='function'?require('./player-rework-hair-anatomy-hd.js'):null);
+     const signedHair=kind==='hair'&&r.body==='male'&&r.action==='attack-unarmed'&&['east','west'].includes(r.direction)&&r.baseRecord==='v7-punch-'+r.direction+'-drawn8-'+r.direction?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;
+     data.data.set(signedHair||appearanceAPI.recolor(data.data,mask,palette.ramp));
      tc.putImageData(data,0,0);
     }
     map.set(source,tile);
@@ -520,7 +548,57 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
    else throw Error('Native body occlusion surface unavailable');
    const sc=surface.getContext('2d');sc.imageSmoothingEnabled=false;sc.drawImage(im,0,0);sc.clearRect(0,o.belowPhysicalY,surface.width,surface.height-o.belowPhysicalY);map.set(key,surface);
   }
-  const pack=hiddenSlots.length?{...p,directions:{[r.direction]:{...d,layers:d.layers.filter(l=>!hiddenSlots.includes(l.slot))}}}:p;
+  const slice=r.nativeSouthSleeveContact&&[3,4,5].includes(frame)?d.layers.map(l=>
+    ['coat172-aligned-sleeves-right-upper','coat172-aligned-sleeves-right-lower','left-front-cuff-rim-rim-left'].includes(l.id)?
+      {...l,binding:{...l.binding,kind:'bone'}}:l):d.layers;
+  const lateral=r.nativeCoat172LateralContact&&[1,2,3,5,6].includes(frame)?slice.map(l=>
+    ['corrected-sleeve-near-upper','corrected-sleeve-near-lower','front-cuff-rim-rim'].includes(l.id)?
+      {...l,binding:{...l.binding,kind:'bone'}}:l):slice;
+  const fitted=r.nativeCoat158Contact&&![0,4,7].includes(frame)?lateral.map(l=>
+    /^coat158-whole-(LEFT|RIGHT)-(upper|lower)$/.test(l.id)?{...l,binding:{...l.binding,kind:'bone'}}:l):lateral;
+  const fitted172=r.nativeCoat172NorthContact&&![0,7].includes(frame)?fitted.map(l=>
+    /^coat-front-(LEFT|RIGHT)-(upper|lower)$/.test(l.id)?{...l,binding:{...l.binding,kind:'bone'}}:l):fitted;
+  const cuffsAttached=r.nativeCoat165Contact&&![0,4,7].includes(frame)?fitted172.map(l=>
+    /^coat165-whole-(LEFT|RIGHT)-(upper|lower)$/.test(l.id)?{...l,binding:{...l.binding,kind:'bone'}}:l):fitted172;
+  const pack=hiddenSlots.length||cuffsAttached!==d.layers?{...p,directions:{[r.direction]:{...d,layers:cuffsAttached.filter(l=>!hiddenSlots.includes(l.slot))}}}:p;
+  if(r.nativeSouthHands?.faces[frame]?.length){
+   const o=r.nativeSouthHands,owners=new Set(o.owners),w=ctx.canvas.width,h=ctx.canvas.height;
+   if(r.body!=='male'||r.direction!=='south'||r.action!=='attack-unarmed'||r.equipment?.torso!==172||
+     hiddenSlots.length||r.mirrorLayerIDs?.length||owners.size!==9||w!==640||h!==640)throw Error('Invalid C172 own cuff geometry');
+   const nc=makeCanvas(w,h),mc=makeCanvas(w,h),ac=makeCanvas(w,h);
+   const bx=nc.getContext('2d'),mx=mc.getContext('2d'),ax=ac.getContext('2d');
+   const render=(cx,layers)=>vendor.compositor.render(cx,{...p,directions:{south:{...d,layers}}},map,{direction:'south',frame,density:4});
+   render(ctx,slice);render(bx,slice.filter(l=>l.id==='base:skin-arms-phase'||l.id==='skin-arms-phase'));
+   render(mx,slice.filter(l=>owners.has(l.id)));
+   for(const c of o.faces[frame]){ax.beginPath();ax.moveTo(...c[0]);for(const px of c.slice(1))ax.lineTo(...px);ax.closePath();ax.fill();}
+   const outfit=ctx.getImageData(0,0,w,h),body=bx.getImageData(0,0,w,h).data,
+    fabric=mx.getImageData(0,0,w,h).data,hands=ax.getImageData(0,0,w,h).data;
+   // Replace only opaque native hand pixels in an owned clothing footprint.
+   for(let k=0;k<outfit.data.length;k+=4)if(body[k+3]===255&&fabric[k+3]&&hands[k+3]>127)
+    outfit.data.set(body.subarray(k,k+4),k);
+   ctx.putImageData(outfit,0,0);
+   for(const c of [nc,mc,ac])c.width=c.height=1;
+  }else
+  if(r.ownedCuffAlpha&&!hiddenSlots.length&&(r.direction==='north'||r.action==='idle'||frame===0||frame===7)){
+   // Keep the exact native hand restoration only where clothing covers it.
+   // Outside the clothing the real, already-colored arm is not painted twice.
+   const own=r.ownedCuffAlpha,owners=new Set(own.owner),repairs=new Set(own.repairs);
+   const north=r.direction==='north'&&r.equipment?.torso===137&&r.action==='attack-unarmed'&&d.clip.frames===8&&(owners.size===7||owners.size===9);
+   const south=r.direction==='south'&&(r.action==='idle'&&d.clip.frames===1||r.action==='attack-unarmed'&&d.clip.frames===8)&&
+    r.strictSouthAppearance&&owners.size===(r.equipment?.torso===137?8:7);
+   if(!makeCanvas||r.body!=='male'||(!north&&!south)||repairs.size!==2||r.mirrorLayerIDs?.length)
+    throw Error('Invalid signed cuff mask');
+   const renderLayers=(target,layers)=>vendor.compositor.render(target,{...p,directions:{[r.direction]:{...d,layers}}},map,{direction:r.direction,frame,density:4});
+   const w=ctx.canvas.width,h=ctx.canvas.height,before=makeCanvas(w,h),mask=makeCanvas(w,h);
+   const b=before.getContext('2d'),a=mask.getContext('2d');
+   renderLayers(ctx,d.layers);
+   renderLayers(b,d.layers.filter(l=>!repairs.has(l.id)));
+   renderLayers(a,d.layers.filter(l=>owners.has(l.id)));
+   const full=ctx.getImageData(0,0,w,h),native=b.getImageData(0,0,w,h).data,alpha=a.getImageData(0,0,w,h).data;
+   for(let k=0;k<alpha.length;k+=4)if(!alpha[k+3])full.data.set(native.subarray(k,k+4),k);
+   ctx.putImageData(full,0,0);
+   before.width=before.height=mask.width=mask.height=1;
+  }else
   if(r.mirrorLayerIDs?.length){
    // WEST base rasters remain EAST originals; only these identified base layers
    // are mirrored. Authored WEST garment frames are already facing WEST.

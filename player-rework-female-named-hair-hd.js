@@ -1,5 +1,7 @@
 /* Named female hair on the ORIGINAL face. Explicit semantic fringe ownership; no color guessing. */
 (function(root){'use strict';
+const localLateralForehead={"source":{"west":"9f2d13b556a604d9bd162d00386e788b9fe0c482a6d1bac35c67e5a9992d2032","east":"5843eab2f9d0d5f4520abf1b5d605301a1f80887422caeb252ca8073f7cef773"},"rows":[[323,198,3,210,114,76,255],[324,198,2,183,84,56,255],[322,199,2,141,58,38,255],[323,199,2,169,79,55,255],[322,200,3,182,98,66,255],[322,201,3,191,103,70,255],[305,202,4,244,162,104,255],[306,202,3,184,118,85,255],[321,202,3,219,129,85,255],[322,202,2,169,85,57,255],[304,203,4,241,159,99,255],[305,203,4,241,164,106,255],[321,203,3,191,100,65,255],[322,203,2,160,77,49,255],[303,204,4,244,165,108,255],[304,204,4,250,172,113,255],[321,204,2,148,69,46,255],[322,204,2,160,80,54,255],[303,205,4,245,167,109,255],[304,205,4,251,180,125,255],[320,205,3,186,99,66,255],[321,205,2,152,77,50,255],[303,206,4,250,169,110,255],[320,206,3,205,121,78,255],[321,206,2,173,92,63,255],[319,207,4,232,148,99,255],[320,207,3,225,141,97,255],[321,207,4,227,147,99,255],[305,208,3,193,113,73,255],[306,208,3,191,109,72,255],[307,208,3,221,131,83,255],[320,208,4,243,164,104,255],[321,208,4,244,165,106,255],[309,209,4,237,147,94,255],[320,209,4,250,166,107,255],[309,210,4,239,150,97,255],[310,210,4,242,150,97,255],[311,210,4,242,157,103,255],[309,211,4,246,159,104,255],[310,211,4,247,160,104,255],[311,211,3,219,138,90,255]]};
+
 const skinMaterials=root.MareNativeSkinHD||(typeof require==='function'?require('./player-rework-skin-hd.js'):null);
 const BP='tools/rework-base-hd/assets/',HP='tools/rework-accessories/assets/';
 const SOUTH_NECK_SOURCE='961e610a5767deace01e30068b84874cda5a3701aaf2b2aaceff40314d02af7c',SOUTH_WALK_HEAD_SOURCE='b4dc10ba2d5cf91f2b3217536e4d6beee5d915bef54707390fc076129d3147e6';
@@ -132,6 +134,22 @@ tc.putImageData(pixels,0,0);image=tile;}if(r.skinColor && (l.slot==='headBase'||
    for(let i=0;i<mask.length;i++)if(irisPixels[i*4+3])mask[i]=0;
   }
   if(!r.daggerNativeHead||l.id==='face')for(const [y,left,right] of o.fringeSpans)mask.fill(0,y*tile.width+left,y*tile.width+right+1);
+  // User-authorized material retouch. The exact native garment and
+  // fringe raster stay untouched outside the hand-traced forehead.
+  const punchSouthNativeOff=base.body==='female'&&base.action==='attack-unarmed'&&base.direction==='south'&&
+   base.sourceId==='v7-female-punch-south-ownership-candidate-south'&&base.id.startsWith('v7-female-punch-south-ownership-candidate-south:')&&base.sourcePackSHA256==='aeff7d06dc08041ceec37c11cd0b3e2cf1f970a5bb1d0c449d3aa78638e09ef9'&&
+   base.pack.density===4&&base.pack.pivot.x===80&&base.pack.pivot.y===128&&
+   base.pack.directions.south.clip.frames===8&&base.pack.directions.south.clip.fps===12;
+  if((r.localCetroForehead||punchSouthNativeOff)&&base.direction==='south'&&r.style==='original'&&r.skinColor!=='light'&&l.id==='face'&&l.source===skinMaterials.boundedSouthForeheadSource)
+   skinMaterials.boundedSouthForehead(l.source,pixels.data,mask,tile.width,tile.height);
+  if(r.localCetroForehead&&r.style==='original'&&r.skinColor!=='light'&&l.id==='face'&&localLateralForehead.source[base.direction]===l.source){
+   if(tile.width!==640||tile.height!==640)throw Error('Changed lateral face registration');
+   for(const [wx,y,rank,R,G,B,A] of localLateralForehead.rows){
+    const x=base.direction==='west'?wx:639-wx,p=y*640+x,i=4*p;
+    if(pixels.data[i]!==R||pixels.data[i+1]!==G||pixels.data[i+2]!==B||pixels.data[i+3]!==A)throw Error('Lateral forehead source changed');
+    mask[p]=rank;
+   }
+  }
   if(r.daggerNativeHead&&l.id==='face'&&r.style==='original'&&r.hairColor){
    const fringe=api.materialMask(pixels.data,'hair'),own=new Uint8Array(fringe.length);
    for(const [y,left,right] of o.fringeSpans)for(let x=left;x<=right;x++){

@@ -5,10 +5,10 @@
     {
       "source": "tools/rework-modular-outfits-hd/index.json.gz",
       "target": "tools/rework-modular-outfits-hd/index.json",
-      "bytes": 24112397,
-      "sha256": "94d0b2a3cc96756c9bbdd0ad5c79b10d12f545a34eb60774e3505bc0bb35ef32",
-      "compressedBytes": 3278406,
-      "compressedSha256": "83e25e0eafd117be3e9f1ec76fcca86f42571ffd5c57182872f350f5b1fcca53"
+      "bytes": 24121309,
+      "sha256": "e302e6d650d811b0f1576bb67f03adb7796608b26e17c25179388e1c4810ec65",
+      "compressedBytes": 3283129,
+      "compressedSha256": "05d0519c9d2b3e374701048cc350bdd9f241e8371f0df92b717c9a5452e7815b"
     }
   ]
 }

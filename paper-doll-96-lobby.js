@@ -74,6 +74,15 @@
       const ownTorso=v.slot==='torso'&&record.hdKind==='outfit-carry'&&outfitPiece?.item===v.item&&
         typeof torso==='string'&&torso.startsWith('male-torso'+v.item+'-'+record.direction+'-')&&
         outfitPiece.layerIds?.length&&outfitPiece.sourceRefs?.length;
+      // The checkpoint SHA-256 signs complete native W0 coat records.
+      // Recognize their already authenticated garment at the consumer,
+      // without changing the signed selector payload.
+      const ownedSwordCoat=v.slot==='torso'&&record.hdKind==='female-equipment'&&
+        record.body==='female'&&record.item===0&&record.action==='attack-sword'&&
+        record.outfitSourceId==='female-torso'+v.item+'-'+record.direction+'-frozen-attack-native'&&
+        record.id.startsWith('female0-attack-sword-'+record.direction+'-candidate-coat'+v.item+'-native-sword:')&&
+        record.outfitSources?.length&&record.outfitSources.every(h=>record.baseRecord?.sourceRefs?.includes(h));
+      if(ownedSwordCoat)return {item:v.item,quality:'hd',source:record.outfitSourceId};
       if(nativeOutfit||ownTorso)return {item:v.item,quality:'hd',source:ownTorso?torso:record.sourceId||record.id};
       const contract=record.equipmentContract;
       const proved=Object.entries(contract||{}).find(([k])=>worldSlot(k)===v.slot);
@@ -95,7 +104,14 @@
           routes[v.key]=r;
         }
         for(const v of kept)known.add(v.key);
-        const held=kept.some(v=>v.slot==='weapon'),rank=kept.length*2+(held?1:0);
+        const held=kept.some(v=>v.slot==='weapon');
+        const fallbackSwordCoat=kept.some(v=>v.slot==='torso'&&
+          routes[v.key]?.source===record.outfitSourceId&&record.hdKind==='female-equipment'&&
+          record.item===0&&record.action==='attack-sword'&&!record.equipmentContract&&!record.slotRoutes);
+        // A raw W0+coat witness may improve the bare sword only; it must
+        // never outrank a mounted sibling (pants, gloves, boots or hat).
+        const rank=kept.length*2+(held?1:0)-(fallbackSwordCoat?1.5:0);
+
         if(requireHeldWeapon&&weaponIndex!==-1&&!held)return;
         if(!current||rank>current.rank)current={record,kept,routes,rank};
       };
@@ -123,6 +139,55 @@
     }
     const combat=options.action!=='idle'&&options.action!=='walk';
     const fit=best(options,selected,combat);
+    if(fit?.omitted?.length&&
+      (options.action==='idle'&&(fit.ownSouthIdleGloveCuff&&options.direction==='south'||
+        fit.ownSideIdleGlove180&&['east','west'].includes(options.direction))||
+       options.action==='walk'&&fit.ownSideWalkGlove180&&['east','west'].includes(options.direction))){
+      // An available partial wrist path must not win a subset tie by
+      // dropping a sibling which already fits the player without the glove.
+      const glove=visible.find(v=>v.slot==='gloves'&&[131,180].includes(v.item));
+      if(glove){
+        const equipment={...player.equipment};delete equipment[glove.key];
+        const existing=selectWorldHDOnly(nativeHD,weaponCatalog,{...player,equipment},options);
+        if(existing&&!existing.visualDegraded&&!existing.unsupported?.length){
+          const routes={},omitted=[];let lost=false;
+          for(const v of visible){
+            const match=v===glove?null:hdSlot(existing,v)||(!existing.omitted?.includes(v.key)&&
+              ['outfit','authored-pants'].includes(existing.hdKind)&&
+              (existing.equipment?.[v.key]??existing.equipment?.[v.slot])===v.item?
+              {item:v.item,quality:'hd',source:existing.sourceId||existing.id}:null);
+            if(match){routes[v.key]=match;if(!hdSlot(fit,v))lost=true;}
+            else{omitted.push(v.key);routes[v.key]=existing.slotRoutes?.[v.key]||
+              {item:v.item,quality:'missing',reason:'hd-combination-unresolved'};}
+          }
+          if(lost)return {...existing,id:existing.id+':world-hd:retain-idle-peers:'+glove.item,
+            slotRoutes:routes,omitted,layeredSlots:true,slotFallback:'hd-only-partial'};
+        }
+      }
+    }
+    if(fit?.northOwnWalkGarment&&fit.omitted?.length&&options.action==='walk'&&options.direction==='north'){
+      const trousers=visible.find(v=>v.slot==='pants'&&v.key===fit.northOwnWalkGarment.key&&v.item===fit.northOwnWalkGarment.item);
+      if(trousers){
+        const unequipped={...player.equipment};delete unequipped[trousers.key];
+        const old=selectWorldHDOnly(nativeHD,weaponCatalog,{...player,equipment:unequipped},options);
+        if(old&&!old.visualDegraded&&!old.unsupported?.length){
+          const retained=visible.filter(v=>v!==trousers&&hdSlot(old,v));
+          if(retained.some(v=>!hdSlot(fit,v))){
+            // Preserve the real already visible peers. Prefer adding the
+            // garment to that verified host over dropping an unrelated slot.
+            const wanted=[...retained,trousers],equipment={...player.equipment};
+            for(const v of visible)if(!wanted.includes(v))delete equipment[v.key];
+            const combined=selectWorldHD(strict,weaponCatalog,{...player,equipment},options);
+            const accepted=combined?.northOwnWalkGarment&&!combined.omitted?.length&&wanted.every(v=>hdSlot(combined,v));
+            const result=accepted?combined:old,kept=accepted?wanted:retained,slotRoutes={};
+            for(const v of visible)slotRoutes[v.key]=kept.includes(v)?hdSlot(result,v):
+              {item:v.item,quality:'missing',reason:'hd-combination-unresolved'};
+            return {...result,id:result.id+':world-hd:retain-walk-peers',slotRoutes,
+              omitted:visible.filter(v=>!kept.includes(v)).map(v=>v.key),layeredSlots:true,slotFallback:'hd-only-partial'};
+          }
+        }
+      }
+    }
     if(fit)return fit;
     if(options.action==='idle')return null;
     const idle=best({...options,action:'idle'},null,false);
