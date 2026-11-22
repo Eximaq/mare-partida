@@ -770,7 +770,36 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   return {...record,...resolved,id:record.id+':named-focus-'+style+':'+color,namedFocusCarry:true,
    colorAppearance:{...record.colorAppearance,hair:style,hairStyle:style,hairColor:color}};
  }
- return {resolve,requiredFiles,render,withNamedHair};
+ // Independent gear uses the unchanged native carry. The source census
+ // replayed every phase with and without its weapon and found no contact
+ // between weapon pixels and these no-hair-occlusion hat passes.
+ function certifiedCarryVector(r){
+  const cert=carryIndex.verifiedHeadgear, row=cert?.plans?.[r?.id];
+  if(cert?.schema!=='exact-independent-carry-headgear-v1'||r?.hdKind!=='carry'||!row||
+     r.base?.id!==row.baseId||r.colorAppearance?.skin!==cert.sourceTone||
+     !Number.isSafeInteger(row.plan)||JSON.stringify(r.plan)!==JSON.stringify(cert.vectors?.[row.plan]))return null;
+  const base=baseIndex.records.find(b=>b.id===row.baseId);
+  if(!base||!!base.mirrorX!==!!r.base.mirrorX||JSON.stringify(base.pack)!==JSON.stringify(r.pack)||
+     JSON.stringify(r.base.pack)!==JSON.stringify(r.pack))return null;
+  return {base:row.baseId,index:row.plan};
+ }
+ function verifiedHeadgear(r,gear,item){
+  const a=carryIndex.verifiedHeadgear,c=a?.plans?.[r?.id],raw=gear?.sourceRecord?.entry?.pack?.directions?.[r?.direction];
+  const mode=raw?.headgearPolicy?.mode,tone=r?.colorAppearance?.skin;
+  // Re-use non-occluding signed hats across recolored anatomy only when
+  // the exact held-part vector and receiving pack still match below.
+  const sameMaterialMask=mode==='none'&&[164,178].includes(item)&&
+   Object.hasOwn(root.MareAppearance96?.skins||{},tone)&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},tone);
+  if(a?.schema!=='exact-independent-carry-headgear-v1'||r?.hdKind!=='carry'||!c||r.base?.id!==c.baseId||
+     tone!==a.sourceTone&&!sameMaterialMask||!['none','full'].includes(mode)||
+     mode!==root.MareHeadgear?.resolve({def:item}).hairHideMode||
+     mode==='full'&&(!c.fullHeadClear?.includes(item)||r.pack.directions[r.direction]?.layers.filter(l=>l.slot==='hair').length!==1)||
+     a.gear?.[r.direction]?.[item]!==gear.gear.source||!Number.isSafeInteger(c.plan)||
+     JSON.stringify(r.plan)!==JSON.stringify(a.vectors?.[c.plan]))return false;
+  const known=baseIndex.records.find(p=>p.id===c.baseId);
+  return !!known&&!!known.mirrorX===!!r.base.mirrorX&&JSON.stringify(known.pack)===JSON.stringify(r.pack);
+ }
+ return {resolve,requiredFiles,render,withNamedHair,verifiedHeadgear,certifiedCarryVector};
 }
 const api={create};root.MareReworkWeaponCarryHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

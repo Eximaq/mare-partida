@@ -15,7 +15,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
  }
  const sources=(r,frame)=>frame===undefined?r.sourceRefs:[...new Set(r.pack.directions[r.direction].layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean))];
  const requiredFiles=(r,{frame}={})=>r?sources(r,frame).map(s=>prefix+s+'.png'):[];
- function render(ctx,r,images,{frame=0,hiddenSlots=[],appearance={},femaleAnatomyPalette=false,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h}),appearanceAPI=root.MareAppearance96,afterMaterialSource}={}){
+ function materialSources(r,images,{frame=0,appearance={},femaleAnatomyPalette=false,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h}),appearanceAPI=root.MareAppearance96,afterMaterialSource}={}){
   if(!r)throw Error('Missing supported HD source');const p=r.pack,d=p.directions[r.direction];
   if(!Number.isInteger(frame)||frame<0||frame>=d.clip.frames)throw Error('HD source frame unavailable');
   const map=new Map();for(const s of sources(r,frame)){const im=images.get(prefix+s+'.png')||images.get(s);if(!im)throw Error('Missing original asset '+s);map.set(s,im);}
@@ -39,12 +39,17 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
    }
   }
   if(afterMaterialSource)for(const [source,image] of map)map.set(source,afterMaterialSource(source,image,originalMap.get(source)));
+  return map;
+ }
+ function render(ctx,r,images,{frame=0,hiddenSlots=[],appearance={},femaleAnatomyPalette=false,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h}),appearanceAPI=root.MareAppearance96,afterMaterialSource}={}){
+  const map=materialSources(r,images,{frame,appearance,femaleAnatomyPalette,makeCanvas,appearanceAPI,afterMaterialSource});
+  const p=r.pack,d=p.directions[r.direction];
   // compositor consumes original density4 PNGs, with no intermediate 1x canvas.
   const pack=hiddenSlots.length?{...p,directions:{[r.direction]:{...d,layers:d.layers.filter(l=>!hiddenSlots.includes(l.slot))}}}:p;
   if(r.mirrorX){const native=makeCanvas(p.frame.width*p.density,p.frame.height*p.density);vendor.compositor.render(native.getContext("2d"),pack,map,{direction:r.direction,frame,density:p.density});ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(native.width,0);ctx.scale(-1,1);ctx.drawImage(native,0,0);ctx.restore();}else vendor.compositor.render(ctx,pack,map,{direction:r.direction,frame,density:p.density});
   return {width:p.frame.width*p.density,height:p.frame.height*p.density,density:p.density,pivot:{x:p.pivot.x*p.density,y:p.pivot.y*p.density},logicalFrame:p.frame,source:r.id,frames:d.clip.frames,rest:d.rest,pose:d.poses[frame],mirrorX:!!r.mirrorX,status:r.status};
  }
- return {resolve,requiredFiles,render};
+ return {resolve,requiredFiles,materialSources,render};
 }
 const api={create};root.MareReworkBaseHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

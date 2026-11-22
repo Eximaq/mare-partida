@@ -7,6 +7,122 @@ const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const sourceOf=layers=>layers.flatMap(l=>l.frames||[l.source]).filter(Boolean);
 const slotNames=new Set(['torso','pants','boots','gloves','head','weapon']);
 const renderFields=['approvedAppearance','colorAppearance','palettePolicy','paletteSupportedMaterials','mirrorX','mirrorLayerIDs','sourceRasterPadding','bodyOcclusion','isolatedPants21','baseMaterialSources','headRecord','headLook','gearOnlyRecord','femaleNamedHairRecord'];
+// Resolve ownership before consulting a receiver or its equipped layers.
+const ownDirections=new Set(['north','east','south','west']);
+function ownLayerKey(v){
+ const {slot,item,action,direction}=v||{},body=canonical(v?.body);
+ if(!slotNames.has(slot)||!Number.isSafeInteger(item)||item<0||
+    !['male','female'].includes(body)||typeof action!=='string'||!action||
+    action!==action.trim()||!ownDirections.has(direction))return null;
+ return [slot,item,body,action,direction];
+}
+function createOwnLayerIndex(records=[]){
+ const native=new Map(),conflict=Symbol('ambiguous equipment source');
+ if(!Array.isArray(records))throw new TypeError('Owned animation rows must be an array');
+ for(const row of records){
+  const fields=ownLayerKey(row);
+  if(!fields||row.source==null)throw new TypeError('Invalid owned equipment animation row');
+  const key=JSON.stringify(fields);
+  native.set(key,native.has(key)?conflict:Object.freeze({source:row.source,sourceDirection:fields[4]}));
+ }
+ const answer=(key,entry,mirrorX)=>entry===conflict?{state:'conflict',key}:entry
+  ?{state:'available',key,...entry,mirrorX}:{state:'unknown',key};
+ return Object.freeze({resolve(request){
+  const fields=ownLayerKey(request);
+  if(!fields)return {state:'unknown',key:null};
+  const key=JSON.stringify(fields),exact=native.get(key);
+  if(exact||fields[4]!=='west')return answer(key,exact,false);
+  return answer(key,native.get(JSON.stringify([...fields.slice(0,4),'east'])),true);
+ }});
+}
+// The caller supplies only this slot's local target attachment for the
+// current phase. For a missing west source, turn the layer around its own
+// attachment: the actor, its siblings and their draw order are untouched.
+function drawOwnLayerAt(ctx,selection,image,{sourceAnchor,targetAttachment,scale=1}={}){
+ if(selection?.state!=='available'||!image||!sourceAnchor||!targetAttachment||
+    ![sourceAnchor.x,sourceAnchor.y,targetAttachment.x,targetAttachment.y,scale].every(Number.isFinite)||
+    scale<=0||!ctx?.save||!ctx.restore||!ctx.translate||!ctx.scale||!ctx.drawImage)return false;
+ ctx.save();
+ try{
+  ctx.imageSmoothingEnabled=false;
+  ctx.translate(targetAttachment.x,targetAttachment.y);
+  ctx.scale(selection.mirrorX?-scale:scale,scale);
+  ctx.drawImage(image,-sourceAnchor.x,-sourceAnchor.y);
+  return true;
+ }finally{ctx.restore();}
+}
+// Compose per-slot signed raster passes for one receiving pose. The caller
+// verifies the receiving body, weapon, clock and material against this authority.
+// Depth is relative to the unmodified body raster (0); ambiguous depths must be
+// resolved by the authority, never by request order or another equipped item.
+function planSignedPhaseSlots(authority,visible,frameCount){
+ if(!authority?.slots||!authority.depths||!visible||!Number.isSafeInteger(frameCount)||frameCount<1)return null;
+ const wanted=Object.entries(visible).filter(([slot])=>slot!=='weapon');
+ const candidates=[],depthOwners=new Map(),conflicted=new Set();
+ for(const [slot,request] of wanted){
+  const item=request?.item;
+  if(!slotNames.has(slot)||!Number.isSafeInteger(item)||item<0)continue;
+  const phases=authority.slots[slot]?.[item],depth=authority.depths[slot];
+  if(!Array.isArray(phases)||phases.length!==frameCount||!depth)continue;
+  const parts=[];
+  for(const side of ['rear','front']){
+   if(phases.some(frame=>!Array.isArray(frame?.[side])||frame[side].some(sha=>typeof sha!=='string'||!/^[a-f0-9]{64}$/.test(sha))))break;
+   const used=phases.some(frame=>frame[side].length),z=depth[side];
+   if(used&&(!Number.isFinite(z)||(side==='rear'?z>=0:z<=0)))break;
+   parts.push({side,z,used});
+  }
+  if(parts.length!==2||!parts.some(p=>p.used))continue;
+  const drawn=parts.filter(p=>p.used);
+  for(const {z} of drawn){
+   if(depthOwners.has(z)){conflicted.add(slot);conflicted.add(depthOwners.get(z));}
+   else depthOwners.set(z,slot);
+  }
+  candidates.push({slot,phases,drawn});
+ }
+ const kept=candidates.filter(p=>!conflicted.has(p.slot));
+ const accepted=kept.map(p=>p.slot).sort();
+ const missing=wanted.map(([slot])=>slot).filter(slot=>!accepted.includes(slot)).sort();
+ const orders={rear:[],front:[]};
+ for(const {drawn,phases} of kept)for(const {side,z} of drawn)orders[side].push({z,phases});
+ for(const order of Object.values(orders))order.sort((a,b)=>a.z-b.z);
+ const phases=Array.from({length:frameCount},(_,i)=>({
+  rear:orders.rear.flatMap(({phases})=>phases[i].rear),
+  front:orders.front.flatMap(({phases})=>phases[i].front)
+ }));
+ return {phases,accepted,missing};
+}
+// A receiver adapter must declare the result of binding each own source.
+// Complete HD and legacy routes are selected before this planner is called.
+function resolveAuditedWorldSlotPlan({requested,weapon,outcomes,allowOmission=false,protectedSubset=()=>false}){
+ if(!requested?.weapon||weapon?.item!==requested.weapon.item||weapon.quality!=='hd'||
+    typeof weapon.source!=='string'||!weapon.source)return null;
+ const slotRoutes={[requested.weapon.key]:weapon},slotResolution={[requested.weapon.key]:{state:'hd',source:weapon.source}},omitted=[];
+ for(const [slot,{key,item}] of Object.entries(requested)){
+  if(slot==='weapon')continue;
+  const proposed=outcomes?.[slot];
+  const result=['hd','no-compatible-pass','unknown','conflict'].includes(proposed?.state)?proposed:{state:'unknown',reason:'unadapted'};
+  const missingIsCertified=result.state==='no-compatible-pass'&&typeof result.authority==='string'&&!!result.authority&&
+   typeof result.reason==='string'&&!!result.reason;
+  const checked=result.state==='no-compatible-pass'&&!missingIsCertified?{state:'unknown',reason:'absence-not-attested'}:result;
+  slotResolution[key]=checked.state==='hd'?{state:'hd',source:checked.source}:
+   {state:checked.state,reason:checked.reason,...(missingIsCertified?{authority:checked.authority}:{})};
+  if(result.state==='hd'&&typeof result.source==='string'&&result.source)slotRoutes[key]={item,quality:'hd',source:result.source};
+  else if(missingIsCertified&&
+    ['head','torso','pants','boots','gloves'].includes(slot)){
+   slotRoutes[key]={item,quality:'missing',reason:result.reason};
+   omitted.push(key);
+  }
+ }
+ const blocked=Object.keys(slotResolution).some(key=>!Object.hasOwn(slotRoutes,key));
+ const complete=!blocked&&!omitted.length;
+ return {complete,ready:complete||!blocked&&allowOmission&&!protectedSubset(omitted),slotRoutes,slotResolution,omitted};
+}
+function composeSignedPhaseSlots(authority,visible,frameCount){
+ const p=planSignedPhaseSlots(authority,visible,frameCount);
+ // Only expose a renderable source once the caller can draw every requested slot.
+ // Unsupported slots are retained in the plan for a slot-level adapter, not hidden.
+ return p?.accepted.length&&!p.missing.length?p.phases:null;
+}
 // An explicit registration is a proof that these layer IDs belong to the slot.
 // Verify remaining rasters, pose clock, pivot and depth/order before selecting
 // an attachment. A matching size alone cannot identify a body or a fitting.
@@ -89,6 +205,75 @@ function composeSlots({anchor,equipment,fixed,slots}){
  return {...anchor,id:anchor.id+':slots:'+JSON.stringify([key,slotRoutes]),sourceId:anchor.id,pack,
   equipment:Object.fromEntries(key.filter(([slot])=>!omitted.includes(slot))),sourceRefs:[...new Set(sourceOf(layers))],
   paletteSourceMasks,paletteRefs,slotRoutes,omitted,layeredSlots:true};
+}
+// Explicit layer groups can travel only on their exact authored bare pose.
+// No sibling outfit is a dependency: each requested slot has one authority.
+function composeRegisteredLayerGroups({base,donors=[],equipment,diagnostic}={}){
+ const statuses=diagnostic||{},dir=base?.direction,d=base?.pack?.directions?.[dir];
+ if(base?.body!=='male'||!d?.layers?.length||!Array.isArray(d.poses)||d.poses.length!==d.clip?.frames||
+    !equipment||Object.keys(base.equipment||{}).length||
+    renderFields.some(k=>base[k]!=null)||base.paletteSourceMasks||base.paletteRefs?.length)return null;
+ const requested=Object.entries(equipment).sort(([a],[b])=>a.localeCompare(b));
+ if(!requested.length||requested.some(([k,v])=>!slotNames.has(k)||k==='weapon'||k==='head'||!Number.isSafeInteger(v)||v<0))return null;
+ const clock=({layers,...rest})=>rest,rig=r=>[r.pack.frame,r.pack.pivot,r.pack.density];
+ const validRefs=(r,layer)=>Number.isFinite(layer.depth)&&
+    (!layer.depthTrack||(layer.depthTrack.length===d.clip.frames&&layer.depthTrack.every(Number.isFinite)))&&
+    sourceOf([layer]).length===(layer.frames?d.clip.frames:1)&&
+    sourceOf([layer]).every(h=>/^[a-f0-9]{64}$/.test(h)&&r.sourceRefs?.includes(h));
+ if(new Set(d.layers.map(l=>l.id)).size!==d.layers.length||d.layers.some(l=>!validRefs(base,l)))return null;
+ const matched=[];
+ for(const r of donors){
+  const q=r?.pack?.directions?.[dir],groups=r?.equipmentLayerGroups;
+  if(!groups||!Array.isArray(q?.layers)||r.productionEnabled===false||r.body!==base.body||r.direction!==dir||r.action!==base.action||
+     !same(clock(q),clock(d))||!same(rig(r),rig(base))||r.headHairSeparated!==base.headHairSeparated||
+     renderFields.some(k=>r[k]!=null)||r.paletteSourceMasks||r.paletteRefs?.length||
+     !same(Object.keys(r.equipment||{}).sort(),Object.keys(groups).sort())||
+     Object.keys(groups).some(k=>!slotNames.has(k)||k==='head'||k==='weapon'||!Number.isSafeInteger(r.equipment[k])||r.equipment[k]<0||
+       !Array.isArray(groups[k])||!groups[k].length))continue;
+  const ids=Object.values(groups).flat();
+  if(new Set(ids).size!==ids.length||new Set(q.layers.map(l=>l.id)).size!==q.layers.length||
+     ids.some(id=>!q.layers.some(l=>l.id===id))||q.layers.some(l=>!validRefs(r,l))||
+     !same(q.layers.filter(l=>!ids.includes(l.id)),d.layers))continue;
+  const group=Object.fromEntries(Object.entries(groups).map(([slot,names])=>[slot,q.layers.filter(l=>names.includes(l.id))]));
+  matched.push({record:r,group,order:q.layers});
+ }
+ const selected=[],slotRoutes={};
+ for(const [slot,item] of requested){
+  const possible=matched.filter(x=>x.record.equipment[slot]===item);
+  if(!possible.length){statuses[slot]={item,reason:'missing-exact-owned-layer'};continue;}
+  const layers=possible[0].group[slot];
+  if(possible.some(x=>!same(x.group[slot],layers))){statuses[slot]={item,reason:'ambiguous-owned-layer'};continue;}
+  const source=possible.map(x=>x.record.id).sort()[0];
+  selected.push(...layers);slotRoutes[slot]=statuses[slot]={item,quality:'hd',source};
+ }
+ if(Object.keys(slotRoutes).length!==requested.length)return null;
+ const nodes=[...d.layers,...selected],byId=new Map(nodes.map(l=>[l.id,l]));
+ if(byId.size!==nodes.length)return null;
+ const before=new Map(nodes.map(l=>[l.id,new Set()])),baseIds=new Set(d.layers.map(l=>l.id));
+ for(let i=1;i<d.layers.length;i++)before.get(d.layers[i].id).add(d.layers[i-1].id);
+ for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+  const a=nodes[i],b=nodes[j];
+  if(baseIds.has(a.id)&&baseIds.has(b.id))continue;
+  let tied=false;for(let n=0;n<d.clip.frames;n++)
+   if((a.depthTrack?.[n]??a.depth)===(b.depthTrack?.[n]??b.depth)){tied=true;break;}
+  if(!tied)continue;
+  const evidence=new Set();
+  for(const q of matched){
+   const ai=q.order.findIndex(l=>l.id===a.id&&same(l,a)),bi=q.order.findIndex(l=>l.id===b.id&&same(l,b));
+   if(ai>=0&&bi>=0)evidence.add(ai<bi);
+  }
+  if(evidence.size!==1){statuses.order={reason:'unverified-layer-tie',layers:[a.id,b.id]};return null;}
+  if(evidence.has(true))before.get(b.id).add(a.id);else before.get(a.id).add(b.id);
+ }
+ const layers=[],done=new Set();
+ while(layers.length<nodes.length){
+  const next=nodes.find(l=>!done.has(l.id)&&[...before.get(l.id)].every(id=>done.has(id)));
+  if(!next){statuses.order={reason:'cyclic-layer-order'};return null;}
+  layers.push(next);done.add(next.id);
+ }
+ return {...base,id:base.id+':registered-slots:'+JSON.stringify(requested),sourceId:base.id,
+  pack:{...base.pack,directions:{...base.pack.directions,[dir]:{...d,layers}}},
+  equipment:Object.fromEntries(requested),sourceRefs:[...new Set(sourceOf(layers))],slotRoutes,omitted:[],layeredSlots:true};
 }
 // Exact versioned male Original South eye/hand sources; conservative opt-in only.
 const strictSouthFaces={"81ce2c74c6e8e05f2745223cdea70cfecee5b0ff49e4bcbf8d6ed25d62e72449":{"w":512,"skin":"0661c468d18e245b3400f8cc212926aa7c5cc916b722b1dd35334abd939ed096"},"6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a":{"w":640,"skin":"47c4585f7c79fdf6d67207416b4a08c9b7322da3d9abc94cddf965bd6ed174a0"}};
@@ -361,5 +546,53 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
  }
  return {resolve,resolveIndependentPants,bindAnatomy,requiredFiles,render,renderWithHead};
 }
-const api={create,composeSlots,withStrictSouthAppearance,southIrisSamples:()=>strictSouthIris.map(p=>p.slice()),sideIrisSamples:side=>strictSideIrisPoints[side]?.map(p=>p.slice())};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
+// Plan per-slot passes on a receiving rig. The provider must attest pixel
+// ownership, contact and material against the same pose before returning a pass.
+// A missing or conflicting claim cannot change another slot or masquerade as HD.
+function planIndependentPasses({pose,frames,layers,requested,resolve}){
+ if(typeof pose!=='string'||!pose||!Number.isInteger(frames)||frames<1||!Array.isArray(layers)||
+    new Set(layers.map(l=>l.id)).size!==layers.length)return null;
+ const baseIds=new Set(layers.map(l=>l.id)),worn=Object.entries(requested);
+ if(new Set(worn.map(([,v])=>v.key)).size!==worn.length)return null;
+ const rank=['head','torso','pants','boots','gloves','weapon'];
+ worn.sort(([a],[b])=>rank.indexOf(a)-rank.indexOf(b));
+ const valid=[],byClaim=new Map(),rejected=new Set();
+ for(const [slot,v] of worn){
+  if(!slotNames.has(slot)||!Number.isSafeInteger(v.item)||v.item<0)continue;
+  const pass=resolve(slot,v.item,pose);
+  if(!pass||pass.item!==v.item||pass.pose!==pose||typeof pass.source!=='string'||!pass.source||
+     !Array.isArray(pass.layers)||!pass.layers.length||!Array.isArray(pass.removed))continue;
+  const addIds=new Set(pass.layers.map(l=>l.id)),removed=new Set(pass.removed);
+  if(addIds.size!==pass.layers.length||removed.size!==pass.removed.length||
+     [...removed].some(id=>!baseIds.has(id))||pass.layers.some(l=>typeof l.id!=='string'||!l.id||
+      l.frames&&l.frames.length!==frames||l.depthTrack&&l.depthTrack.length!==frames||
+      baseIds.has(l.id)&&!removed.has(l.id)))continue;
+  valid.push({slot,...pass});
+  for(const id of new Set([...addIds,...removed])){
+   if(byClaim.has(id)){rejected.add(slot);rejected.add(byClaim.get(id));}else byClaim.set(id,slot);
+  }
+ }
+ const accepted=valid.filter(x=>!rejected.has(x.slot));
+ const lookup=new Map(accepted.map(p=>[p.slot,p]));
+ const replaced=new Map(),append=[];
+ for(const pass of accepted){
+  const remaining=new Map(pass.layers.map(l=>[l.id,l]));
+  for(const id of pass.removed){
+   const fixed=remaining.get(id);replaced.set(id,fixed||null);
+   if(fixed)remaining.delete(id);
+  }
+  if(pass.removed.length===1&&pass.layers.length===1&&remaining.size===1){
+   replaced.set(pass.removed[0],pass.layers[0]);remaining.clear();
+  }
+  append.push(...remaining.values());
+ }
+ const slotRoutes={},omitted=[];
+ for(const [slot,{key,item}] of worn){
+  const p=lookup.get(slot);
+  slotRoutes[key]=p?{item,quality:'hd',source:p.source}:{item,quality:'missing'};
+  if(!p)omitted.push(key);
+ }
+ return {layers:[...layers.flatMap(l=>replaced.has(l.id)?[replaced.get(l.id)].filter(Boolean):[l]),...append],slotRoutes,omitted,accepted};
+}
+const api={createOwnLayerIndex,drawOwnLayerAt,create,planIndependentPasses,composeSlots,planSignedPhaseSlots,composeSignedPhaseSlots,resolveAuditedWorldSlotPlan,composeRegisteredLayerGroups,withStrictSouthAppearance,southIrisSamples:()=>strictSouthIris.map(p=>p.slice()),sideIrisSamples:side=>strictSideIrisPoints[side]?.map(p=>p.slice())};root.MareReworkModularOutfitsHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
