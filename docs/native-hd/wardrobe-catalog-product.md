@@ -63,3 +63,108 @@ O controle por pixels montou os quadros diretamente dos registros do arquivo edi
 A sessão passou por criação, inventário, caminhada equipada, combate, retorno de poder e reconexão. Foram 74 observações e zero erros registrados no navegador. Os recortes mostram as trocas feitas pelo inventário. A animação acima contém o ciclo medido diretamente no compositor usado pelo mapa.
 
 ![Troca de luvas e equipamentos em uso na caçada](wardrobe-in-game.png)
+
+## Resultado do censo por equipamento
+
+O código de jogo auditado é `8d08469`. A assinatura do build é `1473b55ab8bce40b47f57128f4f545cc89b784ee9c2129e7932728ae9336f418`. São 42 armas e sete classes desarmadas, dois corpos, quatro direções e três ações normalizadas por família. Cada execução usa um personagem com pele Ébano, cabelo azul e olhos verdes. Os testes específicos do mapa também usam outras aparências.
+
+| Equipamento de mão | Corpo | Contextos | Peças selecionadas / consultas | Pares selecionados / consultas | Conjuntos mistos selecionados / consultas | Contextos com todas essas seleções |
+|---|---|---:|---:|---:|---:|---:|
+| Com arma | feminino | 504 | 23.793 / 25.200 | 467.865 / 504.000 | 45.675 / 50.400 | 456 |
+| Com arma | masculino | 504 | 8.076 / 25.200 | 155.806 / 504.000 | 14.400 / 50.400 | 144 |
+| Desarmado | feminino | 84 | 1.141 / 4.200 | 13.309 / 84.000 | 700 / 8.400 | 7 |
+| Desarmado | masculino | 84 | 2.758 / 4.200 | 42.357 / 84.000 | 2.996 / 8.400 | 0 |
+
+Cada célula abaixo conta seleções completas com o ID e a fonte de todos os slots solicitados, a pose e a direção corretas. Cada ID participa de 504 consultas individuais armadas por corpo, 168 desarmadas nos dois corpos, 40.320 consultas armadas de pares e 10.080 participações em conjuntos mistos armados. Um par aparece na linha das duas peças. Cada conjunto misto aparece nas cinco linhas correspondentes.
+
+| ID | Item | Slot | Masculino / 504 | Feminino / 504 | Desarmado / 168 | Pares / 40.320 | Mistos / 10.080 | Integração global |
+|---:|---|---|---:|---:|---:|---:|---:|---|
+| 6 | Casaco de Marinheiro | Peitoral | 160 | 468 | 77 | 24.855 | 6.015 | Parcial |
+| 7 | Casaco da Bruma | Peitoral | 160 | 456 | 77 | 24.480 | 6.000 | Parcial |
+| 130 | Casaco das Marés | Peitoral | 160 | 456 | 77 | 24.480 | 6.000 | Parcial |
+| 137 | Túnica do Peregrino | Peitoral | 160 | 456 | 63 | 24.480 | 6.000 | Parcial |
+| 144 | Manto das Correntes Celestes | Peitoral | 160 | 456 | 63 | 24.480 | 6.000 | Parcial |
+| 151 | Sobretudo do Almirante | Peitoral | 160 | 462 | 35 | 24.720 | 6.060 | Parcial |
+| 158 | Manto das Tempestades | Peitoral | 160 | 456 | 77 | 24.480 | 6.000 | Parcial |
+| 165 | Vestes do Santuário Oceânico | Peitoral | 160 | 456 | 77 | 24.480 | 6.000 | Parcial |
+| 172 | Casaco da Grand Line | Peitoral | 160 | 456 | 84 | 24.480 | 6.000 | Parcial |
+| 179 | Armadura do Imperador | Peitoral | 160 | 456 | 77 | 24.480 | 6.000 | Parcial |
+| 21 | Grevas de Navegante | Calça | 162 | 486 | 77 | 25.177 | 6.006 | Parcial |
+| 22 | Calças da Maré Alta | Calça | 166 | 486 | 56 | 25.293 | 6.012 | Parcial |
+| 133 | Calças do Convés | Calça | 168 | 486 | 105 | 25.333 | 6.006 | Parcial |
+| 140 | Calças do Deserto | Calça | 168 | 486 | 77 | 25.333 | 6.009 | Parcial |
+| 147 | Calças do Observador dos Ventos | Calça | 168 | 486 | 77 | 25.333 | 6.012 | Parcial |
+| 154 | Calças de Comando | Calça | 168 | 486 | 77 | 25.333 | 6.006 | Parcial |
+| 161 | Calças da Monção | Calça | 168 | 486 | 77 | 25.333 | 6.006 | Parcial |
+| 168 | Saia/Pernas do Rito Marinho | Calça | 168 | 486 | 119 | 25.333 | 6.006 | Parcial |
+| 175 | Calças do Conquistador | Calça | 168 | 486 | 77 | 25.333 | 6.006 | Parcial |
+| 182 | Calças do Trono dos Mares | Calça | 168 | 486 | 77 | 25.333 | 6.006 | Parcial |
+| 8 | Botas de Navegante | Bota | 168 | 486 | 77 | 25.323 | 6.006 | Parcial |
+| 9 | Botas do Recifal | Bota | 170 | 486 | 77 | 25.327 | 6.006 | Parcial |
+| 134 | Botas do Corsário | Bota | 168 | 486 | 77 | 25.323 | 6.012 | Parcial |
+| 141 | Botas do Oásis | Bota | 168 | 486 | 77 | 25.323 | 6.012 | Parcial |
+| 148 | Botas de Maré Serena | Bota | 168 | 486 | 77 | 25.323 | 6.006 | Parcial |
+| 155 | Botas Imperiais | Bota | 168 | 486 | 77 | 25.323 | 6.006 | Parcial |
+| 162 | Botas do Vendaval | Bota | 168 | 486 | 77 | 25.323 | 6.006 | Parcial |
+| 169 | Sandálias da Ressurgência | Bota | 168 | 486 | 70 | 25.323 | 6.006 | Parcial |
+| 176 | Botas da Supremacia | Bota | 168 | 486 | 70 | 25.323 | 6.006 | Parcial |
+| 183 | Botas do Horizonte Eterno | Bota | 168 | 486 | 70 | 25.323 | 6.009 | Parcial |
+| 25 | Luvas de Cordame | Luva | 154 | 486 | 63 | 24.847 | 6.006 | Parcial |
+| 26 | Luvas do Vigia | Luva | 152 | 486 | 63 | 24.843 | 6.009 | Parcial |
+| 131 | Luvas do Navegante | Luva | 152 | 486 | 70 | 24.843 | 6.006 | Parcial |
+| 138 | Luvas de Areia | Luva | 152 | 486 | 63 | 24.843 | 6.006 | Parcial |
+| 145 | Luvas do Cartógrafo Elemental | Luva | 152 | 486 | 63 | 24.843 | 6.006 | Parcial |
+| 152 | Manoplas da Autoridade | Luva | 152 | 486 | 63 | 24.843 | 6.006 | Parcial |
+| 159 | Braçadeiras do Trovão | Luva | 152 | 486 | 63 | 24.843 | 6.006 | Parcial |
+| 166 | Manoplas da Cura Profunda | Luva | 152 | 486 | 63 | 24.843 | 6.012 | Parcial |
+| 173 | Manoplas Reais | Luva | 152 | 486 | 63 | 24.843 | 6.012 | Parcial |
+| 180 | Manoplas da Vontade Absoluta | Luva | 152 | 486 | 98 | 24.843 | 6.006 | Parcial |
+| 18 | Bandana das Correntes | Cabeça | 160 | 462 | 133 | 24.666 | 6.006 | Parcial |
+| 19 | Capacete do Corsário | Cabeça | 160 | 462 | 91 | 24.666 | 6.006 | Parcial |
+| 129 | Chapéu do Corsário | Cabeça | 160 | 462 | 91 | 24.666 | 6.006 | Parcial |
+| 136 | Capuz das Dunas | Cabeça | 160 | 462 | 91 | 24.666 | 6.006 | Parcial |
+| 143 | Chapéu do Navegador Arcano | Cabeça | 160 | 462 | 91 | 24.666 | 6.006 | Parcial |
+| 150 | Chapéu Carmesim | Cabeça | 160 | 462 | 91 | 24.666 | 6.006 | Parcial |
+| 157 | Diadema da Tormenta | Cabeça | 160 | 468 | 91 | 24.852 | 6.012 | Parcial |
+| 164 | Tiara da Maré Sagrada | Cabeça | 160 | 465 | 91 | 24.759 | 6.009 | Parcial |
+| 171 | Tricórnio do Soberano | Cabeça | 160 | 462 | 91 | 24.666 | 6.006 | Parcial |
+| 178 | Coroa do Horizonte Final | Cabeça | 160 | 468 | 91 | 24.852 | 6.012 | Parcial |
+
+O resultado global requer seleção, carregamento e desenho em todos os contextos. A tabela registra o estágio de seleção. Permanecem 569 contextos com pelo menos uma lacuna entre os 1.176 exercitados. O arquivo opcional `detalhes.tsv` gerado pelo resumo contém as 58.800 consultas individuais com ID, slot, corpo, classe, arma, ação, direção, pose resolvida, fonte e motivo informado pelo seletor. Os JSONs de cada contexto preservam os pares que falharam e as contagens dos conjuntos.
+
+Os testes exercitaram os cinco slots vazios em cada contexto. Com uma arma e as roupas vazias, houve uma seleção de fonte verificável em 490 de 504 consultas femininas e 190 de 504 masculinas. Com os seis slots vazios, houve 84 seleções em cada corpo.
+
+## Produto completo nos contextos executados
+
+| Contexto do build 8d08469 | Configurações completas enumeradas e consultadas | Seleção completa | Seleção pendente |
+|---|---:|---:|---:|
+| Repouso feminino Sul, todas as 42 armas | 4.200.000 | 4.200.000 | 0 |
+| Disparo feminino Norte, seis armas de fogo | 600.000 | 60.000 | 540.000 |
+| Caminhada masculina Leste, Adagas 12 | 100.000 | 100.000 | 0 |
+| Caminhada masculina Oeste, Adagas 12 | 100.000 | 100.000 | 0 |
+
+Essas 5.000.000 consultas contam a configuração novamente quando muda o contexto. No disparo Norte, as 10.000 combinações por arma com o Sobretudo 151 passaram. As restantes incluem um dos nove peitorais cuja montagem ainda está pendente. O carregamento e o desenho foram medidos nos ciclos e sessões descritos acima. A matriz completa com 100.000 conjuntos em cada um dos 1.008 contextos armados teria 100.800.000 consultas.
+
+Além dos lotes armados, o repouso Sul feminino com os cinco slots de roupa e a mão vazia foi enumerado nas sete classes. Seleções completas: 0 / 700.000.
+
+Para repetir os lotes de 100.000 conjuntos por contexto no PowerShell, a partir do mesmo export:
+
+```powershell
+$env:PRODUCT_MODE = 'direct'
+$env:PRODUCT_FILTER = '{"body":["feminino"],"direction":["south"],"action":["idle"]}'
+node --expose-gc tools/audit-hd-wardrobe-product.cjs resultados
+$env:PRODUCT_FILTER = '{"body":["feminino"],"direction":["north"],"action":["attack-firearm"]}'
+node --expose-gc tools/audit-hd-wardrobe-product.cjs resultados
+$env:PRODUCT_FILTER = '{"weapon":[12],"body":["masculino"],"direction":["east","west"],"action":["walk"]}'
+node --expose-gc tools/audit-hd-wardrobe-product.cjs resultados
+Remove-Item Env:PRODUCT_MODE
+Remove-Item Env:PRODUCT_FILTER
+```
+
+## Verificações da publicação
+
+O build padrão e o build estático de demonstração terminaram com sucesso. Os 26 módulos de personagem, equipamento, aparência e catálogo usados na comparação são idênticos aos do export examinado. As 17 regressões do compositor de mapa e de carregamento passaram. Outros 12 testes de planejamento das peças, trocas, cache e espera por região também passaram. O teste que atrasa deliberadamente uma resposta confirmou a liberação da composição obsoleta.
+
+O ensaio histórico de carregamento no navegador (`tests/performance_native_loading_browser.cjs`) voltou a falhar nos 12 desenhos imediatos com cabelo bob violeta. A mesma falha foi reproduzida usando a referência f515727. A sessão de caçada desta entrega aguardou a peça pedida em cada ação e registrou 74 observações com zero erros.
+
+Nas execuções de CI comparadas de f515727, 2fb39af e 8d08469, as falhas de save com slots nulos, regressão de armas e prévia de personagem aparecem nos mesmos arquivos e linhas. A comparação dos logs identificou tests/rework-literal-null-equipment.cjs:33, paper-doll-96-weapons.test.cjs:30 e player-rework-default-hd.test.cjs:37. A publicação do preview das revisões 2fb39af e 8d08469 passou. Os resultados de cada nova revisão aparecem nas [verificações do PR](https://github.com/Eximaq/mare-partida/pull/374/checks).
