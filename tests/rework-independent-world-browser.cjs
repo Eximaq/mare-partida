@@ -141,6 +141,7 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
+  if(process.argv.includes('--mounted-weapons')){await observeMountedWeapons();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--registered-coats')){await observeRegisteredCoats();assert.deepEqual(errors,[]);return;}
   await page.evaluate(()=>__hdSlotQA.seed());
   await draw('porto-sem-equipamento','idle','south',{});
@@ -351,6 +352,7 @@ window.__hdSlotQA={
   }
   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,daggerCoatLook);
   await observeRegisteredCoats();
+  await observeMountedWeapons();
   assert.deepEqual(errors,[]);
   console.log('Character creation, equipped movement, swaps, reload, Mera weapon visibility and armed attacks passed.');
  }finally{
@@ -358,6 +360,27 @@ window.__hdSlotQA={
   await fs.writeFile(path.join(out,'navegador.json'),JSON.stringify({url,trace,errors,state},null,2));
   await page.screenshot({path:path.join(out,'ultimo-estado.png')}).catch(()=>{});
   await context.close();await browser.close();
+ }
+ async function observeMountedWeapons(){
+  for(const [weapon,role,directions] of [[109,'brawler',['east','west']],[15,'cyborg',['east','west']],[117,'cyborg',['north']]]){
+   const items={weapon,coat:6,legs:22,boots:148,gloves:159,head:18};
+   await page.evaluate(({role,items})=>__hdSlotQA.seedWardrobe(role,[...Object.values(items),25],
+    {gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'}),{role,items});
+   for(const id of Object.values(items))await put(id);
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   for(const dir of directions){
+    const name='arma-'+weapon+'-'+dir;
+    const before=await observeAttack('attack-unarmed',name+'-completo',dir,items);
+    await put(25);
+    const swapped=await observeAttack('attack-unarmed',name+'-troca-luva',dir,{...items,gloves:25});
+    for(const slot of ['weapon','coat','legs','boots','head'])
+     assert.deepEqual(swapped.visual.coverage[0].slotRoutes[slot],before.visual.coverage[0].slotRoutes[slot]);
+    await put(159);
+    const after=await observeAttack('attack-unarmed',name+'-retorno',dir,items);
+    assert.deepEqual(after.visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
+   }
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
  }
  async function observeRegisteredCoats(){
   for(const weapon of [111,112,118]){

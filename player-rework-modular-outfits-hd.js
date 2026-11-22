@@ -309,7 +309,7 @@ const strictSouthLegBounds={"e6824bfdd43d71b8690f90b0dc7cc19caf6d38591b8c4611cc1
 function applyStrictSouthLegs(r,d,frame,appearance,map,makeCanvas,appearanceAPI){
  const ramp=appearanceAPI.skins[appearance.skin||appearance.skinColor]?.ramp;
  if(!ramp)return;
- const l=d.layers.find(x=>x.id==='lower-redrawn'&&x.slot==='pants');
+ const l=d.layers.find(x=>(x.id==='lower-redrawn'||x.id==='base:lower-redrawn')&&x.slot==='pants');
  if(!l||l.binding?.kind!=='fixed'||l.depth!==4)return;
  const key=l.frames?.[frame]||l.source,b=strictSouthLegBounds[key];
  if(!b||r.paletteSourceMasks?.[key]||r.sourceRasterPadding?.[key]||

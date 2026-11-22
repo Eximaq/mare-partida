@@ -2,6 +2,29 @@
 (function(root){'use strict';
 const skinMaterials=root.MareNativeSkinHD||(typeof require==='function'?require('./player-rework-skin-hd.js'):null);
 const hairAnatomy=root.MareHairAnatomyHD||(typeof require==='function'?require('./player-rework-hair-anatomy-hd.js'):null);
+function applyPunchProfileIris(r,d,images,map,prefix,appearance,makeCanvas){
+  // The weapon and the empty hand use this same isolated 640px profile.
+  // Skin recoloring runs before the signed iris ranks, including its dark edge.
+  const profileFace={east:'9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2',
+   west:'0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464'}[r.direction];
+  const face=d.layers.find(l=>l.slot==='face'),ramp=root.MareCharacterAppearance?.eyes?.[appearance.eyeColor]?.ramp;
+  if(r.body==='male'&&r.action==='attack-unarmed'&&profileFace&&ramp&&appearance.face==='original'&&
+     (face?.source===profileFace||face?.source==='assets/'+profileFace+'.png'||face?.source==='modular-assets/'+profileFace+'.png')&&!face.frames&&face.binding?.a==='NECK'&&face.binding.b==='NOSE'){
+   const src=face.source,raw=images.get(prefix+src+'.png')||images.get(src);
+   const samples=root.MareReworkModularOutfitsHD?.sideIrisSamples(r.direction);
+   if(raw?.width!==640||raw.height!==640||samples?.length!==18)throw Error('Missing registered punch iris material');
+   const tile=makeCanvas(640,640),ctx=tile.getContext('2d');
+   ctx.drawImage(raw,0,0);const old=ctx.getImageData(0,0,640,640).data;
+   ctx.clearRect(0,0,640,640);ctx.drawImage(map.get(src),0,0);const frame=ctx.getImageData(0,0,640,640);
+   for(const [x,y,red,green,blue,alpha,rank] of samples){
+    const pos=((y+64)*640+x+64)*4,shade=parseInt(ramp[rank-1].slice(1),16);
+    if(old[pos]!==red||old[pos+1]!==green||old[pos+2]!==blue||old[pos+3]!==alpha||frame.data[pos+3]!==alpha)
+     throw Error('Punch face differs from the registered iris');
+    frame.data[pos]=shade>>>16;frame.data[pos+1]=(shade>>>8)&255;frame.data[pos+2]=shade&255;
+   }
+   ctx.putImageData(frame,0,0);map.set(src,tile);
+  }
+}
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-base-hd/assets/'}={}){
  if(index?.schema!=='rework-full-hd-v1'||!vendor?.compositor)throw Error('Missing HD base dependencies');
  const body=b=>({masculino:'male',feminino:'female'})[b]||b;
@@ -131,6 +154,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
     px.data.set(appearanceAPI.recolor(px.data,m,appearanceAPI.skins[skin].ramp));
     c.putImageData(px,0,0);map.set(carryTop,tile);
   }
+  applyPunchProfileIris(r,d,images,map,prefix,appearance,makeCanvas);
   if(afterMaterialSource)for(const [source,image] of map)map.set(source,afterMaterialSource(source,image,originalMap.get(source)));
   return map;
  }
