@@ -33,7 +33,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
   // Palette changes preserve native dimensions/alpha; source PNGs stay immutable.
   const skin=appearance.skin||appearance.skinColor,hair=appearance.hairColor;
   if((skin&&skin!=='original'||hair&&hair!=='original')&&appearanceAPI){
-   for(const source of sources(r,frame)){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),hairLayer=uses.some(l=>l.slot==='hair'),skinKind=femaleAnatomyPalette&&uses.some(l=>l.slot==='headBase')?null:skinMaterials?.ownership(uses);
+   for(const source of sources(r,frame)){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),hairLayer=uses.some(l=>l.slot==='hair'),skinKind=uses.length&&uses.every(l=>r.skinRepairLayers?.includes(l.id))?'mixed':femaleAnatomyPalette&&uses.some(l=>l.slot==='headBase')?null:skinMaterials?.ownership(uses);
     const ramp=hairLayer?appearanceAPI.hairs[hair]?.ramp:skinKind?appearanceAPI.skins[skin]?.ramp:null;if(!ramp&&!(hairLayer&&hairAnatomy?.records[source]))continue;
     const image=map.get(source),w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,tile=makeCanvas(w,h),cx=tile.getContext('2d');cx.drawImage(image,0,0);const data=cx.getImageData(0,0,w,h);const anatomical=hairLayer?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;
     const ranks=hairLayer?appearanceAPI.materialMask(data.data,'hair'):skinMaterials.mask(data.data,w,skinKind);
@@ -139,7 +139,16 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
   const p=r.pack,d=p.directions[r.direction];
   // compositor consumes original density4 PNGs, with no intermediate 1x canvas.
   const pack=hiddenSlots.length?{...p,directions:{[r.direction]:{...d,layers:d.layers.filter(l=>!hiddenSlots.includes(l.slot))}}}:p;
-  if(r.mirrorX){const native=makeCanvas(p.frame.width*p.density,p.frame.height*p.density);vendor.compositor.render(native.getContext("2d"),pack,map,{direction:r.direction,frame,density:p.density});ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(native.width,0);ctx.scale(-1,1);ctx.drawImage(native,0,0);ctx.restore();}else vendor.compositor.render(ctx,pack,map,{direction:r.direction,frame,density:p.density});
+  if(r.mirrorX){const native=makeCanvas(p.frame.width*p.density,p.frame.height*p.density);const nativeCtx=native.getContext('2d'),options={direction:r.direction,frame,density:p.density};
+   if(r.preMirroredLayers?.length){
+    const local=pack.directions[r.direction],parts=new Map(local.layers.map(l=>[l.id,l]));
+    for(const op of vendor.compositor.plan(pack,r.direction,frame)){
+     const layer=parts.get(op.id);nativeCtx.save();
+     if(r.preMirroredLayers.includes(op.id)){nativeCtx.translate(native.width,0);nativeCtx.scale(-1,1);}
+     try{vendor.compositor.render(nativeCtx,{...pack,directions:{[r.direction]:{...local,layers:[layer]}}},map,{...options,clear:false});}
+     finally{nativeCtx.restore();}
+    }
+   }else vendor.compositor.render(nativeCtx,pack,map,options);ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(native.width,0);ctx.scale(-1,1);ctx.drawImage(native,0,0);ctx.restore();}else vendor.compositor.render(ctx,pack,map,{direction:r.direction,frame,density:p.density});
   return {width:p.frame.width*p.density,height:p.frame.height*p.density,density:p.density,pivot:{x:p.pivot.x*p.density,y:p.pivot.y*p.density},logicalFrame:p.frame,source:r.id,frames:d.clip.frames,rest:d.rest,pose:d.poses[frame],mirrorX:!!r.mirrorX,status:r.status};
  }
  return {resolve,requiredFiles,materialSources,render};

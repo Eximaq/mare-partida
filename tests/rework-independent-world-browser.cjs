@@ -302,6 +302,17 @@ window.__hdSlotQA={
    for(const id of Object.values(kit))await put(id);
    await observeAttack('attack-focus','cetro'+kit.weapon+'-'+dir,dir,kit);
   }
+  const bareKit={coat:144,legs:168,boots:148,gloves:159,head:157};
+  await page.evaluate(kit=>__hdSlotQA.seedWardrobe('brawler',Object.values(kit),{
+   gender:'masculino',hairColor:'blue',eyeColor:'green',skinColor:'ebony'
+  }),bareKit);
+  for(const id of Object.values(bareKit))await put(id);
+  const unarmedLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  for(const [key,dir] of [['ArrowDown','south'],['ArrowLeft','west'],['ArrowUp','north'],['ArrowRight','east']]){
+   await walk(key,dir,bareKit,'masculino-desarmado-caminha-'+dir);
+   await observeAttack('attack-unarmed','soco-desarmado-'+dir,dir,bareKit);
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,unarmedLook);
+  }
   assert.deepEqual(errors,[]);
   console.log('Character creation, equipped movement, swaps, reload, Mera weapon visibility and armed attacks passed.');
  }finally{

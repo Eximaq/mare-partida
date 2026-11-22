@@ -2,7 +2,8 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const root=path.join(__dirname,'..');
-const mod=name=>require(path.join(root,name+'.js'));
+const published=process.env.HD_PUBLISHED_ROOT;
+const mod=name=>require(path.join(published||root,name+'.js'));
 const slots=['coat','legs','boots','gloves','head'];
 const expected=[[6,7,130,137,144,151,158,165,172,179],[21,22,133,140,147,154,161,168,175,182],
  [8,9,134,141,148,155,162,169,176,183],[25,26,131,138,145,152,159,166,173,180],[18,19,129,136,143,150,157,164,171,178]];
@@ -15,9 +16,8 @@ const weapons=catalog.flatMap((item,id)=>item.slot==='weapon'?[{id,role:item.typ
 assert.equal(weapons.length,42);
 const directions=['north','south','east','west'],bodies=['masculino','feminino'];
 const allRoles=[...new Set(weapons.map(w=>w.role))];
-const weaponCatalog=require('../tools/paper-doll-96-v3/weapons.json');
+const weaponCatalog=require(path.join(published||root,'tools/paper-doll-96-v3/weapons.json'));
 const world=mod('paper-doll-96-lobby'),appearance=mod('character-appearance');
-const published=process.env.HD_PUBLISHED_ROOT;
 function readIndex(file){
  const p=path.join(published,file);
  return JSON.parse(fs.existsSync(p)?fs.readFileSync(p):require('node:zlib').gunzipSync(fs.readFileSync(p+'.gz')));

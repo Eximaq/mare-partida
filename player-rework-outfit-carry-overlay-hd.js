@@ -47,7 +47,7 @@ function samePoseExceptNearArm(d,o){
   Object.entries(pose).every(([key,point])=>nearArm.has(key)||same(point,o.poses[i][key])));
 }
 function adaptIsolatedCoat(carry,outfits,{coat}={}){
- if(!Number.isInteger(coat)||!Number.isInteger(carry?.item)||carry.base?.body!=='male')return null;
+ if(!Number.isInteger(coat)||carry?.base?.body!=='male')return null;
  const {direction,action,base}=carry;
  const isolated=outfits.records.find(r=>r.id==='male-torso'+coat+'-'+direction+'-frozen-'+action+'-native');
  // The 151 donor declares its garment layers separately from the 133 pants.
@@ -128,10 +128,10 @@ function adaptRecoveredPants(carry,outfits,item){
     !same(pants.map(l=>l.id),['pants168-visible-cloth-only','pants168-original-panel-independent'])||
     !same(pants.map(l=>l.depth),[4.4,4.45])||pants.some(l=>l.binding.kind!=='fixed')||
     pants.some(l=>l.depthTrack||d.layers.some(k=>k.id===l.id||k.depth===l.depth||k.depthTrack))||
-    !carry.plan?.parts?.length||carry.plan.parts.some(part=>{
+    carry.plan&&(!carry.plan.parts?.length||carry.plan.parts.some(part=>{
       const bind=d.layers.find(l=>l.binding?.a===part.binding.a&&l.binding?.b===part.binding.b);
       return !bind||bind.depthTrack||pants.some(l=>l.depth>=bind.depth+(part.depthOffset??.1));
-    }))return null;
+    })))return null;
  }
  if(!pants.length||pants.some(l=>l.frames&&l.frames.length!==d.clip.frames||
     l.binding.kind!=='fixed'&&(l.binding.a!=='NECK'||l.binding.b!=='HIP')))return null;
