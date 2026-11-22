@@ -1,5 +1,7 @@
 # Composição de vestuário no mapa
 
+[Censo de 74e609c, com os resultados dos 50 IDs e 3.100.000 conjuntos enumerados](censo-74e609c/README.md).
+
 Medição do código [6a8ffea](https://github.com/Eximaq/mare-partida/commit/6a8ffeabb0db645ecaa02cb63ccfd7394b933c7e). Referência anterior [1ff7442](https://github.com/Eximaq/mare-partida/commit/1ff74420de4d9ea41c84a909a39b94f54773e92d). Assinaturas do auditor no build anterior e no medido, respectivamente, `1473b55ab8bce40b47f57128f4f545cc89b784ee9c2129e7932728ae9336f418` e `2768429bd90a5adc36e808e453c790f5b21ec25cf729da90d22875a35563322a`.
 
 | Medição do seletor | Anterior | Medido |
