@@ -51,6 +51,78 @@
   const worldVisualSlots=new Set(['weapon','torso','pants','boots','gloves','head']);
   const worldInertSlots=new Set(['necklace','ring','belt','charm','cloak','akuma_no_mi']);
   const worldSlot=key=>slots[key]||key;
+  // A profile may show a vetted current-HD subset, never a replacement look.
+  // Each fitted or omitted layer must refer to the actor's own equipped item.
+  function profileOwnHDPartial(source,player,direction){
+    if(source.slotFallback!=='hd-only-partial'||source.layeredSlots!==true||source.visualDegraded||
+       source.direction!==direction||!source.pack?.directions?.[direction]?.clip||
+       !Array.isArray(source.omitted))return false;
+    const omitted=new Set(source.omitted),routes=source.slotRoutes;
+    if(!routes||!omitted.size||omitted.size!==source.omitted.length)return false;
+    const slotsSeen=new Set();let retained=0;
+    for(const [key,value] of Object.entries(player.equipment||{})){
+      if(value==null||['none','original'].includes(value)||worldInertSlots.has(key)||
+         key==='head'&&Headgear?.hidden(player))continue;
+      const slot=worldSlot(key),item=value.def??value,r=routes[key];
+      if(!worldVisualSlots.has(slot)||slotsSeen.has(slot)||!Number.isSafeInteger(item)||
+         !Object.hasOwn(routes,key)||r?.item!==item)return false;
+      slotsSeen.add(slot);
+      if(omitted.has(key)){
+        if(slot==='weapon'||r.quality!=='missing'||r.source||
+           !['hd-combination-unresolved','no-hd-mount'].includes(r.reason))return false;
+      }else{
+        if(r.quality!=='hd'||typeof r.source!=='string'||!r.source)return false;
+        retained++;
+      }
+    }
+    return retained>0&&Object.keys(routes).length===slotsSeen.size&&
+      [...omitted].every(key=>Object.hasOwn(routes,key));
+  }
+  // Mount only the glove's own two South idle layers. The already-verified
+  // carry supplies its ordinary body, sword, and any independently fitted
+  // coat or trousers. No outfit containing a glove is substituted.
+  function attachSouthIdleOwnCarryGlove(nativeHD,player,o){
+    const e=player.equipment||{},a=player.appearance96||{},id=k=>e[k]?.def??e[k];
+    const active=Object.keys(e).filter(k=>e[k]!=null&&!['none','original'].includes(e[k])&&!worldInertSlots.has(k));
+    if(o.consumer!=='world'||o.action!=='idle'||o.direction!=='south'||o.weaponless||
+       player.classId!=='sword'||player.zoanTransformed||player.__reworkSubset||
+       a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hairStyle!=='original'||
+       a.eyeStyle!=='original'||a.eyeColor!=='blue'||!['black','blue'].includes(a.hairColor)||
+       id('weapon')!==0||id('gloves')!==25||
+       active.some(k=>!['weapon','coat','legs','pants','gloves'].includes(k)||
+         ['variant','variantId','appearanceVariant'].some(v=>e[k]?.[v]!=null&&e[k][v]!=='original')))return null;
+    const lower=active.filter(k=>k==='legs'||k==='pants');
+    if(lower.length>1||lower.some(k=>id(k)!==21)||active.includes('coat')&&id('coat')!==6)return null;
+    const fittedEquipment={...e};delete fittedEquipment.gloves;
+    const seed=nativeHD.selectVisual({...player,equipment:fittedEquipment},o,false);
+    const donor=nativeHD.selectVisual({...player,equipment:{gloves:e.gloves}},o,false);
+    const g=donor?.authoredSouthIdleGlove,p=seed?.base?.pack,d=p?.directions?.south,
+     dp=g?.base?.pack,gd=dp?.directions?.south,eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+    if(!d||!gd||seed.item!==0||seed.direction!=='south'||seed.action!=='idle'||
+       !['carry','outfit-carry'].includes(seed.hdKind)||seed.base.id!=='male-idle-original-south-from-walk0'||
+       seed.omitted?.length||seed.unsupported?.length||seed.appearanceAdapted||seed.visualDegraded||
+       seed.base.mirrorX||seed.preMirroredLayers?.length||seed.headRecord||seed.gearOnlyRecord||
+       seed.plan?.paddingPhysical!==128||seed.plan.parts?.length!==1||
+       seed.plan.parts[0].source?.sha256!=='823474b4f6a0782ef39eca0dc176630df7ab6886e7b1cb70f800c0baa04b51bd'||
+       !eq(d.clip,{frames:1,fps:1,loop:false})||
+       !eq([p.frame,p.pivot,p.density,d.clip,d.rest,d.poses],[dp.frame,dp.pivot,dp.density,gd.clip,gd.rest,gd.poses])||
+       !['armRight','armLeft','handRight','handLeft'].every(k=>d.layers.some(l=>l.id===k&&eq(l,gd.layers.find(x=>x.id===k))))||
+       !eq(g.hashes,['99fb777d55448f73d2d9aa010d20d036e3ddde53d71148302b8f6af71283be33','e1d46ced72d00defb195e9a654b2f86a7d4a48e905d046dd8cf56ee57f03d073'])||
+       g.gloves?.length!==2||g.gloves.some(l=>l.slot!=='foreground'||l.depth!==99.5||l.depthTrack||
+         d.layers.some(old=>old.id===l.id||old.depth===l.depth||old.depthTrack)))return null;
+    const routes={weapon:{item:0,quality:'hd',source:seed.id},gloves:donor.slotRoutes.gloves};
+    if(active.includes('coat')){
+      if(!d.layers.some(l=>l.id==='coat6-collar-core'))return null;
+      routes.coat={item:6,quality:'hd',source:'male-torso6-south-frozen-idle-native'};
+    }
+    if(lower.length){
+      if(!d.layers.some(l=>l.id==='pants21-independent'&&l.source==='387a0072333f7f890b81162257c1927b2aae04b7d56f510161d03528515c2a65'))return null;
+      routes[lower[0]]={item:21,quality:'hd',source:'male-pants21-idle-south'};
+    }
+    const base={...seed,pack:p};
+    return {...base,id:base.id+':own-south-idle-g25',layeredSlots:true,slotRoutes:routes,omitted:[],
+      independentCarryGlove:{base,gloves:g.gloves,hashes:g.hashes}};
+  }
   function selectWorldHDOnly(nativeHD,weaponCatalog,player,options){
     if(!nativeHD?.selectVisual||!player||player.zoanTransformed)return null;
     const selected=selectWorldHD(nativeHD,weaponCatalog,player,options);
@@ -64,7 +136,11 @@
       seen.add(slot);visible.push({key,slot,item:value.def??value});
     }
     visible.sort((a,b)=>a.slot.localeCompare(b.slot));
-    const strict={selectVisual:(p,o)=>nativeHD.selectVisual(p,o,false)};
+    const strict={selectVisual:(p,o)=>{
+      const exact=nativeHD.selectVisual(p,o,false);
+      return exact&&!exact.omitted?.length&&!exact.unsupported?.length?exact:
+        attachSouthIdleOwnCarryGlove(nativeHD,p,o)||exact;
+    }};
     function hdSlot(record,v){
       if(!record||!Number.isSafeInteger(v.item))return null;
       const all=Object.entries(record.slotRoutes||{}).filter(([key])=>worldSlot(key)===v.slot);
@@ -487,13 +563,16 @@
       const held=player.equipment?.weapon,weapon=held?.def??held;
       if(weapon!=null&&!requested.weaponless&&!weaponCatalog.items.some(w=>
          w.itemId===weapon&&w.category===weaponCatalog.classes[player.classId]))return null;
-      const key=JSON.stringify([visualIdentity(player),action,direction,requested.weaponless]);
+      const profilePartial=options.consumer==='profile-portrait'&&action==='idle'&&direction==='south'&&!requested.weaponless;
+      // A profile-only plan must not make another preview eligible on cache hit.
+      const key=JSON.stringify([visualIdentity(player),action,direction,requested.weaponless,profilePartial]);
       const old=surfacePoses.get(key);
       if(old){surfacePoses.delete(key);surfacePoses.set(key,old);return old;}
       if(surfaceLoading>=2)return null;
       const source=selectWorldHDOnly(nativeHD,weaponCatalog,player,requested);
       if(!source||source.appearanceAdapted||source.unsupported?.length||
-         source.omitted?.some(slot=>source.slotRoutes?.[slot]?.reason==='hd-combination-unresolved'))return null;
+         (source.omitted?.some(slot=>source.slotRoutes?.[slot]?.reason==='hd-combination-unresolved')&&
+          (!profilePartial||!profileOwnHDPartial(source,player,direction))))return null;
       const snapshot={...player,appearance96:{...player.appearance96},preferences:{...player.preferences},
        equipment:Object.fromEntries(Object.entries(player.equipment||{}).map(([slot,v])=>[slot,v&&typeof v==='object'?{...v}:v]))};
       const resolved=source.visualDegraded?{...requested,action:'idle'}:requested,

@@ -38,6 +38,25 @@ for(const s of scripts)run(pathFor(s));
  await wait(()=>!!lobby.drawFittedAvatar(ctx,player,{consumer:'inventory'}));
  await wait(()=>lobby.preview(ctx,player,{...o,consumer:'profile-portrait',appearance:player.appearance96}));
  await wait(()=>lobby.preview(ctx,player,{...o,consumer:'character-creation',appearance:player.appearance96}));
+ // Meu Perfil: the Captain browser fixture equips multiple slots at once.
+ // The signed HD subset must be visible without touching the saved kit or
+ // letting the profile-only route leak to any other preview consumer.
+ const captain=MareCharacterAppearance.commit({classId:'sword',factionId:'pirate',equipment:{
+   weapon:{def:0},head:{def:18},coat:{def:6},legs:{def:21},boots:{def:8},gloves:{def:25}
+ }},{gender:'masculino',hairStyle:'original',hairColor:'black',skinColor:'light',eyeStyle:'original',eyeColor:'blue'},()=>true);
+ const captainSave=JSON.stringify(captain),profile={...o,consumer:'profile-portrait',appearance:captain.appearance96};
+ assert.equal(await lobby.prepareVisual(captain,profile),true,'captain preview must accept the current HD partial route');
+ await wait(()=>lobby.preview(ctx,captain,profile));
+ // A different glove still lacks this combined pose. Only the profile is
+ // permitted to reuse its authenticated partial plan across draws.
+ const pending={...captain,equipment:{...captain.equipment,gloves:{def:26}}};
+ const editor={...profile,consumer:'appearance-preview',appearance:pending.appearance96};
+ assert.deepEqual(frame(()=>lobby.preview(ctx,pending,editor)),{ok:false,pixels:false});
+ await wait(()=>lobby.preview(ctx,pending,{...profile,appearance:pending.appearance96}));
+ assert.deepEqual(frame(()=>lobby.preview(ctx,pending,editor)),{ok:false,pixels:false},'editor must not reuse a profile-authorized partial plan');
+ const captainUnknown={...captain,equipment:{...captain.equipment,weapon:{def:999999}}};
+ assert.deepEqual(frame(()=>lobby.preview(ctx,captainUnknown,profile)),{ok:false,pixels:false});
+ assert.equal(JSON.stringify(captain),captainSave);
  await wait(()=>peers.draw(ctx,player,{action:'idle',direction:'south',consumer:'shared-lobby',scene:'lobby',x:200,y:220}));
  assert.deepEqual(frame(()=>peers.draw(ctx,unknown,{action:'idle',direction:'south',consumer:'shared-lobby',scene:'lobby',x:200,y:220})),{ok:false,pixels:false});
  assert.deepEqual(frame(()=>lobby.preview(ctx,unknown,{consumer:'profile-portrait',appearance:unknown.appearance96})),{ok:false,pixels:false});
