@@ -11,6 +11,10 @@ async function main() {
   const index = (await readdir(root)).find(name => /^game-content-.*\.json$/.test(name));
   const manifest = JSON.parse(await readFile(path.join(root, index), 'utf8'));
   const units = new Set(manifest.units.map(unit => unit[0]));
+  const patches = Object.values(manifest.patches || {});
+  assert(patches.length, 'full build should reuse shared HD frames');
+  for (const [rel] of patches) units.add(rel);
+  let received = 0, corruptPatch = null;
   let interrupt = true, transfers = 0, networkDisabled = false;
   const server = createServer(async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
@@ -25,8 +29,13 @@ async function main() {
     try {
       const info = await stat(file);
       const types = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp'};
+      if (units.has(rel) && url.searchParams.has('install')) received += info.size;
       res.writeHead(200, {'Content-Type':types[path.extname(rel)] || 'application/octet-stream','Content-Length':info.size,'Cache-Control':'no-store'});
-      createReadStream(file).pipe(res);
+      if (rel === corruptPatch) {
+        const bytes = await readFile(file);
+        bytes[0] ^= 255;
+        res.end(bytes);
+      } else createReadStream(file).pipe(res);
     } catch { res.writeHead(404).end(); }
   });
   await new Promise(resolve => server.listen(0,'127.0.0.1',resolve));
@@ -37,6 +46,7 @@ async function main() {
     const url = 'http://127.0.0.1:' + server.address().port + '/demo/';
     const session = await page.context().newCDPSession(page);
     await session.send('Storage.overrideQuotaForOrigin',{origin:new URL(url).origin, quotaSize: 2 * 1024 ** 3});
+    const start = Date.now();
     await page.goto(url);
     const loading = page.locator('#gameLoading');
     const retry = loading.getByRole('button');
@@ -48,6 +58,10 @@ async function main() {
     await loading.waitFor({state:'hidden',timeout:90000});
     assert(transfers - before < 12, 'retry must reuse completed units');
     assert.equal(await loading.locator('output').textContent(),'100%');
+    const fullBytes = manifest.units.reduce((sum, [,size]) => sum + size, 0);
+    const expected = new Map(manifest.units.map(([,size,hash]) => [hash, manifest.patches[hash]?.[1] ?? size]));
+    assert.equal(received, Array.from(expected.values()).reduce((sum, size) => sum + size, 0));
+    console.log('Cold install including retry:', Date.now() - start, 'ms;', received, 'bytes;', fullBytes - received, 'bytes saved');
     networkDisabled = true;
     const installed = transfers;
     const sample = Object.keys(manifest.files).find(name => name.includes('sprites-combat') && name.endsWith('.png'));
@@ -60,6 +74,28 @@ async function main() {
     await page.reload();
     await loading.waitFor({state:'hidden',timeout:90000});
     assert.equal(transfers,installed,'return visit must not transfer installed packages');
+    // A new release or partial eviction can leave a single archive missing.
+    // Corrupt its patch and verify recovery through the original file URL.
+    const [targetHash, [patchPath]] = Object.entries(manifest.patches)[0];
+    const [targetPath] = manifest.units.find(unit => unit[2] === targetHash);
+    const getDigest = name => page.evaluate(async path => {
+      const bytes = await (await fetch(path, {cache:'no-store'})).arrayBuffer();
+      const digest = await crypto.subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2,'0')).join('');
+    }, name);
+    assert.equal(await getDigest(targetPath), targetHash);
+    await page.evaluate(async hash => {
+      const scope = new URL('./',location.href);
+      await (await caches.open('kaizoku-content-bytes:' + scope)).delete(new URL('loading-data/'+hash,scope));
+    }, targetHash);
+    networkDisabled = false;
+    corruptPatch = patchPath;
+    await page.reload();
+    await loading.waitFor({state:'hidden',timeout:90000});
+    assert.equal(transfers - installed, 2, 'only the damaged patch and its original should transfer');
+    corruptPatch = null;
+    networkDisabled = true;
+    assert.equal(await getDigest(targetPath), targetHash);
     await page.locator('#characterName').fill('Nauta');
     await page.locator('#nextToClass').click();
     await page.locator('#nextToAppearance').click();
