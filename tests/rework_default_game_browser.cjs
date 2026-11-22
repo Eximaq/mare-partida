@@ -58,6 +58,7 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
             // ResizeObserver can clear the backing store after a successful draw.
             await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
           }
+          await page.locator('#gameLoading').waitFor({state: 'hidden', timeout: 90000});
           const stageStarted=await page.evaluate(()=>performance.now());
           const handle = await page.waitForFunction(stageStarted => {
             const result = window.__reworkDefaultQA?.read();

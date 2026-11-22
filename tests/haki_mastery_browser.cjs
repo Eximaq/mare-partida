@@ -6,8 +6,18 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  const hook="  window.__hakiQA={get game(){return game},set game(v){game=v},get rt(){return session.haki},get world(){return world},get session(){return session},open:openPanel,close:closePanel,update:updateUI,visualReady(){const nav=navigator();if(!nav.ready)nav.buildCells(1024);return mapArtState()==='ready'},save:saveGame,stats:getDerived,make:newItem,defs:itemDefs,travel:worldChange,port:returnLobby,attack:heroAttack,damage:takeDamage,spawn:devSpawn,initialize:initializeSession,draw:drawPlayerSprite,hakiScale:hakiVisualScale,get scene(){return scene},set auto(v){autoPlay=v;autoSkills=v},toggle:toggleHaki,cast:castHakiKing};window.__mareDiagnostics=";
  await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source.replace('  window.__mareDiagnostics=',hook)}));
  await page.goto(process.env.MARE_TEST_URL);await page.waitForFunction(()=>window.__hakiQA);
- await page.locator('#characterName').fill('Papacapim');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.waitForFunction(()=>__hakiQA.game);
+ await page.locator('#characterName').fill('Papacapim');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.locator('#gameLoading').waitFor({state:'hidden'});await page.waitForFunction(()=>__hakiQA.game);
  await page.clock.install({time:new Date('2026-11-01T12:00:00Z')});await page.clock.pauseAt(new Date('2026-11-01T12:00:01Z'));
+ // Saved characters reveal the HUD after the first scene has actually painted.
+ async function reloadSavedCharacter(){
+  await page.reload();
+  for(let frame=0;frame<600;frame++){
+   if(await page.evaluate(()=>!!window.__hakiQA?.game&&document.getElementById('gameLoading').hidden))return;
+   await page.clock.runFor(16);
+   await new Promise(resolve=>setTimeout(resolve,25));
+  }
+  throw Error('Saved character did not finish loading with the test clock');
+ }
  const waitVisual=async()=>{
   for(let i=0;i<300;i++){if(await page.evaluate(()=>__hakiQA.visualReady()))return;await page.clock.runFor(16);await new Promise(resolve=>setTimeout(resolve,25));}
   throw Error(JSON.stringify(await page.evaluate(()=>__mareDiagnostics().lobby96.worldVisual)));
@@ -79,7 +89,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await page.locator('[data-haki-node=future]').click();await page.screenshot({path:process.env.MARE_QA_DIR+'/haki-tree.png'});
  await page.locator('.haki-disciplines').scrollIntoViewIfNeeded();await page.screenshot({path:process.env.MARE_QA_DIR+'/haki-controls.png'});
  const learnedSave=await page.evaluate(()=>JSON.parse(localStorage.getItem('mare-partida-save-v1')));
- await page.reload();await page.waitForFunction(()=>window.__hakiQA?.game);assert.equal(await page.evaluate(()=>__hakiQA.rt.active),null);
+ await reloadSavedCharacter();assert.equal(await page.evaluate(()=>__hakiQA.rt.active),null);
  assert.equal(await page.evaluate(()=>__hakiQA.game.haki.mastery.seq),learnedSave.haki.mastery.seq);
  await page.evaluate(()=>__hakiQA.open('character','haki'));assert.equal(await page.locator('.haki-mastery').count(),1);
  await page.evaluate(()=>{const q=__hakiQA;q.travel('beach');q.auto=false;q.world.mobs=[];q.world.spawnClock=1000;q.game.hp=q.stats().maxHP;q.game.haki.current=100;q.game.haki.auto=null;q.update();});
@@ -163,7 +173,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  }
 
  await page.setViewportSize({width:1672,height:1086});
- await page.evaluate(()=>{const q=__hakiQA;q.game.haki={version:1,unlocked:true,current:55,auto:'armament'};q.game.has_haki_unlocked=true;q.save();});await page.reload();await page.waitForFunction(()=>window.__hakiQA?.game);assert(await page.evaluate(()=>MareHakiProgression.held(__hakiQA.game)));
+ await page.evaluate(()=>{const q=__hakiQA;q.game.haki={version:1,unlocked:true,current:55,auto:'armament'};q.game.has_haki_unlocked=true;q.save();});await reloadSavedCharacter();assert(await page.evaluate(()=>MareHakiProgression.held(__hakiQA.game)));
  assert(await page.evaluate(()=>!!localStorage.getItem('mare-partida-save-v1-before-haki-mastery-v1')));await page.evaluate(()=>__hakiQA.open('haki'));assert(await page.locator('.hm-migration').isVisible());assert(await page.locator('[data-haki-invest]').isDisabled());
  fs.writeFileSync(process.env.MARE_QA_DIR+'/browser-results.json',JSON.stringify({layouts,errors,progression:learnedSave.haki.mastery,checks:'book, real investment, quota rollback, stale confirmation, full gate, persisted ranks, independent class points, H/J/K, exclusivity, auto, drain, combat expiry, port, death, old-save hold and four facings'},null,2));
  assert.deepEqual(errors,[]);console.log('Haki browser functional and visual matrix passed',layouts);

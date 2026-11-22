@@ -72,7 +72,7 @@ jobs:
       - name: Regras e pacote estático
         run: |
           node --test tests/creation-selection.test.cjs tests/character-system.test.cjs tests/character-appearance.test.cjs tests/talent-system.test.cjs tests/character-quick-menu.test.cjs tests/notification-system.test.cjs
-          python tools/build_pages.py
+          python tools/build_pages.py --renderer-fixture
       - name: Criação e controles no preview publicado
         run: |
           python tests/run_honors_hd_browser.py tests/creation_selection_hd_browser.cjs --dist --offline

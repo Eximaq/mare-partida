@@ -62,7 +62,7 @@ assert(identity?.type);
 const name=await page.locator('.prison-enemy-caption strong').textContent();
 await page.locator('#closePanel').click();await page.keyboard.press('m');await page.locator('[data-quick-mode=prison]').click();
 assert.deepEqual(await page.evaluate(()=>__impelQA.game.impelDown.encounter),identity);
-await page.reload();await page.waitForFunction(()=>window.__impelQA?.game);await page.waitForTimeout(600);
+await page.reload();await page.locator('#gameLoading').waitFor({state:'hidden'});await page.waitForFunction(()=>window.__impelQA?.game);
 await page.keyboard.press('m');await page.locator('[data-quick-mode=prison]').click();
 assert.deepEqual(await page.evaluate(()=>__impelQA.game.impelDown.encounter),identity);
 assert.equal(await page.locator('.prison-enemy-caption strong').textContent(),name);

@@ -11,7 +11,52 @@
 <body>
   <main class="harbor">
     <hgroup class="identity">
-      <h1><img src="./art/kaizoku-idle.webp" alt="Kaizoku Idle" width="1000" height="391" fetchpriority="high"></h1>
+      <h1>
+        <img src="./art/kaizoku-idle.webp" alt="Kaizoku Idle" width="1000" height="391" fetchpriority="high">
+        <svg class="logo-voyage" viewBox="0 0 1000 391" aria-hidden="true" focusable="false">
+          <defs>
+            <!-- Clockwise around the brim, crown, lettering, right-hand rope and IDLE plaque. -->
+            <path id="logo-coast" pathLength="100" d="
+              M 16 147
+              C 15 139 38 120 53 107 Q 59 102 55 90
+              C 47 47 87 2 130 -5 Q 166 -12 191 17 Q 196 24 203 22
+              C 225 10 246 5 253 16 Q 261 26 246 42
+              Q 237 54 251 53 L 298 53 Q 318 53 327 66
+              Q 334 76 335 63 Q 336 51 348 51 L 487 51
+              Q 502 51 511 47 Q 531 38 547 57
+              Q 552 61 560 55 Q 606 24 652 54 Q 660 61 668 53
+              Q 681 43 699 52 L 739 52 Q 751 52 751 72
+              Q 751 81 758 65 Q 764 51 777 51 L 937 51
+              Q 955 51 955 68 L 955 186 Q 955 193 964 199
+              C 1002 227 998 274 967 291 Q 944 305 915 292
+              Q 908 288 899 297 C 858 343 793 333 755 294
+              Q 743 280 742 296 L 741 315 Q 740 323 730 327
+              Q 720 334 737 336 Q 748 338 747 350 L 746 373
+              Q 745 393 725 393 L 517 393 Q 497 393 493 382
+              Q 490 375 482 383 Q 473 393 459 393 L 284 393
+              Q 259 393 259 375 L 260 351 Q 260 335 274 333
+              Q 282 332 280 319 L 279 307 Q 277 291 264 301
+              C 223 341 157 339 128 300 Q 123 292 111 296
+              C 60 310 25 277 34 235 Q 40 208 65 195
+              Q 71 192 71 181 L 71 151 Q 71 143 60 149
+              C 42 157 18 166 16 147 Z"/>
+          </defs>
+          <use href="#logo-coast" class="voyage-wake" stroke-dasharray="2.5 97.5">
+            <animate attributeName="stroke-dashoffset" values="2.5;-97.5" dur="24s" repeatCount="indefinite"/>
+          </use>
+          <g class="voyage-ship">
+            <animateMotion dur="24s" rotate="auto" repeatCount="indefinite"><mpath href="#logo-coast"/></animateMotion>
+            <g class="ship-art" stroke-linejoin="round">
+              <path d="M-22 -8 Q-1 -17 27 0 Q3 17 -22 8 Q-26 0 -22 -8Z" fill="#864221" stroke="#39261e" stroke-width="3"/>
+              <path d="M-19 -6 Q1 -13 23 0 Q2 12 -19 6Z" fill="#cc9149" stroke="#f2c878" stroke-width="2"/>
+              <path d="M-12 -9 Q-4 -1 -12 9 Q2 10 7 2 Q5 -6 -12 -9Z" fill="#f5dfaa" stroke="#614631" stroke-width="1.6"/>
+              <path d="M-3 -12 Q4 -1 -3 12 Q14 10 16 1 Q14 -8 -3 -12Z" fill="#fff1c8" stroke="#614631" stroke-width="1.6"/>
+              <path d="M0 -10 Q2 0 0 10" fill="none" stroke="#d3b57e" stroke-width="1.5"/>
+              <path d="M4 0 L-8 -3 -16 1 -7 3Z" fill="#bd4638" stroke="#653121"/>
+            </g>
+          </g>
+        </svg>
+      </h1>
       <p class="game-intro">
         <strong>Do Porto das Correntes à&nbsp;Ilha Dawn</strong>
         A Patrulha de Dawn paga em Berry por seis inimigos derrotados. Na volta, leve sua arma à forja.

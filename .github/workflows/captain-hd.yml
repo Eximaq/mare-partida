@@ -55,7 +55,7 @@ jobs:
       - name: Dados, privacidade, preferências e pacote estático
         run: |
           node --test tests/captain-hd.test.cjs tests/player-hub.test.cjs tests/game-tooltips.test.cjs tests/character-appearance.test.cjs tests/headgear-visibility.test.cjs tests/ui-system.test.cjs tests/character-hud-hierarchy.test.cjs
-          python tools/build_pages.py
+          python tools/build_pages.py --renderer-fixture
       - name: Navegador, controles e responsividade em dist
         run: python tests/run_honors_hd_browser.py tests/captain_hd_browser.cjs --dist --offline
       - name: Configurações de vidro e categorias SVG

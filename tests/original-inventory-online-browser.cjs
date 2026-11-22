@@ -60,7 +60,7 @@ refreshFighter();
    assert.match(html,/<script defer src="game\.js/);
    await route.fulfill({response:r,body:html.replace(/<script defer src="game\.js/,boot+'<script defer src="game.js')});
   });
-  await p.goto(process.env.MARE_TEST_URL);
+  await p.goto(process.env.MARE_TEST_URL);await p.locator('#gameLoading').waitFor({state:'hidden'});
   await p.waitForFunction(()=>window.MareGameSession?.controlled&&!document.body.classList.contains('online-session-loading'));
   await p.keyboard.press('i');await p.waitForSelector('#invSearch');
   await p.locator('[data-item="server-boots"]').click();await p.locator('[data-equip="server-boots"]').click();
@@ -104,7 +104,7 @@ refreshFighter();
   await p.screenshot({path:path.join(out,'original-online-character.png')});
   assert.equal(await p.locator('#heroPower').textContent(),new Intl.NumberFormat('pt-BR').format(wire.combatPreview.stats.power));
 
-  await p.reload();await p.waitForFunction(()=>window.MareGameSession?.controlled&&!document.body.classList.contains('online-session-loading'));
+  await p.reload();await p.locator('#gameLoading').waitFor({state:'hidden'});await p.waitForFunction(()=>window.MareGameSession?.controlled&&!document.body.classList.contains('online-session-loading'));
   assert.deepEqual(await p.evaluate(()=>{const {potions,manaPotions}=MareGameSession.data.online.originalInventory;return [potions,manaPotions];}),[4,2]);
   await p.waitForFunction(()=>document.getElementById('potionCount')?.textContent==='4'&&document.getElementById('manaPotionCount')?.textContent==='2');
   assert.equal(await p.evaluate(()=>MareGameSession.data.online.attributes.allocated.strength),1);

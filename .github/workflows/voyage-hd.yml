@@ -54,7 +54,7 @@ jobs:
       - name: Catálogo, encontros e componentes
         run: |
           node --test tests/archipelago.test.cjs tests/alubarna.test.cjs tests/prison-system.test.cjs tests/prison-encounter.test.cjs tests/impel-down-live.test.cjs tests/impel-down-map.test.cjs tests/voyage-ui.test.cjs tests/modes-quick-menu.test.cjs tests/ui-system.test.cjs tests/performance-map-loading.test.cjs tests/performance-preparation.test.cjs tests/current-player-sprites.test.cjs tests/current-player-release.test.cjs
-          python tools/build_pages.py
+          python tools/build_pages.py --renderer-fixture
       - name: Jogo, falhas e pacote público
         run: |
           python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-voyage-http.log 2>&1 &

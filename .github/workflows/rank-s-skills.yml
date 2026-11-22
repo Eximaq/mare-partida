@@ -58,7 +58,7 @@ jobs:
       - name: Contratos, frames e regressões
         run: |
           node --test tests/rank-s-system.test.cjs tests/rank-a-system.test.cjs tests/rank-a-expansion.test.cjs tests/akuma-system.test.cjs
-          python3 tools/build_pages.py
+          python3 tools/build_pages.py --renderer-fixture
           python3 -m unittest discover -s tests -p '*_test.py'
       - name: Seis habilidades no pacote estático e com API
         env:

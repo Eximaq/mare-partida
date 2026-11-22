@@ -15,7 +15,7 @@ HOOK="""  window.__compactQA={get game(){return game},get session(){return sessi
 refresh(){updateUI();renderPortrait();drawWorld();presentWorld()},enter:enterHunt,leave:returnLobby,
 openMerchant(){const npc=npcs.find(n=>n.kind==='shop');Object.assign(world.hero,{x:npc.x,y:npc.y});activateNPC(npc)},
 toggle:toggleFloating,defs:itemDefs,newItem,syncFruit:syncFruitVfx,
-prepareNavigation(){navigator().buildCells(1024)}};window.__mareDiagnostics="""
+prepareNavigation(){navigator().buildCells(1024);presentWorld()}};window.__mareDiagnostics="""
 
 def measurements(q):
     return q.evaluate('''() => Object.fromEntries(Object.entries({
@@ -35,6 +35,7 @@ with sync_playwright() as p:
     q.wait_for_load_state('networkidle');q.wait_for_function('window.__compactQA')
     # Isolated browser context and generated character; no user's save is read.
     create(q)
+    q.locator('#gameLoading').wait_for(state='hidden')
     q.evaluate('''() => {const x=__compactQA,g=x.game;Object.assign(g,{name:'Nauta',level:53,gold:229378,xp:552,potions:411,hierarchyTier:3,hierarchyFaction:'pirate'});
       const fruit=x.defs.find(d=>d.fruitId==='akuma_mera_mera');if(fruit){g.equipment.akuma_no_mi=x.newItem(fruit);x.syncFruit()}
       g.hp=x.stats().maxHP;g.energy=x.stats().maxEnergy;x.refresh()}''')

@@ -16,6 +16,7 @@ const seed=Number(process.argv.find(a=>a.startsWith('--seed='))?.slice(7)??1);
 assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32');
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{
  const errors=[];
+ if(output)await fs.mkdir(output,{recursive:true});
  if(materialsOnly&&combatOnly)throw Error('Choose either --materials-only or --combat-only');
  if(output)await fs.mkdir(output,{recursive:true});
  if(!combatOnly){
@@ -89,7 +90,7 @@ assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32'
   }
   return {counts,issues};
  },{materialsOnly,otherClasses});console.log(JSON.stringify({audit}));if(audit)assert.deepEqual(audit.issues,[]);
- if(output&&audit){await fs.writeFile(path.join(output,'audit.json'),JSON.stringify(audit,null,2));}
+ if(output&&audit)await fs.writeFile(path.join(output,'audit.json'),JSON.stringify(audit,null,2));
  await p.close();
  }
  if(materialsOnly)return;

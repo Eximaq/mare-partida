@@ -49,7 +49,7 @@ arrive('lobby',null);
    const r=await route.fetch(),html=await r.text();const boot='<script defer src="/apps/account-client/game-session.js"></script><script defer src="/apps/account-client/game-ui.js"></script>';
    await route.fulfill({response:r,body:html.replace(/<script defer src="game\.js/,boot+'<script defer src="game.js')});
   });
-  await p.goto(process.env.MARE_TEST_URL);
+  await p.goto(process.env.MARE_TEST_URL);await p.locator('#gameLoading').waitFor({state:'hidden'});
   await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready&&window.__mareDiagnostics?.().lobby96.worldVisual?.state==='ready');
   assert.equal(await p.evaluate(()=>__mareDiagnostics().map.id),'lobby');
   const initial=await p.evaluate(()=>({x:__mareDiagnostics().hero.x,y:__mareDiagnostics().hero.y}));assert.deepEqual(initial,{x:1504,y:1568});

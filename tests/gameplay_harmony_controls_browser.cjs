@@ -4,7 +4,7 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
  const p=await b.newPage({viewport:{width:1672,height:941}}),errors=[];p.on('pageerror',e=>errors.push(e.message));
  await p.route('**/game.js*',async r=>{const response=await r.fetch(),src=await response.text();await r.fulfill({response,body:src.replace('  window.__mareDiagnostics=','  window.__controlsQA={get game(){return game},get session(){return session},enter:enterHunt,update:updateUI,toggle:toggleFloating,log};window.__mareDiagnostics=')});});
  await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.__controlsQA);
- await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__controlsQA.game);
+ await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.locator('#gameLoading').waitFor({state:'hidden'});await p.waitForFunction(()=>__controlsQA.game);
  const music=p.locator('#mareMusicDock');
  assert.equal(await music.count(),1,'one desktop music disclosure');
  const trigger=music.locator('summary'),volume=music.getByRole('slider');

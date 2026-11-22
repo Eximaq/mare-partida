@@ -287,7 +287,7 @@
     const notices=document.getElementById('toastContainer')||noticeRoot,destination=top?.querySelector('.confirmation-card,.dialog,.ui-window')||fallback;
     if(notices)noticeRoot=notices;
     if(notices&&notices.parentElement!==destination)destination.append(notices);
-    app.inert=!!top&&(top.classList.contains('confirmation-overlay')||!app.contains(top));
+    app.inert=document.getElementById('gameLoading')?.hidden===false||!!top&&(top.classList.contains('confirmation-overlay')||!app.contains(top));
     for(const child of app.children)child.inert=!!top&&child!==top;
     for(const el of document.querySelectorAll('.ui-modal'))el.inert=!!top&&el!==top;
     if(top&&top!==observedTop&&!top.contains(document.activeElement)){const target=focusable(top)[0];target?.focus({preventScroll:true});}

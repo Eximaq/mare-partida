@@ -181,7 +181,7 @@ jobs:
           python pixellab-pip-generations/paper-doll-hair-continuity-20261022/assemble_review.py
           python pixellab-pip-generations/paper-doll-navy-starter-20261023/assemble_review.py
           python tests/paper_doll_inputs_test.py
-          python tools/build_pages.py --include-reviews
+          python tools/build_pages.py --renderer-fixture --include-reviews
       # Root-game tests that required legacy84 are archived. Current ownership,
       # locomotion and combat are enforced by paper-doll-96-lobby.yml.
       - name: Conferir bancadas históricas isoladas
