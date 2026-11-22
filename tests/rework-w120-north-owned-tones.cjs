@@ -1,28 +1,47 @@
-const a=require('node:assert/strict'),P=require('node:path'),A=require('../character-appearance'),{make,cv}=require('./rework-integration-support.cjs');
-const I=require('../tools/rework-weapon-layers-hd/index.json'),load=require('../tools/rework-hd-test-loader.cjs').create(P.join(__dirname,'..')),api=make();
-const o={direction:'north',action:'attack-unarmed',consumer:'world'},r=I.records.find(x=>x.id==='cyborg120-north-native-original-source'),pre='tools/rework-weapon-layers-hd/';
-const actor=(t,extra={})=>JSON.parse(JSON.stringify(A.commit({id:'w120-north-saved',classId:'cyborg',equipment:{weapon:{def:120}}},{gender:'masculino',skinColor:t,...extra},()=>true)));
-const px=c=>Buffer.from(c.getContext('2d').getImageData(0,0,640,640).data);
-const raw=async l=>{const c=cv.createCanvas(640,640);c.getContext('2d').drawImage(await load(pre+l),0,0);return px(c);};
-const grab=(p,i)=>{let c;a(api.draw({save(){},restore(){},drawImage(v){c=v;}},p,{...o,progress:(i+.25)/20}));a.equal(c.width,640);return px(c);};
+const R=require('node:path').resolve(__dirname,'..'),n=f=>require(R+'/'+f);
+const {make,cv}=n('tests/rework-integration-support.cjs'),A=n('character-appearance'),W=n('paper-doll-96-lobby'),C=n('tools/paper-doll-96-v3/weapons.json'),J=n('tools/rework-weapon-layers-hd/index.json'),assert=require('assert/strict'),load=n('tools/rework-hd-test-loader.cjs').create(R);
+const P='tools/rework-weapon-layers-hd/assets/',fetch=load;
+const api=make({loadImage:fetch}),opt={action:'attack-unarmed',direction:'north',consumer:'world'},px=c=>Buffer.from(c.getContext('2d').getImageData(0,0,640,640).data),
+ select=(p,o=opt)=>W.selectWorldHDOnly(api,C,p,o),actor=(t,on)=>A.commit({classId:'cyborg',equipment:on?{weapon:{def:120}}:{}},{gender:'masculino',skinColor:t},()=>true),
+ count=(a,b,region)=>{let n=0;for(let i=0;i<a.length;i+=4)if(a.readUInt32LE(i)!==b.readUInt32LE(i)){assert(!region||region[i+3]);n++}return n};
+async function draw(p,s,o,positions){
+ const bank=await api.prepareConfiguration([{player:p,source:s,options:o}],{resolve:x=>x});
+ try{return positions.map(progress=>{let c;assert(bank.draw({save(){},restore(){},drawImage(im){c=im;}},p,{...o,progress}));assert.equal(c.width,640);return px(c);});}finally{bank.release();global.gc?.();}
+}
 (async()=>{await api.ready;
- const orig=await Promise.all(r.states.map(l=>raw(l.approved.url)));const tones=Object.keys(A.skins);let n=0;
- for(const t of tones){
-  const x=actor(t),saved=JSON.stringify(x),s=api.selectVisual(x,o);a.equal(s?.ownCyborgNorthTone,t,'missing own W120 N '+t);
-  for(const k of ['pivot','fps','timeline','nativeCanvas'])a.deepEqual(s[k],r[k]);
-  a(await api.prepareClip(x,o));const masks=await Promise.all(s.states.map(v=>raw(v.staffSouthRanks)));
-  const ramp=[...A.skins[t].ramp,...A.hairs.black.ramp].map(m=>Buffer.from(m.slice(1),'hex'));
-  for(let i=0;i<20;i++){
-   const f=Number(r.timeline[i]),b=grab(x,i),z=orig[f],m=masks[f];let count=0,hh=0;
-   for(let j=0;j<b.length;j+=4){
-    a.equal(b[j+3],z[j+3]);
-    if(!m[j])a.equal(b.readUInt32LE(j),z.readUInt32LE(j));
-    else{a(m[j]<=10&&b[j+3]>0);const c=ramp[m[j]-1];for(let l=0;l<3;l++)a(Math.abs(b[j+l]-c[l])<= +(b[j+3]<255));count++;if(m[j]>5)hh++;}
-   }
-   a(count>10000);a.equal(hh,5045);n++;
+ const legacy=J.records.find(x=>x.id==='cyborg120-north-native-original-source'),seq=[...Array.from({length:8},(_,i)=>i),...Array(12).fill(7)];
+ const n8=seq.slice(0,8).map(i=>(i+.125)/8),n20=seq.map((_,i)=>(i+.125)/20),rows=[];
+ for(const t of ['light','ebony']){
+  const p=actor(t,true),b=actor(t,false),s=select(p),r=select(b),saved=JSON.stringify([p,b]);
+  assert(s.arm120NorthOwnMetal&&!s.ownCyborgNorthTone);assert.equal(s.fps,12);assert.deepEqual(s.timeline,seq.map(String));assert.deepEqual(s.timeline,legacy.timeline);assert.deepEqual(s.ownW120NorthMetal.base.pack,r.pack);
+  assert.deepEqual(s.pack.directions.north.clip,r.pack.directions.north.clip);
+  assert.equal(select(p,{...opt,action:'attack'}).id,s.id);
+  const ex=(cls,equipment,extras={})=>A.commit({classId:cls,equipment},{gender:'masculino',skinColor:t,...extras},()=>true);
+  for(const [who,o] of [[ex('strategist',{weapon:{def:120}}),opt],
+   [ex('cyborg',{weapon:{def:120,variant:'other'}}),opt],
+   [ex('cyborg',{weapon:{def:120},coat:{def:151}}),opt],
+   [ex('cyborg',{weapon:{def:118}}),opt],[ex('cyborg',{weapon:{def:120}},{gender:'feminino'}),opt],
+   [ex('cyborg',{weapon:{def:120}},{hairColor:'brown'}),opt],
+   [p,{...opt,consumer:'portrait'}],[p,{...opt,weaponless:true}],
+   [p,{...opt,action:'attack-tech'}],[p,{...opt,action:'walk'}],...['south','east','west'].map(direction=>[p,{...opt,direction}])])
+    assert(!api.selectVisual(who,o)?.arm120NorthOwnMetal);
+
+  const off=await draw(b,r,opt,n8),on=await draw(p,s,opt,n20),removed=await draw(b,select(b),opt,n8),
+   weaponless=await draw(p,select(p,{...opt,weaponless:true}),{...opt,weaponless:true},n8);
+  const reequip=await draw(p,select(p),opt,n20);assert(off.every((x,i)=>x.equals(removed[i])&&x.equals(weaponless[i])));
+  assert(on.every((x,i)=>x.equals(reequip[i])));
+  const masks=[];
+  for(let i=0;i<8;i++){
+   const h=s.ownW120NorthMetal.frames[i];assert(h);
+   const c=cv.createCanvas(640,640);c.getContext('2d').drawImage(await fetch(P+h+'.png'),0,0);masks.push(px(c));c.width=1;
   }
-  for(const [q,opts] of [[x,{...o,consumer:'portrait'}],[x,{...o,weaponless:true}],[actor(t,{eyeStyle:'face-calm'}),o],[{...x,classId:'brawler'},o],[{...x,equipment:{weapon:{def:120,variant:'override'}}},o],[{...x,equipment:{weapon:{def:120},coat:{def:151}}},o]])a(!api.selectVisual(q,opts)?.ownCyborgNorthTone);
-  a.equal(JSON.stringify(x),saved);global.gc?.();
+  for(let k=0;k<20;k++){
+   const i=seq[k],pixels=count(on[k],off[i],masks[i]);
+   assert(i===1?pixels===334:i===6?pixels===218:pixels>1000);if(k>7)assert(on[k].equals(on[7]));
+   for(let j=0;j<on[k].length;j+=4)if(masks[i][j+3]===255)assert.equal(on[k].readUInt32LE(j),masks[i].readUInt32LE(j));
+   rows.push({tone:t,tick:k,phase:i,pixels,externalClockUnchanged:true,offExact:true,reequipExact:true});
+  }
+  assert.equal(JSON.stringify([p,b]),saved);
  }
- a.equal(n,160);console.log('PASS 160 actual World W120 NORTH ticks: all 8 saved tones, clock/alpha/all unmarked including gear exact');
-})().catch(e=>{console.error(e);process.exit(1)});
+ assert.equal(rows.length,40);console.log('PASS W120 M NORTH: 40 true World ticks, no anatomy/clock mutations');
+})().catch(e=>{console.error(e);process.exitCode=1});

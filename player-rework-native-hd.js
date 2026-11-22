@@ -63,7 +63,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     const saved=['porcelain','light','warm','olive','copper','brown','dark','ebony']
      .filter(skinColor=>root.MareCharacterAppearance.skins[skinColor]&&root.MareAppearance96.skins[skinColor])
      .map(skinColor=>controls({...control,appearance96:{...standard,skinColor}}));
-    swordCheckpoint=await root.MareSword0Checkpoint.verify(catalog,trusted,{saved});
+    const northBodyPack=baseIndex.records.find(r=>r.id==='v7-female-sword-north-ownership-candidate-north')?.pack;
+    const gloveBodyPacks=Object.fromEntries(['north','south','east','west'].map(direction=>[direction,
+      baseIndex.records.find(r=>r.id==='v7-female-sword-'+direction+'-ownership-candidate-'+direction)?.pack]));
+    swordCheckpoint=await root.MareSword0Checkpoint.verify(catalog,trusted,{saved,northBodyPack,gloveBodyPacks});
     return !!swordCheckpoint;
    }catch(_){return false;}
   })();
@@ -72,36 +75,146 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  const daggerP22Ready=Promise.resolve().then(()=>fetchJSON('tools/rework-female-dagger-p22/index.json')).then(c=>{
   if(c?.schema!=='approved-female-dagger-p22-v1'||!c.frames||!c.targets||!c.geometry||!c.appearance||!root.MareReworkHDAssets)return;
   daggerP22Store=root.MareReworkHDAssets.create(c.archiveIndex,{baseURL,prefix:'tools/rework-female-dagger-p22/archives/'});
-  daggerP22=c;
+  const ownRows=[];
+  for(const [slot,rows] of [['boots',c.signedBootLayers],['gloves',c.signedGloveLayers]])
+   for(const [direction,items] of Object.entries(rows||{}))
+    for(const [item,source] of Object.entries(items))ownRows.push({slot,item:Number(item),body:'female',action:'attack-daggers',direction,source});
+  daggerP22={...c,ownLayers:root.MareReworkModularOutfitsHD?.createOwnLayerIndex(ownRows)};
  }).catch(()=>{});
- const ready=Promise.all([indexesReady.then(warmSwordCheckpoint),daggerP22Ready]).then(()=>{state='ready';onChange();}).catch(e=>{state='failed';error=e.message;onChange();});
+ // Index projected visible-weapon support separately from the glove's own
+ // support. A hand pose/clothing raster is never authorized by the weapon ID.
+ // Opaque anatomical foreground occlusion is already baked into each support
+ // projection. Composite/material branches without matching proofs fail closed.
+ const carryGloveSupport={};
+ const loadCarryGloveSupport=(dir,digest)=>Promise.resolve().then(()=>fetchJSON('tools/rework-weapon-layers-hd/'+dir+'-glove-visible-support.json')).then(async c=>{
+  const compact=dir==='south';
+  if(c?.schema!==(compact?'south-signed-visible-clearance-v1':dir+'-exact-visible-alpha-rle-v1')||!root.crypto?.subtle)return;
+  const actual=Array.from(new Uint8Array(await root.crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(c)))),v=>v.toString(16).padStart(2,'0')).join('');
+  if(actual!==digest)return;
+  const indexes=name=>new Map(c[name].map((v,i)=>[JSON.stringify(v),i]));
+  carryGloveSupport[dir]={body:indexes('bodyScopes'),parts:indexes('partScopes'),cloth:indexes('gloveScopes'),
+   ...(compact?{clearance:new Map(c.clearance.map(({body,part,...proof})=>[body+'/'+part,proof]))}:{
+    weapons:new Map(c.weaponAlpha.map(({body,part,frames})=>[body+'/'+part,frames])),
+    gloves:new Map(c.gloveAlpha.map(({body,cloth,frames})=>[body+'/'+cloth,frames]))}),
+   packKeys:new WeakMap(),partKeys:new WeakMap(),fits:new Map()};
+ }).catch(()=>{});
+ const northGloveSupportReady=loadCarryGloveSupport('north','79c7144bdfa0ccbd3afb53bcb4ea7dff351c5a66e2226a3b09fb0eaaabe9513c');
+ const southGloveSupportReady=loadCarryGloveSupport('south','844286f2fe7e10ba19e2001dbfc95fbf89799b772543421c07bdbbc0b4ed16a9');
+ function supportRunsTouch(x,y){
+  let i=0,j=0;
+  while(i<x.length&&j<y.length){
+   if(x[i+1]<=y[j])i+=2;
+   else if(y[j+1]<=x[i])j+=2;
+   else return true;
+  }
+  return false;
+ }
+ function certifiedCarryGloveClearance(r,gloves){
+  const q=carryGloveSupport[r.direction],p=r.base.pack,d=p?.directions?.[r.direction];
+  if(!q||!d||r.preMirroredLayers?.length||!r.plan?.parts?.length||r.plan.parts.some(part=>
+    ['replaceBoundLayer','hideHandBeyondWrist','staff124NativeContact','staff124ToneTexture','healerToneTexture','staff123ToneTexture',
+     'joinedFringe','joined118Sources','joined117Sources','joined15Sources','relic31PivotTilt'].some(k=>part[k])))return false;
+  const pad=r.plan.paddingPhysical??0;
+  if(!Number.isSafeInteger(pad)||pad<0)return false;
+  const hair=r.hairLayers||[],bodyKey=()=>q.body.get(JSON.stringify([p.frame,p.pivot,p.density,d.clip,d.rest,d.poses,d.layers,hair]));
+  if(!hair.length&&!q.packKeys.has(p))q.packKeys.set(p,bodyKey());
+  const body=hair.length?bodyKey():q.packKeys.get(p);
+  if(body==null)return false;
+  if(!q.partKeys.has(r.plan))q.partKeys.set(r.plan,q.parts.get(JSON.stringify(r.plan.parts.map(l=>
+   [l.binding,l.sourceBone,l.source.sha256,l.source.url,l.source.sourceClip??null,l.source.nativeSize??null,
+    l.calibrationOffsetPhysical??null,l.mirrorSource??false,l.depthOffset??.1]))));
+  const part=q.partKeys.get(r.plan),cloth=q.cloth.get(JSON.stringify(gloves));
+  if(part==null||cloth==null)return false;
+  // South uses lossless precomputed intersections bound to the complete
+  // physical projection input, not a gate keyed by a weapon/catalog ID.
+  if(q.clearance){
+   const physical=q.clearance.get(body+'/'+part);
+   return physical?.frames===d.clip.frames&&!!(physical.bits&(1<<cloth));
+  }
+  const key=[body,part,cloth].join('/');
+  if(!q.fits.has(key)){
+   const w=q.weapons.get(body+'/'+part),g=q.gloves.get(body+'/'+cloth);
+   q.fits.set(key,!!w&&!!g&&w.length===d.clip.frames&&g.length===d.clip.frames&&w.every((f,i)=>!supportRunsTouch(f,g[i])));
+  }
+  return q.fits.get(key);
+ }
+ // Pin the original 12 receiving profiles, arm restoration and each
+ // four-pass boot. These independent sources were compared over the
+ // entire lower support without importing wardrobe sibling layers.
+ const eastProfileBootProof={"source":"e61d9b1851e1ce07a08220d9905db96b3faad22dc6325d7d076bedcc26b7a799","boots":{"183":"e65d0c6911dfb3a36311ee5ade12f4717fdfb1c37067fc4a9179ad10cd09fd31","134":"aa659526704dcdb7054cf03693a6ab7499808efd9be67d3003471f5a230cea31","8":"6444857ac6d68dead73b50287778f181ccd24168d9ae99bd8d7cb914294350ee","141":"a2d27e0ef387f810cf5022b0d59a4b7014929da5aa7bc0f5db186d7ecb34d82c","148":"c11df572e1e4273682f458955d26eb8ad353350a997f7745402654b2158f1c7f","155":"d99064433ba53148b670b6e18ffeb5610fc199a75d10004c548f0d69417aa179","169":"27b21231019c0e22cbacb32b43483a9c77d687bc19eac85b6a66a2b229f73bf1","9":"726d4481b851ad93d223db46d73fe11d42047c4c1d7f01979ed77a173ff04d36","162":"021fa2736d1f72a750da40241e12bc0f6fb8aa87c286d6321fa529210dd8178b","176":"e51059849cc9040681832cc55583d4460c160163c66c1fbbb84ffc2e9286de3d"}};
+ const westProfileBootProof={"source":"a0e81d75ced24a04fcf329d4da50ce5a842ded9c5875547b099fb9fa4d08275c","boots":{"9":"35438423207149777d318cf1478239ced8913e9062df9646bbb2c2454e448fca","162":"164f362c68a74f42ddf39d3a9dbdbcc2f1cbe12d5dd875b14ec2858828c941da","148":"a77ec03a2a622e2cc5cf40233be0bdaf797af715fd347507d0d1296038cea7ab","183":"d76074a5091a13c802e75acfb62d44fd0c060bb6e4e2b9d84ba51becbfda70f6","134":"e4f3fdeea37cbdbda3b83f5a0968e2bd4301aaf72e7f3120e6a90d861f67ca96","8":"614c167136f2b72cee075b525352b0fec0a672d955fb062b59b174abb8a6ee5c","141":"c85dcdef5d466ddb11e3ce3d18ba9d09fd9df3cf9d68f38ce50efef9b1b38e18","155":"1da32160f81552d61afb11bef3025efdd47d2bcaf91f779429156e16fd0b2b42","169":"461cf17cd76e663841a72c1e409ed4f23a3964aab94bd9945605290eca6e2fac","176":"5396efbeb384ad42361d9a4e9d19f7db76f6cbc43c4cee22d2c7b12ec6608ed5"}};
+ let profileOwnBoots;
+ const profileOwnBootReady=indexesReady.then(async()=>{
+  const s=profileRig,subtle=root.crypto?.subtle,records=[];
+  if(!s||!subtle)return;
+  const hash=async v=>Array.from(new Uint8Array(await subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(v)))),n=>n.toString(16).padStart(2,'0')).join('');
+  for(const [direction,proof] of [['east',eastProfileBootProof],['west',westProfileBootProof]]){
+   const d=s.directions?.[direction];if(!d)continue;
+   if(await hash([d.sourceId,d.clock,s.phaseMap,d.poses.map(p=>[p.layers,p.bareForeground])])!==proof.source)continue;
+   for(const [i,signature] of Object.entries(proof.boots)){
+    const b=outfitById.get('frozen-v47-female-151-boot'+i+'-'+direction+'-walk'),p=b?.pack,k=p?.directions?.[direction],
+     layers=k?.layers.filter(l=>l.id.startsWith('boot'+i+'-'))||[];
+    if(!b?.frozenBootContract||b.productionEnabled===false||b.body!=='female'||b.action!=='walk'||b.direction!==direction||
+       b.equipment?.boots!==Number(i)||layers.length!==4||
+       layers.some((l,j)=>l.id!=='boot'+i+'-'+['0-rear','1-rear','0-front','1-front'][j]||
+        l.depth!==[-1,-1,45,46][j]||l.binding?.kind!=='fixed'||l.frames?.length!==40||
+        l.frames.some((h,t)=>!b.sourceRefs.includes(h)||h!==l.frames[d.clock.indexOf(d.clock[t])]))||
+       await hash([b.sourceAuthoritySHA256,p.frame,p.pivot,p.density,k.clip,layers])!==signature)continue;
+    records.push({slot:'boots',item:Number(i),body:'female',action:'walk',direction,source:{pack:{frame:p.frame,pivot:p.pivot,density:p.density},layers,id:b.id}});
+   }
+  }
+  profileOwnBoots=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(records);
+ }).catch(()=>{});
+ const ready=Promise.all([indexesReady.then(warmSwordCheckpoint),daggerP22Ready,northGloveSupportReady,southGloveSupportReady,profileOwnBootReady]).then(()=>{state='ready';onChange();}).catch(e=>{state='failed';error=e.message;onChange();});
  function resolveProfileLayers(player,o,a,equipment){
   const s=profileRig,dir=o.direction;
   if(player.__reworkSubset||canonical(a.body)!=='female'||o.action!=='walk'||!['east','west'].includes(dir)||s?.schema!=='female-profile-separated-rig-candidate-v1')return null;
-  if(Object.entries(equipment).some(([key,v])=>!['weapon','legs','pants'].includes(key)||v&&typeof v==='object'&&['variant','variantId','appearanceVariant'].some(k=>v[k]!=null&&v[k]!=='original'))||equipment.legs!=null&&equipment.pants!=null)return null;
+  if(Object.entries(equipment).some(([key,v])=>!['weapon','legs','pants','boots'].includes(key)||v&&typeof v==='object'&&['variant','variantId','appearanceVariant'].some(k=>v[k]!=null&&v[k]!=='original'))||equipment.legs!=null&&equipment.pants!=null)return null;
   const wr=equipment.weapon?.def??equipment.weapon,item=wr==null?null:Number(wr),pr=equipment.legs??equipment.pants,pants=pr==null?null:Number(pr.def??pr);
   if(item!=null&&![0,5,17].includes(item)||pants!=null&&pants!==21)return null;
+  const boot=equipment.boots?.def??equipment.boots,
+   own=o.consumer==='world'&&pants==null&&!o.weaponless?profileOwnBoots?.resolve({slot:'boots',item:boot,body:a.body,action:o.action,direction:dir}):null,
+   savedBoot=own?.state==='available'&&!own.mirrorX?own.source:null;
+  if(boot!=null&&(!savedBoot||player.equipment?.visual_completo||
+   item==null&&selectFemaleCoat67SideBare(player,o,a,{})))return null;
+
   const d=s.directions?.[dir],clock=[0,0,1,1,1,1,1,2,2,2,2,3,4,4,4,4,4,5,5,5,6,6,7,7,7,7,7,8,8,8,9,9,10,10,10,10,10,11,11,11];
   if(!d||d.poses.length!==12||JSON.stringify(d.clock)!==JSON.stringify(clock)||JSON.stringify(s.phaseMap)!=='[0,1,2,2,3,4,4,5,6,6,7,0]')return null;
-  const native=femaleRegistry?.resolve({body:'female',action:'walk',direction:dir,item:item??0,equipment:{weapon:item??0},appearance:a});
+  const native=femaleRegistry?.resolve({body:'female',action:'walk',direction:dir,item:item??0,equipment:{weapon:item??0},appearance:a,board07OrbWorld:item===17&&o.consumer==='world'});
   if(!native||native.sourceBaseId!==d.sourceId||native.states.length!==8||native.paddingPhysical!==(item===0||item==null?64:0))return null;
   if(native.states.some(st=>st.parts.length!==1||st.parts[0].depth!==(item===17?4.01:3.8099999999999996)))return null;
+  if(savedBoot&&(!native.material||native.material.gearRecord||native.baseRecord?.sourcePackSHA256!=='ade447b6abe83494aa78833f9ed051b36251c9fc5a97af9d3c38b99933091dbc'||
+   !['frame','pivot','density'].every(k=>JSON.stringify(native.pack[k])===JSON.stringify(savedBoot.pack[k]))))return null;
+
   const body=item==null?{...native,item:null,paddingPhysical:0,states:native.states.map(st=>({...st,parts:[]}))}:native;
   if(body.material)body.material={...body.material,id:body.material.id+':profile-neck-restore-bridge-v2',profileNeckRestore:true,profileNeckBridge:true};
-  return {...body,id:'profile-separated-candidate:'+item+':'+pants+':'+body.id,hdKind:'profile-separated',profileLayers:{spec:s,body,pants},colorAppearance:a,pack:{...body.pack,directions:{[dir]:{...body.pack.directions[dir],clip:{frames:40,fps:40,loop:true}}}}};
+  const result={...body,id:'profile-separated-candidate:'+item+':'+pants+':'+body.id,hdKind:'profile-separated',profileLayers:{spec:s,body,pants},colorAppearance:a,pack:{...body.pack,directions:{[dir]:{...body.pack.directions[dir],clip:{frames:40,fps:40,loop:true}}}}};
+  return savedBoot?{...result,id:result.id+':own-profile-boot:'+boot,profileLayers:{...result.profileLayers,boots:savedBoot.layers},
+   slotRoutes:{...(item==null?{}:{weapon:{item,quality:'hd',source:body.id}}),boots:{item:boot,quality:'hd',source:savedBoot.id}},
+   layeredSlots:true,omitted:[]}:result;
  }
  function profileFiles(r,frame){
-  const {spec:s,body,pants}=r.profileLayers,k=s.directions[r.direction].clock[frame],p=s.directions[r.direction].poses[k],phase=s.phaseMap[k];
-  return [...new Set([...femaleRegistry.requiredFiles(body,{frame:phase}),...p.layers.map(l=>l.source),...(pants==null?[p.bareForeground]:[p.cloth,...p.owners,p.foreground]),...(body.item===17?[s.orb17.mask]:[])])];
+  const {spec:s,body,pants,boots}=r.profileLayers,k=s.directions[r.direction].clock[frame],p=s.directions[r.direction].poses[k],phase=s.phaseMap[k];
+  return [...new Set([...femaleRegistry.requiredFiles(body,{frame:phase}),...p.layers.map(l=>l.source),...(pants==null?[p.bareForeground]:[p.cloth,...p.owners,p.foreground]),...(body.item===17?[s.orb17.mask]:[]),...(boots?boots.map(l=>'tools/rework-modular-outfits-hd/assets/'+l.frames[frame]+'.png'):[])])];
  }
+ // Authored foot only. The detached alpha=1 specks in these exact
+ // source PNGs are outside the item and never reach the body/head.
+ const profileBootOwnFootSourceY={"1a4e48a1fa5686452f7c11be06054d98cceb574582d8b6c314bec9742f25ffe1":300,"3ea0cce7f64a512d903835d10219b26174b43ba9cbe140169b0e01b0d6b319f1":300,"ac18beaaf168a62c3e1481e09e4bf85d55b5744d669e72c98138e6f1fbfd3eac":300,"9708b293fc79252cbdebcc0803b87e51eb1117f7df04319fd6b0fe81f8dba5c3":300,"39acea37be57ad1df2e32c4c36938cfc7e17b4d5f31d89aa1c6dbffd8b644442":300,"63f7935455c74958a5c048f8a57de3d5bfc4f8a476a3d615100617c6db32d88f":300,"ce675509721ba16934c894b31e3089b684b415ff67c7792150a7d71fe3499b7b":300,"e10dacb2684fd02a0a09097c3800af90c102e25bcca7846e045c8c68a9c420b9":300,"eb6e52dd9df8a139d43a3bba7b140c7e78fc4f3b2d9a4c1d40bed413c9ae3b37":300,"4dba05d003950b41d6c990b0a380a4383330325fd951f28c6249930a8db33c00":300,"173e58250bac3484bc167f49f6d0c730b36eacd2b1a0632e4b6502a256ad54e4":300,"4f37ba625d5bed6959fe39e8cf0b98ecd56a695cac4ce4cadbe990e1e8d85503":300,"5c72acac28ece5a87ea70827daab9672e4019fedf6787a18f8d6df1366cae2e0":300,"a0b1d6930467011526c8ec24304050c189eb7c3b3e34861f9a99d0a57053b70a":300,"f177ba2c2c0463384e556c8e647ccfc13ebbe463a78091b267056303fd406954":300,"c0549f7075397a9c9243cc50c44c8807fb7950de5daa31526dde0553f5e8e615":300,"3c3094bc8e5385c5d5765dcf85510b2ceb5a0b9252f3729b2b4d61d80a0475ae":300,"ddbf8e24c1294d8fb51e48c64660b22636f1ea5db02a085e6c7e7c6bb34a7b24":300,"9b887f2944162a38211b1b038887f2f871abd736df85fd26ef5fd2b028f9fe5b":300,"f73807a2e636789a909f095aae7537a3a867e9e204fde60c7a8d39f10f93d66c":300,"b800a413f8777a51daf663a454f69590bed22421dc235802500c9264abfa967d":300,"3d12bc26de1fb5f36ba93fc63470f1227e9293ea2bfb3bc0e8d638f53a39d9ae":300,"c41d5d6c76ff60c9de28d5d663414b508dd1254a3141ca22ce514408e8e54f66":300,"3a58b0f059ae2e7e8e52769f0ce93702c318f70ab9826f4c70650b039b9a15ab":300,"72e00be9e7bda7f680dde1d3ee47b26e108998085e72b66585b4db3f7f18a8ed":300,"e85304c075a957bc6809bdf6c0532a483351233a214d774e23fdbdc2f0294918":300,"22692556bd1db7c8d9f9f6fa4e4616954f064613b7d0fca4c27590d2ac3d8554":300,"9471fa2b73d811283694660c02bb93c0e431898b6b12cb3bda2f9685a739ab9c":300,"987fc53be9def24e447540b7986d968e507464b4ba9ca609b21cd9cc6e6718df":300,"cf2256f854874d7d51bb8d1a302793ed5624f1d24d2d6e204e8385ba539058e0":300,"9f5bee91de7cdc47a293309754e637570cbaedfec531f97aca292342efbb6e6a":300,"cb32b8890f4c00b3c8f9cddac4f26c294bad2968ec3e33ec185360ddf0c64c54":300,"ec033dc19759d4c680b8c28882afadd3e0474a2a0f6f23ba4443765331deeff2":300,"b153c3f5a0e6099594de644a474f6469d332fb39441aa609f743c094f4a4e290":300};
  function composeProfileLayers(r,frame,entry){
-  const {spec:s,body,pants}=r.profileLayers,k=s.directions[r.direction].clock[frame],p=s.directions[r.direction].poses[k],phase=s.phaseMap[k],C=()=>makeCanvas(512,512),pixels=c=>c.getContext('2d').getImageData(0,0,512,512).data,images=new Map(entry.images),api=root.MareAppearance96,skin=root.MareNativeSkinHD,skinName=body.material?.skinColor;
+  const {spec:s,body,pants,boots}=r.profileLayers,k=s.directions[r.direction].clock[frame],p=s.directions[r.direction].poses[k],phase=s.phaseMap[k],C=()=>makeCanvas(512,512),pixels=c=>c.getContext('2d').getImageData(0,0,512,512).data,images=new Map(entry.images),api=root.MareAppearance96,skin=root.MareNativeSkinHD,skinName=body.material?.skinColor;
   const source=f=>{let im=images.get(f);if(!im||im.width!==512||im.height!==512)throw Error('Missing profile source '+f);return im;};
   const tinted=f=>{const t=C(),ctx=t.getContext('2d');ctx.drawImage(source(f),0,0);if(skinName){let d=ctx.getImageData(0,0,512,512),tones=new Uint8Array(512*512);for(let n=0;n<tones.length;n++)if(d.data[n*4+3])tones[n]=skin.tone(...d.data.subarray(n*4,n*4+3));d.data.set(api.recolor(d.data,tones,api.skins[skinName].ramp));ctx.putImageData(d,0,0);}return t;};
-  if(body.item===17&&skinName){const part=body.states[phase].parts[0];if(part.sha256!==s.orb17.sourceSHA256)throw Error('Profile orb source guard');const im=images.get(part.url),mask=images.get(s.orb17.mask);if(!im||!mask||im.width!==mask.width||im.height!==mask.height)throw Error('Missing profile orb material');const t=makeCanvas(im.width,im.height),ctx=t.getContext('2d'),m=makeCanvas(im.width,im.height);ctx.drawImage(im,0,0);m.getContext('2d').drawImage(mask,0,0);const d=ctx.getImageData(0,0,im.width,im.height),md=m.getContext('2d').getImageData(0,0,im.width,im.height).data,tones=new Uint8Array(md.length/4);for(let n=0;n<tones.length;n++)if(md[n*4]&&d.data[n*4+3])tones[n]=skin.tone(...d.data.subarray(n*4,n*4+3));d.data.set(api.recolor(d.data,tones,api.skins[skinName].ramp));ctx.putImageData(d,0,0);images.set(part.url,t);m.width=1;}
+  if(body.item===17&&skinName&&!body.ownW17LowerBody){const part=body.states[phase].parts[0];if(part.sha256!==s.orb17.sourceSHA256)throw Error('Profile orb source guard');const im=images.get(part.url),mask=images.get(s.orb17.mask);if(!im||!mask||im.width!==mask.width||im.height!==mask.height)throw Error('Missing profile orb material');const t=makeCanvas(im.width,im.height),ctx=t.getContext('2d'),m=makeCanvas(im.width,im.height);ctx.drawImage(im,0,0);m.getContext('2d').drawImage(mask,0,0);const d=ctx.getImageData(0,0,im.width,im.height),md=m.getContext('2d').getImageData(0,0,im.width,im.height).data,tones=new Uint8Array(md.length/4);for(let n=0;n<tones.length;n++)if(md[n*4]&&d.data[n*4+3])tones[n]=skin.tone(...d.data.subarray(n*4,n*4+3));d.data.set(api.recolor(d.data,tones,api.skins[skinName].ramp));ctx.putImageData(d,0,0);images.set(part.url,t);m.width=1;}
   const ops=[],native=C(),info=femaleRegistry.render(native.getContext('2d'),body,images,{frame:phase,makeCanvas,captureOps:o=>ops.push(o)}),canvas=C(),ctx=canvas.getContext('2d');
+  const drawBoot=l=>{
+   const sha=l.frames[frame],im=source('tools/rework-modular-outfits-hd/assets/'+sha+'.png'),y=profileBootOwnFootSourceY[sha];
+   if(y!=null)ctx.drawImage(im,0,y,512,512-y,0,y,512,512-y);
+   else ctx.drawImage(im,0,0);
+  };
+  if(boots)for(const l of boots)if(l.depth<0)drawBoot(l);
   for(const l of p.layers){if(l.skin){const t=tinted(l.source);ctx.drawImage(t,0,0);t.width=1;}else ctx.drawImage(source(l.source),0,0);}
   if(pants!=null){ctx.drawImage(source(p.cloth),0,0);for(const f of p.owners){const t=tinted(f);ctx.drawImage(t,0,0);t.width=1;}}
+  if(boots)for(const l of boots)if(l.depth>0)drawBoot(l);
   const pad=body.paddingPhysical||0,W=512+pad*2,result=makeCanvas(W,W),rc=result.getContext('2d');rc.drawImage(canvas,pad,pad);const baseline=rc.getImageData(0,0,W,W).data.slice();for(const o of ops.filter(o=>o.op.part))rc.drawImage(o.canvas,0,0);
   if(body.item===0||body.item===5){const mc=C(),mx=mc.getContext('2d');mx.drawImage(source(pants==null?p.bareForeground:p.foreground),0,0);const mask=pixels(mc),d=rc.getImageData(0,0,W,W);for(let y=0;y<512;y++)for(let x=0;x<512;x++)if(mask[(y*512+x)*4]){const n=((y+pad)*W+x+pad)*4;d.data.set(baseline.subarray(n,n+4),n);}rc.putImageData(d,0,0);mc.width=1;}
   for(const o of ops.filter(o=>o.op.layer&&['headBase','face','hair'].includes(o.op.layer.slot)))rc.drawImage(o.canvas,0,0);
@@ -110,7 +223,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
 
  // Authored passes verified at all twelve North contacts.
+ const northNativeDepthBootSources={
+  134:'a38e532b431f3e5b3f7d0b246f5a83eb0f9e7a0a2526eefcb0ab8964bf460e10',
+  155:'87176ce3aabb752d6423f4c62f9098f7e74d1ccd802311bd86f1b97a0f012fbd',
+  162:'eceb0adf7561d266c425291a564ecf551b211363995eb6f2a54c8f61604d3b14',
+  169:'f5f076819194ea0f50513d6101664a5a6147fd2e6c6c6152f60dec0ca9dc30aa',
+ };
  const northWalkBootSources={
+  ...northNativeDepthBootSources,
   8:'5c716dcd2e6b816af05a00dce4d7ccface43c7dd6cd3ad7c4d41d16a662f68b5',
   9:'35a1244a3a30540158e7279cc494c111a410011c6aa0b425e5886895472fb179',
   141:'beb5789022d012cf503306c1b90e38c33b270ce0f3cee7d9a1fc70ee4a2b5ed2',
@@ -118,24 +238,120 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   176:'36c8ab4a95ecdbe3b821dd345c494832c7084e0c73e24ab60b5a39749ad85c08',
   183:'f5a6dfecb3ed623d8356c9c40c6a593c4ff2f65323bcd59a5d05cb47ef1fe282'
  };
+ // The fit comes from the signed NORTH body/clock and independent boot
+ // passes. Look up only the actual projected obstacle for overlap, not
+ // the equipped weapon's catalog ID. Old manifests retain named rows;
+ // their names do not participate in projection identity.
+ const northBootProjectionIndex=new WeakMap(),northBootIntersectionMemo=new WeakMap();
+ function northBootProjectionKey(pad,states){return JSON.stringify([pad,states]);}
+ function northBootProjections(q){
+  if(northBootProjectionIndex.has(q))return northBootProjectionIndex.get(q);
+  const rows=Array.isArray(q.projections)?q.projections:
+   q.weapons&&typeof q.weapons==='object'?Object.values(q.weapons):[];
+  const unique=new Map();
+  for(const row of rows){
+   if(!Number.isSafeInteger(row?.pad)||row.pad<0||!Array.isArray(row.signature)||!Array.isArray(row.states)||
+      row.states.length!==row.signature.length||
+      row.states.some(x=>!Number.isSafeInteger(x)||!Array.isArray(q.shapes[x])))continue;
+   let invalid=false;
+   const decoded=row.signature.map(parts=>{
+    if(!Array.isArray(parts)){invalid=true;return null;}
+    return parts.map(part=>{
+     if(!Array.isArray(part)||part.length!==3){invalid=true;return null;}
+     const [h,m,k]=part,sha=q.hashes[h],matrix=q.matrices[m],meta=q.metadata[k];
+     if(!/^[a-f0-9]{64}$/.test(sha)||!Array.isArray(matrix)||!Array.isArray(meta)){
+      invalid=true;return null;
+     }
+     return [sha,'tools/rework-weapon-layers-hd/assets/'+sha+'.png',matrix,...meta];
+    });
+   });
+   if(invalid)continue;
+   const key=northBootProjectionKey(row.pad,decoded);
+   if(unique.has(key)&&JSON.stringify(unique.get(key))!==JSON.stringify(row.states)){unique.set(key,null);continue;}
+   unique.set(key,row.states);
+  }
+  northBootProjectionIndex.set(q,unique);return unique;
+ }
+ function northBootNoSharedPixels(native,boot,gear,s){
+  const q=s.disjointBootOwnContours,b=q?.boots?.[boot],same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!b||![q.hashes,q.matrices,q.metadata,q.shapes,q.contours,b.keys,b.ticks,b.cells].every(Array.isArray)||
+    !same(gear.map(x=>x.frames),b.keys.map(seq=>seq.map(i=>q.hashes[i])))||native.states.some(st=>!Array.isArray(st.parts)))return false;
+  const projection=northBootProjections(q).get(northBootProjectionKey(native.paddingPhysical||0,
+   native.states.map(st=>st.parts.map(p=>[p.sha256,p.url,p.matrix,p.depth,p.sourceClip??null,p.sourceNativeSize??null]))));
+  if(!projection)return false;
+  // Cache only after the receiving pose, original part projection and boot
+  // assets were checked. An equally projected alternative uses this proof.
+  if(!northBootIntersectionMemo.has(projection))northBootIntersectionMemo.set(projection,new Map());
+  const memo=northBootIntersectionMemo.get(projection),memoKey=JSON.stringify([boot,native.direction,s.phaseMap,s.frameToPhase]);
+  if(memo.has(memoKey))return memo.get(memoKey);
+  for(let tick=0;tick<40;tick++){
+   const a=q.shapes[projection[s.phaseMap[s.frameToPhase[tick]]]],rows=q.shapes[b.cells[b.ticks[tick]]];
+   let j=0,k=0;
+   while(j<a.length&&k<rows.length){
+    const y=a[j],Y=rows[k];
+    if(y<Y){j+=2;continue;}if(Y<y){k+=2;continue;}
+    const x=q.contours[a[j+1]],X=q.contours[rows[k+1]];
+    let p=0,m=0;
+    while(p<x.length&&m<X.length){
+     if(x[p+1]<=X[m])p+=2;
+     else if(X[m+1]<=x[p])m+=2;
+     else {memo.set(memoKey,false);return false;}
+    }
+    j+=2;k+=2;
+   }
+  }
+  memo.set(memoKey,true);
+  return true;
+ }
  function resolveNorthLayers(player,o,a,equipment){
   const s=northRig;
   if(player.__reworkSubset||canonical(a.body)!=='female'||o.action!=='walk'||o.direction!=='north'||s?.schema!=='female-north-author-layered-rig-v1')return null;
   if(Object.entries(equipment).some(([key,v])=>!['weapon','legs','pants','boots'].includes(key)||v&&typeof v==='object'&&['variant','variantId','appearanceVariant'].some(k=>v[k]!=null&&v[k]!=='original'))||equipment.legs!=null&&equipment.pants!=null)return null;
   const raw=equipment.weapon?.def??equipment.weapon,item=raw==null?null:Number(raw),trousers=equipment.legs??equipment.pants,pants=trousers==null?null:Number(trousers.def??trousers);
   const bootVal=equipment.boots,boot=bootVal==null?null:Number(bootVal.def??bootVal),
-   ownPants=[168,182].includes(pants),lowerKit=ownPants||boot!=null;
-  if(item!=null&&![0,5,17].includes(item)||pants!=null&&!ownPants&&pants!==21||
-     lowerKit&&(item!=null||pants===21||boot!=null&&(!Object.hasOwn(northWalkBootSources,boot)||boot===148&&pants===182)||!root.MareCharacterAppearance?.skins?.[a.skin]))return null;
+   ownPants=[168,182].includes(pants),lowerKit=ownPants||boot!=null,
+   nativeDepthBootOnly=Object.hasOwn(northNativeDepthBootSources,boot),
+   reservedStaff=o.consumer==='world'&&!o.weaponless&&!lowerKit&&pants==null&&[123,124,125,126,127].includes(item)&&player.classId===(item<=124?'strategist':'healer'),
+   disjointBootOnly=item!=null&&![0,5,17].includes(item)&&pants==null&&boot!=null;
+  if(nativeDepthBootOnly&&(pants!=null||o.consumer!=='world')||item!=null&&![0,5,17].includes(item)&&!disjointBootOnly&&!reservedStaff||pants!=null&&!ownPants&&pants!==21||
+     lowerKit&&(pants===21||boot!=null&&(!Object.hasOwn(northWalkBootSources,boot)||boot===148&&pants===182)||!root.MareCharacterAppearance?.skins?.[a.skin]))return null;
   const duration=[125,75,50,125,75,50,125,75,50,125,75,50],equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
   if(!equal(s.phaseMap,[0,1,1,2,3,3,4,5,5,6,7,7])||!equal(s.durationMs,duration)||!equal(s.frameToPhase,duration.flatMap((n,k)=>Array(n/25).fill(k)))||s.legs?.length!==12||s.armOcclusion?.length!==12||s.equipmentLayers?.[21]?.cloth?.length!==12||s.equipmentLayers?.[21]?.owner?.length!==12)return null;
-  const native=femaleRegistry?.resolve({body:'female',action:'walk',direction:'north',item:item??0,equipment:{weapon:item??0},appearance:a});
-  if(!native||native.sourceBaseId!==s.bodyRecord||native.states.length!==8)return null;
+  const native=femaleRegistry?.resolve({body:'female',action:'walk',direction:'north',item:item??0,equipment:{weapon:item??0},appearance:a,reservedCardinalStaffWorld:reservedStaff,board07OrbWorld:item===17&&o.consumer==='world'});
+  if(!native||reservedStaff&&!native.ownReservedFemaleCardinalStaff||native.sourceBaseId!==s.bodyRecord||native.states.length!==8)return null;
+  // New lower passes use their own short-hem contact, not another boot or
+  // the weapon ID. Preserve the actual native projection and depth planes.
+  if(nativeDepthBootOnly&&(native.baseRecord.sourcePackSHA256!=='ade447b6abe83494aa78833f9ed051b36251c9fc5a97af9d3c38b99933091dbc'||
+    !equal(native.baseRecord.pack.directions.north.layers.map(l=>[l.id,l.depth]),[['legs',0],['torso',1],['shorts',2],['top',3],['arms',4],['head-rigid',5]])||
+    !native.material||native.material.gearRecord||!Number.isSafeInteger(native.paddingPhysical??0)||
+    (native.paddingPhysical??0)<0||(native.paddingPhysical??0)>256||
+    native.states.some((st,i)=>st.frame!==i||st.hideBaseLayers?.length||st.baseMasks&&Object.keys(st.baseMasks).length||
+     !st.parts.length||st.parts.length>2||st.parts.some(v=>![3.8099999999999996,4.01].includes(v.depth)||
+      !/^[a-f0-9]{64}$/.test(v.sha256)||v.url!=='tools/rework-weapon-layers-hd/assets/'+v.sha256+'.png'||
+      v.matrix?.length!==6||!v.matrix.every(Number.isFinite)||
+      (v.sourceClip!=null&&(v.sourceClip.length!==4||!v.sourceClip.every(Number.isFinite)))))))return null;
+
+  if(item!=null&&lowerKit){
+   const ref=femaleRegistry?.resolve({body:'female',action:'walk',direction:'north',item:0,equipment:{weapon:0},appearance:a});
+   if(!ref||!equal(native.baseRecord.pack,ref.baseRecord.pack)||native.material?.id!==ref.material?.id||
+      !disjointBootOnly&&(native.paddingPhysical!==(item===0?64:0)||native.states.some(st=>st.parts.length!==1||
+      st.parts[0].sha256!==({0:'823474b4f6a0782ef39eca0dc176630df7ab6886e7b1cb70f800c0baa04b51bd',
+        5:'d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d',
+        17:'dd514d855c0b168978c92074132bb47f8c3aa27d24f3696537884365b03e4003'}[item])||
+      st.parts[0].depth!==(item===17?4.01:3.8099999999999996))))return null;
+  }
   // A weapon is an attachment consumer of this same authored rig, not an
   // alternate body/clothing image. Empty hands use the identical body source.
   const body=item==null?{...native,item:null,paddingPhysical:0,states:native.states.map(st=>({...st,parts:[]}))}:{...native};
   if(body.material)body.material={...body.material,id:body.material.id+':north-neck-contact-v1',northNeckContact:true};
   const d=body.pack.directions.north;
+  if(o.consumer==='world'&&!lowerKit&&pants==null&&(reservedStaff||item==null)&&
+     body.baseRecord.sourcePackSHA256==='ade447b6abe83494aa78833f9ed051b36251c9fc5a97af9d3c38b99933091dbc'&&
+     equal(d.clip,{frames:8,fps:8,loop:true})&&body.paddingPhysical===0&&
+     d.layers.some(l=>l.id==='top'&&l.slot==='top'&&l.depth===3&&l.binding?.kind==='fixed'&&l.frames?.length===8)){
+   body.ownReservedFemaleNorthWearTop=true;
+   if(body.material)body.material={...body.material,id:body.material.id+':native-north-top-material-verified'};
+  }
   let lower=null;
   if(lowerKit){
    const resource='tools/rework-modular-outfits-hd/assets/', donor=boot==null?null:outfitById.get(`frozen-v47-female-151-boot${boot}-north-walk`),
@@ -161,13 +377,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     owner=pd.layers.find(l=>l.id===(pants===168?'approved-original-owner-RGBA':'f182-original-owners'));
     if(!cloth||!owner||![cloth,owner].every(l=>l.binding?.kind==='fixed'&&spans(l)))return null;
    }
-   lower={gear,cloth,owner,prefix:resource};
+   if(disjointBootOnly&&!nativeDepthBootOnly&&!northBootNoSharedPixels(native,boot,gear,s))return null;
+   lower={gear,cloth,owner,prefix:resource,disjointBootOnly:disjointBootOnly&&!nativeDepthBootOnly,...(nativeDepthBootOnly?{nativeDepthBootOnly:true}:{})};
   }
-  return {...body,id:'authored-north-layered:'+String(item)+':'+String(pants)+':'+body.id+(boot==null?'':':boot'+boot),hdKind:'authored-north-layered',equipment:{...(item==null?{}:{weapon:item}),...(pants==null?{}:{legs:pants}),...(boot==null?{}:{boots:boot})},northLayers:{spec:s,body,pants:ownPants?null:pants,lower},...(lower?{slotRoutes:{...(ownPants?{[equipment.legs!=null?'legs':'pants']:{item:pants,quality:'hd',source:'independent-female-pants'+pants+'-north-walk'}}:{}),...(boot!=null?{boots:{item:boot,quality:'hd',source:`frozen-v47-female-151-boot${boot}-north-walk`}}:{})},omitted:[]}:{} ),colorAppearance:a,pack:{...body.pack,directions:{north:{...d,clip:{frames:40,fps:40,loop:true}}}}};
+  return {...body,id:'authored-north-layered:'+String(item)+':'+String(pants)+':'+body.id+(boot==null?'':':boot'+boot),hdKind:'authored-north-layered',equipment:{...(item==null?{}:{weapon:item}),...(pants==null?{}:{legs:pants}),...(boot==null?{}:{boots:boot})},northLayers:{spec:s,body,pants:ownPants?null:pants,lower},...(lower?{slotRoutes:{...(item!=null?{weapon:{item,quality:'hd',source:native.id}}:{}),...(ownPants?{[equipment.legs!=null?'legs':'pants']:{item:pants,quality:'hd',source:'independent-female-pants'+pants+'-north-walk'}}:{}),...(boot!=null?{boots:{item:boot,quality:'hd',source:`frozen-v47-female-151-boot${boot}-north-walk`}}:{})},omitted:[]}:{} ),colorAppearance:a,pack:{...body.pack,directions:{north:{...d,clip:{frames:40,fps:40,loop:true}}}}};
  }
  function northFiles(r,frame){
   const {spec:s,body,pants,lower}=r.northLayers,k=s.frameToPhase[frame],f=s.phaseMap[k];
-  return [...new Set([...femaleRegistry.requiredFiles(body,{frame:f}),s.legs[k],s.armOcclusion[k],...(lower?[...lower.gear,lower.cloth,lower.owner].filter(Boolean).map(l=>lower.prefix+l.frames[frame]+'.png'):[]),...(pants==null?[]:[s.equipmentLayers[pants].cloth[k],s.equipmentLayers[pants].owner[k]]),...(body.item===17?[s.orb17Skin.mask]:[])])];
+  return [...new Set([...femaleRegistry.requiredFiles(body,{frame:f}),s.legs[k],s.armOcclusion[k],...(lower?[...lower.gear,lower.cloth,lower.owner].filter(Boolean).map(l=>lower.prefix+l.frames[frame]+'.png'):[]),...(r.northLayers.ownedPants?['tools/rework-modular-outfits-hd/assets/'+r.northLayers.ownedPants[k]+'.png']:[]),...(pants==null?[]:[s.equipmentLayers[pants].cloth[k],s.equipmentLayers[pants].owner[k]]),...(body.item===17?[s.orb17Skin.mask]:[])])];
  }
  function composeNorthLayers(r,frame,entry){
   const {spec:s,body:rBody,pants}=r.northLayers,k=s.frameToPhase[frame],phase=s.phaseMap[k],pad=rBody.paddingPhysical||0,W=512+2*pad,C=(w=W)=>makeCanvas(w,w),pixels=c=>c.getContext('2d').getImageData(0,0,c.width,c.height).data;
@@ -179,7 +396,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const originalArms=images.get('tools/rework-base-hd/assets/'+arms.frames[phase]+'.png'),arm=C(512),ac=arm.getContext('2d'),mc=C(512).getContext('2d');ac.drawImage(originalArms,0,0);mc.drawImage(mask,0,0);
   const ad=ac.getImageData(0,0,512,512),m=mc.getImageData(0,0,512,512).data;
   for(let n=0;n<m.length;n+=4)if(m[n]){if(m[n]!==255||ad.data[n+3]!==255)throw Error('NORTH rig occlusion ownership mismatch');ad.data.fill(0,n,n+4);}ac.putImageData(ad,0,0);images.set('tools/rework-base-hd/assets/'+arms.frames[phase]+'.png',arm);
-  if(rBody.item===17&&rBody.material?.skinColor){
+  if(rBody.item===17&&rBody.material?.skinColor&&!rBody.ownW17LowerBody){
    const p=rBody.states[phase].parts[0];if(p.sha256!==s.orb17Skin.sourceSHA256)throw Error('NORTH orb material/source mismatch');
    const im=images.get(p.url),material=images.get(s.orb17Skin.mask);if(!im||!material||im.width!==material.width||im.height!==material.height)throw Error('Missing NORTH orb skin mask');
    const tile=C(im.width),tc=tile.getContext('2d'),mm=C(im.width).getContext('2d');tc.drawImage(im,0,0);mm.drawImage(material,0,0);const data=tc.getImageData(0,0,im.width,im.height),m=mm.getImageData(0,0,im.width,im.height).data,tones=new Uint8Array(m.length/4),skin=root.MareNativeSkinHD,api=root.MareAppearance96;
@@ -187,20 +404,73 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   const ops=[],native=C(),info=femaleRegistry.render(native.getContext('2d'),rBody,images,{frame:phase,makeCanvas,captureOps:x=>ops.push(x)}),anatomy=ops.filter(x=>x.op.layer),gear=ops.filter(x=>x.op.part);
   const naked=C();for(const op of anatomy)naked.getContext('2d').drawImage(op.canvas,0,0);
+  if(r.northLayers.ownedPants){
+   const lower=r.northLayers.lower,cloth=images.get('tools/rework-modular-outfits-hd/assets/'+r.northLayers.ownedPants[k]+'.png'),
+    shorts=anatomy.find(q=>q.op.layer.id==='shorts'),path=lower?.prefix;
+   if(cloth?.width!==512||cloth.height!==512||!shorts)throw Error('Unverified North garment ownership');
+   // Compare the exact already-selected host to the same layer order without
+   // clothing. Apply the own garment only where that original witness agrees.
+   // This preserves any signed material postpasses in the weapon/arms.
+   const {ownedPants,...unworn}=r.northLayers,prior=lower?composeNorthLayers({...r,northLayers:unworn},frame,entry):{canvas:native,info},
+    boots=(lower?.gear||[]).map(l=>({depth:l.depth===-1?-1:3.7,image:images.get(path+l.frames[frame]+'.png'),offset:pad})),
+    owners=ops.map(q=>({depth:q.op.depth,image:q.canvas,offset:0})),
+    source={depth:2,image:cloth,offset:pad},base=C(),fit=C(),matte=C(),
+    paint=(dst,layers)=>{const ctx=dst.getContext('2d');for(const l of layers.sort((a,b)=>a.depth-b.depth))ctx.drawImage(l.image,l.offset,l.offset);};
+   paint(base,[...boots,...owners]);paint(fit,[...boots,...owners.filter(q=>q.image!==shorts.canvas),source]);
+   paint(matte,[source,{depth:0,image:shorts.canvas,offset:0}]);
+   const dst=prior.canvas.getContext('2d'),wanted=dst.getImageData(0,0,W,W),mask=pixels(matte),
+    bytes=a=>new Uint32Array(a.buffer,a.byteOffset,a.byteLength/4),
+    actual=bytes(wanted.data),without=bytes(pixels(base)),withCloth=bytes(pixels(fit));
+   for(let i=0;i<actual.length;i++)if(mask[i*4+3]&&actual[i]===without[i])actual[i]=withCloth[i];
+   dst.putImageData(wanted,0,0);
+   for(const tmp of [base,fit,matte,naked,...ops.map(q=>q.canvas),...(lower?[native]:[])])tmp.width=1;
+   return northResult(prior.canvas,{...prior.info,frames:40,fps:40});
+  }
   if(r.northLayers.lower){
-   const {gear,cloth,owner,prefix}=r.northLayers.lower,read=l=>{const im=images.get(prefix+l.frames[frame]+'.png');if(im?.width!==512||im.height!==512)throw Error('Missing North walk lower-kit raster');return im;},
-    target=C(),tc=target.getContext('2d');
-   for(const l of gear.filter(l=>l.depth===-1))tc.drawImage(read(l),0,0);
-   tc.drawImage(native,0,0);
+   const {gear:boots,cloth,owner,prefix}=r.northLayers.lower,read=l=>{const im=images.get(prefix+l.frames[frame]+'.png');if(im?.width!==512||im.height!==512)throw Error('Missing North walk lower-kit raster');return im;};
+   const target=C(),tc=target.getContext('2d'),sources=boots.map(l=>({depth:l.depth===-1?-1:3.7,image:read(l),offset:pad}));
+   let shape;
    if(cloth){
-    const shape=C(),sc=shape.getContext('2d');sc.drawImage(read(owner),0,0);
+    shape=C(512);const sc=shape.getContext('2d');sc.drawImage(read(owner),0,0);
     const mask=sc.getImageData(0,0,512,512).data;sc.clearRect(0,0,512,512);sc.drawImage(read(cloth),0,0);
     const data=sc.getImageData(0,0,512,512);
     for(let n=0;n<mask.length;n+=4)if(mask[n+3]){if(mask[n+3]!==255)throw Error('Nonbinary North walk pants owner');data.data.fill(0,n,n+4);}
-    sc.putImageData(data,0,0);tc.drawImage(shape,0,0);shape.width=1;
+    sc.putImageData(data,0,0);sources.push({depth:3.6,image:shape,offset:pad});
    }
-   for(const l of gear.filter(l=>l.depth===45))tc.drawImage(read(l),0,0);
-   native.width=1;info.frames=40;info.fps=40;return northResult(target,info);
+   if(r.northLayers.lower.nativeDepthBootOnly){
+    // At equal position: rear shaft / legs / front shaft / native gear
+    // (with existing foreground arms). Restrict every changed pixel to the
+    // signed boot's own projected support, preserving the receiving frame.
+    const support=C(),sc=support.getContext('2d');
+    for(const boot of sources)sc.drawImage(boot.image,boot.offset,boot.offset);
+    const ordered=[...sources,...ops.map(q=>({depth:q.op.depth,image:q.canvas,offset:0}))].sort((a,b)=>a.depth-b.depth);
+    for(const op of ordered)tc.drawImage(op.image,op.offset,op.offset);
+    const nc=native.getContext('2d'),raw=nc.getImageData(0,0,W,W),mask=pixels(support),paint=pixels(target);
+    for(let i=0;i<mask.length;i+=4)if(mask[i+3])raw.data.set(paint.subarray(i,i+4),i);
+    nc.putImageData(raw,0,0);
+    target.width=support.width=naked.width=1;for(const q of ops)q.canvas.width=1;
+    info.frames=40;info.fps=40;return northResult(native,info);
+   }
+   // Retain the proven unarmed order and its exact pixels outside the early
+   // weapon pass. Inside projected weapon alpha, order the same existing
+   // boot and cloth passes below the held weapon, with the original arms.
+   for(const l of sources.filter(l=>l.depth===-1))tc.drawImage(l.image,pad,pad);
+   tc.drawImage(gear.length&&!r.northLayers.lower.disjointBootOnly?naked:native,0,0);
+   if(shape)tc.drawImage(shape,pad,pad);
+   for(const l of sources.filter(l=>l.depth===3.7))tc.drawImage(l.image,pad,pad);
+   if(gear.length&&!r.northLayers.lower.disjointBootOnly){
+    const visible=C(),vc=visible.getContext('2d'),low=C(),lc=low.getContext('2d');
+    vc.drawImage(gear[0].canvas,0,0);vc.globalCompositeOperation='destination-out';
+    for(const q of anatomy)if(q.op.depth>gear[0].op.depth)vc.drawImage(q.canvas,0,0);
+    const ordered=[...sources,...ops.map(q=>({depth:q.op.depth,image:q.canvas,offset:0}))].sort((a,b)=>a.depth-b.depth);
+    for(const q of ordered)lc.drawImage(q.image,q.offset,q.offset);
+    const output=tc.getImageData(0,0,W,W),support=pixels(visible),value=pixels(low);
+    for(let n=0;n<support.length;n+=4)if(support[n+3])output.data.set(value.subarray(n,n+4),n);
+    tc.putImageData(output,0,0);visible.width=low.width=1;
+   }
+   if(shape)shape.width=1;
+   native.width=naked.width=1;for(const q of ops)q.canvas.width=1;
+   info.frames=40;info.fps=40;return northResult(target,info);
   }
   if(pants==null){info.frames=40;info.fps=40;return northResult(native,info);}
   const cloth=images.get(s.equipmentLayers[pants].cloth[k]),owner=images.get(s.equipmentLayers[pants].owner[k]);if(!cloth||cloth.width!==512||cloth.height!==512||!owner||owner.width!==512||owner.height!==512)throw Error('Missing NORTH garment layers');
@@ -211,19 +481,96 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   info.frames=40;info.fps=40;return northResult(baseline,info);
   function northResult(canvas,info){const rgba=pixels(canvas);let top=W;for(let y=0;y<W&&top===W;y++)for(let x=0;x<W;x++)if(rgba[(y*W+x)*4+3]){top=y;break;}return {canvas,info:{...info,visualHeight:Math.max(0,info.pivot.y-top)}};}
  }
+ // Same South rig: these exact projected weapon pixels miss the union of approved boot passes and signed foot contacts.
+ const southCarryBootWeaponStamps={"15":[0,[[["79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null]],[["79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null]],[["79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec",5.01,[0.9630263849368614,-0.26940709329087836,0.26940709329087836,0.9630263849368614,-35.58986033742667,0.8642601946791046],null]],[["79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec",5.01,[0.9772836091349132,-0.21193571505585887,0.21193571505585887,0.9772836091349132,-20.183437143743888,-16.76687863364691],null]],[["79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec",5.01,[0.9673793417682351,-0.25333221098008046,0.25333221098008046,0.9673793417682351,-29.094088574537764,-2.7539706910403083],null]],[["79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec",5.01,[0.9610329687712401,-0.27643377676169867,0.27643377676169867,0.9610329687712401,-34.53194073596643,5.35172363596746],null]],[["79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec",5.01,[0.9768320800361193,-0.21400721345858562,0.21400721345858562,0.9768320800361193,-19.790695740208562,-21.0810411009453],null]],[["79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec",5.01,[0.9930715987519161,0.11751084950894268,-0.11751084950894268,0.9930715987519161,84.68298433172666,-123.30341691651861],null]]]],"32":[0,[[["b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8",4.81,[0.992645877550526,0.12105437531104009,-0.12105437531104009,0.992645877550526,-107.82136255633935,-105.75278096546748],null]],[["b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8",4.81,[0.9894610641341026,0.14479918011718576,-0.14479918011718576,0.9894610641341026,-99.72987455661737,-113.16276378675968],null]],[["b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8",4.81,[0.9967290481146759,0.08081586876605498,-0.08081586876605498,0.9967290481146759,-120.75895414031088,-97.75549626789805],null]],[["b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8",4.81,[0.9682773237093576,-0.2498780190217698,0.2498780190217698,0.9682773237093576,-214.38414093653356,17.833549348137012],null]],[["b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8",4.81,[0.9953500135553001,-0.09632419486019046,0.09632419486019046,0.9953500135553001,-172.60856011740594,-49.05451697593753],null]],[["b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8",4.81,[0.9953500135553001,-0.09632419486019046,0.09632419486019046,0.9953500135553001,-172.60856011740594,-49.05451697593753],null]],[["b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8",4.81,[0.9904922731777516,0.13756837127468785,-0.13756837127468785,0.9904922731777516,-99.52033714743688,-112.9268200596103],null]],[["b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8",4.81,[0.9968981486534685,0.07870248542001096,-0.07870248542001096,0.9968981486534685,-120.52730645358457,-92.05766709385586],null]]]],"67":[0,[[["a0abe61eb3d9de535cfa14cbbb768fdbf0d1f1b2ec6d08e32cd41fa3be00c1d5",4.81,[-0.3914867745166463,-0.9201837345761729,0.9201837345761729,-0.3914867745166463,-23.88302152317914,647.9575514954074],null]],[["a0abe61eb3d9de535cfa14cbbb768fdbf0d1f1b2ec6d08e32cd41fa3be00c1d5",4.81,[-0.36933076363841005,-0.9292980076543094,0.9292980076543094,-0.36933076363841005,-33.87129442873197,642.3420725824199],null]],[["a0abe61eb3d9de535cfa14cbbb768fdbf0d1f1b2ec6d08e32cd41fa3be00c1d5",4.81,[-0.4283759286770252,-0.9036006107402187,0.9036006107402187,-0.4283759286770252,-6.411577462415892,651.9441687984307],null]],[["a0abe61eb3d9de535cfa14cbbb768fdbf0d1f1b2ec6d08e32cd41fa3be00c1d5",4.81,[-0.7005393741748625,-0.7136137507298272,0.7136137507298272,-0.7005393741748625,139.0508642058229,688.8094114279172],null]],[["a0abe61eb3d9de535cfa14cbbb768fdbf0d1f1b2ec6d08e32cd41fa3be00c1d5",4.81,[-0.5810942065256578,-0.8138362999659797,0.8138362999659797,-0.5810942065256578,72.22858289723337,668.7056684301011],null]],[["a0abe61eb3d9de535cfa14cbbb768fdbf0d1f1b2ec6d08e32cd41fa3be00c1d5",4.81,[-0.5810942065256578,-0.8138362999659797,0.8138362999659797,-0.5810942065256578,72.22858289723337,668.7056684301011],null]],[["a0abe61eb3d9de535cfa14cbbb768fdbf0d1f1b2ec6d08e32cd41fa3be00c1d5",4.81,[-0.3761084323077465,-0.9265756564614728,0.9265756564614728,-0.3761084323077465,-28.145365308358407,642.076838043218],null]],[["a0abe61eb3d9de535cfa14cbbb768fdbf0d1f1b2ec6d08e32cd41fa3be00c1d5",4.81,[-0.43029072261203016,-0.902690364429585,0.902690364429585,-0.43029072261203016,-4.590721088275245,657.3978809725481],null]]]],"70":[0,[[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99",4.81,[-0.3914867745166463,-0.9201837345761729,0.9201837345761729,-0.3914867745166463,-23.88302152317914,647.9575514954074],null]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99",4.81,[-0.36933076363841005,-0.9292980076543094,0.9292980076543094,-0.36933076363841005,-33.87129442873197,642.3420725824199],null]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99",4.81,[-0.4283759286770252,-0.9036006107402187,0.9036006107402187,-0.4283759286770252,-6.411577462415892,651.9441687984307],null]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99",4.81,[-0.7005393741748625,-0.7136137507298272,0.7136137507298272,-0.7005393741748625,139.0508642058229,688.8094114279172],null]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99",4.81,[-0.5810942065256578,-0.8138362999659797,0.8138362999659797,-0.5810942065256578,72.22858289723337,668.7056684301011],null]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99",4.81,[-0.5810942065256578,-0.8138362999659797,0.8138362999659797,-0.5810942065256578,72.22858289723337,668.7056684301011],null]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99",4.81,[-0.3761084323077465,-0.9265756564614728,0.9265756564614728,-0.3761084323077465,-28.145365308358407,642.076838043218],null]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99",4.81,[-0.43029072261203016,-0.902690364429585,0.902690364429585,-0.43029072261203016,-4.590721088275245,657.3978809725481],null]]]],"111":[0,[[["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.999909962760862,-0.013418881159458863,0.013418881159458863,0.999909962760862,-61.802499854289835,-73.19045877011098],null],["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,20.743281966628942,-86.42249577053656],null]],[["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9999444681394558,0.010538531078891038,-0.010538531078891038,0.9999444681394558,-54.50427213452213,-79.50737140005793],null],["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,20.743281966628942,-86.42249577053656],null]],[["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.998549513960035,-0.05384113826970788,0.05384113826970788,0.998549513960035,-73.46101199199363,-67.0806658742556],null],["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9630263849368614,-0.26940709329087836,0.26940709329087836,0.9630263849368614,-42.86045600969443,4.968264318175841],null]],[["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9259225418896626,-0.37771344485017483,0.37771344485017483,0.9259225418896626,-159.65129114821946,31.337463787814954],null],["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9772836091349132,-0.21193571505585887,0.21193571505585887,0.9772836091349132,-27.6841921765821,-13.10039732145816],null]],[["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9733817947848444,-0.2291896192706706,0.2291896192706706,0.9733817947848444,-120.64018534132882,-27.206666411694755],null],["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9673793417682351,-0.25333221098008046,0.25333221098008046,0.9673793417682351,-36.43202101667612,1.2283852385434102],null]],[["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9733817947848444,-0.2291896192706706,0.2291896192706706,0.9733817947848444,-120.64018534132882,-27.206666411694755],null],["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9610329687712401,-0.27643377676169867,0.27643377676169867,0.9610329687712401,-41.772367146253615,9.508722153226415],null]],[["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9999947682357813,0.0032347335386549154,-0.0032347335386549154,0.9999947682357813,-54.05012471072302,-79.60264967077086],null],["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9768320800361193,-0.21400721345858562,0.21400721345858562,0.9768320800361193,-27.28366047401758,-17.398665404038354],null]],[["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9984331191612775,-0.05595807861142241,0.05595807861142241,0.9984331191612775,-73.16443577708372,-61.483183738852915],null],["85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc",5.01,[0.9930715987519161,0.11751084950894268,-0.11751084950894268,0.9930715987519161,76.39747297686931,-122.2764247725336],null]]]],"112":[0,[[["a4efb496a6b4ac775e81081881fa391cf123833602ac3b666216bb7ed868b1ef",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null],["9456736ba1f610be6c124bf1db43df63625b3f3e27378df4a4da75a3ae7d0649",5.01,[0.9673793417682353,0.25333221098008,-0.25333221098008,0.9673793417682353,-78.02869015713293,-164.88658571829166],null]],[["a4efb496a6b4ac775e81081881fa391cf123833602ac3b666216bb7ed868b1ef",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null],["9456736ba1f610be6c124bf1db43df63625b3f3e27378df4a4da75a3ae7d0649",5.01,[0.9610329687712404,0.2764337767616976,-0.2764337767616976,0.9610329687712404,-68.52915927762774,-171.5658934915194],null]],[["a4efb496a6b4ac775e81081881fa391cf123833602ac3b666216bb7ed868b1ef",5.01,[0.9630263849368614,-0.26940709329087836,0.26940709329087836,0.9630263849368614,-35.58986033742667,0.8642601946791046],null],["9456736ba1f610be6c124bf1db43df63625b3f3e27378df4a4da75a3ae7d0649",5.01,[0.9768320800361195,0.21400721345858453,-0.21400721345858453,0.9768320800361195,-93.38183548290827,-158.04565771443978],null]],[["a4efb496a6b4ac775e81081881fa391cf123833602ac3b666216bb7ed868b1ef",5.01,[0.9772836091349132,-0.21193571505585887,0.21193571505585887,0.9772836091349132,-20.183437143743888,-16.76687863364691],null],["9456736ba1f610be6c124bf1db43df63625b3f3e27378df4a4da75a3ae7d0649",5.01,[0.993071598751916,-0.11751084950894355,0.11751084950894355,0.993071598751916,-208.2488075329532,-48.09647323079491],null]],[["a4efb496a6b4ac775e81081881fa391cf123833602ac3b666216bb7ed868b1ef",5.01,[0.9673793417682351,-0.25333221098008046,0.25333221098008046,0.9673793417682351,-29.094088574537764,-2.7539706910403083],null],["9456736ba1f610be6c124bf1db43df63625b3f3e27378df4a4da75a3ae7d0649",5.01,[0.9992667400201203,0.03828814816051135,-0.03828814816051135,0.9992667400201203,-156.29914605146996,-113.22938126139914],null]],[["a4efb496a6b4ac775e81081881fa391cf123833602ac3b666216bb7ed868b1ef",5.01,[0.9610329687712401,-0.27643377676169867,0.27643377676169867,0.9610329687712401,-34.53194073596643,5.35172363596746],null],["9456736ba1f610be6c124bf1db43df63625b3f3e27378df4a4da75a3ae7d0649",5.01,[0.9992667400201203,0.03828814816051135,-0.03828814816051135,0.9992667400201203,-156.29914605146996,-113.22938126139914],null]],[["a4efb496a6b4ac775e81081881fa391cf123833602ac3b666216bb7ed868b1ef",5.01,[0.9768320800361193,-0.21400721345858562,0.21400721345858562,0.9768320800361193,-19.790695740208562,-21.0810411009453],null],["9456736ba1f610be6c124bf1db43df63625b3f3e27378df4a4da75a3ae7d0649",5.01,[0.9630263849368615,0.2694070932908779,-0.2694070932908779,0.9630263849368615,-68.74702602216486,-171.55627951148293],null]],[["a4efb496a6b4ac775e81081881fa391cf123833602ac3b666216bb7ed868b1ef",5.01,[0.9930715987519161,0.11751084950894268,-0.11751084950894268,0.9930715987519161,84.68298433172666,-123.30341691651861],null],["9456736ba1f610be6c124bf1db43df63625b3f3e27378df4a4da75a3ae7d0649",5.01,[0.9772836091349134,0.211935715055858,-0.211935715055858,0.9772836091349134,-93.27807270260092,-152.40573626939636],null]]]],"117":[0,[[["ee7b9253c9d68852cbcf6d48ed2c306005093ce94c9ffd7193f4317d5076b467",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null]],[["ee7b9253c9d68852cbcf6d48ed2c306005093ce94c9ffd7193f4317d5076b467",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null]],[["ee7b9253c9d68852cbcf6d48ed2c306005093ce94c9ffd7193f4317d5076b467",5.01,[0.9630263849368614,-0.26940709329087836,0.26940709329087836,0.9630263849368614,-35.58986033742667,0.8642601946791046],null]],[["ee7b9253c9d68852cbcf6d48ed2c306005093ce94c9ffd7193f4317d5076b467",5.01,[0.9772836091349132,-0.21193571505585887,0.21193571505585887,0.9772836091349132,-20.183437143743888,-16.76687863364691],null]],[["ee7b9253c9d68852cbcf6d48ed2c306005093ce94c9ffd7193f4317d5076b467",5.01,[0.9673793417682351,-0.25333221098008046,0.25333221098008046,0.9673793417682351,-29.094088574537764,-2.7539706910403083],null]],[["ee7b9253c9d68852cbcf6d48ed2c306005093ce94c9ffd7193f4317d5076b467",5.01,[0.9610329687712401,-0.27643377676169867,0.27643377676169867,0.9610329687712401,-34.53194073596643,5.35172363596746],null]],[["ee7b9253c9d68852cbcf6d48ed2c306005093ce94c9ffd7193f4317d5076b467",5.01,[0.9768320800361193,-0.21400721345858562,0.21400721345858562,0.9768320800361193,-19.790695740208562,-21.0810411009453],null]],[["ee7b9253c9d68852cbcf6d48ed2c306005093ce94c9ffd7193f4317d5076b467",5.01,[0.9930715987519161,0.11751084950894268,-0.11751084950894268,0.9930715987519161,84.68298433172666,-123.30341691651861],null]]]],"118":[0,[[["9fadba42a015194fcbde9afaec3c6a266ad4ab566580b79e5353d4e6a2f9c31e",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null]],[["9fadba42a015194fcbde9afaec3c6a266ad4ab566580b79e5353d4e6a2f9c31e",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null]],[["9fadba42a015194fcbde9afaec3c6a266ad4ab566580b79e5353d4e6a2f9c31e",5.01,[0.9630263849368614,-0.26940709329087836,0.26940709329087836,0.9630263849368614,-35.58986033742667,0.8642601946791046],null]],[["9fadba42a015194fcbde9afaec3c6a266ad4ab566580b79e5353d4e6a2f9c31e",5.01,[0.9772836091349132,-0.21193571505585887,0.21193571505585887,0.9772836091349132,-20.183437143743888,-16.76687863364691],null]],[["9fadba42a015194fcbde9afaec3c6a266ad4ab566580b79e5353d4e6a2f9c31e",5.01,[0.9673793417682351,-0.25333221098008046,0.25333221098008046,0.9673793417682351,-29.094088574537764,-2.7539706910403083],null]],[["9fadba42a015194fcbde9afaec3c6a266ad4ab566580b79e5353d4e6a2f9c31e",5.01,[0.9610329687712401,-0.27643377676169867,0.27643377676169867,0.9610329687712401,-34.53194073596643,5.35172363596746],null]],[["9fadba42a015194fcbde9afaec3c6a266ad4ab566580b79e5353d4e6a2f9c31e",5.01,[0.9768320800361193,-0.21400721345858562,0.21400721345858562,0.9768320800361193,-19.790695740208562,-21.0810411009453],null]],[["9fadba42a015194fcbde9afaec3c6a266ad4ab566580b79e5353d4e6a2f9c31e",5.01,[0.9930715987519161,0.11751084950894268,-0.11751084950894268,0.9930715987519161,84.68298433172666,-123.30341691651861],null]]]],"119":[0,[[["69546df73ee8ceba1a6432a57b715868ae669c49f03122969ce13cd694606dc7",5.02,[0.8829376155455404,-0.46949032690222225,0.46949032690222225,0.8829376155455404,-73.10184115458702,73.69368707122379],null],["43562d1350ba4b1602f6c7e68387761930b9bac71c8e5d7874696648d431d629",5.02,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null]],[["69546df73ee8ceba1a6432a57b715868ae669c49f03122969ce13cd694606dc7",5.02,[0.8850342092509563,-0.46552599117077714,0.46552599117077714,0.8850342092509563,-72.4464498346583,72.02193886345657],null],["43562d1350ba4b1602f6c7e68387761930b9bac71c8e5d7874696648d431d629",5.02,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null]],[["69546df73ee8ceba1a6432a57b715868ae669c49f03122969ce13cd694606dc7",5.02,[0.8991441517971356,-0.43765259543273555,0.43765259543273555,0.8991441517971356,-68.67347247672274,73.45938663293003],null],["43562d1350ba4b1602f6c7e68387761930b9bac71c8e5d7874696648d431d629",5.02,[0.9630263849368614,-0.26940709329087836,0.26940709329087836,0.9630263849368614,-35.58986033742667,0.8642601946791046],null]],[["69546df73ee8ceba1a6432a57b715868ae669c49f03122969ce13cd694606dc7",5.02,[0.8872396115981279,-0.46130886790869635,0.46130886790869635,0.8872396115981279,-71.74276801246967,83.25114158311914],null],["43562d1350ba4b1602f6c7e68387761930b9bac71c8e5d7874696648d431d629",5.02,[0.9772836091349132,-0.21193571505585887,0.21193571505585887,0.9772836091349132,-20.183437143743888,-16.76687863364691],null]],[["69546df73ee8ceba1a6432a57b715868ae669c49f03122969ce13cd694606dc7",5.02,[0.8739567182426624,-0.48600375990162414,0.48600375990162414,0.8739567182426624,-74.76721354212461,90.7324706350567],null],["43562d1350ba4b1602f6c7e68387761930b9bac71c8e5d7874696648d431d629",5.02,[0.9673793417682351,-0.25333221098008046,0.25333221098008046,0.9673793417682351,-29.094088574537764,-2.7539706910403083],null]],[["69546df73ee8ceba1a6432a57b715868ae669c49f03122969ce13cd694606dc7",5.02,[0.8712359569491519,-0.4908644490273212,0.4908644490273212,0.8712359569491519,-75.5315797936695,92.82776396055743],null],["43562d1350ba4b1602f6c7e68387761930b9bac71c8e5d7874696648d431d629",5.02,[0.9610329687712401,-0.27643377676169867,0.27643377676169867,0.9610329687712401,-34.53194073596643,5.35172363596746],null]],[["69546df73ee8ceba1a6432a57b715868ae669c49f03122969ce13cd694606dc7",5.02,[0.8796999330822061,-0.47552920807786575,0.47552920807786575,0.8796999330822061,-73.08872363614526,85.25359795014839],null],["43562d1350ba4b1602f6c7e68387761930b9bac71c8e5d7874696648d431d629",5.02,[0.9768320800361193,-0.21400721345858562,0.21400721345858562,0.9768320800361193,-19.790695740208562,-21.0810411009453],null]],[["69546df73ee8ceba1a6432a57b715868ae669c49f03122969ce13cd694606dc7",5.02,[0.8395119944242607,-0.5433411554610971,0.5433411554610971,0.8395119944242607,-79.16989590226729,109.16206518932009],null],["43562d1350ba4b1602f6c7e68387761930b9bac71c8e5d7874696648d431d629",5.02,[0.9930715987519161,0.11751084950894268,-0.11751084950894268,0.9930715987519161,84.68298433172666,-123.30341691651861],null]]]],"120":[0,[[["71f3e23a634f5b09648b9eb6ca5494a4ccbf723418974947332492b346a6d8ad",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null]],[["71f3e23a634f5b09648b9eb6ca5494a4ccbf723418974947332492b346a6d8ad",5.01,[0.9992667400201203,-0.038288148160513125,0.038288148160513125,0.9992667400201203,28.76843243859239,-88.7249664386714],null]],[["71f3e23a634f5b09648b9eb6ca5494a4ccbf723418974947332492b346a6d8ad",5.01,[0.9630263849368614,-0.26940709329087836,0.26940709329087836,0.9630263849368614,-35.58986033742667,0.8642601946791046],null]],[["71f3e23a634f5b09648b9eb6ca5494a4ccbf723418974947332492b346a6d8ad",5.01,[0.9772836091349132,-0.21193571505585887,0.21193571505585887,0.9772836091349132,-20.183437143743888,-16.76687863364691],null]],[["71f3e23a634f5b09648b9eb6ca5494a4ccbf723418974947332492b346a6d8ad",5.01,[0.9673793417682351,-0.25333221098008046,0.25333221098008046,0.9673793417682351,-29.094088574537764,-2.7539706910403083],null]],[["71f3e23a634f5b09648b9eb6ca5494a4ccbf723418974947332492b346a6d8ad",5.01,[0.9610329687712401,-0.27643377676169867,0.27643377676169867,0.9610329687712401,-34.53194073596643,5.35172363596746],null]],[["71f3e23a634f5b09648b9eb6ca5494a4ccbf723418974947332492b346a6d8ad",5.01,[0.9768320800361193,-0.21400721345858562,0.21400721345858562,0.9768320800361193,-19.790695740208562,-21.0810411009453],null]],[["71f3e23a634f5b09648b9eb6ca5494a4ccbf723418974947332492b346a6d8ad",5.01,[0.9930715987519161,0.11751084950894268,-0.11751084950894268,0.9930715987519161,84.68298433172666,-123.30341691651861],null]]]]};
+ const southCarryBootPasses={
+  8:[["boot8-left-rear",-1,["044042fa9d3933b6c2f973928b8fc386ef498147195e28840e797a41facafe72","979a2954f4a88bfd8b633deccf771213de52b7cb3ca6eba4717df93711b393c5","49432c007b362e4e6401a372ecb4b2c51b8e35ffd8c498f53a45a93c45d87e66","3fed2ca61d811da3b3c92e0ece403fdaee0c199c886eddf90060877e9d08a513","3fed2ca61d811da3b3c92e0ece403fdaee0c199c886eddf90060877e9d08a513","81e3503f200dd978fbd32f4466ae98421b5c3a84bf69c2f85c84b81c6b8d31c5","d60ecdf0380faddbf7b9deec836547253a9c01d1de5ba010382489830f00064f","c54fec7d6887cbb7c4136dd8985eb25bdd32cf54637ff8dd5793eafb7aa3969a","8f858beaf80f2cc172c336f4fc64ff057292b100a0ccd98d227361361f330e4a","812a0308194917fc818bdf2dfcabcf965e258036af461fedd4ae01b1568fd1f4"]],["boot8-left-front",45,["76a2bd0ba6bdf765cb4e258c2728c401efd5c8db988a0575f2017d9d4b96359b","0ce08f3bd89e02822eeb294f004270f10726bdc7c4f393586a88c2c41eaad19d","2dca75a56d9508bbfba08828ba45f65c6769d1e97cf81c1aa9c65362ac88505f","6c988a617a9a282c340e93bccca8dfc920ab15909109c1e28d0f9b0230bad0c6","6c988a617a9a282c340e93bccca8dfc920ab15909109c1e28d0f9b0230bad0c6","f807b656c889d83d3ec7b7107ae3905656411e9638c6e4bc829dbbb1a00faa21","d0f142b651c42fab04a9b4501e195c036157ac0d477487c177405ce805a31864","5067b78f4549c83f7fd1ae569a213bf8ff16d30a52e19c0811fc42174d06e0a7","035a9bc23efb911a82382f3dd938927e8f1f43c3f65f615e84b4a78218376a85","09d09256584f5382b26cd88f36c9331f224980d0733c2c7b3617ab7cba608b53"]],["boot8-right-rear",-1,["d43dbb0ab54c7782aef84cfb4a49a6afd24f2fa3aa7475fc1554ae8cdbbca672","c1bcb89b9de74b3784daf47e1a38c362a15406823fc482a8a4a246467a730b1c","9f274d5bfa9c514c2adb542a883db129d36080ce1d1c221e241aac62c7ddc381","64f318f11ecbc2723f4e50f16f03e40208d57dc7f48774767a38a432f314f254","0b7f1f80ef55c1af5cf848307a28cfa3aa177b535d932250a3d8949fe0a4cbb9","ae0b19892d6e734aec104b0c9a8a67163b6b4ad338273723f0467d66be1c2a2f","38cfdaee6b45c6d57ad8d58fa3becb956eaf6ee6e48561c92b5426b7c4729055","297ccd67d76574f11c1da66b622a56965a0a916673fc4263139a572c0da3578f","7af5703cfc76bdb30dadd875da4662ec584169969f3ab87d95b54e710c61118a","ae622b1e1eb7b666278b3f89081db1c5a41f7d95574f91b030865ac80b706663"]],["boot8-right-front",45,["1759777594d33bc464fe3895c6ad3edcbd54e77b425f9fd64fb518a8c979d36c","27dfb6017d8619bf046983ee45edafed1aa6d9084c560a59af479bc3b15feea0","00e7135f974114c8235de6a957d475b9ff62aab8e2cb3224274b1cd4641ab6a2","e48ccd2c6cb6e528f521ca951e73487f4b98dd9addf5be2c4a4f6c33e5d77bc5","b746fe0b2579c42a483931ae012225a26c6f7a3fb2eb58bfc4eb768c304020d1","7390a06bac9b4282e75e3311ec1e3e21dec9f4550f055cba334c2c3fe3928ca6","a0a4f9a00767f5f4c52ab6c5faf124de4e104433e0ec1239ad4432ac3a6a4a9e","00bd772efdf9aaccb64d9f2d4eabfa0dd25cb44ff54a6861746b92a96f4dbcf7","b06d64ee65f78452c360a0040c9a676aac078010f6ce032168a27c39904ddb41","54ddbea42d35efbbf82544ebccb16d236c65e3a91f6f88912ef36d3842fac11b"]]],
+  9:[["boot9-left-rear",-1,["193ce7723048212fd5f2b9d38bd07bb47c9547a158593e6f8b1cad294a687dad","a39030a6c9c53d440976effda7ad1cd32fc296a46f35b9b30ca21b68153ece30","bb09dd7ce14da0319f1154fb9324e0ef18c44d76b07a12a0a93d1cb9da80d9d0","737d0e735c85e135e8108f137266838763086012a497364acb892bbcb235585b","737d0e735c85e135e8108f137266838763086012a497364acb892bbcb235585b","0a165158c444a2e50d3b3a1c2bd6a566b45ec22e9d7bb9d311058cf8430634ec","f908e1ec586e9cf9da463379803df3cd0731472bd07c18ef32d913972f6df82e","439a93b8c3dd4329f94bba9d3cb7febffe4f985cea63ddaf4ce10c7287438e06","c68cd2a24b2906dce39a93093d105fded333344f28d55750e4bc96b06a299a15","f28ce60c54a3a1c0ef0f61b448d0e7094a0eb07d5ed8abab418376aa134048ea"]],["boot9-left-front",45,["119537a0e2742b923234cf308604d3cec3ad6b5568ce8d25cc880619325331f4","5c05ebad74c4b0c95788e444b6df0e0c918590f9ae283da8e6005494832cb57c","963d5c46cd0eff618259d2fc0e8941db4a037edf8fa23b879902c66c148a2d73","574b2402268e19c2e6fec02dcbb2b76db89d06f64d74af8a689bbaa1793d4573","574b2402268e19c2e6fec02dcbb2b76db89d06f64d74af8a689bbaa1793d4573","99340bc06cd0568d787994d35feccb344eae6c9c262c4dbbfcf3bb40eef4adcd","257da2ea32ab502b40676484b13012bef9c4dc423a01ec673916caae369f440d","29637786c5b48ca7556b19a94de461cbf015b419dfc5593d40a5ff360169dd58","a5ac26abcb3d70235a288ca3238c4e6cf9f4249f3a801b810c8d5eb30dad4ccf","edbd779797de06f150f458278486954e8793eaf408b594a46fbd97f21e6709f1"]],["boot9-right-rear",-1,["fa5f9464298aeab77b29f8437fdb0b6431569cbc13310795aa674aaa61fafacd","215641eb2e802cd3c13a3f755a40bdbe09ebbae8a917957d7b5ce1ce1607577c","17843b1c392b0eb85ef531d264b57c0ae44124178bafdb76d421bd3db40d87d1","597a997c7ada6219345437da5224945cec3adc1cc9fed9ca66b5b18f1a9bf52d","33ce174e6c687c6de1e291a9fc6f1777f6dd0765fd30402e2b02174bca640f11","9ef2f6fe8d3e5b2d23b3d25a685613f8378012507477d98f7733040f1bb7446f","6947db1736213d7acb66942e6c1c95cf85d617f2008aecd418204d3dde7afd6c","9ef2f6fe8d3e5b2d23b3d25a685613f8378012507477d98f7733040f1bb7446f","cc0a46c6bf13aa50eab175f6073af058b75d4cd5593a2e17eb87bd565228f0e9","cc0a46c6bf13aa50eab175f6073af058b75d4cd5593a2e17eb87bd565228f0e9"]],["boot9-right-front",45,["c4590e06e960b7e8ec704430b342ee50a2cfeeaa3815fa63a5a804f0bbbee549","6d6554a84f5c3e4edc3a0bd90b4b9f9561ee394590920a69e967a4d25f96f387","fc33fb426a0f0ec9ae486b8b361dcdfa67e05256fc702f8c5e0266e74e518061","095e15793a102834db07a3cb0818177f64acff2644e00e0059b72ec2d289a5ca","49a3c38ccc98f08d4a93e1f5fe449b6b3d20e2d341962360fdab2097f6bf01b8","7caf95d4eb17a9d18741a6560168269528080b40c1dc21450507003b8ce1e9cb","1d371fd23a5d889a94bc19f0404fc75fd817044b1311c8acc8d3601b9e747cc0","341976055ea829116a347467d05f4e04fb3c928574591dcf14b7a353b525c335","1af6f77d9e35a3ca1bfbdb36e6bed8a9fcc0bba2b1c94f7c8198d2667ad93f7b","1af6f77d9e35a3ca1bfbdb36e6bed8a9fcc0bba2b1c94f7c8198d2667ad93f7b"]]],
+  134:[["boot134-left-rear",-1,["d61075b73b27afb08f56ac18cca6cb6625ef1285c7e598a41c3674620c1ec9a3","a1dda863bad034df64ded6257890e3e56329dddde3d222ffea549d84145ba35c","a94bd1449ffadffb1030b3132cdb0a95564e6c4adc6e4efea25256280dcb3b55","6b29857c60f0fd0af77e5aef844f4aa5c08e76e4bd989012c73e9f9e06421f54","6b29857c60f0fd0af77e5aef844f4aa5c08e76e4bd989012c73e9f9e06421f54","89c7f27d75f45442bb488b9a71f6c61834ff32bb42a3229dd25efe4840450b99","1ed0150f9468ca1c92be588bf52cd470275a7e97460dc19c4dd8bd8330256873","a83a34153d9e565f27277ba86f51e04536d859c538c229a4b4b3d24a21929f2f","c0737f3b3de1ba5ccefd8dcf5a65355cc0d2bb574cc1b5e567d1adb7e8072630","5222e12a032a74945030523989760814d4b9e63b03ef2c9f3239a25d4cfe1734"]],["boot134-left-front",45,["9d3c5c498eefe2934ae82ac638737169878ad5d4ecc80d4c8b566733e10cb2cb","3751e4e42ec3b3a937594e4b7a78e9550fc2e1ecad793d2670616fc112a7971c","047f954e0010d8fdc48565399ac8f6da57209a87352397cc37691e868ae9a765","966b52cecffa5b1ec1bf66e0d9075226248b304aa77ded1be46be238ee63972e","966b52cecffa5b1ec1bf66e0d9075226248b304aa77ded1be46be238ee63972e","048353babb4192862f5946d3eceb540d0bf21e61a7d67802452dcddb85277bb6","2b2d865146df071ac33733ca88d4effc9bf64f147911e10759b0efb10a094e40","bd5257476ed69349b91c4a3c98934ffcdede55c168416523de08fc958f8b1d6e","d7064f87bef1ce1390cd57b498dd352114fdd0f63af30dfa1e7ca1cf3f0b583f","c1e5402d234bc924df362b916ce1f9b520c534aaca3f7bd74091a411d44c1db3"]],["boot134-right-rear",-1,["07e08074e416c51cad446249f9ec452b2a998fd249085ce78495807b6297509e","0ba61961c1f40da07aa79cda227248ae0d034d2fd272663e11ef53f127763171","953c16b1b4749982061bc4154372c5e0877f688daa5e8e8dddfa3c0eeaa12971","57aebd25a0c2c4cbb29c58c8fccca0252701ddfa67c8502c0d594ed46c2b935c","d7cf4e382c0f9d9677cfd49a109172ae36f844ff5301e611f2f349e300dd3d98","3d5f0ed4fb39ada31291e70f4d2b9e27432a9530bbdd6f0a2f0f2e86f183b32c","7f04af1d7278cf5c599206eb01e64a6048a2b8568ed99b394d1cf84d5b234ca2","7f04af1d7278cf5c599206eb01e64a6048a2b8568ed99b394d1cf84d5b234ca2","5d92c7ddd50ba32ede81545326411d235a5e8246d30586698afbc3ad63b7ec3c","5d92c7ddd50ba32ede81545326411d235a5e8246d30586698afbc3ad63b7ec3c"]],["boot134-right-front",45,["e52f853a253d483b66a7a4411e69ea6934557b117f68868510ff0a790585c0a5","d6ac3278d2239157f160ceac12114b326720019ddeec06f23f41b7aeaa57c12f","de5791b085b2c3f974b3f04034bef94a2419b65129da3ca300eb1b57d40bb81a","4c55ad6c296f882506cd6d7dc561321c1cc00fa8f90e8b9fa03c9a19402c8eca","55dd354f446e4d7cb3a84af20aae13f8a7009ad9483c0222deb93c0d67d79e9f","2028c32ebe8b35cc2b98eaf21be50db44298a54cc3b872ecf3e54f1de76db676","b1afa84e41785ed0755e56b1e1c315104a42b65c2c5c54854c5daf703e42fd25","b1afa84e41785ed0755e56b1e1c315104a42b65c2c5c54854c5daf703e42fd25","393cb87bc31d5f2caa592b179e8d769aace78e45d74c30a0fa57fb33ec490ca6","393cb87bc31d5f2caa592b179e8d769aace78e45d74c30a0fa57fb33ec490ca6"]]],
+  141:[["boot141-left-rear",-1,["eefb5d4031c4d79d3138c868aa81c07a358740fc274267b8e76a0ff747adbd77","c9268a6a5273b678e7457b5c400f58d7f2a57ffab8e82405d5713ace4d845746","2399c909225f1c08907da2b7f5626bd42efb3c2a3f522fa67304fe8fb8301f8a","97786d40719384d9ed0e15a065126d09daa1a8c02d0e56f92659360d6d30b68e","97786d40719384d9ed0e15a065126d09daa1a8c02d0e56f92659360d6d30b68e","136ecf0ac6439b612bead7a35064f85e64af8a15d5cfdf5c8d9e17fccfbc2f27","e69b96ba9521697107025a044571c9ae306ed663d966ca0c7317cbdd703ad631","aeac8a2cbb8ff3c7c3b16fe3a159ccdeada76d4b5131f91745a38993f40399e0","e11e2cccd2c28ad47a527163a98c80a5e89c416cf18380d5418c8e227494df17","190f28611ffc68bd73073cb2984dacabdcf8bfb5a600c258a41f9ebf80ef5e4e"]],["boot141-left-front",45,["7b0f4b43dd4de149f5565fe8dba1d2b778065a4e33015f3ffa49631c08388417","8e8132dce789ba038fb32b52b5fd940e3dac0f65bbef96fc7f92850f21fb0827","04f932b93af540f8a4f5b2f4b49b06c7287e9c98e3370d997fce580dddcfcddc","f97d78460e8efc32bbb20408a5362124891bd7434fcea526895d586edf390060","f97d78460e8efc32bbb20408a5362124891bd7434fcea526895d586edf390060","8a8c83dee5ac6704fb189b134886173b7a647bf9593871c976439a3a96d81811","377040a4c690d55032d77fa99f28ad3cb4772586578dae697e3f4ccdb82b737f","166c5c5a4aa0694494fd07f62cf24154be8d85f5988dc9b65f853afb000ee46b","793666a1e342913be01f4eb9c870cbecb044b4e1b078caad95cb314e6c6a39e8","2daad867d349df58edf6f43c1905f4007ee4b8faa9f2922db94807c1056c612c"]],["boot141-right-rear",-1,["094024e466deca758369fd1c52ee1e66ffe6b92d9557af107e63da5ab8006e6e","4f3049a552c249109642bcefbb63493551c951d8e5bf39984ebb20f94fa8be0d","e24af240f829fd84b30862c6ac111326055431896b79061692c57fffe08e8b87","fb86df5e866e03f023501246721e8a7c8a33b7f66f486b027bd663dfa5186ae4","37bcee85590751cd266e60a7154bc00d6887ceb16bf6ad5110098106182545f6","4c0e8de57dfd6de915754d611b01949ea5b339b0a8795f0297748130da60b4e7","3a5cc8628d9c76878a9097a23ebf42e3b681f6bc5192af48e4e5f420590cb5da","f3d3db8a7bd92fb19e598af1935873c32254af712b514be431604690e473eff1","0a6770a6918a0918fd10b3fbc976582139b432b110f3a38e384668a33614fed2","4003da42f2104c2cec004fa177c0f8a88c630c04c88128e0a04f5e9d7d53317c"]],["boot141-right-front",45,["d36ac641b89a02b4bd68b531d6c402ca43667a55905454c19cc8812160455db9","dd9a80add5a79eb6ccb783ff8b5cac340bd58d83fe1aeb9b86c1b51ae6d30568","f0063494def47497760cd595ee9e9179df9d05fc90062d7356bd6e03836048e9","40a95a1cc992b18eb1c277d907dd86a2c266c1eb114f5b86236e58fcb99db1bd","7c91072ad8b913ae33a7a9aaf4ad6aa6a1999a588cd6cbdb363faca72609d0a0","acbc118eb51f03dc7ef67b6665ccdb3a0180cf8162bdb1e6012e97c46308dcd0","0f67469402223c6180a89cb6d63e084049c4a560979b73cac94aa99b519b84a2","759bd1eca91cbc8102002a3838f7ad644b154a3f3b8b3c66e1c3c9709067d07d","57982e4a51f28f970f6a62e5f506a57032d210e998e564aaa0d46d68f2119fb7","5b4f95727457cafe696f656dc9c0c27e6d9f83bd7536e775699559aef48b09b3"]]],
+  148:[["boot148-left-rear",-1,["16a70e8394f55d1edfa021e9e00361c18785a94f8df5a8e45aec7ac72cee9722","f52be5f3bea8fcd65aac2eca317de564b632f153e352283cfe2642d9f90f3918","e697661f5aae676455b3c81fa039ff198db3bab9531952d5eb7e8d45f654cdb2","60f4d99df568afd062ef37f53d9d8e999d5e2c5b6e3383a13b0a010b1b5b9ff6","60f4d99df568afd062ef37f53d9d8e999d5e2c5b6e3383a13b0a010b1b5b9ff6","8e3ff4f26010b0cadf509a5f77ef6794b289af7260e0c6d7277c52b1773dd49b","1af8ca9812320bc951673ea7ae337ec598b535257b0256c932ec185d92b2d081","2532785a51742d2746c2ec666219839864a1f6fd597d143e0cdf5a81fbc1d3f7","b4edf3be090c3318e01db731e059dc511574e7147053ffc7739db898e37f8b26","1db87a38fa2d1fc279c1e71ada5fee58b75a182aebe1dfb3901b5d4a924e0c25"]],["boot148-left-front",45,["718af976344a1222dc8eb251a07e72081a695446239352c816da2899ae253e4c","bd17a4cb1e1c9b0b80c9c1a20fcc0bcede3753edfb8b5dc04c2340cbac341c98","788a5c12e224303a40464ad5aa5dad5ff96cb9ed23bceac18b6c23a81964c5f5","5101b6d0fd67bf65351725972fd2c04c23aee460cf424392b3e97ca173f66e1e","5101b6d0fd67bf65351725972fd2c04c23aee460cf424392b3e97ca173f66e1e","fbd28a452c9e881b96df4ef01e6fb466fb9efdfc90726c77bdadaf999a1422aa","4a8986dcfe8f8049254237aaaa125a17d88e5467ee92ba12a115aca266bebfd5","da1bef4a4bf80f06d3f2f68cf7565898419ab85a4b2d3d8a3261265f418c1f73","d6274ee79bc543d05f4075d01e6dc95d8a455000e630c39b3db74defa20fa2cd","dff48a7d749a42bf39f580e8fb4f3f1d874ba0ec412ce97096d82f4a09de90ee"]],["boot148-right-rear",-1,["4af36c3ac6e07f39c2be4cfd70f2a6a21e63ee34f5498a0aa58648a7490c6d5e","c487f72b93b3f3532b8e9446fcb1b17549b44cfcd2e92c1f1a1eb0e812980484","38cc5378bdbe3c0109945233301b0789561525a691e2100e31308021c29de45e","0a22a2bf767c29c4ab0d24e5394540c60ec477a69847b0fee2a663d69ab91032","5ed39a32270cdff592ae8f0f905ff808f529f76ef24c325a1f4352ad71a548f8","25b1635b0f3aa038d58b9391d1eff72ee427cda64d1ded128880af8c6555fa76","5c98f4a40264ea907943e03cbcefa2333abee023f69b3893ea70d375c8990e68","25b1635b0f3aa038d58b9391d1eff72ee427cda64d1ded128880af8c6555fa76","172bc66c1db5869f37c72e1bc6b9ee8ec3926411a639be9323266951380266a1","172bc66c1db5869f37c72e1bc6b9ee8ec3926411a639be9323266951380266a1"]],["boot148-right-front",45,["95ac8368e5dac93f79d3ce22d4b50153e3065d5bd1513a97bef420265a8b1055","1ce28f19210306d37f84ce22d8159cd60ed9ba7008c4887e9f5f64f66669bdcc","d0c5c647f5fca0afc8a18d46483601a633fcec3806c2128b0f72e2b96d2ce205","713cd1b745ae93bb7637b56ad999f7772fb03aaa148d9ef3a43c782f10d4ea86","6675fbf59a2ca304dd74da6d729f8a4b63c59aa91d56ac8912450c92d861030a","5fe68c890c56e76a619103d0b9ee30444c1bce83bc2d09651eee40883e0a2ee6","cbaca5387b2bc7628b549dabb24a69bf40b0e5f85b7390a13233a6ca2ba71438","3e3911a882b5bd5c8cda9ebdd9cd0c912a16a63393784604064d2ccc14ef9869","0589d429577d4487a681876377dc068baa3345b7736fee9f935356e6dc124f70","0589d429577d4487a681876377dc068baa3345b7736fee9f935356e6dc124f70"]]],
+  155:[["boot155-left-rear",-1,["9a47a5b2d76b5f026b7f4980d9111ce7ada0576087dcff0c28405335c3b7ec9e","35a16f7fe461959e5aec6bf7a0e56da3a1f88823685c82b699baa84ec2043e7b","d1de053d2edaf0bc724d4467ed1a18d7abce14572721fd0ac0140ce19e9dd59d","e071fab0d8fd02cc00708db1a3af5f358970330a78629d09db91fbb590e000c2","e071fab0d8fd02cc00708db1a3af5f358970330a78629d09db91fbb590e000c2","e8c87fb9793dee320d18288b507f0998b5ffe3d7c89f6945ae9d54ebeec52f9c","351eac059857dece6fd5806bbb130e2bba139e305c0606c0bad577e9591033e5","e114a367c41038860bb52e6d6caf56eb13b71c88fccd0ed48115822ddbfa9336","709a3018f3533507e1db725a724ab6d797e2658195b3a05ddfdfd37d7e251693","c87716bf3d30b97d2dc503fe71993549215d0b7b44d662059f488434a0cf2497"]],["boot155-left-front",45,["41bc086db600adfa16bef809403e92fa0c29836d10f1f747b32f4e07bf66cf2a","0ca65e0972217e74dd19ec28cd73a031b64c23a18dfecdd92877d70e57124725","54fc7cddfa0fedbed08101e5f36722612e1bead39ae58b24a358a816ddf2a0b7","f6e17fda6e1948e622da80b2dcf186e94d39c35c590260017ededcf7920b82d8","f6e17fda6e1948e622da80b2dcf186e94d39c35c590260017ededcf7920b82d8","f8b5d4022208e18f0fafa079b268dbd7a04b408752b826fd0ca9ea494d6d76ee","0185896fc5c359f852fbccce66ca46e3e396003a8d99c83bae789310ed65edb4","6b2ac2c2a0f43c46ae4395cd7b7c8cb5374753750e290e7a09a44754b7db7dd0","c3c30627df9eae2553610b3b5aa6ce65c538480fa1d19367a40594a7645bf408","8b0d32ef6866418a531fadafe8fbd2ec911f93177c1fd75ede2cd6eabd6db3ff"]],["boot155-right-rear",-1,["04c03f1cd61b0811fcc92227de09a34b2987e7d3652a44480853eb2e79a8b65e","a265b976d31be6b13134a2e8d55b5ade30f01347d333afca2e23aba8f6dd831a","73b9afa9ae022bc0d2ce1ac829dccdcc5a6f943f1ace6c7833a35fd75da45891","7c2e9a79cd04a17bf8c2fb775b104d58a5f0341d6f489408036114a8eb3335db","ef0621171f8399e5bc8373307de122e70ac319f69b43a23237bf5c0d61df7826","7d50f61b6951a1a07c435635fb7b705b91c2ca9a4d6bc01791e49a3e71b946a4","2560936aa18ea687026d48a22e24db158cba653a5c22880df2868160b0ee1aaa","56d9de26f2ac0b483e16a270713e48478f07666153aa3daf877fccc2869dc7f5","83e353d59d09f27483616158a382258d01d5cd106f23b9b4b3f8825738eb0e81","83e353d59d09f27483616158a382258d01d5cd106f23b9b4b3f8825738eb0e81"]],["boot155-right-front",45,["54f5edf3ce711fccf77c39344d4592c2058ea7e7f4f840754a3f6cc28cc3005d","0b2eca53fa665d6e4b20de5a640656f8c3fee3874462a173f5311a4e0456d029","ab6702814a77adaa468a6ceeaa1ab89b093cda50df06e880c31f4738cd27b426","3adbd6c8f602414e5081e835b7f8447a0e9e4c7b36b9d346c91bdd7f5aff2541","08389697cdc46b797327bbece32beceaaf41d4b663487e52522f159f65eac2c8","84743c2939bb6f66186246ee3bda6574f7fedaf25f91d25406d35354836fd76a","d58bf7ad190548846278e8d611ca7cbb7ef924b87c3d10d08575e603680d4889","1f535acda7fa6aed9eb6cbb6b985301d3a400d65b07fea690678299560afd8d4","3163ee2f8862fc9666313ab2aca6399a1cbae44cbf630926cc61907b3e8fdf26","3163ee2f8862fc9666313ab2aca6399a1cbae44cbf630926cc61907b3e8fdf26"]]],
+  162:[["boot162-left-rear",-1,["d9f2136deef8a75596a1fa32c80bf428dbb5ad1eab02e01a6cc282e013aa3129","1c70a4b0c7ee52e9e867a1d04a5a5c1f90373b2e032efffb7ac4de51c0421cb8","b6b66a57c5f544d9389aaa1ac709c0387f4b6cda9114b3246a24b0a6906eb0db","92572f624e1249f36fe55f855175784fd04c9edea72daa0df0519e5fc763598b","92572f624e1249f36fe55f855175784fd04c9edea72daa0df0519e5fc763598b","59308a9bc1e2e051df10d588e84b14925fd0bd8b813740e36ff79b7faee0774b","d9ff21a78e04511cdf425a80b91c58831d5461ffb1e631228765295a5a81c254","965d2a27a891f4d607c4bae799b91382c9ecbc1e1372d3beac6a2460f336b1a6","ff39bacd0986fccee5bf7f2e7d36360ddc871ce4e37c8fcc16d91758b8bb22ea","b4a2ae7016db88752563b766adc3bca4c3fc6ce5bedbdac63783c33db30c62f2"]],["boot162-left-front",45,["0d2a76d7f87f68c23edc472fc42e6ffc934e2ca4039678782eadd70f0d0e1371","da6c88c56820559c267b253a29864f41fae27183cc7f177cf61637dd379d4cf6","cbdfcf517a90fb932d3a04e9c21b944025f5429c15e1b6d4ccfc8723b7e6d366","35723ede41ba23b999d042da6dd97f47151603084c014eea757713efcc553194","35723ede41ba23b999d042da6dd97f47151603084c014eea757713efcc553194","82935325d533a6ac71a5afe3eb880b06f2b4e11c40fe319e127a70d39c417ea0","d5cb61877397c039fd4477b39b36a6dc5ec7e09bb265b35b5b42e653546d8f49","ddeffbe184431e72a0384c8f0278779d53970d505589b5aa985b92fe21e04d68","1205660f379c196de21829bb010c24a52e96c2d11961c54548a0080bd9f61570","c00482e699e89ce478af5b1a0ecfa90244b4ff83009401b4b0bd1d38ef6d2da0"]],["boot162-right-rear",-1,["ba6a4e44d2cb7574606a44806c8ac31c56fa13e416930d07d3dc4d9a4bedefa6","b3ed48a936f3abc621d9b2800a421390fdcc6cf159de8c48486f205fe1d9abf6","fefa896051a1f1571b28d17a6b543eb84895c07c67ad95c7cf7eea8969c01e97","cc0069ff5be2faec3a8c1512cdbdddd06fa4e9498ba20e8d7ef59612a6905f9d","a44ea6ce952c9385c9711c8605332f6f2f5f17a49d5ace347982f9c8dea12bee","46c020ec597ca8e9e319dc267b322e7f559367eb3d9cee10aa2cd8ae01b6c3aa","e986ed4da96e59ac12887934d455af17b48d94a357530f974fb18a9947d3274b","46c020ec597ca8e9e319dc267b322e7f559367eb3d9cee10aa2cd8ae01b6c3aa","7bc8595ad2da996315dd6c866b8482234a54493264a681f8cdf9bb15b8708956","7bc8595ad2da996315dd6c866b8482234a54493264a681f8cdf9bb15b8708956"]],["boot162-right-front",45,["aa82fff12ef8fe08cf7a39ebe24d31d963d311044ab679493c985640057cce9c","86e77232021921c668efbf73d9c2c7a76850618021df4dd3c0c36c324eec9a7f","ea6505d5d94d3f69c89685731b449355023ac1dd96d11f68b2b79d29e104315c","d03f4b3b83456503cab51b171b41bc6edbc6f24ef965434d7a3549c37bfab77e","c9c78f6b497558e4f21ee12e3406be6f5aca853762cf9dcecc1f56344eb65fc1","f0beb67e496c62988c11144b7bc8ec98931a2b8484d276e6379a0927e7ba1e04","f682538532ba15cedbcf54196bc51653a7839693416a1c46f23ab57a4b66fea1","9f5581bc9f21219ab0513f2498c478419dca085b2087e8431370138a27ebe743","10790fc5cebdb2cc20da1b7067dabf5eb9879810ae6ce178e5d1cd2fe5318143","10790fc5cebdb2cc20da1b7067dabf5eb9879810ae6ce178e5d1cd2fe5318143"]]],
+  169:[["boot169-left-rear",-1,["bb0ac3473ed80751e5bf7b9d3dbee14f85ae1bd5dcff77b8eea9127a37b8012d","e05fe732621b5690385541c936941f10c1537d497a70d0735ee36ed94c85aa35","be3d5b4d4d0d02126e71d272ffc589430094700aa601fba6bc8d45591ddfb146","70b0f80c759d3f9fdfdc7a5699c2614f23bd1b9ae2e7b938fbd2cf14c7cb768c","70b0f80c759d3f9fdfdc7a5699c2614f23bd1b9ae2e7b938fbd2cf14c7cb768c","1080b75cbb185f7d0640e4675baa41052696a6c3a4bfb6f3c59cd4728d560bdb","c175dffba71cfc83af5307904ba8f35e95ab1f51ec155b8d7cd1dc222877271f","84963f62a530d4375c91a066bd57766328cf69dfc6469d929261f5895cc2c2bc","384b3c5bc410556b5af7fc1ee7e3d6569342af59789b7a90efe36d254144d43d","f57ac45f71dbdcda83ac550d3c4f68b8772fd53621b1d55c2afed6d44b80a144"]],["boot169-left-front",45,["cc03aa883e9f97cba18a7a59f08e7a00f5932b750811c8cfa5476de4cdfeaf4a","92518fa83a8916006980cc05c3544bf9f4fe9ae8fe3c6b116cdd82c27e7f4358","ad1ce250123b0fa3009061c0c05bb6065177dc52ed5494aa07e8176eceae742d","913d3a33be0f54b202935929046f4e2ca9155b76701f9b41af8ac2f7cf69c817","913d3a33be0f54b202935929046f4e2ca9155b76701f9b41af8ac2f7cf69c817","d05a82b7ef45708e771a16e721dc22a3b6faab1ab163ca7d76f5552c86988eb2","291d322629350b604933d7eb2419445fd486f2c52213626dd1cec801216980a7","4ade3c3c21473a71da8e7afa4e39156a79e450596a678fd5aaa9dcfa5a6f9f17","aabb61d184fd7d50d63a7a9e7c5be0605d34a59ac0347a8246a0d35dbf83b89e","1a61db9fcd58f2bc4368ec70af3eee4a62769fdcde82d432e4c56bb28ae9474e"]],["boot169-right-rear",-1,["7f2ee72c27283ab843cc667298a02f899d674289208dbd01a60bfd53f7c7b1b0","5378934642d1ff80ddaece420d34323d72b6af5f27fb9cd3cb81e0607157288d","8ad4a55f81330b7887ef378fb5d16ac4b15dd51b2c07428fda7a0f3254035b93","2624cb6146ad4ef92568e300887b4385e99bcf20d72721878887829dc1ad94bb","1462b05fe7f3f1a5e8196008b7d5495421f10c837732511caa7c761e93848bb1","08b552c6ef1cc708c28e4ec9a67d3d50227110f30201a3987cb8b27546588be6","8f1c8223acf384729f9b33f9a5ae9ae33e63d0a8f15fca8f11361bae5766adf6","323ed6e19622eab35c42a794bd50c1051334581495791c09765b87052d562656","1ac7ea23126ac7654a330a6892908eb8e4e5719e82a432e64dfac66d58af1e12","1fe915ed6b59c93d324f535993820ab637f210f7ae7ab5fe97cbb6f6082e8b58"]],["boot169-right-front",45,["d3287de4461e974a592136fb1628ae38f3b2be7c2920ea2cd387128320730d4e","d9d8095cbc639d2ca1700631f3677b1b0b05ae893b0187a8bb0ca147e45aa6ec","777d5bc28bd2b6859f027b8f3fb254b42c0caee113405b559310d99fabd1383a","34f17a20a0d2c4f0a5b5c84b621c7162a809c29a1b7270801501229ba9accd9e","872b249274aca0724c360d9e81ab40155793fb5620ff36a55abc00c7cedea967","9848cb013e57b554c2d1fe04769b0084cdf7308feaa24d209a8e75b81e15a00f","8b3abb543b07e730f60c813d504e2a24f53f5c3f16e3741bbd7a95f9259a7d12","e544f0e2774f78e7ec75a5606835f9579369851ea4c26f47bca2d03fa01a370c","ad52c0737af838892cf2315901176aad9134a3ac8f8cbd033d0c6f18e0645b7f","d7fbdc21cd6f54efa5ec354c57add66751b27bfcbb770e0d4d3aaf5d5faf4569"]]],
+  183:[["boot183-left-rear",-1,["c7fb2cb42cf39c9c54a8886d747e711abe7ec139211352d10966bad02593e9c9","6a9af5ac65d95254084d2af6d15e063ac53ceb6692fdd0a058af179fe1ae24e9","fd73408e03d86c5f2942695909091c9ec0efb4e51f027785f05061827c4145ad","e10c8a1c72ed55358208f00ec0370da480720bb7197c3e8a32ae823416ace997","e10c8a1c72ed55358208f00ec0370da480720bb7197c3e8a32ae823416ace997","0a9d46c236f838b50c0de243251928f815766c1cbcda181fdaca92b02e7b1d67","c4ab5fb896954f8be5d3580454bf40b3ea331e3058c480c9f037e4c8afffa300","75247c78d3774a1107d13b2a7ee97cdfd4931a014caad93fc359d1b5309eede9","e10c8a1c72ed55358208f00ec0370da480720bb7197c3e8a32ae823416ace997","8b1cc88d189f292b0b5a017c35e560cc0d87c832ba4a854d33e1debf04f7262a"]],["boot183-left-front",45,["ecc2c8c127ec5c1d0beae718f25a58769035975accd12ece4766053f86bc5f68","63c7948faf139aa95397b83ae08eb9bfa4cf6faf6df20109af38b976303eb02f","bbf4ba1b5ec8aa21ad518916d748f5c41634e87f7ec14a634b4479641b0b67cc","5d0d99096c8fc6977e2cb2c447fd0262682d169393ea3a250840171eaf6a6015","5d0d99096c8fc6977e2cb2c447fd0262682d169393ea3a250840171eaf6a6015","6d33055a3dc0c126877d0a6e739c02dff279d655123eaf1cf8423eac83597898","4d984b8ca25effcc73f956a275a0ca0b23ccc858098600c2c11503ddab541169","8a59feec8c3ed1a3fee7dda5ce5a365c90dc5cb36b61d85df6e487f0252617c4","5f288c0e560193944d59a4bf964c33c3cdccb385abfee51bebb434ceaf8ae04f","faaf9ef28d5609fe6e5104864c04e26b5ba3b17ab79a0dee302233aedfc00ece"]],["boot183-right-rear",-1,["c8eb8404e3924545cb07f556c73018950f84ab2df05d05cd6b6a82558a44279d","33df97f62ae1b2051b2b0517e2272324d0c0b7ee47e109869fd960f51bd760d8","a4b7b497dcf37a2db5c675b2e69b6ab40b1d5110b314a5fe9dbe2cccf07a4afb","e37045801574edfe4d614f74b2abbdf91842f5b97d68d1e10c0028dd336f4828","973c17a5f5efde0ec09d9562d348b0dafb2033198ce8c92375364df2a93393c7","5cec6c95fedfd8b0c6278fa4111f6e19b31de7b463a00d86503e6d9552aaf836","4b53a6724fc58777eb819083e6df4cd6b14ae2b4f9b1204073a767b8c9953229","4b53a6724fc58777eb819083e6df4cd6b14ae2b4f9b1204073a767b8c9953229","0375a48cb592ff5aaf223a701558ec9cf068bb7495f5fc20ec1d8fc8facd05cb","0375a48cb592ff5aaf223a701558ec9cf068bb7495f5fc20ec1d8fc8facd05cb"]],["boot183-right-front",45,["df9fc375520f632197fc53d791b1a9c80127c1913fc70ab0ac7b8e02860bea08","fe08d2fd01f721020bd767336d07901cd92c9530a0b1368717b49d72b89c307d","d47598f0bc63f46ba6a5d1136a6d49e172fedf11de9cc9af1f7c339faa1870de","c74f8b4d4dd85493391fd1da537061524ddabf41b34512ab96b0cbd166e7cef4","9107d88c27abab6c91ec96ca19eb897c17cc6c4c6139fee49e7116e65d4959d7","4dd21c53626cf828242feaef05fef6423bff87c0c3cc28706c72e428bf4cd25b","f544ad83d44f8149f23cb52b2c29508578b44f1c745f12bc215f6cff13e3aa03","64e27c227eb7b02c3885bb02f89a1ec6057853d862ccd1c8242c0d6aa52965ae","ee2ce79129c27393b81d63116818ab7d040de6027cc5d5dcde99a2f8f1971533","5d61671e7aedbcce9e418e160a725625b95e72c3e5842a7253274a35ce85ad1f"]]],
+  176:[["boot176-left-rear",-1,["f031525bddf805473d3af0552fee10492199e97b98808eb744dda4e5fe53626e","e4517cd6ae6863ab4a4d9966ed927d37b1c66bffafddd9c6c6c600aad3d5fcc7","26e88c34103c5bc2d052956bfc0adfedd3fbec2107d1f1453ed4899d6f461eae","5287c449cac61d21340af8b773d7dee9ab1e62fe70b9452a2affb27a71698ba1","5287c449cac61d21340af8b773d7dee9ab1e62fe70b9452a2affb27a71698ba1","b849c114f3c6374f5042abee4bddd10bf6446cd15cca6c479ab4e988c09da33a","af77745a21219985e0fba610dd2bf5ce3588d5da7d0658928c084d7c2944c1e6","9ff8f69b815a223b6f6bca2eb990137f8c79b7741e95a450dfa68452a356b04a","5287c449cac61d21340af8b773d7dee9ab1e62fe70b9452a2affb27a71698ba1","0c692907a8880735670853d0c42ea4f42e69369ea2a65b03b663d9a72452e5b5"]],["boot176-left-front",45,["98503e8e5ee656ab54c759b10a6634d97c0e8001a1fd270aed7af2d9ce6593df","18bad6dbd526fb792e84d6ee66c63676439b490d2bed4142a83999711a02c5f5","50a3741cbc09acf3a8e19fa99ea11e5b594b15a1180e7c4a3d925ce33366e9a4","d5b7fb6472155e9d851109d6a063827b8a03d5ac0e1ad9867c2bbc70d00730e7","d5b7fb6472155e9d851109d6a063827b8a03d5ac0e1ad9867c2bbc70d00730e7","31e12550ec3a4e2c8f4c6f59e16c816474c2dba83baf2f4b255e947e86a04cca","38c3e7f4cf51883e1abd957b026d65292ad73f4a23198a792773c678a825e367","0f7ceb368b2fd3cefcf15b6fef0b9e95b772a7fdc12a7acb18b9fc1127d0056b","c1217949ee6a7052351ac3b4dcf3447de5a27fe00d63e86341f7380af4155fbf","b8d44f1fb77c6cfa59fea236365dc6cd0270905f6fae1885f5400ad157360312"]],["boot176-right-rear",-1,["ca08eb82b0f813488603897a47f5f8d161895b40ae2eeb0934d31742b48c1696","c9f63465ab88e075b3a105e28512c889a66fc5aebdfb2ee0d38ab0904560e453","781df8179f8e1d109f5a530f8eee14bbbb9ea73ad11af325ac95cb693b2a011c","f36de0d0f9a18356c06cfe1ebc3a5b90b545b103242d053a026f3871ed1d7ec4","893d4a70df7195087afcd965674399b884e5843ed438bc58a4a4e88f5fa0632f","d7cff9f85b4a5e2e2764a8741886926b2d99d9169ce4250ba1b7197539f7cd66","732d7a90e76013102f719a83128dd163109bcd0da7f14d3373183bc63d2dee3d","03f6217ee02d38b11de7781fdf71ecab1f432e08c80986b3cc9950688a35aa86","6c819290acc299610bb3d654244f7e5790a9baa53b0202703642994d66b62fba","6c819290acc299610bb3d654244f7e5790a9baa53b0202703642994d66b62fba"]],["boot176-right-front",45,["9180033923423313c719de289f4abba454d1bb66dcb55e02431e5454690e6cdf","2c03d91d1080bec24cac75a0289c2c46aa432fc59094595862935d047ead94b2","e0f90a6742357a54f8d626b4438eb98a8ab78c6cf17abe0ff426bdcbda40212b","8dce14a6f0a7c3b9be0f5bdfabd77316646491bae912e2ffc89ba96d7f563b05","8b010bebca125f489dccf8590175ed10f1d52b79aac5a0f14316d358b425f4d3","0b562e8a055176309d70ec8ee4823a8b08a27b7bcac1e86d3b2b6d204f35c441","d55bd9926c84f4256d1b82ff445f0151977d4b518c66c7d58577ef2cd047d1f9","edb15dda768b80eb69be9c909c83e4ac7827a978f7f7a1b2d57434f657e8314f","5be270d5c0f38c4cc9b404ef23c506ce24efa11b9927f4783834ef86462070e8","742de670908b0849c73a6c12765059671bdeda909acb4d6335caebab1e4df8e5"]]],
+ };
+ const southCarryBootContacts=[{"direction":"south","targetAuthoredPhase":4,"basePhase":3,"incomingPhase":4,"operation":"replace-rgba-under-original-luma-mask","sourceArchive":"Female_South_Contact_Temporal_V2.zip","originalMember":"walk-south-contact-temporal-v2/roi-3-4.png","maskSHA256":"3e16854c502b1a247febb5e0bd34784f2799b88fe39ccfdac80def0ffb17fcaa","diffRGBA":0,"mask":"3e16854c502b1a247febb5e0bd34784f2799b88fe39ccfdac80def0ffb17fcaa"},{"direction":"south","targetAuthoredPhase":9,"basePhase":7,"incomingPhase":0,"operation":"replace-rgba-under-original-luma-mask","sourceArchive":"Female_South_Contact_Temporal_V2.zip","originalMember":"walk-south-contact-temporal-v2/roi-7-0.png","maskSHA256":"a1f047bddc874058a97e6f50d616c1fac0788e5a4b02f20ae4cbc3551cdd71e6","diffRGBA":0,"mask":"a1f047bddc874058a97e6f50d616c1fac0788e5a4b02f20ae4cbc3551cdd71e6"}];
+ // Signed South arm-only masks are outside every B176 shaft/sole and foot contact.
+ const boot176SouthArmMasks=["625f77f4c53f5a3212e8a2e1aef536ff342865ffe24c7b82f5f8e074e45dcb62","ee4a72892b8fcd5d54cc4e218a9ab5ff89fa60492a40881905b2e2f150434a8a","e80832f500abfb90b5e64c6ce86a7d8e8bba3e252b9633c1507023af6a822b12","c97eb4b77f4e62882057e47d175bc0ef2fe67edfe0632c02c4ce7b803f8c9333","7855ff800a3228b148f78732b63bf9fd5e6d3e8f791b56bf6e76dc123196edbd","12bc5b3e7c47a32cd7f0f632c6f669de60864a32c50a6c2061b4dace280ec44b","250b3402d755269e56a4537f71861d5c975a108fc116dc1219bdcf7a30c61bf1","917fed786f7f3517f5cf500f0b9c3917619a762d4028f235ccbce32dfab703e4"];
+ function resolveSouthCarryBootOnly(player,o,a,equipment){
+  const item=Number(equipment.weapon?.def??equipment.weapon),stamps=southCarryBootWeaponStamps[item];
+  const bootItem=Number(equipment.boots?.def??equipment.boots),bootPasses=southCarryBootPasses[bootItem];
+  if(!bootPasses||o.consumer!=='world'||o.weaponless||o.action!=='walk'||o.direction!=='south'||
+     canonical(a.body)!=='female'||['variant','variantId','appearanceVariant'].some(k=>o[k]!=null&&o[k]!=='original')||
+     Object.keys(equipment).length!==2||
+     Object.values(equipment).some(v=>['variant','variantId','appearanceVariant'].some(k=>v?.[k]!=null&&v[k]!=='original')))return null;
+  const off=selectBase({...player,equipment:{weapon:equipment.weapon}},o),boot=resolveSouthPants(player,o,a,{boots:equipment.boots});
+  const d=off?.baseRecord?.pack?.directions?.south,s=boot?.authoredPantsLayer.spec,layers=boot?.authoredPantsLayer.layers;
+  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!off||off.hdKind!=='female-equipment'||off.item!==item||off.sourceBaseId!=='v7-female-walk-drawn-all-south'||
+     !boot||!s||!same(d?.clip,{frames:8,fps:8,loop:true})||!same(off.baseRecord.pack,boot.anatomyBase.pack)||
+     off.material?.id!==boot.anatomyBase.femaleNamedHairRecord?.id||
+     !same(layers.map(l=>[l.id,l.depth,l.frames]),bootPasses)||!same(s.contacts,southCarryBootContacts)||
+     off.states.length!==8||off.states.some(st=>st.parts.some(p=>p.url!=='tools/rework-weapon-layers-hd/assets/'+p.sha256+'.png')))return null;
+  // Earlier contour authority excluded B176; only ordered replay may cover it.
+  const disjoint=bootItem!==176&&stamps&&(off.paddingPhysical||0)===stamps[0]&&
+   same(off.states.map(st=>st.parts.map(p=>[p.sha256,p.depth,p.matrix,p.sourceClip||null])),stamps[1]);
+  // Preserve previously certified disjoint replays. For shared projections
+  // the same signed boot replays can travel on the exact authored gait by
+  // composing rear boot / anatomy / front boot in the native depth planes.
+  // Only independent, already resolved gear parts are admitted.
+  const usesArmMasks=bootItem===176&&off.states.every((st,i)=>
+   same(st.baseMasks,{'arms-phase':'tools/rework-weapon-layers-hd/assets/'+boot176SouthArmMasks[i]+'.png'}));
+  if(!disjoint&&(!off.material||off.material.gearRecord||off.outfitSources||off.outfitSourceId||
+    off.baseRecord.sourcePackSHA256!=='ade447b6abe83494aa78833f9ed051b36251c9fc5a97af9d3c38b99933091dbc'||
+    !same(d.layers.map(l=>[l.id,l.depth]),[['legs-anatomy',0],['torso-anatomy',1],['shorts',2],['chest-neck-rigid',3],['tank-top-rigid',4],['arms-phase',5],['head-face-hair-rigid',6]])||
+    !Number.isSafeInteger(off.paddingPhysical??0)||(off.paddingPhysical??0)<0||(off.paddingPhysical??0)>256||
+    off.states.some((st,i)=>st.frame!==i||st.hideBaseLayers?.length||st.baseMasks&&Object.keys(st.baseMasks).length&&!usesArmMasks||
+     !st.parts.length||st.parts.length>2||st.parts.some(v=>(![4.81,5.01,5.02].includes(v.depth)&&!(item===121&&off.ownW121Mounted&&v.depth===5.01-.02))||
+      !/^[a-f0-9]{64}$/.test(v.sha256)||v.matrix?.length!==6||!v.matrix.every(Number.isFinite)||
+      (v.sourceClip!=null&&(v.sourceClip.length!==4||!v.sourceClip.every(Number.isFinite)))))))return null;
+  return {...boot,id:off.id+':south-own-b'+bootItem+(disjoint?'':':native-depth')+':'+boot.id,equipment:{weapon:item,boots:bootItem},
+   carrySouth:off,...(disjoint?{carrySouthBootOnly:true}:{carrySouthNativeDepth:true}),slotRoutes:{weapon:{item,quality:'hd',source:off.id},
+   boots:{item:bootItem,quality:'hd',source:bootItem===155?'authored-female-south-pants-v1:boot155':
+    `frozen-v47-female-151-boot${bootItem}-south-walk`}},omitted:[]};
+ }
  function resolveSouthCarry(player,o,a,equipment){
-  const item=Number(equipment.weapon?.def??equipment.weapon),pants=Number(equipment.legs?.def??equipment.legs??equipment.pants?.def??equipment.pants);
-  // Deliberately narrow approval: these three weapons + pants21, no invented
-  // combinations with gloves, boots, coats, helmets, another direction or attack.
-  if(![0,5,17].includes(item)||pants!==21||Object.keys(equipment).some(k=>!['weapon','legs','pants'].includes(k))||equipment.legs!=null&&equipment.pants!=null)return null;
+  const bootOnly=resolveSouthCarryBootOnly(player,o,a,equipment);if(bootOnly)return bootOnly;
+  const item=Number(equipment.weapon?.def??equipment.weapon);
+  // The three native South weapon passes bind to the same underlying pose,
+  // not to the item ID of the trousers. Let the independently certified lower
+  // body selector prove pants/boot compatibility and its authored clock.
+  if(![0,5,17].includes(item)||Object.keys(equipment).some(k=>!['weapon','legs','pants','boots'].includes(k))||equipment.legs!=null&&equipment.pants!=null)return null;
   if(Object.values(equipment).some(v=>v&&typeof v==='object'&&['variant','variantId','appearanceVariant'].some(k=>v[k]!=null&&v[k]!=='original')))return null;
   const without={...equipment};delete without.weapon;
   const pantsRecord=resolveSouthPants(player,o,a,without);
-  const carry=femaleRegistry?.resolve({item,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:{weapon:item}});
-  if(!pantsRecord||!carry||carry.sourceBaseId!=='v7-female-walk-drawn-all-south'||!carry.approvedSouthCarry||carry.states.length!==8||carry.paddingPhysical!==(item===0?64:0))return null;
+  const ownNative=pantsRecord?.authoredPantsLayer.spec.items[pantsRecord.authoredPantsLayer.item]?.[0]?.depth===44&&
+   pantsRecord.pack.directions.south.clip.frames===8;
+  const carry=ownNative?selectBase({...player,equipment:{weapon:equipment.weapon}},o):
+   femaleRegistry?.resolve({item,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:{weapon:item}});
+  if(!pantsRecord||!carry||carry.sourceBaseId!=='v7-female-walk-drawn-all-south'||
+     !(carry.approvedSouthCarry||ownNative&&carry.hdKind==='female-equipment')||carry.states.length!==8||
+     carry.paddingPhysical!==(item===0?64:0))return null;
+  const bare=pantsRecord.anatomyBase,authored=carry.baseRecord;
+  const same=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!['frame','pivot','density'].every(k=>same(bare.pack[k],authored.pack[k]))||
+     !same(bare.pack.directions.south,authored.pack.directions.south)||
+     bare.femaleNamedHairRecord?.id!==carry.material?.id)return null;
   const expected={0:'823474b4f6a0782ef39eca0dc176630df7ab6886e7b1cb70f800c0baa04b51bd',5:'d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d',17:'ae249c8a9e349b827a6d91a5951c10ef63edf91be9649cd8c0b48645d194d65b'};
   if(carry.states.some(state=>state.parts.length!==1||expected[item]&&state.parts[0].sha256!==expected[item]||state.parts[0].depth!==(item===17?5.01:4.81)))return null;
-  return {...pantsRecord,id:pantsRecord.id+':approved-carry:'+item,carrySouth:carry,equipment:{...pantsRecord.equipment,weapon:item}};
+  const authoredSlots=registeredEquipment(player,o);
+  // The passing split boot passes are reused by their own hem registration.
+  // W5's barrel, B176 and foreground anatomy share a three-way intersection
+  // that the independent source-over contact proof does not cover.
+  if(item===5&&authoredSlots?.boots?.item===176)return null;
+  if(!authoredSlots)return null;
+  const slotRoutes=Object.fromEntries(Object.entries(authoredSlots).map(([kind,{key,item:id}])=>
+   [key,{item:id,quality:'hd',source:kind==='weapon'?carry.id:
+    kind==='boots'?(Number(id)===155?'authored-female-south-pants-v1:boot155':`frozen-v47-female-151-boot${id}-south-walk`):
+    pantsRecord.authoredPantsLayer.spec.schema+':pants'+id}]));
+  return {...pantsRecord,id:pantsRecord.id+':approved-carry:'+item,carrySouth:carry,equipment:{...pantsRecord.equipment,weapon:item},slotRoutes,omitted:[]};
+
  }
  function southWalkBootLayers(spec,item){
   const approved=spec.layers.filter(l=>l.slot==='boots');
@@ -265,9 +612,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const registeredCoat=values.coat==null||[6,7,130,137,144,151,158,165,172,179].includes(values.coat);
   // A registered upper layer preserves the same validated P168 cuff on the
   // 40-frame South rig. Other trouser/shaft pairs retain their prior routes.
+  const registeredPants=s.items[pants];
+  const ownOrdered=registeredPants?.length===10&&registeredPants.every(f=>f.depth===44&&!f.owner&&!f.ownerAlpha&&/^[a-f0-9]{64}$/.test(f.cloth));
   const certifiedHem=pants===168&&registeredCoat&&(values.boots===9||values.boots===176);
-  if(!registeredCoat||values.boots!=null&&values.boots!==155&&values.coat!==151&&!certifiedHem||values.gloves!=null&&values.gloves!==152)return null;
-  if(pants!=null&&values.boots!=null&&values.boots!==155&&!certifiedHem)return null;
+  const independentBoot=Object.keys(values).length===1&&Object.hasOwn(southCarryBootPasses,values.boots)&&
+   (values.boots!==176||o.consumer==='world');
+  if(!registeredCoat||values.boots!=null&&values.boots!==155&&values.coat!==151&&!certifiedHem&&!independentBoot&&!ownOrdered||values.gloves!=null&&values.gloves!==152)return null;
+  if(pants!=null&&values.boots!=null&&values.boots!==155&&!certifiedHem&&!ownOrdered)return null;
   if(!s.controlsApproved&&(values.coat===151||values.boots!=null||values.gloves!=null))return null;
   const base=selectBase({...player,__southAnatomy:true,equipment:equipment.head!=null?{head:equipment.head}:{}},o,true);
   if(!base||base.sourceId!==s.bodyRecord||base.headRecord||base.gearOnlyRecord)return null;
@@ -283,12 +634,71 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    if(!eq(anatomy,bd.layers)||cd.layers.filter(l=>l.id.startsWith('base:')&&l.frames).some(l=>l.frames.some((f,i)=>f!==l.frames[Math.floor(i/5)*5])))return null;
   }
   const boots=values.boots==null?[]:southWalkBootLayers(s,values.boots);
-  if(!boots)return null;
+  if(!boots||independentBoot&&(JSON.stringify(boots.map(l=>[l.id,l.depth,l.frames]))!==JSON.stringify(southCarryBootPasses[values.boots])||JSON.stringify(s.contacts)!==JSON.stringify(southCarryBootContacts)))return null;
   const layers=s.layers.flatMap(l=>l.slot==='boots'?(l===s.layers.find(x=>x.slot==='boots')?boots:[]):values[l.slot]!=null&&(l.slot!=='coat'||values.coat===(l.item??151))?[l]:[]),refs=[...new Set([...layers.flatMap(l=>l.frames),...(pants!=null?s.items[pants].flatMap(f=>[f.cloth,f.owner,f.ownerAlpha].filter(Boolean)):[]),...s.contacts.map(c=>c.mask)])];
   const d=base.pack.directions.south;
+  // Bare South and bare armed walk use their exact native 8 frames. Keep
+  // their clock and omit the 2 contacts exclusive to authored 40-tick slots.
+  if(ownOrdered&&!Object.keys(values).some(k=>!['legs','pants'].includes(k))){
+   const nativeSpec={...s,frameToPhase:[0,1,2,3,5,6,7,8],contacts:[]};
+   return {id:'authored-female-south:'+JSON.stringify(values)+':'+base.id,body:'female',action:'walk',direction:'south',hdKind:'authored-pants',
+    colorAppearance:base.colorAppearance,anatomyBase:base,equipment:values,
+    sourceRefs:refs.filter(h=>!s.contacts.some(c=>c.mask===h)),
+    authoredPantsLayer:{item:pants,spec:nativeSpec,layers:[]},pack:base.pack};
+  }
   return {id:'authored-female-south:'+JSON.stringify(values)+':'+base.id,body:'female',action:'walk',direction:'south',hdKind:'authored-pants',colorAppearance:base.colorAppearance,anatomyBase:base,equipment:values,sourceRefs:refs,authoredPantsLayer:{item:pants??null,spec:s,layers,mappedCoat},pack:{...base.pack,directions:{south:{...d,clip:{frames:40,fps:40,loop:true}}}}};
  }
- // The approved P168/P182 South walk phase zero uses exactly the authored idle base.
+ // Reuse one approved South boot pass only when its own idle source and
+ // the walking phase-zero body/appearance share exactly the same pixels.
+ function resolveSouthOwnBootIdle(player,o,a,equipment){
+  const item=Number(equipment.boots?.def??equipment.boots);
+  if(player.__southAnatomy||player.__reworkSubset||o.weaponless||canonical(a.body)!=='female'||
+    o.consumer!=='world'||o.action!=='idle'||o.direction!=='south'||Object.keys(equipment).length!==1||
+    ![8,9,134,141,148,155,162,169].includes(item))return null;
+  const idle=selectBase({...player,equipment:{}},o,true),
+   walk=resolveSouthPants(player,{...o,action:'walk'},a,equipment), target=walk?.authoredPantsLayer,base=walk?.anatomyBase,
+   donor=outfitById.get(`frozen-v47-female-151-boot${item}-south-idle`), d=donor?.pack?.directions?.south,
+   I=idle?.pack?.directions?.south,W=base?.pack?.directions?.south,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(idle?.sourceId!=='female-idle-original-south-from-walk0'||idle.headRecord||idle.gearOnlyRecord||
+    !target||target.item!=null||target.layers.length!==4||target.spec.phaseMap[0]!==0||target.spec.frameToPhase[0]!==0||
+    target.spec.contacts.some(c=>c.targetAuthoredPhase===0)||!donor?.frozenBootContract||donor.productionEnabled===false||
+    d?.clip.frames!==1||d.clip.loop!==false||!['frame','pivot','density'].every(k=>eq(donor.pack[k],idle.pack[k])&&eq(base.pack[k],idle.pack[k]))||
+    !eq(I.clip,{frames:1,fps:1,loop:false})||!eq(I.rest,W.rest)||!eq(I.poses,W.poses.slice(0,1))||
+    !eq(I.layers,W.layers.map(l=>l.frames?{...l,frames:l.frames.slice(0,1)}:l))||!eq(idle.colorAppearance,base.colorAppearance)||
+    target.layers.some(l=>l.slot!=='boots'||!l.id.startsWith('boot'+item+'-')||!d.layers.some(x=>
+      x.id===l.id&&x.depth===l.depth&&x.binding?.kind==='fixed'&&x.frames?.length===1&&x.frames[0]===l.frames[0])))return null;
+  return {...walk,id:walk.id+':own-b'+item+'-idle-phase0',action:'idle',pack:idle.pack,
+    sourceRefs:target.layers.map(l=>l.frames[0]),slotRoutes:{boots:{item,quality:'hd',source:donor.id}},omitted:[]};
+ }
+ // Collect independent ownership from the already verified phase-zero
+ // providers. No outfit donor or pair controls which pants/boot is selected.
+ function composeFemaleSouthIdleLayers(player,o,a,visible){
+  if(o.consumer!=='world'||o.action!=='idle'||o.direction!=='south'||
+     !visible.boots||!visible.pants||Object.keys(visible).some(s=>s!=='boots'&&s!=='pants'))return null;
+  const wornBoots=visible.boots,wornPants=visible.pants;
+  const boot=resolveSouthOwnBootIdle(player,o,a,{boots:wornBoots.value});
+  const pants=resolveSouthOwnedPantsIdle(player,o,a,{[wornPants.key]:wornPants.value});
+  const b=boot?.authoredPantsLayer,p=pants?.authoredPantsLayer,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!b||!p||b.item!=null||p.item!==wornPants.item||p.layers.length||b.layers.length!==4||
+     b.spec!==p.spec||b.mappedCoat||p.mappedCoat||boot.carrySouth||pants.carrySouth||
+     !eq(boot.pack,pants.pack)||!eq(boot.colorAppearance,pants.colorAppearance)||
+     !eq(boot.anatomyBase,pants.anatomyBase)||
+     boot.slotRoutes?.boots?.item!==wornBoots.item)return null;
+  const spec=p.spec.items[p.item]?.[0];
+  if(spec?.owner||!spec?.ownerAlpha||!spec.cloth)return null;
+  return {...pants,id:pants.id+':own-south-boot:'+wornBoots.item,
+   equipment:{...pants.equipment,boots:wornBoots.item},sourceRefs:[...new Set([...boot.sourceRefs,spec.cloth,spec.ownerAlpha])],
+   authoredPantsLayer:{...p,layers:b.layers},layeredSlots:true,omitted:[],
+   slotRoutes:{[wornBoots.key]:boot.slotRoutes.boots,[wornPants.key]:{item:wornPants.item,quality:'hd',source:pants.id}}};
+ }
+ function signedSouthIdlePants(item,f){
+  if(item===21)return f?.cloth==='308a214cc7003289eb8592d298af9d6cb60aee84645ad33da66ad955ce34bfb3'&&
+   f.owner==='21479825c71b33e54621363520da4291ab342fa80f444d80eda28c7e1069f4ac'&&!f.ownerAlpha;
+  if(item===133)return f?.cloth==='5526caa7b719d10e3034a28f81fd619d5433546a516e86912cf4838e58a2bb9c'&&
+   f.owner===null&&!f.ownerAlpha;
+  return f?.ownerAlpha==='434a293f43750f8d09085f4258a45f835fe2199c44cecc2ad727e365d2a3b7e6';
+ }
+ // For the signed South variants the underlying walk phase zero is the authored idle pose.
  // Compose only separately proven stationary coat sources, never the walk coat.
  function resolveSouthOwnedPantsIdle(player,o,a,equipment){
   const keys=Object.keys(equipment),value=equipment.legs??equipment.pants,def=Number(value?.def??value),
@@ -300,7 +710,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // The B176 and B183 seams are certified against the single P168 idle
   // geometry. P182 still cannot be worn with boots through this bridge.
   if(coat!=null&&(boot!=null||![7,137,144,158,165,179].includes(coat)||['variant','variantId','appearanceVariant'].some(k=>c?.[k]!=null&&c[k]!=='original')))return null;
-  if(boot==null?(keys.length!==(coat==null?1:2)||![168,182].includes(def)):
+  if(boot==null?(keys.length!==(coat==null?1:2)||![21,133,168,182].includes(def)):
     (![176,183].includes(boot)||value!=null&&def!==168))return null;
   const idle=selectBase({...player,equipment:{}},o,true);
   // B183 is a new position registration, not a new walking combination.
@@ -322,8 +732,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      target.item!==(value!=null?def:168)||target.layers.length!==(boot==null?0:4)||
      (boot!=null&&target.layers.some(l=>l.slot!=='boots'||!l.id.startsWith('boot'+boot+'-')||
        !/^[a-f0-9]{64}$/.test(l.frames?.[0])||l.depth!==(l.id.endsWith('-rear')?-1:45)))||
-     target.spec.items[target.item]?.[0]?.ownerAlpha!==
-      '434a293f43750f8d09085f4258a45f835fe2199c44cecc2ad727e365d2a3b7e6'||
+     !signedSouthIdlePants(target.item,target.spec.items[target.item]?.[0])||
      target.spec.phaseMap[0]!==0||target.spec.frameToPhase[0]!==0||target.spec.contacts.some(c=>c.targetAuthoredPhase===0))return null;
   const base=walk.anatomyBase, I=idle.pack.directions.south,W=base.pack.directions.south;
   const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
@@ -343,10 +752,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       cd.layers.filter(l=>!l.id.startsWith('base:')).some(l=>!['top','underArms'].includes(l.slot)||l.frames&&l.frames.length!==1))return null;
   }
   if(mappedIdleCoat){
-   const {cloth,ownerAlpha}=target.spec.items[def][0];
+   const {cloth,ownerAlpha,owner}=target.spec.items[def][0];
    return {...mappedIdleCoat,id:mappedIdleCoat.id+':pants'+def+':idle-phase0',equipment:{torso:coat,pants:def},
-    sourceRefs:[...new Set([...mappedIdleCoat.sourceRefs,cloth,ownerAlpha])],
-    authoredIdleCoatPants:{cloth,ownerAlpha,record:mappedIdleCoat}};
+    sourceRefs:[...new Set([...mappedIdleCoat.sourceRefs,...[cloth,ownerAlpha,owner].filter(Boolean)])],
+    authoredIdleCoatPants:{cloth,ownerAlpha,restoreOwner:owner,record:mappedIdleCoat}};
   }
   const bridge=boot==null?walk:{
    ...walk,id:walk.id+(b183?':b183-source':'')+(value==null?':boots-only':''),equipment:value==null?{boots:boot}:{...walk.equipment,boots:boot},
@@ -400,6 +809,103 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    authoredNorthIdlePants:{base,cloth:expected[1][1],ownerAlpha:expected[2][1]}};
  }
  // Same complete authored punch rig: replace the shorts slot only.
+ // This idle rig is exactly native walk pose 0. Reuse only the two own
+ // signed cloth layers confirmed on that receiving pose; never the donor's
+ // flattened anatomy, owner overlays or longer gait clock.
+ function resolveFemaleSideIdleOwnPants(player,o,a,equipment){
+  const dir=o.direction,key=equipment.legs!=null?'legs':'pants',value=equipment[key],item=Number(value?.def??value),
+   north=dir==='north',south=dir==='south',coat=equipment.coat,coatItem=Number(coat?.def??coat),weapon=equipment.weapon,weaponItem=Number(weapon?.def??weapon);
+  if(player.__reworkSubset||o.action!=='idle'||o.weaponless||canonical(a.body)!=='female'||
+     (south?item!==22:north?![21,22,133].includes(item):!['east','west'].includes(dir)||![21,22,133].includes(item))||(equipment.legs!=null&&equipment.pants!=null)||
+     Object.keys(equipment).some(k=>k!==key&&!['coat','weapon'].includes(k))||
+     [value,coat,weapon].some(v=>['variant','variantId','appearanceVariant'].some(k=>v?.[k]!=null&&v[k]!=='original')))return null;
+  const id='female-idle-original-'+dir+'-from-walk0',
+   base=selectBase({...player,equipment:{}},o,true),
+   donor=outfitIndex?.independentPants?.records?.find(x=>x.id==='independent-female-pants'+item+'-'+dir+'-walk'),
+   pose=base?.pack?.directions?.[dir],source=donor?.pack?.directions?.[dir],
+   native=baseIndex?.records?.find(x=>x.id==='v7-female-walk-drawn-all-'+dir)?.pack,
+   walk=native?.directions?.[dir],own=source?.layers?.find(l=>l.id==='approved-cloth'),
+   p22SouthPath='tools/rework-modular-outfits-hd/assets/49bb889f78c45c3743b5f8e366ede2cb4e1a14aa0018cb8f9c597f443575d650.png',
+   northPath=item===22&&north?'tools/rework-modular-outfits-hd/assets/8519aadca0828f4f222ffaa29dded985fc83508c51bb40c46996ce1e77bd7401.png':item===133?'tools/rework-modular-outfits-hd/assets/ebdea0b8216c43160447adb96bc6ddae6e429ff557fc715674a808ccb0383b23.png':'tools/rework-female-north-rig/assets/2ccd5abbb87358b1c8eef670218caca4d244549bf18105d9e4548efe375ad428.png',
+   hash=north||south?(south?p22SouthPath:northPath).split('/').pop().slice(0,-4):own?.frames?.[0],same=(x,y)=>JSON.stringify(x)===JSON.stringify(y),
+   zero=l=>l.frames?{...l,frames:[l.frames[0]]}:l;
+  const signed={
+   22:{east:'04005d11dd2a9e162f643713c26a55d3cb6a29a2e1a29afc1680b195774733c1',west:'33e822d5286898c11fccf061634f0b71d78aa28362b604ebd331df4ed1266ea7'},
+   21:{east:'ea95e7f9b89de6ee3bb3b850b63d16027fbb260e3cd7fdeebb75471b0ad9d5b0',west:'76b1fca16d919ba2eba440e43bea453427b5f609600b76be33c19968630423ad'},
+   133:{east:'1296f5081e8686c4d64933d7ef115ea00c6a0a2ac2730f91a8e23b6aead1f17d',west:'a7804b5790a1066c0e9597cda88c4cd53637f430f78f6cbe7e05b4b7f0bb9e9f'},
+  };
+  if(base?.sourceId!==id||base.hdKind||base.headRecord||base.gearOnlyRecord||!walk||!pose||
+     !same(pose.layers,walk.layers.map(zero))||!same(pose.rest,walk.rest)||!same(pose.poses,[walk.poses[0]])||
+     pose.clip.frames!==1||pose.clip.loop!==false||
+     !['frame','pivot','density'].every(k=>same(base.pack[k],native[k])))return null;
+  if(south){
+   const frozen=outfitById.get('frozen-female-pants22-south-idle-source-v47');
+   if(!frozen?.frozenFemalePantsSource||frozen.equipment?.pants!==22||
+      frozen.pack.directions.south.layers[0].source!=='e9f82efb8f3b371d180190f96057fb39f23e5da15f5de3470be91138a193c563'||
+      pose.layers.find(l=>l.id==='legs-anatomy')?.frames?.[0]!=='c9df2b4acd569e35efd0d8cbf84bcefcb42fc8a113c360fd1f749a1e5fac28d5')return null;
+  }else if(north){
+   // Phase zero of the authorial North walking rig has precisely the
+   // receiving native legs and no arm or garment-owner occlusion pixels.
+   // Do not borrow the remaining phases or redraw starting geometry.
+   if(item!==21){
+    const frozen=outfitById.get('frozen-female-pants'+item+'-north-idle-source-v47'),
+     reference=item===133?'4892a99a27736e8d88c398d9ff1309224857798bb7be203fb4feb73bbe8c3906':'2997990c33bf4fd83e8e5348eabee0b987a9a3c70753461c0aca6ba51117cbed';
+    if(frozen?.frozenFemalePantsSource==null||frozen.equipment?.pants!==item||
+       frozen.pack.directions.north.layers[0].source!==reference||
+       pose.layers.find(l=>l.id==='legs')?.frames?.[0]!=='29d7201a1342385cc32cad8e5bb84195c543eeb9f686b4d123bfbdcb889e978b')return null;
+   }else if(northRig?.schema!=='female-north-author-layered-rig-v1'||northRig.frameToPhase?.[0]!==0||northRig.phaseMap?.[0]!==0||
+      northRig.equipmentLayers?.[21]?.cloth?.[0]!==northPath||
+      northRig.equipmentLayers[21].owner?.[0]!=='tools/rework-female-north-rig/assets/ef2a4c8949cdab1ef24e678bdb88cc276b1fd75e62066e47011c2ce53996efe6.png'||
+      northRig.legs?.[0]!=='tools/rework-female-north-rig/assets/8ceefba903af4bc4c8f37735a2cf39b6564465f468e3c4cb07921072b71e61dd.png'||
+      northRig.armOcclusion?.[0]!=='tools/rework-female-north-rig/assets/074065f07e35265d9695cced0f42844dbb02e5766c4ed185d0a372b2d033b093.png'||
+      pose.layers.find(l=>l.id==='legs')?.frames?.[0]!=='29d7201a1342385cc32cad8e5bb84195c543eeb9f686b4d123bfbdcb889e978b')return null;
+  }else if(!donor?.approvedOriginalLayers||!donor.sourceRecipeVerified||donor.body!=='female'||donor.action!=='walk'||
+     donor.direction!==dir||donor.equipment?.pants!==item||donor.sourceClockMapping?.[0]!==0||
+     !own||own.slot!=='pants'||own.binding?.kind!=='fixed'||hash!==signed[item][dir]||!donor.sourceRefs.includes(hash)||
+     !['frame','pivot','density'].every(k=>same(base.pack[k],donor.pack[k])))return null;
+  let host=base;
+  if(weapon!=null){
+   host=select({...player,equipment:{weapon,...(coat!=null?{coat}:{})}},o);
+   const d=host?.pack?.directions?.[dir],p=host?.baseRecord?.pack;
+   if(host?.hdKind!=='female-equipment'||host.sourceBaseId!==id||host.item!==weaponItem||
+      !Number.isInteger(host.paddingPhysical??0)||host.paddingPhysical<0||host.paddingPhysical>(north?71:south?128:64)||host.checkpointSources||host.omitted?.length||host.unsupported?.length||host.appearanceAdapted||
+      host.states?.length!==1||!same(host.pack,p)||!d||
+      !['frame','pivot','density'].every(k=>same(base.pack[k],p[k]))||
+      !same(d.clip,pose.clip)||!same(d.rest,pose.rest)||!same(d.poses,pose.poses)||
+      !same(d.layers.slice(0,pose.layers.length),pose.layers)||
+      d.layers.slice(pose.layers.length).some(l=>!['top','underArms'].includes(l.slot))||
+      host.states.some(state=>state.parts.some(part=>!Number.isFinite(part.depth)||part.depth<=2)||
+       [...(state.hideBaseLayers||[]),...Object.keys(state.baseMasks||{})].some(k=>k==='shorts'))||
+      (coat!=null?host.outfitSourceId!=='female-torso'+coatItem+'-'+dir+'-frozen-idle-native':!!host.outfitSources))return null;
+  }else if(coat!=null){
+   host=selectBase({...player,equipment:{coat}},o,true);
+   const expected='female-torso'+coatItem+'-'+dir+'-frozen-idle-native',d=host?.pack?.directions?.[dir];
+   if(host?.sourceId!==expected||host.hdKind!=='outfit'||host.equipment?.torso!==coatItem||host.headRecord||host.gearOnlyRecord||
+      host.bodyOcclusion||host.sourceRasterPadding?.[hash]||!d||d.clip.frames!==1||d.clip.loop!==false||
+      !['frame','pivot','density'].every(k=>same(base.pack[k],host.pack[k]))||
+      !Object.entries(pose.rest).every(([k,v])=>same(v,d.rest[k]))||
+      d.poses.length!==1||!Object.entries(pose.poses[0]).every(([k,v])=>same(v,d.poses[0][k]))||
+      !same(pose.layers,d.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)})))||
+      d.layers.filter(l=>!l.id.startsWith('base:')).some(l=>!['top','underArms'].includes(l.slot)))return null;
+  }
+  const layers=host.pack.directions[dir].layers,index=layers.findIndex(l=>l.id===(host.hdKind==='outfit'?'base:shorts':'shorts')&&l.slot==='pants');
+  if(index<0)return null;
+  // P22's original lower pass has a straighter front calf than this native
+  // idle. Keep the own fabric with the source-bound calf fit; this is
+  // selected only on the leg raster used to verify that fit.
+  const fittedP22={
+   east:['b4a73d3920e780be675e7d51e5df8c6ba3b43e84c07be4b18c53693a56925ce2','d0f051a2f021e58cc51bc1641a82a93ff0c188086031ba4314facc9830389dc8'],
+   west:['da37943a03a54e8c3fe19ec0aded304178e7d438b65f2731cc53171121510b74','6261aacd824ba7ab217bf2f15aeca10e9ab0c97671a7d50ee5b87360f647cb3e'],
+  };
+  if(!north&&!south&&item===22&&pose.layers.find(l=>l.id==='legs')?.frames?.[0]!==fittedP22[dir][0])return null;
+  const fitted=!north&&!south&&item===22?fittedP22[dir][1]:hash;
+  const cloth={...layers[index],id:'pants'+item+'-independent',source:fitted,frames:[fitted]};
+  return {...host,id:host.id+(south?':own-south-idle-pants:':north?':own-north-idle-pants:':':own-side-idle-pants:')+item,equipment:{...host.equipment,pants:item},
+   authoredSideIdlePants:{base:host,cloth,index,pruneDetachedAlphaOne:item===21||north||south,...(north||south?{sourcePath:south?p22SouthPath:northPath}:{})},
+   slotRoutes:{...host.slotRoutes,[key]:{item,quality:'hd',source:south?p22SouthPath:north?northPath:donor.id},
+    ...(coat!=null?{coat:{item:coatItem,quality:'hd',source:host.outfitSourceId??host.sourceId}}:{}),
+    ...(weapon!=null?{weapon:{item:weaponItem,quality:'hd',source:host.id}}:{})},omitted:[]};
+ }
  function resolveFemaleOwnedPants(player,o,a,equipment){
   const keys=Object.keys(equipment),v=equipment.legs??equipment.pants,dir=o.direction,cv=equipment.coat,coat=cv==null?null:Number(cv.def??cv);
   const h=equipment.head,style=String(a.hair??'original').replace(/^hair-/,''),helmet=h!=null&&Number(h?.def??h)===157&&['north','south','east','west'].includes(dir)&&coat==null&&o.action==='attack-unarmed'&&['original','bob'].includes(style)&&
@@ -450,21 +956,104 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const s=r.authoredPantsLayer.spec,k=s.frameToPhase[frame],contact=s.contacts.find(c=>c.targetAuthoredPhase===k),phases=[s.phaseMap[k],...(contact?[contact.incomingPhase]:[])];
   return [...new Set([...(r.carrySouth?femaleRegistry.requiredFiles(r.carrySouth):[]),...(r.carrySouth?.item===17?['tools/rework-weapon-layers-hd/assets/e4a2f3c434849aabc41cb6037bc16c54ef3130ff21838c355bde9356c6ad287f.png']:[]),...r.sourceRefs.map(h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png'),...phases.flatMap(p=>filesFor(r.anatomyBase,p)),...(r.authoredPantsLayer.mappedCoat?filesFor(r.authoredPantsLayer.mappedCoat,s.phaseMap[k]*5):[])])];
  }
+ function composeSouthCarryNativeDepth(r,frame,entry){
+  const carry=r.carrySouth,{spec:s,layers}=r.authoredPantsLayer,k=s.frameToPhase[frame],phase=s.phaseMap[k],
+   contact=s.contacts.find(c=>c.targetAuthoredPhase===k),pad=carry.paddingPhysical||0,W=512+2*pad,
+   make=()=>makeCanvas(W,W),images=entry.images,src=h=>images.get('tools/rework-modular-outfits-hd/assets/'+h+'.png');
+  const capture=p=>{
+   const tiles=[],native=make(),info=femaleRegistry.render(native.getContext('2d'),carry,images,
+    {frame:p,makeCanvas,captureOps:x=>tiles.push(x)});
+   return {tiles,native,info};
+  };
+  const {tiles,native,info}=capture(phase),incoming=contact?capture(contact.incomingPhase):null;
+  const support=make(),sctx=support.getContext('2d'),edit=make(),ec=edit.getContext('2d');
+  const mask=contact?make():null,mc=mask?.getContext('2d');let correction;
+  if(mc){mc.drawImage(src(contact.mask),pad,pad);correction=mc.getImageData(0,0,W,W).data;}
+  for(const {op,canvas} of tiles)if(op.layer&&incoming){
+   const original=incoming.tiles.find(t=>t.op.layer?.id===op.layer.id)?.canvas;
+   if(!original)throw Error('South contact layer identity changed');
+   const donor=original.getContext('2d').getImageData(0,0,W,W).data,c=canvas.getContext('2d'),out=c.getImageData(0,0,W,W);
+   for(let n=0;n<correction.length;n+=4)if(correction[n])out.data.set(donor.subarray(n,n+4),n);
+   c.putImageData(out,0,0);
+  }
+  const passes=layers.map(l=>{
+   const image=src(l.frames[k]);if(image?.width!==512||image.height!==512)throw Error('Invalid authored South boot frame');
+   sctx.drawImage(image,pad,pad);return {image,offset:pad,depth:l.depth===-1?-1:4.5};
+  });
+  passes.push(...tiles.map(({op,canvas})=>({image:canvas,offset:0,depth:op.depth})));
+  for(const p of passes.sort((a,b)=>a.depth-b.depth))ec.drawImage(p.image,p.offset,p.offset);
+  // Outside the signed boot/contact support, keep the native armed frame
+  // byte-for-byte. Within it use the original gear alpha at its native depth;
+  // translucent edges blend with the new boot pixels instead of deleting them.
+  const rc=native.getContext('2d'),out=rc.getImageData(0,0,W,W),
+   moved=ec.getImageData(0,0,W,W).data,owned=sctx.getImageData(0,0,W,W).data;
+  let top=W;
+  for(let n=0;n<owned.length;n+=4){
+   if(owned[n+3]||correction?.[n])out.data.set(moved.subarray(n,n+4),n);
+   if(out.data[n+3]&&top===W)top=Math.floor(n/(W*4));
+  }
+  rc.putImageData(out,0,0);
+  for(const c of [support,edit,...(mask?[mask]:[]),...tiles.map(t=>t.canvas),
+   ...(incoming?[incoming.native,...incoming.tiles.map(t=>t.canvas)]:[])])c.width=1;
+  return {canvas:native,info:{...info,frames:40,fps:40,visualHeight:Math.max(0,info.pivot.y-top)}};
+ }
  function composeSouthCarry(r,frame,entry){
+  if(r.carrySouthNativeDepth)return composeSouthCarryNativeDepth(r,frame,entry);
   const bare=composeSouthPants({...r,carrySouth:null},frame,entry),carry=r.carrySouth,s=r.authoredPantsLayer.spec,k=s.frameToPhase[frame],phase=s.phaseMap[k],pad=carry.paddingPhysical||0,W=512+2*pad;
   const canvas=()=>makeCanvas(W,W),pixels=c=>c.getContext('2d').getImageData(0,0,W,W).data;
   const images=entry.images;
+  if(r.carrySouthBootOnly){
+   const result=canvas(),rc=result.getContext('2d'),info=femaleRegistry.render(rc,carry,images,{frame:phase,makeCanvas});
+   const support=canvas(),sc=support.getContext('2d'),edited=canvas(),ec=edited.getContext('2d');
+   const src=h=>images.get('tools/rework-modular-outfits-hd/assets/'+h+'.png');
+   ec.drawImage(bare.canvas,pad,pad);
+   for(const l of r.authoredPantsLayer.layers)sc.drawImage(src(l.frames[k]),pad,pad);
+   const contact=s.contacts.find(c=>c.targetAuthoredPhase===k),correction=contact?canvas():null;
+   if(correction)correction.getContext('2d').drawImage(src(contact.mask),pad,pad);
+   // The authored stand-alone boot replay owns the boot passes and its
+   // existing foot-contact correction. Neither intersects actual projected
+   // gear alpha. Preserve native armed pixels everywhere else.
+   const d=rc.getImageData(0,0,W,W),m=pixels(support),b=pixels(edited),fix=correction&&pixels(correction);
+   for(let n=0;n<m.length;n+=4)if(m[n+3]||fix?.[n])d.data.set(b.subarray(n,n+4),n);
+   rc.putImageData(d,0,0);support.width=edited.width=1;if(correction)correction.width=1;
+   let top=W;for(let y=0;y<W&&top===W;y++)for(let x=0;x<W;x++)if(d.data[(y*W+x)*4+3]){top=y;break;}
+   return {canvas:result,info:{...bare.info,...info,frames:40,fps:40,visualHeight:Math.max(0,info.pivot.y-top)}};
+  }
   const capture=p=>{const ops=[];femaleRegistry.render(canvas().getContext('2d'),carry,images,{frame:p,makeCanvas,captureOps:o=>ops.push(o)});return ops;};
   const ops=capture(phase),body=ops.filter(o=>o.op.layer),gear=ops.filter(o=>o.op.part),contact=s.contacts.find(c=>c.targetAuthoredPhase===k);
   if(contact){const donor=capture(contact.incomingPhase),mc=makeCanvas(512,512).getContext('2d');mc.drawImage(images.get('tools/rework-modular-outfits-hd/assets/'+contact.mask+'.png'),0,0);const mask=mc.getImageData(0,0,512,512).data;
    for(const b of body){const d=pixels(donor.find(o=>o.op.layer?.id===b.op.layer.id).canvas),ctx=b.canvas.getContext('2d'),data=ctx.getImageData(0,0,W,W);for(let y=0;y<512;y++)for(let x=0;x<512;x++)if(mask[(y*512+x)*4]){const n=((y+pad)*W+x+pad)*4;data.data.set(d.subarray(n,n+4),n);}ctx.putImageData(data,0,0);}
   }
-  const def=s.items[21][k],cloth=canvas(),cc=cloth.getContext('2d');cc.drawImage(images.get('tools/rework-modular-outfits-hd/assets/'+def.cloth+'.png'),pad,pad);
-  if(def.owner||def.ownerAlpha){const mc=makeCanvas(512,512).getContext('2d');mc.drawImage(images.get('tools/rework-modular-outfits-hd/assets/'+(def.owner||def.ownerAlpha)+'.png'),0,0);const mask=mc.getImageData(0,0,512,512).data,d=cc.getImageData(0,0,W,W);for(let y=0;y<512;y++)for(let x=0;x<512;x++)if(mask[(y*512+x)*4+(def.owner?0:3)]){const n=((y+pad)*W+x+pad)*4;d.data.fill(0,n,n+4);}cc.putImageData(d,0,0);}
+  const item=r.authoredPantsLayer.item,def=item==null?null:s.items[item][k],cloth=canvas(),cc=cloth.getContext('2d');
+  if(def)cc.drawImage(images.get('tools/rework-modular-outfits-hd/assets/'+def.cloth+'.png'),pad,pad);
+  if(def?.owner||def?.ownerAlpha){const mc=makeCanvas(512,512).getContext('2d');mc.drawImage(images.get('tools/rework-modular-outfits-hd/assets/'+(def.owner||def.ownerAlpha)+'.png'),0,0);const mask=mc.getImageData(0,0,512,512).data,d=cc.getImageData(0,0,W,W);for(let y=0;y<512;y++)for(let x=0;x<512;x++)if(mask[(y*512+x)*4+(def.owner?0:3)]){const n=((y+pad)*W+x+pad)*4;d.data.fill(0,n,n+4);}cc.putImageData(d,0,0);}
   // Approved order is confined to the alpha contribution of the real weapon,
   // after occlusion by native foreground anatomy. No color-key subtraction.
   const visible=canvas(),vc=visible.getContext('2d');for(const g of gear)vc.drawImage(g.canvas,0,0);vc.globalCompositeOperation='destination-out';for(const b of body)if(b.op.depth>gear[0].op.depth)vc.drawImage(b.canvas,0,0);
-  const lower=canvas(),lc=lower.getContext('2d');for(const o of [...body,...gear,{op:{depth:4.6},canvas:cloth}].sort((a,b)=>a.op.depth-b.op.depth))lc.drawImage(o.canvas,0,0);
+  // Preserve the existing rear/leg/front/pants relationship even beneath
+  // translucent weapon edges. Keep the boots in the stack; don't copy an
+  // unbooted body over them when the barrel or sword crosses a foot.
+  const boots=r.authoredPantsLayer.layers.filter(l=>l.slot==='boots').map(l=>{
+   const c=canvas();c.getContext('2d').drawImage(images.get('tools/rework-modular-outfits-hd/assets/'+l.frames[k]+'.png'),pad,pad);
+   return {op:{depth:l.depth===-1?-1:4.5},canvas:c};
+  });
+  const shorts=def?.depth===44&&body.find(b=>b.op.layer.id==='shorts'), layers=shorts?body.filter(b=>b!==shorts):body;
+  const lower=canvas(),lc=lower.getContext('2d');for(const o of [...boots,...layers,...gear,{op:{depth:def?.depth===44?4.4:4.6},canvas:cloth}].sort((a,b)=>a.op.depth-b.op.depth))lc.drawImage(o.canvas,0,0);
+  if(def?.depth===44&&s.contacts.length===0&&r.pack.directions.south.clip.frames===8){
+   // Preserve any signed native carry postpasses. The layered compose is
+   // authoritative only on the owned cloth, never on uncovered anatomy/gear.
+   const result=canvas(),rc=result.getContext('2d'),info=femaleRegistry.render(rc,carry,images,{frame:phase,makeCanvas});
+   const witness=canvas(),wc=witness.getContext('2d');
+   for(const o of [...boots,...body,...gear].sort((a,b)=>a.op.depth-b.op.depth))wc.drawImage(o.canvas,0,0);
+   const d=rc.getImageData(0,0,W,W),owned=pixels(cloth),withCloth=pixels(lower),withoutCloth=pixels(witness);
+   const rgba=a=>new Uint32Array(a.buffer,a.byteOffset,a.byteLength/4),dst=rgba(d.data),base32=rgba(withoutCloth),cloth32=rgba(withCloth);
+   const nativeShorts=shorts?pixels(shorts.canvas):null;
+   for(let n=0;n<dst.length;n++)if((owned[n*4+3]||nativeShorts?.[n*4+3])&&dst[n]===base32[n])dst[n]=cloth32[n];
+   witness.width=1;
+   rc.putImageData(d,0,0);
+   let top=W;for(let y=0;y<W&&top===W;y++)for(let x=0;x<W;x++)if(d.data[(y*W+x)*4+3]){top=y;break;}
+   return {canvas:result,info:{...info,visualHeight:Math.max(0,info.pivot.y-top)}};
+  }
   const result=canvas(),rc=result.getContext('2d');rc.drawImage(bare.canvas,pad,pad);const d=rc.getImageData(0,0,W,W),v=pixels(visible),l=pixels(lower);for(let n=0;n<v.length;n+=4)if(v[n+3])d.data.set(l.subarray(n,n+4),n);rc.putImageData(d,0,0);
   return {canvas:result,info:{...bare.info,width:W,height:W,pivot:{x:bare.info.pivot.x+pad,y:bare.info.pivot.y+pad}}};
  }
@@ -472,7 +1061,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(r.carrySouth)return composeSouthCarry(r,frame,entry);
   const s=r.authoredPantsLayer.spec,k=s.frameToPhase[frame],sourcePhase=s.phaseMap[k],base=r.anatomyBase,W=512,H=512;
   entry.southAnatomy ||=new Map();entry.southPixels ||=new Map();entry.southHeads ||=new Map();
-  const anatomy=p=>{if(!entry.southAnatomy.has(p))entry.southAnatomy.set(p,composeFrame(base,p,entry));return entry.southAnatomy.get(p);};
+  const ownCloth=r.authoredPantsLayer.item!=null&&s.items[r.authoredPantsLayer.item][k].depth===44,
+   d=base.pack.directions.south,
+   layerBase=ownCloth?{...base,pack:{...base.pack,directions:{south:{...d,layers:d.layers.filter(l=>l.id!=='shorts')}}}}:base;
+  const anatomy=p=>{const key=ownCloth?'without-shorts:'+p:p;if(!entry.southAnatomy.has(key))entry.southAnatomy.set(key,composeFrame(layerBase,p,entry));return entry.southAnatomy.get(key);};
   const image=h=>{const im=entry.images.get('tools/rework-modular-outfits-hd/assets/'+h+'.png');if(!im)throw Error('Missing authored SOUTH source '+h);return im;};
   const pixels=h=>{if(!entry.southPixels.has(h)){const c=makeCanvas(W,H);c.getContext('2d').drawImage(image(h),0,0);entry.southPixels.set(h,c.getContext('2d').getImageData(0,0,W,H).data);}return entry.southPixels.get(h);};
   const body=makeCanvas(W,H),bc=body.getContext('2d');bc.drawImage(anatomy(sourcePhase).canvas,0,0);const contact=s.contacts.find(c=>c.targetAuthoredPhase===k);
@@ -481,7 +1073,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const operations=[{depth:0,kind:'body'},...r.authoredPantsLayer.layers.map(l=>({...l,kind:l.id==='visible-original-hands'?'hands':'source',hash:l.frames[k]}))];
   const mappedCoat=r.authoredPantsLayer.mappedCoat;
   if(mappedCoat)for(const layer of mappedCoat.pack.directions.south.layers.filter(l=>!l.id.startsWith('base:')))operations.push({depth:layer.depth,kind:'mapped-coat',layer});
-  if(pants!=null){operations.push({depth:46,kind:s.items[pants][k].ownerAlpha?'pants-owned':'source',hash:s.items[pants][k].cloth,ownerAlpha:s.items[pants][k].ownerAlpha});if(s.items[pants][k].owner)operations.push({depth:47,kind:'owner',hash:s.items[pants][k].owner});}
+  if(pants!=null){operations.push({depth:s.items[pants][k].depth===44?44:46,kind:s.items[pants][k].ownerAlpha?'pants-owned':'source',hash:s.items[pants][k].cloth,ownerAlpha:s.items[pants][k].ownerAlpha});if(s.items[pants][k].owner)operations.push({depth:47,kind:'owner',hash:s.items[pants][k].owner});}
   for(const op of operations.sort((a,b)=>a.depth-b.depth)){
    if(op.kind==='body')ctx.drawImage(body,0,0);
    else if(op.kind==='owner'){const data=ctx.getImageData(0,0,W,H),mask=pixels(op.hash);for(let p=0;p<W*H;p++)if(mask[p*4])data.data.set(bodyPixels.subarray(p*4,p*4+4),p*4);ctx.putImageData(data,0,0);}
@@ -493,6 +1085,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    }
    else if(op.kind==='hands'){const tile=makeCanvas(W,H),tc=tile.getContext('2d'),data=tc.createImageData(W,H),mask=pixels(op.hash);for(let p=0;p<W*H;p++)if(mask[p*4+3])data.data.set(bodyPixels.subarray(p*4,p*4+4),p*4);tc.putImageData(data,0,0);ctx.drawImage(tile,0,0);}
    else if(op.kind==='mapped-coat'){const d=mappedCoat.pack.directions.south,q={...mappedCoat,pack:{...mappedCoat.pack,directions:{south:{...d,layers:[op.layer]}}}},tile=makeCanvas(W,H);outfitRegistry.render(tile.getContext('2d'),q,entry.images,{frame:sourcePhase*5,appearance:mappedCoat.colorAppearance,makeCanvas});ctx.drawImage(tile,0,0);}
+   else if(r.ownSouthIdleGloveCuff&&op.slot==='gloves'&&op.protectIdleGloveHand){
+    // The hand is already present in the true idle. Preserve that exact
+    // destination instead of repainting semitransparent hand-edge pixels.
+    const tile=makeCanvas(W,H),tc=tile.getContext('2d');
+    tc.drawImage(image(op.hash),0,0);
+    const data=tc.getImageData(0,0,W,H),hand=pixels(op.protectIdleGloveHand);
+    for(let p=3;p<data.data.length;p+=4)if(data.data[p]&&hand[p])data.data.fill(0,p-3,p+1);
+    tc.putImageData(data,0,0);ctx.drawImage(tile,0,0);tile.width=1;
+   }
    else ctx.drawImage(image(op.hash),0,0);
   }
   // The approved151 backing needs its proven semantic face restoration.
@@ -860,7 +1461,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowOwnSouthDaggers:([71,72,73,74].includes(Number(weapon))||[12,13].includes(Number(weapon))&&a.skin!=='light')&&!player.__reworkSubset&&player.classId==='rogue'&&o.consumer==='world'&&!o.weaponless&&
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
-   allowCyborgForearmSouthAttack:[118,120].includes(Number(weapon))&&!player.__reworkSubset&&player.classId==='cyborg'&&o.consumer==='world'&&!o.weaponless&&
+   allowCyborgForearmSouthAttack:([118,120].includes(Number(weapon))||Number(weapon)===119&&player.appearance96?.version===1&&player.appearance96.skinStyle==='natural'&&player.appearance96.hairStyle==='original'&&player.appearance96.hairColor==='black'&&player.appearance96.eyeStyle==='original'&&player.appearance96.eyeColor==='blue')&&!player.__reworkSubset&&player.classId==='cyborg'&&o.consumer==='world'&&!o.weaponless&&
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowCompass16NorthAttack:Number(weapon)===16&&!player.__reworkSubset&&player.classId==='strategist'&&o.consumer==='world'&&!o.weaponless&&
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
@@ -891,7 +1492,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowGauntlet14NorthOwnAttack:Number(weapon)===14&&!player.__reworkSubset&&player.classId==='cyborg'&&o.consumer==='world'&&!o.weaponless&&
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
-   allowOwnW70South:Number(weapon)===70&&!player.__reworkSubset&&player.classId==='sword'&&o.consumer==='world'&&!o.weaponless&&
+   allowOwnW70South:[1,67,68,69,70].includes(Number(weapon))&&!player.__reworkSubset&&player.classId==='sword'&&o.consumer==='world'&&!o.weaponless&&
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowOwnRestoredRearSword:[67,70].includes(Number(weapon))&&!player.__reworkSubset&&player.classId==='sword'&&o.consumer==='world'&&!o.weaponless&&
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
@@ -901,8 +1502,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(nativeWeapon?.orb122SouthOwn)return {...nativeWeapon,hdKind:'weapon'};
   if(nativeWeapon?.exactComposite&&nativeWeapon.timeline?.length&&nativeWeapon.fps)return {...nativeWeapon,hdKind:'weapon'};
   const savedDaggers=selectFemaleDaggerSavedTones(player,o,a);if(savedDaggers)return savedDaggers;
-  const female=femaleRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment});if(female)return {...female,hdKind:'female-equipment'};
+  const female=femaleRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment,ownLateralStaffWindowWorld:o.consumer==='world'&&o.action==='attack-focus'&&
+    ['east','west'].includes(o.direction)&&!o.skipLateralStaffWindow&&!o.weaponless&&!player.__reworkSubset&&!player.zoanTransformed&&
+    (weapon<=124?player.classId==='strategist':player.classId==='healer')&&[123,124,125,126,127].includes(weapon)&&
+    rawOccupiedEquipmentKeys(player).length===1&&a.hair==='original'&&a.face==='original',boundedW119SouthFaceWorld:o.armedW119SouthFaceRoot===true&&o.consumer==='world'&&!o.weaponless&&!player.__reworkSubset&&!player.zoanTransformed&&weapon===119&&player.classId==='cyborg'&&rawOccupiedEquipmentKeys(player).length===1,ownW2WestIsolatedWorld:o.consumer==='world'&&!o.weaponless&&!o.skipOwnW2WestIsolated&&!player.__reworkSubset&&!player.zoanTransformed&&weapon===2&&player.classId==='brawler'&&rawOccupiedEquipmentKeys(player).length===1&&['idle','attack','attack-unarmed'].includes(o.action),boundedW2WestSkinWorld:o.consumer==='world'&&!o.weaponless&&!o.skipW2WestSkin&&!player.__reworkSubset&&!player.zoanTransformed&&weapon===2&&player.classId==='brawler'&&rawOccupiedEquipmentKeys(player).length===1,ownCetroLateralCarryWorld:o.cetroSouthWalkRoot===true&&o.consumer==='world'&&['east','west'].includes(o.direction)&&['idle','walk'].includes(o.action)&&[123,124,125,126,127].includes(weapon)&&player.classId===(weapon<=124?'strategist':'healer')&&!o.weaponless&&!o.skipCetroLateralCarry&&!player.__reworkSubset&&!player.zoanTransformed&&rawOccupiedEquipmentKeys(player).length===1&&a.hair==='original'&&a.face==='original',ownCetroSouthWalkWorld:o.cetroSouthWalkRoot===true&&o.consumer==='world'&&o.direction==='south'&&['idle','walk'].includes(o.action)&&[123,124,125,126,127].includes(weapon)&&player.classId===(weapon<=124?'strategist':'healer')&&!o.weaponless&&!o.skipCetroSouthWalk&&!player.__reworkSubset&&!player.zoanTransformed&&rawOccupiedEquipmentKeys(player).length===1,boundedCetroSouthCarryWorld:o.consumer==='world'&&!o.weaponless&&!player.__reworkSubset&&!player.zoanTransformed&&[123,124,125,126,127].includes(weapon)&&['strategist','healer'].includes(player.classId)&&rawOccupiedEquipmentKeys(player).length===1,ownW15SouthPulseWorld:o.consumer==='world'&&!o.weaponless&&!o.skipW15SouthPulse&&!player.__reworkSubset&&weapon===15&&player.classId==='cyborg'&&rawOccupiedEquipmentKeys(player).length===1,ownW14W117SouthFitWorld:o.consumer==='world'&&!o.weaponless&&!player.__reworkSubset&&!player.zoanTransformed&&[14,117].includes(weapon)&&player.classId==='cyborg'&&rawOccupiedEquipmentKeys(player).length===1,ownW118SouthWristWorld:o.consumer==='world'&&!o.weaponless&&!o.skipW118SouthWrist&&!player.__reworkSubset&&!player.zoanTransformed&&weapon===118&&player.classId==='cyborg'&&rawOccupiedEquipmentKeys(player).length===1,ownW113SouthStaticWorld:o.consumer==='world'&&!o.weaponless&&!o.skipW113SouthStatic&&!player.__reworkSubset&&weapon===113&&['gunner','gunslinger'].includes(player.classId)&&rawOccupiedEquipmentKeys(player).length===1,ownStaffFemaleCardinalWorld:o.consumer==='world'&&!o.weaponless&&!o.skipStaffFemaleCardinalAttack&&!player.__reworkSubset&&[123,124,125,126,127].includes(weapon)&&['strategist','healer'].includes(player.classId)&&rawOccupiedEquipmentKeys(player).length===1,reservedCardinalStaffWorld:o.consumer==='world'&&!o.weaponless&&!player.__reworkSubset&&['strategist','healer'].includes(player.classId),board22W31World:o.consumer==='world'&&!o.weaponless&&player.classId==='healer'&&!player.__reworkSubset,board12PalmWorld:o.consumer==='world'&&!o.weaponless&&player.classId==='brawler'&&!player.__reworkSubset,board07OrbWorld:o.consumer==='world'&&!o.weaponless&&player.classId==='strategist'&&!player.__reworkSubset});if(female)return {...female,hdKind:'female-equipment'};
   const idlePants=(o.direction==='north'?resolveNorthOwnedPantsIdle:resolveSouthOwnedPantsIdle)(player,o,a,equipment);if(idlePants)return idlePants;
+  const sideIdlePants=resolveFemaleSideIdleOwnPants(player,o,a,equipment);if(sideIdlePants)return sideIdlePants;
   const punchPants=resolveFemaleOwnedPants(player,o,a,equipment);if(punchPants)return punchPants;
   if(customFemaleFace&&Object.keys(equipment).some(slot=>slot!=='head'))return null;
   if([109,15,111,112,117].includes(Number(weapon))&&Number(equipment.legs?.def??equipment.pants?.def)===133&&Object.keys(equipment).every(k=>['weapon','legs','pants','boots'].includes(k))&&(equipment.boots==null||Number(equipment.boots?.def??equipment.boots)===9)){const garment=outfitRegistry?.resolve({body:canonical(a.body),direction:o.direction,action:o.action,appearance:{hair:'original'},equipment:{pants:133}}),baseWeapon=weaponRegistry?.resolve({item:Number(weapon),body:canonical(a.body),direction:o.direction,action:o.action,appearance:a,equipment:{}}),bootGarment=equipment.boots?outfitRegistry?.resolve({body:canonical(a.body),direction:o.direction,action:o.action,appearance:{hair:'original'},equipment:{pants:133,boots:9}}):null,combined=(!equipment.boots||bootGarment)?root.MareReworkOutfitOverlayHD?.adapt(baseWeapon,garment,{bootsOutfit:bootGarment}):null;if(combined)return {...combined,hdKind:'weapon'};const bareCarry=carryRegistry?.resolve({item:Number(weapon),body:canonical(a.body),direction:o.direction,action:o.action,appearance:a,equipment:{weapon:Number(weapon)}}),dressedCarry=combinedCarryRegistry?.adapt(bareCarry,{boots:equipment.boots?9:null});if(dressedCarry)return {...dressedCarry,hdKind:'outfit-carry',pack:dressedCarry.base.pack,body:dressedCarry.base.body};}
@@ -988,7 +1593,21 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    }
   }
   const pants=equipment.legs??equipment.pants,pantsId=Number(pants?.def??pants);
-  if(weapon!=null&&(equipment.coat!=null||[21,22,133,140,147,154,161,175,182].includes(pantsId))&&Object.keys(equipment).every(slot=>['weapon','coat','legs','pants','head','boots'].includes(slot))&&
+  const side168=pantsId===168&&o.consumer==='world'&&['east','west'].includes(o.direction)&&
+   Object.keys(equipment).length===2&&rawOccupiedEquipmentKeys(player).length===2&&!o.weaponless&&!player.__reworkSubset&&
+   ![equipment.weapon,pants].some(v=>['variant','variantId','appearanceVariant'].some(k=>v?.[k]!=null&&v[k]!=='original'));
+  if(side168&&weapon!=null){
+   const visible=registeredEquipment(player,o),v=visible?.weapon;
+   if(v?.item===weapon&&visible?.pants?.item===168&&Object.keys(visible).length===2){
+    const bare=select({...player,equipment:{weapon:v.value}},o);
+    if(bare?.hdKind==='carry'&&bare.item===weapon&&bare.direction===o.direction&&bare.action===o.action&&
+       !bare.headRecord&&!bare.gearOnlyRecord&&!bare.omitted?.length){
+     const dressed=combinedCarryRegistry?.adaptIsolatedPants(bare,168);
+     if(dressed)return describeSlots({...dressed,hdKind:'outfit-carry',pack:dressed.base.pack,body:dressed.base.body},visible,[]);
+    }
+   }
+  }
+  if(weapon!=null&&pantsId!==168&&(equipment.coat!=null||[21,22,133,140,147,154,161,175,182].includes(pantsId))&&Object.keys(equipment).every(slot=>['weapon','coat','legs','pants','head','boots'].includes(slot))&&
      (equipment.boots==null||pantsId===133&&Number(equipment.boots.def??equipment.boots)===9)){
    let dressed=carryRegistry?.resolve({item:weapon,body:canonical(a.body),action:o.action,direction:o.direction,appearance:a,equipment:{weapon}});
    if(equipment.coat!=null)dressed=combinedCarryRegistry?.adaptIsolatedCoat(dressed,{coat:Number(equipment.coat.def??equipment.coat)});
@@ -1055,16 +1674,20 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // These signed carry plans own all terrain-facing skin and weapon passes.
   // Use the existing separately composited named head, not a new grip/body.
   const namedCarryId=equipment.weapon?.def??equipment.weapon;
-  if([2,14,117].includes(namedCarryId)&&player.classId===(namedCarryId===2?'brawler':'cyborg')&&
+  if([2,3,14,110,111,112,117].includes(namedCarryId)&&player.classId===([14,117].includes(namedCarryId)?'cyborg':'brawler')&&
      !player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
      o.consumer==='world'&&!o.weaponless&&['idle','walk'].includes(o.action)&&Object.keys(equipment).length===1&&
      ['variant','variantId','appearanceVariant'].every(k=>equipment.weapon?.[k]==null||equipment.weapon[k]==='original')&&
-     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair===a.hairStyle&&['hair-spiky','hair-cropped'].includes(a.hair)&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair===a.hairStyle&&(a.hair==='hair-spiky'||[2,14,117].includes(namedCarryId)&&a.hair==='hair-cropped')&&
      a.face==='original'&&a.eyeStyle==='original'&&a.eyeColor==='blue'&&
-     Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)&&
+     Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor)&&([2,14,117].includes(namedCarryId)||a.hairColor==='blue')&&
      a.skin===a.skinColor&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)){
    const base=selectBase({...player,appearance96:{...raw,hairStyle:'original',hair:'original',hairColor:'black'}},o);
    const flags={2:['stockWalkingCuffSavedPalette','gauntletsSouthSavedPalette','gauntlet2NorthSavedPalette'],
+    3:['luvas3SavedPalette','gauntlet23PreviewCarry'],
+    110:['stockWalkingCuffSavedPalette','gauntletsSouthSavedPalette','stockNorth110WalkSavedPalette'],
+    111:['gauntletPairSideSavedPalette','gauntlet111SouthSavedPalette','gauntlet111NorthSavedPalette'],
+    112:['gauntletPairSideSavedPalette','ruptura112SavedPalette','ruptura112NorthSavedPalette'],
     14:['manopla14SavedPalette'],117:['stockFinalTechWalkSavedPalette','arm117SavedPalette']}[namedCarryId];
    const headLook={...a,head:'original'},head=headRegistry?.resolve({body:'male',direction:o.direction,look:headLook});
    if(base?.hdKind==='carry'&&base.item===namedCarryId&&flags.some(k=>base[k])&&head&&headCompat&&
@@ -1145,6 +1768,17 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
    const north118=carryRegistry?.resolve({item:118,approvedW118NorthWalkSaved:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:118}});
    if(north118?.stockW118NorthWalkSavedPalette)return withCarryHead(north118,'carry');
+  }
+  const reservedStaff=player.equipment?.weapon,reservedStaffId=Number(reservedStaff?.def??reservedStaff);
+  if([123,125,126,127].includes(reservedStaffId)&&player.classId===(reservedStaffId===123?'strategist':'healer')&&
+     !o.skipStaffNativeCardinal&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
+     o.consumer==='world'&&!o.weaponless&&['walk','idle'].includes(o.action)&&['north','south'].includes(o.direction)&&Object.keys(equipment).length===1&&
+     ['variant','variantId','appearanceVariant'].every(k=>(reservedStaff?.[k]==null||reservedStaff[k]==='original')&&(o[k]==null||o[k]==='original'))&&
+     a.version===1&&a.gender==='masculino'&&a.skinStyle==='natural'&&a.hair==='original'&&a.hairStyle==='original'&&
+     a.hairColor==='black'&&a.face==='original'&&a.eyeStyle==='original'&&a.eyeColor==='blue'&&
+     a.skin===a.skinColor&&Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)){
+   const r=carryRegistry?.resolve({item:reservedStaffId,approvedStaffNativeCardinal:true,body:'male',action:o.action,direction:o.direction,appearance:a,equipment:{weapon:reservedStaffId}});
+   if(r?.verifiedStaffNativeCardinal)return withCarryHead(r,'carry');
   }
   const staff124Carry=player.equipment?.weapon,staff124Id=staff124Carry?.def??staff124Carry;
   if([124].includes(staff124Id)&&player.classId==='strategist'&&!player.__reworkSubset&&!player.equipment?.head&&!player.equipment?.cloak&&!player.equipment?.visual_completo&&
@@ -1307,7 +1941,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const approvedSouthAction={0:'attack-sword',1:'attack-sword',5:'attack-firearm',67:'attack-sword',68:'attack-sword',69:'attack-sword',111:'attack-unarmed',119:'attack-unarmed'}[weapon];
   if(canonical(a.body)==='male'&&o.direction==='south'&&o.action===approvedSouthAction&&
      Object.keys(equipment).length===1&&!player.__reworkSubset){
-   const source=weaponRegistry?.approvedSouth(weapon);
+   const separateW5=Number(weapon)===5&&player.classId==='gunner'&&o.consumer==='world'&&!o.weaponless&&
+    ['variant','variantId','appearanceVariant'].every(k=>(player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original')&&(o[k]==null||o[k]==='original'));
+   const separateW111=Number(weapon)===111&&player.classId==='brawler'&&o.consumer==='world'&&!o.weaponless&&!o.skipW111Independent&&
+    ['variant','variantId','appearanceVariant'].every(k=>(player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original')&&(o[k]==null||o[k]==='original'));
+   const source=weaponRegistry?.approvedSouth(weapon,{separateW5,separateW111,appearance:a});
+   if(source?.ownedGauntlet111SouthAttack)return {...source,hdKind:'weapon'};
    const adapted=root.MareReworkOutfitOverlayHD?.adaptApprovedSouth(source,{baseIndex,appearance:a});
    if(adapted)return {...adapted,hdKind:'weapon'};
   }
@@ -1350,13 +1989,79 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const femalePalette=canonical(a.body)==='female'&&[a.skin,a.hairColor].some(value=>value&&value!=='original');
   const needHead=customFemaleFace||femalePalette||headItem!=null||hair!=='original'||r.hairStyle!==hair.replace(/^hair-/,'')||a.eyeColor&&!['original','blue'].includes(a.eyeColor);
   const headLook={...a,hair,head:headItem!=null?'head-'+headItem:'original'};
-  const femaleNamed=needHead?femaleNamedHairRegistry?.resolve(r,{hair,head:headItem,appearance:a}):null;
+  const namedHead=needHead?femaleNamedHairRegistry?.resolve(r,{hair,head:headItem,appearance:a}):null;
+  const carryForeheadWeapon=player.equipment?.weapon?.def??player.equipment?.weapon;
+  const carryForeheadBase=o.consumer==='world'&&o.direction==='south'&&['idle','walk'].includes(o.action)&&
+   ['strategist','healer'].includes(player.classId)&&!player.zoanTransformed&&headItem==null&&
+   (carryForeheadWeapon==null||['none','original'].includes(carryForeheadWeapon)||o.weaponless&&[123,124,125,126,127].includes(carryForeheadWeapon))&&
+   r.id===(o.action==='idle'?'female-idle-original-south-from-walk0':'v7-female-walk-drawn-all-south')&&
+   namedHead?.style==='original'&&namedHead.skinColor&&namedHead.skinColor!=='light'&&namedHead.fused===true&&
+   namedHead.ownership?.walkHead==='b4dc10ba2d5cf91f2b3217536e4d6beee5d915bef54707390fc076129d3147e6'&&
+   r.pack.density===4&&r.pack.frame.width===128&&r.pack.frame.height===128;
+  let femaleNamed=carryForeheadBase?{...namedHead,id:namedHead.id+':bounded-carry-skin-r1',localCetroForehead:true}:namedHead;
+  if(femaleNamed&&o.bareW119SouthFaceRoot===true&&o.consumer==='world'&&o.action==='walk'&&o.direction==='south'&&player.classId==='cyborg'&&
+    !player.__reworkSubset&&!player.zoanTransformed&&headItem==null&&(occupiedEquipmentKeys.length===0||o.weaponless&&occupiedEquipmentKeys.length===1&&occupiedEquipmentKeys[0]==='weapon')&&
+    (carryForeheadWeapon==null||['none','original'].includes(carryForeheadWeapon)||o.weaponless&&carryForeheadWeapon===119)&&
+    r.body==='female'&&r.id==='v7-female-walk-drawn-all-south'&&
+    femaleNamed.style==='original'&&femaleNamed.skinColor&&femaleNamed.skinColor!=='light'&&femaleNamed.fused===true&&
+    femaleNamed.ownership?.walkHead==='b4dc10ba2d5cf91f2b3217536e4d6beee5d915bef54707390fc076129d3147e6'){
+   const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+   if(r.sourcePackSHA256==='ade447b6abe83494aa78833f9ed051b36251c9fc5a97af9d3c38b99933091dbc'&&r.pack.density===4&&r.pack.frame.width===128&&r.pack.frame.height===128&&r.pack.pivot.x===64&&r.pack.pivot.y===112&&
+    eq(r.pack.directions.south.clip,{frames:8,fps:8,loop:true})&&eq([r.pack.directions.south.rest.NECK,r.pack.directions.south.rest.NOSE],[{"x":64,"y":42.25},{"x":64,"y":33.75}])&&
+    r.pack.directions.south.poses.every(p=>eq([p.NECK,p.NOSE],[{"x":64,"y":42.25},{"x":64,"y":33.75}]))&&
+    eq(r.pack.directions.south.layers.filter(x=>['headBase','face','hair'].includes(x.slot)),[{"id":"head-face-hair-rigid","slot":"headBase","source":"b4dc10ba2d5cf91f2b3217536e4d6beee5d915bef54707390fc076129d3147e6","binding":{"kind":"rigid","a":"NECK","b":"NOSE"},"depth":6}]))
+    femaleNamed={...femaleNamed,id:femaleNamed.id+':w119-south-face',localCetroForehead:true,localW119SouthFace:true};
+  }
+  if(femaleNamed&&o.bareCetroLateralIdleRoot===true&&o.consumer==='world'&&o.action==='idle'&&!o.weaponless&&!o.skipCetroLateralCarry&&!player.__reworkSubset&&!player.zoanTransformed&&
+    !occupiedEquipmentKeys.length&&headItem==null&&['strategist','healer'].includes(player.classId)&&r.body==='female'&&
+    ['east','west'].includes(o.direction)&&hair==='original'&&a.face==='original'&&a.skinStyle==='natural'&&
+    femaleNamed.style==='original'&&!femaleNamed.gearRecord&&femaleNamed.fused===true&&femaleNamed.skinColor&&femaleNamed.skinColor!=='light'){
+   const pin={"east":{"source":"female-idle-original-east-from-walk0","sha":"ade447b6abe83494aa78833f9ed051b36251c9fc5a97af9d3c38b99933091dbc","head":"202352cb972f4fe437ca7fd43aa4d848b88a4fc98dcfc6393bb5fd0b4c1e16bd","face":"5843eab2f9d0d5f4520abf1b5d605301a1f80887422caeb252ca8073f7cef773","clip":{"frames":1,"fps":1,"loop":false},"rest":{"NECK":{"x":64,"y":42.25},"NOSE":{"x":64,"y":34}},"poses":[{"NECK":{"x":64,"y":42.25},"NOSE":{"x":64,"y":34}}],"pivot":{"x":64,"y":112}},"west":{"source":"female-idle-original-west-from-walk0","sha":"ade447b6abe83494aa78833f9ed051b36251c9fc5a97af9d3c38b99933091dbc","head":"33cd3e581abb50daa48b73e462fb0e267d492b91eb061fafc075dad6a0a4421b","face":"9f2d13b556a604d9bd162d00386e788b9fe0c482a6d1bac35c67e5a9992d2032","clip":{"frames":1,"fps":1,"loop":false},"rest":{"NECK":{"x":64,"y":42.25},"NOSE":{"x":64,"y":34}},"poses":[{"NECK":{"x":64,"y":42.25},"NOSE":{"x":64,"y":34}}],"pivot":{"x":64,"y":112}}}[o.direction],p=r.pack,d=p.directions[o.direction],eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+   const head=d.layers.filter(l=>['headBase','face','hair'].includes(l.slot));
+   if(r.id===pin.source&&r.sourcePackSHA256===pin.sha&&p.density===4&&eq(p.frame,{width:128,height:128})&&eq(p.pivot,pin.pivot)&&
+     eq(d.clip,pin.clip)&&eq({NECK:d.rest.NECK,NOSE:d.rest.NOSE},pin.rest)&&eq(d.poses.map(s=>({NECK:s.NECK,NOSE:s.NOSE})),pin.poses)&&
+     head.length===1&&head[0].slot==='headBase'&&!head[0].frames&&head[0].source===pin.head&&head[0].binding?.kind==='rigid'&&head[0].binding.a==='NECK'&&head[0].binding.b==='NOSE'&&
+     femaleNamed.ownership?.walkHead===pin.head&&femaleNamed.ownership?.attackLayers?.some(l=>l.id==='face'&&l.source===pin.face))
+    femaleNamed={...femaleNamed,id:femaleNamed.id+':bounded-cetro-lateral-idle-skin',localCetroForehead:true,localCetroLateralIdleSkin:true};
+  }
+  // Keep only the already authorized skin points across real World unequip.
+  // Never infer a new mask or affect a fruit/unarmed action or pruned equipment.
+  if(femaleNamed&&o.consumer==='world'&&o.action==='attack-focus'&&!o.weaponless&&
+     !o.skipBareFemaleFocoLateralRecolor&&!player.__reworkSubset&&!occupiedEquipmentKeys.length&&
+     ['strategist','healer'].includes(player.classId)&&canonical(a.body)==='female'&&
+     ['east','west'].includes(o.direction)&&!headItem&&a.skinStyle==='natural'&&
+     a.version===1&&a.skin===a.skinColor&&a.skin!=='light'&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)&&
+     hair==='original'&&a.face==='original'&&femaleNamed.style==='original'&&
+     !femaleNamed.fused&&!femaleNamed.gearRecord&&femaleNamed.skinColor===a.skin){
+   const pins={"east":{"id":"v7-female-focus-east-ownership-candidate-east","sha":"f514b36804330313dc689073b21bd9042e4b9c42cc99beb422c61bd6642644b0","face":{"id":"face","slot":"face","source":"5843eab2f9d0d5f4520abf1b5d605301a1f80887422caeb252ca8073f7cef773","binding":{"kind":"rigid","a":"NECK","b":"NOSE"},"depth":12},"clip":{"frames":8,"fps":12,"loop":false,"contactFrame":4},"rest":{"NECK":{"x":80,"y":58.25},"NOSE":{"x":87,"y":50.5},"HIP":{"x":80,"y":84.5}},"poses":[{"NECK":{"x":80,"y":58.25},"NOSE":{"x":87,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":78.5,"y":61.25},"RIGHT_ELBOW":{"x":78.0,"y":73.25},"RIGHT_WRIST":{"x":80.25,"y":84.25},"RIGHT_HANDCENTER":{"x":80.75,"y":87.5},"LEFT_SHOULDER":{"x":80.25,"y":61.5},"LEFT_ELBOW":{"x":79.25,"y":73.25},"LEFT_WRIST":{"x":80.75,"y":84.25},"LEFT_HANDCENTER":{"x":81.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":87,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":78.5,"y":61.25},"RIGHT_ELBOW":{"x":73.75,"y":71.25},"RIGHT_WRIST":{"x":82.75,"y":77.5},"RIGHT_HANDCENTER":{"x":86.25,"y":78.75},"LEFT_SHOULDER":{"x":80.25,"y":61.5},"LEFT_ELBOW":{"x":79.25,"y":73.25},"LEFT_WRIST":{"x":80.75,"y":84.25},"LEFT_HANDCENTER":{"x":81.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":87,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":78.5,"y":61.25},"RIGHT_ELBOW":{"x":78.25,"y":72.5},"RIGHT_WRIST":{"x":93.25,"y":72.5},"RIGHT_HANDCENTER":{"x":97.5,"y":71.5},"LEFT_SHOULDER":{"x":80.25,"y":61.5},"LEFT_ELBOW":{"x":79.25,"y":73.25},"LEFT_WRIST":{"x":80.75,"y":84.25},"LEFT_HANDCENTER":{"x":81.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":87,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":78.5,"y":61.0},"RIGHT_ELBOW":{"x":79.5,"y":71.5},"RIGHT_WRIST":{"x":97.0,"y":71.0},"RIGHT_HANDCENTER":{"x":102.5,"y":67.25},"LEFT_SHOULDER":{"x":80.25,"y":61.5},"LEFT_ELBOW":{"x":79.25,"y":73.25},"LEFT_WRIST":{"x":80.75,"y":84.25},"LEFT_HANDCENTER":{"x":81.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":87,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":78.5,"y":61.0},"RIGHT_ELBOW":{"x":91.0,"y":66.5},"RIGHT_WRIST":{"x":104.75,"y":66.25},"RIGHT_HANDCENTER":{"x":108.75,"y":61.0},"LEFT_SHOULDER":{"x":80.25,"y":61.5},"LEFT_ELBOW":{"x":79.25,"y":73.25},"LEFT_WRIST":{"x":80.75,"y":84.25},"LEFT_HANDCENTER":{"x":81.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":87,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":78.5,"y":61.0},"RIGHT_ELBOW":{"x":90.75,"y":68.5},"RIGHT_WRIST":{"x":100.75,"y":68.0},"RIGHT_HANDCENTER":{"x":106.75,"y":64.0},"LEFT_SHOULDER":{"x":80.25,"y":61.5},"LEFT_ELBOW":{"x":79.25,"y":73.25},"LEFT_WRIST":{"x":80.75,"y":84.25},"LEFT_HANDCENTER":{"x":81.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":87,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":78.5,"y":61.25},"RIGHT_ELBOW":{"x":78.25,"y":74.25},"RIGHT_WRIST":{"x":92.5,"y":73.75},"RIGHT_HANDCENTER":{"x":97.5,"y":71.75},"LEFT_SHOULDER":{"x":80.25,"y":61.5},"LEFT_ELBOW":{"x":79.25,"y":73.25},"LEFT_WRIST":{"x":80.75,"y":84.25},"LEFT_HANDCENTER":{"x":81.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":87,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":78.5,"y":61.25},"RIGHT_ELBOW":{"x":78.0,"y":73.25},"RIGHT_WRIST":{"x":80.25,"y":84.25},"RIGHT_HANDCENTER":{"x":80.75,"y":87.5},"LEFT_SHOULDER":{"x":80.25,"y":61.5},"LEFT_ELBOW":{"x":79.25,"y":73.25},"LEFT_WRIST":{"x":80.75,"y":84.25},"LEFT_HANDCENTER":{"x":81.0,"y":87.75}}]},"west":{"id":"v7-female-focus-west-ownership-candidate-west","sha":"38b84439887ba1c6a4df9f53e23a6f409116fb50c3cd7e1ffb7a8f2fbb560212","face":{"id":"face","slot":"face","source":"9f2d13b556a604d9bd162d00386e788b9fe0c482a6d1bac35c67e5a9992d2032","binding":{"kind":"rigid","a":"NECK","b":"NOSE"},"depth":12},"clip":{"frames":8,"fps":12,"loop":false,"contactFrame":4},"rest":{"NECK":{"x":80,"y":58.25},"NOSE":{"x":73,"y":50.5},"HIP":{"x":80,"y":84.5}},"poses":[{"NECK":{"x":80,"y":58.25},"NOSE":{"x":73,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":81.5,"y":61.25},"RIGHT_ELBOW":{"x":82.0,"y":73.25},"RIGHT_WRIST":{"x":79.75,"y":84.25},"RIGHT_HANDCENTER":{"x":79.25,"y":87.5},"LEFT_SHOULDER":{"x":79.75,"y":61.5},"LEFT_ELBOW":{"x":80.75,"y":73.25},"LEFT_WRIST":{"x":79.25,"y":84.25},"LEFT_HANDCENTER":{"x":79.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":73,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":81.5,"y":61.25},"RIGHT_ELBOW":{"x":86.25,"y":71.25},"RIGHT_WRIST":{"x":77.25,"y":77.5},"RIGHT_HANDCENTER":{"x":73.75,"y":78.75},"LEFT_SHOULDER":{"x":79.75,"y":61.5},"LEFT_ELBOW":{"x":80.75,"y":73.25},"LEFT_WRIST":{"x":79.25,"y":84.25},"LEFT_HANDCENTER":{"x":79.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":73,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":81.5,"y":61.25},"RIGHT_ELBOW":{"x":81.75,"y":72.5},"RIGHT_WRIST":{"x":66.75,"y":72.5},"RIGHT_HANDCENTER":{"x":62.5,"y":71.5},"LEFT_SHOULDER":{"x":79.75,"y":61.5},"LEFT_ELBOW":{"x":80.75,"y":73.25},"LEFT_WRIST":{"x":79.25,"y":84.25},"LEFT_HANDCENTER":{"x":79.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":73,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":81.5,"y":61.0},"RIGHT_ELBOW":{"x":80.5,"y":71.5},"RIGHT_WRIST":{"x":63.0,"y":71.0},"RIGHT_HANDCENTER":{"x":57.5,"y":67.25},"LEFT_SHOULDER":{"x":79.75,"y":61.5},"LEFT_ELBOW":{"x":80.75,"y":73.25},"LEFT_WRIST":{"x":79.25,"y":84.25},"LEFT_HANDCENTER":{"x":79.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":73,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":81.5,"y":61.0},"RIGHT_ELBOW":{"x":69.0,"y":66.5},"RIGHT_WRIST":{"x":55.25,"y":66.25},"RIGHT_HANDCENTER":{"x":51.25,"y":61.0},"LEFT_SHOULDER":{"x":79.75,"y":61.5},"LEFT_ELBOW":{"x":80.75,"y":73.25},"LEFT_WRIST":{"x":79.25,"y":84.25},"LEFT_HANDCENTER":{"x":79.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":73,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":81.5,"y":61.0},"RIGHT_ELBOW":{"x":69.25,"y":68.5},"RIGHT_WRIST":{"x":59.25,"y":68.0},"RIGHT_HANDCENTER":{"x":53.25,"y":64.0},"LEFT_SHOULDER":{"x":79.75,"y":61.5},"LEFT_ELBOW":{"x":80.75,"y":73.25},"LEFT_WRIST":{"x":79.25,"y":84.25},"LEFT_HANDCENTER":{"x":79.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":73,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":81.5,"y":61.25},"RIGHT_ELBOW":{"x":81.75,"y":74.25},"RIGHT_WRIST":{"x":67.5,"y":73.75},"RIGHT_HANDCENTER":{"x":62.5,"y":71.75},"LEFT_SHOULDER":{"x":79.75,"y":61.5},"LEFT_ELBOW":{"x":80.75,"y":73.25},"LEFT_WRIST":{"x":79.25,"y":84.25},"LEFT_HANDCENTER":{"x":79.0,"y":87.75}},{"NECK":{"x":80,"y":58.25},"NOSE":{"x":73,"y":50.5},"HIP":{"x":80,"y":84.5},"RIGHT_SHOULDER":{"x":81.5,"y":61.25},"RIGHT_ELBOW":{"x":82.0,"y":73.25},"RIGHT_WRIST":{"x":79.75,"y":84.25},"RIGHT_HANDCENTER":{"x":79.25,"y":87.5},"LEFT_SHOULDER":{"x":79.75,"y":61.5},"LEFT_ELBOW":{"x":80.75,"y":73.25},"LEFT_WRIST":{"x":79.25,"y":84.25},"LEFT_HANDCENTER":{"x":79.0,"y":87.75}}]}}, pin=pins[o.direction],p=r.pack,d=p.directions[o.direction];
+   const faces=d.layers.filter(l=>l.id==='face'), mfaces=femaleNamed.ownership?.attackLayers?.filter(l=>l.id==='face');
+   const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+   if(r.id===pin.id&&r.sourcePackSHA256===pin.sha&&p.density===4&&eq(p.frame,{width:160,height:160})&&eq(p.pivot,{x:80,y:128})&&
+      eq(d.clip,pin.clip)&&eq(d.rest,pin.rest)&&eq(d.poses,pin.poses)&&faces.length===1&&eq(faces[0],pin.face)&&mfaces?.length===1&&
+      mfaces[0].slot==='face'&&mfaces[0].source===pin.face.source)
+    femaleNamed={...femaleNamed,id:femaleNamed.id+':bounded-focus-skin-r1',localCetroForehead:true};
+  }
+  if(femaleNamed&&o.consumer==='world'&&o.direction==='west'&&['attack-unarmed','idle'].includes(r.action)&&
+     canonical(a.body)==='female'&&player.classId==='brawler'&&!player.zoanTransformed&&!player.__reworkSubset&&
+     !occupiedEquipmentKeys.length&&headItem==null&&hair==='original'&&a.skinStyle==='natural'&&!o.skipBareW2WestSkin){
+    const source=r.sourceId===undefined?r:{...r,id:r.sourceId};
+ const pin={"attack-unarmed":{"baseId":"v7-female-punch-west-ownership-candidate-west","baseSHA":"aa754b048ceed4247a7859e6a9db9e66861acce9f6b43e539893929fec9a8965","clip":{"frames":8,"fps":12,"loop":false,"contactFrame":4},"packFrame":{"width":160,"height":160},"rest":[{"x":80,"y":58.25},{"x":73,"y":50.5}],"poses":[[{"x":80,"y":58.25},{"x":73,"y":50.5}],[{"x":80,"y":58.25},{"x":73,"y":50.5}],[{"x":80,"y":58.25},{"x":73,"y":50.5}],[{"x":80,"y":58.25},{"x":73,"y":50.5}],[{"x":80,"y":58.25},{"x":73,"y":50.5}],[{"x":80,"y":58.25},{"x":73,"y":50.5}],[{"x":80,"y":58.25},{"x":73,"y":50.5}],[{"x":80,"y":58.25},{"x":73,"y":50.5}]],"head":[{"id":"head-clean","slot":"headBase","source":"b3f9526fb7eefad1214b39f56a0f05a68131f7236048ea563b99ae5d86c8b9f9","binding":{"kind":"rigid","a":"NECK","b":"NOSE"},"depth":11},{"id":"face","slot":"face","source":"9f2d13b556a604d9bd162d00386e788b9fe0c482a6d1bac35c67e5a9992d2032","binding":{"kind":"rigid","a":"NECK","b":"NOSE"},"depth":12},{"id":"iris","slot":"face","source":"5f757e230cf80547097912d391f7acb3f2ce3e98ece852f3f43969f657c1c963","binding":{"kind":"rigid","a":"NECK","b":"NOSE"},"depth":13},{"id":"hair","slot":"hair","source":"dd6a15338078599da85c584d798e368069a02da8731c041929b57abcf011845d","binding":{"kind":"rigid","a":"NECK","b":"NOSE"},"depth":14}]},"idle":{"baseId":"female-idle-original-west-from-walk0","baseSHA":"ade447b6abe83494aa78833f9ed051b36251c9fc5a97af9d3c38b99933091dbc","clip":{"frames":1,"fps":1,"loop":false},"packFrame":{"width":128,"height":128},"rest":[{"x":64,"y":42.25},{"x":64,"y":34}],"poses":[[{"x":64,"y":42.25},{"x":64,"y":34}]],"head":[{"id":"head-rigid","slot":"headBase","source":"33cd3e581abb50daa48b73e462fb0e267d492b91eb061fafc075dad6a0a4421b","binding":{"kind":"rigid","a":"NECK","b":"NOSE"},"depth":5}]}}[r.action], b=source, d=b?.pack?.directions?.west, eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+ const rmat=femaleNamed;
+ const traceMatched=pin&&d&&b.id===pin.baseId&&b.sourcePackSHA256===pin.baseSHA&&b.pack.density===4&&eq(b.pack.frame,pin.packFrame)&&
+   eq(d.clip,pin.clip)&&eq([d.rest.NECK,d.rest.NOSE],pin.rest)&&eq(d.poses.map(q=>[q.NECK,q.NOSE]),pin.poses)&&
+   eq(d.layers.filter(l=>['headBase','face','hair'].includes(l.slot)),pin.head)&&rmat?.style==='original'&&!rmat.gearRecord&&
+   rmat.skinColor&&rmat.skinColor!=='light'&&rmat.fused===(r.action!=='attack-unarmed')&&
+   rmat.ownership?.attackLayers.some(l=>l.id==='face'&&l.source==="9f2d13b556a604d9bd162d00386e788b9fe0c482a6d1bac35c67e5a9992d2032")&&
+   (!rmat.fused||rmat.ownership?.walkHead==="33cd3e581abb50daa48b73e462fb0e267d492b91eb061fafc075dad6a0a4421b");
+
+    if(traceMatched)femaleNamed={...femaleNamed,id:femaleNamed.id+':bounded-w2-west-skin-41',localCetroForehead:true};
+  }
   if(!hasSeparateHair&&!femaleNamed&&((a.hairColor&&a.hairColor!=='original')||(a.skin&&a.skin!=='original')))return null;
   const head=needHead&&!femaleNamed?headRegistry?.resolve({body:canonical(a.body),direction:o.direction,look:headLook}):null;
   const gearOnly=needHead&&!head&&hasSeparateHair&&hair==='original'&&headItem!=null?originalHairGearRegistry?.resolve({body:canonical(a.body),direction:o.direction,item:headItem,look:headLook}):null;
   if((customFemaleFace||femalePalette)&&!femaleNamed)return null;
   if(needHead&&((!head&&!gearOnly&&!femaleNamed)||(!femaleNamed&&!headCompat)))return null;
-  return {...r,id:r.id+':'+hair+':'+(headItem??'none')+':'+(a.skin||'original')+':'+(a.hairColor||'original')+(femaleNamed?.eyeColor?':eye-palette:'+femaleNamed.eyeColor:'')+(femaleNamed?.eyeStyle?':'+femaleNamed.eyeStyle:''),eyeStyle:femaleNamed?.eyeStyle,sourceId:r.id,colorAppearance:a,headRecord:head,gearOnlyRecord:gearOnly,femaleNamedHairRecord:femaleNamed,headLook};
+  return {...r,id:r.id+':'+hair+':'+(headItem??'none')+':'+(a.skin||'original')+':'+(a.hairColor||'original')+(femaleNamed?.eyeColor?':eye-palette:'+femaleNamed.eyeColor:'')+(femaleNamed?.eyeStyle?':'+femaleNamed.eyeStyle:'')+(femaleNamed?.id.endsWith(':bounded-focus-skin-r1')?':bounded-bare-focus-side-r1':'')+(carryForeheadBase?':bounded-carry-skin-r1':'')+(femaleNamed?.localW119SouthFace?':w119-south-face':'')+(femaleNamed?.localCetroLateralIdleSkin?':bounded-cetro-lateral-idle-skin':''),eyeStyle:femaleNamed?.eyeStyle,sourceId:r.id,colorAppearance:a,headRecord:head,gearOnlyRecord:gearOnly,femaleNamedHairRecord:femaleNamed,headLook,...(carryForeheadBase?{boundedCetroSouthCarry:true}:{})};
  }
  // A single source-registered partial-slot pilot. Never reinterpret a baked actor
  // as removable anatomy, opt in an unrelated source, or reset a saved cosmetic.
@@ -1575,9 +2280,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const slotRoutes=Object.fromEntries(Object.entries(composed.slotRoutes).map(([k,v])=>[visible[k].key,v]));
   return {...composed,slotRoutes,omitted:[],hdKind:'outfit'};
  }
+ const registeredLocomotionBootItems=[8,9,134,141,148,155,162,169,176,183];
  function northBootAppearance(record,a,authority,boot9,provedCoat=false){
   if(!(provedCoat||record.canonicalNorthBootGloves)||record.direction!=='north'||record.body!=='male'||
-    !(provedCoat?[9,148,undefined]:[9,155,undefined]).includes(record.equipment.boots)||
+    (provedCoat?![9,148,undefined].includes(record.equipment.boots):
+     ![9,155,undefined].includes(record.equipment.boots)&&(record.slotRoutes?.boots?.quality!=='hd'||
+      record.slotRoutes.boots.item!==record.equipment.boots||!registeredLocomotionBootItems.includes(record.equipment.boots)))||
     !['original','blue',undefined].includes(a.eyeColor)||a.hair&&a.hair!=='original'||a.face&&a.face!=='original'||
     !authority||authority.body!=='male'||authority.direction!=='north'||authority.action!==record.action||
     authority.equipment?.torso!==151||authority.equipment?.pants!==133||
@@ -1610,7 +2318,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    a.skin==='original'&&['original',undefined].includes(a.hair)&&['original',undefined].includes(a.face)&&
    (a.hairColor==null||a.hairColor==='original'||Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor))&&
    (a.eyeColor==null||a.eyeColor==='original'||Object.hasOwn(root.MareCharacterAppearance?.eyes||{},a.eyeColor));
-  if(palette&&!sideColor&&(o.direction!=='north'||![9,155,undefined].includes(visible.boots?.item)||
+  if(palette&&!sideColor&&(o.direction!=='north'||visible.boots!=null&&!registeredLocomotionBootItems.includes(visible.boots.item)||
     !['original',undefined].includes(a.hair)||!['original',undefined].includes(a.face)||
     !['blue','original',undefined].includes(a.eyeColor)||
     a.skin&&a.skin!=='original'&&!root.MareAppearance96?.skins[a.skin]||
@@ -1619,7 +2327,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(a.body!=='male'||!['south','north','east','west'].includes(o.direction)||!['idle','walk'].includes(o.action)||
    Object.entries(fixed).some(([slot,id])=>visible[slot]?.item!==id)||Object.keys(visible).some(k=>!Object.hasOwn(fixed,k)&&k!=='boots'&&!(isSide&&k==='gloves')))return null;
   const dir=o.direction,action=o.action,side=['east','west'].includes(dir),anchorItem=side?155:9;
-  const bootIds=[8,9,134,141,148,155,162,169,176,183];
+  const bootIds=registeredLocomotionBootItems;
   const byId=n=>outfitById.get(n);
   const portable=item=>`male-coat151-pants133-gloves152-boots${item}-walk-${dir}-source-v18${action==='idle'?'-idle-frame0':''}`;
   const owned=(r,item)=>r.pack.directions[dir].layers.filter(l=>l.id.startsWith((item===155?'equip-':'')+'boot'+item+'-')).map(l=>l.id);
@@ -1738,6 +2446,165 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!composed)return null;
   const slotRoutes=Object.fromEntries(Object.entries(composed.slotRoutes).map(([k,v])=>[visible[k].key,v]));
   return {...composed,slotRoutes,omitted:composed.omitted.map(k=>visible[k].key),hdKind:'outfit',resolvedAction:action};
+ }
+ // The original South receiving cuff and hand restoration are also
+ // present in the frozen glove donors. Validate both at the actual hold
+ // clock; do not copy donor anatomy, pants, boots, or saved palette.
+ function selectFemaleSouthOwnGloveCuff(player,o,visible){
+  const g=visible.gloves,coat=visible.torso,d=o.direction,refsByGlove={25:'ref-1019',26:'ref-1020',
+   138:'ref-0634',145:'ref-0635',159:'ref-0648',166:'ref-0649',173:'ref-0650',131:'ref-0982',180:'ref-0995'};
+  if(o.consumer!=='world'||o.action!=='walk'||d!=='south'||o.weaponless||!coat||!g||
+     !Object.hasOwn(refsByGlove,g.item)||Object.keys(visible).some(s=>!['torso','pants','boots','gloves'].includes(s)))return null;
+  const derived=g.item===131||g.item===180;
+  const e={...player.equipment};delete e[g.key];
+  const bare=select({...player,equipment:e},o),fit=bare?.authoredPantsLayer,s=fit?.spec,
+   authority=outfitById.get('frozen-female-glove152-south-walk-native-layers'),
+   donor=outfitById.get('frozen-female-glove'+g.item+'-south-walk-native-layers'),
+   bd=bare?.pack?.directions?.south,D=donor?.pack?.directions?.south,F=authority?.pack?.directions?.south,
+   own=l=>l.id.startsWith('own-female')||derived&&l.id==='candidate-same-item-north-registered-direction',eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!fit||bare.hdKind!=='authored-pants'||bare.carrySouth||fit.mappedCoat||bare.body!=='female'||
+     !eq(bd?.clip,{frames:40,fps:40,loop:true})||bare.anatomyBase?.sourceId!==s.bodyRecord||
+     bare.anatomyBase?.headRecord||bare.anatomyBase?.gearOnlyRecord||
+     ![donor,authority].every(x=>x?.frozenFemaleGloveLayers&&x.action==='walk'&&x.direction===d&&x.body==='female'&&
+       x.productionEnabled!==false&&x.sourceOutfitId===authority.sourceOutfitId&&
+       x.sourceAuthoritySHA256==='20f689d6f736ad1e15400eddc798cb41a32d0783635de84c9f22df01102e0600')||
+     donor.equipment.gloves!==g.item||donor.frozenGloveSourceRef!==refsByGlove[g.item]||
+     (derived&&!eq(donor.derivedFemaleGloveDirection,{sourceDirection:'north',targetDirection:'south',noMirror:true,nativeScale:1,sourceRef:refsByGlove[g.item],notApprovedNewArt:true}))||
+     !['density','frame','pivot'].every(k=>eq(bare.pack[k],donor.pack[k])&&eq(donor.pack[k],authority.pack[k]))||
+     !eq({...D,layers:undefined},{...F,layers:undefined})||!eq(D.clip,bd.clip)||
+     !eq(D.layers.filter(l=>!own(l)),F.layers.filter(l=>!own(l))))return null;
+  // Compare the full authored cuff rather than assuming that a different
+  // sleeve or the stock unarmed hands accept the donor's visible boundary.
+  const compact=l=>Array.from({length:10},(_,i)=>l.frames?.[s.frameToPhase.indexOf(i)]);
+  const upper=fit.layers.filter(l=>l.slot==='coat');
+  if(upper.length!==8||!upper.some(l=>l.id==='visible-original-hands')||
+     upper.some(l=>!D.layers.some(x=>x.id===l.id&&x.depth===l.depth&&x.binding?.kind==='fixed'&&
+      x.frames?.length===40&&eq(compact(x),l.frames))))return null;
+  if(bare.equipment.coat!==coat.item||bare.equipment.boots!==visible.boots?.item||
+     (bare.equipment.pants??bare.equipment.legs)!==visible.pants?.item)return null;
+  const layers=D.layers.filter(own),l=layers[0],frames=l&&compact(l);
+  if(layers.length!==1||!(derived?l.id==='candidate-same-item-north-registered-direction':l.id.startsWith('own-female'+g.item+'-'))||l.slot!=='foreground'||
+     l.depth!==(derived?100:102)||l.depthTrack||l.binding?.kind!=='fixed'||l.frames?.length!==40||
+     l.frames.some((h,i)=>h!==frames[s.frameToPhase[i]])||new Set(frames).size!==8||
+     frames.some(h=>!/^[0-9a-f]{64}$/.test(h)||!donor.sourceRefs.includes(h)||donor.paletteSourceMasks?.[h]||bare.sourceRefs.includes(h)))return null;
+  const r=describeSlots({...bare,id:bare.id+':signed-south-wrist:'+g.item,ownSouthGloveCuff:true,
+   equipment:{...bare.equipment,gloves:g.item},sourceRefs:[...new Set([...bare.sourceRefs,...frames])],
+   authoredPantsLayer:{...fit,layers:[...fit.layers,{...l,slot:'gloves',frames}]}},visible,[]);
+  r.slotRoutes[g.key]={item:g.item,quality:'hd',source:donor.id};return r;
+ }
+ function selectFemaleSouthIdleOwnGlove(player,o,look,visible){
+  const g=visible.gloves,id=g?.item;
+  if(o.consumer!=='world'||o.action!=='idle'||o.direction!=='south'||o.weaponless||
+     ![131,180].includes(id)||Object.keys(visible).some(k=>!['gloves','pants','boots'].includes(k)))return null;
+  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),e={...player.equipment};delete e[g.key];
+  if(['variant','variantId','appearanceVariant'].some(k=>g.value?.[k]!=null&&g.value[k]!=='original'))return null;
+  const offPlayer={...player,equipment:e},off=selectVisualStrict(offPlayer,o)||selectBase(offPlayer,o,true);
+  if(!off||off.omitted?.length||off.visualDegraded||off.headRecord||off.gearOnlyRecord||off.carrySouth)return null;
+  const s=outfitIndex?.authoredPantsSouth,bridge=off.authoredPantsLayer,
+   native=selectBase({...offPlayer,__southAnatomy:true,equipment:{}},{...o,action:'walk'},true),
+   I=off.pack?.directions?.south,W=native?.pack?.directions?.south;
+  if(s?.schema!=='authored-female-south-pants-v1'||!s.controlsApproved||s.bodyRecord!==native?.sourceId||
+     s.phaseMap[0]!==0||s.frameToPhase[0]!==0||s.contacts.some(c=>c.targetAuthoredPhase===0)||
+     !I||!W||!eq(I.clip,{frames:1,fps:1,loop:false})||!eq(I.rest,W.rest)||!eq(I.poses,W.poses.slice(0,1))||
+     !eq(I.layers,W.layers.map(l=>l.frames?{...l,frames:l.frames.slice(0,1)}:l))||
+     !['frame','pivot','density'].every(k=>eq(off.pack[k],native.pack[k]))||!eq(off.colorAppearance,native.colorAppearance)||
+     bridge&&(bridge.spec!==s||bridge.mappedCoat||!eq(off.anatomyBase,native)||bridge.layers.some(l=>l.slot!=='boots'))||
+     !bridge&&(off.hdKind||Object.keys(visible).length!==1))return null;
+  const name='frozen-female-glove'+id+'-south-',w=outfitById.get(name+'walk-native-layers'),
+   i=outfitById.get(name+'idle-native-layers'),wd=w?.pack?.directions?.south,it=i?.pack?.directions?.south,
+   owner='candidate-same-item-north-registered-direction',own=l=>l.id===owner,
+   hand=l=>l.id==='visible-original-hands',wGlove=wd?.layers.filter(own),
+   iGlove=it?.layers.filter(own),wHand=wd?.layers.filter(hand),iHand=it?.layers.filter(hand),
+   handMask=s.layers.find(hand)?.frames?.[0],ref=id===131?'ref-0982':'ref-0995';
+  if(![w,i].every(x=>x?.frozenFemaleGloveLayers&&x.body==='female'&&x.direction==='south'&&x.equipment?.gloves===id&&
+    x.sourceAuthoritySHA256==='20f689d6f736ad1e15400eddc798cb41a32d0783635de84c9f22df01102e0600'&&
+    x.frozenGloveSourceRef===ref&&eq(x.derivedFemaleGloveDirection,{sourceDirection:'north',targetDirection:'south',noMirror:true,nativeScale:1,sourceRef:ref,notApprovedNewArt:true}))||
+    w.action!=='walk'||i.action!=='idle'||wd.clip.frames!==40||it.clip.frames!==1||
+    ![wGlove,iGlove,wHand,iHand].every(x=>x?.length===1)||
+    !['frame','pivot','density'].every(k=>eq(w.pack[k],off.pack[k])&&eq(i.pack[k],off.pack[k])))return null;
+  const g0=iGlove[0],glove=g0.frames?.[0],hasRef=(r,h)=>/^[a-f0-9]{64}$/.test(h)&&r.sourceRefs.includes(h)&&!r.paletteSourceMasks?.[h];
+  if(g0.depth!==100||g0.slot!=='foreground'||g0.binding?.kind!=='fixed'||g0.depthTrack||g0.frames?.length!==1||
+    wGlove[0].depth!==g0.depth||wGlove[0].frames?.[0]!==glove||!hasRef(i,glove)||!hasRef(w,glove)||
+    iHand[0].depth!==101||iHand[0].frames?.[0]!==handMask||wHand[0].frames?.[0]!==handMask||
+    !hasRef(i,handMask)||!hasRef(w,handMask)||off.sourceRefs.includes(glove))return null;
+  // The actual lower layers stay byte-for-byte on their already selected route.
+  const layers=[...(bridge?.layers||[]),{...g0,slot:'gloves',protectIdleGloveHand:handMask}];
+  const result=describeSlots({...off,id:off.id+':signed-south-idle-wrist:'+id,body:'female',hdKind:'authored-pants',
+   ownSouthIdleGloveCuff:true,anatomyBase:native,sourceRefs:[...new Set([...off.sourceRefs,glove,handMask])],
+   equipment:{...off.equipment,gloves:id},authoredPantsLayer:{item:bridge?.item??null,spec:s,layers}},visible,[]);
+  for(const [slot,r] of Object.entries(off.slotRoutes||{}))if(r.quality==='hd')result.slotRoutes[slot]=r;
+  result.slotRoutes[g.key]={item:id,quality:'hd',source:i.id};return result;
+ }
+ const femaleG180SideIdleSigned={"east":{"armSHA":"46fedcb3bfae307f60bce157a7359ca331b56c0e0d5b7530397bc918f10c0d4e","gSHA":"0649bc01b8b5111164c42e7b9c0ed17767714a24038284fd389b85187bf48a5e","oldSHA":"2c4aff9e89f51747ca52ddee8e10a1801aa43251ec6078add961d1dc5601c38a"},"west":{"armSHA":"f65620245e7084fea5d3f5699430e6535912f708a47c8a9fc8e7f3ac634139b8","gSHA":"365b9e0f703deacb44160af7629bbbd47b5b3a764583572508b30d17c19e42a0","oldSHA":"d5b2f4c0ad18f8118760ce7b61b633e3b20ab9b287756cf956318d028a7bcf84"}};
+ function selectFemaleG180SideIdle(player,o,visible){
+  const g=visible.gloves,dir=o.direction,signed=femaleG180SideIdleSigned[dir],art=femaleG180SideIdleSigned.east;
+  if(o.consumer!=='world'||o.action!=='idle'||o.weaponless||g?.item!==180||!signed||visible.weapon||
+     ['variant','variantId','appearanceVariant'].some(k=>g.value?.[k]!=null&&g.value[k]!=='original'))return null;
+  const e={...player.equipment};delete e[g.key];
+  const bare=selectBase({...player,equipment:{}},o,true),base=Object.keys(visible).length===1?bare:selectVisualStrict({...player,equipment:e},o);
+  if(!base||!bare||base.omitted?.length||base.visualDegraded||base.appearanceAdapted||base.hdKind==='carry'||
+     bare.sourceId!=='female-idle-original-'+dir+'-from-walk0'||bare.headRecord||bare.gearOnlyRecord)return null;
+  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b),B=bare.pack.directions[dir],I=base.pack?.directions?.[dir],
+   arm=l=>l.id==='arms'||l.id==='base:arms',armOnly=I?.layers.filter(arm);
+  if(!I||I.clip.frames!==1||I.clip.loop!==false||!same(I.rest,B.rest)||!same(I.poses,B.poses)||
+     !['frame','density','pivot'].every(k=>same(base.pack[k],bare.pack[k]))||
+     !!base.mirrorX||base.mirrorLayerIDs?.length||!same(base.colorAppearance,bare.colorAppearance)||
+     armOnly?.length!==1||armOnly[0].depth!==4||armOnly[0].binding?.kind!=='fixed'||
+     !same(armOnly[0].frames,[signed.armSHA])||B.layers.find(arm)?.frames?.[0]!==signed.armSHA)return null;
+  const stem='frozen-female-glove180-east-',idle=outfitById.get(stem+'idle-native-layers'),
+   walk=outfitById.get(stem+'walk-native-layers'),gOwn=l=>l.id==='candidate-same-item-north-registered-direction',
+   oldArm=l=>l.id==='native-visible-near-arm-manual',D=idle?.pack?.directions?.east,W=walk?.pack?.directions?.east,
+   own=D?.layers.find(gOwn);
+  if(![idle,walk].every(r=>r?.frozenFemaleGloveLayers&&r.body==='female'&&r.direction==='east'&&r.equipment?.gloves===180&&
+     r.frozenGloveSourceRef==='ref-0995'&&r.sourceAuthoritySHA256===femaleSideWalkGloveAuthority.east&&
+     same(r.derivedFemaleGloveDirection,{sourceDirection:'north',targetDirection:'east',noMirror:true,nativeScale:1,sourceRef:'ref-0995',notApprovedNewArt:true})&&r.sourceRefs.includes(art.gSHA))||
+     !['frame','density','pivot'].every(k=>same(idle.pack[k],bare.pack[k])&&same(walk.pack[k],bare.pack[k]))||
+     D?.clip.frames!==1||W?.clip.frames!==40||own?.binding?.kind!=='fixed'||own.depth!==100||own.slot!=='foreground'||
+     !same(own.frames,[art.gSHA])||W.layers.find(gOwn)?.frames?.[0]!==art.gSHA||
+     D.layers.find(oldArm)?.frames?.[0]!==art.oldSHA||W.layers.find(oldArm)?.frames?.[0]!==art.oldSHA||
+     base.sourceRefs.includes(art.gSHA))return null;
+  const routes={};
+  for(const [k,v] of Object.entries(visible)){
+   if(k==='gloves')continue;
+   const old=base.slotRoutes?.[v.key],n=base.equipment?.[v.key]??base.equipment?.[k];
+   if(old?.item!==v.item&&n!==v.item||old?.quality==='missing')return null;
+   routes[v.key]=old??{item:v.item,quality:'hd',source:base.sourceId||base.id};
+  }
+  return {...base,id:base.id+':side-idle-own-g180',equipment:{...base.equipment,gloves:180},
+   ownSideIdleGlove180:{base,bare:base===bare?null:bare,glove:art.gSHA,mirror:dir==='west'},
+   slotRoutes:{...routes,[g.key]:{item:180,quality:'hd',source:idle.id}},layeredSlots:true,omitted:[]};
+ }
+ const femaleG180FingerMaterialForm={"frames":[0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,7,7,7,7,7],"certificates":[["1RoCANUYAgD9ANYaAgDVGAIA/QDXGgIA1RgCAP0A2BoCANUYAgD9ANYcAgDVHgIA/QDXHAIA1R4CAP0A2BwCANUeAgD9ANYeAgDVHgIA/ADXHgIA1R4CAP0A2B4CANYiAgD9ANkeAgDWIgIA+QDGIAIAxyACAPwA1iACANYiAgD9ANcgAgDWIgIA/QDYIAIA1iICAP0A2SACANckAgD8ANogAgDXJAIA2gDGIgIAxyACAP0A1yICANYiAgD9ANgiAgDXJAIA/QDZIgIA1yQCAP0A2iICANckAgDwAMUkAgDGJgIA8gDYJAIA1yQCAP0A2SQCANckAgD9ANokAgDYKAIA/QDbJAIA2CgCANwAxCYCAMYmAgD8AMUmAgDGJgIA/QDYJgIA1yYCAP0A2SYCANgoAgD9ANomAgDYKAIA/QDbJgIA2CgCAPcAwygCAMUsAgDqAMQoAgDGJgIA/QDFKAIAxiYCAP0A2SgCANgoAgD9ANooAgDYKAIA/QDbKAIA2SwCAPwAwyoCAMUsAgD4AMQqAgDFLAIA/QDFKgIAxSwCAP0A2SoCANgqAgD9ANoqAgDZLAIA/QDbKgIA2SwCAP0AwywCAMUsAgD9AMQsAgDFLAIA/QDaLAIA2SwCAP0A2ywCANksAgD8AMIuAgDFLgIA9ADDLgIAxS4CAP0AxC4CAMUuAgD9ANouAgDZLgIA/QDbLgIA2jACAPsAwTACAMQ0AgDmAMIwAgDENAIA/QDDMAIAxTACAP0AxDACAMUwAgD9ANswAgDaMAIA/QDBMgIAxDQCAPwAwjICAMQ0AgD9AMMyAgDENAIA/QDEMgIAxTICAP0A2zICANoyAgD9AME0AgDENAIA/ADCNAIAxDQCAP0AwzQCAMQ0AgD9ANM0AgDTMgIA/QDANgIAxDYCAPsAwTYCAMQ2AgD9AMI2AgDENgIA/QDDNgIAxDYCAP0A0jYCANI0AgD9ANM2AgDSNAIA/QDUNgIA1DQCAP0AwDgCAMQ4AgD9AME4AgDEOAIA/QDCOAIAxDgCAP0AwzgCAMQ4AgD9ANI4AgDROAIA/QDTOAIA0TgCAP0A1DgCANU2AgD9ANU4AgDVNgIA/QDAOgIAxDoCAP0AwToCAMQ6AgD9AMI6AgDEOgIA/QDDOgIAxDoCAP0A0ToCANE4AgD9ANI6AgDROAIA/QDTOgIA0TgCAP0A1DoCANY6AgD9ANU6AgDWOgIA/QDAPAIAxDwCAP0AwTwCAMQ8AgD9AMI8AgDEPAIA/QDDPAIAxDwCAP0A0TwCANA8AgD9ANI8AgDQPAIA/QDTPAIA0TgCAP0A1DwCANY8AgD9ANU8AgDWPAIA/QDAPgIAxD4CAP0AwT4CAMQ+AgD9AMI+AgDEPgIA/QDDPgIAxD4CAP0A0T4CANA+AgD9ANI+AgDQPgIA/QDTPgIA0D4CAP0A1D4CANY+AgD9ANU+AgDWPgIA/QDAQAIAxEACAP0AwUACAMRAAgD9AMJAAgDEQAIA/QDDQAIAxEACAP0A0UACANBAAgD9ANJAAgDQQAIA/QDTQAIA0EACAP0A1EACANZAAgD9ANVAAgDWQAIA/QDAQgIAxEICAP0AwUICAMRCAgD9AMJCAgDEQgIA/QDDQgIAxEICAP0A0UICANBCAgD9ANJCAgDQQgIA/QDTQgIA0EICAP0A1EICANZAAgD9ANVCAgDWQAIA/QDWQgIA1kACAP0AwUQCAMRCAgD7AMJEAgDEQgIA/ADDRAIAxEICAP0AxEQCAMRCAgD9ANFEAgDQRAIA/QDSRAIA0EQCAP0A00QCANFIAgD9ANREAgDWQAIA/QDVRAIA10QCAPwA1kQCANdEAgD9AMJGAgDEQgIA9wDDRgIAxUYCAP0AxEYCAMVGAgD9ANFGAgDQRgIA/QDSRgIA0UgCAP0A00YCANFIAgD9ANRGAgDSSgIA/ADVRgIA10QCAP0A1kYCANdEAgD+ANdGAgDXRAIA/gDYRgIA2EQCAP0AwkgCAMVIAgDgAMNIAgDFSAIA/QDESAIAxUgCAP0A0kgCANFIAgD9ANNIAgDSSgIA/QDUSAIA1EwCAP0A1UgCANRMAgD9ANZIAgDXRAIA/wDXSAIA10QCAP8A2EgCANhEAgD+AMJKAgDFSAIA8gDDSgIAxUgCAP0AxEoCAMVIAgD9AMVKAgDFSAIA/QDTSgIA0koCAP4A1EoCANRMAgD9ANVKAgDUTAIA/QDWSgIA1EwCAP0A10oCANdEAgD+ANhKAgDYRAIA/QDCTAIAxUgCAPIAw0wCAMVIAgD9AMRMAgDGTAIA7QDFTAIAxkwCAPgA1UwCANRMAgD+ANZMAgDUTAIA5ADXTAIA1lACANYAxU4CAMZOAgDeAMVQAgDGUAIA8gDFUgIAxlACAPwAxlICAMZQAgD9AMVUAgDGUAIA1ADGVAIAx1ICAP0Ax1QCAMdSAgD9AMZWAgDHUgIAxgDHVgIAyFQCAOAAyFYCAMhUAgD2AMlYAgDJVgIA6wDJWgIAylgCAOEAyloCAMpYAgD9AMpcAgDLXAIA/ADZGgIA1TACAOQB2RwCANYyAgDaAQ==","N/MBADf7AQD/ADX1AQA3+wEA/QA29QEAN/sBAP0AN/UBADf7AQD6ADj1AQA3+wEA/AA59QEAN/sBAPwANPcBADf7AQD9ADX3AQA3+wEA/QA29wEAN/sBAP0ANPkBADf7AQD9ADX5AQA3+wEA/QA2+QEAN/sBAP0AM/sBADf7AQD9ADT7AQA3+wEA/QA1+wEAN/sBAP0ANvsBADf7AQD9ADP9AQA3/QEA/QA0/QEAN/0BAP0ANf0BADf9AQD9ADb9AQA3/QEA/QAz/wEAN/8BAP0ANP8BADf/AQD9ADX/AQA3/wEA/QA2/wEAN/8BAP0AMwECADcBAgD9ADQBAgA3AQIA/QA1AQIANwECAP0ANgECADcBAgD9ADMDAgA3AwIA/QA0AwIANwMCAP0ANQMCADcDAgD9ADYDAgA3AwIA/QBDAwIAQgMCAPIALwUCAC8NAgD9ADAFAgAwDQIA/QAxBQIAMQ0CAP0AMwUCADcFAgD9ADQFAgA3BQIA/QA1BQIANwUCAP0ANgUCADcFAgD9AEQFAgBDBQIA4QAtBwIALw0CAOYALgcCAC8NAgD9AC8HAgAvDQIA+wAwBwIAMA0CAP0AMQcCADENAgD9ADIHAgAxDQIA/QAzBwIAMQ0CAP0ANAcCADcHAgD9ADUHAgA3BwIA/QA2BwIANwcCAP0ARAcCAEMHAgD/AEUHAgBDBwIA5AAuCQIALw0CAP0ALwkCAC8NAgD7ADAJAgAwDQIA/QAxCQIAMQ0CAP0AMgkCADENAgD9ADMJAgAxDQIA/QA0CQIANwkCAP0ANQkCADcJAgD9ADYJAgA3CQIA/QBECQIAQwkCAPkARQkCAEMJAgD/AEYJAgBDCQIA4AAuCwIALw0CAPsALwsCAC8NAgD+ADALAgAwDQIA/AAxCwIAMQ0CAP0AMgsCADENAgD9ADMLAgAxDQIA/QA0CwIANwsCAP0ANQsCADcLAgD9ADYLAgA3CwIA/QBECwIAQwsCAP0ARQsCAEMLAgD6AEYLAgBDCwIA/wAuDQIALw0CAPEAMg0CADENAgD9ADMNAgAxDQIA/QA0DQIAMQ0CAP0ANQ0CADcNAgD9ADYNAgA3DQIA/QBEDQIAQw0CAP0ARQ0CAEMNAgD8AEYNAgBDDQIA+gBHDQIAQw0CAP8AMg8CADEPAgD9ADMPAgAxDwIA/QA0DwIAMQ8CAP0ANQ8CADcPAgD9ADYPAgA3DwIA/QBEDwIAQw8CAP0ARQ8CAEMPAgD9AEYPAgBDDwIA/QBHDwIAQw8CAP8AMRECADEPAgD8ADIRAgAxDwIA/QAzEQIAMQ8CAP0ANBECADcRAgD9ADURAgA3EQIA/QA2EQIANxECAP0ARBECAEMRAgD9AEURAgBDEQIA/QBGEQIAQxECAP0ARxECAEMRAgD8AEgRAgBDEQIA/wBJEQIAQxECAOkAMRMCADATAgD5ADITAgAwEwIA/QAzEwIAMQ8CAP0ANBMCADYXAgD9ADUTAgA3EwIA/QA2EwIANxMCAP0AQxMCAEMRAgD9AEQTAgBDEQIA/QBFEwIAQxECAP0ARhMCAEMRAgD9AEcTAgBDEQIA/ABIEwIAQxECAPwASRMCAEMRAgD0ADAVAgAwEwIA5AAxFQIAMBMCAPsAMhUCADATAgD6ADMVAgA1GQIA/QA0FQIANhcCAP0ANRUCADYXAgD9ADYVAgA3FQIA/QBDFQIAQhUCAP0ARBUCAEIVAgD9AEUVAgBDEQIA/QBGFQIAQxECAP0ASBUCAEMRAgD4AEkVAgBDEQIA/wAxFwIAMBMCAP8AMhcCADMbAgD9ADMXAgAzGwIA+gA0FwIANRkCAP0ANRcCADYXAgD9AEMXAgBCFwIA/QBEFwIAQhcCAP0ARRcCAEIXAgD9AEYXAgBCFwIA/QBJFwIAQxECAP0AMhkCADMbAgD8ADMZAgAzGwIA/wA0GQIANRkCAPoAQhkCAEIXAgD9AEMZAgBCFwIA/QBEGQIAQhcCAP0ARRkCAEIXAgD9AEkZAgBCFwIA+QBKGQIAQxECAP8AQhsCAEEbAgD9AEMbAgBBGwIA/QBEGwIAQhcCAP0ARRsCAEIXAgD9AEobAgBCFwIA/gBLGwIAQhcCAMUAQh0CAEEdAgD9AEMdAgBBHQIA/QBEHQIAQR0CAP0ARR0CAEEdAgD9AEsdAgBCFwIA6QBCHwIAQR8CAP0AQx8CAEEfAgD9AEQfAgBBHwIA/QBFHwIAQR8CAP0AQSECAEEfAgD9AEIhAgBBHwIA/QBDIQIAQR8CAP0ARCECAEEfAgD9AEAjAgBAIQIA/gBBIwIAQCECAP0AQiMCAEEfAgD9AEMjAgBBHwIA/QBEIwIAQR8CAP0APyUCAD8jAgD9AEAlAgA/IwIA/QBBJQIAQCECAP0AQiUCAEAhAgD9AEMlAgBBHwIA/QA+JwIAPiUCAP0APycCAD4lAgD9AEAnAgA/IwIA/QBBJwIAPyMCAP0AQicCAEAhAgD9AD4pAgA9KQIA/QA/KQIAPSkCAP0AQCkCAD4lAgD9AEEpAgA/IwIA/QA9KwIAPSkCAP0APisCAD0pAgD9AD8rAgA9KQIA/QBAKwIAPSkCAP4AOy0CADsrAgD6ADwtAgA8KwIA/QA9LQIAPCsCAP0APi0CAD0pAgD9AD8tAgA9KQIA/QBALQIAPSkCAP0AOi8CADotAgD/ADsvAgA6LQIA9wA8LwIAPCsCAPoAPS8CADwrAgD7AD4vAgA8KwIA/QA/LwIAPSkCAP0AOjECADotAgD/ADsxAgA6LQIA/wA8MQIAOi0CAP8APTECADwrAgD/AD4xAgA8KwIA+wA18wEA1S4CAP0BNvMBANUwAgD8ATjzAQDXMAIA/wE09QEA0zACAP0BM/cBANEwAgD9ATL5AQDQMAIA/QEz+QEA0TACAP0BMPsBAM4wAgD9ATH7AQDOMAIA/QEy+wEAzzICAP0BL/0BAMsyAgD9ATD9AQDOMAIA/QEx/QEAzjICAP0BMv0BAM8yAgD9AS7/AQDKMAIA/QEv/wEAyzICAP0BMP8BAMsyAgD9ATH/AQDNMgIA/QEy/wEAzjQCAP0BLQECAMkwAgD7AS4BAgDKMgIA/QEvAQIAyzICAP0BMAECAMw0AgD9ATEBAgDMNAIA/QEyAQIAzTQCAP0BLAMCAMcyAgDNAS0DAgDIMgIA/QEuAwIAyTICAPsBLwMCAMo0AgD9ATADAgDLNAIA/QExAwIAzDQCAP0BMgMCAM02AgD9AS0FAgDINAIA/wEuBQIAyTQCAPoBMgUCAMw2AgD9AUcVAgDWUAIA/QFHFwIA1lACAP0BSBcCANZQAgD6AUYZAgDWUAIA/QFHGQIA1lACAP0BSBkCANZSAgD9AUYbAgDWUgIA/QFHGwIA1lICAP0BSBsCANZSAgD9AUkbAgDWVAIA+wFGHQIA1lICAP0BRx0CANZUAgD9AUgdAgDWVAIA/QFJHQIA1lQCAPwBSh0CANZWAgD/AUYfAgDVVAIA/QFHHwIA1lQCAP0BSB8CANZUAgD9AUkfAgDWVgIA/AFKHwIA1lYCAP8BSx8CANZYAgDiAUUhAgDUVAIA/QFGIQIA1FQCAP0BRyECANVWAgD9AUghAgDWVgIA/QFJIQIA1lYCAPwBSiECANZYAgD/AUshAgDWWAIA4wFFIwIA01YCAP0BRiMCANRWAgD9AUcjAgDVVgIA/QFIIwIA1VgCAP0BSSMCANZYAgD8AUojAgDWWAIA/gFLIwIA1lgCAOMBRCUCANFWAgD9AUUlAgDSVgIA/QFGJQIA01YCAP0BRyUCANRYAgD9AUglAgDVWAIA/QFJJQIA1lgCAPkBSiUCANZYAgD/AUMnAgDQVgIA/QFEJwIA0VYCAP0BRScCANJYAgD9AUYnAgDSWAIA/QFHJwIA01gCAP0BSCcCANRaAgD8AUknAgDVWgIA/AFKJwIA1lgCAOgBQikCAM5WAgD9AUMpAgDPVgIA/QFEKQIA0FgCAP0BRSkCANFYAgD9AUYpAgDSWgIA/QFHKQIA01oCAP0BSCkCANRaAgD8AUkpAgDUXAIA/wFBKwIAzVYCAP0BQisCAM5YAgD9AUMrAgDPWAIA/QFEKwIAz1gCAP0BRSsCANBaAgD9AUYrAgDRWgIA/QFHKwIA0loCAPwBSCsCANNcAgD9AUkrAgDUXAIA+AFBLQIAzFgCAP0BQi0CAM1YAgD9AUMtAgDOWgIA/QFELQIAz1oCAP0BRS0CANBaAgD9AUYtAgDQXAIA+gFHLQIA0VwCAPgBSC0CANJcAgD/AUAvAgDLWAIA/QFBLwIAy1gCAP0BQi8CAMxaAgD9AUMvAgDNWgIA/QFELwIAzlwCAP0BRS8CAM9cAgD7AUYvAgDQXAIA/wFHLwIA0VwCAP8BPzECAMlWAgD9AUAxAgDKWAIA/QFBMQIAy1oCAPsBQjECAMxaAgD7AUMxAgDNXAIA/QFEMQIAzVwCAPoBRTECAM5cAgD/AT4zAgDJVgIA/wE/MwIAyVYCAPoBQDMCAMpYAgD6AUEzAgDLXAIA/wFCMwIAy1wCAP8BQzMCAMxcAgD9AUQzAgDNXAIA/wFFMwIAzl4CAOEBPjUCAMlWAgDPAT81AgDJVgIA/wFANQIAy1wCAP8BQTUCAMtcAgDbAUI1AgDLXAIAwwFDNQIAy1wCAPcBRDUCAMxcAgDdAQ=="],["4ygCAOIoAgD9AOQoAgDiKAIA/QDlKAIA4igCAPwA5igCAOIoAgDrAOIqAgDiKAIA/QDjKgIA4igCAP0A5CoCAOIoAgD9AOUqAgDiKAIA/QDjLAIA4i4CAP0A5CwCAOIuAgD9AOUsAgDiLgIA/QDjLgIA4i4CAP0A5C4CAOIuAgD9AOUuAgDjMgIA/QDmLgIA4zICAP0A4zACAOMyAgD9AOQwAgDjMgIA/QDlMAIA4zICAP0A5jACAOQ0AgD9AOcwAgDkNAIA/QDkMgIA4zICAP0A5TICAOQ0AgD9AOYyAgDkNAIA/QDnMgIA5DQCAP0A5TQCAOQ0AgD9AOY0AgDkNAIA/QDnNAIA5TgCAP0A6DQCAOU4AgD9AOU2AgDkNgIA/QDmNgIA5TgCAP0A5zYCAOU4AgD9AOg2AgDlOAIA/QDmOAIA5TgCAP0A5zgCAOU4AgD9AOg4AgDmPAIA/QDmOgIA5ToCAP0A5zoCAOY8AgD9AOg6AgDmPAIA/QDpOgIA5jwCAMQA5zwCAOY8AgD9AOg8AgDmPAIA/QDpPAIA50ACAP0A5z4CAOY+AgD9AOg+AgDnQAIA/QDpPgIA50ACAOsA6EACAOdAAgD9AOlAAgDnQAIAwwDoQgIA50ICAP0A4EQCAOBCAgD9AOhEAgDnRAIA/QDfRgIA30QCAP0A4EYCAN9EAgD9AOFGAgDhRAIA/QDoRgIA50YCAP0A30gCAN5IAgD9AOBIAgDeSAIA/QDhSAIA4kYCAP0A4kgCAOJGAgD9AN5KAgDeSAIA/QDfSgIA3kgCAP0A4EoCAN5IAgD9AOFKAgDjSgIA/QDiSgIA40oCAP0A3kwCAN1MAgD9AN9MAgDdTAIA/gDgTAIA3kgCAP0A4UwCAONMAgD9AOJMAgDjTAIA/QDQTgIA0U4CANsA3k4CAN1OAgD9AN9OAgDdTgIA/QDgTgIA3U4CAP0A4U4CAONOAgD9AOJOAgDjTgIA/QDQUAIA0VACAPgA3lACAN1QAgD9AN9QAgDdUAIA/QDgUAIA3VACAP0A4VACAONQAgD9AOJQAgDjUAIA/QDQUgIA0VICAP0A3lICAN1SAgD9AN9SAgDdUgIA/QDgUgIA3VICAP4A4VICAONQAgD+AOJSAgDjUAIA/gDjUgIA41ACAP8Az1QCANFSAgDuANBUAgDRUgIA/QDRVAIA0VICAP0A3lQCAN1UAgD9AN9UAgDdVAIA/QDgVAIA3lgCAP8A4VQCAONQAgD/AOJUAgDkVAIA/wDjVAIA5FQCAP4Az1YCANFSAgD9ANBWAgDSVgIA/QDRVgIA0lYCAP0A3lYCAN1WAgD9AN9WAgDeWAIA/QDgVgIA3lgCAP8A4VYCAN9aAgD/AOJWAgDkVAIA/wDjVgIA5FQCAP4A0FgCANJYAgD9ANFYAgDSWAIA/ADfWAIA3lgCAP4A4FgCAN9aAgD/AOFYAgDhXAIA/wDiWAIA4VwCAP8A41gCAORUAgD9ANJaAgDSWAIA/QDgWgIA31oCAP8A4VoCAOFcAgD/AONaAgDhXAIA+ADTYgIA02ACAPsA12oCANdoAgDyAOYqAgDZNAIA+QHmLAIA2TQCAP0B5y4CANo2AgDRAegyAgDbOAIA5AE=","MvMBADPzAQD9ADH1AQAz9QEA/QAy9QEAM/UBAP0AMPcBADP3AQD9ADH3AQAz9wEA/QAy9wEAM/cBAP0AL/kBADP5AQD9ADD5AQAz+QEA/QAx+QEAM/kBAP0AMvkBADP5AQD9AC/7AQAz+wEA/QAw+wEAM/sBAP0AMfsBADP7AQD9ADL7AQAz+wEA/QAv/QEAM/0BAP0AMP0BADP9AQD9ADH9AQAz/QEA/QAy/QEAM/0BAP0AQP0BAD/9AQDrACz/AQAsBwIA/wAt/wEALQcCAPkALv8BAC4HAgD9ADD/AQAz/QEA/QAx/wEAM/0BAP0AMv8BADP9AQD9ADP/AQAz/QEA/QBB/wEAQP8BANQALAECACwHAgDmAC0BAgAtBwIA/gAuAQIALgcCAPwALwECAC4HAgD9ADABAgAz/QEA/QAxAQIAM/0BAP0AMgECADQBAgD9ADMBAgA0AQIA/QBBAQIAQAECAP8AQgECAEABAgDuAC0DAgAtBwIA/gAuAwIALgcCAPkALwMCAC4HAgD9ADADAgAuBwIA/QAxAwIANAMCAP0AMgMCADQDAgD9ADMDAgA0AwIA/QBBAwIAQAMCAPkAQgMCAEADAgD/AEMDAgBAAwIAzQAtBQIALQcCAP8ALgUCAC4HAgD6AC8FAgAuBwIA/QAwBQIALgcCAP0AMQUCADQFAgD9ADIFAgA0BQIA/QAzBQIANAUCAP0AQQUCAEAFAgD9AEIFAgBABQIA+gBDBQIAQAUCAP8ALwcCAC4HAgD7ADAHAgAuBwIA/QAxBwIALgcCAP0AMgcCADQHAgD9ADMHAgA0BwIA/QBBBwIAQAcCAP0AQgcCAEAHAgD9AEMHAgBABwIA+gBEBwIAQAcCAP8ALwkCAC4JAgD6ADAJAgAuCQIA/QAxCQIALgkCAP0AMgkCADQJAgD9ADMJAgA0CQIA/QBACQIAQAcCAP0AQQkCAEAHAgD9AEIJAgBABwIA/QBDCQIAQAcCAP0ARAkCAEAHAgD6AEUJAgBABwIA/wAuCwIALgkCANEALwsCAC4JAgD/ADALAgAuCQIA+AAxCwIANAsCAP0AMgsCADQLAgD9ADMLAgA0CwIA/QBACwIAPwsCAP0AQQsCAD8LAgD9AEILAgBABwIA/QBDCwIAQAcCAP0ARAsCAEAHAgD7AEULAgBABwIA/QAvDQIALQ0CAOQAMA0CAC4JAgD/ADENAgAzEQIA/AAyDQIANA0CAPwAMw0CADQNAgD9AEANAgA/DQIA/QBBDQIAPw0CAP0AQg0CAD8NAgD9AEMNAgA/DQIA/QBFDQIAQAcCAP0ARg0CAEAHAgDeADAPAgAtDQIAzAAxDwIAMxECAPwAMg8CADMRAgD/ADMPAgA0DwIA+QA/DwIAPw0CAP0AQA8CAD8NAgD9AEEPAgA/DQIA/QBCDwIAPw0CAP0ARQ8CAD8NAgD5AEYPAgA/DQIA/wAyEQIAMxECAO8APxECAD4RAgD9AEARAgA/EwIA/QBBEQIAPxMCAP0AQhECAD8TAgD9AEYRAgA/EwIA/wBAEwIAPxMCAP0AQRMCAD8TAgD9AEITAgA/EwIA/QBDEwIAPxMCAP0AQBUCAD8VAgD9AEEVAgA/FQIA/QBCFQIAPxUCAP0AQxUCAD8VAgD9AD8XAgA/FQIA/QBAFwIAPxUCAP0AQRcCAD8VAgD9AEIXAgA/FQIA/QA+GQIAPhcCAP0APxkCAD4XAgD9AEAZAgA/FQIA/QBBGQIAPxUCAP0AQhkCAD8VAgD9AD4bAgA9GwIA/QA/GwIAPRsCAP0AQBsCAD4XAgD9AEEbAgA/FQIA/QA9HQIAPRsCAP4APh0CAD0bAgD9AD8dAgA9GwIA/QBAHQIAPRsCAP0APB8CADwdAgD9AD0fAgA8HQIA/QA+HwIAPRsCAP0APx8CAD0bAgD9AEAfAgA9GwIA/QA8IQIAOyECAP0APSECADshAgD9AD4hAgA8HQIA/AA/IQIAPRsCAPwAOyMCADshAgD8ADwjAgA7IQIA+wA9IwIAOyECAPoAPiMCADshAgD/ADslAgA6IwIAzwA8JQIAOyECAP8APSUCADshAgD/AD4lAgA7IQIA8gAt+wEAyjICAP0BLvsBAMsyAgD9ASz9AQDIMgIA/QEt/QEAyTQCAPwBLv0BAMo0AgD9AS//AQDKNgIA/QFEDQIA1lICAPwBQw8CANZSAgD9AUQPAgDWUgIA/QFDEQIA1lICAP0BRBECANZUAgD9AUURAgDWVAIA/AFEEwIA1lQCAP0BRRMCANZWAgD8AUYTAgDWVgIA/wFEFQIA1lYCAP0BRRUCANZWAgD8AUYVAgDWWAIA/wFDFwIA1VYCAP0BRBcCANZYAgD9AUUXAgDWWAIA/AFGFwIA1lgCAP0BQxkCANRYAgD9AUQZAgDVWAIA/QFFGQIA1lgCAPkBRhkCANZYAgD/AUIbAgDSWAIA/QFDGwIA01oCAP0BRBsCANRaAgD7AUUbAgDVWgIA/QFBHQIA0FgCAP0BQh0CANFaAgD9AUMdAgDSWgIA/QFEHQIA01wCAPcBRR0CANRcAgD/AUEfAgDPWgIA/QFCHwIA0FoCAPwBQx8CANFcAgD5AUAhAgDOWgIA/QFBIQIAz1wCAPsBQiECANBcAgD/AUMhAgDRXAIA/wE/IwIAzFoCAP8BQCMCAM1cAgD5AUEjAgDOXAIA/wFCIwIAz14CAM8BPyUCAMtcAgDvAQ=="],["LPsBACn9AQD9ACv9AQAp/QEA/QAs/QEAKgECAP0AKf8BACn9AQD9ACv/AQAqAQIA/QAs/wEAKgECAP0ALf8BACsDAgD9AC7/AQArAwIA/QArAQIAKgECAP0ALAECACsDAgD9AC0BAgArAwIA/QAuAQIALgcCAP0ALwECAC4HAgD9ADABAgAwBwIA/QAsAwIAKwMCAP0ALQMCACsDAgD9AC4DAgAuBwIA/QAvAwIALgcCAP0AMAMCADAHAgD9ADEDAgAxBwIA/QAyAwIAMgcCAP0ALAUCACsFAgD9AC4FAgAuBwIA/QAvBQIALgcCAP0AMAUCADAHAgD9ADEFAgAxBwIA/QAyBQIAMgcCAP0AMwUCADIHAgD9ADMHAgAyBwIA/QA1BwIANAcCAP0ANhUCADYTAgD9ADgVAgA4EwIA/QA5FQIAORMCAP0AOhUCADoTAgD9ADcXAgA3FQIA/QA4FwIANxUCAPwAORcCADkTAgD9ADoXAgA7FQIA/QA7FwIAOxUCAP0ANhkCADYXAgD9ADcZAgA3GwIA/AA4GQIANxsCAP0AORkCADcbAgD9ADoZAgA7FQIA/AA7GQIAPBcCAP0APBkCADwXAgD9AD0ZAgA9FwIA/QA+GQIAPhcCAP0APxkCAD8XAgD9ADgbAgA3GwIA/QA5GwIANxsCAP0AOhsCADwXAgD8ADsbAgA8FwIA/QA8GwIAPBcCAP0APRsCAD0XAgD9AD4bAgA+FwIA/QA/GwIAPxcCAP0AJh0CACcfAgD5ADgdAgA3HQIA/QA5HQIAOB8CAP0AOh0CADohAgD9ADsdAgA6IQIA/gA8HQIAOiECAP0APR0CAD0XAgD9AD4dAgA+FwIA/QA/HQIAQSECAP0AQB0CAEEhAgD9AEEdAgBBIQIA/QA5HwIAOB8CAP0AOh8CADohAgD8ADsfAgA6IQIA/QA8HwIAOiECAP0APR8CADsjAgD9AD4fAgA/IwIA/QA/HwIAPyMCAP0AQB8CAEEhAgD9AEEfAgBBIQIA/QAnIQIAJx8CAPwAOyECADohAgD9ADwhAgA7IwIA/QA9IQIAPSUCAP0APiECAD8jAgD9AD8hAgA/IwIA/ABAIQIAQSECAPwAQiECAEEhAgD9ACgjAgApJQIA/QA8IwIAOyMCAP0APSMCAD0lAgD9AD4jAgA/IwIA/QAoJQIAKSUCAP0AKScCACklAgD9AConAgApJQIA/AApKQIAKSUCAPwAKikCACspAgD8ACkrAgArKQIA+wAqKwIAKykCAPwAKysCACspAgD9ACotAgArKQIA/AArLQIALCsCAP0ALC0CACwrAgD8AC0tAgAtKwIA/QArLwIALCsCAPwALC8CACwrAgD9AC0vAgAuLwIA/QAsMQIALi8CAP0ALTECAC4vAgD9AC4xAgAuLwIA/AAtMwIALi8CAP0ALjMCAC8xAgD9AC8zAgAvMQIA/QAwMwIAMDECAP0ALTUCAC8xAgD6AC41AgAvMQIA/QAvNQIALzECAP0AMDUCADEzAgD9ADE1AgAxMwIA/QAuNwIALzECAP0ALzcCADEzAgD9ADA3AgAxMwIA/QAxNwIAMjUCAP0AMjcCADI1AgD9ADM3AgAzNQIA/QA1NwIANDcCAP0AMDkCADI1AgD9ADE5AgAyNQIA/QAyOQIAMjUCAP0AMzkCADQ3AgD9ADQ5AgA0NwIA/QA1OQIANDcCAP0ANjkCADY3AgD9ADg5AgA4NwIA/QBAOQIAQDcCAP0AMDsCADI1AgD4ADE7AgAyNQIA/AAyOwIANDcCAP0AMzsCADQ3AgD9ADQ7AgA0NwIA/QA1OwIANDcCAP0ANjsCADc5AgD9ADc7AgA3OQIA/QA4OwIANzkCAP0AOTsCADk5AgD9ADo7AgA6OQIA/QA8OwIAPDkCAPwAPTsCAD05AgD9AD87AgA/OQIA/QBAOwIAPzkCAP0AQTsCAEE5AgD8AEI7AgBCOQIA/QBDOwIAQzkCAP0AMj0CADQ3AgD9ADM9AgA0NwIA/QA0PQIANDcCAP0ANT0CADc5AgD9ADY9AgA3OQIA/QA3PQIANzkCAP0AOD0CADc5AgD9ADk9AgA5OQIA/QA6PQIAOzsCAP0AOz0CADs7AgD9ADw9AgA7OwIA/QA9PQIAPjsCAP0APj0CAD47AgD9AD89AgA+OwIA/QBAPQIAPzkCAP0AQT0CAEE5AgD7ADQ/AgA0NwIA/QA1PwIANzkCAP0ANj8CADc5AgD9ADc/AgA3OQIA/QA4PwIANzkCAPwAOT8CADs7AgD9ADo/AgA7OwIA/QA7PwIAOzsCAP0APD8CADs7AgD9AD0/AgA+OwIA/QA+PwIAPjsCAP0APz8CAD47AgD9AEA/AgA+OwIA/QBBPwIAQTkCAPkAN0ECADc5AgD9ADlBAgA7OwIA/QA6QQIAOzsCAP0AO0ECADs7AgD9ADxBAgA7OwIA/QA9QQIAPjsCAP0APkECAD47AgD8AD9BAgA+OwIA/QBAQQIAPjsCAP0AO0MCADs7AgD9AD5DAgA+OwIA+wA4RwIAOzsCAPsAMz8CAMdSAgD7ATVBAgDIVAIA/QE2QQIAyFQCAP0BOEECAMlWAgD9ATVDAgDIVAIA+AE2QwIAyFQCAP0BN0MCAMlWAgD9AThDAgDJVgIA/QE5QwIAylgCAP0BOkMCAMpYAgD9ATxDAgDLXAIA/AE9QwIAzFwCAP0BP0MCAM5eAgD8AUBDAgDOXgIA7gE2RQIAyFQCAPoBN0UCAMlWAgD8AThFAgDJVgIA/QE5RQIAylgCAP0BOkUCAMtcAgD9ATtFAgDLXAIA/QE8RQIAy1wCAP0BPUUCAMxcAgD8ATlHAgDKWAIA+wE6RwIAy1wCAP0BO0cCAMtcAgD9AQ==","4hYCAOUaAgD9AOMWAgDlGgIA/QDkFgIA5RoCAP0A5RYCAOUaAgD9AOcWAgDlGgIA/wDhGAIA5BwCAP0A4hgCAOQcAgD9AOMYAgDlGgIA/QDkGAIA5RoCAPwA5RgCAOUaAgD9ANwaAgDbIAIA/wDdGgIA2yACAPoA4BoCAOMeAgD9AOEaAgDjHgIA/QDiGgIA5BwCAP0A4xoCAOQcAgD9AOQaAgDlGgIA/ADbHAIA2yACAPEA3BwCANsgAgD+AN0cAgDbIAIA/ADeHAIA2yACAP0A4BwCAOMeAgD9AOEcAgDjHgIA/QDiHAIA4x4CAP0A4xwCAOQcAgD9ANseAgDbIAIA/wDcHgIA2yACAPoA3R4CANsgAgD9AN4eAgDbIAIA/QDfHgIA4iICAP0A4B4CAOIiAgD9AOEeAgDjHgIA/QDiHgIA4x4CAP0A3CACANsgAgD6AN0gAgDbIAIA/QDeIAIA2yACAP0A3yACAOEkAgD9AOAgAgDiIgIA/QDhIAIA4iICAPwA4iACAOMgAgD9ANwiAgDbIgIA/ADdIgIA2yICAP0A3iICAOAmAgD9AN8iAgDhJAIA/QDgIgIA4SQCAP0A4SICAOIiAgD9ANokAgDaIgIA/gDbJAIA2yICAPkA3CQCANsiAgD9AN0kAgDbIgIA/QDeJAIA4CYCAP0A3yQCAOAmAgD9AOAkAgDhJAIA/ADZJgIA2SQCAOwA2iYCANkkAgD/ANsmAgDbIgIA/ADcJgIA2yICAP0A3SYCANsiAgD9AN4mAgDgJgIA/QDfJgIA4CYCAP0A2SgCANkkAgD+ANooAgDZJAIA+wDbKAIA2SQCAPwA3CgCAN4sAgD9AN0oAgDfKgIA/QDeKAIA3yoCAP0A3ygCAOAoAgD9ANkqAgDYLgIA/wDaKgIA2C4CAPkA2yoCANwuAgD8ANwqAgDcLgIA/QDdKgIA3iwCAP0A3ioCAN8qAgD9ANgsAgDYLgIA6gDZLAIA2C4CAP8A2iwCANowAgD7ANssAgDcLgIA/QDcLAIA3C4CAP0A3SwCAN4sAgD9ANkuAgDYLgIA/QDaLgIA2jACAPwA2y4CANwuAgD9AOwuAgDsLAIA+gDtLgIA7CwCAP8A7TACAOwwAgD+AOwyAgDsMAIA+gDtMgIA7DACAP8A7jICAOwwAgDBAOs0AgDrMgIA/QDsNAIA6zICAPsA7TQCAOwwAgD/AO40AgDsMAIA5gDrNgIA6jYCAP0A7DYCAOo2AgD8AO02AgDrMgIA/wDuNgIA7DACAOoA6jgCAOo2AgD8AOs4AgDqNgIA/QDsOAIA6jYCAPsA7TgCAOo2AgD/AOk6AgDpOAIA/ADqOgIA6TgCAPwA6zoCAOo2AgD9AOw6AgDqNgIA+QDtOgIA6jYCAP0A5zwCAOc6AgD9AOg8AgDoOgIA/QDpPAIA6DoCAPwA6jwCAOk4AgD9AOs8AgDpOAIA/QDsPAIA6jYCAPoA7TwCAOo2AgD/AOY+AgDmPAIA/QDnPgIA5jwCAP0A6D4CAOg6AgD8AOk+AgDoOgIA/ADqPgIA6DoCAP0A6z4CAOk4AgD5AOw+AgDpOAIA/gDtPgIA6jYCAMkA5EACAOQ+AgD8AOVAAgDlPgIA/ADmQAIA5T4CAPwA50ACAOY8AgD9AOhAAgDmPAIA/QDpQAIA6DoCAP0A6kACAOg6AgD7AOxAAgDpOAIA/wDjQgIA40ACAPwA5EICAONAAgD8AOVCAgDlPgIA/QDmQgIA5T4CAPwA50ICAOU+AgD9AOhCAgDmPAIA/QDrQgIA6DoCAOAA30QCAN9CAgD8AOBEAgDgQgIA/QDhRAIA4UICAP0A4kQCAOJCAgD8AONEAgDiQgIA/ADkRAIA40ACAPwA5UQCAONAAgD8AOZEAgDlPgIA/QDnRAIA5T4CAP0A3UYCAN1EAgD7AN5GAgDeRAIA/QDfRgIA3kQCAP0A4EYCAOBCAgD9AOFGAgDhQgIA/QDiRgIA4kICAP0A40YCAOJCAgD8AORGAgDiQgIA/ADlRgIA40ACAPwA20gCANtGAgDIANxIAgDcRgIA/wDdSAIA3EYCAP0A3kgCAN5EAgD8AN9IAgDeRAIA/QDgSAIA3kQCAP0A4UgCAOFCAgD9AOJIAgDiQgIA/QDjSAIA4kICAPwA5EgCAOJCAgD9ANxKAgDcRgIA3wDdSgIA3EYCAOsA3koCANxGAgD6AN9KAgDeRAIA/ADgSgIA3kQCAP0A4UoCAOFCAgD9AOJKAgDiQgIA/QDeTAIA3EYCAP8A3RQCAMgyAgD6Ad4UAgDKMgIA+wHfFAIAyzICAPwB4BQCAMsyAgD9AeEUAgDOMAIA/QHiFAIAzjACAP0B3RYCAMk0AgD/Ad4WAgDKNAIA+QHfFgIAyzICAP0B4BYCAMsyAgD9AeEWAgDNMgIA/QHcGAIAyDQCAPIB3RgCAMk0AgD8Ad4YAgDKNAIA/AHfGAIAyzQCAP0B4BgCAMw0AgD9Ad4aAgDKNgIA/QHfGgIAyzYCAP0B3xwCAMs4AgD9Ae44AgDcRAIA2QHrQAIA1lACAP8B6UICANZQAgD7AepCAgDWUAIA+wHoRAIA1lICAP0B6UQCANZSAgD6AepEAgDWUgIA/wHmRgIA1FQCAP0B50YCANVUAgD8AehGAgDWVAIA+wHpRgIA1lQCAP8B6kYCANZUAgDlAeVIAgDTVgIA/QHmSAIA1FYCAP0B50gCANVWAgD8AehIAgDWVgIA+QHpSAIA1lYCAP4B40oCANFYAgD8AeRKAgDSWAIA/QHlSgIA01gCAP0B5koCANRYAgD9AedKAgDWWAIA+wHoSgIA1lYCAP8B6UoCANZWAgDyAd9MAgDNWgIA+gHgTAIAzloCAP0B4UwCAM9aAgD7AeJMAgDQWgIA+QHjTAIA0VoCAPwB5EwCANJaAgD9AeVMAgDTWAIA/QHmTAIA1VgCAPwB50wCANZYAgD6AehMAgDWWAIA+gHfTgIAzVwCAP8B4E4CAM5cAgD6AeFOAgDPXAIA/wHiTgIA0FoCAP8B404CANFaAgD6AeROAgDSWgIA/AHlTgIA1FoCAP0B5k4CANVaAgD5AedOAgDWWAIA/wHgUAIAzlwCAP8B4VACAM9cAgDtAeNQAgDSXAIA/wHkUAIA01wCAP4B5VACANRcAgD4AeZQAgDVWgIA/wHnUAIA1VoCAM4B5FICANNcAgD/AeVSAgDUXAIA/wHmUgIA1FwCANsB"],["Ld8BACzfAQD9ADvrAQA76QEA/QA47QEAOOsBAP0AOe0BADnrAQD9ADrtAQA66wEA/QA77QEAOusBAP0APO0BADzrAQD9AD3tAQA96wEA/QA47wEAN+8BAP0AOe8BADjxAQD9ADrvAQA66wEA/QA77wEAOusBAP0APO8BADzrAQD9AD3vAQA+7QEA/QA+7wEAPu0BAPwAP+8BAD/tAQD9AEDvAQBA7QEA/QBB7wEAQe0BAP0AQu8BAEHtAQD9AEPvAQBB7QEA/AA58QEAOPEBAPwAOvEBADnzAQD9ADvxAQA58wEA/QA88QEAPu0BAP0APfEBAD7tAQD9AD7xAQA+7QEA/QA/8QEAP+0BAPwAQPEBAEDtAQD9AEHxAQBB7QEA/QBC8QEAQe0BAP0AQ/EBAEHtAQD9AETxAQBF9QEA/QA68wEAOfMBAP0AO/MBADnzAQD9ADzzAQA79wEA/QA98wEAO/cBAP0APvMBAD7tAQD9AD/zAQA/7QEA/QBA8wEAQO0BAP0AQfMBAEP3AQD9AELzAQBD9wEA/QBD8wEAQ/cBAP0ARPMBAEX1AQD9AEXzAQBF9QEA/AA69QEAOfUBAP0AO/UBADv3AQD9ADz1AQA79wEA/QA+9QEAPfkBAP0AP/UBAED5AQD9AED1AQBA+QEA/QBB9QEAQfkBAP0AQvUBAEP3AQD9AEP1AQBD9wEA/QBE9QEARfUBAP0AJvcBACb1AQD8ACf3AQAm9QEA/QA89wEAO/cBAP0APfcBAD35AQD9AD73AQA9+QEA/QA/9wEAQPkBAP0AQPcBAED5AQD9AEH3AQBB+QEA/QBC9wEAQ/cBAP0AJvkBACb1AQD7ACf5AQAp+QEA/AAo+QEAKfkBAP0APvkBAD35AQD9AD/5AQBA+QEA/QAo+wEAKfkBAP0AKfsBACn5AQD9ACj9AQAp+QEA/QAp/QEAKfkBAP0AKv0BACn5AQD9ACn/AQAp+QEA/QAq/wEALP8BAPwAK/8BACz/AQD9ACsBAgAs/wEA/QAsAQIALP8BAP0ALQECAC4BAgD9ACsDAgAs/wEA/QAsAwIALP8BAP0ALQMCAC4DAgD9ACwFAgAuAwIA/QAtBQIALgMCAP0ALgUCAC4DAgD9AC8FAgAvAwIA/QBJBQIASQMCAP0ALAcCAC4DAgD8AC0HAgAuAwIA/QAuBwIALgMCAP0ALwcCADAFAgD9ADAHAgAwBQIA/QAtCQIALgMCAP0ALgkCADAFAgD9AC8JAgAxCQIA/QAwCQIAMQkCAP0ASQkCAEkHAgD9AC4LAgAxCQIA/QAvCwIAMQkCAP0AMAsCADEJAgD9ADELAgAxCQIA/QAyCwIAMgkCAP0ASAsCAEgJAgD8AEkLAgBICQIA/AAuDQIAMQkCAP0ALw0CADEJAgD9ADANAgAxCQIA/QAxDQIAMQkCAP0AMg0CADMLAgD9ADMNAgAzCwIA/QA0DQIANAsCAP0ARw0CAEcLAgD6AC8PAgAxCQIA/QAwDwIAMQkCAP0AMQ8CADMLAgD9ADIPAgAzCwIA/QAzDwIAMwsCAP0ANQ8CADUNAgD9ADYPAgA2DQIA/QA4DwIANw8CAP0AOQ8CADkNAgD9AEIPAgBCDQIA/QBEDwIARA0CAP0ARQ8CAEUNAgD9AEYPAgBGDQIA/QBHDwIARg0CAPsAMRECADMLAgD9ADIRAgAzCwIA/QAzEQIANQ0CAP0ANBECADUNAgD9ADURAgA1DQIA/QA2EQIANw8CAP0ANxECADcPAgD9ADgRAgA3DwIA/QA5EQIAOg8CAP0AOhECADoPAgD9ADsRAgA7DwIA/QA8EQIAPA8CAP0APRECAD0PAgD9AEERAgBBDwIA/QBCEQIAQQ8CAP0AQxECAEMPAgD9AEQRAgBDDwIA/QBFEQIARQ0CAP0ARhECAEYNAgD9AEcRAgBGDQIAzwAzEwIANQ0CAP0ANBMCADUNAgD9ADUTAgA3DwIA/QA2EwIANw8CAPwANxMCADcPAgD9ADgTAgA3DwIA/QA5EwIAOg8CAP0AOhMCADoPAgD9ADsTAgA7DwIA/QA8EwIAPA8CAP0APRMCAD4RAgD9AD4TAgA+EQIA/QA/EwIAPxECAP0AQBMCAEARAgD9AEETAgBAEQIA/QBCEwIAQQ8CAP0AQxMCAEMPAgD9AEQTAgBDDwIA/QBFEwIAQw8CAP0ARhMCAEYNAgD9ADUVAgA3DwIA/QA2FQIANw8CAP0ANxUCADcPAgD9ADgVAgA3DwIA/QA5FQIAOg8CAP0AOhUCADoPAgD9ADsVAgA7DwIA/QA8FQIAPhECAP0APRUCAD4RAgD9AD4VAgA+EQIA/QA/FQIAPxECAP0AQBUCAEARAgD9AEEVAgBAEQIA/QBCFQIAQBECAP0AQxUCAEMPAgD9AEUVAgBDDwIA9QA3FwIANw8CAP0AOhcCADoPAgD9ADsXAgA7DwIA/QA8FwIAPhECAP0APRcCAD4RAgD9AD4XAgA+EQIA/QA/FwIAPxECAPwAQBcCAEARAgD9AEEXAgBAEQIA/QBCFwIAQBECAP0AQxcCAEMPAgD9AD4ZAgA+EQIA/QA/GQIAPxECAP0AQBkCAEARAgD8ADARAgDGTgIA/AEyEwIAxlACAP0BMxUCAMZQAgD9ATQVAgDHUgIA/QE0FwIAx1ICAPwBNRcCAMdSAgD9ATYXAgDHUgIA/QE4FwIAyVYCAP0BORcCAMlWAgD9ATYZAgDIVAIA/QE3GQIAyFQCAP0BOBkCAMhUAgD9ATkZAgDJVgIA/QE6GQIAyVYCAP0BOxkCAMpYAgD9ATwZAgDLWgIA/QE9GQIAy1oCAP0BQRkCAM5cAgD9AUIZAgDPXgIA/QFDGQIAz14CAPsBORsCAMlWAgD9ATobAgDJVgIA/QE7GwIAylgCAP0BPBsCAMpYAgD9AT0bAgDLWgIA/QE+GwIAzFwCAP0BPxsCAMxcAgD9AUAbAgDNXAIA+wFBGwIAzl4CAP0BQhsCAM5eAgD8ATodAgDJVgIA/QE7HQIAylgCAP0BPB0CAMtcAgD9AT0dAgDLXAIA/QE+HQIAy1wCAP0BPx0CAMxcAgD8ATsfAgDKWAIA/AE8HwIAy1wCAP0BPR8CAMtcAgD9AT4fAgDLXAIA/QE/HwIAy1wCAP0BPCECAMpYAgD7AT0hAgDLXAIA/AE+IQIAy1wCAP0B","ywICAMkGAgD4AMwCAgDJBgIA/QDKBAIAyQYCAPkAywQCAMkGAgD6AMwEAgDKCAIA/ADNBAIAyggCAP0AygYCAMkGAgD+AMsGAgDKCAIA/ADMBgIAyggCAP0AzQYCAMoIAgD9AMsIAgDKCAIA/QDMCAIAyggCAP0AzQgCAMoIAgD9AM4IAgDKCAIA/QDSCAIA0hACAP0A0wgCANMQAgD9ANQIAgDUEAIA/QDICgIAyAgCAP8AywoCAMoKAgD9AMwKAgDKCgIA/QDNCgIAygoCAP0AzgoCAMoKAgD9AM8KAgDPEgIA/QDQCgIA0hACAP0A0QoCANIQAgD9ANIKAgDSEAIA/QDTCgIA0xACAP0A1AoCANQQAgD9ANUKAgDUEAIA/QDWCgIA1BACAP0AxgwCAMcKAgD2AMcMAgDHCgIA/wDIDAIAxwoCAPsAyQwCAMkKAgD9AMoMAgDKCgIA/QDLDAIAygoCAP0AzAwCAMoKAgD9AM0MAgDKCgIA/QDODAIAzxICAP0AzwwCAM8SAgD9ANAMAgDSEAIA/QDRDAIA0hACAP0A0gwCANIQAgD9ANMMAgDTEAIA/QDUDAIA1BACAP0A1QwCANQQAgD9ANYMAgDUEAIA/QDXDAIA1BACAP0AxQ4CAMQSAgDbAMYOAgDHCgIA/wDHDgIAxwoCAPoAyA4CAMcKAgD9AMkOAgDJCgIA/QDKDgIAygoCAP0Ayw4CAMoKAgD9AMwOAgDKCgIA/QDNDgIAzxICAP0Azg4CAM8SAgD9AM8OAgDPEgIA/QDQDgIA0BICAP0A0Q4CANIQAgD9ANIOAgDSEAIA/QDTDgIA0xACAP0A1A4CANQQAgD9ANcOAgDUEAIA/QDFEAIAxBICAP8AxhACAMQSAgD5AMcQAgDHCgIA/QDIEAIAxwoCAP0AyRACAMkKAgD9AMoQAgDMFAIA/QDLEAIAzBQCAP0AzBACAMwUAgD9AM0QAgDNFAIA/QDOEAIAzxICAP0AzxACAM8SAgD9ANAQAgDQEgIA/QDREAIA0hACAP0A2BACANQQAgD4AMUSAgDEEgIA+gDGEgIAxBICAP0AxxICAMcWAgD9AMgSAgDHFgIA/QDJEgIAyRYCAP0AyhICAMoWAgD9AMsSAgDMFAIA/QDMEgIAzBQCAP0AzRICAM0UAgD9AM4SAgDPEgIA/QDYEgIA1BICAPwAxRQCAMQUAgD7AMYUAgDGFgIA/QDHFAIAxxYCAP0AyBQCAMcWAgD9AMkUAgDJFgIA/QDKFAIAyhYCAP0AyxQCAMwUAgD9AMgWAgDHFgIA/QC9JgIAviYCANEAvSgCAL4mAgDKAL4oAgC+JgIA/wDVKAIA1SYCANwAvSoCAL4mAgDQAL4qAgC/KAIA/wC/KgIAvygCAPsAwCoCAMAoAgD9AMIqAgDCKAIA/QDUKgIA1CgCAP8AviwCAL8oAgD/AL8sAgC/KAIA+wDALAIAwSoCAP0AwSwCAMEqAgD9AMIsAgDBKgIA/QDDLAIAwyoCAP0A0SwCANEqAgD9ANIsAgDSKgIA+wDTLAIA0yoCAP8A1CwCANMqAgDXAL4uAgC/KAIA/wC/LgIAwSoCAPkAwC4CAMEqAgD9AMEuAgDBKgIA/QDCLgIAwSoCAP0Awy4CAMQsAgD9AMQuAgDELAIA/QDFLgIAxSwCAP0Axi4CAMYsAgD9AMguAgDILAIA/QDJLgIAySwCAP0Ayi4CAMosAgD9AMsuAgDLLAIA/QDMLgIAzCwCAP0AzS4CAM0sAgD9AM4uAgDOLAIA/QDPLgIAzywCAP0A0C4CANAsAgD9ANEuAgDQLAIA+wDSLgIA0ioCAPoA0y4CANMqAgDnAL8wAgDBKgIA+QDAMAIAwSoCAP0AwTACAMEqAgD9AMIwAgDELAIA/QDDMAIAxCwCAP0AxDACAMQsAgD9AMUwAgDFLAIA/QDGMAIAxy4CAP0AxzACAMcuAgD9AMgwAgDHLgIA/QDJMAIAySwCAP0AyjACAMosAgD9AMswAgDLLAIA/QDMMAIAzCwCAP0AzTACAM0sAgD9AM4wAgDOLAIA/QDPMAIAzywCAP0A0DACANAsAgD9ANEwAgDQLAIA9wDSMAIA0CwCAP8AwTICAMEqAgD9AMIyAgDELAIA/QDDMgIAxCwCAP0AxDICAMQsAgD9AMUyAgDHLgIA/QDGMgIAxy4CAP0AxzICAMcuAgD9AMgyAgDHLgIA/QDJMgIAxy4CAP0AyjICAMosAgD9AMsyAgDLLAIA/QDMMgIAzCwCAP0AzTICAM0sAgD9AM4yAgDOLAIA/QDPMgIAzywCAP0A0DICANAsAgD5ANEyAgDQLAIA/wDENAIAxCwCAP0AxTQCAMcuAgD9AMY0AgDHLgIA/QDHNAIAxy4CAP0AyDQCAMcuAgD9AMk0AgDHLgIA/QDKNAIAyiwCAP0AyzQCAMssAgD9AMw0AgDMLAIA/QDNNAIAzSwCAPoAzjQCAM4sAgD5AM80AgDPLAIA+QDQNAIA0CwCAP8AxzYCAMcuAgD9AM82AgDPLAIA/wDN/AEAyDQCAPYBzvwBAMkyAgD/Ac/8AQDKMgIA+QHN/gEAyTQCAP0Bzv4BAMo0AgD5Ac/+AQDLMgIA/QHQ/gEAyzICAP0B0f4BAMsyAgD9AcwAAgDJNgIA/wHNAAIAyTYCAPsBzgACAMo0AgD9Ac8AAgDLNAIA/QHQAAIAyzICAP0B0QACAM0yAgD9AdIAAgDOMgIA/QHNAgIAyjYCAPwBzgICAMs2AgD9Ac8CAgDMNAIA/QHQAgIAzTQCAP0B0QICAM40AgD9AdICAgDOMgIA/QHTAgIAzzICAP0B1AICANAwAgD9Ac4EAgDLNgIA/QHPBAIAzDYCAP0B0AQCAM00AgD9AdEEAgDONAIA/QHSBAIAzzQCAP0B0wQCANAyAgD9AdQEAgDRMgIA/QHVBAIA0jICAP0B1gQCANMwAgD9Ac4GAgDMOAIA/QHPBgIAzTYCAP0B0AYCAM42AgD9AdEGAgDPNgIA/QHSBgIA0DQCAP0B0wYCANA0AgD9AdQGAgDRMgIA/QHVBgIA0jICAP0B1gYCANMyAgD9AdcGAgDUMAIA/QHYBgIA1TACAPsBzwgCAM04AgD9AdAIAgDONgIA/QHRCAIAzzYCAP0B1QgCANMyAgD9AdYIAgDUMgIA/QHXCAIA1TICAP0B2AgCANUwAgD7AdkIAgDWMAIA/wHXCgIA1TICAP0B2AoCANYyAgD7AdkKAgDXMgIA/wHYDAIA1zICAPoB2QwCANcyAgD/AdgOAgDXNAIA+QHZDgIA2DQCAP8B2RACANk0AgD/AdkSAgDZNgIA8gHYFAIA2TYCAP8BvjACAMlWAgD/Ab4yAgDKWAIA+gG/MgIAy1gCAPwBwDICAMxYAgD8Ab80AgDLWAIA/wHANAIAzFgCAPwBwTQCAM1YAgD9AcI0AgDOVgIA/QHDNAIAz1YCAP0BvzYCAMxaAgD+AcA2AgDNWgIA+gHBNgIAzlgCAP0BwjYCAM9YAgD9AcM2AgDQVgIA/QHENgIA0FYCAP0BxTYCANFWAgD9AcY2AgDSVAIA/QHINgIA1FQCAP0ByTYCANVSAgD9Aco2AgDWUgIA/QHLNgIA1lICAP0BzDYCANZQAgD9Ac02AgDWUAIA/wHONgIA1lACAP8BvzgCAM1aAgD/AcA4AgDNWgIA/wHBOAIAzloCAPwBwjgCAM9YAgD9AcM4AgDQWAIA/QHEOAIA0VgCAP0BxTgCANJWAgD9AcY4AgDTVgIA/QHHOAIA1FQCAP0ByDgCANVUAgD9Ack4AgDVVAIA/QHKOAIA1lICAPwByzgCANZSAgD9Acw4AgDWUgIA/AHBOgIAz1oCAP0BwjoCANBaAgD7AcM6AgDRWAIA/QHEOgIA0lgCAP0BxToCANJYAgD9AcY6AgDTVgIA/QHHOgIA1FYCAP0ByDoCANVWAgD9Ack6AgDWVAIA/QHKOgIA1lQCAPoByzoCANZUAgD/Acw6AgDWUgIAyAHBPAIAz1wCAP8BwjwCANBaAgD6AcM8AgDRWgIA/QHEPAIA0loCAP0BxTwCANNYAgD9AcY8AgDUWAIA/QHHPAIA1VYCAP0ByDwCANZWAgD9Ack8AgDWVgIA/QHKPAIA1lQCAPoByzwCANZUAgD/AcE+AgDQXAIA/wHCPgIA0VwCAPkBwz4CANJaAgD9AcQ+AgDTWgIA/QHFPgIA1FoCAP0Bxj4CANRYAgD9Acc+AgDVWAIA/QHIPgIA1lgCAP0ByT4CANZWAgD9Aco+AgDWVgIA+wHLPgIA1lQCAPwBwUACANFcAgD6AcJAAgDRXAIA/AHDQAIA0lwCAPgBxEACANNcAgD6AcVAAgDUWgIA/QHGQAIA1VoCAP0Bx0ACANZYAgD9AchAAgDWWAIA/QHJQAIA1lgCAPoBykACANZWAgD/ActAAgDWVgIA0AHCQgIA0lwCAPoBw0ICANNcAgD/AcRCAgDUXAIA/wHFQgIA1VoCAPoBxkICANZYAgD9AcdCAgDWWAIA/QHIQgIA1lgCAPwByUICANZYAgD5AcpCAgDWWAIA/AHFRAIA1VoCAP8BxkQCANVaAgD9AcdEAgDWWAIA/QHIRAIA1lgCAPwByUQCANZYAgD/AcZGAgDWWAIA9wHHRgIA1lgCAPsByEYCANZYAgD5AQ=="],["QesBAEHpAQD9AD7tAQA+6wEA/QA/7QEAP+sBAP0AQO0BAEDrAQD9AEHtAQBA6wEA/QBC7QEAQusBAP0AQ+0BAEPrAQD9AD7vAQA97wEA/QA/7wEAPvEBAP0AQO8BAEDrAQD9AEHvAQBA6wEA/QBC7wEAQusBAP0AQ+8BAETtAQD9AETvAQBE7QEA/ABF7wEARe0BAP0ARu8BAEbtAQD9AEfvAQBH7QEA/QBI7wEAR+0BAP0ASe8BAEftAQD8AD/xAQA+8QEA/ABA8QEAP/MBAP0AQfEBAD/zAQD9AELxAQBE7QEA/QBD8QEARO0BAP0ARPEBAETtAQD9AEXxAQBF7QEA/ABG8QEARu0BAP0AR/EBAEftAQD9AEjxAQBH7QEA/QBJ8QEAR+0BAP0ASvEBAEv1AQD9AEvxAQBL9QEA+wBA8wEAP/MBAP0AQfMBAD/zAQD9AELzAQBB9wEA/QBD8wEAQfcBAP0ARPMBAETtAQD9AEXzAQBF7QEA/QBG8wEARu0BAP0AR/MBAEn3AQD9AEjzAQBJ9wEA/QBJ8wEASfcBAP0ASvMBAEv1AQD9AEvzAQBL9QEA/ABA9QEAP/UBAP0AQfUBAEH3AQD9AEL1AQBB9wEA/QBE9QEAQ/kBAP0ARfUBAEb5AQD9AEb1AQBG+QEA/QBH9QEAR/kBAP0ASPUBAEn3AQD9AEn1AQBJ9wEA/QBK9QEAS/UBAP0ALPcBACz1AQD8AC33AQAs9QEA/QBC9wEAQfcBAP0AQ/cBAEP5AQD9AET3AQBD+QEA/QBF9wEARvkBAP0ARvcBAEb5AQD9AEf3AQBH+QEA/QBI9wEASfcBAP0ALPkBACz1AQD7AC35AQAv+QEA/AAu+QEAL/kBAP0ARPkBAEP5AQD9AEX5AQBG+QEA/QAt+wEAL/kBAPwALvsBAC/5AQD9AC/7AQAv+QEA/QAt/QEAL/kBAPwALv0BAC/5AQD9AC/9AQAv+QEA/QAw/QEAL/kBAP0ALv8BAC/5AQD8AC//AQAv+QEA/QAw/wEAMv8BAPwAMf8BADL/AQD9AC8BAgAy/wEA/QAwAQIAMv8BAPwAMQECADL/AQD9ADIBAgAy/wEA/QAzAQIANAECAP0AMAMCADL/AQD9ADEDAgAy/wEA/QAyAwIAMv8BAP0AMwMCADQDAgD9ADEFAgAy/wEA/QAyBQIANAMCAP0AMwUCADQDAgD9ADQFAgA0AwIA/QA1BQIANQMCAP0ATwUCAE8DAgD9ADEHAgA0AwIA/AAyBwIANAMCAPwAMwcCADQDAgD9ADQHAgA0AwIA/QA1BwIANgUCAP0ANgcCADYFAgD9ADIJAgA0AwIA/QAzCQIANAMCAP0ANAkCADYFAgD9ADUJAgA3CQIA/QA2CQIANwkCAP0ATwkCAE8HAgD9ADQLAgA3CQIA/QA1CwIANwkCAP0ANgsCADcJAgD9ADcLAgA3CQIA/QA4CwIAOAkCAP0ATgsCAE4JAgD8AE8LAgBOCQIA/AA0DQIANwkCAP0ANQ0CADcJAgD9ADYNAgA3CQIA/QA3DQIANwkCAP0AOA0CADkLAgD9ADkNAgA5CwIA/QA6DQIAOgsCAP0ATQ0CAE0LAgD6ADUPAgA3CQIA/QA2DwIANwkCAP0ANw8CADkLAgD9ADgPAgA5CwIA/QA5DwIAOQsCAP0AOw8CADsNAgD9ADwPAgA8DQIA/QA+DwIAPQ8CAP0APw8CAD8NAgD9AEgPAgBIDQIA/QBKDwIASg0CAP0ASw8CAEsNAgD9AEwPAgBMDQIA/QBNDwIATA0CAPsANxECADkLAgD9ADgRAgA5CwIA/QA5EQIAOw0CAP0AOhECADsNAgD9ADsRAgA7DQIA/QA8EQIAPQ8CAP0APRECAD0PAgD9AD4RAgA9DwIA/QA/EQIAQA8CAP0AQBECAEAPAgD9AEERAgBBDwIA/QBCEQIAQg8CAP0AQxECAEMPAgD9AEcRAgBHDwIA/QBIEQIARw8CAP0ASRECAEkPAgD9AEoRAgBJDwIA/QBLEQIASw0CAP0ATBECAEwNAgD9AE0RAgBMDQIAzwA5EwIAOw0CAP0AOhMCADsNAgD9ADsTAgA9DwIA/QA8EwIAPQ8CAPwAPRMCAD0PAgD9AD4TAgA9DwIA/QA/EwIAQA8CAP0AQBMCAEAPAgD9AEETAgBBDwIA/QBCEwIAQg8CAP0AQxMCAEQRAgD9AEQTAgBEEQIA/QBFEwIARRECAP0ARhMCAEYRAgD9AEcTAgBGEQIA/QBIEwIARw8CAP0ASRMCAEkPAgD9AEoTAgBJDwIA/QBLEwIASQ8CAP0ATBMCAEwNAgD9ADsVAgA9DwIA/QA8FQIAPQ8CAP0APRUCAD0PAgD9AD4VAgA9DwIA/QA/FQIAQA8CAP0AQBUCAEAPAgD9AEEVAgBBDwIA/QBCFQIARBECAP0AQxUCAEQRAgD9AEQVAgBEEQIA/QBFFQIARRECAP0ARhUCAEYRAgD9AEcVAgBGEQIA/QBIFQIARhECAP0ASRUCAEkPAgD9AEsVAgBJDwIA9QA9FwIAPQ8CAP0AQBcCAEAPAgD9AEEXAgBBDwIA/QBCFwIARBECAP0AQxcCAEQRAgD9AEQXAgBEEQIA/QBFFwIARRECAPwARhcCAEYRAgD9AEcXAgBGEQIA/QBIFwIARhECAP0ASRcCAEkPAgD9AEQZAgBEEQIA/QBFGQIARRECAP0ARhkCAEYRAgD8ADMLAgDFSAIA/AE2EQIAxk4CAPwBNxMCAMZQAgD7ATgTAgDGUAIA/QE6FQIAx1ICAP0BOxcCAMdSAgD9ATwXAgDHUgIA/QE+FwIAyVYCAP0BPxcCAMlWAgD9AT4ZAgDIVAIA/QE/GQIAyVYCAP0BQBkCAMlWAgD9AUEZAgDKWAIA/QFCGQIAy1oCAP0BQxkCAMtaAgD9AUcZAgDOXAIA/QFIGQIAz14CAP0BSRkCAM9eAgD7AUAbAgDJVgIA/QFBGwIAylgCAP0BQhsCAMpYAgD9AUMbAgDLWgIA/QFEGwIAzFwCAP0BRRsCAMxcAgD9AUYbAgDNXAIA+wFHGwIAzl4CAP0BSBsCAM5eAgD8AUAdAgDJVgIA/QFBHQIAylgCAP0BQh0CAMtcAgD9AUMdAgDLXAIA/QFEHQIAy1wCAP0BRR0CAMxcAgD8AUAfAgDJVgIA/AFBHwIAylgCAPwBQh8CAMtcAgD9AUMfAgDLXAIA/QFEHwIAy1wCAP0BRR8CAMtcAgD9AQ==","x/wBAMUCAgDfAMf+AQDFAgIA/ADI/gEAxQICAPwAxQACAMUCAgDDAMYAAgDFAgIA/wDHAAIAxQICAPoAyAACAMUCAgD9AMYCAgDFAgIA9wDHAgIAxQICAP0AyAICAMYGAgD9AMkCAgDGBgIA/QDPAgIAzwoCAP0A0AICANAKAgD9AMYEAgDFBAIA/ADHBAIAxgYCAP0AyAQCAMYGAgD9AMkEAgDGBgIA/QDNBAIAzwoCAP0AzgQCAM8KAgD9AM8EAgDPCgIA/QDQBAIA0AoCAP0A0QQCANAKAgD9ANIEAgDQCgIA/QDHBgIAxgYCAP0AyAYCAMYGAgD9AMkGAgDGBgIA/QDKBgIAxgYCAP0AywYCAM0MAgD9AMwGAgDNDAIA/QDNBgIAzwoCAP0AzgYCAM8KAgD9AM8GAgDPCgIA/QDQBgIA0AoCAP0A0QYCANAKAgD9ANIGAgDQCgIA/QDTBgIA0AoCAP0AwggCAMIGAgD/AMMIAgDDBgIA/ADECAIAxAYCAPwAxQgCAMUGAgD9AMYIAgDGBgIA/QDHCAIAxgYCAP0AyAgCAMYGAgD9AMkIAgDGBgIA/QDKCAIAyg4CAP0AywgCAM0MAgD9AMwIAgDNDAIA/QDNCAIAzQwCAP0AzggCAM8KAgD9AM8IAgDPCgIA/QDQCAIA0AoCAP0A0QgCANAKAgD9ANMIAgDQCgIA/QDBCgIAwgYCAO8AwgoCAMIGAgD7AMMKAgDDBgIA+wDECgIAxAYCAP0AxQoCAMUGAgD9AMYKAgDGBgIA/QDHCgIAxgYCAP0AyAoCAMYGAgD9AMkKAgDKDgIA/QDKCgIAyg4CAP0AywoCAMsOAgD9AMwKAgDNDAIA/QDNCgIAzQwCAP0AzgoCAM8KAgD9ANMKAgDQCgIA/QDUCgIA0AoCAPkAwQwCAMAOAgD/AMIMAgDADgIA+QDDDAIAwwYCAP0AxAwCAMQGAgD9AMUMAgDFBgIA/QDGDAIAyBACAP0AxwwCAMgQAgD9AMgMAgDIEAIA/QDJDAIAyg4CAP0AygwCAMoOAgD9AMsMAgDLDgIA/QDMDAIAzQwCAP0AwQ4CAMAOAgD6AMIOAgDADgIA/QDDDgIAwxICAP0AxA4CAMMSAgD9AMUOAgDFEgIA/QDGDgIAxhICAP0Axw4CAMgQAgD9AMgOAgDIEAIA/QDJDgIAyg4CAP0AwRACAMAQAgD6AMIQAgDCEgIA/QDDEAIAwxICAP0AxBACAMMSAgD9AMUQAgDFEgIA/QDGEAIAxhICAP0AxxACAMgQAgD9AMQSAgDDEgIA/QDTIAIA0x4CANoAuSICALkgAgDFANIiAgDSIAIA+gC5JAIAuiICAM0AuiQCALoiAgD/ANEkAgDRIgIA/wC5JgIAuiICAMsAuiYCALskAgD/ALsmAgC7JAIA+wDPJgIAzyQCAPwA0CYCANAkAgD+ANEmAgDQJAIAwwC5KAIAuyQCANAAuigCALskAgD/ALsoAgC8JgIA+wC8KAIAvCYCAP0AvSgCAL0mAgD9AL4oAgC+JgIA/QDAKAIAwCYCAP0AzSgCAM0mAgD9AM4oAgDOJgIA/QDPKAIAziYCAPkA0CgCANAkAgD/ALoqAgC8JgIA/wC7KgIAvCYCAPsAvCoCALwmAgD9AL0qAgC9JgIA/QC+KgIAvygCAP0AvyoCAL8oAgD9AMAqAgC/KAIA/QDBKgIAwSgCAP0AwioCAMIoAgD9AMUqAgDFKAIA/QDGKgIAxigCAP0AyCoCAMgoAgD9AMkqAgDJKAIA/QDKKgIAyigCAP0AyyoCAMsoAgD9AMwqAgDMKAIA/QDNKgIAzCgCAP0AzioCAM4mAgD6AM8qAgDOJgIA/wDQKgIAziYCANIAuiwCALwmAgD/ALssAgC8JgIA+QC8LAIAvCYCAP0AvSwCAL8oAgD9AL4sAgC/KAIA/QC/LAIAvygCAP0AwCwCAL8oAgD9AMEsAgDBKAIA/QDCLAIAwyoCAP0AwywCAMMqAgD9AMQsAgDEKgIA/QDFLAIAxCoCAP0AxiwCAMcqAgD9AMcsAgDHKgIA/QDILAIAxyoCAP0AySwCAMkoAgD9AMosAgDKKAIA/QDLLAIAyygCAP0AzCwCAMwoAgD9AM0sAgDMKAIA+wDOLAIAzCgCAPsAzywCAM4mAgDnALwuAgC8JgIA/QC9LgIAvygCAP0Avi4CAL8oAgD9AL8uAgC/KAIA/QDALgIAvygCAP0AwS4CAMMqAgD9AMIuAgDDKgIA/QDDLgIAwyoCAP0AxC4CAMQqAgD9AMUuAgDEKgIA/QDGLgIAxyoCAP0Axy4CAMcqAgD9AMguAgDHKgIA/QDJLgIAxyoCAP0Ayi4CAMooAgD9AMsuAgDLKAIA/QDMLgIAzCgCAP0AzS4CAMwoAgD4AM4uAgDMKAIA/wC/MAIAvygCAP0AwTACAMMqAgD9AMIwAgDDKgIA/QDDMAIAwyoCAP0AxDACAMQqAgD9AMUwAgDEKgIA/QDGMAIAxyoCAP0AxzACAMcqAgD9AMgwAgDHKgIA/QDJMAIAxyoCAP0AyjACAMooAgD9AMswAgDLKAIA/QDMMAIAzCgCAPoAwzICAMMqAgD9AMQyAgDEKgIA/QDHMgIAxyoCAP0AyzICAMsoAgD5AMwyAgDMKAIA/wDNMgIAzCgCAOMAyzQCAMsoAgD/AMw0AgDMKAIA4QDERgIAxCoCAPIAyfYBAMgyAgDxAcr2AQDJMgIA/wHL9gEAyjICAPgByfgBAMg0AgD6Acr4AQDJMgIA+QHL+AEAyjICAP0BzPgBAMsyAgD9Acj6AQDINgIA8wHJ+gEAyTQCAP0ByvoBAMo0AgD8Acv6AQDLNAIA/QHM+gEAyzICAP0BzfoBAMsyAgD9Ac76AQDNMgIA/QHI/AEAyDYCAP8ByfwBAMk2AgD7Acr8AQDKNAIA/QHL/AEAyzQCAP0BzPwBAMw0AgD9Ac38AQDNMgIA/QHO/AEAzjICAP0Bz/wBAM8yAgD9AdD8AQDQMAIA/QHJ/gEAyjYCAP0Byv4BAMs2AgD9Acv+AQDMNAIA/QHM/gEAzTQCAP0Bzf4BAM00AgD9Ac7+AQDOMgIA/QHP/gEAzzICAP0B0P4BANAyAgD9AdH+AQDRMAIA/QHS/gEA0jACAP0ByQACAMo4AgD9AcoAAgDLNgIA/QHLAAIAzDYCAP0BzAACAM02AgD9Ac0AAgDONAIA/QHOAAIAzzQCAP0BzwACANA0AgD9AdAAAgDRMgIA/QHRAAIA0jICAP0B0gACANMyAgD9AdMAAgDTMAIA/QHUAAIA1DACAPsBygICAMw4AgD9AcsCAgDNNgIA/QHMAgIAzjYCAP0BzQICAM82AgD9Ac4CAgDPNAIA/QHRAgIA0jICAP0B0gICANMyAgD9AdMCAgDUMgIA/QHUAgIA1TACAPsB1QICANYwAgD/AdYCAgDXMAIA3QHKBAIAzDgCAP0BywQCAM04AgD9AcwEAgDOOAIA/QHTBAIA1DICAP0B1AQCANUyAgD7AdUEAgDWMAIA/wHWBAIA1zACAN0B1AYCANYyAgD7AdUGAgDXMgIA/wHWBgIA2DICANYB1AgCANY0AgD5AdUIAgDXMgIA/wHVCgIA2DQCAP8B1AwCANg2AgD4AdUMAgDYNAIA/wHUDgIA2DYCAPwB1Q4CANk2AgDxAdQQAgDZOAIA/wHVEAIA2TYCAOQB1RICANo4AgDlAbouAgDJVgIA/wG7LgIAylYCAPkBujACAMpYAgD8AbswAgDLWAIA+wG8MAIAzFYCAP0BvTACAM1WAgD9Ab4wAgDNVgIA/QHAMAIAz1QCAP0BzTACANtEAgD/Ac4wAgDcRAIA2gG6MgIAylgCAPIBuzICAMtYAgD/AbwyAgDMWAIA/AG9MgIAzVYCAP0BvjICAM5WAgD9Ab8yAgDPVgIA/QHAMgIA0FQCAP0BwTICANFUAgD9AcIyAgDSVAIA/QHFMgIA1FICAP0BxjICANVQAgD9AcgyAgDWUAIA/QHJMgIA1lACAPoByjICANZQAgD6Abo0AgDLWgIA+wG7NAIAzFoCAP0BvDQCAM1YAgD8Ab00AgDOWAIA/QG+NAIAzlgCAP0BvzQCAM9WAgD9AcA0AgDQVgIA/QHBNAIA0VQCAP0BwjQCANJUAgD9AcM0AgDTVAIA/QHENAIA1FICAP0BxTQCANVSAgD9AcY0AgDWUgIA/QHHNAIA1lACAP0ByDQCANZQAgD8Ack0AgDWUAIA/wHKNAIA1lACAP8BuzYCAMxaAgD/Abw2AgDNWgIA/AG9NgIAzlgCAP0BvjYCAM9YAgD9Ab82AgDQWAIA/QHANgIA0VYCAP0BwTYCANJWAgD9AcI2AgDTVgIA/QHDNgIA1FQCAP0BxDYCANRUAgD9AcU2AgDVVAIA/QHGNgIA1lICAP0BxzYCANZSAgD9Acg2AgDWUgIA/wHJNgIA1lACAMgBvDgCAM5aAgDyAb04AgDPWgIA/AG+OAIA0FgCAP0BvzgCANBYAgD9AcA4AgDRWAIA/QHBOAIA0lYCAP0BwjgCANNWAgD9AcM4AgDUVgIA/QHEOAIA1VQCAP0BxTgCANZUAgD9AcY4AgDWVAIA+wHHOAIA1lICAP4ByDgCANZSAgDfAb06AgDPWgIA/wG+OgIA0FoCAPoBvzoCANFaAgD9AcA6AgDSWAIA/QHBOgIA01gCAP0BwjoCANRYAgD9AcM6AgDVVgIA/QHEOgIA1VYCAP0BxToCANZWAgD9AcY6AgDWVAIA+QHHOgIA1lQCAP4BvTwCANBcAgD9Ab48AgDRWgIA+gG/PAIA0loCAP0BwDwCANJaAgD9AcE8AgDTWAIA/QHCPAIA1FgCAP0BwzwCANVYAgD9AcQ8AgDWVgIA/QHFPAIA1lYCAP0BxjwCANZWAgD6Acc8AgDWVAIA/wG9PgIA0FwCAP8Bvj4CANFcAgD4Ab8+AgDSWgIA/QHAPgIA01oCAP0BwT4CANRaAgD9AcI+AgDVWAIA/QHDPgIA1lgCAP0BxD4CANZYAgD9AcU+AgDWVgIA/AHGPgIA1lYCAPwBxz4CANZWAgDxAb1AAgDRXAIA3wG+QAIA0lwCAP8Bv0ACANNcAgD4AcBAAgDTXAIA+gHBQAIA1FoCAP0BwkACANVaAgD9AcNAAgDWWAIA/QHEQAIA1lgCAP0BxUACANZYAgD5AcZAAgDWWAIA/wG+QgIA0lwCANwBv0ICANNcAgD/AcBCAgDUXAIA/wHBQgIA1VoCAPoBwkICANZYAgD8AcNCAgDWWAIA/QHEQgIA1lgCAPsBxUICANZYAgD6AcZCAgDWWAIA8gHBRAIA1VoCAP8BwkQCANVaAgD/AcNEAgDWWAIA/wHERAIA1lgCAP4BxUQCANZYAgD/AcJGAgDWWAIA8AHDRgIA1lgCAPUB"],["LNkBACzbAQD9AC3ZAQAs2wEA/QAt2wEALNsBAP0ALtsBAC3dAQD9AC/bAQAt3QEA/QAu3QEALd0BAP0AL90BADDfAQD9ADDdAQAw3wEA/QAx3wEAMN8BAP0AOe0BADnrAQD9ADrtAQA66wEA/QA77QEAO+sBAP0APO0BADzrAQD9AD3tAQA96wEA/QBD7QEAQ+sBAP0ARO0BAEPrAQD7ADrvAQA57wEA/QA77wEAO+sBAP0APO8BADzrAQD9AD3vAQA+7QEA/QA+7wEAPu0BAP0AP+8BAD/tAQD9AEDvAQBA7QEA/QBB7wEAQe0BAP0AQ+8BAELvAQD9AETvAQBC7wEA/ABF7wEAQ+sBAPsAOvEBADnxAQD9ADvxAQA68wEA/QA88QEAOvMBAP0APfEBAD7tAQD9AD7xAQA+7QEA/QA/8QEAP+0BAPwAQPEBAEDtAQD9AEHxAQBC7wEA/QBC8QEAQu8BAP0AQ/EBAELvAQD9AETxAQBC7wEA/QBF8QEAR/UBAP0ARvEBAEf1AQD7ADvzAQA68wEA/QA88wEAOvMBAP0APfMBADz3AQD8AD/zAQA/7QEA/QBA8wEAQu8BAP0AQfMBAELvAQD9AELzAQBC7wEA/QBD8wEAQu8BAP0ARPMBAET3AQD9AEXzAQBF9wEA/QBG8wEAR/UBAP0AR/MBAEf1AQD1ADv1AQA69QEA/QA89QEAPPcBAP0APfUBADz3AQD9AD71AQA++QEA/QA/9QEAPvkBAP0AQPUBAD75AQD9AEH1AQBC+QEA/QBC9QEAQvkBAP0AQ/UBAET3AQD9AET1AQBE9wEA/QBF9QEARfcBAP0ARvUBAEf1AQD9AD33AQA89wEA/QA+9wEAPvkBAP0AP/cBAD75AQD8AED3AQBA+wEA/QBB9wEAQvkBAP0AQvcBAEL5AQD9AEP3AQBE9wEA/QA/+QEAPvkBAP0AQPkBAED7AQD9AEH5AQBC+QEA/QAtAQIALf8BAP0ALgECAC8BAgD9AC4DAgAvAwIA/QAuBQIALwMCAP0ALwUCAC8DAgD9ADAFAgAwAwIA/QBKBQIASgMCAP0ALwcCAC8DAgD9ADAHAgAxBQIA/QAxBwIAMQUCAP0ASgcCAEkHAgD9AC8JAgAxBQIA/QAwCQIAMgkCAP0AMQkCADIJAgD9AEoJAgBJCQIA/QAwCwIAMgkCAP0AMQsCADIJAgD9ADILAgAyCQIA/QAzCwIAMwkCAP0ASQsCAEkJAgD9AEoLAgBJCQIA/AAxDQIAMgkCAP0AMg0CADIJAgD9ADMNAgA0CwIA/QA0DQIANAsCAP0ANQ0CADULAgD9AEgNAgBICwIA+wAyDwIANAsCAP0AMw8CADQLAgD9ADQPAgA0CwIA/QA1DwIANg0CAP0ANg8CADYNAgD9ADcPAgA3DQIA/QA5DwIAOA8CAP0ARA8CAEQNAgD9AEYPAgBGDQIA/QBIDwIARw8CAPwAMxECADQLAgD9ADQRAgA2DQIA/QA1EQIANg0CAP0ANhECADYNAgD9ADcRAgA4DwIA/QA4EQIAOA8CAP0AORECADgPAgD9ADoRAgA6DwIA/QA7EQIAOw8CAP0APBECADwPAgD9AD0RAgA9DwIA/QBCEQIAQg8CAP0AQxECAEMPAgD9AEQRAgBDDwIA/QBFEQIARQ8CAP0ARhECAEUPAgD9AEcRAgBHDwIA/QBIEQIARw8CAPwANRMCADYNAgD9ADYTAgA4DwIA/QA3EwIAOA8CAPwAOBMCADgPAgD9ADkTAgA4DwIA/QA6EwIAOg8CAP0AOxMCADsPAgD9ADwTAgA8DwIA/QA9EwIAPhECAP0APhMCAD4RAgD9AD8TAgA/EQIA/QBAEwIAQBECAP0AQRMCAEERAgD9AEITAgBBEQIA/QBDEwIAQw8CAP0ARBMCAEMPAgD9AEUTAgBFDwIA/ABGEwIARQ8CAP0ARxMCAEcPAgD9ADYVAgA4DwIA/QA3FQIAOA8CAP0AOBUCADgPAgD9ADkVAgA4DwIA/QA6FQIAOg8CAP0AOxUCADsPAgD9ADwVAgA+EQIA/QA9FQIAPhECAP0APhUCAD4RAgD9AD8VAgA/EQIA/QBAFQIAQBECAP0AQRUCAEERAgD9AEIVAgBBEQIA/QBDFQIAQRECAP0ARBUCAEMPAgD9AEYVAgBFDwIA9QA4FwIAOA8CAP0AOhcCADoPAgD9ADsXAgA7DwIA/QA8FwIAPhECAP0APRcCAD4RAgD9AD4XAgA+EQIA/QA/FwIAPxECAP0AQBcCAEARAgD9AEEXAgBBEQIA/ABCFwIAQRECAP0AQxcCAEERAgD9AD4ZAgA+EQIA/QA/GQIAPxECAP0AQBkCAEARAgD9AEEZAgBBEQIA/AA5FwIAyFQCAP0BRBcCANBcAgD9AToZAgDJVgIA/QE7GQIAyVYCAP0BPBkCAMpYAgD9AT0ZAgDKWAIA/QFCGQIAzlwCAP0BQxkCAM9eAgD9AUQZAgDPXgIA/QE7GwIAyVYCAP0BPBsCAMpYAgD9AT0bAgDKWAIA/QE+GwIAy1oCAP0BPxsCAMtcAgD9AUAbAgDMXAIA/QFBGwIAzVwCAOYBQhsCAM1cAgD9AUMbAgDOXgIA/AE8HQIAylgCAPwBPR0CAMtcAgD8AT4dAgDLXAIA/QE/HQIAy1wCAP0BQB0CAMtcAgD8ATwfAgDKWAIA+wE9HwIAy1wCAP0BPh8CAMtcAgD9AT8fAgDLXAIA/QFAHwIAy1wCAP0B","zQYCAMsKAgDmAM4GAgDLCgIA+QDMCAIAywoCAP8AzQgCAMsKAgD/AM4IAgDLCgIA/QDMCgIAywoCAPwAzQoCAMsKAgD7AM4KAgDMDgIA/QDPCgIAzA4CAP0A1goCANYSAgD9AMwMAgDLDAIA/ADNDAIAzA4CAP0AzgwCAMwOAgD9AM8MAgDMDgIA/QDTDAIA0xQCAP0A1AwCANYSAgD9ANUMAgDWEgIA/QDWDAIA1hICAP0A1wwCANYSAgD9ANgMAgDWEgIA/QDKDgIAygwCAP8AzQ4CAMwOAgD9AM4OAgDMDgIA/QDPDgIAzA4CAP0A0A4CAMwOAgD9ANEOAgDTFAIA/QDSDgIA0xQCAP0A0w4CANMUAgD9ANQOAgDWEgIA/QDVDgIA1hICAP0A1g4CANYSAgD9ANcOAgDWEgIA/QDYDgIA1hICAP0A2Q4CANYSAgD9AMgQAgDJDgIA6ADJEAIAyQ4CAP8AyhACAMkOAgD6AMsQAgDLDgIA/QDMEAIAzA4CAP0AzRACAMwOAgD9AM4QAgDMDgIA/QDPEAIAzA4CAP0A0BACANEWAgD9ANEQAgDTFAIA/QDSEAIA0xQCAP0A0xACANMUAgD9ANQQAgDUFAIA/QDVEAIA1hICAP0A1hACANYSAgD9ANcQAgDWEgIA/QDYEAIA1hICAP0A2RACANYSAgD9AMcSAgDGFgIAyQDIEgIAyQ4CAP4AyRICAMkOAgD6AMoSAgDJDgIA/QDLEgIAyw4CAP0AzBICAMwOAgD9AM0SAgDMDgIA/QDOEgIAzA4CAP0AzxICANEWAgD9ANASAgDRFgIA/QDREgIA0RYCAP0A0hICANMUAgD9ANMSAgDTFAIA/QDUEgIA1BQCAP0A1RICANYSAgD9ANkSAgDWEgIA/QDaEgIA1hICAP0AxxQCAMYWAgD/AMgUAgDGFgIA+gDJFAIAyQ4CAP0AyhQCAMkOAgD9AMsUAgDLDgIA/QDMFAIAzhgCAP0AzRQCAM4YAgD9AM4UAgDOGAIA/QDPFAIAzxgCAP0A0BQCANEWAgD9ANEUAgDRFgIA/QDSFAIA0xQCAP0AxxYCAMYWAgD9AMgWAgDGFgIA/ADJFgIAyRoCAP0AyhYCAMkaAgD9AMsWAgDLGgIA/QDMFgIAzBoCAP0AzRYCAM4YAgD9AM4WAgDOGAIA/QDPFgIAzxgCAP0A0BYCANEWAgD9AMcYAgDGGAIA+gDIGAIAyBoCAP0AyRgCAMkaAgD9AMoYAgDJGgIA/QDLGAIAyxoCAP0AzBgCAMwaAgD9AM0YAgDOGAIA/QDKGgIAyRoCAP0A2SgCANkmAgD/ANgqAgDYKAIA+wDZKgIA2CgCAPQAvywCAMAqAgDGAMAsAgDAKgIA/wDXLAIA1yoCAPoA2CwCANcqAgD/AL8uAgDAKgIAxADALgIAwSwCAP8AwS4CAMEsAgD6AMIuAgDCLAIA/QDWLgIA1iwCAPsA1y4CANYsAgD8AL8wAgDBLAIAyQDAMAIAwSwCAP8AwTACAMEsAgD6AMIwAgDDLgIA/QDDMAIAwy4CAP0AxDACAMQuAgD9AMUwAgDFLgIA/QDTMAIA0y4CAP0A1DACANQuAgD9ANUwAgDVLgIA/ADWMAIA1S4CAP0A1zACANYsAgD3AMAyAgDBLAIA/wDBMgIAwy4CAPoAwjICAMMuAgD9AMMyAgDDLgIA/QDEMgIAxC4CAP0AxTICAMYwAgD9AMYyAgDGMAIA/QDHMgIAxzACAP0AyDICAMgwAgD9AMsyAgDLMAIA/QDMMgIAzDACAP0AzjICAM4wAgD9AM8yAgDPMAIA/QDQMgIA0DACAP0A0TICANEwAgD9ANIyAgDSMAIA/QDTMgIA0jACAP0A1DICANQuAgD9ANUyAgDVLgIA+QDWMgIA1S4CAP8AwTQCAMMuAgD5AMI0AgDDLgIA/QDDNAIAwy4CAP0AxDQCAMYwAgD9AMU0AgDGMAIA/QDGNAIAxjACAP0AxzQCAMcwAgD9AMg0AgDJMgIA/QDJNAIAyTICAP0AyjQCAMoyAgD9AMs0AgDKMgIA/QDMNAIAzTICAP0AzTQCAM0yAgD9AM40AgDNMgIA/QDPNAIAzzACAP0A0DQCANAwAgD9ANE0AgDRMAIA/QDSNAIA0jACAP0A0zQCANIwAgD9ANQ0AgDSMAIA+gDVNAIA1S4CAPsA1jQCANUuAgDFAMM2AgDDLgIA/QDENgIAxjACAP0AxTYCAMYwAgD9AMY2AgDGMAIA/QDHNgIAyTICAP0AyDYCAMkyAgD9AMk2AgDJMgIA/QDKNgIAyjICAP0AyzYCAMoyAgD9AMw2AgDNMgIA/QDNNgIAzTICAP0AzjYCAM0yAgD9AM82AgDNMgIA/QDQNgIA0DACAP0A0TYCANEwAgD9ANI2AgDSMAIA/QDTNgIA0jACAP0A1DYCANIwAgD5ANU2AgDVLgIA/wDGOAIAxjACAP0AxzgCAMkyAgD9AMg4AgDJMgIA/QDJOAIAyTICAP0AyjgCAMoyAgD9AMs4AgDKMgIA/QDMOAIAzTICAP0AzTgCAM0yAgD9AM44AgDNMgIA/QDPOAIAzTICAP0A0DgCANAwAgD9ANE4AgDRMAIA/QDSOAIA0jACAPwAyToCAMkyAgD9AMo6AgDKMgIA/QDNOgIAzTICAP0A0joCANIwAgD7ANM6AgDSMAIA/wDRPAIA0TACAP8A0jwCANIwAgD/AM5EAgDNMgIA0QDNSAIAzTICAP0AzEwCAM0yAgDfAMpOAgDKMgIA9ADLTgIAyjICAMYA0P4BAMgyAgD/AdH+AQDJMgIA9wHS/gEAyjICAPsBzwACAMg0AgDSAdAAAgDJNAIA/AHRAAIAyjICAPsB0gACAMoyAgD9AdMAAgDLMgIA/QHUAAIAyzICAP0BzwICAMg2AgD/AdACAgDJNAIA+wHRAgIAyjQCAP0B0gICAMs0AgD9AdMCAgDLMgIA/QHUAgIAzTICAP0B1QICAM4yAgD9Ac4EAgDINgIA/wHPBAIAyTYCAPoB0AQCAMo2AgD9AdEEAgDLNAIA/QHSBAIAyzQCAP0B0wQCAMw0AgD9AdQEAgDNMgIA/QHVBAIAzjICAP0B1gQCAM8yAgD9AdcEAgDQMAIA/QHPBgIAyTgCAPwB0AYCAMo2AgD9AdEGAgDLNgIA/QHSBgIAzDQCAP0B0wYCAM00AgD9AdQGAgDONAIA/QHVBgIAzzICAP0B1gYCANAyAgD9AdcGAgDQMgIA/QHYBgIA0TACAP0B2QYCANIwAgD9Ac8IAgDKOAIA/QHQCAIAyzgCAP0B0QgCAMw2AgD9AdIIAgDNNgIA/QHTCAIAzTYCAP0B1AgCAM40AgD9AdUIAgDPNAIA/QHWCAIA0DQCAP0B1wgCANEyAgD9AdgIAgDSMgIA/QHZCAIA0zICAP0B2ggCANQwAgD9AdsIAgDUMAIA+wHQCgIAyzgCAP0B0QoCAMw4AgD9AdIKAgDNNgIA/QHTCgIAzjYCAP0B1AoCAM82AgD9AdUKAgDQNAIA/QHXCgIA0TQCAP0B2AoCANIyAgD9AdkKAgDTMgIA/QHaCgIA1DICAP0B2woCANUwAgD7AdAMAgDMOgIA/QHRDAIAzTgCAP0B0gwCAM44AgD9AdkMAgDUMgIA/QHaDAIA1TICAP0B2wwCANYyAgD7AdoOAgDVNAIA/QHaEAIA1jQCAP0B2hQCANc2AgD9AdoWAgDXNgIA/AHaGAIA2DgCAPsBwDQCAMlWAgD/AcA2AgDJVgIA/wHBNgIAylYCAPkBwjYCAMtWAgD9AcA4AgDKWAIA+AHBOAIAy1gCAPsBwjgCAMxWAgD9AcM4AgDNVgIA/QHEOAIAzVYCAP0BxTgCAM5UAgD9AdM4AgDbRAIA+QHUOAIA20QCAP8BwDoCAMtaAgDoAcE6AgDLWAIA/wHCOgIAzFgCAPwBwzoCAM1WAgD9AcQ6AgDOVgIA/QHFOgIAz1YCAP0BxjoCANBUAgD9Acc6AgDRVAIA/QHIOgIA0lQCAP0ByzoCANRSAgD9Acw6AgDVUAIA/QHOOgIA1lACAP0BzzoCANZQAgD8AdA6AgDWUAIA+gHROgIA1lACAPoBwDwCAMtaAgDzAcE8AgDMWgIA/QHCPAIAzVgCAPsBwzwCAM5YAgD9AcQ8AgDPWAIA/QHFPAIAz1YCAP0BxjwCANBWAgD9Acc8AgDRVgIA/QHIPAIA0lQCAP0ByTwCANNUAgD9Aco8AgDUUgIA/QHLPAIA1VICAP0BzDwCANZSAgD9Ac08AgDWUAIA/QHOPAIA1lACAP0BzzwCANZQAgD/AdA8AgDWUAIA/wHBPgIAzFoCAP8Bwj4CAM1aAgD9AcM+AgDOWAIA/QHEPgIAz1gCAP0BxT4CANBYAgD9AcY+AgDRVgIA/QHHPgIA0lYCAP0ByD4CANNWAgD9Ack+AgDTVAIA/QHKPgIA1FQCAP0Byz4CANVUAgD9Acw+AgDWUgIA/QHNPgIA1lICAPwBzj4CANZSAgD9Ac8+AgDWUAIA7QHCQAIAzloCAO4Bw0ACAM9aAgD8AcRAAgDQWAIA/AHFQAIA0VgCAP0BxkACANFYAgD9AcdAAgDSVgIA/QHIQAIA01YCAP0ByUACANRWAgD9AcpAAgDVVAIA/QHLQAIA1lQCAP0BzEACANZUAgD9Ac1AAgDWUgIA+gHOQAIA1lICAP4Bw0ICAM9aAgD/AcRCAgDQWgIA+QHFQgIA0VoCAP0BxkICANJYAgD9AcdCAgDTWAIA/QHIQgIA1FgCAP0ByUICANVWAgD9AcpCAgDVVgIA/QHLQgIA1lYCAP0BzEICANZUAgD9Ac1CAgDWVAIA+wHOQgIA1lICAP8Bw0QCANBcAgD9AcREAgDRWgIA+QHFRAIA0loCAP0BxkQCANNaAgD9AcdEAgDTWAIA/QHIRAIA1FgCAP0ByUQCANVYAgD9AcpEAgDWVgIA/QHLRAIA1lYCAP0BzEQCANZWAgD7Ac1EAgDWVAIA/QHERgIA0VwCAPgBxUYCANJaAgD9AcZGAgDTWgIA/QHHRgIA1FoCAP0ByEYCANVYAgD9AclGAgDWWAIA/QHKRgIA1lgCAP0By0YCANZWAgD9AcxGAgDWVgIA+gHNRgIA1lYCAP8BxEgCANJcAgD/AcVIAgDTXAIA+gHGSAIA1FwCAPoBx0gCANRaAgD9AchIAgDVWgIA/QHJSAIA1lgCAP0BykgCANZYAgD9ActIAgDWWAIA/QHMSAIA1lgCAPoBxEoCANJcAgDHAcVKAgDTXAIA/wHGSgIA1FwCAP8Bx0oCANVaAgD7AchKAgDWWAIA+wHJSgIA1lgCAP0BykoCANZYAgD9ActKAgDWWAIA+AHMSgIA1lgCAP8Bx0wCANVaAgD/AchMAgDVWgIA/wHJTAIA1lgCAP4BykwCANZYAgD9ActMAgDWWAIA/wHITgIA1lgCANwByU4CANZYAgD1AQ=="],["JuEBACPjAQD9ACbjAQAk5wEA/QAn4wEAJukBAP0AKOMBACbpAQD9ACXlAQAk5wEA/QAm5QEAJukBAP0AJ+UBACbpAQD9ACjlAQAm6QEA/QAp5QEAJukBAP0AJecBACTnAQD9ACbnAQAm6QEA/QAn5wEAJukBAP0AKOcBACbpAQD9ACnnAQAr6wEA/QAn6QEAJukBAP0AKOkBACbpAQD9ACnpAQAp7QEA/QAq6QEAK+sBAP0AK+kBACvrAQD9ACzpAQAs6wEA/QAn6wEAJusBAP0AKesBACntAQD9ACrrAQAr6wEA/QA19wEANfUBAP0AMvkBADL3AQD9ADT5AQA09wEA/QA1+QEANPcBAP0ANvkBADb3AQD9ADf5AQA39wEA/QA8+QEAO/kBAP0AMvsBADH7AQD9ADP7AQAy/QEA/QA0+wEANPcBAP0ANfsBADT3AQD9ADb7AQA29wEA/QA3+wEAOPkBAP0AOPsBADj5AQD9ADn7AQA5+QEA/QA6+wEAOvkBAP0AO/sBADv5AQD9ADz7AQA7+QEA/QA9+wEAO/kBAPwAM/0BADL9AQD8ADT9AQAz/wEA/QA1/QEAM/8BAP0ANv0BADj5AQD9ADf9AQA4+QEA/QA4/QEAOPkBAP0AOf0BADn5AQD9ADr9AQA6+QEA/QA7/QEAO/kBAP0APP0BADv5AQD9AD39AQA7+QEA/QA+/QEAPwECAP0ANP8BADP/AQD9ADX/AQAz/wEA/QA2/wEANQMCAPwAN/8BADUDAgD9ADn/AQA5+QEA/QA6/wEAOvkBAP0AO/8BAD0DAgD9ADz/AQA9AwIA/QA9/wEAPQMCAP0APv8BAD8BAgD9AD//AQA/AQIA/QA0AQIAMwECAP0ANQECADUDAgD9ADYBAgA1AwIA/QA3AQIANwUCAP0AOAECADcFAgD9ADkBAgA6BQIA/QA6AQIAOgUCAP0AOwECADsFAgD9ADwBAgA9AwIA/QA9AQIAPQMCAP0APgECAD8BAgD9ADYDAgA1AwIA/QA3AwIANwUCAP0AOAMCADcFAgD9ADkDAgA6BQIA/QA6AwIAOgUCAP0AOwMCADsFAgD9ADwDAgA9AwIA/QA4BQIANwUCAP0AOQUCADoFAgD9ACcNAgAoDQIA/QAnDwIAKA8CAP0AKBECACgPAgD9ACkRAgApDwIA/QAoEwIAKA8CAP0AKRMCACoRAgD9ACoTAgAqEQIA/QApFQIAKxUCAP0AKhUCACsVAgD9AEMVAgBDEwIA/QApFwIAKxUCAP0AKhcCACsVAgD9ACsXAgArFQIA/QAsFwIALBUCAP0AQhcCAEIVAgDxACoZAgArFQIA/QArGQIAKxUCAP0ALBkCAC0XAgD9AC0ZAgAtFwIA/QAuGQIALhcCAP0AQRkCAEEXAgD7ACsbAgAtFwIA/QAsGwIALRcCAP0ALRsCAC0XAgD9AC4bAgAvGQIA/AAvGwIALxkCAP0AMBsCADAZAgD9ADIbAgAxGwIA/QAzGwIAMxkCAP0APBsCADwZAgD9AD4bAgA+GQIA/QA/GwIAPxkCAP0AQBsCAEAZAgD9AEEbAgBAGQIA+wAtHQIALxkCAPwALh0CAC8ZAgD9AC8dAgAvGQIA/QAwHQIAMRsCAPwAMR0CADEbAgD9ADIdAgAxGwIA/QAzHQIANBsCAP0ANB0CADQbAgD9ADUdAgA1GwIA/QA2HQIANhsCAP0ANx0CADcbAgD9ADsdAgA7GwIA/QA8HQIAOxsCAP0APR0CAD0bAgD9AD4dAgA9GwIA/QA/HQIAPxkCAP0AQB0CAEAZAgD9AC4fAgAvGQIA/QAvHwIAMRsCAP0AMB8CADEbAgD9ADEfAgAxGwIA/QAyHwIAMRsCAP0AMx8CADQbAgD9ADQfAgA0GwIA/QA1HwIANRsCAP0ANh8CADYbAgD9ADcfAgA4HQIA/QA4HwIAOB0CAPwAOR8CADkdAgD9ADofAgA6HQIA/QA7HwIAOh0CAP0APB8CADsbAgD9AD0fAgA9GwIA/QA/HwIAPRsCAPsAMCECADEbAgD9ADEhAgAxGwIA/QAyIQIAMRsCAP0AMyECADQbAgD9ADQhAgA0GwIA/QA1IQIANRsCAP0ANiECADgdAgD9ADchAgA4HQIA/QA4IQIAOB0CAP0AOSECADkdAgD9ADohAgA6HQIA/QA7IQIAOh0CAP0APCECADodAgD9AD0hAgA9GwIA/QAxIwIAMRsCAP0ANCMCADQbAgD9ADUjAgA1GwIA/QA2IwIAOB0CAP0ANyMCADgdAgD9ADgjAgA4HQIA/QA5IwIAOR0CAP0AOiMCADodAgD8ADsjAgA6HQIA/QA8IwIAOh0CAP0APSMCAD0bAgD9ADglAgA4HQIA/QA5JQIAOR0CAP0AOiUCADodAgD6ADIjAgDIVAIA/QEzIwIAyVYCAP0BMSUCAMhUAgD8ATIlAgDJVgIA/QEzJQIAyVYCAP0BNCUCAMlWAgD9ATUlAgDKWAIA/QE2JQIAy1oCAP0BNyUCAMtaAgD9ATslAgDOXgIA/QE8JQIAz14CAPwBMicCAMhUAgD8ATMnAgDJVgIA/QE0JwIAylgCAP0BNScCAMpYAgD9ATYnAgDLXAIA/AE3JwIAy1wCAP0BOCcCAMtcAgD8ATknAgDMXAIA/AE0KQIAyVYCAPwBNSkCAMtcAgD7ATYpAgDLXAIA/QE3KQIAy1wCAP0BOCkCAMtcAgD9ATkpAgDMXAIA/QE2KwIAy1wCAOkBNysCAMtcAgD8ATgrAgDLXAIA/QE=","0AACAM4GAgDgANACAgDOBgIA/wDRAgIAzgYCAPkAzgQCAM4GAgDPAM8EAgDOBgIA/wDQBAIAzgYCAPoA0QQCAM4GAgD9AM8GAgDOBgIA+gDQBgIAzgYCAP0A0QYCAM4GAgD9ANIGAgDOBgIA/QDPCAIAzggCAP0A0AgCAM4IAgD9ANEIAgDOCAIA/QDSCAIAzggCAP0A1wgCANcQAgD9ANgIAgDYEAIA/QDZCAIA2RACAP0AzAoCAMwIAgD/AM8KAgDOCgIA/QDQCgIAzgoCAP0A0QoCAM4KAgD9ANIKAgDOCgIA/QDTCgIA0xICAP0A1AoCANQSAgD9ANUKAgDXEAIA/QDWCgIA1xACAP0A1woCANcQAgD9ANgKAgDYEAIA/QDZCgIA2RACAP0A2goCANkQAgD9ANsKAgDZEAIA/QDKDAIAywoCAMgAywwCAMsKAgD/AMwMAgDLCgIA+QDNDAIAzQoCAP0AzgwCAM4KAgD9AM8MAgDOCgIA/QDQDAIAzgoCAP0A0QwCAM4KAgD9ANIMAgDTEgIA/QDTDAIA0xICAP0A1AwCANQSAgD9ANUMAgDXEAIA/QDWDAIA1xACAP0A1wwCANcQAgD9ANgMAgDYEAIA/QDZDAIA2RACAP0A2gwCANkQAgD9ANsMAgDZEAIA/QDcDAIA2RACAP0Ayg4CAMsKAgD/AMsOAgDLCgIA+QDMDgIAywoCAP0AzQ4CAM0KAgD9AM4OAgDOCgIA/QDPDgIAzgoCAP0A0A4CAM4KAgD9ANEOAgDTEgIA/QDSDgIA0xICAP0A0w4CANMSAgD9ANQOAgDUEgIA/QDVDgIA1RICAP0A1g4CANcQAgD9ANcOAgDXEAIA/QDYDgIA2BACAP0A2Q4CANkQAgD9ANwOAgDZEAIA/QDJEAIAyBICAP8AyhACAMoUAgD6AMsQAgDKFAIA/QDMEAIAyhQCAP0AzRACAM0KAgD9AM4QAgDQFAIA/QDPEAIA0BQCAP0A0BACANAUAgD9ANEQAgDRFAIA/QDSEAIA0xICAP0A0xACANMSAgD9ANQQAgDUEgIA/QDVEAIA1RICAP0A1hACANcQAgD9ANwQAgDZEAIA/QDdEAIA2RACAPkAyRICAMgSAgD8AMoSAgDKFAIA/ADLEgIAyhQCAP0AzBICAMoUAgD9AM0SAgDNFgIA/QDOEgIAzhYCAP0AzxICANAUAgD9ANASAgDQFAIA/QDREgIA0RQCAP0A0hICANMSAgD9ANwSAgDZEAIA/ADLFAIAyhQCAP0AzBQCAMsWAgD9AM0UAgDNFgIA/QDOFAIAzhYCAP0AzxQCANAUAgD9ANwUAgDZEAIA+wDMFgIAyxYCAP0A3RoCANoeAgD/ANskAgDbIgIA/wDCJgIAwiQCAP8AwSgCAMMoAgDDAMIoAgDDKAIA/wDYKAIA2CYCAPsA2SgCANkmAgD7ANooAgDaJgIAwADBKgIAwygCAMkAwioCAMMoAgD/AMMqAgDDKAIA+gDEKgIAxCgCAP0AxSoCAMUoAgD9AMYqAgDGKAIA/QDZKgIA2CoCAPoAwiwCAMMoAgD/AMMsAgDDKAIA+gDELAIAxCgCAP0AxSwCAMUoAgD9AMYsAgDHKgIA/QDHLAIAxyoCAP0AyCwCAMgqAgD9ANUsAgDVKgIA/QDWLAIA1ioCAP0A1ywCANcqAgD5ANgsAgDYKgIA/wDCLgIAwygCAP8Awy4CAMMoAgD5AMQuAgDEKAIA/QDFLgIAxyoCAP0Axi4CAMcqAgD9AMcuAgDHKgIA/QDILgIAySwCAP0AyS4CAMksAgD9AMouAgDKLAIA/QDMLgIAzCwCAP0AzS4CAM0sAgD9AM4uAgDOLAIA/QDPLgIAzywCAP0A0C4CANAsAgD9ANEuAgDRLAIA/QDSLgIA0iwCAP0A0y4CANMsAgD9ANQuAgDULAIA/QDVLgIA1CwCAP0A1i4CANYqAgD6ANcuAgDXKgIA+gDYLgIA2CoCAMUAwzACAMMoAgD5AMQwAgDEKAIA/QDFMAIAxyoCAP0AxjACAMcqAgD9AMcwAgDJLAIA/QDIMAIAySwCAP0AyTACAMksAgD9AMowAgDLLgIA/QDLMAIAyy4CAP0AzDACAMsuAgD9AM0wAgDNLAIA/QDOMAIAziwCAP0AzzACAM8sAgD9ANAwAgDQLAIA/QDRMAIA0SwCAP0A0jACANIsAgD9ANMwAgDTLAIA/QDUMAIA1CwCAP0A1TACANQsAgD8ANYwAgDULAIA+gDXMAIA1yoCAP8AxzICAMksAgD9AMgyAgDJLAIA/QDJMgIAyy4CAP0AyjICAMsuAgD9AMsyAgDLLgIA/QDMMgIAyy4CAP0AzTICAMsuAgD9AM4yAgDOLAIA/QDPMgIAzywCAP0A0DICANAsAgD9ANEyAgDRLAIA/QDSMgIA0iwCAP0A0zICANMsAgD9ANQyAgDULAIA+wDVMgIA1CwCAPoA1jICANQsAgD/AMk0AgDLLgIA/QDKNAIAyy4CAP0AyzQCAMsuAgD9AMw0AgDLLgIA/QDNNAIAyy4CAP0AzjQCAM4sAgD9AM80AgDPLAIA/QDQNAIA0CwCAP0A0TQCANEsAgD8ANI0AgDSLAIA+QDTNAIA0ywCAPgA1DQCANQsAgD/ANU0AgDULAIA/wDLNgIAyy4CAP0A0zYCANMsAgD/ANQ2AgDULAIA8ADS/AEAyDQCAP8B0/wBAMkyAgD3AdT8AQDKMgIA+wHR/gEAyDQCAOYB0v4BAMk0AgD7AdP+AQDKNAIA+wHU/gEAyzICAP0B1f4BAMsyAgD9Adb+AQDLMgIA/QHRAAIAyTYCAP8B0gACAMk2AgD7AdMAAgDKNAIA/QHUAAIAyzQCAP0B1QACAMsyAgD9AdYAAgDNMgIA/QHXAAIAzjICAP0B2AACAM8wAgD9AdICAgDKNgIA/QHTAgIAyzYCAP0B1AICAMw0AgD9AdUCAgDNNAIA/QHWAgIAzjQCAP0B1wICAM4yAgD9AdgCAgDPMgIA/QHZAgIA0DACAP0B0gQCAMs4AgD9AdMEAgDLNgIA/QHUBAIAzDYCAP0B1QQCAM00AgD9AdYEAgDONAIA/QHXBAIAzzQCAP0B2AQCANAyAgD9AdkEAgDRMgIA/QHaBAIA0jICAP0B2wQCANIwAgD9AdMGAgDMOAIA/QHUBgIAzTYCAP0B1QYCAM42AgD9AdYGAgDPNgIA/QHXBgIA0DQCAP0B2AYCANA0AgD9AdkGAgDRMgIA/QHaBgIA0jICAP0B2wYCANMyAgD9AdwGAgDUMAIA/QHdBgIA1TACAPsB0wgCAM04AgD9AdQIAgDNOAIA/QHVCAIAzjYCAP0B1ggCAM82AgD9AdoIAgDTMgIA/QHbCAIA1DICAP0B3AgCANUyAgD9Ad0IAgDVMAIA+wHeCAIA1jACAP8B3AoCANUyAgD9Ad0KAgDWMgIA+wHeCgIA1zICAP8B3QwCANcyAgD6Ad0OAgDXNAIA+QHdEgIA2DYCAPwB3RQCANk2AgD/Ad0WAgDZOAIA/wHdGAIA2jgCAP4BwjACAMlWAgD/AcMyAgDLWAIA/AHEMgIAy1gCAPwBxTICAMxWAgD9AcYyAgDNVgIA/QHDNAIAy1oCAP8BxDQCAMxYAgD8AcU0AgDNWAIA/QHGNAIAzlYCAP0BxzQCAM9WAgD9Acg0AgDQVgIA/QHDNgIAzFoCAP8BxDYCAM1aAgD6AcU2AgDNWAIA/QHGNgIAzlgCAP0BxzYCAM9YAgD9Acg2AgDQVgIA/QHJNgIA0VYCAP0ByjYCANJUAgD9Acw2AgDUVAIA/QHNNgIA1FICAP0BzjYCANVSAgD9Ac82AgDWUgIA/QHQNgIA1lACAP0B0TYCANZQAgD/AdI2AgDWUAIA/wHEOAIAzVoCAP8BxTgCAM5aAgD8AcY4AgDPWAIA/QHHOAIA0FgCAP0ByDgCANFYAgD9Ack4AgDSVgIA/QHKOAIA0lYCAP0ByzgCANNWAgD9Acw4AgDUVAIA/QHNOAIA1VQCAP0BzjgCANZSAgD9Ac84AgDWUgIA+wHQOAIA1lICAP0B0TgCANZQAgDIAcU6AgDPWgIA/QHGOgIAz1oCAPsBxzoCANBaAgD9Acg6AgDRWAIA/QHJOgIA0lgCAP0ByjoCANNWAgD9Acs6AgDUVgIA/QHMOgIA1VYCAP0BzToCANZUAgD9Ac46AgDWVAIA/QHPOgIA1lQCAPoB0DoCANZSAgD/AcU8AgDPXAIA/gHGPAIA0FoCAPkBxzwCANFaAgD9Acg8AgDSWgIA/QHJPAIA01gCAP0ByjwCANRYAgD9Acs8AgDUWAIA/QHMPAIA1VYCAP0BzTwCANZWAgD9Ac48AgDWVAIA/AHPPAIA1lQCAPwB0DwCANZUAgDsAcY+AgDRXAIA+AHHPgIA0VoCAP0ByD4CANJaAgD9Ack+AgDTWgIA/QHKPgIA1FgCAP0Byz4CANVYAgD9Acw+AgDWWAIA/QHNPgIA1lYCAP0Bzj4CANZWAgD6Ac8+AgDWVAIA/gHHQAIA0lwCAPkByEACANNcAgD5AclAAgDUWgIA/QHKQAIA1VoCAP0By0ACANZYAgD9AcxAAgDWWAIA/QHNQAIA1lgCAP0BzkACANZWAgD5Ac9AAgDWVgIA/wHHQgIA01wCAP8ByEICANNcAgD/AclCAgDUXAIA+wHKQgIA1VoCAPwBy0ICANZYAgD9AcxCAgDWWAIA/QHNQgIA1lgCAPkBzkICANZYAgD/AclEAgDVWgIA/wHKRAIA1VoCAP8By0QCANZYAgD9AcxEAgDWWAIA/AHNRAIA1lgCAP8BzkQCANZYAgDvActGAgDWWAIA+wHMRgIA1lgCAPoBzUYCANZYAgDWAQ=="],["yh4CAMwgAgDYAMseAgDMIAIA/QDLIAIAzCACAPwAyyICAMwiAgDeAMskAgDMIgIA9wDaJgIA2iQCAP0AySgCAMooAgD1ANsoAgDbJAIA/QDcKAIA2yQCAPwA3SgCANskAgDVANoqAgDZKgIA/QDbKgIA2SoCAP0A3CoCANkqAgD9AN0qAgDbJAIA6QDaLAIA2SoCAP0A2ywCANkqAgD9ANwsAgDZKgIA/ADaLgIA2TACAP0A2y4CANkwAgD9ANwuAgDaMgIA/QDdLgIA2jICAPAAxjACAMcwAgDjANowAgDZMAIA/QDbMAIA2jICAP0A3DACANoyAgD9AN0wAgDaMgIA7QDFMgIAxjICANEA2zICANoyAgD9ANwyAgDaMgIA/QDdMgIA2jICAP0A3jICANoyAgDkAMQ0AgDFNAIA9gDbNAIA2jQCAP0A3DQCANo0AgD9AN00AgDaNAIA/QDeNAIA2jQCAOAAxDYCAMU2AgD9ANs2AgDaNgIA/QDcNgIA2jYCAP0A3TYCANs6AgD7ANs4AgDaOAIA/QDcOAIA2zoCAP0A3TgCANs6AgD1ANw6AgDbOgIA/QDdOgIA2zoCAP0A2zwCANs6AgD9ANw8AgDbOgIA/QDdPAIA2zoCAPEA0j4CANI8AgD9ANM+AgDTPAIA/QDbPgIA2j4CAP4A3D4CANo+AgD9AN0+AgDbOgIA2QDSQAIA0UACAP0A00ACANQ+AgD9ANRAAgDUPgIA/QDbQAIA2kACAP0A3EACANpAAgD4ANBCAgDQQAIA/QDRQgIA0UACAP0A0kICANFAAgD9ANNCAgDVQgIA/QDUQgIA1UICAP0A20ICANpCAgD9ANxCAgDaQgIA6ADQRAIAz0QCAP0A0UQCANFAAgD9ANJEAgDRQAIA/QDTRAIA1UQCAP0A1EQCANVEAgD9ANtEAgDaRAIA/QDQRgIAz0YCAP0A0UYCAM9GAgD9ANJGAgDUSgIA/QDTRgIA1UYCAP0A1EYCANVGAgD9ANpGAgDaRAIA9wDbRgIA2kQCAOkAz0gCAM9GAgD9ANBIAgDPRgIA/QDRSAIAz0YCAP0A0kgCANRKAgD+ANNIAgDUSgIA/gDUSAIA1UgCAP4Az0oCAM5KAgD9ANBKAgDOSgIA/QDRSgIAz0YCAP4A0koCANRKAgD/ANNKAgDUSgIA/wDOTAIAzkoCAP0Az0wCAM5KAgD8ANBMAgDOSgIA/QDRTAIA1EwCAP8A0kwCANRMAgD/ANNMAgDUTAIA/wDPTgIAzk4CAPwA0E4CAM5OAgD+ANFOAgDOTgIA/wDSTgIA1E4CAP8A004CANROAgD/AM9QAgDOUAIA/QDQUAIAzlACAP8A0VACANBUAgD/ANJQAgDUUAIA/wDTUAIA1FACAP4Az1ICAM5SAgD+ANBSAgDQVAIA/wDRUgIA0FQCAP8A0lICANRQAgD+ANNSAgDUUAIA/ADUUgIA1FACAMUA0VQCANBUAgD/ANJUAgDQVAIA/QDRVgIA0FYCAO4A3SwCANk2AgDDAQ==","LusBAC/rAQD9AC3tAQAv7QEA/QAu7QEAL+0BAP0ALO8BAC/vAQD9AC3vAQAv7wEA/QAu7wEAL+8BAP0AK/EBAC/xAQD9ACzxAQAv8QEA/QAt8QEAL/EBAP0ALvEBAC/xAQD9ACvzAQAv8wEA/QAs8wEAL/MBAP0ALfMBAC/zAQD9AC7zAQAv8wEA/QAr9QEAL/UBAP0ALPUBAC/1AQD9AC31AQAv9QEA/QAu9QEAL/UBAP0APPUBADv1AQDrACj3AQAo/wEA/wAp9wEAKf8BAPkAKvcBACr/AQD9ACz3AQAv9QEA/QAt9wEAL/UBAP0ALvcBAC/1AQD9AC/3AQAv9QEA/QA99wEAPPcBANQAKPkBACj/AQDmACn5AQAp/wEA/gAq+QEAKv8BAPwAK/kBACr/AQD9ACz5AQAv9QEA/QAt+QEAL/UBAP0ALvkBADD5AQD9AC/5AQAw+QEA/QA9+QEAPPkBAP8APvkBADz5AQDuACn7AQAp/wEA/gAq+wEAKv8BAPkAK/sBACr/AQD9ACz7AQAq/wEA/QAt+wEAMPsBAP0ALvsBADD7AQD9AC/7AQAw+wEA/QA9+wEAPPsBAPkAPvsBADz7AQD/AD/7AQA8+wEAzQAp/QEAKf8BAP8AKv0BACr/AQD6ACv9AQAq/wEA/QAs/QEAKv8BAP0ALf0BADD9AQD9AC79AQAw/QEA/QAv/QEAMP0BAP0APf0BADz9AQD9AD79AQA8/QEA+gA//QEAPP0BAP8AK/8BACr/AQD7ACz/AQAq/wEA/QAt/wEAKv8BAP0ALv8BADD/AQD9AC//AQAw/wEA/QA9/wEAPP8BAP0APv8BADz/AQD9AD//AQA8/wEA+gBA/wEAPP8BAP8AKwECACoBAgD6ACwBAgAqAQIA/QAtAQIAKgECAP0ALgECADABAgD9AC8BAgAwAQIA/QA8AQIAPP8BAP0APQECADz/AQD9AD4BAgA8/wEA/QA/AQIAPP8BAP0AQAECADz/AQD6AEEBAgA8/wEA/wAqAwIAKgECANEAKwMCACoBAgD/ACwDAgAqAQIA+AAtAwIAMAMCAP0ALgMCADADAgD9AC8DAgAwAwIA/QA8AwIAOwMCAP0APQMCADsDAgD9AD4DAgA8/wEA/QA/AwIAPP8BAP0AQAMCADz/AQD7AEEDAgA8/wEA/QArBQIAKQUCAOQALAUCACoBAgD/AC0FAgAvCQIA/AAuBQIAMAUCAPwALwUCADAFAgD9ADwFAgA7BQIA/QA9BQIAOwUCAP0APgUCADsFAgD9AD8FAgA7BQIA/QBBBQIAPP8BAP0AQgUCADz/AQDeACwHAgApBQIAzAAtBwIALwkCAPwALgcCAC8JAgD/AC8HAgAwBwIA+QA7BwIAOwUCAP0APQcCADsFAgD9AD4HAgA7BQIA/QBBBwIAOwUCAPkAQgcCADsFAgD/AC4JAgAvCQIA7wA7CQIAOgkCAP0APAkCADsLAgD9AD0JAgA7CwIA/QA+CQIAOwsCAP0AQgkCADsLAgD/ADwLAgA7CwIA/QA9CwIAOwsCAP0APgsCADsLAgD9AD8LAgA7CwIA/QA8DQIAOw0CAP0APQ0CADsNAgD9AD4NAgA7DQIA/QA/DQIAOw0CAP0AOw8CADsNAgD9ADwPAgA7DQIA/QA9DwIAOw0CAP0APg8CADsNAgD9ADoRAgA6DwIA/QA7EQIAOg8CAP0APBECADsNAgD9AD0RAgA7DQIA/QA+EQIAOw0CAP0AOhMCADkTAgD9ADsTAgA5EwIA/QA8EwIAOg8CAP0APRMCADsNAgD9ADkVAgA5EwIA/gA6FQIAORMCAP0AOxUCADkTAgD9ADwVAgA5EwIA/QA4FwIAOBUCAP0AORcCADgVAgD9ADoXAgA5EwIA/QA7FwIAORMCAP0APBcCADkTAgD9ADgZAgA3GQIA/QA5GQIANxkCAP0AOhkCADgVAgD8ADsZAgA5EwIA/AA3GwIANxkCAPwAOBsCADcZAgD7ADkbAgA3GQIA+gA6GwIANxkCAP8ANx0CADYbAgDPADgdAgA3GQIA/wA5HQIANxkCAP8AKfMBAMoyAgD9ASrzAQDLMgIA/QEo9QEAyDICAP0BKfUBAMk0AgD8ASr1AQDKNAIA/QEr9wEAyjYCAP0BQAUCANZSAgD8AT8HAgDWUgIA/QFABwIA1lICAP0BPwkCANZSAgD9AUAJAgDWVAIA/QFBCQIA1lQCAPwBQAsCANZUAgD9AUELAgDWVgIA/AFCCwIA1lYCAP8BQA0CANZWAgD9AUENAgDWVgIA/AFCDQIA1lgCAP8BPw8CANVWAgD9AUAPAgDWWAIA/QFBDwIA1lgCAPwBQg8CANZYAgD9AT8RAgDUWAIA/QFAEQIA1VgCAP0BQRECANZYAgD5AT4TAgDSWAIA/QE/EwIA01oCAP0BQBMCANRaAgD7AT0VAgDQWAIA/QE+FQIA0VoCAP0BPxUCANJaAgD9AUAVAgDTXAIA9wE9FwIAz1oCAP0BPhcCANBaAgD8ATwZAgDOWgIA/QE9GQIAz1wCAPsBPhkCANBcAgD/AQ=="]]};
+ const femaleG180WalkAuthority={"sha":"0649bc01b8b5111164c42e7b9c0ed17767714a24038284fd389b85187bf48a5e","arms":{"east":["46fedcb3bfae307f60bce157a7359ca331b56c0e0d5b7530397bc918f10c0d4e","46fedcb3bfae307f60bce157a7359ca331b56c0e0d5b7530397bc918f10c0d4e","46fedcb3bfae307f60bce157a7359ca331b56c0e0d5b7530397bc918f10c0d4e","46fedcb3bfae307f60bce157a7359ca331b56c0e0d5b7530397bc918f10c0d4e","46fedcb3bfae307f60bce157a7359ca331b56c0e0d5b7530397bc918f10c0d4e","3ac7d6dc532275ffb8d4bb4f0cb65516e08b536db66fc1c35dafdb94b0831bf8","3ac7d6dc532275ffb8d4bb4f0cb65516e08b536db66fc1c35dafdb94b0831bf8","3ac7d6dc532275ffb8d4bb4f0cb65516e08b536db66fc1c35dafdb94b0831bf8","3ac7d6dc532275ffb8d4bb4f0cb65516e08b536db66fc1c35dafdb94b0831bf8","3ac7d6dc532275ffb8d4bb4f0cb65516e08b536db66fc1c35dafdb94b0831bf8","49c3831f519e1c0f6b1420ba7300b96c9d8bd937c7dd8ce17f7095ac538e5dcd","49c3831f519e1c0f6b1420ba7300b96c9d8bd937c7dd8ce17f7095ac538e5dcd","49c3831f519e1c0f6b1420ba7300b96c9d8bd937c7dd8ce17f7095ac538e5dcd","49c3831f519e1c0f6b1420ba7300b96c9d8bd937c7dd8ce17f7095ac538e5dcd","49c3831f519e1c0f6b1420ba7300b96c9d8bd937c7dd8ce17f7095ac538e5dcd","ce816a66738ca0bfcb8fea4d075f06c7104b7dfdc3aabfbedb61f2fc89a597ff","ce816a66738ca0bfcb8fea4d075f06c7104b7dfdc3aabfbedb61f2fc89a597ff","ce816a66738ca0bfcb8fea4d075f06c7104b7dfdc3aabfbedb61f2fc89a597ff","ce816a66738ca0bfcb8fea4d075f06c7104b7dfdc3aabfbedb61f2fc89a597ff","ce816a66738ca0bfcb8fea4d075f06c7104b7dfdc3aabfbedb61f2fc89a597ff","5eac4ba53e1df0bd68fd91c4f70280bf9d04b0298b15c3d0c7272ea9c681886c","5eac4ba53e1df0bd68fd91c4f70280bf9d04b0298b15c3d0c7272ea9c681886c","5eac4ba53e1df0bd68fd91c4f70280bf9d04b0298b15c3d0c7272ea9c681886c","5eac4ba53e1df0bd68fd91c4f70280bf9d04b0298b15c3d0c7272ea9c681886c","5eac4ba53e1df0bd68fd91c4f70280bf9d04b0298b15c3d0c7272ea9c681886c","d7d6d65690b4a7d881dcf31ffa6730c9da6d5e147ef33a086b3fdfe34a06f171","d7d6d65690b4a7d881dcf31ffa6730c9da6d5e147ef33a086b3fdfe34a06f171","d7d6d65690b4a7d881dcf31ffa6730c9da6d5e147ef33a086b3fdfe34a06f171","d7d6d65690b4a7d881dcf31ffa6730c9da6d5e147ef33a086b3fdfe34a06f171","d7d6d65690b4a7d881dcf31ffa6730c9da6d5e147ef33a086b3fdfe34a06f171","d00a025836c36a6762927d8b1f8cd14fee5bd5ce7a2193dfc385686838d9b68b","d00a025836c36a6762927d8b1f8cd14fee5bd5ce7a2193dfc385686838d9b68b","d00a025836c36a6762927d8b1f8cd14fee5bd5ce7a2193dfc385686838d9b68b","d00a025836c36a6762927d8b1f8cd14fee5bd5ce7a2193dfc385686838d9b68b","d00a025836c36a6762927d8b1f8cd14fee5bd5ce7a2193dfc385686838d9b68b","5c3ea3d290473c6472a76beea8b620e3908d939f40941ddbe9dfab5abea144e3","5c3ea3d290473c6472a76beea8b620e3908d939f40941ddbe9dfab5abea144e3","5c3ea3d290473c6472a76beea8b620e3908d939f40941ddbe9dfab5abea144e3","5c3ea3d290473c6472a76beea8b620e3908d939f40941ddbe9dfab5abea144e3","5c3ea3d290473c6472a76beea8b620e3908d939f40941ddbe9dfab5abea144e3"],"west":["f65620245e7084fea5d3f5699430e6535912f708a47c8a9fc8e7f3ac634139b8","f65620245e7084fea5d3f5699430e6535912f708a47c8a9fc8e7f3ac634139b8","f65620245e7084fea5d3f5699430e6535912f708a47c8a9fc8e7f3ac634139b8","f65620245e7084fea5d3f5699430e6535912f708a47c8a9fc8e7f3ac634139b8","f65620245e7084fea5d3f5699430e6535912f708a47c8a9fc8e7f3ac634139b8","25eafe083d3f22a748a5a5812f7b9ceb584dd91106d69a25e7d36445b2ce1783","25eafe083d3f22a748a5a5812f7b9ceb584dd91106d69a25e7d36445b2ce1783","25eafe083d3f22a748a5a5812f7b9ceb584dd91106d69a25e7d36445b2ce1783","25eafe083d3f22a748a5a5812f7b9ceb584dd91106d69a25e7d36445b2ce1783","25eafe083d3f22a748a5a5812f7b9ceb584dd91106d69a25e7d36445b2ce1783","d8a7be71b6859c621c4908dd0cb9389299172b7bde931eb4b516fad29251a6ec","d8a7be71b6859c621c4908dd0cb9389299172b7bde931eb4b516fad29251a6ec","d8a7be71b6859c621c4908dd0cb9389299172b7bde931eb4b516fad29251a6ec","d8a7be71b6859c621c4908dd0cb9389299172b7bde931eb4b516fad29251a6ec","d8a7be71b6859c621c4908dd0cb9389299172b7bde931eb4b516fad29251a6ec","9a9b0fa5c963362d819949cc7cd9969c5606657a836b3aef376cf4e9ce9dd955","9a9b0fa5c963362d819949cc7cd9969c5606657a836b3aef376cf4e9ce9dd955","9a9b0fa5c963362d819949cc7cd9969c5606657a836b3aef376cf4e9ce9dd955","9a9b0fa5c963362d819949cc7cd9969c5606657a836b3aef376cf4e9ce9dd955","9a9b0fa5c963362d819949cc7cd9969c5606657a836b3aef376cf4e9ce9dd955","0a8955ab4ad6628420677d8f311b12c596b382d986ff1ff5282fae0a8b26b2fc","0a8955ab4ad6628420677d8f311b12c596b382d986ff1ff5282fae0a8b26b2fc","0a8955ab4ad6628420677d8f311b12c596b382d986ff1ff5282fae0a8b26b2fc","0a8955ab4ad6628420677d8f311b12c596b382d986ff1ff5282fae0a8b26b2fc","0a8955ab4ad6628420677d8f311b12c596b382d986ff1ff5282fae0a8b26b2fc","96799b9250ae281bee3780ebfd018da41cdc6db55adc31b80eafe4ffbe66dab8","96799b9250ae281bee3780ebfd018da41cdc6db55adc31b80eafe4ffbe66dab8","96799b9250ae281bee3780ebfd018da41cdc6db55adc31b80eafe4ffbe66dab8","96799b9250ae281bee3780ebfd018da41cdc6db55adc31b80eafe4ffbe66dab8","96799b9250ae281bee3780ebfd018da41cdc6db55adc31b80eafe4ffbe66dab8","ca8d60758ff3cd9672ed0cbd580a6b6362f2452b3ac23fc6280d5bf3832655f0","ca8d60758ff3cd9672ed0cbd580a6b6362f2452b3ac23fc6280d5bf3832655f0","ca8d60758ff3cd9672ed0cbd580a6b6362f2452b3ac23fc6280d5bf3832655f0","ca8d60758ff3cd9672ed0cbd580a6b6362f2452b3ac23fc6280d5bf3832655f0","ca8d60758ff3cd9672ed0cbd580a6b6362f2452b3ac23fc6280d5bf3832655f0","0c8ecb08753b41793b93a3bb5147512f0e8fc2423776a0f0545c377eec8d6baa","0c8ecb08753b41793b93a3bb5147512f0e8fc2423776a0f0545c377eec8d6baa","0c8ecb08753b41793b93a3bb5147512f0e8fc2423776a0f0545c377eec8d6baa","0c8ecb08753b41793b93a3bb5147512f0e8fc2423776a0f0545c377eec8d6baa","0c8ecb08753b41793b93a3bb5147512f0e8fc2423776a0f0545c377eec8d6baa"]},"pivots":[[206.53059177532597,281.8304914744233],[315.2683870967742,263.98064516129034]],"moves":[[[0,0,0],[0,0,0]],[[0,0,0],[0,0,0]],[[0,0,0],[0,0,0]],[[0,0,0],[0,0,0]],[[0,0,0],[0,0,0]],[[13,8,-0.011398694168870849],[-3,-4,-0.1014279191715719]],[[13,8,-0.011398694168870849],[-3,-4,-0.1014279191715719]],[[13,8,-0.011398694168870849],[-3,-4,-0.1014279191715719]],[[13,8,-0.011398694168870849],[-3,-4,-0.1014279191715719]],[[13,8,-0.011398694168870849],[-3,-4,-0.1014279191715719]],[[101,-11,-1.0054101546167575],[-89,16,0.6527220355942465]],[[101,-11,-1.0054101546167575],[-89,16,0.6527220355942465]],[[101,-11,-1.0054101546167575],[-89,16,0.6527220355942465]],[[101,-11,-1.0054101546167575],[-89,16,0.6527220355942465]],[[101,-11,-1.0054101546167575],[-89,16,0.6527220355942465]],[[103,-31,-1.1122605101633969],[-111,7,1.2310803516735254]],[[103,-31,-1.1122605101633969],[-111,7,1.2310803516735254]],[[103,-31,-1.1122605101633969],[-111,7,1.2310803516735254]],[[103,-31,-1.1122605101633969],[-111,7,1.2310803516735254]],[[103,-31,-1.1122605101633969],[-111,7,1.2310803516735254]],[[109,-31,-1.1122605101634626],[-115,5,1.186502677933297]],[[109,-31,-1.1122605101634626],[-115,5,1.186502677933297]],[[109,-31,-1.1122605101634626],[-115,5,1.186502677933297]],[[109,-31,-1.1122605101634626],[-115,5,1.186502677933297]],[[109,-31,-1.1122605101634626],[-115,5,1.186502677933297]],[[104,-31,-1.0910130854601832],[-109,9,1.2092631825260969]],[[104,-31,-1.0910130854601832],[-109,9,1.2092631825260969]],[[104,-31,-1.0910130854601832],[-109,9,1.2092631825260969]],[[104,-31,-1.0910130854601832],[-109,9,1.2092631825260969]],[[104,-31,-1.0910130854601832],[-109,9,1.2092631825260969]],[[97,-25,-1.1120706008925705],[-107,7,1.2609463388675057]],[[97,-25,-1.1120706008925705],[-107,7,1.2609463388675057]],[[97,-25,-1.1120706008925705],[-107,7,1.2609463388675057]],[[97,-25,-1.1120706008925705],[-107,7,1.2609463388675057]],[[97,-25,-1.1120706008925705],[-107,7,1.2609463388675057]],[[1,3,0.37800392063679733],[-7,-8,-0.10142791917162763]],[[1,3,0.37800392063679733],[-7,-8,-0.10142791917162763]],[[1,3,0.37800392063679733],[-7,-8,-0.10142791917162763]],[[1,3,0.37800392063679733],[-7,-8,-0.10142791917162763]],[[1,3,0.37800392063679733],[-7,-8,-0.10142791917162763]]]};
+ function selectFemaleG180SideWalk(player,o,visible){
+  const dir=o.direction,g=visible.gloves,P=femaleG180WalkAuthority,arms=P.arms[dir];
+  if(o.consumer!=='world'||o.action!=='walk'||o.weaponless||g?.item!==180||!arms||visible.weapon||
+    ['variant','variantId','appearanceVariant'].some(k=>g.value?.[k]!=null&&g.value[k]!=='original'))return null;
+  const e={...player.equipment};delete e[g.key];
+  const bare=selectVisualStrict({...player,equipment:{}},o),base=Object.keys(visible).length===1?bare:selectVisualStrict({...player,equipment:e},o);
+  if(!base||!bare||base.hdKind!=='outfit'||bare.hdKind!=='outfit'||base.omitted?.length||base.visualDegraded||base.appearanceAdapted||
+     bare.sourceId!=='female-coat67-'+dir+'-own-bare-v1'||bare.headRecord||bare.gearOnlyRecord||base.gearOnlyRecord||
+     base.mirrorX||base.mirrorLayerIDs?.length||base.sourceRasterPadding||bare.sourceRasterPadding)return null;
+  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b),B=bare.pack.directions[dir],D=base.pack?.directions?.[dir],
+   wrist=l=>l.id==='base:arms',hands=D?.layers.filter(wrist);
+  if(!D||!same(D.clip,{frames:40,fps:40,loop:true})||!same(D.clip,B.clip)||!same(D.rest,B.rest)||!same(D.poses,B.poses)||
+    !['density','pivot','frame'].every(k=>same(base.pack[k],bare.pack[k]))||!same(base.colorAppearance,bare.colorAppearance)||
+    hands?.length!==1||hands[0].depth!==4||hands[0].binding?.kind!=='fixed'||!same(hands[0].frames,arms)||!same(B.layers.find(wrist)?.frames,arms))return null;
+  const donor=outfitById.get('frozen-female-glove180-east-walk-native-layers'),L=donor?.pack?.directions?.east,
+   glove=L?.layers.find(l=>l.id==='candidate-same-item-north-registered-direction');
+  if(!donor?.frozenFemaleGloveLayers||donor.frozenGloveSourceRef!=='ref-0995'||donor.equipment?.gloves!==180||
+    donor.sourceAuthoritySHA256!==femaleSideWalkGloveAuthority.east||glove?.frames?.[0]!==P.sha||glove.binding?.kind!=='fixed'||
+    glove.depth!==100||glove.slot!=='foreground'||!donor.sourceRefs.includes(P.sha)||!same(P.sha,femaleG180SideIdleSigned.east.gSHA))return null;
+  const routes={};
+  for(const [k,v] of Object.entries(visible)){
+   if(k==='gloves')continue;
+   const old=base.slotRoutes?.[v.key],n=base.equipment?.[v.key]??base.equipment?.[k];
+   if((old?.item!==v.item&&n!==v.item)||old?.quality==='missing')return null;
+   routes[v.key]=old??{item:v.item,quality:'hd',source:base.sourceId||base.id};
+  }
+  return {...base,id:base.id+':side-walk-own-g180',equipment:{...base.equipment,gloves:180},
+   ownSideWalkGlove180:{base,bare:base===bare?null:bare,mirror:dir==='west',authority:P},
+   slotRoutes:{...routes,[g.key]:{item:180,quality:'hd',source:donor.id}},layeredSlots:true,omitted:[]};
  }
  const femaleSideWalkGloveAuthority={
   east:'944955105f510cb49bdaa64bc8e7bf83dc56eb691dd32aade35dd85f288c1cf4',
@@ -1895,6 +2762,46 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const pending=Object.keys(visible).filter(k=>k!=='weapon'&&!(keepCoat&&k==='torso'));
   if(!pending.length)return null;
   return describeSlots({...source,hdKind:'weapon',action,resolvedAction:action},visible,pending);
+ }
+ // C151's South gait source does not require the trousers present in
+ // the approved screenshot. Reuse only its own original passes on the
+ // exact authored body and the already registered lower slot at its rank.
+ function selectOwnSouthGaitTorsoOnLower(player,o,visible){
+  const coat=visible?.torso, lower=visible?.pants, {action,direction}=o;
+  if(o.consumer!=='world'||o.weaponless||direction!=='south'||!['idle','walk'].includes(action)||
+    canonical(player.appearance96?.gender)!=='male'||coat?.item!==151||!lower||Object.keys(visible).length!==2)return null;
+  const signedBase='male-pants133-'+action+'-south-isolated-r2', donor=outfitById.get(signedBase+'-coat151-native'),
+    control=outfitById.get(signedBase);
+  if(!donor||!control||donor.productionEnabled===false||
+     donor.sourceBodyStatus!=='south-r7-approved'||donor.equipment?.torso!==coat.item||
+     donor.isolatedCoat151Variant?.bootSelection!=='original'||!donor.approvalEvidence?.exactFinalRGBA256||
+     donor.sourceAuthoritySHA256!=='44b95f969c60ed8cebd6543084fc01dbbea704bb239defaee8cc71790709f65c')return null;
+  const equipment={...player.equipment};delete equipment[coat.key];
+  const target=select({...player,equipment},o);
+  if(target?.hdKind!=='outfit'||target.equipment?.pants!==lower.item||Object.keys(target.equipment).length!==1||
+    target.omitted?.length||target.unsupported?.length||target.appearanceAdapted||target.headRecord||target.gearOnlyRecord||
+    target.registeredPaletteBody||target.sourceRasterPadding||target.mirrorLayerIDs||target.mirrorX||
+    target.body!==donor.body||target.action!==action||target.direction!==direction||
+    target.sourceBodyStatus!==donor.sourceBodyStatus||target.status!=='independent-layer-essential-map-cycle'||target.palettePolicy!==control.palettePolicy||
+    !target.strictSouthAppearance)return null;
+  const equal=(x,y)=>JSON.stringify(x)===JSON.stringify(y),
+    [source,base,q]=[donor,control,target].map(r=>r.pack.directions[direction]),
+    pose=({layers,...other})=>other,pivot=r=>[r.pack.frame,r.pack.pivot,r.pack.density],
+    own=source.layers.filter(l=>l.id.startsWith('coat151-')),
+    cloth=base.layers.find(l=>l.id==='own133-isolated'),lowerPass=q.layers.filter(l=>l.slot==='pants'&&l.id!=='lower-redrawn');
+  if(!cloth||lowerPass.length!==1||!own.length||!equal(pivot(donor),pivot(target))||!equal(pose(source),pose(q))||
+     !equal(source.layers.filter(l=>!own.includes(l)),base.layers)||
+     !equal(q.layers.filter(l=>l!==lowerPass[0]),base.layers.filter(l=>l!==cloth))||
+     !equal([lowerPass[0].binding,lowerPass[0].depth,lowerPass[0].depthTrack],
+            [cloth.binding,cloth.depth,cloth.depthTrack])||
+     !equal(outfitById.get(target.sourceId||target.id)?.paletteSourceMasks,control.paletteSourceMasks)||!equal(donor.paletteSourceMasks,control.paletteSourceMasks))return null;
+  const material=own.flatMap(l=>l.frames||[l.source]);
+  if(own.some(l=>l.depthTrack||![100,-1].includes(l.depth)||q.layers.some(k=>k.id===l.id||k.depth===l.depth))||
+    material.some(h=>!donor.sourceRefs.includes(h)||target.paletteSourceMasks?.[h]))return null;
+  const pack={...target.pack,directions:{...target.pack.directions,[direction]:{...q,layers:[...q.layers,...own]}}};
+  return {...target,id:target.id+':own-south-gait-torso:'+donor.id,pack,
+    equipment:{...target.equipment,torso:coat.item},sourceRefs:[...new Set([...target.sourceRefs,...material])],layeredSlots:true,omitted:[],
+    slotRoutes:{[lower.key]:{item:lower.item,quality:'hd',source:target.id},[coat.key]:{item:coat.item,quality:'hd',source:donor.id}}};
  }
  function selectSouthTorsoOnPants133(o,a,visible){
   const d=o.direction,action=o.action,item=visible.torso?.item,boot=visible.boots?.item;
@@ -2192,6 +3099,46 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  // The open B169 has a palette-sensitive gap at the authored pants hem.
  const standaloneFemaleNorthBoots=[8,9,134,141,148,155,162,176,183];
+ // B9 lateral idle: exact authored pair, repaired at ankle and toe of the saved
+ // neutral legs. The two body sources and signed boot passes are immutable.
+ const sideIdleB9Fit={"east":[["b4a73d3920e780be675e7d51e5df8c6ba3b43e84c07be4b18c53693a56925ce2","c3ba8f24892c0aa3f36ffb5dec3f59bde520bee308d09df53ca921e9a45c58fa"],{"boot9-0-rear":["b14aa3825ebd5f15964800f4c1525c7c7fa4dfa78fd4caff6365f438ed718e7e","0733361da7404fb820057a9ebe74dc9ffacb17d2b2bfa47b58f425aa2a32dd48"],"boot9-1-rear":["03d948a5e6e2893cc12e2f00b8356dd11515da99ec09f85e4a6f7f2eaa5504ed","658f7928b21c791313f208b2e17a75c37fd15e3685657ff61a52929f81bcc6eb"],"boot9-0-front":["d323799b144e9f2e012ada391fd142d767d4d03df3497041953ea8de32146f70","172d67b492a096379f378e4a4d1e7ff22052dde4c46ddd02dc54f57b4ff29cb6"],"boot9-1-front":["9e53ac4f85b5bbcd2e69056365efdc3680fab97f1051ae3d8b1d97d3752053d6","eb1d444b9a87a91d3fac172aa529d171569928339aeb3b07b3670ce9e9258973"]}],"west":[["da37943a03a54e8c3fe19ec0aded304178e7d438b65f2731cc53171121510b74","b8f9e8370d6fa8ddd94f2364e0f66837b231a1d2a2fe9f2881b8dee7a844c6eb"],{"boot9-0-rear":["d9c49bddfc60acfbfc60cd4077cb3c3c4d9a97a8ea76f693c51f163bb31229b2","3950d18d5084edebc870d60a266182c666b7583d28f0cc1a74736d9b371eab93"],"boot9-1-rear":["865f7853c71683b2a8aef803ffb5720c0767f3ea96d009992c9eb233b8992606","9a10452c78b5b067d38ec117eac1663a39a6fa550676f115c31d533a4822fe87"],"boot9-0-front":["a8da84fb8c4bff2f8eaacc66b3c88da52ceec1a11a621531f13fc18a23564da9","01108502271b779da2da1d32f5e73beada65736e3b12e404cca699e6d1d00a48"],"boot9-1-front":["2ed92830859e153ddcab7c15c370d4b550e18e6a34adacb708e99398bcfd0507","0977f55770adde8eefcbb3be215070aca33b0d2cf347a8115bb87ad81d9fa5c6"]}]};
+ const sideIdleB8Fit={"east":[["b4a73d3920e780be675e7d51e5df8c6ba3b43e84c07be4b18c53693a56925ce2","c3ba8f24892c0aa3f36ffb5dec3f59bde520bee308d09df53ca921e9a45c58fa"],{"boot8-0-rear":["f2f1f22be0b18332347d4947677f86136e153ddcd07a44fadce7b430f3b271d7","98d827bbe43260dd083642c0521a44bdb90d115ebfc3a2ea22c049865a9e6891"],"boot8-1-rear":["8a5cadf52764a14de8af819df43eb184f5fa8cb66a32bb2d125b1a6e52bd017d","89fefe3d826ca8e7807694b4a98a581ed294171853f8d24bf0b02fac666e9d01"],"boot8-0-front":["74902a04beafc7ed3ea8ecf9ab2c8cbf70a16cfeaad3d272e154f718b4ae822c","8559b13caa692654e706f6e4b10c789817bda231be135bff312ec6974f713d9c"],"boot8-1-front":["5fcaae2cdd3eb4d0ed6147a52fbcad34050424e4665606e05bc7bbf5ca41d6e5","534dc124c73de31b03b40d3d53e51f9cf224d27588c97bf00a4ce0f8d9bd5b21"]}],"west":[["da37943a03a54e8c3fe19ec0aded304178e7d438b65f2731cc53171121510b74","b8f9e8370d6fa8ddd94f2364e0f66837b231a1d2a2fe9f2881b8dee7a844c6eb"],{"boot8-0-rear":["2e94ff06d89d11a4c56e528d94b18ff0316b9d71081b1aeb9d688759962a088a","8a1802a94379ce1307ee7d6257cb164b336df9164ada683adffa5be034a1a47f"],"boot8-1-rear":["373bd71efcf186bdb5eee4eaa83575c0de151a8738be4eeca32d9e92d3b35983","5c0170f5a0c18b711225092fa1e2fafc30a68c103325304ae511482b92165666"],"boot8-0-front":["cf68a04964943d8886d6b0a8efc16738333f1338bbad83fdda53ca48b9a16a23","55b48c87fce6a0f1519f172a50af1ceed8b382eeabd3970b250074af3e023440"],"boot8-1-front":["4a370b688aee41082773745b52152a576a598ac361785feb7263346e1d21d9a1","90541a580ab4e213f2cec12bec4af23ac769c1ff9aa4a7ac2b7019c228a52f1e"]}]};
+ const sideIdleB176Fit={"east":[["b4a73d3920e780be675e7d51e5df8c6ba3b43e84c07be4b18c53693a56925ce2","c3ba8f24892c0aa3f36ffb5dec3f59bde520bee308d09df53ca921e9a45c58fa"],{"boot176-0-rear":["ee444edb2b5d31d06670eba41b2a1a074ba399013e0b61e84d9dbfde6aa37a47","7ef3b4e628f828bc413ebcbaadba846e0aa4533c5100cb4f4f0a2fa496d543f5"],"boot176-1-rear":["e82f3e06aff6f8bb044c2a00ba0c25239a7cc0df24c910be8e5419999cfc3f36","d54f04e796a903fbea68a4e818cdd8f39f67b6a1b52e5be2b42506aa42b953f6"],"boot176-0-front":["a833396a2406bd6e953a171346d07592292573f35fc538909741680081a14a4a","77618e1e8d532e9db6e315267080673f76ed2783790cbf3a30d89293d53861b4"],"boot176-1-front":["3da3491161e018fff78f395bd861b7f4a43d7e801c05f31c48ce0bc1b575e9ba","3e244da5d036251ce00a67feb1b791da56a3bad01116f591b4c03b13fee1529b"]}],"west":[["da37943a03a54e8c3fe19ec0aded304178e7d438b65f2731cc53171121510b74","b8f9e8370d6fa8ddd94f2364e0f66837b231a1d2a2fe9f2881b8dee7a844c6eb"],{"boot176-0-rear":["af632a9795c9f9d7925490a07103ddf8993fdc7846758098d442f8b7b65c2d27","da2e1b854b912d12fc9f0e41af7e9daca4cddf420ca03a4f54089af537cc0050"],"boot176-1-rear":["9b4f02fa8adbe5ceee0617dfd34e55fd92b31decfd5157bf86c5f2941b5fd467","d1b35cdcf5c0a9e18a163c25413036ddda5225e36751e43ae620368fb8723ef9"],"boot176-0-front":["29edc0cfb3966559d6ebb7cbfc320f1d29734b2d55b2005179d87dd5c8da8188","a5c7368c4e95ce93a7894ebd513c1b3953de2fb2dc59f7de86cd82539be142ed"],"boot176-1-front":["74a0a7849531a00c78db66a81af12252a960cc8fee210f8032c256a0095827f0","affc58d7a9c2659caa20c8c86513809c76f98b943596c2f2902d9284d8256aba"]}]};
+ const sideIdleB134Fit={"east":[["b4a73d3920e780be675e7d51e5df8c6ba3b43e84c07be4b18c53693a56925ce2","c3ba8f24892c0aa3f36ffb5dec3f59bde520bee308d09df53ca921e9a45c58fa"],{"boot134-0-rear":["d68d3aef9f5168e08d44d92af2481069dca65d80ed14d9e410e77532cdf38be0","ea08e6d550086b52d78be4d90b987a9ee191d58a049749069e544ca76f65cc5e"],"boot134-1-rear":["f62f998379b2d1acd3e5ff6d08678ecf49c124f690bddc02ea1832aed486de9b","342dfddab3ff9e1df53b44ad29d021650e12db149c9741c7d3a99eda6d680d89"],"boot134-0-front":["a55e1149c723a9395b5b7484041c6ce43f149c10fbf9abb9520da2d166cfed1a","bc4b95d7fdb86b35c7a033c21f9067ea7bcd628cdc064b995275a16ac52e8f25"],"boot134-1-front":["4a5a779fffbd0c3065d4fe2003c9d7694a53d20a1bb6759e58ec7336c3db6dfb","cf177dfed6ba6c59d76f29f8ade49c675088719dd74fc60f83fc68f6253cbd2e"]}],"west":[["da37943a03a54e8c3fe19ec0aded304178e7d438b65f2731cc53171121510b74","b8f9e8370d6fa8ddd94f2364e0f66837b231a1d2a2fe9f2881b8dee7a844c6eb"],{"boot134-0-rear":["0f6478b6fe5eb8ab0ae8911004bf5dcb19a2df6874a68e574c47fd2a4fe17ac3","9ed6652dcdf1d1d5f0c67f8710c32c9d0f8003596da2369286082e38d61fea43"],"boot134-1-rear":["74715d97bda73ea858ce207fd362b0c67c2072d508eca9f03d1826e164f38715","9e927ba82f73f832d9370a07622ba2d413d19c1ab35d28eecccba8bde8a928b8"],"boot134-0-front":["96b470c73f5b7474e222f46e83346d15a48d39cfb6fa750193bbb299b36618e5","754157e55bdd4a13dcd66f713ec86bb6581415166647fe6fac7279a373dbe116"],"boot134-1-front":["a58d20339d2bc0237a8d5fd9eec3dffdb27e27815b8aafae39db085a8518e9b1","6913665ae2b0dc8410f04cfa07636af53bd43bf36bddb5b92f59abef61b766a2"]}]};
+ const sideIdleB183Fit={"east":[["b4a73d3920e780be675e7d51e5df8c6ba3b43e84c07be4b18c53693a56925ce2","c3ba8f24892c0aa3f36ffb5dec3f59bde520bee308d09df53ca921e9a45c58fa"],{"boot183-0-rear":["6b61c08eb7554b3991b37aa92748e445bfda99a4ae4ead5f679fedc8bfb50a00","53c19fb19a2f464c7c749266977eaadf5ed1adb7db85a70fafad1b33a587801a"],"boot183-1-rear":["53b5868e9b283c8c3c6ed43ef853adf26d8c3f1bafbfeee718ff2a640bc9d4f8","29482816a08ec9a223b39599955b2ea56781725b3151644c5f69599fe9bc6683"],"boot183-0-front":["7380541d3bf922af724fe141febfe9e6d5ef5ccb0ce577afad197b31898cce40","2f7944ebbfb2168b30e4cb353f7e93388a73d5a2ce7a50efd3772a9b01d32ed3"],"boot183-1-front":["ae77c074185a645b5ac285fd6b7748d58e1e63f0b3c052f2d647b4aa40e35cad","dbb01930338fe6f41249b5640d7f83b0d017e5772248ce84befa25634061de80"]}],"west":[["da37943a03a54e8c3fe19ec0aded304178e7d438b65f2731cc53171121510b74","b8f9e8370d6fa8ddd94f2364e0f66837b231a1d2a2fe9f2881b8dee7a844c6eb"],{"boot183-0-rear":["93f4e85f357b66b77bc45d779414e7067113872b3bc388bf9ded8fccbd5f361e","277ef4c184d6e17e7183c04cf1ade7b9607a99338c6cc38d6528dbdbd5730f99"],"boot183-1-rear":["e8ab8e4a83cbc571292cdd52a0b79d8b283471df53b2f565846f7712d578b0ad","a891081881c1a69d72cb190d33cd99397ee2fcc468a14d4bb1f43cd5d4ca4f5e"],"boot183-0-front":["7e70353f3f725ad982d0821756c5607f8b5af8aa144a487cd60660fbdaf40a1b","13bc9b61c23a56ad3b3fb6c13528a3e31996bcb0af98e6a71ed0e59be58f6753"],"boot183-1-front":["99d44a1cb74d6147e944743e9f83172ed77b64281c793beba24eba8bdf5b0056","785a1dd4608ea25e65e668a9efdcb7bd46c7ea435802b25418d1e0af1a3e0bcf"]}]};
+ const sideIdleB148Fit={"east":[["b4a73d3920e780be675e7d51e5df8c6ba3b43e84c07be4b18c53693a56925ce2","c3ba8f24892c0aa3f36ffb5dec3f59bde520bee308d09df53ca921e9a45c58fa"],{"boot148-0-rear":["16ebc0f20dfceaef14bba1413f4ff8c9314fb9bb5c5eaca95b9271bd4371c617","73c528eae84aa008d44afae9c18ef2e1d92576c74743f334f7cde3a9ba0a888a"],"boot148-1-rear":["d25367df1d568e6b7a97ccf544a5e5c455cb53ce2fcee0a5dc43c5d566374b63","7222ed23506c990ff32bd704a2c8981f16e38ef2f1e78ace05d30167cadfd6f6"],"boot148-0-front":["c176cde487c02ced1219838df757e8e8ab0af289eb65ac96224abbd8764cc553","31c22c9539ba77927b02f548b889fc8e60f18077f6a831ee8b85f19b8ffaf748"],"boot148-1-front":["8d46abdd24881d06c48b7bc8108df0e7b38ae05d8499beb67cd292ea6185bbde","6314cd1c990f31128c55bb4f8943a61e26e2b59d9bdcfb3da3209b04c60ccb29"]}],"west":[["da37943a03a54e8c3fe19ec0aded304178e7d438b65f2731cc53171121510b74","b8f9e8370d6fa8ddd94f2364e0f66837b231a1d2a2fe9f2881b8dee7a844c6eb"],{"boot148-0-rear":["36611160f9c17c6c951b8e0756560142b82686e207b78bc82449b1030e5bb31c","02d8fa5333048458c66fe59bb9dcaeab226a7223bbea796434b289b7a52cbefc"],"boot148-1-rear":["4e28713d02481ae896b7b84a7e7e45bf6b544da9998878a4cd3bf9a09cb022e4","3f5002253bbddd1971bd1fea3e68fb1f86f3093f2a286663c0b4a0c54db0367c"],"boot148-0-front":["90853af5ec6e8317b4c9feda39a89a59ed54f8b637bcf9fb6f33f487ca996bc4","3ebf154e21a9245576edceeca47d0d8795cc5cf266a6c876e948c4268dd3fd52"],"boot148-1-front":["01af3463e69f7c665ca44e155d88fc5829b2c3e080e58976f450c9a8d1853aa5","846235aeb5a041efc8e9803114f0416e68d06c5f1e7e9213706f564459e90391"]}]};
+ const sideIdleB162Fit={"east":[["b4a73d3920e780be675e7d51e5df8c6ba3b43e84c07be4b18c53693a56925ce2","c3ba8f24892c0aa3f36ffb5dec3f59bde520bee308d09df53ca921e9a45c58fa"],{"boot162-0-rear":["2cbbe402f7cf6a6f616d7fe1e3881c92acf9fa5195aa1902ece0aaa4bb615a8d","80115d4dd82284c4a20963d3eb3f39d5755eea509d14b972a2427c624d9775ad"],"boot162-1-rear":["3b561d0d34b8277b88b7e3558fea8b7a3826792afc0fce936b037717a5ac6104","72f108a1963468ac593829bbde1b3026aa24cd5435a0da22f825f221a0f2d2aa"],"boot162-0-front":["a704561c4ad9ef64f2cfc605569dd577e4c91553280923fa91482e05ad5aa244","ade294ed676279696cd6ff32fca3e308d85b0f630f67309379e3c21f2e2db5c8"],"boot162-1-front":["56e985f93a2614a92d69089b2273cb37f315adcef7f56d55915d3582992d4c3d","520bbd0dd25dfb2cfa17222ddf928751d94979a9b2492a6f9fd19e52f5769706"]}],"west":[["da37943a03a54e8c3fe19ec0aded304178e7d438b65f2731cc53171121510b74","b8f9e8370d6fa8ddd94f2364e0f66837b231a1d2a2fe9f2881b8dee7a844c6eb"],{"boot162-0-rear":["716507cc5f959c35552879798573baf3104a0c31d9d331c112ab1c46d1151e24","3f09f39bd7ccbf2f7384f9ab39b8638424e6b49cc7e5cc58055671b370799a50"],"boot162-1-rear":["868cf4881063c4ca01c1700cb5ec59a05697a803ab280e6a35e7c2aeeb60068b","4d780d15311d1c94a8720274d6be377e60bf9cad09fc39bc988b0149c48cdd02"],"boot162-0-front":["279f7f1bdfef9ead93a25bee42a7422e8357d7bd62e58d25cd4800964aa2b199","dec47ef3a005809751413ec6d05628737bdbe2a040be2e3df0233d7466565ad1"],"boot162-1-front":["20c66a99dfa4f58b767def5dffe2c9e0e9c31d435a6b3e5a1ccaac21abdf32ef","b0c8b38015ab792aafdfef829a0dc93bc06cf0d9365893a3a76ff18fc684e6f0"]}]};
+ const sideIdleB141Fit={"east":[["b4a73d3920e780be675e7d51e5df8c6ba3b43e84c07be4b18c53693a56925ce2","c3ba8f24892c0aa3f36ffb5dec3f59bde520bee308d09df53ca921e9a45c58fa"],{"boot141-0-rear":["d555b669844eac9d67aa510e08993e7f99d3a535c9e3c0246a76dc78d71b4fd4","87e4ad4f9e29c89bff76026f918f4631379c0608040787324d95ff6b4c7e9c8c"],"boot141-1-rear":["9684c05b7c7a822c832a3970b81d60be3cc0447623e76aecc0d38558eeea3d51","e5c2f89d9b2062432d17d2010813632ad08507e5d3ba252196b72d0881113a8c"],"boot141-0-front":["0236c1cfc4a5a36955fa8afd5c4c844aec2d2ea46b694c843c960bdd9d5aa5ac","da455aa53f45f041d433c4c0f7246eec39baf2db6e03bfff2eac9001cb2d5bc3"],"boot141-1-front":["21a3d4d2a27e4dab20fdb17b40f371b29d30a3503f2db8294ebeff57d3262900","c135938c1a555c18937938d1fa966544ea60c53217dd75f4de2c1522244e016a"]}],"west":[["da37943a03a54e8c3fe19ec0aded304178e7d438b65f2731cc53171121510b74","b8f9e8370d6fa8ddd94f2364e0f66837b231a1d2a2fe9f2881b8dee7a844c6eb"],{"boot141-0-rear":["598b206396e22ae87d685dd93ea2fd192f3f1ed41603483aeed04b6f5f1f9a0a","8771f444eb6133ed663a5be40a53d201a6f2d80c91038244f5164a4188ddffa2"],"boot141-1-rear":["ba23d595d70378a8f5aac3984e233b568adaf7cf8a51fc00a5bb3564d52dd128","30c8f9eafad68fcd2fc80110cd25e84dc467be0441e4e50472a4e5904e1faad6"],"boot141-0-front":["4d8307d45b93ac38d64a53905dedc2499c916f657895ee8e8d7efe3cefa67a81","c9a3287b6380e954c5e8cc5d2379f53517eda18bd0818de6177c3f91521894e0"],"boot141-1-front":["be3b1d992e6e983b6abffa9fdf831ec54da6aab9912b0a3691612f498c8aaa34","639eb27d3018660e065f3f171a476520af9636225925d79431269cfef17155ea"]}]};
+ const sideIdleB155Fit={"east":[["b4a73d3920e780be675e7d51e5df8c6ba3b43e84c07be4b18c53693a56925ce2","c3ba8f24892c0aa3f36ffb5dec3f59bde520bee308d09df53ca921e9a45c58fa"],{"boot155-0-rear":["324f7f01c63419c94fbef634e83763934b33daa9e197e16ae5080eda5b2e0214","eb0ff01a0575806233193666afc6e24abc41e237cc527289461837b9eede1187"],"boot155-1-rear":["726f6f138d0ea0ecb95a7ad3417960dbdd3fa37c6caae08fa9ecfa182753af22","bdd84cf743e6e588184fb404423a75e6984145b4d8c096d2cd9ce5f177295cd0"],"boot155-0-front":["0f81939dba9df2ee819ed230c10a365ff40beb9259a23645b1f29c6814fae339","123a285509956fb5b2a11717bf46e0032af1f91bb687de4411c1b88d763fc8ca"],"boot155-1-front":["061d7139df4176fc92b08eeb8249eefa3554f14a4099078bfb6a5daf993e2af6","6e88d2d905c7e36d2c8cb1ec02ade130bd1a28ced93d21cc33df3b65d80ed0fa"]}],"west":[["da37943a03a54e8c3fe19ec0aded304178e7d438b65f2731cc53171121510b74","b8f9e8370d6fa8ddd94f2364e0f66837b231a1d2a2fe9f2881b8dee7a844c6eb"],{"boot155-0-rear":["aaf8583de39b1736871a89ee879cb4dfd2624f0794c3659b89fbe8bd2d65800c","b5a9b89dec39ff22c9a85c4e48ca84a92fb074b93159c0a95f79c16176499d72"],"boot155-1-rear":["7c5b5e01ebbc0a0f58ff21bcd4899cd8c61953f8a57d7522c014d323d0136240","5c54098482e06e03877411532d531934aaff71e342eac5c1789816ae57d4c05f"],"boot155-0-front":["b805248be0c888416038527a06fb03c2aa6b76106157d23c118ba2613af7f692","eaa1d9d881eac1694713a87b6ae4dc5a4eee32f4613dd2cdb83f4f4ce20b1894"],"boot155-1-front":["6145c9e59d6ce5bdd73c5db374844ac6b9dcccf19dadaf6d276ed99f9831223a","3de9b2bcd2de4297149bb8b102312834639fad8db1b7dc76f1d89fb83375e061"]}]};
+ const sideIdleB169Fit={"east":[["b4a73d3920e780be675e7d51e5df8c6ba3b43e84c07be4b18c53693a56925ce2","c3ba8f24892c0aa3f36ffb5dec3f59bde520bee308d09df53ca921e9a45c58fa"],{"boot169-0-rear":["4b1d067dbff02aaeb5a7580f006498e32cfafd5baef6fb1fd3bfe5523071d193","05e42801e40ce262ba19109de89b32b217776202bd466559974e53da9113bdc5"],"boot169-1-rear":["e6fb937e8e34c29b185e3bf3c964abafb84ab69971cbd4f82b6c0c29c0620923","d0cc7ca6b4403d59abcfe536a3411205e769bca926a40a9cd7ee1fbf31c368dc"],"boot169-0-front":["ad990163ab9fa92a5133697893e8afeba7b1b84dd3ec506fbb4ca9965b416e33","72df264b6daf1b60361b8875dacd5baef448cc6fe0ea03f97e47d02f166b82b1"],"boot169-1-front":["08002bd377b5e3bc2d077137792b9702501b70c6fec6733f8ca25eea7215a82e","e1237b06eb64e60447c21d9141fea5704d65302983567821e4b018b3c10567fb"]}],"west":[["da37943a03a54e8c3fe19ec0aded304178e7d438b65f2731cc53171121510b74","b8f9e8370d6fa8ddd94f2364e0f66837b231a1d2a2fe9f2881b8dee7a844c6eb"],{"boot169-0-rear":["724571ec742dad79bc961cc4ac65247b19c6a3990b8467fa37e7381aca33521d","967a6763e6c2ae2a5dec199803a1a16f1e6c4971b259dbfb086d6a8a6d4f6200"],"boot169-1-rear":["a966375af74a12d1c5d0543475ad1e46f95136a57e023b59bd04daa79af8130d","078f29a575681477afb132f44441fae225f9cffab1f15ccc17f066550c3015f6"],"boot169-0-front":["5e05ed7fea7c2756e7ef6ad8e4df39fb4591d1b022f514142dbd64b11a0dfdbd","eb9fa0aba81172e469b7dc4210f730499d22d59903cc940a13b72751592e7da9"],"boot169-1-front":["9eec843f32d7d78a4cc4ea6983019c0d1342e16d2b0dc1ccccc45141cf361148","c398a25ef7cfb967a490f75dd0f5678b726610eb74151ce0af540f4bf70b46e0"]}]};
+ const femaleLateralBootFit={141:sideIdleB141Fit,155:sideIdleB155Fit,169:sideIdleB169Fit,148:sideIdleB148Fit,162:sideIdleB162Fit,134:sideIdleB134Fit,183:sideIdleB183Fit,8:sideIdleB8Fit,9:sideIdleB9Fit,176:sideIdleB176Fit};
+ function selectFemaleFittedSideIdleBoot(player,o,visible){
+  const b=visible.boots,dir=o.direction,signed=femaleLateralBootFit[b?.item]?.[dir],raw=player.appearance96||{};
+  if(o.consumer!=='world'||o.action!=='idle'||o.weaponless||!signed||
+     !root.MareAppearance96?.skins?.[raw.skinColor??raw.skin])return null;
+  const equipment={...player.equipment};delete equipment[b.key];
+  const base=selectVisualStrict({...player,equipment},o),d=base?.pack?.directions?.[dir],
+    donor=outfitById.get('frozen-v47-female-151-boot'+b.item+'-'+dir+'-idle'),s=donor?.pack?.directions?.[dir],
+    eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!d||base.body!=='female'||base.hdKind||base.fixedIdleBoots||base.headRecord||base.gearOnlyRecord||
+     base.sourceId!=='female-idle-original-'+dir+'-from-walk0'||base.omitted?.length||
+     base.mirrorX||base.sourceRasterPadding||!s||!donor.frozenBootContract||donor.productionEnabled===false||
+     !['frame','pivot','density'].every(k=>eq(base.pack[k],donor.pack[k]))||
+     !eq(d.clip,{frames:1,fps:1,loop:false})||!eq(s.clip,d.clip)||
+     !eq(['legs','shorts'].map(k=>d.layers.find(l=>l.id===k&&l.binding?.kind==='fixed'&&l.frames?.length===1)?.source),signed[0]))return null;
+  const source=s.layers.filter(l=>l.id.startsWith('boot'+b.item+'-'));
+  if(source.length!==4||source.some(l=>!signed[1][l.id]||l.binding?.kind!=='fixed'||
+     l.depth!==(l.id.endsWith('rear')?-1:l.id==='boot'+b.item+'-1-front'?46:45)||l.source!==signed[1][l.id][0]||
+     !eq(l.frames,[l.source])||!donor.sourceRefs.includes(l.source)))return null;
+  const layers=source.map(l=>({...l,depth:l.depth===46?45:l.depth,source:signed[1][l.id][1],frames:[signed[1][l.id][1]]}));
+  for(const [slot,v] of Object.entries(visible))
+    if(slot!=='boots'&&(base.slotRoutes?.[v.key]?.quality!=='hd'||base.slotRoutes[v.key].item!==v.item))return null;
+  // Nested lower garment is the base of the boot passes. Leaving its
+  // outer fast-path marker here would return before drawing the boots.
+  const {authoredSideIdlePants,...outer}=base;
+  return describeSlots({...outer,id:base.id+':side-idle-b'+b.item+'-ankle-fit',equipment:{...base.equipment,boots:b.item},
+   fixedIdleBoots:{base,layers}},visible,[]);
+ }
  function selectFemaleNorthBootsOnly(player,o,visible){
   const boot=visible.boots?.item;
   if(o.action!=='idle'||o.direction!=='north'||Object.keys(visible).length!==1||!standaloneFemaleNorthBoots.includes(boot)||
@@ -2210,6 +3157,80 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const layers=coated.pack.directions.north.layers.filter(l=>l.id.startsWith('boot'+boot+'-')),
    fixedIdleBoots={base,layers};
   return describeSlots({...base,id:base.id+':bare-north-boot'+boot,equipment:{boots:boot},fixedIdleBoots},visible,[]);
+ }
+ // Same signed idle lower geometry, no outer boot or hand image replaced.
+ function selectFemaleCardinalOwnPantsWithBoot(player,o,visible){
+  const b=visible?.boots,p=visible?.pants,c=visible?.torso,dir=o.direction;
+  if(o.consumer!=='world'||o.action!=='idle'||!(dir==='north'||dir==='south'&&p?.item===22)||o.weaponless||
+     player.__reworkSubset||canonical(player.appearance96?.gender)!=='female'||!b||![21,22,133].includes(p?.item)||
+     Object.keys(visible).length!==(c?3:2))return null;
+  const equipment={};equipment[p.key]=p.value;if(c)equipment[c.key]=c.value;
+  const dressed=select({...player,equipment},o),q=dressed?.authoredSideIdlePants;
+  if(!q?.sourcePath||!dressed.id.endsWith(':own-'+dir+'-idle-pants:'+p.item))return null;
+  // If the current coat/boot route already owns both passes, retain its
+  // actual signed depth and its own openings.
+  const complete=c&&selectFemaleIdleBoots({...player,equipment:{[b.key]:b.value,[c.key]:c.value}},o,{boots:b,torso:c});
+  if(complete){
+   const host=complete,d=host.pack.directions[dir],core=q.base.pack.directions[dir];
+   if(!d||!['frame','pivot','density'].every(k=>JSON.stringify(host.pack[k])===JSON.stringify(q.base.pack[k]))||
+      JSON.stringify(d.layers.filter(l=>!l.id.startsWith('boot'+b.item+'-')))!==JSON.stringify(core.layers)||
+      JSON.stringify([d.clip,d.rest,d.poses])!==JSON.stringify([core.clip,core.rest,core.poses]))return null;
+   return describeSlots({...host,id:host.id+':own-'+dir+'-idle-pants:'+p.item,equipment:{...host.equipment,pants:p.item},
+    authoredSideIdlePants:{...q,base:host}},visible,[]);
+  }
+  const bootActor={...player,equipment:{[b.key]:b.value}},
+   bare=dir==='north'?selectFemaleNorthBootsOnly(bootActor,o,{boots:b}):selectVisualStrictCore(bootActor,o),
+   d=bare?.pack?.directions?.[dir],host=q.base.pack.directions[dir];
+  const phase0=bare?.authoredPantsLayer?.layers,
+   signedIdle=dir==='south'?outfitById.get('frozen-v47-female-151-boot'+b.item+'-south-idle')?.pack?.directions?.south:null,
+   layers=bare?.fixedIdleBoots?.layers??phase0?.map(l=>signedIdle?.clip?.frames===1&&signedIdle.layers.find(k=>
+    k.id===l.id&&k.depth===l.depth&&k.slot==='body'&&k.binding?.kind==='fixed'&&k.frames?.length===1&&k.frames[0]===l.frames[0])),
+   eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!layers||bare.omitted?.length||layers.length!==4||!layers.every(Boolean)||!['frame','pivot','density'].every(k=>eq(bare.pack[k],q.base.pack[k]))||
+     d.clip.frames!==1||host.clip.frames!==1||d.clip.loop!==host.clip.loop||
+     !Object.entries(d.rest).every(([k,v])=>eq(v,host.rest[k]))||
+     !Object.entries(d.poses[0]).every(([k,v])=>eq(v,host.poses[0][k]))||
+     !eq(d.layers,c?host.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)})):host.layers))return null;
+  if(c){
+   // Boots stay behind the signed coat (depth 100), including its hem;
+   // this is the same authored depth contract as the original C151 route.
+   if(q.base.hdKind!=='outfit'||layers.some(l=>q.base.sourceRefs.includes(l.source)||![-1,45].includes(l.depth))||
+      host.layers.some(l=>l.id.startsWith('boot')))return null;
+   const sourceRefs=[...q.base.sourceRefs,...layers.map(l=>l.source)],
+    pack={...q.base.pack,directions:{[dir]:{...host,layers:[...host.layers,...layers]}}},base={...q.base,pack,sourceRefs};
+   return describeSlots({...dressed,id:dressed.id+':own-'+dir+'-boot:'+b.item,pack,sourceRefs,
+    equipment:{...dressed.equipment,boots:b.item},authoredSideIdlePants:{...q,base}},visible,[]);
+  }
+  if(host.layers.some(l=>l.depth<=-1||l.depth>=45))return null;
+  const {authoredSideIdlePants,...outer}=dressed;
+  return describeSlots({...outer,id:dressed.id+':own-'+dir+'-boot:'+b.item,equipment:{...dressed.equipment,boots:b.item},
+   fixedIdleBoots:{base:dressed,layers}},visible,[]);
+ }
+ // Keep the already signed South wrist/visible-hand source attached above
+ // the exact same anatomy when this independent trouser replaces shorts.
+ function selectFemaleSouthOwnPantsWithGlove(player,o,visible){
+  const p=visible?.pants,g=visible?.gloves;
+  if(o.consumer!=='world'||o.action!=='idle'||o.direction!=='south'||o.weaponless||p?.item!==22||!g||
+    Object.keys(visible).some(k=>!['pants','gloves','boots','torso'].includes(k))||
+    canonical(player.appearance96?.gender)!=='female')return null;
+  const {hairStyle,eyeStyle,skinColor,hairColor,eyeColor}=player.appearance96,
+   look={body:'female',hair:hairStyle,face:eyeStyle,skin:skinColor,hairColor,eyeColor},
+   equipment={...player.equipment};delete equipment[g.key];
+  const receiver=selectVisualStrict({...player,equipment},o),
+   q=receiver?.authoredSideIdlePants??receiver?.fixedIdleBoots?.base?.authoredSideIdlePants,
+   known=selectFemaleSouthIdleOwnGlove({...player,equipment:{[g.key]:g.value}},o,look,{gloves:g}),
+   own=known?.authoredPantsLayer?.layers,eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!q?.sourcePath||!receiver.id.includes(':own-south-idle-pants:22')||receiver.omitted?.length||
+     !known?.ownSouthIdleGloveCuff||own?.length!==1||!own[0].protectIdleGloveHand||!own[0].frames?.[0])return null;
+  const a=receiver.pack.directions.south,b=known.pack.directions.south,
+   core=d=>d.layers.filter(l=>['arms-phase','torso-anatomy'].includes(l.id.replace(/^base:/,''))).map(l=>({...l,id:l.id.replace(/^base:/,'')}));
+  if(!['frame','pivot','density'].every(k=>eq(receiver.pack[k],known.pack[k]))||
+    a.clip.frames!==1||b.clip.frames!==1||!eq(core(a),core(b))||
+    !Object.entries(b.rest).every(([k,v])=>eq(v,a.rest[k]))||
+    !Object.entries(b.poses[0]).every(([k,v])=>eq(v,a.poses[0][k])))return null;
+  return {...receiver,id:receiver.id+':signed-own-south-idle-wrist:'+g.item,equipment:{...receiver.equipment,gloves:g.item},
+   slotRoutes:{...receiver.slotRoutes,[g.key]:known.slotRoutes[g.key]},omitted:[],
+   ownSouthPantsWrist:{base:receiver,glove:own[0].frames[0],mask:own[0].protectIdleGloveHand}};
  }
  function selectFemaleNorthBootOnPants(player,o,visible){
   if(o.action!=='idle'||o.direction!=='north'||Object.keys(visible).length!==2||
@@ -2591,17 +3612,64 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   "north:walk":[["v7-male-walk-drawn-north-north"],[["glove25-north-left","fd1de38775295e8b487868365e8fbae337c29235c94a7f65aaf18a8f0478d39a","LEFT ARM"],["glove25-north-right","da332118e27be7d6c0d5d77f2307170df54a235e2de0fd20648861238219a216","RIGHT ARM"]],[["glove26-north-left","f985f4335bf337d0cbb0bf06a6d0ee13452ccd6402850e3608adb09166b18f0a","LEFT ARM"],["glove26-north-right","db7de3e5bdd7e6f89da3c203bf82c7fc540c97030ed66ad56748b856ff342840","RIGHT ARM"]]],
   "south:walk":[["male-walk-south-r7"],[["glove25-screen-left","99fb777d55448f73d2d9aa010d20d036e3ddde53d71148302b8f6af71283be33","RIGHT ARM"],["glove25-screen-right","e1d46ced72d00defb195e9a654b2f86a7d4a48e905d046dd8cf56ee57f03d073","LEFT ARM"]],[["glove26-screen-left","bbc0af8095780c517f39c6641b1ca5b7dd9cd9b0966fd8a4e89621ff24cf911c","RIGHT ARM"],["glove26-screen-right","005e2acdec650e4bc11b9b4b50f23187667df4bfb92c4dbd87d7e609e9db7aeb","LEFT ARM"]]],
  };
- function selectMaleBareGloveLocomotion(player,o,visible){
+ // Own forearm passes for the matching North rig. These witnesses are not weapon clearance.
+ const maleNorthAdditionalGloves={
+  "idle":{
+   131:[["glove131-north-left","b25687aaf3091f6d6181426492b3afd17250109857a9049b96ae90c953d21444","LEFT ARM"],["glove131-north-right","99d92b2ded043aabba04f7058502840c5d92aee26263f286230942cae02edf67","RIGHT ARM"]],
+   138:[["glove138-north-left","d5359abf78c50a1c042fdae5fedc4fdf9d22453621663188c7d41bd736e6e47b","LEFT ARM"],["glove138-north-right","5ea55c61f1906ae3eb063036afd90bceb61e305872982780385233a908e4c2c3","RIGHT ARM"]],
+   145:[["glove145-north-left","0a416a7ea2224d4e78d794ad169dd211d6639a28663a8fa2cc1fa188c2910e5d","LEFT ARM"],["glove145-north-right","d4245b2cc5856a634f59d8ef6ddbb36c3fb099156d9e0e26327df8398244358f","RIGHT ARM"]],
+   152:[["glove152-north-left","5ecec740a482e846f3e985786353b3748a436332764ca740aadef0221fc463e9","LEFT ARM"],["glove152-north-right","0f089a6e27e6891e2243d47646be954713819c8181ed5a252b036b183bdfa461","RIGHT ARM"]],
+   159:[["glove159-north-left","17bf738b2cad863b0d0c69adfea222fc315a30b7eeac59d9f12f6facd4032dfd","LEFT ARM"],["glove159-north-right","bda8ee9688510e1485b4d0e102ebf8bff5f427845914ad1e27e29e5226ddce34","RIGHT ARM"]],
+   166:[["glove166-north-left","883f6a953d5c53264a18a2e1c643f67d6a4767cc281f3b8d546e15cc9a31d45c","LEFT ARM"],["glove166-north-right","7beed3eb98555b3f04866ceb4cce5d68adaf8aa381b78e1ecdb60add41acd416","RIGHT ARM"]],
+   173:[["glove173-north-left","11d9aa7827f07f72e96c9c8859bdbab8ac0464600ef2d48566dac969e519510b","LEFT ARM"],["glove173-north-right","1e08bd74d76e772034cc72464d7bf71754d4469e9e74d9be21a5006411d63a4d","RIGHT ARM"]],
+   180:[["glove180-north-left","bf312d58679b26e95562da837eb628c53191e47a59c80ccd2427b75be0f4fefc","LEFT ARM"],["glove180-north-right","f912b0cca5407653a7709721530a81ee7ff36d79d41ff0b343578492706c2397","RIGHT ARM"]],
+  },
+  "walk":{
+   131:[["glove131-north-left","b25687aaf3091f6d6181426492b3afd17250109857a9049b96ae90c953d21444","LEFT ARM"],["glove131-north-right","99d92b2ded043aabba04f7058502840c5d92aee26263f286230942cae02edf67","RIGHT ARM"]],
+   138:[["glove138-north-left","d5359abf78c50a1c042fdae5fedc4fdf9d22453621663188c7d41bd736e6e47b","LEFT ARM"],["glove138-north-right","5ea55c61f1906ae3eb063036afd90bceb61e305872982780385233a908e4c2c3","RIGHT ARM"]],
+   145:[["glove145-north-left","0a416a7ea2224d4e78d794ad169dd211d6639a28663a8fa2cc1fa188c2910e5d","LEFT ARM"],["glove145-north-right","d4245b2cc5856a634f59d8ef6ddbb36c3fb099156d9e0e26327df8398244358f","RIGHT ARM"]],
+   152:[["glove152-north-left","5ecec740a482e846f3e985786353b3748a436332764ca740aadef0221fc463e9","LEFT ARM"],["glove152-north-right","0f089a6e27e6891e2243d47646be954713819c8181ed5a252b036b183bdfa461","RIGHT ARM"]],
+   159:[["glove159-north-left","17bf738b2cad863b0d0c69adfea222fc315a30b7eeac59d9f12f6facd4032dfd","LEFT ARM"],["glove159-north-right","bda8ee9688510e1485b4d0e102ebf8bff5f427845914ad1e27e29e5226ddce34","RIGHT ARM"]],
+   166:[["glove166-north-left","883f6a953d5c53264a18a2e1c643f67d6a4767cc281f3b8d546e15cc9a31d45c","LEFT ARM"],["glove166-north-right","7beed3eb98555b3f04866ceb4cce5d68adaf8aa381b78e1ecdb60add41acd416","RIGHT ARM"]],
+   173:[["glove173-north-left","11d9aa7827f07f72e96c9c8859bdbab8ac0464600ef2d48566dac969e519510b","LEFT ARM"],["glove173-north-right","1e08bd74d76e772034cc72464d7bf71754d4469e9e74d9be21a5006411d63a4d","RIGHT ARM"]],
+   180:[["glove180-north-left","bf312d58679b26e95562da837eb628c53191e47a59c80ccd2427b75be0f4fefc","LEFT ARM"],["glove180-north-right","f912b0cca5407653a7709721530a81ee7ff36d79d41ff0b343578492706c2397","RIGHT ARM"]],
+  },
+ };
+ // Additional South forearm sources, for the bare resolved rig only.
+ const maleSouthAdditionalGloves={
+  "idle":{
+   131:[["glove131-screenLeft-r1","3ac08b3f88d82d29c4cc4d3259c5dc079b690040c66b9df58115eea481e08a90","RIGHT ARM"],["glove131-screenRight-r1","d7435d2d1ba27c2ce34f6fbddf5431b88cc6b5cf01b8e7c0f34705c0a4ca3474","LEFT ARM"]],
+   138:[["glove138-screenLeft-r1","260811f73d8dd72ba3d2676427874f63ae0da1a112cd3a09281d6e9784b13d77","RIGHT ARM"],["glove138-screenRight-r1","98d05fdedaa3b73358d403e040de6752e80e75d0e8102d95d337079cb45a6535","LEFT ARM"]],
+   145:[["glove145-screenLeft-r1","4b8fa4df4dbdebcd1844ad5b773114f13348948619c77a7a23935588b665e904","RIGHT ARM"],["glove145-screenRight-r1","9e70eb7abd851865bdb4b3cae0d2dc6bf5f5d433ba09138673ffa014189b60da","LEFT ARM"]],
+   152:[["glove152-screenLeft-r1","e6dae6a34139c41e592b0db6e9cc567f257a207ff82d71c5136ac38cda46de10","RIGHT ARM"],["glove152-screenRight-r1","bd15ad949956b75db9c71a5736c0a238032e5d86117573c6de4a727f4e890a20","LEFT ARM"]],
+   159:[["glove159-screenLeft-r1","42581a9d26d9aac53a30d050f505838867aa534793d980a651f11ab433a1d0eb","RIGHT ARM"],["glove159-screenRight-r1","f73d7a0e4c0dce740ba1ac694bb94f6643fc8a59df86b5d274cd09b9131d8fd4","LEFT ARM"]],
+   166:[["glove166-screenLeft-r1","12f9f28b4e8959b0eb6cb7cfd02d76d4f25782b13968227a21f97abbbeb0a8a1","RIGHT ARM"],["glove166-screenRight-r1","c22444951a3e227ab98b3c2107cf10033be8ebff9cd59408d5fef08243e63037","LEFT ARM"]],
+   173:[["glove173-screenLeft-r1","07d73ab7923d5c8d00f893fe565353b07e016e06f2928b5c9715bbfead15720e","RIGHT ARM"],["glove173-screenRight-r1","5eaa9ae71043ecf10e68a73dbee3898719e3f3e8925aaa537394c0401e04e4da","LEFT ARM"]],
+   180:[["glove180-screenLeft-r1","a034d3e5d45055ba834f35a65adef2e7b9ca1bd35bd077daf77ea618b71ae1e2","RIGHT ARM"],["glove180-screenRight-r1","a3266b7d73ba9ede9ec2a3479a6361a22564b44cf3238db4a9642daa849dbfd9","LEFT ARM"]],
+  },
+  "walk":{
+   131:[["glove131-screenLeft-r1","3ac08b3f88d82d29c4cc4d3259c5dc079b690040c66b9df58115eea481e08a90","RIGHT ARM"],["glove131-screenRight-r1","d7435d2d1ba27c2ce34f6fbddf5431b88cc6b5cf01b8e7c0f34705c0a4ca3474","LEFT ARM"]],
+   138:[["glove138-screenLeft-r1","260811f73d8dd72ba3d2676427874f63ae0da1a112cd3a09281d6e9784b13d77","RIGHT ARM"],["glove138-screenRight-r1","98d05fdedaa3b73358d403e040de6752e80e75d0e8102d95d337079cb45a6535","LEFT ARM"]],
+   145:[["glove145-screenLeft-r1","4b8fa4df4dbdebcd1844ad5b773114f13348948619c77a7a23935588b665e904","RIGHT ARM"],["glove145-screenRight-r1","9e70eb7abd851865bdb4b3cae0d2dc6bf5f5d433ba09138673ffa014189b60da","LEFT ARM"]],
+   152:[["glove152-screenLeft-r1","e6dae6a34139c41e592b0db6e9cc567f257a207ff82d71c5136ac38cda46de10","RIGHT ARM"],["glove152-screenRight-r1","bd15ad949956b75db9c71a5736c0a238032e5d86117573c6de4a727f4e890a20","LEFT ARM"]],
+   159:[["glove159-screenLeft-r1","42581a9d26d9aac53a30d050f505838867aa534793d980a651f11ab433a1d0eb","RIGHT ARM"],["glove159-screenRight-r1","f73d7a0e4c0dce740ba1ac694bb94f6643fc8a59df86b5d274cd09b9131d8fd4","LEFT ARM"]],
+   166:[["glove166-screenLeft-r1","12f9f28b4e8959b0eb6cb7cfd02d76d4f25782b13968227a21f97abbbeb0a8a1","RIGHT ARM"],["glove166-screenRight-r1","c22444951a3e227ab98b3c2107cf10033be8ebff9cd59408d5fef08243e63037","LEFT ARM"]],
+   173:[["glove173-screenLeft-r1","07d73ab7923d5c8d00f893fe565353b07e016e06f2928b5c9715bbfead15720e","RIGHT ARM"],["glove173-screenRight-r1","5eaa9ae71043ecf10e68a73dbee3898719e3f3e8925aaa537394c0401e04e4da","LEFT ARM"]],
+   180:[["glove180-screenLeft-r1","a034d3e5d45055ba834f35a65adef2e7b9ca1bd35bd077daf77ea618b71ae1e2","RIGHT ARM"],["glove180-screenRight-r1","a3266b7d73ba9ede9ec2a3479a6361a22564b44cf3238db4a9642daa849dbfd9","LEFT ARM"]],
+  },
+ };
+ function selectMaleBareGloveLocomotion(player,o,visible,allowSouthNew=false){
   if(o.consumer!=='world'||o.weaponless||Object.keys(visible).length!==1)return null;
   const g=visible.gloves?.item,{direction,action}=o,authority=maleBareGloveLocomotion[direction+':'+action];
-  if(!authority||![25,26].includes(g)||!['original','hair-cropped'].includes(player.appearance96?.hairStyle??player.appearance96?.hair??'original'))return null;
+  const signed=g===25||g===26?authority?.[g-24]:direction==='north'?maleNorthAdditionalGloves[action]?.[g]:allowSouthNew?maleSouthAdditionalGloves[action]?.[g]:null;
+  if(!authority||!signed||!['original','hair-cropped'].includes(player.appearance96?.hairStyle??player.appearance96?.hair??'original'))return null;
   const base=select({...player,equipment:{}},o),donor=outfitById.get(`frozen-male-glove${g}-${direction}-${action}-native-layers`);
   const p=base?.pack,t=donor?.pack,d=p?.directions[direction],sd=t?.directions[direction],eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
   if(!base||base.hdKind||base.mirrorX||base.gearOnlyRecord||!authority[0].includes(base.sourceId)||!d||!sd||
      !donor.frozenGloveLayers||donor.equipment?.gloves!==g||p.density!==4||t.density!==4||
      !eq(p.frame,{width:128,height:128})||!eq(p.frame,t.frame)||!eq(p.pivot,t.pivot)||
      !eq(d.clip,sd.clip)||!eq(d.rest,sd.rest)||!eq(d.poses,sd.poses))return null;
-  const signed=authority[g-24],gloves=sd.layers.filter(l=>l.id.startsWith(`glove${g}-`));
+  const gloves=sd.layers.filter(l=>l.id.startsWith(`glove${g}-`));
   if(gloves.length!==2||!gloves.every((l,j)=>{
     const [id,hash,arm]=signed[j],side=arm==='LEFT ARM'?'Left':'Right';
     return l.id===id&&l.source===hash&&!l.frames&&l.depth===99.5&&
@@ -2616,13 +3684,38 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...base,id:base.id+':bare-locomotion-gloves'+g,authoredBareGloveLocomotion:{base,gloves,hashes:signed.map(row=>row[1])},omitted:[],
    slotRoutes:{[visible.gloves.key]:{item:g,quality:'hd',source:donor.id}}};
  }
- function selectMaleSouthIdleBareGlove(player,o,visible){
+ // The authored Compass projection does not enter either glove track's
+ // occupied pixels at any phase of this North native pose.
+ const northCarryGloveClearance={"item":16,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"LEFT","mirrorSource":false,"source":{"url":"assets/b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd.png","sha256":"b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd","size":[640,640],"sourceMember":"authored-ordered-16-east/0/equipment","nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":88.75,"y":76},"LEFT ARM":{"x":88.75,"y":89}},"targetRestBone":{"LEFT ELBOW":{"x":50.5,"y":58},"LEFT ARM":{"x":48.5,"y":72.25}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,14],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true};
+ function selectIndependentCarryGlove(player,o){
+  if(!player||player.zoanTransformed||player.__reworkSubset||o.consumer!=='world'||o.weaponless||
+     !['idle','walk'].includes(o.action)||!['north','south'].includes(o.direction)||slotEntry(player.equipment?.visual_completo))return null;
+  const visible=registeredEquipment(player,o),g=visible?.gloves,south=o.direction==='south';
+  if(south&&canonicalGaitItem(visible?.weapon?.item,'weapon')?.type!==player.classId)return null;
+  if(!g||!visible.weapon||Object.keys(visible).length!==2)return null;
+  const equipment={...player.equipment};delete equipment[g.key];
+  const r=selectVisualStrict({...player,equipment},o),own=(south&&selectMaleSouthIdleBareGlove(player,o,{gloves:g},true))||selectMaleBareGloveLocomotion(player,o,{gloves:g},south);
+  const proof=own?.authoredSouthIdleGlove||own?.authoredBareGloveLocomotion;
+  if(r?.hdKind!=='carry'||!proof||r.item!==visible.weapon.item||r.base?.mirrorX||r.headRecord||r.gearOnlyRecord)return null;
+  const originalCompass=!south&&[25,26].includes(g.item)&&JSON.stringify(r.plan)===JSON.stringify(northCarryGloveClearance);
+  if(!originalCompass&&!certifiedCarryGloveClearance(r,proof.gloves))return null;
+  const p=r.base.pack,d=p.directions[o.direction],other=proof.base.pack,y=other.directions[o.direction];
+  const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!['frame','density','pivot'].every(k=>eq(p[k],other[k]))||!eq(d.clip,y.clip)||!eq(d.rest,y.rest)||!eq(d.poses,y.poses)||
+     !['armRight','armLeft','handRight','handLeft'].every(id=>eq(d.layers.find(l=>l.id===id),y.layers.find(l=>l.id===id)))||
+     proof.gloves.some(l=>d.layers.some(a=>a.id===l.id||a.depth===l.depth||a.depthTrack)))return null;
+  const independent={...r,id:r.id+':independent-carry-glove:'+g.item,independentCarryGlove:{base:r,gloves:proof.gloves,hashes:proof.hashes}};
+  return south?{...independent,layeredSlots:true,omitted:[],slotRoutes:{
+   [visible.weapon.key]:{item:visible.weapon.item,quality:'hd',source:r.id},[g.key]:own.slotRoutes[g.key]
+  }}:describeSlots(independent,visible,[]);
+ }
+ function selectMaleSouthIdleBareGlove(player,o,visible,allowSouthNew=false){
   if(o.consumer!=='world'||o.direction!=='south'||o.action!=='idle'||o.weaponless||Object.keys(visible).length!==1)return null;
   const g=visible.gloves?.item;
   const signed={
    25:['99fb777d55448f73d2d9aa010d20d036e3ddde53d71148302b8f6af71283be33','e1d46ced72d00defb195e9a654b2f86a7d4a48e905d046dd8cf56ee57f03d073'],
    26:['bbc0af8095780c517f39c6641b1ca5b7dd9cd9b0966fd8a4e89621ff24cf911c','005e2acdec650e4bc11b9b4b50f23187667df4bfb92c4dbd87d7e609e9db7aeb']
-  }[g];
+  }[g]??(allowSouthNew?maleSouthAdditionalGloves.idle[g]?.map(x=>x[1]):null);
   if(!signed)return null;
   const base=select({...player,equipment:{}},o),donor=outfitById.get(`frozen-male-glove${g}-south-idle-native-layers`);
   const p=base?.pack,t=donor?.pack,d=p?.directions.south,sd=t?.directions.south;
@@ -2631,7 +3724,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      !donor?.frozenGloveLayers||donor.equipment?.gloves!==g||base.gearOnlyRecord||!['original','hair-cropped'].includes(player.appearance96?.hairStyle??player.appearance96?.hair??'original')||
      p.density!==4||t?.density!==4||!eq(p.frame,{width:128,height:128})||!eq(p.frame,t.frame)||
      !eq(p.pivot,t.pivot)||!eq(d.clip,sd.clip)||!eq(d.rest,sd.rest)||!eq(d.poses,sd.poses))return null;
-  const gloves=sd.layers.filter(l=>l.id.startsWith(`glove${g}-screen-`));
+  const extra=allowSouthNew?maleSouthAdditionalGloves.idle[g]:null;
+  const gloves=sd.layers.filter(l=>extra?extra.some(x=>x[0]===l.id):l.id.startsWith(`glove${g}-screen-`));
   if(gloves.length!==2||!gloves.every((l,j)=>l.slot==='foreground'&&l.depth===99.5&&
     (l.frames?.[0]??l.source)===signed[j]&&(!l.frames||l.frames.length===1)&&donor.sourceRefs.includes(signed[j])&&
     eq(l.binding,d.layers.find(x=>x.id===(j===0?'handRight':'handLeft'))?.binding)))return null;
@@ -2651,7 +3745,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     pants.item===133&&d!=='south')return null;
   const item=pants.item;
   const {[pants.key]:removed,...equipment}=player.equipment;
-  const base=selectVisual({...player,equipment},o);
+  const base=selectVisualStrict({...player,equipment},o);
   if(base?.hdKind!=='outfit'||base.body!=='male'||base.direction!==d||base.omitted?.length||
      base.equipment?.torso!==coat.item||Object.keys(base.equipment).length!==1||base.mirrorX||base.sourceRasterPadding)return null;
   const donor=outfitById.get('male-pants'+item+'-'+base.action+'-'+d+(item===133?'-isolated-r2':''));
@@ -2681,7 +3775,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(d!=='south'||!['idle','walk'].includes(action)||pants?.item!==168||coat?.item!==6||
     Object.keys(visible).length!==2||o.weaponless)return null;
   const {[pants.key]:removed,...equipment}=player.equipment;
-  const base=selectVisual({...player,equipment},o),donor=outfitById.get('frozen-male-pants168-south-'+action+'-v47');
+  const base=selectVisualStrict({...player,equipment},o),donor=outfitById.get('frozen-male-pants168-south-'+action+'-v47');
   if(base?.hdKind!=='outfit'||base.body!=='male'||base.action!==action||base.direction!==d||base.equipment?.torso!==6||
     Object.keys(base.equipment).length!==1||base.omitted?.length||base.mirrorX||base.mirrorLayerIDs?.length||base.sourceRasterPadding||
     !donor?.frozenPantsSource||donor.productionEnabled===false||donor.body!=='male'||donor.direction!==d||donor.action!==action||
@@ -2712,7 +3806,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!['east','west'].includes(d)||action!=='walk'||pants?.item!==133||coat?.item!==6||
     Object.keys(visible).length!==2||o.weaponless)return null;
   const {[pants.key]:removed,...equipment}=player.equipment;
-  const base=selectVisual({...player,equipment},o),donor=outfitById.get('male-pants133-walk-'+d+'-source-v18-candidate');
+  const base=selectVisualStrict({...player,equipment},o),donor=outfitById.get('male-pants133-walk-'+d+'-source-v18-candidate');
   if(base?.hdKind!=='outfit'||base.body!=='male'||base.action!==action||base.direction!==d||base.equipment?.torso!==6||
     Object.keys(base.equipment).length!==1||base.omitted?.length||base.mirrorX||base.sourceRasterPadding||
     donor?.productionEnabled===false||donor?.body!=='male'||donor.direction!==d||donor.action!==action||
@@ -2735,6 +3829,491 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     pack:{...p,directions:{...p.directions,[d]:{...s,layers:[...s.layers,layer]}}},
     slotRoutes:{[coat.key]:{item:6,quality:'hd',source:base.id},[pants.key]:{item:133,quality:'hd',source:donor.id}}};
  }
+ // Existing independently authored boot RGBA already used with saved skin.
+ const registeredSouthPaletteIndependent={"idle":{"boot9-left-rear":{"id":"boot9-left-rear","slot":"body","source":"0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada","depth":5.75,"binding":{"kind":"fixed"},"frames":["0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada"]},"boot9-left-front":{"id":"boot9-left-front","slot":"body","source":"796e293e5fbbc36eadbec9261a76fca58ca4d85801c22fb8e401a5c672689fa4","depth":5.75,"binding":{"kind":"fixed"},"frames":["796e293e5fbbc36eadbec9261a76fca58ca4d85801c22fb8e401a5c672689fa4"]},"boot9-right-rear":{"id":"boot9-right-rear","slot":"body","source":"6f5977a626f24f328ff175a567dedde4b4aef0659c6646c9d33ac0ca362df3fc","depth":5.75,"binding":{"kind":"fixed"},"frames":["6f5977a626f24f328ff175a567dedde4b4aef0659c6646c9d33ac0ca362df3fc"]},"boot9-right-front":{"id":"boot9-right-front","slot":"body","source":"fda0cc738ae969b1a27bd6dbef67405b34a2044a5c5af99101796bd189b2e1ce","depth":5.75,"binding":{"kind":"fixed"},"frames":["fda0cc738ae969b1a27bd6dbef67405b34a2044a5c5af99101796bd189b2e1ce"]}},"walk":{"boot9-left-rear":{"id":"boot9-left-rear","slot":"body","source":"0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada","depth":5.75,"binding":{"kind":"fixed"},"frames":["0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada","0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada","0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada","0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada","0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada","0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada","0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada","52fd71f0b556dc39a6fbcb95169ddded2d5f4f7c05964dc45d1a11dd6b0fefdb","83c4bf0c05ee44d2f7d494e4d67bbe5afd3fe816a6a014f3beac751e5d8483f4","5db3ac9f676b331af8b7b725ab8bdbf2a3949149c2f21b3f3ed7b5586a423ac6","6a5fadb83328b34f4be642e3bbe5c5dbb66b4dbd01ca8bbb997a517c22a0abfe","13ee8a7cfa4f826e0224bd55fd831facf3ba5d8857f7a7a71ae32e8d5433a17c","706c54123fea9f80372808fcdcd527a72eb7b6e6461ca25c7c391a8d4c776e06","fe58b1de3c111d6900917fe9e283cc444b9b14b0b6a13e1e8b9829c42b205d03","2dd6f4fe3f03ed96c09219554db89b145630b9409a418589b940857d4294a4e7","0e7a08d4b835f7e80074a72298e65f2c18602f696b1ba87b574b1112f5454ada"]},"boot9-left-front":{"id":"boot9-left-front","slot":"body","source":"796e293e5fbbc36eadbec9261a76fca58ca4d85801c22fb8e401a5c672689fa4","depth":5.75,"binding":{"kind":"fixed"},"frames":["796e293e5fbbc36eadbec9261a76fca58ca4d85801c22fb8e401a5c672689fa4","a6d68a02f41cd013b113c443d820c2f802ce754c3fb7a1f3ee78bdabb0432ea2","9db2f2ff0126ee31155ee972c45e0bff7338a80d4f2a9611d7264fd5dab2df19","9db2f2ff0126ee31155ee972c45e0bff7338a80d4f2a9611d7264fd5dab2df19","9db2f2ff0126ee31155ee972c45e0bff7338a80d4f2a9611d7264fd5dab2df19","9db2f2ff0126ee31155ee972c45e0bff7338a80d4f2a9611d7264fd5dab2df19","9db2f2ff0126ee31155ee972c45e0bff7338a80d4f2a9611d7264fd5dab2df19","57619042a348dceffa434d2ba0d95b0bf9b1d40f3cde222d34452ee580adc365","3e4008769473441b3a584e425d0503b51600ba5f7ef09d63e720335704dcd71d","e6d99e8f16fe05ccb7e75c63833bd2d2725d345a96dd99305aa9c0ec13a79217","9bf021b0eefd1287c521e33955b2a007f802f50e5a4a469bb069e54b6f4f25a5","a9c524fcc341be069427282474d79d8d3116d278de88e3be049840c2e9267adb","599593506b4629a0a7789c530829078b1901c8145459e4f1be0ba24813b58fd6","2d960f319f885d5b1bde4fe16891d3bec1b4d0402b74b4dcd5b815021aa99469","1074359522bcafc2c74d8afdb0f3418d074fcd5d589a3725811a23c5fab2bc03","796e293e5fbbc36eadbec9261a76fca58ca4d85801c22fb8e401a5c672689fa4"]},"boot9-right-rear":{"id":"boot9-right-rear","slot":"body","source":"6f5977a626f24f328ff175a567dedde4b4aef0659c6646c9d33ac0ca362df3fc","depth":5.75,"binding":{"kind":"fixed"},"frames":["6f5977a626f24f328ff175a567dedde4b4aef0659c6646c9d33ac0ca362df3fc","f53f5187cd2b5e4c492b38cd1e0c97cccb433b01393896176cd69d6214b8abad","36b76affd915d9e31a1c8babdda6fcb3335a57dba32c0bcbf7a59a20f6965310","ada4bdb68fa7759a2f0f2ac49678e42033394394c109f49ef3083fe856470013","fad325040be80bb26a5cbea4663e01814454084a83ec117dbc5b490b51511455","36059cb3d0f239b179c6bbd00331aed731a5d9f3f20fc59b1e01013d3ce52555","2822a05939df7799f58f032a262a17be14c2766114c75f49fbd5b62df8ed3697","7d13b88ce0e874bc5d37e792e54cde02ace48962feff382d6df248ebd428b178","7d13b88ce0e874bc5d37e792e54cde02ace48962feff382d6df248ebd428b178","7d13b88ce0e874bc5d37e792e54cde02ace48962feff382d6df248ebd428b178","7d13b88ce0e874bc5d37e792e54cde02ace48962feff382d6df248ebd428b178","2822a05939df7799f58f032a262a17be14c2766114c75f49fbd5b62df8ed3697","ee03d7f18a9feca1b7983796ec2ff1a61ebb56db5a59f669c6782d1d692d2ed2","ee03d7f18a9feca1b7983796ec2ff1a61ebb56db5a59f669c6782d1d692d2ed2","ee03d7f18a9feca1b7983796ec2ff1a61ebb56db5a59f669c6782d1d692d2ed2","4837de561b1f31f81c1328fddf047d3098fe48544a6825542cd2014238b9b0dc"]},"boot9-right-front":{"id":"boot9-right-front","slot":"body","source":"fda0cc738ae969b1a27bd6dbef67405b34a2044a5c5af99101796bd189b2e1ce","depth":5.75,"binding":{"kind":"fixed"},"frames":["fda0cc738ae969b1a27bd6dbef67405b34a2044a5c5af99101796bd189b2e1ce","7d30f48564aeeea1096cfa47a8173d59018f59344d653532097db6f2edb2dca6","631769d0d40e68f3f6f4d9a0743627ea2f1910f9ecb57f0eee7308df1d5cfc93","67552b23462431379f61c0c6fda5a3bdcd979ac90d7bc2ebc94254262b9aaf6a","236c5ef68bf37d9f958d0c4b15264cb179175bd5ad9ecb35593ebdf03953735c","544cd8643413b35cb61ceb40ddb1b48b012216900b82c34d9f56713b3f8e9eed","74a7ea90dc1a8d7d48777badd27fd075fc13d413c42ae9fb62ce3ab5636f98b6","47750b48d9c27c725e5e6fc765d37b1596021f10b0e2ec91b3d5ad9a788edc0a","47750b48d9c27c725e5e6fc765d37b1596021f10b0e2ec91b3d5ad9a788edc0a","bb35812546f7f3c2b3c738c2b27c60aa12139a1b391e6f2a81dedbc8aacfe741","bb35812546f7f3c2b3c738c2b27c60aa12139a1b391e6f2a81dedbc8aacfe741","9fce96884a9397996714452c62495eb726806159a392ad95e1ab5f1ab3e3f412","87956a540c4421f6bf41ce5f20a32c124f0dea867c9cd7888d56d02fc70e711e","87956a540c4421f6bf41ce5f20a32c124f0dea867c9cd7888d56d02fc70e711e","87956a540c4421f6bf41ce5f20a32c124f0dea867c9cd7888d56d02fc70e711e","7cdba7ca69d1dc4246e36011414778351b872f13f78cb1086841f51316a98479"]}}};
+ // The existing South B9's four signed passes fit the exact male carry
+ // lower rig. No garment donor's pants, body or weapon is imported.
+ const southCarryB9Authority={"idle":"q1:174w31j:lvbuhn","walk":"3tp:fu3y3w:1wpdfro"};
+ // Drift guard for the offline Canvas witness. SHA-256 source identities are
+ // inputs; these compact fingerprints are not an asset authenticity check.
+ function southCarryB9Stamp(value){
+  const key=JSON.stringify(value,(k,v)=>k==='evidence'?undefined:v);
+  let a=0x811c9dc5,b=0x9e3779b1;
+  for(let i=0;i<key.length;i++){
+   const c=key.charCodeAt(i);a=Math.imul(a^c,0x01000193);b=Math.imul(b^c,0x85ebca77);
+  }
+  return key.length.toString(36)+':'+(a>>>0).toString(36)+':'+(b>>>0).toString(36);
+ }
+ function selectMaleSouthCarryOwnBoot(player,o,visible){
+  const worn=visible.boots,weapon=visible.weapon,a=player.appearance96,action=o.action,authority=southCarryB9Authority[action];
+  if(o.consumer!=='world'||o.direction!=='south'||o.weaponless||Object.keys(visible).length!==2||
+     worn?.item!==9||!authority||!weapon||a?.version!==1||a.gender!=='masculino'||
+     a.skinStyle!=='natural'||a.hairStyle!=='original'||a.hairColor!=='black'||a.eyeStyle!=='original'||a.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skinColor))return null;
+  const equipment={...player.equipment,[worn.key]:null},base=select({...player,equipment},o),
+   approved=outfitById.get('male-pants133-'+action+'-south-isolated-r2-boots9-isolated-candidate'),
+   own=outfitById.get('male-coat151-pants133-gloves152-boots9-walk-south-source-v18'+(action==='idle'?'-idle-frame0':''));
+  // The selected carry still needs its own exact weapon authority. Its
+  // identity, artwork and hand binding are not permission to wear a boot.
+  if(base?.hdKind!=='carry'||base?.base?.body!=='male'||base.item!==weapon.item||
+    base.base.mirrorX||base.base.pack!==base.pack||
+    base.colorAppearance?.skin!==a.skinColor||base.colorAppearance?.hairColor!==a.hairColor||base.colorAppearance?.eyeColor!==a.eyeColor||
+    !approved?.bootsOverlay||!own?.equipmentLayerGroups?.boots)return null;
+  const bp=base.pack,dp=approved.pack,b=bp.directions.south,d=dp.directions.south,same=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const joints=['HIP','LEFT HIP','RIGHT HIP','LEFT KNEE','RIGHT KNEE','LEFT LEG','RIGHT LEG'];
+  const footPose=p=>joints.map(k=>p[k]);
+  const lower=x=>x.layers.find(l=>l.id==='lower-redrawn'),baseLeg=lower(b);
+  if(!baseLeg||baseLeg.depth!==4||baseLeg.depthTrack||baseLeg.binding?.kind!=='fixed'||
+    ![b,d].every(c=>[c.rest,...c.poses].every(p=>footPose(p).every(v=>Number.isFinite(v?.x)&&Number.isFinite(v?.y))))||
+    !same([bp.frame,bp.pivot,bp.density,footPose(b.rest),b.poses.map(footPose),b.clip,baseLeg],
+          [dp.frame,dp.pivot,dp.density,footPose(d.rest),d.poses.map(footPose),d.clip,lower(d)]))return null;
+  const ids=['left-rear','left-front','right-rear','right-front'].map(k=>'boot9-'+k),layers=d.layers.filter(l=>ids.includes(l.id));
+  if(southCarryB9Stamp(layers)!==authority||
+    !same(ids,approved.bootsOverlay.sourceLayerIds)||!same(ids,own.equipmentLayerGroups.boots)||!same(ids,layers.map(l=>l.id))||
+    layers.some(l=>l.binding?.kind!=='fixed'||l.depthTrack||!l.frames||l.frames.length!==b.clip.frames||
+      !same({...l,depth:l.id.endsWith('-rear')?-1:99},own.pack.directions.south.layers.find(k=>k.id===l.id))))return null;
+  const refs=[...new Set(layers.flatMap(l=>[l.source,...l.frames]))];
+  if(refs.some(h=>!/^[a-f0-9]{64}$/.test(h)||!approved.sourceRefs.includes(h)||!own.sourceRefs.includes(h)||base.base.sourceRefs.includes(h))||
+     b.layers.some(l=>l.depthTrack||[-1,baseLeg.depth+.01].includes(l.depth)))return null;
+  // Rear remains behind the limb; the front belongs immediately above the
+  // leg, not in a global foreground above the independently ordered arms.
+  const mounted=layers.map(l=>({...l,slot:'pants',depth:l.id.endsWith('-rear')?-1:baseLeg.depth+.01}));
+  const pose=['male',action,'south',southCarryB9Stamp([bp.frame,bp.pivot,bp.density,footPose(b.rest),b.poses.map(footPose),b.clip,baseLeg])].join('/');
+  const plan=root.MareReworkModularOutfitsHD?.planIndependentPasses({
+   pose,frames:b.clip.frames,layers:b.layers,requested:{boots:worn},
+   resolve:()=>({item:worn.item,pose,source:approved.id,layers:mounted,removed:[]})
+  });
+  if(!plan||plan.omitted.length)return null;
+  const pack={...bp,directions:{...bp.directions,south:{...b,layers:plan.layers}}};
+  return {...base,id:base.id+':own-b9-south-carry',hdKind:'outfit-carry',pack,
+    base:{...base.base,pack,sourceRefs:[...base.base.sourceRefs,...refs]},outfitOverlay:{sourceRefs:refs},
+    slotRoutes:{[weapon.key]:{item:weapon.item,quality:'hd',source:base.id},...plan.slotRoutes},layeredSlots:true,omitted:[]};
+ }
+ // Signed B9 and the receiving coat have disjoint alpha bands at every
+ // original idle/stride tick. Only independent own layers are joined.
+ const maleSouthB9CoatSeparation={"2qs:1an2t7s:e8rmzs":[336,290],"2m4:1dnnehf:1e02gyv":[336,321],"322:1k14phi:kf0cjm":[336,323],"fdi:1o68s3x:4nr7j5":[318,293]};
+ function composeMaleSouthBootAndTorso(player,o,visible){
+  const b=visible?.boots,c=visible?.torso,w=visible?.weapon;
+  if(o.consumer!=='world'||o.direction!=='south'||!['idle','walk'].includes(o.action)||o.weaponless||
+     b?.item!==9||!c||!w||Object.keys(visible).length!==3||canonical(player?.appearance96?.gender)!=='male')return null;
+  const upper={...player.equipment};delete upper[b.key];
+  const receiver=selectVisualStrict({...player,equipment:upper},o);
+  if(receiver?.hdKind!=='outfit-carry'||receiver.omitted?.length||receiver.base?.pack!==receiver.pack||
+     receiver.base.mirrorX||receiver.headRecord||receiver.gearOnlyRecord||receiver.outfitOverlay?.item!==c.item)return null;
+  const lower={...player.equipment};delete lower[c.key];
+  const clothed=selectMaleSouthCarryOwnBoot({...player,equipment:lower},o,{boots:b,weapon:w});
+  if(!clothed?.slotRoutes?.[b.key]||clothed.base?.id!==receiver.base.id||receiver.item!==w.item||
+     JSON.stringify(clothed.plan)!==JSON.stringify(receiver.plan)||JSON.stringify(clothed.colorAppearance)!==JSON.stringify(receiver.colorAppearance))return null;
+  const q=receiver.pack,d=q.directions.south,p=clothed.pack,k=p.directions.south,eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),
+   context=({layers,...rest})=>rest,boot=k.layers.filter(l=>l.id.startsWith('boot9-')),core=k.layers.filter(l=>!boot.includes(l)),
+   coat=d.layers.filter(l=>!core.some(x=>x.id===l.id)),refs=clothed.outfitOverlay.sourceRefs,
+   source=outfitById.get(receiver.outfitOverlay.sourceRecord);
+  if(!source||!coat.length||source.equipment?.torso!==c.item||boot.length!==4||
+     !['frame','pivot','density'].every(k=>eq(q[k],p[k]))||!eq(context(d),context(k))||
+     !eq(d.layers.find(l=>l.id==='lower-redrawn'),core.find(l=>l.id==='lower-redrawn'))||
+     !eq(coat.map(l=>l.id),receiver.outfitOverlay.layerIds)||
+     coat.some(l=>!source.pack.directions.south.layers.some(x=>eq(l,x)))||
+     refs.some(h=>receiver.base.sourceRefs.includes(h)))return null;
+  const key=southCarryB9Stamp([q.frame,q.pivot,q.density,d.rest,d.poses,d.clip,coat]),band=maleSouthB9CoatSeparation[key];
+  if(!band||band[0]<=band[1]+2)return null;
+  const pack={...q,directions:{...q.directions,south:{...d,layers:[...d.layers,...boot]}}};
+  return {...receiver,id:receiver.id+':independent-south-b9-coat',pack,
+   base:{...receiver.base,pack,sourceRefs:[...receiver.base.sourceRefs,...refs]},
+   outfitOverlay:{...receiver.outfitOverlay,sourceRefs:[...receiver.outfitOverlay.sourceRefs,...refs]},
+   slotRoutes:{[c.key]:{item:c.item,quality:'hd',source:source.id},...clothed.slotRoutes,...receiver.slotRoutes},
+   layeredSlots:true,omitted:[]};
+ }
+ function selectRegisteredMaleOutfit(player,o,look,visible){
+  // Do not replace any existing route or translate a saved palette to Original.
+  if(o.consumer!=='world'||o.direction!=='south'||!['idle','walk'].includes(o.action))return null;
+  const raw=player.appearance96||{},literal=['skin','hair','face','hairColor','eyeColor'].every(k=>look[k]==='original');
+  const named=o.action==='walk'&&typeof look.hair==='string'&&look.hair.startsWith('hair-');
+  const saved=raw.version===1&&raw.gender==='masculino'&&raw.skinStyle==='natural'&&(look.hair==='original'||named)&&
+   look.face==='original'&&look.eyeColor==='blue'&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},look.skin)&&
+   Object.hasOwn(root.MareAppearance96?.skins||{},look.skin)&&Object.hasOwn(root.MareAppearance96?.hairs||{},look.hairColor);
+  if(!literal&&!saved)return null;
+  const entries=Object.entries(visible);
+  if(!entries.length||entries.some(([k])=>!['torso','pants','boots','gloves'].includes(k)))return null;
+  const base=baseIndex.records.find(r=>r.body==='male'&&r.direction===o.direction&&r.action===o.action&&r.hairStyle==='original');
+  const bare=select({...player,equipment:{}},o);
+  if(!base||bare?.sourceId!==base.id||!!bare.headRecord!==named||bare.gearOnlyRecord||bare.hdKind||
+     JSON.stringify(bare.pack)!==JSON.stringify(base.pack))return null;
+  const keys={torso:'coat',pants:'legs',boots:'boots',gloves:'gloves'};
+  const authPlayer=literal?player:{...player,appearance96:{...raw,hairStyle:'original',hair:'original',skinColor:'original',skin:'original',
+   eyeStyle:'original',face:'original',hairColor:'original',eyeColor:'original'}};
+  const donors=outfitIndex.records.filter(r=>{
+   if(!r.equipmentLayerGroups||r.body!==base.body||r.direction!==base.direction||r.action!==base.action)return false;
+   const items=Object.entries(r.equipment);
+   if(items.some(([slot])=>!Object.hasOwn(keys,slot))||
+      !items.some(([slot,item])=>visible[slot]?.item===item))return false;
+   const exact=select({...authPlayer,equipment:Object.fromEntries(items.map(([slot,def])=>[keys[slot],{def}]))},o);
+   return exact?.hdKind==='outfit'&&(exact.sourceId||exact.id)===r.id&&JSON.stringify(exact.pack)===JSON.stringify(r.pack);
+  });
+  // Reuse a slot whose native saved route has already proved the authored
+  // hands. The active actor need not wear any particular neighboring item.
+  const declaredOwn=[];
+  const addOwn=(slot,pass,layers)=>{
+   const d=base.pack.directions[o.direction];
+   declaredOwn.push(...layers);
+   donors.push({...base,id:pass.id,equipment:{[slot]:visible[slot].item},sourceRefs:[...new Set([...base.sourceRefs,...layers.flatMap(l=>l.frames||[l.source])])],
+    equipmentLayerGroups:{[slot]:layers.map(l=>l.id)},pack:{...base.pack,directions:{...base.pack.directions,[o.direction]:{...d,layers:[...d.layers,...layers]}}}});
+  };
+  let ownGlove=[];
+  if(saved&&visible.gloves){
+   const slot={gloves:visible.gloves},g=selectMaleSouthIdleBareGlove(player,o,slot,true)||selectMaleBareGloveLocomotion(player,o,slot,true),
+    material=g?.authoredSouthIdleGlove||g?.authoredBareGloveLocomotion;
+   if(!material||material.base.sourceId!==base.id||JSON.stringify(material.base.pack)!==JSON.stringify(base.pack))return null;
+   ownGlove=material.gloves;
+   addOwn('gloves',{id:g.slotRoutes[visible.gloves.key].source},ownGlove);
+  }
+  const source=root.MareReworkModularOutfitsHD?.composeRegisteredLayerGroups({base,donors,
+   equipment:Object.fromEntries(entries.map(([slot,{item}])=>[slot,item]))});
+  if(!source)return null;
+  const slotRoutes=Object.fromEntries(entries.map(([slot,{key}])=>[key,source.slotRoutes[slot]]));
+  if(saved){
+   if(!registry.materialSources||bare.colorAppearance?.skin!==look.skin||bare.colorAppearance?.hairColor!==look.hairColor||
+      bare.colorAppearance?.eyeColor!==look.eyeColor)return null;
+   // These independent passes already have exact material proof in the
+   // existing saved South B9 route. Other registered rasters need their own
+   // skin/cloth authority before being exposed with saved palettes.
+   const own=registeredSouthPaletteIndependent[o.action];
+   const body=base.pack.directions[o.direction].layers,ids=new Set(body.map(l=>l.id));
+   const parts=source.pack.directions[o.direction].layers.filter(l=>!ids.has(l.id));
+   const byGlove=new Map(declaredOwn.map(l=>[l.id,l])),bootCount=visible.boots?Object.keys(own||{}).length:0;
+   if(visible.boots&&!bootCount||parts.length!==bootCount+declaredOwn.length||parts.some(l=>
+      byGlove.has(l.id)?JSON.stringify(l)!==JSON.stringify(byGlove.get(l.id)):
+      !visible.boots||l.depth!==(l.id.endsWith('-rear')?-1:99)||JSON.stringify({...l,depth:5.75})!==JSON.stringify(own?.[l.id])))return null;
+   return {...source,id:source.id+':saved-bare-material',hdKind:'outfit',slotRoutes,
+    registeredPaletteBody:base,colorAppearance:bare.colorAppearance,
+    ...(named?{headRecord:bare.headRecord,headLook:bare.headLook}:{})};
+  }
+  return {...source,hdKind:'outfit',slotRoutes};
+ }
+ function selectBarePunchOwnCoat(player,o,a,visible){
+  const direction=o.direction,worn=visible.torso;
+  if(a.body!=='male'||!worn||worn.item!==151||Object.keys(visible).length!==1||
+     o.consumer!=='world'||!['attack','attack-unarmed'].includes(o.action)||!['north','south','east','west'].includes(direction))return null;
+  const pose={...o,action:'attack-unarmed'},base=select({...player,equipment:{}},pose);
+  if(!base||base.hdKind||base.body!=='male'||base.action!=='attack-unarmed'||base.direction!==direction||
+     base.headRecord||base.gearOnlyRecord||base.mirrorX||base.bodyOcclusion||base.sourceRasterPadding||
+     ![undefined,'original'].includes(a.hair)||![undefined,'original'].includes(a.face)||
+     !['blue','original',undefined].includes(a.eyeColor)||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
+     !Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor))return null;
+  const prefix='male-pants133-attack-unarmed-'+direction+'-drawn8-candidate',
+   donor=outfitById.get(prefix+'-coat151-native'),pants=outfitById.get(prefix),authority=outfitById.get(donor?.isolatedCoat151Variant?.source),
+   bp=base.pack,dd=donor?.pack?.directions?.[direction],pd=pants?.pack?.directions?.[direction],ad=authority?.pack?.directions?.[direction],
+   d=bp.directions[direction],equal=(x,y)=>JSON.stringify(x)===JSON.stringify(y),
+   clothId=direction==='south'?'coat151-registered-south':'coat151-authored-attack',cloth=dd?.layers.find(l=>l.id===clothId);
+  if(!donor||donor.productionEnabled===false||donor.body!=='male'||donor.action!==base.action||donor.direction!==direction||
+     donor.equipment?.torso!==151||!equal(donor.equipment,{pants:133,torso:151})||!pants||!ad||
+     donor.overlayContract?.baseRecordId!==base.sourceId||donor.overlayContract.baseSourcePackSHA256!==base.sourcePackSHA256||
+     !equal(donor.paletteSourceMasks,pants.paletteSourceMasks)||!donor.paletteSourceMasks||
+     !['density','frame','pivot'].every(k=>equal(bp[k],donor.pack[k])&&equal(bp[k],pants.pack[k]))||
+     !equal({...d,layers:undefined},{...dd,layers:undefined})||!equal({...d,layers:undefined},{...pd,layers:undefined})||
+     !equal(dd.layers.filter(l=>l!==cloth),pd.layers)||
+     !equal(pd.layers.filter(l=>l.id!=='pants133-translated-candidate'),d.layers)||
+     !equal(ad.layers.find(l=>l.id===clothId),cloth)||!cloth||cloth.slot!=='body'||
+     cloth.depth!==(direction==='south'?100:6)||!equal(cloth.binding,{kind:'fixed'})||cloth.frames?.length!==d.clip.frames||
+     cloth.frames.some(h=>!/^[0-9a-f]{64}$/.test(h)||!donor.sourceRefs.includes(h)||!authority.sourceRefs.includes(h)||
+        base.sourceRefs.includes(h)||donor.paletteSourceMasks[h]))return null;
+  const pack={...bp,directions:{...bp.directions,[direction]:{...d,layers:[...d.layers,cloth]}}};
+  return {...base,id:base.id+':own-bare-punch-coat151',pack,equipment:{torso:151},
+   barePunchOwnCoat:{base,cloth},resolvedAction:'attack-unarmed',
+   slotRoutes:{[worn.key]:{item:worn.item,quality:'hd',source:donor.id}},omitted:[]};
+ }
+ function selectOwnMalePunchCoat(player,o,a,visible){
+  const d=o.direction,worn=visible.torso;
+  if(!worn||a.body!=='male'||!['north','south','east','west'].includes(d)||!['attack','attack-unarmed'].includes(o.action)||
+     o.consumer!=='world'||visible.weapon||Object.keys(visible).some(k=>!['torso','pants','gloves'].includes(k))||
+     ![undefined,'original'].includes(a.hair)||![undefined,'original'].includes(a.face)||
+     !['blue','original',undefined].includes(a.eyeColor)||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
+     !Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor))return null;
+  const coat=outfitById.get('male-torso'+worn.item+'-'+d+'-frozen-attack-native-candidate');
+  if(!coat||coat.productionEnabled===false||coat.body!=='male'||coat.action!=='attack-unarmed'||coat.direction!==d||
+     coat.equipment?.torso!==worn.item||Object.keys(coat.equipment).length!==1||!coat.sourceRasterPadding||
+     !/^[0-9a-f]{64}$/.test(coat.sourcePackSHA256))return null;
+  const gear={...player.equipment};delete gear[worn.key];
+  const {torso,...others}=visible,pose={...o,action:'attack-unarmed'},bare={...player,equipment:gear};
+  const target=select(bare,pose)||(d==='north'?
+    selectNorthPunchP22Coat(pose,a,others)||selectNorthPunchBare(pose,a,others):
+    d==='south'?selectSouthPunchP22Coat(pose,a,others)||selectSouthPunchBare(pose,a,others):null);
+  if(!target||target.hdKind!=='outfit'||target.action!=='attack-unarmed'||target.body!=='male'||target.direction!==d||
+     target.bodyOcclusion||target.sourceRasterPadding||target.mirrorLayerIDs||target.mirrorX||
+     target.palettePolicy!=='verified-original-anatomy-only'||!target.paletteSourceMasks||
+     Object.entries(others).some(([k,v])=>target.equipment?.[k]!==v.item||target.slotRoutes?.[v.key]?.quality&&target.slotRoutes[v.key].quality!=='hd'))return null;
+  const t=target.pack.directions[d],c=coat.pack.directions[d],equal=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const native=(p)=>Object.fromEntries(Object.entries(p).filter(([k])=>!k.startsWith('cloth:')));
+  if(!equal([target.pack.density,target.pack.frame,target.pack.pivot,t.clip,t.rest,t.poses],
+    [coat.pack.density,coat.pack.frame,coat.pack.pivot,c.clip,native(c.rest),c.poses.map(native)]))return null;
+  const anatomical=c.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)}));
+  const extra=c.layers.filter(l=>!l.id.startsWith('base:')),without=t.layers.filter(l=>anatomical.some(x=>x.id===l.id));
+  if(!extra.length||!equal(without,anatomical))return null;
+  const ref=l=>l.frames||[l.source],used=new Set(t.layers.flatMap(ref));
+  const cloth=extra.flatMap(ref);
+  if(extra.some(l=>l.frames||l.depthTrack||l.depth>100||l.binding?.kind!=='rigid'||
+     [l.binding.a,l.binding.b].some(k=>!k.startsWith('cloth:')||!c.rest[k]||c.poses.some(p=>!p[k]))||
+     !equal(coat.sourceRasterPadding[l.source],{sourceSize:512,offset:64})||!coat.sourceRefs.includes(l.source)||
+     used.has(l.source)||target.paletteSourceMasks[l.source]||t.layers.some(x=>x.id===l.id)))return null;
+  if(t.layers.filter(l=>!anatomical.some(x=>x.id===l.id)).some(l=>
+     !(l.id.startsWith('pants'+others.pants?.item+'-')&&l.slot==='pants'||l.id==='registered-frozen-glove-native-attack'&&others.gloves&&l.slot==='foreground')||
+     extra.some(x=>x.depth===l.depth)&&l.slot==='pants'))return null;
+  const pack={...target.pack,directions:{...target.pack.directions,[d]:{...t,rest:c.rest,poses:c.poses,layers:[...t.layers.filter(l=>l.slot!=='foreground'),...extra,...t.layers.filter(l=>l.slot==='foreground')]}}};
+  const record={...target,id:target.id+':own-punch-coat:'+coat.id,pack,equipment:{...target.equipment,torso:worn.item},
+   sourceRefs:[...new Set([...target.sourceRefs,...cloth])],sourceRasterPadding:coat.sourceRasterPadding,resolvedAction:'attack-unarmed',
+   slotRoutes:{...Object.fromEntries(Object.entries(others).map(([k,v])=>[v.key,{item:v.item,quality:'hd',source:target.slotRoutes?.[v.key]?.source||target.id}])),
+    [worn.key]:{item:worn.item,quality:'hd',source:coat.id}},omitted:[]};
+  return d==='south'?root.MareReworkModularOutfitsHD.withStrictSouthAppearance(record,a):record;
+ }
+ // The saved profile supplies anatomy and palette. Read the literal profile
+ // only as a witness for these separate, signed B9 passes on the same rig.
+ function selectSavedSidePunchB9(player,o,a,visible){
+  const d=o.direction,b=visible.boots,slots=Object.keys(visible);
+  const proof={east:'8lg:r1find:1kdzaqd',west:'8lg:123j0xs:1rxgzhw'}[d];
+  if(!proof||o.weaponless||o.consumer!=='world'||!['attack','attack-unarmed'].includes(o.action)||
+   b?.item!==9||!slots.includes('pants')||slots.some(k=>!['boots','pants','torso'].includes(k))||
+   a.body!=='male'||a.hair!=='original'||a.face!=='original'||a.eyeColor!=='blue'||
+   !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||!Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor))return null;
+  const opt={...o,action:'attack-unarmed'}, equipment={...player.equipment};
+  delete equipment[b.key];
+  const bare={...player,equipment},target=selectLayered(bare,opt)||select(bare,opt);
+  if(target?.hdKind!=='outfit'||target.body!=='male'||target.action!==opt.action||target.direction!==d||
+   target.omitted?.length||target.bodyOcclusion||target.mirrorX||target.mirrorLayerIDs||
+   target.palettePolicy!=='verified-original-anatomy-only'||!target.paletteSourceMasks||
+   target.colorAppearance?.skin!==a.skin||target.colorAppearance?.hairColor!==a.hairColor)return null;
+  const original={gender:'masculino',hairStyle:'original',face:'original',hairColor:'original',skinColor:'original',eyeColor:'original',eyeStyle:'original'};
+  const donor=selectLayered({...player,appearance96:original},opt);
+  if(donor?.hdKind!=='outfit'||donor.body!=='male'||donor.action!==opt.action||donor.direction!==d||
+   donor.omitted?.length||donor.slotRoutes?.[b.key]?.item!==b.item||donor.colorAppearance||donor.bodyOcclusion||
+   donor.mirrorX)return null;
+  const bp=target.pack,dp=donor.pack,t=bp.directions[d],p=dp.directions[d],eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const shape=(pack,r)=>[pack.density,pack.frame,pack.pivot,r.clip,r.rest,r.poses];
+  // The literal West kit marks four upper-coat layers for reflection.
+  // They are not copied: only accept the exact archived non-mirrored boots.
+  const donorMirrors=donor.mirrorLayerIDs||[];
+  const signedWestUpper=/^coat\d+-(?:upper-sleeve-collar-core|upper-sleeve-collar-RIGHT-upper|lower-torso-core|lower-torso-hem)$/;
+  if(d==='east'?donorMirrors.length!==0:donorMirrors.length!==4||new Set(donorMirrors).size!==4||
+   donorMirrors.some(id=>!signedWestUpper.test(id)||!p.layers.some(l=>l.id===id)))return null;
+  const layers=p.layers.filter(l=>l.id.startsWith('boot9-')),refs=[...new Set(layers.map(l=>l.source))];
+  if(!eq(shape(bp,t),shape(dp,p))||layers.length!==6||
+   southCarryB9Stamp([...shape(dp,p),layers])!==proof||
+   layers.some(l=>l.binding?.kind!=='fixed'||l.depthTrack||l.frames||t.layers.some(x=>x.id===l.id))||
+   refs.some(h=>!/^[0-9a-f]{64}$/.test(h)||!donor.sourceRefs.includes(h)||target.sourceRefs.includes(h)||
+    donor.sourceRasterPadding?.[h]||target.sourceRasterPadding?.[h]||target.paletteSourceMasks[h]))return null;
+  const others=p.layers.filter(l=>!layers.includes(l)).map(l=>l.id.startsWith('base:')?{...l,id:l.id.slice(5)}:l);
+  if(others.length!==t.layers.length||!others.every(l=>t.layers.some(k=>eq(l,k)))||
+    slots.filter(k=>k!=='boots').some(k=>target.slotRoutes?.[visible[k].key]?.item!==visible[k].item))return null;
+  const pack={...bp,directions:{...bp.directions,[d]:{...t,layers:[...t.layers,...layers]}}};
+  return {...target,id:target.id+':saved-signed-side-punch-b9',pack,sourceRefs:[...target.sourceRefs,...refs],
+   slotRoutes:{...target.slotRoutes,[b.key]:{item:b.item,quality:'hd',source:donor.slotRoutes[b.key].source}},omitted:[],layeredSlots:true};
+ }
+ function selectOwnSidePunchGlove(player,o,a,visible){
+  const d=o.direction,worn=visible.gloves,raw=player.appearance96||{};
+  if(!worn||a.body!=='male'||!['east','west'].includes(d)||!['attack','attack-unarmed'].includes(o.action)||
+     o.consumer!=='world'||o.weaponless||Object.keys(visible).some(k=>!['torso','pants','gloves'].includes(k))||
+     raw.version!==1||raw.skinStyle!=='natural'||a.hair!=='original'||a.face!=='original'||a.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||!Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor))return null;
+  const id='male-pants133-attack-unarmed-'+d+'-drawn8-candidate',
+   ref=outfitById.get(id+'-boots9-isolated-candidate-coat151-existing-gloves152-visible-native-candidate'),
+   donor=outfitById.get('frozen-male-glove'+worn.item+'-'+d+'-attack-unarmed-native-layers');
+  if(!ref?.registeredMale151Gloves152||!donor?.frozenGloveLayers||donor.productionEnabled===false||
+     donor.frozenGloveSourceRef==='ref-0625'||donor.sourceUpperRecord!==ref.id||donor.equipment?.gloves!==worn.item)return null;
+  const gear={...player.equipment};delete gear[worn.key];
+  const {gloves,...others}=visible,pose={...o,action:'attack-unarmed'},bare={...player,equipment:gear};
+  const target=select(bare,pose)||selectOwnMalePunchCoat(bare,pose,a,others);
+  if(!target||target.hdKind!=='outfit'||target.action!=='attack-unarmed'||target.body!=='male'||target.direction!==d||
+     target.bodyOcclusion||target.mirrorLayerIDs||target.mirrorX||target.palettePolicy!=='verified-original-anatomy-only'||
+     target.colorAppearance?.skin!==a.skin||target.colorAppearance?.hairColor!==a.hairColor||
+     Object.entries(others).some(([k,v])=>target.equipment?.[k]!==v.item||target.slotRoutes?.[v.key]?.quality&&target.slotRoutes[v.key].quality!=='hd'))return null;
+  const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y),dir=r=>r.pack.directions[d],
+   clock=({layers,rest,poses,...k})=>({...k,rest:anatomical(rest),poses:poses.map(anatomical)}),
+   anatomical=o=>Object.fromEntries(Object.entries(o).filter(([k])=>!k.startsWith('cloth:'))),
+   raster=r=>[r.pack.frame,r.pack.pivot,r.pack.density],t=dir(target),r=dir(ref),g=dir(donor),overlay=g.layers[1];
+  if(![ref,donor].every(x=>eq(raster(x),raster(target))&&eq(clock(dir(x)),clock(t)))||
+     !eq(t.clip,{frames:8,fps:12,loop:false,contactFrame:4})||!eq(ref.paletteSourceMasks,target.paletteSourceMasks)||
+     !eq(t.layers.filter(l=>['skin-arms-phase','shorts-phase','headBase','face','hair'].includes(l.id)),r.layers.slice(0,5))||
+     !eq(g.layers.map(l=>l.id),['same-native-outfit-with-original-uncovered-hands','registered-frozen-glove-native-attack'])||
+     overlay.depth!==100||overlay.slot!=='foreground'||overlay.depthTrack||!eq(overlay.binding,{kind:'fixed'})||
+     overlay.frames?.length!==8||
+     overlay.frames.some(h=>!/^[0-9a-f]{64}$/.test(h)||!donor.sourceRefs.includes(h)||target.sourceRefs.includes(h)||target.paletteSourceMasks[h])||
+     t.layers.some(l=>l.id===overlay.id||l.depth>=overlay.depth||l.depthTrack))return null;
+  return {...target,id:target.id+':own-side-punch-glove:'+donor.id,equipment:{...target.equipment,gloves:worn.item},
+   pack:{...target.pack,directions:{...target.pack.directions,[d]:{...t,layers:[...t.layers,overlay]}}},
+   sourceRefs:[...new Set([...target.sourceRefs,...overlay.frames])],omitted:[],resolvedAction:'attack-unarmed',
+   slotRoutes:{...Object.fromEntries(Object.entries(others).map(([k,v])=>[v.key,{item:v.item,quality:'hd',source:target.slotRoutes?.[v.key]?.source||target.id}])),
+    [worn.key]:{item:worn.item,quality:'hd',source:donor.id}}};
+ }
+ // The signed contact overlay matches the bare HD punch itself. It uses
+ // only its own frame sequence; no lower-body or coat donor is substituted.
+ function selectBarePunchGlove(player,o,a,visible){
+  if(a.body!=='male'||o.consumer!=='world'||o.action!=='attack-unarmed'||o.weaponless||
+     !visible.gloves||Object.keys(visible).length!==1||
+     player.appearance96?.version!==1||player.appearance96?.skinStyle!=='natural'||
+     a.hair!=='original'||a.face!=='original'||a.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
+     !Object.hasOwn(root.MareAppearance96?.hairs||{},a.hairColor))return null;
+  const dir=o.direction,w=visible.gloves,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const donor=outfitById.get('frozen-male-glove'+w.item+'-'+dir+'-attack-unarmed-native-layers'),
+    authority=outfitById.get(donor?.sourceUpperRecord);
+  if(!donor?.frozenGloveLayers||donor.productionEnabled===false||donor.equipment?.gloves!==w.item||
+     !donor.frozenGloveSourceRef||donor.frozenGloveSourceRef==='ref-0625'||!authority?.registeredMale151Gloves152)return null;
+  const equipment={...player.equipment};delete equipment[w.key];
+  const base=select({...player,equipment},o);
+  const p=base?.pack,d=p?.directions[dir],c=authority.pack?.directions[dir],g=donor.pack?.directions[dir],
+    layer=g?.layers[1];
+  if(!d||!c||!g||base.hdKind||base.action!=='attack-unarmed'||base.body!=='male'||
+     base.direction!==dir||base.mirrorX||base.headRecord||base.gearOnlyRecord||base.femaleNamedHairRecord||
+     base.colorAppearance?.skin!==a.skin||base.colorAppearance?.hairColor!==a.hairColor||
+     d.renderMirrorFrom||d.layers.some(l=>l.depthTrack||l.depth>=100))return null;
+  const anthrop=o=>Object.fromEntries(Object.entries(o).filter(([k])=>!k.startsWith('cloth:'))),
+    axes=({layers,rest,poses,...x})=>({...x,rest:anthrop(rest),poses:poses.map(anthrop)}),
+    geo=x=>[x.frame,x.pivot,x.density];
+  if(![c,g].every(v=>eq(axes(d),axes(v)))||![authority.pack,donor.pack].every(v=>eq(geo(p),geo(v)))||
+     !eq(d.clip,{frames:8,fps:12,loop:false,contactFrame:4})||
+     !eq(c.layers.filter(l=>d.layers.some(k=>k.id===l.id)),d.layers)||
+     g.layers.length!==2||g.layers[0].id!=='same-native-outfit-with-original-uncovered-hands'||
+     layer.id!=='registered-frozen-glove-native-attack'||layer.slot!=='foreground'||layer.depth!==100||
+     layer.depthTrack||!eq(layer.binding,{kind:'fixed'})||layer.frames?.length!==8||
+     layer.frames.some(h=>!/^[a-f0-9]{64}$/.test(h)||!donor.sourceRefs.includes(h)||base.sourceRefs.includes(h)||
+       authority.paletteSourceMasks?.[h]))return null;
+  return describeSlots({...base,id:base.id+':own-punch-glove:'+donor.id,
+    ownBarePunchGlove:{base,frames:layer.frames},resolvedAction:'attack-unarmed'},visible,[]);
+ }
+ // Reuse verified bare-punch passes without asking the saved actor to wear
+ // one provider's complete outfit. C151 stays in its authored body-layer
+ // position, then the existing foreground contact passes are composed above.
+ function selectBarePunchIndependentSlots(player,o,look,visible){
+  if(o.action!=='attack-unarmed'||look.body!=='male'||o.consumer!=='world')return null;
+  const worn=Object.entries(visible),providers={torso:selectBarePunchOwnCoat,gloves:selectBarePunchGlove};
+  if(worn.length<2)return null;
+  const resolved={};
+  for(const [slot,entry] of worn){
+   if(!Object.hasOwn(providers,slot))return null;
+   const actor={...player,equipment:{[entry.key]:entry.value}};
+   // World already excludes a temporarily hidden weapon from visible. Use
+   // this non-weapon projection only for the explicit unarmed pose contract;
+   // keep the original armed save, action routing, and bundle key untouched.
+   const r=providers[slot](actor,{...o,weaponless:false},look,{[slot]:entry});
+   if(!r||r.slotRoutes?.[entry.key]?.item!==entry.item||r.slotRoutes[entry.key].quality!=='hd')return null;
+   resolved[slot]=r;
+  }
+  const coat=resolved.torso,glove=resolved.gloves,base=coat?.barePunchOwnCoat?.base,contact=glove?.ownBarePunchGlove;
+  if(!base||!contact||contact.base.id!==base.id||JSON.stringify(contact.base)!==JSON.stringify(base))return null;
+  const {key,item}=visible.gloves,frames=base.pack.directions[o.direction].clip.frames,
+   phases=root.MareReworkModularOutfitsHD?.composeSignedPhaseSlots({
+    depths:{gloves:{front:100}},
+    slots:{gloves:{[item]:contact.frames.map(h=>({rear:[],front:[h]}))}}
+   },{gloves:visible.gloves},frames);
+  if(!phases)return null;
+  const {barePunchOwnCoat:coatPass,...anchor}=coat;
+  return {...anchor,id:coat.id+':signed-independent-punch:'+JSON.stringify(phases),
+   signedWeaponGarments:{base:coat,phases,assetPool:'outfit'},layeredSlots:true,
+   slotRoutes:{...coat.slotRoutes,[key]:glove.slotRoutes[key]}};
+ }
+
+ // Per-raster alpha extrema measured against full native PNGs. They are
+ // geometry, not combinations: any signed source with identical bytes
+ // shares the same extrema independent of the equipment ID.
+ const barePunchCoatHeadAlpha={"coat":{"2f669dcf78a4b58703953022d51468b6ee7e8a91177014d2100c971d897096a1":220,"b46defd7eed65fb400e3c13f6bc60cb0f4382a98ec23d731f67f09afbfdb6932":220,"cd27a4fd3bfbc2658b1cd3e58adb7e331f28427dadac123f32e071fae29a8c5c":220,"ac4a3ccb02a6a01fe647ab7ff340484cf52a0903e0e1aa3ae89a02c8128ffe4d":220,"a48cb2e36ddd95b5040ece9f78b7d736ad0a3a3f30ecc070ec7963a1fd406d61":220,"4fae1161c6da47e41634cc0327f21664cc00278ff1301dfbbefe1212a9b98b38":220,"21d02cc7b4ea304928d692508f557b4a8461c020ddc27423de35df727f3eee6e":220,"820a0e8926ddd51882d26cdf9bcf5cabc7881280f3c65a431e786fd9419ff60f":200,"634f64cbe6a16f40b87fe33e9a2fec7833ce5ef6c462cc5c47575c1c5f195f36":200,"e2d20d3cde0059db75aef1e7061f17e4beb0955f37f21de58c4b81419b4fc45f":197,"d3fb4048fbaa64fc482c50cae853e2e06917d0b418feee4d7663279e4cd23a04":196,"364b59953077cecd3587f58ccbc7253a176310ff2091e3953d5b8225c12b67f9":195,"33083f527bd3451525307b8a61b016e97b817bc055d8ea8b45576b79ca0f1036":198,"8a7411582dea53b225086b0b1ab57a46e3584ac40a755db76bf50646b62d4873":200,"3031fdf19fbee56a26db6185abe5fd3f2528f105fa782b7e4130d37e1a60ea57":200,"c497ec8e9424662f4155dc944802081d5fe188e9dca5947593ad9ba7c66d2f8b":207,"5492d5997b97463b8082c3db391af4a0f11fef8162ac57b921caff153ec9ef5c":207,"88d67f345f6fee5b0f9b425a38c7cc0c12037d4f78f67bd6bf262038cb42ab47":207,"8f1cb26ef3dc4cc5750c326492223ba2662d75b45d5cc6287a051f77e3561ff0":207,"f79aa7abaf99119ed2e8639be64fb36624178b0875f2f74a01827c6af92a764c":207,"fe2e79b77ed959ff76a9b0d67384216f617f4ba320b9cc26689f82dd6381d3a5":207,"3ea9308e7bbfc9e85dfa43f23d8cc97c55cefbb15233a365b91ef7a1afd3cc39":207,"5775953f0ca1b13d1f58badc2fef9f4ec20a7ea9c61482559e634db038d3f95b":207,"6ea04ad7d585ca1e584791772e06da76056b6a4f33f76ded7ffb7c901f812e28":207,"46b19a35f3880cf90098b406173218b6246e1cced5456a073742a4356202f2b0":207,"5de85e6b617b1e398c2a7773dbb5ab882294d9b5f19f2f4f66a60f31a42e1795":207,"a39df7a71d858ca4d56e3dfbb4467f3081c1850c569b5adb53a2516f2dc7efc2":207,"08f9992e96ff9791174f633ea3de74c1051b39697fcd7b97a31a7bd84c618ca5":207,"036378341006a9ea6fa198a559e7fb1eb78f082febd609ceb9740de4bdd234d5":207,"1fa5f96eb97b4e986d62e00677ca9dd8addb8b8a2ca5addcddd0a8a70762b017":207,"fb0381f7863c7c7d8aa3a75c38fa1260cc9d966f3b26788f92e8c67289f3af79":207},"head":{"0e356b45e7776fb12fe647a4ee59515b0179c1643e01c40fffd6819a3a74657c":122,"dd21b9ddc99c7dd5e85a821cf3522349c3d5a53a1b2cae587fd6b1033b328e17":124,"9b7d09f3657d28372934da86106a9b3028b12f22a48ff1e9b12a074d71a9463a":174,"2d27e90f459ffb3a65be77f43f26d0d7cd1c37f703fdaecd1c70afae473319ba":191,"389f939d430e2ff8400f6103a8964e86d83d4a60a945c25686950e0f12c0833b":121,"ce21d81c616275cc91840e2a3f270f4647e361aa12a0c9cf616da6c643707bae":141,"dda90f0b65be55a7b63c8f5793af248b723547e97c3c758900ac128344ef9a54":146,"0c3601c710d983a3cf18275ba0feedb33ef7039578ec232534babc8c37b7f987":125,"b62b4864df3dbc0ed619d69c9e145f076add19d4ae3d1cdcb811f064313c60a7":135,"fd9811986eeb49a381863bad8931ad6d6ed29f548a59a8049e1e6f539a84f6f3":134,"0387168d7c7a58a317c117b245034fdfdfe692cc5e376c7a2e147f71ef4375ac":136,"83b1773195422ed173f872b6350d725fac38d42cb6667a85b0a04d8ea7c5048c":138,"69ec76eb3bc808ff9aafa95084183a6f860d15087f2494e8ddcd773aa29c821f":166,"b69baae0d74fdc82d18f8b0a7dfa6a0129529158f97609fce74e6e41d015cba3":186,"9cff84991987fbc1eefa7f9fe1305a3a832f49797f56189a4a091c94920b0dc5":131,"d4b68a7f2c37ced5b976cb81706b439d410e1db55aabff2a165e039cb202fe42":154,"2666ed7febad10cb1dc6bcffab42bc7cedf9a518c46400a04dec65dbda321a13":164,"91ba2454a3fef09e80b9fef1ab81ef8c91bc8928208a3a354f198c9cbda6703f":119,"3f6694192a70f8e9cd0ebbdd3e18400aefe1af6453810fb788dd6edb22cca367":129,"7a77bfc0c7f38afbd1404777abda9f7388eb3f924e1dbe0a708f3a90e02b2370":123,"b329c4104a447ae4b59c90ab1ea744595cb8c979ed66c1ccfee49094fdf5a74a":137,"c4fc3d89206760fb6582b1108257994556d68c35c01944d1c8ded20e7a9c45f4":141,"a537de5ab675832cc1e8c27be8fdba237c117409e19a8ad0fd3b56f28027ae31":189,"fd4099f625573260acf76b196a58a6498ca82d2d92c82e2695548ca6591a4329":219,"a43475dfcd907625d8d4d9e6bb7ce7d85af05b3d9d03e253715969dfd07db5b7":138,"5d6d7431d8cf53db88b06f6ae09d6ac63d9079c4e6e4874fee25b726314ae9b0":157,"3e670578346780b79e3a5d4d9383751b0918a8886ac75c6294332f05ab8008fa":158,"d75d9420e88d3e8448169c7d62c3c39dbbfb16f46109cd4e0cc9a169d64ae0c6":129,"8266d6e541f304ed0d598862db174102df5ed68e28ae5d763c8263a3f6d77b23":159,"7ea60a42da8cd8981a500d18a09482016bf77277aa35b4940d27f43ad02958a9":160,"b519407b8441f8c998a12dedd3d97ecaac0a916260005d75c963f8bf98bea8d9":137,"b9b2776cffdf0f515df6a26ddb67c57fa85dcdec0da57f1c44a6887158275ddf":141,"b66a9d91dc93e0d2e0dda79ad69c0ec06b7f8c59513f020c3239da062bc5f91c":189,"d3a9050058a2818fdcf406fef92f1d014707025589f5ba0711464daf9231606d":219,"20b00182351c0f4d91be59d676ed2cd66ea9a1c01bdf81d41a1a60ce9f267359":138,"103d57f23f8740cdf10e451e19ecce9507992d4ad16ef92244ab40c91f8f1097":157,"267d064249855997dcbd846fb4a640c8e4ceee911b1dca32dbd2ffaad0e66ceb":154,"8b9e31b3ce4dfcd41f53b5f4d7d5c22b5dbd21453d6ebb261637b7c664070330":129,"6747efb28ac9c5794aa7c9bba161e7e266586e37a369b0f12a83d70bb7cf5ca8":159,"4f909f1085b66ec15a8fd4284659bb41a6903c67a40d52cfdbcb21da1c3e7125":160}};
+ // Independent authored punch torso and helmet on the exact same native actor.
+ // The helmet comes from the actual head slot and keeps its signed hair policy.
+ function selectBarePunchCoatAndHead(player,o,visible){
+  const c=visible?.torso,h=visible?.head;
+  if(!c||!h||Object.keys(visible).length!==2||o.consumer!=='world'||o.action!=='attack-unarmed')return null;
+  const solo=entry=>({...player,equipment:{[entry.key]:entry.value}}),
+   coat=selectLayered(solo(c),o),head=select(solo(h),o),base=coat?.barePunchOwnCoat?.base,gear=head?.gearOnlyRecord;
+  const equal=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!base||!gear||gear.sourceRecord?.item!==h.item||head.hdKind||head.headRecord||
+     head.body!==base.body||head.direction!==base.direction||head.action!==base.action||head.sourceId!==base.sourceId||
+     head.mirrorX||base.mirrorX||gear.hideHair||gear.sourceScale!==1||
+     !equal(head.colorAppearance,base.colorAppearance)||head.pack!==base.pack)return null;
+  const {cloth}=coat.barePunchOwnCoat, dir=base.pack.directions[o.direction], source=gear.sourceRecord,
+   a=source.adjustmentRecord.adjustment, prior=source.entry.pack.directions[o.direction].headgearPolicy?.headAdjustment||{},
+   bottom=barePunchCoatHeadAlpha.head[gear.gear.source];
+  if(!Number.isSafeInteger(bottom)||cloth.binding?.kind!=='fixed'||gear.gear.binding?.kind!=='fixed'||
+     cloth.frames.length!==dir.poses.length||!Number.isFinite(source.rest?.NECK?.y)||
+     !cloth.frames.every((hash,k)=>{
+      const top=barePunchCoatHeadAlpha.coat[hash], neck=dir.poses[k].NECK?.y;
+      return Number.isSafeInteger(top)&&Number.isFinite(neck)&&top>bottom+
+       Math.round((neck-source.rest.NECK.y+(prior.y||0)+(a.gearY||0))*4);
+     }))return null;
+  return {...coat,id:coat.id+':own-head-on-identical-punch:'+head.id,gearOnlyRecord:gear,layeredSlots:true,omitted:[],
+   slotRoutes:{...coat.slotRoutes,[h.key]:{item:h.item,quality:'hd',source:head.id}}};
+ }
+ const signedPhaseAsset=(record,sha)=>'tools/'+
+  (record.assetPool==='outfit'?'rework-modular-outfits-hd':'rework-weapon-layers-hd')+'/assets/'+sha+'.png';
+ // Experimental saved-profile fit: pin each own East/West gait source and
+ // accept only the exact native lower geometry and independently masked body.
+ const savedMaleSideBootSources={"east/idle/8":["frozen-v47-male-151-boot8-east-idle","2ct:3evykt:ugtx6l"],"west/idle/8":["frozen-v47-male-151-boot8-west-idle","2ct:1xvedl3:yd9jy3"],"east/walk/8":["frozen-v47-male-151-boot8-east-walk","eon:1hxbkz4:lydu4c"],"west/walk/8":["frozen-v47-male-151-boot8-west-walk","eon:1wr31v:ub1ljz"],"east/idle/134":["male-coat151-pants133-gloves152-boots134-walk-east-source-v18-idle-frame0","2cv:1ooir1n:x2qlq7"],"west/idle/134":["male-coat151-pants133-gloves152-boots134-walk-west-source-v18-idle-frame0","2cv:bssg7d:1y8mbe1"],"east/walk/134":["male-coat151-pants133-gloves152-boots134-walk-east-source-v18","eop:1u6mbm:1be8dnu"],"west/walk/134":["male-coat151-pants133-gloves152-boots134-walk-west-source-v18","eop:chgknv:33c9xz"],"east/idle/141":["frozen-v47-male-151-boot141-east-idle","1z2:901teo:i98ndc"],"west/idle/141":["frozen-v47-male-151-boot141-west-idle","1z2:43el6o:jy0na8"],"east/walk/141":["frozen-v47-male-151-boot141-east-walk","cr2:xumqrb:nbz16v"],"west/walk/141":["frozen-v47-male-151-boot141-west-walk","cr2:3powgf:1pg1emj"],"east/idle/148":["frozen-v47-male-151-boot148-east-idle","2cn:1dhzhln:3hlz8v"],"west/idle/148":["frozen-v47-male-151-boot148-west-idle","2cn:jxazl3:149jzkb"],"east/walk/148":["frozen-v47-male-151-boot148-east-walk","eoh:1smeot:1rn6h29"],"west/walk/148":["frozen-v47-male-151-boot148-west-walk","eoh:15x9atw:1ceb9lg"],"east/idle/162":["frozen-v47-male-151-boot162-east-idle","2cn:12f1v9p:1o9y22d"],"west/idle/162":["frozen-v47-male-151-boot162-west-idle","2cn:1atav3n:pd5w9r"],"east/walk/162":["frozen-v47-male-151-boot162-east-walk","eoh:1ahmpj0:1duf0qo"],"west/walk/162":["frozen-v47-male-151-boot162-west-walk","eoh:1uvv4zz:1du8dv"],"east/walk/169":["frozen-v47-male-151-boot169-east-walk","cr2:rko4u7:18a531z"],"west/walk/169":["frozen-v47-male-151-boot169-west-walk","cr2:11rbh26:166zth6"],"east/idle/169":["frozen-v47-male-151-boot169-east-idle","1z2:agcdm:1uf3cmm"],"west/idle/169":["frozen-v47-male-151-boot169-west-idle","1z2:60g854:1i2z1y8"],"east/idle/155":["frozen-male-pants133-east-idle-v47","1l1:csa4r:ue4413"],"west/idle/155":["frozen-male-pants133-west-idle-v47","1l1:1mvx71r:2hacej"],"east/walk/155":["frozen-male-pants133-east-walk-v47","at7:sgm1tb:yxkzdr"],"west/walk/155":["frozen-male-pants133-west-walk-v47","at7:16pl94v:3ormjj"],"east/idle/176":["frozen-v47-male-151-boot176-east-idle","2cv:1xc8wot:prichh"],"west/idle/176":["frozen-v47-male-151-boot176-west-idle","2cv:1nrvm15:bhdoex"],"east/walk/176":["frozen-v47-male-151-boot176-east-walk","eop:1bgkp5c:1aj3cgg"],"west/walk/176":["frozen-v47-male-151-boot176-west-walk","eop:1rs1l2m:5rcrjm"],"east/walk/183":["frozen-v47-male-151-boot183-east-walk","eop:1t7nyv7:1junkaj"],"west/walk/183":["frozen-v47-male-151-boot183-west-walk","eop:1yq5db4:jh144"],"east/idle/183":["frozen-v47-male-151-boot183-east-idle","2cv:5c56u5:pamvv1"],"west/idle/183":["frozen-v47-male-151-boot183-west-idle","2cv:1whghpp:1cilzx1"]};
+ function selectSavedMaleSideBootGait(player,o,a,visible){
+  const {direction:d,action}=o,b=visible.boots,slots=Object.keys(visible),w=b&&savedMaleSideBootSources[[d,action,b.item].join('/')];
+  if(!w||o.consumer!=='world'||o.weaponless||a.body!=='male'||a.hair!=='original'||a.face!=='original'||
+    !Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||!slots.includes('pants')||
+    slots.some(k=>!['pants','torso','boots'].includes(k)))return null;
+  const equipment={...player.equipment};delete equipment[b.key];
+  const r=selectVisualStrict({...player,equipment},o),q=outfitById.get(w[0]),lp=['clothed018-visible-background','pants133-visible-cloth-only'];
+  if(r?.hdKind!=='outfit'||r.body!=='male'||r.direction!==d||r.action!==action||r.omitted?.length||
+    r.mirrorLayerIDs||r.mirrorX||r.bodyOcclusion||r.sourceRasterPadding||
+    r.colorAppearance?.skin!==a.skin||r.palettePolicy!=='verified-original-anatomy-only'||!r.paletteSourceMasks||
+    !q||q.productionEnabled===false||q.body!=='male'||q.direction!==d||q.action!==action||q.equipment?.boots!==b.item||
+    q.mirrorX||q.mirrorLayerIDs||q.bodyOcclusion||q.sourceRasterPadding)return null;
+  const rp=r.pack,dp=q.pack,t=rp.directions[d],p=dp.directions[d],eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const key=(x,y)=>[x.frame,x.pivot,x.density,y.rest,y.poses,y.clip,y.layers.filter(l=>lp.includes(l.id))];
+  const lower=p.layers.filter(l=>lp.includes(l.id)),bl=p.layers.filter(l=>l.id.startsWith((b.item===155?'equip-':'')+'boot'+b.item+'-'));
+  if(lower.length!==2||(b.item===155?bl.length!==2:![4,6].includes(bl.length))||!eq(key(rp,t),key(dp,p))||
+    southCarryB9Stamp([...key(dp,p),bl])!==w[1]||bl.some(l=>l.binding?.kind!=='fixed'||l.depthTrack||l.frames?.length!==p.clip.frames||
+      t.layers.some(x=>x.id===l.id||x.depth===l.depth)))return null;
+  const refs=[...new Set(bl.flatMap(l=>[l.source,...l.frames]))];
+  if(refs.some(h=>!/^[0-9a-f]{64}$/.test(h)||!q.sourceRefs.includes(h)||r.sourceRefs.includes(h)&&h!=='5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f'||r.paletteSourceMasks[h]))return null;
+  const pack={...rp,directions:{...rp.directions,[d]:{...t,layers:[...t.layers,...bl]}}};
+  return {...r,id:r.id+':saved-gait-own-boot:'+b.item,pack,equipment:{...r.equipment,boots:b.item},sourceRefs:[...new Set([...r.sourceRefs,...refs])],
+   slotRoutes:{...Object.fromEntries(slots.filter(k=>k!=='boots').map(k=>[visible[k].key,{item:visible[k].item,quality:'hd',source:r.id}])),
+    [b.key]:{item:b.item,quality:'hd',source:q.id}},layeredSlots:true,omitted:[]};
+ }
+ // Signed B8 South gait: attach boot parts to the native leg/cuff depth,
+ // never bring across the historical frozen donor trousers or body.
+ const southB134Split={"ac6b59ffc327f03981d022c14bdd561c4e5039d24dbb243eebcc3a644d37426e":["ca74870eb770ed8d41f781cda43300cdcc9abe0ddf82c8236e7afe9beb108a3f","0db4171caa9ada4b83431ccf338777ade5735113e86fb72408da9c01f8cf3f84"],"77ba63417652793a5b76bdc2070b6443196f151a061bbdd645e03cc4c3865d4c":["f5a96f4b7e65bb2e57b0af6881a372165bdef489b82f5eaed366562ca3090606","fc3638b5e38741bccb1942d2685d24c37122a7832e384126cd7a478cd760f574"],"690f94465d42976b64faee9f0c9a93372916a88939ebc1144eb93c2e33127ffd":["956a0dd35d1acce3363884383447d18b78ddc4b42175e367a7b1770ca2f8aafe","83ba346f40866d0e169cd0a77d520cf7a51e24d3d05e76b4a51cce20e996d227"],"8499307a4d3e47e2eff02ec784e34b144e2aaf9a31109a4a1cac5f6f95c94e92":["e3c23bfc2cf7d71460fcfb70e0f3fa1d7b318ce62cd694137766a2a4b5b7d115","3925a414e6e743bfd68604b9f925abbfc44596ee3488d230af560f14532413fb"],"dcd26036caef3685eed8a270c3f88885e991cd5dacee001ffb0164457c0a0be5":["80cb7c8342fd11d7b1d7830ac967b0ef983764ab3d600e5a3f98cbf8bd14e910","e031563bbdc11238f84cdefd4857e6f72862d366482e3a7137181dcd5b2337ed"],"9f029fb1b30e36446414f0676171f2663c5ec9b536138bef36f76c454763383a":["e0f39650aceff44b31fde55c4dfdb4cc9ef2f6de458d2f4a3d8848d6453d1be2","09a321cd9f87ffbf78957f01a814ca56589b8ec4da3d099068c06d9477d32d05"],"92e21c91c3e1b8bde20d72d9dc3d3b464cd9323aad04db809bf6906dba4c9cc1":["e535875a3e676736133a6a61fef012d31cbb0b61f4bb24c5f511a2e34ea9f937","d77f66e8f716eea9b23779e2655979afbb5fa1907a4071f114e6b7a2e4233d81"],"ccb03787d3e8535a7749b40debe5be2001645888330bb15a754fa88d6eff0da3":["04b817a75a3013192e2f8f2d7264f7d4bcdae640647880b4521a5ed32cd0c36e","cc42ecced079853b31ab1a06666c1897d7a78c8303c1dafe5c04961ba0dd85f4"],"52ec06e19e414c4dea1bc8947fbca231ccba5c48fd7b21a9cb504ffc89797772":["b14cc31f2d78527f9eafb75c68efa8afcdb7398f3d7e5df9e879a7bc765d85e2","df2ab1ee762d0822edfd014656236632b084aabe9e3a319a5b89a5468487478f"],"6e350f6cadf5dc9df01cd65f0d507f484562905d1657508e88f16f23875f5906":["9ce946d93af5eeef30b7ca2bf7a16ff89919232f97c59b9410d7e56dd3a96f01","96c4852d13a4d0c4b9413360d8a3eab93abebde4c262b2339dbf90cf62881c4b"],"b78e676a7a1f0dcdf151103eb638d318dd568405e3f792ab7010ee711e1b3cab":["3b777fde3aaa793b1b5f8e17b5866d14fee8d2c127addb662785eeb3edaa5feb","58d4f80567d5d68a458a4ad8cd5e86f61a0e4d4299f577b74cc72b2ef9bbeed3"],"fd3f717a87db6b13f196fd3c86d9d11b5c677df1b9cfcd33ec326cc3ccb7cc5b":["6775068e5651b21da42f202b913407128fbddc6f52043d2ea0c6d59caaf46ca7","012149f780b809d7dd6087702a76efb6ad00b0f51ac2e99aacc3bd289f1fb611"],"dfbd25267c779f00c656921aaa8bf4434c2262d135a22f74936731f0a9c0b6c8":["2d8de78aaffac4ef91cd39b4d19ceab834001a2e3f7d3afa4f89e45b8ae89d3e","8fdcae5a9b4ac1241ea13b28a3ee44c134b085a4a3d89eb3d8c33b5854eae928"],"a15fd0a18f3ea1d7c7bcf6df8ff7eadcdfb3bfbbd76eda4a1d6ef5054813ed3a":["805cf557f5263e23e036aef5ae5e380bf550a763615945d636d71cab65c8adc3","6aecf246abc1d3303cebcfa3527e431f56c319502a1a1a56919d9977b29360cc"],"9637126b217b849213c410da1d7a18c5aef905f59e2e260a071d5bfd9a133423":["503e63f9f4ed52c2d5f0831b4559d4a5683544ed46cf1f1f9ecfc3c0b10e8223","d33c4825e477db7c0bacaa705a04943b69651337db6b04b629de0ec243cfe063"],"c61799eefbd3cc658d57ad61278dd662a2e4fadf1830e8644f6ba2e979dc6e82":["d4a81c29da75f2bf98e665437914cada32c81b5caf9245d4d1ebf707a453c27f","d19f18f422f7596d04b5294827770c631e20ea520e9abac9cd73cd63fba820d6"],"5e2a26577a6e6d93b957b9cd7a0b2fda9092ed2c02d74ed73d570930c65f4bb2":["25ee0a58f028dbb0459b435e287fe2ff1334971ee0eb0f83af96168e473939f4","0757fb04ec6a5bffa03c168b62e3df0c5aa62b343e6f988d9ae44093155cb93f"],"7a7fc54b00d8c3416ee973ec57704c5fb3d0861724bc7be4eaca9b8ed029a228":["199805c96019cbfc395ccb38e3ce0deb7b03fa5365521afcffb5b9dd0f1bab44","5c0d8b2788934802a2b870bc0bb70416e17ce946044251f23071a4c7a542fdb8"],"2fa9b5e7fe5c77d509f0160de7d1e4f18e5db8773e15807d3cf71bc0135e4e5b":["7344b1c3ab544a3e89fb206fa1a485e7b9f81b543dbfff41f6ed5db590357858","f133968122df788d0442229319fef8e258973387e197b5be1f49cc36e3fe476d"]};
+ const southTallGaitPins={"141":{"idle":["cv:1e31ejr:72lcxz","142:1g6nzfy:1icdig6"],"walk":["1wp:5qtj3l:14vp0gx","5rk:yk38in:1tk1wub"]},"169":{"idle":["cv:1e31ejr:72lcxz","142:1u529ve:1injv0q"],"walk":["1wp:5qtj3l:14vp0gx","5rk:qkwxa2:qwntdq"]},"134":{"idle":["cv:1e31ejr:72lcxz","d4:1w3mk84:zkoetc"],"walk":["1wp:5qtj3l:14vp0gx","1wy:1hkuhux:a5fuh1"]},"176":{"idle":["cv:1e31ejr:72lcxz","q5:s5bssn:eejycr"],"walk":["1wp:5qtj3l:14vp0gx","3tt:zwsjx0:1ax1xg0"]},"183":{"walk":["1wp:5qtj3l:14vp0gx","3tt:vtmt8o:rih2k8"]}};
+ const southB162GaitPins={"idle":["cv:1e31ejr:72lcxz","13y:nllj1i:16mmuu"],"walk":["1wp:5qtj3l:14vp0gx","5rg:12ad46w:1j2hbmc"]};
+ const southB8GaitPins={"idle":["cv:1e31ejr:72lcxz","13m:zg77oc:7b6bbk"],"walk":["1wp:5qtj3l:14vp0gx","5r4:1s9jn6p:1gw3dph"]};
+ function selectSavedMaleSouthB8Gait(player,o,a,visible){
+  const b=visible.boots, action=o.action,pins=(b?.item===162?southB162GaitPins[action]:b?.item===8?southB8GaitPins[action]:southTallGaitPins[b?.item]?.[action]);
+  if(!pins||o.consumer!=='world'||o.direction!=='south'||o.weaponless||a.body!=='male'||
+    a.hair!=='original'||a.face!=='original'||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin))return null;
+  const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const equipment={...player.equipment};delete equipment[b.key];
+  const off=selectVisualStrict({...player,equipment},o),donor=outfitById.get('frozen-v47-male-151-boot'+b.item+'-south-'+action);
+  const base=off?.pack?.directions.south,ds=donor?.pack?.directions.south;
+  const lower=l=>['lower-redrawn','own133-isolated'].includes(l.id);
+  if(off?.hdKind!=='outfit'||off.body!=='male'||off.action!==action||off.direction!=='south'||off.omitted?.length||
+    off.sourceRasterPadding||off.visualDegraded||off.mirrorX||off.mirrorLayerIDs?.length||off.bodyOcclusion||off.headRecord||off.gearOnlyRecord||
+    off.colorAppearance?.skin!==a.skin||!off.strictSouthAppearance||!off.paletteSourceMasks||
+    donor?.frozenBootContract!==true||donor?.productionEnabled===false||!base||!ds||
+    !['frame','pivot','density'].every(k=>eq(off.pack[k],donor.pack[k]))||
+    !['rest','poses','clip'].every(k=>eq(base[k],ds[k]))||
+    southCarryB9Stamp(base.layers.filter(lower))!==pins[0]||base.layers.some(l=>/^boot/.test(l.id)))return null;
+  const own=ds.layers.filter(l=>l.id.startsWith('boot'+b.item+'-'));
+  if(own.length!==(b.item===134?2:[141,169].includes(b.item)?6:southTallGaitPins[b.item]?4:6)||southCarryB9Stamp(own)!==pins[1]||
+     own.some(l=>l.binding?.kind!=='fixed'||l.depthTrack||l.atlas||l.alternates||l.frames?.length!==base.clip.frames))return null;
+  const refs=[...new Set(own.flatMap(l=>[l.source,...l.frames]))];
+  if(refs.some(h=>!/^[a-f0-9]{64}$/.test(h)||!donor.sourceRefs.includes(h)||off.sourceRefs.includes(h)||off.paletteSourceMasks[h]))return null;
+  let boots=own.map(l=>({...l,depth:l.depth===49?3.99:l.depth===49.9||l.depth===49.4?5.49:l.depth===49.5?5.51:l.depth}));
+  if(b.item===134){
+   // A byte-preserving separation of the original owner's collar: only its rear
+   // interior goes behind the calf, with the highlight edge over the trouser.
+   if(own.some(l=>!/-(left|right)-front$/.test(l.id)||[l.source,...l.frames].some(h=>!southB134Split[h])))return null;
+   boots=own.flatMap(l=>['rear','front'].map((part,n)=>({...l,id:l.id.replace(/front$/,part),
+    depth:n?5.51:3.99,source:southB134Split[l.source][n],frames:l.frames.map(h=>southB134Split[h][n])})));
+   refs.splice(0,refs.length,...new Set(boots.flatMap(l=>[l.source,...l.frames])));
+   if(refs.some(h=>off.sourceRefs.includes(h)||off.paletteSourceMasks[h]))return null;
+  }
+  const p=off.pack,pack={...p,directions:{...p.directions,south:{...base,layers:[...base.layers,...boots]}}};
+  const mounted=Object.fromEntries(Object.entries(visible).filter(([k])=>k!=='boots').map(([k,v])=>[v.key,
+    off.slotRoutes?.[v.key]??{item:v.item,quality:'hd',source:off.sourceId||off.id}]));
+  if(Object.values(mounted).some(route=>route.quality!=='hd'))return null;
+  return {...off,id:off.id+':saved-gait-own-boot:'+b.item,pack,equipment:{...off.equipment,boots:b.item},
+    sourceRefs:[...off.sourceRefs,...refs],slotRoutes:{...mounted,[b.key]:{item:b.item,quality:'hd',source:donor.id}},
+    layeredSlots:true,omitted:[]};
+ }
  function selectLayered(player,o={}){
   if(state!=='ready'||!player||player.__reworkSubset||player.zoanTransformed||slotEntry(player.equipment?.visual_completo))return null;
   const raw=player.appearance96||{},body={masculino:'male',feminino:'female',male:'male',female:'female'}[raw.gender??raw.body];
@@ -2746,21 +4325,28 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!visible)return null;
   const look={body,hair:raw.hairStyle??raw.hair,face:raw.eyeStyle??raw.face,skin:raw.skinColor??raw.skin,
    hairColor:raw.hairColor,eyeColor:raw.eyeColor};
-  if(body==='female')return selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectFemaleApprovedGloveWalk(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
-  return selectMaleSouthIdleBareGlove(player,o,visible)||selectMaleBareGloveLocomotion(player,o,visible)||selectSouthPunchP22OwnCoatsG26(player,o,look,visible)||selectNorthPunchP22OwnCoats(player,o,look,visible)||selectNorthPunchP22Coat(o,look,visible)||selectSouthPunchP22Coat(o,look,visible)||selectSouthPunchBare(o,look,visible)||selectNorthPunchBare(o,look,visible)||selectNorthPunchB9(player,o,look,visible)||selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||attachRegisteredMalePants(player,o,visible)||attachSideWalkMalePants133(player,o,visible)||attachSouthMalePants168(player,o,visible)||selectUnarmedSouthPilot(player,o);
+  if(body==='female')return selectFemaleFittedSideIdleBoot(player,o,visible)||selectFemaleG180SideIdle(player,o,visible)||selectFemaleG180SideWalk(player,o,visible)||selectFemaleSouthIdleOwnGlove(player,o,look,visible)||selectFemaleSouthOwnGloveCuff(player,o,visible)||composeFemaleSouthIdleLayers(player,o,look,visible)||(visible.boots&&Object.keys(visible).length===1?resolveSouthOwnBootIdle(player,o,look,{boots:player.equipment[visible.boots.key]}):null)||selectFemaleNorthBootOnPants(player,o,visible)||selectFemaleNorthBootsOnly(player,o,visible)||selectFemaleIdleBoots(player,o,visible)||selectFemaleApprovedGloveWalk(player,o,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectFemaleWalkSlots(player,o,visible);
+  const southCarryBoot=selectMaleSouthCarryOwnBoot(player,o,visible);if(southCarryBoot)return southCarryBoot;
+  return selectSavedMaleSouthB8Gait(player,o,look,visible)||selectSavedMaleSideBootGait(player,o,look,visible)||selectSavedSidePunchB9(player,o,look,visible)||selectBarePunchGlove(player,o,look,visible)||selectMaleSouthIdleBareGlove(player,o,visible,true)||selectMaleBareGloveLocomotion(player,o,visible,true)||selectSouthPunchP22OwnCoatsG26(player,o,look,visible)||selectNorthPunchP22OwnCoats(player,o,look,visible)||selectNorthPunchP22Coat(o,look,visible)||selectSouthPunchP22Coat(o,look,visible)||selectSouthPunchBare(o,look,visible)||selectNorthPunchBare(o,look,visible)||selectNorthPunchB9(player,o,look,visible)||selectNorthRegisteredPantsGlove(o,look,visible)||selectNorthGlovePalette(o,look,visible)||selectStaticMalePunchSlots(player,o,look,visible)||selectSouthTorsoOnPants133(o,look,visible)||selectNorthTorsoOnPants133(o,look,visible)||selectBootsOnRegisteredWalk(player,o,look,visible)||selectRegisteredPantsBoot155(o,look,visible)||selectPantsGlovesOnApprovedKit(player,o,look,visible)||selectGlovesOnRegisteredKit(player,o,look,visible)||selectCoatsOnRegisteredPants(player,o,look,visible)||selectOrderedWeaponSlots(player,o,look,visible)||attachRegisteredMalePants(player,o,visible)||attachSideWalkMalePants133(player,o,visible)||attachSouthMalePants168(player,o,visible)||selectUnarmedSouthPilot(player,o)||selectRegisteredMaleOutfit(player,o,look,visible)||selectOwnMalePunchCoat(player,o,look,visible)||selectBarePunchOwnCoat(player,o,look,visible)||selectOwnSidePunchGlove(player,o,look,visible)||selectBarePunchIndependentSlots(player,o,look,visible);
  }
  // Exact, own lateral Focus body and eight separate Relic32 phases. Skin stays the authored Light.
  const relic32FocusSideSources={"east":["122dbaea5701916017e4dbeb23ce136567ad2d3629bea058629dae204f317b8a","9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2","45de7576039c538aee29ff5a5d0def51143e8cbf90a33cdead504d88fd2ea713",["a8302704750a3814209d97264562f620e1a024cde4ca0e1d5516949d8857dd78","4687bc10bb763fc59dbaa8163070de61e4d9b6e0c3afdd52f95f19a8b50b2fea","fb00113270ec6410ff0cbc5be92697a4ca147356524b414e472f6ad53b0c4888","2840fa65e15e017833715fb979df9baf7ce06b60832a73adc0cf8382def8e6c6","0f22fef7774401ff83d70c65a7d8b8f0b2927bd5fe4bb672e0c630382b388af1","93b92c3d7c00f605d14dce668a3b915de7938948c62b72345fec8d1446a98d6f","affe0bf396b58d25641a96f510aab19fb30abded06bacd155463b56792d7fc26","dadd479f2c28a6a0cbe18e7ce59d736bab0fc9fff116413eea9d110d596345d8"]],"west":["98da585b5061c22cc4c17f5d10b67ab3416321628e79e60c29f3ae8fce81fb72","0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464","a1359e16013832c487942d028404f7a5c59f4afd4a7e96eb480aa1a1d34db07e",["63581e58c702d175faa51ae27669eee8a99a5d43cdb55612274de201c1f86b2d","d7ab94fa87a7359fe0dcd20b257b172ae07248d98280edf46c46619431054c11","27d21115d990fcb889a5d11525f618cd2498cb1c547a14d5ae82a9307ab435e2","3c73045fd578990a9ed8a8c7ee0db64b638a97d16725a76a22830587beb3d017","179837f7ad574be32a0f2af9d406b28ec66181359a9d6d5c082502db9261e9de","ead3c68ec8d199c9d50e120db18dbaf2478a4fb05d23bad12e912cf499017b39","ef70507bfcdb9615dbb8e6c428fbb4f105b996ee58b2dc6d532ff940feeb4d3d","ab754ea54ab15a81183a1c732db033503000c346a0e403be1ef42e1d88361ab2"]]};
  const relic32FocusCoats={"east":{"151":["a753b4acfe3e8e3b12d6172a8b559d029af313dc3add3e4e2201037a456f5177","c58f5cd6eeeddfadc025df57052e54fd7dee7c859327726f3de0a2be5d8f7757","458b3e065c9f19631b56f7daf85cf31c161b187374db328aaa1278679adfca07","c9bb7460725ae1424d875252ee48a3324ecf910f947d8ad39eda07d0aabb004a","b27b458a9c9843b42859f4e4bbea74cfd4792cebe5517f29ec32c6ae21f9f3a9","383e8cb10b162b7d614f91a98af40c019bbe43d70238bf98f1e02fc60d1acbe8","a76567f04a92bba4c263da6759b3aa75fa293d139cb55c43070c522a4733edc0","1737ccf4297428db88e5b6a45531a589adb6fb89768cdecf3e674b1912c9cd22"],"158":["f54d59ee426e6bdb4f265c7227fddd30d50e52323ce581e31895883bb0c77e29","4921a8088f06959038a48f1a39868609c659c8fcb72d57d14c52ad02fbc273da","6d4e980d3556e7141d1ac5ecac17403a3008ceec01ec10872f1921ddd69df358","0c28180bc24c6392c45c2d1467cc088f5b9fd2693795d0babb27d051387c4307","0aff8bbc586750f4a6c3062921a11d178dc38b91567ebc1b42fca21a13dd7f97","bdec7da8c5ba60270faad054cd317e1f2b71ac14c3b61ec4331be13a8f7915e2","a7c85d738594cb63f0b35ae9222ad1718071255cfaf15f0cbdff2dddd0f17845","5a258975670363222e64bef2b0a0c3e09167568130357797a2cf57a51214cdc8"],"165":["55e15f11cd2c5a7e6102a887d1141c7cc0ec692de7f636351d1403deea6b0205","ddf4a44c9eb5855aaad24bc87c5cc87c36c9d63b375ffd579c8fb9555d20835c","647c46e652ce234280598eaec7ebe8ff9670ae2c63da52490980f4097982bdf5","92944bca41e32af255a433ce7621b7154f25ce05dad218e607f9fcb0282f2cb6","8b49a51917fd99f57c72914d9db6773eba3f52192ed285f553813b2feadee704","e7d7ed5774484e85ba3625b5315d61551a148ecb0c8e13dc21e5e596e9a023c4","d4af45f2eebb33de71390b66603505c81549a08c765b318e8dbdbdfb319b8155","82571ee0e8e389b2ff18f3789433b7773ffd52cf8a810338e5b3e88271dfb17a"],"179":["19286a60b329d5a46af15de9b3c1625224bf0c9d468b81e0c18b85ab1aa53ea0","9ee86d7e91b99dc36f453b5352ec73ebf2df6af7722dd52317732a85586d6ddd","d7b30c0ffaff5a7248c90bba04969e6c5cc0e0cbf66d2ba20f153f7c522141b7","4874c10c2ce505e52b065f11c6b28ee010e6293f26d48ccaa004fdfec44a9625","00c45cffbc9cd967baa237de4265427fd869168a836daf17c196f23482425e5f","a605078a1d529ac3267a77290dd3bce46d87e150db21c938a9c554c7376c19be","e3923b0ab65ccd18f1a539a8b515c3bb84d632632e5b33a86579e2f57f586363","575907a5912e33ffd5f5bbd72f804035b6a16206239096661d0379ea375abb60"]},"west":{"151":["7d9133533d1771bc74247c7193f992ae8325be711a88d0c4ffab1f8ffcfb3856","3a3b9dd49fdd26814cb568699e944d56cc5188df27879798a4041bd565609436","c4e290d865690b8dcc76a9468e87783e227a270ed92d437757c9473a3d70ed39","23a2d6fc1598b4468aa54c69a58ea73325ae37dabb04330122ea6c98ace4949e","aa53893229957b7b9d01dfce46d3a301127deb8db4fda39dbffce55232ebdaee","78f89a2fa3849109bbae1626487eb1ff2960f54b85eb46ee9381cc62065dbb8f","a1b600983f578c1f0afc1a57fa2cc8df4aa9775781d2d5d3f0c10343c8e41a81","8396bbd0152121313d54180e234a03d0e41eb27e6007eee2d770b0da43427923"],"158":["a0b6c6b381f5e495d3cd6e2f97327765aa5c453cf9a01d4bf096376c45cdc5d5","92b50b70f4a38a8650f50af397d515ac9fae24629b33ed8356659cec8ad1c887","97a471b034af93ee091907b8edc86c9018c5285555f951e0345700c6f1d2be52","1ddb8e74b2b3bb2566f786b1d839438f88c8b5952503cb23f95395ac3a79d1a9","5abb49204b28d914ce0e0f8155d0af73a936ea06d77bacf382f9c537fc131bd4","3d8e9e45f2f0b95b040edfc70e573f062895549137bb7a3460c681358d3512c4","8cafda519193da1ba0f0f87fca9c23afa15ee3f2f6f64b2f9a5cc3baab451ed7","c45c1240f29e54f3305e5198b977fb3d67489a17f6ef31ebd467fb7a365a9f39"],"165":["dad9b165ec4b16ae32ed061bad561f1b10d95d211d04b9d322197494a051632a","9824a8ddf12ea94666ea2bf88d7fdf67857c11c93feec5d4c981abf155766ed7","bae0ddf308007a76fd1fe4c02bfe5abe7501ddce6792cbe2346a576e4b074fe2","ebea912e57376d5d9ff054ef2ec40fbf8c552ca78454c5a5d13d2cf3d85f35d7","5f9939f817a1ccf8e43de52e1b46c94393ed4d6e3e8d44214facc81db53b1238","bd4e027979ed58eb3c9a90d985e2502b0c9bb783ae240e7b4b8db21b748d1003","e8a119b21e2cff36bd4cb052b8d6cd2111d07eeaa266174d67da73521e6b7710","96c5b4ed2ceef5d84810a178d9102b856e34d73816f55a1c1854cae356d6c7cd"],"179":["d4ab9c99dd76c9e639d0f222662300ae87e57d32efc0979086d2b56cce1286d3","8cf68c0a3948421be0a19a0722390fb10aa71543fcb5a26495c790924009ae1f","5893df35549a00a13d71e6b86f78a24f80ec324bbd4b55e55065fbf1704a0d37","6de36acd44aaaec39518ba3e89893d8889bfe5515f98a3cd8f49d9bf35529757","bac15dedb28018494f03611cb34208dcacf9f4ec6c60ccf6469ce796fbdd15bd","fc3c132ad87952f585ad7261bd61db4bced7d4e1538c7e969c0ab208ef62ffc0","e29b1c6f5620878c07c9b7fea9fc6025ae1136f55c5fdeb112a9016cda3100ab","ddc38686c654a0abff3ff7ff008d4a26a4a2fd4ada185faba9530f7d9656d8c6"]}};
  function selectRelic32FocusSide(player,o,a,kits){
   const d=o.direction,own=Object.hasOwn(relic32FocusSideSources,d)&&relic32FocusSideSources[d],w=kits.weapon,c=kits.coat,coat=(c?.def??c);
+  // The production compositor never draws the independent cloak slot.
+  // Keep the signed peitoral (including its own cape) and all visible guards.
+  const inertWorldCloak=o.consumer==='world'&&nonVisualEquipment.has('cloak'),
+   occupied=rawOccupiedEquipmentKeys(player).filter(k=>k!=='cloak'||!inertWorldCloak);
   const w32Tone=a.skin!=='light'&&a.skin===a.skinColor&&
    Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)&&o.consumer==='world'&&
-   c==null&&rawOccupiedEquipmentKeys(player).length===1&&a.hairStyle==='original'&&a.eyeStyle==='original';
+   (c==null?occupied.length===1:
+     occupied.length===2&&occupied.every(k=>k==='weapon'||k==='coat'))&&
+   a.hairStyle==='original'&&a.eyeStyle==='original';
   if(!own||o.action!=='attack-focus'||o.weaponless||player.__reworkSubset||player.classId!=='healer'||!root.MareAppearance96?.hairs?.black||
      (w?.def??w)!==32||Object.keys(kits).length!==(c!=null?2:1)||c!=null&&(!Number.isInteger(coat)||!Object.hasOwn(relic32FocusCoats[d],coat)||o.consumer!=='world'||
      (player.equipment?.head!=null&&!['none','original'].includes(player.equipment.head))||
-     [c?.variant,c?.variantId,c?.appearanceVariant].some(v=>v!=null&&v!=='original'))||['visual_completo','cloak'].some(k=>player.equipment?.[k]!=null&&!['none','original'].includes(player.equipment[k]))||
+     [c?.variant,c?.variantId,c?.appearanceVariant].some(v=>v!=null&&v!=='original'))||['visual_completo','cloak'].some(k=>(k!=='cloak'||!inertWorldCloak)&&player.equipment?.[k]!=null&&!['none','original'].includes(player.equipment[k]))||
      [w?.variant,w?.variantId,w?.appearanceVariant].some(v=>v!=null&&v!=='original')||
      a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||(a.skin!=='light'&&!w32Tone)||a.hair!=='original'||
      a.face!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue')return null;
@@ -2794,11 +4380,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      a.skin!==a.skinColor||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skin)||
      ['variant','variantId','appearanceVariant'].some(k=>o[k]!=null&&o[k]!=='original'))return null;
   const v=registeredEquipment(player,o),item=v?.weapon?.item;
-  if(![12,13,71,72,73,74].includes(item)||Object.keys(v).length!==(v.pants?2:1)||v.pants&&v.pants.item!==22)return null;
-  const r=femaleRegistry?.resolve({item,body:'female',action:o.action,direction,appearance:a,equipment:{weapon:v.weapon.value},
+  if(![12,13,71,72,73,74].includes(item)||Object.keys(v).length!==(v.pants||v.head?2:1)||
+     v.pants&&v.pants.item!==22||v.head&&(![12,71,73].includes(item)||!['east','west'].includes(direction)||
+       a.hair!=='original'||root.MareHeadgear?.resolve({def:v.head.item}).hairHideMode!=='none'))return null;
+  const r=femaleRegistry?.resolve({item,body:'female',action:o.action,direction,appearance:a,equipment:{weapon:v.weapon.value,...(v.head?{head:v.head.value}:{})},
    daggerToneAuthority:{target:daggerP22.targets[item+'/'+direction],geometry:daggerP22.geometry[direction],...proof}});
   if(!r?.femaleDaggerSavedTones)return null;
   const base={...r,hdKind:'female-equipment'};
+  if(v.head)return describeSlots(base,v,[]);
   if(!v.pants)return base;
   const p=r.baseRecord.pack,d=p.directions[direction],frames=daggerP22.frames[direction];
   if(frames?.length!==8||frames.some(h=>!daggerP22.archiveIndex.sources[h]||r.baseRecord.sourceRefs.includes(h))||
@@ -2869,10 +4458,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  const focusCarryClasses=Object.freeze({16:'strategist',17:'strategist',31:'healer',32:'healer',121:'strategist',
   122:'strategist',123:'strategist',124:'strategist',125:'healer',126:'healer',127:'healer',128:'healer'});
+ const spikyCyborgCarryIds=new Set([15,118,119,120]);
  function selectNamedFocusCarry(player,o){
   if(!player||player.zoanTransformed||player.__reworkSubset||o.consumer!=='world'||o.weaponless||!['idle','walk'].includes(o.action))return null;
   const raw=player.appearance96||{},equipment=player.equipment||{},w=equipment.weapon,id=w?.def??w;
-  if(!Number.isInteger(id)||focusCarryClasses[id]!==player.classId||
+  const cyborg=player.classId==='cyborg'&&raw.hairStyle==='hair-spiky'&&raw.hairColor==='blue'&&spikyCyborgCarryIds.has(id);
+  if(!Number.isInteger(id)||!cyborg&&focusCarryClasses[id]!==player.classId||
      Object.entries(equipment).some(([k,v])=>k!=='weapon'&&!nonVisualEquipment.has(k)&&v!=null&&v!=='none')||
      ['variant','variantId','appearanceVariant'].some(k=>w?.[k]!=null&&w[k]!=='original')||
      raw.version!==1||raw.gender!=='masculino'||raw.skinStyle!=='natural'||raw.skin!=null&&raw.skin!==raw.skinColor||
@@ -2887,31 +4478,2348 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      authority.headRecord||authority.gearOnlyRecord||authority.omitted?.length)return null;
   return carryRegistry?.withNamedHair?.(authority,raw.hairStyle,raw.hairColor)||null;
  }
- function selectVisual(player,o={}){
-  const exact=select(player,o)||selectApprovedFemaleDaggerP22(player,o)||selectSouthIdleImperialBoots(player,o);
+ // Own P22 pass is mapped to each signed attack body/contact frame; keep the weapon ahead.
+ const weaponP22SideEvidence={111:{"east":[["2e92c76386aaaf40252a2e5d26846a84eca93ef31ff140657bb6dcd4cf61f346","3129a4d595d0d93b4748271446eabb63480c0ea2cff1353ce74be3c9b7a76c7b","96aa5ea941280e4c8c39d3bb241138c75be7936f4bbcb288645d18b23df98f6c"],["a6d22114df7503df1b489e64567e4620c96099fa065f69f3988bb807c5423b06","2dc8cc41f4b5f9ace43c0069cc5e47cf9a429af69e20977701ec9f5af0a29d13","6f5a95875f072ff5ae30c6d902147fa35623d6740e083d92514388049005739e"],["eacf09fbeee7f3f46852c516a4b05f6d2fc2d542c07b4ce91e99ea03e5e80abc","f89b5f0fd1275b1c5b9f88e19d26fdc10434bfdbff78ab9c0c4db2c0428569bc","6f64376700fb2eced09b6b7619116110bbc00e41011f8236cb236175e47ed81b"],["69996d30451eb37e0ba2d4959ad993ba20d6b934c42014795be067474b500043","ac0d9da6ff7f0352f42d076a2aee95f433d452a8c51ce635517d692da7dbd4da","0d6597415d63006d13dc854778947e241a5e46b24739f68c69bb7dc3a1647cac"],["2930e201b2657da99bed40d85ab2ec3dc293b5f56489336bb71978aa464d201f","2cc62562f90331751ac8b4bf3cfb9a11ae43fc2599ff036e85c83c282eb32149","6ab151fad747f571893ce790a0ae215d9ce55bae3c08d44f0149dab9a82009a7"],["cf739b81f6ab8be1eddd4c18d6b9448ab4c057aa4e91550bf069048d1d9ed7c0","a3d6ff2bc3448d4a6cfc713bc6b60e013e480e56ff159158d3e123bf666ac306","682b2de4b5cfa9e29e50d4c00db1183fd247e1183f2341fb71dfa3cf982a94e6"],["821bc13dd3548164c7f96d23e8f8637feafe6b2e56e0230560b02bd56c56b133","2dc8cc41f4b5f9ace43c0069cc5e47cf9a429af69e20977701ec9f5af0a29d13","4bc8ffa0dabbb6373040663ae937749c9a4e24b62d7198aa85abaaec818b7612"],["4c30183c9d1ab082c01655e210db9ef56d12a22884439d6f35749ea177de692f","3129a4d595d0d93b4748271446eabb63480c0ea2cff1353ce74be3c9b7a76c7b","7d2fe4a25f0ab83e21219143f6d2eb64adbb93f5c43b8beaf733706da4cba1d7"]],"west":[["09b278017b35fa1f4af444658b220c7617317a74dfd6ddcd8d51b236b3c94307","e066777fafbf1e3d370ffd6d958b718890dbf2a19a7360e32f7e0c2777271eb9","f19bbf33ef0a2210df149912ab5f9f1ed49f3f30da5737d84b31baab4b3d9ead"],["9a29b0fa3f2158c44f93b74c4cd9616a39963d53fa76bf3dc96807ea733d17dd","3257c1c57da0ee8f5ab0aba51cd651b610b2c591adb28aaf9c57896e13d4f952","fa3b6ab90d4192219fcb741a8049f1d8476087bb4a038573f47f28215e1a0df8"],["96c5bbe596b7d17e2b31846f24b5c57ac2bbfabc3a177d36e0f662b3baaab05e","055f053062ea56776bdcf475981ba3ead3aec1db10f9cc91a7344127976e2397","92e48ff454bff305797e4cd042c0893c1588cd298e39a22582c71a9bb17cc58f"],["de64db3082b6c21c455f2408e78b03e2a747a00248ba982cf1a1ef7a742d8a8b","144d53f7a8cf321a2bd8c6c55404f8c3ac50b998c996c5bb3b48bbe7313d8a86","835c1d56e998bffb3c14a39bcbcd7a1a29caa54e989e4c1d77d0820c5fda7967"],["9dadac60938e3ba16886b2e7b6b3f92eeeaaee14ad814852e1587dd580ae608e","fdcbf111505cb50aab708d0f90bb21ab76678ea18e89be8993f05aa7a512f45e","8f8cf2754575a0dfd4f15c3454c7baeba4cecacf15d42ae05503e26c01e29b80"],["fe2561e42ae4a7bc247589841f37447e95f7f9ef66d1167e18540ff1f960bfa1","f2d470149a7deb9416c66d44411203f00a022b18ee6440fc11be2a455379794b","f23b33a71f4b8a70884ae36d1e2efdb9f1b3dae112a72678ec063913fa6dce39"],["8f6b6a9079b9f106f02605a8be13ef452d2f7d93bcd96d250a54cdcfdab67e3f","3257c1c57da0ee8f5ab0aba51cd651b610b2c591adb28aaf9c57896e13d4f952","87bd6eeeec12035adbe6cc5f1eda1499f33933f938ad2acbea4b41ac78819487"],["235f3beaa71fbc5c4c731462d20e0f13c4f1bb889428ea643c9163a349d11f7a","e066777fafbf1e3d370ffd6d958b718890dbf2a19a7360e32f7e0c2777271eb9","21154d3766f31ac9f2a9f288d74bb1f85308debfbbda92d5a894581d2cf1fe8d"]]},118:{"east":[["2e92c76386aaaf40252a2e5d26846a84eca93ef31ff140657bb6dcd4cf61f346","6190c8025947706895cbe20066eb1e649b992c47a784615b2964c5ce6aa3d9ba","96aa5ea941280e4c8c39d3bb241138c75be7936f4bbcb288645d18b23df98f6c"],["ee6d766ed6de64cbccacad9c98cb313a4f586c1a609b782bf50bc55bfd3fef5b","3c0060d0194f7b229ebc6522a9ba042bbde942fba9f16e2b22e59168e0648330","6f5a95875f072ff5ae30c6d902147fa35623d6740e083d92514388049005739e"],["0836ac9a467bb00437ee0f9312602a1bf6b2d4c20d5e19aec3417c845d7f9ad4","9dd81c9f91977052cb98550267fc5f6e90ec5994920125ad02308efb06ea81ae","6f64376700fb2eced09b6b7619116110bbc00e41011f8236cb236175e47ed81b"],["a9e310b273924aaeffbf0fe02e59f9d9ee6f4de8828833ce1e211ded12dc8584","aa20a871cbecad13c368aa49ed93ce148891123b756c40387256edfc7276d704","0d6597415d63006d13dc854778947e241a5e46b24739f68c69bb7dc3a1647cac"],["2930e201b2657da99bed40d85ab2ec3dc293b5f56489336bb71978aa464d201f","44a24828ededbcf68106ce6cd001effb410797458d4584fbe95f1e3c95e1bd43","6ab151fad747f571893ce790a0ae215d9ce55bae3c08d44f0149dab9a82009a7"],["084e77f44de44450cc8d937367c41219b621b0dd6c45b9c85fbf7bc46be26ee9","83731e746fe1f7447c2c5bc1e8d6274dd6db4bfb8d37fb1423c81e9c24f48c86","682b2de4b5cfa9e29e50d4c00db1183fd247e1183f2341fb71dfa3cf982a94e6"],["c54b62f26763d794bd3e8fdec5935ff77328defb3e610e0abe58c7d1b52913c0","f1fa70395c7c26a74aea190c4889d49e70034602f7a1e1580a20de276ce85f83","4bc8ffa0dabbb6373040663ae937749c9a4e24b62d7198aa85abaaec818b7612"],["4c30183c9d1ab082c01655e210db9ef56d12a22884439d6f35749ea177de692f","aefc6054195e56b64eef7668251cae855518466ba29115413f5dae090b5091ef","7d2fe4a25f0ab83e21219143f6d2eb64adbb93f5c43b8beaf733706da4cba1d7"]],"west":[["09b278017b35fa1f4af444658b220c7617317a74dfd6ddcd8d51b236b3c94307","475d07755ef8171f5a157671d2da5c78a4375fb3dd9adb0930eb8513c32b99fa","f19bbf33ef0a2210df149912ab5f9f1ed49f3f30da5737d84b31baab4b3d9ead"],["1d22cd583f6738a47714976f5d0997dd08a1f5b97d98c7e2da20b5b014ab99a7","ef142e28801bbc908ef3840b4f73454a4ccab900e3e6e420d1e1f7a8fe55c613","fa3b6ab90d4192219fcb741a8049f1d8476087bb4a038573f47f28215e1a0df8"],["9724df6e4df0479c9836f97d935a36f94d531514275acfe57c2a0aaad9878e11","21dfa019b3e7c5ccf3cb6223d0aac803dfb3f371c12621e77b83f7f31014979b","92e48ff454bff305797e4cd042c0893c1588cd298e39a22582c71a9bb17cc58f"],["bd2278a555569747f36eec065d7436f4768d36cc09c9fd35e4d3e0b433ea1e16","b28fe2603347ab33023b5b572775ce57926179ad8e28ff4445ac3484fc4f73b7","835c1d56e998bffb3c14a39bcbcd7a1a29caa54e989e4c1d77d0820c5fda7967"],["9dadac60938e3ba16886b2e7b6b3f92eeeaaee14ad814852e1587dd580ae608e","7db2393fbd1364a5f3b3b65d441e8839c68b3478abd3b7ff31d64e0a425fcfe4","8f8cf2754575a0dfd4f15c3454c7baeba4cecacf15d42ae05503e26c01e29b80"],["5fb2d14f71024a2385a6ee7ce1f6f452e1e743b7fa291c7c12392c4cbc14f92e","e25cf6799cd67ce8e6258d8a0ea7201fa087b208a27d80cd8fbbd8fb489665a0","f23b33a71f4b8a70884ae36d1e2efdb9f1b3dae112a72678ec063913fa6dce39"],["771e7fe7da3fabcb9cb1ca3ec6ba6baddd9beda9af3af03ebabcbdbb8ab79913","5024e75205b5dd0eda34195d21f2125233d7284173c4cbb22fbf93aa1e760b8e","87bd6eeeec12035adbe6cc5f1eda1499f33933f938ad2acbea4b41ac78819487"],["235f3beaa71fbc5c4c731462d20e0f13c4f1bb889428ea643c9163a349d11f7a","80b20de2fa722a99e8897296d8355905b5d0e4528abd33d195059eea7937cdf1","21154d3766f31ac9f2a9f288d74bb1f85308debfbbda92d5a894581d2cf1fe8d"]]}};
+ function selectOwnWeaponP22Side(player,o){
+  if(o.consumer!=='world'||o.weaponless||!['attack','attack-unarmed'].includes(o.action)||!['east','west'].includes(o.direction)||
+     !player||player.__reworkSubset||player.zoanTransformed||slotEntry(player.equipment?.visual_completo))return null;
+  const kit=registeredEquipment(player,o),p=player.appearance96,weapon=kit?.weapon?.item;
+  if(![111,118].includes(weapon)||player.classId!==(weapon===111?'brawler':'cyborg')||kit?.pants?.item!==22||Object.keys(kit).length!==2||
+     p?.gender!=='masculino'||p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue')return null;
+  const direction=o.direction,base=select({...player,equipment:{weapon:kit.weapon.value}},{...o,action:'attack-unarmed'});
+  const donor=outfitById.get('male-pants22-attack-unarmed-'+direction),d=donor?.pack.directions[direction];
+  const layers=d?.layers.filter(l=>l.id==='pants22-profile-candidate'),cloth=layers?.[0];
+  const isArm=weapon===118;
+  if(!(isArm?base?.ownedArm118SideAttack:base?.ownedGauntletSide)||base.hdKind!=='weapon'||base.item!==weapon||base.basePack||base.equipmentBehindBody||
+     base.renderOffsetPhysical||base.nativeCanvas?.join()!=='640,640'||base.pivot?.join()!=='80,128'||
+     base.fps!==12||base.states?.length!==8||base.timeline?.join()!==(isArm?'0,1,2,3,4,5,6,7,7,7,7,7,7,7,7,7,7,7,7,7':'0,1,2,3,4,5,6,7')||
+     donor?.productionEnabled!==true||donor.body!=='male'||donor.equipment?.pants!==22||
+     donor.mirrorLayerIDs||donor.mirrorX||donor.sourceRasterPadding||layers.length!==1||cloth.slot!=='pants'||
+     cloth.binding?.kind!=='fixed'||cloth.frames?.length!==8||!cloth.frames.every(h=>donor.sourceRefs.includes(h)))return null;
+  const authored=weaponP22SideEvidence[weapon][direction];
+  if(base.states.some((s,i)=>s.state!==String(i)||s.layers.length!==2||(s.layers[0].offset||(isArm?s.layers[1].offset?.join()!==(i===4?(direction==='east'?'-3,0':'3,0'):'0,0'):s.layers[1].offset))||
+     s.layers.some(l=>l.mirrorX||l.operation!=='source-over')||
+     s.layers[0].depth!==0||s.layers[1].depth!==1||s.layers[0].sha256!==authored[i][0]||s.layers[1].sha256!==authored[i][1]||
+     cloth.frames[i]!==authored[i][2]))return null;
+  const states=base.states.map((s,i)=>({...s,layers:[s.layers[0],{id:'pants22',depth:.5,operation:'source-over',
+   sha256:cloth.frames[i],url:'/tools/rework-modular-outfits-hd/assets/'+cloth.frames[i]+'.png',size:[640,640],occludedBy:s.layers[1]},s.layers[1]]}));
+  return describeSlots({...base,id:base.id+':own-p22',equipmentContract:{weapon,pants:22},states,
+   action:'attack-unarmed',resolvedAction:'attack-unarmed'},kit,[]);
+ }
+ // South Orb 122 shares the exact DRAWN8 lower anatomy and shorts
+ // registered with the independent P133 overlay. Keep the orb's own hand pass.
+ function selectOrbFocusSouthP133(player,o){
+  if(o.consumer!=='world'||o.direction!=='south'||o.action!=='attack-focus'||o.weaponless||player?.classId!=='strategist'||player?.__reworkSubset||player?.zoanTransformed)return null;
+  const v=registeredEquipment(player,o),id=v?.weapon?.item;
+  if(id!==122||v.pants?.item!==133||Object.keys(v).length!==2||rawOccupiedEquipmentKeys(player).length!==2)return null;
+  const a=player.appearance96||{};
+  if(a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hairStyle!=='original'||a.eyeStyle!=='original'||
+     a.hairColor!=='black'||a.eyeColor!=='blue'||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skinColor))return null;
+  const r=select({...player,equipment:{weapon:v.weapon.value}},o),p=r?.basePack?.pack,d=p?.directions?.south,
+   donor=outfitById.get('male-pants133-attack-focus-south-drawn8-candidate'),dp=donor?.pack,dd=dp?.directions.south,
+   eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),sha='8a93e44b2f1bc0abd95b342f31808776e5aa53db4c7d15a2c5975d8f2a20d0f5',
+   strip=s=>s?.startsWith('assets/')&&s.endsWith('.png')?s.slice(7,-4):s;
+  if(r?.hdKind!=='weapon'||r.id!=='orb122-south-native-layers:saved-own-fused-south'||
+     !r.orb122SouthOwn||!d||!dd||r.body!=='male'||r.item!==id||r.direction!=='south'||r.mirrorBody||r.equipmentBehindBody||
+     r.renderOffsetPhysical?.some(Boolean)||r.headRecord||r.gearOnlyRecord||!eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||
+     p.density!==4||dp.density!==4||!eq(p.frame,{width:160,height:160})||!eq(p.frame,dp.frame)||!eq(p.pivot,dp.pivot)||
+     !eq([d.clip,d.rest,d.poses],[dd.clip,dd.rest,dd.poses])||d.renderMirrorFrom||dd.renderMirrorFrom||
+     !eq(r.timeline,['0','1','2','3','4','5','6','7'])||r.fps!==12||r.states?.length!==8||
+     !r.states.every((s,i)=>s.state===String(i)&&!s.canvasRoundingPatch?.length&&s.layers.length===1&&s.layers[0].role==='authored-hand-and-orb'&&s.layers[0].depth===10))return null;
+  const [cloth]=dd.layers.slice(5),base=dd.layers.slice(0,5);
+  if(dd.layers.length!==6||!eq(cloth,{id:'pants133-translated-candidate',slot:'pants',source:sha,depth:2,binding:{kind:'fixed'}})||
+     !donor.sourceRefs.includes(sha)||r.basePack.images[sha]||d.layers.length!==base.length||
+     !d.layers.every((l,i)=>eq({...l,...(l.source?{source:strip(l.source)}:{}),...(l.frames?{frames:l.frames.map(strip)}:{})},base[i])))return null;
+  const pack={...p,directions:{...p.directions,south:{...d,layers:[...d.layers,cloth]}}};
+  return describeSlots({...r,id:r.id+':own-p133',orbFocusSouthP133:true,resolvedAction:o.action,equipmentContract:{weapon:id,pants:133},
+   basePack:{...r.basePack,pack,images:{...r.basePack.images,[sha]:'../rework-modular-outfits-hd/assets/'+sha+'.png'}}},v,[]);
+ }
+ // Signed, independently owned fixed passes keyed by verified attack source and item.
+ const signedWeaponGarmentAuthorities={114:{"south":{"id":"pistolas114-south-native-original-source","sha256":"b5078b93973cb77041f9b3f12fb06d841dc27e58e2797fc7e8f8d637fa6b4375","timeline":["0","0","0","1","1","2","2","3","3","4","4","5","5","6","6","7","6","5","5","4","4","3","3","2","2","1","1","0","0","0"],"fps":24,"poseSourceSHA256":["68770a49635c3d8ae381ac55f7672e497efdee5c20bc418f539e131e07f81fab","0749f60fa6fb8f5a7bf05af1b5743b9d95eba27756cce1729cddb1c78b166396","f36d1b1242e726047bb0a47b2c8985f0d3df2be0895cec460044846faae40945","03f5275d71bd8785747a42e9dbc272e8a4023c76ce174e418948fa66cabb24cc","347b2b2aefe1d353867efd212b2d7ce882b8d8d43702f585bdf61dde1310d3d2","0f04bff5043a422ef7244fdf152a349d2ab1bda9b8e4bad05134c48f4793d195","76fcadfff4ebd7cef14ec1f0944000938053175bc10bf81bf1418c48b1f5c201","bf782adb30462dc19d46c85ed0f17430d8ce4778460e6e5a252998ce8db26778"],"slots":{"pants":{"21":[{"rear":[],"front":["2255e207159040c2a61c9983d3cc2ebd477985f55f090912412a2d975db211e6"]},{"rear":[],"front":["2255e207159040c2a61c9983d3cc2ebd477985f55f090912412a2d975db211e6"]},{"rear":[],"front":["2255e207159040c2a61c9983d3cc2ebd477985f55f090912412a2d975db211e6"]},{"rear":[],"front":["2255e207159040c2a61c9983d3cc2ebd477985f55f090912412a2d975db211e6"]},{"rear":[],"front":["2255e207159040c2a61c9983d3cc2ebd477985f55f090912412a2d975db211e6"]},{"rear":[],"front":["2255e207159040c2a61c9983d3cc2ebd477985f55f090912412a2d975db211e6"]},{"rear":[],"front":["2255e207159040c2a61c9983d3cc2ebd477985f55f090912412a2d975db211e6"]},{"rear":[],"front":["2255e207159040c2a61c9983d3cc2ebd477985f55f090912412a2d975db211e6"]}],"22":[{"rear":[],"front":["6539cdbff9469200c2e273ff236f964ac42a68213c6eb92186fb0e597fc9ed3a"]},{"rear":[],"front":["6539cdbff9469200c2e273ff236f964ac42a68213c6eb92186fb0e597fc9ed3a"]},{"rear":[],"front":["6539cdbff9469200c2e273ff236f964ac42a68213c6eb92186fb0e597fc9ed3a"]},{"rear":[],"front":["6539cdbff9469200c2e273ff236f964ac42a68213c6eb92186fb0e597fc9ed3a"]},{"rear":[],"front":["6539cdbff9469200c2e273ff236f964ac42a68213c6eb92186fb0e597fc9ed3a"]},{"rear":[],"front":["6539cdbff9469200c2e273ff236f964ac42a68213c6eb92186fb0e597fc9ed3a"]},{"rear":[],"front":["6539cdbff9469200c2e273ff236f964ac42a68213c6eb92186fb0e597fc9ed3a"]},{"rear":[],"front":["6539cdbff9469200c2e273ff236f964ac42a68213c6eb92186fb0e597fc9ed3a"]}]},"boots":{"9":[{"rear":["c5f502f994b85eac56d2213b5f94facfff064a715bc139f57741b28aa91256e7"],"front":["bf340bde9bd981c9ee364ee947364844bc93817d8c2f1b1ceb91a9a83c118019"]},{"rear":["c5f502f994b85eac56d2213b5f94facfff064a715bc139f57741b28aa91256e7"],"front":["bf340bde9bd981c9ee364ee947364844bc93817d8c2f1b1ceb91a9a83c118019"]},{"rear":["c5f502f994b85eac56d2213b5f94facfff064a715bc139f57741b28aa91256e7"],"front":["bf340bde9bd981c9ee364ee947364844bc93817d8c2f1b1ceb91a9a83c118019"]},{"rear":["c5f502f994b85eac56d2213b5f94facfff064a715bc139f57741b28aa91256e7"],"front":["bf340bde9bd981c9ee364ee947364844bc93817d8c2f1b1ceb91a9a83c118019"]},{"rear":["c5f502f994b85eac56d2213b5f94facfff064a715bc139f57741b28aa91256e7"],"front":["bf340bde9bd981c9ee364ee947364844bc93817d8c2f1b1ceb91a9a83c118019"]},{"rear":["c5f502f994b85eac56d2213b5f94facfff064a715bc139f57741b28aa91256e7"],"front":["bf340bde9bd981c9ee364ee947364844bc93817d8c2f1b1ceb91a9a83c118019"]},{"rear":["c5f502f994b85eac56d2213b5f94facfff064a715bc139f57741b28aa91256e7"],"front":["bf340bde9bd981c9ee364ee947364844bc93817d8c2f1b1ceb91a9a83c118019"]},{"rear":["c5f502f994b85eac56d2213b5f94facfff064a715bc139f57741b28aa91256e7"],"front":["bf340bde9bd981c9ee364ee947364844bc93817d8c2f1b1ceb91a9a83c118019"]}]}}},"north":{"id":"pistolas114-north-native-original-source","sha256":"627b26283fa546c98fbb81760a0789728bfbcea25ec357ea0cc033abdb4532cb","timeline":["0","1","2","3","4","5","6","7"],"fps":12,"poseSourceSHA256":["94205c7523baeaba46e8f23c6cc6bb160ea08c1ab5226160fd17b027bac313ac","69587976f5d426b266c8921895fffd5e0f9bd763568a90474597221aa076f1c4","e1c0ee1aa4d198b426a31854cccb761f9148ec534971527766b9790dab99ea0f","a1b552effa295848f4e8f0e238caced7e9766b47e15aaed8ee057d893dcf532c","1a04c1d12e938c5f701bfbedeaf9757642764f83ed3b050c6d67a42ce4df012a","0ef501aa9e9dc858a6669f025228fd10b3380153af73c6a2eeff25723e435f8b","0b593b9498b916a04082ae5c82839bd82c1d46ab494365da1bfb9ec5f776a781","e23b8f5b5d992238cf81d79f71192285996b99d64ee467c416422f3b7e7e241d"],"slots":{"pants":{"21":[{"rear":[],"front":["087eb639b41a6f18d4aa02b3de98dae0b59ddba083b725bedb0422c2c4c36bb7"]},{"rear":[],"front":["1f28f0290de678ad886463fd6c4cc89346e9a9ddaa5c746c5fd0c87c763fd0d3"]},{"rear":[],"front":["2f9441bb2d9f1a8a3ea14bbfc9fd5f37987ee92551f3356f257be7b5d401d327"]},{"rear":[],"front":["99d0dfa327ed2201540c550909acdc98d15e73ed1f64c726e74689c39a04dd77"]},{"rear":[],"front":["1a48016a2e2628c764898984a18bdff95e72f10dc757db85843e75baf3059427"]},{"rear":[],"front":["d4dca5f9122c29a5d96b126d9360c10f70f0e1b801aa3fd38ac4f668b71b9ae8"]},{"rear":[],"front":["689d218d0307decf24dc9aa42dba871347ece8c6191bfabb9fd0e7e990d0b38f"]},{"rear":[],"front":["689d218d0307decf24dc9aa42dba871347ece8c6191bfabb9fd0e7e990d0b38f"]}]}}}}};
+ const ownSignedFirearmAnimations=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(
+  Object.entries(signedWeaponGarmentAuthorities[114]).flatMap(([direction,{id,slots}])=>
+   Object.entries(slots).flatMap(([slot,items])=>Object.entries(items).map(([item,phases])=>
+    ({slot,item:Number(item),body:'male',action:'attack-firearm',direction,source:{source:id+':'+slot+':'+item,phases}})))));
+ const signedWeaponGarmentDepths={boots:{rear:-1,front:1},pants:{front:2}};
+ // Prior complete routes and all equipped subsets are preservation witnesses,
+ // not authorization to add/attach art. This runs only before an omission.
+ function hasProtectedStrictSubset(player,o,entries,weapon,omitted){
+  const missing=new Set(omitted),limit=1<<entries.length;
+  for(let mask=limit-2;mask>=1;mask--){
+   const picked=entries.filter((_,i)=>mask&(1<<i));
+   if(!picked.some(([,s])=>missing.has(s.key)))continue;
+   const equipment=Object.fromEntries([weapon,...picked.map(([,s])=>s)].map(s=>[s.key,s.value]));
+   if(selectVisualStrict({...player,equipment},o))return true;
+  }
+  // The full actor was already tried by strict resolution. With one slot,
+  // additionally retain prior explicit weapon/slot-only compatibility probes.
+  if(entries.length===1&&selectVisualStrict({...player,equipment:{[weapon.key]:weapon.value,[entries[0][1].key]:entries[0][1].value}},o))return true;
+  return false;
+ }
+ function selectSignedWeaponGarments(player,o,allowOmission=false){
+  if(o.consumer!=='world'||o.action!=='attack-firearm'||o.weaponless||player?.zoanTransformed||player?.__reworkSubset||
+     player?.classId!=='gunner'||player.equipment?.visual_completo)return null;
+  const visible=registeredEquipment(player,o),weapon=visible?.weapon;
+  if(!weapon)return null;
+  const slots=Object.entries(visible).filter(([slot])=>slot!=='weapon').sort(([a],[b])=>a.localeCompare(b));
+  if(!slots.length)return null;
+  const registry=root.MareReworkModularOutfitsHD;
+  if(!registry||!ownSignedFirearmAnimations)return null;
+  const own=Object.fromEntries(slots.map(([slot,{item}])=>[slot,ownSignedFirearmAnimations.resolve({
+   slot,item,body:canonical(player.appearance96?.gender??player.appearance96?.body),
+   action:o.action,direction:o.direction,
+  })]));
+  const authority=signedWeaponGarmentAuthorities[114][o.direction];
+  if(!authority)return null;
+  const bare=select({...player,equipment:{[weapon.key]:weapon.value}},o),eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  const raw=player.appearance96||{},tone=raw.skinColor,
+    savedIdentity=raw.version===1&&raw.gender==='masculino'&&raw.skinStyle==='natural'&&raw.hairStyle==='original'&&
+      raw.hairColor==='black'&&raw.eyeStyle==='original'&&raw.eyeColor==='blue'&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},tone),
+    signedTone=savedIdentity&&((o.direction==='south'&&bare?.w114LocalSouthTone===true&&bare.id===authority.id+':owned-local-south:'+tone)||
+      (o.direction==='north'&&bare?.ownW114North===true&&bare.id===authority.id+':owned-w114-north-skin:'+tone));
+  if(bare?.id!==authority.id&&!signedTone||
+     bare?.hdKind!=='weapon'||bare.item!==weapon.item||bare.body!=='male'||bare.direction!==o.direction||
+     !eq(bare.nativeCanvas,[640,640])||!eq(bare.logicalFrame,[160,160])||!eq(bare.pivot,[80,128])||bare.density!==4||
+     bare.fps!==authority.fps||!eq(bare.timeline,authority.timeline)||bare.states?.length!==8||
+     !bare.states.every((state,i)=>{const layer=state.layers?.[0],sha=authority.poseSourceSHA256[i];
+      return state.state===String(i)&&state.atomic===true&&state.rgbaExact===true&&state.baseSourceModified===false&&
+        state.approved?.sha256===sha&&state.layers.length===1&&
+        (signedTone?/^[0-9a-f]{64}$/.test(layer?.sha256):layer?.sha256===sha)&&layer.url==='assets/'+layer.sha256+'.png'&&
+        layer.operation==='source-over'&&layer.depth===0&&!layer.offset&&!layer.mirrorX&&!layer.mask; }))return null;
+  // Register the independently selected item tracks onto this actual
+  // signed receiving attachment. A failed witness above is unadapted, not absent.
+  const tracks=Object.fromEntries(slots.filter(([slot])=>own[slot]?.state==='available'&&!own[slot].mirrorX)
+   .map(([slot,{item}])=>[slot,{[item]:own[slot].source.phases}]));
+  const plan=registry.planSignedPhaseSlots(
+   {slots:tracks,depths:signedWeaponGarmentDepths},visible,bare.states.length);
+  if(!plan)return null;
+  const {phases}=plan;
+  const catalogSlot={torso:'coat',pants:'legs',head:'head',boots:'boots',gloves:'gloves'};
+  const outcomes=Object.fromEntries(slots.map(([slot,{item}])=>{
+   const ownSource=own[slot];
+   if(plan.accepted.includes(slot))return [slot,{state:'hd',source:ownSource.source.source}];
+   if(ownSource?.state==='conflict')return [slot,{state:'conflict',reason:'own-animation-conflict'}];
+   if(ownSource?.state==='available')return [slot,ownSource.mirrorX?{state:'unknown',reason:'mirrored-attachment-not-registered'}:
+    {state:'conflict',reason:'signed-pass-registration-failed'}];
+   if(!canonicalGaitItem(item,catalogSlot[slot]))return [slot,{state:'unknown',reason:'unrecognized-item-slot'}];
+   return [slot,{state:'no-compatible-pass',reason:'no-signed-pose-pass',authority:authority.id}];
+  }));
+  // Keep the existing slot ordering and visual/provenance IDs for exact audit
+  // and cache compatibility. Resolution metadata does not change any raster.
+  const resolved=registry.resolveAuditedWorldSlotPlan({requested:Object.fromEntries([['weapon',weapon],...slots]),
+   weapon:{item:weapon.item,quality:'hd',source:bare.id},outcomes,allowOmission,
+   protectedSubset:omitted=>hasProtectedStrictSubset(player,o,slots,weapon,omitted)});
+  if(!resolved?.ready)return null;
+  const {slotRoutes,slotResolution,omitted}=resolved;
+  const cacheVector=JSON.stringify([slots.map(([k,v])=>[k,v.item]),phases.map(p=>[p.rear,p.front])]);
+  return {...bare,id:bare.id+':owned-independent-garments:'+cacheVector,resolvedAction:'attack-firearm',
+   signedWeaponGarments:{base:bare,phases},slotRoutes,slotResolution,layeredSlots:true,omitted,
+   ...(omitted.length?{slotFallback:'signed-pose-omit'}:{})};
+ }
+ // These authored rifle poses share the same lower backing through all
+ // firearm states. The existing pistol P21 pass fits the fixed lower
+ // backing at its last two states; use that one pass on the rifle clock.
+ function selectFixedNorthFirearmPants(player,o){
+  if(o.consumer!=='world'||o.direction!=='north'||!['attack-firearm','attack','skill'].includes(o.action)||
+     o.weaponless||player?.zoanTransformed||player?.__reworkSubset||player?.classId!=='gunner'||player.equipment?.visual_completo)return null;
+  const v=registeredEquipment(player,o),w=v?.weapon,p=v?.pants,a=player.appearance96;
+  if(!w||p?.item!==21||Object.keys(v).length!==2||canonicalGaitItem(w.item,'weapon')?.type!==player.classId||
+     a?.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hairStyle!=='original'||
+     a.hairColor!=='black'||a.eyeStyle!=='original'||a.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skinColor))return null;
+  const own=ownSignedFirearmAnimations?.resolve({slot:'pants',item:p.item,
+   body:canonical(a.gender),action:'attack-firearm',direction:o.direction});
+  // Ownership is shared with any firearm; this adapter only proves the
+  // receiver's mounting frame and keeps its own clock and weapon art.
+  if(own?.state!=='available'||own.mirrorX)return null;
+  const base=select({...player,equipment:{[w.key]:w.value}},{...o,action:'attack-firearm'}),
+   same=(l,r)=>JSON.stringify(l)===JSON.stringify(r),
+   lowerHash='23937c63990a9f1d47ecad3d695bb18525e9fda4a275d13899cf428f53055233',
+   materialHash='dbd4bd96d42aec8e29e1ff8c71e0e54f3c3805652b3aac0cb3264e46a86dd29b',
+   roles=['arms','weapon','hands','body-occluder'];
+  if(base?.hdKind!=='weapon'||base.item!==w.item||base.body!=='male'||base.direction!==o.direction||
+     base.replacementMode!=='atomic-arms-weapon-hands-body'||!['approved-source-timing-candidate','presented-states'].includes(base.approval)||
+     base.colorAppearance?.skin!==a.skinColor||base.colorAppearance.hairColor!==a.hairColor||
+     base.colorAppearance.eyeColor!==a.eyeColor||!same(base.nativeCanvas,[640,640])||
+     !same(base.logicalFrame,[160,160])||!same(base.pivot,[80,128])||base.density!==4||
+     base.states?.length!==3||base.fps!==24||!base.timeline?.length||!base.timeline.every(k=>['0','1','2'].includes(k))||
+     !base.states.every((s,i)=>s.state===String(i)&&s.rgbaExact===true&&s.layers?.length===4&&
+      s.layers.every((l,z)=>l.role===roles[z]&&l.operation==='source-over'&&l.depth===z&&
+       same(l.size,[640,640])&&!l.mask&&!l.offset&&!l.mirrorX)&&
+      s.layers[3].sha256===lowerHash&&s.layers[3].paletteMask?.sha256===materialHash&&
+      (s.canvasRoundingPatch||[]).every(([pixel])=>pixel<312*640)))return null;
+  const track=own.source.phases,pass=track?.[6];
+  if(!pass||track.length!==8||!same(pass,track[7]))return null;
+  const phases=root.MareReworkModularOutfitsHD?.composeSignedPhaseSlots({
+   slots:{pants:{[p.item]:Array(base.states.length).fill(pass)}},depths:{pants:{front:4}}
+  },v,base.states.length);
+  if(!phases)return null;
+  return {...base,id:base.id+':fixed-north-pose-own-p21',resolvedAction:'attack-firearm',
+   signedWeaponGarments:{base,phases},fixedNorthFirearmPants:true,layeredSlots:true,omitted:[],slotRoutes:{
+    [w.key]:{item:w.item,quality:'hd',source:base.id},
+    [p.key]:{item:p.item,quality:'hd',source:own.source.source}
+   }};
+ }
+ // The ordinary armor selector cannot recover the signed item-specific
+ // carry authorization from a stripped palette or from generic raw resolve().
+ const mechanicalCarryPantsClasses=Object.freeze({2:'brawler',3:'brawler',14:'cyborg',15:'cyborg',110:'brawler',111:'brawler',112:'brawler',117:'cyborg',118:'cyborg',119:'cyborg',120:'cyborg'});
+ function selectFocusCarryPants(player,o){
+  if(o.consumer!=='world'||o.weaponless||player?.zoanTransformed||player?.__reworkSubset||
+    !['idle','walk'].includes(o.action))return null;
+  const visible=registeredEquipment(player,o),id=visible?.weapon?.item,item=visible?.pants?.item,a=player?.appearance96||{};
+  const mechanical=mechanicalCarryPantsClasses[id]===player.classId&&Object.hasOwn(mechanicalCarryPantsClasses,id);
+  if(!Number.isInteger(id)||(!mechanical&&focusCarryClasses[id]!==player.classId)||![21,22,133].includes(item)||item===133&&!['north','south'].includes(o.direction)||
+    Object.keys(visible).length!==2||rawOccupiedEquipmentKeys(player).length!==2||
+    a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||!['original','hair-cropped','hair-spiky'].includes(a.hairStyle)||
+    (a.hairStyle==='original'?a.hairColor!=='black':a.hairColor!=='blue')||a.eyeStyle!=='original'||a.eyeColor!=='blue'||
+    !Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skinColor)||
+    !Object.hasOwn(root.MareAppearance96?.skins||{},a.skinColor))return null;
+  const unarmored={...player,equipment:{weapon:visible.weapon.value}};
+  const carry=select(unarmored,o)||selectNamedFocusCarry(unarmored,o);
+  if(a.hairStyle!=='original'&&(!carry?.hairLayers?.length||carry.colorAppearance?.hairColor!==a.hairColor||
+    (carry.colorAppearance?.hairStyle??carry.colorAppearance?.hair)!==a.hairStyle))return null;
+  if(carry?.hdKind!=='carry'||carry.item!==id||carry.direction!==o.direction||carry.action!==o.action||
+     carry.base?.body!=='male'||carry.colorAppearance?.skin!==a.skinColor||carry.colorAppearance?.eyeColor!=='blue'||
+     carry.headRecord||carry.gearOnlyRecord||carry.omitted?.length)return null;
+  const r=combinedCarryRegistry?.adaptIsolatedPants(carry,item);
+  if(r?.outfitOverlay?.sourceRecord!==`male-pants${item}-${o.action}-${o.direction}${item===133?'-isolated-r2':''}`)return null;
+  // Apparel must not paint over the weapon/hand contribution at any phase.
+  const d=r.base.pack.directions[o.direction],pants=d.layers.filter(l=>l.id==='lower-redrawn'||(item===133?l.id==='own133-isolated':l.id.startsWith('pants'+item+'-')));
+  if(pants.length!==2||pants.some(l=>l.depthTrack)||!r.plan.parts.length||
+     !r.plan.parts.every(part=>{
+      const layer=d.layers.find(l=>l.binding?.a===part.binding.a&&l.binding?.b===part.binding.b);
+      return layer&&!layer.depthTrack&&pants.every(p=>p.depth<layer.depth+(part.depthOffset??.1));
+     }))return null;
+  const composed=describeSlots({...r,hdKind:'outfit-carry',pack:r.base.pack,body:r.base.body,...(a.hairStyle!=='original'?{namedCarryPants:item}:{}),...(mechanical?{mechanicalCarryPants:item}:item===22?{focusCarryP22:true}:item===21?{focusCarryP21:true}:{focusCarryP133:true})},visible,[]);
+  // Keep the assembled cache key; report the actual independent provider
+  // for each slot, so changing the weapon never changes the pants source.
+  return {...composed,slotRoutes:{
+   [visible.weapon.key]:{item:id,quality:'hd',source:carry.id},
+   [visible.pants.key]:{item,quality:'hd',source:r.outfitOverlay.sourceRecord},
+  }};
+ }
+ let maleGaitHeadOwnIndex;
+ function resolveMaleGaitHeadSource(request){
+  if(!maleGaitHeadOwnIndex&&originalHairGearRegistry){
+   const rows=[];
+   for(const direction of ['south','north','east','west'])for(const item of [19,136,164,178]){
+    // Resolve the existing exact source once. No receiver, hair style or
+    // skin tone participates in choosing this independent gear raster.
+    const gear=originalHairGearRegistry.resolve({body:'male',direction,item}),
+     mode=gear?.sourceRecord?.entry?.pack?.directions?.[direction]?.headgearPolicy?.mode,
+     expected=item===19||item===136?'full':'none';
+    if(!gear||mode!==expected)continue;
+    for(const action of ['idle','walk'])rows.push({slot:'head',item,body:'male',direction,action,
+     source:Object.freeze({gear,source:gear.gear.source})});
+   }
+   maleGaitHeadOwnIndex=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(rows);
+  }
+  return maleGaitHeadOwnIndex?.resolve(request)||{state:'unknown',key:null};
+ }
+ function selectOwnCarryHat(player,o){
+  if(!player||player.zoanTransformed||player.__reworkSubset||o.consumer!=='world'||o.weaponless||
+     !['idle','walk'].includes(o.action)||player.equipment?.visual_completo)return null;
+  const a=player.appearance96||{},headOnly=Object.fromEntries(Object.entries(player.equipment||{}).filter(([key])=>slotOf(key)==='head')),
+   item=registeredEquipment({...player,equipment:headOnly},o)?.head?.item,
+   selected=resolveMaleGaitHeadSource({slot:'head',item,body:a.gender,action:o.action,direction:o.direction});
+  if(selected.state!=='available'||selected.mirrorX)return null;
+  const visible=registeredEquipment(player,o),h=visible?.head,hair=a.hairStyle??a.hair,face=a.eyeStyle??a.face;
+  if(!h||!visible.weapon||Object.keys(visible).some(slot=>!['head','weapon'].includes(slot)))return null;
+  if(a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||
+     !Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skinColor)||
+     a.skin!=null&&a.skin!==a.skinColor||hair!=='original'||face!=='original'||a.hairColor!=='black'||a.eyeColor!=='blue')return null;
+  if(a.skinColor!=='light'&&(![164,178].includes(h.item)||
+     canonicalGaitItem(visible.weapon.item,'weapon')?.type!==player.classId))return null;
+  const equip={...player.equipment};delete equip[h.key];
+  const bare=select({...player,equipment:equip},o);
+  if(!bare||bare.item!==visible.weapon.item||bare.colorAppearance?.skin!==a.skinColor||
+     bare.headRecord||bare.gearOnlyRecord||bare.hairLayers)return null;
+  const look={...bare.colorAppearance,hair,head:'head-'+h.item};
+  const gear=selected.source.gear;
+  if(!carryRegistry?.verifiedHeadgear?.(bare,gear,h.item))return null;
+  const policy=root.MareHeadgear.resolve({def:h.item}).hairHideMode;
+  const gearOnlyRecord={...gear,hideHair:policy==='full',occlusion:policy==='full'?'full-hair-hidden':'source-alpha-only'};
+  return describeSlots({...bare,id:bare.id+':own-hat:'+h.item,gearOnlyRecord,headLook:look,mirrorX:bare.base.mirrorX,
+    ownIndependentCarryHat:true,ownLayerSources:{[h.key]:selected.key}},visible,[]);
+ }
+ // These approved lateral profiles keep the original head and a distinct metal pass.
+ // Certified on the real lateral stationary head pack. Eligibility is
+ // keyed by opaque/transparent source support and all attachment transforms,
+ // never by the firearm catalog ID. Only the head pass is appended below.
+ const firearmCapCert={"body":[[{"width":160,"height":160},{"x":80,"y":128},4,{"frames":8,"fps":12,"loop":false,"contactFrame":4},[{"x":80.75,"y":58},{"x":88.5,"y":51.5}],[[{"x":80.75,"y":58},{"x":88.5,"y":51.5}],[{"x":80.75,"y":58},{"x":88.5,"y":51.5}],[{"x":80.75,"y":58},{"x":88.5,"y":51.5}],[{"x":80.75,"y":58},{"x":88.5,"y":51.5}],[{"x":80.75,"y":58},{"x":88.5,"y":51.5}],[{"x":80.75,"y":58},{"x":88.5,"y":51.5}],[{"x":80.75,"y":58},{"x":88.5,"y":51.5}],[{"x":80.75,"y":58},{"x":88.5,"y":51.5}]],[{"id":"underbody","slot":"body","depth":0,"frames":["48959c3514e8aa18c0f07fc689fdded80efeedc5bdcc4e387825d71435b5e98d","b77978a162227aeb9b710394699e7cedc1776f0a11b430bdd2f115e419713e1d","81d8428322152a19065d0a588ff43146f58145eac5da58d5eed690be80817bc5","1335411aaac42216cc5890a900b5d3150bf12f3e93a2bf95a69512c07c8a2ff9","97db59a1737ca34d42562970a8053b5bd36249fa7ce445f76935b61a46ea46be","9bf5006f9302419e5e275d03cb94abdb11e5f0eef3d04c6eaf4ec773719d5602","b7c5985b95bc302164bf1212461629f7e2b08943e9a047db6c326c2aae87f632","0fe3aa063ddcd460f1d084852a55d9bc702defc02a69e683fe89625b49b0ab45"],"binding":{"kind":"fixed"}},{"id":"torso","slot":"body","depth":1,"frames":["7562985d5840972513ba1afa7e8c8a6543a5d3c8414482a6fd45b2e601fd8179","339439c19875a7aeb290ff54ee5417c63205aebc1ec211b31c54bda38137b0d6","0b2a37c628d4d67c9583117142ca7440288bfde691acc727d7bea487ccb7ef82","d470a18a27154cc4c81da6ff22aaea90e98956fda45815526b26c0153a9e35c6","30eddf7a77ddb2eabbe66446297392165608084930119cb8ac1863977afdb1f7","f69cc7ee4e029857553f1775ab08ba6969aa5ac12cfcf813f6c7c5f44d145e21","a57dce9a66cd58860910ef41ea7bda17b06e7bfd3cac1599281dcac839b97d80","4316a684a83142315b63f1a45b375d2044b2937242ecfbd290c04e5bc38260a9"],"binding":{"kind":"fixed"}},{"id":"legs","slot":"body","depth":2,"frames":["0f854c5158bffcfced670156c1143d35eb25643182a84c3a351cfae59c10d798","c35fcf4cc381d5557a298c995d880487969c7b198834b7b51ce400fa0d43b852","60083ddc1cf49f1331201af84b1234f08e272c97265f6b395a545219435a0ee0","efc14177a497cb3785e44806e0147e28882db8a3dc033e8210271bb2bbd492db","e1f2be641fa4ed4a6cda73571d8c0d92f998fae905014eb4284052a820c70f02","68b13229ff3f0f9d0797f5044151a9750082be6f9848bf6725323ae403d30603","6370fc0e983b96d0f083cbb84bb7b2f21bc453b9d3a337270326f873c15039d6","c779e12d6bd8d4c5ae1c00e4e9db577736ce68b63e06e1f5c557eb42f575e5f4"],"binding":{"kind":"fixed"}},{"id":"upper-arm-far","slot":"body","depth":3,"frames":["1b41a06d1c666767661a762783e6aa862e59fcedecfd073e66785ca1f4f251a1","b78b8104c0f7e7aab291e1671dcb6e54702c7d7e8771b42898646258a19fe71b","6616a5b4bbaa12c66facd98aba5c2151c60715f3a8d1a890695fd238a9f5f5f5","2640435c493ccf2a2af79424912bca4be15543fca84cc44d479053948fcadeb9","5df62cd96774f48125d4304e378090c5131d83ab25e4fc2c28f5fd8a71164df4","480ed8556d629c4590f22ee8c0eaced31d208664cd932d5cad08308c28dd119c","0bd85b7e116b05b98b1e0b0f58d5ef74b1441a701a02b1a45454f1602a99c43e","bbc20ec370eceb33d08050fa5cf62353b58ec4014456c308255e85c38343d99d"],"binding":{"kind":"fixed"}},{"id":"forearm-hand-far","slot":"body","depth":4,"frames":["66d24f7d61ac452bd1e8fad8afb5a8a398e812466282049fa52fa5067e687365","a56ad9033d9e2b6eb7e67acace7e4eae6374c0326a997990573932af40bde2ff","a00678be636527a5b96823ac5a9313c69606ad5fb3cf641fcaf744e37585e3da","39d6d68f4af0463f35a281f72226d6bfede327c916eba27c26f27e99aaaaa069","727f7578e9c06223bed4c803670a9a3567739f7d75e607711ec7d357299f34ea","0652f27b071efb50f9ca22a2d2d6013804222815d09d9fb65b26ec196f27e398","d94a908cc5616de551d9466cf8d9a54fb70627d4df969bffd621dead8ce3202e","1d3b148abf4b3d9f6d93c1c5bc9d2dfce01a8b89708d915a72f368b2bf2e6975"],"binding":{"kind":"fixed"}},{"id":"upper-arm-near","slot":"body","depth":5,"frames":["83efc6036e1156c25280b0dafb1ea10d77f3caeaf1a4749b109280613b8fdfaf","bcbbf1f0085595bd08ef427ec10ddda43fa1c74bbaa278d982db0543e6265cc3","a324782bfa8ba0f89efb48f815a1145712b0f4ba7d6a5d5cc06a79ede183a896","e63a56a3cfa6be7d4c12cca3a91f5a37eec0398e6371e014d71ffeb131afc828","5ddc2f60ad17aa2ae509574b2e609a4dc037c8b17b11f6c0a4e73ffc0d7ed277","13c04b9334460288f14109ebbf2c9d8fed6f047b35bebbb910dbcc79c5c9835a","0d688bc28772ebf712b2aa84be67d8a4b98182c473bff8ea189d3b39d3fa6987","f6fd96182033d488b09d668708698a736065b71b6940676c60e7df088adea04a"],"binding":{"kind":"fixed"}},{"id":"forearm-hand-near","slot":"body","depth":6,"frames":["715d3f1fb0276153f3f430a767153fad6d06a877432f5d534f1a49cc55e733b7","99c6dc39023810aafce5006cf986f6608d3ee2913d2bb8a6d642618f4ab23029","3ceb6ee6aad533bd03c3aa81f32fbb2792f5891e0aa5b265878d813774706d3d","1ac795ec462eaace7e12578f6c300da160100d80e7ef55394f4f9e685a1ba72f","960169ba1fd65b0ef034b8b68d0644e660517ae592447cce0bc6f277ec1ef035","6e54ecf6933840feac4078c17f4a9833bc4770908c0e3a620c48b1d7aeb5d90a","236f9681a74b520d21c6816d4a776e1295f33a88c05c7389a21a9a938afe2272","2953eded901de35048cf049e98f91fa858ae203202ffefb375c36cfe6c806d30"],"binding":{"kind":"fixed"}},{"id":"shorts","slot":"pants","depth":7,"frames":["ad339299c66ac587c9895a95d2a81397a59418e616138acfd0cce78f35578c17","7ae65c177a6242a9ad59f4cd704ac14a09b2078cd9bd5bb091f0c5899c59d513","65966f5ee99fd0d5199ec0bc6ed8f53bff7c9b1e94d220093c0de70100dff6b3","ee3fb346481de006ee12c071565717fbe3aa1a9b3590571f026b33988b24a0d7","46975b3990a11c81866e6e9c9b833be082d1d5aee5418e9ef7449fe072b6d3e2","c1f7ea808afc95229f5bc6e1f3687785448d3c3096dd974dfd18b276064637ef","3bd8072b2da90b57a52630e13f1f3228ee12897704ae791f1346b826ed9e315c","5abe332c5253e0f538c5964f2798e06d62c9384efca067ed9525499ffe01e662"],"binding":{"kind":"fixed"}},{"id":"headBase","slot":"headBase","depth":20,"source":"e1a62125f08b88d3875261638bf09a2ec736e93b687df59a19014f5dab146154","binding":{"kind":"rigid","a":"NECK","b":"NOSE"}},{"id":"face","slot":"face","depth":21,"source":"9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2","binding":{"kind":"rigid","a":"NECK","b":"NOSE"}},{"id":"hair","slot":"hair","depth":22,"source":"45de7576039c538aee29ff5a5d0def51143e8cbf90a33cdead504d88fd2ea713","binding":{"kind":"rigid","a":"NECK","b":"NOSE"}}]],[{"width":160,"height":160},{"x":80,"y":128},4,{"frames":8,"fps":12,"loop":false,"contactFrame":4},[{"x":79.25,"y":58},{"x":71.5,"y":51.5}],[[{"x":79.25,"y":58},{"x":71.5,"y":51.5}],[{"x":79.25,"y":58},{"x":71.5,"y":51.5}],[{"x":79.25,"y":58},{"x":71.5,"y":51.5}],[{"x":79.25,"y":58},{"x":71.5,"y":51.5}],[{"x":79.25,"y":58},{"x":71.5,"y":51.5}],[{"x":79.25,"y":58},{"x":71.5,"y":51.5}],[{"x":79.25,"y":58},{"x":71.5,"y":51.5}],[{"x":79.25,"y":58},{"x":71.5,"y":51.5}]],[{"id":"underbody","slot":"body","depth":0,"frames":["6ab8152ebd85efc629d8e802c121f7fec38bb504ae24f610aaa2ced02e7c350c","11c0815d44c6fc9875d5df6f6c3c20b0cd6f7bd23f61048b6876e1ae83d3d8c3","b6df3c42dca9384f61dd19a70abd04bddce1f406857f7c2a544dad22d020adc7","20ca71ad41574831f5fd2832bcd040a34342cfc72ba23be80d689c91c329cc8c","664bc2c0e00b3f4c7555c4b6d01ef645f1ce14f6caf461ea00c281503719be98","2b4406196c1c6e55b2d08a5f51c3212e101405753cb576d03e9a472793ea2db5","f781bb4acecf0a16faf2782345f14cff8a6bb0ca7bc5b0cb18d60ff9809d1b71","dec5cddbe8f41cabf97fe35f22210bdc86ad29ad1bb705ccf09e61059c13d4d7"],"binding":{"kind":"fixed"}},{"id":"torso","slot":"body","depth":1,"frames":["48f6a65944d0bcce3bc518c6bfd0e7071cfc9fdcb731a8237dbad40b53700636","02867937d46edaa585e70cc628a40de7e291c14930cee198a5f932b24fe9c7f8","becb4d1798b48c10b14af36c86a9ceefec6f5d6268374a5e6546805b9bd3b494","bdf969665385bf789892c1e8f4dee31b37d6a57b0386b425c2c6a9d4e9001529","ab9ea0091bb502703d2eff106bd37500a6c0a14abe93465aab662475b79eeaff","dc26e7388b68e7fc7a684b0878e55d74b8fbe39c4cea5f81eca259c1e4066d16","68ea5ad59c9d08b40bf92908d8c341b5913f143ffb4a2de0b4c619f66e5baf92","63162e0be9c93067a68b0b707fad42c4c6d2f469b962f06c8089f4a218294fa1"],"binding":{"kind":"fixed"}},{"id":"legs","slot":"body","depth":2,"frames":["e7ceac7b73fba7911fd4f9b4b68c28c83c76e1fa504c7c6cc4532d2cf8e677f0","200b0ac2288088bfe72fbe5efb6121b6280e7705ff27f2a750ff32dd3f6ffb5b","d6672bd93ab89936a215236cd7471d0ff48d24ddb5869a497699663e3da9c0ea","85a8ead51b715d09147a103305d33e7b749244a5d4be0767d4dc50c8799886b2","ca4a76096fd26e4af4a16320330b4569e25d0f2644d272cf5cb5ada5d531e6b5","f24ceb7bcacf7cf8c8a6d55f03584f4ac3cee04888a7461dd82d3f47ef74cfe0","4913cf7271e3fb06323e7030c96806f345a78596861665344c53fe2c084e02b0","b75000c97c992c554db73ec2e07ca87708eebec345928e0bb2a179adab63767c"],"binding":{"kind":"fixed"}},{"id":"upper-arm-far","slot":"body","depth":3,"frames":["338a00a73a2f72e2dc4c9b98306af80c3a146b5819658e450001f8157775bf49","09a9b267b1d93cd263b97040ede66109195c4f917d22b0efc60aa5608c6d61f9","681ab248e0ad8f26f34e055e86ee602303f6c701dfb7bc3b0adf33147d3912b2","f9b535c8b7876c55a5fba57b033adcb3b076fa745e22d1a42bf154e4073e380d","021a2a409ee8dc709f5519f4ccb5506e08e04831e6932f81a0db502ea3617d4f","6ebc9dd0aa03bf6bcac2f1640f9553c4315f74ab1fbded68c771667666327931","c6ded69c018422d7d69ccab9a5c0fa727bbff8734b1fffab28735c23f6b6f6e9","fac77cc78d4139ca10459bb47f26ccd2cb02dbc6038484168e9d3bf0628df1a4"],"binding":{"kind":"fixed"}},{"id":"forearm-hand-far","slot":"body","depth":4,"frames":["4f3a23b68da58f0b5c87006ff9f8fdeea319d0e208803cfe6c1bc5d23de7b4d5","06221689e202edf7ce5c4c659f3540e74db7c0e38764d37f75329febeceb81d6","02a10847df104af07b73da0bfd2d113c23a5f8cdc9cb18e5f1600ab2412fe9a2","ad0506a3936c1e277f651f73652f96ceb1b8bb87f1b087bc0c888ac60c1ce2db","732604060beded34f8994c3dabd94feaba48d88c8d01a0d18aab22a13035e67a","c5c6262cb4a41db0a00494f5bf06ab53f32aacbfe60748b8967fe75889709196","54c68abba87b64fb4c520b5a7d1d4123a7be3570f13dd9412bf03846f9acb4b2","da85629f03b7caf2a7ff0defc8413df89d1ee28a8e49d8012cdfdce314372e16"],"binding":{"kind":"fixed"}},{"id":"upper-arm-near","slot":"body","depth":5,"frames":["0d4499b0c29ea1b4fcf21af469d1347c719d5419e3c7fa9a1c53099a384cbb0b","a54e8d2a9721f30eccfc90081ff72ab33c5d34c8c4fe2d82dae94476f7a4d1d5","fdf9d090cc7d5f1e12c5e7143cdafa514dcde4a894b071148fc1253b8a67bc05","663a2a9a3f8e47f095f91173524853743e765ece79cd1d6b70718dddcc5b6243","78d22ac304221233596c2aef88b17319a205115c590552fa95bc88242312bd3b","46566f619b45a62418ddb489f5ea5b35aa75446a2a4fe06b25c757aaed7053df","4c4c26c020e8032a315490d7429239ce123a637dbc9ec40cbad2b5c978734ea6","c502618e710d31f196185445157a414462061018af3854ca80f0a702f64812a3"],"binding":{"kind":"fixed"}},{"id":"forearm-hand-near","slot":"body","depth":6,"frames":["0258589f207744fc16791f7014797042695d35389617366cd9d45e9d480cbdd3","313eef41d73e4708c4eb5b1debf2c0e7cd5298ffe066b9b17395eca817930f91","71290a22c3202580a207b36c2a302d2f35910ea4a622d2c2231bc41475f797fa","cdaea47d380190aeaa790561750b2284154640171d316dc86f977d5e34b985fb","992faed8560cf81f7b8da9a515588d257bb17a557d4808662d294df22eae0eba","9667934047134962253c864623ccf4b4e3505d3887b55fa198a1b2ef517baff1","c2efd374451d855a4e355a4a22b04f9b8df26bdd2dfe031f21c4b1e3ba6280be","1d15ace8ae16e453a157e4cbf26782542d0f9b31cf71264c5012975b6b47212d"],"binding":{"kind":"fixed"}},{"id":"shorts","slot":"pants","depth":7,"frames":["19f7e08eaa4aed5a5a7e5f37d92b34f3b0cc8dbec9f63e3c80e5986ee8408c23","0d419c0661f4dc6bf45f897784a9d21a3445cf5c46101b887d6306b756e1bc3b","856b941d8af2e0180f568373b6a36929620d54c4abad1d3f7eb19f56fa0c7a3c","c913175b9c8f08d8b63a04c835f7e05724be4bd0a0653300961b2e84d5993630","168566a8c171e6d24a6dc3a12e652fd22aff7167c28d39b8e6d8707752356b08","2cf31b0c211a46c82c2372f86ecc65fb22269932ff63a89901276027fc8069c6","34c6ecd0e27a94d2a9978dd351f8569add84b516bc2af381a637cd1debefe1b7","38efba138d57f30bcb23d302333ce9c77db600e3c669068e0ed9539d4b3d51b7"],"binding":{"kind":"fixed"}},{"id":"headBase","slot":"headBase","depth":20,"source":"550e876bc65b387f14977734f71f6d4ae681ebdab0d2cf515faa2fa6bf98d888","binding":{"kind":"rigid","a":"NECK","b":"NOSE"}},{"id":"face","slot":"face","depth":21,"source":"0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464","binding":{"kind":"rigid","a":"NECK","b":"NOSE"}},{"id":"hair","slot":"hair","depth":22,"source":"a1359e16013832c487942d028404f7a5c59f4afd4a7e96eb480aa1a1d34db07e","binding":{"kind":"rigid","a":"NECK","b":"NOSE"}}]]],"states":[[[[[640,640],[80,128],["0","1","2","3","4","5","6","7"],12,[["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[6.123233995736766e-17,-1,1,6.123233995736766e-17,274.72467532467533,451.24675324675326],5.5,false],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[0.7071067811865476,-0.7071067811865475,0.7071067811865475,0.7071067811865476,260.39559896522934,373.2656565178044],5.5,false],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[0.9659258262890683,-0.25881904510252074,0.25881904510252074,0.9659258262890683,273.12888497077444,289.72038691801674],5.5,false],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[1,0,0,1,304.86233766233767,233.17142857142858],5.5,false],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[1,0,0,1,303.8727272727273,234.16103896103897],5.5,false],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[1,0,0,1,304.86233766233767,235.15064935064936],5.5,false],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[0.9659258262890683,-0.25881904510252074,0.25881904510252074,0.9659258262890683,273.12888497077444,289.72038691801674],5.5,false],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[6.123233995736766e-17,-1,1,6.123233995736766e-17,300.4545454545455,441.35064935064935],5.5,false]]],[164,178]],[[[640,640],[80,128],["0","1","2","3","4","5","6","7"],12,[["assets/d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d.png","d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d",[640,640],[1,0,0,1,0,0],5.5,false],["assets/2fb64a01536807f7ae0f9164613f839c98a5969944871d30cc8caca0afd93250.png","2fb64a01536807f7ae0f9164613f839c98a5969944871d30cc8caca0afd93250",[640,640],[1,0,0,1,0,0],5.5,false],["assets/8a07b768a79e42c6ae78ecb0c70fef55542f2aae9af80551a2bef96f73773203.png","8a07b768a79e42c6ae78ecb0c70fef55542f2aae9af80551a2bef96f73773203",[640,640],[1,0,0,1,0,0],5.5,false],["assets/53a72b7c30bbace88f41dd93451c577591efb37cbad730d1cbe3033317816b77.png","53a72b7c30bbace88f41dd93451c577591efb37cbad730d1cbe3033317816b77",[640,640],[1,0,0,1,0,0],5.5,false],["assets/eaa8a4f439a3cbd96d6e614a268ca307fef7a0e026212496aec8e0b6210cefc0.png","eaa8a4f439a3cbd96d6e614a268ca307fef7a0e026212496aec8e0b6210cefc0",[640,640],[1,0,0,1,0,0],5.5,false],["assets/53a72b7c30bbace88f41dd93451c577591efb37cbad730d1cbe3033317816b77.png","53a72b7c30bbace88f41dd93451c577591efb37cbad730d1cbe3033317816b77",[640,640],[1,0,0,1,0,0],5.5,false],["assets/4cbd2fd92bc6b905c029b9517d6b8ad3d95341480bda284789ca56e34d31ce4c.png","4cbd2fd92bc6b905c029b9517d6b8ad3d95341480bda284789ca56e34d31ce4c",[640,640],[1,0,0,1,0,0],5.5,false],["assets/d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d.png","d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d",[640,640],[1,0,0,1,0,0],5.5,false]]],[164,178]],[[[640,640],[80,128],["0","1","2","3","4","5","6","7"],12,[["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[6.123233995736766e-17,-1,1,6.123233995736766e-17,274.72467532467533,451.24675324675326],5.5,false],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[0.7071067811865476,-0.7071067811865475,0.7071067811865475,0.7071067811865476,260.39559896522934,373.2656565178044],5.5,false],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[0.9659258262890683,-0.25881904510252074,0.25881904510252074,0.9659258262890683,273.12888497077444,289.72038691801674],5.5,false],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[1,0,0,1,304.86233766233767,233.17142857142858],5.5,false],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[1,0,0,1,303.8727272727273,234.16103896103897],5.5,false],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[1,0,0,1,304.86233766233767,235.15064935064936],5.5,false],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[0.9659258262890683,-0.25881904510252074,0.25881904510252074,0.9659258262890683,273.12888497077444,289.72038691801674],5.5,false],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[6.123233995736766e-17,-1,1,6.123233995736766e-17,300.4545454545455,441.35064935064935],5.5,false]]],[164,178]],[[[640,640],[80,128],["0","1","2","3","4","5","6","7"],12,[["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[1,0,0,1,53.72467532467533,68.24675324675326],5.5,false],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.77602931761141,0.6306968354190222,-0.6306968354190222,0.77602931761141,334.71533388286844,-54.08563405537359],5.5,false],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.7876958469423941,0.6160643251395949,-0.6160643251395949,0.7876958469423941,346.2119406578172,-86.34495080451273],5.5,false],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.9663955201182123,0.25705971815017986,-0.25705971815017986,0.9663955201182123,219.660940131455,-76.85159002213618],5.5,false],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.9601577797843646,0.2794584726208165,-0.2794584726208165,0.9601577797843646,226.8335785340709,-79.86423561740776],5.5,false],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.989240199579788,0.14630047004483968,-0.14630047004483968,0.989240199579788,181.37962302468594,-52.74561113830708],5.5,false],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.7876958469423941,0.6160643251395949,-0.6160643251395949,0.7876958469423941,346.2119406578172,-86.34495080451273],5.5,false],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[1,0,0,1,79.4545454545455,58.35064935064935],5.5,false]]],[164]],[[[640,640],[80,128],["0","1","2","3","4","5","6","7"],12,[["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[6.123233995736766e-17,-1,1,6.123233995736766e-17,274.72467532467533,451.24675324675326],5.5,false],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[0.7071067811865476,-0.7071067811865475,0.7071067811865475,0.7071067811865476,260.39559896522934,373.2656565178044],5.5,false],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[0.9659258262890683,-0.25881904510252074,0.25881904510252074,0.9659258262890683,273.12888497077444,289.72038691801674],5.5,false],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[1,0,0,1,304.86233766233767,233.17142857142858],5.5,false],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[1,0,0,1,303.8727272727273,234.16103896103897],5.5,false],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[1,0,0,1,304.86233766233767,235.15064935064936],5.5,false],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[0.9659258262890683,-0.25881904510252074,0.25881904510252074,0.9659258262890683,273.12888497077444,289.72038691801674],5.5,false],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[6.123233995736766e-17,-1,1,6.123233995736766e-17,300.4545454545455,441.35064935064935],5.5,false]]],[164,178]]],[[[[640,640],[80,128],["0","1","2","3","4","5","6","7"],12,[["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[6.123233995736766e-17,1,-1,6.123233995736766e-17,365.27532467532467,244.24675324675326],5.5,true],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[0.7071067811865476,0.7071067811865475,-0.7071067811865475,0.7071067811865476,233.2332973291553,226.8945528121891],5.5,true],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[0.9659258262890683,0.25881904510252074,-0.25881904510252074,0.9659258262890683,166.92446898738842,236.14484458179498],5.5,true],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[1,0,0,1,128.13766233766233,233.17142857142858],5.5,true],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[1,0,0,1,129.12727272727273,234.16103896103897],5.5,true],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[1,0,0,1,128.13766233766233,235.15064935064936],5.5,true],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[0.9659258262890683,0.25881904510252074,-0.25881904510252074,0.9659258262890683,166.92446898738842,236.14484458179498],5.5,true],["assets/26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6.png","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6",[207,66],[6.123233995736766e-17,1,-1,6.123233995736766e-17,339.5454545454545,234.35064935064935],5.5,true]]],[164,178]],[[[640,640],[80,128],["0","1","2","3","4","5","6","7"],12,[["assets/d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d.png","d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d",[640,640],[1,0,0,1,0,0],5.5,true],["assets/2fb64a01536807f7ae0f9164613f839c98a5969944871d30cc8caca0afd93250.png","2fb64a01536807f7ae0f9164613f839c98a5969944871d30cc8caca0afd93250",[640,640],[1,0,0,1,0,0],5.5,true],["assets/8a07b768a79e42c6ae78ecb0c70fef55542f2aae9af80551a2bef96f73773203.png","8a07b768a79e42c6ae78ecb0c70fef55542f2aae9af80551a2bef96f73773203",[640,640],[1,0,0,1,0,0],5.5,true],["assets/53a72b7c30bbace88f41dd93451c577591efb37cbad730d1cbe3033317816b77.png","53a72b7c30bbace88f41dd93451c577591efb37cbad730d1cbe3033317816b77",[640,640],[1,0,0,1,0,0],5.5,true],["assets/eaa8a4f439a3cbd96d6e614a268ca307fef7a0e026212496aec8e0b6210cefc0.png","eaa8a4f439a3cbd96d6e614a268ca307fef7a0e026212496aec8e0b6210cefc0",[640,640],[1,0,0,1,0,0],5.5,true],["assets/53a72b7c30bbace88f41dd93451c577591efb37cbad730d1cbe3033317816b77.png","53a72b7c30bbace88f41dd93451c577591efb37cbad730d1cbe3033317816b77",[640,640],[1,0,0,1,0,0],5.5,true],["assets/4cbd2fd92bc6b905c029b9517d6b8ad3d95341480bda284789ca56e34d31ce4c.png","4cbd2fd92bc6b905c029b9517d6b8ad3d95341480bda284789ca56e34d31ce4c",[640,640],[1,0,0,1,0,0],5.5,true],["assets/d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d.png","d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d",[640,640],[1,0,0,1,0,0],5.5,true]]],[164,178]],[[[640,640],[80,128],["0","1","2","3","4","5","6","7"],12,[["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[6.123233995736766e-17,1,-1,6.123233995736766e-17,365.27532467532467,247.24675324675326],5.5,true],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[0.7071067811865476,0.7071067811865475,-0.7071067811865475,0.7071067811865476,235.35461767271494,229.01587315574875],5.5,true],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[0.9659258262890683,0.25881904510252074,-0.25881904510252074,0.9659258262890683,169.82224646625565,236.92130171710255],5.5,true],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[1,0,0,1,131.13766233766233,233.17142857142858],5.5,true],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[1,0,0,1,132.12727272727273,234.16103896103897],5.5,true],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[1,0,0,1,131.13766233766233,235.15064935064936],5.5,true],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[0.9659258262890683,0.25881904510252074,-0.25881904510252074,0.9659258262890683,169.82224646625565,236.92130171710255],5.5,true],["assets/0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4.png","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4",[204,58],[6.123233995736766e-17,1,-1,6.123233995736766e-17,339.5454545454545,237.35064935064935],5.5,true]]],[164,178]],[[[640,640],[80,128],["0","1","2","3","4","5","6","7"],12,[["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[1,0,0,1,74.27532467532467,68.24675324675326],5.5,true],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.7760293176114101,-0.6306968354190221,0.6306968354190221,0.7760293176114101,-92.04234449991034,268.83114567916573],5.5,true],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.7876958469423941,-0.6160643251395947,0.6160643251395947,0.7876958469423941,-109.51221429232294,229.07998366695978],5.5,true],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.9663955201182124,-0.25705971815017964,0.25705971815017964,0.9663955201182124,-74.45544643197964,54.762985670755825],5.5,true],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.9601577797843647,-0.2794584726208162,0.2794584726208162,0.9601577797843647,-78.4343617836655,63.21850236445016],5.5,true],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.9892401995797881,-0.14630047004483945,0.14630047004483945,0.9892401995797881,-47.870605209537395,22.16022952465073],5.5,true],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[0.7876958469423941,-0.6160643251395947,0.6160643251395947,0.7876958469423941,-109.51221429232294,229.07998366695978],5.5,true],["assets/313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b.png","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b",[512,512],[1,0,0,1,48.545454545454504,58.35064935064935],5.5,true]]],[164]],[[[640,640],[80,128],["0","1","2","3","4","5","6","7"],12,[["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[6.123233995736766e-17,1,-1,6.123233995736766e-17,365.27532467532467,244.24675324675326],5.5,true],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[0.7071067811865476,0.7071067811865475,-0.7071067811865475,0.7071067811865476,233.2332973291553,226.8945528121891],5.5,true],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[0.9659258262890683,0.25881904510252074,-0.25881904510252074,0.9659258262890683,166.92446898738842,236.14484458179498],5.5,true],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[1,0,0,1,128.13766233766233,233.17142857142858],5.5,true],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[1,0,0,1,129.12727272727273,234.16103896103897],5.5,true],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[1,0,0,1,128.13766233766233,235.15064935064936],5.5,true],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[0.9659258262890683,0.25881904510252074,-0.25881904510252074,0.9659258262890683,166.92446898738842,236.14484458179498],5.5,true],["assets/136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654.png","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654",[207,66],[6.123233995736766e-17,1,-1,6.123233995736766e-17,339.5454545454545,234.35064935064935],5.5,true]]],[164,178]]]]};
+ const firearmCapBodies=firearmCapCert.body.map(x=>JSON.stringify(x)),firearmCapStates=firearmCapCert.states.map(rows=>
+  new Map(rows.map(([states,caps])=>[JSON.stringify(states.slice(0,4))+'|'+JSON.stringify(states[4]),new Set(caps)])));
+ const firearmCapPackCache=new WeakMap(),firearmCapStateCache=new WeakMap();
+ function certifiedFirearmCap(r,direction,cap){
+  if(!r?.ownedSideFirearmIris||r.orderedAttack||r.equipmentBehindBody||r.approvedSouthHead||
+     r.sourceRasterPadding||r.mirrorBody||r.headOverlayOffset?.some(Boolean))return false;
+  const q=r.basePack,p=q?.pack,d=p?.directions?.[direction],keys=x=>[x.NECK,x.NOSE];
+  if(!d||!r.states)return false;
+  if(!firearmCapPackCache.has(q))firearmCapPackCache.set(q,{});
+  const byDirection=firearmCapPackCache.get(q);
+  if(!Object.hasOwn(byDirection,direction)){
+   const valid=d.layers.every(l=>(l.frames||[l.source]).every(h=>q.images[h]===`assets/${h}.png`));
+   const geometry=valid&&[p.frame,p.pivot,p.density,d.clip,keys(d.rest),d.poses.map(keys),d.layers];
+   byDirection[direction]=geometry?firearmCapBodies.indexOf(JSON.stringify(geometry)):-1;
+  }
+  const body=byDirection[direction];
+  if(body<0)return false;
+  if(!firearmCapStateCache.has(r.states)){
+   const valid=r.states.every((s,i)=>s.state===String(i)&&!s.layers?.length&&s.attachment&&!s.bodyPatch&&!s.canvasRoundingPatch);
+   firearmCapStateCache.set(r.states,valid?JSON.stringify(r.states.map(({attachment:x})=>
+    [x.url,x.sha256,x.size,x.matrix,x.depth,!!x.mirrorX])):null);
+  }
+  const states=firearmCapStateCache.get(r.states);
+  return !!states&&firearmCapStates[body].get(JSON.stringify([r.nativeCanvas,r.pivot,r.timeline,r.fps])+'|'+states)?.has(cap);
+ }
+ function selectOwnGauntletHead(player,o){
+  if(o.consumer!=='world'||!['attack-unarmed','attack-focus','attack-firearm'].includes(o.action)||o.weaponless||player.zoanTransformed||player.__reworkSubset||
+     ['variant','variantId','appearanceVariant'].some(k=>o[k]!=null&&o[k]!=='original'))return null;
+  const v=registeredEquipment(player,o), dir=o.direction, a=player.appearance96||{};
+  const relic=v?.weapon?.item===32&&o.action==='attack-focus',firearm=o.action==='attack-firearm';
+  if(!v?.head||!v.weapon||Object.keys(v).some(slot=>!['head','weapon'].includes(slot)&&!(relic&&slot==='torso'))||
+     !firearm&&!(o.action==='attack-focus'?[32]:[2,3,109,117]).includes(v.weapon.item)||![164,178].includes(v.head.item)||
+     (v.torso&&v.head.item!==164)||
+     !['east','west'].includes(dir)||player.classId!==(firearm?'gunner':v.weapon.item===32?'healer':v.weapon.item===117?'cyborg':'brawler')||a.gender!=='masculino'||a.hairStyle!=='original'||
+     root.MareHeadgear?.resolve({def:v.head.item}).hairHideMode!=='none')return null;
+  const eq={...player.equipment};delete eq[v.head.key];
+  const base=select({...player,equipment:eq},o),d=base?.basePack?.pack?.directions?.[dir];
+  const w109=base?.item===109&&base.id==='gauntlet109-'+dir+'-native-layers'&&base.states?.length===8&&
+    base.states.every((state,i)=>state.state===String(i)&&!state.attachment&&!state.bodyPatch&&state.layers?.length===2&&
+      state.layers.every(l=>/^weapon-(near|far)$/.test(l.role)&&l.operation==='source-over'&&!l.offset&&l.mirrorX===(dir==='west')&&!l.occludedBy)),
+   w117=base?.item===117&&base.ownedArm117SideAttack&&base.states?.length===8&&
+    base.states.every((state,i)=>state.state===String(i)&&!state.attachment&&!state.bodyPatch&&state.layers?.length===1&&
+      state.layers[0].operation==='replace-rgba-under-mask'&&state.layers[0].ownArm117Gear?.url),
+   w32=relic&&base?.item===32&&base.relic32SideBlue&&base.states?.length===8&&
+    base.equipmentContract?.coat===v.torso?.item&&base.states.every((state,i)=>state.state===String(i)&&
+      !state.attachment&&!state.bodyPatch&&state.layers?.length===(v.torso?2:1)&&
+      state.layers.every(l=>l.operation==='source-over'&&!l.offset&&!l.mirrorX));
+  if(base?.hdKind!=='weapon'||!base.ownGauntletsSideFrames&&!w109&&!w117&&!w32&&!(firearm&&certifiedFirearmCap(base,dir,v.head.item))||base.item!==v.weapon.item||
+     base.direction!==dir||d?.poses?.length!==8||!d.poses.every(p=>p.NECK.x===d.rest.NECK.x&&p.NECK.y===d.rest.NECK.y)||
+     d.clip.frames!==8||d.renderMirrorFrom||base.renderOffsetPhysical?.some(Boolean)||!base.hairSeparated)return null;
+  const gear=originalHairGearRegistry?.resolve({body:'male',direction:dir,item:v.head.item}), src=gear?.sourceRecord,
+   prev=src?.entry.pack.directions[dir].headgearPolicy,adj=src?.adjustmentRecord?.adjustment;
+  const approved={
+   east:{164:'4152e39e1bcfb3c796b91dceaf0349693365309abbf8ada9b9f2402e1952a11d:d75d9420e88d3e8448169c7d62c3c39dbbfb16f46109cd4e0cc9a169d64ae0c6',
+    178:'09581a94253e26a2c140661840f73974f48747947ae73017b64003207ab69640:7ea60a42da8cd8981a500d18a09482016bf77277aa35b4940d27f43ad02958a9'},
+   west:{164:'0444d2596c436cbddc9fb4963f87eca8b66a9b52c94b2ae0a7013e1b709e787d:8b9e31b3ce4dfcd41f53b5f4d7d5c22b5dbd21453d6ebb261637b7c664070330',
+    178:'09581a94253e26a2c140661840f73974f48747947ae73017b64003207ab69640:4f909f1085b66ec15a8fd4284659bb41a6903c67a40d52cfdbcb21da1c3e7125'}};
+  if(!gear||approved[dir][v.head.item]!==src.snapshot+':'+gear.gear.source||prev?.mode!=='none'||(prev.headAdjustment?.scale??100)!==100||adj?.gearScale!==100||
+     ![d.rest.NECK.x,d.rest.NECK.y,src.rest.NECK.x,src.rest.NECK.y].every(Number.isFinite))return null;
+  const head=d.layers.filter(l=>l.slot==='headBase'), image=base.basePack.images[head[0]?.source];
+  if(head.length!==1||head[0].frames||!head[0].source||
+     !/^(?:\/tools\/rework-base-hd\/)?assets\/[a-f0-9]{64}\.png$/.test(image))return null;
+  const headPath=image.startsWith('/')?image.slice(1):'tools/rework-weapon-layers-hd/'+image;
+  const offset=['x','y'].map((k,i)=>Math.round(4*(d.rest.NECK[k]-src.rest.NECK[k]+(prev.headAdjustment?.[k]||0)+(adj[i?'gearY':'gearX']||0))));
+  const record={...base,resolvedAction:o.action,id:base.id+':own-gauntlet-head:'+src.snapshot,
+   ownGauntletHead:{source:'tools/rework-accessories/assets/'+gear.gear.source+'.png',offset,gear,headKey:head[0].source,headPath}};
+  if(!w32)return describeSlots(record,v,[]);
+  // The exact signed W32 coat and gear hashes are checked by its provider.
+  // H164's aligned alpha ends at y=193; these coats start at y>=206 for
+  // every frame. H178 crosses that band and has no signed overlap policy.
+  if(v.torso&&(offset[0]!==64||offset[1]!==64))return null;
+  const slotRoutes={
+   [v.weapon.key]:{item:32,quality:'hd',source:'male-focus-modular8:'+dir+':weapon32'},
+   [v.head.key]:{item:v.head.item,quality:'hd',source:src.snapshot+':'+gear.gear.source},
+  };
+  if(v.torso)slotRoutes[v.torso.key]={item:v.torso.item,quality:'hd',source:'male-focus-modular8:'+dir+':coat'+v.torso.item};
+  return {...record,slotRoutes,omitted:[],layeredSlots:true};
+ }
+ // Own approved boot passes bracket the existing leg; only the selected item
+ // is appended. The receiving dagger's pose, weapons and material are unchanged.
+ function selectFemaleDaggerOwnBoots(player,o){
+  if(!daggerP22?.signedBootLayers||!player||player.zoanTransformed||player.__reworkSubset||o.consumer!=='world'||
+     o.action!=='attack-daggers'||player.classId!=='rogue'||o.weaponless)return null;
+  const v=registeredEquipment(player,o),boot=v?.boots,w=v?.weapon;
+  if(!boot||!w)return null;
+  const own=daggerP22.ownLayers?.resolve({slot:'boots',item:boot.item,body:'female',action:o.action,direction:o.direction});
+  const layers=own?.state==='available'&&(!own.mirrorX||own.sourceDirection==='east')?own.source:null;
+  if(layers?.length!==2||!layers.every((l,i)=>l.id===`adaga-overlap:boots:${boot.item}:${i?'front':'rear'}`&&l.slot==='pants'&&
+    l.depth===(i?.7:-1)&&l.binding?.kind==='fixed'&&!l.depthTrack&&l.frames?.length===8&&l.source===l.frames[0]&&
+    l.frames.every(h=>/^[a-f0-9]{64}$/.test(h)&&daggerP22.archiveIndex.sources[h])))return null;
+  const equipment={...player.equipment};delete equipment[boot.key];
+  const r=selectVisualStrict({...player,equipment},o),p=r?.baseRecord?.pack,d=p?.directions[o.direction];
+  const [basis,density,frame,pivot]=daggerP22.geometry[o.direction]||[],same=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!r?.femaleDaggerSavedTones||r.item!==w.item||r.paddingPhysical||r.body!=='female'||!d||
+     !basis||!same(p,r.pack)||r.omitted?.length||r.unsupported?.length||r.appearanceAdapted)return null;
+  const raw=d.layers.filter(l=>!basis.layers.some(k=>k.id===l.id)),cuff=daggerP22.frames[o.direction];
+  // This receiving cloth clip is a certified cuff envelope. It may overlap
+  // the shaft at its existing depth .9, but never reaches the lower sole.
+  // Bind to a fixed source and clock, not the ID of the equipment beside it.
+  if(raw.length&&(raw.length!==1||raw[0].slot!=='foreground'||raw[0].depth!==.9||
+     raw[0].binding?.kind!=='fixed'||raw[0].depthTrack||raw[0].source!==cuff?.[0]||
+     !same(raw[0].frames,cuff)||!cuff.every(h=>r.daggerP22Sources?.includes(h))))return null;
+  if(!same([{...d,layers:d.layers.filter(l=>!raw.includes(l))},p.density,p.frame,p.pivot],[basis,density,frame,pivot]))return null;
+  const routes={...r.slotRoutes};
+  for(const [slot,vv] of Object.entries(v)){
+   if(slot==='boots')continue;
+   const existing=routes[vv.key];
+   if(existing?(existing.item!==vv.item||existing.quality!=='hd'):slot!=='weapon')return null;
+  }
+  // A boot may change the background through a later translucent dagger
+  // edge. Its own rear/shaft strata remain below every native weapon part;
+  // therefore it cannot change the dagger pixels' own contribution.
+  const front=Math.max(...layers.map(l=>l.depth)),ids=new Set(layers.map(l=>l.id));
+  if(r.states?.length!==d.clip.frames||r.states.some(s=>!Array.isArray(s.parts)||
+     s.parts.some(part=>!Number.isFinite(part.depth)||part.depth<=front)||
+     [...(s.hideBaseLayers||[]),...Object.keys(s.baseMasks||{})].some(id=>ids.has(id))))return null;
+  const refs=[...new Set(layers.flatMap(l=>l.frames))];
+  if(refs.some(h=>r.baseRecord.sourceRefs.includes(h)))return null;
+  const pack={...p,directions:{...p.directions,[o.direction]:{...d,layers:[...d.layers,...layers]}}};
+  return {...r,id:r.id+':own-boots:'+own.key,pack,
+   baseRecord:{...r.baseRecord,pack,sourceRefs:[...r.baseRecord.sourceRefs,...refs]},layeredSlots:true,omitted:[],
+   daggerP22Sources:[...new Set([...(r.daggerP22Sources||[]),...refs])],
+   ...(own.mirrorX?{daggerBootMirror:own}:{}),
+   slotRoutes:{[w.key]:{item:w.item,quality:'hd',source:r.id},...routes,
+    [boot.key]:{item:boot.item,quality:'hd',source:own.key}},ownLayerSources:{...r.ownLayerSources,[boot.key]:own.key}};
+ }
+
+ // Mount the authored glove into the existing opaque hand operation.
+ // Weapon part IDs and projections are not layer authorities. Later weapon
+ // edges retain their own unchanged alpha/RGB and blend the gloved hand.
+ function selectFemaleDaggerOwnGloves(player,o){
+  if(!daggerP22?.signedGloveLayers||!player||player.zoanTransformed||player.__reworkSubset||
+     o.consumer!=='world'||o.action!=='attack-daggers'||player.classId!=='rogue'||o.weaponless)return null;
+  const v=registeredEquipment(player,o),g=v?.gloves,w=v?.weapon;
+  if(!g||!w)return null;
+  const own=daggerP22.ownLayers?.resolve({slot:'gloves',item:g.item,body:'female',action:o.action,direction:o.direction});
+  const layers=own?.state==='available'&&own.sourceDirection==='east'?own.source:null;
+  if(layers?.length!==2||!layers.every((l,i)=>l.id===`adaga-stage:gloves:${g.item}:${i?'right':'left'}`&&
+    l.slot==='foreground'&&l.depth===(i?6.1:3.1)&&l.binding?.kind==='fixed'&&!l.depthTrack&&
+    l.frames?.length===8&&l.source===l.frames[0]&&l.frames.every(h=>
+      daggerP22.archiveIndex.sources[h]?.archive==='female-dagger-authored-gloves-east.zip')))return null;
+  // Probe only the already selected siblings, with the glove removed.
+  // Strict resolution cannot turn a genuinely missing piece into an HD route.
+  const equipment={...player.equipment};delete equipment[g.key];
+  const r=selectVisualStrict({...player,equipment},o),p=r?.baseRecord?.pack,d=p?.directions[o.direction];
+  if(!r?.femaleDaggerSavedTones||r.item!==w.item||r.paddingPhysical||r.body!=='female'||
+     r.material?.sourceScale!==1||r.hdKind!=='female-equipment'||r.daggerOwnHands||
+     r.omitted?.length||r.unsupported?.length||r.appearanceAdapted||!d)return null;
+  const same=(x,y)=>JSON.stringify(x)===JSON.stringify(y),hands=new Set(['left-hand','right-hand']);
+  const ownRig=({layers,...rig})=>({...rig,layers:layers.filter(l=>hands.has(l.id))});
+  const [shape,density,frame,pivot]=daggerP22.geometry[o.direction]||[];
+  if(!shape||!same(p,r.pack)||!same([ownRig(d),p.density,p.frame,p.pivot],[ownRig(shape),density,frame,pivot]))return null;
+  if(r.states?.length!==8||r.states.some(s=>
+     [...(s.hideBaseLayers||[]),...Object.keys(s.baseMasks||{})].some(id=>hands.has(id))))return null;
+  const routes={...r.slotRoutes};
+  for(const [slot,vv] of Object.entries(v)){
+   if(slot==='gloves')continue;
+   const existing=routes[vv.key];
+   if(existing?(existing.item!==vv.item||existing.quality!=='hd'):slot!=='weapon')return null;
+  }
+  const refs=[...new Set(layers.flatMap(l=>l.frames))];
+  if(refs.some(h=>r.baseRecord.sourceRefs.includes(h)))return null;
+  return {...r,id:r.id+':own-hands:'+own.key,layeredSlots:true,omitted:[],
+   daggerOwnHands:own,daggerP22Sources:[...new Set([...(r.daggerP22Sources||[]),...refs])],
+   slotRoutes:{[w.key]:{item:w.item,quality:'hd',source:r.id},...routes,
+    [g.key]:{item:g.item,quality:'hd',source:own.key}},ownLayerSources:{...r.ownLayerSources,[g.key]:own.key}};
+ }
+
+ // An already attested isolated hat composes with the independent trouser
+ // provider: the hat does not select a different body, weapon or lower raster.
+ const femaleSwordHatPoses={"1/north/attack-sword":{"base":"v7-female-sword-north-ownership-candidate-north","head":["head-clean","166331e5140203e0a448d8e0f9f189b16948787f25335066e4e17b19977cbdcb",12],"geometry":[{"width":160,"height":160},{"x":80,"y":128},4,{"frames":8,"fps":12,"loop":false,"contactFrame":4},{"x":80,"y":58.25},{"x":80,"y":49.75}],"sig":[[["a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f","tools/rework-weapon-layers-hd/assets/a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f.png",[-0.8216798134792077,-0.5699493697871545,0.5699493697871545,-0.8216798134792077,394.77464513931,787.4402594897942],null,10.81]],[["a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f","tools/rework-weapon-layers-hd/assets/a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f.png",[-0.9950898892807847,0.09897531132133783,-0.09897531132133783,-0.9950898892807847,727.5785624163493,652.8922431655328],null,10.81]],[["a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f","tools/rework-weapon-layers-hd/assets/a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f.png",[0.1605133233652478,0.9870336737022923,-0.9870336737022923,0.1605133233652478,728.5031615473345,-117.21216767317631],null,10.81]],[["a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f","tools/rework-weapon-layers-hd/assets/a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f.png",[0.775825352729499,0.6309477173761296,-0.6309477173761296,0.775825352729499,400.45646687418764,-240.2858492989232],null,10.81]],[["a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f","tools/rework-weapon-layers-hd/assets/a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f.png",[-0.39331443336711425,-0.9194040224542777,0.9194040224542777,-0.39331443336711425,139.63932735002572,626.45850266112],null,10.81]],[["a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f","tools/rework-weapon-layers-hd/assets/a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f.png",[-0.45379971752119563,-0.891103706858906,0.891103706858906,-0.45379971752119563,160.43855762188173,674.0770494241835],null,10.81]],[["a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f","tools/rework-weapon-layers-hd/assets/a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f.png",[-0.7871135595736416,-0.6168081098164253,0.6168081098164253,-0.7871135595736416,365.63390302621696,754.6261798310286],null,10.81]],[["a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f","tools/rework-weapon-layers-hd/assets/a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f.png",[-0.8045302336707918,-0.5939116963906512,0.5939116963906512,-0.8045302336707918,382.7862500186203,785.460492948517],null,10.81]]]},"70/east/idle":{"base":"female-idle-original-east-from-walk0","head":["head-rigid","202352cb972f4fe437ca7fd43aa4d848b88a4fc98dcfc6393bb5fd0b4c1e16bd",5],"geometry":[{"width":128,"height":128},{"x":64,"y":112},4,{"frames":1,"fps":1,"loop":false},{"x":64,"y":42.25},{"x":64,"y":34}],"sig":[[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99","tools/rework-weapon-layers-hd/assets/2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99.png",[-0.9268420106086329,-0.37545157793109196,0.37545157793109196,-0.9268420106086329,416.5593388280839,692.2962797935531],null,3.8099999999999996]]]},"70/east/walk":{"base":"v7-female-walk-drawn-all-east","head":["head-rigid","202352cb972f4fe437ca7fd43aa4d848b88a4fc98dcfc6393bb5fd0b4c1e16bd",5],"geometry":[{"width":128,"height":128},{"x":64,"y":112},4,{"frames":8,"fps":8,"loop":true},{"x":64,"y":42.25},{"x":64,"y":34}],"sig":[[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99","tools/rework-weapon-layers-hd/assets/2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99.png",[-0.9268420106086329,-0.37545157793109196,0.37545157793109196,-0.9268420106086329,416.5593388280839,692.2962797935531],null,3.8099999999999996]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99","tools/rework-weapon-layers-hd/assets/2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99.png",[-0.9345174028968739,-0.35591743941942744,0.35591743941942744,-0.9345174028968739,420.4385826590309,682.0740783456749],null,3.8099999999999996]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99","tools/rework-weapon-layers-hd/assets/2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99.png",[-0.929041101410738,-0.36997652883598287,0.36997652883598287,-0.929041101410738,410.7131530704561,700.9437232098078],null,3.8099999999999996]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99","tools/rework-weapon-layers-hd/assets/2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99.png",[-0.9942520978070067,-0.10706430780781401,0.10706430780781401,-0.9942520978070067,524.2369343104125,638.3707890647452],null,3.8099999999999996]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99","tools/rework-weapon-layers-hd/assets/2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99.png",[-0.9975463132051678,-0.07000966369564383,0.07000966369564383,-0.9975463132051678,543.0839673614696,629.3067669478112],null,3.8099999999999996]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99","tools/rework-weapon-layers-hd/assets/2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99.png",[-0.9909617845493689,-0.13414448017987968,0.13414448017987968,-0.9909617845493689,515.6890286317426,643.2077713458398],null,3.8099999999999996]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99","tools/rework-weapon-layers-hd/assets/2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99.png",[-0.9999140592331298,0.013110078105223216,-0.013110078105223216,-0.9999140592331298,564.6325925356366,614.6919715014553],null,3.8099999999999996]],[["2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99","tools/rework-weapon-layers-hd/assets/2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99.png",[-0.9293414110465326,-0.36922153473766917,0.36922153473766917,-0.9293414110465326,411.2297930361435,679.1428612016811],null,3.8099999999999996]]]}};
+ const femaleSwordHatSource={
+  east:[164,'0473f014d352e68dec9126d0e0cb41646beb9bb14cec02fa672476ab9efab6a9','def62c0c42f48d846c08972a6bd94f4638e199e8d7579334e84005cddab58bd0',{x:65,y:43.5},-.75,3],
+  north:[157,'f24f832fec352fe8f2b64f7fe54a543e22381c3146d27ba6297d41301cdfe9fe','6f38ce6e1badcc2004674e699593d07205179c4b878a7fa793c498925d7e4b81',{x:64,y:44},0,0]
+ };
+ function selectIndependentFemaleSwordHat(player,o){
+  if(o.consumer!=='world'||o.weaponless||player?.classId!=='sword'||player.zoanTransformed||player.__reworkSubset)return null;
+  const a=player.appearance96,v=registeredEquipment(player,o);
+  if(!v?.head||!v?.pants||!v?.weapon||Object.keys(v).some(k=>!['head','pants','weapon'].includes(k))||
+     a?.gender!=='feminino'||a.version!==1||a.skinStyle!=='natural'||a.hairStyle!=='original'||a.eyeStyle!=='original'||a.eyeColor!=='blue'||
+     !(a.skinColor==='light'&&a.hairColor==='black'||a.skinColor==='ebony'&&a.hairColor==='blue'))return null;
+  const direction=o.direction, expected=femaleSwordHatPoses[[v.weapon.item,direction,o.action].join('/')], pin=femaleSwordHatSource[direction];
+  if(!expected||pin?.[0]!==v.head.item||root.MareHeadgear?.resolve(v.head.value).hairHideMode!=='none')return null;
+  const lower={...player.equipment};delete lower[v.head.key];
+  const receiving=select({...player,equipment:lower},o),
+   solo=select({...player,equipment:{[v.weapon.key]:v.weapon.value,[v.head.key]:v.head.value}},o),mat=receiving?.material,source=solo?.material,gear=source?.gearRecord;
+  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b),withoutGear=({id,gearRecord,...rest})=>rest;
+  if(receiving?.body!=='female'||receiving.hdKind!=='female-equipment'||receiving.item!==v.weapon.item||
+     receiving.sourceBaseId!==expected.base||receiving.paddingPhysical!==0||receiving.action!==o.action||receiving.direction!==direction||
+     receiving.omitted?.length||!receiving.pantsSourceId||receiving.slotRoutes?.[v.pants.key]?.item!==v.pants.item||
+     receiving.slotRoutes?.[v.pants.key]?.quality!=='hd'||receiving.slotRoutes?.[v.weapon.key]?.quality!=='hd'||
+     !mat||mat.gearRecord||!gear||mat.style!=='original'||source.gearPolicy!=='source-alpha-only'||
+     !same(withoutGear(mat),withoutGear(source))||!same(receiving.states,solo.states)||
+     !same(receiving.colorAppearance,solo.colorAppearance)||solo.item!==receiving.item||solo.sourceBaseId!==expected.base)return null;
+  const p=receiving.pack,d=p.directions[direction],q=solo.pack.directions[direction],
+   {layers:current,...motion}=d,{layers:original,...referenceMotion}=q,
+   head=current.find(l=>l.slot==='headBase'),cloth=current.filter(l=>l.slot==='pants'),
+   isHead=l=>['headBase','face','hair'].includes(l.slot),discard=l=>l.slot==='pants';
+  if(!same(receiving.baseRecord.pack,p)||!same([p.frame,p.pivot,p.density,d.clip,d.rest.NECK,d.rest.NOSE],expected.geometry)||
+     !same(motion,referenceMotion)||!same(current.filter(l=>!discard(l)),original.filter(l=>!discard(l)))||
+     !same([head?.id,head?.source,head?.depth],expected.head)||
+     !same(head.binding,{kind:'rigid',a:'NECK',b:'NOSE'})||
+     !d.poses.every(z=>same([z.NECK,z.NOSE],[d.rest.NECK,d.rest.NOSE]))||
+     cloth.length!==1||cloth[0].binding?.kind!=='fixed'||cloth[0].frames?.length!==d.clip.frames||
+     receiving.states.some(f=>[...(f.hideBaseLayers||[]),...Object.keys(f.baseMasks||{})].some(id=>current.some(l=>l.id===id&&(isHead(l)||discard(l)))))||
+     !same(receiving.states.map(f=>f.parts.map(p=>[p.sha256,p.url,p.matrix,p.sourceClip,p.depth])),expected.sig))return null;
+  const pass=gear.layers.filter(l=>l.id===gear.headgearPolicy?.gearId),g=gear.adjustmentRecord?.adjustment,b=gear.headgearPolicy?.headAdjustment;
+  if(gear.body!=='female'||gear.direction!==direction||gear.item!==pin[0]||gear.snapshot!==pin[1]||
+     gear.headgearPolicy?.mode!=='none'||!same(gear.rest.NECK,pin[3])||pass.length!==1||
+     pass[0].source!==pin[2]||pass[0].binding?.kind!=='fixed'||pass[0].frames||
+     g?.gearScale!==100||g.gearX!==pin[4]||g.gearY!==pin[5]||b?.scale!==100||b.x!==0||b.y!==0)return null;
+  return {...receiving,id:receiving.id+':owned-head:'+gear.snapshot,
+   material:{...mat,id:mat.id+':owned-head:'+gear.snapshot,gearRecord:gear},
+   slotRoutes:{...receiving.slotRoutes,[v.head.key]:{item:v.head.item,quality:'hd',source:gear.snapshot}}};
+ }
+ // Dominant signed lower-pose sources predate item-independent registries;
+ // the artifact names retain "sword", but no equipped sword is their pose key.
+ let femaleGaitCatalog;
+ function canonicalGaitItem(def,slot){
+  if(!femaleGaitCatalog){
+   const get=(symbol,file)=>root[symbol]||(typeof require==='function'?require(file):null);
+   try{
+    femaleGaitCatalog=get('MareItemCatalog','./item-catalog.js')?.create({
+     forge:get('MareForge','./forge-system.js'),prison:get('MarePrison','./prison-system.js'),
+     haki:get('MareHaki','./haki-system.js'),akuma:get('MareAkuma','./akuma-system.js'),
+     hakiProgression:get('MareHakiProgression','./haki-progression.js'),
+     bossDungeons:get('MareBossDungeons','./boss-dungeon-system.js')
+    })?.items;
+   }catch(_){return null;}
+  }
+  const v=femaleGaitCatalog?.[def];return v?.slot===slot?v:null;
+ }
+ function selectIndependentFemaleGaitPants(player,o){
+  if(o.consumer!=='world'||!['idle','walk'].includes(o.action)||!['north','south','east','west'].includes(o.direction)||
+     o.weaponless||player?.zoanTransformed||player?.__reworkSubset||canonical(player?.appearance96?.gender)!=='female')return null;
+  const visible=registeredEquipment(player,o),p=visible?.pants,w=visible?.weapon,d=o.direction,
+   role=w&&canonicalGaitItem(w.item,'weapon')?.type;
+  const coat=visible?.torso;
+  if(!p||!w||Object.keys(visible).length!==(coat?3:2)||!canonicalGaitItem(p.item,'legs')||
+     coat&&!canonicalGaitItem(coat.item,'coat')||
+     !role||role!==player.classId)return null;
+  const donor=outfitById.get('female-pants'+p.item+'-sword-'+o.action+'-'+d);
+  if(!donor||donor.body!=='female'||donor.action!==o.action||donor.direction!==d||
+     donor.equipment?.pants!==p.item||donor.sourceLowerRecord!=='frozen-female-pants'+p.item+'-'+d+'-'+o.action+'-source-v47')return null;
+  const equip={...player.equipment};delete equip[p.key];
+  const r=selectVisualStrict({...player,equipment:equip},o),pack=r?.pack,s=pack?.directions?.[d],
+   witness=baseIndex?.records.find(x=>x.id===r?.sourceBaseId),q=donor.pack?.directions?.[d],native=witness?.pack.directions[d];
+  if(r?.hdKind!=='female-equipment'||r.item!==w.item||r.body!=='female'||r.action!==o.action||r.direction!==d||
+     !!r.outfitSources!==!!coat||r.checkpointSources||r.omitted?.length||!s||!q||!native)return null;
+  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),context=({layers,...motion})=>motion,
+   base=s.layers.filter(x=>x.slot==='pants'),cloth=q.layers[0],refs=[...new Set(cloth?.frames||[])],
+   stride=s.clip.frames/native.clip.frames,phase=i=>Math.floor(i/stride);
+  if(!eq(pack,r.baseRecord?.pack)||!eq(context(native),context(q))||
+     !['frame','pivot','density'].every(k=>eq(pack[k],donor.pack[k])&&eq(pack[k],witness.pack[k]))||
+     base.length!==1||base[0].id!=='shorts'||q.layers.length!==1||cloth.id!=='pants'+p.item+'-independent-sword'||
+     cloth.slot!=='pants'||cloth.binding?.kind!=='fixed'||cloth.depth!==base[0].depth||cloth.depthTrack||
+     cloth.frames?.length!==native.clip.frames||cloth.source!==cloth.frames[0]||
+     !refs.length||!refs.every(h=>/^[a-f0-9]{64}$/.test(h)&&donor.sourceRefs.includes(h)&&!r.baseRecord.sourceRefs.includes(h))||
+     r.states?.length!==s.clip.frames||!r.states.every(t=>t?.parts?.length&&t.parts.every(x=>Number.isFinite(x.depth)&&x.depth>cloth.depth)&&
+      [...(t.hideBaseLayers||[]),...Object.keys(t.baseMasks||{})].every(k=>k!==base[0].id&&k!==cloth.id)))return null;
+  if(coat){
+   const id='female-torso'+coat.item+'-'+d+'-frozen-'+o.action+'-native', upper=outfitById.get(id), u=upper?.pack?.directions?.[d];
+   if(!u||upper.equipment?.torso!==coat.item||upper.baseRecord!==(o.action==='idle'?'v7-female-walk-drawn-all-'+d:witness.id)||
+      r.outfitSourceId!==id||!r.outfitSources.every(h=>upper.sourceRefs.includes(h)&&!refs.includes(h))||
+      !Number.isInteger(stride)||stride<1||s.clip.loop!==native.clip.loop||s.clip.fps!==native.clip.fps*stride||
+      !Object.entries(native.rest).every(([k,v])=>eq(v,s.rest[k]))||
+      s.poses.length!==s.clip.frames||!s.poses.every((pose,i)=>Object.entries(native.poses[phase(i)]).every(([k,v])=>eq(v,pose[k]))))return null;
+   if(s.layers.length<native.layers.length)return null;
+   for(const [i,part] of native.layers.entries()){
+    const {frames,...expected}=part,{frames:held,...actual}=s.layers[i];
+    if(!eq(actual,expected)||!!held!==!!frames||held&&(held.length!==s.clip.frames||!held.every((h,j)=>h===frames[phase(j)])))return null;
+   }
+   if(!eq(s.layers.slice(native.layers.length),u.layers.filter(l=>!l.id.startsWith('base:'))))return null;
+  }else if(!eq(pack,witness.pack))return null;
+  // Replace only shorts at identical depth and use the already approved
+  // phase hold when the upper garment has five ticks per native phase.
+  const owned=stride===1?cloth:{...cloth,frames:Array.from({length:s.clip.frames},(_,i)=>cloth.frames[phase(i)])};
+  const layers=s.layers.map(l=>l===base[0]?owned:l), result={...pack,directions:{...pack.directions,[d]:{...s,layers}}};
+  return {...r,id:r.id+':own-gait-pants:'+p.item,pack:result,
+   baseRecord:{...r.baseRecord,pack:result,sourceRefs:[...r.baseRecord.sourceRefs,...refs]},pantsSourceId:donor.id,outfitSources:[...(r.outfitSources||[]),...refs],
+   slotRoutes:{...r.slotRoutes,...(coat?{[coat.key]:{item:coat.item,quality:'hd',source:r.outfitSourceId}}:{}),[p.key]:{item:p.item,quality:'hd',source:donor.id},[w.key]:{item:w.item,quality:'hd',source:r.id}},omitted:[]};
+ }
+ // Signed female hand pose. The 40-tick source is eight exact five-tick
+ // holds, not a new animation. Phase 1 has two authored outer-edge pixels
+ // beyond the native hand; the other 3,947 inspected opaque points match.
+ const northFemaleWalkHandProof=[["9fb4dc4162cebcb89e8163d4252b1f0cef77a9353def1877e3461edd7808ed8a","21d9a6c3df0fb880bbe26281dd039749c2b0fe4fde029a23280c29b7226783db","db32269194b645ef06f32ca6b6cc2e5a0585292ed65267a01f1c33d3ddde9571","356a070885504001819eba59ad5a68d305509c941078a61c88f05480544c9766","519bca9bdc4e20d624c9b9b88d2d32306a13bafeac3964a6fef71eb6a594798b","f27ed945191522ce42ae6fe150d8c401785de46c278e0411a3d20e55923e31f1","245b929eb1d967f85772b8cc5258e551fc820d7ca73fb4181434ba45517a6e58","f164539c4e4f28633108e077f4e25c560fca21c918fdcd67fda3489d75307a26"],["a14070da42d9591efb75aa91185ff4a99788861f4832479caac1b180d21cc838","77dcbf8803fa175e417d5799f9706b6fc76b83111b8d73e36305bc204f01bc09","6f5d609dfc5c000c68c600b38f3dca4fc5f629c87876cc1059a65e92de0ce428","42e3e1c39cdd366ebe35892302cb73269e8ec42e2bdad767b956c35d1a376e7f","500feaf926fc0b4f9e9571e1ad882abdc92607044da727b6681d3507654da06f","82d9facf0de83532ede3923966e0036d582f872774f94dfd5d7e443fc52f4480","42d1b62ddb3e0e97fceb2f7a11aebf71f87757a4aa32456241d7ce1171740d7a","618cf0b140f8ed7a26371a1cf882d3102217d0640b93d14bebffe0a35022fea3"]];
+ function selectIndependentFemaleNorthGaitGlove(player,o,visible){
+  if(o.consumer!=='world'||!['idle','walk'].includes(o.action)||o.direction!=='north'||o.weaponless||
+     player?.zoanTransformed||player?.__reworkSubset||canonical(player?.appearance96?.gender)!=='female')return null;
+  const g=visible?.gloves,w=visible?.weapon,dir=o.direction,walk=o.action==='walk';
+  if(!g||!w||Object.keys(visible).length!==2||!canonicalGaitItem(g.item,'gloves')||
+     canonicalGaitItem(w.item,'weapon')?.type!==player.classId)return null;
+  const donor=outfitById.get('frozen-female-glove'+g.item+'-north-'+o.action+'-native-layers'),d=donor?.pack?.directions?.north;
+  if(!d||!donor.frozenFemaleGloveLayers||donor.productionEnabled===false||donor.body!=='female'||
+     donor.action!==o.action||donor.direction!==dir||donor.equipment?.gloves!==g.item||
+     donor.sourceAuthoritySHA256!=='5be7774ed9fcb647b83290181cc66194a7313feb84633151c491ff58707aed60')return null;
+  const equip={...player.equipment};delete equip[g.key];
+  const base=selectVisualStrict({...player,equipment:equip},o);
+  const pack=base?.pack,p=pack?.directions?.north,source=walk?'v7-female-walk-drawn-all-north':'female-idle-original-north-from-walk0';
+  if(base?.body!=='female'||base.hdKind!=='female-equipment'||base.item!==w.item||base.sourceBaseId!==source||
+     base.action!==o.action||base.direction!==dir||base.outfitSources||base.checkpointSources||
+     base.omitted?.length||base.sourceRasterPadding||!p||!base.baseRecord)return null;
+  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  const witness=baseIndex?.records.find(x=>x.id===source),arm=p.layers.find(l=>l.id==='arms');
+  const glove=d.layers.find(l=>l.id==='own-female'+g.item+'-visible-gloves'),
+    ownHand=d.layers.find(l=>l.id==='visible-original-hands');
+  const count=walk?8:1,holding=(l)=>l?.frames?.length===40&&l.frames.every((h,i)=>h===l.frames[Math.floor(i/5)*5]),
+    cut=(l)=>walk?(holding(l)?l.frames.filter((_,i)=>i%5===0):null):l?.frames,
+    hands=cut(ownHand),frames=cut(glove),hashes=[...new Set(frames||[])];
+  if(!witness||!eq(witness.pack,pack)||!eq(base.baseRecord.pack,pack)||
+     !['frame','pivot','density'].every(k=>eq(donor.pack[k],pack[k]))||
+     (walk?(d.clip.frames!==40||d.clip.fps!==40||d.clip.loop!==true):!eq(p.clip,d.clip))||
+     p.clip.frames!==count||arm?.depth!==4||arm.binding?.kind!=='fixed'||
+     !eq([arm.frames||[arm.source],hands],walk?northFemaleWalkHandProof:[
+      ['9fb4dc4162cebcb89e8163d4252b1f0cef77a9353def1877e3461edd7808ed8a'],
+      ['a14070da42d9591efb75aa91185ff4a99788861f4832479caac1b180d21cc838']
+     ])||!glove||glove.binding?.kind!=='fixed'||glove.depth!==50||glove.depthTrack||
+     frames?.length!==count||glove.source!==frames[0]||hashes.some(hash=>!/^[a-f0-9]{64}$/.test(hash)||
+      !donor.sourceRefs.includes(hash)||base.baseRecord.sourceRefs.includes(hash)))return null;
+  const mounted={...glove,depth:4.001,frames};
+  if(base.states?.length!==count||!base.states.every(state=>state.parts?.length&&
+      state.parts.every(x=>Number.isFinite(x.depth)&&x.depth>mounted.depth)&&
+      [...(state.hideBaseLayers||[]),...Object.keys(state.baseMasks||{})].every(k=>k!==arm.id&&k!==glove.id)))return null;
+  const result={...pack,directions:{...pack.directions,north:{...p,layers:[...p.layers,mounted]}}};
+  return {...base,id:base.id+':pose-own-female-gloves:'+g.item,pack:result,
+   baseRecord:{...base.baseRecord,pack:result,sourceRefs:[...base.baseRecord.sourceRefs,...hashes]},outfitSources:hashes,
+   slotRoutes:{[g.key]:{item:g.item,quality:'hd',source:donor.id},[w.key]:{item:w.item,quality:'hd',source:base.id}},omitted:[]};
+ }
+ // Foot authority and projected weapon clearance are independent permits.
+ // The projection key contains no item ID. Keep unknown intersections closed.
+ const femaleIdleBootProof={"boots":{"north":{"8":[333,[["boot8-left-rear",-1,"f8ca2f0bfd287999087b5f1364d3657d29694264a986f66fa5209ba312c16136"],["boot8-left-front",45,"e98cbc8fdaa0fb128d41a7f28a007657510ab295ddc4383690611aab505642f7"],["boot8-right-rear",-1,"1b90e77053226a8d0f0b6912e7032b0a127f4d089b51e3ec9e741e435f6893d4"],["boot8-right-front",45,"5c1febb1a24ffe93475bb4c2df9393ee0bd6042dd353f656b7f29a35fd50fa00"]]],"9":[337,[["boot9-left-rear",-1,"b5f5e2164af383d889e40ff1c2ed5519f57c9804f2cbc2d9d42d51d735e30b49"],["boot9-left-front",45,"a18e6ad8bb340f1cbd95a6334068b417af26e9ad910a01c6822eb2d0bed8010d"],["boot9-right-rear",-1,"c5fa201d42958f3904f8b5d08128ebd4edacb5a84c806ed550f2cedfe344ef78"],["boot9-right-front",45,"bd1fde85c956e134e4f80aa9f9f0eff0e52d359c1078ddc9684437ad347306e0"]]],"134":[319,[["boot134-left-rear",-1,"7b92fbf8c29a89a0b1abb328301f2bd13d4addb295cc08e20098cc3521939389"],["boot134-left-front",45,"b28556cf0c012ca1da324d284f0622a486c4b75ce4ff520ec56d0eafbd3be337"],["boot134-right-rear",-1,"fda9efd6ad2ea85a654876a823d10a9bf72f9a0984f6d26058d2f311f8b802e3"],["boot134-right-front",45,"7b726dbb260edd74ea95d5dffcf21884e5e047bdfe1798d427cffb6af2f31c7e"]]],"141":[335,[["boot141-left-rear",-1,"3c05df846fc6ed1b7ad12e1a12d792de4cd1e98ae221e1189347f32585f97471"],["boot141-left-front",45,"c6ff5a4eeee4a6c2a86a7fd7dab2d4432c9bd59c7b6b3a0f2ef894540a771af1"],["boot141-right-rear",-1,"66d65ab0daaef96e670ad914362e7c81397306d3e6cde585e5c17093b012787d"],["boot141-right-front",45,"c7415f6ebc23e3e5d250e01185e614d7c073b80d70091229d4956d5014cf6539"]]],"148":[339,[["boot148-left-rear",-1,"23f1b89981a4d84d3d2a32daea21d45e15023de714b3d290804d041904425032"],["boot148-left-front",45,"ffabfc220ac99659442e5c466f132925a6c3dc34797db4a72c66a3b17254b169"],["boot148-right-rear",-1,"ce9339a4a291137e0209a004cb20b3e9b5acdd611bcd0a43313765a4a760a9eb"],["boot148-right-front",45,"672500cdb881d3aebf22f51c39640712d701d02a3737a493284878569b978387"]]],"155":[335,[["boot155-left-rear",-1,"f45b178a2f1af053f7bebd175bf01124b2403c2737c618cbc14b956e58e1e863"],["boot155-left-front",45,"549fb39d56bc70ccb91bfaf57759d47547c3b942e80e1e2220b2f885596a3a5d"],["boot155-right-rear",-1,"c605abe201eeba8813fd7799805a3f829827dbfb9ce9b8200dfdef793d4ad0fe"],["boot155-right-front",45,"67bf993fe3abececb4ccaffd1a1a07afb53dd111ecf7d03af3953a4ed1cda1a4"]]],"162":[337,[["boot162-left-rear",-1,"0657c107af8a610157e3496e6b25455d802eb0f891a4cdbd0567d2c73f4b1f43"],["boot162-left-front",45,"ccf802094798ebddcff4495f68da76a139348717c280b2f711c72ce0766a285c"],["boot162-right-rear",-1,"ca3b33c3eb2133d12a37b21c494e3a924f60dbf17cf855f9823f3ecdf00bccd9"],["boot162-right-front",45,"c535e2b6b4dcb4944ee07ef8036d0ac67de6e7233e8cc26d04009e954e573e71"]]],"176":[305,[["boot176-left-rear",-1,"ca8fdfbf98f4b858f328a11bc248029764ccdb38b680b4507515cde4ac8abd21"],["boot176-left-front",45,"5082044242df72bae11035791a263345dbc5f639048ee2e33b1c930bc99f14c4"],["boot176-right-rear",-1,"fa7cc6a2fd027abdc8257c9a3a32d902144301956363a98563ee8c0ab3d13044"],["boot176-right-front",45,"8bfd4193bb86f90fa8d95da5d6e61d04fcf43496dc1ea5bcc6865e6d004b4b76"]]],"183":[319,[["boot183-left-rear",-1,"047a48c48bf640cfb6be5962a37f5fbde6857a8f2ff83eb64319cf3ff89246e0"],["boot183-left-front",45,"11bb2a313120a1d0d0fefdc5d75864bdc31003bd84671e46c26a039c4207632a"],["boot183-right-rear",-1,"06601e05709fae113cd972728a1cd1a8f64e0ec761d31d1f5dcedbf3784e5b19"],["boot183-right-front",45,"172380d804d921b2642a3e2600b2c5b542c2672f6147512d44c8b3e33d408ee2"]]]},"south":{"8":[337,[["boot8-left-rear",-1,"044042fa9d3933b6c2f973928b8fc386ef498147195e28840e797a41facafe72"],["boot8-left-front",45,"76a2bd0ba6bdf765cb4e258c2728c401efd5c8db988a0575f2017d9d4b96359b"],["boot8-right-rear",-1,"d43dbb0ab54c7782aef84cfb4a49a6afd24f2fa3aa7475fc1554ae8cdbbca672"],["boot8-right-front",45,"1759777594d33bc464fe3895c6ad3edcbd54e77b425f9fd64fb518a8c979d36c"]]],"9":[342,[["boot9-left-rear",-1,"193ce7723048212fd5f2b9d38bd07bb47c9547a158593e6f8b1cad294a687dad"],["boot9-left-front",45,"119537a0e2742b923234cf308604d3cec3ad6b5568ce8d25cc880619325331f4"],["boot9-right-rear",-1,"fa5f9464298aeab77b29f8437fdb0b6431569cbc13310795aa674aaa61fafacd"],["boot9-right-front",45,"c4590e06e960b7e8ec704430b342ee50a2cfeeaa3815fa63a5a804f0bbbee549"]]],"134":[324,[["boot134-left-rear",-1,"d61075b73b27afb08f56ac18cca6cb6625ef1285c7e598a41c3674620c1ec9a3"],["boot134-left-front",45,"9d3c5c498eefe2934ae82ac638737169878ad5d4ecc80d4c8b566733e10cb2cb"],["boot134-right-rear",-1,"07e08074e416c51cad446249f9ec452b2a998fd249085ce78495807b6297509e"],["boot134-right-front",45,"e52f853a253d483b66a7a4411e69ea6934557b117f68868510ff0a790585c0a5"]]],"141":[339,[["boot141-left-rear",-1,"eefb5d4031c4d79d3138c868aa81c07a358740fc274267b8e76a0ff747adbd77"],["boot141-left-front",45,"7b0f4b43dd4de149f5565fe8dba1d2b778065a4e33015f3ffa49631c08388417"],["boot141-right-rear",-1,"094024e466deca758369fd1c52ee1e66ffe6b92d9557af107e63da5ab8006e6e"],["boot141-right-front",45,"d36ac641b89a02b4bd68b531d6c402ca43667a55905454c19cc8812160455db9"]]],"148":[343,[["boot148-left-rear",-1,"16a70e8394f55d1edfa021e9e00361c18785a94f8df5a8e45aec7ac72cee9722"],["boot148-left-front",45,"718af976344a1222dc8eb251a07e72081a695446239352c816da2899ae253e4c"],["boot148-right-rear",-1,"4af36c3ac6e07f39c2be4cfd70f2a6a21e63ee34f5498a0aa58648a7490c6d5e"],["boot148-right-front",45,"95ac8368e5dac93f79d3ce22d4b50153e3065d5bd1513a97bef420265a8b1055"]]],"155":[341,[["boot155-left-rear",-1,"9a47a5b2d76b5f026b7f4980d9111ce7ada0576087dcff0c28405335c3b7ec9e"],["boot155-left-front",45,"41bc086db600adfa16bef809403e92fa0c29836d10f1f747b32f4e07bf66cf2a"],["boot155-right-rear",-1,"04c03f1cd61b0811fcc92227de09a34b2987e7d3652a44480853eb2e79a8b65e"],["boot155-right-front",45,"54f5edf3ce711fccf77c39344d4592c2058ea7e7f4f840754a3f6cc28cc3005d"]]],"162":[341,[["boot162-left-rear",-1,"d9f2136deef8a75596a1fa32c80bf428dbb5ad1eab02e01a6cc282e013aa3129"],["boot162-left-front",45,"0d2a76d7f87f68c23edc472fc42e6ffc934e2ca4039678782eadd70f0d0e1371"],["boot162-right-rear",-1,"ba6a4e44d2cb7574606a44806c8ac31c56fa13e416930d07d3dc4d9a4bedefa6"],["boot162-right-front",45,"aa82fff12ef8fe08cf7a39ebe24d31d963d311044ab679493c985640057cce9c"]]],"169":[339,[["boot169-left-rear",-1,"bb0ac3473ed80751e5bf7b9d3dbee14f85ae1bd5dcff77b8eea9127a37b8012d"],["boot169-left-front",45,"cc03aa883e9f97cba18a7a59f08e7a00f5932b750811c8cfa5476de4cdfeaf4a"],["boot169-right-rear",-1,"7f2ee72c27283ab843cc667298a02f899d674289208dbd01a60bfd53f7c7b1b0"],["boot169-right-front",45,"d3287de4461e974a592136fb1628ae38f3b2be7c2920ea2cd387128320730d4e"]]],"176":[307,[["boot176-left-rear",-1,"f031525bddf805473d3af0552fee10492199e97b98808eb744dda4e5fe53626e"],["boot176-left-front",45,"98503e8e5ee656ab54c759b10a6634d97c0e8001a1fd270aed7af2d9ce6593df"],["boot176-right-rear",-1,"ca08eb82b0f813488603897a47f5f8d161895b40ae2eeb0934d31742b48c1696"],["boot176-right-front",45,"9180033923423313c719de289f4abba454d1bb66dcb55e02431e5454690e6cdf"]]],"183":[323,[["boot183-left-rear",-1,"c7fb2cb42cf39c9c54a8886d747e711abe7ec139211352d10966bad02593e9c9"],["boot183-left-front",45,"ecc2c8c127ec5c1d0beae718f25a58769035975accd12ece4766053f86bc5f68"],["boot183-right-rear",-1,"c8eb8404e3924545cb07f556c73018950f84ab2df05d05cd6b6a82558a44279d"],["boot183-right-front",45,"df9fc375520f632197fc53d791b1a9c80127c1913fc70ab0ac7b8e02860bea08"]]]}},"weaponAlphaBounds":{"823474b4f6a0782ef39eca0dc176630df7ab6886e7b1cb70f800c0baa04b51bd":[364,334,431,464,640,640],"a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f":[222,323,414,512,640,640],"33136493d49bc376f0dc943348d314dbcca9f3a288cccea8c8d055f395670b6e":[300,399,341,437,768,768],"c50f7fe4385bb9007bd314143a5059c8e0478a5aad967613bc0a49571e07c07b":[429,402,463,434,768,768],"f69ce0d5b0290f1ed550777dfec664c3b1d6c11b2ba194fd36d9dc33bd59b423":[299,394,329,437,768,768],"0dbd179dfb31b0e2081640e8c6b33a31918600dde0d7e83345dfd708e409a094":[436,395,465,438,768,768],"26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6":[0,0,207,66,207,66],"d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d":[295,329,355,434,640,640],"f29f557668100fa11296b1d36c83c27d64f496360f873656048101bb9150c22c":[224,343,424,435,640,640],"38d7353209e178350f7359ed67886026c2aafe55417464824d85bcd7a4a16f70":[221,338,434,444,640,640],"35710a540ca7697fb527c00ef103c620de5f0a597deeba628c303d792b95b461":[431,394,459,437,768,768],"f5482aa957130425b88d61515857d12c139058eefdb7389acb845acb889f1efa":[358,321,396,411,640,640],"a5d7c7ee814eaf3c1e4ec9ae32c074eb6f53e879288b7b6eab65e468b73e91bd":[341,337,373,392,640,640],"dd514d855c0b168978c92074132bb47f8c3aa27d24f3696537884365b03e4003":[367,299,425,357,640,640],"01dc643b144c0f9add31481140c694dd76dfbacfe50f9ee4b361bd87f369b827":[375,240,455,432,640,640],"b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8":[345,323,370,365,640,640],"a0abe61eb3d9de535cfa14cbbb768fdbf0d1f1b2ec6d08e32cd41fa3be00c1d5":[224,340,448,472,640,640],"4adef9ea082343f7de6e1f68c49d586453074bf775256391cf67a342cb0a8316":[203,298,430,526,640,640],"900d3e1873707134eeed93ea5e6a2e010d7f54f5d0492fc1b1b419e680f1cbe5":[343,360,691,596,768,768],"2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99":[222,339,482,466,640,640],"a1f8c4cbcb2082fa12e3c7558ae2aa4930b35042d19572dd94373f384c297340":[198,339,424,439,640,640],"573fdf24e299ec837f42b7d0be440cda1f40731de71ea2c3233ade4789860e9d":[202,339,426,442,640,640],"d5e74dc641007f7e4f0ee94c22c04a959575fe23df15e23943a59f46d1f9cba7":[199,335,428,443,640,640],"226ad6ec6687fd26289dfa7c5449cd9fed76158d5427054ed5ea959ffd3924a1":[203,336,430,446,640,640],"1edf09db09d689cf0fe8c821f3c982ca2a2740daff0bd98e95d29f26d0611fc3":[239,311,403,373,640,640],"0d957c301ea9376fa42c2f4c8bca8ace0e3d11d5c7318f17c8a9f4ae7bfad390":[302,400,344,442,768,768],"9cabcc5bec690ae2ef438df3b58a5e2d3d96af78c4e79aff30a14a8e8a7cf20d":[425,402,468,443,768,768],"fa1b1529739aced049d7c0e68421af4c78d0c7906dc55cccfe15714c017f118c":[238,310,285,373,640,640],"03c23d3e9daa84a2e28007e614901e3d0c7e0a7b0f13ca2a29d243a65e23cca3":[362,331,402,379,640,640],"66b32c40ecb1efc295d4ab1c2a2e169e1bceb48bbbb7b7539b2c3ef0aa834827":[236,329,278,378,640,640],"0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4":[0,0,204,58,204,58],"89ea18ee5c506df3e4a07b9d25aaa21a40e3d255fc515ce2d1ece76105649895":[8,24,120,80,128,128],"313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b":[200,142,334,361,512,512],"136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654":[0,0,207,66,207,66],"08631a2f7d3ad9bbc223dc282925ea60c118e9b1dc2da32f298d3049f4f8b72b":[362,317,402,371,640,640],"4a102854a34cc0f92ecf7849dd409a8e2ed7fab2c5e2c9791be37df94297623c":[364,315,398,373,640,640],"2cd02c09e63a86db1503b4f153c22e6f88fbc20d194a16c5cf6bcab00de41b91":[362,304,397,375,640,640],"6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0":[343,198,421,376,640,640],"a957407f45eedfab734f008aa99bd1bf9c44249759ff36ffeae7e91497ab4313":[367,299,423,357,640,640],"df2a8a414bf7c5cc68fc855b99ef8d2d2cc38d205e1921d5010670be50a66d90":[350,212,413,376,640,640],"3c2ebcd0b120096de4ecd53664883cef64cccc8fd2d4bd9975a1b47e39ef6761":[355,206,418,373,640,640],"bfcc8ff558bdbff6b16847c1ced2d539e51a4aab8558717763c21c7e302ece23":[350,204,412,361,640,640],"3b3ad5ccfb8f8baaa542aea03e24b238f59fdc90f6e428a7b3b3285e78505b73":[355,200,417,352,640,640],"7602d10cf4a606073d99c0ab5101b4498b0100ac903baf341d648c77a5793bcc":[355,200,420,350,640,640],"535b5dc885463b8106314a3bfcc7e0ad3d0a7da8321113a54994d86ee18e4893":[355,200,417,362,640,640],"88eda32297377802e38d8f818b115a7e95827d25d1f77496296147b27df6caba":[249,329,280,380,640,640],"b672de04bb8c43f9570eb288c80f01753d405e995605ec3a74926c0cf612c221":[371,329,401,379,640,640],"ef58814bafb7ebba5238ecde3b36840fbd1320b5be88126e8782582c5cfb297e":[246,329,279,379,640,640],"1cbd3e71348f06d0908e219da9e6dce067d866a4154c4112f303360d90dd84ca":[371,329,404,378,640,640],"8c5dfc4d424bf22567d89f6bce1b1b17b095d27e448cf308f39b37e9f7d94a84":[245,329,278,379,640,640],"79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec":[234,334,265,367,640,640],"ae249c8a9e349b827a6d91a5951c10ef63edf91be9649cd8c0b48645d194d65b":[366,335,398,377,640,640],"2a489a16d88718cf5a83b310d1f17d4b11250b5c927cb663ab9febfe35104e27":[242,333,408,413,640,640],"a40fd49400ac3ef3c2d6b375f7cd331ba0b31019d2fa608e37d54c1af6754dcf":[245,329,279,380,640,640],"49ffe35da0c5fe9bc8bbc9513a07db793fb33152911b1c1f436603ed4cc0aa0f":[371,329,404,380,640,640],"85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc":[245,333,279,382,640,640],"a4efb496a6b4ac775e81081881fa391cf123833602ac3b666216bb7ed868b1ef":[249,334,279,381,640,640],"9456736ba1f610be6c124bf1db43df63625b3f3e27378df4a4da75a3ae7d0649":[371,334,401,381,640,640],"ee7b9253c9d68852cbcf6d48ed2c306005093ce94c9ffd7193f4317d5076b467":[251,327,276,379,640,640],"9fadba42a015194fcbde9afaec3c6a266ad4ab566580b79e5353d4e6a2f9c31e":[247,306,291,369,640,640],"71f3e23a634f5b09648b9eb6ca5494a4ccbf723418974947332492b346a6d8ad":[246,313,293,391,640,640],"7f3a26856839d9be8eaec8e6343ac21c863593243da65925ddd39fa75eee6700":[367,339,400,404,640,640]}};
+ // Each byte triplet encodes a row and [first,last) occupied run of
+ // 4px cells. Derived independently from the original source alpha, not
+ // from weapon/garment pair examples. Inflate the projected support by
+ // two native pixels: these cells can only authorize a strict separation.
+ const femaleIdleAlphaCells={"bootCells":{"north":{"8":"Uzg/VDZBVTZBVjZBVzZBWDZAWTdBWjZBWkJHWklKWzZIXDZJXTdJXjdIXzdIYDdJYTdJYjZJYzZJZDVJZTVJZjVKZzZKaDdKaTlKaj5Kaz5KbD5JbT5Jbj9Jbz9JcD9I","9":"VDc/VTZAVjZBVzdAWDZAWTZBWjdBWzdIXDdJXTdJXjdJXzdJYDZJYTZJYjZJYzZJZDVKZTVKZjVKZzZKaDZKaTdJaj5Jaz5JbD5JbT5Jbj5Jbz9IcEFH","134":"Tzs+UDdBUTdBUjdBUzhBVDdBVTZBVjZJVzdKWDdKWTdKWjdKWzhKXDhKXThKXjhJXzhJYDdJYTZJYjZJYzZJZDZKZTZKZjZKZzdKaDdJaThJaj9Jaz5JbD5JbT5Jbj9Jbz9IcEFH","141":"UzZBVDZBVTZBVjZBVzZBWDZBWTZBWjdJWzdJXDdJXTdJXjdJXzdJYDZIYTZIYjZJYzZKZDZKZTZKZjVJZzVKaDdJaThJakBJa0BJbD9KbT9Kbj9Kbz9JcEBI","148":"VDg/VTZAVjZAVzZAWDZAWTZAWjZBWzdIXDdJXTdJXjhJXzhJYDdJYTZJYjZJYzZJZDZJZTZJZjVJZzVJaDdJaTdJaj9Iaz5JbD5JbT5Jbj5Jbz9IcEBH","155":"Uzk+VDdAVTZAVjdAVzdAWDZAWTdBWjhAWzdJXDhKXThKXjhJXzhJYDhJYTdJYjdJYzZJZDZKZTZKZjZKZzZKaDdJaTdJaj5Kaz5KbD5KbT5Kbj5Kbz5KcD9I","162":"VDZAVTZAVjZAVzZAWDZAWTZAWjdBWzdJXDdJXTdJXjZKXzdJYDdKYTZKYjZKYzZKZDZKZTZKZjVKZzVKaDZKaTZKaj5Kaz5KbD5KbT5Kbj5Kbz5KcD5K","176":"TDVBTTVBTjZBTzZCUDZCUTZCUjZBUzZKVDZLVTZKVjZKVzZKWDZKWTZKWjVKWzVKXDVKXTVKXjVKXzVKYDVKYTRKYjRKYzRJZDRJZTRJZjRKZzVKaDVKaTVJakBJa0BJbEBJbUBJbkBIb0BIcEFG","183":"TzZCUDZCUTdCUjdCUzZBVDZCVTZCVjZKVzdKWDdKWTdKWjdKWzdJXDZJXTZJXjZJXzVJYDVJYTVKYjVKYzVJZDVJZTRJZjRJZzVJaDVIaTdIakBJa0BJbEBJbUBJbkBIb0BIcEFH"},"south":{"8":"VEFIVUBKVkBKV0BKWEBKWUBKWkBKWzhKXDdKXTZJXjdKXzdKYDdKYTdKYjdKYzdLZDdLZTdLZjZLZzZLaDZKaTVKajVDazVDbDVDbTVBbjZBbzZBcDg/","9":"VUJJVkBKV0BKWEBKWUBKWkBKW0FKXDdJXTdJXjdJXzdJYDdJYTdJYjdJYzdKZDdKZThKZjdKZzdKaDZKaTZJajVJazVCbDVCbTVCbjVCbzVCcDdA","134":"UUBJUkBJU0BJVEBJVUBJVkBJVzg/V0BJWDdJWTdJWjdIWzdIXDdIXTdIXjdIXzdIYDdIYThJYjhJYzhJZDhJZThJZjhJZzhKaDdKaTdJajZJazZBbDZBbTZBbjZBbzZBcDdA","141":"VEBKVUBKVkBKV0BKWEBKWUBKWkBJWzZIXDZIXTZIXjZIXzZJYDZJYTdJYjdJYzhKZDhKZTdDZUVKZjZCZkZKZzdKaDdKaTdJajZIazZBbDY7bD1BbTZBbjZBbzZBcDhA","148":"VUFJVkBJV0BKWEFJWUBKWkFJW0FJXDg/XEFJXTdAXUFJXjdJXzdIYDdJYTdJYjhKYzhKZDhKZThKZjhKZzdKaDdKaTZKajZJazZBbDZBbTZBbjZBbzZBcDhB","155":"VUBJVkBKV0BKWEBKWUBJWkBJWzk+W0BIXDhIXTdIXjdIXzdIYDdIYThIYjhJYzhJZDhJZThJZjhKZzdKaDdKaTdJajdJazZBbDZBbTZBbjZBbzZBcDZA","162":"VUBJVkBKV0BKWEBKWUBKWkBJW0BJXDdJXTdJXjdJXzdJYDdIYTdJYjhJYzhKZDdKZTdKZjdKZzZKaDZKaTZKajZJazZBbDZBbTZBbjZBbzZBcDdB","169":"VD9DVEZKVT9DVUZKVj9KV0BKWEBJWUBJWkBJWzY5Wz5JXDY6XD1HXTZIXjZIXzdJYDdJYTdJYjdJYzhJZDhJZTdKZjdCZkZKZzdKaDdKaTdJajZJazZBbDZBbTZBbjZBbzZBcDdA"}},"partCells":{"823474b4f6a0782ef39eca0dc176630df7ab6886e7b1cb70f800c0baa04b51bd":"U1xeVFteVVtfVltfV1xgWFxgWV1jWl1jW1xjXFxkXVxkXl1lX11lYF5lYV5mYl9mY19nZF9nZWBnZmBoZ2FoaGFpaWJpamJpa2JqbGNqbWNrbmRrb2RscGRscWVrcmZsc2hs","a738328e584324be54531ba577a4ffe38c669300a1bdffcf609c6aea02c00e1f":"UDo8UTk+UU9QUjg/Uzg/VDhAVE5QVThCVU5QVjdDVk5QVlZXVzhEV0dKV1tcWDc7WD1FWEZLWTc7WT1MWjc7Wj5MWzc8W0BMXDg9XEBMXTk9XUFLXVVWXjk/XkBMXlVXXlpbXzlNX1lbYDpOYFhZYFtcYTtPYVZcYjxRYlZcYzc4Yz1RY1ZYY1teZENSZFtgZUNEZUdSZVthZkdSZltjZmVmZzw+Z0hVZ1pjZ2RmaDxAaEFDaEhVaFpiaGNmaTxFaUhVaVtjaWRmaj1FakpXal5maz5Da0paa15ka2VnbD5DbERFbEtabGFobT4/bUNEbUxabWFnbkNEbkVGbkxbbmJob0FGb01eb2NocEBDcERGcE1gcGNkcGVocURHcU5hcWRockNGck9hc0NHc09hdENHdFBhdGVmdUNHdVBgdkRJdlJgdmZodzc5d0RFd0dId1JgeEJDeFNieTg5eUdIeVRielRje1dkfFdlfVpnflxnf15n","33136493d49bc376f0dc943348d314dbcca9f3a288cccea8c8d055f395670b6e":"Y1JUZE5UZUtVZktVZ0tVaExWaUxVakxVa0xUbE1TbU5P","c50f7fe4385bb9007bd314143a5059c8e0478a5aad967613bc0a49571e07c07b":"ZGt0ZWt0Zmt0Z2t0aGt0aWt0amt0a2x0bG1z","f69ce0d5b0290f1ed550777dfec664c3b1d6c11b2ba194fd36d9dc33bd59b423":"Yk1PY0xSZExSZUxTZkxSZ0tSaEpTaUpTakpSa0tQbExQbU1O","0dbd179dfb31b0e2081640e8c6b33a31918600dde0d7e83345dfd708e409a094":"YnBxY25yZG1zZW1zZm1zZ210aG10aW11am10a250bHB0bXBz","26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6":"AAEGAA0OAQEGAQoOAQ8SARMWARscAgEGAgoMAhASAhMYAhscAwoMAw4PAxMbAystBAYJBBIbBQALBQ8dBR4jBgApBjA0BwA0CAA0CQA0CgA0CwAXCxkyDAANDBEXDCUyDQAKDRESDRMWDS0yDgAGDg0ODi8xEB0f","d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d":"UklQU0lRVElTVUlUVklUV0pWWEtWWU5WWVdYWk1ZW01ZXE1ZXU1YXk1YX05YYFBZYVBZYlBWY1BWZFFXZVFXZlFXZ1FXaFJXaVJXalJYa1JYbFJY","f29f557668100fa11296b1d36c83c27d64f496360f873656048101bb9150c22c":"VT9BVj5CVltgVz1DV1thWD1DWFthWT1DWVthWj1CWlxiWzxCW1xiXDhCXFxmXThBXV1nXjhCXlxmXzlEX1tmYDpEYFpkYTpEYVplYjlDYlteYl9mYzlAY19mY2lqZDlAZF9mZThAZV9nZjg/ZmBnZzg/Z2BnaDg+aGFnaTg+aWFnajg9amJnazg8a2NnbDg7bGRm","38d7353209e178350f7359ed67886026c2aafe55417464824d85bcd7a4a16f70":"VEFCVFxeVT5DVVtgVj5DVltgVz5DV1tgWD5DWFthWT1DWVthWj1CWlxhWz1CW1xlXDlCXFxmXGttXThCXV1mXWhqXWtsXjlDXltmXmprXmxtXzlEX1tlX2psYDpEYFtlYGttYTpDYVtmYjlBYl5mYzlBY0VGY19nZDhAZEVGZF9nZThAZUVGZV9nZWpsZjdAZkVHZl9oZzdAZ0VHZ2BoaDc/aGBoaTc/aWBoajc+akJDamFoazc+a2JobDc9bGNobTg8bWRobjg7bmZn","35710a540ca7697fb527c00ef103c620de5f0a597deeba628c303d792b95b461":"Ym5yY21zZG1yZW1yZmxzZ2xzaGtzaWtzamxza21zbG1ybW9w","f5482aa957130425b88d61515857d12c139058eefdb7389acb845acb889f1efa":"UFpdUGFjUVleUWFjUlljU1ljVFljVVljVlljV1ljWFljWVljWlljW1pjXFpjXVljXlljX1ljYFpjYVpjYlpjY1pjZFpjZVpjZlpj","a5d7c7ee814eaf3c1e4ec9ae32c074eb6f53e879288b7b6eab65e468b73e91bd":"VFdaVVhaVlZaV1ZbWFdbWVhcWlddW1ZeXFZeXVZeXlVdX1VWX1ddYFVWYFdcYVVY","dd514d855c0b168978c92074132bb47f8c3aa27d24f3696537884365b03e4003":"SmJjSmVmS2BoS2lqTF9pTV9qTl5qT11rUF1rUVtrUltrU1tqVFxpVVxpVlxpV11oWF5nWWFj","01dc643b144c0f9add31481140c694dd76dfbacfe50f9ee4b361bd87f369b827":"PG5xPW5yPm1xP2xxQGpxQWlyQmlyQ2hyRGhyRWlyRmlyR2lxSGlwSWlvSmluS2ltTGhtTWhsTmhrT2drUGdqUWdqUmZqU2VqVGNpVWJqVmJrV2JrWGJrWWJrWmJqW2NqXGNoXWJlXmJlX2JlYGFkYWFkYmBkY2BjZGBjZV9jZl9iZ19iaF5iaV5hal1ha11g","b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8":"UFZdUVZdUlZdU1ZdVFZdVVZdVlZdV1ZdWFZdWVZdWlZdW1Zd","a0abe61eb3d9de535cfa14cbbb768fdbf0d1f1b2ec6d08e32cd41fa3be00c1d5":"VTk8Vjg+VzhAWDhCWEdJWTlEWUVLWjtMWz1NXD9NXUFNXkJMX0JMYEJOYFRVYUJQYkNRY0RJY0pTZEZHZEtVZU1WZk5YZ1BaaFFcaVNealVga1Zia2ZnbFhlbGdpbGprbUxNbU5PbVpobWprbkxOblxrb15vcGFwcWNwcmZudVladV9h","4adef9ea082343f7de6e1f68c49d586453074bf775256391cf67a342cb0a8316":"SjU5SzU6S0FCTDQ7TEFCTTQ7TUhKTjQ8TklKTzQ9UDQ9UTY/UjY/UzdBVDhCVTg5VTpDVWVmVjpDVmBiVmRmVzpJV19iWDpLWFBRWFdYWGJkWTxLWWFkWj5LWlBTWmFlWz5LW1BTW1tcW2JlXD1KXExNXFJTXFpbXF9hXGJlXT5KXUxOXVVYXj1KXlRZXl9gXz1KX1VZX1pcYDIzYD1LYFFTYFVcYTM0YT1MYVFTYVVcYjM0Yj9MYlJTYldcY0FEY0VOY1dYY1pcY2BiZEdOZFtfZGBiZUdPZVxdZWBhZkhQZmJjZzU2Z0lRZ1ZXZ15gZ2FjaEpSaFZYaF5gaGFkaUtSaWFlaktTal9hamJma01Ua2Bha2Jja2RobE1VbGRpbTY3bU5WbWNobk9XbmNnbmprb1BXb2NpcFFYcGRpcVJZcV9gcWJrclJbcmJsc0JDc0hJc1Nbc2NsdEdJdFRddGRqdUdJdVVddWRpdkdJdlZedmFidmRndzk6d0dId1Zfd2RmeD4/eEdJeFdgeGFieGRleT9AeUFCeVhiekZIellje0dIe1plfD4/fEJDfFtlfVxnfl1nf0BBf15qgEBBgF9rgUFCgWBrgmNqg2Zq","900d3e1873707134eeed93ea5e6a2e010d7f54f5d0492fc1b1b419e680f1cbe5":"WnByWpKUXHh7XXh8XnJ0Xnp8X3p8X31+YIWGYJiZYXp7YYWHYZiZYldaYnp8YoWHYpydYp+gY1ZdY4eIY52fZFZeZF9gZG1yZIWGZIeIZVVhZWJjZWx1ZX5/ZYSGZYmKZYuNZlZkZmt2ZoOJZoqNZ1ZmZ2l2Z4SIZ4uNaFd3aISGaI2OaVd3aYeKaYyOaZKTalx4aoiLaoyOapKUa154a4eKa4uOa5GWbGF5bIiKbJKWbJeYbWN8bZOVbmR8bn2AbpOWb2aBb5OXb5iab6WmcGeDcISFcJOVcJqccKWmcWeHcZqccmiJcoqLcp+ic2eNc56jdGeNdJ6jdWeSdZ6kdmiTdpeadp+gdqGkd2hzd3WTd5Sad6GjeGpzeHh6eHubeW1yeXt9eX6fen6he4KlfISqfWdpfXR1fYetfmlqfmtsfnN0foqtf2psf4ytgGtsgHh5gJGrgWVpgXBygXN0gXh6gZSpgmVpgnJ0gnh5gnt8gpSWgpmng2Zng3J0g52eg6KkhGtshG9zhHp7hXBxhmtshnN0h25vh3N0iXd4iX5/inR1i3R1i3h6jmhpj3d4j4WGj4eIkHh5kIWHkXZ3kXp7knJ0lHl6","2b51077b5ceed71278e46efbb2f37fbecf9d2572476a1c4288b39968ce674a99":"VDo7VTk9Vjk/Vzg/V0lMWDhBWEhOWTdEWUVHWUhPWjhPWzlPXD1PXUBQXkJRX0JSYEJVYURVYkRXY0NZZERbZURKZU1dZkZJZk9gZ1FiaFRkaVZmalhoa1pqbFxubV5wbXFybmB2b2N4cGV5cWd4cml4c2t3dG9wdHFydHN0","a1f8c4cbcb2082fa12e3c7558ae2aa4930b35042d19572dd94373f384c297340":"VENFVFdYVT5GVVdbVj5GVldcVl9iVmNkVzo7V0BGV1ddV2VmWDY3WDo7WD0+WEBGWFZdWGZnWGhpWTw+WT9FWVdjWjQ1WjtEWlZkWzQ1WzlDW1ZXW1pkXDM2XDlDXEZHXFZXXFpkXTI1XTlEXUZHXVpkXjE2XjhEXkZHXlllXzE1XzhEX0VGX1ZXX1llYDE1YDhEYFZXYFpmYTI1YThEYVpmYjI1YjZEYltnYzI0YzVBY0dIY1tnZDI0ZDVBZEZHZFZXZF1oZTU/ZV9pZjY+ZkdIZldZZlpcZl9pZzU+Z1hcZ2BpaDU9aFheaGBqaTQ8aUNGaVlfaWNqajQ8alpgamNqazQ6a11ha2Jja2VqbDQ5bGdqbTQ3bWhq","573fdf24e299ec837f42b7d0be440cda1f40731de71ea2c3233ade4789860e9d":"VFdaVUFGVVdcVkFGVlddV0BGV1dfWEBGWFdgWGdoWT1GWVhiWWdoWjxFWlljWztFW1piXDtFXFpiXGNmXTo7XTxEXVlnXjQ1XjZEXlloXzZEX1poYDVEYFtoYTVCYVxpYjVCYlxqYzRDY1xrZDJDZEZHZFtrZTJCZUZHZVtqZjVCZlxqZzVBZ1pbZ15qaDRAaF5raTQ/aV9rajM/amBrazM+a2Bia2RrbDM6bGZrbTQ5bWhqbjQ2","d5e74dc641007f7e4f0ee94c22c04a959575fe23df15e23943a59f46d1f9cba7":"U0NFVEBGVFZbVUBGVVZcVkBGVlZbVz9GV1ZbWDM0WD9GWFVcWTQ1WTo9WT5DWVZdWWBiWjlDWlhjWzhDW1hjXDdCXFlkXGVmXTdDXVplXjIzXjdEXllkXzIzXzdEX1lkYDEzYDlEYFhkYTEyYTdDYVllYjZCYlllYzRCY1llY2ZnZDM/ZEJDZFpeZF9lZTM+ZVVXZV9lZWdoZjM6Zl9lZzI5Z1xdZ19naDM5aDw9aF9oaTM5aTs8aWBpajM4altdamBrazM4a1xda2FrbDM4bGJrbTQ3bWdpbjU3","226ad6ec6687fd26289dfa7c5449cd9fed76158d5427054ed5ea959ffd3924a1":"VEFGVFZaVUBGVVZbVkBGVlZbVzIzVz9GV1ZcWD9GWFZdWT5EWVddWWBjWjlEWlhjWzhDW1hkXDhDXFlkXTdDXVpmXjZEXlpmXzZEX1lmYDdEYFlmYTdEYVlmYjdDYllnYzZCY1pnZDZCZFtoZTRBZVtpZjQ+Zl9qZzM+Z1NVZ2BqaDM9aGFqaTM8aWJrajQ7amFsazQ7a2NsbDQ5bGVsbTQ5bWtsbjQ4bzQ3","1edf09db09d689cf0fe8c821f3c982ca2a2740daff0bd98e95d29f26d0611fc3":"TT9DTV5iTj5FTlxkTz5GT1tkUD1HUFtlUT1HUVxlUj1HUlxlUz1GU1xlVD1GVFxkVTxGVVtkVjxGVlplVztGV1plWDtGWFplWTxGWVplWjxGWltlWz1FW1xkXD5EXFxiXUFD","0d957c301ea9376fa42c2f4c8bca8ace0e3d11d5c7318f17c8a9f4ae7bfad390":"ZE5TZUxUZkxVZ0xWaExWaUtWaktWa0tWbExVbU1Ubk9T","9cabcc5bec690ae2ef438df3b58a5e2d3d96af78c4e79aff30a14a8e8a7cf20d":"ZG1zZWxzZmxzZ2t0aGp1aWp1amp1a2p1bGt1bWx0bm1y","fa1b1529739aced049d7c0e68421af4c78d0c7906dc55cccfe15714c017f118c":"TT9ETj5GTz5HUD5IUT5IUj5HUz1GVD1GVT1GVjxGVztGWDtGWTtGWjtGWzxFXD1EXUFD","03c23d3e9daa84a2e28007e614901e3d0c7e0a7b0f13ca2a29d243a65e23cca3":"UlxeUmFjU1tkVFplVVplVlplV1pkWFtkWVtkWltkW1tkXFtjXVxjXl1i","66b32c40ecb1efc295d4ab1c2a2e169e1bceb48bbbb7b7539b2c3ef0aa834827":"UkBEUzxFVDtFVTtFVjtFVztFWDtFWTxGWj1GWz1FXD1FXT5EXj9D","0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4":"AAYHABMXARIcASAiASUmAhIdAiAkAiUpAi8xAwELAxAfAyEkAyUoAy8wAzIzBAAfBCwtBC4wBQAlBSstBgAzBwAzCAAzCQAzCgAPChAaCiMzCwAKCw8XCzAzDAAEDAUGDBAWDBobDDAxDS8xDiYnDjAx","89ea18ee5c506df3e4a07b9d25aaa21a40e3d255fc515ce2d1ece76105649895":"BgsOBhARBwsOBw8RCAseCQgeCgceCwYdDAUWDBwdDQQQDgQODwMIDwkOEAIIEQIHEgIIEwMH","313d55eb5787d63cc3f06172d5215ffda64010ce1463a31abdcc852e7508a16b":"I0xOJEpPJUpPJkpQJ0pQKElPKUlOKkhOK0hNLEdMLUdMLVNULkZMLlFTL0ZLMEVLMFJUMURLMkRKM0RKND9CNERLNT9KNj5KNk9QNz5KOD5JOT1IOjxIOzxIPDtHPTtHPjtGPzpGQDpGQTlFQjlGQzhHRDhHRTc4RTpGRj1GRzc4Rz1FSDtESTtESjpESzpETDpDTTlDTjlCTzI0TzhDUDI0UDhCUTIzUThCUjdCUzI0UzdCVDM1VDZCVTZCVjZBVzhBWDpBWTxBWj4/","136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654":"ABEVAREWAgIEAhEXAwEMAw0dBAAnBQAtBTE0BgA0BwA0CAA0CQA0CgAcCh0jCic0CwAICxAVCyksCy00DAAFDCAhDDAzDR0eDiEiDx4fDyEjECEi","08631a2f7d3ad9bbc223dc282925ea60c118e9b1dc2da32f298d3049f4f8b72b":"T1xjUFtkUVxkUlxkU1xkVFxkVVxkVltkV1tkWFplWVplWltkW1tkXF1i","4a102854a34cc0f92ecf7849dd409a8e2ed7fab2c5e2c9791be37df94297623c":"TmFiT1tdT2FjUFtdUGFjUVteUWFjUltjU1tkVFtjVVtjVltkV1tkWFtkWVtkWltkW1xjXF1iXV9g","2cd02c09e63a86db1503b4f153c22e6f88fbc20d194a16c5cf6bcab00de41b91":"TGFiTVxdTWBiTltiT1tiUFtiUVtiUltiU1tiVFtiVVtjVltjV1pjWFpkWVpkWlpkW1tjXFtjXVxi","6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0":"MWBlMl1mM1xnNFtoNVthNWJjNWRpNlpjNmRpN1ppOFpqOVpqOlpkOmVqO1ppPFppPVtpPltoP1tnQFxlQV1lQl1hQ11hRFxhRVxgRl1gR1xgSFxgSVxfSlxfS1pfTFpfTVpeTlpeT1leUFleUVpdUlpdU1ldVFhdVVhcVlhcV1dcWFZdWVZdWlVeW1ZdXFdcXVha","a957407f45eedfab734f008aa99bd1bf9c44249759ff36ffeae7e91497ab4313":"SmNlS2NmS2doTGBpTV9qTl5qT19qUF9qUVtqUltpU1tqVFxqVVxpVlxpV11oWF5nWWFj","df2a8a414bf7c5cc68fc855b99ef8d2d2cc38d205e1921d5010670be50a66d90":"NV5lNl1mN1xnOFxnOVtoOltoO1toPFtoPVxnPlxnP11mQF1lQV1kQl1hQ1xhRF1hRV1hRl1gR11gSFxfSVxgSlxgS1tfTFpfTVpfTlpfT1pfUFpeUVleUlleU1pdVFhdVVhcVlhcV1hcWFhcWVdbWldbW1dbXFdbXVdb","3c2ebcd0b120096de4ecd53664883cef64cccc8fd2d4bd9975a1b47e39ef6761":"M2JkNFxdNGFkNVxlNlxmN1tpOFtfOGBpOVteOV9jOWRoOltkOmVoO1toPFtpPVtpPltePl9jPmRpP1tiP2NoQFtnQVxmQlxmQ11jRF1iRV1hRl1gR11gSFxgSVtgSlhbSlxgS1hfTFhgTVhgTlhgT1hgUFhfUVleUlleU1ldVFhdVVhcVlhcV1hcWFhcWVhbWV1eWlhbW1hbXFhbXVhZ","bfcc8ff558bdbff6b16847c1ced2d539e51a4aab8558717763c21c7e302ece23":"M2BlNF9mNV9mNl9mN1xeN19mOFxlOVxlOltnO1tnPFxnPVxnPlxmP11lQF1kQV1iQl5iQ11hRF1hRV1hRl1gR1xgSFxgSVtgSltgS1pfTFpgTVpgTllgT1lfUFlfUVleUlleU1hdVFhdVVddVldcV1ddWFddWVdcWlha","3b3ad5ccfb8f8baaa542aea03e24b238f59fdc90f6e428a7b3b3285e78505b73":"Ml1nM11oNFxoNVxpNlxpN1xpOFxoOV1oOl1oO15nPF9lPV9jPl9iP19iQF5hQV5hQl5hQ15hRF5gRV1gRl1gR11gSF1fSVxfSlxfS1tfTFpgTVpgTlpgT1pfUFpfUVpdUlpdU1ldVFhdVVhdVlhdV1hc","7602d10cf4a606073d99c0ab5101b4498b0100ac903baf341d648c77a5793bcc":"MlxmMmdpM1xnNFxnNVxnNlxnNmhpN1xpOFxpOVxpOlxeOl9nO1xdO19nPF9nPV9iPWNlPl9iPmNlP19hQF9hQV5hQl5hQ15gRF5gRV1gRl1gR11fSF1fSVxfSlxfS1tfTFpgTVpgTlpgT1pfUFpfUVpdUlpdU1ldVFhdVVhcVlhaV1ha","535b5dc885463b8106314a3bfcc7e0ad3d0a7da8321113a54994d86ee18e4893":"Ml5mM15nNF1nNVxoNlxoN1xpOFxoOVxoOlxoO11nPF5mPV9lPl9iP19iQF9hQV5hQl5hQ15gRF5gRV1gRl1gR11fSFxfSVxfSlhbSlxfS1hfTFhgTVhgTlhgT1hgUFhfUVpdUlpdU1ldVFhdVVhdVlhdV1hdWFlbWVhaWlha","88eda32297377802e38d8f818b115a7e95827d25d1f77496296147b27df6caba":"UkBFUz9GVD9FVT5GVj5GVz5GWD5GWT5GWj5GWz5GXD5FXT9FXj9F","b672de04bb8c43f9570eb288c80f01753d405e995605ec3a74926c0cf612c221":"Ul1jU11jVF1kVV1kVlxkV1xlWFxlWVxlWlxlW11lXF1kXV1kXl5j","ef58814bafb7ebba5238ecde3b36840fbd1320b5be88126e8782582c5cfb297e":"Uj9FUz9FVD9FVT5FVj9GVz0+Vz9GWD0+WD9GWT9GWj9GWz0+Wz9GXD9FXT9FXkBE","1cbd3e71348f06d0908e219da9e6dce067d866a4154c4112f303360d90dd84ca":"Ul1jU11jVF1jVV5jVWRlVlxjV11lWF1lWV1kWl1kW11lXF5kXV5jXl5i","8c5dfc4d424bf22567d89f6bce1b1b17b095d27e448cf308f39b37e9f7d94a84":"UkBFUz9FVD9EVT9EVj9FVz9FWD0+WD9GWT9GWj9GWz9GXD9FXT9FXj9F","79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec":"Uz5BVDo7VD1CVTs8VT1DVj1AVzxAWDxAWTtAWjs/Wzw/","ae249c8a9e349b827a6d91a5951c10ef63edf91be9649cd8c0b48645d194d65b":"U11fU2FiVF1iVV1iVlxjV1tjWFtkWVtkWltkW1tjXFxjXVxiXl9g","2a489a16d88718cf5a83b310d1f17d4b11250b5c927cb663ab9febfe35104e27":"U0FEU19iVD9FVF1jVT9FVV1jVj9GVlxdVl5kVz9FV11kWD9FWF1kWT9FWV1kWj0+Wj9FWl1lWz5GW11kXDw9XD5GXFxkXGVmXT5GXVxlXj1IXlpbXlxlXz5DX0RHX1xfX2BlYD1CYENGYFxfYGBlYT5CYURHYVtcYV1fYWFlYj5DYmBlYz9DY2BkZEBCZGFjZT4/ZWRlZ0BBZ2Jj","a40fd49400ac3ef3c2d6b375f7cd331ba0b31019d2fa608e37d54c1af6754dcf":"UkBFUz9FVD9FVT5FVj5FVz1GWD1GWT1GWj1GWz1GXD1FXT5FXj9E","49ffe35da0c5fe9bc8bbc9513a07db793fb33152911b1c1f436603ed4cc0aa0f":"Ul5jU15jVF1kVV1kVl1kV1xlWFxlWV1lWlxlW1xlXF1lXV1lXl5k","85b0df18f50f6f9dc2e13764e9f2a7a9e9905ae8166e81eab61f3dc429adeacc":"Uz9EVD9FVT9EVj9FVz5FWD5GWT5GWj5CWkNGWz1CW0RGXD5EXT9EXj9EX0FD","a4efb496a6b4ac775e81081881fa391cf123833602ac3b666216bb7ed868b1ef":"U0BDVD5FVT5FVj5FVz5GWD5GWT5GWj5GWz5GXD5FXT9FXkBFX0JD","9456736ba1f610be6c124bf1db43df63625b3f3e27378df4a4da75a3ae7d0649":"U19jVF5kVV5kVl5kV11kWF1kWVxlWl1lW11lXF1kXV1kXl5iX19g","ee7b9253c9d68852cbcf6d48ed2c306005093ce94c9ffd7193f4317d5076b467":"UUJEUkBFUz9FVD9FVT9FVj9FVz9FWD5FWT5FWj5FWz9FXD9FXUBEXkFE","9fadba42a015194fcbde9afaec3c6a266ad4ab566580b79e5353d4e6a2f9c31e":"TENETURFTUZHTkBGTz9CT0RHUD9HUT9IUj9GUkhJUz9GU0dIVD5GVT5GVj5GVz5GWD1GWT5GWj5FWz5FXEFD","71f3e23a634f5b09648b9eb6ca5494a4ccbf723418974947332492b346a6d8ad":"TkBGTz9CT0RGUD9HUElKUT9HUj9GUz9GVD9GVT5GVj5FVz5FWD5FWT5FWj5FWz1EXD1EXT1EXj5EX0BCYUJD","7f3a26856839d9be8eaec8e6343ac21c863593243da65925ddd39fa75eee6700":"VF5iVV5iVl1iV11iWF1jWV1jWl1jW11iXFxkXVtkXlxkX1xkYFxkYVxkYltkY1xkZF9h"},"tile":4},femaleIdleBootCellCache=new Map(),femaleIdlePartCellCache=new Map();
+ function idleAlphaCellMap(encoded){
+  if(!encoded||typeof root.atob!=='function')return null;
+  try{return root.atob(encoded);}catch{return null;}
+ }
+ function femaleIdleDisjointSupport(dir,item,part){
+  const size=femaleIdleAlphaCells.tile,side=512/size,bootKey=dir+'/'+item;
+  let boot=femaleIdleBootCellCache.get(bootKey);
+  if(!boot){
+   const ord=idleAlphaCellMap(femaleIdleAlphaCells.bootCells[dir]?.[item]);
+   if(!ord||ord.length%3)return false;
+   boot=new Uint8Array(side*side);
+   for(let i=0;i<ord.length;i+=3){
+    const y=ord.charCodeAt(i),x0=ord.charCodeAt(i+1),x1=ord.charCodeAt(i+2);
+    if(y>=side||x1>side||x0>=x1)return false;
+    boot.fill(1,y*side+x0,y*side+x1);
+   }
+   femaleIdleBootCellCache.set(bootKey,boot);
+  }
+  const m=part.matrix,key=JSON.stringify([part.sha256,m]);
+  let projection=femaleIdlePartCellCache.get(key);
+  if(!projection){
+   const encoded=idleAlphaCellMap(femaleIdleAlphaCells.partCells[part.sha256]);
+   if(!encoded||encoded.length%3)return false;
+   const width=Math.ceil(part.sourceNativeSize[0]/size),height=Math.ceil(part.sourceNativeSize[1]/size),
+    occupied=new Uint8Array(side*side);
+   for(let i=0;i<encoded.length;i+=3){
+    const y=encoded.charCodeAt(i),x0=encoded.charCodeAt(i+1),x1=encoded.charCodeAt(i+2);
+    if(y>=height||x1>width||x0>=x1)return false;
+    for(let x=x0;x<x1;x++){
+     let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity;
+     for(const ox of [0,size])for(const oy of [0,size]){
+      const sx=x*size+ox,sy=y*size+oy,X=m[0]*sx+m[2]*sy+m[4],Y=m[1]*sx+m[3]*sy+m[5];
+      left=Math.min(left,X);right=Math.max(right,X);top=Math.min(top,Y);bottom=Math.max(bottom,Y);
+     }
+     const a=Math.max(0,Math.floor((left-2)/size)),b=Math.min(side-1,Math.floor((right+2)/size)),
+      c=Math.max(0,Math.floor((top-2)/size)),d=Math.min(side-1,Math.floor((bottom+2)/size));
+     if(![left,top,right,bottom].every(Number.isFinite))return false;
+     if(a>b||c>d)continue;
+     for(let yy=c;yy<=d;yy++)occupied.fill(1,yy*side+a,yy*side+b+1);
+    }
+   }
+   projection=occupied.reduce((cells,v,i)=>{if(v)cells.push(i);return cells;},[]);
+   if(femaleIdlePartCellCache.size>=256)femaleIdlePartCellCache.clear();
+   femaleIdlePartCellCache.set(key,projection);
+  }
+  return !projection.some(i=>boot[i]);
+ }
+ // Narrow proof for the conservative grid's borderline failures. Authored
+ // boot alpha and signed projected PNG supports were measured separately.
+ // Projection uses a complete native pixel envelope plus a 1px guard.
+ // Sparse runs cover only the audited lower band (all signed boot alpha).
+ const femaleIdlePixelRuns={"boots":{"north/176":"1cUJAwQp/AMDBCn9AwIDKYAEKf4DKoEEKoIEKIEEKP8DKYEEAQIn/QMCAyf/AymCBCf9AwECJCYC2AMnKAPYAycpAtgDJigC1wMnKQLXAycpAtcDJykC2AMCAyMmAdYDAwQk/AMBAgECI/wDAgMkgAQk/gMmggQk/QMm/wNNgQRLTAG0AwECSEkBtQNLTAGzA0tNAbMDAQJISgECAbIDSf8DS4AES4AEAwRGSAG0A0qABEmABEqABEqABEyABEz/A02ABE2ABE2ABE6ABExNAbMDToEETYAETIAEAQJGRwIDAbMDAQJISQK1AwECSEkCtQMBAkv+A0yABE7/A02ABE2ABAECS/8DTP8DAQJM/gMBAkz+AwECTP4DAQJL/gMBAklKAbQDAQJL/gNLTAG1AwECS/4DAQJM/gMBAkhJA7UDAQJJSgK0AwECSUoCswMBAkpLAbMDT4AET4EETf4DT/4DUoAET1ABsQMCA0tMAbADAgMBAkpLAa8DAgVL+wNOTwOxA09QArEDTU4CsAMBAlH/A1GBBEuABEuABEv/A02ABE7/A0+ABE+ABFCABFCABFGABFGABFGBBFCABFGBBFD+A1KBBFOABAEFTv8DAgNM+wMDBUz7AwMETPsDAQIBAk78AwECT/4DAQJO/wMCBEr8AwMES/wDAwRKpQQkgQQjgQQigAQhgAQggAQigAQigAQigAQjgAQjgAQjgAQjgAQjgAQjgAQigAQhgAQhgAQggAQggAQggAQfgAQegAQeggQbgAQagAQXgAQVhAQSggQP","north/183":"2v0JKisC1QMqKwLXAyuABCuBBCgpAdcDKv8DK4AEK4AEK4EEKf8DJioB1gMnKgHWAyeABCf/Ayf/AyUmAQIB2AMpgAQnKQHXAyeABAECAQIn/AMBAgECKPsDAQIBAyMkBNgDAgQjJATaAyMkAgME2AMrgAQrgAQBAiIjBt0DIiMG3ANMgARMgARLgARKgARKgQRJgARJgARJgARKgARIggRHgARGRwG5A0ZHAbcDS4IERkcBuQNGRwG5A0b/A0OABENEAb0DQ4AEQ/4DAgNC/AMDBEL8AwMEQvsDR/8DBAVD/ANH/wNIgQRH/wMCA0X8A0mABEn/A0qABEqABEqABEr/A0uABEuABEqABEuABEuABEr/A0qABExNAQICsQNNTgKwAwECUf4DAQJR/wNOgARO/wNOgAROgARPgARPgARPgARPgARPgARPgAROgAROgARO/wNPgAROgAROgQROgQQBA0n+AwMER/wDAwRH/AMCA0j8AwECAQJH/QMCA0f+AwECR4AEAQJEggQfIiHeAx8iIYEEIIAEIIAEIIAEIIAEIIAEIoAEIoAEIoAEI4AEI4AEI4AEI4AEI4AEI4AEI4AEI4AEIYAEIYAEIIAEIIAEH4AEHoAEHoIEG4AEGv8DGIEEFoQEE4EEEA==","south/141":"gM4KJoAEJoAEJoAEJYAEJYAEJYAEJoAEJYAEJYAEJYAEIyQB3AMjJAECAdsDJCUB2wMjJAHcAyOABCOABCOABCOABCOABCOBBCP/AyKABAIDHf0DAwQf/QMBAxscAeEDAQMb/QMBAxvUA0SBBEKABEKABEOABEP/AwIDQP0DAgNA/QMCA0D9AwEDJicd1gMoKR7XAwECJicd1wMBA0T9AwEDRP0DKCkd1wNGRwG5A0dIAbkDR0gBtwNKgQRJgQRIgARHgQRGgQRFgARFgQREgQRDgARCgARCgQQgISDfA0GABECBBEGABEKABESBBEKABEFCAb0DRIAERIAEKTQCAw3KAyk0D8kDLTcPyAMqKwIPDcQDAQIqOg3DAwIDKj0CAwe9AwEDJicBGga+AwECKD0BAge/AwECJykHDQMGCsEDAgNG/QMCA0aABEb9AwECSP4DAQJH/gNJgARIgQQBAkT9AwIDRf0DJygb2AMkKhfVAyYrF9UDKIEEJ/8DKP8DKYAEDhwM5QMKCwEQAgMJ4gMICQIDAhIK4gMKCwMRAgQI4AMICgESDOQDCB4K4gMIHgEDB98DBiAI4AMHCAEUAgQI3wMKDQEEAQsBBAngAymABCmABCmABCmABCmABCmABAECJf8DJYAEJYUEHB0C5gMXgAQX","south/169":"/80KCQoBEgzkAwkKARIM5AMJCgETC+IDCh8K4gMKHQvjAwwNAQwBAg3lAxEWEukDKYEEKIEEJ4AEJoAEJIAEI4EEIoAEIoIEH/4DIoAEIoEEIYEEIIAEH4AEIIAEIIEEH4AEHf8DHh8B4QMf2QMIHSTiAwkeJOIDCh4i4gMKHiLiAwobJeUDDBsl5QMRFinqAz+ABESABCcpG9cDJicc2wNBgARBgQQhIh/eAyEiIN4DIiMg3AMiJR/bAyImHtsDISQf3AMhJB/cAyEkH9wDICIh3gMhIiHfAyAiIN4DHyIh3QMgIiLeAyAjId4DHyIg3gMgIiHfAx4hICEBwAMcHiTiA0CABEGABEKBBECABECABECABED+AwECQP4DQ/8DQ/8DMDURywMpOwvFAyg+CcIDJzwLxAMoPAvFAyc8CsMDKCoCAwECAwQBAgEEDscDLTAFCA/HA0j/A0mBBEeBBEb+A0mABEeABCMkItwDJCUf2wMkKBkaA70DJSkZGgO8AyaBBCb/AyiABCj/AymABCgpAdcDKoAEDg8LDA7lAxobD+YDCR0M4gMLHwvhAwkfC+EDCh8L4QMKFgIIDOIDCgsBBAMEBAUS5wMQEgcJEOUDK4AEK4AEKSoB1gMpggQn/wMBAiWABCODBB+BBAECGBsB4wMBAhgbAQ==","south/8":"hMYKG4AEG4AEG/8DHv4DJP8DJYAEJoAEJoAEJoAEJoAEJoEEJP8DJoIEI4AEI4AEI4AEIoAEIoAEIoAEIv8DI4AEJIAEJYAEJIAEJIAEJIAEJOMDGB0k4wMYHiPiAxgeI+EDGx8j3wMeIiLbAyMlItkDRIAERIAEQv8DQ4EER4EERYEERYAERoAER4AERoAER4EER/8DSIEER4AER/8DSYAESf8DSoAESoEESIAESIAESIAESIAESYAESYEESf8DTIEES4AES4AETP8DTYEETYAETf8DTYAETYAETf4DT4AEToAEToAEToAETv8DT/8DUIAEUIAEUIAET4AEToAEToAETv8DTf8DTf8DTYEERv8DMf8DM/4DNYIENIAENf4DN4EENv8DOIEEN4AEN4EEMzQBzQMyNAHLAzKABCwtAdQDK4AELIEEK4AEKoAEK4EEKoAEKoAEKYIEJoEEJIIEH4IEGw==","north/134":"7P0JC/wDFRYB4gMigAQi/wMjgAQjgAQjgAQjgAQjgAQj/wMkgQQjgAQjgQQigAQigAQigAQigAQi/wMjgAQj/wMkgAQk/AMogQQn/wMngQQmgQQkLQ4TAcEDIyYe2wMiJR7bA0T/A0ZHArkDSoEESf8DAQJH/gNJgAQfICrhAwECR/4DAQJH/QMCA0b8AwMER/4DSYAESYEESIEERoIERIAERYAERYAERYAERIAERIAERIEEQ4AEQ/8DRYAERYEERIAEGhso5ANBgQRAgARA/wMcHSPhAx4fI+IDQYAEP0ABwQM/gAQcHSLhA0GABB4fIuADQoAEQv8DQ/0DRoIERYAERf4DSIAER4EER4AERYAERv8DR4EERv8DR4AERkcBuANKgARLgARLgARLgARLgARLgARLgARL/wNMgQRLggRJgQRHgARHgQRFgARFggRDgARDgARDgARDnQQmgAQlgQQl/wMlgAQkgQQigAQi/wMl/wMjJALbAyf+AymABCmABCmABCqABCmABCmCBAECJf8DIyQC3AMnggQl/wMlgwQg/wMgggQc/gMeggQaggQBAhWABBITAe4DAQINDgI=","south/148":"ht4KAgMZ/gMBAhj9AxscAeEDAQIf/gMBAh/+AyEiAt4DJIAEJIIEHf8DH4AEHoAEHoAEHoAEHoAEHyAB3wMhgAQhgQQggQQd/wMBAh3+Ax+CBByBBAIDGP0DAgMZ/QMc/gMCAxn8AwIDG90DGCAe3gMBAhggHN4DGiId2QMDBBwjHdkDISIBBhvYAyEiAQUb2QMhIgEFHNkDIyYcHQG9AwIDHR4CBRwdAcADHh8BBAIDGRoBwAMeIh7dAx8iAQMc3AMeIR7fAx0hAQIc3QMeIQECGxwBwQMeIQECGxwBwQMeIR7eAx8hIeADHiEg3wMeIB4fAsADHyECAx/cAwECAgMYGyAhBMIDAQIXGyXiAxsdIyQDvwMZHSXiAx0eJ+IDGx4n4gMaHifiAxofJuEDGh4n4gMaHybhAwECGBoBAibkAxgaKeUDAQIXGSnkAxocKOQDAQIYGSjmA0P/A0WBBESABESABEWBBET+AwECRP4DRoAEAQJE/QNH/wNHggRF/AMCA0f9A0qABEr+A0qABAMEISMfIQK4AyYpGxwDvAMmJxwdA7wDKIEEJv8DKIEEJSYB2AMBAiUmAdsDJCUB2QMmJwHaAyf/AyiABCiABCiABCiABCiABCiABCiABCiABCiABCiABCmABCmABCiBBCb/AyWFBB8gAeADIYAEIQ==","south/155":"h9YKAQIT+gMDBBj7Ax//AyEiAt4DISMB3QMiIwHdAySABCOABCOABCOABCSABCSBBCP/AyOBBCH/AyKABCKABCOABCOABCP/AyOABCKABCKCBB3/Ax3jAwECDg8DDAECG+EDAQIODwMNHeMDFx4c4AMaIRncAx8kFxgBxAMhJBcYAcIDAQIhJBraAwECISMb2gMBAyEiHNsDAgMhIhvbAwEDPf8DP/4DAQI9/gMBAj3+AwECAQIgIRrbAwIDPP0DAgQhIxnZAwIDHyACBBnaAwECISIb3AMBAh8gAQIb3gMhIhreAx8gHOADPD4CwwM/gQQcHSHjAxweHR4CxAMCAzv9AwIDPP0DAgM8/QMcHSLjAxwdIuMDHB0i4wMBAj7+AwECPf4DP4AEQIAEQP8DAgM+/QNCgQRBgARCggRA/gNDgARDgAQCA0D9A0OBBEL9AwMEQfsDAwRC/AMCA0P8A0j/AwIDRv0DR4EER/8DR4AEIyQi3AMiIwECItwDJCYcHQK8AyQnHB0CvAMl/wMmgQQlgAQlgAQl/gMngQQmgAQm/wMo/wMpgAQpgAQpgAQpgAQpgAQpgAQpgAQp/wMqgQQp/wMqggQlJwHaAyf/AyMmAtoDI4QEAwQZ/AMDBBk=","south/162":"iNYKAgQNDwHqAwECFfoDI4AEJIAEJIAEJIAEI4AEJIAEJIAEJIAEI4EEI4AEI4AEIiMB3QMkgAQkgAQigAQi/wMjgAQgIQLiAyCBBBv+Ax6ABB6BBB2ABB6BBB3cAwEDAwQQEQILHt4DAQIYGgIGH9gDJSgf2AMlJx7ZAyUmH9oDJSYf2gMlJh/aAyUoHtgDJScCAxvWAyUnAgMb1gMlJgIDHdgDJygc1wMlJgIDG9cDKCkb2ANEgAQlJh3aAyMkHtwDIyQe3AMBAyAhH9wDAwQcHQECIN4DHyIf3wMDBBocIOEDHB8h4gMbHiEjAcADGhsDBCLgAxscJOQDGxwl4wMbHSbjAxsdAQMj4QMaHCfjA0WABEWABEWABEWABEX/AwECRP4DRoEERoAERYAERoAERv8DR4AER/8DAQJG/gMBAkb7AwQFRvsDS4EEAwRG+wNL/gMCA0r9AwIDSv0DTYAEAQJL/gNNgAQBAkhKAbQDKy0ZGwO4AystGRsDuAMrgAQrgAQrgAQrgAQrgwQogAQo/gMqgAQqgAQqgQQpgAQp/wMq/wMrgAQrgAQrgAQrgAQrgAQrgAQrgAQrggQp/wMCAyIjAeADGxwBBQHcAwIDGv0DAgMa","south/9":"i9oKDhEC7QMXGQHkAx3+AyH/AyKABCSABCOABCOABCOABCOABCOABCOABCOABCOABCOABCOABCOABCOABCOBBCL/AyKABCKBBAECHv4DAQIfgAQegAQe+wMBAiDgAwEGCw8CCx/eAxsiH9sDICUf2gMiJh/ZAyMmINsDJCUg2wNFgARGgARGgARF/wMjJCPdAyIjI90DIiMi3QNEgAQiIyHcA0WBBESABEWABEWABEWABEeBBB8gJt4DSIAEAgRE/QMCA0P9A0eABAIDRP0DSYAESoEESYAESoAESoAESYAEAQJHgARHgARHgARIgARIgARI/gNKgARK/wNLgARLgARLgARLgARLgARL/wNM/wNMgARNgARLgQRI/gNJgARH/wMsLRvRAy4vG9ADAQIt/gMwgAQwgAQCAyz9AzCCBC//Ay+ABC+ABC+BBC7/Ay+ABC+ABC+ABC+ABC+ABDCABDCABC+ABC6ABC+ABAECK4MEJYEEJIAEICIB3QMFBhgbA98DBQYYGwM=","north/141":"2b0KKoAEKoAEKYEEKYAEKP8DKYEEKIEEKP0DKoAEKoMEJf0DKIIEJ4AEJ4AEJ4AEJ4AEJ4AEJ/8DKIIEJv8DKIEEJoAEJoAEAgMj/gMBAyL9AwEDIv4DAQIj/gMBAiP+AwECRP0DAQJE/wNEggRDgAQiIx/dAyIjId0DHyAk4AMfISAhAb0DICIgIQG9Ax8hI94DAQIeICLfAyAhI98DAgNB/gMBAkH+AwECQf0DICEj3QMiIyEiAbsDRYIEIiQf3ANBQgG9A0T+A0P/A0T/AwECQ/4DAQJD/gNEgAREgARFgARE/wNGgARGgARJgARMgAROgAROgAROgAROgAROgAROgARNgARNgARNgARNgARNgARMgARKgARKgARM/wNNgAROggRMggRKggRI/wNIgARIgwRFgwQZHCbkAxkcJIAEJIIEIoAEIIAEIIAEIIAEIoAEIoAEIoAEI4AEI4AEI4AEI/4DJYAEJoAEJ/8DKP8DKYAEKYAEKYAEKYAEKIAEJ4EEJf8DJYIEI/4DIYIEH4IEHYQEFw==","north/148":"4M0KGhsB4wMBAh3+AyD8AySABAIDIf0DAgMh/QMkgAQk/wMlgQQlgAQlgAQBAyL8AyaABCaABCaBBCWABCX/AyaBBCb/AyeBBAEDI/4DJoIEJIAEJIAEIiMB3AMjgAQkgAQkgAQkJwECFxgBwAMkJh3bAyMlHB0BAgK6AwMEQUMBugMCA0FCArsDAgNCQwG7AwECRP8DRYIEQv8DHyAj4ANEgAREgQQcHiXhAx0eJuIDHR4m4gMdHibjA0P+A0WABEKABEKABEKBBEH+A0L9A0aABEaABEb/A0eABEaABEVGAboDR4AER/8DSoEESEkBtwNKgARK/wNLgARL/wNMgARMgARMgARLgARL/wNMgARMgARMgARMgQRLggRJggRHgARHgAQBAkSABEWBBAMEQPwDAwQ/mgQjgQQigAQhgAQggAQg/wMh/wMk/wMl/gMogAQqgAQqgAQqgAQpgAQqgAQqgAQqgAQpgAQpgAQoKQHXAyqABCmBBCeCBCSABCKBBCGDBByBBBqABBiDBBI=","north/155":"5r0KEIAEEP0DFRcB4wMi/wMj/gMEBSD8AyWABCWABCWBBAECIv4DAQIigAQigAQigQQggAQggAQggAQhgAQh/gMj/gMlgQQkgAQkgAQkgQQjgAQkgwQggAQggQQf/wMg/wMBA0D+Az9AA8EDQEEBvwNCgARC/wNEgARFgQREgARDgAREgAREgAQBAkH/AwECPv4DAQI+/QMBAz79A0KABAECQP4DQ4EEQYAEQIAEQf8DQoAEQoAEQv8DQv0DAgNC/QND/wMBAkL+A0SABEWABERFAbsDRv8DR4AER4AESIAESIAESYAESP8DS4AES4AESoAESoAES4AES/8DTIAETIAETIAETIEES4AEAgRH/AMBAkaABEaBBEWBBESABESABAIEQPwDAgRAlwQpgAQDBCX8AymABCyABCyABCyABCyBBCuABCv/AyyABCyABCyABCyABCyABCyABCyBBCuABCuABCuABCuBBCr+AyyABCyABAMEJCUD1wMsggQqgAQnggQjhAQd","north/162":"3cUKAgMBAhf5AwQFGfoDIiMC3QMCAyH9AyX/AyaABAECJP4DJoIEJP4DJoAEJoAEJYAEJYIEJP4DAgMj/QMBAyP/AyT/AyWABCT/AwEDAQIh+wMBAiMkAdkDAQQBAiL8AwIDI/8DJYAEI4AEI4AEI4AEI4AEIygY2AMjKBnYA0VGAroDRUYCuwNG/wNIgQRHgARHgARH/wNIgARIgQQfICjgAx8gKN4DAQIfICfgA0f/A0iABEeABEVHAbkDRUYBuwNGgQRI/wNJgARJgwRG+gMBBEj8AwMESPoDAgMBA0j6A06ABE6ABE6ABE6ABE6CBEyABEyABEz+A06BBE3/A06ABE6ABE6ABE6ABE6ABE3/A06ABE6BBE3/A06ABAECTP8DAwRJ+wNO/wMCA0yCBEqABEr+A0yBBAcIQ/gDBwhDlwQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQsgAQs","north/8":"47UKF4AEF4AEF/0DHf0DIv8DJf8DJv8DKIAEKP8DKv8DK4AEK4AEKoEEKYAEKYAEKIEEJ4AEJ4AEJoEEJYAEJYAEJIEEJIEEI4AEI4AEIv8DJf8DJoAEJy0RHAG3AyctERwBuAMmLBEcAbgDJikX1wMmKBnYA0P/A0WABEaABEaBBEWABEWABEWBBESBBEKABEKBBEGABEH/A0L/AyMkH9wDQ/8DRIAEQ4AEQ4AEQ4AERIEERIAERIAERIAERIAERP8DRYAERf8DRf8DSf8DSf8DSoAES4AESoAES/8DTIAETIAETIAETIAETIAETIAETf8DToEETv8DT4EEToAEToIETYIES4AES4AES4EESoEESYIER4YEERQs7AMRFCyABCyBBCuABCqABCqABCqABCqABCuABCuABCuABCqABCqABCqABCmABCmABCmBBCiBBCeABCWCBCOABCOABCOABCOABCOABCOABCOABCOABCOABCGCBB4=","north/9":"4sUKAQYL+wMUFwHkAx7+AyH/AwECIv8DJP8DJIAEJP8DJSYB2wMkgAQkgQQkgAQjgAQkgAQk/wMkgAQkgAQkgAQkgAQkgAQmgAQmgQQlgQQk/wMjgAQjggQggAQggQQgJgIGC9MDISUBAhfZAyEkHtwDISMg3QNFgARFgARFgARGgARG/wNHgARGgQRFgARF/wNGgARGgARG/wNHgARHgQRGgARG/gNIgQRHgARH/wNH/gNK/wMBA0f+AwECR/0DSEkBtwNKgARLgQRKgARKgARLgARL/wNMgARNgARO/wNPgARPgARPgARPgAROgARNgAROgQRNgARNgQRMgQRLgQRKgARKgARKgARKgQRJggRGgQQBAhcZKuUDAQIXGimBBCaBBCX/Ayb/AyeBBCf9AyqCBCn+AyuABCuABCuABCuABCuABCuBBCqABCr/AyuCBCj/Ayr/AyqBBCmBBCeCBCWBBCSBBCGABCD/AyCEBBuCBBeABBQ=","south/134":"iJIKAQQM+AMe/wMf/wMhgAQhgAQhgAQhgAQhgAQhgAQhgQQfgAQfgAQfgAQf/wMhgAQhgAQhgAQhgAQhgAQhgAQhgAQBAh/+AyCABCCABAECHv8DH+UDDhEBCCHhAxoeAQIg3AMgIyHcA0WABEaABCMkIdwDIyQh3AMjJB7bAyQlAQMc2QMjJAIDG9kDIyUBAhrYAyYoGtgDJiga2AMmKBrYAyUoGtgDQ4EEQv8DQ4AEJigb2AMnKBnYAycoGdgDJygZ2AMkJQIDGdgDJCYBAhnYAwECIiQBAhnYAwECIiYZ2QMiJxrYAyMlHNsDIyYc3AMhIgIDG9sDISIe3gMgIh/eAyEiH94DISIf3gMhIwECHN0DHyACAxzdAx4gIN8DICEf4AMfIAIDG90DHyABAh3eAz+ABD9BAb8DQoAEHh8j4QMfICLgA0OABEKABEKABESABESABESBBEOABB0eJOEDHh8l4QMBAkH+A0OABEOABEOABEOABESABESABESBBEOABEOABEP/A0WABEWABEX/A0b/A0f+A0iABEiABAECRv4DJicdHgO7AyYoHB0DugMngAQnKAHYAycoAdgDJ4AEAQImgAQm/gMogQQmgAQlJgHaAyb/AyeABCiABCiABCiABCiABCiABCiABCiABCiABCeCBCX/AyQlAdwDIv8DAgMh/QMDBB/8AwMEHw=="},"parts":{"[\"north\",\"f69ce0d5b0290f1ed550777dfec664c3b1d6c11b2ba194fd36d9dc33bd59b423\",[0.9959131496771519,0.09031610210884214,-0.09031610210884214,0.9959131496771519,-78.20115877857526,-144.1829602808543],4.01,null,[768,768]]":"tMUJIYAEHYIEGoEEGoAEGv8DG4AEFBgD6AMVgwQSgQQRgAQRgQQNgAQLgQQJgQQE","[\"north\",\"0dbd179dfb31b0e2081640e8c6b33a31918600dde0d7e83345dfd708e409a094\",[0.9902588628607364,-0.13923858849385556,0.13923858849385556,0.9902588628607364,-198.5763315026174,-94.29013057173603],4.01,null,[768,768]]":"","[\"north\",\"03c23d3e9daa84a2e28007e614901e3d0c7e0a7b0f13ca2a29d243a65e23cca3\",[0.9998469261361602,-0.017496408090572714,0.017496408090572714,0.9998469261361602,-87.72746147564693,-106.65342894917433],4.01,null,[640,640]]":"","[\"north\",\"66b32c40ecb1efc295d4ab1c2a2e169e1bceb48bbbb7b7539b2c3ef0aa834827\",[0.9987997050436374,-0.0489811106932364,0.0489811106932364,0.9987997050436374,-73.37287154483313,-58.10982800418367],4.01,null,[640,640]]":"w8UJEYIEDoIEBQYF","[\"north\",\"d5e74dc641007f7e4f0ee94c22c04a959575fe23df15e23943a59f46d1f9cba7\",[0.9902588628607364,-0.13923858849385556,0.13923858849385556,0.9902588628607364,-114.73298818685518,-62.656208981162024],3.8099999999999996,[320,0,320,640],[640,640]]":"ssYJBBQr7AMFFCzsAwUVK+wDBxco6QMHGyDmAwYbHegDAxgchAQEBRM=","[\"north\",\"d5e74dc641007f7e4f0ee94c22c04a959575fe23df15e23943a59f46d1f9cba7\",[0.9959131496771519,0.09031610210884214,-0.09031610210884214,0.9959131496771519,-21.103133433356525,-96.83257525724156],3.8099999999999996,[0,0,320,640],[640,640]]":"jcUJBRkDCCjfAwUhKd8DAx8r4QMDHyvhAwMfK4EEK/4DLfcDNv8DNoAENP8DMfsDNoAENv4DNv4DOIAEN/4DOf4DO/8DPYAEPoAELjkFxwMrOwPFAyqABCmABCn+AyX/Ax2ABByABBuABBuABBqABBmABBmABBklA9sDGSUD3AMXJAPcAxeABBeABBcfA+EDFx8D4QMXHwPhAxWABBWABBSABBGABBGABBGBBBCABBCABBCABBCBBA+ABA6ABA2CBAuABAqABAqBBAiBBAaABAY=","[\"north\",\"226ad6ec6687fd26289dfa7c5449cd9fed76158d5427054ed5ea959ffd3924a1\",[0.9902588628607364,-0.13923858849385556,0.13923858849385556,0.9902588628607364,-114.73298818685518,-62.656208981162024],3.8099999999999996,[320,0,320,640],[640,640]]":"zMYJKYAEKYUEJIAEI4AEI4kEBAYFBg4=","[\"north\",\"226ad6ec6687fd26289dfa7c5449cd9fed76158d5427054ed5ea959ffd3924a1\",[0.9959131496771519,0.09031610210884214,-0.09031610210884214,0.9959131496771519,-21.103133433356525,-96.83257525724156],3.8099999999999996,[0,0,320,640],[640,640]]":"osUJNYAENoAENoAENoAENoEEBgcu+QMGCC34AzWABDWABDWABDKABDL+AzT/AzSABC2ABC3+Ay6ABC6ABC7/AzD/AzH5Azj/AzmABDeABCkqCtcDJykK1gMpLgTRAyqABCr+AyyABCyABCyBBCmABCmABCiABCWABCSABCOBBCKABCH/AyKABCCABB+ABB+BBByABBuABBuABBqABBmABBaBBBT/AxWABBOABBKABBKBBA+ABA2ABA2ABA2ABAyABAyABAqCBAQ=","[\"south\",\"38d7353209e178350f7359ed67886026c2aafe55417464824d85bcd7a4a16f70\",[0.9953500135553002,0.0963241948601898,-0.0963241948601898,0.9953500135553002,77.47715991362605,-128.90727451503528],4.81,[0,0,320,640],[640,640]]":"gZIKF4AEF4AEF4AEF4AEEYEEDoAEDoEEDYAEDYAEC4EECYAEBA==","[\"south\",\"38d7353209e178350f7359ed67886026c2aafe55417464824d85bcd7a4a16f70\",[0.992645877550526,0.12105437531104009,-0.12105437531104009,0.992645877550526,-128.1100758584696,-129.3825950261825],4.81,[320,0,320,640],[640,640]]":"ypEKHywE1AMfLATUAx+ABCCABCCABCCCBB6ABB+ABB//AyCABCCABB+BBB6BBB2ABB6BBB2ABB2ABB2ABB2BBByBBBmCBBeBBBaCBBOABBOABBOABBOABBOABBOCBBGCBA6CBAyBBAqBBAiCBAaBBAQ=","[\"south\",\"a1f8c4cbcb2082fa12e3c7558ae2aa4930b35042d19572dd94373f384c297340\",[0.9953500135553002,0.0963241948601898,-0.0963241948601898,0.9953500135553002,75.71121634118921,-121.0407986014531],4.81,[0,0,320,640],[640,640]]":"8pEKHjsDBwW/Ax06AwcFvwMcQQO9AxyABBaABBb/AxeABBeABBSABBGABBCABA6ABA6EBAU=","[\"south\",\"a1f8c4cbcb2082fa12e3c7558ae2aa4930b35042d19572dd94373f384c297340\",[0.992645877550526,0.12105437531104009,-0.12105437531104009,0.992645877550526,-117.16676033035164,-119.9887755020458],4.81,[320,0,320,640],[640,640]]":"ypEKKoEEKYIEKYEEKeUDBB8l4AMKISTfAwohJN8DEiIj5AMMHCXkAw4cJuMDDx0m4wMPHiXiAxAfI+IDEBMDCyPjAw8RBA4h4QMVHiLjAxQcI+QDFRwk5QMUGyXlAxQbJeYDFRsEBR/fAxcjHd0DGCcZ2QMYKBjYAxgnGd8DEiEb4QMRHxvlAw8dGegDDRgZ6QMMDgMMFusDBwkDDhTrAwMHAw0VgAQVgAQUhQQPgAQPgwQMgQQKggQHgAQHgQQGgAQG","[\"south\",\"573fdf24e299ec837f42b7d0be440cda1f40731de71ea2c3233ade4789860e9d\",[0.9953500135553002,0.0963241948601898,-0.0963241948601898,0.9953500135553002,75.71121634118921,-121.0407986014531],4.81,[0,0,320,640],[640,640]]":"7pEKL4AEL4AEL4EELoAELYAEHB4DBAreAxsiCd4DGyIH3gMZgQQX/wMYgAQYgAQXgAQUgAQQgQQDBQM=","[\"south\",\"573fdf24e299ec837f42b7d0be440cda1f40731de71ea2c3233ade4789860e9d\",[0.992645877550526,0.12105437531104009,-0.12105437531104009,0.992645877550526,-117.16676033035164,-119.9887755020458],4.81,[320,0,320,640],[640,640]]":"xZEKPYAEPYAEPYAEPYAEPYAEPIMEOf8DNDUFywM4gAQ2+QMDCjP2AwMNL/MDAw0ugAQuggQtgQQtgAQtgAQuggQsgAQsgAQugQQtgAQtgQQNDx3xAwwOHvIDDA4e8gMKDh7yAwoRG+8DCREa7wMHERrxAwQPGYAEGYAEGYEEGIQEFIEEE4EEEoAEEYAEEIAEEIYECoIECIMEBQ==","[\"south\",\"d5e74dc641007f7e4f0ee94c22c04a959575fe23df15e23943a59f46d1f9cba7\",[0.9953500135553002,0.0963241948601898,-0.0963241948601898,0.9953500135553002,75.71121634118921,-121.0407986014531],4.81,[0,0,320,640],[640,640]]":"7pEKFYAEEoAEEoAEEYAEEYEEEIAEEIAEEIAEEIEED4AEDoEEDIEEC4AEC4EECYEEB4AEBoAEBg==","[\"south\",\"d5e74dc641007f7e4f0ee94c22c04a959575fe23df15e23943a59f46d1f9cba7\",[0.992645877550526,0.12105437531104009,-0.12105437531104009,0.992645877550526,-117.16676033035164,-119.9887755020458],4.81,[320,0,320,640],[640,640]]":"xZEKCQ8WHgO7AwQYCQ8WHgO7AwQdAwoVHgO7AwQnFf8DFYAEFYAEFf8DFyID3gMXIgPeAxciA94DF4EEF/QDAw4V8gMDDRrzAwMNG/8DHoAEH4AEIIEEH4EEHu0DBBMd7QMFEx/tAwUTH+0DBRQe7AMFEyPuAwYSI+4DBhIl8QMDDyaBBCWDBCSDBCOBBCOABCOABCSABCSDBCGEBByBBBuFBBWCBA8QA/UDB4QEAw==","[\"north\",\"26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6\",[-0.1392385884938555,-0.9902588628607364,0.9902588628607364,-0.1392385884938555,273.44106533957444,335.1702659659694],3.8099999999999996,null,[207,66]]":"ncYJK4AELIIEKoAEAwQngAQngAQn8AMGECftAwsTJ+wDDRQn7AMNFCjsAw0UKO0DDBMp7QMLFCjsAwsUKOsDChUo6wMKFCnsAwoUKOwDChQo7gMKEyftAwsTJ+sDDRUn6wMNFSbrAwwVJuwDCxch6QMKFw0PA9sDCBgD6QMG","[\"north\",\"0ada4db5e15082161d590ffb07f1c6ae2e49e74b94a61c49a1fdba1a851f48e4\",[-0.1392385884938555,-0.9902588628607364,0.9902588628607364,-0.1392385884938555,273.44106533957444,335.1702659659694],3.8099999999999996,null,[204,58]]":"msYJJoAEJvMDAw0m8wMDDSXzAwMNJYAEJoAEJoAEJ4AEJ4AEJ4EEKIAEKYAEKYAEKYAEKYAEKYAEKIAEKIAEKYAEKYAEKYAEKYAEKYAEFxoP6gMMFwXrAwU=","[\"north\",\"89ea18ee5c506df3e4a07b9d25aaa21a40e3d255fc515ce2d1ece76105649895\",[0.7986753071857546,0.6017622069320576,-0.6017622069320576,0.7986753071857546,312.5204881398216,180.6552074258641],3.8099999999999996,null,[128,128]]":"","[\"north\",\"89ea18ee5c506df3e4a07b9d25aaa21a40e3d255fc515ce2d1ece76105649895\",[-0.7680800698610661,0.6403538133580683,0.6403538133580683,0.7680800698610661,185.59032644297065,223.57609214105497],3.8099999999999996,null,[128,128]]":"i8UJHv8DH/8DHv8DHv8DHv4DHf8DHf8DHP4DHIAEG/4DG/8DG/8DG/8DGf8DGfsDHf8DHYAEG/8DHIAEGoAEGf8DGYAEF4AEFoAEFYEEE4EEEYEED4EEDIIEAwQGgQQE","[\"north\",\"136a96941e5094d2603b654c99280a753f04019a6f4e62e32dbae86451ff1654\",[-0.1392385884938555,-0.9902588628607364,0.9902588628607364,-0.1392385884938555,273.44106533957444,335.1702659659694],3.8099999999999996,null,[207,66]]":"mcYJJYAEJYAEJoEEJYAEJYAEJf8DKIAEKYAEKYEEKIAEKIAEKP8DKoAEKoAEKoAEKoAEKYEEKIAEKYAEKYEEKIAEKIAEKIAEKIQEERIO8AMFCAQPAw==","[\"south\",\"226ad6ec6687fd26289dfa7c5449cd9fed76158d5427054ed5ea959ffd3924a1\",[0.9953500135553002,0.0963241948601898,-0.0963241948601898,0.9953500135553002,75.71121634118921,-121.0407986014531],4.81,[0,0,320,640],[640,640]]":"8ZEKHoAEHoAEHIAEG4AEG4AEGoAEGYAEFoEEFIAEFP8DE4AEEoAEEoEEDIAEDYAEDYAEDYAEDIAEDIAECoMEAw==","[\"south\",\"226ad6ec6687fd26289dfa7c5449cd9fed76158d5427054ed5ea959ffd3924a1\",[0.992645877550526,0.12105437531104009,-0.12105437531104009,0.992645877550526,-117.16676033035164,-119.9887755020458],4.81,[320,0,320,640],[640,640]]":"w5EKMoAEERIg7gMQEiDvAzKBBDHfAwQkL9wDBCct2QMEKiuEBCeDBCSCBCKABCKABCOBBCSABCSBBCOABCOABCODBCCABCCABCGABCGABCH/AyKABCKABCSABCSABCWBBCSBBCODBCKABCOABCODBCCCBB6DBBuEBBeBBBWGBA+BBA6FBAiEBASBBAM=","[\"north\",\"38d7353209e178350f7359ed67886026c2aafe55417464824d85bcd7a4a16f70\",[0.9902588628607364,-0.13923858849385556,0.13923858849385556,0.9902588628607364,-127.73000324913485,-68.90741682212166],3.8099999999999996,[320,0,320,640],[640,640]]":"xsYJEoAEEoAEEYIED4IEDYIEC4UEBoIEBA==","[\"north\",\"38d7353209e178350f7359ed67886026c2aafe55417464824d85bcd7a4a16f70\",[0.9959131496771519,0.09031610210884214,-0.09031610210884214,0.9959131496771519,-19.38469146680862,-104.70956435254993],3.8099999999999996,[0,0,320,640],[640,640]]":"scUJJv0DJ4AEJ/8DJ4AEJYAEIP4DIYAEIf8DIYAEIDEDzgMhMgPNAyIzA80DIv8DIP8DIYAEIYAEITYDywMgNQPKAyA2A8gDIjgExwMjOQTHAyM4BcgDIzgIyQMiNwjJAyE3CMkDITgGyAMfOAXIAx84BMYDH4AEH4AEIIAEIIAEIIAEH4AEHYEEHIAEG/4DHSwD1AMcLAPUAxssA9QDGiwD1QMZgAQYgAQYgAQYgQQXgAQRgQQOgAQOgQQNgAQNgAQLgQQJgAQE","[\"north\",\"573fdf24e299ec837f42b7d0be440cda1f40731de71ea2c3233ade4789860e9d\",[0.9902588628607364,-0.13923858849385556,0.13923858849385556,0.9902588628607364,-114.73298818685518,-62.656208981162024],3.8099999999999996,[320,0,320,640],[640,640]]":"xcYJChEZ7wMKERnvAwkRGe8DBxIY7gMGGBKCBBCABBCABAUGCg==","[\"north\",\"573fdf24e299ec837f42b7d0be440cda1f40731de71ea2c3233ade4789860e9d\",[0.9959131496771519,0.09031610210884214,-0.09031610210884214,0.9959131496771519,-21.103133433356525,-96.83257525724156],3.8099999999999996,[0,0,320,640],[640,640]]":"nsUJOv8DOoAEOoAEOoAEOoAEOYAEOf4DOf8DMzQGzAMzgAQz/wM1/QM5gAQ5gAQ5/AM+/gNAgARB/gNDgARDgARDgQRCgARChQQ9ggQ3SAO7AzRFA70DMkMDvQMzQwO8AzREA7sDNf4DNoAENP4DNIAENP8DMYAEMIAELoEELf8DLoAELv4DL/8DLv8DL4AEL4AEL4EELYAELIAEHB4DBAreAxsiCd4DGyIH3gMZgAQYgAQYgAQYgAQXgAQUgAQSgQQI","[\"south\",\"d2921b011e13c613bdc2a114b8a06fee10abd21ba2605097ec96b89dcb9ae35d\",[0.992645877550526,0.12105437531104009,-0.12105437531104009,0.992645877550526,-76.22617060015799,-117.01083786939421],4.81,null,[640,640]]":"xJEKFoAEFoAEFoEEFYAEFf8DFoAEFoAEFoAEFoAEFoAEFoAEFoEEFYEEFIAEFIEEFIAEFP8DFYAEFYAEFYEEFIAEFYAEFf8DFoAEF4AEF4AEF4AEFoAEFoAEFoQEEYIED4gEBA==","[\"south\",\"26adeb343fe2686f0177a07497d851d603e8d6b7887cd09419bf08b3c438d0a6\",[0.12105437531104014,-0.992645877550526,0.992645877550526,0.12105437531104014,155.18137324442546,364.54346711792203],4.81,null,[207,66]]":"pJEKBgcDCh7wAwUGAwoe8gMDDh6ABB7/Ax//AyD/AyCABCL/AyP/AyWABCaABCb/AyeABCf/AyiABCiABCiBBCfxAwYPAwQj7AMKFCPrAwwVI+sDDRQl7AMNFCXsAw0TKO0DDBMo7AMMFCjsAwwUJ+wDChQn7AMJFSbrAwkUJ+wDCRQn6gMMFCnsAw0UKewDDRQp7QMMFCfsAwsUKOwDChQo7QMIEyiABCiBBCeABCeBBCaBBCSHBByGBBaDBBOJBAiABAY=","[\"north\",\"0d957c301ea9376fa42c2f4c8bca8ace0e3d11d5c7318f17c8a9f4ae7bfad390\",[0.9959131496771519,0.09031610210884214,-0.09031610210884214,0.9959131496771519,-81.86084399503073,-150.53946687557877],4.01,null,[768,768]]":"s8UJLIEEK4EEKYEEKIEEJoAEJIEEIoAEIoAEIYEEH4IEG4EEGoUEEIIEDIAEBAgD","[\"north\",\"9cabcc5bec690ae2ef438df3b58a5e2d3d96af78c4e79aff30a14a8e8a7cf20d\",[0.9902588628607364,-0.13923858849385556,0.13923858849385556,0.9902588628607364,-198.90721429883018,-101.31246443543847],4.01,null,[768,768]]":"","[\"north\",\"b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8\",[0.9959131496771519,0.09031610210884214,-0.09031610210884214,0.9959131496771519,-122.86447087816383,-93.00763062443164],3.8099999999999996,null,[640,640]]":"","[\"north\",\"823474b4f6a0782ef39eca0dc176630df7ab6886e7b1cb70f800c0baa04b51bd\",[0.9604137805010577,0.27857740436666095,-0.27857740436666095,0.9604137805010577,36.73737327863694,-200.98494531848604],3.8099999999999996,null,[640,640]]":"pcYJHIAEHIAEHIEEG4AEG4AEG4AEG4AEHIAEHIAEHIAEHIEEG4AEG4AEG4EEGoAEG4AEG4AEG/8DHIAEHIAEHIEEG4AEG4AEG4AEG4AEHIAEHIAEHIEEG4AEG4AEG4AEG4AEHIAEHIEEG4AEG4AEG4AEG4AEG4AEG4AEHIAEHIEEG4EEGYEEF/8DGIAEGIAEGIMEFYAEFIIEEoEEEYEEEIIEDoEEDoEEDYEEDIIECoIEBoAEBg=="}},femaleIdlePixelRunCache=new Map();
+ function idlePixelRuns(encoded){
+  if(encoded===undefined)return null;
+  if(femaleIdlePixelRunCache.has(encoded))return femaleIdlePixelRunCache.get(encoded);
+  if(encoded==='')return [];
+  const raw=idleAlphaCellMap(encoded);
+  if(!raw)return null;
+  let at=0,pos=0,end=-1;
+  const take=()=>{
+   let out=0,scale=1;
+   while(at<raw.length&&scale<1<<21){
+    const ch=raw.charCodeAt(at++);out+=(ch&127)*scale;
+    if(ch<128)return out;
+    scale*=128;
+   }
+   return NaN;
+  };
+  const runs=[];
+  while(at<raw.length){
+   pos+=take();const span=take(),next=pos+span;
+   if(!Number.isSafeInteger(next)||pos<end||span<=0||next>512*512||Math.floor(pos/512)!==Math.floor((next-1)/512))return null;
+   runs.push(pos,next);end=next;
+  }
+  femaleIdlePixelRunCache.set(encoded,runs);return runs;
+ }
+ function femaleIdleDisjointPixelProof(dir,item,f){
+  const a=idlePixelRuns(femaleIdlePixelRuns.boots[dir+'/'+item]),
+   b=idlePixelRuns(femaleIdlePixelRuns.parts[JSON.stringify([dir,f.sha256,f.matrix,f.depth,f.sourceClip??null,f.sourceNativeSize??null])]);
+  if(!a?.length||!b)return false;
+  let i=0,j=0;
+  while(i<a.length&&j<b.length){
+   if(a[i+1]<=b[j])i+=2;
+   else if(b[j+1]<=a[i])j+=2;
+   else return false;
+  }
+  return true;
+ }
+ // Signed, opaque South idle contact at y<=345. The front boot pass
+ // belongs above native shorts (2), but can sit below this exact weapon
+ // projection without changing its pixels or the unarmed front/rear read.
+ // No item ID here: a receiving projection must match every source and transform.
+ const femaleIdleOpaqueFrontProjection=[["89ea18ee5c506df3e4a07b9d25aaa21a40e3d255fc515ce2d1ece76105649895","tools/rework-weapon-layers-hd/assets/89ea18ee5c506df3e4a07b9d25aaa21a40e3d255fc515ce2d1ece76105649895.png",[-0.7719302356170493,0.6357072528611001,0.6357072528611001,0.7719302356170493,280.46743922932404,200.60930584153246],4.81,null,[128,128]],["89ea18ee5c506df3e4a07b9d25aaa21a40e3d255fc515ce2d1ece76105649895","tools/rework-weapon-layers-hd/assets/89ea18ee5c506df3e4a07b9d25aaa21a40e3d255fc515ce2d1ece76105649895.png",[0.6163082616581105,0.787505001007586,-0.787505001007586,0.6163082616581105,232.8155791361651,225.349233481569],4.81,null,[128,128]]];
+ const ownFemaleIdleBoots=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(
+  Object.entries(femaleIdleBootProof.boots).flatMap(([direction,rows])=>Object.entries(rows)
+   .map(([item,source])=>({slot:'boots',item:Number(item),body:'female',action:'idle',direction,source}))));
+ function selectIndependentFemaleIdleCarryBoot(player,o,visible){
+  const b=visible?.boots,w=visible?.weapon,dir=o.direction;
+  const own=ownFemaleIdleBoots?.resolve({slot:'boots',item:b?.item,body:player?.appearance96?.gender,action:o.action,direction:dir});
+  if(o.consumer!=='world'||o.action!=='idle'||o.weaponless||own?.state!=='available'||own.mirrorX||!b||!w||Object.keys(visible).length!==2||
+     player?.__reworkSubset||player?.zoanTransformed||canonical(player?.appearance96?.gender)!=='female'||
+     !canonicalGaitItem(b.item,'boots')||canonicalGaitItem(w.item,'weapon')?.type!==player.classId)return null;
+  const [min,expected]=own.source;
+  if(!min)return null;
+  const equip={...player.equipment};delete equip[b.key];
+  const base=selectVisualStrict({...player,equipment:equip},o);
+  const witness=baseIndex?.records.find(x=>x.id==='female-idle-original-'+dir+'-from-walk0');
+  const p=base?.pack,d=p?.directions?.[dir],frame=base?.states?.[0],eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(base?.hdKind!=='female-equipment'||base.body!=='female'||base.item!==w.item||base.action!=='idle'||base.direction!==dir||
+     base.sourceBaseId!==witness?.id||!witness||base.headRecord||base.gearOnlyRecord||!base.material||base.material.gearRecord||
+     base.omitted?.length||base.sourceRasterPadding||base.outfitSources||base.checkpointSources||
+     base.states.length!==1||!frame.parts?.length||frame.hideBaseLayers?.length||Object.keys(frame.baseMasks||{}).length||
+     !eq(p,witness.pack)||!eq(p,base.baseRecord?.pack)||!eq(d.clip,{frames:1,fps:1,loop:false}))return null;
+  // Use the actual source alpha bounding rectangle, conservatively ignoring
+  // sourceClip and adding two pixels of rasterization margin. Thus a new
+  // projection of any known texture also passes if it clears the boot.
+  const clears=frame.parts.every(f=>{
+   const r=femaleIdleBootProof.weaponAlphaBounds[f.sha256],m=f.matrix;
+   if(!r||!eq(f.sourceNativeSize,r.slice(4))||f.url!=='tools/rework-weapon-layers-hd/assets/'+f.sha256+'.png'||
+      m?.length!==6||!m.every(Number.isFinite))return false;
+   const [x0,y0,x1,y1]=r;
+   return Math.max(...[x0,x1].flatMap(x=>[y0,y1].map(y=>m[1]*x+m[3]*y+m[5])))+2<min||
+    femaleIdleDisjointSupport(dir,b.item,f)||femaleIdleDisjointPixelProof(dir,b.item,f);
+  });
+  const exactOpaqueDepth=!clears&&dir==='south'&&min>=324&&Object.hasOwn(femaleIdleAlphaCells.bootCells.south,b.item)&&
+   witness.sourcePackSHA256==='ade447b6abe83494aa78833f9ed051b36251c9fc5a97af9d3c38b99933091dbc'&&
+   d.layers.some(l=>l.id==='shorts'&&l.depth===2&&l.source==='ad2c0b51845d77caadbaee52636ba0745530b78fb293de0d9c3607086d6ea411')&&
+   eq(frame.parts.map(f=>[f.sha256,f.url,f.matrix,f.depth,f.sourceClip??null,f.sourceNativeSize]),femaleIdleOpaqueFrontProjection);
+  if(!clears&&!exactOpaqueDepth)return null;
+  const naked={...player,equipment:{[b.key]:b.value}},oBoot=selectVisualStrict(naked,o);
+  const layers=dir==='north'?oBoot?.fixedIdleBoots?.layers:oBoot?.authoredPantsLayer?.item==null?oBoot?.authoredPantsLayer?.layers:null;
+  const donor=outfitById.get('frozen-v47-female-151-boot'+b.item+'-'+dir+'-idle');
+  const native=donor?.pack?.directions?.[dir];
+  if(!donor?.frozenBootContract||donor.productionEnabled===false||donor.body!=='female'||donor.direction!==dir||
+     donor.action!=='idle'||donor.equipment?.boots!==b.item||native?.clip.frames!==1||native.clip.loop!==false||
+     !['frame','pivot','density'].every(k=>eq(donor.pack[k],p[k]))||
+     !eq(oBoot?.pack,p)||!layers||!eq(layers.map(l=>[l.id,l.depth,l.frames?.[0]]),expected)||
+     !layers.every(l=>l.frames?.length>=1&&native.layers.some(f=>f.id===l.id&&
+       f.depth===l.depth&&f.binding?.kind==='fixed'&&f.frames?.length===1&&f.frames[0]===l.frames[0])))return null;
+  const fixed=native.layers.filter(l=>l.id.startsWith('boot'+b.item+'-'));
+  if(!eq(fixed.map(l=>[l.id,l.depth,l.frames[0]]),expected)||fixed.some(l=>Object.keys(l).some(k=>!['id','slot','depth','source','frames','binding'].includes(k))||
+    l.slot!=='body'||!eq(l.binding,{kind:'fixed'})||l.source!==l.frames[0]||
+    !donor.sourceRefs.includes(l.source)||base.baseRecord.sourceRefs.includes(l.source)))return null;
+  const mounted=exactOpaqueDepth?fixed.map(l=>l.depth===45?{...l,depth:2.01}:l):fixed;
+  const result={...p,directions:{...p.directions,[dir]:{...d,layers:[...d.layers,...mounted]}}};
+  const hashes=fixed.map(l=>l.source);
+  return {...base,id:base.id+':pose-own-female-idle-boot:'+b.item+(exactOpaqueDepth?':opaque-foreground':''),pack:result,
+   baseRecord:{...base.baseRecord,pack:result,sourceRefs:[...base.baseRecord.sourceRefs,...hashes]},outfitSources:hashes,
+   ownLayerSources:{[b.key]:own.key},
+   slotRoutes:{[b.key]:{item:b.item,quality:'hd',source:donor.id},[w.key]:{item:w.item,quality:'hd',source:base.id}},omitted:[],layeredSlots:true};
+ }
+ // Union the independent North idle boot and glove layers without
+ // changing either receiver's pose, occlusion, source or sibling route.
+ const femaleNorthIdleGloveAlphaBottom={"0829d4397396df11bd67b9ce142113c7e38403dbe423f8394e60d71175629966":295,"a4dc71a17b4295ad2621a9506dac67d4c1cda6fc21e242e3c228c52e9f4aef32":295,"41f4fa43f267f6bc080075b739874f48c65753bb41ab858b771acaff62b61849":295,"88e3d4a80fdcab53a7b28aa05f2c059b1d3c239f0c3ed70f177b2b2771e2faf0":295,"c341973bbe31057d7516fefcc8323531c10154b895b9481022987da9a31bdda4":295,"3d41e1fb8559687f6ae84808f4e8d5b92b8edfa68a71eb032399a27bc8633d4b":295,"6022edef054af27dc9fb2deef917a1b160a1d9607dec8ed0dd7350a1b25d1ba1":295,"c0beee0ec64a8fae4484270c56270f8c83b62cd79507e797495ce2899accb7f2":287,"fbd802b590210717032d714d5f450bd0c7c756015a59f25979a20b9a06fec8e1":287,"bfd2e49eba6e536720591ab23c9a73a2df40e512873ca6997870bfe0bfa4cb6d":295};
+ function composeFemaleNorthIdleBootAndGlove(player,o,visible){
+  const b=visible?.boots,g=visible?.gloves,w=visible?.weapon,dir=o.direction;
+  if(o.consumer!=='world'||o.action!=='idle'||dir!=='north'||o.weaponless||
+     !b||!g||!w||Object.keys(visible).length!==3||canonical(player?.appearance96?.gender)!=='female')return null;
+  const gear={...player.equipment};delete gear[b.key];
+  const receiver=selectVisualStrict({...player,equipment:gear},o);
+  if(!receiver?.id.includes(':pose-own-female-gloves:')||receiver.omitted?.length||receiver.hdKind!=='female-equipment'||
+     receiver.slotRoutes?.[g.key]?.item!==g.item||receiver.slotRoutes?.[g.key]?.quality!=='hd'||
+     receiver.slotRoutes?.[w.key]?.item!==w.item||receiver.slotRoutes?.[w.key]?.quality!=='hd')return null;
+  const lower={...player.equipment};delete lower[g.key];
+  const own=selectIndependentFemaleIdleCarryBoot({...player,equipment:lower},o,{boots:b,weapon:w});
+  if(!own||own.omitted?.length||own.slotRoutes?.[b.key]?.item!==b.item||own.slotRoutes?.[b.key]?.quality!=='hd')return null;
+  const reference=baseIndex?.records.find(r=>r.id===receiver.sourceBaseId),eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const p=receiver.pack,k=p?.directions?.north,n=own.pack?.directions?.north,native=reference?.pack?.directions?.north;
+  if(!k||!n||!native||receiver.sourceBaseId!==own.sourceBaseId||receiver.paddingPhysical!==own.paddingPhysical||
+     !eq(receiver.states,own.states)||!eq(receiver.colorAppearance,own.colorAppearance)||!eq(receiver.material,own.material)||
+     !eq(receiver.baseRecord?.pack,p)||!eq(own.baseRecord?.pack,own.pack)||
+     !['frame','pivot','density'].every(key=>eq(p[key],own.pack[key]))||
+     !eq(k.clip,n.clip)||!eq(k.poses,n.poses)||!eq(k.rest,n.rest)||
+     !eq(k.layers.slice(0,-1),native.layers)||!eq(n.layers.slice(0,-4),native.layers))return null;
+  const gloves=k.layers.at(-1),boots=n.layers.slice(-4),min=ownFemaleIdleBoots?.resolve({slot:'boots',item:b.item,body:'female',action:'idle',direction:dir})?.source?.[0],
+   max=femaleNorthIdleGloveAlphaBottom[gloves.source];
+  if(!min||!max||max+2>=min||gloves.depth!==4.001||!eq(gloves.binding,{kind:'fixed'})||
+     gloves.frames?.length!==1||gloves.frames[0]!==gloves.source||
+     !eq(receiver.outfitSources,[gloves.source])||!eq(own.outfitSources,boots.map(l=>l.source))||
+     boots.some(l=>l.source===gloves.source))return null;
+  const result={...p,directions:{...p.directions,north:{...k,layers:[...k.layers,...boots]}}};
+  return {...receiver,id:receiver.id+':independent-north-idle-boot:'+b.item,pack:result,
+   baseRecord:{...receiver.baseRecord,pack:result,sourceRefs:[...receiver.baseRecord.sourceRefs,...own.outfitSources]},
+   outfitSources:[...receiver.outfitSources,...own.outfitSources],layeredSlots:true,
+   slotRoutes:{...receiver.slotRoutes,[b.key]:own.slotRoutes[b.key]}};
+ }
+ // Independently signed V47 lateral cloth passes can use an already
+ // authorized carry without re-selecting its weapon or forearm translation.
+ function selectIndependentMaleLateralGaitPants(player,o){
+  if(o.consumer!=='world'||!['idle','walk'].includes(o.action)||!['east','west'].includes(o.direction)||o.weaponless||
+     player?.zoanTransformed||player?.__reworkSubset||canonical(player?.appearance96?.gender)!=='male')return null;
+  const v=registeredEquipment(player,o),w=v?.weapon,p=v?.pants,a=player.appearance96,dir=o.direction;
+  if(!w||!p||Object.keys(v).length!==2||!canonicalGaitItem(p.item,'legs')||
+     canonicalGaitItem(w.item,'weapon')?.type!==player.classId||
+     a.version!==1||a.skinStyle!=='natural'||a.hairStyle!=='original'||a.hairColor!=='black'||
+     a.eyeStyle!=='original'||a.eyeColor!=='blue'||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skinColor))return null;
+  const equipment={...player.equipment};delete equipment[p.key];
+  const bare=select({...player,equipment},o);
+  if(bare?.hdKind!=='carry'||bare.item!==w.item||bare.base?.body!=='male'||bare.direction!==dir||bare.action!==o.action||
+     bare.headRecord||bare.gearOnlyRecord||bare.outfitOverlay||bare.omitted?.length||
+     bare.colorAppearance?.skin!==a.skinColor||bare.colorAppearance?.hairColor!==a.hairColor||bare.colorAppearance?.eyeColor!==a.eyeColor)return null;
+  const donor=outfitById.get('frozen-male-pants'+p.item+'-'+(bare.base.mirrorX?'east':dir)+'-'+o.action+'-v47');
+  if(!donor?.frozenPantsSource||donor.productionEnabled===false||donor.equipment?.pants!==p.item)return null;
+  const dressed=combinedCarryRegistry?.adaptIsolatedPants(bare,p.item),b=bare.base.pack.directions[dir],d=dressed?.base?.pack?.directions?.[dir];
+  if(!d||dressed.outfitOverlay?.sourceRecord!==donor.id)return null;
+  const eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y),known=new Set(b.layers.map(l=>l.id)),
+   parts=d.layers.filter(l=>!known.has(l.id)),owner='pants'+p.item;
+  if(!eq(d.layers.filter(l=>known.has(l.id)),b.layers)||parts.length<1||parts.length>2||
+     !parts.every((l,i)=>l.slot==='pants'&&l.binding?.kind==='fixed'&&!l.depthTrack&&l.frames?.length===b.clip.frames&&
+      l.depth===(i===0?4.4:4.45)&&(i===0?l.id===owner+'-visible-cloth-only':l.id===owner+'-independent-original-panel'||l.id===owner+'-original-panel-independent')&&
+      b.layers.every(k=>k.depth!==l.depth&&!k.depthTrack)))return null;
+  if(!bare.plan?.parts?.length||!bare.plan.parts.every(q=>{
+   const bound=b.layers.find(l=>l.binding?.a===q.binding?.a&&l.binding?.b===q.binding?.b);
+   return bound&&Number.isFinite(bound.depth+(q.depthOffset??.1))&&parts.every(l=>l.depth<bound.depth+(q.depthOffset??.1));
+  }))return null;
+  return {...dressed,id:dressed.id+':pose-owned-cloth',hdKind:'outfit-carry',pack:dressed.base.pack,body:bare.base.body,
+   ownLateralGaitPants:true,layeredSlots:true,omitted:[],slotRoutes:{
+    [w.key]:{item:w.item,quality:'hd',source:bare.id},
+    [p.key]:{item:p.item,quality:'hd',source:donor.id},
+   }};
+ }
+ // Register the exact South lower raster rather than the donor's coat,
+ // gloves, boots or held weapon. The North V47 base uses different leg art.
+ function selectIndependentMaleSouthGaitPants(player,o){
+  if(o.consumer!=='world'||o.direction!=='south'||!['idle','walk'].includes(o.action)||o.weaponless||
+     player?.zoanTransformed||player?.__reworkSubset||canonical(player?.appearance96?.gender)!=='male')return null;
+  const v=registeredEquipment(player,o),w=v?.weapon,p=v?.pants,a=player.appearance96;
+  if(!w||!p||Object.keys(v).length!==2||!canonicalGaitItem(p.item,'legs')||
+     canonicalGaitItem(w.item,'weapon')?.type!==player.classId||
+     a.version!==1||a.skinStyle!=='natural'||a.hairStyle!=='original'||a.hairColor!=='black'||
+     a.eyeStyle!=='original'||a.eyeColor!=='blue'||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skinColor))return null;
+  const donor=outfitById.get('frozen-male-pants'+p.item+'-south-'+o.action+'-v47');
+  if(!donor?.frozenPantsSource||donor.productionEnabled===false||donor.equipment?.pants!==p.item)return null;
+  const equipment={...player.equipment};delete equipment[p.key];
+  const bare=select({...player,equipment},o);
+  if(bare?.hdKind!=='carry'||bare.item!==w.item||bare.base?.body!=='male'||bare.base.mirrorX||
+     bare.direction!=='south'||bare.action!==o.action||bare.headRecord||bare.gearOnlyRecord||bare.outfitOverlay||
+     bare.omitted?.length||bare.colorAppearance?.skin!==a.skinColor||bare.colorAppearance?.hairColor!==a.hairColor||
+     bare.colorAppearance?.eyeColor!==a.eyeColor)return null;
+  const b=bare.base.pack,t=donor.pack,s=b.directions.south,q=t.directions.south,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const lower=(d)=>d.layers.find(l=>l.id==='lower-redrawn'),original=lower(s);
+  if(!original||original.depth!==4||original.depthTrack||original.binding?.kind!=='fixed'||
+     !eq([b.frame,b.density,b.pivot,s.rest,s.poses,s.clip,original],[t.frame,t.density,t.pivot,q.rest,q.poses,q.clip,lower(q)]))return null;
+  const prefix='pants'+p.item+'-',ids=['waist','leg-left','leg-right'].map(x=>prefix+x),
+   pieces=q.layers.filter(x=>x.slot==='pants'&&x.id.startsWith(prefix));
+  if(!eq(pieces.map(x=>x.id),ids)||pieces.some(l=>l.depth!==50||l.depthTrack||s.layers.some(k=>k.id===l.id||k.depthTrack))||
+     !eq(pieces[0].binding,{kind:'bone',a:'NECK',b:'HIP'})||pieces[0].frames||
+     !pieces.slice(1).every(l=>l.binding?.kind==='fixed'&&l.frames?.length===s.clip.frames))return null;
+  const refs=[...new Set(pieces.flatMap(l=>l.frames||[l.source]))];
+  if(refs.some(h=>!/^[a-f0-9]{64}$/.test(h)||!donor.sourceRefs.includes(h)||bare.base.sourceRefs.includes(h)))return null;
+  const mounted=pieces.map((l,i)=>({...l,depth:original.depth+(i+1)/100}));
+  if(!bare.plan?.parts?.length||!bare.plan.parts.every(q=>{
+   const hand=s.layers.find(l=>l.binding?.a===q.binding?.a&&l.binding?.b===q.binding?.b);
+   return hand&&Number.isFinite(hand.depth+(q.depthOffset??.1))&&mounted.every(l=>l.depth<hand.depth+(q.depthOffset??.1));
+  })||s.layers.some(l=>mounted.some(m=>m.depth===l.depth)))return null;
+  const pack={...b,directions:{...b.directions,south:{...s,layers:[...s.layers,...mounted]}}};
+  return {...bare,id:bare.id+':south-own-gait-pants:'+p.item,hdKind:'outfit-carry',pack,body:bare.base.body,
+   base:{...bare.base,pack,sourceRefs:[...bare.base.sourceRefs,...refs]},
+   outfitOverlay:{item:p.item,sourceRecord:donor.id,sourceRefs:refs},ownSouthGaitPants:true,layeredSlots:true,omitted:[],
+   slotRoutes:{[w.key]:{item:w.item,quality:'hd',source:bare.id},[p.key]:{item:p.item,quality:'hd',source:donor.id}}};
+ }
+ // Reuse the exact independent North/South/lateral torso filing on the
+ // selected carry. Clearance certificates guard ordering, never choose its
+ // art: both the real weapon plan and the actual worn torso source stay intact.
+ const torsoCarryAcceptance={"north":{"idle":{"6":{"base":"male-idle-original-north-from-walk0","source":"male-torso6-north-frozen-idle-native","sha":"f6f5ca961e1ff6b316372f65a9c4b0c303789861528b79e156eabcb19b1610ed","layers":[{"id":"coat6-own-core","slot":"top","depth":100,"source":"d3f394a5ae190c130a7f386ec9fce35f566f1bec0bad1dbbc62e431b5255b8c4","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-own-LEFT-upper","slot":"top","depth":100,"source":"84e43094b88e767478be87be466800a9b121926e1a718a191c2646a1dff9d2e0","binding":{"kind":"bone","a":"LEFT SHOULDER","b":"LEFT ELBOW"},"frames":["84e43094b88e767478be87be466800a9b121926e1a718a191c2646a1dff9d2e0"]},{"id":"coat6-own-RIGHT-upper","slot":"top","depth":100,"source":"088efe2ec1b2f1a662713ce14e3753fcd576b9f930e33f5aca25a0f8442d3627","binding":{"kind":"bone","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"},"frames":["088efe2ec1b2f1a662713ce14e3753fcd576b9f930e33f5aca25a0f8442d3627"]},{"id":"coat6-own-hem","slot":"top","depth":100,"source":"b69d5288e63d98c5bf4933884ccf2f74de86da31d843465448e238426372b56f","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"plans":{"22":{"item":2,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"LEFT","source":{"url":"assets/33136493d49bc376f0dc943348d314dbcca9f3a288cccea8c8d055f395670b6e.png","sha256":"33136493d49bc376f0dc943348d314dbcca9f3a288cccea8c8d055f395670b6e","size":[768,768],"nativeSize":[768,768]},"sourceBone":{"LEFT ELBOW":{"x":80.5827067669173,"y":88},"LEFT ARM":{"x":80.5827067669173,"y":101}},"targetRestBone":{"LEFT ELBOW":{"x":50.5,"y":58},"LEFT ARM":{"x":48.5,"y":72.25}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":151,"support":1011,"clothing":0,"rgbTolerance":1,"centerPadding":64,"urls":["assets/9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97.png","assets/e29fdaaeb5357aff1ea51dfc0450ce22759dae8b1300eb26a7b461efff6144bf.png","assets/2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0.png"]}},{"side":"RIGHT","source":{"url":"assets/c50f7fe4385bb9007bd314143a5059c8e0478a5aad967613bc0a49571e07c07b.png","sha256":"c50f7fe4385bb9007bd314143a5059c8e0478a5aad967613bc0a49571e07c07b","size":[768,768],"nativeSize":[768,768]},"sourceBone":{"RIGHT ELBOW":{"x":111.4369658119658,"y":88.75},"RIGHT ARM":{"x":111.4369658119658,"y":101.75}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":198,"support":962,"clothing":1,"rgbTolerance":1,"centerPadding":64,"urls":["assets/9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97.png","assets/8a704b6088addc1e828b6149b691f7bd650f4e5f3d30db900f33a19f66ef5acf.png","assets/2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0.png"]}}],"interfaceSkinLocked":true,"candidate":true},"23":{"item":14,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/35710a540ca7697fb527c00ef103c620de5f0a597deeba628c303d792b95b461.png","sha256":"35710a540ca7697fb527c00ef103c620de5f0a597deeba628c303d792b95b461","size":[768,768],"nativeSize":[768,768]},"sourceBone":{"RIGHT ELBOW":{"x":111.80813953488372,"y":86.75},"RIGHT ARM":{"x":111.80813953488372,"y":99.75}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate."}],"interfaceSkinLocked":true,"candidate":true},"24":{"item":16,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"LEFT","mirrorSource":false,"source":{"url":"assets/b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd.png","sha256":"b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd","size":[640,640],"sourceMember":"authored-ordered-16-east/0/equipment","nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":88.75,"y":76},"LEFT ARM":{"x":88.75,"y":89}},"targetRestBone":{"LEFT ELBOW":{"x":50.5,"y":58},"LEFT ARM":{"x":48.5,"y":72.25}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,14],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true},"25":{"item":3,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"LEFT","source":{"url":"assets/36fdca59293192ddc83312bd050c8e36f0dfe1d61e593ef7ecfa2dfd6b5b19a8.png","sha256":"36fdca59293192ddc83312bd050c8e36f0dfe1d61e593ef7ecfa2dfd6b5b19a8","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":66.5,"y":74},"LEFT ARM":{"x":64.5,"y":88.25}},"targetRestBone":{"LEFT ELBOW":{"x":50.5,"y":58},"LEFT ARM":{"x":48.5,"y":72.25}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":false,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","calibrationOffsetPhysical":[3,0]},{"side":"RIGHT","source":{"url":"assets/e1f24684c33b3184601a74636945ee0981d09fb69d809222a36f171679032632.png","sha256":"e1f24684c33b3184601a74636945ee0981d09fb69d809222a36f171679032632","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":93.5,"y":74},"RIGHT ARM":{"x":95.25,"y":88.25}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":false,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","calibrationOffsetPhysical":[-3,0]}],"interfaceSkinLocked":true,"candidate":true},"26":{"item":15,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"north","parts":[{"side":"RIGHT","source":{"url":"assets/f5482aa957130425b88d61515857d12c139058eefdb7389acb845acb889f1efa.png","sha256":"f5482aa957130425b88d61515857d12c139058eefdb7389acb845acb889f1efa","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":93.5,"y":74},"RIGHT ARM":{"x":95.25,"y":88.25}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"evidence":"117 existing initial authored arm/gauntlet source; rigid wrist transfer to unchanged body; candidate.","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"hideHandBeyondWrist":true,"joined15Sources":["assets/9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97.png","assets/2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0.png","assets/42bc1a7c0d327a4506a3867c5188b4ab656d4788c9ffb5dd998391df6d9ea6ef.png"],"joined15North":true}],"targetNativeCanvas":[512,512],"mirrorEntireComposition":false,"status":"rendered-carry-candidate-needs-user-calibration","canUseSameRegistrationForIdle":false,"idleConstraint":"Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim","restrictions":["Do not flatten head or change source raster dimensions.","Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.","Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.","This is an attachment plan, not a verified carry animation."],"requiresVisualCalibration":true},"27":{"item":31,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":false,"source":{"url":"assets/9acb8f39056d3f761b73d6d32cb2f28b446b535473c09e08be5cc609b053eb77.png","sha256":"9acb8f39056d3f761b73d6d32cb2f28b446b535473c09e08be5cc609b053eb77","size":[640,640],"sourceMember":"authored-ordered-31-east/0/gear","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":92.5,"y":65},"RIGHT ARM":{"x":92.5,"y":78}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,8],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true},"28":{"item":32,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"LEFT","mirrorSource":false,"source":{"url":"assets/b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8.png","sha256":"b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8","size":[640,640],"sourceMember":"original/equipment/00-unoccluded.png","nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":89.25,"y":73},"LEFT ARM":{"x":89.25,"y":86}},"targetRestBone":{"LEFT ELBOW":{"x":50.5,"y":58},"LEFT ARM":{"x":48.5,"y":72.25}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,18],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true},"29":{"item":110,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"LEFT","source":{"url":"assets/0d957c301ea9376fa42c2f4c8bca8ace0e3d11d5c7318f17c8a9f4ae7bfad390.png","sha256":"0d957c301ea9376fa42c2f4c8bca8ace0e3d11d5c7318f17c8a9f4ae7bfad390","size":[768,768],"nativeSize":[768,768]},"sourceBone":{"LEFT ELBOW":{"x":80.34,"y":88.25},"LEFT ARM":{"x":80.34,"y":101.25}},"targetRestBone":{"LEFT ELBOW":{"x":50.5,"y":58},"LEFT ARM":{"x":48.5,"y":72.25}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","skinMaterial":{"url":"assets/302d7c5ba21a57c512aa6f280733142304b4868c3be41c47c9f8a7ead7dfe9c3.png","sourceSHA256":"0d957c301ea9376fa42c2f4c8bca8ace0e3d11d5c7318f17c8a9f4ae7bfad390"}},{"side":"RIGHT","source":{"url":"assets/9cabcc5bec690ae2ef438df3b58a5e2d3d96af78c4e79aff30a14a8e8a7cf20d.png","sha256":"9cabcc5bec690ae2ef438df3b58a5e2d3d96af78c4e79aff30a14a8e8a7cf20d","size":[768,768],"nativeSize":[768,768]},"sourceBone":{"RIGHT ELBOW":{"x":111.49295774647888,"y":88.75},"RIGHT ARM":{"x":111.49295774647888,"y":101.75}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","skinMaterial":{"url":"assets/3e02fc42236a36c97f7a1be3cf78a02f1816a775b17b0123a184a50760559a45.png","sourceSHA256":"9cabcc5bec690ae2ef438df3b58a5e2d3d96af78c4e79aff30a14a8e8a7cf20d"}}],"interfaceSkinLocked":true,"candidate":true},"31":{"item":112,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"north","parts":[{"side":"RIGHT","source":{"url":"assets/03c23d3e9daa84a2e28007e614901e3d0c7e0a7b0f13ca2a29d243a65e23cca3.png","sha256":"03c23d3e9daa84a2e28007e614901e3d0c7e0a7b0f13ca2a29d243a65e23cca3","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":93.5,"y":74},"RIGHT ARM":{"x":95.25,"y":88.25}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"evidence":"112initial approved glove interface split into existing connected components nearest source wrist; no resizing or new pixels","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"hideHandBeyondWrist":true,"joinedFringe":{"count":639,"support":1336,"clothing":1,"rgbTolerance":1,"urls":["assets/9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97.png","assets/764438c4dcf05bf9a8492b231796c6c8bee28dfbb4431e909dcba04199b63a6a.png","assets/2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0.png"]}},{"side":"LEFT","source":{"url":"assets/66b32c40ecb1efc295d4ab1c2a2e169e1bceb48bbbb7b7539b2c3ef0aa834827.png","sha256":"66b32c40ecb1efc295d4ab1c2a2e169e1bceb48bbbb7b7539b2c3ef0aa834827","nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":66.5,"y":74},"LEFT ARM":{"x":64.5,"y":88.25}},"targetRestBone":{"LEFT ELBOW":{"x":50.5,"y":58},"LEFT ARM":{"x":48.5,"y":72.25}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"evidence":"112initial approved glove interface split into existing connected components nearest source wrist; no resizing or new pixels","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"hideHandBeyondWrist":true,"joinedFringe":{"count":656,"support":1328,"clothing":0,"rgbTolerance":1,"urls":["assets/9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97.png","assets/764438c4dcf05bf9a8492b231796c6c8bee28dfbb4431e909dcba04199b63a6a.png","assets/2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0.png"]}}],"targetNativeCanvas":[512,512],"mirrorEntireComposition":false,"status":"rendered-carry-candidate-needs-user-calibration","canUseSameRegistrationForIdle":false,"idleConstraint":"Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim","restrictions":["Do not flatten head or change source raster dimensions.","Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.","Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.","This is an attachment plan, not a verified carry animation."],"requiresVisualCalibration":true},"32":{"item":117,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"north","parts":[{"side":"RIGHT","source":{"url":"assets/08631a2f7d3ad9bbc223dc282925ea60c118e9b1dc2da32f298d3049f4f8b72b.png","sha256":"08631a2f7d3ad9bbc223dc282925ea60c118e9b1dc2da32f298d3049f4f8b72b","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":93.5,"y":74},"RIGHT ARM":{"x":95.25,"y":88.25}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"evidence":"117 existing initial authored arm/gauntlet source; rigid wrist transfer to unchanged body; candidate.","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"hideHandBeyondWrist":true,"skinMaterial":{"url":"assets/aad008ab9f7facf1900a2b79f632d9fc948fcbc1501aec5f33d0b8dabfe14b7a.png","sourceSHA256":"08631a2f7d3ad9bbc223dc282925ea60c118e9b1dc2da32f298d3049f4f8b72b"}}],"targetNativeCanvas":[512,512],"mirrorEntireComposition":false,"status":"rendered-carry-candidate-needs-user-calibration","canUseSameRegistrationForIdle":false,"idleConstraint":"Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim","restrictions":["Do not flatten head or change source raster dimensions.","Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.","Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.","This is an attachment plan, not a verified carry animation."],"requiresVisualCalibration":true},"33":{"item":118,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"north","parts":[{"side":"RIGHT","source":{"url":"assets/4a102854a34cc0f92ecf7849dd409a8e2ed7fab2c5e2c9791be37df94297623c.png","sha256":"4a102854a34cc0f92ecf7849dd409a8e2ed7fab2c5e2c9791be37df94297623c","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":93.5,"y":74},"RIGHT ARM":{"x":95.25,"y":88.25}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"evidence":"Existing118 original initial forearm/cannon interface, rigid wrist rotation without scaling; old distal hand clipped, candidate.","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"hideHandBeyondWrist":true}],"targetNativeCanvas":[512,512],"mirrorEntireComposition":false,"status":"rendered-carry-candidate-needs-user-calibration","canUseSameRegistrationForIdle":false,"idleConstraint":"Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim","restrictions":["Do not flatten head or change source raster dimensions.","Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.","Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.","This is an attachment plan, not a verified carry animation."],"requiresVisualCalibration":true},"35":{"item":120,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"north","parts":[{"side":"RIGHT","source":{"url":"assets/2cd02c09e63a86db1503b4f153c22e6f88fbc20d194a16c5cf6bcab00de41b91.png","sha256":"2cd02c09e63a86db1503b4f153c22e6f88fbc20d194a16c5cf6bcab00de41b91","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":93.5,"y":74},"RIGHT ARM":{"x":95.25,"y":88.25}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"evidence":"Existing120 original initial forearm/cannon interface, rigid wrist rotation without scaling; old distal hand clipped, candidate.","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"hideHandBeyondWrist":true,"skinMaterial":{"url":"assets/86bc8ca986f70ab7a295bc93213e5f553e0e9f971e64201ef01d23dddd10a880.png","sourceSHA256":"2cd02c09e63a86db1503b4f153c22e6f88fbc20d194a16c5cf6bcab00de41b91"}}],"targetNativeCanvas":[512,512],"mirrorEntireComposition":false,"status":"rendered-carry-candidate-needs-user-calibration","canUseSameRegistrationForIdle":false,"idleConstraint":"Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim","restrictions":["Do not flatten head or change source raster dimensions.","Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.","Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.","This is an attachment plan, not a verified carry animation."],"requiresVisualCalibration":true},"37":{"item":122,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"north","parts":[{"side":"RIGHT","source":{"sha256":"d52b77a02515aaf23be9cc1b84d7ad9441425438bb9bf7016464247a2b0735c6","url":"assets/d52b77a02515aaf23be9cc1b84d7ad9441425438bb9bf7016464247a2b0735c6.png","nativeSize":[640,640],"sourceMember":"authored-orb-122-east/2/gear"},"sourceBone":{"RIGHT ELBOW":{"x":94.85967741935484,"y":50.86935483870968},"RIGHT ARM":{"x":96.22419354838709,"y":61.33064516129032}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"evidence":"Existing approved orb/hand interface, rigid wrist-only transfer; no sourcePNG resampling. Lateral donor far-hand mapped to the only visible walk hand. Candidate calibration.","calibrationOffsetPhysical":[0,0],"hideHandBeyondWrist":false,"depthOffset":-0.1}],"interfaceSkinLocked":true,"candidate":true}}}},"walk":{"6":{"base":"v7-male-walk-drawn-north-north","source":"male-torso6-north-frozen-walk-native","sha":"f6f5ca961e1ff6b316372f65a9c4b0c303789861528b79e156eabcb19b1610ed","layers":[{"id":"coat6-own-core","slot":"top","depth":100,"source":"d3f394a5ae190c130a7f386ec9fce35f566f1bec0bad1dbbc62e431b5255b8c4","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-own-LEFT-upper","slot":"top","depth":100,"source":"84e43094b88e767478be87be466800a9b121926e1a718a191c2646a1dff9d2e0","binding":{"kind":"bone","a":"LEFT SHOULDER","b":"LEFT ELBOW"},"frames":["84e43094b88e767478be87be466800a9b121926e1a718a191c2646a1dff9d2e0","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d","039101d9ed477f94d78cd6d3fc8bb8a397eb501f9dadbb136426ebc92f81154d"]},{"id":"coat6-own-RIGHT-upper","slot":"top","depth":100,"source":"088efe2ec1b2f1a662713ce14e3753fcd576b9f930e33f5aca25a0f8442d3627","binding":{"kind":"bone","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"},"frames":["088efe2ec1b2f1a662713ce14e3753fcd576b9f930e33f5aca25a0f8442d3627","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6","aec67019411a9a76f9fb9a3227b5037d67b6ce554a107dbaebb0659c1a59bff6"]},{"id":"coat6-own-hem","slot":"top","depth":100,"source":"b69d5288e63d98c5bf4933884ccf2f74de86da31d843465448e238426372b56f","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"plans":{"22":{"item":2,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"LEFT","source":{"url":"assets/33136493d49bc376f0dc943348d314dbcca9f3a288cccea8c8d055f395670b6e.png","sha256":"33136493d49bc376f0dc943348d314dbcca9f3a288cccea8c8d055f395670b6e","size":[768,768],"nativeSize":[768,768]},"sourceBone":{"LEFT ELBOW":{"x":80.5827067669173,"y":88},"LEFT ARM":{"x":80.5827067669173,"y":101}},"targetRestBone":{"LEFT ELBOW":{"x":50.5,"y":58},"LEFT ARM":{"x":48.5,"y":72.25}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":151,"support":1011,"clothing":0,"rgbTolerance":1,"centerPadding":64,"urls":["assets/9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97.png","assets/e29fdaaeb5357aff1ea51dfc0450ce22759dae8b1300eb26a7b461efff6144bf.png","assets/2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0.png"]}},{"side":"RIGHT","source":{"url":"assets/c50f7fe4385bb9007bd314143a5059c8e0478a5aad967613bc0a49571e07c07b.png","sha256":"c50f7fe4385bb9007bd314143a5059c8e0478a5aad967613bc0a49571e07c07b","size":[768,768],"nativeSize":[768,768]},"sourceBone":{"RIGHT ELBOW":{"x":111.4369658119658,"y":88.75},"RIGHT ARM":{"x":111.4369658119658,"y":101.75}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":198,"support":962,"clothing":1,"rgbTolerance":1,"centerPadding":64,"urls":["assets/9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97.png","assets/8a704b6088addc1e828b6149b691f7bd650f4e5f3d30db900f33a19f66ef5acf.png","assets/2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0.png"]}}],"interfaceSkinLocked":true,"candidate":true},"23":{"item":14,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/35710a540ca7697fb527c00ef103c620de5f0a597deeba628c303d792b95b461.png","sha256":"35710a540ca7697fb527c00ef103c620de5f0a597deeba628c303d792b95b461","size":[768,768],"nativeSize":[768,768]},"sourceBone":{"RIGHT ELBOW":{"x":111.80813953488372,"y":86.75},"RIGHT ARM":{"x":111.80813953488372,"y":99.75}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate."}],"interfaceSkinLocked":true,"candidate":true},"24":{"item":16,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"LEFT","mirrorSource":false,"source":{"url":"assets/b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd.png","sha256":"b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd","size":[640,640],"sourceMember":"authored-ordered-16-east/0/equipment","nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":88.75,"y":76},"LEFT ARM":{"x":88.75,"y":89}},"targetRestBone":{"LEFT ELBOW":{"x":50.5,"y":58},"LEFT ARM":{"x":48.5,"y":72.25}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,14],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true},"25":{"item":3,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"LEFT","source":{"url":"assets/36fdca59293192ddc83312bd050c8e36f0dfe1d61e593ef7ecfa2dfd6b5b19a8.png","sha256":"36fdca59293192ddc83312bd050c8e36f0dfe1d61e593ef7ecfa2dfd6b5b19a8","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":66.5,"y":74},"LEFT ARM":{"x":64.5,"y":88.25}},"targetRestBone":{"LEFT ELBOW":{"x":50.5,"y":58},"LEFT ARM":{"x":48.5,"y":72.25}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":false,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","calibrationOffsetPhysical":[3,0]},{"side":"RIGHT","source":{"url":"assets/e1f24684c33b3184601a74636945ee0981d09fb69d809222a36f171679032632.png","sha256":"e1f24684c33b3184601a74636945ee0981d09fb69d809222a36f171679032632","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":93.5,"y":74},"RIGHT ARM":{"x":95.25,"y":88.25}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":false,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","calibrationOffsetPhysical":[-3,0]}],"interfaceSkinLocked":true,"candidate":true},"27":{"item":31,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":false,"source":{"url":"assets/9acb8f39056d3f761b73d6d32cb2f28b446b535473c09e08be5cc609b053eb77.png","sha256":"9acb8f39056d3f761b73d6d32cb2f28b446b535473c09e08be5cc609b053eb77","size":[640,640],"sourceMember":"authored-ordered-31-east/0/gear","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":92.5,"y":65},"RIGHT ARM":{"x":92.5,"y":78}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,8],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true}}}}},"south":{"idle":{"6":{"base":"male-idle-original-south-from-walk0","source":"male-torso6-south-frozen-idle-native","sha":"589b9bb6f7b8b3e1001425ede151d26e2bd016cd701dceca173bb7dae1a3f29e","layers":[{"id":"coat6-collar-core","slot":"top","depth":100,"source":"aceec6ba712f114d765738c12fe75d1418a513be0f0e80c7a413c00e954532db","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-left-sleeve-RIGHT-sleeve","slot":"top","depth":100,"source":"f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","binding":{"kind":"bone","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"},"frames":["f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1"]},{"id":"coat6-right-sleeve-LEFT-sleeve","slot":"top","depth":100,"source":"ef095de8fa1eca23b0bc3902b69102c717cbb845f730de09c8cd8121dbd2df3e","binding":{"kind":"bone","a":"LEFT SHOULDER","b":"LEFT ELBOW"},"frames":["ef095de8fa1eca23b0bc3902b69102c717cbb845f730de09c8cd8121dbd2df3e"]},{"id":"coat6-torso-core","slot":"top","depth":100,"source":"d42153e739eedad4497dc1b72e2fc981cb3874a12e35ac7623dc06e103ca6258","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-torso-RIGHT-upper","slot":"top","depth":100,"source":"2393d256a1f18254f9f2fc2414a1ab286191722f0f179c279bdf169c634bac69","binding":{"kind":"bone","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"},"frames":["2393d256a1f18254f9f2fc2414a1ab286191722f0f179c279bdf169c634bac69"]},{"id":"coat6-torso-LEFT-upper","slot":"top","depth":100,"source":"ef88463f450848e5c3bcf9300e6402239cfe5bebc504d70363dd4e48385f2561","binding":{"kind":"bone","a":"LEFT SHOULDER","b":"LEFT ELBOW"},"frames":["ef88463f450848e5c3bcf9300e6402239cfe5bebc504d70363dd4e48385f2561"]},{"id":"coat6-torso-hem","slot":"top","depth":100,"source":"a526adbc615b9ba295e56cfd83c8b5444b8d2d993e71a1062a76f8569c308a4a","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-inner-lining-neck","slot":"underArms","depth":-5,"source":"c19fbbf897d844c5a15a8a1d6c284427a1659f3a7a8b00b962f82dbc68945815","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"plans":{"0":{"item":2,"body":"male","direction":"south","targetWalkRecord":"male-walk-south-r7","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/88eda32297377802e38d8f818b115a7e95827d25d1f77496296147b27df6caba.png","sha256":"88eda32297377802e38d8f818b115a7e95827d25d1f77496296147b27df6caba","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":66.20198675496688,"y":70.5},"RIGHT ARM":{"x":66.20198675496688,"y":83.5}},"targetRestBone":{"RIGHT ELBOW":{"x":49.30143540669857,"y":59.86602870813397},"RIGHT ARM":{"x":47.464114832535884,"y":73.41626794258373}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":886,"support":1184,"clothing":1,"rgbTolerance":1,"urls":["assets/0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e.png","assets/6cd0e307510af68f77903c01e110f8f8c50d0372996d2ecb3e72964b7a999ed5.png","assets/3da05f94849279f5dd3cceb75958b0afaa4d7953429b614a542e248114da5f4f.png"]}},{"side":"LEFT","source":{"url":"assets/b672de04bb8c43f9570eb288c80f01753d405e995605ec3a74926c0cf612c221.png","sha256":"b672de04bb8c43f9570eb288c80f01753d405e995605ec3a74926c0cf612c221","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":96.125,"y":70.5},"LEFT ARM":{"x":96.125,"y":83.5}},"targetRestBone":{"LEFT ELBOW":{"x":78.69856459330144,"y":59.86602870813397},"LEFT ARM":{"x":80.53588516746412,"y":73.41626794258373}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":874,"support":1205,"clothing":0,"rgbTolerance":1,"urls":["assets/0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e.png","assets/6cd0e307510af68f77903c01e110f8f8c50d0372996d2ecb3e72964b7a999ed5.png","assets/3da05f94849279f5dd3cceb75958b0afaa4d7953429b614a542e248114da5f4f.png"]}}],"interfaceSkinLocked":true,"candidate":true},"1":{"item":14,"body":"male","direction":"south","targetWalkRecord":"male-walk-south-r7","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/8c5dfc4d424bf22567d89f6bce1b1b17b095d27e448cf308f39b37e9f7d94a84.png","sha256":"8c5dfc4d424bf22567d89f6bce1b1b17b095d27e448cf308f39b37e9f7d94a84","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":66.12068965517241,"y":70.5},"RIGHT ARM":{"x":66.12068965517241,"y":83.5}},"targetRestBone":{"RIGHT ELBOW":{"x":49.30143540669857,"y":59.86602870813397},"RIGHT ARM":{"x":47.464114832535884,"y":73.41626794258373}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":944,"support":1034,"clothing":1,"rgbTolerance":1,"urls":["assets/0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e.png","assets/393a9057810171c354946e1e2482d91eaaf0642f076abadc55361d4667e09291.png","assets/3da05f94849279f5dd3cceb75958b0afaa4d7953429b614a542e248114da5f4f.png"]}}],"interfaceSkinLocked":true,"candidate":true},"2":{"item":16,"body":"male","direction":"south","targetWalkRecord":"male-walk-south-r7","sourceDirection":"east","parts":[{"side":"LEFT","mirrorSource":false,"source":{"url":"assets/b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd.png","sha256":"b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd","size":[640,640],"sourceMember":"authored-ordered-16-east/0/equipment","nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":88.75,"y":76},"LEFT ARM":{"x":88.75,"y":89}},"targetRestBone":{"LEFT ELBOW":{"x":78.69856459330144,"y":59.86602870813397},"LEFT ARM":{"x":80.53588516746412,"y":73.41626794258373}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,14],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true},"3":{"item":3,"body":"male","direction":"south","targetWalkRecord":"male-walk-south-r7","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/ef58814bafb7ebba5238ecde3b36840fbd1320b5be88126e8782582c5cfb297e.png","sha256":"ef58814bafb7ebba5238ecde3b36840fbd1320b5be88126e8782582c5cfb297e","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":66.065625,"y":70.5},"RIGHT ARM":{"x":66.065625,"y":83.5}},"targetRestBone":{"RIGHT ELBOW":{"x":49.30143540669857,"y":59.86602870813397},"RIGHT ARM":{"x":47.464114832535884,"y":73.41626794258373}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":944,"support":1029,"clothing":1,"rgbTolerance":1,"urls":["assets/0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e.png","assets/2b10e18cda0f0cf5d4875ea1e03be2ebff3ad47955ae0cb1d451c08febba829c.png","assets/3da05f94849279f5dd3cceb75958b0afaa4d7953429b614a542e248114da5f4f.png"]}},{"side":"LEFT","source":{"url":"assets/1cbd3e71348f06d0908e219da9e6dce067d866a4154c4112f303360d90dd84ca.png","sha256":"1cbd3e71348f06d0908e219da9e6dce067d866a4154c4112f303360d90dd84ca","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":96.23407643312102,"y":70.5},"LEFT ARM":{"x":96.23407643312102,"y":83.5}},"targetRestBone":{"LEFT ELBOW":{"x":78.69856459330144,"y":59.86602870813397},"LEFT ARM":{"x":80.53588516746412,"y":73.41626794258373}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":922,"support":1021,"clothing":0,"rgbTolerance":1,"urls":["assets/0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e.png","assets/44c65ab76b8a35134158b546b31c055fd2244c68511b28cbb7043249491e4e61.png","assets/3da05f94849279f5dd3cceb75958b0afaa4d7953429b614a542e248114da5f4f.png"]}}],"interfaceSkinLocked":true,"candidate":true},"4":{"item":15,"body":"male","direction":"south","targetWalkRecord":"male-walk-south-r7","sourceDirection":"south","parts":[{"side":"RIGHT","source":{"url":"assets/79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec.png","sha256":"79ca605a6ecb835d3c2eb785f301d48c7e4943665723b9c6bbf588112da324ec","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":65.30143540669857,"y":75.86602870813397},"RIGHT ARM":{"x":63.464114832535884,"y":89.41626794258373}},"targetRestBone":{"RIGHT ELBOW":{"x":49.30143540669857,"y":59.86602870813397},"RIGHT ARM":{"x":47.464114832535884,"y":73.41626794258373}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"evidence":"117 existing initial authored arm/gauntlet source; rigid wrist transfer to unchanged body; candidate.","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"calibrationEvidence":"Visual native512 walkstate0: painted RIGHT hand extends image-left of unadjusted gauntlet; shift8pxleft2pxup, no source PNG modification. Candidate pending user review.","hideHandBeyondWrist":true,"joined15Sources":["assets/0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e.png","assets/3da05f94849279f5dd3cceb75958b0afaa4d7953429b614a542e248114da5f4f.png","assets/3fc83f9af20f59a919cfe299e8f213aedc9b808af243d69ddd5388207c839377.png"],"joined15South":true}],"targetNativeCanvas":[512,512],"mirrorEntireComposition":false,"status":"rendered-carry-candidate-needs-user-calibration","canUseSameRegistrationForIdle":false,"idleConstraint":"Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim","restrictions":["Do not flatten head or change source raster dimensions.","Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.","Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.","This is an attachment plan, not a verified carry animation."],"requiresVisualCalibration":true},"6":{"item":32,"body":"male","direction":"south","targetWalkRecord":"male-walk-south-r7","sourceDirection":"east","parts":[{"side":"LEFT","mirrorSource":false,"source":{"url":"assets/b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8.png","sha256":"b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8","size":[640,640],"sourceMember":"original/equipment/00-unoccluded.png","nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":89.25,"y":73},"LEFT ARM":{"x":89.25,"y":86}},"targetRestBone":{"LEFT ELBOW":{"x":78.69856459330144,"y":59.86602870813397},"LEFT ARM":{"x":80.53588516746412,"y":73.41626794258373}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,18],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true},"7":{"item":110,"body":"male","direction":"south","targetWalkRecord":"male-walk-south-r7","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/a40fd49400ac3ef3c2d6b375f7cd331ba0b31019d2fa608e37d54c1af6754dcf.png","sha256":"a40fd49400ac3ef3c2d6b375f7cd331ba0b31019d2fa608e37d54c1af6754dcf","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":66.12068965517241,"y":70.5},"RIGHT ARM":{"x":66.12068965517241,"y":83.5}},"targetRestBone":{"RIGHT ELBOW":{"x":49.30143540669857,"y":59.86602870813397},"RIGHT ARM":{"x":47.464114832535884,"y":73.41626794258373}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":878,"support":1225,"clothing":1,"rgbTolerance":1,"urls":["assets/0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e.png","assets/fb29ed32436ac87af4318d12803630f6db7dbc379dda4b61bd4f5c076d0f53cb.png","assets/3da05f94849279f5dd3cceb75958b0afaa4d7953429b614a542e248114da5f4f.png"]}},{"side":"LEFT","source":{"url":"assets/49ffe35da0c5fe9bc8bbc9513a07db793fb33152911b1c1f436603ed4cc0aa0f.png","sha256":"49ffe35da0c5fe9bc8bbc9513a07db793fb33152911b1c1f436603ed4cc0aa0f","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":96.35036496350365,"y":70.5},"LEFT ARM":{"x":96.35036496350365,"y":83.5}},"targetRestBone":{"LEFT ELBOW":{"x":78.69856459330144,"y":59.86602870813397},"LEFT ARM":{"x":80.53588516746412,"y":73.41626794258373}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":859,"support":1202,"clothing":0,"rgbTolerance":1,"urls":["assets/0b7ee1b711b485637652f65c64610a73741c2fb1c0cf8213759ff7488f929f3e.png","assets/fb29ed32436ac87af4318d12803630f6db7dbc379dda4b61bd4f5c076d0f53cb.png","assets/3da05f94849279f5dd3cceb75958b0afaa4d7953429b614a542e248114da5f4f.png"]}}],"interfaceSkinLocked":true,"candidate":true}}}}},"east":{"idle":{"6":{"base":"male-idle-original-east-from-walk0","source":"male-torso6-east-frozen-idle-native","sha":"588d7f159c5a7c27cd77ab09ffcdbca7a8bd505d7337a8f0e5e2673c3d71839c","layers":[{"id":"coat6-upper-sleeve-collar-core","slot":"top","depth":100,"source":"1226385af7087382ec44cecc2a65eb0eff60d10a79c1cd4433ed4e11185a2fe7","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-upper-sleeve-collar-RIGHT-upper","slot":"top","depth":100,"source":"7f1eec4a846a1276ca5191f942461b28b78438a2032062c7e59c66719c8eac44","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat6-lower-torso-core","slot":"top","depth":4.7,"source":"76867f07260768207b39a9acbf531c33ddb428af468d82f41a19f44c35b4a7f0","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-lower-torso-hem","slot":"top","depth":4.7,"source":"bcdf6d0e05871f4ec4be801ee4ba7cbd9fc6e70045812220f3477e5f7a0dc92b","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"plans":{"44":{"item":2,"body":"male","direction":"east","targetWalkRecord":"v7-male-walk-drawn-east-east","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a.png","sha256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":80.318359375,"y":70.25},"RIGHT ARM":{"x":80.318359375,"y":83.25}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","skinMaterial":{"url":"assets/0430fb149730f9878fe7cb5970c531092fa855bae7fd5654d0c370918d2549eb.png","sourceSHA256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a"}}],"interfaceSkinLocked":true,"candidate":true},"45":{"item":14,"body":"male","direction":"east","targetWalkRecord":"v7-male-walk-drawn-east-east","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/8ff81ee85ed4eb038dfa08d0413266fa50a17a44e3c4f5c2b2b95361ef26bc9b.png","sha256":"8ff81ee85ed4eb038dfa08d0413266fa50a17a44e3c4f5c2b2b95361ef26bc9b","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":79.48958333333333,"y":70.5},"RIGHT ARM":{"x":79.48958333333333,"y":83.5}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":46,"support":1273,"clothing":36,"rgbTolerance":0,"urls":["assets/b0979f9817371731bb761db0dfed65de422a64c6fdd053232e50dc8966a21b6a.png","assets/0d35afdf6b7e36243c02b53f9c21c64a581d95a7adaf7ed6a32079b31cdecf34.png","assets/34d57b1b89acb48177dbd83d05fdfc893ca5538fd9bf1984f80b397142c38b0b.png"]}}],"interfaceSkinLocked":true,"candidate":true},"46":{"item":16,"body":"male","direction":"east","targetWalkRecord":"v7-male-walk-drawn-east-east","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":false,"source":{"url":"assets/b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd.png","sha256":"b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd","size":[640,640],"sourceMember":"authored-ordered-16-east/0/equipment","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":88.75,"y":76},"RIGHT ARM":{"x":88.75,"y":89}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,14],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true},"47":{"item":3,"body":"male","direction":"east","targetWalkRecord":"v7-male-walk-drawn-east-east","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/c777f9c6676045c3fa9c12748f4a216669ce603378fad9e7f67ed149231c049f.png","sha256":"c777f9c6676045c3fa9c12748f4a216669ce603378fad9e7f67ed149231c049f","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":75.64583333333334,"y":76.125},"RIGHT ARM":{"x":78.80555555555556,"y":86.81944444444444}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":false,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate."}],"interfaceSkinLocked":true,"candidate":true},"50":{"item":32,"body":"male","direction":"east","targetWalkRecord":"v7-male-walk-drawn-east-east","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":false,"source":{"url":"assets/b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8.png","sha256":"b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8","size":[640,640],"sourceMember":"original/equipment/00-unoccluded.png","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":89.25,"y":73},"RIGHT ARM":{"x":89.25,"y":86}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,18],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true},"51":{"item":110,"body":"male","direction":"east","targetWalkRecord":"v7-male-walk-drawn-east-east","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/7546ec0e65b17593979b4c682ce9e97986341c3c772c9727df43b6b2113a4227.png","sha256":"7546ec0e65b17593979b4c682ce9e97986341c3c772c9727df43b6b2113a4227","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":79.14077669902913,"y":70.75},"RIGHT ARM":{"x":79.14077669902913,"y":83.75}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","skinMaterial":{"url":"assets/95a3b7c76726a9a332e72bc73dcae1555b7463e1ec72324c14978cd6f806f3c9.png","sourceSHA256":"7546ec0e65b17593979b4c682ce9e97986341c3c772c9727df43b6b2113a4227"}}],"interfaceSkinLocked":true,"candidate":true},"53":{"item":112,"body":"male","direction":"east","targetWalkRecord":"v7-male-walk-drawn-east-east","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/bf0810f0c33f571580836998f170bc085fa5e0f783fbd7c343ae0c8662a40fd6.png","sha256":"bf0810f0c33f571580836998f170bc085fa5e0f783fbd7c343ae0c8662a40fd6","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":75.5,"y":73.5},"RIGHT ARM":{"x":80,"y":88.75}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"evidence":"112initial approved glove interface split into existing connected components nearest source wrist; no resizing or new pixels","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"hideHandBeyondWrist":true,"joinedFringe":{"count":679,"support":1198,"clothing":421,"rgbTolerance":1,"urls":["assets/946587ecb05500b60c34d864c7662aaf6782d434acf752fd7bfefd30826e7f73.png","assets/4cca0b5fcec84540637ec699bc749334a3edf82003c829037467798526814ab4.png","assets/b5e372ae7b8f629174e1333e9aea076280e7eb74e3132d5d825484f2b9f51380.png"]}},{"side":"LEFT","source":{"url":"assets/87195a8777879c193ce0bfae821be3f17832d81294772b9945f4b5d2a78166a0.png","sha256":"87195a8777879c193ce0bfae821be3f17832d81294772b9945f4b5d2a78166a0","nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":87.25,"y":73.25},"LEFT ARM":{"x":88.5,"y":88.75}},"targetRestBone":{"LEFT ELBOW":{"x":71.25,"y":57.25},"LEFT ARM":{"x":72.5,"y":72.75}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"evidence":"112initial approved glove interface split into existing connected components nearest source wrist; no resizing or new pixels","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"hideHandBeyondWrist":true}],"targetNativeCanvas":[512,512],"mirrorEntireComposition":false,"status":"rendered-carry-candidate-needs-user-calibration","canUseSameRegistrationForIdle":false,"idleConstraint":"Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim","restrictions":["Do not flatten head or change source raster dimensions.","Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.","Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.","This is an attachment plan, not a verified carry animation."],"requiresVisualCalibration":true}}}}},"west":{"idle":{"6":{"base":"male-idle-original-west-from-walk0","source":"male-torso6-west-frozen-idle-native","sha":"588d7f159c5a7c27cd77ab09ffcdbca7a8bd505d7337a8f0e5e2673c3d71839c","layers":[{"id":"coat6-upper-sleeve-collar-core","slot":"top","depth":100,"source":"22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","binding":{"kind":"fixed"},"frames":["22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88"]},{"id":"coat6-upper-sleeve-collar-RIGHT-upper","slot":"top","depth":100,"source":"93ef93e01bd69bf0d6a8c76d0acf439c18b177cd73c6a12022360c91266a3383","binding":{"kind":"fixed"},"frames":["93ef93e01bd69bf0d6a8c76d0acf439c18b177cd73c6a12022360c91266a3383"]},{"id":"coat6-lower-torso-core","slot":"top","depth":4.7,"source":"d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","binding":{"kind":"fixed"},"frames":["d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f"]},{"id":"coat6-lower-torso-hem","slot":"top","depth":4.7,"source":"08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","binding":{"kind":"fixed"},"frames":["08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9"]}],"plans":{"66":{"item":2,"body":"male","direction":"west","targetWalkRecord":"v7-male-walk-drawn-east-east-mirror-west-candidate","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a.png","sha256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":80.318359375,"y":70.25},"RIGHT ARM":{"x":80.318359375,"y":83.25}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","skinMaterial":{"url":"assets/0430fb149730f9878fe7cb5970c531092fa855bae7fd5654d0c370918d2549eb.png","sourceSHA256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a"}}],"interfaceSkinLocked":true,"candidate":true},"67":{"item":14,"body":"male","direction":"west","targetWalkRecord":"v7-male-walk-drawn-east-east-mirror-west-candidate","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/8ff81ee85ed4eb038dfa08d0413266fa50a17a44e3c4f5c2b2b95361ef26bc9b.png","sha256":"8ff81ee85ed4eb038dfa08d0413266fa50a17a44e3c4f5c2b2b95361ef26bc9b","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":79.48958333333333,"y":70.5},"RIGHT ARM":{"x":79.48958333333333,"y":83.5}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","joinedFringe":{"count":46,"support":1273,"clothing":36,"rgbTolerance":0,"urls":["assets/b0979f9817371731bb761db0dfed65de422a64c6fdd053232e50dc8966a21b6a.png","assets/0d35afdf6b7e36243c02b53f9c21c64a581d95a7adaf7ed6a32079b31cdecf34.png","assets/34d57b1b89acb48177dbd83d05fdfc893ca5538fd9bf1984f80b397142c38b0b.png"]}}],"interfaceSkinLocked":true,"candidate":true},"68":{"item":16,"body":"male","direction":"west","targetWalkRecord":"v7-male-walk-drawn-east-east-mirror-west-candidate","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":true,"source":{"url":"assets/b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd.png","sha256":"b9ff9fb23315eeae625bac311953a4fb1b1c63500045fba42be3f9954f70d0fd","size":[640,640],"sourceMember":"authored-ordered-16-east/0/equipment","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":71.25,"y":76},"RIGHT ARM":{"x":71.25,"y":89}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,14],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true},"69":{"item":3,"body":"male","direction":"west","targetWalkRecord":"v7-male-walk-drawn-east-east-mirror-west-candidate","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/c777f9c6676045c3fa9c12748f4a216669ce603378fad9e7f67ed149231c049f.png","sha256":"c777f9c6676045c3fa9c12748f4a216669ce603378fad9e7f67ed149231c049f","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":75.64583333333334,"y":76.125},"RIGHT ARM":{"x":78.80555555555556,"y":86.81944444444444}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":false,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate."}],"interfaceSkinLocked":true,"candidate":true},"72":{"item":32,"body":"male","direction":"west","targetWalkRecord":"v7-male-walk-drawn-east-east-mirror-west-candidate","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":true,"source":{"url":"assets/b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8.png","sha256":"b5ef89a85da05dae52d7151d74991cc81290932a9bc102856d71c985305991b8","size":[640,640],"sourceMember":"original/equipment/00-unoccluded.png","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":70.75,"y":73},"RIGHT ARM":{"x":70.75,"y":86}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":-0.1,"calibrationOffsetPhysical":[0,18],"evidence":"Native source pixels and original authored mask only; no scaling. Staff includes authored grip and relicary pure equipment. Wrist rigid candidate."}],"interfaceSkinLocked":false,"candidate":true},"73":{"item":110,"body":"male","direction":"west","targetWalkRecord":"v7-male-walk-drawn-east-east-mirror-west-candidate","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/7546ec0e65b17593979b4c682ce9e97986341c3c772c9727df43b6b2113a4227.png","sha256":"7546ec0e65b17593979b4c682ce9e97986341c3c772c9727df43b6b2113a4227","size":[640,640],"nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":79.14077669902913,"y":70.75},"RIGHT ARM":{"x":79.14077669902913,"y":83.75}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"depthOffset":0.1,"hideHandBeyondWrist":true,"evidence":"Exact source gear/hand pixels from original ownership mask or isolated transparent SOUTH hand region; no resize. Original hand occluded only distal to wrist. Carry candidate.","skinMaterial":{"url":"assets/95a3b7c76726a9a332e72bc73dcae1555b7463e1ec72324c14978cd6f806f3c9.png","sourceSHA256":"7546ec0e65b17593979b4c682ce9e97986341c3c772c9727df43b6b2113a4227"}}],"interfaceSkinLocked":true,"candidate":true},"75":{"item":112,"body":"male","direction":"west","targetWalkRecord":"v7-male-walk-drawn-east-east-mirror-west-candidate","sourceDirection":"east","parts":[{"side":"RIGHT","source":{"url":"assets/bf0810f0c33f571580836998f170bc085fa5e0f783fbd7c343ae0c8662a40fd6.png","sha256":"bf0810f0c33f571580836998f170bc085fa5e0f783fbd7c343ae0c8662a40fd6","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":75.5,"y":73.5},"RIGHT ARM":{"x":80,"y":88.75}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"evidence":"112initial approved glove interface split into existing connected components nearest source wrist; no resizing or new pixels","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"hideHandBeyondWrist":true,"joinedFringe":{"count":679,"support":1198,"clothing":421,"rgbTolerance":1,"urls":["assets/946587ecb05500b60c34d864c7662aaf6782d434acf752fd7bfefd30826e7f73.png","assets/4cca0b5fcec84540637ec699bc749334a3edf82003c829037467798526814ab4.png","assets/b5e372ae7b8f629174e1333e9aea076280e7eb74e3132d5d825484f2b9f51380.png"]}},{"side":"LEFT","source":{"url":"assets/87195a8777879c193ce0bfae821be3f17832d81294772b9945f4b5d2a78166a0.png","sha256":"87195a8777879c193ce0bfae821be3f17832d81294772b9945f4b5d2a78166a0","nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":87.25,"y":73.25},"LEFT ARM":{"x":88.5,"y":88.75}},"targetRestBone":{"LEFT ELBOW":{"x":71.25,"y":57.25},"LEFT ARM":{"x":72.5,"y":72.75}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"evidence":"112initial approved glove interface split into existing connected components nearest source wrist; no resizing or new pixels","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"hideHandBeyondWrist":true}],"targetNativeCanvas":[512,512],"mirrorEntireComposition":true,"status":"rendered-carry-candidate-needs-user-calibration","canUseSameRegistrationForIdle":false,"idleConstraint":"Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim","restrictions":["Do not flatten head or change source raster dimensions.","Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.","Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.","This is an attachment plan, not a verified carry animation."],"requiresVisualCalibration":true},"85":{"item":126,"body":"male","direction":"west","targetWalkRecord":"v7-male-walk-drawn-east-east-mirror-west-candidate","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":true,"source":{"url":"assets/3b3ad5ccfb8f8baaa542aea03e24b238f59fdc90f6e428a7b3b3285e78505b73.png","sha256":"3b3ad5ccfb8f8baaa542aea03e24b238f59fdc90f6e428a7b3b3285e78505b73","size":[640,640],"sourceMember":"cajado126-ew-clothing-v1/Cajado126_Masculino_EAST_WEST_4Trajes_Editavel.zip::GEAR126.png masked original source; no resampling","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":67.5,"y":64.75},"RIGHT ARM":{"x":67.5,"y":77.75}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":0.1,"calibrationOffsetPhysical":[0,0],"evidence":"Authored protection-mask original item pixels. Translation/rotation candidate without resizing; includes original grip pixels, original skin only.","healerToneTexture":"assets/7f24aa3374d857f1ec68de23e6267d817d1a3330c454333b02effcf2567248e2.png"}],"interfaceSkinLocked":false,"candidate":true},"86":{"item":127,"body":"male","direction":"west","targetWalkRecord":"v7-male-walk-drawn-east-east-mirror-west-candidate","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":true,"source":{"url":"assets/7602d10cf4a606073d99c0ab5101b4498b0100ac903baf341d648c77a5793bcc.png","sha256":"7602d10cf4a606073d99c0ab5101b4498b0100ac903baf341d648c77a5793bcc","size":[640,640],"sourceMember":"cajado127-ew-clothing-v1/Cajado127_Masculino_EAST_WEST_4Trajes_Editavel.zip::GEAR127.png masked original source; no resampling","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":67.5,"y":64.75},"RIGHT ARM":{"x":67.5,"y":77.75}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":0.1,"calibrationOffsetPhysical":[0,0],"evidence":"Authored protection-mask original item pixels. Translation/rotation candidate without resizing; includes original grip pixels, original skin only.","healerToneTexture":"assets/2eee6d02e9130642ba654583399485573ea51352c0f3731c321e307e0a12dfd4.png"}],"interfaceSkinLocked":false,"candidate":true},"87":{"item":128,"body":"male","direction":"west","targetWalkRecord":"v7-male-walk-drawn-east-east-mirror-west-candidate","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":true,"source":{"url":"assets/535b5dc885463b8106314a3bfcc7e0ad3d0a7da8321113a54994d86ee18e4893.png","sha256":"535b5dc885463b8106314a3bfcc7e0ad3d0a7da8321113a54994d86ee18e4893","size":[640,640],"sourceMember":"approved-register-recovered/Cajado128_Masculino_EW_QuatroTrajes_Editavel.zip::M158/0-protected.png masked original source; no resampling","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":67.5,"y":64.75},"RIGHT ARM":{"x":67.5,"y":77.75}},"targetRestBone":{"RIGHT ELBOW":{"x":59.5,"y":57.5},"RIGHT ARM":{"x":64,"y":72.75}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":0.1,"calibrationOffsetPhysical":[0,0],"evidence":"Authored protection-mask original item pixels. Translation/rotation candidate without resizing; includes original grip pixels, original skin only.","skinMaterial":{"url":"assets/38ec923a4995564450832aa2fcbde8d29c4f945764165994fa44caf27dd3b7d8.png","sourceSHA256":"535b5dc885463b8106314a3bfcc7e0ad3d0a7da8321113a54994d86ee18e4893"}}],"interfaceSkinLocked":false,"candidate":true}}}}}};
+ function selectIndependentMaleGaitTorso(player,o){
+  if(o.consumer!=='world'||!['idle','walk'].includes(o.action)||o.weaponless||
+     player?.zoanTransformed||player?.__reworkSubset||canonical(player?.appearance96?.gender)!=='male')return null;
+  // Looking up the coat must not inspect the weapon, sibling slots or
+  // appearance variants; those are inputs to the later mount only.
+  const coatOnly=Object.fromEntries(Object.entries(player.equipment||{}).filter(([key])=>slotOf(key)==='torso')),
+   item=registeredEquipment({...player,equipment:coatOnly},o)?.torso?.item,d=o.direction,
+   selected=resolveMaleGaitTorsoSource({slot:'torso',item,body:'male',action:o.action,direction:d}),
+   donor=selected.source?.record,z=donor?.pack?.directions?.[d],own=z?.layers.filter(l=>!l.id.startsWith('base:'));
+  if(selected.state!=='available'||selected.mirrorX||!z)return null;
+  const v=registeredEquipment(player,o),w=v?.weapon,c=v?.torso,a=player.appearance96,
+   additional=c?.item===6&&o.action==='walk'?torsoC6WalkClearance[d]:null,
+   gate=torsoCarryAcceptance[d]?.[o.action]?.[c?.item]??torsoCarryRearClearance[d]?.[o.action]?.[c?.item]??additional;
+  if(donor.id!==gate?.source||
+     donor.sourcePackSHA256!==gate.sha||JSON.stringify(own)!==JSON.stringify(gate.layers)||
+     !w||!c||Object.keys(v).length!==2||!canonicalGaitItem(c.item,'coat')||
+     canonicalGaitItem(w.item,'weapon')?.type!==player.classId||
+     a.version!==1||a.skinStyle!=='natural'||a.hairStyle!=='original'||a.eyeStyle!=='original'||
+     a.skinColor!=='light'||a.hairColor!=='black'||a.eyeColor!=='blue')return null;
+  const e={...player.equipment};delete e[c.key];
+  const r=select({...player,equipment:e},o);
+  const vector=carryRegistry?.certifiedCarryVector(r);
+  if(!vector||r.action!==o.action||r.direction!==d||r.item!==w.item||
+    r.headRecord||r.gearOnlyRecord||r.outfitOverlay||r.omitted?.length||r.hairLayers||
+    r.colorAppearance?.skin!==a.skinColor||r.colorAppearance?.hairColor!==a.hairColor||
+    r.colorAppearance?.eyeColor!==a.eyeColor||gate.base!==vector.base)return null;
+  const previous=gate.plans?.[vector.index]??(gate!==additional&&gate.planIndices?.includes(vector.index)?torsoCarryPinnedVectors.get(vector.index):null),
+   expanded=!previous&&additional?.planIndices.includes(vector.index),
+   known=previous??(expanded?(torsoCarryPinnedVectors.get(vector.index)??torsoC6WalkVectors[vector.index]):null);
+  // Preserve the existing C6 depth on the exact W128 idle mounts when
+  // replacing its grip-bearing raster with the signed own shaft behind its
+  // hand. The old approved vector remains the geometry and sibling authority.
+  const w128CoatBase=!known&&o.action==='idle'&&c.item===6&&w.item===128?
+   (d==='north'&&r.w128PureNorth?torsoCarryContextDepth[43]?.plan:d==='west'&&r.w128PureSide?gate.plans?.[87]:null):null;
+  const ownW128WithCoat=!!(w128CoatBase&&JSON.stringify({
+   ...w128CoatBase,parts:w128CoatBase.parts.map(({skinMaterial,...part})=>{
+    const sha='40730cd745d620a3602ae7e1206fb48d3bd3e6dedd961de6c123259db8fbedfe';
+    return {...part,depthOffset:-.1,source:{...part.source,sha256:sha,url:'assets/'+sha+'.png',
+     sourceMember:'staff128-male-owned-north-walk-v1.zip::'+sha+'.png'}};
+   })
+  })===JSON.stringify(r.plan));
+  const context=!known&&d==='north'&&o.action==='idle'&&c.item===6?
+   torsoCarryContextDepth[ownW128WithCoat?43:vector.index]:null;
+  if(!ownW128WithCoat&&(!known&&!context||JSON.stringify(known||context.plan)!==JSON.stringify(r.plan)))return null;
+  const fit=combinedCarryRegistry?.adaptOwnCoat(r,selected);
+  if(!fit||fit.outfitOverlay.sourceRecord!==gate.source||fit.plan!==r.plan||fit.colorAppearance!==r.colorAppearance)return null;
+  let base=fit.base;
+  if(context){
+   const pack=base.pack, dir=pack.directions[d], moved=dir.layers.filter(l=>l.id===context.id);
+   const ops=root.ReworkAccessoryVendor?.compositor?.plan(r.pack,d,0);
+   if(dir.clip.frames!==1||moved.length!==1||!fit.outfitOverlay.layerIds.includes(context.id)||
+      moved[0].depth!==100||moved[0].depthTrack||!ops)return null;
+   const depths=r.plan.parts.flatMap(p=>{
+    const l=ops.find(l=>l.binding?.a===p.binding.a&&l.binding?.b===p.binding.b);
+    return l?[l.depth+(ownW128WithCoat ? .1 : (p.depthOffset??.1))]:[];
+   });
+   if(JSON.stringify(depths)!==JSON.stringify(context.partDepths)||!depths.includes(context.bound))return null;
+   const layers=dir.layers.map(l=>l===moved[0]?{...l,depth:context.bound-.001}:l);
+   base={...base,pack:{...pack,directions:{...pack.directions,[d]:{...dir,layers}}}};
+  }
+  return {...fit,base,id:fit.id+(context?':own-gait-context-torso:':expanded?':own-walk-torso:':':own-gait-torso:')+c.item,hdKind:'outfit-carry',body:'male',pack:base.pack,
+   layeredSlots:true,omitted:[],ownLayerSources:{[c.key]:selected.key},slotRoutes:{
+    [w.key]:{item:w.item,quality:'hd',source:r.id},
+    [c.key]:{item:c.item,quality:'hd',source:donor.id}
+   }};
+ }
+
+ let maleGaitTorsoOwnIndex;
+ function resolveMaleGaitTorsoSource(request){
+  if(!maleGaitTorsoOwnIndex&&outfitIndex){
+   const rows=outfitIndex.records.filter(row=>
+    row.body==='male'&&['idle','walk'].includes(row.action)&&row.productionEnabled!==false&&
+    Object.keys(row.equipment||{}).length===1&&
+    [6,7,130,137,144,158,165,172,179].includes(row.equipment?.torso)&&
+    row.id==='male-torso'+row.equipment.torso+'-'+row.direction+'-frozen-'+row.action+'-native');
+   maleGaitTorsoOwnIndex=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(rows.map(record=>({
+    slot:'torso',item:record.equipment.torso,body:record.body,action:record.action,direction:record.direction,
+    source:Object.freeze({record,source:record.id})
+   })));
+  }
+  return maleGaitTorsoOwnIndex?.resolve(request)||{state:'unknown',key:null};
+ }
+ // Contextual depth for one contact-own pass, with zero neutral-rig RGBA
+ // change and byte-exact existing weapon projection. No weapon ID table.
+ const torsoCarryContextDepth={"30":{"id":"coat6-own-hem","bound":9.1,"partDepths":[7.1,9.1],"plan":{"item":111,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"north","parts":[{"side":"RIGHT","source":{"url":"assets/692d9a0a1e43e7904dc3980d139e67b55c93f55c1e638c33e6a2393f69748e6a.png","sha256":"692d9a0a1e43e7904dc3980d139e67b55c93f55c1e638c33e6a2393f69748e6a","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":93.5,"y":74},"RIGHT ARM":{"x":95.25,"y":88.25}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"evidence":"111initial approved glove interface split into existing connected components nearest source wrist; no resizing or new pixels","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"joinedFringe":{"count":1039,"support":1887,"clothing":1,"rgbTolerance":1,"urls":["assets/9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97.png","assets/9cdf75f440de5dad8df7bf95bd0461e1d21c7bb919bc363dab164e4028ad042c.png","assets/2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0.png"]}},{"side":"LEFT","source":{"url":"assets/fa1b1529739aced049d7c0e68421af4c78d0c7906dc55cccfe15714c017f118c.png","sha256":"fa1b1529739aced049d7c0e68421af4c78d0c7906dc55cccfe15714c017f118c","nativeSize":[640,640]},"sourceBone":{"LEFT ELBOW":{"x":66.5,"y":74},"LEFT ARM":{"x":64.5,"y":88.25}},"targetRestBone":{"LEFT ELBOW":{"x":50.5,"y":58},"LEFT ARM":{"x":48.5,"y":72.25}},"binding":{"kind":"rigid","a":"LEFT ELBOW","b":"LEFT ARM"},"evidence":"111initial approved glove interface split into existing connected components nearest source wrist; no resizing or new pixels","restOffsetLogical":[16,16],"restOffsetPhysical":[64,64],"depthPolicy":"Apply immediately above corresponding authored hand layer, keep far hand behind torso where source ordering requires it","calibrationOffsetPhysical":[0,0],"joinedFringe":{"count":1033,"support":1870,"clothing":0,"rgbTolerance":1,"urls":["assets/9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97.png","assets/9cdf75f440de5dad8df7bf95bd0461e1d21c7bb919bc363dab164e4028ad042c.png","assets/2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0.png"]}}],"targetNativeCanvas":[512,512],"mirrorEntireComposition":false,"status":"rendered-carry-candidate-needs-user-calibration","canUseSameRegistrationForIdle":false,"idleConstraint":"Only idle source with same rest bones and exact matching hand/body pixel registration; no blanket idle identity claim","restrictions":["Do not flatten head or change source raster dimensions.","Rigid placement preserves weapon size; walk forearm stretch might reveal skin and requires visual test.","Far EAST arm is not a standalone walk layer; exact depth/occlusion must be verified before enabling.","This is an attachment plan, not a verified carry animation."],"requiresVisualCalibration":true}},"38":{"id":"coat6-own-RIGHT-upper","bound":7.1,"partDepths":[7.1],"plan":{"item":123,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":false,"source":{"url":"assets/df2a8a414bf7c5cc68fc855b99ef8d2d2cc38d205e1921d5010670be50a66d90.png","sha256":"df2a8a414bf7c5cc68fc855b99ef8d2d2cc38d205e1921d5010670be50a66d90","size":[640,640],"sourceMember":"cetro123-ew-clothing-v1/Cetro123_Masculino_EAST_WEST_4Trajes_Editavel.zip::GEAR123.png masked original source; no resampling","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":92.5,"y":64.75},"RIGHT ARM":{"x":92.5,"y":77.75}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":0.1,"calibrationOffsetPhysical":[0,0],"evidence":"Authored protection-mask original item pixels. Translation/rotation candidate without resizing; includes original grip pixels, original skin only.","staff123ToneTexture":"assets/6b39b48e651e2d2ed9c5cc43e27ba30dc290573a62dfe8bb389950761890313b.png"}],"interfaceSkinLocked":false,"candidate":true}},"39":{"id":"coat6-own-RIGHT-upper","bound":7.1,"partDepths":[7.1],"plan":{"item":124,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":false,"source":{"url":"assets/3c2ebcd0b120096de4ecd53664883cef64cccc8fd2d4bd9975a1b47e39ef6761.png","sha256":"3c2ebcd0b120096de4ecd53664883cef64cccc8fd2d4bd9975a1b47e39ef6761","size":[640,640],"sourceMember":"recovery126-ew-clothes/Cajado124_Masculino_EW_QuatroTrajes_Editavel.zip::M158/0-protected.png masked original source; no resampling","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":92.5,"y":64.75},"RIGHT ARM":{"x":92.5,"y":77.75}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":0.1,"calibrationOffsetPhysical":[0,0],"evidence":"Authored protection-mask original item pixels. Translation/rotation candidate without resizing; includes original grip pixels, original skin only.","staff124NativeContact":{"gear":"assets/1231d2b82a1ccc5e5d6ddcbd0ad9551468010e66a51d117a1a9bb4e4b15f94d6.png","grip":"assets/1e5f2a368e7eab6141e539dfa1bd5a343b58ecd5f81474dda2e954b06816471a.png"}}],"interfaceSkinLocked":false,"candidate":true}},"40":{"id":"coat6-own-RIGHT-upper","bound":7.1,"partDepths":[7.1],"plan":{"item":125,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":false,"source":{"url":"assets/bfcc8ff558bdbff6b16847c1ced2d539e51a4aab8558717763c21c7e302ece23.png","sha256":"bfcc8ff558bdbff6b16847c1ced2d539e51a4aab8558717763c21c7e302ece23","size":[640,640],"sourceMember":"cajado125-ew-clothing-v1/Cajado125_Masculino_EAST_WEST_4Trajes_Editavel.zip::GEAR125.png masked original source; no resampling","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":92.5,"y":64.75},"RIGHT ARM":{"x":92.5,"y":77.75}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":0.1,"calibrationOffsetPhysical":[0,0],"evidence":"Authored protection-mask original item pixels. Translation/rotation candidate without resizing; includes original grip pixels, original skin only.","staff124ToneTexture":"assets/3891dcd9f2c51b5af85afb5afe95fb58b7d0710d9833f294f70b51e0fb74bc25.png"}],"interfaceSkinLocked":false,"candidate":true}},"43":{"id":"coat6-own-RIGHT-upper","bound":7.1,"partDepths":[7.1],"plan":{"item":128,"body":"male","direction":"north","targetWalkRecord":"v7-male-walk-drawn-north-north","sourceDirection":"east","parts":[{"side":"RIGHT","mirrorSource":false,"source":{"url":"assets/9d725aecbfbe25f33180ad56b27ddca50d7ac1ae83b540510d3aaa6cd6fa0b83.png","sha256":"9d725aecbfbe25f33180ad56b27ddca50d7ac1ae83b540510d3aaa6cd6fa0b83","size":[640,640],"sourceMember":"approved-register-recovered/Cajado128_Masculino_EW_QuatroTrajes_Editavel.zip::M158/0-protected.png masked original source; no resampling","nativeSize":[640,640]},"sourceBone":{"RIGHT ELBOW":{"x":92.5,"y":64.75},"RIGHT ARM":{"x":92.5,"y":77.75}},"targetRestBone":{"RIGHT ELBOW":{"x":77.5,"y":58},"RIGHT ARM":{"x":79.25,"y":72.25}},"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"},"hideHandBeyondWrist":false,"depthOffset":0.1,"calibrationOffsetPhysical":[0,0],"evidence":"Authored protection-mask original item pixels. Translation/rotation candidate without resizing; includes original grip pixels, original skin only.","skinMaterial":{"url":"assets/38ec923a4995564450832aa2fcbde8d29c4f945764165994fa44caf27dd3b7d8.png","sourceSHA256":"9d725aecbfbe25f33180ad56b27ddca50d7ac1ae83b540510d3aaa6cd6fa0b83"}}],"interfaceSkinLocked":false,"candidate":true}}};
+ // In side gait the compass only contacts the existing rear hem, never
+ // the authored collar/cuff passes. Reuse the pinned projection vectors
+ // from the former clearance proof rather than copying weapon data again.
+ const torsoCarryPinnedVectors=new Map();
+ for(const dirs of Object.values(torsoCarryAcceptance))for(const motions of Object.values(dirs))
+  for(const gate of Object.values(motions))for(const [i,plan] of Object.entries(gate.plans))
+   torsoCarryPinnedVectors.set(Number(i),plan);
+ const torsoCarryRearClearance={
+  "north":{"idle":{"137":{"base":"male-idle-original-north-from-walk0","source":"male-torso137-north-frozen-idle-native","sha":"d90df4f478667c89095a0a4347bc90dae9a2e87848e4dfb543d2175a6108df3c","layers":[{"id":"coat137-collar-rear-neck","source":"a4f4f519ae743d914c8be385d40c6a08a3b216e1de5041fce631233d1b7f3d12","slot":"underArms","depth":-5,"binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat137-front-core","source":"c1c0de52917c74565ae950569b4715019c1f153ed744a1fd645f90348e973fe2","slot":"top","depth":100,"binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat137-front-LEFT-upper","source":"4acda102aff44134a0cf6a92356bb0d07b12fb4c8c5f3d074c5a857869d21afb","slot":"top","depth":100,"binding":{"kind":"bone","a":"LEFT SHOULDER","b":"LEFT ELBOW"},"frames":["4acda102aff44134a0cf6a92356bb0d07b12fb4c8c5f3d074c5a857869d21afb"]},{"id":"coat137-front-RIGHT-upper","source":"c0dc0ad7d5f6af3000181f21ce53582426a4ead8ee2637abbcc30f446bdafdc5","slot":"top","depth":100,"binding":{"kind":"bone","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"},"frames":["c0dc0ad7d5f6af3000181f21ce53582426a4ead8ee2637abbcc30f446bdafdc5"]},{"id":"coat137-front-LEFT-lower","source":"0a3b820f3639113e6ea013ba2ba836aea6f0517d759c81019b8fe303a4cd859d","slot":"top","depth":100,"binding":{"kind":"bone","a":"LEFT ELBOW","b":"LEFT ARM"},"frames":["0a3b820f3639113e6ea013ba2ba836aea6f0517d759c81019b8fe303a4cd859d"]},{"id":"coat137-front-RIGHT-lower","source":"bdcf1ee3d602785f85f7f86427b58eeedcd9562653ce0bcbf3e26a90e253ffd5","slot":"top","depth":100,"binding":{"kind":"bone","a":"RIGHT ELBOW","b":"RIGHT ARM"},"frames":["bdcf1ee3d602785f85f7f86427b58eeedcd9562653ce0bcbf3e26a90e253ffd5"]},{"id":"coat137-front-hem","source":"5f38bf1c53db19016ce0ba23d7518d2f71d426368749d20ed9c6dba358ed2e45","slot":"top","depth":100,"binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"cuff-emergence-handRight-RIGHT-skin","slot":"top","source":"d383b7148a8226b5cd7706249db11e14b1932689c3c9a5bcafcf5f0c0ef78db9","depth":101,"binding":{"kind":"bone","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"cuff-emergence-handLeft-LEFT-skin","slot":"top","source":"58a31b7aeb417bfadd1362702e8c8814cbcd196da65cf9946a6ab3ca3ccaccf3","depth":101,"binding":{"kind":"bone","a":"LEFT ELBOW","b":"LEFT ARM"}}],"planIndices":[24]}}},
+  "east":{"idle":{"7":{"base":"male-idle-original-east-from-walk0","source":"male-torso7-east-frozen-idle-native","sha":"eb568600a2ddb08ae7d01bf6d6eadea3c3fee11e17e3071811a1c61698ad4e0f","layers":[{"id":"coat7-upper-core","slot":"top","depth":100,"source":"c5978c40f59c2b87fcf7eb37029862e545d9514bfe3f54cfef18480810fe872e","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat7-upper-RIGHT-upper","slot":"top","depth":100,"source":"2182056ef73688a1cfe4f374ad80a33cb9e8b6a9e5d46351ef0de75a7ad5e82a","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat7-lower-core","slot":"top","depth":4.7,"source":"c5d278c3c1c2cbb3419509f0da7adec09398f295a709cfddf722bc03594b7b1c","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat7-lower-hem","slot":"top","depth":4.7,"source":"9028d130e96250eb0cd0891ed901b54cc4265c798168b7a361e3dcd8cc296d8d","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"sleeve-front-lip-RIGHT-sleeve","source":"57a79b254dba9b609e1470aa2221072d8602473723b652ef090ab2370c97d049","slot":"top","depth":100,"binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"sleeve-aperture-rear-RIGHT-sleeve","source":"bc5729dd7cc3d2fe0b7912b6e8772bf2105c0d28d51d46b0ad2465cd8354c125","slot":"underArms","depth":-4,"binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}}],"planIndices":[46]},"130":{"base":"male-idle-original-east-from-walk0","source":"male-torso130-east-frozen-idle-native","sha":"85d36b03e29bc5a0e6eb271b1efdc62ed8b6dd9f5b7135a3acfd20c571cba25a","layers":[{"id":"coat130-upper-sleeve-core","slot":"top","depth":100,"source":"80e3270d7316a639628cdd39cc505ac0cfb8a0882012f34377771cebc52cc5d0","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat130-upper-sleeve-RIGHT-upper","slot":"top","depth":100,"source":"6b5d0c812dbe5115c372c62b475ee423c8f24cf2505d3b3eb8e6f04da00c5ac3","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat130-upper-sleeve-RIGHT-lower","slot":"top","depth":100,"source":"5b6c8a3afedbd483b5f24136ae80e7c4fd3ef32c3bb60848127397c7a8b8bca4","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat130-upper-sleeve-hem","slot":"top","depth":100,"source":"6f837f9aa4ba62f548dca40808e8cfe400a1cbe846a174d87102317a241b7813","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat130-lower-skirt-hem","slot":"top","depth":4.7,"source":"d2e75aea1f0ef82e4c296c55e2ad5c4ea7057d75083e1c71b7b1547cea392223","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"planIndices":[46]},"137":{"base":"male-idle-original-east-from-walk0","source":"male-torso137-east-frozen-idle-native","sha":"e6a487c1f7e64e6122784c23e4346b91599103fb3673178b70bb5177b691d756","layers":[{"id":"coat137-upper-core","slot":"top","depth":100,"source":"46edc931081dbacb6a76ddc51926d77338ebedccb666b038382565d11ddd5fea","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat137-upper-RIGHT-upper","slot":"top","depth":100,"source":"2b453a4225b3c7a05eb715a979a5e837fa1d8c92a256dffb892917b5358fd83c","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat137-upper-RIGHT-lower","slot":"top","depth":100,"source":"54c05787cae5751074f1ec38a8f1e41a317485868c2eb27af01732f1a5a1c89b","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat137-upper-hem","slot":"top","depth":100,"source":"0abdb1839e13713846432ad3039b05d20045d4faa8e57de80bdae94e53b8abed","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat137-lower-hem","slot":"top","depth":4.7,"source":"50114ab6aab0763ba26ecc6752ec3ed13e4d5688fef38560d2830aacef13e922","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"profile-underlap","source":"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","depth":4.65,"slot":"top","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"planIndices":[46]},"144":{"base":"male-idle-original-east-from-walk0","source":"male-torso144-east-frozen-idle-native","sha":"40b5c1ae41aeb9baf38fa22d37105c7f5d0964e8a913f3cf7c2f5663252cc165","layers":[{"id":"coat144-upper-core","slot":"top","depth":100,"source":"03298ed90600cebef5ad63f3b56e8f883d794763eda1699b4326eb4cab07c208","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat144-upper-RIGHT-upper","slot":"top","depth":100,"source":"8994fd6e5afa05d99b1d3ba19c75c2dbf6fd96b72e0375c519b86b1c8ab03a5d","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat144-upper-RIGHT-lower","slot":"top","depth":100,"source":"0751d481af4c394d2d2aae73cdd210244985598ac3ff9fb0e31bf46a39d67e33","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat144-upper-hem","slot":"top","depth":100,"source":"bfe09b434b268e30ec8f251f9645e267653c279c877357b9689d793d578c2322","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat144-lower-hem","slot":"top","depth":4.7,"source":"5b070b40739cc324f84593e460da749e21268ac834ce3583998e8cfc465490f9","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"profile-underlap","source":"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","depth":4.65,"slot":"top","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"planIndices":[46]},"158":{"base":"male-idle-original-east-from-walk0","source":"male-torso158-east-frozen-idle-native","sha":"5ba5c76a8c838b37fa2c33e65342b1b8816cb9c386bd34a92d3ee7dc9db0e5bd","layers":[{"id":"coat158-upper-core","slot":"top","depth":100,"source":"a6845fbfc20cbe84650dd426e4d5b4c38beb86739a34e3a0533e44429417ecbc","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat158-upper-RIGHT-upper","slot":"top","depth":100,"source":"a59e7faa0929a0a8cc9eb52e8f2bf4b97d282dde7cc9e80c1c69e1ec8446dc05","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat158-upper-RIGHT-lower","slot":"top","depth":100,"source":"2b1391b9e99d57837c3a0f89c4e7d9d1e4e2b0b4ba237bf5236e519f01a7918e","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat158-upper-hem","slot":"top","depth":100,"source":"ac9a57578e5a87a1b065b7fc265cecdc32803e6bf4f175e6d05066da8ed8a603","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat158-lower-tail","slot":"top","depth":4.7,"source":"c9ff17b361bd59e0691e5d7d0b41a08c817df576586145f1ae7eb0104dec7d6c","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"bone","a":"NECK","b":"HIP"},"source":"012d7d26b88356f26d6ec6cc780245110c0ada631d9d0fc55e854eb5b0b65af8"}],"planIndices":[46]},"165":{"base":"male-idle-original-east-from-walk0","source":"male-torso165-east-frozen-idle-native","sha":"fe1a718405b80b21ce12eb00a483cdfe11d9bbe2913c9ae10d7ff046c89b1419","layers":[{"id":"coat165-upper-core","slot":"top","depth":100,"source":"335992eb415f19246f2f987b887cd7c8290be16bfdb87a0bf550e1b9fbe8294d","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat165-upper-RIGHT-upper","slot":"top","depth":100,"source":"3609879ac3eea11585db2aa075120b9cda0cd2c485adaa458767dd3f1c9652ab","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat165-upper-RIGHT-lower","slot":"top","depth":100,"source":"aaae919e034c86d1a46ae4adc48316f833b4afa4e20002a8628600077243b183","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat165-upper-hem","slot":"top","depth":100,"source":"ad91e53e590c48ba69a09a264a7578e652226f70a0a43d4939f5f217ebfa1b8f","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat165-lower-tail","slot":"top","depth":4.7,"source":"e039eee74d087f1bfa1e6d409f2e5ea74e0ab9481698a7c8f0a8cf83aa1b567c","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"bone","a":"NECK","b":"HIP"},"source":"8ba1b1c2f3c68f5df0887e0a01911bf5c389153c1d39124ab30829217421bb2b"}],"planIndices":[46]},"172":{"base":"male-idle-original-east-from-walk0","source":"male-torso172-east-frozen-idle-native","sha":"d0f33feec3cdacd2afb1273ae44590ad2fdb9835cc8a7f0485fd9c2ad5c9676b","layers":[{"id":"coat172-lower-tail","slot":"top","depth":4.7,"source":"d0a3b3a5232cf29864666d5389126ed4c6c1d3a6fc0ff870fa75c1a2e681aa87","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"corrected-core-core","slot":"top","source":"b081624d0c601c8e44861f8eaf0b7bd4ca245025edcc908324edbd121d08db60","depth":100,"binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"corrected-core-hem","slot":"top","source":"497f2665954d13553728db63d5ca890af08f5c381a65d5b5a929157bb2403f7a","depth":100,"binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"corrected-sleeve-near-upper","slot":"top","source":"6ecedc60f1f72f11f8e5ff179d3e72f0146ae56d37656e639356f0f460be472c","depth":101,"binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"corrected-sleeve-near-lower","slot":"top","source":"f4781622d7c71205eb137d475061d2524466c27d048d232816a8da36daecc50e","depth":101,"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"front-cuff-rim-rim","source":"0595a6dd3d54c5ef6684e3e7671bbf4bb18907a7b8731e6788ff9c40addb201c","slot":"top","depth":104,"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"original-neck-coverage-only-collar","slot":"top","depth":103,"binding":{"kind":"bone","a":"NECK","b":"HIP"},"source":"2b5ded0de58e1c1828e4edaf5f970342bb1864d87f68072899eb84efce82ba60"},{"id":"own-torso-behind-sleeve","source":"374f7eff214ed116bceb3750a306f41535bb13a2f061f1d6e32b54dffd599d7f","slot":"top","depth":100,"binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"planIndices":[46]},"179":{"base":"male-idle-original-east-from-walk0","source":"male-torso179-east-frozen-idle-native","sha":"c4b9d32b3c8a4c3291c21d76b75673745902ea7dd748ffdc61b1f5e09d46a4f3","layers":[{"id":"coat179-upper-core","slot":"top","depth":100,"source":"abe98e91a270e73e0e3e327e0add5dcd78199ee8a015017c5c3e1490817ec8df","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat179-upper-RIGHT-upper","slot":"top","depth":100,"source":"18ed1ea0a48c303e4be4f7f2382620103bfadaa87f96e77019e4132a48d7c919","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat179-upper-RIGHT-lower","slot":"top","depth":100,"source":"bf0e22c2a523ef3e8bb006ff542172b01e29cdafde6ebc7f8ef11f2f77ebb403","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat179-upper-hem","slot":"top","depth":100,"source":"7b601e12e15a1bc5fe63e936109760c933197deba53645465e52242f609f4e4e","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat179-lower-tail","slot":"top","depth":4.7,"source":"583f9ba5179653a9f9816a01efb64a55eb947897b9d6742ea1206a24d12cf3f2","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"bone","a":"NECK","b":"HIP"},"source":"f1d0c53e504463b30405d063114c5e62ecfbc3148a5ed573ba2e55e45559dcfb"}],"planIndices":[46]}},"walk":{"7":{"base":"v7-male-walk-drawn-east-east","source":"male-torso7-east-frozen-walk-native","sha":"eb568600a2ddb08ae7d01bf6d6eadea3c3fee11e17e3071811a1c61698ad4e0f","layers":[{"id":"coat7-upper-core","slot":"top","depth":100,"source":"c5978c40f59c2b87fcf7eb37029862e545d9514bfe3f54cfef18480810fe872e","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat7-upper-RIGHT-upper","slot":"top","depth":100,"source":"2182056ef73688a1cfe4f374ad80a33cb9e8b6a9e5d46351ef0de75a7ad5e82a","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat7-lower-core","slot":"top","depth":4.7,"source":"c5d278c3c1c2cbb3419509f0da7adec09398f295a709cfddf722bc03594b7b1c","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat7-lower-hem","slot":"top","depth":4.7,"source":"9028d130e96250eb0cd0891ed901b54cc4265c798168b7a361e3dcd8cc296d8d","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"sleeve-front-lip-RIGHT-sleeve","source":"57a79b254dba9b609e1470aa2221072d8602473723b652ef090ab2370c97d049","slot":"top","depth":100,"binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"sleeve-aperture-rear-RIGHT-sleeve","source":"bc5729dd7cc3d2fe0b7912b6e8772bf2105c0d28d51d46b0ad2465cd8354c125","slot":"underArms","depth":-4,"binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}}],"planIndices":[46]},"130":{"base":"v7-male-walk-drawn-east-east","source":"male-torso130-east-frozen-walk-native","sha":"85d36b03e29bc5a0e6eb271b1efdc62ed8b6dd9f5b7135a3acfd20c571cba25a","layers":[{"id":"coat130-upper-sleeve-core","slot":"top","depth":100,"source":"80e3270d7316a639628cdd39cc505ac0cfb8a0882012f34377771cebc52cc5d0","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat130-upper-sleeve-RIGHT-upper","slot":"top","depth":100,"source":"6b5d0c812dbe5115c372c62b475ee423c8f24cf2505d3b3eb8e6f04da00c5ac3","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat130-upper-sleeve-RIGHT-lower","slot":"top","depth":100,"source":"5b6c8a3afedbd483b5f24136ae80e7c4fd3ef32c3bb60848127397c7a8b8bca4","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat130-upper-sleeve-hem","slot":"top","depth":100,"source":"6f837f9aa4ba62f548dca40808e8cfe400a1cbe846a174d87102317a241b7813","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat130-lower-skirt-hem","slot":"top","depth":4.7,"source":"d2e75aea1f0ef82e4c296c55e2ad5c4ea7057d75083e1c71b7b1547cea392223","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"planIndices":[46]},"137":{"base":"v7-male-walk-drawn-east-east","source":"male-torso137-east-frozen-walk-native","sha":"e6a487c1f7e64e6122784c23e4346b91599103fb3673178b70bb5177b691d756","layers":[{"id":"coat137-upper-core","slot":"top","depth":100,"source":"46edc931081dbacb6a76ddc51926d77338ebedccb666b038382565d11ddd5fea","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat137-upper-RIGHT-upper","slot":"top","depth":100,"source":"2b453a4225b3c7a05eb715a979a5e837fa1d8c92a256dffb892917b5358fd83c","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat137-upper-RIGHT-lower","slot":"top","depth":100,"source":"54c05787cae5751074f1ec38a8f1e41a317485868c2eb27af01732f1a5a1c89b","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat137-upper-hem","slot":"top","depth":100,"source":"0abdb1839e13713846432ad3039b05d20045d4faa8e57de80bdae94e53b8abed","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat137-lower-hem","slot":"top","depth":4.7,"source":"50114ab6aab0763ba26ecc6752ec3ed13e4d5688fef38560d2830aacef13e922","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"profile-underlap","source":"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","depth":4.65,"slot":"top","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"planIndices":[46]},"144":{"base":"v7-male-walk-drawn-east-east","source":"male-torso144-east-frozen-walk-native","sha":"40b5c1ae41aeb9baf38fa22d37105c7f5d0964e8a913f3cf7c2f5663252cc165","layers":[{"id":"coat144-upper-core","slot":"top","depth":100,"source":"03298ed90600cebef5ad63f3b56e8f883d794763eda1699b4326eb4cab07c208","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat144-upper-RIGHT-upper","slot":"top","depth":100,"source":"8994fd6e5afa05d99b1d3ba19c75c2dbf6fd96b72e0375c519b86b1c8ab03a5d","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat144-upper-RIGHT-lower","slot":"top","depth":100,"source":"0751d481af4c394d2d2aae73cdd210244985598ac3ff9fb0e31bf46a39d67e33","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat144-upper-hem","slot":"top","depth":100,"source":"bfe09b434b268e30ec8f251f9645e267653c279c877357b9689d793d578c2322","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat144-lower-hem","slot":"top","depth":4.7,"source":"5b070b40739cc324f84593e460da749e21268ac834ce3583998e8cfc465490f9","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"profile-underlap","source":"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","depth":4.65,"slot":"top","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"planIndices":[46]},"158":{"base":"v7-male-walk-drawn-east-east","source":"male-torso158-east-frozen-walk-native","sha":"5ba5c76a8c838b37fa2c33e65342b1b8816cb9c386bd34a92d3ee7dc9db0e5bd","layers":[{"id":"coat158-upper-core","slot":"top","depth":100,"source":"a6845fbfc20cbe84650dd426e4d5b4c38beb86739a34e3a0533e44429417ecbc","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat158-upper-RIGHT-upper","slot":"top","depth":100,"source":"a59e7faa0929a0a8cc9eb52e8f2bf4b97d282dde7cc9e80c1c69e1ec8446dc05","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat158-upper-RIGHT-lower","slot":"top","depth":100,"source":"2b1391b9e99d57837c3a0f89c4e7d9d1e4e2b0b4ba237bf5236e519f01a7918e","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat158-upper-hem","slot":"top","depth":100,"source":"ac9a57578e5a87a1b065b7fc265cecdc32803e6bf4f175e6d05066da8ed8a603","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat158-lower-tail","slot":"top","depth":4.7,"source":"c9ff17b361bd59e0691e5d7d0b41a08c817df576586145f1ae7eb0104dec7d6c","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"bone","a":"NECK","b":"HIP"},"source":"012d7d26b88356f26d6ec6cc780245110c0ada631d9d0fc55e854eb5b0b65af8"}],"planIndices":[46]},"165":{"base":"v7-male-walk-drawn-east-east","source":"male-torso165-east-frozen-walk-native","sha":"fe1a718405b80b21ce12eb00a483cdfe11d9bbe2913c9ae10d7ff046c89b1419","layers":[{"id":"coat165-upper-core","slot":"top","depth":100,"source":"335992eb415f19246f2f987b887cd7c8290be16bfdb87a0bf550e1b9fbe8294d","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat165-upper-RIGHT-upper","slot":"top","depth":100,"source":"3609879ac3eea11585db2aa075120b9cda0cd2c485adaa458767dd3f1c9652ab","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat165-upper-RIGHT-lower","slot":"top","depth":100,"source":"aaae919e034c86d1a46ae4adc48316f833b4afa4e20002a8628600077243b183","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat165-upper-hem","slot":"top","depth":100,"source":"ad91e53e590c48ba69a09a264a7578e652226f70a0a43d4939f5f217ebfa1b8f","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat165-lower-tail","slot":"top","depth":4.7,"source":"e039eee74d087f1bfa1e6d409f2e5ea74e0ab9481698a7c8f0a8cf83aa1b567c","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"bone","a":"NECK","b":"HIP"},"source":"8ba1b1c2f3c68f5df0887e0a01911bf5c389153c1d39124ab30829217421bb2b"}],"planIndices":[46]},"172":{"base":"v7-male-walk-drawn-east-east","source":"male-torso172-east-frozen-walk-native","sha":"d0f33feec3cdacd2afb1273ae44590ad2fdb9835cc8a7f0485fd9c2ad5c9676b","layers":[{"id":"coat172-lower-tail","slot":"top","depth":4.7,"source":"d0a3b3a5232cf29864666d5389126ed4c6c1d3a6fc0ff870fa75c1a2e681aa87","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"corrected-core-core","slot":"top","source":"b081624d0c601c8e44861f8eaf0b7bd4ca245025edcc908324edbd121d08db60","depth":100,"binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"corrected-core-hem","slot":"top","source":"497f2665954d13553728db63d5ca890af08f5c381a65d5b5a929157bb2403f7a","depth":100,"binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"corrected-sleeve-near-upper","slot":"top","source":"6ecedc60f1f72f11f8e5ff179d3e72f0146ae56d37656e639356f0f460be472c","depth":101,"binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"corrected-sleeve-near-lower","slot":"top","source":"f4781622d7c71205eb137d475061d2524466c27d048d232816a8da36daecc50e","depth":101,"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"front-cuff-rim-rim","source":"0595a6dd3d54c5ef6684e3e7671bbf4bb18907a7b8731e6788ff9c40addb201c","slot":"top","depth":104,"binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"original-neck-coverage-only-collar","slot":"top","depth":103,"binding":{"kind":"bone","a":"NECK","b":"HIP"},"source":"2b5ded0de58e1c1828e4edaf5f970342bb1864d87f68072899eb84efce82ba60"},{"id":"own-torso-behind-sleeve","source":"374f7eff214ed116bceb3750a306f41535bb13a2f061f1d6e32b54dffd599d7f","slot":"top","depth":100,"binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"planIndices":[46]},"179":{"base":"v7-male-walk-drawn-east-east","source":"male-torso179-east-frozen-walk-native","sha":"c4b9d32b3c8a4c3291c21d76b75673745902ea7dd748ffdc61b1f5e09d46a4f3","layers":[{"id":"coat179-upper-core","slot":"top","depth":100,"source":"abe98e91a270e73e0e3e327e0add5dcd78199ee8a015017c5c3e1490817ec8df","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat179-upper-RIGHT-upper","slot":"top","depth":100,"source":"18ed1ea0a48c303e4be4f7f2382620103bfadaa87f96e77019e4132a48d7c919","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat179-upper-RIGHT-lower","slot":"top","depth":100,"source":"bf0e22c2a523ef3e8bb006ff542172b01e29cdafde6ebc7f8ef11f2f77ebb403","binding":{"kind":"rigid","a":"RIGHT ELBOW","b":"RIGHT ARM"}},{"id":"coat179-upper-hem","slot":"top","depth":100,"source":"7b601e12e15a1bc5fe63e936109760c933197deba53645465e52242f609f4e4e","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat179-lower-tail","slot":"top","depth":4.7,"source":"583f9ba5179653a9f9816a01efb64a55eb947897b9d6742ea1206a24d12cf3f2","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"bone","a":"NECK","b":"HIP"},"source":"f1d0c53e504463b30405d063114c5e62ecfbc3148a5ed573ba2e55e45559dcfb"}],"planIndices":[46]}}},
+  "west":{"idle":{"7":{"base":"male-idle-original-west-from-walk0","source":"male-torso7-west-frozen-idle-native","sha":"eb568600a2ddb08ae7d01bf6d6eadea3c3fee11e17e3071811a1c61698ad4e0f","layers":[{"id":"coat7-upper-core","slot":"top","depth":100,"source":"1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","binding":{"kind":"fixed"},"frames":["1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40"]},{"id":"coat7-upper-RIGHT-upper","slot":"top","depth":100,"source":"8f6b2f2a99953669f8635976677b0622f77d8cde8534accd304d42367b199eb7","binding":{"kind":"fixed"},"frames":["8f6b2f2a99953669f8635976677b0622f77d8cde8534accd304d42367b199eb7"]},{"id":"coat7-lower-core","slot":"top","depth":4.7,"source":"b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","binding":{"kind":"fixed"},"frames":["b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c"]},{"id":"coat7-lower-hem","slot":"top","depth":4.7,"source":"d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","binding":{"kind":"fixed"},"frames":["d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6"]},{"id":"sleeve-front-lip-RIGHT-sleeve","source":"d2fd8188338f55dc161def3a0a51ccdaa4477a7d0aaff5a5ece8f4672e4ed588","slot":"top","depth":100,"binding":{"kind":"fixed"},"frames":["d2fd8188338f55dc161def3a0a51ccdaa4477a7d0aaff5a5ece8f4672e4ed588"]},{"id":"sleeve-aperture-rear-RIGHT-sleeve","source":"666751c3d23de7526ee576511c2a6725c6de07e6edd5a181e98a89647de2e9e0","slot":"underArms","depth":-4,"binding":{"kind":"fixed"},"frames":["666751c3d23de7526ee576511c2a6725c6de07e6edd5a181e98a89647de2e9e0"]}],"planIndices":[68]},"130":{"base":"male-idle-original-west-from-walk0","source":"male-torso130-west-frozen-idle-native","sha":"85d36b03e29bc5a0e6eb271b1efdc62ed8b6dd9f5b7135a3acfd20c571cba25a","layers":[{"id":"coat130-upper-sleeve-core","slot":"top","depth":100,"source":"5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","binding":{"kind":"fixed"},"frames":["5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938"]},{"id":"coat130-upper-sleeve-RIGHT-upper","slot":"top","depth":100,"source":"ec9c694125c82efda38ea3b1837a93c9a0048daf0439aeba624320a8118bdc50","binding":{"kind":"fixed"},"frames":["ec9c694125c82efda38ea3b1837a93c9a0048daf0439aeba624320a8118bdc50"]},{"id":"coat130-upper-sleeve-RIGHT-lower","slot":"top","depth":100,"source":"d3ca8245386d48aa37d631885005eac5215cfd25a991aaff0ff0c5afcb694d2d","binding":{"kind":"fixed"},"frames":["d3ca8245386d48aa37d631885005eac5215cfd25a991aaff0ff0c5afcb694d2d"]},{"id":"coat130-upper-sleeve-hem","slot":"top","depth":100,"source":"c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","binding":{"kind":"fixed"},"frames":["c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472"]},{"id":"coat130-lower-skirt-hem","slot":"top","depth":4.7,"source":"2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","binding":{"kind":"fixed"},"frames":["2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2"]}],"planIndices":[68]},"137":{"base":"male-idle-original-west-from-walk0","source":"male-torso137-west-frozen-idle-native","sha":"e6a487c1f7e64e6122784c23e4346b91599103fb3673178b70bb5177b691d756","layers":[{"id":"coat137-upper-core","slot":"top","depth":100,"source":"1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","binding":{"kind":"fixed"},"frames":["1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd"]},{"id":"coat137-upper-RIGHT-upper","slot":"top","depth":100,"source":"517f70ade8961e0ec58106886eabfaa987a30744d386ae1799a5d99cee8ee00b","binding":{"kind":"fixed"},"frames":["517f70ade8961e0ec58106886eabfaa987a30744d386ae1799a5d99cee8ee00b"]},{"id":"coat137-upper-RIGHT-lower","slot":"top","depth":100,"source":"a2579850c9d5797ddd307a41e57d388801ab1c36c2a50e607ed244855e59ef4c","binding":{"kind":"fixed"},"frames":["a2579850c9d5797ddd307a41e57d388801ab1c36c2a50e607ed244855e59ef4c"]},{"id":"coat137-upper-hem","slot":"top","depth":100,"source":"c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","binding":{"kind":"fixed"},"frames":["c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5"]},{"id":"coat137-lower-hem","slot":"top","depth":4.7,"source":"56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","binding":{"kind":"fixed"},"frames":["56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37"]},{"id":"profile-underlap","source":"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","depth":4.65,"slot":"top","binding":{"kind":"fixed"},"frames":["5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"]}],"planIndices":[68]},"144":{"base":"male-idle-original-west-from-walk0","source":"male-torso144-west-frozen-idle-native","sha":"40b5c1ae41aeb9baf38fa22d37105c7f5d0964e8a913f3cf7c2f5663252cc165","layers":[{"id":"coat144-upper-core","slot":"top","depth":100,"source":"e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","binding":{"kind":"fixed"},"frames":["e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8"]},{"id":"coat144-upper-RIGHT-upper","slot":"top","depth":100,"source":"3746027db66b8a931773d949a8fbdf541bc91de9fec551a6c7599771d4c4100f","binding":{"kind":"fixed"},"frames":["3746027db66b8a931773d949a8fbdf541bc91de9fec551a6c7599771d4c4100f"]},{"id":"coat144-upper-RIGHT-lower","slot":"top","depth":100,"source":"86f1a431cc55510d9d2a5317652a3d48ee3385a97071ca0abefc176ea20e8be1","binding":{"kind":"fixed"},"frames":["86f1a431cc55510d9d2a5317652a3d48ee3385a97071ca0abefc176ea20e8be1"]},{"id":"coat144-upper-hem","slot":"top","depth":100,"source":"811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","binding":{"kind":"fixed"},"frames":["811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff"]},{"id":"coat144-lower-hem","slot":"top","depth":4.7,"source":"df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","binding":{"kind":"fixed"},"frames":["df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7"]},{"id":"profile-underlap","source":"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","depth":4.65,"slot":"top","binding":{"kind":"fixed"},"frames":["5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"]}],"planIndices":[68]},"158":{"base":"male-idle-original-west-from-walk0","source":"male-torso158-west-frozen-idle-native","sha":"5ba5c76a8c838b37fa2c33e65342b1b8816cb9c386bd34a92d3ee7dc9db0e5bd","layers":[{"id":"coat158-upper-core","slot":"top","depth":100,"source":"c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","binding":{"kind":"fixed"},"frames":["c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5"]},{"id":"coat158-upper-RIGHT-upper","slot":"top","depth":100,"source":"43f7c44afc6650cc39ebaac1e01a9c40de7358fa4af4018a826502331bac90b2","binding":{"kind":"fixed"},"frames":["43f7c44afc6650cc39ebaac1e01a9c40de7358fa4af4018a826502331bac90b2"]},{"id":"coat158-upper-RIGHT-lower","slot":"top","depth":100,"source":"28e66e3766568044f07d9dee0056a39a4e25fe06a83c41685f3a465817b39374","binding":{"kind":"fixed"},"frames":["28e66e3766568044f07d9dee0056a39a4e25fe06a83c41685f3a465817b39374"]},{"id":"coat158-upper-hem","slot":"top","depth":100,"source":"fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","binding":{"kind":"fixed"},"frames":["fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6"]},{"id":"coat158-lower-tail","slot":"top","depth":4.7,"source":"819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","binding":{"kind":"fixed"},"frames":["819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51"]},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"fixed"},"source":"582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","frames":["582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a"]}],"planIndices":[68]},"165":{"base":"male-idle-original-west-from-walk0","source":"male-torso165-west-frozen-idle-native","sha":"fe1a718405b80b21ce12eb00a483cdfe11d9bbe2913c9ae10d7ff046c89b1419","layers":[{"id":"coat165-upper-core","slot":"top","depth":100,"source":"fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","binding":{"kind":"fixed"},"frames":["fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f"]},{"id":"coat165-upper-RIGHT-upper","slot":"top","depth":100,"source":"dde40323ca9d93a3ed43cb8fb0a90adc9fa1fb771e153255a9a049a13a474e9b","binding":{"kind":"fixed"},"frames":["dde40323ca9d93a3ed43cb8fb0a90adc9fa1fb771e153255a9a049a13a474e9b"]},{"id":"coat165-upper-RIGHT-lower","slot":"top","depth":100,"source":"e9388aef2315fcfd3efe133093c1ae0ae3e5aeaf72ddab6a22d1634290306680","binding":{"kind":"fixed"},"frames":["e9388aef2315fcfd3efe133093c1ae0ae3e5aeaf72ddab6a22d1634290306680"]},{"id":"coat165-upper-hem","slot":"top","depth":100,"source":"94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","binding":{"kind":"fixed"},"frames":["94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0"]},{"id":"coat165-lower-tail","slot":"top","depth":4.7,"source":"3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","binding":{"kind":"fixed"},"frames":["3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0"]},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"fixed"},"source":"49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","frames":["49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a"]}],"planIndices":[68]},"172":{"base":"male-idle-original-west-from-walk0","source":"male-torso172-west-frozen-idle-native","sha":"d0f33feec3cdacd2afb1273ae44590ad2fdb9835cc8a7f0485fd9c2ad5c9676b","layers":[{"id":"coat172-lower-tail","slot":"top","depth":4.7,"source":"0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","binding":{"kind":"fixed"},"frames":["0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e"]},{"id":"corrected-core-core","source":"32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","depth":100,"slot":"top","binding":{"kind":"fixed"},"frames":["32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e"]},{"id":"corrected-core-hem","source":"dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","depth":100,"slot":"top","binding":{"kind":"fixed"},"frames":["dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34"]},{"id":"corrected-sleeve-near-upper","source":"e3096644435a28f0357412b163863c97ac18a59c4ba97f3e146eef0a6b2eae42","depth":101,"slot":"top","binding":{"kind":"fixed"},"frames":["e3096644435a28f0357412b163863c97ac18a59c4ba97f3e146eef0a6b2eae42"]},{"id":"corrected-sleeve-near-lower","source":"0d2c416faf3621c8b263b8e90bd729cd249926f7e72ede4bc9edb77f5f255b1f","depth":101,"slot":"top","binding":{"kind":"fixed"},"frames":["0d2c416faf3621c8b263b8e90bd729cd249926f7e72ede4bc9edb77f5f255b1f"]},{"id":"original-neck-coverage-only-collar","slot":"top","depth":103,"binding":{"kind":"fixed"},"source":"274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","frames":["274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c"]},{"id":"own-torso-behind-sleeve","source":"80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","slot":"top","depth":100,"binding":{"kind":"fixed"},"frames":["80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717"]}],"planIndices":[68]},"179":{"base":"male-idle-original-west-from-walk0","source":"male-torso179-west-frozen-idle-native","sha":"c4b9d32b3c8a4c3291c21d76b75673745902ea7dd748ffdc61b1f5e09d46a4f3","layers":[{"id":"coat179-upper-core","slot":"top","depth":100,"source":"b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","binding":{"kind":"fixed"},"frames":["b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a"]},{"id":"coat179-upper-RIGHT-upper","slot":"top","depth":100,"source":"4a2a8fc4189a4a032248d5af6324eb2b778560c4d554d3e15983be9e87edb0a2","binding":{"kind":"fixed"},"frames":["4a2a8fc4189a4a032248d5af6324eb2b778560c4d554d3e15983be9e87edb0a2"]},{"id":"coat179-upper-RIGHT-lower","slot":"top","depth":100,"source":"2bb84d8a77c335be28ac66ef9643ff158fa1ef731e3be01f4d2ed3ee0b8e232f","binding":{"kind":"fixed"},"frames":["2bb84d8a77c335be28ac66ef9643ff158fa1ef731e3be01f4d2ed3ee0b8e232f"]},{"id":"coat179-upper-hem","slot":"top","depth":100,"source":"e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","binding":{"kind":"fixed"},"frames":["e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b"]},{"id":"coat179-lower-tail","slot":"top","depth":4.7,"source":"5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","binding":{"kind":"fixed"},"frames":["5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406"]},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"fixed"},"source":"b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","frames":["b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6"]}],"planIndices":[68]}},"walk":{"7":{"base":"v7-male-walk-drawn-east-east-mirror-west-candidate","source":"male-torso7-west-frozen-walk-native","sha":"eb568600a2ddb08ae7d01bf6d6eadea3c3fee11e17e3071811a1c61698ad4e0f","layers":[{"id":"coat7-upper-core","slot":"top","depth":100,"source":"1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","binding":{"kind":"fixed"},"frames":["1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40","1f46806c8b1eaaab3b90965fc95444e1d928e0278d7f80dbb8f13fab9bedea40"]},{"id":"coat7-upper-RIGHT-upper","slot":"top","depth":100,"source":"8f6b2f2a99953669f8635976677b0622f77d8cde8534accd304d42367b199eb7","binding":{"kind":"fixed"},"frames":["8f6b2f2a99953669f8635976677b0622f77d8cde8534accd304d42367b199eb7","9f879d44c44a39a759a4e565b8750b40b1db96db0395fe9fc4cbea446e50c876","0577deaa7fbe7ccba0d806279751dabe13cfd4c5240a2586131b0fb4dac732f3","d8e1bdb804f18478e5fcac249150a64886c4189f9003ee83b7b99bd8ff0b20cb","84936f7d8db6206776c48241e1d1ca7d50faa03fe084ca6dcc0a12998a5f9d99","5d67c9499b69c111f8cbff71461ce92c9276f7ace111d99f644a915589387730","63c74917c1d665e0b29d911b1ac0aa547d8a1ee1956e9a0d1292ddf26a3f0a1d","31087983296cb8db3c5119f496f8b06e9c6ab6537951a72a0a96a16f496a3ae6","c8a762d16a53a135ea0d2974a1d53553dbe04adfb19033b8245d4884314c103d","31087983296cb8db3c5119f496f8b06e9c6ab6537951a72a0a96a16f496a3ae6","63c74917c1d665e0b29d911b1ac0aa547d8a1ee1956e9a0d1292ddf26a3f0a1d","5d67c9499b69c111f8cbff71461ce92c9276f7ace111d99f644a915589387730","84936f7d8db6206776c48241e1d1ca7d50faa03fe084ca6dcc0a12998a5f9d99","d8e1bdb804f18478e5fcac249150a64886c4189f9003ee83b7b99bd8ff0b20cb","0577deaa7fbe7ccba0d806279751dabe13cfd4c5240a2586131b0fb4dac732f3","9f879d44c44a39a759a4e565b8750b40b1db96db0395fe9fc4cbea446e50c876"]},{"id":"coat7-lower-core","slot":"top","depth":4.7,"source":"b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","binding":{"kind":"fixed"},"frames":["b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c","b50d4116ef99adccb53d04281f3b7343bd7029645c8bed1d3d84176fa944e96c"]},{"id":"coat7-lower-hem","slot":"top","depth":4.7,"source":"d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","binding":{"kind":"fixed"},"frames":["d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6","d328ec86854ae508ca87fb440a80eb7a61a91cb514becacaf9e17621baa6b2e6"]},{"id":"sleeve-front-lip-RIGHT-sleeve","source":"d2fd8188338f55dc161def3a0a51ccdaa4477a7d0aaff5a5ece8f4672e4ed588","slot":"top","depth":100,"binding":{"kind":"fixed"},"frames":["d2fd8188338f55dc161def3a0a51ccdaa4477a7d0aaff5a5ece8f4672e4ed588","0dc24ed192999b151ed83666ae2ef6d7a7d714eea3e9df923444d01f311c37c8","4bed80baf11ae7f4fe68fc534314bd84d24a8d0aaba4a68a2b262e3582efd854","a51d68abb3a35af49e4cb55d23e9634308530d7c437d075ded70d4eaaf2784a8","4de690729d1191ab290e3c2d48656f230100abe1718f8f3db2d835bebe0f29ff","b244681d90c1f65e6ec425c61cc82de142f2649be0e33322d71351fcf4c5495b","ffd0352b418f03aade8851a9960067ea3e481ac34c4cc64982740dee69a0fba1","a43922356d7b141597ca3c87339c3f304df33cf8c446240c6f0a0c03a899f35e","c2409f641c0899f21c55d6e1a64e0e013dfce33d4232702809f99a707416ccdc","a43922356d7b141597ca3c87339c3f304df33cf8c446240c6f0a0c03a899f35e","ffd0352b418f03aade8851a9960067ea3e481ac34c4cc64982740dee69a0fba1","b244681d90c1f65e6ec425c61cc82de142f2649be0e33322d71351fcf4c5495b","4de690729d1191ab290e3c2d48656f230100abe1718f8f3db2d835bebe0f29ff","a51d68abb3a35af49e4cb55d23e9634308530d7c437d075ded70d4eaaf2784a8","4bed80baf11ae7f4fe68fc534314bd84d24a8d0aaba4a68a2b262e3582efd854","0dc24ed192999b151ed83666ae2ef6d7a7d714eea3e9df923444d01f311c37c8"]},{"id":"sleeve-aperture-rear-RIGHT-sleeve","source":"666751c3d23de7526ee576511c2a6725c6de07e6edd5a181e98a89647de2e9e0","slot":"underArms","depth":-4,"binding":{"kind":"fixed"},"frames":["666751c3d23de7526ee576511c2a6725c6de07e6edd5a181e98a89647de2e9e0","db6dd37d0a5d7c04ecfde07481856a6aa42edea893b346e961c105c251282608","9066ae7f711f2b740a6d795455684b70a3e0961f66fb9b1356fe42e7c680edc0","4b1d6c57d058a2a7f36acbbf4d84fedbfaf002452ffe098af45ea50a124dce91","f7989909cce909d49e682d765016b7ca79e9a3c6b869538923b682bdd3cf9621","34a952e407158cbda7f701a222184e07e9aa849f22c862a30e06c7b35918ee1a","10f4d110c0ec6eae9a5e3ce83276dd58104a47a885d047962b32e335d7859c14","e9a46a82409ee2dd9c31aad7b04e2464ab9ac7c8d16f034c379a41a9fda85f2b","dd0640b9fd143790d846f9d1adf37decc5e7d456a843f11fce6c3408007a4589","e9a46a82409ee2dd9c31aad7b04e2464ab9ac7c8d16f034c379a41a9fda85f2b","10f4d110c0ec6eae9a5e3ce83276dd58104a47a885d047962b32e335d7859c14","34a952e407158cbda7f701a222184e07e9aa849f22c862a30e06c7b35918ee1a","f7989909cce909d49e682d765016b7ca79e9a3c6b869538923b682bdd3cf9621","4b1d6c57d058a2a7f36acbbf4d84fedbfaf002452ffe098af45ea50a124dce91","9066ae7f711f2b740a6d795455684b70a3e0961f66fb9b1356fe42e7c680edc0","db6dd37d0a5d7c04ecfde07481856a6aa42edea893b346e961c105c251282608"]}],"planIndices":[68]},"130":{"base":"v7-male-walk-drawn-east-east-mirror-west-candidate","source":"male-torso130-west-frozen-walk-native","sha":"85d36b03e29bc5a0e6eb271b1efdc62ed8b6dd9f5b7135a3acfd20c571cba25a","layers":[{"id":"coat130-upper-sleeve-core","slot":"top","depth":100,"source":"5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","binding":{"kind":"fixed"},"frames":["5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938","5d9fca794fa8077efd0af50e2cc485fb436fe2c92ff6301f26aee7663d4d5938"]},{"id":"coat130-upper-sleeve-RIGHT-upper","slot":"top","depth":100,"source":"ec9c694125c82efda38ea3b1837a93c9a0048daf0439aeba624320a8118bdc50","binding":{"kind":"fixed"},"frames":["ec9c694125c82efda38ea3b1837a93c9a0048daf0439aeba624320a8118bdc50","4a3ea52d5026191fbd013144b01401d741ea44ca524f8975cf552c7a50477aca","ed29a09b2ac7fceb35d7641032f84df0d2857d86171cc2e6f6520b0bd2d0062e","d91cd7916221678809b871f31dc8c17fbc3cf28230359942c3f9ce7c9215cff7","51cfd85a5f0b62cd8d0f6a36b7758ccea2f8a829fb10520c9fbf1ef339796664","7ec1e1ee71e1278a53895a4c4112d16feb85340d768dfbbef12b5736c80a9272","99ac96fcc149b1250590f58876616806a4ed05a8b7051c772a2e172ce7356e4c","8d062d37e252700be4c2cca17ee097ced86ced7d2270673264e2f4e354a30e4c","c2acd060a3b96cfa1480886c62acc531fee5ffa4d977c0cd3620e91d0be9a51c","8d062d37e252700be4c2cca17ee097ced86ced7d2270673264e2f4e354a30e4c","99ac96fcc149b1250590f58876616806a4ed05a8b7051c772a2e172ce7356e4c","7ec1e1ee71e1278a53895a4c4112d16feb85340d768dfbbef12b5736c80a9272","51cfd85a5f0b62cd8d0f6a36b7758ccea2f8a829fb10520c9fbf1ef339796664","d91cd7916221678809b871f31dc8c17fbc3cf28230359942c3f9ce7c9215cff7","ed29a09b2ac7fceb35d7641032f84df0d2857d86171cc2e6f6520b0bd2d0062e","4a3ea52d5026191fbd013144b01401d741ea44ca524f8975cf552c7a50477aca"]},{"id":"coat130-upper-sleeve-RIGHT-lower","slot":"top","depth":100,"source":"d3ca8245386d48aa37d631885005eac5215cfd25a991aaff0ff0c5afcb694d2d","binding":{"kind":"fixed"},"frames":["d3ca8245386d48aa37d631885005eac5215cfd25a991aaff0ff0c5afcb694d2d","e755c6fe7a60adcadab95851d4390e60de3936ee428d1cdddbbfe9fed4c93780","31af31ced678e780da2ef72c3c54fddb515bed9f7a97733dee96177c5c5a472e","cbb959d95acabc617f317d7f741822f001cb4e89882e2d0bf38b6c2f610b7c1e","1d09844436896cb6e458552adcc3b6560c1b7ce34627fc2a120db0eeade55c18","ac3ba5b1c447055c58308eaf4c86b580bcfcab41fbd1c9e04366ea90b430d91a","20618d56423390395a0d21401d2aff01dca2cae4ff50d016f7765e7ebc95ca15","e95d55b6e6e1943fe1a8c4a93d3af07099086875973198f4ac1991c48d7add52","a5fe357d8416cf4bdb64491694294e7e08fb1be193004b676104db996d64eff0","84f855568018b1935b76ff35d5166343653407f10f58aa34b371dce696b383e3","6e7da06fd6e3b352fb190454323c8cd7ee470e4821b796746c6ee749cfc377a6","2d9e2ea57f4b7acde3b5badf1b00be6cb631cc3633a02da2577c0b138be2a7fa","d6d3e141a9f015b87378ab813e431b27e820933496804cb59cca4d26a1527240","3cae92cdffcc1218bb69b638127eadfb09376513a338c4cbec82deb81b0d20ec","3586b5a502b4f015adb1cabe57cc342d303bd97b7abc89b076eb02fc61a58694","2f0f7c047b12fbe5edb0a3fff15b3857210e864da1cf55c952d886556ba03501"]},{"id":"coat130-upper-sleeve-hem","slot":"top","depth":100,"source":"c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","binding":{"kind":"fixed"},"frames":["c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472","c794dc56f4bdaf8eeafed8cde0457527ca8c95f4587cedd7c5d14bcb8d7ef472"]},{"id":"coat130-lower-skirt-hem","slot":"top","depth":4.7,"source":"2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","binding":{"kind":"fixed"},"frames":["2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2","2ee9fcc9b0faf50e45a2305ad6ed9fca8ba3e6800c89e4046e6b1fa9a0296ec2"]}],"planIndices":[68]},"137":{"base":"v7-male-walk-drawn-east-east-mirror-west-candidate","source":"male-torso137-west-frozen-walk-native","sha":"e6a487c1f7e64e6122784c23e4346b91599103fb3673178b70bb5177b691d756","layers":[{"id":"coat137-upper-core","slot":"top","depth":100,"source":"1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","binding":{"kind":"fixed"},"frames":["1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd","1d6e11a5a2a5e3e8967e594c663c32c04a93edfc3e917c8f07516aae159c50bd"]},{"id":"coat137-upper-RIGHT-upper","slot":"top","depth":100,"source":"517f70ade8961e0ec58106886eabfaa987a30744d386ae1799a5d99cee8ee00b","binding":{"kind":"fixed"},"frames":["517f70ade8961e0ec58106886eabfaa987a30744d386ae1799a5d99cee8ee00b","3019bd456f4a74738a7c36209d4e783211006f3a81b767870955cf5d742a1582","0cf53c6f564aa81775302bacfef8bfedb2ba896c79eafbc53d6b418c5b144c61","033c59631f5a00a6f1c8d646633a330f5b1082955c8df387b351700ec494567e","4023740a87fbd1c90b87b0d833316064241b69ce6aff2b3a9411a3fee7867867","fd203109c6c346e13a3a9dd5707b5cd02fdd4828b5356ab167ea4eee5eb75ef1","9cebff051006cfd3bbf31ab1c29280c222a4012e70ad51360f754273be2a3ed1","91599d7f25a032a5f01f54de5a7e252964792e7bc7f841463bce9999b4ab8d41","d4b1228742ee0e02c4abee9eab4edc828eaec066e2617ddf572de7204e8f21b6","91599d7f25a032a5f01f54de5a7e252964792e7bc7f841463bce9999b4ab8d41","9cebff051006cfd3bbf31ab1c29280c222a4012e70ad51360f754273be2a3ed1","fd203109c6c346e13a3a9dd5707b5cd02fdd4828b5356ab167ea4eee5eb75ef1","4023740a87fbd1c90b87b0d833316064241b69ce6aff2b3a9411a3fee7867867","033c59631f5a00a6f1c8d646633a330f5b1082955c8df387b351700ec494567e","0cf53c6f564aa81775302bacfef8bfedb2ba896c79eafbc53d6b418c5b144c61","3019bd456f4a74738a7c36209d4e783211006f3a81b767870955cf5d742a1582"]},{"id":"coat137-upper-RIGHT-lower","slot":"top","depth":100,"source":"a2579850c9d5797ddd307a41e57d388801ab1c36c2a50e607ed244855e59ef4c","binding":{"kind":"fixed"},"frames":["a2579850c9d5797ddd307a41e57d388801ab1c36c2a50e607ed244855e59ef4c","88940ad07209cf1ea43c379180c6c8439c96008e1c223bfe6d61f5b529d740ef","8da36893c4586d7ff84dcdc7fd11ec8c8e0cdb21cc8c9e235270871ddf4a3bb3","7998f0de8110f4ce191e0461a7f7592537709771198b10e632d202ac30949863","6706bdef174d266aec6356165e776abd40100b653e6757837cf681a468c99ce9","355114ed806237cea007f99c3184633e6819dd5b84f56a1fe23ef0d7d031a1ee","5e194e3d27047e472d792a0c03511b0de8a4a93a022e2912743c494926cb7b74","74f16ba1244b8f79f22f90b73a31137afe51f566256f1a9e3963b3fa3e8ceca8","a4e2a3d721cab9e9f544b1f60f22ffcdf0b895fec4a49ca298a4ed748cfe2909","1381bd84a5fa67e7ad7e49aed64f61124ce519e62b6d73401fb2355327a54e3c","7379dc8d12ec83523261015f91892d592f938844a14ae929031b3d8c9eaa97da","ceb228ef1ad7b08efc544d35758d9a69b0d077b64d14fb587503996b6a64648e","2bb7dc854ca4fc3f3362829cd92d0ae7990ea6e5a83db349f2fd5be0064dd9d3","108e4fb581e51ea71f3f24c076f0a0ef3dbfde7e8d68990b5c31404d0e2376a5","d9eeb9fa811aa9ba4b7cc8d28a34ca4793704278e4cf1fb595be899ba8827ae0","3f3952e8208264949bb781e2302a8311436d33a2d3a533adf253fd689ac40ee4"]},{"id":"coat137-upper-hem","slot":"top","depth":100,"source":"c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","binding":{"kind":"fixed"},"frames":["c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5","c4ed30e2314df52504706f75ccd4a6922c50ce8d77b577a6f44885a27fcfffd5"]},{"id":"coat137-lower-hem","slot":"top","depth":4.7,"source":"56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","binding":{"kind":"fixed"},"frames":["56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37","56d2079a8da2d624996c139c660500058918796bc7786b090ce8d0f88a839c37"]},{"id":"profile-underlap","source":"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","depth":4.65,"slot":"top","binding":{"kind":"fixed"},"frames":["5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"]}],"planIndices":[68]},"144":{"base":"v7-male-walk-drawn-east-east-mirror-west-candidate","source":"male-torso144-west-frozen-walk-native","sha":"40b5c1ae41aeb9baf38fa22d37105c7f5d0964e8a913f3cf7c2f5663252cc165","layers":[{"id":"coat144-upper-core","slot":"top","depth":100,"source":"e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","binding":{"kind":"fixed"},"frames":["e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8","e4027ecd2cb1e8cf4458924a4b023476ad3c91f5b82be5e0a83aaf593b0a63f8"]},{"id":"coat144-upper-RIGHT-upper","slot":"top","depth":100,"source":"3746027db66b8a931773d949a8fbdf541bc91de9fec551a6c7599771d4c4100f","binding":{"kind":"fixed"},"frames":["3746027db66b8a931773d949a8fbdf541bc91de9fec551a6c7599771d4c4100f","32558ac7d2a7ffe43e659bb813e89ced4cd51d2bc1aa8082d2c8281360c1a78d","faa56650beb74c11ab6c66e7a4d1bb48ac886cda5735f4e6d05aaba76b8930c4","17505473f93f51b479abd2620224622d222a07e38a26417d05dd030785694a37","2bdf9735e7f3e97bceee30fa15cf4849dfa14d059f1e00bcbfe98b1e3d48e887","ba45c8a99a68f530b4998d2afcf7348990c6ca0f80193e4f578aeb423fdae33a","9b85e77708d87c215b1a941123fdfadd464b11697d9597a12d7bc8ed33072c85","84b124a29e90eeaec31b145ad7bcbfd2849d35d7c52a73c439beda5079777cda","0f89b6c8b5f28a924ef68f8c06318fd858e236e34d3edf3cf46a663a7757a19b","84b124a29e90eeaec31b145ad7bcbfd2849d35d7c52a73c439beda5079777cda","9b85e77708d87c215b1a941123fdfadd464b11697d9597a12d7bc8ed33072c85","ba45c8a99a68f530b4998d2afcf7348990c6ca0f80193e4f578aeb423fdae33a","2bdf9735e7f3e97bceee30fa15cf4849dfa14d059f1e00bcbfe98b1e3d48e887","17505473f93f51b479abd2620224622d222a07e38a26417d05dd030785694a37","faa56650beb74c11ab6c66e7a4d1bb48ac886cda5735f4e6d05aaba76b8930c4","32558ac7d2a7ffe43e659bb813e89ced4cd51d2bc1aa8082d2c8281360c1a78d"]},{"id":"coat144-upper-RIGHT-lower","slot":"top","depth":100,"source":"86f1a431cc55510d9d2a5317652a3d48ee3385a97071ca0abefc176ea20e8be1","binding":{"kind":"fixed"},"frames":["86f1a431cc55510d9d2a5317652a3d48ee3385a97071ca0abefc176ea20e8be1","36cded06d20c57d2cf9318783ea763cf82592b839630ad66d1c01daf8acaf9bf","2201acc9b79bb66a103cea2d7b635d04d1939c3fc0b296f511f3975c0d822f1c","372d996ff204e9707fe6e238fcfda692bad655c47aa21e6089fe575508028bb3","f34c23bd450e28d176fc202032c2fc447aa0005705c66b910a624ddd72230e1f","a848f85bec1c5a2660236dc3360d87cf8bf65e33c78536900ee0267500f69e50","a6c67e358793c91335203e53f8ec3c4470aa6010d99a5f9ee2722c572247575b","8e173467aa8bdc2aed2ffb0172a0b559f61db9acede9e6bac335e108303e8e01","191b68927de73c679e4961c868a58ab2e58eb8ade80a41b2c23eb79d4504e78b","5d5f7456f91496d4942d3ae52723e19f7e5c599849f124cd0d30f05061353195","1347866043d5080cbee0ea5584a2e146f07c3c0f19689f14793ac3480c47d668","f1d26d56d2cfc4999f97b0b5eec5b5c9070c1311acd6f2494e4dc364a20d4215","5a26133958ee8a717d372d2cbe325806f6a63e27c44a452105b212b391bc3f58","47c23f09e0a0f163eedca738ba97c50ef57e6b67f837d7edb286f2c01a1555d7","372a025e1dd7d4baa91e1b8d5f6d5b57c90f5cbcc56f110b95952f59eb0825df","90f79a145303d0c6253da4b86328b3c68f86c6ee39619cc5c2e30afc7cbab7db"]},{"id":"coat144-upper-hem","slot":"top","depth":100,"source":"811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","binding":{"kind":"fixed"},"frames":["811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff","811a5c76155eb0a4b35699ecfacdcff4918ecd49f437b96ea77016d88bab43ff"]},{"id":"coat144-lower-hem","slot":"top","depth":4.7,"source":"df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","binding":{"kind":"fixed"},"frames":["df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7","df1b52b5e802eb9b9c9fa2f1462cd53579671973f6f694f398addb2d01e336d7"]},{"id":"profile-underlap","source":"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","depth":4.65,"slot":"top","binding":{"kind":"fixed"},"frames":["5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"]}],"planIndices":[68]},"158":{"base":"v7-male-walk-drawn-east-east-mirror-west-candidate","source":"male-torso158-west-frozen-walk-native","sha":"5ba5c76a8c838b37fa2c33e65342b1b8816cb9c386bd34a92d3ee7dc9db0e5bd","layers":[{"id":"coat158-upper-core","slot":"top","depth":100,"source":"c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","binding":{"kind":"fixed"},"frames":["c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5","c6ea6f732a047470944b9aa1352fc3902da832aa47a6ad6cffad2c413298ccc5"]},{"id":"coat158-upper-RIGHT-upper","slot":"top","depth":100,"source":"43f7c44afc6650cc39ebaac1e01a9c40de7358fa4af4018a826502331bac90b2","binding":{"kind":"fixed"},"frames":["43f7c44afc6650cc39ebaac1e01a9c40de7358fa4af4018a826502331bac90b2","b8314335d1e64d319b394d993c99ad73d85837297a8862db173fdab5516b91ab","63aa6cb2f303c0e20ea7364b401e128c5c2881cb971a5fac5c19fd11904f8cf4","96a25064eb7826ba083ba72426195288aca130703a3bde3be84cc31e56e26aed","fb0fbfa78d0f02d256a76213ccaac0153a872b9a2ab7a167e8bdb797f1b4e39b","da4a98bb75b3c689b7e3435f17f012d6bc246b27f1e60b7b95a68f88b662f64e","65a131760e035e844f29d45e7c3fc1bb1c6d1e7a4bdf9e112a2c2881910ba6d0","c4dcc467d3a8e072bede068c865979f3f0c5045c44eb2d92df490ee0ae54a5b4","4f2d77270b9f7ea5623bc4078132cb2ed19ab4d56f1ea9105f9f24014ce7c7fd","c4dcc467d3a8e072bede068c865979f3f0c5045c44eb2d92df490ee0ae54a5b4","65a131760e035e844f29d45e7c3fc1bb1c6d1e7a4bdf9e112a2c2881910ba6d0","da4a98bb75b3c689b7e3435f17f012d6bc246b27f1e60b7b95a68f88b662f64e","fb0fbfa78d0f02d256a76213ccaac0153a872b9a2ab7a167e8bdb797f1b4e39b","96a25064eb7826ba083ba72426195288aca130703a3bde3be84cc31e56e26aed","63aa6cb2f303c0e20ea7364b401e128c5c2881cb971a5fac5c19fd11904f8cf4","b8314335d1e64d319b394d993c99ad73d85837297a8862db173fdab5516b91ab"]},{"id":"coat158-upper-RIGHT-lower","slot":"top","depth":100,"source":"28e66e3766568044f07d9dee0056a39a4e25fe06a83c41685f3a465817b39374","binding":{"kind":"fixed"},"frames":["28e66e3766568044f07d9dee0056a39a4e25fe06a83c41685f3a465817b39374","6ee58120a48952d1df660e9eb95b303bb835adc1b7b5fa14c811b033d2ff3288","f8c19a8979a0f1906e4999a4248b004098c48d0011dd0a649e27a3655e643cbc","5d986252a6ba394abed4471f7cfa4e5f119b98da1860eeadd742df9afceca67a","3e3cb081dbe1172e92d38c7e02de2e7a15a3acf7a9da161831bad05dab5035a3","ee2d5e3f2c471c49b0667a3bfe0de9b8a4f9f8633460d8d671c2b52c5a3dff60","cec5da3b93bf1d23d54d2587458600c995603f5170ab1f4e23106c61124c91ce","7de09bc921563c6d572f24b7066f6552f9318a18915edd47d55cd0dc5d928949","a4c94cf1f7587c6bb67adc7d783365e7327a59fc469c2c9c76ece02ff63b3ae5","4603badd0cbc1e490138ac816df4dad2e6803b02b5029727b4b2fd6fbdf85363","a883df27fd5ecf01642c5134a81ed34e10f97177f7488c4af3cbed8e23d94edb","fe43ef427ebcfcf328fed54aaec1144f43b8eea3bad55b50d05c09b144128571","559545f5270a39fa7aacf00b96cc687f86de784aad459d520c17b6030f5fd658","d6f72fb63a4952464dbda1b4dbd11504e43cdaca007312c0ba65d2eb2ebfef31","89dae5859f0cabfac0852e1982d1c0552eeea2a36baa1c20a1e9f265980bbb06","3dfbd572cd7d7520e732500a08e8aaa6411fbe63a94450c6650d0bc7caac1998"]},{"id":"coat158-upper-hem","slot":"top","depth":100,"source":"fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","binding":{"kind":"fixed"},"frames":["fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6","fae0bb7d3a39e3c8654534a530ffef7f73927d665a0ac61f85af61e7c4ff2ff6"]},{"id":"coat158-lower-tail","slot":"top","depth":4.7,"source":"819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","binding":{"kind":"fixed"},"frames":["819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51","819048cba6ccc9e8c17f17b636821508a1fb3d792a093980ebbbe208b7f8bf51"]},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"fixed"},"source":"582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","frames":["582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a","582f61acc8d5c13af3f8e15bd5357d7bd165c08c0d89accc1ea2b01d2a50839a"]}],"planIndices":[68]},"165":{"base":"v7-male-walk-drawn-east-east-mirror-west-candidate","source":"male-torso165-west-frozen-walk-native","sha":"fe1a718405b80b21ce12eb00a483cdfe11d9bbe2913c9ae10d7ff046c89b1419","layers":[{"id":"coat165-upper-core","slot":"top","depth":100,"source":"fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","binding":{"kind":"fixed"},"frames":["fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f","fb9a1b83be4bb707f6c40ae1ee3f6b17246cf336d35a376b48adf628f9cadf6f"]},{"id":"coat165-upper-RIGHT-upper","slot":"top","depth":100,"source":"dde40323ca9d93a3ed43cb8fb0a90adc9fa1fb771e153255a9a049a13a474e9b","binding":{"kind":"fixed"},"frames":["dde40323ca9d93a3ed43cb8fb0a90adc9fa1fb771e153255a9a049a13a474e9b","0a63798ed5377ffd76f2f4e6cddcbd571a26502e53d5db7c92ec013b4af33b7c","75c4f75cbef5f513aab13677f9cafbb2d64cd953e775ac86336ff19008d806d3","3fc67183ba365ddea721fa23791d65a2a3a4120f8d3eec2516cd2d2f32282b7c","a688b39932b81440210a04e18ec25fd81c932262841edee1ac6f28ce010a2dd8","8be029fafd92ecd2577e51af91278c74a246175abeff2905663db5c6f7553046","926a8c2465e2cb03285eec1460b56aa2e077ee19f60ea5397c10bee127371771","9cd3078d067cc72b09f7246437b2ee778657cee7bd4895358605548c603ec3fe","159bf2becad4104bc411f97ab6fa6c7b5d57fa912d6c885f13b3b5aeb771cd9a","9cd3078d067cc72b09f7246437b2ee778657cee7bd4895358605548c603ec3fe","926a8c2465e2cb03285eec1460b56aa2e077ee19f60ea5397c10bee127371771","8be029fafd92ecd2577e51af91278c74a246175abeff2905663db5c6f7553046","a688b39932b81440210a04e18ec25fd81c932262841edee1ac6f28ce010a2dd8","3fc67183ba365ddea721fa23791d65a2a3a4120f8d3eec2516cd2d2f32282b7c","75c4f75cbef5f513aab13677f9cafbb2d64cd953e775ac86336ff19008d806d3","0a63798ed5377ffd76f2f4e6cddcbd571a26502e53d5db7c92ec013b4af33b7c"]},{"id":"coat165-upper-RIGHT-lower","slot":"top","depth":100,"source":"e9388aef2315fcfd3efe133093c1ae0ae3e5aeaf72ddab6a22d1634290306680","binding":{"kind":"fixed"},"frames":["e9388aef2315fcfd3efe133093c1ae0ae3e5aeaf72ddab6a22d1634290306680","93dee6b2b65640d2480840b3150323640b86b3a70cab0602139b299e1aac852a","8066defa69f2ca59dcfab58f12ca153f201b1893ac73f5d52e94fb6366c506f6","067f43e821aef27bcc1af5d639f9059a2ffd74033af5a25e4f792b6b48573897","551c5cfa2fb22efe07be1b21c05f408c8bb6fc2b43ec29e0b3baa6e01d72da3c","4c1a001f88db8ec506bb1fafb54d1f719928a2ab46ef49934a9d6a3531851fa9","bcd323bcabc566cd00cfe485691baa5232026d27aa94f3e8276267c151db3c35","cbc26ff27a879f44950f0c0c86c7902873fb1f10665d43f7c0f962f9f555899d","c0c3960336e6269dab691fbe8434aa8bdf73a0126c0ef3c637a748f9bc625bc6","9ca2f6d55e1da78a22d930e65c32643fbf8b330560470c539659bfa4e00366d1","bc62d9637dfc4aae591b87d1c9d38219745a9586298729b6f7f50f39cc4ef1be","ea9987c409fb847a99e482a2147dba8d044fce96d07b78f9a3957e0b4ab83502","530c518d52fd9d9eee1f0cffcd5dac6ea027decc4beeafdde92179ea2ac383b9","2c39404ffac7109226c4d448a7b006d2c845c30ba2f3bbb678d4c4e9c95f4ad4","0e652a9d320b418876ea0e8318267a38ab2a5b07b99dee92cd27270697303744","e6d56df3481a83732c82d1c1977ddda70d37d11e458e1d9b3657fd1e8414b012"]},{"id":"coat165-upper-hem","slot":"top","depth":100,"source":"94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","binding":{"kind":"fixed"},"frames":["94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0","94f5fac7060736d705d401b174be69015ca3567c321da2fc20d4972f9fd36fe0"]},{"id":"coat165-lower-tail","slot":"top","depth":4.7,"source":"3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","binding":{"kind":"fixed"},"frames":["3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0","3484ecf1cecd6c122a0fdf6e626ad2182db08764cce745c538467ff0b1ac1ab0"]},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"fixed"},"source":"49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","frames":["49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a","49725689175dba91878565c2ea65b9f8c2561f45c198aad088f894638b66834a"]}],"planIndices":[68]},"172":{"base":"v7-male-walk-drawn-east-east-mirror-west-candidate","source":"male-torso172-west-frozen-walk-native","sha":"d0f33feec3cdacd2afb1273ae44590ad2fdb9835cc8a7f0485fd9c2ad5c9676b","layers":[{"id":"coat172-lower-tail","slot":"top","depth":4.7,"source":"0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","binding":{"kind":"fixed"},"frames":["0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e","0af217160f90c3057d8f2eef49eaebc2b137c8060f2d2ecefda8bce4c77d2a3e"]},{"id":"corrected-core-core","source":"32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","depth":100,"slot":"top","binding":{"kind":"fixed"},"frames":["32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e","32465fc97eb473eef4040545ac0bf477c7788fde38a02d889aacbf145e02ab5e"]},{"id":"corrected-core-hem","source":"dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","depth":100,"slot":"top","binding":{"kind":"fixed"},"frames":["dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34","dfdbce6d47322d9cc40ebcfb40ddf9063ea3cb0d2d94e482a2192ebc6e0b0e34"]},{"id":"corrected-sleeve-near-upper","source":"e3096644435a28f0357412b163863c97ac18a59c4ba97f3e146eef0a6b2eae42","depth":101,"slot":"top","binding":{"kind":"fixed"},"frames":["e3096644435a28f0357412b163863c97ac18a59c4ba97f3e146eef0a6b2eae42","b94f9fe1a6d003a994d1c1c83850b6556340a2998b8017458f3725b85438afa1","2c8be4b65ccd106794eb70954c88b6169c8dbaeb2c1e988b5d18fe66a9b9155b","338502d9719ec7c4bbaa44d5e468e1eab822e3df1b41603ca00907cdf0a3e924","e866d8ac2c4fb9dcf72084195131451c8c3d30baeecbe2f37ad113660d7e87f9","8389fa2ea024612d4a291e24ef40ac8b3c9b06f294c68cc57adbf39c12ac5b07","e6cbb48b864863017d7c3f5b79d57b6fa0c46334f552f7b3130ae4e8661e2499","48ba2a0d9578eece0f1a2e3b9784fc1aff28250b91d7f51bb826be206c42d12b","e046398b76489bf5d654443bd523bc161ad49b92a34fff199ae8e987452fe86e","48ba2a0d9578eece0f1a2e3b9784fc1aff28250b91d7f51bb826be206c42d12b","e6cbb48b864863017d7c3f5b79d57b6fa0c46334f552f7b3130ae4e8661e2499","8389fa2ea024612d4a291e24ef40ac8b3c9b06f294c68cc57adbf39c12ac5b07","e866d8ac2c4fb9dcf72084195131451c8c3d30baeecbe2f37ad113660d7e87f9","338502d9719ec7c4bbaa44d5e468e1eab822e3df1b41603ca00907cdf0a3e924","2c8be4b65ccd106794eb70954c88b6169c8dbaeb2c1e988b5d18fe66a9b9155b","b94f9fe1a6d003a994d1c1c83850b6556340a2998b8017458f3725b85438afa1"]},{"id":"corrected-sleeve-near-lower","source":"0d2c416faf3621c8b263b8e90bd729cd249926f7e72ede4bc9edb77f5f255b1f","depth":101,"slot":"top","binding":{"kind":"fixed"},"frames":["0d2c416faf3621c8b263b8e90bd729cd249926f7e72ede4bc9edb77f5f255b1f","ae4d2c8a2e422a3b9d2e9880f9331dc85cf5343b94d162083469353273e4d5e1","d2f1088d1e409cbc4bae75c88fe83bc251084eed0963168b23a4cbd47531bd9b","aa1c87de1a0040976c50e74632cb3d4725997fc8208f445e091fbe5dd6e0b625","ab801729f43626839fa3bcb1c14c03fcc7cdd21cb79457c23eefc9de9f1c6949","e941de4ea3e2819162da77d792cc3ee805d360526116da503ad57dcb7a3e172e","7c90449e50806d25e896cf1026f803b04f9f4b688199777ae7a77ed1396a04a0","b6eee010a4e2f10cd4b4dbdba94210c939c8af79de4144bd7ec1b0e876e8301a","6e6a5ce5b60971b2d60fac3aa729d10e6b997ec6c52947531f5a1ed23ecc4ef4","95df2812cd9a41f2def2ffca155403901edee954db179ae1eb61a73a0ddad5ba","8bb82013e3e28d0d0bbc69235e7f82bd848c31e53f7aa76dbf84ac9ff3f4b6a7","eb41ad45a4c09857064e78a62b80d07e7bcbececae9148597f1734e9a311244c","eded3f68b967ddfef166bff8f38bfb4ce53b6a0af326a2e5ebce9df7d25d9cda","608bd0c3ac04ac485c0cb613a64f66a3f286e699c892c1b72c36bfde33e5db5f","e5d70a111f88d9c1d6e723dfd5af5e75d79e2ecbf492dfaa0f0feed3cc2d0b71","e7f175ffc8600ecdfd7030177c0296bdb607c87d52419e5bea310c97d60b460f"]},{"id":"original-neck-coverage-only-collar","slot":"top","depth":103,"binding":{"kind":"fixed"},"source":"274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","frames":["274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c","274e935006b7ecbe5e8735a98a3d4e1fddb513fefc8aa3770d62c227c968d56c"]},{"id":"own-torso-behind-sleeve","source":"80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","slot":"top","depth":100,"binding":{"kind":"fixed"},"frames":["80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717","80465fb165e0743967dd0efc2a248a56870a0ca4812ad76745919a47c1388717"]}],"planIndices":[68]},"179":{"base":"v7-male-walk-drawn-east-east-mirror-west-candidate","source":"male-torso179-west-frozen-walk-native","sha":"c4b9d32b3c8a4c3291c21d76b75673745902ea7dd748ffdc61b1f5e09d46a4f3","layers":[{"id":"coat179-upper-core","slot":"top","depth":100,"source":"b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","binding":{"kind":"fixed"},"frames":["b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a","b3e8a12e46afa63f64d64ad56211188b9eaa2225e67308d43247966e9888b39a"]},{"id":"coat179-upper-RIGHT-upper","slot":"top","depth":100,"source":"4a2a8fc4189a4a032248d5af6324eb2b778560c4d554d3e15983be9e87edb0a2","binding":{"kind":"fixed"},"frames":["4a2a8fc4189a4a032248d5af6324eb2b778560c4d554d3e15983be9e87edb0a2","f1563deab0222ea41b0ea3aadfa10423f866b7d9f90aa96658a6fc29b8054097","ec62cc57b4f8d3685063766f1075dc3b1749b93a0591fe0df78196b04bcb856c","4ed6ee53807898814a645f6ecc82cde090595876dee0aaa51a9ecce4aed76d51","99782fa2a5d5ac721b808105695e322f2cdb9046bf452c96e72e28d1ca667222","f91f624ef1f018945f19f7028f415204fd51384bf6016f35fe156b42ac645001","73de8d8513376fd2d56a7962f46e78f6c5c2fb485a62a797f7bfa5b0035aa185","bca65961b34e783b08b3c7739384aac0f229b7c602e36a743a14459af0fe146d","dc13e7515fd0b8065b62ae41632fd66013e3cb84402289389f384cf48eff9a25","bca65961b34e783b08b3c7739384aac0f229b7c602e36a743a14459af0fe146d","73de8d8513376fd2d56a7962f46e78f6c5c2fb485a62a797f7bfa5b0035aa185","f91f624ef1f018945f19f7028f415204fd51384bf6016f35fe156b42ac645001","99782fa2a5d5ac721b808105695e322f2cdb9046bf452c96e72e28d1ca667222","4ed6ee53807898814a645f6ecc82cde090595876dee0aaa51a9ecce4aed76d51","ec62cc57b4f8d3685063766f1075dc3b1749b93a0591fe0df78196b04bcb856c","f1563deab0222ea41b0ea3aadfa10423f866b7d9f90aa96658a6fc29b8054097"]},{"id":"coat179-upper-RIGHT-lower","slot":"top","depth":100,"source":"2bb84d8a77c335be28ac66ef9643ff158fa1ef731e3be01f4d2ed3ee0b8e232f","binding":{"kind":"fixed"},"frames":["2bb84d8a77c335be28ac66ef9643ff158fa1ef731e3be01f4d2ed3ee0b8e232f","836b0215012209f1c8d03c78514aaa15a61f53ee1971c7ba09ee133586a0f9da","7bed9bfe99b95140adc557caa4e2177dc3d473e5678f39cb9f60a08867dcc4e7","8bc865e20a39388185927d4e02e45cd58d43df0b8a2204db00981792ab17b288","c5f564750cc73b82aaf548f507ba103ec3eec974af319cf1581100a53e96792b","27a4c759370ee4dbd0d799acbfde9cc4364f959ef3dd427ca24bc515408bc5b5","68e207cc24e3aebfb2173c22cd7828d006355a8876228fa089cf724fc06e8b1f","ba6cedcb11030aadbc6150d15b8140c506f240ed24ac21d4a12c670b710cacb7","9a5e1efba62514fc7895cfa75a703fdc0933e354d5c06a039222e1084037b36d","b7307cb8a03c75a084de298e70cf21d76143e6d39865877d93989cabb38ee877","9f46e27f4318605200704198d37fb345a460c09e07ec3e54334f9edb46795f33","43d5aac5f06e81b12ef67bc29c04426799201df919fac22fe787cc12a4722dfb","cc842267e48a04403baf777c21feea3aea26eb3b8d11754f882dcbe69a726ab8","c1116e053e70e6f17f9282b0bf65ae3a5c8966d96693d8d3b3212964f10b308c","62cfb7b3ac9a0b2195afaa3011b83335c62b7101e8414ec2de3e3a26adff5621","c7d421029b8815c72eafae14ff14fe373df0c61cdd7814ea47be5bad35f9a25a"]},{"id":"coat179-upper-hem","slot":"top","depth":100,"source":"e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","binding":{"kind":"fixed"},"frames":["e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b","e96c539989703fe008f84bc94ee847b99e7b97a82133deefb4b34a45de9b717b"]},{"id":"coat179-lower-tail","slot":"top","depth":4.7,"source":"5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","binding":{"kind":"fixed"},"frames":["5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406","5a8e06b3d0d404505d360bf6fbe62287257ba9d94c415e031084ed68e8dc0406"]},{"id":"original-neck-coverage-only-collar","slot":"top","depth":100.1,"binding":{"kind":"fixed"},"source":"b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","frames":["b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6","b4a18e3707e8c5f1840bbbf7ea34fae13b54023ae27c3f9efb2b3e0c905d22c6"]}],"planIndices":[68]}}},
+ };
+ // Same exact direct torso and body source, mounted at its original
+ // ranks. Slot provider is selected from gait; existing projected carry
+ // proofs certify only safe depth, not which cloth to render.
+ const torsoC6WalkClearance={
+  "east":{"base":"v7-male-walk-drawn-east-east","source":"male-torso6-east-frozen-walk-native","sha":"588d7f159c5a7c27cd77ab09ffcdbca7a8bd505d7337a8f0e5e2673c3d71839c","layers":[{"id":"coat6-upper-sleeve-collar-core","slot":"top","depth":100,"source":"1226385af7087382ec44cecc2a65eb0eff60d10a79c1cd4433ed4e11185a2fe7","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-upper-sleeve-collar-RIGHT-upper","slot":"top","depth":100,"source":"7f1eec4a846a1276ca5191f942461b28b78438a2032062c7e59c66719c8eac44","binding":{"kind":"rigid","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"}},{"id":"coat6-lower-torso-core","slot":"top","depth":4.7,"source":"76867f07260768207b39a9acbf531c33ddb428af468d82f41a19f44c35b4a7f0","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-lower-torso-hem","slot":"top","depth":4.7,"source":"bcdf6d0e05871f4ec4be801ee4ba7cbd9fc6e70045812220f3477e5f7a0dc92b","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"planIndices":[51,53,45,46,44,47,50]},
+  "north":{"planIndices":[29,31,32,33,35,37,28]},
+  "south":{"base":"male-walk-south-r7","source":"male-torso6-south-frozen-walk-native","sha":"589b9bb6f7b8b3e1001425ede151d26e2bd016cd701dceca173bb7dae1a3f29e","layers":[{"id":"coat6-collar-core","slot":"top","depth":100,"source":"aceec6ba712f114d765738c12fe75d1418a513be0f0e80c7a413c00e954532db","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-left-sleeve-RIGHT-sleeve","slot":"top","depth":100,"source":"f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","binding":{"kind":"bone","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"},"frames":["f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1","f99075b5250e5dc07c9d65990c9d81f6b6ad772dc7b5d82a7160ef70b2dd38a1"]},{"id":"coat6-right-sleeve-LEFT-sleeve","slot":"top","depth":100,"source":"ef095de8fa1eca23b0bc3902b69102c717cbb845f730de09c8cd8121dbd2df3e","binding":{"kind":"bone","a":"LEFT SHOULDER","b":"LEFT ELBOW"},"frames":["ef095de8fa1eca23b0bc3902b69102c717cbb845f730de09c8cd8121dbd2df3e","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39","66267aef9b19751ef5423225df3686d4618420fb20f6e4074185bcd4c1e7ca39"]},{"id":"coat6-torso-core","slot":"top","depth":100,"source":"d42153e739eedad4497dc1b72e2fc981cb3874a12e35ac7623dc06e103ca6258","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-torso-RIGHT-upper","slot":"top","depth":100,"source":"2393d256a1f18254f9f2fc2414a1ab286191722f0f179c279bdf169c634bac69","binding":{"kind":"bone","a":"RIGHT SHOULDER","b":"RIGHT ELBOW"},"frames":["2393d256a1f18254f9f2fc2414a1ab286191722f0f179c279bdf169c634bac69","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e","ce18292e37b92bc44fbb1d2f6a76bf0a9bd8f5a5090584ebce967734d8f5b11e"]},{"id":"coat6-torso-LEFT-upper","slot":"top","depth":100,"source":"ef88463f450848e5c3bcf9300e6402239cfe5bebc504d70363dd4e48385f2561","binding":{"kind":"bone","a":"LEFT SHOULDER","b":"LEFT ELBOW"},"frames":["ef88463f450848e5c3bcf9300e6402239cfe5bebc504d70363dd4e48385f2561","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618","9af06c075c7475d1e62da0215465d638730c00d147e189698fc148eb99bbe618"]},{"id":"coat6-torso-hem","slot":"top","depth":100,"source":"a526adbc615b9ba295e56cfd83c8b5444b8d2d993e71a1062a76f8569c308a4a","binding":{"kind":"bone","a":"NECK","b":"HIP"}},{"id":"coat6-inner-lining-neck","slot":"underArms","depth":-5,"source":"c19fbbf897d844c5a15a8a1d6c284427a1659f3a7a8b00b962f82dbc68945815","binding":{"kind":"bone","a":"NECK","b":"HIP"}}],"planIndices":[7,1,2,0,3,6]},
+  "west":{"base":"v7-male-walk-drawn-east-east-mirror-west-candidate","source":"male-torso6-west-frozen-walk-native","sha":"588d7f159c5a7c27cd77ab09ffcdbca7a8bd505d7337a8f0e5e2673c3d71839c","layers":[{"id":"coat6-upper-sleeve-collar-core","slot":"top","depth":100,"source":"22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","binding":{"kind":"fixed"},"frames":["22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88","22365b72a7ec7d94367df78ef8ddba4d75d10ecc3cc54c64c2e7646d6f0dec88"]},{"id":"coat6-upper-sleeve-collar-RIGHT-upper","slot":"top","depth":100,"source":"93ef93e01bd69bf0d6a8c76d0acf439c18b177cd73c6a12022360c91266a3383","binding":{"kind":"fixed"},"frames":["93ef93e01bd69bf0d6a8c76d0acf439c18b177cd73c6a12022360c91266a3383","7ba0244291f3c9c72ba1f298427c7e6a7a7bd9976689c89f8a41746af28d08fa","7eb975b7eb893137bd97030908eae891042b4c1d229cc01ca298aa3ad59f8323","feeb6766b88d68f5fa1c168e8d15f78539eb838a43ddada070cd99b4f9ccb36e","fc6b4ea1b88252c02f5c639b5bf45b615b64d511a2d68eb6a569ef77d3341a56","13a70fe38173606c26b51b22dd48ce36066b7da8d42bd5c3c15a14464954cfcf","655c34ea7ca1b619968e4cd892edf45582c862981a70877388518de83544c4c2","fedae6b0f532fe5594263da0c0a41f6d8e9373ab58a6271b3a8bc7169d6e6790","28b4bfd26bb8cb31629a57783d1d3affc87529c67769320f8d14a2778e589cd9","fedae6b0f532fe5594263da0c0a41f6d8e9373ab58a6271b3a8bc7169d6e6790","655c34ea7ca1b619968e4cd892edf45582c862981a70877388518de83544c4c2","13a70fe38173606c26b51b22dd48ce36066b7da8d42bd5c3c15a14464954cfcf","fc6b4ea1b88252c02f5c639b5bf45b615b64d511a2d68eb6a569ef77d3341a56","feeb6766b88d68f5fa1c168e8d15f78539eb838a43ddada070cd99b4f9ccb36e","7eb975b7eb893137bd97030908eae891042b4c1d229cc01ca298aa3ad59f8323","7ba0244291f3c9c72ba1f298427c7e6a7a7bd9976689c89f8a41746af28d08fa"]},{"id":"coat6-lower-torso-core","slot":"top","depth":4.7,"source":"d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","binding":{"kind":"fixed"},"frames":["d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f","d5e897a3648fa2501f0d3499dc2760f755747c6194d40278d47fe3ccecf5732f"]},{"id":"coat6-lower-torso-hem","slot":"top","depth":4.7,"source":"08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","binding":{"kind":"fixed"},"frames":["08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9","08b7d25088aaf21e172933115d366793ec63cdeda1a22a43e60ef3e8027eafe9"]}],"planIndices":[73,75,67,68,66,69,72]},
+ };
+ const torsoC6WalkVectors={};
+ function visibleWorldActor(player){
+  // The save keeps the equipped item, but a hidden hat is not a visual
+  // dependency. Pass the exact visible projection to legacy authored guards.
+  if(player?.equipment?.head!=null&&root.MareHeadgear?.hidden(player)){
+   const equipment={...player.equipment};delete equipment.head;player={...player,equipment};
+  }
+  return player;
+ }
+ const auditedWorldSlotProviders=[selectSignedWeaponGarments];
+ function selectAuditedWorldSlotPose(player,o){
+  if(!player||o.consumer!=='world')return null;
+  for(const provider of auditedWorldSlotProviders){
+   const candidate=provider(player,o,true);
+   if(candidate)return candidate;
+  }
+  return null;
+ }
+ const cetroWalk40Pins={"east":{"walk":"202352cb972f4fe437ca7fd43aa4d848b88a4fc98dcfc6393bb5fd0b4c1e16bd","face":"5843eab2f9d0d5f4520abf1b5d605301a1f80887422caeb252ca8073f7cef773","iris":"3c8fcb083ab48610c42b34b6bdb0dcdc324331509b908c0dd7cbb724b5b37141"},"west":{"walk":"33cd3e581abb50daa48b73e462fb0e267d492b91eb061fafc075dad6a0a4421b","face":"9f2d13b556a604d9bd162d00386e788b9fe0c482a6d1bac35c67e5a9992d2032","iris":"5f757e230cf80547097912d391f7acb3f2ce3e98ece852f3f43969f657c1c963"}};
+ function exactCetroWalk40Bare(r,o,a){
+  const pin=cetroWalk40Pins[o.direction],material=r?.femaleNamedHairRecord,d=r?.pack?.directions[o.direction],eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!pin||r?.hdKind!=='outfit'||r.sourceId!=='female-coat67-'+o.direction+'-own-bare-v1'||
+   !eq(d.clip,{frames:40,fps:40,loop:true})||r.pack.density!==4||!eq(r.pack.frame,{width:128,height:128})||!eq(r.pack.pivot,{x:64,y:112})||
+   !material?.fused||material.style!=='original'||material.gearRecord||material.profileNeckRestore!==true||material.registeredBlueIris!==pin.iris||
+   material.ownership.walkHead!==pin.walk||!material.ownership.attackLayers.some(l=>l.id==='face'&&l.source===pin.face)||
+   material.skinColor!==a.skinColor||material.hairColor!==a.hairColor||material.eyeColor!==a.eyeColor)return null;
+  if(a.skinColor==='light')return r;
+  const bounded={...material,id:material.id+':cetro-walk40-skin41',localCetroForehead:true};
+  return {...r,id:r.id+':cetro-walk40-skin41',femaleNamedHairRecord:bounded};
+ }
+ function selectCetroWalk40Parity(strict,player,o){
+  const a=player.appearance96,keys=rawOccupiedEquipmentKeys(player),e=player.equipment?.weapon,n=Number(e?.def??e);
+  if(o.consumer!=='world'||o.action!=='walk'||o.weaponless||!cetroWalk40Pins[o.direction]||player.__reworkSubset||player.zoanTransformed||
+    !a||a.gender!=='feminino'||a.version!==1||a.skinStyle!=='natural'||a.skin!=null&&a.skinColor!==a.skin||
+    a.hair!=null&&a.hair!=='original'||a.hairStyle!=='original'||a.face!=null&&a.face!=='original'||a.eyeStyle!=='original'||a.eyeColor!=='blue'||
+    a.hairColor!=='black'||!['strategist','healer'].includes(player.classId))return null;
+  if(!keys.length)return exactCetroWalk40Bare(strict,o,a);
+  if(!strict?.cetroLateralCarryGrip||strict.hdKind!=='female-equipment'||keys.length!==1||keys[0]!=='weapon'||n!==strict.item||
+   ![123,124,125,126,127].includes(n)||player.classId!==(n<=124?'strategist':'healer')||
+   ['variant','variantId','appearanceVariant'].some(k=>e?.[k]!=null&&e[k]!=='original'))return null;
+  const host=exactCetroWalk40Bare(selectVisualStrict({...player,equipment:{}},o),o,a);
+  const ord=host?.pack.directions[o.direction],old=strict.baseRecord.pack.directions[o.direction],eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!host||!eq(old.clip,{frames:8,fps:8,loop:true})||strict.states.length!==8||!eq(ord.rest,old.rest)||
+     !['density','pivot','frame'].every(k=>eq(host.pack[k],strict.baseRecord.pack[k]))||ord.layers.length!==old.layers.length||
+     !ord.poses.every((v,t)=>{const f=Math.floor(t/5);return eq(v,old.poses[f])&&ord.layers.every((l,i)=>{
+      const q=old.layers[i];return l.id==='base:'+q.id&&l.slot===q.slot&&l.depth===q.depth&&eq(l.binding,q.binding)&&
+       (l.frames?.[t]||l.source)===(q.frames?.[f]||q.source);
+     });})||!strict.states.every((s,i)=>s.frame===i&&!s.hideBaseLayers&&!s.baseMasks&&s.parts.length===1&&s.parts[0].depth===4.01&&s.parts[0].sourceClip===null&&s.parts[0].cetroSouthGripWindow))return null;
+  return {...host,id:strict.id+':cetro-walk40-parity:'+host.id,item:n,equipment:{weapon:n},
+    slotRoutes:{weapon:{item:n,quality:'hd',source:strict.id}},
+    ownCetroWalk40Parity:{host,parts:strict.states.map(s=>s.parts[0])}};
+ }
+
+ const ownW2WestWalk40Pins={"id":"female2-walk-west-candidate","base":"v7-female-walk-drawn-all-west","layer":"arms","hands":["f65620245e7084fea5d3f5699430e6535912f708a47c8a9fc8e7f3ac634139b8","25eafe083d3f22a748a5a5812f7b9ceb584dd91106d69a25e7d36445b2ce1783","d8a7be71b6859c621c4908dd0cb9389299172b7bde931eb4b516fad29251a6ec","9a9b0fa5c963362d819949cc7cd9969c5606657a836b3aef376cf4e9ce9dd955","0a8955ab4ad6628420677d8f311b12c596b382d986ff1ff5282fae0a8b26b2fc","96799b9250ae281bee3780ebfd018da41cdc6db55adc31b80eafe4ffbe66dab8","ca8d60758ff3cd9672ed0cbd580a6b6362f2452b3ac23fc6280d5bf3832655f0","0c8ecb08753b41793b93a3bb5147512f0e8fc2423776a0f0545c377eec8d6baa"],"clip":{"frames":8,"fps":8,"loop":true},"w":128,"stamp":[{"url":"tools/rework-weapon-layers-hd/assets/a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a.png","sourceClip":null,"sha256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a","matrix":[0.960973035505924,-0.27664205217307475,0.27664205217307475,0.960973035505924,-94.51424142163853,57.57199809729434],"depth":4.01,"targetHandCenter":[306.3426724137931,288.69827586206895],"targetForearmCenter":[299.81607142857143,266.0267857142857],"side":"right","handMaskSHA256":null,"registration":"Original isolated item carry pixels rigidly registered to authored female wrist/forearm; no scale or body substitution","sourceNativeSize":[640,640]},{"url":"tools/rework-weapon-layers-hd/assets/a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a.png","sourceClip":null,"sha256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a","matrix":[0.9801066465236765,-0.19847156330344426,0.19847156330344426,0.9801066465236765,-89.17861916816308,33.9885745246836],"depth":4.01,"targetHandCenter":[291.79464285714283,296.60044642857144],"targetForearmCenter":[287.2060810810811,273.9408783783784],"side":"right","handMaskSHA256":null,"registration":"Original isolated item carry pixels rigidly registered to authored female wrist/forearm; no scale or body substitution","sourceNativeSize":[640,640]},{"url":"tools/rework-weapon-layers-hd/assets/a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a.png","sourceClip":null,"sha256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a","matrix":[0.9988113591320236,-0.04874288531508908,0.04874288531508908,0.9988113591320236,-52.98929901932145,-32.213973525573124],"depth":4.01,"targetHandCenter":[284.1336405529954,284.7304147465438],"targetForearmCenter":[282.91846522781776,259.82973621103116],"side":"right","handMaskSHA256":null,"registration":"Original isolated item carry pixels rigidly registered to authored female wrist/forearm; no scale or body substitution","sourceNativeSize":[640,640]},{"url":"tools/rework-weapon-layers-hd/assets/a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a.png","sourceClip":null,"sha256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a","matrix":[0.9266539796271037,-0.3759154187330592,0.3759154187330592,0.9266539796271037,-113.12817893368258,89.90858286804183],"depth":4.01,"targetHandCenter":[309.7609649122807,277.7127192982456],"targetForearmCenter":[300.4267399267399,254.7032967032967],"side":"right","handMaskSHA256":null,"registration":"Original isolated item carry pixels rigidly registered to authored female wrist/forearm; no scale or body substitution","sourceNativeSize":[640,640]},{"url":"tools/rework-weapon-layers-hd/assets/a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a.png","sourceClip":null,"sha256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a","matrix":[0.9326422527731081,-0.3608024782929048,0.3608024782929048,0.9326422527731081,-105.75885605355971,83.24939952761497],"depth":4.01,"targetHandCenter":[314.0215517241379,277.9030172413793],"targetForearmCenter":[305.0501730103806,254.71280276816609],"side":"right","handMaskSHA256":null,"registration":"Original isolated item carry pixels rigidly registered to authored female wrist/forearm; no scale or body substitution","sourceNativeSize":[640,640]},{"url":"tools/rework-weapon-layers-hd/assets/a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a.png","sourceClip":null,"sha256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a","matrix":[0.9554250503732975,-0.2952337601277705,0.2952337601277705,0.9554250503732975,-97.58332893975698,59.573460496126756],"depth":4.01,"targetHandCenter":[307.68220338983053,282.8792372881356],"targetForearmCenter":[300.5783783783784,259.8900900900901],"side":"right","handMaskSHA256":null,"registration":"Original isolated item carry pixels rigidly registered to authored female wrist/forearm; no scale or body substitution","sourceNativeSize":[640,640]},{"url":"tools/rework-weapon-layers-hd/assets/a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a.png","sourceClip":null,"sha256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a","matrix":[0.9363291775690445,-0.35112344158839165,0.35112344158839165,0.9363291775690445,-113.74179955808924,76.00901893544119],"depth":4.01,"targetHandCenter":[304,275],"targetForearmCenter":[295,251],"side":"right","handMaskSHA256":null,"registration":"Original isolated item carry pixels rigidly registered to authored female wrist/forearm; no scale or body substitution","sourceNativeSize":[640,640]},{"url":"tools/rework-weapon-layers-hd/assets/a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a.png","sourceClip":null,"sha256":"a47cb7853dac4d73cafdbae055b676ecdd55bb7beb6fd4aa1e4a6ca0a5fa0e8a","matrix":[0.966647832818074,-0.25610928782088516,0.25610928782088516,0.966647832818074,-93.82808161240936,46.366549612140716],"depth":4.01,"targetHandCenter":[302.01458333333335,285.9791666666667],"targetForearmCenter":[295.85739750445634,262.7397504456328],"side":"right","handMaskSHA256":null,"registration":"Original isolated item carry pixels rigidly registered to authored female wrist/forearm; no scale or body substitution","sourceNativeSize":[640,640]}],"spec":[["c613786d36644ae27905e9d202052140e29a19bcb4facb2ab05c49ffa88ef994",[305.21,282.83],[297.24,260.78]],["f0b04e6cfe23423b2d6f2240a76777c3a332bacd32abee6de1b96eb23ef6b3b9",[290.82,290.45],[285.55,268.18]],["22dc54a3f36fcd2e138f8dc3b25df5690c98baab19e7dd1d8d9bdcbdecfb4370",[202.54,274.65],[216.59,257.68]],["dc1bbaccee10a6e1a30858499960a61c532f2c1d52705ac251e582720405cdf9",[196.12,257.38],[213.55,245.24]],["ec5a3bcfd5a7aef53b491f7216f8453a402a0cf8a11110b2f43a1fcb63f2fa98",[190.68,256.71],[208.84,245.41]],["37a35affda2950f8312290b12caa5184cd8a90fdc322b5d00105041f4a69df00",[194.46,256.38],[211.6,243.52]],["bdacda3660d24fe5a13469b5c8751f3f0fe4d18e87e2e2f41481c0399cf7fb68",[202.79,261.39],[219.48,247.23]],["dc4ffd6f507ff2e11f52e77e59ccc0384091ba4d528215c243749b6d4cc0efa5",[300.83,279.82],[293.38,256.79]]],"depth":4.01,"side":"right"};
+ function selectOwnW2WestWalk40(strict,player,o){
+  const fit=ownW2WestWalk40Pins,look=player.appearance96,keys=rawOccupiedEquipmentKeys(player),e=player.equipment?.weapon;
+  if(o.consumer!=='world'||o.direction!=='west'||o.action!=='walk'||o.weaponless||player.__reworkSubset||player.zoanTransformed||
+    player.classId!=='brawler'||look?.version!==1||look.gender!=='feminino'||look.skinStyle!=='natural'||
+    look.hairStyle!=='original'||look.eyeStyle!=='original'||look.eyeColor!=='blue'||!['black','auburn'].includes(look.hairColor))return null;
+  if(!keys.length)return exactCetroWalk40Bare(strict,o,look);
+  if(keys.length!==1||keys[0]!=='weapon'||(e?.def??e)!==2||strict?.item!==2||strict.hdKind!=='female-equipment'||
+    strict.id.split(':')[0]!==fit.id||strict.sourceBaseId!==fit.base||strict.states.length!==8||
+    ['variant','variantId','appearanceVariant'].some(k=>e?.[k]!=null&&e[k]!=='original')||strict.omitted?.length)return null;
+  const host=exactCetroWalk40Bare(selectVisualStrict({...player,equipment:{}},o),o,look),ord=host?.pack.directions.west,
+   base=strict.baseRecord.pack,old=base.directions.west,eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!host||!eq(old.clip,fit.clip)||!eq(ord.rest,old.rest)||
+    !['density','pivot','frame'].every(k=>eq(host.pack[k],base[k]))||ord.layers.length!==old.layers.length||
+    !old.layers.some(l=>l.id===fit.layer&&l.depth===4&&eq(l.frames,fit.hands))||
+    !ord.poses.every((v,t)=>{const f=Math.floor(t/5);return eq(v,old.poses[f])&&ord.layers.every((l,i)=>{
+      const q=old.layers[i];return l.id==='base:'+q.id&&l.slot===q.slot&&l.depth===q.depth&&eq(l.binding,q.binding)&&
+       (l.frames?.[t]||l.source)===(q.frames?.[f]||q.source);
+    });})||!strict.states.every((s,i)=>s.frame===i&&!s.hideBaseLayers&&!s.baseMasks&&s.parts.length===1&&eq(s.parts[0],fit.stamp[i])))return null;
+  const parts=fit.spec.map(([sha])=>'tools/rework-weapon-layers-hd/assets/'+sha+'.png');
+  return {...host,id:strict.id+':own-w2-west-walk40:'+host.id,item:2,equipment:{weapon:2},
+    slotRoutes:{weapon:{item:2,quality:'hd',source:strict.id}},ownW2WestWalk40:{host,parts}};
+ }
+  const w119SideBody={"east":{"sha":"1793a125ab0bbb85e7c1bd17b631d638287fb4cca4929cc4135166f42a5980e0","packId":"v7-punch-east-drawn8-east","layers":[["skin-arms-phase",0,{"kind":"fixed"},["b0979f9817371731bb761db0dfed65de422a64c6fdd053232e50dc8966a21b6a","f87d911ae4e4725905f0dee7b460ad3b068a2785939a777017b4f9d4bcad846b","d18e401a7a747f262286f4512e352717f13e46c440475808e680db24e3416830","738338534b0e8e45915f7422a15d25f346748a58c0822ecb6fcfe1c508a004f8","475e09d0d85d793686d4a288059d439f055dc54410d3378b3b99a5ec8a8ebcd2","f1f4470a9b70da3738a4719c57282820515cd2d00d9aa1c879ee007ec090b5a2","49dae24527acfe4ba2cdf49cfe55a62f052edfc7e46db29a64433778529d9deb","d8bfee7bdae9094e25dba9c9d2076ab1d7069dd0afd689edf9b1bf22d8c95c35"]],["shorts-phase",1,{"kind":"fixed"},["34d57b1b89acb48177dbd83d05fdfc893ca5538fd9bf1984f80b397142c38b0b","f95975d2f6a0c58476e3c74115e538123a21bf75214ed0f26f2afbe3c5d4a659","07310c481d001c1e2704aa4a948bd7d9ed65143846f6dc126d9546bb2cba1acb","5856b0032bcc3557e04337bfd2771abe8f94076f595a92c167f62d49178a50e0","653baf9e98885bccf715bb74c4eef01bb68f5a424b6b5913215fb959ab83d105","062dc23ba349415c7b2812f2632dbf8576fd156ae773d64ca9c316bdc9d43539","d198fcf417108140b998d9e456e5e12b4f2f787ea97e32c74f1296c3a0232823","cf28c98fc5d678f2aa4855812e212892c8c9936202df6793af1b59ce9e11f688"]],["headBase",4,{"kind":"rigid","a":"NECK","b":"NOSE"},["e1a62125f08b88d3875261638bf09a2ec736e93b687df59a19014f5dab146154"]],["face",5,{"kind":"rigid","a":"NECK","b":"NOSE"},["9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2"]],["hair",6,{"kind":"rigid","a":"NECK","b":"NOSE"},["45de7576039c538aee29ff5a5d0def51143e8cbf90a33cdead504d88fd2ea713"]]]},"west":{"sha":"443626e677dcabda46b4a90b5730138d8c3a56606a74c91b4a7f269700b5f561","packId":"v7-punch-west-drawn8-west","layers":[["skin-arms-phase",0,{"kind":"fixed"},["4e70d3b6005b1e75c6365c35ed75f0677dbb011d20c0c6d9b45e1eaa62a5f7ed","49669cfe45413f0c6ddd5a24e65c7943d2e96db52a2d689f6cb97932207bc6bc","66cb7411df889fcf8cbb254c0aff57ba4164abe9109c456e31287f00fc47c81c","45c4f65d5039a8164b0dd1120679ae8f88fa72da0b831d36a2465f201588f334","46bb35b150ad7ad09bd5e3eac6e0dde3218cca340def68bf5e8c1d9585b06d1a","f2acc2b2f534cf3002d7ef1b9abb40ea2b88974e954b6e89b61924e63517c4b3","38d5c1eb946e167aab27e077706cb502bf10716d0682dcbef9697ea4e8be7f73","4342e94db6081451436f2e0b6f2e5ea9ea9f6f8babed1591528d1b904023065c"]],["shorts-phase",1,{"kind":"fixed"},["22aba9c19c030e20d9cd520ff28c69b0beda7c551a1c6914532ada11f574c4c9","ff61160087d9f3b72b1cfc2d33452a971e658fa1436121f934d42e6614fa0488","05a54b93427a9ebff89f2de817e3fcb490f40037ab2c1f2ef898873d91266a3c","82cc6b465f3a4dcf05af2ae03331e3b1ca4c400a60fd109bc4419abd889b1b7a","6a6563fc7a1a5b7c4b57eb96202f040561682dd690c572ca793b1febb6627b37","ef7490a6fc2edbd30490a75bb2220676cec5bec78b6c7e7336a4b4c54da422db","35f9f00bb11fa4f77e0aec5c66f138926c69c0bbce9eb84003d64bf13778fbf8","913fcc35116de62f4e9cf64a6f5a5b7f8141cb16ce62d2c986e760225d5e8b74"]],["headBase",4,{"kind":"rigid","a":"NECK","b":"NOSE"},["550e876bc65b387f14977734f71f6d4ae681ebdab0d2cf515faa2fa6bf98d888"]],["face",5,{"kind":"rigid","a":"NECK","b":"NOSE"},["0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464"]],["hair",6,{"kind":"rigid","a":"NECK","b":"NOSE"},["a1359e16013832c487942d028404f7a5c59f4afd4a7e96eb480aa1a1d34db07e"]]]}};
+ const w119SideHead={"east":{"sources":["e1a62125f08b88d3875261638bf09a2ec736e93b687df59a19014f5dab146154","9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2","45de7576039c538aee29ff5a5d0def51143e8cbf90a33cdead504d88fd2ea713"],"ranks":["d8b96bdb0b10446318c5a80aa9e0d893fe67131a624ae22d1c2045cbb6326f75","487f46f14e16ce953d437804708a6f08fb58e254d0124eb670c9c9182b517214","e5db3148156bb74372eb157ec627a095515fad8ea94c97428ecfff95f7fb73ee","3f9c365f6560aa04b53c408d99247c23a9e0ab02923f98df6d452b092ade4bf8","1d025e43fd8cc5a6df7dd9a75af600ca85a9bd00d5d4030d303a6e75345cb970","55bf6cfff1cbaa77c398a623905111d1e3e3b7e00a0da29e6a14f739372af94f","86c7f1a6e0fb9297a66116284f0bba8f7bc7cf2c4b613cc22986f59562fecfe4","8aed777ad965ddf4a532bc135fb5da43dd80e73b9ae5aef95940d30ea268923c"],"restores":[[[307,234,0,0,0,2]],[],[[306,235,150,75,47,255]],[],[[307,233,0,0,0,3],[306,235,121,68,44,255]],[],[],[[307,234,0,0,0,2]]],"approved":["c46b1a871d759a51348a0f33ddebcd6a8704d6c2922213b7675ad7b7d7a87805","cb54706eece425702a61079dc0f281a46b3d7b9386040b03b309c73861c5c64b","ce382f98c27d6e8a8e8a2e07c2824a710d20865fcee91c5cee39673c452f33ea","7fd8fa3d71b93a867d2e5cdf639c8a766d9f77a078530b8f777d5ff4356153f9","e10107afd13e316cb1b37d44d79c29d05ebeed15e94bf761f0a6da9ccf31b0df","ad287874235b2f110dabcf3fea7e93ebcba9cd6089b33ce56933eb189af3e43d","6732d78403aabcff70b26bdfdf70e686ce66d78d38abb3ca98bdf87ba1d59859","e71902ba56340f12ded01cdd5e5fbcad00b34bb549ab4e428590994df58eda2e"]},"west":{"sources":["550e876bc65b387f14977734f71f6d4ae681ebdab0d2cf515faa2fa6bf98d888","0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464","a1359e16013832c487942d028404f7a5c59f4afd4a7e96eb480aa1a1d34db07e"],"ranks":["be59afe3fc462cb87c25a498941c4c419287e802dba66432b7a3c95310e0e64d","998ba23f1d55ecdff9f83a908c5a0facc2d38340497b4fe501e250edccfec244","f876479a760b79c28a01b0c8e4bb5209bcea88fd8f1a4bfca6aa7e849a068438","c46138c29a5abe618c58b35ab422566d3175742bb5dae0621e279e00d99a996b","198b4dd9ffea2df0675e392db6d778045337b3de34d88143b13fedc04f706168","a6c6845d9112da593d6f40f768b22c47ce81a8f45339247572aa13738da98c0a","173717c98b8b15bff8be6365db9c961e001e3ca43644d72593fd364f313e8a9c","0d8f4733133710dafb34742fed03f610ce65c05d9f9a9c88deb615dc07fdd282"],"restores":[[[332,234,0,0,0,2]],[],[[333,235,150,75,47,255]],[],[[332,233,0,0,0,3],[333,235,121,68,44,255]],[],[],[[332,234,0,0,0,2]]],"approved":["8bdf85deed8c17f0c11235a210259ce11a11023bcd953da78f47674e96ded46b","a0c7e26c584fb0b2087fcd26b067683b2f3a17ce89e4c0854c732c9577b1286d","9052dccb8f91651302c426961da9dca15a605ccba24415797d127e97d5343b9a","4dd8a0d5a3b3c67dc3cd56a173b5a9eac3131a84c0a823725d2da0afc3789a80","1ee75516e89b026af65c7f3b9ada8895ba213afcffedc10ed65372d382b700da","e36eac8cf3673051d65a090d17dcdafca95c57ba6ea3353d95d866e0e7447b47","1923f1cec4d0669b69cd6b6b798eec823d82bda0fabb25ca39277a87ad93b981","2a5e91887aea2812ff7b2384cffa062a2c529d97bfcfe62c45ef9adf7845c569"]}};
+ const w119SideMetal=["f29908a3298269aa27bd592e1b0770c29f803c7662ef92402739b0ef68edffce","eca7901c398636e4bbd7d5e941ab91cdcc367bc15d9f088f51273df9295b13dd","88f0f7098ac815a592641bb69d12df87ce704509e016b4440d670349fb4b8a01","5f5a724956ad34888551198b9abba548730744b965dc79b577838ff88c59a38a","fe2a21451b49097e72829ce2250db4e60ff7548a3339eafde07ce4dd85a310dc","8154417e082ba5b828e44fa07d9bf6276e34701ef574a8d4b92dade770abde42","82fbe9cec557f80b93dce0e899341b69a6e6e976107f61afd445311879badac6","2cc2f8996d8be32fc7ca899eb28125cad44f5c06db49998cdb19e6541bcb0755"];
+
+ function selectW119SideNativeBody(approved,player,o){
+  const d=o.direction,p=player.appearance96,e=player.equipment?.weapon,look=w119SideHead[d],authority=w119SideBody[d];
+  if(o.consumer!=='world'||o.weaponless||!look||!['attack','attack-unarmed'].includes(o.action)||
+     player.classId!=='cyborg'||player.zoanTransformed||player.__reworkSubset||
+     JSON.stringify(rawOccupiedEquipmentKeys(player))!=='["weapon"]'||Number(e?.def??e)!==119||
+     ['variant','variantId','appearanceVariant'].some(k=>e?.[k]!=null&&e[k]!=='original')||
+     p?.version!==1||p.gender!=='masculino'||p.skinStyle!=='natural'||!Object.hasOwn(root.MareCharacterAppearance?.skins||{},p.skinColor)||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     approved?.id!==('cyborg119-'+d+'-native-original-source:owned-atomic-palette:'+p.skinColor)||
+     approved.sourceArchiveSHA256!=='57c0e1867b63058fbca10a36ddc0f7436fecc3107238dfcc31882e6e1077bd9c'||
+     approved.item!==119||approved.ownCyborgLateralTone!==p.skinColor||approved.fps!==12||approved.density!==4||
+     approved.nativeCanvas?.join(',')!=='640,640'||approved.pivot?.join(',')!=='80,128'||
+     approved.timeline?.join(',')!==['0','1','2','3','4','5','6',...Array(13).fill('7')].join(',')||
+     approved.states.length!==8||!approved.states.every((st,i)=>st.state===String(i)&&st.approved.sha256===look.approved[i]&&
+       st.staffSouthRanks==='assets/'+look.ranks[i]+'.png'&&st.layers.length===1&&st.layers[0].sha256===look.approved[i]))return null;
+  const b=selectVisualStrict({...player,equipment:{}},{...o,action:'attack-unarmed',weaponless:true}),p0=b?.pack,dir=p0?.directions[d];
+  if(!b||b.hdKind||b.headRecord||b.gearOnlyRecord||b.mirrorX||b.omitted?.length||b.visualDegraded||
+     b.sourceId!==authority.packId||b.sourcePackSHA256!==authority.sha||p0.density!==4||
+     p0.frame.width!==160||p0.frame.height!==160||p0.pivot.x!==80||p0.pivot.y!==128||
+     JSON.stringify(dir.clip)!==JSON.stringify({frames:8,fps:12,loop:false,contactFrame:4})||
+     JSON.stringify(dir.layers.map(l=>[l.id,l.depth,l.binding,l.frames||[l.source]]))!==JSON.stringify(authority.layers))return null;
+  return {...b,id:approved.id+':independent-w119-native-skin',item:119,hdKind:'weapon',ownW119SideNative:{base:b},
+   nativeCanvas:approved.nativeCanvas,logicalFrame:[160,160],pivot:approved.pivot,density:4,fps:approved.fps,timeline:approved.timeline,
+   contactTick:approved.contactTick,states:approved.states.map(x=>({state:x.state})),resolvedAction:'attack-unarmed',
+   slotRoutes:{weapon:{item:119,quality:'hd',source:approved.id}},equipment:{weapon:119},equipmentContract:{weapon:119},omitted:[]};
+ }
+
+ const w114NorthIndependent={"frames":[{"pin":"94205c7523baeaba46e8f23c6cc6bb160ea08c1ab5226160fd17b027bac313ac","body":"5306f72cc581ac351224f64f1c496fa5f77277b3b7486bea053240bb251e8a0b","ranks":"6e773ed58af3e45cb30936ce0ce7f2044ff6b6527831347c29d8933e38c7add7","metal":["efe9b4ac9c1176822f4737b72452ffac2c0f95b7d149299595a5433d5d04bf0e","ae89891eebbfa050a52b912e707b9bc85bcad931aee5aae0182ec52a1705f973"],"compatibilityRanks":"6e4138f2c016a159374118079845bd8d411be5580b6af786d39d294a675fc92e","correctionMask":"ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","metalRankCorrection":0,"inferredHand":0},{"pin":"69587976f5d426b266c8921895fffd5e0f9bd763568a90474597221aa076f1c4","body":"89763d521f7b277ab77f01a68a9d0ed7d42f184195ca0beab25aec4e99a080f6","ranks":"1f31a5d67afb95e25523a06a74ae2f1544789c0c27b63134a8b8cd41d18daa8d","metal":["73d6ad87c2a0423af85e834743de9a3c86f0b18751c38ce93265ec9201a8fec0","99b00993f53621d27c1e946a5907ce0a9347b9e9b80880b2e5bd54c8f37a3c27"],"compatibilityRanks":"8e0e8fd5e70e6c8ed9b740b363d2581fab3c7185bf9618d54443e2020235365a","correctionMask":"ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","metalRankCorrection":0,"inferredHand":9},{"pin":"e1c0ee1aa4d198b426a31854cccb761f9148ec534971527766b9790dab99ea0f","body":"a0248833edc1f16cac1975991c5d400b2192c232ae0a340a32a57abdbb7850e7","ranks":"eddafdd0cbad11adaf4f8c91e964749accd90ba13f67b7a5def06a93999a5f48","metal":["b6cafaf3c916eb0d507aaa460e7dea499bf87b836447d011cea7901d4faf1772","87e5837a51c08f7fa833520eba2e288935e2b15542f51bbdda838914a2fe11d5"],"compatibilityRanks":"8f01c128ca65992aafdd163b7d51e254eb18e06a57766dd1ed0f8635437aaefb","correctionMask":"ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","metalRankCorrection":0,"inferredHand":38},{"pin":"a1b552effa295848f4e8f0e238caced7e9766b47e15aaed8ee057d893dcf532c","body":"3845aed0e31aaa74acbbd6ed17a529a6bf24f342aaac07bb2bc77eb44d70b214","ranks":"903b74b0f28f2f69fbdc7587b191186ad00b46b5ee64aa69e1fbfd61cf5abdaa","metal":["f69df50d6b5dfb63a80b75a31228fe772c98c24c07c37db7424b4f82bb08b50f","abb4e345e7d125eb0681f0abe2c4b6b3dda3c5c860bc176d0c0ee89ecd4f4a36"],"compatibilityRanks":"13c300bf1a3eec939477056c5995fb3b2c3045ecc63b40f3d15cff04401407c6","correctionMask":"ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","metalRankCorrection":0,"inferredHand":0},{"pin":"1a04c1d12e938c5f701bfbedeaf9757642764f83ed3b050c6d67a42ce4df012a","body":"92d68c2cd398b7c6a8027773a20f92cd56a8a829cf5ce6483b71190affae9713","ranks":"d9ddf90d4c6856e17950fb3adc884dc494032c62b0a1e9be2b7ac223da42124d","metal":["9197002df4171f222dd7ebb92e71d093a7d97e5e97f3075e2a4d2343731c968c","6ec0efffde42555618638e6971e130d7a1469b06b8ee9e044a53ac204d7d6950"],"compatibilityRanks":"f7a30e5e25f92d8a71649b50d3953b166d832400b1fec343082fffa2bbbbf423","correctionMask":"4f3e0c348e306e253816126fa664135897d51746b581a2152859259436fc7085","metalRankCorrection":21,"inferredHand":0},{"pin":"0ef501aa9e9dc858a6669f025228fd10b3380153af73c6a2eeff25723e435f8b","body":"0817edeb53568af5ca2846a661780f7871cdd0ce840aca15947b612f502d2181","ranks":"1ed479b7cf382075c1858aeaa0cf5aafd1cab856fe8870a85f70c3e53d1b70af","metal":["7648e91d4702d15f0f0376a77d813c0b4fb28dc5931b6fb8ad228c6293f002c5","eeb55f66acd3e11028fe8f4d8730cf8656143054faeff6e77b20639ef3058d80"],"compatibilityRanks":"a6c82f4625a062da0ce8413778237a70438fc2d93f1b7ada107fb5e1d699f4bb","correctionMask":"303bce38fb5b18737c3f2ad2523f280a604a3e01838d5a0d09fa8a36a0221a8d","metalRankCorrection":52,"inferredHand":0},{"pin":"0b593b9498b916a04082ae5c82839bd82c1d46ab494365da1bfb9ec5f776a781","body":"5af771df67d39c374fc959fa46f9da25a1072573c25ec0308d59bee477cefda4","ranks":"3f6d8fef7e2a9d100884e9379045598d03a3a170d4662828cc7baaf7f89774bf","metal":["2984fe648b33bc346ec618bbc93ae1c91e503c4c32bf35ca744f28bbd08dde2e","0d344cc38a8f16b47b046292475b438d92218baaf2f394908d999f4d2ba86fd2"],"compatibilityRanks":"5fbfb86614a1c9db55b1cc35dab598249c5fb71f71d82d4637a8cf0628232076","correctionMask":"ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","metalRankCorrection":0,"inferredHand":0},{"pin":"e23b8f5b5d992238cf81d79f71192285996b99d64ee467c416422f3b7e7e241d","body":"189669c1d54f3755e5050195292a2fcdc2d8bf78ac3dd91873fd987ea5757466","ranks":"bfc76899291db68f5510c61416861e81be71f19fc00ff251d25e561204a1819c","metal":["5aaa54b81562f4b2bec42338d8244caf002362784f936821a62e2595a26793d4","851f2932d23a0715ae23bff86930fe53127a6ca4ecdac731b7f2fd6ace087c40"],"compatibilityRanks":"530e3d0b6d8a35a1672dba16a6ad55bf5ed18d1ba4e8a0e993214783e72e9a50","correctionMask":"ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","metalRankCorrection":0,"inferredHand":0}],"tones":{"porcelain":[[105,74,64],[165,115,96],[217,166,139],[244,199,170],[255,227,198]],"light":[[99,67,50],[149,99,70],[201,142,97],[237,177,125],[255,208,156]],"warm":[[84,51,35],[133,80,48],[184,121,67],[217,154,91],[244,189,124]],"olive":[[68,56,43],[109,87,59],[154,123,80],[189,160,106],[221,197,140]],"copper":[[67,43,37],[108,62,44],[152,89,55],[189,122,73],[223,161,105]],"brown":[[51,35,31],[80,53,42],[121,80,57],[162,116,80],[195,151,108]],"dark":[[36,28,27],[59,41,37],[87,60,48],[120,86,65],[162,123,89]],"ebony":[[25,23,26],[42,35,37],[65,49,46],[93,70,59],[130,101,79]]}};
+ const w114NorthAsset=h=>'tools/rework-weapon-layers-hd/assets/'+h+'.png';
+ function tryW114NorthIndependent(r,player,o,allowOmission){
+  const keys=rawOccupiedEquipmentKeys(player),tone=player?.appearance96?.skinColor;
+  if(!allowOmission||o.consumer!=='world'||o.weaponless||o.inventoryPresentation||o.direction!=='north'||!['attack','attack-firearm'].includes(o.action)||
+     player?.zoanTransformed||player?.__reworkSubset||keys.length!==1||keys[0]!=='weapon'||player?.classId!=='gunner'||
+     !tone||!Object.hasOwn(w114NorthIndependent.tones,tone)||r?.ownW114North!==true||r.body!=='male'||r.item!==114||
+     r.id!=='pistolas114-north-native-original-source:owned-w114-north-skin:'+tone||r.pivot?.join(',')!=='80,128'||
+     r.nativeCanvas?.join(',')!=='640,640'||r.fps!==12||r.timeline?.join(',')!=='0,1,2,3,4,5,6,7'||
+     r.states?.length!==8||!r.states.every((x,i)=>x.state===String(i)&&x.approved?.sha256===w114NorthIndependent.frames[i].pin))return null;
+  return {...r,id:r.id+':independent-north-test',w114NorthRuntime:{tone}};
+ }
+ function composeOwnW114North(r,frame,entry){
+  const {tone,omit}=r.w114NorthRuntime,d=w114NorthIndependent.frames[frame],sz=640,canvas=makeCanvas(sz,sz),ctx=canvas.getContext('2d'),
+   tmp=makeCanvas(sz,sz),tx=tmp.getContext('2d'),ramp=w114NorthIndependent.tones[tone];
+  const im=h=>{const v=entry.images.get(w114NorthAsset(h));if(v?.width!==640||v.height!==640)throw Error('W114 own split missing '+h);return v;};
+  const read=asset=>{tx.clearRect(0,0,sz,sz);tx.drawImage(asset,0,0);return tx.getImageData(0,0,sz,sz);};
+  const tiles=[];
+  const recolor=(hash,rank)=>{
+   if(tone==='light')return im(hash);
+   const m=read(im(rank)).data,patch=read(im(hash)),raw=patch.data;
+   // Rank map is opaque where proven; preserve original alpha separately.
+   for(let j=0;j<raw.length;j+=4)if(raw[j+3]&&m[j+3]){
+    const k=m[j]/32-1;if(!Number.isInteger(k)||k<0||k>=ramp.length)throw Error('W114 bad rank');
+    raw.set(ramp[k],j);
+   }
+   const tile=makeCanvas(sz,sz);tile.getContext('2d').putImageData(patch,0,0);tiles.push(tile);return tile;
+  };
+  ctx.drawImage(recolor(d.body,d.ranks),0,0);
+  let calibrate=null;
+  if(!omit){
+   for(const h of d.metal)ctx.drawImage(recolor(h,d.compatibilityRanks),0,0);
+   const model=ctx.getImageData(0,0,sz,sz),a=model.data,b=read(im(r.states[frame].layers[0].sha256)).data,cm=read(im(d.correctionMask)).data;
+   let maxPremul=0,count=0,corrected=0;
+   for(let j=0;j<a.length;j+=4){
+    const aa=a[j+3];
+    if(aa!==b[j+3])throw Error('W114 split alpha '+frame+'/'+j/4+'/'+aa+'/'+b[j+3]);
+    if(aa===0)continue;
+    if(tone!=='light'&&cm[j+3]){
+     if(aa!==255)throw Error('W114 correction outside opaque source-owned hardware');
+     corrected+=+(a[j]!==b[j]||a[j+1]!==b[j+1]||a[j+2]!==b[j+2]);continue;
+    }
+    if(a[j]===b[j]&&a[j+1]===b[j+1]&&a[j+2]===b[j+2])continue;
+    const delta=Math.max(Math.abs(a[j]-b[j]),Math.abs(a[j+1]-b[j+1]),Math.abs(a[j+2]-b[j+2]))*aa/255;
+    maxPremul=Math.max(maxPremul,delta);
+    if(delta>=2)throw Error('W114 non-transport RGB '+frame+'/'+j/4+'/'+delta);
+    count++;a.set(b.subarray(j,j+3),j);
+   }
+   ctx.putImageData(model,0,0);
+   calibrate={maxPremul,count,corrected};
+   r.w114NorthProof?.(frame,calibrate);
+  }
+  const a=ctx.getImageData(0,0,sz,sz).data;
+  tmp.width=1;for(const tile of tiles)tile.width=1;
+  let top=0;outer:for(;top<640;top++)for(let x=0;x<640;x++)if(a[(top*640+x)*4+3])break outer;
+  return {canvas,info:{width:640,height:640,density:4,pivot:{x:320,y:512},source:r.id,
+    state:String(frame),frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalOffset:[0,0],visualHeight:Math.max(0,512-top)}};
+ }
+ function selectVisual(player,o={},allowOmission=true){
+  // The world omission search calls with false on pruned loadouts. Keep the precise W111 fit out of that search.
+  const visible=visibleWorldActor(player),weaponId=Number(visible?.equipment?.weapon?.def??visible?.equipment?.weapon);
+  if(!allowOmission)o={...o,skipBareFemaleFocoLateralRecolor:true,skipBareW2WestSkin:true,skipLateralStaffWindow:true};
+  if(allowOmission&&rawOccupiedEquipmentKeys(player).length===1&&[123,124,125,126,127].includes(weaponId))o={...o,cetroSouthWalkRoot:true};
+  if(allowOmission&&o.consumer==='world'&&!o.weaponless&&o.action==='idle'&&rawOccupiedEquipmentKeys(player).length===0)o={...o,bareCetroLateralIdleRoot:true};
+  // #58 belongs only to a raw bare actor or an explicitly suppressed W119.
+  // Do not enable it on a bare anatomy clone while composing an equipped slot.
+  const w119RawKeys=rawOccupiedEquipmentKeys(player);
+  const bareW119SouthFaceRoot=allowOmission&&o.consumer==='world'&&o.action==='walk'&&o.direction==='south'&&
+   player?.classId==='cyborg'&&!player?.__reworkSubset&&!player?.zoanTransformed&&
+   (w119RawKeys.length===0||o.weaponless&&w119RawKeys.length===1&&w119RawKeys[0]==='weapon'&&weaponId===119);
+  const armedW119SouthFaceRoot=allowOmission&&o.consumer==='world'&&o.action==='walk'&&o.direction==='south'&&
+   player?.classId==='cyborg'&&!player?.__reworkSubset&&!player?.zoanTransformed&&!o.weaponless&&
+   w119RawKeys.length===1&&w119RawKeys[0]==='weapon'&&weaponId===119;
+  o={...o,bareW119SouthFaceRoot,armedW119SouthFaceRoot};
+  let strict=selectVisualStrict(visible,allowOmission?o:weaponId===2?{...o,skipW2WestSkin:true,skipBareW2WestSkin:true,skipOwnW2WestIsolated:true}:weaponId===118?{...o,skipW118SouthWrist:true}:weaponId===15?{...o,skipW15SouthPulse:true}:weaponId===113?{...o,skipW113SouthStatic:true}:weaponId===111?{...o,skipW111Independent:true}:
+   [123,124,125,126,127].includes(weaponId)?{...o,skipStaffFemaleCardinalAttack:true,skipCetroSouthWalk:true,...(weaponId===124?{}:{skipStaffNativeCardinal:true})}:o);
+  strict=tryW114NorthIndependent(strict,player,o,allowOmission)||strict;
+  if(allowOmission)strict=selectCetroWalk40Parity(strict,player,o)||strict;
+  if(allowOmission)strict=selectOwnW2WestWalk40(strict,player,o)||strict;
+  if(strict?.ownW2WestIsolated&&(!allowOmission||rawOccupiedEquipmentKeys(player).length!==1||player.__reworkSubset))return selectVisualStrict(visible,{...o,skipOwnW2WestIsolated:true});
+  if(allowOmission)strict=selectW119SideNativeBody(strict,player,o)||strict;
+  if(allowOmission&&o.consumer==='world'&&o.direction==='north'&&!o.weaponless&&
+     ['attack','attack-focus'].includes(o.action)&&!player.__reworkSubset&&rawOccupiedEquipmentKeys(player).length===1&&
+     weaponId===121&&player.classId==='strategist'&&strict?.staff121NorthOwnMaterial&&strict.item===121&&strict.direction==='north'&&
+     strict.timeline?.length===8&&strict.fps===12&&strict.states.length===8&&!strict.omitted?.length){
+   const c={"gear":"2f19d2ad44c65cc98958cadfc16fa1a08a831c49c7399a2fba2358a7360bfca3","hands":{"olive":"f5d84a4ca33197b9f5609cb1961eaa7f4bf894c4670cff45dbb7263f9d5ec359","warm":"fc2ae1cadfb2bf9c8afe2cfee40ba866a1a341f9b3f90520fdb3142cb8c686b9","copper":"24a75303c90a9357759acd67863488add2832f33665ebd03eb251ff70faaf331","ebony":"31758e493b2da3b24c073b50a7763b92bdefcf81e910272513c4d3e19881718e","brown":"3b4d532b2fe7759b9ad417bca7824d1603365e5fd2a56196602838eae24d1437","dark":"ba1ebd288a90dc204d98e6e8561d36e6d8d2d1d618539db00de6b14fb60125ed","light":"152e48d2429016680d1fcff03fa5e64cfddda3ff69bdccc2e3fd2ddb85f5f085","porcelain":"281761451d730bdef943afcc7d3e265058e311f54cf1f1d43deba12127bc9b7e"},"handPoints":310,"toneSource":{"olive":"fd4dda8b1c91040e849943b83ab3111738d7909e86d2ccba3d45d162f346a958","warm":"0527953594b5d0e2403a5f48dae8a6898acf689ce7d06d8eff95e04ed420db6e","copper":"47b18ed00577155e93c6bfb1970855267e2fd4ac391ca924ee858b030dee13bb","ebony":"8d5bfd71741868b8828246f8f27ca4b5dc111687d0e096087def404513b24764","brown":"631b3ffa5cc7573f4a444a0fe8c35822275bf3044bcb44a16c7fda127230c84f","dark":"957afdb8d93b60cc4bb861744dfcb5fa683b7caefd216d429f63b21baf578d8a","light":"536ab24bdcb790ad388a504a05244fae474d8258323e24a376edb802240544a4","porcelain":"f91a8feb5fddb4527c8ca2a8a9920fa0f83b6650b651fbc8bebab49a6ba2cda4"}},look=player.appearance96?.skinColor,hand=c.hands[look];
+   if(hand&&strict.colorAppearance?.skin===look&&strict.states.every(s=>s.attachment?.sha256===c.toneSource[look]))
+    strict={...strict,id:strict.id+':independent-own-grip',w121IndependentNorth:{grip:hand,gear:c.gear},
+      states:strict.states.map(s=>({...s,attachment:{...s.attachment,sha256:c.gear,url:'assets/'+c.gear+'.png'}}))};
+  }
+
+  if(strict?.boundedW2WestSkin&&(!allowOmission||rawOccupiedEquipmentKeys(player).length!==1||player.__reworkSubset)){
+   const {boundedW2WestSkin:_suppressed,...original}=strict;strict=original;
+  }
+  // Review case 41. Scope to the exact retained native body and the eight
+  // own sword rasters; reflect only the weapon. No subset replacement.
+  if(allowOmission&&weaponId===0&&strict?.hdKind==='weapon'&&
+     strict.id==='sword0-north-historical-attack-adapted-original'&&strict.body==='male'&&
+     o.consumer==='world'&&o.direction==='north'&&['attack','attack-sword'].includes(o.action)&&(strict.resolvedAction??o.action)==='attack-sword'&&!o.weaponless&&
+     !visible?.__reworkSubset&&rawOccupiedEquipmentKeys(player).length===1&&strict.basePack&&
+     strict.fps===12&&strict.density===4&&strict.pivot?.[0]===80&&strict.pivot?.[1]===128&&
+     !strict.mirrorBody&&!strict.omitted?.length&&strict.states?.length===8){
+   const pins=["823474b4f6a0782ef39eca0dc176630df7ab6886e7b1cb70f800c0baa04b51bd","86f0d80c961c15168a85ddb16a45b1235f0e7a702e06444fa0abaaf519c78310","c91e808c2c1f987403d950f228e3ad895fd970fce19b93c014d2dbe8bf06c9ba","e374515c712240ff60f1d1b689525e3f3426207d2c661844ebd3aa7f5acefc2e","3d4ec107f50e35d573172e4be67b58c247bdf6cc64e485858603629d2fbad041","40e40d4ee75529cfacacdae1882b24d0c5ce02df234c967abcd87495314f31fd","769ab0ddee997ff6ca0af52c7abb8718a5067e21982f5ecec8f5a8d5af06faa1","823474b4f6a0782ef39eca0dc176630df7ab6886e7b1cb70f800c0baa04b51bd"];
+   if(strict.timeline?.length===8&&strict.states.every((s,i)=>s.state===String(i)&&strict.timeline[i]===s.state&&
+     s.attachment?.sha256===pins[i]&&s.attachment.depth===-1&&!s.attachment.mirrorX&&!s.attachment.offset&&
+     JSON.stringify(s.attachment.matrix)==='[1,0,0,1,0,0]')){
+    return {...strict,id:strict.id+':case41-left-only-review',w0LeftOnlyReview:true,
+     states:strict.states.map((s,i)=>({...s,attachment:{...s.attachment,matrix:[-1,0,0,1,i===0?637:640,0]}}))};
+   }
+  }
+  if(allowOmission&&weaponId===0&&strict?.hdKind==='weapon'&&strict.id==='sword0-south-historical-layers-appearance-original'&&
+    o.consumer==='world'&&!o.weaponless&&o.direction==='south'&&['attack','attack-sword'].includes(o.action)&&
+    (strict.resolvedAction??o.action)==='attack-sword'&&strict.body==='male'&&visible.classId==='sword'&&!visible.__reworkSubset&&
+    rawOccupiedEquipmentKeys(player).length===1&&strict.approvedSouthHead&&strict.fps===24&&strict.density===4&&
+    strict.timeline?.join(',')==='0,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8'&&
+    strict.pivot?.[0]===80&&strict.pivot?.[1]===128&&strict.states?.length===9&&
+    strict.states.every((s,i)=>s.state===String(i)&&s.layers[0]?.sha256===["28a128847a3ee08683a18fc655c205f9fd2951f3ce985ed3daff6de65b299973","03058bef613941f04caaabfbf46a664705ce5b914df7b84e8b6d3203899e8c65","36964a4db3d8e67d78e3a035c75568b757307bd424d1356445933e3a0e8a8a4e","d4286e6cf07fe3dac81dac9dd18ecdb2e5831bcd39d8414ca60d48e96d0a58f1","ce5ae3087c7856c9c961acd12622cc693065dba65187045f6ad02cf80718461d","568383337fac8dd10e5d5ba66f46e64c25b749e5e4877d10fa0ac2627d7d0bcb","27b3092dc2331806f7bb988bac0a8fc68cd46690a25a66d9d3c2c3e134c2f1fa","9e53428cb3137c0bc49dfb603e0c2ba372501c8e3d5160218b7af5326853c46a","eda76830a36b262cf039a56442976cbd45dc5e6a8faf5813f51f7f2bd0f4e41d"][i]&&
+     s.approved?.sha256===["b4d43d94d7b5be488b1de9457a1dd617c44e541cfe6bf2ec84034b92fb09fbe3","ecd0aa00e726a8858f5a07bbbe5675dab72e2eff2be2bfd17f0f9f81f7a1e81a","3dc613c9630f4c3bd03a943dcd5e40ae024083aa4024a9a713b45d64aaa56825","adb1fc167a90890ce954fe4b88bd6d3954ef68b7bb4c4d021f220b41746f1aa0","92f2e2a6ea523b9e3d05d99e84f45c77fa83232890d7916510a28c6ca277da29","67c44b21ab9a42e19a96786186eae2405af4f2557b6deabf7b272b808ad666b2","04dddd198a80700e418c5cd34305e4d48e4ec26e2cb45c6e623791738785eced","842ce483bc0cb8c966849bd20c4a6573a7220cf50a6dc03998cfb7a004c63bd3","360e0858aee7a2de55851a31ee8ccac0a96182186f5ab32e07965c5b7912d631"][i])&&
+    visible.appearance96?.hairStyle==='original'&&visible.appearance96?.hairColor==='black'&&
+    visible.appearance96?.eyeStyle==='original'&&visible.appearance96?.eyeColor==='blue'&&
+    visible.appearance96?.skinStyle==='natural'&&
+    strict.colorAppearance?.skin===visible.appearance96?.skinColor&&Object.hasOwn(root.MareAppearance96.skins,strict.colorAppearance.skin)){
+   const shade=strict.colorAppearance.skin,own=shade==='light'?strict:{...strict,id:strict.id+':case42-own-skin:'+shade,case42SouthSkin:shade};
+   return {...own,id:own.id+':w0-south-v85-independent',ownW0SouthIndependent:true};
+  }
+  if(allowOmission&&strict?.hdKind==='carry'&&o.consumer==='world'&&!o.weaponless&&
+     !visible?.__reworkSubset&&rawOccupiedEquipmentKeys(visible).length===1&&
+     (visible.equipment?.weapon?.def??visible.equipment?.weapon)===strict.item){
+   return carryRegistry?.withIndependentStaffSideGear(strict)??strict;
+  }
+  return strict||!allowOmission?strict:selectAuditedWorldSlotPose(visible,o);
+ }
+ function selectSignedSouthCuffAlpha(player,o,r){
+  if(o.consumer!=='world'||o.direction!=='south'||!['idle','attack-unarmed'].includes(o.action)||r?.hdKind!=='outfit'||
+    !r.strictSouthAppearance||![137,144].includes(r.equipment?.torso)||r.omitted?.length||r.visualDegraded||
+    r.headRecord||r.gearOnlyRecord||r.femaleNamedHairRecord||r.mirrorLayerIDs?.length||r.bodyOcclusion)return r;
+  const item=r.equipment.torso;
+  if(item===137&&o.action!=='attack-unarmed')return r;
+  const a=r.colorAppearance,skin=a?.skin??a?.skinColor;
+  if((item===137?!Object.hasOwn(root.MareAppearance96?.skins||{},skin):!['light','ebony'].includes(skin))||(a.hair??a.hairStyle)!=='original'||(a.face??a.eyeStyle)!=='original'||
+    a.hairColor!=='black'||a.eyeColor!=='blue')return r;
+  const equipment=registeredEquipment(player,o),donor=outfitById.get('male-torso'+item+(o.action==='idle'?'-south-frozen-idle-native':'-south-frozen-attack-native-candidate'));
+  const pose=r.pack?.directions?.south,source=donor?.pack?.directions?.south;
+  if(equipment?.torso?.item!==item||!pose||!source||pose.clip.frames!==(o.action==='idle'?1:8))return r;
+  const equal=(x,y)=>JSON.stringify(x)===JSON.stringify(y),norm=l=>({...l,id:l.id.replace(/^base:/,'')}),
+   motion=x=>[x.pack.frame,x.pack.pivot,x.pack.density],
+   clock=p=>[p.clip.frames,p.clip.loop,p.clip.frames===1?null:p.clip.fps,p.clip.contactFrame,p.rest,p.poses],
+   own=n=>n.startsWith('coat'+item+'-')||n==='collar-depth-rear-neck',
+   upper=n=>/^(torso|headBase|armRight|armLeft|handRight|handLeft|face|hair|skin-arms-phase|shorts-phase)$/.test(n);
+  if(!equal(motion(r),motion(donor))||!equal(clock(pose),clock(source))||
+    !equal(pose.layers.map(norm).filter(l=>upper(l.id)||own(l.id)),
+     source.layers.map(norm).filter(l=>upper(l.id)||own(l.id))))return r;
+  const repairs=item===137?{
+   'cuff-emergence-handRight-RIGHT-skin':'5ac179932f16e9e0884f57463303f7f40fa77b95d1f57a5f0e74b84f05389f40',
+   'cuff-emergence-handLeft-LEFT-skin':'55ac07f9dc92cc9130ab27a55cb48c7c6ff547d448f66c713085502fc0be5e67',
+  }:{
+   'south-visible-original-hands-RIGHT-skin':'64f3dce9f28769a460346360ade91e072e39618741b89aaff092971bdbc23d0e',
+   'south-visible-original-hands-LEFT-skin':'9281f2be9b2d3d735c1e48c690bd57a152bbd2283115df453f7af05440076284',
+  };
+  const skip=l=>Object.hasOwn(repairs,l.id),overlay=pose.layers.filter(skip),author=source.layers.filter(skip);
+  if(!equal(overlay,author)||overlay.length!==2||overlay.some(l=>l.source!==repairs[l.id])||
+    !equal([...r.strictSouthAppearance.repairs].sort(),Object.values(repairs).sort()))return r;
+  const remaining={...player.equipment};delete remaining[equipment.torso.key];
+  const bare=selectVisualStrictCore({...player,equipment:remaining},o),body=bare?.pack?.directions?.south;
+  const core=p=>Object.fromEntries(Object.entries(p).filter(([k])=>!k.startsWith('cloth:')));
+  const coreClock=p=>[p.clip.frames,p.clip.loop,p.clip.frames===1?null:p.clip.fps,p.clip.contactFrame,core(p.rest),p.poses.map(core)];
+  const nativeBare=item===137&&!bare?.strictSouthAppearance&&bare?.body==='male'&&
+   !bare.hdKind&&!bare.headRecord&&!bare.gearOnlyRecord&&!bare.bodyOcclusion&&!bare.mirrorX&&
+   bare.action==='attack-unarmed'&&bare.sourceId==='male-attack-unarmed-south-drawn8';
+  if(!body||(!bare.strictSouthAppearance&&!nativeBare)||bare.omitted?.length||bare.visualDegraded||
+    !equal(motion(r),motion(bare))||!equal(coreClock(pose),coreClock(body))||body.layers.some(l=>[l.binding?.a,l.binding?.b].some(k=>k?.startsWith('cloth:')))||
+    !equal(pose.layers.filter(l=>!skip(l)&&!own(l.id)).map(norm),body.layers.map(norm)))return r;
+  return {...r,id:r.id+':own-c'+item+'-cuff-alpha',ownedCuffAlpha:{
+   owner:pose.layers.filter(l=>own(l.id)).map(l=>l.id),repairs:overlay.map(l=>l.id)},
+   ...(nativeBare?{registeredPaletteBody:bare,paletteSourceMasks:undefined,baseMaterialSources:undefined,
+      slotRoutes:{[equipment.torso.key]:{item,quality:'hd',source:donor.id}},
+      strictSouthAppearance:{...r.strictSouthAppearance,nativeFace:true}}:{})};
+ }
+ function selectSignedNorthC137(player,o,selected){
+  if(o.consumer!=='world'||o.action!=='attack-unarmed'||o.direction!=='north'||o.weaponless||
+     player?.__reworkSubset||player?.zoanTransformed)return selected;
+  const gear=registeredEquipment(player,o),coat=gear?.torso;
+  if(coat?.item!==137||Object.keys(gear).some(k=>!['torso','pants'].includes(k)))return selected;
+  const equipment={...player.equipment};delete equipment[coat.key];
+  const bare=selectVisualStrictCore({...player,equipment},o),a=bare?.colorAppearance;
+  if(!bare||bare.body!=='male'||bare.direction!=='north'||bare.action!=='attack-unarmed'||
+     bare.mirrorX||bare.mirrorLayerIDs?.length||bare.headRecord||bare.gearOnlyRecord||bare.bodyOcclusion||
+     bare.sourceRasterPadding||bare.omitted?.length||bare.visualDegraded||
+     !a||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
+     (a.hair??a.hairStyle??player.appearance96?.hairStyle)!=='original'||(a.face??a.eyeStyle??player.appearance96?.eyeStyle)!=='original'||
+     a.hairColor!=='black'||a.eyeColor&&!['original','blue'].includes(a.eyeColor))return selected;
+  const stock=!bare.hdKind&&bare.sourceId==='v7-punch-north-drawn8-north';
+  if(!stock&&(bare.hdKind!=='outfit'||bare.palettePolicy!=='verified-original-anatomy-only'||!bare.paletteSourceMasks||
+    !gear.pants||bare.equipment?.pants!==gear.pants.item))return selected;
+  const donor=outfitById.get('male-torso137-north-frozen-attack-native-candidate');
+  const t=bare.pack?.directions?.north,c=donor?.pack?.directions?.north,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const core=x=>Object.fromEntries(Object.entries(x).filter(([k])=>!k.startsWith('cloth:')));
+  if(!t||!c||donor.productionEnabled===false||!donor.bodyClothingSeparated||
+     !['frame','density','pivot'].every(k=>eq(bare.pack[k],donor.pack[k]))||
+     !eq(t.clip,{frames:8,fps:12,loop:false,contactFrame:4})||
+     !eq(t.clip,c.clip)||!eq(t.rest,core(c.rest))||!eq(t.poses,c.poses.map(core)))return selected;
+  const native=c.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)}));
+  const existing=stock?t.layers:t.layers.filter(l=>!l.id.startsWith('pants'+gear.pants.item+'-'));
+  const compare=native;
+  if(!eq(existing,compare)||!stock&&t.layers.filter(l=>!existing.includes(l)).some(l=>l.slot!=='pants'))return selected;
+  const owners=c.layers.filter(l=>l.id.startsWith('coat137-')),
+   repairs=c.layers.filter(l=>l.id.startsWith('cuff-emergence-'));
+  const signed={
+   'cuff-emergence-handRight-RIGHT-skin':'d383b7148a8226b5cd7706249db11e14b1932689c3c9a5bcafcf5f0c0ef78db9',
+   'cuff-emergence-handLeft-LEFT-skin':'58a31b7aeb417bfadd1362702e8c8814cbcd196da65cf9946a6ab3ca3ccaccf3',
+  };
+  const add=[...owners,...repairs], used=new Set(t.layers.flatMap(l=>l.frames||[l.source]));
+  if(owners.length!==7||repairs.length!==2||native.length+add.length!==c.layers.length||
+     repairs.some(l=>l.source!==signed[l.id]||l.depth!==101)||
+     add.some(l=>l.frames||l.depthTrack||l.binding?.kind!=='rigid'||
+       [l.binding.a,l.binding.b].some(k=>!k.startsWith('cloth:')||!c.rest[k]||c.poses.some(v=>!v[k]))||
+       !donor.sourceRefs.includes(l.source)||used.has(l.source)||bare.paletteSourceMasks?.[l.source]||
+       !eq(donor.sourceRasterPadding?.[l.source],{sourceSize:512,offset:64})))return selected;
+  const landmarks=[
+ null,
+ {"LEFT":[[283,245],[261,295],[246,351]],"RIGHT":[[354,250],[369,274],[378,295]]},
+ {"LEFT":[[283,245],[257,301],[238,348]],"RIGHT":[[351,249],[378,244],[364,213]]},
+ {"LEFT":[[283,245],[268,295],[238,348]],"RIGHT":[[351,243],[366,224],[375,210]]},
+ {"LEFT":[[283,245],[264,302],[236,350]],"RIGHT":[[352,245],[366,224],[373,207]]},
+ {"LEFT":[[283,245],[263,295],[243,349]],"RIGHT":[[351,249],[378,258],[365,231]]},
+ {"LEFT":[[283,245],[267,297],[249,353]],"RIGHT":[[356,250],[366,280],[374,308]]},
+ null
+];
+  const poses=c.poses.map((p,i)=>{const l=landmarks[i];if(!l)return p;
+   const next={...p};for(const side of ['LEFT','RIGHT'])for(const [k,kind] of ['SHOULDER','ELBOW','ARM'].entries()){
+    const [x,y]=l[side][k];next['cloth:'+side+' '+kind]={x:x/4,y:y/4};
+   }return next;
+  });
+  const splits={"L":["8cd82d092b1d0c82d93120f0276ae066ea87b13c61d5c01bcf6d763febebca8c","5266d2a3f6d3f2bc9d33423b8196161d6cf60b7fc43abf596c4150bb1256d16f"],"R":["041be68d7331f896818e7c85657fd913e9ea7ba915cfcc5ff49063279b0c0431","198f1147211beb36b844e4a0791b4da48822c9a55c8965af38f658b45968525e"],"empty":"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"};
+  const article=add.flatMap(l=>{
+   const sleeve=l.id.match(/-(LEFT|RIGHT)-(upper|lower)$/);
+   if(!sleeve)return [l];
+   const binding={...l.binding,kind:'bone'};
+   if(sleeve[2]!=='lower')return [{...l,binding}];
+   const [shaft,leaf]=splits[sleeve[1][0]],span=Array(6).fill(shaft),hem=Array(6).fill(leaf);
+   return [{...l,binding,frames:[l.source,...span,l.source]},
+    {...l,id:l.id+'-hem-leaf',binding:{kind:'rigid',a:'cloth:NECK',b:'cloth:HIP'},depth:100,
+     source:splits.empty,frames:[splits.empty,...hem,splits.empty]}];
+  });
+  const addedRefs=Object.values(splits).flat(),pad={...donor.sourceRasterPadding};
+  for(const h of addedRefs)pad[h]={sourceSize:512,offset:64};
+  const pack={...bare.pack,directions:{...bare.pack.directions,north:{...t,rest:c.rest,poses,layers:[...t.layers,...article]}}};
+  const colorAppearance={...a};
+  return {...bare,id:bare.id+':own-c137-north-cuff-alpha',hdKind:'outfit',pack,colorAppearance,
+   equipment:{...bare.equipment,torso:137},
+   sourceRefs:[...bare.sourceRefs,...add.map(l=>l.source),...addedRefs],sourceRasterPadding:pad,
+   ...(stock?{registeredPaletteBody:bare}:{}),
+   baseMaterialSources:Object.fromEntries(repairs.map(l=>[l.source,'anatomy'])),
+   ownedCuffAlpha:{owner:article.filter(l=>l.id.startsWith('coat137-')).map(l=>l.id),repairs:repairs.map(l=>l.id)},
+   slotRoutes:{...(gear.pants?{[gear.pants.key]:{item:gear.pants.item,quality:'hd',source:bare.id}}:{}),
+    [coat.key]:{item:137,quality:'hd',source:donor.id}},resolvedAction:'attack-unarmed',omitted:[]};
+ }
+ function selectOwnC172SouthNativeBody(player,o,r){
+  if(o.consumer!=='world'||o.action!=='attack-unarmed'||o.direction!=='south'||
+     r?.body!=='male'||r.hdKind!=='outfit'||r.equipment?.torso!==172||!r.strictSouthAppearance||
+     r.strictSouthAppearance.repairs.length||r.appearanceAdapted||r.mirrorX||r.mirrorLayerIDs?.length||
+     r.visualDegraded||r.omitted?.length||r.bodyOcclusion||r.headRecord||r.gearOnlyRecord)return r;
+  const gear=registeredEquipment(player,o),own=gear?.torso;
+  if(own?.item!==172||Object.keys(gear).some(k=>!['torso','pants'].includes(k)))return r;
+  const remain={...player.equipment};delete remain[own.key];
+  const bare=selectVisualStrictCore({...player,equipment:remain},o),d=r.pack?.directions?.south,t=bare?.pack?.directions?.south,
+   donor=outfitById.get('male-torso172-south-frozen-attack-native-candidate'),auth=donor?.pack?.directions?.south,
+   eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const stock=!bare?.hdKind&&bare?.sourceId==='male-attack-unarmed-south-drawn8',
+   trim=p=>Object.fromEntries(Object.entries(p).filter(([k])=>!k.startsWith('cloth:')));
+  if(!t||!d||!auth||bare.visualDegraded||bare.omitted?.length||bare.appearanceAdapted||bare.headRecord||bare.gearOnlyRecord||bare.mirrorX||bare.bodyOcclusion||
+     !['density','frame','pivot'].every(k=>eq(r.pack[k],bare.pack[k])&&eq(r.pack[k],donor.pack[k]))||
+     !eq(t.clip,{frames:8,fps:12,loop:false,contactFrame:4})||!eq(d.clip,t.clip)||
+     !eq(d.rest,auth.rest)||!eq(d.poses,auth.poses)||!eq(t.rest,trim(d.rest))||!eq(t.poses,d.poses.map(trim)))return r;
+  if(!stock&&(!gear.pants||bare.hdKind!=='outfit'||bare.equipment?.pants!==gear.pants.item||
+      !eq(r.paletteSourceMasks,bare.paletteSourceMasks)||!eq(r.strictSouthAppearance,bare.strictSouthAppearance)))return r;
+  const layers=auth.layers.filter(l=>!l.id.startsWith('base:')),
+   ownLayer=l=>layers.some(x=>x.id===l.id),
+   native=d.layers.filter(l=>!ownLayer(l)).map(l=>({...l,id:l.id.replace(/^base:/,'')}));
+  if(!eq(t.layers,native)||!eq(d.layers.filter(ownLayer),layers))return r;
+  if(!eq(layers.map(l=>l.id),['coat172-rear-collar-collar','coat172-core-open-collar-collar',
+     'coat172-aligned-sleeves-right-upper','coat172-aligned-sleeves-left-upper',
+     'coat172-aligned-sleeves-right-lower','coat172-aligned-sleeves-left-lower',
+     'bilateral-collar-front-collar','left-front-cuff-rim-rim-left','right-front-cuff-rim-rim-right'])||
+     layers.some(l=>l.frames||l.binding.kind!=='rigid'||!donor.sourceRefs.includes(l.source)||
+      !eq(donor.sourceRasterPadding[l.source],{sourceSize:512,offset:64})||!eq(r.sourceRasterPadding?.[l.source],donor.sourceRasterPadding[l.source])))return r;
+  // Signed coordinates trace the exposed hand on the existing 640px native
+  // body per phase; they do not repaint the skin or alter the arm animation.
+  const nativeSouthHands={owners:layers.map(l=>l.id),faces:[
+ [],
+ [[[277,240],[289,237],[298,241],[300,251],[294,262],[283,267],[276,271],[272,261],[273,250]],[[337,241],[350,238],[360,243],[364,252],[361,265],[355,272],[346,268],[340,261],[337,253]]],
+ [[[269,285],[282,287],[290,296],[289,307],[281,315],[271,315],[261,309],[257,300],[261,291]],[[340,248],[352,245],[361,250],[365,259],[361,276],[354,283],[345,276],[340,267]]],
+ [[[252,259],[263,254],[278,251],[290,254],[299,262],[301,274],[297,286],[282,291],[267,289],[253,284],[243,275],[245,265]],[[340,249],[354,245],[364,251],[369,261],[365,277],[357,283],[347,278],[343,268]]],
+ [[[257,246],[268,239],[285,233],[304,234],[315,242],[320,256],[313,269],[301,278],[285,280],[269,275],[257,269],[247,260],[249,252]],[[348,242],[362,244],[374,251],[377,263],[372,276],[363,280],[353,271],[349,261]]],
+ [[[263,256],[276,249],[292,247],[305,247],[313,256],[318,269],[307,283],[293,287],[277,284],[264,281],[254,272],[256,263]],[[339,248],[352,246],[364,251],[368,261],[364,275],[355,282],[346,277],[342,266]]],
+ [[[276,240],[288,237],[299,240],[301,249],[295,262],[283,267],[276,272],[271,262],[272,252]],[[338,241],[351,238],[361,242],[365,252],[361,266],[355,273],[347,268],[340,260],[337,251]]],
+ []
+]};
+  // The tight foreshortening in the three contact poses shortens the projected
+  // front sleeve, not the fist texture or the original combat clock.
+  const wristContact={3:[[296,250],[269,271]],4:[[301,240],[270,251]],5:[[297,248],[274,264]]};
+  const poses=d.poses.map((pose,i)=>{const t=wristContact[i];return !t?pose:{...pose,
+    'cloth:RIGHT ELBOW':{x:t[0][0]/4,y:t[0][1]/4},'cloth:RIGHT ARM':{x:t[1][0]/4,y:t[1][1]/4}};});
+  const pack={...r.pack,directions:{...r.pack.directions,south:{...d,poses}}};
+  const nativeSouthSleeveContact=true;
+  // Keep the actor's normal stock palette; mounting C172 changes only cloth phases.
+  return {...r,id:r.id+':own-c172-south-native-body',nativeSouthHands,nativeSouthSleeveContact,pack,
+   ...(stock?{registeredPaletteBody:bare,strictSouthAppearance:{...r.strictSouthAppearance,nativeFace:true},
+      paletteSourceMasks:undefined,baseMaterialSources:undefined}:{}),
+   slotRoutes:{...r.slotRoutes,[own.key]:{item:172,quality:'hd',source:donor.id}}};
+ }
+ function selectOwnC172LateralPunch(player,o,selected){
+  const d=o.direction;
+  if(o.consumer!=='world'||o.action!=='attack-unarmed'||!['east','west'].includes(d)||o.weaponless||
+     player?.__reworkSubset||player?.zoanTransformed)return selected;
+  const gear=registeredEquipment(player,o),coat=gear?.torso;
+  if(coat?.item!==172||Object.keys(gear).some(k=>!['torso','pants'].includes(k)))return selected;
+  const equip={...player.equipment};delete equip[coat.key];
+  const bare=selectVisualStrictCore({...player,equipment:equip},o),a=bare?.colorAppearance,
+   stock=!bare?.hdKind&&bare?.sourceId==='v7-punch-'+d+'-drawn8-'+d;
+  if(!bare||bare.body!=='male'||bare.action!=='attack-unarmed'||bare.direction!==d||bare.mirrorX||
+     bare.mirrorLayerIDs?.length||bare.headRecord||bare.gearOnlyRecord||bare.bodyOcclusion||bare.sourceRasterPadding||
+     bare.omitted?.length||bare.visualDegraded||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},a?.skin)||a?.hairColor!=='black'||
+     (a.hair??a.hairStyle??player.appearance96?.hairStyle)!=='original'||
+     (a.face??a.eyeStyle??player.appearance96?.eyeStyle)!=='original'||(a.eyeColor??player.appearance96?.eyeColor)!=='blue')return selected;
+  if(!stock&&(bare.hdKind!=='outfit'||bare.palettePolicy!=='verified-original-anatomy-only'||
+    !gear.pants||bare.equipment?.pants!==gear.pants.item))return selected;
+  const donor=outfitById.get('male-torso172-'+d+'-frozen-attack-native-candidate'),t=bare.pack?.directions?.[d],
+   c=donor?.pack?.directions?.[d],eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y),
+   trim=p=>Object.fromEntries(Object.entries(p).filter(([k])=>!k.startsWith('cloth:')));
+  const source={east:'1793a125ab0bbb85e7c1bd17b631d638287fb4cca4929cc4135166f42a5980e0',
+      west:'443626e677dcabda46b4a90b5730138d8c3a56606a74c91b4a7f269700b5f561'}[d];
+  if(!t||!c||donor.sourcePackSHA256!==source||!donor.bodyClothingSeparated||
+     !['frame','density','pivot'].every(k=>eq(bare.pack[k],donor.pack[k]))||
+     !eq(t.clip,{frames:8,fps:12,loop:false,contactFrame:4})||!eq(t.clip,c.clip)||
+     !eq(t.rest,trim(c.rest))||!eq(t.poses,c.poses.map(trim)))return selected;
+  const native=c.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)})),
+   body=t.layers.filter(l=>!gear.pants||!l.id.startsWith('pants'+gear.pants.item+'-')),own=c.layers.filter(l=>!l.id.startsWith('base:'));
+  if(!eq(body,native)||t.layers.filter(l=>!body.includes(l)).some(l=>l.slot!=='pants')||
+     !eq(own.map(l=>l.id),['coat172-lower-tail','corrected-core-core','corrected-core-hem','corrected-sleeve-near-upper',
+       'corrected-sleeve-near-lower','front-cuff-rim-rim','original-neck-coverage-only-collar','own-torso-behind-sleeve'])||
+     (d==='east'?donor.mirrorLayerIDs?.length:!eq(donor.mirrorLayerIDs,own.map(l=>l.id))))return selected;
+  // Own C172 sleeve continuation sampled on the exact authored punch W/E.
+  // Other phases preserve their original cloth bindings and images.
+  const sleeve='c5cdafa6fd46f49b204443149bc6a5a6d6b419a6b410a079665d3fb1810c1612',empty='da610c2a197572123daf75849ddc7ea36eca264ac47053727a1bb876b052fb9a',id='coat172-lateral-own-sleeve-contact-f05',
+   authored={id,slot:'top',depth:102,source:empty,binding:{kind:'fixed'},frames:Array.from({length:8},(_,f)=>f===4?sleeve:empty)};
+  // Dimensions are from the already-drawn near arm in each native phase.
+  // The old garment pose drove the sleeve above its own hand in F2/F3/F4/F7
+  // and left the forward forearm exposed in F6.
+  const anchor={1:[[309,246],[297,293],[331,265]],2:[[309,246],[279,291],[318,305]],
+    3:[[309,246],[310,283],[380,278]],5:[[307,245],[304,275],[363,273]],
+    6:[[309,246],[298,295],[331,269]]};
+  const poses=c.poses.map((f,k)=>{
+   const n=anchor[k];if(!n)return f;
+   const next={...f};for(const [i,j] of ['SHOULDER','ELBOW','ARM'].entries())
+    next['cloth:RIGHT '+j]={x:n[i][0]/4,y:n[i][1]/4};
+   return next;
+  });
+  const layers=[...t.layers,...own,authored];
+  const pack={...bare.pack,directions:{...bare.pack.directions,[d]:{...t,rest:c.rest,poses,layers}}};
+  return {...bare,id:bare.id+':own-c172-lateral-contact',hdKind:'outfit',pack,
+   equipment:{...bare.equipment,torso:172},sourceRasterPadding:donor.sourceRasterPadding,nativeCoat172LateralContact:true,
+   sourceRefs:[...new Set([...bare.sourceRefs,...donor.sourceRefs,sleeve,empty])],
+   ...(stock?{registeredPaletteBody:bare}:{}),...(d==='west'?{mirrorLayerIDs:[...donor.mirrorLayerIDs,id]}:{}),
+   slotRoutes:{...(gear.pants?{[gear.pants.key]:{item:gear.pants.item,quality:'hd',source:bare.id}}:{}),
+    [coat.key]:{item:172,quality:'hd',source:donor.id}},resolvedAction:'attack-unarmed',omitted:[]};
+ }
+ function selectOwnC158NorthContact(player,o,r){
+  if(o.consumer!=='world'||o.direction!=='north'||o.action!=='attack-unarmed'||o.weaponless||
+     player?.__reworkSubset||player?.zoanTransformed)return r;
+  const gear=registeredEquipment(player,o),coat=gear?.torso;
+  if(coat?.item!==158||Object.keys(gear).some(k=>!['torso','pants'].includes(k)))return r;
+  const remain={...player.equipment};delete remain[coat.key];
+  const bare=selectVisualStrictCore({...player,equipment:remain},o),a=bare?.colorAppearance,
+   stock=!bare?.hdKind&&bare?.sourceId==='v7-punch-north-drawn8-north';
+  if(!bare||bare.body!=='male'||bare.action!=='attack-unarmed'||bare.direction!=='north'||bare.mirrorX||
+     bare.mirrorLayerIDs?.length||bare.headRecord||bare.gearOnlyRecord||bare.bodyOcclusion||bare.sourceRasterPadding||
+     bare.omitted?.length||bare.visualDegraded||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},a?.skin)||a?.hairColor!=='black'||
+     (a.hair??a.hairStyle??player.appearance96?.hairStyle)!=='original'||
+     (a.face??a.eyeStyle??player.appearance96?.eyeStyle)!=='original')return r;
+  if(!stock&&(bare.hdKind!=='outfit'||bare.palettePolicy!=='verified-original-anatomy-only'||
+    !gear.pants||bare.equipment?.pants!==gear.pants.item))return r;
+  const donor=outfitById.get('male-torso158-north-frozen-attack-native-candidate'),t=bare.pack?.directions?.north,
+   c=donor?.pack?.directions?.north,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y),
+   strip=p=>Object.fromEntries(Object.entries(p).filter(([k])=>!k.startsWith('cloth:')));
+  if(!t||!c||donor.sourcePackSHA256!=='7f084167add6b3feea3781fed355cec591ea20bb1465747cd8eb90b6316bb957'||
+     !['frame','density','pivot'].every(k=>eq(bare.pack[k],donor.pack[k]))||
+     !eq(t.clip,{frames:8,fps:12,loop:false,contactFrame:4})||!eq(t.clip,c.clip)||
+     !eq(t.rest,strip(c.rest))||!eq(t.poses,c.poses.map(strip)))return r;
+  const anatomy=c.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)})),
+   body=t.layers.filter(l=>!gear.pants||!l.id.startsWith('pants'+gear.pants.item+'-')),
+   own=c.layers.filter(l=>!l.id.startsWith('base:'));
+  if(!eq(body,anatomy)||own.length!==8||t.layers.filter(l=>!body.includes(l)).some(l=>l.slot!=='pants'))return r;
+  const guide=[null,{"LEFT":[[283,245],[261,295],[246,351]],"RIGHT":[[354,250],[369,274],[378,295]]},{"LEFT":[[283,245],[257,301],[238,348]],"RIGHT":[[351,249],[378,244],[364,213]]},{"LEFT":[[283,245],[268,295],[238,348]],"RIGHT":[[351,243],[366,224],[375,210]]},null,{"LEFT":[[283,245],[263,295],[243,349]],"RIGHT":[[351,249],[378,258],[365,231]]},{"LEFT":[[283,245],[267,297],[249,353]],"RIGHT":[[356,250],[366,280],[374,308]]},null];
+  const poses=c.poses.map((pose,i)=>{const l=guide[i];if(!l)return pose;const out={...pose};
+   for(const side of ['LEFT','RIGHT'])for(const [k,j] of ['SHOULDER','ELBOW','ARM'].entries()){
+    const [x,y]=l[side][k];out['cloth:'+side+' '+j]={x:x/4,y:y/4};
+   }return out;
+  });
+  const hem=own.find(l=>l.id==='coat158-phase05-owned-hem-return');
+  if(!hem||hem.frames?.length!==8||hem.frames[4]!==hem.source||hem.binding.kind!=='fixed')return r;
+  const layers=own.map(l=>l!==hem?l:{...l,frames:l.frames.map((h,i)=>![0,7].includes(i)?l.source:h)}),
+   padding=donor.sourceRasterPadding;
+  // Pin the verified F05 material and all own cloth rasters; this correction
+  // only retargets the other five moving phases to the painted anatomy.
+  if(!eq(layers.map(l=>l.id),['coat158-whole-core','coat158-whole-LEFT-upper','coat158-whole-RIGHT-upper',
+      'coat158-whole-LEFT-lower','coat158-whole-RIGHT-lower','coat158-whole-hem',
+      'original-neck-coverage-only-collar','coat158-phase05-owned-hem-return'])||
+     layers.some(l=>[l.source,...l.frames||[]].some(h=>!donor.sourceRefs.includes(h)||
+       !eq(padding?.[h],{sourceSize:512,offset:64})&&!eq(padding?.[h],undefined))))return r;
+  const pack={...bare.pack,directions:{...bare.pack.directions,north:{...t,rest:c.rest,poses,layers:[...t.layers,...layers]}}};
+  return {...bare,id:bare.id+':own-c158-north-contact',hdKind:'outfit',pack,
+   equipment:{...bare.equipment,torso:158},sourceRasterPadding:padding,nativeCoat158Contact:true,
+   sourceRefs:[...bare.sourceRefs,...donor.sourceRefs],...(stock?{registeredPaletteBody:bare,preserveC158NorthF05:r?.hdKind==='outfit'&&r.equipment?.torso===158?r:null}:{}),
+   slotRoutes:{...(gear.pants?{[gear.pants.key]:{item:gear.pants.item,quality:'hd',source:bare.id}}:{}),
+    [coat.key]:{item:158,quality:'hd',source:donor.id}},resolvedAction:'attack-unarmed',omitted:[]};
+ }
+ function selectOwnC172NorthContact(player,o,r){
+  if(o.consumer!=='world'||o.direction!=='north'||o.action!=='attack-unarmed'||o.weaponless||
+     player?.__reworkSubset||player?.zoanTransformed)return r;
+  const gear=registeredEquipment(player,o),coat=gear?.torso;
+  if(coat?.item!==172||Object.keys(gear).some(k=>!['torso','pants'].includes(k)))return r;
+  const remain={...player.equipment};delete remain[coat.key];
+  const bare=selectVisualStrictCore({...player,equipment:remain},o),a=bare?.colorAppearance,
+   stock=!bare?.hdKind&&bare?.sourceId==='v7-punch-north-drawn8-north';
+  if(!bare||bare.body!=='male'||bare.action!=='attack-unarmed'||bare.direction!=='north'||bare.mirrorX||
+     bare.mirrorLayerIDs?.length||bare.headRecord||bare.gearOnlyRecord||bare.bodyOcclusion||bare.sourceRasterPadding||
+     bare.omitted?.length||bare.visualDegraded||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},a?.skin)||a?.hairColor!=='black'||
+     (a.hair??a.hairStyle??player.appearance96?.hairStyle)!=='original'||
+     (a.face??a.eyeStyle??player.appearance96?.eyeStyle)!=='original')return r;
+  if(!stock&&(bare.hdKind!=='outfit'||bare.palettePolicy!=='verified-original-anatomy-only'||
+    !gear.pants||bare.equipment?.pants!==gear.pants.item))return r;
+  const donor=outfitById.get('male-torso172-north-frozen-attack-native-candidate'),t=bare.pack?.directions?.north,
+   c=donor?.pack?.directions?.north,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y),
+   strip=p=>Object.fromEntries(Object.entries(p).filter(([k])=>!k.startsWith('cloth:')));
+  if(!t||!c||donor.sourcePackSHA256!=='7f084167add6b3feea3781fed355cec591ea20bb1465747cd8eb90b6316bb957'||
+     !['frame','density','pivot'].every(k=>eq(bare.pack[k],donor.pack[k]))||
+     !eq(t.clip,{frames:8,fps:12,loop:false,contactFrame:4})||!eq(t.clip,c.clip)||
+     !eq(t.rest,strip(c.rest))||!eq(t.poses,c.poses.map(strip)))return r;
+  const anatomy=c.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)})),
+   body=t.layers.filter(l=>!gear.pants||!l.id.startsWith('pants'+gear.pants.item+'-')),
+   own=c.layers.filter(l=>!l.id.startsWith('base:'));
+  if(!eq(body,anatomy)||own.length!==8||t.layers.filter(l=>!body.includes(l)).some(l=>l.slot!=='pants'))return r;
+  const guide=[null,{"LEFT":[[283,245],[261,295],[246,351]],"RIGHT":[[354,250],[369,274],[378,295]]},{"LEFT":[[283,245],[257,301],[238,348]],"RIGHT":[[351,249],[378,244],[364,213]]},{"LEFT":[[283,245],[268,295],[238,348]],"RIGHT":[[351,243],[366,224],[375,210]]},{"LEFT":[[282,247],[257,307],[243.56,353.16]],"RIGHT":[[352,244],[363,236],[388.18,221.55]]},{"LEFT":[[283,245],[263,295],[243,349]],"RIGHT":[[351,249],[378,258],[365,231]]},{"LEFT":[[283,245],[267,297],[249,353]],"RIGHT":[[356,250],[366,280],[374,308]]},null];
+  const poses=c.poses.map((pose,i)=>{const l=guide[i];if(!l)return pose;const out={...pose};
+   for(const side of ['LEFT','RIGHT'])for(const [k,j] of ['SHOULDER','ELBOW','ARM'].entries()){
+    const [x,y]=l[side][k];out['cloth:'+side+' '+j]={x:x/4,y:y/4};
+   }return out;
+  });
+  const [hem,left,right]=["7f00aefce2b5ffde3707fdb5b270b628714041ec6934ba5c0a7661368357aec4","b03de0446b48de472fc06f08c67400b45262a06220f89ddff6b5944be2e28e1e","3938aa9f62c3c55e2b95a64217602924c77636dcb99aee49d76c9a9e1197d6cb"],empty='5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f',
+   pins=[false,true,true,true,true,true,true,false];
+  const stored=own.find(l=>l.id==='coat-front-hem');
+  if(stored?.source!=='50b9a215a01ab3b84721e55b1c900ec96b2badb0c0a44cba1c15e19b59a114d2')return r;
+  const cuffs=[['LEFT',left],['RIGHT',right]].map(([side,sha])=>({...stored,
+   id:'coat172-own-cuff-rim-'+side,source:empty,frames:pins.map(f=>f?sha:empty),
+   binding:{kind:'bone',a:'cloth:'+side+' ELBOW',b:'cloth:'+side+' ARM'}}));
+  const hemReturn=own.find(l=>l.id==='coat172-phase05-owned-hem-return');
+  if(!hemReturn||hemReturn.frames?.length!==8||hemReturn.frames[4]!==hemReturn.source||hemReturn.binding.kind!=='fixed')return r;
+  const repaired="09ec1de5303703b7369e46e2b3ab37291b57c16f7924ab094ea88b055f3adf6b";
+  const core="346805da8493b76970571a3fd9fe624866c55b01b7e72d9ad0ae40d876a076dc";
+  const layers=own.map(l=>l===stored?{...l,frames:pins.map(f=>f?hem:l.source)}:l.id==='coat-front-core'?
+   {...l,frames:pins.map(f=>f?core:l.source)}:l===hemReturn?
+   {...l,frames:l.frames.map((h,i)=>pins[i]?repaired:h)}:l).concat(cuffs);
+  const seam="c0683d116c542fa95f7b26721b6cb8d010519b0387082be08086da83e63cd0e1";
+  layers.push({...stored,id:"coat172-f05-sleeve-joins",source:empty,frames:pins.map((_,f)=>f===4?seam:empty),depth:101,binding:{kind:"fixed"}});
+  const extra=[hem,left,right,empty,repaired,core,seam],padding={...donor.sourceRasterPadding};
+  for(const h of extra)if(h!==repaired&&h!==seam)padding[h]={sourceSize:512,offset:64};
+  const pack={...bare.pack,directions:{...bare.pack.directions,north:{...t,rest:c.rest,poses,layers:[...t.layers,...layers]}}};
+  return {...bare,id:bare.id+':own-c172-north-contact',hdKind:'outfit',pack,
+   equipment:{...bare.equipment,torso:172},sourceRasterPadding:padding,nativeCoat172NorthContact:true,
+   sourceRefs:[...bare.sourceRefs,...donor.sourceRefs,...extra],...(stock?{registeredPaletteBody:bare}:{}),
+   slotRoutes:{...(gear.pants?{[gear.pants.key]:{item:gear.pants.item,quality:'hd',source:bare.id}}:{}),
+    [coat.key]:{item:172,quality:'hd',source:donor.id}},resolvedAction:'attack-unarmed',omitted:[]};
+ }
+ function selectOwnC165NorthContact(player,o,r){
+  if(o.consumer!=='world'||o.direction!=='north'||o.action!=='attack-unarmed'||o.weaponless||
+     player?.__reworkSubset||player?.zoanTransformed)return r;
+  const gear=registeredEquipment(player,o),coat=gear?.torso;
+  if(coat?.item!==165||Object.keys(gear).some(k=>!['torso','pants'].includes(k)))return r;
+  const remain={...player.equipment};delete remain[coat.key];
+  const bare=selectVisualStrictCore({...player,equipment:remain},o),a=bare?.colorAppearance,
+   stock=!bare?.hdKind&&bare?.sourceId==='v7-punch-north-drawn8-north';
+  if(!bare||bare.body!=='male'||bare.action!=='attack-unarmed'||bare.direction!=='north'||bare.mirrorX||
+     bare.mirrorLayerIDs?.length||bare.headRecord||bare.gearOnlyRecord||bare.bodyOcclusion||bare.sourceRasterPadding||
+     bare.omitted?.length||bare.visualDegraded||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},a?.skin)||a?.hairColor!=='black'||
+     (a.hair??a.hairStyle??player.appearance96?.hairStyle)!=='original'||
+     (a.face??a.eyeStyle??player.appearance96?.eyeStyle)!=='original')return r;
+  if(!stock&&(bare.hdKind!=='outfit'||bare.palettePolicy!=='verified-original-anatomy-only'||
+    !gear.pants||bare.equipment?.pants!==gear.pants.item))return r;
+  const donor=outfitById.get('male-torso165-north-frozen-attack-native-candidate'),t=bare.pack?.directions?.north,
+   c=donor?.pack?.directions?.north,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y),
+   strip=p=>Object.fromEntries(Object.entries(p).filter(([k])=>!k.startsWith('cloth:')));
+  if(!t||!c||donor.sourcePackSHA256!=='7f084167add6b3feea3781fed355cec591ea20bb1465747cd8eb90b6316bb957'||
+     !['frame','density','pivot'].every(k=>eq(bare.pack[k],donor.pack[k]))||
+     !eq(t.clip,{frames:8,fps:12,loop:false,contactFrame:4})||!eq(t.clip,c.clip)||
+     !eq(t.rest,strip(c.rest))||!eq(t.poses,c.poses.map(strip)))return r;
+  const anatomy=c.layers.filter(l=>l.id.startsWith('base:')).map(l=>({...l,id:l.id.slice(5)})),
+   body=t.layers.filter(l=>!gear.pants||!l.id.startsWith('pants'+gear.pants.item+'-')),
+   own=c.layers.filter(l=>!l.id.startsWith('base:'));
+  if(!eq(body,anatomy)||own.length!==8||t.layers.filter(l=>!body.includes(l)).some(l=>l.slot!=='pants'))return r;
+  const guide=[null,{"LEFT":[[283,245],[261,295],[246,351]],"RIGHT":[[354,250],[369,274],[378,295]]},{"LEFT":[[283,245],[257,301],[238,348]],"RIGHT":[[351,249],[378,244],[364,213]]},{"LEFT":[[283,245],[268,295],[238,348]],"RIGHT":[[351,243],[366,224],[375,210]]},null,{"LEFT":[[283,245],[263,295],[243,349]],"RIGHT":[[351,249],[378,258],[365,231]]},{"LEFT":[[283,245],[267,297],[249,353]],"RIGHT":[[356,250],[366,280],[374,308]]},null];
+  const poses=c.poses.map((pose,i)=>{const l=guide[i];const out={...pose};
+   if(l)for(const side of ['LEFT','RIGHT'])for(const [k,j] of ['SHOULDER','ELBOW','ARM'].entries()){
+    const [x,y]=l[side][k];out['cloth:'+side+' '+j]={x:x/4,y:y/4};
+   }
+   for(const side of ['LEFT','RIGHT'])for(const key of ['ELBOW','ARM']){
+    const a=out['cloth:'+side+' '+key];
+    out['cloth:cuff:'+side+' '+key]={x:a.x+(i===4&&side==='RIGHT'?1:0),y:a.y-(i===4&&side==='RIGHT'?2.5:0)};
+   }
+   return out;
+  });
+  const [hem,left,right]=["2e4c56271dad1ea0b759e728e6cf3738c01d739190b2c8f01a2f4c8275e14bcf","01a7bd781b12bda0ae00f2a711b70ce388f9de69074179d50dc78d528e1f8a74","fc2a3a7901c0c005ec632c139a75ec42b39106088a7ceba84960b0dfd8db1bf1"],empty='5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f',
+   pins=[false,true,true,true,true,true,true,false];
+  const stored=own.find(l=>l.id==='coat165-whole-hem');
+  if(stored?.source!=='b53c1658e66f8be28ce71a290e51546982846acd5d401b764429d1849a6a19d9')return r;
+  const cuffs=[['LEFT',left],['RIGHT',right]].map(([side,sha])=>({...stored,
+   id:'coat165-own-cuff-rim-'+side,source:empty,frames:pins.map(f=>f?sha:empty),
+   binding:{kind:'bone',a:'cloth:cuff:'+side+' ELBOW',b:'cloth:cuff:'+side+' ARM'}}));
+  const cleanF05Hem='d7cb08c5b28efa0d06c2af8744ada0e72744353d0edd3253058926986b19172c';
+  // The F05 return patch contained only the extensions behind the
+  // disconnected rims. Retire its exact signed pass in F05, not the skirt.
+  const phaseReturn=own.find(l=>l.id==='coat165-phase05-owned-hem-return');
+  if(phaseReturn?.frames?.length!==8||phaseReturn.frames[4]!=='05525cf6f4a786ca5ba02206624980a0d43b6db88cf88b5f9a9b48a8a83c70fd'||
+     phaseReturn.frames[0]!=='ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c')return r;
+  const layers=own.map(l=>l===phaseReturn?{...l,frames:l.frames.map((h,i)=>i===4?l.frames[0]:h)}:
+   l!==stored?l:{...l,frames:pins.map((f,i)=>i===4?cleanF05Hem:f?hem:l.source)}).concat(cuffs);
+  const extra=[hem,left,right,empty,cleanF05Hem],padding={...donor.sourceRasterPadding};
+  for(const h of extra)padding[h]={sourceSize:512,offset:64};
+  const rest={...c.rest};for(const side of ['LEFT','RIGHT'])for(const key of ['ELBOW','ARM'])rest['cloth:cuff:'+side+' '+key]=c.rest['cloth:'+side+' '+key];
+  const pack={...bare.pack,directions:{...bare.pack.directions,north:{...t,rest,poses,layers:[...t.layers,...layers]}}};
+  const existing=r?.pack?.directions?.north;
+  if(stock&&(!existing||r.hdKind!=='outfit'||r.equipment?.torso!==165||
+     !eq(existing.clip,c.clip)||!eq(existing.rest,c.rest)||!eq(existing.poses,c.poses)||
+     !eq(existing.layers,c.layers)))return r;
+  const ownLabels=new Set(own.map(l=>l.id));
+  const keepRegisteredF05=stock?{...r,id:r.id+':own-c165-f05-cuffs',sourceRasterPadding:padding,
+   sourceRefs:[...r.sourceRefs,...extra],pack:{...r.pack,directions:{...r.pack.directions,
+    north:{...existing,rest,poses,layers:[...existing.layers.filter(l=>!ownLabels.has(l.id)),...layers]}}}}:null;
+  return {...bare,id:bare.id+':own-c165-north-contact',hdKind:'outfit',pack,
+   equipment:{...bare.equipment,torso:165},sourceRasterPadding:padding,nativeCoat165Contact:true,
+   sourceRefs:[...bare.sourceRefs,...donor.sourceRefs,...extra],...(stock?{registeredPaletteBody:bare,preserveC165NorthF05:keepRegisteredF05}:{}),
+   slotRoutes:{...(gear.pants?{[gear.pants.key]:{item:gear.pants.item,quality:'hd',source:bare.id}}:{}),
+    [coat.key]:{item:165,quality:'hd',source:donor.id}},resolvedAction:'attack-unarmed',omitted:[]};
+ }
+ function selectVisualStrict(player,o={}){
+  const stageSelected =selectOwnC172NorthContact(player,o,selectOwnC158NorthContact(player,o,selectOwnC172LateralPunch(player,o,selectOwnC172SouthNativeBody(player,o,selectSignedNorthC137(player,o,selectSignedSouthCuffAlpha(player,o,selectVisualStrictCore(player,o)))))));
+  const selected=selectOwnC165NorthContact(player,o,stageSelected);
+  // Approved Original C137 South preview: the native hands are already in
+  // this pose. The two extra hand passes double-paint the cuff pixels.
+  // Keep the cloth/backing and every other outfit, palette and pose unchanged.
+  if(o.consumer!=='world'||o.direction!=='south'||!['idle','walk'].includes(o.action)||!selected||
+    selected.hdKind!=='outfit'||selected.strictSouthAppearance||selected.omitted?.length||
+    selected.visualDegraded||selected.equipment?.torso!==137||player?.zoanTransformed||player?.__reworkSubset)return selected;
+  const saved=player?.appearance96;
+  if(!saved||!['male','masculino'].includes(saved.gender)||['hairStyle','hairColor','eyeStyle','eyeColor','skinColor'].some(k=>saved[k]!=='original'))return selected;
+  const visible=registeredEquipment(player,o);
+  if(!visible||visible.torso?.item!==137)return selected;
+  const action=o.action,donor=outfitById.get('male-torso137-south-frozen-'+action+'-native');
+  const pose=selected.pack?.directions?.south,source=donor?.pack?.directions?.south;
+  if(!pose||!source||pose.clip.frames!==(action==='idle'?1:16))return selected;
+  const equal=(x,y)=>JSON.stringify(x)===JSON.stringify(y),
+   norm=l=>({...l,id:l.id.replace(/^base:/,'')}),
+   motion=r=>[r.pack.frame,r.pack.pivot,r.pack.density],
+   clock=p=>[p.clip.frames,p.clip.loop,p.clip.frames===1?null:p.clip.fps,p.rest,p.poses],
+   own=n=>n.startsWith('coat137-')||n==='collar-depth-rear-neck',
+   upper=n=>/^(torso|headBase|armRight|armLeft|handRight|handLeft|face|hair)$/.test(n);
+  if(!equal(motion(selected),motion(donor))||!equal(clock(pose),clock(source))||
+    !equal(pose.layers.map(norm).filter(l=>upper(l.id)||own(l.id)),
+     source.layers.map(norm).filter(l=>upper(l.id)||own(l.id))))return selected;
+  const repairs={
+   'cuff-emergence-handRight-RIGHT-skin':'5ac179932f16e9e0884f57463303f7f40fa77b95d1f57a5f0e74b84f05389f40',
+   'cuff-emergence-handLeft-LEFT-skin':'55ac07f9dc92cc9130ab27a55cb48c7c6ff547d448f66c713085502fc0be5e67',
+  };
+  const skip=l=>Object.hasOwn(repairs,l.id);
+  const overlay=pose.layers.filter(skip);
+  if(overlay.length!==2||new Set(overlay.map(l=>l.id)).size!==2||
+    overlay.some(l=>l.source!==repairs[l.id]||l.frames?.some(h=>h!==l.source)))return selected;
+  // Prove the real no-coat route has exactly these non-clothing passes.
+  // This check includes boots, silhouette and clock without requiring any item ID.
+  const equipment={...player.equipment};delete equipment[visible.torso.key];
+  const bare=selectVisualStrictCore({...player,equipment},o),body=bare?.pack?.directions?.south;
+  if(!body||bare.omitted?.length||bare.visualDegraded||
+    !equal(motion(selected),motion(bare))||!equal(clock(pose),clock(body))||
+    !equal(pose.layers.filter(l=>!skip(l)&&!own(l.id)).map(norm),body.layers.map(norm)))return selected;
+  return {...selected,id:selected.id+':own-c137-native-cuffs',
+   pack:{...selected.pack,directions:{...selected.pack.directions,south:{...pose,layers:pose.layers.filter(l=>!skip(l))}}}};
+ }
+ const maleB148NorthPunchOwn=[["boot148-left-rear","eca6d2768588c587f7dc01e83c51ec3fdda28bdd4f507f088b843e7501b727b5","0cfe659b4f76280dbdde91714ed05032ba4fded5483c555af1db28defdcb9425"],["boot148-left-front","99d6304ff600bd8292648fb31563d78f72fd85c6acadfc0009dede21c6c53d27","ee3030689fb2c61a9ea7f51b147b6a090bdcce33e0327f62fd768a32d9ccd43f"],["boot148-right-rear","81618db6e9980f16062b88974800a1319ea0dae638920978269860c65b822856","a8d4ae1385f6f91e0d8103713bdd6d6ed77c3fbfcdd4fee934225dd168637b3a"],["boot148-right-front","7d2dae36506f5b67e7b7ab285384cc0db7264a06e0b075b5d8d2bd5213b96081","8d13fc97bf8ebd258d455c1e3c9d65807c9cdab377c6d6e4c039f12b67993ed3"],["boot148-left-own-material-backing","9ed47b8b97c67bd2885d55d2eaf3ec897627f07ed73ac2033cc83b58f4d7ee1b","37791eb7808435fbf9808920f9b6a0f89944df604e450d58c4a996d55303427a"],["boot148-right-own-material-backing","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c"]];
+ function selectMaleNorthPunchB148(player,o,visible){
+  const b=visible?.boots,raw=player?.appearance96||{};
+  if(o.consumer!=='world'||o.direction!=='north'||!['attack','attack-unarmed'].includes(o.action)||o.weaponless||
+     b?.item!==148||canonical(raw.gender)!=='male'||player.__reworkSubset||player.zoanTransformed)return null;
+  const equipment={...player.equipment};delete equipment[b.key];
+  const action={...o,action:'attack-unarmed'},off=selectVisualStrictCore({...player,equipment},action),
+    donor=outfitById.get('male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate'),
+    t=off?.pack?.directions?.north,src=donor?.pack?.directions?.north,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!t||!src||off.hdKind!=='outfit'||off.body!=='male'||off.bodyOcclusion||off.omitted?.length||
+     off.sourceRasterPadding||off.mirrorX||off.visualDegraded||off.headRecord||off.gearOnlyRecord||
+     !['frame','pivot','density'].every(k=>eq(off.pack[k],donor.pack[k]))||
+     !['rest','poses','clip'].every(k=>eq(t[k],src[k]))||
+     !eq(t.layers,src.layers.filter(l=>!l.id.startsWith('boot148-'))))return null;
+  const own=src.layers.filter(l=>l.id.startsWith('boot148-'));
+  if(own.length!==6||!own.every((l,i)=>l.id===maleB148NorthPunchOwn[i][0]&&l.source===maleB148NorthPunchOwn[i][1]&&
+     l.depth===2.5&&l.binding?.kind==='fixed'&&!l.frames&&!l.depthTrack&&donor.sourceRefs.includes(l.source)))return null;
+  const layers=own.map((l,i)=>({...l,source:maleB148NorthPunchOwn[i][2],
+     depth:l.id.endsWith('-rear')?-1:l.id.endsWith('-backing')?2.49:2.5}));
+  const refs=layers.map(l=>l.source);
+  if(refs.some(h=>off.sourceRefs.includes(h)||off.paletteSourceMasks?.[h]))return null;
+  for(const [slot,v] of Object.entries(visible))
+   if(slot!=='boots'&&off.slotRoutes?.[v.key]&&(off.slotRoutes[v.key].quality!=='hd'||off.slotRoutes[v.key].item!==v.item))return null;
+  const mounted={...off,id:off.id+':own-b148-north-anchored-sole',equipment:{...off.equipment,boots:148},
+   pack:{...off.pack,directions:{...off.pack.directions,north:{...t,layers:[...t.layers,...layers]}}},
+   sourceRefs:[...off.sourceRefs,...refs],resolvedAction:action.action};
+  return describeSlots(mounted,visible,[]);
+ }
+ const maleExtraNorthPunchOwn={"8":[["boot8-left-rear","frozen-v47-male-151-boot8-north-idle",0,"f8194caf8ac64efd3b065601515ce9d695a51a7cacc372aca0b73f344e937c00","c526aec849cdc8f0e3a7bc92a708bc519aef0a6cd2cacf3eb06f81e68cfcb9e3"],["boot8-left-front","frozen-v47-male-151-boot8-north-idle",0,"a208d5d7e6e7538410662a2a9a6f3d0abb527db5e4e0dd0b01d60989bb86beac","43041c100e8d821f8ad4134c7440e846d68ea789c58bcf35ef57efb31806e094"],["boot8-right-rear","frozen-v47-male-151-boot8-north-idle",0,"13f6062c7d3e769ac842f8ab26b8787ae72883a74c1444f38102a114ebba11e4","27839a4bce10f0a74f38268a9c569c74aabefdca407afc30994d92ebfc2a6d3e"],["boot8-right-front","frozen-v47-male-151-boot8-north-idle",0,"89f23c5048c7a2a2632edb7be9929706394ea01c6b7229350bafb26592ec4f62","4d149ce82341bcb82ca7fbac8d1172f9adf66735881d0c1fa12459fc26d99137"],["boot8-left-own-material-backing","frozen-v47-male-151-boot8-north-idle",0,"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c"],["boot8-right-own-material-backing","frozen-v47-male-151-boot8-north-idle",0,"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c"]],"183":[["boot183-left-rear","frozen-v47-male-151-boot183-north-idle",0,"9834faf5227189d17f46a200cff0dd94d1076b011d66d44dd9efed72df0ec06e","d1de2038adf7c314e48de212cc62c35ed0956ad1cefdfa8e88c01e4743d60b66"],["boot183-left-front","frozen-v47-male-151-boot183-north-idle",0,"bed187646921af4b77d4fd23dbea056490e76693137e10fd07d74642f7a434a2","694fb0fc282d0df99741163f8c063ea07a3a70143abfc713fa9904f26e221312"],["boot183-right-rear","frozen-v47-male-151-boot183-north-idle",0,"6f427330a1bb5c32c028d758fa11510d249b9808af48c6af3ffc45fe694dd5f6","3b3d901d7afdcbb09d273ddf6cd2ad28031c7432dec28a0d3b4a339ae355660d"],["boot183-right-front","frozen-v47-male-151-boot183-north-idle",0,"b62030df2f8be29345f6b9900138cb00617647f11b4999dc2414093e00b67da9","4e84f039f2b8733032018de7bfab563adf195c342ced2c0b7459fe62a6275596"]],"141":[["boot141-left-rear","frozen-v47-male-151-boot141-north-idle",0,"2d17b06b65b4f2be2d609f159fdbd960e82d2779c160a0e17334bdb1e9b9ef33","5cca928de4ebbe27b6e045fa4b249d52648e66dd747c707901734fb1f0b3f41e"],["boot141-left-front","frozen-v47-male-151-boot141-north-idle",0,"f1fb17d455caf4009184045940a60f315123dcb848cd87538dd167129836bf45","22fa8ce36885c99e507b1d44e4ac10f11528bdb982048aecf919987c8d3761b3"],["boot141-right-rear","frozen-v47-male-151-boot141-north-idle",0,"7bcd7ed1aeb14737a97b729ab33864ddb3d852acc81eafcf40d5af3ed2e03bef","faed42e4d107332be9f86b13fc7c049f85c69abd6551fb0e2963221c4bf6acc2"],["boot141-right-front","frozen-v47-male-151-boot141-north-idle",0,"ee8608c794ba6bce7d5fbe5ea10ab9f790a61f76a03a45ece65e6b6b9ea7e781","545cf4c02f78db467c85703758b627ff810f52cedad4a10b6fb20501af890810"],["boot141-left-own-material-backing","frozen-v47-male-151-boot141-north-idle",0,"4da529da6885196729e5a4d9ff75efc73abcd58c9375c4c9c59ca107b708f778","e9aba7b2e06005d7417d4b7fdf38fa3d21999c74418f526ea780cf5f6cb86b78"],["boot141-right-own-material-backing","frozen-v47-male-151-boot141-north-idle",0,"41062caa1d4200ca6717603e7e4a686172c55698054085054d1caa225adbe399","54f93aff24518cd16a24d45cd4c7d10d86f5b13b289a2d9e9b2f14fb7a2bb67e"]],"169":[["boot169-left-rear","frozen-v47-male-151-boot169-north-idle",0,"4f08bd3137d4fac3afb793f28c2c312f8f0e9015c287d89e914871d27a122693","7693c0015e55aa914c5c1d2678b506cc3f4a098867aabed7854343d3ddebe104"],["boot169-left-front","frozen-v47-male-151-boot169-north-idle",0,"0e37d70b43e35ba864fdb0e08d8bf3b9bd08a48a45816f0a80a03d73a537e08c","04201c63a35ce07239c4e7334b3e20e8f22a38e82cd46d6a672a4eea7d5f158c"],["boot169-right-rear","frozen-v47-male-151-boot169-north-idle",0,"7121b83d887c90ab10033768ba4532cf8f9af734c6bdfe07b7e7c5cc899f4685","82675e27bd21b3fa5c916834d997740c825be5b1f4981d8c1cf94499a8305d05"],["boot169-right-front","frozen-v47-male-151-boot169-north-idle",0,"b0a3ca0dd687d0e3beb591535b17562394d63e0320500638286290f09423c40d","aa7d2195f1489a9ba448bfe5e94611ced9b80700c3bb6ffb1e09f9e59c13afa5"]],"134":[["boot134-left-rear","male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",0,"c590d6b61b6b88e06dfab78b54c65cde3d9f6fded7f50e87fe2091a079690b1e","d75c579a974ef81ad459037a26077548838a3aae30a2ca0f28aa63b58f2936c2"],["boot134-left-front","male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",0,"5af69bb9bf9483a4c2a7bd2eac0568b561679d4ed4378c66ed23d57e24644deb","d44bbe61b5bb277c6e258a2b28f00031ce1ef6f9ea1f30eb8339804803dc44b0"],["boot134-right-rear","male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",0,"4b9c3798a5dfea7bb3eccaa81e6e917b6010f8c06067a168693679f0b68053b5","320892f6cade86fd6293c63a2cf650a653e69ee576ed61996ca59f807afd0b87"],["boot134-right-front","male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",0,"e8324aeb972c91e0e0a4a6f414cb863afe93bb786366f797551c7190259d3738","dbbb00ccac9808a5e4b04e1aba6fad37282481a99ce17498fc9f8f76d47f3423"],["boot134-left-own-material-backing","male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",0,"46cf3b9636eb153d878d7642630eb7c039f4446cf399269478abdc4c567c4124","d02dcb8d86b6a2636eb0e96615d6583fcd2a4890a7d49840956861620718f05a"],["boot134-right-own-material-backing","male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",0,"b6723736e363a18f37567d72c452783b2b524adf69cb5c018a0986cebce7c92a","883eee2c9a52b8ec6a87b434a511dee58603b6be42adf6e4483c07eca9164d44"]],"176":[["boot176-left-rear","frozen-v47-male-151-boot176-north-idle",0,"a379185099b51e86bf90bc07c06e91bbaed5db5b626bc7afb5c25075f900e74c","d919d357c72c293be0a430297a615fb59193878ddf150b58d464ec033f4594ff"],["boot176-left-front","frozen-v47-male-151-boot176-north-idle",0,"83ae2f1ccf160aed14c4e58290c8cf45b5e0081353759cda8e72cb5abb4124e0","668d4856aafe9f1407cdfcc562585af4a701fe9ca4c25fc60fb4b5bed5dd83ea"],["boot176-right-rear","frozen-v47-male-151-boot176-north-idle",0,"cfcc33671a24ed4898d80ebfc3f47abfb75f559ce15c490b4b7d58cf9408fdc9","ba97c60cf0d2e76e9ec42b115a45e49747b2c7daf2d24ceca55ec7a0460d99e9"],["boot176-right-front","frozen-v47-male-151-boot176-north-idle",0,"262a25812e05abdcc218d3895b628827d5a8eac231904a7d7e5da288e774e32c","9574d34e550ae7eb61b92844c57b4ef526f5bbcfd343e92629733b760d6d6d43"]],"155":[["boot155-rear-mouth-0","frozen-male-pants133-north-idle-v47",0,"c3a988b433dbbed7344be381d3f0438a6b6a8486cd7f114e9a30b75d156c0b49","6aba48e145eaa418e79df19565e0819700bfd69139b16eb331b7d0fea0768899"],["boot155-shell-0","frozen-male-pants133-north-idle-v47",0,"e82db848e9e28377743e8a760494374bbb5bb371afc4b04c018305b27138e58c","f15c974a04f6fd74d34446fcee310ae63ab206fb98729cb80771ea8aa08d1626"],["boot155-rear-mouth-1","frozen-male-pants133-north-walk-v47",9,"ef864e2ed6358f01a8e40a11126a6e07cbbbc785d38a3e7a8ad6ee7f53c002ab","631a99c2022e384da759eba68d20a2e49c5b09997f2a70d98975109374ce7cbd"],["boot155-shell-1","frozen-male-pants133-north-walk-v47",9,"54a786cd2e0a3d9af5e8787467ee6ee3701095ff97f90e730bb286e9b513a69c","6d5464d0045405921a36123bd5bde6ce7cd89809decc23ede17e31869d6bd54d"]],"162":[["boot162-left-rear","frozen-v47-male-151-boot162-north-idle",0,"598495b4d3329ba2a2c915ddc34e3b52251927a5bea15ebaed514e69ab705053","bfc90f2ec23335ad06643cf5cc574a8c1be9fa3118a65eb12b49531e768ab751"],["boot162-left-front","frozen-v47-male-151-boot162-north-idle",0,"fff00603ef3820a4c18cd9e75b2da2136c6342e0dd4b8f8122039c7104fd5105","5c0252c71b4719b87c816e987f821773af6d993cd463f3567f8c600e31cd3789"],["boot162-right-rear","frozen-v47-male-151-boot162-north-idle",0,"64aafcdbd6079de681944545102f1fc073fe50ed4d043b52e6abe47286dd55f0","96defdabf20e78d6ccb9a7ceab9242ca2153cd5f7512f280f94a6880eb60f6ad"],["boot162-right-front","frozen-v47-male-151-boot162-north-idle",0,"4432ccd22323cf7cfa3386928a0b0a714f81a0a8557d8a74f6fe394c211dee80","cccb06b45a6561a7cc5c1189581a46e5e1de406ddd6c82c5af883aab4b0c49f6"],["boot162-left-own-material-backing","frozen-v47-male-151-boot162-north-idle",0,"c3e5f7595fb5e901c58d73509456534d57c89e1d2ab72488cc1b1e7674845ecc","edea56fec8bbeb9efcf5cc46f47770ff240298ccd4f1377659fadf2677efac79"],["boot162-right-own-material-backing","frozen-v47-male-151-boot162-north-idle",0,"5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f","ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c"]]};
+ function selectMaleNorthPunchFittedBoot(player,o,visible){
+  const b=visible?.boots,raw=player?.appearance96||{};
+  if(o.consumer!=='world'||o.direction!=='north'||!['attack','attack-unarmed'].includes(o.action)||o.weaponless||
+     !maleExtraNorthPunchOwn[b?.item]||canonical(raw.gender)!=='male'||player.__reworkSubset||player.zoanTransformed)return null;
+  const equipment={...player.equipment};delete equipment[b.key];
+  const action={...o,action:'attack-unarmed'},off=selectVisualStrictCore({...player,equipment},action),
+    donor=outfitById.get('male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate'),
+    t=off?.pack?.directions?.north,src=donor?.pack?.directions?.north,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!t||!src||off.hdKind!=='outfit'||off.body!=='male'||off.bodyOcclusion||off.omitted?.length||
+     off.sourceRasterPadding||off.mirrorX||off.visualDegraded||off.headRecord||off.gearOnlyRecord||
+     !['frame','pivot','density'].every(k=>eq(off.pack[k],donor.pack[k]))||
+     !['rest','poses','clip'].every(k=>eq(t[k],src[k]))||
+     !eq(t.layers,src.layers.filter(l=>!l.id.startsWith('boot148-'))))return null;
+  const own=maleExtraNorthPunchOwn[b.item];
+  const layers=[];
+  for(const [id,key,frame,sha,fit] of own){
+   const source=outfitById.get(key),l=source?.pack?.directions?.north?.layers?.find(x=>x.id===id);
+   if(!l||l.binding?.kind!=='fixed'||l.depthTrack||!source.sourceRefs.includes(sha)||
+      (l.frames?.[frame]||l.source)!==sha||source.pack.frame.width!==128||source.pack.pivot.x!==64||
+      source.pack.pivot.y!==112||source.pack.density!==4)return null;
+   layers.push({id,slot:l.slot,source:fit,binding:{kind:'fixed'},
+     depth:id.includes('-rear')?-1:id.endsWith('-backing')?2.49:2.5});
+  }
+  const refs=layers.map(l=>l.source);
+  if(refs.some(h=>off.sourceRefs.includes(h)||off.paletteSourceMasks?.[h]))return null;
+  for(const [slot,v] of Object.entries(visible))
+   if(slot!=='boots'&&off.slotRoutes?.[v.key]&&(off.slotRoutes[v.key].quality!=='hd'||off.slotRoutes[v.key].item!==v.item))return null;
+  const mounted={...off,id:off.id+':own-b'+b.item+'-north-anchored-sole',equipment:{...off.equipment,boots:b.item},
+   pack:{...off.pack,directions:{...off.pack.directions,north:{...t,layers:[...t.layers,...layers]}}},
+   sourceRefs:[...off.sourceRefs,...refs],resolvedAction:action.action};
+  return describeSlots(mounted,visible,[]);
+ }
+ function selectOwnNorthWalkPants(player,o){
+  if(o.consumer!=='world'||o.action!=='walk'||o.direction!=='north'||player.zoanTransformed||player.__reworkSubset||
+     canonical(player.appearance96?.gender)!=='female')return null;
+  const visible=registeredEquipment(player,o),p=visible?.pants,bank=northRig?.independentOwnPants?.[p?.item];
+  if(!p||!bank||[bank.authored,bank.native].some((refs,i)=>refs?.length!==(i?8:12)||
+     refs.some(h=>!/^[a-f0-9]{64}$/.test(h)))||
+     ['variant','variantId','appearanceVariant'].some(k=>p.value?.[k]!=null&&p.value[k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[p.key];
+  const u=selectVisualStrict({...player,equipment},o),d=u?.pack?.directions?.north;
+  if(!d||u.omitted?.length||u.visualDegraded||u.headRecord||u.gearOnlyRecord||
+     ![8,40].includes(d.clip.frames)||d.clip.fps!==d.clip.frames||!d.clip.loop||
+     u.pack.frame.width!==128||u.pack.frame.height!==128||u.pack.density!==4||u.pack.pivot.x!==64||u.pack.pivot.y!==112)return null;
+  const own={item:p.item,quality:'hd',source:'female-own-north-walk-v47:pants'+p.item},
+   give=r=>({...r,id:u.id+':own-north-walk-pants:'+p.item,equipment:{...u.equipment,[p.key]:p.item},
+     northOwnWalkGarment:{key:p.key,item:p.item},slotRoutes:{...describeSlots(u,registeredEquipment({...player,equipment},o),[]).slotRoutes,...u.slotRoutes,[p.key]:own},omitted:[]});
+  if(u.northLayers){
+   const q=u.northLayers;
+   if(q.spec!==northRig||q.body.sourceBaseId!==northRig.bodyRecord||q.pants!=null||q.lower?.cloth||
+      q.lower?.gear?.some(l=>![-1,45].includes(l.depth)))return null;
+   return give({...u,northLayers:{...q,ownedPants:bank.authored}});
+  }
+  // Independent upper/weapon receivers retain their exact scene graph.
+  // Their North stride is eight native poses, not the separate twelve-contact replay.
+  const native=baseIndex.records.find(v=>v.id===northRig.bodyRecord)?.pack.directions.north,
+   legs=d.layers.find(l=>['legs','base:legs'].includes(l.id)),
+   slots=d.layers.filter(l=>['shorts','base:shorts'].includes(l.id)),short=slots[0],
+   eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),step=d.clip.frames/8,holds=frames=>frames.flatMap(h=>Array(step).fill(h));
+  if(!native||!['female-equipment','outfit'].includes(u.hdKind)||slots.length!==1||
+     !eq(legs?.frames,holds(native.layers.find(l=>l.id==='legs').frames))||
+     !eq(short.frames,holds(native.layers.find(l=>l.id==='shorts').frames))||short.depth!==2||
+     short.binding?.kind!=='fixed'||!eq(d.rest,native.rest)||!eq(d.poses,holds(native.poses)))return null;
+  if(u.hdKind==='female-equipment'&&(!eq(u.baseRecord?.pack,u.pack)||
+     u.states?.some(s=>s.hideBaseLayers?.includes(short.id)||s.baseMasks?.[short.id])))return null;
+  const frames=holds(bank.native),cloth={...short,id:'pants'+p.item+'-own-walk-north',source:frames[0],frames},
+   pack={...u.pack,directions:{...u.pack.directions,north:{...d,layers:d.layers.map(l=>l===short?cloth:l)}}};
+  if(u.hdKind==='female-equipment')return give({...u,pack,
+   baseRecord:{...u.baseRecord,pack,sourceRefs:[...new Set([...u.baseRecord.sourceRefs,...frames])]},
+   outfitSources:[...new Set([...(u.outfitSources||[]),...frames])]});
+  return give({...u,pack,sourceRefs:[...new Set([...u.sourceRefs,...frames])]});
+ }
+ const maleSouthPunchOwn={"134":[["boot134-left-front","frozen-v47-male-151-boot134-south-idle",0,"ac6b59ffc327f03981d022c14bdd561c4e5039d24dbb243eebcc3a644d37426e","f5f9919a0660ac07d3e889d33f2ca7f69a8e5dfe2caa08ff59924b91dd9ba917","boot134-left-front","0db4171caa9ada4b83431ccf338777ade5735113e86fb72408da9c01f8cf3f84"],["boot134-left-rear","frozen-v47-male-151-boot134-south-idle",0,"ac6b59ffc327f03981d022c14bdd561c4e5039d24dbb243eebcc3a644d37426e","cf888d9c4a760d3bc3f2a4177dad12fd40eccfd6b6f301845e8ee5bd25303bd3","boot134-left-front","ca74870eb770ed8d41f781cda43300cdcc9abe0ddf82c8236e7afe9beb108a3f"],["boot134-right-front","frozen-v47-male-151-boot134-south-walk",9,"5e2a26577a6e6d93b957b9cd7a0b2fda9092ed2c02d74ed73d570930c65f4bb2","38752c5f3fb2ec6398cd137e239db6ae267647f9c617895988acc3fc5f42af62","boot134-right-front","0757fb04ec6a5bffa03c168b62e3df0c5aa62b343e6f988d9ae44093155cb93f"],["boot134-right-rear","frozen-v47-male-151-boot134-south-walk",9,"5e2a26577a6e6d93b957b9cd7a0b2fda9092ed2c02d74ed73d570930c65f4bb2","b3c3b3bc34469e07adccbf518f36171259f5f3e0cfdc008ec584af19403ee998","boot134-right-front","25ee0a58f028dbb0459b435e287fe2ff1334971ee0eb0f83af96168e473939f4"]],"155":[["boot155-left-front","frozen-male-pants133-south-idle-v47",0,"43ad371d3f2f37b09c7adc6cd5264eca0dab6d7b9b2cce96cc07cc540db29470","494e37cce4c37da90d4a220315918e6e67c7f93f43961d4d11803c55200201a8","boot155-screen-0","43ad371d3f2f37b09c7adc6cd5264eca0dab6d7b9b2cce96cc07cc540db29470"],["boot155-left-rear","frozen-male-pants133-south-idle-v47",0,"40045e67d792cb48d2db9e97f2071f0c27ef69cdaa566cc7b5e344163587503f","b3909d8f76b801f87ae2607a2673cb9c6b5f4e89b839ad01512723d6ff91a58c","boot155-mouth-rear-0","40045e67d792cb48d2db9e97f2071f0c27ef69cdaa566cc7b5e344163587503f"],["boot155-right-front","frozen-male-pants133-south-walk-v47",9,"4aaf1228f455fedc7e28565b1eb17aa6734fcffcfaec624d77e3ca8818c984cb","32dff96cc11c787b5f6e1f10c7ccc416ad36a8a147a6a3b81ce37ff9e8c99941","boot155-screen-1","4aaf1228f455fedc7e28565b1eb17aa6734fcffcfaec624d77e3ca8818c984cb"],["boot155-right-rear","frozen-male-pants133-south-walk-v47",9,"99ef62d2acfe7a873b27abc5a434bfb272cf72b3ee3a2d0b46368e3b20946862","0bdf864b9ac8cf1fe99de3045ea277009631de5c4f0bba76250f744576e8559b","boot155-mouth-rear-1","99ef62d2acfe7a873b27abc5a434bfb272cf72b3ee3a2d0b46368e3b20946862"]],"141":[["boot141-left-rear","frozen-v47-male-151-boot141-south-idle",0,"c68861618b7ae3996b64d9ce1bb0a44d661a8c703aa7f328cb8b2dada7271e41","71901b32e67e3bae4771af7c709c3959a596b2ebea2103ae8b5b86879229a8d7","boot141-left-rear","c68861618b7ae3996b64d9ce1bb0a44d661a8c703aa7f328cb8b2dada7271e41"],["boot141-left-front","frozen-v47-male-151-boot141-south-idle",0,"61c611c0747f1ea8958de13688678b0a2497ef03a7d8d60a057704051d856652","6575434f060c918702d08522330a35a0b9da23514747477354804cc57dac30b1","boot141-left-front","61c611c0747f1ea8958de13688678b0a2497ef03a7d8d60a057704051d856652"],["boot141-right-rear","frozen-v47-male-151-boot141-south-walk",9,"b29aa01135089e4c6ce32356b27a4eae13f3d5d6fea4c28bdcdcfa8f77bd8733","67472c7057b0c00549351ee8bcbe47dca3beabd95097f195b104b2b996f14f61","boot141-right-rear","b29aa01135089e4c6ce32356b27a4eae13f3d5d6fea4c28bdcdcfa8f77bd8733"],["boot141-right-front","frozen-v47-male-151-boot141-south-walk",9,"e3078966d6728d6789add41f215afd084d5247269ef5a55d37a0f9a92b08ea18","7193f3ec337e4e7003c97ce9f54976431698dc70ab1e2a37bafe817393bcbaad","boot141-right-front","e3078966d6728d6789add41f215afd084d5247269ef5a55d37a0f9a92b08ea18"],["boot141-left-own-material-backing","frozen-v47-male-151-boot141-south-idle",0,"727c0e579afb199d811ca8f2942279c4a77cece2e8f6dcaa9df6fec25f4c7a64","55c9f0e53f637c1f19802160bc3e971a626d3bc25bced337a48dbc16f0031cf7","boot141-left-own-material-backing","727c0e579afb199d811ca8f2942279c4a77cece2e8f6dcaa9df6fec25f4c7a64"],["boot141-right-own-material-backing","frozen-v47-male-151-boot141-south-walk",9,"4549c2816ddfb333ece5c13765e59298c86d4be00d1ae9e0dfa2e880ce0ddbd3","fece65bfb885f74d53ed92b0314bfa6b1ba880da3f8977cafeb4a6fca9b19d51","boot141-right-own-material-backing","4549c2816ddfb333ece5c13765e59298c86d4be00d1ae9e0dfa2e880ce0ddbd3"]],"169":[["boot169-left-rear","frozen-v47-male-151-boot169-south-idle",0,"4369afeb08f72dc5e4c4aa5ebefc19f2545461ee7ac79d138fbee03a59cba98d","ad3a332e7eefdcc1792dbe89758730657407c178edec888da06561138c10f5dc","boot169-left-rear","4369afeb08f72dc5e4c4aa5ebefc19f2545461ee7ac79d138fbee03a59cba98d"],["boot169-left-front","frozen-v47-male-151-boot169-south-idle",0,"2c61e2ef567e9b83263fce296dc405ecc45125998ca67ed54a56de5faa0db9f4","28cacf669fd85cebf8e3523cbe7545f73daf26f3066f20f5ea81437c80a8ffc0","boot169-left-front","2c61e2ef567e9b83263fce296dc405ecc45125998ca67ed54a56de5faa0db9f4"],["boot169-right-rear","frozen-v47-male-151-boot169-south-walk",9,"5b2d472f60881dcfe640c3185ccd53f1e5447379e554b625eb82e86e3429e7cf","93d966cb3267f9acfceddff6eeccf13e5b3a8fcf2935a8f69e09d60252b5bcd1","boot169-right-rear","5b2d472f60881dcfe640c3185ccd53f1e5447379e554b625eb82e86e3429e7cf"],["boot169-right-front","frozen-v47-male-151-boot169-south-walk",9,"e93610be6331af758ddb17e08d993c036a134e973f3f22f01284b5e3ec5d75ff","b8b59352026598935a18ea2f9b77c08fc2e0983bab727dd7499d8e8d76d8b9be","boot169-right-front","e93610be6331af758ddb17e08d993c036a134e973f3f22f01284b5e3ec5d75ff"],["boot169-left-own-material-backing","frozen-v47-male-151-boot169-south-idle",0,"c61f9bb5b1e2b7ee76f1f42bcc17cf98ccce99ffd9fb4471a1ac6854b2a19098","0908e4cc4e71378cc903e6127530203a0d9b425cd3f5a3c33439a86b794bf6cb","boot169-left-own-material-backing","c61f9bb5b1e2b7ee76f1f42bcc17cf98ccce99ffd9fb4471a1ac6854b2a19098"],["boot169-right-own-material-backing","frozen-v47-male-151-boot169-south-walk",9,"b60ae1ba50eeb7947246ae7d7b9a39fed226e553d172e830714f86b8be9d94d3","6b2dbd8c1b933bbdd09ca56595ee46731fe44458b82467df5b47e0f054120164","boot169-right-own-material-backing","b60ae1ba50eeb7947246ae7d7b9a39fed226e553d172e830714f86b8be9d94d3"]],"8":[["boot8-left-rear","frozen-v47-male-151-boot8-south-idle",0,"d0a26da561f85c067e7eb94674da52a9645807b9b0c5045ee3bcae229d9722b4","0b8296fcfae98669a063f48fa571537adb7c98bfc335f1fd984f0d4b4fb15ba8"],["boot8-left-front","frozen-v47-male-151-boot8-south-idle",0,"56e393a54cdaf8ce06046950081309b0f530543f86768b03f3b3edaf7b87fbd8","de18df37816f99212beb591af55c6ab5a52af87e8ae4fb1542999591a984bc63"],["boot8-right-rear","frozen-v47-male-151-boot8-south-walk",9,"8383abe4b674ab5f257a94ef513469dc4a01144eae14cf463287b920ac4f3026","21f1c8be0d6751c1d477b5c48d7b3df805401c5faeb394aa6a4b1eec7f4223d0"],["boot8-right-front","frozen-v47-male-151-boot8-south-walk",9,"944956a380b4cb549bc70844894966355ae86b116d3dcf7ff73d0f2cc1d4cc6b","0edd32f7bd6c22b566419112832cffaa792be27cd6e18c70493d746f9bb09c6c"],["boot8-left-own-material-backing","frozen-v47-male-151-boot8-south-idle",0,"3f2a179dfc2367d940f42627d03a7c071c3abdb564bbe796225136cfd479bcd9","72c4ec206bafe0d7c5306d979611d371c18e73bed6f88cdd8ba4ad893453e36d"],["boot8-right-own-material-backing","frozen-v47-male-151-boot8-south-walk",9,"52b7ff697f3541e66f35b2070d6e136da58a5efdab60620000a4d0c9276d9666","e33b398a0f7febd5108209902f032b2e554f4af45463f1868f116f1f1eecd5cf"]],"162":[["boot162-left-rear","frozen-v47-male-151-boot162-south-idle",0,"3f7e06e4e10773d727614ba54f6ceba90e69dae22eb0467db561a17effab9a1d","136d18bd667c25da3ae7a84a6795fcb9ac06f9a1d50162b653c4079e3f40674a"],["boot162-left-front","frozen-v47-male-151-boot162-south-idle",0,"9b29ea57bee1aa26e5633e4cd989e3d1ad2ea801110741719d18ed021f7a8348","7564f26247a16190ea51d09fdff137412d62c3dce09f8f9c31054752c0d5fae9"],["boot162-right-rear","frozen-v47-male-151-boot162-south-walk",9,"10adcb0e87e5024b2cb2c7590dce389e3c6e004fc465f9bfd9e1ea962b0e8dfe","6e0dffdc59aedbbc31589faee075bf813e579e944cc27e6a0c31101ad73b7b25"],["boot162-right-front","frozen-v47-male-151-boot162-south-walk",9,"559f69c849ef85c273ba8b1f5a547172ddd50757cc799d32842806c9c8f5166d","4c3632a5974255bbf16557ed532f6e251ba85075eab2a06f37205990eb352f84"],["boot162-left-own-material-backing","frozen-v47-male-151-boot162-south-idle",0,"f8c204ecb18177ef87a52454ad743134fb2b9388c6a468c962df8f0db6ebaeb1","6d0eed25efb7d32d610468e9c35798dbc480ae1552d15006f08d1e6cebf6ff81"],["boot162-right-own-material-backing","frozen-v47-male-151-boot162-south-walk",9,"80d40469744205da0bff895b6c3393e42d2b45e775061466a08d6d7406c82369","51e0303b3585b82169899b117f674b9f8b0bf278ebf34dba2cfcd0230c857f5d"]],"176":[["boot176-left-rear","frozen-v47-male-151-boot176-south-idle",0,"d8c2627d74bf80032543f46f7577188d16d2c393a876c988db9edd4cf8160961","8088e8adc8d87b5372977768ac0c015ccad5ddc68b1c998fe55d19e2c1830504"],["boot176-left-front","frozen-v47-male-151-boot176-south-idle",0,"6f778184dbd62fb37ec23a6707c15009360f2847c1c0103aa6490738a9be55ff","9024708c36cfc57f2e990672893d7e8ccd77e3aa1e85fabe00d6f429d675e386"],["boot176-right-rear","frozen-v47-male-151-boot176-south-walk",9,"de548e8ef016d4436e2d3155d6311543866621e8c1eac4209898b080ea1f2256","1a879082f73e856727857b356a303ef6cdac513eec55ee283283fbdecfe52ba3"],["boot176-right-front","frozen-v47-male-151-boot176-south-walk",9,"6a70f6740666da40f691e9e42ced3bc916f61d5dd6bab33f8624c1ede9d2df6a","ce3f233bdc7ab4fb8d58093dcda257eea44ec598cc62ce87f2bf29b7adc1d4ab"]],"183":[["boot183-left-rear","frozen-v47-male-151-boot183-south-idle",0,"3ac8d51285cfd456c96fe53e43ab6cc7bf320ad8958f7ed58c2e33350e30657e","9bda0ae0519a9a436097f4ee0a046886449c36be0d61f6fe403eb43a37e5c6d8"],["boot183-left-front","frozen-v47-male-151-boot183-south-idle",0,"1def05c3e3a2b4ad61cfff33df3204abdbf3bac743e9403515f7289707ef0410","7e29ae9db2bfe0aa9c6aec90339310f92dac630df6b77bcd8349701f3abb105c"],["boot183-right-rear","frozen-v47-male-151-boot183-south-walk",9,"a529011447132683e79002e09dffe4a0902cc47e207bfa27540d2b9a3d6e1a45","1a3cae3405e048221848af7298ad9aff8f8558c80362471ac318a060e781ee2b"],["boot183-right-front","frozen-v47-male-151-boot183-south-walk",9,"742371456faf7b08943227f00019c17a37c5e8fb580a2457df5b769e2a25d9da","4e17c69ea8f5aa952c4478da542b931f348fd37ccd6e7613bd8a6ee747a30cca"]]};
+ function selectMaleSouthPunchFittedBoot(player,o,visible){
+  const b=visible?.boots,raw=player?.appearance96||{};
+  if(o.consumer!=='world'||o.direction!=='south'||!['attack','attack-unarmed'].includes(o.action)||o.weaponless||
+     !maleSouthPunchOwn[b?.item]||canonical(raw.gender)!=='male'||player.__reworkSubset||player.zoanTransformed)return null;
+  const equipment={...player.equipment};delete equipment[b.key];
+  const action={...o,action:'attack-unarmed'},off=selectVisualStrictCore({...player,equipment},action),
+    donor=outfitById.get('male-pants133-attack-unarmed-south-drawn8-candidate'),
+    t=off?.pack?.directions?.south,src=donor?.pack?.directions?.south,eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!t||!src||off.hdKind!=='outfit'||off.body!=='male'||off.bodyOcclusion||off.omitted?.length||
+     off.sourceRasterPadding||off.mirrorX||off.visualDegraded||off.headRecord||off.gearOnlyRecord||
+     !['frame','pivot','density'].every(k=>eq(off.pack[k],donor.pack[k]))||
+     !['rest','poses','clip'].every(k=>eq(t[k],src[k]))||
+     !eq(t.layers,src.layers))return null;
+  const own=maleSouthPunchOwn[b.item];
+  const layers=[];
+  for(const [id,key,frame,sha,fit,sid=id,sourceSHA=sha] of own){
+   const source=outfitById.get(key),l=source?.pack?.directions?.south?.layers?.find(x=>x.id===sid);
+   if(!l||l.binding?.kind!=='fixed'||l.depthTrack||!source.sourceRefs.includes(sha)||
+      (l.frames?.[frame]||l.source)!==sha||source.pack.frame.width!==128||source.pack.pivot.x!==64||
+      source.pack.pivot.y!==112||source.pack.density!==4)return null;
+   // B134 source is the same frozen South material already split into
+   // signed rear/front passes. Preserve that source hierarchy.
+   if(sourceSHA!==sha&&southB134Split[sha]?.[id.endsWith('-rear')?0:1]!==sourceSHA)return null;
+   layers.push({id,slot:l.slot,source:fit,binding:{kind:'fixed'},
+     depth:id.includes('-rear')?-1:id.endsWith('-backing')?2.49:2.5});
+  }
+  const refs=layers.map(l=>l.source);
+  if(refs.some(h=>off.sourceRefs.includes(h)||off.paletteSourceMasks?.[h]))return null;
+  for(const [slot,v] of Object.entries(visible))
+   if(slot!=='boots'&&off.slotRoutes?.[v.key]&&(off.slotRoutes[v.key].quality!=='hd'||off.slotRoutes[v.key].item!==v.item))return null;
+  const mounted={...off,id:off.id+':own-b'+b.item+'-south-anchored-sole',equipment:{...off.equipment,boots:b.item},
+   pack:{...off.pack,directions:{...off.pack.directions,south:{...t,layers:[...t.layers,...layers]}}},
+   sourceRefs:[...off.sourceRefs,...refs],resolvedAction:action.action};
+  return describeSlots(mounted,visible,[]);
+ }
+ function selectOwnNorthWalkPants(player,o){
+  if(o.consumer!=='world'||o.action!=='walk'||o.direction!=='south'||player.zoanTransformed||player.__reworkSubset||
+     canonical(player.appearance96?.gender)!=='female')return null;
+  const visible=registeredEquipment(player,o),p=visible?.pants,bank=northRig?.independentOwnPants?.[p?.item];
+  if(!p||!bank||[bank.authored,bank.native].some((refs,i)=>refs?.length!==(i?8:12)||
+     refs.some(h=>!/^[a-f0-9]{64}$/.test(h)))||
+     ['variant','variantId','appearanceVariant'].some(k=>p.value?.[k]!=null&&p.value[k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[p.key];
+  const u=selectVisualStrict({...player,equipment},o),d=u?.pack?.directions?.south;
+  if(!d||u.omitted?.length||u.visualDegraded||u.headRecord||u.gearOnlyRecord||
+     ![8,40].includes(d.clip.frames)||d.clip.fps!==d.clip.frames||!d.clip.loop||
+     u.pack.frame.width!==128||u.pack.frame.height!==128||u.pack.density!==4||u.pack.pivot.x!==64||u.pack.pivot.y!==112)return null;
+  const own={item:p.item,quality:'hd',source:'female-own-north-walk-v47:pants'+p.item},
+   give=r=>({...r,id:u.id+':own-north-walk-pants:'+p.item,equipment:{...u.equipment,[p.key]:p.item},
+     northOwnWalkGarment:{key:p.key,item:p.item},slotRoutes:{...describeSlots(u,registeredEquipment({...player,equipment},o),[]).slotRoutes,...u.slotRoutes,[p.key]:own},omitted:[]});
+  if(u.northLayers){
+   const q=u.northLayers;
+   if(q.spec!==northRig||q.body.sourceBaseId!==northRig.bodyRecord||q.pants!=null||q.lower?.cloth||
+      q.lower?.gear?.some(l=>![-1,45].includes(l.depth)))return null;
+   return give({...u,northLayers:{...q,ownedPants:bank.authored}});
+  }
+  // Independent upper/weapon receivers retain their exact scene graph.
+  // Their North stride is eight native poses, not the separate twelve-contact replay.
+  const native=baseIndex.records.find(v=>v.id===northRig.bodyRecord)?.pack.directions.north,
+   legs=d.layers.find(l=>['legs','base:legs'].includes(l.id)),
+   slots=d.layers.filter(l=>['shorts','base:shorts'].includes(l.id)),short=slots[0],
+   eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b),step=d.clip.frames/8,holds=frames=>frames.flatMap(h=>Array(step).fill(h));
+  if(!native||!['female-equipment','outfit'].includes(u.hdKind)||slots.length!==1||
+     !eq(legs?.frames,holds(native.layers.find(l=>l.id==='legs').frames))||
+     !eq(short.frames,holds(native.layers.find(l=>l.id==='shorts').frames))||short.depth!==2||
+     short.binding?.kind!=='fixed'||!eq(d.rest,native.rest)||!eq(d.poses,holds(native.poses)))return null;
+  if(u.hdKind==='female-equipment'&&(!eq(u.baseRecord?.pack,u.pack)||
+     u.states?.some(s=>s.hideBaseLayers?.includes(short.id)||s.baseMasks?.[short.id])))return null;
+  const frames=holds(bank.native),cloth={...short,id:'pants'+p.item+'-own-walk-north',source:frames[0],frames},
+   pack={...u.pack,directions:{...u.pack.directions,south:{...d,layers:d.layers.map(l=>l===short?cloth:l)}}};
+  if(u.hdKind==='female-equipment')return give({...u,pack,
+   baseRecord:{...u.baseRecord,pack,sourceRefs:[...new Set([...u.baseRecord.sourceRefs,...frames])]},
+   outfitSources:[...new Set([...(u.outfitSources||[]),...frames])]});
+  return give({...u,pack,sourceRefs:[...new Set([...u.sourceRefs,...frames])]});
+ }
+ function selectMaleCardinalPunchOwnPants(player,o){
+  if(o.consumer!=='world'||o.action!=='attack-unarmed'||!['north','south'].includes(o.direction)||
+     player.zoanTransformed||player.__reworkSubset||canonical(player.appearance96?.gender)!=='male')return null;
+  const v=registeredEquipment(player,o),p=v?.pants,bank=outfitIndex?.malePunchOwnPantsCardinal,q=bank?.cardinals?.[o.direction],h=q?.items?.[p?.item];
+  if(!p||v.weapon||bank?.schema!=='male-native-cardinal-punch-pants-v1'||!/^[a-f0-9]{64}$/.test(h||''))return null;
+  const equipment={...player.equipment};delete equipment[p.key];
+  const host=selectVisualStrict({...player,equipment},o),d=host?.pack?.directions?.[o.direction],
+    orig=baseIndex.records.find(r=>r.id===q.baseId),stock=orig?.pack?.directions?.[o.direction],eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!stock||orig.sourcePackSHA256!==q.baseSHA||!d||host.omitted?.length||host.visualDegraded||host.headRecord||host.gearOnlyRecord||
+     host.bodyOcclusion||host.mirrorX||host.mirrorLayerIDs||host.hdKind&&host.hdKind!=='outfit'||
+     !['frame','pivot','density'].every(k=>eq(orig.pack[k],host.pack[k]))||!eq(d.clip,stock.clip)||d.poses.length!==8||
+     !Object.entries(stock.rest).every(([k,v])=>eq(d.rest[k],v))||
+     !stock.poses.every((s,i)=>Object.entries(s).every(([k,v])=>eq(d.poses[i]?.[k],v))))return null;
+  const find=k=>d.layers.find(l=>l.id===k||l.id==='base:'+k),short=find('shorts-phase'),index=d.layers.indexOf(short);
+  if(index<0||short.slot!=='pants'||short.depth!==1||short.binding?.kind!=='fixed'||host.sourceRefs.includes(h)||[h].some(k=>host.sourceRasterPadding?.[k])||
+     !['skin-arms-phase','shorts-phase'].every(k=>{const x=find(k);return x&&eq({...x,id:k},stock.layers.find(l=>l.id===k));}))return null;
+  const cloth={...short,id:'pants'+p.item+'-own-cardinal-unarmed',source:h,frames:Array(8).fill(h)};
+  return {...host,id:host.id+':own-cardinal-unarmed-pants:'+p.item,equipment:{...host.equipment,[p.key]:p.item},
+    authoredPunchPants:{base:host,cloth,index},
+    slotRoutes:{...describeSlots(host,registeredEquipment({...player,equipment},o),[]).slotRoutes,...host.slotRoutes,
+      [p.key]:{item:p.item,quality:'hd',source:bank.schema+':'+p.item}},omitted:[]};
+ }
+ function selectFemaleNorthPunchOwnPants(player,o){
+  if(o.consumer!=='world'||o.action!=='attack-unarmed'||o.direction!=='north'||player.zoanTransformed||
+     player.__reworkSubset||canonical(player.appearance96?.gender)!=='female')return null;
+  const v=registeredEquipment(player,o),p=v?.pants,s=outfitIndex?.femalePunchOwnPantsNorth,frames=s?.items?.[p?.item];
+  if(!p||v.weapon||s?.schema!=='female-native-north-punch-pants-v1'||frames?.length!==8||
+     frames.some(h=>!/^[a-f0-9]{64}$/.test(h)))return null;
+  const equipment={...player.equipment};delete equipment[p.key];
+  const host=selectVisualStrict({...player,equipment},o),d=host?.pack?.directions?.north,
+   orig=baseIndex.records.find(q=>q.id===s.baseId),native=orig?.pack.directions.north,
+   eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!native||orig.sourcePackSHA256!==s.baseSHA||!d||host.omitted?.length||host.visualDegraded||
+     host.headRecord||host.gearOnlyRecord||host.bodyOcclusion||
+     host.hdKind&&host.hdKind!=='outfit'||host.mirrorX||host.mirrorLayerIDs||
+     !['frame','pivot','density'].every(k=>eq(host.pack[k],orig.pack[k]))||
+     !eq(d.clip,native.clip)||!Object.entries(native.rest).every(([k,value])=>eq(d.rest[k],value))||
+     d.poses.length!==8||!native.poses.every((pose,i)=>Object.entries(pose).every(([k,value])=>eq(d.poses[i][k],value))))return null;
+  const find=k=>d.layers.find(l=>l.id===k||l.id==='base:'+k),short=find('shorts'),
+   index=d.layers.indexOf(short);
+  if(index<0||short.slot!=='pants'||short.depth!==4||short.binding?.kind!=='fixed'||
+     !['left-leg','right-leg','pelvis','torso','shorts'].every(k=>{
+      const target=find(k),source=native.layers.find(l=>l.id===k);
+      return target&&eq({...target,id:k},source);
+     })||frames.some(h=>host.sourceRefs.includes(h)||host.sourceRasterPadding?.[h]))return null;
+  const cloth={...short,id:'pants'+p.item+'-own-north-unarmed',source:frames[0],frames};
+  return {...host,id:host.id+':own-north-unarmed-pants:'+p.item,equipment:{...host.equipment,[p.key]:p.item},
+   authoredPunchPants:{base:host,cloth,index},
+   slotRoutes:{...describeSlots(host,registeredEquipment({...player,equipment},o),[]).slotRoutes,...host.slotRoutes,
+    [p.key]:{item:p.item,quality:'hd',source:s.schema+':'+p.item}},omitted:[]};
+ }
+ function selectMaleSidePunchOwnPants(player,o){
+  const direction=o.direction;
+  if(o.consumer!=='world'||o.action!=='attack-unarmed'||!['east','west'].includes(direction)||player.zoanTransformed||
+     player.__reworkSubset||canonical(player.appearance96?.gender)!=='male')return null;
+  const worn=registeredEquipment(player,o),p=worn?.pants,bank=outfitIndex?.maleSidePunchOwnPants,s=bank?.directions?.[direction],sha=s?.items?.[p?.item];
+  if(!p||worn.weapon||bank?.schema!=='male-native-side-punch-pants-v1'||!/^[a-f0-9]{64}$/.test(sha||''))return null;
+  const equipment={...player.equipment};delete equipment[p.key];
+  const host=selectVisualStrict({...player,equipment},o),d=host?.pack?.directions?.[direction],
+   ref=baseIndex.records.find(q=>q.id===s.baseId),native=ref?.pack.directions[direction],
+   eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!native||ref.sourcePackSHA256!==s.baseSHA||!d||host.omitted?.length||host.visualDegraded||
+     host.bodyOcclusion||host.mirrorX||host.hdKind&&host.hdKind!=='outfit'||
+     !['frame','pivot','density'].every(k=>eq(host.pack[k],ref.pack[k]))||
+     !eq(d.clip,native.clip)||d.clip.frames!==8||!Object.entries(native.rest).every(([k,value])=>eq(d.rest[k],value))||
+     d.poses.length!==8||!native.poses.every((pose,i)=>Object.entries(pose).every(([k,value])=>eq(d.poses[i][k],value))))return null;
+  const base=k=>d.layers.find(l=>l.id===k||l.id==='base:'+k),short=base('shorts-phase'),index=d.layers.indexOf(short);
+  if(index<0||short.slot!=='pants'||short.depth!==1||short.binding?.kind!=='fixed'||
+     !['skin-arms-phase','shorts-phase'].every(k=>{const l=base(k);
+      return l&&!host.mirrorLayerIDs?.includes(l.id)&&eq({...l,id:k},native.layers.find(r=>r.id===k));
+     })||host.sourceRefs.includes(sha)||host.sourceRasterPadding?.[sha]||host.paletteSourceMasks?.[sha])return null;
+  const cloth={...short,id:'pants'+p.item+'-own-side-unarmed',source:sha,frames:Array(d.clip.frames).fill(sha)};
+  return {...host,id:host.id+':own-side-unarmed-pants:'+p.item,equipment:{...host.equipment,[p.key]:p.item},
+   authoredPunchPants:{base:host,cloth,index},slotRoutes:{
+    ...describeSlots(host,registeredEquipment({...player,equipment},o),[]).slotRoutes,...host.slotRoutes,
+    [p.key]:{item:p.item,quality:'hd',source:bank.schema+':'+direction+':'+p.item}},omitted:[]};
+ }
+ const maleLateralPunchBootOwn={"8":{"east":{"donor":"frozen-v47-male-151-boot8-east-walk","frame":12,"pins":[["boot8-near-front-pilot","a08480f88fa3a48245c84b46ea102e74a9e6aeb9a0d0155ce9e0405c89103e34"],["boot8-near-rear-pilot","81ad402dbacbbce5cc599cea9513b87ad4b988c3418c11d542f8733f5a1641d4"],["boot8-far-front-pilot","70f5ca664dd6bbaff67da40208a73b76d35de009ca07d7a8d43d7b91443eab07"],["boot8-far-rear-pilot","e1c7bee7cda388187a6de1365d902f1d38a20b9daf7321cad31ce8c2da3942a6"],["boot8-far-brown-leather-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot8-near-brown-leather-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"]],"fit":[["boot8-near-front","fb61632ecb0c25594fff3c543f6760b2bb59e86924eeb46308d9c989e54901aa",2.5],["boot8-near-rear","f780c224838878a6a363b6ce804bf7140527906d5aae616ad8eb5b20a3db8eef",-1],["boot8-far-front","858aa82235728588ef2c12ba7898a8371d56e5eb14467cbfe1269e90d4d2d225",2.49],["boot8-far-rear","422be2cbd4724d60878720a92f978fcb60fd9f460dee8de610169fcaf22e1134",-1]]},"west":{"donor":"frozen-v47-male-151-boot8-west-walk","frame":12,"pins":[["boot8-near-front-pilot","f2d02d9c6012b1bc90786dcd77a8b4cc8cb398daa4adcb9638002d625fa27b91"],["boot8-near-rear-pilot","047f922f8005e0ca062fddb1f22be7c2ad889a640acf3abe63cee45809412ca4"],["boot8-far-front-pilot","81d4551bca63ac09e1d8a69dd39898b61bb5e4dea800fc3c46c5334a1f0e60a7"],["boot8-far-rear-pilot","977a549545edbb86da34279009743edc433a5ac6c7d7206e1a8ec574367dcc1a"],["boot8-far-brown-leather-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot8-near-brown-leather-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"]],"fit":[["boot8-near-front","9ec7efe26e1df3fd10c16177605f2eebb13d09ec60cc21198e3993f073bacbc5",2.5],["boot8-near-rear","5e715ee229b41f9782eb6d42471ff34a9bfe5dee4f95a56fc2a567ff08770694",-1],["boot8-far-front","38ab255da259846b8d34e7cab267e0991ca1439a916cfe6ae8169890cb8439ad",2.49],["boot8-far-rear","3c3d288a8e52250b427883b416d7951f892919e8c12efff834e7f4a6813defbd",-1]]}},"134":{"east":{"donor":"male-coat151-pants133-gloves152-boots134-walk-east-source-v18","frame":12,"pins":[["boot134-near-front-pilot","b2877af3a3202141a697dc615a27a6376095a02daeead9b869aa9d8c21af53d3"],["boot134-near-rear-pilot","60773b45f4de7c96651c8b4fa5c16ff859a9e24448c5bf613992ed714a3fa54b"],["boot134-far-front-pilot","f181cee83c15d6a77738fd2fa9ab84a8bd9bc4f2dd14f5112a8e381b29eb4aea"],["boot134-far-rear-pilot","aedeb8d554fc40c42722649036951db39acdafc4b4bcae28d4ef4eb31c8f8699"],["boot134-far-brown-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot134-near-brown-local-backing","7e9d7752eba0120c9f1008fddc2a3c3c56b165d276f8ec3d9b98c49a650c5972"]],"fit":[["boot134-near-front","e523f464a7d9ede4e6e1a231f293d837527d20799533923147ce414005f43422",2.5],["boot134-near-rear","48198d5a512c524ac9b0596093772cd3d536021f2be9375ed605283db367e73b",-1],["boot134-far-front","9d425d86d95e8619282a2e9f9d8df255ecc2c75c96667f332a281b197bcf6632",2.49],["boot134-far-rear","f9934a1e026499e9cc3c25f419a24a1a3e335e8e0a66b5001886273e0c96b7f1",-1]]},"west":{"donor":"male-coat151-pants133-gloves152-boots134-walk-west-source-v18","frame":12,"pins":[["boot134-near-front-pilot","8ca9d26d02bca09fb3f6f94193abe5f0bddd2f94cfe178d17d75d835805345c2"],["boot134-near-rear-pilot","917575a372a59b5a37b9238e1771899d2a68e6ddc1985f9ba707607ba4dd8607"],["boot134-far-front-pilot","4301ed097d09f223688fbcf40756879a0850bbecb22a947c9eb21b17363a6f7f"],["boot134-far-rear-pilot","8688535d9415e26398f10a56381ab3d6f6bd1915c6bbfafbc41e61091e881bea"],["boot134-far-brown-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot134-near-brown-local-backing","3f57bb6682deb9240b721efef15c3438169b5d4fa11fda6dfb3ccfb6bcf3b24c"]],"fit":[["boot134-near-front","a05276baca2ec9936c624ab2c60d747df2ab4f4351e6c379f78323d051d09862",2.5],["boot134-near-rear","15869d1eaef15a1e8931173fb6e04c131ef95cb5989467a59a7e4352090d388b",-1],["boot134-far-front","80302d3c24b6429a25dabc7f842fd4488d3fef5f51b1a12ce526e90b73531f76",2.49],["boot134-far-rear","d678a7e63c5fdb2c9949d6b7c8e124fd33b33105dcdbc118f1bbabcd0b2c2638",-1]]}},"162":{"east":{"donor":"frozen-v47-male-151-boot162-east-walk","frame":12,"pins":[["boot162-near-front-pilot","b3b4fdb56e1fac08d25e88be39059ea0b44ace03fd208ae49a84d759649ec842"],["boot162-near-rear-pilot","cad9cac119cd032cde5a069b2e99ea6ca164817622adce301c61b73d54e58bbe"],["boot162-far-front-pilot","d1d31cd06030afb6e76eaf4b46ea988a604178d3c060ad5f99b65a0a4a160393"],["boot162-far-rear-pilot","e87b75ba3fbbed2dd17311c1b377f4c9dab4b31de248089769a2f56c5eee9bce"],["boot162-far-navy-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot162-near-navy-local-backing","e5272f566cf9eea46e858092c1cb011732ee7e8a3bbc7ee70dedc8d250683f2f"]],"fit":[["boot162-near-front","222e110287182debd66cc8445c62445ec6041d060eef8a8b21a602927ed2e8e8",2.5],["boot162-near-rear","ad547d7a75b5b16b0762024e997d9337493b8e04164e7084d0df3ff56855496a",-1],["boot162-far-front","becd8c61c87913c5f4d30f84702010241685a9bc05a15deb26a2e9f46b27c301",2.49],["boot162-far-rear","b10b6d30ddbba70b32ec28b2e738b12c0d20bd4529b746873e9f36e3f85e44c6",-1]]},"west":{"donor":"frozen-v47-male-151-boot162-west-walk","frame":12,"pins":[["boot162-near-front-pilot","0211385ae6aab2b46cbed2e121c402278f76a8fdc0b817475ebc3a40c31f8308"],["boot162-near-rear-pilot","13a7099c9cd54d8957aa4f1cca73108f9ef445517ef2aa4b110ef10ee4ea1e57"],["boot162-far-front-pilot","7fbc6847247013fb3aec69b541642401516a1ddef23b10c8dfa16ea6e7b3adc6"],["boot162-far-rear-pilot","f29aa834ff6a11dffdcfed5c350f96e493593def15f0108e48a528ca9f007616"],["boot162-far-navy-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot162-near-navy-local-backing","eb48f572fe32cb0ce02ba9ee246d5c925e4cb133a8ca7136e31c61e6ad333a9f"]],"fit":[["boot162-near-front","f56b3d94b22c1d3ffee408b32631337ef31dede576fc79dadc0d1006c66a36cf",2.5],["boot162-near-rear","787844efec076019484a460afe9bbc67fedf7b22b54903b51868a0425d841351",-1],["boot162-far-front","5d90ca0d09b31e4af7e598512f0127eef0f4af236fb917db1c6e773376cab45d",2.49],["boot162-far-rear","a2e470c8be46681d47b946aef8738e61c4e3a8cd36425ac2d5c59573acf978cd",-1]]}},"176":{"east":{"donor":"frozen-v47-male-151-boot176-east-walk","frame":12,"pins":[["boot176-near-front-pilot","e34838ef0793d3c29c7ee301dd845d58ab1bf5f5e68b454c23dab9cb90d6d5e9"],["boot176-near-rear-pilot","b4b9e56a02454df28b71b5e512482a1b33d6d23cec17750ba0530f4525c815aa"],["boot176-far-front-pilot","46324412e8a6c4266f3442de56a0158e556531c5f50e4c83e7609c5cae44806e"],["boot176-far-rear-pilot","282a5337112a56933e1ac5952f4affb0371fffa193db189b37aef35e79f08d18"],["boot176-far-brown-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot176-near-brown-local-backing","56013d1aac9a05841652fe7b85f073fe750a63301573c0692f3c8aabc825cbb7"]],"fit":[["boot176-near-front","30b23b798ce5b74d41ea379b3812d957397c5ec8ceb16d7d63e422b8bfb0bcb1",2.5],["boot176-near-rear","51984d998cb330cf4e71ace2a63516610c0122841f2f2ff15ff673053219e569",-1],["boot176-far-front","887f9ce6e487491b66d69852ff582ac5196336f444b81d291673ad28109ae80d",2.49],["boot176-far-rear","27b4d3d9fe32d6ecb4abd1a2bc541f01b13361937dce608d059955ff8687c366",-1]]},"west":{"donor":"frozen-v47-male-151-boot176-west-walk","frame":12,"pins":[["boot176-near-front-pilot","ce8d9c9af169dce3f448ff3e25bdac0413458192b071533f479848d79afee698"],["boot176-near-rear-pilot","11733210278342c1cca1110fd6ac6ee445eb48b7a36a60b44dca2cba1ecea0d8"],["boot176-far-front-pilot","09a0b3a9fd0a2072ef6d980388d8960dfebbdf5a71afdf562180cd1d4cd145a0"],["boot176-far-rear-pilot","3b0bd50b582dc59086a7054363f3cec0d97ba489213fe684a80ab8fd6ff58005"],["boot176-far-brown-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot176-near-brown-local-backing","c988b2987d8c143f3137c3637727401bb94fa9d9e20a5e8705e201e3c3b1cfa4"]],"fit":[["boot176-near-front","e2365d62c7d708ca8d76951272e5dd753efd649e0511afc100fcd0ae6492a483",2.5],["boot176-near-rear","ea0254462a80f9a150da0be3992264ff363c65990132c0493457b0e4828373b7",-1],["boot176-far-front","adf0fb9bd3e146a83b6af5eb75dca2fddc88b61f3d4fd39883d6b2b2b2fbb827",2.49],["boot176-far-rear","861c1fda4f4da06aad9fac37b1d0eefd70a8e26b293e774c24b532d083c5a2d4",-1]]}},"183":{"east":{"donor":"frozen-v47-male-151-boot183-east-walk","frame":12,"pins":[["boot183-near-front-pilot","f2c43d0eb650daa7c9b5c7bc0bc82021cc1f6bbd59a3814f3ce05d985d727a7f"],["boot183-near-rear-pilot","f5f970cf51f74cd88aa66bbc731c4ae9f92ad10abef3468887bfe7cdb3c8c7ba"],["boot183-far-front-pilot","a57efa827a475108b460bdaf292e8cb67b88f63c830b94b2c69f2c3751b60ec7"],["boot183-far-rear-pilot","d5c9b68529f3dd9fea8291fd10bbd462f2a221f79a93391c315d8c07f55ac231"],["boot183-far-brown-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot183-near-brown-local-backing","2da2c83bcacdcedd8dc96faa618d1935956c03e9e179162cdb7e7797426b7e42"]],"fit":[["boot183-near-front","67f9756270116f3a88d4cd434eb6666da45b9c0f713e1357d5f4b8dde9c5f421",2.5],["boot183-near-rear","68466b3d930035e6d7a74a44b026ffd287a2d45d9b14ca33ae32c2edd8de56ac",-1],["boot183-far-front","3787ad1246f703b495f50a250d5daaa2f117e36f3873e688ec8805f5e7b9723d",2.49],["boot183-far-rear","b150c1d9fe48db7f0d45820c2ce5749e66561dbab8a5a2f66d0ff8d32890ffc5",-1]]},"west":{"donor":"frozen-v47-male-151-boot183-west-walk","frame":12,"pins":[["boot183-near-front-pilot","c92bb1276d7c6182159357da4d2c8f6961feae345313fab9be1b9debb718f81d"],["boot183-near-rear-pilot","359fa59eee5d6dcce6bc4460857b49e7d0a8783055def25b20e411dc3a705d94"],["boot183-far-front-pilot","c69bd09448223be8479acb6b1129a311b0c496e67fa2f62ceec6d6116602008c"],["boot183-far-rear-pilot","f80b4a2d3d93271e4e63d028162f845ab545e8b305a1de51a2a0535ebc8e4e53"],["boot183-far-brown-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot183-near-brown-local-backing","80e074629ed9a00dd18e134aee90129952b43abdf16f53ba8914d834c836111b"]],"fit":[["boot183-near-front","bd467f8cbaad1bc7132f0fe4f433423a7449558b9a4c19104379cc85fbd5817b",2.5],["boot183-near-rear","e6779f5775dfb1083cbd58f03820ef3c3cd43114947e324f35b8a0a7a5be4e76",-1],["boot183-far-front","4862781eddbf47ef093d9ea3681c645e87ce0c813ede86692633943b7c8f2bb1",2.49],["boot183-far-rear","05b0d9d744981877c6105a7db01321bf6402a5a8ab57d17f594c1957e814f290",-1]]}},"148":{"east":{"donor":"frozen-v47-male-151-boot148-east-walk","frame":12,"pins":[["boot148-near-front-pilot","753a452520b810fbf17d96ee52254b590327161aeb3b92798b647b8430bfd778"],["boot148-near-rear-pilot","84ba22740280de67fd21159a3d7f0316b2b30b70df54fe2cbb9ce78334bce498"],["boot148-far-front-pilot","4d550b2e465ec0efa3254c619f68b8988d30fc9f2944b29abf38976e77d6a8c9"],["boot148-far-rear-pilot","bb546a8726f526e4351ea365fa6bc71c4c3c73d62a0beb8c592f7f8f58e6b0fe"],["boot148-far-navy-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot148-near-navy-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"]],"fit":[["boot148-near-front","03335b270134021ed91d35a7af94f13a1937618df6bbbca2fe4bd9f2b6330f65",2.5],["boot148-near-rear","471ea69274455eb9567d45c9d6dc9da71eaae0f316856ea2062e1333cfce7639",-1],["boot148-far-front","57fda2590948a3facf0de0d9e2953ca6ad880ad8e044a47eff915ce952d5c21a",2.49],["boot148-far-rear","708aaf11c3207d5489bf1b196bc60be40ce12a5d39300920455b79108176baa6",-1]]},"west":{"donor":"frozen-v47-male-151-boot148-west-walk","frame":12,"pins":[["boot148-near-front-pilot","eee877805b9c2ff39dce84223d7e96dcf81d0eeddb18254eb844931a2537c97f"],["boot148-near-rear-pilot","15c604dadbaa64b61d7c56f5a9902e64db967d3ce2ba4b829e28d9dee398428d"],["boot148-far-front-pilot","0fcb08c8b85aa2a93b9d3582d161814f77d67772adec5f666cef9bd0ddaec91a"],["boot148-far-rear-pilot","3e8797b85e36fede64b2817c95020b09678891e4b6008abf5568e0aac9186115"],["boot148-far-navy-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"],["boot148-near-navy-local-backing","5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f"]],"fit":[["boot148-near-front","7383dd34c8fe8957ca3de027635cb1bef09fe1c5c59039d6917231626f261078",2.5],["boot148-near-rear","3db8966e0f3bd0456d545828dfe32a8127f12dc3aeb2812c0a8e074fa7607ca3",-1],["boot148-far-front","4a21d9ca7ad2dceab3b234b3bfe37092a8e6d1ae193de3051ec4b1722d7390e3",2.49],["boot148-far-rear","db61fba4c1a5308794c4a028ad4a56f40c4a781e003ff5beeb6129e3b02be3e9",-1]]}},"155":{"east":{"donor":"frozen-male-pants133-east-walk-v47","frame":12,"pins":[["equip-boot155-far","2c6c133686e07492c0fe555891df71082e272669e8f4f7b1c0414b1d56d83246"],["equip-boot155-near","3bb45ff88fe5bca0c50fff34799844721edac5dd69d98c5665b9ea0a4724ff6d"]],"fit":[["boot155-near-front","93684cda46498e39c257451c5a8707e3961a441b41755ee0f862db8b6928c2bc",2.5],["boot155-near-rear","19acc7bd9b4327401a39b35a2724a2ed9205d8bf317444ee3acb515d8408ebbe",-1],["boot155-far-front","8d5e6abe64f2ca4dec484530f8cb66c8acf8a251f9f26f45e67846f8ba89aa1b",2.49],["boot155-far-rear","a915fc70c78f7fc1f8b2389dd2511f8b10559094dbf3672694a2bf6fdce0ed7b",-1]]},"west":{"donor":"frozen-male-pants133-west-walk-v47","frame":12,"pins":[["equip-boot155-far","cc757d5b48bb4449195466956b0b7c9ff7eb62398384d9594d7f1976c8d9a5db"],["equip-boot155-near","5545c034bfe45e8492259098a18f637e79486e465b6b48b5eab268375048b86c"]],"fit":[["boot155-near-front","3a8b046747cce0390a4a68b688a0ca2e30c2c7352b21d01ec9ad4b7e95d983bf",2.5],["boot155-near-rear","272f7ff176c7fd7c6f400f9913d0a3a41a220b3cb49971d17d1e73f1e8998747",-1],["boot155-far-front","ca6d02b3cbd2d1ad134333436a41e3dd93850b69ac5b655e13aaf3f46f888980",2.49],["boot155-far-rear","4d72918b162b107e77fde19bccd54c9da8d7d46b9b353f994d84839e2597b8a5",-1]]}},"141":{"east":{"donor":"frozen-v47-male-151-boot141-east-walk","frame":12,"pins":[["boot141-near-front-pilot","6def190b4cff3fd3e4d35b740036752e82f5f5e5326c8058f4234e77a684aca3"],["boot141-near-rear-pilot","e3e708ed8f40bf53754c2edfe0e5a869e3527ac46c8cb06bfb06d4423b9e27d8"],["boot141-far-front-pilot","c4dde0943daa5efdcb53f6ba124f7d79c420962d941ed8371f8d4326596c26f0"],["boot141-far-rear-pilot","bca7d1e0b7cb2d6d87597884e6b1a99d3c0b1b8a28a8897bfe10e10ec1726847"]],"fit":[["boot141-near-front","49487a5e1cd9833d92966447ebda606e91f9a6edea39571c4a1642fddcd66328",2.5],["boot141-near-rear","78a65bb11e15c2fbbc7524c3f00d69dbc8d24f706f1b1d89ba1b10b40cd9ca2e",-1],["boot141-far-front","3c645e7d37cc39b2a239679b42eb620a9bb10dcb86a20aab4a6d4b2086cb44b0",2.49],["boot141-far-rear","d91cd5430fe47e6bb921db81992a5c58f79432d92286960a20a7adab42c1ae63",-1]]},"west":{"donor":"frozen-v47-male-151-boot141-west-walk","frame":12,"pins":[["boot141-near-front-pilot","6041e3d6ed57b0c21c616d569f5de91ca119bfb649c93601401aed54f7b721ae"],["boot141-near-rear-pilot","de7d3f6656b0c50cbe7a51466a220d318c320c1f76d7e12749da049a3544ad87"],["boot141-far-front-pilot","a2b7016e3024a2587a0a603d5c639f349ff18d7e674e667a9ed491bb5f34242a"],["boot141-far-rear-pilot","4806b448e7576a09ea89140e60283f5627038b7a5a78743c4cd74e1c55f62b69"]],"fit":[["boot141-near-front","1f745d34e95c978d409779984d545c943e21b9cd5c1162c4aa6c9b53ddc19a38",2.5],["boot141-near-rear","e0dd10e627f715a166a20acf7b35a278e985fecdaa23a4a9e89500ab56d0d3d0",-1],["boot141-far-front","019baa7a814da91a58fff830e7df262a4e2634c4afb2332dd10b55d94dc25b59",2.49],["boot141-far-rear","7ff45e26f49ff6f375ffa9611b7bcd552ece3173490e3780b0256934d01a52b6",-1]]}},"169":{"east":{"donor":"frozen-v47-male-151-boot169-east-walk","frame":12,"pins":[["boot169-near-front-pilot","afd9700e54c799fe4cf557469698923061f93cd19ba732e4b9b6f1ce96a69fb6"],["boot169-near-rear-pilot","0cee1f4e985bc7b959259cadbed283d0d18e01abb8eb760e440f65f597362e0a"],["boot169-far-front-pilot","a58281794b60533825ee77a47ac5cba1ae85e45a861411506dcd46e82faa914b"],["boot169-far-rear-pilot","de973b9177c720e32a09690f5d97c49ca07872b3a802bd2b69748686b6fa93d5"]],"fit":[["boot169-near-front","517dae6e337f8e79c7282f1128422ba4abed77d07ae46afed5a9fea2285dbd05",2.5],["boot169-near-rear","28ebaf615dd3252eb4f3e977397471b94afc6e224ed88267d1adf69c7f4e3112",-1],["boot169-far-front","92e2cebaa570ba6c32a724177d260648326d5f5219765daf75ac6adaa7ebd129",2.49],["boot169-far-rear","e513ba1b029e67a18492d2109ead9c5d6bc806327fb1269bfa68296d41793689",-1]]},"west":{"donor":"frozen-v47-male-151-boot169-west-walk","frame":12,"pins":[["boot169-near-front-pilot","a7ec9b5b3e7162380610f9b9ba7630d3e639621b3e79f6d7f65e14e91c312f69"],["boot169-near-rear-pilot","82375e9d6521fcdbfd67de76b9ec02e5cdc3c7fcf2f472596027cab3900a51d2"],["boot169-far-front-pilot","2d52a3beff6ad4eda78ec04dee1546e14e6a928a2ce3f60e3455dc1329b30777"],["boot169-far-rear-pilot","3b8798d1439c6ac765caadd4457186ba7aebefe0bf472e3838343cd0e633b059"]],"fit":[["boot169-near-front","40ebac8024b8767aa29ce784fa26b9d601a5c16cd64a920d7ec59fa8a40b8932",2.5],["boot169-near-rear","3fdb7f84f08e2c265525392a67f253b323ceafccce532c594888a6a11f73d776",-1],["boot169-far-front","f7bde1cc33c94c91455faf8ee4c97b876917b304eebabfec815c9277dfb360e9",2.49],["boot169-far-rear","36877d4f4a6b82019c1b837c6409065514c139b12870036b56ef453b7aa28fb7",-1]]}}};
+ function selectMaleLateralPunchFittedBoot(player,o,visible){
+  const b=visible?.boots,dir=o.direction,raw=player?.appearance96||{},signed=maleLateralPunchBootOwn[b?.item]?.[dir];
+  if(o.consumer!=='world'||!['attack','attack-unarmed'].includes(o.action)||o.weaponless||!signed||
+    canonical(raw.gender)!=='male'||player.__reworkSubset||player.zoanTransformed)return null;
+  const equipment={...player.equipment};delete equipment[b.key];
+  const action={...o,action:'attack-unarmed'},off=selectVisualStrictCore({...player,equipment},action),
+   witness=outfitById.get('male-pants133-attack-unarmed-'+dir+'-drawn8-candidate'),
+   src=witness?.pack?.directions?.[dir],t=off?.pack?.directions?.[dir],eq=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  if(!t||!src||off.hdKind!=='outfit'||off.body!=='male'||off.bodyOcclusion||off.omitted?.length||
+     off.sourceRasterPadding||off.mirrorX||off.visualDegraded||off.headRecord||off.gearOnlyRecord||
+     !['frame','pivot','density'].every(k=>eq(off.pack[k],witness.pack[k]))||
+     !eq(t,src))return null;
+  const donor=outfitById.get(signed.donor),borrow=donor?.pack?.directions?.[dir]?.layers;
+  if(!borrow||donor.body!=='male'||donor.direction!==dir||donor.action!=='walk'||donor.equipment?.boots!==b.item||
+    donor.pack.frame.width!==128||donor.pack.pivot.x!==64||donor.pack.pivot.y!==112||donor.pack.density!==4||
+    !signed.pins.every(([id,sha])=>borrow.some(l=>l.id===id&&l.binding?.kind==='fixed'&&
+      (l.frames?.[signed.frame]||l.source)===sha&&donor.sourceRefs.includes(sha))))return null;
+  const layers=signed.fit.map(([id,source,depth])=>({id,slot:'body',source,depth,binding:{kind:'fixed'}}));
+  const refs=layers.map(l=>l.source);
+  if(refs.some(h=>off.sourceRefs.includes(h)||off.paletteSourceMasks?.[h]))return null;
+  for(const [slot,v] of Object.entries(visible))
+   if(slot!=='boots'&&off.slotRoutes?.[v.key]&&(off.slotRoutes[v.key].quality!=='hd'||off.slotRoutes[v.key].item!==v.item))return null;
+  const mounted={...off,id:off.id+':own-b'+b.item+'-lateral-anchored-sole',equipment:{...off.equipment,boots:b.item},
+   pack:{...off.pack,directions:{...off.pack.directions,[dir]:{...t,layers:[...t.layers,...layers]}}},
+   sourceRefs:[...off.sourceRefs,...refs],resolvedAction:action.action};
+  return describeSlots(mounted,visible,[]);
+ }
+ function selectFemaleDirectionalPunchOwnPants(player,o){
+  const direction=o.direction;
+  if(o.consumer!=='world'||o.action!=='attack-unarmed'||!['east','west','south'].includes(direction)||player.zoanTransformed||
+     player.__reworkSubset||canonical(player.appearance96?.gender)!=='female')return null;
+  const v=registeredEquipment(player,o),p=v?.pants,bank=outfitIndex?.femalePunchOwnPantsDirectional,s=bank?.directions?.[direction],frames=s?.items?.[p?.item];
+  if(!p||v.weapon||bank?.schema!=='female-native-directional-punch-pants-v1'||frames?.length!==8||
+     frames.some(h=>!/^[a-f0-9]{64}$/.test(h)))return null;
+  const equipment={...player.equipment};delete equipment[p.key];
+  const host=selectVisualStrict({...player,equipment},o),d=host?.pack?.directions?.[direction],
+   orig=baseIndex.records.find(q=>q.id===s.baseId),native=orig?.pack.directions[direction],
+   eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!native||orig.sourcePackSHA256!==s.baseSHA||!d||host.omitted?.length||host.visualDegraded||
+     host.bodyOcclusion||
+     host.hdKind&&host.hdKind!=='outfit'||host.mirrorX||
+     !['frame','pivot','density'].every(k=>eq(host.pack[k],orig.pack[k]))||
+     !eq(d.clip,native.clip)||!Object.entries(native.rest).every(([k,value])=>eq(d.rest[k],value))||
+     d.poses.length!==8||!native.poses.every((pose,i)=>Object.entries(pose).every(([k,value])=>eq(d.poses[i][k],value))))return null;
+  const find=k=>d.layers.find(l=>l.id===k||l.id==='base:'+k),short=find('shorts'),
+   index=d.layers.indexOf(short);
+  if(index<0||short.slot!=='pants'||short.depth!==(direction==='south'?4:3)||short.binding?.kind!=='fixed'||
+     !(direction==='south'?['left-leg','right-leg','pelvis','torso','shorts']:['legs-base','pelvis','torso','shorts']).every(k=>{
+      const target=find(k),source=native.layers.find(l=>l.id===k);
+      return target&&!host.mirrorLayerIDs?.includes(target.id)&&eq({...target,id:k},source);
+     })||frames.some(h=>host.sourceRefs.includes(h)||host.sourceRasterPadding?.[h]))return null;
+  const cloth={...short,id:'pants'+p.item+'-own-directional-unarmed',source:frames[0],frames};
+  return {...host,id:host.id+':own-directional-unarmed-pants:'+p.item,equipment:{...host.equipment,[p.key]:p.item},
+   authoredPunchPants:{base:host,cloth,index},
+   slotRoutes:{...describeSlots(host,registeredEquipment({...player,equipment},o),[]).slotRoutes,...host.slotRoutes,
+    [p.key]:{item:p.item,quality:'hd',source:bank.schema+':'+direction+':'+p.item}},omitted:[]};
+ }
+ const w31SouthNativePalm=[["7a536ec72a39194a98528b582b0908142a841912e1025474f6be4ac114bb58c2","e77e8e4239f426ed325bdf5d2c6bce3b8ea572c9e1b9d5caa21254e2805e204d"],["71698a24ec7b71f61ca26fff10880f0b38bc34fc57bf20b0fb709fb333695509","6544707326f0cb983f21625569e4ce6a0807e477eeb0a7010d67a6c9b05e5ce8"],["7a536ec72a39194a98528b582b0908142a841912e1025474f6be4ac114bb58c2","463cc913004e10b967a6ec4a21da334a7377a4e16cffd16783c9ba0f1a764996"],["7a536ec72a39194a98528b582b0908142a841912e1025474f6be4ac114bb58c2","e77e8e4239f426ed325bdf5d2c6bce3b8ea572c9e1b9d5caa21254e2805e204d"],["7a536ec72a39194a98528b582b0908142a841912e1025474f6be4ac114bb58c2","463cc913004e10b967a6ec4a21da334a7377a4e16cffd16783c9ba0f1a764996"],["d2e4e734efff7db2b87e3e04a8fa99c838bff38e689e2ec1d67b9e7fdbdf71f9","00a3476371ec905d98fec05ca69a0a08032e83823ec218c3fdaa935aaaa82880"],["7a536ec72a39194a98528b582b0908142a841912e1025474f6be4ac114bb58c2","463cc913004e10b967a6ec4a21da334a7377a4e16cffd16783c9ba0f1a764996"],["235c87b694a27a1c8083f640ceed29913de3df7c41d79e7a6f81a40cb0a689ca","146eca4708135d992ffbeaa1bdedb81b2fecec5850d89f822218ca742b5c5943"]];
+
+ // Only the W14 v3 steel plus signed contour extension. Never mount on the
+ // legacy fused W14 body: the actual weaponless v7 clip owns the whole actor.
+ const w14V7Plate=Object.freeze(["c51a348beea2f79a6328b83730c198561fb87e4413b108e9396bd19d56c65d3b","53dc4b7aebd1ee01294bfe007c2f9429880db20448b0850a134afe5e824db532","c1608b41b7298830982bdde2e78358261b6affa42072d02e823ec6b80f031b49","2495f1321931f4a4564df1b758ca14301184ddf1bf59ccb444e38c649eb0d538","0a96f54af36a0a2e66d9be2f6518de8d4f6b3aa316b9fce4bcfe7bc88b769dc8","a03a650d227da6fb352bb8222ccdeddffa0c4d6c343ff29aeaa68fcac7ada495","8077370ce52bccaca2058f0bbc6bd66d0d871f532031210cdaad412cfbacbdb0","5bf1181340fe948f604f65d1bc3431d86f2d317e232729536c87f98a8fa09084"]);
+ const w14V7Bodies=Object.freeze({
+  east:'1793a125ab0bbb85e7c1bd17b631d638287fb4cca4929cc4135166f42a5980e0',
+  west:'443626e677dcabda46b4a90b5730138d8c3a56606a74c91b4a7f269700b5f561'
+ });
+ const w14V7PlateURL=frame=>'tools/rework-weapon-layers-hd/assets/'+w14V7Plate[frame]+'.png';
+ function selectMaleW14LateralV7(player,o,visible){
+  const arm=visible?.weapon,p=player?.appearance96,direction=o.direction;
+  if(o.consumer!=='world'||!Object.hasOwn(w14V7Bodies,direction)||!['attack','attack-unarmed'].includes(o.action)||o.weaponless||
+     player.classId!=='cyborg'||player.zoanTransformed||player.__reworkSubset||arm?.item!==14||
+     Object.keys(visible).length!==1||p?.version!==1||canonical(p.gender)!=='male'||p.skinStyle!=='natural'||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},p.skinColor)||
+     ['variant','variantId','appearanceVariant'].some(k=>player.equipment?.[arm.key]?.[k]!=null&&player.equipment[arm.key][k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[arm.key];
+  const r=selectVisualStrict({...player,equipment},{...o,action:'attack-unarmed',weaponless:true}),d=r?.pack?.directions?.[direction];
+  if(!r||r.body!=='male'||r.direction!==direction||r.action!=='attack-unarmed'||r.headRecord||r.hdKind||r.gearOnlyRecord||
+     r.mirrorX||r.omitted?.length||r.visualDegraded||r.sourcePackSHA256!==w14V7Bodies[direction]||
+     r.pack.density!==4||r.pack.frame.width!==160||r.pack.frame.height!==160||r.pack.pivot.x!==80||r.pack.pivot.y!==128||
+     d?.clip.frames!==8||d.clip.fps!==12||d.clip.contactFrame!==4||d.clip.loop)return null;
+  return {...r,id:r.id+':w14-lateral-v7-own-plate',item:14,ownW14LateralV7:{base:r},equipmentContract:{weapon:14},separableAttack:true,
+   slotRoutes:{[arm.key]:{item:14,quality:'hd',source:'gauntlet14-v3-lateral-own-fitted-plate'}},omitted:[],equipment:{[arm.key]:14}};
+ }
+ function selectMaleFocusW31South(player,o,visible){
+  const arm=visible?.weapon,p=player?.appearance96;
+  if(o.consumer!=='world'||o.direction!=='south'||!['attack','attack-focus'].includes(o.action)||o.weaponless||
+     player.classId!=='healer'||player.zoanTransformed||player.__reworkSubset||arm?.item!==31||
+     Object.keys(visible).length!==1||p?.version!==1||canonical(p.gender)!=='male'||p.skinStyle!=='natural'||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},p.skinColor)||
+     ['variant','variantId','appearanceVariant'].some(k=>player.equipment?.[arm.key]?.[k]!=null&&player.equipment[arm.key][k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[arm.key];
+  const r=selectVisualStrict({...player,equipment},{...o,action:'attack-focus',weaponless:true}),d=r?.pack?.directions?.south;
+  if(!r||r.headRecord||r.hdKind||r.gearOnlyRecord||r.mirrorX||r.omitted?.length||r.visualDegraded||
+     r.sourcePackSHA256!=='ba0eaf6f429ac9ec56b966de8d408632bc69b812e223c49529c410f5c9dfc9e8'||
+     r.pack.density!==4||r.pack.frame.width!==160||r.pack.frame.height!==160||r.pack.pivot.x!==80||r.pack.pivot.y!==128||
+     d?.clip.frames!==8||d.clip.fps!==12||d.clip.contactFrame!==4||d.clip.loop)return null;
+  return {...r,id:r.id+':own-w31-south-native-palm',item:31,ownedW31NativePalm:true,ownW31NativePalm:{base:r},
+   slotRoutes:{[arm.key]:{item:31,quality:'hd',source:'staff31-south-own-authored-palm'}},omitted:[],equipment:{[arm.key]:31}};
+ }
+ const w122SouthNativeGear=["4571d5e3a67f1685c1f1880ab838421baeae322a132e33617f0c67a1ed3ac183","3ddf7d802d2de41d62313eda9bf6fc4c74eb7f543a9ae99845ef4328b42be7ad","d7b04780d5d7b7d636a6d08beadac6932ccf75b055d8999244cca644d54b6681","5fff4f9ad5a74d00b92b29290b4597fdace382e9ed1d2b38cedb96e14bd858dd","355af6dca44e200666e1efd3e6d4c75dc59278c2577bd7c7118a49c73b9e60f3","5e1bfd009da8df938263e7fcaa411bec36a021e3af4cb3028fabad6b0e70a1ce","d85000be2ad6a9409cb34ad32e8d073b30ceb0986cf7a7fbe62fd783939bd882","e43dd6756f46c839d5992300a4a3fac64d4d4109019fc515cd0600c9628cb2a0"];
+ function selectMaleFocusW122South(player,o,visible){
+  const arm=visible?.weapon,p=player?.appearance96;
+  if(o.consumer!=='world'||o.direction!=='south'||!['attack','attack-focus'].includes(o.action)||o.weaponless||
+     player.classId!=='strategist'||player.zoanTransformed||player.__reworkSubset||arm?.item!==122||
+     Object.keys(visible).length!==1||p?.version!==1||canonical(p.gender)!=='male'||p.skinStyle!=='natural'||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},p.skinColor)||
+     ['variant','variantId','appearanceVariant'].some(k=>player.equipment?.[arm.key]?.[k]!=null&&player.equipment[arm.key][k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[arm.key];
+  const r=selectVisualStrict({...player,equipment},{...o,action:'attack-focus',weaponless:true}),v=r?.pack?.directions?.south;
+  if(!r||r.headRecord||r.hdKind||r.gearOnlyRecord||r.mirrorX||r.omitted?.length||r.visualDegraded||
+     r.sourcePackSHA256!=='ba0eaf6f429ac9ec56b966de8d408632bc69b812e223c49529c410f5c9dfc9e8'||
+     r.pack.density!==4||r.pack.frame.width!==160||r.pack.frame.height!==160||r.pack.pivot.x!==80||r.pack.pivot.y!==128||
+     v?.clip.frames!==8||v.clip.fps!==12||v.clip.contactFrame!==4||v.clip.loop)return null;
+  return {...r,id:r.id+':own-w122-south-gesture-gear',item:122,ownedW122NativeGear:true,ownW122NativeGear:{base:r},
+   slotRoutes:{[arm.key]:{item:122,quality:'hd',source:'orb122-south-own-gesture-gear'}},omitted:[],equipment:{[arm.key]:122}};
+ }
+ const w17SouthNativeGear=["344a88d792e1f906407ba168dc249eee5a86fb1ebfe63a3a996c55062a5bea36","d3631cc857119aacd5eacf16eda3502ab3cf2ab8d5228fb4d2ec6ee96b793e23","ed560b01d0a88294f9c3580aabde9952096f4f51308697b069d01704716c0f8b","87fb4dabf8fab70a05911ed323bbd117a5b7cf6b5fc518a69a46d8f2644506a1","dd94777552243010b9dde627279edc6fe6960c02f01441cc03c901f47d4b091e","bebf805233f9ba4bcd3f2a9bfe760a6ade47a56d194e04ff974c27b592b776a7","e9c22f7cca746f9824caa2d331323938b3fa476a6a4156a636a6c1552780098e","1f5017ef33a530150f58ad223a3beec8cee5fac6f4daca64785b45b136183b45"];
+ function selectMaleFocusW17South(player,o,visible){
+  const arm=visible?.weapon,p=player?.appearance96;
+  if(o.consumer!=='world'||o.direction!=='south'||!['attack','attack-focus'].includes(o.action)||o.weaponless||
+     player.classId!=='strategist'||player.zoanTransformed||player.__reworkSubset||arm?.item!==17||
+     Object.keys(visible).length!==1||p?.version!==1||canonical(p.gender)!=='male'||p.skinStyle!=='natural'||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},p.skinColor)||
+     ['variant','variantId','appearanceVariant'].some(k=>player.equipment?.[arm.key]?.[k]!=null&&player.equipment[arm.key][k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[arm.key];
+  const r=selectVisualStrict({...player,equipment},{...o,action:'attack-focus',weaponless:true}),v=r?.pack?.directions?.south;
+  if(!r||r.headRecord||r.hdKind||r.gearOnlyRecord||r.mirrorX||r.omitted?.length||r.visualDegraded||
+     r.sourcePackSHA256!=='ba0eaf6f429ac9ec56b966de8d408632bc69b812e223c49529c410f5c9dfc9e8'||
+     r.pack.density!==4||r.pack.frame.width!==160||r.pack.frame.height!==160||r.pack.pivot.x!==80||r.pack.pivot.y!==128||
+     v?.clip.frames!==8||v.clip.fps!==12||v.clip.contactFrame!==4||v.clip.loop)return null;
+  return {...r,id:r.id+':own-w17-south-gesture-gear',item:17,ownedW17NativeGear:true,ownW17NativeGear:{base:r},
+   slotRoutes:{[arm.key]:{item:17,quality:'hd',source:'orb17-south-own-gesture-gear'}},omitted:[],equipment:{[arm.key]:17}};
+ }
+ const w32SouthNativeGear=["830185367992169814e068ec2522ccccca8db49a215d3e415f449feb856b126f","73977f1eb1cfcf0cc29ab1bc2fcfa38dd1a3ac46f7177768820564f815b8707e","5e2b52f5026eca4d2f7fec1a18d18274395bb28f6cc8a745f557859a64e4060a","56fa3d8b045271de4ba56eaca99743fe56f7634afa6c4c7465ee6926dbd5bdef","19aff74a2f10339706789a99d2152c877b5e520eaa2a8004977ed4025cf43c22","b8a1ea542235e6d9834f9e081403c54407d2ebbb899bb4e531a34efb22a09655","8b5e4d9ce4eb487fd51d942bd34ea4275bc8e9c48e50ea1dfd0e0cb3e1151ba1","4d704329fafe9619bffc54a9c9d264233a6c65f57b3b64d5f62aa730b18b88f0"];
+ function selectMaleFocusW32South(player,o,visible){
+  const arm=visible?.weapon,p=player?.appearance96;
+  if(o.consumer!=='world'||o.direction!=='south'||!['attack','attack-focus'].includes(o.action)||o.weaponless||
+     player.classId!=='healer'||player.zoanTransformed||player.__reworkSubset||arm?.item!==32||
+     Object.keys(visible).length!==1||p?.version!==1||canonical(p.gender)!=='male'||p.skinStyle!=='natural'||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},p.skinColor)||
+     ['variant','variantId','appearanceVariant'].some(k=>player.equipment?.[arm.key]?.[k]!=null&&player.equipment[arm.key][k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[arm.key];
+  const r=selectVisualStrict({...player,equipment},{...o,action:'attack-focus',weaponless:true}),v=r?.pack?.directions?.south;
+  if(!r||r.headRecord||r.hdKind||r.gearOnlyRecord||r.mirrorX||r.omitted?.length||r.visualDegraded||
+     r.sourcePackSHA256!=='ba0eaf6f429ac9ec56b966de8d408632bc69b812e223c49529c410f5c9dfc9e8'||
+     r.pack.density!==4||r.pack.frame.width!==160||r.pack.frame.height!==160||r.pack.pivot.x!==80||r.pack.pivot.y!==128||
+     v?.clip.frames!==8||v.clip.fps!==12||v.clip.contactFrame!==4||v.clip.loop)return null;
+  return {...r,id:r.id+':own-w32-south-gesture-gear',item:32,ownedW32NativeGear:true,ownW32NativeGear:{base:r},
+   slotRoutes:{[arm.key]:{item:32,quality:'hd',source:'orb32-south-own-gesture-gear'}},omitted:[],equipment:{[arm.key]:32}};
+ }
+ const w16SouthNativeGear=["f1ea74cf4fb974ae573d096e233c506dcb9adbbd32b31ad099a05bcb512d3a0e","76003ccf0cbe1c448bf8586a053f59c69e539b0dda4a50d968cd7c8318fb2a2e","8db09393f5604adaae60a00cdd422bc1d935cee744ce15021033d56b358b1c08","9c8d4199ba59ca0fbded837f1d01689f5473e12e3f597d53f1e50eaea599b7dd","172b2bb10683adcfbf0d9056f6f010458663a3c8bd0c3a73519ec5b558b7a062","e550aa9061e0b1460f42f45cbf60bb85416aafb628ea3a343a747c7566e5dcf6","f528a852dd498c7104a9f16117caa42af973bf5ddfddc478ed5660554794e71e","c82ad2ae62942ac9d640239bf04fe736133daeeec98311b92cabb5036127e315"];
+ function selectMaleFocusW16South(player,o,visible){
+  const arm=visible?.weapon,p=player?.appearance96;
+  if(o.consumer!=='world'||o.direction!=='south'||!['attack','attack-focus'].includes(o.action)||o.weaponless||
+     player.classId!=='strategist'||player.zoanTransformed||player.__reworkSubset||arm?.item!==16||
+     Object.keys(visible).length!==1||p?.version!==1||canonical(p.gender)!=='male'||p.skinStyle!=='natural'||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},p.skinColor)||
+     ['variant','variantId','appearanceVariant'].some(k=>player.equipment?.[arm.key]?.[k]!=null&&player.equipment[arm.key][k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[arm.key];
+  const r=selectVisualStrict({...player,equipment},{...o,action:'attack-focus',weaponless:true}),v=r?.pack?.directions?.south;
+  if(!r||r.headRecord||r.hdKind||r.gearOnlyRecord||r.mirrorX||r.omitted?.length||r.visualDegraded||
+     r.sourcePackSHA256!=='ba0eaf6f429ac9ec56b966de8d408632bc69b812e223c49529c410f5c9dfc9e8'||
+     r.pack.density!==4||r.pack.frame.width!==160||r.pack.frame.height!==160||r.pack.pivot.x!==80||r.pack.pivot.y!==128||
+     v?.clip.frames!==8||v.clip.fps!==12||v.clip.contactFrame!==4||v.clip.loop)return null;
+  return {...r,id:r.id+':own-w16-south-gesture-gear',item:16,ownedW16NativeGear:true,ownW16NativeGear:{base:r},
+   slotRoutes:{[arm.key]:{item:16,quality:'hd',source:'compass16-south-own-gesture-gear'}},omitted:[],equipment:{[arm.key]:16}};
+ }
+ const w121SouthNativeGear=["0f78073f44801126d23fd9892fdf8c354a41c5665c49b78854d444ec611ca4a4","d6e7e72d67eb8700e6edf69d2778763b3079560dac5f3560e75425bff37912a6","d5fbe106f61b0916786eafa0f48d2615e693497ceaa51873589d936f12c548bf","a3afacecfd1427c72e06ab18c40432a818e6cc6cc9eefbc67160207ecffcfd30","27bd859eeae7b98920e48c5c208eb7745cff75497c1a66f72a78b16fd1f60395","725ce83f94020620589193ea4cada62e037e44b712178f977d6dfbf7425c843b","bc4d328e3f5d63c56fde327fe13ab18e415b7255bd9918bd116055fb069dbb04","89f6df3bfb8488dac4c80975cda7d35b80fac473addf42bfa38a030db833f65e"];
+ function selectMaleFocusW121South(player,o,visible){
+  const arm=visible?.weapon,p=player?.appearance96;
+  if(o.consumer!=='world'||o.direction!=='south'||!['attack','attack-focus'].includes(o.action)||o.weaponless||
+     player.classId!=='strategist'||player.zoanTransformed||player.__reworkSubset||arm?.item!==121||
+     Object.keys(visible).length!==1||p?.version!==1||canonical(p.gender)!=='male'||p.skinStyle!=='natural'||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},p.skinColor)||
+     ['variant','variantId','appearanceVariant'].some(k=>player.equipment?.[arm.key]?.[k]!=null&&player.equipment[arm.key][k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[arm.key];
+  const r=selectVisualStrict({...player,equipment},{...o,action:'attack-focus',weaponless:true}),v=r?.pack?.directions?.south;
+  if(!r||r.headRecord||r.hdKind||r.gearOnlyRecord||r.mirrorX||r.omitted?.length||r.visualDegraded||
+     r.sourcePackSHA256!=='ba0eaf6f429ac9ec56b966de8d408632bc69b812e223c49529c410f5c9dfc9e8'||
+     r.pack.density!==4||r.pack.frame.width!==160||r.pack.frame.height!==160||r.pack.pivot.x!==80||r.pack.pivot.y!==128||
+     v?.clip.frames!==8||v.clip.fps!==12||v.clip.contactFrame!==4||v.clip.loop)return null;
+  return {...r,id:r.id+':own-w121-south-gesture-gear',item:121,ownedW121NativeGear:true,ownW121NativeGear:{base:r},
+   slotRoutes:{[arm.key]:{item:121,quality:'hd',source:'orb121-south-own-gesture-gear'}},omitted:[],equipment:{[arm.key]:121}};
+ }
+ const w120NorthOwnMetal=["681f30d7e54dc41421c2e674db2f67fbc8b170bb01f7cdb22e25e910f7a23fe4","e49331a015e71107053543177c7f65f5ded753f1996586542cf68bc1b79a997a","1e6ad28c5cd23bcb9007457036449480bf64eb81f13cb4ac4f3234c879517000","11dfbec12cf061deb7d02782c056bc4ba9a6e680c151cf7432493d4fc6a8b4ea","704193a16d577a0fa1909ff1af3a7caadc29f73190dbc3b1e43fa72a1965f634","5d120d12df5383bfe5a312d001943e49679137821d2fc93dc4b1952ae8b06e93","680075cb0cadadf6a9a6836ef60b973c9f697e21cbcb0a77d694e2d032027aef","7fd2cfd72a111ddf18e9e12c1d72e18397782d5a0f192e427dac3041878e59b2"],w120NorthOwnClock=["0","1","2","3","4","5","6","7","7","7","7","7","7","7","7","7","7","7","7","7"];
+ function selectMaleW120NorthOwnMetal(player,o,visible){
+  const arm=visible?.weapon,p=player?.appearance96;
+  if(o.consumer!=='world'||o.direction!=='north'||!['attack','attack-unarmed'].includes(o.action)||o.weaponless||
+     player.classId!=='cyborg'||player.zoanTransformed||player.__reworkSubset||arm?.item!==120||
+     Object.keys(visible).length!==1||p?.version!==1||canonical(p.gender)!=='male'||p.skinStyle!=='natural'||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},p.skinColor)||
+     ['variant','variantId','appearanceVariant'].some(k=>player.equipment?.[arm.key]?.[k]!=null&&player.equipment[arm.key][k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[arm.key];
+  const b=selectVisualStrict({...player,equipment},{...o,action:'attack-unarmed',weaponless:true}),d=b?.pack?.directions?.north;
+  if(!b||b.headRecord||b.hdKind||b.gearOnlyRecord||b.mirrorX||b.omitted?.length||b.visualDegraded||
+     b.sourceId!=='v7-punch-north-drawn8-north'||b.sourcePackSHA256!=='7f084167add6b3feea3781fed355cec591ea20bb1465747cd8eb90b6316bb957'||
+     b.pack.density!==4||b.pack.frame.width!==160||b.pack.frame.height!==160||b.pack.pivot.x!==80||b.pack.pivot.y!==128||
+     JSON.stringify(d?.clip)!==JSON.stringify({frames:8,fps:12,loop:false,contactFrame:4})||
+     JSON.stringify(d.layers.map(l=>[l.id,l.depth,l.binding,l.frames||[l.source]]))!==JSON.stringify([["skin-arms-phase",0,{"kind":"fixed"},["9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97","eebe26703d817b42082bb0a87755dae1add5303daae39016e31e595fe302ce4d","443a426a01956892e6d26c74e4e5c6e788f5e3685c671fe8646042fcdf728a03","acf14879bd873ba084eed990b5299c8ca12ef7accf4088d61d37927122949742","1a0f2561bf6ddfdbe6167ac07ce569c5fb107136e722d05b919d35c62dd440be","ea78b3bbe7da1935c45a4d39ae73d8ab13a84c811f54da142145093d9f5efb07","b072b3256a05b69c4a7f994c2f98503cf1ec968cd1ee710d7f8ebdd41b99a4fd","fd2616f94952dca6049960e9847a46ab54bc8e72beca12ac2ab4dec23fad7659"]],["shorts-phase",1,{"kind":"fixed"},["2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0","fd1acb385298ed7810492a1a0006a535a88cebd100a75785f877607bf092dd42","66887ada4079168f708e3e9809e5a30ea44b8933e515e806682ae0f254147d10","86b93f073aa216486917498e0ddbea0c3e32d6871a480e912507f7636e7b31cd","2150163bf95ba720e58a245c7fffb4da8a8f711c43a8ea6f80e740f6be12b100","273aecb6f044a8562e9f2fad52b00ea806d2e8623dd678fef9d139b88c68771a","00bc3f2822584f6653bf98ccc9dd5a3a0a33c9126f54a7cf76c89e5f44adf6e9","4a33b516a75d40a893cf7ceaa159f243a5512d250633ab854dfffb477ea11438"]],["headBase",4,{"kind":"rigid","a":"NECK","b":"NOSE"},["767c435b05d1f85eed23fde9603e1ca722ed095609b17af82634522024c95969"]],["hair",6,{"kind":"rigid","a":"NECK","b":"NOSE"},["c5eb1d2d523d85acb584eee39a8e1e66b0ffbbf5cf2a118dc796f91b69bea8ea"]]]))return null;
+  return {...b,id:b.id+':own-w120-north-metal',item:120,hdKind:'weapon',arm120NorthOwnMetal:true,
+    ownW120NorthMetal:{base:b,frames:w120NorthOwnMetal},nativeCanvas:[640,640],logicalFrame:[160,160],pivot:[80,128],density:4,fps:12,timeline:w120NorthOwnClock,states:w120NorthOwnMetal.map((_,i)=>({state:String(i)})),
+    slotRoutes:{[arm.key]:{item:120,quality:'hd',source:'cyborg120-north-own-metal'}},omitted:[],equipment:{[arm.key]:120},
+    equipmentContract:{weapon:120},resolvedAction:'attack-unarmed'};
+ }
+ const w118NorthOwnMetal=["4a102854a34cc0f92ecf7849dd409a8e2ed7fab2c5e2c9791be37df94297623c","4204060a127ad6a8fef0b2fada5d099ca920c74d80c44b8c5ac378263f0c11bc","f76d50acf802da62127813d469036f0108567bb6feb6a9362f56ebd46d52da9f","2523fefc7c142d99c9fd01a4b49d551844fca7a1ba8c6ef6564387021564b30b","86c11b21ff75328f578b1cd76f4ce9947d6149084627ead29a5117c86d8276a9","81c5eae54d6dee13e10613ed30846b8cdd2496bec1230dad0603ac17f05c9753","1b6985072d34a7e70d94d2efbb5495166793a57b5c844a457cccf19b3a6020fd","75c083e982fbaf03a6d82e83323af8b7fef1528dd987afd4d13a464bab7a1819"],w118NorthOwnClock=["0","1","2","3","4","5","6","7","7","7","7","7","7","7","7","7","7","7","7","7"];
+ function selectMaleW118NorthOwnMetal(player,o,visible){
+  const arm=visible?.weapon,p=player?.appearance96;
+  if(o.consumer!=='world'||o.direction!=='north'||!['attack','attack-unarmed'].includes(o.action)||o.weaponless||
+     player.classId!=='cyborg'||player.zoanTransformed||player.__reworkSubset||arm?.item!==118||
+     Object.keys(visible).length!==1||p?.version!==1||canonical(p.gender)!=='male'||p.skinStyle!=='natural'||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},p.skinColor)||
+     ['variant','variantId','appearanceVariant'].some(k=>player.equipment?.[arm.key]?.[k]!=null&&player.equipment[arm.key][k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[arm.key];
+  const b=selectVisualStrict({...player,equipment},{...o,action:'attack-unarmed',weaponless:true}),d=b?.pack?.directions?.north;
+  if(!b||b.headRecord||b.hdKind||b.gearOnlyRecord||b.mirrorX||b.omitted?.length||b.visualDegraded||
+     b.sourceId!=='v7-punch-north-drawn8-north'||b.sourcePackSHA256!=='7f084167add6b3feea3781fed355cec591ea20bb1465747cd8eb90b6316bb957'||
+     b.pack.density!==4||b.pack.frame.width!==160||b.pack.frame.height!==160||b.pack.pivot.x!==80||b.pack.pivot.y!==128||
+     JSON.stringify(d?.clip)!==JSON.stringify({frames:8,fps:12,loop:false,contactFrame:4})||
+     JSON.stringify(d.layers.map(l=>[l.id,l.depth,l.binding,l.frames||[l.source]]))!==JSON.stringify([["skin-arms-phase",0,{"kind":"fixed"},["9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97","eebe26703d817b42082bb0a87755dae1add5303daae39016e31e595fe302ce4d","443a426a01956892e6d26c74e4e5c6e788f5e3685c671fe8646042fcdf728a03","acf14879bd873ba084eed990b5299c8ca12ef7accf4088d61d37927122949742","1a0f2561bf6ddfdbe6167ac07ce569c5fb107136e722d05b919d35c62dd440be","ea78b3bbe7da1935c45a4d39ae73d8ab13a84c811f54da142145093d9f5efb07","b072b3256a05b69c4a7f994c2f98503cf1ec968cd1ee710d7f8ebdd41b99a4fd","fd2616f94952dca6049960e9847a46ab54bc8e72beca12ac2ab4dec23fad7659"]],["shorts-phase",1,{"kind":"fixed"},["2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0","fd1acb385298ed7810492a1a0006a535a88cebd100a75785f877607bf092dd42","66887ada4079168f708e3e9809e5a30ea44b8933e515e806682ae0f254147d10","86b93f073aa216486917498e0ddbea0c3e32d6871a480e912507f7636e7b31cd","2150163bf95ba720e58a245c7fffb4da8a8f711c43a8ea6f80e740f6be12b100","273aecb6f044a8562e9f2fad52b00ea806d2e8623dd678fef9d139b88c68771a","00bc3f2822584f6653bf98ccc9dd5a3a0a33c9126f54a7cf76c89e5f44adf6e9","4a33b516a75d40a893cf7ceaa159f243a5512d250633ab854dfffb477ea11438"]],["headBase",4,{"kind":"rigid","a":"NECK","b":"NOSE"},["767c435b05d1f85eed23fde9603e1ca722ed095609b17af82634522024c95969"]],["hair",6,{"kind":"rigid","a":"NECK","b":"NOSE"},["c5eb1d2d523d85acb584eee39a8e1e66b0ffbbf5cf2a118dc796f91b69bea8ea"]]]))return null;
+  return {...b,id:b.id+':own-w118-north-metal',item:118,hdKind:'weapon',arm118NorthOwnMetal:true,
+    ownW118NorthMetal:{base:b,frames:w118NorthOwnMetal},nativeCanvas:[640,640],logicalFrame:[160,160],pivot:[80,128],density:4,fps:12,timeline:w118NorthOwnClock,states:w118NorthOwnMetal.map((_,i)=>({state:String(i)})),
+    slotRoutes:{[arm.key]:{item:118,quality:'hd',source:'cyborg118-north-own-metal'}},omitted:[],equipment:{[arm.key]:118},
+    equipmentContract:{weapon:118},resolvedAction:'attack-unarmed'};
+ }
+ const w119NorthOwnMetal=["754a145c23cf6ccde7a3258c8e27b2afef45adbeb0e76935b52fdb218b4cfb99","da555520077e917ab9b38fdb839cb97686defef010716e800647c6e8e8954ee9","1966dad52311de88edb4f3915602633cdaf382572e5bc666e14369b32b575110","21866958b8cbfd18a5d69d6d5acb9ccea95a6605b3c719cfed791617bfe7a634","c30f378cd5171ef2af855195eb1c23e30ba2fc5906cb26b9bfd793db3dfc3fa8","4d36758bdd5cac43e1860b70c0c836713814517e1ad21f8900fffc044c4073ff","a9bac6bd8ae0392bd716e7a6c6eaea3af9581551ca8372299e800c43d369ab1d","2004f47883f6bdfcc76ff1b7146677a300b32dfc775a14e188e3a14409c42e4d"],w119NorthOwnClock=["0","1","2","3","4","5","6","7","7","7","7","7","7","7","7","7","7","7","7","7"];
+ function selectMaleW119NorthOwnMetal(player,o,visible){
+  const arm=visible?.weapon,p=player?.appearance96;
+  if(o.consumer!=='world'||o.direction!=='north'||!['attack','attack-unarmed'].includes(o.action)||o.weaponless||
+     player.classId!=='cyborg'||player.zoanTransformed||player.__reworkSubset||arm?.item!==119||
+     Object.keys(visible).length!==1||p?.version!==1||canonical(p.gender)!=='male'||p.skinStyle!=='natural'||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},p.skinColor)||
+     ['variant','variantId','appearanceVariant'].some(k=>player.equipment?.[arm.key]?.[k]!=null&&player.equipment[arm.key][k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[arm.key];
+  const b=selectVisualStrict({...player,equipment},{...o,action:'attack-unarmed',weaponless:true}),d=b?.pack?.directions?.north;
+  if(!b||b.headRecord||b.hdKind||b.gearOnlyRecord||b.mirrorX||b.omitted?.length||b.visualDegraded||
+     b.sourceId!=='v7-punch-north-drawn8-north'||b.sourcePackSHA256!=='7f084167add6b3feea3781fed355cec591ea20bb1465747cd8eb90b6316bb957'||
+     b.pack.density!==4||b.pack.frame.width!==160||b.pack.frame.height!==160||b.pack.pivot.x!==80||b.pack.pivot.y!==128||
+     JSON.stringify(d?.clip)!==JSON.stringify({frames:8,fps:12,loop:false,contactFrame:4})||
+     JSON.stringify(d.layers.map(l=>[l.id,l.depth,l.binding,l.frames||[l.source]]))!==JSON.stringify([["skin-arms-phase",0,{"kind":"fixed"},["9a11a56a800ed3150aedc977c240821ce7e644be94065736933f9721f6885f97","eebe26703d817b42082bb0a87755dae1add5303daae39016e31e595fe302ce4d","443a426a01956892e6d26c74e4e5c6e788f5e3685c671fe8646042fcdf728a03","acf14879bd873ba084eed990b5299c8ca12ef7accf4088d61d37927122949742","1a0f2561bf6ddfdbe6167ac07ce569c5fb107136e722d05b919d35c62dd440be","ea78b3bbe7da1935c45a4d39ae73d8ab13a84c811f54da142145093d9f5efb07","b072b3256a05b69c4a7f994c2f98503cf1ec968cd1ee710d7f8ebdd41b99a4fd","fd2616f94952dca6049960e9847a46ab54bc8e72beca12ac2ab4dec23fad7659"]],["shorts-phase",1,{"kind":"fixed"},["2d63629d17384dce855b82c242fe109bbeaacbeacd654184ee8c972cd52239c0","fd1acb385298ed7810492a1a0006a535a88cebd100a75785f877607bf092dd42","66887ada4079168f708e3e9809e5a30ea44b8933e515e806682ae0f254147d10","86b93f073aa216486917498e0ddbea0c3e32d6871a480e912507f7636e7b31cd","2150163bf95ba720e58a245c7fffb4da8a8f711c43a8ea6f80e740f6be12b100","273aecb6f044a8562e9f2fad52b00ea806d2e8623dd678fef9d139b88c68771a","00bc3f2822584f6653bf98ccc9dd5a3a0a33c9126f54a7cf76c89e5f44adf6e9","4a33b516a75d40a893cf7ceaa159f243a5512d250633ab854dfffb477ea11438"]],["headBase",4,{"kind":"rigid","a":"NECK","b":"NOSE"},["767c435b05d1f85eed23fde9603e1ca722ed095609b17af82634522024c95969"]],["hair",6,{"kind":"rigid","a":"NECK","b":"NOSE"},["c5eb1d2d523d85acb584eee39a8e1e66b0ffbbf5cf2a118dc796f91b69bea8ea"]]]))return null;
+  return {...b,id:b.id+':own-w119-north-metal',item:119,hdKind:'weapon',arm119NorthOwnMetal:true,
+    ownW119NorthMetal:{base:b,frames:w119NorthOwnMetal},nativeCanvas:[640,640],logicalFrame:[160,160],pivot:[80,128],density:4,fps:12,timeline:w119NorthOwnClock,states:w119NorthOwnMetal.map((_,i)=>({state:String(i)})),
+    slotRoutes:{[arm.key]:{item:119,quality:'hd',source:'cyborg119-north-own-metal'}},omitted:[],equipment:{[arm.key]:119},
+    equipmentContract:{weapon:119},resolvedAction:'attack-unarmed'};
+ }
+ const w120LateralBodies={"east":{"sha":"1793a125ab0bbb85e7c1bd17b631d638287fb4cca4929cc4135166f42a5980e0","id":"v7-punch-east-drawn8-east","pins":[["skin-arms-phase",0,{"kind":"fixed"},["b0979f9817371731bb761db0dfed65de422a64c6fdd053232e50dc8966a21b6a","f87d911ae4e4725905f0dee7b460ad3b068a2785939a777017b4f9d4bcad846b","d18e401a7a747f262286f4512e352717f13e46c440475808e680db24e3416830","738338534b0e8e45915f7422a15d25f346748a58c0822ecb6fcfe1c508a004f8","475e09d0d85d793686d4a288059d439f055dc54410d3378b3b99a5ec8a8ebcd2","f1f4470a9b70da3738a4719c57282820515cd2d00d9aa1c879ee007ec090b5a2","49dae24527acfe4ba2cdf49cfe55a62f052edfc7e46db29a64433778529d9deb","d8bfee7bdae9094e25dba9c9d2076ab1d7069dd0afd689edf9b1bf22d8c95c35"]],["shorts-phase",1,{"kind":"fixed"},["34d57b1b89acb48177dbd83d05fdfc893ca5538fd9bf1984f80b397142c38b0b","f95975d2f6a0c58476e3c74115e538123a21bf75214ed0f26f2afbe3c5d4a659","07310c481d001c1e2704aa4a948bd7d9ed65143846f6dc126d9546bb2cba1acb","5856b0032bcc3557e04337bfd2771abe8f94076f595a92c167f62d49178a50e0","653baf9e98885bccf715bb74c4eef01bb68f5a424b6b5913215fb959ab83d105","062dc23ba349415c7b2812f2632dbf8576fd156ae773d64ca9c316bdc9d43539","d198fcf417108140b998d9e456e5e12b4f2f787ea97e32c74f1296c3a0232823","cf28c98fc5d678f2aa4855812e212892c8c9936202df6793af1b59ce9e11f688"]],["headBase",4,{"kind":"rigid","a":"NECK","b":"NOSE"},["e1a62125f08b88d3875261638bf09a2ec736e93b687df59a19014f5dab146154"]],["face",5,{"kind":"rigid","a":"NECK","b":"NOSE"},["9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2"]],["hair",6,{"kind":"rigid","a":"NECK","b":"NOSE"},["45de7576039c538aee29ff5a5d0def51143e8cbf90a33cdead504d88fd2ea713"]]]},"west":{"sha":"443626e677dcabda46b4a90b5730138d8c3a56606a74c91b4a7f269700b5f561","id":"v7-punch-west-drawn8-west","pins":[["skin-arms-phase",0,{"kind":"fixed"},["4e70d3b6005b1e75c6365c35ed75f0677dbb011d20c0c6d9b45e1eaa62a5f7ed","49669cfe45413f0c6ddd5a24e65c7943d2e96db52a2d689f6cb97932207bc6bc","66cb7411df889fcf8cbb254c0aff57ba4164abe9109c456e31287f00fc47c81c","45c4f65d5039a8164b0dd1120679ae8f88fa72da0b831d36a2465f201588f334","46bb35b150ad7ad09bd5e3eac6e0dde3218cca340def68bf5e8c1d9585b06d1a","f2acc2b2f534cf3002d7ef1b9abb40ea2b88974e954b6e89b61924e63517c4b3","38d5c1eb946e167aab27e077706cb502bf10716d0682dcbef9697ea4e8be7f73","4342e94db6081451436f2e0b6f2e5ea9ea9f6f8babed1591528d1b904023065c"]],["shorts-phase",1,{"kind":"fixed"},["22aba9c19c030e20d9cd520ff28c69b0beda7c551a1c6914532ada11f574c4c9","ff61160087d9f3b72b1cfc2d33452a971e658fa1436121f934d42e6614fa0488","05a54b93427a9ebff89f2de817e3fcb490f40037ab2c1f2ef898873d91266a3c","82cc6b465f3a4dcf05af2ae03331e3b1ca4c400a60fd109bc4419abd889b1b7a","6a6563fc7a1a5b7c4b57eb96202f040561682dd690c572ca793b1febb6627b37","ef7490a6fc2edbd30490a75bb2220676cec5bec78b6c7e7336a4b4c54da422db","35f9f00bb11fa4f77e0aec5c66f138926c69c0bbce9eb84003d64bf13778fbf8","913fcc35116de62f4e9cf64a6f5a5b7f8141cb16ce62d2c986e760225d5e8b74"]],["headBase",4,{"kind":"rigid","a":"NECK","b":"NOSE"},["550e876bc65b387f14977734f71f6d4ae681ebdab0d2cf515faa2fa6bf98d888"]],["face",5,{"kind":"rigid","a":"NECK","b":"NOSE"},["0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464"]],["hair",6,{"kind":"rigid","a":"NECK","b":"NOSE"},["a1359e16013832c487942d028404f7a5c59f4afd4a7e96eb480aa1a1d34db07e"]]]}};
+ const w120LateralOwnMetal=["7c72fc19c7fd0404ea113c67c06533f95cbe9d3513e0d4afbaec25cc3bdcdc9a","396d95e4f5f83a2ef3f9b1cfa33e0757262194635612edc16efa501be33cc407","26a7c5f1b62c9e96554a42c8ca407748cbafcd2ae5f245f980ae351fef399939","f04ca2e6b9d39d806d6acdd7093d7291d4aa07ef1a4ac032081925a0f24f7a6b","f793a462cf55b14856f431e3c6b61157c568e9a659d5e1f2e1c872dccd28ab1f","f5d29bef34a3af5af0dda5f4dbb4f47fb88271c8d50d07b76b3d9f6a585d425c","80b767a40725421853b333c7a321f7e718004ed37b5b889b339e8c61813411ed","a43eea12aaccf55400d1655900b57720971dd653540734148da2550508149829"],w120LateralOwnClock=["0","1","2","3","4","5","6","7","7","7","7","7","7","7","7","7","7","7","7","7"];
+ function selectMaleW120LateralOwnMetal(player,o,visible){
+  const arm=visible?.weapon,p=player?.appearance96;
+  if(o.consumer!=='world'||!['east','west'].includes(o.direction)||!['attack','attack-unarmed'].includes(o.action)||o.weaponless||
+     player.classId!=='cyborg'||player.zoanTransformed||player.__reworkSubset||arm?.item!==120||
+     Object.keys(visible).length!==1||p?.version!==1||canonical(p.gender)!=='male'||p.skinStyle!=='natural'||
+     p.hairStyle!=='original'||p.hairColor!=='black'||p.eyeStyle!=='original'||p.eyeColor!=='blue'||
+     !Object.hasOwn(root.MareAppearance96?.skins||{},p.skinColor)||
+     ['variant','variantId','appearanceVariant'].some(k=>player.equipment?.[arm.key]?.[k]!=null&&player.equipment[arm.key][k]!=='original'))return null;
+  const equipment={...player.equipment};delete equipment[arm.key];
+  const b=selectVisualStrict({...player,equipment},{...o,action:'attack-unarmed',weaponless:true}),d=b?.pack?.directions?.[o.direction];
+  if(!b||b.headRecord||b.hdKind||b.gearOnlyRecord||b.mirrorX||b.omitted?.length||b.visualDegraded||
+     b.sourceId!==w120LateralBodies[o.direction].id||b.sourcePackSHA256!==w120LateralBodies[o.direction].sha||
+     b.pack.density!==4||b.pack.frame.width!==160||b.pack.frame.height!==160||b.pack.pivot.x!==80||b.pack.pivot.y!==128||
+     JSON.stringify(d?.clip)!==JSON.stringify({frames:8,fps:12,loop:false,contactFrame:4})||
+     JSON.stringify(d.layers.map(l=>[l.id,l.depth,l.binding,l.frames||[l.source]]))!==JSON.stringify(w120LateralBodies[o.direction].pins))return null;
+  return {...b,id:b.id+':own-w120-lateral-metal',item:120,hdKind:'weapon',arm120LateralOwnMetal:true,
+    ownW120LateralMetal:{base:b,frames:w120LateralOwnMetal},nativeCanvas:[640,640],logicalFrame:[160,160],pivot:[80,128],density:4,fps:12,timeline:w120LateralOwnClock,states:w120LateralOwnMetal.map((_,i)=>({state:String(i)})),
+    slotRoutes:{[arm.key]:{item:120,quality:'hd',source:'cyborg120-lateral-own-metal'}},omitted:[],equipment:{[arm.key]:120},
+    equipmentContract:{weapon:120},resolvedAction:'attack-unarmed'};
+ }
+ function selectVisualStrictCore(player,o={}){
+  player=visibleWorldActor(player);
+  const arm120Side=selectMaleW120LateralOwnMetal(player,o,registeredEquipment(player,o));if(arm120Side)return arm120Side;
+  const arm119North=selectMaleW119NorthOwnMetal(player,o,registeredEquipment(player,o));if(arm119North)return arm119North;
+  const arm118North=selectMaleW118NorthOwnMetal(player,o,registeredEquipment(player,o));if(arm118North)return arm118North;
+  const arm120North=selectMaleW120NorthOwnMetal(player,o,registeredEquipment(player,o));if(arm120North)return arm120North;
+  const orb121phase=selectMaleFocusW121South(player,o,registeredEquipment(player,o));if(orb121phase)return orb121phase;
+  const compass16phase=selectMaleFocusW16South(player,o,registeredEquipment(player,o));if(compass16phase)return compass16phase;
+  const orb32phase=selectMaleFocusW32South(player,o,registeredEquipment(player,o));if(orb32phase)return orb32phase;
+  const orb17phase=selectMaleFocusW17South(player,o,registeredEquipment(player,o));if(orb17phase)return orb17phase;
+  const orb122=selectMaleFocusW122South(player,o,registeredEquipment(player,o));if(orb122)return orb122;
+  const gauntlet14=selectMaleW14LateralV7(player,o,registeredEquipment(player,o));if(gauntlet14)return gauntlet14;
+  const staff31=selectMaleFocusW31South(player,o,registeredEquipment(player,o));if(staff31)return staff31;
+  const northBootWorn=registeredEquipment(player,o),northOwnBoot=selectMaleNorthPunchB148(player,o,northBootWorn)||selectMaleNorthPunchFittedBoot(player,o,northBootWorn);if(northOwnBoot)return northOwnBoot;
+  const southFittedBoot=selectMaleSouthPunchFittedBoot(player,o,northBootWorn);if(southFittedBoot)return southFittedBoot;
+  const lateralFittedBoot=selectMaleLateralPunchFittedBoot(player,o,northBootWorn);if(lateralFittedBoot)return lateralFittedBoot;
+  const ownNorthWalkPants=selectOwnNorthWalkPants(player,o);if(ownNorthWalkPants)return ownNorthWalkPants;
+  const paired=selectOwnWeaponP22Side(player,o);if(paired)return paired;
+  const exact=select(player,o)||selectApprovedFemaleDaggerP22(player,o)||selectSouthIdleImperialBoots(player,o)||selectSignedWeaponGarments(player,o);
   if(!exact){
+   const p22Wrist=selectFemaleSouthOwnPantsWithGlove(player,o,registeredEquipment(player,o));if(p22Wrist)return p22Wrist;
+   const northP21Boot=selectFemaleCardinalOwnPantsWithBoot(player,o,registeredEquipment(player,o));if(northP21Boot)return northP21Boot;
+   const independentHat=selectIndependentFemaleSwordHat(player,o);if(independentHat)return independentHat;
    const layered=selectLayered(player,o);if(layered)return layered;
+   const bootAndGlove=composeFemaleNorthIdleBootAndGlove(player,o,registeredEquipment(player,o));if(bootAndGlove)return bootAndGlove;
+   const punchCoatAndHead=selectBarePunchCoatAndHead(player,o,registeredEquipment(player,o));if(punchCoatAndHead)return punchCoatAndHead;
+   const southGaitTorsoOnLower=selectOwnSouthGaitTorsoOnLower(player,o,registeredEquipment(player,o));if(southGaitTorsoOnLower)return southGaitTorsoOnLower;
+   const southBootAndTorso=composeMaleSouthBootAndTorso(player,o,registeredEquipment(player,o));if(southBootAndTorso)return southBootAndTorso;
+   const idleBoot=selectIndependentFemaleIdleCarryBoot(player,o,registeredEquipment(player,o));if(idleBoot)return idleBoot;
+   const ownPunchPants=selectFemaleNorthPunchOwnPants(player,o)||selectMaleCardinalPunchOwnPants(player,o);if(ownPunchPants)return ownPunchPants;
+   const ownMaleSidePunchPants=selectMaleSidePunchOwnPants(player,o);if(ownMaleSidePunchPants)return ownMaleSidePunchPants;
+   const ownDirectionalPunchPants=selectFemaleDirectionalPunchOwnPants(player,o);if(ownDirectionalPunchPants)return ownDirectionalPunchPants;
+   const gaitPants=selectIndependentFemaleGaitPants(player,o);if(gaitPants)return gaitPants;
+   const gaitTorso=selectIndependentMaleGaitTorso(player,o);if(gaitTorso)return gaitTorso;
+   const poseGlove=selectIndependentFemaleNorthGaitGlove(player,o,registeredEquipment(player,o));if(poseGlove)return poseGlove;
+   const daggerGloves=selectFemaleDaggerOwnGloves(player,o);if(daggerGloves)return daggerGloves;
+   const daggerBoots=selectFemaleDaggerOwnBoots(player,o);if(daggerBoots)return daggerBoots;
+   const hat=selectOwnCarryHat(player,o);if(hat)return hat;
+   const gauntletHead=selectOwnGauntletHead(player,o);if(gauntletHead)return gauntletHead;
+   const fixedFirearmPants=selectFixedNorthFirearmPants(player,o);if(fixedFirearmPants)return fixedFirearmPants;
+   const orbP133=selectOrbFocusSouthP133(player,o);if(orbP133)return orbP133;
+   const focusPants=selectFocusCarryPants(player,o);if(focusPants)return focusPants;
+   const lateralPants=selectIndependentMaleLateralGaitPants(player,o);if(lateralPants)return lateralPants;
+   const southPants=selectIndependentMaleSouthGaitPants(player,o);if(southPants)return southPants;
    const namedFocus=selectNamedFocusCarry(player,o);if(namedFocus)return namedFocus;
+   const glove=selectIndependentCarryGlove(player,o);if(glove)return glove;
    if(!swordCheckpoint||!player||player.zoanTransformed||player.__reworkSubset||o.weaponless||
       !['attack-sword','attack','skill'].includes(o.action))return null;
    const visible=registeredEquipment(player,o);
-   if(o.direction==='north'&&o.action==='attack-sword'&&[0,1,67,68,69,70].includes(visible?.weapon?.item)&&[26,145,159,166,173].includes(visible.gloves?.item)&&
-      visible.pants?.item===182&&Object.keys(visible).length===3){
+   if(o.consumer==='world'&&o.action==='attack-sword'&&['east','west'].includes(o.direction)&&player.classId==='sword'&&
+      visible?.weapon&&visible.pants&&visible.gloves&&Object.keys(visible).length===3){
+    const {weapon,gloves}=visible,equipment={...player.equipment};delete equipment[gloves.key];
+    const bare=select({...player,equipment:{[weapon.key]:weapon.value}},o),lower=selectVisualStrict({...player,equipment},o);
+    const own=swordCheckpoint.resolveVerifiedGloveOnSidePants?.(bare,lower,o.direction,visible);
+    if(own)return own;
+   }
+   if(o.consumer==='world'&&o.action==='attack-sword'&&player.classId==='sword'&&swordCheckpoint.canUseVerifiedGlovePose?.(o.direction,visible)){
+    const solo={...player,equipment:{weapon:visible.weapon.value}},owned=swordCheckpoint.resolveVerifiedGlovePose(select(solo,o),o.direction,visible);
+    if(owned)return owned;
+   }
+   if(o.consumer==='world'&&o.action==='attack-sword'&&player.classId==='sword'&&visible?.weapon&&
+      visible.boots&&visible.gloves&&Object.keys(visible).length===3){
+    const receiver=select({...player,equipment:{weapon:visible.weapon.value}},o);
+    const owned=swordCheckpoint.resolveVerifiedGloveAndBoot?.(receiver,o.direction,visible);
+    if(owned)return owned;
+   }
+   if(o.action==='attack-sword'&&o.direction==='north'&&visible?.weapon&&visible.boots&&visible.gloves&&
+      Object.keys(visible).length===3&&swordCheckpoint.canUseNorthIsolatedBoot?.(o.direction,visible)){
+    const pick=(slot)=>({...player,equipment:{weapon:visible.weapon.value,...(slot?{[visible[slot].key]:visible[slot].value}:{})}});
+    const bare=select(pick(),o);
+    const layered=swordCheckpoint.resolveNorthDisjointSlots?.(bare,visible,{
+     boots:selectVisualStrict(pick('boots'),o),gloves:selectVisualStrict(pick('gloves'),o)});
+    if(layered)return layered;
+   }
+   if(o.action==='attack-sword'&&swordCheckpoint.canUseNorthBootOnPants?.(o.direction,visible)){
+    const {boots,pants}=visible;
+    const source=(remove)=>{const equipment={...player.equipment};delete equipment[remove.key];return selectVisualStrict({...player,equipment},o);};
+    const resolved=swordCheckpoint.resolveNorthBootOnPants?.(source(pants),source(boots),visible);
+    if(resolved)return resolved;
+   }
+   if(o.consumer==='world'&&o.action==='attack-sword'&&['east','west'].includes(o.direction)&&player.classId==='sword'&&
+      visible?.pants?.item===22&&visible.weapon&&Object.keys(visible).length===2){
+    const receiver=select({...player,equipment:{weapon:visible.weapon.value}},o);
+    const own=swordCheckpoint.resolvePants22ByExactPose?.(receiver,o.direction,visible);
+    if(own)return own;
+   }
+   if(visible?.pants?.item===22&&[0,1,67,68,69,70].includes(visible.weapon?.item)&&Object.keys(visible).length===2&&o.action==='attack-sword'){
     const bare={...player,equipment:{weapon:visible.weapon.value}};
-    const reference=visible.weapon.item===0?bare:{...player,equipment:{weapon:{def:0}}};
+    const reference=visible.weapon.item===0?bare:{...bare,equipment:{weapon:{def:0}}};
     const coated={...reference,equipment:{...reference.equipment,coat:{def:151}}};
-    const panted={...bare,equipment:{...bare.equipment,[visible.pants.key]:visible.pants.value}};
-    const gloved=swordCheckpoint.resolveNorthGloveOnly(select(coated,o),select(bare,o),o.direction,{weapon:visible.weapon,gloves:visible.gloves},
+    const resolved=swordCheckpoint.resolvePantsOnly?.(select(coated,o),select(bare,o),o.direction,visible,
      visible.weapon.item===0?undefined:select(reference,o));
-    const resolved=swordCheckpoint.resolveNorthGlovePants182(gloved,select(panted,o),o.direction,visible);
+    if(resolved)return resolved;
+    if(o.consumer==='world'&&o.direction==='north'&&player.classId==='sword'){
+     const receiver=select(bare,o);
+     if(receiver?.colorAppearance?.hairStyle==='original'){
+      const appearance96=swordCheckpoint.northGloveWitnessLook?.(receiver.material?.skinColor);
+      if(appearance96){
+       const witness=x=>select({...x,appearance96},o),plain=witness(bare);
+       const proven=swordCheckpoint.resolvePantsOnly?.(witness(coated),plain,o.direction,visible,
+        visible.weapon.item===0?undefined:witness(reference));
+       const borrowed=swordCheckpoint.resolveNorthPantsOnOriginal?.(receiver,plain,proven,visible);
+       if(borrowed)return borrowed;
+      }
+     }
+    }
+   }
+   if(o.direction==='north'&&o.action==='attack-sword'&&visible?.weapon&&visible.pants&&visible.gloves&&
+      Object.keys(visible).every(slot=>['weapon','pants','boots','gloves'].includes(slot))){
+    const {pants,gloves,weapon,boots}=visible;
+    const pick=(...pieces)=>({...player,equipment:Object.fromEntries([weapon,...pieces].map(v=>[v.key,v.value]))});
+    const withHands=selectVisualStrict(pick(gloves),o),lower=selectVisualStrict(pick(pants,...(boots?[boots]:[])),o);
+    const resolved=swordCheckpoint.resolveNorthGloveOnLowerPose?.(withHands,lower,o.direction,visible);
     if(resolved)return resolved;
    }
    if(o.direction==='north'&&o.action==='attack-sword'&&[0,1,67,68,69,70].includes(visible?.weapon?.item)&&visible.gloves&&Object.keys(visible).length===2){
     const bare={...player,equipment:{weapon:visible.weapon.value}};
     const reference=visible.weapon.item===0?bare:{...player,equipment:{weapon:{def:0}}};
     const coated={...reference,equipment:{...reference.equipment,coat:{def:151}}};
-    const resolved=swordCheckpoint.resolveNorthGloveOnly(select(coated,o),select(bare,o),o.direction,visible,
+    const receiving=select(bare,o);
+    const resolved=swordCheckpoint.resolveNorthGloveOnly(select(coated,o),receiving,o.direction,visible,
      visible.weapon.item===0?undefined:select(reference,o));
+    if(resolved)return resolved;
+    if(player.classId==='sword'&&receiving?.colorAppearance?.hairStyle==='original'){
+     const appearance96=swordCheckpoint.northGloveWitnessLook?.(receiving.material?.skinColor);
+     if(appearance96){
+      const witness=x=>select({...x,appearance96},o),uncovered=witness(bare);
+      const owned=swordCheckpoint.resolveNorthGloveOnly(witness(coated),uncovered,o.direction,visible,
+       visible.weapon.item===0?undefined:witness(reference));
+      const original=swordCheckpoint.resolveNorthGloveOnOriginal?.(receiving,uncovered,owned,visible);
+      if(original)return original;
+     }
+    }
+   }
+   if(o.action==='attack-sword'&&swordCheckpoint.canUseNorthIsolatedBoot?.(o.direction,visible)&&Object.keys(visible).length===2){
+    const bare={...player,equipment:{weapon:visible.weapon.value}};
+    const resolved=swordCheckpoint.resolveNorthIsolatedBoot(select(bare,o),o.direction,visible);
     if(resolved)return resolved;
    }
    if((visible?.boots?.item===9&&(['north','south'].includes(o.direction)&&[0,1,67,68,70].includes(visible.weapon?.item)||
@@ -2925,6 +6833,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     const resolved=swordCheckpoint.resolveBootOnly(select(coated,o),select(bare,o),o.direction,visible,
      visible.weapon.item===0?undefined:select(reference,o));
     if(resolved)return resolved;
+   }
+   if(o.consumer==='world'&&player.classId==='sword'&&o.action==='attack-sword'&&['north','south'].includes(o.direction)&&visible?.weapon&&visible.boots&&Object.keys(visible).length===2){
+    const receiver=select({...player,equipment:{weapon:visible.weapon.value}},o);
+    const fitted=swordCheckpoint.resolveAdditionalIsolatedBoot?.(receiver,o.direction,visible);
+    if(fitted)return fitted;
    }
    if(![0,1,67,68,69,70].includes(visible?.weapon?.item)||visible.torso?.item!==151||Object.keys(visible).some(k=>!['weapon','torso','pants','boots','gloves'].includes(k)))return null;
    const item=visible.weapon.item,options={...o,action:'attack-sword'};
@@ -2961,7 +6874,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const tick=Number.isFinite(progress)?Math.floor(Math.max(0,Math.min(1,progress))*clip.frames+(r.orderedAttack?1e-9:0)):Math.floor(Math.max(0,o.time||0)*clip.fps),position=clip.loop?tick%clip.frames:Math.min(clip.frames-1,tick);
   return timeline?r.states.findIndex(s=>s.state===String(timeline[position])):position;
  }
- function filesFor(r,frame){if(r.authoredSouthIdleGlove||r.authoredBareGloveLocomotion){const q=r.authoredSouthIdleGlove||r.authoredBareGloveLocomotion;return [...filesFor(q.base,frame),...q.hashes.map(h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png')];}if(r.authoredPunchPants||r.authoredSideIdlePants){const q=r.authoredPunchPants||r.authoredSideIdlePants;return [...filesFor(q.base,frame),'tools/rework-modular-outfits-hd/assets/'+q.cloth.frames[frame]+'.png'];}if(r.authoredNorthIdlePants){const q=r.authoredNorthIdlePants,p='tools/rework-modular-outfits-hd/assets/';return [...new Set([...filesFor(q.base,frame),p+q.cloth+'.png',p+q.ownerAlpha+'.png'])];}if(r.authoredIdleCoatPants){const q=r.authoredIdleCoatPants;return [...new Set([...filesFor(q.record,frame),...['cloth','ownerAlpha'].map(k=>'tools/rework-modular-outfits-hd/assets/'+q[k]+'.png')])];}if(r.fixedIdleBoots)return [...filesFor(r.fixedIdleBoots.base,frame),...r.fixedIdleBoots.layers.map(l=>'tools/rework-modular-outfits-hd/assets/'+l.frames[0]+'.png')];if(r.partitionedMalePunch)return filesForPartitionedMalePunch(r,frame);if(r.northLayers)return northFiles(r,frame);if(r.profileLayers)return profileFiles(r,frame);if(r.authoredPantsLayer)return southFiles(r,frame);return [...new Set([...(r.hdKind==='female-equipment'?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).requiredFiles(r,{frame}),...(r.headRecord?headRegistry.requiredFiles(r.headRecord):[]),...(r.gearOnlyRecord?originalHairGearRegistry.requiredFiles(r.gearOnlyRecord):[]),...(r.femaleNamedHairRecord?femaleNamedHairRegistry.requiredFiles(r.femaleNamedHairRecord):[])])];}
+ function filesFor(r,frame){if(r.w114NorthRuntime){const d=w114NorthIndependent.frames[frame];
+   return [d.body,d.ranks,...(r.w114NorthRuntime.omit?[]:[...d.metal,d.compatibilityRanks,d.correctionMask,r.states[frame].layers[0].sha256])].map(w114NorthAsset);}if(r.ownW119SideNative){const p='tools/rework-weapon-layers-hd/assets/';return [...filesFor(r.ownW119SideNative.base,frame),p+w119SideHead[r.direction].ranks[frame]+'.png',...(r.ownW119SideNative.omit===true?[]:[p+w119SideMetal[frame]+'.png'])];}if(r.ownW2WestWalk40){const q=r.ownW2WestWalk40;return [...filesFor(q.host,frame),q.parts[Math.floor(frame/5)]];}if(r.ownCetroWalk40Parity){const q=r.ownCetroWalk40Parity;return [...filesFor(q.host,frame),q.parts[Math.floor(frame/5)].url];}if(r.ownW120LateralMetal)return [...filesFor(r.ownW120LateralMetal.base,frame),'tools/rework-weapon-layers-hd/assets/'+w120LateralOwnMetal[frame]+'.png'];if(r.ownW119NorthMetal)return [...filesFor(r.ownW119NorthMetal.base,frame),'tools/rework-weapon-layers-hd/assets/'+w119NorthOwnMetal[frame]+'.png'];if(r.ownW118NorthMetal)return [...filesFor(r.ownW118NorthMetal.base,frame),'tools/rework-weapon-layers-hd/assets/'+w118NorthOwnMetal[frame]+'.png'];if(r.ownW120NorthMetal)return [...filesFor(r.ownW120NorthMetal.base,frame),'tools/rework-weapon-layers-hd/assets/'+w120NorthOwnMetal[frame]+'.png'];if(r.ownW121NativeGear)return [...filesFor(r.ownW121NativeGear.base,frame),'tools/rework-weapon-layers-hd/assets/'+w121SouthNativeGear[frame]+'.png'];if(r.ownW16NativeGear)return [...filesFor(r.ownW16NativeGear.base,frame),'tools/rework-weapon-layers-hd/assets/'+w16SouthNativeGear[frame]+'.png'];if(r.ownW32NativeGear)return [...filesFor(r.ownW32NativeGear.base,frame),'tools/rework-weapon-layers-hd/assets/'+w32SouthNativeGear[frame]+'.png'];if(r.ownW17NativeGear)return [...filesFor(r.ownW17NativeGear.base,frame),'tools/rework-weapon-layers-hd/assets/'+w17SouthNativeGear[frame]+'.png'];if(frame===4&&r.preserveC165NorthF05)return filesFor(r.preserveC165NorthF05,frame);if(r.ownW14LateralV7)return [...filesFor(r.ownW14LateralV7.base,frame),...(r.ownW14LateralV7.omit?[]:[w14V7PlateURL(frame)])];if(r.ownW122NativeGear)return [...filesFor(r.ownW122NativeGear.base,frame),'tools/rework-weapon-layers-hd/assets/'+w122SouthNativeGear[frame]+'.png'];if(r.ownW31NativePalm){const [gear,mask]=w31SouthNativePalm[frame],p='tools/rework-weapon-layers-hd/assets/';return [...filesFor(r.ownW31NativePalm.base,frame),p+gear+'.png',p+mask+'.png'];}if(r.ownSideWalkGlove180){const q=r.ownSideWalkGlove180,p='tools/rework-modular-outfits-hd/assets/';return [...filesFor(q.base,frame),...(q.bare?filesFor(q.bare,frame):[]),p+q.authority.sha+'.png',p+q.authority.arms[r.direction][frame]+'.png'];}if(r.ownSideIdleGlove180){const q=r.ownSideIdleGlove180;return [...filesFor(q.base,frame),...(q.bare?filesFor(q.bare,0):[]),'tools/rework-modular-outfits-hd/assets/'+q.glove+'.png'];}if(r.ownSouthPantsWrist){const q=r.ownSouthPantsWrist;return [...filesFor(q.base,frame),...[q.glove,q.mask].map(h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png')];}if(frame===4&&r.preserveC158NorthF05)return filesFor(r.preserveC158NorthF05,frame);if(r.ownGauntletHead)return [...filesFor({...r,ownGauntletHead:null},frame),...originalHairGearRegistry.requiredFiles(r.ownGauntletHead.gear),r.ownGauntletHead.headPath];if(r.barePunchOwnCoat){const {base,cloth}=r.barePunchOwnCoat;return [...filesFor(base,frame),'tools/rework-modular-outfits-hd/assets/'+cloth.frames[frame]+'.png',...(r.gearOnlyRecord?originalHairGearRegistry.requiredFiles(r.gearOnlyRecord):[])];}if(r.ownBarePunchGlove){const q=r.ownBarePunchGlove;return [...filesFor(q.base,frame),'tools/rework-modular-outfits-hd/assets/'+q.frames[frame]+'.png'];}if(r.independentCarryGlove){const g=r.independentCarryGlove;return [...new Set([...filesFor(g.base,frame),...g.hashes.map(h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png')])];}if(r.signedWeaponGarments){const q=r.signedWeaponGarments,f=q.phases[frame];return [...new Set([...filesFor(q.base,frame),...[...f.rear,...f.front].map(h=>signedPhaseAsset(q,h))])];}if(r.authoredSouthIdleGlove||r.authoredBareGloveLocomotion){const q=r.authoredSouthIdleGlove||r.authoredBareGloveLocomotion;return [...filesFor(q.base,frame),...q.hashes.map(h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png')];}if(r.authoredPunchPants||r.authoredSideIdlePants){const q=r.authoredPunchPants||r.authoredSideIdlePants;return [...filesFor(q.base,frame),q.sourcePath||'tools/rework-modular-outfits-hd/assets/'+q.cloth.frames[frame]+'.png'];}if(r.authoredNorthIdlePants){const q=r.authoredNorthIdlePants,p='tools/rework-modular-outfits-hd/assets/';return [...new Set([...filesFor(q.base,frame),p+q.cloth+'.png',p+q.ownerAlpha+'.png'])];}if(r.authoredIdleCoatPants){const q=r.authoredIdleCoatPants;return [...new Set([...filesFor(q.record,frame),...['cloth','ownerAlpha','restoreOwner'].filter(k=>q[k]).map(k=>'tools/rework-modular-outfits-hd/assets/'+q[k]+'.png')])];}if(r.fixedIdleBoots)return [...filesFor(r.fixedIdleBoots.base,frame),...r.fixedIdleBoots.layers.map(l=>'tools/rework-modular-outfits-hd/assets/'+l.frames[0]+'.png')];if(r.partitionedMalePunch)return filesForPartitionedMalePunch(r,frame);if(r.northLayers)return northFiles(r,frame);if(r.profileLayers)return profileFiles(r,frame);if(r.authoredPantsLayer)return southFiles(r,frame);return [...new Set([...(r.hdKind==='female-equipment'?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).requiredFiles(r,{frame}),...(r.headRecord?headRegistry.requiredFiles(r.headRecord):[]),...(r.gearOnlyRecord?originalHairGearRegistry.requiredFiles(r.gearOnlyRecord):[]),...(r.femaleNamedHairRecord?femaleNamedHairRegistry.requiredFiles(r.femaleNamedHairRecord):[])])];}
  async function prepare(player,o,clipFileLimit=0){await ready;const r=selectVisual(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
   const job=(async()=>{try{entry=entry||{images:new Map(),proofs:[],frames:new Map(),imageLimit:Math.max(64,clipFileLimit)};await Promise.all(files.map(async p=>{if(!entry.images.has(p))entry.images.set(p,await loadShared(p));}));
   if(r.femaleNamedHairRecord)femaleNamedHairRegistry.compose(r,r.femaleNamedHairRecord,entry.images);
@@ -3001,7 +6915,334 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   info.visualHeight=Math.max(0,info.pivot.y-top);
   return {canvas,info};
  }
+ function composeW119AuthoredHeadHost(r,frame,entry){
+  const base=r.ownW119SideNative.base,d=base.pack.directions[r.direction],
+   certified=w119SideHead[r.direction],roles=['headBase','face','hair'],skin=base.colorAppearance,
+   layers=d.layers.filter(l=>roles.includes(l.id)).sort((x,y)=>x.depth-y.depth),prefix='tools/rework-base-hd/assets/';
+  if(layers.length!==3||layers.some((l,i)=>l.id!==roles[i]||l.source!==certified.sources[i]||l.frames||
+      l.binding.kind!=='rigid'||l.binding.a!=='NECK'||l.binding.b!=='NOSE')||
+     ['NECK','NOSE'].some(k=>JSON.stringify(d.poses[frame][k])!==JSON.stringify(d.rest[k])))throw Error('Unverified W119 authored head rig');
+  const bodyPack={...base.pack,directions:{[r.direction]:{...d,layers:d.layers.filter(l=>!roles.includes(l.id))}}};
+  const out=composeFrame({...base,id:base.id+':w119-head-separated',pack:bodyPack},frame,entry);
+  const cel=makeCanvas(640,640),cx=cel.getContext('2d'),rankCanvas=makeCanvas(640,640),rx=rankCanvas.getContext('2d');
+  const ranks=entry.images.get('tools/rework-weapon-layers-hd/assets/'+certified.ranks[frame]+'.png');
+  if(!ranks||ranks.width!==640||ranks.height!==640)throw Error('Missing own W119 head palette ranks');
+  const A=root.MareCharacterAppearance,colors=[...A.skins[skin.skin||skin.skinColor].ramp,...A.hairs[skin.hairColor].ramp,...A.eyes[skin.eyeColor].ramp].map(s=>parseInt(s.slice(1),16));
+  cx.imageSmoothingEnabled=false;
+  for(const l of layers){
+   const im=entry.images.get(prefix+l.source+'.png');
+   if(im?.width!==640||im.height!==640)throw Error('Missing independently authored head layer');
+   cx.drawImage(im,0,2);
+  }
+  rx.drawImage(ranks,0,0);const rank=rx.getImageData(0,0,640,640).data,px=cx.getImageData(0,0,640,640);
+  // Signed rank placement after the historic offset. Independent head has
+  // zero geometric overlap with the matched equipment envelope in all phases.
+  // The opacity guard rejects anything not attested by that head pass.
+  for(let i=0;i<640*640*4;i+=4){
+   const k=rank[i];if(!k||px.data[i+3]!==255)continue;
+   if(k>colors.length)throw Error('Unknown W119 head rank');
+   const value=colors[k-1];px.data[i]=value>>>16;px.data[i+1]=(value>>>8)&255;px.data[i+2]=value&255;
+  }
+  cx.putImageData(px,0,0);out.canvas.getContext('2d').drawImage(cel,0,0);cel.width=rankCanvas.width=1;
+  return out;
+ }
  function composeFrame(r,frame,entry){
+  if(r.w114NorthRuntime)return composeOwnW114North(r,frame,entry);
+  if(r.ownW119SideNative){
+   const out=composeW119AuthoredHeadHost(r,frame,entry);
+   // The private decomposition witness explicitly removes only this layer;
+   // no public option or selector retimes a normal unequipped action.
+   if(r.ownW119SideNative.omit===true)return out;
+   const img=entry.images.get('tools/rework-weapon-layers-hd/assets/'+w119SideMetal[frame]+'.png');
+   if(img?.width!==640||img.height!==640)throw Error('Missing W119 source-owned metal');
+   const ctx=out.canvas.getContext('2d');
+   ctx.save();if(r.direction==='west'){ctx.translate(640,0);ctx.scale(-1,1);}ctx.drawImage(img,0,0);ctx.restore();
+   for(const [x,y,R,G,B,A] of w119SideHead[r.direction].restores[frame]){
+    const old=ctx.getImageData(x,y,1,1);
+    if(A!==255&&old.data[3]!==0)throw Error('Unexpected body under fixed W119 contact');
+    old.data.set([R,G,B,A]);ctx.putImageData(old,x,y);
+   }
+   return {...out,info:{...out.info,source:r.id}};
+  }
+  if(r.ownW2WestWalk40){
+   const q=r.ownW2WestWalk40,host=q.host,d=host.pack.directions.west,
+    name='own-w2-metal-absolute',metal=entry.images.get(q.parts[Math.floor(frame/5)]),size=512;
+   if(!metal||metal.width!==size||metal.height!==size)throw Error('Missing W2 west signed plate');
+   const layer={id:name,source:name,slot:'foreground',binding:{kind:'fixed'},depth:4.01},images=new Map(entry.images);images.set(name,metal);
+   const pack={...host.pack,directions:{west:{...d,layers:[...d.layers,layer]}}},moving={...host,id:r.id,pack};
+   const head=femaleNamedHairRegistry.compose(host,host.femaleNamedHairRecord,images),canvas=makeCanvas(size,size);
+   const info=outfitRegistry.renderWithHead(canvas.getContext('2d'),moving,images,head,{frame,appearance:host.colorAppearance,makeCanvas});
+   const alpha=canvas.getContext('2d').getImageData(0,0,size,size).data;
+   let top=size;for(let y=0;y<size&&top===size;y++)for(let x=0;x<size;x++)if(alpha[(y*size+x)*4+3]){top=y;break;}
+   info.visualHeight=Math.max(0,info.pivot.y-top);return {canvas,info};
+  }
+
+  if(r.ownCetroWalk40Parity){
+   const q=r.ownCetroWalk40Parity,part=q.parts[Math.floor(frame/5)],host=q.host,d=host.pack.directions[r.direction],
+    bodyArm=d.layers.find(x=>x.id==='base:arms'),armSHA=bodyArm?.frames?.[frame],
+    nativeArm=entry.images.get('tools/rework-modular-outfits-hd/assets/'+armSHA+'.png'),gear=entry.images.get(part.url),
+    [hx,hy]=part.targetHandCenter,[fx,fy]=part.targetForearmCenter,len=Math.hypot(hx-fx,hy-fy),size=512;
+   if(!armSHA||nativeArm?.width!==size||nativeArm.height!==size||gear?.width!==640||gear.height!==640||
+    bodyArm.depth!==4||bodyArm.binding.kind!=='fixed'||!(len>22&&len<42))throw Error('Lost certified lateral gait grip');
+   const metal=makeCanvas(size,size),mc=metal.getContext('2d'),grip=makeCanvas(size,size),g=grip.getContext('2d'),ux=(hx-fx)/len,uy=(hy-fy)/len;
+   mc.save();mc.imageSmoothingEnabled=false;mc.transform(...part.matrix);mc.drawImage(gear,0,0);mc.restore();
+   // Same clipped support as the prior hand-only approved gait implementation.
+   g.beginPath();
+   for(const [j,[a,b]] of [[-8,-10],[13,-10],[13,10],[-8,10]].entries()){
+    const x=hx+ux*a-uy*b,y=hy+uy*a+ux*b;
+    if(j)g.lineTo(x,y);else g.moveTo(x,y);
+   }
+   g.closePath();g.clip();g.beginPath();g.arc(hx,hy,14,0,Math.PI*2);g.clip();g.drawImage(nativeArm,0,0);
+   mc.globalCompositeOperation='destination-out';mc.drawImage(grip,0,0);grip.width=1;
+   const name='own-cetro-walk40-insertion',layer={id:name,source:name,slot:'foreground',binding:{kind:'fixed'},depth:4.01},images=new Map(entry.images);
+   images.set(name,metal);
+   const pack={...host.pack,directions:{[r.direction]:{...d,layers:[...d.layers,layer]}}},moving={...host,id:r.id,pack};
+   const head=femaleNamedHairRegistry.compose(host,host.femaleNamedHairRecord,images),canvas=makeCanvas(size,size);
+   const info=outfitRegistry.renderWithHead(canvas.getContext('2d'),moving,images,head,{frame,appearance:host.colorAppearance,makeCanvas});
+   const alpha=canvas.getContext('2d').getImageData(0,0,size,size).data;
+   let top=size;for(let y=0;y<size&&top===size;y++)for(let x=0;x<size;x++)if(alpha[(y*size+x)*4+3]){top=y;break;}
+   info.visualHeight=Math.max(0,info.pivot.y-top);metal.width=1;return {canvas,info};
+  }
+  if(r.ownW120LateralMetal){
+   const result=composeFrame(r.ownW120LateralMetal.base,frame,entry),
+    gear=entry.images.get('tools/rework-weapon-layers-hd/assets/'+w120LateralOwnMetal[frame]+'.png');
+   if(gear?.width!==640||gear?.height!==640)throw Error('Missing W120 lateral own metal');
+   const x=result.canvas.getContext('2d');
+   x.save();if(r.direction==='west'){x.translate(640,0);x.scale(-1,1);}
+   x.drawImage(gear,0,0);x.restore();
+   return {...result,info:{...result.info,source:r.id}};
+  }
+  if(r.ownW119NorthMetal){
+   const result=composeFrame(r.ownW119NorthMetal.base,frame,entry),
+    gear=entry.images.get('tools/rework-weapon-layers-hd/assets/'+w119NorthOwnMetal[frame]+'.png');
+   if(gear?.width!==640||gear?.height!==640)throw Error('Missing W119 North own metal');
+   result.canvas.getContext('2d').drawImage(gear,0,0);
+   return {...result,info:{...result.info,source:r.id}};
+  }
+  if(r.ownW118NorthMetal){
+   const result=composeFrame(r.ownW118NorthMetal.base,frame,entry),
+    gear=entry.images.get('tools/rework-weapon-layers-hd/assets/'+w118NorthOwnMetal[frame]+'.png');
+   if(gear?.width!==640||gear?.height!==640)throw Error('Missing W118 North own metal');
+   result.canvas.getContext('2d').drawImage(gear,0,0);
+   return {...result,info:{...result.info,source:r.id}};
+  }
+  if(r.ownW120NorthMetal){
+   const result=composeFrame(r.ownW120NorthMetal.base,frame,entry),
+    gear=entry.images.get('tools/rework-weapon-layers-hd/assets/'+w120NorthOwnMetal[frame]+'.png');
+   if(gear?.width!==640||gear?.height!==640)throw Error('Missing W120 North own metal');
+   result.canvas.getContext('2d').drawImage(gear,0,0);
+   return {...result,info:{...result.info,source:r.id}};
+  }
+  if(r.ownW121NativeGear){
+   const result=composeFrame(r.ownW121NativeGear.base,frame,entry);
+   if(!r.ownW121NativeGear.omit){
+    const gear=entry.images.get('tools/rework-weapon-layers-hd/assets/'+w121SouthNativeGear[frame]+'.png');
+    if(gear?.width!==640||gear?.height!==640)throw Error('Missing W121 own montage');
+    result.canvas.getContext('2d').drawImage(gear,0,0);
+   }
+   return result;
+  }
+
+  if(r.ownW16NativeGear){
+   const result=composeFrame(r.ownW16NativeGear.base,frame,entry);
+   if(!r.ownW16NativeGear.omit){
+    const gear=entry.images.get('tools/rework-weapon-layers-hd/assets/'+w16SouthNativeGear[frame]+'.png');
+    if(gear?.width!==640||gear?.height!==640)throw Error('Missing W16 own montage');
+    result.canvas.getContext('2d').drawImage(gear,0,0);
+   }
+   return result;
+  }
+
+  if(r.ownW32NativeGear){
+   const result=composeFrame(r.ownW32NativeGear.base,frame,entry);
+   if(!r.ownW32NativeGear.omit){
+    const gear=entry.images.get('tools/rework-weapon-layers-hd/assets/'+w32SouthNativeGear[frame]+'.png');
+    if(gear?.width!==640||gear?.height!==640)throw Error('Missing W32 own montage');
+    result.canvas.getContext('2d').drawImage(gear,0,0);
+   }
+   return result;
+  }
+
+  if(r.ownW17NativeGear){
+   const result=composeFrame(r.ownW17NativeGear.base,frame,entry);
+   if(!r.ownW17NativeGear.omit){
+    const gear=entry.images.get('tools/rework-weapon-layers-hd/assets/'+w17SouthNativeGear[frame]+'.png');
+    if(gear?.width!==640||gear?.height!==640)throw Error('Missing W17 own montage');
+    result.canvas.getContext('2d').drawImage(gear,0,0);
+   }
+   return result;
+  }
+
+  if(frame===4&&r.preserveC165NorthF05)return composeFrame(r.preserveC165NorthF05,frame,entry);
+  if(r.ownW122NativeGear){
+   const result=composeFrame(r.ownW122NativeGear.base,frame,entry);
+   if(!r.ownW122NativeGear.omit){
+    const gear=entry.images.get('tools/rework-weapon-layers-hd/assets/'+w122SouthNativeGear[frame]+'.png');
+    if(gear?.width!==640||gear?.height!==640)throw Error('Missing W122 own montage');
+    result.canvas.getContext('2d').drawImage(gear,0,0);
+   }
+   return result;
+  }
+
+
+  if(r.ownW14LateralV7){
+   const q=r.ownW14LateralV7,body=composeFrame(q.base,frame,entry);
+   if(q.omit)return body;
+   const gear=entry.images.get(w14V7PlateURL(frame));
+   if([gear,body.canvas].some(im=>im?.width!==640||im.height!==640))throw Error('Missing signed W14 v3 lateral contact');
+   const canvas=makeCanvas(640,640),ctx=canvas.getContext('2d');
+   ctx.drawImage(body.canvas,0,0);
+   if(r.direction==='west'){ctx.translate(640,0);ctx.scale(-1,1);}
+   ctx.drawImage(gear,0,0);body.canvas.width=1;
+   return {...body,canvas};
+  }
+  if(r.ownW31NativePalm){
+   const body=composeFrame(r.ownW31NativePalm.base,frame,entry);
+   if(r.ownW31NativePalm.omit)return body;
+   const [test,owner]=w31SouthNativePalm[frame],p='tools/rework-weapon-layers-hd/assets/',
+    gear=entry.images.get(p+test+'.png'),mask=entry.images.get(p+owner+'.png');
+   if([gear,mask,body.canvas].some(im=>im?.width!==640||im.height!==640))throw Error('Missing signed W31 South contact');
+   const canvas=makeCanvas(640,640),ctx=canvas.getContext('2d'),tile=makeCanvas(640,640),t=tile.getContext('2d');
+   ctx.drawImage(body.canvas,0,0);const off=ctx.getImageData(0,0,640,640).data;
+   ctx.drawImage(gear,0,0);const prior=ctx.getImageData(0,0,640,640);
+   t.drawImage(gear,0,0);const own=t.getImageData(0,0,640,640).data;
+   t.clearRect(0,0,640,640);t.drawImage(mask,0,0);const m=t.getImageData(0,0,640,640).data;let n=0;
+   for(let i=0;i<off.length;i+=4)if(m[i]){
+    if(m[i]!==255||m[i+1]!==255||m[i+2]!==255||m[i+3]!==255)throw Error('Invalid signed W31 hand owner');
+    if(!own[i+3]||!off[i+3])continue;n++;
+    const f=off[i+3]/255,g=own[i+3]/255*(1-f),alpha=f+g;
+    for(let ch=0;ch<3;ch++)prior.data[i+ch]=Math.round((off[i+ch]*f+own[i+ch]*g)/alpha);
+    prior.data[i+3]=Math.round(alpha*255);
+   }
+   if(n<300)throw Error('W31 weapon misses native grip');
+   ctx.putImageData(prior,0,0);tile.width=1;body.canvas.width=1;
+   return {...body,canvas};
+  }
+
+  if(r.ownSideWalkGlove180){
+   const q=r.ownSideWalkGlove180,result=composeFrame(q.base,frame,entry),cx=result.canvas.getContext('2d'),
+    A=q.authority,steps=A.moves[frame],prefix='tools/rework-modular-outfits-hd/assets/',
+    art=entry.images.get(prefix+A.sha+'.png'),arm=entry.images.get(prefix+A.arms[r.direction][frame]+'.png'),size=512;
+   if(!steps||[art,arm].some(i=>i?.width!==size||i.height!==size)||result.canvas.width!==size)throw Error('Invalid lateral gait wrist source');
+   const current=cx.getImageData(0,0,size,size).data,
+    naked=q.bare?composeFrame(q.bare,frame,entry).canvas.getContext('2d').getImageData(0,0,size,size).data:current;
+   const m=makeCanvas(size,size),mc=m.getContext('2d');mc.drawImage(arm,0,0);const wrists=mc.getImageData(0,0,size,size).data;
+   const leather=makeCanvas(size,size),leatherCtx=leather.getContext('2d');
+   leatherCtx.drawImage(art,0,0);const digitAtlas=leatherCtx.getImageData(0,0,size,size).data;
+   leather.width=1;
+   const tiles=[];
+   // Render far first. Do not paint behind-body anatomy or visible cloth
+   // where the far wrist is already hidden on this exact native pose.
+   for(const i of [1,0]){
+    const tile=makeCanvas(size,size),tc=tile.getContext('2d');tc.imageSmoothingEnabled=false;tiles.push(tile);
+    const [dx,dy,angle]=steps[i],[x,y]=A.pivots[i],sx=i*256;
+    tc.clearRect(0,0,size,size);tc.save();if(q.mirror){tc.translate(size,0);tc.scale(-1,1);}
+    if(angle){tc.translate(x+dx,y+dy);tc.rotate(angle);tc.translate(-x,-y);}else tc.translate(dx,dy);
+    tc.drawImage(art,sx,0,256,512,sx,0,256,512);tc.restore();
+    const own=tc.getImageData(0,0,size,size);
+    // Only the certified missing distal-finger footprint is extended.
+    // Copy from existing G180 leather, below any authored translucent edge.
+    const cert=femaleG180FingerMaterialForm,buf=root.atob(cert.certificates[cert.frames[frame]][i]),
+      bytes=new Uint8Array(buf.length);
+    for(let k=0;k<buf.length;k++)bytes[k]=buf.charCodeAt(k);
+    const dv=new DataView(bytes.buffer),original=new Uint8ClampedArray(own.data),
+      flip=p=>q.mirror?p-(p%size)+size-1-p%size:p;
+    for(let s=0;s<dv.byteLength;s+=10){
+     const at=4*flip(dv.getUint32(s,true)),kind=dv.getUint8(s+9),read=dv.getUint32(s+4,true),
+       alpha=dv.getUint8(s+8)/255;
+     if(!digitAtlas)throw Error('Missing own distal leather atlas');
+     const pix=kind?digitAtlas:original,from=4*(kind?read:flip(read));
+     if(alpha<.75||original[at+3]>=192||wrists[at+3]<192||pix[from+3]<192||!Number.isFinite(alpha))
+      throw Error('Uncertified G180 finger coverage');
+     const up=original[at+3]/255,end=up+alpha*(1-up);
+     for(let chan=0;chan<3;chan++)own.data[at+chan]=Math.round((original[at+chan]*up+pix[from+chan]*alpha*(1-up))/end);
+     own.data[at+3]=Math.round(end*255);
+    }
+    for(let j=0;j<own.data.length;j+=4)if(own.data[j+3]&&(i===1&&current[j+3]&&!wrists[j+3]||
+      q.bare&&(current[j]!==naked[j]||current[j+1]!==naked[j+1]||current[j+2]!==naked[j+2]||current[j+3]!==naked[j+3])))own.data.fill(0,j,j+4);
+    tc.putImageData(own,0,0);cx.drawImage(tile,0,0);
+   }
+   cx.getImageData(0,0,1,1);for(const tile of tiles)tile.width=1;m.width=1;
+   return result;
+  }
+
+  if(r.ownSideIdleGlove180){
+   const q=r.ownSideIdleGlove180,result=composeFrame(q.base,frame,entry),ctx=result.canvas.getContext('2d'),
+    raster=entry.images.get('tools/rework-modular-outfits-hd/assets/'+q.glove+'.png');
+   if(raster?.width!==512||raster.height!==512||result.canvas.width!==512||result.canvas.height!==512)
+    throw Error('Invalid lateral idle glove raster');
+   if(q.bare){
+    // A sibling that changes the actual visible wrist receives priority
+    // over transplanted art; the underlying RGBA remains exact.
+    const naked=composeFrame(q.bare,0,entry).canvas,ref=naked.getContext('2d').getImageData(0,0,512,512).data,
+     actual=ctx.getImageData(0,0,512,512).data,tile=makeCanvas(512,512),tc=tile.getContext('2d');
+    tc.save();if(q.mirror){tc.translate(512,0);tc.scale(-1,1);}
+    tc.drawImage(raster,0,0);tc.restore();
+    const own=tc.getImageData(0,0,512,512);
+    for(let i=0;i<own.data.length;i+=4)if(own.data[i+3]&&[0,1,2,3].some(k=>ref[i+k]!==actual[i+k]))own.data.fill(0,i,i+4);
+    tc.putImageData(own,0,0);ctx.drawImage(tile,0,0);tile.width=tile.height=1;
+   }else{ctx.save();if(q.mirror){ctx.translate(512,0);ctx.scale(-1,1);}ctx.drawImage(raster,0,0);ctx.restore();}
+   return result;
+  }
+
+  if(r.ownSouthPantsWrist){
+   const q=r.ownSouthPantsWrist,source=h=>entry.images.get('tools/rework-modular-outfits-hd/assets/'+h+'.png'),
+    glove=source(q.glove),mask=source(q.mask),lower=composeFrame(q.base,frame,entry),w=lower.canvas.width,h=lower.canvas.height;
+   if([glove,mask].some(i=>i?.width!==w||i.height!==h))throw Error('Invalid South idle wrist raster');
+   const tile=makeCanvas(w,h),mark=makeCanvas(w,h),tc=tile.getContext('2d'),mc=mark.getContext('2d');
+   tc.drawImage(glove,0,0);mc.drawImage(mask,0,0);
+   const raw=tc.getImageData(0,0,w,h),owner=mc.getImageData(0,0,w,h).data;
+   for(let i=3;i<raw.data.length;i+=4)if(raw.data[i]&&owner[i])raw.data.fill(0,i-3,i+1);
+   tc.putImageData(raw,0,0);lower.canvas.getContext('2d').drawImage(tile,0,0);
+   tile.width=mark.width=1;return lower;
+  }
+
+  if(frame===4&&r.preserveC158NorthF05)return composeFrame(r.preserveC158NorthF05,frame,entry);
+  if(r.barePunchOwnCoat){
+   const {base,cloth}=r.barePunchOwnCoat,sha=cloth.frames[frame],p=base.pack,
+    fabric=entry.images.get('tools/rework-modular-outfits-hd/assets/'+sha+'.png'),
+    canvas=makeCanvas(p.frame.width*p.density,p.frame.height*p.density);
+   if(fabric?.width!==canvas.width||fabric.height!==canvas.height)throw Error('Invalid authored bare punch coat raster');
+   const material=registry.materialSources(base,entry.images,{frame,appearance:base.colorAppearance,makeCanvas});
+   material.set(sha,fabric);
+   root.ReworkAccessoryVendor.compositor.render(canvas.getContext('2d'),r.pack,material,{frame,direction:r.direction,density:p.density,hidden:r.gearOnlyRecord?.hideHair?['hair']:[]});
+   if(r.gearOnlyRecord)originalHairGearRegistry.draw(canvas.getContext('2d'),r.gearOnlyRecord,entry.images,entry.proofs[frame]);
+   const data=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
+   let top=canvas.height;for(let y=0;y<canvas.height&&top===canvas.height;y++)for(let x=0;x<canvas.width;x++)if(data[(y*canvas.width+x)*4+3]){top=y;break;}
+   const d=p.directions[r.direction],pivot={x:p.pivot.x*p.density,y:p.pivot.y*p.density};
+   return {canvas,info:{width:canvas.width,height:canvas.height,density:p.density,pivot,logicalFrame:p.frame,
+    source:r.id,frames:d.clip.frames,rest:d.rest,pose:d.poses[frame],visualHeight:Math.max(0,pivot.y-top),status:r.status}};
+  }
+  if(r.ownBarePunchGlove){
+   const {base,frames}=r.ownBarePunchGlove,result=composeFrame(base,frame,entry),c=result.canvas,
+    im=entry.images.get('tools/rework-modular-outfits-hd/assets/'+frames[frame]+'.png');
+   if(im?.width!==c.width||im.height!==c.height)throw Error('Wrong signed punch glove raster');
+   c.getContext('2d').drawImage(im,0,0);
+   return result;
+  }
+
+  if(r.independentCarryGlove){
+   const {base,gloves,hashes}=r.independentCarryGlove,p=base.pack,d=p.directions[base.direction];
+   const images=new Map(entry.images);
+   for(const h of hashes){
+    const im=images.get('tools/rework-modular-outfits-hd/assets/'+h+'.png');
+    if(im?.width!==512||im.height!==512)throw Error('Missing independent carry glove raster');
+    images.set('tools/rework-base-hd/assets/'+h+'.png',im);
+   }
+   const pack={...p,directions:{...p.directions,[base.direction]:{...d,layers:[...d.layers,...gloves]}}};
+   return composeFrame({...base,pack,base:{...base.base,pack,sourceRefs:[...base.base.sourceRefs,...hashes]}},frame,{...entry,images});
+  }
+
+  if(r.signedWeaponGarments){
+   const {base,phases}=r.signedWeaponGarments,body=composeFrame(base,frame,entry),{rear,front}=phases[frame],
+    canvas=makeCanvas(body.info.width,body.info.height),ctx=canvas.getContext('2d');
+   ctx.imageSmoothingEnabled=false;
+   const passes=files=>{for(const sha of files){const im=entry.images.get(signedPhaseAsset(r.signedWeaponGarments,sha));
+    if(im?.width!==canvas.width||im.height!==canvas.height)throw Error('Wrong signed garment raster '+sha);
+    ctx.drawImage(im,0,0);}};
+   passes(rear);ctx.drawImage(body.canvas,0,0);passes(front);body.canvas.width=1;
+   return {...body,canvas};
+  }
   if(r.authoredSouthIdleGlove||r.authoredBareGloveLocomotion){
    const {base,gloves,hashes}=r.authoredSouthIdleGlove||r.authoredBareGloveLocomotion,images=new Map(entry.images),p=base.pack,direction=base.direction,d=p.directions[direction];
    for(const h of hashes){
@@ -3012,12 +7253,36 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    return composeFrame({...base,pack:{...p,directions:{[direction]:{...d,layers:[...d.layers,...gloves]}}}},frame,{...entry,images});
   }
   if(r.authoredPunchPants||r.authoredSideIdlePants){
-   const {base,cloth,index}=r.authoredPunchPants||r.authoredSideIdlePants,d=base.pack.directions[base.direction],
-    sha=cloth.frames[frame],image=entry.images.get('tools/rework-modular-outfits-hd/assets/'+sha+'.png');
+   const {base,cloth,index,pruneDetachedAlphaOne,sourcePath}=r.authoredPunchPants||r.authoredSideIdlePants,d=base.pack.directions[base.direction],
+    sha=cloth.frames[frame],path='tools/rework-modular-outfits-hd/assets/'+sha+'.png',image=entry.images.get(sourcePath||path);
    if(image?.width!==base.pack.frame.width*4||image.height!==base.pack.frame.height*4)throw Error('Invalid punch pants raster');
    const images=new Map(entry.images);
-   if(base.hdKind!=='outfit')images.set('tools/rework-base-hd/assets/'+sha+'.png',image);
-   const adapted={...base,pack:{...base.pack,directions:{[base.direction]:{...d,layers:d.layers.map((l,i)=>i===index?cloth:l)}}}};
+   let clothImage=image;
+   if(sourcePath)images.set(path,image);
+   if(pruneDetachedAlphaOne){
+    // Only discard detached 1/255-alpha export speckles from this signed
+    // idle pass. Keep the base, garment interior and adjacent antialiasing.
+    const w=image.width,h=image.height,tile=makeCanvas(w,h),ctx=tile.getContext('2d');
+    ctx.drawImage(image,0,0);
+    const pixels=ctx.getImageData(0,0,w,h),rgba=pixels.data;
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+     const i=(y*w+x)*4;
+     if(rgba[i+3]!==1)continue;
+     let edge=false;
+     for(let yy=Math.max(0,y-1);yy<=Math.min(h-1,y+1)&&!edge;yy++)
+      for(let xx=Math.max(0,x-1);xx<=Math.min(w-1,x+1);xx++)
+       if(rgba[(yy*w+xx)*4+3]>1){edge=true;break;}
+     if(!edge)rgba.fill(0,i,i+4);
+    }
+    ctx.putImageData(pixels,0,0);
+    clothImage=tile;
+    images.set(path,tile);
+   }
+   if(base.hdKind!=='outfit')images.set('tools/rework-base-hd/assets/'+sha+'.png',clothImage);
+   const pack={...base.pack,directions:{[base.direction]:{...d,layers:d.layers.map((l,i)=>i===index?cloth:l)}}};
+   const adapted={...base,pack,...(base.hdKind==='female-equipment'?{
+    baseRecord:{...base.baseRecord,pack,sourceRefs:[...base.baseRecord.sourceRefs,sha]},
+    outfitSources:[...(base.outfitSources||[]),sha]}:{})};
    return composeFrame(adapted,frame,{...entry,images});
   }
   if(r.authoredNorthIdlePants){
@@ -3032,14 +7297,22 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    return {...body,canvas};
   }
   if(r.authoredIdleCoatPants){
-   const {cloth,ownerAlpha,record}=r.authoredIdleCoatPants,prefix='tools/rework-modular-outfits-hd/assets/',
-     tile=makeCanvas(512,512),tc=tile.getContext('2d'),domain=makeCanvas(512,512),dc=domain.getContext('2d');
-   const garment=entry.images.get(prefix+cloth+'.png'),owner=entry.images.get(prefix+ownerAlpha+'.png');
-   if([garment,owner].some(i=>i?.width!==512||i.height!==512))throw Error('Invalid South idle garment raster');
-   tc.drawImage(garment,0,0);dc.drawImage(owner,0,0);
-   const data=tc.getImageData(0,0,512,512),mask=dc.getImageData(0,0,512,512).data;
-   for(let i=0;i<mask.length;i+=4)if(mask[i+3]){if(mask[i+3]!==255)throw Error('Nonbinary authored pants owner');data.data.fill(0,i,i+4);}
-   tc.putImageData(data,0,0);domain.width=1;
+   const {cloth,ownerAlpha,restoreOwner,record}=r.authoredIdleCoatPants,prefix='tools/rework-modular-outfits-hd/assets/',
+     tile=makeCanvas(512,512),tc=tile.getContext('2d'),ownerSHA=ownerAlpha||restoreOwner;
+   const garment=entry.images.get(prefix+cloth+'.png');
+   if(garment?.width!==512||garment.height!==512)throw Error('Invalid idle garment raster');
+   tc.drawImage(garment,0,0);
+   if(ownerSHA){
+    const owner=entry.images.get(prefix+ownerSHA+'.png'),domain=makeCanvas(512,512),dc=domain.getContext('2d');
+    if(owner?.width!==512||owner.height!==512)throw Error('Invalid idle garment owner raster');
+    dc.drawImage(owner,0,0);
+    const data=tc.getImageData(0,0,512,512),mask=dc.getImageData(0,0,512,512).data;
+    for(let i=0;i<mask.length;i+=4)if(ownerAlpha?mask[i+3]:mask[i]){
+     if(ownerAlpha&&mask[i+3]!==255)throw Error('Nonbinary authored pants owner');
+     data.data.fill(0,i,i+4);
+    }
+    tc.putImageData(data,0,0);domain.width=1;
+   }
    const source=record.direction+'-idle-owned-pants',d=record.pack.directions[record.direction];
    const pack={...record.pack,directions:{[record.direction]:{...d,layers:[...d.layers,{id:source,slot:'pants',source,binding:{kind:'fixed'},depth:46}]}}};
    const images=new Map(entry.images);images.set(prefix+source+'.png',tile);
@@ -3059,8 +7332,23 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(r.northLayers)return composeNorthLayers(r,frame,entry);
   if(r.profileLayers)return composeProfileLayers(r,frame,entry);
   if(r.authoredPantsLayer)return composeSouthPants(r,frame,entry);
+  if(r.registeredPaletteBody){
+   const base=r.registeredPaletteBody,d=base.pack.directions[r.direction],images=new Map(entry.images);
+   const path=h=>'tools/rework-modular-outfits-hd/assets/'+h+'.png';
+   const refs=new Map(d.layers.map(l=>l.frames?.[frame]||l.source).map(h=>[h,images.get(path(h))]));
+   const materials=registry.materialSources(base,refs,{frame,appearance:r.colorAppearance,makeCanvas});
+   for(const [h,im] of materials)images.set(path(h),im);
+   return composeFrame({...r,registeredPaletteBody:null},frame,{...entry,images});
+  }
+
   const canvas=makeCanvas(r.hdKind==='weapon'?r.nativeCanvas[0]:r.pack.frame.width*r.pack.density,r.hdKind==='weapon'?r.nativeCanvas[1]:r.pack.frame.height*r.pack.density);const info=(r.femaleNamedHairRecord?{render:(cx,base,imgs,opts)=>base.hdKind==='outfit'?outfitRegistry.renderWithHead(cx,base,imgs,femaleNamedHairRegistry.compose(base,base.femaleNamedHairRecord,imgs),opts):femaleNamedHairRegistry.render(cx,base,base.femaleNamedHairRecord,imgs,opts)}:r.hdKind==='female-equipment'?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).render(canvas.getContext('2d'),r,entry.images,{frame,appearance:r.colorAppearance,makeCanvas,hiddenSlots:r.headRecord||r.gearOnlyRecord?.hideHair?['hair']:[]});
   if(r.headRecord){const pixels=headRegistry.composeNative(r.headRecord,entry.images,{width:r.pack.frame.width,height:r.pack.frame.height,targetNeck:entry.proofs[frame].targetNeck,look:r.headLook,hairRamp:root.MareAppearance96?.hairs[r.colorAppearance.hairColor]?.ramp});for(const slot of ['hair','head']){const tile=makeCanvas(info.width,info.height),cx=tile.getContext('2d'),data=cx.createImageData(info.width,info.height);data.data.set(pixels[slot]);cx.putImageData(data,0,0);canvas.getContext('2d').drawImage(tile,0,0);}}
+  if(r.ownGauntletHead){
+   const {gear,headKey,headPath}=r.ownGauntletHead;
+   const proof=originalHairGearRegistry.validate(gear,{basePack:r.basePack.pack,baseBody:r.body,baseDirection:r.direction,
+    baseFrame:frame,baseImages:new Map([[headKey,entry.images.get(headPath)]]),headImages:entry.images});
+   originalHairGearRegistry.draw(canvas.getContext('2d'),gear,entry.images,proof);
+  }
   if(r.gearOnlyRecord)originalHairGearRegistry.draw(canvas.getContext('2d'),r.gearOnlyRecord,entry.images,entry.proofs[frame]);
   const alpha=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;let top=canvas.height;for(let y=0;y<canvas.height&&top===canvas.height;y++)for(let x=0;x<canvas.width;x++)if(alpha[(y*canvas.width+x)*4+3]){top=y;break;}info.visualHeight=Math.max(0,info.pivot.y-top);return {canvas,info};
  }
@@ -3091,7 +7379,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      const frames=new Map(),entry={images:new Map(),proofs:[]};
      // The authored directional walk holds repeat the same composition. Retain one
      // canvas per pose, while keeping every tick addressable at the original clock.
-     const holds=r.northLayers?.spec.frameToPhase??r.profileLayers?.spec.directions[r.direction].clock;
+     const holds=r.northLayers?.spec.frameToPhase??r.profileLayers?.spec.directions[r.direction].clock??(r.action==='walk'?r.authoredPantsLayer?.spec.frameToPhase:undefined);
      const compositions=new Map();
      sources.set(key,frames);
      for(let i=0;i<frameCount;i++){
@@ -3192,7 +7480,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function drawStable(ctx,player,o={}){const key=identityKey(player);if(!selectVisual(player,o)){last={state:'uncovered',action:o.action,direction:o.direction,reason:'No compatible source for this pose'};return false;}if(draw(ctx,player,o))return true;if(failureFor(player,o))return false;const consumerKey=key+'|'+(o.consumer||'world'),held=lastRendered.get(consumerKey+'|'+o.direction);if(!held&&o.action!=='idle'){const loading=last;if(draw(ctx,player,{...o,action:'idle',time:0,progress:0})){last={...last,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction};return true;}last=loading;}if(held?.key===key){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(held.canvas,(o.x||0)-held.info.pivot.x*WORLD_SCALE,(o.y||0)-held.info.pivot.y*WORLD_SCALE,held.info.width*WORLD_SCALE,held.info.height*WORLD_SCALE);ctx.restore();last={...held.pose,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction,physicalScale:WORLD_SCALE,sourceScale:1};return true;}return false;}
  const height=player=>{const held=lastRendered.get(identityKey(player)+'|world');return held?.key===identityKey(player)?held.info.visualHeight*WORLD_SCALE:null;};
  function failureFor(player,o={}){const r=selectVisual(player,o);return r?failures.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{})+':'+frameFor(r,o)):null;}
- return {ready,warmSwordCheckpoint,prepare:prepareForPlayer,prepareClip,prepareConfiguration,prepareStablePose,prepareFamily,draw,drawFittedAvatar,drawStable,canDrawStable,height,select,selectLayered,selectVisual,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
+ return {ready,warmSwordCheckpoint,prepare:prepareForPlayer,prepareClip,prepareConfiguration,prepareStablePose,prepareFamily,draw,drawFittedAvatar,drawStable,canDrawStable,height,select,selectLayered,selectVisual,resolveMaleGaitTorsoSource,resolveMaleGaitHeadSource,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
 }
 const api={create,fitInventoryAvatar};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
