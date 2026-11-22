@@ -11,6 +11,7 @@ import tarfile
 from export_north_firearm_wardrobe import materialize as rifle_wardrobe
 
 from export_firearm_wardrobe import materialize as other_firearm_wardrobe
+from export_male_dagger_coats import materialize as male_dagger_coats
 
 ARCHIVES = {
     'soco': 'e3c4d0cad2a2727a74aef567468eb3e337391e25f7e3eab363dc49d16fc69c91',
@@ -142,5 +143,5 @@ def materialize(folder, out):
     rigs.update(other_rigs)
     assets.update(other_assets)
     (out / 'index.json').write_text(json.dumps(dict(schema='editable-combat-wardrobe-v1', rigs=rigs,
-        records=records, handFits={k: [r['matrix'] for r in phases] for k, phases in fit.items()}), separators=(',', ':')) + '\n', encoding='utf-8')
+        records=records, maleDaggerCoats=male_dagger_coats(bank), handFits={k: [r['matrix'] for r in phases] for k, phases in fit.items()}), separators=(',', ':')) + '\n', encoding='utf-8')
     return len(records), len(assets)

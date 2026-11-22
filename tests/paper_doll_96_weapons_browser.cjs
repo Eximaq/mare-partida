@@ -17,6 +17,7 @@ assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32'
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{
  const errors=[];
  if(materialsOnly&&combatOnly)throw Error('Choose either --materials-only or --combat-only');
+ if(output)await fs.mkdir(output,{recursive:true});
  if(!combatOnly){
  const p=await browser.newPage();p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.text().startsWith('weapons-progress:'))console.log(m.text());});await p.goto(new URL('tools/paper-doll-96-v3/',origin).href);await p.waitForFunction(()=>window.__review96v3);
  const audit=await p.evaluate(async({materialsOnly,otherClasses})=>{
@@ -88,7 +89,7 @@ assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32'
   }
   return {counts,issues};
  },{materialsOnly,otherClasses});console.log(JSON.stringify({audit}));if(audit)assert.deepEqual(audit.issues,[]);
- if(output){await fs.mkdir(output,{recursive:true});if(audit)await fs.writeFile(path.join(output,'audit.json'),JSON.stringify(audit,null,2));}
+ if(output&&audit){await fs.writeFile(path.join(output,'audit.json'),JSON.stringify(audit,null,2));}
  await p.close();
  }
  if(materialsOnly)return;

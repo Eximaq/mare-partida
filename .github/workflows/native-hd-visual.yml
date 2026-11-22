@@ -4,6 +4,10 @@ on:
     branches: [main]
     paths:
       - 'player-rework-*hd*'
+      - 'tests/rework-wardrobe-map-action.test.cjs'
+      - 'tests/rework-male-dagger-coat-cycles.cjs'
+      - 'tools/export_male_dagger_coats.py'
+      - 'tools/export_combat_wardrobe.py'
       - 'tests/rework-literal-null-equipment.cjs'
       - 'tests/rework-named-carry-head-saved.cjs'
       - 'tests/rework-male-named-focus-carry.cjs'
@@ -98,6 +102,30 @@ concurrency:
   group: native-hd-visual-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
+  wardrobe-independence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Movimentos do catálogo, oclusão da mão e peitorais nas adagas
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WARDROBE_EVIDENCE: ${{ runner.temp }}/adagas-384.json
+        run: |
+          node --test tests/rework-wardrobe-map-action.test.cjs
+          node tests/rework-male-dagger-coat-cycles.cjs
+      - uses: actions/upload-artifact@v4
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
+        with:
+          name: wardrobe-independence-dagger-frames
+          path: ${{ runner.temp }}/adagas-384.json
+          retention-days: 3
+          if-no-files-found: warn
   native-world:
     runs-on: ubuntu-latest
     timeout-minutes: 60

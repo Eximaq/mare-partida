@@ -47,6 +47,14 @@
   }
   function selectWorldHDOnly(nativeHD,weaponCatalog,player,options){
     if(!nativeHD?.selectVisual||!player||player.zoanTransformed)return null;
+    if(['attack','skill'].includes(options.action)){
+      const raw=player.equipment?.weapon,item=raw?.def??raw,category=weaponCatalog?.classes?.[player.classId];
+      const model=item==null||options.weaponless?null:weaponCatalog?.items?.find(w=>w.itemId===item&&w.category===category);
+      if(category&&(item==null||options.weaponless||model)){
+        const action=model?(model.attackAction||nativeHD.attackActionFor?.(item)||'attack-'+category):'attack-unarmed';
+        if(actions.includes(action))options={...options,action};
+      }
+    }
     const selectPose=(actor,pose)=>selectWorldHD(nativeHD,weaponCatalog,actor,pose);
     // Keep the independent route stable on either side of an equipment
     // change. Exact artwork still handles receivers with bespoke renderers.

@@ -2899,7 +2899,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    actions.includes(requested)?actions.find(a=>a.startsWith('attack-')):null;
   return action?{...record,action}:record;
  }
- return {resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
+ return {attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
 }
 const api={create};root.MareReworkWeaponNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

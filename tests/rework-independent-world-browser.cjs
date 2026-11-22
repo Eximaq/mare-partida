@@ -338,6 +338,17 @@ window.__hdSlotQA={
   await put(159);armedPunch.gloves=159;
   await observeAttack('attack-unarmed','manopla112-restaura-luva-norte','north',armedPunch);
   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,armedLook);
+  const sideDagger={weapon:73,coat:151};
+  await page.evaluate(kit=>__hdSlotQA.seedWardrobe('rogue',[...Object.values(kit),165],{
+   gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'
+  }),sideDagger);
+  await put(sideDagger.weapon);
+  const daggerCoatLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  for(const coat of [151,165,151]){
+   await put(coat);sideDagger.coat=coat;
+   for(const dir of ['east','west'])await observeAttack('attack-daggers','adaga73-masculino-peitoral-'+coat+'-'+dir,dir,sideDagger);
+  }
+  assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,daggerCoatLook);
   assert.deepEqual(errors,[]);
   console.log('Character creation, equipped movement, swaps, reload, Mera weapon visibility and armed attacks passed.');
  }finally{

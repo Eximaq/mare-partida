@@ -7,21 +7,25 @@ const fixtures=require('../tools/rework-weapon-layers-hd/carry-binding-plan.json
 const bases=require('../tools/rework-base-hd/index.json');
 const files=require('../tools/rework-hd-test-loader.cjs').create(require('node:path').resolve(__dirname,'..'));
 const drawOptions={consumer:'world',direction:'south'};
-test('17 SOUTH carry keeps the same source while recoloring only the marked hand',async()=>{
+test('17 SOUTH carry preserves the rim and core while the receiving actor owns the hand',async()=>{
  const api=make();await api.ready;
  const carry=global.MareReworkWeaponCarryHD.create(bases,fixtures,{makeCanvas:cv.createCanvas});
  const selection=api.select(p,{...drawOptions,action:'walk'});
  assert.match(selection.id,/^carry17-male-walk-south-r7/);
  assert.equal(selection.colorAppearance.skin,'dark');
  const part=selection.plan.parts[0];
- assert.equal(part.source.sha256,part.skinMaterial.sourceSHA256);
+ const original=fixtures.records.find(r=>r.item===17&&r.direction==='south').parts[0];
+ assert.equal(part.skinMaterial,undefined);assert.equal(part.hideHandBeyondWrist,undefined);
+ assert.equal(part.source.sha256,'85afee2afc3551dba4ddebfa1ec6f724b72723f9073d02ae1aa1eabb16f99682');
  const prefix='tools/rework-weapon-layers-hd/';
- const source=await files(prefix+part.source.url),mask=await files(prefix+part.skinMaterial.url);
- const maskCtx=cv.createCanvas(640,640).getContext('2d');maskCtx.drawImage(mask,0,0);
- assert.equal(maskCtx.getImageData(383,342,1,1).data[0],255,'source hand');
- assert.equal(maskCtx.getImageData(380,351,1,1).data[0],0,'gold rim');
- assert.equal(maskCtx.getImageData(383,357,1,1).data[0],0,'orb core');
- assert.deepEqual([source.width,source.height],[640,640]);
+ const painted=async source=>{
+  const im=await files(prefix+source.url);assert.deepEqual([im.width,im.height],[640,640]);
+  const ctx=cv.createCanvas(640,640).getContext('2d');ctx.drawImage(im,0,0);
+  return (x,y)=>Array.from(ctx.getImageData(x,y,1,1).data);
+ };
+ const old=await painted(original.source),own=await painted(part.source);
+ assert(old(383,342)[3]>0);assert.equal(own(383,342)[3],0,'donor palm removed');
+ for(const [x,y] of [[380,351],[383,357]])assert.deepEqual(own(x,y),old(x,y),'rim and gem retain their pixels');
  const images=new Map(await Promise.all(carry.requiredFiles(selection).map(async f=>[f,await files(f)])));
  for(const action of ['walk','idle']){
   const r=api.select(p,{...drawOptions,action});
