@@ -5736,6 +5736,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  // A weapon authored behind its hand stays behind the glove on that
  // same hand. This is an ordinary depth relation, not a clearance claim
  // for front-mounted weapons or for projections that cut a body raster.
+ function unprojectedProfileHand(direction,part,layers){
+  // Carry rendering skips hardware with no receiving hand. Only the far
+  // left hand of the authored right-facing profile is absent by design.
+  return ['east','west'].includes(direction)&&part.side==='LEFT'&&part.binding?.a==='LEFT ELBOW'&&
+   part.binding.b==='LEFT ARM'&&layers.some(l=>l.id==='handNear'&&l.binding?.a==='RIGHT ELBOW'&&l.binding.b==='RIGHT ARM');
+ }
  function gloveAboveRearWeapon(r,gloves,{localCoordinates=false}={}){
   if((r.base.mirrorX&&!localCoordinates)||r.preMirroredLayers?.length||r.hairLayers?.length||!r.plan?.parts?.length)return false;
   const p=r.pack,d=p.directions[r.direction],plan=root.ReworkAccessoryVendor?.compositor?.plan;
@@ -5746,6 +5752,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const operations=plan(p,r.direction,frame);
    for(const part of r.plan.parts){
     const hand=operations.find(l=>l.binding?.a===part.binding.a&&l.binding?.b===part.binding.b);
+    if(!hand&&unprojectedProfileHand(r.direction,part,operations))continue;
     const glove=gloves.find(l=>l.binding?.a===part.binding.a&&l.binding?.b===part.binding.b);
     if(!hand||!glove||(glove.depthTrack?.[frame]??glove.depth)<=hand.depth)return false;
    }
@@ -5823,6 +5830,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       add('boots',id,layers);
     }
     const pants=r.equipment?.pants;
+    if(pants!=null&&r.frozenPantsSource&&['east','west'].includes(r.direction)){
+     const prefix='pants'+pants+'-',layers=tracks.filter(l=>l.slot==='pants'&&l.id.startsWith(prefix));
+     const [cloth,panel]=layers;
+     if(layers.length>=1&&layers.length<=2&&cloth.id===prefix+'visible-cloth-only'&&cloth.depth===4.4&&
+        (!panel||panel.depth===4.45&&[prefix+'original-panel-independent',prefix+'independent-original-panel'].includes(panel.id))&&
+        layers.every(l=>l.binding?.kind==='fixed'&&!l.depthTrack))add('pants',pants,layers);
+    }
     if(pants!=null&&r.frozenPantsSource&&['north','south'].includes(r.direction)){
      const layers=tracks.filter(l=>l.slot==='pants'&&l.id.startsWith('pants'+pants+'-'));
      if(layers.length===3&&['waist','leg-left','leg-right'].every(id=>layers.some(l=>l.id==='pants'+pants+'-'+id)))

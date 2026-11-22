@@ -7,6 +7,8 @@ assert(folder,'Provide the sample directory from a single exported build');
 const items=new Map(gear.flatMap((group,i)=>group.map(id=>[id,{id,slot:slots[i],
  masculino:0,feminino:0,bare:0,pairs:0,mixed:0}])));
 const total={armed:{},bare:{}},contexts=new Set();
+const detailFile=process.argv[4];
+const detailRows=detailFile?['ID\tSlot\tCorpo\tArma\tClasse\tAcao\tDirecao\tSelecao\tPoseResolvida\tFonteDoSlot\tMotivoDoSlot']:null;
 for(const name of fs.readdirSync(folder).filter(n=>n.endsWith('.json')).sort()){
  const row=JSON.parse(fs.readFileSync(path.join(folder,name)));
  assert.equal(row.mode,'sample');assert.equal(row.full.tested,100);
@@ -22,6 +24,11 @@ for(const name of fs.readdirSync(folder).filter(n=>n.endsWith('.json')).sort()){
   if(single.selected){counts.solo++;item[armed?row.body:'bare']++;}
   if(armed)item.mixed+=full.selected;
   if(!single.selected)whole=false;
+  if(detailRows){
+   const columns=[id,item.slot,row.body,row.weapon??'desarmado',row.role,row.action,row.direction,
+    single.selected?'completa':'pendente',single.pose??'',single.source??'',single.reason];
+   detailRows.push(columns.map(value=>String(value).replace(/[\t\r\n]/g,' ')).join('\t'));
+  }
  }
  for(const p of row.pairs){
   assert.equal(p.tested,100);counts.pairs+=100-p.failed.length;
@@ -42,4 +49,5 @@ for(const body of ['masculino','feminino']){
 }
 const report={fingerprint:path.basename(path.dirname(folder)),contexts:contexts.size,total,items:[...items.values()]};
 if(process.argv[3])fs.writeFileSync(process.argv[3],JSON.stringify(report,null,2)+'\n');
+if(detailRows)fs.writeFileSync(detailFile,detailRows.join('\n')+'\n');
 console.log(JSON.stringify(total));

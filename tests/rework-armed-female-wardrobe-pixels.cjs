@@ -8,7 +8,7 @@ const weapons=require('../tools/paper-doll-96-v3/weapons.json');
 global.MareSword0Checkpoint=require('../player-rework-sword0-checkpoint.js');
 const {make}=require('./rework-integration-support.cjs');
 const {weapons:catalog}=require('../tools/audit-hd-wardrobe-product.cjs');
-const poses={maleGait:['sword','walk'],gait:['sword','walk'],sword:['sword','attack-sword'],punch:['brawler','attack-unarmed'],tech:['cyborg','attack-unarmed'],focus:['healer','attack-focus']};
+const poses={maleDaggers:['rogue','walk'],maleGait:['sword','walk'],gait:['sword','walk'],sword:['sword','attack-sword'],punch:['brawler','attack-unarmed'],tech:['cyborg','attack-unarmed'],focus:['healer','attack-focus']};
 const directions=['north','south','east','west'];
 async function main(){
  assert(process.env.HD_PUBLISHED_ROOT,'Set HD_PUBLISHED_ROOT to the exported site');
@@ -32,12 +32,12 @@ async function main(){
  const selectedPoses=Object.entries(poses).filter(([name])=>!process.env.WARDROBE_FAMILY||name===process.env.WARDROBE_FAMILY);
  assert(selectedPoses.length>0);
  for(const [name,[role,attack]] of selectedPoses)for(const direction of directions.filter(d=>!process.env.WARDROBE_DIRECTION||process.env.WARDROBE_DIRECTION===d)){
-  for(const action of ['sword','maleGait'].includes(name)?['idle',attack]:[attack]){
+  for(const action of ['sword','maleGait','maleDaggers'].includes(name)?['idle',attack]:[attack]){
    for(let variant=0;variant<10;variant++){
     const choices=name==='maleGait'?catalog.filter(w=>w.id===1):catalog.filter(w=>w.role===role||name==='focus'&&w.role==='strategist');
     const {id:def,role:classId}=choices[(variant+directions.indexOf(direction)*3)%choices.length],selected=slots.map((slot,i)=>[slot,gear[i][(variant+i*3)%10]]);
     const actor=pieces=>look.commit({classId,equipment:Object.fromEntries([['weapon',{def}],
-     ...pieces.map(([slot,item])=>[slot,{def:item}])])},{gender:name==='maleGait'?'masculino':'feminino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',
+     ...pieces.map(([slot,item])=>[slot,{def:item}])])},{gender:['maleGait','maleDaggers'].includes(name)?'masculino':'feminino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',
      hairStyle:'original',eyeStyle:'original'},()=>true);
     const o={consumer:'world',action,direction},get=p=>world.selectWorldHDOnly(api,weapons,p,o);
     const p=actor(selected),saved=JSON.stringify(p),full=get(p);assert(complete(full,selected,def,o),JSON.stringify({direction,def,selected,action}));
@@ -58,7 +58,7 @@ async function main(){
    }
   }
  }
- assert.equal(rows.length,(process.env.WARDROBE_DIRECTION?1:4)*50*selectedPoses.reduce((n,[name])=>n+(['sword','maleGait'].includes(name)?2:1),0));
+ assert.equal(rows.length,(process.env.WARDROBE_DIRECTION?1:4)*50*selectedPoses.reduce((n,[name])=>n+(['sword','maleGait','maleDaggers'].includes(name)?2:1),0));
  if(process.env.WARDROBE_EVIDENCE)require('node:fs').writeFileSync(process.env.WARDROBE_EVIDENCE,JSON.stringify(rows));
  console.log(JSON.stringify({checks:rows.length,phases:rows.reduce((n,x)=>n+x.changed.length,0),invisible:failures}));
  assert.equal(failures.length,0,'A real equipment group made no visible contribution throughout its cycle');

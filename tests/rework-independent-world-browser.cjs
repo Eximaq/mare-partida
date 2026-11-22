@@ -238,6 +238,14 @@ window.__hdSlotQA={
   await put(148);maleKit.boots=148;await walk('a','west',maleKit,'masculino-troca-bota-oeste',true);
   await put(134);maleKit.boots=134;await walk('a','west',maleKit,'masculino-restaura-bota-oeste',true);
   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,maleLook);
+  const blades={weapon:12,coat:151,legs:168,boots:134,gloves:25,head:18};
+  await page.evaluate(kit=>__hdSlotQA.seedWardrobe('rogue',[...Object.values(kit),26],{gender:'masculino'}),blades);
+  for(const id of Object.values(blades))await put(id);
+  const bladeLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  for(const [key,dir] of [['d','east'],['a','west']])await walk(key,dir,blades,'adagas-masculinas-'+dir,true);
+  await put(26);blades.gloves=26;await walk('a','west',blades,'adagas-troca-luva-oeste',true);
+  await put(25);blades.gloves=25;await walk('a','west',blades,'adagas-restaura-luva-oeste',true);
+  assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,bladeLook);
   const pistol={weapon:114,legs:21,boots:9,gloves:25};
   for(const colored of [false,true]){
    await page.evaluate(({pistol,colored})=>__hdSlotQA.seedWardrobe('gunner',Object.values(pistol),{

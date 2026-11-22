@@ -34,10 +34,18 @@ function fingerprint(){
  return h.digest('hex');
 }
 function ownRoute(record,slot){return record?.slotRoutes?.[slot]??record?.slotRoutes?.[{coat:'torso',legs:'pants'}[slot]];}
+function isNativeWeapon(record,weapon){
+ if(record.item!==weapon||!record.id)return false;
+ if(record.hdKind==='carry')return record.plan?.item===weapon&&record.plan.parts?.length>0&&!!record.base?.pack;
+ if(record.hdKind==='female-equipment')return !!record.sourceBaseId&&record.baseRecord?.id===record.sourceBaseId&&
+  record.states?.length>0&&record.states.every(s=>Array.isArray(s.parts));
+ return record.hdKind==='weapon'&&record.states?.length>0&&record.states.every(s=>Array.isArray(s.layers));
+}
 function complete(record,entries,weapon,options){
  if(!record||record.appearanceAdapted||record.visualDegraded||record.omitted?.length||record.unsupported?.length||
    record.direction!==options.direction||(record.resolvedAction??record.action)!==options.action)return false;
- if(weapon!=null&&!trusted(record,'weapon',weapon))return false;
+ // The renderer returns the weapon record itself when all clothing slots are empty.
+ if(weapon!=null&&!trusted(record,'weapon',weapon)&&(entries.length||!isNativeWeapon(record,weapon)))return false;
  return entries.every(([slot,id])=>trusted(record,slot,id));
 }
 function* product(){
