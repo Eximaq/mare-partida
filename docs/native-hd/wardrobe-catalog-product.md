@@ -1,5 +1,7 @@
 # Catálogo de vestuário no mapa
 
+Consulte também o [censo por equipamento, a fila por causa e os resultados dos produtos diretos](qa-wardrobe/README.md).
+
 O catálogo tem 50 peças em cinco slots, 42 armas e sete classes. Cada consulta ao seletor identifica corpo, arma, ação e direção. Os testes de desenho usam o carregador do jogo, o compositor dos quadros e a caçada no navegador.
 
 ## Fontes reaproveitadas
