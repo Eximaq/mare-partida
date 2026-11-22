@@ -21,10 +21,12 @@ Os arquivos de revisão com 16 e 51 casos documentam propostas e comparações l
 python tools/build_pages.py --static-demo
 $env:HD_PUBLISHED_ROOT = (Resolve-Path dist).Path
 node --expose-gc tools/audit-hd-wardrobe-product.cjs resultados
-node tools/summarize-hd-wardrobe-product.cjs resultados/<assinatura>/sample resumo.json
+node tools/summarize-hd-wardrobe-product.cjs resultados/<assinatura>/sample resumo.json detalhes.tsv
 node --expose-gc tests/rework-armed-female-wardrobe-pixels.cjs
 node --expose-gc tests/rework-male-p114-signed-slots.cjs
 node --expose-gc tests/rework-signed-staff-wardrobe.cjs
+node --expose-gc tests/rework-male-dagger-profile-wardrobe.cjs
+node --expose-gc tests/rework-female-rifle-signed-wardrobe.cjs
 node --expose-gc tests/rework-independent-world-browser.cjs
 ```
 
@@ -37,3 +39,27 @@ Na revisão `aeaaa62`, as 4.200.000 combinações com todas as armas passaram pe
 A caminhada feminina passou por 200 retiradas de slot, com 8.000 comparações de fase. A caminhada e o repouso masculinos com a espada 1 passaram por 400 retiradas, com 3.400 comparações de fase. Todas as retiradas alteraram pixels em pelo menos uma fase do ciclo. O teste de espada feminino também mediu 400 retiradas no repouso e ataque e 1.800 comparações. Nos testes de soco Leste, tecnologia Norte e foco Leste foram 150 retiradas e 1.200 comparações. O teste da Pistola 114 compara a montagem com passes originais em 212 posições de relógio. Nos cetros, 66 imagens coincidiram com a montagem calculada a partir do pacote editável.
 
 As evidências locais da caçada incluem criação, inventário, trocas de arma e roupa, caminhada, ataque, retorno de poder e reconexão. A prova por slot e por ciclo faz parte dos testes Node. As capturas do navegador amostram momentos do mapa.
+
+
+### Encaixes recuperados a partir de 63db412
+
+No porte lateral de adagas masculino, o renderizador projeta a lâmina somente quando a mão correspondente existe no quadro. A verificação da luva passou a usar a mão próxima que realmente é desenhada. Os painéis próprios das calças laterais usam as posições de quadril, joelho e perna da pose receptora. A Calça 168 mantém seus dois passes. A Luva 25 mantém as 16 fases, inclusive o espelhamento já presente na imagem Oeste. A troca 25 → 26 → 25 foi feita pelo inventário durante a caminhada. Nas 64 comparações Leste/Oeste de Calça 168 e Luva 25, os 260.636 pixels que mudaram ficaram dentro da arte da peça retirada.
+
+No disparo Norte feminino, o arquivo `fuzil113-ns.zip` do checkpoint de 18/11 contém 31 registros aproveitados. São dez calças, dez botas, dez luvas e o Sobretudo 151, distribuídos em 163 PNGs distintos. A comparação com o corpo do jogo verificou os 11 grupos de anatomia, os pivôs, as oito poses e o relógio. As duas mãos, os passes da bota 148 e a ordem entre manga e punho vêm do pacote. Os dez equipamentos de cabeça usam o registro de personalização da personagem, incluindo o deslocamento de nove pixels do quadro de recuo. O mesmo receptor funciona nas armas 4, 5, 113, 114, 115 e 116.
+
+O controle por pixels montou os quadros diretamente dos registros do arquivo editável. As seis armas reproduziram o controle em 192 quadros, com duas combinações de roupas e dois tons de pele. A retirada isolada das cinco peças em dez conjuntos produziu 50 ciclos com diferença visível e 400 comparações de fase.
+
+![Oito fases a 12 quadros por segundo do Fuzil 113 com cinco peças](wardrobe-rifle-north.webp)
+
+### Leitura dos casos pendentes
+
+- No ataque feminino Norte de adagas 73, o seletor encontra a Calça 168 e a Luva 25. O Peitoral 6 e a Cabeça 18 ainda carecem de montagem nessa direção. O teste de mapa cobre o Peitoral 6 e a Calça 168 nas laterais.
+- No disparo feminino Norte, o conjunto com o Sobretudo 151 aceita todas as dez opções dos quatro slots restantes. Os outros nove peitorais ainda precisam do vínculo da manga e do tronco nessa pose.
+- O pacote de pistolas laterais guarda 25 camadas de uma composição. O corpo utilizado pelo jogo tem 11 camadas e nenhuma imagem inicial de anatomia coincide entre as duas estruturas. O Oeste compartilha as poses. No Leste, a sequência de pontos anatômicos é diferente. O registro Sul do fuzil tem oito quadros e 68.388 correções de pixel dependentes da reconstrução original. O reaproveitamento dos passes nessas direções ainda exige separar as oclusões e demonstrar o encaixe no corpo atual.
+- No ataque masculino Leste da Espada 1, a consulta do censo com pele Ébano, olhos verdes e cabelo azul ainda falha para Peitoral 6, Calça 168 e Luva 25. Na Pistola 114 masculina, os quatro sentidos passaram no visual com cabelo preto e olhos azuis. A variação azul/verde passou no Leste e no Oeste. O Sul continua pendente para essa variação.
+
+## Capturas da caçada
+
+A sessão passou por criação, inventário, caminhada equipada, combate, retorno de poder e reconexão. Foram 74 observações e zero erros registrados no navegador. Os recortes mostram as trocas feitas pelo inventário. A animação acima contém o ciclo medido diretamente no compositor usado pelo mapa.
+
+![Troca de luvas e equipamentos em uso na caçada](wardrobe-in-game.png)

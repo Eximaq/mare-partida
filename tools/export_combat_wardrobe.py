@@ -8,6 +8,8 @@ from pathlib import Path
 import struct
 import tarfile
 
+from export_north_firearm_wardrobe import materialize as rifle_wardrobe
+
 ARCHIVES = {
     'soco': 'e3c4d0cad2a2727a74aef567468eb3e337391e25f7e3eab363dc49d16fc69c91',
     'focus': '958a96547f8943671ee64f9419e2f26f00f93b770a8f883e39908917ecba1e91',
@@ -129,6 +131,10 @@ def materialize(folder, out):
     if Counter((r['action'], r['slot']) for r in records) != expected or len({
         (r['action'], r['slot'], r['item'], r['direction']) for r in records}) != 240:
         raise ValueError('Incomplete combat wardrobe')
+    rifle_rows, rifle_rig, rifle_assets = rifle_wardrobe(folder, bank, native)
+    records.extend(rifle_rows)
+    rigs['attack-firearm/north'] = rifle_rig
+    assets.update(rifle_assets)
     (out / 'index.json').write_text(json.dumps(dict(schema='editable-combat-wardrobe-v1', rigs=rigs,
         records=records, handFits={k: [r['matrix'] for r in phases] for k, phases in fit.items()}), separators=(',', ':')) + '\n', encoding='utf-8')
     return len(records), len(assets)

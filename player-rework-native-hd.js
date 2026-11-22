@@ -6020,9 +6020,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   return idleBodyWitness.get(base.pack);
  }
- function femaleMaterialHead(base,v,player){
+ function femaleMaterialHead(base,v,player,reference=base.baseRecord){
   const look=base.colorAppearance||player.appearance96;
-  const head=femaleNamedHairRegistry?.resolve(base.baseRecord,{hair:look?.hair||look?.hairStyle,
+  const head=femaleNamedHairRegistry?.resolve(reference,{hair:look?.hair||look?.hairStyle,
    head:v.item,appearance:look});
   const gear=head?.gearRecord;
   if(gear?.item!==v.item||gear.direction!==base.direction||gear.body!==base.body)return null;
@@ -6105,8 +6105,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function combatWardrobePass(base,slot,v,player){
   if(!combatReceiver(base))return null;
-  if(slot==='head')return femaleMaterialHead(base,v,player);
-  if(slot==='torso')return fittedAttackCoat(base,v.item);
+  const firearm=base.action==='attack-firearm';
+  if(firearm&&(base.states.some(s=>s.hideBaseLayers?.length||Object.keys(s.baseMasks||{}).length)||base.paddingPhysical!==0))return null;
+  if(slot==='head'){
+   if(!firearm)return femaleMaterialHead(base,v,player);
+   const recoil=femaleRegistry.northFirearmRecoil(base);
+   if(!recoil)return null;
+   const pass=femaleMaterialHead(base,v,player,recoil.reference);
+   return pass&&{...pass,head:{...pass.head,northFirearmHeadRecoil:recoil.offsets}};
+  }
+  if(!firearm&&slot==='torso')return fittedAttackCoat(base,v.item);
   const own=combatWardrobe.index.resolve({body:base.body,action:base.action,direction:base.direction,slot,item:v.item});
   if(own.state!=='available'||own.mirrorX)return null;
   const d=base.pack.directions[base.direction],shorts=d.layers.find(l=>l.id==='shorts');
@@ -6118,13 +6126,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   if(!layers.length||layers.some(l=>!Number.isFinite(l.depth)||l.binding?.kind!=='fixed'||
      l.frames?.length!==d.clip.frames||l.frames[0]!==l.source))return null;
-  if(slot==='pants'&&(!shorts||layers.length!==1||layers[0].depth!==shorts.depth||
+  if(!firearm&&slot==='pants'&&(!shorts||layers.length!==1||layers[0].depth!==shorts.depth||
      base.states.some(s=>s.hideBaseLayers?.includes(shorts.id)||s.baseMasks?.[shorts.id])))return null;
   const gloveFit=layers.filter(l=>l.receivingHand).map(l=>({frames:l.frames,
    matrices:combatWardrobe.handFits?.[base.direction+'/'+l.receivingHand]}));
   if(gloveFit.some(g=>g.matrices?.length!==8||g.matrices.some(m=>m.length!==6||!m.every(Number.isFinite))))return null;
-  return {gloveFit,source:((base.action==='attack-focus'?'focus':'soco')+'-editable-sources.tgz/'+base.direction+'/'+slot+'/'+v.item),
-   layers,removed:slot==='pants'?[shorts.id]:[],refs:[...new Set(layers.flatMap(l=>l.frames))],combatWardrobe:true};
+  const library=firearm?'fuzil113-ns.zip':(base.action==='attack-focus'?'focus':'soco')+'-editable-sources.tgz';
+  return {gloveFit,source:library+'/'+base.direction+'/'+slot+'/'+v.item,
+   layers,removed:slot==='pants'&&!firearm?[shorts.id]:[],refs:[...new Set(layers.flatMap(l=>l.frames))],combatWardrobe:true};
  }
  function swordWardrobePass(base,slot,v,player){
   if(!swordWardrobe?.usesWardrobePose(base))return null;
@@ -6235,8 +6244,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    }
   }
   const coat=accepted.find(p=>p.swordCoat)?.swordCoat;
+  // Fixed rifle passes can share their numeric depth at the sleeve seam.
+  // Keep the original pack's tie order independently of slot enumeration.
+  const layers=base.action==='attack-firearm'&&accepted.some(p=>p.combatWardrobe)
+   ? [...planned.layers].sort((a,b)=>(a.sourceStackIndex??-1)-(b.sourceStackIndex??-1)) : planned?.layers;
   const pack=accepted.length?{...base.pack,directions:{...base.pack.directions,[direction]:{...d,
-   ...(coat?{rest:coat.rest,poses:coat.poses}:{}),layers:planned.layers}}}:base.pack;
+   ...(coat?{rest:coat.rest,poses:coat.poses}:{}),layers}}}:base.pack;
   const refs=[...new Set(accepted.flatMap(p=>p.refs))];let mounted={...base,pack};
   if(simpleCarry(base)&&accepted.length){
    mounted.base={...base.base,pack,sourceRefs:[...base.base.sourceRefs,...refs]};
