@@ -33,6 +33,12 @@ function* probePairs(buckets){
   if(a.unverified.length)for(const y of b.hd){const p=emit(s,a.unverified[0],t,y);if(p)yield p;}
  }
 }
+function* allPairs(groups){
+ for(let i=0;i<slots.length;i++)for(let j=i+1;j<slots.length;j++){
+  const left=slots[i],right=slots[j];
+  for(const a of groups[left])for(const b of groups[right])yield [[left,a],[right,b]];
+ }
+}
 function classify(slot,id,solo,mixed,neighbor,phaseCompatible){
  if(trusted(mixed,slot,id))return trusted(solo,slot,id)?'declaredRetained':'declaredOnlyWithNeighbor';
  if(!trusted(solo,slot,id))return solo?'unverifiedSolo':'noSoloHDSelection';
@@ -78,9 +84,8 @@ async function main(){
  const match=(k,v)=>!filter[k]||filter[k].includes(v);
  const published=process.env.HD_PUBLISHED_ROOT&&path.resolve(process.env.HD_PUBLISHED_ROOT),prefix='tools/rework-sword0-checkpoint/';
  if(published)mod('player-rework-sword0-checkpoint');
- const {make,cv}=require(path.join(root,'tests/rework-integration-support.cjs'));
- const fileLoad=require(path.join(root,'tools/rework-hd-test-loader.cjs')).create(root);
- const api=make(published?{fetchJSON:async f=>readJSON(path.join(f.startsWith(prefix)?published:root,f)),loadImage:f=>f.startsWith(prefix)?cv.loadImage(path.join(published,f)):fileLoad(f)}:{});
+ const {make}=require(path.join(root,'tests/rework-integration-support.cjs'));
+ const api=make();
  await api.ready;if(api.snapshot().state!=='ready')throw Error(api.snapshot().error);
  if(published&&!await api.warmSwordCheckpoint())throw Error('Signed sword registrations were not verified.');
  const world=mod('paper-doll-96-lobby'),A=mod('character-appearance'),catalog=json('tools/paper-doll-96-v3/weapons.json');
@@ -100,7 +105,7 @@ async function main(){
  const pairArg=process.env.AUDIT_PAIR?JSON.parse(process.env.AUDIT_PAIR):null;
  if(pairArg&&(!Array.isArray(pairArg)||pairArg.length!==2||pairArg.some(x=>!Array.isArray(x)||x.length!==2||
     !groups[x[0]]?.includes(x[1]))||pairArg[0][0]===pairArg[1][0]))throw Error('AUDIT_PAIR requires two items in different visual slots');
- const counts={},bySlot={},examples={},grouped={};let poseContexts=0,soloQueries=0,mixedQueries=0,loadoutQueries=0,loadoutDrops=0,declaredPairQueries=0,declaredPairComplete=0,loadoutComplete=0;
+ const exhaustive=process.env.AUDIT_ALL_PAIRS==='1',counts={},bySlot={},examples={},grouped={},soloGaps={};let allPairComplete=0, poseContexts=0,soloQueries=0,mixedQueries=0,loadoutQueries=0,loadoutDrops=0,declaredPairQueries=0,declaredPairComplete=0,loadoutComplete=0;
  const add=(obj,key)=>{obj[key]=(obj[key]||0)+1;};
  for(const {role,def}of contexts.filter(x=>match('weapon',x.def)&&match('family',x.role))){
   const base={...padding,...(def==null?{}:{weapon:{def}})};
@@ -115,11 +120,14 @@ async function main(){
      for(const id of pairArg?pairArg.filter(x=>x[0]===slot).map(x=>x[1]):groups[slot]){
       const r=select(player,base,[[slot,id]],o);soloQueries++;
       solo[slot].set(id,r);
-      bucket[slot][trusted(r,slot,id)?'hd':'unverified'].push(id);
+      const ready=trusted(r,slot,id);
+      bucket[slot][ready?'hd':'unverified'].push(id);
+      if(!ready)add(soloGaps,[gender,role,action,direction,slot,id].join('/'));
      }
     }
-    for(const pair of pairArg?[pairArg]:probePairs(bucket)){
+    for(const pair of pairArg?[pairArg]:exhaustive?allPairs(groups):probePairs(bucket)){
      const mixed=select(player,base,pair,o);mixedQueries++;
+      if(pair.every(([slot,id])=>trusted(mixed,slot,id)))allPairComplete++;
       if(pair.every(([slot,id])=>trusted(solo[slot].get(id),slot,id))){
        declaredPairQueries++;
        if(pair.every(([slot,id])=>trusted(mixed,slot,id)))declaredPairComplete++;
@@ -133,7 +141,7 @@ async function main(){
       }
      }
     }
-   if(!pairArg)for(const entries of mixedLoadouts(bucket)){
+   if(!pairArg)for(const entries of mixedLoadouts(exhaustive?Object.fromEntries(slots.map(s=>[s,{hd:groups[s]}])):bucket)){
     loadoutQueries++;
     const plan=select(player,base,entries,o);
     if(entries.every(([slot,id])=>trusted(plan,slot,id)))loadoutComplete++;
@@ -147,10 +155,10 @@ async function main(){
    }
   }
  }
- console.log(JSON.stringify({mode:'slot-independence',filter,profile,pair:pairArg,poseContexts,soloQueries,mixedQueries,declaredPairQueries,declaredPairComplete,loadoutQueries,loadoutComplete,loadoutDrops,mixSeed:MIX_SEED,counts,bySlot,
-  grouped,examples,authority:'Independent explicit solo slot declarations and World mixed selection, not Canvas proof. "Drop" shows a missing explicit declaration. It does not prove that the render has no layer, compatible art is absent, or a guard is the only cause. Two solo authorities merely match reported body, action, direction, pivot, scale, clock and mirror metadata; check underlying layer ownership and occlusion when resolving.'},null,2));
+ console.log(JSON.stringify({mode:'slot-independence',filter,profile,pair:pairArg,exhaustive,poseContexts,soloQueries,mixedQueries,allPairComplete,declaredPairQueries,declaredPairComplete,loadoutQueries,loadoutComplete,loadoutDrops,mixSeed:MIX_SEED,counts,bySlot,
+  grouped,examples,soloGaps,authority:'Independent explicit solo slot declarations and World mixed selection, not Canvas proof. "Drop" shows a missing explicit declaration. It does not prove that the render has no layer, compatible art is absent, or a guard is the only cause. Two solo authorities merely match reported body, action, direction, pivot, scale, clock and mirror metadata; check underlying layer ownership and occlusion when resolving.'},null,2));
  if(process.env.AUDIT_REQUIRE_ALL==='1'&&
-    (loadoutDrops||Object.entries(counts).some(([key,value])=>key.startsWith('declaredDrop')&&value)))process.exitCode=1;
+    (loadoutDrops||exhaustive&&allPairComplete!==mixedQueries||Object.entries(counts).some(([key,value])=>key.startsWith('declaredDrop')&&value)))process.exitCode=1;
 }
 module.exports={trusted,poseKey,probePairs,mixedLoadouts,scoreProbe};
 if(require.main===module)main().catch(e=>{console.error(e);process.exitCode=1;});

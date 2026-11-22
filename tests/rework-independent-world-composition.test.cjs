@@ -33,20 +33,49 @@ for(const action of ['idle','walk'])for(const armed of [false,true]){
 }
 
 for(const direction of ['east','west']){
- test('dagger: adding an unresolved torso preserves the own gloves and trousers in '+direction,async()=>{
+ test('dagger: C6 completes the own gloves and trousers in '+direction,async()=>{
   await visual.ready;
   const p=appearance.commit({classId:'rogue',factionId:'pirate',equipment:{
    weapon:{def:73},gloves:{def:159},legs:{def:22},coat:{def:6}
   }},{...look,gender:'feminino'},()=>true);
   const selection=world.selectWorldHDOnly(visual,weapons,p,{action:'attack-daggers',direction,consumer:'world'});
   assert.ok(selection);
-  assert.deepEqual(selection.omitted,['coat']);
+  assert.deepEqual(selection.omitted,[]);
+  assert.equal(selection.slotRoutes.coat.item,6);
+  assert.equal(selection.slotRoutes.coat.source,'female-torso6-'+direction+'-frozen-attack-native');
   assert.equal(selection.slotRoutes.weapon.item,73);
   assert.equal(selection.slotRoutes.gloves.item,159);
   assert.equal(selection.slotRoutes.gloves.quality,'hd');
   assert.equal(selection.slotRoutes.legs.item,22);
   assert.equal(selection.slotRoutes.legs.quality,'hd');
   assert.equal(selection.action,'attack-daggers');
+  const q={...p,equipment:{...p.equipment}};delete q.equipment.coat;
+  const options={action:'attack-daggers',direction,consumer:'world'};
+  const control=world.selectWorldHDOnly(visual,weapons,q,options);
+  for(const slot of ['weapon','gloves','legs'])assert.deepEqual(selection.slotRoutes[slot],control.slotRoutes[slot]);
+  const on=await prepare(visual,p,options,selection),off=await prepare(visual,q,options,control);
+  try{
+   assert.equal(on.coverage[0].frames,8);
+   const {refs,transforms}=selection.daggerTorso;
+   const plates=await Promise.all(refs.map(h=>loadNative('tools/rework-modular-outfits-hd/assets/'+h+'.png')));
+   for(let i=0;i<8;i++){
+    const tick=(i+.25)/8,first=drawFrame(on,p,options,tick),second=drawFrame(off,q,options,tick);
+    assert.deepEqual([first.width,first.height],[second.width,second.height]);
+    const matte=cv.createCanvas(first.width,first.height),c=matte.getContext('2d'),pad=(first.width-640)/2;
+    c.imageSmoothingEnabled=false;
+    for(const [j,im] of plates.entries()){
+     const [a,b,d,e,x,y]=transforms[i][j];c.setTransform(a,b,d,e,x+pad,y+pad);c.drawImage(im,64,64);
+    }
+    const mask=c.getImageData(0,0,first.width,first.height).data;
+    let changed=0,outside=0;
+    for(let j=0;j<first.pixels.length;j+=4){
+     if(first.pixels.subarray(j,j+4).every((val,k)=>val===second.pixels[j+k]))continue;
+     changed++;if(!mask[j+3])outside++;
+    }
+    assert.ok(changed>100,'C6 is visibly drawn on phase '+i);
+    assert.equal(outside,0,'only C6 can change pixels on phase '+i);
+   }
+  }finally{on.release();off.release();}
  });
 }
 
@@ -172,4 +201,63 @@ test('a registered female helmet mounts with the independent lateral clothing an
   assert(drawFrame(bundle,p,options,0).pixels.some(Boolean));
   assert.equal(JSON.stringify(p),before);
  }finally{bundle.release();}
+});
+
+test('dagger: own hat and clothing share the same saved head and weapon',async()=>{
+ await visual.ready;
+ const options={consumer:'world',direction:'east',action:'attack-daggers'};
+ const q=appearance.commit({classId:'rogue',equipment:{weapon:{def:73},coat:{def:6},legs:{def:22},gloves:{def:159}}},
+  {...look,gender:'feminino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'},()=>true);
+ const p={...q,equipment:{...q.equipment,head:{def:157}}};
+ const a=world.selectWorldHDOnly(visual,weapons,p,options),b=world.selectWorldHDOnly(visual,weapons,q,options);
+ assert.deepEqual(a.omitted,[]);
+ for(const slot of ['weapon','coat','legs','gloves'])assert.deepEqual(a.slotRoutes[slot],b.slotRoutes[slot]);
+ assert.equal(a.material.gearRecord.item,157);
+ assert.deepEqual(a.colorAppearance,b.colorAppearance);
+ const on=await prepare(visual,p,options,a),off=await prepare(visual,q,options,b);
+ try{
+  assert.equal(on.coverage[0].frames,8);
+  for(let i=0;i<8;i++)assert.notDeepEqual(drawFrame(on,p,options,(i+.25)/8).pixels,drawFrame(off,q,options,(i+.25)/8).pixels);
+ }finally{on.release();off.release();}
+});
+
+test('dagger: P168 stays visible with G159 for all eight east phases',{skip:!process.env.HD_PUBLISHED_ROOT},async()=>{
+ await visual.ready;
+ const options={consumer:'world',direction:'east',action:'attack-daggers'};
+ const model={classId:'rogue',factionId:'pirate',equipment:{weapon:{def:73},gloves:{def:159}}};
+ const q=appearance.commit(model,{...look,gender:'feminino'},()=>true);
+ const p={...q,equipment:{...q.equipment,legs:{def:168}}};
+ const selection=world.selectWorldHDOnly(visual,weapons,p,options),control=world.selectWorldHDOnly(visual,weapons,q,options);
+ assert.deepEqual(selection.omitted??[],[]);
+ assert.equal(selection.slotRoutes.legs.item,168);
+ assert.equal(selection.slotRoutes.legs.quality,'hd');
+ assert.deepEqual(selection.slotRoutes.gloves,control.slotRoutes.gloves);
+ const on=await prepare(visual,p,options,selection),off=await prepare(visual,q,options,control);
+ try{
+  assert.equal(on.coverage[0].frames,8);
+  for(let i=0;i<8;i++){
+   const tick=(i+.25)/8;
+   assert.notDeepEqual(drawFrame(on,p,options,tick).pixels,drawFrame(off,q,options,tick).pixels,'visible P168 frame '+i);
+  }
+ }finally{on.release();off.release();}
+});
+
+for(const direction of ['east','west'])test('male walk: G25 has its own 16 '+direction+' phases',async()=>{
+ await visual.ready;
+ const options={consumer:'world',direction,action:'walk'};
+ const other=[['weapon',0],['coat',6],['legs',21]];
+ const q=actor(other),p=actor([...other,['gloves',25]]);
+ const find=p=>world.selectWorldHDOnly(visual,weapons,p,options);
+ const source=find(p),control=find(q);
+ assert.deepEqual(source.omitted,[]);
+ assert.equal(source.slotRoutes.gloves.source,'frozen-male-glove25-'+direction+'-walk-native-layers');
+ for(const slot of ['weapon','coat','legs'])assert.deepEqual(source.slotRoutes[slot],control.slotRoutes[slot]);
+ const on=await prepare(visual,p,options,source),off=await prepare(visual,q,options,control);
+ try{
+  assert.equal(on.coverage[0].frames,16);
+  for(let i=0;i<16;i++){
+   const tick=(i+.25)/16;
+   assert.notDeepEqual(drawFrame(on,p,options,tick).pixels,drawFrame(off,q,options,tick).pixels,'visible G25 frame '+i);
+  }
+ }finally{on.release();off.release();}
 });

@@ -654,7 +654,7 @@ function placeSouthWalk14OverHand(r){
  });
  return {...r,id:r.id+':right-palm-overlay-flipped',states,southWalk14RightPalm:true,southWalk14PalmFlip:true};
 }
-const asset=(r,sha)=>'tools/'+(r.daggerP22Sources?.includes(sha)?'rework-female-dagger-p22':r.northFirearmCoatSources?.includes(sha)?'rework-firearm113-coat':r.checkpointSources?.includes(sha)?'rework-sword0-checkpoint':r.outfitSources?.includes(sha)?'rework-modular-outfits-hd':'rework-base-hd')+'/assets/'+sha+'.png';
+const asset=(r,sha)=>'tools/'+(r.daggerTorso?.refs.includes(sha)?'rework-modular-outfits-hd':r.daggerWardrobeSources?.includes(sha)?'rework-female-dagger-wardrobe':r.daggerP22Sources?.includes(sha)?'rework-female-dagger-p22':r.northFirearmCoatSources?.includes(sha)?'rework-firearm113-coat':r.checkpointSources?.includes(sha)?'rework-sword0-checkpoint':r.outfitSources?.includes(sha)?'rework-modular-outfits-hd':'rework-base-hd')+'/assets/'+sha+'.png';
 // Each approved dagger atlas is isolated equipment. Its left/right
 // raster halves belong to the item; wrist centres, matrices, z, and
 // intentional hidden phases belong only to the receiving action.
@@ -1638,6 +1638,17 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
    c.putImageData(pixel,x,y);
   }
   prior.width=1;map.set(ref,target);
+ }
+ if(r.daggerTorso){
+  const {refs,transforms}=r.daggerTorso,size=p.frame.width*p.density;
+  for(const [i,hash] of refs.entries()){
+   const image=map.get(hash);
+   if(!image||image.width!==512||image.height!==512||size!==640)
+    throw Object.assign(Error('Invalid owned dagger torso plate'),{asset:asset(r,hash)});
+   const tile=frameCanvas(size,size),c=tile.getContext('2d');
+   c.imageSmoothingEnabled=false;c.setTransform(...transforms[frame][i]);c.drawImage(image,64,64);
+   map.set(hash,tile);
+  }
  }
  if(r.daggerBootMirror){
   const owned=r.daggerBootMirror,size=p.frame.width*4,anchor={x:p.pivot.x*4,y:p.pivot.y*4};

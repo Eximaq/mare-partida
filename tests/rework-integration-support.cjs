@@ -13,7 +13,7 @@ global.MareReworkOutfitOverlayHD=require('../player-rework-outfit-overlay-hd.js'
 global.MareReworkOutfitCarryOverlayHD=require('../player-rework-outfit-carry-overlay-hd.js');
 const {create}=require('../player-rework-native-hd.js');
 global.MareReworkZip=require('../player-rework-zip.js');global.MareReworkHDAssets=require('../player-rework-hd-assets.js');
-const make=(options={})=>create({fetchJSON:async p=>{const file=path.join(__dirname,'..',p);return JSON.parse(fs.existsSync(file)?fs.readFileSync(file):require('node:zlib').gunzipSync(fs.readFileSync(file+'.gz')));},loadImage:require('../tools/rework-hd-test-loader.cjs').create(path.join(__dirname,'..')),makeCanvas:cv.createCanvas,...options});
+const make=(options={})=>{const root=path.resolve(process.env.HD_PUBLISHED_ROOT||path.join(__dirname,'..'));return create({fetchJSON:async p=>{const file=path.join(root,p);return JSON.parse(fs.existsSync(file)?fs.readFileSync(file):require('node:zlib').gunzipSync(fs.readFileSync(file+'.gz')));},loadImage:require('../tools/rework-hd-test-loader.cjs').create(root),makeCanvas:cv.createCanvas,...options});};
 
 global.MareCharacterAppearance=require('../character-appearance.js');
 global.MareReworkEyeStylesHD=require('../player-rework-eye-styles-hd.js');

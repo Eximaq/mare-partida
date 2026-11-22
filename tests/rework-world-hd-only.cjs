@@ -1,7 +1,8 @@
 'use strict';
 const fs=require('node:fs'),p=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const rootSource=p.resolve(process.env.KAIZOKU_REPO||p.join(__dirname,'..')),cv=require(p.join(rootSource,'node_modules/@napi-rs/canvas'));
-const root=p.resolve(process.argv[2]||rootSource),uri='https://fixture.test/index.html';
+const root=p.resolve(process.argv[2]||p.join(rootSource,'dist')),uri='https://fixture.test/index.html';
+assert(fs.existsSync(p.join(root,'tools/rework-female-dagger-wardrobe/index.json')),'Build the game before testing the published wardrobe');
 const pathFor=u=>p.join(root,new URL(u,uri).pathname);
 const run=f=>vm.runInThisContext(fs.readFileSync(f.endsWith('/player-rework-native-hd.js')&&process.env.SIGNED_NATIVE_JS||f.endsWith('/player-rework-modular-outfits-hd.js')&&process.env.SIGNED_OUTFIT_JS||f.endsWith('/paper-doll-96-lobby.js')&&process.env.SIGNED_LOBBY_JS||f,'utf8'),{filename:f});
 global.window=global;
@@ -51,12 +52,16 @@ for(const s of scripts)if(fs.existsSync(pathFor(s)))run(pathFor(s));
   }
   c.width=1;core.clearWorldVisual();global.gc?.();return seq;
  };
- for(const [initial,missing,keep]of [
-  [{gloves:159},{legs:168},['weapon','gloves']],
-  [{gloves:159,legs:22},{coat:6},['weapon','gloves','legs']]
+ for(const [direction,initial,extra,keep] of [
+  ['east',{gloves:159},{legs:168},['weapon','gloves','legs']],
+  ...['east','west'].map(direction=>[direction,{gloves:159,legs:22},{coat:6},['weapon','gloves','legs','coat']])
  ]){
-  const reference=actor(initial),mixed=actor({...initial,...missing}),save=JSON.stringify(mixed);
-  assert.deepEqual(await collect(mixed,pathOpts,Object.keys(missing),keep),await collect(reference,pathOpts,[],keep));
+  const reference=actor(initial),mixed=actor({...initial,...extra}),save=JSON.stringify(mixed);
+  const o={...pathOpts,direction};
+  const equipped=await collect(mixed,o,[],keep);
+  const original=await collect(reference,o,[],keep.filter(k=>!Object.hasOwn(extra,k)));
+  assert.equal(equipped.length,8);
+  assert(equipped.every((checksum,i)=>checksum!==original[i]),'equipped gear visibly changes each phase');
   assert.equal(JSON.stringify(mixed),save,'Never mutate equipment or appearance');
  }
  const fallback=actor({gloves:159});
@@ -65,5 +70,5 @@ for(const s of scripts)if(fs.existsSync(pathFor(s)))run(pathFor(s));
  assert.equal(core.worldVisual().reason,'no-hd-pose');
  const c=cv.createCanvas(400,360);
  assert(!core.draw(c.getContext('2d'),fallback,{...f,x:200,y:230,worldView:false}));
- console.log('PASS actual World HD: retained G159, P22 and W73 in every frame; unsupported action has no replacement pose.');
+ console.log('PASS actual World HD: drew C6, P22, P168, G159 and W73 in every applicable phase; unsupported action has no replacement pose.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

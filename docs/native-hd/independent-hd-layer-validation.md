@@ -68,3 +68,34 @@ O ensaio de ataques Sul selecionou uma arma de cada classe pelo catálogo e obse
 As lacunas da matriz e a validação de todas as ações e aparências continuam abertas. A recarga de sessão foi medida no jogo local. O ensaio de poder cobre Espadachim, e o ensaio complementar de todas as classes atingiu o tempo limite antes de concluir.
 
 A repetição completa no build após o ajuste confirmou 19 etapas no Chromium, incluindo os dois ataques reais, sem erros de página.
+
+## Recuperação de fontes portáteis e camadas próprias
+
+Esta etapa começou em `e412a230f9b15e78b3efa354153d4ee7051eb268`, que já contém o PR #373. Os arquivos do checkpoint de 18/11 tiveram hashes conferidos antes da extração. As camadas recuperadas usam os mesmos PNGs do acervo.
+
+| Corpo, ação e direção | Peças | Fonte e montagem |
+| --- | --- | --- |
+| Feminino, ataque de adagas, quatro direções | Calças 21, 22, 133, 140, 147, 154, 161, 168, 175, 182. Botas 8, 9, 134, 141, 148, 155, 162, 169, 176, 183. Luvas 25, 26, 131, 138, 145, 152, 159, 166, 173, 180. | `adaga-12-13-71-74-camadas.zip` em `docs/native-hd/editable-female-equipment/checkpoint-2026-11-18/`. O build publica 120 registros de oito fases e 1.500 PNGs verificados por SHA-256. As montagens existentes de P22 e das luvas e botas com encaixes próprios têm prioridade. O frame transparente compartilhado do Norte permanece transparente. |
+| Feminino, ataque de adagas, Leste/Oeste | Peitoral 6 | `female-torso6-{east,west}-frozen-attack-native`. O compositor recebe cinco partes de tecido de `female-frozen-torsos-garment-only-v1.zip`. Aplica os pontos do tronco por fase e encaixa mangas nas articulações da adaga. O corpo, as mãos e as armas vêm da seleção do personagem. |
+| Feminino, ataque de adagas lateral compatível | Capacetes com encaixe original já registrado | O selecionador verifica o mesmo corpo, pose, arma e material da cabeça. Monta os pixels do acessório conforme o contrato de cabelo existente. |
+| Masculino, caminhada Leste/Oeste, 16 fases | Luvas 25, 26, 131, 138, 145, 152, 159, 166, 173, 180 | Registros `frozen-male-glove{ID}-{east,west}-walk-native-layers`. O Leste usa a placa própria ligada ao pulso. O Oeste usa as 16 placas já refletidas e muda de coordenadas antes da reflexão final do ator. Arma que desenha atrás dessa mão preserva sua profundidade. |
+
+Para reproduzir sobre o build em PowerShell
+
+```powershell
+python tools/build_pages.py --static-demo
+$env:HD_PUBLISHED_ROOT = (Resolve-Path dist).Path
+node --test tests/rework-independent-world-composition.test.cjs tests/world-hd-only-routing.test.cjs
+node --expose-gc tests/rework-world-hd-only.cjs
+node --expose-gc tests/rework-female-dagger-wardrobe.cjs
+$env:TONES = 'light'
+$env:AUDIT_ALL_PAIRS = '1'
+$env:AUDIT_FILTER = '{"body":["feminino"],"action":["attack-daggers"]}'
+node tools/audit-hd-slot-independence.cjs
+```
+
+O censo por catálogo distingue seleção individual, pares e conjuntos gerados. Com `AUDIT_ALL_PAIRS=1`, inclui todas as peças dos cinco slots em cada contexto selecionado, inclusive as que falham sozinhas. `soloGaps` identifica o ID, corpo, ação, direção e classe. `AUDIT_FILTER` permite repetir lotes. O teste dedicado das adagas aprovou 720 escolhas individuais, todos os 7.200 pares entre calça, bota e luva e 4.800 trios determinísticos em 24 contextos de arma e direção. Desenhou 120 ciclos e conferiu 960 quadros da Adaga 73. Dez quadros permaneceram idênticos ao controle na fase Norte que oculta as mãos. Todos os 120 ciclos têm quadros visíveis. No censo estendido dos cinco slots, 8.025 dos 24.000 pares e 3 dos 1.200 conjuntos gerados produziram as declarações esperadas. Os 8.025 pares com as duas fontes declaradas individualmente preservaram ambas. O relatório registra os slots e poses pendentes.
+
+O teste de navegador em `tests/rework-independent-world-browser.cjs` usa a mochila e o canvas do jogo. As capturas do mapa ficam no diretório de evidências local. O teste focado do tronco compara os pixels de todos os quadros com a área das cinco camadas. O teste de capacete usa pele Ébano, cabelo azul e olhos verdes.
+
+A CI de referência já falhava na etapa do save com slots vazios. O caso reproduzido indica o mesmo ID de origem para o soco Leste com a Manopla 14. [Execução anterior da CI](https://github.com/Eximaq/mare-partida/actions/runs/45051336843/job/137296899021)
