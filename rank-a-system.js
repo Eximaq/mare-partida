@@ -39,9 +39,9 @@
  }
  function cast(s,c){
   c={...c,key:String(c.key)};if(!valid(s,c))return false;if(rankS?.has(c.fruit))return rankS.cast(s.rankS ||= rankS.create(),c);if(ext.has(c.fruit))return ext.cast(s,c);
-  const ope=c.fruit===rules.ope.id,now=c.now,base={started:now,origin:{x:c.hero.x,y:c.hero.y},power:ope?c.stats.physical:c.stats.elemental,physical:c.stats.physical,elemental:c.stats.elemental,pen:c.stats.penetration||0,magicPen:c.stats.magicPen||0,targetId:c.target?.id,hit:false,fruit:c.fruit,token:c.token};
+  const ope=c.fruit===rules.ope.id,now=c.now,base={started:now,origin:{x:c.hero.x,y:c.hero.y},power:ope?c.stats.physical:c.stats.elemental,physical:c.stats.physical,elemental:c.stats.elemental,pen:c.stats.penetration||0,magicPen:c.stats.magicPen||0,targetId:c.target?.id,hit:false,fruit:c.fruit,token:c.token,wear:c.wear};
   if(ope&&c.key==='1'){
-   if(roomActive(s,now)){const from={x:c.hero.x,y:c.hero.y},to={x:c.target.x,y:c.target.y};Object.assign(c.hero,to);Object.assign(c.target,from);s.trails.push({...from,to,started:now});control(c.target,now,2);c.hit(c.target,(c.damage||damage)(c.target,c.stats.physical,2,false,c.stats.penetration),{kind:'shambles'});c.onSwap?.();}
+   if(roomActive(s,now)){const from={x:c.hero.x,y:c.hero.y},to={x:c.target.x,y:c.target.y};Object.assign(c.hero,to);Object.assign(c.target,from);s.trails.push({...from,to,started:now});control(c.target,now,2);c.hit(c.target,(c.damage||damage)(c.target,c.stats.physical,2,false,c.stats.penetration),{kind:'shambles',wear:c.wear});c.onSwap?.();}
    else s.room={...base.origin,started:now,until:now+.25+30};return true;
   }
   const kind=ope?(c.key==='2'?'tact':'gamma'):c.key==='1'?'mellow':c.key==='2'?'kiss':'rain';
@@ -58,7 +58,7 @@
     if(!live(target)||!c.clear(j,target))return false;
     const dx=target.x-j.origin.x,dy=target.y-j.origin.y,d=Math.hypot(dx,dy),travel=Math.min(256,Math.max(0,age)*900);
     if(d>256)return false;j.x=j.origin.x+(d?dx/d:0)*Math.min(travel,d);j.y=j.origin.y+(d?dy/d:0)*Math.min(travel,d);
-    if(!j.hit&&travel+EPS>=d){j.hit=true;j.impact=c.now;j.point={x:target.x,y:target.y};control(target,c.now,1.5,false,4);c.hit(target,(c.damage||damage)(target,j.physical,3.5,false,j.pen),{kind:j.kind,token:j.token});}
+    if(!j.hit&&travel+EPS>=d){j.hit=true;j.impact=c.now;j.point={x:target.x,y:target.y};control(target,c.now,1.5,false,4);c.hit(target,(c.damage||damage)(target,j.physical,3.5,false,j.pen),{kind:j.kind,token:j.token,wear:j.wear});}
     return !j.hit?age<1.6:c.now-j.impact<.8;
    }
    if(j.kind==='mellow'){
@@ -70,7 +70,7 @@
    if(!j.hit&&age+EPS>=j.duration){
     j.hit=true;if(!c.clear(j.origin,target))return false;
     const targets=j.kind==='gamma'?[target]:c.enemies.filter(m=>live(m)&&dist(target,m)<=(ope?128:256)&&c.clear(target,m));
-    for(const m of targets){if(j.kind==='rain')control(m,c.now,5,true,5);const absolute=j.kind==='gamma';c.hit(m,damage(m,absolute?j.elemental:j.power,absolute?4.5:ope?3.5:2.5,!ope||absolute,absolute?1:ope?j.pen:j.magicPen,absolute),{kind:j.kind,ignoreAllMitigation:absolute,token:j.token});}
+    for(const m of targets){if(j.kind==='rain')control(m,c.now,5,true,5);const absolute=j.kind==='gamma';c.hit(m,damage(m,absolute?j.elemental:j.power,absolute?4.5:ope?3.5:2.5,!ope||absolute,absolute?1:ope?j.pen:j.magicPen,absolute),{kind:j.kind,ignoreAllMitigation:absolute,token:j.token,wear:j.wear});}
    }
    return age+EPS<j.duration;
   });

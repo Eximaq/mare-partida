@@ -27,6 +27,7 @@ export const originalItemSchema = z.strictObject({
   level: z.number().int().min(1).max(1000),
   plus: z.number().int().min(0).max(20),
   locked: z.boolean(),
+  durability: z.number().int().min(0).max(100000).optional(),
   dismantlable: z.boolean().optional(),
   obtainedAt: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
   rarity: z
@@ -101,7 +102,11 @@ const five = z
   .array(instanceIdSchema)
   .length(5)
   .refine((a) => new Set(a).size === 5);
+const repairQuote = z.array(z.strictObject({id:instanceIdSchema,cost:z.number().int().min(1).max(1_000_000_000)}))
+  .min(1).max(11).refine(rows=>new Set(rows.map(row=>row.id)).size===rows.length);
 export const forgeOperationSchema = z.discriminatedUnion("type", [
+  z.strictObject({...item,type:z.literal("repair"),quote:repairQuote.refine(rows=>rows.length===1)}),
+  z.strictObject({...revision,type:z.literal("repairAll"),quote:repairQuote}),
   z.strictObject({...revision,type:z.literal("formEpicWeapon")}),
   z.strictObject({ ...item, type: z.literal("upgrade") }),
   z.strictObject({

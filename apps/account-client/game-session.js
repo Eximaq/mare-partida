@@ -23,8 +23,14 @@
   const instanceId=v=>typeof v==='string'&&/^[a-zA-Z0-9:-]{1,80}$/.test(v);
   function validForge(op){
     if(!op||typeof op!=='object'||!Number.isSafeInteger(op.expectedSeq)||op.expectedSeq<0)return false;
-    const fields={formEpicWeapon:[],dismantle:['itemIds'],upgrade:['itemId'],imbue:['itemId','pearlItemId','socket'],remove:['itemId','socket'],fuse:['itemIds'],fuseEquipment:['itemIds','slot'],reforge:['itemId'],reforgeLine:['itemId','line']}[op.type];
+    const fields={repair:['itemId','quote'],repairAll:['quote'],formEpicWeapon:[],dismantle:['itemIds'],upgrade:['itemId'],imbue:['itemId','pearlItemId','socket'],remove:['itemId','socket'],fuse:['itemIds'],fuseEquipment:['itemIds','slot'],reforge:['itemId'],reforgeLine:['itemId','line']}[op.type];
     if(!fields||Object.keys(op).sort().join()!==['type','expectedSeq',...fields].sort().join())return false;
+    if(op.type==='repair'||op.type==='repairAll'){
+      const q=op.quote;
+      return (op.type==='repairAll'||instanceId(op.itemId)) && Array.isArray(q)&&q.length>=1&&q.length<=(op.type==='repair'?1:11)
+        && q.every(r=>r&&Object.keys(r).sort().join()==='cost,id'&&instanceId(r.id)&&Number.isSafeInteger(r.cost)&&r.cost>0&&r.cost<=1_000_000_000)
+        && new Set(q.map(r=>r.id)).size===q.length;
+    }
     const batchSize=op.type==='dismantle'?[1,120]:[5,5];
     return fields.every(k=>k==='itemIds'?Array.isArray(op[k])&&op[k].length>=batchSize[0]&&op[k].length<=batchSize[1]&&new Set(op[k]).size===op[k].length&&op[k].every(instanceId):k==='slot'?originalSlots.includes(op[k]):k==='socket'||k==='line'?Number.isInteger(op[k])&&op[k]>=0&&op[k]<=(k==='socket'?4:7):instanceId(op[k]));
   }
@@ -357,7 +363,20 @@
           const daily=original.online.contracts?.daily;
           if(f.version!==original.online.state.version||(f.protocol===2&&!party)||(daily&&Date.parse(f.serverNow)>=daily.endsAt))return read(true);
           networkSample={rttMs:Math.max(0,completed-started),at:completed,intervalMs:networkSample?Math.max(0,completed-networkSample.at):null};
-          data={character:original.character,online:{...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party,weeklyBoss:f.weeklyBoss??null}};
+          let originalInventory=original.online.originalInventory;
+          const condition=f.battle?.equipmentCondition;
+          if(originalInventory&&condition?.forgeSeq===originalInventory.forgeSeq&&condition.values){
+            const equipment={...originalInventory.equipment};
+            let changed=false;
+            for(const [slot,item] of Object.entries(equipment)){
+              const units=item&&condition.values[item.id];
+              if(Number.isInteger(units)&&units>=0&&units<=100000&&units!==item.durability){
+                equipment[slot]={...item,durability:units};changed=true;
+              }
+            }
+            if(changed)originalInventory={...originalInventory,equipment};
+          }
+          data={character:original.character,online:{...original.online,originalInventory,world:f.world,battle:f.battle,lobby:f.lobby,party,weeklyBoss:f.weeklyBoss??null}};
           available=true;notify();return data;
         }catch(error){if(revision===readVersion){available=false;notify();}throw error;}
       })().finally(()=>{if(frameFlight===flight)frameFlight=null;});

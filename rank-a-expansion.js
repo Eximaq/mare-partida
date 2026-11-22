@@ -20,11 +20,11 @@
  }
  function emit(c,j,m,power,mult,magic=false,absolute=false,event='initial',dot=false){
   if(!live(m))return;const amount=dot?power:(c.damage||A().damage)(m,power,mult,magic,magic?j.magicPen:j.pen,absolute);
-  c.hit(m,amount,{kind:j.kind,token:j.token,eventKey:event,impactPoint:j.point,dot,ignoreAllMitigation:absolute,exclusive:true});
+  c.hit(m,amount,{kind:j.kind,token:j.token,wear:j.wear,eventKey:event,impactPoint:j.point,dot,ignoreAllMitigation:absolute,exclusive:true});
  }
  function poison(e,j,m,now,kind,power,count,interval=1){
   if(kind==='bleed'){const old=e.dots.find(d=>d.cast===j.id&&d.targetId===m.id&&d.kind===kind);if(old){old.until=now+4;return;}}
-  e.dots.push({cast:j.id,targetId:m.id,kind,power,next:now+interval,until:now+count*interval,left:count,tick:0,token:j.token});
+  e.dots.push({cast:j.id,targetId:m.id,kind,power,next:now+interval,until:now+count*interval,left:count,tick:0,token:j.token,wear:j.wear});
   if(e.dots.length>512)e.dots.splice(0,e.dots.length-512);
  }
  function tiles(point,radius){const out=[],cx=Math.floor(point.x/64)*64+32,cy=Math.floor(point.y/64)*64+32;for(let y=-3;y<=3;y++)for(let x=-3;x<=3;x++){const p={x:cx+x*64,y:cy+y*64};if(dist(point,p)<=radius)out.push(p);}return out;}
@@ -34,7 +34,7 @@
   if(!valid(s,c))return false;const e=state(s),now=c.now,bari=c.fruit===ids[0],doku=c.fruit===ids[1];
   if(bari&&c.key==='2'){e.dome={started:now,until:now+10,realUntil:c.epoch?c.epoch+10000:null};cleanseControl(c.hero);return true;}
   const kind=bari?(c.key==='1'?'bariPush':'bariCharge'):doku?({1:'hydra',2:'gasBomb',3:'redPoison'})[c.key]:({1:'tamaito',2:'parasite',3:'overheat'})[c.key],direction=A().direction(c.hero);
-  const j={id:++e.seq,kind,started:now,origin:{x:c.hero.x,y:c.hero.y},point:c.target?{x:c.target.x,y:c.target.y}:{x:c.hero.x+direction[0]*192,y:c.hero.y+direction[1]*192},direction,targetId:c.target?.id,token:c.token,physical:c.stats.physical,elemental:c.stats.elemental,attack:c.stats.attack??c.stats.physical,pen:c.stats.penetration||0,magicPen:c.stats.magicPen||0,hits:new Set(),walls:new Set(),distance:0,next:0,shots:[]};
+  const j={id:++e.seq,kind,started:now,origin:{x:c.hero.x,y:c.hero.y},point:c.target?{x:c.target.x,y:c.target.y}:{x:c.hero.x+direction[0]*192,y:c.hero.y+direction[1]*192},direction,targetId:c.target?.id,token:c.token,wear:c.wear,physical:c.stats.physical,elemental:c.stats.elemental,attack:c.stats.attack??c.stats.physical,pen:c.stats.penetration||0,magicPen:c.stats.magicPen||0,hits:new Set(),walls:new Set(),distance:0,next:0,shots:[]};
   if(kind==='gasBomb'){const d=dist(j.origin,j.point);if(d>192){j.point={x:j.origin.x+(j.point.x-j.origin.x)*192/d,y:j.origin.y+(j.point.y-j.origin.y)*192/d};}j.point=clipPoint(c,j.origin,j.point);j.duration=dist(j.origin,j.point)/640;}
   if(kind==='bariPush'||kind==='bariCharge')j.limit=dist(j.origin,clipPoint(c,j.origin,{x:j.origin.x+direction[0]*256,y:j.origin.y+direction[1]*256}));
   if(kind==='redPoison')j.point={x:Math.floor(c.hero.x/64)*64+32,y:Math.floor(c.hero.y/64)*64+32};

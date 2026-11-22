@@ -28,7 +28,7 @@ function fitInventoryAvatar(ctx,source,referenceScale=1,{cache=true,zoom=3}={}){
  return {physicalScale,requestedScale:target,multiplier:physicalScale/referenceScale,limited:physicalScale<target,bounds};
 }
 
-const identityKey=p=>JSON.stringify([p.appearance96||{},p.equipment||{},!!p.zoanTransformed,!!root.MareHeadgear?.hidden(p)]);
+const identityKey=p=>JSON.stringify([p.appearance96||{},p.equipment||{},!!p.zoanTransformed,!!root.MareHeadgear?.hidden(p)],(key,value)=>key==='durability'?undefined:value);
 // Approved comparison: the 374px-tall rifle115 source draws at 105px, like the Marinheiro.
 // A fixed factor across every pose prevents frame-to-frame breathing; assets and composition stay HD.
 const WORLD_SCALE=105/374;

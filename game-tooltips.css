@@ -24,3 +24,12 @@
 .game-tip-compendium .game-tip-description{font-size:16px}
 
 .equipment-potential{position:relative;isolation:isolate;height:17px;min-width:100px;margin:5px 0;background:#17131b;border:1px solid #706048;border-radius:2px;overflow:hidden;font-size:10px;color:#fff3d8}.equipment-potential>span{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#3e4872,#9365bc);z-index:-1}.equipment-potential>b{display:block;padding:0 6px;line-height:15px;text-shadow:0 1px 2px #000}.equipment-legacy{display:block;color:#b7aa94;margin:4px 0}
+
+.equipment-durability{margin-block:.55rem;color:inherit;font-size:.84em}
+.equipment-durability strong,.equipment-durability small{display:block}
+.equipment-durability-bar{height:4px;border-radius:3px;background:#293237;margin:.25rem 0;overflow:hidden}
+.equipment-durability-bar span{display:block;height:100%;background:#75dc91}
+.equipment-durability[data-condition="fair"] span{background:#ffcd73}
+.equipment-durability[data-condition="worn"] span{background:#ffab55}
+.equipment-durability[data-condition="low"] span{background:#ff6868}
+.game-tooltip{max-height:calc(100dvh - 16px);overflow:auto}

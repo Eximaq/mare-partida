@@ -6,6 +6,7 @@ import type { OriginalItemInstance } from "@mare/shared";
 import type { AuthService } from "../../apps/game-server/src/auth/service.js";
 import { getGameCatalog } from "../../apps/game-server/src/gameplay/catalog.js";
 import { authDatabase } from "./auth-support.mjs";
+import { marketItemDetails } from "../../apps/game-server/src/characters/market.js";
 
 type MarketResult = {
   kind: string;
@@ -75,7 +76,8 @@ test("market escrow, fees and immutable mail delivery use the ordinary Berry wal
     const seller = await actor(service, pool, "Comerciante", 0);
     const buyer = await actor(service, pool, "Comprador", 20_000);
     const rival = await actor(service, pool, "Ofertante", 8_000);
-    const item = gear();
+    const item = gear({durability:0});
+    assert.equal(marketItemDetails(item).durability,0);
     const auctionItem = gear({ potential: 87 });
     const blocked = gear({ locked: true });
     const bound = gear({ binding: "character", boundToCharacter: seller.id });

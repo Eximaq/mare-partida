@@ -165,7 +165,7 @@
     const directionalPreparations=new Map();
     function prepareWorldDirections(player){
       if(!nativeHD?.prepareStablePose||!player||player.zoanTransformed)return;
-      const key=JSON.stringify([player.appearance96,player.equipment,!!root.MareHeadgear?.hidden(player),!!root.MareAppearance96,!!root.MareCharacterAppearance]);
+      const key=JSON.stringify([player.appearance96,player.equipment,!!root.MareHeadgear?.hidden(player),!!root.MareAppearance96,!!root.MareCharacterAppearance],(key,value)=>key==='durability'?undefined:value);
       if(directionalPreparations.has(key))return;
       const preparedPlayer={...player,appearance96:{...player.appearance96},equipment:{...player.equipment},preferences:{...player.preferences}};
       const task=(async()=>{for(const direction of ['south','east','west','north']){const options={action:'idle',direction,consumer:'world'};if(!await nativeHD.prepareStablePose(preparedPlayer,options))await defaultHD?.prepareStablePose(preparedPlayer,options);}})().catch(()=>{directionalPreparations.delete(key);});
