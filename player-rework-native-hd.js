@@ -3690,10 +3690,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(o.consumer!=='world'||o.weaponless||Object.keys(visible).length!==1)return null;
   const g=visible.gloves?.item,{direction,action}=o,authority=maleBareGloveLocomotion[direction+':'+action];
   const signed=g===25||g===26?authority?.[g-24]:direction==='north'?maleNorthAdditionalGloves[action]?.[g]:allowSouthNew?maleSouthAdditionalGloves[action]?.[g]:null;
-  if(!authority||!signed||!['original','hair-cropped'].includes(player.appearance96?.hairStyle??player.appearance96?.hair??'original'))return null;
+  if(!authority||!signed)return null;
   const base=select({...player,equipment:{}},o),donor=outfitById.get(`frozen-male-glove${g}-${direction}-${action}-native-layers`);
   const p=base?.pack,t=donor?.pack,d=p?.directions[direction],sd=t?.directions[direction],eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
-  if(!base||base.hdKind||base.mirrorX||base.gearOnlyRecord||!authority[0].includes(base.sourceId)||!d||!sd||
+  if(!base||base.hdKind||base.mirrorX||base.gearOnlyRecord||!authority[0].includes(base.sourceId)&&!baseIndex.records.some(r=>r.id===base.sourceId&&r.body==='male'&&r.action===action&&r.direction===direction)||!d||!sd||
      !donor.frozenGloveLayers||donor.equipment?.gloves!==g||p.density!==4||t.density!==4||
      !eq(p.frame,{width:128,height:128})||!eq(p.frame,t.frame)||!eq(p.pivot,t.pivot)||
      !eq(d.clip,sd.clip)||!eq(d.rest,sd.rest)||!eq(d.poses,sd.poses))return null;
@@ -4495,12 +4495,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      Object.entries(equipment).some(([k,v])=>k!=='weapon'&&!nonVisualEquipment.has(k)&&v!=null&&v!=='none')||
      ['variant','variantId','appearanceVariant'].some(k=>w?.[k]!=null&&w[k]!=='original')||
      raw.version!==1||raw.gender!=='masculino'||raw.skinStyle!=='natural'||raw.skin!=null&&raw.skin!==raw.skinColor||
-     raw.hair!=null&&raw.hair!==raw.hairStyle||!['hair-cropped','hair-spiky'].includes(raw.hairStyle)||raw.face!=null&&raw.face!=='original'||raw.eyeStyle!=='original'||raw.eyeColor!=='blue'||
+     raw.hair!=null&&raw.hair!==raw.hairStyle||!['hair-cropped','hair-spiky'].includes(raw.hairStyle)||raw.face!=null&&raw.face!=='original'||raw.eyeStyle!=='original'||!Object.hasOwn(root.MareCharacterAppearance?.eyes||{},raw.eyeColor)||
      !Object.hasOwn(root.MareCharacterAppearance?.skins||{},raw.skinColor)||!Object.hasOwn(root.MareAppearance96?.skins||{},raw.skinColor)||
      !Object.hasOwn(root.MareCharacterAppearance?.hairs||{},raw.hairColor)||!Object.hasOwn(root.MareAppearance96?.hairs||{},raw.hairColor))return null;
   // Reuse the exact accepted saved-tone attachment, not the old Native96 grip.
   // The source and depth contain the item-specific hand treatment and stay intact.
-  const authority=select({...player,appearance96:{...raw,hair:'original',hairStyle:'original',hairColor:'black'}},o);
+  const authority=selectVisual({...player,appearance96:{...raw,hair:'original',hairStyle:'original',hairColor:raw.hairColor}},o);
   if(authority?.hdKind!=='carry'||authority.item!==id||authority.action!==o.action||authority.direction!==o.direction||
      authority.base?.body!=='male'||authority.colorAppearance?.skin!==raw.skinColor||authority.colorAppearance?.eyeColor!==raw.eyeColor||
      authority.headRecord||authority.gearOnlyRecord||authority.omitted?.length)return null;
@@ -5711,9 +5711,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...group,layers,source:own.sourceRecord,repair:fitted.skinRepairLayers,mirrored:fitted.preMirroredLayers};
  }
  function independentNativePass({player,o,base,weapon,slot,v,selectPose}){
-  const equipment=weapon?{[weapon.key]:weapon.value}:{},single=selectPose({...player,equipment:{...equipment,[v.key]:v.value}},o);
+  const equipment=weapon?{[weapon.key]:weapon.value}:{},candidate=selectPose({...player,equipment:{...equipment,[v.key]:v.value}},o);
   const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b),carry=simpleCarry(base);
-  if(single?.appearanceAdapted||single?.unsupported?.length||single?.omitted?.length)return null;
+  const single=candidate?.appearanceAdapted||candidate?.unsupported?.length||candidate?.omitted?.length?null:candidate;
   if(base.hdKind==='female-equipment'){
    // The dagger renderer already owns the hand operation and the East →
    // West reflection. Carry its own verified passes without copying skin,
@@ -5764,9 +5764,18 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(slot==='gloves'){
    const own=strictOwnGlove(single)||strictOwnGlove(selectPose({...player,equipment:{[v.key]:v.value}},o));
    if(own){
-    const d=own.base.pack.directions[o.direction],pack={...own.base.pack,
-     directions:{...own.base.pack.directions,[o.direction]:{...d,layers:[...d.layers,...own.gloves]}}};
-    const group=packAttachment(base,{...own.base,pack},{refs:own.hashes,layers:own.gloves});
+    const source=own.base.pack,donor=source.directions[o.direction],dest=base.pack.directions[o.direction];
+    const sameRig=same([source.frame,source.pivot,source.density,donor.rest,donor.poses],
+     [base.pack.frame,base.pack.pivot,base.pack.density,dest.rest,dest.poses])&&
+     (same(donor.clip,dest.clip)||o.action==='idle'&&donor.clip.frames===1&&dest.clip.frames===1)&&
+     !!own.base.mirrorX===!!(carry?base.base:base).mirrorX&&
+     ['armRight','armLeft','handRight','handLeft'].every(id=>{
+      const arm=dest.layers.find(l=>l.id===id);
+      return arm&&same(arm,donor.layers.find(l=>l.id===id));
+     });
+    const rig=sameRig?base:own.base,pack=rig.pack,clip=pack.directions[o.direction];
+    const mounted={...pack,directions:{...pack.directions,[o.direction]:{...clip,layers:[...clip.layers,...own.gloves]}}};
+    const group=packAttachment(base,{...rig,pack:mounted},{refs:own.hashes,layers:own.gloves});
     const fitted=group&&carry&&glovesUnderHeldParts(base,group.layers);
     if(group&&(!carry||fitted||single?.independentCarryGlove||
        certifiedCarryGloveClearance(base,own.gloves)||gloveAboveRearWeapon(base,own.gloves))){
@@ -5811,15 +5820,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function glovesUnderHeldParts(r,gloves){
   // Both sources use the same receiver bones. Its authored front grip is
   // the upper limit for the clothing pass on that hand in every frame.
-  if(!r.savedHeadMaterial||!gloves.length||!r.plan?.parts?.length)return null;
+  if(!gloves.length||!r.plan?.parts?.length)return null;
   const d=r.pack.directions[r.direction],out=[];
   for(const glove of gloves){
    const hand=d.layers.find(l=>l.slot==='body'&&l.binding?.a===glove.binding?.a&&l.binding?.b===glove.binding?.b);
    if(!hand||hand.depthTrack||glove.depthTrack||!Number.isFinite(hand.depth))return null;
    const front=r.plan.parts.filter(p=>p.binding?.a===hand.binding.a&&p.binding?.b===hand.binding.b);
-   if(front.some(p=>!p.source?.sha256||!Number.isFinite(p.depthOffset)||p.depthOffset<=0||
-       p.replaceBoundLayer))return null;
-   out.push({...glove,depth:hand.depth+(front.length?Math.min(.05,...front.map(p=>p.depthOffset/2)):.05)});
+   if(front.some(p=>!p.source?.sha256||!Number.isFinite(p.depthOffset)||p.replaceBoundLayer))return null;
+   const aboveHand=front.filter(p=>p.depthOffset>0);
+   out.push({...glove,depth:hand.depth+Math.min(.05,...aboveHand.map(p=>p.depthOffset/2))});
   }
   return out;
  }
@@ -5997,7 +6006,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    if(scene.pants!=null||scene.boots||scene.lower)return base;
    const body=scene.body;
    if(!body||body.hdKind&&body.hdKind!=='female-equipment')return base;
-   const mounted=wardrobeGaitReceiver({...body,hdKind:'female-equipment'});
+   const bare=body.item==null&&body.states?.every(s=>s.parts?.length===0);
+   const mounted=wardrobeGaitReceiver({...body,hdKind:bare?'unarmed-wardrobe':'female-equipment'});
    return mounted?.gaitOriginal?{...mounted,id:base.id,gaitScene:{source:base,field}}:base;
   }
   if(base?.body!=='female'||!usesFemaleWardrobe(base)||base.action!=='walk'||
@@ -6101,6 +6111,17 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  // Use the actual naked body's clock, anatomy and saved head material.
  // This receiver has no item and has no weapon draw operations in any phase.
  function unarmedWardrobeReceiver(body){
+  // The separated side-walk source has five identical samples per original
+  // phase. selectFemaleCoat67SideBare already compared every body pixel source,
+  // pose and pivot with this registry entry. Keep the saved neck/face materials.
+  const basis=body&&verifiedCoat67SideBare[body.direction];
+  if(basis&&body.pack===basis.pack&&body.sourceId===basis.id&&body.femaleNamedHairRecord){
+   const original=baseIndex.records.find(r=>r.id==='v7-female-walk-drawn-all-'+body.direction);
+   const clip=original.pack.directions[body.direction];
+   return {...original,id:body.id,hdKind:'unarmed-wardrobe',baseRecord:original,sourceBaseId:original.id,
+    colorAppearance:body.colorAppearance,material:body.femaleNamedHairRecord,paddingPhysical:0,
+    states:clip.poses.map((_,frame)=>({frame,parts:[]}))};
+  }
   if(!body||body.hdKind||body.body!=='female'||body.headRecord||body.gearOnlyRecord||
      !body.femaleNamedHairRecord||!['idle','walk','attack-unarmed'].includes(body.action))return body;
   const d=body.pack?.directions?.[body.direction],sourceId=body.sourceId??body.id;
@@ -6205,7 +6226,21 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      base.states.length!==8||base.states.some((state,i)=>state.frame!==i))return false;
   if(!combatReceiverCache.has(base.pack)){
    const original=baseIndex.records.find(r=>r.id===rig.id&&r.sourcePackSHA256===rig.digest);
-   combatReceiverCache.set(base.pack,!!original&&JSON.stringify(original.pack)===JSON.stringify(base.pack));
+   let expected=original?.pack;
+   if(expected&&base.previewW5SouthMuzzle&&base.action==='attack-firearm'&&base.direction==='south'){
+    const d=expected.directions.south,clock=base.firearmBodyClock;
+    if(!clock||clock.length!==8)return false;
+    expected={...expected,directions:{...expected.directions,south:{...d,layers:d.layers.map(layer=>({...layer,
+     frames:clock.map(f=>layer.frames[layer.id==='body-clothed'?1:f])}))}}};
+   }
+   if(expected&&base.w113SouthStaticBody&&base.action==='attack-firearm'&&base.direction==='south'){
+    // This receiver retains the approved second torso plate across recoil.
+    // Arms, hand masks, pose and all remaining geometry must still match.
+    const d=expected.directions.south,body=d.layers[0];
+    if(body.id==='body-clothed'&&body.frames.length===8)expected={...expected,directions:{...expected.directions,south:{...d,
+     layers:[{...body,source:body.frames[1],frames:Array(8).fill(body.frames[1])},...d.layers.slice(1)]}}};
+   }
+   combatReceiverCache.set(base.pack,!!expected&&JSON.stringify(expected)===JSON.stringify(base.pack));
   }
   return combatReceiverCache.get(base.pack);
  }
@@ -6215,6 +6250,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(firearm&&(base.states.some(s=>s.hideBaseLayers?.length||Object.keys(s.baseMasks||{}).length)||base.paddingPhysical!==0))return null;
   if(slot==='head'){
    if(!firearm)return femaleMaterialHead(base,v,player);
+   if(base.direction!=='north'){
+    const rig=base.baseRecord,p=rig.pack,d=p.directions[base.direction];
+    const layers=d.layers.filter(l=>['headBase','face','hair'].includes(l.slot));
+    if(layers.length!==4||layers.some(l=>l.binding?.kind!=='fixed'||!l.frames?.every(h=>h===l.source)))return null;
+    const fixed=new Set(layers),reference={...rig,pack:{...p,directions:{...p.directions,[base.direction]:{
+     ...d,layers:d.layers.map(l=>fixed.has(l)?{...l,frames:undefined}:l)}}}};
+    return femaleMaterialHead(base,v,player,reference);
+   }
    const recoil=femaleRegistry.northFirearmRecoil(base);
    if(!recoil)return null;
    const pass=femaleMaterialHead(base,v,player,recoil.reference);
@@ -6226,6 +6269,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(own.state!=='available'||own.mirrorX)return null;
   const d=base.pack.directions[base.direction],shorts=d.layers.find(l=>l.id==='shorts');
   let layers=own.source;
+  if(base.firearmBodyClock)layers=layers.map(l=>({...l,frames:base.firearmBodyClock.map(f=>l.frames[f]),
+   ...(l.firearmHands?{firearmHands:base.firearmBodyClock.map(f=>l.firearmHands[f])}:{})}));
   if(slot==='gloves'&&base.hdKind==='female-equipment'&&player.classId==='cyborg'){
    // The mechanical right hand belongs to the weapon. Preserve the
    // authored free left-hand glove in every phase.
@@ -6238,8 +6283,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const gloveFit=layers.filter(l=>l.receivingHand).map(l=>({frames:l.frames,
    matrices:combatWardrobe.handFits?.[base.direction+'/'+l.receivingHand]}));
   if(gloveFit.some(g=>g.matrices?.length!==8||g.matrices.some(m=>m.length!==6||!m.every(Number.isFinite))))return null;
-  const library=firearm?'fuzil113-ns.zip':(base.action==='attack-focus'?'focus':'soco')+'-editable-sources.tgz';
-  return {gloveFit,source:library+'/'+base.direction+'/'+slot+'/'+v.item,
+  const library=firearm?(['east','west'].includes(base.direction)?'pistolas114-laterais.zip':'fuzil113-ns.zip'):(base.action==='attack-focus'?'focus':'soco')+'-editable-sources.tgz';
+  return {gloveFit,firearmGloves:layers.filter(l=>l.firearmHands).map(l=>({frames:l.frames,hands:l.firearmHands})),source:library+'/'+base.direction+'/'+slot+'/'+v.item,
    layers,removed:slot==='pants'&&!firearm?[shorts.id]:[],refs:[...new Set(layers.flatMap(l=>l.frames))],combatWardrobe:true};
  }
  function swordWardrobePass(base,slot,v,player){
@@ -6251,7 +6296,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function fittedAttackCoat(base,item){
   const row=outfitById.get('female-torso'+item+'-'+base.direction+'-frozen-attack-native');
   if(!row||row.body!==base.body||row.direction!==base.direction||row.productionEnabled===false)return null;
-  const fitted=femaleRegistry.attachSwordCoat(base,row,item);
+  const fitted=femaleRegistry.attachSwordCoat(base,row,item,base.action==='attack-firearm'&&combatReceiver(base));
   if(!fitted)return null;
   const d=base.pack.directions[base.direction],s=fitted.pack.directions[base.direction];
   if(!d.layers.every((l,i)=>s.layers[i]===l))return null;
@@ -6266,7 +6311,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     if(l.id.endsWith('-far-derived-sleeve'))return {...l,depth:depth('right-upper')+.1};
     // The shirt panels sit over the base top but behind the bent arms,
     // the hand grip and the blade. Preserve relative order of trim.
-    return l.depth<0?l:{...l,depth:depth('top')+.1+l.depth/100};
+    return l.depth<0?l:{...l,depth:(base.action==='attack-firearm'?depth('body-clothed')+.85:depth('top'))+.1+l.depth/100};
    });
   }else{
    const rest=row.pack.directions[base.direction].poses[0];
@@ -6279,15 +6324,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      const left=cut[1].toLowerCase()==='left',arm=left?'left':'right';
      const side=(base.direction==='south'?!left:left)?'LEFT':'RIGHT';
      sleeves.push({hash:l.source,side,from:rest[side+'_SHOULDER'],to:rest[side+'_WRIST']});
-     return {...l,binding:{kind:'fixed'},depth:rifle?6.1:depth(arm+'-forearm')+.3+(l.depth<0?-.1:0)};
+     return {...l,binding:{kind:'fixed'},depth:depth(arm+'-forearm')+.3+(l.depth<0?-.1:0)};
     }
-    if(l.id.endsWith('whole-rear-cape'))return {...l,depth:depth('head-clean')-.1};
-    if(rifle||daggers)return {...l,depth:l.depth<0?l.depth:(rifle?5.1:depth('body-clothed')+1.1)+l.depth/10000};
+    if(l.id.endsWith('whole-rear-cape'))return {...l,depth:rifle?depth('body-clothed')+.85:depth('head-clean')-.1};
+    if(rifle||daggers)return {...l,depth:l.depth<0?l.depth:(depth('body-clothed')+(rifle ? .95 : 1.1))+l.depth/10000};
     return l.depth<0?l:{...l,depth:depth('top')+.1+l.depth/1000};
    });
   }
   return {source:row.id,layers,removed:[],refs:fitted.outfitSources,
-   swordCoat:{rest:s.rest,poses:s.poses,padding:fitted.sourceRasterPadding,sleeves,
+   swordCoat:{rest:s.rest,poses:base.firearmBodyClock?base.firearmBodyClock.map(f=>s.poses[f]):s.poses,padding:fitted.sourceRasterPadding,sleeves,
     repair:layers.filter(l=>l.id.startsWith('original-neck-coverage-only')).map(l=>l.id)}};
  }
  const independentPassCache=new Map();
@@ -6390,6 +6435,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     mounted.clothOwner=outfits.find(p=>p.clothOwner)?.clothOwner;
    }
    mounted.focusGloveFit=accepted.flatMap(p=>p.gloveFit||[]);
+   mounted.firearmGloves=accepted.flatMap(p=>p.firearmGloves||[]);
    mounted.combatWardrobeSources=accepted.filter(p=>p.combatWardrobe).flatMap(p=>p.refs);
    const nativeRefs=accepted.filter(p=>!p.combatWardrobe&&!p.femaleOutfit&&!p.swordCheckpoint&&!p.swordCoat&&!p.daggerWardrobe&&!p.daggerTorso).flatMap(p=>p.refs);
    mounted.daggerP22Sources=[...new Set([...nativeRefs,...(daggerHands?.source.flatMap(l=>l.frames)||[])])];

@@ -20,7 +20,12 @@ const preview=(api,q,o)=>{let z;a(api.draw({save(){},restore(){},drawImage(c){z=
   a(q.hideHandBeyondWrist&&!q.replaceBoundLayer);a.equal(q.depthOffset,.1);
   const vanilla={...r,id:r.id+':baseline',plan:{...r.plan,parts:[{...q,joinedFringe:null}]}};
   const opts=[{...o,action:'attack-unarmed'},{...o,consumer:'portrait'},{...o,weaponless:true}];
-  const people=[save('light',{classId:'brawler'}),save('light',{equipment:{weapon:{def:14,variant:'other'}}}),save('light',{equipment:{weapon:{def:14},coat:{def:151}}}),save('light',{equipment:{weapon:{def:14},gloves:{def:26}}}),save('light',{equipment:{weapon:{def:14},head:{def:157}}}),save('light',{}, {hairStyle:'none'}),save('light',{}, {eyeColor:'green'}),save('light',{}, {hairColor:'brown'})];
+  const people=[save('light',{classId:'brawler'}),save('light',{equipment:{weapon:{def:14,variant:'other'}}}),save('light',{equipment:{weapon:{def:14},coat:{def:151}}}),save('light',{equipment:{weapon:{def:14},gloves:{def:26}}}),save('light',{equipment:{weapon:{def:14},head:{def:157}}}),save('light',{}, {hairStyle:'none'})];
+  for(const [hairColor,eyeColor] of [['blue','green'],['brown','blue']]){
+   const colored=api.selectVisual(save('light',{}, {hairColor,eyeColor}),o);
+   a(colored?.manopla14SavedPalette);a.deepEqual(colored.savedHeadMaterial.colors,[hairColor,eyeColor]);
+   a.deepEqual(colored.plan,r.plan);a.deepEqual(colored.pack,r.pack);a.notEqual(colored.id,r.id);
+  }
   for(const [g,options] of [...people.map(g=>[g,o]),...opts.map(x=>[who,x])]){a(!api.selectVisual(g,options)?.manopla14SavedPalette);if(C)a.deepEqual(api.selectVisual(g,options),stock.selectVisual(g,options));}
   const pref='tools/rework-weapon-layers-hd/',gear=await load(pref+q.source.url),s=gear.width,cc=cv.createCanvas(s,s),cx=cc.getContext('2d');
   const px=im=>{cx.clearRect(0,0,s,s);cx.drawImage(im,0,0);return cx.getImageData(0,0,s,s);};

@@ -213,10 +213,12 @@ window.__hdSlotQA={
   await remove('weapon');
   const {weapon:held,...clothes}=swordKit;
   const bare=await draw('repouso-desarmada-com-cinco-pecas','idle','south',clothes,true);
+  await walk('d','east',clothes,'desarmada-caminha-leste',true);
+  await walk('a','west',clothes,'desarmada-caminha-oeste',true);
   assert(!Object.hasOwn(bare.equipment,'weapon'));
   assert.deepEqual(bare.appearance,savedLook);
   await put(held);
-  await draw('repouso-arma-restaurada','idle','south',swordKit,true);
+  await draw('repouso-arma-restaurada','idle','west',swordKit,true);
   for(const [key,direction] of [['d','east'],['s','south'],['a','west'],['w','north']])
    await walk(key,direction,swordKit,'espada-caminhada-'+direction,true);
   for(const direction of ['east','north','west','south'])
@@ -275,6 +277,9 @@ window.__hdSlotQA={
   for(const coat of [6,179,151]){
    await put(coat);rifleKit.coat=coat;
    await observeAttack('attack-firearm','fuzil113-peitoral-'+coat,'north',rifleKit);
+  }
+  for(const dir of ['south','east','west']){
+   await observeAttack('attack-firearm','fuzil113-traje-'+dir,dir,rifleKit);
   }
   await put(26);rifleKit.gloves=26;
   await observeAttack('attack-firearm','fuzil113-troca-luva','north',rifleKit);

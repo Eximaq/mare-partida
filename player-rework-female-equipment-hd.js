@@ -55,16 +55,21 @@ function bendSwordSleeve(canvas,image,sleeve,pose,density){
  draw(a,joint,shoulder,elbow,false);
  if(long)draw(joint,b,elbow,wrist,true);
 }
-function attachSwordCoat(record,outfit,coat){
+function attachSwordCoat(record,outfit,coat,registeredFirearm=false){
  if(record.body!=='female'||!(['attack-sword','attack-unarmed','attack-focus'].includes(record.action)||
-    (record.action==='attack-firearm'&&record.direction==='north'&&northFirearmRecoil(record))||
+    (record.action==='attack-firearm'&&(registeredFirearm||record.direction==='north'&&northFirearmRecoil(record)))||
     (record.action==='attack-daggers'&&record.femaleDaggerSavedTones))||!outfit||
     outfit.equipment.torso!==coat||Object.keys(outfit.equipment).length!==1)return null;
  const {direction,baseRecord:base}=record,pack=base.pack,d=pack.directions[direction],o=outfit.pack.directions[direction];
  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
  if(!same(pack.frame,outfit.pack.frame)||!same(pack.pivot,outfit.pack.pivot)||pack.density!==outfit.pack.density||
     d.clip.frames!==o.clip.frames||d.clip.fps!==o.clip.fps||d.clip.contactFrame!==o.clip.contactFrame||
-    !same(d.rest.NECK,o.rest.NECK)||!same(d.rest.NOSE,o.rest.NOSE))return null;
+    !same(d.rest.NECK,o.rest.NECK))return null;
+ const profileRifle=registeredFirearm&&['east','west'].includes(direction)&&
+  same(d.rest.NOSE,{x:80,y:49.75})&&same(o.rest.NOSE,{x:direction==='east'?87:73,y:50.5})&&
+  same(d.rest.NECK,{x:80,y:58.25})&&o.layers.every(l=>l.id.startsWith('base:')||
+   ![l.binding?.a,l.binding?.b].includes('NOSE'));
+ if(!same(d.rest.NOSE,o.rest.NOSE)&&!profileRifle)return null;
  const layers=o.layers.filter(l=>!l.id.startsWith('base:'));
  const refs=[...new Set(layers.map(l=>l.source))];
  if(!layers.length||layers.some(l=>!['top','underArms'].includes(l.slot)||l.frames||
@@ -925,7 +930,7 @@ function previewW5SouthMuzzle(r){
  const layers=d.layers.map(layer=>({...layer,frames:pose.map(from=>layer.frames?.[layer.id==='body-clothed'?1:from])}));
  if(!d.layers.every(q=>q.frames?.length===8)||layers.some(x=>x.frames.some(y=>!y)))return r;
  const baseRecord={...r.baseRecord,pack:{...r.baseRecord.pack,directions:{...r.baseRecord.pack.directions,south:{...d,layers}}}};
- return {...r,previewW5SouthMuzzle:true,baseRecord,states:r.states.map((s,i)=>{
+ return {...r,previewW5SouthMuzzle:true,firearmBodyClock:pose,baseRecord,states:r.states.map((s,i)=>{
   const from=pose[i],p=r.states[from].parts[0],matrix=p.matrix.slice();
   if(i===0){matrix[4]+=9;matrix[5]+=7;return {...s,parts:[{...p,matrix,sourceClip:[0,0,260,640],depth:6.005}]};}
   const rawCentre={1:[304,260],2:[310,246],4:[309,240],5:[311,235],6:[310,246]}[from];
@@ -1481,6 +1486,17 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   const pixels=c.getImageData(0,0,tile.width,tile.height);
   for(let i=0;i<keep.length;i+=4)if(keep[i])pixels.data.fill(0,i,i+4);
   c.putImageData(pixels,0,0);map.set(hash,tile);
+ }
+ for(const fit of r.firearmGloves||[]){
+  const hash=fit.frames[frame],image=map.get(hash);
+  if(!image)throw Object.assign(Error('Missing firearm glove'),{asset:asset(r,hash)});
+  const tile=frameCanvas(image.width,image.height),ctx=tile.getContext('2d');
+  ctx.imageSmoothingEnabled=false;
+  for(const {box,offset} of fit.hands[frame]){
+   const [x,y,right,bottom]=box||[0,0,image.width,image.height];
+   ctx.drawImage(image,x,y,right-x,bottom-y,x+offset[0],y+offset[1],right-x,bottom-y);
+  }
+  map.set(hash,tile);
  }
  for(const fit of r.focusGloveFit||[]){
   const hash=fit.frames[frame],image=map.get(hash);

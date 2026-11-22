@@ -2278,7 +2278,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  }
   function resolve({item,body:b,action='attack',direction,appearance={},equipment={},allowExactComposite=true,allowNorthSavedBlue=false,allowKnownSideFirearmSkin=false,allowKnownFirearmSavedSkin=false,allowOwnFirearmNaturalPalette=false,allowNorthSwordDefault=false,allowNorthSwordAllSkin=false,allowOwnRestoredRearSword=false,allowOwnW70South=false,allowCannon15SideAttack=false,allowArm117SideAttack=false,allowRelic31NorthAttack=false,allowRelic32NorthAttack=false,allowStaff121NorthAttack=false,allowGauntlet112NorthOwnAttack=false,allowGauntlet14NorthOwnAttack=false,allowW2NorthOwnAttack=false,allowOwnGauntletsSide=false,allowW3NorthOwnAttack=false,allowGauntlet112SouthOwnAttack=false,allowGauntlet111NorthOwnAttack=false,allowOrb17NorthRestoredAttack=false,allowOrb122NorthRestoredAttack=false,allowCyborgForearmSouthAttack=false,allowCompass16NorthAttack=false,allowOwnSouthDaggers=false,allowOwnOrb122South=false}={}){
   if(item==null)return null;
-  const allowed=[12,13,71,72,73,74].includes(Number(item))?["attack","attack-daggers"]:[0,1,67,68,69,70].includes(Number(item))?["attack","attack-sword"]:[14,110,112,2,3,15,109,111,117,118,119,120].includes(Number(item))?['attack','punch','attack-unarmed']:[4,5,113,114,115,116].includes(Number(item))?['attack','shoot','attack-firearm']:[123,124,125,126,127,128,16,121,17,122,31,32].includes(Number(item))?['attack','focus','attack-focus','cast']:[];
+  const allowed=weaponActions(Number(item));
   const id=v=>Number(v&&typeof v==='object'?v.def:v);
   const idleSource=exactSouthIdle.get(Number(item));
   const exactSource=idleSource??index.exactSouthFirearms?.find(r=>r.equipment.weapon===Number(item)&&r.equipment.coat===id(equipment.coat));
@@ -2856,7 +2856,18 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
 
   return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4+renderOffset[0],y:r.pivot[1]*4+renderOffset[1]},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalScale:1,hairSeparated:r.hairSeparated,roundingCorrection:!r.separableAttack&&!hiddenSlots.length&&!recolored,roundingTolerance:r.separableAttack||hiddenSlots.length?1:0};}finally{ctx.restore();}
  }
- return {resolve,resolveSeparable,approvedSouth,requiredFiles,render};
+ function weaponActions(item){return [12,13,71,72,73,74].includes(item)?["attack","attack-daggers"]:[0,1,67,68,69,70].includes(item)?["attack","attack-sword"]:[14,110,112,2,3,15,109,111,117,118,119,120].includes(item)?['attack','punch','attack-unarmed']:[4,5,113,114,115,116].includes(item)?['attack','shoot','attack-firearm']:[123,124,125,126,127,128,16,121,17,122,31,32].includes(item)?['attack','focus','attack-focus','cast']:[];}
+ // Many editable attacks store only their ordered states. Expose the
+ // family's actual action after the resolver has accepted the source.
+ function withClock(resolver,request={}){
+  const record=resolver(request);
+  if(!record||record.action||!record.timeline?.length||!record.states?.length)return record;
+  const actions=weaponActions(Number(record.item)),requested=request.action??'attack';
+  const action=requested==='idle'&&record.timeline.length===1?'idle':
+   actions.includes(requested)?actions.find(a=>a.startsWith('attack-')):null;
+  return action?{...record,action}:record;
+ }
+ return {resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
 }
 const api={create};root.MareReworkWeaponNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

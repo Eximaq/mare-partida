@@ -826,7 +826,19 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   for(let i=0;i<raw.data.length;i+=4){
    if(!raw.data[i+3])continue;
    support++;
-   if(!p118&&[0,1,2,3].every(k=>raw.data[i+k]===g[i+k]))continue;
+   if(!p118){
+    if([0,1,2,3].every(k=>raw.data[i+k]===g[i+k]))continue;
+    // Canvas may round an unpremultiplied edge by one RGB code. Only the
+    // metal is present here. Compare the actual premultiplied channels and
+    // leave the original pixel untouched, including its exact alpha.
+    const alpha=raw.data[i+3];
+    // If adding the tissue would change alpha, this sample cannot be
+    // the joined skin composite. Only the original gear supplied its alpha.
+    if(alpha===g[i+3]&&old[i+3]>alpha&&[0,1,2].every(k=>
+       Math.abs(raw.data[i+k]-g[i+k])<=rgbTolerance))continue;
+    if(!s.data[i+3]&&!p?.[i+3]&&alpha===g[i+3]&&[0,1,2].every(k=>
+       Math.round(raw.data[i+k]*alpha/255)===Math.round(g[i+k]*alpha/255)))continue;
+   }
    if(raw.data[i+3]!==old[i+3]||[0,1,2].some(k=>Math.abs(raw.data[i+k]-old[i+k])>rgbTolerance))throw Error('Own cyborg carry no longer reconstructs its F0 crop');
    if(!p118&&expectedClothing&&p?.[i+3]&&!s.data[i+3]){verifiedClothing++;continue;}
    if(m?.[i+3]||!s.data[i+3]||p?.[i+3]||g[i+3]===255||!tone[i/4]){

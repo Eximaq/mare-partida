@@ -10,6 +10,8 @@ import tarfile
 
 from export_north_firearm_wardrobe import materialize as rifle_wardrobe
 
+from export_firearm_wardrobe import materialize as other_firearm_wardrobe
+
 ARCHIVES = {
     'soco': 'e3c4d0cad2a2727a74aef567468eb3e337391e25f7e3eab363dc49d16fc69c91',
     'focus': '958a96547f8943671ee64f9419e2f26f00f93b770a8f883e39908917ecba1e91',
@@ -135,6 +137,10 @@ def materialize(folder, out):
     records.extend(rifle_rows)
     rigs['attack-firearm/north'] = rifle_rig
     assets.update(rifle_assets)
+    other_rows, other_rigs, other_assets = other_firearm_wardrobe(folder, bank, native)
+    records.extend(other_rows)
+    rigs.update(other_rigs)
+    assets.update(other_assets)
     (out / 'index.json').write_text(json.dumps(dict(schema='editable-combat-wardrobe-v1', rigs=rigs,
         records=records, handFits={k: [r['matrix'] for r in phases] for k, phases in fit.items()}), separators=(',', ':')) + '\n', encoding='utf-8')
     return len(records), len(assets)
