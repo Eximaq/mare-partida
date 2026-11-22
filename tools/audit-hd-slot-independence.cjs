@@ -120,6 +120,10 @@ async function main(){
     }
     for(const pair of pairArg?[pairArg]:probePairs(bucket)){
      const mixed=select(player,base,pair,o);mixedQueries++;
+      if(pair.every(([slot,id])=>trusted(solo[slot].get(id),slot,id))){
+       declaredPairQueries++;
+       if(pair.every(([slot,id])=>trusted(mixed,slot,id)))declaredPairComplete++;
+      }
      for(const scored of scoreProbe(pair,solo,mixed)){
       add(counts,scored.mark);add(bySlot[scored.slot]??={},scored.mark);
       if(scored.mark.startsWith('declaredDrop')){

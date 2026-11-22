@@ -121,6 +121,9 @@ if(mode==='inventory'){
    const hashes=parts?flatten(parts):flatten(r.sourceRefs??r.parts??r.states??r.layers??[]);
    rows.push({item,body,action,direction,phases:d?.clip?.frames??r.timeline?.length??r.states?.length??null,
     sourceIndex:sourcesByKind[kind],record:r.id??r.targetWalkRecord??r.package??r.snapshot??null,
+    origin:r.sourcePackage??r.sourcePortableFile??r.sourceArchiveSHA256??r.provenance??r.package??null,
+    approvalEvidence:r.approvalEvidence??r.approval??null,
+    density:r.pack?.density??r.density??null,clock:d?.clip??(r.fps?{fps:r.fps}:null),
     sourceStatus:r.status??r.approval??r.sourceStatus??null,productionEnabled:r.productionEnabled??null,
     ownership:parts?'explicit-layer-group':'record-only',parts,
     sources:hashes});

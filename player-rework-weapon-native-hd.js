@@ -1727,9 +1727,15 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const expected=read(reference),gear=read(weapon),fg=read(front);
   // Source-over in native authorial order. The original raster is only a rounding witness.
   t.clearRect(0,0,size,size);t.drawImage(body,0,0);t.drawImage(weapon,0,0);t.drawImage(front,0,0);
-  const signedOn=t.getImageData(0,0,size,size).data;
-  ctx.drawImage(body,0,0);if(!omitWeaponLayer)ctx.drawImage(weapon,0,0);ctx.drawImage(front,0,0);
-  const rendered=ctx.getImageData(0,0,size,size),out=rendered.data;
+  const equipped=t.getImageData(0,0,size,size),signedOn=equipped.data;
+  // Keep both replays on one surface. Browser readback may round alpha
+  // differently when the output and the witness use different backends.
+  let rendered=equipped;
+  if(omitWeaponLayer){
+   t.clearRect(0,0,size,size);t.drawImage(body,0,0);t.drawImage(front,0,0);
+   rendered=t.getImageData(0,0,size,size);
+  }
+  const out=rendered.data;
   for(let j=0;j<out.length;j+=4){
    const a=signedOn[j+3],b=expected[j+3];
    if(Math.abs(a-b)>1)throw Error('Claro dagger alpha lost its signed assembly');

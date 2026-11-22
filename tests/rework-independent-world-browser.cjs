@@ -21,6 +21,12 @@ lobby96.draw=function(ctx,p,o){
  return drawn;
 };
 window.__hdSlotQA={
+ seedDaggers(){
+  game.classId='rogue';
+  game.inventory=[newItem(itemDefs[12],1,false)];
+  game.equipment={};game.level=100;
+  saveGame();renderPanel();updateUI();
+ },
  seed(){
   game.classId='sword';game.level=100;
   game.appearance96=MareCharacterAppearance.normalize({...game.appearance96,gender:'masculino',
@@ -49,10 +55,10 @@ window.__hdSlotQA={
   }
   world.spawnClock=1e9;world.target=null;world.mobs=[];
   this.lane('south');
-  const {x,y}=world.hero;
+  const {x,y}=world.hero,reach=Math.min(42,Math.max(8,getDerived().range-4));
   const target={...monsterTypes.cesar,id:'independent-hd-qa',type:'cesar',area:game.area,
    district:MareHunt.sectors(game.area)[0].id,level:1,alive:true,hp:100000,maxHP:100000,
-   defense:0,magicDefense:0,x,y:y+42,anchorX:x,anchorY:y+42,
+   defense:0,magicDefense:0,x,y:y+reach,anchorX:x,anchorY:y+reach,
    attack:0,attackClock:1e9,speed:0,patrolClock:1e9,aggro:0,bob:0};
   world.mobs=[target];game.hp=getDerived().maxHP;
   return camera.worldToScreen(target.x,target.y);
@@ -154,29 +160,34 @@ window.__hdSlotQA={
    await page.locator('[data-unequip="'+slot+'"]').click();
    await close();
   }
-  const point=await page.evaluate(()=>__hdSlotQA.target()),canvas=page.locator('#worldCanvas');
-  const bounds=await canvas.boundingBox(),size=await canvas.evaluate(c=>({width:c.width,height:c.height}));
-  await draw('mapa-de-cacada','idle','south',{});
-  const attack=page.waitForFunction(()=>{
-   const row=__hdSlotQA.read().draw;
-   return row?.drawn&&row.scene==='hunt'&&row.visual.coverage[0]?.resolvedAction==='attack-sword'&&
-    row.last?.state==='rendered'&&row.last?.direction==='south'?row:false;
-  },null,{timeout:16000});
-  const attempt=attack.then(h=>h.jsonValue());
-  const position={x:point.x*bounds.width/size.width,y:point.y*bounds.height/size.height};
-  let attacked;
-  for(let n=0;n<25&&!attacked;n++){
-   await canvas.click({position});
-   attacked=await Promise.race([attempt,new Promise(resolve=>setTimeout(resolve,450))]);
-  }
-  attacked??=await attempt;trace.push({label:'ataque-real-espada',draw:attacked});
+  await observeAttack('attack-sword','ataque-real-espada');
+  await page.evaluate(()=>__hdSlotQA.seedDaggers());
+  await put(12);
+  await observeAttack('attack-daggers','ataque-real-adagas-bruma');
   assert.deepEqual(errors,[]);
-  console.log('Character creation, 4 keyboard directions, equipment, A-B-A, helmet visibility and reload passed.');
+  console.log('Character creation, 4 keyboard directions, equipment, A-B-A, helmet visibility, reload and both attacks passed.');
  }finally{
   const state=await page.evaluate(()=>window.__hdSlotQA?.read()).catch(()=>null);
   await fs.writeFile(path.join(out,'navegador.json'),JSON.stringify({url,trace,errors,state},null,2));
   await page.screenshot({path:path.join(out,'ultimo-estado.png')}).catch(()=>{});
   await context.close();await browser.close();
+ }
+ async function observeAttack(resolvedAction,label){
+  const point=await page.evaluate(()=>__hdSlotQA.target()),canvas=page.locator('#worldCanvas');
+  const bounds=await canvas.boundingBox(),size=await canvas.evaluate(c=>({width:c.width,height:c.height}));
+  await draw(label+'-mapa','idle','south',{});
+  const position={x:point.x*bounds.width/size.width,y:point.y*bounds.height/size.height};
+  let attack;
+  for(let n=0;n<25&&!attack;n++){
+   await canvas.click({position});
+   attack=await page.waitForFunction(action=>{
+    const row=__hdSlotQA.read().draw;
+    return row?.drawn&&row.scene==='hunt'&&row.visual.coverage[0]?.resolvedAction===action&&
+     row.last?.state==='rendered'&&row.last.direction==='south'?row:false;
+   },resolvedAction,{timeout:650}).then(h=>h.jsonValue()).catch(()=>null);
+  }
+  assert(attack,JSON.stringify((await page.evaluate(()=>__hdSlotQA.read())).draw?.visual));
+  trace.push({label,draw:attack});
  }
  async function walk(key,direction,kit,label,save=false){
   let failure;

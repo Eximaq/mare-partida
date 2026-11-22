@@ -42,3 +42,29 @@ A montagem nova resolve o corpo e a pose, consulta cada slot pelo próprio item 
 ### Lacuna comprovada pelo acervo
 
 A luva masculina 25 tem registros de caminhada Leste/Oeste, incluindo `frozen-male-glove25-east-walk-native-layers` e `frozen-male-glove25-west-walk-native-layers`. O relógio é de 16 fases. O braço, as poses por fase e a base V31 desses doadores divergem do receptor lateral padrão. O Oeste já contém fases espelhadas. A fonte está identificada e fica pendente o vínculo local, com comprovação de encaixe e sem reaplicar o espelhamento. Os demais resultados sem vínculo apontam os registros consultados para investigação.
+
+### Resultados reproduzidos no build local
+
+A montagem e o navegador foram verificados com os módulos de `aa35e59c93bd8fac0f2b290c3bd344ad8bb51d63`. `python tools/build_pages.py --static-demo` terminou com sucesso. Os três módulos de composição na exportação coincidiram byte a byte com o código testado.
+
+- O inventário tem 4.710 ocorrências de item em registro, cobrindo 92 IDs com família visual e 189 definições de catálogo. `python tools/audit_hd_archive_members.py inventario-fontes-hd.json` encontrou os 16.585 membros referenciados em 278 arquivos compactados e 201 arquivos avulsos. A conferência de nomes, por si só, mede presença dos arquivos. A decodificação e a pintura foram exercitadas pelos testes de quadro e de navegador.
+- Os testes focados tiveram 22 aprovações. O ensaio adicional `TONE=all` verificou 32 coortes Sul, com oito tons de pele, duas cores de cabelo e duas configurações de roupa. O teste de cache descartou um pacote atrasado depois de publicar a aparência mais recente.
+- A validação no Chromium confirmou criação, movimento nas quatro direções, seleção pelo inventário, trocas A → B → A de luva e bota, capacete visível/oculto, recarga da sessão local e ataque de espada em caçada. A bota 148 foi vista em repouso e caminhada no mapa. O teste está em `tests/rework-independent-world-browser.cjs` e usa `MARE_TEST_URL`, `MARE_EVIDENCE_DIR` e `CHROME_PATH`.
+- O acionamento de poder em Espadachim foi observado nos dois corpos e nas quatro direções. As 8 conjurações e 64 amostras de quadro usaram a pose desarmada enquanto a ação estava ativa. Após a ação, o equipamento salvo voltou a aparecer. O ensaio usou o relógio controlado da bancada existente e simulou a pose recebida pelo cliente.
+- A suíte geral registrou falhas. Em uma comparação dirigida, dez casos também falharam com os módulos de `dbd8197f`, incluindo a preparação antiga com `AbortController` ausente na bancada, as expectativas antigas de pacote de mundo e a coloração do Orbe 17.
+
+### Matriz estrita e ensaios adicionais
+
+| Corpo | Contextos | Consultas individuais | Sondas de pares | Pares com duas declarações HD individuais | Pares que mantiveram ambas as declarações | Conjuntos mistos | Conjuntos completos no seletor |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Masculino | 980 | 49.000 | 148.182 | 117.552 | 102.911 | 10.497 | 7.925 |
+| Feminino | 980 | 49.000 | 54.928 | 28.838 | 13.211 | 2.751 | 1.074 |
+| Total | 1.960 | 98.000 | 203.110 | 146.390 | 116.122 | 13.248 | 8.999 |
+
+A matriz foi executada com `HD_PUBLISHED_ROOT` apontando para `dist`, `TONES=light` e `AUDIT_REQUIRE_ALL=1`. O produto de pares foi integral para as duas declarações de slot por contexto. Nas sondas com um vizinho sem declaração, o vizinho serviu de controle de retenção. Os conjuntos mistos usaram semente 374. A auditoria saiu com código 1 porque encontrou perdas de declaração, incluindo casos de autoridade de pose ainda a verificar. Ela mede a seleção e fornece exemplos por classe, arma, corpo, ação, direção e slot.
+
+O ensaio de ataques Sul selecionou uma arma de cada classe pelo catálogo e observou o desenho nos dois corpos. Treze das 14 amostras foram vistas na primeira rodada. O caso restante, Adagas da Bruma ID 12, corpo masculino e tom Claro, resolvia `daggers12-south-native-original-source` e falhava no quadro 0 durante a conferência de arredondamento. A correção faz as duas composições na mesma superfície antes de transferir os pixels verificados. Preserva a comparação com a referência, a propriedade do metal e os limites de tolerância existentes. O caso foi repetido com sucesso no Chromium após a correção. O teste de cabelo, íris e corrupção do raster de adaga também passou em Node.
+
+As lacunas da matriz e a validação de todas as ações e aparências continuam abertas. A recarga de sessão foi medida no jogo local. O ensaio de poder cobre Espadachim, e o ensaio complementar de todas as classes atingiu o tempo limite antes de concluir.
+
+A repetição completa no build após o ajuste confirmou 19 etapas no Chromium, incluindo os dois ataques reais, sem erros de página.
