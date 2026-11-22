@@ -34,14 +34,15 @@ from export_sword0_checkpoint import materialize as materialize_sword_checkpoint
 materialize_sword_checkpoint(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
                              OUT/'tools/rework-sword0-checkpoint')
 web_files.append('player-rework-sword0-checkpoint.js')
-from export_female_dagger_wardrobe import materialize as materialize_dagger_wardrobe
-materialize_dagger_wardrobe(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
-                            OUT/'tools/rework-female-dagger-wardrobe')
 from export_firearm113_coat import materialize as materialize_firearm113_coat
 materialize_firearm113_coat(
     ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18/fuzil113-ns.zip',
     ROOT/'tools/rework-firearm113-coat/masks',
     OUT/'tools/rework-firearm113-coat')
+
+from export_female_dagger_wardrobe import materialize as materialize_dagger_wardrobe
+materialize_dagger_wardrobe(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
+                            OUT/'tools/rework-female-dagger-wardrobe')
 
 if not include_reviews:
     retired_scripts = {"paper-doll.js", "paper-doll-assets.js", "paper-doll-review.js", "paper-doll-look-data.js", "paper-doll-look.js", "paper-doll-coverage.js", "paper-doll-look.css"}
