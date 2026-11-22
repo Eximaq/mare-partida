@@ -8,7 +8,7 @@ const weapons=require('../tools/paper-doll-96-v3/weapons.json');
 global.MareSword0Checkpoint=require('../player-rework-sword0-checkpoint.js');
 const {make}=require('./rework-integration-support.cjs');
 const {weapons:catalog}=require('../tools/audit-hd-wardrobe-product.cjs');
-const poses={sword:['sword','attack-sword'],punch:['brawler','attack-unarmed'],tech:['cyborg','attack-unarmed'],focus:['healer','attack-focus']};
+const poses={gait:['sword','walk'],sword:['sword','attack-sword'],punch:['brawler','attack-unarmed'],tech:['cyborg','attack-unarmed'],focus:['healer','attack-focus']};
 const directions=['north','south','east','west'];
 async function main(){
  assert(process.env.HD_PUBLISHED_ROOT,'Set HD_PUBLISHED_ROOT to the exported site');
@@ -17,7 +17,7 @@ async function main(){
   const bundle=await api.prepareConfiguration([{player:p,options:o}],{resolve:()=>({player:p,options:o,source:r})});
   try{
    const coverage=bundle.coverage[0],frames=coverage.frames;
-   assert.equal(frames,o.action==='idle'?1:8);
+   assert.equal(frames,o.action==='idle'?1:o.action==='walk'?40:8);
    assert.deepEqual(coverage.omitted||[],[]);
    const result=[];
    for(let i=0;i<frames;i++){

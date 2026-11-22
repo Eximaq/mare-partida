@@ -209,6 +209,8 @@ window.__hdSlotQA={
   const swordKit={weapon:1,coat:151,legs:168,boots:183,gloves:159,head:157};
   for(const id of Object.values(swordKit))await put(id);
   const savedLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  for(const [key,direction] of [['d','east'],['s','south'],['a','west'],['w','north']])
+   await walk(key,direction,swordKit,'espada-caminhada-'+direction,true);
   for(const direction of ['east','north','west','south'])
    await observeAttack('attack-sword','espada-conjunto-'+direction,direction,swordKit);
   for(const [slot,id] of [['gloves',25],['head',18],['legs',22],['boots',148],['coat',6],['weapon',67]]){
