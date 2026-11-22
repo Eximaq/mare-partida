@@ -148,7 +148,10 @@ function composeSlots({anchor,equipment,fixed,slots}){
   const item=equipment[slot];
   if(item==null){if(!rule.uncoveredBaseVerified)return null;continue;}
   const candidate=rule.records[item],r=candidate?.record,c=r?.pack?.directions?.[r.direction],ids=new Set(candidate?.layers||[]);
-  const ignore=new Set(),shared=new Set();
+  const foreign=r?.equipment||{},ignore=new Set();
+  // The anchor declares the ownership of its own independent layers.
+  // An absent sibling in the donor has no donor-side pixels to remove.
+  const shared=new Set(Object.keys(slots).filter(k=>k!==slot&&!Object.hasOwn(foreign,k)));
   for(const [name,list] of Object.entries(candidate?.otherOwnedLayers||{})){
    if(!Object.hasOwn(slots,name)||name===slot||!Array.isArray(list)||!list.length)return null;
    shared.add(name);
@@ -160,11 +163,9 @@ function composeSlots({anchor,equipment,fixed,slots}){
   // A donor may have been captured with a different sibling item. Only
   // ignore that item when its complete layer ownership was registered above;
   // the full remaining body, timeline, palette and pivot still must match.
-  const foreign=r?.equipment||{};
-  const otherSlotsMatch=Object.keys(foreign).length===Object.keys(anchor.equipment).length&&
-   Object.entries(anchor.equipment).every(([k,v])=>k===slot||foreign[k]===v||
-    (shared.has(k)&&Number.isSafeInteger(foreign[k])&&foreign[k]>=0));
-  const compatible=otherSlotsMatch&&r.equipment[slot]===item&&ids.size&&ids.size===donorLayers.length&&
+  const ownershipDeclared=Object.keys(foreign).every(k=>k===slot||Object.hasOwn(fixed,k)||Object.hasOwn(slots,k))&&
+   Object.entries(fixed).every(([k,item])=>foreign[k]===item);
+  const compatible=ownershipDeclared&&foreign[slot]===item&&ids.size&&ids.size===donorLayers.length&&
    r.body===anchor.body&&r.action===anchor.action&&r.direction===anchor.direction&&
    same(c&&clock(c),clock(d))&&same(r.pack.frame,anchor.pack.frame)&&same(r.pack.pivot,anchor.pack.pivot)&&r.pack.density===anchor.pack.density&&
    renderFields.every(k=>same(r[k],anchor[k]))&&same(core,others)&&same(masks(r,core),masks(anchor,others))&&

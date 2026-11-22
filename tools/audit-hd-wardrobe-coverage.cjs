@@ -63,13 +63,75 @@ const basicContexts=wContexts.length, actionsPerContext=act.length+1, posed=ward
 const shaFile=f=>crypto.createHash('sha256').update(fs.readFileSync(path.join(R,f))).digest('hex');
 const releaseMarker=Object.fromEntries(['item-catalog.js','player-rework-native-hd.js','paper-doll-96-lobby.js','player-rework-default-hd.js','tools/rework-weapon-layers-hd/index.json','tools/rework-modular-outfits-hd/index.json'].map(x=>[x,shaFile(x)]));
 const summary={releaseMarker,catalogEntries:items.length,bodySlotCounts:Object.fromEntries(slots.map(s=>[s,group(s).length])),bodyVisualSlots:visibleSlots,notInBodyLayerProduct:otherSlots.map(s=>({slot:s,n:group(s).length})),wardrobes:String(wardrobes),weaponFamilies:Object.fromEntries(classes.map(c=>[c,ws.filter(w=>w.type===c).length])),weaponClassContexts:basicContexts,equipmentClassProduct:String(wardrobes*BigInt(basicContexts)),perSingleActionPoseProduct:String(wardrobes*BigInt(basicContexts*bodies.length*dirs.length*skin.length)),declaredKits:declared.size,bodyChoices:bodies,directions:dirs,skinChoices:skin,actionsPerContext:['idle','walk','attack','skill','canonical class action'],scopeNote:'Excludes alternate hair/style/colors, account visual-complete override, Zoan alternate body, real non-rendered stats and additional weaponless/fruit actions from the lower-bound product. No numerical assumption of coverage.',posedLowerBound:String(posed),fallback:[
- 'game.js drawPaperDoll -> paper-doll-96-lobby.js local requestWorldVisual -> native selectVisual (exact + certified layered registries) -> native prepareConfiguration; otherwise prepareModularWorld (native96)',
- 'inventory: game.drawInventoryAvatar -> native drawFittedAvatar; if unavailable, drawCurrentPreview -> lobby.draw -> nativeHD.drawStable -> defaultHD.draw (subset/appearance adaptation) -> legacy/native96',
+ 'game.js drawPaperDoll -> paper-doll-96-lobby.js local requestWorldVisual -> selectWorldHDOnly (independent native pose or exact authored route) -> native prepareConfiguration',
+ 'inventory: game.drawInventoryAvatar -> lobby.drawFittedAvatar -> typed South HD surface or fitted native route; unresolved slots remain diagnostic',
  'character-creation specifically requires native HD for its draft; ordinary editor (explicit appearance) skips adapting defaultHD but retains its separate fallback', 
  'defaultHD.draw may report omission or appear to handle an uncovered row; neither makes it a complete HD result',
  'Visual Completo and Zoan bodies use separate override gates, not the base body product'
 ]};
 if(mode==='count'){console.log(JSON.stringify({summary,equiv},null,2));process.exit(0);}
+if(mode==='inventory'){
+ const pools=['rework-base-hd','rework-modular-outfits-hd','rework-weapon-layers-hd']
+  .map(folder=>[folder,J('tools/'+folder+'/archives/archive-index.json').sources]);
+ for(const folder of ['rework-female-dagger-p22','rework-female-profile-rig','rework-female-north-rig']){
+  const index=J('tools/'+folder+'/index.json');
+  if(index.archiveIndex)pools.push([folder,index.archiveIndex.sources]);
+ }
+ const locate=hash=>pools.flatMap(([folder,sources])=>{
+  const r=sources[hash];
+  if(!r)return [];
+  const file='tools/'+folder+'/archives/'+r.archive;
+  return [{file,member:r.path,available:fs.existsSync(path.join(R,file))}];
+ }).concat(['rework-accessories','rework-female-north-rig'].flatMap(folder=>{
+  const file='tools/'+folder+'/assets/'+hash+'.png';
+  return fs.existsSync(path.join(R,file))?[{file,available:true}]:[];
+ }));
+ const sourcesByKind={
+  'weapon-atomic':'tools/rework-weapon-layers-hd/index.json#records',
+  'weapon-ordered':'tools/rework-weapon-layers-hd/index.json#orderedAttackProfiles',
+  'female-native':'tools/rework-weapon-layers-hd/index.json#femaleRegistrations',
+  'outfit':'tools/rework-modular-outfits-hd/index.json.gz#records',
+  'carry':'tools/rework-weapon-layers-hd/carry-binding-plan.json#records',
+  'head':'tools/rework-accessories/head-layer-index.json'
+ };
+ const slotsFor=(kind,r)=>{
+  const eq={...r.equipment};
+  if(/weapon|female-native|carry/.test(kind)&&Number.isSafeInteger(r.item))eq.weapon=r.item;
+  if(kind==='head'&&Number.isSafeInteger(r.item))eq.head=r.item;
+  return Object.entries(eq).flatMap(([key,v])=>{
+   const slot=canon[key]||key,id=v?.def??v;
+   return all[id]?.slot===slot?[[key,all[id]]]:[];
+  });
+ };
+ const independent=J('tools/rework-female-dagger-p22/index.json');
+ const daggerRows=['boots','gloves'].flatMap(slot=>Object.entries(
+  slot==='boots'?independent.signedBootLayers:independent.signedGloveLayers).flatMap(([direction,items])=>
+   Object.entries(items).map(([item,layers])=>({id:['female-dagger',slot,item,direction].join('/'),
+    body:'female',action:'attack-daggers',direction,equipment:{[slot]:Number(item)},
+    equipmentLayerGroups:{[slot]:layers.map(l=>l.id)},pack:{directions:{[direction]:{layers,clip:{frames:layers[0].frames.length}}}}}))));
+ sourcesByKind['dagger-own']='tools/rework-female-dagger-p22/index.json';
+ const rows=[];
+ for(const [kind,records] of [...manifests,['dagger-own',daggerRows]])for(const r of records||[]){
+  const direction=r.direction??r.targetDirection??null,body=r.body??r.targetBody??null;
+  const action=r.action??r.targetAction??(kind==='carry'?'walk':kind==='weapon-atomic'?family[all[r.item]?.type]:null);
+  const d=r.pack?.directions?.[direction];
+  for(const [key,item] of slotsFor(kind,r)){
+   const owned=r.equipmentLayerGroups?.[key],parts=owned?(d?.layers||[]).filter(l=>owned.includes(l.id)).map(l=>
+    ({id:l.id,depth:l.depth,binding:l.binding,frames:l.frames??[l.source]})):null;
+   const hashes=parts?flatten(parts):flatten(r.sourceRefs??r.parts??r.states??r.layers??[]);
+   rows.push({item,body,action,direction,phases:d?.clip?.frames??r.timeline?.length??r.states?.length??null,
+    sourceIndex:sourcesByKind[kind],record:r.id??r.targetWalkRecord??r.package??r.snapshot??null,
+    sourceStatus:r.status??r.approval??r.sourceStatus??null,productionEnabled:r.productionEnabled??null,
+    ownership:parts?'explicit-layer-group':'record-only',parts,
+    sources:hashes});
+  }
+ }
+ const ids=new Set(rows.map(r=>r.item.def));
+ const locations=Object.fromEntries([...new Set(rows.flatMap(r=>r.sources))].sort().map(hash=>[hash,locate(hash)]));
+ console.log(JSON.stringify({summary,inventoryUnit:'One catalog item occurrence in a source record. Frame arrays and paths are available where the index declares ownership. Use the slot and pixel audits for mounted and rendered coverage.',
+  items:all.map(r=>({...r,visualFamily:visibleSlots.includes(r.slot),indexed:ids.has(r.def)})),rows,locations}));
+ process.exit(0);
+}
 const {make,cv}=require(path.join(R,'tests/rework-integration-support.cjs')),APP=n('character-appearance');
 const published=process.env.HD_PUBLISHED_ROOT&&path.resolve(process.env.HD_PUBLISHED_ROOT),swordPrefix='tools/rework-sword0-checkpoint/';
 if(published)require(path.join(R,'player-rework-sword0-checkpoint.js'));

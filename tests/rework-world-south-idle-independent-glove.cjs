@@ -37,7 +37,8 @@ async function paint(player,source){
   const withoutSword=x=>{
    const plan={...x.plan,parts:[]},g=x.independentCarryGlove;
    return {...x,id:x.id+':test-weapon-witness',plan,
-    ...(g?{independentCarryGlove:{...g,base:{...g.base,plan}}}:{})};
+    ...(g?{independentCarryGlove:{...g,base:{...g.base,plan}}}:{}),
+    ...(x.nativeSlotPack?{nativeSlotPack:{...x.nativeSlotPack,mounted:{...x.nativeSlotPack.mounted,plan}}}:{})};
   };
   const shadow=await paint(entries[1][0],withoutSword(entries[1][1]));
   const shadowBoth=await paint(p,withoutSword(r));
@@ -58,12 +59,12 @@ async function paint(player,source){
    pxLeg+=+l;pxGlove+=+g;
   }
   assert(pxLeg>100&&pxGlove>100&&weaponPixels>100);
-  const [withOther,s]=select({...p.equipment,head:{def:18},boots:{def:8}});
+  const [withOther,s]=select({...p.equipment,head:{def:99999},boots:{def:99999}});
   assert.deepEqual(s.omitted.slice().sort(),['boots','head']);
   assert.equal(s.slotRoutes.weapon.quality,'hd');assert.equal(s.slotRoutes.legs.quality,'hd');assert.equal(s.slotRoutes.gloves.quality,'hd');
   assert.deepEqual(await paint(withOther,s),both);
   ++cases;
  }
  assert.equal(cases,tones.length*4);
- console.log('PASS independently mounted G25 + P21; no peer pixels change, save unchanged, and missing B8/H18 do not erase HD:',cases,'native cohorts');
+ console.log('PASS independently mounted G25 + P21; no peer pixels change, save unchanged, and unregistered test slots do not erase HD:',cases,'native cohorts');
 })().catch(e=>{console.error(e);process.exitCode=1;});

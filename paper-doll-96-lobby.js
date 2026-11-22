@@ -45,230 +45,18 @@
     }
     return pending.size?source:candidate;
   }
-  // Gameplay can show an unresolved HD mounting issue, but never switch
-  // the whole character to the 96-pixel wardrobe. This is a cold-pose
-  // decision (at most 64 subsets), not a draw-time composition.
-  const worldVisualSlots=new Set(['weapon','torso','pants','boots','gloves','head']);
-  const worldInertSlots=new Set(['necklace','ring','belt','charm','cloak','akuma_no_mi']);
-  const worldSlot=key=>slots[key]||key;
-  // A profile may show a vetted current-HD subset, never a replacement look.
-  // Each fitted or omitted layer must refer to the actor's own equipped item.
-  function profileOwnHDPartial(source,player,direction){
-    if(source.slotFallback!=='hd-only-partial'||source.layeredSlots!==true||source.visualDegraded||
-       source.direction!==direction||!source.pack?.directions?.[direction]?.clip||
-       !Array.isArray(source.omitted))return false;
-    const omitted=new Set(source.omitted),routes=source.slotRoutes;
-    if(!routes||!omitted.size||omitted.size!==source.omitted.length)return false;
-    const slotsSeen=new Set();let retained=0;
-    for(const [key,value] of Object.entries(player.equipment||{})){
-      if(value==null||['none','original'].includes(value)||worldInertSlots.has(key)||
-         key==='head'&&Headgear?.hidden(player))continue;
-      const slot=worldSlot(key),item=value.def??value,r=routes[key];
-      if(!worldVisualSlots.has(slot)||slotsSeen.has(slot)||!Number.isSafeInteger(item)||
-         !Object.hasOwn(routes,key)||r?.item!==item)return false;
-      slotsSeen.add(slot);
-      if(omitted.has(key)){
-        if(slot==='weapon'||r.quality!=='missing'||r.source||
-           !['hd-combination-unresolved','no-hd-mount'].includes(r.reason))return false;
-      }else{
-        if(r.quality!=='hd'||typeof r.source!=='string'||!r.source)return false;
-        retained++;
-      }
-    }
-    return retained>0&&Object.keys(routes).length===slotsSeen.size&&
-      [...omitted].every(key=>Object.hasOwn(routes,key));
-  }
-  // Mount only the glove's own two South idle layers. The already-verified
-  // carry supplies its ordinary body, sword, and any independently fitted
-  // coat or trousers. No outfit containing a glove is substituted.
-  function attachSouthIdleOwnCarryGlove(nativeHD,player,o){
-    const e=player.equipment||{},a=player.appearance96||{},id=k=>e[k]?.def??e[k];
-    const active=Object.keys(e).filter(k=>e[k]!=null&&!['none','original'].includes(e[k])&&!worldInertSlots.has(k));
-    if(o.consumer!=='world'||o.action!=='idle'||o.direction!=='south'||o.weaponless||
-       player.classId!=='sword'||player.zoanTransformed||player.__reworkSubset||
-       a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hairStyle!=='original'||
-       a.eyeStyle!=='original'||a.eyeColor!=='blue'||!['black','blue'].includes(a.hairColor)||
-       id('weapon')!==0||id('gloves')!==25||
-       active.some(k=>!['weapon','coat','legs','pants','gloves'].includes(k)||
-         ['variant','variantId','appearanceVariant'].some(v=>e[k]?.[v]!=null&&e[k][v]!=='original')))return null;
-    const lower=active.filter(k=>k==='legs'||k==='pants');
-    if(lower.length>1||lower.some(k=>id(k)!==21)||active.includes('coat')&&id('coat')!==6)return null;
-    const fittedEquipment={...e};delete fittedEquipment.gloves;
-    const seed=nativeHD.selectVisual({...player,equipment:fittedEquipment},o,false);
-    const donor=nativeHD.selectVisual({...player,equipment:{gloves:e.gloves}},o,false);
-    const g=donor?.authoredSouthIdleGlove,p=seed?.base?.pack,d=p?.directions?.south,
-     dp=g?.base?.pack,gd=dp?.directions?.south,eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
-    if(!d||!gd||seed.item!==0||seed.direction!=='south'||seed.action!=='idle'||
-       !['carry','outfit-carry'].includes(seed.hdKind)||seed.base.id!=='male-idle-original-south-from-walk0'||
-       seed.omitted?.length||seed.unsupported?.length||seed.appearanceAdapted||seed.visualDegraded||
-       seed.base.mirrorX||seed.preMirroredLayers?.length||seed.headRecord||seed.gearOnlyRecord||
-       seed.plan?.paddingPhysical!==128||seed.plan.parts?.length!==1||
-       seed.plan.parts[0].source?.sha256!=='823474b4f6a0782ef39eca0dc176630df7ab6886e7b1cb70f800c0baa04b51bd'||
-       !eq(d.clip,{frames:1,fps:1,loop:false})||
-       !eq([p.frame,p.pivot,p.density,d.clip,d.rest,d.poses],[dp.frame,dp.pivot,dp.density,gd.clip,gd.rest,gd.poses])||
-       !['armRight','armLeft','handRight','handLeft'].every(k=>d.layers.some(l=>l.id===k&&eq(l,gd.layers.find(x=>x.id===k))))||
-       !eq(g.hashes,['99fb777d55448f73d2d9aa010d20d036e3ddde53d71148302b8f6af71283be33','e1d46ced72d00defb195e9a654b2f86a7d4a48e905d046dd8cf56ee57f03d073'])||
-       g.gloves?.length!==2||g.gloves.some(l=>l.slot!=='foreground'||l.depth!==99.5||l.depthTrack||
-         d.layers.some(old=>old.id===l.id||old.depth===l.depth||old.depthTrack)))return null;
-    const routes={weapon:{item:0,quality:'hd',source:seed.id},gloves:donor.slotRoutes.gloves};
-    if(active.includes('coat')){
-      if(!d.layers.some(l=>l.id==='coat6-collar-core'))return null;
-      routes.coat={item:6,quality:'hd',source:'male-torso6-south-frozen-idle-native'};
-    }
-    if(lower.length){
-      if(!d.layers.some(l=>l.id==='pants21-independent'&&l.source==='387a0072333f7f890b81162257c1927b2aae04b7d56f510161d03528515c2a65'))return null;
-      routes[lower[0]]={item:21,quality:'hd',source:'male-pants21-idle-south'};
-    }
-    const base={...seed,pack:p};
-    return {...base,id:base.id+':own-south-idle-g25',layeredSlots:true,slotRoutes:routes,omitted:[],
-      independentCarryGlove:{base,gloves:g.gloves,hashes:g.hashes}};
-  }
   function selectWorldHDOnly(nativeHD,weaponCatalog,player,options){
     if(!nativeHD?.selectVisual||!player||player.zoanTransformed)return null;
-    const selected=selectWorldHD(nativeHD,weaponCatalog,player,options);
-    if(selected&&!selected.omitted?.length&&!selected.unsupported?.length)return selected;
-    const visible=[],seen=new Set();
-    for(const [key,value]of Object.entries(player.equipment||{})){
-      if(value==null||['none','original'].includes(value)||worldInertSlots.has(key)||
-         key==='weapon'&&options.weaponless||key==='head'&&Headgear?.hidden(player))continue;
-      const slot=worldSlot(key);
-      if(!worldVisualSlots.has(slot)||seen.has(slot))return selected;
-      seen.add(slot);visible.push({key,slot,item:value.def??value});
-    }
-    visible.sort((a,b)=>a.slot.localeCompare(b.slot));
-    const strict={selectVisual:(p,o)=>{
-      const exact=nativeHD.selectVisual(p,o,false);
-      return exact&&!exact.omitted?.length&&!exact.unsupported?.length?exact:
-        attachSouthIdleOwnCarryGlove(nativeHD,p,o)||exact;
-    }};
-    function hdSlot(record,v){
-      if(!record||!Number.isSafeInteger(v.item))return null;
-      const all=Object.entries(record.slotRoutes||{}).filter(([key])=>worldSlot(key)===v.slot);
-      if(all.length)return all.length===1&&all[0][1].item===v.item&&all[0][1].quality==='hd'&&all[0][1].source?all[0][1]:null;
-      const nativeOutfit=record.hdKind==='outfit'&&record.equipment?.[v.slot]===v.item&&record.equipmentLayerGroups?.[v.slot]?.length;
-      const outfitPiece=record.outfitOverlay,torso=outfitPiece?.sourceRecord;
-      const ownTorso=v.slot==='torso'&&record.hdKind==='outfit-carry'&&outfitPiece?.item===v.item&&
-        typeof torso==='string'&&torso.startsWith('male-torso'+v.item+'-'+record.direction+'-')&&
-        outfitPiece.layerIds?.length&&outfitPiece.sourceRefs?.length;
-      // The checkpoint SHA-256 signs complete native W0 coat records.
-      // Recognize their already authenticated garment at the consumer,
-      // without changing the signed selector payload.
-      const ownedSwordCoat=v.slot==='torso'&&record.hdKind==='female-equipment'&&
-        record.body==='female'&&record.item===0&&record.action==='attack-sword'&&
-        record.outfitSourceId==='female-torso'+v.item+'-'+record.direction+'-frozen-attack-native'&&
-        record.id.startsWith('female0-attack-sword-'+record.direction+'-candidate-coat'+v.item+'-native-sword:')&&
-        record.outfitSources?.length&&record.outfitSources.every(h=>record.baseRecord?.sourceRefs?.includes(h));
-      if(ownedSwordCoat)return {item:v.item,quality:'hd',source:record.outfitSourceId};
-      if(nativeOutfit||ownTorso)return {item:v.item,quality:'hd',source:ownTorso?torso:record.sourceId||record.id};
-      const contract=record.equipmentContract;
-      const proved=Object.entries(contract||{}).find(([k])=>worldSlot(k)===v.slot);
-      if(proved?.[1]===v.item||v.slot==='weapon'&&(record.item===v.item||record.equipment?.weapon===v.item)
-         &&['weapon','female-equipment','carry','outfit-carry','profile-separated','authored-north-layered'].includes(record.hdKind))
-        return {item:v.item,quality:'hd',source:record.id};
-      return null;
-    }
-    function best(actionOptions,initial,requireHeldWeapon){
-      const known=new Set(),limit=1<<visible.length,weaponIndex=visible.findIndex(v=>v.slot==='weapon');
-      let current=null;
-      const accept=(record,kept)=>{
-        if(!record||record.appearanceAdapted||record.unsupported?.length||
-           record.direction!==actionOptions.direction||
-           (!record.pack?.directions?.[actionOptions.direction]?.clip&&!(record.hdKind==='weapon'&&record.timeline?.length)))return;
-        const routes={};
-        for(const v of kept){
-          const r=hdSlot(record,v);if(!r)return;
-          routes[v.key]=r;
-        }
-        for(const v of kept)known.add(v.key);
-        const held=kept.some(v=>v.slot==='weapon');
-        const fallbackSwordCoat=kept.some(v=>v.slot==='torso'&&
-          routes[v.key]?.source===record.outfitSourceId&&record.hdKind==='female-equipment'&&
-          record.item===0&&record.action==='attack-sword'&&!record.equipmentContract&&!record.slotRoutes);
-        // A raw W0+coat witness may improve the bare sword only; it must
-        // never outrank a mounted sibling (pants, gloves, boots or hat).
-        const rank=kept.length*2+(held?1:0)-(fallbackSwordCoat?1.5:0);
-
-        if(requireHeldWeapon&&weaponIndex!==-1&&!held)return;
-        if(!current||rank>current.rank)current={record,kept,routes,rank};
-      };
-      if(initial&&!initial.unsupported?.length){
-        const kept=visible.filter(v=>hdSlot(initial,v));
-        if(kept.length+initial.omitted?.length===visible.length)accept(initial,kept);
-      }
-      for(let mask=limit-1;mask>=0;mask--){
-        if(requireHeldWeapon&&weaponIndex!==-1&&!(mask&(1<<weaponIndex)))continue;
-        const kept=visible.filter((_,i)=>mask&(1<<i));
-        const omitted=visible.filter((_,i)=>!(mask&(1<<i)));
-        const equipment={...player.equipment};
-        for(const v of omitted)delete equipment[v.key];
-        const r=selectWorldHD(strict,weaponCatalog,{...player,equipment},actionOptions);
-        if(r?.omitted?.length)continue;
-        accept(r,kept);
-      }
-      if(!current)return null;
-      if(current.record===initial)return initial;
-      const omitted=visible.filter(v=>!current.kept.includes(v)),route={...current.routes};
-      for(const v of omitted)route[v.key]={item:v.item,quality:'missing',
-        reason:known.has(v.key)?'hd-combination-unresolved':'no-hd-mount'};
-      return {...current.record,id:current.record.id+':world-hd:'+actionOptions.action+':'+omitted.map(v=>v.key).join(','),
-        slotRoutes:route,omitted:omitted.map(v=>v.key),layeredSlots:true,slotFallback:'hd-only-partial'};
-    }
-    const combat=options.action!=='idle'&&options.action!=='walk';
-    const fit=best(options,selected,combat);
-    if(fit?.omitted?.length&&
-      (options.action==='idle'&&(fit.ownSouthIdleGloveCuff&&options.direction==='south'||
-        fit.ownSideIdleGlove180&&['east','west'].includes(options.direction))||
-       options.action==='walk'&&fit.ownSideWalkGlove180&&['east','west'].includes(options.direction))){
-      // An available partial wrist path must not win a subset tie by
-      // dropping a sibling which already fits the player without the glove.
-      const glove=visible.find(v=>v.slot==='gloves'&&[131,180].includes(v.item));
-      if(glove){
-        const equipment={...player.equipment};delete equipment[glove.key];
-        const existing=selectWorldHDOnly(nativeHD,weaponCatalog,{...player,equipment},options);
-        if(existing&&!existing.visualDegraded&&!existing.unsupported?.length){
-          const routes={},omitted=[];let lost=false;
-          for(const v of visible){
-            const match=v===glove?null:hdSlot(existing,v)||(!existing.omitted?.includes(v.key)&&
-              ['outfit','authored-pants'].includes(existing.hdKind)&&
-              (existing.equipment?.[v.key]??existing.equipment?.[v.slot])===v.item?
-              {item:v.item,quality:'hd',source:existing.sourceId||existing.id}:null);
-            if(match){routes[v.key]=match;if(!hdSlot(fit,v))lost=true;}
-            else{omitted.push(v.key);routes[v.key]=existing.slotRoutes?.[v.key]||
-              {item:v.item,quality:'missing',reason:'hd-combination-unresolved'};}
-          }
-          if(lost)return {...existing,id:existing.id+':world-hd:retain-idle-peers:'+glove.item,
-            slotRoutes:routes,omitted,layeredSlots:true,slotFallback:'hd-only-partial'};
-        }
-      }
-    }
-    if(fit?.northOwnWalkGarment&&fit.omitted?.length&&options.action==='walk'&&options.direction==='north'){
-      const trousers=visible.find(v=>v.slot==='pants'&&v.key===fit.northOwnWalkGarment.key&&v.item===fit.northOwnWalkGarment.item);
-      if(trousers){
-        const unequipped={...player.equipment};delete unequipped[trousers.key];
-        const old=selectWorldHDOnly(nativeHD,weaponCatalog,{...player,equipment:unequipped},options);
-        if(old&&!old.visualDegraded&&!old.unsupported?.length){
-          const retained=visible.filter(v=>v!==trousers&&hdSlot(old,v));
-          if(retained.some(v=>!hdSlot(fit,v))){
-            // Preserve the real already visible peers. Prefer adding the
-            // garment to that verified host over dropping an unrelated slot.
-            const wanted=[...retained,trousers],equipment={...player.equipment};
-            for(const v of visible)if(!wanted.includes(v))delete equipment[v.key];
-            const combined=selectWorldHD(strict,weaponCatalog,{...player,equipment},options);
-            const accepted=combined?.northOwnWalkGarment&&!combined.omitted?.length&&wanted.every(v=>hdSlot(combined,v));
-            const result=accepted?combined:old,kept=accepted?wanted:retained,slotRoutes={};
-            for(const v of visible)slotRoutes[v.key]=kept.includes(v)?hdSlot(result,v):
-              {item:v.item,quality:'missing',reason:'hd-combination-unresolved'};
-            return {...result,id:result.id+':world-hd:retain-walk-peers',slotRoutes,
-              omitted:visible.filter(v=>!kept.includes(v)).map(v=>v.key),layeredSlots:true,slotFallback:'hd-only-partial'};
-          }
-        }
-      }
-    }
-    if(fit)return fit;
-    if(options.action==='idle')return null;
-    const idle=best({...options,action:'idle'},null,false);
-    return idle?{...idle,id:idle.id+':preview-for:'+options.action,visualDegraded:true,requestedAction:options.action,
-      degradationReason:'no-hd-requested-pose'}:null;
+    const selectPose=(actor,pose)=>selectWorldHD(nativeHD,weaponCatalog,actor,pose);
+    const exact=selectPose(player,options);
+    const full=exact&&!exact.visualDegraded&&!exact.appearanceAdapted&&!exact.omitted?.length&&!exact.unsupported?.length;
+    // Keep the independent route stable on either side of an equipment
+    // change. Exact artwork still handles receivers with bespoke renderers.
+    const independent=nativeHD.selectIndependentWorld?.(player,options,selectPose);
+    if(independent&&!independent.omitted.length)return independent;
+    if(full)return exact;
+    if(exact?.slotFallback==='signed-pose-omit'&&exact.layeredSlots&&!exact.unsupported?.length&&!exact.appearanceAdapted)return exact;
+    return independent||null;
   }
   const gaitStates=new WeakMap();
   function walkPose(actor){return {...(gaitStates.get(actor)?.pose||{moving:false,time:0,phase:0,distance:0,speed:0,stepDistance:0,timestamp:0})};}
@@ -563,19 +351,15 @@
       const held=player.equipment?.weapon,weapon=held?.def??held;
       if(weapon!=null&&!requested.weaponless&&!weaponCatalog.items.some(w=>
          w.itemId===weapon&&w.category===weaponCatalog.classes[player.classId]))return null;
-      const profilePartial=options.consumer==='profile-portrait'&&action==='idle'&&direction==='south'&&!requested.weaponless;
-      // A profile-only plan must not make another preview eligible on cache hit.
-      const key=JSON.stringify([visualIdentity(player),action,direction,requested.weaponless,profilePartial]);
+      const key=JSON.stringify([visualIdentity(player),action,direction,requested.weaponless]);
       const old=surfacePoses.get(key);
       if(old){surfacePoses.delete(key);surfacePoses.set(key,old);return old;}
       if(surfaceLoading>=2)return null;
       const source=selectWorldHDOnly(nativeHD,weaponCatalog,player,requested);
-      if(!source||source.appearanceAdapted||source.unsupported?.length||
-         (source.omitted?.some(slot=>source.slotRoutes?.[slot]?.reason==='hd-combination-unresolved')&&
-          (!profilePartial||!profileOwnHDPartial(source,player,direction))))return null;
+      if(!source||source.appearanceAdapted||source.unsupported?.length||source.visualDegraded)return null;
       const snapshot={...player,appearance96:{...player.appearance96},preferences:{...player.preferences},
        equipment:Object.fromEntries(Object.entries(player.equipment||{}).map(([slot,v])=>[slot,v&&typeof v==='object'?{...v}:v]))};
-      const resolved=source.visualDegraded?{...requested,action:'idle'}:requested,
+      const resolved=requested,
        pose={player:snapshot,options:resolved},controller=new AbortController(),
        entry={source,resolved,controller,bundle:null,ready:null};
       surfacePoses.set(key,entry);surfaceLoading++;
@@ -597,7 +381,7 @@
       const entry=requestTypedSurface(player,options);
       if(!entry?.bundle)return null;
       const {source,resolved,bundle}=entry;
-      if(!bundle.draw(ctx,player,{...options,...resolved,...(source.visualDegraded?{progress:0,time:0}:{})}))return null;
+      if(!bundle.draw(ctx,player,{...options,...resolved}))return null;
       return {source:source.id,omitted:source.omitted||[],slotRoutes:source.slotRoutes||{},consumer:options.consumer,typedHD:true};
     }
     const worldPoseKey=(player,o,identity=visualIdentity(player))=>JSON.stringify([identity,o.action,o.direction,!!o.weaponless]);
@@ -611,7 +395,7 @@
       worldRequest=null;
       worldIdentity=null;
     }
-    const worldVisual=()=>worldRequest?{key:worldRequest.key,state:worldRequest.state,error:worldRequest.error,degradation:worldRequest.degradation,coverage:worldRequest.bundle?.coverage||[],preparedAt:worldRequest.preparedAt,firstDrawAt:worldRequest.firstDrawAt,publishedKey:worldRequest.bundle?worldRequest.key:undefined}:null;
+    const worldVisual=()=>worldRequest?{key:worldRequest.key,state:worldRequest.state,error:worldRequest.error,reason:worldRequest.reason,coverage:worldRequest.bundle?.coverage||[],preparedAt:worldRequest.preparedAt,firstDrawAt:worldRequest.firstDrawAt,publishedKey:worldRequest.bundle?worldRequest.key:undefined}:null;
     const worldReady=player=>!!player&&worldRequest?.state==='ready'&&worldRequest.identity===visualIdentity(player);
     function requestWorldVisual(player,options){
       const identity=visualIdentity(player),key=worldPoseKey(player,options,identity);
@@ -645,23 +429,22 @@
           signal.throwIfAborted();
           const pose={player:snapshot,options};
           const source=selectWorldHDOnly(nativeHD,weaponCatalog,snapshot,options);
-          if(!source)throw Error('Sem fonte HD: '+options.action+' / '+options.direction);
-          const resolved=source.visualDegraded?{...options,action:'idle'}:options;
-          bundle=await nativeHD.prepareConfiguration([pose],{signal,resolve:()=>({player:snapshot,options:resolved,source})});
-          if(source.visualDegraded)entry.degradation={reason:source.degradationReason,requestedAction:options.action,renderedAction:'idle'};
+          if(!source)throw Object.assign(Error('Sem fonte HD: '+options.action+' / '+options.direction),{code:'no-hd-pose'});
+          bundle=await nativeHD.prepareConfiguration([pose],{signal,resolve:()=>({...pose,source})});
           signal.throwIfAborted();
           entry.bundle=bundle;bundle=null;
           entry.state='ready';entry.preparedAt=performance.now();
         }catch(error){
           if(signal.aborted)return;
-          Object.assign(entry,{state:'failed',error:error.message,failedAt:performance.now()});
+          Object.assign(entry,{state:'failed',error:error.message,reason:error.code||(error.asset?'source-load-failed':'composition-failed'),failedAt:performance.now()});
           diagnose(error,{consumer:'world',asset:options.action+'/'+options.direction});
         }finally{bundle?.release();}
       })();
       return entry;
     }
     function retryWorldVisual(){
-      for(const entry of worldPoses.values())if(entry.state==='failed')releaseWorldPose(entry);
+      for(const entry of worldPoses.values())if(entry.state==='failed'||entry.bundle?.coverage.some(pose=>
+        Object.values(pose.slotResolution||{}).some(slot=>slot.state==='load-failed')))releaseWorldPose(entry);
       imageFailures.clear();
     }
     function drawWorldVisual(ctx,options,player=worldRequest?.player){

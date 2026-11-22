@@ -24,10 +24,8 @@ function* probePairs(buckets){
  };
  for(let i=0;i<slots.length;i++)for(let j=i+1;j<slots.length;j++){
   const s=slots[i],t=slots[j],a=buckets[s],b=buckets[t];
-  // Cyclic zip covers every independently declared item against every
-  // neighbor slot category without multiplying item counts.
-  for(let k=0;a.hd.length&&b.hd.length&&k<Math.max(a.hd.length,b.hd.length);k++){
-   const p=emit(s,a.hd[k%a.hd.length],t,b.hd[k%b.hd.length]);if(p)yield p;
+  for(const x of a.hd)for(const y of b.hd){
+   const p=emit(s,x,t,y);if(p)yield p;
   }
   // Exercise a missing or unverified neighbor in each slot. This records a
   // dropout of the declared HD item independently of the unresolved neighbor.
@@ -47,6 +45,20 @@ function scoreProbe(pair,solo,mixed){
   slot,id,mark:classify(slot,id,i?second:first,mixed,i?trusted(first,s,a):trusted(second,t,b),compatible),
   soloRoute:route(i?second:first,slot)?.source,mixedRoute:route(mixed,slot)?.source,
  }));
+}
+// In every pose with three visual slot families, each declared item is
+// the anchor of a mixed loadout. A seeded draw fills the other families.
+const MIX_SEED=374;
+function mixedLoadouts(buckets,seed=MIX_SEED){
+ let state=seed>>>0;
+ const pick=(rows)=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return rows[state%rows.length];};
+ const groups=slots.filter(slot=>buckets[slot].hd.length),cases=new Map();
+ if(groups.length<3)return [];
+ for(const anchor of groups)for(const item of buckets[anchor].hd){
+  const loadout=groups.map(slot=>[slot,slot===anchor?item:pick(buckets[slot].hd)]);
+  cases.set(JSON.stringify(loadout),loadout);
+ }
+ return [...cases.values()];
 }
 async function main(){
  const fs=require('node:fs'),path=require('node:path');
@@ -80,7 +92,7 @@ async function main(){
   return own.length===1?own[0]:family[role];
  };
  const padding=process.env.NULL_SLOTS==='1'?Object.fromEntries([...inventorySlotsLeft,...inventorySlotsRight,'visual_completo'].map(s=>[s,null])):{};
- const select=(player,base,entries,o)=>world.selectWorldHD(api,catalog,
+ const select=(player,base,entries,o)=>world.selectWorldHDOnly(api,catalog,
   {...player,equipment:{...base,...Object.fromEntries(entries.map(([s,def])=>[s,{def}]))}},o);
  const profile=process.env.AUDIT_PROFILE||'default';
  if(!['default','signed-sword'].includes(profile)||profile==='signed-sword'&&!published)throw Error('Invalid AUDIT_PROFILE or no signed build');
@@ -88,7 +100,7 @@ async function main(){
  const pairArg=process.env.AUDIT_PAIR?JSON.parse(process.env.AUDIT_PAIR):null;
  if(pairArg&&(!Array.isArray(pairArg)||pairArg.length!==2||pairArg.some(x=>!Array.isArray(x)||x.length!==2||
     !groups[x[0]]?.includes(x[1]))||pairArg[0][0]===pairArg[1][0]))throw Error('AUDIT_PAIR requires two items in different visual slots');
- const counts={},bySlot={},examples={},grouped={};let poseContexts=0,soloQueries=0,mixedQueries=0;
+ const counts={},bySlot={},examples={},grouped={};let poseContexts=0,soloQueries=0,mixedQueries=0,loadoutQueries=0,loadoutDrops=0,declaredPairQueries=0,declaredPairComplete=0,loadoutComplete=0;
  const add=(obj,key)=>{obj[key]=(obj[key]||0)+1;};
  for(const {role,def}of contexts.filter(x=>match('weapon',x.def)&&match('family',x.role))){
   const base={...padding,...(def==null?{}:{weapon:{def}})};
@@ -117,11 +129,24 @@ async function main(){
       }
      }
     }
+   if(!pairArg)for(const entries of mixedLoadouts(bucket)){
+    loadoutQueries++;
+    const plan=select(player,base,entries,o);
+    if(entries.every(([slot,id])=>trusted(plan,slot,id)))loadoutComplete++;
+    for(const [slot,id] of entries)if(!trusted(plan,slot,id)){
+     loadoutDrops++;
+     const key=[gender,role,direction,action,slot,'mixed-loadout-drop'].join('/');
+     add(grouped,key);
+     examples[key]??={weapon:def,tone,equipment:Object.fromEntries(entries),mixedSource:plan?.id};
+    }
+   }
    }
   }
  }
- console.log(JSON.stringify({mode:'slot-independence',filter,profile,pair:pairArg,poseContexts,soloQueries,mixedQueries,counts,bySlot,
+ console.log(JSON.stringify({mode:'slot-independence',filter,profile,pair:pairArg,poseContexts,soloQueries,mixedQueries,declaredPairQueries,declaredPairComplete,loadoutQueries,loadoutComplete,loadoutDrops,mixSeed:MIX_SEED,counts,bySlot,
   grouped,examples,authority:'Independent explicit solo slot declarations and World mixed selection, not Canvas proof. "Drop" shows a missing explicit declaration. It does not prove that the render has no layer, compatible art is absent, or a guard is the only cause. Two solo authorities merely match reported body, action, direction, pivot, scale, clock and mirror metadata; check underlying layer ownership and occlusion when resolving.'},null,2));
+ if(process.env.AUDIT_REQUIRE_ALL==='1'&&
+    (loadoutDrops||Object.entries(counts).some(([key,value])=>key.startsWith('declaredDrop')&&value)))process.exitCode=1;
 }
-module.exports={trusted,poseKey,probePairs,scoreProbe};
+module.exports={trusted,poseKey,probePairs,mixedLoadouts,scoreProbe};
 if(require.main===module)main().catch(e=>{console.error(e);process.exitCode=1;});

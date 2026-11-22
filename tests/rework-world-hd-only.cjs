@@ -61,9 +61,9 @@ for(const s of scripts)if(fs.existsSync(pathFor(s)))run(pathFor(s));
  }
  const fallback=actor({gloves:159});
  const f={...pathOpts,action:'unsupported-future-skill'},entry=core.requestWorldVisual(fallback,f);await entry.promise;
- assert(core.worldReady(fallback),JSON.stringify(core.worldVisual()));
- assert.deepEqual(core.worldVisual().degradation,{reason:'no-hd-requested-pose',requestedAction:f.action,renderedAction:'idle'});
+ assert(!core.worldReady(fallback));
+ assert.equal(core.worldVisual().reason,'no-hd-pose');
  const c=cv.createCanvas(400,360);
- assert(core.draw(c.getContext('2d'),fallback,{...f,x:200,y:230,worldView:false}));
- console.log('PASS actual World HD: retained G159, P22, W73 and real pixels; no native96; same-actor HD idle if action has no pose.');
+ assert(!core.draw(c.getContext('2d'),fallback,{...f,x:200,y:230,worldView:false}));
+ console.log('PASS actual World HD: retained G159, P22 and W73 in every frame; unsupported action has no replacement pose.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

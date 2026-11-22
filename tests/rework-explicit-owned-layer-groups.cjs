@@ -78,3 +78,18 @@ test('normal World selector uses complete independent routes only for the verifi
   a(!api.selectVisual(unsafe,o)?.id.includes(':registered-slots:'));
  a(!api.selectVisual(p,{...o,direction:'north'})?.id.includes(':registered-slots:'));
 });
+
+test('a donor with only its own equipment mounts onto a registered anchor',()=>{
+ const anchor=groups('south','idle').find(x=>x.equipment.boots===9);
+ const owns=anchor.equipmentLayerGroups;
+ const other=new Set(Object.entries(owns).filter(([slot])=>slot!=='boots').flatMap(([,ids])=>ids));
+ const donor={...fit(anchor,d(anchor).layers.filter(l=>!other.has(l.id))),id:'isolated-boots-witness',
+  equipment:{boots:9},equipmentLayerGroups:{boots:owns.boots}};
+ const slots=Object.fromEntries(Object.entries(owns).map(([slot,anchorLayers])=>[slot,{anchorLayers,
+  uncoveredBaseVerified:true,records:slot==='boots'?{9:{record:donor,layers:owns.boots}}:{}}]));
+ const result=MareReworkModularOutfitsHD.composeSlots({anchor,equipment:{boots:9},fixed:{},slots});
+ a.equal(result.slotRoutes.boots.quality,'hd');
+ a.equal(result.slotRoutes.boots.source,donor.id);
+ a.deepEqual(result.omitted,[]);
+ a.deepEqual(d(result).layers.map(l=>l.id).sort(),d(donor).layers.map(l=>l.id).sort());
+});
