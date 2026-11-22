@@ -48,13 +48,12 @@
   function selectWorldHDOnly(nativeHD,weaponCatalog,player,options){
     if(!nativeHD?.selectVisual||!player||player.zoanTransformed)return null;
     const selectPose=(actor,pose)=>selectWorldHD(nativeHD,weaponCatalog,actor,pose);
-    const exact=selectPose(player,options);
-    const full=exact&&!exact.visualDegraded&&!exact.appearanceAdapted&&!exact.omitted?.length&&!exact.unsupported?.length;
     // Keep the independent route stable on either side of an equipment
     // change. Exact artwork still handles receivers with bespoke renderers.
     const independent=nativeHD.selectIndependentWorld?.(player,options,selectPose);
     if(independent&&!independent.omitted.length)return independent;
-    if(full)return exact;
+    const exact=selectPose(player,options);
+    if(exact&&!exact.visualDegraded&&!exact.appearanceAdapted&&!exact.omitted?.length&&!exact.unsupported?.length)return exact;
     if(exact?.slotFallback==='signed-pose-omit'&&exact.layeredSlots&&!exact.unsupported?.length&&!exact.appearanceAdapted)return exact;
     return independent||null;
   }

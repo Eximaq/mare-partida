@@ -21,6 +21,14 @@ lobby96.draw=function(ctx,p,o){
  return drawn;
 };
 window.__hdSlotQA={
+ seedSwordWardrobe(){
+  game.classId='sword';game.level=100;game.equipment={};
+  game.inventory=[1,67,6,151,168,22,25,159,18,157,148,183].map(id=>newItem(itemDefs[id],1,false));
+  game.appearance96=MareCharacterAppearance.normalize({...game.appearance96,gender:'feminino',
+   skinStyle:'natural',skinColor:'ebony',hairStyle:'original',hairColor:'blue',eyeStyle:'original',eyeColor:'green'});
+  game.preferences={...game.preferences,hideHeadgear:false};
+  saveGame();renderPanel();updateUI();
+ },
  seedDaggers(){
   game.classId='rogue';
   game.inventory=[73,159,22,168,148,6].map(id=>newItem(itemDefs[id],1,false));
@@ -188,8 +196,6 @@ window.__hdSlotQA={
   await walk('w','north',powerKit,'caminhada-norte-equipado',true);
   await walk('s','south',powerKit,'caminhada-sul-equipado');
   await observePower(powerKit);
-  for(const slot of ['coat','legs','gloves','head'])await remove(slot);
-  await observeAttack('attack-sword','ataque-real-espada');
   await page.evaluate(()=>__hdSlotQA.seedDaggers());
   for(const id of [73,159,168,148])await put(id);
   const daggerKit={weapon:73,gloves:159,legs:168,boots:148};
@@ -199,6 +205,20 @@ window.__hdSlotQA={
   await put(6);
   await observeAttack('attack-daggers','adaga73-peitoral6-leste','east',{...daggerKit,legs:22,coat:6});
   await observeAttack('attack-daggers','adaga73-peitoral6-oeste','west',{...daggerKit,legs:22,coat:6});
+  await page.evaluate(()=>__hdSlotQA.seedSwordWardrobe());
+  const swordKit={weapon:1,coat:151,legs:168,boots:183,gloves:159,head:157};
+  for(const id of Object.values(swordKit))await put(id);
+  const savedLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  for(const direction of ['east','north','west','south'])
+   await observeAttack('attack-sword','espada-conjunto-'+direction,direction,swordKit);
+  for(const [slot,id] of [['gloves',25],['head',18],['legs',22],['boots',148],['coat',6],['weapon',67]]){
+   await put(id);swordKit[slot]=id;
+   await observeAttack('attack-sword','espada-troca-'+slot,'east',swordKit);
+  }
+  await page.reload({waitUntil:'domcontentloaded',timeout:90000});
+  await page.waitForFunction(()=>window.__hdSlotQA?.read().appearance);
+  await observeAttack('attack-sword','espada-apos-reconectar','east',swordKit);
+  assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,savedLook);
   assert.deepEqual(errors,[]);
   console.log('Character creation, equipped movement, swaps, reload, Mera weapon visibility and armed attacks passed.');
  }finally{

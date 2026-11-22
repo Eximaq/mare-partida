@@ -28,8 +28,35 @@ function attachIsolatedCoat(record,outfit,coat){
  const states=o.poses.map((_,i)=>record.states[sourceFrame(i)]);
  return {...record,states,id:record.id+'-coat'+coat+'-native',pack:combined,baseRecord:{...base,pack:combined,sourceRefs:[...base.sourceRefs,...refs]},outfitSources:refs,outfitSourceId:outfit.id,skinRepairLayers:layers.filter(l=>l.id.startsWith('original-neck-coverage-only')).map(l=>l.id),sourceRasterPadding:outfit.sourceRasterPadding};
 }
+// Fit the two lengths of the side sleeve to the actual sword arm. Its source
+// is one straight, padded HD plate. Both segments meet at the same elbow.
+function bendSwordSleeve(canvas,image,sleeve,pose,density){
+ const ctx=canvas.getContext('2d'),a=sleeve.from,b=sleeve.to;
+ const side=sleeve.side,shoulder=pose[side+'_SHOULDER'],elbow=pose[side+'_ELBOW'],wrist=pose[side+'_WRIST'];
+ const length=Math.hypot(b.x-a.x,b.y-a.y),ux=(b.x-a.x)/length,uy=(b.y-a.y)/length;
+ const long=length>15,upper=long?length*.52:length;
+ const joint={x:a.x+ux*upper,y:a.y+uy*upper};
+ const draw=(start,end,from,to,lower)=>{
+  const dx=to.x-from.x,dy=to.y-from.y,span=Math.hypot(end.x-start.x,end.y-start.y),len=Math.hypot(dx,dy);
+  if(len===0)return;
+  const nx=-dy/len,ny=dx/len;
+  const xx=dx/span*ux-nx*uy,xy=dx/span*uy+nx*ux;
+  const yx=dy/span*ux-ny*uy,yy=dy/span*uy+ny*ux;
+  ctx.save();ctx.setTransform(xx,yx,xy,yy,density*(from.x-xx*start.x-xy*start.y),density*(from.y-yx*start.x-yy*start.y));
+  ctx.imageSmoothingEnabled=false;
+  if(long){
+   const sign=lower?1:-1,x=joint.x*density,y=joint.y*density,r=image.width;
+   ctx.beginPath();ctx.moveTo(x-uy*r,y+ux*r);ctx.lineTo(x+uy*r,y-ux*r);
+   ctx.lineTo(x+uy*r+sign*ux*r,y-ux*r+sign*uy*r);ctx.lineTo(x-uy*r+sign*ux*r,y+ux*r+sign*uy*r);
+   ctx.closePath();ctx.clip();
+  }
+  ctx.drawImage(image,0,0);ctx.restore();
+ };
+ draw(a,joint,shoulder,elbow,false);
+ if(long)draw(joint,b,elbow,wrist,true);
+}
 function attachSwordCoat(record,outfit,coat){
- if(record.item!==0||record.action!=='attack-sword'||!outfit||
+ if(record.body!=='female'||record.action!=='attack-sword'||!outfit||
     outfit.equipment.torso!==coat||Object.keys(outfit.equipment).length!==1)return null;
  const {direction,baseRecord:base}=record,pack=base.pack,d=pack.directions[direction],o=outfit.pack.directions[direction];
  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -1245,7 +1272,7 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
    throw Error('Missing exact own sword source at the signed wrist mount');
   return [{...state.parts[0],sha256:source.sha256,url:source.url,sourceNativeSize:source.sourceNativeSize}];
  }
- return {resolveOwnWeaponSource,
+ return {resolveOwnWeaponSource,attachIsolatedCoat,attachSwordCoat,
  resolve({item,body,action,direction,appearance={},equipment={},reservedCardinalStaffWorld=false,ownCetroSouthWalkWorld=false,ownCetroLateralCarryWorld=false,boundedW2WestSkinWorld=false,ownW2WestIsolatedWorld=false,ownW14W117SouthFitWorld=false,ownW118SouthWristWorld=false,boundedW119SouthFaceWorld=false,ownW15SouthPulseWorld=false,boundedCetroSouthCarryWorld=false,ownW113SouthStaticWorld=false,ownStaffFemaleCardinalWorld=false,ownLateralStaffWindowWorld=false,board22W31World=false,board12PalmWorld=false,board07OrbWorld=false,daggerToneAuthority=null}={}){if(item==null||!index.records.some(r=>r.item===Number(item))||!['female','feminino'].includes(body))return null;const extra=Object.entries(equipment).filter(([k,v])=>k!=='weapon'&&v!=null&&!['none','original'].includes(v));const glove=extra.find(([slot])=>slot==='gloves')?.[1],clothing=extra.filter(([slot])=>!['head','gloves'].includes(slot)),head=extra.find(([slot])=>slot==='head')?.[1];if(clothing.some(([slot])=>!['coat','legs','pants'].includes(slot))||clothing.filter(([slot])=>slot!=='coat').length>1)return null;if(equipment.weapon!=null&&Number(equipment.weapon?.def??equipment.weapon)!==Number(item))return null;const customized=['hair','hairStyle','skin','skinColor','hairColor','face','eyeStyle','eyeColor'].some(k=>appearance[k]&&appearance[k]!=='original'&&!((k==='eyeColor')&&appearance[k]==='blue'));if(['attack','punch','shoot','focus','cast'].includes(action))action=index.records.find(r=>r.item===Number(item)&&r.action.startsWith('attack-'))?.action||action;const r=index.records.find(r=>r.item===Number(item)&&r.body==='female'&&r.action===action&&r.direction===direction);if(!r)return null;const coat=clothing.find(([slot])=>slot==='coat')?.[1],pants=clothing.find(([slot])=>slot!=='coat')?.[1];
  const isOriginal=v=>v==null||v==='original';
  const exact113CoatHelmet=r.item===113&&direction==='north'&&action==='attack-firearm'&&
@@ -1285,7 +1312,7 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   const p154=pants!=null&&Number(pants.def??pants)===154&&def===151&&Number(item)===113&&direction==='north'&&
    action==='attack-firearm'&&glove==null&&!alternate(pants)&&!alternate(coat)&&!alternate(equipment.weapon);
   const northCoat=(!pants||p154)&&(head==null||exact113CoatHelmet)&&(r.item===113||!alternate(coat)&&!alternate(equipment.weapon))?attachNorthFirearmCoat(r,def):null;
-  combined=p154?attachNorth113Pants154(northCoat):action==='attack-sword'?attachSwordCoat(r,outfit,def):northCoat||attachIsolatedCoat(r,outfit,def);
+  combined=p154?attachNorth113Pants154(northCoat):action==='attack-sword'?(r.item===0&&attachSwordCoat(r,outfit,def)):northCoat||attachIsolatedCoat(r,outfit,def);
  }
  if(coat==null&&pants!=null&&Number(pants.def??pants)===154&&(Number(item)===113||Object.hasOwn(northP154SiblingMatrices,Number(item)))&&action==='attack-firearm'&&direction==='north'&&head==null&&glove==null&&
   ![pants,equipment.weapon].some(x=>['variant','variantId','appearanceVariant'].some(k=>x?.[k]!=null&&x[k]!=='original')))
@@ -1381,7 +1408,7 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
      material.gearRecord?.snapshot!=='f24f832fec352fe8f2b64f7fe54a543e22381c3146d27ba6297d41301cdfe9fe'||
      !material.gearRecord.layers.some(l=>l.id===material.gearRecord.headgearPolicy?.gearId&&l.source==='6f38ce6e1badcc2004674e699593d07205179c4b878a7fa793c498925d7e4b81')))return null;
   return {...combined,id:combined.id+':'+material.id,material,colorAppearance:appearance,...(recoil?{northFirearmHeadRecoil:recoil.offsets,...(material.skinColor?{northFirearmVisibleSkin}:{} )}:{})};},
- requiredFiles(r,{frame}={}){const d=r.baseRecord.pack.directions[r.direction],states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid female equipment frame');const refs=frame===undefined?r.baseRecord.sourceRefs:d.layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean);const skinFiles=r.northFirearmVisibleSkin?refs.filter(h=>r.northFirearmVisibleSkin[h]).map(h=>'tools/rework-firearm113-coat/assets/'+r.northFirearmVisibleSkin[h]+'.png'):[];const daggerMasks=refs.flatMap(h=>{const m=r.femaleDaggerSavedTones?.bodyMasks[h]||r.femaleDaggerSavedTones?.armMasks[h];return m?['tools/rework-female-dagger-p22/assets/'+m+'.png']:[];});return [...new Set([...(w119SouthOwnWide(r)?.flatMap((x,i)=>(frame===undefined||i===frame)&&x.png?[w119SouthOwnWideFiles(x.png)]:[])||[]),...(r.ownLateralStaffWindow?['tools/rework-weapon-layers-hd/assets/'+lateralStaffGripAuthority[r.item].raw+'.png']:[]),...(r.board07OrbOwnerMask?[r.board07OrbOwnerMask]:[]),...skinFiles,...daggerMasks,...(r.approvedSouthCarry&&r.item===17?[orbSkinPath]:[]),...refs.map(s=>asset(r,s)),...(r.checkpointPantsApertures&&frame!==undefined&&r.checkpointPantsApertures.points[frame]?.length?[asset(r,r.checkpointPantsApertures.source[frame])]:[]),...(r.daggerOwnHands?.source.flatMap(l=>(frame===undefined?l.frames:[l.frames[frame]]).map(h=>asset(r,h)))||[]),...(r.material?appearanceRegistry.requiredFiles(r.material):[]),...states.flatMap(s=>[...mountedParts(r,s).map(p=>p.url),...(r.north114GloveContact?s.parts.map(p=>asset(r,p.handMaskSHA256)):[]),...Object.values(s.baseMasks||{})])])]},
+ requiredFiles(r,{frame}={}){const d=r.baseRecord.pack.directions[r.direction],states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid female equipment frame');const refs=frame===undefined?r.baseRecord.sourceRefs:d.layers.map(l=>l.frames?.[frame]||l.source).filter(Boolean);const skinFiles=r.northFirearmVisibleSkin?refs.filter(h=>r.northFirearmVisibleSkin[h]).map(h=>'tools/rework-firearm113-coat/assets/'+r.northFirearmVisibleSkin[h]+'.png'):[];const daggerMasks=refs.flatMap(h=>{const m=r.femaleDaggerSavedTones?.bodyMasks[h]||r.femaleDaggerSavedTones?.armMasks[h];return m?['tools/rework-female-dagger-p22/assets/'+m+'.png']:[];});return [...new Set([...(w119SouthOwnWide(r)?.flatMap((x,i)=>(frame===undefined||i===frame)&&x.png?[w119SouthOwnWideFiles(x.png)]:[])||[]),...(r.ownLateralStaffWindow?['tools/rework-weapon-layers-hd/assets/'+lateralStaffGripAuthority[r.item].raw+'.png']:[]),...(r.board07OrbOwnerMask?[r.board07OrbOwnerMask]:[]),...skinFiles,...daggerMasks,...(r.clothOwner?[asset(r,r.clothOwner.mask)]:[]),...(r.approvedSouthCarry&&r.item===17?[orbSkinPath]:[]),...refs.map(s=>asset(r,s)),...(r.checkpointPantsApertures&&frame!==undefined&&r.checkpointPantsApertures.points[frame]?.length?[asset(r,r.checkpointPantsApertures.source[frame])]:[]),...(r.daggerOwnHands?.source.flatMap(l=>(frame===undefined?l.frames:[l.frames[frame]]).map(h=>asset(r,h)))||[]),...(r.material?appearanceRegistry.requiredFiles(r.material):[]),...states.flatMap(s=>[...mountedParts(r,s).map(p=>p.url),...(r.north114GloveContact?s.parts.map(p=>asset(r,p.handMaskSHA256)):[]),...Object.values(s.baseMasks||{})])])]},
  render(ctx,r,images,{frame=0,captureOps,makeCanvas:frameCanvas=makeCanvas}={}){let p=r.baseRecord.pack,d=p.directions[r.direction];
  const map=new Map(r.baseRecord.sourceRefs.map(s=>[s,images.get(asset(r,s))]));
  let gearImages=images;
@@ -1442,6 +1469,23 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   const tile=frameCanvas(p.frame.width*4,p.frame.height*4);
   tile.getContext('2d').drawImage(image,padding.offset,padding.offset);
   map.set(sha,tile);
+ }
+ if(r.clothOwner){
+  const {hash,mask}=r.clothOwner,cloth=map.get(hash),owner=images.get(asset(r,mask));
+  if(!cloth||!owner||cloth.width!==owner.width||cloth.height!==owner.height)throw Object.assign(Error('Invalid fitted pants mask'),{asset:asset(r,mask)});
+  const tile=frameCanvas(cloth.width,cloth.height),c=tile.getContext('2d');
+  c.drawImage(owner,0,0);const keep=c.getImageData(0,0,tile.width,tile.height).data;
+  c.clearRect(0,0,tile.width,tile.height);c.drawImage(cloth,0,0);
+  const pixels=c.getImageData(0,0,tile.width,tile.height);
+  for(let i=0;i<keep.length;i+=4)if(keep[i])pixels.data.fill(0,i,i+4);
+  c.putImageData(pixels,0,0);map.set(hash,tile);
+ }
+ for(const sleeve of r.swordSleeves||[]){
+  const image=map.get(sleeve.hash);
+  if(!image)throw Object.assign(Error('Missing sword sleeve'),{asset:asset(r,sleeve.hash)});
+  const tile=frameCanvas(image.width,image.height);
+  bendSwordSleeve(tile,image,sleeve,d.poses[frame],p.density);
+  map.set(sleeve.hash,tile);
  }
  if(r.material){
   const head=d.layers.find(layer=>layer.slot==='headBase'),source='custom-head';

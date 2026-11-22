@@ -671,5 +671,50 @@ async function verify(catalog,trusted,{subtle=root.crypto?.subtle,saved=[],north
  }
  return create(catalog,accepted,normalizedGloves,colors,gloveOnlyVerified,northIsolatedPack,certifiedGlovePoses,extraBootPacks,pants22Packs);
 }
-const api={verify};root.MareSword0Checkpoint=api;if(typeof module!=='undefined')module.exports=api;
+async function verifyWardrobe(catalog,bodyPacks,subtle=root.crypto?.subtle){
+ if(!subtle||!Array.isArray(catalog?.records)||catalog.records.length!==120)return null;
+ const sign=async data=>Array.from(new Uint8Array(await subtle.digest('SHA-256',
+  new TextEncoder().encode(JSON.stringify(data)))),v=>v.toString(16).padStart(2,'0')).join('');
+ const rows=catalog.records.map(({item,slot,direction,layers})=>[direction,slot,item,layers]);
+ if(await sign(rows)!=='5945eb6dd448bb13ba4b46080b65cae2bd4902e3d2cb9f5078d742fe9a093e92')return null;
+ const wardrobePacks={};
+ for(const [dir,proof] of Object.entries(alphaGlovePoseProof)){
+  if(bodyPacks[dir]&&await sign(bodyPacks[dir])===proof.geometry)
+   wardrobePacks[dir]=JSON.stringify(bodyPacks[dir]);
+ }
+ const index=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(rows.map(([direction,slot,item,layers])=>({
+  direction,slot,item,body:'female',action:'attack-sword',source:layers
+ })));
+ if(!index)return null;
+ // The checkpoint was captured on one outfit. Bind its local passes to the
+ // original anatomical receiver, before any other wardrobe slot is mounted.
+ const compatiblePacks=new WeakMap();
+ function usesWardrobePose(base){
+  const pack=base?.pack,dir=base?.direction;
+  if(base?.hdKind!=='female-equipment'||base.body!=='female'||base.action!=='attack-sword'||
+     !pack||pack!==base.baseRecord?.pack||!wardrobePacks[dir]||base.appearanceAdapted||
+     base.sourceBaseId!=='v7-female-sword-'+dir+'-ownership-candidate-'+dir)return false;
+  if(!compatiblePacks.has(pack))compatiblePacks.set(pack,JSON.stringify(pack)===wardrobePacks[dir]);
+  return compatiblePacks.get(pack)&&base.states.length===8&&base.states.every((state,i)=>
+   state.frame===i&&!state.hideBaseLayers?.length&&!Object.keys(state.baseMasks||{}).length&&
+   state.parts.length===1&&Number.isFinite(state.parts[0].depth));
+ }
+ function wardrobePass(base,slot,item){
+  if(!Object.hasOwn(claims,slot)||!usesWardrobePose(base))return null;
+  const d=base.pack.directions[base.direction],own=index.resolve({body:base.body,action:base.action,direction:base.direction,slot,item});
+  if(own.state!=='available'||own.mirrorX)return null;
+  const layers=own.source,refs=[...new Set(layers.flatMap(l=>l.frames))],removed=d.layers.filter(l=>claims[slot].has(l.id)).map(l=>l.id);
+  if(layers.some(l=>l.binding?.kind!=='fixed'||l.depthTrack||!Number.isFinite(l.depth)||
+     l.frames?.length!==d.clip.frames||l.source!==l.frames[0]))return null;
+  if(slot==='gloves'&&(layers.length!==2||removed.length!==2||
+     !layers.every(l=>removed.includes(l.id)&&d.layers.find(x=>x.id===l.id).depth===l.depth)))return null;
+  const shorts=d.layers.find(l=>l.id==='shorts');
+  if(slot==='pants'&&(layers.length!==1||removed.length!==1||layers[0].depth!==shorts.depth))return null;
+  const points=slot==='pants'&&item===22&&sideP22Pinholes[base.direction];
+  return {layers,removed,refs,source:'espada-0-camadas.zip/'+base.direction+'/'+slot+'/'+item,swordCheckpoint:true,
+   ...(points?{apertures:{id:layers[0].id,source:shorts.frames,points}}:{})};
+ }
+ return {usesWardrobePose,wardrobePass};
+}
+const api={verify,verifyWardrobe};root.MareSword0Checkpoint=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
