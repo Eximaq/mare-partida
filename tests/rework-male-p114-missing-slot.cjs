@@ -18,8 +18,8 @@ const draw=(b,x,i)=>{let c;a(b.draw({save(){},restore(){},drawImage(image){c=ima
   const appearance96=A.normalize({gender:'masculino',hairColor:'black',eyeColor:'blue',skinColor});
   const actor=(equipment)=>({classId:'gunner',appearance96,equipment:{weapon:original(114),...equipment}});
   const cases=north?[
-   [{legs:original(21),boots:original(9),coat:original(151)},{legs:original(21)},['boots','coat']],
-   [{legs:original(182),boots:original(9)},{},['boots','legs']],
+   [{legs:original(21),boots:original(9),coat:original(151)},{legs:original(21),boots:original(9)},['coat']],
+   [{legs:original(182),boots:original(9)},{boots:original(9)},['legs']],
    [{legs:original(182)},{},['legs']]
   ]:[
    [{legs:original(22),boots:original(9),coat:original(151),gloves:original(26)},
@@ -44,7 +44,7 @@ const draw=(b,x,i)=>{let c;a(b.draw({save(){},restore(){},drawImage(image){c=ima
    try{a.deepEqual(c1.coverage[0].omitted.slice().sort(),missing);for(let i=0;i<ticks;i++)a(draw(c0,y,i).equals(draw(c1,x,i)));}finally{c0.release();c1.release();global.gc?.();}
   }
   a(!n.selectVisual(actor({legs:{def:182,variant:'other'}}),o)?.slotFallback);
-  a(!n.selectVisual(actor({legs:original(182)}),{...o,direction:'east'})?.slotFallback);
+  a.equal(n.selectVisual(actor({legs:original(182),boots:original(9)}),{...o,direction:'east'})?.slotRoutes?.boots?.item,9);
   a(!n.selectVisual(actor({legs:original(182)}),{...o,consumer:'portrait'})?.slotFallback);
   a(!n.selectVisual(actor({legs:original(182)}),{...o,weaponless:true})?.slotFallback);
   console.log('PASS W114',o.direction,skinColor,process.env.SELECT_ONLY==='1'?'metadata only':(ticks*3)+' exact rendered ticks','pending slots preserved as missing; proof outside omitted slots byte-identical');

@@ -21,11 +21,11 @@ lobby96.draw=function(ctx,p,o){
  return drawn;
 };
 window.__hdSlotQA={
- seedWardrobe(role,items){
+ seedWardrobe(role,items,look={}){
   game.classId=role;game.level=100;game.equipment={};
   game.inventory=items.map(id=>newItem(itemDefs[id],1,false));
   game.appearance96=MareCharacterAppearance.normalize({...game.appearance96,gender:'feminino',
-   skinStyle:'natural',skinColor:'ebony',hairStyle:'original',hairColor:'blue',eyeStyle:'original',eyeColor:'green'});
+   skinStyle:'natural',skinColor:'ebony',hairStyle:'original',hairColor:'blue',eyeStyle:'original',eyeColor:'green',...look});
   game.preferences={...game.preferences,hideHeadgear:false};
   saveGame();renderPanel();updateUI();
  },
@@ -227,6 +227,34 @@ window.__hdSlotQA={
    for(const id of Object.values(kit))await put(id);
    for(const direction of ['east','north','west','south'])await observeAttack(action,role+'-conjunto-'+direction,direction,kit);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,savedLook);
+  }
+  const maleKit={weapon:1,coat:151,legs:168,boots:134,gloves:25,head:18};
+  await page.evaluate(kit=>__hdSlotQA.seedWardrobe('sword',[...Object.values(kit),148],
+   {gender:'masculino'}),maleKit);
+  for(const id of Object.values(maleKit))await put(id);
+  const maleLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  for(const [key,dir] of [['d','east'],['a','west'],['w','north'],['s','south']])
+   await walk(key,dir,maleKit,'masculino-conjunto-'+dir,true);
+  await put(148);maleKit.boots=148;await walk('a','west',maleKit,'masculino-troca-bota-oeste',true);
+  await put(134);maleKit.boots=134;await walk('a','west',maleKit,'masculino-restaura-bota-oeste',true);
+  assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,maleLook);
+  const pistol={weapon:114,legs:21,boots:9,gloves:25};
+  for(const colored of [false,true]){
+   await page.evaluate(({pistol,colored})=>__hdSlotQA.seedWardrobe('gunner',Object.values(pistol),{
+    gender:'masculino',hairColor:colored?'blue':'black',eyeColor:colored?'green':'blue'
+   }),{pistol,colored});
+   for(const id of Object.values(pistol))await put(id);
+   const identity=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   for(const dir of (colored?['east','west']:['east','west','south','north'])){
+    await observeAttack('attack-firearm','pistola114-'+(colored?'cores-':'')+dir,dir,pistol);
+    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,identity);
+   }
+  }
+  for(const [role,kit,dir] of [['strategist',{weapon:123,coat:6,gloves:25},'south'],['healer',{weapon:126,boots:148},'north']]){
+   await page.evaluate(({role,kit})=>__hdSlotQA.seedWardrobe(role,Object.values(kit),
+    {gender:'masculino',hairColor:'black',eyeColor:'blue'}),{role,kit});
+   for(const id of Object.values(kit))await put(id);
+   await observeAttack('attack-focus','cetro'+kit.weapon+'-'+dir,dir,kit);
   }
   assert.deepEqual(errors,[]);
   console.log('Character creation, equipped movement, swaps, reload, Mera weapon visibility and armed attacks passed.');

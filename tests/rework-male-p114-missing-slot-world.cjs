@@ -35,9 +35,9 @@ for(const s of scripts)if(fs.existsSync(pathFor(s)))run(pathFor(s));
  const core=MarePaperDoll96Lobby.create({baseURL:uri});await core.ready;assert.equal(core.snapshot().state,'ready');
  const appearance96=MareCharacterAppearance.normalize({gender:'masculino',hairColor:'black',eyeColor:'blue',skinColor:'ebony'}),hash=require('node:crypto');
  const dir=process.env.DIRECTION==='north'?'north':'south',north=dir==='north',clock=north?8:30;
- const item=def=>({def}),actor=(extra)=>({classId:'gunner',appearance96,equipment:{weapon:item(114),legs:item(north?21:22),...(!north?{boots:item(9)}:{}),...extra}});
+ const item=def=>({def}),actor=(extra)=>({classId:'gunner',appearance96,equipment:{weapon:item(114),legs:item(north?21:22),boots:item(9),...extra}});
  const all=actor(north?{coat:item(151),boots:item(9)}:{coat:item(151),gloves:item(26)}),kept=actor({}),before=JSON.stringify(all);
- const absent=north?['boots','coat']:['coat','gloves'];
+ const absent=north?['coat']:['coat','gloves'];
  const collect=async(p,action,missing)=>{
   const opts={consumer:'world',direction:dir,action};
   core.requestWorldVisual(p,opts);
@@ -46,7 +46,7 @@ for(const s of scripts)if(fs.existsSync(pathFor(s)))run(pathFor(s));
   assert(core.worldReady(p),JSON.stringify(core.worldVisual()));
   const row=core.worldVisual().coverage[0];
   assert.equal(row.frames,8);assert.deepEqual(row.omitted.slice().sort(),missing);
-  for(const [s,id] of [['weapon',114],['legs',north?21:22],...(!north?[['boots',9]]:[])]){
+  for(const [s,id] of [['weapon',114],['legs',north?21:22],['boots',9]]){
    assert.equal(row.slotRoutes[s].quality,'hd');assert.equal(row.slotRoutes[s].item,id);
   }
   for(const s of missing)assert.equal(row.slotRoutes[s].quality,'missing');

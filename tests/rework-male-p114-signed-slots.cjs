@@ -14,7 +14,8 @@ const url=sha=>'tools/rework-weapon-layers-hd/assets/'+sha+'.png';
  for(const [direction,parts] of [
   ['south',{boots:{def:9}}],['south',{legs:{def:21}}],['south',{legs:{def:22}}],
   ['south',{legs:{def:21},boots:{def:9}}],['south',{legs:{def:22},boots:{def:9}}],
-  ['north',{legs:{def:21}}]
+  ['north',{legs:{def:21}}],
+  ...['north','east','west','south'].map(dir=>[dir,{boots:{def:9},legs:{def:21},gloves:{def:25}}])
  ]){
   const o={direction,action:'attack-firearm',consumer:'world'},on=actor(parts),off=actor(),snapshot=JSON.stringify(on);
   const r=api.selectVisual(on,o),b=api.selectVisual(off,o);a(r?.signedWeaponGarments,JSON.stringify([direction,parts,r?.id]));
@@ -35,7 +36,7 @@ const url=sha=>'tools/rework-weapon-layers-hd/assets/'+sha+'.png';
    let delta=0;for(let j=0;j<bare.length;j+=4){
     a(newFrame[j+3]>=bare[j+3],'lost native source alpha');
     if(newFrame.readUInt32LE(j)!==bare.readUInt32LE(j)){a(mask[j+3],'changed pixels outside exact garment atlas');delta++;}
-    if(parts.boots&&bare[j+3]>=128&&Math.floor(j/4/640)>=502)a(mask[j+3],'exposed bottom of bare foot');
+    if(direction==='south'&&parts.boots&&bare[j+3]>=128&&Math.floor(j/4/640)>=502)a(mask[j+3],'exposed bottom of bare foot');
    }
    a(delta>4000);draws++;
   }}
@@ -44,9 +45,11 @@ const url=sha=>'tools/rework-weapon-layers-hd/assets/'+sha+'.png';
   const qa=await prep(off,o);try{a.deepEqual(draw(qa,off,o,0,r.timeline.length),draw(awaitableReference(off,o,pix,publicSources[0],cv),off,o,0,r.timeline.length));}finally{qa.release();}
   global.gc?.();console.log(direction,Object.keys(parts),r.timeline.length);
  }
- for(const [direction,parts] of [['south',{gloves:{def:25}}],['north',{boots:{def:9}}],['north',{legs:{def:22}}],['east',{boots:{def:9}}],['west',{boots:{def:9}}],['south',{legs:{def:21,variant:'alt'}}],['south',{legs:{def:21},coat:{def:6}}]]){
-  a(!api.selectVisual(actor(parts),{direction,action:'attack-firearm',consumer:'world'})?.signedWeaponGarments);
+ for(const [direction,parts] of [['north',{legs:{def:22}}],['east',{legs:{def:22}}],['west',{gloves:{def:180}}],['south',{legs:{def:21,variant:'alt'}}],['south',{legs:{def:21},coat:{def:6}}]]){
+  const result=api.selectVisual(actor(parts),{direction,action:'attack-firearm',consumer:'world'});
+  const missing=Object.keys(parts).at(-1);a.notEqual(result?.slotRoutes?.[missing]?.quality,'hd');
+  if(parts.coat)a.equal(result?.slotRoutes?.legs?.item,21);
  }
- a.equal(draws,158);console.log('PASS 158 P114 signed World ticks, published OFF and ordered ON byte-exact');
+ a.equal(draws,212);console.log('PASS 212 P114 signed World ticks, published OFF and ordered ON byte-exact');
 })().catch(e=>{console.error(e);process.exitCode=1;});
 function awaitableReference(_p,_o,_pix,img,canvas){return {draw(ctx){const c=canvas.createCanvas(640,640);c.getContext('2d').drawImage(img,0,0);ctx.drawImage(c);return true;}};}

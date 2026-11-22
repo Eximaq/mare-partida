@@ -724,8 +724,8 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(registeredPistolas&&allowExactComposite&&classId==='gunner'&&action==='attack-firearm'&&['male','masculino'].includes(sourceBody??b)&&
      !visibleOrdered.length&&(weaponVariant==null||weaponVariant==='original')&&appearance.version===1&&appearance.gender==='masculino'&&
      appearance.skinStyle==='natural'&&appearance.skin===appearance.skinColor&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},appearance.skin)&&
-     appearance.hair==='original'&&appearance.hairStyle==='original'&&appearance.hairColor==='black'&&
-     appearance.face==='original'&&appearance.eyeStyle==='original'&&appearance.eyeColor==='blue'){
+     appearance.hair==='original'&&appearance.hairStyle==='original'&&Object.hasOwn(root.MareCharacterAppearance.hairs,appearance.hairColor)&&
+     appearance.face==='original'&&appearance.eyeStyle==='original'&&Object.hasOwn(root.MareCharacterAppearance.eyes,appearance.eyeColor)){
    const r=index.records.find(x=>x.id===`pistolas${southDagger}-${direction}-native-original-source`);
    if(r?.item===southDagger&&r.body==='male'&&r.direction===direction&&r.sourceArchiveSHA256===registeredPistolas.archive&&r.density===4&&r.fps===12&&
      eq123(r.nativeCanvas,[640,640])&&eq123(r.pivot,[80,128])&&r.timeline?.join(',')===['0','1','2','3','4','5','6','7'].join(',')&&
@@ -733,7 +733,9 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      r.states.every((st,i)=>{const [h]=registeredPistolas.states[i],l=st.layers?.[0];return st.state===String(i)&&st.rgbaExact===true&&
        st.approved?.sha256===h&&st.layers.length===1&&l.sha256===h&&l.url===`assets/${h}.png`&&l.operation==='source-over'&&l.depth===0&&
        l.role==='original-approved-body-weapon-composite'&&!l.offset&&!l.mirrorX&&!st.attachment&&!st.bodyPatch&&!st.canvasRoundingPatch;}))
-    return {...r,id:r.id+':owned-atomic-palette:'+appearance.skin,ownW114SideTone:appearance.skin,
+    return {...r,id:r.id+':owned-atomic-palette:'+appearance.skin+
+      (appearance.hairColor==='black'&&appearance.eyeColor==='blue'?'':':'+appearance.hairColor+':'+appearance.eyeColor),
+      ownW114SideTone:appearance.skin,pistolColors:{hair:appearance.hairColor,eyes:appearance.eyeColor},
       states:r.states.map((st,i)=>({...st,staffSouthRanks:`assets/${registeredPistolas.states[i][1]}.png`})),
       separableAttack:true,equipmentContract:{weapon:southDagger},colorAppearance:{}};
   }
@@ -2827,7 +2829,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   }
   if(r.ownStaffFamilySouth||r.ownStaff128North||r.ownStaff127North||r.ownCyborgLateralTone||r.ownCyborgNorthTone||r.ownW114SideTone||r.ownW118NorthTone||r.ownStaff126North){
    if(w!==640||h!==640||hiddenSlots.length||recolored||renderOffset.some(Boolean))throw Error('Invalid own staff south material');
-   const A=root.MareCharacterAppearance,entries=[...A.skins[r.ownStaffFamilySouth||r.ownStaff128North||r.ownStaff127North||r.ownCyborgLateralTone||r.ownCyborgNorthTone||r.ownW114SideTone||r.ownW118NorthTone||r.ownStaff126North].ramp,...A.hairs.black.ramp,...A.eyes.blue.ramp];
+   const A=root.MareCharacterAppearance,entries=[...A.skins[r.ownStaffFamilySouth||r.ownStaff128North||r.ownStaff127North||r.ownCyborgLateralTone||r.ownCyborgNorthTone||r.ownW114SideTone||r.ownW118NorthTone||r.ownStaff126North].ramp,...A.hairs[r.pistolColors?.hair??'black'].ramp,...A.eyes[r.pistolColors?.eyes??'blue'].ramp];
    const lut=entries.map(s=>parseInt(s.slice(1),16)),mask=image({url:s.staffSouthRanks});
    if(mask.width!==w||mask.height!==h||lut.length!==15)throw Error('Invalid staff material rank image');
    const tile=makeCanvas(w,h),tc=tile.getContext('2d');tc.drawImage(mask,0,0);

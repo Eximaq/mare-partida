@@ -101,3 +101,5 @@ O teste de navegador em `tests/rework-independent-world-browser.cjs` usa a mochi
 Os 23 testes focados e o build estático passaram. A CI de referência já falhava na etapa do save com slots vazios. O caso reproduzido indica o mesmo ID de origem para o soco Leste com a Manopla 14. [Execução anterior da CI](https://github.com/Eximaq/mare-partida/actions/runs/45051336843/job/137296899021)
 
 A expectativa de rota de caminhada em `rework-male-bare-glove-locomotion.cjs:27` falha do mesmo modo no head de referência e nesta revisão.
+
+O [censo dos 50 itens com as 42 armas](wardrobe-catalog-product.md) descreve as fontes recuperadas, os ciclos desenhados e a cobertura atual por peça.
