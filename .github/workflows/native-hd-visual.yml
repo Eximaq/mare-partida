@@ -177,7 +177,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        role: [sword, gunner, strategist]
+        role: [sword, gunner, strategist, healer]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

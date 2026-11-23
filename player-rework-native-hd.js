@@ -6557,16 +6557,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  // again at the requested phase before applying any gear pixels.
  const articulatedSkulls={"north":"767c435b05d1f85eed23fde9603e1ca722ed095609b17af82634522024c95969","east":"e1a62125f08b88d3875261638bf09a2ec736e93b687df59a19014f5dab146154","west":"550e876bc65b387f14977734f71f6d4ae681ebdab0d2cf515faa2fa6bf98d888","south":"e29ac6a7d7759516e6733c811635a4c2b6087fdc4702002823bfa86655c9295d"};
  function articulatedWeaponHead(base,slot,item,player){
-  if(slot!=='head'||base.hdKind!=='weapon'||base.body!=='male'||!base.basePack&&!base.orbAnatomy||
+  if(slot!=='head'||base.hdKind!=='weapon'||base.body!=='male'||!base.basePack&&!base.orbAnatomy&&!base.orderedAnatomy||
      player.appearance96?.hairStyle!=='original'||base.mirrorBody||base.approvedSouthHead)return null;
-  const {direction}=base,rig=base.basePack||base.orbAnatomy,pack=rig.pack,d=pack.directions[direction];
+  const {direction}=base,rig=base.basePack||base.orbAnatomy||base.orderedAnatomy,pack=rig.pack,d=pack.directions[direction];
   const head=d?.layers.find(l=>l.slot==='headBase'),hair=d?.layers.find(l=>l.slot==='hair');
   const digest=h=>h?.match(/(?:^|\/)([0-9a-f]{64})(?:\.png)?$/)?.[1];
   if(!head||!hair||head.frames||d.renderMirrorFrom||pack.density!==4||base.density!==4||
      head.binding?.kind!=='rigid'||head.binding.a!=='NECK'||head.binding.b!=='NOSE'||
      digest(head.source)!==articulatedSkulls[direction]||[head.id,hair.id].some(id=>base.mirrorLayerIDs?.includes(id))||
      !base.states.every(s=>!s.bodyPatch&&!s.canvasRoundingPatch?.length&&
-      (base.orbAnatomy||s.attachment&&s.attachment.depth<head.depth&&!s.layers.length||base.equipmentBehindBody&&!s.attachment&&s.layers.length&&
+      (base.orbAnatomy||base.orderedAnatomy||s.attachment&&s.attachment.depth<head.depth&&!s.layers.length||base.equipmentBehindBody&&!s.attachment&&s.layers.length&&
        s.layers.every(l=>l.role==='approved-equipment-behind-body'&&l.operation==='source-over'&&l.depth<head.depth))))return null;
   const gear=originalHairGearRegistry?.resolve({body:base.body,direction,item});
   if(!gear)return null;
@@ -6595,8 +6595,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(slot!=='boots'||!bank?.sources[item]||base.hdKind!=='weapon'||base.body!=='male'||
      base.mirrorBody||base.mirrorLayerIDs?.length||Object.keys(base.sourceRasterPadding||{}).length||base.density!==4||base.fps!==12||
      base.states.length!==8||base.states.some((s,i)=>Number(s.state)!==i||s.bodyPatch||s.canvasRoundingPatch?.length||
-      !base.orbAnatomy&&(!s.attachment||s.layers.length)))return null;
-  const rig=base.basePack||base.orbAnatomy,p=rig?.pack,d=p?.directions[base.direction];
+      !base.orbAnatomy&&!base.orderedAnatomy&&(!s.attachment||s.layers.length)))return null;
+  const rig=base.basePack||base.orbAnatomy||base.orderedAnatomy,p=rig?.pack,d=p?.directions[base.direction];
   if(!d||d.clip.frames!==8||d.clip.fps!==12||d.clip.loop||d.clip.contactFrame!==4||
      p.frame.width!==160||p.frame.height!==160||p.pivot.x!==80||p.pivot.y!==128||p.density!==4)return null;
   if(!bootRigCache.has(d)){
@@ -8870,11 +8870,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    return composeFrame({...r,registeredPaletteBody:null},frame,{...entry,images});
   }
 
-  const canvas=makeCanvas(r.hdKind==='weapon'?r.nativeCanvas[0]:r.pack.frame.width*r.pack.density,r.hdKind==='weapon'?r.nativeCanvas[1]:r.pack.frame.height*r.pack.density);const info=(r.femaleNamedHairRecord?{render:(cx,base,imgs,opts)=>base.hdKind==='outfit'?outfitRegistry.renderWithHead(cx,base,imgs,femaleNamedHairRegistry.compose(base,base.femaleNamedHairRecord,imgs),opts):femaleNamedHairRegistry.render(cx,base,base.femaleNamedHairRecord,imgs,opts)}:usesFemaleWardrobe(r)?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).render(canvas.getContext('2d'),r,entry.images,{frame,appearance:r.colorAppearance,makeCanvas,hiddenSlots:r.headRecord||r.gearOnlyRecord?.hideHair||r.ownGauntletHead?.hideHair&&!r.orbAnatomy?['hair']:[]});
+  const canvas=makeCanvas(r.hdKind==='weapon'?r.nativeCanvas[0]:r.pack.frame.width*r.pack.density,r.hdKind==='weapon'?r.nativeCanvas[1]:r.pack.frame.height*r.pack.density);const info=(r.femaleNamedHairRecord?{render:(cx,base,imgs,opts)=>base.hdKind==='outfit'?outfitRegistry.renderWithHead(cx,base,imgs,femaleNamedHairRegistry.compose(base,base.femaleNamedHairRecord,imgs),opts):femaleNamedHairRegistry.render(cx,base,base.femaleNamedHairRecord,imgs,opts)}:usesFemaleWardrobe(r)?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).render(canvas.getContext('2d'),r,entry.images,{frame,appearance:r.colorAppearance,makeCanvas,hiddenSlots:r.headRecord||r.gearOnlyRecord?.hideHair||r.ownGauntletHead?.hideHair&&!r.orbAnatomy&&!r.orderedAnatomy?['hair']:[]});
   if(r.headRecord){const pixels=headRegistry.composeNative(r.headRecord,entry.images,{width:r.pack.frame.width,height:r.pack.frame.height,targetNeck:entry.proofs[frame].targetNeck,look:r.headLook,hairRamp:root.MareAppearance96?.hairs[r.colorAppearance.hairColor]?.ramp});for(const slot of ['hair','head']){const tile=makeCanvas(info.width,info.height),cx=tile.getContext('2d'),data=cx.createImageData(info.width,info.height);data.data.set(pixels[slot]);cx.putImageData(data,0,0);canvas.getContext('2d').drawImage(tile,0,0);}}
   if(r.ownGauntletHead){
    const {gear,headKey,headPath}=r.ownGauntletHead;
-   const proof=originalHairGearRegistry.validate(gear,{basePack:(r.basePack||r.orbAnatomy).pack,baseBody:r.body,baseDirection:r.direction,
+   const proof=originalHairGearRegistry.validate(gear,{basePack:(r.basePack||r.orbAnatomy||r.orderedAnatomy).pack,baseBody:r.body,baseDirection:r.direction,
     baseFrame:frame,baseImages:new Map([[headKey,entry.images.get(headPath)]]),headImages:entry.images});
    originalHairGearRegistry.draw(canvas.getContext('2d'),gear,entry.images,proof,{paddingPhysical:r.ownGauntletHead.paddingPhysical||0});
   }

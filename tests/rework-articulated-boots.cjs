@@ -12,10 +12,10 @@ const load=require('../tools/rework-hd-test-loader.cjs').create(root);
 const art=key=>load('tools/rework-combat-wardrobe/assets/'+key+'.png');
 const pixels=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,c.width,c.height).data.buffer);
 const copy=c=>{const a=cv.createCanvas(c.width,c.height);a.getContext('2d').drawImage(c,0,0);return a;};
-const roles={sword:[0,1,67,68,69,70],gunner:[4,5,113,115,116],strategist:[17,122]};
+const roles={sword:[0,1,67,68,69,70],gunner:[4,5,113,115,116],strategist:[17,122,123,124],healer:[31,125,126,127]};
 async function cycle(api,weapon,direction){
  const {id,role}=weapon,options={action:api.attackActionFor(id),direction,consumer:'world'};
- const equipment={weapon:{def:id},head:{def:19},...(role!=='gunner'?{coat:{def:151}}:{})};
+ const equipment={weapon:{def:id},head:{def:19},...(role==='sword'||[17,122].includes(id)?{coat:{def:151}}:{})};
  const actor=look.commit({classId:role,equipment},{gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',eyeStyle:'original',hairStyle:'original'},()=>true);
  async function prepare(player){
   const r=world.selectWorldHDOnly(api,catalog,player,options);

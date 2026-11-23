@@ -391,8 +391,8 @@ window.__hdSlotQA={
  }
  async function observeArticulatedBoots(){
   const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
-  for(const [weapon,role,action] of [[68,'sword','attack-sword'],[4,'gunner','attack-firearm'],[17,'strategist','attack-focus']]){
-   const clothing={head:19,...(role!=='gunner'?{coat:151}:{})},kit={weapon,...clothing};
+  for(const [weapon,role,action] of [[68,'sword','attack-sword'],[4,'gunner','attack-firearm'],[17,'strategist','attack-focus'],[124,'strategist','attack-focus'],[31,'healer','attack-focus']]){
+   const clothing={head:19,...(role==='sword'||weapon===17?{coat:151}:{})},kit={weapon,...clothing};
    const items=[...Object.values(kit),8,9,134,141,148,155,162,169,176,183];
    await page.evaluate(({role,items,look})=>__hdSlotQA.seedWardrobe(role,items,look),{role,items,look});
    for(const id of Object.values(kit))await put(id);
