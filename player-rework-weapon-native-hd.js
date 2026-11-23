@@ -2019,6 +2019,20 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  return {...r,id:r.id+':author-side-alternate:'+a.skin,ownGauntletsSideFrames:frames,basePack:d.backing,
   exactComposite:true,separableAttack:true,hairSeparated:true,colorAppearance:a,equipmentContract:{weapon:r.item}};
  }
+ // W2/W3 use a pre-oriented metal bitmap over the fully rendered body.
+ // Validate against the same authored bank that supplies the native draw.
+ function sidePunchMetal(record){
+  const source=ownGauntletsSideAuthority[record?.direction],track=source?.items[record?.item];
+  if(!record?.ownW2CleanSide||!track||record.basePack!==source.backing||track.length!==8||record.states?.length!==8)return null;
+  const ops=record.states.map((state,i)=>{
+   const layer=state.layers?.[0];
+   if(Number(state.state)!==i||!state.rgbaExact||!state.atomic||state.layers.length!==1||state.attachment||state.bodyPatch||
+      layer.component!=='equipment'||layer.operation!=='source-over'||layer.depth!==1||layer.mirrorX||layer.offset||layer.mask||
+      layer.url!==track[i].gear||layer.url!=='assets/'+layer.sha256+'.png')return null;
+   return [{asset:'tools/rework-weapon-layers-hd/'+layer.url}];
+  });
+  return ops.every(Boolean)?ops:null;
+ }
  function renderOwnGauntletsSide(ctx,r,s,image,hiddenSlots,appearance) {
  if(hiddenSlots.length||appearance.skin!==r.colorAppearance.skin||appearance.hairColor!==r.colorAppearance.hairColor||appearance.eyeColor!==r.colorAppearance.eyeColor)throw Error('Unsupported authored alternate appearance');
  const frame=Number(s.state),dir=r.direction,{gear,ref}=r.ownGauntletsSideFrames[frame], bp=r.basePack,d=bp.pack.directions[dir],size=640;
@@ -3158,7 +3172,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    actions.includes(requested)?actions.find(a=>a.startsWith('attack-')):null;
   return action?{...record,action}:record;
  }
- return {registeredCoat,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
+ return {registeredCoat,sidePunchMetal,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
 }
 const api={create};root.MareReworkWeaponNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

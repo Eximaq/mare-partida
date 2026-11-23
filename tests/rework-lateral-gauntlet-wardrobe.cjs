@@ -8,6 +8,7 @@ const load=require('../tools/rework-hd-test-loader.cjs').create(root);
 const rgba=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,c.width,c.height).data.buffer);
 (async()=>{
  const api=make();await api.ready;await api.warmSwordCheckpoint();
+ const weapon=Number(process.argv[4]||110);assert([2,3,110].includes(weapon));
  const direction=process.argv[2];assert(['east','west'].includes(direction));
  const skin=process.argv[3]||'ebony',lookData={gender:'masculino',skinColor:skin,hairColor:skin==='light'?'white':'blue',eyeColor:skin==='light'?'amber':'green',hairStyle:'original',eyeStyle:'original'};
  const body=look.commit({classId:'brawler',equipment:{}},lookData,()=>true);
@@ -22,7 +23,7 @@ const rgba=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,c.width,c.heig
   assert.deepEqual(b.coverage[0].omitted,[]);
   return {r,draw(frame){let c;assert(b.draw({save(){},restore(){},drawImage(x){c=x}},p,{...opts,progress:(frame+.25)/8}));return c;},release:()=>b.release()};
  }
- const bare=await prepare({}),stock=await prepare({weapon:110}),frames=[],results=[];
+ const bare=await prepare({}),stock=await prepare({weapon}),frames=[],results=[];
  // Capture native references once. For every other slot the expected
  // foreground is the same isolated metal from this weapon's own archive.
  for(let phase=0;phase<8;phase++){
@@ -30,7 +31,7 @@ const rgba=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,c.width,c.heig
   const im=await load('tools/rework-weapon-layers-hd/'+l.url);
   function armed(c){
    const tile=cv.createCanvas(640,640),ctx=tile.getContext('2d');ctx.drawImage(c,0,0);
-   ctx.save();if(direction==='west'){ctx.translate(640,0);ctx.scale(-1,1);}ctx.drawImage(im,0,0);ctx.restore();
+   ctx.save();if(l.mirrorX){ctx.translate(640,0);ctx.scale(-1,1);}ctx.drawImage(im,0,0);ctx.restore();
    const data=rgba(tile);tile.width=1;return data;
   }
   const reference=armed(bare.draw(phase)),original=rgba(stock.draw(phase)),edges=[];
@@ -43,7 +44,7 @@ const rgba=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,c.width,c.heig
  for(let i=0;i<10;i++)scenarios.push(Object.fromEntries(slots.map((slot,j)=>[slot,gear[j][(i+j)%10]])));
  let completed=0;
  for(const kit of scenarios){
-  const outfit=await prepare(kit),armed=await prepare({...kit,weapon:110});
+  const outfit=await prepare(kit),armed=await prepare({...kit,weapon});
   try{for(let phase=0;phase<8;phase++){
    const {armed:overlay,reference,original,edges}=frames[phase],expected=overlay(outfit.draw(phase)),actual=rgba(armed.draw(phase));
    for(const p of edges)if(expected[p]===reference[p])expected[p]=original[p];

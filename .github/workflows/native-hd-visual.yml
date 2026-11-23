@@ -167,8 +167,10 @@ jobs:
           node --expose-gc tests/rework-male-p114-signed-slots-saved.cjs
           node tests/rework-wardrobe-grip-cycles.cjs
           node --expose-gc tests/rework-wardrobe-authored-contact.cjs
-          node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs east
-          node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs west light
+          for item in 2 3 110; do
+            node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs east ebony "$item"
+            node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs west light "$item"
+          done
           node tests/rework-south-wardrobe-ownership.cjs
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')

@@ -173,7 +173,8 @@ window.__hdSlotQA={
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
   const daggerGearArg=process.argv.find(v=>/^--dagger-(boots|heads)=/.test(v));
   if(daggerGearArg){const [mode,direction]=daggerGearArg.split('=');await observeDaggerEquipment(direction,mode.endsWith('heads')?'head':'boots');assert.deepEqual(errors,[]);return;}
-  if(process.argv.includes('--lateral-gauntlet-wardrobe')){await observeLateralGauntlet();assert.deepEqual(errors,[]);return;}
+  const sideFist=process.argv.find(v=>v==='--lateral-gauntlet-wardrobe'||/^--lateral-gauntlet=(2|3|110)$/.test(v));
+  if(sideFist){await observeLateralGauntlet(Number(sideFist.split('=')[1]||110));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-moving-boots')){await observeNorthMovingBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-coats')||process.argv.includes('--north-weapon-coats')){await observeNorthFocusCoats(process.argv.includes('--north-weapon-coats'));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-rifle-helmets')){await observeNorthRifleHelmets();assert.deepEqual(errors,[]);return;}
@@ -555,8 +556,8 @@ window.__hdSlotQA={
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }
- async function observeLateralGauntlet(){
-  const initial={weapon:110,coat:6,legs:22,boots:148,gloves:159,head:157};
+ async function observeLateralGauntlet(weapon){
+  const initial={weapon,coat:6,legs:22,boots:148,gloves:159,head:157};
   const swaps={coat:179,legs:175,boots:8,gloves:25,head:19};
   for(const direction of ['east','west']){
    const look=direction==='east'?{gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'}:
@@ -576,7 +577,7 @@ window.__hdSlotQA={
     assert.deepEqual(back.visual.coverage[0].slotRoutes,start.visual.coverage[0].slotRoutes);
    }
    await remove('weapon');const cloth={...initial};delete cloth.weapon;await show('sem-arma',cloth);
-   await put(110);const back=await show('arma-restaurada',initial);
+   await put(weapon);const back=await show('arma-restaurada',initial);
    assert.deepEqual(back.visual.coverage[0].slotRoutes,start.visual.coverage[0].slotRoutes);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }

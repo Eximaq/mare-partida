@@ -6488,8 +6488,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  const mountedWeaponPasses=['ownW14LateralV7','ownW120LateralMetal','ownW118NorthMetal','ownW119NorthMetal','ownW120NorthMetal',
   'ownW31NativePalm','ownW32NativeGear','ownW16NativeGear','ownW17NativeGear','ownW121NativeGear','ownW122NativeGear'];
  function sideGauntletReceiver(source,player,o,selectPose){
-  if(!source?.w110OwnDirectionalAttack||source.sourceArchiveSHA256!=='613311373fd9666d009e423177bbbb8881218ba4985dfa446cd83f237845d878'||
-     source.body!=='male'||source.hdKind!=='weapon'||source.action!=='attack-unarmed'||source.direction!==o.direction)return null;
+  if(source?.body!=='male'||source.hdKind!=='weapon'||source.action!=='attack-unarmed'||source.direction!==o.direction)return null;
+  const mirroredOriginal=source.w110OwnDirectionalAttack&&source.sourceArchiveSHA256==='613311373fd9666d009e423177bbbb8881218ba4985dfa446cd83f237845d878';
+  if(!mirroredOriginal&&!source.ownW2CleanSide)return null;
   const poses={east:'1793a125ab0bbb85e7c1bd17b631d638287fb4cca4929cc4135166f42a5980e0',
    west:'443626e677dcabda46b4a90b5730138d8c3a56606a74c91b4a7f269700b5f561'};
   const direction=source.direction;
@@ -6500,10 +6501,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const body=selectPose({...player,equipment:{}},{...o,action:'attack-unarmed'}),d=body?.pack?.directions?.[direction];
   if(!d||body.hdKind||body.sourcePackSHA256!==poses[direction]||body.direction!==direction||
      d.clip.frames!==8||d.clip.fps!==12||d.clip.loop||d.clip.contactFrame!==4||source.states?.length!==8||
-     !source.states.every((s,i)=>Number(s.state)===i&&s.layers?.length===2&&s.layers.every((l,k)=>
+     mirroredOriginal&&!source.states.every((s,i)=>Number(s.state)===i&&s.layers?.length===2&&s.layers.every((l,k)=>
       l.component===(k?'equipment':'anatomy')&&l.depth===k&&l.operation==='source-over'&&l.mirrorX===(direction==='west')&&
       l.size?.join(',')==='640,640'&&l.url==='assets/'+l.sha256+'.png')))return null;
-  const ops=source.states.map(s=>[{asset:'tools/rework-weapon-layers-hd/'+s.layers[1].url,mirror:direction==='west'}]);
+  const ops=mirroredOriginal?source.states.map(s=>[{asset:'tools/rework-weapon-layers-hd/'+s.layers[1].url,mirror:direction==='west'}]):weaponRegistry.sidePunchMetal(source);
+  if(!ops)return null;
   const receiver={body,weapon:source,ops,pad:[0,0],registeredPigments:true};
   if(gripReceivers.size>=256)gripReceivers.delete(gripReceivers.keys().next().value);
   gripReceivers.set(key,receiver);return receiver;
