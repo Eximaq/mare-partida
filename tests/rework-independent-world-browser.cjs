@@ -175,6 +175,10 @@ window.__hdSlotQA={
   const daggerGearArg=process.argv.find(v=>/^--dagger-(boots|heads)=/.test(v));
   if(daggerGearArg){const [mode,direction]=daggerGearArg.split('=');await observeDaggerEquipment(direction,mode.endsWith('heads')?'head':'boots');assert.deepEqual(errors,[]);return;}
   const sideFist=process.argv.find(v=>v==='--lateral-gauntlet-wardrobe'||/^--lateral-gauntlet=(2|3|110|111|112|118|119)$/.test(v));
+  if(process.argv.includes('--north-gauntlet=110')){
+   await observeLateralGauntlet(110,['north']);await observeLateralGauntlet(110,['north'],true);
+   assert.deepEqual(errors,[]);return;
+  }
   if(sideFist){await observeLateralGauntlet(Number(sideFist.split('=')[1]||110));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-moving-boots')){await observeNorthMovingBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-coats')||process.argv.includes('--north-weapon-coats')){await observeNorthFocusCoats(process.argv.includes('--north-weapon-coats'));assert.deepEqual(errors,[]);return;}
@@ -591,19 +595,20 @@ window.__hdSlotQA={
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }
- async function observeLateralGauntlet(weapon){
+ async function observeLateralGauntlet(weapon,directions=['east','west'],alternate=false){
   const initial={weapon,coat:6,legs:22,boots:148,gloves:159,head:157};
   const swaps={coat:179,legs:175,boots:8,gloves:25,head:19};
-  for(const direction of ['east','west']){
-   const look=direction==='east'?{gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'}:
+  for(const direction of directions){
+   const dark=direction==='east'||alternate,tag=direction+(alternate?'-segunda-aparencia':'');
+   const look=dark?{gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'}:
     {gender:'masculino',skinColor:'light',hairColor:'white',eyeColor:'amber'};
    const ids=[...Object.values(initial),...Object.values(swaps)];
    await page.evaluate(({ids,look,role})=>__hdSlotQA.seedWardrobe(role,ids,look),{ids,look,role:weapon===118||weapon===119?'cyborg':'brawler'});
-   for(const item of (direction==='east'?Object.values(initial):Object.values(initial).reverse()))await put(item);
+   for(const item of (dark?Object.values(initial):Object.values(initial).reverse()))await put(item);
    const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
-   const show=(label,kit)=>observeAttack('attack-unarmed','punho-'+direction+'-'+label,direction,kit);
+   const show=(label,kit)=>observeAttack('attack-unarmed','punho-'+tag+'-'+label,direction,kit);
    const start=await show('inicial',initial);
-   await captureMapCycle('attack-unarmed',initial,'punho-'+direction,8,direction);
+   await captureMapCycle('attack-unarmed',initial,'punho-'+tag,8,direction);
    for(const [slot,id] of Object.entries(swaps)){
     await put(id);const switched=await show(slot,{...initial,[slot]:id});
     for(const name of Object.keys(initial).filter(k=>k!==slot))

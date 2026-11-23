@@ -196,6 +196,13 @@ jobs:
         run: |
           node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs east ebony "$WEAPON"
           node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs west light "$WEAPON"
+      - name: Conferir o punho Norte nas oito fases e nas duas aparências
+        if: matrix.weapon == 110
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          node --expose-gc tests/rework-north-padded-gauntlet.cjs light
+          node --expose-gc tests/rework-north-padded-gauntlet.cjs ebony
   south-punch-wardrobe:
     runs-on: ubuntu-latest
     timeout-minutes: 30
