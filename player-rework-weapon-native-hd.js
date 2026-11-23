@@ -2512,6 +2512,18 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  }
  // Keep the historical palm residue on the shorts layer. Only the connected
  // indigo garment is removed. The underlying skin is the live personalized rig.
+ // Far fingertips in two bent-arm poses are painted on the original upper
+ // arm, behind the weapon. The supporting staff grip has its own depth.
+ function northHandLayers(track,frame,images,map){
+  const parts=track[frame],layers=[];
+  for(const [part,depth] of [['behind',3],['grip',3.05],['far',4.25],['near',6.25]]){
+   const key=parts[part];if(!key)continue;
+   const url='tools/rework-combat-wardrobe/assets/'+key+'.png',im=images.get(url);
+   if(im?.width!==640||im.height!==640)throw Object.assign(Error('Missing fitted North glove'),{asset:url});
+   map.set(key,im);layers.push({id:'equipped-focus-glove-'+part,slot:'top',source:key,depth,binding:{kind:'fixed'}});
+  }
+  return layers;
+ }
  function northStockWithoutPants(map,stock,phase,fit){
   const key=stock.frames[phase],source=map.get(key),row=fit.phases[phase];
   if(source?.width!==640||source.height!==640||!row.stock.includes(key))throw Error('Missing registered North waist');
@@ -2603,14 +2615,23 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const image=url=>{const im=images.get(resource(url));if(!im)throw Error('Missing North focus source '+url);return im;};
   const w=cloth.width,h=cloth.height,front=makeCanvas(w,h),tile=makeCanvas(w,h);
   try{
-   const cx=front.getContext('2d');cx.imageSmoothingEnabled=false;cx.save();cx.transform(...at.matrix);
-   if(at.mirrorX){cx.translate(at.size[0],0);cx.scale(-1,1);}
-   paintNativeAttachment(cx,r,at,a=>image(a.url),r.colorAppearance);cx.restore();
+   const cx=front.getContext('2d');cx.imageSmoothingEnabled=false;
    const upper=dir.layers.filter(l=>l.depth>at.depth&&!(hideHair&&l.slot==='hair'));
    const map=new Map(upper.map(l=>{const k=l.frames?.[frame]||l.source;return [k,image(rig.images[k])];}));
    if(r.northFittedPants)northStockWithoutPants(map,dir.layers.find(l=>l.id==='shorts'),frame,r.northFittedPants);
-   cx.globalCompositeOperation='destination-out';
-   vendor.compositor.render(cx,{...pack,directions:{north:{...dir,layers:upper}}},map,{direction:'north',frame,density:4,clear:false});
+   const gloves=r.northGloveTrack?northHandLayers(r.northGloveTrack,frame,images,map):[];
+   for(const l of gloves.filter(l=>l.depth<=at.depth))cx.drawImage(map.get(l.source),0,0);
+   cx.save();cx.transform(...at.matrix);
+   if(at.mirrorX){cx.translate(at.size[0],0);cx.scale(-1,1);}
+   paintNativeAttachment(cx,r,at,a=>image(a.url),r.colorAppearance);cx.restore();
+   const erase=layers=>vendor.compositor.render(cx,{...pack,directions:{north:{...dir,layers}}},map,{direction:'north',frame,density:4,clear:false});
+   if(gloves.length){
+    const ordered=[...upper.map(layer=>({depth:layer.depth,layer})),...gloves.filter(l=>l.depth>at.depth).map(l=>({depth:l.depth,cloth:l.source}))];
+    for(const op of ordered.sort((a,b)=>a.depth-b.depth)){
+     cx.globalCompositeOperation=op.cloth?'source-over':'destination-out';
+     if(op.cloth)cx.drawImage(map.get(op.cloth),0,0);else erase([op.layer]);
+    }
+   }else{cx.globalCompositeOperation='destination-out';erase(upper);}
    const t=tile.getContext('2d');t.drawImage(cloth,0,0);t.globalCompositeOperation='source-atop';t.drawImage(front,0,0);
    return tile;
   }catch(e){tile.width=1;throw e;}finally{front.width=1;}
@@ -2710,6 +2731,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    }
    let layers=r.bootTrack?mountedBootLayers(r,s,d,map,images):d.layers;
    if(r.northFittedPants)layers=northTrouserLayer(r,layers,map,images,Number(s.state));
+   if(r.northGloveTrack)layers=[...layers,...northHandLayers(r.northGloveTrack,Number(s.state),images,map)];
    if(r.relic32SideBlue&&r.orderedGloves){
     layers=[...layers];
     for(const [i,id] of ['forearm-hand-far','forearm-hand-near'].entries()){

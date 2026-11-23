@@ -51,6 +51,9 @@ on:
       - 'tools/rework-combat-wardrobe/south-focus-trousers.json'
       - 'tests/rework-north-focus-coats.cjs'
       - 'tests/rework-north-focus-trousers.cjs'
+      - 'tools/register_north_focus_gloves.py'
+      - 'tools/rework-combat-wardrobe/north-focus-gloves.zip'
+      - 'tests/rework-north-focus-gloves.cjs'
       - 'tools/register_north_focus_trousers.py'
       - 'tools/rework-combat-wardrobe/north-focus-trousers.json'
       - 'tests/rework-north-moving-boots.cjs'
@@ -476,6 +479,7 @@ jobs:
         run: |
           python tools/register_north_weapon_coats.py --verify
           python tools/register_north_focus_trousers.py --verify
+          python tools/register_north_focus_gloves.py --verify
       - name: Conferir os peitorais, a mão e o metal atuais
         env:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
@@ -485,6 +489,11 @@ jobs:
         env:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
         run: node --expose-gc tests/rework-north-focus-trousers.cjs
+      - name: Conferir os dedos e a empunhadura com o conjunto equipado
+        if: ${{ !cancelled() }}
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: node --expose-gc tests/rework-north-focus-gloves.cjs
   weapon-materials:
     runs-on: ubuntu-latest
     timeout-minutes: 30

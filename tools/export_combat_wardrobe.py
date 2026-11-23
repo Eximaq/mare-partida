@@ -20,6 +20,7 @@ from register_south_punch_coats import materialize as south_punch_coats
 from export_male_sword_coats import receptors as sword_receivers
 from export_north_focus_coats import materialize as north_focus_coats
 from register_north_weapon_coats import materialize as north_weapon_coats
+from register_north_focus_gloves import materialize as north_focus_gloves
 from register_north_articulated_boots import materialize as north_articulated_boots
 from export_north_pistol_coats import materialize as north_pistol_coats
 
@@ -159,7 +160,7 @@ def materialize(folder, out):
         daggerGloves=staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/dagger-gloves.zip'),
         orbGloves=staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/orb-gloves.zip'),
         swordGloves=dict(staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/sword-gloves.zip'),receivers=sword_receivers()),
-        maleNorthPistolCoats=north_pistol_coats(bank), northFocusCoats=north_focus_coats(bank), northWeaponCoats=north_weapon_coats(bank), northBoots=north_articulated_boots(bank),
+        maleNorthPistolCoats=north_pistol_coats(bank), northFocusCoats=north_focus_coats(bank), northWeaponCoats=north_weapon_coats(bank), northBoots=north_articulated_boots(bank), northFocusGloves=north_focus_gloves(bank),
         southFocusBoots=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/south-focus-boots.json').read_bytes()),
         southPunchWaist=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/south-punch-waist.json').read_bytes()),
         northFocusTrousers=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/north-focus-trousers.json').read_bytes()),
