@@ -2418,7 +2418,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  // Work in the native 640px rig, before the weapon-specific offset. Only
  // copies of the two independently signed anatomy images receive the matte.
  function restoreFocusScalp(ctx,r,s,images,resource){
-  const {pack,images:urls}=r.orbAnatomy||r.fusedFocusAnatomy,d=pack.directions[r.direction],frame=Number(s.state);
+  const {pack,images:urls}=r.orbAnatomy||r.fusedFocusAnatomy||r.daggerHeadRig,d=pack.directions[r.direction],frame=Number(s.state);
   const keys=d.layers.map(l=>l.frames?.[frame]||l.source),maps=new Map(keys.map(k=>[k,images.get(resource(urls[k]))]));
   if([...maps.values()].some(im=>!im))throw Error('Missing registered orb anatomy');
   const part=layers=>({...pack,directions:{[r.direction]:{...d,layers}}});
@@ -3005,7 +3005,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    ctx.putImageData(px,0,0);
   }
   if(!r.ownedGauntletCoatHead&&!s.layers.some(l=>l.role==='ordered-orb-coat')){
-   paintOwnedHead();if(r.orbAnatomy&&r.ownGauntletHead?.hideHair)restoreFocusScalp(ctx,r,s,images,resource);
+   paintOwnedHead();if((r.orbAnatomy||r.daggerHeadRig)&&r.ownGauntletHead?.hideHair)restoreFocusScalp(ctx,r,s,images,resource);
   }
   // User-approved exact restoration: native V7 shorts swatch on 489 emitted
   // boundary samples only. Outside the independent current cloth/gear/grip.

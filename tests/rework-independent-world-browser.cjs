@@ -171,8 +171,8 @@ window.__hdSlotQA={
   if(process.argv.includes('--articulated-boots')){await observeArticulatedBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--sword-coats')){await observeWeaponCoats([0,1,67,68,69,70],'sword','attack-sword');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
-  const daggerBootsArg=process.argv.find(v=>v.startsWith('--dagger-boots='));
-  if(daggerBootsArg){await observeDaggerBoots(daggerBootsArg.split('=')[1]);assert.deepEqual(errors,[]);return;}
+  const daggerGearArg=process.argv.find(v=>/^--dagger-(boots|heads)=/.test(v));
+  if(daggerGearArg){const [mode,direction]=daggerGearArg.split('=');await observeDaggerEquipment(direction,mode.endsWith('heads')?'head':'boots');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--lateral-gauntlet-wardrobe')){await observeLateralGauntlet();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-moving-boots')){await observeNorthMovingBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-coats')||process.argv.includes('--north-weapon-coats')){await observeNorthFocusCoats(process.argv.includes('--north-weapon-coats'));assert.deepEqual(errors,[]);return;}
@@ -522,27 +522,35 @@ window.__hdSlotQA={
   const data=await page.evaluate(()=>__hdSlotQA.finishCycle());
   await fs.writeFile(path.join(out,label+'-ciclo.png'),Buffer.from(data.split(',')[1],'base64'));
  }
- async function observeDaggerBoots(direction){
+ async function observeDaggerEquipment(direction,slot){
   assert(['east','west'].includes(direction));
-  const boots=[8,9,134,141,148,155,162,169,176,183];
+  const ids=slot==='head'?[19,18,129,136,143,150,157,164,171,178]:[8,9,134,141,148,155,162,169,176,183];
   const look={gender:'masculino',skinColor:direction==='east'?'ebony':'light',hairColor:'blue',eyeColor:'green'};
   for(const weapon of [12,13,71,72,73,74]){
-   const base={weapon,coat:151};
-   await page.evaluate(({base,boots,look})=>__hdSlotQA.seedWardrobe('rogue',[...Object.values(base),...boots],look),{base,boots,look});
+   const base={weapon,coat:151,...(slot==='head'?{boots:148}:{})};
+   await page.evaluate(({base,ids,look})=>__hdSlotQA.seedWardrobe('rogue',[...Object.values(base),...ids],look),{base,ids,look});
    for(const id of (direction==='west'?Object.values(base).reverse():Object.values(base)))await put(id);
    const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
    const show=(label,gear)=>observeAttack('attack-daggers','adagas-'+weapon+'-'+direction+'-'+label,direction,gear);
-   const initial=await show('sem-botas',base);let first;
-   for(const id of [...boots,boots[0]]){
-    await put(id);const gear={...base,boots:id};
-    const now=await show('bota-'+id+(first&&id===boots[0]?'-restaurada':''),gear);
+   const initial=await show('sem-'+slot,base);let first;
+   for(const id of [...ids,ids[0]]){
+    await put(id);const gear={...base,[slot]:id};
+    const now=await show(slot+'-'+id+(first&&id===ids[0]?'-retorno':''),gear);
     for(const slot of Object.keys(base))assert.deepEqual(now.visual.coverage[0].slotRoutes[slot],initial.visual.coverage[0].slotRoutes[slot]);
-    if(id===boots[0]){
+    if(id===ids[0]){
      if(first)assert.deepEqual(now.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);
      else {first=now;await captureMapCycle('attack-daggers',gear,'adagas-'+weapon+'-'+direction,8,direction);}
     }
    }
-   await remove('boots');const end=await show('botas-retiradas',base);
+   if(slot==='head'){
+    for(const hidden of [true,false]){
+     await menu();await page.locator('[data-headgear-visibility]').click();await close();
+     const current=await show(hidden?'oculto':'visivel',hidden?base:{...base,head:ids[0]});
+     assert.deepEqual(current.visual.coverage[0].slotRoutes,(hidden?initial:first).visual.coverage[0].slotRoutes);
+     assert.equal((await page.evaluate(()=>__hdSlotQA.read())).equipment.head,ids[0]);
+    }
+   }
+   await remove(slot);const end=await show(slot+'-retirado',base);
    assert.deepEqual(end.visual.coverage[0].slotRoutes,initial.visual.coverage[0].slotRoutes);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
