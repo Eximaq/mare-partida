@@ -1,11 +1,11 @@
 # Manopla e adagas laterais no mapa
 
-O censo do código `f1dff07ef90bac17c9643bb564952addd8943cfc` tem a assinatura `ab80d6be9ac8541faa4f40eafe70c1540d967791d4eb1e515e706dd4f1d89b12`. Há **1.048 contextos completos na seleção e 128 com lacunas**, todos em ataques masculinos armados. Os 1.176 receptores sem roupas foram selecionados. Nenhum dos 50 itens atendeu ao critério global de seleção e desenho em todas as poses. [Censo por contexto](censo.ndjson.gz) · [Resultados por item](detalhes.tsv.gz) · [Fila de causas e IDs](pendencias.json.gz) · [Resumo](resumo.json)
+O censo do código `d8b7e4c2a1fb2c29745967ecde39345d9c6ab54c` tem a assinatura `bb975569b0fccd43f85f05134e7d07667e8fd30cc4fe29bec735d7c57a6b94fd`. Há **1.048 contextos completos na seleção e 128 com lacunas**, todos em ataques masculinos armados. Os 1.176 receptores sem roupas foram selecionados. Nenhum dos 50 itens atendeu ao critério global de seleção e desenho em todas as poses. [Censo por contexto](censo.ndjson.gz) · [Resultados por item](detalhes.tsv.gz) · [Fila de causas e IDs](pendencias.json.gz) · [Resumo](resumo.json)
 
 | Corpo e equipamento | Contextos completos | Itens individuais | Pares | Conjuntos mistos |
 |---|---:|---:|---:|---:|
 | Feminino armado | 504/504 | 25.200/25.200 | 504.000/504.000 | 50.400/50.400 |
-| Masculino armado | 376/504 | 20.720/25.200 | 388.355/504.000 | 37.600/50.400 |
+| Masculino armado | 376/504 | 20.800/25.200 | 388.755/504.000 | 37.600/50.400 |
 | Feminino desarmado | 84/84 | 4.200/4.200 | 84.000/84.000 | 8.400/8.400 |
 | Masculino desarmado | 84/84 | 4.200/4.200 | 84.000/84.000 | 8.400/8.400 |
 
@@ -21,6 +21,17 @@ Cada contexto consulta 50 peças, todos os 1.000 pares entre slots e 100 conjunt
 | e4cdf54 | 20.594 | 386.955 | 375 |
 | 976b294 | 20.674 | 387.355 | 375 |
 | f1dff07 | 20.720 | 388.355 | 376 |
+| d8b7e4c | 20.800 | 388.755 | 376 |
+
+## Punhos de vinte instantes para o Sul
+
+As armas 111, 118, 119 e 120 usam doze poses ao longo de vinte instantes, a 24 por segundo. Cada arma mantém suas camadas de metal. A luva mecânica 119 aceita a cor de cabelo e de olhos salva. Os dez capacetes usam o crânio, a máscara de cabelo e os olhos da base aprovada. As dez botas usam os painéis originais e acompanham a perna da pose. Em cada uma dessas quatro armas, a seleção passou de zero para 20 de 50 peças e 100 de 1.000 pares.
+
+Os testes compararam 960 quadros de capacetes e 1.920 de botas nas aparências clara e escura. Cruzaram os 100 pares de capacete e bota por arma nos doze quadros, totalizando 4.800 comparações de imagem. No navegador, o inventário e o mapa passaram pelas quatro armas em 108 ataques. Uma segunda execução sobre o preview estático exportado repetiu os 108 ataques com as mesmas fontes. [Resultados por arma, peça, fase e troca](quadros-bracos-sul-20-ticks.json.gz)
+
+![Doze poses do ataque com a arma 111, capacete e botas](punho-sul-vestido-111-ciclo.png)
+
+O teste de caminhada com o peitoral 151 repetiu 96 desenhos pelo compositor do mapa em três fases, duas direções, duas aparências e quatro modelos de calça. O ensaio de combate em Chromium passou por vinte lutas dos dois corpos, vinte abates preparados e 102 abates nas cinco caçadas contínuas. Cinco testes históricos agora solicitam a pose e a direção efetivamente usadas. A luva 152 ainda impede a aprovação dos conjuntos que a exigem nesses ataques masculinos.
 
 ## Manopla 110 para o Norte
 
@@ -134,16 +145,16 @@ As colunas individuais contam até 504 contextos armados por corpo e 168 desarma
 | 168 | Calça | 381 | 504 | 168 | 35.300 | 8.800 | Parcial |
 | 175 | Calça | 381 | 504 | 168 | 35.300 | 8.800 | Parcial |
 | 182 | Calça | 381 | 504 | 168 | 35.300 | 8.800 | Parcial |
-| 8 | Bota | 454 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 9 | Bota | 458 | 504 | 168 | 36.219 | 8.800 | Parcial |
-| 134 | Bota | 454 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 141 | Bota | 454 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 148 | Bota | 455 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 155 | Bota | 454 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 162 | Bota | 454 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 169 | Bota | 454 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 176 | Bota | 454 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 183 | Bota | 454 | 504 | 168 | 36.206 | 8.800 | Parcial |
+| 8 | Bota | 458 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 9 | Bota | 462 | 504 | 168 | 36.259 | 8.800 | Parcial |
+| 134 | Bota | 458 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 141 | Bota | 458 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 148 | Bota | 459 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 155 | Bota | 458 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 162 | Bota | 458 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 169 | Bota | 458 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 176 | Bota | 458 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 183 | Bota | 458 | 504 | 168 | 36.246 | 8.800 | Parcial |
 | 25 | Luva | 381 | 504 | 168 | 35.214 | 8.800 | Parcial |
 | 26 | Luva | 376 | 504 | 168 | 35.200 | 8.800 | Parcial |
 | 131 | Luva | 376 | 504 | 168 | 35.200 | 8.800 | Parcial |
@@ -154,13 +165,13 @@ As colunas individuais contam até 504 contextos armados por corpo e 168 desarma
 | 166 | Luva | 376 | 504 | 168 | 35.200 | 8.800 | Parcial |
 | 173 | Luva | 376 | 504 | 168 | 35.200 | 8.800 | Parcial |
 | 180 | Luva | 376 | 504 | 168 | 35.200 | 8.800 | Parcial |
-| 18 | Cabeça | 463 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 19 | Cabeça | 463 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 129 | Cabeça | 463 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 136 | Cabeça | 463 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 143 | Cabeça | 463 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 150 | Cabeça | 463 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 157 | Cabeça | 463 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 164 | Cabeça | 465 | 504 | 168 | 36.214 | 8.800 | Parcial |
-| 171 | Cabeça | 463 | 504 | 168 | 36.206 | 8.800 | Parcial |
-| 178 | Cabeça | 465 | 504 | 168 | 36.206 | 8.800 | Parcial |
+| 18 | Cabeça | 467 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 19 | Cabeça | 467 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 129 | Cabeça | 467 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 136 | Cabeça | 467 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 143 | Cabeça | 467 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 150 | Cabeça | 467 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 157 | Cabeça | 467 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 164 | Cabeça | 469 | 504 | 168 | 36.254 | 8.800 | Parcial |
+| 171 | Cabeça | 467 | 504 | 168 | 36.246 | 8.800 | Parcial |
+| 178 | Cabeça | 469 | 504 | 168 | 36.246 | 8.800 | Parcial |
