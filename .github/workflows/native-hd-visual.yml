@@ -18,6 +18,10 @@ on:
       - 'tests/rework-ordered-staff-coats.cjs'
       - 'tests/rework_staff_coat_sources.py'
       - 'tests/rework-north-pistol-coats.cjs'
+      - 'tests/rework-fixed-north-rifle-trousers.cjs'
+      - 'tests/rework-fixed-north-rifle-boots.cjs'
+      - 'tools/register_north_rifle_trousers.py'
+      - 'tools/rework-combat-wardrobe/north-rifle-trousers.json'
       - 'tools/export_north_pistol_coats.py'
       - 'tools/export_staff_coats.py'
       - 'tools/rework-combat-wardrobe/staff-hand-registration.json'
@@ -213,6 +217,9 @@ jobs:
           python tests/rework_staff_coat_sources.py
           python tools/export_north_pistol_coats.py --verify
           node --expose-gc tests/rework-north-pistol-coats.cjs
+          python tools/register_north_rifle_trousers.py --verify
+          node --expose-gc tests/rework-fixed-north-rifle-trousers.cjs
+          node --expose-gc tests/rework-fixed-north-rifle-boots.cjs
   weapon-materials:
     runs-on: ubuntu-latest
     timeout-minutes: 30
