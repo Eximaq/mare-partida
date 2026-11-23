@@ -152,6 +152,7 @@ window.__hdSlotQA={
   if(process.argv.includes('--articulated-boots')){await observeArticulatedBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--sword-coats')){await observeWeaponCoats([0,1,67,68,69,70],'sword','attack-sword');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--north-focus-coats')){await observeNorthFocusCoats();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-rifle-helmets')){await observeNorthRifleHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-rifle-trousers')){await observeNorthTrousers();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--pistol-clothes')){await observePistolClothes();assert.deepEqual(errors,[]);return;}
@@ -462,6 +463,25 @@ window.__hdSlotQA={
    await remove('head');
    const bare=await observeAttack(action,prefix+'-sem-capacete',dir,{weapon});
    assert.equal(bare.visual.coverage[0].slotRoutes.head,undefined);
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
+ }
+ async function observeNorthFocusCoats(){
+  const ids=[151,158,165,179],look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
+  for(const weapon of [123,124,125,126,127]){
+   const role=weapon<125?'strategist':'healer';
+   await page.evaluate(({role,weapon,ids,look})=>__hdSlotQA.seedWardrobe(role,[weapon,...ids],look),{role,weapon,ids,look});
+   await put(weapon);const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   const show=(name,gear)=>observeAttack('attack-focus','cajado-'+weapon+'-'+name,'north',gear);
+   const bare=await show('antes',{weapon});let first;
+   for(const coat of [...ids,151]){
+    await put(coat);
+    const now=await show('peitoral-'+coat+(first&&coat===151?'-retorno':''),{weapon,coat});
+    assert.deepEqual(now.visual.coverage[0].slotRoutes.weapon,bare.visual.coverage[0].slotRoutes.weapon);
+    if(coat===151){if(first)assert.deepEqual(now.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);else first=now;}
+   }
+   await remove('coat');const restored=await show('depois',{weapon});
+   assert.deepEqual(restored.visual.coverage[0].slotRoutes,bare.visual.coverage[0].slotRoutes);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }

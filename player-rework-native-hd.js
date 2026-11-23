@@ -85,7 +85,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  const combatWardrobeReady=Promise.resolve().then(()=>fetchJSON('tools/rework-combat-wardrobe/index.json')).then(c=>{
   if(c?.schema!=='editable-combat-wardrobe-v1'||!c.rigs||!Array.isArray(c.records))return;
   const index=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(c.records.map(({layers,...r})=>({...r,body:'female',source:layers})));
-  if(index)combatWardrobe={rigs:c.rigs,index,handFits:c.handFits,maleDaggerCoats:c.maleDaggerCoats,maleSwordCoats:c.maleSwordCoats,articulatedBoots:c.articulatedBoots,maleStaffCoats:c.maleStaffCoats,maleNorthPistolCoats:c.maleNorthPistolCoats,northRiflePants:c.northRiflePants};
+  if(index)combatWardrobe={rigs:c.rigs,index,handFits:c.handFits,maleDaggerCoats:c.maleDaggerCoats,maleSwordCoats:c.maleSwordCoats,articulatedBoots:c.articulatedBoots,maleStaffCoats:c.maleStaffCoats,northFocusCoats:c.northFocusCoats,maleNorthPistolCoats:c.maleNorthPistolCoats,northRiflePants:c.northRiflePants};
  }).catch(()=>{});
  const daggerWardrobeReady=Promise.resolve().then(()=>fetchJSON('tools/rework-female-dagger-wardrobe/index.json')).then(c=>{
   if(c?.schema!=='female-dagger-owned-wardrobe-v1'||!c.targets||!Array.isArray(c.records))return;
@@ -6698,6 +6698,18 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const cloth=bank.items[item];
   return cloth&&{source:cloth.source,refs:[cloth.sha],rifleTrousers:{sha:cloth.sha,cut:cloth.replace?bank.clear:[],protectedPhases}};
  }
+ // These plates were clipped against the receiving weapon, hands and hair
+ // in the editable source. The signed body remains the actual player.
+ function fittedNorthFocusCoat(base,slot,item){
+  if(slot!=='torso'||base.body!=='male'||base.hdKind!=='weapon'||base.action!=='attack-focus'||
+     base.direction!=='north'||base.fps!==12||base.density!==4||base.nativeCanvas?.join(',')!=='640,640'||
+     base.pivot?.join(',')!=='80,128')return null;
+  const row=combatWardrobe?.northFocusCoats?.[base.item],plate=row?.coats[item];
+  if(!plate||base.states.length!==row.poses.length||base.timeline.length!==base.states.length||
+     !base.states.every((s,i)=>s.approved?.sha256===row.poses[i]&&Number(base.timeline[i])===i))return null;
+  return {source:plate.path+'/coat-'+item+'@'+plate.archive,refs:[...new Set(plate.cloth)],
+   rasterCoat:{cloth:plate.cloth,preclipped:true,belowHelmet:true}};
+ }
  function fittedStaffCoat(base,slot,item){
   const bank=combatWardrobe?.maleStaffCoats,cloth=bank?.coats[item],proof=bank?.directions[base.direction];
   if(slot!=='torso'||!cloth||!proof||base.body!=='male'||base.action!=='attack-focus'||base.hdKind!=='weapon'||
@@ -6762,7 +6774,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   for(const [slot,v] of Object.entries(request)){
    const key=JSON.stringify([pose,slot,v.item]);
    if(!independentPassCache.has(key)){
-    const plate=fixedRifleLower(base,slot,v,player,routeOptions)||articulatedWeaponHead(base,slot,v.item,player)||articulatedBoot(base,slot,v.item)||articulatedSwordCoat(base,slot,v.item)||fittedStaffCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
+    const plate=fixedRifleLower(base,slot,v,player,routeOptions)||articulatedWeaponHead(base,slot,v.item,player)||articulatedBoot(base,slot,v.item)||articulatedSwordCoat(base,slot,v.item)||fittedNorthFocusCoat(base,slot,v.item)||fittedStaffCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
     if(!plate&&!poseCanMount){passes.set(slot,null);continue;}
     const pass=plate||femaleGaitPass(base,slot,v,player)||swordWardrobePass(base,slot,v,player)||combatWardrobePass(base,slot,v,player)||femaleRestPass(base,slot,v,player)||independentNativePass({player,o:routeOptions,base,weapon:grip?null:weapon,slot,v,selectPose})||
      malePunchWardrobe(base,slot,v,player,routeOptions)||maleCarryWardrobe(base,slot,v,player,routeOptions,selectPose)||daggerGarment(base,slot,v,player)||findDaggerWardrobePass(base,slot,v.item)||
@@ -8358,7 +8370,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const {swordTrack,...base}=r;
   return [...filesFor(base,frame),combatPlatePath(swordTrack.cloth[frame]),combatPlatePath(swordTrack.hands[frame])];
  }if(r.fittedCoatPlate||r.daggerCoatPlate){
-  const p=r.fittedCoatPlate||r.daggerCoatPlate;return [...filesFor(p.base,frame),combatPlatePath(p.cloth[frame]),combatPlatePath(p.masks[frame])];
+  const p=r.fittedCoatPlate||r.daggerCoatPlate;return [...filesFor(p.base,frame),combatPlatePath(p.cloth[frame]),...(p.preclipped?[]:[combatPlatePath(p.masks[frame])])];
  }if(r.wardrobeWeapon)return filesFor(r.wardrobeWeapon.attached,frame);if(r.wardrobeGrip){const grip=r.wardrobeGrip,ops=grip.ops[frame];
    return [...new Set([...filesFor(grip.dressed,frame),...ops.flatMap(p=>[p.asset,...(p.extraMetal||[]),...(p.mask?[p.mask]:[])]),
     ...(ops.some(p=>p.signedEdge)?[...filesFor(grip.weapon,frame),...filesFor(grip.body,frame)]:[])])];
@@ -8549,7 +8561,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(r.fittedCoatPlate||r.daggerCoatPlate){
    const p=r.fittedCoatPlate||r.daggerCoatPlate,defer=p.belowHelmet&&p.base.ownGauntletHead;
    const result=composeFrame(defer?{...p.base,deferFittedHelmet:true}:p.base,frame,entry);
-   const cloth=entry.images.get(combatPlatePath(p.cloth[frame])),mask=entry.images.get(combatPlatePath(p.masks[frame]));
+   const cloth=entry.images.get(combatPlatePath(p.cloth[frame]));
+   if(p.preclipped){
+    if([result.canvas,cloth].some(im=>im?.width!==640||im.height!==640))throw Error('Missing registered North focus plate');
+    result.canvas.getContext('2d').drawImage(cloth,0,0);
+    if(defer)drawFittedHelmet(result.canvas,p.base,entry,frame);
+    return {...result,info:{...result.info,source:r.id}};
+   }
+   const mask=entry.images.get(combatPlatePath(p.masks[frame]));
    for(const img of [result.canvas,cloth,mask])if(img?.width!==640||img.height!==640)throw Error('Incompatible registered coat canvas');
    const tile=makeCanvas(640,640),t=tile.getContext('2d'),ctx=result.canvas.getContext('2d');
    // The approved assembly preserves everything above physical row 205.
