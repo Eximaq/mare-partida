@@ -1,5 +1,7 @@
 # Cobertura das roupas HD no mapa
 
+[Continuação da fila de 114 contextos e produtos diretos por arma](continuacao-114.md)
+
 O censo de `f2aadd231c9a5abc928dfcd642a56778dc31469d` tem a assinatura `fd1d51b9e233ddcb0ffa6bdb229cd12db03c2aea977c7f12823c810950c0c9a3`. Todos os 1.176 receptores sem roupas passaram. Em **1.113 de 1.176 contextos** passaram as 50 peças isoladas, os 1.000 pares entre slots e 100 conjuntos completos determinísticos. Os **63 contextos com lacunas** são ataques masculinos armados. Os 50 itens continuam parcialmente integrados no critério global de seleção e desenho. [Resultados por contexto](censo.ndjson.gz) · [Resultado por ID](detalhes.tsv.gz) · [Fila por causa](pendencias.json.gz) · [Resumo](resumo.json)
 
 | Corpo e equipamento | Contextos completos | Itens individuais | Pares | Conjuntos mistos |
