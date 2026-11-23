@@ -141,8 +141,14 @@ const sizes = [[1920,1080],[1366,768],[1280,720],[1024,768],[768,1024],[390,844]
     for(const [width,height] of [[1366,768],[768,1024],[390,844]]) {
       await page.setViewportSize({width,height});
       await noOverflow();
-      await page.locator('[data-appearance-apply]').scrollIntoViewIfNeeded();
-      assert(await page.locator('[data-appearance-apply]').isVisible());
+      // Responsive layout may replace the panel. Scroll and measure the same live element.
+      await page.waitForFunction(()=>{
+        const button=document.querySelector('[data-appearance-apply]');
+        if(!button)return false;
+        button.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});
+        const r=button.getBoundingClientRect(),center=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);
+        return r.width>0&&r.height>0&&button.contains(center);
+      });
       await page.locator('#dialogBody').evaluate(e=>e.scrollTop=0);
       const preview=await page.locator('#profileAppearanceCanvas').boundingBox();
       const harbor=await page.locator('.studio-harbor').boundingBox();

@@ -34,17 +34,31 @@ def profile_panels(item,seams,records,bank,source):
     edge,side=seams
     yy,xx=np.indices((640,640))
     alpha=lambda image:np.asarray(image)[:,:,3]
-    name=f'male-torso{item}-east-frozen-attack-native-candidate'
-    r=records[name];d=r['pack']['directions']['east'];rest=d['rest']
-    original=records[f'male-torso{item}-east-frozen-idle-native']
-    known={l['source'] for l in original['pack']['directions']['east']['layers']}
-    if r['body']!='male' or r['equipment']!={'torso':item} or r['pack']['pivot']!={'x':80,'y':128}:raise ValueError(name)
-    owner=Image.new('RGBA',(640,640));parts=[]
-    for l in sorted(d['layers'],key=lambda l:l['depth']):
-        if l['id'].startswith('base:'):continue
-        key=l['source']
-        if key not in known or r['sourceRasterPadding'][key]!={'sourceSize':512,'offset':64} or l['slot'] not in ('underArms','top'):raise ValueError('Foreign cloth')
-        owner.alpha_composite(source(bank,key));parts.append([l['id'],key])
+    if item==151:
+        name='male-pants133-idle-east-source-v18-candidate-coat151-native'
+        r=records[name];d=r['pack']['directions']['east']
+        if r['body']!='male' or r['equipment'].get('torso')!=item or r['pack']['pivot']!={'x':64,'y':112} or r['pack']['density']!=4:
+            raise ValueError('Invalid isolated 151 donor')
+        rest={k:{'x':v['x']+16,'y':v['y']+16} for k,v in d['rest'].items()}
+        owner=Image.new('RGBA',(640,640));parts=[]
+        for l in sorted(d['layers'],key=lambda l:l['depth']):
+            if not l['id'].startswith(('equip-coat151-','equip-original-neck-coverage')):continue
+            k=l['source']
+            if k not in r['sourceRefs'] or l['slot']!='body':raise ValueError('Foreign reference garment')
+            owner.alpha_composite(source(bank,k));parts.append([l['id'],k])
+        if len(parts)!=9:raise ValueError('Incomplete isolated 151')
+    else:
+        name=f'male-torso{item}-east-frozen-attack-native-candidate'
+        r=records[name];d=r['pack']['directions']['east'];rest=d['rest']
+        original=records[f'male-torso{item}-east-frozen-idle-native']
+        known={l['source'] for l in original['pack']['directions']['east']['layers']}
+        if r['body']!='male' or r['equipment']!={'torso':item} or r['pack']['pivot']!={'x':80,'y':128}:raise ValueError(name)
+        owner=Image.new('RGBA',(640,640));parts=[]
+        for l in sorted(d['layers'],key=lambda l:l['depth']):
+            if l['id'].startswith('base:'):continue
+            key=l['source']
+            if key not in known or r['sourceRasterPadding'][key]!={'sourceSize':512,'offset':64} or l['slot'] not in ('underArms','top'):raise ValueError('Foreign cloth')
+            owner.alpha_composite(source(bank,key));parts.append([l['id'],key])
     poly=Image.new('L',(640,640));ImageDraw.Draw(poly).polygon(edge,fill=255)
     arm=clipped(owner,np.asarray(poly))
     # Recover the textile behind the resting sleeve from this same coat's

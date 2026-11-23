@@ -14,7 +14,7 @@ DEST=ROOT/'tools/rework-combat-wardrobe/blade-trousers.zip'
 IDS=(21,22,133,140,147,154,161,168,175,182)
 
 
-def generate():
+def generate(extra_rigs=None):
     import numpy as np
     from PIL import Image
 
@@ -42,6 +42,7 @@ def generate():
                        for direction in ('east','west')},
           'sword':{direction:next(r for r in weapons['records'] if r['body']=='male' and r['direction']==direction and r['item']==1)['basePack']['pack']
                    for direction in ('east','west')}}
+    if extra_rigs is not None: rigs=extra_rigs(weapons)
     result={'sources':{},'rigs':{},'items':{}}
     assets={}
     def gather(d,ids,f):
@@ -209,8 +210,8 @@ def generate():
     return assets
 
 
-def materialize(bank):
-    with zipfile.ZipFile(DEST) as z:
+def materialize(bank,archive=DEST):
+    with zipfile.ZipFile(archive) as z:
         registry=json.loads(z.read('register.json'))
         for name,rows in registry['items'].items():
             if set(map(int,rows))!=set(IDS):raise ValueError('Incomplete blade wardrobe '+name)

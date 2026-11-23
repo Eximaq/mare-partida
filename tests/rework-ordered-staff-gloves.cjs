@@ -6,7 +6,8 @@ const world=mod('paper-doll-96-lobby.js'),catalog=mod('tools/paper-doll-96-v3/we
 const load=require('../tools/rework-hd-test-loader.cjs').create(root),{gear,weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
 const atlas=mod('tools/rework-combat-wardrobe/index.json').staffGloves;
 const weapon=Number(process.argv[2]),tone=process.argv[3]||'light';
-assert([31,123,124,125,126,127,128].includes(weapon)&&['light','ebony'].includes(tone));
+const scepter=weapon===121?mod('tools/rework-combat-wardrobe/index.json').scepterGloves:null;
+assert([31,121,123,124,125,126,127,128].includes(weapon)&&['light','ebony'].includes(tone));
 const cv640=()=>cv.createCanvas(640,640);
 const read=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,640,640).data.buffer);
 async function plane(sha,bank,mirror,base){
@@ -32,10 +33,10 @@ async function main(){
   const fixed={head:19,coat:151,boots:169,weapon},bare=await pose({weapon}),clothed=await pose(fixed),phases=[];
   for(let f=0;f<8;f++){
    const layers=bare.r.states[f].layers,from=layers.findIndex(l=>l.id==='forearm-hand-far');
-   const fused=bare.r.w128IndependentSide;assert(fused||from>0);const cover=new Uint8Array(640*640);let metal;
-   const after=fused?[{id:'grip',sha256:atlas.pins[direction][f].grip},layers.find(l=>l.id==='gear')]:layers.slice(from+1);
+   const fused=bare.r.w128IndependentSide||bare.r.w121IndependentSide;assert(fused||from>0);const cover=new Uint8Array(640*640);let metal;
+   const after=fused?[{id:'grip',sha256:scepter?scepter.occlusion[f]:atlas.pins[direction][f].grip,ownMask:!!scepter,mirrorX:scepter&&direction==='west'},layers.find(l=>l.id==='gear')]:layers.slice(from+1);
    for(const l of after){
-    const rgba=await plane(l.sha256,'rework-weapon-layers-hd',Boolean(l.mirrorX));
+    const rgba=await plane(l.sha256,l.ownMask?'rework-combat-wardrobe':'rework-weapon-layers-hd',Boolean(l.mirrorX));
     if(fused&&l.id==='gear')metal=rgba;
     for(let i=0;i<rgba.length;i++)cover[i]=Math.max(cover[i],rgba[i]>>>24);
    }
@@ -45,10 +46,11 @@ async function main(){
    const on=await pose({weapon,gloves}),kit=await pose({...fixed,gloves});
    assert.deepEqual(on.r.slotRoutes.gloves,kit.r.slotRoutes.gloves);
    for(const k of Object.keys(fixed))assert.deepEqual(clothed.r.slotRoutes[k],kit.r.slotRoutes[k]);
+   const own=(side,f)=>scepter&&side==='right'?scepter.right[gloves][f].art:atlas.items[gloves][side][f].art;
    for(let f=0;f<8;f++){
-    const [far,near]=await Promise.all(['left','right'].map(side=>plane(atlas.items[gloves][side][f].art,'rework-combat-wardrobe',direction==='west')));
+    const [far,near]=await Promise.all(['left','right'].map(side=>plane(own(side,f),'rework-combat-wardrobe',direction==='west')));
     const a=on.draw(f),b=kit.draw(f),{before,dressed,cover,metal}=phases[f];
-    const [farOnBody,nearOnBody]=await Promise.all(['left','right'].map(side=>plane(atlas.items[gloves][side][f].art,'rework-combat-wardrobe',direction==='west',before)));
+    const [farOnBody,nearOnBody]=await Promise.all(['left','right'].map(side=>plane(own(side,f),'rework-combat-wardrobe',direction==='west',before)));
     let changed=0,mixed=0,nearExact=0,farExact=0,hidden=0;
     for(let k=0;k<a.length;k++){
      const fa=far[k]>>>24,na=near[k]>>>24;
@@ -69,7 +71,8 @@ async function main(){
  assert.equal(saved,JSON.stringify(player.appearance96));assert.equal(rows.length,160);
  assert(rows.some(r=>r.f===4&&r.farExact>150));// Totals from the two original directional stacks, across all ten gloves.
  const metalContacts={31:222,123:60,124:288,125:104,126:206,127:146,128:644};
- assert.equal(rows.reduce((n,r)=>n+r.hidden,0),metalContacts[weapon]);
+ const blocked=rows.reduce((n,r)=>n+r.hidden,0);
+ if(scepter)assert(blocked>0,'The scepter must cover fingers during contact');else assert.equal(blocked,metalContacts[weapon]);
  if(process.env.HD_STAFF_GLOVE_RESULTS)fs.writeFileSync(process.env.HD_STAFF_GLOVE_RESULTS,JSON.stringify(rows));
  console.log(weapon,tone,rows.length,'independent glove phases and 160 mixed phases');
 }

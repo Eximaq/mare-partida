@@ -6,7 +6,7 @@ const {gear,weapons}=require('../tools/audit-hd-wardrobe-product.cjs'),mod=name=
 const world=mod('paper-doll-96-lobby.js'),look=mod('character-appearance.js'),catalog=mod('tools/paper-doll-96-v3/weapons.json');
 const atlas=mod('tools/rework-combat-wardrobe/index.json').sideFocusTrousers,load=require('../tools/rework-hd-test-loader.cjs').create(root);
 const read=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,640,640).data.buffer);
-const ids=[16,17,32,122,128],select=process.argv[2]?[Number(process.argv[2])]:ids;assert(select.every(id=>ids.includes(id)));
+const ids=[16,17,32,121,122,128],select=process.argv[2]?[Number(process.argv[2])]:ids;assert(select.every(id=>ids.includes(id)));
 (async()=>{
  const api=make();await api.ready;const rows=[];
  for(const id of select)for(const direction of ['east','west']){
@@ -37,7 +37,7 @@ const ids=[16,17,32,122,128],select=process.argv[2]?[Number(process.argv[2])]:id
     const a=one.draw(f),b=kit.draw(f),base=baseline[f],before=mixed[f],plate=fit.items[n],phase=fit.phases[f];
     const mark=new Uint8Array(640*640),g=new Uint8Array(mark.length);
     for(const [off,len] of phase.cut)mark.fill(1,off,off+len);
-    const fg=id===128?phase.bent:id===17||id===122?phase.orb:null;
+    const fg=id===121?phase.scepter:id===128?phase.bent:id===17||id===122?phase.orb:null;
     if(fg)for(const [off,len] of fg.guard)g.fill(1,off,off+len);
     const physical=cv.createCanvas(640,640),cx=physical.getContext('2d');cx.imageSmoothingEnabled=false;
     cx.transform(...phase.transform);cx.drawImage(await load('tools/rework-modular-outfits-hd/assets/'+plate.cloth[f]+'.png'),0,0);

@@ -173,9 +173,11 @@ window.__hdSlotQA={
    assert.deepEqual(errors,[]);return;
   }
   if(process.argv.includes('--orb-coats')){await observeWeaponCoats([17,122],'strategist','attack-focus');assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--north-blade-wardrobe')){await observeBladeCloth('legs',true);assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--blade-trousers')||process.argv.includes('--blade-sleeves')){await observeBladeCloth(process.argv.includes('--blade-sleeves')?'coat':'legs');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-boots')){await observeArticulatedBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--sword-coats')){await observeWeaponCoats([0,1,67,68,69,70],'sword','attack-sword');assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--south-staff-clothes')){await observeSouthFocusClothes();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-focus-trousers')||process.argv.includes('--south-focus-boots')){await observeFocusTrousers(process.argv.includes('--south-focus-boots'));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-forearm-trousers')){await observeSouthForearmTrousers();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-forearm-wardrobe')){await observeSouthPunchHelmets([111,118,119,120]);assert.deepEqual(errors,[]);return;}
@@ -190,6 +192,7 @@ window.__hdSlotQA={
   }
   if(sideFist){await observeLateralGauntlet(Number(sideFist.split('=')[1]||110));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-moving-boots')){await observeNorthMovingBoots();assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--scepter-profile')){await observeFocusSleeves(true);assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--side-focus-sleeves')){await observeFocusSleeves();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--side-staff-trousers')){await observeWeaponGloves('staffPants');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-jackets')){await observeNorthFocusClothing('coat');assert.deepEqual(errors,[]);return;}
@@ -197,6 +200,8 @@ window.__hdSlotQA={
   if(process.argv.includes('--north-focus-trousers')){await observeNorthFocusClothing('legs');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-coats')||process.argv.includes('--north-weapon-coats')||process.argv.includes('--north-orb-compass-coats')){await observeNorthFocusCoats(process.argv.includes('--north-weapon-coats'),process.argv.includes('--north-orb-compass-coats'));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-rifle-clothes')){await observeNorthRifleClothes();assert.deepEqual(errors,[]);return;}
+  const rifleProfiles=process.argv.find(v=>/^--rifle-profile-clothes(?:=(4|5|113|115|116))?$/.test(v));
+  if(rifleProfiles){await observeRifleProfileClothes(rifleProfiles.includes('=')?[Number(rifleProfiles.split('=')[1])]:[4,5,113,115,116]);assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-rifle-helmets')){await observeNorthRifleHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-rifle-trousers')){await observeNorthTrousers();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--pistol-clothes')){await observePistolClothes();assert.deepEqual(errors,[]);return;}
@@ -441,17 +446,17 @@ window.__hdSlotQA={
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }
- async function observeBladeCloth(slot){
+ async function observeBladeCloth(slot,north=false){
   const coats=slot==='coat',alternatives=coats?[137,6]:[168,22];
   // One real map cycle for each distinct body compositor. The pixel test
   // exercises all ten materials and both directions of these three paths.
   const {weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
-  for(const weapon of [0,1,73]){
+  for(const weapon of north?[1,67,69,73]:[0,1,73]){
    const role=weapons.find(w=>w.id===weapon).role;
-   const action=role==='sword'?'attack-sword':'attack-daggers',direction=weapon===1?'west':'east';
+   const action=role==='sword'?'attack-sword':'attack-daggers',direction=north?'north':weapon===1?'west':'east';
    const look={gender:'masculino',skinColor:weapon===1?'light':'ebony',hairColor:'blue',eyeColor:'green'};
    const fixed={weapon,head:19,...(coats?{legs:168}:{coat:151}),boots:148,gloves:152},equipped=Object.values(fixed);
-   await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,look,ids:[...equipped,...alternatives]});
+   await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,look,ids:[...equipped,...alternatives,...(north?[137,25]:[])]});
    for(const item of weapon===1?equipped.reverse():equipped)await put(item);
    const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance,label=(coats?'mangas':'calcas')+'-lamina-'+weapon+'-'+direction;
    const before=await observeAttack(action,label+'-sem-'+slot,direction,fixed);let first;
@@ -461,6 +466,16 @@ window.__hdSlotQA={
     for(const slot of Object.keys(fixed))assert.deepEqual(routes[slot],before.visual.coverage[0].slotRoutes[slot]);
     if(index===0){first=routes;await captureMapCycle(action,kit,label,8,direction);}
     else if(index===2)assert.deepEqual(first,routes);
+   }
+   if(north){
+    const gear={...fixed,[slot]:alternatives[0]};
+    for(const [target,item] of [['gloves',25],['coat',137],['gloves',fixed.gloves],['coat',fixed.coat]]){
+     await put(item);gear[target]=item;
+     const changed=await observeAttack(action,label+'-'+target+'-'+item,direction,gear);
+     const routes=changed.visual.coverage[0].slotRoutes;
+     for(const [k,v] of Object.entries(gear))assert.equal(routes[k].item,v);
+     if(gear.gloves===fixed.gloves&&gear.coat===fixed.coat)assert.deepEqual(routes,first);
+    }
    }
    await remove(slot);assert.deepEqual((await observeAttack(action,label+'-retirada',direction,fixed)).visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
    assert.deepEqual(saved,(await page.evaluate(()=>__hdSlotQA.read())).appearance);
@@ -627,11 +642,11 @@ window.__hdSlotQA={
   }
   assert.deepEqual(saved,(await page.evaluate(()=>__hdSlotQA.read())).appearance);
  }
- async function observeFocusSleeves(){
+ async function observeFocusSleeves(scepter=false){
   const {weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
   // Each case samples a distinct contact geometry. The two directions and the six coat IDs are covered.
-  for(const [weapon,direction,first,second] of [[31,'east',6,130],[32,'west',7,144],[17,'east',137,172]]){
-   const fixed={weapon,head:19,gloves:159,boots:148},role=weapons.find(w=>w.id===weapon).role;
+  for(const [weapon,direction,first,second] of (scepter?[[121,'east',6,151],[121,'west',172,158]]:[[31,'east',6,130],[32,'west',7,144],[17,'east',137,172]])){
+   const fixed={weapon,head:19,gloves:159,boots:148,legs:168},role=weapons.find(w=>w.id===weapon).role;
    const look={gender:'masculino',skinColor:weapon===31?'light':'ebony',hairColor:'blue',eyeColor:'green'};
    await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,ids:[...Object.values(fixed),first,second],look});
    for(const id of Object.values(fixed))await put(id);
@@ -670,6 +685,24 @@ window.__hdSlotQA={
     }
     await remove(slot);assert.deepEqual((await show('retirada',fixed)).visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
    }
+   assert.deepEqual(saved,(await page.evaluate(()=>__hdSlotQA.read())).appearance);
+  }
+ }
+ async function observeSouthFocusClothes(){
+  const {weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
+  for(const [weapon,coat,other] of [[31,144,137],[17,151,179]]){
+   const fixed={weapon,legs:168,head:136,boots:148},role=weapons.find(w=>w.id===weapon).role;
+   const look={gender:'masculino',skinColor:weapon===31?'ebony':'light',hairColor:'blue',eyeColor:'green'};
+   await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,ids:[...Object.values(fixed),coat,other,25,159],look});
+   for(const id of Object.values(fixed))await put(id);
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance,prefix='roupa-gesto-sul-'+weapon;
+   await put(coat);await put(25);const firstGear={...fixed,coat,gloves:25},show=(name,eq)=>observeAttack('attack-focus',prefix+'-'+name,'south',eq);
+   const first=await show('inicio',firstGear);await captureMapCycle('attack-focus',firstGear,prefix+'-inicio',8,'south');
+   await put(159);await put(other);const second=await show('troca',{...fixed,coat:other,gloves:159});
+   for(const slot of Object.keys(fixed))assert.deepEqual(first.visual.coverage[0].slotRoutes[slot],second.visual.coverage[0].slotRoutes[slot]);
+   await captureMapCycle('attack-focus',{...fixed,coat:other,gloves:159},prefix+'-troca',8,'south');
+   await remove('coat');await remove('gloves');await show('retirada',fixed);
+   await put(25);await put(coat);assert.deepEqual((await show('retorno',firstGear)).visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);
    assert.deepEqual(saved,(await page.evaluate(()=>__hdSlotQA.read())).appearance);
   }
  }
@@ -840,6 +873,23 @@ window.__hdSlotQA={
    await put(159);await put(151);const restored=await shot('retorno',kit);
    assert.deepEqual(restored.visual.coverage[0].slotRoutes,dressed.visual.coverage[0].slotRoutes);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,before);
+  }
+ }
+ async function observeRifleProfileClothes(weapons){
+  for(const weapon of weapons)for(const direction of ['east','west']){
+   const look={gender:'masculino',skinColor:direction==='east'?'light':'ebony',hairColor:'blue',eyeColor:'green'},kit={weapon,legs:168,boots:148,head:19,coat:130,gloves:159};
+   await page.evaluate(({kit,look})=>__hdSlotQA.seedWardrobe('gunner',[...Object.values(kit),25,151,21],look),{kit,look});
+   for(const id of Object.values(kit))await put(id);
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance,label='rifle-perfil-'+weapon+'-'+direction;
+   const shoot=(tag,eq)=>observeAttack('attack-firearm',label+'-'+tag,direction,eq);
+   const first=await shoot('conjunto',kit);await captureMapCycle('attack-firearm',kit,label,8,direction);
+   await put(151);await put(25);await put(21);const changed=await shoot('trocas',{...kit,coat:151,gloves:25,legs:21});
+   for(const s of ['head','boots','weapon'])assert.deepEqual(first.visual.coverage[0].slotRoutes[s],changed.visual.coverage[0].slotRoutes[s]);
+   await remove('coat');const {coat,...open}=kit;
+   await shoot('retirada',{...open,gloves:25,legs:21});
+   await put(159);await put(168);await put(130);const after=await shoot('retorno',kit);
+   assert.deepEqual(after.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }
  async function observeNorthRifleHelmets(){

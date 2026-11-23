@@ -11,7 +11,10 @@ from register_south_focus_trousers import BASE, OUTFITS, ROOT, index
 
 WEAPONS = ROOT / 'tools/rework-weapon-layers-hd'
 OUTPUT = ROOT / 'tools/rework-combat-wardrobe/north-focus-trousers.json'
-RESTORED_PALM_STOCK = 'bb94bb7c0081fc93dd65e54133d65df76cebea83fc1b81af2ecc42c4895e82f2'
+RESTORED_STOCK = {
+    ('focus', 0): 'bb94bb7c0081fc93dd65e54133d65df76cebea83fc1b81af2ecc42c4895e82f2',
+    ('sword', 3): 'cb51d1e4f7ecd753ff32fccb68f0dbc96ea467ba101bb96225d8281457c9f958',
+}
 
 
 def register():
@@ -57,7 +60,7 @@ def register():
     outfit = index(OUTFITS)
     bodies = {r['id']: r for r in index(BASE)['records']}
     ref = outfit['malePunchOwnPantsCardinal']['cardinals']['north']
-    donor, receiver = bodies[ref['baseId']], bodies['v7-focus-north-modular8-north']
+    donor = bodies[ref['baseId']]
     if donor['sourcePackSHA256'] != ref['baseSHA']: raise ValueError('Changed donor anatomy')
     def layers(body):
         pack = body['pack']
@@ -66,7 +69,7 @@ def register():
             raise ValueError('Unexpected frame or clock')
         return {l['id']:l for l in d['layers']}
 
-    dl, rl = layers(donor), layers(receiver)
+    dl = layers(donor)
     items = {n:dict(source=ref['baseId']+'/pants'+n, cloth=[key]*8) for n,key in ref['items'].items()}
     for n, record in ((21,'male-pants21-attack-unarmed-north'),(22,'male-pants22-attack-unarmed-north'),
                       (133,'male-pants133-attack-unarmed-north-drawn8-candidate')):
@@ -76,28 +79,37 @@ def register():
         if textile['slot'] != 'pants' or textile['binding'] != {'kind':'fixed'}: raise ValueError('Non-owned trouser panel')
         items[str(n)] = dict(source=record+'/'+textile['id'],cloth=textile['frames'] if 'frames' in textile else [textile['source']]*8)
     if len(items)!=10 or len({v['cloth'][0] for v in items.values()})!=10: raise ValueError('Expected ten distinct garments')
-    phases = []
-    for f in range(8):
-        stock = rl['shorts']['frames'][f]
-        cloth = pixels(stock)
-        cut = stock_component(cloth)
-        variants = [stock]
-        if f == 0:
-            restored = pixels(RESTORED_PALM_STOCK)
-            if not np.array_equal(cloth[cut],restored[cut]) or not np.array_equal(cut,stock_component(restored)):
-                raise ValueError('Palm correction intersects trousers')
-            variants.append(RESTORED_PALM_STOCK)
-        src = fit(stock_component(pixels(dl['shorts-phase']['frames'][f])),pixels(dl['skin-arms-phase']['frames'][f]))
-        dest = fit(cut,pixels(rl['legs']['frames'][f]))
-        sx=(dest[1]-dest[0])/(src[1]-src[0]);sy=(dest[3]-dest[2])/(src[3]-src[2])
-        if not (.85<sx<1.1 and .95<sy<1.1): raise ValueError('Unexpected waist/foot transform')
-        phases.append(dict(stock=variants,legs=rl['legs']['frames'][f],underbody=rl['underbody']['frames'][f],cut=runs(cut),
-                           transform=[sx,0,0,sy,dest[0]-sx*src[0],dest[2]-sy*src[2]],donorFit=src,receiverFit=dest))
-        for item in items.values():
-            fabric = pixels(item['cloth'][f])
-            y,x=np.nonzero(fabric[:,:,3])
-            if y.min()<295 or y.max()>520 or x.min()<220 or x.max()>420: raise ValueError('Trouser material exceeds its own garment')
-    return dict(source=receiver['id'],bodySHA=receiver['sourcePackSHA256'],items=items,phases=phases)
+    def mount(family):
+        receiver = bodies['v7-' + family + '-north-modular8-north']
+        rl = layers(receiver)
+        phases = []
+        for f in range(8):
+            stock = rl['shorts']['frames'][f]
+            cloth = pixels(stock)
+            cut = stock_component(cloth)
+            variants = [stock]
+            alternate = RESTORED_STOCK.get((family, f))
+            if alternate:
+                restored = pixels(alternate)
+                if not np.array_equal(cloth[cut],restored[cut]) or not np.array_equal(cut,stock_component(restored)):
+                    raise ValueError('Palm correction intersects trousers')
+                variants.append(alternate)
+            src = fit(stock_component(pixels(dl['shorts-phase']['frames'][f])),pixels(dl['skin-arms-phase']['frames'][f]))
+            dest = fit(cut,pixels(rl['legs']['frames'][f]))
+            sx=(dest[1]-dest[0])/(src[1]-src[0]);sy=(dest[3]-dest[2])/(src[3]-src[2])
+            if not (.85<sx<1.1 and .95<sy<1.1): raise ValueError('Unexpected waist/foot transform')
+            phases.append(dict(stock=variants,legs=rl['legs']['frames'][f],underbody=rl['underbody']['frames'][f],cut=runs(cut),
+                               transform=[sx,0,0,sy,dest[0]-sx*src[0],dest[2]-sy*src[2]],donorFit=src,receiverFit=dest))
+            for item in items.values():
+                fabric = pixels(item['cloth'][f])
+                y,x=np.nonzero(fabric[:,:,3])
+                if y.min()<295 or y.max()>520 or x.min()<220 or x.max()>420: raise ValueError('Trouser material exceeds its own garment')
+        return dict(source=receiver['id'],bodySHA=receiver['sourcePackSHA256'],phases=phases)
+
+    result = mount('focus')
+    result['items'] = items
+    result['bladeReceivers'] = {family:mount(family) for family in ('sword','daggers')}
+    return result
 
 
 if __name__ == '__main__':

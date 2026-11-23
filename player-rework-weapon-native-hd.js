@@ -952,7 +952,9 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
       id,role:id,component,sha256,url:'assets/'+sha256+'.png',size:[640,640],operation:'source-over',depth,mirrorX
      }))};
     });
-    return {...r,states,id:r.id+':independent-side:'+appearance.skin,staff121SideSkin:true,w121IndependentSide:true,approvedFocusSide:true,separableAttack:true,
+    const peer=index.orderedAttackProfiles?.find(p=>p.id==='authored-ordered-124-'+direction);
+    const fusedFocusAnatomy=orderedAnatomy(peer);
+    return {...r,states,fusedFocusAnatomy,focusShorts:peer?.states.map(s=>s.layers.find(l=>l.id==='shorts').sha256),focusScalpSkin:appearance.skin,id:r.id+':independent-side:'+appearance.skin,staff121SideSkin:true,w121IndependentSide:true,approvedFocusSide:true,separableAttack:true,
       replacementMode:'signed-independent-body-and-weapon',equipmentContract:{weapon:121},colorAppearance:{},orderedFocusHead:true,orderedDaggerIris:'blue',orderedDaggerHair:'black'};
    }
   }
@@ -2561,6 +2563,24 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   ctx.save();if(r.bladePants.mirror){ctx.translate(640,0);ctx.scale(-1,1);}
   ctx.drawImage(art,phase.x,phase.y);ctx.restore();
  }
+ function mountedRifleCoat(r,s,layers,map,images){
+  const f=Number(s.state),phase=r.rifleProfileCoat[f],added=[],front=makeCanvas(640,640),mask=front.getContext('2d');
+  for(const [id,key] of Object.entries(phase)){
+   const im=images.get('tools/rework-combat-wardrobe/assets/'+key+'.png');
+   if(im?.width!==640||im.height!==640)throw Error('Missing profile firearm coat');
+   let tile=im;
+   if(r.direction==='west'){
+    tile=makeCanvas(640,640);const ctx=tile.getContext('2d');ctx.translate(640,0);ctx.scale(-1,1);ctx.drawImage(im,0,0);
+   }
+   map.set(key,tile);
+   const depth=id==='core'?4.85:layers.find(l=>l.id===id).depth+.15;
+   added.push({id:'rifle-fabric-'+id,source:key,depth,slot:'top',binding:{kind:'fixed'}});
+   mask.drawImage(tile,0,0);
+  }
+  const stock=layers.find(l=>l.id==='shorts').frames[f],clean=makeCanvas(640,640),g=clean.getContext('2d');
+  g.drawImage(map.get(stock),0,0);g.globalCompositeOperation='destination-out';g.drawImage(front,0,0);map.set(stock,clean);
+  front.width=1;return [...layers,...added];
+ }
  function mountedBladeTrousers(r,s,layers,map,images){
   const frame=Number(s.state),key=r.bladePants.phases[frame].art,tile=makeCanvas(640,640);
   paintBladeTrousers(tile.getContext('2d'),r,s,images);map.set(key,tile);
@@ -2845,6 +2865,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    let layers=r.bootTrack?mountedBootLayers(r,s,d,map,images):d.layers;
    if(r.sideFittedPants&&r.relic32SideBlue)layers=modularSideTrousers(r,s,layers,map,images);
    if(r.bladePants)layers=mountedBladeTrousers(r,s,layers,map,images);
+   if(r.rifleProfileCoat)layers=mountedRifleCoat(r,s,layers,map,images);
    if(r.northFittedPants)layers=northTrouserLayer(r,layers,map,images,Number(s.state));
    if(r.northSleeves)layers=northSleeveLayers(r,layers,map,images,Number(s.state));
    if(r.northGloveTrack)layers=[...layers,...northHandLayers(r.northGloveTrack,Number(s.state),images,map)];
@@ -2896,6 +2917,14 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     }
     target.clearRect(x,y,width,height);
     target.drawImage(patch.canvas,x,y);
+    // The signed nodachi open grip is composited after the mirrored rig.
+    // Its real finger opening differs from the body hand underneath it.
+    const palm=r.northGloveTrack?.[Number(s.state)]?.palm;
+    if(palm){
+     const ink=images.get('tools/rework-combat-wardrobe/assets/'+palm+'.png');
+     if(ink?.width!==640||ink.height!==640)throw Error('Missing registered open grip');
+     target.drawImage(ink,x,y,width,height,x,y,width,height);
+    }
    }
    if(r.approvedSouthHead)headOverlay=target.canvas;
    else if(underBody)ctx.drawImage(target.canvas,0,0);
@@ -3160,7 +3189,8 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     }
     ctx.restore();
     if(r.fusedFocusAnatomy&&l.id==='body'){
-     if(r.ownGauntletHead?.hideHair)restoreFocusScalp(ctx,r,s,images,resource);
+     // The scepter validates and recolors its signed head after the metal pass.
+     if(!r.w121IndependentSide&&r.ownGauntletHead?.hideHair)restoreFocusScalp(ctx,r,s,images,resource);
      if(r.bootTrack){
       const shoe=bootStamp(r,s,images),phase=Number(s.state),key=r.focusShorts[phase];
       const shorts=images.get(resource('assets/'+key+'.png'));
@@ -3369,7 +3399,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    ctx.putImageData(px,0,0);
   }
   if(!r.ownedGauntletCoatHead&&!s.layers.some(l=>l.role==='ordered-orb-coat')){
-   paintOwnedHead();if((r.compassAnatomy||r.orbAnatomy||r.daggerHeadRig)&&r.ownGauntletHead?.hideHair)restoreFocusScalp(ctx,r,s,images,resource);
+   paintOwnedHead();if((r.compassAnatomy||r.orbAnatomy||r.daggerHeadRig||r.w121IndependentSide)&&r.ownGauntletHead?.hideHair)restoreFocusScalp(ctx,r,s,images,resource);
   }
   if(dressedOrb)dressedOrb.width=1;
   // User-approved exact restoration: native V7 shorts swatch on 489 emitted

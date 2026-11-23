@@ -15,14 +15,19 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / 'art-approved/weapons/clothing-batch-20261112'
 BANK = ROOT / 'tools/rework-weapon-layers-hd'
 REGISTRATION = ROOT / 'tools/rework-combat-wardrobe/staff-hand-registration.json'
-DIGESTS = {124: 'fb1b82efc98e5e2155195ec8e5108659d3946bbc17e767c43dad34d50f691726',
+DIGESTS = {121: 'c6760dc9b77ab138a97e9089e611460ecaf3705d7092088b4b9fe005f177a8f0',
+           124: 'fb1b82efc98e5e2155195ec8e5108659d3946bbc17e767c43dad34d50f691726',
            128: '8228c8562ef396b5fcc331915c9bd50e21181e3e353c7d852d10a92b3660ef89'}
 COATS = (151, 158, 165, 179)
 
 
 def package(weapon):
     path = SOURCES / f'{weapon}_EW_M' / f'Cajado{weapon}_Masculino_EW_QuatroTrajes_Editavel.zip'
-    data = path.read_bytes()
+    if weapon == 121:
+        path = SOURCES / '121_EW_M/Cetro121_Masculino_EAST_WEST_4Trajes_Editavel.zip'
+        data = b''.join(Path(str(path) + suffix).read_bytes() for suffix in ('.part001', '.part002'))
+    else:
+        data = path.read_bytes()
     if hashlib.sha256(data).hexdigest() != DIGESTS[weapon]:
         raise ValueError('Changed coat source ' + str(path))
     return zipfile.ZipFile(io.BytesIO(data))
@@ -123,7 +128,10 @@ def materialize(bank):
             raise ValueError('Signed staff body no longer matches the garment')
         poses[direction] = dict(anatomy=[ordered_parts(s) for s in base['states']],
                                 metal=[next(l['sha256'] for l in s['layers'] if l['id']=='gear') for s in base['states']],
-                                fused=hashes)
+                                fused=hashes, scepter=[s['approved']['sha256'] for s in next(
+                                    r for r in index['records'] if r['id']=='daggers121-'+direction+'-native-original-source')['states']])
+        if direction == 'east' and poses[direction]['scepter'] != reference[121]:
+            raise ValueError('Scepter receiver differs from its registered source')
     from register_side_focus_sleeves import materialize as sleeves
     return dict(coats=clothing, signedMasks=masks, hands=hands, directions=poses, archives=DIGESTS, sleeves=sleeves(bank))
 

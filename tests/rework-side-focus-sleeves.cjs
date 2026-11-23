@@ -10,7 +10,8 @@ function stamp(im,west){const c=cv.createCanvas(640,640),x=c.getContext('2d');if
  x.drawImage(im,0,0);const data=read(c);c.width=1;return data;}
 (async()=>{
  const api=make();await api.ready;const counts={selected:0,drawn:0};const report=[];
- const gearIds=[16,17,31,32,122,123,124,125,126,127,128];
+ const scepterOnly=process.argv.includes('--scepter');
+ const gearIds=scepterOnly?[121]:[16,17,31,32,122,123,124,125,126,127,128];
  for(const weapon of gearIds)for(const direction of ['east','west']){
   const o={consumer:'world',action:'attack-focus',direction};
   const p=look.commit({classId:weapons.find(w=>w.id===weapon).role,equipment:{}},
@@ -19,7 +20,7 @@ function stamp(im,west){const c=cv.createCanvas(640,640),x=c.getContext('2d');if
    const row=world.selectWorldHDOnly(api,catalog,player,o);assert.deepEqual(row.omitted||[],[],[weapon,direction,JSON.stringify(equipment)].join('/'));return {player,row};};
   const prepare=async pair=>{const b=await api.prepareConfiguration([{player:pair.player,options:o}],{resolve:()=>({player:pair.player,options:o,source:pair.row})});
    assert.deepEqual(b.coverage[0].omitted,[]);return {draw(f){let c;assert(b.draw({save(){},restore(){},drawImage(im){c=im;}},pair.player,{...o,progress:(f+.25)/pair.row.timeline.length}));return read(c);},release:()=>b.release()};};
-  const off={weapon,boots:148,head:19,gloves:159},base=select(off),cycle=[31,32,17,16,128].includes(weapon)&&direction===(weapon%2?'east':'west'),before=cycle?await prepare(base):null;
+  const off={weapon,boots:148,head:19,gloves:159},base=select(off),cycle=scepterOnly||[31,32,17,16,128].includes(weapon)&&direction===(weapon%2?'east':'west'),before=cycle?await prepare(base):null;
   for(const item of items){
    const single=select({weapon,coat:item}),eq={...off,coat:item},kit=select(eq);counts.selected++;
    assert.equal(kit.row.slotRoutes.coat.item,item);assert.deepEqual(kit.row.slotRoutes.coat,single.row.slotRoutes.coat);
@@ -27,7 +28,7 @@ function stamp(im,west){const c=cv.createCanvas(640,640),x=c.getContext('2d');if
    assert.deepEqual(select(Object.fromEntries(Object.entries(eq).reverse())).row.slotRoutes,kit.row.slotRoutes);
    if(!cycle)continue;
    const on=await prepare(kit);
-   const mode=[31,123,124,125,126,127,128].includes(weapon)?'grip':[17,122].includes(weapon)?'orb':'open';
+   const mode=[31,121,123,124,125,126,127,128].includes(weapon)?'grip':[17,122].includes(weapon)?'orb':'open';
    for(let f=0;f<8;f++){
     const a=before.draw(f),b=on.draw(f),plate=kit.row.fittedCoatPlate,west=direction==='west';
     const fabric=id=>load('tools/rework-combat-wardrobe/assets/'+id+'.png');
@@ -46,6 +47,6 @@ function stamp(im,west){const c=cv.createCanvas(640,640),x=c.getContext('2d');if
    }on.release();
   }before?.release();global.gc?.();
  }
- assert.deepEqual(counts,{selected:132,drawn:240});console.log(JSON.stringify(counts));
+ assert.deepEqual(counts,scepterOnly?{selected:12,drawn:96}:{selected:132,drawn:240});console.log(JSON.stringify(counts));
  if(process.env.HD_SLEEVE_RESULTS)fs.writeFileSync(process.env.HD_SLEEVE_RESULTS,JSON.stringify(report));
 })().catch(e=>{console.error(e);process.exitCode=1;});

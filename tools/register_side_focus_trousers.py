@@ -76,6 +76,7 @@ def register():
     sources_weapons = weapons()
     staff = sources_weapons['orderedAttackProfiles']
     staff128_light = ["94b5506ea2c9d0340e16bd3269d1058eec0b3d7dabf59a061323ac73a720fca0","e0707dea2a9acc262a12d1b910cc81ce71a5c1b15b95b320b9bb3e57609707c3","9bcd8f0a8451b22598cef02ab0f9ecec54e65eb7623320bff9536b874b3f977e","6e72330d4a1ddb28f948f84a7e5fefaa46a8a89637c6fda843c36b4a76523501","37c4b332b83bb883d2e7d7e8218e0cfe18addc7a3d6784f6676c57e2d4eaf092","f2ac9d28b271ab23ca26692dbfca5d5f73e956de7b9105b516b3783f980ed1d5","dc5316ed050bbf561a8fb664c39619872e60afafc84dd5a0ffc6f2cd6f7a6870","f51cf31d9173dea1f38c10d159d0b7ded22bcf9c44b0bbbe07159274d7f63f95"]
+    scepter_light=["80d4b0e44b1f34c7be8aa8be7bbd65ff2308033285b35641c09e1de5dc306742","876091f363321cdd3b9b757c808c8f736332a9cd4bf6fe4e545452cd8febbe50","c9e4d8f12eeb01826e3213ecad379ef6a77f4e95c6cc98515b13357839adc7ef","a1f30d41937abc4beec2a072442a8faddc06a38b65fa5ba7cc9827a855bda827","9859fc0d6f4436e33e0f08b9a0c38370f77624e86dfb6e883d9abf154fb33d6b","3f81242096bf40024ed5b411bcb1174f59f02c39a522938f875327c20a33c353","567a50cd3a78ffcaeec9fc80820711dff919edf8d164dfaa699ea700306ad6e9","d78738d632d06c533a72e0caecd08d1d6bd50a20f0abb9773d17ab79b247241b"]
     output = {}
     for direction in ('east','west'):
         ref = outfits['maleSidePunchOwnPants']['directions'][direction]
@@ -133,7 +134,9 @@ def register():
             orb=fused_waist(np.asarray(raw),pixels(BANK,bodykeys[0]),part,direction)
             full=pixels(BANK,staff128_light[f])
             bent=fused_waist(np.asarray(raw),full[:,::-1] if direction=='west' else full,part,direction)
-            phases.append(dict(stock=keys[0],modular=shared,orb={**orb,'body':bodykeys[0]},bent=bent,legs=keys[1],underbody=keys[2],
+            scepter_body=pixels(BANK,scepter_light[f])
+            scepter=fused_waist(np.asarray(raw),scepter_body[:,::-1] if direction=='west' else scepter_body,part,direction)
+            phases.append(dict(stock=keys[0],modular=shared,orb={**orb,'body':bodykeys[0]},bent=bent,scepter=scepter,legs=keys[1],underbody=keys[2],
                                cut=runs(part),
                                donor=donor,receiver=target,
                                transform=[a,0,shear,d,target[0]-a*left-shear*335,target[2]-d*y]))

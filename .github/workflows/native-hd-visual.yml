@@ -16,6 +16,13 @@ on:
       - 'tests/rework-blade-wardrobe-cases.cjs'
       - 'tests/rework-blade-sleeves.cjs'
       - 'tools/register_blade_sleeves.py'
+      - 'tests/rework-north-blade-clothes.cjs'
+      - 'tools/register_north_blade_gloves.py'
+      - 'tools/register_north_blade_coats.py'
+      - 'tools/articulated_sleeve_projection.py'
+      - 'tools/rework-combat-wardrobe/north-blade-coats.zip'
+      - 'tools/north_blade_anatomy.py'
+      - 'tools/rework-combat-wardrobe/north-blade-gloves.zip'
       - 'tools/blade_sleeves_panels.py'
       - 'tools/rework-combat-wardrobe/blade-sleeves.zip'
       - 'tools/export_articulated_boots.py'
@@ -24,6 +31,9 @@ on:
       - 'tests/rework-ordered-orb-anatomy.cjs'
       - 'tests/rework-ordered-orb-coats.cjs'
       - 'tests/rework-ordered-staff-coats.cjs'
+      - 'tests/rework-south-staff-clothes.cjs'
+      - 'tools/register_south_staff_clothes.py'
+      - 'tools/rework-combat-wardrobe/south-staff-clothes.zip'
       - 'tests/rework-side-focus-sleeves.cjs'
       - 'tools/register_side_focus_sleeves.py'
       - 'tools/rework-combat-wardrobe/side-focus-sleeves.zip'
@@ -33,6 +43,8 @@ on:
       - 'tools/register_side_focus_trousers.py'
       - 'tools/rework-combat-wardrobe/side-focus-trousers.json'
       - 'tools/register_staff_gloves.py'
+      - 'tools/register_scepter_profile_gloves.py'
+      - 'tools/rework-combat-wardrobe/scepter-profile-gloves.zip'
       - 'tools/rework-combat-wardrobe/staff-gloves.zip'
       - 'tools/rework-combat-wardrobe/sword-gloves.zip'
       - 'tools/register_sword_gloves.py'
@@ -66,6 +78,7 @@ on:
       - 'tools/rework-combat-wardrobe/south-focus-trousers.json'
       - 'tests/rework-north-focus-coats.cjs'
       - 'tests/rework-north-focus-trousers.cjs'
+      - 'tests/rework-north-blade-trousers.cjs'
       - 'tools/register_north_focus_gloves.py'
       - 'tools/rework-combat-wardrobe/north-focus-gloves.zip'
       - 'tests/rework-north-focus-gloves.cjs'
@@ -89,6 +102,9 @@ on:
       - 'tools/rework-combat-wardrobe/north-focus-coats.zip'
       - 'tools/register_north_rifle_trousers.py'
       - 'tools/register_north_rifle_clothes.py'
+      - 'tools/register_rifle_profile_*.py'
+      - 'tools/rework-combat-wardrobe/rifle-profile-*.zip'
+      - 'tests/rework-rifle-profile-clothes.cjs'
       - 'tools/rework-combat-wardrobe/north-rifle-clothes.zip'
       - 'tests/rework-north-rifle-clothes.cjs'
       - 'tools/north_rifle_clothing_panels.py'
@@ -452,6 +468,10 @@ jobs:
           node --expose-gc tests/rework-blade-trousers.cjs
           python tools/register_blade_sleeves.py --verify
           node --expose-gc tests/rework-blade-sleeves.cjs
+          python tools/register_north_blade_gloves.py --verify
+          node --expose-gc tests/rework-north-blade-clothes.cjs gloves
+          python tools/register_north_blade_coats.py --verify
+          node --expose-gc tests/rework-north-blade-clothes.cjs coat
       - name: Conferir as botas nos oito quadros das seis adagas e na restauração da mão
         if: matrix.role == 'rogue'
         env:
@@ -479,7 +499,10 @@ jobs:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
         run: |
           node --expose-gc tests/rework-ordered-staff-coats.cjs
+          node --expose-gc tests/rework-south-staff-clothes.cjs
           node --expose-gc tests/rework-side-focus-sleeves.cjs
+          node --expose-gc tests/rework-side-focus-sleeves.cjs --scepter
+          node --expose-gc tests/rework-ordered-staff-gloves.cjs 121 ebony
           node --expose-gc tests/rework-side-focus-trouser-receivers.cjs
           python -m pip install pillow numpy
           python tests/rework_staff_coat_sources.py
@@ -488,6 +511,8 @@ jobs:
           python tools/register_south_focus_trousers.py --verify
           python tools/register_south_focus_boots.py --verify
           python tools/register_staff_gloves.py --verify
+          python tools/register_scepter_profile_gloves.py --verify
+          python tools/register_south_staff_clothes.py --verify
           python tools/register_side_focus_sleeves.py --verify
           python tools/register_side_focus_trousers.py --verify
           python tools/register_sword_gloves.py --verify
@@ -502,10 +527,14 @@ jobs:
           node --expose-gc tests/rework-compass-side-wardrobe.cjs ebony 32
           python tools/register_north_rifle_trousers.py --verify
           python tools/register_north_rifle_clothes.py --verify
+          python tools/register_rifle_profile_trousers.py --verify
+          python tools/register_rifle_profile_gloves.py --verify
+          python tools/register_rifle_profile_sleeves.py --verify
           python tools/export_north_focus_coats.py --verify
           python tools/register_north_articulated_boots.py --verify
           node --expose-gc tests/rework-fixed-north-rifle-trousers.cjs
           node --expose-gc tests/rework-north-rifle-clothes.cjs
+          node --expose-gc tests/rework-rifle-profile-clothes.cjs
           node --expose-gc tests/rework-fixed-north-rifle-boots.cjs
           node --expose-gc tests/rework-fixed-north-rifle-heads.cjs
           node --expose-gc tests/rework-north-moving-boots.cjs
@@ -534,7 +563,9 @@ jobs:
         if: ${{ !cancelled() }}
         env:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
-        run: node --expose-gc tests/rework-north-focus-trousers.cjs
+        run: |
+          node --expose-gc tests/rework-north-focus-trousers.cjs
+          node --expose-gc tests/rework-north-blade-trousers.cjs
       - name: Conferir os dedos e a empunhadura com o conjunto equipado
         if: ${{ !cancelled() }}
         env:
