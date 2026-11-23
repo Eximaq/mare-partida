@@ -14,16 +14,16 @@ DIGEST = '67134527f6c1793484ac303b9624f17ea0212ce231e10adafa193d75289e3461'
 SIZES = {'cloth': 6, 'ownership': 0}
 
 
-def open_package():
-    manifest = json.loads((PACKAGE / 'MANIFEST.json').read_bytes())
+def open_package(folder=PACKAGE, digest=DIGEST):
+    manifest = json.loads((folder / 'MANIFEST.json').read_bytes())
     stream = io.BytesIO()
     for part in manifest['parts']:
-        data = (PACKAGE / part['path']).read_bytes()
+        data = (folder / part['path']).read_bytes()
         if len(data) != part['bytes'] or hashlib.sha256(data).hexdigest() != part['sha256']:
-            raise ValueError('Invalid dagger wardrobe archive segment ' + part['path'])
+            raise ValueError('Invalid wardrobe archive segment ' + part['path'])
         stream.write(data)
-    if hashlib.sha256(stream.getbuffer()).hexdigest() != DIGEST:
-        raise ValueError('Unexpected approved dagger wardrobe archive')
+    if hashlib.sha256(stream.getbuffer()).hexdigest() != digest:
+        raise ValueError('Unexpected approved wardrobe archive')
     return zipfile.ZipFile(stream)
 
 

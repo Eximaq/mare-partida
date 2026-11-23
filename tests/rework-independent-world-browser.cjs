@@ -133,6 +133,8 @@ window.__hdSlotQA={
  try{
   await page.goto(url,{waitUntil:'domcontentloaded',timeout:90000});
   await page.waitForFunction(()=>window.__hdSlotQA);
+  // A clean Pages installation fetches the packaged game before opening creation.
+  await page.locator('#characterName').waitFor({state:'visible',timeout:180000});
   await page.locator('#characterName').fill('Camadas QA');
   await page.locator('#characterName').press('Tab');
   await page.locator('#nextToClass').click();
@@ -141,6 +143,7 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
+  if(process.argv.includes('--sword-coats')){await observeSwordCoats();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--pistol-clothes')){await observePistolClothes();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--mounted-weapons')){await observeMountedWeapons();assert.deepEqual(errors,[]);return;}
@@ -380,6 +383,29 @@ window.__hdSlotQA={
     await put(159);
     const after=await observeAttack('attack-unarmed',name+'-retorno',dir,items);
     assert.deepEqual(after.visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
+   }
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
+ }
+ async function observeSwordCoats(){
+  for(const weapon of [0,1,67,68,69,70]){
+   const appearance={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
+   await page.evaluate(({weapon,appearance})=>__hdSlotQA.seedWardrobe('sword',[weapon,19,151,158,165,179],appearance),{weapon,appearance});
+   await put(weapon);await put(19);await put(151);
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   for(const direction of ['east','west']){
+    const prefix='espada-'+weapon+'-'+direction,kit={weapon,head:19,coat:151};
+    const start=await observeAttack('attack-sword',prefix+'-151',direction,kit);
+    for(const coat of [158,165,179,151]){
+     await put(coat);
+     const next=await observeAttack('attack-sword',prefix+'-troca-'+coat,direction,{...kit,coat});
+     for(const slot of ['weapon','head'])assert.deepEqual(next.visual.coverage[0].slotRoutes[slot],start.visual.coverage[0].slotRoutes[slot]);
+     if(coat===151)assert.deepEqual(next.visual.coverage[0].slotRoutes,start.visual.coverage[0].slotRoutes);
+    }
+    await remove('coat');
+    const after=await observeAttack('attack-sword',prefix+'-sem-peitoral',direction,{weapon,head:19});
+    assert.equal(after.visual.coverage[0].slotRoutes.coat,undefined);
+    await put(151);
    }
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }

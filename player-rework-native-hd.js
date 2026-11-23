@@ -85,7 +85,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  const combatWardrobeReady=Promise.resolve().then(()=>fetchJSON('tools/rework-combat-wardrobe/index.json')).then(c=>{
   if(c?.schema!=='editable-combat-wardrobe-v1'||!c.rigs||!Array.isArray(c.records))return;
   const index=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(c.records.map(({layers,...r})=>({...r,body:'female',source:layers})));
-  if(index)combatWardrobe={rigs:c.rigs,index,handFits:c.handFits,maleDaggerCoats:c.maleDaggerCoats};
+  if(index)combatWardrobe={rigs:c.rigs,index,handFits:c.handFits,maleDaggerCoats:c.maleDaggerCoats,maleSwordCoats:c.maleSwordCoats};
  }).catch(()=>{});
  const daggerWardrobeReady=Promise.resolve().then(()=>fetchJSON('tools/rework-female-dagger-wardrobe/index.json')).then(c=>{
   if(c?.schema!=='female-dagger-owned-wardrobe-v1'||!c.targets||!Array.isArray(c.records))return;
@@ -6584,6 +6584,28 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  // The approved lateral source contains four clothing tracks shared by all
  // six blades. Only the hand/metal ownership differs with the grip.
+ // Register against the shared pose, even when the actual blade is padded
+ // or its grip uses a different attachment matrix.
+ const swordBodyContracts=new WeakMap();
+ function articulatedSwordCoat(base,slot,item){
+  const native=combatWardrobe?.maleSwordCoats,cloth=native?.coats[item];
+  if(slot!=='torso'||!cloth||base.hdKind!=='weapon'||base.action!=='attack-sword'||base.body!=='male'||
+     !base.basePack||base.mirrorBody||base.mirrorLayerIDs?.length||base.density!==4||base.fps!==12||
+     base.states.length!==8||base.states.some((s,i)=>String(s.state)!==String(i)||s.layers.length||
+      s.bodyPatch||s.canvasRoundingPatch?.length||!s.attachment||s.attachment.depth!==5.9))return null;
+  const rig=base.basePack,dir=rig.pack.directions[base.direction],proof=native.directions[base.direction];
+  if(!dir||!proof||rig.pack.frame.width!==160||rig.pack.frame.height!==160||rig.pack.pivot.x!==80||rig.pack.pivot.y!==128)return null;
+  if(!swordBodyContracts.has(rig))swordBodyContracts.set(rig,new Map());
+  const checked=swordBodyContracts.get(rig);
+  if(!checked.has(dir)){
+   const matches=JSON.stringify(dir)===JSON.stringify(proof)&&dir.layers.every(l=>
+    (l.frames||[l.source]).every(key=>rig.images[key]==='assets/'+key+'.png'));
+   checked.set(dir,matches);
+  }
+  if(!checked.get(dir))return null;
+  return {source:'male-sword-coat-'+item+'-'+base.direction+'@'+native.archive,
+   refs:[...cloth,...native.hands],swordTrack:{cloth,hands:native.hands,mirror:base.direction==='west'}};
+ }
  function maleDaggerCoat(base,slot,item){
   const native=combatWardrobe?.maleDaggerCoats,dir=base.direction;
   if(slot!=='torso'||base.body!=='male'||base.action!=='attack-daggers'||base.hdKind!=='weapon'||
@@ -6620,7 +6642,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   for(const [slot,v] of Object.entries(request)){
    const key=JSON.stringify([pose,slot,v.item]);
    if(!independentPassCache.has(key)){
-    const plate=articulatedWeaponHead(base,slot,v.item,player)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
+    const plate=articulatedWeaponHead(base,slot,v.item,player)||articulatedSwordCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
     if(!plate&&!poseCanMount){passes.set(slot,null);continue;}
     const pass=plate||femaleGaitPass(base,slot,v,player)||swordWardrobePass(base,slot,v,player)||combatWardrobePass(base,slot,v,player)||femaleRestPass(base,slot,v,player)||independentNativePass({player,o:routeOptions,base,weapon:grip?null:weapon,slot,v,selectPose})||
      malePunchWardrobe(base,slot,v,player,routeOptions)||maleCarryWardrobe(base,slot,v,player,routeOptions,selectPose)||daggerGarment(base,slot,v,player)||findDaggerWardrobePass(base,slot,v.item)||
@@ -6640,7 +6662,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const active=new Map([...passes].filter(([slot])=>!unavailable.has(slot)));
   const {direction}=base,d=base.pack?.directions?.[direction];
   const head=active.get('head'),daggerHands=active.get('gloves')?.daggerHands;
-  const bodyRequest=Object.fromEntries(Object.entries(request).filter(([slot])=>slot!=='head'&&!active.get(slot)?.rasterCoat&&!active.get(slot)?.weaponCoat&&!active.get(slot)?.decorator&&!(slot==='gloves'&&daggerHands)));
+  const bodyRequest=Object.fromEntries(Object.entries(request).filter(([slot])=>slot!=='head'&&!active.get(slot)?.rasterCoat&&!active.get(slot)?.swordTrack&&!active.get(slot)?.weaponCoat&&!active.get(slot)?.decorator&&!(slot==='gloves'&&daggerHands)));
   const planned=poseCanMount&&root.MareReworkModularOutfitsHD?.planIndependentPasses({
    pose,frames:d.clip.frames,layers:d.layers,requested:bodyRequest,
    resolve:(slot,item)=>{const p=active.get(slot);return p&&{...p,item,pose};}
@@ -6652,7 +6674,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    slotResolution[weapon.key]={state:'hd',source};
   }
   for(const [slot,{key,item}] of Object.entries(request).sort(([a],[b])=>a.localeCompare(b))){
-   const pass=active.get(slot),separate=pass?.head||pass?.daggerHands||pass?.decorator||pass?.rasterCoat||pass?.weaponCoat;
+   const pass=active.get(slot),separate=pass?.head||pass?.daggerHands||pass?.decorator||pass?.rasterCoat||pass?.swordTrack||pass?.weaponCoat;
    const source=separate?pass.source:planned?.slotRoutes?.[key]?.source;
    if(source){
     slotRoutes[key]={item,quality:'hd',source};
@@ -6729,6 +6751,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const dressed={...mounted,id:base.id+':independent-slots:'+JSON.stringify(slotRoutes),slotRoutes,slotResolution,omitted,layeredSlots:true,independentPlan:plan,
    ...(omitted.length?{slotFallback:'independent-unresolved'}:{}),
    ...(refs.length&&!usesFemaleWardrobe(base)?{nativeSlotPack:{mounted,refs,padding:Object.assign({},...accepted.map(p=>p.padding)),phaseTransforms:accepted.flatMap(p=>p.phaseFits||(p.phaseTransforms?[p.phaseTransforms]:[]))}}:{})};
+  if(active.get('torso')?.swordTrack)return {...dressed,swordTrack:active.get('torso').swordTrack};
   const registeredCoat=active.get('torso')?.weaponCoat;
   if(registeredCoat)return {...dressed,states:registeredCoat,ownedGauntletCoatHead:!!base.ownedGauntletSide};
   const raster=active.get('torso')?.rasterCoat;
@@ -8191,7 +8214,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {phase,source:body};
  }
  const combatPlatePath=h=>'tools/rework-combat-wardrobe/assets/'+h+'.png';
- function filesFor(r,frame){if(r.daggerCoatPlate){
+ function filesFor(r,frame){if(r.swordTrack){
+  const {swordTrack,...base}=r;
+  return [...filesFor(base,frame),combatPlatePath(swordTrack.cloth[frame]),combatPlatePath(swordTrack.hands[frame])];
+ }if(r.daggerCoatPlate){
   const p=r.daggerCoatPlate;return [...filesFor(p.base,frame),combatPlatePath(p.cloth[frame]),combatPlatePath(p.masks[frame])];
  }if(r.wardrobeWeapon)return filesFor(r.wardrobeWeapon.attached,frame);if(r.wardrobeGrip){const grip=r.wardrobeGrip,ops=grip.ops[frame];
    return [...new Set([...filesFor(grip.dressed,frame),...ops.flatMap(p=>[p.asset,...(p.extraMetal||[]),...(p.mask?[p.mask]:[])]),
