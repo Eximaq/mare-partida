@@ -1253,6 +1253,10 @@ function fitOwnW14W117South(r){
     matrix:q.matrix,depth:q.depth,sourceNativeSize:q.bodySize,side:q.side,handMaskSHA256:q.hand,sourceClip:null}]};
  })};
 }
+function ownedImage(ctx,slot,part,source,image,args,sign=1){
+ if(root.MareHDPosition?.active)return root.MareHDPosition.blit(ctx,slot,part,source,image,args,sign);
+ ctx.drawImage(image,...args);
+}
 function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVendor?.compositor,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){if(index?.schema!=='female-native-equipment-registration-v1'||!vendor)throw Error('Missing female equipment sources');index={...index,records:index.records.map(applyApprovedEastCarryFit).map(applyBoard13WestCannon).map(previewW5SouthMuzzle).map(applyPr25W117South).map(applyPr26W119North).map(applyPr29W119Walk)};const gloveHandAlpha=new Set(),ownDaggers=createOwnFemaleDaggerIndex(index.records),ownSwords=createOwnFemaleSwordIndex();
  const swordSources=new WeakMap();
  const usesOwnSword=r=>r.body==='female'&&r.action==='attack-sword'&&Object.hasOwn(ownSwordTextureSHA,r.item);
@@ -1745,7 +1749,8 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
       r.states[frame].hideBaseLayers?.includes(l.id)||r.states[frame].baseMasks?.[l.id])throw Error('Invalid dagger glove hand phase');
    const tile=frameCanvas(size,size),c=tile.getContext('2d');
    c.drawImage(src,0,0);
-   const anchor={x:size/2,y:0}, place=ctx=>root.MareReworkModularOutfitsHD.drawOwnLayerAt(ctx,own,image,{sourceAnchor:anchor,targetAttachment:anchor});
+   const anchor={x:size/2,y:0}, place=(ctx,edit=false)=>root.MareReworkModularOutfitsHD.drawOwnLayerAt(ctx,own,image,{sourceAnchor:anchor,targetAttachment:anchor,
+    paint:edit&&root.MareHDPosition?.active?(dest,img,args)=>ownedImage(dest,'gloves',l.id,refs.frames[frame],img,args):null});
    const pair=[old,refs.frames[frame],own.mirrorX].join('/');
    // Exact input PNGs are content-addressed. Saved palette substitution
    // changes RGB only, so validate the immutable support pair once.
@@ -1757,7 +1762,7 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
     gloveHandAlpha.add(pair);
     overlay.width=1;
    }
-   if(!place(c))throw Error('Invalid glove mount');
+   if(!place(c,true))throw Error('Invalid glove mount');
    const id='own-hand-'+l.id;map.set(id,tile);
    return {...l,source:id,frames:undefined};
   })};
@@ -1787,7 +1792,14 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   if(dots)throw Error('Unexpected C127 cap trim overlap');
   x.beginPath();x.rect(0,0,512,512);x.rect(335,154,1,1);x.clip('evenodd');
  }else if(dots){x.beginPath();x.rect(0,0,ctx.canvas.width,ctx.canvas.height);for(const [px,py] of dots)x.rect(px,py,1,1);x.clip('evenodd');}
- x.transform(...op.part.matrix);if(op.part.sourceClip){x.beginPath();x.rect(...op.part.sourceClip);x.clip()}x.drawImage(localGear,0,0);x.restore();
+ x.transform(...op.part.matrix);if(op.part.sourceClip){x.beginPath();x.rect(...op.part.sourceClip);x.clip()}
+ const mixed=op.part.skinMaterial||r.item===17&&!r.board07OrbOwnerMask;
+ if(r.item===17&&r.approvedSouthCarry&&images.has(orbSkinPath)&&root.MareHDPosition?.active){
+  root.MareHDPosition.material(x,'weapon','orb-'+op.i,op.part.sha256+'@'+orbSkinPath,localGear,images.get(orbSkinPath),[0,0]);
+ }else if(mixed)x.drawImage(localGear,0,0);
+ else ownedImage(x,'weapon',(op.part.side||'mount')+'-'+op.i,op.part.sha256,localGear,[0,0],
+  op.part.w119FemaleWalkWestMirror||op.part.mirrorProjectedPhysical||op.part.ownCyborgMirror||op.part.w119SideAttackFlip||op.part.w3SideAttackFlip||op.part.w118WestAttackFlip?-1:1);
+ x.restore();
  // Area of the same source plate projected into output (335,154):
  // 1254/4096 samples from (413,202), 460/4096 from (414,203),
  // 2182/4096 from (414,202), rest transparent (premultiplied area).

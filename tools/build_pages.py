@@ -36,7 +36,7 @@ web_files += ['weekly-boss-ui.js','weekly-boss-ui.css','akainu-art-data.js','aka
 from export_sword0_checkpoint import materialize as materialize_sword_checkpoint
 materialize_sword_checkpoint(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
                              OUT/'tools/rework-sword0-checkpoint')
-web_files.extend(['player-rework-sword0-checkpoint.js', 'game-loading.js', 'game-loading.css', 'game-content-worker.js'])
+web_files.extend(['hd-position.js', 'hd-position-approved.json', 'bancada-hd.html', 'bancada-hd.js', 'bancada-hd.css', 'player-rework-sword0-checkpoint.js', 'game-loading.js', 'game-loading.css', 'game-content-worker.js'])
 from export_firearm113_coat import materialize as materialize_firearm113_coat
 materialize_firearm113_coat(
     ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18/fuzil113-ns.zip',
@@ -80,7 +80,7 @@ def version_asset(match):
     version = asset_versions[relative]
     return f'{match.group(1)}{relative}?v={version}{match.group(3)}'
 
-for page in ['index.html', 'ui-preview.html']:
+for page in ['index.html', 'ui-preview.html', 'bancada-hd.html']:
     entry = OUT / page
     html = entry.read_text(encoding='utf-8')
     if args.static_demo:

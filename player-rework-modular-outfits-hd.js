@@ -38,7 +38,7 @@ function createOwnLayerIndex(records=[]){
 // The caller supplies only this slot's local target attachment for the
 // current phase. For a missing west source, turn the layer around its own
 // attachment: the actor, its siblings and their draw order are untouched.
-function drawOwnLayerAt(ctx,selection,image,{sourceAnchor,targetAttachment,scale=1}={}){
+function drawOwnLayerAt(ctx,selection,image,{sourceAnchor,targetAttachment,scale=1,paint=null}={}){
  if(selection?.state!=='available'||!image||!sourceAnchor||!targetAttachment||
     ![sourceAnchor.x,sourceAnchor.y,targetAttachment.x,targetAttachment.y,scale].every(Number.isFinite)||
     scale<=0||!ctx?.save||!ctx.restore||!ctx.translate||!ctx.scale||!ctx.drawImage)return false;
@@ -47,7 +47,7 @@ function drawOwnLayerAt(ctx,selection,image,{sourceAnchor,targetAttachment,scale
   ctx.imageSmoothingEnabled=false;
   ctx.translate(targetAttachment.x,targetAttachment.y);
   ctx.scale(selection.mirrorX?-scale:scale,scale);
-  ctx.drawImage(image,-sourceAnchor.x,-sourceAnchor.y);
+  if(paint)paint(ctx,image,[-sourceAnchor.x,-sourceAnchor.y]);else ctx.drawImage(image,-sourceAnchor.x,-sourceAnchor.y);
   return true;
  }finally{ctx.restore();}
 }

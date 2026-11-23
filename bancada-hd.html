@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bancada de encaixe · Kaizoku Idle</title><link rel="stylesheet" href="bancada-hd.css">
+<script defer src="neko-system.js"></script>
+<script defer src="ushi-rules.js"></script>
+<script defer src="ushi-art-data.js"></script>
+<script defer src="ushi-system.js"></script>
+<script defer src="doru-data.js"></script>
+<script defer src="doru-system.js"></script>
+<script defer src="wolf-data.js"></script>
+<script defer src="wolf-system.js"></script>
+<script defer src="akuma-passives.js"></script>
+<script defer src="rank-c-data.js"></script>
+<script defer src="rank-c-system.js"></script>
+<script defer src="rank-c-expansion-data.js"></script>
+<script defer src="rank-c-expansion.js"></script>
+<script defer src="rank-b-data.js"></script>
+<script defer src="rank-b-system.js"></script>
+<script defer src="hoya-data.js"></script>
+<script defer src="hoya-system.js"></script>
+<script defer src="jiki-data.js"></script>
+<script defer src="jiki-assembly-art.js"></script>
+<script defer src="jiki-system.js"></script>
+<script defer src="ryu-data.js"></script>
+<script defer src="ryu-system.js"></script>
+<script defer src="rank-s-data.js"></script>
+<script defer src="rank-s-rework-data.js"></script>
+<script defer src="rank-s-rework.js"></script>
+<script defer src="rank-s-system.js"></script>
+<script defer src="rank-a-data.js"></script>
+<script defer src="rank-a-expansion.js"></script>
+<script defer src="paramecia-rework-manifest.js"></script>
+<script defer src="paramecia-rework-data.js"></script>
+<script defer src="rank-a-system.js"></script>
+<script defer src="combat-action-policy.js"></script>
+<script defer src="akuma-system.js"></script>
+<script defer src="headgear-visibility.js"></script>
+<script defer src="character-appearance.js"></script>
+<script defer src="tools/paper-doll-96-v3/rig.js"></script>
+<script defer src="tools/paper-doll-96-v3/layers.js"></script>
+<script defer src="tools/paper-doll-96-v3/motion.js"></script>
+<script defer src="tools/paper-doll-96-v3/surface.js"></script>
+<script defer src="tools/paper-doll-96-v3/torso.js"></script>
+<script defer src="tools/paper-doll-96-v3/appearance.js"></script>
+<script defer src="player-rework-zip.js"></script>
+<script defer src="tools/rework-accessories/vendor.js"></script>
+<script defer src="player-rework-hd-assets.js"></script>
+<script defer src="player-rework-hair-anatomy-hd.js"></script>
+<script defer src="player-rework-skin-hd.js"></script>
+<script defer src="player-rework-base-hd.js"></script>
+<script defer src="player-rework-head-family.js"></script>
+<script defer src="native-head-compat.js"></script>
+<script defer src="player-rework-original-hair-helmets-hd.js"></script>
+<script defer src="player-rework-weapon-native-hd.js"></script>
+<script defer src="player-rework-female-equipment-hd.js"></script>
+<script defer src="player-rework-modular-outfits-hd.js"></script>
+<script defer src="player-rework-weapon-carry-hd.js"></script>
+<script defer src="player-rework-outfit-overlay-hd.js"></script>
+<script defer src="player-rework-outfit-carry-overlay-hd.js"></script>
+<script defer src="player-rework-eye-styles-hd.js"></script>
+<script defer src="player-rework-female-named-hair-hd.js"></script>
+<script defer src="player-rework-sword0-checkpoint.js"></script>
+<script defer src="hd-position.js"></script>
+<script defer src="player-rework-native-hd.js"></script>
+<script defer src="paper-doll-96-lobby.js"></script>
+<script defer src="forge-system.js"></script>
+<script defer src="prison-system.js"></script>
+<script defer src="haki-progression.js"></script>
+<script defer src="haki-system.js"></script>
+<script defer src="boss-dungeon-system.js"></script>
+<script defer src="item-catalog.js"></script>
+<script defer src="bancada-hd.js"></script>
+</head><body><header><div><small>KAIZOKU IDLE</small><h1>Bancada de encaixe</h1></div><nav><label class="button">Importar JSON<input id="file" type="file" accept=".json,application/json"></label><button id="export">Exportar rascunho</button></nav></header>
+<main><aside aria-label="Catálogo de equipamentos"><h2>Equipamentos</h2><label>Buscar no catálogo<input id="search" type="search" placeholder="Nome, ID ou categoria"></label><label>Categoria<select id="filter"></select></label><div id="catalog"></div></aside>
+<section class="stage"><div class="stagebar"><label>Movimento<select id="action"></select></label><label>Direção<select id="direction"><option value="south">Sul</option><option value="east">Leste</option><option value="north">Norte</option><option value="west">Oeste</option></select></label></div>
+<div id="viewport"><canvas id="figure" aria-label="Prévia do personagem em pixels nativos"></canvas></div>
+<div class="transport"><button id="prev" aria-label="Fase anterior">◀</button><button id="play">Reproduzir</button><button id="next" aria-label="Próxima fase">▶</button><label><input type="checkbox" id="loop" checked> Repetir</label><select id="speed" aria-label="Velocidade"><option value=".25">¼×</option><option value=".5">½×</option><option selected>1</option><option>2</option></select><label>Zoom <input id="zoom" type="range" min=".35" max="3" step=".05" value=".85"></label></div>
+<label class="timeline"><output id="clock">Fase</output><input type="range" id="tick" min="0" max="0" value="0"></label>
+<div class="toggles"><label><input type="checkbox" id="before"> Original</label><label><input type="checkbox" id="solo"> Isolar no corpo</label><label><input type="checkbox" id="guides"> Guias</label></div>
+<div id="status" role="status">Carregando os registros HD…</div></section>
+<aside aria-label="Ajustes e aparência"><h2>Posicionamento</h2><label>Peça em edição<select id="slot"></select></label><button id="remove">Desequipar peça</button><label>Parte<select id="part"></select></label><label>Aplicar a<select id="scope"><option value="cycle">Ciclo inteiro</option><option value="phase">Fase atual</option></select></label>
+<div class="coords"><label>X <input type="number" id="x" step="1" value="0"></label><label>Y <input type="number" id="y" step="1" value="0"></label></div><div class="arrows"><button data-move="-1,0" aria-label="Um pixel à esquerda">←</button><button data-move="0,-1" aria-label="Um pixel acima">↑</button><button data-move="0,1" aria-label="Um pixel abaixo">↓</button><button data-move="1,0" aria-label="Um pixel à direita">→</button></div>
+<p id="details"></p><div class="history"><button id="undo">Desfazer</button><button id="redo">Refazer</button><button id="reset">Restaurar parte</button></div>
+<details open><summary>Personagem de teste</summary><label>Classe<select id="role"></select></label><div id="appearance"></div><label><input type="checkbox" id="hide"> Ocultar capacete</label></details>
+</aside></main></body></html>

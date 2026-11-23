@@ -5,6 +5,9 @@ on:
     paths:
       - 'player-rework-*hd*'
       - 'tests/rework-wardrobe-map-action.test.cjs'
+      - 'bancada-hd.*'
+      - 'hd-position*'
+      - 'tests/hd-position*'
       - 'tests/rework-independent-world-browser.cjs'
       - 'tests/rework-wardrobe-async-browser.cjs'
       - 'tests/rework-male-dagger-coat-cycles.cjs'
@@ -282,7 +285,8 @@ jobs:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
           WARDROBE_EVIDENCE: ${{ runner.temp }}/adagas-960.json
         run: |
-          node --test tests/rework-wardrobe-map-action.test.cjs
+          node --test tests/rework-wardrobe-map-action.test.cjs tests/hd-position.test.cjs
+          node tests/hd-position-render.cjs
           node tests/rework-male-dagger-coat-cycles.cjs
       - name: Peitorais nas duas manoplas e no braço tecnológico
         env:
@@ -738,6 +742,17 @@ jobs:
           python tools/build_pages.py --renderer-fixture
           python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/native-hd-server.txt" 2>&1 &
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
+      - name: Compare o ajuste exportado com os pixels da caçada
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8157/dist/
+          MARE_EVIDENCE_DIR: artifacts/bancada-hd
+        run: node tests/hd-position-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bancada-hd-mapa
+          path: artifacts/bancada-hd
+          if-no-files-found: ignore
       - name: Aparência salva ao andar e ao retirar a arma
         env:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist

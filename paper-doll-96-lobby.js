@@ -86,6 +86,8 @@
     if(exact?.slotFallback==='signed-pose-omit'&&exact.layeredSlots&&!exact.unsupported?.length&&!exact.appearanceAdapted)return exact;
     return independent||null;
   }
+  const restAliases=Object.freeze(['combat-idle','guard','hurt','death']);
+  const worldAction=action=>restAliases.includes(action)?'idle':action;
   const gaitStates=new WeakMap();
   function walkPose(actor){return {...(gaitStates.get(actor)?.pose||{moving:false,time:0,phase:0,distance:0,speed:0,stepDistance:0,timestamp:0})};}
   function stepWalk(actor,time,active,{from=null,dt=null,context=null}={}){
@@ -151,6 +153,9 @@
   function create({search='',baseURL=root.location?.href,onChange=()=>{},sharedLobby=false}={}){
     const active=enabled(search),rehearsal=false,base=new URL('tools/paper-doll-96-v3/',baseURL);
     const nativeHD=root.MareReworkNativeHD?.create({baseURL,onChange});
+    const approved=root.MareHDPosition&&nativeHD?fetch(new URL('hd-position-approved.json',baseURL),{cache:'no-cache'})
+      .then(async response=>{if(!response.ok)throw Error('HTTP '+response.status);return root.MareHDPosition.validate(await response.json());})
+      .catch(error=>{diagnose(error,{consumer:'hd-position',asset:'hd-position-approved.json'});return null;}):null;
     const defaultHD=root.MareReworkDefaultHD?.create({native:nativeHD,baseURL,onChange});
     const accessoryPilot=root.MareReworkAccessoryTest?.create({search,baseURL,onChange});
     const weaponCycles=root.MareReworkWeapons?.create({search,baseURL,onChange});
@@ -462,7 +467,8 @@
           const pose={player:snapshot,options};
           const source=selectWorldHDOnly(nativeHD,weaponCatalog,snapshot,options);
           if(!source)throw Object.assign(Error('Sem fonte HD: '+options.action+' / '+options.direction),{code:'no-hd-pose'});
-          bundle=await nativeHD.prepareConfiguration([pose],{signal,resolve:()=>({...pose,source})});
+          bundle=await nativeHD.prepareConfiguration([pose],{signal,positions:await approved,resolve:()=>({...pose,source})});
+          for(const reason of bundle.positionView?.(options)?.diagnostics||[])diagnose(Error(reason),{consumer:'hd-position',asset:source.id});
           signal.throwIfAborted();
           entry.bundle=bundle;bundle=null;
           entry.state='ready';entry.preparedAt=performance.now();
@@ -483,7 +489,7 @@
       if(!player)return false;
       const drawOptions={...options,direction:directionOf(options.direction)};
       if(root.MareVisualCompletoRenderer?.equipped(player))return root.MareVisualCompletoRenderer.draw(ctx,player,drawOptions);
-      const action=['combat-idle','guard','hurt','death'].includes(options.action)?'idle':options.action;
+      const action=worldAction(options.action);
       const exact={...drawOptions,action,weaponless:action!=='idle'&&!!options.weaponless};
       const entry=requestWorldVisual(player,{action,direction:exact.direction,weaponless:exact.weaponless,consumer:'world'});
       const result=entry.bundle?.draw(ctx,player,exact)||false;
@@ -493,6 +499,6 @@
     const height=player=>active&&!player?.zoanTransformed?((worldReady(player)&&worldRequest.bundle?.visualHeight)||nativeHD?.height(player)||96):null;
     return {ready,snapshot,draw,drawFittedAvatar,height,ensure,prepareVisual,worldVisual,worldReady,requestWorldVisual,clearWorldVisual,retryWorldVisual,drawWorldVisual,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
   }
-  root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,appearanceLook,assetReferences,validateRelease,frameAt,directionOf,selectWorldHD,selectWorldHDOnly};
+  root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,appearanceLook,assetReferences,validateRelease,frameAt,directionOf,actions:Object.freeze(actions),restAliases,worldAction,selectWorldHD,selectWorldHDOnly};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.MarePaperDoll96Lobby;
 })(typeof globalThis!=='undefined'?globalThis:window);
