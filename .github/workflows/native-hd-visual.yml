@@ -395,6 +395,11 @@ jobs:
           node-version: '24'
       - run: npm ci --ignore-scripts
       - run: python tools/materialize_native_indexes.py
+      - name: Testar as poses do mapa com os índices e as imagens publicados
+        if: matrix.suite == 'ordered-poses'
+        run: |
+          python tools/build_pages.py
+          echo "HD_PUBLISHED_ROOT=$GITHUB_WORKSPACE/dist" >> "$GITHUB_ENV"
       - run: ${{ matrix.command }}
   native-world:
     runs-on: ubuntu-latest
