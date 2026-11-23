@@ -642,7 +642,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
       (k===3?l.operation==='replace-rgba-under-mask'&&l.mask?.sha256===pins[i][2]&&l.mask.url==='assets/'+pins[i][2]+'.png':
         l.operation==='source-over'&&!l.mask)))){
     const states=ordered.states.map((state,i)=>({...state,layers:state.layers.map((l,j)=>j===1||j===3?
-     {...l,url:'assets/'+ownDaggerTones[i]+'.png',sha256:ownDaggerTones[i]}:l)}));
+     {...l,registeredBodySHA:l.sha256,url:'assets/'+ownDaggerTones[i]+'.png',sha256:ownDaggerTones[i]}:l)}));
     return {...ordered,id:ordered.id+':own-side-skin:'+appearance.skin+':hair:'+appearance.hairColor+':iris:'+appearance.eyeColor,states,
      orderedAttack:true,separableAttack:true,maleDaggerSideTone:appearance.skin,colorAppearance:{},
      equipmentContract:{weapon:ordered.item},
@@ -2443,6 +2443,14 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   }
   return {row,art,mask,rear,draw};
  }
+ function bootOnOrderedBody(r,s,images,body){
+  const boot=bootStamp(r,s,images);
+  if(body?.width!==640||body.height!==640)throw Error('Incompatible ordered dagger body');
+  const layer=makeCanvas(640,640),cx=layer.getContext('2d');cx.drawImage(body,0,0);
+  cx.globalCompositeOperation='destination-out';boot.draw(cx,boot.mask);
+  cx.globalCompositeOperation='source-over';boot.draw(cx,boot.art);
+  return layer;
+ }
  function mountedBootLayers(r,s,d,map,images){
   const phase=Number(s.state),{row,art,mask,rear,draw:stamp}=bootStamp(r,s,images);
   if(r.bootTrack.splitDepth){
@@ -2775,7 +2783,9 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     }
     const ramp=l.skinOnly&&root.MareAppearance96?.skins[appearance.skin||appearance.skinColor]?.ramp;
     if(ramp){const c=makeCanvas(w,h),cx=c.getContext('2d');cx.drawImage(tile,0,0);const d=cx.getImageData(0,0,w,h),api=root.MareAppearance96;d.data.set(api.recolor(d.data,root.MareNativeSkinHD.mask(d.data,w,'anatomy'),ramp));cx.putImageData(d,0,0);tile=c;}
-    if(r.orderedAnatomy&&r.bootTrack&&(l.id==='legs'||l.id==='underbody')){
+    if(r.bootTrack?.orderedDagger&&l.id==='authored-body'){
+     const dressed=bootOnOrderedBody(r,s,images,tile);ctx.drawImage(dressed,0,0);dressed.width=1;
+    }else if(r.orderedAnatomy&&r.bootTrack&&(l.id==='legs'||l.id==='underbody')){
      const shoe=bootStamp(r,s,images),clipped=makeCanvas(w,h),cx=clipped.getContext('2d');
      cx.drawImage(tile,0,0);cx.globalCompositeOperation='destination-out';shoe.draw(cx,shoe.mask);
      ctx.drawImage(clipped,0,0);clipped.width=1;
@@ -2804,7 +2814,11 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     if(r.ownedGauntletCoatHead&&l.depth===0)paintOwnedHead();}
    else if(l.operation==='replace-rgba-under-mask'){
     if((hiddenSlots.length||recolored)&&l.role!=='authored-hand-and-orb')continue; // never reintroduce authored head pixels into a dynamic head composition
-    const scratch=makeCanvas(w,h),sc=scratch.getContext('2d');sc.drawImage(r.w16SideTone&&l.id==='original-distal-hand'?compass16TintedBody():r.ownOrbSideTone&&l.id==='original-anatomy'?orbOwnBody(l):image(l),0,0);let patch=sc.getImageData(0,0,w,h).data;
+    const scratch=makeCanvas(w,h),sc=scratch.getContext('2d');
+    // This ordered mask also restores the body outside both blades.
+    // Restore the equipped body in that region so it keeps its own boots.
+    const dressedRestore=r.bootTrack?.orderedDagger&&l.id==='original-hand-and-outside-gear-restoration'?bootOnOrderedBody(r,s,images,image(l)):null;
+    sc.drawImage(dressedRestore|| (r.w16SideTone&&l.id==='original-distal-hand'?compass16TintedBody():r.ownOrbSideTone&&l.id==='original-anatomy'?orbOwnBody(l):image(l)),0,0);if(dressedRestore)dressedRestore.width=1;let patch=sc.getImageData(0,0,w,h).data;
     if(l.skinFromAnatomy){
      const ramp=root.MareAppearance96?.skins[appearance.skin||appearance.skinColor]?.ramp;
      if(ramp){

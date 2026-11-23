@@ -171,6 +171,8 @@ window.__hdSlotQA={
   if(process.argv.includes('--articulated-boots')){await observeArticulatedBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--sword-coats')){await observeWeaponCoats([0,1,67,68,69,70],'sword','attack-sword');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
+  const daggerBootsArg=process.argv.find(v=>v.startsWith('--dagger-boots='));
+  if(daggerBootsArg){await observeDaggerBoots(daggerBootsArg.split('=')[1]);assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--lateral-gauntlet-wardrobe')){await observeLateralGauntlet();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-moving-boots')){await observeNorthMovingBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-coats')||process.argv.includes('--north-weapon-coats')){await observeNorthFocusCoats(process.argv.includes('--north-weapon-coats'));assert.deepEqual(errors,[]);return;}
@@ -519,6 +521,31 @@ window.__hdSlotQA={
   assert.deepEqual(frames,Array.from({length:count},(_,i)=>i),label+' visible map frames');
   const data=await page.evaluate(()=>__hdSlotQA.finishCycle());
   await fs.writeFile(path.join(out,label+'-ciclo.png'),Buffer.from(data.split(',')[1],'base64'));
+ }
+ async function observeDaggerBoots(direction){
+  assert(['east','west'].includes(direction));
+  const boots=[8,9,134,141,148,155,162,169,176,183];
+  const look={gender:'masculino',skinColor:direction==='east'?'ebony':'light',hairColor:'blue',eyeColor:'green'};
+  for(const weapon of [12,13,71,72,73,74]){
+   const base={weapon,coat:151};
+   await page.evaluate(({base,boots,look})=>__hdSlotQA.seedWardrobe('rogue',[...Object.values(base),...boots],look),{base,boots,look});
+   for(const id of (direction==='west'?Object.values(base).reverse():Object.values(base)))await put(id);
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   const show=(label,gear)=>observeAttack('attack-daggers','adagas-'+weapon+'-'+direction+'-'+label,direction,gear);
+   const initial=await show('sem-botas',base);let first;
+   for(const id of [...boots,boots[0]]){
+    await put(id);const gear={...base,boots:id};
+    const now=await show('bota-'+id+(first&&id===boots[0]?'-restaurada':''),gear);
+    for(const slot of Object.keys(base))assert.deepEqual(now.visual.coverage[0].slotRoutes[slot],initial.visual.coverage[0].slotRoutes[slot]);
+    if(id===boots[0]){
+     if(first)assert.deepEqual(now.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);
+     else {first=now;await captureMapCycle('attack-daggers',gear,'adagas-'+weapon+'-'+direction,8,direction);}
+    }
+   }
+   await remove('boots');const end=await show('botas-retiradas',base);
+   assert.deepEqual(end.visual.coverage[0].slotRoutes,initial.visual.coverage[0].slotRoutes);
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
  }
  async function observeLateralGauntlet(){
   const initial={weapon:110,coat:6,legs:22,boots:148,gloves:159,head:157};

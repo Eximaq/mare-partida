@@ -48,11 +48,14 @@ def lower(pack, direction):
     return dict(anatomy=anatomy, poses=[{k: p[k] for k in JOINTS} for p in d['poses']])
 
 
-def calibrate():
+DAGGER_ATLAS = DEST.with_name('lateral-dagger-boots.zip')
+
+
+def calibrate(daggers=False, verify=False):
     import math
     import numpy as np
     from PIL import Image, ImageDraw
-    banks = (OUTFITS, BANK)
+    banks = (OUTFITS, BANK, ROOT/'tools/rework-base-hd') if daggers else (OUTFITS, BANK)
     stores = [json.loads((b / 'archives/archive-index.json').read_bytes())['sources'] for b in banks]
 
     @lru_cache(maxsize=128)
@@ -122,12 +125,34 @@ def calibrate():
         return key
 
     weapon_index = index(BANK)
+    if daggers:
+        manifest['ordered']={}
+        for r in weapon_index['orderedAttackProfiles']:
+            if r['action']!='attack-daggers' or r['body']!='male' or r['direction'] not in ('east','west'):continue
+            order=['far-gear','authored-body','near-gear','original-hand-and-outside-gear-restoration']
+            if (r['fps']!=12 or r['contactTick']!=4 or r['density']!=4 or r['nativeCanvas']!=[640,640] or
+                    list(map(int,r['timeline']))!=list(range(8)) or r['pivot']!=[80,128]):raise ValueError('Unexpected ordered dagger clock')
+            states=[]
+            for s in r['states']:
+                parts=s['layers']
+                if ([l['id'] for l in parts]!=order or [l['operation'] for l in parts]!=['source-over']*3+['replace-rgba-under-mask'] or
+                        parts[1]['sha256']!=parts[3]['sha256']):raise ValueError('Unregistered restoration')
+                states.append([l['sha256'] for l in parts[:3]]+[parts[3]['mask']['sha256']])
+            manifest['ordered'][r['id']]=dict(item=r['item'],direction=r['direction'],states=states)
+        if len(manifest['ordered'])!=12:raise ValueError('Incomplete two-dagger source family')
     records = weapon_index['records']
-    for family, exemplar in [('sword', 1), ('firearm', 4), ('orb', 17)]:
+    published = [('daggers', None)] if daggers else [('sword',1),('firearm',4),('orb',17)]
+    base_records = index(banks[-1])['records'] if daggers else []
+    for family, exemplar in published:
         rigs = {}
         for direction in ('east', 'west'):
-            r = next(r for r in records if r['body'] == 'male' and r['direction'] == direction and r['item'] == exemplar)
-            rigs[direction] = lower(r['basePack']['pack'], direction)
+            if daggers:
+                r = next(r for r in base_records if r['id']=='v7-daggers-'+direction+'-modular8-'+direction)
+                pack = r['pack']
+            else:
+                r = next(r for r in records if r['body'] == 'male' and r['direction'] == direction and r['item'] == exemplar)
+                pack = r['basePack']['pack']
+            rigs[direction] = lower(pack, direction)
             manifest['rigs'][rigs[direction]['anatomy'][1]['frames'][0]] = {**rigs[direction], 'family': family, 'direction': direction}
         east, west = rigs['east'], rigs['west']
         tracks = manifest['tracks'][family] = {item: [] for item in source}
@@ -240,11 +265,12 @@ def calibrate():
                     ImageDraw.floodfill(outside,(0,0),2)
                     cut = (y>=seal) & (alpha>0)
                     cut[by-1:ey+1,bx-1:ex+1] &= np.asarray(outside)!=0
-                if family == 'orb':
+                if family in ('orb','daggers'):
                     # In the fifth recoil phase the opaque hem crosses the
                     # upper cuff. It is foreground on both original exports.
-                    east_pack = next(r['basePack']['pack']['directions']['east'] for r in records
-                                     if r['item']==exemplar and r['body']=='male' and r['direction']=='east')
+                    east_pack = (next(r['pack']['directions']['east'] for r in base_records if r['id']=='v7-daggers-east-modular8-east')
+                                 if daggers else next(r['basePack']['pack']['directions']['east'] for r in records
+                                     if r['item']==exemplar and r['body']=='male' and r['direction']=='east'))
                     hem = next(l for l in east_pack['layers'] if l['id']=='shorts')
                     opaque = np.asarray(original(hem['frames'][i]))[:,:,3] == 255
                     color_pixels = np.array(color)
@@ -271,18 +297,51 @@ def calibrate():
                                     np.asarray(original(metal['sha256']))[:,:,3][domain].any() or
                                     np.asarray(original(hand['mask']['sha256']))[:,:,0][domain].any()):
                                 raise ValueError(f'Unowned ordered orb footprint: {orb}/{direction}/{i}/{item}')
+                if daggers:
+                    # Restore only this garment's own footprint. The original
+                    # hand/metal mask stays in force before and after the body.
+                    footprint=(np.asarray(color)[:,:,3]>0)|cut
+                    for side in ('east','west'):
+                        domain=footprint if side=='east' else footprint[:,::-1]
+                        expected=np.asarray(legs) if side=='east' else np.asarray(legs)[:,::-1]
+                        bodies={r['states'][i][1] for r in manifest['ordered'].values() if r['direction']==side}
+                        if len(bodies)!=1 or not np.array_equal(np.asarray(original(next(iter(bodies))))[domain],expected[domain]):
+                            raise ValueError(f'Dagger boot crosses unregistered anatomy: {side}/{item}/{i}')
                 tracks[item].append(dict(x=box[0], y=box[1], width=box[2]-box[0], height=box[3]-box[1],
                                          art=png(color.crop(box)), mask=png(mask.crop(box).convert('1'))))
     assets['registration.json'] = json.dumps(manifest, separators=(',', ':')).encode()
-    with zipfile.ZipFile(DEST, 'w') as z:
+    target = DAGGER_ATLAS if daggers else DEST
+    if verify:
+        with zipfile.ZipFile(target) as z:
+            saved = json.loads(z.read('registration.json'))
+            if ({k: v for k,v in saved.items() if k != 'tracks'} !=
+                    {k: v for k,v in manifest.items() if k != 'tracks'} or
+                    saved['tracks'].keys() != manifest['tracks'].keys()):
+                raise ValueError('Changed boot origins, ordered operations or anatomy')
+            for family, items in manifest['tracks'].items():
+                previous = saved['tracks'][family]
+                if items.keys() != previous.keys():
+                    raise ValueError('Changed boot catalog')
+                for item, phases in items.items():
+                    for now, prior in zip(phases, previous[item], strict=True):
+                        if ({k: v for k,v in now.items() if k not in ('art','mask')} !=
+                                {k: v for k,v in prior.items() if k not in ('art','mask')}):
+                            raise ValueError(f'Changed phase placement: {family}/{item}')
+                        for role in ('art','mask'):
+                            lhs = Image.open(io.BytesIO(assets[now[role]+'.png'])).convert('RGBA')
+                            rhs = Image.open(io.BytesIO(z.read(prior[role]+'.png'))).convert('RGBA')
+                            if lhs.size != rhs.size or lhs.tobytes() != rhs.tobytes():
+                                raise ValueError(f'Changed boot {role}: {family}/{item}')
+        return
+    with zipfile.ZipFile(target, 'w') as z:
         for name, data in sorted(assets.items()):
             z.writestr(zipfile.ZipInfo(name), data, compress_type=zipfile.ZIP_DEFLATED)
 
 
-def materialize(bank):
-    with zipfile.ZipFile(DEST) as z:
+def materialize(bank, daggers=False):
+    with zipfile.ZipFile(DAGGER_ATLAS if daggers else DEST) as z:
         manifest = json.loads(z.read('registration.json'))
-        if set(manifest['sources']) != set(DONORS) or len(manifest['rigs']) != 6:
+        if set(manifest['sources']) != set(DONORS) or len(manifest['rigs']) != (2 if daggers else 6):
             raise ValueError('Incomplete boot registration')
         for items in manifest['tracks'].values():
             if set(items) != set(DONORS) or any(len(track) != 8 for track in items.values()):
@@ -299,4 +358,5 @@ def materialize(bank):
 
 
 if __name__ == '__main__':
-    calibrate()
+    import sys
+    calibrate('--daggers' in sys.argv, '--verify' in sys.argv)
