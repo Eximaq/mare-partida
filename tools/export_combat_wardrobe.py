@@ -15,6 +15,7 @@ from export_male_dagger_coats import materialize as male_dagger_coats
 from export_male_sword_coats import materialize as male_sword_coats
 from export_articulated_boots import materialize as articulated_boots
 from export_staff_coats import materialize as staff_coats
+from export_north_pistol_coats import materialize as north_pistol_coats
 
 ARCHIVES = {
     'soco': 'e3c4d0cad2a2727a74aef567468eb3e337391e25f7e3eab363dc49d16fc69c91',
@@ -147,5 +148,6 @@ def materialize(folder, out):
     assets.update(other_assets)
     (out / 'index.json').write_text(json.dumps(dict(schema='editable-combat-wardrobe-v1', rigs=rigs,
         records=records, maleDaggerCoats=male_dagger_coats(bank), maleSwordCoats=male_sword_coats(bank), articulatedBoots=articulated_boots(bank), maleStaffCoats=staff_coats(bank),
+        maleNorthPistolCoats=north_pistol_coats(bank),
         handFits={k: [r['matrix'] for r in phases] for k, phases in fit.items()}), separators=(',', ':')) + '\n', encoding='utf-8')
     return len(records), len(assets)

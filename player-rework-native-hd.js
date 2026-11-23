@@ -85,7 +85,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  const combatWardrobeReady=Promise.resolve().then(()=>fetchJSON('tools/rework-combat-wardrobe/index.json')).then(c=>{
   if(c?.schema!=='editable-combat-wardrobe-v1'||!c.rigs||!Array.isArray(c.records))return;
   const index=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(c.records.map(({layers,...r})=>({...r,body:'female',source:layers})));
-  if(index)combatWardrobe={rigs:c.rigs,index,handFits:c.handFits,maleDaggerCoats:c.maleDaggerCoats,maleSwordCoats:c.maleSwordCoats,articulatedBoots:c.articulatedBoots,maleStaffCoats:c.maleStaffCoats};
+  if(index)combatWardrobe={rigs:c.rigs,index,handFits:c.handFits,maleDaggerCoats:c.maleDaggerCoats,maleSwordCoats:c.maleSwordCoats,articulatedBoots:c.articulatedBoots,maleStaffCoats:c.maleStaffCoats,maleNorthPistolCoats:c.maleNorthPistolCoats};
  }).catch(()=>{});
  const daggerWardrobeReady=Promise.resolve().then(()=>fetchJSON('tools/rework-female-dagger-wardrobe/index.json')).then(c=>{
   if(c?.schema!=='female-dagger-owned-wardrobe-v1'||!c.targets||!Array.isArray(c.records))return;
@@ -4278,7 +4278,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...coat,id:coat.id+':own-head-on-identical-punch:'+head.id,gearOnlyRecord:gear,layeredSlots:true,omitted:[],
    slotRoutes:{...coat.slotRoutes,[h.key]:{item:h.item,quality:'hd',source:head.id}}};
  }
- const signedPhaseAsset=(record,sha)=>'tools/'+
+ const signedPhaseAsset=(record,sha)=>record.coatAssets?.includes(sha)?combatPlatePath(sha):'tools/'+
   (record.assetPool==='outfit'?'rework-modular-outfits-hd':'rework-weapon-layers-hd')+'/assets/'+sha+'.png';
  // Experimental saved-profile fit: pin each own East/West gait source and
  // accept only the exact native lower geometry and independently masked body.
@@ -4588,7 +4588,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     ({slot,item:Number(item),body:'male',action:'attack-firearm',direction,source:{source:id+':'+slot+':'+item,phases}}))));
   ownSignedFirearmAnimations=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(rows);
  }
- const signedWeaponGarmentDepths={boots:{rear:-1,front:1},pants:{front:2},gloves:{front:3}};
+ const signedWeaponGarmentDepths={boots:{rear:-1,front:1},pants:{front:2},torso:{front:2.5},gloves:{front:3}};
  // Prior complete routes and all equipped subsets are preservation witnesses,
  // not authorization to add/attach art. This runs only before an omission.
  function hasProtectedStrictSubset(player,o,entries,weapon,omitted){
@@ -4685,6 +4685,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // signed receiving attachment. A failed witness above is unadapted, not absent.
   const tracks=Object.fromEntries(slots.filter(([slot])=>own[slot]?.state==='available'&&!own[slot].mirrorX)
    .map(([slot,{item}])=>[slot,{[item]:own[slot].source.phases}]));
+  // The North editor pads each side of the native frame by 64 physical
+  // pixels. Its recovered coat contains only unprotected, original fabric.
+  const north=combatWardrobe?.maleNorthPistolCoats,torso=visible.torso?.item;
+  const coatAssets=o.direction==='north'&&north?.receiver===authority.id&&
+   eq(north.poses,authority.poseSourceSHA256)&&north.coats[torso];
+  if(coatAssets){
+   tracks.torso={[torso]:coatAssets.map(h=>({rear:[],front:[h]}))};
+   own.torso={state:'available',source:{source:north.receiver+'/coat-'+torso+'@'+north.source}};
+  }
   const plan=registry.planSignedPhaseSlots(
    {slots:tracks,depths:signedWeaponGarmentDepths},visible,bare.states.length);
   if(!plan)return null;
@@ -4709,7 +4718,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const cacheVector=JSON.stringify([slots.map(([k,v])=>[k,v.item]),phases.map(p=>[p.rear,p.front])]);
   const equippedBody=tryW114NorthIndependent(bare,{...player,equipment:{[weapon.key]:weapon.value}},o,true)||bare;
   return {...bare,id:bare.id+':owned-independent-garments:'+cacheVector,resolvedAction:'attack-firearm',
-   signedWeaponGarments:{base:equippedBody,phases},slotRoutes,slotResolution,layeredSlots:true,omitted,
+   signedWeaponGarments:{base:equippedBody,phases,...(coatAssets?{coatAssets}:{})},slotRoutes,slotResolution,layeredSlots:true,omitted,
    ...(omitted.length?{slotFallback:'signed-pose-omit'}:{})};
  }
  // These authored rifle poses share the same lower backing through all

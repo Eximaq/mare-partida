@@ -466,7 +466,7 @@ window.__hdSlotQA={
  async function observePistolClothes(){
   const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
   const kit={weapon:114,legs:21,boots:9,gloves:25};
-  await page.evaluate(({look,kit})=>__hdSlotQA.seedWardrobe('gunner',[...Object.values(kit),22],look),{look,kit});
+  await page.evaluate(({look,kit})=>__hdSlotQA.seedWardrobe('gunner',[...Object.values(kit),22,151,158,165,179],look),{look,kit});
   for(const id of Object.values(kit))await put(id);
   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
   const before=await observeAttack('attack-firearm','pistolas-calca21-south','south',kit);
@@ -478,6 +478,17 @@ window.__hdSlotQA={
    const restored=await observeAttack('attack-firearm','pistolas-conjunto-'+dir,dir,kit);
    if(dir==='south')assert.deepEqual(restored.visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
   }
+  const north=await observeAttack('attack-firearm','pistolas-114-sem-peitoral-north','north',kit);
+  let first;
+  for(const coat of [151,158,165,179,151]){
+   await put(coat);
+   const current=await observeAttack('attack-firearm','pistolas-114-peitoral-'+coat+(first&&coat===151?'-retorno':''),'north',{...kit,coat});
+   for(const slot of ['weapon','legs','boots','gloves'])assert.deepEqual(current.visual.coverage[0].slotRoutes[slot],north.visual.coverage[0].slotRoutes[slot]);
+   if(coat===151){if(first)assert.deepEqual(current.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);else first=current;}
+  }
+  await remove('coat');
+  const removed=await observeAttack('attack-firearm','pistolas-114-sem-peitoral-retorno','north',kit);
+  assert.deepEqual(removed.visual.coverage[0].slotRoutes,north.visual.coverage[0].slotRoutes);
   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   for(const weapon of [4,5,113,115,116]){
    await page.evaluate(({weapon,look})=>__hdSlotQA.seedWardrobe('gunner',[weapon,21],look),{weapon,look});
