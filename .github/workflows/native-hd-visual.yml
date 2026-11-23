@@ -23,6 +23,7 @@ on:
       - 'tests/rework-fixed-north-rifle-heads.cjs'
       - 'tests/rework-north-focus-coats.cjs'
       - 'tests/rework-north-moving-boots.cjs'
+      - 'tests/rework-lateral-gauntlet-wardrobe.cjs'
       - 'tools/register_north_articulated_boots.py'
       - 'tools/rework-combat-wardrobe/north-articulated-boots.zip'
       - 'tools/rework-combat-wardrobe/north-boot-donors.json'
@@ -164,6 +165,8 @@ jobs:
           node --expose-gc tests/rework-male-p114-signed-slots-saved.cjs
           node tests/rework-wardrobe-grip-cycles.cjs
           node --expose-gc tests/rework-wardrobe-authored-contact.cjs
+          node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs east
+          node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs west light
           node tests/rework-south-wardrobe-ownership.cjs
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
