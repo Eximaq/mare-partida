@@ -31,7 +31,46 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
    }
    throw Error('A prévia não atingiu os pixels esperados. '+await p.locator('#status').innerText());
   };
+  if(process.argv.includes('--boots')){
+   const ids=await p.locator('#catalog button').evaluateAll(bs=>bs.filter(b=>b.querySelector('small')?.textContent.startsWith('Botas ·')).map(b=>+b.dataset.id));
+   assert.equal(new Set(ids).size,10);let comparisons=0;
+   for(const body of ['masculino','feminino']){
+    await p.locator('#look-gender').selectOption(body);
+    for(const direction of ['south','east','north','west']){
+     await p.locator('#direction').selectOption(direction);
+     for(const id of ids){
+      await p.locator('[data-id="'+id+'"]').click();
+      await p.waitForFunction(d=>document.querySelector('#status').textContent.startsWith('idle · '+d+' ·')&&document.querySelector('#part option[value="*"]'),direction);
+      const feet=await p.locator('#part option').evaluateAll(os=>os.map(o=>o.value).filter(v=>v.startsWith('foot:')));
+      assert.equal(feet.length,2,[body,direction,id].join('/'));
+      await p.locator('#part').selectOption('*');
+      assert.ok((await p.locator('#details').innerText()).startsWith('#'+id+' ·'));
+      const original=await pixels();
+      for(const foot of feet){
+       await p.locator('#part').selectOption(foot);
+       await p.locator('[data-move="1,0"]').click();await waitPixels(original,false);
+       await p.locator('#reset').click();await waitPixels(original);comparisons++;
+      }
+     }
+    }
+   }
+   assert.equal(comparisons,160);assert.deepEqual(errors,[]);
+   console.log('160 edições e restaurações de pés em repouso, dez botas nos dois corpos e nas quatro direções.');return;
+  }
   const initial=await waitPixels(null,false);
+  const moveFoot=async(part,x)=>{await p.locator('#part').selectOption(part);await p.locator('#x').fill(String(x));await p.locator('#x').press('Tab');};
+  const panelIds=await p.locator('#part option').evaluateAll(os=>os.map(o=>o.value));
+  for(const side of ['left','right']){
+   const group='foot:'+side,panels=panelIds.filter(id=>id.startsWith('boot148-'+side+'-'));assert(panels.length>=2);
+   await moveFoot(group,5);const grouped=await waitPixels(initial,false);
+   await p.locator('#reset').click();await waitPixels(initial);
+   for(const panel of panels)await moveFoot(panel,5);
+   // The independently moved front, rear and lining form exactly one boot.
+   await waitPixels(grouped);
+   for(const panel of panels){await p.locator('#part').selectOption(panel);await p.locator('#reset').click();}
+   await waitPixels(initial);
+  }
+  await p.locator('#part').selectOption('*');
   await p.locator('[data-move="1,0"]').click();await waitPixels(initial,false);
   let edited=await pixels();
   await p.locator('#undo').click();await waitPixels(initial);
@@ -46,7 +85,9 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
   let last=await pixels();await p.locator('#flip').check();await waitPixels(last,false);
   last=await pixels();await p.locator('#layer').selectOption('body');await waitPixels(last,false);edited=await pixels();
   await p.locator('#before').check();await waitPixels(initial);await p.locator('#before').uncheck();await waitPixels(edited);
-  await p.locator('#slot').selectOption('coat');
+  await moveFoot('foot:left',6);await waitPixels(edited,false);edited=await pixels();
+  await p.locator('#part').selectOption('foot:right');assert.equal(await p.locator('#x').inputValue(),'0');
+  await p.locator('#part').selectOption('*');await p.locator('#slot').selectOption('coat');
   await number('x',55);await number('y',35);await number('size',120);
   await p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
   const inFrontOfHand=await pixels();await p.locator('#layer').selectOption('hand');
@@ -64,8 +105,9 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
   assert.equal(await p.locator('#angle').inputValue(),'8');
   const download=p.waitForEvent('download');await p.locator('#export').click();
   const file=await (await download).path(),manifest=JSON.parse(await fs.readFile(file,'utf8'));
-  assert.equal(manifest.schema,2);assert.equal(manifest.records.length,4);
-  const boots=manifest.records.find(r=>r.item===148),coat=manifest.records.find(r=>r.item===6&&r.direction==='east'),west=manifest.records.find(r=>r.item===6&&r.direction==='west');
+  assert.equal(manifest.schema,2);assert.equal(manifest.records.length,5);
+  assert.deepEqual(manifest.records.find(r=>r.part==='foot:left').cycle,[6,0]);
+  const boots=manifest.records.find(r=>r.item===148&&r.part==='*'),coat=manifest.records.find(r=>r.item===6&&r.direction==='east'),west=manifest.records.find(r=>r.item===6&&r.direction==='west');
   assert.deepEqual(boots.style.cycle,{angle:12,size:125,flip:true,layer:'body'});assert.equal(west.style.phases[0].angle,-8);assert.equal(coat.style.phases[0].angle,8);
   assert.equal(manifest.records.find(r=>r.item===6&&r.direction==='south').style.cycle.layer,'hand');
   assert.equal(boots.direction,'south');assert.deepEqual(boots.cycle,[1,0]);

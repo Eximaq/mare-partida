@@ -3,6 +3,14 @@
 'use strict';
 const reference='36c68a69254c6dbf3c7e31f61a7c69109f173e77';
 const slots=['coat','legs','boots','gloves','head','weapon'];
+const footLabels={'foot:left':'Bota esquerda','foot:right':'Bota direita','foot:near':'Bota próxima','foot:far':'Bota distante','foot:0':'Bota 1','foot:1':'Bota 2'};
+function bootGroup(item,name){
+ const match=/^(?:(?:equip-)?boot|firearm-(?:north|south|east|west)-boots-)(\d+)-(left|right|near|far|0|1)(?:-|$)/.exec(name)
+  ||/^boot(\d+)-(?:mouth-rear|rear-mouth|screen|shell)-([01])$/.exec(name);
+ if(!match||Number(match[1])!==item)return null;
+ // Numbered source feet retain their authored identities through turns and crossed legs.
+ return 'foot:'+match[2];
+}
 const alias={torso:'coat',pants:'legs'};
 const empty=()=>({schema:1,reference,space:'native-screen-px',revision:0,records:[]});
 const fields=['body','weapon','receiver','action','direction','slot','item','part'];
@@ -98,7 +106,7 @@ function around(style,box,sign){
 }
 function matrices(d,w,h,sign){
  const out=[];
- for(const [part,style] of [['*',d.whole],[d.part,d.local]]){
+ for(const [part,style] of [['*',d.whole],[d.group,d.foot],[d.part,d.local]]){
   if(oriented(style)){const box=d.geometry.get(plane(part,d.phase,w,h,sign));if(box)out.push(around(style,box,sign));}
  }
  return out;
@@ -119,18 +127,20 @@ function fits(d,box,w,h,sign){
  return true;
 }
 const intersect=(a,b)=>a?[Math.max(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[2],b[2]),Math.min(a[3],b[3])]:b;
-function blit(ctx,slot,part,source,img,args,sign=1,original=null,underlay=null){
+function blit(ctx,slot,part,source,img,args,sign=1,original=null,underlay=null,ownerPart=part){
  if(!active||!active.items.has(slot))return ctx.drawImage(img,...args);
  const {capture,phase,descriptors,make,offsets}=active;
  if(capture){
   let parts=descriptors.get(slot);if(!parts)descriptors.set(slot,parts=new Map());
   let p=parts.get(part);if(!p)parts.set(part,p={phases:new Map(),sources:new Map()});
+  const group=slot==='boots'?bootGroup(active.items.get(slot),ownerPart):null;
+  if(p.group===undefined)p.group=group;else if(p.group!==group)p.group=null;
   const box=extent(ctx,img,args,make);
   if(box){
    const w=ctx.canvas.width,h=ctx.canvas.height,lim=limits(box,w,h,sign);
    p.phases.set(phase,intersect(p.phases.get(phase),lim));
    let g=active.geometry.get(slot);if(!g)active.geometry.set(slot,g=new Map());
-   for(const id of [part,'*']){const k=plane(id,phase,w,h,sign);g.set(k,union(g.get(k),box));}
+   for(const id of group?[part,group,'*']:[part,'*']){const k=plane(id,phase,w,h,sign);g.set(k,union(g.get(k),box));}
   }
   if(!p.sources.has(phase))p.sources.set(phase,new Set());
   const {a,b,c,d,e,f}=ctx.getTransform();
@@ -138,7 +148,7 @@ function blit(ctx,slot,part,source,img,args,sign=1,original=null,underlay=null){
  }else{
   const d=offsets.get(JSON.stringify([slot,part,phase]));
   if(d&&active.hidden?.has(d.layer)){if(underlay)ctx.drawImage(underlay,...args);return;}
-  if(d&&(d[0]||d[1]||oriented(d.whole)||oriented(d.local))){
+  if(d&&(d[0]||d[1]||oriented(d.whole)||oriented(d.foot)||oriented(d.local))){
    if(underlay)ctx.drawImage(underlay,...args);
    ctx.save();try{setMatrix(ctx,d,sign);ctx.imageSmoothingEnabled=false;ctx.drawImage(img,...args);}finally{ctx.restore();}
    return;
@@ -249,10 +259,16 @@ function session(r,player,options,make){
  async function finish(info,clock=[],fps=info.fps){
   const receiver=info.width+'x'+info.height+'@'+info.pivot.x+','+info.pivot.y;
   for(const [slot,parts] of descriptors){
-   const all=new Map(),signatures=[],firstTarget=targets.length;
+   const all=new Map(),signatures=[],groups=new Map(),firstTarget=targets.length;
    for(const [part,data] of parts){
     const identity=[part,receiver,clock,fps,[...data.sources].map(([p,s])=>[p,[...s].sort()])];
     signatures.push(identity);
+    if(data.group&&data.phases.size){
+     const foot=groups.get(data.group)||{limits:new Map(),sources:[]};
+     foot.sources.push(identity);
+     for(const [phase,lim] of data.phases)foot.limits.set(phase,intersect(foot.limits.get(phase),lim));
+     groups.set(data.group,foot);
+    }
     for(const [phase,lim] of data.phases)all.set(phase,intersect(all.get(phase),lim));
     if(data.phases.size)targets.push({...meta,receiver,slot,item:items.get(slot),part,source:await digest(identity),limits:Object.fromEntries(data.phases)});
    }
@@ -260,6 +276,12 @@ function session(r,player,options,make){
     const signature=await digest(signatures.sort((a,b)=>a[0].localeCompare(b[0])));
     const rig=receiver+'@'+signature.slice(0,16);
     for(const t of targets.slice(firstTarget))t.receiver=rig;
+    // Virtual groups do not contribute to the existing pair or panel signatures.
+    // Only offer a whole foot when all visible panels have an identified owner.
+    if([...parts.values()].every(p=>!p.phases.size||p.group))for(const [part,foot] of groups){
+     foot.sources.sort((a,b)=>a[0].localeCompare(b[0]));
+     targets.push({...meta,receiver:rig,slot,item:items.get(slot),part,source:await digest([part,foot.sources]),limits:Object.fromEntries(foot.limits)});
+    }
     targets.push({...meta,receiver:rig,slot,item:items.get(slot),part:'*',source:signature,limits:Object.fromEntries(all)});
    }
   }
@@ -274,15 +296,17 @@ function session(r,player,options,make){
    accepted.set(key(t),a);
   }
   const next=new Map();
-  for(const t of targets.filter(v=>v.part!=='*')){
-   const whole=accepted.get(key({...t,part:'*'})),part=accepted.get(key(t));if(!whole&&!part)continue;
+  for(const t of targets.filter(v=>v.part!=='*'&&!Object.hasOwn(footLabels,v.part))){
+   const whole=accepted.get(key({...t,part:'*'})),part=accepted.get(key(t));
+   const group=descriptors.get(t.slot).get(t.part).group,foot=group&&accepted.get(key({...t,part:group}));
+   if(!whole&&!part&&!foot)continue;
    for(const [f,b] of Object.entries(t.limits)){
-    const a=delta(whole,f),p=delta(part,f),v=[a[0]+p[0],a[1]+p[1]];
+    const a=delta(whole,f),p=delta(part,f),s=delta(foot,f),v=[a[0]+p[0]+s[0],a[1]+p[1]+s[1]];
     if(v[0]<b[0]||v[0]>b[1]||v[1]<b[2]||v[1]>b[3]){invalid.add(t.slot);errors.push('Deslocamento recorta '+t.part+' na fase '+f);break;}
-    const parent=styleAt(whole,f),local=styleAt(part,f),g=geometry.get(t.slot);
-    Object.assign(v,{whole:parent,local,part:t.part,phase:+f,geometry:g,layer:local.layer??parent.layer??'native'});
+    const parent=styleAt(whole,f),shoe=styleAt(foot,f),local=styleAt(part,f),g=geometry.get(t.slot);
+    Object.assign(v,{whole:parent,group,foot:shoe,local,part:t.part,phase:+f,geometry:g,layer:local.layer??shoe.layer??parent.layer??'native'});
     if(!['native','body'].includes(v.layer)&&!members.get(+f)?.has(v.layer)){invalid.add(t.slot);errors.push('A pose não separa esse membro na fase '+f);break;}
-    if(oriented(parent)||oriented(local)){
+    if(oriented(parent)||oriented(shoe)||oriented(local)){
      for(const [k,box] of g){
       const [name,phase,w,h,sign]=JSON.parse(k);
       if(name===t.part&&phase===+f&&!fits(v,box,w,h,sign)){invalid.add(t.slot);errors.push('A transformação recorta '+t.part+' na fase '+f);break;}
@@ -308,9 +332,10 @@ function session(r,player,options,make){
   const phases=phase==null?Object.keys(t.limits).map(Number):[phase];
   return Object.keys(layerNames).filter(n=>n==='native'||n==='body'||phases.every(f=>members.get(f)?.has(n)));
  }
- return {visit,finish,configure,availableLayers,get targets(){return targets;},get moved(){return [...offsets.values()].some(v=>v[0]||v[1]||oriented(v.whole)||oriented(v.local)||v.layer!=='native');}};
+ const footFor=t=>t?.slot==='boots'?(Object.hasOwn(footLabels,t.part)?t.part:descriptors.get('boots')?.get(t.part)?.group):null;
+ return {visit,finish,configure,availableLayers,footFor,get targets(){return targets;},get moved(){return [...offsets.values()].some(v=>v[0]||v[1]||oriented(v.whole)||oriented(v.foot)||oriented(v.local)||v.layer!=='native');}};
 }
 function offset(slot,part){return active&&!active.capture?active.offsets.get(JSON.stringify([slot,part,active.phase]))||[0,0]:[0,0];}
-const api={empty,validate,slots,key,layerNames,mirrorRecord,styleAt,session,blit,material,layer,offset,localClip,original:paint=>scoped(null,paint),get materialCache(){return active?.materialCache;},get active(){return !!active;}};
+const api={empty,validate,slots,key,layerNames,footLabels,mirrorRecord,styleAt,session,blit,material,layer,offset,localClip,original:paint=>scoped(null,paint),get materialCache(){return active?.materialCache;},get active(){return !!active;}};
 root.MareHDPosition=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

@@ -55,12 +55,19 @@ function inputs(){
  $('undo').disabled=!past.length;$('redo').disabled=!future.length;
  const at=view?.clock.flatMap((v,i)=>v.phase===phase()?[i+1]:[]).join(', ');
  $('clock').textContent=view?'Quadro '+(tick+1)+' / '+view.clock.length+' · fase '+phase()+' · posições '+at:'Fase';
- $('details').textContent=t?'#'+t.item+' · '+t.body+' · '+t.receiver+' · fonte '+t.source.slice(0,12)+(t.limits[phase()]?' · limites da fase em px: X '+t.limits[phase()].slice(0,2).join('…')+', Y '+t.limits[phase()].slice(2).join('…'):' · oculta nesta fase'):'Selecione uma peça com camada própria nesta pose.';
+ $('details').textContent=t?'#'+t.item+' · '+t.body+' · '+t.receiver+' · fonte '+t.source.slice(0,12)+(t.limits[phase()]?' · limites da fase em px: X '+t.limits[phase()].slice(0,2).join('…')+', Y '+t.limits[phase()].slice(2).join('…'):' · oculta nesta fase'):(view&&editSlot==='boots'&&$('part').selectedOptions[0]?.disabled?'Escolha outra parte para editar nesta pose.':'Selecione uma peça com camada própria nesta pose.');
+ if(t?.part==='*'&&t.slot==='boots'&&!view.targets.some(v=>v.slot==='boots'&&Object.hasOwn(A.footLabels,v.part)))$('details').textContent+=' · A montagem desta pose não separa os pés.';
 }
+const preferredParts=new Map();
 function parts(){
- const old=$('part').value,targets=(view?.targets||[]).filter(t=>t.slot===editSlot);
- selectValues('part',targets.sort((a,b)=>Number(b.part==='*')-Number(a.part==='*')).map(t=>[t.part,t.part==='*'?'Peça inteira':t.part]));
+ const old=preferredParts.get(editSlot)||'*',targets=(view?.targets||[]).filter(t=>t.slot===editSlot);
+ const rank=t=>t.part==='*'?0:Object.hasOwn(A.footLabels,t.part)?1:2;
+ selectValues('part',targets.sort((a,b)=>rank(a)-rank(b)).map(t=>[t.part,t.part==='*'?(editSlot==='boots'?'Par de botas':'Peça inteira'):(A.footLabels[t.part]||t.part)]));
  if(targets.some(t=>t.part===old))$('part').value=old;
+ else if(targets.length&&Object.hasOwn(A.footLabels,old)){
+  const unavailable=new Option(A.footLabels[old]+' · indisponível nesta pose','');
+  unavailable.disabled=true;$('part').add(unavailable);unavailable.selected=true;
+ }
  inputs();
 }
 function schedule(){if(!drawing){drawing=true;requestAnimationFrame(paint);}}
@@ -132,7 +139,7 @@ function history(from,to){
  if(!from.length)return;try{const old=draft;commit(from.at(-1),false);from.pop();to.push(old);inputs();}catch(e){status(e.message,true);}
 }
 function lateralRecords(t){
- return draft.records.filter(r=>r.slot===t.slot&&r.item===t.item&&r.body===t.body&&r.action===t.action&&r.receiver===t.receiver&&r.direction===t.direction&&(r.slot!=='weapon'||r.weapon===t.weapon)&&(t.part==='*'||r.part===t.part));
+ return draft.records.filter(r=>r.slot===t.slot&&r.item===t.item&&r.body===t.body&&r.action===t.action&&r.receiver===t.receiver&&r.direction===t.direction&&(r.slot!=='weapon'||r.weapon===t.weapon)&&(t.part==='*'||r.part===t.part||Object.hasOwn(A.footLabels,t.part)&&view.footFor(r)===t.part));
 }
 async function copyLateral(direction){
  const t=target(),from=view,current=ticket,previous=draft,selected=editSlot;
@@ -151,7 +158,8 @@ async function copyLateral(direction){
    if(same.length!==1)throw Error('Sem parte lateral correspondente para '+r.part);
    copies.push(A.mirrorRecord(r,same[0],from.clock,other.v.clock));
   }
-  const dest=new Set((t.part==='*'?candidates:copies).map(A.key));
+  const destination=Object.hasOwn(A.footLabels,t.part)?candidates.filter(v=>other.v.footFor(v)===t.part):copies;
+  const dest=new Set((t.part==='*'?candidates:destination).map(A.key));
   const next={...draft,revision:draft.revision+1,records:[...draft.records.filter(r=>!dest.has(A.key(r))),...copies]};
   other.v.set(next);commit(next);
   $('direction').value=direction;await reload();
@@ -189,7 +197,7 @@ try{
  $('role').onchange=()=>{if(equipment.weapon&&catalog[equipment.weapon.def].type!==$('role').value)delete equipment.weapon;actions();list();reload();};
  $('direction').onchange=$('action').onchange=$('hide').onchange=$('solo').onchange=reload;
  $('slot').onchange=()=>{editSlot=$('slot').value;if($('solo').checked)reload();else parts();};
- $('part').onchange=$('scope').onchange=inputs;$('before').onchange=()=>{inputs();schedule();};
+ $('part').onchange=()=>{preferredParts.set(editSlot,$('part').value);inputs();};$('scope').onchange=inputs;$('before').onchange=()=>{inputs();schedule();};
  $('guides').onchange=$('zoom').oninput=schedule;$('play').onclick=()=>toggle(!playing);
  const step=d=>{if(!view)return;toggle(false);const phase0=phase();let i=tick;do{i=(i+d+view.clock.length)%view.clock.length;}while(i!==tick&&view.clock[i].phase===phase0);setTick(i);schedule();};
  $('next').onclick=()=>step(1);$('prev').onclick=()=>step(-1);$('tick').oninput=()=>{toggle(false);setTick(+$('tick').value);schedule();};

@@ -20,6 +20,8 @@ Acesse [a bancada local](http://localhost:8000/bancada-hd.html). O personagem de
 7. **Ciclo inteiro** vale para todas as fases. **Fase atual** acrescenta uma exceção. **Restaurar parte** remove o ajuste de ciclo e todas as exceções da parte escolhida. Desfazer e refazer abrangem o rascunho desta sessão.
 8. **Exportar rascunho** grava o documento completo, inclusive as peças, direções e fases fora da seleção atual. **Importar JSON** confere as identidades e os limites antes de substituir o rascunho. Ele fica guardado neste navegador entre sessões.
 
+Para editar uma bota, escolha **Botas** e depois o pé em **Parte**. O nome acompanha a identificação da pose: esquerda/direita, próxima/distante ou bota 1/2. Frente, traseira e forro do pé escolhido se movem juntos. Para ajustar os dois pés, selecione **Par de botas**. Há poses de ataque em que a montagem só fornece os planos do par. A bancada sinaliza essas poses e pede uma nova seleção se o pé que você editava ficar indisponível.
+
 Para aprovar ajustes para o jogo, revise o ciclo completo, substitua `hd-position-approved.json` no repositório pela exportação e publique o build normal. A edição privada usa a chave `kaizoku-hd-position-draft-v1` da bancada. O mapa lê o arquivo publicado.
 
 ## Formato do arquivo
@@ -52,7 +54,9 @@ node tests/hd-position-render.cjs
 node tests/hd-position-render.cjs --census
 ```
 
-O último comando mede o repouso Sul dos dois corpos para as 42 armas, alternando os dez itens de cada categoria. A variante `--cycles` inclui caminhada e ataque. Para dividir por lote, defina `HD_WEAPON_IDS` (IDs separados por vírgula) e `HD_DIRECTIONS` (direções em inglês separadas por vírgula). A saída é JSON. Uma peça sem diferença visível no ciclo produz uma falha.
+Com o servidor da bancada em execução, `node tests/hd-position-browser.cjs --boots` usa `MARE_TEST_URL` e `MARE_EVIDENCE_DIR` para conferir no navegador a edição e a restauração de cada pé dos dez modelos em repouso, nas quatro direções e nos dois corpos.
+
+O comando `--census` mede o repouso Sul dos dois corpos para as 42 armas, alternando os dez itens de cada categoria. A variante `--cycles` inclui caminhada e ataque. Para dividir por lote, defina `HD_WEAPON_IDS` (IDs separados por vírgula) e `HD_DIRECTIONS` (direções em inglês separadas por vírgula). A saída é JSON. Uma peça sem diferença visível no ciclo produz uma falha.
 
 O arquivo de referência guarda hashes RGBA e do contrato de desenho em quatro ciclos gerados no build independente de `36c68a6`, com 26 posições. Para reproduzir a origem, execute o teste com `HD_PUBLISHED_ROOT` apontando para aquele build e `--reference` seguido do caminho de um arquivo temporário. O teste normal lê o arquivo versionado.
 

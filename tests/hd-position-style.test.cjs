@@ -36,3 +36,28 @@ test('cópia lateral usa a assinatura de destino, reflete X e rotação e remape
  assert.throws(()=>A.mirrorRecord(a,other,clock([1,2,2]),clock([1,2,3])));
  assert.throws(()=>A.mirrorRecord(a,{...other,item:3},clock([2]),clock([2])));
 });
+
+test('uma bota agrupa frente, traseira e forro no mesmo pé e mantém o par e as partes salvas',async()=>{
+ const session=A.session({action:'idle',direction:'south'},{equipment:{boots:{def:148}}},{},make);
+ const rows=[['left-rear',3,8,'blue'],['right-rear',11,8,'orange'],['left-own-material-backing',4,8,'purple'],['left-front',4,9,'red'],['right-front',12,9,'green']];
+ const layers=rows.map(([id,x,y,color])=>({id:'boot148-'+id,tile:tile(color,x,y,1,1)}));
+ const render=(phase,capture=false)=>session.visit(phase,capture,()=>{
+  const canvas=make(16,16),ctx=canvas.getContext('2d');
+  for(const l of layers)A.blit(ctx,'boots',l.id,l.id,l.tile,[0,0]);
+  return {canvas};
+ }).canvas;
+ const before=render(0,true);render(1,true);await session.finish({width:16,height:16,pivot:{x:8,y:14}},[0,1],8);
+ const record=(part,cycle,phases={})=>{const t=session.targets.find(t=>t.part===part);assert.ok(t,'Falta '+part);const {limits,...id}=t;return {...id,cycle,phases};};
+ const pair=record('*',[0,-1]),left=record('foot:left',[1,0],{1:[0,-1]}),toe=record('boot148-left-front',[1,0]);
+ assert.ok(session.targets.some(t=>t.part==='foot:right'));
+ session.configure({...A.empty(),records:[pair,left,toe]},true);
+ for(const f of [0,1]){const expected=make(16,16),c=expected.getContext('2d');
+  for(const l of layers){const chosen=l.id.startsWith('boot148-left');c.drawImage(l.tile,Number(chosen)+Number(l.id===toe.part),-1-(chosen?f:0));}
+  assert.deepEqual(render(f).data(),expected.data());}
+ const rotated={...left,cycle:[0,0],phases:{},style:{cycle:{angle:180},phases:{}}};
+ session.configure({...A.empty(),schema:2,records:[rotated]},true);
+ const expected=make(16,16),c=expected.getContext('2d');
+ for(const l of layers){c.save();if(l.id.startsWith('boot148-left')){c.translate(8,18);c.scale(-1,-1);}c.drawImage(l.tile,0,0);c.restore();}
+ assert.deepEqual(render(0).data(),expected.data());
+ session.configure(A.empty(),true);assert.deepEqual(render(0).data(),before.data());
+});

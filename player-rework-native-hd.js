@@ -36,8 +36,8 @@ const canonical=b=>['female','feminino'].includes(b)?'female':'male';
 // These equipped items have no body layer. They must not invalidate a
 // compatible visual route, including an independently registered slot.
 const nonVisualEquipment=new Set(['necklace','ring','belt','charm','cloak','akuma_no_mi']);
-function ownedImage(ctx,slot,part,source,image,args,sign=1){
- if(root.MareHDPosition?.active)return root.MareHDPosition.blit(ctx,slot,part,source,image,args,sign);
+function ownedImage(ctx,slot,part,source,image,args,sign=1,ownerPart=part){
+ if(root.MareHDPosition?.active)return root.MareHDPosition.blit(ctx,slot,part,source,image,args,sign,null,null,ownerPart);
  ctx.drawImage(image,...args);
 }
 function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async path=>{const r=await fetch(new URL(path,baseURL));if(!r.ok)throw Error('HD index HTTP '+r.status);return r.json();},loadImage=null,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
@@ -6832,7 +6832,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const rig=southFocusRig(base,bank),skin=rig?.layers[0];
   if(skin?.id!=='skin-arms-phase'||skin.binding.kind!=='fixed'||bank.skin.length!==8||
      !bank.skin.every((sha,i)=>skin.frames[i]===sha)||plate.distal.length!==8)return null;
-  const layers=plate.layers.map(l=>({depth:l.depth,source:ownOutfitPaths+l.plate+'.png',
+  const layers=plate.layers.map(l=>({ownerPart:l.id,depth:l.depth,source:ownOutfitPaths+l.plate+'.png',
    matrices:l.offsets.map(([x,y])=>[1,0,0,1,x,y])}));
   return {source:bank.receiver+'/boot'+item+'@'+plate.layers[0].record,refs:plate.layers.map(l=>l.plate),
    soleCut:plate.distal,decorator:{field:'southPunchFoot',own:{layers}}};
@@ -6869,7 +6869,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const panels=[...grant.layers].sort((a,b)=>a.depth-b.depth);
   if(!panels.length||panels.some(l=>!l.id.startsWith('boot'+v.item+'-')||l.binding?.kind!=='fixed'||
      l.depthTrack||l.frames||!(l.depth<0||l.depth>1&&l.depth<4)||!bank.refs.includes(l.source)||bank.padding?.[l.source]))return null;
-  const layers=panels.map(l=>({depth:l.depth,source:ownOutfitPaths+l.source+'.png',
+  const layers=panels.map(l=>({ownerPart:l.id,depth:l.depth,source:ownOutfitPaths+l.source+'.png',
    matrices:bank.phaseTransforms.find(t=>t.layer.id===l.id)?.matrices}));
   return {source:grant.source,refs:grant.refs,decorator:{field:'southPunchFoot',own:{layers}}};
  }
@@ -7573,7 +7573,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      // These are already fitted original North boot groups. In the native
      // recoil, the calf/sole region is identical to phase zero of that rig.
      const byDepth=[...owned].sort((a,b)=>a.depth-b.depth),sha=l=>l.frames?.[0]||l.source;
-     group={rear:byDepth.filter(l=>l.depth<0).map(sha),front:byDepth.filter(l=>l.depth>0).map(sha)};
+     const rear=byDepth.filter(l=>l.depth<0),front=byDepth.filter(l=>l.depth>0);
+     group={rear:rear.map(sha),front:front.map(sha),rearParts:rear.map(l=>l.id),frontParts:front.map(l=>l.id)};
     }
     library.set(item,group);
    }
@@ -10459,7 +10460,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    function draw(l){
     const im=entry.images.get(l.source);
     if(im?.width!==640||im.height!==640)throw Object.assign(Error('Invalid South boot panel'),{asset:l.source});
-    ctx.save();ctx.imageSmoothingEnabled=false;if(l.matrices)ctx.setTransform(...l.matrices[pose]);ownedImage(ctx,'boots',l.id||'panel-'+layers.indexOf(l),l.source,im,[0,0]);ctx.restore();
+    ctx.save();ctx.imageSmoothingEnabled=false;if(l.matrices)ctx.setTransform(...l.matrices[pose]);ownedImage(ctx,'boots',l.id||'panel-'+layers.indexOf(l),l.source,im,[0,0],1,l.ownerPart||l.id);ctx.restore();
    }
    // Paint individual panels over their actual backing. Pre-flattening the
    // front group changes pigment rounding where the sole meets the foot.
@@ -10482,10 +10483,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    }
    if(foot){
     ctx.save();ctx.globalCompositeOperation='destination-over';
-    for(let i=foot.rear.length-1;i>=0;i--)ownedImage(ctx,'boots','rear-'+i,foot.rear[i],image(foot.rear[i]),[0,0]);
+    for(let i=foot.rear.length-1;i>=0;i--)ownedImage(ctx,'boots','rear-'+i,foot.rear[i],image(foot.rear[i]),[0,0],1,foot.rearParts[i]);
     ctx.restore();
    }
-   if(foot)for(const [i,h] of foot.front.entries())ownedImage(ctx,'boots','front-'+i,h,image(h),[0,0]);
+   if(foot)for(const [i,h] of foot.front.entries())ownedImage(ctx,'boots','front-'+i,h,image(h),[0,0],1,foot.frontParts[i]);
    if(r.rifleLower.rifleCoat){
     const phase=r.rifleLower.rifleCoat[frame],fabric=entry.images.get(combatPlatePath(phase[helmet?.hide||entry.rifleHairRemoved?'frontBare':'front']));
     if(fabric?.width!==640||fabric.height!==640)throw Error('Missing North rifle coat');
@@ -11118,7 +11119,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
         await editor.finish(first.info,clock,source.hdKind==='weapon'?source.fps:source.pack.directions[source.direction].clip.fps);signal?.throwIfAborted();
         const phaseOf=new Map(clock.map(v=>[v.frame,v.phase])),drop=()=>{for(const v of adjusted.values())v.canvas.width=v.canvas.height=0;adjusted.clear();};
         const diagnostics=editor.configure(positions||positionsAPI.empty());
-        editors.set(key,{clock,targets:editor.targets,availableLayers:editor.availableLayers,diagnostics,pivot:first.info.pivot,width:first.canvas.width,height:first.canvas.height,
+        editors.set(key,{clock,targets:editor.targets,availableLayers:editor.availableLayers,footFor:editor.footFor,diagnostics,pivot:first.info.pivot,width:first.canvas.width,height:first.canvas.height,
          fps:source.hdKind==='weapon'?source.fps:source.pack.directions[source.direction].clip.fps,
          set(m){editor.configure(positionsAPI.validate(m),true);drop();},
          frame(f,original=false){
