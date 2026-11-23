@@ -3356,7 +3356,10 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    actions.includes(requested)?actions.find(a=>a.startsWith('attack-')):null;
   return action?{...record,action}:record;
  }
- return {registeredCoat,registeredPunchGrip,compassWardrobeRig,southPunchHeadLayers,sidePunchMetal,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
+ return {registeredCoat,registeredPunchGrip,compassWardrobeRig,southPunchHeadLayers,
+  southArmProjection:frame=>frame>=7&&frame<=10?cyborg119SouthOwnAuthority.frames[frame][3]:null,
+  projectSouthArms:(before,sheet,phase,trousers)=>cyborg120ArmRecipe(before,sheet,phase-7,makeCanvas,trousers),
+  sidePunchMetal,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
 }
 const api={create};root.MareReworkWeaponNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
