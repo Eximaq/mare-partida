@@ -23,7 +23,18 @@ else test('actual lobby invalidates weapon and coat identities for scoped tenth 
    if(previous)assert(!lobby.worldReady(p),'changed equipment invalidates previous identity');console.log('ninth-world start',item,coat);const directions=['east','west'];
    await prepareWorldPose(lobby,p,action,directions[0]);
    console.log('ninth-world equipped ready',item,coat,Math.round(process.memoryUsage().rss/1048576)+'MB');const visual=lobby.worldVisual();assert.equal(visual?.state,'ready',JSON.stringify(visual));assert.equal(visual.publishedKey,visual.key);assert(lobby.worldReady(p));assert.equal(JSON.stringify(p),before);if(previous)assert(!lobby.worldReady(previous));previous=p;
-   for(const direction of directions){const entry=await equippedWorldPose(lobby,p,action,direction);assert.equal(entry?.source,(orb?`authored-orb-${item}-${direction}-coat-${coat}`:`authored-ordered-${item}-${direction}`));assert.deepEqual(entry.omitted,[]);assert.deepEqual(entry.unsupported,[]);assert(lobby.drawWorldVisual(cv.createCanvas(640,640).getContext('2d'),{action,direction,progress:.5,timing:{locked:true,hitFrameRatio:.5,duration:1},x:320,y:512}));assert.equal(native.snapshot().last.source,entry.source);assert.equal(native.snapshot().last.frame,4);}
+   for(const direction of directions){const entry=await equippedWorldPose(lobby,p,action,direction);if(orb){
+    const base='authored-orb-'+item+'-'+direction;
+    assert.equal(entry.slotRoutes.coat.source,base+'/coat-'+coat);
+    assert(entry.slotRoutes.weapon.source.startsWith(base+':approved-bare-preview'));
+   }else assert.equal(entry.source,'authored-ordered-'+item+'-'+direction);assert.deepEqual(entry.omitted,[]);assert.deepEqual(entry.unsupported,[]);assert(lobby.drawWorldVisual(cv.createCanvas(640,640).getContext('2d'),{action,direction,progress:.5,timing:{locked:true,hitFrameRatio:.5,duration:1},x:320,y:512}));assert.equal(native.snapshot().last.source,entry.source);// The active orb clock holds state 7 through ticks 7–19; the sword has eight ticks.
+    assert.equal(native.snapshot().last.frame,orb?7:4);
+    if(orb){
+     for(let frame=0;frame<8;frame++){
+      assert(lobby.drawWorldVisual(cv.createCanvas(640,640).getContext('2d'),{action,direction,progress:(frame+.1)/20,x:320,y:512}));
+      assert.equal(native.snapshot().last.frame,frame);
+     }
+    }}
    assert(lobby.worldVisual().firstDrawAt!==undefined);assert(!lobby.worldReady({...p,equipment:{}}));
    console.log('tenth-world draw complete',mode,drawIndex++);if(drawIndex!==2)continue;const equipped={...p,equipment:{...p.equipment,gloves:{def:152}}};for(const direction of directions)await equippedWorldPose(lobby,equipped,action,direction);
    assert.equal(lobby.worldVisual().state,'ready',JSON.stringify(lobby.worldVisual()));assert(lobby.worldReady(equipped));assert(!lobby.worldReady(p));

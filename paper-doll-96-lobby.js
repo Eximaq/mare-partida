@@ -55,7 +55,20 @@
         if(actions.includes(action))options={...options,action};
       }
     }
-    const selectPose=(actor,pose)=>selectWorldHD(nativeHD,weaponCatalog,actor,pose);
+    const selectPose=(actor,pose)=>{
+      const current=selectWorldHD(nativeHD,weaponCatalog,actor,pose);
+      if(current)return current;
+      // Pre-versioned saves used English body IDs and omitted the natural
+      // skin style. Adapt that representation only for this render request.
+      const saved=actor.appearance96,cosmetics=root.MareCharacterAppearance;
+      if(!saved||!cosmetics?.normalize||saved.version!=null&&saved.version!==1||
+         !['male','female','masculino','feminino'].includes(saved.gender)||
+         saved.version===1&&saved.skinStyle&& !['male','female'].includes(saved.gender))return null;
+      const gender={male:'masculino',female:'feminino'}[saved.gender]||saved.gender;
+      const look=cosmetics.normalize({...saved,gender});
+      if(Object.keys(cosmetics.choices).some(k=>k!=='gender'&&saved[k]!=null&&look[k]!==saved[k]))return null;
+      return selectWorldHD(nativeHD,weaponCatalog,{...actor,appearance96:{...saved,...look}},pose);
+    };
     // Keep the independent route stable on either side of an equipment
     // change. Exact artwork still handles receivers with bespoke renderers.
     const independent=nativeHD.selectIndependentWorld?.(player,options,selectPose);

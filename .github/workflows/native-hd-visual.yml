@@ -21,6 +21,9 @@ on:
       - 'tools/rework-combat-wardrobe/staff-gloves.zip'
       - 'tools/rework-combat-wardrobe/sword-gloves.zip'
       - 'tools/register_sword_gloves.py'
+      - 'tools/register_orb_gloves.py'
+      - 'tools/rework-combat-wardrobe/orb-gloves.zip'
+      - 'tests/rework-orb-hand-gloves.cjs'
       - 'tests/rework-articulated-sword-gloves.cjs'
       - 'tests/rework_staff_coat_sources.py'
       - 'tests/rework-north-pistol-coats.cjs'
@@ -215,6 +218,28 @@ jobs:
         run: |
           node --expose-gc tests/rework-north-padded-gauntlet.cjs light
           node --expose-gc tests/rework-north-padded-gauntlet.cjs ebony
+  orb-gloves:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        weapon: [17, 122]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Conferir as duas mãos, as dez luvas e a oclusão dos orbes e o formato antigo de aparência
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WEAPON: ${{ matrix.weapon }}
+        run: |
+          for tone in light ebony; do
+            node --expose-gc tests/rework-orb-hand-gloves.cjs "$WEAPON" "$tone"
+          done
   sword-gloves:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -377,6 +402,7 @@ jobs:
           python tools/register_south_focus_boots.py --verify
           python tools/register_staff_gloves.py --verify
           python tools/register_sword_gloves.py --verify
+          python tools/register_orb_gloves.py --verify
           python tools/register_north_rifle_trousers.py --verify
           python tools/export_north_focus_coats.py --verify
           python tools/register_north_weapon_coats.py --verify

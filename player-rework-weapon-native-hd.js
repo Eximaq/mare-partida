@@ -2724,6 +2724,20 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    return w16TintedBody=tile;
   }
   let orbTonedBody;
+  let dressedOrb=null;
+  function orbBody(l){
+   const body=r.ownOrbSideTone?orbOwnBody(l):image(l);
+   if(!r.orbGloves)return body;
+   if(dressedOrb)return dressedOrb;
+   const tile=makeCanvas(w,h),c=tile.getContext('2d');
+   c.drawImage(body,0,0);if(r.direction==='west'){c.translate(w,0);c.scale(-1,1);}
+   for(const hand of r.orbGloves){
+    const glove=images.get('tools/rework-combat-wardrobe/assets/'+hand[Number(s.state)]+'.png');
+    if(!glove||glove.width!==w||glove.height!==h)throw Error('Missing registered orb glove');
+    c.drawImage(glove,0,0);
+   }
+   return dressedOrb=tile;
+  }
   function orbOwnBody(l){
    if(orbTonedBody)return orbTonedBody;
    const tone=r.ownOrbSideTone,R=root.MareAppearance96,ramp=R?.skins[tone]?.ramp;
@@ -2772,7 +2786,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    for(const [x,y,,,,,tone] of eyes)apply(((y+64)*640+x+64)*4,tone,colors.eyes.blue.ramp,colors.eyes[look.eyeColor].ramp);
    cx.putImageData(rgba,0,0);return tile;
   }
-  const paletteImage=(l,assembled)=>{if(r.ownOrbSideTone&&l.id==='body')return orbOwnBody(l);if(r.w16SideTone&&l.id==='body')return compass16TintedBody();if(r.arm118SidePalette&&l.depth===0)return arm118Backing();const original=assembled||image(l);
+  const paletteImage=(l,assembled)=>{if((r.ownOrbSideTone||r.orbGloves)&&l.id==='body')return orbBody(l);if(r.w16SideTone&&l.id==='body')return compass16TintedBody();if(r.arm118SidePalette&&l.depth===0)return arm118Backing();const original=assembled||image(l);
   if(l.depth===0&&r.northHairColor&&r.northHairColor!=='black'){
    const tile=makeCanvas(w,h),tc=tile.getContext('2d');tc.drawImage(original,0,0);
    const anatomy=root.MareHairAnatomyHD;anatomy.paintRearHair(tc,images.get(anatomy.rearHairPath),r.northHairColor,(w-640)/2,makeCanvas);return tile;
@@ -2898,7 +2912,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     // This ordered mask also restores the body outside both blades.
     // Restore the equipped body in that region so it keeps its own boots.
     const dressedRestore=r.bootTrack?.orderedDagger&&l.id==='original-hand-and-outside-gear-restoration'?bootOnOrderedBody(r,s,images,image(l)):null;
-    sc.drawImage(dressedRestore|| (r.w16SideTone&&l.id==='original-distal-hand'?compass16TintedBody():r.ownOrbSideTone&&l.id==='original-anatomy'?orbOwnBody(l):image(l)),0,0);if(dressedRestore)dressedRestore.width=1;let patch=sc.getImageData(0,0,w,h).data;
+    sc.drawImage(dressedRestore|| (r.w16SideTone&&l.id==='original-distal-hand'?compass16TintedBody():(r.ownOrbSideTone||r.orbGloves)&&l.id==='original-anatomy'?orbBody(l):image(l)),0,0);if(dressedRestore)dressedRestore.width=1;let patch=sc.getImageData(0,0,w,h).data;
     if(l.skinFromAnatomy){
      const ramp=root.MareAppearance96?.skins[appearance.skin||appearance.skinColor]?.ramp;
      if(ramp){
@@ -3087,6 +3101,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   if(!r.ownedGauntletCoatHead&&!s.layers.some(l=>l.role==='ordered-orb-coat')){
    paintOwnedHead();if((r.orbAnatomy||r.daggerHeadRig)&&r.ownGauntletHead?.hideHair)restoreFocusScalp(ctx,r,s,images,resource);
   }
+  if(dressedOrb)dressedOrb.width=1;
   // User-approved exact restoration: native V7 shorts swatch on 489 emitted
   // boundary samples only. Outside the independent current cloth/gear/grip.
   if(r.staffLateralPalette){
