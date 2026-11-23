@@ -9,13 +9,32 @@ class NativeFrames(unittest.TestCase):
         files=list((ROOT/'assets/sprites-combat-v2').glob('*/metadata.json'))
         dungeon_names={'dungeon-'+name for name in ('alvida','morgan','buggy','kuro','krieg','arlong','smoker','wapol','crocodile')}
         self.assertEqual({path.parent.name for path in files if path.parent.name.startswith('dungeon-')},dungeon_names)
-        self.assertEqual(sum(not path.parent.name.startswith('dungeon-') for path in files),27)
+        priests={'shura','gendatsu','ohm'}
+        self.assertEqual(sum(not path.parent.name.startswith('dungeon-') for path in files),30)
+        # These three approved strips have their original metadata preserved in
+        # place; the runtime registration additionally pins the whole PNG.
+        runtime=(ROOT/'sprite-combat-v2-data.js').read_text(encoding='utf8')
+        registry=json.loads(runtime.split('Object.assign(globalThis.MareSpriteCombatV2Data, ',1)[1].strip()[:-2])
+        self.assertEqual(set(registry),priests)
         self.assertIn('satori',{path.parent.name for path in files})
         count=0
         for path in files:
             entry=json.loads(path.read_text(encoding='utf8'))
             for action,directions in entry['clips'].items():
                 for direction,clip in directions.items():
+                    if path.parent.name in priests:
+                        record=registry[path.parent.name]['clips'][action][direction]
+                        filename=path.parent/clip['image']
+                        self.assertEqual(ROOT/record['image'],filename)
+                        self.assertEqual(hashlib.sha256(filename.read_bytes()).hexdigest(),record['png_sha256'])
+                        with Image.open(filename) as sheet:
+                            size,frames=clip['size'],clip['frames']
+                            self.assertEqual(sheet.size,(size*frames,size))
+                            alpha=sheet.convert('RGBA').getchannel('A')
+                            bounds=[alpha.crop((i*size,0,(i+1)*size,size)).getbbox() for i in range(frames)]
+                            self.assertEqual([list(b) for b in bounds],record['bounds'])
+                        count+=frames
+                        continue
                     sheet=Image.open(ROOT/clip['image']).convert('RGBA')
                     self.assertEqual(sheet.size,(clip['size']*clip['frames'],clip['size']))
                     source=clip if 'rgba_sha256' in clip else entry['provenance']['clips'][action][direction]

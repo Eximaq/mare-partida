@@ -331,5 +331,44 @@
     "behavior": "reactive_homebound",
     "sprite_id": "ea69180d-a29c-4297-9ca3-8a0b7e34d88c",
     "boss": false
+  },
+  "shura": {
+    "base_id": "cocox",
+    "move_speed": 76,
+    "attack_seconds": 1.6,
+    "aggro_radius": 390,
+    "reach": 70,
+    "behavior": "reactive_homebound",
+    "boss": false,
+    "id": "shura",
+    "name": "Shura",
+    "level": 84,
+    "area": "skypiea-02"
+  },
+  "gendatsu": {
+    "base_id": "cocox",
+    "move_speed": 76,
+    "attack_seconds": 1.6,
+    "aggro_radius": 390,
+    "reach": 70,
+    "behavior": "reactive_homebound",
+    "boss": false,
+    "id": "gendatsu",
+    "name": "Gendatsu",
+    "level": 88,
+    "area": "skypiea-03"
+  },
+  "ohm": {
+    "base_id": "cocox",
+    "move_speed": 76,
+    "attack_seconds": 1.6,
+    "aggro_radius": 390,
+    "reach": 70,
+    "behavior": "reactive_homebound",
+    "boss": false,
+    "id": "ohm",
+    "name": "Ohm",
+    "level": 95,
+    "area": "skypiea-04"
   }
 }

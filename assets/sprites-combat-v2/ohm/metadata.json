@@ -1,0 +1,212 @@
+{
+  "name": "Ohm",
+  "frame_size": [
+    128,
+    128
+  ],
+  "anchor": [
+    64,
+    108
+  ],
+  "source_reference": "https://one-piece.com/character/Ohm/index.html",
+  "directions": [
+    "south",
+    "north",
+    "east",
+    "west"
+  ],
+  "clips": {
+    "idle": {
+      "south": {
+        "image": "idle-south.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 5,
+        "loop": true,
+        "anchor": [
+          64,
+          108
+        ]
+      },
+      "north": {
+        "image": "idle-north.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 5,
+        "loop": true,
+        "anchor": [
+          64,
+          108
+        ]
+      },
+      "east": {
+        "image": "idle-east.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 5,
+        "loop": true,
+        "anchor": [
+          64,
+          108
+        ]
+      },
+      "west": {
+        "image": "idle-west.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 5,
+        "loop": true,
+        "anchor": [
+          64,
+          108
+        ],
+        "mirrored_from": "east"
+      }
+    },
+    "walk": {
+      "south": {
+        "image": "walk-south.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 9,
+        "loop": true,
+        "anchor": [
+          64,
+          108
+        ]
+      },
+      "north": {
+        "image": "walk-north.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 9,
+        "loop": true,
+        "anchor": [
+          64,
+          108
+        ]
+      },
+      "east": {
+        "image": "walk-east.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 9,
+        "loop": true,
+        "anchor": [
+          64,
+          108
+        ]
+      },
+      "west": {
+        "image": "walk-west.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 9,
+        "loop": true,
+        "anchor": [
+          64,
+          108
+        ],
+        "mirrored_from": "east"
+      }
+    },
+    "attack": {
+      "south": {
+        "image": "attack-south.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 12,
+        "loop": false,
+        "anchor": [
+          64,
+          108
+        ],
+        "impact_frame": 3
+      },
+      "north": {
+        "image": "attack-north.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 12,
+        "loop": false,
+        "anchor": [
+          64,
+          108
+        ],
+        "impact_frame": 3
+      },
+      "east": {
+        "image": "attack-east.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 12,
+        "loop": false,
+        "anchor": [
+          64,
+          108
+        ],
+        "impact_frame": 3
+      },
+      "west": {
+        "image": "attack-west.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 12,
+        "loop": false,
+        "anchor": [
+          64,
+          108
+        ],
+        "impact_frame": 3,
+        "mirrored_from": "east"
+      }
+    },
+    "hurt": {
+      "south": {
+        "image": "hurt-south.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 14,
+        "loop": false,
+        "anchor": [
+          64,
+          108
+        ]
+      },
+      "north": {
+        "image": "hurt-north.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 14,
+        "loop": false,
+        "anchor": [
+          64,
+          108
+        ]
+      },
+      "east": {
+        "image": "hurt-east.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 14,
+        "loop": false,
+        "anchor": [
+          64,
+          108
+        ]
+      },
+      "west": {
+        "image": "hurt-west.png",
+        "size": 128,
+        "frames": 6,
+        "fps": 14,
+        "loop": false,
+        "anchor": [
+          64,
+          108
+        ],
+        "mirrored_from": "east"
+      }
+    }
+  }
+}

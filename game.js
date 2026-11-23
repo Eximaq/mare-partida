@@ -165,7 +165,7 @@
   }
   let travelPath = [], pursuit = new WeakMap(), conchasRouteReplans = 0;
   const keys = new Set(), rejectedTargets = new Map();
-  const mapKey=()=>ONLINE_GAME?.data?.online.world?.mapId||(scene==='lobby'?'lobby':dungeonRun?'quest-dungeons':impelRun?'impel-down':game?.area==='skypiea-01'?'skypiea-01':MareAlubarna.worlds[game?.area]?game.area:game?.area==='alabasta'&&worldMaps.alabasta?'alabasta':game?.area==='rare'&&worldMaps.rare?'rare':game?.area==='syrup'&&worldMaps.syrup?'syrup':game?.area==='baratie'&&worldMaps.baratie?'baratie':game?.area==='arlong'&&worldMaps.arlong?'arlong':game?.area==='swamp'&&worldMaps.conchas?'conchas':game?.area==='orange'&&worldMaps.orange?'orange':game?.area==='loguetown'&&worldMaps.loguetown?'loguetown':game?.area==='beach'&&worldMaps.dawn?'dawn':game?.area==='beach'&&worldMaps.embers?'embers':'hunt');
+  const mapKey=()=>ONLINE_GAME?.data?.online.world?.mapId||(scene==='lobby'?'lobby':dungeonRun?'quest-dungeons':impelRun?'impel-down':MareSkypiea.has(game?.area)?game.area:MareAlubarna.worlds[game?.area]?game.area:game?.area==='alabasta'&&worldMaps.alabasta?'alabasta':game?.area==='rare'&&worldMaps.rare?'rare':game?.area==='syrup'&&worldMaps.syrup?'syrup':game?.area==='baratie'&&worldMaps.baratie?'baratie':game?.area==='arlong'&&worldMaps.arlong?'arlong':game?.area==='swamp'&&worldMaps.conchas?'conchas':game?.area==='orange'&&worldMaps.orange?'orange':game?.area==='loguetown'&&worldMaps.loguetown?'loguetown':game?.area==='beach'&&worldMaps.dawn?'dawn':game?.area==='beach'&&worldMaps.embers?'embers':'hunt');
   const activeMap = () => worldMaps[mapKey()];
   const playOrangeSfx=cue=>{if(!ONLINE_GAME&&scene==='hunt')globalThis.MareAudio?.playOrange(mapKey(),cue);};
   const orangeBasicSfx=()=>MareCharacters.roles[game.classId].magic&&!game.zoanTransformed?'magia-fogo':'espada-corte';
@@ -270,7 +270,7 @@
   }
 
   const zones = {
-    'skypiea-01':{name:'Ilha dos Anjos',sub:'Skypiea',min:75,label:'RECOMENDADO · NV. 75–80',tint:'blue',mobs:['satori']},
+    ...Object.fromEntries(MareSkypiea.specs.map(s=>[s.id,{name:s.name,sub:'Skypiea',min:s.min,label:'RECOMENDADO · NV. '+s.min+'–'+s.max,tint:'blue',mobs:[s.type]}])),
     ...Object.fromEntries(MareAlubarna.specs.map(s=>[s.id,{name:s.name,sub:'Cidade de Alubarna',min:s.min,label:'RECOMENDADO · NV. '+s.min+'–'+s.max,tint:'orange',mobs:[s.type]}])),
     alabasta:{name:MareArchipelago.byArea('alabasta').name,sub:'Oásis e Santuários',min:40,label:'RECOMENDADO · NV. 40–50',tint:'orange',mobs:['bananawani']},
     beach: { name:MareArchipelago.byArea('beach').name, sub:'Costa dos Navegantes', min:1, label:'RECOMENDADO · NV. 1–5', tint:'beach', mobs:['cesar'] },
@@ -1308,7 +1308,7 @@
     $('sceneInfo').textContent=inLobby?'ÁREA SEGURA · CLIQUE PARA CAMINHAR':'COMBATE AUTOMÁTICO ATIVO';$('worldHint').textContent=inLobby?'Clique para caminhar · WASD / setas · Clique nos NPCs para interagir':'Clique no chão para caminhar · Monstro: retomar caçada · WASD / setas';document.body.classList.toggle('scene-lobby',inLobby);document.body.classList.toggle('scene-hunt',!inLobby);}
 
   function monsterName(m){return m?.name||monsterTypes[m?.type]?.name||'';}
-  function huntAnchors(){const imported=MareMapExports.get(activeMap().id);if(imported?.districts?.length)return imported.districts;if(activeMap().id==='skypiea-01')return MareSkypiea.districts;if(MareAlubarna.worlds[activeMap().id])return MareAlubarna.worlds[activeMap().id].districts;if(activeMap().id==='alabasta')return MareAlabasta.districts;return MareNewIslands[activeMap().id]?.districts||(activeMap().id==='dawn'?MareDawn.districts:activeMap().id==='conchas'?MarePixelWorldMaps.conchas.districts:activeMap().id==='orange'?MarePixelWorldMaps.orange.districts:activeMap().id==='loguetown'?MarePixelWorldMaps.loguetown.districts:activeMap().id==='embers'?MareEmber.districts:[]);}
+  function huntAnchors(){const imported=MareMapExports.get(activeMap().id);if(imported?.districts?.length)return imported.districts;if(MareSkypiea.has(activeMap().id))return MareSkypiea.worlds[activeMap().id].districts;if(MareAlubarna.worlds[activeMap().id])return MareAlubarna.worlds[activeMap().id].districts;if(activeMap().id==='alabasta')return MareAlabasta.districts;return MareNewIslands[activeMap().id]?.districts||(activeMap().id==='dawn'?MareDawn.districts:activeMap().id==='conchas'?MarePixelWorldMaps.conchas.districts:activeMap().id==='orange'?MarePixelWorldMaps.orange.districts:activeMap().id==='loguetown'?MarePixelWorldMaps.loguetown.districts:activeMap().id==='embers'?MareEmber.districts:[]);}
   function contractsBoardData(){
     const {daily,weekly}=ONLINE_GAME?ONLINE_GAME.data?.online.contracts||{}:localRecurring();
     return {quests:[...(daily?.objectives||[]),...(weekly?.objectives||[]),...questDefs],period:contractPeriod,progress:q=>q.current??questProgress(q),claimed:game.claimed,daily,weekly};
@@ -2031,7 +2031,7 @@
           if(MareBossDungeonCombat.begin(mob,enemyTarget,clip)){mob.attackCount++;mob.attackClock=mob.attackSec;continue;}
         }
       }
-       if(mob.source!=='boss-dungeon'&&mob.attackClock<=0){if(!MareRankA.attackBlocked(mob,world.time)&&md<=reach+10&&combatLine(mob,enemyTarget)&&!(enemyTarget===world.hero&&session.talents.ultimate.hidden)&&!(mob.empRemaining>0)){mob.emberFacing=Math.abs(enemyTarget.x-mob.x)>Math.abs(enemyTarget.y-mob.y)?(enemyTarget.x<mob.x?'west':'east'):(enemyTarget.y<mob.y?'north':'south');mob.attackAnim=(['bananawani','satori','cocox','sham','buchi','pearl','gin','kuroobi','chew','cesar','mr3','cabaji','marinheiro','helmeppo',...MareAlubarna.specs.map(s=>s.type)].includes(mob.type)||mob.type==='boss'&&mob.area==='beach')?MareCharacters.monsterAttackVisualDuration(mob.type):0;const warning=MareHunt.beginWarning(mob,enemyTarget);mob.attackCount=(mob.attackCount||0)+1;if(warning){mob.telegraph=warning;spawnVisual(mob.x,mob.y-95,warning.name,'#ffcb82',12);}else receiveEnemyAttack(enemyTarget,mob.attack,mob,mob.type!=='spirit');mob.attackClock=mob.attackSec||monsterTypes[mob.type].attackSec;}else mob.attackClock=.3;}
+       if(mob.source!=='boss-dungeon'&&mob.attackClock<=0){if(!MareRankA.attackBlocked(mob,world.time)&&md<=reach+10&&combatLine(mob,enemyTarget)&&!(enemyTarget===world.hero&&session.talents.ultimate.hidden)&&!(mob.empRemaining>0)){mob.emberFacing=Math.abs(enemyTarget.x-mob.x)>Math.abs(enemyTarget.y-mob.y)?(enemyTarget.x<mob.x?'west':'east'):(enemyTarget.y<mob.y?'north':'south');mob.attackAnim=(['bananawani',...MareSkypiea.specs.map(s=>s.type),'cocox','sham','buchi','pearl','gin','kuroobi','chew','cesar','mr3','cabaji','marinheiro','helmeppo',...MareAlubarna.specs.map(s=>s.type)].includes(mob.type)||mob.type==='boss'&&mob.area==='beach')?MareCharacters.monsterAttackVisualDuration(mob.type):0;const warning=MareHunt.beginWarning(mob,enemyTarget);mob.attackCount=(mob.attackCount||0)+1;if(warning){mob.telegraph=warning;spawnVisual(mob.x,mob.y-95,warning.name,'#ffcb82',12);}else receiveEnemyAttack(enemyTarget,mob.attack,mob,mob.type!=='spirit');mob.attackClock=mob.attackSec||monsterTypes[mob.type].attackSec;}else mob.attackClock=.3;}
       if(mob.telegraph)continue;
       if(MareDoru.isRooted(mob,world.time)||MareRankB.rooted(mob,world.time)){mob.moving=0;continue;}
       if(md>reach*.75||!combatLine(mob,enemyTarget))navigateEntity(mob,enemyTarget,mob.speed*MareRankA.slowFactor(mob,world.time)*Math.min(mob.slow>0?.55:1,mob.talentSlow?.remaining>0?1-mob.talentSlow.percent:1,mob.zoanSlow?.remaining>0?1-mob.zoanSlow.percent:1)*.65,dt,combatLine(mob,enemyTarget)?reach*.75:0);
@@ -2248,7 +2248,7 @@
     if(!zones[area]||game.level<zones[area].min)return;
     const id=area==='swamp'?'conchas':area==='beach'?'dawn':area;
     if(id==='dawn')void MareEmberRenderer.prepareMonsters(['cesar']);
-    if(id==='skypiea-01'){MareSkypiea.prepare();MareSpriteCombatV2.preload('satori');}
+    if(MareSkypiea.has(id)){MareSkypiea.prepare();MareSpriteCombatV2.preload(MareSkypiea.worlds[id].spec.type);}
     if(MareMapExports.get(id))MareMapExports.prepare(id);
     else if(MareAlubarna.worlds[id])MareAlubarna.prepare();
     else if(id==='alabasta')MareAlabasta.prepare();
@@ -3505,7 +3505,7 @@ ${avatarExtra}
   function drawBackground(){
     if(MareMapExports.get(activeMap().id)){MareMapExports.ground(ctx,activeMap().id,camera,W,H);return;}
     if(activeMap().id==='quest-dungeons'){MareQuestDungeonWorld.ground(ctx,camera,W,H);return;}
-    if(activeMap().id==='skypiea-01'){MareSkypiea.ground(ctx,camera,W,H);return;}
+    if(MareSkypiea.has(activeMap().id)){MareSkypiea.ground(ctx,camera,W,H);return;}
     if(MareAlubarna.worlds[activeMap().id]){MareAlubarna.ground(ctx,camera,W,H);return;}
     if(activeMap().id==='alabasta'){MareAlabasta.ground(ctx,camera,W,H);return;}
     if(activeMap().id==='impel-down'){MareImpel.ground(ctx,camera,W,H);return;}
@@ -3770,7 +3770,7 @@ ${avatarExtra}
     if(id==='quest-dungeons'){MareQuestDungeonWorld.prepare();return MareQuestDungeonWorld.state();}
     if(id==='lobby')image=MareLobby.image;
     else if(id==='dawn'){const s=MareDawnRenderer.stats();return s.ready?'ready':s.missing.length?'failed':'loading';}
-    else if(id==='skypiea-01')image=MareSkypiea.prepare();
+    else if(MareSkypiea.has(id))image=MareSkypiea.prepare();
     else if(id==='alabasta')image=MareAlabasta.prepare();
     else if(MareAlubarna.worlds[id])image=MareAlubarna.prepare();
     else if(MareNewIslands[id])image=MareNewIslands.prepare(id);
@@ -3835,7 +3835,7 @@ ${avatarExtra}
     // Neko skill impacts use the approved claws at each actual damage event.
     for(let f of world.fx){if(['akuma_tori_albatroz','akuma_uma_uma'].includes(f.zoanVfx))continue;ctx.globalAlpha=f.fruit||f.zoanVfx||f.supaVfx?1:clamp(f.life/f.max,0,1);if(f.wolfImpact){MareWolf.drawEffect(ctx,'bleed',f.x,f.y,(world.time-f.started)*1000);}else if(f.supaVfx){MareSupaArt.draw(ctx,supaImages[f.supaVfx],f.supaVfx,f.x,f.y,Date.now()-f.startedAt,{scale:MareAkuma.supaRules.radius*2/MareSupaArt.animations.slash.frames[0].w});}else if(f.zoanVfx){MareZoanArt.drawVfx(ctx,f.zoanVfx,f.followHero?world.hero.x:f.x,f.followHero?world.hero.y:f.y,{time:f.max-f.life,scale:74/48,loop:!!f.loop});}else if(f.fruit){drawFruitBurst(ctx,f.x,f.y,f.fruit,f.max-f.life);}else if(f.slash){ctx.strokeStyle=f.color;ctx.lineWidth=5;ctx.beginPath();ctx.arc(f.x,f.y-17,29,-2.35,.2);ctx.stroke();}else if(f.ring){ctx.strokeStyle=f.color;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(f.x,f.y-4,(1-f.life/f.max)*61+6,(1-f.life/f.max)*26+5,0,0,Math.PI*2);ctx.stroke();}else {ctx.textAlign='center';ctx.font='bold '+f.size+'px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#0b2323';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);}}ctx.globalAlpha=1;
     drawCombatVfx();
-    if(activeMap().id==='skypiea-01'){MareSkypiea.environment(ctx);MareSkypiea.foreground(ctx,camera,W,H,world.time,ambientReduced());}
+    if(MareSkypiea.has(activeMap().id)){MareSkypiea.environment(ctx,activeMap().id);MareSkypiea.foreground(ctx,camera,W,H,world.time,ambientReduced());}
     ambientWeather.draw(ctx,camera,W,H);
     ctx.restore();
 

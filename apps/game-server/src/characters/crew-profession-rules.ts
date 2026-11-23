@@ -63,7 +63,7 @@ export const professionalTargets:readonly Target[]=Object.entries(engine.hunt.re
   const group=groups.get(key)??[];group.push({slot,profile});groups.set(key,group);
  }
  return [...groups.values()].filter(g=>g.length>=2).flatMap(g=>{
-  const {slot,profile}=g[0]!,monster=engine.prisonCatalog[slot.type];
+  const {slot,profile}=g[0]!,monster=engine.worldMonsterCatalog[slot.type];
   if(!monster?.name||monster.boss)return [];
   const distance=g.reduce((sum,a)=>sum+Math.min(...g.filter(b=>a!==b).map(b=>Math.hypot(a.slot.x-b.slot.x,a.slot.y-b.slot.y))),0)/g.length;
   return [{area,areaName:(region as {name:string}).name,islandId:map.id,monster:slot.type,monsterName:monster.name,level:profile.level,entry:map.minLevel,count:g.length,travel:distance,maxHP:profile.maxHP,defense:profile.defense,magicDefense:profile.magicDefense,respawn:behavior.RESPAWN_MS/1000}];
