@@ -263,7 +263,7 @@ jobs:
       - name: Movimentos do catálogo, oclusão da mão e peitorais nas adagas
         env:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
-          WARDROBE_EVIDENCE: ${{ runner.temp }}/adagas-384.json
+          WARDROBE_EVIDENCE: ${{ runner.temp }}/adagas-960.json
         run: |
           node --test tests/rework-wardrobe-map-action.test.cjs
           node tests/rework-male-dagger-coat-cycles.cjs
@@ -280,7 +280,7 @@ jobs:
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           name: wardrobe-independence-dagger-frames
-          path: ${{ runner.temp }}/adagas-384.json
+          path: ${{ runner.temp }}/adagas-960.json
           retention-days: 3
           if-no-files-found: warn
   lateral-punch-wardrobe:

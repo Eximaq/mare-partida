@@ -7,7 +7,8 @@ const {make,cv}=require(path.join(project,'tests/rework-integration-support.cjs'
 const {gear,weapons}=require(path.join(project,'tools/audit-hd-wardrobe-product.cjs')),load=require(path.join(project,'tools/rework-hd-test-loader.cjs')).create(root);
 const look=mod('character-appearance.js'),world=mod('paper-doll-96-lobby.js'),catalog=mod('tools/paper-doll-96-v3/weapons.json');
 function json(file){const p=path.join(root,file);return JSON.parse(fs.existsSync(p)?fs.readFileSync(p):zlib.gunzipSync(fs.readFileSync(p+'.gz')));}
-const weaponArt=mod('player-rework-weapon-native-hd.js').create(json('tools/rework-weapon-layers-hd/index.json'),{makeCanvas:cv.createCanvas});
+const weaponIndex=json('tools/rework-weapon-layers-hd/index.json');
+const weaponArt=mod('player-rework-weapon-native-hd.js').create(weaponIndex,{makeCanvas:cv.createCanvas});
 const read=c=>Buffer.from(c.getContext('2d').getImageData(0,0,c.width,c.height).data);
 // Compare the ordered dagger head with the independent modular source. Its
 // neck and nose were translated in the signed 640px export, in both directions.
@@ -47,13 +48,16 @@ async function daggerReference(record,direction){
  }
  return {poses,frames};
 }
-const group=process.argv[2],expected={sword:170,rogue:180,gunner:130,healer:140,strategist:120};
+const group=process.argv[2],expected={sword:180,rogue:180,gunner:130,healer:140,strategist:120};
 assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated headgear');
 (async()=>{
  const api=make();await api.ready;await api.warmSwordCheckpoint();const rows=[];
  for(const {id:weapon,role} of weapons.filter(w=>w.role===group))for(const direction of ['north','south','east','west']){
   const actor=look.commit({classId:role,equipment:{weapon:{def:weapon}}},{gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',eyeStyle:'original',hairStyle:'original'},()=>true);
   const o={consumer:'world',direction,action:api.attackActionFor(weapon)},bare=world.selectWorldHDOnly(api,catalog,actor,o);
+  // The archive records the orientation of the modular skull independently of the selector.
+  const mirrored=weaponIndex.records.some(source=>source.item===weapon&&source.body===bare?.body&&
+   source.direction===direction&&source.approvedModularBody?.placement==='behind-body'&&source.approvedModularBody.mirror===true);
   let images,dagger;const backs=new Map();let count=0,frames=0;
   for(const item of gear[4]){
    const player={...actor,equipment:{...actor.equipment,head:{def:item}}},r=world.selectWorldHDOnly(api,catalog,player,o),part=r?.ownGauntletHead;
@@ -87,7 +91,9 @@ assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated h
      const i=Number(r.timeline[tick]),pose=dagger?dagger.poses[i]:(bare.basePack||bare.orbAnatomy||bare.orderedAnatomy||bare.fusedFocusAnatomy).pack.directions[direction].poses[i],pad=part.paddingPhysical;
      const off=(axis,delta)=>pad+Math.round(4*(pose.NECK[axis]-h.rest.NECK[axis]+(prior[axis]||0)+(delta||0)));
      const expected=cv.createCanvas(...r.nativeCanvas),ctx=expected.getContext('2d'),back=backs.get(hidden)[i];
-     ctx.drawImage(back,0,0);ctx.drawImage(raw,off('x',adj.gearX),off('y',adj.gearY));
+     ctx.drawImage(back,0,0);
+     if(mirrored){ctx.translate(expected.width,0);ctx.scale(-1,1);}
+     ctx.drawImage(raw,off('x',adj.gearX),off('y',adj.gearY));
      let actual;assert(b.draw({save(){},restore(){},drawImage(c){actual=c;}},player,{...o,progress:(tick+.2)/r.timeline.length}));
      const pixels=read(actual);assert(pixels.equals(read(expected)),[weapon,direction,item,tick,'original weapon and gear'].join('/'));
      assert(!pixels.equals(read(back)),[weapon,direction,item,tick,'visible gear'].join('/'));
@@ -100,6 +106,8 @@ assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated h
   if(count){rows.push({weapon,direction,items:count,frames});console.log(weapon,direction,count,frames);}
   global.gc?.();
  }
+ if(group==='sword')assert.deepEqual(rows.find(r=>r.weapon===69&&r.direction==='north'),
+  {weapon:69,direction:'north',items:10,frames:80},'All helmets ride the mirrored Nodachi skull through the complete cycle');
  if(group==='healer')for(const direction of ['east','west']){
   const relic=rows.find(r=>r.weapon===32&&r.direction===direction);
   assert.deepEqual(relic,{weapon:32,direction,items:10,frames:80});

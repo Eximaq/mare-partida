@@ -23,7 +23,16 @@ const pixels=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,640,640).dat
   try{for(const coat of [151,158,165,179]){
    const q=player({coat}),r=select(q);assert.deepEqual(r.omitted,[]);
    assert.equal(r.slotRoutes.coat.item,coat);assert.equal(r.slotRoutes.weapon.item,114);
-   assert.deepEqual(r.signedWeaponGarments.coatAssets,source.coats[coat]);
+   // Gloves are an independent foreground group above the coat. Walk the
+   // actual signed group chain and verify all eight source and drawing passes.
+   const coatGroups=[];
+   for(let group=r.signedWeaponGarments;group;group=group.base?.signedWeaponGarments){
+    if(group.coatAssets)coatGroups.push(group);
+   }
+   assert.equal(coatGroups.length,1);
+   const [registeredCoat]=coatGroups;
+   assert.deepEqual(registeredCoat.coatAssets,source.coats[coat]);
+   assert.deepEqual(registeredCoat.phases.map(phase=>phase.front),source.coats[coat].map(sha=>[sha]));
    for(const s of Object.keys(parts))assert.deepEqual(r.slotRoutes[s],bare.slotRoutes[s]);
    assert.deepEqual(select({...q,equipment:Object.fromEntries(Object.entries(q.equipment).reverse())}).slotRoutes,r.slotRoutes);
    const on=await prepare(q,r);assert.deepEqual(on.coverage[0].omitted,[]);
