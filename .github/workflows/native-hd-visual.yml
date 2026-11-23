@@ -22,6 +22,10 @@ on:
       - 'tests/rework-fixed-north-rifle-boots.cjs'
       - 'tests/rework-fixed-north-rifle-heads.cjs'
       - 'tests/rework-north-focus-coats.cjs'
+      - 'tests/rework-north-moving-boots.cjs'
+      - 'tools/register_north_articulated_boots.py'
+      - 'tools/rework-combat-wardrobe/north-articulated-boots.zip'
+      - 'tools/rework-combat-wardrobe/north-boot-donors.json'
       - 'tools/export_north_focus_coats.py'
       - 'tools/rework-combat-wardrobe/north-focus-coats.zip'
       - 'tools/register_north_rifle_trousers.py'
@@ -223,10 +227,12 @@ jobs:
           node --expose-gc tests/rework-north-pistol-coats.cjs
           python tools/register_north_rifle_trousers.py --verify
           python tools/export_north_focus_coats.py --verify
+          python tools/register_north_articulated_boots.py --verify
           node --expose-gc tests/rework-fixed-north-rifle-trousers.cjs
           node --expose-gc tests/rework-fixed-north-rifle-boots.cjs
           node --expose-gc tests/rework-fixed-north-rifle-heads.cjs
           node --expose-gc tests/rework-north-focus-coats.cjs
+          node --expose-gc tests/rework-north-moving-boots.cjs
   weapon-materials:
     runs-on: ubuntu-latest
     timeout-minutes: 30

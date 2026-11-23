@@ -2435,16 +2435,25 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  }
  function bootStamp(r,s,images){
   const track=r.bootTrack,row=track.phases[Number(s.state)],prefix='tools/rework-combat-wardrobe/assets/';
-  const art=images.get(prefix+row.art+'.png'),mask=images.get(prefix+row.mask+'.png');
-  if([art,mask].some(im=>im?.width!==row.width||im.height!==row.height))throw Error('Invalid fitted boot plate');
+  const art=images.get(prefix+row.art+'.png'),mask=row.mask&&images.get(prefix+row.mask+'.png'),rear=row.rear&&images.get(prefix+row.rear+'.png');
+  if([art,...(track.splitDepth?(row.rear?[rear]:[]):[mask])].some(im=>im?.width!==row.width||im.height!==row.height))throw Error('Invalid fitted boot plate');
   function draw(ctx,image){
    ctx.save();if(track.mirror){ctx.translate(640,0);ctx.scale(-1,1);}
    ctx.drawImage(image,row.x,row.y);ctx.restore();
   }
-  return {row,art,mask,draw};
+  return {row,art,mask,rear,draw};
  }
  function mountedBootLayers(r,s,d,map,images){
-  const phase=Number(s.state),{row,art,mask,draw:stamp}=bootStamp(r,s,images);
+  const phase=Number(s.state),{row,art,mask,rear,draw:stamp}=bootStamp(r,s,images);
+  if(r.bootTrack.splitDepth){
+   const layers=[...d.layers];
+   for(const [texture,key,depth] of [[rear,row.rear,-1],[art,row.art,2.5]]){
+    if(!texture)continue;
+    const tile=makeCanvas(640,640);stamp(tile.getContext('2d'),texture);map.set(key,tile);
+    layers.push({id:'equipped-boot-'+depth,slot:'top',depth,source:key,binding:{kind:'fixed'}});
+   }
+   return layers;
+  }
   for(const l of d.layers.filter(l=>l.id==='legs'||l.id==='underbody')){
    const key=l.frames[phase],original=map.get(key);
    if(original?.width!==640||original.height!==640)throw Error('Unexpected boot anatomy');
