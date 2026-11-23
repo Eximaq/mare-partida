@@ -5,17 +5,18 @@ const {make,cv}=require('./rework-integration-support.cjs'),{gear}=require('../t
 const load=require('../tools/rework-hd-test-loader.cjs').create(root),mod=n=>require(path.join(root,n));
 const world=mod('paper-doll-96-lobby.js'),catalog=mod('tools/paper-doll-96-v3/weapons.json'),app=mod('character-appearance.js');
 const tone=process.argv[2]||'ebony';assert(['light','ebony'].includes(tone));
+const weapon=Number(process.argv[3]||16);assert([16,32].includes(weapon));
 const tile=()=>cv.createCanvas(640,640),pixels=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,640,640).data.buffer);
-const readLayer=(r,l,f)=>load('tools/rework-weapon-layers-hd/'+r.images[l.frames?.[f]||l.source]);
+const readLayer=(r,l,f)=>load(r.images[l.frames?.[f]||l.source].replace(/^\/tools\//,'tools/').replace(/^assets\//,'tools/rework-weapon-layers-hd/assets/'));
 const armor=mod('tools/rework-combat-wardrobe/index.json'),slots={head:gear[4],boots:gear[2],coat:[151,158,165,179],gloves:gear[3]};
 async function test(){
  const api=make();await api.ready;
- const actor=app.commit({classId:'strategist',equipment:{}},{gender:'masculino',skinColor:tone,hairColor:tone==='light'?'brown':'blue',eyeColor:tone==='light'?'brown':'green'},()=>true);
+ const actor=app.commit({classId:weapon===32?'healer':'strategist',equipment:{}},{gender:'masculino',skinColor:tone,hairColor:tone==='light'?'brown':'blue',eyeColor:tone==='light'?'brown':'green'},()=>true);
  const saved=JSON.stringify(actor.appearance96),rows=[];
  for(const direction of ['east','west']){
   const options={consumer:'world',action:'attack-focus',direction},fixed={head:19,boots:169,coat:151,gloves:152};
   async function pose(eq){
-   const p={...actor,equipment:Object.fromEntries(Object.entries({weapon:16,...eq}).map(([s,id])=>[s,{def:id}]))},r=world.selectWorldHDOnly(api,catalog,p,options);
+   const p={...actor,equipment:Object.fromEntries(Object.entries({weapon,...eq}).map(([s,id])=>[s,{def:id}]))},r=world.selectWorldHDOnly(api,catalog,p,options);
    assert.deepEqual(r.omitted||[],[]);assert(!r.visualDegraded&&!r.appearanceAdapted);
    assert.equal(r.direction,direction);assert.equal(r.action,'attack-focus');
    for(const [k,v] of Object.entries(eq))assert.equal(r.slotRoutes[k].item,v);
@@ -24,7 +25,7 @@ async function test(){
    return {r,draw(f){let c;assert(b.draw({save(){},restore(){},drawImage(im){c=im;}},p,{...options,progress:(f+.1)/8}));assert.equal(api.snapshot().last.frame,f);return pixels(c);},release:()=>b.release()};
   }
   const naked=await pose({}),bare=Array.from({length:8},(_,f)=>naked.draw(f));
-  const witness=await pose({gloves:152}),rig=witness.r.independentPlan.base.compassAnatomy,parts=rig.pack.directions[direction].layers;
+  const witness=await pose({gloves:152}),rig=weapon===32?witness.r.independentPlan.base.basePack:witness.r.independentPlan.base.compassAnatomy,parts=rig.pack.directions[direction].layers;
   assert.equal(parts.length,11);witness.release();
   for(const [slot,ids] of Object.entries(slots)){
    const peers={...fixed};delete peers[slot];const others=await pose(peers),reference=Array.from({length:8},(_,f)=>others.draw(f));
@@ -34,7 +35,15 @@ async function test(){
     for(const s of Object.keys(peers))assert.deepEqual(others.r.slotRoutes[s],full.r.slotRoutes[s]);
     for(let f=0;f<8;f++){
      const a=solo.draw(f),b=full.draw(f);let changed=0,inKit=0,owned=0;
-     let glove,opaqueMetal,restore;
+     let glove,opaqueMetal,restore,clothReference;
+     if(weapon===32&&slot==='coat'){
+      const [cloth,metal]=solo.r.states[f].layers;
+      assert.equal(metal.sha256,naked.r.states[f].layers[0].sha256);
+      const c=tile(),x=c.getContext('2d'),back=x.createImageData(640,640);
+      new Uint32Array(back.data.buffer).set(bare[f]);x.putImageData(back,0,0);
+      x.drawImage(await load('tools/rework-weapon-layers-hd/'+cloth.url),0,0);
+      clothReference=pixels(c);c.width=1;
+     }
      if(slot==='gloves'){
       const c=tile(),x=c.getContext('2d'),all=tile();
       for(const [side,plane,material] of [['left','forearm-hand-far','staffGloves'],['right','forearm-hand-near','orbGloves']]){
@@ -49,13 +58,14 @@ async function test(){
        x.globalCompositeOperation='source-over';all.getContext('2d').drawImage(c,0,0);
       }
       glove=pixels(all);all.width=1;
-      const state=naked.r.states[f],equipment=state.layers.find(l=>l.id==='equipment'),body=state.layers.find(l=>l.id==='body'),rest=state.layers.find(l=>l.id==='original-distal-hand');
-      x.clearRect(0,0,640,640);if(equipment.depth>body.depth)x.drawImage(await load('tools/rework-weapon-layers-hd/'+equipment.url),0,0);opaqueMetal=pixels(c);
-      x.clearRect(0,0,640,640);x.drawImage(await load('tools/rework-weapon-layers-hd/'+rest.mask.url),0,0);restore=pixels(c);c.width=1;
+      const state=naked.r.states[f],equipment=weapon===32?state.layers[0]:state.layers.find(l=>l.id==='equipment'),body=state.layers.find(l=>l.id==='body'),rest=state.layers.find(l=>l.id==='original-distal-hand');
+      x.clearRect(0,0,640,640);if(weapon===32||equipment.depth>body.depth)x.drawImage(await load('tools/rework-weapon-layers-hd/'+equipment.url),0,0);opaqueMetal=pixels(c);
+      x.clearRect(0,0,640,640);if(rest)x.drawImage(await load('tools/rework-weapon-layers-hd/'+rest.mask.url),0,0);restore=pixels(c);c.width=1;
      }
      for(let i=0;i<a.length;i++){
       const different=a[i]!==bare[f][i],mixed=b[i]!==reference[f][i];
       if(different)changed++;if(mixed)inKit++;
+      if(clothReference)assert.equal(a[i],clothReference[i],'original garment, skin and weapon at '+i);
       if(glove){
        if(!glove[i]||((opaqueMetal[i]>>>24)===255&&!(restore[i]&255))){assert(!different);assert(!mixed);}
        else if(different)owned++;
@@ -78,6 +88,6 @@ async function test(){
  }
  assert.equal(rows.length,544);assert.equal(JSON.stringify(actor.appearance96),saved);
  if(process.env.HD_COMPASS_RESULTS)fs.writeFileSync(process.env.HD_COMPASS_RESULTS,JSON.stringify(rows));
- console.log(tone,rows.length,'single frames and the same number of mixed compass frames');
+ console.log(weapon,tone,rows.length,'single frames and the same number of mixed focus frames');
 }
 test().catch(e=>{console.error(e);process.exitCode=1;});

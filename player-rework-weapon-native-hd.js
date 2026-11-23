@@ -2621,12 +2621,13 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     map.set(key,tile);
    }else map.set(key,im);}
    if(r.w32SideSavedPalette){
-    if(r.item!==32||!r.relic32SideBlue||w!==640||h!==640||hiddenSlots.length)throw Error('Invalid exact W32 lateral palette');
+    if(r.item!==32||!r.relic32SideBlue||w!==640||h!==640||hiddenSlots.some(slot=>slot!=='hair'||!r.ownGauntletHead?.hideHair))throw Error('Invalid exact W32 lateral palette');
     const tone=appearance.focusSkin,api=root.MareAppearance96,ramp=api.skins[tone]?.ramp,S=root.MareNativeSkinHD,
       eye=root.MareReworkModularOutfitsHD?.sideIrisSamples(r.direction);
     if(!ramp||eye?.length!==18)throw Error('Missing W32 exact palette authority');
     const extra=({"east":[[120031,2],[120032,3],[120665,2],[120666,2],[121948,2],[121949,1],[121950,2],[121951,1],[121952,1],[122588,2],[122594,3],[123229,2],[123235,1],[123848,2],[123875,2],[124514,2],[124515,1],[127075,2],[130244,2],[130885,2]],"west":[[119968,2],[119967,3],[120614,2],[120613,2],[121891,2],[121890,1],[121889,2],[121888,1],[121887,1],[122531,2],[122525,3],[123170,2],[123164,1],[123831,2],[123804,2],[124445,2],[124444,1],[127004,2],[130235,2],[130874,2]]})[r.direction];
     for(const l of d.layers){
+     if(hiddenSlots.includes(l.slot))continue;
      const q=staffLateralRanks.head[r.direction][l.id],own=['torso','legs','upper-arm-far','forearm-hand-far','upper-arm-near','forearm-hand-near'].includes(l.id);
      if(!q&&!own)continue; // Underbody is invisible in all phases. Never paint it or shorts.
      const k=l.frames?.[Number(s.state)]||l.source,im=map.get(k),c=makeCanvas(w,h),cx=c.getContext('2d');if(!im||im.width!==w||im.height!==h)throw Error('Missing W32 source anatomy');
@@ -2643,7 +2644,18 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      px.data.set(api.recolor(px.data,mask,ramp));cx.putImageData(px,0,0);map.set(k,c);
     }
    }
-   const layers=r.bootTrack?mountedBootLayers(r,s,d,map,images):d.layers;
+   let layers=r.bootTrack?mountedBootLayers(r,s,d,map,images):d.layers;
+   if(r.relic32SideBlue&&r.orderedGloves){
+    layers=[...layers];
+    for(const [i,id] of ['forearm-hand-far','forearm-hand-near'].entries()){
+     const key=r.orderedGloves[i][Number(s.state)],hand=layers.find(l=>l.id===id);
+     const im=images.get('tools/rework-combat-wardrobe/assets/'+key+'.png');
+     if(im?.width!==640||im.height!==640||hand?.binding.kind!=='fixed')throw Error('Invalid modular focus hand');
+     const tile=makeCanvas(640,640),cx=tile.getContext('2d');
+     if(r.direction==='west'){cx.translate(640,0);cx.scale(-1,1);}cx.drawImage(im,0,0);map.set(key,tile);
+     layers.push({id:'glove-on-'+id,source:key,slot:'top',binding:{kind:'fixed'},depth:hand.depth+.25});
+    }
+   }
    const pack={...p,directions:{[r.direction]:{...d,layers:layers.filter(l=>!hiddenSlots.includes(l.slot))}}};
    if(r.ownedCannon15SouthAttack||r.ownedArm117SouthAttack||r.gauntlet112SouthOwnAttack){
     if(hiddenSlots.length||!recolored)throw Error('Unsupported W15 south owned rendering');
@@ -3057,7 +3069,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   if(!hiddenSlots.length&&!recolored&&s.canvasRoundingPatch?.length){const out=ctx.getImageData(0,0,w,h);for(const [pixel,red,green,blue,alpha] of s.canvasRoundingPatch){const i=pixel*4;out.data[i]=red;out.data[i+1]=green;out.data[i+2]=blue;out.data[i+3]=alpha;}ctx.putImageData(out,0,0);}
   if(r.relic32SideBlue){
    const points=root.MareReworkModularOutfitsHD?.sideIrisSamples?.(r.direction),ramp=root.MareCharacterAppearance?.eyes?.[r.colorAppearance?.focusEyes||'blue']?.ramp;
-   if(!r.basePack||r.item!==32||w!==640||h!==640||!points||points.length!==18||!ramp||hiddenSlots.length||renderOffset.some(Boolean))throw Error('Invalid Relic32 iris authority');
+   if(!r.basePack||r.item!==32||w!==640||h!==640||!points||points.length!==18||!ramp||hiddenSlots.some(slot=>slot!=='hair'||!r.ownGauntletHead?.hideHair)||renderOffset.some(Boolean))throw Error('Invalid Relic32 iris authority');
    const patch=points.map(([x,y,R,G,B,A,tone])=>{
     x+=64;y+=64;const p=ctx.getImageData(x,y,1,1),color=ramp[tone-1];
     if(p.data[0]!==R||p.data[1]!==G||p.data[2]!==B||p.data[3]!==A||!color)throw Error('Relic32 iris no longer matches the author source');

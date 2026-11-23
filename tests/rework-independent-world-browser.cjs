@@ -164,7 +164,7 @@ window.__hdSlotQA={
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
   if(process.argv.includes('--front-punch-trousers')){await observeWeaponGloves('pants');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--front-punch-coats')){await observeWeaponGloves('coat');assert.deepEqual(errors,[]);return;}
-  if(process.argv.includes('--compass-side-wardrobe')){await observeCompassWardrobe();assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--compass-side-wardrobe')||process.argv.includes('--relic-side-wardrobe')){await observeCompassWardrobe(process.argv.includes('--relic-side-wardrobe')?32:16);assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-metal-gloves')){await observeWeaponGloves('gauntlet');assert.deepEqual(errors,[]);return;}
   if(['--staff-gloves','--sword-gloves','--orb-gloves','--dagger-gloves'].some(v=>process.argv.includes(v))){await observeWeaponGloves(process.argv.includes('--sword-gloves')?'sword':process.argv.includes('--orb-gloves')?'orb':process.argv.includes('--dagger-gloves')?'daggers':'staff');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--staff-coats')){
@@ -569,16 +569,16 @@ window.__hdSlotQA={
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }
- async function observeCompassWardrobe(){
+ async function observeCompassWardrobe(weapon){
   const {gear}=require('../tools/audit-hd-wardrobe-product.cjs');
   const wardrobe={coat:[151,158,165,179],head:gear[4],boots:gear[2],gloves:gear[3]};
-  const start={weapon:16,coat:151,head:19,boots:169,gloves:152};
+  const start={weapon,coat:151,head:19,boots:169,gloves:152};
   const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
-  await page.evaluate(({ids,look})=>__hdSlotQA.seedWardrobe('strategist',ids,look),{ids:[16,...Object.values(wardrobe).flat()],look});
+  await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role:weapon===32?'healer':'strategist',ids:[weapon,...Object.values(wardrobe).flat()],look});
   for(const id of Object.values(start))await put(id);
   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
   for(const direction of ['east','west']){
-   const label='bussola-16-'+direction;
+   const label=(weapon===32?'reliquia-32-':'bussola-16-')+direction;
    const show=(name,kit)=>observeAttack('attack-focus',label+'-'+name,direction,kit);
    const original=await show('conjunto',start);
    await captureMapCycle('attack-focus',start,label,8,direction);

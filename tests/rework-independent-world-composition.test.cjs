@@ -80,7 +80,7 @@ for(const direction of ['east','west']){
 }
 
 const path=require('node:path');
-const loadNative=require('../tools/rework-hd-test-loader.cjs').create(path.resolve(__dirname,'..'));
+const loadNative=require('../tools/rework-hd-test-loader.cjs').create(process.env.HD_PUBLISHED_ROOT||path.resolve(__dirname,'..'));
 const {cv}=require('./rework-integration-support.cjs');
 const pose=action=>({consumer:'world',direction:'south',action});
 async function prepare(renderer,player,options,source){
@@ -260,4 +260,20 @@ for(const direction of ['east','west'])test('male walk: G25 has its own 16 '+dir
    assert.notDeepEqual(drawFrame(on,p,options,tick).pixels,drawFrame(off,q,options,tick).pixels,'visible G25 frame '+i);
   }
  }finally{on.release();off.release();}
+});
+
+for(const [failedSlot,planSlot] of [['coat','torso'],['gloves','gloves']])test('South punch retains every other slot after a failed '+failedSlot+' raster',{skip:!process.env.HD_PUBLISHED_ROOT},async()=>{
+ const options={consumer:'world',action:'attack-unarmed',direction:'south'};
+ const p=appearance.commit({classId:'brawler',equipment:{weapon:{def:2},coat:{def:151},legs:{def:168},boots:{def:169},gloves:{def:152},head:{def:19}}},look,()=>true);
+ const q={...p,equipment:{...p.equipment}};delete q.equipment[failedSlot];
+ await visual.ready;const find=player=>world.selectWorldHDOnly(visual,weapons,player,options);
+ const selected=find(p),ref=find(q),hash=selected.independentPlan.passes.get(planSlot).refs[0];
+ assert.match(hash,/^[a-f0-9]{64}$/);
+ const broken=make({loadImage:file=>file.endsWith('/'+hash+'.png')?Promise.reject(Error('simulated missing garment')):loadNative(file)});
+ const b=await prepare(broken,p,options,selected),control=await prepare(visual,q,options,ref);
+ try{
+  const [row]=b.coverage;assert.deepEqual(row.omitted,[failedSlot]);assert.equal(row.slotResolution[failedSlot].state,'load-failed');
+  for(const slot of Object.keys(q.equipment))assert.deepEqual(row.slotRoutes[slot],control.coverage[0].slotRoutes[slot]);
+  for(let i=0;i<b.coverage[0].frames;i++){const t=(i+.25)/b.coverage[0].frames;assert.deepEqual(drawFrame(b,p,options,t).pixels,drawFrame(control,q,options,t).pixels);}
+ }finally{b.release();control.release();}
 });
