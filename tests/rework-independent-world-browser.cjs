@@ -152,6 +152,7 @@ window.__hdSlotQA={
   if(process.argv.includes('--articulated-boots')){await observeArticulatedBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--sword-coats')){await observeWeaponCoats([0,1,67,68,69,70],'sword','attack-sword');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--north-rifle-helmets')){await observeNorthRifleHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-rifle-trousers')){await observeNorthTrousers();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--pistol-clothes')){await observePistolClothes();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--mounted-weapons')){await observeMountedWeapons();assert.deepEqual(errors,[]);return;}
@@ -462,6 +463,32 @@ window.__hdSlotQA={
    const bare=await observeAttack(action,prefix+'-sem-capacete',dir,{weapon});
    assert.equal(bare.visual.coverage[0].slotRoutes.head,undefined);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
+ }
+ async function observeNorthRifleHelmets(){
+  const heads=[18,19,129,136,143,150,157,164,171,178],look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
+  for(const weapon of [4,5,113,115,116]){
+   const gear={weapon,legs:140,boots:176};
+   await page.evaluate(({gear,heads,look})=>__hdSlotQA.seedWardrobe('gunner',[...Object.values(gear),...heads],look),{gear,heads,look});
+   for(const item of Object.values(gear))await put(item);
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   const shoot=(label,visible)=>observeAttack('attack-firearm','rifle-'+weapon+'-'+label,'north',visible);
+   const clean=await shoot('antes-do-chapeu',gear);
+   let first;
+   for(const head of [...heads,18]){
+    await put(head);
+    const next=await shoot('cabeca-'+head+(first&&head===18?'-retorno':''),{...gear,head});
+    for(const slot of Object.keys(gear))assert.deepEqual(next.visual.coverage[0].slotRoutes[slot],clean.visual.coverage[0].slotRoutes[slot]);
+    if(head===18){if(first)assert.deepEqual(next.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);else first=next;}
+   }
+   for(const hide of [true,false]){
+    await menu();await page.locator('[data-headgear-visibility]').click();await close();
+    const toggled=await shoot(hide?'oculto':'visivel',hide?gear:{...gear,head:18});
+    assert.deepEqual(toggled.visual.coverage[0].slotRoutes,(hide?clean:first).visual.coverage[0].slotRoutes);
+    const state=await page.evaluate(()=>__hdSlotQA.read());assert.equal(state.equipment.head,18);assert.equal(state.hideHead,hide);assert.deepEqual(state.appearance,saved);
+   }
+   await remove('head');const last=await shoot('depois-do-chapeu',gear);
+   assert.deepEqual(last.visual.coverage[0].slotRoutes,clean.visual.coverage[0].slotRoutes);
   }
  }
  async function observeNorthTrousers(){

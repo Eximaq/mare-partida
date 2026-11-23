@@ -81,6 +81,21 @@ def register():
     foot_box[380:540,235:409] = True
     if np.any(native[foot_box] != backing[foot_box]):
         raise ValueError('Receiving feet differ from the source of the boots')
+    head, hair = d['layers'][2:4]
+    if [head['slot'],hair['slot']] != ['headBase','hair'] or any(l['binding'] != {'kind':'rigid','a':'NECK','b':'NOSE'} for l in (head,hair)):
+        raise ValueError('Unexpected rear head registration')
+    if any(d['rest'][joint]!=d['poses'][0][joint] for joint in ('NECK','NOSE')):
+        raise ValueError('Receiving neck differs')
+    scalp, fringe = (np.asarray(original(l['source'])) for l in (head,hair))
+    hair_owned = fringe[:,:,3] > 0
+    clear_head = native.copy()
+    clear_head[hair_owned] = scalp[hair_owned]
+    exposed = (scalp[:,:,3]>0) & ~hair_owned
+    if (not np.isin(fringe[:,:,3],[0,255]).all() or np.any(scalp[exposed]!=native[exposed]) or
+            np.any(np.asarray(skin)[:,:,3][hair_owned]) or
+            np.any(np.asarray(Image.alpha_composite(Image.fromarray(clear_head),Image.fromarray(fringe)))!=native)):
+        raise ValueError('The original head does not reconstruct the receiving backing')
+    head_mask = 'dbd4bd96d42aec8e29e1ff8c71e0e54f3c3805652b3aac0cb3264e46a86dd29b'
     poses = {}
     for r in weapons['records']:
         if r['body'] != 'male' or r['direction'] != 'north' or not any(l['sha256']==BACK for l in r['states'][0]['layers']):
@@ -93,7 +108,9 @@ def register():
                 raise ValueError('Unexpected receiver order')
             if any(l['depth']!=i or l['operation']!='source-over' or l['size']!=[640,640] or l.get('offset') or l.get('mask') or l.get('mirrorX') for i,l in enumerate(layers)):
                 raise ValueError('Unregistered weapon transformation')
-            if any(extent.flat[pixel] or stock.flat[pixel] for pixel,*rest in state.get('canvasRoundingPatch',[])):
+            if layers[-1]['paletteMask']['sha256'] != head_mask:
+                raise ValueError('Unexpected backing materials')
+            if any(extent.flat[pixel] or stock.flat[pixel] or hair_owned.flat[pixel] for pixel,*rest in state.get('canvasRoundingPatch',[])):
                 raise ValueError('Rounding correction intersects garment')
             foreign = np.logical_or.reduce([np.asarray(original(l['sha256']))[:,:,3]>0 for l in layers[:3]])
             if np.any(foreign & foot_box):
@@ -106,7 +123,7 @@ def register():
             poses[key]=runs(foreign & extent & (native[:,:,3]<255))
     if not poses:
         raise ValueError('No compatible rifle')
-    return dict(receiver=BACK,baseId=q['baseId'],donor=q['baseSHA'],footBounds=[235,380,409,540],clear=runs(stock & (native[:,:,3]>0)),items=cloth,poses=poses)
+    return dict(receiver=BACK,baseId=q['baseId'],donor=q['baseSHA'],head=dict(skull=head['source'],hair=hair['source'],materials=head_mask),footBounds=[235,380,409,540],clear=runs(stock & (native[:,:,3]>0)),items=cloth,poses=poses)
 
 
 if __name__=='__main__':
