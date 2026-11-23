@@ -8,6 +8,8 @@ from pathlib import Path
 import struct
 import tarfile
 
+from register_south_firearm_legs import south_firearm_legs
+from register_south_rifle_arms import south_rifle_arms
 from export_north_firearm_wardrobe import materialize as rifle_wardrobe
 
 from export_firearm_wardrobe import materialize as other_firearm_wardrobe
@@ -20,6 +22,7 @@ from register_staff_gloves import materialize as staff_gloves
 from register_scepter_profile_gloves import materialize as scepter_gloves
 from register_south_punch_coats import materialize as south_punch_coats
 from register_south_staff_clothes import materialize as south_staff_clothes
+from register_south_staff_grips import materialize as south_staff_grips
 from export_male_sword_coats import receptors as sword_receivers
 from export_north_focus_coats import materialize as north_focus_coats
 from register_north_weapon_coats import materialize as north_weapon_coats
@@ -169,6 +172,7 @@ def materialize(folder, out):
         records=records, maleDaggerCoats=dagger_coat_bank, maleSwordCoats=sword_coat_bank, articulatedBoots=articulated_boots(bank), daggerBoots=articulated_boots(bank,daggers=True), rifleProfileGloves=rifle_profile_gloves(bank), rifleProfileSleeves=rifle_profile_sleeves(bank), rifleProfilePants=rifle_profile_trousers(bank), bladeTrousers=blade_trousers(bank), northBladeGloves=north_blade_gloves(bank), northBladeCoats=north_blade_coats(bank), maleStaffCoats=staff_coats(bank), staffGloves=staff_gloves(bank), scepterGloves=scepter_gloves(bank),
         southPunchCoats=south_punch_coats(bank),
         southStaffClothes=south_staff_clothes(bank),
+        southStaffGrips=south_staff_grips(bank),
         southPunchGloves=staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/south-punch-gloves.zip',phases=12),
         daggerGloves=staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/dagger-gloves.zip'),
         orbGloves=staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/orb-gloves.zip'),
@@ -180,6 +184,9 @@ def materialize(folder, out):
         sideFocusTrousers=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/side-focus-trousers.json').read_bytes()),
         northFocusTrousers=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/north-focus-trousers.json').read_bytes()),
         southFocusPants=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/south-focus-trousers.json').read_bytes()),
+        southFirearmLegs=south_firearm_legs(bank),
+        southRifleArms=south_rifle_arms(bank),
+        firearmHeads=json.loads((Path(__file__).resolve().parent/'rework-combat-wardrobe/firearm-original-heads.json').read_bytes()),
         northRifleClothes=north_rifle_clothes(bank),
         northRiflePants=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/north-rifle-trousers.json').read_bytes()),
         handFits={k: [r['matrix'] for r in phases] for k, phases in fit.items()}), separators=(',', ':')) + '\n', encoding='utf-8')

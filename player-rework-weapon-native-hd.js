@@ -2581,6 +2581,40 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   g.drawImage(map.get(stock),0,0);g.globalCompositeOperation='destination-out';g.drawImage(front,0,0);map.set(stock,clean);
   front.width=1;return [...layers,...added];
  }
+ // Limit erasure and paint to this receiver's signed back plane. Hands and
+ // barrels occupy holes in the clip and retain their actual customized pixels.
+ function paintSouthFirearmLegs(ctx,legs,frame,images){
+  const phases=legs.map(l=>l.track[frame]);
+  function spans(runs,fn){
+   for(const [begin,length] of runs){
+    let x=begin%640,y=Math.floor(begin/640),remaining=length;
+    while(remaining){const w=Math.min(640-x,remaining);fn(x,y,w,1);remaining-=w;y++;x=0;}
+   }
+  }
+  function draw(p){
+   if(!p)return;const [key,x,y]=p,url='tools/rework-combat-wardrobe/assets/'+key+'.png',im=images.get(url);
+   if(!im)throw Object.assign(Error('Missing registered firearm garment'),{asset:url});
+   ctx.drawImage(im,x,y);
+  }
+  ctx.save();ctx.beginPath();ctx.rect(0,0,640,640);
+  spans(phases[0].guard,(x,y,w,h)=>ctx.rect(x,y,w,h));ctx.clip('evenodd');
+  for(const p of phases)spans(p.cut,(x,y,w,h)=>ctx.clearRect(x,y,w,h));
+  ctx.globalCompositeOperation='destination-over';
+  for(const p of phases)draw(p.rear);
+  ctx.globalCompositeOperation='source-over';
+  for(const p of phases)draw(p.front);
+  ctx.restore();
+ }
+ function paintSouthRifleArms(ctx,tracks,frame,images){
+  function draw(p){
+   if(!p)return;const [sha,x,y]=p,url='tools/rework-combat-wardrobe/assets/'+sha+'.png',im=images.get(url);
+   if(!im)throw Object.assign(Error('Missing original firearm sleeve or grip'),{asset:url});
+   ctx.drawImage(im,x,y);
+  }
+  ctx.save();ctx.globalCompositeOperation='destination-over';
+  for(const track of tracks)draw(track[frame].rear);
+  ctx.globalCompositeOperation='source-over';for(const track of tracks)draw(track[frame].front);ctx.restore();
+ }
  function mountedBladeTrousers(r,s,layers,map,images){
   const frame=Number(s.state),key=r.bladePants.phases[frame].art,tile=makeCanvas(640,640);
   paintBladeTrousers(tile.getContext('2d'),r,s,images);map.set(key,tile);
@@ -2889,8 +2923,10 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    if((recolored||r.mirrorBody)&&!s.attachment){if(!root.MareReworkBaseHD)throw Error('Native palette renderer unavailable');const base=root.MareReworkBaseHD.create({schema:'rework-full-hd-v1',records:[]},{vendor,prefix:''});base.render(target,{id:r.id,body:r.body,action:r.action,pack,direction:r.direction,sourceRefs:[...map.keys()],mirrorX:r.mirrorBody},map,{frame:Number(s.state),appearance,makeCanvas,
     ...(r.isolatedProfileIris||r.ownedCannon15SideAttack||r.ownedArm117SideAttack||r.ownedCannon15SouthAttack||r.ownedArm117SouthAttack||r.gauntlet112SouthOwnAttack?{afterMaterialSource:(source,im,old)=>source===((r.ownedCannon15SouthAttack||r.ownedArm117SouthAttack||r.gauntlet112SouthOwnAttack)?"assets/"+firearmSouthFace+".png":firearmSideFace[r.direction])?paintFirearmSideIris(im,old,r,makeCanvas):im}:{})});}
    else if(s.attachment){const dir=pack.directions[r.direction],at=s.attachment,ops=dir.layers.map(layer=>({depth:layer.depth,layer}));ops.push({depth:at.depth,attachment:at});
+    if(r.firearmLegs)ops.push({depth:1.8,firearmLegs:true});
+    if(r.firearmArms)ops.push({depth:2.8,firearmArms:true});
     for(const hand of r.swordGloves||[])ops.push({depth:hand.depth,glove:hand.track[Number(s.state)]});
-    if(r.swordTrack)ops.push({depth:8,swordCoat:true});for(const op of ops.sort((a,b)=>a.depth-b.depth)){if(op.glove){
+    if(r.swordTrack)ops.push({depth:8,swordCoat:true});for(const op of ops.sort((a,b)=>a.depth-b.depth)){if(op.firearmLegs){paintSouthFirearmLegs(ctx,r.firearmLegs,Number(s.state),images);continue;}if(op.firearmArms){paintSouthRifleArms(ctx,r.firearmArms,Number(s.state),images);continue;}if(op.glove){
       const panel=images.get('tools/rework-combat-wardrobe/assets/'+op.glove+'.png');
       if(panel?.width!==640||panel.height!==640)throw Error('Invalid articulated sword glove');
       ctx.save();if(r.direction==='west'){ctx.translate(640,0);ctx.scale(-1,1);}
@@ -3130,6 +3166,10 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   if(r.ownDaggerLightMaterials)renderOwnDaggerLight(ctx,r,s,image,omitWeaponLayer);
   for(const l of r.equipmentBehindBody||r.ownDaggerLightMaterials?[]:[...s.layers].sort((a,b)=>a.depth-b.depth)){
    if((r.w128IndependentSide||r.w121IndependentSide)&&omitWeaponLayer&&l.id==='gear'&&l.component==='equipment')continue;
+   if(r.w5IndependentSouth&&(r.firearmLegs||r.firearmArms)&&l===s.layers.find(p=>p.component==='equipment')){
+    if(r.firearmLegs)paintSouthFirearmLegs(ctx,r.firearmLegs,Number(s.state),images);
+    if(r.firearmArms)paintSouthRifleArms(ctx,r.firearmArms,Number(s.state),images);
+   }
    if(r.w5IndependentSouth&&omitWeaponLayer&&l.component==='equipment')continue;
    if(l.inFrontOfHead&&headOverlay){ctx.drawImage(headOverlay,...(r.headOverlayOffset??[0,0]));headOverlay=null;}
    if(r.orderedAnatomy&&r.ownGauntletHead?.hideHair&&l.id==='hair')continue;
@@ -3617,7 +3657,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    actions.includes(requested)?actions.find(a=>a.startsWith('attack-')):null;
   return action?{...record,action}:record;
  }
- return {registeredCoat,registeredPunchGrip,compassWardrobeRig,southPunchHeadLayers,northFocusCoat,sharesNorthFocusCoatPose,
+ return {paintSouthFirearmLegs,registeredCoat,registeredPunchGrip,compassWardrobeRig,southPunchHeadLayers,northFocusCoat,sharesNorthFocusCoatPose,
   southArmProjection:frame=>frame>=7&&frame<=10?cyborg119SouthOwnAuthority.frames[frame][3]:null,
   projectSouthArms:(before,sheet,phase,trousers)=>cyborg120ArmRecipe(before,sheet,phase-7,makeCanvas,trousers),
   sidePunchMetal,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
