@@ -2,6 +2,11 @@
 const assert=require('node:assert/strict');
 async function prepareWorldPose(lobby,player,action,direction){
  const request=lobby.requestWorldVisual(player,{action,direction,consumer:'world'});
+ const pending=lobby.worldVisual();
+ if(pending.state==='loading'){
+  assert.equal(pending.key,request.key);assert.equal(pending.publishedKey,undefined);
+  assert.deepEqual(pending.coverage,[]);
+ }
  await request.promise;
  const visual=lobby.worldVisual();
  assert.equal(visual?.state,'ready',JSON.stringify(visual));
@@ -21,4 +26,15 @@ async function walkingTrousers(lobby,player,item,direction){
  const donor='female-pants'+item+(item===168?'-walk-':'-sword-walk-')+direction;
  assert.equal(route.source,donor);return pose;
 }
-module.exports={prepareWorldPose,walkingTrousers};
+async function equippedWorldPose(lobby,player,action,direction){
+ const entry=await prepareWorldPose(lobby,player,action,direction);
+ assert.deepEqual(entry.omitted,[]);
+ for(const [slot,item] of Object.entries(player.equipment)){
+  if(item==null)continue;
+  const route=entry.slotRoutes?.[slot];
+  assert.equal(route?.item,item.def??item,slot+' in '+action+' '+direction);
+  assert.equal(route.quality,'hd');assert(route.source);
+ }
+ return entry;
+}
+module.exports={prepareWorldPose,walkingTrousers,equippedWorldPose};
