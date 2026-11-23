@@ -2510,6 +2510,27 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   cx.globalCompositeOperation='source-over';boot.draw(cx,boot.art);
   return layer;
  }
+ // Keep the historical palm residue on the shorts layer. Only the connected
+ // indigo garment is removed. The underlying skin is the live personalized rig.
+ function northStockWithoutPants(map,stock,phase,fit){
+  const key=stock.frames[phase],source=map.get(key),row=fit.phases[phase];
+  if(source?.width!==640||source.height!==640||!row.stock.includes(key))throw Error('Missing registered North waist');
+  const clean=makeCanvas(640,640),ctx=clean.getContext('2d');ctx.drawImage(source,0,0);
+  for(const [start,length] of row.cut){
+   let at=start,left=length;
+   while(left>0){const x=at%640,n=Math.min(640-x,left);ctx.clearRect(x,Math.floor(at/640),n,1);at+=n;left-=n;}
+  }
+  map.set(key,clean);
+ }
+ function northTrouserLayer(r,layers,map,images,frame){
+  const fit=r.northFittedPants,key=fit.cloth[frame],url='tools/rework-modular-outfits-hd/assets/'+key+'.png';
+  const fabric=images.get(url);
+  if(fabric?.width!==640||fabric.height!==640)throw Object.assign(Error('Wrong North trouser plate'),{asset:url});
+  northStockWithoutPants(map,layers.find(l=>l.id==='shorts'),frame,fit);
+  const tile=makeCanvas(640,640),ctx=tile.getContext('2d');
+  ctx.imageSmoothingEnabled=false;ctx.transform(...fit.phases[frame].transform);ctx.drawImage(fabric,0,0);map.set(key,tile);
+  return [...layers,{id:'equipped-focus-trousers',source:key,slot:'top',depth:2.25,binding:{kind:'fixed'}}];
+ }
  function mountedBootLayers(r,s,d,map,images){
   const phase=Number(s.state),{row,art,mask,rear,draw:stamp}=bootStamp(r,s,images);
   if(r.bootTrack.splitDepth){
@@ -2587,6 +2608,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    paintNativeAttachment(cx,r,at,a=>image(a.url),r.colorAppearance);cx.restore();
    const upper=dir.layers.filter(l=>l.depth>at.depth&&!(hideHair&&l.slot==='hair'));
    const map=new Map(upper.map(l=>{const k=l.frames?.[frame]||l.source;return [k,image(rig.images[k])];}));
+   if(r.northFittedPants)northStockWithoutPants(map,dir.layers.find(l=>l.id==='shorts'),frame,r.northFittedPants);
    cx.globalCompositeOperation='destination-out';
    vendor.compositor.render(cx,{...pack,directions:{north:{...dir,layers:upper}}},map,{direction:'north',frame,density:4,clear:false});
    const t=tile.getContext('2d');t.drawImage(cloth,0,0);t.globalCompositeOperation='source-atop';t.drawImage(front,0,0);
@@ -2687,6 +2709,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     }
    }
    let layers=r.bootTrack?mountedBootLayers(r,s,d,map,images):d.layers;
+   if(r.northFittedPants)layers=northTrouserLayer(r,layers,map,images,Number(s.state));
    if(r.relic32SideBlue&&r.orderedGloves){
     layers=[...layers];
     for(const [i,id] of ['forearm-hand-far','forearm-hand-near'].entries()){
