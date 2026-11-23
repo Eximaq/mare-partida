@@ -1,11 +1,11 @@
 # Manopla e adagas laterais no mapa
 
-O censo do código `4eea58b322f717ec20211374d0a3da01cbd44e5a` tem a assinatura `f11b50cb1764ae8f1940bbfa28166caf007732140916a0ff1e913bcef4e403a8`. Há **1.056 contextos completos na seleção e 120 com lacunas**, todos em ataques masculinos armados. Os 1.176 receptores sem roupas foram selecionados. Nenhum dos 50 itens atendeu ao critério global de seleção e desenho em todas as poses. [Censo por contexto](censo.ndjson.gz) · [Resultados por item](detalhes.tsv.gz) · [Fila de causas e IDs](pendencias.json.gz) · [Resumo](resumo.json)
+O censo do código `dd993d1630438b650447ae3f29950201a0dc74f5` tem a assinatura `a5ae4a8e81cd8027aa3774b223b13ae0c735feb74448200571d63f8726cbefeb`. Há **1.056 contextos completos na seleção e 120 com lacunas**, todos em ataques masculinos armados. Os 1.176 receptores sem roupas foram selecionados. Nenhum dos 50 itens atendeu ao critério global de seleção e desenho em todas as poses. [Censo por contexto](censo.ndjson.gz) · [Resultados por item](detalhes.tsv.gz) · [Fila de causas e IDs](pendencias.json.gz) · [Resumo](resumo.json)
 
 | Corpo e equipamento | Contextos completos | Itens individuais | Pares | Conjuntos mistos |
 |---|---:|---:|---:|---:|
 | Feminino armado | 504/504 | 25.200/25.200 | 504.000/504.000 | 50.400/50.400 |
-| Masculino armado | 384/504 | 21.712/25.200 | 409.507/504.000 | 38.400/50.400 |
+| Masculino armado | 384/504 | 21.736/25.200 | 409.987/504.000 | 38.400/50.400 |
 | Feminino desarmado | 84/84 | 4.200/4.200 | 84.000/84.000 | 8.400/8.400 |
 | Masculino desarmado | 84/84 | 4.200/4.200 | 84.000/84.000 | 8.400/8.400 |
 
@@ -34,6 +34,25 @@ Cada contexto consulta 50 peças, todos os 1.000 pares entre slots e 100 conjunt
 | 859a53d | 21.608 | 407.075 | 380 |
 | c0265d6 | 21.648 | 408.675 | 384 |
 | 4eea58b | 21.712 | 409.507 | 384 |
+| dd993d1 | 21.736 | 409.987 | 384 |
+
+## Peitorais na pose de foco Norte
+
+Nas armas 16, 17, 31, 32, 121 e 122, cada receptor passou de 20 para 24 peças selecionadas entre as 50. Os quatro peitorais recuperados são 151, 158, 165 e 179. O arquivo editável da bússola fica em `art-approved/weapons/clothing-batch-20261112/16_N_M`; os dois orbes estão em `art-approved/weapons/male17-122-north-four-torsos`. Os outros três receptores têm o mesmo corpo modular, pivô, direção e relógio de oito fases. O registro valida esses dados e usa a fonte do próprio peitoral sobre a empunhadura real de cada arma.
+
+O exportador reproduz cada quadro editorial com sua máscara, recupera o tecido que as outras fontes do mesmo item deixam visível e confere a posição do cabelo no quadro 1. Durante o desenho, o compositor usa o metal da ação atual e a mão efetivamente equipada, respeitando a transparência da borda e as partes do corpo que ficam à frente. Nenhuma peça exige os IDs das outras roupas.
+
+| Ensaio | Cobertura executada | Resultado |
+|---|---:|---|
+| Seleção na pose recuperada | 6 armas × 4 peitorais × 10 capacetes × 10 botas × 2 ordens | 4.800 seleções com os mesmos IDs e fontes |
+| Desenho isolado | 468 quadros em 14 armas, incluindo 192 nas seis armas de foco | Comparação RGBA com o corpo e a roupa do quadro |
+| Desenho combinado no foco | 192 quadros com capacete 19 e botas 148 | Toda diferença ao retirar o peitoral ficou dentro do seu tecido |
+| Oclusão no foco | 19.552 ocorrências de pixel opaco e 66.578 de borda parcial | Metal opaco preservado e bordas comparadas com a composição de referência |
+| Mapa e inventário | 42 ataques, 6 ciclos completos, 8 quadros por ciclo | Trocas entre quatro peitorais, retorno ao primeiro e retirada; pele ébano, cabelo azul e olhos verdes preservados |
+
+O censo global enumera cada peça e todos os pares em cada contexto. Os conjuntos de cinco roupas dessa rodada são amostrados. Os seis contextos de foco ainda têm lacunas em outras peças. [Quadros, fontes e rastros do mapa](foco-norte-quadros-e-mapa.json.gz) · [Ciclos das seis armas no mapa](foco-norte-seis-ciclos.png)
+
+Para reproduzir, exporte com `python tools/build_pages.py --static-demo`, aponte `HD_PUBLISHED_ROOT` para o diretório exportado e execute `node --expose-gc tests/rework-north-focus-coats.cjs`. Para conferir as origens use `python tools/register_north_weapon_coats.py --verify`. Com o jogo servido localmente e `MARE_TEST_URL` configurado, execute `node tests/rework-independent-world-browser.cjs --north-orb-compass-coats`. Para o censo use `PRODUCT_MODE=sample` com `node tools/audit-hd-wardrobe-product.cjs <pasta>`.
 
 ## Relíquia 32 para Leste e Oeste
 
@@ -232,11 +251,11 @@ As colunas individuais contam até 504 contextos armados por corpo e 168 desarma
 | 130 | Peitoral | 384 | 504 | 168 | 35.520 | 8.880 | Parcial |
 | 137 | Peitoral | 384 | 504 | 168 | 35.520 | 8.880 | Parcial |
 | 144 | Peitoral | 384 | 504 | 168 | 35.520 | 8.880 | Parcial |
-| 151 | Peitoral | 438 | 504 | 168 | 36.943 | 8.880 | Parcial |
-| 158 | Peitoral | 438 | 504 | 168 | 36.943 | 8.880 | Parcial |
-| 165 | Peitoral | 438 | 504 | 168 | 36.943 | 8.880 | Parcial |
+| 151 | Peitoral | 444 | 504 | 168 | 37.063 | 8.880 | Parcial |
+| 158 | Peitoral | 444 | 504 | 168 | 37.063 | 8.880 | Parcial |
+| 165 | Peitoral | 444 | 504 | 168 | 37.063 | 8.880 | Parcial |
 | 172 | Peitoral | 384 | 504 | 168 | 35.520 | 8.880 | Parcial |
-| 179 | Peitoral | 438 | 504 | 168 | 36.943 | 8.880 | Parcial |
+| 179 | Peitoral | 444 | 504 | 168 | 37.063 | 8.880 | Parcial |
 | 21 | Calça | 399 | 504 | 168 | 35.752 | 8.880 | Parcial |
 | 22 | Calça | 396 | 504 | 168 | 35.742 | 8.880 | Parcial |
 | 133 | Calça | 395 | 504 | 168 | 35.740 | 8.880 | Parcial |
@@ -247,16 +266,16 @@ As colunas individuais contam até 504 contextos armados por corpo e 168 desarma
 | 168 | Calça | 395 | 504 | 168 | 35.740 | 8.880 | Parcial |
 | 175 | Calça | 395 | 504 | 168 | 35.740 | 8.880 | Parcial |
 | 182 | Calça | 395 | 504 | 168 | 35.740 | 8.880 | Parcial |
-| 8 | Bota | 468 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 9 | Bota | 472 | 504 | 168 | 37.135 | 8.880 | Parcial |
-| 134 | Bota | 468 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 141 | Bota | 468 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 148 | Bota | 469 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 155 | Bota | 468 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 162 | Bota | 468 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 169 | Bota | 468 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 176 | Bota | 468 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 183 | Bota | 468 | 504 | 168 | 37.122 | 8.880 | Parcial |
+| 8 | Bota | 468 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 9 | Bota | 472 | 504 | 168 | 37.159 | 8.880 | Parcial |
+| 134 | Bota | 468 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 141 | Bota | 468 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 148 | Bota | 469 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 155 | Bota | 468 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 162 | Bota | 468 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 169 | Bota | 468 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 176 | Bota | 468 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 183 | Bota | 468 | 504 | 168 | 37.146 | 8.880 | Parcial |
 | 25 | Luva | 435 | 504 | 168 | 36.638 | 8.880 | Parcial |
 | 26 | Luva | 430 | 504 | 168 | 36.624 | 8.880 | Parcial |
 | 131 | Luva | 430 | 504 | 168 | 36.624 | 8.880 | Parcial |
@@ -267,13 +286,13 @@ As colunas individuais contam até 504 contextos armados por corpo e 168 desarma
 | 166 | Luva | 430 | 504 | 168 | 36.624 | 8.880 | Parcial |
 | 173 | Luva | 430 | 504 | 168 | 36.624 | 8.880 | Parcial |
 | 180 | Luva | 430 | 504 | 168 | 36.624 | 8.880 | Parcial |
-| 18 | Cabeça | 471 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 19 | Cabeça | 471 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 129 | Cabeça | 471 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 136 | Cabeça | 471 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 143 | Cabeça | 471 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 150 | Cabeça | 471 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 157 | Cabeça | 471 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 164 | Cabeça | 471 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 171 | Cabeça | 471 | 504 | 168 | 37.122 | 8.880 | Parcial |
-| 178 | Cabeça | 471 | 504 | 168 | 37.122 | 8.880 | Parcial |
+| 18 | Cabeça | 471 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 19 | Cabeça | 471 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 129 | Cabeça | 471 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 136 | Cabeça | 471 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 143 | Cabeça | 471 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 150 | Cabeça | 471 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 157 | Cabeça | 471 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 164 | Cabeça | 471 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 171 | Cabeça | 471 | 504 | 168 | 37.146 | 8.880 | Parcial |
+| 178 | Cabeça | 471 | 504 | 168 | 37.146 | 8.880 | Parcial |
