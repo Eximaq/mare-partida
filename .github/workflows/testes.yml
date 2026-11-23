@@ -42,7 +42,7 @@ jobs:
               continue
             fi
             case "$file" in
-              tests/rework-*-world-bundle.test.cjs|tests/rework-wardrobe-map-action.test.cjs|tests/rework-exact-boots-gloves.test.cjs) HD_PUBLISHED_ROOT="$GITHUB_WORKSPACE/dist" node "$file" || failed=1 ;;
+              tests/rework-*-world-bundle.test.cjs|tests/rework-eleventh-world.test.cjs|tests/rework-wardrobe-map-action.test.cjs|tests/rework-exact-boots-gloves.test.cjs) HD_PUBLISHED_ROOT="$GITHUB_WORKSPACE/dist" node "$file" || failed=1 ;;
               *) node "$file" || failed=1 ;;
             esac
           done
