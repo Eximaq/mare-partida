@@ -725,7 +725,7 @@ window.__hdSlotQA={
  }
  async function observeNorthFocusCoats(articulated,focusOrbs){
   const ids=[151,158,165,179],look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
-  for(const weapon of focusOrbs?[16,17,122]:articulated?[67,70,110]:[123,124,125,126,127]){
+  for(const weapon of focusOrbs?[16,17,31,32,121,122]:articulated?[67,70,110]:[123,124,125,126,127]){
    const sword=weapon===67||weapon===70,role=require('../tools/audit-hd-wardrobe-product.cjs').weapons.find(w=>w.id===weapon).role;
    const attack=sword?'attack-sword':weapon===110?'attack-unarmed':'attack-focus';
    const gear=sword||focusOrbs?{weapon,head:19,boots:148}:{weapon};

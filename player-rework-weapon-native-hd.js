@@ -1440,19 +1440,22 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
  const relic31NorthAuthority={"layers":[["underbody",0,"body",{"kind":"fixed"},["88a71302e5a703aab41cbe45d6914a9159c28cea578312b8a81fa486ce90efbe","af5619b535aa2b707f2b9ca309c082515aa19ce5f1bb40b79e05dc6435320dd0","4574484331bab00188a8d55f782e1345b1e654e4aef9e9793bc41ad56567e720","dd6d8b98e3d5f74d1e1334a83661213988f817ea3284ea5f78f061eb8e551e5d","98a02c4de5c1134ebc382d746bd959743886a5fb56dc71379fc46eda4604d18f","4f997149f3bf42220d0ecae1745b0235ab44a0a53e82488eecfb85d578ef8371","75dbb2130523c42a05ed26eefee024eb4b51e863089a5462648f037805d5632c","dcdd84c6e00968cb0ebdcdf11ef99dc6fd8af9c7da7329104dc2bdc626aee53a"]],["torso",1,"body",{"kind":"fixed"},["6977bc6929ab7f1317f64f9bdc6deff251f7d51fe235eca7d21180cdda7e5abe","9c84f7fc95b3a6f8583a418e3dbb2fe86e317454bae7ff57615ed49cd0604eae","e12f47a25d6bcff87225ecd09da7e7a148531f6bb08c417251a056d94226c007","a76b52365bdb8ab45a910ddc5c1ae03dfff9e5948a3ef198aebf6641eae7b819","cc3de6c8cba427fc75c4a1e15cc885c36c9c4e907889938cacee6b9249a0cad7","c0ae844e050deef08f6593ad1ef68d39e8ba5b6abd22cdfc6eb36bf5a1e24c29","3cb701712477eca7187f6fe7c1dc22535737da1a32c38917bccd57f64e507a3f","1e832a352a2badd7df3da85b21bfca2dbced3726576e56db0d67ee464fc23be4"]],["legs",2,"body",{"kind":"fixed"},["0feaeb11b5bb6d6ccce2df843775c18bbdf9dc826f1e6800989da072d5d29b71","e79c5eef02e2d70fb8660e6d4db51cdd2a4d76eee5a430709378d507a3c9f937","5052c5023cffb36cdfb1235878bdcdc18ee724deb03a8437bd4f21d8ab35357e","b0cd110bc79c390ea0087f763cea78f7d700212796171d5a2463b38f461726f6","720f4887e87b8a3bb72101f79381c815ea42751f4675bdafbae3f2003b79fc09","fd7d9ebd5c3749a8e7d4a9324aecaa5f4de8b558a744d469d436421530db733e","8b83d9a5f6cf7f8919daeba108ff30b7d887d997cf3b504e7b2ccca6e9846a8b","91855fa66a47bc86595a383470918b0dda0b502fd49a4128e4e0b2b3328efcc1"]],["upper-arm-far",3,"body",{"kind":"fixed"},["728b84c1e26867566f80fd2d8ef381143cf7ed9932f0a54c79f91c7fbff9f193","79679ba7f6f073e94c6af56826dc03c31635585e2a8c9777a68612324aab939f","a8ab286a7b9a2b176101ce59302e87f704639a2e7121a32c2aa99d79f9cfb70d","c126d957b84bbf1f1d880eb429dd8e49aa5dec0c68a8fbf090417e8866246dec","0686cff6e9b5fa12e0897d451034d8649ca9901975733a237cd98e40c8a8bc34","2870366605aaa20f693f42be91b9b49891058fa37fd135bdae2783d4ea49642c","1540bf3d9a8669dbe5857bde783746d71ab55e6fe75aedcfe9d93121c67b49e2","f8c8e2fe086a8c433dd47c084ecc8c68d6c0a981ac048ea909e3e9c74f51d0db"]],["forearm-hand-far",4,"body",{"kind":"fixed"},["f79341a09df3e0937374f37dc9baa0590c4d963fb3cea068b705056f1e5a5aed","d7f82c3267a81433603f074f36cb40695de0e73aec670c89a195978efafa5ae2","483bf21d3bacda6a8205fcf571ef2a8f52679a5349b461aba87ff7a8386f2391","6bf8a952fd9071090bcc203a5fad53d1c2a432db47087e0c4c4757bca26cef8c","36e425833a7f95d766f2a2bf95f5edb6f9c64fc430ffd7be5e175aaa816d853a","0093c23f79ac107c8eee2ae61680a46effceba6cc8137c81c16f9fd98dc9878b","66c6e450c83c2fa2a0d0e213cd4e4d87fa814365795d45c077c32437a0c36211","aed8ce1adc6ed17be1b92db54933bdd5d93850a4c2fa6ada453909333ac2de30"]],["upper-arm-near",5,"body",{"kind":"fixed"},["22d2265d52c54d8a4d636ed24d6f0599f486450ed8992a1c28f943080522a3f6","e5ac265a59d2713382d54a2b602cda62ab5b39b509929dcbf753c815be0b93c6","bf904634e065c69fda8dd193b60d3601e6101ea40708acefb8629c98f4f56658","266a7f5eabe215eb3a03ad974e58814009fb8cac51a1918510be198646d6ed0c","c479ffbbaed7a08ed6bb16daa63b4607df6446ed6010e21368a31f9b268103a1","28876ec5ce64d58322de506b2d9761ac45f446f1e516d909ddfb4bf866f57088","6a03b2dde6963762e80c8729b52a884cb7d0bcaa39f271c385eb4e742700bd79","15e0b7ce86222a172787927d76d4b0e9b826950ea16fc98f4108e1c3749ddb1b"]],["forearm-hand-near",6,"body",{"kind":"fixed"},["ec3fd9de3aa933043128c3e60d03635f397d8f133b85825811be5407cc6a3b01","a530a4c7a8af830cea792e5ceff2a366a9d8dd530a9d7c2b46fc42c28209026b","b3f125bd97ac0e70938260e65d27b9f2827ff7e4de42b4688e3820e718341fce","c368023fac22bdf48f44b9f0ea00bba19314cd2f89d6f0547964f5cd2de8f193","27cb7ecb9e3836cbc6c6fbc5adfd0d597b9e5da9a3c0967811f513a534308170","5f930719158d85b61f4cf22fa4d51bdaf8796af7e3a1442c1be4441e1deb5bed","b10567cd9ee1f71c3b706eb6405874c051bcbe684f78105013e5f53b77de9794","dfe224060796390d597b21be0091678a9993e956f9564d9596fb741b3040f133"]],["shorts",7,"pants",{"kind":"fixed"},["b062c0783898bf909d06fa37394636ecc8ca75dd435f8f94d0ce74b6a923d62c","ccef4f14c930f22e971b83c8a254d01dc4a350c951bba5db00a1d5558cc2fbaa","84c85bb862be492c5b4354ceee10bdb775660b3dfdfb2fc36fe56c4446b549ac","5bf8de06b2af4bd6d456e34fb4861011b4e81f8f36fee38b5fe87ea98a561761","b7d77aaddbba1afbc5bad6bf4ff6cd4257241c3f5c3c4280de55bffea49fe1bd","7df7084ac6a8771f764ba6641800afd17cddea367b31df271850e5c8bd17614f","41b01e6d8f7b7d1dea195faebeae8b34f39b317a682bfb808b97e61dc4cb623d","a608474af65c1c30621e13448c32ef629a995e809e36daaaa648b235f4c6ec2b"]],["headBase",20,"headBase",{"kind":"rigid","a":"NECK","b":"NOSE"},["767c435b05d1f85eed23fde9603e1ca722ed095609b17af82634522024c95969"]],["hair",21,"hair",{"kind":"rigid","a":"NECK","b":"NOSE"},["c5eb1d2d523d85acb584eee39a8e1e66b0ffbbf5cf2a118dc796f91b69bea8ea"]]],"headAnchors":[[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}],[{"x":80,"y":57.5},{"x":80,"y":47.5}]],"transforms":[[[1,0,0,1,10.896774193548367,39.3290322580645],[370,311],[380.89677419354837,350.3290322580645]],[[1,0,0,1,11.806451612903231,0.12258064516129252],[370,311],[381.80645161290323,311.1225806451613]],[[1,0,0,1,-0.019354838709659816,-40.722580645161315],[370,311],[369.98064516129034,270.2774193548387]],[[1,0,0,1,19.99354838709678,-84.38709677419354],[370,311],[389.9935483870968,226.61290322580646]],[[1,0,0,1,30.909677419354864,-88.02580645161291],[370,311],[400.90967741935486,222.9741935483871]],[[1,0,0,1,15.445161290322574,-79.83870967741936],[370,311],[385.4451612903226,231.16129032258064]],[[1,0,0,1,-0.019354838709659816,-39.81290322580645],[370,311],[369.98064516129034,271.18709677419355]],[[1,0,0,1,10.896774193548367,39.3290322580645],[370,311],[380.89677419354837,350.3290322580645]]]};
  const relic31NorthCleanGear='9acb8f39056d3f761b73d6d32cb2f28b446b535473c09e08be5cc609b053eb77';
  const relic31NorthHistoricalGear='c994de2e98a2873c5be7a86842e22d8267f6182602612e899ec9f54c3c9149f8';
- function verifiedNorthRelicBase(r,a,action,equipment,eq){
+ function matchesNorthFocusBody(r,eq){
   const proof=relic31NorthAuthority,p=r?.basePack?.pack,d=p?.directions?.north;
+  return !(r?.body!=='male'||r.direction!=='north'||r.density!==4||r.fps!==12||!eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||r.renderOffsetPhysical||r.mirrorBody||r.mirrorLayerIDs||r.sourceRasterPadding||
+     p?.density!==4||!eq(p.frame,{width:160,height:160})||!eq(p.pivot,{x:80,y:128})||
+     !eq(d?.clip,{frames:8,fps:12,loop:false,contactFrame:4})||!eq(r.timeline,['0','1','2','3','4','5','6','7'])||r.states?.length!==8||
+     !eq(d.layers?.map(l=>[l.id,l.depth,l.slot,l.binding,l.frames||[l.source]]),proof.layers)||
+     !eq([d.rest,...(d.poses||[])].map(v=>[v?.NECK,v?.NOSE]),proof.headAnchors)||
+     !proof.layers.every(l=>l[4].every(h=>r.basePack.images[h]==='assets/'+h+'.png')));
+ }
+ function verifiedNorthRelicBase(r,a,action,equipment,eq){
   if(r?.body!=='male'||r.direction!=='north'||
      action!=='attack-focus'||Object.keys(equipment).length||a.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||
      a.hair!=='original'||a.hairStyle!=='original'||a.face!=='original'||a.eyeStyle!=='original'||!savedHeadPalette(a)||
      a.skin!==a.skinColor||!Object.hasOwn(root.MareAppearance96?.skins||{},a.skin)||
      r.replacementMode!=='original-base-plus-existing-orb-interface'||r.interfaceSkinLocked!==true||r.hairSeparated!==true||
-     r.density!==4||r.fps!==12||!eq(r.nativeCanvas,[640,640])||!eq(r.pivot,[80,128])||r.renderOffsetPhysical||r.mirrorBody||r.mirrorLayerIDs||r.sourceRasterPadding||
-     p?.density!==4||!eq(p.frame,{width:160,height:160})||!eq(p.pivot,{x:80,y:128})||
-     !eq(d?.clip,{frames:8,fps:12,loop:false,contactFrame:4})||!eq(r.timeline,['0','1','2','3','4','5','6','7'])||r.states?.length!==8||
-     !eq(d.layers?.map(l=>[l.id,l.depth,l.slot,l.binding,l.frames||[l.source]]),proof.layers)||
-     !eq([d.rest,...(d.poses||[])].map(v=>[v?.NECK,v?.NOSE]),proof.headAnchors)||
-     !proof.layers.every(l=>l[4].every(h=>r.basePack.images[h]==='assets/'+h+'.png')))return false;
+     !matchesNorthFocusBody(r,eq))return false;
   return true;
  }
  const ownStaff121NorthRig=[{"url":"assets/6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0.png","sha256":"6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0","size":[640,640],"sourceMember":"Original equipment pixels under approved authored protection mask","matrix":[1,0,0,1,10.896774193548367,39.3290322580645],"sourceGrip":[370,311],"targetGrip":[380.89677419354837,350.3290322580645],"depth":3},{"url":"assets/6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0.png","sha256":"6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0","size":[640,640],"sourceMember":"Original equipment pixels under approved authored protection mask","matrix":[1,0,0,1,11.806451612903231,0.12258064516129252],"sourceGrip":[370,311],"targetGrip":[381.80645161290323,311.1225806451613],"depth":3},{"url":"assets/6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0.png","sha256":"6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0","size":[640,640],"sourceMember":"Original equipment pixels under approved authored protection mask","matrix":[1,0,0,1,-0.019354838709659816,-40.722580645161315],"sourceGrip":[370,311],"targetGrip":[369.98064516129034,270.2774193548387],"depth":3},{"url":"assets/6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0.png","sha256":"6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0","size":[640,640],"sourceMember":"Original equipment pixels under approved authored protection mask","matrix":[1,0,0,1,19.99354838709678,-84.38709677419354],"sourceGrip":[370,311],"targetGrip":[389.9935483870968,226.61290322580646],"depth":3},{"url":"assets/6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0.png","sha256":"6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0","size":[640,640],"sourceMember":"Original equipment pixels under approved authored protection mask","matrix":[1,0,0,1,30.909677419354864,-88.02580645161291],"sourceGrip":[370,311],"targetGrip":[400.90967741935486,222.9741935483871],"depth":3},{"url":"assets/6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0.png","sha256":"6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0","size":[640,640],"sourceMember":"Original equipment pixels under approved authored protection mask","matrix":[1,0,0,1,15.445161290322574,-79.83870967741936],"sourceGrip":[370,311],"targetGrip":[385.4451612903226,231.16129032258064],"depth":3},{"url":"assets/6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0.png","sha256":"6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0","size":[640,640],"sourceMember":"Original equipment pixels under approved authored protection mask","matrix":[1,0,0,1,-0.019354838709659816,-39.81290322580645],"sourceGrip":[370,311],"targetGrip":[369.98064516129034,271.18709677419355],"depth":3},{"url":"assets/6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0.png","sha256":"6ab4b814adda46451e59ca4c0670e16ba1d01d970aa700ac3cff1f1176f8b9d0","size":[640,640],"sourceMember":"Original equipment pixels under approved authored protection mask","matrix":[1,0,0,1,10.896774193548367,39.3290322580645],"sourceGrip":[370,311],"targetGrip":[380.89677419354837,350.3290322580645],"depth":3}];
@@ -2551,6 +2554,45 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   }
   ctx.clearRect(pad,pad,640,640);ctx.drawImage(core,pad,pad);core.width=1;return canvas;
  }
+ function paintNativeAttachment(ctx,r,at,image,appearance,omitWeaponLayer=false){
+   if(r.w121IndependentNorth){
+    const w0=r.w121IndependentNorth,part=image(at),grip=image({url:'assets/'+w0.grip+'.png'});
+    if(r.item!==121||r.direction!=='north'||at.sha256!==w0.gear||w0.gear!==ownStaff121NorthSplit.gear||ownStaff121NorthSplit.hands[appearance.skin]!==w0.grip||
+       grip?.width!==640||grip?.height!==640||part?.width!==640||part?.height!==640)
+     throw Error('Unregistered W121 north grip or hardware');
+    if(r.w121NorthOnlyNativeHand===true||omitWeaponLayer)ctx.drawImage(grip,0,0);
+    else{
+     const local=makeCanvas(640,640),x=local.getContext('2d');
+     x.drawImage(part,0,0);x.drawImage(grip,0,0);
+     ctx.drawImage(local,0,0);local.width=1;
+    }
+   }else ctx.drawImage(image(at),0,0);
+ }
+ function sharesNorthFocusCoatPose(r){
+  if(!(r.relic31NorthApprovedPreview||r.relic32NorthApprovedPreview||r.w121IndependentNorth))return false;
+  return matchesNorthFocusBody(r,(a,b)=>JSON.stringify(a)===JSON.stringify(b))&&r.states.every(s=>
+   s.layers.length===0&&s.attachment?.depth===3&&s.attachment.size[0]===640&&s.attachment.size[1]===640);
+ }
+ // The North focus receiver replaces the editorial attachment. Keep its real
+ // antialiased hardware in front of the cloth, only where anatomy leaves it visible.
+ function northFocusCoat(cloth,r,images,frame,hideHair){
+  const state=r.states[frame],at=state.attachment,rig=r.basePack,pack=rig.pack,dir=pack.directions.north;
+  if(r.direction!=='north'||!at||at.depth!==3||state.layers.length||Number(state.state)!==frame)
+   throw Error('Incompatible articulated North focus coat');
+  const image=url=>{const im=images.get(resource(url));if(!im)throw Error('Missing North focus source '+url);return im;};
+  const w=cloth.width,h=cloth.height,front=makeCanvas(w,h),tile=makeCanvas(w,h);
+  try{
+   const cx=front.getContext('2d');cx.imageSmoothingEnabled=false;cx.save();cx.transform(...at.matrix);
+   if(at.mirrorX){cx.translate(at.size[0],0);cx.scale(-1,1);}
+   paintNativeAttachment(cx,r,at,a=>image(a.url),r.colorAppearance);cx.restore();
+   const upper=dir.layers.filter(l=>l.depth>at.depth&&!(hideHair&&l.slot==='hair'));
+   const map=new Map(upper.map(l=>{const k=l.frames?.[frame]||l.source;return [k,image(rig.images[k])];}));
+   cx.globalCompositeOperation='destination-out';
+   vendor.compositor.render(cx,{...pack,directions:{north:{...dir,layers:upper}}},map,{direction:'north',frame,density:4,clear:false});
+   const t=tile.getContext('2d');t.drawImage(cloth,0,0);t.globalCompositeOperation='source-atop';t.drawImage(front,0,0);
+   return tile;
+  }catch(e){tile.width=1;throw e;}finally{front.width=1;}
+ }
  function renderSwordSleeve(ctx,r,s,pack,map,images,image){
   const phase=Number(s.state),size=640,at=s.attachment,track=r.swordTrack;
   const asset=key=>images.get('tools/rework-combat-wardrobe/assets/'+key+'.png');
@@ -2679,18 +2721,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
        ...(!r.firearmSouthSignedPalette&&((r.ownedSideFirearmIris||r.ownedSouthFirearmIris)&&op.layer.slot==='face'||r.ownedFirearmSideTone)?{afterMaterialSource:(source,image,old)=>{
         const fixed=r.ownedFirearmSideTone?paintFirearmSignedSideTone(image,old,r,op.layer,appearance,makeCanvas):image;
         return op.layer.slot==='face'&&source===(r.ownedSouthFirearmIris?firearmSouthFace:firearmSideFace[r.direction])?paintFirearmSideIris(fixed,old,r,makeCanvas):fixed;
-       }}:{})});ctx.drawImage(tile,0,0);}else vendor.compositor.render(ctx,one,map,{direction:r.direction,frame:Number(s.state),density:4,clear:false});ctx.restore();}else{ctx.save();ctx.transform(...at.matrix);if(at.mirrorX){ctx.translate(at.size[0],0);ctx.scale(-1,1);}if(r.w121IndependentNorth){
-    const w0=r.w121IndependentNorth,part=image(at),grip=image({url:'assets/'+w0.grip+'.png'});
-    if(r.item!==121||r.direction!=='north'||at.sha256!==w0.gear||w0.gear!==ownStaff121NorthSplit.gear||ownStaff121NorthSplit.hands[appearance.skin]!==w0.grip||
-       grip?.width!==640||grip?.height!==640||part?.width!==640||part?.height!==640)
-     throw Error('Unregistered W121 north grip or hardware');
-    if(r.w121NorthOnlyNativeHand===true||omitWeaponLayer)ctx.drawImage(grip,0,0);
-    else{
-     const local=makeCanvas(640,640),x=local.getContext('2d');
-     x.drawImage(part,0,0);x.drawImage(grip,0,0);
-     ctx.drawImage(local,0,0);local.width=1;
-    }
-   }else ctx.drawImage(image(at),0,0);ctx.restore();}}}
+       }}:{})});ctx.drawImage(tile,0,0);}else vendor.compositor.render(ctx,one,map,{direction:r.direction,frame:Number(s.state),density:4,clear:false});ctx.restore();}else{ctx.save();ctx.transform(...at.matrix);if(at.mirrorX){ctx.translate(at.size[0],0);ctx.scale(-1,1);}paintNativeAttachment(ctx,r,at,image,appearance,omitWeaponLayer);ctx.restore();}}}
    else vendor.compositor.render(target,pack,map,{direction:r.direction,frame:Number(s.state),density:4});
    if(s.bodyPatch){
     const [x,y,width,height]=s.bodyPatch.rect;
@@ -3368,7 +3399,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    actions.includes(requested)?actions.find(a=>a.startsWith('attack-')):null;
   return action?{...record,action}:record;
  }
- return {registeredCoat,registeredPunchGrip,compassWardrobeRig,southPunchHeadLayers,
+ return {registeredCoat,registeredPunchGrip,compassWardrobeRig,southPunchHeadLayers,northFocusCoat,sharesNorthFocusCoatPose,
   southArmProjection:frame=>frame>=7&&frame<=10?cyborg119SouthOwnAuthority.frames[frame][3]:null,
   projectSouthArms:(before,sheet,phase,trousers)=>cyborg120ArmRecipe(before,sheet,phase-7,makeCanvas,trousers),
   sidePunchMetal,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};

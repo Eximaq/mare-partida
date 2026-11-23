@@ -7018,16 +7018,19 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function fittedNorthWeaponCoat(base,slot,item){
   if(slot!=='torso'||base.body!=='male'||base.hdKind!=='weapon'||base.direction!=='north'||
      base.fps!==12||base.density!==4||base.mirrorBody)return null;
-  const row=combatWardrobe?.northWeaponCoats?.[base.item]||combatWardrobe?.northFocusCoats?.[base.item];
+  const sharedFocus=weaponRegistry.sharesNorthFocusCoatPose(base);
+  const row=combatWardrobe?.northWeaponCoats?.[base.item]||combatWardrobe?.northFocusCoats?.[base.item]||
+   (sharedFocus?combatWardrobe?.northWeaponCoats?.[17]:null);
   const plate=row?.coats[item],size=row?.size||[640,640],pivot=row?.pivot||[80,128];
   const offset=base.renderOffsetPhysical||[0,0];
   if(!plate||base.action!==weaponRegistry?.attackAction(base.item)||base.nativeCanvas?.length!==2||base.pivot?.length!==2||
      !base.nativeCanvas.every((n,i)=>n===size[i])||
      !base.pivot?.every((n,i)=>n+offset[i]/base.density===pivot[i])||
      base.states.length!==row.poses.length||base.timeline.length!==base.states.length||
-     !base.states.every((s,i)=>s.approved?.sha256===row.poses[i]&&Number(base.timeline[i])===i))return null;
+     !base.states.every((s,i)=>(sharedFocus||s.approved?.sha256===row.poses[i])&&Number(s.state)===i&&Number(base.timeline[i])===i))return null;
   return {source:plate.path+'/coat-'+item+'@'+plate.archive,refs:[...new Set(plate.cloth)],
-   rasterCoat:{cloth:plate.cloth,size,preclipped:true,belowHelmet:true}};
+   rasterCoat:{cloth:plate.cloth,size,preclipped:true,belowHelmet:true,
+    currentFocusAttachment:!!(sharedFocus||base.compass16NorthApprovedPreview||base.orb17NorthRestoredApproved||base.orb122NorthRestoredApproved)}};
  }
  function orderedDaggerGloves(base,slot,item){
   if(slot!=='gloves'||!orderedDaggerRegistration(base))return null;
@@ -9223,7 +9226,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const cloth=entry.images.get(combatPlatePath(p.cloth[frame]));
    if(p.preclipped){
     if([result.canvas,cloth].some(im=>im?.width!==p.size[0]||im.height!==p.size[1]))throw Error('Incompatible registered North coat');
-    result.canvas.getContext('2d').drawImage(cloth,0,0);
+    const tile=p.currentFocusAttachment?weaponRegistry.northFocusCoat(cloth,p.base,entry.images,frame,!!defer?.hideHair):cloth;
+    result.canvas.getContext('2d').drawImage(tile,0,0);if(tile!==cloth)tile.width=1;
     if(defer)drawFittedHelmet(result.canvas,p.base,entry,frame);
     return {...result,info:{...result.info,source:r.id}};
    }

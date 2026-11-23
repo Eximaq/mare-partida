@@ -69,10 +69,65 @@ def moved_head(record, phase, original, editorial, runtime):
     return source_mask,dest_mask
 
 
+
+def release_editorial_hardware(samples, records, original, rows, assets):
+    """Recover fabric hidden by the editorial weapon before fitting the live attachment."""
+    from PIL import Image
+    import numpy as np
+
+    rig = records['orb17-north-native-layers']['basePack']['pack']['directions']['north']
+    for phase in range(8):
+        body = Image.new('RGBA', (640, 640))
+        for layer in rig['layers']:
+            key = layer['frames'][phase] if layer.get('frames') else layer['source']
+            offset = (0, 0)
+            if layer['slot'] in ('headBase', 'hair'):
+                if any(rig['rest'][j] != rig['poses'][phase][j] for j in ('NECK', 'NOSE')):
+                    raise ValueError('Unexpected North head pose')
+                if phase == 1: offset = (0, -1)
+            elif layer['binding']['kind'] != 'fixed':
+                raise ValueError('Unregistered North body transform')
+            body.alpha_composite(original(key), offset)
+        bare = np.asarray(body)
+        for coat in sorted(COATS):
+            parts = {i: samples[i, coat, phase] for i in (16, 17, 122)}
+            changed = {i: np.any(np.asarray(source) != bare, axis=2)
+                       for i, (source, _, _, _) in parts.items()}
+            for item, (_, fabric, ownership, head_shift) in parts.items():
+                raw = np.asarray(fabric)
+                keep = np.asarray(ownership) != 0
+                pending = keep & changed[item] & (raw[:, :, 3] != 0)
+                keep = keep.copy()
+                # Prefer the alternate orb on the same editorial rig. The compass
+                # contributes ownership only on identical, unobstructed textile.
+                for other in (17, 122, 16):
+                    if other == item: continue
+                    _, donor, mask, _ = parts[other]
+                    available = pending & ~changed[other] & np.all(raw == np.asarray(donor), axis=2)
+                    keep[available] = np.asarray(mask)[available] != 0
+                    pending[available] = False
+                # Outside the entire bare silhouette only the historical weapon
+                # could hide this signed fabric. Retain its own cut over anatomy.
+                keep[pending & (bare[:, :, 3] == 0)] = False
+                if head_shift is not None:
+                    old_head, head = head_shift
+                    under_head = keep & old_head
+                    keep[old_head & ~head] = False
+                    keep[head] = np.roll(under_head, 1, axis=0)[head]
+                rgba = raw.copy()
+                rgba[keep] = 0
+                out = io.BytesIO()
+                Image.fromarray(rgba).save(out, format='PNG', compress_level=9)
+                data = out.getvalue()
+                key = digest(data)
+                assets[key+'.png'] = data
+                rows[item]['coats'][coat]['cloth'][phase] = key
+
+
 def recover():
     from PIL import Image
     import numpy as np
-    assets, rows = {}, {}
+    assets, rows, focus_samples = {}, {}, {}
     records = receivers()
     source_index = json.loads((BANK/'archives/archive-index.json').read_bytes())['sources']
     @lru_cache(maxsize=32)
@@ -143,20 +198,14 @@ def recover():
                                 Image.alpha_composite(source,plate).tobytes()!=target.tobytes()):
                             raise ValueError(f'Garment does not reproduce the approved picture {item}/{coat}/{phase}')
                         plate = plate.crop(crop)
-                        if head_shift is not None:
-                            old_head,head = head_shift
-                            keep = np.array(protected.crop(crop)) != 0
-                            # Transfer only the occlusion owned by the moved head.
-                            # All metal, hands and body contacts remain in the source frame.
-                            adjusted = keep.copy()
-                            adjusted[old_head & ~head] = False
-                            adjusted[head] = np.roll(keep & old_head,1,axis=0)[head]
-                            garment = np.array(cloth.crop(crop))
-                            garment[adjusted] = 0
-                            plate = Image.fromarray(garment)
+                        if item in (16,17,122):
+                            focus_samples[item,coat,phase] = (editorial,cloth.crop(crop),protected.crop(crop),head_shift)
+                            row['coats'].setdefault(coat,dict(archive=archive_sha,path=folder,cloth=[]))['cloth'].append(None)
+                            continue
                         out = io.BytesIO();plate.save(out,format='PNG',compress_level=9)
                         image = out.getvalue();sha = digest(image);assets[sha+'.png']=image
                         row['coats'].setdefault(coat,dict(archive=archive_sha,path=folder,cloth=[]))['cloth'].append(sha)
+    release_editorial_hardware(focus_samples, records, original, rows, assets)
     assets['registration.json']=json.dumps(rows,separators=(',',':')).encode()
     return assets
 
