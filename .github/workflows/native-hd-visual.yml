@@ -10,14 +10,26 @@ on:
       - 'tests/rework-male-p114-signed-slots-saved.cjs'
       - 'tests/rework-articulated-weapon-heads.cjs'
       - 'tests/rework-articulated-sword-coats.cjs'
+      - 'tools/register_blade_trousers.py'
+      - 'tools/rework-combat-wardrobe/blade-trousers.zip'
+      - 'tests/rework-blade-trousers.cjs'
+      - 'tests/rework-blade-wardrobe-cases.cjs'
+      - 'tests/rework-blade-sleeves.cjs'
+      - 'tools/register_blade_sleeves.py'
+      - 'tools/blade_sleeves_panels.py'
+      - 'tools/rework-combat-wardrobe/blade-sleeves.zip'
       - 'tools/export_articulated_boots.py'
       - 'tools/rework-combat-wardrobe/articulated-boots.zip'
       - 'tests/rework-articulated-boots.cjs'
       - 'tests/rework-ordered-orb-anatomy.cjs'
       - 'tests/rework-ordered-orb-coats.cjs'
       - 'tests/rework-ordered-staff-coats.cjs'
+      - 'tests/rework-side-focus-sleeves.cjs'
+      - 'tools/register_side_focus_sleeves.py'
+      - 'tools/rework-combat-wardrobe/side-focus-sleeves.zip'
       - 'tests/rework-ordered-staff-gloves.cjs'
       - 'tests/rework-side-focus-trousers.cjs'
+      - 'tests/rework-side-focus-trouser-receivers.cjs'
       - 'tools/register_side_focus_trousers.py'
       - 'tools/rework-combat-wardrobe/side-focus-trousers.json'
       - 'tools/register_staff_gloves.py'
@@ -76,6 +88,10 @@ on:
       - 'tests/rework-world-pose-support.cjs'
       - 'tools/rework-combat-wardrobe/north-focus-coats.zip'
       - 'tools/register_north_rifle_trousers.py'
+      - 'tools/register_north_rifle_clothes.py'
+      - 'tools/rework-combat-wardrobe/north-rifle-clothes.zip'
+      - 'tests/rework-north-rifle-clothes.cjs'
+      - 'tools/north_rifle_clothing_panels.py'
       - 'tools/rework-combat-wardrobe/north-rifle-trousers.json'
       - 'tools/export_north_pistol_coats.py'
       - 'tools/export_staff_coats.py'
@@ -426,6 +442,16 @@ jobs:
           node-version: '24'
       - run: npm ci --ignore-scripts
       - run: python tools/build_pages.py
+      - name: Conferir as calças nas duas poses laterais de lâmina
+        if: matrix.role == 'sword'
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          python -m pip install pillow numpy
+          python tools/register_blade_trousers.py --verify
+          node --expose-gc tests/rework-blade-trousers.cjs
+          python tools/register_blade_sleeves.py --verify
+          node --expose-gc tests/rework-blade-sleeves.cjs
       - name: Conferir as botas nos oito quadros das seis adagas e na restauração da mão
         if: matrix.role == 'rogue'
         env:
@@ -453,6 +479,8 @@ jobs:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
         run: |
           node --expose-gc tests/rework-ordered-staff-coats.cjs
+          node --expose-gc tests/rework-side-focus-sleeves.cjs
+          node --expose-gc tests/rework-side-focus-trouser-receivers.cjs
           python -m pip install pillow numpy
           python tests/rework_staff_coat_sources.py
           python tools/export_north_pistol_coats.py --verify
@@ -460,6 +488,7 @@ jobs:
           python tools/register_south_focus_trousers.py --verify
           python tools/register_south_focus_boots.py --verify
           python tools/register_staff_gloves.py --verify
+          python tools/register_side_focus_sleeves.py --verify
           python tools/register_side_focus_trousers.py --verify
           python tools/register_sword_gloves.py --verify
           python tools/register_orb_gloves.py --verify
@@ -472,9 +501,11 @@ jobs:
           node --expose-gc tests/rework-compass-side-wardrobe.cjs light 32
           node --expose-gc tests/rework-compass-side-wardrobe.cjs ebony 32
           python tools/register_north_rifle_trousers.py --verify
+          python tools/register_north_rifle_clothes.py --verify
           python tools/export_north_focus_coats.py --verify
           python tools/register_north_articulated_boots.py --verify
           node --expose-gc tests/rework-fixed-north-rifle-trousers.cjs
+          node --expose-gc tests/rework-north-rifle-clothes.cjs
           node --expose-gc tests/rework-fixed-north-rifle-boots.cjs
           node --expose-gc tests/rework-fixed-north-rifle-heads.cjs
           node --expose-gc tests/rework-north-moving-boots.cjs

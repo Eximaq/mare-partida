@@ -55,10 +55,27 @@ def register():
             raise ValueError('Incomplete waist or foot')
         return [int(x.min()),int(x.max()),float(y),float((x_foot.max()+x_foot.min())/2),int(y_foot.max()+494)]
 
+    def runs(mask):
+        edges=np.flatnonzero(np.diff(np.r_[False,mask.ravel(),False])).reshape(-1,2)
+        return [[int(a),int(b-a)] for a,b in edges]
+
+    def fused_waist(lower, actual, cut, direction):
+        # The signed body supplies the open palm or the bent grip. Compare it
+        # to its own unobstructed stock/legs, never to a neighboring garment.
+        y,x=np.indices((640,640))
+        area=(y>=302)&(y<=500)&(x>=244)&(x<=395)
+        diff=np.max(np.abs(actual.astype('int16')-lower.astype('int16')),axis=2)>2
+        protect=diff&area
+        if np.any(protect & (y>=380)) or not 450<protect.sum()<5500:
+            raise ValueError('Different lower rig below receiving hands: '+direction)
+        return dict(guard=runs(protect),restore=runs(cut&~protect))
+
     outfits = index(OUTFITS)
     records = {r['id']:r for r in outfits['records']}
     bases = {r['id']:r for r in index(BASE)['records']}
-    staff = weapons()['orderedAttackProfiles']
+    sources_weapons = weapons()
+    staff = sources_weapons['orderedAttackProfiles']
+    staff128_light = ["94b5506ea2c9d0340e16bd3269d1058eec0b3d7dabf59a061323ac73a720fca0","e0707dea2a9acc262a12d1b910cc81ce71a5c1b15b95b320b9bb3e57609707c3","9bcd8f0a8451b22598cef02ab0f9ecec54e65eb7623320bff9536b874b3f977e","6e72330d4a1ddb28f948f84a7e5fefaa46a8a89637c6fda843c36b4a76523501","37c4b332b83bb883d2e7d7e8218e0cfe18addc7a3d6784f6676c57e2d4eaf092","f2ac9d28b271ab23ca26692dbfca5d5f73e956de7b9105b516b3783f980ed1d5","dc5316ed050bbf561a8fb664c39619872e60afafc84dd5a0ffc6f2cd6f7a6870","f51cf31d9173dea1f38c10d159d0b7ded22bcf9c44b0bbbe07159274d7f63f95"]
     output = {}
     for direction in ('east','west'):
         ref = outfits['maleSidePunchOwnPants']['directions'][direction]
@@ -84,6 +101,11 @@ def register():
         signed=next(r for r in staff if r['id']=='authored-ordered-31-'+direction)
         if signed['nativeCanvas']!=[640,640] or signed['pivot']!=[80,128] or signed['fps']!=12:
             raise ValueError('Unexpected receiving frame or clock')
+        modular=next(r for r in sources_weapons['records'] if r['id']=='orb17-'+direction+'-native-layers')['basePack']['pack']['directions'][direction]
+        layers_mod={l['id']:l for l in modular['layers']}
+        if modular['clip']['frames']!=8 or layers_mod['shorts']['depth']!=7:
+            raise ValueError('Unexpected arm/waist stack')
+        orbs=[next(r for r in staff if r['id']==f'authored-orb-{n}-'+direction) for n in (17,122)]
         lower={l['id']:l for l in native['layers']}
         for f,state in enumerate(signed['states']):
             layers={l['id']:l for l in state['layers']}
@@ -101,9 +123,18 @@ def register():
             shear=(target[3]-a*foot-(target[0]-a*left))/(bottom-335)
             if not (.89<a<1.22 and .94<d<1.06 and abs(shear)<.1):
                 raise ValueError('Unregistered waist/sole displacement')
-            runs=np.flatnonzero(np.diff(np.r_[False,part.ravel(),False])).reshape(-1,2)
-            phases.append(dict(stock=keys[0],legs=keys[1],underbody=keys[2],
-                               cut=[[int(start),int(stop-start)] for start,stop in runs],
+            shared = {name:layers_mod[name]['frames'][f] for name in ('underbody','legs','torso','shorts','upper-arm-far','forearm-hand-far','upper-arm-near','forearm-hand-near')}
+            if shared['legs']!=keys[1] or shared['underbody']!=keys[2]: raise ValueError('Different lower-body drawings')
+            raw=Image.new('RGBA',(640,640))
+            for name in ('underbody','torso','legs','shorts'):
+                raw.alpha_composite(Image.fromarray(pixels(BANK,layers[name]['sha256'])))
+            bodykeys=[next(l['sha256'] for l in r['states'][f]['layers'] if l['id']=='body') for r in orbs]
+            if bodykeys[0]!=bodykeys[1]: raise ValueError('Orbs do not share a waist')
+            orb=fused_waist(np.asarray(raw),pixels(BANK,bodykeys[0]),part,direction)
+            full=pixels(BANK,staff128_light[f])
+            bent=fused_waist(np.asarray(raw),full[:,::-1] if direction=='west' else full,part,direction)
+            phases.append(dict(stock=keys[0],modular=shared,orb={**orb,'body':bodykeys[0]},bent=bent,legs=keys[1],underbody=keys[2],
+                               cut=runs(part),
                                donor=donor,receiver=target,
                                transform=[a,0,shear,d,target[0]-a*left-shear*335,target[2]-d*y]))
             for n,cloth in items.items():

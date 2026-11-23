@@ -2450,7 +2450,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const mount=r.body==='male'&&r.direction==='north'&&Object.hasOwn(northFirearmBlueAuthority,r.item)&&r.id===northFirearmBlueAuthority[r.item][0];
   const receiver=mount?mountOwnNorthRifle(r):r;
   if(!receiver)return null;
-  return {...receiver,colorAppearance:appearance,...(receiver.basePack&&hasIsolatedProfileFace(receiver)?{isolatedProfileIris:true}:{}),...(firearmSouthSignedPalette?{firearmSavedNatural:true,firearmSouthSignedPalette:true}:{}),...(ownRearBlue&&appearance.skin!=='light'?{firearmSavedNatural:true}:{}),...(ownSideBlue?{id:r.id+':owned-side-firearm-iris:'+appearance.eyeColor,ownedSideFirearmIris:true,...(appearance.skin!=='light'?{ownedFirearmSideTone:true}:{})}:ownSouthBlue?{id:r.id+':owned-south-firearm-iris:'+appearance.eyeColor,ownedSouthFirearmIris:true}:{})};
+  return {...receiver,colorAppearance:appearance,...(receiver.basePack&&hasIsolatedProfileFace(receiver)?{isolatedProfileIris:true}:{}),...(firearmSouthSignedPalette?{firearmSavedNatural:true,firearmSouthSignedPalette:true}:{}),...(ownRearBlue?{firearmSavedNatural:true}:{}),...(ownSideBlue?{id:r.id+':owned-side-firearm-iris:'+appearance.eyeColor,ownedSideFirearmIris:true,...(appearance.skin!=='light'?{ownedFirearmSideTone:true}:{})}:ownSouthBlue?{id:r.id+':owned-south-firearm-iris:'+appearance.eyeColor,ownedSouthFirearmIris:true}:{})};
  }
  function requiredFiles(r,{frame}={}){if(!r)return [];const states=frame===undefined?r.states:[r.states[frame]];if(states.some(s=>!s))throw Error('Invalid native weapon frame');const files=new Set();if(r.northHairColor&&r.northHairColor!=='black')files.add(root.MareHairAnatomyHD.rearHairPath);if(r.profileHeadRanks)for(const s of states){const dir=s.layers[0].mirrorX?'east':r.direction;files.add(daggerHairPath(daggerHairAuthority[dir].mask));}if(r.w121IndependentNorth)files.add(resource('assets/'+r.w121IndependentNorth.grip+'.png'));if(r.ownW0SouthIndependent&&!r.case42SouthSkin)for(const s of states)for(const h of case42W0Material[Number(s.state)].layers)files.add(resource('assets/'+h+'.png'));if(r.case42SouthSkin)for(const s of states){for(const h of case42W0Material[Number(s.state)].layers)files.add(resource('assets/'+h+'.png'));for(const h of w70SouthKeys(ownW70SouthAuthority.phases[Number(s.state)]))files.add(resource(w70SouthPath(h)));}if(r.ownDaggerLightMaterials)for(const st of states)for(const url of ownDaggersSouthProof.frames[r.item].states[Number(st.state)])files.add(resource(url));if(r.w16SideTone||r.compassAnatomy&&(r.orderedGloves||r.bootTrack||r.ownGauntletHead?.hideHair))for(const [id,slot,kind,hs] of compass16SideToneAuthority[r.direction].refs)for(const st of states)files.add(resource('assets/'+(hs[Number(st.state)]||hs[0])+'.png'));if(r.firearmSouthSignedPalette){
   for(const st of states){const id=r.basePack.pack.directions.south.layers[0].frames[Number(st.state)];files.add(resource('assets/'+firearmSouthSavedMaterial.body[id].mask+'.png'));}
@@ -2479,6 +2479,52 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  }
  // The signed focus waist is below both animated arms. Only edit the
  // original shorts tile; the feet, equipment, grip and skin stay in the stack.
+ function drawFusedSideTrousers(ctx,r,s,images){
+  const fit=r.sideFittedPants,f=Number(s.state),phase=fit.phases[f],matte=phase[fit.fused];
+  const temp=makeCanvas(640,640),c=temp.getContext('2d');
+  if(fit.plate.replace){
+   const rig=r.orbAnatomy||r.fusedFocusAnatomy;
+   ctx.save();ctx.beginPath();
+   for(const [at,n] of matte.restore)ctx.rect(at%640,Math.floor(at/640),n,1);
+   ctx.clip();ctx.clearRect(0,0,640,640);
+   // Only the stock area uncovered by this garment needs the player's
+   // original skin and foot. Read the small waist crop during composition.
+   for(const id of ['underbody','torso','legs']){
+    const key=phase.modular[id],im=images.get('tools/rework-weapon-layers-hd/'+rig.images[key]);
+    if(im?.width!==640||im.height!==640)throw Error('Missing registered lower anatomy');
+    c.clearRect(0,0,112,114);c.drawImage(im,266,299,112,114,0,0,112,114);
+    if(fit.skin!=='light'){
+     const color=root.MareAppearance96,px=c.getImageData(0,0,112,114);
+     const rank=root.MareNativeSkinHD.mask(px.data,112,'anatomy');
+     px.data.set(color.recolor(px.data,rank,color.skins[fit.skin].ramp));c.putImageData(px,0,0);
+    }
+    ctx.drawImage(temp,0,0,112,114,266,299,112,114);
+   }
+   if(r.bootTrack){
+    const shoe=bootStamp(r,s,images);ctx.save();ctx.globalCompositeOperation='destination-out';shoe.draw(ctx,shoe.mask);ctx.restore();shoe.draw(ctx,shoe.art);
+   }
+   ctx.restore();c.clearRect(0,0,640,640);
+  }
+  const fabric=images.get('tools/rework-modular-outfits-hd/assets/'+fit.plate.cloth[f]+'.png');
+  if(fabric?.width!==640||fabric.height!==640)throw Error('Missing fitted profile fabric');
+  c.save();c.imageSmoothingEnabled=false;c.transform(...phase.transform);c.drawImage(fabric,0,0);c.restore();
+  for(const [at,n] of matte.guard)c.clearRect(at%640,Math.floor(at/640),n,1);
+  ctx.drawImage(temp,0,0);temp.width=1;
+ }
+ function modularSideTrousers(r,s,layers,map,images){
+  const f=Number(s.state),fit=r.sideFittedPants,phase=fit.phases[f],key=phase.modular.shorts;
+  const original=map.get(key),fabric=images.get('tools/rework-modular-outfits-hd/assets/'+fit.plate.cloth[f]+'.png');
+  if(original?.width!==640||fabric?.width!==640)throw Error('Missing modular trouser or waist');
+  const residual=makeCanvas(640,640),rx=residual.getContext('2d');rx.drawImage(original,0,0);
+  const lower=makeCanvas(640,640),ctx=lower.getContext('2d');
+  for(const [start,len] of phase.cut){
+   const x=start%640,y=Math.floor(start/640);rx.clearRect(x,y,len,1);
+   if(!fit.plate.replace)ctx.drawImage(original,x,y,len,1,x,y,len,1);
+  }
+  ctx.imageSmoothingEnabled=false;ctx.transform(...phase.transform);ctx.drawImage(fabric,0,0);
+  const cloth=fit.plate.cloth[f];map.set(key,residual);map.set(cloth,lower);
+  return [...layers,{id:'fitted-profile-trousers',source:cloth,slot:'top',depth:2.75,binding:{kind:'fixed'}}];
+ }
  function drawSideTrousers(ctx,tile,fit,frame,images){
   const {plate,phases}=fit,phase=phases[frame];
   const cloth=images.get('tools/rework-modular-outfits-hd/assets/'+plate.cloth[frame]+'.png');
@@ -2509,9 +2555,25 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   }
   ctx.restore();
  }
+ function paintBladeTrousers(ctx,r,s,images){
+  const phase=r.bladePants.phases[Number(s.state)],url='tools/rework-combat-wardrobe/assets/'+phase.art+'.png',art=images.get(url);
+  if(art?.width!==phase.width||art.height!==phase.height)throw Object.assign(Error('Missing original blade trouser plate'),{asset:url});
+  ctx.save();if(r.bladePants.mirror){ctx.translate(640,0);ctx.scale(-1,1);}
+  ctx.drawImage(art,phase.x,phase.y);ctx.restore();
+ }
+ function mountedBladeTrousers(r,s,layers,map,images){
+  const frame=Number(s.state),key=r.bladePants.phases[frame].art,tile=makeCanvas(640,640);
+  paintBladeTrousers(tile.getContext('2d'),r,s,images);map.set(key,tile);
+  // The original shorts have a late pass for pixels at the wrist. Mask
+  // only their overlap with this fabric before inserting it below the arms.
+  const stock=layers.find(l=>l.id==='shorts').frames[frame],clean=makeCanvas(640,640),c=clean.getContext('2d');
+  c.drawImage(map.get(stock),0,0);c.globalCompositeOperation='destination-out';c.drawImage(tile,0,0);map.set(stock,clean);
+  return [...layers,{id:'equipped-blade-trousers',source:key,slot:'top',depth:2.75,binding:{kind:'fixed'}}];
+ }
  function dressedDaggerBody(r,s,images,body){
   const tile=r.bootTrack?.orderedDagger?bootOnOrderedBody(r,s,images,body):makeCanvas(640,640);
   const c=tile.getContext('2d');if(!r.bootTrack?.orderedDagger)c.drawImage(body,0,0);
+  if(r.bladePants)paintBladeTrousers(c,r,s,images);
   if(r.orderedGloves)paintOrderedGloves(c,r,s,images);
   return tile;
  }
@@ -2623,6 +2685,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    const boot=bootStamp(r,s,images);cx.save();cx.globalCompositeOperation='destination-out';boot.draw(cx,boot.mask);
    cx.globalCompositeOperation='source-over';boot.draw(cx,boot.art);cx.restore();
   }
+  if(r.bladePants)paintBladeTrousers(cx,r,s,images);
   if(r.swordTrack){
    const fabric=panel(r.swordTrack.cloth[frame]),wrist=panel(r.swordTrack.hands[frame]);
    if(fabric?.width!==768||wrist?.width!==640)throw Error('Missing signed sword sleeve');
@@ -2720,7 +2783,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   // Both the background and the original contact restoration refer to this
   // signed body. Only its owned garments change; the metal and its mask are
   // read unmodified, including on blades with native padding.
-  if(r.orderedSwordFit&&(r.swordTrack||r.swordGloves||r.bootTrack||r.ownGauntletHead?.hideHair)){
+  if(r.orderedSwordFit&&(r.bladePants||r.swordTrack||r.swordGloves||r.bootTrack||r.ownGauntletHead?.hideHair)){
    const key=resource(s.layers[0].url),original=images.get(key);
    if(original?.width!==w||original.height!==h)throw Error('Missing original sword receiver');
    images=new Map(images);images.set(key,dressOriginalSwordBody(r,s,images,original));
@@ -2780,6 +2843,8 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     }
    }
    let layers=r.bootTrack?mountedBootLayers(r,s,d,map,images):d.layers;
+   if(r.sideFittedPants&&r.relic32SideBlue)layers=modularSideTrousers(r,s,layers,map,images);
+   if(r.bladePants)layers=mountedBladeTrousers(r,s,layers,map,images);
    if(r.northFittedPants)layers=northTrouserLayer(r,layers,map,images,Number(s.state));
    if(r.northSleeves)layers=northSleeveLayers(r,layers,map,images,Number(s.state));
    if(r.northGloveTrack)layers=[...layers,...northHandLayers(r.northGloveTrack,Number(s.state),images,map)];
@@ -2856,14 +2921,15 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   function compass16TintedBody(){
    if(w16TintedBody)return w16TintedBody;
    if(w!==640||h!==640||hiddenSlots.length||renderOffset.some(Boolean))throw Error('Invalid compass side material geometry');
-   const f=Number(s.state),dir=r.direction,api=root.MareAppearance96,ramp=api?.skins[appearance.skin]?.ramp;
+   const f=Number(s.state),dir=r.direction,api=root.MareAppearance96,ramp=api?.skins[appearance.skin||'light']?.ramp,modular=r.sideFittedPants&&r.compassAnatomy;
    if(!ramp)throw Error('Missing compass side skin palette');
    const tile=makeCanvas(w,h),cx=tile.getContext('2d');cx.imageSmoothingEnabled=false;
+   const material=modular?new Map():null;
    for(const [id,slot,kind,hashes] of compass16SideToneAuthority[dir].refs){
     const sha=hashes[f]||hashes[0],original=image({url:'assets/'+sha+'.png'}),head=kind==='rigid';
     if(original.width!==640||original.height!==640)throw Error('Invalid own compass side PNG');
     let source=original;
-    if(!['underbody','shorts'].includes(id)){
+    if(r.w16SideTone&&!['underbody','shorts'].includes(id)){
      const term=staffLateralRanks.head[dir]?.[id];
      if(head&&term?.source!==sha)throw Error('Unregistered compass side head source');
      const skin=makeCanvas(w,h),sc=skin.getContext('2d');sc.drawImage(original,0,0);const px=sc.getImageData(0,0,w,h),p=px.data,rank=new Uint8Array(w*h);
@@ -2873,18 +2939,23 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      }else for(let j=0;j<p.length;j+=4)if(p[j+3]&&(p[j]||p[j+1]||p[j+2]))rank[j/4]=root.MareNativeSkinHD.tone(p[j],p[j+1],p[j+2]);
      p.set(api.recolor(p,rank,ramp));sc.putImageData(px,0,0);source=skin;
     }
-    cx.drawImage(source,0,head?focusHeadY[f]:0);
+    if(material)material.set(sha,source);else cx.drawImage(source,0,head?focusHeadY[f]:0);
+   }
+   if(material){
+    const d=modular.pack.directions[dir],rows=r.bootTrack?mountedBootLayers(r,s,d,material,images):d.layers;
+    for(const l of modularSideTrousers(r,s,rows,material,images).sort((a,b)=>a.depth-b.depth))
+     cx.drawImage(material.get(l.frames?.[f]||l.source),0,l.binding.kind==='rigid'?focusHeadY[f]:0);
    }
    return w16TintedBody=tile;
   }
   let compassClothBody;
   function compassBody(source){
    if(compassClothBody)return compassClothBody;
-   const original=r.w16SideTone?compass16TintedBody():image(source);
+   const original=r.w16SideTone||r.sideFittedPants?compass16TintedBody():image(source);
    if(!r.orderedGloves&&!r.bootTrack)return original;
    const f=Number(s.state),parts=r.compassAnatomy.pack.directions[r.direction].layers;
    const tile=makeCanvas(w,h),cx=tile.getContext('2d');cx.drawImage(original,0,0);
-   if(r.bootTrack){
+   if(r.bootTrack&&!r.sideFittedPants){
     const shoe=bootStamp(r,s,images),shorts=parts.find(l=>l.id==='shorts');
     for(const [surface,op] of [[shoe.mask,'destination-out'],[shoe.art,'source-over']]){
      const cut=makeCanvas(w,h),sc=cut.getContext('2d');shoe.draw(sc,surface);
@@ -2910,10 +2981,15 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   let dressedOrb=null;
   function orbBody(l){
    const body=r.ownOrbSideTone?orbOwnBody(l):image(l);
-   if(!r.orderedGloves)return body;
+   if(!r.orderedGloves&&!r.sideFittedPants)return body;
    if(dressedOrb)return dressedOrb;
    const tile=makeCanvas(w,h),c=tile.getContext('2d');
-   c.drawImage(body,0,0);paintOrderedGloves(c,r,s,images);
+   c.drawImage(body,0,0);
+   if(r.sideFittedPants){
+    if(r.bootTrack){const shoe=bootStamp(r,s,images);c.globalCompositeOperation='destination-out';shoe.draw(c,shoe.mask);c.globalCompositeOperation='source-over';shoe.draw(c,shoe.art);}
+    drawFusedSideTrousers(c,r,s,images);
+   }
+   if(r.orderedGloves)paintOrderedGloves(c,r,s,images);
    return dressedOrb=tile;
   }
   function orbOwnBody(l){
@@ -2964,7 +3040,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    for(const [x,y,,,,,tone] of eyes)apply(((y+64)*640+x+64)*4,tone,colors.eyes.blue.ramp,colors.eyes[look.eyeColor].ramp);
    cx.putImageData(rgba,0,0);return tile;
   }
-  const paletteImage=(l,assembled)=>{if(r.compassAnatomy&&l.id==='body')return compassBody(l);if((r.ownOrbSideTone||r.orderedGloves)&&l.id==='body')return orbBody(l);if(r.w16SideTone&&l.id==='body')return compass16TintedBody();if(r.arm118SidePalette&&l.depth===0)return arm118Backing();const original=assembled||image(l);
+  const paletteImage=(l,assembled)=>{if(r.compassAnatomy&&l.id==='body')return compassBody(l);if((r.ownOrbSideTone||r.orderedGloves||r.orbAnatomy&&r.sideFittedPants)&&l.id==='body')return orbBody(l);if(r.w16SideTone&&l.id==='body')return compass16TintedBody();if(r.arm118SidePalette&&l.depth===0)return arm118Backing();const original=assembled||image(l);
   if(l.depth===0&&r.northHairColor&&r.northHairColor!=='black'){
    const tile=makeCanvas(w,h),tc=tile.getContext('2d');tc.drawImage(original,0,0);
    const anatomy=root.MareHairAnatomyHD;anatomy.paintRearHair(tc,images.get(anatomy.rearHairPath),r.northHairColor,(w-640)/2,makeCanvas);return tile;
@@ -3055,7 +3131,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     }
     const ramp=l.skinOnly&&root.MareAppearance96?.skins[appearance.skin||appearance.skinColor]?.ramp;
     if(ramp){const c=makeCanvas(w,h),cx=c.getContext('2d');cx.drawImage(tile,0,0);const d=cx.getImageData(0,0,w,h),api=root.MareAppearance96;d.data.set(api.recolor(d.data,root.MareNativeSkinHD.mask(d.data,w,'anatomy'),ramp));cx.putImageData(d,0,0);tile=c;}
-    if((r.orderedGloves||r.bootTrack?.orderedDagger)&&l.id==='authored-body'){
+    if((r.bladePants||r.orderedGloves||r.bootTrack?.orderedDagger)&&l.id==='authored-body'){
      const dressed=dressedDaggerBody(r,s,images,tile);ctx.drawImage(dressed,0,0);dressed.width=1;
     }else if(r.sideFittedPants&&l.id==='shorts'){
      drawSideTrousers(ctx,tile,r.sideFittedPants,Number(s.state),images);
@@ -3065,7 +3141,20 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      ctx.drawImage(clipped,0,0);clipped.width=1;
      if(l.id==='legs')shoe.draw(ctx,shoe.art);
     }else ctx.drawImage(tile,...(l.offset??[0,0]));
-    if(r.orbAnatomy&&r.bootTrack&&l.id==='body'){
+    if(r.rifleSleeves&&l.role==='arms'){
+     const sha=r.rifleSleeves[Number(s.state)];
+     if(sha){
+      const cloth=images.get('tools/rework-combat-wardrobe/assets/'+sha+'.png');
+      if(cloth?.width!==w||cloth.height!==h)throw Error('Missing North rifle sleeves');
+      ctx.drawImage(cloth,0,0);
+     }
+    }
+    if(r.rifleHands&&l.role==='hands'){
+     const cloth=images.get('tools/rework-combat-wardrobe/assets/'+r.rifleHands[Number(s.state)]+'.png');
+     if(cloth?.width!==w||cloth.height!==h)throw Error('Missing North rifle glove');
+     ctx.drawImage(cloth,0,0);
+    }
+    if(r.orbAnatomy&&r.bootTrack&&!r.sideFittedPants&&l.id==='body'){
      const boot=bootStamp(r,s,images);ctx.globalCompositeOperation='destination-out';boot.draw(ctx,boot.mask);
      ctx.globalCompositeOperation='source-over';boot.draw(ctx,boot.art);
     }
@@ -3084,6 +3173,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
       };
       apply(shoe.mask,'destination-out');apply(shoe.art,'source-over');
      }
+     if(r.sideFittedPants)drawFusedSideTrousers(ctx,r,s,images);
     }
     if(r.ownedGauntletCoatHead&&l.depth===0)paintOwnedHead();}
    else if(l.operation==='replace-rgba-under-mask'){
@@ -3091,8 +3181,8 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     const scratch=makeCanvas(w,h),sc=scratch.getContext('2d');
     // This ordered mask also restores the body outside both blades.
     // Restore the equipped body in that region so it keeps its own boots.
-    const dressedRestore=(r.orderedGloves||r.bootTrack?.orderedDagger)&&l.id==='original-hand-and-outside-gear-restoration'?dressedDaggerBody(r,s,images,image(l)):null;
-    sc.drawImage(dressedRestore|| (r.compassAnatomy&&l.id==='original-distal-hand'?compassBody(l):r.w16SideTone&&l.id==='original-distal-hand'?compass16TintedBody():(r.ownOrbSideTone||r.orderedGloves)&&l.id==='original-anatomy'?orbBody(l):image(l)),0,0);if(dressedRestore)dressedRestore.width=1;let patch=sc.getImageData(0,0,w,h).data;
+    const dressedRestore=(r.bladePants||r.orderedGloves||r.bootTrack?.orderedDagger)&&l.id==='original-hand-and-outside-gear-restoration'?dressedDaggerBody(r,s,images,image(l)):null;
+    sc.drawImage(dressedRestore|| (r.compassAnatomy&&l.id==='original-distal-hand'?compassBody(l):r.w16SideTone&&l.id==='original-distal-hand'?compass16TintedBody():(r.ownOrbSideTone||r.orderedGloves||r.orbAnatomy&&r.sideFittedPants)&&l.id==='original-anatomy'?orbBody(l):image(l)),0,0);if(dressedRestore)dressedRestore.width=1;let patch=sc.getImageData(0,0,w,h).data;
     if(l.skinFromAnatomy){
      const ramp=root.MareAppearance96?.skins[appearance.skin||appearance.skinColor]?.ramp;
      if(ramp){

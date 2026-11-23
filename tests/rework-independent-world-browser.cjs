@@ -173,6 +173,7 @@ window.__hdSlotQA={
    assert.deepEqual(errors,[]);return;
   }
   if(process.argv.includes('--orb-coats')){await observeWeaponCoats([17,122],'strategist','attack-focus');assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--blade-trousers')||process.argv.includes('--blade-sleeves')){await observeBladeCloth(process.argv.includes('--blade-sleeves')?'coat':'legs');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-boots')){await observeArticulatedBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--sword-coats')){await observeWeaponCoats([0,1,67,68,69,70],'sword','attack-sword');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-focus-trousers')||process.argv.includes('--south-focus-boots')){await observeFocusTrousers(process.argv.includes('--south-focus-boots'));assert.deepEqual(errors,[]);return;}
@@ -189,11 +190,13 @@ window.__hdSlotQA={
   }
   if(sideFist){await observeLateralGauntlet(Number(sideFist.split('=')[1]||110));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-moving-boots')){await observeNorthMovingBoots();assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--side-focus-sleeves')){await observeFocusSleeves();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--side-staff-trousers')){await observeWeaponGloves('staffPants');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-jackets')){await observeNorthFocusClothing('coat');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-gloves')){await observeNorthFocusClothing('gloves');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-trousers')){await observeNorthFocusClothing('legs');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-coats')||process.argv.includes('--north-weapon-coats')||process.argv.includes('--north-orb-compass-coats')){await observeNorthFocusCoats(process.argv.includes('--north-weapon-coats'),process.argv.includes('--north-orb-compass-coats'));assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--north-rifle-clothes')){await observeNorthRifleClothes();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-rifle-helmets')){await observeNorthRifleHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-rifle-trousers')){await observeNorthTrousers();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--pistol-clothes')){await observePistolClothes();assert.deepEqual(errors,[]);return;}
@@ -438,6 +441,31 @@ window.__hdSlotQA={
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }
+ async function observeBladeCloth(slot){
+  const coats=slot==='coat',alternatives=coats?[137,6]:[168,22];
+  // One real map cycle for each distinct body compositor. The pixel test
+  // exercises all ten materials and both directions of these three paths.
+  const {weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
+  for(const weapon of [0,1,73]){
+   const role=weapons.find(w=>w.id===weapon).role;
+   const action=role==='sword'?'attack-sword':'attack-daggers',direction=weapon===1?'west':'east';
+   const look={gender:'masculino',skinColor:weapon===1?'light':'ebony',hairColor:'blue',eyeColor:'green'};
+   const fixed={weapon,head:19,...(coats?{legs:168}:{coat:151}),boots:148,gloves:152},equipped=Object.values(fixed);
+   await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,look,ids:[...equipped,...alternatives]});
+   for(const item of weapon===1?equipped.reverse():equipped)await put(item);
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance,label=(coats?'mangas':'calcas')+'-lamina-'+weapon+'-'+direction;
+   const before=await observeAttack(action,label+'-sem-'+slot,direction,fixed);let first;
+   for(const [index,item] of [...alternatives,alternatives[0]].entries()){
+    await put(item);const kit={...fixed,[slot]:item},state=await observeAttack(action,label+'-'+index,direction,kit);
+    const routes=state.visual.coverage[0].slotRoutes;
+    for(const slot of Object.keys(fixed))assert.deepEqual(routes[slot],before.visual.coverage[0].slotRoutes[slot]);
+    if(index===0){first=routes;await captureMapCycle(action,kit,label,8,direction);}
+    else if(index===2)assert.deepEqual(first,routes);
+   }
+   await remove(slot);assert.deepEqual((await observeAttack(action,label+'-retirada',direction,fixed)).visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
+   assert.deepEqual(saved,(await page.evaluate(()=>__hdSlotQA.read())).appearance);
+  }
+ }
  async function observeArticulatedBoots(){
   const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
   for(const [weapon,role,action] of [[68,'sword','attack-sword'],[4,'gunner','attack-firearm'],[17,'strategist','attack-focus'],[124,'strategist','attack-focus'],[31,'healer','attack-focus']]){
@@ -598,6 +626,27 @@ window.__hdSlotQA={
    }
   }
   assert.deepEqual(saved,(await page.evaluate(()=>__hdSlotQA.read())).appearance);
+ }
+ async function observeFocusSleeves(){
+  const {weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
+  // Each case samples a distinct contact geometry. The two directions and the six coat IDs are covered.
+  for(const [weapon,direction,first,second] of [[31,'east',6,130],[32,'west',7,144],[17,'east',137,172]]){
+   const fixed={weapon,head:19,gloves:159,boots:148},role=weapons.find(w=>w.id===weapon).role;
+   const look={gender:'masculino',skinColor:weapon===31?'light':'ebony',hairColor:'blue',eyeColor:'green'};
+   await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,ids:[...Object.values(fixed),first,second],look});
+   for(const id of Object.values(fixed))await put(id);
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   const label='mangas-perfil-'+weapon+'-'+direction,show=(key,gear)=>observeAttack('attack-focus',label+'-'+key,direction,gear);
+   const before=await show('sem-casaco',fixed);let signature;
+   for(const [step,id] of [first,second,first].entries()){
+    await put(id);const gear={...fixed,coat:id},sample=await show('troca-'+step,gear),routes=sample.visual.coverage[0].slotRoutes;
+    for(const key of Object.keys(fixed))assert.deepEqual(routes[key],before.visual.coverage[0].slotRoutes[key]);
+    if(step===0)signature=routes;if(step===2)assert.deepEqual(routes,signature);
+    if(step<2)await captureMapCycle('attack-focus',gear,label+'-'+id,8,direction);
+   }
+   await remove('coat');assert.deepEqual((await show('retirada',fixed)).visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
+   assert.deepEqual(saved,(await page.evaluate(()=>__hdSlotQA.read())).appearance);
+  }
  }
  async function observeWeaponGloves(kind){
   const {gear,weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
@@ -772,6 +821,25 @@ window.__hdSlotQA={
    await remove('coat');const restored=await show('depois',gear);
    assert.deepEqual(restored.visual.coverage[0].slotRoutes,bare.visual.coverage[0].slotRoutes);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
+ }
+ async function observeNorthRifleClothes(){
+  for(const [k,weapon] of [4,5,113,115,116].entries()){
+   const kit={weapon,legs:168,boots:148,head:19,coat:151,gloves:159},look={gender:'masculino',hairColor:'blue',eyeColor:'green',skinColor:k%2?'ebony':'light'};
+   await page.evaluate(({kit,look})=>__hdSlotQA.seedWardrobe('gunner',[...Object.values(kit),25,7],look),{kit,look});
+   for(const item of Object.values(kit))await put(item);
+   const before=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   const shot=(tag,gear)=>observeAttack('attack-firearm','rifle-norte-'+weapon+'-'+tag,'north',gear);
+   const dressed=await shot('conjunto',kit);
+   await captureMapCycle('attack-firearm',kit,'rifle-norte-'+weapon,3);
+   await put(7);await put(25);
+   const change=await shot('duas-trocas',{...kit,coat:7,gloves:25});
+   for(const s of ['weapon','head','legs','boots'])assert.deepEqual(change.visual.coverage[0].slotRoutes[s],dressed.visual.coverage[0].slotRoutes[s]);
+   await remove('coat');const {coat,...open}=kit;
+   await shot('sem-peitoral',{...open,gloves:25});
+   await put(159);await put(151);const restored=await shot('retorno',kit);
+   assert.deepEqual(restored.visual.coverage[0].slotRoutes,dressed.visual.coverage[0].slotRoutes);
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,before);
   }
  }
  async function observeNorthRifleHelmets(){

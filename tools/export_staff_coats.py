@@ -124,7 +124,8 @@ def materialize(bank):
         poses[direction] = dict(anatomy=[ordered_parts(s) for s in base['states']],
                                 metal=[next(l['sha256'] for l in s['layers'] if l['id']=='gear') for s in base['states']],
                                 fused=hashes)
-    return dict(coats=clothing, signedMasks=masks, hands=hands, directions=poses, archives=DIGESTS)
+    from register_side_focus_sleeves import materialize as sleeves
+    return dict(coats=clothing, signedMasks=masks, hands=hands, directions=poses, archives=DIGESTS, sleeves=sleeves(bank))
 
 
 if __name__ == '__main__':
