@@ -1,11 +1,11 @@
 # Manopla e adagas laterais no mapa
 
-O censo do código `8696364daea07ea965c750f5baee9ce6e91f7a1d` tem a assinatura `3096fef53e725726dbb8ef4eff0bf646fa38dda880dc03a3eaf899bd0b5dfe6b`. Há **1.062 contextos completos na seleção e 114 com lacunas**, todos em ataques masculinos armados. Os 1.176 receptores sem roupas foram selecionados. Nenhum dos 50 itens atendeu ao critério global de seleção e desenho em todas as poses. [Censo por contexto](censo.ndjson.gz) · [Resultados por item](detalhes.tsv.gz) · [Fila de causas e IDs](pendencias.json.gz) · [Resumo](resumo.json)
+O censo do código `d05527a02aa2565d5160ee63ff606f529dc95eea` tem a assinatura `f806b6e142f90bb2a8c4ee154c2a1ab6708733cedfbce105f1f88a061cc7f845`. Há **1.062 contextos completos na seleção e 114 com lacunas**, todos em ataques masculinos armados. Os 1.176 receptores sem roupas foram selecionados. Nenhum dos 50 itens atendeu ao critério global de seleção e desenho em todas as poses. [Censo por contexto](censo.ndjson.gz) · [Resultados por item](detalhes.tsv.gz) · [Fila de causas e IDs](pendencias.json.gz) · [Resumo](resumo.json)
 
 | Corpo e equipamento | Contextos completos | Itens individuais | Pares | Conjuntos mistos |
 |---|---:|---:|---:|---:|
 | Feminino armado | 504/504 | 25.200/25.200 | 504.000/504.000 | 50.400/50.400 |
-| Masculino armado | 390/504 | 21.892/25.200 | 414.907/504.000 | 39.000/50.400 |
+| Masculino armado | 390/504 | 22.012/25.200 | 418.987/504.000 | 39.480/50.400 |
 | Feminino desarmado | 84/84 | 4.200/4.200 | 84.000/84.000 | 8.400/8.400 |
 | Masculino desarmado | 84/84 | 4.200/4.200 | 84.000/84.000 | 8.400/8.400 |
 
@@ -38,6 +38,15 @@ Cada contexto consulta 50 peças, todos os 1.000 pares entre slots e 100 conjunt
 | 6c38e70 | 21.796 | 411.427 | 384 |
 | 2d8e7f7 | 21.856 | 413.467 | 384 |
 | 8696364 | 21.892 | 414.907 | 390 |
+| d05527a | 22.012 | 418.987 | 390 |
+
+## Dez calças em doze ataques laterais de cajado
+
+As armas 31, 123, 124, 125, 126 e 127 usam a mesma cintura articulada para Leste e Oeste. Cada contexto passou de 34 para 44 peças individuais. As calças 21 e 22 prolongam a bainha do short existente. A 133 usa a sobreposição registrada. As outras sete substituem o tecido contínuo do short. O encaixe usa a largura da cintura e o apoio do pé em cada quadro. Ambas as direções usam os arquivos próprios do jogo. Braços, empunhadura e arma conservam sua profundidade durante o movimento.
+
+As 120 combinações de peça, arma e direção passaram por **960 comparações individuais e 960 com os demais slots**. A referência recompõe o corpo com a camada do tecido na profundidade correta. O teste confere os pixels, a ordem de equipar, a identidade dos vizinhos e a preservação da aparência. O navegador registrou **156 ataques e 12 ciclos completos** com as trocas feitas pelo inventário, mantendo os outros quatro slots. Os 12 contextos ainda precisam dos peitorais 6, 7, 130, 137, 144 e 172. [Ciclos no mapa](calcas-cajados-laterais-mapa.jpg) · [Quadros, origens e trocas](calcas-cajados-laterais-quadros-e-mapa.json.gz)
+
+Com a exportação em `HD_PUBLISHED_ROOT`, execute `node --expose-gc tests/rework-side-focus-trousers.cjs`. O argumento opcional restringe a execução a uma arma. O registro é reproduzido por `python tools/register_side_focus_trousers.py --verify`. O cenário de mapa usa `node tests/rework-independent-world-browser.cjs --side-staff-trousers` com `MARE_TEST_URL`.
 
 ## Dez peitorais no ataque de foco Norte
 
@@ -280,48 +289,48 @@ As colunas individuais contam até 504 contextos armados por corpo e 168 desarma
 | 130 | Peitoral | 390 | 504 | 168 | 35.760 | 8.940 | Parcial |
 | 137 | Peitoral | 390 | 504 | 168 | 35.760 | 8.940 | Parcial |
 | 144 | Peitoral | 390 | 504 | 168 | 35.760 | 8.940 | Parcial |
-| 151 | Peitoral | 444 | 504 | 168 | 37.183 | 8.940 | Parcial |
-| 158 | Peitoral | 444 | 504 | 168 | 37.183 | 8.940 | Parcial |
-| 165 | Peitoral | 444 | 504 | 168 | 37.183 | 8.940 | Parcial |
+| 151 | Peitoral | 444 | 504 | 168 | 37.303 | 9.060 | Parcial |
+| 158 | Peitoral | 444 | 504 | 168 | 37.303 | 9.060 | Parcial |
+| 165 | Peitoral | 444 | 504 | 168 | 37.303 | 9.060 | Parcial |
 | 172 | Peitoral | 390 | 504 | 168 | 35.760 | 8.940 | Parcial |
-| 179 | Peitoral | 444 | 504 | 168 | 37.183 | 8.940 | Parcial |
-| 21 | Calça | 405 | 504 | 168 | 35.992 | 8.940 | Parcial |
-| 22 | Calça | 402 | 504 | 168 | 35.982 | 8.940 | Parcial |
-| 133 | Calça | 401 | 504 | 168 | 35.980 | 8.940 | Parcial |
-| 140 | Calça | 401 | 504 | 168 | 35.980 | 8.940 | Parcial |
-| 147 | Calça | 401 | 504 | 168 | 35.980 | 8.940 | Parcial |
-| 154 | Calça | 401 | 504 | 168 | 35.980 | 8.940 | Parcial |
-| 161 | Calça | 401 | 504 | 168 | 35.980 | 8.940 | Parcial |
-| 168 | Calça | 401 | 504 | 168 | 35.980 | 8.940 | Parcial |
-| 175 | Calça | 401 | 504 | 168 | 35.980 | 8.940 | Parcial |
-| 182 | Calça | 401 | 504 | 168 | 35.980 | 8.940 | Parcial |
-| 8 | Bota | 468 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 9 | Bota | 472 | 504 | 168 | 37.315 | 8.940 | Parcial |
-| 134 | Bota | 468 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 141 | Bota | 468 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 148 | Bota | 469 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 155 | Bota | 468 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 162 | Bota | 468 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 169 | Bota | 468 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 176 | Bota | 468 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 183 | Bota | 468 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 25 | Luva | 441 | 504 | 168 | 36.878 | 8.940 | Parcial |
-| 26 | Luva | 436 | 504 | 168 | 36.864 | 8.940 | Parcial |
-| 131 | Luva | 436 | 504 | 168 | 36.864 | 8.940 | Parcial |
-| 138 | Luva | 436 | 504 | 168 | 36.864 | 8.940 | Parcial |
-| 145 | Luva | 436 | 504 | 168 | 36.864 | 8.940 | Parcial |
-| 152 | Luva | 436 | 504 | 168 | 36.864 | 8.940 | Parcial |
-| 159 | Luva | 436 | 504 | 168 | 36.864 | 8.940 | Parcial |
-| 166 | Luva | 436 | 504 | 168 | 36.864 | 8.940 | Parcial |
-| 173 | Luva | 436 | 504 | 168 | 36.864 | 8.940 | Parcial |
-| 180 | Luva | 436 | 504 | 168 | 36.864 | 8.940 | Parcial |
-| 18 | Cabeça | 471 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 19 | Cabeça | 471 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 129 | Cabeça | 471 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 136 | Cabeça | 471 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 143 | Cabeça | 471 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 150 | Cabeça | 471 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 157 | Cabeça | 471 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 164 | Cabeça | 471 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 171 | Cabeça | 471 | 504 | 168 | 37.302 | 8.940 | Parcial |
-| 178 | Cabeça | 471 | 504 | 168 | 37.302 | 8.940 | Parcial |
+| 179 | Peitoral | 444 | 504 | 168 | 37.303 | 9.060 | Parcial |
+| 21 | Calça | 417 | 504 | 168 | 36.400 | 8.988 | Parcial |
+| 22 | Calça | 414 | 504 | 168 | 36.390 | 8.988 | Parcial |
+| 133 | Calça | 413 | 504 | 168 | 36.388 | 8.988 | Parcial |
+| 140 | Calça | 413 | 504 | 168 | 36.388 | 8.988 | Parcial |
+| 147 | Calça | 413 | 504 | 168 | 36.388 | 8.988 | Parcial |
+| 154 | Calça | 413 | 504 | 168 | 36.388 | 8.988 | Parcial |
+| 161 | Calça | 413 | 504 | 168 | 36.388 | 8.988 | Parcial |
+| 168 | Calça | 413 | 504 | 168 | 36.388 | 8.988 | Parcial |
+| 175 | Calça | 413 | 504 | 168 | 36.388 | 8.988 | Parcial |
+| 182 | Calça | 413 | 504 | 168 | 36.388 | 8.988 | Parcial |
+| 8 | Bota | 468 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 9 | Bota | 472 | 504 | 168 | 37.435 | 8.988 | Parcial |
+| 134 | Bota | 468 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 141 | Bota | 468 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 148 | Bota | 469 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 155 | Bota | 468 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 162 | Bota | 468 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 169 | Bota | 468 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 176 | Bota | 468 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 183 | Bota | 468 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 25 | Luva | 441 | 504 | 168 | 36.998 | 8.988 | Parcial |
+| 26 | Luva | 436 | 504 | 168 | 36.984 | 8.988 | Parcial |
+| 131 | Luva | 436 | 504 | 168 | 36.984 | 8.988 | Parcial |
+| 138 | Luva | 436 | 504 | 168 | 36.984 | 8.988 | Parcial |
+| 145 | Luva | 436 | 504 | 168 | 36.984 | 8.988 | Parcial |
+| 152 | Luva | 436 | 504 | 168 | 36.984 | 8.988 | Parcial |
+| 159 | Luva | 436 | 504 | 168 | 36.984 | 8.988 | Parcial |
+| 166 | Luva | 436 | 504 | 168 | 36.984 | 8.988 | Parcial |
+| 173 | Luva | 436 | 504 | 168 | 36.984 | 8.988 | Parcial |
+| 180 | Luva | 436 | 504 | 168 | 36.984 | 8.988 | Parcial |
+| 18 | Cabeça | 471 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 19 | Cabeça | 471 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 129 | Cabeça | 471 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 136 | Cabeça | 471 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 143 | Cabeça | 471 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 150 | Cabeça | 471 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 157 | Cabeça | 471 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 164 | Cabeça | 471 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 171 | Cabeça | 471 | 504 | 168 | 37.422 | 8.988 | Parcial |
+| 178 | Cabeça | 471 | 504 | 168 | 37.422 | 8.988 | Parcial |
