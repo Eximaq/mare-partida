@@ -49,7 +49,8 @@ lobby96.draw=function(ctx,p,o){
    const r=hdQA.last,c=hdQA.visual?.coverage?.[0];
    if(c?.resolvedAction===mapCycle.action&&r?.direction===mapCycle.direction&&r.state==='rendered'&&Number.isInteger(r.frame)&&
     sprite.width===r.width&&sprite.height===r.height&&!mapCycle.frames.has(r.frame)&&
-    Object.entries(mapCycle.gear).every(([k,id])=>c.slotRoutes[k]?.item===id)&&!c.omitted.length){
+    Object.entries(mapCycle.gear).every(([k,id])=>c.slotRoutes[k]?.item===id)&&!c.omitted.length&&
+    (!mapCycle.checkPainted||(r.source===c.source&&Object.entries(mapCycle.gear).every(([k,id])=>r.slotRoutes?.[k]?.item===id)))){
     const tile=document.createElement('canvas');tile.width=tile.height=160;
     const tx=tile.getContext('2d');tx.imageSmoothingEnabled=true;tx.drawImage(sprite,0,0,160,160);
     mapCycle.frames.set(r.frame,tile);
@@ -65,7 +66,7 @@ window.__hdSlotQA={
   stale:q.stale,lostSlots:q.lostSlots,legacy:q.legacy,blocked:q.blocked,current:q.current,actor:game.equipment.coat?.def,
   x:world.hero.x,y:world.hero.y,active:!!basicAttackPose()?.locked||world.hero.attackAnim>0,
   scene,position:world.hero.direction};},
- startCycle(action,direction,gear){mapCycle={action,direction,gear,frames:new Map()};},
+ startCycle(action,direction,gear,checkPainted=false){mapCycle={action,direction,gear,checkPainted,frames:new Map()};},
  cycleFrames(){return [...mapCycle.frames.keys()].sort((a,b)=>a-b);},
  finishCycle(){const sheet=document.createElement('canvas');sheet.width=mapCycle.frames.size*160;sheet.height=160;const ctx=sheet.getContext('2d');for(const [phase,tile] of mapCycle.frames)ctx.drawImage(tile,phase*160,0);mapCycle=null;return sheet.toDataURL('image/png');},
  seedWardrobe(role,items,look={}){
@@ -258,6 +259,10 @@ window.__hdSlotQA={
   if(process.argv.includes('--north-rifle-clothes')){await observeNorthRifleClothes();assert.deepEqual(errors,[]);return;}
   const southLegs=process.argv.find(v=>/^--south-firearm-legs(?:=(4|5|113|114|115|116))?$/.test(v));
   if(southLegs){await observeSouthFirearmLegs(southLegs.includes('=')?[Number(southLegs.split('=')[1])]:[4,5,113,114,115,116]);assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--wardrobe-map-batch')){
+   await require('./rework-wardrobe-map-batch.cjs')({page,out,put,observeAttack,captureMapCycle});
+   assert.deepEqual(errors,[]);return;
+  }
   if(process.argv.includes('--pistol-complete-wardrobe')){await observePistolWardrobe();assert.deepEqual(errors,[]);return;}
   const southFused=process.argv.find(v=>/^--south-fused-firearm(?:=(114|116))?$/.test(v));
   if(southFused){await observeSouthRifleArms(southFused.includes('=')?[Number(southFused.split('=')[1])]:[114,116]);assert.deepEqual(errors,[]);return;}
@@ -633,8 +638,8 @@ window.__hdSlotQA={
    }
   }
  }
- async function captureMapCycle(action,gear,label,count,direction='north'){
-  await page.evaluate(({action,direction,gear})=>__hdSlotQA.startCycle(action,direction,gear),{action,direction,gear});
+ async function captureMapCycle(action,gear,label,count,direction='north',checkPainted=false){
+  await page.evaluate(({action,direction,gear,checkPainted})=>__hdSlotQA.startCycle(action,direction,gear,checkPainted),{action,direction,gear,checkPainted});
   const canvas=page.locator('#worldCanvas');
   let frames=[];
   for(let attempt=0;attempt<24&&frames.length<count;attempt++){
@@ -1169,7 +1174,7 @@ window.__hdSlotQA={
   assert.deepEqual(after.appearance,before.appearance);
   assert.deepEqual(after.draw.visual.coverage[0].slotRoutes,before.draw.visual.coverage[0].slotRoutes);
  }
- async function observeAttack(resolvedAction,label,direction='south',expected={}){
+ async function observeAttack(resolvedAction,label,direction='south',expected={},save=true){
   const point=await page.evaluate(dir=>__hdSlotQA.target(dir),direction),canvas=page.locator('#worldCanvas');
   const bounds=await canvas.boundingBox(),size=await canvas.evaluate(c=>({width:c.width,height:c.height}));
   await page.waitForFunction(()=>__hdSlotQA.read().draw?.scene==='hunt');
@@ -1187,7 +1192,7 @@ window.__hdSlotQA={
   }
   assert(attack,JSON.stringify((await page.evaluate(()=>__hdSlotQA.read())).draw?.visual));
   trace.push({label,draw:attack});
-  if(Object.keys(expected).length)await page.screenshot({path:path.join(out,label+'.png')});
+  if(save&&Object.keys(expected).length)await page.screenshot({path:path.join(out,label+'.png')});
   return attack;
  }
  async function walk(key,direction,kit,label,save=false){

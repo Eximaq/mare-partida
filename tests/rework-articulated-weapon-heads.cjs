@@ -48,7 +48,7 @@ async function daggerReference(record,direction){
  }
  return {poses,frames};
 }
-const group=process.argv[2],expected={sword:180,rogue:180,gunner:130,healer:140,strategist:120};
+const group=process.argv[2],expected={sword:180,rogue:180,gunner:140,healer:140,strategist:160};
 assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated headgear');
 (async()=>{
  const api=make();await api.ready;await api.warmSwordCheckpoint();const rows=[];
@@ -58,6 +58,11 @@ assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated h
   // The archive records the orientation of the modular skull independently of the selector.
   const mirrored=weaponIndex.records.some(source=>source.item===weapon&&source.body===bare?.body&&
    source.direction===direction&&source.approvedModularBody?.placement==='behind-body'&&source.approvedModularBody.mirror===true);
+  // The compass exposes its registered scalp through the weapon archive
+  // when dressing the bare receiver. Read the same signed source independently.
+  const compass=bare&&weaponArt.compassWardrobeRig(bare);
+  const anatomy=compass||bare?.orbAnatomy||bare?.fusedFocusAnatomy;
+  const receiver=compass?{...bare,compassAnatomy:compass,focusScalpSkin:actor.appearance96.skinColor}:bare;
   let images,dagger;const backs=new Map();let count=0,frames=0;
   for(const item of gear[4]){
    const player={...actor,equipment:{...actor.equipment,head:{def:item}}},r=world.selectWorldHDOnly(api,catalog,player,o),part=r?.ownGauntletHead;
@@ -67,16 +72,16 @@ assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated h
    const hidden=mod('headgear-visibility.js').resolve({def:item}).hideHair;
    if(r.daggerHeadRig&&!dagger)dagger=await daggerReference(bare,direction);
    if(!images){
-    images=new Map();const urls=new Set(weaponArt.requiredFiles(bare));
-    for(const url of Object.values((bare.orbAnatomy||bare.fusedFocusAnatomy)?.images||{}))urls.add('tools/rework-weapon-layers-hd/'+url);
+    images=new Map();const urls=new Set(weaponArt.requiredFiles(receiver));
+    for(const url of Object.values(anatomy?.images||{}))urls.add('tools/rework-weapon-layers-hd/'+url);
     for(const url of urls)images.set(url,await load(url));
    }
    if(!backs.has(hidden)){
     const layers=[];
     for(let i=0;i<r.states.length;i++){
      const c=cv.createCanvas(...r.nativeCanvas);
-     const layeredHead=bare.orbAnatomy||bare.orderedAnatomy||bare.fusedFocusAnatomy;
-     const skull=(layeredHead||bare.w32SideSavedPalette)&&hidden?{...bare,ownGauntletHead:{hideHair:true}}:bare;
+     const layeredHead=anatomy||bare.orderedAnatomy;
+     const skull=(layeredHead||bare.w32SideSavedPalette)&&hidden?{...receiver,ownGauntletHead:{hideHair:true}}:receiver;
      weaponArt.render(c.getContext('2d'),skull,images,{frame:i,hiddenSlots:hidden&&!layeredHead&&!dagger?['hair']:[],appearance:bare.colorAppearance});
      if(hidden&&dagger)dagger.frames[i].uncover(c);
      layers.push(c);
@@ -88,7 +93,7 @@ assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated h
    const b=await api.prepareConfiguration([{player,options:o}],{resolve:()=>({player,options:o,source:r})});
    try{
     for(let tick=0;tick<r.timeline.length;tick++){
-     const i=Number(r.timeline[tick]),pose=dagger?dagger.poses[i]:(bare.basePack||bare.orbAnatomy||bare.orderedAnatomy||bare.fusedFocusAnatomy).pack.directions[direction].poses[i],pad=part.paddingPhysical;
+     const i=Number(r.timeline[tick]),pose=dagger?dagger.poses[i]:(bare.basePack||anatomy||bare.orderedAnatomy).pack.directions[direction].poses[i],pad=part.paddingPhysical;
      const off=(axis,delta)=>pad+Math.round(4*(pose.NECK[axis]-h.rest.NECK[axis]+(prior[axis]||0)+(delta||0)));
      const expected=cv.createCanvas(...r.nativeCanvas),ctx=expected.getContext('2d'),back=backs.get(hidden)[i];
      ctx.drawImage(back,0,0);
@@ -108,6 +113,12 @@ assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated h
  }
  if(group==='sword')assert.deepEqual(rows.find(r=>r.weapon===69&&r.direction==='north'),
   {weapon:69,direction:'north',items:10,frames:80},'All helmets ride the mirrored Nodachi skull through the complete cycle');
+ if(group==='gunner')assert.deepEqual(rows.find(r=>r.weapon===5&&r.direction==='south'),
+  {weapon:5,direction:'south',items:10,frames:320},'All helmets through the musket firing clock');
+ if(group==='strategist')for(const direction of ['east','west']){
+  assert.deepEqual(rows.find(r=>r.weapon===16&&r.direction===direction),
+   {weapon:16,direction,items:10,frames:80},'All helmets on the registered compass skull');
+ }
  if(group==='healer')for(const direction of ['east','west']){
   const relic=rows.find(r=>r.weapon===32&&r.direction===direction);
   assert.deepEqual(relic,{weapon:32,direction,items:10,frames:80});

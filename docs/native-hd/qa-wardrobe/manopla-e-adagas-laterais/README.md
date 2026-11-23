@@ -11,7 +11,7 @@ No build de `14505bc0be618c0a1d5cacde16008d1a69d0d896`, os **1.176/1.176 context
 
 Os produtos diretos, executados em lotes em diferentes builds, têm os mesmos 1.176 identificadores do censo final. São **117.600.000 seleções diretas aprovadas** de conjuntos de cinco roupas, incluindo os estados armados e desarmados. O censo final repetiu as 58.800 peças isoladas, os 1.176.000 pares e 117.600 conjuntos amostrados. [Índice dos produtos diretos com origem de cada contexto](produtos-1176-por-contexto.json.gz)
 
-Os últimos 114 contextos somam 11.400.000 seleções diretas. Os ensaios de desenho e do mapa identificam separadamente as fases, os equipamentos, as aparências e as trocas observadas. A coluna «Global» da tabela dos 50 itens continua parcial para a comprovação visual em todo o catálogo. [Resultados dos 114 contextos, regressões e capturas](continuacao-114.md)
+Os últimos 114 contextos somam 11.400.000 seleções diretas. Cada um dos 114 ataques teve um ciclo completo capturado no mapa com arma e cinco roupas, totalizando 904 fases. As pranchas identificam o equipamento de cada caso. A coluna «Global» da tabela dos 50 itens continua parcial para a comprovação visual em todo o catálogo. [Resultados dos 114 contextos, regressões e capturas](continuacao-114.md)
 
 ## Histórico das rodadas anteriores
 ## 51 ataques recuperados

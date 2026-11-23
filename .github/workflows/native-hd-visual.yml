@@ -5,6 +5,8 @@ on:
     paths:
       - 'player-rework-*hd*'
       - 'tests/rework-wardrobe-map-action.test.cjs'
+      - 'tests/rework-independent-world-browser.cjs'
+      - 'tests/rework-wardrobe-async-browser.cjs'
       - 'tests/rework-male-dagger-coat-cycles.cjs'
       - 'tests/rework-registered-weapon-coats.cjs'
       - 'tests/rework-male-p114-signed-slots-saved.cjs'
@@ -707,6 +709,11 @@ jobs:
         run: |
           node tests/rework_visual_readiness_browser.cjs
           MARE_FAIL_VISUAL=1 node tests/rework_visual_readiness_browser.cjs
+      - name: Trocar o peitoral durante o ataque com a textura anterior pendente
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8157/dist/
+          MARE_EVIDENCE_DIR: artifacts/rework-wardrobe-load-race
+        run: node tests/rework-independent-world-browser.cjs --wardrobe-load-race
       - name: Capture normal world renderer without touching owner saves
         env:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/

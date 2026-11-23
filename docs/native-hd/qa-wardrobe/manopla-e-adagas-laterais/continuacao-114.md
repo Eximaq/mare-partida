@@ -19,6 +19,30 @@ Na aparência masculina Sul, 14 cabelos × 5 expressões × 18 armas passaram co
 
 O build estático do commit `14505bc0be618c0a1d5cacde16008d1a69d0d896` tem a assinatura `478afa2805b71aa09613e1cb55e44f411b9b9e14b36f7a2740178429fea8782a`. Para repetir os ensaios de mapa, use `tests/rework-independent-world-browser.cjs` com `--pistol-complete-wardrobe`, `--wardrobe-load-race` ou `--south-saved-head-shapes`. Sirva o build gerado por `python tools/build_pages.py --static-demo` e aponte `MARE_TEST_URL` para ele. Para o censo de seleção, use `HD_PUBLISHED_ROOT` e o modo `sample` ou `direct` em `tools/audit-hd-wardrobe-product.cjs`.
 
+## Os 114 contextos no mapa
+
+Cada um dos **114 contextos** tem um ciclo completo de ataque observado na caçada, com arma e cinco roupas equipadas. O índice reúne **904 fases desenhadas**. Foram reaproveitados 31 ciclos com fontes e fases verificáveis. Os outros 83 foram capturados no build de `14505bc`. Nesses 83, a captura exige que o quadro efetivamente pintado use a fonte selecionada e os seis IDs equipados. Juntos, os lotes adicionais vestiram todos os 50 IDs do catálogo. O índice registra o conjunto usado, o total de fases e a impressão digital dos pixels de cada quadro. Um conjunto por contexto foi usado para esta contagem de desenho. [Ciclos, IDs e medidas por quadro](ciclos-no-mapa-114.json.gz)
+
+| Ataque | Contextos com ciclo completo | Fases desenhadas | Todos os quadros |
+|---|---:|---:|---|
+| Espadas | 24 | 198 | [Prancha de espadas](ciclos-114-attack-sword.webp) |
+| Adagas | 24 | 198 | [Prancha de adagas](ciclos-114-attack-daggers.webp) |
+| Armas de fogo | 24 | 166 | [Prancha de disparos](ciclos-114-attack-firearm.webp) |
+| Cajados, orbes e focos | 42 | 342 | [Prancha de foco](ciclos-114-attack-focus.webp) |
+
+Para reproduzir todos os ciclos com o servidor e a pasta de evidências configurados, execute `node tests/rework-independent-world-browser.cjs --wardrobe-map-batch`. O teste lê os conjuntos documentados. `MARE_MAP_ROLE` permite selecionar uma classe, `MARE_MAP_BATCH` aceita uma lista JSON explícita e `MARE_MAP_BUILD` permite retomar a mesma revisão em uma pasta de evidências existente. Cada caso concluído escreve sua imagem e resultado. A retomada verifica a versão, os IDs e o SHA-256 da captura.
+
+## Regressões da revisão anterior
+
+| Falha observada na CI | Correção e verificação dirigida |
+|---|---|
+| Adagas laterais exigiam a contagem antiga de quatro peitorais | O teste obtém os dez IDs do catálogo. As seis adagas passaram pelos dois perfis, totalizando 120 rotas e 960 quadros comparados com a arte de referência. |
+| Peitoral 151 e luva na pistola Norte | O compositor preserva a camada inferior. A regressão localiza o único grupo assinado do peitoral, inclusive sob a luva, e compara os 64 quadros por pixel. |
+| Elmos na nodachi Norte, mosquete Sul e bússola lateral | A referência aplica uma vez o espelho assinado da nodachi e usa o crânio da própria bússola. A cobertura inclui o mosquete. Foram comparados 1.520 quadros completos nesses recortes. |
+| Agressão do inimigo no primeiro andar de Impel Down, intermitente | O teste esperava deslocamento antes de o navegador construir a rota ao redor do obstáculo. A nova sincronização conserva os critérios de aproximação, engajamento, ataque, dano e personagem parado. Os 19 inimigos possíveis avançaram e causaram dano. A progressão dos andares, as recompensas e a reconexão passaram no Chromium até o andar 100. |
+
+Os cinco comandos de independência que vinham após a interrupção também passaram no build publicado. Eles exercitam casacos registrados, peças assinadas da pistola, empunhadura, contato com a arma e propriedade das roupas Sul. Entre eles estão 192 quadros de casacos registrados, 838 ticks da pistola, 104 ticks de contato e 48 quadros de propriedade das roupas. A execução de Chromium com textura atrasada faz parte do job de mapa da CI.
+
 ## Histórico dos lotes anteriores
 ## Mais dez contextos selecionados
 
