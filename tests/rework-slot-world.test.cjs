@@ -15,7 +15,7 @@ function fixture({layered=true,exact=false,canonical=false}={}){
       select:(_p,o)=>o.action!=='attack-unarmed'||o.direction!=='south'||exact?{id:'strict-hd'}:null,
       selectVisual:function(p,o){if(canonical&&o.action==='walk'&&o.direction==='north')return {id:'canonical-hd'};return this.select(p,o)||this.selectLayered(p,o);},
       selectLayered:(p,o)=>layered&&o.action==='attack-unarmed'&&o.direction==='south'?{
-        id:'registered-layered-pilot',
+        id:'registered-layered-pilot',layeredSlots:true,slotFallback:'signed-pose-omit',
         omitted:p.equipment.coat?['coat']:[]
       }:null,
       prepareConfiguration:async function(poses,{resolve=({player,options})=>({source:this.select(player,options)})}){
@@ -71,7 +71,7 @@ test('an unregistered pose still follows the existing route rather than inventin
   const state=await prepare(lobby,player);
   assert.equal(state.state,'failed');
   assert.equal(state.coverage.length,0);
-  assert.match(state.error,/sprite|indispon|visual/i);
+  assert.equal(state.error,'Sem fonte HD: attack-unarmed / south');
   assert.equal(lobby.worldReady(player),false);
   assert.equal(lobby.drawWorldVisual({}, {action:'attack-unarmed',direction:'south'},player),false);
 });
