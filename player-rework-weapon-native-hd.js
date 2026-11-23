@@ -2459,7 +2459,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  // Work in the native 640px rig, before the weapon-specific offset. Only
  // copies of the two independently signed anatomy images receive the matte.
  function restoreFocusScalp(ctx,r,s,images,resource){
-  const {pack,images:urls}=r.orbAnatomy||r.fusedFocusAnatomy||r.daggerHeadRig,d=pack.directions[r.direction],frame=Number(s.state);
+  const {pack,images:urls}=r.orbAnatomy||r.fusedFocusAnatomy||r.orderedSwordFit?.rig||r.daggerHeadRig,d=pack.directions[r.direction],frame=Number(s.state);
   const keys=d.layers.map(l=>l.frames?.[frame]||l.source),maps=new Map(keys.map(k=>[k,images.get(resource(urls[k]))]));
   if([...maps.values()].some(im=>!im))throw Error('Missing registered orb anatomy');
   const part=layers=>({...pack,directions:{[r.direction]:{...d,layers}}});
@@ -2512,6 +2512,30 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const tile=makeCanvas(640,640);stamp(tile.getContext('2d'),art);map.set(row.art,tile);
   return [...d.layers,{id:'equipped-articulated-boots',slot:'top',depth:2.5,source:row.art,binding:{kind:'fixed'}}];
  }
+ function dressOriginalSwordBody(r,s,images,source){
+  const {pad}=r.orderedSwordFit,frame=Number(s.state),size=r.nativeCanvas[0];
+  const canvas=makeCanvas(size,size),ctx=canvas.getContext('2d'),core=makeCanvas(640,640),cx=core.getContext('2d');
+  const panel=key=>images.get('tools/rework-combat-wardrobe/assets/'+key+'.png');
+  ctx.drawImage(source,0,0);cx.drawImage(source,-pad,-pad);
+  if(r.ownGauntletHead?.hideHair)restoreFocusScalp(cx,r,s,images,resource);
+  if(r.bootTrack){
+   const boot=bootStamp(r,s,images);cx.save();cx.globalCompositeOperation='destination-out';boot.draw(cx,boot.mask);
+   cx.globalCompositeOperation='source-over';boot.draw(cx,boot.art);cx.restore();
+  }
+  if(r.swordTrack){
+   const fabric=panel(r.swordTrack.cloth[frame]),wrist=panel(r.swordTrack.hands[frame]);
+   if(fabric?.width!==768||wrist?.width!==640)throw Error('Missing signed sword sleeve');
+   const c=makeCanvas(640,640),x=c.getContext('2d');
+   x.save();if(r.direction==='west'){x.translate(640,0);x.scale(-1,1);}
+   x.drawImage(fabric,-64,-64);x.globalCompositeOperation='destination-out';x.drawImage(wrist,0,0);x.restore();
+   cx.drawImage(c,0,0);c.width=1;
+  }
+  for(const hand of r.swordGloves||[]){
+   const im=panel(hand.track[frame]);if(im?.width!==640||im.height!==640)throw Error('Missing ordered sword glove');
+   cx.save();if(r.direction==='west'){cx.translate(640,0);cx.scale(-1,1);}cx.drawImage(im,0,0);cx.restore();
+  }
+  ctx.clearRect(pad,pad,640,640);ctx.drawImage(core,pad,pad);core.width=1;return canvas;
+ }
  function renderSwordSleeve(ctx,r,s,pack,map,images,image){
   const phase=Number(s.state),size=640,at=s.attachment,track=r.swordTrack;
   const asset=key=>images.get('tools/rework-combat-wardrobe/assets/'+key+'.png');
@@ -2543,6 +2567,14 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const recolored=!!(r.basePack||r.paletteSupport)&&['skin','skinColor','hairColor','eyeColor','face'].some(k=>appearance[k]&&appearance[k]!=='original');
   const renderOffset=r.renderOffsetPhysical??[0,0];if(!Array.isArray(renderOffset)||renderOffset.length!==2||renderOffset.some(v=>!Number.isInteger(v)||v<0))throw Error('Native render offset must be two nonnegative integers');if(renderOffset.some(Boolean)&&(!r.basePack||!s.attachment||s.layers.some(l=>l.operation!=='source-over')||s.canvasRoundingPatch?.length))throw Error('Padded native attachments cannot contain coordinate-addressed RGBA patches');
   const [w,h]=r.nativeCanvas;ctx.canvas.width=w;ctx.canvas.height=h;ctx.clearRect(0,0,w,h);ctx.imageSmoothingEnabled=false;ctx.save();ctx.translate(...renderOffset);try{
+  // Both the background and the original contact restoration refer to this
+  // signed body. Only its owned garments change; the metal and its mask are
+  // read unmodified, including on blades with native padding.
+  if(r.orderedSwordFit&&(r.swordTrack||r.swordGloves||r.bootTrack||r.ownGauntletHead?.hideHair)){
+   const key=resource(s.layers[0].url),original=images.get(key);
+   if(original?.width!==w||original.height!==h)throw Error('Missing original sword receiver');
+   images=new Map(images);images.set(key,dressOriginalSwordBody(r,s,images,original));
+  }
   const image=a=>{const im=images.get(resource(a.url))||images.get(a.url);if(!im)throw Error('Missing original asset '+a.url);return im;};
   if(r.w3NorthOwnAttack){renderW3North(ctx,r,s,image,hiddenSlots,appearance);return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4,y:r.pivot[1]*4},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalScale:1,hairSeparated:false,roundingCorrection:false,roundingTolerance:0};}
   if(r.ownW70South){renderW70South(ctx,r,s,image,hiddenSlots,appearance);return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4,y:r.pivot[1]*4},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalOffset:[0,0]};}
@@ -2605,7 +2637,14 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    }
    if((recolored||r.mirrorBody)&&!s.attachment){if(!root.MareReworkBaseHD)throw Error('Native palette renderer unavailable');const base=root.MareReworkBaseHD.create({schema:'rework-full-hd-v1',records:[]},{vendor,prefix:''});base.render(target,{id:r.id,body:r.body,action:r.action,pack,direction:r.direction,sourceRefs:[...map.keys()],mirrorX:r.mirrorBody},map,{frame:Number(s.state),appearance,makeCanvas,
     ...(r.isolatedProfileIris||r.ownedCannon15SideAttack||r.ownedArm117SideAttack||r.ownedCannon15SouthAttack||r.ownedArm117SouthAttack||r.gauntlet112SouthOwnAttack?{afterMaterialSource:(source,im,old)=>source===((r.ownedCannon15SouthAttack||r.ownedArm117SouthAttack||r.gauntlet112SouthOwnAttack)?"assets/"+firearmSouthFace+".png":firearmSideFace[r.direction])?paintFirearmSideIris(im,old,r,makeCanvas):im}:{})});}
-   else if(s.attachment){const dir=pack.directions[r.direction],at=s.attachment,ops=dir.layers.map(layer=>({depth:layer.depth,layer}));ops.push({depth:at.depth,attachment:at});if(r.swordTrack)ops.push({depth:8,swordCoat:true});for(const op of ops.sort((a,b)=>a.depth-b.depth)){if(op.swordCoat){renderSwordSleeve(ctx,r,s,pack,map,images,image);continue;}if(op.layer){const one={...pack,directions:{[r.direction]:{...dir,layers:[op.layer]}}};ctx.save();if(r.mirrorLayerIDs?.includes(op.layer.id)){ctx.translate(p.frame.width*4,0);ctx.scale(-1,1);}if(recolored){const tile=makeCanvas(w,h),base=root.MareReworkBaseHD.create({schema:'rework-full-hd-v1',records:[]},{vendor,prefix:''});base.render(tile.getContext('2d'),{id:r.id,pack:one,direction:r.direction,sourceRefs:[...map.keys()]},map,{frame:Number(s.state),appearance,makeCanvas,
+   else if(s.attachment){const dir=pack.directions[r.direction],at=s.attachment,ops=dir.layers.map(layer=>({depth:layer.depth,layer}));ops.push({depth:at.depth,attachment:at});
+    for(const hand of r.swordGloves||[])ops.push({depth:hand.depth,glove:hand.track[Number(s.state)]});
+    if(r.swordTrack)ops.push({depth:8,swordCoat:true});for(const op of ops.sort((a,b)=>a.depth-b.depth)){if(op.glove){
+      const panel=images.get('tools/rework-combat-wardrobe/assets/'+op.glove+'.png');
+      if(panel?.width!==640||panel.height!==640)throw Error('Invalid articulated sword glove');
+      ctx.save();if(r.direction==='west'){ctx.translate(640,0);ctx.scale(-1,1);}
+      ctx.drawImage(panel,0,0);ctx.restore();continue;
+     }if(op.swordCoat){renderSwordSleeve(ctx,r,s,pack,map,images,image);continue;}if(op.layer){const one={...pack,directions:{[r.direction]:{...dir,layers:[op.layer]}}};ctx.save();if(r.mirrorLayerIDs?.includes(op.layer.id)){ctx.translate(p.frame.width*4,0);ctx.scale(-1,1);}if(recolored){const tile=makeCanvas(w,h),base=root.MareReworkBaseHD.create({schema:'rework-full-hd-v1',records:[]},{vendor,prefix:''});base.render(tile.getContext('2d'),{id:r.id,pack:one,direction:r.direction,sourceRefs:[...map.keys()]},map,{frame:Number(s.state),appearance,makeCanvas,
        ...(r.firearmSouthSignedPalette?{afterMaterialSource:(source,image,old)=>{
         const c=tintFirearmSouthSource(source,old,images,appearance,makeCanvas);
         return source===firearmSouthFace?paintFirearmSideIris(c,old,r,makeCanvas):c;

@@ -17,7 +17,7 @@ TIPS = ((356,362),(396,326),(381,246),(427,253),(449,260),(436,270),(397,338),(3
 LEFT_AXIS = ((6,-24),(-13,-22),(-25,-12),(-25,-12),(-25,-12),(-25,-12),(-25,-12),(6,-24))
 
 
-def bind(image, coverage, target_axis, material_axis):
+def bind(image, coverage, target_axis, material_axis, envelope=None):
     import numpy as np
     from PIL import Image
 
@@ -27,7 +27,7 @@ def bind(image, coverage, target_axis, material_axis):
         return unit,np.array([-unit[1],unit[0]])
 
     source=np.asarray(image)
-    sy,sx=np.where(source[:,:,3]>50)
+    sy,sx=np.where((source[:,:,3] if envelope is None else envelope)>50)
     ty,tx=np.where(coverage>0)
     if len(sx)<120 or not len(tx):
         raise ValueError('Unowned glove or empty hand')
@@ -156,19 +156,21 @@ def calibrate(verify):
         for name,data in sorted(assets.items()):z.writestr(zipfile.ZipInfo(name),data,compress_type=zipfile.ZIP_DEFLATED)
 
 
-def materialize(bank):
-    with zipfile.ZipFile(ARCHIVE) as z:
+def materialize(bank, archive=ARCHIVE):
+    with zipfile.ZipFile(archive) as z:
         registration=json.loads(z.read('registration.json'))
-        if len(registration['items'])!=10:raise ValueError('Incomplete staff glove atlas')
+        if len(registration['items'])!=10:raise ValueError('Incomplete glove atlas')
         for hands in registration['items'].values():
             if set(hands)!={'left','right'}:raise ValueError('Missing hand')
             for track in hands.values():
                 if len(track)!=8:raise ValueError('Missing phase')
                 for row in track:
-                    name=row['art']+'.png';data=z.read(name)
-                    if hashlib.sha256(data).hexdigest()!=row['art'] or struct.unpack('>II',data[16:24])!=(640,640):
-                        raise ValueError('Invalid garment panel')
-                    (bank/name).write_bytes(data)
+                    for key in (row['art'],row.get('turned')):
+                        if not key:continue
+                        name=key+'.png';data=z.read(name)
+                        if hashlib.sha256(data).hexdigest()!=key or struct.unpack('>II',data[16:24])!=(640,640):
+                            raise ValueError('Invalid garment panel')
+                        (bank/name).write_bytes(data)
     return registration
 
 

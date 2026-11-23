@@ -162,7 +162,7 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
-  if(process.argv.includes('--staff-gloves')){await observeStaffGloves();assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--staff-gloves')||process.argv.includes('--sword-gloves')){await observeWeaponGloves(process.argv.includes('--sword-gloves'));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--staff-coats')){
    await observeWeaponCoats([123,124],'strategist','attack-focus',true);
    await observeWeaponCoats([31,125,126,127,128],'healer','attack-focus',true);
@@ -565,9 +565,10 @@ window.__hdSlotQA={
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }
- async function observeStaffGloves(){
+ async function observeWeaponGloves(swords=false){
   const {gear,weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
-  for(const weapon of [31,123,124,125,126,127,128]){
+  const action=swords?'attack-sword':'attack-focus',family=swords?'espada':'cajado';
+  for(const weapon of swords?weapons.filter(w=>w.role==='sword').map(w=>w.id):[31,123,124,125,126,127,128]){
    const role=weapons.find(w=>w.id===weapon).role,dark=weapon%2===0;
    const look={gender:'masculino',skinColor:dark?'ebony':'light',hairColor:dark?'blue':'brown',eyeColor:dark?'green':'brown'};
    const fixed={weapon,coat:151,boots:169,head:19},equipment=Object.values(fixed);
@@ -575,13 +576,13 @@ window.__hdSlotQA={
    for(const item of dark?equipment:equipment.reverse())await put(item);
    const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
    for(const direction of ['east','west']){
-    const label='luvas-cajado-'+weapon+'-'+direction,show=(name,eq)=>observeAttack('attack-focus',label+'-'+name,direction,eq);
+    const label='luvas-'+family+'-'+weapon+'-'+direction,show=(name,eq)=>observeAttack(action,label+'-'+name,direction,eq);
     const before=await show('sem-luva',fixed);let first;
     for(const gloves of [152,...gear[3].filter(id=>id!==152),152]){
      await put(gloves);const kit={...fixed,gloves},step=await show('luva-'+gloves+(first&&gloves===152?'-retorno':''),kit);
      for(const key of Object.keys(fixed))assert.deepEqual(before.visual.coverage[0].slotRoutes[key],step.visual.coverage[0].slotRoutes[key]);
      if(gloves===152){if(first)assert.deepEqual(step.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);
-      else{first=step;await captureMapCycle('attack-focus',kit,label,8,direction);}}
+      else{first=step;await captureMapCycle(action,kit,label,8,direction);}}
     }
     await remove('gloves');assert.deepEqual((await show('retirada',fixed)).visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
    }
