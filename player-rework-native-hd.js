@@ -4662,9 +4662,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const bare=select({...player,equipment:{[weapon.key]:weapon.value}},o),eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
   const raw=player.appearance96||{},tone=raw.skinColor,
     savedIdentity=raw.version===1&&raw.gender==='masculino'&&raw.skinStyle==='natural'&&raw.hairStyle==='original'&&
-      raw.hairColor==='black'&&raw.eyeStyle==='original'&&raw.eyeColor==='blue'&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},tone),
-    signedTone=savedIdentity&&((o.direction==='south'&&bare?.w114LocalSouthTone===true&&bare.id===authority.id+':owned-local-south:'+tone)||
-      (o.direction==='north'&&bare?.ownW114North===true&&bare.id===authority.id+':owned-w114-north-skin:'+tone))||
+      raw.eyeStyle==='original'&&Object.hasOwn(root.MareCharacterAppearance?.skins||{},tone)&&
+      Object.hasOwn(root.MareCharacterAppearance?.hairs||{},raw.hairColor)&&Object.hasOwn(root.MareCharacterAppearance?.eyes||{},raw.eyeColor),
+    stock=raw.hairColor==='black'&&raw.eyeColor==='blue',look=bare?.savedWeaponAppearance,
+    signedLook=stock||bare?.savedWeaponMaterials&&look?.skin===tone&&look.hairColor===raw.hairColor&&look.eyeColor===raw.eyeColor,
+    paletteId=stock?'':':materials:'+tone+':'+raw.hairColor+':'+raw.eyeColor,
+    signedTone=savedIdentity&&signedLook&&((o.direction==='south'&&bare?.w114LocalSouthTone===true&&bare.id===authority.id+':owned-local-south:'+tone+paletteId)||
+      (o.direction==='north'&&bare?.ownW114North===true&&bare.id===authority.id+':owned-w114-north-skin:'+tone+paletteId))||
       (['east','west'].includes(o.direction)&&bare?.ownW114SideTone===tone&&bare.pistolColors?.hair===raw.hairColor&&
        bare.pistolColors?.eyes===raw.eyeColor&&bare.id===authority.id+':owned-atomic-palette:'+tone+
         (raw.hairColor==='black'&&raw.eyeColor==='blue'?'':':'+raw.hairColor+':'+raw.eyeColor));
@@ -4717,7 +4721,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const v=registeredEquipment(player,o),w=v?.weapon,p=v?.pants,a=player.appearance96;
   if(!w||p?.item!==21||Object.keys(v).length!==2||canonicalGaitItem(w.item,'weapon')?.type!==player.classId||
      a?.version!==1||a.gender!=='masculino'||a.skinStyle!=='natural'||a.hairStyle!=='original'||
-     a.hairColor!=='black'||a.eyeStyle!=='original'||a.eyeColor!=='blue'||
+     a.eyeStyle!=='original'||!Object.hasOwn(root.MareCharacterAppearance?.hairs||{},a.hairColor)||
+     !Object.hasOwn(root.MareCharacterAppearance?.eyes||{},a.eyeColor)||
      !Object.hasOwn(root.MareCharacterAppearance?.skins||{},a.skinColor))return null;
   const own=ownSignedFirearmAnimations?.resolve({slot:'pants',item:p.item,
    body:canonical(a.gender),action:'attack-firearm',direction:o.direction});

@@ -7,6 +7,7 @@ on:
       - 'tests/rework-wardrobe-map-action.test.cjs'
       - 'tests/rework-male-dagger-coat-cycles.cjs'
       - 'tests/rework-registered-weapon-coats.cjs'
+      - 'tests/rework-male-p114-signed-slots-saved.cjs'
       - 'tests/rework-wardrobe-grip-cycles.cjs'
       - 'tests/rework-south-wardrobe-ownership.cjs'
       - 'tests/rework-male-weapon-material-cycles.cjs'
@@ -128,6 +129,7 @@ jobs:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
         run: |
           node tests/rework-registered-weapon-coats.cjs
+          node --expose-gc tests/rework-male-p114-signed-slots-saved.cjs
           node tests/rework-wardrobe-grip-cycles.cjs
           node tests/rework-south-wardrobe-ownership.cjs
       - uses: actions/upload-artifact@v4

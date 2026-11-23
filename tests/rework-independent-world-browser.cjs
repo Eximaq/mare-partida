@@ -141,6 +141,7 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
+  if(process.argv.includes('--pistol-clothes')){await observePistolClothes();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--mounted-weapons')){await observeMountedWeapons();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--registered-coats')){await observeRegisteredCoats();assert.deepEqual(errors,[]);return;}
   await page.evaluate(()=>__hdSlotQA.seed());
@@ -380,6 +381,28 @@ window.__hdSlotQA={
     assert.deepEqual(after.visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
    }
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
+ }
+ async function observePistolClothes(){
+  const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
+  const kit={weapon:114,legs:21,boots:9,gloves:25};
+  await page.evaluate(({look,kit})=>__hdSlotQA.seedWardrobe('gunner',[...Object.values(kit),22],look),{look,kit});
+  for(const id of Object.values(kit))await put(id);
+  const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  const before=await observeAttack('attack-firearm','pistolas-calca21-south','south',kit);
+  await put(22);
+  const swap=await observeAttack('attack-firearm','pistolas-calca22-south','south',{...kit,legs:22});
+  for(const slot of ['weapon','boots','gloves'])assert.deepEqual(swap.visual.coverage[0].slotRoutes[slot],before.visual.coverage[0].slotRoutes[slot]);
+  await put(21);
+  for(const dir of ['south','north','east','west']){
+   const restored=await observeAttack('attack-firearm','pistolas-conjunto-'+dir,dir,kit);
+   if(dir==='south')assert.deepEqual(restored.visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
+  }
+  assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  for(const weapon of [4,5,113,115,116]){
+   await page.evaluate(({weapon,look})=>__hdSlotQA.seedWardrobe('gunner',[weapon,21],look),{weapon,look});
+   await put(21);await put(weapon);
+   await observeAttack('attack-firearm','disparo-'+weapon+'-calca21-north','north',{weapon,legs:21});
   }
  }
  async function observeRegisteredCoats(){

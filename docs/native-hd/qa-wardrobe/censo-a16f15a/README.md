@@ -24,7 +24,7 @@ Este ponto de controle contém 261 contextos concluídos no [build 4ff9073](../c
 
 ## Cobertura por peça
 
-As colunas de corpo contam os 504 contextos com arma de cada corpo. A coluna sem arma conta os 168 contextos dos dois corpos. Cada linha inclui 47.040 participações previstas em pares e 11.760 nos conjuntos amostrados.
+As colunas de corpo contam os 504 contextos com arma de cada corpo. A coluna sem arma conta os 168 contextos dos dois corpos. As colunas de pares e conjuntos amostrados contam somente os contextos armados, com 40.320 e 10.080 participações previstas por peça.
 
 | ID | Slot | Masculino armado | Feminino armado | Sem arma | Pares aprovados | Misturas aprovadas | Integração global |
 |---:|---|---:|---:|---:|---:|---:|---|
