@@ -400,7 +400,11 @@
       return {source:source.id,omitted:source.omitted||[],slotRoutes:source.slotRoutes||{},consumer:options.consumer,typedHD:true};
     }
     const worldPoseKey=(player,o,identity=visualIdentity(player))=>JSON.stringify([identity,o.action,o.direction,!!o.weaponless]);
-    function releaseWorldPose(entry){
+    function releaseWorldPose(entry,reason='pose-released'){
+      if(entry.state==='loading'){
+        entry.state='cancelled';
+        entry.reason=reason;
+      }
       entry.controller.abort();
       entry.bundle?.release();
       worldPoses.delete(entry.key);
@@ -416,7 +420,7 @@
       const identity=visualIdentity(player),key=worldPoseKey(player,options,identity);
       if(worldIdentity!==identity){
         worldIdentity=identity;
-        for(const entry of worldPoses.values())if(entry.identity!==identity&&entry.state==='loading')releaseWorldPose(entry);
+        for(const entry of worldPoses.values())if(entry.identity!==identity&&entry.state==='loading')releaseWorldPose(entry,'appearance-changed');
       }
       let entry=worldPoses.get(key),retried=false;
       if(entry?.state==='failed'&&!entry.retried&&performance.now()-entry.failedAt>=1500){
@@ -435,7 +439,7 @@
         equipment:Object.fromEntries(Object.entries(player.equipment||{}).map(([slot,item])=>[slot,item&&typeof item==='object'?{...item}:item]))};
       entry={key,identity,player:snapshot,state:'loading',controller,retried};
       worldPoses.set(key,entry);worldRequest=entry;
-      while(worldPoses.size>12)releaseWorldPose(worldPoses.values().next().value);
+      while(worldPoses.size>12)releaseWorldPose(worldPoses.values().next().value,'pose-evicted');
       entry.promise=(async()=>{
         let bundle;
         try{

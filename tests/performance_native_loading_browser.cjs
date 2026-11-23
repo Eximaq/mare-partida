@@ -39,6 +39,7 @@ const root=path.resolve(process.env.HD_PUBLISHED_ROOT||path.join(__dirname,'..')
    await started;
    let turns=0;await new Promise(r=>requestAnimationFrame(()=>{turns++;r();}));
    const next=api.requestWorldVisual(b,o);
+   const cancelledBeforeDecode=first.state==='cancelled'&&first.reason==='appearance-changed';
    await next.promise;
    const drawnB=api.drawWorldVisual(ctx,o,b),stateB=api.worldVisual(),before=publications;
    const urls=()=>performance.getEntriesByType('resource').filter(x=>/rework-/.test(x.name)).map(x=>x.name);
@@ -46,11 +47,12 @@ const root=path.resolve(process.env.HD_PUBLISHED_ROOT||path.join(__dirname,'..')
    releaseOld();await first.promise;
    const stable=api.worldVisual().publishedKey===stateB.publishedKey;
    const warm=Array.from({length:12},()=>api.drawWorldVisual(ctx,o,b));
-   return {pendingDraw,blank,turns,drawnB,stable,warm,reused:before===publications,
+   return {pendingDraw,blank,turns,drawnB,stable,warm,cancelledBeforeDecode,cancelledAfterDecode:first.state==='cancelled',reused:before===publications,
     networkReused:urls().length===networkBefore.length,requests:networkBefore.length,
     coverage:stateB.coverage[0],opaque:ctx.getImageData(0,0,384,384).data.some((v,i)=>i%4===3&&v)};
   });
   assert(!result.pendingDraw&&result.blank&&result.turns===1);
+  assert(result.cancelledBeforeDecode&&result.cancelledAfterDecode);
   assert(result.drawnB&&result.opaque&&result.stable&&result.warm.every(Boolean));
   assert(result.reused&&result.networkReused&&result.requests>0);
   assert.equal(result.coverage.direction,'south');assert.deepEqual(result.coverage.omitted||[],[]);

@@ -27,10 +27,12 @@ const draw=(id,action='idle',direction='south')=>api.draw({},actor(id),{action,d
 await api.ready;
 check(!draw(0),'cold pose transparent');await drain();
 check(schedule.length===1&&schedule[0].pose.options.action==='idle','only current pose gets requested');
-check(!draw(1)&&!draw(2),'new item stays transparent');await drain();
+const superseded=api.requestWorldVisual(actor(0),{action:'idle',direction:'south',consumer:'world'});
+check(!draw(1)&&!draw(2),'new item stays transparent');
+check(superseded.state==='cancelled'&&superseded.reason==='appearance-changed','a pending pose must settle visibly as soon as its wearer changes');await drain();
 check(schedule.length===2&&schedule[0].signal.aborted&&schedule[1].pose.player.equipment.weapon.def===2,'intermediate equipment superseded');
 schedule[1].resolve();await drain();check(draw(2),'third item draws immediately when ready');
-schedule[0].resolve();await drain();check(draw(2)&&paint.every(([id])=>id===2),'late decode cannot publish prior item');
+schedule[0].resolve();await superseded.promise;await drain();check(superseded.state==='cancelled','late decode cannot revive a cancelled pose');check(draw(2)&&paint.every(([id])=>id===2),'late decode cannot publish prior item');
 check(!draw(2,'attack','east'),'pending attack does not borrow idle');await drain();
 schedule[2].reject(Error('fixture decode error'));await drain();
 check(api.worldVisual().state==='failed'&&!draw(2,'attack','east'),'failure remains transparent');
