@@ -28,6 +28,47 @@ function exactly(actual,expected,label){
  const a=pix(actual),e=pix(expected),first=a.findIndex((v,k)=>v!==e[k]);
  assert.equal(first,-1,label+' at '+[Math.floor(first/4)%640,Math.floor(first/2560)]);return a;
 }
+async function checkFootwear(prepare,refs){
+ const bank=file('tools/rework-combat-wardrobe/index.json').southFocusBoots,rows=[];
+ const fabrics=new Map();
+ for(const id of gear[1])fabrics.set(id,await load('tools/rework-modular-outfits-hd/assets/'+fit.items[id].sha+'.png'));
+ for(const boots of gear[2]){
+  const item=bank.items[boots],parts=await Promise.all(item.layers.map(async l=>({...l,image:await load('tools/rework-modular-outfits-hd/assets/'+l.plate+'.png')})));
+  const bare=await prepare({weapon,boots}),own=bare.r.slotRoutes.boots;
+  assert.equal(own.source,bank.receiver+'/boot'+boots+'@'+parts[0].record);
+  for(const legs of [null,...gear[1]]){
+   const mixed=legs==null?bare:await prepare({head:136,legs,weapon,boots});
+   assert.deepEqual(mixed.r.slotRoutes.boots,own);
+   for(let f=0;f<8;f++){
+    const {registered,metal,mask,h,helmet,signed}=refs[f];
+    const anatomy=copy(registered),a=anatomy.getContext('2d'),ink=a.getImageData(0,0,640,640);
+    function clear(runs){for(const [from,n] of runs)ink.data.fill(0,4*from,4*(from+n));}
+    clear(item.distal[f]);if(legs&&fit.items[legs].replace)clear(fit.phases[f].cut);a.putImageData(ink,0,0);
+    if(legs){
+     a.drawImage(fabrics.get(legs),0,0);const dressed=a.getImageData(0,0,640,640);
+     for(const [from,n] of fit.phases[f].hands)dressed.data.set(ink.data.subarray(from*4,(from+n)*4),from*4);
+     a.putImageData(dressed,0,0);
+    }
+    const stacked=c640(),s=stacked.getContext('2d');
+    const paint=l=>s.drawImage(l.image,...l.offsets[f]);
+    parts.filter(l=>l.depth<0).forEach(paint);s.drawImage(anatomy,0,0);parts.filter(l=>l.depth>0).forEach(paint);
+    const complete=underWeapon(stacked,metal,mask),x=complete.getContext('2d');
+    if(legs){
+     const out=x.getImageData(0,0,640,640);for(const k of helmet)out.data.set(h.subarray(k,k+4),k);x.putImageData(out,0,0);
+    }
+    const got=exactly(mixed.draw(f),complete,'focus feet '+[weapon,boots,legs,f].join('/'));
+    let changed=0;for(let k=400*2560;k<got.length;k+=4)if(got.readUInt32LE(k)!==signed.readUInt32LE(k))changed++;
+    assert(changed>500);rows.push({boots,legs,head:legs?136:null,phase:f,changed});
+    anatomy.width=stacked.width=complete.width=1;
+   }
+   if(legs)mixed.release();
+  }
+  bare.release();
+ }
+ assert.equal(rows.length,880);
+ if(process.env.HD_FOCUS_BOOT_RESULTS)fs.writeFileSync(process.env.HD_FOCUS_BOOT_RESULTS,JSON.stringify(rows));
+ console.log(weapon,tone,'80 boot phases and 800 complete boot/trouser/helmet phases');
+}
 async function main(){
  const api=make();await api.ready;
  const player=look.commit({classId:weapons.find(w=>w.id===weapon).role,equipment:{}},{gender:'masculino',skinColor:tone,hairColor:tone==='ebony'?'blue':'white',eyeColor:tone==='ebony'?'green':'amber',eyeStyle:'original',hairStyle:'original'},()=>true);
@@ -52,6 +93,10 @@ async function main(){
   for(let k=0;k<a.length;k+=4)if(a.readUInt32LE(k)!==h.readUInt32LE(k))helmet.push(k);
   assert(helmet.length>1000&&helmet.every(k=>k<314*2560));
   refs.push({registered,metal,mask,signed:a,h,helmet});
+ }
+ if(process.argv.includes('--boots')){
+  await checkFootwear(prepare,refs);body.release();bare.release();capped.release();
+  assert.equal(saved,JSON.stringify(player.appearance96));return;
  }
  for(const id of gear[1]){
   const single=await prepare({weapon,legs:id}),withHat=await prepare({head:136,legs:id,weapon});

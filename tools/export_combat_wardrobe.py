@@ -152,6 +152,7 @@ def materialize(folder, out):
     (out / 'index.json').write_text(json.dumps(dict(schema='editable-combat-wardrobe-v1', rigs=rigs,
         records=records, maleDaggerCoats=male_dagger_coats(bank), maleSwordCoats=male_sword_coats(bank), articulatedBoots=articulated_boots(bank), daggerBoots=articulated_boots(bank,daggers=True), maleStaffCoats=staff_coats(bank),
         maleNorthPistolCoats=north_pistol_coats(bank), northFocusCoats=north_focus_coats(bank), northWeaponCoats=north_weapon_coats(bank), northBoots=north_articulated_boots(bank),
+        southFocusBoots=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/south-focus-boots.json').read_bytes()),
         southFocusPants=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/south-focus-trousers.json').read_bytes()),
         northRiflePants=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/north-rifle-trousers.json').read_bytes()),
         handFits={k: [r['matrix'] for r in phases] for k, phases in fit.items()}), separators=(',', ':')) + '\n', encoding='utf-8')

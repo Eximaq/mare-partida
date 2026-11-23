@@ -24,6 +24,8 @@ on:
       - 'tests/rework-south-focus-trousers.cjs'
       - 'tests/fixtures/south-focus-weapon-planes.json'
       - 'tools/register_south_focus_trousers.py'
+      - 'tools/register_south_focus_boots.py'
+      - 'tools/rework-combat-wardrobe/south-focus-boots.json'
       - 'tools/rework-combat-wardrobe/south-focus-trousers.json'
       - 'tests/rework-north-focus-coats.cjs'
       - 'tests/rework-north-moving-boots.cjs'
@@ -228,6 +230,7 @@ jobs:
         run: |
           for tone in light ebony; do
             node --expose-gc tests/rework-south-focus-trousers.cjs "$WEAPON" "$tone"
+            node --expose-gc tests/rework-south-focus-trousers.cjs "$WEAPON" "$tone" --boots
           done
   south-punch-wardrobe:
     runs-on: ubuntu-latest
@@ -321,6 +324,7 @@ jobs:
           python tools/export_north_pistol_coats.py --verify
           node --expose-gc tests/rework-north-pistol-coats.cjs
           python tools/register_south_focus_trousers.py --verify
+          python tools/register_south_focus_boots.py --verify
           python tools/register_north_rifle_trousers.py --verify
           python tools/export_north_focus_coats.py --verify
           python tools/register_north_weapon_coats.py --verify

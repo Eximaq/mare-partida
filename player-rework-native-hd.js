@@ -85,7 +85,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  const combatWardrobeReady=Promise.resolve().then(()=>fetchJSON('tools/rework-combat-wardrobe/index.json')).then(c=>{
   if(c?.schema!=='editable-combat-wardrobe-v1'||!c.rigs||!Array.isArray(c.records))return;
   const index=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(c.records.map(({layers,...r})=>({...r,body:'female',source:layers})));
-  if(index)combatWardrobe={rigs:c.rigs,index,handFits:c.handFits,maleDaggerCoats:c.maleDaggerCoats,maleSwordCoats:c.maleSwordCoats,articulatedBoots:c.articulatedBoots,daggerBoots:c.daggerBoots,maleStaffCoats:c.maleStaffCoats,northBoots:c.northBoots,northWeaponCoats:c.northWeaponCoats,northFocusCoats:c.northFocusCoats,maleNorthPistolCoats:c.maleNorthPistolCoats,northRiflePants:c.northRiflePants,southFocusPants:c.southFocusPants};
+  if(index)combatWardrobe={rigs:c.rigs,index,handFits:c.handFits,maleDaggerCoats:c.maleDaggerCoats,maleSwordCoats:c.maleSwordCoats,articulatedBoots:c.articulatedBoots,daggerBoots:c.daggerBoots,maleStaffCoats:c.maleStaffCoats,northBoots:c.northBoots,northWeaponCoats:c.northWeaponCoats,northFocusCoats:c.northFocusCoats,maleNorthPistolCoats:c.maleNorthPistolCoats,northRiflePants:c.northRiflePants,southFocusPants:c.southFocusPants,southFocusBoots:c.southFocusBoots};
  }).catch(()=>{});
  const daggerWardrobeReady=Promise.resolve().then(()=>fetchJSON('tools/rework-female-dagger-wardrobe/index.json')).then(c=>{
   if(c?.schema!=='female-dagger-owned-wardrobe-v1'||!c.targets||!Array.isArray(c.records))return;
@@ -6683,17 +6683,34 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const rig={pack:{...p,directions:{[dir]:{...d,poses}}},images:Object.fromEntries(row.sourceRefs.map(k=>[k,'../rework-base-hd/assets/'+k+'.png']))};
   daggerHeadRigs.set(row,rig);return rig;
  }
- function southFocusTrousers(base,slot,item){
-  const fit=combatWardrobe?.southFocusPants,plate=fit?.items[item];
-  if(slot!=='pants'||!plate||base.body!=='male'||base.hdKind||base.direction!=='south'||
-     base.action!=='attack-focus'||base.sourcePackSHA256!==fit.sha||base.mirrorX||base.bodyOcclusion)return null;
+ function southFocusRig(base,bank){
+  if(!bank||base.body!=='male'||base.hdKind||base.direction!=='south'||base.action!=='attack-focus'||
+     base.sourcePackSHA256!==bank.sha||base.mirrorX||base.bodyOcclusion)return null;
   const p=base.pack,d=p?.directions.south;
   if(!d||p.density!==4||p.frame.width!==160||p.frame.height!==160||p.pivot.x!==80||p.pivot.y!==128||
-     d.clip.frames!==8||d.clip.fps!==12||d.clip.loop||d.clip.contactFrame!==4||fit.phases.length!==8)return null;
-  const [body,stock]=d.layers;
+     d.clip.frames!==8||d.clip.fps!==12||d.clip.loop||d.clip.contactFrame!==4)return null;
+  return d;
+ }
+ function southFocusTrousers(base,slot,item){
+  const fit=combatWardrobe?.southFocusPants,plate=fit?.items[item];
+  if(slot!=='pants'||!plate)return null;
+  const rig=southFocusRig(base,fit);
+  if(!rig||fit.phases.length!==8)return null;
+  const [body,stock]=rig.layers;
   if(body.id!=='skin-arms-phase'||stock.id!=='shorts-phase'||body.binding?.kind!=='fixed'||stock.binding?.kind!=='fixed'||
      !fit.phases.every((row,i)=>row.body===body.frames[i]&&row.stock===stock.frames[i]))return null;
   return {source:plate.source+'@'+fit.receiver,refs:[plate.sha],decorator:{field:'southFocusPants',own:{plate,phases:fit.phases}}};
+ }
+ function southFocusBoot(base,slot,item){
+  const bank=combatWardrobe?.southFocusBoots,plate=bank?.items[item];
+  if(slot!=='boots'||!plate)return null;
+  const rig=southFocusRig(base,bank),skin=rig?.layers[0];
+  if(skin?.id!=='skin-arms-phase'||skin.binding.kind!=='fixed'||bank.skin.length!==8||
+     !bank.skin.every((sha,i)=>skin.frames[i]===sha)||plate.distal.length!==8)return null;
+  const layers=plate.layers.map(l=>({depth:l.depth,source:ownOutfitPaths+l.plate+'.png',
+   matrices:l.offsets.map(([x,y])=>[1,0,0,1,x,y])}));
+  return {source:bank.receiver+'/boot'+item+'@'+plate.layers[0].record,refs:plate.layers.map(l=>l.plate),
+   soleCut:plate.distal,decorator:{field:'southPunchFoot',own:{layers}}};
  }
  function southForearmTrousers(base,slot,v,player,o,selectPose){
   if(slot!=='pants'||!base.ownedCyborg120Body||base.hdKind!=='weapon'||base.direction!=='south'||
@@ -7006,7 +7023,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   for(const [slot,v] of Object.entries(request)){
    const key=JSON.stringify([pose,slot,v.item,slot==='torso'&&(grip?.chromaticSource||grip?.paddedNorth)?grip.weapon.id:null]);
    if(!independentPassCache.has(key)){
-    const plate=(grip?.paddedNorth&&fittedNorthWeaponCoat(grip.weapon,slot,v.item))||(slot==='torso'&&cuffCoatPass(grip,v.item))||fixedRifleLower(base,slot,v,player,routeOptions)||southFocusTrousers(base,slot,v.item)||southPunchHelmet(base,slot,v.item,player)||southPunchBoot(base,slot,v,player,routeOptions,selectPose)||southForearmTrousers(base,slot,v,player,routeOptions,selectPose)||articulatedWeaponHead(base,slot,v.item,player)||northArticulatedBoot(base,slot,v.item)||orderedDaggerBoot(base,slot,v.item)||articulatedBoot(base,slot,v.item)||articulatedSwordCoat(base,slot,v.item)||fittedNorthWeaponCoat(base,slot,v.item)||fittedStaffCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
+    const plate=(grip?.paddedNorth&&fittedNorthWeaponCoat(grip.weapon,slot,v.item))||(slot==='torso'&&cuffCoatPass(grip,v.item))||fixedRifleLower(base,slot,v,player,routeOptions)||southFocusTrousers(base,slot,v.item)||southFocusBoot(base,slot,v.item)||southPunchHelmet(base,slot,v.item,player)||southPunchBoot(base,slot,v,player,routeOptions,selectPose)||southForearmTrousers(base,slot,v,player,routeOptions,selectPose)||articulatedWeaponHead(base,slot,v.item,player)||northArticulatedBoot(base,slot,v.item)||orderedDaggerBoot(base,slot,v.item)||articulatedBoot(base,slot,v.item)||articulatedSwordCoat(base,slot,v.item)||fittedNorthWeaponCoat(base,slot,v.item)||fittedStaffCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
     if(!plate&&!poseCanMount){passes.set(slot,null);continue;}
     const pass=plate||femaleGaitPass(base,slot,v,player)||swordWardrobePass(base,slot,v,player)||combatWardrobePass(base,slot,v,player)||femaleRestPass(base,slot,v,player)||independentNativePass({player,o:routeOptions,base,weapon:grip?null:weapon,slot,v,selectPose})||
      malePunchWardrobe(base,slot,v,player,routeOptions)||maleCarryWardrobe(base,slot,v,player,routeOptions,selectPose)||daggerGarment(base,slot,v,player)||findDaggerWardrobePass(base,slot,v.item)||
@@ -7119,10 +7136,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // Apply vertically separated operations in authored order: trousers
   // replace their anatomy layer, boot soles wrap it, then the wrist is
   // painted over the arm. Each step points only to the current receiver.
+  const soleCut=active.get('boots')?.soleCut;
+  if(soleCut)mounted={...mounted,southBareSole:{base:mounted,cut:soleCut}};
   for(const slot of ['pants','boots','gloves']){
    const patch=active.get(slot)?.decorator;
    if(!patch)continue;
-   const {field,own}=patch,{authoredSideIdlePants,fixedIdleBoots,ownSideIdleGlove180,southForearmPants,...receiver}=mounted;
+   const {field,own}=patch,{authoredSideIdlePants,fixedIdleBoots,ownSideIdleGlove180,southForearmPants,southFocusPants,southBareSole,...receiver}=mounted;
    mounted={...receiver,[field]:{...own,base:mounted}};
   }
   const dressed={...mounted,id:base.id+':independent-slots:'+JSON.stringify(slotRoutes),slotRoutes,slotResolution,omitted,layeredSlots:true,independentPlan:plan,
@@ -8601,7 +8620,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    'tools/rework-weapon-layers-hd/'+anatomy.images[l.frames?.[frame]||l.source]):[];
  }
  const rifleFabricPath=(sha,pool)=>'tools/'+(pool==='weapon'?'rework-weapon-layers-hd':'rework-modular-outfits-hd')+'/assets/'+sha+'.png';
- function filesFor(r,frame){if(r.southFocusPants){
+ function filesFor(r,frame){if(r.southBareSole)return filesFor(r.southBareSole.base,frame);
+  if(r.southFocusPants){
    const {base,plate}=r.southFocusPants;return [...filesFor(base,frame),ownOutfitPaths+plate.sha+'.png'];
  }if(r.southForearmPants){
   const {base,phases}=r.southForearmPants;return [...filesFor(base,frame),ownOutfitPaths+phases[Math.min(frame,7)]+'.png'];
@@ -8876,6 +8896,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...result,info:{...result.info,source:r.id}};
  }
  function composeFrame(r,frame,entry){
+  if(r.southBareSole){
+   const {base,cut}=r.southBareSole,result=composeFrame(base,frame,entry);
+   clearOwnedRuns(result.canvas.getContext('2d'),cut[frame]);return result;
+  }
   if(r.southFocusPants){
    const {base,plate,phases}=r.southFocusPants,result=composeFrame(base,frame,entry);
    const image=entry.images.get(ownOutfitPaths+plate.sha+'.png');
