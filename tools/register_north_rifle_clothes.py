@@ -20,7 +20,7 @@ SEAMS = (245,244,243)
 PALMS = (((25,-14),(-13,-21)),((22,-13),(9,-20)),((20,-10),(7,-20)))
 
 
-def register_coats(native, save):
+def register_coats(native, save, recoil=None):
     import numpy as np
     from PIL import Image
     from register_south_focus_trousers import OUTFITS, BASE, index
@@ -61,6 +61,8 @@ def register_coats(native, save):
     head=json.loads((ROOT/'tools/rework-combat-wardrobe/north-rifle-trousers.json').read_bytes())['head']
     hair=np.asarray(panel(head['hair'],BASE))[:,:,3]
     skull=np.asarray(panel(head['skull'],BASE))[:,:,3]
+    if recoil is not None:
+        joints=recoil
     results={}
     for item in (6,7,130,137,144,151,158,165,172,179):
         name=f'male-torso{item}-north-frozen-idle-native' if item!=151 else 'male-pants133-idle-north-isolated-r2-coat151-native'

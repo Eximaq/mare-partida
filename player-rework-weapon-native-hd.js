@@ -208,6 +208,31 @@ const focusSouthSources={
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-weapon-layers-hd/',makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
  if(index?.schema!=='native-hd-weapon-layers-v1'||!vendor?.compositor)throw Error('Missing native weapon dependencies');
  const w5SouthIndependent={"id":"mosquete5-south-initial-v2","sourceArchive":"d0bdab20685518b5f81e2b8640845f06f672a1d01c1adcc676202b1c740fa212","clock":["0","0","1","1","2","2","3","3","4","4","5","5","6","6","7","7","8","8","9","9","9","9","9","9","9","9","9","9","9","9","9","9"],"headSupport":8440,"rows":[{"phase":0,"archiveBodySHA":"ba8f759c8b24c0f6d07fa1a2b1816cf81c17e45ac08ddf47b2a1a0a45be8135d","stockRef":"42b27dc8f86d1f80c344692c87936a56c509ee61057f3d419233ef4abb33341f","body":"f83ea0d75bd59e7c8e10e170d882e767f85c885fad581db6781ec5476d38525b","mask":"19d75c6e76fb5890998b6f4b2b0cf5eb52ce4a20d956d9e2996749175d623fe4","gear":[{"sha":"7393a49166285852eb8c38e053d0b1c80070769a6f4b4eda233878b4e02f1a3a","id":"mechanism","depth":4}]},{"phase":1,"archiveBodySHA":"c9169a5e179731aae4be0e8d4c1fbaa452cbbe2c29d0aa8a4293c6ca834bcb58","stockRef":"4a24ef0e0be7a4bb7033e7335112fb5dd63c19cab662fdcafbe62f7ad68a993a","body":"ae86e55f1b03a19aaeb72c510a46b442bde3540cb898ddc044c73995c3eff141","mask":"6ad19c90f302c3621592194932d0322f81ed3cac0ae93e1271eaf6a5cd51dc2d","gear":[{"sha":"68dbcf10a6ac39fead17f7527785e834eeae71fcff0b65f2f0ba5be6f24070c5","id":"mechanism","depth":4}]},{"phase":2,"archiveBodySHA":"5fe088198c4b0ee5f22fc68905b5c43a70999d69bf939de0367848addb7b51d7","stockRef":"6da5df034832b9e94a353a899d46818bef7c053471a838eb2181b9b3f52b870e","body":"8cf685c0c4babb670b29d0c5603c3ee5a8032422292e1f57656a1e08037d8227","mask":"4130068287391bfa05680192af510e4d4b8d9aefdad593f41c70f8316dedb7d9","gear":[{"sha":"83b6c33d0d38feace851203510a0fa776045a6e0baba7362bdb891539dd3f88b","id":"mechanism","depth":4},{"sha":"6b6ca8bc6001368d24c13bba19db3f5751b4ef15a9304274ae1cb9b280a99b98","id":"muzzle","depth":30,"inFrontOfHead":true}]},{"phase":3,"archiveBodySHA":"726cb981fdcbed1bd34dab7ddf3ae14c7528a2dd03989b1641bcb495c85b9a63","stockRef":"d69857fa937d9ac72f440ceb1ae90420766c2dc5a7d1bc2d05af32eef2c670ff","body":"88fa40b7f3d57462109cffaf04527121d0b16e08f589e2ee24bcc3ded87b71cc","mask":"860d469008842f2f4c3220bdd7d2dfdb286a1aeae5962ea64d72dcaa6e726357","gear":[{"sha":"d2c0de442e067c23fee5c0a41843d651d5cf472f846b31a6bd92f1407069bdf5","id":"mechanism","depth":4},{"sha":"549828e4ded8a66762faf24dd369bbceacef70e149f9cc1be38b6d64f02a93dd","id":"muzzle","depth":30,"inFrontOfHead":true}]},{"phase":4,"archiveBodySHA":"1164eb2c9fa9ef21a468d860ad92713e467490ecc220044e3281f70efed025d3","stockRef":"1d2554ca2f6efbe632ae485704e28bf05b9eb58d4840d98da0ce949340440bb3","body":"7b28b81b0fcf4b505670da635514d00bfd7f34240f1dad24c1f9661c65bc51cb","mask":"5d2396c96f5333160b52b291bdc03f3c5bf3ae3cf53d9484daf1a4cba494bec3","gear":[{"sha":"839f893caeafaf7f3f5c3b41338d892242a61dc0ab32613a62a3a2caa3a7dd2e","id":"mechanism","depth":4},{"sha":"6389760921296e0182a3c1831bb7df56c51ce28da9008df88eac7020efc9d27f","id":"muzzle","depth":30,"inFrontOfHead":true}]},{"phase":5,"archiveBodySHA":"fdcd9b5672c106ebfa7efd81a42d145f02f52b5130e2292b553a07969ce30025","stockRef":"ff1e6161a9b12e6acfd298fe9633828a049ba1dd302e089e81fa094a782daf13","body":"be35f26afe408f45027b65167b7f80a38989f3e992abee2244a5801c194ea407","mask":"6506d14c320ddb114c8843186c8f0eb3a926c73727b91c99173a81d21e2b04dd","gear":[{"sha":"127890f30f76cf7823a9c983969a7c9c4750290edd46c995f1fcb9f1507a5278","id":"mechanism","depth":4},{"sha":"b65ace98f3d680fdc56f108e46f799b8a5d1078592542301dec19a5b2135cf78","id":"muzzle","depth":30,"inFrontOfHead":true}]},{"phase":6,"archiveBodySHA":"19f90b19e429eb569622e4cf5cc8c0d0a723ee1d1e3d7d41a692a5a4ea8504e2","stockRef":"26d83f4d5367f00139ed614c76c16ba1e6529058fe866da5a7f77b7ee620ed23","body":"3ef1a7933ff2ac98e5a3d17fd6d6dbc1b6d56ae3a0cfa3345a875ea8da0daba0","mask":"488728bd014a38ea8aaadb06e59dc7411212b7d0d1d5c166150406fd41a7a0e9","gear":[{"sha":"a45a61b100c723974b30584eb8e206ba73c9bb2922f0e04cfeb1e5ae23cc4566","id":"mechanism","depth":4},{"sha":"5818b486ae04def8ad07ce659792b71e506df43ed3d709cfb7cd609a53158594","id":"muzzle","depth":30,"inFrontOfHead":true}]},{"phase":7,"archiveBodySHA":"a1c9d3703be6dfdeb3eee846a32db06e58a2ac1219d777a1be85cb7ab8a982f2","stockRef":"73a2f1759e237a3dfd85155fd59738d1c223607fafab49a7e910ee61da109a30","body":"bb7abc7750568c4283cc0cc8b5898da5e71a32daa438325a9c684fe98331155e","mask":"bb8e177ea5f01b44d86a74e540796bd592ae02ff507bbb193494636492a127a9","gear":[{"sha":"43a0b327da8fc32ec3a3f7705b593b9bbe8d062ab4ccdc2c35a32f5783989122","id":"mechanism","depth":4}]},{"phase":8,"archiveBodySHA":"bbb101171a60ddc9e6e64426f7c97d06c944dbd3996889ff61226199be617363","stockRef":"3e393dff136f104a5683c04349a29b30c424aa5aff816473b7690d90ee578a82","body":"d94f5b85dc85c7e3384fe18d622fd1f2b2ce2924c1ed43d0c4fad5545da54344","mask":"198332bf173fadff2af3f21e465a8d7fef27a3fffc53d0092593444617763507","gear":[{"sha":"ec1e699d470012421822b721313e6860cede81868336e2b24c6e34a4fde3edb6","id":"mechanism","depth":4}]},{"phase":9,"archiveBodySHA":"ba8f759c8b24c0f6d07fa1a2b1816cf81c17e45ac08ddf47b2a1a0a45be8135d","stockRef":"4d06ada8102f689f60c92de4acd9edf8a46b2111a921637c5a013a0e32d63179","body":"f83ea0d75bd59e7c8e10e170d882e767f85c885fad581db6781ec5476d38525b","mask":"19d75c6e76fb5890998b6f4b2b0cf5eb52ce4a20d956d9e2996749175d623fe4","gear":[{"sha":"d62d06378fa701b3ad4973fd2da43dc64429e7f2d38ec3a45fff73b5f6230c85","id":"mechanism","depth":4}]}]};
+ const southBladeSkulls={"640":["59a0f66d3a02cbebb9ca3d915f76a7ce59f89c401f67a8783e48d0c0b0c2e999","ae8188d428b92bb4c464aa0c717994d727d6d5f502bfee200aeac42672594356","50cb56395911d7965f87fbdd2bae659f52a49093698e9da369e64108dce7b8df","0b1be85f98b83ad927002ed7b3c680a286d3ecc1062f24797127be9e14e03651","3e8844113a5573d4749e358076c52e397fb50ec047e01a4db4e8def6246cf633","1913422d971ab13c3506b84c13ddabd1841a6512451441d9fb35eb3c9bf6a9de","89e50f32a230043e9628d191e3b79dbf1d7ffa37b66ecfebdbfb78f0011dfd0a","53f39c282ed0c534d77bec1121559b2a1fd151e159fca715f0f9d2f1cefe6636","f681879b3b689dba3ef13bc125daf28e473d487d533fab817c9c3418d63c9da0"],"896":["31de7f72177f6fc6e397ec1ab38a1d7259b6d539b44dc812ec69c2a84f181161","d2c195b8c6b6af0fe2307eef7945fe3490fea0d20d5249d648b29b691af1816c","5c97a1952604ef931642883c8d5d6c4c4eee330b94a2c8a4998752dfd14b99d7","350e14e34a496fcb3607a0ca56ff6afae9b5c7bf53cb574aa8fd2d1438a18b37","af5345521c8f4d9fbaaa8a44b40b58609e07364e31150537a0506433fc6d9b95","630462b1f51103948e329ea01fbb8c5e9393b630961291269a81590d1763f427","3c858ecfbd289e89eea28b64f3a13ae84e834d42e684c4d39aa8f38af0259dfe","021f9ac7dbe60cbc82803b64f2da1c3bdbdf749af51e3e335e70664f020e1f95","236ebc5bf5e99ac1c4ba069ff42aa7294eb560b0af6e3eb86f5adcd58a31bc86"]};
+ function southBladeArmRig(r){
+  const receiver=southBladeHeadRig(r);if(!receiver)return null;
+  const family=r.ownedDaggersSouth?'daggers':'sword';
+  const phases=r.ownedDaggersSouth?ownDaggersSouthPhases:ownW70SouthAuthority.phases,
+   skin=family==='daggers'?ownDaggersSouthProof.anatomy.map(a=>a[0].slice(7,-4)):ownW70SouthAuthority.pack.directions.south.layers[0].frames;
+  return {family,phases,skin,cover:receiver.cover};
+ }
+ function southBladeHeadRig(r){
+  if(r?.direction!=='south'||r.body!=='male'||r.density!==4||r.states?.length!==9)return null;
+  if(r.ownedDaggersSouth&&r.action==='attack-daggers'){
+   return {pack:r.ownDaggersBody,kind:'daggers',cover:ownDaggersSouthProof.frames[r.item].states.map(s=>s.slice(2))};
+  }
+  if(r.action!=='attack-sword'||r.fps!==24)return null;
+  if(r.approvedSouthHead&&r.item===0&&r.basePack?.pack){
+   if(!r.states.every((s,i)=>s.layers[0].role==='authored-anatomy-and-equipment-under-head'&&s.state===String(i)))return null;
+   return {pack:r.basePack.pack,kind:'head-overlay',cover:case42W0Material.map(m=>m.layers.slice(1).map(k=>'assets/'+k+'.png'))};
+  }
+  const n=r.nativeCanvas[0],poses=southBladeSkulls[n],pad=(n-640)/2;
+  if(!poses||r.nativeCanvas[1]!==n||r.pivot[0]*4!==320+pad||r.pivot[1]*4!==512+pad||
+     !r.states.every((s,i)=>s.state===String(i)&&s.layers.length===3&&s.layers[0].sha256===poses[i]&&
+       s.layers.every((l,j)=>l.url==='assets/'+l.sha256+'.png'&&l.operation==='source-over'&&l.depth===j&&!l.offset&&!l.mirrorX&&!l.mask)))return null;
+  const model=index.records.find(s=>s.approvedSouthHead&&s.item===1&&s.body===r.body&&s.direction===r.direction);
+  return model?{pack:model.basePack.pack,kind:'body',pad,cover:r.states.map(s=>s.layers.slice(1).map(l=>l.url))}:null;
+ }
  const approvedSouth=(item,{separateW5=false,separateW111=false,appearance}={})=>{
   const r=index.records.find(r=>r.approvedSouthHead&&r.item===Number(item)&&r.body==='male'&&r.direction==='south');
   if(separateW111&&Number(item)===111){
@@ -1797,7 +1822,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const pack={...bp.pack,directions:{south:{...d,layers}}};
   return {...r,id:r.id+':owned-south-palette:'+a.skin,ownedDaggersSouth:true,ownDaggersBody:pack,exactComposite:true,colorAppearance:a};
  }
- function renderOwnSouthDaggers(ctx,r,s,image,hiddenSlots,appearance,omitWeaponLayer){
+ function renderOwnSouthDaggers(ctx,r,s,image,hiddenSlots,appearance,omitWeaponLayer,images){
   if(hiddenSlots.length||appearance.skin!==r.colorAppearance.skin||appearance.hairColor!==r.colorAppearance.hairColor||appearance.eyeColor!==r.colorAppearance.eyeColor)throw Error('Unsupported South daggers appearance');
   const phase=Number(s.state),i=ownDaggersSouthPhases[phase],pack=r.ownDaggersBody,proof=ownDaggersSouthProof.frames[r.item];
   const C=()=>makeCanvas(640,640),take=(c)=>c.getContext('2d').getImageData(0,0,640,640).data;
@@ -1840,6 +1865,10 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     input[j+3]=Math.round(total);
    }else for(let c=0;c<3;c++)input[j+c]+=Math.round(((next[j+c]-raw[j+c])*effectiveBody+(nf[j+c]-f[j+c])*af)/ao);
   }
+  if(r.southBladeHead)paintSouthBladeHead(out,r.southBladeHead,images,saved,(dc)=>base.render(dc,
+   {id:r.id,pack,direction:'south',sourceRefs:[...map.keys()]},map,{frame:i,appearance,makeCanvas,hiddenSlots:['hair'],
+    afterMaterialSource:(src,im,previous)=>src==='assets/'+firearmSouthFace+'.png'?paintFirearmSideIris(im,previous,r,makeCanvas):im}),
+   omitWeaponLayer?null:weapon,nf);
   ctx.putImageData(out,0,0);
   for(const c of [old,saved,tmp])c.width=c.height=1;
  }
@@ -2247,7 +2276,21 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  }
  function w70SouthKeys(phase){const d=ownW70SouthAuthority.pack.directions.south;return [...new Set(d.layers.map(l=>l.frames?.[phase]||l.source))];}
  const w70SouthPath=h=>'../rework-base-hd/assets/'+h+'.png';
- function renderW70South(ctx,r,s,image,hiddenSlots,appearance) {
+ function paintSouthBladeHead(out,head,images,saved,drawHairless,metal,front){
+  const pad=(out.width-640)/2,dressed=makeCanvas(640,640),dc=dressed.getContext('2d');
+  if(head.hide)drawHairless(dc);else dc.drawImage(saved,0,0);
+  head.draw(dc,images);
+  const worn=new Uint32Array(dc.getImageData(0,0,640,640).data.buffer),
+   original=new Uint32Array(saved.getContext('2d').getImageData(0,0,640,640).data.buffer);
+  if(metal)dc.drawImage(metal,-pad,-pad);
+  const overlay=makeCanvas(out.width,out.height),oc=overlay.getContext('2d'),ink=oc.createImageData(out.width,out.height);
+  ink.data.set(front);oc.putImageData(ink,0,0);dc.drawImage(overlay,-pad,-pad);
+  const pixels=new Uint32Array(dc.getImageData(0,0,640,640).data.buffer),target=new Uint32Array(out.data.buffer);
+  // Preserve the signed attack everywhere the modified head makes no contribution.
+  for(let y=0,p=0;y<640;y++)for(let x=0;x<640;x++,p++)if(original[p]!==worn[p])target[(y+pad)*out.width+x+pad]=pixels[p];
+  dressed.width=overlay.width=1;
+ }
+ function renderW70South(ctx,r,s,image,hiddenSlots,appearance,images) {
  if(hiddenSlots.length||appearance.skin!==r.colorAppearance.skin||appearance.hairColor!==r.colorAppearance.hairColor||appearance.eyeColor!==r.colorAppearance.eyeColor)throw Error('Invalid own W70 South appearance');
  const state=Number(s.state),a=ownW70SouthAuthority,frame=a.phases[state],p=a.pack,padding=r.item===69?128:0,size=640+padding*2;
  const canvas=()=>makeCanvas(size,size),take=c=>c.getContext('2d').getImageData(0,0,size,size).data;
@@ -2270,6 +2313,8 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    if(pa)o[i+k]+=Math.round(((next[i+k]-prev[i+k])*ba+(tint[i+k]-f[i+k])*fa)/pa);
   }
  }
+ if(r.southBladeHead)paintSouthBladeHead(out,r.southBladeHead,images,saved,dc=>base.render(dc,
+  {id:r.id,pack:p,direction:'south',sourceRefs:[...map.keys()]},map,{frame,appearance,makeCanvas,hiddenSlots:['hair']}),image(s.layers[1]),tint);
  ctx.putImageData(out,0,0);for(const c of [old,saved,tmp])c.width=c.height=1;
  }
 
@@ -2844,7 +2889,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   }
   const image=a=>{const im=images.get(resource(a.url))||images.get(a.url);if(!im)throw Error('Missing original asset '+a.url);return im;};
   if(r.w3NorthOwnAttack){renderW3North(ctx,r,s,image,hiddenSlots,appearance);return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4,y:r.pivot[1]*4},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalScale:1,hairSeparated:false,roundingCorrection:false,roundingTolerance:0};}
-  if(r.ownW70South){renderW70South(ctx,r,s,image,hiddenSlots,appearance);return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4,y:r.pivot[1]*4},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalOffset:[0,0]};}
+  if(r.ownW70South){renderW70South(ctx,r,s,image,hiddenSlots,appearance,images);return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4,y:r.pivot[1]*4},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalOffset:[0,0]};}
   if(r.ownW2CleanSide){
    const d=r.basePack.pack.directions[r.direction],f=Number(s.state),
     map=new Map(d.layers.map(l=>{const k=l.frames?.[f]||l.source;return [k,image({url:r.basePack.images[k]})];}));
@@ -2855,7 +2900,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   }
   if(r.ownGauntletsSideFrames){renderOwnGauntletsSide(ctx,r,s,image,hiddenSlots,appearance);return {width:w,height:h,density:4,pivot:{x:320,y:512},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalOffset:[0,0]};}
   if(r.w2NorthOwnAttack){renderW2North(ctx,r,s,image,hiddenSlots,appearance);return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4,y:r.pivot[1]*4},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalScale:1,hairSeparated:false,roundingCorrection:false,roundingTolerance:0};}
-  if(r.ownedDaggersSouth){renderOwnSouthDaggers(ctx,r,s,image,hiddenSlots,appearance,omitWeaponLayer);return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4,y:r.pivot[1]*4},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalScale:1,hairSeparated:false,roundingCorrection:false,roundingTolerance:0};}
+  if(r.ownedDaggersSouth){renderOwnSouthDaggers(ctx,r,s,image,hiddenSlots,appearance,omitWeaponLayer,images);return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4,y:r.pivot[1]*4},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalScale:1,hairSeparated:false,roundingCorrection:false,roundingTolerance:0};}
   if(r.ownedCyborgForearmSouthAttack){cyborg120SouthRender(ctx,r,s,image,hiddenSlots,appearance,omitWeaponLayer);return {width:w,height:h,density:4,pivot:{x:r.pivot[0]*4,y:r.pivot[1]*4},source:r.id,state:s.state,frames:r.states.length,timeline:r.timeline,fps:r.fps,physicalScale:1,hairSeparated:false,roundingCorrection:false,roundingTolerance:0};}
   let headOverlay,cannonSouthRaw;
   if(r.basePack){const p=r.basePack.pack,d=p.directions[r.direction],map=new Map();
@@ -2962,7 +3007,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      target.drawImage(ink,x,y,width,height,x,y,width,height);
     }
    }
-   if(r.approvedSouthHead)headOverlay=target.canvas;
+   if(r.approvedSouthHead)headOverlay=r.southBladeHead?.kind==='head-overlay'?r.southBladeHead.dressBody(target.canvas,images,Number(s.state)):target.canvas;
    else if(underBody)ctx.drawImage(target.canvas,0,0);
   }
   function arm118Backing(){
@@ -3174,7 +3219,9 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    if(l.inFrontOfHead&&headOverlay){ctx.drawImage(headOverlay,...(r.headOverlayOffset??[0,0]));headOverlay=null;}
    if(r.orderedAnatomy&&r.ownGauntletHead?.hideHair&&l.id==='hair')continue;
    if(l.role==='ordered-orb-coat'){paintOwnedHead();if(r.ownGauntletHead?.hideHair)restoreFocusScalp(ctx,r,s,images,resource);}
-   if(l.operation==='source-over'){ctx.save();if(l.mirrorX){ctx.translate(w,0);ctx.scale(-1,1);}let tile=paletteImage(l);if(l.role==='authored-anatomy-and-equipment-under-head'&&r.ownW0SouthIndependent){
+   if(l.operation==='source-over'){ctx.save();if(l.mirrorX){ctx.translate(w,0);ctx.scale(-1,1);}let tile=paletteImage(l);
+    if(r.southBladeHead?.kind==='body'&&l===s.layers[0])tile=r.southBladeHead.dressBody(tile,images,Number(s.state));
+    if(l.role==='authored-anatomy-and-equipment-under-head'&&r.ownW0SouthIndependent){
     const split=buildW0SouthIndependent(r,s,image(l),image,makeCanvas);
     const calibrated=paletteImage(l,split.raw);
     if(r.case42SouthSkin)tile=paintCase42W0(r,s,split.raw,calibrated,image,appearance,makeCanvas,split);
@@ -3657,10 +3704,10 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    actions.includes(requested)?actions.find(a=>a.startsWith('attack-')):null;
   return action?{...record,action}:record;
  }
- return {paintSouthFirearmLegs,registeredCoat,registeredPunchGrip,compassWardrobeRig,southPunchHeadLayers,northFocusCoat,sharesNorthFocusCoatPose,
+ return {paintSouthRifleArms,paintSouthFirearmLegs,registeredCoat,registeredPunchGrip,compassWardrobeRig,southPunchHeadLayers,northFocusCoat,sharesNorthFocusCoatPose,
   southArmProjection:frame=>frame>=7&&frame<=10?cyborg119SouthOwnAuthority.frames[frame][3]:null,
   projectSouthArms:(before,sheet,phase,trousers)=>cyborg120ArmRecipe(before,sheet,phase-7,makeCanvas,trousers),
-  sidePunchMetal,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
+  sidePunchMetal,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,southBladeHeadRig,southBladeArmRig,requiredFiles,render};
 }
 const api={create};root.MareReworkWeaponNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

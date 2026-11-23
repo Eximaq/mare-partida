@@ -48,7 +48,7 @@ BENDS=[
 ]
 AXES=[[(1,29),(-3,30)],[(23,8),(-23,10)],[(12,-26),(-27,0)],[(10,-26),(-26,6)],[(10,-27),(-26,4)],[(10,-27),(-26,4)],[(12,-23),(-27,2)],[(23,9),(-26,10)]]
 
-def generate():
+def generate(poses=None):
     import numpy as np
     from PIL import Image,ImageDraw,ImageChops,ImageFilter
     src={b:json.loads((b/'archives/archive-index.json').read_bytes())['sources'] for b in (OUTFITS,BANK)}
@@ -82,34 +82,39 @@ def generate():
         e,w=np.array(elbow),np.array(wrist);v=w-e;normal=np.array([-v[1],v[0]])/np.linalg.norm(v)
         return polygon([tuple(p) for p in [e+radius*normal,w+9*normal,w-9*normal,e-radius*normal]])
     records={r['id']:r for r in index(OUTFITS)['records']}
-    rg=next(r for r in weapons()['records'] if r['id']=='rifle115-south-original-body-native-attachment')
-    native=rg['basePack']['pack']['directions']['south']
-    pins=native['layers'][0]['frames']
-    # The alternate musket recording holds a genuinely different, lowered
-    # elbow at physical state 8, then repeats the opening arm on state 9.
-    import re
-    source=(ROOT/'player-rework-weapon-native-hd.js').read_text(encoding='utf8')
-    musket=json.loads(re.search(r'^ const w5SouthIndependent=(.+);$',source,re.M)[1])
-    extra=musket['rows'][8]['body']
-    skin=[read(k).getchannel('A') for k in [*pins,extra]]
-    right_contours=[*RIGHT,[(x+2,y-14) for x,y in RIGHT[0]]]
-    left_contours=[*LEFT,[(x-5,y-15) for x,y in LEFT[0]]]
-    targets=[*BENDS,[((260,295),(258,329)),((379,295),(379,329))]]
-    axes=[*AXES,AXES[0]]
-    # The approved musket body has the same physical arms in states 0..7
-    # and 9. Differences close to the removed head cannot authorize a fit.
-    for f,row in enumerate(musket['rows']):
-        if f==8:continue
-        original=np.asarray(read(pins[f%9] if f<8 else pins[0]))[:,:,3]
-        new=np.asarray(read(row['body']))[:,:,3]
-        if np.any(abs(original[246:320].astype(int)-new[246:320].astype(int))>1):
-            raise ValueError('Unexpected musket upper arms')
-    scale=[im.filter(ImageFilter.MaxFilter(17)) for im in skin]
-    masks=[]
-    for f in range(9):
-        right=ImageChops.multiply(polygon(right_contours[f]),skin[f])
-        left=ImageChops.subtract(ImageChops.multiply(polygon(left_contours[f]),skin[f]),right)
-        masks.append([right,left])
+    if poses is None:
+        rg=next(r for r in weapons()['records'] if r['id']=='rifle115-south-original-body-native-attachment')
+        native=rg['basePack']['pack']['directions']['south']
+        pins=native['layers'][0]['frames']
+        # The alternate musket recording holds a genuinely different, lowered
+        # elbow at physical state 8, then repeats the opening arm on state 9.
+        import re
+        source=(ROOT/'player-rework-weapon-native-hd.js').read_text(encoding='utf8')
+        musket=json.loads(re.search(r'^ const w5SouthIndependent=(.+);$',source,re.M)[1])
+        extra=musket['rows'][8]['body']
+        skin=[read(k).getchannel('A') for k in [*pins,extra]]
+        right_contours=[*RIGHT,[(x+2,y-14) for x,y in RIGHT[0]]]
+        left_contours=[*LEFT,[(x-5,y-15) for x,y in LEFT[0]]]
+        targets=[*BENDS,[((260,295),(258,329)),((379,295),(379,329))]]
+        axes=[*AXES,AXES[0]]
+        # The approved musket body has the same physical arms in states 0..7
+        # and 9. Differences close to the removed head cannot authorize a fit.
+        for f,row in enumerate(musket['rows']):
+            if f==8:continue
+            original=np.asarray(read(pins[f%9] if f<8 else pins[0]))[:,:,3]
+            new=np.asarray(read(row['body']))[:,:,3]
+            if np.any(abs(original[246:320].astype(int)-new[246:320].astype(int))>1):
+                raise ValueError('Unexpected musket upper arms')
+        scale=[im.filter(ImageFilter.MaxFilter(17)) for im in skin]
+        masks=[]
+        for f in range(9):
+            right=ImageChops.multiply(polygon(right_contours[f]),skin[f])
+            left=ImageChops.subtract(ImageChops.multiply(polygon(left_contours[f]),skin[f]),right)
+            masks.append([right,left])
+        resting={0,7,8}
+    else:
+        pins,skin,masks,targets,axes,resting=(poses[k] for k in ('pins','skin','masks','targets','axes','resting'))
+        scale=[im.filter(ImageFilter.MaxFilter(17)) for im in skin]
     files={};items={}
     glovers=[r for r in records.values() if r['id'].startswith('frozen-male-glove') and r['id'].endswith('-south-attack-unarmed-native-layers')]
     if len(glovers)!=10:raise ValueError('Incomplete glove library')
@@ -154,23 +159,34 @@ def generate():
                 for x0,x1,dx in [(345,end,-shift),(640-end,640-345,shift)]:
                     lining.paste(front.crop((x0,sy,x1,sy+1)),(x0+dx,y))
             main.alpha_composite(with_alpha(lining,ImageChops.multiply(lining.getchannel('A'),seams)))
-        for f in range(9):
-            frame=Image.new('RGBA',SIZE);frame.alpha_composite(main,(2,2))
+        for f in range(len(skin)):
+            frame=Image.new('RGBA',SIZE)
+            shoulders=poses.get('shoulders') if poses else None
+            def attach_core(cloth):
+                if not shoulders:
+                    frame.alpha_composite(cloth,(2,2));return
+                # In the heavy-rifle lift the stock draws the far shoulder
+                # upwards and forwards; keep the actual waist fixed.
+                src=np.array([[276,258,1],[364,258,1],[320,336,1]],float)
+                dst=np.array([[*p,1] for p in [*shoulders[f],(322,338)]],float)
+                projection=np.linalg.solve(dst,src).T[:2].ravel()
+                frame.alpha_composite(cloth.transform(SIZE,Image.Transform.AFFINE,tuple(projection),Image.Resampling.NEAREST))
+            attach_core(main)
             # Hold the original shoulder cap against the foreshortened limb.
             crown=band(front,0,267)
             crown=with_alpha(crown,ImageChops.multiply(crown.getchannel('A'),scale[f]))
-            frame.alpha_composite(crown,(2,2))
+            attach_core(crown)
             occlude=Image.new('L',SIZE)
             sleeves=Image.new('RGBA',SIZE)
             for s,(e,w) in enumerate(targets[f]):
-                sh=(276,258) if s==0 else (364,258);target=(277,258) if s==0 else (365,258)
+                sh=(276,258) if s==0 else (364,258);target=shoulders[f][s] if shoulders else ((277,258) if s==0 else (365,258))
                 src_elbow=(261,304) if s==0 else (379,304);src_wrist=(254,347) if s==0 else (386,347)
                 sleeve=with_alpha(front,ImageChops.multiply(front.getchannel('A'),[right,left][s]))
                 upper=fit(band(sleeve,0,310),sh,src_elbow,target,e)
                 lower=fit(band(sleeve,296,640),src_elbow,src_wrist,e,w)
                 upper.alpha_composite(lower)
                 sleeves.alpha_composite(with_alpha(upper,ImageChops.multiply(upper.getchannel('A'),scale[f])))
-                if f not in (0,7,8):
+                if f not in resting:
                     occlude=ImageChops.lighter(occlude,ImageChops.multiply(limb(e,w,11),skin[f]))
             frame=with_alpha(frame,ImageChops.subtract(frame.getchannel('A'),occlude))
             frame.alpha_composite(sleeves)
@@ -178,8 +194,14 @@ def generate():
             rear=back.copy()
             if item==151:
                 for x0,x1 in [(227,272),(368,413)]:rear.paste((0,0,0,0),(x0,334,x1,365))
+            if poses is not None:
+                # The original hardware in a flattened target is above the sleeve.
+                frame=with_alpha(frame,ImageChops.subtract(frame.getchannel('A'),poses['hardware'][f]))
             rec['phases'].append(dict(front=emit(frame),rear=emit(rear)))
-    files['register.json']=json.dumps(dict(pins=pins,items=items,musket=dict(body=[s['body'] for s in musket['rows']],gear=[[g['sha'] for g in s['gear']] for s in musket['rows']],archive=musket['sourceArchive'],clock=musket['clock'])),separators=(',',':')).encode()
+    registration=dict(pins=pins,items=items)
+    if poses is None:
+        registration['musket']=dict(body=[s['body'] for s in musket['rows']],gear=[[g['sha'] for g in s['gear']] for s in musket['rows']],archive=musket['sourceArchive'],clock=musket['clock'])
+    files['register.json']=json.dumps(registration,separators=(',',':')).encode()
     return files
 
 

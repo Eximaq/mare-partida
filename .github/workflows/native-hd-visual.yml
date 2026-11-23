@@ -18,6 +18,14 @@ on:
       - 'tools/register_blade_sleeves.py'
       - 'tests/rework-north-blade-clothes.cjs'
       - 'tools/register_north_blade_gloves.py'
+      - 'tools/register_south_blade_gloves.py'
+      - 'tools/register_south_blade_coats.py'
+      - 'tools/rework-combat-wardrobe/south-blade-coats.zip'
+      - 'tests/rework-south-blade-coats.cjs'
+      - 'tools/rework-combat-wardrobe/south-blade-gloves.zip'
+      - 'tests/rework-south-blade-head.cjs'
+      - 'tests/rework-south-blade-gloves.cjs'
+      - 'tests/rework-south-saved-head-shapes.cjs'
       - 'tools/register_north_blade_coats.py'
       - 'tools/articulated_sleeve_projection.py'
       - 'tools/rework-combat-wardrobe/north-blade-coats.zip'
@@ -32,6 +40,9 @@ on:
       - 'tests/rework-ordered-orb-coats.cjs'
       - 'tests/rework-ordered-staff-coats.cjs'
       - 'tests/rework-south-staff-clothes.cjs'
+      - 'tests/rework-north-staff-wardrobe.cjs'
+      - 'tools/register_north_staff_wardrobe.py'
+      - 'tools/rework-combat-wardrobe/north-staff-wardrobe.zip'
       - 'tests/rework-south-staff-grips.cjs'
       - 'tools/register_south_staff_grips.py'
       - 'tools/rework-combat-wardrobe/south-staff-grips.zip'
@@ -81,6 +92,9 @@ on:
       - 'tools/rework-combat-wardrobe/south-focus-trousers.json'
       - 'tests/rework-north-focus-coats.cjs'
       - 'tests/rework-north-focus-trousers.cjs'
+      - 'tests/rework-south-blade-legs.cjs'
+      - 'tools/register_south_blade_legs.py'
+      - 'tools/rework-combat-wardrobe/south-blade-legs.zip'
       - 'tests/rework-north-blade-trousers.cjs'
       - 'tools/register_north_focus_gloves.py'
       - 'tools/rework-combat-wardrobe/north-focus-gloves.zip'
@@ -107,6 +121,9 @@ on:
       - 'tools/register_north_rifle_clothes.py'
       - 'tools/register_rifle_profile_*.py'
       - 'tools/rework-combat-wardrobe/rifle-profile-*.zip'
+      - 'tests/rework-pistol-leg-wardrobe.cjs'
+      - 'tools/register_pistol_legs.py'
+      - 'tools/rework-combat-wardrobe/pistol-legs.zip'
       - 'tests/rework-south-firearm-legs.cjs'
       - 'tools/register_south_firearm_legs.py'
       - 'tools/rework-combat-wardrobe/south-firearm-legs.zip'
@@ -116,6 +133,12 @@ on:
       - 'tests/rework-firearm-original-heads.cjs'
       - 'tools/register_firearm_original_heads.py'
       - 'tools/rework-combat-wardrobe/firearm-original-heads.json'
+      - 'tests/rework-pistol-recoil-clothes.cjs'
+      - 'tools/register_pistol_recoil_clothes.py'
+      - 'tools/rework-combat-wardrobe/pistol-recoil-clothes.zip'
+      - 'tests/rework-south-fused-clothes.cjs'
+      - 'tools/register_south_fused_clothes.py'
+      - 'tools/rework-combat-wardrobe/south-fused-firearm-clothes.zip'
       - 'tests/rework-rifle-profile-clothes.cjs'
       - 'tools/rework-combat-wardrobe/north-rifle-clothes.zip'
       - 'tests/rework-north-rifle-clothes.cjs'
@@ -480,6 +503,12 @@ jobs:
           node --expose-gc tests/rework-blade-trousers.cjs
           python tools/register_blade_sleeves.py --verify
           node --expose-gc tests/rework-blade-sleeves.cjs
+          python tools/register_south_blade_coats.py --verify
+          node --expose-gc tests/rework-south-blade-coats.cjs
+          python tools/register_south_blade_gloves.py --verify
+          node --expose-gc tests/rework-south-blade-head.cjs
+          node --expose-gc tests/rework-south-blade-gloves.cjs
+          node --expose-gc tests/rework-south-saved-head-shapes.cjs
           python tools/register_north_blade_gloves.py --verify
           node --expose-gc tests/rework-north-blade-clothes.cjs gloves
           python tools/register_north_blade_coats.py --verify
@@ -512,6 +541,7 @@ jobs:
         run: |
           node --expose-gc tests/rework-ordered-staff-coats.cjs
           node --expose-gc tests/rework-south-staff-clothes.cjs
+          node --expose-gc tests/rework-north-staff-wardrobe.cjs
           node --expose-gc tests/rework-south-staff-grips.cjs
           node --expose-gc tests/rework-side-focus-sleeves.cjs
           node --expose-gc tests/rework-side-focus-sleeves.cjs --scepter
@@ -526,6 +556,7 @@ jobs:
           python tools/register_staff_gloves.py --verify
           python tools/register_scepter_profile_gloves.py --verify
           python tools/register_south_staff_clothes.py --verify
+          python tools/register_north_staff_wardrobe.py --verify
           python tools/register_south_staff_grips.py --verify
           python tools/register_side_focus_sleeves.py --verify
           python tools/register_side_focus_trousers.py --verify
@@ -549,9 +580,12 @@ jobs:
           node --expose-gc tests/rework-fixed-north-rifle-trousers.cjs
           node --expose-gc tests/rework-north-rifle-clothes.cjs
           node --expose-gc tests/rework-rifle-profile-clothes.cjs
+          node --expose-gc tests/rework-south-fused-clothes.cjs
+          node --expose-gc tests/rework-pistol-recoil-clothes.cjs
           node --expose-gc tests/rework-firearm-original-heads.cjs
           node --expose-gc tests/rework-south-rifle-arms.cjs
           node --expose-gc tests/rework-south-firearm-legs.cjs
+          node --expose-gc tests/rework-pistol-leg-wardrobe.cjs
           node --expose-gc tests/rework-fixed-north-rifle-boots.cjs
           node --expose-gc tests/rework-fixed-north-rifle-heads.cjs
           node --expose-gc tests/rework-north-moving-boots.cjs
@@ -583,6 +617,7 @@ jobs:
         run: |
           node --expose-gc tests/rework-north-focus-trousers.cjs
           node --expose-gc tests/rework-north-blade-trousers.cjs
+          node --expose-gc tests/rework-south-blade-legs.cjs
       - name: Conferir os dedos e a empunhadura com o conjunto equipado
         if: ${{ !cancelled() }}
         env:
