@@ -9,6 +9,7 @@ on:
       - 'tests/rework-registered-weapon-coats.cjs'
       - 'tests/rework-male-p114-signed-slots-saved.cjs'
       - 'tests/rework-articulated-weapon-heads.cjs'
+      - 'tests/rework-wardrobe-authored-contact.cjs'
       - 'tests/rework-wardrobe-grip-cycles.cjs'
       - 'tests/rework-south-wardrobe-ownership.cjs'
       - 'tests/rework-male-weapon-material-cycles.cjs'
@@ -132,6 +133,7 @@ jobs:
           node tests/rework-registered-weapon-coats.cjs
           node --expose-gc tests/rework-male-p114-signed-slots-saved.cjs
           node tests/rework-wardrobe-grip-cycles.cjs
+          node --expose-gc tests/rework-wardrobe-authored-contact.cjs
           node tests/rework-south-wardrobe-ownership.cjs
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')

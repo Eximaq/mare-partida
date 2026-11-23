@@ -364,7 +364,7 @@ window.__hdSlotQA={
   await context.close();await browser.close();
  }
  async function observeMountedWeapons(){
-  for(const [weapon,role,directions] of [[109,'brawler',['east','west']],[15,'cyborg',['east','west']],[117,'cyborg',['north']]]){
+  for(const [weapon,role,directions] of [[2,'brawler',['north']],[3,'brawler',['north']],[109,'brawler',['east','west','south']],[112,'brawler',['south']],[15,'cyborg',['east','west','south']],[117,'cyborg',['north','east','west','south']]]){
    const items={weapon,coat:6,legs:22,boots:148,gloves:159,head:18};
    await page.evaluate(({role,items})=>__hdSlotQA.seedWardrobe(role,[...Object.values(items),25],
     {gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'}),{role,items});

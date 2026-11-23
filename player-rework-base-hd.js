@@ -5,19 +5,20 @@ const hairAnatomy=root.MareHairAnatomyHD||(typeof require==='function'?require('
 function applyPunchProfileIris(r,d,images,map,prefix,appearance,makeCanvas){
   // The weapon and the empty hand use this same isolated 640px profile.
   // Skin recoloring runs before the signed iris ranks, including its dark edge.
-  const profileFace={east:'9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2',
+  const profileFace={south:'6c19bf77a6d9364d1f720d6a0096a014065ccd5d4ad35a8a53c80e3f93dbf13a',east:'9add51bf7602618f2e937cf31d851346a02afc248da8490ae5ea7ea322fabde2',
    west:'0dc6cfcac5a2cf85ea30b0d88bdfd08e3fb7574110b115fb230ff8adce03b464'}[r.direction];
   const face=d.layers.find(l=>l.slot==='face'),ramp=root.MareCharacterAppearance?.eyes?.[appearance.eyeColor]?.ramp;
   if(r.body==='male'&&r.action==='attack-unarmed'&&profileFace&&ramp&&appearance.face==='original'&&
      (face?.source===profileFace||face?.source==='assets/'+profileFace+'.png'||face?.source==='modular-assets/'+profileFace+'.png')&&!face.frames&&face.binding?.a==='NECK'&&face.binding.b==='NOSE'){
    const src=face.source,raw=images.get(prefix+src+'.png')||images.get(src);
-   const samples=root.MareReworkModularOutfitsHD?.sideIrisSamples(r.direction);
-   if(raw?.width!==640||raw.height!==640||samples?.length!==18)throw Error('Missing registered punch iris material');
+   const pigments=root.MareReworkModularOutfitsHD||(typeof require==='function'?require('./player-rework-modular-outfits-hd.js'):null);
+   const front=r.direction==='south',offset=front?0:64,samples=front?pigments?.southIrisSamples():pigments?.sideIrisSamples(r.direction);
+   if(raw?.width!==640||raw.height!==640||samples?.length!==(front?45:18))throw Error('Missing registered punch iris material');
    const tile=makeCanvas(640,640),ctx=tile.getContext('2d');
    ctx.drawImage(raw,0,0);const old=ctx.getImageData(0,0,640,640).data;
    ctx.clearRect(0,0,640,640);ctx.drawImage(map.get(src),0,0);const frame=ctx.getImageData(0,0,640,640);
    for(const [x,y,red,green,blue,alpha,rank] of samples){
-    const pos=((y+64)*640+x+64)*4,shade=parseInt(ramp[rank-1].slice(1),16);
+    const pos=((y+offset)*640+x+offset)*4,shade=parseInt(ramp[rank-1].slice(1),16);
     if(old[pos]!==red||old[pos+1]!==green||old[pos+2]!==blue||old[pos+3]!==alpha||frame.data[pos+3]!==alpha)
      throw Error('Punch face differs from the registered iris');
     frame.data[pos]=shade>>>16;frame.data[pos+1]=(shade>>>8)&255;frame.data[pos+2]=shade&255;
@@ -57,8 +58,9 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
   const skin=appearance.skin||appearance.skinColor,hair=appearance.hairColor;
   if((skin&&skin!=='original'||hair&&hair!=='original')&&appearanceAPI){
    for(const source of sources(r,frame)){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),hairLayer=uses.some(l=>l.slot==='hair'),skinKind=uses.length&&uses.every(l=>r.skinRepairLayers?.includes(l.id))?'mixed':femaleAnatomyPalette&&uses.some(l=>l.slot==='headBase')?null:skinMaterials?.ownership(uses);
-    const ramp=hairLayer?appearanceAPI.hairs[hair]?.ramp:skinKind?appearanceAPI.skins[skin]?.ramp:null;if(!ramp&&!(hairLayer&&hairAnatomy?.records[source]))continue;
-    const image=map.get(source),w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,tile=makeCanvas(w,h),cx=tile.getContext('2d');cx.drawImage(image,0,0);const data=cx.getImageData(0,0,w,h);const anatomical=hairLayer?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;
+    const hairSource=hairLayer&&source==='assets/4d7b8fa3090367f80f4ded64a1bbc2c0759f3a1d2402ec9e8be112333c0297a7.png'?source.slice(7,-4):source;
+    const ramp=hairLayer?appearanceAPI.hairs[hair]?.ramp:skinKind?appearanceAPI.skins[skin]?.ramp:null;if(!ramp&&!(hairLayer&&hairAnatomy?.records[hairSource]))continue;
+    const image=map.get(source),w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,tile=makeCanvas(w,h),cx=tile.getContext('2d');cx.drawImage(image,0,0);const data=cx.getImageData(0,0,w,h);const anatomical=hairLayer?hairAnatomy?.recolor(hairSource,data.data,appearance,appearanceAPI):null;
     const ranks=hairLayer?appearanceAPI.materialMask(data.data,'hair'):skinMaterials.mask(data.data,w,skinKind);
     if(!hairLayer&&skin&&skin!=='original'&&skin!=='light'&&r.body==='female'&&r.action==='attack-unarmed'&&r.direction==='south'&&
        (r.sourceId||r.id.split(':')[0])==='v7-female-punch-south-ownership-candidate-south'&&r.sourcePackSHA256==='aeff7d06dc08041ceec37c11cd0b3e2cf1f970a5bb1d0c449d3aa78638e09ef9'&&
