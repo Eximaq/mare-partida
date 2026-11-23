@@ -141,6 +141,7 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
+  if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--pistol-clothes')){await observePistolClothes();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--mounted-weapons')){await observeMountedWeapons();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--registered-coats')){await observeRegisteredCoats();assert.deepEqual(errors,[]);return;}
@@ -380,6 +381,26 @@ window.__hdSlotQA={
     const after=await observeAttack('attack-unarmed',name+'-retorno',dir,items);
     assert.deepEqual(after.visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
    }
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
+ }
+ async function observeArticulatedHelmets(){
+  for(const [weapon,role,dir] of [[0,'sword','east'],[4,'gunner','west'],[73,'rogue','north']]){
+   const appearance={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
+   await page.evaluate(({role,weapon,appearance})=>__hdSlotQA.seedWardrobe(role,[weapon,19,178],appearance),{role,weapon,appearance});
+   await put(weapon);await put(19);
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   const action={sword:'attack-sword',gunner:'attack-firearm',rogue:'attack-daggers'}[role],prefix='capacete-'+weapon+'-'+dir;
+   const full=await observeAttack(action,prefix+'-19',dir,{weapon,head:19});
+   await put(178);
+   const open=await observeAttack(action,prefix+'-178',dir,{weapon,head:178});
+   assert.deepEqual(open.visual.coverage[0].slotRoutes.weapon,full.visual.coverage[0].slotRoutes.weapon);
+   await put(19);
+   const restored=await observeAttack(action,prefix+'-retorno',dir,{weapon,head:19});
+   assert.deepEqual(restored.visual.coverage[0].slotRoutes,full.visual.coverage[0].slotRoutes);
+   await remove('head');
+   const bare=await observeAttack(action,prefix+'-sem-capacete',dir,{weapon});
+   assert.equal(bare.visual.coverage[0].slotRoutes.head,undefined);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }

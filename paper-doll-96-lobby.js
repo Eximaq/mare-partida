@@ -61,7 +61,15 @@
     const independent=nativeHD.selectIndependentWorld?.(player,options,selectPose);
     if(independent&&!independent.omitted.length)return independent;
     const exact=selectPose(player,options);
-    if(exact&&!exact.visualDegraded&&!exact.appearanceAdapted&&!exact.omitted?.length&&!exact.unsupported?.length)return exact;
+    if(exact&&!exact.visualDegraded&&!exact.appearanceAdapted&&!exact.omitted?.length&&!exact.unsupported?.length){
+      const equipped=player.equipment?.weapon,item=equipped?.def??equipped;
+      if(!options.weaponless&&exact.hdKind==='weapon'&&item!=null&&item===exact.item&&exact.id&&!exact.slotRoutes?.weapon){
+        const source=exact.id;
+        return {...exact,slotRoutes:{...exact.slotRoutes,weapon:{item,quality:'hd',source}},
+          slotResolution:{...exact.slotResolution,weapon:{state:'hd',source}}};
+      }
+      return exact;
+    }
     if(exact?.slotFallback==='signed-pose-omit'&&exact.layeredSlots&&!exact.unsupported?.length&&!exact.appearanceAdapted)return exact;
     return independent||null;
   }
