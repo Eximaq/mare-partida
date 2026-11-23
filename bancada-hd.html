@@ -79,6 +79,9 @@
 <div id="status" role="status">Carregando os registros HD…</div></section>
 <aside aria-label="Ajustes e aparência"><h2>Posicionamento</h2><label>Peça em edição<select id="slot"></select></label><button id="remove">Desequipar peça</button><label>Parte<select id="part"></select></label><label>Aplicar a<select id="scope"><option value="cycle">Ciclo inteiro</option><option value="phase">Fase atual</option></select></label>
 <div class="coords"><label>X <input type="number" id="x" step="1" value="0"></label><label>Y <input type="number" id="y" step="1" value="0"></label></div><div class="arrows"><button data-move="-1,0" aria-label="Um pixel à esquerda">←</button><button data-move="0,-1" aria-label="Um pixel acima">↑</button><button data-move="0,1" aria-label="Um pixel abaixo">↓</button><button data-move="1,0" aria-label="Um pixel à direita">→</button></div>
+<div class="coords"><label>Rotação (°)<input id="angle" type="number" value="0" min="-180" max="180" step="1"></label><label>Tamanho (%)<input id="size" type="number" value="100" min="1" step="1"></label></div>
+<label><input id="flip" type="checkbox"> Espelhar item</label><label>Camada<select id="layer"></select></label>
+<div class="history" id="mirror-tools" hidden><button id="mirror-west" title="Copiar os ajustes de Leste para Oeste">Espelhar oeste</button><button id="mirror-east" title="Copiar os ajustes de Oeste para Leste">Espelhar leste</button></div>
 <p id="details"></p><div class="history"><button id="undo">Desfazer</button><button id="redo">Refazer</button><button id="reset">Restaurar parte</button></div>
 <details open><summary>Personagem de teste</summary><label>Classe<select id="role"></select></label><div id="appearance"></div><label><input type="checkbox" id="hide"> Ocultar capacete</label></details>
 </aside></main></body></html>

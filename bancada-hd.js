@@ -6,7 +6,7 @@ const labels={coat:'Peitoral',legs:'Calça',boots:'Botas',gloves:'Luvas',head:'C
 const classes={sword:'Espadachim',rogue:'Gatuno',brawler:'Lutador',cyborg:'Ciborgue',healer:'Curandeiro',gunner:'Atirador',strategist:'Estrategista'};
 const equipment={coat:{def:6},boots:{def:148}},appearance={...look.defaults};
 const storage='kaizoku-hd-position-draft-v1';
-let draft=A.empty(),past=[],future=[],approved,api,catalog,weapons,actor,options,bundle,view,source,controller,ticket=0;
+let draft=A.empty(),past=[],future=[],api,catalog,weapons,actor,options,bundle,view,source,controller,ticket=0;
 let tick=0,playing=false,elapsed=0,last=0,drawing=false,pan=[0,0],pointer,loadMessage='',editSlot='boots';
 function status(message,error=false){$('status').textContent=message;$('status').dataset.error=error;}
 function option(select,value,label){select.add(new Option(label,String(value)));}
@@ -36,9 +36,21 @@ function target(){return view?.targets.find(t=>t.slot===editSlot&&t.part===$('pa
 function record(t){return t&&draft.records.find(r=>A.key(r)===A.key(t));}
 function phase(){return view?.clock[tick]?.phase??0;}
 function values(){const r=record(target());return ($('scope').value==='cycle'?r?.cycle:r?.phases[phase()])||[0,0];}
+function displayStyle(){
+ const r=record(target());return $('scope').value==='cycle'?r?.style?.cycle||{}:A.styleAt(r,phase());
+}
 function inputs(){
  const t=target(),v=values(),ready=!!t&&!$('before').checked;
  $('x').value=v[0];$('y').value=v[1];
+ const style=displayStyle(),scope=$('scope').value,available=t?view.availableLayers(t,scope==='phase'?phase():null):['native'];
+ $('angle').value=style.angle??0;$('size').value=style.size??100;$('flip').checked=!!style.flip;
+ if($('layer').dataset.options!==available.join(',')){
+  selectValues('layer',available.map(k=>[k,A.layerNames[k]]));$('layer').dataset.options=available.join(',');
+ }
+ $('layer').value=style.layer??'native';
+ for(const id of ['angle','size','flip','layer'])$(id).disabled=!ready;
+ const dir=$('direction').value,side=dir==='west'||dir==='east';$('mirror-tools').hidden=!side;
+ for(const to of ['west','east'])$('mirror-'+to).disabled=!ready||dir===to||!lateralRecords(t).length;
  for(const e of [$('x'),$('y'),$('reset'),...document.querySelectorAll('[data-move]')])e.disabled=!ready;
  $('undo').disabled=!past.length;$('redo').disabled=!future.length;
  const at=view?.clock.flatMap((v,i)=>v.phase===phase()?[i+1]:[]).join(', ');
@@ -97,19 +109,53 @@ function commit(next,history=true){
  if(history){past.push(draft);if(past.length>80)past.shift();future=[];}
  draft=next;inputs();schedule();status(loadMessage);
 }
-function update(v,restore=false,remember=true){
+function update(v,restore=false,remember=true,change=null){
  const t=target();if(!t||$('before').checked)return;
  try{
   const {limits,...identity}=t,r=structuredClone(record(t)||{...identity,cycle:[0,0],phases:{}});
-  if($('scope').value==='cycle')r.cycle=v;else r.phases[phase()]=v;
+  const cycle=$('scope').value==='cycle';
+  if(change){
+   r.style??={cycle:{},phases:{}};const f=phase(),s=cycle?r.style.cycle:(r.style.phases[f]??={});
+   const [key,val]=Object.entries(change)[0],defaults={angle:0,size:100,flip:false,layer:'native'};
+   const inherited=cycle?defaults[key]:(r.style.cycle[key]??defaults[key]);
+   if(val===inherited)delete s[key];else s[key]=val;
+   if(!cycle&&!Object.keys(s).length)delete r.style.phases[f];
+   if(!Object.keys(r.style.cycle).length&&!Object.keys(r.style.phases).length)delete r.style;
+  }else if(cycle)r.cycle=v;else r.phases[phase()]=v;
   for(const k of Object.keys(r.phases))if(r.phases[k].every(n=>n===0))delete r.phases[k];
   const rows=draft.records.filter(a=>A.key(a)!==A.key(t));
-  if(!restore&&(r.cycle.some(Boolean)||Object.keys(r.phases).length))rows.push(r);
-  commit({...draft,revision:draft.revision+1,records:rows},remember);
+  if(!restore&&(r.style||r.cycle.some(Boolean)||Object.keys(r.phases).length))rows.push(r);
+  commit({...draft,schema:r.style?2:draft.schema,revision:draft.revision+1,records:rows},remember);
  }catch(e){inputs();status(e.message,true);}
 }
 function history(from,to){
  if(!from.length)return;try{const old=draft;commit(from.at(-1),false);from.pop();to.push(old);inputs();}catch(e){status(e.message,true);}
+}
+function lateralRecords(t){
+ return draft.records.filter(r=>r.slot===t.slot&&r.item===t.item&&r.body===t.body&&r.action===t.action&&r.receiver===t.receiver&&r.direction===t.direction&&(r.slot!=='weapon'||r.weapon===t.weapon)&&(t.part==='*'||r.part===t.part));
+}
+async function copyLateral(direction){
+ const t=target(),from=view,current=ticket,previous=draft,selected=editSlot;
+ if(!t||$('before').checked||t.direction===direction||!['east','west'].includes(t.direction))return;
+ const rows=lateralRecords(t);if(!rows.length)return;
+ let other;
+ try{
+  status('Conferindo a arte e as fases do lado de destino…');
+  other=await prepare(actor,{...options,direction},controller.signal);
+  if(ticket!==current||draft!==previous||target()!==t||editSlot!==selected||$('before').checked)return;
+  if(from.fps!==other.v.fps)throw Error('O ritmo da pose é diferente no outro lado.');
+  const candidates=other.v.targets.filter(v=>v.slot===t.slot&&v.item===t.item),copies=[];
+  const lateralName=s=>s.replace(/\b(east|west)\b/gi,'side').replace(/([_-])(east|west)(?=[_-]|$)/gi,'$1side');
+  for(const r of rows){
+   const exact=candidates.filter(v=>v.part===r.part),same=exact.length?exact:candidates.filter(v=>lateralName(v.part)===lateralName(r.part));
+   if(same.length!==1)throw Error('Sem parte lateral correspondente para '+r.part);
+   copies.push(A.mirrorRecord(r,same[0],from.clock,other.v.clock));
+  }
+  const dest=new Set((t.part==='*'?candidates:copies).map(A.key));
+  const next={...draft,revision:draft.revision+1,records:[...draft.records.filter(r=>!dest.has(A.key(r))),...copies]};
+  other.v.set(next);commit(next);
+  $('direction').value=direction;await reload();
+ }catch(e){if(current===ticket)status(e.message,true);}finally{other?.b.release();}
 }
 async function verifyImport(m){
  A.validate(m);
@@ -127,8 +173,8 @@ async function verifyImport(m){
  }
 }
 try{
- status('Lendo armas e aparências…');api=MareReworkNativeHD.create();const result=await Promise.all([fetch('tools/paper-doll-96-v3/weapons.json').then(r=>r.json()),fetch('hd-position-approved.json',{cache:'no-cache'}).then(r=>r.json()),api.ready]);
- weapons=result[0];approved=A.validate(result[1]);draft=approved;
+ let startupError='';status('Lendo armas e aparências…');api=MareReworkNativeHD.create();const result=await Promise.all([fetch('tools/paper-doll-96-v3/weapons.json').then(r=>r.json()),fetch('hd-position-approved.json',{cache:'no-cache'}).then(async r=>{if(!r.ok)throw Error('HTTP '+r.status);return A.validate(await r.json());}).catch(e=>{startupError='Ajustes publicados indisponíveis · '+e.message;return A.empty();}),api.ready]);
+ weapons=result[0];draft=result[1];
  catalog=MareItemCatalog.create({forge:MareForge,prison:MarePrison,haki:MareHaki,akuma:MareAkuma,hakiProgression:MareHakiProgression}).items;
  let draftError='';try{const saved=localStorage.getItem(storage);if(saved)draft=A.validate(JSON.parse(saved));}catch(e){draftError=e.message;}
  selectValues('filter',[['','Todas as categorias'],...Object.entries(labels)]);selectValues('slot',Object.entries(labels));$('slot').value=editSlot;
@@ -147,11 +193,13 @@ try{
  $('guides').onchange=$('zoom').oninput=schedule;$('play').onclick=()=>toggle(!playing);
  const step=d=>{if(!view)return;toggle(false);const phase0=phase();let i=tick;do{i=(i+d+view.clock.length)%view.clock.length;}while(i!==tick&&view.clock[i].phase===phase0);setTick(i);schedule();};
  $('next').onclick=()=>step(1);$('prev').onclick=()=>step(-1);$('tick').oninput=()=>{toggle(false);setTick(+$('tick').value);schedule();};
+ for(const id of ['angle','size','flip','layer'])$(id).onchange=()=>{const el=$(id);update(values(),false,true,{[id]:id==='flip'?el.checked:id==='layer'?el.value:el.valueAsNumber});};
+ for(const dir of ['west','east'])$('mirror-'+dir).onclick=()=>copyLateral(dir);
  $('x').onchange=$('y').onchange=()=>update([$('x').valueAsNumber,$('y').valueAsNumber]);
  document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{const d=b.dataset.move.split(',').map(Number);update(values().map((n,i)=>n+d[i]));});
  $('undo').onclick=()=>history(past,future);$('redo').onclick=()=>history(future,past);$('reset').onclick=()=>update([0,0],true);
  const canvas=$('figure');canvas.onpointerdown=e=>{
-  if(!view)return;const move=e.shiftKey||e.button===1;if(!move&&(!target()||$('before').checked))return;toggle(false);canvas.setPointerCapture(e.pointerId);
+  if(!view||!e.isPrimary||e.button>1)return;const move=e.shiftKey||e.button===1;if(!move&&(!target()||$('before').checked))return;toggle(false);canvas.setPointerCapture(e.pointerId);
   pointer={id:e.pointerId,start:[e.clientX,e.clientY],initial:move?[...pan]:values(),move,draft,changed:false};
  };
  let dragFrame=0;canvas.onpointermove=e=>{
@@ -165,6 +213,6 @@ try{
  $('export').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(draft,null,2)+'\n'],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='hd-position-approved.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
  $('file').onchange=async e=>{const file=e.target.files[0];if(!file)return;const original=draft;
   try{const m=JSON.parse(await file.text());status('Conferindo fontes e limites…');await verifyImport(m);if(draft!==original)throw Error('O rascunho mudou durante a importação.');commit(m);}catch(err){status(err.message,true);}finally{e.target.value='';}};
- new ResizeObserver(schedule).observe($('viewport'));actions();list();await reload();if(draftError)status('Rascunho local inválido · '+draftError,true);
+ new ResizeObserver(schedule).observe($('viewport'));actions();list();await reload();if(draftError||startupError)status([startupError,draftError&&'Rascunho local inválido · '+draftError].filter(Boolean).join(' · '),true);
 }catch(e){status(e.message,true);}
 })();

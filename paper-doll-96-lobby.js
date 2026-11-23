@@ -153,9 +153,10 @@
   function create({search='',baseURL=root.location?.href,onChange=()=>{},sharedLobby=false}={}){
     const active=enabled(search),rehearsal=false,base=new URL('tools/paper-doll-96-v3/',baseURL);
     const nativeHD=root.MareReworkNativeHD?.create({baseURL,onChange});
-    const approved=root.MareHDPosition&&nativeHD?fetch(new URL('hd-position-approved.json',baseURL),{cache:'no-cache'})
-      .then(async response=>{if(!response.ok)throw Error('HTTP '+response.status);return root.MareHDPosition.validate(await response.json());})
-      .catch(error=>{diagnose(error,{consumer:'hd-position',asset:'hd-position-approved.json'});return null;}):null;
+    let approved=null;
+    if(root.MareHDPosition&&nativeHD&&typeof fetch==='function')void fetch(new URL('hd-position-approved.json',baseURL),{cache:'no-cache'})
+      .then(async response=>{if(!response.ok)throw Error('HTTP '+response.status);approved=root.MareHDPosition.validate(await response.json());if(approved.records.length)onChange();})
+      .catch(error=>diagnose(error,{consumer:'hd-position',asset:'hd-position-approved.json'}));
     const defaultHD=root.MareReworkDefaultHD?.create({native:nativeHD,baseURL,onChange});
     const accessoryPilot=root.MareReworkAccessoryTest?.create({search,baseURL,onChange});
     const weaponCycles=root.MareReworkWeapons?.create({search,baseURL,onChange});
@@ -417,7 +418,7 @@
       if(!bundle.draw(ctx,player,{...options,...resolved}))return null;
       return {source:source.id,omitted:source.omitted||[],slotRoutes:source.slotRoutes||{},consumer:options.consumer,typedHD:true};
     }
-    const worldPoseKey=(player,o,identity=visualIdentity(player))=>JSON.stringify([identity,o.action,o.direction,!!o.weaponless]);
+    const worldPoseKey=(player,o,identity=visualIdentity(player))=>JSON.stringify([identity,o.action,o.direction,!!o.weaponless,...(approved?.records.length?[approved.revision]:[])]);
     function releaseWorldPose(entry,reason='pose-released'){
       if(entry.state==='loading'){
         entry.state='cancelled';
@@ -467,7 +468,7 @@
           const pose={player:snapshot,options};
           const source=selectWorldHDOnly(nativeHD,weaponCatalog,snapshot,options);
           if(!source)throw Object.assign(Error('Sem fonte HD: '+options.action+' / '+options.direction),{code:'no-hd-pose'});
-          bundle=await nativeHD.prepareConfiguration([pose],{signal,positions:await approved,resolve:()=>({...pose,source})});
+          bundle=await nativeHD.prepareConfiguration([pose],{signal,positions:approved,resolve:()=>({...pose,source})});
           for(const reason of bundle.positionView?.(options)?.diagnostics||[])diagnose(Error(reason),{consumer:'hd-position',asset:source.id});
           signal.throwIfAborted();
           entry.bundle=bundle;bundle=null;

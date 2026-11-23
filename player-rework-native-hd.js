@@ -409,6 +409,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return [...new Set([...femaleRegistry.requiredFiles(body,{frame:f}),s.legs[k],s.armOcclusion[k],...(lower?[...lower.gear,lower.cloth,lower.owner].filter(Boolean).map(l=>lower.prefix+l.frames[frame]+'.png'):[]),...(r.northLayers.ownedPants?['tools/rework-modular-outfits-hd/assets/'+r.northLayers.ownedPants[k]+'.png']:[]),...(pants==null?[]:[s.equipmentLayers[pants].cloth[k],s.equipmentLayers[pants].owner[k]]),...(body.item===17?[s.orb17Skin.mask]:[])])];
  }
  function composeNorthLayers(r,frame,entry){
+  const drawPass=(dst,op)=>ownedImage(dst,op.slot,op.part,op.sha,op.image,[op.offset,op.offset]);
   const {spec:s,body:rBody,pants}=r.northLayers,k=s.frameToPhase[frame],phase=s.phaseMap[k],pad=rBody.paddingPhysical||0,W=512+2*pad,C=(w=W)=>makeCanvas(w,w),pixels=c=>c.getContext('2d').getImageData(0,0,c.width,c.height).data;
   const images=new Map(entry.images),d=rBody.baseRecord.pack.directions.north,legs=d.layers.find(l=>l.id==='legs'),arms=d.layers.find(l=>l.id==='arms');
   if(!legs||!arms||legs.binding.kind!=='fixed'||arms.binding.kind!=='fixed')throw Error('Unsupported NORTH rig layers');
@@ -434,10 +435,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    // clothing. Apply the own garment only where that original witness agrees.
    // This preserves any signed material postpasses in the weapon/arms.
    const {ownedPants,...unworn}=r.northLayers,prior=lower?composeNorthLayers({...r,northLayers:unworn},frame,entry):{canvas:native,info},
-    boots=(lower?.gear||[]).map(l=>({depth:l.depth===-1?-1:3.7,image:images.get(path+l.frames[frame]+'.png'),offset:pad})),
+    boots=(lower?.gear||[]).map(l=>({depth:l.depth===-1?-1:3.7,slot:'boots',part:l.id,sha:l.frames[frame],image:images.get(path+l.frames[frame]+'.png'),offset:pad})),
     owners=ops.map(q=>({depth:q.op.depth,image:q.canvas,offset:0})),
-    source={depth:2,image:cloth,offset:pad},base=C(),fit=C(),matte=C(),
-    paint=(dst,layers)=>{const ctx=dst.getContext('2d');for(const l of layers.sort((a,b)=>a.depth-b.depth))ctx.drawImage(l.image,l.offset,l.offset);};
+    source={depth:2,slot:'legs',part:'trousers',sha:r.northLayers.ownedPants[k],image:cloth,offset:pad},base=C(),fit=C(),matte=C(),
+    paint=(dst,layers)=>{const ctx=dst.getContext('2d');for(const l of layers.sort((a,b)=>a.depth-b.depth))drawPass(ctx,l);};
    paint(base,[...boots,...owners]);paint(fit,[...boots,...owners.filter(q=>q.image!==shorts.canvas),source]);
    paint(matte,[source,{depth:0,image:shorts.canvas,offset:0}]);
    const dst=prior.canvas.getContext('2d'),wanted=dst.getImageData(0,0,W,W),mask=pixels(matte),
@@ -450,23 +451,23 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   if(r.northLayers.lower){
    const {gear:boots,cloth,owner,prefix}=r.northLayers.lower,read=l=>{const im=images.get(prefix+l.frames[frame]+'.png');if(im?.width!==512||im.height!==512)throw Error('Missing North walk lower-kit raster');return im;};
-   const target=C(),tc=target.getContext('2d'),sources=boots.map(l=>({depth:l.depth===-1?-1:3.7,image:read(l),offset:pad}));
+   const target=C(),tc=target.getContext('2d'),sources=boots.map(l=>({depth:l.depth===-1?-1:3.7,slot:'boots',part:l.id,sha:l.frames[frame],image:read(l),offset:pad}));
    let shape;
    if(cloth){
     shape=C(512);const sc=shape.getContext('2d');sc.drawImage(read(owner),0,0);
     const mask=sc.getImageData(0,0,512,512).data;sc.clearRect(0,0,512,512);sc.drawImage(read(cloth),0,0);
     const data=sc.getImageData(0,0,512,512);
     for(let n=0;n<mask.length;n+=4)if(mask[n+3]){if(mask[n+3]!==255)throw Error('Nonbinary North walk pants owner');data.data.fill(0,n,n+4);}
-    sc.putImageData(data,0,0);sources.push({depth:3.6,image:shape,offset:pad});
+    sc.putImageData(data,0,0);sources.push({depth:3.6,slot:'legs',part:'trousers',sha:[cloth.frames[frame],owner.frames[frame]],image:shape,offset:pad});
    }
    if(r.northLayers.lower.nativeDepthBootOnly){
     // At equal position: rear shaft / legs / front shaft / native gear
     // (with existing foreground arms). Restrict every changed pixel to the
     // signed boot's own projected support, preserving the receiving frame.
     const support=C(),sc=support.getContext('2d');
-    for(const boot of sources)sc.drawImage(boot.image,boot.offset,boot.offset);
+    for(const boot of sources)drawPass(sc,boot);
     const ordered=[...sources,...ops.map(q=>({depth:q.op.depth,image:q.canvas,offset:0}))].sort((a,b)=>a.depth-b.depth);
-    for(const op of ordered)tc.drawImage(op.image,op.offset,op.offset);
+    for(const op of ordered)drawPass(tc,op);
     const nc=native.getContext('2d'),raw=nc.getImageData(0,0,W,W),mask=pixels(support),paint=pixels(target);
     for(let i=0;i<mask.length;i+=4)if(mask[i+3])raw.data.set(paint.subarray(i,i+4),i);
     nc.putImageData(raw,0,0);
@@ -476,16 +477,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    // Retain the proven unarmed order and its exact pixels outside the early
    // weapon pass. Inside projected weapon alpha, order the same existing
    // boot and cloth passes below the held weapon, with the original arms.
-   for(const l of sources.filter(l=>l.depth===-1))tc.drawImage(l.image,pad,pad);
+   for(const l of sources.filter(l=>l.depth===-1))drawPass(tc,l);
    tc.drawImage(gear.length&&!r.northLayers.lower.disjointBootOnly?naked:native,0,0);
-   if(shape)tc.drawImage(shape,pad,pad);
-   for(const l of sources.filter(l=>l.depth===3.7))tc.drawImage(l.image,pad,pad);
+   if(shape)drawPass(tc,sources.at(-1));
+   for(const l of sources.filter(l=>l.depth===3.7))drawPass(tc,l);
    if(gear.length&&!r.northLayers.lower.disjointBootOnly){
     const visible=C(),vc=visible.getContext('2d'),low=C(),lc=low.getContext('2d');
     vc.drawImage(gear[0].canvas,0,0);vc.globalCompositeOperation='destination-out';
     for(const q of anatomy)if(q.op.depth>gear[0].op.depth)vc.drawImage(q.canvas,0,0);
     const ordered=[...sources,...ops.map(q=>({depth:q.op.depth,image:q.canvas,offset:0}))].sort((a,b)=>a.depth-b.depth);
-    for(const q of ordered)lc.drawImage(q.image,q.offset,q.offset);
+    for(const q of ordered)drawPass(lc,q);
     const output=tc.getImageData(0,0,W,W),support=pixels(visible),value=pixels(low);
     for(let n=0;n<support.length;n+=4)if(support[n+3])output.data.set(value.subarray(n,n+4),n);
     tc.putImageData(output,0,0);visible.width=low.width=1;
@@ -4660,7 +4661,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     const target=p.operation==='source-over'?(p.stage==='under-base'?phase.rear:p.stage==='over-base'?phase.front:null):
      p.operation==='replace-rgb-where-mask-preserve-alpha'&&p.stage==='over-base'?phase.rgb:null;
     if(!target)return null;
-    target.push(p.path.slice(0,-4));
+    const sha=p.path.slice(0,-4);target.push(sha);(phase.owners??={})[sha]=slot;
    }
    outcomes[slot]={state:'hd',source:row.baseNativeRecordId+':'+slot+':'+item};
   }
@@ -7476,7 +7477,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const raw=z.createImageData(640,640);
   if(native)for(const slot of ['hair','head']){
    if(slot==='head'&&!h.hat||slot==='hair'&&h.hat&&root.MareHeadgear.resolve({def:h.hat.item}).hideHair)continue;
-   raw.data.set(native[slot]);z.putImageData(raw,0,0);ctx.drawImage(tile,x,y);
+   raw.data.set(native[slot]);z.putImageData(raw,0,0);
+   if(slot==='head')ownedImage(ctx,'head','helmet',h.named.snapshot,tile,[x,y]);else ctx.drawImage(tile,x,y);
   }
   if(h.separateGear){
    const gearProof=originalHairGearRegistry.validate(h.separateGear,{basePack:h.pack,baseBody:r.body,baseDirection:d,baseFrame:0,
@@ -7522,7 +7524,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      base.sourceArchiveSHA256!==row.archive||base.states.length!==row.pins.length||base.fps!==row.fps||base.timeline.join(',')!==row.clock.join(',')||
      base.states.some((s,f)=>s.approved?.sha256!==row.pins[f]||!s.atomic||s.layers.length!==1||s.layers[0].operation!=='source-over'))return null;
   return {source:cloth.origin+'@'+row.id,refs:[...new Set(cloth.phases.flatMap(p=>[p.front?.[0],p.rear?.[0]].filter(Boolean)))],
-   decorator:{field:'fusedFirearmCloth',own:{frames:cloth.phases}}};
+   decorator:{field:'fusedFirearmCloth',own:{frames:cloth.phases.map(p=>({...p,owner:slot==='pants'?'legs':slot==='torso'?'coat':slot}))}}};
  }
  function fixedRifleLower(base,slot,v,player,o){
   const bank=combatWardrobe?.northRiflePants,item=v.item;
@@ -7684,14 +7686,14 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const fit=record.northStaffFit,result=composeFrame(fit.base,frame,entry),ctx=result.canvas.getContext('2d');
   const paint=url=>{const im=entry.images.get(url);if(!im)throw Error('Missing North staff garment');return im;};
   if(fit.parts){
-   for(const {url,x,y,behind} of fit.parts[frame]){
-    ctx.save();if(behind)ctx.globalCompositeOperation='destination-over';ctx.drawImage(paint(url),x,y);ctx.restore();
+   for(const [i,{url,x,y,behind}] of fit.parts[frame].entries()){
+    ctx.save();if(behind)ctx.globalCompositeOperation='destination-over';ownedImage(ctx,fit.positionOwner,'panel-'+i,url,paint(url),[x,y]);ctx.restore();
    }
    return {...result,info:{...result.info,source:record.id}};
   }
   if(fit.feet){const {front,rear}=fit.feet[frame];
-   if(rear){ctx.save();ctx.globalCompositeOperation='destination-over';ctx.drawImage(paint(rear),fit.x,fit.y);ctx.restore();}
-   ctx.drawImage(paint(front),fit.x,fit.y);return {...result,info:{...result.info,source:record.id}};
+   if(rear){ctx.save();ctx.globalCompositeOperation='destination-over';ownedImage(ctx,'boots','rear',rear,paint(rear),[fit.x,fit.y]);ctx.restore();}
+   ownedImage(ctx,'boots','front',front,paint(front),[fit.x,fit.y]);return {...result,info:{...result.info,source:record.id}};
   }
   const row=fit.track.frames[frame],scratch=makeCanvas(640,640),sc=scratch.getContext('2d');
   sc.drawImage(paint(combatPlatePath(row.mask)),0,0);
@@ -7704,7 +7706,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    view[j]=maps[i]?(before[row.samples[maps[i+1]]]&0xffffff)|(maps[i]<<24):0;
   }
   const tmp=sc.createImageData(640,640);tmp.data.set(under);ctx.putImageData(tmp,0,0);
-  ctx.save();ctx.imageSmoothingEnabled=false;ctx.setTransform(...row.transform);ctx.drawImage(paint(fit.cloth),0,0);ctx.restore();
+  ctx.save();ctx.imageSmoothingEnabled=false;ctx.setTransform(...row.transform);ownedImage(ctx,'legs','trousers',fit.cloth,paint(fit.cloth),[0,0]);ctx.restore();
   // Retain native antialiasing over newly exposed fabric at the edge of the shaft.
   const changed=new Uint32Array(ctx.getImageData(0,0,640,640).data.buffer);
   for(let j=0;j<before.length;j++)if(!maps[4*j+2]||before[j]===changed[j])before[j]=0;
@@ -8457,7 +8459,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const tile=makeCanvas(pack.frame.width*4,pack.frame.height*4),c=tile.getContext('2d'),image=c.createImageData(tile.width,tile.height);
    for(const slot of ['hair','head']){
     if(slot==='hair'&&portrait.hide||slot==='head'&&portrait.record.item==null)continue;
-    image.data.set(art[slot]);c.putImageData(image,0,0);ctx.drawImage(tile,0,0);
+    image.data.set(art[slot]);c.putImageData(image,0,0);
+    if(slot==='head')ownedImage(ctx,'head','helmet',portrait.record.snapshot||portrait.record.id,tile,[0,0]);else ctx.drawImage(tile,0,0);
    }
    tile.width=1;
   }
@@ -10118,7 +10121,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   try{
    for(const slot of ['hair','head']){
     if(slot==='hair'&&hideHair||slot==='head'&&!r.ownGauntletHead.gear)continue;
-    pixels.data.set(material[slot]);cx.putImageData(pixels,0,0);assembled.drawImage(layer,0,0);
+    pixels.data.set(material[slot]);cx.putImageData(pixels,0,0);
+    if(slot==='head')ownedImage(assembled,'head','helmet',named.snapshot,layer,[0,0],r.mirrorBody?-1:1);else assembled.drawImage(layer,0,0);
    }
    // The ordered lateral blades keep the near metal in front of the skull.
    if(r.daggerHeadRig){
@@ -10232,7 +10236,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const tile=makeCanvas(640,640),z=tile.getContext('2d'),data=z.createImageData(640,640);
    for(const slot of ['hair','head']){
     if(slot==='hair'&&h.named.item!=null&&root.MareHeadgear.resolve({def:h.named.item}).hideHair)continue;
-    data.data.set(native[slot]);z.putImageData(data,0,0);ctx.drawImage(tile,0,0);
+    data.data.set(native[slot]);z.putImageData(data,0,0);
+    if(slot==='head')ownedImage(ctx,'head','helmet',h.named.snapshot,tile,[0,0]);else ctx.drawImage(tile,0,0);
    }
    tile.width=1;
   }else if(h.gear){
@@ -10295,7 +10300,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const phase={front:[],rear:[],rgb:[]};
    for(const [slot] of local)for(const patch of row.slots[slot].passes){
     const bucket=patch.operation==='source-over'?(patch.stage==='under-base'?'rear':'front'):'rgb';
-    phase[bucket].push(patch.path.slice(0,-4));
+    const sha=patch.path.slice(0,-4);phase[bucket].push(sha);(phase.owners??={})[sha]=slot;
    }
    return phase;
   });
@@ -10318,7 +10323,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const below=outfit.getContext('2d');below.drawImage(signed.canvas,0,0);const joined=get(outfit);
   for(let i=0;i<target.length;i++)if(old[i]!==worn[i])target[i]=mask[i]?joined[i]:worn[i];
   ctx.putImageData(rgba,0,0);
-  if(glove!=null){const tex=entry.images.get(combatPlatePath(row.gloves[glove]));if(tex?.width!==640||tex.height!==640)throw Error('Missing fitted grip');ctx.drawImage(tex,0,0);}
+  if(glove!=null){const tex=entry.images.get(combatPlatePath(row.gloves[glove]));if(tex?.width!==640||tex.height!==640)throw Error('Missing fitted grip');ownedImage(ctx,'gloves','staff-grip',row.gloves[glove],tex,[0,0]);}
   copy.width=naked.width=outfit.width=1;return {...signed,info:{...signed.info,source:r.id}};
  }
  function composeOriginalFirearmHead(r,frame,entry){
@@ -10362,11 +10367,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     [metal,front]=h.cover[frame].map(u=>entry.images.get('tools/rework-weapon-layers-hd/'+u)),size=result.canvas.width,pad=(size-640)/2;
    if(metal.width!==size||front.width!==size||ink.width!==640||ink.height!==640)throw Error('Changed blade hand registration');
    if(p.rear){
-    const back=entry.images.get(combatPlatePath(p.rear)),dst=result.canvas.getContext('2d');dst.save();dst.globalCompositeOperation='destination-over';dst.drawImage(back,pad,pad);dst.restore();
+    const back=entry.images.get(combatPlatePath(p.rear)),dst=result.canvas.getContext('2d');dst.save();dst.globalCompositeOperation='destination-over';ownedImage(dst,h.positionOwner,'rear',p.rear,back,[pad,pad]);dst.restore();
    }
    const hold=makeCanvas(640,640),oc=hold.getContext('2d');oc.drawImage(metal,-pad,-pad);
    oc.globalCompositeOperation='destination-out';oc.drawImage(front,-pad,-pad);
-   const plate=makeCanvas(640,640),c=plate.getContext('2d');c.drawImage(ink,0,0);
+   const plate=makeCanvas(640,640),c=plate.getContext('2d');ownedImage(c,h.positionOwner,'front',p.front||p,ink,[0,0]);
    c.globalCompositeOperation='destination-out';c.drawImage(hold,0,0);
    result.canvas.getContext('2d').drawImage(plate,pad,pad);plate.width=hold.width=1;
    return {...result,info:{...result.info,source:r.id}};
@@ -10499,8 +10504,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const cloth=entry.images.get(combatPlatePath(p.cloth[frame]));
    if(p.preclipped){
     if([result.canvas,cloth].some(im=>im?.width!==p.size[0]||im.height!==p.size[1]))throw Error('Incompatible registered North coat');
-    const tile=p.currentFocusAttachment?weaponRegistry.northFocusCoat(cloth,p.base,entry.images,frame,!!defer?.hideHair):cloth;
-    ownedImage(result.canvas.getContext('2d'),'coat','jacket',p.cloth[frame],tile,[0,0]);if(tile!==cloth)tile.width=1;
+    const tile=p.currentFocusAttachment?weaponRegistry.northFocusCoat(cloth,p.base,entry.images,frame,!!defer?.hideHair,p.cloth[frame]):cloth;
+    if(p.currentFocusAttachment)result.canvas.getContext('2d').drawImage(tile,0,0);else ownedImage(result.canvas.getContext('2d'),'coat','jacket',p.cloth[frame],tile,[0,0]);if(tile!==cloth)tile.width=1;
     if(defer)drawFittedHelmet(result.canvas,p.base,entry,frame);
     return {...result,info:{...result.info,source:r.id}};
    }
@@ -10578,25 +10583,26 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       if(im.data[3])throw Error('Unregistered mechanical contact pixel');
       im.data.set([R,G,B,A]);ctx.putImageData(im,u,y);
      }
-     return {metal:tile,mirror,temporary:true};
+     return {metal:tile,asset,mirror,temporary:true};
     }
-    if(!mask||cutAnatomy)return {metal,mirror,offset:cuff?cuff[2].offset:offset};
+    if(!mask||cutAnatomy)return {metal,asset,mirror,offset:cuff?cuff[2].offset:offset};
     const limit=entry.images.get(mask),tile=makeCanvas(metal.width,metal.height),x=tile.getContext('2d');
     if(limit?.width!==metal.width||limit.height!==metal.height)throw Object.assign(Error('Incompatible contact mask'),{asset:mask});
     x.drawImage(limit,0,0);const support=x.getImageData(0,0,tile.width,tile.height);
     for(let i=0;i<support.data.length;i+=4)support.data[i+3]=support.data[i]?255:0;
     x.putImageData(support,0,0);x.globalCompositeOperation='source-in';x.drawImage(metal,0,0);
-    return {metal:tile,mirror,temporary:true};
+    return {metal:tile,asset,mirror,temporary:true};
    });
    const [w,h]=r.nativeCanvas;
    const canvas=pad.some(Boolean)?makeCanvas(w,h):out.canvas,ctx=canvas.getContext('2d');
    if(canvas!==out.canvas){ctx.drawImage(out.canvas,...pad);out.canvas.width=out.canvas.height=1;}
-   const drawMetal=target=>{for(const {metal,mirror,offset} of parts){
-    target.save();if(mirror){target.translate(w,0);target.scale(-1,1);}target.drawImage(metal,(grip.paddedNorth?0:pad[0])+(offset?.[0]||0),(grip.paddedNorth?0:pad[1])+(offset?.[1]||0));target.restore();
+   const drawMetal=target=>{for(const [i,{metal,asset,mirror,offset}] of parts.entries()){
+    target.save();if(mirror){target.translate(w,0);target.scale(-1,1);}ownedImage(target,'weapon','hardware-'+i,asset,metal,[(grip.paddedNorth?0:pad[0])+(offset?.[0]||0),(grip.paddedNorth?0:pad[1])+(offset?.[1]||0)]);target.restore();
    }};
-   if(r.wardrobeGrip.chromaticSource)preservePunchPigments(canvas,r.wardrobeGrip,frame,targetEntry,()=>{});
+   const proof=(entry,paint)=>{const run=()=>preservePunchPigments(canvas,r.wardrobeGrip,frame,entry,paint);if(root.MareHDPosition?.active)root.MareHDPosition.original(run);else run();};
+   if(r.wardrobeGrip.chromaticSource)proof(targetEntry,()=>{});
    drawMetal(ctx);
-   if(!r.wardrobeGrip.chromaticSource&&r.wardrobeGrip.registeredPigments)preservePunchPigments(canvas,r.wardrobeGrip,frame,entry,drawMetal);
+   if(!r.wardrobeGrip.chromaticSource&&r.wardrobeGrip.registeredPigments)proof(entry,drawMetal);
    for(const {metal,temporary} of parts)if(temporary)metal.width=metal.height=1;
    return {canvas,info:{...out.info,width:w,height:h,pivot:{x:out.info.pivot.x+pad[0],y:out.info.pivot.y+pad[1]},
     source:r.id,frames:r.states.length,timeline:r.timeline,fps:r.fps}};
@@ -10651,7 +10657,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const q=r.ownW2WestWalk40,host=q.host,d=host.pack.directions.west,
     name='own-w2-metal-absolute',metal=entry.images.get(q.parts[Math.floor(frame/5)]),size=512;
    if(!metal||metal.width!==size||metal.height!==size)throw Error('Missing W2 west signed plate');
-   const layer={id:name,source:name,slot:'foreground',binding:{kind:'fixed'},depth:4.01},images=new Map(entry.images);images.set(name,metal);
+   const layer={id:name,source:name,positionOwner:'weapon',positionSource:q.parts[Math.floor(frame/5)],slot:'foreground',binding:{kind:'fixed'},depth:4.01},images=new Map(entry.images);images.set(name,metal);
    const pack={...host.pack,directions:{west:{...d,layers:[...d.layers,layer]}}},moving={...host,id:r.id,pack};
    const head=femaleNamedHairRegistry.compose(host,host.femaleNamedHairRecord,images),canvas=makeCanvas(size,size);
    const info=outfitRegistry.renderWithHead(canvas.getContext('2d'),moving,images,head,{frame,appearance:host.colorAppearance,makeCanvas});
@@ -10668,7 +10674,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    if(!armSHA||nativeArm?.width!==size||nativeArm.height!==size||gear?.width!==640||gear.height!==640||
     bodyArm.depth!==4||bodyArm.binding.kind!=='fixed'||!(len>22&&len<42))throw Error('Lost certified lateral gait grip');
    const metal=makeCanvas(size,size),mc=metal.getContext('2d'),grip=makeCanvas(size,size),g=grip.getContext('2d'),ux=(hx-fx)/len,uy=(hy-fy)/len;
-   mc.save();mc.imageSmoothingEnabled=false;mc.transform(...part.matrix);mc.drawImage(gear,0,0);mc.restore();
+   mc.save();mc.imageSmoothingEnabled=false;mc.transform(...part.matrix);ownedImage(mc,'weapon','shaft',part.url,gear,[0,0]);mc.restore();
    // Same clipped support as the prior hand-only approved gait implementation.
    g.beginPath();
    for(const [j,[a,b]] of [[-8,-10],[13,-10],[13,10],[-8,10]].entries()){
@@ -10920,10 +10926,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const {base,phases}=r.signedWeaponGarments,body=composeFrame(base,frame,entry),{rear,front}=phases[frame],
     canvas=makeCanvas(body.info.width,body.info.height),ctx=canvas.getContext('2d');
    ctx.imageSmoothingEnabled=false;
-   const passes=files=>{for(const sha of files){const im=entry.images.get(signedPhaseAsset(r.signedWeaponGarments,sha));
+   const paint=(dst,sha,im,part)=>{const name=phases[frame].owners?.[sha]||r.signedWeaponGarments.positionOwner;ownedImage(dst,name==='torso'?'coat':name==='pants'?'legs':name,part,sha,im,[0,0]);};
+   const passes=(files,part)=>{for(const sha of files){const im=entry.images.get(signedPhaseAsset(r.signedWeaponGarments,sha));
     if(im?.width!==canvas.width||im.height!==canvas.height)throw Error('Wrong signed garment raster '+sha);
-    ctx.drawImage(im,0,0);}};
-   passes(rear);ctx.drawImage(body.canvas,0,0);passes(front);body.canvas.width=1;
+    paint(ctx,sha,im,part);}};
+   passes(rear,'rear');ctx.drawImage(body.canvas,0,0);passes(front,'front');body.canvas.width=1;
    const masks=phases[frame].rgb;
    if(masks?.length){
     const result=ctx.getImageData(0,0,canvas.width,canvas.height),dst=result.data;
@@ -10931,7 +10938,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     for(const h of masks){
      const im=entry.images.get(signedPhaseAsset(r.signedWeaponGarments,h));
      if(im?.width!==canvas.width||im.height!==canvas.height)throw Error('Wrong signed garment mask '+h);
-     tc.clearRect(0,0,tile.width,tile.height);tc.drawImage(im,0,0);
+     tc.clearRect(0,0,tile.width,tile.height);paint(tc,h,im,'front');
      const mask=tc.getImageData(0,0,tile.width,tile.height).data;
      for(let j=0;j<dst.length;j+=4)if(mask[j+3]&&dst[j+3]){
       dst[j]=mask[j];dst[j+1]=mask[j+1];dst[j+2]=mask[j+2];
@@ -11111,7 +11118,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
         await editor.finish(first.info,clock,source.hdKind==='weapon'?source.fps:source.pack.directions[source.direction].clip.fps);signal?.throwIfAborted();
         const phaseOf=new Map(clock.map(v=>[v.frame,v.phase])),drop=()=>{for(const v of adjusted.values())v.canvas.width=v.canvas.height=0;adjusted.clear();};
         const diagnostics=editor.configure(positions||positionsAPI.empty());
-        editors.set(key,{clock,targets:editor.targets,diagnostics,pivot:first.info.pivot,width:first.canvas.width,height:first.canvas.height,
+        editors.set(key,{clock,targets:editor.targets,availableLayers:editor.availableLayers,diagnostics,pivot:first.info.pivot,width:first.canvas.width,height:first.canvas.height,
          fps:source.hdKind==='weapon'?source.fps:source.pack.directions[source.direction].clip.fps,
          set(m){editor.configure(positionsAPI.validate(m),true);drop();},
          frame(f,original=false){

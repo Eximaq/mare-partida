@@ -2756,7 +2756,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   if(fabric?.width!==640||fabric.height!==640)throw Object.assign(Error('Wrong North trouser plate'),{asset:url});
   northStockWithoutPants(map,layers.find(l=>l.id==='shorts'),frame,fit);
   const tile=makeCanvas(640,640),ctx=tile.getContext('2d');
-  ctx.imageSmoothingEnabled=false;ctx.transform(...fit.phases[frame].transform);ctx.drawImage(fabric,0,0);map.set(key,tile);
+  ctx.imageSmoothingEnabled=false;ctx.transform(...fit.phases[frame].transform);ownedImage(ctx,'legs','focus-trousers',key,fabric,[0,0]);map.set(key,tile);
   return [...layers,{id:'equipped-focus-trousers',source:key,slot:'top',depth:2.25,binding:{kind:'fixed'}}];
  }
  function mountedBootLayers(r,s,d,map,images){
@@ -2813,10 +2813,10 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     if(r.w121NorthOnlyNativeHand===true||omitWeaponLayer)ctx.drawImage(grip,0,0);
     else{
      const local=makeCanvas(640,640),x=local.getContext('2d');
-     x.drawImage(part,0,0);x.drawImage(grip,0,0);
+     ownedImage(x,'weapon','shaft',w0.gear,part,[0,0]);x.drawImage(grip,0,0);
      ctx.drawImage(local,0,0);local.width=1;
     }
-   }else ctx.drawImage(image(at),0,0);
+   }else ownedImage(ctx,'weapon','attachment',at.sha256||at.url,image(at),[0,0]);
  }
  function sharesNorthFocusCoatPose(r){
   if(!(r.relic31NorthApprovedPreview||r.relic32NorthApprovedPreview||r.w121IndependentNorth))return false;
@@ -2825,7 +2825,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  }
  // The North focus receiver replaces the editorial attachment. Keep its real
  // antialiased hardware in front of the cloth, only where anatomy leaves it visible.
- function northFocusCoat(cloth,r,images,frame,hideHair){
+ function northFocusCoat(cloth,r,images,frame,hideHair,source){
   const state=r.states[frame],at=state.attachment,rig=r.basePack,pack=rig.pack,dir=pack.directions.north;
   if(r.direction!=='north'||!at||at.depth!==3||state.layers.length||Number(state.state)!==frame)
    throw Error('Incompatible articulated North focus coat');
@@ -2849,7 +2849,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      if(op.cloth)cx.drawImage(map.get(op.cloth),0,0);else erase([op.layer]);
     }
    }else{cx.globalCompositeOperation='destination-out';erase(upper);}
-   const t=tile.getContext('2d');t.drawImage(cloth,0,0);t.globalCompositeOperation='source-atop';t.drawImage(front,0,0);
+   const t=tile.getContext('2d');ownedImage(t,'coat','jacket',source,cloth,[0,0]);t.globalCompositeOperation='source-atop';t.drawImage(front,0,0);
    return tile;
   }catch(e){tile.width=1;throw e;}finally{front.width=1;}
  }
@@ -2870,7 +2870,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    for(let i=3;i<matte.data.length;i+=4)if(matte.data[i])matte.data[i]=255;
    bx.putImageData(matte,0,0);
    tx.save();if(track.mirror){tx.translate(size,0);tx.scale(-1,1);}
-   tx.drawImage(cloth,64,64,size,size,0,0,size,size);
+   ownedImage(tx,'coat','sword-coat',track.cloth[phase],cloth,[64,64,size,size,0,0,size,size]);
    tx.globalCompositeOperation='destination-out';tx.drawImage(hands,0,0);tx.restore();
    tx.globalCompositeOperation='destination-out';tx.drawImage(blade,0,0);
    ctx.drawImage(tile,0,0);
@@ -2961,7 +2961,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      if(im?.width!==640||im.height!==640||hand?.binding.kind!=='fixed')throw Error('Invalid modular focus hand');
      const tile=makeCanvas(640,640),cx=tile.getContext('2d');
      if(r.direction==='west'){cx.translate(640,0);cx.scale(-1,1);}cx.drawImage(im,0,0);map.set(key,tile);
-     layers.push({id:'glove-on-'+id,source:key,slot:'top',binding:{kind:'fixed'},depth:hand.depth+.25});
+     layers.push({id:'glove-on-'+id,positionOwner:'gloves',positionSource:key,source:key,slot:'top',binding:{kind:'fixed'},depth:hand.depth+.25});
     }
    }
    const pack={...p,directions:{[r.direction]:{...d,layers:layers.filter(l=>!hiddenSlots.includes(l.slot))}}};
@@ -3083,7 +3083,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     if(fabric?.width!==640||fabric.height!==640)throw Error('Missing compass hand material');
     const palm=makeCanvas(w,h),px=palm.getContext('2d');px.save();
     if(r.direction==='west'){px.translate(w,0);px.scale(-1,1);}
-    px.drawImage(fabric,0,0);px.restore();px.globalCompositeOperation='destination-out';
+    ownedImage(px,'gloves','hand-'+i,r.orderedGloves[i][f],fabric,[0,0]);px.restore();px.globalCompositeOperation='destination-out';
     for(const upper of parts.slice(parts.findIndex(l=>l.id===id)+1)){
      const sha=upper.frames?.[f]||upper.source,im=image({url:r.compassAnatomy.images[sha]});
      px.drawImage(im,0,upper.binding.kind==='rigid'?focusHeadY[f]:0);
@@ -3261,7 +3261,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      cx.drawImage(tile,0,0);cx.globalCompositeOperation='destination-out';shoe.draw(cx,shoe.mask);
      ctx.drawImage(clipped,0,0);clipped.width=1;
      if(l.id==='legs')shoe.draw(ctx,shoe.art);
-    }else if(l.component==='equipment'&&!l.skinOnly&&!l.paletteMask)ownedImage(ctx,'weapon',l.id,l.sha256||l.url,tile,l.offset??[0,0]);
+    }else if((l.component==='equipment'||l.role==='weapon')&&!l.skinOnly&&!l.paletteMask&&!l.staffSkinRuns&&!l.staffSkinAnatomy)ownedImage(ctx,'weapon',l.id||l.role||'plate-'+l.depth,l.sha256||l.url,tile,l.offset??[0,0]);
     else ctx.drawImage(tile,...(l.offset??[0,0]));
     if(r.rifleSleeves&&l.role==='arms'){
      const sha=r.rifleSleeves[Number(s.state)];

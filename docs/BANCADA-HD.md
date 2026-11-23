@@ -14,8 +14,11 @@ Acesse [a bancada local](http://localhost:8000/bancada-hd.html). O personagem de
 1. Busque pelo nome, ID ou categoria. Clique na peça para equipá-la. Ao escolher uma arma, a bancada seleciona sua classe.
 2. Selecione movimento e direção. A barra percorre as posições do relógio. As setas da reprodução pulam até a fase distinta anterior ou seguinte. O indicador identifica as posições que compartilham aquela fase.
 3. Em **Peça em edição**, escolha a peça inteira ou uma parte registrada. Arraste a arte ou use X, Y e as quatro setas. Use Shift + arraste para mover a câmera. **Original** mostra a composição antes dos ajustes. **Isolar no corpo** mantém a arma que define a pose. As guias usam o pivô e as articulações disponíveis na fonte.
-4. **Ciclo inteiro** vale para todas as fases. **Fase atual** acrescenta uma exceção. **Restaurar parte** remove o ajuste de ciclo e todas as exceções da parte escolhida. Desfazer e refazer abrangem o rascunho desta sessão.
-5. **Exportar rascunho** grava o documento completo, inclusive as peças, direções e fases fora da seleção atual. **Importar JSON** confere as identidades e os limites antes de substituir o rascunho. Ele fica guardado neste navegador entre sessões.
+4. **Tamanho (%)** amplia ou reduz a arte em torno do centro da peça. **100%** recupera o tamanho original. **Rotação (°)** aceita graus inteiros de −180 a 180. **Espelhar item** inverte a peça horizontalmente. Ao selecionar a peça inteira, as subpartes que compartilham o mesmo plano giram e mudam de tamanho em torno de um centro comum. O ajuste de uma parte tem seu próprio centro.
+5. Em **Camada**, escolha **Atrás do corpo** para levar a peça ao fundo da composição. Quando o desenho daquela pose separa a anatomia, também aparecem destinos como **Atrás do punho** ou **Atrás do antebraço e punho**. Só a região de sobreposição muda. Use **Ordem original** para restaurar a profundidade da arte.
+6. Na direção Leste, **Espelhar oeste** copia o ajuste para a arte do Oeste e abre essa direção. **Espelhar leste** faz a cópia inversa. X e o ângulo mudam de sinal. Tamanho, Y, camada e a opção de espelho local são preservados. A peça inteira copia as subpartes ajustadas. A parte selecionada copia somente seus próprios registros. A cópia exige poses e fases correspondentes e pode ser desfeita.
+7. **Ciclo inteiro** vale para todas as fases. **Fase atual** acrescenta uma exceção. **Restaurar parte** remove o ajuste de ciclo e todas as exceções da parte escolhida. Desfazer e refazer abrangem o rascunho desta sessão.
+8. **Exportar rascunho** grava o documento completo, inclusive as peças, direções e fases fora da seleção atual. **Importar JSON** confere as identidades e os limites antes de substituir o rascunho. Ele fica guardado neste navegador entre sessões.
 
 Para aprovar ajustes para o jogo, revise o ciclo completo, substitua `hd-position-approved.json` no repositório pela exportação e publique o build normal. A edição privada usa a chave `kaizoku-hd-position-draft-v1` da bancada. O mapa lê o arquivo publicado.
 
@@ -31,17 +34,20 @@ Para aprovar ajustes para o jogo, revise o ciclo completo, substitua `hd-positio
 | `source` | SHA-256 das referências de origem, geometria da montagem e relógio capturados pelo compositor |
 | `cycle` | Par inteiro `[dx,dy]` do ciclo |
 | `phases` | Mapa da fase de origem para o par adicional. Por exemplo, `{"3":[0,-1]}` |
+| `style` | Opcional no esquema 2. Contém `cycle` e `phases` com propriedades opcionais `angle` (graus), `size` (percentual inteiro positivo), `flip` (booleano) e `layer` (ordem original ou destino anatômico) |
+
+O esquema 1 continua aceito. O primeiro ajuste visual além de X/Y grava o esquema 2. Uma exceção de fase substitui somente as propriedades visuais presentes naquela fase. Os valores iniciais são 0°, 100%, espelho desligado e ordem original. O ajuste local da subparte é aplicado antes do ajuste geral da peça. A camada da parte tem precedência. Cada direção utiliza sua própria fonte e assinatura.
 
 O deslocamento de uma parte soma o ciclo da peça, a exceção da peça, o ciclo da parte e a exceção da parte. Zoom e panorâmica só alteram a câmera. A distância em pixels CSS do arraste é dividida pelo zoom e arredondada ao pixel nativo. O mapa usa sua projeção habitual sobre esses mesmos quadros. Cada direção tem seu próprio registro. Máscaras de anatomia e pegadas continuam no espaço da pose.
 
-Campos desconhecidos, duplicatas, transformações diferentes de X/Y, fases inválidas e deslocamentos que excedam a área disponível são rejeitados. Os limites usam o suporte alfa, o recorte e a matriz da operação real. O contato artístico entre mão e arma exige inspeção do movimento. Uma assinatura publicada que deixou de corresponder à fonte preserva o desenho original da peça e gera um diagnóstico.
+A importação verifica o esquema, as duplicatas, o item, as fontes e as fases. O compositor verifica o contorno da parte após escala, giro, espelho e deslocamento contra os limites do plano nativo. Os limites usam o suporte alfa, o recorte e a matriz da operação real. O contato artístico entre mão e arma exige inspeção do movimento. Uma assinatura publicada que deixou de corresponder à fonte preserva o desenho original da peça e gera um diagnóstico.
 
 ## Reprodução da validação
 
 Em um checkout com as dependências do projeto instaladas e `HD_PUBLISHED_ROOT` apontando para o caminho absoluto do build:
 
 ```sh
-node --test tests/hd-position.test.cjs tests/character-appearance.test.cjs tests/rework-wardrobe-map-action.test.cjs
+node --test tests/hd-position.test.cjs tests/hd-position-style.test.cjs tests/character-appearance.test.cjs tests/rework-wardrobe-map-action.test.cjs
 node tests/hd-position-render.cjs
 node tests/hd-position-render.cjs --census
 ```

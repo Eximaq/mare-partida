@@ -1792,7 +1792,10 @@ function create(index,{outfits,appearanceRegistry,vendor=root.ReworkAccessoryVen
   if(dots)throw Error('Unexpected C127 cap trim overlap');
   x.beginPath();x.rect(0,0,512,512);x.rect(335,154,1,1);x.clip('evenodd');
  }else if(dots){x.beginPath();x.rect(0,0,ctx.canvas.width,ctx.canvas.height);for(const [px,py] of dots)x.rect(px,py,1,1);x.clip('evenodd');}
- x.transform(...op.part.matrix);if(op.part.sourceClip){x.beginPath();x.rect(...op.part.sourceClip);x.clip()}
+ x.transform(...op.part.matrix);if(op.part.sourceClip){
+  if(root.MareHDPosition?.active)root.MareHDPosition.localClip(x,op.part.sourceClip,'weapon',(op.part.side||'mount')+'-'+op.i,op.part.mirrorProjectedPhysical||op.part.ownCyborgMirror||op.part.w119FemaleWalkWestMirror||op.part.w119SideAttackFlip||op.part.w3SideAttackFlip||op.part.w118WestAttackFlip?-1:1);
+  else{x.beginPath();x.rect(...op.part.sourceClip);x.clip();}
+ }
  const mixed=op.part.skinMaterial||r.item===17&&!r.board07OrbOwnerMask;
  if(r.item===17&&r.approvedSouthCarry&&images.has(orbSkinPath)&&root.MareHDPosition?.active){
   root.MareHDPosition.material(x,'weapon','orb-'+op.i,op.part.sha256+'@'+orbSkinPath,localGear,images.get(orbSkinPath),[0,0]);

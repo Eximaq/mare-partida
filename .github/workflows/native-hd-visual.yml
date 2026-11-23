@@ -285,7 +285,7 @@ jobs:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
           WARDROBE_EVIDENCE: ${{ runner.temp }}/adagas-960.json
         run: |
-          node --test tests/rework-wardrobe-map-action.test.cjs tests/hd-position.test.cjs
+          node --test tests/rework-wardrobe-map-action.test.cjs tests/hd-position.test.cjs tests/hd-position-style.test.cjs
           node tests/hd-position-render.cjs
           node tests/rework-male-dagger-coat-cycles.cjs
       - name: Peitorais nas duas manoplas e no braço tecnológico
@@ -746,6 +746,7 @@ jobs:
         env:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/
           MARE_EVIDENCE_DIR: artifacts/bancada-hd
+          HD_MAP_CYCLES: smoke
         run: node tests/hd-position-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
