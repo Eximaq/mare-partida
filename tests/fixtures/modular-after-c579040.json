@@ -103,5 +103,12 @@
         }
       }
     }
+  },
+  "archives": {
+    "first": "male-north-punch-f05-c158-c172-approved-capes.zip",
+    "files": 39,
+    "members": 426,
+    "archives": "209d9d3fff627e801f9c3070492c25f1f9a5746b59865024cbfa36f70adac5f3",
+    "sources": "2b9898a0a4b536ffa8cf250c607f9aed7b1aa2c1ebbe18e7a9fce31191153bb3"
   }
 }

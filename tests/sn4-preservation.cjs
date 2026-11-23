@@ -22,4 +22,11 @@ function reviewedExtensions(index){
  return index;
 }
 exports.priorIndex=source=>{const i=reviewedExtensions(structuredClone(source)),extension=require('./fixtures/sn7-source-provenance.json'),coat130=require('./fixtures/sn7-coat130-source.json');for(const id of['147','168','182']){assert.deepEqual(i.authoredPantsSouth.items[id],extension.entries[id]);delete i.authoredPantsSouth.items[id];}assert.deepEqual(i.authoredPantsSouth.layers.filter(l=>l.item===130),coat130.layers);i.authoredPantsSouth.layers=i.authoredPantsSouth.layers.filter(l=>l.item!==130);assert.equal(hash(i.authoredPantsSouth),proof.descriptorSHA256,'exact SOUTH extension only');delete i.authoredPantsSouth;return i;};
-exports.priorArchive=source=>{const a=structuredClone(source),found=a.archives.filter(x=>x.file===proof.archive.file);assert.deepEqual(found,[proof.archive]);const actual=Object.fromEntries(Object.entries(a.sources).filter(([,v])=>v.archive===proof.archive.file));assert.deepEqual(actual,proof.sources);a.archives=a.archives.filter(x=>x.file!==proof.archive.file);for(const k of Object.keys(proof.sources))delete a.sources[k];return a;};
+exports.priorArchive=source=>{const a=structuredClone(source),reviewed=require('./fixtures/modular-after-c579040.json').archives;
+ const start=a.archives.findIndex(r=>r.file===reviewed.first);assert(start>=0);
+ const extra=a.archives.slice(start),files=new Set(extra.map(r=>r.file));
+ const members=Object.fromEntries(Object.entries(a.sources).filter(([,row])=>files.has(row.archive)));
+ assert.equal(files.size,reviewed.files);assert.equal(Object.keys(members).length,reviewed.members);
+ assert.equal(hash(extra),reviewed.archives);assert.equal(hash(members),reviewed.sources);
+ a.archives.length=start;for(const key of Object.keys(members))delete a.sources[key];
+ const found=a.archives.filter(x=>x.file===proof.archive.file);assert.deepEqual(found,[proof.archive]);const actual=Object.fromEntries(Object.entries(a.sources).filter(([,v])=>v.archive===proof.archive.file));assert.deepEqual(actual,proof.sources);a.archives=a.archives.filter(x=>x.file!==proof.archive.file);for(const k of Object.keys(proof.sources))delete a.sources[k];return a;};
