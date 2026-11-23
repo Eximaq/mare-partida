@@ -85,9 +85,11 @@ function supports(style) { return Object.hasOwn(styles,style); }
 function maleSource(record) {
  const layers = record.pack.directions[record.direction].layers.filter(layer => layer.slot === 'face');
  if (record.direction === 'north') return layers.length === 0 ? {north:true} : null;
- if (layers.length !== 1 || !maleSources[layers[0].source] ||
-     layers[0].frames?.some(source => source !== layers[0].source)) return null;
- return {source:layers[0].source,...maleSources[layers[0].source]};
+ if (layers.length !== 1) return null;
+ const {source,frames}=layers[0];
+ const digest=/^(?:(?:assets|modular-assets)\/)?([0-9a-f]{64})(?:\.png)?$/.exec(source)?.[1];
+ if (!maleSources[digest] || frames?.some(frame=>frame!==source)) return null;
+ return {source,...maleSources[digest]};
 }
 function reshape(context, style, direction, boxes) {
  if (!supports(style) || !boxes) return;

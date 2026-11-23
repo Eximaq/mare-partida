@@ -14,7 +14,12 @@ function px(canvas){return Buffer.from(canvas.getContext('2d').getImageData(0,0,
    a(r?.namedFocusCarry,`missing ${item}/${direction}/${action}/${tone}/${color}`);
    a.deepEqual(r.plan,reference.plan);a.deepEqual(r.base,reference.base);a.deepEqual(r.relicEyes,reference.relicEyes);
    a.equal(r.colorAppearance.skin,tone);a.equal(r.colorAppearance.hairColor,color);s++;
-   for(const q of [{...named,classId:'brawler'},{...named,equipment:{...named.equipment,gloves:{def:26}}},{...named,equipment:{weapon:{def:id,variant:'other'}}}])a(!api.selectVisual(q,o)?.namedFocusCarry);
+   for(const q of [{...named,classId:'brawler'},{...named,equipment:{weapon:{def:id,variant:'other'}}}])a(!api.selectVisual(q,o)?.namedFocusCarry);
+   if(direction==='north'){
+    const withGlove=require(P+'/paper-doll-96-lobby').selectWorldHDOnly(api,require(P+'/tools/paper-doll-96-v3/weapons.json'),{...named,equipment:{...named.equipment,gloves:{def:26}}},o);
+    a.equal(withGlove?.slotRoutes.gloves.item,26);a.equal(withGlove.slotRoutes.weapon.item,id);
+    a.deepEqual(withGlove.omitted,[]);a.deepEqual(withGlove.plan,r.plan);
+   }
    if(!['porcelain','ebony'].includes(tone))continue;
    const before=JSON.stringify(named),d=r.base.pack.directions[direction],frames=d.clip.frames,padding=r.plan.paddingPhysical??0;
    const baseH=d.layers.filter(l=>l.slot==='hair'),namedH=r.hairLayers;

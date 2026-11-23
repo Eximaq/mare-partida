@@ -1,4 +1,62 @@
 'use strict';
 const assert=require('node:assert/strict'),path=require('node:path'),{chromium}=require('playwright');
-const reference=process.argv.find(a=>a.startsWith('--source-ref='))?.slice(13),hook='window.__nativeLoadingQA={get game(){return game},runtime:lobby96,appearance(a){game=MareCharacterAppearance.apply(game,a);return lobby96.ensure(game)},probe(action,direction){const c=document.createElement("canvas");c.width=c.height=384;return lobby96.draw(c.getContext("2d"),game,{scene:"hunt",action,direction,x:192,y:300})}};';
-(async()=>{const fixture=await require('./performance_server.cjs').create(path.resolve(__dirname,'..'),hook,reference),b=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{const p=await b.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(fixture.origin);await p.waitForFunction(()=>window.__nativeLoadingQA);await p.locator('#characterName').fill('Native Cache');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__nativeLoadingQA.runtime.snapshot().state==='ready');await p.evaluate(()=>__nativeLoadingQA.runtime.ensure(__nativeLoadingQA.game));for(const gender of ['masculino','feminino']){await p.evaluate(gender=>__nativeLoadingQA.appearance({...__nativeLoadingQA.game.appearance96,gender,hairStyle:'hair-bob',hairColor:'violet',skinColor:'ebony'}),gender);const result=await p.evaluate(async()=>{const q=__nativeLoadingQA,native=()=>performance.getEntriesByType('resource').filter(r=>r.name.includes('/paper-doll-96-v3/assets/')&&r.name.includes('.png')).map(r=>r.name),before=native().length;await q.runtime.ensure(q.game);const draws=[];for(const action of ['idle','walk','attack'])for(const direction of ['south','north','east','west'])draws.push(q.probe(action,direction));return {state:q.runtime.snapshot(),resources:native(),before,draws};});assert(result.draws.every(Boolean),JSON.stringify({draws:result.draws,state:result.state}));assert.equal(result.resources.length,result.before,'unchanged appearance does not reload images');assert(!result.resources.some(url=>/-head-base.png/.test(url)),'do not load animated heads replaced by canonical heads');assert.equal(result.state.renderer,'native96');assert(result.state.imageBytes<=8*1024*1024,'combat keeps compiled poses and releases large source strips');assert(result.state.images<=192&&result.state.imageBytes<=64*1024*1024&&result.state.bundles<=2&&result.state.previews<=8&&result.state.peakLoads<=6);assert.deepEqual(result.state.errors,[]);}assert.deepEqual(errors,[]);console.log(JSON.stringify({bodies:2,poses:24,unusedHeadLoads:0,unchangedReloads:0,errors:[]}));}finally{await b.close();await new Promise(r=>fixture.server.close(r))}})().catch(e=>{console.error(e);process.exitCode=1});
+const reference=process.argv.find(a=>a.startsWith('--source-ref='))?.slice(13);
+const root=path.resolve(process.env.HD_PUBLISHED_ROOT||path.join(__dirname,'..'));
+(async()=>{
+ const fixture=await require('./performance_server.cjs').create(root,'',reference);
+ const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});
+ try{
+  const page=await browser.newPage(),errors=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.goto(fixture.origin,{waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>window.MarePaperDoll96Lobby&&window.MareReworkNativeHD&&window.MareCharacterAppearance);
+  const result=await page.evaluate(async()=>{
+   const provider=MareReworkNativeHD.create;
+   let publications=0,releaseOld,signalStarted;
+   const started=new Promise(r=>{signalStarted=r;}),gate=new Promise(r=>{releaseOld=r;});
+   // Hold only the first decoded bundle just before publication. The normal
+   // selector, network loader, decoder, compositor and canvas still run.
+   MareReworkNativeHD.create=(...args)=>{
+    const native=provider(...args),prepare=native.prepareConfiguration;
+    return {...native,async prepareConfiguration(...inputs){
+     const bundle=await prepare(...inputs);
+     if(publications++===0){signalStarted();await gate;}
+     return bundle;
+    }};
+   };
+   let api;
+   try{api=MarePaperDoll96Lobby.create({baseURL:location.href});}
+   finally{MareReworkNativeHD.create=provider;}
+   await api.ready;
+   const canvas=document.createElement('canvas');canvas.width=canvas.height=384;
+   const ctx=canvas.getContext('2d'),o={action:'idle',direction:'south',consumer:'world',x:192,y:280};
+   const actor=(gender,hairColor,gloves)=>MareCharacterAppearance.commit(
+    {classId:'sword',equipment:{weapon:{def:1},gloves:{def:gloves}}},
+    {gender,skinColor:'ebony',hairStyle:'original',hairColor,eyeStyle:'original',eyeColor:'green'},()=>true);
+   const a=actor('masculino','blue',25),b=actor('feminino','violet',159);
+   const first=api.requestWorldVisual(a,o);
+   const pendingDraw=api.drawWorldVisual(ctx,o,a),blank=ctx.getImageData(0,0,384,384).data.every(v=>v===0);
+   await started;
+   let turns=0;await new Promise(r=>requestAnimationFrame(()=>{turns++;r();}));
+   const next=api.requestWorldVisual(b,o);
+   const cancelledBeforeDecode=first.state==='cancelled'&&first.reason==='appearance-changed';
+   await next.promise;
+   const drawnB=api.drawWorldVisual(ctx,o,b),stateB=api.worldVisual(),before=publications;
+   const urls=()=>performance.getEntriesByType('resource').filter(x=>/rework-/.test(x.name)).map(x=>x.name);
+   const networkBefore=urls();
+   releaseOld();await first.promise;
+   const stable=api.worldVisual().publishedKey===stateB.publishedKey;
+   const warm=Array.from({length:12},()=>api.drawWorldVisual(ctx,o,b));
+   return {pendingDraw,blank,turns,drawnB,stable,warm,cancelledBeforeDecode,cancelledAfterDecode:first.state==='cancelled',reused:before===publications,
+    networkReused:urls().length===networkBefore.length,requests:networkBefore.length,
+    coverage:stateB.coverage[0],opaque:ctx.getImageData(0,0,384,384).data.some((v,i)=>i%4===3&&v)};
+  });
+  assert(!result.pendingDraw&&result.blank&&result.turns===1);
+  assert(result.cancelledBeforeDecode&&result.cancelledAfterDecode);
+  assert(result.drawnB&&result.opaque&&result.stable&&result.warm.every(Boolean));
+  assert(result.reused&&result.networkReused&&result.requests>0);
+  assert.equal(result.coverage.direction,'south');assert.deepEqual(result.coverage.omitted||[],[]);
+  assert.equal(result.coverage.slotRoutes.gloves.item,159);assert.equal(result.coverage.slotRoutes.weapon.item,1);
+  assert.deepEqual(errors,[]);console.log(JSON.stringify({warmDraws:12,stalePublication:false,hdRequests:result.requests}));
+ }finally{await browser.close();await new Promise(r=>fixture.server.close(r));}
+})().catch(e=>{console.error(e);process.exitCode=1;});

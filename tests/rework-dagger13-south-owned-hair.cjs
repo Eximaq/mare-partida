@@ -14,7 +14,7 @@ const ctx=()=>cv.createCanvas(640,640).getContext('2d'),bytes=c=>Buffer.from(c.g
  const native=global.MareReworkWeaponNativeHD.create(IDX,{vendor:global.ReworkAccessoryVendor,makeCanvas:cv.createCanvas}),legacy=native.resolve({item:13,body:'male',direction:'south',action:'attack-daggers'});
  let n=0;for(const hc of Object.keys(A.hairs))for(const ec of Object.keys(A.eyes)){
   const p=save(hc,ec),str=JSON.stringify(p),r=api.selectVisual(p,o);a(r?.approvedDagger13South);a.equal(r.orderedDaggerHair,hc==='brown'?undefined:hc);a.equal(r.dagger13SouthIris,ec==='brown'?undefined:ec);a.deepEqual(r.states,base.states);a.deepEqual(r.timeline,['0','1','2','3','4','5','6','7','8']);a.deepEqual(r.pivot,[80,128]);a.equal(r.fps,12);a.equal(JSON.stringify(p),str);
-  const f=native.requiredFiles(r);a.equal(f.length,hc==='brown'?9:11);if(hc!=='brown')for(const p of [sPath,mPath])a(f.includes(p));n++;
+  const f=native.requiredFiles(r);a.equal(f.length,(hc==='brown'?9:11)+(hc==='black'&&ec==='blue'?27:0));if(hc!=='brown')for(const p of [sPath,mPath])a(f.includes(p));n++;
  }a.equal(n,60);
  const p=save('silver','amber');for(const q of [save('silver','amber',{skinColor:'ebony'}),save('silver','amber',{hairStyle:'hair-bob'}),save('silver','amber',{eyeStyle:'face-focused'}),{...p,classId:'sword'},{...p,zoanTransformed:true},{...p,equipment:{weapon:{def:13,variant:'other'}}},{...p,equipment:{...p.equipment,pants:{def:133}}},...[71,72,73,74].map(i=>save('silver','amber',{},i))])a(!api.selectVisual(q,o)?.approvedDagger13South);
  for(const direction of ['north','east','west'])a(!api.selectVisual(p,{...o,direction})?.approvedDagger13South);a(!api.selectVisual(p,{...o,action:'walk'})?.approvedDagger13South);

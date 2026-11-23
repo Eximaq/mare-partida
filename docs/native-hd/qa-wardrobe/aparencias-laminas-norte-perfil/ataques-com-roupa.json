@@ -1,0 +1,416 @@
+{
+  "comando": "node tests/rework-blade-profile-head-styles.cjs --remaining",
+  "comandoMapa": "node tests/rework-independent-world-browser.cjs --blade-outfit-styles",
+  "arte": "Os seis ataques laterais de espada usam os registros assinados do tronco, membros, arma e contato de cada espada. As seis adagas Norte conservam o corpo traseiro e as montagens próprias de cada par. Cabelo e capacete usam os materiais aprovados do índice de cabeça.",
+  "regressao": {
+    "contextos": [
+      {
+        "contexto": "0_sword_masculino_east_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            137
+          ],
+          [
+            "boots",
+            148
+          ],
+          [
+            "gloves",
+            152
+          ],
+          [
+            "head",
+            19
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "0_sword_masculino_west_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            144
+          ],
+          [
+            "boots",
+            134
+          ],
+          [
+            "gloves",
+            138
+          ],
+          [
+            "head",
+            157
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "1_sword_masculino_east_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            165
+          ],
+          [
+            "boots",
+            183
+          ],
+          [
+            "gloves",
+            159
+          ],
+          [
+            "head",
+            178
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "1_sword_masculino_west_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            137
+          ],
+          [
+            "boots",
+            148
+          ],
+          [
+            "gloves",
+            152
+          ],
+          [
+            "head",
+            19
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "12_rogue_masculino_north_attack-daggers",
+        "omissoesAnteriores": [
+          [
+            "head",
+            129
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "13_rogue_masculino_north_attack-daggers",
+        "omissoesAnteriores": [
+          [
+            "head",
+            143
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "67_sword_masculino_east_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            6
+          ],
+          [
+            "boots",
+            162
+          ],
+          [
+            "gloves",
+            180
+          ],
+          [
+            "head",
+            129
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "67_sword_masculino_west_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            158
+          ],
+          [
+            "boots",
+            8
+          ],
+          [
+            "gloves",
+            152
+          ],
+          [
+            "head",
+            171
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "68_sword_masculino_east_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            179
+          ],
+          [
+            "boots",
+            169
+          ],
+          [
+            "gloves",
+            173
+          ],
+          [
+            "head",
+            19
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "68_sword_masculino_west_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            172
+          ],
+          [
+            "boots",
+            176
+          ],
+          [
+            "gloves",
+            166
+          ],
+          [
+            "head",
+            18
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "69_sword_masculino_east_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            7
+          ],
+          [
+            "boots",
+            155
+          ],
+          [
+            "gloves",
+            25
+          ],
+          [
+            "head",
+            136
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "69_sword_masculino_west_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            144
+          ],
+          [
+            "boots",
+            134
+          ],
+          [
+            "gloves",
+            138
+          ],
+          [
+            "head",
+            157
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "70_sword_masculino_east_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            165
+          ],
+          [
+            "boots",
+            183
+          ],
+          [
+            "gloves",
+            159
+          ],
+          [
+            "head",
+            178
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "70_sword_masculino_west_attack-sword",
+        "omissoesAnteriores": [
+          [
+            "coat",
+            158
+          ],
+          [
+            "boots",
+            8
+          ],
+          [
+            "gloves",
+            152
+          ],
+          [
+            "head",
+            171
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "71_rogue_masculino_north_attack-daggers",
+        "omissoesAnteriores": [
+          [
+            "head",
+            157
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "72_rogue_masculino_north_attack-daggers",
+        "omissoesAnteriores": [
+          [
+            "head",
+            171
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "73_rogue_masculino_north_attack-daggers",
+        "omissoesAnteriores": [
+          [
+            "head",
+            19
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      },
+      {
+        "contexto": "74_rogue_masculino_north_attack-daggers",
+        "omissoesAnteriores": [
+          [
+            "head",
+            136
+          ]
+        ],
+        "omissoesAposCorrecao": []
+      }
+    ],
+    "conjuntosOriginaisRecuperados": 18,
+    "selecoesDeCabeloERosto": 1260,
+    "substituicoesDeUmaPecaEmConjuntoCompleto": 900,
+    "desenhosNativos": 240
+  },
+  "mapa": {
+    "quadros": 24,
+    "erros": [],
+    "aparencia": {
+      "version": 1,
+      "gender": "masculino",
+      "hairStyle": "hair-cropped",
+      "hairColor": "blue",
+      "eyeStyle": "face-calm",
+      "eyeColor": "green",
+      "skinStyle": "natural",
+      "skinColor": "ebony"
+    },
+    "observacoes": [
+      {
+        "caso": "cabelo-curto-lamina-0-east-elmo",
+        "acao": "attack-sword",
+        "direcao": "east",
+        "desenhou": true,
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-0-east-sem-elmo",
+        "acao": "attack-sword",
+        "direcao": "east",
+        "desenhou": true,
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-0-east-elmo-restaurado",
+        "acao": "attack-sword",
+        "direcao": "east",
+        "desenhou": true,
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-69-west-elmo",
+        "acao": "attack-sword",
+        "direcao": "west",
+        "desenhou": true,
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-69-west-sem-elmo",
+        "acao": "attack-sword",
+        "direcao": "west",
+        "desenhou": true,
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-69-west-elmo-restaurado",
+        "acao": "attack-sword",
+        "direcao": "west",
+        "desenhou": true,
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-73-north-elmo",
+        "acao": "attack-daggers",
+        "direcao": "north",
+        "desenhou": true,
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-73-north-sem-elmo",
+        "acao": "attack-daggers",
+        "direcao": "north",
+        "desenhou": true,
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-73-north-elmo-restaurado",
+        "acao": "attack-daggers",
+        "direcao": "north",
+        "desenhou": true,
+        "omitidos": []
+      }
+    ]
+  }
+}

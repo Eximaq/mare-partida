@@ -13,9 +13,9 @@ function fixture({layered=true,exact=false,canonical=false}={}){
     MareReworkNativeHD:{create:()=>({
       ready:Promise.resolve(),snapshot:()=>({}),
       select:(_p,o)=>o.action!=='attack-unarmed'||o.direction!=='south'||exact?{id:'strict-hd'}:null,
-      ...(canonical?{selectVisual:function(p,o){if(o.action==='walk'&&o.direction==='north')return {id:'canonical-hd'};return this.select(p,o)||this.selectLayered(p,o);}}:{}),
+      selectVisual:function(p,o){if(canonical&&o.action==='walk'&&o.direction==='north')return {id:'canonical-hd'};return this.select(p,o)||this.selectLayered(p,o);},
       selectLayered:(p,o)=>layered&&o.action==='attack-unarmed'&&o.direction==='south'?{
-        id:'registered-layered-pilot',
+        id:'registered-layered-pilot',layeredSlots:true,slotFallback:'signed-pose-omit',
         omitted:p.equipment.coat?['coat']:[]
       }:null,
       prepareConfiguration:async function(poses,{resolve=({player,options})=>({source:this.select(player,options)})}){
@@ -23,7 +23,7 @@ function fixture({layered=true,exact=false,canonical=false}={}){
         const routes=new Map(poses.map(p=>[routeKey(p.options),resolve(p)]));
         return {coverage:poses.map(p=>{
           const r=routes.get(routeKey(p.options));
-          return {...p.options,weaponless:!!p.options.weaponless,source:r.source.id,omitted:r.omitted||[]};
+          return {...p.options,weaponless:!!p.options.weaponless,source:r.source.id,omitted:r.source.omitted||[]};
         }),draw(_ctx,p,o){const route=routes.get(routeKey(o));if(!route)return false;
           drawn.push({source:route.source.id,skin:p.appearance96.skin,hairColor:p.appearance96.hairColor});
           return true;
@@ -37,23 +37,25 @@ function fixture({layered=true,exact=false,canonical=false}={}){
   return {lobby,player,drawn};
 }
 
-async function prepare(lobby,player){
-  lobby.requestWorldVisual(player,{actions:['attack-unarmed'],scope:'test'});
+async function prepare(lobby,player,{action='attack-unarmed',direction='south',weaponless=false}={}){
+  lobby.requestWorldVisual(player,{action,direction,weaponless,consumer:'world'});
   for(let i=0;i<20&&lobby.worldVisual().state==='loading';i++)await new Promise(setImmediate);
   return lobby.worldVisual();
 }
 
 test('the real map consumer builds and draws both registered HD punch routes instead of selecting modular96',async()=>{
   const {lobby,player,drawn}=fixture();
-  const state=await prepare(lobby,player);
-  assert.equal(state.state,'ready',state.error);
-  assert.equal(lobby.worldReady(player),true);
-  const covered=state.coverage.filter(c=>c.action==='attack-unarmed'&&c.direction==='south');
+  const covered=[];
+  for(const weaponless of [false,true]){
+   const state=await prepare(lobby,player,{weaponless});
+   assert.equal(state.state,'ready',state.error);assert.equal(lobby.worldReady(player),true);
+   covered.push(...state.coverage);
+   assert.ok(lobby.drawWorldVisual({}, {action:'attack-unarmed',direction:'south',weaponless},player));
+  }
   assert.deepEqual(JSON.parse(JSON.stringify(covered.map(c=>[c.weaponless,c.source,c.omitted]))),[
     [false,'registered-layered-pilot',['coat']],
     [true,'registered-layered-pilot',['coat']]
   ]);
-  for(const weaponless of [true,false])assert.ok(lobby.drawWorldVisual({}, {action:'attack-unarmed',direction:'south',weaponless}));
   assert.deepEqual(drawn,[0,1].map(()=>({source:'registered-layered-pilot',skin:'dark',hairColor:'pink'})));
 });
 
@@ -68,14 +70,15 @@ test('an unregistered pose still follows the existing route rather than inventin
   const {lobby,player}=fixture({layered:false});
   const state=await prepare(lobby,player);
   assert.equal(state.state,'failed');
-  assert.ok(state.coverage.every(c=>c.source===null&&c.action==='attack-unarmed'&&c.direction==='south'));
+  assert.equal(state.coverage.length,0);
+  assert.equal(state.error,'Sem fonte HD: attack-unarmed / south');
   assert.equal(lobby.worldReady(player),false);
-  assert.equal(lobby.drawWorldVisual({}, {action:'attack-unarmed',direction:'south'}),false);
+  assert.equal(lobby.drawWorldVisual({}, {action:'attack-unarmed',direction:'south'},player),false);
 });
 
 test('canonical per-slot precedence is honored by the map consumer',async()=>{
   const {lobby,player}=fixture({exact:true,canonical:true});
-  const state=await prepare(lobby,player);
+  const state=await prepare(lobby,player,{action:'walk',direction:'north'});
   assert.equal(state.state,'ready',state.error);
   const route=state.coverage.find(x=>x.action==='walk'&&x.direction==='north');
   assert.equal(route?.source,'canonical-hd');

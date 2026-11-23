@@ -3,6 +3,8 @@ module.exports.create=root=>{global.MareReworkZip=require('../player-rework-zip.
 return async p=>{p=path.isAbsolute(p)?path.relative(root,p):p;
  for(const[prefix,store]of stores)if(p.startsWith(prefix+'assets/'))return store.load(p);
  if(/^tools\/rework-firearm113-coat\/assets\/[0-9a-f]{64}\.png$/.test(p)){
+  const exported=path.join(root,p);
+  if(fs.existsSync(exported))return cv.loadImage(exported);
   const name=path.basename(p),mask=path.join(root,firearmPrefix,'masks',name);
   if(fs.existsSync(mask))return cv.loadImage(mask);
   const archive=path.join(root,'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18/fuzil113-ns.zip');

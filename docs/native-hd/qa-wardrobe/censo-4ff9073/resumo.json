@@ -1,0 +1,494 @@
+{
+  "fingerprint": "fba920d8a5428740b276d3c91dbcc63a3c6de8fa941861f5eefca6913a3e4da9",
+  "contexts": 1176,
+  "total": {
+    "armed": {
+      "feminino": {
+        "contexts": 504,
+        "emptyRoute": 504,
+        "wardrobeComplete": 504,
+        "solo": 25200,
+        "pairs": 504000,
+        "mixed": 50400
+      },
+      "masculino": {
+        "contexts": 504,
+        "emptyRoute": 494,
+        "wardrobeComplete": 348,
+        "solo": 17539,
+        "pairs": 348007,
+        "mixed": 34800
+      }
+    },
+    "bare": {
+      "feminino": {
+        "contexts": 84,
+        "emptyRoute": 84,
+        "wardrobeComplete": 84,
+        "solo": 4200,
+        "pairs": 84000,
+        "mixed": 8400
+      },
+      "masculino": {
+        "contexts": 84,
+        "emptyRoute": 84,
+        "wardrobeComplete": 84,
+        "solo": 4200,
+        "pairs": 84000,
+        "mixed": 8400
+      }
+    }
+  },
+  "items": [
+    {
+      "id": 6,
+      "slot": "coat",
+      "masculino": 349,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34081,
+      "mixed": 8520
+    },
+    {
+      "id": 7,
+      "slot": "coat",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 130,
+      "slot": "coat",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 137,
+      "slot": "coat",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 144,
+      "slot": "coat",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 151,
+      "slot": "coat",
+      "masculino": 360,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 158,
+      "slot": "coat",
+      "masculino": 360,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 165,
+      "slot": "coat",
+      "masculino": 360,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 172,
+      "slot": "coat",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 179,
+      "slot": "coat",
+      "masculino": 360,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 21,
+      "slot": "legs",
+      "masculino": 350,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34084,
+      "mixed": 8520
+    },
+    {
+      "id": 22,
+      "slot": "legs",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 133,
+      "slot": "legs",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 140,
+      "slot": "legs",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 147,
+      "slot": "legs",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 154,
+      "slot": "legs",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 161,
+      "slot": "legs",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 168,
+      "slot": "legs",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 175,
+      "slot": "legs",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 182,
+      "slot": "legs",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 8,
+      "slot": "boots",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 9,
+      "slot": "boots",
+      "masculino": 350,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34084,
+      "mixed": 8520
+    },
+    {
+      "id": 134,
+      "slot": "boots",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 141,
+      "slot": "boots",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 148,
+      "slot": "boots",
+      "masculino": 349,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 155,
+      "slot": "boots",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 162,
+      "slot": "boots",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 169,
+      "slot": "boots",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 176,
+      "slot": "boots",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 183,
+      "slot": "boots",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 25,
+      "slot": "gloves",
+      "masculino": 351,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34085,
+      "mixed": 8520
+    },
+    {
+      "id": 26,
+      "slot": "gloves",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 131,
+      "slot": "gloves",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 138,
+      "slot": "gloves",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 145,
+      "slot": "gloves",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 152,
+      "slot": "gloves",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 159,
+      "slot": "gloves",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 166,
+      "slot": "gloves",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 173,
+      "slot": "gloves",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 180,
+      "slot": "gloves",
+      "masculino": 348,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 18,
+      "slot": "head",
+      "masculino": 354,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 19,
+      "slot": "head",
+      "masculino": 354,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 129,
+      "slot": "head",
+      "masculino": 354,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 136,
+      "slot": "head",
+      "masculino": 354,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 143,
+      "slot": "head",
+      "masculino": 354,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 150,
+      "slot": "head",
+      "masculino": 354,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 157,
+      "slot": "head",
+      "masculino": 354,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 164,
+      "slot": "head",
+      "masculino": 366,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 171,
+      "slot": "head",
+      "masculino": 354,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    },
+    {
+      "id": 178,
+      "slot": "head",
+      "masculino": 364,
+      "feminino": 504,
+      "bare": 168,
+      "pairs": 34080,
+      "mixed": 8520
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "south22": "33e889a9f50ae82fbde06edf8d774e47e2160f787143e4fe1a9c7983fe767828",
+  "families": {
+    "femalePunchOwnPantsNorth": "76127f8fe9253cef6d70f92c32d838a1b106f07c5bd4a5657711638e3c32fe46",
+    "malePunchOwnPantsCardinal": "e0d3ee657e521b5c3a40df5ec20ac5cf9674a2d40cf4a045ca74db84044a1bf8",
+    "maleSidePunchOwnPants": "14b22955829a43cb946545b328dcd1a53603569571a109b775e5bc10bbf3e238",
+    "femalePunchOwnPantsDirectional": "cac30bd49fc7eeb55cc3bfce2b2a04b2d8b75a161adef24d5547fd905a40299d"
+  },
+  "torsos": {
+    "male-torso158-north-frozen-attack-native-candidate": {
+      "reviewed": "10155c35790f1dc6ec5d8fb93a369d3c748d882c7500afe65cd504144568fac5",
+      "prior": "4d5bbbef55ff74b6e076c50241cc3b735972919162150c282ae7abd9cc121901",
+      "sourceCount": 25,
+      "layerCount": 11,
+      "phaseFour": {
+        "cloth:RIGHT SHOULDER": {
+          "x": 89,
+          "y": 62
+        },
+        "cloth:LEFT SHOULDER": {
+          "x": 70.75,
+          "y": 62
+        },
+        "cloth:RIGHT ELBOW": {
+          "x": 101.8123581422445,
+          "y": 62.30574308636641
+        },
+        "cloth:LEFT ELBOW": {
+          "x": 58.03226847052041,
+          "y": 62.56727836560245
+        },
+        "cloth:RIGHT ARM": {
+          "x": 110.79022055371824,
+          "y": 51.102038943510486
+        },
+        "cloth:LEFT ARM": {
+          "x": 45.94370142179373,
+          "y": 54.76157233037158
+        }
+      }
+    },
+    "male-torso165-north-frozen-attack-native-candidate": {
+      "reviewed": "1fc2256d2fbc670a90d185271f05e7c0ee3bfd20d2d0306152de50159b532dc7",
+      "prior": "c2229866e835040f55f5f8e66b1ca051844843958d18b5f8058dd551686366f2",
+      "sourceCount": 25,
+      "layerCount": 11,
+      "phaseFour": {
+        "cloth:RIGHT SHOULDER": {
+          "x": 89,
+          "y": 62
+        },
+        "cloth:LEFT SHOULDER": {
+          "x": 70.75,
+          "y": 62
+        },
+        "cloth:RIGHT ELBOW": {
+          "x": 101.8123581422445,
+          "y": 62.30574308636641
+        },
+        "cloth:LEFT ELBOW": {
+          "x": 58.03226847052041,
+          "y": 62.56727836560245
+        },
+        "cloth:RIGHT ARM": {
+          "x": 110.79022055371824,
+          "y": 51.102038943510486
+        },
+        "cloth:LEFT ARM": {
+          "x": 45.94370142179373,
+          "y": 54.76157233037158
+        }
+      }
+    },
+    "male-torso172-north-frozen-attack-native-candidate": {
+      "reviewed": "9aa37cc514151335b8bbbe11f0a36a6b3772a96196b15f7fd2202a88c91d619b",
+      "prior": "e72c70e8f4b0e394c0afcc89b981660c4555c19490ab6cedd51d93fd7d316f5d",
+      "sourceCount": 25,
+      "layerCount": 11,
+      "phaseFour": {
+        "cloth:RIGHT SHOULDER": {
+          "x": 89,
+          "y": 62
+        },
+        "cloth:LEFT SHOULDER": {
+          "x": 70.75,
+          "y": 62
+        },
+        "cloth:RIGHT ELBOW": {
+          "x": 101.8123581422445,
+          "y": 62.30574308636641
+        },
+        "cloth:LEFT ELBOW": {
+          "x": 58.03226847052041,
+          "y": 62.56727836560245
+        },
+        "cloth:RIGHT ARM": {
+          "x": 110.79022055371824,
+          "y": 51.102038943510486
+        },
+        "cloth:LEFT ARM": {
+          "x": 45.94370142179373,
+          "y": 54.76157233037158
+        }
+      }
+    }
+  },
+  "archives": {
+    "first": "male-north-punch-f05-c158-c172-approved-capes.zip",
+    "files": 39,
+    "members": 426,
+    "archives": "209d9d3fff627e801f9c3070492c25f1f9a5746b59865024cbfa36f70adac5f3",
+    "sources": "2b9898a0a4b536ffa8cf250c607f9aed7b1aa2c1ebbe18e7a9fce31191153bb3"
+  }
+}

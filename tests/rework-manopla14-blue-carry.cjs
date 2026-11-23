@@ -20,7 +20,12 @@ const preview=(api,q,o)=>{let z;a(api.draw({save(){},restore(){},drawImage(c){z=
   a(q.hideHandBeyondWrist&&!q.replaceBoundLayer);a.equal(q.depthOffset,.1);
   const vanilla={...r,id:r.id+':baseline',plan:{...r.plan,parts:[{...q,joinedFringe:null}]}};
   const opts=[{...o,action:'attack-unarmed'},{...o,consumer:'portrait'},{...o,weaponless:true}];
-  const people=[save('light',{classId:'brawler'}),save('light',{equipment:{weapon:{def:14,variant:'other'}}}),save('light',{equipment:{weapon:{def:14},coat:{def:151}}}),save('light',{equipment:{weapon:{def:14},gloves:{def:26}}}),save('light',{equipment:{weapon:{def:14},head:{def:157}}}),save('light',{}, {hairStyle:'none'}),save('light',{}, {eyeColor:'green'}),save('light',{}, {hairColor:'brown'})];
+  const people=[save('light',{classId:'brawler'}),save('light',{equipment:{weapon:{def:14,variant:'other'}}}),save('light',{equipment:{weapon:{def:14},coat:{def:151}}}),save('light',{equipment:{weapon:{def:14},gloves:{def:26}}}),save('light',{equipment:{weapon:{def:14},head:{def:157}}})];
+  for(const [hairColor,eyeColor] of [['blue','green'],['brown','blue']]){
+   const colored=api.selectVisual(save('light',{}, {hairColor,eyeColor}),o);
+   a(colored?.manopla14SavedPalette);a.deepEqual(colored.savedHeadMaterial.colors,[hairColor,eyeColor]);
+   a.deepEqual(colored.plan,r.plan);a.deepEqual(colored.pack,r.pack);a.notEqual(colored.id,r.id);
+  }
   for(const [g,options] of [...people.map(g=>[g,o]),...opts.map(x=>[who,x])]){a(!api.selectVisual(g,options)?.manopla14SavedPalette);if(C)a.deepEqual(api.selectVisual(g,options),stock.selectVisual(g,options));}
   const pref='tools/rework-weapon-layers-hd/',gear=await load(pref+q.source.url),s=gear.width,cc=cv.createCanvas(s,s),cx=cc.getContext('2d');
   const px=im=>{cx.clearRect(0,0,s,s);cx.drawImage(im,0,0);return cx.getImageData(0,0,s,s);};
@@ -56,14 +61,24 @@ const preview=(api,q,o)=>{let z;a(api.draw({save(){},restore(){},drawImage(c){z=
    const black=save(tone,{}, {hairColor:'black'}),blackSlot=stock.selectVisual(black,o);
    a.deepEqual(blackSlot.plan,slot.plan);a.deepEqual(blackSlot.pack,slot.pack);
    const rows=[[slot,actor],[variant,actor],[base,bare],[blackSlot,black]];
+   // Removing hair keeps this exact carry and its contact with the hand.
+   if(tone==='light'){
+    const bald=save(tone,{}, {hairStyle:'none'}),baldPose=api.selectVisual(bald,o);
+    a.equal(baldPose?.colorAppearance?.hair,'none');a.deepEqual(baldPose.hairLayers,[]);
+    a.deepEqual(baldPose.plan,slot.plan);a.deepEqual(baldPose.pack,slot.pack);
+    rows.push([baldPose,bald]);
+   }
    const cfg=await Promise.all(rows.map(([source,player])=>api.prepareConfiguration([{source,player,options:o}],{resolve:x=>x})));
    let deltaMin=Infinity,deltaMax=0;
    try{
     for(let f=0;f<n;f++){
      const opt={...o,progress:(f+.23)/n},[own,shape,h,eyes,hairPlane]=domains[f];
-     const [current,control,off,blackPixels]=rows.map(([,p],i)=>preview(cfg[i],p,opt));
-     let changed=0,irisN=0,hairChanges=0;
+     const [current,control,off,blackPixels,baldPixels]=rows.map(([,p],i)=>preview(cfg[i],p,opt));
+     let changed=0,irisN=0,hairChanges=0,baldChanges=0;
      for(let i=0;i<current.length;i+=4){
+      if(baldPixels&&current.readUInt32LE(i)!==baldPixels.readUInt32LE(i)){
+       a(hairPlane[i+3],dir+': removing hair altered the body or the carried weapon');baldChanges++;
+      }
       a.equal(current[i+3],control[i+3]);
       a.equal(current[i+3],blackPixels[i+3]);
       if(current.readUInt32LE(i)!==blackPixels.readUInt32LE(i)){a(hairPlane[i+3],dir+': only approved hair can differ from the black-hair exact hold');hairChanges++;}
@@ -71,6 +86,7 @@ const preview=(api,q,o)=>{let z;a(api.draw({save(){},restore(){},drawImage(c){z=
       if(eyes?.[i+3]){a.equal(current.readUInt32LE(i),eyes.readUInt32LE(i));irisN++;}
       else if(!h[i+3]&&!shape[i+3])a.equal(current.readUInt32LE(i),off.readUInt32LE(i),'non-contact body changed');
      }
+     if(baldPixels)a(baldChanges>=50,'removing hair must visibly change every phase');
      a(hairChanges>=50,'blue hair must actually display');a(dir==='north'?changed===0:changed>4);a.equal(irisN,dir==='north'?0:lateral?18:45);
      deltaMin=Math.min(deltaMin,changed);deltaMax=Math.max(deltaMax,changed);
     }

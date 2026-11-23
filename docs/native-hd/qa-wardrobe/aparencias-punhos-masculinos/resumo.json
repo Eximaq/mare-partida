@@ -1,0 +1,1286 @@
+{
+  "scope": {
+    "body": "masculino",
+    "action": "attack-unarmed",
+    "classes": [
+      "brawler",
+      "cyborg"
+    ],
+    "items": [
+      2,
+      3,
+      14,
+      15,
+      109,
+      110,
+      111,
+      112,
+      117,
+      118,
+      119,
+      120
+    ],
+    "directions": [
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  "before": {
+    "missingReceivers": 44,
+    "receiversMissingWardrobe": 4
+  },
+  "selection": {
+    "completeMixed": 48,
+    "withoutClothes": 48,
+    "individuallySelectedClothes": 2400,
+    "oneOutfitAllHairAndEyeStyles": 3360,
+    "hairStyles": 14,
+    "eyeShapes": 5
+  },
+  "pixels": {
+    "mixedCycles": 48,
+    "uniquePostures": 415,
+    "changedPixelsBelowHead": 0,
+    "sameWardrobeOriginalAndCropped": [
+      {
+        "context": "109_brawler_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 72840,
+        "clothes": {
+          "coat": 151,
+          "legs": 161,
+          "boots": 169,
+          "gloves": 173,
+          "head": 178
+        }
+      },
+      {
+        "context": "109_brawler_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 78684,
+        "clothes": {
+          "coat": 172,
+          "legs": 133,
+          "boots": 162,
+          "gloves": 25,
+          "head": 143
+        }
+      },
+      {
+        "context": "109_brawler_masculino_south_attack-unarmed",
+        "distinctPostures": 7,
+        "differingUpperPixels": 37548,
+        "clothes": {
+          "coat": 130,
+          "legs": 182,
+          "boots": 162,
+          "gloves": 138,
+          "head": 18
+        }
+      },
+      {
+        "context": "109_brawler_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 64048,
+        "clothes": {
+          "coat": 151,
+          "legs": 154,
+          "boots": 155,
+          "gloves": 152,
+          "head": 150
+        }
+      },
+      {
+        "context": "110_brawler_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 0,
+        "clothes": {
+          "coat": 7,
+          "legs": 161,
+          "boots": 9,
+          "gloves": 159,
+          "head": 19
+        }
+      },
+      {
+        "context": "110_brawler_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 54011,
+        "clothes": {
+          "coat": 144,
+          "legs": 133,
+          "boots": 8,
+          "gloves": 173,
+          "head": 157
+        }
+      },
+      {
+        "context": "110_brawler_masculino_south_attack-unarmed",
+        "distinctPostures": 12,
+        "differingUpperPixels": 57624,
+        "clothes": {
+          "coat": 172,
+          "legs": 182,
+          "boots": 8,
+          "gloves": 26,
+          "head": 129
+        }
+      },
+      {
+        "context": "110_brawler_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 37340,
+        "clothes": {
+          "coat": 7,
+          "legs": 154,
+          "boots": 183,
+          "gloves": 138,
+          "head": 164
+        }
+      },
+      {
+        "context": "111_brawler_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 68502,
+        "clothes": {
+          "coat": 165,
+          "legs": 161,
+          "boots": 155,
+          "gloves": 145,
+          "head": 136
+        }
+      },
+      {
+        "context": "111_brawler_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 91230,
+        "clothes": {
+          "coat": 7,
+          "legs": 140,
+          "boots": 155,
+          "gloves": 166,
+          "head": 178
+        }
+      },
+      {
+        "context": "111_brawler_masculino_south_attack-unarmed",
+        "distinctPostures": 12,
+        "differingUpperPixels": 93264,
+        "clothes": {
+          "coat": 144,
+          "legs": 182,
+          "boots": 148,
+          "gloves": 180,
+          "head": 143
+        }
+      },
+      {
+        "context": "111_brawler_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 72624,
+        "clothes": {
+          "coat": 165,
+          "legs": 154,
+          "boots": 141,
+          "gloves": 26,
+          "head": 178
+        }
+      },
+      {
+        "context": "112_brawler_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 36128,
+        "clothes": {
+          "coat": 144,
+          "legs": 168,
+          "boots": 8,
+          "gloves": 138,
+          "head": 157
+        }
+      },
+      {
+        "context": "112_brawler_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 0,
+        "clothes": {
+          "coat": 165,
+          "legs": 140,
+          "boots": 183,
+          "gloves": 152,
+          "head": 19
+        }
+      },
+      {
+        "context": "112_brawler_masculino_south_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 49624,
+        "clothes": {
+          "coat": 6,
+          "legs": 182,
+          "boots": 176,
+          "gloves": 166,
+          "head": 157
+        }
+      },
+      {
+        "context": "112_brawler_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 0,
+        "clothes": {
+          "coat": 137,
+          "legs": 154,
+          "boots": 169,
+          "gloves": 180,
+          "head": 19
+        }
+      },
+      {
+        "context": "117_cyborg_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 36200,
+        "clothes": {
+          "coat": 144,
+          "legs": 168,
+          "boots": 8,
+          "gloves": 138,
+          "head": 157
+        }
+      },
+      {
+        "context": "117_cyborg_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 43206,
+        "clothes": {
+          "coat": 172,
+          "legs": 147,
+          "boots": 8,
+          "gloves": 159,
+          "head": 129
+        }
+      },
+      {
+        "context": "117_cyborg_masculino_south_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 39960,
+        "clothes": {
+          "coat": 7,
+          "legs": 21,
+          "boots": 183,
+          "gloves": 173,
+          "head": 164
+        }
+      },
+      {
+        "context": "117_cyborg_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 61793,
+        "clothes": {
+          "coat": 144,
+          "legs": 161,
+          "boots": 176,
+          "gloves": 25,
+          "head": 129
+        }
+      },
+      {
+        "context": "118_cyborg_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 72680,
+        "clothes": {
+          "coat": 7,
+          "legs": 175,
+          "boots": 155,
+          "gloves": 131,
+          "head": 178
+        }
+      },
+      {
+        "context": "118_cyborg_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 78598,
+        "clothes": {
+          "coat": 144,
+          "legs": 147,
+          "boots": 148,
+          "gloves": 145,
+          "head": 143
+        }
+      },
+      {
+        "context": "118_cyborg_masculino_south_attack-unarmed",
+        "distinctPostures": 12,
+        "differingUpperPixels": 110484,
+        "clothes": {
+          "coat": 165,
+          "legs": 21,
+          "boots": 141,
+          "gloves": 159,
+          "head": 178
+        }
+      },
+      {
+        "context": "118_cyborg_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 55584,
+        "clothes": {
+          "coat": 6,
+          "legs": 161,
+          "boots": 134,
+          "gloves": 173,
+          "head": 143
+        }
+      },
+      {
+        "context": "119_cyborg_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 0,
+        "clothes": {
+          "coat": 165,
+          "legs": 175,
+          "boots": 183,
+          "gloves": 25,
+          "head": 19
+        }
+      },
+      {
+        "context": "119_cyborg_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 54305,
+        "clothes": {
+          "coat": 6,
+          "legs": 147,
+          "boots": 176,
+          "gloves": 131,
+          "head": 157
+        }
+      },
+      {
+        "context": "119_cyborg_masculino_south_attack-unarmed",
+        "distinctPostures": 12,
+        "differingUpperPixels": 46895,
+        "clothes": {
+          "coat": 137,
+          "legs": 21,
+          "boots": 169,
+          "gloves": 145,
+          "head": 19
+        }
+      },
+      {
+        "context": "119_cyborg_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 37417,
+        "clothes": {
+          "coat": 165,
+          "legs": 168,
+          "boots": 169,
+          "gloves": 166,
+          "head": 164
+        }
+      },
+      {
+        "context": "120_cyborg_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 64128,
+        "clothes": {
+          "coat": 179,
+          "legs": 175,
+          "boots": 169,
+          "gloves": 159,
+          "head": 150
+        }
+      },
+      {
+        "context": "120_cyborg_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 44735,
+        "clothes": {
+          "coat": 130,
+          "legs": 147,
+          "boots": 162,
+          "gloves": 173,
+          "head": 18
+        }
+      },
+      {
+        "context": "120_cyborg_masculino_south_attack-unarmed",
+        "distinctPostures": 12,
+        "differingUpperPixels": 75888,
+        "clothes": {
+          "coat": 158,
+          "legs": 22,
+          "boots": 162,
+          "gloves": 26,
+          "head": 157
+        }
+      },
+      {
+        "context": "120_cyborg_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 0,
+        "clothes": {
+          "coat": 179,
+          "legs": 168,
+          "boots": 155,
+          "gloves": 138,
+          "head": 19
+        }
+      },
+      {
+        "context": "14_cyborg_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 45672,
+        "clothes": {
+          "coat": 7,
+          "legs": 21,
+          "boots": 183,
+          "gloves": 173,
+          "head": 164
+        }
+      },
+      {
+        "context": "14_cyborg_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 42556,
+        "clothes": {
+          "coat": 144,
+          "legs": 161,
+          "boots": 176,
+          "gloves": 25,
+          "head": 129
+        }
+      },
+      {
+        "context": "14_cyborg_masculino_south_attack-unarmed",
+        "distinctPostures": 12,
+        "differingUpperPixels": 90672,
+        "clothes": {
+          "coat": 172,
+          "legs": 140,
+          "boots": 176,
+          "gloves": 138,
+          "head": 171
+        }
+      },
+      {
+        "context": "14_cyborg_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 67501,
+        "clothes": {
+          "coat": 7,
+          "legs": 182,
+          "boots": 169,
+          "gloves": 152,
+          "head": 136
+        }
+      },
+      {
+        "context": "15_cyborg_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 72712,
+        "clothes": {
+          "coat": 165,
+          "legs": 21,
+          "boots": 141,
+          "gloves": 159,
+          "head": 178
+        }
+      },
+      {
+        "context": "15_cyborg_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 77856,
+        "clothes": {
+          "coat": 6,
+          "legs": 161,
+          "boots": 134,
+          "gloves": 173,
+          "head": 143
+        }
+      },
+      {
+        "context": "15_cyborg_masculino_south_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 42904,
+        "clothes": {
+          "coat": 144,
+          "legs": 140,
+          "boots": 134,
+          "gloves": 26,
+          "head": 18
+        }
+      },
+      {
+        "context": "15_cyborg_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 63991,
+        "clothes": {
+          "coat": 165,
+          "legs": 182,
+          "boots": 9,
+          "gloves": 138,
+          "head": 150
+        }
+      },
+      {
+        "context": "2_brawler_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 36296,
+        "clothes": {
+          "coat": 158,
+          "legs": 22,
+          "boots": 162,
+          "gloves": 26,
+          "head": 157
+        }
+      },
+      {
+        "context": "2_brawler_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 0,
+        "clothes": {
+          "coat": 179,
+          "legs": 168,
+          "boots": 155,
+          "gloves": 138,
+          "head": 19
+        }
+      },
+      {
+        "context": "2_brawler_masculino_south_attack-unarmed",
+        "distinctPostures": 12,
+        "differingUpperPixels": 75540,
+        "clothes": {
+          "coat": 130,
+          "legs": 140,
+          "boots": 148,
+          "gloves": 152,
+          "head": 157
+        }
+      },
+      {
+        "context": "2_brawler_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 61632,
+        "clothes": {
+          "coat": 158,
+          "legs": 21,
+          "boots": 148,
+          "gloves": 173,
+          "head": 129
+        }
+      },
+      {
+        "context": "3_brawler_masculino_east_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 64543,
+        "clothes": {
+          "coat": 130,
+          "legs": 22,
+          "boots": 8,
+          "gloves": 180,
+          "head": 171
+        }
+      },
+      {
+        "context": "3_brawler_masculino_north_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 70950,
+        "clothes": {
+          "coat": 151,
+          "legs": 168,
+          "boots": 183,
+          "gloves": 26,
+          "head": 136
+        }
+      },
+      {
+        "context": "3_brawler_masculino_south_attack-unarmed",
+        "distinctPostures": 12,
+        "differingUpperPixels": 90672,
+        "clothes": {
+          "coat": 172,
+          "legs": 140,
+          "boots": 176,
+          "gloves": 138,
+          "head": 171
+        }
+      },
+      {
+        "context": "3_brawler_masculino_west_attack-unarmed",
+        "distinctPostures": 8,
+        "differingUpperPixels": 55615,
+        "clothes": {
+          "coat": 130,
+          "legs": 21,
+          "boots": 176,
+          "gloves": 159,
+          "head": 143
+        }
+      }
+    ],
+    "eyeBoxComparisons": [
+      {
+        "id": 109,
+        "dir": "east",
+        "hair": "original",
+        "changes": [
+          824,
+          2248
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 8
+      },
+      {
+        "id": 109,
+        "dir": "east",
+        "hair": "hair-cropped",
+        "changes": [
+          1008,
+          2704
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 8
+      },
+      {
+        "id": 109,
+        "dir": "east",
+        "hair": "none",
+        "changes": [
+          1008,
+          2720
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 8
+      },
+      {
+        "id": 110,
+        "dir": "south",
+        "hair": "original",
+        "changes": [
+          2052,
+          1896
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 12
+      },
+      {
+        "id": 110,
+        "dir": "south",
+        "hair": "hair-cropped",
+        "changes": [
+          2052,
+          1896
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 12
+      },
+      {
+        "id": 110,
+        "dir": "south",
+        "hair": "none",
+        "changes": [
+          2052,
+          1896
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 12
+      },
+      {
+        "id": 2,
+        "dir": "north",
+        "hair": "original",
+        "changes": [
+          0,
+          0
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 8
+      },
+      {
+        "id": 2,
+        "dir": "north",
+        "hair": "hair-cropped",
+        "changes": [
+          0,
+          0
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 8
+      },
+      {
+        "id": 2,
+        "dir": "north",
+        "hair": "none",
+        "changes": [
+          0,
+          0
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 8
+      },
+      {
+        "id": 119,
+        "dir": "west",
+        "hair": "original",
+        "changes": [
+          752,
+          640
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 8
+      },
+      {
+        "id": 119,
+        "dir": "west",
+        "hair": "hair-cropped",
+        "changes": [
+          944,
+          1200
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 8
+      },
+      {
+        "id": 119,
+        "dir": "west",
+        "hair": "none",
+        "changes": [
+          944,
+          1160
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 8
+      },
+      {
+        "id": 119,
+        "dir": "south",
+        "hair": "original",
+        "changes": [
+          5508,
+          12300
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 12
+      },
+      {
+        "id": 119,
+        "dir": "south",
+        "hair": "hair-cropped",
+        "changes": [
+          5508,
+          12300
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 12
+      },
+      {
+        "id": 119,
+        "dir": "south",
+        "hair": "none",
+        "changes": [
+          5508,
+          12300
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 12
+      },
+      {
+        "id": 2,
+        "dir": "south",
+        "hair": "original",
+        "changes": [
+          2052,
+          1896
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 12
+      },
+      {
+        "id": 2,
+        "dir": "south",
+        "hair": "hair-cropped",
+        "changes": [
+          2052,
+          1896
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 12
+      },
+      {
+        "id": 2,
+        "dir": "south",
+        "hair": "none",
+        "changes": [
+          2052,
+          1896
+        ],
+        "outs": [
+          0,
+          0
+        ],
+        "coords": [],
+        "frames": 12
+      }
+    ]
+  },
+  "map": {
+    "cycles": 8,
+    "postures": 72,
+    "gearToggles": 4,
+    "errors": [],
+    "appearance": "face-calm, eyes green, ebony skin. 110/119 hair-cropped blue, 2 none, 109 original blue.",
+    "samples": [
+      {
+        "sample": "punho-aparencia-110-south-sem-elmo",
+        "action": "attack-unarmed",
+        "direction": "south",
+        "postures": 12,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 110,
+            "source": "gauntlet110-south-native-original-source:saved-light-black-blue:own-south-palette:ebony:materials:ebony:blue:green:saved-punch:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de:hair-cropped:face-calm:blue"
+          },
+          "boots": {
+            "item": 148,
+            "source": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-south-attack-unarmed-native-layers/twelve-state-front"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-cardinal-punch-pants-v1:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-south-frozen-attack-native-candidate/twelve-state-front"
+          }
+        }
+      },
+      {
+        "sample": "punho-aparencia-110-south-com-elmo",
+        "action": "attack-unarmed",
+        "direction": "south",
+        "postures": 12,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 110,
+            "source": "gauntlet110-south-native-original-source:saved-light-black-blue:own-south-palette:ebony:materials:ebony:blue:green:saved-punch:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de:hair-cropped:face-calm:blue"
+          },
+          "boots": {
+            "item": 148,
+            "source": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-south-attack-unarmed-native-layers/twelve-state-front"
+          },
+          "head": {
+            "item": 157,
+            "source": "533266c4c319b198926c373fdec7ba47951369ac254b62eb3757903d4e4e0c89"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-cardinal-punch-pants-v1:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-south-frozen-attack-native-candidate/twelve-state-front"
+          }
+        }
+      },
+      {
+        "sample": "punho-aparencia-110-south-retirado",
+        "action": "attack-unarmed",
+        "direction": "south",
+        "postures": 12,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 110,
+            "source": "gauntlet110-south-native-original-source:saved-light-black-blue:own-south-palette:ebony:materials:ebony:blue:green:saved-punch:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de:hair-cropped:face-calm:blue"
+          },
+          "boots": {
+            "item": 148,
+            "source": "male-pants133-attack-unarmed-south-drawn8-candidate-boots148-isolated-candidate"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-south-attack-unarmed-native-layers/twelve-state-front"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-cardinal-punch-pants-v1:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-south-frozen-attack-native-candidate/twelve-state-front"
+          }
+        }
+      },
+      {
+        "sample": "punho-aparencia-2-north-sem-elmo",
+        "action": "attack-unarmed",
+        "direction": "north",
+        "postures": 8,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 2,
+            "source": "gauntlet2-north-native-original-source:own-north-layer:ebony:materials:ebony:blue:green"
+          },
+          "boots": {
+            "item": 148,
+            "source": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-north-attack-unarmed-native-layers"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-cardinal-punch-pants-v1:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-north-frozen-attack-native-candidate"
+          }
+        }
+      },
+      {
+        "sample": "punho-aparencia-2-north-com-elmo",
+        "action": "attack-unarmed",
+        "direction": "north",
+        "postures": 8,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 2,
+            "source": "gauntlet2-north-native-original-source:own-north-layer:ebony:materials:ebony:blue:green"
+          },
+          "boots": {
+            "item": 148,
+            "source": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-north-attack-unarmed-native-layers"
+          },
+          "head": {
+            "item": 19,
+            "source": "3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de+received-male-19-north"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-cardinal-punch-pants-v1:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-north-frozen-attack-native-candidate"
+          }
+        }
+      },
+      {
+        "sample": "punho-aparencia-2-north-retirado",
+        "action": "attack-unarmed",
+        "direction": "north",
+        "postures": 8,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 2,
+            "source": "gauntlet2-north-native-original-source:own-north-layer:ebony:materials:ebony:blue:green"
+          },
+          "boots": {
+            "item": 148,
+            "source": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-north-attack-unarmed-native-layers"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-cardinal-punch-pants-v1:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-north-frozen-attack-native-candidate"
+          }
+        }
+      },
+      {
+        "sample": "punho-aparencia-109-east-sem-elmo",
+        "action": "attack-unarmed",
+        "direction": "east",
+        "postures": 8,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 109,
+            "source": "gauntlet109-east-native-layers:materials:ebony:blue:green"
+          },
+          "boots": {
+            "item": 148,
+            "source": "v7-punch-east-drawn8-east:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole:slots:{\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"v7-punch-east-drawn8-east:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole\"}}"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-east-attack-unarmed-native-layers"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-side-punch-pants-v1:east:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-east-frozen-attack-native-candidate"
+          }
+        }
+      },
+      {
+        "sample": "punho-aparencia-109-east-com-elmo",
+        "action": "attack-unarmed",
+        "direction": "east",
+        "postures": 8,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 109,
+            "source": "gauntlet109-east-native-layers:materials:ebony:blue:green"
+          },
+          "boots": {
+            "item": 148,
+            "source": "v7-punch-east-drawn8-east:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole:slots:{\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"v7-punch-east-drawn8-east:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole\"}}"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-east-attack-unarmed-native-layers"
+          },
+          "head": {
+            "item": 18,
+            "source": "original-hair-gear-only-18-east"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-side-punch-pants-v1:east:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-east-frozen-attack-native-candidate"
+          }
+        }
+      },
+      {
+        "sample": "punho-aparencia-109-east-retirado",
+        "action": "attack-unarmed",
+        "direction": "east",
+        "postures": 8,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 109,
+            "source": "gauntlet109-east-native-layers:materials:ebony:blue:green"
+          },
+          "boots": {
+            "item": 148,
+            "source": "v7-punch-east-drawn8-east:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole:slots:{\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"v7-punch-east-drawn8-east:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole\"}}"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-east-attack-unarmed-native-layers"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-side-punch-pants-v1:east:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-east-frozen-attack-native-candidate"
+          }
+        }
+      },
+      {
+        "sample": "punho-aparencia-119-west-sem-elmo",
+        "action": "attack-unarmed",
+        "direction": "west",
+        "postures": 8,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 119,
+            "source": "cyborg119-west-native-original-source:owned-atomic-palette:ebony:materials:ebony:blue:green"
+          },
+          "boots": {
+            "item": 148,
+            "source": "v7-punch-west-drawn8-west:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole:slots:{\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"v7-punch-west-drawn8-west:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole\"}}"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-west-attack-unarmed-native-layers"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-side-punch-pants-v1:west:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-west-frozen-attack-native-candidate"
+          }
+        }
+      },
+      {
+        "sample": "punho-aparencia-119-west-com-elmo",
+        "action": "attack-unarmed",
+        "direction": "west",
+        "postures": 8,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 119,
+            "source": "cyborg119-west-native-original-source:owned-atomic-palette:ebony:materials:ebony:blue:green"
+          },
+          "boots": {
+            "item": 148,
+            "source": "v7-punch-west-drawn8-west:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole:slots:{\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"v7-punch-west-drawn8-west:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole\"}}"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-west-attack-unarmed-native-layers"
+          },
+          "head": {
+            "item": 129,
+            "source": "a251768d0338704073ddcde6e7cbef68d0ad0c8ff275e1e35ce10c31e667d8e8"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-side-punch-pants-v1:west:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-west-frozen-attack-native-candidate"
+          }
+        }
+      },
+      {
+        "sample": "punho-aparencia-119-west-retirado",
+        "action": "attack-unarmed",
+        "direction": "west",
+        "postures": 8,
+        "omitted": [],
+        "drawn": "rendered",
+        "slots": {
+          "weapon": {
+            "item": 119,
+            "source": "cyborg119-west-native-original-source:owned-atomic-palette:ebony:materials:ebony:blue:green"
+          },
+          "boots": {
+            "item": 148,
+            "source": "v7-punch-west-drawn8-west:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole:slots:{\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"v7-punch-west-drawn8-west:original:none:ebony:blue:eyes:original:green:own-b148-lateral-anchored-sole\"}}"
+          },
+          "gloves": {
+            "item": 159,
+            "source": "frozen-male-glove159-west-attack-unarmed-native-layers"
+          },
+          "legs": {
+            "item": 168,
+            "source": "male-native-side-punch-pants-v1:west:168"
+          },
+          "coat": {
+            "item": 130,
+            "source": "male-torso130-west-frozen-attack-native-candidate"
+          }
+        }
+      }
+    ]
+  },
+  "commands": [
+    "node tests/rework-male-punch-saved-look.cjs",
+    "node tests/rework-independent-world-browser.cjs --punch-saved-look"
+  ]
+}

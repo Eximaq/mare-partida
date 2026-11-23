@@ -1,0 +1,119 @@
+{
+  "artes": "tools/rework-accessories/head-layer-index.json",
+  "comando": "node tests/rework-starter-helmet-hair.cjs",
+  "nativo": {
+    "pares": 72,
+    "cabelos": 12,
+    "cabecas": [
+      18,
+      19
+    ],
+    "direcoes": [
+      "north",
+      "east",
+      "west"
+    ],
+    "pixelsInferioresDeCabeloPreservadosNoElmo18": 101977,
+    "oclusoesCompletasNoElmo19": 36
+  },
+  "mapa": {
+    "aparencia": {
+      "version": 1,
+      "gender": "masculino",
+      "hairStyle": "hair-cropped",
+      "hairColor": "blue",
+      "eyeStyle": "face-calm",
+      "eyeColor": "green",
+      "skinStyle": "natural",
+      "skinColor": "ebony"
+    },
+    "erros": [],
+    "quadrosDeCiclo": 32,
+    "observacoes": [
+      {
+        "caso": "cabelo-curto-lamina-73-east-18-elmo",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "east",
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-73-east-18-sem-elmo",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "east",
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-73-east-18-elmo-restaurado",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "east",
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-74-west-19-elmo",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "west",
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-74-west-19-sem-elmo",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "west",
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-74-west-19-elmo-restaurado",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "west",
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-1-north-18-elmo",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-1-north-18-sem-elmo",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-1-north-18-elmo-restaurado",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-67-north-19-elmo",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-67-north-19-sem-elmo",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "omitidos": []
+      },
+      {
+        "caso": "cabelo-curto-lamina-67-north-19-elmo-restaurado",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "omitidos": []
+      }
+    ]
+  }
+}

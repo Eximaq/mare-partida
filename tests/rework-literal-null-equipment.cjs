@@ -30,7 +30,12 @@ const canon=(r,key='id')=>r&&({...r,[key]:r[key]?.split(':slots:')[0]});
   // for a slot that is ignored by more general routes.
   for(const bad of [undefined,false,0,'none','original',{def:23}]){
    const actor={...dense,equipment:{...dense.equipment,cloak:bad}};
-   const r=provider.selectVisual(actor,options);a.notEqual(id(r),id(s));
+   const r=provider.selectVisual(actor,options);
+   // The modular lateral gauntlet projects only visual slots. Its own fitted
+   // plate deliberately ignores the non-visual cloak on the saved character.
+   if(s.slotRoutes?.weapon?.source==='gauntlet14-v3-lateral-own-fitted-plate'){
+    a.equal(id(r),id(s));a.deepEqual(r.slotRoutes,s.slotRoutes);a.equal(r.slotRoutes.weapon.item,weapon);
+   }else a.notEqual(id(r),id(s));
    negatives++;
   }
   for(const field of ['variant','variantId','appearanceVariant']){

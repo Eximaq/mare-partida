@@ -1,0 +1,230 @@
+{
+  "previousCommit": "5daaedd63968a0dd105481da6f5dc7f7055c5684",
+  "legacySave": {
+    "body": "masculino",
+    "hairStyle": "cropped",
+    "hairColor": "black",
+    "skinColor": "light",
+    "eyeColor": "blue"
+  },
+  "action": "idle",
+  "direction": "south",
+  "source": "male-idle-original-south-from-walk0",
+  "before": {
+    "view": "pants133-cropped-head129",
+    "appearance": {
+      "version": 1,
+      "skinStyle": "natural",
+      "gender": "masculino",
+      "hairStyle": "cropped",
+      "hairColor": "black",
+      "eyeStyle": "original",
+      "eyeColor": "blue",
+      "skinColor": "light"
+    },
+    "equipment": {
+      "legs": 133,
+      "head": 129
+    },
+    "action": "idle",
+    "direction": "south",
+    "drawn": true,
+    "source": "male-idle-south-cropped:cropped:none:light:black:independent-slots:{\"head\":{\"item\":129,\"quality\":\"hd\",\"source\":\"a251768d0338704073ddcde6e7cbef68d0ad0c8ff275e1e35ce10c31e667d8e8\"},\"legs\":{\"item\":133,\"quality\":\"missing\",\"reason\":\"no-compatible-owned-registration\"}}",
+    "headIdentity": "exact-head-source-pixels",
+    "omitted": [
+      "legs"
+    ],
+    "routes": {
+      "head": {
+        "item": 129,
+        "quality": "hd",
+        "source": "a251768d0338704073ddcde6e7cbef68d0ad0c8ff275e1e35ce10c31e667d8e8"
+      },
+      "legs": {
+        "item": 133,
+        "quality": "missing",
+        "reason": "no-compatible-owned-registration"
+      }
+    }
+  },
+  "after": [
+    {
+      "view": "pants133-cropped-head129",
+      "appearance": {
+        "version": 1,
+        "skinStyle": "natural",
+        "gender": "masculino",
+        "hairStyle": "cropped",
+        "hairColor": "black",
+        "eyeStyle": "original",
+        "eyeColor": "blue",
+        "skinColor": "light"
+      },
+      "equipment": {
+        "legs": 133,
+        "head": 129
+      },
+      "action": "idle",
+      "direction": "south",
+      "drawn": true,
+      "source": "male-idle-original-south-from-walk0:cropped:none:light:black:independent-slots:{\"head\":{\"item\":129,\"quality\":\"hd\",\"source\":\"a251768d0338704073ddcde6e7cbef68d0ad0c8ff275e1e35ce10c31e667d8e8\"},\"legs\":{\"item\":133,\"quality\":\"hd\",\"source\":\"male-pants133-idle-south-isolated-r2\"}}",
+      "headIdentity": "exact-head-source-pixels",
+      "omitted": [],
+      "routes": {
+        "head": {
+          "item": 129,
+          "quality": "hd",
+          "source": "a251768d0338704073ddcde6e7cbef68d0ad0c8ff275e1e35ce10c31e667d8e8"
+        },
+        "legs": {
+          "item": 133,
+          "quality": "hd",
+          "source": "male-pants133-idle-south-isolated-r2"
+        }
+      }
+    },
+    {
+      "view": "cropped-pants133-remove-head",
+      "appearance": {
+        "version": 1,
+        "skinStyle": "natural",
+        "gender": "masculino",
+        "hairStyle": "cropped",
+        "hairColor": "black",
+        "eyeStyle": "original",
+        "eyeColor": "blue",
+        "skinColor": "light"
+      },
+      "equipment": {
+        "legs": 133
+      },
+      "action": "idle",
+      "direction": "south",
+      "drawn": true,
+      "source": "male-idle-original-south-from-walk0:cropped:none:light:black:independent-slots:{\"legs\":{\"item\":133,\"quality\":\"hd\",\"source\":\"male-pants133-idle-south-isolated-r2\"}}",
+      "headIdentity": "exact-head-source-pixels",
+      "omitted": [],
+      "routes": {
+        "legs": {
+          "item": 133,
+          "quality": "hd",
+          "source": "male-pants133-idle-south-isolated-r2"
+        }
+      }
+    },
+    {
+      "view": "cropped-pants133-restore-head",
+      "appearance": {
+        "version": 1,
+        "skinStyle": "natural",
+        "gender": "masculino",
+        "hairStyle": "cropped",
+        "hairColor": "black",
+        "eyeStyle": "original",
+        "eyeColor": "blue",
+        "skinColor": "light"
+      },
+      "equipment": {
+        "legs": 133,
+        "head": 129
+      },
+      "action": "idle",
+      "direction": "south",
+      "drawn": true,
+      "source": "male-idle-original-south-from-walk0:cropped:none:light:black:independent-slots:{\"head\":{\"item\":129,\"quality\":\"hd\",\"source\":\"a251768d0338704073ddcde6e7cbef68d0ad0c8ff275e1e35ce10c31e667d8e8\"},\"legs\":{\"item\":133,\"quality\":\"hd\",\"source\":\"male-pants133-idle-south-isolated-r2\"}}",
+      "headIdentity": "exact-head-source-pixels",
+      "omitted": [],
+      "routes": {
+        "head": {
+          "item": 129,
+          "quality": "hd",
+          "source": "a251768d0338704073ddcde6e7cbef68d0ad0c8ff275e1e35ce10c31e667d8e8"
+        },
+        "legs": {
+          "item": 133,
+          "quality": "hd",
+          "source": "male-pants133-idle-south-isolated-r2"
+        }
+      }
+    }
+  ],
+  "inventory": {
+    "captures": 58,
+    "errors": []
+  },
+  "pixels": {
+    "items": 50,
+    "variants": [
+      "cropped",
+      "hair-cropped"
+    ],
+    "renderedFrames": 100,
+    "identicalPairs": 50
+  },
+  "commands": [
+    "node tests/rework_inventory_game_browser.cjs",
+    "UNARMED_NAMED_DIRECTION=south node --expose-gc tests/rework-male-unarmed-named-wardrobe.cjs"
+  ],
+  "samplePublished": {
+    "build": "c08c1631a2bb7814312e018cbf70575fb8715c5cef2667a827199e6342ae9513",
+    "mode": "sample",
+    "contexts": [
+      {
+        "role": "brawler",
+        "receiver": true,
+        "solo": 50,
+        "pairs": 1000,
+        "mixed": 100
+      },
+      {
+        "role": "cyborg",
+        "receiver": true,
+        "solo": 50,
+        "pairs": 1000,
+        "mixed": 100
+      },
+      {
+        "role": "gunner",
+        "receiver": true,
+        "solo": 50,
+        "pairs": 1000,
+        "mixed": 100
+      },
+      {
+        "role": "healer",
+        "receiver": true,
+        "solo": 50,
+        "pairs": 1000,
+        "mixed": 100
+      },
+      {
+        "role": "rogue",
+        "receiver": true,
+        "solo": 50,
+        "pairs": 1000,
+        "mixed": 100
+      },
+      {
+        "role": "strategist",
+        "receiver": true,
+        "solo": 50,
+        "pairs": 1000,
+        "mixed": 100
+      },
+      {
+        "role": "sword",
+        "receiver": true,
+        "solo": 50,
+        "pairs": 1000,
+        "mixed": 100
+      }
+    ]
+  },
+  "browser": {
+    "inventoryCaptures": 58,
+    "oldAndCanonicalHairRenders": 100,
+    "bothBodiesKeyboardMovement": true,
+    "realInventoryV5": true,
+    "fiveStatesFromPointer": true
+  }
+}

@@ -34,7 +34,19 @@ for(const [def,classId]of [[5,'gunner'],[15,'cyborg'],[17,'strategist'],[109,'br
  for(const direction of ['south','north','east','west']){await page.evaluate(direction=>window.__integrationPose={action:'attack',direction,progress:.5},direction);const state=await rendered('control-'+def+'-attack-'+direction);const active=state.draw.snapshot.nativeHD.last;assert.equal(state.draw.snapshot.renderer,'native-hd');assert(active.source.includes(def+'-'),active.source);assert(!active.source.startsWith('carry'));assert.equal(active.direction,direction);}
 }
 
-await page.evaluate(()=>{__integrationQA.seed('masculino',[133,129],'sword');__integrationQA.setHair('cropped');window.__integrationPose={action:'idle',direction:'south',progress:0};});await equip(133);await equip(129);const named=await rendered('pants133-cropped-head129','pants133');assert(named.draw.snapshot.nativeHD.last.headIdentity==='exact-head-source-pixels');assert.equal(named.appearance.hairStyle,'cropped');
+await page.evaluate(()=>{__integrationQA.seed('masculino',[133,129],'sword');__integrationQA.setHair('cropped');window.__integrationPose={action:'idle',direction:'south',progress:0};});await equip(133);await equip(129);const named=await rendered('pants133-cropped-head129','pants133');const layered=named.draw.snapshot.nativeHD.last;
+assert.equal(layered.headIdentity,'exact-head-source-pixels');assert.equal(named.appearance.hairStyle,'cropped');
+assert.deepEqual(layered.omitted,[]);
+for(const [slot,id] of [['legs',133],['head',129]]){
+ assert.equal(layered.slotRoutes[slot].item,id);assert.equal(layered.slotRoutes[slot].quality,'hd');
+}
+await inventory();await page.locator('[data-inv-slot="head"]').click();await page.locator('[data-unequip="head"]').click();await page.locator('[data-close-panel]').click();
+const removed=await rendered('cropped-pants133-remove-head','pants133');
+assert.equal(removed.equipment.head??null,null);assert.deepEqual(removed.appearance,named.appearance);
+assert.deepEqual(removed.draw.snapshot.nativeHD.last.slotRoutes.legs,layered.slotRoutes.legs);
+await equip(129);const restored=await rendered('cropped-pants133-restore-head','pants133');
+assert.deepEqual(restored.draw.snapshot.nativeHD.last.slotRoutes,layered.slotRoutes);
+assert.deepEqual(restored.appearance,named.appearance);
 await page.evaluate(()=>{__integrationQA.seed('feminino',[],'sword');__integrationQA.setHair('cropped');window.__integrationPose={action:'idle',direction:'south',progress:0};});const femaleHair=await rendered('female-cropped-hair');assert.equal(femaleHair.appearance.hairStyle,'cropped');assert.equal(femaleHair.draw.snapshot.nativeHD.last.faceProtectedExact,true);
 assert.deepEqual(errors,[]);console.log('Real inventory and map checks passed: '+evidence.length+' captures');
 }catch(e){await fs.writeFile(path.join(out,'failure.json'),JSON.stringify({message:e.message,state:await page.evaluate(()=>window.__integrationQA?.read()).catch(()=>null),errors},null,2));await page.screenshot({path:path.join(out,'failure.png'),fullPage:true});throw e;}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

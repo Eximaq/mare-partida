@@ -1,0 +1,258 @@
+{
+  "schema": "mare-south-saved-head-validation-v1",
+  "scope": {
+    "body": "masculino",
+    "direction": "south",
+    "families": [
+      "attack-daggers",
+      "attack-sword",
+      "attack-focus"
+    ],
+    "weapons": [
+      0,
+      1,
+      67,
+      68,
+      69,
+      70,
+      12,
+      13,
+      71,
+      72,
+      73,
+      74,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128
+    ],
+    "clothing": {
+      "coat": 151,
+      "legs": 168,
+      "boots": 148,
+      "gloves": 25
+    },
+    "palettes": {
+      "skin": "ebony",
+      "hair": [
+        "blue",
+        "auburn"
+      ],
+      "eyes": [
+        "green",
+        "brown"
+      ]
+    },
+    "shapes": {
+      "hair": 14,
+      "eyes": 5
+    }
+  },
+  "publishedFilesSha256": {
+    "player-rework-native-hd.js": "f651c75207bea5859565a0c53e562a7b1142759bd47b5125dfca774e3e319e11",
+    "player-rework-weapon-native-hd.js": "81a2beeb3752046129106bf994e14430660c62254cd33ffea9058284f0d123cb",
+    "paper-doll-96-lobby.js": "1467a2f34aaf5dbc2dc796152a1eea0a7643f39c14d1f7dda333e7a0776bbfa6",
+    "player-rework-head-family.js": "761efc48c46bdb53682696bcb9ffdcd43243bcb06c360628dc388e905d6eec04",
+    "player-rework-eye-styles-hd.js": "dafbc3325b3d90fc0376bbdd469c8d5248374d5fd72562bd185b5e2c45479bfd",
+    "tools/rework-accessories/head-layer-index.json": "345dd0a018ebe23047af8aa2f456bacfda5213ac90d3a970f136a81b1bd96acf",
+    "tools/rework-combat-wardrobe/index.json": "bd66ac8b68bee93a1d8f64a8016f559ec2980ca622494815f3c1cbb2d81e0083"
+  },
+  "mapRun": {
+    "command": "node tests/rework-independent-world-browser.cjs --south-saved-head-shapes",
+    "browser": "Chromium / Playwright",
+    "screen": "worldCanvas",
+    "cycles": [
+      {
+        "weapon": 1,
+        "head": 18,
+        "hairStyle": "hair-spiky",
+        "eyeStyle": "face-calm",
+        "frames": 9
+      },
+      {
+        "weapon": 73,
+        "head": 164,
+        "hairStyle": "none",
+        "eyeStyle": "face-calm",
+        "frames": 9
+      },
+      {
+        "weapon": 123,
+        "head": 19,
+        "hairStyle": "hair-spiky",
+        "eyeStyle": "face-calm",
+        "frames": 8
+      }
+    ],
+    "reachedPhases": 26,
+    "errors": [],
+    "observations": [
+      {
+        "label": "aparencia-salva-sul-1-sem-elmo",
+        "action": "attack-sword",
+        "frame": 8,
+        "slotIDs": {
+          "weapon": 1,
+          "boots": 148,
+          "gloves": 25,
+          "legs": 168,
+          "coat": 151
+        },
+        "omitted": []
+      },
+      {
+        "label": "aparencia-salva-sul-1-elmo-18",
+        "action": "attack-sword",
+        "frame": 0,
+        "slotIDs": {
+          "weapon": 1,
+          "boots": 148,
+          "gloves": 25,
+          "head": 18,
+          "legs": 168,
+          "coat": 151
+        },
+        "omitted": []
+      },
+      {
+        "label": "aparencia-salva-sul-1-retirado",
+        "action": "attack-sword",
+        "frame": 0,
+        "slotIDs": {
+          "weapon": 1,
+          "boots": 148,
+          "gloves": 25,
+          "legs": 168,
+          "coat": 151
+        },
+        "omitted": []
+      },
+      {
+        "label": "aparencia-salva-sul-73-sem-elmo",
+        "action": "attack-daggers",
+        "frame": 0,
+        "slotIDs": {
+          "weapon": 73,
+          "boots": 148,
+          "gloves": 25,
+          "legs": 168,
+          "coat": 151
+        },
+        "omitted": []
+      },
+      {
+        "label": "aparencia-salva-sul-73-elmo-164",
+        "action": "attack-daggers",
+        "frame": 0,
+        "slotIDs": {
+          "weapon": 73,
+          "boots": 148,
+          "gloves": 25,
+          "head": 164,
+          "legs": 168,
+          "coat": 151
+        },
+        "omitted": []
+      },
+      {
+        "label": "aparencia-salva-sul-73-retirado",
+        "action": "attack-daggers",
+        "frame": 4,
+        "slotIDs": {
+          "weapon": 73,
+          "boots": 148,
+          "gloves": 25,
+          "legs": 168,
+          "coat": 151
+        },
+        "omitted": []
+      },
+      {
+        "label": "aparencia-salva-sul-123-sem-elmo",
+        "action": "attack-focus",
+        "frame": 0,
+        "slotIDs": {
+          "weapon": 123,
+          "boots": 148,
+          "gloves": 25,
+          "legs": 168,
+          "coat": 151
+        },
+        "omitted": []
+      },
+      {
+        "label": "aparencia-salva-sul-123-elmo-19",
+        "action": "attack-focus",
+        "frame": 0,
+        "slotIDs": {
+          "weapon": 123,
+          "boots": 148,
+          "gloves": 25,
+          "head": 19,
+          "legs": 168,
+          "coat": 151
+        },
+        "omitted": []
+      },
+      {
+        "label": "aparencia-salva-sul-123-retirado",
+        "action": "attack-focus",
+        "frame": 2,
+        "slotIDs": {
+          "weapon": 123,
+          "boots": 148,
+          "gloves": 25,
+          "legs": 168,
+          "coat": 151
+        },
+        "omitted": []
+      }
+    ],
+    "fullCycles": "ciclos-no-mapa.webp"
+  },
+  "evidence": "A captura de cada fase veio do desenho da caçada, com a roupa equipada. A cor do cabelo, a forma dos olhos e os limites de cada alteração foram comparados no raster físico no teste indicado.",
+  "tests": {
+    "command": "node --expose-gc tests/rework-south-saved-head-shapes.cjs",
+    "selected": 1260,
+    "drawn": 232,
+    "fullPhaseComparisons": {
+      "weapons": [
+        0,
+        1,
+        69,
+        73,
+        123,
+        128
+      ],
+      "draws": 208,
+      "conditions": [
+        "none/original",
+        "hair-spiky/original",
+        "none/face-calm",
+        "none/original (return)"
+      ]
+    },
+    "paletteContactComparisons": {
+      "weapons": [
+        1,
+        73,
+        123
+      ],
+      "head": [
+        18,
+        19,
+        164
+      ],
+      "draws": 24
+    },
+    "assertions": [
+      "Saved equipment, requested pose and direction",
+      "Source-mask confinement for hair and eyes",
+      "Opaque hair palette from the signed style",
+      "Iris hue and hair hue with full, partial and open helmets",
+      "Per-phase identity across A → B → A"
+    ]
+  }
+}

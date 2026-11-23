@@ -73,15 +73,17 @@ test('authored gear ownership excludes coat even under translucent gear pixels',
  }
 });
 test('focus rig stays separate from punch geometry and its twenty-tick clock',()=>{
- const focus={...structuredClone(spec),rig:'male-focus-east-modular8',action:'attack-focus',timeline:['0','1','2','3','4','5','6','7']};focus.directions.east.weapons={32:frames(6)};
+ const focus={...structuredClone(spec),rig:'fixture-focus-eight-phases',action:'attack-focus',timeline:['0','1','2','3','4','5','6','7']};focus.directions.east.weapons={32:frames(6)};
  const h=api.create({schema:'native-hd-weapon-layers-v1',records:[],separableAttacks:spec,separableAttackRigs:[focus]},{makeCanvas:cv.createCanvas});
- const q={item:32,body:'male',direction:'east',action:'attack-focus',appearance:approvedAppearance,equipment:{coat:158}},r=h.resolveSeparable(q);assert(r);assert.equal(r.timeline.length,8);assert(r.id.includes('male-focus-east-modular8'));assert.equal(r.states[0].layers.at(-1).sha256,asset(6).sha256);
+ const q={item:32,body:'male',direction:'east',action:'attack-focus',appearance:approvedAppearance,equipment:{coat:158}},r=h.resolveSeparable(q);assert(r);assert.equal(r.timeline.length,8);assert(r.id.includes('fixture-focus-eight-phases'));assert.equal(r.states[0].layers.at(-1).sha256,asset(6).sha256);
  for(const action of ['attack-unarmed','walk','idle','attack-firearm'])assert.equal(h.resolveSeparable({...q,action}),null);
  assert.equal(h.resolveSeparable({...q,item:15}),null);assert.equal(h.resolveSeparable({...q,equipment:{coat:158,gloves:152}}),null);
  assert.equal(h.resolveSeparable({...q,item:15,action:'attack-unarmed'})?.timeline.length,20);
+ const impostor=api.create({schema:'native-hd-weapon-layers-v1',records:[],separableAttackRigs:[{...focus,rig:'male-focus-east-modular8'}]},{makeCanvas:cv.createCanvas});
+ assert.equal(impostor.resolveSeparable(q),null,'the real focus rig requires its signed source');
 });
 test('optional authored cuff sockets translate gear without requiring a coat or changing other rigs',()=>{
- const cuff={...structuredClone(spec),rig:'male-punch-native-right-cuff',action:'attack-unarmed'};cuff.directions.east.weapons={118:frames(5).map(a=>({...a,attachment:{name:'native-right-cuff',anchor:[30,30],fallbackOffset:[0,0]}}))};
+ const cuff={...structuredClone(spec),rig:'fixture-right-cuff',action:'attack-unarmed'};cuff.directions.east.weapons={118:frames(5).map(a=>({...a,attachment:{name:'native-right-cuff',anchor:[30,30],fallbackOffset:[0,0]}}))};
  cuff.directions.east.coats[151]=frames(2).map(a=>({...a,socket:{name:'native-right-cuff',position:[26,23]}}));
  const h=api.create({schema:'native-hd-weapon-layers-v1',records:[],separableAttacks:spec,separableAttackRigs:[cuff]},{makeCanvas:cv.createCanvas}),q={item:118,body:'male',direction:'east',action:'attack-unarmed',appearance:approvedAppearance};
  const bare=h.resolveSeparable({...q,equipment:{}}),dressed=h.resolveSeparable({...q,equipment:{coat:151}});

@@ -24,7 +24,12 @@ function pixels(im){return Buffer.from(im.getContext('2d').getImageData(0,0,512,
     a(diff>200);a.deepEqual(pixels(draw(bare,off,f)),b);tile.width=1;n++;
    }
    a.equal(JSON.stringify(p),before);
-   for(const more of [{boots:{def:155}},{weapon:{def:0}},{gloves:{def:152}}])a(!api.selectVisual({...p,equipment:{...p.equipment,...more}},options)?.authoredBareGloveLocomotion);
+   const replacement=api.selectVisual({...p,equipment:{...p.equipment,gloves:{def:152}}},options);
+   a(replacement?.authoredBareGloveLocomotion);a.equal(replacement.slotRoutes.gloves.item,152);
+   a.notEqual(replacement.slotRoutes.gloves.source,r.slotRoutes.gloves.source);
+   a.equal(replacement.authoredBareGloveLocomotion.base.id,q.base.id);
+   a.equal(api.selectVisual(p,options).id,r.id);
+   for(const more of [{boots:{def:155}},{weapon:{def:0}}])a(!api.selectVisual({...p,equipment:{...p.equipment,...more}},options)?.authoredBareGloveLocomotion);
    for(const x of [{direction:'east'},{direction:'west'},{action:'attack-unarmed'},{consumer:'lobby'},{weaponless:true}])a(!api.selectVisual(p,{...options,...x})?.authoredBareGloveLocomotion);
    bundle.release();global.gc?.();
   }

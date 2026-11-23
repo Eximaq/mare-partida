@@ -35,7 +35,20 @@ const pixel=async url=>{const t=cv.createCanvas(640,640),x=t.getContext('2d');x.
  }
  const x=save(item,'ebony');
  for(const opt of [{consumer:'portrait'},{direction:'north'},{direction:'south'},{action:'walk'},{weaponless:true},{variant:'different'}])a(!api.selectVisual(x,{...opts,...opt})?.ownW114SideTone);
- for(const p of [save(item,'ebony','cyborg'),save(item,'ebony','gunner',{coat:{def:151}}),save(item,'ebony','gunner',{weapon:{def:item,variant:'special'}}),save(item,'ebony','gunner',{}, {eyeStyle:'face-almond'}),save(item,'ebony','gunner',{}, {hairColor:'pink'})])a(!api.selectVisual(p,opts)?.ownW114SideTone);
+ for(const p of [save(item,'ebony','cyborg'),save(item,'ebony','gunner',{coat:{def:151}}),save(item,'ebony','gunner',{weapon:{def:item,variant:'special'}}),save(item,'ebony','gunner',{}, {eyeStyle:'face-almond'})])a(!api.selectVisual(p,opts)?.ownW114SideTone);
+ const colors={hairColor:'blue',eyeColor:'green'},colored=save(item,'ebony','gunner',{},colors);
+ const signed=api.selectVisual(colored,{...opts,action:'attack-firearm'});
+ a.deepEqual(signed?.pistolColors,{hair:'blue',eyes:'green'});a.notEqual(signed.id,r0.id);
+ const bundle=await api.prepareConfiguration([{player:colored,options:{...opts,action:'attack-firearm'}}]);
+ try{
+  const ramp=[...A.skins.ebony.ramp,...A.hairs.blue.ramp,...A.eyes.green.ramp].map(s=>Buffer.from(s.slice(1),'hex'));
+  for(let i=0;i<8;i++){
+   let image;a(bundle.draw({save(){},restore(){},drawImage(c){image=c;}},colored,{...opts,action:'attack-firearm',progress:(i+.25)/8}));
+   const rendered=pix(image),{v,m,p}=refs[i];
+   for(const [at,rank] of p)if(v[at+3]===255)a.deepEqual(rendered.subarray(at,at+3),ramp[rank-1]);
+   for(let j=0;j<v.length;j+=4)if(!m[j])a.equal(rendered.readUInt32LE(j),v.readUInt32LE(j));
+  }
+ }finally{bundle.release();}
  console.log(item,direction,'PASS 64 native ticks, separate SHA source palette only');global.gc?.();
 }
 a.equal(n,128);a.equal(frames,128);console.log('PASS',n,frames,armorWitness);

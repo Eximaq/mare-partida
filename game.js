@@ -2505,7 +2505,7 @@
     if(!MareVisualCompletoRenderer.equipped(avatar)&&lobby96.drawFittedAvatar?.(c,avatar,{zoom,consumer:'character-status'})){
       canvas.dataset.avatarRenderer='native-hd';return;
     }
-    canvas.dataset.avatarRenderer='fallback';
+    canvas.dataset.avatarRenderer='pending-hd';
     c.clearRect(0,0,canvas.width,canvas.height);
     c.save();
     try{
@@ -2514,8 +2514,9 @@
       c.scale(zoom,zoom);
       const x=canvas.width/(2*zoom),y=canvas.height/zoom-10;
       // The sheet shows the saved loadout, not a momentary combat mutation.
-      lobby96.draw(c,avatar,{scene,action:'idle',direction:'south',time:0,x,y,
-        scale:(canvas.height/zoom-18)/46,consumer:'characterSprite'});
+      if(lobby96.draw(c,avatar,{scene,action:'idle',direction:'south',time:0,x,y,
+        scale:(canvas.height/zoom-18)/46,consumer:'characterSprite'}))
+       canvas.dataset.avatarRenderer=MareVisualCompletoRenderer.equipped(avatar)?'visual-completo':'native-hd';
     }finally{c.restore();}
   }
   function drawCurrentPreview(canvas,height,{aura=true}={}){
@@ -2537,12 +2538,16 @@
     const special=world.hero.visible===false||game.zoanTransformed||MareVisualCompletoRenderer.equipped(game);
     const exact=!special&&lobby96.drawFittedAvatar(c,game,{zoom:3,consumer:'inventory'});
     if(exact){canvas.dataset.avatarRenderer='native-hd';return;}
-    // Keep the game's existing transformation/full-skin and legacy fallbacks,
-    // and scale only what they actually draw. No re-equip or altered save.
+    if(!special){
+     c.clearRect(0,0,width,height);
+     canvas.dataset.avatarRenderer='pending-hd';return;
+    }
+    // Transformations and full skins are separate approved visual overrides,
+    // not ways to replace a missing player equipment sprite.
     inventoryAvatarScratch??=Object.assign(document.createElement('canvas'),{id:'inventorySprite',width:360,height:440});
     drawCurrentPreview(inventoryAvatarScratch,185,{aura:false});
     if(!MareReworkNativeHD.fitInventoryAvatar(c,inventoryAvatarScratch,1,{cache:false}))c.clearRect(0,0,width,height);
-    canvas.dataset.avatarRenderer='fallback';
+    canvas.dataset.avatarRenderer='special-visual';
   }
   function invSymbol(entry){return itemIcon(entry.kind==='gear'?entry.item.def:entry.potion?.id||entry.kind,entry.name,true);}
   function invSlotHtml(slot){
@@ -2653,7 +2658,7 @@ ${avatarExtra}
     inventoryGridObserver.observe(body.querySelector('.op-grid-wrap'));
     const preview=$('inventorySprite');
     const redraw=()=>{if(currentPanel==='inventory'&&preview.isConnected)drawInventoryAvatar(preview,{force:true});};
-    redraw();void lobby96.ready.then(()=>lobby96.ensure(game)).then(redraw);
+    redraw();void lobby96.ready.then(()=>lobby96.prepareVisual(game,{consumer:'world',action:'idle',direction:'south'})).then(redraw);
   }
   function layoutInventoryDetail(){
     const wrap=$('inventory-detail')?.querySelector('.op-detail-wrap');if(!wrap)return;
