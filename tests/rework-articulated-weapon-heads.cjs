@@ -9,7 +9,7 @@ const look=mod('character-appearance.js'),world=mod('paper-doll-96-lobby.js'),ca
 function json(file){const p=path.join(root,file);return JSON.parse(fs.existsSync(p)?fs.readFileSync(p):zlib.gunzipSync(fs.readFileSync(p+'.gz')));}
 const weaponArt=mod('player-rework-weapon-native-hd.js').create(json('tools/rework-weapon-layers-hd/index.json'),{makeCanvas:cv.createCanvas});
 const read=c=>Buffer.from(c.getContext('2d').getImageData(0,0,c.width,c.height).data);
-const group=process.argv[2],expected={sword:170,rogue:60,gunner:130,healer:100,strategist:120};
+const group=process.argv[2],expected={sword:170,rogue:60,gunner:130,healer:120,strategist:120};
 assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated headgear');
 (async()=>{
  const api=make();await api.ready;await api.warmSwordCheckpoint();const rows=[];
@@ -25,14 +25,14 @@ assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated h
    const hidden=mod('headgear-visibility.js').resolve({def:item}).hideHair;
    if(!images){
     images=new Map();const urls=new Set(weaponArt.requiredFiles(bare));
-    for(const url of Object.values(bare.orbAnatomy?.images||{}))urls.add('tools/rework-weapon-layers-hd/'+url);
+    for(const url of Object.values((bare.orbAnatomy||bare.fusedFocusAnatomy)?.images||{}))urls.add('tools/rework-weapon-layers-hd/'+url);
     for(const url of urls)images.set(url,await load(url));
    }
    if(!backs.has(hidden)){
     const layers=[];
     for(let i=0;i<r.states.length;i++){
      const c=cv.createCanvas(...r.nativeCanvas);
-     const layeredHead=bare.orbAnatomy||bare.orderedAnatomy;
+     const layeredHead=bare.orbAnatomy||bare.orderedAnatomy||bare.fusedFocusAnatomy;
      const skull=layeredHead&&hidden?{...bare,ownGauntletHead:{hideHair:true}}:bare;
      weaponArt.render(c.getContext('2d'),skull,images,{frame:i,hiddenSlots:hidden&&!layeredHead?['hair']:[],appearance:bare.colorAppearance});
      layers.push(c);
@@ -44,7 +44,7 @@ assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated h
    const b=await api.prepareConfiguration([{player,options:o}],{resolve:()=>({player,options:o,source:r})});
    try{
     for(let tick=0;tick<r.timeline.length;tick++){
-     const i=Number(r.timeline[tick]),pose=(bare.basePack||bare.orbAnatomy||bare.orderedAnatomy).pack.directions[direction].poses[i],pad=part.paddingPhysical;
+     const i=Number(r.timeline[tick]),pose=(bare.basePack||bare.orbAnatomy||bare.orderedAnatomy||bare.fusedFocusAnatomy).pack.directions[direction].poses[i],pad=part.paddingPhysical;
      const off=(axis,delta)=>pad+Math.round(4*(pose.NECK[axis]-h.rest.NECK[axis]+(prior[axis]||0)+(delta||0)));
      const expected=cv.createCanvas(...r.nativeCanvas),ctx=expected.getContext('2d'),back=backs.get(hidden)[i];
      ctx.drawImage(back,0,0);ctx.drawImage(raw,off('x',adj.gearX),off('y',adj.gearY));

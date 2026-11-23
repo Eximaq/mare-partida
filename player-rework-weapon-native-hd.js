@@ -577,7 +577,11 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
       id,role:id,component,sha256,url:'assets/'+sha256+'.png',size:[640,640],operation:'source-over',depth,mirrorX
      }))};
     });
-    return {...source,id:source.id+':independent-side:'+appearance.skin,states,w128IndependentSide:true,profileHeadRanks:direction!=='north'&&(appearance.hairColor!=='black'||appearance.eyeColor!=='blue')?appearance:null,w128OwnLateralPalette:true,
+    // The editable 124 and 128 poses share native scalp and lower limbs.
+    // Keep the 128 body, personal palette and its independently signed metal.
+    const peer=index.orderedAttackProfiles?.find(r=>r.id==='authored-ordered-124-'+direction);
+    const fusedFocusAnatomy=orderedAnatomy(peer);
+    return {...source,id:source.id+':independent-side:'+appearance.skin,states,w128IndependentSide:true,fusedFocusAnatomy,focusShorts:peer?.states.map(s=>s.layers.find(l=>l.id==='shorts').sha256),focusScalpSkin:appearance.skin,profileHeadRanks:direction!=='north'&&(appearance.hairColor!=='black'||appearance.eyeColor!=='blue')?appearance:null,w128OwnLateralPalette:true,
      replacementMode:'signed-independent-body-and-weapon',separableAttack:true,colorAppearance:{},equipmentContract:{weapon:128}};
    }
   }
@@ -2413,8 +2417,8 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  // and the source-owned distal hands take precedence over the sleeve.
  // Work in the native 640px rig, before the weapon-specific offset. Only
  // copies of the two independently signed anatomy images receive the matte.
- function restoreOrbScalp(ctx,r,s,images,resource){
-  const {pack,images:urls}=r.orbAnatomy,d=pack.directions[r.direction],frame=Number(s.state);
+ function restoreFocusScalp(ctx,r,s,images,resource){
+  const {pack,images:urls}=r.orbAnatomy||r.fusedFocusAnatomy,d=pack.directions[r.direction],frame=Number(s.state);
   const keys=d.layers.map(l=>l.frames?.[frame]||l.source),maps=new Map(keys.map(k=>[k,images.get(resource(urls[k]))]));
   if([...maps.values()].some(im=>!im))throw Error('Missing registered orb anatomy');
   const part=layers=>({...pack,directions:{[r.direction]:{...d,layers}}});
@@ -2423,7 +2427,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    vendor.compositor.render(mx,part(d.layers.filter(l=>l.slot==='hair')),maps,{direction:r.direction,frame,density:4});
    const anatomy=root.MareReworkBaseHD.create({schema:'rework-full-hd-v1',records:[]},{vendor,prefix:''});
    anatomy.render(sx,{id:r.id,body:'male',pack:part(d.layers.filter(l=>l.slot!=='hair')),direction:r.direction,sourceRefs:keys},maps,
-    {frame,makeCanvas,appearance:{skin:r.ownOrbSideTone||'light',face:'original'}});
+    {frame,makeCanvas,appearance:{skin:r.focusScalpSkin||r.ownOrbSideTone||'light',face:'original'}});
    const owned=mx.getImageData(0,0,640,640).data,reveal=sx.getImageData(0,0,640,640).data,out=ctx.getImageData(0,0,640,640);
    for(let i=0;i<owned.length;i+=4)if(owned[i+3])out.data.set(reveal.subarray(i,i+4),i);
    ctx.putImageData(out,0,0);
@@ -2735,7 +2739,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    if(r.w5IndependentSouth&&omitWeaponLayer&&l.component==='equipment')continue;
    if(l.inFrontOfHead&&headOverlay){ctx.drawImage(headOverlay,...(r.headOverlayOffset??[0,0]));headOverlay=null;}
    if(r.orderedAnatomy&&r.ownGauntletHead?.hideHair&&l.id==='hair')continue;
-   if(l.role==='ordered-orb-coat'){paintOwnedHead();if(r.ownGauntletHead?.hideHair)restoreOrbScalp(ctx,r,s,images,resource);}
+   if(l.role==='ordered-orb-coat'){paintOwnedHead();if(r.ownGauntletHead?.hideHair)restoreFocusScalp(ctx,r,s,images,resource);}
    if(l.operation==='source-over'){ctx.save();if(l.mirrorX){ctx.translate(w,0);ctx.scale(-1,1);}let tile=paletteImage(l);if(l.role==='authored-anatomy-and-equipment-under-head'&&r.ownW0SouthIndependent){
     const split=buildW0SouthIndependent(r,s,image(l),image,makeCanvas);
     const calibrated=paletteImage(l,split.raw);
@@ -2773,6 +2777,21 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      ctx.globalCompositeOperation='source-over';boot.draw(ctx,boot.art);
     }
     ctx.restore();
+    if(r.fusedFocusAnatomy&&l.id==='body'){
+     if(r.ownGauntletHead?.hideHair)restoreFocusScalp(ctx,r,s,images,resource);
+     if(r.bootTrack){
+      const shoe=bootStamp(r,s,images),phase=Number(s.state),key=r.focusShorts[phase];
+      const shorts=images.get(resource('assets/'+key+'.png'));
+      if(!shorts||shorts.width!==640||shorts.height!==640)throw Error('Missing authored focus shorts');
+      // Clip the local shoe pass against the shorts that are already painted.
+      const apply=(im,op)=>{
+       const c=makeCanvas(640,640),cx=c.getContext('2d');shoe.draw(cx,im);
+       cx.globalCompositeOperation='destination-out';cx.drawImage(shorts,0,0);
+       ctx.save();ctx.globalCompositeOperation=op;ctx.drawImage(c,0,0);ctx.restore();c.width=1;
+      };
+      apply(shoe.mask,'destination-out');apply(shoe.art,'source-over');
+     }
+    }
     if(r.ownedGauntletCoatHead&&l.depth===0)paintOwnedHead();}
    else if(l.operation==='replace-rgba-under-mask'){
     if((hiddenSlots.length||recolored)&&l.role!=='authored-hand-and-orb')continue; // never reintroduce authored head pixels into a dynamic head composition
@@ -2963,7 +2982,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    ctx.putImageData(px,0,0);
   }
   if(!r.ownedGauntletCoatHead&&!s.layers.some(l=>l.role==='ordered-orb-coat')){
-   paintOwnedHead();if(r.orbAnatomy&&r.ownGauntletHead?.hideHair)restoreOrbScalp(ctx,r,s,images,resource);
+   paintOwnedHead();if(r.orbAnatomy&&r.ownGauntletHead?.hideHair)restoreFocusScalp(ctx,r,s,images,resource);
   }
   // User-approved exact restoration: native V7 shorts swatch on 489 emitted
   // boundary samples only. Outside the independent current cloth/gear/grip.

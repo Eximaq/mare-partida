@@ -143,6 +143,11 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
+  if(process.argv.includes('--staff-coats')){
+   await observeWeaponCoats([123,124],'strategist','attack-focus',true);
+   await observeWeaponCoats([31,125,126,127,128],'healer','attack-focus',true);
+   assert.deepEqual(errors,[]);return;
+  }
   if(process.argv.includes('--orb-coats')){await observeWeaponCoats([17,122],'strategist','attack-focus');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-boots')){await observeArticulatedBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--sword-coats')){await observeWeaponCoats([0,1,67,68,69,70],'sword','attack-sword');assert.deepEqual(errors,[]);return;}
@@ -414,23 +419,24 @@ window.__hdSlotQA={
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }
- async function observeWeaponCoats(weapons,role,action){
+ async function observeWeaponCoats(weapons,role,action,withBoots=false){
   for(const weapon of weapons){
    const appearance={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
-   await page.evaluate(({weapon,appearance,role})=>__hdSlotQA.seedWardrobe(role,[weapon,19,151,158,165,179],appearance),{weapon,appearance,role});
-   await put(weapon);await put(19);await put(151);
+   const parts={head:19,...(withBoots?{boots:169}:{})};
+   await page.evaluate(({weapon,appearance,role,parts})=>__hdSlotQA.seedWardrobe(role,[weapon,...Object.values(parts),151,158,165,179],appearance),{weapon,appearance,role,parts});
+   await put(weapon);for(const item of Object.values(parts))await put(item);await put(151);
    const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
    for(const direction of ['east','west']){
-    const prefix=(role==='sword'?'espada':'orbe')+'-'+weapon+'-'+direction,kit={weapon,head:19,coat:151};
+    const prefix=(role==='sword'?'espada':[17,122].includes(weapon)?'orbe':'cajado')+'-'+weapon+'-'+direction,kit={weapon,...parts,coat:151};
     const start=await observeAttack(action,prefix+'-151',direction,kit);
     for(const coat of [158,165,179,151]){
      await put(coat);
      const next=await observeAttack(action,prefix+'-troca-'+coat,direction,{...kit,coat});
-     for(const slot of ['weapon','head'])assert.deepEqual(next.visual.coverage[0].slotRoutes[slot],start.visual.coverage[0].slotRoutes[slot]);
+     for(const slot of ['weapon',...Object.keys(parts)])assert.deepEqual(next.visual.coverage[0].slotRoutes[slot],start.visual.coverage[0].slotRoutes[slot]);
      if(coat===151)assert.deepEqual(next.visual.coverage[0].slotRoutes,start.visual.coverage[0].slotRoutes);
     }
     await remove('coat');
-    const after=await observeAttack(action,prefix+'-sem-peitoral',direction,{weapon,head:19});
+    const after=await observeAttack(action,prefix+'-sem-peitoral',direction,{weapon,...parts});
     assert.equal(after.visual.coverage[0].slotRoutes.coat,undefined);
     await put(151);
    }
