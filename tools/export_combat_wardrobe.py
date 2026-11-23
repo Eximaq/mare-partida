@@ -16,6 +16,7 @@ from export_male_sword_coats import materialize as male_sword_coats
 from export_articulated_boots import materialize as articulated_boots
 from export_staff_coats import materialize as staff_coats
 from register_staff_gloves import materialize as staff_gloves
+from register_south_punch_coats import materialize as south_punch_coats
 from export_male_sword_coats import receptors as sword_receivers
 from export_north_focus_coats import materialize as north_focus_coats
 from register_north_weapon_coats import materialize as north_weapon_coats
@@ -153,6 +154,7 @@ def materialize(folder, out):
     assets.update(other_assets)
     (out / 'index.json').write_text(json.dumps(dict(schema='editable-combat-wardrobe-v1', rigs=rigs,
         records=records, maleDaggerCoats=male_dagger_coats(bank), maleSwordCoats=male_sword_coats(bank), articulatedBoots=articulated_boots(bank), daggerBoots=articulated_boots(bank,daggers=True), maleStaffCoats=staff_coats(bank), staffGloves=staff_gloves(bank),
+        southPunchCoats=south_punch_coats(bank),
         southPunchGloves=staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/south-punch-gloves.zip',phases=12),
         daggerGloves=staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/dagger-gloves.zip'),
         orbGloves=staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/orb-gloves.zip'),
