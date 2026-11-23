@@ -29,9 +29,10 @@ async function main(){
  const rows=directions.filter(dir=>!part||dir===part);
  for(const direction of rows)for(const [i,action] of actions.entries()){
   const o={consumer:'world',action,direction};
-  function study(role,style,eq){
+  function study(role,style,eq,saved){
    const p=look.commit({classId:role,equipment:Object.fromEntries(Object.entries(eq).map(([k,id])=>[k,{def:id}]))},
     {gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',eyeStyle:'original',hairStyle:style},()=>true);
+   if(saved)Object.assign(p.appearance96,saved);
    const r=world.selectWorldHDOnly(api,catalog,p,o),label=[role,style,direction,action,JSON.stringify(eq)].join('/');
    assert(r,label);assert.equal(r.resolvedAction||r.action,action,label);assert.equal(r.direction,direction,label);
    assert(!r.visualDegraded&&!r.appearanceAdapted,label);assert.deepEqual(r.omitted||[],[],label);
@@ -48,6 +49,22 @@ async function main(){
      frames.push(new Uint32Array(c.getContext('2d').getImageData(0,0,width,height).data.buffer));}
     return frames;
    }finally{b.release();}
+  }
+  if(direction==='south'&&action==='idle'){
+   // Old saves also contain the unprefixed style. Exercise its actual light/black
+   // standing archive, where the old and current bodies have different legs.
+   const colors={skinColor:'light',hairColor:'black',eyeColor:'blue'};
+   let compared=0;
+   for(const [k,slot] of slots.entries())for(const id of gear[k]){
+    const eq={[slot]:id};
+    const current=study('sword','hair-cropped',eq,colors);
+    const legacy=study('sword','hair-cropped',eq,{...colors,hairStyle:'cropped'});
+    assert.equal(legacy.r.slotRoutes[slot].source,current.r.slotRoutes[slot].source,legacy.label);
+    const [a]=await draw(current),[b]=await draw(legacy);
+    assert(Buffer.from(a.buffer).equals(Buffer.from(b.buffer)),slot+'/'+id+': legacy and current save differ');
+    compared++;
+   }
+   assert.equal(compared,50);console.log('Legacy and current cropped hair: 50 equipped items rendered identically');
   }
   const namedBare=study('sword','hair-cropped',{}),originalBare=study('sword','original',{});
   assert.equal(namedBare.r.pack,originalBare.r.pack,'Named hair must use the same registered body motion');

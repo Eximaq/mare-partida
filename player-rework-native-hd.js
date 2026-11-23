@@ -6284,6 +6284,24 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  // Use the actual naked body's clock, anatomy and saved head material.
  // This receiver has no item and has no weapon draw operations in any phase.
+ // Early standing head packs use the original upper body with an older lower body.
+ // Reuse the dressed standing rig only when the animation and every shared upper
+ // layer match. The hair, face materials and helmet still come from the saved head.
+ const standingHeadBodies=new WeakMap();
+ function standingBodyForHead(record){
+  if(standingHeadBodies.has(record.pack))return standingHeadBodies.get(record.pack)||record;
+  const target=baseIndex.records.find(row=>row.id==='male-idle-original-south-from-walk0');
+  const source=record.pack.directions.south,dest=target?.pack.directions.south;
+  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  const compatible=dest&&same([record.pack.frame,record.pack.pivot,record.pack.density,source.clip,source.poses,source.rest],
+    [target.pack.frame,target.pack.pivot,target.pack.density,dest.clip,dest.poses,dest.rest])&&
+   ['torso','armLeft','armRight','handLeft','handRight','headBase','face'].every(id=>{
+    const layer=dest.layers.find(l=>l.id===id);
+    return layer&&same(source.layers.find(l=>l.id===id),layer);
+   });
+  standingHeadBodies.set(record.pack,compatible?target:null);
+  return compatible?target:record;
+ }
  // A named head contributes only hair or its helmet. The receiving body must
  // be the same registered HD motion used for all four clothing slots.
  function namedUnarmedBody(record,head,options){
@@ -6292,7 +6310,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const d=record.pack.directions[record.direction];
   if(record.hdKind||record.pack.density!==4||!d||d.clip.frames!==d.poses.length||
      !d.layers.some(l=>l.slot==='hair')||!d.layers.some(l=>l.slot==='headBase'))return null;
-  return record;
+  return record.action==='idle'&&record.direction==='south'?standingBodyForHead(record):record;
  }
  function namedUnarmedPass(player,o,base,slot,v,selectPose){
   if(!base.namedUnarmedBody||!base.headRecord)return null;

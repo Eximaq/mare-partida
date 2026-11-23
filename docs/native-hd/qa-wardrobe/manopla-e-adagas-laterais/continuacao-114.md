@@ -114,3 +114,13 @@ Na revisão `b189a13f3`, os mesmos 1.176 conjuntos com cabelo curto passaram de 
 A assinatura da exportação foi `8195eb6f65f05c18b69d1fada1846ccb8bd29e322cbcc4064ef3a0b150d03c16`. Para repetir um lote, defina `HD_PUBLISHED_ROOT` com o caminho do jogo exportado, `WARDROBE_HAIR` com a opção do catálogo e execute `node tools/audit-hd-saved-hair.cjs --all-contexts --all-eye-styles`. Os testes de imagem e de mapa descritos acima verificam as fases e as configurações indicadas em cada família. A repetição final dos punhos confirmou 12 observações, oito ciclos e zero erros de navegador.
 
 A prova histórica da manopla tecnológica 14 passou em repouso e caminhada, nas quatro direções e oito tonalidades de pele. O caso sem cabelo conserva o mesmo encaixe entre metal e mão. A comparação de cada fase com o cabelo azul exigiu uma diferença visível, restrita aos pixels da camada de cabelo.
+
+### Save antigo com cabelo curto e calça 133
+
+O inventário da revisão `5daaedd` reproduziu uma omissão no repouso masculino Sul com o nome antigo do cabelo curto, `cropped`. O registro de pé usava as pernas de uma versão anterior do corpo. A cabeça e o capacete 129 eram desenhados, e a calça 133 perdia o vínculo com a pose. A montagem agora verifica o pivô, a densidade, o relógio, os ossos e as camadas de tronco, braços, mãos, rosto e crânio antes de usar a base de pé compatível. O save conserva seu valor original.
+
+As 50 peças equipadas individualmente produziram imagens idênticas entre o formato antigo e o atual, `hair-cropped`, usando pele clara, cabelo preto e olhos azuis. O ensaio integral do inventário produziu 58 capturas. Retirar e recolocar o capacete preservou a fonte da calça e a aparência salva. [Comparação visual](../desarmado-com-cabelo-salvo/calca-133-e-elmo-129-save-antigo.webp) · [Fontes e resultados](../desarmado-com-cabelo-salvo/compatibilidade-repouso-sul.json)
+
+A auditoria da exportação repetiu este repouso nas sete classes. Passaram os sete corpos, as 350 peças isoladas, os 7.000 pares e os 700 conjuntos mistos amostrados. A assinatura é `c08c1631a2bb7814312e018cbf70575fb8715c5cef2667a827199e6342ae9513`.
+
+As três etapas de navegador posteriores ao inventário também passaram nesta revisão: combate V5 pelo inventário, caminhada dos dois corpos pelo teclado e as cinco posturas iniciadas pelo clique no alvo. Na prova do teclado, se o personagem encontra uma colisão antes de a textura carregar, o teste dá espaço com a tecla oposta e exige ver novamente a caminhada na direção solicitada.
