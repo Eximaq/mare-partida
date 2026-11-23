@@ -21,6 +21,7 @@ function reviewedExtensions(index){
  }
  return index;
 }
+exports.reviewedExtensions=reviewedExtensions;
 exports.priorIndex=source=>{const i=reviewedExtensions(structuredClone(source)),extension=require('./fixtures/sn7-source-provenance.json'),coat130=require('./fixtures/sn7-coat130-source.json');for(const id of['147','168','182']){assert.deepEqual(i.authoredPantsSouth.items[id],extension.entries[id]);delete i.authoredPantsSouth.items[id];}assert.deepEqual(i.authoredPantsSouth.layers.filter(l=>l.item===130),coat130.layers);i.authoredPantsSouth.layers=i.authoredPantsSouth.layers.filter(l=>l.item!==130);assert.equal(hash(i.authoredPantsSouth),proof.descriptorSHA256,'exact SOUTH extension only');delete i.authoredPantsSouth;return i;};
 exports.priorArchive=source=>{const a=structuredClone(source),reviewed=require('./fixtures/modular-after-c579040.json').archives;
  const start=a.archives.findIndex(r=>r.file===reviewed.first);assert(start>=0);
