@@ -162,6 +162,7 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
+  if(process.argv.includes('--south-metal-gloves')){await observeWeaponGloves('gauntlet');assert.deepEqual(errors,[]);return;}
   if(['--staff-gloves','--sword-gloves','--orb-gloves','--dagger-gloves'].some(v=>process.argv.includes(v))){await observeWeaponGloves(process.argv.includes('--sword-gloves')?'sword':process.argv.includes('--orb-gloves')?'orb':process.argv.includes('--dagger-gloves')?'daggers':'staff');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--staff-coats')){
    await observeWeaponCoats([123,124],'strategist','attack-focus',true);
@@ -567,22 +568,22 @@ window.__hdSlotQA={
  }
  async function observeWeaponGloves(kind){
   const {gear,weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
-  const swords=kind==='sword',action=swords?'attack-sword':kind==='daggers'?'attack-daggers':'attack-focus',family={sword:'espada',orb:'orbe',staff:'cajado',daggers:'adaga'}[kind];
-  for(const weapon of swords?weapons.filter(w=>w.role==='sword').map(w=>w.id):kind==='orb'?[17,122]:kind==='daggers'?weapons.filter(w=>w.role==='rogue').map(w=>w.id):[31,123,124,125,126,127,128]){
+  const front=kind==='gauntlet',swords=kind==='sword',action=front?'attack-unarmed':swords?'attack-sword':kind==='daggers'?'attack-daggers':'attack-focus',family={sword:'espada',orb:'orbe',staff:'cajado',daggers:'adaga',gauntlet:'manopla'}[kind];
+  for(const weapon of front?[2,3,14,110,111,118,119,120]:swords?weapons.filter(w=>w.role==='sword').map(w=>w.id):kind==='orb'?[17,122]:kind==='daggers'?weapons.filter(w=>w.role==='rogue').map(w=>w.id):[31,123,124,125,126,127,128]){
    const role=weapons.find(w=>w.id===weapon).role,dark=weapon%2===0;
    const look={gender:'masculino',skinColor:dark?'ebony':'light',hairColor:dark?'blue':'brown',eyeColor:dark?'green':'brown'};
-   const fixed={weapon,coat:151,boots:169,head:19},equipment=Object.values(fixed);
+   const fixed={weapon,...(front?{}:{coat:151}),boots:169,head:19},equipment=Object.values(fixed);
    await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,ids:[...equipment,...gear[3]],look});
    for(const item of dark?equipment:equipment.reverse())await put(item);
    const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
-   for(const direction of ['east','west']){
+   for(const direction of front?['south']:['east','west']){
     const label='luvas-'+family+'-'+weapon+'-'+direction,show=(name,eq)=>observeAttack(action,label+'-'+name,direction,eq);
     const before=await show('sem-luva',fixed);let first;
     for(const gloves of [152,...gear[3].filter(id=>id!==152),152]){
      await put(gloves);const kit={...fixed,gloves},step=await show('luva-'+gloves+(first&&gloves===152?'-retorno':''),kit);
      for(const key of Object.keys(fixed))assert.deepEqual(before.visual.coverage[0].slotRoutes[key],step.visual.coverage[0].slotRoutes[key]);
      if(gloves===152){if(first)assert.deepEqual(step.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);
-      else{first=step;await captureMapCycle(action,kit,label,8,direction);}}
+      else{first=step;await captureMapCycle(action,kit,label,front?12:8,direction);}}
     }
     await remove('gloves');assert.deepEqual((await show('retirada',fixed)).visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
    }

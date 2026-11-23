@@ -153,6 +153,7 @@ def materialize(folder, out):
     assets.update(other_assets)
     (out / 'index.json').write_text(json.dumps(dict(schema='editable-combat-wardrobe-v1', rigs=rigs,
         records=records, maleDaggerCoats=male_dagger_coats(bank), maleSwordCoats=male_sword_coats(bank), articulatedBoots=articulated_boots(bank), daggerBoots=articulated_boots(bank,daggers=True), maleStaffCoats=staff_coats(bank), staffGloves=staff_gloves(bank),
+        southPunchGloves=staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/south-punch-gloves.zip',phases=12),
         daggerGloves=staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/dagger-gloves.zip'),
         orbGloves=staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/orb-gloves.zip'),
         swordGloves=dict(staff_gloves(bank,Path(__file__).resolve().parent / 'rework-combat-wardrobe/sword-gloves.zip'),receivers=sword_receivers()),

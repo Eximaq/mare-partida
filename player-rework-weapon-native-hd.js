@@ -3254,14 +3254,22 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   if(archive.archive!==r.sourceArchiveSHA256||!r.timeline.every((v,i)=>v===archive.timeline[i])||
      !r.states.every((s,i)=>s.state===String(i))||metal.length!==12||
      !metal.every(parts=>parts.length&&parts.every(url=>/^assets\/[a-f0-9]{64}\.png$/.test(url))))return null;
-  return {body:{...r,[flag]:true},metal};
+  return {body:{...r,[flag]:true},metal,articulatedBody:body.originalSHA256};
  }
  function southPunchHeadLayers(r){
   if(r?.body!=='male'||r.direction!=='south'||r.action!=='attack-unarmed'||r.density!==4||r.nativeCanvas?.join(',')!=='640,640'||r.pivot?.join(',')!=='80,128')return null;
   const forearm=southForearmParts(r);if(forearm)return forearm;
+  const ordered=index.orderedAttackProfiles?.find(v=>v.id==='authored-ordered-14-south');
+  if(ordered&&r.item===14&&r.id.split(':')[0]===ordered.id&&r.fps===24&&r.contactTick===8&&
+     r.timeline?.length===20&&r.timeline.every((v,i)=>v===ordered.timeline[i])&&r.states?.length===12&&
+     r.states.every((s,i)=>s.state===String(i)&&s.layers.length===2&&s.layers.every((l,j)=>
+      l.sha256===ownW14SouthTrace[i][j]&&l.url==='assets/'+l.sha256+'.png'&&l.depth===j&&
+      l.id===(j?'equipment':'body')&&l.component===(j?'equipment':'anatomy')&&
+      l.operation==='source-over'&&!l.offset&&!l.mirrorX))){
+   return {body:{...r,states:r.states.map(s=>({...s,layers:[s.layers[0]]}))},metal:r.states.map(s=>[s.layers[1].url])};
+  }
   if(r.fps!==12||r.states?.length!==12||
      r.timeline?.length!==12||!r.timeline.every((v,i)=>v===String(i)))return null;
-  const ordered=index.orderedAttackProfiles?.find(v=>v.id==='authored-ordered-14-south');
   const stock=index.records.find(v=>v.item===r.item&&v.body===r.body&&v.direction===r.direction&&
    v.sourceArchiveSHA256===r.sourceArchiveSHA256&&v.id==='gauntlet'+r.item+'-south-native-original-source');
   const metal=r.item===14?ownW14SouthTrace.map(t=>t[1]):ownGauntletsSouthGear[r.item];

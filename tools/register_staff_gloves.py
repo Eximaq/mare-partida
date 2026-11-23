@@ -156,14 +156,14 @@ def calibrate(verify):
         for name,data in sorted(assets.items()):z.writestr(zipfile.ZipInfo(name),data,compress_type=zipfile.ZIP_DEFLATED)
 
 
-def materialize(bank, archive=ARCHIVE):
+def materialize(bank, archive=ARCHIVE, phases=8):
     with zipfile.ZipFile(archive) as z:
         registration=json.loads(z.read('registration.json'))
         if len(registration['items'])!=10:raise ValueError('Incomplete glove atlas')
         for hands in registration['items'].values():
             if set(hands)!={'left','right'}:raise ValueError('Missing hand')
             for track in hands.values():
-                if len(track)!=8:raise ValueError('Missing phase')
+                if len(track)!=phases:raise ValueError('Missing phase')
                 for row in track:
                     for key in (row['art'],row.get('turned')):
                         if not key:continue

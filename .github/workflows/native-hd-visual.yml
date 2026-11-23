@@ -23,6 +23,9 @@ on:
       - 'tools/register_sword_gloves.py'
       - 'tools/register_orb_gloves.py'
       - 'tools/register_dagger_gloves.py'
+      - 'tools/register_south_punch_gloves.py'
+      - 'tools/rework-combat-wardrobe/south-punch-gloves.zip'
+      - 'tests/rework-south-gauntlet-gloves.cjs'
       - 'tools/rework-combat-wardrobe/dagger-gloves.zip'
       - 'tests/rework-ordered-hand-gloves.cjs'
       - 'tools/rework-combat-wardrobe/orb-gloves.zip'
@@ -354,6 +357,7 @@ jobs:
           for tone in light ebony; do
             node --expose-gc tests/rework-south-punch-helmets.cjs "$WEAPON" "$tone"
             node --expose-gc tests/rework-south-punch-boots.cjs "$WEAPON" "$tone"
+            node --expose-gc tests/rework-south-gauntlet-gloves.cjs "$WEAPON" "$tone"
             case "$WEAPON" in 111|118|119|120) node --expose-gc tests/rework-south-forearm-trousers.cjs "$WEAPON" "$tone";; esac
           done
           node --expose-gc tests/rework-south-punch-pairs.cjs "$WEAPON"
@@ -429,6 +433,7 @@ jobs:
           python tools/register_sword_gloves.py --verify
           python tools/register_orb_gloves.py --verify
           python tools/register_dagger_gloves.py --verify
+          python tools/register_south_punch_gloves.py --verify
           python tools/register_north_rifle_trousers.py --verify
           python tools/export_north_focus_coats.py --verify
           python tools/register_north_weapon_coats.py --verify
