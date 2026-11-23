@@ -26,6 +26,7 @@ on:
       - 'tools/register_south_punch_gloves.py'
       - 'tools/rework-combat-wardrobe/south-punch-gloves.zip'
       - 'tests/rework-south-gauntlet-gloves.cjs'
+      - 'tests/rework-compass-side-wardrobe.cjs'
       - 'tools/rework-combat-wardrobe/dagger-gloves.zip'
       - 'tests/rework-ordered-hand-gloves.cjs'
       - 'tools/rework-combat-wardrobe/orb-gloves.zip'
@@ -434,6 +435,8 @@ jobs:
           python tools/register_orb_gloves.py --verify
           python tools/register_dagger_gloves.py --verify
           python tools/register_south_punch_gloves.py --verify
+          node --expose-gc tests/rework-compass-side-wardrobe.cjs light
+          node --expose-gc tests/rework-compass-side-wardrobe.cjs ebony
           python tools/register_north_rifle_trousers.py --verify
           python tools/export_north_focus_coats.py --verify
           python tools/register_north_weapon_coats.py --verify

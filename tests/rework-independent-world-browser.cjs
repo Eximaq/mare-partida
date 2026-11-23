@@ -162,6 +162,7 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
+  if(process.argv.includes('--compass-side-wardrobe')){await observeCompassWardrobe();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-metal-gloves')){await observeWeaponGloves('gauntlet');assert.deepEqual(errors,[]);return;}
   if(['--staff-gloves','--sword-gloves','--orb-gloves','--dagger-gloves'].some(v=>process.argv.includes(v))){await observeWeaponGloves(process.argv.includes('--sword-gloves')?'sword':process.argv.includes('--orb-gloves')?'orb':process.argv.includes('--dagger-gloves')?'daggers':'staff');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--staff-coats')){
@@ -565,6 +566,32 @@ window.__hdSlotQA={
    assert.deepEqual(end.visual.coverage[0].slotRoutes,initial.visual.coverage[0].slotRoutes);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
+ }
+ async function observeCompassWardrobe(){
+  const {gear}=require('../tools/audit-hd-wardrobe-product.cjs');
+  const wardrobe={coat:[151,158,165,179],head:gear[4],boots:gear[2],gloves:gear[3]};
+  const start={weapon:16,coat:151,head:19,boots:169,gloves:152};
+  const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
+  await page.evaluate(({ids,look})=>__hdSlotQA.seedWardrobe('strategist',ids,look),{ids:[16,...Object.values(wardrobe).flat()],look});
+  for(const id of Object.values(start))await put(id);
+  const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+  for(const direction of ['east','west']){
+   const label='bussola-16-'+direction;
+   const show=(name,kit)=>observeAttack('attack-focus',label+'-'+name,direction,kit);
+   const original=await show('conjunto',start);
+   await captureMapCycle('attack-focus',start,label,8,direction);
+   for(const [slot,ids] of Object.entries(wardrobe)){
+    for(const item of ids.filter(k=>k!==start[slot])){
+     await put(item);const step=await show(slot+'-'+item,{...start,[slot]:item});
+     for(const other of Object.keys(start).filter(k=>k!==slot))
+      assert.deepEqual(step.visual.coverage[0].slotRoutes[other],original.visual.coverage[0].slotRoutes[other]);
+    }
+    await remove(slot);const rest={...start};delete rest[slot];await show(slot+'-retirado',rest);
+    await put(start[slot]);const back=await show(slot+'-restaurado',start);
+    assert.deepEqual(back.visual.coverage[0].slotRoutes,original.visual.coverage[0].slotRoutes);
+   }
+  }
+  assert.deepEqual(saved,(await page.evaluate(()=>__hdSlotQA.read())).appearance);
  }
  async function observeWeaponGloves(kind){
   const {gear,weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
