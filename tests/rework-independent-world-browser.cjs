@@ -191,6 +191,26 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
+  if(process.argv.includes('--profile-blade-head-styles')){
+   const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',hairStyle:'hair-cropped',eyeStyle:'face-calm'};
+   for(const [weapon,role,dirs] of [[73,'rogue',['east','west']],[1,'sword',['north']],[67,'sword',['north']]]){
+    const fixed={weapon,coat:165,legs:21,boots:183,gloves:159},worn={...fixed,head:178};
+    const action=role==='rogue'?'attack-daggers':'attack-sword';
+    await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,ids:Object.values(worn),look});
+    for(const item of Object.values(worn))await put(item);
+    for(const dir of dirs){
+     const label='cabelo-curto-lamina-'+weapon+'-'+dir;
+     const first=await observeAttack(action,label+'-elmo',dir,worn);await captureMapCycle(action,worn,label,8,dir);
+     await remove('head');const bare=await observeAttack(action,label+'-sem-elmo',dir,fixed);
+     for(const slot of Object.keys(fixed))assert.deepEqual(first.visual.coverage[0].slotRoutes[slot],bare.visual.coverage[0].slotRoutes[slot]);
+     await put(178);const restored=await observeAttack(action,label+'-elmo-restaurado',dir,worn);
+     assert.deepEqual(restored.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);
+     const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;for(const [k,v] of Object.entries(look))assert.equal(saved[k],v);
+    }
+   }
+   assert.deepEqual(errors,[]);return;
+  }
+  if(process.argv.includes('--focus-saved-hair')){await require('./rework-male-focus-saved-hair-browser.cjs')({page,put,remove,observeAttack,captureMapCycle});assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-saved-head-shapes')){
    const {weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
    for(const [weapon,hairStyle,head] of [[1,'hair-spiky',18],[73,'none',164],[123,'hair-spiky',19]]){

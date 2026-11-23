@@ -28,6 +28,9 @@ on:
       - 'tests/rework-south-blade-head.cjs'
       - 'tests/rework-south-blade-gloves.cjs'
       - 'tests/rework-south-saved-head-shapes.cjs'
+      - 'tests/rework-blade-profile-head-styles.cjs'
+      - 'tests/rework-male-focus-saved-hair.cjs'
+      - 'tests/rework-male-focus-saved-hair-browser.cjs'
       - 'tools/register_north_blade_coats.py'
       - 'tools/articulated_sleeve_projection.py'
       - 'tools/rework-combat-wardrobe/north-blade-coats.zip'
@@ -512,6 +515,7 @@ jobs:
           node --expose-gc tests/rework-south-blade-head.cjs
           node --expose-gc tests/rework-south-blade-gloves.cjs
           node --expose-gc tests/rework-south-saved-head-shapes.cjs
+          node --expose-gc tests/rework-blade-profile-head-styles.cjs
           python tools/register_north_blade_gloves.py --verify
           node --expose-gc tests/rework-north-blade-clothes.cjs gloves
           python tools/register_north_blade_coats.py --verify
@@ -536,6 +540,7 @@ jobs:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
         run: |
           node tests/rework-ordered-orb-anatomy.cjs
+          node --expose-gc tests/rework-male-focus-saved-hair.cjs
           node --expose-gc tests/rework-ordered-orb-coats.cjs
       - name: Comparar mangas, mãos e arma com a fonte de cada fase
         if: matrix.role == 'healer'
