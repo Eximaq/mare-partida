@@ -28,7 +28,7 @@ async function walkingTrousers(lobby,player,item,direction){
 }
 async function equippedWorldPose(lobby,player,action,direction){
  const entry=await prepareWorldPose(lobby,player,action,direction);
- assert.deepEqual(entry.omitted,[]);
+ assert.deepEqual(entry.omitted,[],action+'/'+direction+' '+JSON.stringify(player.equipment));
  for(const [slot,item] of Object.entries(player.equipment)){
   if(item==null)continue;
   const route=entry.slotRoutes?.[slot];

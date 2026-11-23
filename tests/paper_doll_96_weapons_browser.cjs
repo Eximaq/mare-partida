@@ -118,7 +118,12 @@ if(!heroAttack(m))throw Error('Attack rejected '+JSON.stringify({classId:game.cl
   // Respawn uses wall dates; advance those with the accelerated simulation.
   let naturalTime=Date.now();await game.clock.setFixedTime(naturalTime);
   for(const id of [2,4,14,16,31]){
-   await game.evaluate(async id=>{__weaponQA.equip(id);await __weaponQA.r.ensure(__weaponQA.g);},id);const before=await game.evaluate(()=>__weaponQA.startNatural());await game.waitForFunction(()=>__weaponQA.prepareMap(),null,{timeout:90000});let result,steps=0;
+   // Exercise the on-demand map request after equip. A rehearsal preview promise
+   // belongs to another consumer and can be discarded during the next hunt.
+   const equipped=await game.evaluate(id=>__weaponQA.equip(id),id);assert.equal(equipped.equipped,id);
+   const before=await game.evaluate(()=>__weaponQA.startNatural());
+   await game.waitForFunction(id=>__weaponQA.g.equipment.weapon?.def===id&&__weaponQA.prepareMap(),id,{timeout:90000});
+   let result,steps=0;
    do{naturalTime+=10000;await game.clock.setFixedTime(naturalTime);result=await game.evaluate(()=>__weaponQA.naturalStep());steps++;}while(result.kills-before.kills<20&&steps<60&&result.deaths===before.deaths);
    assert(result.kills-before.kills>=20,JSON.stringify({id,before,result,steps}));assert.equal(result.deaths,before.deaths,'twenty consecutive native-spawn kills');assert(result.xp>before.xp);assert(result.hp>0);assert(result.spawns>=20);assert(result.cache.images<=192&&result.cache.imageBytes<=8*1024*1024&&result.cache.bundles<=2&&result.cache.peakLoads<=6,JSON.stringify({id,steps,cache:result.cache}));
    natural.push({id,kills:result.kills-before.kills,xp:result.xp-before.xp,level:result.level,spawns:result.spawns,simulatedSeconds:steps*10,wallMsPerBatch:result.wallMs,heap:result.heap});console.log('weapons-natural:'+id+':'+(result.kills-before.kills));
