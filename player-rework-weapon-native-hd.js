@@ -3172,9 +3172,25 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  // The twelve South punches have distinct native bodies but share a rigid
  // skull. The original ordered archive authenticates the body before either
  // hand's metal. Light-skin saves can retain the signed flattened frame.
+ function southForearmParts(r){
+  const body=r.ownedCyborg120Body;
+  if(!body||body.originalSHA256!=='ae9f25a9f6982fe6ee02c08f1c323c228955d97c176c28958aca639fa6af0964'||
+     r.fps!==24||r.timeline?.length!==20||r.states?.length!==12)return null;
+  let archive,flag,metal;
+  if(r.ownedGauntlet111SouthAttack){archive=gauntlet111SouthOwnProof;flag='w111OmitOwnGear';metal=archive.gear;}
+  else if(r.ownedCyborg118SouthAttack){archive=cyborg118SouthAuthority;flag='w118OmitOwnGear';metal=w118OwnProjectedGear.map(url=>[url]);}
+  else if(r.ownedCyborg119SouthAttack){archive=cyborg119SouthOwnAuthority;flag='w119OmitOwnGear';metal=archive.frames.map(row=>row.slice(1,3));}
+  else if(r.ownedCyborg120SouthAttack){archive=cyborg120SouthAuthority;flag='w120OmitOwnGear';metal=w120OwnProjectedGear.map(url=>[url]);}
+  else return null;
+  if(archive.archive!==r.sourceArchiveSHA256||!r.timeline.every((v,i)=>v===archive.timeline[i])||
+     !r.states.every((s,i)=>s.state===String(i))||metal.length!==12||
+     !metal.every(parts=>parts.length&&parts.every(url=>/^assets\/[a-f0-9]{64}\.png$/.test(url))))return null;
+  return {body:{...r,[flag]:true},metal};
+ }
  function southPunchHeadLayers(r){
-  if(r?.body!=='male'||r.direction!=='south'||r.action!=='attack-unarmed'||r.density!==4||r.fps!==12||
-     r.nativeCanvas?.join(',')!=='640,640'||r.pivot?.join(',')!=='80,128'||r.states?.length!==12||
+  if(r?.body!=='male'||r.direction!=='south'||r.action!=='attack-unarmed'||r.density!==4||r.nativeCanvas?.join(',')!=='640,640'||r.pivot?.join(',')!=='80,128')return null;
+  const forearm=southForearmParts(r);if(forearm)return forearm;
+  if(r.fps!==12||r.states?.length!==12||
      r.timeline?.length!==12||!r.timeline.every((v,i)=>v===String(i)))return null;
   const ordered=index.orderedAttackProfiles?.find(v=>v.id==='authored-ordered-14-south');
   const stock=index.records.find(v=>v.item===r.item&&v.body===r.body&&v.direction===r.direction&&
@@ -3190,7 +3206,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
         layers.length===2&&layers[0].sha256===a.sha256&&layers[1].sha256===metal[i]&&
         layers.every((l,j)=>l.depth===j&&l.operation==='source-over'&&!l.offset&&!l.mirrorX));
      }))return null;
-  return {body:{...r,states:r.states.map((s,i)=>({...s,layers:[ordered.states[i].layers[0]]}))},metal};
+  return {body:{...r,states:r.states.map((s,i)=>({...s,layers:[ordered.states[i].layers[0]]}))},metal:metal.map(h=>['assets/'+h+'.png'])};
  }
  function withClock(resolver,request={}){
   let record=resolver(request);

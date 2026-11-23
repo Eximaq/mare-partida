@@ -209,7 +209,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        weapon: [2, 3, 14, 110]
+        weapon: [2, 3, 14, 110, 111, 118, 119, 120]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

@@ -1499,7 +1499,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowOwnSouthDaggers:([71,72,73,74].includes(Number(weapon))||[12,13].includes(Number(weapon))&&a.skin!=='light')&&!player.__reworkSubset&&player.classId==='rogue'&&o.consumer==='world'&&!o.weaponless&&
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
-   allowCyborgForearmSouthAttack:([118,120].includes(Number(weapon))||Number(weapon)===119&&player.appearance96?.version===1&&player.appearance96.skinStyle==='natural'&&player.appearance96.hairStyle==='original'&&player.appearance96.hairColor==='black'&&player.appearance96.eyeStyle==='original'&&player.appearance96.eyeColor==='blue')&&!player.__reworkSubset&&player.classId==='cyborg'&&o.consumer==='world'&&!o.weaponless&&
+   allowCyborgForearmSouthAttack:[118,119,120].includes(Number(weapon))&&!player.__reworkSubset&&player.classId==='cyborg'&&o.consumer==='world'&&!o.weaponless&&
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
    allowCompass16NorthAttack:Number(weapon)===16&&!player.__reworkSubset&&player.classId==='strategist'&&o.consumer==='world'&&!o.weaponless&&
     occupiedEquipmentKeys.length===1&&['variant','variantId','appearanceVariant'].every(k=>player.equipment?.weapon?.[k]==null||player.equipment.weapon[k]==='original'),
@@ -8581,7 +8581,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const {southPunchHead:h,...base}=r;
   return [...new Set([...filesFor(base,frame),...filesFor(h.body,frame),...originalHairGearRegistry.requiredFiles(h.gear),
    ...h.parts.filter(l=>h.hide||l.slot==='headBase').map(l=>bodyPaths+l.source+'.png'),
-   'tools/rework-weapon-layers-hd/assets/'+h.metal[frame]+'.png'])];
+   ...h.metal[frame].map(url=>'tools/rework-weapon-layers-hd/'+url)])];
  }if(r.rifleLower){
   const {base,trousers,foot,helmet}=r.rifleLower;
   return [...new Set([...filesFor(base,frame),...(helmet?[...originalHairGearRegistry.requiredFiles(helmet.gear),
@@ -8836,7 +8836,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    baseFrame:0,baseImages:new Map([[skull.source,source(skull)]]),headImages:entry.images});
   originalHairGearRegistry.draw(ctx,h.gear,entry.images,proof);
   const dressed=ctx.getImageData(0,0,size,size).data;
-  ctx.drawImage(entry.images.get('tools/rework-weapon-layers-hd/assets/'+h.metal[frame]+'.png'),0,0);
+  for(const url of h.metal[frame])ctx.drawImage(entry.images.get('tools/rework-weapon-layers-hd/'+url),0,0);
   const composed=ctx.getImageData(0,0,size,size).data,target=result.canvas.getContext('2d'),out=target.getImageData(0,0,size,size);
   const before=new Uint32Array(old.data.buffer),after=new Uint32Array(dressed.buffer),
    paint=new Uint32Array(composed.buffer),dest=new Uint32Array(out.data.buffer);

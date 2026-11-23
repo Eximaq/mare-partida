@@ -3,7 +3,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const {make}=require('./rework-integration-support.cjs'),{weapons,gear}=require('../tools/audit-hd-wardrobe-product.cjs');
 const root=process.env.HD_PUBLISHED_ROOT;assert(root);const mod=n=>require(path.join(root,n));
 const look=mod('character-appearance.js'),world=mod('paper-doll-96-lobby.js'),catalog=mod('tools/paper-doll-96-v3/weapons.json');
-const weapon=Number(process.argv[2]);assert([2,3,14,110].includes(weapon));const options={action:'attack-unarmed',direction:'south',consumer:'world'};
+const weapon=Number(process.argv[2]);assert([2,3,14,110,111,118,119,120].includes(weapon));const options={action:'attack-unarmed',direction:'south',consumer:'world'};
+const clockFor=weapon=>[111,118,119,120].includes(weapon)?'0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 8 9 10 11 11'.split(' '):Array.from({length:12},(_,i)=>String(i));
 const digest=(ctx,y,h)=>createHash('sha256').update(ctx.getImageData(0,y,640,h).data).digest('hex');
 async function main(){
  const api=make();await api.ready;const actor=look.commit({classId:weapons.find(w=>w.id===weapon).role,equipment:{}},
@@ -11,12 +12,12 @@ async function main(){
  async function phases(kit){
   const p={...actor,equipment:Object.fromEntries(Object.entries(kit).map(([k,id])=>[k,{def:id}]))};
   const source=world.selectWorldHDOnly(api,catalog,p,options);
-  assert.deepEqual(source.omitted||[],[]);assert.equal(source.states.length,12);assert.equal(source.timeline.length,12);
+  assert.deepEqual(source.omitted||[],[]);assert.equal(source.states.length,12);assert.deepEqual(source.timeline,clockFor(weapon));
   for(const [k,id] of Object.entries(kit))assert.equal(source.slotRoutes[k].item,id);
   const bundle=await api.prepareConfiguration([{player:p,options}],{resolve:()=>({player:p,options,source})});
   const rows=[];try{assert.deepEqual(bundle.coverage[0].omitted||[],[]);
    for(let f=0;f<12;f++){
-    let c;assert(bundle.draw({save(){},restore(){},drawImage(frame){c=frame;}},p,{...options,progress:(f+.25)/12}));assert.equal(c.width,640);
+    let c;assert(bundle.draw({save(){},restore(){},drawImage(frame){c=frame;}},p,{...options,progress:(source.timeline.indexOf(String(f))+.25)/source.timeline.length}));assert.equal(c.width,640);
     const x=c.getContext('2d');rows.push([digest(x,0,380),digest(x,380,260)]);
    }
   }finally{bundle.release();}return rows;

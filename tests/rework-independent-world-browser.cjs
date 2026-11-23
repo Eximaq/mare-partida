@@ -170,6 +170,7 @@ window.__hdSlotQA={
   if(process.argv.includes('--orb-coats')){await observeWeaponCoats([17,122],'strategist','attack-focus');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-boots')){await observeArticulatedBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--sword-coats')){await observeWeaponCoats([0,1,67,68,69,70],'sword','attack-sword');assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--south-forearm-wardrobe')){await observeSouthPunchHelmets([111,118,119,120]);assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-punch-helmets')){await observeSouthPunchHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
   const daggerGearArg=process.argv.find(v=>/^--dagger-(boots|heads)=/.test(v));
@@ -561,10 +562,10 @@ window.__hdSlotQA={
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }
- async function observeSouthPunchHelmets(){
+ async function observeSouthPunchHelmets(weapons=[2,3,14,110]){
   const ids=[19,18,129,136,143,150,157,164,171,178],shoes=[8,9,134,141,148,155,162,169,176,183],action='attack-unarmed';
-  for(const weapon of [2,3,14,110]){
-   const role=weapon===14?'cyborg':'brawler',look={gender:'masculino',skinColor:weapon===110?'light':'ebony',hairColor:weapon===110?'black':'blue',eyeColor:weapon===110?'blue':'green'};
+  for(const weapon of weapons){
+   const role=require('../tools/audit-hd-wardrobe-product.cjs').weapons.find(w=>w.id===weapon).role,look={gender:'masculino',skinColor:weapon===110?'light':'ebony',hairColor:weapon===110?'black':'blue',eyeColor:weapon===110?'blue':'green'};
    await page.evaluate(({role,weapon,ids,shoes,look})=>__hdSlotQA.seedWardrobe(role,[weapon,...ids,...shoes],look),{role,weapon,ids,shoes,look});
    const show=(label,gear)=>observeAttack(action,'punho-sul-'+weapon+'-'+label,'south',gear);
    await put(weapon);const initial=await show('sem-capacete',{weapon});

@@ -5,7 +5,7 @@ const mod=n=>require(path.join(root,n)),{make,cv}=require('./rework-integration-
 const load=require('../tools/rework-hd-test-loader.cjs').create(root),{weapons,gear}=require('../tools/audit-hd-wardrobe-product.cjs');
 const world=mod('paper-doll-96-lobby.js'),catalog=mod('tools/paper-doll-96-v3/weapons.json'),look=mod('character-appearance.js');
 const weapon=Number(process.argv[2]),tone=process.argv[3]||'ebony';
-assert([2,3,14,110].includes(weapon)&&['ebony','light'].includes(tone));
+assert([2,3,14,110,111,118,119,120].includes(weapon)&&['ebony','light'].includes(tone));
 const canvas=()=>cv.createCanvas(640,640),read=c=>Buffer.from(c.getContext('2d').getImageData(0,0,640,640).data);
 async function main(){
  const api=make();await api.ready;
@@ -15,7 +15,7 @@ async function main(){
   const p={...actor,equipment:Object.fromEntries(Object.entries(eq).map(([s,id])=>[s,{def:id}]))},r=select(p);
   assert.deepEqual(r.omitted||[],[]);for(const [s,id] of Object.entries(eq))assert.equal(r.slotRoutes[s].item,id);
   const bundle=await api.prepareConfiguration([{player:p,options:o}],{resolve:()=>({player:p,options:o,source:r})});
-  const draw=f=>{let c;assert(bundle.draw({save(){},restore(){},drawImage(v){c=v;}},p,{...o,progress:(f+.1)/(r.timeline?.length||8)}));return c;};
+  const draw=f=>{let c;assert(bundle.draw({save(){},restore(){},drawImage(v){c=v;}},p,{...o,progress:((r.timeline?r.timeline.indexOf(String(f)):f)+.1)/(r.timeline?.length||8)}));return c;};
   return {r,draw,release:()=>bundle.release()};
  }
  const rawIndex=mod('tools/rework-weapon-layers-hd/index.json'),stock=rawIndex.orderedAttackProfiles.find(r=>r.id==='authored-ordered-14-south');
