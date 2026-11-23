@@ -6665,6 +6665,39 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const rig={pack:{...p,directions:{[dir]:{...d,poses}}},images:Object.fromEntries(row.sourceRefs.map(k=>[k,'../rework-base-hd/assets/'+k+'.png']))};
   daggerHeadRigs.set(row,rig);return rig;
  }
+ function southPunchBoot(base,slot,v,player,o,selectPose){
+  if(slot!=='boots'||base.hdKind!=='weapon'||base.direction!=='south'||base.action!=='attack-unarmed'||
+     !weaponRegistry.southPunchHeadLayers(base))return null;
+  // All twelve authored states use the same moving calves as the eight-state
+  // outfit model, holding its final position for the four new arm poses.
+  const isolated=selectIndependentWorld({...player,equipment:{[v.key]:v.value}},o,selectPose);
+  const grant=isolated?.independentPlan?.passes.get('boots'),bank=isolated?.nativeSlotPack;
+  if(isolated?.omitted?.length||!grant||!bank||bank.mounted.sourcePackSHA256!=='ae9f25a9f6982fe6ee02c08f1c323c228955d97c176c28958aca639fa6af0964'||
+     grant.removed?.length||grant.repair?.length||grant.mirrored?.length)return null;
+  const panels=[...grant.layers].sort((a,b)=>a.depth-b.depth);
+  if(!panels.length||panels.some(l=>!l.id.startsWith('boot'+v.item+'-')||l.binding?.kind!=='fixed'||
+     l.depthTrack||l.frames||!(l.depth<0||l.depth>1&&l.depth<4)||!bank.refs.includes(l.source)||bank.padding?.[l.source]))return null;
+  const layers=panels.map(l=>({depth:l.depth,source:ownOutfitPaths+l.source+'.png',
+   matrices:bank.phaseTransforms.find(t=>t.layer.id===l.id)?.matrices}));
+  return {source:grant.source,refs:grant.refs,decorator:{field:'southPunchFoot',own:{layers}}};
+ }
+ function southPunchHelmet(base,slot,item,player){
+  if(slot!=='head'||base.action!=='attack-unarmed'||base.direction!=='south'||base.hdKind!=='weapon'||
+     player.appearance96?.hairStyle!=='original')return null;
+  const native=weaponRegistry.southPunchHeadLayers(base);
+  if(!native)return null;
+  const row=baseIndex.records.find(r=>r.id==='male-attack-unarmed-south-drawn8');
+  if(row?.sourcePackSHA256!=='ae9f25a9f6982fe6ee02c08f1c323c228955d97c176c28958aca639fa6af0964')return null;
+  const p=row.pack,d=p.directions.south,parts=d.layers.filter(l=>['headBase','face','hair'].includes(l.slot));
+  if(parts.length!==3||parts.some(l=>l.frames||l.binding?.kind!=='rigid'||l.binding.a!=='NECK'||l.binding.b!=='NOSE')||
+     !d.poses.every(pose=>['NECK','NOSE'].every(k=>pose[k].x===d.rest[k].x&&pose[k].y===d.rest[k].y)))return null;
+  const gear=originalHairGearRegistry.resolve({body:base.body,direction:base.direction,item});
+  if(!gear||gear.sourceScale!==1)return null;
+  const hide=root.MareHeadgear.resolve({def:item}).hideHair;
+  return {source:gear.sourceRecord.snapshot+':'+gear.gear.source,refs:[],head:{southPunchHead:{
+   ...native,gear,pack:p,parts,hide,look:player.appearance96}}};
+ }
+
  function articulatedWeaponHead(base,slot,item,player){
   if(slot!=='head'||base.hdKind!=='weapon'||base.body!=='male'||
      player.appearance96?.hairStyle!=='original'||base.mirrorBody||base.approvedSouthHead)return null;
@@ -6928,7 +6961,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   for(const [slot,v] of Object.entries(request)){
    const key=JSON.stringify([pose,slot,v.item,slot==='torso'&&grip?.chromaticSource?grip.weapon.id:null]);
    if(!independentPassCache.has(key)){
-    const plate=(slot==='torso'&&cuffCoatPass(grip,v.item))||fixedRifleLower(base,slot,v,player,routeOptions)||articulatedWeaponHead(base,slot,v.item,player)||northArticulatedBoot(base,slot,v.item)||orderedDaggerBoot(base,slot,v.item)||articulatedBoot(base,slot,v.item)||articulatedSwordCoat(base,slot,v.item)||fittedNorthWeaponCoat(base,slot,v.item)||fittedStaffCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
+    const plate=(slot==='torso'&&cuffCoatPass(grip,v.item))||fixedRifleLower(base,slot,v,player,routeOptions)||southPunchHelmet(base,slot,v.item,player)||southPunchBoot(base,slot,v,player,routeOptions,selectPose)||articulatedWeaponHead(base,slot,v.item,player)||northArticulatedBoot(base,slot,v.item)||orderedDaggerBoot(base,slot,v.item)||articulatedBoot(base,slot,v.item)||articulatedSwordCoat(base,slot,v.item)||fittedNorthWeaponCoat(base,slot,v.item)||fittedStaffCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
     if(!plate&&!poseCanMount){passes.set(slot,null);continue;}
     const pass=plate||femaleGaitPass(base,slot,v,player)||swordWardrobePass(base,slot,v,player)||combatWardrobePass(base,slot,v,player)||femaleRestPass(base,slot,v,player)||independentNativePass({player,o:routeOptions,base,weapon:grip?null:weapon,slot,v,selectPose})||
      malePunchWardrobe(base,slot,v,player,routeOptions)||maleCarryWardrobe(base,slot,v,player,routeOptions,selectPose)||daggerGarment(base,slot,v,player)||findDaggerWardrobePass(base,slot,v.item)||
@@ -8514,7 +8547,15 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    'tools/rework-weapon-layers-hd/'+anatomy.images[l.frames?.[frame]||l.source]):[];
  }
  const rifleFabricPath=(sha,pool)=>'tools/'+(pool==='weapon'?'rework-weapon-layers-hd':'rework-modular-outfits-hd')+'/assets/'+sha+'.png';
- function filesFor(r,frame){if(r.rifleLower){
+ function filesFor(r,frame){if(r.southPunchFoot){
+  const {base,layers}=r.southPunchFoot;
+  return [...new Set([...filesFor(base,frame),...layers.map(l=>l.source)])];
+ }if(r.southPunchHead){
+  const {southPunchHead:h,...base}=r;
+  return [...new Set([...filesFor(base,frame),...filesFor(h.body,frame),...originalHairGearRegistry.requiredFiles(h.gear),
+   ...h.parts.filter(l=>h.hide||l.slot==='headBase').map(l=>bodyPaths+l.source+'.png'),
+   'tools/rework-weapon-layers-hd/assets/'+h.metal[frame]+'.png'])];
+ }if(r.rifleLower){
   const {base,trousers,foot,helmet}=r.rifleLower;
   return [...new Set([...filesFor(base,frame),...(helmet?[...originalHairGearRegistry.requiredFiles(helmet.gear),
    bodyPaths+helmet.skull+'.png',...(helmet.hide?[bodyPaths+helmet.hair+'.png']:[])]:[]),...(trousers?[rifleFabricPath(trousers.sha,trousers.pool)]:[]),
@@ -8736,7 +8777,55 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // hands underneath remain in their own native positions and drawing order.
   const images=new Map(entry.images);images.set(bodyPath,fit[0]);images.set(materialPath,fit[1]);return {...entry,images};
  }
+ function composeSouthPunchHead(r,frame,entry){
+  const {southPunchHead:h,...base}=r, result=composeFrame(base,frame,entry);
+  // Keep the signed native output wherever dressing the head changes no pixel,
+  // including translucent wrist edges in flattened legacy frames.
+  const body=composeFrame(h.body,frame,entry).canvas,ctx=body.getContext('2d'),size=body.width;
+  if(size!==640||body.height!==640)throw Error('Invalid South punch canvas');
+  const old=ctx.getImageData(0,0,size,size),source=l=>entry.images.get(bodyPaths+l.source+'.png');
+  const skull=h.parts.find(l=>l.slot==='headBase');
+  if(h.hide){
+   const layers=h.parts.filter(l=>l.slot!=='hair'),d=h.pack.directions.south;
+   const pack={...h.pack,directions:{south:{...d,layers}}},keys=layers.map(l=>l.source),tile=makeCanvas(size,size);
+   const images=new Map(layers.map(l=>[l.source,source(l)]));
+   registry.render(tile.getContext('2d'),{id:r.id,body:r.body,pack,direction:'south',sourceRefs:keys},images,
+    {frame:0,makeCanvas,appearance:{skin:h.look.skinColor,face:h.look.face}});
+   const scalp=tile.getContext('2d').getImageData(0,0,size,size).data,hair=h.parts.find(l=>l.slot==='hair');
+   const sx=tile.getContext('2d');sx.clearRect(0,0,size,size);sx.drawImage(source(hair),0,0);
+   const mask=sx.getImageData(0,0,size,size).data,pixels=ctx.getImageData(0,0,size,size);
+   for(let k=0;k<mask.length;k+=4)if(mask[k+3])pixels.data.set(scalp.subarray(k,k+4),k);
+   ctx.putImageData(pixels,0,0);tile.width=1;
+  }
+  const proof=originalHairGearRegistry.validate(h.gear,{basePack:h.pack,baseBody:r.body,baseDirection:'south',
+   baseFrame:0,baseImages:new Map([[skull.source,source(skull)]]),headImages:entry.images});
+  originalHairGearRegistry.draw(ctx,h.gear,entry.images,proof);
+  const dressed=ctx.getImageData(0,0,size,size).data;
+  ctx.drawImage(entry.images.get('tools/rework-weapon-layers-hd/assets/'+h.metal[frame]+'.png'),0,0);
+  const composed=ctx.getImageData(0,0,size,size).data,target=result.canvas.getContext('2d'),out=target.getImageData(0,0,size,size);
+  const before=new Uint32Array(old.data.buffer),after=new Uint32Array(dressed.buffer),
+   paint=new Uint32Array(composed.buffer),dest=new Uint32Array(out.data.buffer);
+  for(let i=0;i<before.length;i++)if(before[i]!==after[i])dest[i]=paint[i];
+  target.putImageData(out,0,0);body.width=1;
+  return {...result,info:{...result.info,source:r.id}};
+ }
  function composeFrame(r,frame,entry){
+  if(r.southPunchFoot){
+   const {base,layers}=r.southPunchFoot,result=composeFrame(base,frame,entry),pose=Math.min(frame,7);
+   const canvas=makeCanvas(640,640),ctx=canvas.getContext('2d');
+   function draw(l){
+    const im=entry.images.get(l.source);
+    if(im?.width!==640||im.height!==640)throw Object.assign(Error('Invalid South boot panel'),{asset:l.source});
+    ctx.save();ctx.imageSmoothingEnabled=false;if(l.matrices)ctx.setTransform(...l.matrices[pose]);ctx.drawImage(im,0,0);ctx.restore();
+   }
+   // Paint individual panels over their actual backing. Pre-flattening the
+   // front group changes pigment rounding where the sole meets the foot.
+   for(const l of layers)if(l.depth<0)draw(l);
+   ctx.drawImage(result.canvas,0,0);result.canvas.width=1;
+   for(const l of layers)if(l.depth>0)draw(l);
+   return {canvas,info:{...result.info,source:r.id}};
+  }
+  if(r.southPunchHead)return composeSouthPunchHead(r,frame,entry);
   if(r.rifleLower){
    const {base,trousers,foot,helmet}=r.rifleLower,result=composeFrame(base,frame,helmet?.hide?rifleHeadMaterials(helmet,entry):entry),ctx=result.canvas.getContext('2d');
    if(result.canvas.width!==640||result.canvas.height!==640)throw Error('Invalid North rifle backing');

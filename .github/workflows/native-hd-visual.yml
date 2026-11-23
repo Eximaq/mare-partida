@@ -196,6 +196,30 @@ jobs:
         run: |
           node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs east ebony "$WEAPON"
           node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs west light "$WEAPON"
+  south-punch-wardrobe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        weapon: [2, 3, 14, 110]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Conferir os capacetes e as botas nas doze fases do golpe
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WEAPON: ${{ matrix.weapon }}
+        run: |
+          for tone in light ebony; do
+            node --expose-gc tests/rework-south-punch-helmets.cjs "$WEAPON" "$tone"
+            node --expose-gc tests/rework-south-punch-boots.cjs "$WEAPON" "$tone"
+          done
+          node --expose-gc tests/rework-south-punch-pairs.cjs "$WEAPON"
   articulated-helmets:
     runs-on: ubuntu-latest
     timeout-minutes: 35

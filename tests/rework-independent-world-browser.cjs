@@ -170,6 +170,7 @@ window.__hdSlotQA={
   if(process.argv.includes('--orb-coats')){await observeWeaponCoats([17,122],'strategist','attack-focus');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-boots')){await observeArticulatedBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--sword-coats')){await observeWeaponCoats([0,1,67,68,69,70],'sword','attack-sword');assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--south-punch-helmets')){await observeSouthPunchHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
   const daggerGearArg=process.argv.find(v=>/^--dagger-(boots|heads)=/.test(v));
   if(daggerGearArg){const [mode,direction]=daggerGearArg.split('=');await observeDaggerEquipment(direction,mode.endsWith('heads')?'head':'boots');assert.deepEqual(errors,[]);return;}
@@ -553,6 +554,40 @@ window.__hdSlotQA={
    }
    await remove(slot);const end=await show(slot+'-retirado',base);
    assert.deepEqual(end.visual.coverage[0].slotRoutes,initial.visual.coverage[0].slotRoutes);
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
+ }
+ async function observeSouthPunchHelmets(){
+  const ids=[19,18,129,136,143,150,157,164,171,178],shoes=[8,9,134,141,148,155,162,169,176,183],action='attack-unarmed';
+  for(const weapon of [2,3,14,110]){
+   const role=weapon===14?'cyborg':'brawler',look={gender:'masculino',skinColor:weapon===110?'light':'ebony',hairColor:weapon===110?'black':'blue',eyeColor:weapon===110?'blue':'green'};
+   await page.evaluate(({role,weapon,ids,shoes,look})=>__hdSlotQA.seedWardrobe(role,[weapon,...ids,...shoes],look),{role,weapon,ids,shoes,look});
+   const show=(label,gear)=>observeAttack(action,'punho-sul-'+weapon+'-'+label,'south',gear);
+   await put(weapon);const initial=await show('sem-capacete',{weapon});
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;let first;
+   for(const id of [...ids,ids[0]]){
+    await put(id);const state=await show('cabeca-'+id+(first&&id===ids[0]?'-retorno':''),{weapon,head:id});
+    assert.deepEqual(state.visual.coverage[0].slotRoutes.weapon,initial.visual.coverage[0].slotRoutes.weapon);
+    if(id===ids[0]){
+     if(first)assert.deepEqual(state.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);
+     else{first=state;await captureMapCycle(action,{weapon,head:id},'punho-sul-'+weapon,12,'south');}
+    }
+   }
+   for(const hide of [true,false]){
+    await menu();await page.locator('[data-headgear-visibility]').click();await close();
+    const sample=await show(hide?'oculto':'visivel',hide?{weapon}:{weapon,head:19});
+    assert.deepEqual(sample.visual.coverage[0].slotRoutes,(hide?initial:first).visual.coverage[0].slotRoutes);
+   }
+   await put(148);
+   const dressed=await show('botas-e-capacete',{weapon,head:19,boots:148});
+   await captureMapCycle(action,{weapon,head:19,boots:148},'punho-sul-vestido-'+weapon,12,'south');
+   for(const boots of shoes){
+    await put(boots);const step=await show('bota-'+boots,{weapon,head:19,boots});
+    assert.deepEqual(step.visual.coverage[0].slotRoutes.head,dressed.visual.coverage[0].slotRoutes.head);
+   }
+   await remove('boots');
+   await remove('weapon');await show('sem-arma',{head:19});await put(weapon);
+   assert.deepEqual((await show('arma-restaurada',{weapon,head:19})).visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }

@@ -3169,6 +3169,29 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const rig=receiver?.basePack||null;
   orderedRigs.set(record,rig);return rig;
  }
+ // The twelve South punches have distinct native bodies but share a rigid
+ // skull. The original ordered archive authenticates the body before either
+ // hand's metal. Light-skin saves can retain the signed flattened frame.
+ function southPunchHeadLayers(r){
+  if(r?.body!=='male'||r.direction!=='south'||r.action!=='attack-unarmed'||r.density!==4||r.fps!==12||
+     r.nativeCanvas?.join(',')!=='640,640'||r.pivot?.join(',')!=='80,128'||r.states?.length!==12||
+     r.timeline?.length!==12||!r.timeline.every((v,i)=>v===String(i)))return null;
+  const ordered=index.orderedAttackProfiles?.find(v=>v.id==='authored-ordered-14-south');
+  const stock=index.records.find(v=>v.item===r.item&&v.body===r.body&&v.direction===r.direction&&
+   v.sourceArchiveSHA256===r.sourceArchiveSHA256&&v.id==='gauntlet'+r.item+'-south-native-original-source');
+  const metal=r.item===14?ownW14SouthTrace.map(t=>t[1]):ownGauntletsSouthGear[r.item];
+  if(!stock||!ordered||!metal||metal.length!==12||ordered.states.length!==12||
+     ownW14SouthTrace.length!==12||!r.states.every((s,i)=>{
+      const a=ordered.states[i].layers[0],layers=s.layers;
+      return s.state===String(i)&&s.approved?.sha256===stock.states[i].approved?.sha256&&
+       a.sha256===ownW14SouthTrace[i][0]&&a.url==='assets/'+a.sha256+'.png'&&a.depth===0&&
+       a.component==='anatomy'&&a.operation==='source-over'&&!a.offset&&!a.mirrorX&&
+       (layers.length===1&&layers[0].sha256===s.approved.sha256||
+        layers.length===2&&layers[0].sha256===a.sha256&&layers[1].sha256===metal[i]&&
+        layers.every((l,j)=>l.depth===j&&l.operation==='source-over'&&!l.offset&&!l.mirrorX));
+     }))return null;
+  return {body:{...r,states:r.states.map((s,i)=>({...s,layers:[ordered.states[i].layers[0]]}))},metal};
+ }
  function withClock(resolver,request={}){
   let record=resolver(request);
   const look=request.appearance;
@@ -3194,7 +3217,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    actions.includes(requested)?actions.find(a=>a.startsWith('attack-')):null;
   return action?{...record,action}:record;
  }
- return {registeredCoat,registeredPunchGrip,sidePunchMetal,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
+ return {registeredCoat,registeredPunchGrip,southPunchHeadLayers,sidePunchMetal,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
 }
 const api={create};root.MareReworkWeaponNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
