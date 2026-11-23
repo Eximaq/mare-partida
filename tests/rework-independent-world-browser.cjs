@@ -143,6 +143,7 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
+  if(process.argv.includes('--articulated-boots')){await observeArticulatedBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--sword-coats')){await observeSwordCoats();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--pistol-clothes')){await observePistolClothes();assert.deepEqual(errors,[]);return;}
@@ -383,6 +384,31 @@ window.__hdSlotQA={
     await put(159);
     const after=await observeAttack('attack-unarmed',name+'-retorno',dir,items);
     assert.deepEqual(after.visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
+   }
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
+ }
+ async function observeArticulatedBoots(){
+  const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
+  for(const [weapon,role,action] of [[68,'sword','attack-sword'],[4,'gunner','attack-firearm'],[17,'strategist','attack-focus']]){
+   const clothing={head:19,...(role==='sword'?{coat:151}:{})},kit={weapon,...clothing};
+   const items=[...Object.values(kit),8,9,134,141,148,155,162,169,176,183];
+   await page.evaluate(({role,items,look})=>__hdSlotQA.seedWardrobe(role,items,look),{role,items,look});
+   for(const id of Object.values(kit))await put(id);
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   for(const dir of ['east','west']){
+    const baseline=await observeAttack(action,'botas-'+weapon+'-'+dir+'-descalco',dir,kit);
+    let first;
+    for(const boots of [8,9,134,141,148,155,162,169,176,183,8]){
+     await put(boots);
+     const result=await observeAttack(action,'botas-'+weapon+'-'+dir+'-'+boots+(first&&boots===8?'-retorno':''),dir,{...kit,boots});
+     for(const slot of Object.keys(kit))assert.deepEqual(result.visual.coverage[0].slotRoutes[slot],baseline.visual.coverage[0].slotRoutes[slot]);
+     if(!first)first=result.visual.coverage[0].slotRoutes;
+     else if(boots===8)assert.deepEqual(result.visual.coverage[0].slotRoutes,first);
+    }
+    await remove('boots');
+    const end=await observeAttack(action,'botas-'+weapon+'-'+dir+'-retiradas',dir,kit);
+    assert.deepEqual(end.visual.coverage[0].slotRoutes,baseline.visual.coverage[0].slotRoutes);
    }
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }

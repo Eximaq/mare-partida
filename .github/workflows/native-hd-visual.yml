@@ -10,6 +10,10 @@ on:
       - 'tests/rework-male-p114-signed-slots-saved.cjs'
       - 'tests/rework-articulated-weapon-heads.cjs'
       - 'tests/rework-articulated-sword-coats.cjs'
+      - 'tools/export_articulated_boots.py'
+      - 'tools/rework-combat-wardrobe/articulated-boots.zip'
+      - 'tests/rework-articulated-boots.cjs'
+      - 'tests/rework-ordered-orb-anatomy.cjs'
       - 'tools/export_male_sword_coats.py'
       - 'tools/rework-combat-wardrobe/sword-hand-registration.json'
       - 'tests/rework-wardrobe-authored-contact.cjs'
@@ -166,6 +170,29 @@ jobs:
         env:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
         run: node --expose-gc tests/rework-articulated-sword-coats.cjs
+  articulated-boots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        role: [sword, gunner, strategist]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Comparar os dez pares de botas em todos os quadros da família
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: node --expose-gc tests/rework-articulated-boots.cjs "${{ matrix.role }}"
+      - name: Verificar o crânio e a oclusão nas duas orbes
+        if: matrix.role == 'strategist'
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: node tests/rework-ordered-orb-anatomy.cjs
   weapon-materials:
     runs-on: ubuntu-latest
     timeout-minutes: 30

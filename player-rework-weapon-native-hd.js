@@ -280,6 +280,19 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   "+P/4//j/+P/4//j/+P/4//j/+P/4//j/+P/4/7gFCQASAAkACgDYExEAGgAJAJATCgAjAAoAKQAKABEAiBMSACMACgAQABkACgARAAwAeBMSADMACgAIACEACAAJAAwAcBMJABIACwAsABAAMQALAAoAWBMJAAgACgALAAoADAANABQAEwAwACEAWBMJAAgACgALAAoACwAkAFAACQALAEgTCQAIAAkACgALAAoASAAKAAkAEAARABIACwAKADgTEQAKABMACgBAAAsADAALAAkACAAJADMACgAJACgTCQATACgACQAaABMADAATAAoACQAKADMACQAoEwkADAALACgAGwA8AAsACgALAAwAIwAJADATEwARAAoACQAaAEsACQALAAwAIwAJADATMwAKAGAAGQAbABEAIBMJACsACgB4AAkACwAMAAsAEgBYAAkAIgAJAJgSCgAjAIgACgAUAAsAEgBQAAkACwAkAAoAmBIJAAoAGwCAAAkACwAUABsACQBIACIACwAMAAsACgAJAJASCQALABQACgB4AAsALAALAAkAQAATAAoAEQAKAAsAFAAKAJASCQALABQACwB4ADQACwAJADgACQATABIAIwAMAAsAkBITABwAeAA8AAkAQAAiABMAEgAMAAsAiBIKACwAcABEAAkAMAAJACoAEwASAAwACwCIEgoALABwAEQACQAwAAsACgARABIAGwAKAAwACwCIEgoANABQAFwACQAoAAoACwAKABEAEgAjAAwACwBwEgkACAAJAAsANABQAFwACQAgAAoAEwAKABEAEgAjAAwACgBwEgkAEwBEAEAAZAAgAAoAFAATACIAGwAUAAoAcBIJAAsAVAAYAIQACQAQAAoAFAATAAoACQASACMAFAAKAGASEQALAOwACwARAAoALAALABoAIwAUAAoAYBITAPwACgALACwAEwASAAsACgATAAwACwAKAGASCQBEAQsAEQAKABsAFAAKAHASCgALADQBCwAKABsAHAALAAkAcBIJAAoACwBsAQoACAAJAHgSCgBcAQoAIQAKAGASCQAIAAkAEwAMARMALAALAAkACAAJACoAaBIJAAoADAELABoAEwAKABEACAA6AFgSCQAIAAoAZAATAJQAEwAKAEAAOgAJAGASCgBcABsAlAALABIACQASAAkAGAAJADIACQBoEgkARAATAAoACwCcABMAGgATAAkAGAAJACoAEQBoEgkACgALACQAKwCkABMAKgAJABgACQAiAAkAeBIJAAgACQAbABIAEwCkABsAIgATAAkAEAAqAAkAgBIJAAgACQAjAMQACwAaABMACgALAAoAGwAiAAkAkBIKANQAGwASAEsAIgCYEgkACwC8ABMACgARABIASwAaAAkAoBILAKwAIwAKAAgAGgBTABIACQCQEgkACAAJAAoAjAAbABIAGQASAGMAEgCwEgkAhAAjAAkAGAAJABIAMwAMADMACgCwEgkAbAAjAAoAGQAqADMAHAArAAoAsBIJABMAVAALAAkACAAJACgAIgAzACwAIwAKAMASCQALACQAEwAKAAkAEgAJACAACQAyADMALAAjAAoA0BIbABIACQBAAAkAMgA7ACwAIwAKAAATEQAwADIAOwA8ABsACgA4EwkAKgBDADwAGwAKADgTCQAiACsAFAATADwAIwBAEwoAOwAUABMATAAbABEAMBMKADMAHAATAEwAIwAJADATCgArABwAEwBUACMACQBYEyQAEwBcABsACgAJAJATVAAbAAkAKBMZACMALAALAFwAEwAKAAkAIBMZAAoAGwAcAAsAbAArAAoACQAIExkACgATABQAGwB0ACMACgAJABATEQAKABMAFAATAIQAIwARAAATGQAbAGwAYwAJAPgSGQAKACMAXAAbABIAQwAKAAkA8BIRAAsAFADrAAkA4BIRAAoAEwAMAFMAEgATAFQAKwAJANASGQAKAAsACgAjABIASwBkABsACgAZALgSEgAJAIMAlAATAAoACQCwEgkACgAjAFQAGwCkAAsACgARAKgSCQAKABQAEwBUABsApAATAAoAEQCYEhEACwBsABMAxAALABEAkBIRAAsAbAATAMQAEwAKABEAgBIJAAsAfAATAMQAGwAKAAkAgBIJAAsAhAALAMQAGwAKAAkAeBIJAAoACwBcAQsACgAJAHASCQAKAGwBCwASAGgSCQAKAHQBGwAJAFgSEQCUABsA1AAbAAoACQBQEgkACgCUABsA1AAbAAoACQBIEgkACwCcABsA1AAbAAoACQBAEgkACgCkABsA1AAbAAoACQBAEgkACgCkABsA1AAbAAoACQA4EhEACgCkACMAzAAbAAoACQAwEhEACwAKAKQAIwDMABsACgAJADASCQAKAAwACwCkAAsAEgAjALQAEwAKABEAMBIJAAoAtAAKABEACgAbALQAEwAKACEAIBIJAAoAtAALAAoAEQAjAKQAGwASAAsACgAJABgSEQAKAAsArAATABEACgAbAKQAEwAaAAsACgAJABASEQAbAKQAEwAKABkAEgAbAJQACwAaABMACgAJABASEQAbAKQAEwAKACkAIwCMAAsAEgArABASEQAbAJQAIwAaABEACgAzAGwAKwAMABsADAAKAAkAABIRACMAjAAjABoAEQAKAEsAVAAbACQAEwAMAAoACQAAEhEAEwAKAAsAhAAjACIAEQAKABMAJAAbAEQAKwAkABMADAAKAAkAABIRABMACgALAEwADQAMABMAFAAjACoAEQAKABMAdAArACwAEwAMAAoACQAAEhEAKwBcADsAGgALAAoAEQAKABMARAALACwAKwAsABMADAAKAAkAABIZAAoAMwBEAGMAEQAKABMAdAAjADQAEwAMAAoACQAQEhEACwASALsAEQAKABMAXAALABQAEwBEABMADAAKAAkAEBIRAAsAEgBrABIAQwAZABMAdAATAEQAGwARABgSEQAKAIMAHAArABkAEwB0ABMARAATAAoAEQAgEgkACgBLAAoACwAKABMANAAjABkAEwB0ABMAPAAbAAkAMBIJAAoAawA8ACMAGQAKAAsAdAATADwAEwAKAAkAMBIJAAoADAALAJQAIwAZAAoACwB8AAsANAAbAAkAOBIJAAsADAALAHQAQwAhAAsAfAALADQAGwAJADgSCQALAAwACwBsAEsAEgARAAoAtAAbAAkAOBIJAAsADAALAGwAEwAUADsACgAJAAoAtAAbAAkAOBIJAAsADAATAFwAEwAkADMAEQAKAAwACwB0ABMAJAALABIACQA4EgkACgAMABsATAAbACQAMwARAAoAEwB8AAsAJAALAAoAEQA4EgkACgALAAoAIwA0ACMAJAAzABkACgALAKQACwAKABEAOBIJAAoACwAKACsALAAbADQAKwAhAAsApAATABEAQBISADMALAATADwAKwAKABkACgCEABMAFAATAAoACQBIEgkACgAMACsAJAALADwAIwAMAAsACgAZAAoACwB8ABMADAAjAAkASBIJAAsALAAbAFQAMwAKAAsAEQAKABMAjAAjAAkASBIJAAsALAAbAGQAGwAKABMAGQAbAHwAKwAJAEgSCQALADQAEwAMABMAVAArABkAEgALADQACwBEACsAEQBAEgkACwA8ACMAXAAjACEACgATACQAEwBEADMACgAJADgSCQALADwAGwBsABsAEgAZABsADAAjAEQAOwAJADASEQALADwAGwBsACsACgARABIAMwBEADsACQAwEhEACwAMAAsANAATAGwAKwAKABkAIgATAEwAOwAJADASEQALAAwACwA0AAsAdAArAAoAKQASABMAVAAzAAoAEQAgEhEACwAMAAsALAATAHQAMwAKACEAEgALAGQAGwAMABMACgAJABgSGQAKABsAJAATAGwASwAZABsAZAATABQAEwAKAAkAGBIZABoAEwAUABsAbAA7ABIAGQAbAFwAGwAUABMACgAJABASIQAKABsAFAAjAGQAQwASABkAEwBkABsAFAATAAoACQAQEgkACgARAAoAEwAUABsADAALAGQAQwAKABkACgALAGQAIwAUABMACgAJAAgSCQAKAAsAEQAKABMAFAATABQAEwBUAEsAGQAKABMAZABDAAoACQAIEgkACgALABEACgATADQAGwBMAEsAGQAbAGQAQwAKAAkAABIRAAoACwARAAoACwA8ACMAPABLAAoAEQAKABMAbAAzAAoACwAKAAkAABIRAAoACwARAAoAEwA0ACMARABDAAoAEQAKAIQAKwAaAAkA+BEZABMAEQAKABMANAAjAFwAKwAKABEACgCUABsAGgAJAPgREQAKABMAEQAKABMANAAjAFwAKwAKABEACgCcABMACgALAAoACQD4EREAGwARAAsARAAjAFwAIwAZAAoACwCcABMAGgAJAPgREQATAAoAEQAKAEwAEwBkACMAEQASAAsAnAALABIAEQAAEhEACwAZAAoAEwC0ACMAEQAKABMAnAATAAoACQAAEhEACgALABEACgAMABMAPAALAGwAKwARAAoAEwCcABMACgAJAAASCQAKABMAGQAMABMAPAATAFQAOwARAAoAEwCcABMACgAJAPgREQAKABMAGQAMABMANAATAFQAQwAZAAoACwCcABMACgAJAPgREQAKABMAGQAMAAsANAAbAFQAQwAIABEACgALAJQAGwAKAAkA+BERAAoAEwAZABsALAATAEwAUwAYAAoACwCMACMACgAJAPgREQAbABkAGwAkABsAJAB7ABgACgALAIwAGwASAAASCQAIAAoAEwAYABsAJAATAGQAEwAKAEAACgALAIwAGwAJABASCgAbABgAGwAkABsAPAArAAoASAAKAAsAjAAbAAkAABIJAAgAIwAYABMALAATACwAkAAKAAsAjAAbAAkAEBITAAoAIAArABQAEwAkAAsAkAAKAIwAEwAKAAkAuBEKAFAACgATACAACgAMAAsAJADQAAsAjAATABEAsBEMAAsAUAAKABMAKAAiAAsACgDQAAsAhAAbABEAsBELAAwACwA4AAkACAAKAAsAMAELAIQAGwAJALgREwAMAAoACAAKACAACQAIAAwAMAEKAIwAEwAKAAkAwBEbAAoAKAAJAAoADAAwAQsAjAALAAoACQAYEQoACwAKAAsACgCIABsADAAoAAoACwAMAAoAKAELAHwAEwAMAAoACQAYEQsADAALAAwACgCIABsAFAAKABAACQALABQACgAoAQsAfAAbAAoACQAYEQoAHAALAAwACgB4AAoADAATABQACwAQAAsAFAAKACgBCgCEAAoAEQAoERIAEwAMAAsAgAAMACMADAALABAAFAAKACgBCwB0ABMACgARADgRCgATAAoACAAKAAsAcAAKACMADAALAAgAFAAKACgBCwBsABsACgAJACAREgATAAoACAASAAgACwAMAAsAcAAbADQACgAgAQoACwBsABsACgAJABgRCgAkAAoAIAAKABMAFABYAAoAEwA8AAoAIAETAGQAIwAKAAkAGBELAAwAEwAMAAsAIAAKAAgACgAUAAoAUAATAEQACgAgARMAZAAjACgRKwAMAAoAGAAKABAAEwAKACMAGgALAAoAGwA0AAsADAAKACABCwBsABMACgAwEQoAIwAMAAsAGAATABgACgBbADwACwAMAAoAGAEKAHQAEwAKAEARCgAbAAwACgAQABQACgAYAEsACgALADwACwAMAAoAGAEKAHQAEwAKAEgRCgATAAwACwAQABQACwAYAAoAUwA8AAsADAAKABgBCgB0ABMACgBQEQoAGwAQAAsAFAAKAAgAEgAIAAoASwA0AAsADAAKABABEwBsABsACgBYERIACwAQAAoAFAALABIAEAAKAFsANAAQAQsAbAArAGgRCgALAAoACAALABwACwAYABIAOwAKACsAHAAIAQoACwBsACsAcBEKABAACwAMAAsAFAAQAAoACwBqACMAAAGMABsACgCIEQoAJAALAAgAEgAIAIMA+AALAJwACwAKAJARCwAMAAsAFAALAAwACwAKAGwAEwAKAPAArAALAAoAkBEjAJwACwDwAAsArAALAAoAkBEzAIwACwDgAAoACwC0AAsACgCgEQoAGwCEAAsACgDgAMQAEwAKAKAREgATAHwACwAKANgACgDEABMACgCwETMATADwAAsAzAATAAoAyBELABwAEwAsAPgACgDMABMACgDQEQoACwASABsAGAEUABMAtAALAAoAGBMLAAwAEwAKAAsArAALAAoAEBMjABIACwCsABMAEBMMABsAEgALAKwAEwAQExQAEwAKAAkACgCsABMAEBMUABMACgAJAAoArAALAAoAEBMUABMACgAJAAoArAALAAoAEBMUAAsACgARAAoArAALAAoAEBMUAAsAIQAsABMALAALADwAEwAKABATFAALACEAJAAbACwAEwA0ABMACgAQExQACwAIABkAJAAjACQAEwAUADMAGBMMABMACgAIABEAJAALABIACwAcAAsACgALABQACwAJABsACgAYExIACwAKABgAJAALABEACwAcAAsACQALABQACgAJACMAKBMLAAoAGAAkAAsAEQAMAA0AFAAKAAkACwAUAAoACQAKABsAKBMSABgAJAALABEADAAVAAwACwAJAAsAFAAKAAgACgAbAEgTCgAkAAsAEQAMAA0AFAALAAkACwAUAAoACAAKABsASBMKACQACwARACQACwAJAAsAFAAKAAgAEgBYEwoAJAALABEACwAcAAoACAAbABAACgALAFATCwAKABsAIgATABIAEAAaAGgTMwAKABEACgATAAoACAAiAHATKwAKABAAIgAQABoAgBMKABsAEAAKAAsAGgCwExIAIAAaAPj/+P9IfwoACwAKALAAQgATAOgSCgALAAoAsAAKAAsAMgALAAoA6BITABoAGAByAAsAUgALAAoAEQDQEgkAKwAYANMACgARANASCQATAAoAEwAYABoAuwAKABEA0BIJACsACgAZAAoAEwA8AHsACgARANASCQATAAoACwAKAAsACgARAAoACwBUAGsACgARANASCQATAAoACwAKABMAEQAKABMATAA7ACQAGwARANgSCgALABoAEwARAAoAEwBMACsANAAbAAoACQDYEgkACgALABoACwARAAoAEwBMACsANAAjAAoACQDQEgkACgALABoACwAZABMARAAjAEwAIwARAMgSEQAqABkACgATADQAKwBUABsACgAJANASEQAiACEACgALADQAIwBcACMACgAJANASCQAqABkAEgALACwAIwBkABsACgARAMgSCQAyABEAEgALACwAIwBsABsAEQDIEhkAIgAZAAoAGwAMADMAdAATABIA0BIRACIAGQASAEsAdAAbAAoACQDIEhEAIgAhAAoAQwB8ABsACgAJAMgSEQAqABkACgA7AIwAGwARAMgSCQAqABkACgA7AIwAIwAJAMgSGQAiABEAEgA7AIwAGwAJANASEQAqABkAOwCMABsACQDQEhEAEwAaABkAKwCkABMACgARAMASEQATABoAGQAKABsAtAATAAoACQDAEhEAEwAKAAsACgAZAAoAEwC8ABMACgAJAMASEQATAAoACwAKABkACgATALwAEwAKAAkAyBIJABMACgALAAoAGQAKABMAvAATAAoACQDIEgkAEwAKAAsACgAZAAoAEwDEABsACQDAEgkAEwAKABMAGQAKABMAxAAbAAkAwBIJABMACgATABkACgATAMQAGwAJAMASCQATAAoACwAKABkACgATAMQAGwAJAMASCQATAAoACwAKABkAEgALAMQAGwAJAMASCQATAAoACwAKABkAEgALAMQAGwAJAMASCQAaAAsACgAhAAoACwDEABsACQC4EhEAEwAKAAsACgAhAAoACwDEABsAEQC4EgkAGgALAAoAGQASAAsAxAAbABEAwBIRADIACQAKAAsAvAAjABEAwBIRACIACwAKABEACwC0ACsAEQDAEhEACwAaAAsACgARAAsAtAAbAAoACwARAMASEQAiAAsACgARAAoACwCsABsACgARAMgSEQAiAAsACgARAAoACwCsABsACgAJANASEQAiAAsACgARAAoACwCsABMACgARANASEQAiAAsACgARAAoACwCkABsACgARANASEQAiAAsACgARAAoACwCkABMAEgAJANgSEQAiAAsACgARAAoACwCMADMACgAJAOgSIgALAAoAEQAKAAsAjAArAAoACQDwEhEAEgALAAoAEQASAAsAhAAjAAoAEQDwEhEACgATAAoAGQAKAAsAjAAbAAoACQD4EhEAEgALAAoAIQALAIQAIwAKAAkA+BIRAAoAEwAKABkACgALAIQAIwAKAAkA+BIRAAoAEwAKACEACwCEACMACgAJAPgSEQAKABMACgAhAAsAhAAjAAoACQD4EhEAGwAKACEACgCEACMACgAJAPgSEQATAAoAEwAKABEACgB0ACsAEgARAPASEQALABoACwAKABEACgB0ACsAGQD4EhEACwAaAAsACgARAAoACwBsACsAGQD4EhEACwASABMACgARAAoACwBsACMACgARAAATEQALAAoAGwAKABEACgALAGwAIwAZAAATEQALAAoAGwAKABEACgALAGwAIwAZAAATEQALAAoAGwAKABEACgALAGwAIwARAAgTEQALAAoAGwAKABEACgALAGwAIwARAAgTEQALAAoAGwAKABEACgALAGwAIwARAAgTEQALAAoAGwAKABEACgALAGwAIwARAAgTEQALAAoAGwAKABEACgALAHQAGwARAAgTEQArAAoAEQAKAAsAbAAjABEACBMRACsACgARAAoACwBcADMAEQAIExEAKwAKABEACgALAFwAMwARAAgTEQALAAoACwAKAAsACgARAAoACwBcADMAEQAIExEAGwAKAAsACgARAAoACwBcADMAEQAIExEACwAaAAsACgARAAoACwBcADMAEQAIExEACwAKAAsACgALAAoAEQAKAGQAMwARAAATCQASAAsAGgALAAoAEQALAGQAMwARAPgSEQAKAAsAIgALAAoAEQALAGQAGwASAAsAEQD4EhEAIgALAAoAIQALAHQACwASAAsAEQDwEhkACgALABIACwAKABEAEgALAHQACwASAAsAEQDoEhkACgALAAoACwAKAAsACgARAAoAEwB0AAsAEgALABkA2BIZAAoACwASAAsAGgARAAoAEwB0AAsACgATAAoACQDYEhEAEgAbABoACwAKABEACgCEAAsACgAbAAoACQDIEhEACgA7ABIAGQALAIQACwAKACMAEQC4EhoAKwAKABMACgARABMAlAALAAoAEwAKAAkAuBIJAAoAQwAKACEApAALAAoAGwAJAKgSGQAKAEMAEQAKALQACwASABMACQCgEgkACgBLABEAEgAMAA0ArAASABsACQCQEgkAEgATAAoACwASABsACgARAAwADQC0AAsAEgAbABEAeBIRAAoAMwAKABMACgAZAAoAlAALACwACwASABsACgAJAGgSGQAqAAsAEgATABkACgCkAAsAJAALAAoACQAKACMACgAJAEgSIQBCABMACgAZAMQAEwAMABMAEgAjAAoACQAwEjkAMgALAAoACwAKABEAEgDEADMACgAjAAoACQAgEiEAagAZAAoA3AArABQAIwAKAAkACBIpAFoAKQDsACMAJAAjAAkAABIZAGoAIQAKAAsA7AAjACQAIwAJAPgRCQByACkACgA8ASMAEQDoEREAKgBpAAsARAEjABEA4BERAAsAKgBJABsAVAEjABEA4BEJAAoAEwASAFkACwBkASMAEQDgEREACwASACEAEgBLAFQBIwARAOARCQAKAAsACgAhAAsAPAAjAFQBIwARAOARCQAKAAsAGQArACIAEwAUABsAJAAbAAwBIwARAOgRIQAKAAwAGwAaAAsAJAAzABQAGwAMASMAEQDwERkAGwAKAAkACwAsAAsACgATABQAEwAKAAsAFAEzABEA+BERABsACgAJACwAEwA0ABsADAE7AAkAABIRABsAEgAUAAsADAATAAwADQAcABIACwC8ACMAPABDAAkAABIRAAoAEwARABMADAALAAoACwAcAA0ADAAJAAoAtABTAAwASwAKABASCQAKABMAEQAbAAoACQAKAAwAEwAMAAsACgALAJQAEwAKAAsAKgBzAAoACQAYEgkACgAZAAoAEwARAAoAIwAKAAkACgA0AGMASgBDAAoAKwAKACgSKQASABkACgAbAAoACQAKAHsAugALAAoAEQBAErEBYBKRAfj/+P/4//j/+P/4//j/+P/4//j/yAk="
  ]
  };
+ const orderedOrbRigCache=new WeakMap();
+ function orderedOrbRig(active,direction){
+  if(orderedOrbRigCache.has(active))return orderedOrbRigCache.get(active);
+  const rig=active.basePack,p=rig.pack,d=p.directions[direction];
+  // The ordered body moves its head by one physical pixel in five phases.
+  // Feet keep the original clock; only the two rigid head anchors move.
+  const poses=d.poses.map((pose,i)=>{
+   const shifted=k=>({...pose[k],y:pose[k].y+focusHeadY[i]/4});
+   return {...pose,NECK:shifted('NECK'),NOSE:shifted('NOSE')};
+  });
+  const result={...rig,pack:{...p,directions:{[direction]:{...d,poses}}}};
+  orderedOrbRigCache.set(active,result);return result;
+ }
  function approvedBareOrbPreview(ordered,appearance,classId,sourceBody,direction,equipment,weaponVariant){
   const item=ordered?.item;
   const signs=(item===122?orb122ApprovedPreviewSources:item===17?orb17ApprovedPreviewSources:null)?.[direction],seq=['0','1','2','3','4','5','6',...Array(13).fill('7')];
@@ -305,7 +318,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   if(active?.item!==item||active.body!=='male'||active.direction!==direction||active.fps!==12||active.states?.length!==8||
      !eq(active.timeline,seq)||!eq(active.nativeCanvas,ordered.nativeCanvas)||!eq(active.pivot,ordered.pivot))return null;
   return {...ordered,id:ordered.id+':approved-bare-preview'+(appearance.skin==='light'?'':':'+appearance.skin),...(appearance.skin==='light'?{}:{ownOrbSideTone:appearance.skin}),timeline:active.timeline,visualSampling:undefined,
-   separableAttack:true,...(item===122?{orb122ApprovedPreview:true}:{orb17ApprovedPreview:true}),equipmentContract:{weapon:item},colorAppearance:{},
+   orbAnatomy:orderedOrbRig(active,direction),separableAttack:true,...(item===122?{orb122ApprovedPreview:true}:{orb17ApprovedPreview:true}),equipmentContract:{weapon:item},colorAppearance:{},
    orderedDaggerHair:'black',orderedDaggerIris:'blue'};
  }
  // Braço118 bare: owner-approved alternate cuff, not the fused historical sprite.
@@ -2398,6 +2411,45 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  // Paint at the garment seam, after the source shorts and before the
  // recipient's head. Only the real blade that survived foreground anatomy
  // and the source-owned distal hands take precedence over the sleeve.
+ // Work in the native 640px rig, before the weapon-specific offset. Only
+ // copies of the two independently signed anatomy images receive the matte.
+ function restoreOrbScalp(ctx,r,s,images,resource){
+  const {pack,images:urls}=r.orbAnatomy,d=pack.directions[r.direction],frame=Number(s.state);
+  const keys=d.layers.map(l=>l.frames?.[frame]||l.source),maps=new Map(keys.map(k=>[k,images.get(resource(urls[k]))]));
+  if([...maps.values()].some(im=>!im))throw Error('Missing registered orb anatomy');
+  const part=layers=>({...pack,directions:{[r.direction]:{...d,layers}}});
+  const mask=makeCanvas(640,640),scalp=makeCanvas(640,640),mx=mask.getContext('2d'),sx=scalp.getContext('2d');
+  try{
+   vendor.compositor.render(mx,part(d.layers.filter(l=>l.slot==='hair')),maps,{direction:r.direction,frame,density:4});
+   const anatomy=root.MareReworkBaseHD.create({schema:'rework-full-hd-v1',records:[]},{vendor,prefix:''});
+   anatomy.render(sx,{id:r.id,body:'male',pack:part(d.layers.filter(l=>l.slot!=='hair')),direction:r.direction,sourceRefs:keys},maps,
+    {frame,makeCanvas,appearance:{skin:r.ownOrbSideTone||'light',face:'original'}});
+   const owned=mx.getImageData(0,0,640,640).data,reveal=sx.getImageData(0,0,640,640).data,out=ctx.getImageData(0,0,640,640);
+   for(let i=0;i<owned.length;i+=4)if(owned[i+3])out.data.set(reveal.subarray(i,i+4),i);
+   ctx.putImageData(out,0,0);
+  }finally{mask.width=1;scalp.width=1;}
+ }
+ function bootStamp(r,s,images){
+  const track=r.bootTrack,row=track.phases[Number(s.state)],prefix='tools/rework-combat-wardrobe/assets/';
+  const art=images.get(prefix+row.art+'.png'),mask=images.get(prefix+row.mask+'.png');
+  if([art,mask].some(im=>im?.width!==row.width||im.height!==row.height))throw Error('Invalid fitted boot plate');
+  function draw(ctx,image){
+   ctx.save();if(track.mirror){ctx.translate(640,0);ctx.scale(-1,1);}
+   ctx.drawImage(image,row.x,row.y);ctx.restore();
+  }
+  return {row,art,mask,draw};
+ }
+ function mountedBootLayers(r,s,d,map,images){
+  const phase=Number(s.state),{row,art,mask,draw:stamp}=bootStamp(r,s,images);
+  for(const l of d.layers.filter(l=>l.id==='legs'||l.id==='underbody')){
+   const key=l.frames[phase],original=map.get(key);
+   if(original?.width!==640||original.height!==640)throw Error('Unexpected boot anatomy');
+   const tile=makeCanvas(640,640),cx=tile.getContext('2d');
+   cx.drawImage(original,0,0);cx.globalCompositeOperation='destination-out';stamp(cx,mask);map.set(key,tile);
+  }
+  const tile=makeCanvas(640,640);stamp(tile.getContext('2d'),art);map.set(row.art,tile);
+  return [...d.layers,{id:'equipped-articulated-boots',slot:'top',depth:2.5,source:row.art,binding:{kind:'fixed'}}];
+ }
  function renderSwordSleeve(ctx,r,s,pack,map,images,image){
   const phase=Number(s.state),size=640,at=s.attachment,track=r.swordTrack;
   const asset=key=>images.get('tools/rework-combat-wardrobe/assets/'+key+'.png');
@@ -2482,7 +2534,8 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      px.data.set(api.recolor(px.data,mask,ramp));cx.putImageData(px,0,0);map.set(k,c);
     }
    }
-   const pack={...p,directions:{[r.direction]:{...d,layers:d.layers.filter(l=>!hiddenSlots.includes(l.slot))}}};
+   const layers=r.bootTrack?mountedBootLayers(r,s,d,map,images):d.layers;
+   const pack={...p,directions:{[r.direction]:{...d,layers:layers.filter(l=>!hiddenSlots.includes(l.slot))}}};
    if(r.ownedCannon15SouthAttack||r.ownedArm117SouthAttack||r.gauntlet112SouthOwnAttack){
     if(hiddenSlots.length||!recolored)throw Error('Unsupported W15 south owned rendering');
     cannonSouthRaw=makeCanvas(w,h);
@@ -2707,7 +2760,12 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     }
     const ramp=l.skinOnly&&root.MareAppearance96?.skins[appearance.skin||appearance.skinColor]?.ramp;
     if(ramp){const c=makeCanvas(w,h),cx=c.getContext('2d');cx.drawImage(tile,0,0);const d=cx.getImageData(0,0,w,h),api=root.MareAppearance96;d.data.set(api.recolor(d.data,root.MareNativeSkinHD.mask(d.data,w,'anatomy'),ramp));cx.putImageData(d,0,0);tile=c;}
-    ctx.drawImage(tile,...(l.offset??[0,0]));ctx.restore();
+    ctx.drawImage(tile,...(l.offset??[0,0]));
+    if(r.orbAnatomy&&r.bootTrack&&l.id==='body'){
+     const boot=bootStamp(r,s,images);ctx.globalCompositeOperation='destination-out';boot.draw(ctx,boot.mask);
+     ctx.globalCompositeOperation='source-over';boot.draw(ctx,boot.art);
+    }
+    ctx.restore();
     if(r.ownedGauntletCoatHead&&l.depth===0)paintOwnedHead();}
    else if(l.operation==='replace-rgba-under-mask'){
     if((hiddenSlots.length||recolored)&&l.role!=='authored-hand-and-orb')continue; // never reintroduce authored head pixels into a dynamic head composition
@@ -2898,6 +2956,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    ctx.putImageData(px,0,0);
   }
   if(!r.ownedGauntletCoatHead)paintOwnedHead();
+  if(r.orbAnatomy&&r.ownGauntletHead?.hideHair)restoreOrbScalp(ctx,r,s,images,resource);
   // User-approved exact restoration: native V7 shorts swatch on 489 emitted
   // boundary samples only. Outside the independent current cloth/gear/grip.
   if(r.staffLateralPalette){
