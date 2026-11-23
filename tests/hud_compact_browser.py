@@ -15,6 +15,7 @@ HOOK="""  window.__compactQA={get game(){return game},get session(){return sessi
 refresh(){updateUI();renderPortrait();drawWorld();presentWorld()},enter:enterHunt,leave:returnLobby,
 openMerchant(){const npc=npcs.find(n=>n.kind==='shop');Object.assign(world.hero,{x:npc.x,y:npc.y});activateNPC(npc)},
 toggle:toggleFloating,defs:itemDefs,newItem,syncFruit:syncFruitVfx,
+manualSkillReady(){return scene==='hunt'&&!autoPlay&&!actionLocked()&&!classSkillReason()&&session.respawn<=0},
 prepareNavigation(){navigator().buildCells(1024);presentWorld()}};window.__mareDiagnostics="""
 
 def measurements(q):
@@ -150,7 +151,7 @@ with sync_playwright() as p:
         # without a timing dependency on enemy navigation.
         q.evaluate('''() => {const x=__compactQA;x.game.equipment.akuma_no_mi=null;
           x.game.classId='cyborg';x.game.equipment.weapon=x.newItem(x.defs[14]);x.syncFruit();x.enter();x.refresh()}''')
-        if q.locator('#autoToggle').get_attribute('aria-pressed')=='true':
+        if q.locator('#autoToggle').evaluate("button => button.classList.contains('active')"):
             q.locator('#autoToggle').click()
         # enterHunt loads map art and builds navigation asynchronously. The
         # production RAF intentionally suspends simulation/HUD ticks until ready.
@@ -169,6 +170,8 @@ with sync_playwright() as p:
         except Exception:
             print('Compact HUD loading diagnostics:', q.evaluate("({navigation:__mareDiagnostics().map.navigation,visual:__mareDiagnostics().lobby96.worldVisual,loading:document.querySelector('#worldLoading')?.dataset.state})"), errors, flush=True)
             raise
+        # Pausing the hunt allows an attack already in progress to finish.
+        q.wait_for_function('__compactQA.manualSkillReady()')
         q.evaluate('__compactQA.session.cooldowns[1]=0;__compactQA.game.energy=__compactQA.stats().maxEnergy;__compactQA.refresh()')
         q.locator('#classSkill2').click()
         q.wait_for_function("document.querySelector('#classSkill2').classList.contains('is-cooling')", timeout=10000)
