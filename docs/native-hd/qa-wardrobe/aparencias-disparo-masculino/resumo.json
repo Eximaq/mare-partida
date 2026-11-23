@@ -1,0 +1,255 @@
+{
+  "scope": "Masculino, ataque com arma de fogo, seis armas e quatro direções. A amostra no mapa usa quatro armas.",
+  "selection": {
+    "receivers": 24,
+    "singleItem": 1200,
+    "censusMixed": 24
+  },
+  "drawing": {
+    "posesWithAndWithoutHelmet": 48,
+    "uniquePosturesDrawn": 332,
+    "unchangedChecksBelowHead": true,
+    "exactOpaquePixels": 65968,
+    "retiredHairAlphaChecks": 97416
+  },
+  "map": {
+    "world": "hunt",
+    "hair": "hair-cropped",
+    "skin": "ebony",
+    "hairColor": "blue",
+    "eyeColor": "green",
+    "cycles": 8,
+    "uniqueFramesPerCycle": [
+      8,
+      8,
+      3,
+      3,
+      8,
+      8,
+      8,
+      8
+    ],
+    "headToggleChecks": 4,
+    "errors": [],
+    "trace": [
+      {
+        "sample": "cabelo-curto-disparo-115-south-sem-elmo",
+        "action": "attack-firearm",
+        "direction": "south",
+        "gear": {
+          "weapon": 115,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "rifle115-south-original-body-native-attachment:owned-south-firearm-iris:green:materials:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":115,\"quality\":\"hd\",\"source\":\"rifle115-south-original-body-native-attachment:owned-south-firearm-iris:green:materials:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-left-rear+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-right-rear+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-left-own-material-backing+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-right-own-material-backing+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-left-front+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-right-front@firearm-south\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"frozen-male-glove159-south-attack-unarmed-native-layers@firearm-south-arms\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"male-attack-unarmed-south-drawn8/pants168@firearm-south\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-south-frozen-attack-native-candidate@firearm-south-arms\"}}:named-firearm:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de::blue",
+        "omitted": [],
+        "posts": 8
+      },
+      {
+        "sample": "cabelo-curto-disparo-115-south-com-elmo",
+        "action": "attack-firearm",
+        "direction": "south",
+        "gear": {
+          "weapon": 115,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130,
+          "head": 157
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "rifle115-south-original-body-native-attachment:owned-south-firearm-iris:green:materials:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":115,\"quality\":\"hd\",\"source\":\"rifle115-south-original-body-native-attachment:owned-south-firearm-iris:green:materials:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-left-rear+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-right-rear+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-left-own-material-backing+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-right-own-material-backing+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-left-front+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-right-front@firearm-south\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"frozen-male-glove159-south-attack-unarmed-native-layers@firearm-south-arms\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"male-attack-unarmed-south-drawn8/pants168@firearm-south\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-south-frozen-attack-native-candidate@firearm-south-arms\"}}:named-firearm:533266c4c319b198926c373fdec7ba47951369ac254b62eb3757903d4e4e0c89::blue",
+        "omitted": [],
+        "posts": 8
+      },
+      {
+        "sample": "cabelo-curto-disparo-115-south-retirado",
+        "action": "attack-firearm",
+        "direction": "south",
+        "gear": {
+          "weapon": 115,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "rifle115-south-original-body-native-attachment:owned-south-firearm-iris:green:materials:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":115,\"quality\":\"hd\",\"source\":\"rifle115-south-original-body-native-attachment:owned-south-firearm-iris:green:materials:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-left-rear+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-right-rear+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-left-own-material-backing+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-right-own-material-backing+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-left-front+male-pants133-attack-focus-south-drawn8-candidate-boots148-isolated-candidate/boot148-right-front@firearm-south\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"frozen-male-glove159-south-attack-unarmed-native-layers@firearm-south-arms\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"male-attack-unarmed-south-drawn8/pants168@firearm-south\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-south-frozen-attack-native-candidate@firearm-south-arms\"}}:named-firearm:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de::blue",
+        "omitted": [],
+        "posts": 8
+      },
+      {
+        "sample": "cabelo-curto-disparo-116-west-sem-elmo",
+        "action": "attack-firearm",
+        "direction": "west",
+        "gear": {
+          "weapon": 116,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "rifle116-west-native-attachment:owned-side-firearm-iris:green:materials:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":116,\"quality\":\"hd\",\"source\":\"rifle116-west-native-attachment:owned-side-firearm-iris:green:materials:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"frozen-v47-male-151-boot148-east-idle@firearm-west\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"c21e95336154c31508dffbebdff65c5703cff1b8499b9da8cfbb9310acf86fc0/east/gloves/159@firearm-west\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"v7-punch-east-drawn8-east/pants168@rifle-west\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-east-frozen-attack-native-candidate@firearm-west\"}}:named-firearm:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de::blue",
+        "omitted": [],
+        "posts": 8
+      },
+      {
+        "sample": "cabelo-curto-disparo-116-west-com-elmo",
+        "action": "attack-firearm",
+        "direction": "west",
+        "gear": {
+          "weapon": 116,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130,
+          "head": 129
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "rifle116-west-native-attachment:owned-side-firearm-iris:green:materials:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":116,\"quality\":\"hd\",\"source\":\"rifle116-west-native-attachment:owned-side-firearm-iris:green:materials:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"frozen-v47-male-151-boot148-east-idle@firearm-west\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"c21e95336154c31508dffbebdff65c5703cff1b8499b9da8cfbb9310acf86fc0/east/gloves/159@firearm-west\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"v7-punch-east-drawn8-east/pants168@rifle-west\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-east-frozen-attack-native-candidate@firearm-west\"}}:named-firearm:a251768d0338704073ddcde6e7cbef68d0ad0c8ff275e1e35ce10c31e667d8e8::blue",
+        "omitted": [],
+        "posts": 8
+      },
+      {
+        "sample": "cabelo-curto-disparo-116-west-retirado",
+        "action": "attack-firearm",
+        "direction": "west",
+        "gear": {
+          "weapon": 116,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "rifle116-west-native-attachment:owned-side-firearm-iris:green:materials:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":116,\"quality\":\"hd\",\"source\":\"rifle116-west-native-attachment:owned-side-firearm-iris:green:materials:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"frozen-v47-male-151-boot148-east-idle@firearm-west\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"c21e95336154c31508dffbebdff65c5703cff1b8499b9da8cfbb9310acf86fc0/east/gloves/159@firearm-west\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"v7-punch-east-drawn8-east/pants168@rifle-west\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-east-frozen-attack-native-candidate@firearm-west\"}}:named-firearm:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de::blue",
+        "omitted": [],
+        "posts": 8
+      },
+      {
+        "sample": "cabelo-curto-disparo-4-north-sem-elmo",
+        "action": "attack-firearm",
+        "direction": "north",
+        "gear": {
+          "weapon": 4,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "mosquete4-north-native-layers:materials:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":4,\"quality\":\"hd\",\"source\":\"mosquete4-north-native-layers:materials:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"v7-punch-north-drawn8-north/north-foot/boot-148\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"cdd9889e5d96f92f826536779298fa86b9af0e0b52f2af2af41ac382a0087377/north/gloves-159\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"v7-punch-north-drawn8-north/pants168\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-north-frozen-idle-native\"}}:named-firearm:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de::blue",
+        "omitted": [],
+        "posts": 3
+      },
+      {
+        "sample": "cabelo-curto-disparo-4-north-com-elmo",
+        "action": "attack-firearm",
+        "direction": "north",
+        "gear": {
+          "weapon": 4,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130,
+          "head": 19
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "mosquete4-north-native-layers:materials:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":4,\"quality\":\"hd\",\"source\":\"mosquete4-north-native-layers:materials:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"v7-punch-north-drawn8-north/north-foot/boot-148\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"cdd9889e5d96f92f826536779298fa86b9af0e0b52f2af2af41ac382a0087377/north/gloves-159\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"v7-punch-north-drawn8-north/pants168\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-north-frozen-idle-native\"}}:named-firearm:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de+received-male-19-north::blue",
+        "omitted": [],
+        "posts": 3
+      },
+      {
+        "sample": "cabelo-curto-disparo-4-north-retirado",
+        "action": "attack-firearm",
+        "direction": "north",
+        "gear": {
+          "weapon": 4,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "mosquete4-north-native-layers:materials:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":4,\"quality\":\"hd\",\"source\":\"mosquete4-north-native-layers:materials:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"v7-punch-north-drawn8-north/north-foot/boot-148\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"cdd9889e5d96f92f826536779298fa86b9af0e0b52f2af2af41ac382a0087377/north/gloves-159\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"v7-punch-north-drawn8-north/pants168\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-north-frozen-idle-native\"}}:named-firearm:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de::blue",
+        "omitted": [],
+        "posts": 3
+      },
+      {
+        "sample": "cabelo-curto-disparo-114-east-sem-elmo",
+        "action": "attack-firearm",
+        "direction": "east",
+        "gear": {
+          "weapon": 114,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "pistolas114-east-native-original-source:owned-atomic-palette:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":114,\"quality\":\"hd\",\"source\":\"pistolas114-east-native-original-source:owned-atomic-palette:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"frozen-v47-male-151-boot148-east-walk@pistolas114-east-native-original-source\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"pistolas114-laterais/159@pistolas114-east-native-original-source\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"v7-punch-east-drawn8-east/pants168@pistolas114-east-native-original-source\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-east-frozen-attack-native-candidate@pistolas114-east-native-original-source\"}}:named-firearm:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de::blue",
+        "omitted": [],
+        "posts": 8
+      },
+      {
+        "sample": "cabelo-curto-disparo-114-east-com-elmo",
+        "action": "attack-firearm",
+        "direction": "east",
+        "gear": {
+          "weapon": 114,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130,
+          "head": 18
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "pistolas114-east-native-original-source:owned-atomic-palette:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":114,\"quality\":\"hd\",\"source\":\"pistolas114-east-native-original-source:owned-atomic-palette:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"frozen-v47-male-151-boot148-east-walk@pistolas114-east-native-original-source\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"pistolas114-laterais/159@pistolas114-east-native-original-source\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"v7-punch-east-drawn8-east/pants168@pistolas114-east-native-original-source\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-east-frozen-attack-native-candidate@pistolas114-east-native-original-source\"}}:named-firearm:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de+received-male-18-east::blue",
+        "omitted": [],
+        "posts": 8
+      },
+      {
+        "sample": "cabelo-curto-disparo-114-east-retirado",
+        "action": "attack-firearm",
+        "direction": "east",
+        "gear": {
+          "weapon": 114,
+          "boots": 148,
+          "gloves": 159,
+          "legs": 168,
+          "coat": 130
+        },
+        "hair": "exact-head-source-pixels",
+        "source": "pistolas114-east-native-original-source:owned-atomic-palette:ebony:blue:green:independent-slots:{\"weapon\":{\"item\":114,\"quality\":\"hd\",\"source\":\"pistolas114-east-native-original-source:owned-atomic-palette:ebony:blue:green\"},\"boots\":{\"item\":148,\"quality\":\"hd\",\"source\":\"frozen-v47-male-151-boot148-east-walk@pistolas114-east-native-original-source\"},\"gloves\":{\"item\":159,\"quality\":\"hd\",\"source\":\"pistolas114-laterais/159@pistolas114-east-native-original-source\"},\"legs\":{\"item\":168,\"quality\":\"hd\",\"source\":\"v7-punch-east-drawn8-east/pants168@pistolas114-east-native-original-source\"},\"coat\":{\"item\":130,\"quality\":\"hd\",\"source\":\"male-torso130-east-frozen-attack-native-candidate@pistolas114-east-native-original-source\"}}:named-firearm:3e4e4eca7dad1e86bef1fa961d751fb0f03c8a935d85752fe17e60ed071268de::blue",
+        "omitted": [],
+        "posts": 8
+      }
+    ]
+  },
+  "historicalV5": {
+    "weapon": 115,
+    "coat": 151,
+    "head": 157,
+    "hair": "hair-spiky",
+    "source": "rifle115-v5-south-native-layers",
+    "drawOrder": [
+      1,
+      2,
+      3,
+      4,
+      0
+    ],
+    "damageAfterClick": 122,
+    "rendererAfterHelmetRemoval": "carry115-male-idle-original-south-from-walk0:hair-spiky-coat151-native",
+    "errors": []
+  },
+  "commands": [
+    "node tests/rework-male-firearm-named-hair.cjs",
+    "node tests/rework-independent-world-browser.cjs --firearm-saved-hair",
+    "node tests/rework_v5_ui_browser.cjs"
+  ]
+}

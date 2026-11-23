@@ -191,9 +191,43 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
-  if(process.argv.includes('--profile-blade-head-styles')){
+  if(process.argv.includes('--saved-carry-gait')){
+   const expressions=process.argv.includes('--carry-expression');
+   const look={gender:'masculino',hairStyle:expressions?'hair-long':'hair-cropped',hairColor:'blue',eyeColor:'green',skinColor:'ebony',eyeStyle:expressions?'face-calm':'original'};
+   const cases=expressions?[[110,'brawler','a','west',19],[124,'strategist','s','south',157]]:
+    [[0,'sword','d','east',18],[110,'brawler','a','west',19],[119,'cyborg','w','north',129],[124,'strategist','s','south',157]];
+   for(const [weapon,role,key,dir,head] of cases){
+    const clothes={weapon,coat:137,legs:22,boots:162,gloves:159},worn={...clothes,head};
+    await page.evaluate(({role,items,look})=>__hdSlotQA.seedWardrobe(role,items,look),{role,items:Object.values(worn),look});
+    for(const id of Object.values(worn))await put(id);
+    await page.evaluate(dir=>__hdSlotQA.target(dir),dir);
+    const label='porte-'+weapon+'-'+dir;
+    const first=await walk(key,dir,worn,label);
+    await page.evaluate(({dir,worn})=>__hdSlotQA.startCycle('walk',dir,worn,true),{dir,worn});
+    let frames=[];
+    for(let attempt=0;attempt<5&&frames.length<16;attempt++){
+     await page.evaluate(dir=>__hdSlotQA.lane(dir),dir);
+     await page.keyboard.down(key);
+     try{await page.waitForFunction(()=>__hdSlotQA.cycleFrames().length===16,null,{timeout:3000}).catch(()=>{});}
+     finally{await page.keyboard.up(key);}
+     frames=await page.evaluate(()=>__hdSlotQA.cycleFrames());
+    }
+    assert.deepEqual(frames,Array.from({length:16},(_,i)=>i),label);
+    const image=await page.evaluate(()=>__hdSlotQA.finishCycle());
+    await fs.writeFile(path.join(out,label+'-ciclo.png'),Buffer.from(image.split(',')[1],'base64'));
+    await remove('head');const bare=await walk(key,dir,clothes,label+'-sem-elmo');
+    for(const slot of Object.keys(clothes))assert.deepEqual(first.draw.visual.coverage[0].slotRoutes[slot],bare.draw.visual.coverage[0].slotRoutes[slot]);
+    await put(head);const back=await walk(key,dir,worn,label+'-elmo-restaurado');
+    assert.deepEqual(back.draw.visual.coverage[0].slotRoutes,first.draw.visual.coverage[0].slotRoutes);
+    assert.deepEqual(back.appearance,first.appearance);
+   }
+   assert.deepEqual(errors,[]);return;
+  }
+  if(process.argv.includes('--profile-blade-head-styles')||process.argv.includes('--blade-outfit-styles')){
    const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',hairStyle:'hair-cropped',eyeStyle:'face-calm'};
-   for(const [weapon,role,dirs] of [[73,'rogue',['east','west']],[1,'sword',['north']],[67,'sword',['north']]]){
+   const runs=process.argv.includes('--blade-outfit-styles')?[[0,'sword',['east']],[69,'sword',['west']],[73,'rogue',['north']]]:
+    [[73,'rogue',['east','west']],[1,'sword',['north']],[67,'sword',['north']]];
+   for(const [weapon,role,dirs] of runs){
     const fixed={weapon,coat:165,legs:21,boots:183,gloves:159},worn={...fixed,head:178};
     const action=role==='rogue'?'attack-daggers':'attack-sword';
     await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,ids:Object.values(worn),look});
@@ -210,6 +244,8 @@ window.__hdSlotQA={
    }
    assert.deepEqual(errors,[]);return;
   }
+  if(process.argv.includes('--firearm-saved-hair')){await require('./rework-male-firearm-named-hair-browser.cjs')({page,put,remove,observeAttack,captureMapCycle});assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--unarmed-saved-hair')){await require('./rework-male-unarmed-named-browser.cjs')({page,out,draw,walk,put,remove,observeAttack,captureMapCycle});assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--focus-saved-hair')){await require('./rework-male-focus-saved-hair-browser.cjs')({page,put,remove,observeAttack,captureMapCycle});assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-saved-head-shapes')){
    const {weapons}=require('../tools/audit-hd-wardrobe-product.cjs');

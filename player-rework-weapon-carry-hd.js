@@ -889,7 +889,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
      r.direction==='west'&&r.base.id==='v7-male-walk-drawn-east-east-mirror-west-candidate'&&r.base.mirrorX))return 'w'+r.item+'-side';
   return null;
  }
- function render(ctx,r,images,{frame=0,hiddenSlots=[],appearance=r?.colorAppearance||{},appearanceAPI=root.MareAppearance96}={}){
+ function render(ctx,r,images,{frame=0,hiddenSlots=[],drawGaitHat,appearance=r?.colorAppearance||{},appearanceAPI=root.MareAppearance96}={}){
   if(!r)throw Error('Unsupported carry identity');const source=r.base.pack,original=source.directions[r.direction],d=r.hairLayers?{...original,layers:original.layers.filter(l=>l.slot!=='hair').concat(r.hairLayers)}:original,p=r.hairLayers?{...source,directions:{...source.directions,[r.direction]:d}}:source,pose=d.poses[frame];if(!pose)throw Error('No authored frame');const padding=r.plan.paddingPhysical??0;if(!Number.isInteger(padding)||padding<0)throw Error('Carry padding must be a nonnegative integer');const w=p.frame.width*4+2*padding,h=p.frame.height*4+2*padding;ctx.canvas.width=w;ctx.canvas.height=h;
   const canvas=r.base.mirrorX?makeCanvas(w,h):ctx.canvas,target=r.base.mirrorX?canvas.getContext('2d'):ctx;target.clearRect(0,0,w,h);target.imageSmoothingEnabled=false;target.save();target.translate(padding,padding);try{
   const map=new Map([...r.base.sourceRefs,...(r.hairLayers||[]).map(l=>l.source)].map(s=>[s,images.get(basePrefix+s+'.png')||images.get(s)]));const skin=appearance.skin||appearance.skinColor,hair=appearance.hairColor;
@@ -919,6 +919,13 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   const w112Specks=w112WalkSpecks(r,d,padding);
   const carrySpecks=w2w110CarrySpecks(r,d,padding);
   const layers=V.plan(p,r.direction,frame).filter(l=>!hiddenSlots.includes(l.slot));const operations=layers.map(l=>({depth:l.depth,layer:l}));
+  if(drawGaitHat){
+   // Keep the head in the outfit depth stack, below foreground arms and weapons.
+   const hair=V.plan(source,r.direction,frame).find(l=>l.slot==='hair');
+   if(!hair)throw Error('Missing registered hair depth');
+   for(let i=operations.length-1;i>=0;i--)if(operations[i].layer.slot==='hair')operations.splice(i,1);
+   operations.push({depth:hair.depth,drawGaitHat});
+  }
   for(const part of r.plan.parts){const hand=layers.find(l=>l.binding?.a===part.binding.a&&l.binding?.b===part.binding.b);if(!hand)continue; // Lateral source has no authored far hand: do not float a disconnected far gauntlet.
    if(part.source.sha256==='a5d9ace7907501b55cae486be1f0f83c9227c7cf31ddc440ff21262c70bf8ec6'&&r.item===121&&r.verifiedStaff121Carry||
       part.staffSideGripWindow&&r.sideOwnProof&&[126,127].includes(r.item)&&
@@ -930,6 +937,13 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   // Fixed WEST garment rasters are already facing WEST. Compensate for the
   // base canvas reflection only when drawing those registered layers.
   for(const op of operations.sort((a,b)=>a.depth-b.depth)){
+   if(op.drawGaitHat){
+    target.save();try{
+     if(r.base.mirrorX){target.translate(p.frame.width*4,0);target.scale(-1,1);}
+     op.drawGaitHat(target);
+    }finally{target.restore();}
+    continue;
+   }
    if(op.layer){const original=d.layers.find(l=>l.id===op.layer.id);if(original.slot==='body'&&r.plan.parts.some(q=>q.replaceBoundLayer&&original.binding?.a===q.binding.a&&original.binding?.b===q.binding.b))continue;const pack={...p,directions:{[r.direction]:{...d,layers:[original]}}};const cover=original.slot==='body'&&r.plan.parts.find(q=>q.hideHandBeyondWrist&&original.binding?.a===q.binding.a&&original.binding?.b===q.binding.b);target.save();if(cover){const a=pose[cover.binding.a],b=pose[cover.binding.b],dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy),ux=dx/len,uy=dy/len,nx=-uy,ny=ux,L=2000,x=b.x*4,y=b.y*4;target.beginPath();target.moveTo(x+nx*L,y+ny*L);target.lineTo(x-nx*L,y-ny*L);target.lineTo(x-nx*L-ux*L,y-ny*L-uy*L);target.lineTo(x+nx*L-ux*L,y+ny*L-uy*L);target.closePath();target.clip();
     // The North remainder is from the clipped native hand (not the metal).
     // Exclude exactly those disconnected wrist-edge samples from this draw.
@@ -1054,12 +1068,18 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
  }
  // Adapt only a preselected exact carry; do not resolve/rebind weapon, pose, or hand.
  function withNamedHair(record,style,color){
-  if(record?.hdKind!=='carry'||record.hairLayers||!['hair-cropped','hair-spiky'].includes(style)||record.colorAppearance?.hair!=='original')return null;
-  const resolved=resolveHair(record.base,style.slice(5));
-  if(resolved?.hairLayers?.length!==1||!resolved.hairSource)return null;
+  if(!['hair-cropped','hair-spiky'].includes(style))return null;
+  const fitted=withGaitHair(record,style,color);
+  return fitted&&{...fitted,id:record.id+':named-focus-'+style+':'+color,namedFocusCarry:true};
+ }
+ function withGaitHair(record,style,color){
+  if(record?.hdKind!=='carry'||record.hairLayers||record.colorAppearance?.hair!=='original'||
+     !root.MareCharacterAppearance?.choices.hairStyle[style]||style==='original')return null;
+  const resolved=resolveHair(record.base,style.replace(/^hair-/,''));
+  if(!resolved||style!=='none'&&(resolved.hairLayers?.length!==1||!resolved.hairSource))return null;
   const layer=resolved.hairLayers[0],d=record.base.pack.directions[record.direction];
-  if(d.layers.some(l=>l.slot!=='hair'&&(l.id===layer.id||l.source===layer.source||l.frames?.includes(layer.source))))return null;
-  return {...record,...resolved,id:record.id+':named-focus-'+style+':'+color,namedFocusCarry:true,
+  if(layer&&d.layers.some(l=>l.slot!=='hair'&&(l.id===layer.id||l.source===layer.source||l.frames?.includes(layer.source))))return null;
+  return {...record,...resolved,id:record.id+':saved-carry-hair:'+style+':'+color,
    colorAppearance:{...record.colorAppearance,hair:style,hairStyle:style,hairColor:color}};
  }
  // Independent gear uses the unchanged native carry. The source census
@@ -1091,7 +1111,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   const known=baseIndex.records.find(p=>p.id===c.baseId);
   return !!known&&!!known.mirrorX===!!r.base.mirrorX&&JSON.stringify(known.pack)===JSON.stringify(r.pack);
  }
- return {resolve,requiredFiles,render,withNamedHair,verifiedHeadgear,certifiedCarryVector,withIndependentStaffSideGear};
+ return {resolve,requiredFiles,render,withNamedHair,withGaitHair,verifiedHeadgear,certifiedCarryVector,withIndependentStaffSideGear};
 }
 const api={create};root.MareReworkWeaponCarryHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

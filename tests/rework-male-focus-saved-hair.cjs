@@ -9,8 +9,6 @@ const {gear,slots,weapons} = require('../tools/audit-hd-wardrobe-product.cjs');
 const world = require(path.join(root,'paper-doll-96-lobby.js'));
 const appearance = require(path.join(root,'character-appearance.js'));
 const catalog = require(path.join(root,'tools/paper-doll-96-v3/weapons.json'));
-const bank = require(path.join(root,'tools/rework-combat-wardrobe/index.json'));
-const north = new Set(Object.keys(bank.northStaffWardrobe.items).map(Number));
 const focus = weapons.filter(w=>['healer','strategist'].includes(w.role));
 const dirs = ['east','west','south','north'];
 const selection = process.env.FOCUS_HAIR_GROUP || 'all';
@@ -18,7 +16,7 @@ assert(['all',...dirs].includes(selection));
 const part = (direction)=>selection==='all'||direction===selection;
 const renderCases = {
  east:[16,17,31,32,121,122,123,128],
- west:[32,121,124],north:[123,128],south:[16,17,31,123]
+ west:[32,121,124],north:[16,17,31,32,121,122,123,128],south:[16,17,31,123]
 };
 const pigments=new Set(appearance.eyes.green.ramp.map(hex=>{
  const n=parseInt(hex.slice(1),16);return ((n>>16)&255)|(n&0xff00)|((n&255)<<16);
@@ -42,7 +40,6 @@ async function main(){
  let selected=0,drawn=0,frames=0;
  for(const direction of dirs.filter(part)){
   for(const [i,w] of focus.entries()){
-   if(direction==='north'&&!north.has(w.id))continue;
    const o={consumer:'world',action:'attack-focus',direction};
    const clothes=Object.fromEntries(slots.map((s,n)=>[s,gear[n][(i*3+n)%gear[n].length]]));
    function query(hairStyle,helmet){
@@ -87,8 +84,8 @@ async function main(){
    console.log(JSON.stringify(rows.at(-1)));global.gc?.();
   }
  }
- assert.equal(focus.length,12);assert.equal(north.size,6);
- const expected=dirs.filter(part).reduce((sum,d)=>sum+(d==='north'?north.size:focus.length),0);assert.equal(selected,2*expected);
+ assert.equal(focus.length,12);
+ const expected=dirs.filter(part).length*focus.length;assert.equal(selected,2*expected);
  assert.equal(drawn,dirs.filter(part).reduce((sum,d)=>sum+renderCases[d].length,0));
  if(process.env.WARDROBE_EVIDENCE)fs.writeFileSync(process.env.WARDROBE_EVIDENCE,JSON.stringify({selected,allHelmets:expected*10,drawn,frames,rows}));
  console.log(JSON.stringify({selected,allHelmets:expected*10,drawn,frames}));

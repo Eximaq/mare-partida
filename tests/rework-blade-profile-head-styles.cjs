@@ -4,7 +4,7 @@ const root=process.env.HD_PUBLISHED_ROOT;assert(root,'Set HD_PUBLISHED_ROOT to t
 const mod=n=>require(path.join(root,n));
 global.MareSword0Checkpoint=mod('player-rework-sword0-checkpoint.js');
 const {make,cv}=require('./rework-integration-support.cjs');
-const {weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
+const {weapons,slots,gear:wardrobe}=require('../tools/audit-hd-wardrobe-product.cjs');
 const world=mod('paper-doll-96-lobby.js'),catalog=mod('tools/paper-doll-96-v3/weapons.json'),look=mod('character-appearance.js');
 const read=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,c.width,c.height).data.buffer);
 (async()=>{
@@ -12,13 +12,16 @@ const read=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,c.width,c.heig
  const loader=require('../tools/rework-hd-test-loader.cjs').create(root);
  const family=global.MareReworkHead.create(mod('tools/rework-accessories/head-layer-index.json'),
   {vendor:global.ReworkAccessoryVendor,appearanceAPI:global.MareAppearance96,makeCanvas:cv.createCanvas});
- const groups=[...weapons.filter(w=>w.role==='rogue').flatMap(w=>['east','west'].map(direction=>({...w,direction}))),
+ const initial=[...weapons.filter(w=>w.role==='rogue').flatMap(w=>['east','west'].map(direction=>({...w,direction}))),
   ...weapons.filter(w=>w.role==='sword'&&[1,67,68,70].includes(w.id)).map(w=>({...w,direction:'north'}))];
- assert.equal(groups.length,16);let drawn=0,checks=0;
+ const remaining=[...weapons.filter(w=>w.role==='sword').flatMap(w=>['east','west'].map(direction=>({...w,direction}))),
+  ...weapons.filter(w=>w.role==='rogue').map(w=>({...w,direction:'north'}))];
+ assert.equal(initial.length,16);assert.equal(remaining.length,18);
+ const onlyRemaining=process.argv.includes('--remaining'),groups=onlyRemaining?remaining:[...initial,...remaining];let drawn=0,checks=0,clothing=0;
  for(const {id,role,direction} of groups){
   const o={action:api.attackActionFor(id),direction,consumer:'world'},gear={weapon:id,coat:165,legs:21,boots:183,gloves:159,head:178};
-  function select(hairStyle,eyeStyle,head,hairColor='blue'){
-   const equipment={...gear};if(head==null)delete equipment.head;else equipment.head=head;
+  function select(hairStyle,eyeStyle,head,hairColor='blue',pieces=gear){
+   const equipment={...pieces};if(head==null)delete equipment.head;else equipment.head=head;
    const p=look.commit({classId:role,equipment:Object.fromEntries(Object.entries(equipment).map(([s,v])=>[s,{def:v}]))},
     {gender:'masculino',skinColor:'ebony',hairStyle,eyeStyle,hairColor,eyeColor:'green'},()=>true);
    const r=world.selectWorldHDOnly(api,catalog,p,o);
@@ -40,12 +43,15 @@ const read=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,c.width,c.heig
    }}finally{b.release();}
    return result;
   }
+  const initialGroup=initial.some(w=>w.id===id&&w.direction===direction);
+  if(!initialGroup)for(const [i,slot] of slots.entries())for(const item of wardrobe[i]){
+   const pieces={...gear,[slot]:item}; select('hair-cropped','original',pieces.head,'blue',pieces);clothing++;
+  }
   const full=await take('hair-cropped','original',178);
-
-  if([1,67,73].includes(id)){
+  if(initialGroup?[1,67,73].includes(id):id===73||id===0&&direction==='east'||id===69&&direction==='west'){
    const baseline=await take('none','original',null),hair=await take('hair-cropped','original',null),
     eyes=await take('none','face-calm',null),auburn=await take('hair-cropped','original',178,'auburn');
-   const naked=select('hair-cropped','original',null).r,fit=naked.daggerHeadRig||naked.basePack||naked.independentPlan?.base?.daggerHeadRig;
+   const naked=select('hair-cropped','original',null).r,carrier=naked.independentPlan?.base??naked,fit=carrier.daggerHeadRig||carrier.basePack||carrier.orderedSwordFit?.rig;
    assert(fit?.pack,[id,direction,'registered receiver']);
    const d=fit.pack.directions[direction],raw=family.resolve({body:'male',direction,look:{hair:'hair-cropped'}}),
     helmet=family.resolve({body:'male',direction,look:{hair:'hair-cropped',head:'head-178'}}),imgs=new Map();
@@ -75,5 +81,5 @@ const read=c=>new Uint32Array(c.getContext('2d').getImageData(0,0,c.width,c.heig
   }
 
  }
- assert.equal(checks,1120);assert.equal(drawn,256);console.log(JSON.stringify({contexts:groups.length,checks,drawn}));
+ assert.equal(checks,groups.length*70);assert.equal(clothing,900);assert.equal(drawn,onlyRemaining?240:496);console.log(JSON.stringify({contexts:groups.length,checks,clothing,drawn}));
 })().catch(e=>{console.error(e);process.exitCode=1;});

@@ -30,6 +30,13 @@ on:
       - 'tests/rework-south-saved-head-shapes.cjs'
       - 'tests/rework-blade-profile-head-styles.cjs'
       - 'tests/rework-male-focus-saved-hair.cjs'
+      - 'tools/audit-hd-saved-hair.cjs'
+      - 'tests/rework-carry-saved-hats.cjs'
+      - 'tests/rework-male-firearm-named-hair.cjs'
+      - 'tests/rework-male-firearm-named-hair-browser.cjs'
+      - 'tests/rework-male-unarmed-named-wardrobe.cjs'
+      - 'tests/rework-male-unarmed-named-browser.cjs'
+      - 'tests/rework-starter-helmet-hair.cjs'
       - 'tests/rework-male-focus-saved-hair-browser.cjs'
       - 'tools/register_north_blade_coats.py'
       - 'tools/articulated_sleeve_projection.py'
@@ -595,6 +602,7 @@ jobs:
           node --expose-gc tests/rework-pistol-leg-wardrobe.cjs
           node --expose-gc tests/rework-fixed-north-rifle-boots.cjs
           node --expose-gc tests/rework-fixed-north-rifle-heads.cjs
+          node --expose-gc tests/rework-male-firearm-named-hair.cjs
       - name: Conferir as empunhaduras, os orbes e a bússola lateral
         if: matrix.role == 'strategist'
         env:
@@ -629,7 +637,10 @@ jobs:
       - name: Conferir os peitorais, a mão e o metal atuais
         env:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
-        run: node --expose-gc tests/rework-north-focus-coats.cjs
+        run: |
+          node --expose-gc tests/rework-north-focus-coats.cjs
+          node tools/audit-hd-saved-hair.cjs
+          node --expose-gc tests/rework-starter-helmet-hair.cjs
       - name: Conferir as dez calças com capacetes, botas e peitorais
         if: ${{ !cancelled() }}
         env:
@@ -720,6 +731,12 @@ jobs:
           python tools/build_pages.py --renderer-fixture
           python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/native-hd-server.txt" 2>&1 &
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
+      - name: Aparência salva ao andar e ao retirar a arma
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          node --expose-gc tests/rework-carry-saved-hats.cjs
+          node --expose-gc tests/rework-male-unarmed-named-wardrobe.cjs
       - name: Carregamento visual com movimento e combate
         env:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/

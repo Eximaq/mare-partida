@@ -2,7 +2,9 @@
 const assert=require('node:assert/strict');
 const {weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
 module.exports=async function({page,put,remove,observeAttack,captureMapCycle}){
- for(const [weapon,direction,head,phases] of [[16,'east',18,8],[122,'west',164,8],[128,'north',19,9],[31,'south',143,8]]){
+ const cases=process.argv.includes('--north-focus-hair')?[[17,'north',18,8],[121,'north',157,8]]:
+  [[16,'east',18,8],[122,'west',164,8],[128,'north',19,9],[31,'south',143,8]];
+ for(const [weapon,direction,head,phases] of cases){
   const role=weapons.find(w=>w.id===weapon).role,action='attack-focus';
   const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',hairStyle:'hair-cropped',eyeStyle:'original'};
   const gear={weapon,coat:130,legs:168,boots:148,gloves:159},label='cabelo-curto-foco-'+weapon+'-'+direction;
