@@ -85,7 +85,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  const combatWardrobeReady=Promise.resolve().then(()=>fetchJSON('tools/rework-combat-wardrobe/index.json')).then(c=>{
   if(c?.schema!=='editable-combat-wardrobe-v1'||!c.rigs||!Array.isArray(c.records))return;
   const index=root.MareReworkModularOutfitsHD?.createOwnLayerIndex(c.records.map(({layers,...r})=>({...r,body:'female',source:layers})));
-  if(index)combatWardrobe={rigs:c.rigs,index,handFits:c.handFits,maleDaggerCoats:c.maleDaggerCoats,maleSwordCoats:c.maleSwordCoats,articulatedBoots:c.articulatedBoots,daggerBoots:c.daggerBoots,maleStaffCoats:c.maleStaffCoats,northBoots:c.northBoots,northWeaponCoats:c.northWeaponCoats,northFocusCoats:c.northFocusCoats,maleNorthPistolCoats:c.maleNorthPistolCoats,northRiflePants:c.northRiflePants,southFocusPants:c.southFocusPants,southFocusBoots:c.southFocusBoots,staffGloves:c.staffGloves,swordGloves:c.swordGloves,orbGloves:c.orbGloves};
+  if(index)combatWardrobe={rigs:c.rigs,index,handFits:c.handFits,maleDaggerCoats:c.maleDaggerCoats,maleSwordCoats:c.maleSwordCoats,articulatedBoots:c.articulatedBoots,daggerBoots:c.daggerBoots,maleStaffCoats:c.maleStaffCoats,northBoots:c.northBoots,northWeaponCoats:c.northWeaponCoats,northFocusCoats:c.northFocusCoats,maleNorthPistolCoats:c.maleNorthPistolCoats,northRiflePants:c.northRiflePants,southFocusPants:c.southFocusPants,southFocusBoots:c.southFocusBoots,staffGloves:c.staffGloves,swordGloves:c.swordGloves,orbGloves:c.orbGloves,daggerGloves:c.daggerGloves};
  }).catch(()=>{});
  const daggerWardrobeReady=Promise.resolve().then(()=>fetchJSON('tools/rework-female-dagger-wardrobe/index.json')).then(c=>{
   if(c?.schema!=='female-dagger-owned-wardrobe-v1'||!c.targets||!Array.isArray(c.records))return;
@@ -7003,6 +7003,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {source:plate.path+'/coat-'+item+'@'+plate.archive,refs:[...new Set(plate.cloth)],
    rasterCoat:{cloth:plate.cloth,size,preclipped:true,belowHelmet:true}};
  }
+ function orderedDaggerGloves(base,slot,item){
+  if(slot!=='gloves'||!orderedDaggerRegistration(base))return null;
+  const bank=combatWardrobe?.daggerGloves,source=base.id.split(':')[0],proof=bank?.ordered[source],cloth=bank?.items[item];
+  if(!cloth||!proof||!base.states.every((s,i)=>{
+   const [far,body,near,restore]=s.layers,p=proof[i];
+   return far.sha256===p[0]&&(body.registeredBodySHA||body.sha256)===p[1]&&near.sha256===p[2]&&restore.mask.sha256===p[3];
+  }))return null;
+  const hands=['left','right'].map(side=>cloth[side].map(p=>p.art));
+  return {source:source+'/gloves-'+item+'@'+bank.sourceArchive,refs:[...new Set(hands.flat())],orderedGloves:hands};
+ }
  function lateralOrbGloves(base,slot,item){
   if(slot!=='gloves'||!base.orbAnatomy||base.body!=='male'||base.action!=='attack-focus'||base.hdKind!=='weapon')return null;
   const bank=combatWardrobe?.orbGloves,cloth=bank?.items[item],source=base.id.split(':')[0],proof=bank?.ordered[source];
@@ -7015,7 +7025,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     body.operation==='source-over'&&gear.operation==='source-over'&&restore.operation==='replace-rgba-under-mask';
   }))return null;
   const hands=['left','right'].map(side=>cloth[side].map(p=>p.art));
-  return {source:source+'/gloves-'+item+'@'+bank.sourceArchive,refs:[...new Set(hands.flat())],orbGloves:hands};
+  return {source:source+'/gloves-'+item+'@'+bank.sourceArchive,refs:[...new Set(hands.flat())],orderedGloves:hands};
  }
  function lateralStaffGloves(base,slot,item){
   if(slot!=='gloves'||base.body!=='male'||base.hdKind!=='weapon'||base.action!=='attack-focus'||!(base.orderedAnatomy||base.w128IndependentSide))return null;
@@ -7111,7 +7121,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   for(const [slot,v] of Object.entries(request)){
    const key=JSON.stringify([pose,slot,v.item,slot==='torso'&&(grip?.chromaticSource||grip?.paddedNorth)?grip.weapon.id:null]);
    if(!independentPassCache.has(key)){
-    const plate=(grip?.paddedNorth&&fittedNorthWeaponCoat(grip.weapon,slot,v.item))||(slot==='torso'&&cuffCoatPass(grip,v.item))||fixedRifleLower(base,slot,v,player,routeOptions)||southFocusTrousers(base,slot,v.item)||southFocusBoot(base,slot,v.item)||southPunchHelmet(base,slot,v.item,player)||southPunchBoot(base,slot,v,player,routeOptions,selectPose)||southForearmTrousers(base,slot,v,player,routeOptions,selectPose)||articulatedWeaponHead(base,slot,v.item,player)||northArticulatedBoot(base,slot,v.item)||orderedDaggerBoot(base,slot,v.item)||articulatedBoot(base,slot,v.item)||articulatedSwordGarment(base,slot,v.item)||fittedNorthWeaponCoat(base,slot,v.item)||lateralOrbGloves(base,slot,v.item)||lateralStaffGloves(base,slot,v.item)||fittedStaffCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
+    const plate=(grip?.paddedNorth&&fittedNorthWeaponCoat(grip.weapon,slot,v.item))||(slot==='torso'&&cuffCoatPass(grip,v.item))||fixedRifleLower(base,slot,v,player,routeOptions)||southFocusTrousers(base,slot,v.item)||southFocusBoot(base,slot,v.item)||southPunchHelmet(base,slot,v.item,player)||southPunchBoot(base,slot,v,player,routeOptions,selectPose)||southForearmTrousers(base,slot,v,player,routeOptions,selectPose)||articulatedWeaponHead(base,slot,v.item,player)||northArticulatedBoot(base,slot,v.item)||orderedDaggerBoot(base,slot,v.item)||articulatedBoot(base,slot,v.item)||articulatedSwordGarment(base,slot,v.item)||fittedNorthWeaponCoat(base,slot,v.item)||orderedDaggerGloves(base,slot,v.item)||lateralOrbGloves(base,slot,v.item)||lateralStaffGloves(base,slot,v.item)||fittedStaffCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
     if(!plate&&!poseCanMount){passes.set(slot,null);continue;}
     const pass=plate||femaleGaitPass(base,slot,v,player)||swordWardrobePass(base,slot,v,player)||combatWardrobePass(base,slot,v,player)||femaleRestPass(base,slot,v,player)||independentNativePass({player,o:routeOptions,base,weapon:grip?null:weapon,slot,v,selectPose})||
      malePunchWardrobe(base,slot,v,player,routeOptions)||maleCarryWardrobe(base,slot,v,player,routeOptions,selectPose)||daggerGarment(base,slot,v,player)||findDaggerWardrobePass(base,slot,v.item)||
@@ -7131,7 +7141,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const active=new Map([...passes].filter(([slot])=>!unavailable.has(slot)));
   const {direction}=base,d=base.pack?.directions?.[direction];
   const head=active.get('head'),daggerHands=active.get('gloves')?.daggerHands;
-  const bodyRequest=Object.fromEntries(Object.entries(request).filter(([slot])=>slot!=='head'&&!active.get(slot)?.rifleFoot&&!active.get(slot)?.rifleTrousers&&!active.get(slot)?.rasterCoat&&!active.get(slot)?.bootTrack&&!active.get(slot)?.orbGloves&&!active.get(slot)?.swordGloves&&!active.get(slot)?.swordTrack&&!active.get(slot)?.weaponCoat&&!active.get(slot)?.staffGloveStates&&!active.get(slot)?.decorator&&!(slot==='gloves'&&daggerHands)));
+  const bodyRequest=Object.fromEntries(Object.entries(request).filter(([slot])=>slot!=='head'&&!active.get(slot)?.rifleFoot&&!active.get(slot)?.rifleTrousers&&!active.get(slot)?.rasterCoat&&!active.get(slot)?.bootTrack&&!active.get(slot)?.orderedGloves&&!active.get(slot)?.swordGloves&&!active.get(slot)?.swordTrack&&!active.get(slot)?.weaponCoat&&!active.get(slot)?.staffGloveStates&&!active.get(slot)?.decorator&&!(slot==='gloves'&&daggerHands)));
   const planned=poseCanMount&&root.MareReworkModularOutfitsHD?.planIndependentPasses({
    pose,frames:d.clip.frames,layers:d.layers,requested:bodyRequest,
    resolve:(slot,item)=>{const p=active.get(slot);return p&&{...p,item,pose};}
@@ -7143,7 +7153,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    slotResolution[weapon.key]={state:'hd',source};
   }
   for(const [slot,{key,item}] of Object.entries(request).sort(([a],[b])=>a.localeCompare(b))){
-   const pass=active.get(slot),separate=pass?.rifleHelmet||pass?.rifleFoot||pass?.rifleTrousers||pass?.head||pass?.daggerHands||pass?.decorator||pass?.rasterCoat||pass?.bootTrack||pass?.orbGloves||pass?.swordGloves||pass?.swordTrack||pass?.weaponCoat||pass?.staffGloveStates;
+   const pass=active.get(slot),separate=pass?.rifleHelmet||pass?.rifleFoot||pass?.rifleTrousers||pass?.head||pass?.daggerHands||pass?.decorator||pass?.rasterCoat||pass?.bootTrack||pass?.orderedGloves||pass?.swordGloves||pass?.swordTrack||pass?.weaponCoat||pass?.staffGloveStates;
    const source=separate?pass.source:planned?.slotRoutes?.[key]?.source;
    if(source){
     slotRoutes[key]={item,quality:'hd',source};
@@ -7190,7 +7200,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(head?.head)Object.assign(mounted,head.head);
   const staffHands=active.get('gloves')?.staffGloveStates;
   if(staffHands)mounted.states=staffHands;
-  if(active.get('gloves')?.orbGloves)mounted.orbGloves=active.get('gloves').orbGloves;
+  if(active.get('gloves')?.orderedGloves)mounted.orderedGloves=active.get('gloves').orderedGloves;
   if(active.get('gloves')?.swordGloves)mounted.swordGloves=active.get('gloves').swordGloves;
   if(active.get('boots')?.bootTrack)mounted.bootTrack=active.get('boots').bootTrack;
   if(usesFemaleWardrobe(base)&&(refs.length||daggerHands)){
@@ -8733,8 +8743,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }if(r.bootTrack){
   const {bootTrack,...base}=r,phase=bootTrack.phases[frame];
   return [...filesFor(base,frame),combatPlatePath(phase.art),...(phase.mask?[combatPlatePath(phase.mask)]:[]),...(phase.rear?[combatPlatePath(phase.rear)]:[]),...(r.fusedFocusAnatomy?['tools/rework-weapon-layers-hd/assets/'+r.focusShorts[frame]+'.png']:[])];
- }if(r.orbGloves){
-   const {orbGloves,...base}=r;return [...filesFor(base,frame),...orbGloves.map(hand=>combatPlatePath(hand[frame]))];
+ }if(r.orderedGloves){
+   const {orderedGloves,...base}=r;return [...filesFor(base,frame),...orderedGloves.map(hand=>combatPlatePath(hand[frame]))];
   }if(r.swordGloves){
   const {swordGloves,...base}=r;return [...filesFor(base,frame),...swordGloves.map(h=>combatPlatePath(h.track[frame]))];
  }if(r.swordTrack){

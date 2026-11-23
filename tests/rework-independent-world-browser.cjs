@@ -162,7 +162,7 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
-  if(['--staff-gloves','--sword-gloves','--orb-gloves'].some(v=>process.argv.includes(v))){await observeWeaponGloves(process.argv.includes('--sword-gloves')?'sword':process.argv.includes('--orb-gloves')?'orb':'staff');assert.deepEqual(errors,[]);return;}
+  if(['--staff-gloves','--sword-gloves','--orb-gloves','--dagger-gloves'].some(v=>process.argv.includes(v))){await observeWeaponGloves(process.argv.includes('--sword-gloves')?'sword':process.argv.includes('--orb-gloves')?'orb':process.argv.includes('--dagger-gloves')?'daggers':'staff');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--staff-coats')){
    await observeWeaponCoats([123,124],'strategist','attack-focus',true);
    await observeWeaponCoats([31,125,126,127,128],'healer','attack-focus',true);
@@ -567,8 +567,8 @@ window.__hdSlotQA={
  }
  async function observeWeaponGloves(kind){
   const {gear,weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
-  const swords=kind==='sword',action=swords?'attack-sword':'attack-focus',family={sword:'espada',orb:'orbe',staff:'cajado'}[kind];
-  for(const weapon of swords?weapons.filter(w=>w.role==='sword').map(w=>w.id):kind==='orb'?[17,122]:[31,123,124,125,126,127,128]){
+  const swords=kind==='sword',action=swords?'attack-sword':kind==='daggers'?'attack-daggers':'attack-focus',family={sword:'espada',orb:'orbe',staff:'cajado',daggers:'adaga'}[kind];
+  for(const weapon of swords?weapons.filter(w=>w.role==='sword').map(w=>w.id):kind==='orb'?[17,122]:kind==='daggers'?weapons.filter(w=>w.role==='rogue').map(w=>w.id):[31,123,124,125,126,127,128]){
    const role=weapons.find(w=>w.id===weapon).role,dark=weapon%2===0;
    const look={gender:'masculino',skinColor:dark?'ebony':'light',hairColor:dark?'blue':'brown',eyeColor:dark?'green':'brown'};
    const fixed={weapon,coat:151,boots:169,head:19},equipment=Object.values(fixed);
