@@ -15,7 +15,7 @@ const copy=c=>{const a=cv.createCanvas(c.width,c.height);a.getContext('2d').draw
 const roles={sword:[0,1,67,68,69,70],gunner:[4,5,113,115,116],strategist:[17,122]};
 async function cycle(api,weapon,direction){
  const {id,role}=weapon,options={action:api.attackActionFor(id),direction,consumer:'world'};
- const equipment={weapon:{def:id},head:{def:19},...(role==='sword'?{coat:{def:151}}:{})};
+ const equipment={weapon:{def:id},head:{def:19},...(role!=='gunner'?{coat:{def:151}}:{})};
  const actor=look.commit({classId:role,equipment},{gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',eyeStyle:'original',hairStyle:'original'},()=>true);
  async function prepare(player){
   const r=world.selectWorldHDOnly(api,catalog,player,options);

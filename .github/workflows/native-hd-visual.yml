@@ -14,6 +14,7 @@ on:
       - 'tools/rework-combat-wardrobe/articulated-boots.zip'
       - 'tests/rework-articulated-boots.cjs'
       - 'tests/rework-ordered-orb-anatomy.cjs'
+      - 'tests/rework-ordered-orb-coats.cjs'
       - 'tools/export_male_sword_coats.py'
       - 'tools/rework-combat-wardrobe/sword-hand-registration.json'
       - 'tests/rework-wardrobe-authored-contact.cjs'
@@ -192,7 +193,9 @@ jobs:
         if: matrix.role == 'strategist'
         env:
           HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
-        run: node tests/rework-ordered-orb-anatomy.cjs
+        run: |
+          node tests/rework-ordered-orb-anatomy.cjs
+          node --expose-gc tests/rework-ordered-orb-coats.cjs
   weapon-materials:
     runs-on: ubuntu-latest
     timeout-minutes: 30

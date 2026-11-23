@@ -2734,6 +2734,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    if((r.w128IndependentSide||r.w121IndependentSide)&&omitWeaponLayer&&l.id==='gear'&&l.component==='equipment')continue;
    if(r.w5IndependentSouth&&omitWeaponLayer&&l.component==='equipment')continue;
    if(l.inFrontOfHead&&headOverlay){ctx.drawImage(headOverlay,...(r.headOverlayOffset??[0,0]));headOverlay=null;}
+   if(l.role==='ordered-orb-coat'){paintOwnedHead();if(r.ownGauntletHead?.hideHair)restoreOrbScalp(ctx,r,s,images,resource);}
    if(l.operation==='source-over'){ctx.save();if(l.mirrorX){ctx.translate(w,0);ctx.scale(-1,1);}let tile=paletteImage(l);if(l.role==='authored-anatomy-and-equipment-under-head'&&r.ownW0SouthIndependent){
     const split=buildW0SouthIndependent(r,s,image(l),image,makeCanvas);
     const calibrated=paletteImage(l,split.raw);
@@ -2955,8 +2956,9 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    }
    ctx.putImageData(px,0,0);
   }
-  if(!r.ownedGauntletCoatHead)paintOwnedHead();
-  if(r.orbAnatomy&&r.ownGauntletHead?.hideHair)restoreOrbScalp(ctx,r,s,images,resource);
+  if(!r.ownedGauntletCoatHead&&!s.layers.some(l=>l.role==='ordered-orb-coat')){
+   paintOwnedHead();if(r.orbAnatomy&&r.ownGauntletHead?.hideHair)restoreOrbScalp(ctx,r,s,images,resource);
+  }
   // User-approved exact restoration: native V7 shorts swatch on 489 emitted
   // boundary samples only. Outside the independent current cloth/gear/grip.
   if(r.staffLateralPalette){
@@ -3009,6 +3011,20 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  function registeredCoat(record,item){
   if(record?.hdKind!=='weapon'||!record.separableAttack||!record.states?.length)return null;
   const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  // Ordered focus exports retain an independent, ownership-cut fabric
+  // image above the restored hand. Reuse its own phase and real orb mask.
+  const track=record.orbAnatomy&&record.requiredAuthoredCoats?.[item];
+  if(track?.length===record.states.length&&track.every((row,i)=>{
+   const l=row.layer,state=record.states[i],body=state.layers[0];
+   return l?.id==='coat-'+item&&l.operation==='source-over'&&l.depth===3&&l.url==='assets/'+l.sha256+'.png'&&
+    same(l.size,record.nativeCanvas)&&!l.mask&&!l.mirrorX&&!l.offset&&state.state===String(i)&&
+    state.layers.length===3&&body.id==='body'&&state.layers[1].id==='gear'&&
+    state.layers[2].id==='original-anatomy'&&state.layers[2].sha256===body.sha256&&
+    state.layers[2].operation==='replace-rgba-under-mask'&&state.layers[2].mask?.sha256;
+  })){
+   return {source:record.id.split(':')[0]+'/coat-'+item,refs:track.map(row=>row.layer.sha256),
+    weaponCoat:record.states.map((s,i)=>({...s,layers:[...s.layers,{...track[i].layer,role:'ordered-orb-coat'}]}))};
+  }
   for(const rig of index.separableAttackRigs||[]){
    const d=rig.directions[record.direction],gear=d?.weapons?.[record.item],cloth=d?.coats?.[item];
    if(!cloth||!gear||rig.body!==record.body||rig.action!==record.action||
