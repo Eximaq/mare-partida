@@ -91,7 +91,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
     exact23(q.source.size,r.size)&&exact23(q.source.nativeSize,r.size)&&!!q.hideHandBeyondWrist&&!q.replaceBoundLayer&&!q.source.sourceClip&&
     !q.mirrorSource&&!q.skinMaterial&&q.depthOffset===.1&&q.calibrationOffsetPhysical==null&&exact23(q.binding,r.binding)&&
     exact23(q.sourceBone,r.sourceBone)&&exact23(q.targetRestBone,r.targetRestBone);});
-  if(preview23)plan={...plan,parts:plan.parts.map((q,i)=>{const r=ref23[i];return {...q,hideHandBeyondWrist:false,sourceBone:r.newBone,...(direction==='north'?{calibrationOffsetPhysical:[q.side==='LEFT'?3:-3,0]}:{}),
+  if(preview23)plan={...plan,parts:plan.parts.map((q,i)=>{const r=ref23[i];return {...q,positionOwnSource:r.new,hideHandBeyondWrist:false,sourceBone:r.newBone,...(direction==='north'?{calibrationOffsetPhysical:[q.side==='LEFT'?3:-3,0]}:{}),
     source:{...q.source,sha256:r.new,url:'assets/'+r.new+'.png',size:[640,640],nativeSize:[640,640]}};})};
   const pure=Number(item)===32&&Object.hasOwn(walks,direction)&&pureRelic32Saved&&
     Object.keys(equipment).length===1&&equipment.weapon===32&&plan.targetWalkRecord===walks[direction]&&
@@ -724,7 +724,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   const {staff123ToneTexture,staff124ToneTexture,healerToneTexture,...part}=q,sha256=signed[1];
   // The actual hand retains its signed palette and depth. Reuse the same
   // EAST transform in both directions; the compositor mirrors WEST once.
-  return {...r,id:r.id+(signed[2]?':side-own-grip-split-v2':':side-own-only-v1'),sideOwnProof:true,plan:{...r.plan,parts:[{...part,mirrorSource:false,depthOffset:-.1,
+  return {...r,id:r.id+(signed[2]?':side-own-grip-split-v2':':side-own-only-v1'),sideOwnProof:true,plan:{...r.plan,parts:[{...part,positionOwnSource:sha256,mirrorSource:false,depthOffset:-.1,
    ...(signed[2]?{staffSideGripWindow:true}:{}),
    sourceBone:{'RIGHT ELBOW':{x:92.5,y:64.75},'RIGHT ARM':{x:92.5,y:77.75}},
    source:{...q.source,sha256,url:'assets/'+sha256+'.png',sourceMember:'staff123-127-independent-assets.zip::'+sha256+'.png'}}]}};

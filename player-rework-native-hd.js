@@ -11088,7 +11088,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
        if(!Number.isSafeInteger(frameCount)||frameCount<1)throw Error('Clipe inválido: '+r.id);
        const frames=new Map(),entry={images:new Map(),proofs:[]};
        const positionsAPI=root.MareHDPosition;
-       const wantsOffsets=positions?.records?.some(a=>a.direction===r.direction&&a.action===(r.resolvedAction||r.action)&&
+       const wantsOffsets=positions?.records?.some(a=>(a.range==='motion'||a.direction===r.direction)&&a.action===(r.resolvedAction||r.action)&&
         a.body===(['female','feminino'].includes(player.appearance96?.gender)?'female':'male')&&(player.equipment?.[a.slot]?.def??player.equipment?.[a.slot])===a.item);
        const editor=positionsAPI&&(inspectPositions||wantsOffsets)?positionsAPI.session(r,player,options,makeCanvas):null;
        const clock=[],adjusted=new Map();
@@ -11121,7 +11121,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
         const diagnostics=editor.configure(positions||positionsAPI.empty());
         editors.set(key,{clock,targets:editor.targets,availableLayers:editor.availableLayers,footFor:editor.footFor,diagnostics,pivot:first.info.pivot,width:first.canvas.width,height:first.canvas.height,
          fps:source.hdKind==='weapon'?source.fps:source.pack.directions[source.direction].clip.fps,
-         set(m){editor.configure(positionsAPI.validate(m),true);drop();},
+         set(m,strict=true){const issues=editor.configure(positionsAPI.validate(m),strict);drop();return issues;},
          frame(f,original=false){
           if(original||!editor.moved)return frames.get(f);
           const phase=phaseOf.get(f);

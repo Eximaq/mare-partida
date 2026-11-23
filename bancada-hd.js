@@ -32,16 +32,28 @@ function list(){
   tag.textContent=labels[v.slot]+' · #'+id;b.append(tag);b.setAttribute('aria-pressed',String(equipment[v.slot]?.def===id));$('catalog').append(b);
  }
 }
+// Reopen the exact disposable actor on import. Its neighbors are provenance only.
+function originFor(t){
+ const gear=A.gearOf(actor,t.weapon===null);
+ return {role:actor.classId,gear,look:Object.fromEntries(Object.keys(look.choices).map(k=>[k,actor.appearance96[k]])),hide:!!actor.preferences.hideHeadgear};
+}
 function target(){return view?.targets.find(t=>t.slot===editSlot&&t.part===$('part').value);}
-function record(t){return t&&draft.records.find(r=>A.key(r)===A.key(t));}
+function record(t){return t&&draft.records.find(r=>!r.range&&A.key(r)===A.key(t)&&r.source===t.source);}
 function phase(){return view?.clock[tick]?.phase??0;}
-function values(){const r=record(target());return ($('scope').value==='cycle'?r?.cycle:r?.phases[phase()])||[0,0];}
+function placement(t){return t&&A.positionFor(t,draft.records,A.gearOf(actor,t.weapon===null));}
+function values(){const t=target();if(!t)return [0,0];return ($('scope').value==='cycle'?placement(t)?.cycle:record(t)?.phases[phase()])||[0,0];}
 function displayStyle(){
  const r=record(target());return $('scope').value==='cycle'?r?.style?.cycle||{}:A.styleAt(r,phase());
 }
 function inputs(){
  const t=target(),v=values(),ready=!!t&&!$('before').checked;
  $('x').value=v[0];$('y').value=v[1];
+ const cycle=$('scope').value==='cycle',xy=placement(t),exception=xy?.range==='outfit';
+ $('outfit-position').disabled=!ready||!cycle;$('outfit-position').setAttribute('aria-pressed',String(exception));
+ $('outfit-position').textContent=exception?'Remover exceção deste conjunto':'Criar exceção para este conjunto';
+ $('apply-positions').disabled=!ready||!cycle;
+ $('position-item').textContent=t?catalog[t.item].name+' #'+t.item+' · '+$('action').selectedOptions[0].textContent+' · '+$('direction').selectedOptions[0].textContent+' · '+(exception?'Exceção deste conjunto':xy?.range==='motion'?'Padrão nas quatro direções':'Padrão em todos os conjuntos'):'';
+ $('apply-positions').title=t?'Usar o X/Y de '+catalog[t.item].name+' nas quatro direções deste movimento e corpo. Desfazer recupera as posições anteriores.':'';
  const style=displayStyle(),scope=$('scope').value,available=t?view.availableLayers(t,scope==='phase'?phase():null):['native'];
  $('angle').value=style.angle??0;$('size').value=style.size??100;$('flip').checked=!!style.flip;
  if($('layer').dataset.options!==available.join(',')){
@@ -50,7 +62,8 @@ function inputs(){
  $('layer').value=style.layer??'native';
  for(const id of ['angle','size','flip','layer'])$(id).disabled=!ready;
  const dir=$('direction').value,side=dir==='west'||dir==='east';$('mirror-tools').hidden=!side;
- for(const to of ['west','east'])$('mirror-'+to).disabled=!ready||dir===to||!lateralRecords(t).length;
+ const canMirror=ready&&side&&lateralRecords(t).length>0;
+ for(const to of ['west','east'])$('mirror-'+to).disabled=!canMirror||dir===to;
  for(const e of [$('x'),$('y'),$('reset'),...document.querySelectorAll('[data-move]')])e.disabled=!ready;
  $('undo').disabled=!past.length;$('redo').disabled=!future.length;
  const at=view?.clock.flatMap((v,i)=>v.phase===phase()?[i+1]:[]).join(', ');
@@ -98,16 +111,24 @@ async function prepare(a,o,signal){
  const b=await api.prepareConfiguration([{player:a,options:o}],{signal,inspectPositions:true,resolve:()=>({player:a,options:o,source:r})});
  return {b,r,v:b.positionView(o)};
 }
+let lastFrame;
 async function reload(){
  const id=++ticket;controller?.abort();controller=new AbortController();const {signal}=controller;
+ if(view)lastFrame={action:options.action,direction:options.direction,progress:tick/view.clock.length};
  pointer=null;bundle?.release();bundle=view=source=null;parts();schedule();status('Carregando a configuração…');
  actor=currentActor($('solo').checked);options=pose();
  try{
   const {r,b,v}=await prepare(actor,options,signal);
   if(signal.aborted||ticket!==id){b.release();return;}
-  bundle=b;source=r;view=v;tick=0;last=elapsed=0;$('tick').max=v.clock.length-1;$('tick').value=0;
+  bundle=b;source=r;view=v;
+  tick=lastFrame?.action===options.action&&lastFrame.direction===options.direction?Math.min(v.clock.length-1,Math.floor(lastFrame.progress*v.clock.length)):0;
+  last=elapsed=0;$('tick').max=v.clock.length-1;$('tick').value=tick;
   const missing=b.coverage[0].omitted||[];loadMessage=r.action+' · '+r.direction+' · '+v.clock.length+' posições'+(missing.length?' · sem desenho: '+missing.join(', '):'');
-  parts();schedule();v.set(draft);status(loadMessage,missing.length>0);
+  const verified=A.legacyPositions(draft).filter(r=>v.targets.some(t=>A.key(t)===A.key(r)&&t.source===r.source));
+  draft=A.shareVerified(draft,verified);
+  const issues=v.set(draft,false);
+  if(issues.length)loadMessage+=' · '+issues.join(' · ');
+  parts();schedule();status(loadMessage,missing.length>0||issues.length>0);
  }catch(e){if(!signal.aborted)status(e.message,true);}
 }
 function commit(next,history=true){
@@ -120,7 +141,8 @@ function update(v,restore=false,remember=true,change=null){
  const t=target();if(!t||$('before').checked)return;
  try{
   const {limits,...identity}=t,r=structuredClone(record(t)||{...identity,cycle:[0,0],phases:{}});
-  const cycle=$('scope').value==='cycle';
+  const cycle=$('scope').value==='cycle',xy=placement(t),range=xy?.range==='outfit'?'outfit':'direction';
+  if(cycle&&!change&&!restore){commit(A.withPosition(draft,t,range,v,originFor(t)),remember);return;}
   if(change){
    r.style??={cycle:{},phases:{}};const f=phase(),s=cycle?r.style.cycle:(r.style.phases[f]??={});
    const [key,val]=Object.entries(change)[0],defaults={angle:0,size:100,flip:false,layer:'native'};
@@ -130,16 +152,23 @@ function update(v,restore=false,remember=true,change=null){
    if(!Object.keys(r.style.cycle).length&&!Object.keys(r.style.phases).length)delete r.style;
   }else if(cycle)r.cycle=v;else r.phases[phase()]=v;
   for(const k of Object.keys(r.phases))if(r.phases[k].every(n=>n===0))delete r.phases[k];
-  const rows=draft.records.filter(a=>A.key(a)!==A.key(t));
+  const rows=draft.records.filter(a=>a.range?!(restore&&A.positionKey(a)===A.positionKey({...t,range,witness:originFor(t)})):A.key(a)!==A.key(t));
   if(!restore&&(r.style||r.cycle.some(Boolean)||Object.keys(r.phases).length))rows.push(r);
-  commit({...draft,schema:r.style?2:draft.schema,revision:draft.revision+1,records:rows},remember);
+  commit({...draft,schema:r.style?Math.max(2,draft.schema):draft.schema,revision:draft.revision+1,records:rows},remember);
  }catch(e){inputs();status(e.message,true);}
 }
 function history(from,to){
  if(!from.length)return;try{const old=draft;commit(from.at(-1),false);from.pop();to.push(old);inputs();}catch(e){status(e.message,true);}
 }
 function lateralRecords(t){
- return draft.records.filter(r=>r.slot===t.slot&&r.item===t.item&&r.body===t.body&&r.action===t.action&&r.receiver===t.receiver&&r.direction===t.direction&&(r.slot!=='weapon'||r.weapon===t.weapon)&&(t.part==='*'||r.part===t.part||Object.hasOwn(A.footLabels,t.part)&&view.footFor(r)===t.part));
+ if(!t)return [];
+ const rows=[];
+ for(const part of view.targets.filter(v=>v.slot===t.slot&&(t.part==='*'||t.part===v.part||Object.hasOwn(A.footLabels,t.part)&&view.footFor(v)===t.part))){
+  const local=record(part),xy=placement(part);
+  if(local)rows.push(local);
+  if(xy&&(xy.range||xy!==local)){const {limits,...identity}=part;rows.push({...identity,range:'direction',cycle:xy.cycle,phases:{}});}
+ }
+ return rows;
 }
 async function copyLateral(direction){
  const t=target(),from=view,current=ticket,previous=draft,selected=editSlot;
@@ -156,29 +185,40 @@ async function copyLateral(direction){
   for(const r of rows){
    const exact=candidates.filter(v=>v.part===r.part),same=exact.length?exact:candidates.filter(v=>lateralName(v.part)===lateralName(r.part));
    if(same.length!==1)throw Error('Sem parte lateral correspondente para '+r.part);
-   copies.push(A.mirrorRecord(r,same[0],from.clock,other.v.clock));
+   const copy=A.mirrorRecord(r,same[0],from.clock,other.v.clock);
+   copies.push(r.range?{...copy,range:'direction',witness:originFor(t)}:copy);
   }
   const destination=Object.hasOwn(A.footLabels,t.part)?candidates.filter(v=>other.v.footFor(v)===t.part):copies;
   const dest=new Set((t.part==='*'?candidates:destination).map(A.key));
-  const next={...draft,revision:draft.revision+1,records:[...draft.records.filter(r=>!dest.has(A.key(r))),...copies]};
+  const next={...draft,revision:draft.revision+1,records:[...draft.records.filter(r=>r.range?!copies.some(c=>c.range&&A.positionKey(r)===A.positionKey(c)):!dest.has(A.key(r))),...copies]};
   other.v.set(next);commit(next);
   $('direction').value=direction;await reload();
  }catch(e){if(current===ticket)status(e.message,true);}finally{other?.b.release();}
 }
-async function verifyImport(m){
- A.validate(m);
+async function verifySources(m,records,partial=false){
+ const verified=[];
  const groups=new Map();
- for(const r of m.records){
+ for(const r of records){
   if(catalog[r.item]?.slot!==r.slot||r.weapon!==null&&catalog[r.weapon]?.slot!=='weapon')throw Error('ID incompatível com o catálogo.');
-  const k=JSON.stringify([r.body,r.weapon,r.action,r.direction,r.slot,r.item]);
-  if(!groups.has(k))groups.set(k,r);
+  const k=JSON.stringify([r.body,r.weapon,r.action,r.direction,r.slot,r.item,r.witness]);
+  if(!groups.has(k))groups.set(k,[]);groups.get(k).push(r);
  }
- for(const r of groups.values()){
-  const a=currentActor();a.appearance96={...a.appearance96,gender:r.body==='male'?'masculino':'feminino'};
-  a.preferences={hideHeadgear:false};a.equipment={[r.slot]:{def:r.item}};if(r.weapon!==null){a.equipment.weapon={def:r.weapon};a.classId=catalog[r.weapon].type;}
-  const o={consumer:'world',action:r.action,direction:r.direction},test=await prepare(a,o);
-  try{if(!test.v.targets.some(t=>A.key(t)===A.key(r)&&t.source===r.source))throw Error('Fonte incompatível para #'+r.item+' · '+r.direction);test.v.set(m);}finally{test.b.release();}
+ for(const rows of groups.values()){
+  const r=rows[0];
+  const w=r.witness;
+  if(w&&(!Object.hasOwn(weapons.classes,w.role)||Object.entries(w.gear).some(([s,id])=>catalog[id]?.slot!==s)||Object.entries(w.look).some(([k,v])=>!Object.hasOwn(look.choices[k],v))))throw Error('Catálogo ou aparência de origem incompatível.');
+  const gear=w?.gear||{[r.slot]:r.item,...(r.weapon!==null?{weapon:r.weapon}:{})};
+  const a=look.apply({classId:w?.role||(r.weapon===null?currentActor().classId:catalog[r.weapon].type),
+   equipment:Object.fromEntries(Object.entries(gear).map(([s,id])=>[s,{def:id}])),preferences:{hideHeadgear:w?.hide||false}},
+   w?.look||{...appearance,gender:r.body==='male'?'masculino':'feminino'});
+  const o={consumer:'world',action:r.action,direction:r.direction};let test;
+  try{
+   test=await prepare(a,o);
+   if(!rows.every(row=>test.v.targets.some(t=>A.key(t)===A.key(row)&&t.source===row.source)))throw Error('Fonte incompatível para #'+r.item+' · '+r.direction);
+   test.v.set(m);verified.push(...rows);
+  }catch(e){if(!partial)throw e;}finally{test?.b.release();}
  }
+ return verified;
 }
 try{
  let startupError='';status('Lendo armas e aparências…');api=MareReworkNativeHD.create();const result=await Promise.all([fetch('tools/paper-doll-96-v3/weapons.json').then(r=>r.json()),fetch('hd-position-approved.json',{cache:'no-cache'}).then(async r=>{if(!r.ok)throw Error('HTTP '+r.status);return A.validate(await r.json());}).catch(e=>{startupError='Ajustes publicados indisponíveis · '+e.message;return A.empty();}),api.ready]);
@@ -192,11 +232,21 @@ try{
   for(const [v,n] of Object.entries(choices))option(s,v,n);s.value=appearance[k];s.id='look-'+k;s.onchange=()=>{appearance[k]=s.value;reload();};$('appearance').append(label);
  }
  $('search').oninput=$('filter').onchange=list;
- $('catalog').onclick=e=>{const b=e.target.closest('[data-id]');if(!b)return;const id=+b.dataset.id,v=catalog[id];equipment[v.slot]={def:id};editSlot=v.slot;$('slot').value=v.slot;if(v.slot==='weapon')$('role').value=v.type;actions();list();reload();};
+ $('catalog').onclick=e=>{const b=e.target.closest('[data-id]');if(!b)return;const id=+b.dataset.id,v=catalog[id];equipment[v.slot]={def:id};if(!$('pin-slot').checked)editSlot=v.slot;$('slot').value=editSlot;if(v.slot==='weapon')$('role').value=v.type;actions();list();reload();};
  $('remove').onclick=()=>{delete equipment[editSlot];actions();list();reload();};
  $('role').onchange=()=>{if(equipment.weapon&&catalog[equipment.weapon.def].type!==$('role').value)delete equipment.weapon;actions();list();reload();};
  $('direction').onchange=$('action').onchange=$('hide').onchange=$('solo').onchange=reload;
  $('slot').onchange=()=>{editSlot=$('slot').value;if($('solo').checked)reload();else parts();};
+ $('outfit-position').onclick=()=>{const t=target();if(!t||$('before').checked||$('scope').value!=='cycle')return;
+  try{
+   const active=placement(t);
+   if(active?.range==='outfit')commit({...draft,revision:draft.revision+1,records:draft.records.filter(r=>r!==active)});
+   else commit(A.withPosition(draft,t,'outfit',values(),originFor(t)));
+  }catch(e){status(e.message,true);}
+ };
+ $('apply-positions').onclick=()=>{const t=target();if(!t||$('before').checked||$('scope').value!=='cycle')return;
+  try{commit(A.withPosition(draft,t,'motion',values(),originFor(t)));status('Posição aplicada a '+catalog[t.item].name+' #'+t.item+' nas quatro direções deste movimento.');}catch(e){status(e.message,true);}
+ };
  $('part').onchange=()=>{preferredParts.set(editSlot,$('part').value);inputs();};$('scope').onchange=inputs;$('before').onchange=()=>{inputs();schedule();};
  $('guides').onchange=$('zoom').oninput=schedule;$('play').onclick=()=>toggle(!playing);
  const step=d=>{if(!view)return;toggle(false);const phase0=phase();let i=tick;do{i=(i+d+view.clock.length)%view.clock.length;}while(i!==tick&&view.clock[i].phase===phase0);setTick(i);schedule();};
@@ -220,7 +270,12 @@ try{
   if(draft!==p.draft){past.push(p.draft);future=[];inputs();}pointer=null;};
  $('export').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(draft,null,2)+'\n'],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='hd-position-approved.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
  $('file').onchange=async e=>{const file=e.target.files[0];if(!file)return;const original=draft;
-  try{const m=JSON.parse(await file.text());status('Conferindo fontes e limites…');await verifyImport(m);if(draft!==original)throw Error('O rascunho mudou durante a importação.');commit(m);}catch(err){status(err.message,true);}finally{e.target.value='';}};
- new ResizeObserver(schedule).observe($('viewport'));actions();list();await reload();if(draftError||startupError)status([startupError,draftError&&'Rascunho local inválido · '+draftError].filter(Boolean).join(' · '),true);
+  try{const m=JSON.parse(await file.text());status('Conferindo fontes e limites…');A.validate(m);await verifySources(m,m.records);if(draft!==original)throw Error('O rascunho mudou durante a importação.');commit(A.shareVerified(m,A.legacyPositions(m)));}catch(err){status(err.message,true);}finally{e.target.value='';}};
+ new ResizeObserver(schedule).observe($('viewport'));actions();list();await reload();const original=draft,pending=A.legacyPositions(original);
+ if(pending.length)void verifySources(original,pending,true).then(rows=>{
+  if(draft!==original||!rows.length)return;
+  const next=A.shareVerified(original,rows);view?.set(next);draft=next;inputs();schedule();
+ }).catch(e=>status(e.message,true));
+ if(draftError||startupError)status([startupError,draftError&&'Rascunho local inválido · '+draftError].filter(Boolean).join(' · '),true);
 }catch(e){status(e.message,true);}
 })();

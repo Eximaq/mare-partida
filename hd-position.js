@@ -16,6 +16,64 @@ const empty=()=>({schema:1,reference,space:'native-screen-px',revision:0,records
 const fields=['body','weapon','receiver','action','direction','slot','item','part'];
 // For clothing, weapon is an import witness. Equivalent rigs share the offset.
 const key=r=>JSON.stringify(fields.map(f=>f==='weapon'&&r.slot!=='weapon'?null:r[f]));
+function samePart(a,b){
+ return a.body===b.body&&a.action===b.action&&a.slot===b.slot&&a.item===b.item&&a.part===b.part;
+}
+// XY defaults describe a catalog item on the screen. Phase, style and rig overrides
+// stay attached to the signed source that owns those pixels.
+function gearOf(player,weaponless=false){return Object.fromEntries(slots.flatMap(s=>{
+ const worn=player.equipment?.[s],id=worn?.def??worn;
+ return Number.isSafeInteger(id)&&!(s==='weapon'&&weaponless)?[[s,id]]:[];
+}));}
+function sameGear(a,b){return !!a&&!!b&&slots.every(s=>a[s]===b[s]);}
+function positionKey(r){
+ return JSON.stringify([r.body,r.action,r.slot,r.item,r.part,r.range,
+  r.range==='motion'?null:r.direction,r.range==='pose'?r.receiver:null,...(r.range==='outfit'?slots.map(s=>r.witness.gear[s]??null):[])]);
+}
+function positionFor(target,records,gear){
+ let outfit,local,directional,motion,exactRecord;
+ const transferable=target.part==='*'||Object.hasOwn(footLabels,target.part);
+ for(const r of records){
+  if(!samePart(r,target))continue;
+  const exact=r.receiver===target.receiver&&r.direction===target.direction;
+  if(exact&&r.source!==target.source)continue;
+  if(!transferable&&!exact&&r.source!==target.source)continue;
+  if(r.range==='outfit'&&r.direction===target.direction&&sameGear(r.witness.gear,gear))outfit=r;
+  else if(r.range==='pose'&&exact)local=r;
+  else if(r.range==='direction'&&r.direction===target.direction)directional=r;
+  else if(r.range==='motion')motion=r;
+  else if(!r.range&&exact)exactRecord=r;
+ }
+ return outfit||local||directional||motion||exactRecord||null;
+}
+function legacyPositions(manifest){
+ const groups=new Map(),configured=new Set();
+ for(const r of manifest.records){
+  const id=positionKey({...r,range:'direction'});
+  if(r.range){configured.add(positionKey({...r,range:r.range==='motion'?'motion':'direction'}));continue;}
+  const prev=groups.get(id);
+  if(prev===null)continue;
+  if(prev&&(r.cycle[0]!==prev.cycle[0]||r.cycle[1]!==prev.cycle[1]))groups.set(id,null);
+  else if(!prev)groups.set(id,r);
+ }
+ return [...groups].flatMap(([id,r])=>r&&r.cycle.some(Boolean)&&!configured.has(id)&&!configured.has(positionKey({...r,range:'motion'}))?[r]:[]);
+}
+function shareVerified(manifest,rows){
+ if(!rows.length)return manifest;
+ const additions=rows.map(r=>({...r,range:'direction',phases:{}}));
+ for(const r of additions)delete r.style;
+ return {...manifest,schema:3,revision:manifest.revision+1,records:[...manifest.records,...additions]};
+}
+function withPosition(manifest,t,range,cycle,witness){
+ const {limits,...identity}=t;
+ const next={...identity,range,cycle:[...cycle],phases:{},...(witness?{witness}:{})};
+ const records=manifest.records.filter(r=>{
+  if(!samePart(r,t))return true;
+  if(r.range)return range==='motion'?['pose','outfit'].includes(r.range):positionKey(r)!==positionKey(next)&&!(range==='direction'&&r.range==='pose'&&r.receiver===t.receiver&&r.direction===t.direction);
+  return true;
+ });
+ records.push(next);return {...manifest,schema:3,revision:manifest.revision+1,records};
+}
 const pair=p=>Array.isArray(p)&&p.length===2&&p.every(Number.isSafeInteger);
 const object=o=>o!==null&&typeof o==='object'&&!Array.isArray(o);
 function keys(o,allowed){
@@ -51,10 +109,18 @@ function mirrorRecord(r,t,from,to){
 }
 function validate(m){
  keys(m,Object.keys(empty()));
- if(![1,2].includes(m.schema)||m.space!==empty().space||!/^[a-f0-9]{40}$/.test(m.reference)||!Number.isSafeInteger(m.revision)||m.revision<0||!Array.isArray(m.records))throw Error('Versão ou coordenadas incompatíveis.');
+ if(![1,2,3].includes(m.schema)||m.space!==empty().space||!/^[a-f0-9]{40}$/.test(m.reference)||!Number.isSafeInteger(m.revision)||m.revision<0||!Array.isArray(m.records))throw Error('Versão ou coordenadas incompatíveis.');
  const seen=new Set();
  for(const r of m.records){
-  keys(r,[...fields,'source','cycle','phases',...(m.schema===2&&Object.hasOwn(r,'style')?['style']:[])]);
+  keys(r,[...fields,'source','cycle','phases',...(m.schema>=2&&Object.hasOwn(r,'style')?['style']:[]),...(m.schema===3&&Object.hasOwn(r,'range')?['range',...(Object.hasOwn(r,'witness')?['witness']:[])]:[])]);
+  if(Object.hasOwn(r,'range')&&(!['pose','outfit','direction','motion'].includes(r.range)||r.range==='outfit'&&!r.witness||m.reference!==reference||r.style!==undefined||!object(r.phases)||Object.keys(r.phases).length))throw Error('Alcance ou versão do ajuste de posição incompatível.');
+  if(r.witness!==undefined){
+   const w=r.witness;keys(w,['role','gear','look','hide']);
+   if(typeof w.role!=='string'||!w.role||w.role.length>40||typeof w.hide!=='boolean'||!object(w.gear)||!object(w.look)||
+    Object.entries(w.gear).some(([slot,id])=>!slots.includes(slot)||!Number.isSafeInteger(id)||id<0)||w.gear[r.slot]!==r.item||(w.gear.weapon??null)!==r.weapon||
+    Object.entries(w.look).some(([k,v])=>!['gender','skinStyle','skinColor','hairStyle','hairColor','eyeStyle','eyeColor'].includes(k)||typeof v!=='string'||v.length>64)||
+    w.look.gender!==(r.body==='male'?'masculino':'feminino'))throw Error('Configuração de origem inválida.');
+  }
   if(r.style!==undefined){
    keys(r.style,['cycle','phases']);checkStyle(r.style.cycle);
    if(!object(r.style.phases))throw Error('Fases visuais inválidas.');
@@ -64,7 +130,7 @@ function validate(m){
    !Number.isSafeInteger(r.item)||r.item<0||!(r.weapon===null||Number.isSafeInteger(r.weapon)&&r.weapon>=0)||
    ![r.receiver,r.action,r.part].every(v=>typeof v==='string'&&v.length>0&&v.length<=512)||!/^[a-f0-9]{64}$/.test(r.source)||
    !pair(r.cycle)||!object(r.phases)||Object.entries(r.phases).some(([k,p])=>!/^(0|[1-9]\d*)$/.test(k)||!Number.isSafeInteger(+k)||!pair(p)))throw Error('Item, posição ou fase inválida.');
-  if(seen.has(key(r)))throw Error('Ajuste duplicado.');seen.add(key(r));
+  const id=r.range?positionKey(r):key(r);if(seen.has(id))throw Error('Ajuste duplicado.');seen.add(id);
  }
  return m;
 }
@@ -248,7 +314,7 @@ function session(r,player,options,make){
   }
  }
  const meta={body,action:r.resolvedAction||r.action,direction:r.direction,weapon:items.get('weapon')??null};
- const geometry=new Map(),members=new Map(),depthByPhase=new Map();
+ const gear=gearOf(player,options.weaponless),geometry=new Map(),members=new Map(),depthByPhase=new Map();
  let targets=[],lookup=new Map();
  function visit(phase,capture,fn){
   const context={phase,capture,make,items,layers,descriptors,offsets,geometry,members,sign:plan?.base?.base?.mirrorX||plan?.base?.mirrorX?-1:1};
@@ -287,13 +353,25 @@ function session(r,player,options,make){
   }
   lookup=new Map(targets.map(t=>[key(t),t]));
  }
+ function originalOutfit(a){
+  const w=a.witness;
+  if(!w||w.role!==player.classId||w.hide!==!!player.preferences?.hideHeadgear||a.weapon!==meta.weapon)return false;
+  if(Object.entries(w.look).some(([k,v])=>player.appearance96?.[k]!==v))return false;
+  return sameGear(w.gear,gear);
+ }
  function configure(manifest,strict=false){
-  const selected=manifest.records.filter(a=>a.body===body&&(a.weapon===meta.weapon||a.slot!=='weapon'&&lookup.has(key(a)))&&a.action===meta.action&&a.direction===r.direction&&items.get(a.slot)===a.item);
+  const selected=manifest.records.filter(a=>a.body===body&&a.action===meta.action&&a.direction===r.direction&&items.get(a.slot)===a.item&&
+   (lookup.has(key(a))||originalOutfit(a)||manifest.schema<3&&a.weapon===meta.weapon));
   const accepted=new Map(),errors=[],invalid=new Set();
   for(const a of selected){
    const t=lookup.get(key(a));
    if(!t||a.source!==t.source||[...Object.keys(a.phases),...Object.keys(a.style?.phases||{})].some(f=>!Object.hasOwn(t.limits,f))){invalid.add(a.slot);errors.push('Fonte, receptor ou fase incompatível • '+a.slot+' #'+a.item);continue;}
-   accepted.set(key(t),a);
+   if(!a.range)accepted.set(key(t),a);
+  }
+  const positions=manifest.records.filter(a=>a.body===body&&a.action===meta.action&&items.get(a.slot)===a.item&&(a.range==='motion'||a.direction===meta.direction));
+  for(const t of targets){
+   const p=positionFor(t,positions,gear);
+   if(p){const k=key(t);accepted.set(k,{phases:{},...accepted.get(k),cycle:p.cycle});}
   }
   const next=new Map();
   for(const t of targets.filter(v=>v.part!=='*'&&!Object.hasOwn(footLabels,v.part))){
@@ -336,6 +414,6 @@ function session(r,player,options,make){
  return {visit,finish,configure,availableLayers,footFor,get targets(){return targets;},get moved(){return [...offsets.values()].some(v=>v[0]||v[1]||oriented(v.whole)||oriented(v.foot)||oriented(v.local)||v.layer!=='native');}};
 }
 function offset(slot,part){return active&&!active.capture?active.offsets.get(JSON.stringify([slot,part,active.phase]))||[0,0]:[0,0];}
-const api={empty,validate,slots,key,layerNames,footLabels,mirrorRecord,styleAt,session,blit,material,layer,offset,localClip,original:paint=>scoped(null,paint),get materialCache(){return active?.materialCache;},get active(){return !!active;}};
+const api={empty,validate,slots,key,gearOf,positionKey,positionFor,samePart,withPosition,legacyPositions,shareVerified,layerNames,footLabels,mirrorRecord,styleAt,session,blit,material,layer,offset,localClip,original:paint=>scoped(null,paint),get materialCache(){return active?.materialCache;},get active(){return !!active;}};
 root.MareHDPosition=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

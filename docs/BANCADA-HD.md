@@ -20,6 +20,15 @@ Acesse [a bancada local](http://localhost:8000/bancada-hd.html). O personagem de
 7. **Ciclo inteiro** vale para todas as fases. **Fase atual** acrescenta uma exceção. **Restaurar parte** remove o ajuste de ciclo e todas as exceções da parte escolhida. Desfazer e refazer abrangem o rascunho desta sessão.
 8. **Exportar rascunho** grava o documento completo, inclusive as peças, direções e fases fora da seleção atual. **Importar JSON** confere as identidades e os limites antes de substituir o rascunho. Ele fica guardado neste navegador entre sessões.
 
+### Posição por item e movimento
+
+O X/Y de **Ciclo inteiro** vale imediatamente para o corpo, o movimento, a direção e o ID em edição. Por exemplo, ajuste a bota 148 na caminhada para Leste e troque o peitoral ou a arma. A bota conserva o deslocamento em pixels na caminhada para Leste. Marque **Manter peça em edição ao trocar o conjunto** para continuar vendo seus valores enquanto experimenta outras roupas. A troca preserva a posição da timeline no mesmo movimento.
+
+- Para definir quatro posições diferentes, edite o X/Y em cada direção. Cada edição já vale para todos os conjuntos.
+- Para repetir o X/Y atual nas quatro direções, clique em **Aplicar em todas as posições**. A cópia usa o mesmo X e Y na tela, inclusive no Oeste. Ela substitui os padrões direcionais da parte nesse movimento e corpo e preserva as exceções explícitas. **Desfazer** recupera essas posições.
+- Para adaptar só o conjunto equipado, clique em **Criar exceção para este conjunto** e edite X/Y. A exceção pode valer zero. Trocar uma peça vizinha devolve o padrão e reequipá-la recupera a exceção. **Remover exceção deste conjunto** volta ao padrão. Repouso e caminhada mantêm coordenadas independentes mesmo na mesma direção.
+- A peça inteira acompanha as diferentes artes do mesmo ID. Um pé individual acompanha as montagens que identificam esse mesmo pé. Um painel técnico exige uma fonte correspondente. Os ajustes de fase, tamanho, rotação, espelho e camada continuam ligados à montagem original.
+
 Para editar uma bota, escolha **Botas** e depois o pé em **Parte**. O nome acompanha a identificação da pose: esquerda/direita, próxima/distante ou bota 1/2. Frente, traseira e forro do pé escolhido se movem juntos. Para ajustar os dois pés, selecione **Par de botas**. Há poses de ataque em que a montagem só fornece os planos do par. A bancada sinaliza essas poses e pede uma nova seleção se o pé que você editava ficar indisponível.
 
 Para aprovar ajustes para o jogo, revise o ciclo completo, substitua `hd-position-approved.json` no repositório pela exportação e publique o build normal. A edição privada usa a chave `kaizoku-hd-position-draft-v1` da bancada. O mapa lê o arquivo publicado.
@@ -34,11 +43,12 @@ Para aprovar ajustes para o jogo, revise o ciclo completo, substitua `hd-positio
 | `body`, `weapon`, `action`, `direction`, `receiver` | Corpo, arma da pose (ou `null`), ação resolvida, direção, dimensões, pivô e assinatura da montagem. Para roupas, a arma serve de referência para reabrir a pose na importação. Outra arma com a mesma montagem aceita o ajuste |
 | `slot`, `item`, `part` | Slot, ID de catálogo e parte do desenho. `*` agrupa as operações próprias registradas para a peça |
 | `source` | SHA-256 das referências de origem, geometria da montagem e relógio capturados pelo compositor |
+| `range` | No esquema 3, um registro de X/Y pode definir `motion` (quatro direções), `direction` (todos os conjuntos naquela direção) ou `outfit` (exceção explícita deste conjunto). A leitura também aceita `pose` para a montagem assinada. Corpo, ação, slot, item e parte identificam o dono da posição. Direção, arma, receptor e fonte guardam a referência de origem para a importação. |
 | `cycle` | Par inteiro `[dx,dy]` do ciclo |
 | `phases` | Mapa da fase de origem para o par adicional. Por exemplo, `{"3":[0,-1]}` |
 | `style` | Opcional no esquema 2. Contém `cycle` e `phases` com propriedades opcionais `angle` (graus), `size` (percentual inteiro positivo), `flip` (booleano) e `layer` (ordem original ou destino anatômico) |
 
-O esquema 1 continua aceito. O primeiro ajuste visual além de X/Y grava o esquema 2. Uma exceção de fase substitui somente as propriedades visuais presentes naquela fase. Os valores iniciais são 0°, 100%, espelho desligado e ordem original. O ajuste local da subparte é aplicado antes do ajuste geral da peça. A camada da parte tem precedência. Cada direção utiliza sua própria fonte e assinatura.
+Os esquemas 1 e 2 continuam aceitos. Ao reconhecer a fonte de um rascunho antigo, a bancada reaproveita o X/Y de ciclo como padrão daquela direção se os registros antigos concordarem. Valores antigos divergentes permanecem vinculados às suas montagens. A precedência do X/Y é conjunto, montagem assinada, direção e depois movimento. O arquivo exportado inclui os padrões e as exceções. O primeiro ajuste visual além de X/Y grava o esquema 2. Uma exceção de fase substitui somente as propriedades visuais presentes naquela fase. Os valores iniciais são 0°, 100%, espelho desligado e ordem original. O ajuste local da subparte é aplicado antes do ajuste geral da peça. A camada da parte tem precedência. Cada direção utiliza sua própria fonte e assinatura.
 
 O deslocamento de uma parte soma o ciclo da peça, a exceção da peça, o ciclo da parte e a exceção da parte. Zoom e panorâmica só alteram a câmera. A distância em pixels CSS do arraste é dividida pelo zoom e arredondada ao pixel nativo. O mapa usa sua projeção habitual sobre esses mesmos quadros. Cada direção tem seu próprio registro. Máscaras de anatomia e pegadas continuam no espaço da pose.
 
@@ -55,6 +65,10 @@ node tests/hd-position-render.cjs --census
 ```
 
 Com o servidor da bancada em execução, `node tests/hd-position-browser.cjs --boots` usa `MARE_TEST_URL` e `MARE_EVIDENCE_DIR` para conferir no navegador a edição e a restauração de cada pé dos dez modelos em repouso, nas quatro direções e nos dois corpos.
+
+A opção `--positions` do teste de navegador verifica trocas de peitoral e arma durante a caminhada, quatro direções para calça, bota e peitoral, isolamento por ID e exceção de montagem.
+
+O teste `node --expose-gc tests/hd-position-outfits.cjs` percorre o catálogo em caminhada para Leste. Ele registra o X/Y de cada ID em um conjunto, troca as peças vizinhas e compara os pixels do ajuste herdado com os de um ajuste direto na nova montagem. `HD_WEAPON_IDS` permite dividir a execução em lotes com pelo menos dez armas. A opção `--poses` testa o peitoral 151 nos movimentos usados pelo catálogo, nas quatro direções e no poder de mãos livres. Repouso em combate, guarda, ferimento e queda usam o repouso quando o controlador HD os encaminha para essa animação.
 
 O comando `--census` mede o repouso Sul dos dois corpos para as 42 armas, alternando os dez itens de cada categoria. A variante `--cycles` inclui caminhada e ataque. Para dividir por lote, defina `HD_WEAPON_IDS` (IDs separados por vírgula) e `HD_DIRECTIONS` (direções em inglês separadas por vírgula). A saída é JSON. Uma peça sem diferença visível no ciclo produz uma falha.
 
