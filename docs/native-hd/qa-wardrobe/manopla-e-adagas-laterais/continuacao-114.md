@@ -69,3 +69,11 @@ O produto direto enumera os 100.000 conjuntos de cinco slots em cada contexto. A
 Para reproduzir o produto, execute `tools/audit-hd-wardrobe-product.cjs` com `HD_PUBLISHED_ROOT` apontando ao build, `PRODUCT_MODE=direct` e filtro de corpo, arma, ação e direção conforme as linhas. O arquivo de resultados conserva as direções canônicas e o nome exato de cada ação.
 
 [Capturas dos 14 ciclos do lote de 30 contextos](trinta-contextos-mapa.jpg)
+
+## Aparências salvas fora do censo original
+
+O censo de 1.176 contextos usou pele ebony, cabelo azul e olhos verdes com o formato original do cabelo e dos olhos. As capturas dos 114 ataques documentam esse recorte. Repetir as mesmas 114 configurações com o identificador salvo `hair-cropped` revelou 74 falhas de seleção adicionais no build de assinatura `478afa2805b71aa09613e1cb55e44f411b9b9e14b36f7a2740178429fea8782a`. As roupas desapareceram junto com o receptor em 12 perfis de adagas, quatro ataques de espada Norte, 23 disparos e 35 ataques de foco.
+
+O repouso masculino Sul sem arma passou a usar a base atual, as camadas do cabelo salvo e o ajuste próprio de cada elmo. A comparação exige o mesmo pivô, relógio, âncoras e sete camadas de tronco, braços, mãos, cabeça e rosto dos registros. Na prova isolada, as 50 peças carregaram e produziram diferenças de pixels com cabelo curto nas duas paletas testadas (100/100). O inventário real gerou 58 capturas e comprovou a alternância da calça 133 com o capacete 129. O teste permanente repete a retirada e compara as identidades e os pixels recuperados.
+
+Os ensaios históricos de movimento e da arma 115 voltaram a acompanhar o desenho real durante o carregamento. No mapa, caminhada e repouso passaram nos dois corpos, com e sem o kit inicial, e o disparo mostrou cinco fases e dano. O ensaio separado de clique revelou uma falha de montagem ao retirar o capacete 157 com cabelo espetado, arma 115 e peitoral 151; integra a fila de disparos. Para encurtar a espera da CI, as 1.518 observações originais de armas e roupas foram distribuídas em dois grupos de 719 e 799. Cada grupo verifica sua contagem e mantém um relatório incremental.

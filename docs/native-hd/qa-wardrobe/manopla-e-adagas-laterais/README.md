@@ -1,6 +1,6 @@
 # Cobertura das roupas HD no mapa
 
-No build de `14505bc0be618c0a1d5cacde16008d1a69d0d896`, os **1.176/1.176 contextos** passaram na seleção. O catálogo inclui 50 roupas, 42 armas, dois corpos, quatro direções e os movimentos de repouso, caminhada e ataque da família. As sete classes também entraram desarmadas. A assinatura do build é `478afa2805b71aa09613e1cb55e44f411b9b9e14b36f7a2740178429fea8782a`. [Censo por contexto](censo.ndjson.gz) · [Fontes por ID, arma, ação e direção](detalhes.tsv.gz) · [Fila de seleção](pendencias.json.gz) · [Resumo](resumo.json)
+No build de `14505bc0be618c0a1d5cacde16008d1a69d0d896`, os **1.176/1.176 contextos** passaram na seleção com pele ebony, cabelo azul e olhos verdes, ambos de formato original. O catálogo inclui 50 roupas, 42 armas, dois corpos, quatro direções e os movimentos de repouso, caminhada e ataque da família. As sete classes também entraram desarmadas. A assinatura do build é `478afa2805b71aa09613e1cb55e44f411b9b9e14b36f7a2740178429fea8782a`. [Censo por contexto](censo.ndjson.gz) · [Fontes por ID, arma, ação e direção](detalhes.tsv.gz) · [Fila de seleção](pendencias.json.gz) · [Resumo](resumo.json)
 
 | Corpo e equipamento | Contextos completos | Itens individuais | Pares | Conjuntos mistos amostrados |
 |---|---:|---:|---:|---:|

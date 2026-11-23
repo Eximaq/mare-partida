@@ -2100,7 +2100,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const gearOnly=needHead&&!head&&hasSeparateHair&&hair==='original'&&headItem!=null?originalHairGearRegistry?.resolve({body:canonical(a.body),direction:o.direction,item:headItem,look:headLook}):null;
   if((customFemaleFace||femalePalette)&&!femaleNamed)return null;
   if(needHead&&((!head&&!gearOnly&&!femaleNamed)||(!femaleNamed&&!headCompat)))return null;
-  return {...r,id:r.id+':'+hair+':'+(headItem??'none')+':'+(a.skin||'original')+':'+(a.hairColor||'original')+(femaleNamed?.eyeColor?':eye-palette:'+femaleNamed.eyeColor:'')+(femaleNamed?.eyeStyle?':'+femaleNamed.eyeStyle:'')+(femaleNamed?.id.endsWith(':bounded-focus-skin-r1')?':bounded-bare-focus-side-r1':'')+(carryForeheadBase?':bounded-carry-skin-r1':'')+(femaleNamed?.localW119SouthFace?':w119-south-face':'')+(femaleNamed?.localCetroLateralIdleSkin?':bounded-cetro-lateral-idle-skin':''),eyeStyle:femaleNamed?.eyeStyle,sourceId:r.id,colorAppearance:a,headRecord:head,gearOnlyRecord:gearOnly,femaleNamedHairRecord:femaleNamed,headLook,...(carryForeheadBase?{boundedCetroSouthCarry:true}:{})};
+  const rest=namedSouthRestBody(r,head,o);
+  const receiver=rest?{...rest,namedSouthRest:rest.id}:r;
+  return {...receiver,id:receiver.id+':'+hair+':'+(headItem??'none')+':'+(a.skin||'original')+':'+(a.hairColor||'original')+(femaleNamed?.eyeColor?':eye-palette:'+femaleNamed.eyeColor:'')+(femaleNamed?.eyeStyle?':'+femaleNamed.eyeStyle:'')+(femaleNamed?.id.endsWith(':bounded-focus-skin-r1')?':bounded-bare-focus-side-r1':'')+(carryForeheadBase?':bounded-carry-skin-r1':'')+(femaleNamed?.localW119SouthFace?':w119-south-face':'')+(femaleNamed?.localCetroLateralIdleSkin?':bounded-cetro-lateral-idle-skin':''),eyeStyle:femaleNamed?.eyeStyle,sourceId:receiver.id,colorAppearance:a,headRecord:head,gearOnlyRecord:gearOnly,femaleNamedHairRecord:femaleNamed,headLook,...(carryForeheadBase?{boundedCetroSouthCarry:true}:{})};
  }
  // A single source-registered partial-slot pilot. Never reinterpret a baked actor
  // as removable anatomy, opt in an unrelated source, or reset a saved cosmetic.
@@ -6242,6 +6244,44 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  // Use the actual naked body's clock, anatomy and saved head material.
  // This receiver has no item and has no weapon draw operations in any phase.
+ // The named-hair idle archive predates the redrawn legs. Its face and scalp
+ // use the current standing body verbatim; the head archive only supplies
+ // hair and hats. Use one body for dressed and undressed named characters.
+ function namedSouthRestBody(record,head,options){
+  if(!head||record.body!=='male'||record.action!=='idle'||record.direction!=='south'||
+     options.consumer!=='world'||head.body!==record.body||head.direction!==record.direction)return null;
+  const target=baseIndex.records.find(r=>r.id==='male-idle-original-south-from-walk0');
+  const d=record.pack.directions.south,t=target?.pack.directions.south;
+  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+  if(!t||!same([record.pack.frame,record.pack.pivot,record.pack.density,d.clip,d.poses,d.rest],
+               [target.pack.frame,target.pack.pivot,target.pack.density,t.clip,t.poses,t.rest])||
+     !['torso','armLeft','armRight','handLeft','handRight','headBase','face'].every(id=>{
+      const layer=t.layers.find(l=>l.id===id);
+      return layer&&same(d.layers.find(l=>l.id===id),layer);
+     }))return null;
+  return target;
+ }
+ function namedSouthRestPass(player,o,base,slot,v,selectPose){
+  if(!base.namedSouthRest||!base.headRecord)return null;
+  if(slot==='head'){
+   const saved=base.headRecord,look={...base.headLook,head:'head-'+v.item};
+   const worn=headRegistry.resolve({body:base.body,direction:base.direction,look});
+   const gear=worn?.layers.find(l=>l.id===worn.headgearPolicy?.gearId);
+   if(!gear||worn.item!==v.item||worn.style!==saved.style||!worn.sourceRefs.includes(gear.source)||
+      !['headBase','face','hair'].every(slot=>{
+       const a=saved.layers.find(l=>l.slot===slot),b=worn.layers.find(l=>l.slot===slot);
+       return a&&b&&a.source===b.source;
+      }))return null;
+   return {source:worn.snapshot,refs:[gear.source],head:{headRecord:worn,headLook:look}};
+  }
+  // Clothes registered on this same pack use its neutral hair in the archive.
+  // Take only the owned pass; the player and its head material stay on base.
+  const sourceActor={...player,equipment:{[v.key]:v.value},appearance96:{...player.appearance96,hairStyle:'original',hair:'original'}};
+  const garment=selectIndependentWorld(sourceActor,o,selectPose)?.independentPlan;
+  const pass=garment?.passes.get(slot);
+  if(garment?.base.pack!==base.pack||!pass?.layers?.length||pass.removed?.length||pass.head||pass.decorator)return null;
+  return pass;
+ }
  function unarmedWardrobeReceiver(body){
   // The separated side-walk source has five identical samples per original
   // phase. selectFemaleCoat67SideBare already compared every body pixel source,
@@ -7742,7 +7782,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    if(!independentPassCache.has(key)){
     const plate=(grip?.paddedNorth&&fittedNorthWeaponCoat(grip.weapon,slot,v.item))||(slot==='torso'&&cuffCoatPass(grip,v.item))||southBladeLegs(base,slot,v.item)||southFirearmLegs(base,slot,v.item)||southFirearmArms(base,slot,v.item)||firearmOriginalHead(base,slot,v.item,player)||signedPistolPiece(base,slot,v,player,routeOptions,weapon)||pistolLegs(base,slot,v.item)||northStaffHelmet(base,slot,v.item,player)||northStaffLower(base,slot,v.item)||fusedFirearmClothes(base,slot,v.item)||fixedRifleLower(base,slot,v,player,routeOptions)||southFocusSurface(base,slot,v.item)||southFocusTrousers(base,slot,v.item)||southFocusBoot(base,slot,v.item)||southBladeCoat(base,slot,v.item)||southBladeGlove(base,slot,v.item)||southPunchSurface(base,slot,v.item)||southBladeHelmet(base,slot,v.item,player)||southPunchHelmet(base,slot,v.item,player)||southPunchBoot(base,slot,v,player,routeOptions,selectPose)||southForearmTrousers(base,slot,v,player,routeOptions,selectPose)||articulatedWeaponHead(base,slot,v.item,player)||northFocusSleeves(base,slot,v.item)||northBladeGloves(base,slot,v.item)||northFocusGloves(base,slot,v.item)||northFittedTrousers(base,slot,v.item)||sideFocusTrousers(base,slot,v.item,player)||northArticulatedBoot(base,slot,v.item)||rifleProfileClothes(base,slot,v.item)||bladeTrousers(base,slot,v.item)||orderedDaggerBoot(base,slot,v.item)||articulatedBoot(base,slot,v.item)||articulatedSwordGarment(base,slot,v.item)||fittedNorthWeaponCoat(base,slot,v.item)||northBladeCoat(base,slot,v.item)||orderedDaggerGloves(base,slot,v.item)||compassHandPanels(base,slot,v.item)||lateralOrbGloves(base,slot,v.item)||lateralStaffGloves(base,slot,v.item)||relicSideCoat(base,slot,v.item)||fittedStaffCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
     if(!plate&&!poseCanMount){passes.set(slot,null);continue;}
-    const pass=plate||femaleGaitPass(base,slot,v,player)||swordWardrobePass(base,slot,v,player)||combatWardrobePass(base,slot,v,player)||femaleRestPass(base,slot,v,player)||independentNativePass({player,o:routeOptions,base,weapon:grip?null:weapon,slot,v,selectPose})||
+    const pass=plate||namedSouthRestPass(player,routeOptions,base,slot,v,selectPose)||femaleGaitPass(base,slot,v,player)||swordWardrobePass(base,slot,v,player)||combatWardrobePass(base,slot,v,player)||femaleRestPass(base,slot,v,player)||independentNativePass({player,o:routeOptions,base,weapon:grip?null:weapon,slot,v,selectPose})||
      malePunchWardrobe(base,slot,v,player,routeOptions)||maleCarryWardrobe(base,slot,v,player,routeOptions,selectPose)||daggerGarment(base,slot,v,player)||findDaggerWardrobePass(base,slot,v.item)||
      (slot==='torso'?findDaggerSideTorso(base,v.item):null)||
      (slot==='gloves'?findMaleSideLocomotionGlove(base,v.item):null)||
