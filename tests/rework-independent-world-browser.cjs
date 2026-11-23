@@ -189,6 +189,7 @@ window.__hdSlotQA={
   }
   if(sideFist){await observeLateralGauntlet(Number(sideFist.split('=')[1]||110));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-moving-boots')){await observeNorthMovingBoots();assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--side-staff-trousers')){await observeWeaponGloves('staffPants');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-jackets')){await observeNorthFocusClothing('coat');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-gloves')){await observeNorthFocusClothing('gloves');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-trousers')){await observeNorthFocusClothing('legs');assert.deepEqual(errors,[]);return;}
@@ -600,9 +601,9 @@ window.__hdSlotQA={
  }
  async function observeWeaponGloves(kind){
   const {gear,weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
-  const coat=kind==='coat',pants=kind==='pants',slot=coat?'coat':pants?'legs':'gloves',items=gear[coat?0:pants?1:3],firstItem=coat?151:pants?168:152;
-  const front=coat||pants||kind==='gauntlet',swords=kind==='sword',action=front?'attack-unarmed':swords?'attack-sword':kind==='daggers'?'attack-daggers':'attack-focus',family={sword:'espada',orb:'orbe',staff:'cajado',daggers:'adaga',gauntlet:'manopla',coat:'punho',pants:'punho'}[kind];
-  for(const weapon of pants?[2,3,14,110]:front?[2,3,14,110,111,118,119,120]:swords?weapons.filter(w=>w.role==='sword').map(w=>w.id):kind==='orb'?[17,122]:kind==='daggers'?weapons.filter(w=>w.role==='rogue').map(w=>w.id):[31,123,124,125,126,127,128]){
+  const staffPants=kind==='staffPants',coat=kind==='coat',pants=kind==='pants'||staffPants,slot=coat?'coat':pants?'legs':'gloves',items=gear[coat?0:pants?1:3],firstItem=coat?151:pants?168:152;
+  const front=coat||pants&&!staffPants||kind==='gauntlet',swords=kind==='sword',action=front?'attack-unarmed':swords?'attack-sword':kind==='daggers'?'attack-daggers':'attack-focus',family={sword:'espada',orb:'orbe',staff:'cajado',staffPants:'cajado',daggers:'adaga',gauntlet:'manopla',coat:'punho',pants:'punho'}[kind];
+  for(const weapon of staffPants?[31,123,124,125,126,127]:pants?[2,3,14,110]:front?[2,3,14,110,111,118,119,120]:swords?weapons.filter(w=>w.role==='sword').map(w=>w.id):kind==='orb'?[17,122]:kind==='daggers'?weapons.filter(w=>w.role==='rogue').map(w=>w.id):[31,123,124,125,126,127,128]){
    const role=weapons.find(w=>w.id===weapon).role,dark=weapon%2===0;
    const look={gender:'masculino',skinColor:dark?'ebony':'light',hairColor:dark?'blue':'brown',eyeColor:dark?'green':'brown'};
    const fixed={weapon,...(pants?{coat:151,gloves:152}:coat?{gloves:152,...([111,118,119,120].includes(weapon)?{legs:168}:{})}:front?{}:{coat:151}),boots:169,head:19},equipment=Object.values(fixed);

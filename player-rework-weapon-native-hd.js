@@ -2477,6 +2477,19 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    ctx.putImageData(out,0,0);
   }finally{mask.width=1;scalp.width=1;}
  }
+ // The signed focus waist is below both animated arms. Only edit the
+ // original shorts tile; the feet, equipment, grip and skin stay in the stack.
+ function drawSideTrousers(ctx,tile,fit,frame,images){
+  const {plate,phases}=fit,phase=phases[frame];
+  const cloth=images.get('tools/rework-modular-outfits-hd/assets/'+plate.cloth[frame]+'.png');
+  if(cloth?.width!==640||cloth.height!==640)throw Error('Missing registered lateral trouser plate');
+  if(plate.replace){
+   const scratch=makeCanvas(640,640),c=scratch.getContext('2d');c.drawImage(tile,0,0);
+   for(const [start,len] of phase.cut)c.clearRect(start%640,Math.floor(start/640),len,1);
+   ctx.drawImage(scratch,0,0);scratch.width=1;
+  }else ctx.drawImage(tile,0,0);
+  ctx.save();ctx.imageSmoothingEnabled=false;ctx.transform(...phase.transform);ctx.drawImage(cloth,0,0);ctx.restore();
+ }
  function bootStamp(r,s,images){
   const track=r.bootTrack,row=track.phases[Number(s.state)],prefix='tools/rework-combat-wardrobe/assets/';
   const art=images.get(prefix+row.art+'.png'),mask=row.mask&&images.get(prefix+row.mask+'.png'),rear=row.rear&&images.get(prefix+row.rear+'.png');
@@ -3044,6 +3057,8 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     if(ramp){const c=makeCanvas(w,h),cx=c.getContext('2d');cx.drawImage(tile,0,0);const d=cx.getImageData(0,0,w,h),api=root.MareAppearance96;d.data.set(api.recolor(d.data,root.MareNativeSkinHD.mask(d.data,w,'anatomy'),ramp));cx.putImageData(d,0,0);tile=c;}
     if((r.orderedGloves||r.bootTrack?.orderedDagger)&&l.id==='authored-body'){
      const dressed=dressedDaggerBody(r,s,images,tile);ctx.drawImage(dressed,0,0);dressed.width=1;
+    }else if(r.sideFittedPants&&l.id==='shorts'){
+     drawSideTrousers(ctx,tile,r.sideFittedPants,Number(s.state),images);
     }else if(r.orderedAnatomy&&r.bootTrack&&(l.id==='legs'||l.id==='underbody')){
      const shoe=bootStamp(r,s,images),clipped=makeCanvas(w,h),cx=clipped.getContext('2d');
      cx.drawImage(tile,0,0);cx.globalCompositeOperation='destination-out';shoe.draw(cx,shoe.mask);

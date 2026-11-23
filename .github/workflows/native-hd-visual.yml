@@ -17,6 +17,9 @@ on:
       - 'tests/rework-ordered-orb-coats.cjs'
       - 'tests/rework-ordered-staff-coats.cjs'
       - 'tests/rework-ordered-staff-gloves.cjs'
+      - 'tests/rework-side-focus-trousers.cjs'
+      - 'tools/register_side_focus_trousers.py'
+      - 'tools/rework-combat-wardrobe/side-focus-trousers.json'
       - 'tools/register_staff_gloves.py'
       - 'tools/rework-combat-wardrobe/staff-gloves.zip'
       - 'tools/rework-combat-wardrobe/sword-gloves.zip'
@@ -329,6 +332,12 @@ jobs:
           for tone in light ebony; do
             node --expose-gc tests/rework-ordered-staff-gloves.cjs "$WEAPON" "$tone"
           done
+      - name: Comparar a cintura e as dez calças com o conjunto durante o ataque de perfil
+        if: ${{ !cancelled() && matrix.weapon != 128 }}
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WEAPON: ${{ matrix.weapon }}
+        run: node --expose-gc tests/rework-side-focus-trousers.cjs "$WEAPON"
   south-focus-trousers:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -451,6 +460,7 @@ jobs:
           python tools/register_south_focus_trousers.py --verify
           python tools/register_south_focus_boots.py --verify
           python tools/register_staff_gloves.py --verify
+          python tools/register_side_focus_trousers.py --verify
           python tools/register_sword_gloves.py --verify
           python tools/register_orb_gloves.py --verify
           python tools/register_dagger_gloves.py --verify
