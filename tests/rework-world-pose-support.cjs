@@ -37,4 +37,13 @@ async function equippedWorldPose(lobby,player,action,direction){
  }
  return entry;
 }
-module.exports={prepareWorldPose,walkingTrousers,equippedWorldPose};
+function assertWalkingEquipment(api,player,direction){
+ const catalog=require('../tools/paper-doll-96-v3/weapons.json');
+ const r=require('../paper-doll-96-lobby.js').selectWorldHDOnly(api,catalog,player,{consumer:'world',action:'walk',direction});
+ assert.deepEqual(r.omitted,[]);
+ for(const [slot,item] of Object.entries(player.equipment)){
+  const route=r.slotRoutes[slot];assert.equal(route.item,item.def??item);assert.equal(route.quality,'hd');assert(route.source);
+ }
+ return r;
+}
+module.exports={prepareWorldPose,walkingTrousers,equippedWorldPose,assertWalkingEquipment};

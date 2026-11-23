@@ -24,13 +24,20 @@ test('all240 production walking ticks reproduce72 independent source renders wit
  const index=JSON.parse(fs.readFileSync(path.join(__dirname,'../tools/rework-modular-outfits-hd/index.json'))),h=api.create(index),world=make();await world.ready;
  const timeline=[2,5,4,1,5,3,2,5,3,2,5,3].flatMap((n,i)=>Array(n).fill(i));assert.equal(timeline.length,40);let ticks=0;
  for(const item of [133,161,21])for(const direction of ['east','west']){
-  const p={appearance96:{gender:'female',hairStyle:'original',hairColor:'brown',eyeStyle:'original',eyeColor:'brown',skinColor:'light'},equipment:{legs:{def:item}}},o={consumer:'world',action:'walk',direction},r=world.select(p,o);assert(r?.independentPants);assert.equal(r.pack.directions[direction].clip.fps,40);assert.deepEqual(r.pack.pivot,{x:64,y:112});assert(await world.prepareClip(p,o));
+  const p={appearance96:{gender:'female',hairStyle:'original',hairColor:'brown',eyeStyle:'original',eyeColor:'brown',skinColor:'light'},equipment:{legs:{def:item}}},o={consumer:'world',action:'walk',direction};
+  const r=h.resolveIndependentPants({body:'female',direction,action:'walk',equipment:p.equipment,appearance});
+  const route=require('../paper-doll-96-lobby.js').selectWorldHDOnly(world,require('../tools/paper-doll-96-v3/weapons.json'),p,o);
+  assert.deepEqual(route.omitted,[]);assert.equal(route.slotRoutes.legs.item,item);assert.equal(route.slotRoutes.legs.quality,'hd');
+  assert.equal(route.slotRoutes.legs.source,item===161?'female-pants161-sword-walk-'+direction:'independent-female-pants'+item+'-'+direction+'-walk');
+  assert(r?.independentPants);assert.equal(r.pack.directions[direction].clip.fps,40);assert.deepEqual(r.pack.pivot,{x:64,y:112});const bundle=await world.prepareConfiguration([{player:p,options:o}],{resolve:()=>({player:p,options:o,source:route})});
+  assert.deepEqual(bundle.coverage[0].omitted,[]);try{
   const images=new Map(await Promise.all(h.requiredFiles(r).map(async f=>[f,await load(f)]))),refs=new Map();
   for(let phase=0;phase<12;phase++){const name=item+'-'+direction+'-'+phase+'-composition.png',raw=await zip.read(name);assert.equal(crypto.createHash('sha256').update(raw).digest('hex'),proof.members[name]);const c=cv.createCanvas(512,512).getContext('2d');c.drawImage(await cv.loadImage(Buffer.from(raw)),0,0);refs.set(phase,c.getImageData(0,0,512,512).data);}
   for(let tick=0;tick<40;tick++){
    const c=cv.createCanvas(512,512).getContext('2d');h.render(c,r,images,{frame:tick,makeCanvas:cv.createCanvas});assert.deepEqual(c.getImageData(0,0,512,512).data,refs.get(timeline[tick]),'approved '+item+'/'+direction+'/tick'+tick);
-   assert(world.draw(cv.createCanvas(512,512).getContext('2d'),p,{...o,progress:(tick+.1)/40,x:256,y:448}));ticks++;
+   let painted;assert(bundle.draw({save(){},restore(){},drawImage(c){painted=c;}},p,{...o,progress:(tick+.1)/40,x:256,y:448}));assert(painted.width&&painted.height);ticks++;
   }
+  }finally{bundle.release();}
   assert(!world.select({...p,equipment:{}},o)?.independentPants);
  }
  assert.equal(ticks,240);
