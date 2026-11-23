@@ -1523,7 +1523,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
      !eq([d.rest,...d.poses].map(p=>[p.NECK,p.NOSE]),ap.poses)||!ap.layers.every(l=>l[4].every(h=>bp.images[h]===h)))return null;
   return {...r,id:r.id+':owned-south-material:'+a.skin,ownedCyborgForearmSouthAttack:true,ownedCyborg120SouthAttack:r.item===120,ownedCyborg118SouthAttack:r.item===118,ownedCyborg119SouthAttack:r.item===119,exactComposite:true,ownedCyborg120Body:bp,colorAppearance:a};
  }
-  function cyborg120ArmRecipe(base,sheet,i,makeCanvas){
+  function cyborg120ArmRecipe(base,sheet,i,makeCanvas,trousers){
  const cuts=[[[284,247],[299,266],[297,318],[277,380],[238,380],[238,300],[261,262]],[[355,247],[374,247],[403,291],[408,380],[373,380],[349,318],[353,270]]];
 const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,292],[292,271]];
 
@@ -1538,6 +1538,9 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  for(const pts of cuts){polygon(pts);ctx.fill();}
  ctx.globalCompositeOperation='source-over';
  clipped(()=>polygon(torso),drawBase);
+ // The original lower-body plate stays at the hips when the arms swing.
+ // The newly projected forearms then cross the trousers in the authored order.
+ if(trousers)ctx.drawImage(trousers,0,0);
  clipped(()=>rectangle(235,245,175,140),()=>{
   for(const [half,ox,tx] of [[0,615,285],[1,921,361]]){
    ctx.save();ctx.translate(tx,252);ctx.scale(scale,scale);ctx.translate(-ox,-366);
@@ -1553,7 +1556,8 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   if(hiddenSlots.length||appearance.skin!==r.colorAppearance.skin||appearance.hairColor!==r.colorAppearance.hairColor||
      appearance.eyeColor!==r.colorAppearance.eyeColor)throw Error('Unsupported W120 South appearance');
   const phase=Number(s.state),[oldUrl,gearUrl,visibleUrl,sheetUrl]=(r.item===118?cyborg118SouthAuthority:r.item===119||r.ownedGauntlet111SouthAttack?cyborg119SouthOwnAuthority:cyborg120SouthAuthority).frames[phase],i=Math.min(phase,7);
-  const bp=r.ownedCyborg120Body,p=bp.pack,d=p.directions.south;
+  const bp=r.ownedCyborg120Body,basePack=bp.pack,d=basePack.directions.south,trousers=r.southTrouserMaterial;
+  const p=trousers?.replaceShorts?{...basePack,directions:{south:{...d,layers:d.layers.filter(l=>l.id!=='shorts-phase')}}}:basePack;
   const map=new Map(d.layers.map(l=>{const key=l.frames?.[i]||l.source;return [key,image({url:bp.images[key]})];}));
   const C=()=>makeCanvas(640,640),raw=C(),shade=C(),mask=C(),rawX=raw.getContext('2d'),sx=shade.getContext('2d'),mx=mask.getContext('2d');
   vendor.compositor.render(rawX,p,map,{direction:'south',frame:i,density:4});
@@ -1568,9 +1572,10 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    im.data.set(api.recolor(im.data,root.MareNativeSkinHD.mask(im.data,src.width,'anatomy'),api.skins[appearance.skin].ramp));
    tx.putImageData(im,0,0);
    before=cyborg120ArmRecipe(raw,src,phase-7,makeCanvas);
-   after=cyborg120ArmRecipe(shade,tile,phase-7,makeCanvas);
+   after=cyborg120ArmRecipe(shade,tile,phase-7,makeCanvas,trousers?.image);
    tile.width=tile.height=1;
   }
+  if(trousers&&!sheetUrl)shade.getContext('2d').drawImage(trousers.image,0,0);
   if(r.ownedCyborg120SouthAttack){
    // W120's signed twelve-pose body and chosen tone stay whole. Unlike
    // the legacy composite, wrist coverage belongs only to own hardware.

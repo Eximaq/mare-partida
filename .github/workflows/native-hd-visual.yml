@@ -225,6 +225,7 @@ jobs:
           for tone in light ebony; do
             node --expose-gc tests/rework-south-punch-helmets.cjs "$WEAPON" "$tone"
             node --expose-gc tests/rework-south-punch-boots.cjs "$WEAPON" "$tone"
+            case "$WEAPON" in 111|118|119|120) node --expose-gc tests/rework-south-forearm-trousers.cjs "$WEAPON" "$tone";; esac
           done
           node --expose-gc tests/rework-south-punch-pairs.cjs "$WEAPON"
   articulated-helmets:

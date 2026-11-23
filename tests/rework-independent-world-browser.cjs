@@ -170,6 +170,7 @@ window.__hdSlotQA={
   if(process.argv.includes('--orb-coats')){await observeWeaponCoats([17,122],'strategist','attack-focus');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-boots')){await observeArticulatedBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--sword-coats')){await observeWeaponCoats([0,1,67,68,69,70],'sword','attack-sword');assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--south-forearm-trousers')){await observeSouthForearmTrousers();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-forearm-wardrobe')){await observeSouthPunchHelmets([111,118,119,120]);assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-punch-helmets')){await observeSouthPunchHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
@@ -559,6 +560,26 @@ window.__hdSlotQA={
    }
    await remove(slot);const end=await show(slot+'-retirado',base);
    assert.deepEqual(end.visual.coverage[0].slotRoutes,initial.visual.coverage[0].slotRoutes);
+   assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
+ }
+ async function observeSouthForearmTrousers(){
+  const {weapons,gear}=require('../tools/audit-hd-wardrobe-product.cjs'),pants=gear[1],action='attack-unarmed';
+  for(const weapon of [111,118,119,120]){
+   const role=weapons.find(w=>w.id===weapon).role,dark=weapon===111||weapon===119;
+   const look={gender:'masculino',skinColor:dark?'ebony':'light',hairColor:dark?'blue':'white',eyeColor:dark?'green':'amber'};
+   const fixed={weapon,head:136,boots:148};
+   await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,ids:[...Object.values(fixed),...pants],look});
+   for(const item of dark?Object.values(fixed):Object.values(fixed).reverse())await put(item);
+   const show=(label,eq)=>observeAttack(action,'cintura-sul-'+weapon+'-'+label,'south',eq);
+   const start=await show('inicio',fixed),saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;let first;
+   for(const id of [...pants,pants[0]]){
+    const kit={...fixed,legs:id};await put(id);const sample=await show('calca-'+id+(first&&id===pants[0]?'-restaurada':''),kit);
+    for(const slot of Object.keys(fixed))assert.deepEqual(sample.visual.coverage[0].slotRoutes[slot],start.visual.coverage[0].slotRoutes[slot]);
+    if(id===pants[0]){if(first)assert.deepEqual(sample.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);
+     else{first=sample;await captureMapCycle(action,kit,'cintura-sul-'+weapon,12,'south');}}
+   }
+   await remove('legs');assert.deepEqual((await show('retirada',fixed)).visual.coverage[0].slotRoutes,start.visual.coverage[0].slotRoutes);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
  }

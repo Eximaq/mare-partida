@@ -6683,6 +6683,21 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const rig={pack:{...p,directions:{[dir]:{...d,poses}}},images:Object.fromEntries(row.sourceRefs.map(k=>[k,'../rework-base-hd/assets/'+k+'.png']))};
   daggerHeadRigs.set(row,rig);return rig;
  }
+ function southForearmTrousers(base,slot,v,player,o,selectPose){
+  if(slot!=='pants'||!base.ownedCyborg120Body||base.hdKind!=='weapon'||base.direction!=='south'||
+     base.action!=='attack-unarmed'||!weaponRegistry.southPunchHeadLayers(base))return null;
+  const isolated=selectIndependentWorld({...player,equipment:{[v.key]:v.value}},o,selectPose);
+  const pass=isolated?.independentPlan?.passes.get(slot),bank=isolated?.nativeSlotPack,layer=pass?.layers?.[0];
+  if(!pass||isolated.omitted?.length||bank?.mounted.sourcePackSHA256!==base.ownedCyborg120Body.originalSHA256||
+     pass.layers.length!==1||layer.slot!=='pants'||layer.binding?.kind!=='fixed'||layer.depthTrack||
+     !layer.id.startsWith('pants'+v.item+'-')||bank.phaseTransforms.length||Object.keys(bank.padding).length||
+     pass.repair?.length||pass.mirrored?.length)return null;
+  const replaceShorts=pass.removed?.length===1&&pass.removed[0]==='shorts-phase';
+  if(replaceShorts?layer.depth!==1:pass.removed?.length||layer.depth!==2)return null;
+  const phases=layer.frames||Array(8).fill(layer.source);
+  if(phases.length!==8||!phases.every(h=>pass.refs.includes(h)))return null;
+  return {source:pass.source,refs:pass.refs,decorator:{field:'southForearmPants',own:{phases,replaceShorts}}};
+ }
  function southPunchBoot(base,slot,v,player,o,selectPose){
   if(slot!=='boots'||base.hdKind!=='weapon'||base.direction!=='south'||base.action!=='attack-unarmed'||
      !weaponRegistry.southPunchHeadLayers(base))return null;
@@ -6979,7 +6994,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   for(const [slot,v] of Object.entries(request)){
    const key=JSON.stringify([pose,slot,v.item,slot==='torso'&&(grip?.chromaticSource||grip?.paddedNorth)?grip.weapon.id:null]);
    if(!independentPassCache.has(key)){
-    const plate=(grip?.paddedNorth&&fittedNorthWeaponCoat(grip.weapon,slot,v.item))||(slot==='torso'&&cuffCoatPass(grip,v.item))||fixedRifleLower(base,slot,v,player,routeOptions)||southPunchHelmet(base,slot,v.item,player)||southPunchBoot(base,slot,v,player,routeOptions,selectPose)||articulatedWeaponHead(base,slot,v.item,player)||northArticulatedBoot(base,slot,v.item)||orderedDaggerBoot(base,slot,v.item)||articulatedBoot(base,slot,v.item)||articulatedSwordCoat(base,slot,v.item)||fittedNorthWeaponCoat(base,slot,v.item)||fittedStaffCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
+    const plate=(grip?.paddedNorth&&fittedNorthWeaponCoat(grip.weapon,slot,v.item))||(slot==='torso'&&cuffCoatPass(grip,v.item))||fixedRifleLower(base,slot,v,player,routeOptions)||southPunchHelmet(base,slot,v.item,player)||southPunchBoot(base,slot,v,player,routeOptions,selectPose)||southForearmTrousers(base,slot,v,player,routeOptions,selectPose)||articulatedWeaponHead(base,slot,v.item,player)||northArticulatedBoot(base,slot,v.item)||orderedDaggerBoot(base,slot,v.item)||articulatedBoot(base,slot,v.item)||articulatedSwordCoat(base,slot,v.item)||fittedNorthWeaponCoat(base,slot,v.item)||fittedStaffCoat(base,slot,v.item)||maleDaggerCoat(base,slot,v.item)||(slot==='torso'&&weaponRegistry?.registeredCoat(base,v.item));
     if(!plate&&!poseCanMount){passes.set(slot,null);continue;}
     const pass=plate||femaleGaitPass(base,slot,v,player)||swordWardrobePass(base,slot,v,player)||combatWardrobePass(base,slot,v,player)||femaleRestPass(base,slot,v,player)||independentNativePass({player,o:routeOptions,base,weapon:grip?null:weapon,slot,v,selectPose})||
      malePunchWardrobe(base,slot,v,player,routeOptions)||maleCarryWardrobe(base,slot,v,player,routeOptions,selectPose)||daggerGarment(base,slot,v,player)||findDaggerWardrobePass(base,slot,v.item)||
@@ -7095,7 +7110,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   for(const slot of ['pants','boots','gloves']){
    const patch=active.get(slot)?.decorator;
    if(!patch)continue;
-   const {field,own}=patch,{authoredSideIdlePants,fixedIdleBoots,ownSideIdleGlove180,...receiver}=mounted;
+   const {field,own}=patch,{authoredSideIdlePants,fixedIdleBoots,ownSideIdleGlove180,southForearmPants,...receiver}=mounted;
    mounted={...receiver,[field]:{...own,base:mounted}};
   }
   const dressed={...mounted,id:base.id+':independent-slots:'+JSON.stringify(slotRoutes),slotRoutes,slotResolution,omitted,layeredSlots:true,independentPlan:plan,
@@ -8574,7 +8589,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    'tools/rework-weapon-layers-hd/'+anatomy.images[l.frames?.[frame]||l.source]):[];
  }
  const rifleFabricPath=(sha,pool)=>'tools/'+(pool==='weapon'?'rework-weapon-layers-hd':'rework-modular-outfits-hd')+'/assets/'+sha+'.png';
- function filesFor(r,frame){if(r.southPunchFoot){
+ function filesFor(r,frame){if(r.southForearmPants){
+  const {base,phases}=r.southForearmPants;return [...filesFor(base,frame),ownOutfitPaths+phases[Math.min(frame,7)]+'.png'];
+ }if(r.southPunchFoot){
   const {base,layers}=r.southPunchFoot;
   return [...new Set([...filesFor(base,frame),...layers.map(l=>l.source)])];
  }if(r.southPunchHead){
@@ -8845,6 +8862,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...result,info:{...result.info,source:r.id}};
  }
  function composeFrame(r,frame,entry){
+  if(r.southForearmPants){
+   const {base,phases,replaceShorts}=r.southForearmPants,url=ownOutfitPaths+phases[Math.min(frame,7)]+'.png',image=entry.images.get(url);
+   if(image?.width!==640||image.height!==640)throw Object.assign(Error('Incompatible south trouser plate'),{asset:url});
+   return composeFrame({...base,southTrouserMaterial:{image,replaceShorts}},frame,entry);
+  }
   if(r.southPunchFoot){
    const {base,layers}=r.southPunchFoot,result=composeFrame(base,frame,entry),pose=Math.min(frame,7);
    const canvas=makeCanvas(640,640),ctx=canvas.getContext('2d');
