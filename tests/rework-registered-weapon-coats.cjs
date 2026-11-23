@@ -33,7 +33,8 @@ const bytes=c=>Buffer.from(c.getContext('2d').getImageData(0,0,640,640).data);
     assert.equal(kit.coverage[0].frames,8);
     for(let i=0;i<8;i++){
      const pass=track.coats[id][i],metal=bare.states[i].layers[1];
-     const shift=pass.socket?pass.socket.position.map((v,k)=>v-metal.attachment.anchor[k]):[0,0];assert.equal(source.states[i].layers[1].sha256,pass.sha256);
+     const shift=pass.socket?pass.socket.position.map((v,k)=>v-metal.attachment.anchor[k]):[0,0];const mounted=(source.wardrobeGrip?.cuffCoat||source.states)[i].layers;
+     assert.equal(mounted[1].sha256,pass.sha256);assert.equal(mounted[2].sha256,metal.sha256);
      const expected=cv.createCanvas(640,640),ctx=expected.getContext('2d');
      registry.render(ctx,body,reference,{frame:i});const without=bytes(expected);
      ctx.drawImage(await load('tools/rework-weapon-layers-hd/'+pass.url),0,0);

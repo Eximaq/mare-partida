@@ -173,7 +173,7 @@ window.__hdSlotQA={
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
   const daggerGearArg=process.argv.find(v=>/^--dagger-(boots|heads)=/.test(v));
   if(daggerGearArg){const [mode,direction]=daggerGearArg.split('=');await observeDaggerEquipment(direction,mode.endsWith('heads')?'head':'boots');assert.deepEqual(errors,[]);return;}
-  const sideFist=process.argv.find(v=>v==='--lateral-gauntlet-wardrobe'||/^--lateral-gauntlet=(2|3|110)$/.test(v));
+  const sideFist=process.argv.find(v=>v==='--lateral-gauntlet-wardrobe'||/^--lateral-gauntlet=(2|3|110|111|112|118|119)$/.test(v));
   if(sideFist){await observeLateralGauntlet(Number(sideFist.split('=')[1]||110));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-moving-boots')){await observeNorthMovingBoots();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-coats')||process.argv.includes('--north-weapon-coats')){await observeNorthFocusCoats(process.argv.includes('--north-weapon-coats'));assert.deepEqual(errors,[]);return;}
@@ -563,7 +563,7 @@ window.__hdSlotQA={
    const look=direction==='east'?{gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'}:
     {gender:'masculino',skinColor:'light',hairColor:'white',eyeColor:'amber'};
    const ids=[...Object.values(initial),...Object.values(swaps)];
-   await page.evaluate(({ids,look})=>__hdSlotQA.seedWardrobe('brawler',ids,look),{ids,look});
+   await page.evaluate(({ids,look,role})=>__hdSlotQA.seedWardrobe(role,ids,look),{ids,look,role:weapon===118||weapon===119?'cyborg':'brawler'});
    for(const item of (direction==='east'?Object.values(initial):Object.values(initial).reverse()))await put(item);
    const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
    const show=(label,kit)=>observeAttack('attack-unarmed','punho-'+direction+'-'+label,direction,kit);

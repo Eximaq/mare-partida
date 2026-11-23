@@ -2021,6 +2021,28 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  }
  // W2/W3 use a pre-oriented metal bitmap over the fully rendered body.
  // Validate against the same authored bank that supplies the native draw.
+ // These authored side grips share the modular punch body, with the head
+ // registered two physical pixels lower. Both facings have their own plates.
+ function registeredPunchGrip(record){
+  if(!record?.separableAttack||record.body!=='male'||!['east','west'].includes(record.direction)||
+     record.states?.length!==8)return null;
+  const family=[111,112].includes(record.item)?'male-authored-gauntlet'+record.item+'-eight':
+   record.item===118?'male-punch-native-right-cuff':null;
+  const rig=family&&index.separableAttackRigs.find(r=>r.rig===family),d=rig?.directions[record.direction];
+  const gear=d?.weapons[record.item];
+  if(!gear||rig.action!==record.action||d.base.length!==8||gear.length!==8)return null;
+  for(const [i,s] of record.states.entries()){
+   const [body,part]=s.layers,raw=gear[i];
+   if(Number(s.state)!==i||s.layers.length!==2||s.attachment||s.bodyPatch||s.canvasRoundingPatch||
+      [body,part].some((l,j)=>l.depth!==j||l.operation!=='source-over'||l.mask||l.mirrorX||l.occludedBy||
+       l.size?.join(',')!=='640,640'||l.url!=='assets/'+l.sha256+'.png')||
+      body.offset||body.sha256!==d.base[i].sha256||part.sha256!==raw.sha256||
+      JSON.stringify(part.offset)!==JSON.stringify(raw.attachment?.fallbackOffset))return null;
+  }
+  const wrist=family==='male-authored-gauntlet111-eight'?{x:record.direction==='east'?351:259,y:241,
+   width:30,height:33,counts:[0,584,586,617,0,613,590,0]}:null;
+  return {headOffset:2,ticks:rig.timeline.length,wrist,ops:record.states.map(s=>[{asset:resource(s.layers[1].url),offset:s.layers[1].offset}])};
+ }
  function sidePunchMetal(record){
   const source=ownGauntletsSideAuthority[record?.direction],track=source?.items[record?.item];
   if(!record?.ownW2CleanSide||!track||record.basePack!==source.backing||track.length!==8||record.states?.length!==8)return null;
@@ -3172,7 +3194,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    actions.includes(requested)?actions.find(a=>a.startsWith('attack-')):null;
   return action?{...record,action}:record;
  }
- return {registeredCoat,sidePunchMetal,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
+ return {registeredCoat,registeredPunchGrip,sidePunchMetal,attackAction:item=>weaponActions(Number(item)).find(name=>name.startsWith('attack-')),resolve:request=>withClock(resolve,request),resolveSeparable:request=>withClock(resolveSeparable,request),approvedSouth,requiredFiles,render};
 }
 const api={create};root.MareReworkWeaponNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
