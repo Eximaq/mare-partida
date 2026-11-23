@@ -3,7 +3,7 @@ const path=require('node:path'),fs=require('node:fs'),vm=require('node:vm');
 const crypto=require('node:crypto'),zlib=require('node:zlib'),assert=require('node:assert/strict');
 const {test}=require('node:test');
 const {cv}=require('./rework-integration-support.cjs');
-const root=path.resolve(__dirname,'..');
+const root=path.resolve(process.env.HD_PUBLISHED_ROOT||path.join(__dirname,'..'));
 const local=url=>path.join(root,new URL(String(url),'http://localhost/').pathname);
 const appearance={version:1,gender:'feminino',skinStyle:'natural',skinColor:'olive',hairStyle:'hair-cropped',hairColor:'blonde',eyeStyle:'original',eyeColor:'amber'};
 
@@ -12,25 +12,32 @@ test('normal WorldVisual keeps four native walk directions with pants21 and thre
  global.fetch=async url=>{const file=local(url),bytes=fs.existsSync(file)?fs.readFileSync(file):zlib.gunzipSync(fs.readFileSync(file+'.gz'));return{ok:true,json:async()=>JSON.parse(bytes),arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength)};};
  global.document={createElement:tag=>tag==='canvas'?cv.createCanvas(1,1):{},head:{append(node){try{vm.runInThisContext(fs.readFileSync(local(node.src),'utf8'),{filename:local(node.src)});node.onload();}catch(error){node.onerror(error);}}}};
  global.Image=class extends cv.Image{set src(v){if(String(v).startsWith('blob:'))this.pending=require('node:buffer').resolveObjectURL(v).arrayBuffer().then(b=>{super.src=Buffer.from(b);});else super.src=fs.readFileSync(local(v));}async decode(){await this.pending;return super.decode();}};
- const lobby=require('../paper-doll-96-lobby.js').create({baseURL:'http://localhost/'});
+ const lobby=require(path.join(root,'paper-doll-96-lobby.js')).create({baseURL:'http://localhost/'});
  await lobby.ready;
  const actor={factionId:'pirate',appearance96:{...appearance}},saved=JSON.stringify(appearance);
  const directions=['north','south','east','west'];
  const ticks=[0,4,5,9,10,14,15,18,24,25,34,35,38];
  let count=0;
  try{
-  for(const [weapon,cls,attack] of [[0,'sword','attack-sword'],[5,'gunner','attack-firearm'],[17,'strategist','attack-focus']]){
+  for(const [weapon,cls] of [[0,'sword'],[5,'gunner'],[17,'strategist']]){
    actor.classId=cls;actor.equipment={legs:{def:21},weapon:{def:weapon}};
    assert.equal(lobby.resolve(actor)?.body,'feminino');
-   const previous=lobby.worldVisual()?.publishedKey;
-   lobby.requestWorldVisual(actor,{actions:['attack',attack,'skill'],scope:'four-walk-directions'});
-   if(previous)assert.equal(lobby.worldVisual().publishedKey,previous,'keep a prepared character while changing slots');
-   for(let i=0;i<8500&&lobby.worldVisual()?.state==='loading';i++)await new Promise(resolve=>setTimeout(resolve,10));
-   const prepared=lobby.worldVisual();
-   assert.equal(prepared.state,'ready',JSON.stringify(prepared));assert.equal(prepared.publishedKey,prepared.key);
    for(const direction of directions){
+    const pose={action:'walk',direction,consumer:'world'};
+    const request=lobby.requestWorldVisual(actor,pose);
+    assert.equal(lobby.worldVisual().key,request.key);
+    if(request.state==='loading'){
+     const cold=cv.createCanvas(320,320);
+     assert.equal(lobby.drawWorldVisual(cold.getContext('2d'),{...pose,time:0,x:160,y:256},actor),false);
+     assert.equal(lobby.worldVisual().publishedKey,undefined);
+    }
+    await request.promise;
+    const prepared=lobby.worldVisual();
+    assert.equal(prepared.state,'ready',JSON.stringify(prepared));assert.equal(prepared.publishedKey,prepared.key);
     const route=prepared.coverage.find(x=>x.action==='walk'&&x.direction===direction);
     assert(route?.source&&!route.source.startsWith('native96/'), weapon+'/'+direction+': '+JSON.stringify(route));
+    assert.deepEqual(route.omitted,[]);assert.deepEqual(route.unsupported,[]);
+    assert.equal(route.slotRoutes.legs.item,21);assert.equal(route.slotRoutes.weapon.item,weapon);
     assert.equal(route.frames,40);
     const images=new Set();
     for(const tick of ticks){
