@@ -15,28 +15,30 @@ const url=process.env.MARE_TEST_URL;
    page.on('pageerror',error=>errors.push(error.message));
    await page.route('**/api/akuma/catalog',route=>route.fulfill({status:404,body:'{}'}));
    await page.route('**/__dev_version',route=>route.fulfill({body:'stable'}));
+   // Hold the actual map request. Inventory and creation previews prepare poses too.
+   await page.addInitScript(failWalk=>{
+    window.__poseLoad={held:false,released:false,rejectWalk:failWalk,failed:false};
+    window.__holdWorldPose=async(key,action)=>{
+     const state=window.__poseLoad;
+     if(state.armed&&action==='idle'&&!state.held){
+      state.held=true;state.heldKey=key;
+      await new Promise(resolve=>{state.release=()=>{state.released=true;resolve();};});
+     }
+     if(state.held&&action==='walk'&&state.rejectWalk&&!state.failed){
+      state.failed=true;state.failedKey=key;
+      throw Error('Visual QA: temporary walk decode failure');
+     }
+    };
+   },induceFailure);
+   await page.route('**/paper-doll-96-lobby.js*',async route=>{
+    const response=await route.fetch(),source=await response.text();
+    const marker='bundle=await nativeHD.prepareConfiguration([pose],';
+    assert.equal(source.split(marker).length,2,'exact map publication path');
+    await route.fulfill({response,body:source.replace(marker,'await window.__holdWorldPose(entry.key,options.action);'+marker)});
+   });
    await page.route('**/game.js*',async route=>{
-    const response=await route.fetch(),source=await response.text(),marker='  window.__mareDiagnostics=',renderer='  const lobby96=MarePaperDoll96Lobby.create';
-    assert(source.includes(marker)&&source.includes(renderer));
-    const fixture=`
-     window.__poseLoad={held:false,released:false,rejectWalk:${induceFailure},failed:false};
-     const createNative=MareReworkNativeHD.create;
-     MareReworkNativeHD.create=(...args)=>{
-      const instance=createNative(...args),prepare=instance.prepareConfiguration;
-      instance.prepareConfiguration=async (poses,options)=>{
-       const state=window.__poseLoad;
-       if(poses[0].options.action==='idle'&&!state.held){
-        state.held=true;
-        await new Promise(resolve=>{state.release=()=>{state.released=true;resolve();};});
-       }
-       if(state.rejectWalk&&poses[0].options.action==='walk'&&!state.failed){
-        state.failed=true;throw Error('Visual QA: temporary walk decode failure');
-       }
-       return prepare(poses,options);
-      };
-      return instance;
-     };
-    `;
+    const response=await route.fetch(),source=await response.text(),marker='  window.__mareDiagnostics=';
+    assert(source.includes(marker));
     const instrumentation=`
      const observedWorld=lobby96.draw.bind(lobby96);
      const draws=[];
@@ -56,7 +58,8 @@ const url=process.env.MARE_TEST_URL;
        const nav=navigator();
        for(let y=192;y<nav.map.height-192;y+=16)for(let x=192;x<nav.map.width-300;x+=16){
         if(!nav.clear({x,y},{x:x+250,y}))continue;
-        Object.assign(world.hero,{x,y});camera.update(world.hero,activeMap(),0,true);
+        window.__poseLoad.armed=true;
+        Object.assign(world.hero,{x,y,direction:'back'});camera.update(world.hero,activeMap(),0,true);
         world.mobs=[{...monsterTypes.cesar,id:'readiness-qa',type:'cesar',area:game.area,district:MareHunt.sectors(game.area)[0].id,level:1,alive:true,hp:100000,maxHP:100000,defense:0,magicDefense:0,x:x+175,y,anchorX:x+175,anchorY:y,attack:0,attackClock:1e9,speed:0,patrolClock:1e9,aggro:0,bob:0}];
         return;
        }
@@ -68,7 +71,7 @@ const url=process.env.MARE_TEST_URL;
       }
      };
     `;
-    await route.fulfill({response,body:source.replace(renderer,fixture+renderer).replace(marker,instrumentation+marker)});
+    await route.fulfill({response,body:source.replace(marker,instrumentation+marker)});
    });
    await page.goto(url,{waitUntil:'networkidle',timeout:90000});
    await page.locator('#characterName').fill('Visual QA');
@@ -81,14 +84,18 @@ const url=process.env.MARE_TEST_URL;
    await page.locator('#createCharacter').click();
    await page.locator('[data-confirm-accept]').click();
    const read=()=>page.evaluate(()=>__preparationQA.read());
+   await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
+   await page.evaluate(()=>__preparationQA.lane());
    await page.waitForFunction(()=>__poseLoad.held&&document.querySelector('#worldLoading').classList.contains('hidden'),null,{timeout:60000});
    assert.equal(await page.locator('#playerVisualStatus,#retryPlayerVisual').count(),0);
    const paused=await read();
-   assert.equal(paused.draws.length,0);
+   const heldKey=await page.evaluate(()=>__poseLoad.heldKey);
+   assert.equal(paused.visual.key,heldKey);assert.equal(paused.visual.state,'loading');
+   assert(!paused.draws.some(d=>d.key===heldKey),'An unfinished map pose was published');
    await page.waitForFunction(t=>__preparationQA.read().hero.time>t,paused.hero.time);
-   await page.evaluate(()=>__preparationQA.lane());
    const before=await read();
-   await page.keyboard.down('d');
+   let movementKey='d';
+   await page.keyboard.down(movementKey);
    try{
     await page.waitForFunction(x=>__preparationQA.read().hero.x>x+10,before.hero.x,{timeout:15000});
     if(induceFailure){
@@ -96,8 +103,25 @@ const url=process.env.MARE_TEST_URL;
      await page.waitForFunction(()=>__preparationQA.read().visual?.state==='failed');
     }
     await page.evaluate(()=>__poseLoad.release());
-    await page.waitForFunction(()=>__preparationQA.read().draws.some(row=>row.action==='walk'),null,{timeout:30000});
-   }finally{await page.keyboard.up('d');}
+    // A cold pose can take longer than one crossing. Continue walking
+    // inside the measured clear lane so the actor still requests walk.
+    const deadline=Date.now()+45000;
+    const failedKey=await page.evaluate(()=>__poseLoad.failedKey);
+    let seen=false;
+    while(!seen&&Date.now()<deadline){
+     await page.waitForFunction(({start,key,failedKey})=>{
+      const q=__preparationQA.read();
+      return q.draws.some(row=>row.action==='walk'&&(!failedKey||row.key===failedKey))||(key==='d'?q.hero.x>start+125:q.hero.x<start+25);
+     },{start:before.hero.x,key:movementKey,failedKey},{timeout:Math.max(1,deadline-Date.now())});
+     seen=(await read()).draws.some(row=>row.action==='walk'&&(!failedKey||row.key===failedKey));
+     if(!seen){
+      await page.keyboard.up(movementKey);
+      movementKey=movementKey==='d'?'a':'d';
+      await page.keyboard.down(movementKey);
+     }
+    }
+    assert(seen,'An equipped walk pose must draw during continued player input');
+   }finally{await page.keyboard.up(movementKey);}
    const pos=await page.evaluate(()=>__preparationQA.target()),canvas=page.locator('#worldCanvas'),size=await canvas.boundingBox();
    const hp=(await read()).targetHP;
    await canvas.click({position:{x:pos.x*size.width,y:pos.y*size.height}});
