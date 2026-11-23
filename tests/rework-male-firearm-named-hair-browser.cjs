@@ -1,10 +1,12 @@
 'use strict';
 const assert=require('node:assert/strict');
-module.exports=async function({page,put,remove,observeAttack,captureMapCycle}){
- for(const [weapon,direction,head,phases] of [[115,'south',157,8],[4,'north',19,3],[114,'east',18,8],[116,'west',129,8]]){
-  const role='gunner',action='attack-firearm';
-  const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',hairStyle:'hair-cropped',eyeStyle:'original'};
-  const gear={weapon,coat:130,legs:168,boots:148,gloves:159},label='cabelo-curto-disparo-'+weapon+'-'+direction;
+module.exports=async function({page,put,remove,observeAttack,captureMapCycle,punch=false}){
+ const samples=punch?[[110,'south',157,12],[2,'north',19,8],[109,'east',18,8],[119,'west',129,8]]:
+  [[115,'south',157,8],[4,'north',19,3],[114,'east',18,8],[116,'west',129,8]];
+ for(const [weapon,direction,head,phases] of samples){
+  const role=punch?(weapon===119?'cyborg':'brawler'):'gunner',action=punch?'attack-unarmed':'attack-firearm';
+  const look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green',hairStyle:punch&&weapon===2?'none':punch&&weapon===109?'original':'hair-cropped',eyeStyle:punch?'face-calm':'original'};
+  const gear={weapon,coat:130,legs:168,boots:148,gloves:159},label=(punch?'punho-aparencia-':'cabelo-curto-disparo-')+weapon+'-'+direction;
   await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,ids:[...Object.values(gear),head],look});
   for(const id of Object.values(gear))await put(id);
   const saved=await page.evaluate(()=>__hdSlotQA.read().appearance);

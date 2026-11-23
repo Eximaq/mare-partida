@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const zlib = require('node:zlib');
-const {complete, gear, slots, weapons} = require('./audit-hd-wardrobe-product.cjs');
+const {complete, fingerprint, gear, slots, weapons} = require('./audit-hd-wardrobe-product.cjs');
 const {trusted} = require('./audit-hd-slot-independence.cjs');
 const {make} = require('../tests/rework-integration-support.cjs');
 
@@ -39,14 +39,9 @@ function contexts(all) {
  });
 }
 
-async function main() {
- const hairStyle = process.env.WARDROBE_HAIR || 'hair-cropped';
- const eyeStyle = process.env.WARDROBE_EYES || 'original';
+function inspect(api, cases, hairStyle, eyeStyle) {
  assert(Object.hasOwn(appearance.choices.hairStyle, hairStyle) && Object.hasOwn(appearance.choices.eyeStyle, eyeStyle));
- const api = make();
- await api.ready;
- assert(await api.warmSwordCheckpoint());
- const cases = contexts(process.argv.includes('--all-contexts')), rows = [];
+ const rows = [];
  for (const {weapon, role, body, direction, action, ids} of cases) {
   const held = weapon == null ? {} : {weapon:{def:weapon}};
   const options = {action, direction, consumer:'world'};
@@ -63,14 +58,34 @@ async function main() {
   const receiver = complete(bare,[],weapon,options);
   const selected = complete(outfit,pieces,weapon,options);
   const missing = Object.entries(equipment).filter(([s,item]) => !trusted(outfit,s,item.def)).map(([s]) => s);
-  rows.push({weapon,role,body,direction,action,receiver,selected,
+  rows.push({weapon,role,body,direction,action,ids,receiver,selected,
    ...(!receiver||!selected ? {missing,source:outfit?.id??null,details:outfit?.slotResolution??null} : {})});
   assert.equal(JSON.stringify(p.appearance96), saved);
  }
  const gaps = rows.filter(r => !r.receiver || !r.selected);
- const summary = {hairStyle,eyeStyle,contexts:rows.length,withReceiver:rows.filter(r=>r.receiver).length,selected:rows.filter(r=>r.selected).length,gaps:gaps.length};
- if(process.env.WARDROBE_EVIDENCE) fs.writeFileSync(process.env.WARDROBE_EVIDENCE,JSON.stringify({stage:'selection',...summary,rows}));
- console.log(JSON.stringify(summary));
- if(gaps.length){console.error(JSON.stringify(gaps[0]));process.exitCode=1;}
+ return {stage:'selection',rows,hairStyle,eyeStyle,contexts:rows.length,withReceiver:rows.filter(r=>r.receiver).length,selected:rows.filter(r=>r.selected).length,gaps:gaps.length};
+}
+
+async function main() {
+ const hairStyle = process.env.WARDROBE_HAIR || 'hair-cropped';
+ const everyEye = process.argv.includes('--all-eye-styles');
+ const eyeStyles = everyEye ? Object.keys(appearance.choices.eyeStyle) : [process.env.WARDROBE_EYES || 'original'];
+ const cases = contexts(process.argv.includes('--all-contexts'));
+ const api = make();
+ await api.ready;
+ assert(await api.warmSwordCheckpoint());
+ const build = fingerprint();
+ const summaries = [];
+ let result;
+ for (const eyes of eyeStyles) {
+  const {rows, ...summary} = inspect(api, cases, hairStyle, eyes);
+  const failed = rows.filter(row => !row.receiver || !row.selected);
+  if (failed.length) {console.error(JSON.stringify(failed[0])); process.exitCode = 1;}
+  summaries.push({...summary, failed});
+  if (!everyEye) result = {...summary, build, rows};
+ }
+ if (everyEye) result = {stage:'selection', build, hairStyle, contextsPerAppearance:cases.length, summaries};
+ if (process.env.WARDROBE_EVIDENCE) fs.writeFileSync(process.env.WARDROBE_EVIDENCE, JSON.stringify(result));
+ console.log(JSON.stringify({build, summaries:summaries.map(({failed,...summary}) => summary)}));
 }
 main().catch(error => {console.error(error);process.exitCode=1;});

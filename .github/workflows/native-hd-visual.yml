@@ -38,6 +38,10 @@ on:
       - 'tests/rework-male-unarmed-named-browser.cjs'
       - 'tests/rework-starter-helmet-hair.cjs'
       - 'tests/rework-male-focus-saved-hair-browser.cjs'
+      - 'tests/rework-focus-eye-shapes.cjs'
+      - 'tests/rework-firearm-eye-expressions.cjs'
+      - 'tests/rework-male-punch-saved-look.cjs'
+      - 'tests/rework-firearm-eye-expressions-browser.cjs'
       - 'tools/register_north_blade_coats.py'
       - 'tools/articulated_sleeve_projection.py'
       - 'tools/rework-combat-wardrobe/north-blade-coats.zip'
@@ -286,6 +290,7 @@ jobs:
         run: |
           node tests/rework-registered-weapon-coats.cjs
           node --expose-gc tests/rework-male-p114-signed-slots-saved.cjs
+          node --expose-gc tests/rework-male-punch-saved-look.cjs
           node tests/rework-wardrobe-grip-cycles.cjs
           node --expose-gc tests/rework-wardrobe-authored-contact.cjs
           node tests/rework-south-wardrobe-ownership.cjs
@@ -548,6 +553,7 @@ jobs:
         run: |
           node tests/rework-ordered-orb-anatomy.cjs
           node --expose-gc tests/rework-male-focus-saved-hair.cjs
+          node --expose-gc tests/rework-focus-eye-shapes.cjs
           node --expose-gc tests/rework-ordered-orb-coats.cjs
       - name: Comparar mangas, mãos e arma com a fonte de cada fase
         if: matrix.role == 'healer'
@@ -603,6 +609,7 @@ jobs:
           node --expose-gc tests/rework-fixed-north-rifle-boots.cjs
           node --expose-gc tests/rework-fixed-north-rifle-heads.cjs
           node --expose-gc tests/rework-male-firearm-named-hair.cjs
+          node --expose-gc tests/rework-firearm-eye-expressions.cjs
       - name: Conferir as empunhaduras, os orbes e a bússola lateral
         if: matrix.role == 'strategist'
         env:

@@ -153,4 +153,4 @@ async function main(){
  if(failed)process.exitCode=1;
 }
 if(require.main===module)main().catch(e=>{console.error(e);process.exitCode=1;});
-module.exports={gear,slots,product,complete,weapons};
+module.exports={gear,slots,product,complete,fingerprint,weapons};

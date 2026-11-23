@@ -150,8 +150,16 @@ const sizes = [[1920,1080],[1366,768],[1280,720],[1024,768],[768,1024],[390,844]
         return r.width>0&&r.height>0&&button.contains(center);
       });
       await page.locator('#dialogBody').evaluate(e=>e.scrollTop=0);
-      const preview=await page.locator('#profileAppearanceCanvas').boundingBox();
-      const harbor=await page.locator('.studio-harbor').boundingBox();
+      // The resize observer can replace the appearance panel between two layout reads.
+      const layout=await page.waitForFunction(()=>{
+        const harbor=document.querySelector('.studio-harbor'), preview=harbor?.querySelector('#profileAppearanceCanvas');
+        if(!preview)return false;
+        const box=harbor.getBoundingClientRect(), sprite=preview.getBoundingClientRect();
+        if(!box.width||!box.height||!sprite.width||!sprite.height)return false;
+        return {preview:{width:sprite.width,height:sprite.height},harbor:{width:box.width,height:box.height}};
+      });
+      const {preview,harbor}=await layout.jsonValue();
+      await layout.dispose();
       assert(preview.width<=harbor.width+1&&preview.height<=harbor.height+1,'appearance sprite fits preview without cropping at '+width);
       await page.screenshot({path:path.join(out,'appearance-'+width+'.png')});
     }

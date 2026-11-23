@@ -244,9 +244,10 @@ window.__hdSlotQA={
    }
    assert.deepEqual(errors,[]);return;
   }
-  if(process.argv.includes('--firearm-saved-hair')){await require('./rework-male-firearm-named-hair-browser.cjs')({page,put,remove,observeAttack,captureMapCycle});assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--firearm-eye-expressions')){await require('./rework-firearm-eye-expressions-browser.cjs')({page,put,remove,menu,close,observeAttack,captureMapCycle});assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--firearm-saved-hair')||process.argv.includes('--punch-saved-look')){await require('./rework-male-firearm-named-hair-browser.cjs')({page,put,remove,observeAttack,captureMapCycle,punch:process.argv.includes('--punch-saved-look')});assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--unarmed-saved-hair')){await require('./rework-male-unarmed-named-browser.cjs')({page,out,draw,walk,put,remove,observeAttack,captureMapCycle});assert.deepEqual(errors,[]);return;}
-  if(process.argv.includes('--focus-saved-hair')){await require('./rework-male-focus-saved-hair-browser.cjs')({page,put,remove,observeAttack,captureMapCycle});assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--focus-saved-hair')||process.argv.includes('--focus-eye-shapes')){await require('./rework-male-focus-saved-hair-browser.cjs')({page,put,remove,observeAttack,captureMapCycle});assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--south-saved-head-shapes')){
    const {weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
    for(const [weapon,hairStyle,head] of [[1,'hair-spiky',18],[73,'none',164],[123,'hair-spiky',19]]){
