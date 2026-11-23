@@ -27,6 +27,9 @@ on:
       - 'tools/rework-combat-wardrobe/north-articulated-boots.zip'
       - 'tools/rework-combat-wardrobe/north-boot-donors.json'
       - 'tools/export_north_focus_coats.py'
+      - 'tools/register_north_weapon_coats.py'
+      - 'tools/rework-combat-wardrobe/north-weapon-coats.zip'
+      - 'tests/rework-world-pose-support.cjs'
       - 'tools/rework-combat-wardrobe/north-focus-coats.zip'
       - 'tools/register_north_rifle_trousers.py'
       - 'tools/rework-combat-wardrobe/north-rifle-trousers.json'
@@ -227,6 +230,7 @@ jobs:
           node --expose-gc tests/rework-north-pistol-coats.cjs
           python tools/register_north_rifle_trousers.py --verify
           python tools/export_north_focus_coats.py --verify
+          python tools/register_north_weapon_coats.py --verify
           python tools/register_north_articulated_boots.py --verify
           node --expose-gc tests/rework-fixed-north-rifle-trousers.cjs
           node --expose-gc tests/rework-fixed-north-rifle-boots.cjs

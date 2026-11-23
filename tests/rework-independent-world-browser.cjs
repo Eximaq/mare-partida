@@ -10,17 +10,36 @@ const out=process.env.MARE_EVIDENCE_DIR;
 if(!url||!out)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
 const marker='  window.__mareDiagnostics=';
 const hook=`
-let hdQA=null;
+let hdQA=null,mapCycle=null;
 const hdDraw=lobby96.draw.bind(lobby96);
 lobby96.draw=function(ctx,p,o){
- const drawn=hdDraw(ctx,p,o);
+ const watch=mapCycle&&o.consumer==='world'&&ctx.canvas.id==='worldCanvas'&&o.scene==='hunt';
+ let sprite,drawn;
+ if(watch){
+  const paint=ctx.drawImage;
+  ctx.drawImage=function(image,...args){sprite=image;return paint.call(this,image,...args);};
+  try{drawn=hdDraw(ctx,p,o);}finally{ctx.drawImage=paint;}
+ }else drawn=hdDraw(ctx,p,o);
  if(o.consumer==='world'&&ctx.canvas.id==='worldCanvas'){
   hdQA={at:performance.now(),drawn,action:o.action,direction:o.direction,scene:o.scene,
    visual:lobby96.worldVisual(),last:lobby96.snapshot().nativeHD?.last};
+  if(watch&&drawn&&sprite){
+   const r=hdQA.last,c=hdQA.visual?.coverage?.[0];
+   if(c?.resolvedAction===mapCycle.action&&r?.direction===mapCycle.direction&&r.state==='rendered'&&Number.isInteger(r.frame)&&
+    sprite.width===r.width&&sprite.height===r.height&&!mapCycle.frames.has(r.frame)&&
+    Object.entries(mapCycle.gear).every(([k,id])=>c.slotRoutes[k]?.item===id)&&!c.omitted.length){
+    const tile=document.createElement('canvas');tile.width=tile.height=160;
+    const tx=tile.getContext('2d');tx.imageSmoothingEnabled=true;tx.drawImage(sprite,0,0,160,160);
+    mapCycle.frames.set(r.frame,tile);
+   }
+  }
  }
  return drawn;
 };
 window.__hdSlotQA={
+ startCycle(action,direction,gear){mapCycle={action,direction,gear,frames:new Map()};},
+ cycleFrames(){return [...mapCycle.frames.keys()].sort((a,b)=>a-b);},
+ finishCycle(){const sheet=document.createElement('canvas');sheet.width=mapCycle.frames.size*160;sheet.height=160;const ctx=sheet.getContext('2d');for(const [phase,tile] of mapCycle.frames)ctx.drawImage(tile,phase*160,0);mapCycle=null;return sheet.toDataURL('image/png');},
  seedWardrobe(role,items,look={}){
   game.classId=role;game.level=100;game.equipment={};
   game.inventory=items.map(id=>newItem(itemDefs[id],1,false));
@@ -153,7 +172,7 @@ window.__hdSlotQA={
   if(process.argv.includes('--sword-coats')){await observeWeaponCoats([0,1,67,68,69,70],'sword','attack-sword');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--articulated-helmets')){await observeArticulatedHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-moving-boots')){await observeNorthMovingBoots();assert.deepEqual(errors,[]);return;}
-  if(process.argv.includes('--north-focus-coats')){await observeNorthFocusCoats();assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--north-focus-coats')||process.argv.includes('--north-weapon-coats')){await observeNorthFocusCoats(process.argv.includes('--north-weapon-coats'));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-rifle-helmets')){await observeNorthRifleHelmets();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-rifle-trousers')){await observeNorthTrousers();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--pistol-clothes')){await observePistolClothes();assert.deepEqual(errors,[]);return;}
@@ -485,21 +504,40 @@ window.__hdSlotQA={
    }
   }
  }
- async function observeNorthFocusCoats(){
+ async function captureMapCycle(action,gear,label,count){
+  const direction='north';
+  await page.evaluate(({action,direction,gear})=>__hdSlotQA.startCycle(action,direction,gear),{action,direction,gear});
+  const canvas=page.locator('#worldCanvas');
+  let frames=[];
+  for(let attempt=0;attempt<24&&frames.length<count;attempt++){
+   const pt=await page.evaluate(dir=>__hdSlotQA.target(dir),direction);
+   const box=await canvas.boundingBox(),size=await canvas.evaluate(c=>({w:c.width,h:c.height}));
+   await canvas.click({position:{x:pt.x*box.width/size.w,y:pt.y*box.height/size.h}});
+   await page.waitForFunction(n=>__hdSlotQA.cycleFrames().length===n,count,{timeout:1250}).catch(()=>{});
+   frames=await page.evaluate(()=>__hdSlotQA.cycleFrames());
+  }
+  assert.deepEqual(frames,Array.from({length:count},(_,i)=>i),label+' visible map frames');
+  const data=await page.evaluate(()=>__hdSlotQA.finishCycle());
+  await fs.writeFile(path.join(out,label+'-ciclo.png'),Buffer.from(data.split(',')[1],'base64'));
+ }
+ async function observeNorthFocusCoats(articulated){
   const ids=[151,158,165,179],look={gender:'masculino',skinColor:'ebony',hairColor:'blue',eyeColor:'green'};
-  for(const weapon of [123,124,125,126,127]){
-   const role=weapon<125?'strategist':'healer';
-   await page.evaluate(({role,weapon,ids,look})=>__hdSlotQA.seedWardrobe(role,[weapon,...ids],look),{role,weapon,ids,look});
-   await put(weapon);const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
-   const show=(name,gear)=>observeAttack('attack-focus','cajado-'+weapon+'-'+name,'north',gear);
-   const bare=await show('antes',{weapon});let first;
+  for(const weapon of articulated?[67,70,110]:[123,124,125,126,127]){
+   const sword=weapon===67||weapon===70,role=sword?'sword':weapon===110?'brawler':weapon<125?'strategist':'healer';
+   const attack=sword?'attack-sword':weapon===110?'attack-unarmed':'attack-focus';
+   const gear=sword?{weapon,head:19,boots:148}:{weapon};
+   await page.evaluate(({role,gear,ids,look})=>__hdSlotQA.seedWardrobe(role,[...Object.values(gear),...ids],look),{role,gear,ids,look});
+   for(const item of Object.values(gear))await put(item);const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   const show=(name,equipment)=>observeAttack(attack,(articulated?'arma-':'cajado-')+weapon+'-'+name,'north',equipment);
+   const bare=await show('antes',gear);let first;
    for(const coat of [...ids,151]){
     await put(coat);
-    const now=await show('peitoral-'+coat+(first&&coat===151?'-retorno':''),{weapon,coat});
-    assert.deepEqual(now.visual.coverage[0].slotRoutes.weapon,bare.visual.coverage[0].slotRoutes.weapon);
+    const now=await show('peitoral-'+coat+(first&&coat===151?'-retorno':''),{...gear,coat});
+    for(const slot of Object.keys(gear))assert.deepEqual(now.visual.coverage[0].slotRoutes[slot],bare.visual.coverage[0].slotRoutes[slot]);
+    if(articulated&&coat===151&&!first)await captureMapCycle(attack,{...gear,coat},'arma-'+weapon,8);
     if(coat===151){if(first)assert.deepEqual(now.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);else first=now;}
    }
-   await remove('coat');const restored=await show('depois',{weapon});
+   await remove('coat');const restored=await show('depois',gear);
    assert.deepEqual(restored.visual.coverage[0].slotRoutes,bare.visual.coverage[0].slotRoutes);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
   }
