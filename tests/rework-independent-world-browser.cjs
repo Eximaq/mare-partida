@@ -162,6 +162,7 @@ window.__hdSlotQA={
   await page.locator('#createCharacter').click();
   await page.locator('[data-confirm-accept]').click();
   await page.waitForFunction(()=>__hdSlotQA.read().appearance);
+  if(process.argv.includes('--staff-gloves')){await observeStaffGloves();assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--staff-coats')){
    await observeWeaponCoats([123,124],'strategist','attack-focus',true);
    await observeWeaponCoats([31,125,126,127,128],'healer','attack-focus',true);
@@ -562,6 +563,29 @@ window.__hdSlotQA={
    await remove(slot);const end=await show(slot+'-retirado',base);
    assert.deepEqual(end.visual.coverage[0].slotRoutes,initial.visual.coverage[0].slotRoutes);
    assert.deepEqual((await page.evaluate(()=>__hdSlotQA.read())).appearance,saved);
+  }
+ }
+ async function observeStaffGloves(){
+  const {gear,weapons}=require('../tools/audit-hd-wardrobe-product.cjs');
+  for(const weapon of [31,123,124,125,126,127,128]){
+   const role=weapons.find(w=>w.id===weapon).role,dark=weapon%2===0;
+   const look={gender:'masculino',skinColor:dark?'ebony':'light',hairColor:dark?'blue':'brown',eyeColor:dark?'green':'brown'};
+   const fixed={weapon,coat:151,boots:169,head:19},equipment=Object.values(fixed);
+   await page.evaluate(({role,ids,look})=>__hdSlotQA.seedWardrobe(role,ids,look),{role,ids:[...equipment,...gear[3]],look});
+   for(const item of dark?equipment:equipment.reverse())await put(item);
+   const saved=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
+   for(const direction of ['east','west']){
+    const label='luvas-cajado-'+weapon+'-'+direction,show=(name,eq)=>observeAttack('attack-focus',label+'-'+name,direction,eq);
+    const before=await show('sem-luva',fixed);let first;
+    for(const gloves of [152,...gear[3].filter(id=>id!==152),152]){
+     await put(gloves);const kit={...fixed,gloves},step=await show('luva-'+gloves+(first&&gloves===152?'-retorno':''),kit);
+     for(const key of Object.keys(fixed))assert.deepEqual(before.visual.coverage[0].slotRoutes[key],step.visual.coverage[0].slotRoutes[key]);
+     if(gloves===152){if(first)assert.deepEqual(step.visual.coverage[0].slotRoutes,first.visual.coverage[0].slotRoutes);
+      else{first=step;await captureMapCycle('attack-focus',kit,label,8,direction);}}
+    }
+    await remove('gloves');assert.deepEqual((await show('retirada',fixed)).visual.coverage[0].slotRoutes,before.visual.coverage[0].slotRoutes);
+   }
+   assert.deepEqual(saved,(await page.evaluate(()=>__hdSlotQA.read())).appearance);
   }
  }
  async function observeFocusTrousers(boots=false){

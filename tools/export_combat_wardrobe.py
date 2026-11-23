@@ -15,6 +15,7 @@ from export_male_dagger_coats import materialize as male_dagger_coats
 from export_male_sword_coats import materialize as male_sword_coats
 from export_articulated_boots import materialize as articulated_boots
 from export_staff_coats import materialize as staff_coats
+from register_staff_gloves import materialize as staff_gloves
 from export_north_focus_coats import materialize as north_focus_coats
 from register_north_weapon_coats import materialize as north_weapon_coats
 from register_north_articulated_boots import materialize as north_articulated_boots
@@ -150,7 +151,7 @@ def materialize(folder, out):
     rigs.update(other_rigs)
     assets.update(other_assets)
     (out / 'index.json').write_text(json.dumps(dict(schema='editable-combat-wardrobe-v1', rigs=rigs,
-        records=records, maleDaggerCoats=male_dagger_coats(bank), maleSwordCoats=male_sword_coats(bank), articulatedBoots=articulated_boots(bank), daggerBoots=articulated_boots(bank,daggers=True), maleStaffCoats=staff_coats(bank),
+        records=records, maleDaggerCoats=male_dagger_coats(bank), maleSwordCoats=male_sword_coats(bank), articulatedBoots=articulated_boots(bank), daggerBoots=articulated_boots(bank,daggers=True), maleStaffCoats=staff_coats(bank), staffGloves=staff_gloves(bank),
         maleNorthPistolCoats=north_pistol_coats(bank), northFocusCoats=north_focus_coats(bank), northWeaponCoats=north_weapon_coats(bank), northBoots=north_articulated_boots(bank),
         southFocusBoots=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/south-focus-boots.json').read_bytes()),
         southFocusPants=json.loads((Path(__file__).resolve().parent / 'rework-combat-wardrobe/south-focus-trousers.json').read_bytes()),

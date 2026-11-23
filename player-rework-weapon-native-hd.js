@@ -229,7 +229,7 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-we
   });
   return {...r,id:r.id+':independent-south',states,w5IndependentSouth:true,separableAttack:true,equipmentContract:{weapon:5}};
  };
- const resource=url=>{const p=new URL(url,'https://native.invalid/'+prefix).pathname.slice(1);if(!/^tools\/(rework-weapon-layers-hd|rework-modular-outfits-hd|rework-base-hd)\/assets\/[a-f0-9]{64}\.png$/.test(p))throw Error('Invalid native weapon source path');return p;};
+ const resource=url=>{const p=new URL(url,'https://native.invalid/'+prefix).pathname.slice(1);if(!/^tools\/(rework-weapon-layers-hd|rework-modular-outfits-hd|rework-base-hd|rework-combat-wardrobe)\/assets\/[a-f0-9]{64}\.png$/.test(p))throw Error('Invalid native weapon source path');return p;};
  const body=b=>({masculino:'male',feminino:'female'})[b]||b;
  // The released light-skin gauntlet clips already own their body/gear and contact.
  // Only the independently authenticated hair/iris pixels differ for the default save.
