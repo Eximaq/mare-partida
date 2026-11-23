@@ -2514,6 +2514,43 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  // indigo garment is removed. The underlying skin is the live personalized rig.
  // Far fingertips in two bent-arm poses are painted on the original upper
  // arm, behind the weapon. The supporting staff grip has its own depth.
+ function northSleeveLayers(r,original,map,images,frame){
+  const layers=[...original],row=r.northSleeves.frames[frame],fixed={kind:'fixed'};
+  function add(id,source,im,depth){
+   map.set(source,im);layers.push({id:'equipped-focus-coat-'+id,source,slot:'top',depth,binding:fixed});
+  }
+  const cloth={};
+  for(const [name,key] of Object.entries(row)){
+   const url='tools/rework-combat-wardrobe/assets/'+key+'.png',im=images.get(url);
+   if(im?.width!==640||im.height!==640)throw Object.assign(Error('Missing registered North sleeve'),{asset:url});
+   cloth[name]=im;
+  }
+  if(!r.northFittedPants){
+   // The original shorts also contain a wrist on the first frame. Lower
+   // only stock-cloth pixels covered by the jacket, keeping that wrist in front.
+   const stock=layers.find(l=>l.id==='shorts'),key=stock.frames[frame],orig=map.get(key);
+   const upper=makeCanvas(640,640),low=makeCanvas(640,640),cx=upper.getContext('2d'),lx=low.getContext('2d');
+   cx.drawImage(orig,0,0);lx.imageSmoothingEnabled=false;
+   for(const [start,length] of r.northSleeves.waistCut[frame]){
+    let pos=start,left=length;
+    while(left){const x=pos%640,y=Math.floor(pos/640),n=Math.min(640-x,left);
+     lx.drawImage(orig,x,y,n,1,x,y,n,1);cx.clearRect(x,y,n,1);pos+=n;left-=n;}
+   }
+   map.set(key,upper);
+   add('lowered-waist','stock-under-focus-coat',low,2.1);
+  }
+  for(const [name,depth] of [['back',-.1],['core',2.8],['farShoulder',3],['farUpper',3],['farLower',3],['nearShoulder',5.05],['nearUpper',5.1],['nearLower',6.1],['nearDrape',6.5]]){
+   if(cloth[name])add(name,row[name],cloth[name],depth);
+  }
+  if(cloth.farLower){
+   // Where the original forearm passes over the hardware its own sleeve
+   // must cross in front as well. The registered textile excludes fingers.
+   const fore=original.find(l=>l.id==='forearm-hand-far'),tile=makeCanvas(640,640),cx=tile.getContext('2d');
+   cx.drawImage(cloth.farLower,0,0);cx.globalCompositeOperation='destination-in';cx.drawImage(map.get(fore.frames[frame]),0,0);
+   add('front-cuff','focus-cuff-over-forearm',tile,4.1);
+  }
+  return layers;
+ }
  function northHandLayers(track,frame,images,map){
   const parts=track[frame],layers=[];
   for(const [part,depth] of [['behind',3],['grip',3.05],['far',4.25],['near',6.25]]){
@@ -2731,6 +2768,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    }
    let layers=r.bootTrack?mountedBootLayers(r,s,d,map,images):d.layers;
    if(r.northFittedPants)layers=northTrouserLayer(r,layers,map,images,Number(s.state));
+   if(r.northSleeves)layers=northSleeveLayers(r,layers,map,images,Number(s.state));
    if(r.northGloveTrack)layers=[...layers,...northHandLayers(r.northGloveTrack,Number(s.state),images,map)];
    if(r.relic32SideBlue&&r.orderedGloves){
     layers=[...layers];

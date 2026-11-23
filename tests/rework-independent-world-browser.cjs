@@ -189,6 +189,7 @@ window.__hdSlotQA={
   }
   if(sideFist){await observeLateralGauntlet(Number(sideFist.split('=')[1]||110));assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-moving-boots')){await observeNorthMovingBoots();assert.deepEqual(errors,[]);return;}
+  if(process.argv.includes('--north-focus-jackets')){await observeNorthFocusClothing('coat');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-gloves')){await observeNorthFocusClothing('gloves');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-trousers')){await observeNorthFocusClothing('legs');assert.deepEqual(errors,[]);return;}
   if(process.argv.includes('--north-focus-coats')||process.argv.includes('--north-weapon-coats')||process.argv.includes('--north-orb-compass-coats')){await observeNorthFocusCoats(process.argv.includes('--north-weapon-coats'),process.argv.includes('--north-orb-compass-coats'));assert.deepEqual(errors,[]);return;}
@@ -726,10 +727,11 @@ window.__hdSlotQA={
   }
  }
  async function observeNorthFocusClothing(slot){
-  const gloves=slot==='gloves',catalog=require('../tools/audit-hd-wardrobe-product.cjs');
-  const items=catalog.gear[gloves?3:1],family=gloves?'luvas':'calcas',piece=gloves?'luva':'calca';
+  const catalog=require('../tools/audit-hd-wardrobe-product.cjs');
+  const [index,family,piece]={gloves:[3,'luvas','luva'],legs:[1,'calcas','calca'],coat:[0,'peitorais','peitoral']}[slot];
+  const items=catalog.gear[index];
   for(const weapon of [16,17,31,32,121,122]){
-   const role=catalog.weapons.find(w=>w.id===weapon).role,gear={weapon,head:19,boots:148,coat:151,...(gloves?{legs:168}:{})};
+   const role=catalog.weapons.find(w=>w.id===weapon).role,gear={weapon,head:19,boots:148,...(slot!=='coat'?{coat:151}:{}),...(slot!=='legs'?{legs:168}:{}),...(slot==='coat'?{gloves:159}:{})};
    const look={gender:'masculino',skinColor:weapon%2?'ebony':'light',hairColor:'blue',eyeColor:'green'};
    await page.evaluate(({role,gear,items,look})=>__hdSlotQA.seedWardrobe(role,[...Object.values(gear),...items],look),{role,gear,items,look});
    for(const item of Object.values(gear))await put(item);
