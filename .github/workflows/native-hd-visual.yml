@@ -546,39 +546,38 @@ jobs:
           node --expose-gc tests/rework-north-staff-wardrobe.cjs
           node --expose-gc tests/rework-south-staff-grips.cjs
           node --expose-gc tests/rework-side-focus-sleeves.cjs
-          node --expose-gc tests/rework-side-focus-sleeves.cjs --scepter
-          node --expose-gc tests/rework-ordered-staff-gloves.cjs 121 ebony
           node --expose-gc tests/rework-side-focus-trouser-receivers.cjs
           python -m pip install pillow numpy
           python tests/rework_staff_coat_sources.py
-          python tools/export_north_pistol_coats.py --verify
-          node --expose-gc tests/rework-north-pistol-coats.cjs
           python tools/register_south_focus_trousers.py --verify
           python tools/register_south_focus_boots.py --verify
           python tools/register_staff_gloves.py --verify
-          python tools/register_scepter_profile_gloves.py --verify
           python tools/register_south_staff_clothes.py --verify
           python tools/register_north_staff_wardrobe.py --verify
           python tools/register_south_staff_grips.py --verify
           python tools/register_side_focus_sleeves.py --verify
           python tools/register_side_focus_trousers.py --verify
           python tools/register_sword_gloves.py --verify
-          python tools/register_orb_gloves.py --verify
           python tools/register_dagger_gloves.py --verify
           python tools/register_south_punch_gloves.py --verify
           python tools/register_south_punch_coats.py --verify
           python tools/register_south_punch_trousers.py --verify
-          node --expose-gc tests/rework-compass-side-wardrobe.cjs light
-          node --expose-gc tests/rework-compass-side-wardrobe.cjs ebony
-          node --expose-gc tests/rework-compass-side-wardrobe.cjs light 32
-          node --expose-gc tests/rework-compass-side-wardrobe.cjs ebony 32
+          python tools/export_north_focus_coats.py --verify
+          python tools/register_north_articulated_boots.py --verify
+          node --expose-gc tests/rework-north-moving-boots.cjs
+      - name: Conferir os vínculos e os quadros das armas de fogo
+        if: matrix.role == 'gunner'
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          python -m pip install pillow numpy
+          python tools/export_north_pistol_coats.py --verify
+          node --expose-gc tests/rework-north-pistol-coats.cjs
           python tools/register_north_rifle_trousers.py --verify
           python tools/register_north_rifle_clothes.py --verify
           python tools/register_rifle_profile_trousers.py --verify
           python tools/register_rifle_profile_gloves.py --verify
           python tools/register_rifle_profile_sleeves.py --verify
-          python tools/export_north_focus_coats.py --verify
-          python tools/register_north_articulated_boots.py --verify
           node --expose-gc tests/rework-fixed-north-rifle-trousers.cjs
           node --expose-gc tests/rework-north-rifle-clothes.cjs
           node --expose-gc tests/rework-rifle-profile-clothes.cjs
@@ -590,7 +589,20 @@ jobs:
           node --expose-gc tests/rework-pistol-leg-wardrobe.cjs
           node --expose-gc tests/rework-fixed-north-rifle-boots.cjs
           node --expose-gc tests/rework-fixed-north-rifle-heads.cjs
-          node --expose-gc tests/rework-north-moving-boots.cjs
+      - name: Conferir as empunhaduras, os orbes e a bússola lateral
+        if: matrix.role == 'strategist'
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          python -m pip install pillow numpy
+          node --expose-gc tests/rework-side-focus-sleeves.cjs --scepter
+          node --expose-gc tests/rework-ordered-staff-gloves.cjs 121 ebony
+          python tools/register_scepter_profile_gloves.py --verify
+          python tools/register_orb_gloves.py --verify
+          node --expose-gc tests/rework-compass-side-wardrobe.cjs light
+          node --expose-gc tests/rework-compass-side-wardrobe.cjs ebony
+          node --expose-gc tests/rework-compass-side-wardrobe.cjs light 32
+          node --expose-gc tests/rework-compass-side-wardrobe.cjs ebony 32
   north-focus-wardrobe:
     runs-on: ubuntu-latest
     timeout-minutes: 30
