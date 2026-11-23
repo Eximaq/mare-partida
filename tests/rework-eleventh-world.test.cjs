@@ -1,4 +1,4 @@
-const {prepareWorldPose,walkingTrousers}=require('./rework-world-pose-support.cjs');
+const {prepareWorldPose,walkingTrousers,equippedWorldPose}=require('./rework-world-pose-support.cjs');
 const south=require('./sn7-south-expectation.cjs');
 'use strict';const{test}=require('node:test'),assert=require('node:assert/strict'),fs=require('fs'),path=require('path'),vm=require('vm');const{make,cv}=require('./rework-integration-support.cjs');const root=process.env.HD_PUBLISHED_ROOT||path.resolve(__dirname,'..'),local=u=>path.join(root,new URL(String(u),'http://localhost/').pathname),look={hairStyle:'original',hairColor:'brown',eyeStyle:'original',eyeColor:'brown',skinColor:'light'};
 if(!process.env.MARE_ELEVENTH_CASE)test('eleventh actual world transitions run in three bounded serial processes',{timeout:400000},()=>{for(const kind of['pants','coat-swap','weapon-swap']){const env={...process.env,MARE_ELEVENTH_CASE:kind};delete env.NODE_TEST_CONTEXT;const r=require('child_process').spawnSync(process.execPath,['--test','--test-reporter=tap',__filename],{env,encoding:'utf8',timeout:125000,maxBuffer:4*1024*1024});console.log(r.stdout);assert.equal(r.error,undefined);assert.equal(r.signal,null);assert.equal(r.status,0,r.stderr+r.stdout);assert.match(r.stdout,/# pass 1/);assert(r.stdout.includes('ELEVENTH_WORLD_COMPLETE '+kind));}});
@@ -9,7 +9,23 @@ const cases=kind==='pants'?[[147,null],[168,null]]:kind==='coat-swap'?[[1,151],[
 for(const[item,coat]of cases){const pants=kind==='pants',p={classId:'sword',factionId:'pirate',appearance96:{...look,gender:pants?'female':'male'},equipment:pants?{legs:{def:item}}:{weapon:{def:item},...(coat?{coat:{def:coat}}:{})}},original=JSON.stringify(p),action=pants?'attack-unarmed':'attack-sword';if(previous)assert(!lobby.worldReady(p));await prepareWorldPose(lobby,p,pants?'walk':action,'east');const v=lobby.worldVisual();assert.equal(v?.state,'ready',JSON.stringify(v));assert.equal(v.publishedKey,v.key);assert(lobby.worldReady(p));if(previous)assert(!lobby.worldReady(previous));console.log('ELEVENTH_READY',kind,item,coat,Math.round(process.memoryUsage().rss/1048576)+'MB');previous=p;
 if(pants){for(const direction of['east','west']){await walkingTrousers(lobby,p,item,direction);assert.equal(native.select(p,{action:'walk',direction}).id,`independent-female-pants${item}-${direction}-walk`);}for(const direction of['south','north']){const entry=await walkingTrousers(lobby,p,item,direction),id=entry.source;assert.deepEqual(entry.omitted,[]);const record=south.check(native.select(p,{action:'walk',direction}),item,direction),seen=new Set();for(let n=0;n<80;n++){const gait=step(1,true),before=JSON.stringify(actor);assert(gait.moving);ctx.clearRect(0,0,1024,1024);assert(lobby.drawWorldVisual(ctx,{action:'walk',direction,time:gait.time,progress:null,x:512,y:512}));ctx.getImageData(0,0,1,1);assert.equal(JSON.stringify(actor),before);assert.equal(native.snapshot().last.source,id);const frame=Math.floor(gait.time*40)%40;assert.equal(native.snapshot().last.frame,frame);seen.add(south.phases(record)[frame]);gaitDraws++;}assert.equal(seen.size,direction==='south'?10:12);
 const prior=lobby.walkPose(actor).phase,stopped=step(0,false);assert(!stopped.moving);assert.equal(stopped.phase,prior);await prepareWorldPose(lobby,p,'idle',direction);assert(lobby.drawWorldVisual(ctx,{action:'idle',direction,time:stopped.time,progress:null,x:512,y:512}));const resumed=step(1,true);assert(resumed.moving);const phase=resumed.phase,teleported=step(200,true);assert(!teleported.moving);assert.equal(teleported.phase,phase);assert(lobby.drawWorldVisual(ctx,{action:'idle',direction,time:teleported.time,progress:null,x:512,y:512}));assert(step(1,true).moving);}}
-else{for(const direction of['east','west']){const id=`authored-ordered-${item}-${direction}`+(coat?'-coat-'+coat:''),entry=await prepareWorldPose(lobby,p,action,direction);assert.equal(entry?.source,id);assert.deepEqual(entry.omitted,[]);assert.deepEqual(entry.unsupported,[]);ctx.clearRect(0,0,1024,1024);assert(lobby.drawWorldVisual(ctx,{action,direction,progress:.5,timing:{locked:true,hitFrameRatio:.5,duration:1},x:512,y:512}));ctx.getImageData(0,0,1,1);assert.equal(native.snapshot().last.source,id);assert.equal(native.snapshot().last.frame,4);}const extra={...p,equipment:{...p.equipment,gloves:{def:152}}};assert(!native.select(extra,{action,direction:'east'})?.orderedAttack);}
+else{
+ for(const direction of ['east','west']){
+  const source='authored-ordered-'+item+'-'+direction;
+  const entry=await equippedWorldPose(lobby,p,action,direction);
+  assert.equal(entry.slotRoutes.weapon.source,source);assert.deepEqual(entry.unsupported,[]);
+  if(coat)assert.match(entry.slotRoutes.coat.source,new RegExp('^male-sword-coat-'+coat+'-'+direction+'@[a-f0-9]{64}$'));
+  ctx.clearRect(0,0,1024,1024);
+  assert(lobby.drawWorldVisual(ctx,{action,direction,progress:.5,timing:{locked:true,hitFrameRatio:.5,duration:1},x:512,y:512}));
+  ctx.getImageData(0,0,1,1);assert.equal(native.snapshot().last.source,entry.source);assert.equal(native.snapshot().last.frame,4);
+  const extra={...p,equipment:{...p.equipment,gloves:{def:152}}};
+  const withGloves=await equippedWorldPose(lobby,extra,action,direction);
+  for(const slot of Object.keys(p.equipment))assert.deepEqual(withGloves.slotRoutes[slot],entry.slotRoutes[slot]);
+  assert(lobby.drawWorldVisual(ctx,{action,direction,progress:.5,timing:{locked:true,hitFrameRatio:.5,duration:1},x:512,y:512}));
+  assert.equal(native.snapshot().last.source,withGloves.source);
+ }
+}
+
 assert.equal(JSON.stringify(p),original);assert(v.preparedAt!==undefined);console.log('ELEVENTH_DRAW_COMPLETE',kind,item,coat);}
 if(kind==='pants')assert.equal(gaitDraws,320);console.log('ELEVENTH_WORLD_COMPLETE '+kind,'gaitDraws',gaitDraws);
 }finally{lobby.clearWorldVisual();Object.assign(global,saved);}});

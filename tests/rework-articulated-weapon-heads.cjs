@@ -47,7 +47,7 @@ async function daggerReference(record,direction){
  }
  return {poses,frames};
 }
-const group=process.argv[2],expected={sword:170,rogue:180,gunner:130,healer:120,strategist:120};
+const group=process.argv[2],expected={sword:170,rogue:180,gunner:130,healer:140,strategist:120};
 assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated headgear');
 (async()=>{
  const api=make();await api.ready;await api.warmSwordCheckpoint();const rows=[];
@@ -72,7 +72,7 @@ assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated h
     for(let i=0;i<r.states.length;i++){
      const c=cv.createCanvas(...r.nativeCanvas);
      const layeredHead=bare.orbAnatomy||bare.orderedAnatomy||bare.fusedFocusAnatomy;
-     const skull=layeredHead&&hidden?{...bare,ownGauntletHead:{hideHair:true}}:bare;
+     const skull=(layeredHead||bare.w32SideSavedPalette)&&hidden?{...bare,ownGauntletHead:{hideHair:true}}:bare;
      weaponArt.render(c.getContext('2d'),skull,images,{frame:i,hiddenSlots:hidden&&!layeredHead&&!dagger?['hair']:[],appearance:bare.colorAppearance});
      if(hidden&&dagger)dagger.frames[i].uncover(c);
      layers.push(c);
@@ -99,6 +99,10 @@ assert(Object.hasOwn(expected,group),'Specify a weapon family with articulated h
   for(const frames of backs.values())for(const c of frames)c.width=c.height=1;
   if(count){rows.push({weapon,direction,items:count,frames});console.log(weapon,direction,count,frames);}
   global.gc?.();
+ }
+ if(group==='healer')for(const direction of ['east','west']){
+  const relic=rows.find(r=>r.weapon===32&&r.direction===direction);
+  assert.deepEqual(relic,{weapon:32,direction,items:10,frames:80});
  }
  const items=rows.reduce((a,r)=>a+r.items,0);assert(items>0,'No tested fits for '+group);assert.equal(items,expected[group]);assert(rows.every(r=>r.items===gear[4].length));
  if(process.env.HD_HEAD_RESULTS)fs.writeFileSync(process.env.HD_HEAD_RESULTS,JSON.stringify({group,rows,items}));
