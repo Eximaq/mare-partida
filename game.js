@@ -1845,6 +1845,7 @@
       }else if(previous&&previous!=='0,0')void onlineWorldCommand(session.genie?'fruit.move':'world.stop',session.genie?{x:session.genie.x,y:session.genie.y}:{});
     }
     if(pose.moving||!lobbyAction||!lobbyDestination)return;
+    if(lobbyAction.kind==='return'&&(onlineMoveWorking||ONLINE_GAME.busy||ONLINE_GAME.pending))return;
     const action=lobbyAction,destination=lobbyDestination;
     if(distance(pose,destination)<5){
       lobbyAction=null;lobbyDestination=null;
@@ -3845,7 +3846,7 @@ ${avatarExtra}
     // Neko skill impacts use the approved claws at each actual damage event.
     for(let f of world.fx){if(['akuma_tori_albatroz','akuma_uma_uma'].includes(f.zoanVfx))continue;ctx.globalAlpha=f.fruit||f.zoanVfx||f.supaVfx?1:clamp(f.life/f.max,0,1);if(f.wolfImpact){MareWolf.drawEffect(ctx,'bleed',f.x,f.y,(world.time-f.started)*1000);}else if(f.supaVfx){MareSupaArt.draw(ctx,supaImages[f.supaVfx],f.supaVfx,f.x,f.y,Date.now()-f.startedAt,{scale:MareAkuma.supaRules.radius*2/MareSupaArt.animations.slash.frames[0].w});}else if(f.zoanVfx){MareZoanArt.drawVfx(ctx,f.zoanVfx,f.followHero?world.hero.x:f.x,f.followHero?world.hero.y:f.y,{time:f.max-f.life,scale:74/48,loop:!!f.loop});}else if(f.fruit){drawFruitBurst(ctx,f.x,f.y,f.fruit,f.max-f.life);}else if(f.slash){ctx.strokeStyle=f.color;ctx.lineWidth=5;ctx.beginPath();ctx.arc(f.x,f.y-17,29,-2.35,.2);ctx.stroke();}else if(f.ring){ctx.strokeStyle=f.color;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(f.x,f.y-4,(1-f.life/f.max)*61+6,(1-f.life/f.max)*26+5,0,0,Math.PI*2);ctx.stroke();}else {ctx.textAlign='center';ctx.font='bold '+f.size+'px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#0b2323';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);}}ctx.globalAlpha=1;
     drawCombatVfx();
-    if(MareSkypiea.has(activeMap().id)){MareSkypiea.environment(ctx,activeMap().id);MareSkypiea.foreground(ctx,camera,W,H,world.time,ambientReduced());}
+    if(MareSkypiea.has(activeMap().id))MareSkypiea.environment(ctx,activeMap().id);
     ambientWeather.draw(ctx,camera,W,H);
     ctx.restore();
 
@@ -4388,6 +4389,15 @@ function applySceneHudLayout(){
       if(canInteract&&distance(world.hero,approach)<5)activateNPC(npc);
       else walkTo(approach,npc);
       return;
+    }
+    if(MareSkypiea.has(activeMap().id)){
+      const portal=activeMap().returnPoint;
+      if(Math.hypot(x-portal.x,y-portal.y)<portal.radius){
+        if(ONLINE_GAME?.data?.online.world&&(!ONLINE_GAME.controlled||onlineMoveWorking||ONLINE_GAME.busy||ONLINE_GAME.pending))return;
+        const action={...portal,kind:'return'};
+        if(distance(world.hero,portal)<5)returnLobby();else walkTo(portal,action);
+        return;
+      }
     }
     if(activeMap().id==='rare'&&Math.hypot(x-MareRare.returnPoint.x,y-MareRare.returnPoint.y)<42){walkTo({...MareRare.returnPoint},{...MareRare.returnPoint,kind:'return'});return;}
     if(activeMap().id==='dawn'&&Math.hypot(x-MareDawn.returnPoint.x,y-MareDawn.returnPoint.y)<42){walkTo({...MareDawn.returnPoint},{...MareDawn.returnPoint,kind:'return'});return;}

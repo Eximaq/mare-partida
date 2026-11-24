@@ -1,8 +1,7 @@
 """Recover the Sky Island ZIP's native terrain and authored props.
 
-The map editor export omits its vertex grid. Recover it from the 4x4 Wang
-atlases, matching the composited map outside authored object bounds. Each
-unknown vertex remains non-walkable. No visual model is generated.
+Keep the authored composite exactly for rendering. The map editor export
+omits its vertex grid, so recover collision separately from the Wang atlases.
 """
 import collections
 import hashlib
@@ -91,7 +90,6 @@ def run(archive):
             patterns.append((ground_names[k],)*4)
         ims.append(Image.new('RGBA',(64,64))); patterns.append(('.',)*4)
         atlas=np.array([np.array(im) for im in ims])
-        fit={}
         votes=[[collections.Counter() for x in range(nx)] for y in range(ny)]
         matched=visible_count=0
         for yy in range(ny-1):
@@ -107,33 +105,30 @@ def run(archive):
                     possible=np.flatnonzero(score==score.min())
                 else: possible=np.arange(len(atlas))
                 count=np.count_nonzero(np.any(atlas[possible][:,seen]!=ref[seen],axis=2),axis=1)
-                best=int(possible[count.argmin()])
                 errors=int(count.min()); total=int(seen.sum())
                 matched+=total-errors;visible_count+=total
-                fit[xx,yy]=best
                 tied=possible[count==errors]
                 if errors>max(12,total*.04) or total<16: continue
                 for j,(dx,dy) in enumerate(((0,0),(1,0),(0,1),(1,1))):
                     options={patterns[i][j] for i in tied}
                     if len(options)==1:votes[yy+dy][xx+dx][options.pop()]+=total
         rows=[''.join((c.most_common(1)[0][0] if c else '.') for c in row) for row in votes]
-        # Fill the padding with the native sky tile. Use supported fitted tile
-        # pixels where known; under fully-covered props use the inferred quad.
         sky=ims[-2]
-        ground=Image.new('RGBA',(w,h))
-        for y in range(0,h,64):
-            for x in range(0,w,64): ground.paste(sky,(x,y))
-        for yy in range(ny-1):
-            for xx in range(nx-1):
-                key=(xx,yy); idx=fit.get(key)
-                if idx is None:
-                    pat=(rows[yy][xx],rows[yy][xx+1],rows[yy+1][xx],rows[yy+1][xx+1])
-                    idx=patterns.index(pat) if pat in patterns else (32 if '.' not in pat else len(atlas)-2)
-                ground.alpha_composite(ims[idx],(xx*64+32,yy*64+32))
         assert matched/visible_count > .98, (matched,visible_count)
-        # Save the terrain, not the flattened reference, so runtime props can
-        # use their native layers and collision footprints without double paint.
-        ground.save(out/'ground.webp',lossless=True,method=4)
+        # Authoring pixels beat inferred terrain and runtime reassembly. Keep the
+        # composite as one authored layer; the exported objects still describe all
+        # placements and collision without ever painting a second copy.
+        background=Image.new('RGBA',(w,h))
+        for y in range(0,h,64):
+            for x in range(0,w,64): background.paste(sky,(x,y))
+        background.alpha_composite(orig)
+        scene=out/'scene.webp'
+        background.save(scene,lossless=True,method=6)
+        opaque=source[:,:,3]==255
+        actual=np.array(Image.open(scene).convert('RGBA'))
+        assert np.array_equal(source[opaque],actual[opaque]), 'Authored pixels changed'
+        assert np.all(actual[:,:,3]==255), 'Scene margins must be filled with sky'
+        (out/'ground.webp').unlink(missing_ok=True)
         def openpx(x,y):
             if not 0<=x<w or not 0<=y<h:return False
             return rows[int(y//64)][int(x//64)] in 'sc' or any(p['x']<=x<=p['x']+p['w'] and p['y']<=y<=p['y']+p['h'] for p in bridges)
@@ -164,11 +159,15 @@ def run(archive):
             (85,90,'gendatsu','Gendatsu',88,(5950,2880),[(5980,1960),(5130,1250),(4690,2250)]),
             (90,95,'ohm','Ohm',95,(2140,1460),[(2940,990),(3490,1520),(4270,1000)]),
         ]
+        spawn=dict(x=1554,y=2846)  # Red circle registered against the golden arch.
+        return_point=dict(x=1544,y=2792)
+        assert all(walk(**p) for p in (spawn,return_point))
         spec=[]
         names=['Jardins Celestes','Ruínas dos Anjos','Bosque das Nuvens']
         for n,(mn,mx,t,name,lv,start,spots) in enumerate(basis,1):
             mid=f'skypiea-{n:02}'
-            spawn=nearest(*start);used=[(spawn['x'],spawn['y'])]
+            # Do not move existing encounter slots or change their IDs.
+            old_arrival=nearest(*start);used=[(old_arrival['x'],old_arrival['y'])]
             districts,slots=[],[]
             for i,(sx,sy) in enumerate(spots):
                 d=dict(id='sky-'+str(i),name=names[i],**nearest(sx,sy,used));districts.append(d)
@@ -177,14 +176,16 @@ def run(archive):
                     slots.append(dict(id=f'{mid}-{len(slots)}',sector=d['id'],type=t,**loc))
             spec.append(dict(id=mid,name='Ilha dos Anjos'+(f' {n}' if n>1 else ''),min=mn,max=mx,type=t,monster=name,
                              level=lv,spawn=spawn,districts=districts,slots=slots))
-        data=dict(width=w,height=h,tile=64,groundUrl='assets/skypiea/anjos/ground.webp',
+        data=dict(width=w,height=h,tile=64,groundUrl='assets/skypiea/anjos/scene.webp',returnPoint=return_point,
                   rows=rows,props=props,colliders=colliders,bridgeDecks=bridges,
                   spawn=spec[0]['spawn'],districts=spec[0]['districts'],slots=spec[0]['slots'],specs=spec)
         (ROOT/'skypiea-map-data.js').write_text("'use strict';\n((r)=>{r.MareSkypieaData="+json.dumps(data,separators=(',',':'))+
             ";if(typeof module!=='undefined')module.exports=r.MareSkypieaData;})(globalThis);\n",encoding='utf8')
         (out/'provenance.json').write_text(json.dumps(dict(sourceArchiveSha256=hashlib.sha256(archive.read_bytes()).hexdigest(),
             mapId=meta['mapId'],width=w,height=h,objects=len(props),bridgeDecks=len(bridges),terrainMatchingPixels=matched,
-            terrainUncoveredPixels=visible_count,connectedSampleCells=len(connected)),indent=2)+'\n')
+            terrainUncoveredPixels=visible_count,connectedSampleCells=len(connected),
+            sceneSourceOpaquePixels=int(opaque.sum()),sceneOpaquePixelDelta=0,
+            sceneSha256=hashlib.sha256(scene.read_bytes()).hexdigest()),indent=2)+'\n')
         print((out/'provenance.json').read_text())
 
 if __name__=='__main__': run(Path(sys.argv[1]))
