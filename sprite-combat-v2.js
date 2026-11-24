@@ -5,6 +5,7 @@
  const directions={front:'south',back:'north',left:'west',right:'east'};
  const fruits={akuma_tori_albatroz:'tori',akuma_tori_phoenix:'phoenix',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko',akuma_ushi_giraffe:'ushi',akuma_inu_wolf:'wolf',akuma_ryu_ryu:'ryu',akuma_ushi_bison:'bison'};
  const data=()=>root.MareSpriteCombatV2Data||{};
+ const entryFor=key=>data()[key]??root.MareCp9SpriteData?.[key];
  const errors=new Map(),assetBase=typeof document!=='undefined'&&document.currentScript?.src?new URL('.',document.currentScript.src):null;
  const assetVersion=typeof document!=='undefined'&&document.currentScript?.src?new URL(document.currentScript.src).searchParams.get('v')||'current-player-v2-20261030':'current-player-v2-20261030';
  function resourceURL(file){if(!assetBase)return file;const target=new URL(file,assetBase);target.searchParams.set('revision',assetVersion);return target.href;}
@@ -16,12 +17,14 @@
  function hurtProgress(actor,now){const start=reactions.get(actor);if(start===undefined)return null;const elapsed=now-start;if(elapsed<0||elapsed>=HURT_SECONDS){reactions.delete(actor);return null;}return elapsed/HURT_SECONDS;}
  function hurt(actor,damage,now,{protected:protectedAction=false}={}){
   if(!actor||!Number.isFinite(damage)||damage<=0||!Number.isFinite(now))return false;
+  const cp9=root.MareCp9Monsters;
+  if(cp9?.recordHit(actor,now))preload(cp9.catalog[actor.type].hybridSprite);
   if(protectedAction){reactions.delete(actor);return false;}
   if(hurtProgress(actor,now)!==null)return false;
   reactions.set(actor,now);return true;
  }
  function resolve(key,action='idle',direction='front'){
-  const entry=data()[key];if(!entry)return null;
+  const entry=entryFor(key);if(!entry)return null;
   // Keep legacy South-only reactions unless this actor has authored directional Hurt.
   const nativeFacing=directions[direction]||direction;
   const directionalHurt=(entry.dungeonBoss||entry.directionalHurt)&&entry.clips.hurt?.[nativeFacing];
@@ -43,9 +46,9 @@
    im.addEventListener?.('load',notify);im.addEventListener?.('error',()=>{failedAt.set(url,Date.now());reportMissing(context.consumer||'sprite-combat-v2',url,context.action,context.direction,'image-load');notify();});im.src=resourceURL(url);images.set(url,im);
   }return images.get(url);
  }
- function preload(key){const entry=data()[key];if(entry)for(const [action,ds]of Object.entries(entry.clips))for(const [direction,c]of Object.entries(ds))image(c.image,{consumer:'current-sprite-preload:'+key,action,direction});}
+ function preload(key){const entry=entryFor(key);if(entry)for(const [action,ds]of Object.entries(entry.clips))for(const [direction,c]of Object.entries(ds))image(c.image,{consumer:'current-sprite-preload:'+key,action,direction});}
  async function prepare(key){
-  const entry=data()[key];if(!entry)return false;
+  const entry=entryFor(key);if(!entry)return false;
   try{await Promise.all(Object.entries(entry.clips).flatMap(([action,ds])=>Object.entries(ds).map(async([direction,clip])=>{const cached=images.get(clip.image);if(cached?.complete&&(cached.naturalWidth!==clip.size*clip.frames||cached.naturalHeight!==clip.size))images.delete(clip.image);const im=image(clip.image,{consumer:'dungeon-preload:'+key,action,direction});if(!im)throw Error('Recurso inválido');await im.decode();if(status(key,action,direction)!=='ready')throw Error('Frame inválido');})));return true;}catch{return false;}
  }
  function status(key,action,direction){const r=resolve(key,action,direction);if(!r?.clip){reportMissing('current-sprite:'+key,key,action,direction);return 'missing';}const im=image(r.clip.image,{consumer:'current-sprite:'+key,action:r.action,direction:r.facing});if(!im)return 'failed';if(!im.complete)return 'loading';if(im.naturalWidth===r.clip.size*r.clip.frames&&im.naturalHeight===r.clip.size)return 'ready';reportMissing('current-sprite:'+key,r.clip.image,r.action,r.facing,'image-dimensions');return 'failed';}
@@ -80,16 +83,20 @@
  }
  const monsterScales=Object.freeze({marinheiro:.70,helmeppo:1.30,cocox:.80,merry:.80,doublefinger:.70,mr1:.70});
  const monsterScale=type=>monsterScales[type]??1;
- const monsterHeight=type=>{const e=data()[type];return e?.monster?e.worldHeight*(e.world_scale??1)*monsterScale(type):null;};
+ const monsterHeight=type=>{const e=entryFor(type);return e?.monster?e.worldHeight*(e.world_scale??1)*monsterScale(type):null;};
  function monster(c,m,now){
-  const entry=data()[m.type];if(!entry||!entry.monster)return false;
-  const reaction=m.alive!==false?hurtProgress(m,now):null,attacking=m.attackAnim>0;
+  const cp9=root.MareCp9Monsters;
+  const isCp9=cp9?.isMonster(m.type);
+  if(isCp9&&(m.alive===false||m.hp<=0||m.engaged===false||m.returning))reactions.delete(m);
+  const key=(isCp9?cp9.form(m,now,HURT_SECONDS):null)||m.type;
+  const entry=entryFor(key);if(!entry||!entry.monster)return false;
+  const reaction=m.alive!==false?hurtProgress(m,now):null,attacking=m.attackAnim>0&&(!isCp9||!!entry.clips.attack);
   const action=reaction!==null?'hurt':attacking?'attack':m.moving>0?'walk':'idle';
   const duration=root.MareCharacters.monsterAttackVisualDuration(m.type);
   // Legacy mobs apply damage immediately. Begin at contact; never defer their damage.
-  const clip=resolve(m.type,action,m.emberFacing||'south').clip;
+  const clip=resolve(key,action,m.emberFacing||'south').clip;
   const progress=reaction??(entry.dungeonBoss?(m.dungeonAttack?m.dungeonAttack.elapsed/m.dungeonAttack.duration:null):(attacking?(clip.impact_frame??0)/clip.frames+(1-m.attackAnim/duration)*(1-(clip.impact_frame??0)/clip.frames):null));
-  return draw(c,m.type,m.x,m.y+3,{action,direction:m.emberFacing||'south',time:(action==='walk'?now*root.MareCharacters.monsterBalance.moveSpeed:now)+(m.bob||0),progress,height:monsterHeight(m.type),flash:reaction!==null&&!resolve(m.type,'hurt',m.emberFacing||'south').requested});
+  return draw(c,key,m.x,m.y+3,{action,direction:m.emberFacing||'south',time:(action==='walk'?now*root.MareCharacters.monsterBalance.moveSpeed:now)+(m.bob||0),progress,height:monsterHeight(key),flash:reaction!==null&&!resolve(key,'hurt',m.emberFacing||'south').requested});
  }
  function install(){
   // PR177 native Hurt backport; keep catalog contributions from main conflict-free.
@@ -108,7 +115,7 @@
    system.status=(a,d)=>status(key,a,d);
    system.preload=()=>{if(data()[key])preload(key);oldPreload({actors:false});};
   }
-  if(root.MareNewIslandArt){const old=root.MareNewIslandArt.monster;root.MareNewIslandArt.monster=(c,m,t)=>data()[m.type]?.monster?monster(c,m,t):old(c,m,t);}
+  if(root.MareNewIslandArt){const old=root.MareNewIslandArt.monster;root.MareNewIslandArt.monster=(c,m,t)=>entryFor(m.type)?.monster?monster(c,m,t):old(c,m,t);}
   if(root.MareRareRenderer){const old=root.MareRareRenderer.monster;root.MareRareRenderer.monster=(c,m,t)=>m.type==='cocox'&&data().cocox?monster(c,m,t):old(c,m,t);}
   if(root.MareHoya){const system=root.MareHoya,old=system.drawActor,oldPreload=system.preload;system.drawActor=(c,g,t)=>{if(!data().hoya)return old(c,g,t);const p=g.clock.snapshot(),reaction=hurtProgress(g,t);return draw(c,'hoya',g.x,g.y,{action:reaction!==null?'hurt':p.locked?'attack':g.walking>0?'walk':'idle',direction:g.direction,time:t,progress:reaction??(p.locked?p.progress:null),hitRatio:p.hitFrameRatio,height:data().hoya.worldHeight*g.scale*(data().hoya.world_scale??1)});};system.preload=()=>{preload('hoya');oldPreload({actors:false});};}
  }
