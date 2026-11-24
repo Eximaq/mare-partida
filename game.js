@@ -1070,7 +1070,7 @@
   }
   function eligibleGearForDrop(rarity,world=false){
     const worldAllowed=!world||MarePrison.canDrop('equipment','world');
-    return itemDefs.filter(d=>worldAllowed&&!d.kind&&d.type!=='akuma_no_mi'&&d.rarity===rarity&&d.rarity!=='supreme'&&d.rarity!=='legendary');
+    return itemDefs.filter(d=>worldAllowed&&MareForge.canAcquireDefinition(d)&&!d.kind&&d.type!=='akuma_no_mi'&&d.rarity===rarity&&d.rarity!=='supreme'&&d.rarity!=='legendary');
   }
   function itemBase(item){return itemDefs[item?.def]||itemDefs[0];}
   function itemRarity(item){if(MareVisualCompleto.isVisual(item,itemDefs))return null;const fruit=MareAkuma.itemData(item,itemDefs);return fruit?MareAkuma.rarityFor(fruit):item?.rarity||itemBase(item).rarity;}
@@ -1078,10 +1078,9 @@
   function starterWeapon(cls){return {sword:0,brawler:2,gunner:4,rogue:12,cyborg:14,strategist:16,healer:healerWeaponIndex}[cls]??0;}
   function createGame(name, cls) {
     world.nextID=1;
-    const initialWeapon = starterWeapon(cls);
     const g={version:VERSION,talentVersion:MareTalents.VERSION,talentLegacyBudget:0,name,classId:cls,factionId:selectedFaction,level:1,xp:0,xpCurveVersion:MareCharacterCatalog.xpCurveVersion,gold:120,hp:0,energy:0,inventory:[],equipment:Object.fromEntries([...inventorySlotsLeft,...inventorySlotsRight].map(key=>[key,null])),potions:4,materials:0,stats:{kills:0,crab:0,bandit:0,spirit:0,boss:0,damage:0,goldEarned:0,xpEarned:0},claimed:[],area:'beach',created:Date.now(),totalPlay:0,hasSeenBoss:false,preferences:{hideItems:false}};
     Object.assign(g,MareCharacters.migrate(g),{forgeVersion:MareForge.VERSION,forgeSeq:0,forgeHistory:[]});
-    g.equipment.weapon = newItem(itemDefs[initialWeapon]); g.equipment.coat = newItem(itemDefs[6]); g.inventory.push(newItem(itemDefs[8])); g.hp=getDerived(g).maxHP;g.energy=getDerived(g).maxEnergy;
+    const stats=getDerived(g);g.hp=stats.maxHP;g.energy=stats.maxEnergy;
     return MareBossDungeons.migrate(MareHierarchy.migrate(MareAkuma.migrate(MareHaki.migrate(MareTalents.migrate(MarePrison.migrate(MareHunt.migrate(g)))))));
   }
   function getDerived(g=game,runtime=g===game?session?.talents:null) {
@@ -4140,7 +4139,11 @@ function applySceneHudLayout(){
     if(changed&&game.equipment.weapon&&game.inventory.length>=BAG_CAPACITY){$('creationError').textContent='Libere um espaço na mochila para guardar sua arma atual antes de trocar a classe.';return;}
     let candidate=editing?JSON.parse(JSON.stringify(game)):createGame(name,selectedClass);
     candidate.name=name;candidate.factionId=selectedFaction;candidate.classId=selectedClass;
-    if(changed){const old=candidate.equipment.weapon;if(old)candidate.inventory.push(old);candidate.equipment.weapon=newItem(itemDefs[starterWeapon(selectedClass)]);}
+    if(changed){
+      const old=candidate.equipment.weapon;if(old)candidate.inventory.push(old);
+      const owned=candidate.inventory.findIndex(i=>itemDefs[i.def]?.slot==='weapon'&&itemDefs[i.def]?.type===selectedClass);
+      candidate.equipment.weapon=owned<0?null:candidate.inventory.splice(owned,1)[0];
+    }
     candidate=MareHierarchy.migrate(candidate);candidate.paperDollLook={...creationLookDraft,hair:creationAppearanceDraft.hairStyle==='none'?'bald':'short-black'};
     const d=getDerived(candidate,null);candidate.hp=Math.min(d.maxHP,Math.max(1,candidate.hp));candidate.energy=Math.min(d.maxEnergy,Math.max(0,candidate.energy));
     try{const saved=MareCharacterAppearance.commit(candidate,creationAppearanceDraft,next=>{if(DEV_ACTIVE)next.devSandbox=true;localStorage.setItem(STORAGE_KEY,JSON.stringify(next));return true;});if(!saved)return;game=saved;}

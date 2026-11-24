@@ -20,7 +20,7 @@
     const g=clone(original),T=root.MareTalents,C=root.MareCharacters,H=root.MareHaki,A=root.MareAchievements,defs=ctx.defs||[];
     const fail=message=>({ok:false,message}),number=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
     function grant(def,count=1,rarity=null,level=1,plus=0){
-      if(!def||!number(count,1,25))return false;
+      if(!def||def.acquisitionBlocked||!number(count,1,25))return false;
       if(def.kind==='haki-fragment'){const next=H.progression.addFragments(g,def.branch,count,defs,d=>ctx.makeItem(d,1,null));if(!next)return false;Object.assign(g,next);return true;}
       if(g.inventory.length+count>120)return false;
       for(let i=0;i<count;i++){const item=ctx.makeItem(def,level,rarity);if(!def.kind)item.plus=plus;item.origin='Laboratório DEV';g.inventory.push(item);}return true;
@@ -35,6 +35,7 @@
       case 'supplies':g.gold=Math.min(1e9,g.gold+1000000);g.materials=Math.min(1e9,g.materials+10000);g.potions=Math.min(10000,g.potions+100);break;
       case 'item':{
         const def=defs[command.index];if(!def||!number(command.count,1,25)||!number(command.level,1,100)||!number(command.plus,0,20)||!root.MareForge.rarity[command.rarity])return fail('Item, quantidade, nível ou raridade inválidos.');
+        if(def.acquisitionBlocked)return fail('Equipamento temporariamente indisponível.');
         if(!grant(def,command.count,def.kind?null:command.rarity,command.level,command.plus))return fail('Mochila cheia. Nenhum item foi criado.');break;
       }
       case 'haki-fragments':{for(const b of H.ids){const next=H.progression.addFragments(g,b,25,defs,d=>ctx.makeItem(d,1,null));if(!next)return fail('Libere espaço para os materiais.');Object.assign(g,next);}break;}

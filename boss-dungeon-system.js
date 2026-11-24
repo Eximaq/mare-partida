@@ -53,7 +53,7 @@
  function openEpicBox(original,id,defs,random=Math.random,now=Date.now()){
   const box=original.inventory.find(i=>i.id===id);if(!box||box.locked||defs[box.def]?.id!==epicBox.id||!bound(box)||!Number.isInteger(box.level)||box.level<1)return fail('Caixa indisponível.');
   const forge=root.MareForge||(typeof require==='function'?require('./forge-system.js'):null);
-  const pool=defs.map((d,i)=>({d,i})).filter(({d})=>d.rarity==='epic'&&d.slot&&!d.kind&&d.type!=='akuma_no_mi'&&!d.unavailable);
+  const pool=defs.map((d,i)=>({d,i})).filter(({d})=>d.rarity==='epic'&&d.slot&&!d.kind&&d.type!=='akuma_no_mi'&&!d.unavailable&&!d.acquisitionBlocked);
   const roll=random();if(!Number.isFinite(roll)||roll<0||roll>=1||!pool.length)return fail('Equipamento indisponível.');
   const item=forge.generateItem({...box,id:'epic-from:'+box.id,def:pool[Math.floor(roll*pool.length)].i,obtainedAt:now},defs,random,{potential:epicBoxPotential,source:'boss-dungeon-epic-box'});
   if(original.inventory.some(i=>i.id===item.id))return fail('Equipamento já recebido.');

@@ -21,7 +21,7 @@ test('first victory claims once and preserves entitlement with a full bag; trave
  o.battle.hunts.areas.beach.bosses=1;o.battle.hunts.areas.beach.respawns['beach-cais-0']=Date.now()+30000;
  await pool.query('UPDATE mare_game.character_battles SET simulation=$1',[JSON.stringify(o.battle)]);
  const inventory=o.originalInventory.inventory;
- const full=Array.from({length:120},()=>({...inventory[0],id:randomUUID()}));await pool.query('UPDATE mare_game.game_inventory SET inventory=$1',[JSON.stringify(full)]);
+ const full=Array.from({length:120},()=>({id:randomUUID(),def:8,rarity:'common',level:1,plus:0,locked:false,obtainedAt:1}));await pool.query('UPDATE mare_game.game_inventory SET inventory=$1',[JSON.stringify(full)]);
  await assert.rejects(a.send(await a.input('battle.first')),{code:'inventory_full'});assert.equal((await a.read()).battle.hunts.areas.beach.firstRewardClaimed,false);
  await pool.query('UPDATE mare_game.game_inventory SET inventory=$1',[JSON.stringify(inventory)]);
  const previousGold=BigInt(o.state.gold),first=await a.input('battle.first'),receipt=await a.send(first);assert.deepEqual(await a.send(first),receipt);
@@ -47,7 +47,8 @@ test('worker advances only authorized server time, serializes kills and atomical
  await a.send(await a.input('battle.target',{targetId:m.id}));
  // Isolated PostgreSQL fixture: a near-death monster makes the transactional race deterministic.
  o=await a.read();o.battle.mobs[0].hp=1;o.battle.mobs[0].patrolClock=100;
- const worn=o.originalInventory.equipment.weapon;
+ const worn={id:randomUUID(),def:16,rarity:"common",level:1,plus:0,locked:false,obtainedAt:1};
+ await pool.query("UPDATE mare_game.game_inventory SET equipment=jsonb_set(equipment,'{weapon}',$2::jsonb) WHERE character_id=$1",[a.c.id,JSON.stringify({...worn,durability:100000})]);
  o.battle.pending={targetId:m.id,remaining:.01,wear:{id:randomUUID(),owner:a.c.id,ids:[worn.id],confirmed:false}};o.battle.attackClock=1;
  await pool.query("UPDATE mare_game.character_battles SET simulation=$2,tick_at=clock_timestamp()-interval '250 milliseconds' WHERE character_id=$1",[a.c.id,JSON.stringify(o.battle)]);
  await Promise.all([tick(),tick()]);const after=await a.read();

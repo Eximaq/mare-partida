@@ -5,7 +5,7 @@ import {z} from 'zod';
 import {AuthFault} from '../auth/errors.js';
 import {getGameCatalog} from '../gameplay/catalog.js';
 import {assertEquipmentTransferReady,readOriginalInventory} from '../gameplay/inventory.js';
-import {itemTradeQuantity,itemTradeRestriction} from './item-negotiability.js';
+import {acquisitionBlocked,itemTradeQuantity,itemTradeRestriction} from './item-negotiability.js';
 
 const {items,slots}=getGameCatalog();
 const require=createRequire(import.meta.url);
@@ -160,6 +160,7 @@ export async function readMarket(client:PoolClient,id:string,f:MarketRead){
   const where:string[]=[];
   if(f.view==='market'){
     where.push(live);
+    where.push(`NOT (l.item->>'def'=ANY(${bind(getGameCatalog().items.filter(item=>acquisitionBlocked(item.defIndex)).map(item=>String(item.defIndex)))}::text[]))`);
     if(f.q)where.push(`strpos(l.details->>'searchName',${bind(searchKey(f.q))})>0`);
     if(f.mode)where.push('l.mode='+bind(f.mode));
     for(const k of Object.keys(fieldMap) as (keyof typeof fieldMap)[])if(f[k]!==undefined)where.push(`l.details->>'${fieldMap[k]}'=${bind(f[k])}`);
@@ -210,6 +211,15 @@ export async function executeMarket(client:PoolClient,id:string,input:Action){
     if(restriction)throw new AuthFault(409,restriction==='locked'?'market_item_locked':'market_item_untradable');
     if(payload.quantity>itemTradeQuantity(item))throw new AuthFault(400,'market_invalid_quantity');
     data={...payload,item,details:marketItemDetails(item)};
+  }
+  if(payload.kind==='market_buy'||payload.kind==='market_offer'||payload.kind==='market_accept'){
+    // The item is immutable for the lifetime of an escrow listing. The SQL
+    // command still owns transaction locks and rechecks listing/proposal versions.
+    const listing=(await client.query<{def:unknown}>(
+      "SELECT item->'def' AS def FROM mare_game.market_listings WHERE id=$1",
+      [payload.listingId],
+    )).rows[0];
+    if(acquisitionBlocked(listing?.def))throw new AuthFault(409,'market_item_untradable');
   }
   const {feeBps,listingLimit,publishInterval}=policy();
   try{

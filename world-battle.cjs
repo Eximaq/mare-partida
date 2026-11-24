@@ -65,7 +65,7 @@ function refreshSkypieaPriests(area,mobs){
 }
 function upgradeBalance(b){
  if(!b)return;
- if([previousPriestBalanceHash,'0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'].includes(b.rulesHash)){refreshSkypieaPriests(b.area,b.mobs);b.rulesHash=rulesHash;return;}
+ if([previousPriestBalanceHash,'29dc036001499d18acfeaffcc3e868e77538f9fcf5f8cc843d33a5003c21b130','0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'].includes(b.rulesHash)){refreshSkypieaPriests(b.area,b.mobs);b.rulesHash=rulesHash;return;}
  if([previousSkypieaHash,'a2e4d9333c0770e539dee6262fb900e1747e94b44c1226a0baacb513b6c07a57','f48377155e997f7d41c76e0d6264e321603376094b73132ef8ebbd13be5cf0f7','8a7832817164137faed714a2ead01559c6c5801e6989c2a1a3aed55d3f2b383a'].includes(b.rulesHash)){
   if(b.area==='skypiea-01'){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
   addSkypieaLedgers(b);b.rulesHash=rulesHash;return;

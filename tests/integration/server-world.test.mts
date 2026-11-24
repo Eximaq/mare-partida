@@ -83,7 +83,8 @@ test('server travel enforces all four Skypiea minimums and spawns on the chosen 
   assert.deepEqual(moved.world.position,{...rules.navigation(islandId).map.spawn});
   assert.deepEqual(moved.world.path,[]);
   assert.equal(moved.world.rulesHash,rules.rulesHash);
-  const battle=(await a.read()).battle;assert.equal(battle.area,islandId);
+  const snapshot=await a.read(),battle=snapshot.battle;assert.equal(battle.area,islandId);
+  assert(snapshot.achievements.records.islands.includes(islandId));
   assert(battle.mobs.length>0&&battle.mobs.every((m:any)=>m.type===type&&m.level===level&&m.source==='world'));
  }
  await a.send(await a.input('world.return'));

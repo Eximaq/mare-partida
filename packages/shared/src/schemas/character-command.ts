@@ -121,7 +121,7 @@ export const characterCommandResultSchema = z.strictObject({
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),
   inventory: inventorySnapshotSchema.optional(),
-  mail: z.strictObject({claimed:z.array(z.uuid()),pending:z.array(z.uuid()),reason:z.literal('inventory_full').optional()}).optional(),
+  mail: z.strictObject({claimed:z.array(z.uuid()),pending:z.array(z.uuid()),reason:z.enum(['inventory_full','item_acquisition_blocked']).optional()}).optional(),
   market: marketReceiptSchema.optional(),
   state: characterStateSchema,
   // Optional so immutable receipts from earlier protocol increments remain valid.
