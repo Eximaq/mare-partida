@@ -154,8 +154,8 @@ function update(v,restore=false,remember=true,change=null){
   }else if(cycle)r.cycle=v;else r.phases[phase()]=v;
   for(const k of Object.keys(r.phases))if(r.phases[k].every(n=>n===0))delete r.phases[k];
   const rows=draft.records.filter(a=>a.range?!(restore&&A.positionKey(a)===A.positionKey({...t,range,witness:originFor(t)})):!A.targetKeyMatches(t,a));
-  if(!restore&&(r.style||r.cycle.some(Boolean)||Object.keys(r.phases).length))rows.push(r);
-  commit({...draft,schema:r.style?Math.max(2,draft.schema):draft.schema,revision:draft.revision+1,records:rows},remember);
+  if(!restore&&(r.style||r.cycle.some(Boolean)||Object.keys(r.phases).length))rows.push({...r,witness:originFor(t)});
+  commit({...draft,schema:3,revision:draft.revision+1,records:rows},remember);
  }catch(e){inputs();status(e.message,true);}
 }
 function history(from,to){
@@ -173,50 +173,78 @@ function lateralRecords(t){
  return rows;
 }
 let copying=false;
+function copyBody(dest){return $('copy-body').value==='current'?dest.body:$('copy-body').value;}
+function contextOf(r,rows){
+ if(r.weapon!==null)return String(r.weapon);
+ const sameRig=rows.find(w=>w.witness&&w.weapon===null&&w.receiver===r.receiver&&w.direction===r.direction&&w.source===r.source);
+ return 'none:'+(r.witness?.role||sameRig?.witness.role||'');
+}
+function contextLabel(k){
+ if(k.startsWith('none:'))return 'Sem arma'+(k.slice(5)?' · '+(classes[k.slice(5)]||k.slice(5)):'');
+ const w=catalog[Number(k)];return w.name+' #'+k+' · '+(classes[w.type]||w.type);
+}
+function copyRows(dest){
+ return draft.records.filter(r=>r.body===copyBody(dest)&&r.slot===dest.slot&&r.action===dest.action&&catalog[r.item]?.slot===dest.slot);
+}
 function copyChoices(){
- const dest=view?.targets.find(t=>t.slot===editSlot&&t.part==='*'),select=$('copy-source'),prior=select.value;
- const ids=dest?[...new Set(draft.records.filter(r=>r.slot===dest.slot&&r.item!==dest.item&&r.body===dest.body&&r.action===dest.action&&catalog[r.item]?.slot===dest.slot).map(r=>r.item))].sort((a,b)=>a-b):[];
- selectValues('copy-source',ids.length?ids.map(id=>[id,catalog[id].name+' #'+id]):[['','Nenhuma peça ajustada neste movimento']]);
- select.disabled=!ids.length;if(ids.includes(Number(prior))&&prior!=='')select.value=prior;
+ const dest=view?.targets.find(t=>t.slot===editSlot&&t.part==='*'),prior=$('copy-source').value,weapon=$('copy-weapon').value;
+ const rows=dest?copyRows(dest):[],contexts=[...new Set(rows.map(r=>contextOf(r,rows)))];
+ selectValues('copy-weapon',[['auto','Automática'],...contexts.map(k=>[k,contextLabel(k)])]);
+ if(contexts.includes(weapon))$('copy-weapon').value=weapon;
+ const chosen=$('copy-weapon').value;
+ const ids=[...new Set(rows.filter(r=>(chosen==='auto'||contextOf(r,rows)===chosen)&&
+  (r.item!==dest.item||r.body!==dest.body||chosen!=='auto'&&(r.weapon!==dest.weapon||r.weapon===null&&chosen!=='none:'+actor.classId))).map(r=>r.item))].sort((a,b)=>a-b);
+ selectValues('copy-source',ids.length?ids.map(id=>[id,catalog[id].name+' #'+id]):[['','Nenhuma origem ajustada neste movimento']]);
+ $('copy-source').disabled=!ids.length;
+ if(prior!==''&&ids.includes(+prior))$('copy-source').value=prior;
+ else if(dest&&ids.includes(dest.item))$('copy-source').value=String(dest.item);
+ $('copy-help').textContent=dest?'Destino: '+(dest.body==='female'?'feminino':'masculino')+' · '+dest.action+'. Copia as partes ajustadas em todas as direções gravadas deste movimento.':'Selecione uma peça com desenho próprio.';
 }
 async function copyItem(){
  const dest=view?.targets.find(t=>t.slot===editSlot&&t.part==='*'),id=$('copy-source').value;
- if(!dest||!id||copying||$('before').checked)return;
- const sourceId=Number(id),slot=editSlot,previous=draft,current=ticket,witness=originFor(dest),signal=controller.signal;
- const stale=()=>current!==ticket||draft!==previous||editSlot!==slot||$('copy-source').value!==id||$('before').checked;
- const donor=look.apply({...actor,classId:slot==='weapon'?catalog[sourceId].type:actor.classId,
-  equipment:{...actor.equipment,[slot]:{def:sourceId}}},actor.appearance96);
- const dirs=new Set(previous.records.filter(r=>r.slot===slot&&r.item===sourceId&&r.body===dest.body&&r.action===dest.action).map(r=>r.direction));
+ if(!dest||id===''||copying||$('before').checked)return;
+ const previous=draft,current=ticket,slot=dest.slot,sourceId=Number(id),body=copyBody(dest),chosen=$('copy-weapon').value;
+ const adaptPhases=$('copy-adapt').checked,witness=originFor(dest),signal=controller.signal;
+ const stale=()=>current!==ticket||draft!==previous||editSlot!==slot||$('copy-source').value!==id||copyBody(dest)!==body||
+  $('copy-weapon').value!==chosen||$('copy-adapt').checked!==adaptPhases||$('before').checked;
+ const candidates=copyRows(dest).filter(r=>r.item===sourceId);
+ const rows=chosen==='auto'?candidates:candidates.filter(r=>contextOf(r,candidates)===chosen);
+ const dirs=new Set(rows.map(r=>r.direction));
  let next=previous;copying=true;inputs();
  try{
   for(const direction of dirs){
    let sourcePose,destPose;
    try{
-    status('Conferindo as fases das duas peças · '+direction+'…');
-    const o={...options,direction};let fromActor=donor;
-    sourcePose=await prepare(fromActor,o,signal);
+    status('Conferindo as fases de '+dest.action+' · '+direction+'…');
+    const inDir=rows.filter(r=>r.direction===direction);
+    const contexts=[...new Set(inDir.map(r=>contextOf(r,candidates)))];
+    const preferred=slot==='weapon'?String(sourceId):dest.weapon===null?'none:'+actor.classId:String(dest.weapon);
+    const k=chosen!=='auto'?chosen:contexts.includes(preferred)?preferred:contexts.length===1?contexts[0]:null;
+    if(k===null)throw Error('Há mais de uma origem para '+direction+'. Escolha a arma e a classe da animação de origem.');
+    const selected=inDir.filter(r=>contextOf(r,candidates)===k);
+    const weapon=k.startsWith('none:')?null:Number(k);
+    const gear=A.gearOf(actor);delete gear.weapon;if(weapon!==null)gear.weapon=weapon;gear[slot]=sourceId;
+    const withWitness=selected.filter(r=>r.witness);
+    const w=(withWitness.find(r=>A.slots.every(s=>gear[s]===r.witness.gear[s]))||withWitness.find(r=>!r.range)||withWitness.find(r=>r.range!=='outfit')||withWitness[0])?.witness;
+    const fromActor=look.apply({classId:w?.role||(weapon===null?k.slice(5):catalog[weapon].type)||actor.classId,
+     equipment:Object.fromEntries(Object.entries(w?.gear||gear).map(([s,def])=>[s,{def}])),preferences:{hideHeadgear:w?.hide??actor.preferences.hideHeadgear}},
+     {...(w?.look||actor.appearance96),gender:body==='male'?'masculino':'feminino'});
+    const sourceOptions={consumer:'world',action:dest.action,direction};
+    sourcePose=await prepare(fromActor,sourceOptions,signal);
     if(stale())return;
-    const parts=sourcePose.v.targets.filter(t=>t.slot===slot&&t.item===sourceId);
-    const missing=A.unavailableCopyRecord(previous,parts)||(!parts.length&&previous.records.find(r=>r.item===sourceId&&r.body===dest.body&&r.action===dest.action&&r.direction===direction));
-    if(missing){
-     sourcePose.b.release();sourcePose=null;
-     const w=missing.witness||previous.records.find(r=>r.witness&&A.key(r)===A.key(missing)&&r.weapon===missing.weapon&&r.source===missing.source)?.witness;
-     const gear=w?.gear||{[slot]:sourceId,...(missing.weapon!==null?{weapon:missing.weapon}:{})};
-     fromActor=look.apply({classId:w?.role||catalog[missing.weapon]?.type||donor.classId,
-      equipment:Object.fromEntries(Object.entries(gear).map(([s,def])=>[s,{def}])),preferences:{hideHeadgear:w?.hide??false}},w?.look||donor.appearance96);
-     sourcePose=await prepare(fromActor,o,signal);
-     if(stale())return;
-    }
-    sourcePose.v.set(previous);
-    if(direction!==dest.direction)destPose=await prepare(actor,o,signal);
+    // The XY default may have been authored with another weapon. Per-phase edits
+    // and outfit exceptions, however, belong only to the chosen source context.
+    const sourceRecords=[...selected,...candidates.filter(r=>r.direction===direction&&r.range==='direction'&&!selected.includes(r))];
+    sourcePose.v.set({ ...previous,records:sourceRecords });
+    if(direction!==dest.direction)destPose=await prepare(actor,{...options,direction},signal);
     if(stale())return;
-    next=A.copyItemDirection(next,sourcePose.v,destPose?.v||view,slot,sourceId,dest.item,A.gearOf(fromActor,o.weaponless),witness);
+    next=A.copyItemDirection(next,sourcePose.v,destPose?.v||view,slot,sourceId,dest.item,A.gearOf(fromActor),witness,{sourceRecords,adaptPhases});
     destPose?.v.set(next);
    }finally{sourcePose?.b.release();destPose?.b.release();}
   }
   if(stale()||!dirs.size)return;
   commit({...next,revision:previous.revision+1});
-  status('Movimento copiado de '+catalog[sourceId].name+' #'+sourceId+' para '+catalog[dest.item].name+' #'+dest.item+' · '+dirs.size+(dirs.size===1?' direção.':' direções.'));
+  status('Movimento copiado · '+dest.action+' · '+catalog[sourceId].name+' #'+sourceId+' → '+catalog[dest.item].name+' #'+dest.item+' · '+dirs.size+(dirs.size===1?' direção.':' direções.'));
  }catch(e){if(!stale())status(e.message,true);}finally{copying=false;inputs();}
 }
 async function copyLateral(direction){
@@ -332,7 +360,8 @@ try{
   }catch(e){status(e.message,true);}
  };
  $('apply-positions').onclick=applyDirections;
- $('copy-item').onclick=copyItem;
+ $('copy-body').onchange=$('copy-weapon').onchange=()=>{copyChoices();inputs();};
+ $('copy-source').onchange=inputs;$('copy-item').onclick=copyItem;
  $('part').onchange=()=>{preferredParts.set(editSlot,$('part').value);inputs();};$('scope').onchange=inputs;$('before').onchange=()=>{inputs();schedule();};
  $('guides').onchange=$('zoom').oninput=schedule;$('play').onclick=()=>toggle(!playing);
  const step=d=>{if(!view)return;toggle(false);const phase0=phase();let i=tick;do{i=(i+d+view.clock.length)%view.clock.length;}while(i!==tick&&view.clock[i].phase===phase0);setTick(i);schedule();};

@@ -10081,6 +10081,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   };
   const ctx=surface.getContext('2d'),dst=ctx.getImageData(0,0,w,h),dressed=new Uint32Array(dst.data.buffer),
    applied=draw(surface),paint=new Uint32Array(applied.data.buffer);
+  let registeredEdges;
   if(part.signedEdge){
    // The original contact carries signed edge rounding and seven restored
    // neck pixels on the side pose. Retain those samples when the receiving
@@ -10104,11 +10105,37 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     if(joinedContactEdges.size>=64)joinedContactEdges.delete(joinedContactEdges.keys().next().value);
     joinedContactEdges.set(key,samples);
    }
+   registeredEdges=samples;
    for(const [i,bare,signed] of samples)if(dressed[i]===bare)paint[i]=signed;
   }
   let count=0;for(let i=0;i<dressed.length;i++)if(matte[i*4]){dressed[i]=paint[i];count++;}
   if(!count||part.contactCount!==undefined&&count!==part.contactCount)throw Error('Contact matte differs from the weapon record');
-  ctx.putImageData(dst,0,0);tile.width=tile.height=1;
+  const positions=root.MareHDPosition,hardware='contact-metal';
+  const native=()=>ctx.putImageData(dst,0,0);
+  if(positions?.inspectingPart?.('weapon',hardware)){
+   // This record owns metal rasters and a contact matte. Its signed composite
+   // also contains the arm underneath: keep those pixels in body coordinates.
+   cx.clearRect(0,0,w,h);for(const metal of metals)cx.drawImage(metal,0,0);
+   if(part.restore){
+    cx.save();cx.beginPath();part.restore.forEach(([x,y],i)=>i?cx.lineTo(x,y):cx.moveTo(x,y));
+    cx.closePath();cx.clip();cx.clearRect(0,0,w,h);cx.restore();
+   }
+   const ink=cx.getImageData(0,0,w,h);
+   for(let i=0;i<ink.data.length;i+=4)if(!matte[i])ink.data[i+3]=0;
+   cx.putImageData(ink,0,0);
+   // Signed neck and wrist corrections outside the metal stay on the receiving
+   // anatomy, including when the adjustable weapon is drawn on a lower layer.
+   if(registeredEdges?.length){
+    const skin=ctx.getImageData(0,0,w,h),pixels=new Uint32Array(skin.data.buffer);let changed=false;
+    for(const [i,bare,signed] of registeredEdges){
+     if(!ink.data[i*4+3]&&pixels[i]===bare&&bare!==signed){pixels[i]=signed;changed=true;}
+    }
+    if(changed)ctx.putImageData(skin,0,0);
+   }
+   const identity=JSON.stringify([part.asset,...part.extraMetal,part.mask,part.restore]);
+   positions.blit(ctx,'weapon',hardware,identity,tile,[0,0],1,native);
+  }else native();
+  tile.width=tile.height=1;
  }
  function paintBladeHeadMaterials(ctx,r,entry,frame,pack){
   const {headKey,headPath,paddingPhysical:pad,style}=r.ownGauntletHead;

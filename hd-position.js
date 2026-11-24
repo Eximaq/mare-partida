@@ -134,35 +134,69 @@ function unavailableCopyRecord(manifest,sources){
  return manifest.records.find(r=>!r.range&&r.slot===t.slot&&r.item===t.item&&r.body===t.body&&r.action===t.action&&r.direction===t.direction&&
   !sources.some(src=>src.part===r.part&&localRecord(src,manifest.records)));
 }
-function copyItemDirection(manifest,from,to,slot,sourceId,destId,sourceGear,witness){
+// Map authored phases, never mutate either animation. Repeated destination phases
+// use their first timeline position, so editing one held pose stays deterministic.
+function copyPhases(from,to,adapt){
+ try{
+  if(from.fps!==to.fps)throw Error('As fases têm ritmos diferentes.');
+  return phaseTransfer(from.clock,to.clock);
+ }catch(e){
+  if(!adapt||!from.clock.length||!to.clock.length)throw Error(e.message+' Ative “Adaptar fases” para distribuir os ajustes pelo ciclo.');
+ }
+ const mapping=new Map();
+ for(const [tick,{phase}] of to.clock.entries()){
+  const index=Math.round(tick*(from.clock.length-1)/Math.max(1,to.clock.length-1));
+  if(!mapping.has(phase))mapping.set(phase,from.clock[index].phase);
+ }
+ return (rows,convert)=>Object.fromEntries([...mapping].filter(([,phase])=>Object.hasOwn(rows,phase))
+  .map(([dest,source])=>[dest,convert(rows[source])]));
+}
+function copyItemDirection(manifest,from,to,slot,sourceId,destId,sourceGear,witness,{sourceRecords=manifest.records,adaptPhases=false}={}){
  const sources=from.targets.filter(t=>t.slot===slot&&t.item===sourceId);
  const targets=to.targets.filter(t=>t.slot===slot&&t.item===destId);
- if(sourceId===destId||!sources.length||!targets.length||['body','action','direction'].some(k=>sources[0][k]!==targets[0][k]))
-  throw Error('As peças precisam ter desenho no mesmo corpo, movimento e direção.');
+ if(!sources.length||!targets.length||['action','direction'].some(k=>sources[0][k]!==targets[0][k]))
+  throw Error('As duas peças precisam ter desenho no mesmo movimento e direção.');
+ const sameItem=sources[0].body===targets[0].body&&sourceId===destId;
  let next=manifest,remap,count=0;
  const seen=new Set();
- const missing=unavailableCopyRecord(manifest,sources);
+ const missing=unavailableCopyRecord({records:sourceRecords},sources);
  if(missing)throw Error('A parte '+missing.part+' de #'+sourceId+' tem ajustes em outra montagem ('+missing.direction+').');
  for(const src of sources){
-  const local=localRecord(src,manifest.records),position=positionFor(src,manifest.records,sourceGear);
+  const local=localRecord(src,sourceRecords),position=positionFor(src,sourceRecords,sourceGear);
   if(!local&&!position)continue;
   const foot=from.footFor(src),related=targets.filter(t=>to.footFor(t)===foot);
   let matchesPart=related.filter(t=>partName(t)===partName(src));
   // Lining panels may include the donor's material name in an otherwise
   // equivalent boot. Only a unique lining for the same authored foot qualifies.
   if(!matchesPart.length&&foot&&src.part.endsWith('-backing'))matchesPart=related.filter(t=>t.part.endsWith('-backing'));
+  // A hand can own a different numbered grip on each weapon. Only match
+  // a single authored part of the same hand on both sides.
+  const hand=slot==='weapon'&&/^(left|right)-[0-9]+$/.exec(src.part)?.[1];
+  if(!matchesPart.length&&hand&&sources.filter(t=>t.part.startsWith(hand+'-')).length===1)
+   matchesPart=related.filter(t=>new RegExp('^'+hand+'-[0-9]+$').test(t.part));
+  if(!matchesPart.length&&slot==='weapon'&&src.part!=='*'&&sources.length===2&&targets.length===2){
+   const only=targets.find(t=>t.part!=='*'),side=only&&/^(left|right)-/.exec(only.part)?.[1];
+   if(only&&(!hand||!side||hand===side))matchesPart=[only];
+  }
   if(matchesPart.length!==1||seen.has(matchesPart[0]))throw Error('Sem parte correspondente para '+src.part+' em #'+destId+' ('+src.direction+').');
   const dest=matchesPart[0],{limits,...identity}=dest;seen.add(dest);
-  const scope=positionFor(dest,next.records,witness.gear)?.range==='outfit'?'outfit':'direction';
-  next=withPosition(next,dest,scope,position?.cycle??local.cycle,witness);
+  const current=positionFor(dest,next.records,witness.gear),xy=position?.cycle??local.cycle;
+  const sameBinding=sameItem&&matches(dest,src);
+  // Identical signed bindings already share phase edits. Preserve the original
+  // record, including its provenance, when only the equipment witness changes.
+  if(sameBinding&&current===position){count++;continue;}
+  if(sameItem&&!sameBinding&&local&&targetKeyMatches(dest,src))throw Error('A origem e o destino usam assinaturas incompatíveis para a mesma parte.');
+  const keepDefault=sameItem||src.body!==dest.body&&current?.range==='direction';
+  const scope=current?.range==='outfit'||sameBinding?'outfit':keepDefault?'pose':'direction';
+  next=withPosition(next,dest,scope,xy,witness);
+  if(sameBinding){count++;continue;}
   next.records=next.records.filter(r=>r.range||!targetKeyMatches(dest,r));
   if(local&&(Object.keys(local.phases).length||local.style)){
    if(Object.keys(local.phases).length||Object.keys(local.style?.phases||{}).length){
-    if(from.fps!==to.fps)throw Error('As fases têm ritmos diferentes em '+src.direction+'.');
-    remap??=phaseTransfer(from.clock,to.clock);
+    remap??=copyPhases(from,to,adaptPhases);
    }
    const transfer=rows=>Object.keys(rows).length?remap(rows,v=>structuredClone(v)):{};
-   next.records.push({...identity,cycle:[0,0],phases:transfer(local.phases),
+   next.records.push({...identity,witness,cycle:[0,0],phases:transfer(local.phases),
     ...(local.style?{style:{cycle:{...local.style.cycle},phases:transfer(local.style.phases)}}:{})});
   }
   count++;
@@ -185,7 +219,7 @@ function validate(m){
  if(![1,2,3].includes(m.schema)||m.space!==empty().space||!/^[a-f0-9]{40}$/.test(m.reference)||!Number.isSafeInteger(m.revision)||m.revision<0||!Array.isArray(m.records))throw Error('Versão ou coordenadas incompatíveis.');
  const seen=new Set();
  for(const r of m.records){
-  keys(r,[...fields,'source','cycle','phases',...(m.schema>=2&&Object.hasOwn(r,'style')?['style']:[]),...(m.schema===3&&Object.hasOwn(r,'range')?['range',...(Object.hasOwn(r,'witness')?['witness']:[])]:[])]);
+  keys(r,[...fields,'source','cycle','phases',...(m.schema>=2&&Object.hasOwn(r,'style')?['style']:[]),...(m.schema===3?['range','witness'].filter(k=>Object.hasOwn(r,k)):[])]);
   if(Object.hasOwn(r,'range')&&(!['pose','outfit','direction','motion'].includes(r.range)||r.range==='outfit'&&!r.witness||m.reference!==reference||r.style!==undefined||!object(r.phases)||Object.keys(r.phases).length))throw Error('Alcance ou versão do ajuste de posição incompatível.');
   if(r.witness!==undefined){
    const w=r.witness;keys(w,['role','gear','look','hide']);
@@ -266,6 +300,9 @@ function fits(d,box,w,h,sign){
  return true;
 }
 const intersect=(a,b)=>a?[Math.max(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[2],b[2]),Math.min(a[3],b[3])]:b;
+function inspectingPart(slot,part){
+ return !!active&&active.items.has(slot)&&(active.capture||active.offsets.has(JSON.stringify([slot,part,active.phase])));
+}
 function blit(ctx,slot,part,source,img,args,sign=1,original=null,underlay=null,ownerPart=part,sourceArgs=args){
  if(!active||!active.items.has(slot))return ctx.drawImage(img,...args);
  const {capture,phase,descriptors,make,offsets}=active;
@@ -306,7 +343,7 @@ function blit(ctx,slot,part,source,img,args,sign=1,original=null,underlay=null,o
    return;
   }
  }
- ctx.drawImage(original||img,...args);
+ if(typeof original==='function')original();else ctx.drawImage(original||img,...args);
 }
 // Material labels are encoded in the red channel of the signed skin map.
 function material(ctx,slot,part,source,original,mask,args,sign=1){
@@ -519,6 +556,6 @@ function session(r,player,options,make){
  return {visit,finish,configure,availableLayers,footFor,get targets(){return targets;},get moved(){return [...offsets.values()].some(v=>v[0]||v[1]||oriented(v.whole)||oriented(v.foot)||oriented(v.local)||v.layer!=='native');}};
 }
 function offset(slot,part){return active&&!active.capture?active.offsets.get(JSON.stringify([slot,part,active.phase]))||[0,0]:[0,0];}
-const api={empty,validate,slots,key,matches,targetKeyMatches,localRecord,gearOf,positionKey,positionFor,samePart,withPosition,legacyPositions,shareVerified,layerNames,footLabels,unavailableCopyRecord,copyItemDirection,mirrorRecord,styleAt,session,blit,material,layer,bodyPlane,offset,localClip,original:paint=>scoped(null,paint),get materialCache(){return active?.materialCache;},get active(){return !!active;}};
+const api={empty,validate,slots,key,matches,targetKeyMatches,localRecord,gearOf,positionKey,positionFor,samePart,withPosition,legacyPositions,shareVerified,layerNames,footLabels,unavailableCopyRecord,copyItemDirection,mirrorRecord,styleAt,session,inspectingPart,blit,material,layer,bodyPlane,offset,localClip,original:paint=>scoped(null,paint),get materialCache(){return active?.materialCache;},get active(){return !!active;}};
 root.MareHDPosition=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

@@ -83,8 +83,11 @@
 <div class="coords"><label>Rotação (°)<input id="angle" type="number" value="0" min="-180" max="180" step="1"></label><label>Tamanho (%)<input id="size" type="number" value="100" min="1" step="1"></label></div>
 <label><input id="flip" type="checkbox"> Espelhar item</label><label>Camada<select id="layer"></select></label>
 <div class="history" id="mirror-tools" hidden><button id="mirror-west" title="Copiar os ajustes de Leste para Oeste">Espelhar oeste</button><button id="mirror-east" title="Copiar os ajustes de Oeste para Leste">Espelhar leste</button></div>
-<details><summary>Copiar ajustes de outra peça</summary><label>Peça de origem<select id="copy-source"></select></label>
-<p>Copia as coordenadas, tamanho, rotação, espelho e camada de cada parte ajustada, em todas as fases e direções gravadas deste movimento.</p><button id="copy-item">Copiar movimento para esta peça</button></details>
+<details><summary>Copiar ajustes de outra peça ou animação</summary><label>Corpo de origem<select id="copy-body"><option value="current">Mesmo corpo</option><option value="male">Masculino</option><option value="female">Feminino</option></select></label>
+<label>Arma e classe da animação de origem<select id="copy-weapon"></select></label><label>Peça de origem<select id="copy-source"></select></label>
+<label><input type="checkbox" id="copy-adapt"> Adaptar fases à duração do destino</label>
+<p id="copy-help">Escolha uma origem com ajustes salvos neste movimento.</p>
+<p>Com a adaptação, cada fase do destino usa a posição proporcional no ciclo de origem. Um ciclo mais curto pode pular fases intermediárias.</p><button id="copy-item">Copiar movimento para esta peça</button></details>
 <p id="details"></p><div class="history"><button id="undo">Desfazer</button><button id="redo">Refazer</button><button id="reset">Restaurar parte</button></div>
 <details open><summary>Personagem de teste</summary><label>Classe<select id="role"></select></label><div id="appearance"></div><label><input type="checkbox" id="hide"> Ocultar capacete</label></details>
 </aside></main></body></html>

@@ -31,6 +31,65 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
    }
    throw Error('A prévia não atingiu os pixels esperados. '+await p.locator('#status').innerText());
   };
+  if(process.argv.includes('--copy-origins')){
+   const el=id=>p.locator('#'+id),wear=id=>p.locator('[data-id="'+id+'"]').click();
+   const ready=()=>p.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('attack-unarmed · south ·')&&document.querySelector('#part').value==='*',null,{timeout:90000});
+   const rows=()=>p.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).records);
+   const change=async(id,v)=>{await el(id).fill(String(v));await el(id).press('Tab');};
+   const copy=async(success=true)=>{
+    await el('copy-item').click();
+    await p.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('Movimento copiado')||document.querySelector('#status').dataset.error==='true',null,{timeout:90000});
+    assert.equal(await el('status').getAttribute('data-error'),String(!success),await el('status').innerText());
+   };
+   await el('slot').selectOption('coat');await el('remove').click();
+   await wear(117);await wear(25);await wear(8);await el('pin-slot').check();
+   await el('action').selectOption('attack-unarmed');await ready();
+   assert.equal(await el('tick').getAttribute('max'),'7');
+   await change('x',2);await el('scope').selectOption('phase');await el('tick').fill('7');await change('y',-2);await change('angle',4);
+   const original=await rows();await wear(3);await ready();assert.equal(await el('tick').getAttribute('max'),'11');
+   await el('tick').fill('11');const untouched=await pixels();
+   await el('copy-item').locator('..').locator('summary').click();await el('copy-weapon').selectOption('117');await el('copy-source').selectOption('8');
+   await copy(false);assert.match(await el('status').innerText(),/Adaptar fases/);assert.deepEqual(await rows(),original);
+   await el('copy-adapt').check();await copy();
+   assert.equal(await el('y').inputValue(),'-2');assert.equal(await el('angle').inputValue(),'4');
+   await waitPixels(untouched,false);assert.deepEqual((await rows()).filter(r=>r.weapon===117),original);
+   // Edit the male arm's registered metal without moving the hand under it.
+   await el('slot').selectOption('weapon');await wear(117);await ready();await el('tick').fill('7');
+   await el('before').check();const armOriginal=await pixels();await el('before').uncheck();await waitPixels(armOriginal);
+   await change('y',-2);await waitPixels(armOriginal,false);await el('undo').click();await waitPixels(armOriginal);await el('redo').click();
+   await wear(3);await ready();await el('copy-weapon').selectOption('117');await el('copy-source').selectOption('117');await copy();
+   await el('tick').fill('11');assert.equal(await el('y').inputValue(),'-2');await el('slot').selectOption('boots');
+   const male=await rows();
+   await el('look-gender').selectOption('feminino');await ready();await el('tick').fill('7');
+   const femaleOriginal=await pixels();await el('copy-body').selectOption('male');await el('copy-weapon').selectOption('3');
+   await el('copy-source').selectOption('8');await copy();assert.equal(await el('y').inputValue(),'-2');assert.equal(await el('angle').inputValue(),'4');
+   await waitPixels(femaleOriginal,false);assert.deepEqual((await rows()).filter(r=>r.body==='male'),male);
+   await el('undo').click();assert.deepEqual(await rows(),male);await el('redo').click();
+   // The same controls copy the weapon itself to the other class.
+   await el('slot').selectOption('weapon');await wear(117);await ready();
+   await el('scope').selectOption('cycle');await change('y',1);await el('scope').selectOption('phase');
+   await el('tick').fill('7');await change('angle',7);await wear(3);await ready();
+   await el('copy-body').selectOption('current');await el('copy-weapon').selectOption('117');await el('copy-source').selectOption('117');await copy();
+   await el('tick').fill('7');assert.equal(await el('angle').inputValue(),'7');await el('scope').selectOption('cycle');assert.equal(await el('y').inputValue(),'1');
+   const saved=await rows(),download=p.waitForEvent('download');await el('export').click();const file=await (await download).path();
+   assert.deepEqual(JSON.parse(await fs.readFile(file,'utf8')).records,saved);
+   await el('reset').click();await el('file').setInputFiles(file);await p.waitForFunction(n=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).records.length===n||document.querySelector('#status').dataset.error==='true',saved.length,{timeout:120000});
+   assert.equal(await el('status').getAttribute('data-error'),'false',await el('status').innerText());assert.deepEqual(await rows(),saved);
+   if(process.env.HD_MAP_CYCLES){
+    const cycles=[];
+    for(const [body,weapon] of [['masculino',117],['masculino',3],['feminino',3]]){
+     await el('look-gender').selectOption(body);await wear(weapon);await ready();
+     const hashes=await p.evaluate(async()=>{
+      const t=document.querySelector('#tick'),result=[];
+      for(let i=0;i<=+t.max;i++){t.value=i;t.dispatchEvent(new Event('input'));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));result.push(await __fingerprint(__benchImage));}return result;
+     });
+     assert.equal(hashes.length,body==='masculino'&&weapon===3?12:8);
+     cycles.push({body,role:await el('role').inputValue(),action:'attack-unarmed',direction:'south',weapon,boots:8,gear:{weapon,boots:8,gloves:25},hashes});
+    }
+    await compareInHunt(await p.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1'))),cycles,null);
+   }
+   assert.deepEqual(errors,[]);console.log('Ataque sul com Braço de Ferro e Luvas de Marfim: bota 8 entre classes (8 → 12 fases), masculino → feminino (12 → 8), arma → arma, pixels, histórico e JSON.');return;
+  }
   if(process.argv.includes('--copy')){
    const el=id=>p.locator('#'+id),wear=id=>p.locator('[data-id="'+id+'"]').click();
    const ready=d=>p.waitForFunction(d=>document.querySelector('#status').textContent.startsWith('walk · '+d+' ·')&&document.querySelector('#part').value==='*',d);
@@ -281,6 +340,10 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
    }
   }
   const approvals=cycles.length?await p.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1'))):manifest;
+  await compareInHunt(approvals,cycles,edited);
+  assert.deepEqual(errors,[]);
+  console.log('92 itens no catálogo; edição, comparação, arquivo, histórico, rascunho, troca de direção, celular e igualdade RGBA na caçada.');
+  async function compareInHunt(approvals,cycles,initial){
   const map=await context.newPage();map.on('pageerror',e=>errors.push(e.message));
   await map.route('**/hd-position-approved.json',r=>r.fulfill({json:approvals}));
   await map.route('**/game.js*',async route=>{
@@ -289,7 +352,7 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
    const hook=`window.__testPositionHunt=()=>{game.classId='sword';game.appearance96=MareCharacterAppearance.normalize({});game.equipment={coat:newItem(itemDefs[6],1,false),boots:newItem(itemDefs[148],1,false)};game.preferences={...game.preferences,hideHeadgear:false};enterHunt();autoPlay=false;autoSkills=false;world.hero.direction='south';};
     let probe=null;
     window.__positionPose=q=>{probe=q;window.__mapImage=null;game.classId=q.role;game.appearance96=MareCharacterAppearance.normalize({gender:q.body,hairStyle:q.hairStyle});
-     game.equipment=Object.fromEntries(Object.entries({weapon:q.weapon,coat:6,legs:22,boots:q.boots,gloves:159,head:q.head}).map(([s,id])=>[s,newItem(itemDefs[id],1,false)]));};
+     game.equipment=Object.fromEntries(Object.entries(q.gear||{weapon:q.weapon,coat:6,legs:22,boots:q.boots,gloves:159,head:q.head}).map(([s,id])=>[s,newItem(itemDefs[id],1,false)]));};
     window.__positionTick=t=>{probe.tick=t;window.__mapImage=null;};
     const draw=lobby96.draw.bind(lobby96);
     lobby96.draw=(ctx,p,o)=>{if(o.scene!=='hunt'||ctx.canvas.id!=='worldCanvas'||(!probe&&(o.action!=='idle'||o.direction!=='south')))return draw(ctx,p,o);
@@ -304,7 +367,7 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
   if(!await map.locator('#nextToAppearance').isVisible())await map.locator('#nextToClass').click();
   await map.locator('#nextToAppearance').click();await map.locator('#createCharacter').click();await map.locator('[data-confirm-accept]').click();
   await map.evaluate(()=>__testPositionHunt());await map.waitForFunction(()=>window.__mapImage,null,{timeout:90000});
-  assert.equal(await map.evaluate(()=>__fingerprint(__mapImage)),edited);
+  if(initial)assert.equal(await map.evaluate(()=>__fingerprint(__mapImage)),initial);
   await map.screenshot({path:path.join(dir,'mapa-ajustado.png')});
   for(const {hashes,...pose} of cycles){
    await map.evaluate(q=>__positionPose(q),{...pose,tick:0,count:hashes.length});
@@ -315,7 +378,7 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
    }
   }
   if(cycles.length)console.log(cycles.length+' ciclos comparados na cena da caçada, '+cycles.reduce((n,c)=>n+c.hashes.length,0)+' posições do relógio.');
-  assert.deepEqual(errors,[]);
-  console.log('92 itens no catálogo; edição, comparação, arquivo, histórico, rascunho, troca de direção, celular e igualdade RGBA na caçada.');
+  await map.close();
+  }
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

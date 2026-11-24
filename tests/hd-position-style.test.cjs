@@ -84,3 +84,36 @@ test('copiar para outra peça remapeia todas as fases, preserva a origem e rejei
  const third={...m.records[1],part:'unavailable',receiver:'elsewhere'};
  assert.throws(()=>A.copyItemDirection({...m,records:[...m.records,third]},from,to,'boots',8,9,gear,witness),/outra montagem/);
 });
+
+test('copie attack-unarmed entre armas e corpos, adaptando fases apenas a pedido',()=>{
+ const pose=(body,weapon,n)=>({fps:12,clock:Array.from({length:n},(_,phase)=>({phase})),footFor:()=>null,
+  targets:[{body,weapon,item:8,slot:'boots',part:'*',action:'attack-unarmed',direction:'south',
+   receiver:'rig-'+weapon,source:(body==='male'&&weapon===117?'a':'b').repeat(64)}]});
+ const from=pose('male',117,8),src=from.targets[0],gear={boots:8,weapon:117};
+ const original=A.withPosition(A.empty(),src,'direction',[2,1]);
+ original.records.push({...src,cycle:[0,0],phases:{7:[1,-3]},style:{cycle:{angle:8},phases:{7:{size:105}}}});
+ const before=structuredClone(original);
+ for(const [body,n] of [['male',12],['female',8]]){
+  const to=pose(body,3,n),dest=to.targets[0],w={gear:{boots:8,weapon:3},role:'brawler',hide:false,look:{gender:body==='male'?'masculino':'feminino'}};
+  if(n!==8)assert.throws(()=>A.copyItemDirection(original,from,to,'boots',8,8,gear,w));
+  const copy=A.validate(A.copyItemDirection(original,from,to,'boots',8,8,gear,w,{adaptPhases:true}));
+  assert.deepEqual(original,before);
+  for(const r of before.records)assert.ok(copy.records.some(x=>JSON.stringify(x)===JSON.stringify(r)));
+  assert.deepEqual(A.positionFor(dest,copy.records,w.gear).cycle,[2,1]);
+  const row=A.localRecord(dest,copy.records);assert.equal(row.body,body);assert.equal(row.weapon,3);
+  assert.deepEqual(row.phases[n-1],[1,-3]);assert.deepEqual(row.style.phases[n-1],{size:105});
+  assert.equal(row.style.cycle.angle,8);
+  assert.throws(()=>A.copyItemDirection(original,from,{...to,targets:[{...dest,action:'idle'}]},'boots',8,8,gear,w));
+ }
+});
+
+test('metal único do braço pode transferir ajustes para o único painel da luva',()=>{
+ const hand=(item,part)=>({body:'male',weapon:item,slot:'weapon',item,part,receiver:'rig-'+item,action:'attack-unarmed',direction:'south',source:'a'.repeat(64)});
+ const view=(id,parts)=>({targets:parts.map(p=>hand(id,p)),clock:[{phase:0}],fps:12,footFor:()=>null});
+ const arm=view(117,['*','contact-metal']),glove=view(3,['*','plate-1']);
+ const source=arm.targets[1],m={...A.empty(),records:[{...source,cycle:[1,0],phases:{0:[1,1]}}]};
+ const w={role:'brawler',gear:{weapon:3},look:{gender:'masculino'},hide:false};
+ const next=A.validate(A.copyItemDirection(m,arm,glove,'weapon',117,3,{weapon:117},w));
+ assert.deepEqual(A.localRecord(glove.targets[1],next.records).phases,{0:[1,1]});
+ assert.throws(()=>A.copyItemDirection(m,arm,view(3,['*','left-0','right-1']),'weapon',117,3,{weapon:117},w),/parte correspondente/);
+});
