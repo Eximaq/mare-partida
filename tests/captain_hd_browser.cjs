@@ -24,8 +24,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await page.locator('#characterName').fill('Navegante');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.waitForFunction(()=>__captainQA.game);
  await page.evaluate(()=>{
   const q=__captainQA,g=q.game;g.level=43;g.totalPlay=42540;g.stats.kills=2057;g.stats.damage=1365479;g.stats.goldEarned=98189;g.gold=1234;g.hierarchyTier=2;
-  for(const slot of ['weapon','head','necklace','coat','legs','boots','cloak','gloves','ring','belt','charm']){
-   const def=q.defs.findIndex(d=>d&&d.slot===slot&&!d.acquisitionBlocked&&(slot!=='weapon'||d.type===g.classId));if(def>=0)g.equipment[slot]=q.newItem(q.defs[def],4,false);
+  for(const slot of ['head','necklace','coat','legs','boots','cloak','gloves','ring','belt','charm']){
+   const def=q.defs.findIndex(d=>d&&d.slot===slot);if(def>=0)g.equipment[slot]=q.newItem(q.defs[def],4,false);
   }
   const fruit=q.defs.findIndex(d=>d?.fruitId==='akuma_mera_mera');if(fruit>=0)g.equipment.akuma_no_mi=q.newItem(q.defs[fruit],1,false);
   q.syncVfx();q.update();q.save();

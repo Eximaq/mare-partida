@@ -155,7 +155,7 @@ test("canonical inventory converts owned alpha copies once, preserves gold/XP an
     assert.equal(Object.keys(i.equipment).length, 13);
     assert.equal(i.equipment.visual_completo,null);
     assert.equal(i.equipment.weapon.def, 0);
-    assert.equal(i.inventory.length, 2);
+    assert.equal(i.inventory.length, 3);
     assert.equal(i.inventory.filter((x: any) => x.def === 0).length, 1);
     assert.equal(i.inventory.filter((x: any) => x.def === 6).length, 1);
     assert.equal(i.potions, 4);
@@ -166,7 +166,7 @@ test("canonical inventory converts owned alpha copies once, preserves gold/XP an
           (x: any) => x.id,
         ),
       ).size,
-      3,
+      4,
     );
     assert.equal((await f.send(f.body("items.initialize", {}, 1))).status, 409);
     assert.equal(
@@ -201,14 +201,12 @@ test("canonical inventory converts owned alpha copies once, preserves gold/XP an
     );
   }));
 
-test("fresh characters have only four potions; purchase replay cannot debit or mint twice", async () =>
+test("fresh original starter kit is granted exactly once and purchase replay cannot debit or mint twice", async () =>
   fixture(async (f) => {
     assert.equal((await f.send(f.body("items.initialize"))).status, 200);
     let o = await f.read();
     assert.equal(o.state.gold, "120");
-    assert.deepEqual(o.originalInventory.inventory, []);
-    assert(Object.values(o.originalInventory.equipment).every(item=>item===null));
-    assert.equal(o.originalInventory.potions, 4);
+    assert.equal(o.originalInventory.inventory.length, 1);
     await placeAtMerchant(f.pool, f.c.id);
     const purchase = f.body("potions.buy", {}, 1),
       responses = await Promise.all([f.send(purchase), f.send(purchase)]);
@@ -298,8 +296,7 @@ test("merchant gates potion purchases and Mana restores 25 percent with the shar
 test("original equip, lock, sale and unequip are owned-instance operations with original prices", async () =>
   fixture(async (f) => {
     assert.equal((await f.send(f.body("items.initialize"))).status, 200);
-    const boots = gear(8); // Already owned before the temporary ban.
-    await f.pool.query('UPDATE mare_game.game_inventory SET inventory=$2::jsonb WHERE character_id=$1',[f.c.id,JSON.stringify([boots])]);
+    const boots = (await f.read()).originalInventory.inventory[0];
     assert.equal(
       (await f.send(f.body("items.equip", { itemId: boots.id }, 1))).status,
       200,
@@ -387,8 +384,7 @@ test("original equip, lock, sale and unequip are owned-instance operations with 
 test("original forge uses persisted gear and server costs, is replay-safe, and rolls back failed operations", async () =>
   fixture(async (f) => {
     assert.equal((await f.send(f.body("items.initialize"))).status, 200);
-    const item = gear();
-    await f.pool.query("UPDATE mare_game.game_inventory SET equipment=jsonb_set(equipment,'{weapon}',$2::jsonb) WHERE character_id=$1",[f.c.id,JSON.stringify(item)]);
+    const item = (await f.read()).originalInventory.equipment.weapon;
     await f.pool.query("UPDATE mare_game.game_inventory SET materials=11 WHERE character_id=$1",[f.c.id]);
     await f.pool.query("UPDATE mare_game.character_progression SET gold=570 WHERE character_id=$1",[f.c.id]);
     const upgrade = f.body(
@@ -703,8 +699,8 @@ test("a full original bag permits a swap, rejects unequip and enforces class com
     assert.equal((await f.send(f.body("items.initialize"))).status, 200);
     const bag = [gear(2), ...Array.from({ length: 119 }, () => gear())];
     await f.pool.query(
-      "UPDATE mare_game.game_inventory SET inventory=$2::jsonb,equipment=jsonb_set(equipment,'{weapon}',$3::jsonb) WHERE character_id=$1",
-      [f.c.id, JSON.stringify(bag), JSON.stringify(gear())],
+      "UPDATE mare_game.game_inventory SET inventory=$2::jsonb WHERE character_id=$1",
+      [f.c.id, JSON.stringify(bag)],
     );
     assert.equal(
       (await f.send(f.body("items.unequip", { slot: "weapon" }, 1))).status,
@@ -807,8 +803,7 @@ test("runtime can execute original inventory commands but cannot rewrite its mig
 test("valid session and control for another owned character cannot equip or forge an instance from account A", async () =>
   fixture(async (f) => {
     assert.equal((await f.send(f.body("items.initialize"))).status, 200);
-    const item = gear();
-    await f.pool.query('UPDATE mare_game.game_inventory SET inventory=$2::jsonb WHERE character_id=$1',[f.c.id,JSON.stringify([item])]);
+    const item = (await f.read()).originalInventory.inventory[0];
     const c = await f.service.createCharacter(f.b.token, {
         name: "Other",
         classId: "sword",
@@ -862,8 +857,6 @@ test("a full potion stock refuses purchase as a conflict and preserves the walle
 test("original forge dismantles owned gear once with a stable balance across retries", async () =>
   fixture(async (f) => {
     assert.equal((await f.send(f.body("items.initialize"))).status, 200);
-    await f.pool.query("UPDATE mare_game.game_inventory SET inventory=$2::jsonb,equipment=jsonb_set(equipment,'{weapon}',$3::jsonb) WHERE character_id=$1",
-      [f.c.id,JSON.stringify([gear(8)]),JSON.stringify(gear())]);
     const original = (await f.read()).originalInventory;
     const id = original.inventory[0].id;
     const wrong = f.body("forge.execute", {operation:{type:"dismantle",itemIds:[id,original.equipment.weapon.id],expectedSeq:0}},1);
@@ -883,8 +876,8 @@ test("repair quote is authoritative and concurrent replay charges the wallet onl
   fixture(async (f) => {
     assert.equal((await f.send(f.body("items.initialize"))).status,200);
     const start=(await f.read()).originalInventory;
-    const equipped={...gear(),durability:50000,locked:true};
-    const bag={...gear(8),durability:0};
+    const equipped={...start.equipment.weapon,durability:50000,locked:true};
+    const bag={...start.inventory[0],durability:0};
     const equipment={...start.equipment,weapon:equipped};
     const inventory=[bag,...start.inventory.slice(1)];
     await f.pool.query("UPDATE mare_game.game_inventory SET inventory=$2::jsonb,equipment=$3::jsonb WHERE character_id=$1",[f.c.id,JSON.stringify(inventory),JSON.stringify(equipment)]);
@@ -905,15 +898,3 @@ test("repair quote is authoritative and concurrent replay charges the wallet onl
     assert.deepEqual(after.originalInventory.inventory[0],bag);
     assert.equal(after.originalInventory.materials,start.materials);
   }));
-
-test('the server issues only Botas do Corsário when the boot slot is fused, including after a replay',async()=>fixture(async f=>{
- assert.equal((await f.send(f.body('items.initialize'))).status,200);
- const owned=Array.from({length:5},()=>gear(0)), itemIds=owned.map(i=>i.id);
- await f.pool.query('UPDATE mare_game.game_inventory SET inventory=$2::jsonb,materials=100 WHERE character_id=$1',[f.c.id,JSON.stringify(owned)]);
- await f.pool.query('UPDATE mare_game.character_progression SET gold=500 WHERE character_id=$1',[f.c.id]);
- const command=f.body('forge.execute',{operation:{type:'fuseEquipment',itemIds,slot:'boots',expectedSeq:0}},1);
- const receipt=await f.send(command);assert.equal(receipt.status,200);assert.deepEqual(await f.send(command),receipt);
- const state=await f.read(), bag=state.originalInventory.inventory;
- assert.equal(bag.length,1);assert.deepEqual([bag[0].def,bag[0].rarity,bag[0].generation.source],[134,'uncommon','fusion']);
- assert.equal(state.originalInventory.equipment.boots,null);
-}));

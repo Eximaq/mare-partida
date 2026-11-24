@@ -343,14 +343,7 @@
     "id": "shura",
     "name": "Shura",
     "level": 84,
-    "area": "skypiea-02",
-    "xp": 3920,
-    "multipliers": {
-      "max_hp": 0.829857,
-      "physical_attack": 0.85097,
-      "physical_defense": 0.855272,
-      "magic_defense": 0.882749
-    }
+    "area": "skypiea-02"
   },
   "gendatsu": {
     "base_id": "cocox",
@@ -363,14 +356,7 @@
     "id": "gendatsu",
     "name": "Gendatsu",
     "level": 88,
-    "area": "skypiea-03",
-    "xp": 4050,
-    "multipliers": {
-      "max_hp": 0.745957,
-      "physical_attack": 0.77628,
-      "physical_defense": 0.782812,
-      "magic_defense": 0.826825
-    }
+    "area": "skypiea-03"
   },
   "ohm": {
     "base_id": "cocox",
@@ -383,13 +369,6 @@
     "id": "ohm",
     "name": "Ohm",
     "level": 95,
-    "area": "skypiea-04",
-    "xp": 4600,
-    "multipliers": {
-      "max_hp": 0.619036,
-      "physical_attack": 0.660894,
-      "physical_defense": 0.670994,
-      "magic_defense": 0.732022
-    }
+    "area": "skypiea-04"
   }
 }

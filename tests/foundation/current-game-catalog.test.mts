@@ -18,8 +18,7 @@ test("server and original browser rules expose 109 preserved definitions plus tw
     hakiProgression: require("../../haki-progression.js"),
   });
   const summary = {
-    // The historical checksum protects saved indices and stats, not this temporary flag.
-    items: c.items.slice(0,103).map(({acquisitionBlocked:_restriction,...original}:any)=>original),
+    items: c.items.slice(0,103),
     slots: [...c.inventorySlotsLeft, ...c.inventorySlotsRight],
     capacity: c.capacity,
     healerWeaponIndex: c.healerWeaponIndex,
@@ -34,9 +33,7 @@ test("server and original browser rules expose 109 preserved definitions plus tw
   assert.equal(server.items[187]?.requiredClass,"sword");
   assert.equal(server.items.length, 189);
   assert.equal(server.items[186]?.kind,"xp-boost");
-  assert.deepEqual(server.items.filter(i=>i.acquisitionBlocked===true).map(i=>i.defIndex),[8,9]);
-  assert.equal(server.items[134]?.equipmentFusionFor,"boots");
-  assert.equal(server.rulesHash,'7ca7ee214922a807fbc6f7191a02dabc62efc53f1a2a55e7b780bc5efa0341c8');
+  assert.equal(server.rulesHash,'73e8db5876c24d2ae1d6611965fb07031f6bfe00a4865ed973166fdeb27dd1aa');
   assert.deepEqual(c.items.slice(103,109),require('../../boss-dungeon-system.js').fragments);
   assert.equal(server.items.filter((i) => i.type === "akuma_no_mi").length, 30);
   assert.equal(server.slots.length, 13);
@@ -59,18 +56,4 @@ test("server catalog is deeply immutable; client-supplied changes cannot rewrite
     (c.items[0] as any).attack = 9999;
   }, TypeError);
   assert.equal(getGameCatalog().items[0]!.attack, 6);
-});
-
-test('all seven classes can deal damage at level one without equipped items',async()=>{
- const {deriveOriginalFighter,resolveOriginalRound}=await import('../../apps/game-server/src/gameplay/character.js');
- const catalog=getGameCatalog(),attributes={strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0};
- const inventory={catalogId:'original-game-v1',inventory:[],equipment:Object.fromEntries(catalog.slots.map(s=>[s,null])),materials:0,potions:4,forgeVersion:5,forgeSeq:0,forgeHistory:[]};
- for(const cls of ['brawler','sword','rogue','gunner','cyborg','strategist','healer']){
-  const f=deriveOriginalFighter(cls,'pirate',{level:1,version:0} as any,attributes,inventory as any);
-  assert.equal(f.rulesetId,'original-character-v1');
-  if(f.rulesetId!=='original-character-v1')throw Error(cls);
-  assert(f.maxHp>0&&f.attackMin>0,cls);
-  const r=resolveOriginalRound(f.maxHp,36,f,()=>.5);
-  assert(r.playerDamage>0&&r.enemyHp<36,cls);
- }
 });

@@ -7,8 +7,5 @@
   "bridgeDecks": 8,
   "terrainMatchingPixels": 31753830,
   "terrainUncoveredPixels": 31758612,
-  "connectedSampleCells": 22048,
-  "sceneSourceOpaquePixels": 34287616,
-  "sceneOpaquePixelDelta": 0,
-  "sceneSha256": "3053bb9df7826c1be60610595260e41c7b177555bab486d5781a9e76f264297a"
+  "connectedSampleCells": 22048
 }

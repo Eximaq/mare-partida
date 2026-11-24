@@ -1,6 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{chromium}=require('playwright');
-(async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{const page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[];page.on('pageerror',e=>errors.push(e.message));const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8').replace('function worldChange(area){','function worldChange(area){window.__voyageTravelCalls=(window.__voyageTravelCalls||0)+1;').replace("direction:'front'});syncZoanTransition();camera.update","direction:'front'});window.__voyageArrival=[world.hero.x,world.hero.y];syncZoanTransition();camera.update");const hook="  window.__impelQA={get preparedDraft(){return prisonPreparedDraft?.enemy},get game(){return game},set game(v){game=v},get world(){return world},get session(){return session},get run(){return typeof impelRun==='undefined'?null:impelRun},tick,step:tickSimulation,pause(){autoPlay=false;autoSkills=false},resume(){autoPlay=true},persist:persistImpelVictory,enter:enterImpelDown,claim:claimImpelMilestone,stats:getDerived,damage:outputDamage,nav:navigator,exit:returnLobby};window.__mareDiagnostics=";await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source.replace('  window.__mareDiagnostics=',hook)}));await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8152/?dev=1');await page.waitForFunction(()=>window.__impelQA);await page.locator('#characterName').fill('Impel QA');await page.locator('#nextToClass').click();await page.locator('#classStep').waitFor({state:'visible'});await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.waitForFunction(()=>__impelQA.game);await page.evaluate(()=>{const q=__impelQA;q.game.level=99;q.game.attributes.strength=400;q.game.hp=q.stats().maxHP;q.game.impelDown={version:1,cleared:0,claimed:[],options:{autoAdvance:false,pauseBeforeBoss:true}};});
+(async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{const page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[];page.on('pageerror',e=>errors.push(e.message));const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8').replace('function worldChange(area){','function worldChange(area){window.__voyageTravelCalls=(window.__voyageTravelCalls||0)+1;');const hook="  window.__impelQA={get preparedDraft(){return prisonPreparedDraft?.enemy},get game(){return game},set game(v){game=v},get world(){return world},get session(){return session},get run(){return typeof impelRun==='undefined'?null:impelRun},tick,step:tickSimulation,pause(){autoPlay=false;autoSkills=false},resume(){autoPlay=true},persist:persistImpelVictory,enter:enterImpelDown,claim:claimImpelMilestone,stats:getDerived,damage:outputDamage,nav:navigator,exit:returnLobby};window.__mareDiagnostics=";await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source.replace('  window.__mareDiagnostics=',hook)}));await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8152/?dev=1');await page.waitForFunction(()=>window.__impelQA);await page.locator('#characterName').fill('Impel QA');await page.locator('#nextToClass').click();await page.locator('#classStep').waitFor({state:'visible'});await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.waitForFunction(()=>__impelQA.game);await page.evaluate(()=>{const q=__impelQA;q.game.level=99;q.game.attributes.strength=400;q.game.hp=q.stats().maxHP;q.game.impelDown={version:1,cleared:0,claimed:[],options:{autoAdvance:false,pauseBeforeBoss:true}};});
 await page.waitForTimeout(1400);await page.setViewportSize({width:1672,height:990});
 const open=async(kind)=>{await page.evaluate(()=>{if(__mareDiagnostics().map.id!=='lobby')__impelQA.exit();});await page.keyboard.press('m');await page.locator('[data-quick-mode='+kind+']').click();};
 const map=async(region='east-blue')=>{await open('map');if(region!=='east-blue')await page.locator('[data-voyage-region='+region+']').click();};
@@ -18,7 +18,7 @@ for(const region of catalog.regions){
   assert.equal(await page.locator('.dungeon-range strong').textContent(),i.recommended[0]===i.recommended[1]?String(i.recommended[0]):i.recommended.join('–'));
   assert((await page.locator('.voyage-adversary').textContent()).includes(i.monster.name));
   assert.equal(await page.evaluate(()=>__impelQA.game.area),'beach','inspection never travels');
-  assert.equal(await page.locator('.dungeon-details .voyage-location').getAttribute('src'),i.thumbnail??'assets/ui/voyage-hd/'+i.id+'.png');
+  assert.equal(await page.locator('.dungeon-details .voyage-location').getAttribute('src'),'assets/ui/voyage-hd/'+i.id+'.png');
  }
 }
 await page.evaluate(()=>__impelQA.game.level=1);
@@ -27,29 +27,12 @@ assert(await page.locator('[data-travel-island]').isDisabled());
 await page.locator('[data-travel-island]').dispatchEvent('click');
 assert.equal(await page.evaluate(()=>__impelQA.game.area),'beach');
 await page.evaluate(()=>__impelQA.game.level=99);
-// Observe the actual canvas immediately after the map renderer paints blue sky,
-// before weather, players and HUD are drawn. The same point remains blocked.
-await page.evaluate(()=>{
-  const render=MareSkypiea.ground;
-  MareSkypiea.ground=function(ctx,camera,w,h){
-   render.call(this,ctx,camera,w,h);
-   if(!this.image?.naturalWidth)return;
-   const x=1400-Math.round(camera.x),y=2846-Math.round(camera.y);
-   if(x<0||x>=w||y<0||y>=h)return;
-   const [r,g,b,a]=ctx.getImageData(x,y,1,1).data;
-   window.__skypieaGround={id:__mareDiagnostics().map.id,painted:a===255&&r<=5&&g>=122&&g<=130&&b>=245};
-  };
-});
 for(const i of catalog.islands){
  await map(i.region);await page.locator('[data-island="'+i.id+'"]').click();
  if(i.id==='dawn'){await page.locator('[data-travel-island]').evaluate(b=>{b.dispatchEvent(new MouseEvent('click',{bubbles:true}));b.dispatchEvent(new MouseEvent('click',{bubbles:true}));});assert.equal(await page.evaluate(()=>window.__voyageTravelCalls),1,'duplicate click only travels once');}else await page.locator('[data-travel-island]').click();
  assert.equal(await page.evaluate(()=>__impelQA.game.area),i.area);
  assert(await page.locator('#panelOverlay').evaluate(e=>e.classList.contains('hidden')));
  await page.evaluate(()=>__impelQA.pause());
- if(i.region==='skypiea'){
-  await page.waitForFunction(id=>window.__skypieaGround?.id===id&&window.__skypieaGround.painted,i.area);
-  assert.deepEqual(await page.evaluate(()=>{const q=__impelQA;return [...window.__voyageArrival,q.nav().walkable(1400,2846)];}),[1554,2846,false]);
- }
 }
 await map();await page.waitForTimeout(3700);
 for(const [width,height]of [[1920,1080],[1672,990],[1366,768],[1280,720],[393,851]]){
@@ -127,5 +110,5 @@ assert.equal(await page.evaluate(()=>__impelQA.game.impelDown.cleared),8);assert
 await page.setViewportSize({width:1672,height:990});
 await page.screenshot({path:process.env.MARE_QA_DIR+'/prison-available.png'});
 assert.deepEqual(errors,[]);
-console.log('Voyage HD: all '+catalog.islands.length+' destinations and travel gates, all four Skypiea scenes, 3 regions, 5 sizes, no overlapping cards, official sprites, persistent preview/battle identity, boss/locked/completed and storage retry passed.');
+console.log('Voyage HD: all 14 destinations and travel gates, 3 regions, 5 sizes, no overlapping cards, official sprites, persistent preview/battle identity, boss/locked/completed and storage retry passed.');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1});

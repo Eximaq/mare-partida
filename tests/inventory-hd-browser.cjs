@@ -168,7 +168,7 @@ assert.equal(await p.locator('.op-grid > .op-item:not(.empty)').count(),1);
 assert.equal(await p.locator('.op-grid > .op-item.empty').count(),fullPage-1);
 await verifySlotSpace();
 await p.screenshot({path:out+'/inventory-partial.png'});
-await p.evaluate(()=>{const q=__invQA;const eligible=q.defs.filter(d=>!d.acquisitionBlocked);q.game.inventory=Array.from({length:120},(_,n)=>q.newItem(eligible[n%eligible.length],20));q.ui.page=0;q.renderPanel()});assert.equal(await p.locator('.op-bag-capacity b').innerText(),'120 / 120');assert(await p.locator('[data-inv-page="1"]').first().isEnabled());
+await p.evaluate(()=>{const q=__invQA;q.game.inventory=Array.from({length:120},(_,n)=>q.newItem(q.defs[n%q.defs.length],20));q.ui.page=0;q.renderPanel()});assert.equal(await p.locator('.op-bag-capacity b').innerText(),'120 / 120');assert(await p.locator('[data-inv-page="1"]').first().isEnabled());
 // ResizeObserver finishes pagination on a later animation frame. Wait for the
 // measured grid and rendered page to agree before capturing a resize anchor.
 async function settleGrid(){
