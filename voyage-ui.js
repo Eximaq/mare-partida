@@ -9,7 +9,7 @@
  const range=r=>r[0]===r[1]?String(r[0]):r.join('–');
  const coords={
   'east-blue':[[24,27],[70,27],[29,47],[74,47],[24,67],[69,67],[31,87],[75,87]],
-  skypiea:[[50,50]],
+  skypiea:[[25,35],[75,35],[25,68],[75,68]],
   alabasta:[[25,28],[69,28],[33,54],[75,54],[27,80],[69,80]]
  };
  const names={'east-blue':'Mares infinitos, grandes aventuras.',alabasta:'Areias, intrigas e um reino em crise.',skypiea:'Além das nuvens, novos horizontes.'};
@@ -17,7 +17,7 @@
   return `<div class="expedition-monster ${cls}" data-state="loading"><canvas width="480" height="320" data-expedition-monster="${E(type)}" role="img" aria-label="${E(label)}"></canvas><span class="expedition-art-status" role="status">Carregando adversário…</span></div>`;
  }
  function location(i,cls=''){
-  return `<img class="voyage-location ${cls}" src="${art(i.id)}" alt="Paisagem de ${E(i.name)}" data-location-art>`;
+  return `<img class="voyage-location ${cls}" src="${E(i.thumbnail??art(i.id))}" alt="Paisagem de ${E(i.name)}" data-location-art>`;
  }
  function voyage({region,regions,islands,selected,game,canTravel,scene}){
   const points=coords[region.id]||[],type=selected?.monster?.src?.match(/sprites-combat-v2\/([^/]+)\//)?.[1]||(selected?.id==='dawn'?'cesar':null);

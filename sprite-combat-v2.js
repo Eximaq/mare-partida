@@ -22,9 +22,10 @@
  }
  function resolve(key,action='idle',direction='front'){
   const entry=data()[key];if(!entry)return null;
-  // The owner intentionally uses the native South reaction for damage from every facing.
+  // Keep legacy South-only reactions unless this actor has authored directional Hurt.
   const nativeFacing=directions[direction]||direction;
-  const facing=action==='hurt'?((entry.dungeonBoss&&entry.clips.hurt?.[nativeFacing])?nativeFacing:'south'):nativeFacing;
+  const directionalHurt=(entry.dungeonBoss||entry.directionalHurt)&&entry.clips.hurt?.[nativeFacing];
+  const facing=action==='hurt'&&!directionalHurt?'south':nativeFacing;
   const aliases={dash:'special',charge:'special',finish:'special',headbutt:'special',bite:'special',tail:'special-2'};
   action=key==='phoenix'&&action==='idle'?'walk':key==='phoenix'&&action==='dash'?'dash':aliases[action]||action;
   // Authored locomotion aliases remain valid. Playable forms never borrow an unrelated action.

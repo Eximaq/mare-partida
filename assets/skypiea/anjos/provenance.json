@@ -1,0 +1,11 @@
+{
+  "sourceArchiveSha256": "500e152b17234f3f7645039054338550c40ec0899ebf14e7165475c1ac94cbb0",
+  "mapId": "296cc51b-1db0-467f-b04e-8c0640b92291",
+  "width": 7616,
+  "height": 4736,
+  "objects": 137,
+  "bridgeDecks": 8,
+  "terrainMatchingPixels": 31753830,
+  "terrainUncoveredPixels": 31758612,
+  "connectedSampleCells": 22048
+}
