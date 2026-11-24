@@ -4136,13 +4136,14 @@ function applySceneHudLayout(){
       finally{onlineCreationBusy=false;}return;
     }
     const editing=editingCharacter&&game,changed=editing&&game.classId!==selectedClass;
-    if(changed&&game.equipment.weapon&&game.inventory.length>=BAG_CAPACITY){$('creationError').textContent='Libere um espaço na mochila para guardar sua arma atual antes de trocar a classe.';return;}
+    const owned=changed?game.inventory.findIndex(i=>itemDefs[i.def]?.slot==='weapon'&&itemDefs[i.def]?.type===selectedClass):-1;
+    if(changed&&owned<0&&game.equipment.weapon&&game.inventory.length>=BAG_CAPACITY){$('creationError').textContent='Libere um espaço na mochila para guardar sua arma atual antes de trocar a classe.';return;}
     let candidate=editing?JSON.parse(JSON.stringify(game)):createGame(name,selectedClass);
     candidate.name=name;candidate.factionId=selectedFaction;candidate.classId=selectedClass;
     if(changed){
-      const old=candidate.equipment.weapon;if(old)candidate.inventory.push(old);
-      const owned=candidate.inventory.findIndex(i=>itemDefs[i.def]?.slot==='weapon'&&itemDefs[i.def]?.type===selectedClass);
+      const old=candidate.equipment.weapon;
       candidate.equipment.weapon=owned<0?null:candidate.inventory.splice(owned,1)[0];
+      if(old)candidate.inventory.push(old);
     }
     candidate=MareHierarchy.migrate(candidate);candidate.paperDollLook={...creationLookDraft,hair:creationAppearanceDraft.hairStyle==='none'?'bald':'short-black'};
     const d=getDerived(candidate,null);candidate.hp=Math.min(d.maxHP,Math.max(1,candidate.hp));candidate.energy=Math.min(d.maxEnergy,Math.max(0,candidate.energy));
