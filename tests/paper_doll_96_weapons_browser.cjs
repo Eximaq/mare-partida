@@ -18,6 +18,7 @@ assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32'
  const errors=[];
  if(output)await fs.mkdir(output,{recursive:true});
  if(materialsOnly&&combatOnly)throw Error('Choose either --materials-only or --combat-only');
+ if(output)await fs.mkdir(output,{recursive:true});
  if(!combatOnly){
  const p=await browser.newPage();p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.text().startsWith('weapons-progress:'))console.log(m.text());});await p.goto(new URL('tools/paper-doll-96-v3/',origin).href);await p.waitForFunction(()=>window.__review96v3);
  const audit=await p.evaluate(async({materialsOnly,otherClasses})=>{
@@ -105,19 +106,24 @@ if(!heroAttack(m))throw Error('Attack rejected '+JSON.stringify({classId:game.cl
  let fights=0,kills=0;const results=[];
  const ids=selectedIds||(otherClasses?[2,3,4,5,14,15,16,17,31,32]:[0,1,12,13,67,68,69,70,71,72,73,74]);
  for(const body of ['masculino','feminino'])for(const id of ids){
-  const equipped=await game.evaluate(async({body,id})=>{const result=__weaponQA.equip(id),r=__weaponQA.r;if(!r.snapshot().rehearsal)__weaponQA.g.appearance96={...MareCharacterAppearance.read(__weaponQA.g),gender:body};r.setDraft('body',body);r.setDraft('kit','sample-b');r.apply(__weaponQA.g);if(!await r.ensure(__weaponQA.g))throw Error('Equipment composition failed: '+JSON.stringify(r.snapshot()));return result;},{body,id});assert.equal(equipped.equipped,id);
+  const equipped=await game.evaluate(({body,id})=>{const result=__weaponQA.equip(id),r=__weaponQA.r;if(!r.snapshot().rehearsal)__weaponQA.g.appearance96={...MareCharacterAppearance.read(__weaponQA.g),gender:body};r.setDraft('body',body);r.setDraft('kit','sample-b');r.apply(__weaponQA.g);return result;},{body,id});assert.equal(equipped.equipped,id);
   await game.waitForFunction(()=>__weaponQA.prepareMap(),null,{timeout:90000});
   const result=await game.evaluate(()=>__weaponQA.fight());assert(result.damage>0);assert(result.hits.length>0);assert(result.hits.every(h=>h.weapon==='weapon-'+id&&h.state==='rendered'&&Number.isInteger(h.frame)),JSON.stringify({body,id,result}));assert(['native-hd','rework-default-hd','native96'].includes(result.last?.renderer),'combat uses the replacement renderer');if(result.last.renderer==='native96')assert(result.hits.every(hit=>!hit.visualWeaponMissing));else assert.equal(result.last.physicalScale,105/374);assert(result.frames.some(Number.isInteger),'authored HD frames must actually render, not only deal damage');if(result.ranged){assert(result.releases.length>0,'projectile or beam emitted');for(const release of result.releases){assert(Number.isFinite(release.origin.x)&&Number.isFinite(release.origin.y),'gameplay projectile has a finite origin');if(otherClasses&&release.expected){assert(Math.abs(release.origin.x-release.expected.x)<.001&&Math.abs(release.origin.y-release.expected.y)<.001,'gameplay emitter retains its registered origin (not a claim of visual weapon presence)');}}}assert(result.frames.filter(Number.isInteger).length>=2,'HD animation must advance beyond one frame');assert.equal(await game.evaluate(()=>__weaponQA.g.equipment.weapon?.def),id,'rendering cannot unequip or substitute the saved weapon');results.push({body,id,damage:result.damage,hits:result.hits,releases:result.releases,render:result.last});fights++;console.log('weapons-combat:'+body+':'+id);
  }
- for(const id of selectedIds?[]:otherClasses?[4,15]:[70,74]){await game.evaluate(async id=>{__weaponQA.equip(id);await __weaponQA.r.ensure(__weaponQA.g);},id);await game.waitForFunction(()=>__weaponQA.prepareMap(),null,{timeout:90000});for(let i=0;i<10;i++){const result=await game.evaluate(()=>__weaponQA.fight(true));kills+=result.kills;}}
+ for(const id of selectedIds?[]:otherClasses?[4,15]:[70,74]){await game.evaluate(id=>__weaponQA.equip(id),id);await game.waitForFunction(()=>__weaponQA.prepareMap(),null,{timeout:90000});for(let i=0;i<10;i++){const result=await game.evaluate(()=>__weaponQA.fight(true));kills+=result.kills;}}
  assert.equal(kills,selectedIds?0:20);
- await game.evaluate(async()=>{__weaponQA.unequip();await __weaponQA.r.ensure(__weaponQA.g);});await game.waitForFunction(()=>__weaponQA.prepareMap(),null,{timeout:90000});const unarmed=await game.evaluate(()=>__weaponQA.fight());assert(unarmed.damage>0&&unarmed.hits.length>0,'unarmed gameplay still damages target');assert(unarmed.hits.every(h=>h.action==='attack-unarmed'||h.renderer==='native-hd'),'unarmed rework fallback uses the punch action');
+ await game.evaluate(()=>__weaponQA.unequip());await game.waitForFunction(()=>__weaponQA.prepareMap(),null,{timeout:90000});const unarmed=await game.evaluate(()=>__weaponQA.fight());assert(unarmed.damage>0&&unarmed.hits.length>0,'unarmed gameplay still damages target');assert(unarmed.hits.every(h=>h.action==='attack-unarmed'||h.renderer==='native-hd'),'unarmed rework fallback uses the punch action');
  const natural=[];if(otherClasses&&!selectedIds){
   // Use a level-25 fighter so this equipment soak measures rendering, not the beginner difficulty curve.
   // Respawn uses wall dates; advance those with the accelerated simulation.
   let naturalTime=Date.now();await game.clock.setFixedTime(naturalTime);
   for(const id of [2,4,14,16,31]){
-   await game.evaluate(async id=>{__weaponQA.equip(id);await __weaponQA.r.ensure(__weaponQA.g);},id);const before=await game.evaluate(()=>__weaponQA.startNatural());await game.waitForFunction(()=>__weaponQA.prepareMap(),null,{timeout:90000});let result,steps=0;
+   // Exercise the on-demand map request after equip. A rehearsal preview promise
+   // belongs to another consumer and can be discarded during the next hunt.
+   const equipped=await game.evaluate(id=>__weaponQA.equip(id),id);assert.equal(equipped.equipped,id);
+   const before=await game.evaluate(()=>__weaponQA.startNatural());
+   await game.waitForFunction(id=>__weaponQA.g.equipment.weapon?.def===id&&__weaponQA.prepareMap(),id,{timeout:90000});
+   let result,steps=0;
    do{naturalTime+=10000;await game.clock.setFixedTime(naturalTime);result=await game.evaluate(()=>__weaponQA.naturalStep());steps++;}while(result.kills-before.kills<20&&steps<60&&result.deaths===before.deaths);
    assert(result.kills-before.kills>=20,JSON.stringify({id,before,result,steps}));assert.equal(result.deaths,before.deaths,'twenty consecutive native-spawn kills');assert(result.xp>before.xp);assert(result.hp>0);assert(result.spawns>=20);assert(result.cache.images<=192&&result.cache.imageBytes<=8*1024*1024&&result.cache.bundles<=2&&result.cache.peakLoads<=6,JSON.stringify({id,steps,cache:result.cache}));
    natural.push({id,kills:result.kills-before.kills,xp:result.xp-before.xp,level:result.level,spawns:result.spawns,simulatedSeconds:steps*10,wallMsPerBatch:result.wallMs,heap:result.heap});console.log('weapons-natural:'+id+':'+(result.kills-before.kills));

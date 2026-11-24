@@ -61,3 +61,56 @@ test('world transaction rolls back position, version and receipt on storage fail
  await new Promise(r=>setTimeout(r,450));const first=(await a.read()).world;await new Promise(r=>setTimeout(r,100));assert.deepEqual((await a.read()).world.position,first.position);assert.equal(first.path.length,0);
  await assert.rejects(a.send(await a.input('world.move',{x:1504,y:1440})),{code:'control_conflict'});
 }));
+
+test('server travel enforces all four Skypiea minimums and spawns on the chosen authored map',async()=>authDatabase(async({service,pool})=>{
+ const a=await actor(service);
+ const {createRequire}=await import('node:module');
+ const rules=createRequire(import.meta.url)('../../world-catalog.cjs').load();
+ await a.send(await a.input('world.initialize'));
+ await a.send(await a.input('battle.start'));
+ for(const [islandId,min,type,level] of [['skypiea-01',75,'satori',77],['skypiea-02',80,'shura',84],['skypiea-03',85,'gendatsu',88],['skypiea-04',90,'ohm',95]] as const){
+  const setLevel=(level:number)=>pool.query('UPDATE mare_game.character_progression SET level=$2 WHERE character_id=$1',[a.c.id,level]);
+  await setLevel(min-1);
+  const before=await a.read();
+  await assert.rejects(a.send(await a.input('world.travel',{islandId})),{code:'world_level_required'});
+  const afterRejected=await a.read();
+  assert.equal(afterRejected.world.mapId,before.world.mapId);
+  assert.deepEqual(afterRejected.world.position,before.world.position);
+  assert.equal(afterRejected.state.version,before.state.version);
+  await setLevel(min);
+  const moved=await a.send(await a.input('world.travel',{islandId}));
+  assert.equal(moved.world.mapId,islandId);assert.equal(moved.world.area,islandId);
+  assert.deepEqual(moved.world.position,{...rules.navigation(islandId).map.spawn});
+  assert.deepEqual(moved.world.path,[]);
+  assert.equal(moved.world.rulesHash,rules.rulesHash);
+  const battle=(await a.read()).battle;assert.equal(battle.area,islandId);
+  assert(battle.mobs.length>0&&battle.mobs.every((m:any)=>m.type===type&&m.level===level&&m.source==='world'));
+ }
+ await a.send(await a.input('world.return'));
+ assert.equal((await a.read()).world.mapId,'lobby');
+}));
+
+test('Skypiea world migration moves only the audited old island and retains unrelated routes',async()=>authDatabase(async({service,pool})=>{
+ const a=await actor(service),b=await actor(service),c=await actor(service);
+ for(const p of [a,b,c])await p.send(await p.input('world.initialize'));
+ const previous='af897f7bc7334c34b65078ee6cf34b917dd9e176a2b6cbedea6a97c0a7a314d9',unknown='f'.repeat(64);
+ const seed=(id:string,hash:string,mapId:string,area:string|null)=>pool.query(
+  "UPDATE mare_game.character_world SET rules_hash=$2,map_id=$3,area=$4,x=1392,y=1968,path='[{\"x\":1456,\"y\":1968}]',speed=150,motion_until=started_at+interval '30 seconds' WHERE character_id=$1",
+  [id,hash,mapId,area]);
+ await seed(a.c.id,previous,'skypiea-01','skypiea-01');
+ await seed(b.c.id,previous,'lobby',null);
+ await seed(c.c.id,unknown,'skypiea-01','skypiea-01');
+ const {createRequire}=await import('node:module'),{readFile}=await import('node:fs/promises');
+ const rules=createRequire(import.meta.url)('../../world-catalog.cjs').load();
+ const sql=await readFile(new URL('../../apps/game-server/migrations/0061_skypiea_multi_maps.sql',import.meta.url),'utf8');
+ await pool.query(sql);
+ const rows=new Map((await pool.query('SELECT * FROM mare_game.character_world')).rows.map(row=>[row.character_id,row]));
+ const oldSky=rows.get(a.c.id),other=rows.get(b.c.id),rejected=rows.get(c.c.id),spawn=rules.maps['skypiea-01'].spawn;
+ assert.equal(oldSky.map_id,'skypiea-01');assert.equal(oldSky.area,'skypiea-01');
+ assert.equal(oldSky.rules_hash,rules.rulesHash);
+ assert.deepEqual([oldSky.x,oldSky.y,oldSky.speed,oldSky.path],[spawn.x,spawn.y,0,[]]);
+ assert.equal(oldSky.motion_until.getTime(),oldSky.started_at.getTime());
+ assert.equal(other.rules_hash,rules.rulesHash);
+ for(const row of [other,rejected])assert.deepEqual([row.x,row.y,row.speed,row.path],[1392,1968,150,[{x:1456,y:1968}]]);
+ assert.equal(rejected.rules_hash,unknown);
+}));

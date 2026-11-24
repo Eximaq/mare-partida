@@ -10,7 +10,7 @@
  function regions(id){if(cache.has(id))return cache.get(id);let items=[];
   const imported=root.MareMapExports?.get(id);
   if(imported)items=imported.props.map(p=>({...p,type:'export',mapId:id,tall:p.h>56}));
-  else if(id==='skypiea-01'&&root.MareSkypiea)items=root.MareSkypiea.props.filter(p=>!p.cloud).map(p=>({...p,type:'sky',tall:p.h>96}));
+  else if(root.MareSkypiea?.has(id))items=root.MareSkypiea.props.filter(p=>!p.cloud).map(p=>({...p,type:'sky',tall:p.h>96}));
   else if(id==='lobby'&&root.MareLobby){items=root.MareLobby.depthObjects.map(p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,base:p.pivotY,tall:p.h>72,type:'lobby',assetId:p.assetId}));}
   else if(root.MareAlubarna?.worlds[id])items=root.MareAlubarna.props.filter(p=>p.h>40).map(p=>({...p,tall:p.h>96,type:'alubarna'}));
   else if(id==='alabasta'&&root.MareAlabasta)items=root.MareAlabasta.props.filter(p=>p.h>40).map(p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,base:p.base,tall:p.h>96,type:'alabasta',assetId:p.assetId}));

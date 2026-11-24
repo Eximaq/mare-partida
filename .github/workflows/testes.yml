@@ -30,20 +30,26 @@ jobs:
           python3 tools/codex_snapshot.py --area game --compare HEAD > /dev/null
       - name: Materializar índices do rework
         run: python3 tools/materialize_native_indexes.py
+      - name: Exportar o jogo com os registros de roupa e arma
+        run: python3 tools/build_pages.py
       - name: Regressao de jogo
         run: |
+          failed=0
           for file in tests/*.test.cjs; do
             # Browser E2E requires Playwright + running server; it is not a standalone Node test.
             if [ "$file" = "tests/supa-browser.test.cjs" ]; then
               echo "SKIP $file (browser E2E; requires Playwright + test server)"
               continue
             fi
-            node "$file"
+            case "$file" in
+              tests/rework-*-world-bundle.test.cjs|tests/rework-eleventh-world.test.cjs|tests/rework-wardrobe-map-action.test.cjs|tests/rework-exact-boots-gloves.test.cjs) HD_PUBLISHED_ROOT="$GITHUB_WORKSPACE/dist" node "$file" || failed=1 ;;
+              *) node "$file" || failed=1 ;;
+            esac
           done
+          exit "$failed"
       - name: Verificar site estatico
         run: |
           python3 tests/paper_doll_pages_test.py
-          python3 tools/build_pages.py
           python3 tests/production_pages_test.py
           python3 tests/portal_build_test.py
           python3 tools/build_portal.py

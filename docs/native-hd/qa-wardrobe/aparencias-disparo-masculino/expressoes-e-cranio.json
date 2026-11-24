@@ -1,0 +1,114 @@
+{
+  "comando": "node tests/rework-firearm-eye-expressions.cjs",
+  "comandoMapa": "node tests/rework-independent-world-browser.cjs --firearm-eye-expressions",
+  "armas": [
+    4,
+    5,
+    113,
+    114,
+    115,
+    116
+  ],
+  "direcoes": [
+    "south",
+    "north",
+    "east",
+    "west"
+  ],
+  "selecao": {
+    "contextosPorAparencia": 24,
+    "cabeloCurtoRostoCalmo": {
+      "antes": 1,
+      "depois": 24
+    },
+    "semCabeloRostoOriginal": {
+      "antes": 0,
+      "depois": 24
+    },
+    "cabeloOriginalRostoCalmo": {
+      "depois": 24
+    }
+  },
+  "comparacao": {
+    "poses": 24,
+    "fases": 166,
+    "pixelsDiferentesSomenteNasRegioesDosOlhos": 38942,
+    "olhosPintadosDeCostas": 0,
+    "fasesComProvaDeCranioSemCabelo": 27,
+    "pixelsDeCabeloAntigoLiberados": 58737,
+    "amostrasExatasDaPalpebraCalma": 2480,
+    "controleV5": "115 + 151 + 157, cabelo espetado preto, olhos azuis, pele clara, expressão original. Rota rifle115-v5-south-native-layers, cinco estados."
+  },
+  "mapa": {
+    "ciclos": [
+      [
+        "115",
+        "south",
+        "hair-cropped",
+        178,
+        "visível"
+      ],
+      [
+        "114",
+        "east",
+        "none",
+        19,
+        "visível"
+      ],
+      [
+        "114",
+        "east",
+        "none",
+        19,
+        "oculto"
+      ],
+      [
+        "114",
+        "east",
+        "none",
+        null,
+        "retirado"
+      ]
+    ],
+    "totalQuadros": 32,
+    "sha256ElmoOcultoERetirado": "c1ad061c9e4f67d0c8e65f3ed135fadf820c70245f3ac02c1ea5597c23417344",
+    "erros": [],
+    "observacoes": [
+      {
+        "caso": "disparo-expressao-115-south-com-elmo",
+        "acao": "attack-firearm",
+        "direcao": "south",
+        "desenhado": true,
+        "omitidos": []
+      },
+      {
+        "caso": "disparo-expressao-115-south-retirado",
+        "acao": "attack-firearm",
+        "direcao": "south",
+        "desenhado": true,
+        "omitidos": []
+      },
+      {
+        "caso": "disparo-expressao-114-east-com-elmo",
+        "acao": "attack-firearm",
+        "direcao": "east",
+        "desenhado": true,
+        "omitidos": []
+      },
+      {
+        "caso": "disparo-expressao-114-east-elmo-oculto",
+        "acao": "attack-firearm",
+        "direcao": "east",
+        "desenhado": true,
+        "omitidos": []
+      },
+      {
+        "caso": "disparo-expressao-114-east-retirado",
+        "acao": "attack-firearm",
+        "direcao": "east",
+        "desenhado": true,
+        "omitidos": []
+      }
+    ]
+  }
+}

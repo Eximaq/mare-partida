@@ -4,6 +4,193 @@ on:
     branches: [main]
     paths:
       - 'player-rework-*hd*'
+      - 'tests/rework-wardrobe-map-action.test.cjs'
+      - 'tests/rework-independent-world-browser.cjs'
+      - 'tests/rework-wardrobe-async-browser.cjs'
+      - 'tests/rework-male-dagger-coat-cycles.cjs'
+      - 'tests/rework-registered-weapon-coats.cjs'
+      - 'tests/rework-male-p114-signed-slots-saved.cjs'
+      - 'tests/rework-articulated-weapon-heads.cjs'
+      - 'tests/rework-articulated-sword-coats.cjs'
+      - 'tools/register_blade_trousers.py'
+      - 'tools/rework-combat-wardrobe/blade-trousers.zip'
+      - 'tests/rework-blade-trousers.cjs'
+      - 'tests/rework-blade-wardrobe-cases.cjs'
+      - 'tests/rework-blade-sleeves.cjs'
+      - 'tools/register_blade_sleeves.py'
+      - 'tests/rework-north-blade-clothes.cjs'
+      - 'tools/register_north_blade_gloves.py'
+      - 'tools/register_south_blade_gloves.py'
+      - 'tools/register_south_blade_coats.py'
+      - 'tools/rework-combat-wardrobe/south-blade-coats.zip'
+      - 'tests/rework-south-blade-coats.cjs'
+      - 'tools/rework-combat-wardrobe/south-blade-gloves.zip'
+      - 'tests/rework-south-blade-head.cjs'
+      - 'tests/rework-south-blade-gloves.cjs'
+      - 'tests/rework-south-saved-head-shapes.cjs'
+      - 'tests/rework-blade-profile-head-styles.cjs'
+      - 'tests/rework-male-focus-saved-hair.cjs'
+      - 'tools/audit-hd-saved-hair.cjs'
+      - 'tests/rework-carry-saved-hats.cjs'
+      - 'tests/rework-male-firearm-named-hair.cjs'
+      - 'tests/rework-male-firearm-named-hair-browser.cjs'
+      - 'tests/rework-male-unarmed-named-wardrobe.cjs'
+      - 'tests/rework-male-unarmed-named-browser.cjs'
+      - 'tests/rework-starter-helmet-hair.cjs'
+      - 'tests/rework-male-focus-saved-hair-browser.cjs'
+      - 'tests/rework-focus-eye-shapes.cjs'
+      - 'tests/rework-firearm-eye-expressions.cjs'
+      - 'tests/rework-male-punch-saved-look.cjs'
+      - 'tests/rework-firearm-eye-expressions-browser.cjs'
+      - 'tools/register_north_blade_coats.py'
+      - 'tools/articulated_sleeve_projection.py'
+      - 'tools/rework-combat-wardrobe/north-blade-coats.zip'
+      - 'tools/north_blade_anatomy.py'
+      - 'tools/rework-combat-wardrobe/north-blade-gloves.zip'
+      - 'tools/blade_sleeves_panels.py'
+      - 'tools/rework-combat-wardrobe/blade-sleeves.zip'
+      - 'tools/export_articulated_boots.py'
+      - 'tools/rework-combat-wardrobe/articulated-boots.zip'
+      - 'tests/rework-articulated-boots.cjs'
+      - 'tests/rework-ordered-orb-anatomy.cjs'
+      - 'tests/rework-ordered-orb-coats.cjs'
+      - 'tests/rework-ordered-staff-coats.cjs'
+      - 'tests/rework-south-staff-clothes.cjs'
+      - 'tests/rework-north-staff-wardrobe.cjs'
+      - 'tools/register_north_staff_wardrobe.py'
+      - 'tools/rework-combat-wardrobe/north-staff-wardrobe.zip'
+      - 'tests/rework-south-staff-grips.cjs'
+      - 'tools/register_south_staff_grips.py'
+      - 'tools/rework-combat-wardrobe/south-staff-grips.zip'
+      - 'tools/register_south_staff_clothes.py'
+      - 'tools/rework-combat-wardrobe/south-staff-clothes.zip'
+      - 'tests/rework-side-focus-sleeves.cjs'
+      - 'tools/register_side_focus_sleeves.py'
+      - 'tools/rework-combat-wardrobe/side-focus-sleeves.zip'
+      - 'tests/rework-ordered-staff-gloves.cjs'
+      - 'tests/rework-side-focus-trousers.cjs'
+      - 'tests/rework-side-focus-trouser-receivers.cjs'
+      - 'tools/register_side_focus_trousers.py'
+      - 'tools/rework-combat-wardrobe/side-focus-trousers.json'
+      - 'tools/register_staff_gloves.py'
+      - 'tools/register_scepter_profile_gloves.py'
+      - 'tools/rework-combat-wardrobe/scepter-profile-gloves.zip'
+      - 'tools/rework-combat-wardrobe/staff-gloves.zip'
+      - 'tools/rework-combat-wardrobe/sword-gloves.zip'
+      - 'tools/register_sword_gloves.py'
+      - 'tools/register_orb_gloves.py'
+      - 'tools/register_dagger_gloves.py'
+      - 'tools/register_south_punch_gloves.py'
+      - 'tools/register_south_punch_coats.py'
+      - 'tools/register_south_punch_trousers.py'
+      - 'tools/rework-combat-wardrobe/south-punch-waist.json'
+      - 'tools/rework-combat-wardrobe/south-punch-gloves.zip'
+      - 'tools/rework-combat-wardrobe/south-punch-coats.zip'
+      - 'tests/rework-south-gauntlet-gloves.cjs'
+      - 'tests/rework-south-gauntlet-coats.cjs'
+      - 'tests/rework-south-signed-punch-trousers.cjs'
+      - 'tests/rework-compass-side-wardrobe.cjs'
+      - 'tools/rework-combat-wardrobe/dagger-gloves.zip'
+      - 'tests/rework-ordered-hand-gloves.cjs'
+      - 'tools/rework-combat-wardrobe/orb-gloves.zip'
+      - 'tests/rework-orb-hand-gloves.cjs'
+      - 'tests/rework-articulated-sword-gloves.cjs'
+      - 'tests/rework_staff_coat_sources.py'
+      - 'tests/rework-north-pistol-coats.cjs'
+      - 'tests/rework-fixed-north-rifle-trousers.cjs'
+      - 'tests/rework-fixed-north-rifle-boots.cjs'
+      - 'tests/rework-fixed-north-rifle-heads.cjs'
+      - 'tests/rework-south-focus-trousers.cjs'
+      - 'tests/fixtures/south-focus-weapon-planes.json'
+      - 'tools/register_south_focus_trousers.py'
+      - 'tools/register_south_focus_boots.py'
+      - 'tools/rework-combat-wardrobe/south-focus-boots.json'
+      - 'tools/rework-combat-wardrobe/south-focus-trousers.json'
+      - 'tests/rework-north-focus-coats.cjs'
+      - 'tests/rework-north-focus-trousers.cjs'
+      - 'tests/rework-south-blade-legs.cjs'
+      - 'tools/register_south_blade_legs.py'
+      - 'tools/rework-combat-wardrobe/south-blade-legs.zip'
+      - 'tests/rework-north-blade-trousers.cjs'
+      - 'tools/register_north_focus_gloves.py'
+      - 'tools/rework-combat-wardrobe/north-focus-gloves.zip'
+      - 'tests/rework-north-focus-gloves.cjs'
+      - 'tools/north_focus_anatomy.py'
+      - 'tools/register_north_focus_sleeves.py'
+      - 'tools/rework-combat-wardrobe/north-focus-sleeves.zip'
+      - 'tests/rework-north-focus-sleeves.cjs'
+      - 'tools/register_north_focus_trousers.py'
+      - 'tools/rework-combat-wardrobe/north-focus-trousers.json'
+      - 'tests/rework-north-moving-boots.cjs'
+      - 'tests/rework-lateral-gauntlet-wardrobe.cjs'
+      - 'tests/rework-lateral-dagger-boots.cjs'
+      - 'tools/rework-combat-wardrobe/lateral-dagger-boots.zip'
+      - 'tools/register_north_articulated_boots.py'
+      - 'tools/rework-combat-wardrobe/north-articulated-boots.zip'
+      - 'tools/rework-combat-wardrobe/north-boot-donors.json'
+      - 'tools/export_north_focus_coats.py'
+      - 'tools/register_north_weapon_coats.py'
+      - 'tools/rework-combat-wardrobe/north-weapon-coats.zip'
+      - 'tests/rework-world-pose-support.cjs'
+      - 'tools/rework-combat-wardrobe/north-focus-coats.zip'
+      - 'tools/register_north_rifle_trousers.py'
+      - 'tools/register_north_rifle_clothes.py'
+      - 'tools/register_rifle_profile_*.py'
+      - 'tools/rework-combat-wardrobe/rifle-profile-*.zip'
+      - 'tests/rework-pistol-leg-wardrobe.cjs'
+      - 'tools/register_pistol_legs.py'
+      - 'tools/rework-combat-wardrobe/pistol-legs.zip'
+      - 'tests/rework-south-firearm-legs.cjs'
+      - 'tools/register_south_firearm_legs.py'
+      - 'tools/rework-combat-wardrobe/south-firearm-legs.zip'
+      - 'tests/rework-south-rifle-arms.cjs'
+      - 'tools/register_south_rifle_arms.py'
+      - 'tools/rework-combat-wardrobe/south-rifle-arms.zip'
+      - 'tests/rework-firearm-original-heads.cjs'
+      - 'tools/register_firearm_original_heads.py'
+      - 'tools/rework-combat-wardrobe/firearm-original-heads.json'
+      - 'tests/rework-pistol-recoil-clothes.cjs'
+      - 'tools/register_pistol_recoil_clothes.py'
+      - 'tools/rework-combat-wardrobe/pistol-recoil-clothes.zip'
+      - 'tests/rework-south-fused-clothes.cjs'
+      - 'tools/register_south_fused_clothes.py'
+      - 'tools/rework-combat-wardrobe/south-fused-firearm-clothes.zip'
+      - 'tests/rework-rifle-profile-clothes.cjs'
+      - 'tools/rework-combat-wardrobe/north-rifle-clothes.zip'
+      - 'tests/rework-north-rifle-clothes.cjs'
+      - 'tools/north_rifle_clothing_panels.py'
+      - 'tools/rework-combat-wardrobe/north-rifle-trousers.json'
+      - 'tools/export_north_pistol_coats.py'
+      - 'tools/export_staff_coats.py'
+      - 'tools/rework-combat-wardrobe/staff-hand-registration.json'
+      - 'art-approved/weapons/clothing-batch-20261112/**'
+      - 'tools/export_male_sword_coats.py'
+      - 'tools/rework-combat-wardrobe/sword-hand-registration.json'
+      - 'tests/rework-wardrobe-authored-contact.cjs'
+      - 'tests/rework-wardrobe-grip-cycles.cjs'
+      - 'tests/rework-south-wardrobe-ownership.cjs'
+      - 'tests/rework-male-weapon-material-cycles.cjs'
+      - 'tools/export_male_dagger_coats.py'
+      - 'tools/export_combat_wardrobe.py'
+      - 'tests/rework-literal-null-equipment.cjs'
+      - 'tests/rework-named-carry-head-saved.cjs'
+      - 'tests/rework-male-named-focus-carry.cjs'
+      - 'tests/rework-male-spiky-focus-carry.cjs'
+      - 'tests/rework-male-sword-coat-b9-south-idle.cjs'
+      - 'tests/rework-male-w67-c6-g25-north-idle.cjs'
+      - 'tests/rework-relic32-p22-carry.cjs'
+      - 'tests/rework-male-c6-p22-named-head.cjs'
+      - 'tests/rework-male-independent-pants-locomotion.cjs'
+      - 'tests/rework-male-south-idle-gloves-independent.cjs'
+      - 'tests/rework-male-imperial-b183-south-idle.cjs'
+      - 'tests/rework-male-w0-c6-*.cjs'
+      - 'tests/rework-male-c6-p22-other-punches.cjs'
+      - 'tests/rework-male-c6-p168-south-locomotion.cjs'
+      - 'tests/rework-male-c6-p133-side-walk.cjs'
+      - 'tests/rework-male-w0-coat-b9-south-idle.cjs'
+      - 'tests/rework-male-bare-glove-locomotion.cjs'
+      - 'tests/rework-female-south-boots-saved-head.cjs'
+      - 'tests/rework-manopla14-blue-carry.cjs'
       - 'tools/rework-*-hd/**'
       - 'tools/rework-eleventh-source/**'
       - 'tools/rework-f182-sn/**'
@@ -29,6 +216,7 @@ on:
       - 'tests/fixtures/f182-*'
       - 'paper-doll-96-lobby.js'
       - 'tests/native_hd_game_browser.cjs'
+      - 'tests/native-hd-world-evidence.cjs'
       - 'tests/rework_default_game_browser.cjs'
       - 'tests/rework-integration*.cjs'
       - 'tests/rework_inventory_game_browser.cjs'
@@ -79,6 +267,446 @@ concurrency:
   group: native-hd-visual-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
+  wardrobe-independence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Movimentos do catálogo, oclusão da mão e peitorais nas adagas
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WARDROBE_EVIDENCE: ${{ runner.temp }}/adagas-960.json
+        run: |
+          node --test tests/rework-wardrobe-map-action.test.cjs
+          node tests/rework-male-dagger-coat-cycles.cjs
+      - name: Peitorais nas duas manoplas e no braço tecnológico
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          node tests/rework-registered-weapon-coats.cjs
+          node --expose-gc tests/rework-male-p114-signed-slots-saved.cjs
+          node --expose-gc tests/rework-male-punch-saved-look.cjs
+          node tests/rework-wardrobe-grip-cycles.cjs
+          node --expose-gc tests/rework-wardrobe-authored-contact.cjs
+          node tests/rework-south-wardrobe-ownership.cjs
+      - uses: actions/upload-artifact@v4
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
+        with:
+          name: wardrobe-independence-dagger-frames
+          path: ${{ runner.temp }}/adagas-960.json
+          retention-days: 3
+          if-no-files-found: warn
+  lateral-punch-wardrobe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        weapon: [2, 3, 110, 111, 112, 118, 119]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Conferir as 50 peças e os oito quadros em cada direção
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WEAPON: ${{ matrix.weapon }}
+        run: |
+          node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs east ebony "$WEAPON"
+          node --expose-gc tests/rework-lateral-gauntlet-wardrobe.cjs west light "$WEAPON"
+      - name: Conferir o punho Norte nas oito fases e nas duas aparências
+        if: matrix.weapon == 110
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          node --expose-gc tests/rework-north-padded-gauntlet.cjs light
+          node --expose-gc tests/rework-north-padded-gauntlet.cjs ebony
+  dagger-gloves:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        weapon: [12, 13, 71, 72, 73, 74]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Conferir as duas mãos, as dez luvas e a oclusão das lâminas nas seis adagas
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WEAPON: ${{ matrix.weapon }}
+        run: |
+          for tone in light ebony; do
+            node --expose-gc tests/rework-ordered-hand-gloves.cjs "$WEAPON" "$tone"
+          done
+  orb-gloves:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        weapon: [17, 122]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Conferir as duas mãos, as dez luvas e a oclusão dos orbes e o formato antigo de aparência
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WEAPON: ${{ matrix.weapon }}
+        run: |
+          for tone in light ebony; do
+            node --expose-gc tests/rework-orb-hand-gloves.cjs "$WEAPON" "$tone"
+          done
+  sword-gloves:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        weapon: [0, 1, 67, 68, 69, 70]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Conferir as duas mãos, as dez luvas e a oclusão de cada espada
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WEAPON: ${{ matrix.weapon }}
+        run: |
+          for tone in light ebony; do
+            node --expose-gc tests/rework-articulated-sword-gloves.cjs "$WEAPON" "$tone"
+          done
+  staff-gloves:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        weapon: [31, 123, 124, 125, 126, 127, 128]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Conferir as duas mãos, as dez luvas e a oclusão de cada cajado
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WEAPON: ${{ matrix.weapon }}
+        run: |
+          for tone in light ebony; do
+            node --expose-gc tests/rework-ordered-staff-gloves.cjs "$WEAPON" "$tone"
+          done
+      - name: Comparar a cintura e as dez calças com o conjunto durante o ataque de perfil
+        if: ${{ !cancelled() && matrix.weapon != 128 }}
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WEAPON: ${{ matrix.weapon }}
+        run: node --expose-gc tests/rework-side-focus-trousers.cjs "$WEAPON"
+  south-focus-trousers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        weapon: [16, 17, 31, 32, 121, 122]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Conferir as dez calças nas oito fases da conjuração
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WEAPON: ${{ matrix.weapon }}
+        run: |
+          for tone in light ebony; do
+            node --expose-gc tests/rework-south-focus-trousers.cjs "$WEAPON" "$tone"
+            node --expose-gc tests/rework-south-focus-trousers.cjs "$WEAPON" "$tone" --boots
+          done
+  south-punch-wardrobe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        weapon: [2, 3, 14, 110, 111, 118, 119, 120]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Conferir os capacetes e as botas nas doze fases do golpe
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+          WEAPON: ${{ matrix.weapon }}
+        run: |
+          for tone in light ebony; do
+            node --expose-gc tests/rework-south-punch-helmets.cjs "$WEAPON" "$tone"
+            node --expose-gc tests/rework-south-punch-boots.cjs "$WEAPON" "$tone"
+            node --expose-gc tests/rework-south-gauntlet-gloves.cjs "$WEAPON" "$tone"
+            node --expose-gc tests/rework-south-gauntlet-coats.cjs "$WEAPON" "$tone"
+            case "$WEAPON" in
+              111|118|119|120) node --expose-gc tests/rework-south-forearm-trousers.cjs "$WEAPON" "$tone";;
+              *) node --expose-gc tests/rework-south-signed-punch-trousers.cjs "$WEAPON" "$tone";;
+            esac
+          done
+          node --expose-gc tests/rework-south-punch-pairs.cjs "$WEAPON"
+  articulated-helmets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Comparar o quadro da arma, o cabelo e os pixels dos dez capacetes
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          for role in sword rogue gunner healer strategist; do
+            node --expose-gc tests/rework-articulated-weapon-heads.cjs "$role"
+          done
+      - name: Comparar as mangas, mãos e lâminas das seis espadas laterais
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: node --expose-gc tests/rework-articulated-sword-coats.cjs
+  articulated-boots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        role: [sword, gunner, strategist, healer, rogue]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Conferir as calças nas duas poses laterais de lâmina
+        if: matrix.role == 'sword'
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          python -m pip install pillow numpy
+          python tools/register_blade_trousers.py --verify
+          node --expose-gc tests/rework-blade-trousers.cjs
+          python tools/register_blade_sleeves.py --verify
+          node --expose-gc tests/rework-blade-sleeves.cjs
+          python tools/register_south_blade_coats.py --verify
+          node --expose-gc tests/rework-south-blade-coats.cjs
+          python tools/register_south_blade_gloves.py --verify
+          node --expose-gc tests/rework-south-blade-head.cjs
+          node --expose-gc tests/rework-south-blade-gloves.cjs
+          node --expose-gc tests/rework-south-saved-head-shapes.cjs
+          node --expose-gc tests/rework-blade-profile-head-styles.cjs
+          python tools/register_north_blade_gloves.py --verify
+          node --expose-gc tests/rework-north-blade-clothes.cjs gloves
+          python tools/register_north_blade_coats.py --verify
+          node --expose-gc tests/rework-north-blade-clothes.cjs coat
+      - name: Conferir as botas nos oito quadros das seis adagas e na restauração da mão
+        if: matrix.role == 'rogue'
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          python -m pip install pillow numpy
+          python tools/export_articulated_boots.py --daggers --verify
+          node --expose-gc tests/rework-lateral-dagger-boots.cjs east
+          node --expose-gc tests/rework-lateral-dagger-boots.cjs west
+      - name: Comparar os dez pares de botas em todos os quadros da família
+        if: matrix.role != 'rogue'
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: node --expose-gc tests/rework-articulated-boots.cjs "${{ matrix.role }}"
+      - name: Verificar o crânio e a oclusão nas duas orbes
+        if: matrix.role == 'strategist'
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          node tests/rework-ordered-orb-anatomy.cjs
+          node --expose-gc tests/rework-male-focus-saved-hair.cjs
+          node --expose-gc tests/rework-focus-eye-shapes.cjs
+          node --expose-gc tests/rework-ordered-orb-coats.cjs
+      - name: Comparar mangas, mãos e arma com a fonte de cada fase
+        if: matrix.role == 'healer'
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          node --expose-gc tests/rework-ordered-staff-coats.cjs
+          node --expose-gc tests/rework-south-staff-clothes.cjs
+          node --expose-gc tests/rework-north-staff-wardrobe.cjs
+          node --expose-gc tests/rework-south-staff-grips.cjs
+          node --expose-gc tests/rework-side-focus-sleeves.cjs
+          node --expose-gc tests/rework-side-focus-trouser-receivers.cjs
+          python -m pip install pillow numpy
+          python tests/rework_staff_coat_sources.py
+          python tools/register_south_focus_trousers.py --verify
+          python tools/register_south_focus_boots.py --verify
+          python tools/register_staff_gloves.py --verify
+          python tools/register_south_staff_clothes.py --verify
+          python tools/register_north_staff_wardrobe.py --verify
+          python tools/register_south_staff_grips.py --verify
+          python tools/register_side_focus_sleeves.py --verify
+          python tools/register_side_focus_trousers.py --verify
+          python tools/register_sword_gloves.py --verify
+          python tools/register_dagger_gloves.py --verify
+          python tools/register_south_punch_gloves.py --verify
+          python tools/register_south_punch_coats.py --verify
+          python tools/register_south_punch_trousers.py --verify
+          python tools/export_north_focus_coats.py --verify
+          python tools/register_north_articulated_boots.py --verify
+          node --expose-gc tests/rework-north-moving-boots.cjs
+      - name: Conferir os vínculos e os quadros das armas de fogo
+        if: matrix.role == 'gunner'
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          python -m pip install pillow numpy
+          python tools/export_north_pistol_coats.py --verify
+          node --expose-gc tests/rework-north-pistol-coats.cjs
+          python tools/register_north_rifle_trousers.py --verify
+          python tools/register_north_rifle_clothes.py --verify
+          python tools/register_rifle_profile_trousers.py --verify
+          python tools/register_rifle_profile_gloves.py --verify
+          python tools/register_rifle_profile_sleeves.py --verify
+          node --expose-gc tests/rework-fixed-north-rifle-trousers.cjs
+          node --expose-gc tests/rework-north-rifle-clothes.cjs
+          node --expose-gc tests/rework-rifle-profile-clothes.cjs
+          node --expose-gc tests/rework-south-fused-clothes.cjs
+          node --expose-gc tests/rework-pistol-recoil-clothes.cjs
+          node --expose-gc tests/rework-firearm-original-heads.cjs
+          node --expose-gc tests/rework-south-rifle-arms.cjs
+          node --expose-gc tests/rework-south-firearm-legs.cjs
+          node --expose-gc tests/rework-pistol-leg-wardrobe.cjs
+          node --expose-gc tests/rework-fixed-north-rifle-boots.cjs
+          node --expose-gc tests/rework-fixed-north-rifle-heads.cjs
+          node --expose-gc tests/rework-male-firearm-named-hair.cjs
+          node --expose-gc tests/rework-firearm-eye-expressions.cjs
+      - name: Conferir as empunhaduras, os orbes e a bússola lateral
+        if: matrix.role == 'strategist'
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          python -m pip install pillow numpy
+          node --expose-gc tests/rework-side-focus-sleeves.cjs --scepter
+          node --expose-gc tests/rework-ordered-staff-gloves.cjs 121 ebony
+          python tools/register_scepter_profile_gloves.py --verify
+          python tools/register_orb_gloves.py --verify
+          node --expose-gc tests/rework-compass-side-wardrobe.cjs light
+          node --expose-gc tests/rework-compass-side-wardrobe.cjs ebony
+          node --expose-gc tests/rework-compass-side-wardrobe.cjs light 32
+          node --expose-gc tests/rework-compass-side-wardrobe.cjs ebony 32
+  north-focus-wardrobe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python -m pip install pillow numpy
+      - run: python tools/build_pages.py
+      - name: Reproduzir as mangas e a cintura das fontes aprovadas
+        run: |
+          python tools/register_north_weapon_coats.py --verify
+          python tools/register_north_focus_trousers.py --verify
+          python tools/register_north_focus_gloves.py --verify
+          python tools/register_north_focus_sleeves.py --verify
+      - name: Conferir os peitorais, a mão e o metal atuais
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          node --expose-gc tests/rework-north-focus-coats.cjs
+          node tools/audit-hd-saved-hair.cjs
+          node --expose-gc tests/rework-starter-helmet-hair.cjs
+      - name: Conferir as dez calças com capacetes, botas e peitorais
+        if: ${{ !cancelled() }}
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          node --expose-gc tests/rework-north-focus-trousers.cjs
+          node --expose-gc tests/rework-north-blade-trousers.cjs
+          node --expose-gc tests/rework-south-blade-legs.cjs
+      - name: Conferir os dedos e a empunhadura com o conjunto equipado
+        if: ${{ !cancelled() }}
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: node --expose-gc tests/rework-north-focus-gloves.cjs
+      - name: Comparar as mangas e a barra dos seis peitorais nas poses de foco Norte
+        if: ${{ !cancelled() }}
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: node --expose-gc tests/rework-north-focus-sleeves.cjs
+  weapon-materials:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/build_pages.py
+      - name: Comparar os ciclos das sete classes com três combinações de cores
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: node tests/rework-male-weapon-material-cycles.cjs
+  native-historical:
+    name: native-historical (${{ matrix.suite }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: hd
+            command: npm run test:rework-hd
+          - suite: ordered-poses
+            command: node --test --test-concurrency=1 player-rework-default-hd.test.cjs tests/rework-integration.test.cjs tests/rework-v5-binding.test.cjs tests/rework-approved-rifles.test.cjs tests/rework-approved-orb17-carry.test.cjs tests/rework-female-authored-adjustments.test.cjs tests/rework-approved-swords-south.test.cjs tests/rework-approved-coat151-idle.test.cjs tests/rework-approved-outfit-idle.test.cjs tests/rework-approved-torso130-walk.test.cjs tests/rework-approved-staff128.test.cjs tests/rework-approved-lateral-attacks.test.cjs tests/rework-direction-retention.test.cjs tests/rework-separable-*.test.cjs tests/rework-independent-female-pants.test.cjs tests/rework-independent-female-pants-fourth.test.cjs tests/rework-independent-female-pants-fifth.test.cjs tests/rework-authored-ordered-attacks.test.cjs tests/rework-ordered-world-bundle.test.cjs tests/rework-sixth-*.test.cjs tests/rework-six-daggers-ordered.test.cjs tests/rework-seventh-world-bundle.test.cjs tests/rework-eighth-*.test.cjs tests/rework-ninth-*.test.cjs tests/rework-tenth-*.test.cjs tests/rework-eleventh-*.test.cjs tests/rework-f182-*.test.cjs tests/rework-slot151-*.test.cjs tests/rework-sn4-*.test.cjs tests/rework-sn7-*.test.cjs tests/rework-female-south-neck-*.test.cjs tests/rework-female-south-carry*.test.cjs
+          - suite: materials
+            command: node --test --test-concurrency=1 tests/rework-female-north-layered.test.cjs tests/rework-female-profile-rig.test.cjs tests/rework-female-direction-*.test.cjs tests/rework-female-walk-directions-world.test.cjs
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: python tools/materialize_native_indexes.py
+      - name: Testar as poses do mapa com os índices e as imagens publicados
+        if: matrix.suite == 'ordered-poses'
+        run: |
+          python tools/build_pages.py
+          echo "HD_PUBLISHED_ROOT=$GITHUB_WORKSPACE/dist" >> "$GITHUB_ENV"
+      - run: ${{ matrix.command }}
   native-world:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -89,9 +717,14 @@ jobs:
           node-version: '24'
       - run: npm ci --ignore-scripts
       - run: python tools/verify_native_hd_archives.py
-      - run: npm run test:rework-hd
-      - run: node --test --test-concurrency=1 player-rework-default-hd.test.cjs tests/rework-integration.test.cjs tests/rework-v5-binding.test.cjs tests/rework-approved-rifles.test.cjs tests/rework-approved-orb17-carry.test.cjs tests/rework-female-authored-adjustments.test.cjs tests/rework-approved-swords-south.test.cjs tests/rework-approved-coat151-idle.test.cjs tests/rework-approved-outfit-idle.test.cjs tests/rework-approved-torso130-walk.test.cjs tests/rework-approved-staff128.test.cjs tests/rework-approved-lateral-attacks.test.cjs tests/rework-direction-retention.test.cjs tests/rework-separable-*.test.cjs tests/rework-independent-female-pants.test.cjs tests/rework-independent-female-pants-fourth.test.cjs tests/rework-independent-female-pants-fifth.test.cjs tests/rework-authored-ordered-attacks.test.cjs tests/rework-ordered-world-bundle.test.cjs tests/rework-sixth-*.test.cjs tests/rework-six-daggers-ordered.test.cjs tests/rework-seventh-world-bundle.test.cjs tests/rework-eighth-*.test.cjs tests/rework-ninth-*.test.cjs tests/rework-tenth-*.test.cjs tests/rework-eleventh-*.test.cjs tests/rework-f182-*.test.cjs tests/rework-slot151-*.test.cjs tests/rework-sn4-*.test.cjs tests/rework-sn7-*.test.cjs tests/rework-female-south-neck-*.test.cjs tests/rework-female-south-carry*.test.cjs
-      - run: node --test --test-concurrency=1 tests/rework-female-north-layered.test.cjs tests/rework-female-profile-rig.test.cjs tests/rework-female-direction-*.test.cjs tests/rework-female-walk-directions-world.test.cjs
+      - name: HD de um save com espaços vazios no inventário
+        run: node --test tests/rework-literal-null-equipment.cjs
+      - name: Camadas HD independentes, sem substituir o personagem
+        run: node --test --test-concurrency=2 tests/rework-male-c6-p22-named-head.cjs tests/rework-male-independent-pants-locomotion.cjs tests/rework-male-south-idle-gloves-independent.cjs tests/rework-male-imperial-b183-south-idle.cjs tests/rework-male-w0-c6-b9-south-idle.cjs tests/rework-male-w0-c6-g25-north.cjs
+      - name: Segundo lote de camadas e porte de arma HD
+        run: node --expose-gc --test --test-concurrency=2 tests/rework-male-c6-p22-other-punches.cjs tests/rework-male-c6-p168-south-locomotion.cjs tests/rework-male-c6-p133-side-walk.cjs tests/rework-male-w0-coat-b9-south-idle.cjs tests/rework-male-bare-glove-locomotion.cjs tests/rework-female-south-boots-saved-head.cjs tests/rework-manopla14-blue-carry.cjs
+      - name: Porte HD com cabelo salvo e peças independentes
+        run: node --expose-gc --test --test-concurrency=2 tests/rework-named-carry-head-saved.cjs tests/rework-male-named-focus-carry.cjs tests/rework-male-spiky-focus-carry.cjs tests/rework-male-sword-coat-b9-south-idle.cjs tests/rework-male-w67-c6-g25-north-idle.cjs tests/rework-relic32-p22-carry.cjs
       - run: node tools/audit_rework_integration.cjs
       - name: Cache Chromium
         uses: actions/cache@v4
@@ -105,6 +738,12 @@ jobs:
           python tools/build_pages.py --renderer-fixture
           python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/native-hd-server.txt" 2>&1 &
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
+      - name: Aparência salva ao andar e ao retirar a arma
+        env:
+          HD_PUBLISHED_ROOT: ${{ github.workspace }}/dist
+        run: |
+          node --expose-gc tests/rework-carry-saved-hats.cjs
+          node --expose-gc tests/rework-male-unarmed-named-wardrobe.cjs
       - name: Carregamento visual com movimento e combate
         env:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/
@@ -112,11 +751,11 @@ jobs:
         run: |
           node tests/rework_visual_readiness_browser.cjs
           MARE_FAIL_VISUAL=1 node tests/rework_visual_readiness_browser.cjs
-      - name: Capture normal world renderer without touching owner saves
+      - name: Trocar o peitoral durante o ataque com a textura anterior pendente
         env:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/
-          MARE_EVIDENCE_DIR: artifacts/native-hd-game
-        run: node tests/native_hd_game_browser.cjs
+          MARE_EVIDENCE_DIR: artifacts/rework-wardrobe-load-race
+        run: node tests/rework-independent-world-browser.cjs --wardrobe-load-race
       - name: Authentic starter saves use the replacement without editing equipment
         env:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/
@@ -172,6 +811,38 @@ jobs:
           name: rework-default-save-evidence
           path: artifacts/rework-default-game/
           if-no-files-found: ignore
+
+  native-world-captures:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [weapons, wardrobe]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: chromium-${{ runner.os }}-playwright-1.62.1
+      - name: Chromium and actual Pages build
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
+          bash tools/install_ci_chromium.sh npx playwright
+          python tools/build_pages.py --renderer-fixture
+          python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/native-hd-server.txt" 2>&1 &
+          curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
+      - name: Capture normal world renderer without touching owner saves
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8157/dist/
+          MARE_EVIDENCE_DIR: artifacts/native-hd-game
+          MARE_WORLD_GROUP: ${{ matrix.group }}
+        run: node tests/native_hd_game_browser.cjs
       - name: Split evidence into downloadable native-resolution groups
         if: always()
         run: python tools/split_native_hd_evidence.py artifacts/native-hd-game artifacts/native-hd-parts
@@ -179,118 +850,118 @@ jobs:
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-runtime-report
+          name: native-hd-runtime-report-${{ matrix.group }}
           path: artifacts/native-hd-game/*.json
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part0
+          name: native-hd-real-game-part0-${{ matrix.group }}
           path: artifacts/native-hd-parts/part0
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part1
+          name: native-hd-real-game-part1-${{ matrix.group }}
           path: artifacts/native-hd-parts/part1
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part2
+          name: native-hd-real-game-part2-${{ matrix.group }}
           path: artifacts/native-hd-parts/part2
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part3
+          name: native-hd-real-game-part3-${{ matrix.group }}
           path: artifacts/native-hd-parts/part3
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part4
+          name: native-hd-real-game-part4-${{ matrix.group }}
           path: artifacts/native-hd-parts/part4
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part5
+          name: native-hd-real-game-part5-${{ matrix.group }}
           path: artifacts/native-hd-parts/part5
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part6
+          name: native-hd-real-game-part6-${{ matrix.group }}
           path: artifacts/native-hd-parts/part6
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part7
+          name: native-hd-real-game-part7-${{ matrix.group }}
           path: artifacts/native-hd-parts/part7
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part8
+          name: native-hd-real-game-part8-${{ matrix.group }}
           path: artifacts/native-hd-parts/part8
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part9
+          name: native-hd-real-game-part9-${{ matrix.group }}
           path: artifacts/native-hd-parts/part9
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part10
+          name: native-hd-real-game-part10-${{ matrix.group }}
           path: artifacts/native-hd-parts/part10
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part11
+          name: native-hd-real-game-part11-${{ matrix.group }}
           path: artifacts/native-hd-parts/part11
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part12
+          name: native-hd-real-game-part12-${{ matrix.group }}
           path: artifacts/native-hd-parts/part12
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part13
+          name: native-hd-real-game-part13-${{ matrix.group }}
           path: artifacts/native-hd-parts/part13
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part14
+          name: native-hd-real-game-part14-${{ matrix.group }}
           path: artifacts/native-hd-parts/part14
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
         with:
           retention-days: 3
-          name: native-hd-real-game-part15
+          name: native-hd-real-game-part15-${{ matrix.group }}
           path: artifacts/native-hd-parts/part15
           if-no-files-found: ignore

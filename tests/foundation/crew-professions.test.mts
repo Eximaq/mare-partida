@@ -37,7 +37,7 @@ test('binomial target uses personal species kill rate and targets use eligible r
   assert.equal(collectionGoal(1),0);
   assert.equal(collectionGoal(100),7);
   const stats={attack:700,physical:700,elemental:550,speed:1.6,huntSpeed:126};
-  for(const level of [1,5,13,23,40,45,53,58,63,68,75,77,200]){
+  for(const level of [1,5,13,23,40,45,53,58,63,68,75,77,84,88,95,200]){
     const areas=eligibleProfessionAreas(level);
     const target=selectProfessionalTarget('test-recipient','2026-11-02',level,stats);
     assert(target);
@@ -48,7 +48,7 @@ test('binomial target uses personal species kill rate and targets use eligible r
     assert(Math.abs(target.level-level)<=Math.max(3,nearest));
     assert.equal(selectProfessionalTarget('test-recipient','2026-11-02',level,stats)?.monster,target.monster);
   }
-  assert.equal(selectProfessionalTarget('test-recipient','2026-11-02',200,stats)?.area,'skypiea-01');
+  assert.equal(selectProfessionalTarget('test-recipient','2026-11-02',200,stats)?.area,'skypiea-04');
 });
 
 test('prison progression, fallback and installation caps preserve earned profession level',()=>{

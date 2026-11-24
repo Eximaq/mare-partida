@@ -1,7 +1,48 @@
 'use strict';
-const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const root=path.resolve(__dirname,'..'),dir=path.join(root,'tools/paper-doll-96-v3'),release=require('../tools/paper-doll-96-v3/player-pack.json');
-function runtime(){const calls=[],loads=[],ctx=()=>({clearRect(){},translate(){},drawImage(){},save(){},restore(){},scale(){}});const c=vm.createContext({console,URL,Map,Set,WeakMap,setTimeout,location:{href:'http://localhost/'},fetch:async url=>({ok:true,json:async()=>JSON.parse(fs.readFileSync(path.join(dir,new URL(url).pathname.split('/').pop()),'utf8'))}),Image:class{set src(url){loads.push(url);const file='assets/'+new URL(url).pathname.split('/').pop();[this.naturalWidth,this.naturalHeight]=release.resources[file];}async decode(){}},document:{createElement:tag=>tag==='canvas'?{getContext:ctx}:{},head:{append(node){const name=new URL(node.src).pathname.split('/').pop();if(name!=='wardrobe.js')vm.runInContext(fs.readFileSync(path.join(dir,name),'utf8'),c);setTimeout(()=>node.onload(),0)}}}});c.window=c;vm.runInContext(fs.readFileSync(path.join(root,'headgear-visibility.js'),'utf8'),c);vm.runInContext(fs.readFileSync(path.join(root,'character-appearance.js'),'utf8'),c);c.MareWardrobe96={create:()=>({nativeFiles:s=>Object.values(s.layers),requiredFiles:s=>{const a=JSON.parse(fs.readFileSync(path.join(dir,'appearance-catalog.json'),'utf8'));return ['fitBases','originalHeads','originalHairs','originalFaces','originalHands'].map(k=>a[k]?.[s.body]?.[s.direction]).filter(Boolean)},weaponPadding:()=>({x:0,top:0,bottom:0}),draw:(ctx,images,s,fi,spec,hidden,look)=>{calls.push({action:s.action,dir:s.direction,hidden:look.hideHeadgear});return []}})};vm.runInContext(fs.readFileSync(path.join(root,'paper-doll-96-lobby.js'),'utf8'),c);return {r:c.MarePaperDoll96Lobby.create(),calls,loads,ctx:ctx()};}
-test('prepare visible look only and publish its exact first clip before background clips complete',async()=>{const {r,calls,ctx}=runtime();await r.ready;const p={classId:'sword',equipment:{head:{def:19}}};let done=false;const complete=r.ensure(p).then(v=>{done=true;return v});let early=false;for(let i=0;i<200&&!done;i++){if(r.draw(ctx,p,{scene:'lobby',direction:'south'})){early=!done;break}await new Promise(r=>setTimeout(r,1));}assert(early,'current idle must appear before every other clip finishes');assert(await complete);assert(calls.length);assert(calls.every(c=>!c.hidden),'do not prepare hidden helmet before it is requested');for(const direction of ['south','north','east','west'])assert(r.draw(ctx,p,{scene:'hunt',action:'attack',direction}));const n=calls.length;await r.ensure(p);assert.equal(calls.length,n,'unchanged appearance is not recomposed');p.preferences={hideHeadgear:true};assert(await r.ensure(p));assert(calls.slice(n).every(c=>c.hidden));assert(r.draw(ctx,p,{scene:'lobby',direction:'west'}));});
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path');
+const lobby=fs.readFileSync(path.join(__dirname,'../paper-doll-96-lobby.js'),'utf8');
 
-test('preparing a cached appearance does not decode the same small native layers repeatedly',async()=>{const {r,loads}=runtime();await r.ready;const p={classId:'sword',equipment:{head:{def:19}}};await r.ensure(p);p.equipment.head.def=18;await r.ensure(p);p.equipment.head.def=19;await r.ensure(p);const frequencies=new Map();for(const url of loads)frequencies.set(url,(frequencies.get(url)||0)+1);assert(Math.max(...frequencies.values())<=2,'small shared layers must survive preparing adjacent clips');assert(r.snapshot().imageBytes<=64*1024*1024);assert(r.snapshot().images<=192);});
+function fixture(){
+ const prepared=[],released=[],pending=new Map(),drawn=[];
+ const root={MareHeadgear:{hidden:p=>!!p.preferences?.hideHeadgear},MareReworkNativeHD:{create:()=>native}};
+ const native={ready:Promise.resolve(),snapshot:()=>({}),
+  selectVisual(player,o){
+   const hidden=!!player.preferences?.hideHeadgear,id=player.equipment.head.def;
+   return {id:[id,hidden,o.action,o.direction].join('/'),action:o.action,direction:o.direction,
+    body:'male',pack:{directions:{[o.direction]:{clip:{frames:1}}}},
+    slotRoutes:hidden?{}:{head:{item:id,quality:'hd',source:'signed-hat-'+id}}};
+  },
+  async prepareConfiguration([pose],{resolve}){
+   const {source}=resolve(pose),id=source.id;prepared.push(id);
+   if(pending.has(id))await pending.get(id).promise;
+   return {coverage:[source],draw(){drawn.push(id);return true;},release(){released.push(id);}};
+  }
+ };
+ const load=new Function('globalThis','URL','fetch','performance','AbortController','console',lobby+';return globalThis.MarePaperDoll96Lobby');
+ const api=load(root,class URL{},async()=>({ok:false}),performance,AbortController,{error(){}}).create({baseURL:'https://fixture.test/'});
+ return {api,prepared,drawn,released,hold(key){let finish;const promise=new Promise(r=>{finish=r;});pending.set(key,{promise});return finish;}};
+}
+const player=id=>({classId:'sword',appearance96:{gender:'masculino',skinColor:'light'},equipment:{head:{def:id}}});
+const clip=(action,direction)=>({consumer:'world',action,direction});
+
+test('cada movimento carrega sua pose enquanto o jogador já pode desenhar outra direção',async()=>{
+ const {api,prepared,drawn,hold}=fixture();await api.ready;
+ const p=player(19),north=clip('walk','north'),south=clip('idle','south');
+ const resume=hold('19/false/walk/north'),walking=api.requestWorldVisual(p,north);
+ await api.requestWorldVisual(p,south).promise;
+ assert.deepEqual(prepared.sort(),['19/false/idle/south','19/false/walk/north']);
+ assert.equal(walking.state,'loading');assert(api.drawWorldVisual({},south,p));
+ assert(!api.drawWorldVisual({},north,p));assert.deepEqual(drawn,['19/false/idle/south']);
+ resume();await walking.promise;assert(api.drawWorldVisual({},north,p));
+ assert.equal(drawn.at(-1),'19/false/walk/north');
+});
+
+test('trocas A → B → A reutilizam a pose pronta e a preferência do capacete tem chave própria',async()=>{
+ const {api,prepared,drawn}=fixture();await api.ready;
+ const o=clip('idle','south'),p=player(19),q=player(18);
+ for(const who of [p,q,p]){await api.requestWorldVisual(who,o).promise;assert(api.drawWorldVisual({},o,who));}
+ assert.equal(prepared.length,2);assert.deepEqual(drawn,['19/false/idle/south','18/false/idle/south','19/false/idle/south']);
+ p.preferences={hideHeadgear:true};await api.requestWorldVisual(p,o).promise;assert(api.drawWorldVisual({},o,p));
+ assert.equal(drawn.at(-1),'19/true/idle/south');assert.equal(prepared.length,3);
+});

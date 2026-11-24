@@ -1,0 +1,219 @@
+{
+  "schema": "r1-headgear-adjustments-v1",
+  "previewOnly": true,
+  "catalogVersion": "headgear-editor-r1-v1",
+  "catalogSHA256": "66380171d46c03f050e6b198bf684950c8fe8ab56928e50fbba04dde81224078",
+  "createdAt": "2026-11-21T16:09:57.782Z",
+  "adjustments": [
+    {
+      "target": {
+        "snapshot": "53e68d21b3bb3dc5d7744e5852bc23d326fb30219d0146ea8f2b8f5595fa99fe",
+        "packSHA256": "53e68d21b3bb3dc5d7744e5852bc23d326fb30219d0146ea8f2b8f5595fa99fe",
+        "item": 143,
+        "body": "female",
+        "style": "curly",
+        "direction": "north"
+      },
+      "adjustment": {
+        "gearX": 0,
+        "gearY": 0,
+        "gearScale": 100,
+        "hairX": 0,
+        "hairY": 0,
+        "hairScale": 100,
+        "lineOffset": 0,
+        "policy": "calibrated",
+        "hideHair": false
+      }
+    },
+    {
+      "target": {
+        "snapshot": "3b25fbc72421aeae7c711fd3f5b7ea6b08dd962922bad8c624b5466a0241990c",
+        "packSHA256": "3b25fbc72421aeae7c711fd3f5b7ea6b08dd962922bad8c624b5466a0241990c",
+        "item": 178,
+        "body": "female",
+        "style": "braided",
+        "direction": "south"
+      },
+      "adjustment": {
+        "gearX": 0,
+        "gearY": 0,
+        "gearScale": 100,
+        "hairX": 0,
+        "hairY": 0,
+        "hairScale": 100,
+        "lineOffset": 0,
+        "policy": "calibrated",
+        "hideHair": false
+      }
+    },
+    {
+      "target": {
+        "snapshot": "5577107bd51f67008493f715950d0bae92fffb495f8fb20a53c1a28aab8b9d95",
+        "packSHA256": "5577107bd51f67008493f715950d0bae92fffb495f8fb20a53c1a28aab8b9d95",
+        "item": 178,
+        "body": "female",
+        "style": "undercut",
+        "direction": "south"
+      },
+      "adjustment": {
+        "gearX": 0,
+        "gearY": 0,
+        "gearScale": 100,
+        "hairX": 0,
+        "hairY": 0,
+        "hairScale": 100,
+        "lineOffset": 0,
+        "policy": "calibrated",
+        "hideHair": false
+      }
+    },
+    {
+      "target": {
+        "snapshot": "2d6c0eaf39650a5521820c30bbc3f480e87e55be9d873fbd93ba6bff83dd6d10",
+        "packSHA256": "2d6c0eaf39650a5521820c30bbc3f480e87e55be9d873fbd93ba6bff83dd6d10",
+        "item": 178,
+        "body": "female",
+        "style": "bob",
+        "direction": "south"
+      },
+      "adjustment": {
+        "gearX": 0,
+        "gearY": 0,
+        "gearScale": 100,
+        "hairX": 0,
+        "hairY": 0,
+        "hairScale": 100,
+        "lineOffset": 0,
+        "policy": "calibrated",
+        "hideHair": false
+      }
+    },
+    {
+      "target": {
+        "snapshot": "9aa0752264d4ef4587117678d322c79515c5166e5a54be8a1a1512147196f1c6",
+        "packSHA256": "9aa0752264d4ef4587117678d322c79515c5166e5a54be8a1a1512147196f1c6",
+        "item": 178,
+        "body": "female",
+        "style": "swept",
+        "direction": "south"
+      },
+      "adjustment": {
+        "gearX": 0,
+        "gearY": 0,
+        "gearScale": 100,
+        "hairX": 0,
+        "hairY": 0,
+        "hairScale": 100,
+        "lineOffset": 0,
+        "policy": "calibrated",
+        "hideHair": false
+      }
+    },
+    {
+      "target": {
+        "snapshot": "922fb347d507990fc3a5e57ea0233792ea00413c6c86cb375a1b18773f67d92a",
+        "packSHA256": "922fb347d507990fc3a5e57ea0233792ea00413c6c86cb375a1b18773f67d92a",
+        "item": 178,
+        "body": "female",
+        "style": "spiky",
+        "direction": "south"
+      },
+      "adjustment": {
+        "gearX": 0,
+        "gearY": 0,
+        "gearScale": 100,
+        "hairX": 0,
+        "hairY": 0,
+        "hairScale": 100,
+        "lineOffset": 0,
+        "policy": "calibrated",
+        "hideHair": false
+      }
+    },
+    {
+      "target": {
+        "snapshot": "7851d5b889845dd5ad61070d725c667afe67030b4aae5acd1dcaa4f49cae54e6",
+        "packSHA256": "7851d5b889845dd5ad61070d725c667afe67030b4aae5acd1dcaa4f49cae54e6",
+        "item": 178,
+        "body": "female",
+        "style": "topknot",
+        "direction": "south"
+      },
+      "adjustment": {
+        "gearX": 0,
+        "gearY": 0,
+        "gearScale": 100,
+        "hairX": 0,
+        "hairY": 0,
+        "hairScale": 100,
+        "lineOffset": 0,
+        "policy": "calibrated",
+        "hideHair": false
+      }
+    },
+    {
+      "target": {
+        "snapshot": "833e24244593cfbeb60288e47dcf9f451354fa74339b21f780140cfacf2cf23b",
+        "packSHA256": "833e24244593cfbeb60288e47dcf9f451354fa74339b21f780140cfacf2cf23b",
+        "item": 178,
+        "body": "female",
+        "style": "ponytail",
+        "direction": "south"
+      },
+      "adjustment": {
+        "gearX": 0,
+        "gearY": 0,
+        "gearScale": 100,
+        "hairX": 0,
+        "hairY": 0,
+        "hairScale": 100,
+        "lineOffset": 0,
+        "policy": "calibrated",
+        "hideHair": false
+      }
+    },
+    {
+      "target": {
+        "snapshot": "a7441d63507950f6d6ec91624a6ed406adbe72eba39a9476f31d7e7f80badbcd",
+        "packSHA256": "a7441d63507950f6d6ec91624a6ed406adbe72eba39a9476f31d7e7f80badbcd",
+        "item": 178,
+        "body": "female",
+        "style": "curly",
+        "direction": "south"
+      },
+      "adjustment": {
+        "gearX": 0,
+        "gearY": 0,
+        "gearScale": 100,
+        "hairX": 0,
+        "hairY": 0,
+        "hairScale": 100,
+        "lineOffset": 0,
+        "policy": "calibrated",
+        "hideHair": false
+      }
+    },
+    {
+      "target": {
+        "snapshot": "8b927013cbbfb307daece98ed38023ab88c5d665a8625c47a009f882b4477785",
+        "packSHA256": "8b927013cbbfb307daece98ed38023ab88c5d665a8625c47a009f882b4477785",
+        "item": 178,
+        "body": "female",
+        "style": "long",
+        "direction": "south"
+      },
+      "adjustment": {
+        "gearX": 0,
+        "gearY": 0,
+        "gearScale": 100,
+        "hairX": 0,
+        "hairY": 0,
+        "hairScale": 100,
+        "lineOffset": 0,
+        "policy": "calibrated",
+        "hideHair": false
+      }
+    }
+  ]
+}

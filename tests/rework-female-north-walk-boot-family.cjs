@@ -41,7 +41,7 @@ for(const pants of items){
   for(const x of [dc,pc,all])x.width=1;
  }
  a.equal(JSON.stringify(p9),save);
- for(const e of [{legs:pants,boots:169},{legs:pants,boots:id,head:129},{legs:pants,boots:id,weapon:0},{legs:21,boots:id},{legs:pants,boots:id,coat:151}]){
+ for(const e of [{legs:pants,boots:169},{legs:pants,boots:id,head:129},{legs:pants,boots:id,weapon:4},{legs:21,boots:id},{legs:pants,boots:id,coat:151}]){
   a(!api.selectVisual(actor(e),o)?.northLayers?.lower);
  }
  pb.release();both.release();console.log(id,pants,look.skinColor,'40 frames exact');

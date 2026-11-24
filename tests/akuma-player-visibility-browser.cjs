@@ -14,7 +14,7 @@ const realVisibilityDraw=lobby96.draw;lobby96.draw=function(c,player,options){co
  await p.evaluate(async()=>{for(let i=0;i<180;i++){__testFrame(performance.now());await new Promise(r=>setTimeout(r,1));}});
  let casts=0,frames=0;
  for(const body of ['masculino','feminino'])for(const cls of ['sword','brawler','gunner','rogue','cyborg','strategist','healer']){
-  await p.evaluate(({body,cls})=>__visibilityQA.setup(body,cls),{body,cls});const savedEquipment=await p.evaluate(()=>JSON.stringify(__visibilityQA.game.equipment));await p.waitForFunction(()=>__visibilityQA.prepare()==='ready',null,{timeout:90000});
+  await p.evaluate(({body,cls})=>__visibilityQA.setup(body,cls),{body,cls});const savedEquipment=await p.evaluate(()=>__visibilityQA.game.equipment);await p.waitForFunction(()=>__visibilityQA.prepare()==='ready',null,{timeout:90000});
   await p.evaluate(async()=>{const {runtime,game}=__visibilityQA;for(const direction of ['south','north','east','west']){for(const [action,weaponless] of [['idle',false],['attack-unarmed',true]]){const pose=runtime.requestWorldVisual(game,{action,direction,weaponless,consumer:'world'});while(pose.state==='loading')await new Promise(resolve=>setTimeout(resolve,15));if(pose.state!=='ready')throw Error(pose.error);}}});
   for(const [index,direction]of ['south','north','east','west'].entries()){
    await p.evaluate(({direction,key})=>{const q=__visibilityQA;q.aim(direction);q.game.energy=10000;q.game.fruitCooldowns={};q.session.rankA=null;void q.cast(true,key);q.draw();},{direction,key:String(index%3+1)});
@@ -28,7 +28,13 @@ const realVisibilityDraw=lobby96.draw;lobby96.draw=function(c,player,options){co
    assert.equal(requests.length,requestCount,'cast frames must reuse explicitly prepared sprite sources');
    for(let i=0;i<120&&await p.evaluate(()=>!!__visibilityQA.session.fruitAction);i++){await p.evaluate(()=>__visibilityQA.step(.05));await p.waitForTimeout(10);}
    assert.equal(await p.evaluate(()=>!!__visibilityQA.session.fruitAction),false);await p.evaluate(()=>__visibilityQA.draw());
-   const after=await p.evaluate(()=>({pose:__visibilityQA.pose(),probe:__visibilityQA.probe()}));assert(after.pose&&after.probe.ok&&after.probe.pixels>100);assert.equal(after.pose.state,'rendered');assert.equal(after.pose.weaponless,false,'real world draw restores equipped action after cast');assert.equal(await p.evaluate(()=>JSON.stringify(__visibilityQA.game.equipment)),savedEquipment,'casting cannot replace saved equipment');casts++;console.log('cast '+body+'/'+cls+'/'+direction);
+   const after=await p.evaluate(()=>({pose:__visibilityQA.pose(),probe:__visibilityQA.probe()}));assert(after.pose&&after.probe.ok&&after.probe.pixels>100);assert.equal(after.pose.state,'rendered');assert.equal(after.pose.weaponless,false,'real world draw restores equipped action after cast');const equipped=await p.evaluate(()=>__visibilityQA.game.equipment);
+    for(const [slot,item] of Object.entries(savedEquipment)){
+     if(item?.durability===undefined)continue;
+     assert(Number.isInteger(equipped[slot]?.durability)&&equipped[slot].durability>=0&&equipped[slot].durability<=item.durability,'only wear can lower condition during the cast');
+     equipped[slot]={...equipped[slot],durability:item.durability};
+    }
+    assert.deepEqual(equipped,savedEquipment,'casting preserves every equipped instance and all attributes except wear');casts++;console.log('cast '+body+'/'+cls+'/'+direction);
   }
   // The online adapter populates this same action from castVisual snapshots.
 

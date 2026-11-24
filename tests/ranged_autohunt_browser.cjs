@@ -16,7 +16,7 @@ const cases=[
  await page.route('**/api/**',route=>route.fulfill({status:404,body:'{}'}));
  await page.route('**/game.js*',async route=>{
   const response=await route.fetch(),source=await response.text();
-  const hook=`window.__rangedQA={get g(){return game},get w(){return world},get s(){return session},r:lobby96,nav:navigator,stats:getDerived,prepareMap(){lastTime=performance.now();return mapArtState()==='ready'},enterHunt,heroAttack,stepCombatVfx,faceCombatTarget,combatChest,draw:presentWorld,tick,center(){camera.update(world.hero,activeMap(),0,true)},equip(){cancelBasicAttack();game.classId='healer';configureFactionVisual();const item=newItem(itemDefs[31],1,false);game.inventory.push(item);equipItem(item.id);},auto(){autoPlay=true;autoSkills=false},stop(){autoPlay=false;autoSkills=false}};`;
+  const hook=`window.__rangedQA={get g(){return game},get w(){return world},get s(){return session},r:lobby96,nav:navigator,stats:getDerived,prepareMap(){lastTime=performance.now();return mapArtState()==='ready'},enterHunt,heroAttack,stepCombatVfx,faceCombatTarget,combatChest,autoAttackLine,draw:presentWorld,tick,center(){camera.update(world.hero,activeMap(),0,true)},equip(){cancelBasicAttack();game.classId='healer';configureFactionVisual();const item=newItem(itemDefs[31],1,false);game.inventory.push(item);equipItem(item.id);},auto(){autoPlay=true;autoSkills=false},stop(){autoPlay=false;autoSkills=false}};`;
   assert(source.includes('  window.__mareDiagnostics='),'test bridge insertion point');
   await route.fulfill({response,body:source.replace('  window.__mareDiagnostics=',hook+'\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')});
  });
@@ -34,15 +34,32 @@ const cases=[
    const q=__rangedQA;q.w.spawnClock=1e9;q.g.hp=q.stats().maxHP;
    const hero=q.w.hero;Object.assign(hero,scenario.hero);
    const target={...q.w.mobs[0],id:'ranged-regression',...scenario.target,anchorX:scenario.anchor.x,anchorY:scenario.anchor.y,alive:true,hp:10000,maxHP:10000,defense:0,magicDefense:0,speed:0,patrolClock:1e9,attackClock:1e9,engaged:false,returning:false};
+   // Preserve the shot direction and range while locating the nearest obstructed
+   // emitter on this map revision. Feet, target, muzzle and collision are all live.
+   const nav=q.nav();
+   const base={x:hero.x,y:hero.y},vector={x:target.x-hero.x,y:target.y-hero.y};
+   const clearFeetBlockedMuzzle=()=>nav.walkable(hero.x,hero.y)&&nav.walkable(target.x,target.y)&&
+     nav.projectileClear(hero,target)&&!q.autoAttackLine(target,hero);
+   let found=false;
+   for(let radius=0;radius<=40&&!found;radius++)for(let row=-radius;row<=radius&&!found;row++)
+    for(let col=-radius;col<=radius&&!found;col++){
+     if(Math.max(Math.abs(row),Math.abs(col))!==radius)continue;
+     hero.x=base.x+col*8;hero.y=base.y+row*8;
+     target.x=hero.x+vector.x;target.y=hero.y+vector.y;
+     found=clearFeetBlockedMuzzle();
+    }
+   if(!found)throw Error('No reachable obstructed emitter near '+scenario.name);
+   target.anchorX+=hero.x-base.x;target.anchorY+=hero.y-base.y;
+   const start={x:hero.x,y:hero.y};
    q.w.mobs=[target];q.w.target=target;q.faceCombatTarget(target);
-   const accepted=q.heroAttack(target,1,null,false,true),shot=q.s.combatProjectiles[0],point=q.combatChest(target),nav=q.nav();
+   const accepted=q.heroAttack(target,1,null,false,true),shot=q.s.combatProjectiles[0],point=q.combatChest(target);
    if(!shot)throw Error('Expected native projectile');
    const feetClear=nav.projectileClear(hero,target),shotClear=nav.projectileClear({x:shot.origin.x,y:shot.origin.y+24},{x:point.x,y:point.y+24});
    for(let i=0;i<30;i++){q.w.time+=.05;q.stepCombatVfx(.05);}
    const blockedDamage=10000-target.hp;
    q.auto();for(let i=0;i<400;i++){q.tick(.05);if(i%5===0)q.draw();}
    q.center();q.draw();
-   return {accepted,feetClear,shotClear,blockedDamage,autoDamage:10000-target.hp,moved:Math.hypot(hero.x-scenario.hero.x,hero.y-scenario.hero.y),walkable:nav.walkable(hero.x,hero.y),visualErrors:q.r.snapshot().errors};
+   return {start,accepted,feetClear,shotClear,blockedDamage,autoDamage:10000-target.hp,moved:Math.hypot(hero.x-start.x,hero.y-start.y),walkable:nav.walkable(hero.x,hero.y),visualErrors:q.r.snapshot().errors};
   },scenario);
   if(evidence)await page.screenshot({path:path.join(evidence,scenario.name+'-'+width+'.png')});
   console.log(JSON.stringify({case:scenario.name,...result}));

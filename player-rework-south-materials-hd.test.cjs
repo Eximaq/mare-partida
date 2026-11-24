@@ -36,7 +36,9 @@ require('node:test')('registered South tops and pants preserve strict saved eye,
  ]) {
   const o={action,direction:'south',consumer:'world'};
   const p=(pants,top)=>({appearance96:look,equipment:{...(top==null?{}:{coat:{def:top}}),...(pants==null?{}:{legs:{def:pants}})}});
-  const mixed=rt.selectVisual(p(21,coat),o),top=rt.selectVisual(p(null,coat),o),pants=rt.selectVisual(p(21,null),o);
+  // This oracle renders the modular material pass directly. Compare sources from the same pass.
+  const material=actor=>rt.select(actor,o)||rt.selectLayered(actor,o);
+  const mixed=material(p(21,coat)),top=material(p(null,coat)),pants=material(p(21,null));
   assert(mixed?.strictSouthAppearance, action+'/'+coat+'/'+JSON.stringify(look));
   assert(top?.strictSouthAppearance);assert(pants?.strictSouthAppearance);
   assert.equal(mixed.colorAppearance.eyeColor,look.eyeColor);assert.equal(mixed.colorAppearance.skin,look.skinColor);assert.equal(mixed.colorAppearance.hairColor,look.hairColor);

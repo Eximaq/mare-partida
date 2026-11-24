@@ -40,8 +40,16 @@ await authDatabase(async f=>{
   assert.equal(await p.evaluate('window.statusObserver.disconnect(); window.statusMutations'),0,'stable load labels do not rewrite DOM at frame rate');
   assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.characters')).rows[0].n,2);
   const before=await p.evaluate(()=>globalThis.__mareDiagnostics().sharedLobby.players[0]);
-  await q.keyboard.down('ArrowRight');await q.waitForTimeout(1200);await q.keyboard.up('ArrowRight');
-  await p.waitForFunction((x:number)=>Math.abs(globalThis.__mareDiagnostics().sharedLobby.players[0].x-x)>20,before.x);
+  assert.equal(before.name,'Companheiro');
+  await q.keyboard.down('ArrowRight');
+  try{
+   // The world loop consumes held input when the previous server command settles.
+   // Observe the same peer on the other account before ending the input.
+   await p.waitForFunction(({x,name}:{x:number;name:string})=>{
+    const peer=globalThis.__mareDiagnostics().sharedLobby.players[0];
+    return peer?.name===name&&Math.abs(peer.x-x)>20;
+   },before,{timeout:30000});
+  }finally{await q.keyboard.up('ArrowRight');}
   await p.screenshot({path:resolve(out,'two-players-original-port.png')});console.log('two isolated accounts visible; authoritative movement rendered');
   // Reproduce the original stutter with real requests delayed by 100 ms.
   // Frame-normalized checks distinguish a position jump from a busy CI renderer.
@@ -114,5 +122,23 @@ await authDatabase(async f=>{
   await q.evaluate(()=>globalThis.MareGameSession.logout());await p.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===0);
   assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');
   if(errors.length)console.log('browser errors',errors);assert.deepEqual(errors,[]);await other.close();console.log(JSON.stringify({result:'passed',transport:'trusted local HTTPS',backend:'real Node and isolated PostgreSQL',provider:'fixture without emails',flows:['two accounts','original map and dolls','server movement','travel and return','logout removes peer','demo save preserved']}));
- }catch(e){if(context)await context.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw new Error('End-to-end browser acceptance failed: '+(e instanceof Error?e.message.split('Call log:')[0].split('\n')[0]:'unknown error'));}finally{await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
+ }catch(error){
+  // Keep the original Playwright call site even when a page has stopped painting.
+  const pages=browser?.contexts().flatMap((c:any)=>c.pages())??[];
+  await Promise.allSettled(pages.map(async(page:any,i:number)=>{
+   const state=await page.locator('html').evaluate(()=>{
+    const d=globalThis.__mareDiagnostics?.(),session=globalThis.MareGameSession;
+    const load=document.querySelector('#worldLoading');
+    return {path:location.pathname,document:document.readyState,focus:document.activeElement?.tagName,
+     available:session?.available,controlled:session?.controlled,busy:session?.busy,
+     map:d?.map?.id,navigation:d?.map?.navigation,worldLoading:load?.getAttribute('data-state'),
+     visualState:d?.lobby96?.visualState,renderer:d?.lobby96?.renderer,draws:d?.sharedLobby?.draws,
+     peers:d?.sharedLobby?.players?.map((peer:{x:number;y:number})=>({x:peer.x,y:peer.y})),
+     hero:d?.hero&&{x:d.hero.x,y:d.hero.y},serverPosition:session?.data?.online?.world?.position};
+   },undefined,{timeout:3000}).catch(()=>({unresponsive:true}));
+   await writeFile(resolve(out,'failure-page-'+(i+1)+'.json'),JSON.stringify(state,null,2));
+   await page.screenshot({path:resolve(out,i===0?'failure.png':'failure-page-'+(i+1)+'.png'),timeout:5000});
+  }));
+  throw error;
+ }finally{await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
 });

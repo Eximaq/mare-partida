@@ -100,7 +100,11 @@ with sync_playwright() as p:
  q.locator('[data-close-panel]').click();open_comp(q);ready(q)
  assert q.locator('.comp-heading-subtitle').count()==1
  assert q.locator('[data-compendium-bonus]').inner_text()=='+0,9%'
- q.reload();q.wait_for_load_state('networkidle');open_comp(q);ready(q)
+ # The return to the saved game is ready when its HUD and current map
+ # character are available. Other animation assets continue loading on demand.
+ q.reload(wait_until='domcontentloaded',timeout=90000)
+ q.wait_for_function("window.__mareDiagnostics?.().lobby96.worldVisual?.state === 'ready'",timeout=90000)
+ open_comp(q);ready(q)
  q.locator('[data-compendium-query]').fill('Uma-Uma');ready(q)
  assert q.locator('[data-fruit-register=akuma_uma_uma]').is_disabled()
  # Permanence after losing the item; no second copy or bonus allowed.

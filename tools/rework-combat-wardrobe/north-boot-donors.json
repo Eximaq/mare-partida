@@ -1,0 +1,422 @@
+{
+ "8": [
+  {
+   "layer": "boot8-left-rear",
+   "record": "frozen-v47-male-151-boot8-north-idle",
+   "frame": 0,
+   "original": "f8194caf8ac64efd3b065601515ce9d695a51a7cacc372aca0b73f344e937c00",
+   "fit": "c526aec849cdc8f0e3a7bc92a708bc519aef0a6cd2cacf3eb06f81e68cfcb9e3",
+   "depth": -1
+  },
+  {
+   "layer": "boot8-left-front",
+   "record": "frozen-v47-male-151-boot8-north-idle",
+   "frame": 0,
+   "original": "a208d5d7e6e7538410662a2a9a6f3d0abb527db5e4e0dd0b01d60989bb86beac",
+   "fit": "43041c100e8d821f8ad4134c7440e846d68ea789c58bcf35ef57efb31806e094",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot8-right-rear",
+   "record": "frozen-v47-male-151-boot8-north-idle",
+   "frame": 0,
+   "original": "13f6062c7d3e769ac842f8ab26b8787ae72883a74c1444f38102a114ebba11e4",
+   "fit": "27839a4bce10f0a74f38268a9c569c74aabefdca407afc30994d92ebfc2a6d3e",
+   "depth": -1
+  },
+  {
+   "layer": "boot8-right-front",
+   "record": "frozen-v47-male-151-boot8-north-idle",
+   "frame": 0,
+   "original": "89f23c5048c7a2a2632edb7be9929706394ea01c6b7229350bafb26592ec4f62",
+   "fit": "4d149ce82341bcb82ca7fbac8d1172f9adf66735881d0c1fa12459fc26d99137",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot8-left-own-material-backing",
+   "record": "frozen-v47-male-151-boot8-north-idle",
+   "frame": 0,
+   "original": "5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f",
+   "fit": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+   "depth": 2.49
+  },
+  {
+   "layer": "boot8-right-own-material-backing",
+   "record": "frozen-v47-male-151-boot8-north-idle",
+   "frame": 0,
+   "original": "5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f",
+   "fit": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+   "depth": 2.49
+  }
+ ],
+ "9": [
+  {
+   "layer": "boot9-left-rear",
+   "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+   "frame": 0,
+   "original": "61af01b1dd542dc5ad05172d6d398d7cbfbc1a0ac73b2e2b5c22d69e37913304",
+   "fit": "61af01b1dd542dc5ad05172d6d398d7cbfbc1a0ac73b2e2b5c22d69e37913304",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot9-left-front",
+   "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+   "frame": 0,
+   "original": "1761f7a88f430ac85c6ff982e6220ed70d63582c3b10bc5c21fa4a3a7da8e0a3",
+   "fit": "1761f7a88f430ac85c6ff982e6220ed70d63582c3b10bc5c21fa4a3a7da8e0a3",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot9-right-rear",
+   "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+   "frame": 0,
+   "original": "3a427f965f64b3a3b256df5f78d42463ea6f6ed64eae343af5f186716f010eb5",
+   "fit": "3a427f965f64b3a3b256df5f78d42463ea6f6ed64eae343af5f186716f010eb5",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot9-right-front",
+   "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots9-isolated-candidate",
+   "frame": 0,
+   "original": "43b504179b980e2227c26d53364f91f80adcfe8eb4ebe789044a75d8eb4d989f",
+   "fit": "43b504179b980e2227c26d53364f91f80adcfe8eb4ebe789044a75d8eb4d989f",
+   "depth": 2.5
+  }
+ ],
+ "134": [
+  {
+   "layer": "boot134-left-rear",
+   "record": "male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",
+   "frame": 0,
+   "original": "c590d6b61b6b88e06dfab78b54c65cde3d9f6fded7f50e87fe2091a079690b1e",
+   "fit": "d75c579a974ef81ad459037a26077548838a3aae30a2ca0f28aa63b58f2936c2",
+   "depth": -1
+  },
+  {
+   "layer": "boot134-left-front",
+   "record": "male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",
+   "frame": 0,
+   "original": "5af69bb9bf9483a4c2a7bd2eac0568b561679d4ed4378c66ed23d57e24644deb",
+   "fit": "d44bbe61b5bb277c6e258a2b28f00031ce1ef6f9ea1f30eb8339804803dc44b0",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot134-right-rear",
+   "record": "male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",
+   "frame": 0,
+   "original": "4b9c3798a5dfea7bb3eccaa81e6e917b6010f8c06067a168693679f0b68053b5",
+   "fit": "320892f6cade86fd6293c63a2cf650a653e69ee576ed61996ca59f807afd0b87",
+   "depth": -1
+  },
+  {
+   "layer": "boot134-right-front",
+   "record": "male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",
+   "frame": 0,
+   "original": "e8324aeb972c91e0e0a4a6f414cb863afe93bb786366f797551c7190259d3738",
+   "fit": "dbbb00ccac9808a5e4b04e1aba6fad37282481a99ce17498fc9f8f76d47f3423",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot134-left-own-material-backing",
+   "record": "male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",
+   "frame": 0,
+   "original": "46cf3b9636eb153d878d7642630eb7c039f4446cf399269478abdc4c567c4124",
+   "fit": "d02dcb8d86b6a2636eb0e96615d6583fcd2a4890a7d49840956861620718f05a",
+   "depth": 2.49
+  },
+  {
+   "layer": "boot134-right-own-material-backing",
+   "record": "male-coat151-pants133-gloves152-boots134-walk-north-source-v18-idle-frame0",
+   "frame": 0,
+   "original": "b6723736e363a18f37567d72c452783b2b524adf69cb5c018a0986cebce7c92a",
+   "fit": "883eee2c9a52b8ec6a87b434a511dee58603b6be42adf6e4483c07eca9164d44",
+   "depth": 2.49
+  }
+ ],
+ "141": [
+  {
+   "layer": "boot141-left-rear",
+   "record": "frozen-v47-male-151-boot141-north-idle",
+   "frame": 0,
+   "original": "2d17b06b65b4f2be2d609f159fdbd960e82d2779c160a0e17334bdb1e9b9ef33",
+   "fit": "5cca928de4ebbe27b6e045fa4b249d52648e66dd747c707901734fb1f0b3f41e",
+   "depth": -1
+  },
+  {
+   "layer": "boot141-left-front",
+   "record": "frozen-v47-male-151-boot141-north-idle",
+   "frame": 0,
+   "original": "f1fb17d455caf4009184045940a60f315123dcb848cd87538dd167129836bf45",
+   "fit": "22fa8ce36885c99e507b1d44e4ac10f11528bdb982048aecf919987c8d3761b3",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot141-right-rear",
+   "record": "frozen-v47-male-151-boot141-north-idle",
+   "frame": 0,
+   "original": "7bcd7ed1aeb14737a97b729ab33864ddb3d852acc81eafcf40d5af3ed2e03bef",
+   "fit": "faed42e4d107332be9f86b13fc7c049f85c69abd6551fb0e2963221c4bf6acc2",
+   "depth": -1
+  },
+  {
+   "layer": "boot141-right-front",
+   "record": "frozen-v47-male-151-boot141-north-idle",
+   "frame": 0,
+   "original": "ee8608c794ba6bce7d5fbe5ea10ab9f790a61f76a03a45ece65e6b6b9ea7e781",
+   "fit": "545cf4c02f78db467c85703758b627ff810f52cedad4a10b6fb20501af890810",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot141-left-own-material-backing",
+   "record": "frozen-v47-male-151-boot141-north-idle",
+   "frame": 0,
+   "original": "4da529da6885196729e5a4d9ff75efc73abcd58c9375c4c9c59ca107b708f778",
+   "fit": "e9aba7b2e06005d7417d4b7fdf38fa3d21999c74418f526ea780cf5f6cb86b78",
+   "depth": 2.49
+  },
+  {
+   "layer": "boot141-right-own-material-backing",
+   "record": "frozen-v47-male-151-boot141-north-idle",
+   "frame": 0,
+   "original": "41062caa1d4200ca6717603e7e4a686172c55698054085054d1caa225adbe399",
+   "fit": "54f93aff24518cd16a24d45cd4c7d10d86f5b13b289a2d9e9b2f14fb7a2bb67e",
+   "depth": 2.49
+  }
+ ],
+ "148": [
+  {
+   "layer": "boot148-left-rear",
+   "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+   "frame": 0,
+   "original": "eca6d2768588c587f7dc01e83c51ec3fdda28bdd4f507f088b843e7501b727b5",
+   "fit": "eca6d2768588c587f7dc01e83c51ec3fdda28bdd4f507f088b843e7501b727b5",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot148-left-front",
+   "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+   "frame": 0,
+   "original": "99d6304ff600bd8292648fb31563d78f72fd85c6acadfc0009dede21c6c53d27",
+   "fit": "99d6304ff600bd8292648fb31563d78f72fd85c6acadfc0009dede21c6c53d27",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot148-right-rear",
+   "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+   "frame": 0,
+   "original": "81618db6e9980f16062b88974800a1319ea0dae638920978269860c65b822856",
+   "fit": "81618db6e9980f16062b88974800a1319ea0dae638920978269860c65b822856",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot148-right-front",
+   "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+   "frame": 0,
+   "original": "7d2dae36506f5b67e7b7ab285384cc0db7264a06e0b075b5d8d2bd5213b96081",
+   "fit": "7d2dae36506f5b67e7b7ab285384cc0db7264a06e0b075b5d8d2bd5213b96081",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot148-left-own-material-backing",
+   "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+   "frame": 0,
+   "original": "9ed47b8b97c67bd2885d55d2eaf3ec897627f07ed73ac2033cc83b58f4d7ee1b",
+   "fit": "9ed47b8b97c67bd2885d55d2eaf3ec897627f07ed73ac2033cc83b58f4d7ee1b",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot148-right-own-material-backing",
+   "record": "male-pants133-attack-unarmed-north-drawn8-candidate-boots148-isolated-candidate",
+   "frame": 0,
+   "original": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+   "fit": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+   "depth": 2.5
+  }
+ ],
+ "155": [
+  {
+   "layer": "boot155-rear-mouth-0",
+   "record": "frozen-male-pants133-north-idle-v47",
+   "frame": 0,
+   "original": "c3a988b433dbbed7344be381d3f0438a6b6a8486cd7f114e9a30b75d156c0b49",
+   "fit": "6aba48e145eaa418e79df19565e0819700bfd69139b16eb331b7d0fea0768899",
+   "depth": -1
+  },
+  {
+   "layer": "boot155-shell-0",
+   "record": "frozen-male-pants133-north-idle-v47",
+   "frame": 0,
+   "original": "e82db848e9e28377743e8a760494374bbb5bb371afc4b04c018305b27138e58c",
+   "fit": "f15c974a04f6fd74d34446fcee310ae63ab206fb98729cb80771ea8aa08d1626",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot155-rear-mouth-1",
+   "record": "frozen-male-pants133-north-walk-v47",
+   "frame": 9,
+   "original": "ef864e2ed6358f01a8e40a11126a6e07cbbbc785d38a3e7a8ad6ee7f53c002ab",
+   "fit": "631a99c2022e384da759eba68d20a2e49c5b09997f2a70d98975109374ce7cbd",
+   "depth": -1
+  },
+  {
+   "layer": "boot155-shell-1",
+   "record": "frozen-male-pants133-north-walk-v47",
+   "frame": 9,
+   "original": "54a786cd2e0a3d9af5e8787467ee6ee3701095ff97f90e730bb286e9b513a69c",
+   "fit": "6d5464d0045405921a36123bd5bde6ce7cd89809decc23ede17e31869d6bd54d",
+   "depth": 2.5
+  }
+ ],
+ "162": [
+  {
+   "layer": "boot162-left-rear",
+   "record": "frozen-v47-male-151-boot162-north-idle",
+   "frame": 0,
+   "original": "598495b4d3329ba2a2c915ddc34e3b52251927a5bea15ebaed514e69ab705053",
+   "fit": "bfc90f2ec23335ad06643cf5cc574a8c1be9fa3118a65eb12b49531e768ab751",
+   "depth": -1
+  },
+  {
+   "layer": "boot162-left-front",
+   "record": "frozen-v47-male-151-boot162-north-idle",
+   "frame": 0,
+   "original": "fff00603ef3820a4c18cd9e75b2da2136c6342e0dd4b8f8122039c7104fd5105",
+   "fit": "5c0252c71b4719b87c816e987f821773af6d993cd463f3567f8c600e31cd3789",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot162-right-rear",
+   "record": "frozen-v47-male-151-boot162-north-idle",
+   "frame": 0,
+   "original": "64aafcdbd6079de681944545102f1fc073fe50ed4d043b52e6abe47286dd55f0",
+   "fit": "96defdabf20e78d6ccb9a7ceab9242ca2153cd5f7512f280f94a6880eb60f6ad",
+   "depth": -1
+  },
+  {
+   "layer": "boot162-right-front",
+   "record": "frozen-v47-male-151-boot162-north-idle",
+   "frame": 0,
+   "original": "4432ccd22323cf7cfa3386928a0b0a714f81a0a8557d8a74f6fe394c211dee80",
+   "fit": "cccb06b45a6561a7cc5c1189581a46e5e1de406ddd6c82c5af883aab4b0c49f6",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot162-left-own-material-backing",
+   "record": "frozen-v47-male-151-boot162-north-idle",
+   "frame": 0,
+   "original": "c3e5f7595fb5e901c58d73509456534d57c89e1d2ab72488cc1b1e7674845ecc",
+   "fit": "edea56fec8bbeb9efcf5cc46f47770ff240298ccd4f1377659fadf2677efac79",
+   "depth": 2.49
+  },
+  {
+   "layer": "boot162-right-own-material-backing",
+   "record": "frozen-v47-male-151-boot162-north-idle",
+   "frame": 0,
+   "original": "5eea5795b6444492f9a08963e15d30c444d9164c3d44e05da44133813b8d120f",
+   "fit": "ed0f91b02f8e6681e0c69b76e9d3b9b968b341b3ef3d1f10bd53da0ed7a8727c",
+   "depth": 2.49
+  }
+ ],
+ "169": [
+  {
+   "layer": "boot169-left-rear",
+   "record": "frozen-v47-male-151-boot169-north-idle",
+   "frame": 0,
+   "original": "4f08bd3137d4fac3afb793f28c2c312f8f0e9015c287d89e914871d27a122693",
+   "fit": "7693c0015e55aa914c5c1d2678b506cc3f4a098867aabed7854343d3ddebe104",
+   "depth": -1
+  },
+  {
+   "layer": "boot169-left-front",
+   "record": "frozen-v47-male-151-boot169-north-idle",
+   "frame": 0,
+   "original": "0e37d70b43e35ba864fdb0e08d8bf3b9bd08a48a45816f0a80a03d73a537e08c",
+   "fit": "04201c63a35ce07239c4e7334b3e20e8f22a38e82cd46d6a672a4eea7d5f158c",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot169-right-rear",
+   "record": "frozen-v47-male-151-boot169-north-idle",
+   "frame": 0,
+   "original": "7121b83d887c90ab10033768ba4532cf8f9af734c6bdfe07b7e7c5cc899f4685",
+   "fit": "82675e27bd21b3fa5c916834d997740c825be5b1f4981d8c1cf94499a8305d05",
+   "depth": -1
+  },
+  {
+   "layer": "boot169-right-front",
+   "record": "frozen-v47-male-151-boot169-north-idle",
+   "frame": 0,
+   "original": "b0a3ca0dd687d0e3beb591535b17562394d63e0320500638286290f09423c40d",
+   "fit": "aa7d2195f1489a9ba448bfe5e94611ced9b80700c3bb6ffb1e09f9e59c13afa5",
+   "depth": 2.5
+  }
+ ],
+ "176": [
+  {
+   "layer": "boot176-left-rear",
+   "record": "frozen-v47-male-151-boot176-north-idle",
+   "frame": 0,
+   "original": "a379185099b51e86bf90bc07c06e91bbaed5db5b626bc7afb5c25075f900e74c",
+   "fit": "d919d357c72c293be0a430297a615fb59193878ddf150b58d464ec033f4594ff",
+   "depth": -1
+  },
+  {
+   "layer": "boot176-left-front",
+   "record": "frozen-v47-male-151-boot176-north-idle",
+   "frame": 0,
+   "original": "83ae2f1ccf160aed14c4e58290c8cf45b5e0081353759cda8e72cb5abb4124e0",
+   "fit": "668d4856aafe9f1407cdfcc562585af4a701fe9ca4c25fc60fb4b5bed5dd83ea",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot176-right-rear",
+   "record": "frozen-v47-male-151-boot176-north-idle",
+   "frame": 0,
+   "original": "cfcc33671a24ed4898d80ebfc3f47abfb75f559ce15c490b4b7d58cf9408fdc9",
+   "fit": "ba97c60cf0d2e76e9ec42b115a45e49747b2c7daf2d24ceca55ec7a0460d99e9",
+   "depth": -1
+  },
+  {
+   "layer": "boot176-right-front",
+   "record": "frozen-v47-male-151-boot176-north-idle",
+   "frame": 0,
+   "original": "262a25812e05abdcc218d3895b628827d5a8eac231904a7d7e5da288e774e32c",
+   "fit": "9574d34e550ae7eb61b92844c57b4ef526f5bbcfd343e92629733b760d6d6d43",
+   "depth": 2.5
+  }
+ ],
+ "183": [
+  {
+   "layer": "boot183-left-rear",
+   "record": "frozen-v47-male-151-boot183-north-idle",
+   "frame": 0,
+   "original": "9834faf5227189d17f46a200cff0dd94d1076b011d66d44dd9efed72df0ec06e",
+   "fit": "d1de2038adf7c314e48de212cc62c35ed0956ad1cefdfa8e88c01e4743d60b66",
+   "depth": -1
+  },
+  {
+   "layer": "boot183-left-front",
+   "record": "frozen-v47-male-151-boot183-north-idle",
+   "frame": 0,
+   "original": "bed187646921af4b77d4fd23dbea056490e76693137e10fd07d74642f7a434a2",
+   "fit": "694fb0fc282d0df99741163f8c063ea07a3a70143abfc713fa9904f26e221312",
+   "depth": 2.5
+  },
+  {
+   "layer": "boot183-right-rear",
+   "record": "frozen-v47-male-151-boot183-north-idle",
+   "frame": 0,
+   "original": "6f427330a1bb5c32c028d758fa11510d249b9808af48c6af3ffc45fe694dd5f6",
+   "fit": "3b3d901d7afdcbb09d273ddf6cd2ad28031c7432dec28a0d3b4a339ae355660d",
+   "depth": -1
+  },
+  {
+   "layer": "boot183-right-front",
+   "record": "frozen-v47-male-151-boot183-north-idle",
+   "frame": 0,
+   "original": "b62030df2f8be29345f6b9900138cb00617647f11b4999dc2414093e00b67da9",
+   "fit": "4e84f039f2b8733032018de7bfab563adf195c342ced2c0b7459fe62a6275596",
+   "depth": 2.5
+  }
+ ]
+}

@@ -122,7 +122,15 @@ test('registered coat 6 adds only clothing to every native P133 punch frame',asy
    const dir=source.pack.directions.south,coatLayers=dir.layers.filter(l=>!l.id.startsWith('base:')&&!l.id.startsWith('pants133-'));
    assert(coatLayers.length&&coatLayers.every(l=>['top','underArms'].includes(l.slot)));
    const coatOnly={...source,strictSouthAppearance:null,paletteSourceMasks:{},paletteRefs:[],id:source.id+':regression-coat-only',pack:{...source.pack,directions:{south:{...dir,layers:coatLayers}}}};
-   assert.equal(api.selectLayered(mixed,{...options,direction:'north'}),null);
+   const north={...options,direction:'north'},northSource=api.selectLayered(mixed,north);
+   assert.equal(northSource.slotRoutes.coat.item,6);assert.equal(northSource.slotRoutes.legs.item,133);
+   assert.match(northSource.slotRoutes.coat.source,/torso6-north/);assert.deepEqual(northSource.omitted,[]);
+   const northern=await api.prepareConfiguration([{player:mixed,options:north,source:northSource}],{resolve:x=>x});
+   try{
+    assert.equal(northern.coverage[0].frames,8);
+    for(let f=0;f<8;f++)assert(northern.draw(cv.createCanvas(400,400).getContext('2d'),mixed,
+     {...north,x:180,y:180,progress:(f+.2)/8}));
+   }finally{northern.release();}
    assert.equal(api.selectLayered({...mixed,equipment:{...mixed.equipment,weapon:{def:0}}},options),null);
    assert.equal(api.selectLayered({...mixed,equipment:{...mixed.equipment,boots:{def:148}}},options)?.slotRoutes.boots.quality,'hd');
    assert.equal(api.selectLayered({...mixed,equipment:{...mixed.equipment,boots:{def:176}}},options),null);

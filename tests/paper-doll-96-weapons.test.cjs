@@ -27,6 +27,14 @@ for(const body of ['masculino','feminino'])for(const item of catalog.items)for(c
 }
 const mask=new Uint8Array(128*128);mask[75*128+47]=1;assert.deepEqual(W.contact({x:45/128,y:75/128},mask,128,128,0),{x:47,y:75,distance:4,visible:true});assert.equal(W.contact({x:.5,y:.5},mask,128,128,0).visible,false,'occluded hands do not borrow another limb');
 const wardrobe=fs.readFileSync(path.join(base,'wardrobe.js'),'utf8');
-const runtime=fs.readFileSync(path.join(root,'paper-doll-96-lobby.js'),'utf8');assert(runtime.includes('progress/hit*.5'));assert(runtime.includes("key:[body,action,direction].join(':')"),'attachment caches must distinguish animation families');assert(runtime.includes('weaponPadding'));
+const runtime=fs.readFileSync(path.join(root,'paper-doll-96-lobby.js'),'utf8');const {frameAt}=require('../paper-doll-96-lobby.js');
+for(const body of Object.values(manifest.bodies))for(const [name,byDirection] of Object.entries(body.clips)){
+ if(!name.startsWith('attack-'))continue;
+ for(const clip of Object.values(byDirection)){
+  for(let phase=0;phase<clip.frames;phase++)assert.equal(frameAt(clip,0,(phase+.25)/clip.frames),phase);
+  assert.equal(frameAt(clip,0,1),clip.loop?0:clip.frames-1);
+ }
+}
+assert(runtime.includes("key:[body,action,direction].join(':')"),'attachment caches must distinguish animation families');assert(runtime.includes('weaponPadding'));
 assert(wardrobe.includes("drawGrips(ctx,weaponPlan,'back'"));assert(wardrobe.includes("drawGrips(ctx,weaponPlan,'front'"));
 assert.equal(manifest.productionEnabled,false);console.log(JSON.stringify({weaponMaterials:12,effects:[70,74],poses,contacts,originalsUnchanged:true}));

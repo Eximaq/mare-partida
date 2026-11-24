@@ -34,6 +34,8 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
   // Revalidate provider/session/epoch after acquiring every peer lock.
   roster=await presence(c,candidate.party_id);
   const room=row.simulation,now=row.now.getTime(),elapsed=(now-row.tick_at.getTime())/1000,actors:any[]=[];let attached=0;
+  // The shared room owns its old mobs independently of personal battle rows.
+  if(room.area==='skypiea-01')E.reanchorSkypieaMobs(room.area,room.mobs,maps().navigation(room.mapId));
    await refreshPartyLeader(c,candidate.party_id,roster,now);
   const ids=roster.map(m=>m.character_id),battles=await readBattleRows(c,ids);
   const connected=roster.filter(m=>m.connected&&battles.get(m.character_id)?.simulation.partyInstanceId===room.id).map(m=>m.character_id);

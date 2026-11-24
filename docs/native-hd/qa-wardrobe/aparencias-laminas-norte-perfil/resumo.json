@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "comandoSelecao": "node tests/rework-blade-profile-head-styles.cjs",
+  "comandoMapa": "node tests/rework-independent-world-browser.cjs --profile-blade-head-styles",
+  "build": {
+    "sha256Montador": "0e79c5185af03ade4ce1fcb616f113f021d0a36861d981573ff15d47c5a169f3"
+  },
+  "selecao": {
+    "armas": {
+      "lesteOeste": [
+        12,
+        13,
+        71,
+        72,
+        73,
+        74
+      ],
+      "norte": [
+        1,
+        67,
+        68,
+        70
+      ]
+    },
+    "contextos": 16,
+    "comCabeloCroppedAntes": 0,
+    "comCabeloCroppedDepois": 16,
+    "estilosDeCabelo": 14,
+    "expressoes": 5,
+    "selecoesComElmo178": 1120
+  },
+  "desenho": {
+    "ciclosComEquipamentos": 16,
+    "quadrosPorCiclo": 8,
+    "quadrosComEquipamentos": 128,
+    "quadrosComparadosComMaterialNativoEmQuatroContextos": 160,
+    "nota": "A prova de material inclui os quatro ciclos equipados correspondentes da primeira contagem."
+  },
+  "mapa": {
+    "aparencia": {
+      "version": 1,
+      "gender": "masculino",
+      "hairStyle": "hair-cropped",
+      "hairColor": "blue",
+      "eyeStyle": "face-calm",
+      "eyeColor": "green",
+      "skinStyle": "natural",
+      "skinColor": "ebony"
+    },
+    "equipamento": {
+      "coat": 165,
+      "pants": 21,
+      "boots": 183,
+      "gloves": 159,
+      "head": 178
+    },
+    "quadrosNoMosaico": 32,
+    "errosCapturados": [],
+    "observacoes": [
+      {
+        "caso": "cabelo-curto-lamina-73-east-elmo",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "east",
+        "estado": "ready"
+      },
+      {
+        "caso": "cabelo-curto-lamina-73-east-sem-elmo",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "east",
+        "estado": "ready"
+      },
+      {
+        "caso": "cabelo-curto-lamina-73-east-elmo-restaurado",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "east",
+        "estado": "ready"
+      },
+      {
+        "caso": "cabelo-curto-lamina-73-west-elmo",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "west",
+        "estado": "ready"
+      },
+      {
+        "caso": "cabelo-curto-lamina-73-west-sem-elmo",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "west",
+        "estado": "ready"
+      },
+      {
+        "caso": "cabelo-curto-lamina-73-west-elmo-restaurado",
+        "desenhou": true,
+        "acao": "attack-daggers",
+        "direcao": "west",
+        "estado": "ready"
+      },
+      {
+        "caso": "cabelo-curto-lamina-1-north-elmo",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "estado": "ready"
+      },
+      {
+        "caso": "cabelo-curto-lamina-1-north-sem-elmo",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "estado": "ready"
+      },
+      {
+        "caso": "cabelo-curto-lamina-1-north-elmo-restaurado",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "estado": "ready"
+      },
+      {
+        "caso": "cabelo-curto-lamina-67-north-elmo",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "estado": "ready"
+      },
+      {
+        "caso": "cabelo-curto-lamina-67-north-sem-elmo",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "estado": "ready"
+      },
+      {
+        "caso": "cabelo-curto-lamina-67-north-elmo-restaurado",
+        "desenhou": true,
+        "acao": "attack-sword",
+        "direcao": "north",
+        "estado": "ready"
+      }
+    ]
+  }
+}

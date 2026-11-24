@@ -15,6 +15,7 @@ HOOK="""  window.__compactQA={get game(){return game},get session(){return sessi
 refresh(){updateUI();renderPortrait();drawWorld();presentWorld()},enter:enterHunt,leave:returnLobby,
 openMerchant(){const npc=npcs.find(n=>n.kind==='shop');Object.assign(world.hero,{x:npc.x,y:npc.y});activateNPC(npc)},
 toggle:toggleFloating,defs:itemDefs,newItem,syncFruit:syncFruitVfx,
+manualSkillReady(){return scene==='hunt'&&!autoPlay&&!actionLocked()&&!classSkillReason()&&session.respawn<=0},
 prepareNavigation(){navigator().buildCells(1024);presentWorld()}};window.__mareDiagnostics="""
 
 def measurements(q):
@@ -114,7 +115,7 @@ with sync_playwright() as p:
         q.locator('#chatInput').blur()
         # Keep screenshots/merchant interactions from consuming the 5s cooldown on slower runners.
         # Advance the application clock explicitly for both sides of the cooldown boundary below.
-        q.clock.pause_at(q.evaluate('Date.now()+1'))
+        q.clock.pause_at(q.evaluate('new Date(Date.now()+1000).toISOString()'))
         q.evaluate('__compactQA.game.hp=__compactQA.stats().maxHP/2;__compactQA.refresh()')
         old=q.evaluate('({potions:__compactQA.game.potions,gold:__compactQA.game.gold,hp:__compactQA.game.hp})')
         q.locator('#usePotion').click()
@@ -150,7 +151,7 @@ with sync_playwright() as p:
         # without a timing dependency on enemy navigation.
         q.evaluate('''() => {const x=__compactQA;x.game.equipment.akuma_no_mi=null;
           x.game.classId='cyborg';x.game.equipment.weapon=x.newItem(x.defs[14]);x.syncFruit();x.enter();x.refresh()}''')
-        if q.locator('#autoToggle').get_attribute('aria-pressed')=='true':
+        if q.locator('#autoToggle').evaluate("button => button.classList.contains('active')"):
             q.locator('#autoToggle').click()
         # enterHunt loads map art and builds navigation asynchronously. The
         # production RAF intentionally suspends simulation/HUD ticks until ready.
@@ -169,10 +170,24 @@ with sync_playwright() as p:
         except Exception:
             print('Compact HUD loading diagnostics:', q.evaluate("({navigation:__mareDiagnostics().map.navigation,visual:__mareDiagnostics().lobby96.worldVisual,loading:document.querySelector('#worldLoading')?.dataset.state})"), errors, flush=True)
             raise
+        # Navigation and manual combat share the same timer. Freeze after map loading,
+        # then finish any outstanding attack with the production simulation clock.
+        q.clock.pause_at(q.evaluate('new Date(Date.now()+1000).toISOString()'))
+        for _ in range(120):
+            if q.evaluate('__compactQA.manualSkillReady()'):
+                break
+            q.clock.run_for(50)
+        assert q.evaluate('__compactQA.manualSkillReady()')
         q.evaluate('__compactQA.session.cooldowns[1]=0;__compactQA.game.energy=__compactQA.stats().maxEnergy;__compactQA.refresh()')
+        uses=q.evaluate('__compactQA.session.skillUses?.[1]||0')
         q.locator('#classSkill2').click()
-        q.wait_for_function("document.querySelector('#classSkill2').classList.contains('is-cooling')", timeout=10000)
+        assert q.evaluate('__compactQA.session.skillUses[1]')==uses+1, 'The real click must activate the skill'
         assert q.evaluate('__compactQA.session.cooldowns[1]')>0
+        # The live HUD repaints after 270 ms of simulation; wait on its output.
+        for _ in range(20):
+            q.clock.run_for(100)
+            if 'is-cooling' in q.locator('#classSkill2').get_attribute('class'):
+                break
         assert 'is-cooling' in q.locator('#classSkill2').get_attribute('class')
         assert q.locator('#classCooldown2').inner_text().endswith('s')
     assert not errors,errors

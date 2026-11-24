@@ -39,7 +39,7 @@ function adaptCarry(carry,outfits,{boots=null}={}){
  const refs=[...new Set([...(layer.frames||[]),layer.source,...added].filter(Boolean))];r.base.sourceRefs=[...new Set([...r.base.sourceRefs,...refs])];
  r.outfitOverlay={item:133,sourceRecord:outfit.id,sourceRefs:refs,lowerBodyPoseVerified:true,forearmPoseDifferencesAllowed:true,candidate:true};r.id+='-pants133-candidate';return r;
 }
-const recoveredPants=new Set([140,147,154,161,175,182]);
+const recoveredPants=new Set([140,147,154,161,168,175,182]);
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 function samePoseExceptNearArm(d,o){
  const nearArm=new Set(['RIGHT ELBOW','RIGHT ARM']);
@@ -47,8 +47,8 @@ function samePoseExceptNearArm(d,o){
   Object.entries(pose).every(([key,point])=>nearArm.has(key)||same(point,o.poses[i][key])));
 }
 function adaptIsolatedCoat(carry,outfits,{coat}={}){
- if(!Number.isInteger(coat)||!Number.isInteger(carry?.item)||carry.base?.body!=='male')return null;
- const {direction,action,base}=carry,d=base.pack.directions[direction];
+ if(!Number.isInteger(coat)||carry?.base?.body!=='male')return null;
+ const {direction,action,base}=carry;
  const isolated=outfits.records.find(r=>r.id==='male-torso'+coat+'-'+direction+'-frozen-'+action+'-native');
  // The 151 donor declares its garment layers separately from the 133 pants.
  // Reuse those layers only where the pose and frame contract actually match.
@@ -56,8 +56,22 @@ function adaptIsolatedCoat(carry,outfits,{coat}={}){
  const retarget=coat===151&&['east','west'].includes(direction);
  const outfit=isolated||(coat===151&&outfits.records.find(r=>r.body==='male'&&r.direction===sourceDirection&&r.action===action&&
   r.equipment?.torso===151&&r.equipment?.pants===133&&Object.keys(r.equipment).length===2&&r.id.endsWith('-coat151-native')));
+ return mountIsolatedCoat(carry,outfit,{coat,sourceDirection,retarget,isolated:!!isolated});
+}
+function adaptOwnCoat(carry,selected){
+ const outfit=selected?.source?.record, coat=outfit?.equipment?.torso;
+ if(selected?.state!=='available'||selected.mirrorX||carry?.base?.body!=='male'||
+    outfit?.body!=='male'||outfit.direction!==carry.direction||outfit.action!==carry.action||
+    selected.sourceDirection!==outfit.direction||selected.key!==JSON.stringify(['torso',coat,'male',outfit.action,outfit.direction])||outfit.productionEnabled===false)return null;
+ // Source ownership was resolved already: no catalog, caller weapon
+ // identity, outfit list, or fallback source is consulted here.
+ return mountIsolatedCoat(carry,outfit,{coat,sourceDirection:selected.sourceDirection,retarget:false,isolated:true});
+}
+function mountIsolatedCoat(carry,outfit,{coat,sourceDirection,retarget,isolated}){
  if(!outfit||outfit.equipment.torso!==coat||isolated&&Object.keys(outfit.equipment).length!==1)return null;
- const o=outfit.pack.directions[sourceDirection],equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ const {direction,action,base}=carry,d=base.pack.directions[direction],
+  o=outfit.pack.directions[sourceDirection],equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ if(!d||!o)return null;
  const compatibleClip=equal(d.clip,o.clip)||action==='idle'&&d.clip.frames===1&&o.clip.frames===1&&!d.clip.loop&&!o.clip.loop;
  if(!equal(base.pack.frame,outfit.pack.frame)||!equal(base.pack.pivot,outfit.pack.pivot)||base.pack.density!==outfit.pack.density||
     !equal(d.rest,o.rest)||!(retarget?samePoseExceptNearArm(d,o):equal(d.poses,o.poses))||!compatibleClip)return null;
@@ -76,7 +90,8 @@ function adaptIsolatedPants(carry,outfits,item){
  if(carry?.base?.body!=='male'||!['idle','walk'].includes(carry.action)||carry.bootsOverlay)return null;
  const {direction,action,base}=carry;
  if(recoveredPants.has(item))return adaptRecoveredPants(carry,outfits,item);
- const outfit=outfits.records.find(r=>r.id==='male-pants'+item+'-'+action+'-'+direction);
+ if(item===133&&!['north','south'].includes(direction))return null;
+ const outfit=outfits.records.find(r=>r.id==='male-pants'+item+'-'+action+'-'+direction+(item===133?'-isolated-r2':''));
  if(outfit?.equipment.pants!==item||Object.keys(outfit.equipment).length!==1)return null;
  const d=base.pack.directions[direction],o=outfit.pack.directions[direction];
  const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -87,7 +102,7 @@ function adaptIsolatedPants(carry,outfits,item){
  const material=o.layers.filter(l=>!baseIds.has(l.id));
  if(!lower||!oldLower||lower.binding.kind!=='fixed'||oldLower.binding.kind!=='fixed'||lower.depth!==oldLower.depth||
     d.layers.some(l=>!(carry.outfitOverlay?.layerIds||[]).includes(l.id)&&l.id!==lower.id&&!eq(l,o.layers.find(a=>a.id===l.id)))||
-    material.length!==1||!(item===21?material[0].id==='pants21-independent':['pants22-independent-candidate','pants22-profile-candidate'].includes(material[0].id))||
+    material.length!==1||!(item===133?material[0].id==='own133-isolated':item===21?material[0].id==='pants21-independent':['pants22-independent-candidate','pants22-profile-candidate'].includes(material[0].id))||
     material[0].slot!=='pants'||material[0].binding.kind!=='fixed')return null;
  const sources=l=>(l.frames||[l.source]);
  const refs=[...new Set([...(carry.outfitOverlay?.sourceRefs||[]),...sources(lower).filter(sha=>!base.sourceRefs.includes(sha)),...sources(material[0])])];
@@ -105,6 +120,19 @@ function adaptRecoveredPants(carry,outfits,item){
  if(!same(base.pack.frame,outfit.pack.frame)||!same(base.pack.pivot,outfit.pack.pivot)||
     base.pack.density!==outfit.pack.density||!same(d.clip,o.clip)||!same(d.rest,o.rest)||!samePoseExceptNearArm(d,o))return null;
  const pants=o.layers.filter(l=>l.slot==='pants'&&l.id.startsWith('pants'+item+'-'));
+ if(item===168){
+  // The two side passes own their alpha; the named v47 donor also has
+  // unrelated torso, glove and boot records, which are never imported.
+  // Vertical donors use a different depth order and are not certified here.
+  if(!['east','west'].includes(direction)||!outfit.frozenPantsSource||outfit.productionEnabled===false||
+    !same(pants.map(l=>l.id),['pants168-visible-cloth-only','pants168-original-panel-independent'])||
+    !same(pants.map(l=>l.depth),[4.4,4.45])||pants.some(l=>l.binding.kind!=='fixed')||
+    pants.some(l=>l.depthTrack||d.layers.some(k=>k.id===l.id||k.depth===l.depth||k.depthTrack))||
+    carry.plan&&(!carry.plan.parts?.length||carry.plan.parts.some(part=>{
+      const bind=d.layers.find(l=>l.binding?.a===part.binding.a&&l.binding?.b===part.binding.b);
+      return !bind||bind.depthTrack||pants.some(l=>l.depth>=bind.depth+(part.depthOffset??.1));
+    })))return null;
+ }
  if(!pants.length||pants.some(l=>l.frames&&l.frames.length!==d.clip.frames||
     l.binding.kind!=='fixed'&&(l.binding.a!=='NECK'||l.binding.b!=='HIP')))return null;
  const refs=[...new Set(pants.flatMap(l=>[l.source,...(l.frames||[])]).filter(Boolean))];
@@ -117,7 +145,7 @@ function adaptRecoveredPants(carry,outfits,item){
 const adaptPants22=(carry,outfits)=>adaptIsolatedPants(carry,outfits,22);
 function create(carryAPI,outfits,{basePrefix='tools/rework-base-hd/assets/',outfitPrefix='tools/rework-modular-outfits-hd/assets/'}={}){
  const alias=(r,url)=>r.outfitOverlay.sourceRefs.some(s=>url===basePrefix+s+'.png')?outfitPrefix+url.slice(basePrefix.length):url;
- return {adapt:(r,opts)=>adaptCarry(r,outfits,opts),adaptIsolatedCoat:(r,opts)=>adaptIsolatedCoat(r,outfits,opts),adaptIsolatedPants:(r,item)=>adaptIsolatedPants(r,outfits,item),requiredFiles:(r,opts)=>carryAPI.requiredFiles(r,opts).map(url=>alias(r,url)),render:(ctx,r,images,opts)=>{const map=new Map(images);for(const sha of r.outfitOverlay.sourceRefs){const im=images.get(outfitPrefix+sha+'.png');if(im)map.set(basePrefix+sha+'.png',im);}return carryAPI.render(ctx,r,map,opts);}};
+ return {adapt:(r,opts)=>adaptCarry(r,outfits,opts),adaptIsolatedCoat:(r,opts)=>adaptIsolatedCoat(r,outfits,opts),adaptOwnCoat,adaptIsolatedPants:(r,item)=>adaptIsolatedPants(r,outfits,item),requiredFiles:(r,opts)=>carryAPI.requiredFiles(r,opts).map(url=>alias(r,url)),render:(ctx,r,images,opts)=>{const map=new Map(images);for(const sha of r.outfitOverlay.sourceRefs){const im=images.get(outfitPrefix+sha+'.png');if(im)map.set(basePrefix+sha+'.png',im);}return carryAPI.render(ctx,r,map,opts);}};
 }
 const api={adaptCarry,adaptIsolatedCoat,adaptPants22,create};root.MareReworkOutfitCarryOverlayHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

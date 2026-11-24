@@ -6,7 +6,18 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  const page=await browser.newPage({viewport:{width:1448,height:1086}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
- const hook='  window.__captainQA={get game(){return game},open:openPanel,close:closePanel,update:updateUI,save:saveGame,stats:getDerived,defs:itemDefs,newItem,portrait:renderPortrait,syncVfx:syncFruitVfx};window.__mareDiagnostics=';
+ const observePortrait=`const originalProfilePreview=lobby96.preview;
+ lobby96.preview=function(ctx,player,options){
+  if(options.consumer!=='profile-portrait')return originalProfilePreview.call(this,ctx,player,options);
+  const originalDraw=ctx.drawImage;let frame;
+  ctx.drawImage=function(image,...args){frame={width:image.width,height:image.height};return originalDraw.call(this,image,...args);};
+  try{
+   const ready=originalProfilePreview.call(this,ctx,player,options);
+   if(ready&&frame)window.__captainProfileFrame={...frame,canvas:ctx.canvas,look:JSON.stringify(player.appearance96)};
+   return ready;
+  }finally{ctx.drawImage=originalDraw;}
+ };`;
+ const hook=observePortrait+'  window.__captainQA={get game(){return game},open:openPanel,close:closePanel,update:updateUI,save:saveGame,stats:getDerived,defs:itemDefs,newItem,portrait:renderPortrait,syncVfx:syncFruitVfx};window.__mareDiagnostics=';
  assert(source.includes('  window.__mareDiagnostics='));
  await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source.replace('  window.__mareDiagnostics=',hook)}));
  await page.goto(process.env.MARE_TEST_URL);await page.waitForFunction(()=>window.__captainQA);
@@ -41,12 +52,14 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  assert.equal(await page.locator('[data-profile-value=title]').textContent(),'Pirata Promissor');
  assert.equal(await page.locator('[data-profile-value=power]').first().textContent(),await page.evaluate(()=>Math.round(__captainQA.stats().power).toLocaleString('pt-BR')));
  const portraitRaster=await page.locator('#captainProfilePortrait').evaluate(c=>({width:c.width,height:c.height,opaque:[...c.getContext('2d').getImageData(0,0,c.width,c.height).data].some((v,i)=>i%4===3&&v)}));
- // PR327 preserves the selected appearance: incompatible authored HD palettes
- // use the native96 compositor instead of silently substituting another look.
- const profileSource=await page.evaluate(()=>__mareDiagnostics().lobby96.nativeHD?.last);
- if(profileSource?.consumer==='profile-portrait'&&profileSource.state==='rendered'){
-  assert(portraitRaster.width>=512&&portraitRaster.height>=512&&portraitRaster.width<=2048&&portraitRaster.height<=2096,'authored HD profile retains its native backing');
- }else assert.deepEqual([portraitRaster.width,portraitRaster.height],[256,256],'appearance-preserving native96 fallback retains its preview backing');
+ // The world and profile share diagnostics. Read the frame actually submitted to this canvas.
+ const drawn=await page.evaluate(()=>{const f=window.__captainProfileFrame;return f&&{
+  correctCanvas:f.canvas===document.querySelector('#captainProfilePortrait'),width:f.width,height:f.height,
+  savedLook:f.look===JSON.stringify(__captainQA.game.appearance96)
+ };});
+ assert(drawn?.correctCanvas&&drawn.savedLook);
+ assert(drawn.width>=512&&drawn.height>=512&&drawn.width<=2048&&drawn.height<=2048,'profile receives an authored HD frame');
+ assert.deepEqual([portraitRaster.width,portraitRaster.height],[drawn.width,drawn.height+48],'preview preserves native pixels and the footer margin');
  assert(portraitRaster.opaque,'portrait contains rendered pixels after its loading state clears');
  const realState=await page.evaluate(()=>JSON.stringify({eq:__captainQA.game.equipment,appearance:__captainQA.game.appearance96,attributes:__captainQA.game.attributes}));
  await shot('profile-overview');

@@ -165,3 +165,17 @@ test('both attack paths and power decrease while life, mana and pearl contributi
     assert.deepEqual(worn.attributes,full.attributes);
   }
 });
+test('ongoing Skypiea sessions survive the durability merge from either predecessor', () => {
+  const active = {rulesHash:'0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7',area:'skypiea-01',tick:17,hp:42,projectiles:[{id:'in-flight'}]};
+  const expected = {...structuredClone(active),rulesHash:engine.rulesHash};
+  engine.upgradeBalance(active);
+  assert.deepEqual(active,expected);
+  const earlier = {rulesHash:'a2e4d9333c0770e539dee6262fb900e1747e94b44c1226a0baacb513b6c07a57',area:'syrup',hunts:{areas:{}},hp:42};
+  engine.upgradeBalance(earlier);
+  assert.equal(earlier.rulesHash,engine.rulesHash);
+  assert.equal(earlier.hp,42);
+  for (const area of ['skypiea-02','skypiea-03','skypiea-04']) assert.ok(earlier.hunts.areas[area]);
+  const migrated = structuredClone(earlier);
+  engine.upgradeBalance(earlier);
+  assert.deepEqual(earlier,migrated);
+});
