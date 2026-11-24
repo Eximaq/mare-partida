@@ -406,8 +406,50 @@ html[data-mare-motion=reduced] #app #panelOverlay.hud-density.forge-hd-mode .for
 }
 
 /* Keep all forge operations reachable on narrow screens. */
-.forge-hd-workbench .forge2-tabs {grid-template-columns:repeat(5,minmax(0,1fr))}
+.forge-hd-workbench .forge2-tabs {grid-template-columns:repeat(6,minmax(0,1fr))}
 .forge2-fragment-yield {font-size:.75rem;color:var(--forge-gold,#e9bd77)}
 @media (max-width:600px) {
   .forge-hd-workbench .forge2-tabs {grid-template-columns:repeat(3,minmax(0,1fr));flex-wrap:wrap}
 }
+
+
+#app #panelOverlay.forge-hd-mode .forge2-shell[data-forge-view="repair"] .forge2-catalog:not(.as-list) .forge2-item-grid {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+}
+#app #panelOverlay.forge-hd-mode .forge2-shell[data-forge-view="repair"] .forge2-tile {
+  min-width: 0;
+  height: auto;
+  min-height: 114px;
+  aspect-ratio: auto;
+  padding: 7px 4px;
+}
+#app #panelOverlay.forge-hd-mode .forge2-shell[data-forge-view="repair"] .forge2-tile-name {
+  display: block;
+  font-size: 11px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+#app #panelOverlay.forge-hd-mode .forge2-shell[data-forge-view="repair"] .forge2-repair-tile {
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+#app #panelOverlay.forge-hd-mode .forge2-shell[data-forge-view="repair"] .as-list .forge2-tile {
+  min-height: 84px;
+  grid-template-columns: 36px minmax(0,1fr) auto;
+}
+#app #panelOverlay.forge-hd-mode .forge2-shell[data-forge-view="repair"] .as-list .forge2-repair-tile {
+  grid-column: 2;
+  grid-row: 2;
+  margin-left: 0;
+}
+.forge2-repair-batch {
+  margin-top: .6rem;
+  border: 1px solid #d8c18a38;
+  border-radius: 8px;
+  padding: .65rem;
+}
+.forge2-repair-batch h4,.forge2-repair-batch p{margin:0 0 .35rem}

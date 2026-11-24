@@ -4,7 +4,7 @@ import type {CharacterCommand,OriginalItemInstance} from '@mare/shared';
 import {z} from 'zod';
 import {AuthFault} from '../auth/errors.js';
 import {getGameCatalog} from '../gameplay/catalog.js';
-import {readOriginalInventory} from '../gameplay/inventory.js';
+import {assertEquipmentTransferReady,readOriginalInventory} from '../gameplay/inventory.js';
 import {itemTradeQuantity,itemTradeRestriction} from './item-negotiability.js';
 
 const {items,slots}=getGameCatalog();
@@ -77,7 +77,7 @@ export function marketItemDetails(item:OriginalItemInstance){
   const quantity=itemTradeQuantity(item), name=def.name;
   return {instanceId:item.id,catalogId:item.def,name,searchName:searchKey(name),category,slot:def.slot,rarity,rarityOrder:rarities.indexOf(rarity),
     rank:rank??null,fruitType:fruit?akuma.familyFor(fruit):null,level:gear?item.level:null,potential:gear?item.potential??null:null,attributes,
-    upgrade:gear?item.plus:null,pearls:(item.sockets??[]).map(id=>id?{id,name:forge.pearlById[id]?.name,attribute:forge.pearlById[id]?.attribute,level:forge.pearlById[id]?.level}:null),
+    upgrade:gear?item.plus:null,durability:forge.hasDurability(item,items)?forge.durabilityOf(item):null,pearls:(item.sockets??[]).map(id=>id?{id,name:forge.pearlById[id]?.name,attribute:forge.pearlById[id]?.attribute,level:forge.pearlById[id]?.level}:null),
     origin:item.generation?.family??null,originLabel:item.origin??null,classId:gear&&def.slot==='weapon'?String(def.type??'')||null:null,
     stackable:kind==='haki-fragment',quantity,obtainedAt:item.obtainedAt};
 }
@@ -205,6 +205,7 @@ export async function executeMarket(client:PoolClient,id:string,input:Action){
     if(!inventory)throw new AuthFault(409,'market_inventory_missing');
     const item=inventory.inventory.find(i=>i.id===payload.itemId);
     if(!item)throw new AuthFault(409,Object.values(inventory.equipment).some(i=>i?.id===payload.itemId)?'market_item_equipped':'market_item_unavailable');
+    await assertEquipmentTransferReady(client,id,[item.id]);
     const restriction=itemTradeRestriction(item);
     if(restriction)throw new AuthFault(409,restriction==='locked'?'market_item_locked':'market_item_untradable');
     if(payload.quantity>itemTradeQuantity(item))throw new AuthFault(400,'market_invalid_quantity');

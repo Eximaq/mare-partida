@@ -871,3 +871,30 @@ test("original forge dismantles owned gear once with a stable balance across ret
     assert.equal(after.materials,original.materials+2);
     assert.equal(after.forgeSeq,1);
   }));
+
+test("repair quote is authoritative and concurrent replay charges the wallet only once", async () =>
+  fixture(async (f) => {
+    assert.equal((await f.send(f.body("items.initialize"))).status,200);
+    const start=(await f.read()).originalInventory;
+    const equipped={...start.equipment.weapon,durability:50000,locked:true};
+    const bag={...start.inventory[0],durability:0};
+    const equipment={...start.equipment,weapon:equipped};
+    const inventory=[bag,...start.inventory.slice(1)];
+    await f.pool.query("UPDATE mare_game.game_inventory SET inventory=$2::jsonb,equipment=$3::jsonb WHERE character_id=$1",[f.c.id,JSON.stringify(inventory),JSON.stringify(equipment)]);
+    const cost=forge.repairCost(equipped,defs);
+    await f.pool.query("UPDATE mare_game.character_progression SET gold=$2 WHERE character_id=$1",[f.c.id,cost]);
+    const command=(price:number)=>f.body("forge.execute",{operation:{type:"repairAll",expectedSeq:0,quote:[{id:equipped.id,cost:price}]}},1);
+    const stale=await f.send(command(cost-1));
+    assert.deepEqual(stale,{status:409,body:{error:"repair_quote_changed"}});
+    assert.equal((await f.read()).state.gold,String(cost));
+    const first=command(cost),second=command(cost);
+    const attempts=await Promise.all([f.send(first),f.send(second)]);
+    assert.deepEqual(attempts.map(a=>a.status).sort(),[200,409]);
+    const accepted=attempts.findIndex(a=>a.status===200);
+    assert.deepEqual(await f.send(accepted===0?first:second),attempts[accepted]);
+    const after=await f.read();
+    assert.equal(after.state.gold,"0");
+    assert.deepEqual(after.originalInventory.equipment.weapon,{...equipped,durability:100000});
+    assert.deepEqual(after.originalInventory.inventory[0],bag);
+    assert.equal(after.originalInventory.materials,start.materials);
+  }));

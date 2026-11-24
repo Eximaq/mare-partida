@@ -5,7 +5,7 @@ import type {PoolClient} from 'pg';
 import type {CharacterCommand,OriginalItemInstance} from '@mare/shared';
 import {AuthFault} from '../auth/errors.js';
 import {getGameCatalog} from '../gameplay/catalog.js';
-import {readOriginalInventory,writeInventory} from '../gameplay/inventory.js';
+import {assertEquipmentTransferReady,readOriginalInventory,writeInventory} from '../gameplay/inventory.js';
 import {assertSocialContactAllowed,isSocialCharacterOnline} from './social-contacts.js';
 
 export type TradeCommand=Extract<CharacterCommand,{action:`trade.${string}`}>;
@@ -176,6 +176,7 @@ async function modifyOffer(client:PoolClient,t:TradeRow,id:string,p:{itemId:stri
     await client.query('SELECT character_id FROM mare_game.game_inventory WHERE character_id=$1 FOR UPDATE',[id]);
     const item=(await readOriginalInventory(client,id))?.inventory.find(x=>x.id===p.itemId);
     if(!item||!tradeEligible(item))throw new AuthFault(409,'trade_item_ineligible');
+    await assertEquipmentTransferReady(client,id,[item.id]);
     if(p.quantity>itemQuantity(item))throw new AuthFault(409,'trade_quantity_invalid');
     const stored=await client.query(`
       INSERT INTO mare_game.social_trade_reservations(character_id,item_id,trade_id,quantity,item)

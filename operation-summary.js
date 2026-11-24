@@ -8,6 +8,21 @@
  function finish(m,evidence){m.fingerprint=JSON.stringify(evidence);return m;}
  function forge(s,c,defs){
   const api=F(),i=find(s,c.itemId),m={title:'Confirmar operação',costs:[],changes:[],result:'',error:'',acceptLabel:'CONFIRMAR'},cost=price=>{if(price.gold>0)m.costs.push({name:'Berry',icon:moneyIcon,needed:price.gold,available:s.gold,remaining:s.gold-price.gold});if(price.materials>0)m.costs.push({name:api.itemFragment.name,icon:api.itemFragment.iconPath,needed:price.materials,available:s.materials,remaining:s.materials-price.materials});},target=()=>{if(!api.isGear(i,defs)||i.locked)m.error='Selecione um equipamento existente e desbloqueado.';else m.subject=item(i,defs);};
+  if(c.type==='repair'||c.type==='repairAll'){
+   const plan=api.repairPlan(s,c.type,c.itemId,defs);
+   const format=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:3});
+   const all=c.type==='repairAll';
+   m.title=all?'Reparar tudo':'Reparar equipamento';
+   m.acceptLabel=all?'REPARAR TUDO':'REPARAR';
+   m.subject=all?{name:plan.items.length+' equipamento(s) em uso'}:item(i,defs);
+   cost({gold:plan.total});
+   m.changes=plan.items.map(({item:gear,cost:fee})=>({name:api.gearName(gear,defs)+' · '+format.format(fee)+' Berry',before:format.format(api.durabilityOf(gear)/api.hitsPerPercent)+'%',after:'100%'}));
+   m.result='Durabilidade restaurada a 100%.';
+   if(!plan.items.length)m.error='Nenhum equipamento precisa de reparo.';
+   else if(s.gold<plan.total)m.error='Berry insuficientes. Você pode reparar uma peça por vez.';
+   else if(c.expectedSeq!==s.forgeSeq)m.error='A Forja mudou. Reabra a operação.';
+   return finish(m,{seq:s.forgeSeq,gold:s.gold,items:plan.items.map(({item,cost})=>[item.id,api.durabilityOf(item),cost]),error:m.error});
+  }
   if(c.type==='dismantle'){
    m.title='Desmontar equipamentos';m.acceptLabel='DESMONTAR';
    const plan=api.dismantlePlan(s,c.itemIds,defs);

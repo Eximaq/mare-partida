@@ -26,7 +26,7 @@
   if(!valid(s,c))return false;const key=String(c.key),now=c.now,yami=c.fruit===rules.yami.id;
   if(s.time===null)s.time=now;
   const kind=({[rules.yami.id]:{1:'vortex',2:'blackHole',3:'liberation'},[rules.mera.id]:{1:'fireFist',2:'fireRain',3:'pillar'},[rules.gura.id]:{1:'guraCrack',2:'guraSkull',3:'guraBuff'},[rules.hie.id]:{1:'hieSpears',2:'hieBird',3:'hieFreeze'},[rules.phoenix.id]:{1:'phoenixDash',2:'phoenixTotem',3:'phoenixEnergy'}})[c.fruit][key];
-  const j={id:++s.seq,kind,key,started:now,origin:point(c.hero),x:c.hero.x,y:c.hero.y,targetId:c.target?.id,direction:aim(c.hero,c.target,direction(c.hero)),token:c.token,elemental:c.stats.elemental,magicPen:c.stats.magicPen||0,hits:new Set(),pulls:[],next:1,shots:[],ticks:new Map(),path:[],pathAt:0,last:now};
+  const j={id:++s.seq,kind,key,started:now,origin:point(c.hero),x:c.hero.x,y:c.hero.y,targetId:c.target?.id,direction:aim(c.hero,c.target,direction(c.hero)),token:c.token,wear:c.wear,elemental:c.stats.elemental,magicPen:c.stats.magicPen||0,hits:new Set(),pulls:[],next:1,shots:[],ticks:new Map(),path:[],pathAt:0,last:now};
   j.duration={guraCrack:.8,guraSkull:.8,guraBuff:10,hieSpears:.9,hieBird:.9,hieFreeze:5,phoenixDash:.7,phoenixTotem:7,phoenixEnergy:1.2,vortex:.6,blackHole:6,liberation:effects.liberation.frames.reduce((n,f)=>n+f.duration,0)/1000,fireFist:320/900+.45,fireRain:1.1,pillar:7}[kind];
   j.until=now+j.duration;j.viewTop=c.view?.y;
   s.jobs.push(j);if(s.jobs.length>32)s.jobs.shift();return true;
@@ -34,12 +34,12 @@
  function emit(c,j,m,mult,event,dot=false,power=j.elemental,impact=null){
   if(!live(m))return;
   const physical=j.kind==='guraCrack'||j.kind==='guraSkull';const amount=dot?Math.max(0,Math.floor(power)):(c.damage||root.MareRankA.damage)(m,power,mult,!physical,j.magicPen,j.kind==='guraSkull');
-  c.hit(m,amount,{kind:j.kind,token:j.token,eventKey:event,effectAge:Math.max(0,c.now-j.started),skillKey:j.key,dot,exclusive:true,impactPoint:impact||(j.kind==='pillar'?point(j):j.origin)});
+  c.hit(m,amount,{kind:j.kind,token:j.token,wear:j.wear,eventKey:event,effectAge:Math.max(0,c.now-j.started),skillKey:j.key,dot,exclusive:true,impactPoint:impact||(j.kind==='pillar'?point(j):j.origin)});
  }
  function burn(s,c,j,m,t){
   if(!live(m))return;let b=s.burns.find(b=>b.targetId===m.id&&b.until+EPS>=t);
   if(!b){b={targetId:m.id,started:t,next:t+1,tick:0,until:t+4};s.burns.push(b);}
-  b.until=t+4;b.power=j.elemental*.1;b.token=j.token;b.kind=j.kind;b.key=j.key;
+  b.until=t+4;b.power=j.elemental*.1;b.token=j.token;b.wear=j.wear;b.kind=j.kind;b.key=j.key;
   if(s.burns.length>128)s.burns.shift();
  }
  function push(c,m,center,length){const d=dist(center,m),v=d?[(m.x-center.x)/d,(m.y-center.y)/d]:[1,0];c.move?.(m,v[0]*length,v[1]*length);}

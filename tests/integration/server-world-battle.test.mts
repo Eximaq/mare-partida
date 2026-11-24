@@ -47,11 +47,14 @@ test('worker advances only authorized server time, serializes kills and atomical
  await a.send(await a.input('battle.target',{targetId:m.id}));
  // Isolated PostgreSQL fixture: a near-death monster makes the transactional race deterministic.
  o=await a.read();o.battle.mobs[0].hp=1;o.battle.mobs[0].patrolClock=100;
- o.battle.pending={targetId:m.id,remaining:.01};o.battle.attackClock=1;
+ const worn=o.originalInventory.equipment.weapon;
+ o.battle.pending={targetId:m.id,remaining:.01,wear:{id:randomUUID(),owner:a.c.id,ids:[worn.id],confirmed:false}};o.battle.attackClock=1;
  await pool.query("UPDATE mare_game.character_battles SET simulation=$2,tick_at=clock_timestamp()-interval '250 milliseconds' WHERE character_id=$1",[a.c.id,JSON.stringify(o.battle)]);
  await Promise.all([tick(),tick()]);const after=await a.read();
  assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.world_battle_rewards')).rows[0].n,1);
  assert.equal(after.contracts.progress['dawn-patrol'],1,'concurrent worker retries cannot duplicate contract progress');
+ assert.equal(after.originalInventory.equipment.weapon.durability,99999);
+ assert.equal(after.battle.equipmentCondition.values[worn.id],99999);
  assert(BigInt(after.state.experience)>BigInt(o.state.experience));assert(BigInt(after.state.gold)>BigInt(o.state.gold));
  const xp=after.state.experience;await tick();assert.equal((await a.read()).state.experience,xp);assert.equal((await a.read()).contracts.progress['dawn-patrol'],1);
  const snapshot=(await pool.query('SELECT simulation,tick_at FROM mare_game.character_battles')).rows;
