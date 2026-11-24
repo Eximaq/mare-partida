@@ -45,8 +45,8 @@ const hook='  window.__creationQA={get game(){return game},classes,factions,crea
  await p.locator('#classStep [data-class="sword"]').click();await p.locator('#nextToAppearance').click();
  assert(await p.locator('#creationAppearanceStudio').isVisible());
  const controls=await p.locator('#creationAppearanceStudio').evaluate(e=>e.innerHTML);
- assert(controls.includes('data-appearance'),'shared appearance component');await p.locator('#creationAppearanceStudio [data-appearance=gender]').selectOption('feminino');const hair=await p.locator('#creationAppearanceStudio [data-appearance=hairStyle] option').nth(2).getAttribute('value');await p.locator('#creationAppearanceStudio [data-appearance=hairStyle]').selectOption(hair);
- await p.locator('#backToClass').click();await p.locator('#nextToAppearance').click();assert.equal(await p.locator('#creationAppearanceStudio [data-appearance=gender]').inputValue(),'feminino');assert.equal(await p.locator('#creationAppearanceStudio [data-appearance=hairStyle]').inputValue(),hair);await p.locator('#backToClass').click();assert.equal(await p.locator('[data-selected-class]').getAttribute('data-selected-class'),'sword');
+ assert(controls.includes('data-appearance'),'shared appearance component');assert(await p.locator('#creation-gender option[value=feminino]').isDisabled());const hair=await p.locator('#creationAppearanceStudio [data-appearance=hairStyle] option').nth(2).getAttribute('value');await p.locator('#creationAppearanceStudio [data-appearance=hairStyle]').selectOption(hair);
+ await p.locator('#backToClass').click();await p.locator('#nextToAppearance').click();assert.equal(await p.locator('#creationAppearanceStudio [data-appearance=gender]').inputValue(),'masculino');assert.equal(await p.locator('#creationAppearanceStudio [data-appearance=hairStyle]').inputValue(),hair);await p.locator('#backToClass').click();assert.equal(await p.locator('[data-selected-class]').getAttribute('data-selected-class'),'sword');
  await p.locator('#backToFaction').click();assert.equal(await p.locator('#characterName').inputValue(),'Navegante');assert.equal(await p.locator('[data-faction="pirate"]').getAttribute('aria-pressed'),'true');
  for(const [width,height]of [[1920,1080],[1366,768],[1280,720],[1024,768],[760,900],[393,852],[320,568],[844,390]]){
   await p.setViewportSize({width,height});
@@ -67,7 +67,7 @@ const hook='  window.__creationQA={get game(){return game},classes,factions,crea
  await p.setViewportSize({width:1672,height:941});await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();
  await p.locator('#createCharacter').click();assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),null,'confirmation required');
  await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__creationQA.game);
- const saved=await p.evaluate(()=>JSON.parse(localStorage.getItem('mare-partida-save-v1')));assert.equal(saved.name,'Navegante');assert.equal(saved.classId,'sword');assert.equal(saved.factionId,'pirate');assert.equal(saved.appearance96.gender,'feminino');assert.equal(saved.appearance96.hairStyle,hair);assert(!saved.talents?.keystone&&!saved.talents?.ultimate);
+ const saved=await p.evaluate(()=>JSON.parse(localStorage.getItem('mare-partida-save-v1')));assert.equal(saved.name,'Navegante');assert.equal(saved.classId,'sword');assert.equal(saved.factionId,'pirate');assert.equal(saved.appearance96.gender,'masculino');assert.equal(saved.appearance96.hairStyle,hair);assert(!saved.talents?.keystone&&!saved.talents?.ultimate);
  await p.reload();await p.waitForFunction(()=>__creationQA.game);assert.equal(await p.evaluate(()=>__creationQA.game.name),'Navegante');
  // Editing preview must keep the original save intact until final confirmation.
  const original=await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1'));

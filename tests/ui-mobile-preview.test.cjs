@@ -20,5 +20,5 @@ for(const doc of [production,preview]){
 assert.match(build,/'hud-nautical\.css'/);
 assert.match(skin,/\.topbar/);
 assert.match(build,/web_files = \['index\.html', 'ui-preview\.html', 'ui-art-direction\.css'/);
-assert.match(build,/for page in \['index\.html', 'ui-preview\.html'\]:/);
+assert.match(build,/for page in \['index\.html', 'ui-preview\.html', 'bancada-hd\.html'\]:/);
 console.log('Mobile live preview: production entry preserved and static release configured');

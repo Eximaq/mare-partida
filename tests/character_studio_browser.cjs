@@ -153,7 +153,7 @@ await auditSymbols('.attribute-row>.studio-icon,.studio-derived-groups h4 img');
  assert.equal(await p.locator('#profile-hairColor').evaluate(e=>getComputedStyle(e).backgroundImage),'none');
 await auditSymbols('.studio-control-icon');await checkSelectorAlignment();
  const cosmeticsBefore=await p.evaluate(()=>JSON.stringify(__studioQA.player.appearance96));
- await p.locator('#profile-gender').selectOption('feminino');await p.locator('#profile-hairStyle').selectOption('hair-topknot');
+ assert(await p.locator('#profile-gender option[value=feminino]').isDisabled());await p.locator('#profile-hairStyle').selectOption('hair-topknot');
  await p.locator('[data-appearance-color=hairColor][data-value=violet]').click();
  await p.locator('#profile-skinColor').selectOption('ebony');
  assert.equal(await p.evaluate(()=>JSON.stringify(__studioQA.player.appearance96)),cosmeticsBefore);

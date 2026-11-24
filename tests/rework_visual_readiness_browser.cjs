@@ -1,4 +1,5 @@
 'use strict';
+const resumeFemaleSave=require('./existing-female-save.cjs');
 const assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=require('node:path');
 const {chromium}=require('playwright');
 const out=process.env.MARE_EVIDENCE_DIR;
@@ -80,9 +81,9 @@ const url=process.env.MARE_TEST_URL;
    if(!await page.locator('#nextToAppearance').isVisible())await page.locator('#nextToClass').click();
    await page.locator('#classStep [data-class=sword]').click();
    await page.locator('#nextToAppearance').click();
-   await page.locator('[data-appearance=gender]').first().selectOption(gender);
+   assert(await page.locator('#creation-gender option[value=feminino]').isDisabled());
    await page.locator('#createCharacter').click();
-   await page.locator('[data-confirm-accept]').click();
+   await page.locator('[data-confirm-accept]').click();if(gender==='feminino')await resumeFemaleSave(page);
    const read=()=>page.evaluate(()=>__preparationQA.read());
    await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
    await page.evaluate(()=>__preparationQA.lane());
