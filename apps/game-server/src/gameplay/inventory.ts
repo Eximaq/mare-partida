@@ -309,18 +309,6 @@ async function initialize(
       else i.inventory.push(item);
     }
   }
-  // These starter resources never existed in the alpha. Add missing starter gear
-  // once, but preserve every converted copy and every existing balance/XP.
-  for (const [slot, def] of [
-    ["weapon", weapon],
-    ["coat", 6],
-    ["boots", 8],
-  ] as const) {
-    if (i.equipment[slot] || i.inventory.some((item) => item.def === def))
-      continue;
-    if (slot === "boots") i.inventory.push(newGear(def));
-    else i.equipment[slot] = newGear(def);
-  }
   if (i.inventory.length > 120)
     throw new AuthFault(409, "inventory_conversion_capacity");
   const fresh =

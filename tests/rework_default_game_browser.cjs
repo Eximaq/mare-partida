@@ -15,7 +15,7 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
   const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROME_PATH });
   const evidence = [];
   try {
-    for (const [classId, weapon] of [['sword', 0], ['gunner', 4], ['brawler', 2]]) {
+    for (const classId of ['sword', 'gunner', 'brawler']) {
       const context = await browser.newContext({ viewport: { width: 1600, height: 1100 } });
       const page = await context.newPage();
       const errors = [];
@@ -27,7 +27,7 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
         const source = await response.text();
         const marker = '  window.__mareDiagnostics=';
         assert.ok(source.includes(marker), 'Read-only game diagnostic insertion point missing');
-        const hook = `let __lastRealWorldDraw=null,__realWorldDraws=0;const __observeWorldDraw=lobby96.draw.bind(lobby96);lobby96.draw=function(c,p,o){const result=__observeWorldDraw(c,p,o);if(o.consumer==='world'&&c.canvas.id==='worldCanvas'){const snapshot=lobby96.snapshot();__lastRealWorldDraw={count:++__realWorldDraws,at:performance.now(),returned:result,action:o.action,direction:o.direction,scene:o.scene,viewport:[innerWidth,innerHeight],canvas:[c.canvas.width,c.canvas.height],snapshot,heroScreen:camera.worldToScreen(world.hero.x,world.hero.y),camera:{x:camera.x,y:camera.y,width:camera.width,height:camera.height,masked:camera.masked}};}return result;};window.__reworkDefaultQA=Object.freeze({read(){return JSON.parse(JSON.stringify({identity:game?{classId:game.classId,appearance:game.appearance96,equipment:game.equipment,equippedIds:Object.fromEntries(Object.entries(game.equipment).map(([slot,item])=>[slot,item?.def??null]))}:null,snapshot:lobby96.snapshot(),worldDraw:__lastRealWorldDraw}));}});`;
+        const hook = `let __lastRealWorldDraw=null,__realWorldDraws=0;const __observeWorldDraw=lobby96.draw.bind(lobby96);lobby96.draw=function(c,p,o){const result=__observeWorldDraw(c,p,o);if(o.consumer==='world'&&c.canvas.id==='worldCanvas'){const snapshot=lobby96.snapshot();__lastRealWorldDraw={count:++__realWorldDraws,at:performance.now(),returned:result,action:o.action,direction:o.direction,scene:o.scene,viewport:[innerWidth,innerHeight],canvas:[c.canvas.width,c.canvas.height],snapshot,heroScreen:camera.worldToScreen(world.hero.x,world.hero.y),camera:{x:camera.x,y:camera.y,width:camera.width,height:camera.height,masked:camera.masked}};}return result;};window.__reworkDefaultQA=Object.freeze({read(){return JSON.parse(JSON.stringify({identity:game?{classId:game.classId,potions:game.potions,inventory:game.inventory,appearance:game.appearance96,equipment:game.equipment,equippedIds:Object.fromEntries(Object.entries(game.equipment).map(([slot,item])=>[slot,item?.def??null]))}:null,snapshot:lobby96.snapshot(),worldDraw:__lastRealWorldDraw}));}});`;
         await route.fulfill({ response, body: source.replace(marker, hook + '\n' + marker) });
       });
       try {
@@ -47,8 +47,9 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
         await page.waitForFunction(() => window.__reworkDefaultQA.read().identity, null, { timeout: 60000 });
         const original = await page.evaluate(() => window.__reworkDefaultQA.read().identity);
         assert.equal(original.classId, classId);
-        assert.equal(original.equippedIds.weapon, weapon, 'Real starter weapon must be retained (including item 0)');
-        assert.equal(original.equippedIds.coat, 6, 'Do not erase the real starter coat to make a renderer pass');
+        assert(Object.values(original.equippedIds).every(id=>id===null), 'New characters have no starting equipment');
+        assert.deepEqual(original.inventory, []);
+        assert.equal(original.potions, 4);
         for (const [key, value] of Object.entries(expectedAppearance)) assert.equal(original.appearance[key], value, `Default appearance ${key}`);
 
         for (const stage of ['created', 'reloaded', 'narrow']) {
@@ -65,7 +66,7 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
             const draw=result?.worldDraw;
             if(!draw?.returned||draw.at<stageStarted||draw.viewport[0]!==innerWidth||draw.viewport[1]!==innerHeight)return false;
             const snapshot = draw.snapshot;
-            if(snapshot?.renderer==='native96')return snapshot.worldVisual?.state==='ready'&&snapshot.worldVisual.preparedAt<=draw.at&&snapshot.lastPose?.consumer==='world'&&snapshot.lastPose.direction===MarePaperDoll96Lobby.directionOf(draw.direction)&&snapshot.lastPose.weaponIds?.includes(result.identity.equippedIds.weapon)?result:false;
+            if(snapshot?.renderer==='native96')return snapshot.worldVisual?.state==='ready'&&snapshot.worldVisual.preparedAt<=draw.at&&snapshot.lastPose?.consumer==='world'&&snapshot.lastPose.direction===MarePaperDoll96Lobby.directionOf(draw.direction)&&snapshot.lastPose.weaponIds?.length===0?result:false;
             if (!['native-hd', 'rework-default-hd'].includes(snapshot?.renderer)) return false;
             const active = snapshot.renderer === 'native-hd' ? snapshot.nativeHD : snapshot.defaultHD;
             return active?.last?.state === 'rendered' && active.last.physicalScale === 105 / 374 && active.last.consumer==='world' && active.last.direction===MarePaperDoll96Lobby.directionOf(draw.direction) ? result : false;
@@ -76,7 +77,7 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
           const active = worldSnapshot.renderer === 'native-hd' ? worldSnapshot.nativeHD : worldSnapshot.defaultHD;
           if(worldSnapshot.renderer==='native96'){
             assert.equal(worldSnapshot.lastPose.consumer,'world');
-            assert(worldSnapshot.lastPose.weaponIds.includes(weapon));
+            assert.deepEqual(worldSnapshot.lastPose.weaponIds, []);
             assert(worldSnapshot.worldVisual.coverage.every(p=>p.omitted.length===0&&p.unsupported.length===0));
           }else{
             assert.equal(active.last.physicalScale, scale);
@@ -133,7 +134,7 @@ const expectedAppearance = { gender: 'masculino', hairStyle: 'original', hairCol
           await fs.writeFile(path.join(out, `${classId}-${stage}-pixels.json`), JSON.stringify({state}, null, 2));
           assert(presented.samples > 30 && presented.bright > presented.samples * .05, 'Screenshot must show the world in exposed canvas areas, not a black mobile viewport');
           await page.locator('#worldCanvas').screenshot({path:path.join(out,`${classId}-${stage}-world.png`)});
-          evidence.push({ classId, weapon, stage, state, errors: [...errors] });
+          evidence.push({ classId, stage, state, errors: [...errors] });
           await fs.writeFile(path.join(out, 'runtime.json'), JSON.stringify({ url, evidence }, null, 2));
         }
         assert.deepEqual(errors, [], `${classId}: no runtime errors`);

@@ -10,7 +10,7 @@ const expected=[['skypiea-01',75,'satori',77],['skypiea-02',80,'shura',84],['sky
 const stats={maxHP:100,maxEnergy:100};
 
 test('server resolves four separate Skypiea IDs, tier gates and ordinary authored opponents',()=>{
- const all=new Set<string>(),spawns=new Set<string>();
+ const all=new Set<string>();
  for(const [id,min,type,level] of expected){
   const island=W.islands.find((row:any)=>row.id===id);
   assert(island,id);
@@ -18,8 +18,7 @@ test('server resolves four separate Skypiea IDs, tier gates and ordinary authore
   assert.equal(W.mapId(island.area),id);
   const n=W.navigation(id),spawn=n.map.spawn;
   assert.deepEqual([n.map.id,n.map.width,n.map.height],[id,7616,4736]);
-  assert(!spawns.has(JSON.stringify(spawn)),id+': duplicate arrival location');
-  spawns.add(JSON.stringify(spawn));
+  assert.deepEqual([spawn.x,spawn.y],[1554,2846],id+': shared authored arrival');
   assert(n.walkable(spawn.x,spawn.y),id+': blocked arrival');
   assert.equal(E.hunt.get(id).boss,null);
   const b=E.create(id,stats,100000,()=>.5),slots=B.slots(id);
@@ -75,4 +74,27 @@ test('old shared party slots are projected once while keeping ordinary and bonus
  const saved=structuredClone(mobs);
  assert.equal(E.reanchorSkypieaMobs(area,mobs,nav),false);
  assert.deepEqual(mobs,saved);
+});
+
+
+test('existing Skypiea encounters get the new profile without losing their identity, damage or ledger',()=>{
+ const now=100000,id='skypiea-02',b=E.create(id,stats,now,()=>.5),m=b.mobs[0],dead=b.mobs[1],slot=m.spawnId;
+ Object.assign(m,{maxHP:61979,hp:31000,attack:2356,defense:1024,magicDefense:127,xp:4795,engaged:true});
+ Object.assign(dead,{maxHP:61979,hp:0,alive:false,xp:4795,corpseUntil:now+200});
+ const oldId=m.id;
+ b.rulesHash='5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810';
+ b.hunts.areas[id].kills=17;b.hunts.areas[id].respawns[dead.spawnId]=now+1000;
+ E.upgradeBalance(b);
+ assert.equal(b.rulesHash,E.rulesHash);
+ assert.deepEqual([m.maxHP,m.attack,m.defense,m.magicDefense,m.xp],[51878,2037,899,113,3920]);
+ assert.equal(m.hp,Math.ceil(51878*31000/61979));
+ assert.equal(m.id,oldId);assert.equal(m.spawnId,slot);assert.equal(m.engaged,true);
+ assert.equal(b.hunts.areas[id].kills,17);assert.equal(b.hunts.areas[id].respawns[dead.spawnId],now+1000);
+ assert.equal(dead.hp,0);assert.equal(dead.alive,false);assert.equal(dead.corpseUntil,now+200);
+ const current=structuredClone(b.mobs);
+ E.refreshSkypieaPriests(id,b.mobs);
+ assert.deepEqual(b.mobs,current);
+ const beach=E.create('beach',stats,now,()=>.5),prior=structuredClone(beach.mobs);
+ beach.rulesHash='5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810';
+ E.upgradeBalance(beach);assert.deepEqual(beach.mobs,prior);
 });

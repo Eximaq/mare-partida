@@ -3,6 +3,7 @@ import {originalItemSchema,type CharacterCommand,type CharacterState,type Origin
 import {AuthFault} from '../auth/errors.js';
 import {getGameCatalog} from '../gameplay/catalog.js';
 import {event,readOriginalInventory,validateInventoryItem,writeInventory} from '../gameplay/inventory.js';
+import {acquisitionBlocked} from './item-negotiability.js';
 
 const pageSize=40;
 const inventoryCapacity=120;
@@ -45,6 +46,7 @@ export async function sendOfficialMail(client:PoolClient,characterId:string,rewa
  )).rows[0];
  if(existing)return existing.id;
  const items=parseAttachments(characterId,reward.makeAttachments());
+ if(items.some(item=>acquisitionBlocked(item.def)))throw new AuthFault(409,'item_acquisition_blocked');
  return (await client.query<{id:string}>(
   'INSERT INTO mare_game.social_mail(character_id,source,source_id,reward_id,title,message,attachments) VALUES($1,$2,$3,$4,$5,$6,$7::jsonb) RETURNING id',
   [...key,reward.title,reward.message,JSON.stringify(items)],
@@ -78,7 +80,7 @@ export async function readSocialMail(client:PoolClient,characterId:string,tab:'p
  };
 }
 
-type MailResult={claimed:string[];pending:string[];reason?:'inventory_full'};
+type MailResult={claimed:string[];pending:string[];reason?:'inventory_full'|'item_acquisition_blocked'};
 
 async function advanceMailVersion(client:PoolClient,characterId:string,state:CharacterState){
  if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
@@ -86,8 +88,8 @@ async function advanceMailVersion(client:PoolClient,characterId:string,state:Cha
 }
 
 async function claimMail(client:PoolClient,characterId:string,state:CharacterState,requestId:string,mailId?:string):Promise<MailResult>{
- const letters=(await client.query<Pick<LetterRow,'id'|'attachments'|'claimed_at'>>(
-  "SELECT id,attachments,claimed_at FROM mare_game.social_mail WHERE character_id=$1 AND archived_at IS NULL"+
+ const letters=(await client.query<Pick<LetterRow,'id'|'attachments'|'claimed_at'|'source'|'reward_id'>>(
+  "SELECT id,attachments,claimed_at,source,reward_id FROM mare_game.social_mail WHERE character_id=$1 AND archived_at IS NULL"+
   " AND ($2::uuid IS NULL AND claimed_at IS NULL OR id=$2) ORDER BY created_at,id FOR UPDATE",
   [characterId,mailId??null],
  )).rows;
@@ -103,15 +105,28 @@ async function claimMail(client:PoolClient,characterId:string,state:CharacterSta
  for(const letter of unclaimed){
   const items=parseAttachments(characterId,letter.attachments);
   if(items.some(item=>owned.has(item.id)))throw new AuthFault(503,'mail_attachment_invalid');
+  if(items.some(item=>acquisitionBlocked(item.def))){
+   // Accept only a verified return of the seller's own escrow, not a new
+   // award, a market purchase, or an arbitrary mail marked as a return.
+   const returned=letter.source==='market'&&letter.reward_id==='return'&&(await client.query(
+    "SELECT 1 FROM mare_game.market_listings WHERE delivery_mail_id=$1 AND seller_id=$2 AND status IN ('cancelled','expired') AND jsonb_build_array(item)=$3::jsonb",
+    [letter.id,characterId,JSON.stringify(letter.attachments)],
+   )).rowCount===1;
+   if(!returned){
+    result.pending.push(letter.id);
+    result.reason='item_acquisition_blocked';
+    continue;
+   }
+  }
   if(after.inventory.length+items.length>inventoryCapacity){
    result.pending.push(letter.id);
+   result.reason??='inventory_full';
    continue;
   }
   after.inventory.push(...items);
   for(const item of items){owned.add(item.id);delivered.push(item.id);}
   result.claimed.push(letter.id);
  }
- if(result.pending.length)result.reason='inventory_full';
  if(!result.claimed.length)return result;
  await writeInventory(client,characterId,after);
  await client.query(
