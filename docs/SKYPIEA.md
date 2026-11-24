@@ -32,3 +32,17 @@ A migração aditiva 0035_skypiea_catalog.sql promove somente as assinaturas aud
 Atualização solicitada pelo proprietário: substituição pelo export Skypeia_1-export (1).zip, 2752 × 2752, com caminho de ruínas e 26 nuvens móveis preservadas. Partículas ampliadas para 56 em Skypiea e 48 em Alabasta: pontos luminosos contornados e traços de vento mais claros, sem ocupar a HUD. Conferência visual rápida; sem nova rodada extensa de testes, conforme solicitado.
 
 Entrega após o merge do PR #234: atualização isolada em nova branch. A migração 0035 mesclada foi preservada integralmente; a nova 0036 promove apenas a identificação conhecida do mapa anterior para o novo export. Sem nova bateria extensa de testes, conforme solicitação do proprietário.
+
+## Expansão: quatro Ilhas dos Anjos
+
+A edição do proprietário `Skypiea.zip` substitui o cenário da rota `skypiea-01` e é reutilizada em três mapas independentes, com chegadas, setores, encontros e progresso separados. O export 7616 × 4736 fornece 137 objetos. A reconstrução tem 31.753.830 de 31.758.612 pixels descobertos idênticos ao export; as margens transparentes mostram o tile de céu. A navegação usa os vértices do atlas original, não uma classificação por cor. Bordas de céu não são piso. As oito pontes têm piso sem bloquear projéteis; o portão dourado tem colisão apenas nos dois pilares. Uma malha de 16 px, apenas nesta família, permite que o clique encontre as passagens estreitas sem alargar o piso.
+
+| Destino | Faixa | Encontro | Nv. | HP | Ataque | Defesa física | Defesa mágica | XP |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Ilha dos Anjos 2 | 80–85 | Shura | 84 | 61.979 | 2.356 | 1.024 | 127 | 7.812 |
+| Ilha dos Anjos 3 | 85–90 | Gendatsu | 88 | 79.112 | 2.877 | 1.216 | 150 | 11.116 |
+| Ilha dos Anjos 4 | 90–95 | Ohm | 95 | 121.646 | 4.099 | 1.655 | 197 | 18.596 |
+
+Valores efetivos após os multiplicadores existentes, XP por vitória no mesmo nível do atacante e sem bônus. Satori continua no nível 77 e mantém os seis identificadores de encontro da primeira ilha. A migração 0061 reconhece apenas a assinatura imediatamente anterior para reposicionar saves que estavam no mapa substituído. Os sacerdotes fazem parte das caçadas do arquipélago, não da rotação de Impel Down. As artes têm 6 quadros por faixa, nas quatro direções; Oeste já vem espelhado no arquivo.
+
+Reproduzir com `python3 tools/import_skypiea_expansion.py caminho/para/Skypiea.zip`. O ZIP do autor não é publicado junto com o jogo. O mapa compilado, as imagens do pacote e a proveniência estão em `assets/skypiea/anjos/`. O teste `node --test tests/skypiea-expansion.test.cjs` percorre todos os cruzamentos de ponte e valida o céu externo, a passagem pelo portão e as rotas de combate.

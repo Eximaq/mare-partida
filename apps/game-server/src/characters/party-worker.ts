@@ -9,7 +9,7 @@ import {readBattleRows,storeBattle} from './battle.js';
 import {readCharacterState} from './state.js';
 import {readWorlds,storeWorld} from './world.js';
 import {readCombatInputs} from './combat-inputs.js';
-import {awardWorldLoot} from '../gameplay/inventory.js';
+import {awardWorldLoot,equipmentWear,persistEquipmentWear} from '../gameplay/inventory.js';
 import {completeDungeonVictory} from './dungeons.js';
 import {advanceLevel} from './progression.js';
 import {recordContractKills,recordDailyProgress,boostXp} from './contracts.js';
@@ -34,6 +34,8 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
   // Revalidate provider/session/epoch after acquiring every peer lock.
   roster=await presence(c,candidate.party_id);
   const room=row.simulation,now=row.now.getTime(),elapsed=(now-row.tick_at.getTime())/1000,actors:any[]=[];let attached=0;
+  // The shared room owns its old mobs independently of personal battle rows.
+  if(room.area==='skypiea-01')E.reanchorSkypieaMobs(room.area,room.mobs,maps().navigation(room.mapId));
    await refreshPartyLeader(c,candidate.party_id,roster,now);
   const ids=roster.map(m=>m.character_id),battles=await readBattleRows(c,ids);
   const connected=roster.filter(m=>m.connected&&battles.get(m.character_id)?.simulation.partyInstanceId===room.id).map(m=>m.character_id);
@@ -53,11 +55,12 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
    const epoch=personal!.control_epoch;
    if(Number(epoch)!==Number(m.epoch)){E.cancel(b);E.resetHaki(b);}
    const inventory=input.inventory,build=input.talents.build;
-   actors.push({id:m.character_id,connected:true,lastSeen:new Date(m.last_seen).getTime(),instanceId:room.id,b,state,f,w,hero:{...w.position,direction:w.direction},stats:f.stats,baseStats:f.baseStats,fruitId:f.fruitId,build,classId:f.classId,factionId:f.factionId,level:state.level,preferences:input.preferences,potions:inventory?.potions??0,crewBenefits:input.crewBenefits,potionHealingBonus:input.crewBenefits.doctor,manualPath:b.auto?[]:w.path.map((p:any)=>({...p})),manualSpeed:w.speed,manualStart:personal!.started_at.getTime(),epoch:Number(m.epoch)});
+   actors.push({id:m.character_id,connected:true,lastSeen:new Date(m.last_seen).getTime(),instanceId:room.id,b,state,f,w,inventory,wear:equipmentWear(inventory,m.character_id),hero:{...w.position,direction:w.direction},stats:f.stats,baseStats:f.baseStats,fruitId:f.fruitId,build,classId:f.classId,factionId:f.factionId,level:state.level,preferences:input.preferences,potions:inventory?.potions??0,crewBenefits:input.crewBenefits,potionHealingBonus:input.crewBenefits.doctor,manualPath:b.auto?[]:w.path.map((p:any)=>({...p})),manualSpeed:w.speed,manualStart:personal!.started_at.getTime(),epoch:Number(m.epoch)});
   }
   if(!attached){await c.query('UPDATE mare_game.party_instances SET ended_at=$2 WHERE id=$1',[room.id,row.now]);await c.query('COMMIT');budget.commit();continue;}
    // Never catch up offline time. Reconnection resumes the same wounded enemies.
   const results=S.step(room,actors,{nav:maps().navigation(room.mapId),now,dt:elapsed>2?0:Math.min(1,elapsed),rng});
+  for(const actor of actors)if(actor.inventory&&actor.wear.changed)await persistEquipmentWear(c,actor.id,actor.inventory,actor.b,actor.state.version,()=>inputs.get(actor.id)?.fighter(actor.b));
   const rewards=new Map<string,number>(),victories:any[]=[];
   const crewActivities:CrewActivity[]=[];
   const activityTime=new Date(now);

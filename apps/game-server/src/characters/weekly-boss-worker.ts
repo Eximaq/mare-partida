@@ -9,7 +9,7 @@ import {lockPeer} from './party.js';
 import {readBattleRows,storeBattle} from './battle.js';
 import {readWorlds,storeWorld} from './world.js';
 import {readCharacterState} from './state.js';
-import {awardWorldLoot} from '../gameplay/inventory.js';
+import {awardWorldLoot,equipmentWear,persistEquipmentWear} from '../gameplay/inventory.js';
 import {digest} from '../auth/vault.js';
 import {weeklyRoster,storeWeeklyRoom,weeklyAudit} from './weekly-boss-store.js';
 import {leaveWeeklyBoss,weeklyInputs} from './weekly-boss.js';
@@ -46,12 +46,13 @@ export async function tickWeeklyBosses(pool:Pool,assignment?:SimulationPartition
    if(!w||w.mapId!==row.map_id||f.rulesetId!=='original-character-v1'||b.rulesHash!==E.rulesHash)throw Error('weekly_world_mismatch');
    b.mobs=room.mobs;b.hp=Math.min(b.hp,f.maxHp);b.energy=Math.min(b.energy,f.stats.maxEnergy);
    if(elapsed>2||Number(m.control_epoch)!==Number(m.epoch)){E.cancel(b);E.resetHaki(b);A.pause(boss,now);}
-   actors.push({id:m.character_id,connected:true,lastSeen:new Date(m.last_seen).getTime(),instanceId:row.id,b,state,f,w,hero:{...w.position,direction:w.direction},stats:f.stats,baseStats:f.baseStats,fruitId:f.fruitId,build:input.talents.build,classId:f.classId,factionId:f.factionId,level:state.level,preferences:input.preferences,potions:row.mode==='test'?0:input.inventory?.potions??0,potionHealingBonus:input.crewBenefits.doctor,manualPath:b.auto?[]:w.path.map((p:any)=>({...p})),manualSpeed:w.speed,manualStart:battles.get(m.character_id)!.started_at.getTime(),epoch:Number(m.epoch)});
+   actors.push({id:m.character_id,connected:true,lastSeen:new Date(m.last_seen).getTime(),instanceId:row.id,b,state,f,w,inventory:input.inventory,wear:row.mode==='official'?equipmentWear(input.inventory,m.character_id):undefined,hero:{...w.position,direction:w.direction},stats:f.stats,baseStats:f.baseStats,fruitId:f.fruitId,build:input.talents.build,classId:f.classId,factionId:f.factionId,level:state.level,preferences:input.preferences,potions:row.mode==='test'?0:input.inventory?.potions??0,potionHealingBonus:input.crewBenefits.doctor,manualPath:b.auto?[]:w.path.map((p:any)=>({...p})),manualSpeed:w.speed,manualStart:battles.get(m.character_id)!.started_at.getTime(),epoch:Number(m.epoch)});
   }
   if(!actors.length||elapsed>2)A.pause(boss,now);
   const results=S.step(room,actors,{nav:maps().navigation(row.map_id),now,dt:elapsed>2?0:Math.min(1,elapsed),rng});
   for(const a of actors){
    const result=results.find((r:any)=>r.id===a.id);
+   if(a.inventory&&a.wear?.changed)await persistEquipmentWear(c,a.id,a.inventory,a.b,a.state.version,()=>inputs.get(a.id)?.fighter(a.b));
    // Reconcile only consumables actually used during an official tick.
    if(row.mode==='official'&&result.potionsUsed){
     const requestId=randomUUID();await awardWorldLoot(c,a.id,requestId,a.state,[],undefined,result.potionsUsed,{xpGrant:0});

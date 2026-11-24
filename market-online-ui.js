@@ -164,6 +164,7 @@
         ['Potencial', exists(item.potential) ? count.format(item.potential)+'%' : null],
         ['Aprimoramento', equipment && exists(item.upgrade) ? '+'+item.upgrade : null],
         ['Pérolas', pearlList.join(', ')],
+        ['Durabilidade', Number.isInteger(item.durability) ? (item.durability/1000).toLocaleString('pt-BR')+'% / 100%' : null],
         ['Origem', origins[item.origin] || item.origin],
         ['Obtido em', item.originLabel],
         ...bonus,

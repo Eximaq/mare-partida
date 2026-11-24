@@ -61,7 +61,7 @@
       return {ok:true,state:save,enemy,changed:true};
     }catch{return {ok:false,message:'Encontro indisponível.'};}
   }
-  function commonPool(catalog){return Object.entries(catalog).filter(([id,m])=>id!=='boss'&&!m.boss&&['hp','atk','def'].every(k=>Number.isFinite(m[k])&&m[k]>=0)&&m.hp>0).map(([type,m])=>({...m,type}));}
+  function commonPool(catalog){return Object.entries(catalog).filter(([id,m])=>id!=='boss'&&!m.boss&&!m.worldOnly&&['hp','atk','def'].every(k=>Number.isFinite(m[k])&&m[k]>=0)&&m.hp>0).map(([type,m])=>({...m,type}));}
   function spawnImpelDownBoss(floor,catalog){
     if(!validFloor(floor))throw Error('Andar inválido');
     const base=commonPool(catalog).sort((a,b)=>Math.abs((a.level??1)-floor)-Math.abs((b.level??1)-floor)||a.type.localeCompare(b.type))[0];

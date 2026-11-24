@@ -98,7 +98,7 @@ test('HUD integer formatting reuses one formatter while preserving Portuguese ou
 test('busy/control notifications retain status without reprojecting unchanged server data',()=>{
  let projections=0,updates=0;const nodes={};
  const c=vm.createContext({game:{hp:10},session:{},ONLINE_GAME:{data:{online:{state:{version:1,gold:'8'},battle:{},combat:{}}},available:true,controlled:true},onlineProjectionSnapshot:null,
-  MareOnlineGameUI:{project(g){projections++;return g;}},applyOnlineEquipment(){},syncOnlineWorld(){},syncOnlineBattle(){},updateUI(){updates++;},scene:'lobby',onlineInventoryStamp:null,
+  MareOnlineGameUI:{project(g){projections++;return g;}},applyOnlineEquipment(){},syncOnlineWorld(){},syncOnlineBattle(){},updateUI(){updates++;},scene:'lobby',currentPanel:null,onlineInventoryStamp:null,
   $:id=>nodes[id]??=( {} )});
  vm.runInContext(fn('syncOnlineGame'),c);for(let i=0;i<4;i++){c.ONLINE_GAME.busy=!!(i%2);vm.runInContext('syncOnlineGame()',c);}
  assert.equal(projections,1);assert.equal(updates,1);

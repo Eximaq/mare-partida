@@ -588,3 +588,15 @@ test('South B155 walk keeps all saved colors for the seven individual trousers a
   global.MareHeadgear=prior.headgear;
  }
 });
+
+test('durability changes keep the same native sprite family cache entry',async()=>{
+ const api=make(),player={appearance96:{body:'male',hair:'original'},equipment:{weapon:{def:109,durability:99999}}};
+ await api.prepareFamily(player);
+ assert.equal(api.snapshot().families.length,1);
+ player.equipment.weapon.durability=99998;
+ await api.prepareFamily(player);
+ assert.equal(api.snapshot().families.length,1);
+ player.equipment.weapon.def=117;
+ await api.prepareFamily(player);
+ assert.equal(api.snapshot().families.length,2);
+});

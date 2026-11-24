@@ -157,7 +157,11 @@
   }
   function derived(base, data) {
     const f = !data.online.battle&&['active','won','lost'].includes(data.online.combat?.status)?data.online.combat.fighter??data.online.combatPreview:data.online.combatPreview;
-    if(f.rulesetId==='original-character-v1')return {...base,...structuredClone(f.stats),magicDefense:f.stats.defense};
+    if(f.rulesetId==='original-character-v1'){
+      const condition=data.online.battle?.equipmentCondition;
+      const stats=condition&&condition.version===data.online.state?.version&&condition.forgeSeq===data.online.originalInventory?.forgeSeq&&condition.stats?condition.stats:f.stats;
+      return {...base,...structuredClone(stats),magicDefense:stats.defense};
+    }
     return {
       ...base,
       maxHP: f.maxHp,
@@ -254,6 +258,8 @@
     combat_daily_limit: "O limite de encontros em 24 horas foi atingido.",
     pending_command: "Confira o pedido pendente antes de enviar outra ação.",
     authentication_required: "Sua sessão terminou.",
+    equipment_impact_pending: 'Aguarde a conclusão do ataque antes de mover esta peça.',
+    repair_quote_changed: 'O custo do reparo mudou. Confira o novo orçamento e confirme novamente.',
     forge_operation_rejected: 'Operação recusada. Confira custos, bloqueios, sockets e materiais.',
     equipment_during_combat: 'Conclua o combate antes de trocar equipamentos ou usar a forja.',
     inventory_conversion_capacity: 'Libere espaço no inventário anterior antes da conversão. Seus itens foram preservados.',

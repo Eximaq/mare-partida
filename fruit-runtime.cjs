@@ -36,7 +36,7 @@ function context(b,c,key,hooks={}){
   manualPath:c.manualPath,point:c.point,classId:c.classId,map:nav.map,haki:b.hakiRuntime?.active,armor:(m,magic)=>armor(m,magic,now),scaleHp:n=>{b.hp*=n;},view:{x:Math.max(0,Math.min(hero.x-480,nav.map.width-960)),y:Math.max(0,Math.min(hero.y-285,nav.map.height-570)),width:960,height:570},
   clear:(a,z)=>nav.projectileClear(a,z),walkable:p=>nav.walkable(p.x,p.y),path:(a,z)=>nav.path(a,z),move:(m,dx,dy)=>move(nav,m,dx,dy),
   damage:(m,power,mult,magic,pen,absolute)=>R.damage({...m,defense:armor(m,false,now),magicDefense:armor(m,true,now)},power,mult,magic,pen,absolute),
-  ...hooks,healArea:(point,radius,ratio)=>{if(distance(hero,point)<=radius&&nav.projectileClear(point,hero))hooks.heal?.(c.stats.maxHP*ratio,true);for(const a of c.allies||[])if(a.b.hp>0&&distance(a.hero,point)<=radius&&nav.projectileClear(point,a.hero))a.b.hp=Math.min(a.stats.maxHP,a.b.hp+a.stats.maxHP*ratio);},hit:hooks.hit||(()=>{}),heal:ratio=>hooks.heal?.(c.stats.maxHP*ratio,true),cancelHero(){b.pending=null;b.skillJob=null;b.projectiles=[];if(c.manualPath)c.manualPath.length=0;for(const m of b.mobs)m.telegraph=null;},onSwap(){b.pending=null;if(c.manualPath)c.manualPath.length=0;}};
+  ...hooks,wear:c.actionWear,healArea:(point,radius,ratio)=>{if(distance(hero,point)<=radius&&nav.projectileClear(point,hero))hooks.heal?.(c.stats.maxHP*ratio,true);for(const a of c.allies||[])if(a.b.hp>0&&distance(a.hero,point)<=radius&&nav.projectileClear(point,a.hero))a.b.hp=Math.min(a.stats.maxHP,a.b.hp+a.stats.maxHP*ratio);},hit:(m,amount,flags)=>hooks.hit?.(m,amount,flags?.wear??c.actionWear),heal:ratio=>hooks.heal?.(c.stats.maxHP*ratio,true),cancelHero(){b.pending=null;b.skillJob=null;b.projectiles=[];if(c.manualPath)c.manualPath.length=0;for(const m of b.mobs)m.telegraph=null;},onSwap(){b.pending=null;if(c.manualPath)c.manualPath.length=0;}};
 }
 function valid(b,c,key){
  const f=state(b,c),skill=A.activeSkill(f.id,key),ctx=context(b,c,key),target=ctx.target;
@@ -61,7 +61,7 @@ function cast(b,key,c){
 function queue(b,f,key,c){
  const human=!A.isZoan(A.byId(f.id)),t=b.mobs.find(m=>m.id===b.targetId&&live(m));
  if(t){const dx=t.x-c.hero.x,dy=t.y-c.hero.y;c.hero.direction=Math.abs(dx)>Math.abs(dy)?dx<0?'left':'right':dy<0?'back':'front';}
- f.job={id:f.id,key,targetId:b.targetId,area:b.area,impactAt:c.now+(human?Policy.punch.impact*1000:0),...(c.point?{point:{...c.point}}:{})};
+ f.job={id:f.id,key,wear:c.beginActionWear?.(),targetId:b.targetId,area:b.area,impactAt:c.now+(human?Policy.punch.impact*1000:0),...(c.point?{point:{...c.point}}:{})};
  if(human){f.castVisual={id:f.id,key,area:b.area,started:c.now,until:c.now+Policy.punch.duration*1000,direction:c.hero.direction};b.actionLockUntil=f.castVisual.until;}
  c.hero.moving=0;
 }
@@ -70,22 +70,22 @@ function tick(b,c,dt,hooks){
  if(f.castVisual&&(c.now+1e-6>=f.castVisual.until||f.castVisual.id!==f.id||f.castVisual.area!==b.area||b.hp<=0))f.castVisual=null;
  if(c.hero.talentControl?.remaining>0&&!Policy.cleansesControl(f.id,f.job?.key||f.castVisual?.key)){f.job=null;f.castVisual=null;b.actionLockUntil=0;}
  const ctx=context(b,c,f.job?.key||'1',hooks),now=ctx.now,rt=decode(f.advanced||R.create());
- if(f.job&&c.now>=(f.job.impactAt??0)){const j=f.job;f.job=null;const original=b.targetId;b.targetId=j.targetId;const castContext=context(b,{...c,point:j.point},j.key,hooks);b.targetId=original;
+ if(f.job&&c.now>=(f.job.impactAt??0)){const j=f.job;f.job=null;const original=b.targetId;b.targetId=j.targetId;const castContext=context(b,{...c,point:j.point,actionWear:j.wear},j.key,hooks);b.targetId=original;
   if(j.id===f.id&&(j.area??b.area)===b.area){hooks.effect?.({fruitId:f.id,key:j.key,x:c.hero.x,y:c.hero.y});if(R.has(f.id)){R.cast(rt,castContext);if(rt.room&&!rt.room.realUntil)rt.room.realUntil=c.now+30250;}
    else if(G.valid(f,castContext))G.cast(f,castContext);
    else if(L.valid(f,castContext))L.cast(f,castContext);
    else if(f.id==='akuma_kuku_kuku'){const m=b.mobs.filter(m=>!m.alive&&!m.fruitConsumed&&m.corpseUntil>c.now).sort((a,z)=>distance(a,c.hero)-distance(z,c.hero))[0];if(m){m.fruitConsumed=true;f.effects.food??=[];f.effects.food.push({x:m.x,y:m.y,ready:now+.75});}}
    else if(f.id==='akuma_beri_beri'){f.effects.invulnerableUntil=now+1.5;for(const m of b.mobs.filter(m=>live(m)&&distance(m,c.hero)<=130)){const d=Math.max(1,distance(m,c.hero));ctx.move(m,(m.x-c.hero.x)*65/d,(m.y-c.hero.y)*65/d);}}
    else if(f.id==='akuma_tori_albatroz')f.effects.altitudeUntil=now+5;
-   else if(f.id==='akuma_uma_uma'){const [dx,dy]=R.direction(c.hero);f.effects.dash={dx,dy,remaining:256,hit:false};}
-   else if(f.id==='akuma_inu_dachshund'){const m=b.mobs.filter(m=>live(m)&&distance(m,c.hero)<=130&&ctx.clear(c.hero,m)).sort((a,z)=>distance(a,c.hero)-distance(z,c.hero))[0];if(m){const d=Math.max(1,distance(m,c.hero));ctx.move(c.hero,(m.x-c.hero.x)/d*Math.max(0,d-35),(m.y-c.hero.y)/d*Math.max(0,d-35));m.zoanSlowUntil=m.zoanDefenseUntil=now+3;hooks.hit(m,C.damage(ctx.stats,armor(m,false,now),{type:'physical',multiplier:.85}));}}
+   else if(f.id==='akuma_uma_uma'){const [dx,dy]=R.direction(c.hero);f.effects.dash={dx,dy,remaining:256,hit:false,wear:j.wear};}
+   else if(f.id==='akuma_inu_dachshund'){const m=b.mobs.filter(m=>live(m)&&distance(m,c.hero)<=130&&ctx.clear(c.hero,m)).sort((a,z)=>distance(a,c.hero)-distance(z,c.hero))[0];if(m){const d=Math.max(1,distance(m,c.hero));ctx.move(c.hero,(m.x-c.hero.x)/d*Math.max(0,d-35),(m.y-c.hero.y)/d*Math.max(0,d-35));m.zoanSlowUntil=m.zoanDefenseUntil=now+3;hooks.hit(m,C.damage(ctx.stats,armor(m,false,now),{type:'physical',multiplier:.85}),j.wear);}}
   }
  }
  if(R.has(f.id))R.step(rt,ctx);else {L.tick(f,ctx,dt);G.tick(f,ctx,dt);}
  f.effects.food=(f.effects.food||[]).filter(food=>{if(food.ready<=now&&distance(food,c.hero)<25){hooks.heal(c.stats.maxHP*.15,true);return false;}return true;});
  if(f.id==='akuma_tori_phoenix'){f.effects.phoenixElapsed=(f.effects.phoenixElapsed||0)+dt;if(f.effects.phoenixElapsed>=10){f.effects.phoenixElapsed-=10;b.hp=Math.min(c.stats.maxHP,b.hp+c.stats.maxHP*.1);b.energy=Math.min(c.stats.maxEnergy,b.energy+c.stats.maxEnergy*.1);}}
  const dash=f.effects.dash;if(dash){const amount=Math.min(dash.remaining,800*dt),moved=ctx.move(c.hero,dash.dx*amount,dash.dy*amount);dash.remaining-=amount;
-  if(!dash.hit){const m=b.mobs.find(m=>live(m)&&distance(m,c.hero)<45&&ctx.clear(c.hero,m));if(m){dash.hit=true;hooks.hit(m,C.damage(ctx.stats,armor(m,false,now),{type:'physical',multiplier:.55}));ctx.move(m,dash.dx*45,dash.dy*45);}}
+  if(!dash.hit){const m=b.mobs.find(m=>live(m)&&distance(m,c.hero)<45&&ctx.clear(c.hero,m));if(m){dash.hit=true;hooks.hit(m,C.damage(ctx.stats,armor(m,false,now),{type:'physical',multiplier:.55}),dash.wear);ctx.move(m,dash.dx*45,dash.dy*45);}}
   if(dash.remaining<=0||moved<amount-.1)delete f.effects.dash;
  }
  f.advanced=encode(rt);if(JSON.stringify(f).length>250000)throw Error('fruit_runtime_limit');

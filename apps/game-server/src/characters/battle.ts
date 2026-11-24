@@ -16,7 +16,7 @@ import {readWorld,storeWorld} from './world.js';
 import {readFighter} from './fighter.js';
 import {readCharacterState} from './state.js';
 import {advanceLevel} from './progression.js';
-import {awardWorldLoot} from '../gameplay/inventory.js';
+import {awardWorldLoot,equipmentWear,readOriginalInventory,persistEquipmentWear} from '../gameplay/inventory.js';
 import {digest} from '../auth/vault.js';
 import {recordContractKills,recordDailyProgress,boostXp} from './contracts.js';
 import {creditCrewActivities,crewHuntEvents} from './crew-activity.js';
@@ -84,7 +84,8 @@ export async function mutateBattle(client:PoolClient,id:string,input:CharacterCo
    b.targetId=target?.id??null;b.auto=!!target;
   }else if(input.action==='battle.skill'){
    const actor={...w.position,direction:w.direction};
-   if(!engine.skill(b,input.payload.index,{hero:actor,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId,now:Date.parse(w.serverNow)}))throw new AuthFault(409,'battle_skill_unavailable');
+   const wear=equipmentWear(await readOriginalInventory(client,id),id);
+   if(!engine.skill(b,input.payload.index,{wear,hero:actor,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId,now:Date.parse(w.serverNow)}))throw new AuthFault(409,'battle_skill_unavailable');
    await storeWorld(client,id,{...w,direction:actor.direction,path:[],motionUntil:w.serverNow});
   }else if(input.action==='battle.first'){
    const area=b.hunts.areas[b.area],region=engine.hunt.get(b.area);
@@ -137,8 +138,9 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
   b.hp=Math.min(b.hp,fighter.maxHp);b.energy=Math.min(b.energy,fighter.stats.maxEnergy);
   const path=b.auto?[]:w.path.map(p=>({...p})),hero={...w.position,direction:w.direction};
   const started=(await client.query('SELECT started_at FROM mare_game.character_world WHERE character_id=$1',[id])).rows[0].started_at.getTime();
-  const stock=inputs.inventory;
-  const result=engine.step(b,{preferences:inputs.preferences,hero,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:inputs.talents.build,classId:fighter.classId,factionId:fighter.factionId,level:state.level,now:now.getTime(),dt,rng,manualPath:path,manualSpeed:w.speed,manualStart:started,potions:stock?.potions??0,potionHealingBonus:inputs.crewBenefits.doctor});
+  const stock=inputs.inventory,wear=equipmentWear(stock,id);
+  const result=engine.step(b,{wear,preferences:inputs.preferences,hero,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:inputs.talents.build,classId:fighter.classId,factionId:fighter.factionId,level:state.level,now:now.getTime(),dt,rng,manualPath:path,manualSpeed:w.speed,manualStart:started,potions:stock?.potions??0,potionHealingBonus:inputs.crewBenefits.doctor});
+  if(stock&&wear.changed)await persistEquipmentWear(client,id,stock,b,state.version,()=>inputs.fighter(b));
   if(result.kills.length||result.potionsUsed||result.talentSteals.length){
    if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
    const requestId=randomUUID();

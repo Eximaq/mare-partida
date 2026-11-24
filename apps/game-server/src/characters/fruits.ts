@@ -6,7 +6,7 @@ import {readWorld,storeWorld} from './world.js';
 import {readFighter} from './fighter.js';
 import {readTalents} from './talents.js';
 import {AuthFault} from '../auth/errors.js';
-import {readOriginalInventory} from '../gameplay/inventory.js';
+import {readOriginalInventory,equipmentWear} from '../gameplay/inventory.js';
 import {getGameCatalog} from '../gameplay/catalog.js';
 const A=createRequire(import.meta.url)('../../../../akuma-system.js');
 const require=createRequire(import.meta.url),E=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
@@ -17,7 +17,7 @@ export async function mutateFruit(client:PoolClient,id:string,input:CharacterCom
  const fighter=await readFighter(client,id,state);if(fighter.rulesetId!=='original-character-v1')throw new AuthFault(409,'original_inventory_required');
  const now=((await client.query('SELECT clock_timestamp() now')).rows[0].now as Date).getTime(),nav=maps().navigation(w.mapId),c={hero:{...w.position,direction:w.direction},nav,now,stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,classId:fighter.classId,factionId:fighter.factionId,level:state.level,build:(await readTalents(client,id,state))?.build};
  if(input.action==='fruit.transform'){if(!E.fruitTransform(b,input.payload.enabled,c))throw new AuthFault(409,'fruit_transform_unavailable');}
- else if(input.action==='fruit.cast'){if(!E.fruitCast(b,input.payload.key,{...c,point:input.payload.point}))throw new AuthFault(409,'fruit_cast_unavailable');}
+ else if(input.action==='fruit.cast'){if(!E.fruitCast(b,input.payload.key,{...c,wear:equipmentWear(await readOriginalInventory(client,id),id),point:input.payload.point}))throw new AuthFault(409,'fruit_cast_unavailable');}
  else if(input.action==='fruit.move'){
   const g=b.fruit?.effects?.genie;if(!g||g.hp<=0||g.until<=now/1000||b.hp<=0||fighter.fruitId!=='akuma_hoya_hoya'||!nav.walkable(input.payload.x,input.payload.y))throw new AuthFault(409,'fruit_move_unavailable');
   const route=nav.path(g,input.payload);if(!route.length&&Math.hypot(g.x-input.payload.x,g.y-input.payload.y)>1)throw new AuthFault(409,'fruit_move_unavailable');g.path=route;b.targetId=null;

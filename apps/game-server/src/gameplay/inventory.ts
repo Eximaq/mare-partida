@@ -140,6 +140,32 @@ export async function readOriginalGear(client: PoolClient, id: string) {
     armor: gear.defense,
   };
 }
+export function equipmentWear(inventory:OriginalInventory|undefined,owner:string){
+  return {
+    owner,changed:false,
+    begin:()=>forge.beginWear(inventory?.equipment,defs),
+    confirm(action:{ids:string[];confirmed:boolean}){
+      if(inventory&&action.ids.length&&forge.confirmWear(action,inventory,defs))this.changed=true;
+    },
+  };
+}
+export async function assertEquipmentTransferReady(client:PoolClient,id:string,itemIds:readonly string[]){
+  const battle=await readBattle(client,id);
+  if(!battle)return;
+  const pending: Set<string>=require('../../../../world-battle.cjs').pendingWearIds(battle);
+  if(itemIds.some(itemId=>pending.has(itemId)))throw new AuthFault(409,'equipment_impact_pending');
+}
+export async function persistEquipmentWear(client:PoolClient,id:string,inventory:OriginalInventory,battle:any,version:number,derive?:()=>any){
+  await writeInventory(client,id,inventory);
+  const worn=Object.values(inventory.equipment).some(item=>item&&forge.hasDurability(item,defs)&&forge.durabilityOf(item)<80*forge.hitsPerPercent);
+  const fighter=worn?derive?.():null;
+  battle.equipmentCondition={
+    ...(fighter?.rulesetId==='original-character-v1'?{stats:fighter.stats}:{}),
+    version,forgeSeq:inventory.forgeSeq,
+    values:Object.fromEntries(Object.values(inventory.equipment)
+      .filter(item=>item&&forge.hasDurability(item,defs)).map(item=>[item!.id,forge.durabilityOf(item)])),
+  };
+}
 export async function writeInventory(
   client: PoolClient,
   id: string,
@@ -348,7 +374,8 @@ export async function mutateOriginalInventory(
     "forge.execute",
   ].includes(input.action);
   const battle=await readBattle(client,id);
-  if (changesGear && (combat?.phase === "active"||battle&&(battle.auto||battle.pending||battle.skillJob||battle.mobs.some((m:any)=>m.alive&&m.engaged))))
+  const repair=input.action==="forge.execute"&&(input.payload.operation.type==="repair"||input.payload.operation.type==="repairAll");
+  if (changesGear && (combat?.phase === "active"||!repair&&battle&&(battle.auto||battle.pending||battle.skillJob||battle.mobs.some((m:any)=>m.alive&&m.engaged))))
     throw new AuthFault(409, "equipment_during_combat");
   if (input.action === "items.initialize") {
     if (i) throw new AuthFault(409, "inventory_already_initialized");
@@ -358,7 +385,9 @@ export async function mutateOriginalInventory(
   } else {
     if (!i) throw new AuthFault(409, "original_inventory_required");
     if(input.action==='items.sell-batch'){
-      const rules=require('../../../../inventory-batch.js'),plan=rules.preview(i,input.payload.items.map(row=>row.itemId),defs);
+      const idsToSell=input.payload.items.map(row=>row.itemId);
+      await assertEquipmentTransferReady(client,id,idsToSell);
+      const rules=require('../../../../inventory-batch.js'),plan=rules.preview(i,idsToSell,defs);
       if(plan.error)throw new AuthFault(409,'item_protected');
       if(JSON.stringify(plan.items)!==JSON.stringify(input.payload.items))throw new AuthFault(409,'inventory_preview_changed');
       const ids=new Set(input.payload.items.map(row=>row.itemId));i.inventory=i.inventory.filter(item=>!ids.has(item.id));delta=BigInt(plan.total);outcome={items:plan.items,total:plan.total};
@@ -379,6 +408,7 @@ export async function mutateOriginalInventory(
       if (input.action === "items.lock") {
         item.locked = input.payload.locked;
       } else if (input.action === "items.sell") {
+        await assertEquipmentTransferReady(client,id,[item.id]);
         if (!i.inventory.some((x) => x.id === item.id))
           throw new AuthFault(409, "item_equipped");
         if (require('../../../../inventory-batch.js').reason(item,defs,i.equipment))
@@ -484,6 +514,8 @@ export async function mutateOriginalInventory(
     } else if (input.action === "forge.execute") {
       if (BigInt(state.gold) > BigInt(Number.MAX_SAFE_INTEGER))
         throw new AuthFault(409, "original_currency_limit");
+      const operation=input.payload.operation;
+      if(operation.type==="dismantle"||operation.type==="fuseEquipment")await assertEquipmentTransferReady(client,id,operation.itemIds);
       const result = forge.execute(
         {
           ...i,
@@ -501,7 +533,7 @@ export async function mutateOriginalInventory(
         random,
         Date.now(),
       );
-      if (!result.ok) throw new AuthFault(409, "forge_operation_rejected");
+      if (!result.ok) throw new AuthFault(409, result.reason??"forge_operation_rejected");
       const { gold, classId, characterId, level, ...next } = result.state;
       i = valid(next,id);
       delta = BigInt(gold) - BigInt(state.gold);
