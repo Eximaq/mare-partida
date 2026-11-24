@@ -45,16 +45,34 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
     await wear(id,'east');assert.equal(await sel('slot').inputValue(),'boots');assert.equal(await sel('tick').inputValue(),'5');
     assert.deepEqual(await xy(),[5,-2]);const drawn=await frame();await sel('before').check();await waitPixels(drawn,false);await sel('before').uncheck();await waitPixels(drawn);
    }
-   await sel('apply-positions').click();await wear(22,'east');
-   await focus('legs');await move(-3,3);await sel('apply-positions').click();
-   await focus('coat');await move(6,2);await sel('apply-positions').click();
-   for(const direction of ['north','west','south','east']){
+   await wear(22,'east');
+   const positions={east:{coat:[6,2],legs:[-3,3],boots:[5,-2]},north:{coat:[-1,4],legs:[2,1],boots:[0,0]},west:{coat:[-4,2],legs:[3,-2],boots:[-5,1]},south:{coat:[4,-3],legs:[1,2],boots:[2,3]}};
+   for(const [direction,slots] of Object.entries(positions)){
     await sel('direction').selectOption(direction);await ready(direction);
-    for(const [slot,expected] of [['coat',[6,2]],['legs',[-3,3]],['boots',[5,-2]]]){
-     await focus(slot);assert.deepEqual(await xy(),expected);
+    for(const [slot,expected] of Object.entries(slots)){await focus(slot);if(expected.some(Boolean))await move(...expected);}
+   }
+   for(const slot of ['boots','legs','coat']){
+    await focus(slot);await sel('apply-positions').click();
+    await p.waitForFunction(()=>document.querySelector('#status').textContent.includes('aplicad')||document.querySelector('#status').dataset.error==='true');
+    assert.equal(await sel('status').getAttribute('data-error'),'false',await sel('status').innerText());
+   }
+   await wear(4,'south');
+   for(const [direction,slots] of Object.entries(positions)){
+    await sel('direction').selectOption(direction);await ready(direction);
+    for(const [slot,expected] of Object.entries(slots)){
+     await focus(slot);assert.deepEqual(await xy(),expected,slot+'/'+direction);
+     if(!expected.some(Boolean))continue;
      const moved=await frame();await sel('outfit-position').click();await move(0,0);await waitPixels(moved,false);
      await sel('reset').click();await waitPixels(moved);assert.deepEqual(await xy(),expected);assert.equal(await sel('outfit-position').getAttribute('aria-pressed'),'false');
     }
+   }
+   await focus('boots');await sel('outfit-position').click();await move(4,-1);
+   await sel('direction').selectOption('west');await ready('west');await sel('outfit-position').click();await move(-1,4);
+   await sel('direction').selectOption('east');await ready('east');await sel('apply-positions').click();
+   await p.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('Posições aplicadas'));
+   await wear(0,'east');
+   for(const [d,wanted] of Object.entries({south:[4,-1],west:[-1,4],east:[5,-2],north:[0,0]})){
+    await sel('direction').selectOption(d);await ready(d);assert.deepEqual(await xy(),wanted,'Promoção da bota em '+d);
    }
    await sel('direction').selectOption('south');await ready('south');await focus('coat');
    await move(4,-3);await sel('outfit-position').click();await move(8,-1);
@@ -71,19 +89,25 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
    await sel('outfit-position').click();await move(9,-2);await focus('weapon');await sel('remove').click();await ready('east');
    await focus('boots');assert.deepEqual(await xy(),[5,-2]);await wear(0,'east');assert.deepEqual(await xy(),[9,-2]);
    const downloaded=p.waitForEvent('download');await sel('export').click();const file=await (await downloaded).path();
-   const manifest=JSON.parse(await fs.readFile(file,'utf8'));assert.equal(manifest.records.filter(r=>r.range==='motion').length,3);
+   const manifest=JSON.parse(await fs.readFile(file,'utf8'));assert.equal(manifest.records.filter(r=>r.range==='motion').length,0);
    const fresh=await browser.newPage();
    try{
     await fresh.goto(new URL('bancada-hd.html',url).href);await fresh.waitForFunction(()=>document.querySelector('#part').value==='*');
     await fresh.locator('#file').setInputFiles(file);
-    await fresh.waitForFunction(()=>localStorage.getItem('kaizoku-hd-position-draft-v1')||document.querySelector('#status').dataset.error==='true');
+    await fresh.waitForFunction(()=>localStorage.getItem('kaizoku-hd-position-draft-v1')||document.querySelector('#status').dataset.error==='true',null,{timeout:150000});
     assert.equal(await fresh.locator('#status').getAttribute('data-error'),'false',await fresh.locator('#status').innerText());
     assert.deepEqual(await fresh.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1'))),manifest);
-    const signed=manifest.records.find(r=>r.item===148&&r.range==='outfit');
+    const signed=manifest.records.find(r=>r.item===148&&r.range==='outfit'&&r.direction==='east');
+    const blanket={...signed,range:'motion',cycle:[5,19]},west=manifest.records.find(r=>r.item===148&&r.range==='direction'&&r.direction==='west');
+    await fresh.locator('#file').setInputFiles({name:'rascunho-quatro-direcoes.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({...manifest,records:[blanket,west]}))});
+    await fresh.waitForFunction(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).records.length===2||document.querySelector('#status').dataset.error==='true',null,{timeout:90000});
+    const restored=await fresh.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).records);
+    assert.deepEqual(Object.fromEntries(restored.map(r=>[r.direction,r.cycle])),{east:[5,19],west:west.cycle});
+    assert(restored.every(r=>r.range==='direction'));
     const {range,witness,...legacy}=signed;
     const old={...manifest,schema:1,records:[{...legacy,cycle:[4,1]}]};
     await fresh.locator('#file').setInputFiles({name:'rascunho-antigo.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(old))});
-    await fresh.waitForFunction(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).records.length===2||document.querySelector('#status').dataset.error==='true');
+    await fresh.waitForFunction(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).records.some(r=>!r.range&&r.cycle[0]===4)||document.querySelector('#status').dataset.error==='true');
     assert.equal(await fresh.locator('#status').getAttribute('data-error'),'false',await fresh.locator('#status').innerText());
     await fresh.locator('#action').selectOption('walk');await fresh.locator('#direction').selectOption('east');
     await fresh.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('walk · east ·')&&document.querySelector('#x').value==='4');
@@ -191,28 +215,33 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
   if(process.env.HD_MAP_CYCLES){
    await p.setViewportSize({width:1280,height:780});
    for(const item of [22,159,18])await p.locator('[data-id="'+item+'"]').click();
-   const full=process.env.HD_MAP_CYCLES==='all',ids=full?[0,2,4,73,15,16,17]:[0,73];
+   const full=process.env.HD_MAP_CYCLES==='all',ids=full?[0,2,4,73,15,16,17]:[0,73,68];
    for(const [i,weapon] of ids.entries())for(const body of full?['masculino','feminino']:[i?'feminino':'masculino']){
-    await p.locator('#look-gender').selectOption(body);await p.locator('[data-id="'+weapon+'"]').click();
+    const named=!full&&weapon===68,head=named?136:18,hairStyle=named?'hair-bob':'original';
+    await p.locator('#look-gender').selectOption(body);await p.locator('#look-hairStyle').selectOption(hairStyle);
+    await p.locator('[data-id="'+head+'"]').click();await p.locator('[data-id="'+weapon+'"]').click();
     const role=await p.locator('#role').inputValue(),attack=await p.locator('#action option').evaluateAll(os=>os.find(o=>o.value.startsWith('attack-')).value);
-    const poses=full?directions.flatMap(direction=>['idle','walk',attack].map(action=>[direction,action])):[i?['east',attack]:['west','walk']];
+    const poses=full?directions.flatMap(direction=>['idle','walk',attack].map(action=>[direction,action])):[i===1?['east',attack]:['west','walk']];
     for(const [direction,action] of poses){
      await p.locator('#direction').selectOption(direction);await p.locator('#action').selectOption(action);await p.locator('#slot').selectOption('boots');
      await p.waitForFunction(([a,d])=>document.querySelector('#status').textContent.startsWith(a+' · '+d+' ·')&&document.querySelector('#part').value==='*',[action,direction]);
-     if(!full&&action==='walk'){
-      await p.locator('#direction').selectOption('east');
-      await p.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('walk · east ·'));
-      await p.locator('[data-move="0,1"]').click();await p.locator('#apply-positions').click();
-      await p.locator('#direction').selectOption(direction);
-      await p.waitForFunction(d=>document.querySelector('#status').textContent.startsWith('walk · '+d+' ·'),direction);
-     }else await p.locator('[data-move="0,1"]').click();
+     await p.locator('[data-move="0,1"]').click();
      assert.equal(await p.locator('#y').inputValue(),'1',role+'/'+body+'/'+action+'/'+direction);
+     if(!full){
+      await p.locator('#slot').selectOption('head');await p.locator('#part').selectOption('*');
+      const before=await pixels();
+      for(const [field,value] of [['x','5'],['y','19']]){
+       const input=p.locator('#'+field);await input.fill(value);await input.press('Tab');
+      }
+      assert.equal(await p.locator('#status').getAttribute('data-error'),'false',await p.locator('#status').innerText());
+      await waitPixels(before,false);
+     }
      const hashes=await p.evaluate(async()=>{
       const timeline=document.querySelector('#tick'),result=[];
       for(let i=0;i<=+timeline.max;i++){timeline.value=i;timeline.dispatchEvent(new Event('input'));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));result.push(await __fingerprint(__benchImage));}return result;
      });
      assert(hashes.length&&hashes.every(Boolean));
-     cycles.push({body,weapon,role,action,direction,hashes});
+     cycles.push({body,weapon,role,head,hairStyle,action,direction,hashes});
     }
    }
   }
@@ -224,8 +253,8 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
    assert(s.includes(marker));
    const hook=`window.__testPositionHunt=()=>{game.classId='sword';game.appearance96=MareCharacterAppearance.normalize({});game.equipment={coat:newItem(itemDefs[6],1,false),boots:newItem(itemDefs[148],1,false)};game.preferences={...game.preferences,hideHeadgear:false};enterHunt();autoPlay=false;autoSkills=false;world.hero.direction='south';};
     let probe=null;
-    window.__positionPose=q=>{probe=q;window.__mapImage=null;game.classId=q.role;game.appearance96=MareCharacterAppearance.normalize({gender:q.body});
-     game.equipment=Object.fromEntries(Object.entries({weapon:q.weapon,coat:6,legs:22,boots:148,gloves:159,head:18}).map(([s,id])=>[s,newItem(itemDefs[id],1,false)]));};
+    window.__positionPose=q=>{probe=q;window.__mapImage=null;game.classId=q.role;game.appearance96=MareCharacterAppearance.normalize({gender:q.body,hairStyle:q.hairStyle});
+     game.equipment=Object.fromEntries(Object.entries({weapon:q.weapon,coat:6,legs:22,boots:148,gloves:159,head:q.head}).map(([s,id])=>[s,newItem(itemDefs[id],1,false)]));};
     window.__positionTick=t=>{probe.tick=t;window.__mapImage=null;};
     const draw=lobby96.draw.bind(lobby96);
     lobby96.draw=(ctx,p,o)=>{if(o.scene!=='hunt'||ctx.canvas.id!=='worldCanvas'||(!probe&&(o.action!=='idle'||o.direction!=='south')))return draw(ctx,p,o);

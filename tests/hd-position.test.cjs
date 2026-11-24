@@ -1,6 +1,11 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
 const adjust=require('../hd-position.js');
+// A four-way copy as actually serialized by the earlier workbench.
+function oldCopy(m,t,cycle,witness){
+ const {limits,...identity}=t;
+ return {...m,schema:3,records:[...m.records,{...identity,range:'motion',cycle,phases:{},...(witness?{witness}:{})}]};
+}
 test('manifesto aceita somente deslocamentos inteiros e campos conhecidos',()=>{
  const m=adjust.empty(); assert.deepEqual(adjust.validate(m),m);
  assert.throws(()=>adjust.validate({...m,scale:1}));
@@ -68,8 +73,8 @@ test('posição por ID, movimento e corpo tem direção, quatro direções e exc
   if(dx||dy)assert.equal(pixel(c,4,8)[3],0);
  }
  let m=adjust.withPosition(adjust.empty(),east.coat,'direction',[3,1]);check(armed,m,3,1);check(west,m,0,0);
- m=adjust.withPosition(m,east.coat,'motion',[2,-1]);check(west,m,2,-1);
- for(const d of ['north','south'])check(await makeView(6,'masculino',d,4),m,2,-1);
+ m=adjust.validate(oldCopy(adjust.empty(),east.coat,[2,-1]));check(west,m,0,0);
+ for(const d of ['north','south'])check(await makeView(6,'masculino',d,4),m,0,0);
  for(const v of [await makeView(7,'masculino','east',0),await makeView(6,'feminino','east',0),await makeView(6,'masculino','east',0,'idle')])check(v,m,0,0);
  m=adjust.withPosition(m,armed.coat,'pose',[0,0]);check(armed,m,0,0);check(east,m,2,-1);
  m=adjust.withPosition(m,west.coat,'direction',[-2,1]);check(west,m,-2,1);check(east,m,2,-1);
@@ -89,7 +94,7 @@ test('a montagem de origem detecta uma arte substituída mesmo com X/Y compartil
  }
  const original=await view('arte-original'),changed=await view('arte-nova'),t=original.targets.find(v=>v.part==='*');
  const witness={role:'sword',gear:{coat:6},look:{gender:'masculino'},hide:false};
- const m=adjust.withPosition(adjust.empty(),t,'motion',[2,1],witness);
+ const m=adjust.validate(oldCopy(adjust.empty(),t,[2,1],witness));
  assert.throws(()=>changed.configure(m,true),/incompatível/);assert.equal(changed.moved,false);
 });
 
@@ -124,4 +129,20 @@ test('cada ação e direção mantém seu padrão por ID do catálogo nos dois c
   }
  }
  assert.equal(checks,92*2*4*actions.length);
+});
+
+test('reaplicar uma cópia antiga recupera a direção de origem e preserva outros IDs e direções',()=>{
+ const item={body:'male',weapon:0,receiver:'montagem',action:'walk',direction:'south',slot:'head',item:18,part:'*',source:'b'.repeat(64)};
+ let m=oldCopy(adjust.empty(),item,[5,19]);
+ m=adjust.withPosition(m,{...item,direction:'west'},'direction',[-4,2]);
+ m=oldCopy(m,{...item,item:19},[7,3]);
+ const result=adjust.validate(m);assert.equal(m.records.filter(r=>r.range==='motion').length,2);
+ assert.deepEqual(adjust.positionFor(item,result.records).cycle,[5,19]);
+ assert.deepEqual(adjust.positionFor({...item,direction:'west'},result.records).cycle,[-4,2]);
+ for(const direction of ['north','east'])assert.equal(adjust.positionFor({...item,direction},result.records),null);
+ assert.deepEqual(adjust.positionFor({...item,item:19},result.records).cycle,[7,3]);
+ assert.equal(adjust.positionFor({...item,item:19,direction:'east'},result.records),null);
+ const newer=adjust.withPosition(m,item,'direction',[1,2]);
+ assert.deepEqual(adjust.positionFor(item,adjust.validate(newer).records).cycle,[1,2]);
+ assert.strictEqual(adjust.validate(result),result);
 });

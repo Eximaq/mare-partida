@@ -41,7 +41,7 @@ function positionFor(target,records,gear){
   if(r.range==='outfit'&&r.direction===target.direction&&sameGear(r.witness.gear,gear))outfit=r;
   else if(r.range==='pose'&&exact)local=r;
   else if(r.range==='direction'&&r.direction===target.direction)directional=r;
-  else if(r.range==='motion')motion=r;
+  else if(r.range==='motion'&&r.direction===target.direction)motion=r;
   else if(!r.range&&exact)exactRecord=r;
  }
  return outfit||local||directional||motion||exactRecord||null;
@@ -50,13 +50,13 @@ function legacyPositions(manifest){
  const groups=new Map(),configured=new Set();
  for(const r of manifest.records){
   const id=positionKey({...r,range:'direction'});
-  if(r.range){configured.add(positionKey({...r,range:r.range==='motion'?'motion':'direction'}));continue;}
+  if(r.range){configured.add(id);continue;}
   const prev=groups.get(id);
   if(prev===null)continue;
   if(prev&&(r.cycle[0]!==prev.cycle[0]||r.cycle[1]!==prev.cycle[1]))groups.set(id,null);
   else if(!prev)groups.set(id,r);
  }
- return [...groups].flatMap(([id,r])=>r&&r.cycle.some(Boolean)&&!configured.has(id)&&!configured.has(positionKey({...r,range:'motion'}))?[r]:[]);
+ return [...groups].flatMap(([id,r])=>r&&r.cycle.some(Boolean)&&!configured.has(id)?[r]:[]);
 }
 function shareVerified(manifest,rows){
  if(!rows.length)return manifest;
@@ -65,14 +65,27 @@ function shareVerified(manifest,rows){
  return {...manifest,schema:3,revision:manifest.revision+1,records:[...manifest.records,...additions]};
 }
 function withPosition(manifest,t,range,cycle,witness){
+ if(!['direction','outfit','pose'].includes(range))throw Error('Selecione uma direção para a posição do item.');
  const {limits,...identity}=t;
  const next={...identity,range,cycle:[...cycle],phases:{},...(witness?{witness}:{})};
  const records=manifest.records.filter(r=>{
   if(!samePart(r,t))return true;
-  if(r.range)return range==='motion'?['pose','outfit'].includes(r.range):positionKey(r)!==positionKey(next)&&!(range==='direction'&&r.range==='pose'&&r.receiver===t.receiver&&r.direction===t.direction);
+  if(r.range)return positionKey(r)!==positionKey(next)&&!(range==='direction'&&r.range==='pose'&&r.receiver===t.receiver&&r.direction===t.direction);
   return true;
  });
  records.push(next);return {...manifest,schema:3,revision:manifest.revision+1,records};
+}
+// Keep the source direction of an old four-way copy. Untouched directions use the art.
+function directionalDraft(manifest){
+ const copies=manifest.records.filter(r=>r.range==='motion');
+ if(!copies.length)return manifest;
+ const records=manifest.records.filter(r=>r.range!=='motion');
+ const existing=new Set(records.filter(r=>r.range==='direction').map(positionKey));
+ for(const copy of copies){
+  const row={...copy,range:'direction'};
+  if(!existing.has(positionKey(row)))records.push(row);
+ }
+ return {...manifest,revision:manifest.revision+1,records};
 }
 const pair=p=>Array.isArray(p)&&p.length===2&&p.every(Number.isSafeInteger);
 const object=o=>o!==null&&typeof o==='object'&&!Array.isArray(o);
@@ -132,7 +145,7 @@ function validate(m){
    !pair(r.cycle)||!object(r.phases)||Object.entries(r.phases).some(([k,p])=>!/^(0|[1-9]\d*)$/.test(k)||!Number.isSafeInteger(+k)||!pair(p)))throw Error('Item, posição ou fase inválida.');
   const id=r.range?positionKey(r):key(r);if(seen.has(id))throw Error('Ajuste duplicado.');seen.add(id);
  }
- return m;
+ return directionalDraft(m);
 }
 function delta(r,f){const p=r?.phases[f]||[0,0];return [p[0]+(r?.cycle[0]||0),p[1]+(r?.cycle[1]||0)];}
 let active=null;
@@ -193,7 +206,7 @@ function fits(d,box,w,h,sign){
  return true;
 }
 const intersect=(a,b)=>a?[Math.max(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[2],b[2]),Math.min(a[3],b[3])]:b;
-function blit(ctx,slot,part,source,img,args,sign=1,original=null,underlay=null,ownerPart=part){
+function blit(ctx,slot,part,source,img,args,sign=1,original=null,underlay=null,ownerPart=part,sourceArgs=args){
  if(!active||!active.items.has(slot))return ctx.drawImage(img,...args);
  const {capture,phase,descriptors,make,offsets}=active;
  if(capture){
@@ -210,7 +223,7 @@ function blit(ctx,slot,part,source,img,args,sign=1,original=null,underlay=null,o
   }
   if(!p.sources.has(phase))p.sources.set(phase,new Set());
   const {a,b,c,d,e,f}=ctx.getTransform();
-  p.sources.get(phase).add(JSON.stringify([source,img.width,img.height,args,sign,[a,b,c,d,e,f]]));
+  p.sources.get(phase).add(JSON.stringify([source,img.width,img.height,sourceArgs,sign,[a,b,c,d,e,f]]));
  }else{
   const d=offsets.get(JSON.stringify([slot,part,phase]));
   if(d&&active.hidden?.has(d.layer)){if(underlay)ctx.drawImage(underlay,...args);return;}
@@ -368,7 +381,7 @@ function session(r,player,options,make){
    if(!t||a.source!==t.source||[...Object.keys(a.phases),...Object.keys(a.style?.phases||{})].some(f=>!Object.hasOwn(t.limits,f))){invalid.add(a.slot);errors.push('Fonte, receptor ou fase incompatível • '+a.slot+' #'+a.item);continue;}
    if(!a.range)accepted.set(key(t),a);
   }
-  const positions=manifest.records.filter(a=>a.body===body&&a.action===meta.action&&items.get(a.slot)===a.item&&(a.range==='motion'||a.direction===meta.direction));
+  const positions=manifest.records.filter(a=>a.body===body&&a.action===meta.action&&items.get(a.slot)===a.item&&a.direction===meta.direction);
   for(const t of targets){
    const p=positionFor(t,positions,gear);
    if(p){const k=key(t);accepted.set(k,{phases:{},...accepted.get(k),cycle:p.cycle});}

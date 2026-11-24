@@ -52,8 +52,8 @@ function inputs(){
  $('outfit-position').disabled=!ready||!cycle;$('outfit-position').setAttribute('aria-pressed',String(exception));
  $('outfit-position').textContent=exception?'Remover exceção deste conjunto':'Criar exceção para este conjunto';
  $('apply-positions').disabled=!ready||!cycle;
- $('position-item').textContent=t?catalog[t.item].name+' #'+t.item+' · '+$('action').selectedOptions[0].textContent+' · '+$('direction').selectedOptions[0].textContent+' · '+(exception?'Exceção deste conjunto':xy?.range==='motion'?'Padrão nas quatro direções':'Padrão em todos os conjuntos'):'';
- $('apply-positions').title=t?'Usar o X/Y de '+catalog[t.item].name+' nas quatro direções deste movimento e corpo. Desfazer recupera as posições anteriores.':'';
+ $('position-item').textContent=t?catalog[t.item].name+' #'+t.item+' · '+$('action').selectedOptions[0].textContent+' · '+$('direction').selectedOptions[0].textContent+' · '+(exception?'Exceção deste conjunto':'Padrão em todos os conjuntos'):'';
+ $('apply-positions').title=t?'Aplicar os ajustes de '+catalog[t.item].name+' a todos os conjuntos. Cada direção conserva seu próprio X/Y neste movimento e corpo.':'';
  const style=displayStyle(),scope=$('scope').value,available=t?view.availableLayers(t,scope==='phase'?phase():null):['native'];
  $('angle').value=style.angle??0;$('size').value=style.size??100;$('flip').checked=!!style.flip;
  if($('layer').dataset.options!==available.join(',')){
@@ -132,7 +132,7 @@ async function reload(){
  }catch(e){if(!signal.aborted)status(e.message,true);}
 }
 function commit(next,history=true){
- A.validate(next);view?.set(next);
+ next=A.validate(next);view?.set(next);
  try{localStorage.setItem(storage,JSON.stringify(next));}catch(e){view?.set(draft);throw e;}
  if(history){past.push(draft);if(past.length>80)past.shift();future=[];}
  draft=next;inputs();schedule();status(loadMessage);
@@ -195,12 +195,48 @@ async function copyLateral(direction){
   $('direction').value=direction;await reload();
  }catch(e){if(current===ticket)status(e.message,true);}finally{other?.b.release();}
 }
+async function applyDirections(){
+ const t=target(),previous=draft,version=ticket,witness=t&&originFor(t);
+ if(!t||$('before').checked||$('scope').value!=='cycle')return;
+ const stale=()=>ticket!==version||draft!==previous||target()!==t||$('before').checked||$('scope').value!=='cycle';
+ let next=previous;
+ try{
+  // Ordinary edits already apply to every outfit. Prepare other directions only
+  // when a local position could be promoted for the selected outfit.
+  const dirs=new Set(next.records.filter(r=>A.samePart(t,r)&&r.range!=='direction'&&
+   (r.range!=='outfit'||A.positionKey(r)===A.positionKey({...r,witness}))).map(r=>r.direction));
+  for(const direction of dirs){
+   let other;
+   try{
+    if(direction!==t.direction){
+     status('Conferindo o ajuste de '+catalog[t.item].name+' para '+$('direction').querySelector('[value="'+direction+'"]').textContent+'…');
+     other=await prepare(actor,{...options,direction},controller.signal);
+    }
+    if(stale())return;
+    const dest=direction===t.direction?t:other.v.targets.find(v=>v.item===t.item&&v.slot===t.slot&&v.part===t.part);
+    if(!dest)continue;
+    const local=A.positionFor(dest,next.records,witness.gear);
+    if(!local||local.range==='direction')continue;
+    const {limits,...identity}=dest,shared={...identity,range:'direction',cycle:[...local.cycle],phases:{},witness};
+    const prior=next.records.find(r=>r.range==='direction'&&A.positionKey(r)===A.positionKey(shared));
+    if(prior&&prior.cycle.every((n,i)=>n===shared.cycle[i]))continue;
+    next={...next,schema:3,records:[...next.records.filter(r=>r!==prior),shared]};
+    other?.v.set(next);
+   }finally{other?.b.release();}
+  }
+  if(stale())return;
+  if(next!==previous)commit({...next,revision:previous.revision+1});
+  status('Posições aplicadas a '+catalog[t.item].name+' #'+t.item+'. Cada direção conserva seu X/Y em todos os conjuntos deste movimento.');
+ }catch(e){if(!stale())status(e.message,true);}
+}
 async function verifySources(m,records,partial=false){
  const verified=[];
  const groups=new Map();
  for(const r of records){
   if(catalog[r.item]?.slot!==r.slot||r.weapon!==null&&catalog[r.weapon]?.slot!=='weapon')throw Error('ID incompatível com o catálogo.');
-  const k=JSON.stringify([r.body,r.weapon,r.action,r.direction,r.slot,r.item,r.witness]);
+  // An exported outfit often provides several parts for the same signed pose.
+  // Decode its cycle once, while keeping per-item recovery for partial imports.
+  const k=JSON.stringify([r.body,r.weapon,r.action,r.direction,r.witness,(!r.witness||partial)?[r.slot,r.item]:null]);
   if(!groups.has(k))groups.set(k,[]);groups.get(k).push(r);
  }
  for(const rows of groups.values()){
@@ -244,9 +280,7 @@ try{
    else commit(A.withPosition(draft,t,'outfit',values(),originFor(t)));
   }catch(e){status(e.message,true);}
  };
- $('apply-positions').onclick=()=>{const t=target();if(!t||$('before').checked||$('scope').value!=='cycle')return;
-  try{commit(A.withPosition(draft,t,'motion',values(),originFor(t)));status('Posição aplicada a '+catalog[t.item].name+' #'+t.item+' nas quatro direções deste movimento.');}catch(e){status(e.message,true);}
- };
+ $('apply-positions').onclick=applyDirections;
  $('part').onchange=()=>{preferredParts.set(editSlot,$('part').value);inputs();};$('scope').onchange=inputs;$('before').onchange=()=>{inputs();schedule();};
  $('guides').onchange=$('zoom').oninput=schedule;$('play').onclick=()=>toggle(!playing);
  const step=d=>{if(!view)return;toggle(false);const phase0=phase();let i=tick;do{i=(i+d+view.clock.length)%view.clock.length;}while(i!==tick&&view.clock[i].phase===phase0);setTick(i);schedule();};
@@ -270,7 +304,7 @@ try{
   if(draft!==p.draft){past.push(p.draft);future=[];inputs();}pointer=null;};
  $('export').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(draft,null,2)+'\n'],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='hd-position-approved.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
  $('file').onchange=async e=>{const file=e.target.files[0];if(!file)return;const original=draft;
-  try{const m=JSON.parse(await file.text());status('Conferindo fontes e limites…');A.validate(m);await verifySources(m,m.records);if(draft!==original)throw Error('O rascunho mudou durante a importação.');commit(A.shareVerified(m,A.legacyPositions(m)));}catch(err){status(err.message,true);}finally{e.target.value='';}};
+  try{const m=A.validate(JSON.parse(await file.text()));status('Conferindo fontes e limites…');await verifySources(m,m.records);if(draft!==original)throw Error('O rascunho mudou durante a importação.');commit(A.shareVerified(m,A.legacyPositions(m)));}catch(err){status(err.message,true);}finally{e.target.value='';}};
  new ResizeObserver(schedule).observe($('viewport'));actions();list();await reload();const original=draft,pending=A.legacyPositions(original);
  if(pending.length)void verifySources(original,pending,true).then(rows=>{
   if(draft!==original||!rows.length)return;

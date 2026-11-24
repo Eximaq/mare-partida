@@ -287,6 +287,8 @@ jobs:
         run: |
           node --test tests/rework-wardrobe-map-action.test.cjs tests/hd-position.test.cjs tests/hd-position-style.test.cjs
           node tests/hd-position-render.cjs
+          HD_DIRECTIONS=east HD_ACTIONS=walk node --expose-gc tests/hd-position-helmet.cjs
+          node --expose-gc tests/hd-position-helmet.cjs --hair
           node tests/rework-male-dagger-coat-cycles.cjs
       - name: Peitorais nas duas manoplas e no braço tecnológico
         env:
@@ -747,7 +749,9 @@ jobs:
           MARE_TEST_URL: http://127.0.0.1:8157/dist/
           MARE_EVIDENCE_DIR: artifacts/bancada-hd
           HD_MAP_CYCLES: smoke
-        run: node tests/hd-position-browser.cjs
+        run: |
+          node tests/hd-position-browser.cjs
+          node tests/hd-position-browser.cjs --positions
       - uses: actions/upload-artifact@v4
         if: always()
         with:

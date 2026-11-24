@@ -6,7 +6,27 @@ const root=process.env.HD_PUBLISHED_ROOT||path.resolve(__dirname,'..');
 const from=n=>require(path.join(root,n));
 global.MareSword0Checkpoint=from('player-rework-sword0-checkpoint.js');
 const {make,cv}=require('./rework-integration-support.cjs'),world=from('paper-doll-96-lobby.js'),weapons=from('tools/paper-doll-96-v3/weapons.json');
-const ref=process.argv.includes('--reference'),census=process.argv.includes('--census'),api=make();
+const ref=process.argv.includes('--reference'),census=process.argv.includes('--census');
+// Historical reference builds placed the final helmet at the canvas origin on
+// padded carries. Reconstruct those expected pixels independently using the
+// dimensions of the signed body frame. All other draws remain the reference build's.
+let referenceBody;
+if(ref){
+ const registry=global.MareOriginalHairHelmetsHD,create=registry.create;
+ registry.create=(...args)=>{
+  const heads=create(...args),draw=heads.draw;
+  heads.draw=(ctx,r,images,proof,options)=>{
+   if(!referenceBody||options?.paddingPhysical)return draw(ctx,r,images,proof,options);
+   const {frame,density}=referenceBody;
+   ctx.save();try{
+    ctx.translate((ctx.canvas.width-frame.width*density)/2,(ctx.canvas.height-frame.height*density)/2);
+    return draw(ctx,r,images,proof);
+   }finally{ctx.restore();}
+  };
+  return heads;
+ };
+}
+const api=make();
 const position=ref?null:from('hd-position.js');
 const {gear,slots,weapons:arms}=require('../tools/audit-hd-wardrobe-product.cjs');
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
@@ -17,7 +37,9 @@ async function run(gender,id,action,direction,outfit){
  if(id!==null)equipment.weapon={def:id};
  const a=MareCharacterAppearance.apply({classId:arms.find(w=>w.id===id)?.role||'sword',equipment},{gender,skinColor:'light',hairColor:'black'});
  const o={action,direction,consumer:'world'},r=world.selectWorldHDOnly(api,weapons,a,o);
- assert.ok(r);const pose={player:a,options:o};
+ assert.ok(r);const base=r.independentPlan?.base;
+ referenceBody=ref&&base?.hdKind==='carry'?base.pack:null;
+ const pose={player:a,options:o};
  const b=await api.prepareConfiguration([pose],{inspectPositions:!ref,resolve:()=>({...pose,source:r})});
  try{
  const v=b.positionView?.(o),count=r.hdKind==='weapon'?r.timeline.length:r.pack.directions[direction].clip.frames;
