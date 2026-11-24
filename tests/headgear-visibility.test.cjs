@@ -10,13 +10,20 @@ assert.equal(H.resolve(19,{model:{hairOcclusion:'none'}}).hideHair,false);
 assert.equal(H.resolve(999,{model:{hairOcclusion:'crown'}}).hairOcclusion,'crown');
 for(const id of [157,164,178])assert.equal(H.resolve(id).hairHideMode,'none');
 assert.equal(H.resolve(136).hairHideMode,'full');assert.equal(H.resolve(999).hairHideMode,'full','unknown existing pieces preserve the previous conservative policy');
-const player={equipment:{head:{id:'kept',def:19,plus:7,rarity:'epic'}},inventory:[{id:'bag'}],preferences:{hideItems:true},hp:41};
+const player={equipment:{head:{id:'kept',def:136,plus:7,rarity:'epic'}},inventory:[{id:'bag'}],preferences:{hideItems:true},hp:41};
 const before=JSON.stringify(player),next=H.withPreference(player,true);
 assert.equal(JSON.stringify(player),before);assert.equal(next.equipment,player.equipment);assert.equal(next.inventory,player.inventory);assert.equal(next.hp,player.hp);
 assert.deepEqual(next.preferences,{hideItems:true,hideHeadgear:true});assert(H.hidden(next));assert(!H.hidden({preferences:{hideHeadgear:'true'}}));
 assert.equal(H.withPreference(player,'true'),null);
 for(const [p,label,pressed]of [[player,'Ocultar capacete','true'],[next,'Mostrar capacete','false']]){const html=H.button(p);assert(html.includes('aria-label="'+label+'"'));assert(html.includes('aria-pressed="'+pressed+'"'));assert(!html.includes('disabled'));}
 assert(H.button({}).includes('disabled'));
+for(const def of [18,19]){
+ const worn={...player,equipment:{head:{...player.equipment.head,def}},preferences:{hideHeadgear:false}};
+ assert(H.hidden(worn));assert(H.button(worn).includes('disabled'));assert.equal(worn.equipment.head.plus,7);
+ assert.equal(worn.preferences.hideHeadgear,false);
+ assert(!H.hidden({...worn,equipment:{head:{def:136}}}));assert(H.hidden(H.withPreference({...worn,equipment:{head:{def:136}}},true)));
+ assert(!H.hidden({...worn,appearance96:{gender:'feminino'}}));
+}
 assert(R.enabled(''));assert(R.enabled('?paperDoll96=1'));assert(R.enabled('?paperDoll96=0'));assert(R.enabled('?dev=1'));assert(R.enabled('?dev=1&paperDoll96=1'));
 const catalog=require('../tools/paper-doll-96-v3/appearance-catalog.json');
 assert.equal(R.outfit(catalog,{paperDollLook:{version:1,hair:'short-black'}},R.defaults,{production:true}).look.hairColor,'black','retain saved short-black appearance in native96');
@@ -25,8 +32,8 @@ const base=path.join(__dirname,'../tools/paper-doll-96-v3'),release=JSON.parse(f
 assert.equal(release.productionEnabled,true);assert.equal(release.manifestRevision,manifest.visualRevision);assert.equal(release.weaponRevision,weapons.revision);
 require('../paper-doll.js');require('../paper-doll-assets.js');require('../paper-doll-look.js');
 const Legacy=require('../paper-doll-review.js'),legacyPack=structuredClone(require('../pixellab-pip-generations/paper-doll-complete-20261026/player-pack.json'));
-const headPiece={...structuredClone(legacyPack.pieces.find(p=>p.slot==='hair')),id:'head-fixture',slot:'head',hideHair:true};legacyPack.pieces.push(headPiece);legacyPack.bindings.head={slot:'head',items:{19:headPiece.id}};
-const legacyPlayer={classId:'sword',factionId:'pirate',equipment:{head:{def:19}}};
+const headPiece={...structuredClone(legacyPack.pieces.find(p=>p.slot==='hair')),id:'head-fixture',slot:'head',hideHair:true};legacyPack.pieces.push(headPiece);legacyPack.bindings.head={slot:'head',items:{136:headPiece.id}};
+const legacyPlayer={classId:'sword',factionId:'pirate',equipment:{head:{def:136}}};
 assert(Legacy.appearance(legacyPack,legacyPlayer,{production:true}).hidden.includes('hair'),'archived compositor retains its isolated headgear contract');
 const legacyHidden=Legacy.appearance(legacyPack,H.withPreference(legacyPlayer,true),{production:true});assert(!legacyHidden.hidden.includes('hair'));assert.equal(legacyHidden.pieces.head,undefined);
 console.log('Headgear: explicit open/partial/full coverage, immutable preference, accessible button, release/default and DEV isolation passed.');

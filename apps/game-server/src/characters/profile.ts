@@ -13,6 +13,7 @@ const require=createRequire(import.meta.url),A=require('../../../../character-ap
 const preferences={hideItems:false,hideHeadgear:false,healThreshold:.7};
 async function available(client:PoolClient){return !!(await client.query("SELECT to_regclass('mare_game.character_profile') present")).rows[0].present;}
 export async function initializeProfile(client:PoolClient,id:string,appearance?:unknown){
+ if(appearance!==undefined&&!A.canSaveAppearance(appearanceSchema.parse(appearance)))throw new AuthFault(400,'appearance_temporarily_unavailable');
  if(!await available(client))return;
  await client.query(`INSERT INTO mare_game.character_profile(character_id,appearance,preferences,starter_classes) SELECT id,$2,$3,ARRAY[class_id] FROM mare_game.characters WHERE id=$1 ON CONFLICT DO NOTHING`,[id,JSON.stringify(appearanceSchema.parse(appearance??A.defaults)),JSON.stringify(preferences)]);
 }
@@ -31,7 +32,12 @@ export async function mutateProfile(client:PoolClient,id:string,input:CharacterC
  if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
  const before=await raw(client,id),after=structuredClone(before),audit:any={before:{...before},after:{}};
  if(input.action==='profile.preferences')after.preferences=preferencesSchema.parse({...before.preferences,...input.payload});
- if(input.action==='profile.appearance'||input.action==='profile.identity')after.appearance=appearanceSchema.parse(input.payload.appearance);
+ if(input.action==='profile.appearance'||input.action==='profile.identity'){
+  const appearance=appearanceSchema.parse(input.payload.appearance);
+  if(!A.canSaveAppearance(appearance,before.appearance)||input.action==='profile.appearance'&&A.lockedGender(before.appearance.gender))
+   throw new AuthFault(400,'appearance_temporarily_unavailable');
+  after.appearance=appearance;
+ }
  if(input.action==='profile.identity'){
   const world=await readWorld(client,id);if(!world||world.mapId!=='lobby'||world.area!==null)throw new AuthFault(409,'profile_port_only');
   const identity=(await client.query('SELECT name,class_id,faction_id FROM mare_game.characters WHERE id=$1',[id])).rows[0];

@@ -435,7 +435,7 @@ function session(r,player,options,make){
  const items=new Map(),layers=new Map(),descriptors=new Map(),offsets=new Map();
  for(const slot of slots){
   const v=player.equipment?.[slot],id=v?.def??v;
-  if(Number.isSafeInteger(id)&&!(slot==='weapon'&&options.weaponless)&&!(slot==='head'&&player.preferences?.hideHeadgear)&&!r.omitted?.includes(slot))items.set(slot,id);
+  if(Number.isSafeInteger(id)&&!(slot==='weapon'&&options.weaponless)&&!(slot==='head'&&(root.MareHeadgear?.hidden(player)??player.preferences?.hideHeadgear))&&!r.omitted?.includes(slot))items.set(slot,id);
  }
  for(const [name,pass] of plan?.passes||[]){
   for(const l of [...(pass?.layers||[]),...(pass?.decorator?.own?.cloth?[pass.decorator.own.cloth]:[])]){

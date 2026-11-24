@@ -10,3 +10,16 @@ test('production outfit takes persistent cosmetics; rehearsal remains explicit',
 test('AI brown hair separates warm forehead matte before palette recoloring',()=>{const {separateGeneratedHairSkin}=require('../tools/paper_doll_96_head_materials.cjs');const p=new Uint8ClampedArray(128*128*4);p.set([253,186,122,255],(26*128+64)*4);p.set([174,83,45,255],(22*128+64)*4);const out=separateGeneratedHairSkin(p);assert.equal(out[(26*128+64)*4+3],0);assert.deepEqual([...out.slice((22*128+64)*4,(22*128+64)*4+4)],[174,83,45,255]);assert.equal(p[(26*128+64)*4+3],255);});
 
 test('short AI hair never owns canonical ear or neck skin, including dark shadows',()=>{const {separateGeneratedHairSkin}=require('../tools/paper_doll_96_head_materials.cjs');const p=new Uint8ClampedArray(128*128*4),head=new Uint8ClampedArray(p.length);for(const [x,y]of [[57,36],[59,43]]){const i=(y*128+x)*4;p.set([95,55,30,255],i);head.set([220,140,80,255],i);}p.set([95,55,30,255],(28*128+56)*4);const out=separateGeneratedHairSkin(p,head,'east');assert.equal(out[(36*128+57)*4+3],0);assert.equal(out[(43*128+59)*4+3],0);assert.equal(out[(28*128+56)*4+3],255);});
+
+test('a escolha temporária de gênero preserva o gênero já salvo',()=>{
+ assert.equal(A.genderAvailable('feminino'),false);
+ assert.equal(A.genderAvailable('feminino','masculino'),false);
+ assert.equal(A.genderAvailable('feminino','feminino'),true);
+ assert.equal(A.genderAvailable('masculino','feminino'),false);
+ const female={...A.defaults,gender:'feminino'};assert(A.canSaveAppearance(female,female));
+ assert(!A.canSaveAppearance({...female,eyeColor:'amber'},female));
+ assert(!A.canSaveAppearance(female));
+ assert.match(A.fields(A.defaults),/<option value="feminino"[^>]*disabled[^>]*>Feminino · Temporariamente indisponível/);
+ assert.equal(A.read({appearance96:{gender:'feminino'}}).gender,'feminino');
+ assert.equal(A.read({appearance96:{gender:'female',hairColor:'pink'}}).gender,'feminino');
+});

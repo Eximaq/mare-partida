@@ -28,7 +28,13 @@ async function namedHair(api,swords){
   const b=await api.prepareConfiguration([{player,options}],{inspectPositions:true,resolve:()=>({player,options,source})});
   try{
    const v=b.positionView(options),head=v.targets.find(t=>t.slot==='head'&&t.part==='*'&&t.item===item);
-   const label=[item,gender,direction,w.id].join('/');assert(head,'Sem capacete ajustável em '+label);
+   const label=[item,gender,direction,w.id].join('/');
+   if(gender==='masculino'&&[18,19].includes(item)){
+    assert.equal(head,undefined,label);assert.equal(source.slotRoutes?.head,undefined,label);
+    const bare={...player,equipment:{...equipment}};delete bare.equipment.head;
+    assert.equal(source.id,world.selectWorldHDOnly(api,catalog,bare,options).id,label);cases++;continue;
+   }
+   assert(head,'Sem capacete ajustável em '+label);
    const frame=v.clock[0].frame,before=hash(v.frame(frame,true).canvas);
    v.set(A.withPosition(A.empty(),head,'direction',[5,19]));
    assert.notEqual(hash(v.frame(frame).canvas),before,label);v.set(A.empty());
@@ -47,12 +53,12 @@ async function namedHair(api,swords){
  const actions=process.env.HD_ACTIONS?.split(',')||['walk','idle'];assert(actions.length&&actions.every(a=>['idle','walk'].includes(a)));
  let cases=0,frames=0;
  for(const direction of directions)for(const action of actions)for(const w of [...swords,...controls]){
-  const key=[w.id,direction,action].join('/'),equipment={head:{def:18},weapon:{def:w.id},coat:{def:151},boots:{def:148}};
+  const key=[w.id,direction,action].join('/'),equipment={head:{def:129},weapon:{def:w.id},coat:{def:151},boots:{def:148}};
   const player=MareCharacterAppearance.apply({classId:w.role,equipment},{gender:'masculino'});
   const options={consumer:'world',action,direction},source=world.selectWorldHDOnly(api,catalog,player,options);
   const b=await api.prepareConfiguration([{player,options}],{inspectPositions:true,resolve:()=>({player,options,source})});
   try{
-   const v=b.positionView(options),body=source.independentPlan.base.pack,head=v.targets.find(t=>t.slot==='head'&&t.item===18&&t.part==='*');
+   const v=b.positionView(options),body=source.independentPlan.base.pack,head=v.targets.find(t=>t.slot==='head'&&t.item===129&&t.part==='*');
    assert(head,key);origin=[v.pivot.x-body.pivot.x*body.density,v.pivot.y-body.pivot.y*body.density];
    const m=A.withPosition(A.empty(),head,'direction',[5,19]);v.set(m);const actual=[],original=[];
    for(const {frame} of v.clock){actual.push(hash(v.frame(frame).canvas));original.push(hash(v.frame(frame,true).canvas));}

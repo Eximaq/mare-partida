@@ -7,6 +7,9 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
  const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true});
  try{
   const context=await browser.newContext({viewport:{width:1280,height:780},acceptDownloads:true});
+  // Editing regressions start with a fresh document, regardless of the current release.
+  const emptyPosition=route=>route.fulfill({json:require('../hd-position.js').empty()});
+  await context.route('**/hd-position-approved.json',emptyPosition);
   await context.addInitScript(()=>{
    const paint=CanvasRenderingContext2D.prototype.drawImage;
    CanvasRenderingContext2D.prototype.drawImage=function(image,...args){
@@ -182,7 +185,7 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
    await focus('boots');assert.deepEqual(await xy(),[5,-2]);await wear(0,'east');assert.deepEqual(await xy(),[9,-2]);
    const downloaded=p.waitForEvent('download');await sel('export').click();const file=await (await downloaded).path();
    const manifest=JSON.parse(await fs.readFile(file,'utf8'));assert.equal(manifest.records.filter(r=>r.range==='motion').length,0);
-   const fresh=await browser.newPage();
+   const fresh=await browser.newPage();await fresh.route('**/hd-position-approved.json',emptyPosition);
    try{
     await fresh.goto(new URL('bancada-hd.html',url).href);await fresh.waitForFunction(()=>document.querySelector('#part').value==='*');
     await fresh.locator('#file').setInputFiles(file);
@@ -309,7 +312,7 @@ if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
    for(const item of [22,159,18])await p.locator('[data-id="'+item+'"]').click();
    const full=process.env.HD_MAP_CYCLES==='all',ids=full?[0,2,4,73,15,16,17]:[0,73,68];
    for(const [i,weapon] of ids.entries())for(const body of full?['masculino','feminino']:[i?'feminino':'masculino']){
-    const named=!full&&weapon===68,head=named?136:18,hairStyle=named?'hair-bob':'original',boots=!full&&weapon===0?8:148;
+    const named=!full&&weapon===68,head=named?136:body==='masculino'?129:18,hairStyle=named?'hair-bob':'original',boots=!full&&weapon===0?8:148;
     await p.locator('[data-id="'+boots+'"]').click();
     await p.locator('#look-gender').selectOption(body);await p.locator('#look-hairStyle').selectOption(hairStyle);
     await p.locator('[data-id="'+head+'"]').click();await p.locator('[data-id="'+weapon+'"]').click();

@@ -8501,6 +8501,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...receptor,savedFocusBody:receptor};
  }
  function selectVisual(player,o={},allowOmission=true){
+  if(root.MareHeadgear?.alwaysHidden(player))player=visibleWorldActor(player);
   const focus=savedFocusReceiver(player,o,allowOmission);if(focus)return focus;
   const bladeHead=selectSavedBladeHead(player,o);if(bladeHead)return bladeHead;
   const styledBlade=signedSouthBladeLook(player,o);if(styledBlade)return styledBlade;

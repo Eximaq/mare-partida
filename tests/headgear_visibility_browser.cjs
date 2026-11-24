@@ -40,9 +40,16 @@ const out=process.argv.find(s=>s.startsWith('--evidence='))?.slice(11),gameOnly=
   assert.equal(await game.evaluate(()=>__headQA.r.snapshot().enabled),true,'native96 enabled without query');
   async function settledPortrait(){await game.waitForFunction(()=>{const q=__headQA;q.portrait();const s=q.r.snapshot(),last=s.renderer==='rework-default-hd'?s.defaultHD?.last:s.nativeHD?.last;if(last?.state!=='rendered'||last.direction!=='south'||last.physicalScale!==105/374)return false;const helmet=q.g.equipment.head?.def,expected=helmet!=null&&!MareHeadgear.hidden(q.g);const source=last.source||'';const visible=source.includes(':head:'+helmet)||source.includes(':original:'+helmet+':')||source.includes(':none:'+helmet+':');return visible===expected;},null,{timeout:120000});}
   const results=[];
-  for(const body of ['masculino','feminino'])for(const id of [18,19]){
+  for(const body of ['masculino','feminino'])for(const id of (body==='masculino'?[18,19,136]:[18,19])){
    await game.evaluate(async({body,id})=>{const q=__headQA;q.g.appearance96={...MareCharacterAppearance.read(q.g),gender:body};q.r.setDraft('body',body);q.r.setDraft('kit','equipped');q.r.apply(q.g);await q.equip(id);q.open();q.portrait();},{body,id});
    await settledPortrait();const before=await game.evaluate(()=>__headQA.state());assert.equal(before.head.def,id);
+   if(body==='masculino'&&[18,19].includes(id)){
+    assert(before.hidden);assert(await game.locator('[data-headgear-visibility]').isDisabled());
+    assert.notEqual(JSON.parse(before.save).preferences?.hideHeadgear,true);
+    await game.evaluate(async()=>{await __headQA.remove();__headQA.portrait();});await settledPortrait();
+    assert.equal((await game.evaluate(()=>__headQA.state())).portrait,before.portrait);
+    results.push({body,id,automatic:true});continue;
+   }
    const toggle=()=>game.locator('[data-headgear-visibility]').click();await toggle();await settledPortrait();
    const hidden=await game.evaluate(()=>__headQA.state());assert.equal(hidden.hidden,true);assert.deepEqual(hidden.head,before.head);assert.deepEqual(hidden.inventory,before.inventory);assert.deepEqual(hidden.stats,before.stats);const omitted=before.renderer.defaultHD?.last?.unrepresentedSlots?.includes('head')||false;assert.equal(omitted,false,'registered helmet must be represented');assert.notEqual(hidden.portrait,before.portrait,'hiding a registered helmet must change the portrait');assert.equal(JSON.parse(hidden.save).preferences.hideHeadgear,true);
    assert.equal(await game.locator('[data-headgear-visibility]').getAttribute('aria-label'),'Mostrar capacete');

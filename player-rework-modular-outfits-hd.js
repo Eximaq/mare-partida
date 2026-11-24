@@ -490,10 +490,6 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
     if(!image||!palette&&expression?.source!==source)continue;
     const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d');
     tc.drawImage(image,0,0);
-    if(expression?.source===source){
-     eyes.reshape(tc,appearance.face,expression.direction,expression.boxes);
-     eyes.recolorIris(tc,expression,appearance.eyeColor);
-    }
     if(palette){
      const data=tc.getImageData(0,0,tile.width,tile.height);
      const mask=kind==='hair'?appearanceAPI.materialMask(data.data,'hair'):skinMaterials.mask(data.data,tile.width,kind);
@@ -501,6 +497,10 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
      const signedHair=kind==='hair'&&r.body==='male'&&r.action==='attack-unarmed'&&['east','west'].includes(r.direction)&&r.baseRecord==='v7-punch-'+r.direction+'-drawn8-'+r.direction?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;
      data.data.set(signedHair||appearanceAPI.recolor(data.data,mask,palette.ramp));
      tc.putImageData(data,0,0);
+    }
+    if(expression?.source===source){
+     eyes.recolorIris(tc,expression,appearance.eyeColor);
+     eyes.reshape(tc,appearance.face,expression.direction,expression.boxes);
     }
     map.set(source,tile);
    }

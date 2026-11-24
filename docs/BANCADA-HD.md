@@ -95,6 +95,8 @@ Para conferir botas com espadas, execute `node --expose-gc tests/hd-position-boo
 
 Para verificar cópias entre classes e corpos, execute `node tests/hd-position-browser.cjs --copy-origins`. Com `HD_MAP_CYCLES=smoke`, o teste também compara os quadros da bancada com os da caçada para o Braço de Ferro e as Luvas de Marfim. O comando `node tests/hd-position-contact.cjs` verifica o metal do braço nas oito fases do ataque Sul, Leste e Oeste. A opção `--original` emite os mesmos hashes de referência quando executada com `HD_PUBLISHED_ROOT` apontando para o build anterior.
 
+Os dois casos masculinos desta referência usam o capacete 129, pois os itens 18 e 19 ficam ocultos no personagem masculino. Os hashes desses dois casos foram capturados no build anterior independente de `efda36b`; os casos femininos conservaram a referência original.
+
 O arquivo de referência guarda hashes RGBA e do contrato de desenho em quatro ciclos baseados no build independente de `36c68a6`, com 26 posições. Nas duas poses de espada com margem, a referência desenha o capacete no centro do quadro do corpo. Para reproduzir a origem, execute o teste com `HD_PUBLISHED_ROOT` apontando para aquele build e `--reference` seguido do caminho de um arquivo temporário. O teste normal lê o arquivo versionado.
 
 Para o navegador, execute o build com `--renderer-fixture`, sirva a pasta e configure `MARE_TEST_URL` e `MARE_EVIDENCE_DIR`. Execute `node tests/hd-position-browser.cjs` com Chromium e Playwright. O teste cria uma sessão descartável, exporta e reimporta alterações distintas, verifica o rascunho após recarga e compara o quadro nativo mostrado na bancada com o desenhado na caçada, com a mesma aprovação. As capturas ficam no diretório de evidências.

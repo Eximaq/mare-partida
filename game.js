@@ -2918,7 +2918,7 @@ ${avatarExtra}
     if(characterTab==='appearance'){
       if(lobby96.snapshot().enabled){
         appearanceDraft=appearanceDraft||MareCharacterAppearance.read(game);
-        body.innerHTML='<section id="profileAppearance">'+MareCharacterStudio.appearance({value:appearanceDraft,prefix:'profile',direction:profileDirection,factionId:game.factionId,factionName:factions[game.factionId].name})+'<p class="studio-save-status" role="status">'+escapeHTML(dollLookMessage)+'</p><div class="creation-actions">'+MareUI.button({label:'← Descartar alterações',attributes:{'data-appearance-cancel':''}})+MareUI.button({label:'Salvar aparência ✓',variant:'primary',attributes:{'data-appearance-apply':''}})+'</div></section>';return;
+        body.innerHTML='<section id="profileAppearance">'+MareCharacterStudio.appearance({value:appearanceDraft,savedGender:MareCharacterAppearance.read(game).gender,prefix:'profile',direction:profileDirection,factionId:game.factionId,factionName:factions[game.factionId].name})+'<p class="studio-save-status" role="status">'+escapeHTML(dollLookMessage)+'</p><div class="creation-actions">'+MareUI.button({label:'← Descartar alterações',attributes:{'data-appearance-cancel':''}})+MareUI.button({label:'Salvar aparência ✓',variant:'primary',disabled:MareCharacterAppearance.lockedGender(MareCharacterAppearance.read(game).gender),attributes:{'data-appearance-apply':''}})+'</div></section>';return;
       }
 
     }
@@ -3150,7 +3150,7 @@ ${avatarExtra}
   }
   document.addEventListener('click',e=>{
     if(e.target.closest('[data-headgear-visibility]')){
-      if(currentPanel!=='inventory'||!game.equipment?.head)return;
+      if(currentPanel!=='inventory'||!game.equipment?.head||MareHeadgear.alwaysHidden(game))return;
       if(ONLINE_GAME){void onlineItemCommand('profile.preferences',{hideHeadgear:!MareHeadgear.hidden(game)});return;}
       const next=MareHeadgear.withPreference(game,!MareHeadgear.hidden(game));
       try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;$('saveDot').style.background='#65c9bc';}
@@ -3160,6 +3160,8 @@ ${avatarExtra}
     if(e.target.closest('[data-appearance-cancel]')){appearanceDraft=MareCharacterAppearance.read(game);dollLookMessage='Alterações descartadas.';renderPanel();return;}
     if(e.target.closest('[data-appearance-apply]')){
       if(currentPanel!=='character'||characterTab!=='appearance')return;
+      const saved=MareCharacterAppearance.read(game);
+      if(MareCharacterAppearance.lockedGender(saved.gender)||!MareCharacterAppearance.canSaveAppearance(appearanceDraft,saved)){dollLookMessage=MareCharacterAppearance.unavailableMessage;renderPanel();return;}
       if(ONLINE_GAME){void onlineItemCommand('profile.appearance',{appearance:appearanceDraft});return;}
       try{const next=MareCharacterAppearance.commit(game,appearanceDraft,n=>{localStorage.setItem(STORAGE_KEY,JSON.stringify(n));return true;});if(next){game=next;renderPortrait();dollLookMessage='Aparência salva.';}}
       catch{dollLookMessage='Não foi possível salvar. A aparência anterior foi preservada.';}
@@ -4052,7 +4054,7 @@ function applySceneHudLayout(){
     for(const [i,id]of ['factionStep','classStep','appearanceStep'].entries())$(id).classList.toggle('hidden',step!==i+1);
     for(const [i,id]of ['stepFaction','stepClass','stepAppearance'].entries()){const active=step===i+1;$(id).classList.toggle('active',active);if(active)$(id).setAttribute('aria-current','step');else $(id).removeAttribute('aria-current');}
     $('creationError').textContent='';
-    if(step===3)$('creationAppearanceStudio').innerHTML=MareCharacterStudio.appearance({value:creationAppearanceDraft,prefix:'creation',direction:creationDirection,factionId:selectedFaction,factionName:factions[selectedFaction].name});
+    if(step===3)$('creationAppearanceStudio').innerHTML=MareCharacterStudio.appearance({value:creationAppearanceDraft,savedGender:editingCharacter?MareCharacterAppearance.read(game).gender:undefined,prefix:'creation',direction:creationDirection,factionId:selectedFaction,factionName:factions[selectedFaction].name});
     const heading=$(['factionStep','classStep','appearanceStep'][step-1]).querySelector('h2');heading.tabIndex=-1;heading.focus({preventScroll:true});
     $('startOverlay').querySelector('.creation-dialog').scrollTop=0;
   }
@@ -4073,9 +4075,12 @@ function applySceneHudLayout(){
     const cycle=event.target.closest('[data-appearance-cycle]'),swatch=event.target.closest('[data-appearance-color]'),direction=event.target.closest('[data-appearance-direction]');
     if(direction){(creation?$('creationLookState'):$('profileAppearanceState')).textContent='Carregando personagem…';if(creation)creationDirection=direction.dataset.appearanceDirection;else profileDirection=direction.dataset.appearanceDirection;direction.parentElement.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===direction)));return;}
     const draft=creation?creationAppearanceDraft:(appearanceDraft||MareCharacterAppearance.read(game));
-    if(cycle){key=cycle.dataset.appearanceCycle;const ids=Object.keys(MareCharacterAppearance.choices[key]),i=ids.indexOf(draft[key]);value=ids[(i+Number(cycle.dataset.step)+ids.length)%ids.length];}
+    const saved=creation&&!editingCharacter?undefined:MareCharacterAppearance.read(game);
+    if(MareCharacterAppearance.lockedGender(saved?.gender))return;
+    if(cycle){key=cycle.dataset.appearanceCycle;const ids=Object.keys(MareCharacterAppearance.choices[key]).filter(id=>key!=='gender'||MareCharacterAppearance.genderAvailable(id,saved?.gender)),i=ids.indexOf(draft[key]);value=ids[(i+Number(cycle.dataset.step)+ids.length)%ids.length];}
     if(swatch){key=swatch.dataset.appearanceColor;value=swatch.dataset.value;}
     if(!Object.hasOwn(MareCharacterAppearance.choices[key]||{},value))return;
+    if(key==='gender'&&!MareCharacterAppearance.genderAvailable(value,saved?.gender)){event.target.value=draft.gender;return;}
     const next=MareCharacterAppearance.normalize({...draft,[key]:value});if(creation)creationAppearanceDraft=next;else appearanceDraft=next;
     const fields=creation?$('creationAppearanceFields'):$('profileAppearanceFields');fields.querySelector('[data-appearance="'+key+'"]').value=value;
     for(const b of fields.querySelectorAll('[data-appearance-color="'+key+'"]'))b.setAttribute('aria-pressed',String(b.dataset.value===value));
@@ -4117,6 +4122,7 @@ function applySceneHudLayout(){
   let onlineCreationBusy=false;
   async function finishCreation(){
     if(!validateCreationName())return;
+    if(!MareCharacterAppearance.canSaveAppearance(creationAppearanceDraft,editingCharacter?MareCharacterAppearance.read(game):undefined)){toast(MareCharacterAppearance.unavailableMessage,'danger');return;}
     const name=editingCharacter&&$('characterName').value===game?.name?game.name:creationName();
     if(ONLINE_GAME){
       if(onlineCreationBusy)return;onlineCreationBusy=true;

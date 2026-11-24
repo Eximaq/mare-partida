@@ -21,7 +21,15 @@ async function actor(f:any){
 test('profile creation and cosmetics survive reload without changing economy, ownership or another character',async()=>authDatabase(async f=>{
  const a=await actor(f),b=await actor(f),before=await a.read();assert.equal(before.profile.appearance.hairColor,'blue');
  await f.service.createCharacter(a.login.token,{...a.payload,appearance:{...A.defaults,hairColor:'pink'}});assert.equal((await a.read()).profile.appearance.hairColor,'blue');
- await a.doit('profile.appearance',{appearance:{...A.defaults,hairColor:'green',gender:'feminino'}});await a.doit('profile.preferences',{healThreshold:.9,hideHeadgear:true,hideItems:true});
+ const denied={code:'appearance_temporarily_unavailable'},female={...A.defaults,gender:'feminino'};
+ const fresh=await f.service.login(randomUUID()+'@example.invalid','fixture');
+ await assert.rejects(f.service.createCharacter(fresh.token,{...a.payload,appearance:female}),denied);
+ await assert.rejects(a.doit('profile.appearance',{appearance:female}),denied);
+ await assert.rejects(a.doit('profile.identity',{...a.payload,appearance:female}),denied);
+ await f.pool.query('UPDATE mare_game.character_profile SET appearance=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(female)]);
+ await assert.rejects(a.doit('profile.appearance',{appearance:{...female,hairColor:'green'}}),denied);
+ await assert.rejects(a.doit('profile.identity',{...a.payload,appearance:A.defaults}),denied);
+ await a.doit('profile.identity',{...a.payload,appearance:female});await a.doit('profile.preferences',{healThreshold:.9,hideHeadgear:true,hideItems:true});
  const after=await a.read();assert.equal(after.profile.appearance.gender,'feminino');assert.deepEqual(after.profile.preferences,{healThreshold:.9,hideHeadgear:true,hideItems:true});assert.deepEqual(after.originalInventory,before.originalInventory);assert.equal(after.state.gold,before.state.gold);assert.equal(after.state.experience,before.state.experience);assert.deepEqual((await b.read()).profile.appearance,before.profile.appearance);
  const req=await a.input('profile.preferences',{hideItems:false});await assert.rejects(f.service.command(b.login.token,a.c.id,req),{code:'character_not_found'});await f.service.acquireControl(a.login.token,a.c.id,a.lease.epoch);await assert.rejects(a.send(req),{code:'control_conflict'});
 }));

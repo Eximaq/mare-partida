@@ -46,14 +46,6 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
   const originalMap=afterMaterialSource?new Map(map):null;
   const eyes=root.MareReworkEyeStylesHD;
   const expression=eyes&&(eyes.supports(appearance.face)||appearance.eyeColor&&!['original','blue'].includes(appearance.eyeColor))&&eyes.maleSource(r);
-  if(expression?.source){
-   const image=map.get(expression.source);
-   const tile=makeCanvas(image.width,image.height),face=tile.getContext('2d');
-   face.drawImage(image,0,0);
-   eyes.reshape(face,appearance.face,expression.direction,expression.boxes);
-   eyes.recolorIris(face,expression,appearance.eyeColor);
-   map.set(expression.source,tile);
-  }
   // Palette changes preserve native dimensions/alpha; source PNGs stay immutable.
   const skin=appearance.skin||appearance.skinColor,hair=appearance.hairColor;
   if((skin&&skin!=='original'||hair&&hair!=='original')&&appearanceAPI){
@@ -85,6 +77,14 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-ba
     px.data.set(appearanceAPI.recolor(px.data,m,appearanceAPI.skins[skin].ramp));x.putImageData(px,0,0);
     map.set(sha,c);
    }
+  }
+  if(expression?.source){
+   const image=map.get(expression.source);
+   const tile=makeCanvas(image.width,image.height),face=tile.getContext('2d');
+   face.drawImage(image,0,0);
+   eyes.recolorIris(face,expression,appearance.eyeColor);
+   eyes.reshape(face,appearance.face,expression.direction,expression.boxes);
+   map.set(expression.source,tile);
   }
   // Restore the saved blue iris on the exact bare source before its native
   // neck transform. It must not change when the player removes a Cetro.

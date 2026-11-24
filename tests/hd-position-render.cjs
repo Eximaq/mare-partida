@@ -54,6 +54,7 @@ async function run(gender,id,action,direction,outfit){
  const tests={};
  for(const [slot,entry] of Object.entries(equipment)){
   const t=v.targets.find(t=>t.slot===slot&&t.part==='*');
+  if(slot==='head'&&gender==='masculino'&&[18,19].includes(entry.def)){assert(!t);assert.equal(r.slotRoutes?.head,undefined);tests.head={id:entry.def,hidden:true};continue;}
   if(!t){tests[slot]={id:entry.def,result:'sem operação de ajuste'};continue;}
   const {limits,...identity}=t;
   const m={...position.empty(),records:[{...identity,phases:{},cycle:[0,0]}]};
@@ -83,9 +84,11 @@ async function run(gender,id,action,direction,outfit){
   }
   const expected=2*rows.length*directions.length*(full?3:1);assert.equal(Object.keys(stats).length,expected);
   console.log(JSON.stringify(stats));
-  for(const [k,result] of Object.entries(stats))for(const [slot,t] of Object.entries(result))assert.ok(t.changed>0,k+' / '+slot+' #'+t.id+' / '+t.result);return;
+  for(const [k,result] of Object.entries(stats))for(const [slot,t] of Object.entries(result))assert.ok(t.hidden===true||t.changed>0,k+' / '+slot+' #'+t.id+' / '+t.result);return;
  }
- for(const args of contexts)results.push(await run(...args,outfit));
+ // Keep testing an actually visible helmet on both rigs. The masculine #18
+ // and #19 policy is checked separately against the unequipped actor.
+ for(const args of contexts)results.push(await run(...args,args[0]==='masculino'?[...outfit.slice(0,-1),129]:outfit));
  if(ref){fs.writeFileSync(process.argv[process.argv.indexOf('--reference')+1],JSON.stringify(results.map(r=>({rgba:r.rgba,contract:hash(JSON.stringify([r.coverage,r.meta]))})),null,2)+'\n');return;}
  const golden=JSON.parse(fs.readFileSync(checks));
  assert.equal(results.length,golden.length);

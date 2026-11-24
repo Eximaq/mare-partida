@@ -6,7 +6,7 @@ const labels={coat:'Peitoral',legs:'Calça',boots:'Botas',gloves:'Luvas',head:'C
 const classes={sword:'Espadachim',rogue:'Gatuno',brawler:'Lutador',cyborg:'Ciborgue',healer:'Curandeiro',gunner:'Atirador',strategist:'Estrategista'};
 const equipment={coat:{def:6},boots:{def:148}},appearance={...look.defaults};
 const storage='kaizoku-hd-position-draft-v1';
-let draft=A.empty(),past=[],future=[],api,catalog,weapons,actor,options,bundle,view,source,controller,ticket=0;
+let published=A.empty(),draft=A.empty(),past=[],future=[],api,catalog,weapons,actor,options,bundle,view,source,controller,ticket=0;
 let tick=0,playing=false,elapsed=0,last=0,drawing=false,pan=[0,0],pointer,loadMessage='',editSlot='boots';
 function status(message,error=false){$('status').textContent=message;$('status').dataset.error=error;}
 function option(select,value,label){select.add(new Option(label,String(value)));}
@@ -312,6 +312,13 @@ async function verifySources(m,records,partial=false){
  for(const row of m.records)if(row.witness)origins.set(originKey(row),row.witness);
  for(const r of records){
   if(catalog[r.item]?.slot!==r.slot||r.weapon!==null&&catalog[r.weapon]?.slot!=='weapon')throw Error('ID incompatível com o catálogo.');
+  if(r.slot==='head'&&MareHeadgear.alwaysHidden({appearance96:{gender:r.body},equipment:{head:r.item}})){
+   // There is no drawable part to measure. A round trip may retain the
+   // published, inactive record, but cannot introduce an unverified edit.
+   if(!published.records.some(p=>JSON.stringify(p)===JSON.stringify(r)))
+    throw Error('Capacete #'+r.item+' oculto. O ajuste importado difere do registro publicado.');
+   continue;
+  }
   // An exported outfit often provides several parts for the same signed pose.
   // Decode its cycle once, while keeping per-item recovery for partial imports.
   const w=r.witness||origins.get(originKey(r));
@@ -337,7 +344,7 @@ async function verifySources(m,records,partial=false){
 }
 try{
  let startupError='';status('Lendo armas e aparências…');api=MareReworkNativeHD.create();const result=await Promise.all([fetch('tools/paper-doll-96-v3/weapons.json').then(r=>r.json()),fetch('hd-position-approved.json',{cache:'no-cache'}).then(async r=>{if(!r.ok)throw Error('HTTP '+r.status);return A.validate(await r.json());}).catch(e=>{startupError='Ajustes publicados indisponíveis · '+e.message;return A.empty();}),api.ready]);
- weapons=result[0];draft=result[1];
+ weapons=result[0];published=result[1];draft=published;
  catalog=MareItemCatalog.create({forge:MareForge,prison:MarePrison,haki:MareHaki,akuma:MareAkuma,hakiProgression:MareHakiProgression}).items;
  let draftError='';try{const saved=localStorage.getItem(storage);if(saved)draft=A.validate(JSON.parse(saved));}catch(e){draftError=e.message;}
  selectValues('filter',[['','Todas as categorias'],...Object.entries(labels)]);selectValues('slot',Object.entries(labels));$('slot').value=editSlot;

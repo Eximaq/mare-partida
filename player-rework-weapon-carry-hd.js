@@ -933,8 +933,8 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   if(expression?.source){
    const image=map.get(expression.source),tile=makeCanvas(image.width,image.height),face=tile.getContext('2d');
    face.drawImage(image,0,0);
-   eyes.reshape(face,appearance.face,expression.direction,expression.boxes);
    eyes.recolorIris(face,expression,appearance.eyeColor);
+   eyes.reshape(face,appearance.face,expression.direction,expression.boxes);
    map.set(expression.source,tile);
   }
   const w112Specks=w112WalkSpecks(r,d,padding);
