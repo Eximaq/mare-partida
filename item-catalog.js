@@ -18,8 +18,8 @@
     {name:'Mosquete dos Faróis',slot:'weapon',type:'gunner',attack:12,defense:0,hp:0,symbol:'◎',rarity:'rare'},
     {name:'Casaco de Marinheiro',slot:'coat',attack:0,defense:4,hp:17,symbol:'◈',rarity:'common'},
     {name:'Casaco da Bruma',slot:'coat',attack:0,defense:7,hp:27,symbol:'◈',rarity:'uncommon'},
-    {name:'Botas de Navegante',slot:'boots',acquisitionBlocked:true,attack:0,defense:3,hp:7,symbol:'⌁',rarity:'common'},
-    {name:'Botas do Recifal',slot:'boots',acquisitionBlocked:true,attack:0,defense:6,hp:14,symbol:'⌁',rarity:'rare'},
+    {name:'Botas de Navegante',slot:'boots',attack:0,defense:3,hp:7,symbol:'⌁',rarity:'common'},
+    {name:'Botas do Recifal',slot:'boots',attack:0,defense:6,hp:14,symbol:'⌁',rarity:'rare'},
     {name:'Amuleto das Correntes',slot:'charm',attack:3,defense:0,hp:10,symbol:'✧',rarity:'uncommon'},
     {name:'Pingente de Madrepérola',slot:'charm',attack:5,defense:2,hp:25,symbol:'✧',rarity:'rare'},
     {name:'Adagas da Bruma',slot:'weapon',type:'rogue',attack:8,defense:0,hp:0,symbol:'✧',rarity:'common'},
@@ -567,7 +567,6 @@
   {
     "name": "Botas do Corsário",
     "slot": "boots",
-    "equipmentFusionFor": "boots",
     "attack": 0,
     "defense": 3,
     "hp": 7,

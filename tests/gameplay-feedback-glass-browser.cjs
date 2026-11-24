@@ -14,7 +14,7 @@ const { chromium } = require('playwright');
     await page.route('**/game.js*', async route => {
       const response = await route.fetch();
       const body = (await response.text()).replace('  window.__mareDiagnostics=',
-        '  window.feedbackQA={toast,rewardNotice,enterHunt,returnLobby,spawnMob,presentWorld,newItem,defs:itemDefs,get game(){return game},get session(){return session}};window.__mareDiagnostics=');
+        '  window.feedbackQA={toast,rewardNotice,enterHunt,returnLobby,spawnMob,presentWorld,defs:itemDefs,get game(){return game},get session(){return session}};window.__mareDiagnostics=');
       await route.fulfill({ response, body });
     });
     await page.goto(process.env.MARE_TEST_URL);
@@ -37,9 +37,7 @@ const { chromium } = require('playwright');
     await shot('saque');
     await page.evaluate(() => {
       const game=feedbackQA.game;
-      const def=feedbackQA.defs.find(d=>d.slot==='weapon'&&d.type===game.classId&&!d.acquisitionBlocked);
-      game.equipment.weapon=feedbackQA.newItem(def);
-      game.inventory.push({...feedbackQA.newItem(def),id:'compare-qa',plus:2});
+      game.inventory.push({...game.equipment.weapon,id:'compare-qa',plus:2});
     });
     await page.keyboard.press('i');
     const item=page.locator('[data-item=compare-qa]');

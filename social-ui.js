@@ -313,7 +313,7 @@
         const receipt=await o.command(action,payload);
         if(action==='mail.claim'||action==='mail.claim-all'){
           mailPages=[];
-          statusText=(receipt?.mail?.claimed?.length||0)+' entrega(s) resgatada(s).'+(receipt?.mail?.reason==='inventory_full'?' Algumas continuam pendentes: mochila cheia.':receipt?.mail?.reason==='item_acquisition_blocked'?' Algumas continuam pendentes: aquisição temporariamente suspensa.':'');
+          statusText=(receipt?.mail?.claimed?.length||0)+' entrega(s) resgatada(s).'+(receipt?.mail?.reason==='inventory_full'?' Algumas continuam pendentes: mochila cheia.':'');
           o.mailReceived(receipt?.mail?.claimed||[]);
         }else if(!quiet){statusText=({ 'friend.request':'Solicitação enviada.', 'party.invite':'Convite de grupo enviado.', 'crew.invite':'Convite de tripulação enviado.', 'trade.invite':'Convite de troca enviado.'})[action]||'';}
         if(action==='mail.archive'||action==='mail.archive-claimed')mailPages=[];

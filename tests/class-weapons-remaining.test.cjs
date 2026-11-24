@@ -2,7 +2,7 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),F=require('../forge-system.js'),C=require('../item-catalog.js').create({forge:F,prison:require('../prison-system.js'),haki:require('../haki-system.js'),akuma:require('../akuma-system.js'),hakiProgression:require('../haki-progression.js')}),W=require('../tools/paper-doll-96-v3/weapons.js'),catalog=require('../tools/paper-doll-96-v3/weapons.json'),rigs=require('../tools/paper-doll-96-v3/appearance-rig.json'),manifest=require('../tools/paper-doll-96-v3/manifest.json');
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
 test('remaining ten append after 119 preserved definitions, completing 1/2/1 per class',()=>{
- const baseline={items:C.items.slice(0,119).map(({acquisitionBlocked,...identity})=>identity),slots:[...C.inventorySlotsLeft,...C.inventorySlotsRight],capacity:C.capacity,healerWeaponIndex:C.healerWeaponIndex};
+ const baseline={items:C.items.slice(0,119),slots:[...C.inventorySlotsLeft,...C.inventorySlotsRight],capacity:C.capacity,healerWeaponIndex:C.healerWeaponIndex};
  assert.equal(hash(JSON.stringify(baseline)),'a0bb6309ce2142efe8ec49facc4de4ca547db25af4eff82b9c1d19930897e114');assert.equal(C.items.length, 189);
  for(const type of ['brawler','gunner','cyborg','strategist','healer'])assert.deepEqual(C.items.slice(109).filter(i=>i.type===type).map(i=>i.rarity),['epic','legendary','legendary','supreme']);
  assert.deepEqual(C.items.slice(119,129).map(i=>i.type),['cyborg','cyborg','strategist','strategist','strategist','strategist','healer','healer','healer','healer']);

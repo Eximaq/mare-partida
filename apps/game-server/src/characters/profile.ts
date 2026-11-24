@@ -1,4 +1,5 @@
 import {createRequire} from 'node:module';
+import {randomInt,randomUUID} from 'node:crypto';
 import type {PoolClient} from 'pg';
 import {appearanceSchema,preferencesSchema,type CharacterCommand,type CharacterState} from '@mare/shared';
 import {AuthFault} from '../auth/errors.js';
@@ -8,7 +9,7 @@ import {readTalents} from './talents.js';
 import {readFighter} from './fighter.js';
 import {readOriginalInventory,writeInventory} from '../gameplay/inventory.js';
 import {getGameCatalog} from '../gameplay/catalog.js';
-const require=createRequire(import.meta.url),A=require('../../../../character-appearance.js'),T=require('../../../../talent-system.js'),engine=require('../../../../world-battle.cjs');
+const require=createRequire(import.meta.url),A=require('../../../../character-appearance.js'),T=require('../../../../talent-system.js'),engine=require('../../../../world-battle.cjs'),forge=require('../../../../forge-system.js');
 const preferences={hideItems:false,hideHeadgear:false,healThreshold:.7};
 async function available(client:PoolClient){return !!(await client.query("SELECT to_regclass('mare_game.character_profile') present")).rows[0].present;}
 export async function initializeProfile(client:PoolClient,id:string,appearance?:unknown){
@@ -52,8 +53,12 @@ export async function mutateProfile(client:PoolClient,id:string,input:CharacterC
    const inventory=await readOriginalInventory(client,id);if(!inventory)throw new AuthFault(409,'original_inventory_required');
    const next=structuredClone(inventory),defs=getGameCatalog().items;
    const found=next.inventory.findIndex(i=>defs[i.def]?.slot==='weapon'&&defs[i.def]?.type===input.payload.classId);
-   const weapon=found<0?null:next.inventory.splice(found,1)[0]!;
-   if(!after.starter_classes.includes(input.payload.classId))after.starter_classes.push(input.payload.classId);
+   let weapon=found<0?null:next.inventory.splice(found,1)[0]!;
+   if(!after.starter_classes.includes(input.payload.classId)){
+    after.starter_classes.push(input.payload.classId);
+    if(!weapon){const def=({sword:0,brawler:2,gunner:4,rogue:12,cyborg:14,strategist:16,healer:31} as Record<string,number>)[input.payload.classId]!;
+     weapon=forge.generateItem({id:randomUUID(),def,level:1,plus:0,rarity:'common',locked:false,obtainedAt:Date.now(),origin:'Equipamento inicial da classe'},defs,()=>randomInt(0,0x100000000)/0x100000000);}
+   }
    if(next.equipment.weapon){if(next.inventory.length>=120)throw new AuthFault(409,'inventory_full');next.inventory.push(next.equipment.weapon);}
    next.equipment.weapon=weapon;
    audit.before.inventory=inventory;audit.after.inventory=next;

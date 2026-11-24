@@ -62,55 +62,6 @@ async function assertRewardBerry(pool: pg.Pool, owner: Awaited<ReturnType<typeof
 }
 const direct = (i: OriginalItemInstance, price = 100) => ({ kind: "market_publish", mode: "direct", itemId: i.id, quantity: 1, price, hours: 24 });
 
-test("temporarily blocked boots cannot change owner, while a seller can reclaim prior escrow", () => authDatabase(async ({ service, pool }) => {
-  const seller = await createActor(service, pool, "Vendedor das Botas");
-  const buyer = await createActor(service, pool, "Comprador das Botas");
-  const legacy = item(8), recifal = item(9), corsario = item(134);
-  await stock(pool, seller.id, [legacy, recifal, corsario]);
-  for (const boot of [legacy, recifal]) {
-    await assert.rejects(seller.send(seller.input(direct(boot))), { code: "market_item_untradable" });
-  }
-  assert.deepEqual(list(await seller.query("view=inventory")).entries.map(e=>e.instanceId), [corsario.id]);
-
-  // Recreate a listing that predates this policy. The application API above
-  // remains the route under test; SQL is used only for this historical seed.
-  const previous = await pool.query(
-    "SELECT mare_game.market_command($1,$2::jsonb,1000,20,0) AS receipt",
-    [seller.id, JSON.stringify({...direct(legacy), item:legacy, details:marketItemDetails(legacy)})],
-  );
-  const listingId=previous.rows[0]!.receipt.listingId;
-  assert.equal(list(await buyer.query("view=market")).entries.length, 0);
-  for (const kind of ["market_buy", "market_offer"] as const) {
-    await assert.rejects(buyer.send(buyer.input({
-      kind, listingId, version:1, amount:100,
-    })), {code:"market_item_untradable"});
-  }
-  await assert.rejects(seller.send(seller.input({
-    kind:"market_accept", listingId, version:1, proposalId:randomUUID(), proposalVersion:1,
-  })), {code:"market_item_untradable"});
-  assert.equal((await buyer.state()).gold, "100000");
-
-  const cancelled=await seller.send(seller.input({kind:"market_cancel", listingId, version:1}));
-  assert.ok(cancelled.market?.mailId);
-  const blockedMail=randomUUID(), allowedMail=randomUUID();
-  for (const [mailId,attachment] of [[blockedMail,item(9)],[allowedMail,item(134)]] as const) {
-    await pool.query(
-      "INSERT INTO mare_game.social_mail(id,character_id,source,source_id,reward_id,title,message,attachments) VALUES($1,$2,'system',$1::uuid::text,'legacy','Entrega','Entrega',$3::jsonb)",
-      [mailId,seller.id,JSON.stringify([attachment])],
-    );
-  }
-  const claim=await seller.send(characterCommandSchema.parse({
-    requestId:randomUUID(),expectedVersion:(await seller.state()).version,control:seller.control,
-    action:"mail.claim-all",payload:{},
-  }));
-  assert.deepEqual(claim.mail?.claimed.slice().sort(), [String(cancelled.market.mailId),allowedMail].sort());
-  assert.deepEqual(claim.mail?.pending, [blockedMail]);
-  assert.equal(claim.mail?.reason,"item_acquisition_blocked");
-  const after=(await pool.query("SELECT inventory FROM mare_game.game_inventory WHERE character_id=$1",[seller.id])).rows[0]!.inventory;
-  assert.equal(after.filter((i:OriginalItemInstance)=>i.id===legacy.id).length,1);
-  assert.equal(after.filter((i:OriginalItemInstance)=>i.def===9).length,1);
-}));
-
 test("market commands enforce ownership, retain exact receipts and reveal offers only to their owners", () => authDatabase(async ({ service, pool }) => {
   const seller = await createActor(service, pool, "Comércio Privado");
   const buyer = await createActor(service, pool, "Comprador Privado");

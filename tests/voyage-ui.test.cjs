@@ -3,14 +3,14 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const U=require('../voyage-ui.js'),A=require('../archipelago.js'),P=require('../prison-system.js');
 const root=path.join(__dirname,'..');
-test('all canonical destinations show their intended art, identifiers and labels',()=>{
- assert.equal(A.islands.length,18);const images=new Set();
+test('all canonical destinations have distinct art and unchanged identifiers, labels and levels',()=>{
+ assert.equal(A.islands.length,15);const images=new Set();
  for(const r of A.regions){
   const islands=A.list(r.id),ui=U.voyage({region:r,regions:A.regions,islands,selected:null,game:{area:'beach'},scene:'lobby',canTravel:false});
-  for(const i of islands){assert(ui.body.includes('data-island="'+i.id+'"'));assert(ui.body.includes(i.name));const art=i.thumbnail??('assets/ui/voyage-hd/'+i.id+'.png');assert(ui.body.includes('src="'+art+'"'));assert(fs.existsSync(path.join(root,art)));images.add(art);}
+  for(const i of islands){assert(ui.body.includes('data-island="'+i.id+'"'));assert(ui.body.includes(i.name));assert(fs.existsSync(path.join(root,'assets/ui/voyage-hd',i.id+'.png')));images.add(i.id);}
   assert(!ui.body.includes('Oásis Yuba'));assert(!ui.body.includes('data-travel-island='));
  }
- assert.equal(images.size,15);assert.deepEqual(A.list('skypiea').map(i=>[i.id,i.minLevel,i.recommended[1]]),[['skypiea-01',75,80],['skypiea-02',80,85],['skypiea-03',85,90],['skypiea-04',90,95]]);assert.equal(U.range([8,8]),'8');assert.equal(U.range([1,5]),'1–5');
+ assert.equal(images.size,15);assert.equal(U.range([8,8]),'8');assert.equal(U.range([1,5]),'1–5');
 });
 test('selected details contain a current sprite key and guarded travel action',()=>{
  for(const i of A.islands){

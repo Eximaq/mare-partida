@@ -83,8 +83,7 @@ test('server travel enforces all four Skypiea minimums and spawns on the chosen 
   assert.deepEqual(moved.world.position,{...rules.navigation(islandId).map.spawn});
   assert.deepEqual(moved.world.path,[]);
   assert.equal(moved.world.rulesHash,rules.rulesHash);
-  const snapshot=await a.read(),battle=snapshot.battle;assert.equal(battle.area,islandId);
-  assert(snapshot.achievements.records.islands.includes(islandId));
+  const battle=(await a.read()).battle;assert.equal(battle.area,islandId);
   assert(battle.mobs.length>0&&battle.mobs.every((m:any)=>m.type===type&&m.level===level&&m.source==='world'));
  }
  await a.send(await a.input('world.return'));
@@ -105,17 +104,11 @@ test('Skypiea world migration moves only the audited old island and retains unre
  const rules=createRequire(import.meta.url)('../../world-catalog.cjs').load();
  const sql=await readFile(new URL('../../apps/game-server/migrations/0061_skypiea_multi_maps.sql',import.meta.url),'utf8');
  await pool.query(sql);
- const preRefresh=await pool.query('SELECT x,y,path,speed,started_at,motion_until FROM mare_game.character_world WHERE character_id=$1',[a.c.id]);
- const refresh=await readFile(new URL('../../apps/game-server/migrations/0062_skypiea_full_scene.sql',import.meta.url),'utf8');
- assert.equal((await pool.query(refresh)).rowCount,2);
- assert.equal((await pool.query(refresh)).rowCount,0);
- const afterRefresh=await pool.query('SELECT x,y,path,speed,started_at,motion_until FROM mare_game.character_world WHERE character_id=$1',[a.c.id]);
- assert.deepEqual(afterRefresh.rows,preRefresh.rows);
  const rows=new Map((await pool.query('SELECT * FROM mare_game.character_world')).rows.map(row=>[row.character_id,row]));
- const oldSky=rows.get(a.c.id),other=rows.get(b.c.id),rejected=rows.get(c.c.id);
+ const oldSky=rows.get(a.c.id),other=rows.get(b.c.id),rejected=rows.get(c.c.id),spawn=rules.maps['skypiea-01'].spawn;
  assert.equal(oldSky.map_id,'skypiea-01');assert.equal(oldSky.area,'skypiea-01');
  assert.equal(oldSky.rules_hash,rules.rulesHash);
- assert.deepEqual([oldSky.x,oldSky.y,oldSky.speed,oldSky.path],[1512,2600,0,[]]);
+ assert.deepEqual([oldSky.x,oldSky.y,oldSky.speed,oldSky.path],[spawn.x,spawn.y,0,[]]);
  assert.equal(oldSky.motion_until.getTime(),oldSky.started_at.getTime());
  assert.equal(other.rules_hash,rules.rulesHash);
  for(const row of [other,rejected])assert.deepEqual([row.x,row.y,row.speed,row.path],[1392,1968,150,[{x:1456,y:1968}]]);

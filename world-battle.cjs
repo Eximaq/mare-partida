@@ -49,23 +49,10 @@ function addSkypieaLedgers(b){
  const defaults=hunt.migrate({}).hunts.areas;
  for(const id of codes)areas[id]=defaults[id];
 }
-const previousPriestBalanceHash='5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810';
-const priestByArea={'skypiea-02':'shura','skypiea-03':'gendatsu','skypiea-04':'ohm'};
-function refreshSkypieaPriests(area,mobs){
- const species=priestByArea[area];if(!species||!Array.isArray(mobs))return;
- const region=hunt.get(area),profiles=new Map();
- for(const m of mobs){
-  if(m.source!=='world'||m.type!==species||!region.sectors.some(s=>s.id===m.district))continue;
-  let p=profiles.get(m.district);
-  if(!p){p=hunt.profile(area,m.district,species);profiles.set(m.district,p);}
-  if(m.maxHP===p.maxHP&&m.attack===p.attack&&m.defense===p.defense&&m.magicDefense===p.magicDefense&&m.xp===p.xp)continue;
-  m.hp=m.alive?Math.min(p.maxHP,Math.ceil(p.maxHP*m.hp/Math.max(1,m.maxHP))):0;
-  Object.assign(m,p);
- }
-}
 function upgradeBalance(b){
  if(!b)return;
- if([previousPriestBalanceHash,'29dc036001499d18acfeaffcc3e868e77538f9fcf5f8cc843d33a5003c21b130','0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'].includes(b.rulesHash)){refreshSkypieaPriests(b.area,b.mobs);b.rulesHash=rulesHash;return;}
+ // The preceding main release already uses the current Skypiea coordinates.
+ if(b.rulesHash==='0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'){b.rulesHash=rulesHash;return;}
  if([previousSkypieaHash,'a2e4d9333c0770e539dee6262fb900e1747e94b44c1226a0baacb513b6c07a57','f48377155e997f7d41c76e0d6264e321603376094b73132ef8ebbd13be5cf0f7','8a7832817164137faed714a2ead01559c6c5801e6989c2a1a3aed55d3f2b383a'].includes(b.rulesHash)){
   if(b.area==='skypiea-01'){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
   addSkypieaLedgers(b);b.rulesHash=rulesHash;return;
@@ -383,4 +370,4 @@ function step(b,c){
  }
  talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};
 }
-module.exports={refreshSkypieaPriests,pendingWearIds,balanceVersion,previousBalanceHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,reanchorSkypieaMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};
+module.exports={pendingWearIds,balanceVersion,previousBalanceHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,reanchorSkypieaMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};
