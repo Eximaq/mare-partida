@@ -30,13 +30,21 @@ function positionKey(r){
  return JSON.stringify([r.body,r.action,r.slot,r.item,r.part,r.range,
   r.range==='motion'?null:r.direction,r.range==='pose'?r.receiver:null,...(r.range==='outfit'?slots.map(s=>r.witness.gear[s]??null):[])]);
 }
+function sameTarget(t,r){
+ return key(t)===key(r)&&t.source===r.source;
+}
+function targetKeyMatches(t,r){return key(t)===key(r)||!!t.legacyTarget&&key(t.legacyTarget)===key(r);}
+function matches(t,r){return sameTarget(t,r)||!!t.legacyTarget&&sameTarget(t.legacyTarget,r);}
+function localRecord(t,records){
+ return records.find(r=>!r.range&&sameTarget(t,r))||(t.legacyTarget&&records.find(r=>!r.range&&sameTarget(t.legacyTarget,r)));
+}
 function positionFor(target,records,gear){
  let outfit,local,directional,motion,exactRecord;
  const transferable=target.part==='*'||Object.hasOwn(footLabels,target.part);
  for(const r of records){
   if(!samePart(r,target))continue;
-  const exact=r.receiver===target.receiver&&r.direction===target.direction;
-  if(exact&&r.source!==target.source)continue;
+  const exact=(r.receiver===target.receiver||r.receiver===target.legacyTarget?.receiver)&&r.direction===target.direction;
+  if(exact&&!matches(target,r))continue;
   if(!transferable&&!exact&&r.source!==target.source)continue;
   if(r.range==='outfit'&&r.direction===target.direction&&sameGear(r.witness.gear,gear))outfit=r;
   else if(r.range==='pose'&&exact)local=r;
@@ -70,7 +78,7 @@ function withPosition(manifest,t,range,cycle,witness){
  const next={...identity,range,cycle:[...cycle],phases:{},...(witness?{witness}:{})};
  const records=manifest.records.filter(r=>{
   if(!samePart(r,t))return true;
-  if(r.range)return positionKey(r)!==positionKey(next)&&!(range==='direction'&&r.range==='pose'&&r.receiver===t.receiver&&r.direction===t.direction);
+  if(r.range)return positionKey(r)!==positionKey(next)&&!(range==='direction'&&r.range==='pose'&&targetKeyMatches(t,r));
   return true;
  });
  records.push(next);return {...manifest,schema:3,revision:manifest.revision+1,records};
@@ -101,21 +109,73 @@ function checkStyle(value){
   throw Error('Rotação, espelho ou camada inválida.');
 }
 function styleAt(r,phase){return {...r?.style?.cycle,...r?.style?.phases?.[phase]};}
+function phaseTransfer(from,to){
+ if(!from.length||from.length!==to.length)throw Error('Os ciclos têm quantidades de quadros diferentes.');
+ const phaseMap=new Map(),reverse=new Map();
+ for(let i=0;i<from.length;i++){
+  const a=from[i].phase,b=to[i].phase;
+  if(phaseMap.has(a)&&phaseMap.get(a)!==b||reverse.has(b)&&reverse.get(b)!==a)throw Error('As fases dos ciclos não correspondem.');
+  phaseMap.set(a,b);reverse.set(b,a);
+ }
+ return (rows,convert)=>Object.fromEntries(Object.entries(rows).map(([k,v])=>{
+  if(!phaseMap.has(+k))throw Error('Fase sem correspondência no destino.');
+  return [phaseMap.get(+k),convert(v)];
+ }));
+}
+// Only rewrite a catalog ID attached to an equipment name. A numbered panel or
+// foot is a part identity, even if its number happens to equal the item's ID.
+function partName(t){
+ return t.part.replace(/(boot[s]?|pants|legs|coat|torso|gloves?|helmets?|headgear|head|weapon|sword|dagger|gun|staff|item)([-_]?)(\d+)(?=[-_]|$)/gi,
+  (token,name,separator,id)=>Number(id)===t.item?name+separator+'{item}':token);
+}
+function unavailableCopyRecord(manifest,sources){
+ const t=sources[0];
+ if(!t)return null;
+ return manifest.records.find(r=>!r.range&&r.slot===t.slot&&r.item===t.item&&r.body===t.body&&r.action===t.action&&r.direction===t.direction&&
+  !sources.some(src=>src.part===r.part&&localRecord(src,manifest.records)));
+}
+function copyItemDirection(manifest,from,to,slot,sourceId,destId,sourceGear,witness){
+ const sources=from.targets.filter(t=>t.slot===slot&&t.item===sourceId);
+ const targets=to.targets.filter(t=>t.slot===slot&&t.item===destId);
+ if(sourceId===destId||!sources.length||!targets.length||['body','action','direction'].some(k=>sources[0][k]!==targets[0][k]))
+  throw Error('As peças precisam ter desenho no mesmo corpo, movimento e direção.');
+ let next=manifest,remap,count=0;
+ const seen=new Set();
+ const missing=unavailableCopyRecord(manifest,sources);
+ if(missing)throw Error('A parte '+missing.part+' de #'+sourceId+' tem ajustes em outra montagem ('+missing.direction+').');
+ for(const src of sources){
+  const local=localRecord(src,manifest.records),position=positionFor(src,manifest.records,sourceGear);
+  if(!local&&!position)continue;
+  const foot=from.footFor(src),related=targets.filter(t=>to.footFor(t)===foot);
+  let matchesPart=related.filter(t=>partName(t)===partName(src));
+  // Lining panels may include the donor's material name in an otherwise
+  // equivalent boot. Only a unique lining for the same authored foot qualifies.
+  if(!matchesPart.length&&foot&&src.part.endsWith('-backing'))matchesPart=related.filter(t=>t.part.endsWith('-backing'));
+  if(matchesPart.length!==1||seen.has(matchesPart[0]))throw Error('Sem parte correspondente para '+src.part+' em #'+destId+' ('+src.direction+').');
+  const dest=matchesPart[0],{limits,...identity}=dest;seen.add(dest);
+  const scope=positionFor(dest,next.records,witness.gear)?.range==='outfit'?'outfit':'direction';
+  next=withPosition(next,dest,scope,position?.cycle??local.cycle,witness);
+  next.records=next.records.filter(r=>r.range||!targetKeyMatches(dest,r));
+  if(local&&(Object.keys(local.phases).length||local.style)){
+   if(Object.keys(local.phases).length||Object.keys(local.style?.phases||{}).length){
+    if(from.fps!==to.fps)throw Error('As fases têm ritmos diferentes em '+src.direction+'.');
+    remap??=phaseTransfer(from.clock,to.clock);
+   }
+   const transfer=rows=>Object.keys(rows).length?remap(rows,v=>structuredClone(v)):{};
+   next.records.push({...identity,cycle:[0,0],phases:transfer(local.phases),
+    ...(local.style?{style:{cycle:{...local.style.cycle},phases:transfer(local.style.phases)}}:{})});
+  }
+  count++;
+ }
+ if(!count)throw Error('Sem ajustes de origem compatíveis com esta montagem em '+sources[0].direction+'.');
+ return next;
+}
 function mirrorRecord(r,t,from,to){
  const lateral=['east','west'];
  if(!lateral.includes(r.direction)||!lateral.includes(t.direction)||t.direction===r.direction||
   ['slot','item','body','weapon','action'].some(k=>r[k]!==t[k])||r.receiver.split('@').slice(0,2).join('@')!==t.receiver.split('@').slice(0,2).join('@')||
   !from.length||from.length!==to.length)throw Error('As poses laterais são incompatíveis.');
- const phaseMap=new Map(),reverse=new Map();
- for(let i=0;i<from.length;i++){
-  const a=from[i].phase,b=to[i].phase;
-  if(phaseMap.has(a)&&phaseMap.get(a)!==b||reverse.has(b)&&reverse.get(b)!==a)throw Error('As fases dos dois lados não correspondem.');
-  phaseMap.set(a,b);reverse.set(b,a);
- }
- const remap=(rows,convert)=>Object.fromEntries(Object.entries(rows).map(([k,v])=>{
-  if(!phaseMap.has(+k))throw Error('Fase lateral sem correspondência.');
-  return [phaseMap.get(+k),convert(v)];
- }));
+ const remap=phaseTransfer(from,to);
  const xy=([x,y])=>[x?-x:0,y],mirrorStyle=s=>({...s,...(s.angle?{angle:-s.angle}:{})});
  const {limits,...identity}=t;
  return {...identity,cycle:xy(r.cycle),phases:remap(r.phases,xy),...(r.style?{style:{cycle:mirrorStyle(r.style.cycle),phases:remap(r.style.phases,mirrorStyle)}}:{})};
@@ -223,7 +283,20 @@ function blit(ctx,slot,part,source,img,args,sign=1,original=null,underlay=null,o
   }
   if(!p.sources.has(phase))p.sources.set(phase,new Set());
   const {a,b,c,d,e,f}=ctx.getTransform();
-  p.sources.get(phase).add(JSON.stringify([source,img.width,img.height,sourceArgs,sign,[a,b,c,d,e,f]]));
+  const signature=[source,img.width,img.height,sourceArgs,active.signatureSign??sign];
+  p.sources.get(phase).add(JSON.stringify([...signature,[a,b,c,d,e,f]]));
+  if(slot==='boots'){
+   // Describe the same operation as a direct draw in the body's unpadded plane.
+   // The original signature remains valid for drafts made on the larger canvas.
+   const tile=active.tile;
+   if(tile&&p.bodyReceiver!==null&&(p.bodyReceiver===undefined||p.bodyReceiver===tile.receiver)){
+    p.bodyReceiver=tile.receiver;p.bodySources??=new Map();
+    if(!p.bodySources.has(phase))p.bodySources.set(phase,new Set());
+    const x=e-tile.inset,y=f-tile.inset;
+    const matrix=tile.reflected?[-a,b,-c,d,tile.width-x,y]:[a,b,c,d,x,y];
+    p.bodySources.get(phase).add(JSON.stringify([...signature,matrix]));
+   }else p.bodyReceiver=null;
+  }
  }else{
   const d=offsets.get(JSON.stringify([slot,part,phase]));
   if(d&&active.hidden?.has(d.layer)){if(underlay)ctx.drawImage(underlay,...args);return;}
@@ -303,6 +376,13 @@ function lowerLayers(paint,groups){
  }
  return render(0,new Set());
 }
+// Keep the historical source signature. Only the screen-space editing transform
+// and its clipping limits need the reflection that follows this intermediate tile.
+function bodyPlane(pack,density,inset,reflected,paint){
+ const width=pack.frame.width*density,height=pack.frame.height*density;
+ const receiver=width+'x'+height+'@'+pack.pivot.x*density+','+pack.pivot.y*density;
+ return scoped({...active,tile:{receiver,reflected,width,inset},signatureSign:active.sign,sign:reflected?-active.sign:active.sign},paint);
+}
 function layer(ctx,l,img,args){
  if(l.positionOwner&&l.positionSource)return blit(ctx,l.positionOwner,l.positionPart||l.id,l.positionSource,img,args,active.sign);
  const owner=active?.layers.get(l.id);
@@ -335,12 +415,10 @@ function session(r,player,options,make){
   const depths=!capture&&depthByPhase.get(phase);
   return depths?.length?lowerLayers(paint,depths):paint();
  }
- async function finish(info,clock=[],fps=info.fps){
-  const receiver=info.width+'x'+info.height+'@'+info.pivot.x+','+info.pivot.y;
-  for(const [slot,parts] of descriptors){
-   const all=new Map(),signatures=[],groups=new Map(),firstTarget=targets.length;
+ async function describe(slot,parts,receiver,clock,fps,bodySpace=false){
+   const all=new Map(),signatures=[],groups=new Map(),result=[];
    for(const [part,data] of parts){
-    const identity=[part,receiver,clock,fps,[...data.sources].map(([p,s])=>[p,[...s].sort()])];
+    const identity=[part,receiver,clock,fps,[...(bodySpace?data.bodySources:data.sources)].map(([p,s])=>[p,[...s].sort()])];
     signatures.push(identity);
     if(data.group&&data.phases.size){
      const foot=groups.get(data.group)||{limits:new Map(),sources:[]};
@@ -349,22 +427,36 @@ function session(r,player,options,make){
      groups.set(data.group,foot);
     }
     for(const [phase,lim] of data.phases)all.set(phase,intersect(all.get(phase),lim));
-    if(data.phases.size)targets.push({...meta,receiver,slot,item:items.get(slot),part,source:await digest(identity),limits:Object.fromEntries(data.phases)});
+    if(data.phases.size)result.push({...meta,receiver,slot,item:items.get(slot),part,source:await digest(identity),limits:Object.fromEntries(data.phases)});
    }
    if(all.size){
     const signature=await digest(signatures.sort((a,b)=>a[0].localeCompare(b[0])));
     const rig=receiver+'@'+signature.slice(0,16);
-    for(const t of targets.slice(firstTarget))t.receiver=rig;
+    for(const t of result)t.receiver=rig;
     // Virtual groups do not contribute to the existing pair or panel signatures.
     // Only offer a whole foot when all visible panels have an identified owner.
     if([...parts.values()].every(p=>!p.phases.size||p.group))for(const [part,foot] of groups){
      foot.sources.sort((a,b)=>a[0].localeCompare(b[0]));
-     targets.push({...meta,receiver:rig,slot,item:items.get(slot),part,source:await digest([part,foot.sources]),limits:Object.fromEntries(foot.limits)});
+     result.push({...meta,receiver:rig,slot,item:items.get(slot),part,source:await digest([part,foot.sources]),limits:Object.fromEntries(foot.limits)});
     }
-    targets.push({...meta,receiver:rig,slot,item:items.get(slot),part:'*',source:signature,limits:Object.fromEntries(all)});
+    result.push({...meta,receiver:rig,slot,item:items.get(slot),part:'*',source:signature,limits:Object.fromEntries(all)});
+   }
+   return result;
+ }
+ async function finish(info,clock=[],fps=info.fps){
+  const receiver=info.width+'x'+info.height+'@'+info.pivot.x+','+info.pivot.y;
+  for(const [slot,parts] of descriptors){
+   const original=await describe(slot,parts,receiver,clock,fps);
+   const planes=new Set([...parts.values()].map(p=>p.bodyReceiver));
+   const bodyReceiver=planes.size===1&&planes.values().next().value;
+   if(!bodyReceiver){targets.push(...original);continue;}
+   const canonical=await describe(slot,parts,bodyReceiver,clock,fps,true);
+   for(const [i,t] of canonical.entries()){
+    Object.defineProperty(t,'legacyTarget',{value:original[i]});targets.push(t);
    }
   }
-  lookup=new Map(targets.map(t=>[key(t),t]));
+  lookup=new Map();
+  for(const t of targets){lookup.set(key(t),t);if(t.legacyTarget)lookup.set(key(t.legacyTarget),t);}
  }
  function originalOutfit(a){
   const w=a.witness;
@@ -378,8 +470,8 @@ function session(r,player,options,make){
   const accepted=new Map(),errors=[],invalid=new Set();
   for(const a of selected){
    const t=lookup.get(key(a));
-   if(!t||a.source!==t.source||[...Object.keys(a.phases),...Object.keys(a.style?.phases||{})].some(f=>!Object.hasOwn(t.limits,f))){invalid.add(a.slot);errors.push('Fonte, receptor ou fase incompatível • '+a.slot+' #'+a.item);continue;}
-   if(!a.range)accepted.set(key(t),a);
+   if(!t||!matches(t,a)||[...Object.keys(a.phases),...Object.keys(a.style?.phases||{})].some(f=>!Object.hasOwn(t.limits,f))){invalid.add(a.slot);errors.push('Fonte, receptor ou fase incompatível • '+a.slot+' #'+a.item);continue;}
+   if(!a.range&&(!accepted.has(key(t))||sameTarget(t,a)))accepted.set(key(t),a);
   }
   const positions=manifest.records.filter(a=>a.body===body&&a.action===meta.action&&items.get(a.slot)===a.item&&a.direction===meta.direction);
   for(const t of targets){
@@ -427,6 +519,6 @@ function session(r,player,options,make){
  return {visit,finish,configure,availableLayers,footFor,get targets(){return targets;},get moved(){return [...offsets.values()].some(v=>v[0]||v[1]||oriented(v.whole)||oriented(v.foot)||oriented(v.local)||v.layer!=='native');}};
 }
 function offset(slot,part){return active&&!active.capture?active.offsets.get(JSON.stringify([slot,part,active.phase]))||[0,0]:[0,0];}
-const api={empty,validate,slots,key,gearOf,positionKey,positionFor,samePart,withPosition,legacyPositions,shareVerified,layerNames,footLabels,mirrorRecord,styleAt,session,blit,material,layer,offset,localClip,original:paint=>scoped(null,paint),get materialCache(){return active?.materialCache;},get active(){return !!active;}};
+const api={empty,validate,slots,key,matches,targetKeyMatches,localRecord,gearOf,positionKey,positionFor,samePart,withPosition,legacyPositions,shareVerified,layerNames,footLabels,unavailableCopyRecord,copyItemDirection,mirrorRecord,styleAt,session,blit,material,layer,bodyPlane,offset,localClip,original:paint=>scoped(null,paint),get materialCache(){return active?.materialCache;},get active(){return !!active;}};
 root.MareHDPosition=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

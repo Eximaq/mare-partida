@@ -29,6 +29,16 @@ O X/Y de **Ciclo inteiro** vale imediatamente para o corpo, o movimento, a dire�
 - Para adaptar só o conjunto equipado, clique em **Criar exceção para este conjunto** e edite X/Y. A exceção pode valer zero. Trocar uma peça vizinha devolve o padrão e reequipá-la recupera a exceção. **Remover exceção deste conjunto** volta ao padrão. Repouso e caminhada mantêm coordenadas independentes mesmo na mesma direção.
 - A peça inteira acompanha as diferentes artes do mesmo ID. Um pé individual acompanha as montagens que identificam esse mesmo pé. Um painel técnico exige uma fonte correspondente. Os ajustes de fase, tamanho, rotação, espelho e camada continuam ligados à montagem original.
 
+### Copiar um movimento entre peças
+
+Equipe a peça de destino e selecione o movimento e o corpo. Abra **Copiar ajustes de outra peça**, escolha a origem e clique em **Copiar movimento para esta peça**. Por exemplo, equipe a bota 9, selecione **Caminhada** e escolha a bota 8 como origem. A lista mostra as peças do mesmo slot com ajustes gravados nesse movimento e corpo.
+
+A cópia leva o X/Y, rotação, tamanho, espelho e camada do ciclo e de cada fase ajustada. Cada direção mantém seus próprios valores. As partes ajustadas na origem substituem os ajustes das partes correspondentes no destino. Pés separados mantêm a identificação do pé. Movimentos diferentes e partes sem ajuste de origem conservam seus registros. **Desfazer** reverte a cópia inteira. Se uma parte ou fase não tiver correspondência ou o deslocamento recortar a nova peça, a bancada informa o problema e conserva o rascunho anterior.
+
+### Botas e espadas
+
+No repouso e na caminhada, as botas que compartilham arte, geometria e relógio usam o referencial do corpo. A margem da espada e o espelhamento da pose Oeste entram no desenho uma única vez. O par, cada pé e os ajustes por fase acompanham essas montagens equivalentes, inclusive em rascunhos feitos com Punhos de Bronze. As poses próprias dos ataques continuam usando a anatomia da ação.
+
 Para editar uma bota, escolha **Botas** e depois o pé em **Parte**. O nome acompanha a identificação da pose: esquerda/direita, próxima/distante ou bota 1/2. Frente, traseira e forro do pé escolhido se movem juntos. Para ajustar os dois pés, selecione **Par de botas**. Há poses de ataque em que a montagem só fornece os planos do par. A bancada sinaliza essas poses e pede uma nova seleção se o pé que você editava ficar indisponível.
 
 Para aprovar ajustes para o jogo, revise o ciclo completo, substitua `hd-position-approved.json` no repositório pela exportação e publique o build normal. A edição privada usa a chave `kaizoku-hd-position-draft-v1` da bancada. O mapa lê o arquivo publicado.
@@ -73,6 +83,8 @@ O teste `node --expose-gc tests/hd-position-outfits.cjs` percorre o catálogo em
 O comando `--census` mede o repouso Sul dos dois corpos para as 42 armas, alternando os dez itens de cada categoria. A variante `--cycles` inclui caminhada e ataque. Para dividir por lote, defina `HD_WEAPON_IDS` (IDs separados por vírgula) e `HD_DIRECTIONS` (direções em inglês separadas por vírgula). A saída é JSON. Uma peça sem diferença visível no ciclo produz uma falha.
 
 O teste `node tests/hd-position-helmet.cjs` compara o capacete 18 com X=5 e Y=19 com uma montagem independente pelo pivô do corpo. Percorre as seis espadas, o mosquete 4, a adaga 73 e o foco 31, em repouso e caminhada masculinos nas quatro direções. A opção `--hair` desenha os dez capacetes com cabelo Chanel nos dois corpos e confere o deslocamento e a restauração no primeiro quadro de uma caminhada por combinação.
+
+Para conferir botas com espadas, execute `node --expose-gc tests/hd-position-boot-swords.cjs`. O teste aplica o ajuste da bota 8 feito com Punhos de Bronze nas seis espadas e compara os pixels com um deslocamento independente da arte em repouso e caminhada. Com `--catalog`, compara cada modelo de bota com um dos seis modelos de espada. `HD_DIRECTIONS` e `HD_BODIES` permitem dividir a execução. No navegador, `node tests/hd-position-browser.cjs --copy` exercita a cópia de caminhada da bota 8 para a 9, duas direções, um pé separado, histórico e exportação/importação.
 
 O arquivo de referência guarda hashes RGBA e do contrato de desenho em quatro ciclos baseados no build independente de `36c68a6`, com 26 posições. Nas duas poses de espada com margem, a referência desenha o capacete no centro do quadro do corpo. Para reproduzir a origem, execute o teste com `HD_PUBLISHED_ROOT` apontando para aquele build e `--reference` seguido do caminho de um arquivo temporário. O teste normal lê o arquivo versionado.
 

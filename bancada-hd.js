@@ -38,7 +38,7 @@ function originFor(t){
  return {role:actor.classId,gear,look:Object.fromEntries(Object.keys(look.choices).map(k=>[k,actor.appearance96[k]])),hide:!!actor.preferences.hideHeadgear};
 }
 function target(){return view?.targets.find(t=>t.slot===editSlot&&t.part===$('part').value);}
-function record(t){return t&&draft.records.find(r=>!r.range&&A.key(r)===A.key(t)&&r.source===t.source);}
+function record(t){return t&&A.localRecord(t,draft.records);}
 function phase(){return view?.clock[tick]?.phase??0;}
 function placement(t){return t&&A.positionFor(t,draft.records,A.gearOf(actor,t.weapon===null));}
 function values(){const t=target();if(!t)return [0,0];return ($('scope').value==='cycle'?placement(t)?.cycle:record(t)?.phases[phase()])||[0,0];}
@@ -52,6 +52,7 @@ function inputs(){
  $('outfit-position').disabled=!ready||!cycle;$('outfit-position').setAttribute('aria-pressed',String(exception));
  $('outfit-position').textContent=exception?'Remover exceção deste conjunto':'Criar exceção para este conjunto';
  $('apply-positions').disabled=!ready||!cycle;
+ $('copy-item').disabled=!view||$('before').checked||!$('copy-source').value||copying;
  $('position-item').textContent=t?catalog[t.item].name+' #'+t.item+' · '+$('action').selectedOptions[0].textContent+' · '+$('direction').selectedOptions[0].textContent+' · '+(exception?'Exceção deste conjunto':'Padrão em todos os conjuntos'):'';
  $('apply-positions').title=t?'Aplicar os ajustes de '+catalog[t.item].name+' a todos os conjuntos. Cada direção conserva seu próprio X/Y neste movimento e corpo.':'';
  const style=displayStyle(),scope=$('scope').value,available=t?view.availableLayers(t,scope==='phase'?phase():null):['native'];
@@ -81,7 +82,7 @@ function parts(){
   const unavailable=new Option(A.footLabels[old]+' · indisponível nesta pose','');
   unavailable.disabled=true;$('part').add(unavailable);unavailable.selected=true;
  }
- inputs();
+ copyChoices();inputs();
 }
 function schedule(){if(!drawing){drawing=true;requestAnimationFrame(paint);}}
 function paint(now){
@@ -124,7 +125,7 @@ async function reload(){
   tick=lastFrame?.action===options.action&&lastFrame.direction===options.direction?Math.min(v.clock.length-1,Math.floor(lastFrame.progress*v.clock.length)):0;
   last=elapsed=0;$('tick').max=v.clock.length-1;$('tick').value=tick;
   const missing=b.coverage[0].omitted||[];loadMessage=r.action+' · '+r.direction+' · '+v.clock.length+' posições'+(missing.length?' · sem desenho: '+missing.join(', '):'');
-  const verified=A.legacyPositions(draft).filter(r=>v.targets.some(t=>A.key(t)===A.key(r)&&t.source===r.source));
+  const verified=A.legacyPositions(draft).filter(r=>v.targets.some(t=>A.matches(t,r)));
   draft=A.shareVerified(draft,verified);
   const issues=v.set(draft,false);
   if(issues.length)loadMessage+=' · '+issues.join(' · ');
@@ -135,12 +136,12 @@ function commit(next,history=true){
  next=A.validate(next);view?.set(next);
  try{localStorage.setItem(storage,JSON.stringify(next));}catch(e){view?.set(draft);throw e;}
  if(history){past.push(draft);if(past.length>80)past.shift();future=[];}
- draft=next;inputs();schedule();status(loadMessage);
+ draft=next;copyChoices();inputs();schedule();status(loadMessage);
 }
 function update(v,restore=false,remember=true,change=null){
  const t=target();if(!t||$('before').checked)return;
  try{
-  const {limits,...identity}=t,r=structuredClone(record(t)||{...identity,cycle:[0,0],phases:{}});
+  const {limits,...identity}=t,r={cycle:[0,0],phases:{},...structuredClone(record(t)),...identity};
   const cycle=$('scope').value==='cycle',xy=placement(t),range=xy?.range==='outfit'?'outfit':'direction';
   if(cycle&&!change&&!restore){commit(A.withPosition(draft,t,range,v,originFor(t)),remember);return;}
   if(change){
@@ -152,7 +153,7 @@ function update(v,restore=false,remember=true,change=null){
    if(!Object.keys(r.style.cycle).length&&!Object.keys(r.style.phases).length)delete r.style;
   }else if(cycle)r.cycle=v;else r.phases[phase()]=v;
   for(const k of Object.keys(r.phases))if(r.phases[k].every(n=>n===0))delete r.phases[k];
-  const rows=draft.records.filter(a=>a.range?!(restore&&A.positionKey(a)===A.positionKey({...t,range,witness:originFor(t)})):A.key(a)!==A.key(t));
+  const rows=draft.records.filter(a=>a.range?!(restore&&A.positionKey(a)===A.positionKey({...t,range,witness:originFor(t)})):!A.targetKeyMatches(t,a));
   if(!restore&&(r.style||r.cycle.some(Boolean)||Object.keys(r.phases).length))rows.push(r);
   commit({...draft,schema:r.style?Math.max(2,draft.schema):draft.schema,revision:draft.revision+1,records:rows},remember);
  }catch(e){inputs();status(e.message,true);}
@@ -165,10 +166,58 @@ function lateralRecords(t){
  const rows=[];
  for(const part of view.targets.filter(v=>v.slot===t.slot&&(t.part==='*'||t.part===v.part||Object.hasOwn(A.footLabels,t.part)&&view.footFor(v)===t.part))){
   const local=record(part),xy=placement(part);
-  if(local)rows.push(local);
-  if(xy&&(xy.range||xy!==local)){const {limits,...identity}=part;rows.push({...identity,range:'direction',cycle:xy.cycle,phases:{}});}
+  const {limits,...identity}=part;
+  if(local)rows.push({...local,...identity});
+  if(xy&&(xy.range||xy!==local))rows.push({...identity,range:'direction',cycle:xy.cycle,phases:{}});
  }
  return rows;
+}
+let copying=false;
+function copyChoices(){
+ const dest=view?.targets.find(t=>t.slot===editSlot&&t.part==='*'),select=$('copy-source'),prior=select.value;
+ const ids=dest?[...new Set(draft.records.filter(r=>r.slot===dest.slot&&r.item!==dest.item&&r.body===dest.body&&r.action===dest.action&&catalog[r.item]?.slot===dest.slot).map(r=>r.item))].sort((a,b)=>a-b):[];
+ selectValues('copy-source',ids.length?ids.map(id=>[id,catalog[id].name+' #'+id]):[['','Nenhuma peça ajustada neste movimento']]);
+ select.disabled=!ids.length;if(ids.includes(Number(prior))&&prior!=='')select.value=prior;
+}
+async function copyItem(){
+ const dest=view?.targets.find(t=>t.slot===editSlot&&t.part==='*'),id=$('copy-source').value;
+ if(!dest||!id||copying||$('before').checked)return;
+ const sourceId=Number(id),slot=editSlot,previous=draft,current=ticket,witness=originFor(dest),signal=controller.signal;
+ const stale=()=>current!==ticket||draft!==previous||editSlot!==slot||$('copy-source').value!==id||$('before').checked;
+ const donor=look.apply({...actor,classId:slot==='weapon'?catalog[sourceId].type:actor.classId,
+  equipment:{...actor.equipment,[slot]:{def:sourceId}}},actor.appearance96);
+ const dirs=new Set(previous.records.filter(r=>r.slot===slot&&r.item===sourceId&&r.body===dest.body&&r.action===dest.action).map(r=>r.direction));
+ let next=previous;copying=true;inputs();
+ try{
+  for(const direction of dirs){
+   let sourcePose,destPose;
+   try{
+    status('Conferindo as fases das duas peças · '+direction+'…');
+    const o={...options,direction};let fromActor=donor;
+    sourcePose=await prepare(fromActor,o,signal);
+    if(stale())return;
+    const parts=sourcePose.v.targets.filter(t=>t.slot===slot&&t.item===sourceId);
+    const missing=A.unavailableCopyRecord(previous,parts)||(!parts.length&&previous.records.find(r=>r.item===sourceId&&r.body===dest.body&&r.action===dest.action&&r.direction===direction));
+    if(missing){
+     sourcePose.b.release();sourcePose=null;
+     const w=missing.witness||previous.records.find(r=>r.witness&&A.key(r)===A.key(missing)&&r.weapon===missing.weapon&&r.source===missing.source)?.witness;
+     const gear=w?.gear||{[slot]:sourceId,...(missing.weapon!==null?{weapon:missing.weapon}:{})};
+     fromActor=look.apply({classId:w?.role||catalog[missing.weapon]?.type||donor.classId,
+      equipment:Object.fromEntries(Object.entries(gear).map(([s,def])=>[s,{def}])),preferences:{hideHeadgear:w?.hide??false}},w?.look||donor.appearance96);
+     sourcePose=await prepare(fromActor,o,signal);
+     if(stale())return;
+    }
+    sourcePose.v.set(previous);
+    if(direction!==dest.direction)destPose=await prepare(actor,o,signal);
+    if(stale())return;
+    next=A.copyItemDirection(next,sourcePose.v,destPose?.v||view,slot,sourceId,dest.item,A.gearOf(fromActor,o.weaponless),witness);
+    destPose?.v.set(next);
+   }finally{sourcePose?.b.release();destPose?.b.release();}
+  }
+  if(stale()||!dirs.size)return;
+  commit({...next,revision:previous.revision+1});
+  status('Movimento copiado de '+catalog[sourceId].name+' #'+sourceId+' para '+catalog[dest.item].name+' #'+dest.item+' · '+dirs.size+(dirs.size===1?' direção.':' direções.'));
+ }catch(e){if(!stale())status(e.message,true);}finally{copying=false;inputs();}
 }
 async function copyLateral(direction){
  const t=target(),from=view,current=ticket,previous=draft,selected=editSlot;
@@ -230,18 +279,20 @@ async function applyDirections(){
  }catch(e){if(!stale())status(e.message,true);}
 }
 async function verifySources(m,records,partial=false){
- const verified=[];
- const groups=new Map();
+ const verified=[],groups=new Map(),origins=new Map();
+ const originKey=r=>JSON.stringify([A.key(r),r.source,r.weapon]);
+ for(const row of m.records)if(row.witness)origins.set(originKey(row),row.witness);
  for(const r of records){
   if(catalog[r.item]?.slot!==r.slot||r.weapon!==null&&catalog[r.weapon]?.slot!=='weapon')throw Error('ID incompatível com o catálogo.');
   // An exported outfit often provides several parts for the same signed pose.
   // Decode its cycle once, while keeping per-item recovery for partial imports.
-  const k=JSON.stringify([r.body,r.weapon,r.action,r.direction,r.witness,(!r.witness||partial)?[r.slot,r.item]:null]);
+  const w=r.witness||origins.get(originKey(r));
+  const k=JSON.stringify([r.body,r.weapon,r.action,r.direction,w,(!w||partial)?[r.slot,r.item]:null]);
   if(!groups.has(k))groups.set(k,[]);groups.get(k).push(r);
  }
  for(const rows of groups.values()){
   const r=rows[0];
-  const w=r.witness;
+  const w=r.witness||origins.get(originKey(r));
   if(w&&(!Object.hasOwn(weapons.classes,w.role)||Object.entries(w.gear).some(([s,id])=>catalog[id]?.slot!==s)||Object.entries(w.look).some(([k,v])=>!Object.hasOwn(look.choices[k],v))))throw Error('Catálogo ou aparência de origem incompatível.');
   const gear=w?.gear||{[r.slot]:r.item,...(r.weapon!==null?{weapon:r.weapon}:{})};
   const a=look.apply({classId:w?.role||(r.weapon===null?currentActor().classId:catalog[r.weapon].type),
@@ -250,7 +301,7 @@ async function verifySources(m,records,partial=false){
   const o={consumer:'world',action:r.action,direction:r.direction};let test;
   try{
    test=await prepare(a,o);
-   if(!rows.every(row=>test.v.targets.some(t=>A.key(t)===A.key(row)&&t.source===row.source)))throw Error('Fonte incompatível para #'+r.item+' · '+r.direction);
+   if(!rows.every(row=>test.v.targets.some(t=>A.matches(t,row))))throw Error('Fonte incompatível para #'+r.item+' · '+r.direction);
    test.v.set(m);verified.push(...rows);
   }catch(e){if(!partial)throw e;}finally{test?.b.release();}
  }
@@ -281,6 +332,7 @@ try{
   }catch(e){status(e.message,true);}
  };
  $('apply-positions').onclick=applyDirections;
+ $('copy-item').onclick=copyItem;
  $('part').onchange=()=>{preferredParts.set(editSlot,$('part').value);inputs();};$('scope').onchange=inputs;$('before').onchange=()=>{inputs();schedule();};
  $('guides').onchange=$('zoom').oninput=schedule;$('play').onclick=()=>toggle(!playing);
  const step=d=>{if(!view)return;toggle(false);const phase0=phase();let i=tick;do{i=(i+d+view.clock.length)%view.clock.length;}while(i!==tick&&view.clock[i].phase===phase0);setTick(i);schedule();};

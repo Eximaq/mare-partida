@@ -976,7 +976,18 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
      cover.binding.a==='LEFT ELBOW'&&cover.binding.b==='LEFT ARM'?
      (frame===1?[[216,289,2,1]]:frame===3||frame===5?[[216,284,1,1],[217,285,1,1]]:null):null;
     if(specks){target.beginPath();target.rect(0,0,w,h);for(const rect of specks)target.rect(...rect);target.clip('evenodd');}
-   }if(r.preMirroredLayers?.includes(original.id)){target.translate(p.frame.width*4,0);target.scale(-1,1);}if(r.plan.paddingPhysical!==undefined){const bodyTile=makeCanvas(p.frame.width*4,p.frame.height*4);V.render(bodyTile.getContext('2d'),pack,map,{direction:r.direction,frame,density:4,clear:false});target.drawImage(bodyTile,0,0);}else V.render(target,pack,map,{direction:r.direction,frame,density:4,clear:false});target.restore();continue;}
+    }
+    const reflectedLayer=r.preMirroredLayers?.includes(original.id);
+    if(reflectedLayer){target.translate(p.frame.width*4,0);target.scale(-1,1);}
+    const settings={direction:r.direction,frame,density:4,clear:false};
+    if(r.plan.paddingPhysical!==undefined){
+     const tile=makeCanvas(p.frame.width*4,p.frame.height*4),paint=()=>V.render(tile.getContext('2d'),pack,map,settings);
+     // The outer canvas reflects this tile after its equipment has been painted.
+     if(root.MareHDPosition?.active)root.MareHDPosition.bodyPlane(p,4,0,!!reflectedLayer,paint);else paint();
+     target.drawImage(tile,0,0);
+    }else V.render(target,pack,map,settings);
+    target.restore();continue;
+   }
    const q=op.part,im=images.get(weaponPrefix+q.source.url);if(!im)throw Error('Missing isolated equipment');
    if(op.w121Grip!==undefined){
     const {a,b}=q.binding,m=V.rigid(q.sourceBone[b],q.sourceBone[a],pose[b],pose[a]),[ox,oy]=q.calibrationOffsetPhysical||[0,0];

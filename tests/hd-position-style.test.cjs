@@ -61,3 +61,26 @@ test('uma bota agrupa frente, traseira e forro no mesmo pé e mantém o par e as
  assert.deepEqual(render(0).data(),expected.data());
  session.configure(A.empty(),true);assert.deepEqual(render(0).data(),before.data());
 });
+
+test('copiar para outra peça remapeia todas as fases, preserva a origem e rejeita cópia parcial',()=>{
+ const target=(item,part)=>({slot:'boots',item,part,body:'male',weapon:2,action:'walk',direction:'west',
+  receiver:'receiver-'+item,source:(item===8?'a':'b').repeat(64),limits:{0:[-4,4,-4,4],1:[-4,4,-4,4],2:[-4,4,-4,4]}});
+ const view=(item,phases)=>({targets:['*','foot:near','boot'+item+'-near-front'].map(part=>target(item,part)),
+  clock:phases.map(phase=>({phase})),fps:12,footFor:t=>t.part==='*'?null:'foot:near'});
+ const from=view(8,[0,1,1,2]),to=view(9,[2,0,0,1]);
+ const gear={weapon:2,boots:8},witness={role:'brawler',gear:{weapon:2,boots:9},look:{gender:'masculino'},hide:false};
+ let m=A.withPosition(A.empty(),from.targets[0],'direction',[3,-2]);
+ const {limits,...id}=from.targets[2];m.records.push({...id,cycle:[1,0],phases:{0:[1,2],1:[-2,0],2:[3,1]},
+  style:{cycle:{flip:true,layer:'body',size:115},phases:{0:{angle:18},1:{size:90},2:{angle:-7}}}});
+ const unchanged=structuredClone(m),copy=A.validate(A.copyItemDirection(m,from,to,'boots',8,9,gear,witness));
+ assert.deepEqual(m,unchanged);
+ assert.deepEqual(A.positionFor(to.targets[0],copy.records,witness.gear).cycle,[3,-2]);
+ const panel=A.localRecord(to.targets[2],copy.records);assert.equal(panel.source,'b'.repeat(64));
+ assert.deepEqual(panel.phases,{0:[-2,0],1:[3,1],2:[1,2]});
+ assert.deepEqual(panel.style,{cycle:{flip:true,layer:'body',size:115},phases:{0:{size:90},1:{angle:-7},2:{angle:18}}});
+ for(const v of [{...to,clock:from.clock.slice(0,1)},{...to,clock:[0,1,2,2].map(phase=>({phase}))},{...to,targets:to.targets.slice(0,2)}]){
+  assert.throws(()=>A.copyItemDirection(m,from,v,'boots',8,9,gear,witness));assert.deepEqual(m,unchanged);
+ }
+ const third={...m.records[1],part:'unavailable',receiver:'elsewhere'};
+ assert.throws(()=>A.copyItemDirection({...m,records:[...m.records,third]},from,to,'boots',8,9,gear,witness),/outra montagem/);
+});
