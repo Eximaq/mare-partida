@@ -26,7 +26,7 @@ const observeLobbyDraw=lobby96.draw;lobby96.draw=function(c,p,o){const result=ob
   const initial=await page.evaluate(()=>JSON.stringify(__lobby96QA.game)),saved=await page.evaluate(()=>localStorage.getItem('mare-partida-save-v1'));
   // The editor is a draft; only explicit confirmation can replace saved appearance.
   await page.evaluate(()=>__lobby96QA.panel());
-  await page.locator('#profile-gender').selectOption('feminino');await page.locator('#profile-skinColor').selectOption('ebony');
+  assert(await page.locator('#profile-gender option[value=feminino]').isDisabled());await page.locator('#profile-skinColor').selectOption('ebony');
   assert.equal(await page.evaluate(()=>JSON.stringify(__lobby96QA.game)),initial);
   assert.equal(await page.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),saved);
   await page.locator('[data-appearance-cancel]').click();assert.equal(await page.locator('#profile-gender').inputValue(),'masculino');

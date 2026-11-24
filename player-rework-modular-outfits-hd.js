@@ -38,7 +38,7 @@ function createOwnLayerIndex(records=[]){
 // The caller supplies only this slot's local target attachment for the
 // current phase. For a missing west source, turn the layer around its own
 // attachment: the actor, its siblings and their draw order are untouched.
-function drawOwnLayerAt(ctx,selection,image,{sourceAnchor,targetAttachment,scale=1}={}){
+function drawOwnLayerAt(ctx,selection,image,{sourceAnchor,targetAttachment,scale=1,paint=null}={}){
  if(selection?.state!=='available'||!image||!sourceAnchor||!targetAttachment||
     ![sourceAnchor.x,sourceAnchor.y,targetAttachment.x,targetAttachment.y,scale].every(Number.isFinite)||
     scale<=0||!ctx?.save||!ctx.restore||!ctx.translate||!ctx.scale||!ctx.drawImage)return false;
@@ -47,7 +47,7 @@ function drawOwnLayerAt(ctx,selection,image,{sourceAnchor,targetAttachment,scale
   ctx.imageSmoothingEnabled=false;
   ctx.translate(targetAttachment.x,targetAttachment.y);
   ctx.scale(selection.mirrorX?-scale:scale,scale);
-  ctx.drawImage(image,-sourceAnchor.x,-sourceAnchor.y);
+  if(paint)paint(ctx,image,[-sourceAnchor.x,-sourceAnchor.y]);else ctx.drawImage(image,-sourceAnchor.x,-sourceAnchor.y);
   return true;
  }finally{ctx.restore();}
 }
@@ -490,10 +490,6 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
     if(!image||!palette&&expression?.source!==source)continue;
     const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d');
     tc.drawImage(image,0,0);
-    if(expression?.source===source){
-     eyes.reshape(tc,appearance.face,expression.direction,expression.boxes);
-     eyes.recolorIris(tc,expression,appearance.eyeColor);
-    }
     if(palette){
      const data=tc.getImageData(0,0,tile.width,tile.height);
      const mask=kind==='hair'?appearanceAPI.materialMask(data.data,'hair'):skinMaterials.mask(data.data,tile.width,kind);
@@ -501,6 +497,10 @@ function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-mo
      const signedHair=kind==='hair'&&r.body==='male'&&r.action==='attack-unarmed'&&['east','west'].includes(r.direction)&&r.baseRecord==='v7-punch-'+r.direction+'-drawn8-'+r.direction?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;
      data.data.set(signedHair||appearanceAPI.recolor(data.data,mask,palette.ramp));
      tc.putImageData(data,0,0);
+    }
+    if(expression?.source===source){
+     eyes.recolorIris(tc,expression,appearance.eyeColor);
+     eyes.reshape(tc,appearance.face,expression.direction,expression.boxes);
     }
     map.set(source,tile);
    }

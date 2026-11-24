@@ -83,6 +83,7 @@ const femaleBoxes = {
 };
 function supports(style) { return Object.hasOwn(styles,style); }
 function maleSource(record) {
+ if(record.body==='female')return null;
  const layers = record.pack.directions[record.direction].layers.filter(layer => layer.slot === 'face');
  if (record.direction === 'north') return layers.length === 0 ? {north:true} : null;
  if (layers.length !== 1) return null;
@@ -117,15 +118,20 @@ function reshape(context, style, direction, boxes) {
  context.putImageData(result,0,0);
 }
 function recolorIris(context,expression,color){
- const ramp=root.MareCharacterAppearance?.eyes[color]?.ramp,api=root.MareAppearance96;
- if(!ramp||!api||!expression?.boxes)return;
- const {width,height}=context.canvas;
- const data=context.getImageData(0,0,width,height),mask=api.materialMask(data.data,'iris');
- for(let i=0;i<mask.length;i++)if(mask[i]){
-  const x=i%width,y=Math.floor(i/width);
-  if(!expression.boxes.some(([l,t,r,b])=>x>=l&&x<=r&&y>=t&&y<=b))mask[i]=0;
+ const ramp=root.MareCharacterAppearance?.eyes[color]?.ramp,art=root.MareReworkModularOutfitsHD;
+ if(!ramp||!expression?.source)return;
+ const south=expression.direction==='south';
+ const points=south?art.southIrisSamples():art.sideIrisSamples(expression.direction);
+ const {width,height}=context.canvas,inset=(width-(south?640:512))/2;
+ if(!points||width!==height||![512,640].includes(width))throw Error('Fonte de íris masculina incompatível.');
+ const data=context.getImageData(0,0,width,height),tones=ramp.map(hex=>parseInt(hex.slice(1),16));
+ // These coordinates and shade ranks belong to the signed, unwarped face.
+ // Skin may already be tinted. Only the iris RGB changes and alpha stays native.
+ for(const [x,y,,,,alpha,rank] of points){
+  const i=((y+inset)*width+x+inset)*4,tone=tones[rank-1];
+  if(data.data[i+3]!==alpha)throw Error('Alfa incompatível na íris masculina.');
+  data.data[i]=tone>>>16;data.data[i+1]=(tone>>>8)&255;data.data[i+2]=tone&255;
  }
- data.data.set(api.recolor(data.data,mask,ramp));
  context.putImageData(data,0,0);
 }
 const api = {supports,maleSource,reshape,recolorIris,femaleBoxes};

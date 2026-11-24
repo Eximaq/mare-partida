@@ -1,3 +1,5 @@
+**Bancada de encaixe HD** · [Acesso, edição e publicação dos ajustes de equipamentos](docs/BANCADA-HD.md).
+
 **Contratos, combate e recompensas:** [metas medidas, tabelas e evidências de validação](docs/REBALANCEAMENTO-CONTRATOS-RECOMPENSAS.md).
 
 **Mercado dos Mares:** [comércio entre jogadores, Correio e loja do mercador](docs/MERCADO-DOS-MARES.md).

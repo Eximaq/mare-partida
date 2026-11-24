@@ -1,0 +1,387 @@
+'use strict';
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=require('node:path');
+const url=process.env.MARE_TEST_URL,dir=process.env.MARE_EVIDENCE_DIR;
+if(!url||!dir)throw Error('Set MARE_TEST_URL and MARE_EVIDENCE_DIR');
+(async()=>{
+ await fs.mkdir(dir,{recursive:true});
+ const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true});
+ try{
+  const context=await browser.newContext({viewport:{width:1280,height:780},acceptDownloads:true});
+  // Editing regressions start with a fresh document, regardless of the current release.
+  const emptyPosition=route=>route.fulfill({json:require('../hd-position.js').empty()});
+  await context.route('**/hd-position-approved.json',emptyPosition);
+  await context.addInitScript(()=>{
+   const paint=CanvasRenderingContext2D.prototype.drawImage;
+   CanvasRenderingContext2D.prototype.drawImage=function(image,...args){
+    if(this.canvas.id==='figure'&&image.getContext)window.__benchImage=image;
+    return paint.call(this,image,...args);
+   };
+   window.__fingerprint=async c=>{
+    if(!c?.width||!c?.height)return null;
+    const {data}=c.getContext('2d').getImageData(0,0,c.width,c.height);
+    const hash=await crypto.subtle.digest('SHA-256',data);return [...new Uint8Array(hash)].join(',');
+   };
+  });
+  const p=await context.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
+  await p.goto(new URL('bancada-hd.html',url).href);await p.waitForFunction(()=>window.__benchImage&&document.querySelector('#part').value==='*');
+  assert.equal(await p.locator('#catalog button').count(),92);
+  const pixels=()=>p.evaluate(()=>__fingerprint(window.__benchImage));
+  const waitPixels=async(expected,equal=true)=>{
+   const until=Date.now()+60000;
+   while(Date.now()<until){
+    const hash=await pixels();if(hash&&(hash===expected)===equal)return hash;
+    await new Promise(resolve=>setTimeout(resolve,60));
+   }
+   throw Error('A prévia não atingiu os pixels esperados. '+await p.locator('#status').innerText());
+  };
+  if(process.argv.includes('--copy-origins')){
+   const el=id=>p.locator('#'+id),wear=id=>p.locator('[data-id="'+id+'"]').click();
+   const ready=()=>p.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('attack-unarmed · south ·')&&document.querySelector('#part').value==='*',null,{timeout:90000});
+   const rows=()=>p.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).records);
+   const change=async(id,v)=>{await el(id).fill(String(v));await el(id).press('Tab');};
+   const copy=async(success=true)=>{
+    await el('copy-item').click();
+    await p.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('Movimento copiado')||document.querySelector('#status').dataset.error==='true',null,{timeout:90000});
+    assert.equal(await el('status').getAttribute('data-error'),String(!success),await el('status').innerText());
+   };
+   await el('slot').selectOption('coat');await el('remove').click();
+   await wear(117);await wear(25);await wear(8);await el('pin-slot').check();
+   await el('action').selectOption('attack-unarmed');await ready();
+   assert.equal(await el('tick').getAttribute('max'),'7');
+   await change('x',2);await el('scope').selectOption('phase');await el('tick').fill('7');await change('y',-2);await change('angle',4);
+   const original=await rows();await wear(3);await ready();assert.equal(await el('tick').getAttribute('max'),'11');
+   await el('tick').fill('11');const untouched=await pixels();
+   await el('copy-item').locator('..').locator('summary').click();await el('copy-weapon').selectOption('117');await el('copy-source').selectOption('8');
+   await copy(false);assert.match(await el('status').innerText(),/Adaptar fases/);assert.deepEqual(await rows(),original);
+   await el('copy-adapt').check();await copy();
+   assert.equal(await el('y').inputValue(),'-2');assert.equal(await el('angle').inputValue(),'4');
+   await waitPixels(untouched,false);assert.deepEqual((await rows()).filter(r=>r.weapon===117),original);
+   // Edit the male arm's registered metal without moving the hand under it.
+   await el('slot').selectOption('weapon');await wear(117);await ready();await el('tick').fill('7');
+   await el('before').check();const armOriginal=await pixels();await el('before').uncheck();await waitPixels(armOriginal);
+   await change('y',-2);await waitPixels(armOriginal,false);await el('undo').click();await waitPixels(armOriginal);await el('redo').click();
+   await wear(3);await ready();await el('copy-weapon').selectOption('117');await el('copy-source').selectOption('117');await copy();
+   await el('tick').fill('11');assert.equal(await el('y').inputValue(),'-2');await el('slot').selectOption('boots');
+   const male=await rows();
+   await el('look-gender').selectOption('feminino');await ready();await el('tick').fill('7');
+   const femaleOriginal=await pixels();await el('copy-body').selectOption('male');await el('copy-weapon').selectOption('3');
+   await el('copy-source').selectOption('8');await copy();assert.equal(await el('y').inputValue(),'-2');assert.equal(await el('angle').inputValue(),'4');
+   await waitPixels(femaleOriginal,false);assert.deepEqual((await rows()).filter(r=>r.body==='male'),male);
+   await el('undo').click();assert.deepEqual(await rows(),male);await el('redo').click();
+   // The same controls copy the weapon itself to the other class.
+   await el('slot').selectOption('weapon');await wear(117);await ready();
+   await el('scope').selectOption('cycle');await change('y',1);await el('scope').selectOption('phase');
+   await el('tick').fill('7');await change('angle',7);await wear(3);await ready();
+   await el('copy-body').selectOption('current');await el('copy-weapon').selectOption('117');await el('copy-source').selectOption('117');await copy();
+   await el('tick').fill('7');assert.equal(await el('angle').inputValue(),'7');await el('scope').selectOption('cycle');assert.equal(await el('y').inputValue(),'1');
+   const saved=await rows(),download=p.waitForEvent('download');await el('export').click();const file=await (await download).path();
+   assert.deepEqual(JSON.parse(await fs.readFile(file,'utf8')).records,saved);
+   await el('reset').click();await el('file').setInputFiles(file);await p.waitForFunction(n=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).records.length===n||document.querySelector('#status').dataset.error==='true',saved.length,{timeout:120000});
+   assert.equal(await el('status').getAttribute('data-error'),'false',await el('status').innerText());assert.deepEqual(await rows(),saved);
+   if(process.env.HD_MAP_CYCLES){
+    const cycles=[];
+    for(const [body,weapon] of [['masculino',117],['masculino',3],['feminino',3]]){
+     await el('look-gender').selectOption(body);await wear(weapon);await ready();
+     const hashes=await p.evaluate(async()=>{
+      const t=document.querySelector('#tick'),result=[];
+      for(let i=0;i<=+t.max;i++){t.value=i;t.dispatchEvent(new Event('input'));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));result.push(await __fingerprint(__benchImage));}return result;
+     });
+     assert.equal(hashes.length,body==='masculino'&&weapon===3?12:8);
+     cycles.push({body,role:await el('role').inputValue(),action:'attack-unarmed',direction:'south',weapon,boots:8,gear:{weapon,boots:8,gloves:25},hashes});
+    }
+    await compareInHunt(await p.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1'))),cycles,null);
+   }
+   assert.deepEqual(errors,[]);console.log('Ataque sul com Braço de Ferro e Luvas de Marfim: bota 8 entre classes (8 → 12 fases), masculino → feminino (12 → 8), arma → arma, pixels, histórico e JSON.');return;
+  }
+  if(process.argv.includes('--copy')){
+   const el=id=>p.locator('#'+id),wear=id=>p.locator('[data-id="'+id+'"]').click();
+   const ready=d=>p.waitForFunction(d=>document.querySelector('#status').textContent.startsWith('walk · '+d+' ·')&&document.querySelector('#part').value==='*',d);
+   const change=async(id,value)=>{await el(id).fill(String(value));await el(id).press('Tab');};
+   const input=async(id,value)=>assert.equal(await el(id).inputValue(),String(value),id);
+   await wear(2);await wear(8);await el('action').selectOption('walk');await el('direction').selectOption('west');await ready('west');
+   await el('pin-slot').check();await change('x',5);await change('size',105);
+   await el('scope').selectOption('phase');await el('tick').fill('3');await change('y',4);await change('angle',8);
+   await el('part').selectOption('foot:near');await change('x',2);
+   await el('part').selectOption('*');await el('scope').selectOption('cycle');
+   await el('direction').selectOption('east');await ready('east');await change('x',-3);
+   await wear(0);await ready('east');await input('x',-3);
+   await el('direction').selectOption('west');await ready('west');await input('x',5);await input('size',105);
+   await el('scope').selectOption('phase');await el('tick').fill('3');await input('y',4);await input('angle',8);
+   const storage=()=>p.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')));
+   const sourceRows=(await storage()).records;await wear(9);await ready('west');
+   const untouched=await pixels();await el('copy-item').locator('..').locator('summary').click();
+   await el('copy-source').selectOption('8');await el('copy-item').click();
+   await p.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('Movimento copiado')||document.querySelector('#status').dataset.error==='true',null,{timeout:120000});
+   assert.equal(await el('status').getAttribute('data-error'),'false',await el('status').innerText());
+   await el('tick').fill('3');await input('y',4);await input('angle',8);const moved=await waitPixels(untouched,false);
+   assert.deepEqual((await storage()).records.filter(r=>r.item===8),sourceRows);
+   await el('undo').click();assert.deepEqual((await storage()).records,sourceRows);await waitPixels(untouched);
+   await el('redo').click();await waitPixels(moved);await el('part').selectOption('foot:near');await input('x',2);
+   await el('part').selectOption('*');await el('scope').selectOption('cycle');await input('size',105);await input('x',5);
+   await el('direction').selectOption('east');await ready('east');await input('x',-3);
+   const download=p.waitForEvent('download');await el('export').click();const file=await (await download).path();
+   const saved=await storage();assert.deepEqual(JSON.parse(await fs.readFile(file,'utf8')),saved);
+   await el('reset').click();await el('file').setInputFiles(file);
+   await p.waitForFunction(rev=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).revision===rev||document.querySelector('#status').dataset.error==='true',saved.revision,{timeout:150000});
+   assert.equal(await el('status').getAttribute('data-error'),'false',await el('status').innerText());assert.deepEqual(await storage(),saved);
+   assert.deepEqual(errors,[]);console.log('Bota 8 com Punhos de Bronze → espada 0 → cópia para a bota 9. Dois lados, par, pé, fases, escala, rotação, pixels, histórico e arquivo conferidos.');return;
+  }
+  if(process.argv.includes('--positions')){
+   const sel=id=>p.locator('#'+id);
+   const ready=dir=>p.waitForFunction(d=>document.querySelector('#status').textContent.startsWith('walk · '+d+' ·')&&document.querySelector('#clock').textContent.includes(' / '),dir);
+   const wear=async(id,dir)=>{await p.locator('[data-id="'+id+'"]').click();await ready(dir);};
+   const focus=async(slot)=>{await sel('slot').selectOption(slot);await sel('part').selectOption('*');};
+   const xy=async()=>[Number(await sel('x').inputValue()),Number(await sel('y').inputValue())];
+   const move=async(x,y)=>{for(const [id,value] of [['x',x],['y',y]]){await sel(id).fill(String(value));await sel(id).press('Tab');}};
+   const frame=async()=>{await p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));return pixels();};
+   await sel('action').selectOption('walk');await sel('direction').selectOption('east');await ready('east');await focus('boots');
+   await sel('tick').fill('5');await move(5,-2);await sel('pin-slot').check();
+   for(const id of [151,7,151,0]){
+    await wear(id,'east');assert.equal(await sel('slot').inputValue(),'boots');assert.equal(await sel('tick').inputValue(),'5');
+    assert.deepEqual(await xy(),[5,-2]);const drawn=await frame();await sel('before').check();await waitPixels(drawn,false);await sel('before').uncheck();await waitPixels(drawn);
+   }
+   await wear(22,'east');
+   const positions={east:{coat:[6,2],legs:[-3,3],boots:[5,-2]},north:{coat:[-1,4],legs:[2,1],boots:[0,0]},west:{coat:[-4,2],legs:[3,-2],boots:[-5,1]},south:{coat:[4,-3],legs:[1,2],boots:[2,3]}};
+   for(const [direction,slots] of Object.entries(positions)){
+    await sel('direction').selectOption(direction);await ready(direction);
+    for(const [slot,expected] of Object.entries(slots)){await focus(slot);if(expected.some(Boolean))await move(...expected);}
+   }
+   for(const slot of ['boots','legs','coat']){
+    await focus(slot);await sel('apply-positions').click();
+    await p.waitForFunction(()=>document.querySelector('#status').textContent.includes('aplicad')||document.querySelector('#status').dataset.error==='true');
+    assert.equal(await sel('status').getAttribute('data-error'),'false',await sel('status').innerText());
+   }
+   await wear(4,'south');
+   for(const [direction,slots] of Object.entries(positions)){
+    await sel('direction').selectOption(direction);await ready(direction);
+    for(const [slot,expected] of Object.entries(slots)){
+     await focus(slot);assert.deepEqual(await xy(),expected,slot+'/'+direction);
+     if(!expected.some(Boolean))continue;
+     const moved=await frame();await sel('outfit-position').click();await move(0,0);await waitPixels(moved,false);
+     await sel('reset').click();await waitPixels(moved);assert.deepEqual(await xy(),expected);assert.equal(await sel('outfit-position').getAttribute('aria-pressed'),'false');
+    }
+   }
+   await focus('boots');await sel('outfit-position').click();await move(4,-1);
+   await sel('direction').selectOption('west');await ready('west');await sel('outfit-position').click();await move(-1,4);
+   await sel('direction').selectOption('east');await ready('east');await sel('apply-positions').click();
+   await p.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('Posições aplicadas'));
+   await wear(0,'east');
+   for(const [d,wanted] of Object.entries({south:[4,-1],west:[-1,4],east:[5,-2],north:[0,0]})){
+    await sel('direction').selectOption(d);await ready(d);assert.deepEqual(await xy(),wanted,'Promoção da bota em '+d);
+   }
+   await sel('direction').selectOption('south');await ready('south');await focus('coat');
+   await move(4,-3);await sel('outfit-position').click();await move(8,-1);
+   await wear(8,'south');assert.deepEqual(await xy(),[4,-3]);await wear(148,'south');assert.deepEqual(await xy(),[8,-1]);
+   await sel('outfit-position').click();assert.deepEqual(await xy(),[4,-3]);
+   await sel('action').selectOption('idle');await p.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('idle · south ·'));
+   assert.deepEqual(await xy(),[0,0]);await move(-2,2);await p.locator('[data-id="8"]').click();
+   await p.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('idle · south ·'));assert.deepEqual(await xy(),[-2,2]);
+   await sel('action').selectOption('walk');await ready('south');assert.deepEqual(await xy(),[4,-3]);await wear(148,'south');
+   await sel('direction').selectOption('east');await ready('east');
+   await focus('coat');await wear(7,'east');assert.deepEqual(await xy(),[0,0]);await wear(151,'east');assert.deepEqual(await xy(),[6,2]);
+   await focus('legs');await wear(21,'east');assert.deepEqual(await xy(),[0,0]);await wear(22,'east');assert.deepEqual(await xy(),[-3,3]);
+   await focus('boots');await wear(8,'east');assert.deepEqual(await xy(),[0,0]);await wear(148,'east');assert.deepEqual(await xy(),[5,-2]);
+   await sel('outfit-position').click();await move(9,-2);await focus('weapon');await sel('remove').click();await ready('east');
+   await focus('boots');assert.deepEqual(await xy(),[5,-2]);await wear(0,'east');assert.deepEqual(await xy(),[9,-2]);
+   const downloaded=p.waitForEvent('download');await sel('export').click();const file=await (await downloaded).path();
+   const manifest=JSON.parse(await fs.readFile(file,'utf8'));assert.equal(manifest.records.filter(r=>r.range==='motion').length,0);
+   const fresh=await browser.newPage();await fresh.route('**/hd-position-approved.json',emptyPosition);
+   try{
+    await fresh.goto(new URL('bancada-hd.html',url).href);await fresh.waitForFunction(()=>document.querySelector('#part').value==='*');
+    await fresh.locator('#file').setInputFiles(file);
+    await fresh.waitForFunction(()=>localStorage.getItem('kaizoku-hd-position-draft-v1')||document.querySelector('#status').dataset.error==='true',null,{timeout:150000});
+    assert.equal(await fresh.locator('#status').getAttribute('data-error'),'false',await fresh.locator('#status').innerText());
+    assert.deepEqual(await fresh.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1'))),manifest);
+    const signed=manifest.records.find(r=>r.item===148&&r.range==='outfit'&&r.direction==='east');
+    const blanket={...signed,range:'motion',cycle:[5,19]},west=manifest.records.find(r=>r.item===148&&r.range==='direction'&&r.direction==='west');
+    await fresh.locator('#file').setInputFiles({name:'rascunho-quatro-direcoes.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({...manifest,records:[blanket,west]}))});
+    await fresh.waitForFunction(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).records.length===2||document.querySelector('#status').dataset.error==='true',null,{timeout:90000});
+    const restored=await fresh.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).records);
+    assert.deepEqual(Object.fromEntries(restored.map(r=>[r.direction,r.cycle])),{east:[5,19],west:west.cycle});
+    assert(restored.every(r=>r.range==='direction'));
+    const {range,witness,...legacy}=signed;
+    const old={...manifest,schema:1,records:[{...legacy,cycle:[4,1]}]};
+    await fresh.locator('#file').setInputFiles({name:'rascunho-antigo.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(old))});
+    await fresh.waitForFunction(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')).records.some(r=>!r.range&&r.cycle[0]===4)||document.querySelector('#status').dataset.error==='true');
+    assert.equal(await fresh.locator('#status').getAttribute('data-error'),'false',await fresh.locator('#status').innerText());
+    await fresh.locator('#action').selectOption('walk');await fresh.locator('#direction').selectOption('east');
+    await fresh.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('walk · east ·')&&document.querySelector('#x').value==='4');
+    assert.equal(await fresh.locator('#y').inputValue(),'1');
+   }finally{await fresh.close();}
+   assert.deepEqual(errors,[]);console.log('Bota 148, peitoral 151 e calça 22 ajustados separadamente nas quatro direções. Trocas, fase mantida, exceção de arma, restauração e arquivo verificados.');return;
+  }
+  if(process.argv.includes('--boots')){
+   const ids=await p.locator('#catalog button').evaluateAll(bs=>bs.filter(b=>b.querySelector('small')?.textContent.startsWith('Botas ·')).map(b=>+b.dataset.id));
+   assert.equal(new Set(ids).size,10);let comparisons=0;
+   for(const body of ['masculino','feminino']){
+    await p.locator('#look-gender').selectOption(body);
+    for(const direction of ['south','east','north','west']){
+     await p.locator('#direction').selectOption(direction);
+     for(const id of ids){
+      await p.locator('[data-id="'+id+'"]').click();
+      await p.waitForFunction(d=>document.querySelector('#status').textContent.startsWith('idle · '+d+' ·')&&document.querySelector('#part option[value="*"]'),direction);
+      const feet=await p.locator('#part option').evaluateAll(os=>os.map(o=>o.value).filter(v=>v.startsWith('foot:')));
+      assert.equal(feet.length,2,[body,direction,id].join('/'));
+      await p.locator('#part').selectOption('*');
+      assert.ok((await p.locator('#details').innerText()).startsWith('#'+id+' ·'));
+      const original=await pixels();
+      for(const foot of feet){
+       await p.locator('#part').selectOption(foot);
+       await p.locator('[data-move="1,0"]').click();await waitPixels(original,false);
+       await p.locator('#reset').click();await waitPixels(original);comparisons++;
+      }
+     }
+    }
+   }
+   assert.equal(comparisons,160);assert.deepEqual(errors,[]);
+   console.log('160 edições e restaurações de pés em repouso, dez botas nos dois corpos e nas quatro direções.');return;
+  }
+  const initial=await waitPixels(null,false);
+  const moveFoot=async(part,x)=>{await p.locator('#part').selectOption(part);await p.locator('#x').fill(String(x));await p.locator('#x').press('Tab');};
+  const panelIds=await p.locator('#part option').evaluateAll(os=>os.map(o=>o.value));
+  for(const side of ['left','right']){
+   const group='foot:'+side,panels=panelIds.filter(id=>id.startsWith('boot148-'+side+'-'));assert(panels.length>=2);
+   await moveFoot(group,5);const grouped=await waitPixels(initial,false);
+   await p.locator('#reset').click();await waitPixels(initial);
+   for(const panel of panels)await moveFoot(panel,5);
+   // The independently moved front, rear and lining form exactly one boot.
+   await waitPixels(grouped);
+   for(const panel of panels){await p.locator('#part').selectOption(panel);await p.locator('#reset').click();}
+   await waitPixels(initial);
+  }
+  await p.locator('#part').selectOption('*');
+  await p.locator('[data-move="1,0"]').click();await waitPixels(initial,false);
+  let edited=await pixels();
+  await p.locator('#undo').click();await waitPixels(initial);
+  await p.locator('#redo').click();await waitPixels(edited);
+  await p.locator('#before').check();await waitPixels(initial);
+  await p.locator('#before').uncheck();
+  const number=async(id,value)=>{await p.locator('#'+id).fill(String(value));await p.locator('#'+id).press('Tab');};
+  await waitPixels(edited);
+  for(const [id,value] of [['angle',12],['size',125]]){
+   const last=await pixels();await number(id,value);await waitPixels(last,false);
+  }
+  let last=await pixels();await p.locator('#flip').check();await waitPixels(last,false);
+  last=await pixels();await p.locator('#layer').selectOption('body');await waitPixels(last,false);edited=await pixels();
+  await p.locator('#before').check();await waitPixels(initial);await p.locator('#before').uncheck();await waitPixels(edited);
+  await moveFoot('foot:left',6);await waitPixels(edited,false);edited=await pixels();
+  await p.locator('#part').selectOption('foot:right');assert.equal(await p.locator('#x').inputValue(),'0');
+  await p.locator('#part').selectOption('*');await p.locator('#slot').selectOption('coat');
+  await number('x',55);await number('y',35);await number('size',120);
+  await p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+  const inFrontOfHand=await pixels();await p.locator('#layer').selectOption('hand');
+  await waitPixels(inFrontOfHand,false);edited=await pixels();
+  await p.locator('#undo').click();await waitPixels(inFrontOfHand);await p.locator('#redo').click();await waitPixels(edited);
+  await p.locator('#direction').selectOption('east');
+  await p.waitForFunction(()=>document.querySelector('#status').textContent.includes('east')&&document.querySelector('#part').value==='*');
+  await p.locator('#scope').selectOption('phase');await p.locator('[data-move="0,-1"]').click();
+  await number('angle',8);await number('size',112);await p.locator('#flip').check();
+  await p.locator('#mirror-west').click();
+  await p.waitForFunction(()=>document.querySelector('#direction').value==='west'&&document.querySelector('#status').textContent.includes('west'));
+  assert.equal(await p.locator('#angle').inputValue(),'-8');assert.equal(await p.locator('#size').inputValue(),'112');assert(await p.locator('#flip').isChecked());
+  await p.locator('#mirror-east').click();
+  await p.waitForFunction(()=>document.querySelector('#direction').value==='east'&&document.querySelector('#status').textContent.includes('east'));
+  assert.equal(await p.locator('#angle').inputValue(),'8');
+  const download=p.waitForEvent('download');await p.locator('#export').click();
+  const file=await (await download).path(),manifest=JSON.parse(await fs.readFile(file,'utf8'));
+  assert.equal(manifest.schema,3);assert.equal(manifest.records.length,7);
+  assert.deepEqual(manifest.records.find(r=>r.part==='foot:left').cycle,[6,0]);
+  const boots=manifest.records.find(r=>r.item===148&&r.part==='*'&&r.style),coat=manifest.records.find(r=>r.item===6&&r.direction==='east'),west=manifest.records.find(r=>r.item===6&&r.direction==='west');
+  assert.deepEqual(boots.style.cycle,{angle:12,size:125,flip:true,layer:'body'});assert.equal(west.style.phases[0].angle,-8);assert.equal(coat.style.phases[0].angle,8);
+  assert.equal(manifest.records.find(r=>r.item===6&&r.direction==='south'&&r.style).style.cycle.layer,'hand');
+  assert.equal(boots.direction,'south');assert.deepEqual(manifest.records.find(r=>r.item===148&&r.part==='*'&&r.range==='direction').cycle,[1,0]);
+  assert.equal(coat.direction,'east');assert.deepEqual(coat.cycle,[0,0]);assert.deepEqual(coat.phases,{'0':[0,-1]});
+  await p.reload();await p.waitForFunction(()=>document.querySelector('#part').value==='*'&&document.querySelector('#x').value==='1');await waitPixels(edited);
+  assert.equal(await p.locator('#x').inputValue(),'1');
+  const persisted=await p.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1')));assert.deepEqual(persisted,manifest);
+  await p.locator('#reset').click();await p.locator('#file').setInputFiles(file);
+  await waitPixels(edited);
+  assert.deepEqual(await p.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1'))),manifest);
+  const altered=structuredClone(manifest);altered.records[0].source='0'.repeat(64);
+  await p.locator('#file').setInputFiles({name:'incompativel.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(altered))});
+  await p.waitForFunction(()=>document.querySelector('#status').dataset.error==='true');
+  assert.equal(await pixels(),edited);
+  await p.locator('#direction').selectOption('east');await p.locator('#direction').selectOption('west');
+  await p.locator('#direction').selectOption('south');await p.waitForFunction(()=>document.querySelector('#status').textContent.includes('south'));await waitPixels(edited);
+  await p.screenshot({path:path.join(dir,'bancada-desktop.png')});
+  await p.setViewportSize({width:390,height:844});await p.screenshot({path:path.join(dir,'bancada-celular.png')});
+  assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  const cycles=[],directions=['south','east','north','west'];
+  if(process.env.HD_MAP_CYCLES){
+   await p.setViewportSize({width:1280,height:780});
+   for(const item of [22,159,18])await p.locator('[data-id="'+item+'"]').click();
+   const full=process.env.HD_MAP_CYCLES==='all',ids=full?[0,2,4,73,15,16,17]:[0,73,68];
+   for(const [i,weapon] of ids.entries())for(const body of full?['masculino','feminino']:[i?'feminino':'masculino']){
+    const named=!full&&weapon===68,head=named?136:body==='masculino'?129:18,hairStyle=named?'hair-bob':'original',boots=!full&&weapon===0?8:148;
+    await p.locator('[data-id="'+boots+'"]').click();
+    await p.locator('#look-gender').selectOption(body);await p.locator('#look-hairStyle').selectOption(hairStyle);
+    await p.locator('[data-id="'+head+'"]').click();await p.locator('[data-id="'+weapon+'"]').click();
+    const role=await p.locator('#role').inputValue(),attack=await p.locator('#action option').evaluateAll(os=>os.find(o=>o.value.startsWith('attack-')).value);
+    const poses=full?directions.flatMap(direction=>['idle','walk',attack].map(action=>[direction,action])):weapon===0?[['west','walk'],['west',attack],['south','idle']]:[i===1?['east',attack]:['west','walk']];
+    for(const [direction,action] of poses){
+     await p.locator('#direction').selectOption(direction);await p.locator('#action').selectOption(action);await p.locator('#slot').selectOption('boots');
+     await p.waitForFunction(([a,d])=>document.querySelector('#status').textContent.startsWith(a+' · '+d+' ·')&&document.querySelector('#part').value==='*',[action,direction]);
+     await p.locator('[data-move="0,1"]').click();
+     assert.equal(await p.locator('#y').inputValue(),'1',role+'/'+body+'/'+action+'/'+direction);
+     if(!full){
+      await p.locator('#x').fill('5');await p.locator('#x').press('Tab');
+      await p.locator('#slot').selectOption('head');await p.locator('#part').selectOption('*');
+      const before=await pixels();
+      for(const [field,value] of [['x','5'],['y','19']]){
+       const input=p.locator('#'+field);await input.fill(value);await input.press('Tab');
+      }
+      assert.equal(await p.locator('#status').getAttribute('data-error'),'false',await p.locator('#status').innerText());
+      await waitPixels(before,false);
+     }
+     const hashes=await p.evaluate(async()=>{
+      const timeline=document.querySelector('#tick'),result=[];
+      for(let i=0;i<=+timeline.max;i++){timeline.value=i;timeline.dispatchEvent(new Event('input'));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));result.push(await __fingerprint(__benchImage));}return result;
+     });
+     assert(hashes.length&&hashes.every(Boolean));
+     cycles.push({body,weapon,role,head,boots,hairStyle,action,direction,hashes});
+    }
+   }
+  }
+  const approvals=cycles.length?await p.evaluate(()=>JSON.parse(localStorage.getItem('kaizoku-hd-position-draft-v1'))):manifest;
+  await compareInHunt(approvals,cycles,edited);
+  assert.deepEqual(errors,[]);
+  console.log('92 itens no catálogo; edição, comparação, arquivo, histórico, rascunho, troca de direção, celular e igualdade RGBA na caçada.');
+  async function compareInHunt(approvals,cycles,initial){
+  const map=await context.newPage();map.on('pageerror',e=>errors.push(e.message));
+  await map.route('**/hd-position-approved.json',r=>r.fulfill({json:approvals}));
+  await map.route('**/game.js*',async route=>{
+   const response=await route.fetch(),s=await response.text(),marker='  window.__mareDiagnostics=';
+   assert(s.includes(marker));
+   const hook=`window.__testPositionHunt=()=>{game.classId='sword';game.appearance96=MareCharacterAppearance.normalize({});game.equipment={coat:newItem(itemDefs[6],1,false),boots:newItem(itemDefs[148],1,false)};game.preferences={...game.preferences,hideHeadgear:false};enterHunt();autoPlay=false;autoSkills=false;world.hero.direction='south';};
+    let probe=null;
+    window.__positionPose=q=>{probe=q;window.__mapImage=null;game.classId=q.role;game.appearance96=MareCharacterAppearance.normalize({gender:q.body,hairStyle:q.hairStyle});
+     game.equipment=Object.fromEntries(Object.entries(q.gear||{weapon:q.weapon,coat:6,legs:22,boots:q.boots,gloves:159,head:q.head}).map(([s,id])=>[s,newItem(itemDefs[id],1,false)]));};
+    window.__positionTick=t=>{probe.tick=t;window.__mapImage=null;};
+    const draw=lobby96.draw.bind(lobby96);
+    lobby96.draw=(ctx,p,o)=>{if(o.scene!=='hunt'||ctx.canvas.id!=='worldCanvas'||(!probe&&(o.action!=='idle'||o.direction!=='south')))return draw(ctx,p,o);
+     if(probe)o={...o,action:probe.action,direction:probe.direction,progress:(probe.tick+.25)/probe.count,timing:null,weaponless:false};
+     const before=ctx.drawImage;let image;ctx.drawImage=function(im,...args){image=im;return before.call(ctx,im,...args);};
+     try{const ok=draw(ctx,p,o);if(ok&&image&&lobby96.worldVisual()?.coverage?.[0]?.slotRoutes?.boots?.item===(probe?.boots??148))window.__mapImage=image;return ok;}finally{ctx.drawImage=before;}
+    };\n`;
+   await route.fulfill({response,body:s.replace(marker,()=>hook+marker)});
+  });
+  await map.goto(url);await map.locator('#characterName').waitFor({state:'visible',timeout:180000});
+  await map.locator('#characterName').fill('Bancada QA');await map.locator('#characterName').press('Tab');await map.locator('#nextToClass').click();
+  if(!await map.locator('#nextToAppearance').isVisible())await map.locator('#nextToClass').click();
+  await map.locator('#nextToAppearance').click();await map.locator('#createCharacter').click();await map.locator('[data-confirm-accept]').click();
+  await map.evaluate(()=>__testPositionHunt());await map.waitForFunction(()=>window.__mapImage,null,{timeout:90000});
+  if(initial)assert.equal(await map.evaluate(()=>__fingerprint(__mapImage)),initial);
+  await map.screenshot({path:path.join(dir,'mapa-ajustado.png')});
+  for(const {hashes,...pose} of cycles){
+   await map.evaluate(q=>__positionPose(q),{...pose,tick:0,count:hashes.length});
+   for(let tick=0;tick<hashes.length;tick++){
+    await map.evaluate(t=>__positionTick(t),tick);
+    await map.waitForFunction(()=>window.__mapImage?.width>0,null,{timeout:90000});
+    assert.equal(await map.evaluate(()=>__fingerprint(__mapImage)),hashes[tick],JSON.stringify({...pose,tick}));
+   }
+  }
+  if(cycles.length)console.log(cycles.length+' ciclos comparados na cena da caçada, '+cycles.reduce((n,c)=>n+c.hashes.length,0)+' posições do relógio.');
+  await map.close();
+  }
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});

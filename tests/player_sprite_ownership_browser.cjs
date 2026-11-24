@@ -11,7 +11,7 @@ async function pageFor(browser,fixture=null,query=''){
  return {c,p,obsolete,errors,query};
 }
 async function open(q){await q.p.goto(new URL(q.query,base).href,{waitUntil:'domcontentloaded'});await q.p.waitForFunction(()=>window.__ownershipQA);}
-async function create(q,gender='feminino'){const p=q.p;await p.locator('#characterName').fill('Visual Atual');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#creation-gender').selectOption(gender);await p.locator('#creation-hairStyle').selectOption('hair-topknot');await p.locator('#creation-hairColor').selectOption('violet');await p.locator('#creation-skinColor').selectOption('ebony');await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__ownershipQA.game);}
+async function create(q,gender='masculino'){const p=q.p;await p.locator('#characterName').fill('Visual Atual');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#creation-gender').selectOption(gender);await p.locator('#creation-hairStyle').selectOption('hair-topknot');await p.locator('#creation-hairColor').selectOption('violet');await p.locator('#creation-skinColor').selectOption('ebony');await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__ownershipQA.game);}
 async function prepared(q){
  const before=await q.p.evaluate(()=>JSON.stringify([__ownershipQA.game.appearance96,__ownershipQA.game.equipment]));
  await q.p.waitForFunction(()=>{const pixels=__ownershipQA.probe(),s=__ownershipQA.runtime.snapshot(),a=s.renderer==='native96'?s.lastPose:s.renderer==='rework-default-hd'?s.defaultHD?.last:s.nativeHD?.last;return pixels>0&&s.worldVisual?.state==='ready'&&a?.state==='rendered'&&a.consumer==='world';},null,{timeout:120000});
@@ -25,7 +25,9 @@ const nativeIndex=/\/tools\/rework-base-hd\/index\.json(?:\?|$)/;
 (async()=>{const b=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});let unblock;try{
  if(out)await fs.mkdir(out,{recursive:true});
  // Delay the current native source, not the superseded native96 manifest.
- const delayed=await pageFor(b);const gate=new Promise(r=>unblock=r);await delayed.p.route(nativeIndex,async r=>{await gate;await r.continue();});await open(delayed);await create(delayed);
+ const seed=await pageFor(b);await open(seed);await create(seed);
+ const existing=await seed.p.evaluate(()=>MareCharacterAppearance.apply(__ownershipQA.game,{...__ownershipQA.game.appearance96,gender:'feminino'}));await seed.c.close();
+ const delayed=await pageFor(b,existing);const gate=new Promise(r=>unblock=r);await delayed.p.route(nativeIndex,async r=>{await gate;await r.continue();});await open(delayed);await delayed.p.waitForFunction(()=>__ownershipQA.game);
  assert.equal(await delayed.p.evaluate(()=>__oldPlayerEngines),0);assert.equal(await delayed.p.evaluate(()=>__ownershipQA.probe()),0,'native source loading stays transparent instead of exposing legacy');
  assert(await delayed.p.locator('#gameLoading').isVisible(),'entry waits for the delayed native character');
  assert(await delayed.p.locator('#app').evaluate(app=>app.inert),'game controls wait for the playable scene');
@@ -39,7 +41,7 @@ const nativeIndex=/\/tools\/rework-base-hd\/index\.json(?:\?|$)/;
  const world=await q.p.evaluate(()=>__ownershipQA.runtime.snapshot().worldVisual);
  assert(world.error,'map request reports its own failure');assert.equal(world.publishedKey,undefined);await q.p.waitForTimeout(250);assert.equal(requests,1,'no load loop for a broken native index');assert.deepEqual(q.obsolete,[]);assert.deepEqual(q.errors,[]);
  if(out)await q.p.screenshot({path:path.join(out,corrupt?'invalid-native-index.png':'missing-native-index.png')});await q.p.unroute(nativeIndex);await q.p.reload({waitUntil:'domcontentloaded'});await q.p.waitForFunction(()=>window.__ownershipQA);await prepared(q);assert.equal(await q.p.evaluate(()=>__ownershipQA.game.appearance96.gender),'masculino');await q.c.close();}
- const race=await pageFor(b);let seen;const requested=new Promise(r=>seen=r),late=new Promise(r=>unblock=r);await race.p.route(nativeIndex,async r=>{seen();await late;await r.continue();});await open(race);await create(race);await Promise.race([requested,new Promise((_,reject)=>setTimeout(()=>reject(Error('No delayed native request')),5000))]);
+ const race=await pageFor(b,existing);let seen;const requested=new Promise(r=>seen=r),late=new Promise(r=>unblock=r);await race.p.route(nativeIndex,async r=>{seen();await late;await r.continue();});await open(race);await race.p.waitForFunction(()=>__ownershipQA.game);await Promise.race([requested,new Promise((_,reject)=>setTimeout(()=>reject(Error('No delayed native request')),5000))]);
  await race.p.evaluate(()=>__ownershipQA.setAppearance({...__ownershipQA.game.appearance96,gender:'masculino',hairStyle:'hair-afro',hairColor:'silver'}));unblock();await prepared(race);assert.equal(await race.p.evaluate(()=>__ownershipQA.game.appearance96.gender),'masculino');assert.equal(await race.p.evaluate(()=>__ownershipQA.game.appearance96.hairColor),'silver');await race.c.close();
  console.log(JSON.stringify({delayedNativeLoad:true,oldFlags:4,missingAndCorruptNative:true,boundedFailure:true,lateIdentity:true,oldPlayerRequests:0,errors:[]}));
 }finally{unblock?.();await b.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

@@ -8,7 +8,8 @@ Base: 4ea153f, Sprint 2/PR155. Branch: feature/character-appearance-step3. A rev
 
 Facção/nome → Sua Classe → Sua Aparência → confirmação → aventura. Voltar preserva o rascunho; somente a confirmação grava. O editor em Personagem → Aparência reutiliza as mesmas escolhas e composição. Não há seleção nova de raça, voz, roupas, cicatrizes ou acessórios.
 
-- Dois modelos: masculino e feminino; gênero não altera atributos ou classe.
+- O jogo mantém os dois modelos. A criação feminina e a edição da aparência de personagens femininos estão temporariamente indisponíveis. Um personagem feminino existente pode entrar e jogar com seu visual salvo. A regra de seleção está em `character-appearance.js` e é compartilhada pelo cliente e pelo servidor.
+- No masculino, os capacetes 18 e 19 ficam ocultos em todas as poses. Continuam equipados e a preferência manual volta a valer ao trocar de item.
 - 12 penteados de catálogo, além do original e sem cabelo. Dez cores com cinco tons por material.
 - Cinco modelos de olhos: Original, Sereno, Determinado, Amendoado e Atento; seis cores independentes.
 - Pele Natural, a única variante anatômica suportada. Oito tonalidades. As setas de variante única ficam desabilitadas; não se anunciam variantes inexistentes.

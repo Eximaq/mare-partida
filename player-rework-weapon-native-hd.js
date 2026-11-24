@@ -205,6 +205,10 @@ const focusSouthSources={
  }
 };
 
+function ownedImage(ctx,slot,part,source,image,args,sign=1){
+ if(root.MareHDPosition?.active)return root.MareHDPosition.blit(ctx,slot,part,source,image,args,sign);
+ ctx.drawImage(image,...args);
+}
 function create(index,{vendor=root.ReworkAccessoryVendor,prefix='tools/rework-weapon-layers-hd/',makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
  if(index?.schema!=='native-hd-weapon-layers-v1'||!vendor?.compositor)throw Error('Missing native weapon dependencies');
  const w5SouthIndependent={"id":"mosquete5-south-initial-v2","sourceArchive":"d0bdab20685518b5f81e2b8640845f06f672a1d01c1adcc676202b1c740fa212","clock":["0","0","1","1","2","2","3","3","4","4","5","5","6","6","7","7","8","8","9","9","9","9","9","9","9","9","9","9","9","9","9","9"],"headSupport":8440,"rows":[{"phase":0,"archiveBodySHA":"ba8f759c8b24c0f6d07fa1a2b1816cf81c17e45ac08ddf47b2a1a0a45be8135d","stockRef":"42b27dc8f86d1f80c344692c87936a56c509ee61057f3d419233ef4abb33341f","body":"f83ea0d75bd59e7c8e10e170d882e767f85c885fad581db6781ec5476d38525b","mask":"19d75c6e76fb5890998b6f4b2b0cf5eb52ce4a20d956d9e2996749175d623fe4","gear":[{"sha":"7393a49166285852eb8c38e053d0b1c80070769a6f4b4eda233878b4e02f1a3a","id":"mechanism","depth":4}]},{"phase":1,"archiveBodySHA":"c9169a5e179731aae4be0e8d4c1fbaa452cbbe2c29d0aa8a4293c6ca834bcb58","stockRef":"4a24ef0e0be7a4bb7033e7335112fb5dd63c19cab662fdcafbe62f7ad68a993a","body":"ae86e55f1b03a19aaeb72c510a46b442bde3540cb898ddc044c73995c3eff141","mask":"6ad19c90f302c3621592194932d0322f81ed3cac0ae93e1271eaf6a5cd51dc2d","gear":[{"sha":"68dbcf10a6ac39fead17f7527785e834eeae71fcff0b65f2f0ba5be6f24070c5","id":"mechanism","depth":4}]},{"phase":2,"archiveBodySHA":"5fe088198c4b0ee5f22fc68905b5c43a70999d69bf939de0367848addb7b51d7","stockRef":"6da5df034832b9e94a353a899d46818bef7c053471a838eb2181b9b3f52b870e","body":"8cf685c0c4babb670b29d0c5603c3ee5a8032422292e1f57656a1e08037d8227","mask":"4130068287391bfa05680192af510e4d4b8d9aefdad593f41c70f8316dedb7d9","gear":[{"sha":"83b6c33d0d38feace851203510a0fa776045a6e0baba7362bdb891539dd3f88b","id":"mechanism","depth":4},{"sha":"6b6ca8bc6001368d24c13bba19db3f5751b4ef15a9304274ae1cb9b280a99b98","id":"muzzle","depth":30,"inFrontOfHead":true}]},{"phase":3,"archiveBodySHA":"726cb981fdcbed1bd34dab7ddf3ae14c7528a2dd03989b1641bcb495c85b9a63","stockRef":"d69857fa937d9ac72f440ceb1ae90420766c2dc5a7d1bc2d05af32eef2c670ff","body":"88fa40b7f3d57462109cffaf04527121d0b16e08f589e2ee24bcc3ded87b71cc","mask":"860d469008842f2f4c3220bdd7d2dfdb286a1aeae5962ea64d72dcaa6e726357","gear":[{"sha":"d2c0de442e067c23fee5c0a41843d651d5cf472f846b31a6bd92f1407069bdf5","id":"mechanism","depth":4},{"sha":"549828e4ded8a66762faf24dd369bbceacef70e149f9cc1be38b6d64f02a93dd","id":"muzzle","depth":30,"inFrontOfHead":true}]},{"phase":4,"archiveBodySHA":"1164eb2c9fa9ef21a468d860ad92713e467490ecc220044e3281f70efed025d3","stockRef":"1d2554ca2f6efbe632ae485704e28bf05b9eb58d4840d98da0ce949340440bb3","body":"7b28b81b0fcf4b505670da635514d00bfd7f34240f1dad24c1f9661c65bc51cb","mask":"5d2396c96f5333160b52b291bdc03f3c5bf3ae3cf53d9484daf1a4cba494bec3","gear":[{"sha":"839f893caeafaf7f3f5c3b41338d892242a61dc0ab32613a62a3a2caa3a7dd2e","id":"mechanism","depth":4},{"sha":"6389760921296e0182a3c1831bb7df56c51ce28da9008df88eac7020efc9d27f","id":"muzzle","depth":30,"inFrontOfHead":true}]},{"phase":5,"archiveBodySHA":"fdcd9b5672c106ebfa7efd81a42d145f02f52b5130e2292b553a07969ce30025","stockRef":"ff1e6161a9b12e6acfd298fe9633828a049ba1dd302e089e81fa094a782daf13","body":"be35f26afe408f45027b65167b7f80a38989f3e992abee2244a5801c194ea407","mask":"6506d14c320ddb114c8843186c8f0eb3a926c73727b91c99173a81d21e2b04dd","gear":[{"sha":"127890f30f76cf7823a9c983969a7c9c4750290edd46c995f1fcb9f1507a5278","id":"mechanism","depth":4},{"sha":"b65ace98f3d680fdc56f108e46f799b8a5d1078592542301dec19a5b2135cf78","id":"muzzle","depth":30,"inFrontOfHead":true}]},{"phase":6,"archiveBodySHA":"19f90b19e429eb569622e4cf5cc8c0d0a723ee1d1e3d7d41a692a5a4ea8504e2","stockRef":"26d83f4d5367f00139ed614c76c16ba1e6529058fe866da5a7f77b7ee620ed23","body":"3ef1a7933ff2ac98e5a3d17fd6d6dbc1b6d56ae3a0cfa3345a875ea8da0daba0","mask":"488728bd014a38ea8aaadb06e59dc7411212b7d0d1d5c166150406fd41a7a0e9","gear":[{"sha":"a45a61b100c723974b30584eb8e206ba73c9bb2922f0e04cfeb1e5ae23cc4566","id":"mechanism","depth":4},{"sha":"5818b486ae04def8ad07ce659792b71e506df43ed3d709cfb7cd609a53158594","id":"muzzle","depth":30,"inFrontOfHead":true}]},{"phase":7,"archiveBodySHA":"a1c9d3703be6dfdeb3eee846a32db06e58a2ac1219d777a1be85cb7ab8a982f2","stockRef":"73a2f1759e237a3dfd85155fd59738d1c223607fafab49a7e910ee61da109a30","body":"bb7abc7750568c4283cc0cc8b5898da5e71a32daa438325a9c684fe98331155e","mask":"bb8e177ea5f01b44d86a74e540796bd592ae02ff507bbb193494636492a127a9","gear":[{"sha":"43a0b327da8fc32ec3a3f7705b593b9bbe8d062ab4ccdc2c35a32f5783989122","id":"mechanism","depth":4}]},{"phase":8,"archiveBodySHA":"bbb101171a60ddc9e6e64426f7c97d06c944dbd3996889ff61226199be617363","stockRef":"3e393dff136f104a5683c04349a29b30c424aa5aff816473b7690d90ee578a82","body":"d94f5b85dc85c7e3384fe18d622fd1f2b2ce2924c1ed43d0c4fad5545da54344","mask":"198332bf173fadff2af3f21e465a8d7fef27a3fffc53d0092593444617763507","gear":[{"sha":"ec1e699d470012421822b721313e6860cede81868336e2b24c6e34a4fde3edb6","id":"mechanism","depth":4}]},{"phase":9,"archiveBodySHA":"ba8f759c8b24c0f6d07fa1a2b1816cf81c17e45ac08ddf47b2a1a0a45be8135d","stockRef":"4d06ada8102f689f60c92de4acd9edf8a46b2111a921637c5a013a0e32d63179","body":"f83ea0d75bd59e7c8e10e170d882e767f85c885fad581db6781ec5476d38525b","mask":"19d75c6e76fb5890998b6f4b2b0cf5eb52ce4a20d956d9e2996749175d623fe4","gear":[{"sha":"d62d06378fa701b3ad4973fd2da43dc64429e7f2d38ec3a45fff73b5f6230c85","id":"mechanism","depth":4}]}]};
@@ -2568,7 +2572,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    const x=start%640,y=Math.floor(start/640);rx.clearRect(x,y,len,1);
    if(!fit.plate.replace)ctx.drawImage(original,x,y,len,1,x,y,len,1);
   }
-  ctx.imageSmoothingEnabled=false;ctx.transform(...phase.transform);ctx.drawImage(fabric,0,0);
+  ctx.imageSmoothingEnabled=false;ctx.transform(...phase.transform);ownedImage(ctx,'legs','profile-fabric',fit.plate.cloth[f],fabric,[0,0]);
   const cloth=fit.plate.cloth[f];map.set(key,residual);map.set(cloth,lower);
   return [...layers,{id:'fitted-profile-trousers',source:cloth,slot:'top',depth:2.75,binding:{kind:'fixed'}}];
  }
@@ -2581,7 +2585,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    for(const [start,len] of phase.cut)c.clearRect(start%640,Math.floor(start/640),len,1);
    ctx.drawImage(scratch,0,0);scratch.width=1;
   }else ctx.drawImage(tile,0,0);
-  ctx.save();ctx.imageSmoothingEnabled=false;ctx.transform(...phase.transform);ctx.drawImage(cloth,0,0);ctx.restore();
+  ctx.save();ctx.imageSmoothingEnabled=false;ctx.transform(...phase.transform);ownedImage(ctx,'legs','profile-fabric',plate.cloth[frame],cloth,[0,0]);ctx.restore();
  }
  function bootStamp(r,s,images){
   const track=r.bootTrack,row=track.phases[Number(s.state)],prefix='tools/rework-combat-wardrobe/assets/';
@@ -2589,16 +2593,17 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   if([art,...(track.splitDepth?(row.rear?[rear]:[]):[mask])].some(im=>im?.width!==row.width||im.height!==row.height))throw Error('Invalid fitted boot plate');
   function draw(ctx,image){
    ctx.save();if(track.mirror){ctx.translate(640,0);ctx.scale(-1,1);}
-   ctx.drawImage(image,row.x,row.y);ctx.restore();
+   if(image===mask)ctx.drawImage(image,row.x,row.y);
+   else ownedImage(ctx,'boots',image===rear?'sole-rear':'sole-front',image===rear?row.rear:row.art,image,[row.x,row.y]);ctx.restore();
   }
   return {row,art,mask,rear,draw};
  }
  function paintOrderedGloves(ctx,r,s,images){
   ctx.save();if(r.direction==='west'){ctx.translate(640,0);ctx.scale(-1,1);}
-  for(const hand of r.orderedGloves){
+  for(const [side,hand] of r.orderedGloves.entries()){
    const glove=images.get('tools/rework-combat-wardrobe/assets/'+hand[Number(s.state)]+'.png');
    if(glove?.width!==640||glove.height!==640)throw Error('Missing registered hand material');
-   ctx.drawImage(glove,0,0);
+   ownedImage(ctx,'gloves','hand-'+side,hand[Number(s.state)],glove,[0,0]);
   }
   ctx.restore();
  }
@@ -2606,7 +2611,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   const phase=r.bladePants.phases[Number(s.state)],url='tools/rework-combat-wardrobe/assets/'+phase.art+'.png',art=images.get(url);
   if(art?.width!==phase.width||art.height!==phase.height)throw Object.assign(Error('Missing original blade trouser plate'),{asset:url});
   ctx.save();if(r.bladePants.mirror){ctx.translate(640,0);ctx.scale(-1,1);}
-  ctx.drawImage(art,phase.x,phase.y);ctx.restore();
+  ownedImage(ctx,'legs','blade-trousers',phase.art,art,[phase.x,phase.y]);ctx.restore();
  }
  function mountedRifleCoat(r,s,layers,map,images){
   const f=Number(s.state),phase=r.rifleProfileCoat[f],added=[],front=makeCanvas(640,640),mask=front.getContext('2d');
@@ -2619,7 +2624,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    }
    map.set(key,tile);
    const depth=id==='core'?4.85:layers.find(l=>l.id===id).depth+.15;
-   added.push({id:'rifle-fabric-'+id,source:key,depth,slot:'top',binding:{kind:'fixed'}});
+   added.push({id:'rifle-fabric-'+id,positionOwner:'coat',positionSource:key,source:key,depth,slot:'top',binding:{kind:'fixed'}});
    mask.drawImage(tile,0,0);
   }
   const stock=layers.find(l=>l.id==='shorts').frames[f],clean=makeCanvas(640,640),g=clean.getContext('2d');
@@ -2636,29 +2641,29 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     while(remaining){const w=Math.min(640-x,remaining);fn(x,y,w,1);remaining-=w;y++;x=0;}
    }
   }
-  function draw(p){
+  function draw(p,owner,part){
    if(!p)return;const [key,x,y]=p,url='tools/rework-combat-wardrobe/assets/'+key+'.png',im=images.get(url);
    if(!im)throw Object.assign(Error('Missing registered firearm garment'),{asset:url});
-   ctx.drawImage(im,x,y);
+   ownedImage(ctx,owner,part,key,im,[x,y]);
   }
   ctx.save();ctx.beginPath();ctx.rect(0,0,640,640);
   spans(phases[0].guard,(x,y,w,h)=>ctx.rect(x,y,w,h));ctx.clip('evenodd');
   for(const p of phases)spans(p.cut,(x,y,w,h)=>ctx.clearRect(x,y,w,h));
   ctx.globalCompositeOperation='destination-over';
-  for(const p of phases)draw(p.rear);
+  for(const [i,p] of phases.entries())draw(p.rear,legs[i].owner,'rear');
   ctx.globalCompositeOperation='source-over';
-  for(const p of phases)draw(p.front);
+  for(const [i,p] of phases.entries())draw(p.front,legs[i].owner,'front');
   ctx.restore();
  }
  function paintSouthRifleArms(ctx,tracks,frame,images){
-  function draw(p){
+  function draw(p,owner,part){
    if(!p)return;const [sha,x,y]=p,url='tools/rework-combat-wardrobe/assets/'+sha+'.png',im=images.get(url);
    if(!im)throw Object.assign(Error('Missing original firearm sleeve or grip'),{asset:url});
-   ctx.drawImage(im,x,y);
+   ownedImage(ctx,owner,part,sha,im,[x,y]);
   }
   ctx.save();ctx.globalCompositeOperation='destination-over';
-  for(const track of tracks)draw(track[frame].rear);
-  ctx.globalCompositeOperation='source-over';for(const track of tracks)draw(track[frame].front);ctx.restore();
+  for(const track of tracks)draw(track[frame].rear,track[frame].owner,'rear');
+  ctx.globalCompositeOperation='source-over';for(const track of tracks)draw(track[frame].front,track[frame].owner,'front');ctx.restore();
  }
  function mountedBladeTrousers(r,s,layers,map,images){
   const frame=Number(s.state),key=r.bladePants.phases[frame].art,tile=makeCanvas(640,640);
@@ -2691,7 +2696,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  function northSleeveLayers(r,original,map,images,frame){
   const layers=[...original],row=r.northSleeves.frames[frame],fixed={kind:'fixed'};
   function add(id,source,im,depth){
-   map.set(source,im);layers.push({id:'equipped-focus-coat-'+id,source,slot:'top',depth,binding:fixed});
+   map.set(source,im);layers.push({id:'equipped-focus-coat-'+id,...(id==='lowered-waist'?{}:{positionOwner:'coat',positionPart:id==='front-cuff'?'farLower':id,positionSource:row[id]||row.farLower}),source,slot:'top',depth,binding:fixed});
   }
   const cloth={};
   for(const [name,key] of Object.entries(row)){
@@ -2731,7 +2736,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    const key=parts[part];if(!key)continue;
    const url='tools/rework-combat-wardrobe/assets/'+key+'.png',im=images.get(url);
    if(im?.width!==640||im.height!==640)throw Object.assign(Error('Missing fitted North glove'),{asset:url});
-   map.set(key,im);layers.push({id:'equipped-focus-glove-'+part,slot:'top',source:key,depth,binding:{kind:'fixed'}});
+   map.set(key,im);layers.push({id:'equipped-focus-glove-'+part,positionOwner:'gloves',positionSource:key,slot:'top',source:key,depth,binding:{kind:'fixed'}});
   }
   return layers;
  }
@@ -2751,7 +2756,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
   if(fabric?.width!==640||fabric.height!==640)throw Object.assign(Error('Wrong North trouser plate'),{asset:url});
   northStockWithoutPants(map,layers.find(l=>l.id==='shorts'),frame,fit);
   const tile=makeCanvas(640,640),ctx=tile.getContext('2d');
-  ctx.imageSmoothingEnabled=false;ctx.transform(...fit.phases[frame].transform);ctx.drawImage(fabric,0,0);map.set(key,tile);
+  ctx.imageSmoothingEnabled=false;ctx.transform(...fit.phases[frame].transform);ownedImage(ctx,'legs','focus-trousers',key,fabric,[0,0]);map.set(key,tile);
   return [...layers,{id:'equipped-focus-trousers',source:key,slot:'top',depth:2.25,binding:{kind:'fixed'}}];
  }
  function mountedBootLayers(r,s,d,map,images){
@@ -2808,10 +2813,10 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     if(r.w121NorthOnlyNativeHand===true||omitWeaponLayer)ctx.drawImage(grip,0,0);
     else{
      const local=makeCanvas(640,640),x=local.getContext('2d');
-     x.drawImage(part,0,0);x.drawImage(grip,0,0);
+     ownedImage(x,'weapon','shaft',w0.gear,part,[0,0]);x.drawImage(grip,0,0);
      ctx.drawImage(local,0,0);local.width=1;
     }
-   }else ctx.drawImage(image(at),0,0);
+   }else ownedImage(ctx,'weapon','attachment',at.sha256||at.url,image(at),[0,0]);
  }
  function sharesNorthFocusCoatPose(r){
   if(!(r.relic31NorthApprovedPreview||r.relic32NorthApprovedPreview||r.w121IndependentNorth))return false;
@@ -2820,7 +2825,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
  }
  // The North focus receiver replaces the editorial attachment. Keep its real
  // antialiased hardware in front of the cloth, only where anatomy leaves it visible.
- function northFocusCoat(cloth,r,images,frame,hideHair){
+ function northFocusCoat(cloth,r,images,frame,hideHair,source){
   const state=r.states[frame],at=state.attachment,rig=r.basePack,pack=rig.pack,dir=pack.directions.north;
   if(r.direction!=='north'||!at||at.depth!==3||state.layers.length||Number(state.state)!==frame)
    throw Error('Incompatible articulated North focus coat');
@@ -2844,7 +2849,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      if(op.cloth)cx.drawImage(map.get(op.cloth),0,0);else erase([op.layer]);
     }
    }else{cx.globalCompositeOperation='destination-out';erase(upper);}
-   const t=tile.getContext('2d');t.drawImage(cloth,0,0);t.globalCompositeOperation='source-atop';t.drawImage(front,0,0);
+   const t=tile.getContext('2d');ownedImage(t,'coat','jacket',source,cloth,[0,0]);t.globalCompositeOperation='source-atop';t.drawImage(front,0,0);
    return tile;
   }catch(e){tile.width=1;throw e;}finally{front.width=1;}
  }
@@ -2865,7 +2870,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    for(let i=3;i<matte.data.length;i+=4)if(matte.data[i])matte.data[i]=255;
    bx.putImageData(matte,0,0);
    tx.save();if(track.mirror){tx.translate(size,0);tx.scale(-1,1);}
-   tx.drawImage(cloth,64,64,size,size,0,0,size,size);
+   ownedImage(tx,'coat','sword-coat',track.cloth[phase],cloth,[64,64,size,size,0,0,size,size]);
    tx.globalCompositeOperation='destination-out';tx.drawImage(hands,0,0);tx.restore();
    tx.globalCompositeOperation='destination-out';tx.drawImage(blade,0,0);
    ctx.drawImage(tile,0,0);
@@ -2956,7 +2961,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      if(im?.width!==640||im.height!==640||hand?.binding.kind!=='fixed')throw Error('Invalid modular focus hand');
      const tile=makeCanvas(640,640),cx=tile.getContext('2d');
      if(r.direction==='west'){cx.translate(640,0);cx.scale(-1,1);}cx.drawImage(im,0,0);map.set(key,tile);
-     layers.push({id:'glove-on-'+id,source:key,slot:'top',binding:{kind:'fixed'},depth:hand.depth+.25});
+     layers.push({id:'glove-on-'+id,positionOwner:'gloves',positionSource:key,source:key,slot:'top',binding:{kind:'fixed'},depth:hand.depth+.25});
     }
    }
    const pack={...p,directions:{[r.direction]:{...d,layers:layers.filter(l=>!hiddenSlots.includes(l.slot))}}};
@@ -2975,7 +2980,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
       const panel=images.get('tools/rework-combat-wardrobe/assets/'+op.glove+'.png');
       if(panel?.width!==640||panel.height!==640)throw Error('Invalid articulated sword glove');
       ctx.save();if(r.direction==='west'){ctx.translate(640,0);ctx.scale(-1,1);}
-      ctx.drawImage(panel,0,0);ctx.restore();continue;
+      ownedImage(ctx,'gloves','panel-'+op.depth,op.glove,panel,[0,0]);ctx.restore();continue;
      }if(op.swordCoat){renderSwordSleeve(ctx,r,s,pack,map,images,image);continue;}if(op.layer){const one={...pack,directions:{[r.direction]:{...dir,layers:[op.layer]}}};ctx.save();if(r.mirrorLayerIDs?.includes(op.layer.id)){ctx.translate(p.frame.width*4,0);ctx.scale(-1,1);}if(recolored){const tile=makeCanvas(w,h),base=root.MareReworkBaseHD.create({schema:'rework-full-hd-v1',records:[]},{vendor,prefix:''});base.render(tile.getContext('2d'),{id:r.id,pack:one,direction:r.direction,sourceRefs:[...map.keys()]},map,{frame:Number(s.state),appearance,makeCanvas,
        ...(r.firearmSouthSignedPalette?{afterMaterialSource:(source,image,old)=>{
         const c=tintFirearmSouthSource(source,old,images,appearance,makeCanvas);
@@ -3078,7 +3083,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
     if(fabric?.width!==640||fabric.height!==640)throw Error('Missing compass hand material');
     const palm=makeCanvas(w,h),px=palm.getContext('2d');px.save();
     if(r.direction==='west'){px.translate(w,0);px.scale(-1,1);}
-    px.drawImage(fabric,0,0);px.restore();px.globalCompositeOperation='destination-out';
+    ownedImage(px,'gloves','hand-'+i,r.orderedGloves[i][f],fabric,[0,0]);px.restore();px.globalCompositeOperation='destination-out';
     for(const upper of parts.slice(parts.findIndex(l=>l.id===id)+1)){
      const sha=upper.frames?.[f]||upper.source,im=image({url:r.compassAnatomy.images[sha]});
      px.drawImage(im,0,upper.binding.kind==='rigid'?focusHeadY[f]:0);
@@ -3256,19 +3261,20 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      cx.drawImage(tile,0,0);cx.globalCompositeOperation='destination-out';shoe.draw(cx,shoe.mask);
      ctx.drawImage(clipped,0,0);clipped.width=1;
      if(l.id==='legs')shoe.draw(ctx,shoe.art);
-    }else ctx.drawImage(tile,...(l.offset??[0,0]));
+    }else if((l.component==='equipment'||l.role==='weapon')&&!l.skinOnly&&!l.paletteMask&&!l.staffSkinRuns&&!l.staffSkinAnatomy)ownedImage(ctx,'weapon',l.id||l.role||'plate-'+l.depth,l.sha256||l.url,tile,l.offset??[0,0]);
+    else ctx.drawImage(tile,...(l.offset??[0,0]));
     if(r.rifleSleeves&&l.role==='arms'){
      const sha=r.rifleSleeves[Number(s.state)];
      if(sha){
       const cloth=images.get('tools/rework-combat-wardrobe/assets/'+sha+'.png');
       if(cloth?.width!==w||cloth.height!==h)throw Error('Missing North rifle sleeves');
-      ctx.drawImage(cloth,0,0);
+      ownedImage(ctx,'coat','sleeves',sha,cloth,[0,0]);
      }
     }
     if(r.rifleHands&&l.role==='hands'){
      const cloth=images.get('tools/rework-combat-wardrobe/assets/'+r.rifleHands[Number(s.state)]+'.png');
      if(cloth?.width!==w||cloth.height!==h)throw Error('Missing North rifle glove');
-     ctx.drawImage(cloth,0,0);
+     ownedImage(ctx,'gloves','hands',r.rifleHands[Number(s.state)],cloth,[0,0]);
     }
     if(r.orbAnatomy&&r.bootTrack&&!r.sideFittedPants&&l.id==='body'){
      const boot=bootStamp(r,s,images);ctx.globalCompositeOperation='destination-out';boot.draw(ctx,boot.mask);

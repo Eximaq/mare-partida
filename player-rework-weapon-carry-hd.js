@@ -2,6 +2,10 @@
 (function(root){'use strict';
 const skinMaterials=root.MareNativeSkinHD||(typeof require==='function'?require('./player-rework-skin-hd.js'):null);
 const hairAnatomy=root.MareHairAnatomyHD||(typeof require==='function'?require('./player-rework-hair-anatomy-hd.js'):null);
+function ownedImage(ctx,slot,part,source,image,args,sign=1){
+ if(root.MareHDPosition?.active)return root.MareHDPosition.blit(ctx,slot,part,source,image,args,sign);
+ ctx.drawImage(image,...args);
+}
 function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePrefix='tools/rework-base-hd/assets/',weaponPrefix='tools/rework-weapon-layers-hd/',makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
  if(!vendor?.compositor)throw Error('Carry needs original compositor');const V=vendor.compositor;
  function resolveHair(base,style){
@@ -87,7 +91,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
     exact23(q.source.size,r.size)&&exact23(q.source.nativeSize,r.size)&&!!q.hideHandBeyondWrist&&!q.replaceBoundLayer&&!q.source.sourceClip&&
     !q.mirrorSource&&!q.skinMaterial&&q.depthOffset===.1&&q.calibrationOffsetPhysical==null&&exact23(q.binding,r.binding)&&
     exact23(q.sourceBone,r.sourceBone)&&exact23(q.targetRestBone,r.targetRestBone);});
-  if(preview23)plan={...plan,parts:plan.parts.map((q,i)=>{const r=ref23[i];return {...q,hideHandBeyondWrist:false,sourceBone:r.newBone,...(direction==='north'?{calibrationOffsetPhysical:[q.side==='LEFT'?3:-3,0]}:{}),
+  if(preview23)plan={...plan,parts:plan.parts.map((q,i)=>{const r=ref23[i];return {...q,positionOwnSource:r.new,hideHandBeyondWrist:false,sourceBone:r.newBone,...(direction==='north'?{calibrationOffsetPhysical:[q.side==='LEFT'?3:-3,0]}:{}),
     source:{...q.source,sha256:r.new,url:'assets/'+r.new+'.png',size:[640,640],nativeSize:[640,640]}};})};
   const pure=Number(item)===32&&Object.hasOwn(walks,direction)&&pureRelic32Saved&&
     Object.keys(equipment).length===1&&equipment.weapon===32&&plan.targetWalkRecord===walks[direction]&&
@@ -660,7 +664,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
      !l.frames&&l.binding?.a===wa&&l.binding?.b===wb));
   if(w128PureNorth||w128PureSide||w128PureSouth){
    const {skinMaterial,...shaft}=plan.parts[0],sha='40730cd745d620a3602ae7e1206fb48d3bd3e6dedd961de6c123259db8fbedfe';
-   plan={...plan,parts:[{...shaft,depthOffset:-.1,source:{...shaft.source,sha256:sha,url:'assets/'+sha+'.png',
+   plan={...plan,parts:[{...shaft,positionOwnSource:sha,depthOffset:-.1,source:{...shaft.source,sha256:sha,url:'assets/'+sha+'.png',
     sourceMember:'staff128-male-owned-north-walk-v1.zip::'+sha+'.png'}}]};
   }
   // Reuse the exact Board 07 orb material ownership, without its donor palm.
@@ -677,7 +681,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
    // Measured distal palm registration in physical source pixels (not the forearm center).
    const [dx,dy]=direction==='south'?[4,2]:direction==='north'?[-20,17]:[-13,34];
    const sourceBone=Object.fromEntries(Object.entries(gear.sourceBone).map(([k,v])=>[k,{x:v.x-dx/4,y:v.y-dy/4}]));
-   plan={...plan,parts:[{...gear,sourceBone,source:{...gear.source,sha256:sha,url:'assets/'+sha+'.png',
+   plan={...plan,parts:[{...gear,positionOwnSource:sha,sourceBone,source:{...gear.source,sha256:sha,url:'assets/'+sha+'.png',
     sourceMember:'orb17-male-carry-own-v1.zip::'+sha+'.png'}}]};
   }
   const ownsW119Mounted=techWalk&&direction==='north'&&Number(item)===119&&plan.parts.length===2&&
@@ -720,7 +724,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   const {staff123ToneTexture,staff124ToneTexture,healerToneTexture,...part}=q,sha256=signed[1];
   // The actual hand retains its signed palette and depth. Reuse the same
   // EAST transform in both directions; the compositor mirrors WEST once.
-  return {...r,id:r.id+(signed[2]?':side-own-grip-split-v2':':side-own-only-v1'),sideOwnProof:true,plan:{...r.plan,parts:[{...part,mirrorSource:false,depthOffset:-.1,
+  return {...r,id:r.id+(signed[2]?':side-own-grip-split-v2':':side-own-only-v1'),sideOwnProof:true,plan:{...r.plan,parts:[{...part,positionOwnSource:sha256,mirrorSource:false,depthOffset:-.1,
    ...(signed[2]?{staffSideGripWindow:true}:{}),
    sourceBone:{'RIGHT ELBOW':{x:92.5,y:64.75},'RIGHT ARM':{x:92.5,y:77.75}},
    source:{...q.source,sha256,url:'assets/'+sha256+'.png',sourceMember:'staff123-127-independent-assets.zip::'+sha256+'.png'}}]}};
@@ -768,6 +772,23 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   ctx.putImageData(pixels,0,0);
   return tile;
  }
+ // A checked F0 reconstruction supplies a separate hardware plate. Factor its
+ // alpha out of the approved sample. Only the residual stays on the wrist.
+ const joinedOwnership=new WeakMap();
+ function retainOwnership(canvas,original,gear,restored){
+  if(!root.MareHDPosition?.active)return;
+  const hardware=makeCanvas(canvas.width,canvas.height),body=makeCanvas(canvas.width,canvas.height);
+  const g=hardware.getContext('2d'),b=body.getContext('2d');
+  const top=g.createImageData(canvas.width,canvas.height),base=b.createImageData(canvas.width,canvas.height);
+  for(let i=0;i<original.length;i+=4){
+   const alpha=original[i+3]/255;if(!alpha)continue;
+   const fg=Math.min(alpha,gear[i+3]/255)*(1-(restored?.[i+3]||0)/255);
+   const bg=fg<1?(alpha-fg)/(1-fg):0;
+   for(let k=0;k<3;k++){top.data[i+k]=gear[i+k];base.data[i+k]=bg?(original[i+k]*alpha-gear[i+k]*fg)/(bg*(1-fg)):0;}
+   top.data[i+3]=255*fg;base.data[i+3]=255*bg;
+  }
+  g.putImageData(top,0,0);b.putImageData(base,0,0);joinedOwnership.set(canvas,{hardware,body});
+ }
  // Own F0 only: immutable anatomy under immutable shorts & hardware, tested
  // against the approved original crop. Repaint the anatomy contribution, not
  // the flattened pixel's apparent color. Keep the old crop's exact alpha.
@@ -807,7 +828,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
    owned++;
   }
   if(support!==expected[0]||owned!==expected[1])throw Error('Unexpected '+item+' carry material support');
-  ctx.putImageData(orig,0,0);t.width=t.height=1;if(body)body.width=body.height=1;if(restored)restored.width=restored.height=1;return c;
+  retainOwnership(c,orig.data,gearData.data,mask);ctx.putImageData(orig,0,0);t.width=t.height=1;if(body)body.width=body.height=1;if(restored)restored.width=restored.height=1;return c;
  }
  function joinedFringeImage(source,part,images,ramp,api){
   const p118=!!part.joined118Sources;
@@ -851,7 +872,7 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   for(const i of ids)for(let k=0;k<3;k++)s.data[i+k]=recolored[i+k];
   const next=compose();
   for(const i of ids){if(next[i+3]!==raw.data[i+3])throw Error('Changed cyborg F0 alpha');for(let k=0;k<3;k++)raw.data[i+k]=rgbTolerance?raw.data[i+k]+next[i+k]-old[i+k]:next[i+k];}
-  ctx.putImageData(raw,0,0);tmp.width=1;return c;
+  retainOwnership(c,raw.data,g,null);ctx.putImageData(raw,0,0);tmp.width=1;return c;
  }
  // W112 carry: exact residuals found in full World playback. Scope to
  // the authenticated saved clip; leave all other phases and gear untouched.
@@ -912,8 +933,8 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   if(expression?.source){
    const image=map.get(expression.source),tile=makeCanvas(image.width,image.height),face=tile.getContext('2d');
    face.drawImage(image,0,0);
-   eyes.reshape(face,appearance.face,expression.direction,expression.boxes);
    eyes.recolorIris(face,expression,appearance.eyeColor);
+   eyes.reshape(face,appearance.face,expression.direction,expression.boxes);
    map.set(expression.source,tile);
   }
   const w112Specks=w112WalkSpecks(r,d,padding);
@@ -955,7 +976,18 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
      cover.binding.a==='LEFT ELBOW'&&cover.binding.b==='LEFT ARM'?
      (frame===1?[[216,289,2,1]]:frame===3||frame===5?[[216,284,1,1],[217,285,1,1]]:null):null;
     if(specks){target.beginPath();target.rect(0,0,w,h);for(const rect of specks)target.rect(...rect);target.clip('evenodd');}
-   }if(r.preMirroredLayers?.includes(original.id)){target.translate(p.frame.width*4,0);target.scale(-1,1);}if(r.plan.paddingPhysical!==undefined){const bodyTile=makeCanvas(p.frame.width*4,p.frame.height*4);V.render(bodyTile.getContext('2d'),pack,map,{direction:r.direction,frame,density:4,clear:false});target.drawImage(bodyTile,0,0);}else V.render(target,pack,map,{direction:r.direction,frame,density:4,clear:false});target.restore();continue;}
+    }
+    const reflectedLayer=r.preMirroredLayers?.includes(original.id);
+    if(reflectedLayer){target.translate(p.frame.width*4,0);target.scale(-1,1);}
+    const settings={direction:r.direction,frame,density:4,clear:false};
+    if(r.plan.paddingPhysical!==undefined){
+     const tile=makeCanvas(p.frame.width*4,p.frame.height*4),paint=()=>V.render(tile.getContext('2d'),pack,map,settings);
+     // The outer canvas reflects this tile after its equipment has been painted.
+     if(root.MareHDPosition?.active)root.MareHDPosition.bodyPlane(p,4,0,!!reflectedLayer,paint);else paint();
+     target.drawImage(tile,0,0);
+    }else V.render(target,pack,map,settings);
+    target.restore();continue;
+   }
    const q=op.part,im=images.get(weaponPrefix+q.source.url);if(!im)throw Error('Missing isolated equipment');
    if(op.w121Grip!==undefined){
     const {a,b}=q.binding,m=V.rigid(q.sourceBone[b],q.sourceBone[a],pose[b],pose[a]),[ox,oy]=q.calibrationOffsetPhysical||[0,0];
@@ -964,12 +996,12 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
     if(q.staffSideGripWindow){
      if(im.width!==640||im.height!==640)throw Error('Invalid signed C126/C127 shaft dimensions');
      const pair=splitOwnSideShaft(im);
-     target.drawImage(op.w121Grip?pair.rear:pair.front,0,0);target.restore();continue;
+     ownedImage(target,'weapon',op.w121Grip?'shaft-rear':'shaft-front',q.source.sha256,op.w121Grip?pair.rear:pair.front,[0,0],r.base.mirrorX?-1:1);target.restore();continue;
     }
     target.beginPath();
     if(!op.w121Grip){target.rect(0,0,640,300);target.rect(0,324,640,316);}
     else target.rect(0,300,640,24);
-    target.clip();target.drawImage(im,0,0);target.restore();continue;
+    target.clip();ownedImage(target,'weapon',op.w121Grip?'shaft-rear':'shaft-front',q.source.sha256,im,[0,0],r.base.mirrorX?-1:1);target.restore();continue;
    }
    if(q.staff124NativeContact){
     const gear=images.get(weaponPrefix+q.staff124NativeContact.gear),grip=images.get(weaponPrefix+q.staff124NativeContact.grip),hand=d.layers.find(l=>l.id==='handRight');
@@ -980,11 +1012,11 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
     const x0=Math.max(0,Math.floor(Math.min(...corners.map(v=>v[0])))-1),y0=Math.max(0,Math.floor(Math.min(...corners.map(v=>v[1])))-1),
      sw=Math.min(w,Math.ceil(Math.max(...corners.map(v=>v[0])))+1)-x0,sh=Math.min(h,Math.ceil(Math.max(...corners.map(v=>v[1])))+1)-y0;
     const c=makeCanvas(sw,sh),u=c.getContext('2d'),apply=(t,dx,dy)=>{t.transform(m[0],m[1],m[2],m[3],tx-dx,ty-dy);if(q.mirrorSource){t.translate(640,0);t.scale(-1,1);}};
-    const project=image=>{u.clearRect(0,0,sw,sh);u.save();u.imageSmoothingEnabled=false;apply(u,x0,y0);u.drawImage(image,0,0);u.restore();return u.getImageData(0,0,sw,sh).data;};
-    const contact=project(grip),shaft=project(gear),handOnly=makeCanvas(w,h),hc=handOnly.getContext('2d');
+    const project=(image,delta=[0,0])=>{u.clearRect(0,0,sw,sh);u.save();u.imageSmoothingEnabled=false;apply(u,x0-delta[0],y0-delta[1]);u.drawImage(image,0,0);u.restore();return u.getImageData(0,0,sw,sh).data;};
+    const contact=project(grip),shaft=project(gear,root.MareHDPosition?.offset('weapon','shaft')),handOnly=makeCanvas(w,h),hc=handOnly.getContext('2d');
     V.render(hc,{...p,directions:{[r.direction]:{...d,layers:[hand]}}},map,{direction:r.direction,frame,density:4});
     const handPixels=hc.getImageData(x0,y0,sw,sh).data,before=target.getImageData(x0,y0,sw,sh).data;
-    target.save();apply(target,0,0);target.drawImage(gear,0,0);target.restore();
+    target.save();apply(target,0,0);ownedImage(target,'weapon','shaft',q.staff124NativeContact.gear,gear,[0,0]);target.restore();
     const after=target.getImageData(x0,y0,sw,sh),pixels=after.data;
     for(let i=3;i<pixels.length;i+=4)if(contact[i]&&shaft[i]&&handPixels[i]&&before[i]){
      const top=contact[i]/255,low=1-top,a=pixels[i]*low+before[i]*top;
@@ -1061,7 +1093,22 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
    const remove=w119LooseBottom||cannon118FringeSpecks||cyborgCarrySpecks||w14SideHole||w117SideHoles||(hole||carryHole?[hole||carryHole]:null);let clean=partImage;
    if(remove){clean=makeCanvas(partImage.width,partImage.height);const c=clean.getContext('2d');c.drawImage(partImage,0,0);for(const rect of remove)c.clearRect(...rect);}
    // Wrist anchored rigid transform: no weapon raster scaling/stretch; follow authored wrist and forearm rotation.
-   const m=V.rigid(q.sourceBone[b],q.sourceBone[a],pose[b],pose[a]);target.save();const offset=q.calibrationOffsetPhysical||[0,0];target.transform(m[0],m[1],m[2],m[3],m[4]*4+offset[0],m[5]*4+offset[1]);if(q.source.sourceClip){const [x,y,cw,ch]=q.source.sourceClip;target.beginPath();target.rect(x,y,cw,ch);target.clip();}if(q.mirrorSource){target.translate(q.source.nativeSize?.[0]||640,0);target.scale(-1,1);}if(r.relic31SavedCarry&&q.relic31PivotTilt){const {x,y,radians}=q.relic31PivotTilt;target.translate(x,y);target.rotate(radians);target.translate(-x,-y);}target.drawImage(clean,0,0);target.restore();if(clean!==partImage)clean.width=1;
+   const m=V.rigid(q.sourceBone[b],q.sourceBone[a],pose[b],pose[a]);target.save();const offset=q.calibrationOffsetPhysical||[0,0];target.transform(m[0],m[1],m[2],m[3],m[4]*4+offset[0],m[5]*4+offset[1]);if(q.source.sourceClip){if(root.MareHDPosition?.active)root.MareHDPosition.localClip(target,q.source.sourceClip,'weapon',q.side+'-'+a+'-'+b,r.base.mirrorX?-1:1);
+    else{target.beginPath();target.rect(...q.source.sourceClip);target.clip();}}if(q.mirrorSource){target.translate(q.source.nativeSize?.[0]||640,0);target.scale(-1,1);}if(r.relic31SavedCarry&&q.relic31PivotTilt){const {x,y,radians}=q.relic31PivotTilt;target.translate(x,y);target.rotate(radians);target.translate(-x,-y);}const plates=joinedOwnership.get(partImage);
+   if(plates){
+    const {hardware,body}=plates;
+    for(const rect of remove||[]){hardware.getContext('2d').clearRect(...rect);body.getContext('2d').clearRect(...rect);}
+    const refs=q.joinedFringe?.urls||q.joined118Sources||q.joined117Sources||q.joined15Sources;
+    root.MareHDPosition.blit(target,'weapon',q.side+'-'+a+'-'+b,[q.source.sha256,...refs],hardware,[0,0],r.base.mirrorX?-1:1,clean,body);
+    hardware.width=body.width=1;joinedOwnership.delete(partImage);
+   }else if(q.skinMaterial&&root.MareHDPosition?.active){
+    const mask=images.get(weaponPrefix+q.skinMaterial.url);
+    root.MareHDPosition.material(target,'weapon',q.side+'-'+a+'-'+b,q.source.sha256+'@'+q.skinMaterial.url,clean,mask,[0,0],r.base.mirrorX?-1:1);
+   }else if(q.positionOwnSource===q.source.sha256){
+    ownedImage(target,'weapon',q.side+'-'+a+'-'+b,q.source.sha256,clean,[0,0],r.base.mirrorX?-1:1);
+   }else if(q.joined118Sources||q.joined117Sources||q.joined15Sources||q.joinedFringe||staff123||healer||staff124||q.skinMaterial||r.plan.interfaceSkinLocked&&!r.sideOwnProof&&!r.orb122NorthSouthSavedCarry&&!r.orb122SideSavedCarry||q.source.sourceMember?.includes('grip pixels')||q.evidence?.includes('original grip pixels'))target.drawImage(clean,0,0);
+   else ownedImage(target,'weapon',q.side+'-'+q.binding.a+'-'+q.binding.b,q.source.sha256,clean,[0,0],r.base.mirrorX?-1:1);
+   target.restore();if(clean!==partImage)clean.width=1;
   }
   }finally{target.restore();}if(r.base.mirrorX){ctx.clearRect(0,0,w,h);ctx.save();ctx.translate(w,0);ctx.scale(-1,1);ctx.drawImage(canvas,0,0);ctx.restore();}
   return {width:w,height:h,density:4,pivot:{x:p.pivot.x*4+padding,y:p.pivot.y*4+padding},frames:d.clip.frames,fps:d.clip.fps,frame,status:r.status,physicalScale:1,source:r.id,calibrationRequired:true};

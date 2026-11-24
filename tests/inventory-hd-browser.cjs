@@ -150,6 +150,10 @@ await p.locator('[data-equip="'+actionItem.id+'"]').click();assert(await p.locat
 await p.locator('[data-unequip="weapon"]').click();await p.locator('[data-sell="'+actionItem.id+'"]').click();assert.equal(await p.evaluate(id=>__invQA.game.inventory.some(i=>i.id===id),actionItem.id),false);assert.equal(await p.evaluate(()=>__invQA.game.gold),lockedGold+actionItem.price);
 assert.equal(await p.evaluate(()=>__invQA.defs.filter((d,i)=>!MareItemArt.path(i,d)).length),0,'Every catalog item resolves to HD art');
 await p.locator('[data-inv-slot="head"]').click();
+assert(await p.locator('[data-headgear-visibility]').isDisabled(),'starter helmet is automatically hidden');
+const manualHead=await p.evaluate(()=>{const q=__invQA,i=q.newItem(q.defs[129],25);q.game.inventory.push(i);q.select(i.id);return i.id;});
+await p.locator('[data-equip="'+manualHead+'"]').click();
+await p.locator('[data-inv-slot="head"]').click();
 const before=await p.evaluate(()=>JSON.stringify({e:__invQA.game.equipment,s:__invQA.stats()}));
 await p.locator('[data-headgear-visibility]').click();assert.equal(await p.evaluate(()=>JSON.stringify({e:__invQA.game.equipment,s:__invQA.stats()})),before);
 await p.locator('[data-unequip="head"]').click();assert.equal(await p.evaluate(()=>__invQA.game.equipment.head),null);
