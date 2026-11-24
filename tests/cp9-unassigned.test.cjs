@@ -33,6 +33,17 @@ test('Lucci uses the existing dungeon attributes curve from level 90, with no as
  assert.deepEqual([stats.maxHP,stats.attack,stats.defense,stats.magicDefense,stats.xp,stats.gold],[138274,4154,2835,1053,0,[0,0]]);
  assert.equal(C.catalog['rob-lucci'].rewardConfigured,false);
 });
+test('unassigned common stats and nominal XP are proportional to the late-game report',()=>{
+ const C=require('../cp9-monsters.js');
+ const expected={"fukurou":[129420,4316,1732,205,19100],"kalifa":[146519,4787,1898,221,20800],"jabra":[160812,5171,2034,235,21900],"blueno":[176519,5591,2179,248,23000],"kaku":[193773,6044,2334,264,24100]};
+ for(const [id,values] of Object.entries(expected)){
+  const p=C.combatProfile(id);
+  assert(p);
+  assert.deepEqual([p.maxHP,p.attack,p.defense,p.magicDefense,p.nominalXP],values);
+  assert.deepEqual([p.xp,p.gold,C.catalog[id].rewardConfigured],[0,[0,0],false]);
+  assert.equal(C.catalog[id].calibratedAgainst,'ohm');
+ }
+});
 test('actual sprite renderer 132 directional strips share the intended pivots with world height calibration',()=>{
  const {c,ctx,render}=context(),R=c.MareSpriteCombatV2,C=c.MareCp9Monsters,S=c.MareCp9SpriteData;
  let checked=0;
