@@ -37,6 +37,7 @@ web_files += ['thriller-monsters.js','thriller-sprites.js']
 web_files += ['sabaody-monsters.js','sabaody-sprites.js','sabaody-rendering.js']
 web_files += ['marineford-monsters.js','marineford-sprites.js']
 web_files += ['prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','prepared-dungeon-boss-fx.js']
+web_files += ['daily-sword-boss-art-data.js','daily-sword-boss-preview.html','daily-sword-boss-preview.js','daily-sword-boss-preview.css','daily-sword-boss-combat.js','daily-sword-boss-specials.json']
 from export_sword0_checkpoint import materialize as materialize_sword_checkpoint
 materialize_sword_checkpoint(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
                              OUT/'tools/rework-sword0-checkpoint')

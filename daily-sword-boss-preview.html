@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kaizoku Idle | Bancada dos Sete Espadachins</title>
+<link rel="stylesheet" href="daily-sword-boss-preview.css">
+<script defer src="character-system.js"></script>
+<script defer src="sprite-combat-v2-data.js"></script>
+<script defer src="sprite-combat-v2.js"></script>
+<script defer src="daily-sword-boss-art-data.js"></script>
+<script defer src="daily-sword-boss-combat.js"></script>
+<script defer src="daily-sword-boss-preview.js"></script>
+</head>
+<body>
+<main>
+<h1>Os Sete Espadachins</h1>
+<p>Prévia de animações e efeitos. Nenhum combate, rotação ou recompensa está ativo nesta bancada.</p>
+<div class="controls">
+<label>Personagem <select id="actor"></select></label>
+<label>Direção <select id="direction"><option value="south">Sul</option><option value="north">Norte</option><option value="east">Leste</option><option value="west">Oeste</option></select></label>
+<label>Ação <select id="action"><option value="idle">Repouso</option><option value="walk">Caminhada</option><option value="attack">Ataque básico</option><option value="special">Habilidade</option><option value="hurt">Dano recebido</option></select></label>
+<button id="play" type="button">Reproduzir</button>
+<button id="pause" type="button" aria-pressed="false">Pausar</button>
+</div>
+<p id="status" aria-live="polite"></p>
+<canvas id="scene" width="560" height="440" aria-label="Prévia do espadachim selecionado"></canvas>
+</main>
+</body>
+</html>
