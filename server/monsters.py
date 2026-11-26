@@ -16,6 +16,9 @@ WORLD_LEVEL_BANDS = {
     "alubarna-01": (50, 55), "alubarna-02": (55, 60), "alubarna-03": (60, 65),
     "alubarna-04": (65, 70), "alubarna-05": (70, 75), "skypiea-01": (75, 80),
     "skypiea-02": (80, 85), "skypiea-03": (85, 90), "skypiea-04": (90, 95),
+    "enies-lobby-01": (95, 100), "enies-lobby-02": (101, 104),
+    "enies-lobby-03": (104, 106), "enies-lobby-04": (107, 109),
+    "enies-lobby-05": (110, 114),
 }
 
 

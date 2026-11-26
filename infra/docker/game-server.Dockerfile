@@ -24,6 +24,7 @@ COPY visual-completo.js ./
 COPY akainu-combat.js weekly-boss-rules.cjs weekly-boss-battle.cjs ./
 COPY server-navigation.cjs server-terrain-mask.cjs world-catalog.cjs island-world.js lobby-map-data.js lobby-world.js impel-down-world.js alabasta-map-data.js alabasta-world.js alubarna-map-data.js alubarna-world.js ember-world.js orange-world.js conchas-world.js dawn-map-data.js dawn-world.js rare-world.js new-islands-data.js new-islands-objects.js new-islands.js pixellab-world-maps-data.js conchas-pixellab-data.js conchas-structures.js pixellab-world-maps.js quest-dungeons-data.js quest-dungeons-world.js skypiea-map-data.js skypiea-world.js world-map-exports-data.js world-map-exports.js world-system.js archipelago.js ./
 COPY boss-dungeon-combat.js dungeon-timing.cjs dungeon-boss-art-data.js party-rules.cjs party-battle.cjs ./
+COPY enies-lobby-map-data.js enies-lobby-world.js cp9-monsters.js thriller-monsters.js cp9-sprites.js thriller-sprites.js enies-dungeon-art.js ./
 USER node
 COPY combat-action-policy.js zoan-art.js fruit-runtime.cjs fruit-lower-runtime.cjs fruit-summon-runtime.cjs hierarchy-system.js talent-runtime.cjs talent-system.js talent-combat.js ultimate-system.js achievement-system.js contract-system.js world-battle.cjs hunt-system.js monster-behavior.js monster-catalog.js monster-game-catalog.js combat-vfx-data.js combat-vfx.js ./
 EXPOSE 8787

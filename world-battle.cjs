@@ -1,6 +1,7 @@
 'use strict';
 // Server-only simulation. The original catalogues remain the source of balance.
 const {randomUUID,createHash}=require('node:crypto'),fs=require('node:fs'),path=require('node:path');
+const cp9=require('./cp9-monsters.js');
 const hunt=require('./hunt-system.js'),behavior=require('./monster-behavior.js'),characters=require('./character-system.js');
 const dungeons=require('./boss-dungeon-system.js'),dungeonCombat=require('./boss-dungeon-combat.js'),dungeonTiming=require('./dungeon-timing.cjs');
 const mapExports=require('./world-map-exports.js'),dungeonMap=mapExports.get('quest-dungeons');
@@ -13,7 +14,7 @@ const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
 const Policy=require('./combat-action-policy.js');
 const {potionRules,potionRecovery}=require('./item-catalog.js');
-const sources=['attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const sources=['attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','cp9-monsters.js','thriller-monsters.js','cp9-sprites.js','thriller-sprites.js','enies-dungeon-art.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 const balanceVersion=characters.monsterBalance.version;
 const previousBalanceHash='c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b';
@@ -42,20 +43,24 @@ function reanchorSkypieaMobs(area,mobs,nav){
  }
  return moves.length>0;
 }
-function addSkypieaLedgers(b){
+function addHuntLedgers(b){
  const areas=b?.hunts?.areas;if(!areas)return;
- const codes=['skypiea-02','skypiea-03','skypiea-04'].filter(id=>hunt.get(id)&&!Object.hasOwn(areas,id));
+ const codes=['skypiea-02','skypiea-03','skypiea-04','enies-lobby-01','enies-lobby-02','enies-lobby-03','enies-lobby-04','enies-lobby-05'].filter(id=>hunt.get(id)&&!Object.hasOwn(areas,id));
  if(!codes.length)return;
  const defaults=hunt.migrate({}).hunts.areas;
  for(const id of codes)areas[id]=defaults[id];
 }
 function upgradeBalance(b){
  if(!b)return;
+ // Enies adds destinations, without changing existing enemies, HP or clocks.
+ if(b.rulesHash===rulesHash||b.rulesHash==='5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810'){
+  addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
  // The preceding main release already uses the current Skypiea coordinates.
- if(b.rulesHash==='0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'){b.rulesHash=rulesHash;return;}
+ if(b.rulesHash==='0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'){addHuntLedgers(b);b.rulesHash=rulesHash;return;}
  if([previousSkypieaHash,'a2e4d9333c0770e539dee6262fb900e1747e94b44c1226a0baacb513b6c07a57','f48377155e997f7d41c76e0d6264e321603376094b73132ef8ebbd13be5cf0f7','8a7832817164137faed714a2ead01559c6c5801e6989c2a1a3aed55d3f2b383a'].includes(b.rulesHash)){
   if(b.area==='skypiea-01'){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
-  addSkypieaLedgers(b);b.rulesHash=rulesHash;return;
+  addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  if(!priorBalanceHashes.has(b.rulesHash))return;
  const prisonSpec=b.prison&&prison.resolveEncounter(b.prison.spec,prisonCatalog);
@@ -79,7 +84,7 @@ function upgradeBalance(b){
    m.hp=m.alive?Math.min(profile.maxHP,Math.ceil(profile.maxHP*m.hp/Math.max(1,m.maxHP))):0;
    Object.assign(m,profile);
   }else{
-   const spec=m.source==='boss-dungeon'?prisonCatalog[m.type]:prisonSpec;
+   const spec=m.source==='boss-dungeon'?worldMonsterCatalog[m.type]:prisonSpec;
    if(!spec)continue;
    m.hp=m.alive?Math.min(spec.hp,Math.ceil(spec.hp*m.hp/Math.max(1,m.maxHP))):0;
    Object.assign(m,{type:spec.type??m.type,maxHP:spec.hp,attack:spec.atk,defense:spec.def,magicDefense:spec.magicDefense,speed:spec.speed,attackSec:spec.attackSec,accuracy:spec.accuracy,attributePoints:spec.attributePoints});
@@ -88,7 +93,7 @@ function upgradeBalance(b){
   m.balanceVersion=balanceVersion;
  }
  if(b.area==='skypiea-01'&&b.hunts&&(b.partyInstanceId||reanchorSkypieaMobs(b.area,b.mobs))){cancel(b);resetHaki(b);}
- addSkypieaLedgers(b);b.rulesHash=rulesHash;
+ addHuntLedgers(b);b.rulesHash=rulesHash;
 }
 function hakiGame(b){
  b.haki??=H.migrate({}).haki;b.hakiRuntime??=H.start();
@@ -131,7 +136,7 @@ function enterDungeon(b,id,record,stats,hero,{stolen=0}={}){
  cancel(b);resetHaki(b);delete b.prison;b.talents=null;b.dungeon={id,record:structuredClone(record)};b.area='quest-dungeons';b.auto=record.phase==='running';b.autoSkills=true;b.respawn=0;b.attackClock=0;b.mobs=[];
  Object.assign(hero,dungeonMap.spawn);
  if(record.phase!=='running')return;
- const spec=prisonCatalog[d.monster],p=dungeonMap.enemySpawn;
+ const spec=worldMonsterCatalog[d.monster],p=dungeonMap.enemySpawn;
  b.mobs=[{...spec,id:record.spawnId,type:d.monster,source:'boss-dungeon',balanceVersion,dungeonId:id,dungeonRunId:record.runId,dungeonEncounterId:record.encounterId,area:'quest-dungeons',level:d.level,...p,anchorX:p.x,anchorY:p.y,maxHP:spec.hp,hp:spec.hp,attack:spec.atk,defense:spec.def,magicDefense:spec.magicDefense,aggro:dungeonMap.width,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:0,slow:0,telegraph:null,emberElapsed:0,emberFacing:'south',attackAnim:0,moving:0,patrolClock:0,talentStolen:stolen}];
 }
 function startWear(c){
@@ -212,7 +217,7 @@ function step(b,c){
  function land(m,raw,now,slow=0,wear=null){
   if(!live(m)||m.hp<=0||m.isUntargetable||m.isInvulnerable||b.hp<=0||!Number.isFinite(raw)||raw<=0)return 0;H.touch(hakiGame(b),b.hakiRuntime);
   if(m.rankSFreezeUntil>now/1000){raw+=m.rankSFreezePower||0;m.rankSFreezeUntil=0;m.rankAStunUntil=0;m.rankSIceSlowUntil=now/1000+3;m.rankSIceHeavyAttackUntil=now/1000+3;}
-  const amount=Math.min(m.hp,characters.monsterDamage(raw));behavior.hurt(m);if(c.shared&&!m.partyTargetId)m.partyTargetId=c.shared.actorId;m.hp-=amount;if(amount>0)resolveWear(b,c,wear);if(slow)m.slow=slow;
+  const amount=Math.min(m.hp,characters.monsterDamage(raw));behavior.hurt(m);if(c.shared&&!m.partyTargetId)m.partyTargetId=c.shared.actorId;m.hp-=amount;if(amount>0){cp9.recordHit(m,now/1000);resolveWear(b,c,wear);}if(slow)m.slow=slow;
   if(stats.fruitLifesteal||b.fruit?.effects.wolfUntil>now/1000)b.hp=Math.min(stats.maxHP,b.hp+amount*((stats.fruitLifesteal||0)+(b.fruit.effects.wolfUntil>now/1000?globalThis.MareWolf.rules.lifesteal:0)));
   b.metrics.damage=Math.min(Number.MAX_SAFE_INTEGER,b.metrics.damage+amount);event(b,'damage',{id:m.id,amount});if(m.hp<=0)kill(m,now);return amount;
  }

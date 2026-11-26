@@ -2922,10 +2922,10 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
     & .dungeon-card-copy em { font-size: 9px; }
     & .dungeon-list-note { display: none; }
     & .boss-dungeon-details { grid-template-rows: minmax(130px,.7fr) minmax(260px,1fr); }
-    & .dungeon-hero-art header { left: 10px; right: 95px; bottom: 10px; }
+    & .dungeon-hero-art header { left: 10px; right: 144px; bottom: 10px; }
     & .dungeon-hero-art h2 { font-size: 23px; }
     & .dungeon-hero-art header p { font-size: 11px; }
-    & .dungeon-recommended { width: 108px; max-width: 108px; box-sizing: border-box; right: 8px; bottom: 10px; padding: 6px; gap: 4px; font-size: 10px; }
+    & .dungeon-recommended { width: 128px; max-width: 128px; box-sizing: border-box; right: 8px; bottom: 10px; padding: 6px; gap: 4px; font-size: 10px; }
     & .dungeon-recommended strong { flex-shrink: 0; font-size: 20px; }
     & .dungeon-detail-content { padding: 8px; gap: 8px; }
     & .dungeon-description, & .dungeon-state { font-size: 11px; }

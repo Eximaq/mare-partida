@@ -10,9 +10,10 @@
  const coords={
   'east-blue':[[24,27],[70,27],[29,47],[74,47],[24,67],[69,67],[31,87],[75,87]],
   skypiea:[[25,35],[75,35],[25,68],[75,68]],
+  'enies-lobby':[[25,28],[75,28],[25,55],[75,55],[50,80]],
   alabasta:[[25,28],[69,28],[33,54],[75,54],[27,80],[69,80]]
  };
- const names={'east-blue':'Mares infinitos, grandes aventuras.',alabasta:'Areias, intrigas e um reino em crise.',skypiea:'Além das nuvens, novos horizontes.'};
+ const names={'east-blue':'Mares infinitos, grandes aventuras.',alabasta:'Areias, intrigas e um reino em crise.',skypiea:'Além das nuvens, novos horizontes.','enies-lobby':'Atravesse os portões da ilha judiciária.'};
  function monster(type,label,cls=''){
   return `<div class="expedition-monster ${cls}" data-state="loading"><canvas width="480" height="320" data-expedition-monster="${E(type)}" role="img" aria-label="${E(label)}"></canvas><span class="expedition-art-status" role="status">Carregando adversário…</span></div>`;
  }

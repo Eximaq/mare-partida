@@ -7,7 +7,14 @@ let g=base(),source=JSON.stringify(g);assert.deepEqual(H.migrate(g),g);assert.eq
 assert.equal(H.regions.beach.boss,'César');
 assert(H.regions.beach.sectors.every(s=>s.min===5&&s.max===5&&s.roles.length===1&&s.roles[0]==='cesar'));
 assert.equal(H.profile('beach','cais','cesar').level,5);assert.equal(g.stats.kills,99);
-assert.deepEqual(Object.values(H.regions).map(r=>[r.min,r.max]),[[75,80],[80,85],[85,90],[90,95],[40,50],[16,20],[21,25],[26,30],[31,35],[1,5],[11,15],[36,40],[5,10],[50,55],[55,60],[60,65],[65,70],[70,75]]);
+const legacyRanges={
+ 'skypiea-01':[75,80],'skypiea-02':[80,85],'skypiea-03':[85,90],'skypiea-04':[90,95],
+ alabasta:[40,50],rare:[16,20],syrup:[21,25],baratie:[26,30],arlong:[31,35],beach:[1,5],orange:[11,15],loguetown:[36,40],swamp:[5,10],
+ 'alubarna-01':[50,55],'alubarna-02':[55,60],'alubarna-03':[60,65],'alubarna-04':[65,70],'alubarna-05':[70,75]
+};
+assert.deepEqual(Object.fromEntries(Object.entries(H.regions).map(([id,r])=>[id,[r.min,r.max]])),{
+ ...legacyRanges,'enies-lobby-01':[95,100],'enies-lobby-02':[101,104],'enies-lobby-03':[104,106],'enies-lobby-04':[107,109],'enies-lobby-05':[110,114]
+},'new destinations retain every existing area and its exact level range');
 assert.equal(H.regions.swamp.boss,null);assert(H.regions.swamp.sectors.every(s=>s.min===8&&s.max===8&&s.roles.length===1&&s.roles[0]==='helmeppo'));
 for(const [area,region] of Object.entries(H.regions).filter(([,region])=>!!region.boss)){
  const anchors=area==='orange'?globalThis.MareOrange.districts:area==='beach'?E.districts:globalThis.MareConchas.districts,map=area==='orange'?globalThis.MareOrange.map:area==='beach'?E.map:W.maps.conchas,nav=new W.Navigation(map,map.navigationCell||24);

@@ -1,0 +1,12 @@
+{
+  "source": "User-provided Enies_Lobby_V2_Mapa_e_Teste.zip (updated lossless version)",
+  "mapSha256": "7f2f094c13043bed5fda091cf18168f27a50470233b1f084364dedf0abc017c9",
+  "geometrySha256": "084d5bff15704d3cdc0d4db5a1129aa10f00000af8dc0becdbbea24d9504ae0c",
+  "dimensions": [
+    3072,
+    4736
+  ],
+  "props": 87,
+  "imageFile": "map.webp",
+  "modifiedArtwork": false
+}

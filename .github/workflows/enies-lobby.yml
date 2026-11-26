@@ -1,0 +1,75 @@
+name: Integração de Enies Lobby
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  enies-lobby:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:18.6-bookworm
+        env:
+          POSTGRES_USER: mare_test_admin
+          POSTGRES_PASSWORD: disposable-ci-only
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mare_test_admin -d postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://mare_test_admin:disposable-ci-only@127.0.0.1:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - name: Viagens, encontros, impactos e prévia
+        run: node --test tests/enies-lobby.test.cjs tests/enies-bosses.test.cjs tests/archipelago.test.cjs tests/voyage-ui.test.cjs tests/ui-mobile-preview.test.cjs
+      - name: Compatibilidade dos contratos e do runtime
+        run: node --import tsx --test tests/foundation/enies-lobby-schema.test.mts tests/foundation/enies-lobby-migration.test.mts
+      - name: Viagens, vitórias e migração no PostgreSQL
+        run: node --import tsx --test --test-concurrency=1 tests/integration/server-enies-lobby.test.mts
+
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      MARE_QA_DIR: /tmp/mare-enies-lobby
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Preparar Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/enies-browser" playwright@1.56.1 --no-save --package-lock=false
+          bash tools/install_ci_chromium.sh "$RUNNER_TEMP/enies-browser/node_modules/.bin/playwright"
+      - name: Preparar a versão estática
+        run: python3 tools/build_pages.py --static-demo
+      - name: Jogar Enies Lobby e recuperar as vitórias em computador e celular
+        env:
+          NODE_PATH: ${{ runner.temp }}/enies-browser/node_modules
+        run: python3 tests/run_honors_hd_browser.py tests/enies-lobby-browser.cjs --offline --dist
+      - uses: actions/upload-artifact@v4
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
+        with:
+          name: enies-lobby-browser
+          path: /tmp/mare-enies-lobby/
+          if-no-files-found: warn
+          retention-days: 3
