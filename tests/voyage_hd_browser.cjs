@@ -18,7 +18,7 @@ for(const region of catalog.regions){
   assert.equal(await page.locator('.dungeon-range strong').textContent(),i.recommended[0]===i.recommended[1]?String(i.recommended[0]):i.recommended.join('–'));
   assert((await page.locator('.voyage-adversary').textContent()).includes(i.monster.name));
   assert.equal(await page.evaluate(()=>__impelQA.game.area),'beach','inspection never travels');
-  assert.equal(await page.locator('.dungeon-details .voyage-location').getAttribute('src'),'assets/ui/voyage-hd/'+i.id+'.png');
+  assert.equal(await page.locator('.dungeon-details .voyage-location').getAttribute('src'),i.thumbnail??'assets/ui/voyage-hd/'+i.id+'.png');
  }
 }
 await page.evaluate(()=>__impelQA.game.level=1);
@@ -26,7 +26,7 @@ await page.locator('[data-voyage-region=east-blue]').click();await page.locator(
 assert(await page.locator('[data-travel-island]').isDisabled());
 await page.locator('[data-travel-island]').dispatchEvent('click');
 assert.equal(await page.evaluate(()=>__impelQA.game.area),'beach');
-await page.evaluate(()=>__impelQA.game.level=99);
+await page.evaluate(level=>__impelQA.game.level=level,Math.max(...catalog.islands.map(i=>i.minLevel)));
 for(const i of catalog.islands){
  await map(i.region);await page.locator('[data-island="'+i.id+'"]').click();
  if(i.id==='dawn'){await page.locator('[data-travel-island]').evaluate(b=>{b.dispatchEvent(new MouseEvent('click',{bubbles:true}));b.dispatchEvent(new MouseEvent('click',{bubbles:true}));});assert.equal(await page.evaluate(()=>window.__voyageTravelCalls),1,'duplicate click only travels once');}else await page.locator('[data-travel-island]').click();
@@ -37,7 +37,7 @@ for(const i of catalog.islands){
 await map();await page.waitForTimeout(3700);
 for(const [width,height]of [[1920,1080],[1672,990],[1366,768],[1280,720],[393,851]]){
  await page.setViewportSize({width,height});
- for(const region of ['east-blue','alabasta','skypiea']){
+ for(const {id:region}of catalog.regions){
   await page.locator('[data-voyage-region='+region+']').click();
   if(region!=='skypiea')await page.locator('[data-island]').first().click();
   await page.waitForTimeout(250);
@@ -110,5 +110,5 @@ assert.equal(await page.evaluate(()=>__impelQA.game.impelDown.cleared),8);assert
 await page.setViewportSize({width:1672,height:990});
 await page.screenshot({path:process.env.MARE_QA_DIR+'/prison-available.png'});
 assert.deepEqual(errors,[]);
-console.log('Voyage HD: all 14 destinations and travel gates, 3 regions, 5 sizes, no overlapping cards, official sprites, persistent preview/battle identity, boss/locked/completed and storage retry passed.');
+console.log('Voyage HD: all '+catalog.islands.length+' destinations and travel gates, '+catalog.regions.length+' regions, 5 sizes, no overlapping cards, official sprites, persistent preview/battle identity, boss/locked/completed and storage retry passed.');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1});
