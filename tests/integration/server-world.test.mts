@@ -104,6 +104,7 @@ test('Skypiea world migration moves only the audited old island and retains unre
  const rules=createRequire(import.meta.url)('../../world-catalog.cjs').load();
  const sql=await readFile(new URL('../../apps/game-server/migrations/0061_skypiea_multi_maps.sql',import.meta.url),'utf8');
  await pool.query(sql);
+ await pool.query(await readFile(new URL('../../apps/game-server/migrations/0062_enies_lobby.sql',import.meta.url),'utf8'));
  const rows=new Map((await pool.query('SELECT * FROM mare_game.character_world')).rows.map(row=>[row.character_id,row]));
  const oldSky=rows.get(a.c.id),other=rows.get(b.c.id),rejected=rows.get(c.c.id),spawn=rules.maps['skypiea-01'].spawn;
  assert.equal(oldSky.map_id,'skypiea-01');assert.equal(oldSky.area,'skypiea-01');

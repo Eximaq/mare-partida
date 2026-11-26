@@ -3,10 +3,12 @@
 ((root)=>{
   const alubarna=root.MareAlubarna||(typeof module!=='undefined'?require('./alubarna-world.js'):null);
   const sky=root.MareSkypiea||(typeof module!=='undefined'?require('./skypiea-world.js'):null);
+  const enies=root.MareEniesLobby||(typeof module!=='undefined'?require('./enies-lobby-world.js'):null);
   const regions=Object.freeze([
     Object.freeze({id:'east-blue',name:'East Blue',locked:false}),
     Object.freeze({id:'alabasta',name:'Alabasta',locked:false}),
-    Object.freeze({id:'skypiea',name:'Skypiea',locked:false})
+    Object.freeze({id:'skypiea',name:'Skypiea',locked:false}),
+    Object.freeze({id:'enies-lobby',name:'Enies Lobby',locked:false})
   ]);
   const loot=Object.freeze(['Berry e experiência','Equipamentos da classe','Ferro Salgado e poções']);
   const islands=Object.freeze([
@@ -21,6 +23,7 @@
     ,{id:'alabasta-desert',region:'alabasta',name:'Deserto de Alabasta',recommended:[40,50],area:'alabasta',minLevel:40,description:'Explore os oásis e santuários cercados pelas muralhas de areia. Bananawani de nível 45 patrulham as dunas.',drops:loot,monster:{name:'Bananawani',role:'Predador · Nv. 45',src:'assets/sprites-combat-v2/bananawani/idle-south.png',sheet:false}}
     ,...alubarna.specs.map(s=>({id:s.id,region:'alabasta',name:s.name,recommended:[s.min,s.max],area:s.id,minLevel:s.min,description:'Explore as ruas, praças e avenidas de Alubarna. '+s.monster+' patrulha a cidade no nível '+s.level+'.',drops:loot,monster:{name:s.monster,role:'Patrulha · Nv. '+s.level,src:'assets/sprites-combat-v2/'+s.type+'/idle-south.png',sheet:false}}))
     ,...(sky?.specs??[]).map(s=>({id:s.id,region:'skypiea',name:s.name,recommended:[s.min,s.max],area:s.id,minLevel:s.min,description:s.monster+' patrulha os caminhos e as ruínas de '+s.name+' no nível '+s.level+'.',thumbnail:'assets/ui/voyage-hd/skypiea-01.png',drops:loot,monster:{name:s.monster,role:'Patrulha · Nv. '+s.level,src:'assets/sprites-combat-v2/'+s.type+'/idle-south.png',sheet:false}}))
+    ,...(enies?.specs??[]).map(s=>({id:s.id,region:'enies-lobby',name:s.name,recommended:[s.min,s.max],area:s.id,minLevel:s.min,description:s.monster+' patrulha os acessos e as praças de Enies Lobby no nível '+s.level+'.',thumbnail:'assets/exported-maps/enies-lobby/map.webp',drops:loot,monster:{name:s.monster,role:'Patrulha · Nv. '+s.level,src:'assets/sprites-combat-v2/'+s.type+'/idle-south.png',sheet:false}}))
   ].map((island,index)=>Object.freeze({...island,region:island.region||'east-blue',order:index+1,recommended:Object.freeze(island.recommended),monster:island.monster?Object.freeze(island.monster):null,drops:island.drops||null})));
   const get=id=>islands.find(i=>i.id===id)||null;
   const byArea=area=>area?islands.find(i=>i.area===area)||null:null;

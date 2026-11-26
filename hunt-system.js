@@ -8,8 +8,10 @@
   const alabasta=root.MareAlabasta||(typeof module!=='undefined'?require('./alabasta-world.js'):null);
   const alubarna=root.MareAlubarna||(typeof module!=='undefined'?require('./alubarna-world.js'):null);
   const sky=root.MareSkypiea||(typeof module!=='undefined'?require('./skypiea-world.js'):null);
+  const enies=root.MareEniesLobby||(typeof module!=='undefined'?require('./enies-lobby-world.js'):null);
   const archipelago=root.MareArchipelago||(typeof module!=='undefined'?require('./archipelago.js'):null);
   const regions={
+    ...Object.fromEntries((enies?.specs??[]).map(s=>[s.id,{name:s.name,min:s.min,max:s.max,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:s.districts.map(d=>({...d,min:s.level,max:s.level,roles:[s.type]}))}])),
     ...Object.fromEntries((sky?.specs??[]).map(s=>[s.id,{name:s.name,min:s.min,max:s.max,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:s.districts.map(d=>({...d,min:s.level,max:s.level,roles:[s.type]}))}])),
     alabasta:{name:'Deserto de Alabasta',min:40,max:50,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:alabasta.districts.map(d=>({...d,min:45,max:45,roles:['bananawani']}))},
     rare:{name:'Ilha dos Animais Raros',min:16,max:20,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.rare.districts.map(d=>({...d,min:18,max:18,roles:['cocox']}))},
@@ -52,7 +54,7 @@
   function rawProfile(area,sectorId,type,roll=.5){
     const region=get(area),a=archetypes[type],s=region?.sectors.find(s=>s.id===sectorId);if(!s||!a)throw Error('Encontro desconhecido');
     const level=type==='boss'?region.bossLevel:s.min+Math.min(s.max-s.min,Math.floor(Math.max(0,Math.min(.999999,roll))*(s.max-s.min+1)));
-    if(monsterCatalog[type]){const m=monsterCatalog[type];if(m.area!==area)throw Error('Monstro fora da ilha');return {level:m.level,maxHP:m.max_hp,attack:m.physical_attack,defense:m.physical_defense,magicDefense:m.magic_defense,speed:m.move_speed,reach:m.reach,attackSec:m.attack_seconds,aggro:m.aggro_radius,xp:Math.round(140*1.055**(m.level-18)),gold:[Math.round(45*1.055**(m.level-18)),Math.round(70*1.055**(m.level-18))]};}
+    if(monsterCatalog[type]){const m=monsterCatalog[type];if(m.area!==area)throw Error('Monstro fora da ilha');return {level:m.level,maxHP:m.max_hp,attack:m.physical_attack,defense:m.physical_defense,magicDefense:m.magic_defense,speed:m.move_speed,reach:m.reach,attackSec:m.attack_seconds,aggro:m.aggro_radius,xp:m.nominalXP??Math.round(140*1.055**(m.level-18)),gold:[Math.round(45*1.055**(m.level-18)),Math.round(70*1.055**(m.level-18))]};}
     return {level,maxHP:Math.round((70+level*22)*(1+level*.035)*(type==='boss'?1:a.hp)),attack:Math.round((6+level*2.2)*(type==='boss'?1:a.attack)),defense:Math.round((2+level*1.15)*(type==='boss'?1:a.defense)),speed:a.speed,reach:a.reach,attackSec:a.attackSec,aggro:a.aggro,xp:type==='boss'?level*35:Math.round((14+level*6)*(type==='crab'?1.1:type==='spirit'?1.12:1)),gold:type==='boss'?[level*12,level*17]:[4+level*2,8+level*3]};
   }
   function migrate(g){const old=g.hunts?.areas||{};return {...g,hunts:{version:VERSION,areas:Object.fromEntries(Object.keys(regions).map(id=>{const a=old[id]||{};return [id,{kills:int(a.kills),bosses:int(a.bosses),firstRewardClaimed:a.firstRewardClaimed===true,bossReadyAt:int(a.bossReadyAt),respawns:Object.fromEntries(Object.entries(a.respawns&&typeof a.respawns==='object'&&!Array.isArray(a.respawns)?a.respawns:{}).filter(([key,value])=>key.startsWith(id+'-')&&Number.isSafeInteger(value)&&value>=0))}];}))}};}
