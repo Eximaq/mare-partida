@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maré Partida — teste de encaixe do catálogo</title>
+<style>
+  :root{color-scheme:dark;--ink:#f2e2bd;--muted:#c4ad83;--brass:#b48b4a;--sea:#142b2e;--wood:#37271b;--zoom:4}
+  *{box-sizing:border-box}body{margin:0;background:#102124;color:var(--ink);font:16px/1.55 system-ui,sans-serif}
+  main{max-width:1160px;margin:auto;padding:clamp(16px,4vw,44px)}h1,h2,h3{font-family:Georgia,serif;line-height:1.2}h1{font-size:clamp(26px,5vw,38px);margin:0 0 12px}h2{font-size:25px}h3{font-size:21px;margin:0 0 12px}p{margin:10px 0}.muted,figcaption{color:var(--muted)}
+  header,.notice,.card,.controls{background:var(--wood);border:1px solid var(--brass);padding:20px}header{border-top:5px solid var(--brass)}.notice{margin:18px 0;background:var(--sea)}
+  .controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0}select,a{color:var(--ink)}select{padding:9px;background:#211a13;border:1px solid var(--brass);font:inherit}a{text-underline-offset:4px}a:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #ecd694;outline-offset:4px}
+  .reference,.grid{display:grid;gap:20px}.reference{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.card{min-width:0}figure{margin:14px 0}.stage{min-height:280px;display:flex;align-items:center;justify-content:center;background:var(--sea);border:1px solid #6b624b;overflow:auto}
+  .sprite{width:calc(64px * var(--zoom));height:calc(64px * var(--zoom));image-rendering:pixelated;flex-shrink:0}.status{font-weight:700}.rejected{color:#ffbd9b}.candidate{color:#e4cd83}details{margin-top:16px;border-top:1px solid #76603d;padding-top:12px}summary{cursor:pointer}figcaption{font-size:14px;margin-top:8px}.small{font-size:14px}code{overflow-wrap:anywhere}
+  @media(max-width:850px){.grid{grid-template-columns:1fr}.reference{grid-template-columns:1fr}.stage{min-height:280px}.card{padding:16px}}
+</style>
+<main>
+  <header>
+    <h1>Novas peças: teste de encaixe</h1>
+    <p>Maré Partida · piloto frontal · 27/10/2026</p>
+    <p><strong>3 gerações no piloto estático. Nenhuma peça ativada no jogo.</strong></p>
+  </header>
+  <section class="notice" aria-label="Limites desta prévia">
+    <p>As edições de arte cobrem <strong>uma pose frontal</strong>. Abaixo há um teste do attachment do sabre com os movimentos existentes. O colete ferrugem ainda não tem movimento; não há ataque ou outras direções para as peças novas.</p>
+    <p>O cabelo mudou a anatomia e foi reprovado. Roupa e sabre têm candidatos de encaixe feitos com pixels extraídos dos resultados, mantendo o corpo original. Ainda precisam de aprovação visual.</p>
+    <p class="small">Todos os registros permanecem <code>approved:false</code> e <code>productionEnabled:false</code>. Não há manifesto registrado no motor do jogo.</p>
+  </section>
+  <div class="controls"><label for="zoom">Ampliação para inspeção</label><select id="zoom"><option value="2">2×</option><option value="4" selected>4×</option><option value="8">8×</option></select><span class="muted">Pixels nativos preservados; sem interpolação.</span></div>
+  <section aria-labelledby="reference-title">
+    <h2 id="reference-title">Referencial e encaixe conjunto</h2>
+    <div class="reference">
+      <figure><div class="stage"><img class="sprite" src="body-south-idle-00.png" width="64" height="64" alt="Corpo frontal aprovado, sem cabelo, roupa ou arma"></div><figcaption>Base original. Fonte nativa 64×64, pivô 32/52; retorno ao rig 84×84 por padding 10/13.</figcaption></figure>
+      <figure><div class="stage"><img class="sprite" src="combined-fit-candidate.png" width="64" height="64" alt="Corpo original com roupa e sabre candidatos, usando o cabelo preto já existente"></div><figcaption>Montagem de inspeção: roupa + sabre candidatos e <strong>cabelo preto existente</strong>. Não é o Topete Cobre nem um personagem novo.</figcaption></figure>
+    </div>
+  </section>
+  <section aria-labelledby="pieces-title">
+    <h2 id="pieces-title">Resultado das três chamadas</h2>
+    <div class="grid">
+      <article class="card"><h3>Topete Cobre</h3><p class="status rejected">Reprovado para encaixe</p><figure><div class="stage"><img class="sprite" src="copper-quiff-original.png" width="64" height="64" alt="Resultado bruto reprovado: personagem virou e mudou a posição dos pés"></div><figcaption>Original devolvido pelo PixelLab. Mudou orientação, corpo e pés. Nenhuma camada foi extraída ou reparada.</figcaption></figure><a href="copper-quiff-original.png">Abrir original transparente</a></article>
+      <article class="card"><h3>Colete de Convés</h3><p class="status candidate">Candidato estático para avaliação</p><figure><div class="stage"><img class="sprite" src="deck-rust-fit-candidate.png" width="64" height="64" alt="Corpo original com colete ferrugem e camisa clara extraídos do resultado gerado"></div><figcaption>Máscara seleciona a roupa. Recolorações não solicitadas do rosto, mãos e pernas do resultado bruto não foram incorporadas.</figcaption></figure><a href="deck-rust-layer-candidate.png">Camada candidata transparente</a><details><summary>Original e máscara de extração</summary><figure><div class="stage"><img class="sprite" src="deck-rust-original.png" width="64" height="64" alt="Composição original da roupa retornada pelo PixelLab"></div><figcaption>Composição original, preservada sem alteração.</figcaption></figure><a href="deck-rust-extraction-mask.png">Máscara de seleção — controle de extração, não arte</a></details></article>
+      <article class="card"><h3>Sabre de Coral</h3><p class="status candidate">Candidato estático para avaliação</p><figure><div class="stage"><img class="sprite" src="coral-sabre-fit-candidate.png" width="64" height="64" alt="Corpo original segurando o sabre candidato na mão direita, à esquerda do observador"></div><figcaption>Somente pixels novos da arma fora da silhueta original; mão preservada à frente do punho. Sem alterações no item de gameplay.</figcaption></figure><a href="coral-sabre-layer-candidate.png">Camada candidata transparente</a><details><summary>Original e máscara de extração</summary><figure><div class="stage"><img class="sprite" src="coral-sabre-original.png" width="64" height="64" alt="Composição original do sabre retornada pelo PixelLab"></div><figcaption>Composição original, preservada sem alteração.</figcaption></figure><a href="coral-sabre-extraction-mask.png">Máscara de seleção — controle de extração, não arte</a></details></article>
+    </div>
+  </section>
+  <section class="notice" aria-label="Teste de movimento sem consumo"><h2>Sabre nos movimentos existentes</h2><p>Inspeção frontal do attachment: corpo, cabelo e <strong>roupa azul antiga</strong> usam seus frames originais. O sabre acompanha os sockets existentes. Este teste não usa a roupa ferrugem; veja a etapa seguinte para o novo colete em movimento.</p><p><a href="motion-preflight/sabre-idle-south-verified.gif">Abrir repouso com quatro frames</a> · <a href="motion-preflight/sabre-walk-south-8fps.gif">Abrir caminhada com oito frames</a> · <a href="motion-preflight/walk-contact-inspection.png">Inspecionar todos os frames</a></p><p class="small">Zero gerações adicionais. O ciclo de caminhada tem 1.000ms; GIF alterna 120/130ms para representar a média de 8FPS. O runtime permanece inalterado.</p></section>
+  <section class="notice" aria-label="Etapa seguinte"><h2>Colete em repouso e caminhada</h2><p>A transferência da roupa nos 12 frames foi aprovada e concluída em etapa separada, com cobrança de 10 gerações. <a href="../paper-doll-catalog-outfit-motion-20261027/preview.html">Abrir comparação sincronizada do colete em movimento</a>. O conjunto continua fora da produção; não cobre ataque ou outras direções.</p><p>O cabelo exige outra abordagem protegida e orçamento próprio. Nenhuma nova tentativa foi executada.</p><p><a href="review.json">Inspeção do piloto estático</a> · <a href="catalog-pilot.blueprint.json">Receita do piloto estático</a></p></section>
+</main>
+<script>document.getElementById('zoom').addEventListener('change',event=>document.documentElement.style.setProperty('--zoom',event.target.value));</script>
+</html>

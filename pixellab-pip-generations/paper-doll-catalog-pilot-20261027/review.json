@@ -1,0 +1,63 @@
+{
+  "reviewOnly": true,
+  "productionEnabled": false,
+  "approved": false,
+  "direction": "south",
+  "animation": "idle",
+  "frameIndex": 0,
+  "nativeSize": [
+    64,
+    64
+  ],
+  "runtimePadding": [
+    10,
+    13
+  ],
+  "runtimePivot": [
+    42,
+    65
+  ],
+  "new_animations": 0,
+  "reported_usage": {
+    "generations": 3
+  },
+  "pieces": [
+    {
+      "id": "copper-quiff",
+      "approved": false,
+      "state": "rejected",
+      "reason": "Turned the character and changed body/feet geometry; no hair layer accepted.",
+      "original": "copper-quiff-original.png"
+    },
+    {
+      "id": "deck-rust",
+      "approved": false,
+      "state": "static-fitting-candidate",
+      "coverage": {
+        "idle": [
+          "south"
+        ]
+      },
+      "layer_pixels": 258,
+      "original": "deck-rust-original.png",
+      "extraction_mask": "deck-rust-extraction-mask.png",
+      "layer": "deck-rust-layer-candidate.png",
+      "fit": "deck-rust-fit-candidate.png"
+    },
+    {
+      "id": "coral-sabre",
+      "approved": false,
+      "state": "static-fitting-candidate",
+      "coverage": {
+        "idle": [
+          "south"
+        ]
+      },
+      "layer_pixels": 100,
+      "original": "coral-sabre-original.png",
+      "extraction_mask": "coral-sabre-extraction-mask.png",
+      "layer": "coral-sabre-layer-candidate.png",
+      "fit": "coral-sabre-fit-candidate.png"
+    }
+  ]
+}
