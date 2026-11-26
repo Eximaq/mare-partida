@@ -16,7 +16,11 @@ source=source.replace(hook,`  window.__eniesQA={paused:true,stepping:false,
  draw:presentWorld,state:mapArtState,nav:navigator,
  stop(){autoPlay=false;autoSkills=false;travelPath=[];world.target=null;},
  start(){autoPlay=true;autoSkills=false;},
- fixture(level,strong=false){game.level=level;if(strong)Object.assign(game.attributes,{strength:50000,vitality:50000});game.hp=getDerived().maxHP;game.energy=getDerived().maxEnergy;saveGame();updateUI();},
+ fixture(level,strong=false){game.level=level;if(strong){
+  Object.assign(game.attributes,{strength:50000,vitality:50000});
+  // Strength scales logarithmically; raise fixture weapon power to finish the real attack loop promptly.
+  game.equipment.weapon.baseStats={...game.equipment.weapon.baseStats,attack:100000};
+ }game.hp=getDerived().maxHP;game.energy=getDerived().maxEnergy;saveGame();updateUI();},
  step(dt){this.stepping=true;try{tickSimulation(dt)}finally{this.stepping=false}presentWorld();},
  stage(){this.stop();const m=world.mobs.find(m=>m.alive&&m.hp>0);if(!m)throw Error('No live test opponent');
   const n=navigator(),p=[[-48,0],[48,0],[0,48],[0,-48]].map(([dx,dy])=>({x:m.x+dx,y:m.y+dy})).find(p=>n.walkable(p.x,p.y)&&n.clear(p,m));
@@ -39,7 +43,9 @@ source=source.replace(hook,`  window.__eniesQA={paused:true,stepping:false,
   const screenshot=name=>page.screenshot({path:path.join(out,name+'.png')});
   const openMap=async()=>{await page.locator('#mainMenu [data-panel=modes]').click();await page.locator('[data-quick-mode=map]').click();await page.locator('[data-voyage-region=enies-lobby]').click();};
   const travel=async(id,type)=>{
-   await openMap();await page.locator('[data-island='+id+']').click();await page.locator('[data-travel-area='+id+']').click();
+   await openMap();await page.locator('[data-island='+id+']').click();
+   await page.waitForFunction(type=>document.querySelector('[data-expedition-monster="'+type+'"]')?.dataset.ready==='true',type);
+   await page.locator('[data-travel-area='+id+']').click();
    await page.waitForFunction(({id,type})=>__mareDiagnostics().map.id===id&&__eniesQA.state()==='ready'&&MareSpriteCombatV2.status(type,'idle','south')==='ready',{id,type},{timeout:60000});
    await page.evaluate(()=>__eniesQA.stop());
   };
@@ -56,6 +62,7 @@ source=source.replace(hook,`  window.__eniesQA={paused:true,stepping:false,
   await page.evaluate(()=>{__eniesQA.stop();__eniesQA.fixture(94);});await openMap();
   assert.equal(await page.locator('[data-island]').count(),5);
   await page.locator('[data-island=enies-lobby-01]').click();assert(await page.locator('[data-travel-area=enies-lobby-01]').isDisabled(),'below level95 cannot travel');
+  await page.waitForFunction(()=>document.querySelector('[data-expedition-monster=fukurou]')?.dataset.ready==='true');
   await panelFits();await screenshot('enies-five-destinations');await page.locator('#closePanel').click();
   await page.evaluate(()=>__eniesQA.fixture(110,true));
   for(const [id,type,level]of cases){
@@ -119,6 +126,12 @@ source=source.replace(hook,`  window.__eniesQA={paused:true,stepping:false,
   console.log(JSON.stringify({...results,errors,missing}));
  }catch(error){
   if(page)await page.screenshot({path:path.join(out,'enies-failure.png')}).catch(()=>{});
-  console.error({phase,errors,missing});throw error;
+  const combat=page?await page.evaluate(()=>{
+   const q=window.__eniesQA;if(!q?.game)return null;
+   const d=__mareDiagnostics(),m=q.world.target||q.world.mobs.find(m=>m.alive);
+   return {stats:{...q.game.stats},attack:d.stats.attack,hp:q.game.hp,pose:d.combat,
+    hero:{x:q.world.hero.x,y:q.world.hero.y},target:m?{type:m.type,hp:m.hp,maxHP:m.maxHP,x:m.x,y:m.y}:null};
+  }).catch(()=>null):null;
+  console.error({phase,combat,errors,missing});throw error;
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

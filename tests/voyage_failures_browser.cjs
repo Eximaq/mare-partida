@@ -14,7 +14,7 @@ await page.locator('[data-island=syrup]').click();await page.waitForFunction(()=
 assert.equal(await page.locator('#dungeonName').textContent(),'Vila Syrup');
 await page.locator('[data-voyage-region=east-blue]').focus();const hero=await page.evaluate(()=>({x:__impelQA.world.hero.x,y:__impelQA.world.hero.y}));
 await page.keyboard.press('ArrowRight');assert.equal(await page.locator('[aria-selected=true][data-voyage-region]').getAttribute('data-voyage-region'),'alabasta');
-await page.keyboard.press('End');assert.equal(await page.locator('[aria-selected=true][data-voyage-region]').getAttribute('data-voyage-region'),'skypiea');
+await page.keyboard.press('End');assert.equal(await page.locator('[aria-selected=true][data-voyage-region]').getAttribute('data-voyage-region'),'enies-lobby');
 await page.keyboard.press('Home');assert.equal(await page.locator('[aria-selected=true][data-voyage-region]').getAttribute('data-voyage-region'),'east-blue');
 assert.deepEqual(await page.evaluate(()=>({x:__impelQA.world.hero.x,y:__impelQA.world.hero.y})),hero);
 await page.locator('[data-island=conchas]').click();await page.locator('[data-island=orange-town]').click();await page.locator('[data-island=baratie]').click();

@@ -74,7 +74,13 @@ test('Lucci and Moria victories reload as pending without XP, Berry, items or du
   await a.doit('world.return');await a.doit('dungeon.enter',{dungeonId});
   const resumed=await a.read();
   assert.equal(resumed.battle.mobs[0].id,record.spawnId);
-  assert.equal(resumed.dungeons.records[dungeonId].runId,record.runId);
+  // Leaving before victory starts a fresh run, while the stable spawn prevents
+  // farming the same boss's talent-steal allowance across retries.
+  const activeRecord=resumed.dungeons.records[dungeonId];
+  assert.notEqual(activeRecord.runId,record.runId);
+  assert.notEqual(activeRecord.encounterId,record.encounterId);
+  assert.equal(resumed.battle.mobs[0].dungeonRunId,activeRecord.runId);
+  assert.equal(resumed.battle.mobs[0].dungeonEncounterId,activeRecord.encounterId);
   await defeat(f,a);
   const won=await a.read();
   assert.equal(won.dungeons.records[dungeonId].phase,'pending');
@@ -85,7 +91,7 @@ test('Lucci and Moria victories reload as pending without XP, Berry, items or du
   await assert.rejects(a.doit('dungeon.claim',{dungeonId}),{code:'dungeon_reward_unavailable'});
   await a.doit('world.return');await a.doit('dungeon.enter',{dungeonId});
   const pending=await a.read();assert.equal(pending.battle.mobs.length,0);
-  assert.equal(pending.dungeons.records[dungeonId].runId,record.runId);
+  assert.equal(pending.dungeons.records[dungeonId].runId,activeRecord.runId);
   await tickWorldBattles(f.pool);await a.doit('world.return');
  }
  const victories=(await f.pool.query('SELECT dungeon_id,reward FROM mare_game.dungeon_victories WHERE character_id=$1 ORDER BY dungeon_id',[a.c.id])).rows;

@@ -3018,7 +3018,7 @@ ${avatarExtra}
   }
   function drawExpeditionMonster(c,type,w,h){
     c.clearRect(0,0,w,h);c.imageSmoothingEnabled=false;
-    if(MareSpriteCombatV2Data[type]?.monster){
+    if(MareSpriteCombatV2.resolve(type,'idle','south')?.entry?.monster){
       const state=MareSpriteCombatV2.status(type,'idle','south');
       if(state!=='ready')return state==='loading'?'loading':'unavailable';
       return MareSpriteCombatV2.draw(c,type,w/2,h*.94,{action:'idle',direction:'south',time:0,height:h*.79,fit:w*.85})?'ready':'unavailable';
