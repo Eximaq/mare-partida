@@ -7,14 +7,17 @@
  root.MareMapExportData['enies-lobby']=data;
  const goal=id=>data.goals.find(p=>p.id===id);
  const districts=['portao_interno','praca_central','torre_justica'].map(id=>({...goal(id)}));
- const positions=['portao_interno','praca_central','bairro_oeste','bairro_leste','tribunal','torre_justica'];
+ const positions=['portao_interno','praca_central','bairro_oeste','bairro_leste','tribunal','torre_justica'].map(id=>{
+  const p=goal(id),nearest=districts.reduce((best,d)=>!best||Math.hypot(d.x-p.x,d.y-p.y)<Math.hypot(best.x-p.x,best.y-p.y)?d:best,null);
+  return {sector:nearest.id,x:p.x,y:p.y};
+ });
  const specs=[
   ['enies-lobby-01','Enies Lobby 1',95,100,'fukurou','Fukurou',97],
   ['enies-lobby-02','Enies Lobby 2',101,104,'kalifa','Kalifa',101],
   ['enies-lobby-03','Enies Lobby 3',104,106,'jabra','Jabra',104],
   ['enies-lobby-04','Enies Lobby 4',107,109,'blueno','Blueno',107],
   ['enies-lobby-05','Enies Lobby 5',110,114,'kaku','Kaku',110]
- ].map(([id,name,min,max,type,monster,level])=>({id,name,min,max,type,monster,level,spawn:{...data.spawn},districts:districts.map(d=>({...d})),slots:positions.map((g,n)=>({id:id+'-'+n,sector:districts[Math.floor(n/2)].id,type,x:goal(g).x,y:goal(g).y}))}));
+ ].map(([id,name,min,max,type,monster,level])=>({id,name,min,max,type,monster,level,spawn:{...data.spawn},districts:districts.map(d=>({...d})),slots:positions.map((p,n)=>({id:id+'-'+n,type,...p}))}));
  const worlds=Object.fromEntries(specs.map(spec=>{
   const map=maps.build(spec.id),returnPoint={id:'return',...data.returnPoint,radius:40};
   Object.assign(map,{returnPoint,interactions:[returnPoint],spawnZones:spec.districts.map(p=>({id:p.id,x:p.x-120,y:p.y-120,w:240,h:240}))});

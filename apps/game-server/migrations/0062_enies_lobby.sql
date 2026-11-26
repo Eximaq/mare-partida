@@ -26,7 +26,7 @@ ALTER TABLE mare_game.dungeon_victories
 -- position, path, movement timer, battle field and historical receipt exactly.
 -- Promote only the known compatible predecessor; unknown hashes stay rejected.
 UPDATE mare_game.character_world
-SET rules_hash='51960833099ea10cdc82e6647e463bbd2e335d7c58df479c043b0277d13f5ff0'
+SET rules_hash='9c6aa574e983a938188e17282d07a3754b5fae612fff0fb829dadaae64edd2e7'
 WHERE rules_hash='1d59b830667d4842300bf0a74d9a898cdb74a910bc5819877ddcb32827bac1cd';
 
 UPDATE mare_game.character_battles
