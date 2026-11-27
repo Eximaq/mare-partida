@@ -87,7 +87,7 @@ const url=process.env.MARE_TEST_URL;
    const read=()=>page.evaluate(()=>__preparationQA.read());
    await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
    await page.evaluate(()=>__preparationQA.lane());
-   await page.waitForFunction(()=>__poseLoad.held&&document.querySelector('#worldLoading').classList.contains('hidden'),null,{timeout:60000});
+   await page.waitForFunction(()=>__poseLoad.held&&document.querySelector('#gameFrame').dataset.worldState==='ready',null,{timeout:60000});
    assert.equal(await page.locator('#playerVisualStatus,#retryPlayerVisual').count(),0);
    const paused=await read();
    const heldKey=await page.evaluate(()=>__poseLoad.heldKey);

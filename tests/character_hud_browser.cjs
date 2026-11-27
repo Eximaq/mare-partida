@@ -9,7 +9,7 @@ const hook="  window.__hudQA={get game(){return game},get world(){return world},
  await p.route('**/game.js*',async r=>{const response=await r.fetch();await r.fulfill({response,body:(await response.text()).replace('  window.__mareDiagnostics=',hook).replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame;if(!window.__pauseFrames)requestAnimationFrame(frame)')})});
  await p.goto(base);await p.waitForFunction(()=>window.__hudQA&&__mareDiagnostics().lobby96.state==='ready');
  await p.locator('#characterName').fill("Bento D’Água");await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();
- await p.waitForFunction(()=>document.getElementById('worldLoading').dataset.state==='ready',{},{timeout:90000});
+ await p.waitForFunction(()=>document.getElementById('gameFrame').dataset.worldState==='ready',{},{timeout:90000});
  await p.evaluate(()=>window.__pauseFrames=true);
  assert.equal(await p.locator('#characterPosterToggle').count(),1,'one functional character-poster disclosure must exist');
  assert.equal(await p.locator('#characterPosterToggle').getAttribute('aria-expanded'),'false');assert(await p.locator('#characterPoster').isHidden());

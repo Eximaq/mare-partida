@@ -35,6 +35,8 @@ jobs:
         run: |
           python3 tests/run_honors_hd_browser.py tests/pages-local-browser.cjs --offline --dist
           node tests/loading_offline_browser.cjs
+          node --test tests/loading-concurrent-browser.cjs
+          node tests/online-loading-browser.cjs
       - name: Enviar o pacote validado
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3

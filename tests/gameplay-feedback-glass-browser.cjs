@@ -62,13 +62,13 @@ const { chromium } = require('playwright');
     }
     await page.setViewportSize({width:1366,height:768});
     await page.evaluate(()=>feedbackQA.enterHunt());
-    await page.waitForFunction(()=>document.querySelector('#worldLoading').dataset.state==='ready');
+    await page.waitForFunction(()=>document.querySelector('#gameFrame').dataset.worldState==='ready');
     await page.evaluate(()=>{feedbackQA.spawnMob(true);feedbackQA.session.respawn=4;feedbackQA.presentWorld();});
     const recovery = page.locator('#worldRecovery');
     await recovery.waitFor();
     assert.match(await recovery.innerText(), /[1-4]\s*s/i);
     assert.equal(await material('#worldRecovery > div'), 'blur(8px)');
-    assert.equal(await material('#worldLoading > div'), 'blur(8px)');
+    assert.equal(await page.locator('#worldLoading').count(), 0);
     assert.equal(await material('#bossBanner'), 'blur(8px)');
     assert(await page.locator('#bossBanner').isVisible());
     await shot('alerta-e-contagem');

@@ -20,7 +20,11 @@
     return Array.from(digest, n => n.toString(16).padStart(2, '0')).join('');
   }
   let scenePending = false, failure = false, prepared = false, interfaceReady = false, generation = 0;
+  function status(message) {
+    if (!failure) phase.textContent = message;
+  }
   function progress(value) {
+    if (failure) return;
     meter.value = value;
     percent.textContent = Math.floor(value) + '%';
   }
@@ -69,13 +73,13 @@
     const source = new URL(path, scope);
     source.searchParams.set('install', hash.slice(0, 16));
     const file = await fetch(source).catch(() => fetch(source, {cache: 'reload'}));
-    if (!file.ok) throw Error('N„o foi possÌvel baixar um arquivo do jogo.');
+    if (!file.ok) throw Error('N√£o foi poss√≠vel baixar um arquivo do jogo.');
     return file.arrayBuffer();
   }
   async function restoreArchive(unit, patch, units, storage) {
     const [path, literalSize, spans] = patch;
     const literal = new Uint8Array(await fetchBytes(path, unit.hash));
-    if (literal.length !== literalSize) throw Error('A atualizaÁ„o chegou incompleta.');
+    if (literal.length !== literalSize) throw Error('A atualiza√ß√£o chegou incompleta.');
     const output = new Uint8Array(unit.size);
     const providers = new Map();
     let cursor = 0, consumed = 0;
@@ -89,7 +93,7 @@
       } else {
         if (!providers.has(hash)) {
           const stored = temporary.get(hash) || await storage.match(unitKey(hash));
-          if (!stored) throw Error('Arquivo de origem indisponÌvel.');
+          if (!stored) throw Error('Arquivo de origem indispon√≠vel.');
           providers.set(hash, new Uint8Array(await stored.arrayBuffer()));
         }
         output.set(providers.get(hash).subarray(start, start + count), offset);
@@ -113,6 +117,15 @@
     }
     const {units, patches = {}} = await response.json();
     await bind(controller);
+    // Recheck stored hashes inside the lock: a second tab may have installed
+    // everything while this one was waiting. Never download the same release twice.
+    if (navigator.locks) {
+      status('Conferindo o carregamento em outras abas');
+      await navigator.locks.request('kaizoku-install:' + scope, () => installUnits(units, patches));
+    } else await installUnits(units, patches);
+    controller.postMessage({type: 'installed', catalog});
+  }
+  async function installUnits(units, patches) {
     const storage = await caches.open('kaizoku-content-bytes:' + scope);
     const cached = new Set((await storage.keys()).map(key => key.url));
     const queue = [], providers = new Set(), seen = new Set();
@@ -140,7 +153,7 @@
         (temporary.size ? ' ¬∑ Parte dos arquivos fica nesta aba' : '');
     }
     update();
-    phase.textContent = queue.length ? 'Preparando mapas, personagens e equipamentos' : 'Conferindo os arquivos desta vers√£o';
+    status(queue.length ? 'Preparando mapas, personagens e equipamentos' : 'Conferindo os arquivos desta vers√£o');
     let diskFull = false;
     async function installUnit(unit) {
       const {path, size, hash, key, patch, transferSize} = unit;
@@ -156,7 +169,7 @@
       if (!buffer) {
         buffer = await fetchBytes(path, hash);
         if (buffer.byteLength !== size) throw Error('Um arquivo chegou incompleto.');
-        if (await digestOf(buffer) !== hash) throw Error('Um arquivo n„o corresponde ‡ vers„o do jogo.');
+        if (await digestOf(buffer) !== hash) throw Error('Um arquivo n√£o corresponde √† vers√£o do jogo.');
       }
       const blob = new Blob([buffer]);
       if (!diskFull) {
@@ -182,7 +195,6 @@
     }
     await installBatch(queue.filter(unit => providers.has(unit.hash)));
     await installBatch(queue.filter(unit => !providers.has(unit.hash)));
-    controller.postMessage({type: 'installed', catalog});
   }
   async function prepare() {
     show();
@@ -191,6 +203,7 @@
         if (catalog) await install();
         await document.fonts.ready;
         prepared = true;
+        if (failure) return;
         if (scenePending) scene();
         else if (interfaceReady) finish();
         else { progress(97); phase.textContent = 'Preparando a cena de entrada'; }
@@ -204,7 +217,9 @@
     }
   }
   function scene() {
+    if (failure) return;
     show(); scenePending = true;
+    interfaceReady = false;
     if (!prepared) return;
     progress(98);
     phase.textContent = 'Preparando o mapa e a anima√ß√£o do personagem';
@@ -224,6 +239,7 @@
     }));
   }
   window.MareGameLoading = {prepare, scene, finish, fail,
+    status,
     get prepared() { return prepared; },
     get failed() { return failure; },
     get pending() { return scenePending && !failure; }};

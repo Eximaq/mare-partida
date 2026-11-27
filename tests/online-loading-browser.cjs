@@ -1,0 +1,143 @@
+'use strict';
+// Real game boot and content worker, with only the account API replaced by a
+// local fixture. No production account, Supabase session or save is touched.
+const assert = require('node:assert/strict');
+const {createServer} = require('node:http');
+const {createReadStream, readFileSync, mkdirSync} = require('node:fs');
+const {stat} = require('node:fs/promises');
+const path = require('node:path');
+const {chromium} = require('playwright');
+const forge = require('../forge-system.js');
+const catalog = require('../item-catalog.js').create({forge,
+  prison:require('../prison-system.js'), haki:require('../haki-system.js'),
+  akuma:require('../akuma-system.js'), hakiProgression:require('../haki-progression.js')});
+const characters = require('../character-system.js');
+const birth = require('../character-catalog.js').create({characters});
+const maps = require('../world-catalog.cjs').load();
+const root = path.resolve(process.argv.slice(2).find(arg=>!arg.startsWith('--')) || 'dist');
+const character = {id:'11111111-1111-4111-8111-111111111111', name:'Navegante', classId:'sword', factionId:'pirate'};
+const equipment = Object.fromEntries([...catalog.inventorySlotsLeft,...catalog.inventorySlotsRight].map(slot => [slot,null]));
+for (const [slot,def] of [['weapon',0],['coat',6]]) equipment[slot] = forge.normalizeItem({def,id:'fixture-'+slot,level:1,plus:0,rarity:'common',obtainedAt:1},catalog.items,()=>0);
+const allocated = {strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0};
+const stats = characters.derive({classId:'sword',level:2,attributes:allocated},birth.classes.sword,birth.factions.pirate,forge.aggregate(equipment,catalog.items));
+const wire = {
+  state:{characterId:character.id,version:1,level:2,experience:'80',gold:'120'},
+  originalInventory:{catalogId:'original-game-v1',inventory:[],equipment,potions:4,materials:3,forgeVersion:4,forgeSeq:0,forgeHistory:[]},
+  inventory:{items:[],equipped:{weapon:null,armor:null}},itemCatalog:[],
+  attributes:{allocated,available:5},progression:{xpIntoLevel:'0',xpForNextLevel:'80'},
+  journey:{started:false},hunt:{status:'locked'},combat:{status:'locked',playerHp:65,playerMaxHp:65},
+  combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.maxHP},
+  world:{rulesetId:'original-world-v1',rulesHash:maps.rulesHash,mapId:'dawn',area:'beach',
+    position:maps.maps.dawn.spawn,path:[],speed:162.2,direction:'front',
+    serverNow:new Date().toISOString(),motionUntil:new Date().toISOString()}
+};
+let releaseControl;
+const controlGate = new Promise(resolve => {releaseControl = resolve;});
+let controlRequested = false, stateFailure = false, transfers = 0;
+const html = readFileSync(path.join(root,'index.html'),'utf8').replace('<head>',
+  '<head><script defer src="/online/game-session.js"></script><script defer src="/online/game-ui.js"></script><link rel="stylesheet" href="/online/game.css">');
+const types = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.ttf':'font/ttf','.woff2':'font/woff2'};
+const server = createServer(async (req,res) => {
+  const url = new URL(req.url,'http://localhost');
+  res.setHeader('Cache-Control','no-store');
+  if (url.pathname.startsWith('/v1/')) {
+    let body = {};
+    if (url.pathname === '/v1/me') body = {character};
+    else if (url.pathname === '/v1/auth/csrf') body = {csrfToken:'local-fixture'};
+    else if (url.pathname.endsWith('/online-state')) {
+      if (stateFailure) {res.writeHead(503,{'Content-Type':'application/json'}).end('{"error":"unavailable"}');return;}
+      body = wire;
+    }
+    else if (url.pathname.endsWith('/control')) {
+      controlRequested = true;
+      await controlGate;
+      body = {epoch:1,token:'x'.repeat(43)};
+    } else if (url.pathname.endsWith('/renew')) body = {epoch:1};
+    else if (url.pathname.endsWith('/commands')) {
+      let input = '';
+      for await (const chunk of req) input += chunk;
+      const command = JSON.parse(input);
+      assert.equal(command.action,'world.return');
+      wire.world = {...wire.world,mapId:'lobby',area:null,position:maps.maps.lobby.spawn};
+      wire.state.version++;
+    }
+    else {res.writeHead(404).end(); return;}
+    res.setHeader('Content-Type','application/json');res.end(JSON.stringify(body));return;
+  }
+  if (url.pathname === '/game') {res.setHeader('Content-Type','text/html');res.end(html);return;}
+  const relative = decodeURIComponent(url.pathname).slice(1);
+  const online = relative.startsWith('online/');
+  const base = online ? path.resolve('apps/account-client') : root;
+  const file = path.resolve(base,online ? relative.slice(7) : relative);
+  if (!file.startsWith(base+path.sep)) {res.writeHead(404).end();return;}
+  try {
+    const info = await stat(file);
+    if (!info.isFile()) throw Error('not a file');
+    if (url.searchParams.has('install')) transfers++;
+    res.writeHead(200,{'Content-Type':types[path.extname(file)] || 'application/octet-stream','Content-Length':info.size});
+    createReadStream(file).pipe(res);
+  } catch {res.writeHead(404).end();}
+});
+(async () => {
+  await new Promise(resolve => server.listen(0,'127.0.0.1',resolve));
+  if (process.argv.includes('--serve')) {
+    releaseControl();
+    console.log('Local loading fixture: http://127.0.0.1:'+server.address().port+'/game');
+    return;
+  }
+  const browser = await chromium.launch({executablePath:process.env.CHROME_PATH});
+  try {
+    const context = await browser.newContext({viewport:{width:1366,height:768}});
+    const page = await context.newPage(), errors = [];
+    page.on('pageerror',e=>errors.push(e.message));
+    page.on('console',message=>{if(message.type()==='error')console.error('browser:',message.text());});
+    const session = await context.newCDPSession(page);
+    await session.send('Storage.overrideQuotaForOrigin',{origin:'http://127.0.0.1:'+server.address().port,quotaSize:2*1024**3});
+    await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-byte-for-byte'));
+    await page.goto('http://127.0.0.1:'+server.address().port+'/game');
+    await page.waitForFunction(()=>document.querySelector('#gameLoading output').textContent === '100%' ||
+      document.querySelector('#gameLoading [role=status]').textContent.includes('Confirmando a entrada'),null,{timeout:240000});
+    assert(controlRequested,'the scene check must run while the real session acquisition is pending');
+    assert.notEqual(await page.locator('#gameLoading output').textContent(),'100%','100% must wait for the online session, not just the initial lobby image');
+    assert(await page.locator('#gameLoading').isVisible());
+    releaseControl();
+    await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
+    assert.equal(await page.evaluate(()=>window.__mareDiagnostics().map.id),'dawn','the restored server map must be ready before entry');
+    assert.equal(await page.evaluate(()=>window.__mareDiagnostics().map.navigation.ready),true);
+    assert.equal(await page.evaluate(()=>window.MareGameSession.controlled),true);
+    assert.equal(await page.locator('#app').evaluate(el=>el.inert),false);
+    assert.equal(await page.locator('#app').evaluate(el=>getComputedStyle(el).visibility),'visible');
+    assert.equal(await page.locator('#worldLoading').count(),0,'there must be no second in-game loading overlay');
+    assert.equal(await page.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-byte-for-byte');
+    const installed = transfers;
+    if (process.env.MARE_QA_DIR) {
+      mkdirSync(process.env.MARE_QA_DIR,{recursive:true});
+      await page.screenshot({path:path.join(process.env.MARE_QA_DIR,'online-entry-desktop.png')});
+    }
+    await page.setViewportSize({width:393,height:852});
+    await page.reload();
+    await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
+    assert.equal(transfers,installed,'a warm mobile reload must reuse the complete installation');
+    assert.equal(await page.evaluate(()=>window.__mareDiagnostics().map.id),'dawn');
+    if (process.env.MARE_QA_DIR) await page.screenshot({path:path.join(process.env.MARE_QA_DIR,'online-entry-mobile.png')});
+    stateFailure = true;
+    await page.reload();
+    await page.locator('#gameLoading button').waitFor({state:'visible'});
+    assert.match(await page.locator('#gameLoading [role=status]').innerText(),/carregar seu personagem/);
+    assert.notEqual(await page.locator('#gameLoading output').textContent(),'100%');
+    assert.equal(await page.locator('#gameLoading').count(),1,'a server failure keeps the same loader and its retry button');
+    stateFailure = false;
+    await page.locator('#gameLoading button').click();
+    await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
+    assert.equal(transfers,installed,'retrying session setup must not reinstall game content');
+    await page.locator('#returnLobby').click();
+    await page.waitForFunction(()=>window.__mareDiagnostics().map.id==='lobby' &&
+      document.querySelector('#gameFrame').dataset.worldState==='ready' && document.querySelector('#gameLoading').hidden);
+    assert.equal(transfers,installed,'travelling uses the installed maps, not another download');
+    assert.deepEqual(errors,[]);
+    console.log('Online loading: delayed control, restored map, one overlay, desktop/mobile, warm cache and demo isolation passed.');
+    await context.close();
+  } finally {
+    releaseControl();await browser.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));
+  }
+})().catch(error=>{console.error(error);process.exitCode=1;});

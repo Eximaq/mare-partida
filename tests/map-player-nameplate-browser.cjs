@@ -17,7 +17,7 @@ const {chromium}=require('playwright');
     await page.locator('#nextToAppearance').click();
     await page.locator('#createCharacter').click();
     await page.locator('[data-confirm-accept]').click();
-    await page.waitForFunction(()=>document.querySelector('#worldLoading').dataset.state==='ready');
+    await page.waitForFunction(()=>document.querySelector('#gameFrame').dataset.worldState==='ready');
     await page.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready');
     await page.evaluate(()=>{
       const draw=MareMapPlayerHud.draw;

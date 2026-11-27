@@ -513,6 +513,6 @@
       fetch: root.fetch.bind(root),
       storage: root.sessionStorage,
     });
-    document.body.classList.add("online-game", "online-session-loading");
+    document.body.classList.add("online-game");
   }
 })(globalThis);

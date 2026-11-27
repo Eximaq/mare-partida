@@ -50,7 +50,7 @@ arrive('dawn','beach');wire.battle.area='beach';
  const visualGate=new Promise(resolve=>{releaseVisual=resolve;});
  await p.route(/\/tools\/rework-base-hd\/index\.json(?:\?|$)/,async route=>{await visualGate;await route.continue();});
  await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready);
- const visualReady=()=>p.waitForFunction(()=>document.querySelector('#worldLoading')?.dataset.state==='ready');
+ const visualReady=()=>p.waitForFunction(()=>document.querySelector('#gameFrame')?.dataset.worldState==='ready');
  async function open(){await p.locator('#characterMenuTrigger').click();await p.locator('[data-character-section="akuma"]').click();await p.waitForSelector('[data-compendium-query]');await p.locator('[data-compendium-query]').fill('Lobo');await p.locator('[data-compendium-fruit="akuma_inu_wolf"]').click();}
  await open();assert.notEqual(await p.evaluate(()=>__mareDiagnostics().lobby96.worldVisual?.state),'ready');await p.locator('[data-fruit-register="akuma_inu_wolf"]').click();await p.waitForFunction(()=>MareGameSession.data.online.fruits.registered.length===1&&!MareGameSession.busy);assert.equal(original.equipment.akuma_no_mi.id,'server-fruit');assert.equal(wire.state.gold,'120');releaseVisual();
  await p.screenshot({path:path.join(out,'fruit-compendium.png')});await p.locator('#closePanel').click();await visualReady();await p.locator('#zoanTransform').click();await p.waitForFunction(()=>!MareGameSession.data.online.battle.fruit.transformed&&!MareGameSession.busy);await visualReady();await p.locator('#zoanTransform').click();await p.waitForFunction(()=>MareGameSession.data.online.battle.fruit.transformed&&!MareGameSession.busy);

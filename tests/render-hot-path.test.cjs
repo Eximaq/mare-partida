@@ -10,15 +10,17 @@ test('offscreen portal drawing is culled while an edge-overlapping label remains
 });
 test('unchanged map status does not rewrite DOM each frame; load/failure/recovery still update',()=>{
  let state='loading',writes=0,draws=0;
- const text={set textContent(v){writes++;}},loading={dataset:{},classList:{toggle(){}},querySelector:()=>text};
- const c=vm.createContext({game:{},lobby96:{worldVisual:()=>({state:'ready'}),worldPlayer:()=>({})},mapArtState:()=>state,$:()=>loading,ctx:{fillRect(){}},W:100,H:100,drawWorld:()=>draws++,drawPaperDollDiagnostics(){}});
+ let storedState,preparations=0,failures=0;
+ const frame={dataset:{get worldState(){return storedState;},set worldState(value){storedState=value;writes++;}}};
+ const loading={pending:false,failed:false,fail(){this.failed=true;failures++;}};
+ const c=vm.createContext({game:{},loading,prepareScene(){preparations++;loading.pending=true;},mapArtState:()=>state,$:()=>frame,ctx:{fillRect(){}},W:100,H:100,drawWorld:()=>draws++,drawPaperDollDiagnostics(){}});
  let timerValue='',timerWrites=0;
  Object.assign(c,{scene:'hunt',session:{respawn:0},classCombatController:()=>true,
    recoveryNotice:{hidden:true,dataset:{}}, recoveryTitle:{},
    recoveryTimer:{get textContent(){return timerValue;},set textContent(value){timerWrites++;timerValue=value;}}});
  vm.runInContext(fn('updateRecoveryNotice'),c);
  vm.runInContext(fn('presentWorld'),c);for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);
- assert.equal(writes,1);state='failed';vm.runInContext('presentWorld()',c);assert.equal(writes,2);
+ assert.equal(writes,1);assert.equal(preparations,1);state='failed';for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);assert.equal(writes,2);assert.equal(failures,1);
  state='ready';for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);assert.equal(writes,3);assert.equal(draws,60);
  assert.equal(timerWrites,0);
  c.session.respawn=2.8;
