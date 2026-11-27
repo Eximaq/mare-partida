@@ -1,5 +1,6 @@
 import {recordDailyProgress} from './contracts.js';
 import {grantWeeklyBossLoot} from './weekly-boss-loot.js';
+import {rewardDailySwords} from './daily-sword-event.js';
 import type {Pool} from 'pg';
 import {randomInt,randomUUID} from 'node:crypto';
 import {createRequire} from 'node:module';
@@ -62,7 +63,16 @@ export async function tickWeeklyBosses(pool:Pool,assignment?:SimulationPartition
    await storeWorld(c,a.id,{...a.w,position:{x:a.hero.x,y:a.hero.y},direction:a.hero.direction,path:a.b.hp>0&&!a.b.auto?a.manualPath:[],speed:E.combatStats(a.b,a)[a.b.auto?'huntSpeed':'moveSpeed'],serverNow:row.now.toISOString(),motionUntil:new Date(Math.max(now,Date.parse(a.w.motionUntil))).toISOString()});
    await storeBattle(c,a.id,a.b,false);await c.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[a.id,row.now,a.epoch]);await c.query('UPDATE mare_game.weekly_boss_members SET control_epoch=$2 WHERE character_id=$1',[a.id,a.epoch]);
   }
-  if(!boss.alive){
+  if(!boss.alive&&boss.dailySwordBossId){
+   for(const member of roster){
+    const record=room.contributions[member.character_id];
+    if(!record||!(record.damage>0||record.healing>0)||now-new Date(member.last_seen).getTime()>R.policy.reconnectMs)continue;
+    await rewardDailySwords(c,row.id,member.character_id,record);
+   }
+   boss.defeatedAt=now;
+   await c.query("UPDATE mare_game.weekly_boss_events SET status='won',ended_at=$2,version=version+1 WHERE id=$1",[row.id,row.now]);
+   for(const member of roster)await leaveWeeklyBoss(c,member.character_id);
+  }else if(!boss.alive){
    const eligible:string[]=[];
    if(row.mode==='official')for(const a of actors){const contribution=room.contributions[a.id];if(!contribution||!R.eligible({...contribution,connected:a.connected,hp:a.b.hp,lastSeen:a.lastSeen},boss.maxHP,a.f.maxHp,now))continue;
     await c.query('INSERT INTO mare_game.weekly_boss_victories(event_id,character_id,damage,healing,combat_ms) VALUES($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING',[row.id,a.id,contribution.damage,contribution.healing,contribution.combatMs]);

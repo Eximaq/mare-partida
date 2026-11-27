@@ -5,7 +5,8 @@
   const data=root.MareMapExportData;
   const step=16;
   const mapKey=id=>/^(thriller-bark|sabaody|marineford)-\d{2}$/.exec(id)?.[1]||(id?.startsWith('enies-lobby-')?'enies-lobby':id?.startsWith('alubarna-')?'alubarna':id==='beach'?'dawn':id==='swamp'?'conchas':id);
-  const get=id=>data[mapKey(id)];
+  const arena=root.MareDailySwordArena||(typeof module!=='undefined'?require('./daily-sword-arena-data.js'):null);
+  const get=id=>id==='arena-espadachins'?arena:data[mapKey(id)];
   const imageCache=new Map();
   const base=typeof document==='undefined'?null:document.currentScript?.src;
   const square=(x,y,w,h)=>({x,y,w,h});
@@ -50,7 +51,7 @@
     };
   }
   function install(maps){
-    for(const id of [...Object.keys(maps),'marineford']){
+    for(const id of [...new Set([...Object.keys(maps),'marineford','arena-espadachins'])]){
       if(!get(id))continue;
       const map=build(id,maps[id]);
       if(maps[id])Object.assign(maps[id],map);

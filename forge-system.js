@@ -134,7 +134,7 @@
   function normalizeItem(original,defs,random=null){
     const item=clone(original),def=defs[item.def];if(!def)return item;
     if(def.kind==='visual-completo'||def.type==='akuma_no_mi'||item.type==='akuma_no_mi')return item;
-    if(['pearl-box','epic-equipment-box','haki-book','haki-fragment','akuma-fragment','weapon-fragment'].includes(def.kind))return item;
+    if(['pearl-box','epic-equipment-box','haki-book','haki-fragment','akuma-fragment','weapon-fragment','sword-fragment'].includes(def.kind))return item;
     if(isPearl(item,defs)){const p=pearlOf(item,defs);if(p)item.pearlId=p.id;item.forgeVersion=VERSION;return item;}
     if(hasDurability(item,defs))item.durability=durabilityOf(item);
     const fixedRarityUpgrade=def.fixedRarity&&rarity[def.rarity]&&item.rarity!==def.rarity;

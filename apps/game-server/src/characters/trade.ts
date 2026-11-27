@@ -8,6 +8,8 @@ import {getGameCatalog} from '../gameplay/catalog.js';
 import {assertEquipmentTransferReady,readOriginalInventory,writeInventory} from '../gameplay/inventory.js';
 import {assertSocialContactAllowed,isSocialCharacterOnline} from './social-contacts.js';
 
+import {readSwordCollection,routeSwordItems,storeSwordCollection} from './sword-collection-store.js';
+
 export type TradeCommand=Extract<CharacterCommand,{action:`trade.${string}`}>;
 
 type Item = OriginalItemInstance;
@@ -225,7 +227,7 @@ function receive(inventory:Item[],incoming:Offer[]){
     if(result.some(x=>x.id===item.id))throw new AuthFault(409,'trade_item_conflict');
     const stackLimit=items[item.def]?.stackLimit;
     let left=quantity;
-    if(items[item.def]?.kind==='haki-fragment'&&typeof stackLimit==='number'){
+    if(['haki-fragment','sword-fragment'].includes(String(items[item.def]?.kind))&&typeof stackLimit==='number'){
       for(const [index,existing] of result.entries()){
         if(!stackCompatible(existing,item))continue;
         const add=Math.min(left,Math.max(0,stackLimit-itemQuantity(existing)));
@@ -252,7 +254,10 @@ async function settle(client:PoolClient,t:TradeRow,id:string){
   if(!reservations.length)throw new AuthFault(409,'trade_empty');
   const a=separate(first.inventory,reservations.filter(x=>x.character_id===t.initiator_id));
   const b=separate(second.inventory,reservations.filter(x=>x.character_id===t.target_id));
-  const firstResult=receive(a.staying,b.outgoing),secondResult=receive(b.staying,a.outgoing);
+  const toFirst=routeSwordItems(await readSwordCollection(client,t.initiator_id),b.outgoing.map(o=>o.item));
+  const toSecond=routeSwordItems(await readSwordCollection(client,t.target_id),a.outgoing.map(o=>o.item));
+  const firstResult=receive(a.staying,toFirst.inventoryItems.map(item=>({item,quantity:itemQuantity(item)})));
+  const secondResult=receive(b.staying,toSecond.inventoryItems.map(item=>({item,quantity:itemQuantity(item)})));
   const receipt:Receipt={initiator:a.outgoing,target:b.outgoing};
   const completed=await client.query(`
     UPDATE mare_game.social_trades SET status='completed',ended_at=date_trunc('milliseconds',clock_timestamp()),receipt=$2::jsonb,
@@ -265,6 +270,8 @@ async function settle(client:PoolClient,t:TradeRow,id:string){
   await client.query('DELETE FROM mare_game.social_trade_members WHERE trade_id=$1',[t.id]);
   await writeInventory(client,t.initiator_id,{...first,inventory:firstResult});
   await writeInventory(client,t.target_id,{...second,inventory:secondResult});
+  if(toFirst.changed)await storeSwordCollection(client,t.initiator_id,toFirst.collection);
+  if(toSecond.changed)await storeSwordCollection(client,t.target_id,toSecond.collection);
   const versions=await client.query(`
     UPDATE mare_game.characters SET state_version=state_version+1
     WHERE id=ANY($1::uuid[]) AND state_version<9007199254740991 RETURNING id

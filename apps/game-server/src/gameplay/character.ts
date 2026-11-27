@@ -15,7 +15,7 @@ export const advanceOriginalLevel:(value:{level:number;start:bigint;experience:b
 export function deriveOriginalFighter(classId:string,factionId:string,state:CharacterState,allocated:AttributeValues,inventory:OriginalInventory,build?:TalentBuild,runtime?:any,haki?:any,fruits?:{registered:string[]} | null,battle?:any,legacyCadence=false,crewVitality=0):Fighter {
   const A=require('../../../../akuma-system.js'),P=require('../../../../akuma-passives.js'),fruitId=A.itemData(inventory.equipment.akuma_no_mi,getGameCatalog().items)?.id;
   const gear=A.applyGear(forge.aggregate(inventory.equipment,getGameCatalog().items),inventory.equipment.akuma_no_mi,getGameCatalog().items);gear.akumaRegistered=fruits?.registered.length||0;
-  const baseStats=characters.derive({classId,level:state.level,attributes:allocated},catalog.classes[classId],catalog.factions[factionId],gear,{legacyCadence,crewVitality});
+  const baseStats=characters.derive({classId,level:state.level,attributes:allocated,swords:state.swords},catalog.classes[classId],catalog.factions[factionId],gear,{legacyCadence,crewVitality});
   const T=require('../../../../talent-system.js');
   const talentStats=build&&T.spent(build)>0?T.applyStats(baseStats,{classId,talentBuilds:{[classId]:build}},runtime):baseStats;
   const hakiStats=haki?require('../../../../haki-system.js').stats(talentStats,{has_haki_unlocked:haki.state.unlocked,haki:haki.state},haki.runtime):talentStats;

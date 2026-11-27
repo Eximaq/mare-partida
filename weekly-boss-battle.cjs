@@ -1,6 +1,7 @@
 'use strict';
 // Runs only on the authoritative worker. It never issues loot, XP or claims.
 const E=require('./world-battle.cjs'),A=require('./akainu-combat.js'),R=require('./weekly-boss-rules.cjs');
+const daily=require('./daily-sword-battle.cjs');
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function step(room,actors,{nav,now,dt,rng}){
  if(!room?.id||!Array.isArray(room.mobs)||room.mobs.length!==1||room.mobs[0].source!=='weekly-boss')throw Error('weekly_boss_room_invalid');
@@ -12,7 +13,7 @@ function step(room,actors,{nav,now,dt,rng}){
  for(const actor of active){
   actor.b.mobs=room.mobs;
   if(!Object.hasOwn(room.contributions,actor.id)){
-   if(Object.keys(room.contributions).length>=R.policy.maxContributors)throw Error('weekly_boss_contribution_limit');
+   if(!boss.dailySwordBossId&&Object.keys(room.contributions).length>=R.policy.maxContributors)throw Error('weekly_boss_contribution_limit');
    Object.defineProperty(room.contributions,actor.id,{value:{damage:0,healing:0,combatMs:0,lastSeen:now},writable:true,enumerable:true,configurable:true});
   }
  }
@@ -34,7 +35,8 @@ function step(room,actors,{nav,now,dt,rng}){
     for(const other of active){if(alliedHP.has(other.id))record.healing+=Math.max(0,other.b.hp-alliedHP.get(other.id));}
    }
   }
-  const hits=A.step(boss,active,{nav,now:clock,dt:slice});
+  const brain=boss.dailySwordBossId?daily:A;
+  const hits=brain.step(boss,active,{nav,now:clock,dt:slice});
   for(const a of active){
    const incoming=hits.filter(h=>h.targetId===a.id).map(h=>({...h,sourceId:boss.id}));
    if(!incoming.length)continue;

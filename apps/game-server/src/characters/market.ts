@@ -79,7 +79,7 @@ export function marketItemDetails(item:OriginalItemInstance){
     rank:rank??null,fruitType:fruit?akuma.familyFor(fruit):null,level:gear?item.level:null,potential:gear?item.potential??null:null,attributes,
     upgrade:gear?item.plus:null,durability:forge.hasDurability(item,items)?forge.durabilityOf(item):null,pearls:(item.sockets??[]).map(id=>id?{id,name:forge.pearlById[id]?.name,attribute:forge.pearlById[id]?.attribute,level:forge.pearlById[id]?.level}:null),
     origin:item.generation?.family??null,originLabel:item.origin??null,classId:gear&&def.slot==='weapon'?String(def.type??'')||null:null,
-    stackable:kind==='haki-fragment',quantity,obtainedAt:item.obtainedAt};
+    stackable:['haki-fragment','sword-fragment'].includes(kind),quantity,obtainedAt:item.obtainedAt};
 }
 type Details=ReturnType<typeof marketItemDetails>;
 const money=(s:string|null)=>s===null?null:Number(s);

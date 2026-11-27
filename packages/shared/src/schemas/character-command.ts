@@ -32,6 +32,7 @@ const socialActions = ['friend.request','friend.respond','friend.cancel','friend
 const offerVersion = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
 export const messageIdSchema = z.string().regex(/^[1-9][0-9]{0,18}$/).refine(id=>BigInt(id)<=9223372036854775807n);
 export const characterCommandSchema = z.discriminatedUnion("action", [
+ z.strictObject({...commandEnvelope,action:z.literal('swords.activate'),payload:z.strictObject({swordId:z.string().regex(/^[a-z0-9-]{1,50}$/)})}),
  z.strictObject({...commandEnvelope,action:z.literal('weeklyBoss.execute'),payload:weeklyBossPayloadSchema}),
  z.strictObject({...commandEnvelope,action:z.enum(['friend.request','friend.remove']),payload:z.strictObject({targetId:z.uuid()})}),
  z.strictObject({...commandEnvelope,action:z.literal('friend.respond'),payload:z.strictObject({requestId:z.uuid(),accept:z.boolean()})}),
@@ -116,7 +117,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["weeklyBoss.execute", "state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "attributes.build", "attributes.distribute", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,'market.execute',...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
+  action: z.enum(["weeklyBoss.execute", "swords.activate", "state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "attributes.build", "attributes.distribute", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,'market.execute',...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
   weeklyBoss:weeklyBossReceiptSchema.optional(),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),

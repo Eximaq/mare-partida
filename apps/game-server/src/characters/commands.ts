@@ -3,6 +3,7 @@ import {executeWeeklyBoss} from './weekly-boss.js';
 import {executeSocialContact,type SocialContactCommand} from './social-contacts.js';
 import {executeMarket} from './market.js';
 import {executeSocialMail} from './mail.js';
+import {activateSword} from './sword-collection.js';
 import {mutateTrade,cancelBlockedTrade} from './trade.js';
 import {isPartyAction,mutateParty} from './party.js';
 import {executeCrew} from './crew.js';
@@ -99,6 +100,7 @@ export async function executeCharacterCommand(
   }
   state=await readCharacterState(client,characterId);
   const before=state,powerBefore=social||input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);
+  if(input.action==='swords.activate'){await activateSword(client,characterId,state,input.requestId,input.payload.swordId);state=await readCharacterState(client,characterId);}
   if(input.action.startsWith('profile.')){await mutateProfile(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(['fruit.cast','fruit.transform','fruit.move'].includes(input.action)){await mutateFruit(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==='fruit.register'){await registerFruit(client,characterId,input.requestId,state,input.payload.itemId);state=await readCharacterState(client,characterId);}
