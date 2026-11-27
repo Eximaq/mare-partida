@@ -12,7 +12,7 @@ const env={JSON,URL,AbortController,performance,module:{exports:{}},require(f){r
  MareReworkNativeHD:{create:()=>({drawStable(_,p,o){calls.native.push([p,o]);return nativeAvailable;},
    draw(_,p,o){calls.draft.push([p,o]);return nativeAvailable;},snapshot(){return {};},prepareClip(){calls.prepared++;return nativeAvailable;},
    async prepareStablePose(){calls.stable++;return nativeAvailable;}})},
- MareReworkDefaultHD:{create:()=>defaultHD},MareReworkWeapons:{create:()=>reviewActive?{active:true,draw(){calls.unsigned++;return true;}}:null},
+ MareReworkDefaultHD:{create:()=>defaultHD},MareReworkWeapons:{create:()=>reviewActive?{active:true,snapshot(){return {};},draw(){calls.unsigned++;return true;}}:null},
  MarePlayerReworkRuntime:{create:()=>({get active(){return signedAvailable;},snapshot(){return {};},draw(){calls.signed++;return signedAvailable;}})},
  MareVisualCompletoRenderer:{draw(){calls.skin++;return skinAvailable;}},console};
 vm.runInNewContext(lobbySource,env);
