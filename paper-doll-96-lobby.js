@@ -250,17 +250,7 @@
       }
     }
     function releaseBundle(bundle){for(const value of new Set(bundle?.values())){const strip=value?.strip;if(strip){strip.width=0;strip.height=0;}}}
-    const directionalPreparations=new Map();
-    function prepareWorldDirections(player){
-      if(!nativeHD?.prepareStablePose||!player||player.zoanTransformed)return;
-      const key=JSON.stringify([player.appearance96,player.equipment,!!root.MareHeadgear?.hidden(player),!!root.MareAppearance96,!!root.MareCharacterAppearance],(key,value)=>key==='durability'?undefined:value);
-      if(directionalPreparations.has(key))return;
-      const preparedPlayer={...player,appearance96:{...player.appearance96},equipment:{...player.equipment},preferences:{...player.preferences}};
-      const task=(async()=>{for(const direction of ['south','east','west','north']){const options={action:'idle',direction,consumer:'world'};await nativeHD.prepareStablePose(preparedPlayer,options);}})().catch(()=>{directionalPreparations.delete(key);});
-      directionalPreparations.set(key,task);while(directionalPreparations.size>8)directionalPreparations.delete(directionalPreparations.keys().next().value);
-    }
     function ensure(player,{consumer='player-prepare'}={}){
-      prepareWorldDirections(player);
       if(!rehearsal)return prepareVisual(player,{consumer:'world',action:'idle',direction:'south'});
       if(state!=='ready')return Promise.resolve(false);
       const target=resolve(player);
@@ -358,6 +348,14 @@
       return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(point.y-spec.pivot.y)*scale,frame:4,weapon:value.look.weapon};
     }
     async function prepareVisual(player,options={}){
+      if(options.consumer==='world'){
+        if(!player||player.zoanTransformed)return false;
+        const action=worldAction(options.action||'idle');
+        const entry=requestWorldVisual(player,{action,direction:directionOf(options.direction||'south'),consumer:'world',
+          weaponless:action!=='idle'&&!!options.weaponless},{publish:false});
+        await entry.promise;
+        return !!entry.bundle;
+      }
       if(await nativeHD?.prepareClip(player,options))return true;
       const pending=requestTypedSurface(player,options);
       if(pending&&await pending.ready)return true;
@@ -419,13 +417,17 @@
       return {source:source.id,omitted:source.omitted||[],slotRoutes:source.slotRoutes||{},consumer:options.consumer,typedHD:true};
     }
     const worldPoseKey=(player,o,identity=visualIdentity(player))=>JSON.stringify([identity,o.action,o.direction,!!o.weaponless,...(approved?.records.length?[approved.revision]:[])]);
+    const worldRetryDelay=[1500,3000];
+    const hasFailedSlot=bundle=>bundle?.coverage?.some(pose=>
+      Object.values(pose.slotResolution||{}).some(slot=>slot.state==='load-failed'));
     function releaseWorldPose(entry,reason='pose-released'){
-      if(entry.state==='loading'){
+      if(entry.promise){
         entry.state='cancelled';
         entry.reason=reason;
       }
       entry.controller.abort();
       entry.bundle?.release();
+      entry.bundle=null;
       worldPoses.delete(entry.key);
     }
     function clearWorldVisual(){
@@ -435,58 +437,76 @@
     }
     const worldVisual=()=>worldRequest?{key:worldRequest.key,state:worldRequest.state,error:worldRequest.error,reason:worldRequest.reason,coverage:worldRequest.bundle?.coverage||[],preparedAt:worldRequest.preparedAt,firstDrawAt:worldRequest.firstDrawAt,publishedKey:worldRequest.bundle?worldRequest.key:undefined}:null;
     const worldReady=player=>!!player&&worldRequest?.state==='ready'&&worldRequest.identity===visualIdentity(player);
-    function requestWorldVisual(player,options,{publish=true}={}){
-      const identity=visualIdentity(player),key=worldPoseKey(player,options,identity);
-      if(publish&&worldIdentity!==identity){
-        worldIdentity=identity;
-        for(const entry of worldPoses.values())if(entry.identity!==identity&&entry.state==='loading')releaseWorldPose(entry,'appearance-changed');
-      }
-      let entry=worldPoses.get(key),retried=false;
-      if(entry?.state==='failed'&&!entry.retried&&performance.now()-entry.failedAt>=1500){
-        releaseWorldPose(entry);
-        imageFailures.clear();
-        retried=true;
-        entry=null;
-      }
-      if(entry){
-        worldPoses.delete(key);worldPoses.set(key,entry);
-        if(publish)worldRequest=entry;
-        return entry;
-      }
-      const controller=new AbortController(),signal=controller.signal;
-      const snapshot={...player,appearance96:player.appearance96&&{...player.appearance96},preferences:{...player.preferences},
-        equipment:Object.fromEntries(Object.entries(player.equipment||{}).map(([slot,item])=>[slot,item&&typeof item==='object'?{...item}:item]))};
-      entry={key,identity,player:snapshot,state:'loading',controller,retried};
-      worldPoses.set(key,entry);if(publish)worldRequest=entry;
-      while(worldPoses.size>12){
-        const oldest=[...worldPoses.values()].find(pose=>pose!==worldRequest);
-        releaseWorldPose(oldest,'pose-evicted');
-      }
+    function prepareWorldPose(entry){
+      const {player,options,controller:{signal}}=entry;
+      if(!entry.bundle)entry.state='loading';
       entry.promise=(async()=>{
         let bundle;
         try{
           // Both providers use the appearance registry loaded by the lobby.
           await Promise.all([ready,nativeHD?.ready]);
           signal.throwIfAborted();
-          const pose={player:snapshot,options};
-          const source=selectWorldHDOnly(nativeHD,weaponCatalog,snapshot,options);
+          const pose={player,options};
+          const source=selectWorldHDOnly(nativeHD,weaponCatalog,player,options);
           if(!source)throw Object.assign(Error('Sem fonte HD: '+options.action+' / '+options.direction),{code:'no-hd-pose'});
           bundle=await nativeHD.prepareConfiguration([pose],{signal,positions:approved,resolve:()=>({...pose,source})});
           for(const reason of bundle.positionView?.(options)?.diagnostics||[])diagnose(Error(reason),{consumer:'hd-position',asset:source.id});
           signal.throwIfAborted();
-          entry.bundle=bundle;bundle=null;
+          // A retry may succeed with a different pass missing. Keep the
+          // current partial result unless the replacement preserves its passes.
+          const missing=result=>new Set((result?.coverage||[]).flatMap(pose=>pose.omitted||[]));
+          const previouslyMissing=missing(entry.bundle);
+          if(!entry.bundle||[...missing(bundle)].every(slot=>previouslyMissing.has(slot))){
+            entry.bundle?.release();
+            entry.bundle=bundle;bundle=null;
+          }
           entry.state='ready';entry.preparedAt=performance.now();
+          entry.error=null;entry.reason=null;
+          entry.retryAt=hasFailedSlot(entry.bundle)&&entry.retries<worldRetryDelay.length
+            ?entry.preparedAt+worldRetryDelay[entry.retries]:null;
         }catch(error){
           if(signal.aborted)return;
-          Object.assign(entry,{state:'failed',error:error.message,reason:error.code||(error.asset?'source-load-failed':'composition-failed'),failedAt:performance.now()});
+          const at=performance.now();
+          Object.assign(entry,{state:entry.bundle?'ready':'failed',error:error.message,
+            reason:error.code||(error.asset?'source-load-failed':'composition-failed'),
+            retryAt:error.code!=='no-hd-pose'&&entry.retries<worldRetryDelay.length?at+worldRetryDelay[entry.retries]:null});
           diagnose(error,{consumer:'world',asset:options.action+'/'+options.direction});
-        }finally{bundle?.release();}
+        }finally{entry.promise=null;bundle?.release();}
       })();
+    }
+    function requestWorldVisual(player,options,{publish=true}={}){
+      const identity=visualIdentity(player),key=worldPoseKey(player,options,identity);
+      if(publish&&worldIdentity!==identity){
+        worldIdentity=identity;
+        for(const entry of worldPoses.values())if(entry.identity!==identity&&entry.promise)releaseWorldPose(entry,'appearance-changed');
+      }
+      let entry=worldPoses.get(key);
+      if(entry){
+        worldPoses.delete(key);worldPoses.set(key,entry);
+        if(publish)worldRequest=entry;
+        if(entry.retryAt!==null&&!entry.promise&&performance.now()>=entry.retryAt){
+          entry.retries++;
+          prepareWorldPose(entry);
+        }
+        return entry;
+      }
+      const controller=new AbortController();
+      const snapshot={...player,appearance96:player.appearance96&&{...player.appearance96},preferences:{...player.preferences},
+        equipment:Object.fromEntries(Object.entries(player.equipment||{}).map(([slot,item])=>[slot,item&&typeof item==='object'?{...item}:item]))};
+      entry={key,identity,player:snapshot,options:{...options},state:'loading',controller,retries:0,retryAt:null};
+      worldPoses.set(key,entry);if(publish)worldRequest=entry;
+      while(worldPoses.size>12){
+        const oldest=[...worldPoses.values()].find(pose=>pose!==worldRequest);
+        releaseWorldPose(oldest,'pose-evicted');
+      }
+      prepareWorldPose(entry);
       return entry;
     }
     function retryWorldVisual(){
-      for(const entry of worldPoses.values())if(entry.state==='failed'||entry.bundle?.coverage.some(pose=>
-        Object.values(pose.slotResolution||{}).some(slot=>slot.state==='load-failed')))releaseWorldPose(entry);
+      for(const entry of worldPoses.values())if(!entry.promise&&(entry.state==='failed'||hasFailedSlot(entry.bundle))){
+        entry.retries=0;
+        entry.retryAt=performance.now();
+      }
       imageFailures.clear();
     }
     function drawWorldVisual(ctx,options,player=worldRequest?.player,{publish=true}={}){

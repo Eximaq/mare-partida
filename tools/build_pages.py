@@ -108,8 +108,12 @@ for folder in ['assets', 'icones_menu_pirata']:
     # These old faction sheets and empty paper-doll manifests have no game
     # consumers. Keep source/history, and export only for explicit reviews.
     retired_player_paths = {'assets/sprites', 'assets/paper-doll'}
+    # The animated installation screen no longer requests these source illustrations.
+    retired_loading_paths = {'assets/ui/loading-art'}
+    # Cocox now draws from the directional V2 sheets. The import inputs remain in source.
+    retired_monster_inputs = {f'assets/rare-animals/cocox/{pose}.png' for pose in ('idle', 'run', 'attack')}
     def ignore_generation_inputs(directory, names):
-        excluded = generation_inputs | retired_player_paths
+        excluded = generation_inputs | retired_player_paths | retired_loading_paths | retired_monster_inputs
         return [name for name in names if (Path(directory)/name).relative_to(ROOT).as_posix() in excluded]
     ignored = None if include_reviews or folder != 'assets' else ignore_generation_inputs
     shutil.copytree(ROOT/folder, OUT/folder, ignore=ignored)
