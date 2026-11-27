@@ -48,3 +48,18 @@ test('existing pending/claimed records survive idempotent migration independentl
  const g=claim(win(base())).state;g.bossDungeons.records.morgan={phase:'pending',ownerId:g.characterId,runId:'old',reward:{quantity:5}};
  const migrated=S.migrate(S.migrate(g));assert.deepEqual(migrated,g);assert.equal(S.status(migrated,'alvida'),'claimed');assert.equal(S.status(migrated,'morgan'),'pending');assert.equal(S.status(migrated,'buggy'),'locked');
 });
+
+test('the dungeon selection shows independent HD illustrations for all bosses from level 100',()=>{
+ const fs=require('node:fs'),path=require('node:path');
+ require('../boss-dungeon-ui.js');
+ const illustrations=globalThis.MareBossDungeonUI.illustrations;
+ const late=S.catalog.filter(b=>b.level>=100);
+ assert.equal(late.length,9);
+ assert.equal(new Set(late.map(b=>illustrations[b.id])).size,9);
+ for(const boss of S.catalog){
+  const src=illustrations[boss.id];
+  if(boss.level<100){assert.equal(src,boss.portrait);continue;}
+  assert.equal(src,'assets/ui/boss-dungeons/portraits/'+boss.id+'-hd.webp');
+  assert.equal(fs.readFileSync(path.join(__dirname,'..',src)).subarray(8,12).toString(),'WEBP');
+ }
+});

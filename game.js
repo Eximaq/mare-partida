@@ -2238,7 +2238,16 @@
     if(currentPanel==='myprofile')MarePlayerHub.refresh(game,derived,playerBounty());
     updateMiniHud();
   }
-  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{fit:64,time:world.time,scale:equippedZoan().id===MareRyu.rules.id?64/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?90/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?1:64/48});else drawPaperDoll(portrait,36,70,'idle','south',world.time,64/46);vfx_aura.draw(portrait,36,70,world.time,64/48,undefined,'front');window.MareCharacterHUD?.portrait((c,canvas)=>{lobby96.draw(c,{...game,zoanTransformed:false},{scene:'lobby',action:'idle',direction:'south',time:0,x:canvas.width/2,y:canvas.height-12,scale:192/46,consumer:'wantedPortrait'});});}
+  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{fit:64,time:world.time,scale:equippedZoan().id===MareRyu.rules.id?64/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?90/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?1:64/48});else{
+      portrait.save();
+      try{
+        portrait.translate(36,70);portrait.scale(.6,.6);
+        lobby96.drawWorldPortrait(portrait,game,{x:0,y:0,consumer:'compact-portrait'});
+      }finally{portrait.restore();}
+    }vfx_aura.draw(portrait,36,70,world.time,64/48,undefined,'front');window.MareCharacterHUD?.portrait(c=>{
+      const player=game.zoanTransformed?{...game,zoanTransformed:false}:game;
+      lobby96.drawWorldPortrait(c,player,{consumer:'wantedPortrait',scale:192/46});
+    });}
   function drawProfilePortrait(canvas,hideItems){
     const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
     const player=hideItems?{...game,equipment:{},zoanTransformed:false}:game,x=canvas.width/2,y=canvas.height-24,scale=160/48;
@@ -2246,7 +2255,9 @@
     let ready;
     if(!hideItems&&game.zoanTransformed&&equippedZoan()){
       ready=MareZoanArt.draw(c,equippedZoan().id,x,y,{fit:200,time:world.time,scale:160/64});
-    }else ready=lobby96.preview(c,player,{action:'idle',direction:'south',time:0,appearance:MareCharacterAppearance.read(player),consumer:'profile-portrait'});
+    }else if(hideItems){
+      ready=lobby96.preview(c,player,{action:'idle',direction:'south',time:0,appearance:MareCharacterAppearance.read(player),consumer:'profile-portrait'});
+    }else ready=lobby96.drawWorldPortrait(c,player,{x,y,scale,consumer:'profile-portrait'});
     const frontReady=hideItems||vfx_aura.draw(c,x,y,world.time,scale,undefined,'front');
     return !!ready&&auraReady!==false&&frontReady!==false;
   }
@@ -2507,26 +2518,14 @@
   function drawCharacterStatusPreview(){
     const canvas=$('characterSprite');
     if(!canvas||!game)return;
-    const c=canvas.getContext('2d'),zoom=2;
-    // Both panels use the same native selector and fit against visible pixels,
-    // without swapping the map actor or recoloring the saved equipment.
-    const avatar=game.zoanTransformed?{...game,zoanTransformed:false}:game;
-    if(!MareVisualCompletoRenderer.equipped(avatar)&&lobby96.drawFittedAvatar?.(c,avatar,{zoom,consumer:'character-status'})){
-      canvas.dataset.avatarRenderer='native-hd';return;
-    }
-    canvas.dataset.avatarRenderer='pending-hd';
+    const c=canvas.getContext('2d');
+    const player=game.zoanTransformed?{...game,zoanTransformed:false}:game;
     c.clearRect(0,0,canvas.width,canvas.height);
-    c.save();
-    try{
-      // Draw the same equipped HD source at 2× before any canvas downsampling.
-      c.imageSmoothingEnabled=false;
-      c.scale(zoom,zoom);
-      const x=canvas.width/(2*zoom),y=canvas.height/zoom-10;
-      // The sheet shows the saved loadout, not a momentary combat mutation.
-      if(lobby96.draw(c,avatar,{scene,action:'idle',direction:'south',time:0,x,y,
-        scale:(canvas.height/zoom-18)/46,consumer:'characterSprite'}))
-       canvas.dataset.avatarRenderer=MareVisualCompletoRenderer.equipped(avatar)?'visual-completo':'native-hd';
-    }finally{c.restore();}
+    const fullSkin=MareVisualCompletoRenderer.equipped(player);
+    const drawn=lobby96.drawWorldPortrait(c,player,{
+      consumer:'character-status',zoom:2,scale:(canvas.height-24)/46,y:canvas.height-20
+    });
+    canvas.dataset.avatarRenderer=drawn?(fullSkin?'visual-completo':'native-hd'):'pending-hd';
   }
   function drawCurrentPreview(canvas,height,{aura=true}={}){
     const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
@@ -4073,7 +4072,7 @@ function applySceneHudLayout(){
   function drawCreationAppearance(time){
     const canvas=$('creationLookCanvas');if(!canvas||creationStep!==3||$('startOverlay').classList.contains('hidden'))return;
     const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
-    const player={classId:selectedClass,factionId:selectedFaction,paperDollLook:creationLookDraft,equipment:{coat:{def:6}}};
+    const player={classId:selectedClass,factionId:selectedFaction,paperDollLook:creationLookDraft,equipment:{}};
     const drawn=lobby96.preview(c,player,{action:'idle',direction:creationDirection,time:0,appearance:creationAppearanceDraft,consumer:'character-creation'});
     const nativeState=drawn?null:lobby96.snapshot().nativeHD;
     const unavailable=nativeState?.state==='failed'||['failed','uncovered'].includes(nativeState?.last?.state);

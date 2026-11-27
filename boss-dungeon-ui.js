@@ -2,7 +2,10 @@
 ((root)=>{
  const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const labels={locked:'Nível insuficiente',available:'Disponível',running:'Tentar novamente',pending:'Vitória · Baú pendente',claimed:'Concluída'};
- const illustrations=Object.fromEntries(root.MareBossDungeons.catalog.map(d=>[d.id,d.portrait]));
+ const illustratedBosses=new Set(['rob-lucci','gecko-moria','kuma','kizaru','hancock','magellan','ace','aokiji','akainu']);
+ const illustrations=Object.fromEntries(root.MareBossDungeons.catalog.map(d=>[
+  d.id,illustratedBosses.has(d.id)?'assets/ui/boss-dungeons/portraits/'+d.id+'-hd.webp':d.portrait
+ ]));
  const places=Object.fromEntries(root.MareBossDungeons.catalog.map(d=>[d.id,d.location]));
  const descriptions=Object.fromEntries(root.MareBossDungeons.catalog.map(d=>[d.id,'Enfrente '+d.name+' em um confronto único na arena. A vitória fica registrada para este personagem.']));
  function render(game,selected,xpNeeded,monsterName,active=null){

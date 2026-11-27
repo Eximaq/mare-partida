@@ -32,6 +32,11 @@ const C={canvas:{width:400,height:300}}, create=(sharedLobby=false)=>env.module.
  const draft={...player.appearance96,skinColor:'light'};
  assert(lobby.preview(C,player,{appearance:draft,consumer:'character-creation'}));
  assert.equal(calls.draft.at(-1)[0].appearance96,draft);assert.equal(calls.draft.at(-1)[1].previewFit,'creation');
+ assert.equal(Object.keys(calls.draft.at(-1)[0].equipment).length,0);
+ skinAvailable=true;
+ assert(lobby.preview(C,{...player,zoanTransformed:true},{appearance:draft,consumer:'appearance-editor'}));
+ assert.equal(Object.keys(calls.draft.at(-1)[0].equipment).length,0);
+ assert.equal(calls.draft.at(-1)[0].zoanTransformed,false);
  nativeAvailable=false;skinAvailable=true;
  assert(peers.draw(C,player,o));assert(lobby.preview(C,player));
  skinAvailable=false;signedAvailable=true;
@@ -58,7 +63,10 @@ const C={canvas:{width:400,height:300}}, create=(sharedLobby=false)=>env.module.
  const statusCtx={clearRect(){cleared++;},save(){},restore(){},scale(){}};
  const sheet={width:200,height:200,dataset:{},getContext:()=>statusCtx};
  Object.assign(sandbox,{$:()=>sheet,scene:'lobby'});let approved=false;
- sandbox.lobby96.draw=()=>approved;
+ sandbox.lobby96.drawWorldPortrait=(_,avatar,options)=>{
+  assert.equal(options.consumer,'character-status');assert.equal(avatar,model);
+  return approved;
+ };
  fitted=false;model.zoanTransformed=false;vm.runInNewContext(status,sandbox);
  sandbox.drawCharacterStatusPreview();assert.equal(sheet.dataset.avatarRenderer,'pending-hd');
  approved=true;full=true;sandbox.drawCharacterStatusPreview();assert.equal(sheet.dataset.avatarRenderer,'visual-completo');

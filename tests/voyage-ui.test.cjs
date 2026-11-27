@@ -51,3 +51,17 @@ test('new runtime entrypoints are packaged and versioned in the static build',()
   assert(fs.readFileSync(path.join(root,'tools/build_pages.py'),'utf8').includes("'"+file+"'"));
  }
 });
+
+test('the four new regions use one illustrated landscape for the map, all cards and destination details',()=>{
+ for(const id of ['enies-lobby','thriller-bark','sabaody','marineford']){
+  const region=A.regions.find(r=>r.id===id),islands=A.list(id),src='assets/ui/voyage-hd/'+id+'-hd.webp';
+  assert(islands.length>0);
+  const contents=fs.readFileSync(path.join(root,src));
+  assert.equal(contents.subarray(8,12).toString(),'WEBP');
+  for(const selected of islands){
+   const ui=U.voyage({region,regions:A.regions,islands,selected,game:{area:'beach'},canTravel:false});
+   assert(ui.body.includes("--voyage-regional-art:url('"+src+"')"));
+   assert.equal(ui.body.split('src="'+src+'"').length-1,islands.length+1);
+  }
+ }
+});
