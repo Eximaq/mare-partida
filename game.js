@@ -3452,23 +3452,29 @@ ${avatarExtra}
     const {x,y}=point;
     c.save();
     c.translate(Math.round(x),Math.round(y));
-    // One soft ground light, a quiet broken rim and at most three rising sparks.
+    // Offset only the artwork; the map point and caption remain at ground level.
+    c.save();c.translate(0,-31);
     const glow=c.createRadialGradient(0,0,3,0,0,36);
-    glow.addColorStop(0,'rgba(69,159,255,.22)');
-    glow.addColorStop(.65,'rgba(56,149,247,.14)');
+    glow.addColorStop(0,'rgba(69,159,255,.20)');
+    glow.addColorStop(.65,'rgba(56,149,247,.12)');
     glow.addColorStop(1,'rgba(40,130,235,0)');
-    c.save();c.scale(1,.51);c.fillStyle=glow;c.fillRect(-36,-36,72,72);c.restore();
-    c.strokeStyle='#55a7f635';c.lineWidth=4;c.beginPath();c.ellipse(0,0,28,12,0,0,Math.PI*2);c.stroke();
-    c.strokeStyle='#a3e1fc';c.lineWidth=1.25;c.beginPath();
-    c.ellipse(0,0,27.5,11.5,0,.14,Math.PI-.14);
-    c.moveTo(27.5*Math.cos(Math.PI+.14),11.5*Math.sin(Math.PI+.14));c.ellipse(0,0,27.5,11.5,0,Math.PI+.14,Math.PI*2-.14);
-    c.stroke();
-    if(!reduced)for(let i=0;i<3;i++){
-      const phase=(time*.53+i/3)%1;
-      c.globalAlpha=.34*Math.sin(phase*Math.PI);
-      c.fillStyle='#b0e3ff';
-      c.fillRect(Math.round((i-1)*13+Math.sin(phase*4+i)*2),Math.round(-6-phase*21),2,2);
+    c.save();c.scale(1,.54);c.fillStyle=glow;c.fillRect(-36,-36,72,72);c.restore();
+    const rim=(rx,ry,gap)=>{
+      c.beginPath();
+      for(let half=0;half<2;half++)for(let i=0;i<=24;i++){
+        const theta=half*Math.PI+gap+(Math.PI-2*gap)*i/24;
+        const wave=reduced?0:1.2*Math.sin(3*theta-time*2.05)+.35*Math.sin(5*theta+time*1.1);
+        const ax=rx*Math.cos(theta),ay=(ry+wave)*Math.sin(theta);
+        if(i)c.lineTo(ax,ay);else c.moveTo(ax,ay);
+      }
+    };
+    rim(28,11.5,.12);c.lineWidth=4;c.strokeStyle='#55a7f632';c.stroke();
+    c.lineWidth=1.25;c.strokeStyle='#a3e1fce0';c.stroke();
+    if(!reduced){
+      const drift=.5+.5*Math.sin(time*1.4);
+      rim(29.5+drift*1.5,13+drift*1.1,.28);c.strokeStyle='rgba(111,193,255,'+(.12+.11*(1-drift))+')';c.lineWidth=1;c.stroke();
     }
+    c.restore();
     c.globalAlpha=1;
     c.font='700 13px "Alegreya Sans", "Segoe UI", sans-serif';
     c.textAlign='center';c.textBaseline='middle';
@@ -3482,7 +3488,7 @@ ${avatarExtra}
   function drawMapTravelMarkers(){
     const map=activeMap(),reduced=ambientReduced();
     const draw=(point,label)=>{
-      if(!point||point.x+104<camera.x||point.x-104>camera.x+W||point.y+40<camera.y||point.y-40>camera.y+H)return;
+      if(!point||point.x+104<camera.x||point.x-104>camera.x+W||point.y+40<camera.y||point.y-56>camera.y+H)return;
       drawTravelMarker(ctx,point,label,world.time,reduced);
     };
     if(scene==='lobby'){
