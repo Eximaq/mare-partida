@@ -20,11 +20,17 @@ function raceSample(row){
  const sw=m.required;
  if(sw!=null&&row.drawn){
   if(lobby96.snapshot().renderer!=='native-hd')m.legacy++;
-  const painted=row.last;
-  if(cover?.slotRoutes?.coat?.item!==sw||painted?.slotRoutes?.coat?.item!==sw||painted.source!==cover?.source)m.stale++;
-  if(cover?.resolvedAction==='attack-focus'&&cover.direction==='north'&&cover.slotRoutes?.coat?.item===sw&&
+  const painted=row.last,shown=row.visual?.displayed;
+  if(painted?.slotRoutes?.coat?.item!==sw||!shown||
+     shown.exact&&(cover?.slotRoutes?.coat?.item!==sw||painted.source!==cover?.source))m.stale++;
+  if(shown?.exact&&cover?.resolvedAction==='attack-focus'&&cover.direction==='north'&&cover.slotRoutes?.coat?.item===sw&&
    painted?.state==='rendered'&&painted.direction==='north'&&painted.action==='attack-focus'&&!cover.omitted?.length){
-   if(Object.entries(m.gear).some(([slot,item])=>painted.slotRoutes[slot]?.item!==item))m.lostSlots++;
+   const wrongSlot=Object.entries(m.gear).some(([slot,item])=>{
+    const held=game.equipment[slot];
+    if((held?.def??held)!==item)return true;
+    return slot==='head'&&MareHeadgear.hidden(game)?!!painted.slotRoutes[slot]:painted.slotRoutes[slot]?.item!==item;
+   });
+   if(wrongSlot)m.lostSlots++;
    m.current=painted.slotRoutes.coat.source;
    m.draws++;if(m.lastPaintedAttack!==m.lastAttack&&m.lastAttack){m.drawnAttacks++;m.lastPaintedAttack=m.lastAttack;}
   }
@@ -45,7 +51,7 @@ lobby96.draw=function(ctx,p,o){
   hdQA={at:performance.now(),drawn,action:o.action,direction:o.direction,scene:o.scene,
    visual:lobby96.worldVisual(),last:lobby96.snapshot().nativeHD?.last};
   raceSample(hdQA);
-  if(watch&&drawn&&sprite){
+  if(watch&&drawn&&sprite&&hdQA.visual?.displayed?.exact){
    const r=hdQA.last,c=hdQA.visual?.coverage?.[0];
    if(c?.resolvedAction===mapCycle.action&&r?.direction===mapCycle.direction&&r.state==='rendered'&&Number.isInteger(r.frame)&&
     sprite.width===r.width&&sprite.height===r.height&&!mapCycle.frames.has(r.frame)&&

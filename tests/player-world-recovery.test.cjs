@@ -41,11 +41,11 @@ function fixture(){
  const core=globals.MarePaperDoll96Lobby.create({baseURL:'https://fixture.test/'});
  const player={classId:'sword',appearance96:{gender:'masculino'},equipment:{gloves:{def:25},boots:{def:9}}};
  const ctx={frames:[]};
- return {core,player,ctx,jobs,advance(ms){clock+=ms;},draw(){return core.drawWorldVisual(ctx,pose,player);}};
+ return {core,player,ctx,jobs,advance(ms){clock+=ms;},draw(options){return core.drawWorldVisual(ctx,{...pose,...options},player);}};
 }
 function visual(label,omitted=[]){
- return {released:false,coverage:[{omitted,slotResolution:Object.fromEntries(omitted.map(slot=>[slot,{state:'load-failed'}]))}],
-  draw(ctx){assert.equal(this.released,false);ctx.frames.push(label);return true;},
+ return {released:false,draws:[],coverage:[{omitted,slotResolution:Object.fromEntries(omitted.map(slot=>[slot,{state:'load-failed'}]))}],
+  draw(ctx,_player,options){assert.equal(this.released,false);this.draws.push(options);ctx.frames.push(label);return true;},
   release(){this.released=true;}};
 }
 
@@ -108,4 +108,90 @@ test('an unavailable owned layer retries twice while the other passes keep drawi
  assert.equal(draw(),true);
  assert.equal(partial.released,true);
  assert.equal(ctx.frames.at(-1),'complete');
+});
+
+test('a pending attack and the next movement keep the current HD actor in motion',async()=>{
+ const {core,player,jobs,draw,ctx,advance}=fixture();
+ await core.ready;
+ const walk={action:'walk',direction:'east',time:.125};
+ assert.equal(draw(walk),false);
+ await settle();
+ const eastWalk=visual('east walk');
+ jobs[0].resolve(eastWalk);
+ await settle();
+ assert.equal(draw(walk),true);
+ const attack={action:'attack',direction:'east',time:.2,progress:.6,timing:{locked:true},x:30,y:42};
+ advance(125);
+ assert.equal(draw(attack),true);
+ const shown=eastWalk.draws.at(-1);
+ assert.deepEqual([shown.action,shown.direction,shown.time,shown.progress,shown.timing,shown.x,shown.y],
+  ['walk','east',.25,null,null,30,42]);
+ assert.equal(core.worldVisual().displayed.exact,false);
+ await settle();
+ const northWalk={action:'walk',direction:'north',time:.25};
+ assert.equal(draw(northWalk),true);
+ await settle();
+ const eastAttack=visual('late east attack');
+ jobs[1].resolve(eastAttack);
+ await settle();
+ assert.equal(draw(northWalk),true);
+ assert.equal(ctx.frames.at(-1),'east walk');
+ assert.equal(eastAttack.draws.length,0);
+ jobs[2].resolve(visual('north walk'));
+ await settle();
+ assert.equal(draw(northWalk),true);
+ assert.equal(core.worldVisual().displayed.direction,'north');
+ assert.equal(core.worldVisual().displayed.exact,true);
+ assert.equal(draw(attack),true);
+ assert.equal(jobs.length,3);
+ assert.equal(eastAttack.draws.at(-1).timing,attack.timing);
+ assert.equal(core.worldVisual().displayed.exact,true);
+ assert.equal(draw(northWalk),true);
+ assert.equal(ctx.frames.at(-1),'north walk');
+ player.equipment.gloves.def=26;
+ assert.equal(draw(northWalk),false);
+ assert.equal(core.worldVisual().displayed,null);
+ core.clearWorldVisual();
+});
+
+test('anticipation is bounded and a weaponless pose cannot borrow a visible weapon',async()=>{
+ const {core,player,jobs,draw,ctx}=fixture();
+ player.equipment.weapon={def:0};
+ await core.ready;
+ assert.equal(core.warmWorldVisual(player,{action:'attack',direction:'south'}),false);
+ assert.equal(draw(),false);
+ await settle();
+ const idle=visual('armed idle');
+ jobs[0].resolve(idle);
+ await settle();
+ assert.equal(draw(),true);
+ const idleKey=core.worldVisual().key;
+ const punch={action:'attack-unarmed',direction:'south',weaponless:true};
+ assert.equal(core.warmWorldVisual(player,punch),true);
+ assert.equal(core.warmWorldVisual(player,{action:'walk',direction:'north'}),false);
+ assert.equal(core.worldVisual().key,idleKey);
+ assert.equal(draw(punch),false);
+ assert.equal(core.worldVisual().displayed,null);
+ await settle();
+ assert.equal(jobs.length,2);
+ const noWeapon=visual('weaponless punch');
+ jobs[1].resolve(noWeapon);
+ await settle();
+ assert.equal(draw(punch),true);
+ assert.equal(ctx.frames.at(-1),'weaponless punch');
+ assert.equal(noWeapon.draws.at(-1).weaponless,true);
+ assert.equal(draw(),true);
+ assert.equal(ctx.frames.at(-1),'armed idle');
+ assert.equal(core.warmWorldVisual(player,{action:'idle',direction:'south',weaponless:true}),true);
+ await settle();
+ const stopped=jobs[2].options.signal;
+ assert.equal(draw({action:'walk',direction:'west'}),true);
+ assert.equal(stopped.aborted,true);
+ const late=visual('abandoned weaponless anticipation');
+ jobs[2].resolve(late);
+ await settle();
+ assert.equal(late.released,true);
+ assert.equal(draw({action:'walk',direction:'west'}),true);
+ assert.equal(ctx.frames.at(-1),'armed idle');
+ core.clearWorldVisual();
 });

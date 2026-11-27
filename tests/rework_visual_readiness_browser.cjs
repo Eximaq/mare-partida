@@ -18,12 +18,17 @@ const url=process.env.MARE_TEST_URL;
    await page.route('**/__dev_version',route=>route.fulfill({body:'stable'}));
    // Hold the actual map request. Inventory and creation previews prepare poses too.
    await page.addInitScript(failWalk=>{
-    window.__poseLoad={held:false,released:false,rejectWalk:failWalk,failed:false};
+    window.__poseLoad={held:false,released:false,rejectWalk:failWalk,failed:false,attackWaiters:[],releaseAttacks(){
+     this.attacksReleased=true;for(const resolve of this.attackWaiters.splice(0))resolve();
+    }};
     window.__holdWorldPose=async(key,action)=>{
      const state=window.__poseLoad;
      if(state.armed&&action==='idle'&&!state.held){
       state.held=true;state.heldKey=key;
       await new Promise(resolve=>{state.release=()=>{state.released=true;resolve();};});
+     }
+     if(state.armed&&action.startsWith('attack')&&!state.attacksReleased){
+      await new Promise(resolve=>state.attackWaiters.push(resolve));
      }
      if(state.held&&action==='walk'&&state.rejectWalk&&!state.failed){
       state.failed=true;state.failedKey=key;
@@ -45,9 +50,12 @@ const url=process.env.MARE_TEST_URL;
      const draws=[];
      lobby96.draw=function(ctx,player,options){
       const result=observedWorld(ctx,player,options);
-      if(result&&options.worldView&&ctx.canvas.id==='worldCanvas'){
-       const visual=lobby96.worldVisual(),snapshot=lobby96.snapshot(),pose=snapshot.lastPose||snapshot.nativeHD.last;
-       draws.push({at:performance.now(),readyAt:visual?.preparedAt,action:options.action,direction:options.direction,frame:pose?.frame,progress:options.progress,source:pose?.source,state:pose?.state,key:visual?.publishedKey,weaponIds:pose?.weaponIds});
+      if(options.worldView&&ctx.canvas.id==='worldCanvas'){
+       const visual=lobby96.worldVisual(),shown=visual?.displayed;
+       const pose=result?lobby96.snapshot().nativeHD.last:null;
+       draws.push({at:performance.now(),drawn:result,readyAt:visual?.preparedAt,action:options.action,direction:options.direction,
+        frame:pose?.frame,progress:options.progress,source:pose?.source,state:pose?.state,exact:shown?.exact,
+        key:visual?.key,displayedKey:shown?.key,drawnAction:shown?.action,drawnDirection:shown?.direction});
       }
       return result;
      };
@@ -92,7 +100,7 @@ const url=process.env.MARE_TEST_URL;
    const paused=await read();
    const heldKey=await page.evaluate(()=>__poseLoad.heldKey);
    assert.equal(paused.visual.key,heldKey);assert.equal(paused.visual.state,'loading');
-   assert(!paused.draws.some(d=>d.key===heldKey),'An unfinished map pose was published');
+   assert(!paused.draws.some(d=>d.displayedKey===heldKey),'An unfinished map pose was drawn');
    await page.waitForFunction(t=>__preparationQA.read().hero.time>t,paused.hero.time);
    const before=await read();
    let movementKey='d';
@@ -112,9 +120,9 @@ const url=process.env.MARE_TEST_URL;
     while(!seen&&Date.now()<deadline){
      await page.waitForFunction(({start,key,failedKey})=>{
       const q=__preparationQA.read();
-      return q.draws.some(row=>row.action==='walk'&&(!failedKey||row.key===failedKey))||(key==='d'?q.hero.x>start+125:q.hero.x<start+25);
+      return q.draws.some(row=>row.drawn&&row.exact&&row.action==='walk'&&(!failedKey||row.key===failedKey))||(key==='d'?q.hero.x>start+125:q.hero.x<start+25);
      },{start:before.hero.x,key:movementKey,failedKey},{timeout:Math.max(1,deadline-Date.now())});
-     seen=(await read()).draws.some(row=>row.action==='walk'&&(!failedKey||row.key===failedKey));
+     seen=(await read()).draws.some(row=>row.drawn&&row.exact&&row.action==='walk'&&(!failedKey||row.key===failedKey));
      if(!seen){
       await page.keyboard.up(movementKey);
       movementKey=movementKey==='d'?'a':'d';
@@ -124,16 +132,31 @@ const url=process.env.MARE_TEST_URL;
     assert(seen,'An equipped walk pose must draw during continued player input');
    }finally{await page.keyboard.up(movementKey);}
    const pos=await page.evaluate(()=>__preparationQA.target()),canvas=page.locator('#worldCanvas'),size=await canvas.boundingBox();
-   const hp=(await read()).targetHP;
+   const beforeAttack=await read();
    await canvas.click({position:{x:pos.x*size.width,y:pos.y*size.height}});
-   await page.waitForFunction(value=>__preparationQA.read().targetHP<value,hp,{timeout:15000});
+   await page.waitForFunction(value=>__preparationQA.read().targetHP<value,beforeAttack.targetHP,{timeout:15000});
+   const cold=await read();
+   const coldAttacks=cold.draws.slice(beforeAttack.draws.length).filter(d=>d.action.startsWith('attack'));
+   assert(coldAttacks.length>0,'An attack was requested before its artwork was released');
+   assert(coldAttacks.every(d=>d.drawn&&!d.exact&&d.source&&d.displayedKey!==d.key),
+    'The same character remains visible on every pending attack frame');
+   assert(coldAttacks.every(d=>JSON.parse(d.displayedKey)[0]===JSON.parse(d.key)[0]),
+    'The held pose preserves the equipped appearance');
+   const [, , , , equipment]=JSON.parse(JSON.parse(coldAttacks[0].displayedKey)[0]);
+   assert.equal(equipment.find(row=>row[0]==='weapon')?.[1],0);
+   assert.equal(equipment.find(row=>row[0]==='coat')?.[1],6);
+
+   await page.evaluate(()=>__poseLoad.releaseAttacks());
+   await page.waitForFunction(index=>__preparationQA.read().draws.slice(index).some(
+    d=>d.action.startsWith('attack')&&d.drawn&&d.exact),cold.draws.length,{timeout:45000});
    const after=await read();
    assert(after.hero.x>before.hero.x);
    assert.equal(after.equipment.coat,6);
    assert.equal(after.equipment.weapon,0);
-   assert(after.draws.every(d=>Number.isFinite(d.readyAt)&&d.readyAt<=d.at&&d.state==='rendered'));
+   assert(after.draws.filter(d=>d.drawn).every(d=>d.source&&d.state==='rendered'));
+   assert(after.draws.filter(d=>d.exact).every(d=>Number.isFinite(d.readyAt)&&d.readyAt<=d.at&&d.displayedKey===d.key));
    assert.deepEqual(errors,[]);
-   evidence.push({gender,paused,before,after,errors,temporaryFailure:induceFailure});
+   evidence.push({gender,paused,before,after,pendingAttackFrames:coldAttacks.length,errors,temporaryFailure:induceFailure});
    await fs.writeFile(path.join(out,'runtime.json'),JSON.stringify(evidence,null,2));
    await canvas.screenshot({path:path.join(out,gender+'.png')});
    await context.close();
