@@ -99,7 +99,7 @@ function assertWalk(w,label){
 
 (async()=>{
  fs.mkdirSync(out,{recursive:true});
- const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||'/tmp/chromium'});
+ const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
  let page,phase='boot';const errors=[],missing=[],results={viewports:[],journeys:[],playerFrames:[]};
  try{
   const preparePage=async context=>{
