@@ -73,7 +73,8 @@ test('new Skypiea scene migrates four saved positions once while preserving comb
    await f.pool.query(await readFile(new URL('0065_skypiea_celestial_map.sql',source),'utf8'));
    assert.deepEqual(await persisted(f.pool),expected,'reapplying cannot relocate current saves');
    for(const [i,a] of people.slice(0,5).entries()){
-    const resumed=await a.read(),old=originals[i]!.b;
+    const resumed=await a.read();
+    const old:ReturnType<typeof E.create>=originals[i]!.b;
     assert.equal(resumed.world.rulesHash,W.rulesHash);assert.equal(resumed.battle.rulesHash,E.rulesHash);
     assert.deepEqual(resumed.battle.mobs.map((m:any)=>[m.id,m.spawnId,m.hp,m.alive,m.attackClock]),old.mobs.map((m:any)=>[m.id,m.spawnId,m.hp,m.alive,m.attackClock]));
     assert.deepEqual([resumed.battle.hp,resumed.battle.energy,resumed.battle.cooldowns,resumed.battle.hunts],[43,37,[7,3],old.hunts]);
