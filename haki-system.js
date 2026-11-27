@@ -15,16 +15,16 @@
     const h=g.haki||{},unlocked=g.has_haki_unlocked===true||h.unlocked===true;
     return {...g,has_haki_unlocked:unlocked,haki:{version:2,unlocked,mastery:P.normalize(h,unlocked),current:clamp(h.current),kingReadyAt:Number.isFinite(h.kingReadyAt)&&h.kingReadyAt>0?h.kingReadyAt:0,auto:['armament','observation'].includes(h.auto)?h.auto:null,equipped:['armament','observation'].includes(h.equipped)?h.equipped:'armament'}};
   }
-  const start=()=>({active:null,inCombat:false,remaining:0,exhausted:false,kingFX:0,kingOrigin:null,eyeFX:0,dodgeFX:0});
+  const start=()=>({active:null,inCombat:false,remaining:0,exhausted:false,kingFX:0,eyeFX:0});
   function touch(g,rt){
     if(!g.has_haki_unlocked)return;
     const first=!rt.inCombat;rt.inCombat=true;rt.remaining=6;
     if(first&&!rt.active&&g.haki.auto&&P.learned(g,g.haki.auto)&&g.haki.current>0&&!rt.exhausted)rt.active=g.haki.auto;
   }
-  function stop(rt){rt.active=null;rt.inCombat=false;rt.remaining=0;rt.exhausted=false;rt.kingFX=0;rt.kingOrigin=null;rt.eyeFX=0;rt.dodgeFX=0;}
+  function stop(rt){rt.active=null;rt.inCombat=false;rt.remaining=0;rt.exhausted=false;rt.kingFX=0;rt.eyeFX=0;}
   function tick(g,rt,dt,{alive=true,inHunt=true}={}){
     dt=Math.max(0,Number.isFinite(dt)?dt:0);
-    rt.kingFX=Math.max(0,rt.kingFX-dt);rt.eyeFX=Math.max(0,rt.eyeFX-dt);rt.dodgeFX=Math.max(0,(rt.dodgeFX||0)-dt);if(!rt.kingFX)rt.kingOrigin=null;
+    rt.kingFX=Math.max(0,rt.kingFX-dt);rt.eyeFX=Math.max(0,rt.eyeFX-dt);
     if(!g.has_haki_unlocked)return;
     if(!alive||!inHunt){stop(rt);if(alive)g.haki.current=clamp(g.haki.current+dt*rules.regen);return;}
     if(rt.active&&!P.learned(g,rt.active))rt.active=null;
@@ -81,7 +81,6 @@
     g.haki.current-=rules.kingCost;if(g.haki.current===0){rt.active=null;rt.exhausted=true;}
     rt.kingFX=.8;touch(g,rt);
     const effect=P.effects(g,'conqueror');
-    rt.kingOrigin={x:hero.x,y:hero.y,radius:effect.radius};
     const targets=enemies.filter(m=>m.alive&&Math.hypot(m.x-hero.x,m.y-hero.y)<=effect.radius&&clear(hero,m));
     for(const m of targets){if(m.type==='boss'||m.boss)m.hakiDebuff=effect.bossDuration;else m.talentControl={type:'stun',remaining:Math.max(effect.stun,m.talentControl?.remaining||0)};}
     return {ok:true,targets:targets.length};

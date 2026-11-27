@@ -1990,6 +1990,9 @@
     if(session.zoanDash){const dash=session.zoanDash,step=Math.min(dash.remaining,800*dt),beforeX=world.hero.x,beforeY=world.hero.y;navigator().move(world.hero,dash.dx*step,dash.dy*step);const moved=Math.hypot(world.hero.x-beforeX,world.hero.y-beforeY);dash.remaining-=step;world.hero.walking=.2;for(const mob of livingMobs())if(!dash.hit&&(dash.hitId==null||String(dash.hitId)===String(mob.id))&&Math.hypot(mob.x-world.hero.x,mob.y-world.hero.y)<45){dash.hit=true;session.zoanVisualHitAt=world.time;outputDamage(mob,MareCharacters.damage(getFruitDerived(),enemyArmor(mob),{type:'physical',multiplier:.55}),false,{},dash.wear);navigator().move(mob,dash.dx*45,dash.dy*45);world.fx.push({x:mob.x,y:mob.y,ring:1,life:.3,max:.3,color:'#e7a65a'});}if(dash.remaining<=0||moved<.1)session.zoanDash=null;}
     stepRankA();stepJiki(dt);stepHoya(dt);stepRankB();stepExpansion(dt);stepRankC(dt);stepBasicAttack(dt);stepNekoAction(dt);stepUshiAction();stepDoruProjectiles(dt);stepWolfAction(dt);stepWolfBleeds();stepRyuAction();stepCombatVfx(dt);
     MareHaki.tick(game,session.haki,dt,{alive:game.hp>0&&session.respawn<=0,inHunt:scene==='hunt'});
+    // Visual timers are deliberately kept out of the hashed combat rules.
+    const hakiVisual=session.haki;hakiVisual.dodgeFX=hakiVisual.eyeFX>0?Math.max(0,(hakiVisual.dodgeFX||0)-dt):0;
+    if(!hakiVisual.kingFX)hakiVisual.kingOrigin=null;
     if(DEV_ACTIVE){if(game.devOptions?.infiniteWill&&game.has_haki_unlocked)game.haki.current=100;if(game.devOptions?.noCooldown){session.cooldowns=[0,0,0];game.talentCooldowns={};game.haki.kingReadyAt=0;}}
     for(const m of world.mobs)m.hakiDebuff=Math.max(0,(m.hakiDebuff||0)-dt);
     stepFruitPunch(dt);
@@ -2128,6 +2131,7 @@
     const result=MareHaki.cast(game,session.haki,world.hero,livingMobs(),{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0,clear:(a,b)=>combatLine(a,b)});
     if(!result.ok){toast(result.message,'danger');return;}
     try{localStorage.setItem(STORAGE_KEY,JSON.stringify(game));}catch{game.haki=snapshot.haki;session.haki=snapshot.runtime;for(const [m,d,c] of snapshot.mobs){m.hakiDebuff=d;m.talentControl=c;}toast('Não foi possível salvar. Haki do Rei cancelado; Vontade preservada.','danger');return;}
+    session.haki.kingOrigin={x:world.hero.x,y:world.hero.y,radius:MareHaki.progression.effects(game,'conqueror').radius};
     spawnVisual(world.hero.x,world.hero.y-65,'HAKI DO CONQUISTADOR','#e8374c',18);updateUI();
   }
   function hakiBookDetail(item){return `<div class="op-detail-wrap"><h3>Livro da Vontade</h3>${MareHakiUI.icon('book')}<p>Consumível de despertar. Requer nível 50 e libera acesso às árvores de domínio do Haki.</p><p>Origem: baú de Don Krieg Nv.50 (1 livro) ou chefes de mundo aberto/diários Nv.30+ (chance de 5%).</p><button type="button" class="op-action primary" data-use-haki-book="${escapeHTML(item.id)}" ${item.locked||game.level<50||game.has_haki_unlocked?'disabled':''}>Despertar o Haki</button><button type="button" class="op-action secondary" data-inv-lock="${escapeHTML(item.id)}">${item.locked?'Desbloquear':'Bloquear'}</button></div>`;}
