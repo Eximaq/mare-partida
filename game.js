@@ -1456,19 +1456,32 @@
   function drawCombatHeader(actor,name,hp,maxHP,width=60,color='#5ed09c'){
     const box=combatHudBox(actor,width,name);ctx.save();ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#03171c';ctx.strokeText(name,actor.x,box.nameY);ctx.fillStyle='#effcf5';ctx.fillText(name,actor.x,box.nameY);px(ctx,actor.x-width/2,box.barY,width,7,'#001819');px(ctx,actor.x-width/2+1,box.barY+1,(width-2)*Math.max(0,Math.min(1,hp/Math.max(1,maxHP))),5,color);if(world.target===actor){ctx.strokeStyle='#d9b777';ctx.lineWidth=2;ctx.strokeRect(actor.x-width/2-3,box.barY-3,width+6,13);}ctx.restore();
   }
-  // Draw approved HD sprites through the existing class impact clock and chest anchor.
-  // CombatVfx's shared rules and the online events remain authoritative.
-  const swordSkillArtBase='assets/combat-vfx/sword-rebrand/';
-  const swordSkillArtImages=Object.fromEntries(['corteMare','arcoHorizonte'].map(kind=>{
-    const image=new Image();image.src=swordSkillArtBase+kind+'.png';return [kind,image];
-  }));
-  let swordSkillArtClips={};
-  fetch(swordSkillArtBase+'clips.json').then(response=>response.ok?response.json():{}).then(clips=>{swordSkillArtClips=clips;}).catch(()=>{});
-  function drawSwordSkillArt(c,kind,x,y,elapsed,effectWidth){
-    const clip=swordSkillArtClips[kind],image=swordSkillArtImages[kind];
-    if(!clip||!image?.naturalWidth||elapsed<0||elapsed>=clip.duration)return false;
-    const [sx,sy,w,h,ox,oy]=clip.frames[Math.floor(elapsed*60/1000)];
-    const scale=effectWidth/512;
+  // Presentation only: reuse the authoritative impact clock, anchor and dimensions.
+  const classSkillArtImages=new Map(),classSkillArtClips=new Map();
+  for(const [group,kinds] of [
+    ['sword-rebrand',['corteMare','arcoHorizonte']],
+    ['class-rebrand',['pontoFraco','dancaAdagas','blindagemAtiva']]
+  ]){
+    const base='assets/combat-vfx/'+group+'/';
+    for(const kind of kinds){const image=new Image();image.src=base+kind+'.png';classSkillArtImages.set(kind,image);}
+    fetch(base+'clips.json').then(response=>response.ok?response.json():{}).then(clips=>{
+      for(const kind of kinds)if(clips[kind])classSkillArtClips.set(kind,clips[kind]);
+    }).catch(()=>{});
+  }
+  function drawClassSkillArt(c,kind,x,y,elapsed,rate,options){
+    const clip=classSkillArtClips.get(kind),image=classSkillArtImages.get(kind);
+    if(!clip||!image?.naturalWidth)return false;
+    let index;
+    if(clip.duration){
+      const age=elapsed/(rate||1);
+      if(age<0||age>=clip.duration)return false;
+      index=Math.min(clip.frames.length-1,Math.floor(age*60/1000));
+    }else index=MareCombatVfx.frame(kind,elapsed,options);
+    if(index===null)return true;
+    const frame=clip.frames[index];
+    if(frame===null)return true; // Preserve intentionally transparent frames.
+    if(!frame)return false;
+    const [sx,sy,w,h,ox,oy]=frame,scale=options.width/512;
     c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x),Math.round(y));
     c.drawImage(image,sx,sy,w,h,ox*scale,oy*scale,w*scale,h*scale);c.restore();
     return true;
@@ -1484,7 +1497,7 @@
       point.x+=(effect.offsetX||0);
       if(f.zoanRework){MareZoanArt.drawRework(ctx,f.zoanRework,point.x,point.y,world.time-f.started,{index:Math.floor(f.started*6)});continue;}
       if(effect.rangeBound){ctx.save();ctx.beginPath();ctx.arc(f.x,f.y,f.radius,0,Math.PI*2);ctx.clip();}
-      if(!drawSwordSkillArt(ctx,f.kind,point.x,point.y,elapsed/(f.rate||1),options.width)&&!MareClassWeaponVfx.hit(ctx,f.weaponStyle,f.kind,point.x,point.y,elapsed,options))MareCombatVfx.draw(ctx,f.kind,point.x,point.y,elapsed,options);
+      if(!drawClassSkillArt(ctx,f.kind,point.x,point.y,elapsed,f.rate,options)&&!MareClassWeaponVfx.hit(ctx,f.weaponStyle,f.kind,point.x,point.y,elapsed,options))MareCombatVfx.draw(ctx,f.kind,point.x,point.y,elapsed,options);
       if(effect.rangeBound)ctx.restore();
     }
     if(layer!=='front')return;
