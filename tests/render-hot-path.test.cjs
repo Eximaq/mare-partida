@@ -10,17 +10,17 @@ test('offscreen portal drawing is culled while an edge-overlapping label remains
 });
 test('unchanged map status does not rewrite DOM each frame; load/failure/recovery still update',()=>{
  let state='loading',writes=0,draws=0;
- let storedState,preparations=0,failures=0;
+ let storedState,failures=0;
  const frame={dataset:{get worldState(){return storedState;},set worldState(value){storedState=value;writes++;}}};
  const loading={pending:false,failed:false,fail(){this.failed=true;failures++;}};
- const c=vm.createContext({game:{},loading,prepareScene(){preparations++;loading.pending=true;},mapArtState:()=>state,$:()=>frame,ctx:{fillRect(){}},W:100,H:100,drawWorld:()=>draws++,drawPaperDollDiagnostics(){}});
+ const c=vm.createContext({game:{},loading,mapArtState:()=>state,$:()=>frame,ctx:{fillRect(){}},W:100,H:100,drawWorld:()=>draws++,drawPaperDollDiagnostics(){}});
  let timerValue='',timerWrites=0;
  Object.assign(c,{scene:'hunt',session:{respawn:0},classCombatController:()=>true,
    recoveryNotice:{hidden:true,dataset:{}}, recoveryTitle:{},
    recoveryTimer:{get textContent(){return timerValue;},set textContent(value){timerWrites++;timerValue=value;}}});
  vm.runInContext(fn('updateRecoveryNotice'),c);
  vm.runInContext(fn('presentWorld'),c);for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);
- assert.equal(writes,1);assert.equal(preparations,1);state='failed';for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);assert.equal(writes,2);assert.equal(failures,1);
+ assert.equal(writes,1);state='failed';for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);assert.equal(writes,2);assert.equal(failures,1);
  state='ready';for(let i=0;i<60;i++)vm.runInContext('presentWorld()',c);assert.equal(writes,3);assert.equal(draws,60);
  assert.equal(timerWrites,0);
  c.session.respawn=2.8;
@@ -31,6 +31,18 @@ test('unchanged map status does not rewrite DOM each frame; load/failure/recover
 test('visual preparation is absent from the world and HUD frame gates',()=>{
  assert.doesNotMatch(source,/!lobby96\.worldReady\(game\)|updatePlayerVisualStatus\(/);
  assert.doesNotMatch(fn('presentWorld'),/lobby96|Preparando as animações/);
+});
+
+test('a cached map transition keeps the previous frame without reopening the total loader',()=>{
+ let reopened=0,cleared=0;
+ const frame={dataset:{worldState:'ready'},inert:false};
+ const c=vm.createContext({game:{},loading:{pending:false,failed:false},prepareScene(){reopened++;},
+  mapArtState:()=> 'loading',$:()=>frame,updateRecoveryNotice(){},
+  ctx:{fillRect(){cleared++;}},W:100,H:100,drawWorld(){},drawPaperDollDiagnostics(){}});
+ vm.runInContext(fn('presentWorld'),c);vm.runInContext('presentWorld()',c);
+ assert.equal(reopened,0,'map changes must not restart the initial loading screen');
+ assert.equal(cleared,0,'retain the previous frame while the cached map is decoded');
+ assert.equal(frame.inert,true,'the old painted map must not accept clicks during the transition');
 });
 test('NPCs outside the viewport skip sprite and label work without clipping edge labels',()=>{
  const calls=[],sprite={complete:true,naturalWidth:92};
