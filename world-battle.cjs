@@ -22,8 +22,10 @@ const priorBalanceHashes=new Set([previousBalanceHash,'3c3abd53210f73539fe46107f
 // A new terrain projection invalidates old coordinates, not combat rewards,
 // enemy HP or stable slot IDs. Party rooms use this same projection.
 const previousSkypieaHash='0c6dbd3c8a12bb2e1958e830b6bdf3149be9cb911f976f7722ff11d99867b8c0';
+const previousSkypieaSceneHash='28c090f587fc5f11aa1f007f8008b509cfdd31e630fba12d83a8acfbb8391adf';
+const isSkypieaArea=area=>/^skypiea-0[1-4]$/.test(area);
 function reanchorSkypieaMobs(area,mobs,nav){
- if(area!=='skypiea-01'||!Array.isArray(mobs))return false;
+ if(!isSkypieaArea(area)||!Array.isArray(mobs))return false;
  const slots=new Map(behavior.slots(area).map(s=>[s.id,s])),moves=[];
  for(const m of mobs){
   const p=m.source==='world'&&slots.get(m.spawnId);
@@ -52,14 +54,15 @@ function addHuntLedgers(b){
 }
 function upgradeBalance(b){
  if(!b)return;
- // New destinations preserve existing enemies, HP, pending attacks and clocks.
- if(b.rulesHash===rulesHash||b.rulesHash==='9db64cec25862f433bf8c9a16526a7ef183a52f04419dbe618071f40c83c4c23'||b.rulesHash==='0d55e5e1f278e9b0ab184c2a4916d25a6f081cabcf9d7b2e0be662889bc2c04f'||b.rulesHash==='fde69ce5850f0028b5b45ac47805635b3fe798c56aad13c3ade9578297031259'||b.rulesHash==='5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810'){
+ if(b.rulesHash===rulesHash){addHuntLedgers(b);return;}
+ // These audited releases precede the new four-island geometry. Keep every
+ // enemy identity, HP and respawn; cancel spatial attacks only in Skypiea.
+ if([previousSkypieaSceneHash,'9db64cec25862f433bf8c9a16526a7ef183a52f04419dbe618071f40c83c4c23','0d55e5e1f278e9b0ab184c2a4916d25a6f081cabcf9d7b2e0be662889bc2c04f','fde69ce5850f0028b5b45ac47805635b3fe798c56aad13c3ade9578297031259','5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810','0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'].includes(b.rulesHash)){
+  if(isSkypieaArea(b.area)){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
   addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
- // The preceding main release already uses the current Skypiea coordinates.
- if(b.rulesHash==='0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'){addHuntLedgers(b);b.rulesHash=rulesHash;return;}
  if([previousSkypieaHash,'a2e4d9333c0770e539dee6262fb900e1747e94b44c1226a0baacb513b6c07a57','f48377155e997f7d41c76e0d6264e321603376094b73132ef8ebbd13be5cf0f7','8a7832817164137faed714a2ead01559c6c5801e6989c2a1a3aed55d3f2b383a'].includes(b.rulesHash)){
-  if(b.area==='skypiea-01'){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
+  if(isSkypieaArea(b.area)){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
   addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  if(!priorBalanceHashes.has(b.rulesHash))return;
@@ -92,7 +95,7 @@ function upgradeBalance(b){
   if(!m.telegraph&&oldAttackSec>0&&m.attackClock>0)m.attackClock*=m.attackSec/oldAttackSec;
   m.balanceVersion=balanceVersion;
  }
- if(b.area==='skypiea-01'&&b.hunts&&(b.partyInstanceId||reanchorSkypieaMobs(b.area,b.mobs))){cancel(b);resetHaki(b);}
+ if(isSkypieaArea(b.area)&&b.hunts&&(b.partyInstanceId||reanchorSkypieaMobs(b.area,b.mobs))){cancel(b);resetHaki(b);}
  addHuntLedgers(b);b.rulesHash=rulesHash;
 }
 function hakiGame(b){

@@ -1,0 +1,21 @@
+{
+  "name": "Skypiea — Ilha Celestial",
+  "created": "2026-11-27",
+  "origin": "New image generated for the owner's explicit request to create and integrate a new Skypiea map across all four existing destinations.",
+  "generator": "OpenAI imagegen (built-in)",
+  "prompt": "Use case: stylized-concept. Asset type: complete playable top-down RPG world background for Kaizoku Idle. Create a NEW Skypiea-inspired celestial floating-island map with exceptional crisp HD pixel art, authored as a usable orthographic 2D game level, not an illustration or UI. Landscape 3:2, target 3072x2048 or highest supported resolution. Camera straight overhead, consistent top-down RPG perspective, no horizon, no isometric diamond, no tilting. An azure cloud sea surrounds one large connected ivory-cloud island filling most of the frame, its organic edge fully visible with a safe outer sky margin. Light ivory cloud ground, patches of rich emerald grass, warm pale-gold ancient stone walkways. Environment has coherent One Piece sky-island atmosphere: carved Shandoran stone ruins, a majestic golden bell shrine in the far north, wing-motif gateway at the southwest entry, elegant small cloud buildings and palms on the west edge, giant curling beanstalks and lush trees confined to the north/east edges. Level layout MUST prioritize walking and battles: wide open central circular plaza, two broad open clearing courts on the west and east, a spacious southern entry court, broad northern shrine forecourt, all connected by clearly visible wide stone paths in a loop, each path wide enough for several small RPG characters. Keep at least 65 percent of the island as unobstructed flat walkable ground; keep all large buildings, bell base, columns and trees along outer edges or in clearly separated small decorative clusters. No structures spanning the middle of paths, no broken bridges, no narrow bottlenecks. Include one small turquoise circular stone arrival/return dais in the southwest court with ample clear space immediately east of it, no labels. Intricate but restrained pixel details, clean readable ground, sharp discrete pixel clusters, no painterly brushwork, no blurry gradients, no excessive noise, no black outlines on tiles. Consistent soft sun from upper left, small contact shadows. Everything is at game-map scale, with tiny architecture relative to the entire island rather than giant hero objects. Golden bell should be distinctive but occupy less than 9 percent of map width. Show whole playable island uncut, no outside scenery covering its walkable ground. No people, NPCs, monsters, text, letters, captions, numbers, labels, markers, grid, HUD, borders, watermark or logo.",
+  "image": "scene.png",
+  "sha256": "913d628474b7acf16bdb44c2b632dfe0f1cfaf1fe4372f3a96bb4ae5d7028371",
+  "sourcePixels": {
+    "width": 1536,
+    "height": 1024
+  },
+  "worldUnits": {
+    "width": 4608,
+    "height": 3072
+  },
+  "rendering": "Original generated PNG, unchanged. Integer 3x world scale with nearest-neighbor rendering; a single image shared by all four maps.",
+  "navigation": "Manually authored polygon coastline and obstacle footprints in skypiea-map-data.js; visual coverage is independent from traversable terrain.",
+  "artUse": "Generated specifically for this owner-authorized Kaizoku Idle update; no third-party asset pack imported.",
+  "replacedRuntime": "The previous Skypiea scenery is retained in repository history/assets but no longer loaded by the four destinations."
+}

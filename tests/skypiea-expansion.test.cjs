@@ -6,8 +6,8 @@ const cases=[['skypiea-01',75,80,'satori'],['skypiea-02',80,85,'shura'],['skypie
 test('four registered Skypiea destinations preserve the first ID, gate and authored dimensions',()=>{
  const w=load();
  assert.deepEqual(Array.from(w.islands.filter(x=>x.region==='skypiea'),x=>[x.id,x.minLevel,x.recommended[1]]),cases.map(x=>x.slice(0,3)));
- assert.equal(data.width,7616);assert.equal(data.height,4736);
- for(const [id] of cases){const m=w.maps[id];assert.equal(m.width,7616);assert.equal(m.height,4736);assert.equal(m.terrainWalkable(64,64),false);assert(w.navigation(id).walkable(m.spawn.x,m.spawn.y));}
+ assert.equal(data.width,4608);assert.equal(data.height,3072);
+ for(const [id] of cases){const m=w.maps[id];assert.equal(m.width,4608);assert.equal(m.height,3072);assert.equal(m.terrainWalkable(64,64),false);assert(w.navigation(id).walkable(m.spawn.x,m.spawn.y));}
 });
 
 test('new enemies use shared level progression and six separate, reachable encounter slots each',()=>{
@@ -16,7 +16,10 @@ test('new enemies use shared level progression and six separate, reachable encou
  for(const [k,[id,min,max,type]] of cases.entries()){
   assert(!A.canTravel(id,min-1));assert(A.canTravel(id,min));assert.equal(A.get(id).order,15+k);
   const slots=B.slots(id),m=w.maps[id],nav=w.navigation(id);assert.equal(slots.length,6);
-  assert.equal(m.returnPoint.x,m.spawn.x);assert.equal(m.returnPoint.y,m.spawn.y);
+  assert.deepEqual([m.spawn.x,m.spawn.y],[1296,2190]);
+  assert.equal(m.returnPoint.x,1068);assert.equal(m.returnPoint.y,2190);
+  assert(Math.hypot(m.spawn.x-m.returnPoint.x,m.spawn.y-m.returnPoint.y)>m.returnPoint.radius+64,'arrival must not immediately return to the port');
+  assert(nav.path(m.spawn,m.returnPoint).length,'return dais must be reachable');
   for(const s of slots){
    assert.equal(s.type,type);assert(s.id.startsWith(id+'-'));assert(nav.walkable(s.x,s.y));assert(nav.path(m.spawn,s).length);
    const p=H.profile(id,s.sector,s.type,0.5);
@@ -24,34 +27,43 @@ test('new enemies use shared level progression and six separate, reachable encou
    assert.deepEqual(k?[p.level,p.maxHP,p.attack,p.defense,p.magicDefense,xp]:[p.level],expected[k]);
   }
  }
- assert.equal(new Set(cases.map(([id])=>JSON.stringify(w.maps[id].spawn))).size,4);
+ assert.equal(new Set(cases.map(([id])=>JSON.stringify(w.maps[id].spawn))).size,1);
+ assert.equal(new Set(cases.flatMap(([id])=>B.slots(id).map(s=>s.id))).size,24);
 });
-test('manual movement and click routes cross all eight visible bridge decks from each island arrival',()=>{
+test('walking and click routes traverse the new open courts and connect the return dais to the shrine',()=>{
  const sky=require('../skypiea-world.js');require('../world-system.js');
- const map=sky.worlds['skypiea-01'].map;
- const n=new MareWorld.Navigation(map,map.navigationCell);
- function traverse(start,target){
-  const route=n.path(start,target);
-  assert(route.length,JSON.stringify({start,target}));
-  const actor={...start};
+ const n=new MareWorld.Navigation(sky.map,sky.map.navigationCell);
+ // Hand-checked points on the generated artwork: southwest arrival, south court,
+ // centre plaza, east court, shrine forecourt and west court (world units).
+ const stops=[{x:1296,y:2190},{x:2304,y:2400},{x:2304,y:1434},{x:3360,y:1440},{x:2304,y:660},{x:1260,y:1440},{x:1068,y:2190},{x:480,y:2625}];
+ const actor={...stops[0]};
+ for(const target of stops.slice(1)){
+  assert(n.walkable(target.x,target.y),JSON.stringify(target));
+  const route=n.path(actor,target);assert(route.length,JSON.stringify({actor,target}));
   for(const p of route){
    assert(n.clear(actor,p),JSON.stringify({actor,p}));
    n.move(actor,p.x-actor.x,p.y-actor.y);
-   assert(Math.hypot(actor.x-p.x,actor.y-p.y)<.1,JSON.stringify({actor,p,start,target}));
+   assert(Math.hypot(actor.x-p.x,actor.y-p.y)<.1,JSON.stringify({actor,p}));
   }
   assert(Math.hypot(actor.x-target.x,actor.y-target.y)<.1);
  }
- for(const b of data.bridgeDecks){
-  const x=b.x+b.w/2,y=b.y+b.h/2,v=b.w<b.h;
-  const from=v?{x,y:b.y+24}:{x:b.x+18,y},to=v?{x,y:b.y+b.h-18}:{x:b.x+b.w-18,y};
-  assert(n.clear(from,to),b.id+' unobstructed deck');
-  for(const [id] of cases)traverse(sky.worlds[id].map.spawn,{x,y});
-  traverse(from,to);traverse(to,from);
+});
+test('the new scene stays visible over the blocked sky and solid landmarks remain outside the walking surface',()=>{
+ const sky=require('../skypiea-world.js');require('../world-system.js');
+ for(const [id] of cases){
+  const m=sky.worlds[id].map,n=new MareWorld.Navigation(m,m.navigationCell),coverage=MareWorld.coverageFor(m);
+  assert(coverage.contains(0,0,4608,3072),'render must include sky and buildings, not only the walking mask');
+  assert(!n.walkable(64,64),'open sky');
+  assert(!n.walkable(300,1200),'cloud house on the western edge');
+  assert(!n.walkable(2304,270),'golden bell base');
+  assert(n.walkable(2304,1434),'open centre plaza');
  }
 });
-test('the visible opening of the golden entrance arch stays walkable, but its pillars do not',()=>{
- const n=load().originalNavigation('skypiea-01');
- assert(n.clear({x:1540,y:2616},{x:1540,y:2864}),'open stone passage');
- assert(!n.walkable(1460,2792),'left pillar');
- assert(!n.walkable(1616,2792),'right pillar');
+test('the return dais posts block feet while its eastern entrance stays open',()=>{
+ const sky=require('../skypiea-world.js');require('../world-system.js');
+ const nav=new MareWorld.Navigation(sky.map,sky.map.navigationCell);
+ // Coordinates measured on the eight visible post bases in the source artwork.
+ for(const [x,y]of [[993,2100],[1141.5,2100],[918,2154],[1216.5,2163],[912,2235],[1219.5,2238],[990,2301],[1143,2301]])assert(!nav.walkable(x,y),'solid dais post '+x+','+y);
+ assert(nav.walkable(1215,2199),'eastern gap between posts');
+ assert(nav.path(sky.map.spawn,sky.map.returnPoint).length,'the centre remains reachable from arrival');
 });
