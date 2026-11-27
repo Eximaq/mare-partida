@@ -1,4 +1,6 @@
-# Marineford: perfis e artes sem encontros
+# Marineford: recursos aprovados e histórico da preparação
+
+**Estado atual:** os seis comuns integram os seis destinos de Marineford, que reutilizam o cenário semanal mantendo a arena semanal independente. Veja [regiões 114–180](LATE-ARCHIPELAGO.md). O texto abaixo registra a preparação anterior à ativação.
 
 Seis monstros comuns preparados, sem vínculo com mapa, spawn, rotação, masmorra, Impel Down, missão, saque ou recompensa. Nenhum XP ou Berry é concedido. Os valores nominais extrapolam a curva de monstros comuns a partir de X Drake 146; não são atributos de chefes.
 

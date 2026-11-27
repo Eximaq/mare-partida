@@ -1,0 +1,9 @@
+{
+  "sourcePackage": "Sabaody_Uso_No_Jogo.zip",
+  "sourceMap": "Sabaody_Uso_No_Jogo/assets/exported-maps/sabaody/map.webp",
+  "mapSHA256": "3272b51428b25887fb02bad5b4346ef59d2ecab5618cc201647283b73b434836",
+  "geometrySHA256": "1ab712844662854dd0fd1d803f63270231a0e863782b2ac4f4a3bdf627ff51de",
+  "width": 3072,
+  "height": 3072,
+  "import": "Original bytes copied unchanged; original navigation, coverage, depth and spawn data preserved."
+}

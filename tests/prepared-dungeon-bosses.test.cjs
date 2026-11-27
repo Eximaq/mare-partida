@@ -2,31 +2,30 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),vm=require('node:vm');
 const project=path.join(__dirname,'..');
 const wanted={
- hancock:[130,'Perfume Femur','Mero Mero Mellow',['area']],
- magellan:[140,'Golpe de Veneno','Hydra',['projectile','area']],
- ace:[150,'Hiken','Entei',['projectile','area']],
- aokiji:[160,'Ice Saber','Ice Age',['area']],
- akainu:[170,'Punho de Magma','Ryusei Kazan',['projectile','area']]
+ hancock:[140,'Perfume Femur','Mero Mero Mellow',['area']],
+ magellan:[150,'Golpe de Veneno','Hydra',['projectile','area']],
+ ace:[160,'Hiken','Entei',['projectile','area']],
+ aokiji:[170,'Ice Saber','Ice Age',['area']],
+ akainu:[180,'Punho de Magma','Ryusei Kazan',['projectile','area']]
 };
 const stats={
- hancock:[213413,5392,3681,1368],magellan:[241886,5801,3960,1467],ace:[272149,6221,4248,1575],
- aokiji:[304088,6630,4527,1674],akainu:[337815,7040,4797,1773]
+ hancock:[241886,5801,3960,1467],magellan:[272149,6221,4248,1575],ace:[304088,6630,4527,1674],
+ aokiji:[337815,7040,4797,1773],akainu:[373219,7449,5085,1881]
 };
-test('prepared boss IDs have independent basics, skills and visual effects and no live access',()=>{
+test('prepared dungeon profiles activate their basic attacks while retaining independent special art and undefined rewards',()=>{
  const P=require('../prepared-dungeon-bosses.js'),A=require('../prepared-dungeon-boss-art-data.js');
  const D=require('../boss-dungeon-system.js'),W=require('../world-battle.cjs'),T=require('../dungeon-timing.cjs');
  assert.deepEqual(Object.keys(P.catalog).sort(),Object.keys(wanted).sort());
  for(const [id,[level,basic,skill,fx]] of Object.entries(wanted)){
   const e=P.catalog[id],b=P.combatProfile(id);
   assert.deepEqual([e.level,e.normalAttack.name,e.skill.name,Object.keys(A.effects[id])],[level,basic,skill,fx]);
-  assert.deepEqual([e.normalAttack.action,e.skill.action,e.skill.impactFrame,e.availability,e.rewardConfigured],['attack','special',2,'unassigned',false]);
+  assert.deepEqual([e.normalAttack.action,e.skill.action,e.skill.impactFrame,e.availability,e.rewardConfigured],['attack','special',2,'boss-dungeon',false]);
   assert.deepEqual([b.level,b.xp,b.gold],[level,0,[0,0]]);
   assert.deepEqual([b.maxHP,b.attack,b.defense,b.magicDefense],stats[id]);
-  assert(!D.byId[id]&&!Object.hasOwn(W.worldMonsterCatalog,e.monster)&&!Object.hasOwn(W.prisonCatalog,e.monster)&&!Object.hasOwn(T,e.monster));
+  assert(D.byId[id]);assert.equal(D.byId[id].level,level);assert(Object.hasOwn(W.worldMonsterCatalog,e.monster));
+  assert(!Object.hasOwn(W.prisonCatalog,e.monster));assert(Object.hasOwn(T,e.monster));
   assert.notEqual(A.actors[e.monster].clips.attack.south.image,A.actors[e.monster].clips.special.south.image);
  }
- assert.equal(W.rulesHash,'5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810');
- assert.equal(require('../world-catalog.cjs').load().rulesHash,'1d59b830667d4842300bf0a74d9a898cdb74a910bc5819877ddcb32827bac1cd');
 });
 test('art loader resolves and draws all clips independently plus eight separate ground/projectile effects',()=>{
  const drawn=[],a=vm.createContext({console,MareNewIslandArt:{monster:()=>false},Image:class {

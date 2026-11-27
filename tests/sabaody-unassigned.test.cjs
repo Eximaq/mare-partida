@@ -2,24 +2,29 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const vm=require('node:vm'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const expected={
- kuma:[110,161606,4573,3114,1161,null],kizaru:[120,186615,4982,3393,1260,null],
+ kuma:[120,186615,4982,3393,1260,null],kizaru:[130,213413,5392,3681,1368,null],
  pacifista:[131,372822,10443,3796,398,34800],urouge:[136,435851,11903,4266,439,37600],
  hawkins:[141,509606,13572,4794,485,40600],'x-drake':[146,595902,15475,5392,534,43700]
 };
-test('reference stats and available forms are prepared without enabling rewards or encounters',()=>{
+test('Sabaody profiles feed world encounters and two level-gated dungeons without entering Impel Down',()=>{
  const C=require('../sabaody-monsters.js'),E=require('../world-battle.cjs'),D=require('../boss-dungeon-system.js');
  assert.deepEqual(Object.keys(C.catalog).sort(),Object.keys(expected).sort());
  for(const [id,want] of Object.entries(expected)){
   const m=C.catalog[id],p=C.combatProfile(id);
   assert.deepEqual([p.level,p.maxHP,p.attack,p.defense,p.magicDefense,p.nominalXP??null],want);
-  assert.deepEqual([p.xp,p.gold,m.availability,m.rewardConfigured],[0,[0,0],'unassigned',false]);
+  const boss=want[5]===null;
+  assert.deepEqual([p.xp,p.gold,m.availability,m.rewardConfigured],[0,[0,0],boss?'boss-dungeon':'world',false]);
   assert.equal(m.profileKind,want[5]===null?'boss-dungeon':'common');
   assert(!m.mapId&&!m.dungeonId&&!m.area);
-  assert(!Object.hasOwn(E.worldMonsterCatalog,id)&&!Object.hasOwn(E.prisonCatalog,id));
-  assert(!D.catalog.some(d=>[d.id,d.monster].includes(id)));
+  assert(!Object.hasOwn(E.prisonCatalog,id));
+  if(boss){
+   assert(!Object.hasOwn(E.worldMonsterCatalog,id));assert.equal(D.byId[id].monster,'dungeon-'+id);
+   assert.equal(D.byId[id].level,want[0]);assert(E.worldMonsterCatalog['dungeon-'+id].worldOnly);assert(!E.prisonCatalog['dungeon-'+id]);
+  }else{
+   assert(E.worldMonsterCatalog[id].worldOnly);assert.equal(E.worldMonsterCatalog[id].xp,want[5]);
+   assert(!D.catalog.some(d=>[d.id,d.monster].includes(id)));
+  }
  }
- assert.equal(E.rulesHash,'5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810');
- assert.equal(require('../world-catalog.cjs').load().rulesHash,'1d59b830667d4842300bf0a74d9a898cdb74a910bc5819877ddcb32827bac1cd');
 });
 function renderer(){
  const root=path.join(__dirname,'..'),drawn=[],c=vm.createContext({console,MareNewIslandArt:{monster:()=>false},Image:class {

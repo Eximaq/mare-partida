@@ -7,7 +7,7 @@ const expected={
  'little-oars-jr':[161,953372,22976,7679,716,53600],izo:[166,1115228,26221,8647,791,57200],
  vista:[171,1304655,29929,9737,871,60900],jozu:[176,1526357,34165,10968,961,64700]
 };
-test('six Marineford profiles follow the normal curve without enabling live encounters',()=>{
+test('six Marineford profiles retain their attributes in world encounters without entering dungeons or Impel Down',()=>{
  const S=require('../marineford-sprites.js'),M=require('../marineford-monsters.js'),E=require('../world-battle.cjs'),D=require('../boss-dungeon-system.js');
  assert.deepEqual(Object.keys(S).sort(),ids);
  assert.deepEqual(Object.keys(M.catalog).sort(),ids);
@@ -15,13 +15,12 @@ test('six Marineford profiles follow the normal curve without enabling live enco
   assert.equal(S[id].availability,'unassigned');
   const p=M.combatProfile(id),m=M.catalog[id];
   assert.deepEqual([p.level,p.maxHP,p.attack,p.defense,p.magicDefense,p.nominalXP],expected[id]);
-  assert.deepEqual([p.xp,p.gold,m.availability,m.profileKind,m.rewardConfigured],[0,[0,0],'unassigned','common',false]);
+  assert.deepEqual([p.xp,p.gold,m.availability,m.profileKind,m.rewardConfigured],[0,[0,0],'world','common',false]);
   for(const k of ['level','xp','area','mapId','dungeonId','normalCombat','reward'])assert(!Object.hasOwn(S[id],k),id+': '+k);
-  assert(!Object.hasOwn(E.worldMonsterCatalog,id)&&!Object.hasOwn(E.prisonCatalog,id));
+  assert(E.worldMonsterCatalog[id].worldOnly);assert.equal(E.worldMonsterCatalog[id].xp,expected[id][5]);
+  assert(!Object.hasOwn(E.prisonCatalog,id));
   assert(!D.catalog.some(d=>[d.id,d.monster].includes(id)));
  }
- assert.equal(E.rulesHash,'5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810');
- assert.equal(require('../world-catalog.cjs').load().rulesHash,'1d59b830667d4842300bf0a74d9a898cdb74a910bc5819877ddcb32827bac1cd');
 });
 test('96 approved strips use four frames with directional hurt and separate giant anchor',()=>{
  const drawn=[];

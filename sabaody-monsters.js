@@ -1,5 +1,5 @@
 'use strict';
-// Detached Sabaody profiles. No encounter, live rotation or reward is assigned.
+// Approved Sabaody profiles shared by world encounters and Kuma/Kizaru dungeons.
 ((root)=>{
  const common=[
   ['pacifista','Pacifista',131,245820,7770,2269,332,34800],
@@ -12,14 +12,14 @@
   normalCombat:Object.freeze({level,maxHP,attack,defense,magicDefense,attackSec:2.1})
  }));
  const bosses=[
-  ['kuma','Bartholomew Kuma',110,12077,248,129],
-  ['kizaru','Kizaru',120,14092,270,140]
+  ['kuma','Bartholomew Kuma',120,14092,270,140],
+  ['kizaru','Kizaru',130,16262,292,152]
  ].map(([id,name,level,maxHP,attack,defense])=>({id,name,level,profileKind:'boss-dungeon',
   calibratedAgainst:'crocodile-90-lucci-100-moria-110',
   normalCombat:Object.freeze({level,maxHP,attack,defense,speed:50,reach:51,attackSec:2.1,aggro:300})
  }));
  const catalog=Object.freeze(Object.fromEntries([...bosses,...common].map(p=>[p.id,Object.freeze({...p,sprite:p.id,
-  availability:'unassigned',rewardConfigured:false})])));
+  availability:p.profileKind==='boss-dungeon'?'boss-dungeon':'world',rewardConfigured:false})])));
  const get=id=>Object.hasOwn(catalog,id)?catalog[id]:null;
  function combatProfile(id,characters=root.MareCharacters){
   const p=get(id);if(!p)return null;
@@ -30,11 +30,11 @@
  }
  const firstHits=new WeakMap(),prepared=new WeakSet();
  const ended=a=>a.alive===false||a.hp<=0||a.returning||a.engaged===false;
- function reset(actor){firstHits.delete(actor);prepared.delete(actor);}
+ function reset(actor){delete actor.sabaodyTransformed;firstHits.delete(actor);prepared.delete(actor);}
  function recordHit(actor,damage,now){
   if(get(actor?.type)?.activation!=='first-positive-hit'||ended(actor)||
-    !Number.isFinite(damage)||damage<=0||!Number.isFinite(now)||firstHits.has(actor))return false;
-  firstHits.set(actor,now);return true;
+    !Number.isFinite(damage)||damage<=0||!Number.isFinite(now)||actor.sabaodyTransformed)return false;
+  actor.sabaodyTransformed=true;firstHits.set(actor,now);return true;
  }
  function setPreparedForm(actor,enabled){
   if(get(actor?.type)?.activation!=='prepared')return false;
@@ -46,7 +46,7 @@
   const p=get(actor?.type);if(!p)return null;
   if(ended(actor)){reset(actor);return p.sprite;}
   const hit=firstHits.get(actor);
-  return prepared.has(actor)||(hit!==undefined&&now-hit>=reactionSeconds)?p.alternateSprite:p.sprite;
+  return prepared.has(actor)||(actor.sabaodyTransformed&&(hit===undefined||now-hit>=reactionSeconds))?p.alternateSprite:p.sprite;
  }
  const api=Object.freeze({catalog,combatProfile,recordHit,setPreparedForm,form,reset,ended});
  root.MareSabaodyMonsters=api;if(typeof module!=='undefined')module.exports=api;

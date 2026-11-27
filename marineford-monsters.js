@@ -1,5 +1,5 @@
 'use strict';
-// Detached Marineford profiles, with no assignment to encounters or rewards.
+// Approved Marineford profiles assigned to the six archipelago encounters.
 ((root)=>{
  const entries=[
   ['squard','Squard',151,461443,13274,3698,491,46900],
@@ -10,7 +10,7 @@
   ['jozu','Jozu',176,1013899,25927,6810,801,64700]
  ];
  const catalog=Object.freeze(Object.fromEntries(entries.map(([id,name,level,maxHP,attack,defense,magicDefense,nominalXP])=>[
-  id,Object.freeze({id,name,level,nominalXP,availability:'unassigned',sprite:id,profileKind:'common',
+  id,Object.freeze({id,name,level,nominalXP,availability:'world',sprite:id,profileKind:'common',
    calibratedAgainst:'x-drake-level-146',rewardConfigured:false,
    normalCombat:Object.freeze({level,maxHP,attack,defense,magicDefense,attackSec:2.1})})
  ])));

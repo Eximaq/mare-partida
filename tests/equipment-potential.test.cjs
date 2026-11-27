@@ -7,7 +7,18 @@ test('potential zero keeps a usable base and 100 increases the same natural budg
 test('copies vary without changing the stored potential or rerolling on migration',()=>{const a=make(55,seed(1)),b=make(55,seed(99));assert.notDeepEqual(a.extras,b.extras);assert.equal(a.potential,b.potential);const state={inventory:[a],equipment:{},forgeSeq:0};const once=F.migrate(state,defs),twice=F.migrate(once,defs);assert.deepEqual(twice,once);assert.deepEqual(F.itemStats(twice.inventory[0],defs),F.itemStats(a,defs));});
 test('old items retain every effective stat and have no invented potential',()=>{const old=F.normalizeItem({id:'old',def:0,level:17,plus:7,rarity:'epic',locked:true,baseStats:{attack:8,defense:1,hp:13},extras:[{stat:'strength',value:83}],sockets:['pearl_for_1']},defs);const before=F.itemStats(old,defs),next=F.migrate({inventory:[old],equipment:{},forgeSeq:0},defs).inventory[0];assert.deepEqual(F.itemStats(next,defs),before);assert.equal(next.potential,null);assert.equal(next.generation.family,'legacy');assert.equal(next.locked,true);assert.equal(next.plus,7);});
 test('normal rarity draw is conditional 60/25/10/5 with no legendary or supreme',()=>{for(const [roll,want]of [[0,'common'],[.599,'common'],[.6,'uncommon'],[.849,'uncommon'],[.85,'rare'],[.949,'rare'],[.95,'epic'],[.999999,'epic']])assert.equal(F.rollRarity(()=>roll),want);});
-test('map loot clamps player level to every registered map range',()=>{const H=require('../hunt-system.js');for(const r of Object.values(H.regions)){assert.equal(F.lootLevel(100,r),r.max);assert.equal(F.lootLevel(1,r),r.min);assert.equal(F.lootLevel(r.max,r),r.max);}assert.equal(F.lootLevel(3,H.get('beach')),3);});
+test('map loot clamps player level to every registered map range',()=>{
+ const H=require('../hunt-system.js');
+ for(const r of Object.values(H.regions)){
+  assert.equal(F.lootLevel(r.max+1,r),r.max);
+  assert.equal(F.lootLevel(r.min-1,r),r.min);
+  assert.equal(F.lootLevel(r.min,r),r.min);
+  const middle=Math.floor((r.min+r.max)/2);
+  assert.equal(F.lootLevel(middle,r),middle);
+  assert.equal(F.lootLevel(r.max,r),r.max);
+ }
+ assert.equal(F.lootLevel(3,H.get('beach')),3);
+});
 test('weighted potential keeps 100 reachable and high values progressively rarer',()=>{const p=F.potentialProbabilities();assert(Math.abs(p.reduce((a,b)=>a+b,0)-1)<1e-12);assert(p[0]>p[80]&&p[80]>p[90]&&p[90]>p[100]&&p[100]>0);assert.equal(F.rollPotential(()=>0),0);assert.equal(F.rollPotential(()=>1-Number.EPSILON),100);});
 test('reforge redistributes only its paid budget and preserves other properties',()=>{const a=make(73),g={inventory:[a],equipment:{},classId:'strategist',gold:1e9,materials:1e6,forgeSeq:0};for(const type of ['reforge','reforgeLine']){const r=F.execute(g,{type,itemId:a.id,line:0,expectedSeq:0},defs,seed(8));assert(r.ok);const b=r.state.inventory[0];assert.equal(b.potential,73);assert.deepEqual(b.generation,a.generation);assert.deepEqual(b.sockets,a.sockets);assert.deepEqual(b.baseStats,a.baseStats);assert.equal(b.extras.reduce((n,e)=>n+e.points,0),a.generation.extraBudget);if(type==='reforgeLine')assert.deepEqual(b.extras.slice(1),a.extras.slice(1));}});
 

@@ -1,5 +1,5 @@
 'use strict';
-// Detached content. Never add these definitions to any encounter or reward pool implicitly.
+// Approved Thriller profiles: four world encounters and the existing Moria dungeon.
 ((root)=>{
  const entries=[
   ['absalom','Absalom',114,143927,4929,1498,238,26000],
@@ -15,7 +15,7 @@
   normalCombat:Object.freeze({level:110,maxHP:12077,attack:248,defense:129,speed:50,reach:51,attackSec:2.1,aggro:300,xp:674,gold:Object.freeze([224,338])})
  };
  const catalog=Object.freeze(Object.fromEntries([...common,moria].map(x=>[x.id,Object.freeze({...x,
-  availability:'unassigned',sprite:x.id,rewardConfigured:false
+  availability:x.id==='gecko-moria'?'boss-dungeon':'world',sprite:x.id,rewardConfigured:false
  })])));
  function combatProfile(id,characters=root.MareCharacters){
   if(!Object.hasOwn(catalog,id))return null;

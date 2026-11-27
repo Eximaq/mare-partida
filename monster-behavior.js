@@ -5,6 +5,8 @@
  const city=root.MareAlubarna||(typeof module!=='undefined'?require('./alubarna-world.js'):null);
  if(city)for(const [id,w]of Object.entries(city.worlds))plans[id]=w.slots;
  const sky=root.MareSkypiea||(typeof module!=='undefined'?require('./skypiea-world.js'):null);if(sky)for(const [id,w] of Object.entries(sky.worlds))plans[id]=w.slots;
+ const enies=root.MareEniesLobby||(typeof module!=='undefined'?require('./enies-lobby-world.js'):null);if(enies)for(const [id,w] of Object.entries(enies.worlds))plans[id]=w.slots;
+ const late=root.MareLateArchipelago||(typeof module!=='undefined'?require('./late-archipelago-world.js'):null);if(late)for(const [id,w] of Object.entries(late.worlds))plans[id]=w.slots;
  const characters=root.MareCharacters||(typeof module!=='undefined'?require('./character-system.js'):null);
  const RESPAWN_MS=30000/characters.monsterBalance.respawnSpeed;
  const mapExports=root.MareMapExports||(typeof module!=='undefined'?require('./world-map-exports.js'):null);
@@ -20,7 +22,7 @@
  const slots=area=>plans[area]||[];
  const ready=(area,mobs,deadlines,now,boss=false)=>slots(area).filter(s=>!!s.boss===boss&&!mobs.some(m=>m.alive&&m.spawnId===s.id)&&now>=(deadlines?.[s.id]||0));
  function hurt(m){m.engaged=true;m.returning=false;return true;}
- function disengage(m){m.engaged=false;m.returning=false;m.telegraph=null;m.attackAnim=0;m.taunt=null;m.moving=0;m.partyTargetId=null;delete m.partyTaunt;}
+ function disengage(m){m.engaged=false;m.returning=false;m.telegraph=null;m.attackAnim=0;m.taunt=null;m.moving=0;m.partyTargetId=null;delete m.partyTaunt;delete m.cp9Transformed;delete m.sabaodyTransformed;}
  function intent(m,target,alive=true,aggressive=false){
   m.returning=false;
   if(!alive||!target){disengage(m);return 'idle';}

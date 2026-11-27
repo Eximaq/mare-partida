@@ -9,6 +9,22 @@ from monsters import CATALOG, WORLD_LEVEL_BANDS, MonsterStore  # noqa: E402
 
 
 class MonsterCatalogTest(unittest.TestCase):
+    def test_enies_encounters_persist_with_their_world_level_bands(self):
+        expected = [
+            ("fukurou", 97, (95, 100)), ("kalifa", 101, (101, 104)),
+            ("jabra", 104, (104, 106)), ("blueno", 107, (107, 109)),
+            ("kaku", 110, (110, 114)),
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "catalog.sqlite3"
+            catalog = {m["id"]: m for m in MonsterStore(db).catalog()}
+            for index, (monster_id, level, band) in enumerate(expected, 1):
+                area = f"enies-lobby-{index:02}"
+                self.assertEqual(WORLD_LEVEL_BANDS[area], band)
+                self.assertEqual((catalog[monster_id]["level"], catalog[monster_id]["area"]), (level, area))
+                self.assertFalse(catalog[monster_id]["boss"])
+            self.assertEqual({m["id"]: m for m in MonsterStore(db).catalog()}, catalog)
+
     def test_cocox_seed_and_reopen(self):
         with tempfile.TemporaryDirectory() as directory:
             db = Path(directory) / "catalog.sqlite3"

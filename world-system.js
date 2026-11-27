@@ -63,6 +63,8 @@
   // native terrain metadata; dark tiles, walls and water remain real content.
   if(globalThis.MareQuestDungeonWorld)maps['quest-dungeons']=MareQuestDungeonWorld.map;
   globalThis.MareMapExports?.install(maps);
+  globalThis.MareLateArchipelago?.install(maps);
+  if(globalThis.MareEniesLobby)for(const [id,w] of Object.entries(MareEniesLobby.worlds))maps[id]=w.map;
   class Coverage {
     constructor({rows=null,tile=64,x=0,y=0,width,height,version=1}={}){
       this.tile=tile;this.x=x;this.y=y;this.version=version;this.rows=rows;

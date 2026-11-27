@@ -6,26 +6,30 @@ const expected={
  ryuma:[122,281547,8256,3080,334,30000],oars:[127,329060,9407,3458,368,32600],
  'gecko-moria':[110,161606,4573,3114,1161,null]
 };
-test('five unassigned profiles match reference attributes without granting rewards',()=>{
+test('five reference profiles match reference attributes without granting rewards',()=>{
  const T=require('../thriller-monsters.js');
  assert.deepEqual(Object.keys(T.catalog).sort(),Object.keys(expected).sort());
  for(const [id,want] of Object.entries(expected)){
   const p=T.combatProfile(id),m=T.catalog[id];assert(p);
   assert.deepEqual([p.level,p.maxHP,p.attack,p.defense,p.magicDefense,p.nominalXP??null],want);
-  assert.deepEqual([p.xp,p.gold,m.rewardConfigured,m.availability],[0,[0,0],false,'unassigned']);
+  assert.deepEqual([p.xp,p.gold,m.rewardConfigured,m.availability],[0,[0,0],false,id==='gecko-moria'?'boss-dungeon':'world']);
   assert(!Object.hasOwn(m,'area')&&!Object.hasOwn(m,'mapId')&&!Object.hasOwn(m,'dungeonId'));
  }
  assert.equal(T.catalog['gecko-moria'].profileKind,'boss-dungeon');
  assert.equal(T.combatProfile('unknown'),null);
 });
-test('no active Thriller species or changes to world or battle rules',()=>{
+test('Thriller common encounters are world-only and Moria remains exclusive to his dungeon',()=>{
  const E=require('../world-battle.cjs'),D=require('../boss-dungeon-system.js');
  for(const id of Object.keys(expected)){
-  assert(!Object.hasOwn(E.worldMonsterCatalog,id)&&!Object.hasOwn(E.prisonCatalog,id));
-  assert(!D.catalog.some(d=>[d.id,d.monster].includes(id)));
+  assert(!Object.hasOwn(E.prisonCatalog,id));
+  if(id==='gecko-moria'){
+   assert(!Object.hasOwn(E.worldMonsterCatalog,id));assert.equal(D.byId[id].monster,'dungeon-gecko-moria');
+   assert(E.worldMonsterCatalog['dungeon-gecko-moria'].worldOnly);assert(!E.prisonCatalog['dungeon-gecko-moria']);
+  }else{
+   assert(E.worldMonsterCatalog[id].worldOnly);assert.equal(E.worldMonsterCatalog[id].xp,expected[id][5]);
+   assert(!D.catalog.some(d=>[d.id,d.monster].includes(id)));
+  }
  }
- assert.equal(E.rulesHash,'5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810');
- assert.equal(require('../world-catalog.cjs').load().rulesHash,'1d59b830667d4842300bf0a74d9a898cdb74a910bc5819877ddcb32827bac1cd');
 });
 test('80 legal authored strips load through normal directional sprite adapter',()=>{
  const drawn=[];

@@ -1,0 +1,131 @@
+{
+  "method": "Lossless crop of frame 0 from the approved south idle strip; no resampling, recoloring or new artwork.",
+  "portraits": [
+    {
+      "id": "kuma",
+      "source": "assets/sprites-combat-v2/kuma/idle-south.png",
+      "source_sha256": "053cd94a4b68e80b0eec0d7dfff254dabc2022874a1e68cd832ba3515e61d7f5",
+      "frame": 0,
+      "source_cell": [
+        192,
+        192
+      ],
+      "crop": [
+        0,
+        16,
+        192,
+        174
+      ],
+      "output": "assets/ui/boss-dungeons/portraits/kuma.png",
+      "output_sha256": "59a76069f292475707a0e85cbd9bcfa6232c924b50f65d1c0b593d2a74c1a39a"
+    },
+    {
+      "id": "kizaru",
+      "source": "assets/sprites-combat-v2/kizaru/idle-south.png",
+      "source_sha256": "9d61cb1215eea9a5a44ab7d864e50ba34eac431b622dc6e469b12eedf3aa520c",
+      "frame": 0,
+      "source_cell": [
+        192,
+        192
+      ],
+      "crop": [
+        0,
+        48,
+        192,
+        174
+      ],
+      "output": "assets/ui/boss-dungeons/portraits/kizaru.png",
+      "output_sha256": "b63635f2d36075b8f4cf8cf03f1a2568611ad9bf93e2aa24694120f2c1d02490"
+    },
+    {
+      "id": "hancock",
+      "source": "assets/sprites-combat-v2/dungeon-hancock/idle-south.png",
+      "source_sha256": "c2901dc58710e6bcddc4cb256817fca47dda43d85ba02c5185958bc567390cdf",
+      "frame": 0,
+      "source_cell": [
+        256,
+        256
+      ],
+      "crop": [
+        0,
+        61,
+        256,
+        221
+      ],
+      "output": "assets/ui/boss-dungeons/portraits/hancock.png",
+      "output_sha256": "1e40b34648eee9d1b5aa1f7b285c68d9d07fd3480625527bb3e8b0f752526a6c"
+    },
+    {
+      "id": "magellan",
+      "source": "assets/sprites-combat-v2/dungeon-magellan/idle-south.png",
+      "source_sha256": "c6af3feff5d7c53fde9742ccaa9e77a6b570189732b2322f82a780bd592ad134",
+      "frame": 0,
+      "source_cell": [
+        256,
+        256
+      ],
+      "crop": [
+        0,
+        42,
+        256,
+        221
+      ],
+      "output": "assets/ui/boss-dungeons/portraits/magellan.png",
+      "output_sha256": "73894f73f0a502234456d05ebf433b8febfdf2341fbaaa6f0a0bab2f14261b99"
+    },
+    {
+      "id": "ace",
+      "source": "assets/sprites-combat-v2/dungeon-ace/idle-south.png",
+      "source_sha256": "abd10538da71454711facd52d602465e3b4949375a71a9d27429fc0171b05c25",
+      "frame": 0,
+      "source_cell": [
+        256,
+        256
+      ],
+      "crop": [
+        0,
+        71,
+        256,
+        221
+      ],
+      "output": "assets/ui/boss-dungeons/portraits/ace.png",
+      "output_sha256": "b01766cc959fbb42223ca189fb65aae924f7549d0576cd5801ed22cfc5e2cc7d"
+    },
+    {
+      "id": "aokiji",
+      "source": "assets/sprites-combat-v2/dungeon-aokiji/idle-south.png",
+      "source_sha256": "8c95e5978f93d725d68a5a77481fb20bf1cd7609fac868f64c6bfcc1d7bebc38",
+      "frame": 0,
+      "source_cell": [
+        256,
+        256
+      ],
+      "crop": [
+        0,
+        55,
+        256,
+        221
+      ],
+      "output": "assets/ui/boss-dungeons/portraits/aokiji.png",
+      "output_sha256": "47ef6cf902fd34094519dd5c2295148f38313b4aee819ee66b21b40e08acc57d"
+    },
+    {
+      "id": "akainu",
+      "source": "assets/sprites-combat-v2/dungeon-akainu/idle-south.png",
+      "source_sha256": "5ca7603a2ef8eceff7f53f911f6d7b1175f19d74faeca23b83c1fff407a20723",
+      "frame": 0,
+      "source_cell": [
+        256,
+        256
+      ],
+      "crop": [
+        0,
+        52,
+        256,
+        221
+      ],
+      "output": "assets/ui/boss-dungeons/portraits/akainu.png",
+      "output_sha256": "39f9914b01677475d0c53878fe75f6d361a45bd9315dd1496cfb914f2d41b5ba"
+    }
+  ]
+}

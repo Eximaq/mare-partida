@@ -1,4 +1,6 @@
-# Sabaody: perfis preparados sem encontro
+# Sabaody: recursos aprovados e histórico da preparação
+
+**Estado atual:** os quatro comuns integram Sabaody; Kuma e Kizaru integram as masmorras de níveis 120 e 130. Veja [regiões 114–180](LATE-ARCHIPELAGO.md). As tabelas e descrições abaixo registram os níveis e o escopo da preparação original, anteriores à ativação.
 
 | Monstro | Nível | PV | Ataque | Def. física | Def. mágica | XP nominal |
 |---|---:|---:|---:|---:|---:|---:|

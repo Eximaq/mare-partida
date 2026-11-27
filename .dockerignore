@@ -122,6 +122,13 @@
 
 !skypiea-map-data.js
 !skypiea-world.js
+!enies-lobby-map-data.js
+!enies-lobby-world.js
+!cp9-monsters.js
+!thriller-monsters.js
+!cp9-sprites.js
+!thriller-sprites.js
+!enies-dungeon-art.js
 !akainu-combat.js
 !weekly-boss-rules.cjs
 !weekly-boss-battle.cjs

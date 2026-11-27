@@ -1,4 +1,9 @@
-# Thriller Bark: monstros sem encontro
+# Thriller Bark: recursos aprovados e histórico da preparação
+
+**Estado atual:** Gecko Moria integra a masmorra de nível 110; Absalom, Perona, Ryuma e Oars integram os quatro destinos de Thriller Bark. Veja [Enies Lobby](ENIES-LOBBY.md) e [regiões 114–180](LATE-ARCHIPELAGO.md). O texto abaixo registra a preparação anterior à ativação dos encontros.
+
+## Registro da preparação original, anterior à atribuição de Moria
+
 
 Os cinco perfis ficam em `thriller-monsters.js`, fora dos catálogos ativos de mapas, spawns, masmorras, contratos, Impel Down e recompensas. Nenhum XP, Berry, baú ou saque é concedido. Gecko Moria usa perfil de chefe, mas não abre masmorra ou rotação.
 

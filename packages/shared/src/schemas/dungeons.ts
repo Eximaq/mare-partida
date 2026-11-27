@@ -1,6 +1,6 @@
 import {z} from 'zod';
 import {instanceIdSchema} from './original-inventory.js';
-export const dungeonIdSchema=z.enum(['alvida','morgan','buggy','kuro','krieg','arlong','smoker','wapol','crocodile']);
+export const dungeonIdSchema=z.enum(['alvida','morgan','buggy','kuro','krieg','arlong','smoker','wapol','crocodile','rob-lucci','gecko-moria','kuma','kizaru','hancock','magellan','ace','aokiji','akainu']);
 export const dungeonActions=['dungeon.enter','dungeon.claim','dungeon.craft','dungeon.acknowledge'] as const;
 const integer=z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
 const reward=z.union([z.strictObject({xp:integer,berry:integer,materialId:z.enum(['akuma_fragment_e','akuma_fragment_b','epic_weapon_fragment']),quantity:z.union([z.literal(5),z.literal(10)]),boundToCharacter:z.uuid()}),z.strictObject({xp:z.literal(0),berry:z.literal(0),itemId:z.literal('will-book'),quantity:z.literal(1),boundToCharacter:z.uuid()}),z.strictObject({xp:z.literal(0),berry:z.literal(0),itemId:z.literal('epic-equipment-box'),quantity:z.literal(1),equipmentLevel:z.number().int().min(1).max(1000),boundToCharacter:z.uuid()})]);

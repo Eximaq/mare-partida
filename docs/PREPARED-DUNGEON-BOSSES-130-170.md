@@ -1,4 +1,6 @@
-# Chefes de nível 130 a 170: arte e perfis preparados
+# Chefes preparados: arte e histórico dos níveis originais
+
+**Estado atual:** Hancock 140, Magellan 150, Ace 160, Aokiji 170 e Akainu 180 integram as masmorras com ataque básico e vitórias pendentes, sem recompensa configurada. Veja [regiões 114–180](LATE-ARCHIPELAGO.md). Os níveis, atributos e limites de escopo abaixo são o registro histórico da preparação; a mecânica automática de especiais ainda não foi ativada.
 
 Nenhum encontro, skill automática, masmorra, rotação, recompensa, XP ou Berry foi ativado. Os perfis de referência e nomes de ações estão em `prepared-dungeon-bosses.js`; os clipes em `prepared-dungeon-boss-art-data.js`; o desenho independente de VFX em `prepared-dungeon-boss-fx.js`. Os arquivos do Akainu semanal não são alterados.
 
