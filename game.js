@@ -3447,34 +3447,47 @@ ${avatarExtra}
     }
     MareMapPlayerHud.drawNPCName(ctx,npc.x,top-7,npc.name);
   }
-  function drawTravelMarker(c,point,label,time,reduced){
+  function drawTravelMarker(c,point,label,time,reduced,layer='front'){
     if(!point||!Number.isFinite(point.x)||!Number.isFinite(point.y))return;
-    const {x,y}=point;
-    c.save();
-    c.translate(Math.round(x),Math.round(y));
-    // Offset only the artwork; the map point and caption remain at ground level.
-    c.save();c.translate(0,-31);
-    const glow=c.createRadialGradient(0,0,3,0,0,36);
-    glow.addColorStop(0,'rgba(69,159,255,.20)');
-    glow.addColorStop(.65,'rgba(56,149,247,.12)');
-    glow.addColorStop(1,'rgba(40,130,235,0)');
-    c.save();c.scale(1,.54);c.fillStyle=glow;c.fillRect(-36,-36,72,72);c.restore();
-    const rim=(rx,ry,gap)=>{
-      c.beginPath();
-      for(let half=0;half<2;half++)for(let i=0;i<=24;i++){
-        const theta=half*Math.PI+gap+(Math.PI-2*gap)*i/24;
-        const wave=reduced?0:1.2*Math.sin(3*theta-time*2.05)+.35*Math.sin(5*theta+time*1.1);
-        const ax=rx*Math.cos(theta),ay=(ry+wave)*Math.sin(theta);
-        if(i)c.lineTo(ax,ay);else c.moveTo(ax,ay);
+    const {x,y}=point,front=layer==='front',start=front?0:Math.PI;
+    c.save();c.translate(Math.round(x),Math.round(y));
+    if(!front){
+      const glow=c.createRadialGradient(0,0,3,0,0,36);
+      glow.addColorStop(0,'rgba(69,159,255,.22)');
+      glow.addColorStop(.65,'rgba(56,149,247,.14)');
+      glow.addColorStop(1,'rgba(40,130,235,0)');
+      c.save();c.scale(1,.51);c.fillStyle=glow;c.fillRect(-36,-36,72,72);c.restore();
+    }
+    // Each wall starts on the original ground rim, then rises; no floating ring.
+    const rim=(theta,height)=>{
+      const wave=reduced?0:1.25*Math.sin(theta*4-time*1.9)+.45*Math.sin(theta*6+time);
+      const s=height/29;
+      return [Math.cos(theta)*(27.5+s*1.3),Math.sin(theta)*11.5-height+wave*s];
+    };
+    const path=(lo,hi,height,move)=>{
+      for(let i=0;i<=20;i++){
+        const p=rim(lo+(hi-lo)*i/20,height);
+        if(i===0&&move)c.moveTo(...p);else c.lineTo(...p);
       }
     };
-    rim(28,11.5,.12);c.lineWidth=4;c.strokeStyle='#55a7f632';c.stroke();
-    c.lineWidth=1.25;c.strokeStyle='#a3e1fce0';c.stroke();
-    if(!reduced){
-      const drift=.5+.5*Math.sin(time*1.4);
-      rim(29.5+drift*1.5,13+drift*1.1,.28);c.strokeStyle='rgba(111,193,255,'+(.12+.11*(1-drift))+')';c.lineWidth=1;c.stroke();
+    const wall=c.createLinearGradient(0,-41,0,13);
+    wall.addColorStop(0,'rgba(109,186,255,0)');
+    wall.addColorStop(.27,front?'rgba(109,186,255,.095)':'rgba(109,186,255,.14)');
+    wall.addColorStop(.73,front?'rgba(63,155,252,.165)':'rgba(63,155,252,.19)');
+    wall.addColorStop(1,'rgba(87,184,255,.10)');
+    c.beginPath();path(start,start+Math.PI,29,true);path(start+Math.PI,start,0,false);c.closePath();
+    c.fillStyle=wall;c.fill();
+    // Small moving wavelets in the wall, never another detached course.
+    for(let i=0;i<3;i++){
+      const phase=reduced?.58:(time*.25+i*.29)%1;
+      const lo=start+.12+i*.82,hi=Math.min(start+Math.PI-.07,lo+.86),height=5+phase*23;
+      c.beginPath();path(lo,hi,height,true);
+      c.lineWidth=.9;c.strokeStyle='rgba(153,220,255,'+(.12+.16*Math.sin(phase*Math.PI))+')';c.stroke();
     }
-    c.restore();
+    c.beginPath();path(start+.14,start+Math.PI-.14,0,true);
+    c.lineWidth=4;c.strokeStyle='#55a7f635';c.stroke();
+    c.lineWidth=1.25;c.strokeStyle='#a3e1fc';c.stroke();
+    if(!front){c.restore();return;}
     c.globalAlpha=1;
     c.font='700 13px "Alegreya Sans", "Segoe UI", sans-serif';
     c.textAlign='center';c.textBaseline='middle';
@@ -3485,11 +3498,11 @@ ${avatarExtra}
     c.fillStyle='#eefaff';c.fillText(label,0,top+h/2+1);
     c.restore();
   }
-  function drawMapTravelMarkers(){
+  function drawMapTravelMarkers(layer){
     const map=activeMap(),reduced=ambientReduced();
     const draw=(point,label)=>{
       if(!point||point.x+104<camera.x||point.x-104>camera.x+W||point.y+40<camera.y||point.y-56>camera.y+H)return;
-      drawTravelMarker(ctx,point,label,world.time,reduced);
+      drawTravelMarker(ctx,point,label,world.time,reduced,layer);
     };
     if(scene==='lobby'){
       for(const p of globalThis.MareLobby?.portals||[])draw(p,'Mapa do Mundo');
@@ -3888,7 +3901,7 @@ ${avatarExtra}
     if(state!=='ready'){ctx.fillStyle='#151217';ctx.fillRect(0,0,W,H);return;}
     drawWorld();drawPaperDollDiagnostics();
   }
-  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}camera.begin(ctx,activeMap());drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'back',world.hero);drawCombatVfx('back');drawEntityLayer();drawDungeonChestLabel();
+  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}camera.begin(ctx,activeMap());drawBackground();drawMapTravelMarkers('back');drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'back',world.hero);drawCombatVfx('back');drawEntityLayer();drawDungeonChestLabel();
     if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'front',world.hero);
     drawRankB();
     drawExpansion();
@@ -3904,7 +3917,7 @@ ${avatarExtra}
     for(let f of world.fx){if(['akuma_tori_albatroz','akuma_uma_uma'].includes(f.zoanVfx))continue;ctx.globalAlpha=f.fruit||f.zoanVfx||f.supaVfx?1:clamp(f.life/f.max,0,1);if(f.wolfImpact){MareWolf.drawEffect(ctx,'bleed',f.x,f.y,(world.time-f.started)*1000);}else if(f.supaVfx){MareSupaArt.draw(ctx,supaImages[f.supaVfx],f.supaVfx,f.x,f.y,Date.now()-f.startedAt,{scale:MareAkuma.supaRules.radius*2/MareSupaArt.animations.slash.frames[0].w});}else if(f.zoanVfx){MareZoanArt.drawVfx(ctx,f.zoanVfx,f.followHero?world.hero.x:f.x,f.followHero?world.hero.y:f.y,{time:f.max-f.life,scale:74/48,loop:!!f.loop});}else if(f.fruit){drawFruitBurst(ctx,f.x,f.y,f.fruit,f.max-f.life);}else if(f.slash){ctx.strokeStyle=f.color;ctx.lineWidth=5;ctx.beginPath();ctx.arc(f.x,f.y-17,29,-2.35,.2);ctx.stroke();}else if(f.ring){ctx.strokeStyle=f.color;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(f.x,f.y-4,(1-f.life/f.max)*61+6,(1-f.life/f.max)*26+5,0,0,Math.PI*2);ctx.stroke();}else {ctx.textAlign='center';ctx.font='bold '+f.size+'px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#0b2323';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);}}ctx.globalAlpha=1;
     drawCombatVfx();
     if(MareSkypiea.has(activeMap().id))MareSkypiea.foreground(ctx,camera,W,H,world.time,ambientReduced());
-    drawMapTravelMarkers();
+    drawMapTravelMarkers('front');
     ambientWeather.draw(ctx,camera,W,H);
     ctx.restore();
 
