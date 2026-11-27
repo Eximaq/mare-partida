@@ -1,0 +1,44 @@
+{
+  "asset": "baratie-floating-restaurant-hd",
+  "created": "2026-11-27",
+  "generator": "image_gen built-in image generation",
+  "promptFile": "generation-prompt.txt",
+  "file": "scene-hd.png",
+  "format": "PNG",
+  "nativeWidth": 1448,
+  "nativeHeight": 1086,
+  "sha256": "20861fafc5afa5287390a2436a43dee7c1fd8cd2c9e97624c1d58aedf1a5cb92",
+  "bytes": 3162389,
+  "integration": {
+    "worldWidth": 3072,
+    "worldHeight": 2304,
+    "worldUnitsAreNotImagePixels": true,
+    "processing": "Original generated PNG copied byte for byte; no resize, crop or recompression.",
+    "rendering": "Proportional camera crops of the full source, high-quality smoothing local to painted scenery.",
+    "depth": "33 authored polygon silhouettes clipped from the same painting; 48 physical footprints.",
+    "floor": "Eight connected deck and interior polygons. The surrounding sea remains visible but cannot be walked on."
+  },
+  "references": [
+    {
+      "url": "https://opbr-en.bn-ent.net/stage/detail/0017.html",
+      "source": "Bandai Namco — ONE PIECE Bounty Rush, Baratie Stage",
+      "purpose": "Primary visual research: sea surroundings, ship identity and open fighting decks; the generated composition keeps the restaurant intact rather than reproducing the wreckage."
+    },
+    {
+      "url": "https://live-action.onepiece-base.com/location/baratie/",
+      "source": "ONE PIECE official live-action location — Baratie",
+      "purpose": "Primary research: fish-shaped floating restaurant and dining interior."
+    },
+    {
+      "url": "https://gamek.vn/7-nha-hang-doc-dao-va-hap-dan-nhat-trong-the-gioi-manga-anime-20180516163717928.chn",
+      "source": "GameK — anime restaurant reference image",
+      "purpose": "Secondary visual research: mint-green hull, fish-head bow, red roof and yellow/white striped sails."
+    }
+  ],
+  "preservedImages": {
+    "assets/new-islands/baratie-map.png": "df9cb9b5e0fbfa6c67ed146116427de357ff045890daad9bcfa1bd9681dde403",
+    "assets/exported-maps/baratie/map.png": "0b13f454582e91b0bafcab6dcdfebd2b9a9a61ad2f4a32055a079617b54c43dd",
+    "assets/ui/voyage-hd/baratie.png": "ceb5de198b1379010b32cf3fc572efc9987bc7627b4c77cd270a6907620d722c"
+  },
+  "provenance": "Original generated illustration commissioned for the user-requested One Piece fan-game location. Reference images were used for research and are not redistributed in the repository. One Piece motifs remain associated with their respective rights holders; this record does not assert a third-party commercial license."
+}

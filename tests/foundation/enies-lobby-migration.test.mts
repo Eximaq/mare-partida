@@ -14,6 +14,7 @@ test('the Enies Lobby fingerprints lead through the additive migrations to shipp
  const arrival=readMigration('0066_skypiea_hd_arrival.sql');
  const loguetown=readMigration('0067_loguetown_hd_map.sql');
  const arlong=readMigration('0068_arlong_park_hd_map.sql');
+ const baratie=readMigration('0069_baratie_hd_map.sql');
  const world=require('../../world-catalog.cjs').load(),battle=require('../../world-battle.cjs');
  const previousWorld=previous.match(/SET rules_hash='([a-f0-9]{64})'/)?.[1];
  const previousBattle=previous.match(/to_jsonb\('([a-f0-9]{64})'::text\)/)?.[1];
@@ -32,7 +33,9 @@ test('the Enies Lobby fingerprints lead through the additive migrations to shipp
  assert(arrivalWorld&&loguetown.includes("WHERE rules_hash='"+arrivalWorld+"'"),'Recognize worlds after the HD Skypiea arrival migration');
  const loguetownWorld=loguetown.match(/SET rules_hash='([a-f0-9]{64})'/)?.[1];
  assert(loguetownWorld&&arlong.includes("WHERE rules_hash='"+loguetownWorld+"'"),'Recognize worlds after the HD Loguetown migration');
- assert(arlong.includes("SET rules_hash='"+world.rulesHash+"'"),'Migration must promote saved worlds to the shipped catalog hash');
+ const arlongWorld=arlong.match(/SET rules_hash='([a-f0-9]{64})'/)?.[1];
+ assert(arlongWorld&&baratie.includes("WHERE rules_hash='"+arlongWorld+"'"),'Recognize worlds after the HD Arlong Park migration');
+ assert(baratie.includes("SET rules_hash='"+world.rulesHash+"'"),'Migration must promote saved worlds to the shipped catalog hash');
  const savedBattle={rulesHash:lateBattle,hp:17,pending:{targetId:'fixture',remaining:.3}};
  battle.upgradeBalance(savedBattle);
  assert.deepEqual(savedBattle,{rulesHash:battle.rulesHash,hp:17,pending:{targetId:'fixture',remaining:.3}},'Runtime must promote saved battles and preserve the active attack');

@@ -17,7 +17,12 @@ for(const [id,allowed,min] of [['rare','ei',16],['syrup','u',21],['baratie','c',
   if(exported?.spriteMode==='painted'){
     // Painted maps author their own footprints and bake those feet into the
     // navigation mask. The old sprite-count threshold is not their contract.
-    for(const name of ['shark-palace','south-gate-west','south-gate-east']){
+    const landmarks={
+      arlong:['shark-palace','south-gate-west','south-gate-east'],
+      baratie:['restaurant-house','west-mooring-post','east-mooring-post']
+    };
+    assert(landmarks[id],`${id}: painted map has independently selected solid landmarks`);
+    for(const name of landmarks[id]){
       const foot=island.map.colliders.find(o=>o.id===id+'-'+name);
       assert(foot,`${id}/${name}: the visible structure retains a solid base`);
       assert(!nav.walkable(foot.x+foot.w/2,foot.y+foot.h/2),`${id}/${name}: actors cannot stand inside the structure`);
