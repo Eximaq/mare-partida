@@ -1486,9 +1486,50 @@
     c.drawImage(image,sx,sy,w,h,ox*scale,oy*scale,w*scale,h*scale);c.restore();
     return true;
   }
+  // The healing tide is tied to the existing healing effect, not to a new
+  // cast, buff or health update. Its two layers bracket the actual body.
+  const healingTideArt={manifest:null,images:new Map()};
+  const healingTideBase='assets/combat-vfx/tide-v3/';
+  fetch(healingTideBase+'clips.json').then(response=>response.ok?response.json():null).then(manifest=>{
+    if(!manifest)return;
+    for(const {file} of Object.values(manifest.clips))if(!healingTideArt.images.has(file)){
+      const image=new Image();image.src=healingTideBase+file;healingTideArt.images.set(file,image);
+    }
+    healingTideArt.manifest=manifest;
+  }).catch(()=>{});
+  function healingTideState(){
+    const {manifest,images}=healingTideArt;
+    if(!manifest||world.hero.visible===false)return null;
+    const direction=({front:'south',back:'north',left:'west',right:'east'})[world.hero.direction]||world.hero.direction||'south';
+    const flip=direction==='east',key=flip?'west':direction;
+    const clips=['back','front'].map(layer=>manifest.clips[key+'-'+layer]);
+    if(!clips.every(clip=>clip&&images.get(clip.file)?.naturalWidth))return null;
+    return {manifest,clips,flip};
+  }
+  function drawHealingTide(c,state,layer,x,y,height){
+    if(!state)return;
+    const {manifest,clips,flip}=state,clip=clips[layer];
+    const scale=Math.max(.55,Math.min(2.5,(height||107)/107))/manifest.sourceDensity;
+    for(const fx of session.combatHits||[]){
+      if(fx.kind!=='mareRestauradora'||fx.actor!==world.hero)continue;
+      const age=(world.time-fx.started)*1000;
+      if(age<0||age>=manifest.durationMs)continue;
+      const frame=clip.frames[Math.min(clip.frames.length-1,Math.floor(age*manifest.fps/1000))];
+      if(!frame)continue;
+      const [sx,sy,w,h,dx,dy]=frame;
+      c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x),Math.round(y));
+      if(flip)c.scale(-1,1);
+      c.drawImage(healingTideArt.images.get(clip.file),sx,sy,w,h,dx*scale,dy*scale,w*scale,h*scale);
+      c.restore();
+    }
+  }
   function drawCombatVfx(layer='front'){
     if(layer==='front')for(const p of session.combatProjectiles||[])if(!MareClassWeaponVfx.projectile(ctx,p,{origin:combatBeamOrigin(p)}))MareCombatVfx.drawProjectile(ctx,p,{origin:combatBeamOrigin(p)});
     for(const f of session.combatHits||[]){
+      if(f.kind==='mareRestauradora'&&f.actor===world.hero){
+        const renderedWithBody=healingTideState();
+        if(renderedWithBody)continue; // Fall back to the original while the density-4 art is unavailable.
+      }
       const effect=MareCombatVfx.data.effects[f.kind];if((effect.layer||'front')!==layer)continue;const bodyHeight=effect.bodyScale&&f.actor?combatVisualHeight(f.actor):0;
       // The uploaded origin is off-centre; wrap the visible body rather than its chest or HUD.
       const point=effect.rangeBound?{x:f.x,y:f.y}:bodyHeight?{x:f.actor.x,y:f.actor.y-bodyHeight/2}:f.actor?combatChest(f.actor):f;
@@ -3735,9 +3776,13 @@ ${avatarExtra}
     if(world.hero.visible!==false)vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1,visualFruit,'back',visualPlayer?.zoanTransformed);
     drawHoruHealFx(false);
     drawBisonShell(false,x,y);
+    const tide=(session.combatHits||[]).some(f=>f.kind==='mareRestauradora'&&f.actor===world.hero)?healingTideState():null;
+    const tideHeight=tide?combatVisualHeight(world.hero):0;
     const haki=presentHaki(),hakiScale=hakiVisualScale(),hakiHero={x,y,direction:world.hero.direction};
     if(world.hero.visible!==false)MareHakiArt.drawBack(ctx,haki,hakiHero,reducedFX,hakiScale,(c,x,y)=>{c.save();c.translate(x,y);if(u==='titan')c.scale(1.35,1.35);drawPlayerSprite(c,0,0);c.restore();});
+    drawHealingTide(ctx,tide,0,x,y,tideHeight);
     ctx.save();if(rt.hidden)ctx.globalAlpha=.2;if(world.hero.visible===false){drawBeriSeparation(ctx,x,y,1-session.fruitBurst/1.5);}else if(u==='titan'){ctx.translate(x,y);ctx.scale(1.35,1.35);drawPlayerSprite(ctx,0,0);}else drawPlayerSprite(ctx,x,y);ctx.restore();
+    drawHealingTide(ctx,tide,1,x,y,tideHeight);
     if(horuBuffActive()){const aura=MareRankC.rules.horu.mutationVfx;MareRankC.draw(ctx,'mutation',x,y+aura.offsetY,Date.now()-session.horuBuffStarted,{width:aura.width,height:aura.height});}
     vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1,visualFruit,'front',visualPlayer?.zoanTransformed);
     drawBisonShell(true,x,y);
