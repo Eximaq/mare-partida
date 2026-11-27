@@ -52,7 +52,8 @@ module.exports=async function wardrobeLoadRace({page,url,out,put}){
    return {before:state.actor,after:after.actor,activeBefore:state.active,activeAfter:after.active};
   },{old,next,fixed});
   assert.deepEqual(swap,{before:old,after:next,activeBefore:true,activeAfter:true});
-  const ready=await wait(id=>{const m=__hdSlotQA.raceRead();return m.actor===id&&m.draws>0&&m.current?m:false;},next);
+  const ready=await wait(id=>{const m=__hdSlotQA.raceRead();return m.actor===id&&m.draws>0&&m.current?m:false;},next,60000)
+   .catch(cause=>{throw new Error('Replacement did not draw within 60 s while the old response was withheld',{cause});});
   assert(!finished,'Old request was released before the new outfit drew');assert.equal(hitsB,1,'Replacement should decode once');
   const newSource=ready.current,checkpoint=ready.drawnAttacks;
   release();

@@ -1,5 +1,31 @@
 # Continuidade do personagem HD
 
+## Pacote de animações da aparência equipada
+
+A partir da revisão `10f975c8`, o problema reproduzido era a primeira caminhada continuar desenhando a pose anterior. O renderizador guardava uma pose por vez. A versão atual prepara os quatro repousos, os quatro ciclos de caminhada e as rotas reais de ataque e habilidade da aparência equipada. A arma temporariamente ocultada por uma fruta equipada recebe sua própria rota. O mapa e seus comandos continuam disponíveis enquanto esse trabalho roda.
+
+O primeiro desenho normal exige que as rotas essenciais tenham terminado a preparação. Se um asset falhar, o estado identifica a rota afetada e permite a recuperação assíncrona. O mapa nunca usa a direção anterior como substituta da direção solicitada. Trocar a aparência ou o equipamento descarta o trabalho que deixou de corresponder ao personagem. Trocar apenas de ação, direção ou mapa reaproveita as poses já prontas.
+
+O inventário e a janela de atributos apresentam o mesmo retrato HD de repouso para o Sul, com a aparência e o equipamento atuais e o mesmo enquadramento. Ambos aproveitam a composição do mapa. A silhueta de oclusão usa a pose efetivamente desenhada. As rotas de ataque e habilidade que resolvem a mesma fonte e o mesmo relógio compartilham o raster. As superfícies retidas preservam o alinhamento original e descartam margens transparentes. A leitura dos ajustes publicados é restrita às peças que têm registros para a pose em preparo.
+
+| Ensaio apontado no Chrome, cache frio | Base | Alteração |
+|---|---:|---:|
+| Quatro caminhadas completas no cache do mapa | 9.609 ms | 5.859 ms |
+| Primeiro personagem no mapa | 1.828 ms, repouso isolado | 13.675 ms, com as ações essenciais |
+| Preparações físicas de repouso Sul ao abrir o inventário durante a entrada | 2 | 1 |
+| Primeiro quadro exato após comando de caminhada | A caminhada acabou antes de aparecer | 4–15 ms |
+| Primeiro quadro exato de ataque ou habilidade | As três primeiras execuções terminaram antes de aparecer | 5–10 ms |
+
+Ensaio de referência no Chrome local com Espadachim masculino, arma #1, peitoral #6 e luva #25. O mapa respondeu em cerca de 1 s na versão alterada e o inventário abriu durante a preparação. Foram observados os 16 quadros de cada direção, 64 ao todo. Caminhar, atacar e usar a habilidade após o primeiro desenho geraram zero pedidos adicionais de arte HD e zero recomposições durante os comandos observados.
+
+O navegador também comparou os retratos da mochila e dos atributos com a pose Sul do mapa. Os três rasters coincidiram antes e depois da troca da luva #25 pela #26, inclusive na conferência em 390 × 844.
+
+A prova do compositor comparou o desenho compactado com a referência RGBA, inclusive o alinhamento em escala fracionária e os ajustes publicados. Em um ensaio separado com cinco peças equipadas, as superfícies retidas das oito poses caíram de 272 para cerca de 31 MiB, mais uma superfície compartilhada de até 4 MiB. O dado mede só as superfícies dos quadros, sem estimar a memória total do navegador.
+
+Na combinação masculina inicial da espada #0 com o peitoral #6, a fonte Sul conserva uma falha de validação de cor no quadro 1. A mesma falha foi reproduzida na versão publicada do PR #391. O carregamento registra esse caso como uma rota degradada. A troca para um conjunto novo continua exigindo preparar as poses desse conjunto. A corrida de troca durante o ataque confirmou que ele desenha enquanto a resposta antiga segue retida.
+
+## Referência histórica do PR #391
+
 ## Causas e correções
 
 - A preparação trocava a referência do desenho assim que mudava a ação ou a direção. Se a nova composição ainda estivesse pendente, o mapa deixava de desenhar o jogador. O mapa agora conserva a última composição HD compatível com a identidade visual e a revisão dos ajustes. Ao ficar pronta, a pose exata assume o desenho com o relógio da ação em curso.
