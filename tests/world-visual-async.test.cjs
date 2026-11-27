@@ -33,12 +33,13 @@ check(superseded.state==='cancelled'&&superseded.reason==='appearance-changed','
 check(schedule.length===2&&schedule[0].signal.aborted&&schedule[1].pose.player.equipment.weapon.def===2,'intermediate equipment superseded');
 schedule[1].resolve();await drain();check(draw(2),'third item draws immediately when ready');
 schedule[0].resolve();await superseded.promise;await drain();check(superseded.state==='cancelled','late decode cannot revive a cancelled pose');check(draw(2)&&paint.every(([id])=>id===2),'late decode cannot publish prior item');
-check(!draw(2,'attack','east'),'pending attack does not borrow idle');await drain();
+check(draw(2,'attack','east'),'pending attack holds an HD pose of the same actor');await drain();
+check(api.worldVisual().displayed.action==='idle'&&!api.worldVisual().displayed.exact,'transition reports what actually drew');
 schedule[2].reject(Error('fixture decode error'));await drain();
-check(api.worldVisual().state==='failed'&&!draw(2,'attack','east'),'failure remains transparent');
+check(api.worldVisual().state==='failed'&&draw(2,'attack','east'),'decode failure retains the visible identity');
 check(draw(2),'failed attack does not block cached idle');
-time=1500;check(!draw(2,'attack','east'),'retry stays transparent');await drain();
+time=1500;check(draw(2,'attack','east'),'retry remains visible');await drain();
 schedule[3].resolve();await drain();check(draw(2,'attack','east'),'current attack recovered');
-check(paint.at(-1).join(',')==='2,attack,east','draw uses current action/direction');
+check(paint.at(-1).join(',')==='2,attack,east'&&api.worldVisual().displayed.exact,'ready exact pose immediately wins');
 api.clearWorldVisual();return {poseRequests:schedule.length,staleAssetsPrevented:true,recovery:true};
 })().then(console.log).catch(error=>{console.error(error);process.exitCode=1;});

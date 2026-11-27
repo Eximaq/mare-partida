@@ -24,7 +24,8 @@ module.exports=async function wardrobeLoadRace({page,url,out,put}){
   await page.evaluate(()=>__hdSlotQA.target('north'));await page.evaluate(()=>__hdSlotQA.raceStart());
   const savedLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
   const cold=await page.evaluate(names=>performance.getEntriesByType('resource').filter(e=>names.some(k=>new URL(e.name).pathname.endsWith('/'+k))).length,[oldPath,newPath]);
-  assert.equal(cold,0,'Attack panel must start cold');assert.equal(hitsA,0);assert.equal(hitsB,0);
+  assert.equal(cold,0,'Attack panel must not finish before the gate is released');
+   assert(hitsA<=1,'Anticipation and actual attack must share the unfinished request');assert.equal(hitsB,0);
   await page.locator('#autoToggle').click();
   const timeoutToken=Symbol();let watch;
   try{assert.notEqual(await Promise.race([intercepted,new Promise(r=>{watch=setTimeout(()=>r(timeoutToken),30000);})]),timeoutToken,'Cold attack texture was not requested');}

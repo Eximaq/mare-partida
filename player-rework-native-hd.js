@@ -11135,12 +11135,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  // A committed bundle owns rendered frame surfaces, outside the opportunistic
  // preview cache. Share decoded sources across all poses of one preparation.
- async function prepareConfiguration(poses,{signal,inspectPositions=false,positions=null,resolve=({player,options})=>({player,options,source:selectVisual(player,options)})}={}){
+ async function prepareConfiguration(poses,{signal,inspectPositions=false,bakePositions=false,positions=null,resolve=({player,options})=>({player,options,source:selectVisual(player,options)})}={}){
   await ready;
   if(state!=='ready')throw Error(error||'Índices HD indisponíveis');
   const sources=new Map(),routes=new Map(),decoded=new Map(),coverage=[],editors=new Map();
   const routeKey=o=>JSON.stringify([o.action,o.direction,!!o.weaponless]);
   const clearSources=()=>{const canvases=new Set();for(const frames of sources.values())for(const {canvas} of frames.values())canvases.add(canvas);for(const canvas of canvases){canvas.width=0;canvas.height=0;}sources.clear();};
+  const clearEditors=()=>{for(const editor of editors.values())editor.drop?.();editors.clear();};
+  const bake=bakePositions&&!inspectPositions;
+  let batchStarted=bake?performance.now():0;
+  const yieldFrame=()=>new Promise(resolve=>setTimeout(resolve,0));
   const decode=path=>{
    if(!decoded.has(path))decoded.set(path,Promise.resolve().then(()=>loadShared(path)).catch(e=>{throw Object.assign(Error(path+': '+e.message,{cause:e}),{asset:path});}));
    return decoded.get(path);
@@ -11184,14 +11188,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
         validateFrameHead(r,frame,entry);
         try{const rendered=editor?editor.visit(phase??frame,true,()=>composeFrame(r,frame,entry)):composeFrame(r,frame,entry);frames.set(frame,rendered);if(holds)compositions.set(phase,rendered);}
         catch(e){throw Object.assign(Error(r.id+' / '+frame+': '+e.message,{cause:e}),{asset:e.asset});}
-        if(i%4===3)await new Promise(resolve=>setTimeout(resolve,0));
+        if(bake?performance.now()-batchStarted>=8:i%4===3){
+         await yieldFrame();if(bake)batchStarted=performance.now();
+        }
        }
        if(editor){
         const first=frames.values().next().value,source=r;
         await editor.finish(first.info,clock,source.hdKind==='weapon'?source.fps:source.pack.directions[source.direction].clip.fps);signal?.throwIfAborted();
         const phaseOf=new Map(clock.map(v=>[v.frame,v.phase])),drop=()=>{for(const v of adjusted.values())v.canvas.width=v.canvas.height=0;adjusted.clear();};
         const diagnostics=editor.configure(positions||positionsAPI.empty());
-        editors.set(key,{clock,targets:editor.targets,availableLayers:editor.availableLayers,footFor:editor.footFor,diagnostics,pivot:first.info.pivot,width:first.canvas.width,height:first.canvas.height,
+        const positionView={clock,targets:editor.targets,availableLayers:editor.availableLayers,footFor:editor.footFor,diagnostics,pivot:first.info.pivot,width:first.canvas.width,height:first.canvas.height,
          fps:source.hdKind==='weapon'?source.fps:source.pack.directions[source.direction].clip.fps,
          set(m,strict=true){const issues=editor.configure(positionsAPI.validate(m),strict);drop();return issues;},
          frame(f,original=false){
@@ -11199,7 +11205,25 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
           const phase=phaseOf.get(f);
           if(!adjusted.has(phase))adjusted.set(phase,editor.visit(phase,false,()=>composeFrame(source,f,entry)));
           return adjusted.get(phase);
-         },drop});
+         },drop};
+        editors.set(key,positionView);
+        if(bake){
+         // Map playback consumes ready pixels. The workbench keeps its original
+         // frames and mutable editor for comparison and preview editing.
+         if(editor.moved){
+          const originals=new Set(frames.values());
+          for(const f of frames.keys()){
+           signal?.throwIfAborted();
+           positionView.frame(f);
+           if(performance.now()-batchStarted>=8){await yieldFrame();batchStarted=performance.now();}
+          }
+          signal?.throwIfAborted();
+          for(const f of frames.keys())frames.set(f,adjusted.get(phaseOf.get(f)));
+          for(const {canvas} of originals){canvas.width=0;canvas.height=0;}
+          adjusted.clear();
+         }
+         editors.set(key,{diagnostics});
+        }
        }
       }
       break;
@@ -11208,6 +11232,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       const hash=e.asset?.split('/').pop().replace(/\.png$/,'');
       const failed=hash&&[...(plan?.passes||[])].find(([slot,pass])=>!unavailable.has(slot)&&(pass?.ownedFiles?.includes(e.asset)||pass?.refs?.includes(hash)));
       if(!failed)throw e;
+      editors.get(key)?.drop?.();editors.delete(key);
       const frames=sources.get(key);
       if(frames)for(const {canvas} of new Set(frames.values())){canvas.width=0;canvas.height=0;}
       sources.delete(key);
@@ -11227,25 +11252,25 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
      omitted:r.omitted||resolved.omitted||[],unsupported:resolved.unsupported||[],
      ...(slotRoutes?{slotRoutes}:{}),...(r.slotResolution?{slotResolution:r.slotResolution}:{})});
    }
-  }catch(e){clearSources();throw e;}
+  }catch(e){clearEditors();clearSources();throw e;}
   function view(o){const route=routes.get(routeKey(o));return route&&editors.get(route.key);}
   return {coverage,
    positionView:view,
    drawNative(ctx,o,original=false){
     const route=routes.get(routeKey(o));if(!route)return null;
     const f=frameFor(route.r,{...o,action:route.options.action});
-    const rendered=view(o)?.frame(f,original)||sources.get(route.key)?.get(f);
+    const rendered=view(o)?.frame?.(f,original)||sources.get(route.key)?.get(f);
     if(!rendered)return null;ctx.drawImage(rendered.canvas,0,0);return rendered.info;
    },
    draw(ctx,player,o){
     const route=routes.get(routeKey(o));if(!route)return false;
-    const {r,key,options}=route,frame=frameFor(r,{...o,action:options.action}),result=editors.get(key)?.frame(frame)||sources.get(key)?.get(frame);
+    const {r,key,options}=route,frame=frameFor(r,{...o,action:options.action}),result=editors.get(key)?.frame?.(frame)||sources.get(key)?.get(frame);
     if(!result)return false;
     paint(ctx,player,{...o,action:options.action},r,frame,result,false);
     this.visualHeight=result.info.visualHeight*WORLD_SCALE;
     return true;
    },
-   release(){for(const e of editors.values())e.drop();editors.clear();clearSources();routes.clear();}
+   release(){clearEditors();clearSources();routes.clear();}
   };
  }
  function draw(ctx,player,o={}){
