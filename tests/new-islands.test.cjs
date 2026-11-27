@@ -6,7 +6,7 @@ require('../new-islands-art.js');
 require('../world-system.js');
 const root=path.join(__dirname,'..');
 for(const [id,allowed,min] of [['rare','ei',16],['syrup','u',21],['baratie','c',26],['arlong','c',31]]){
-  const island=islands[id],nav=new MareWorld.Navigation(island.map,32);
+  const island=islands[id],nav=new MareWorld.Navigation(island.map,island.map.navigationCell||32);
   assert.equal(MareWorld.maps[id],island.map);
   const exported=MareMapExports.get(id),spawn=island.map.spawn;
   assert.equal(island.map.width,exported?.width??island.data.width*64);
@@ -14,16 +14,27 @@ for(const [id,allowed,min] of [['rare','ei',16],['syrup','u',21],['baratie','c',
   if(exported)assert.deepEqual(spawn,exported.spawn);
   else assert(allowed.includes(island.at(Math.floor(spawn.x/64),Math.floor(spawn.y/64))));
   assert(nav.walkable(spawn.x,spawn.y));
-  assert(island.map.colliders.length>=(id==='arlong'?25:30),`${id}: visible object footprints are solid`);
-  assert(island.map.colliders.some(o=>{
-    const x=o.x+o.w/2,y=o.y+o.h/2;
-    return island.map.terrainWalkable(x,y)&&!nav.walkable(x,y);
-  }),`${id}: objects stop movement on otherwise walkable terrain`);
+  if(exported?.spriteMode==='painted'){
+    // Painted maps author their own footprints and bake those feet into the
+    // navigation mask. The old sprite-count threshold is not their contract.
+    for(const name of ['shark-palace','south-gate-west','south-gate-east']){
+      const foot=island.map.colliders.find(o=>o.id===id+'-'+name);
+      assert(foot,`${id}/${name}: the visible structure retains a solid base`);
+      assert(!nav.walkable(foot.x+foot.w/2,foot.y+foot.h/2),`${id}/${name}: actors cannot stand inside the structure`);
+    }
+    assert(island.map.colliders.every(o=>!nav.walkable(o.x+o.w/2,o.y+o.h/2)),`${id}: every authored footprint stops movement`);
+  }else{
+    assert(island.map.colliders.length>=(id==='arlong'?25:30),`${id}: visible object footprints are solid`);
+    assert(island.map.colliders.some(o=>{
+      const x=o.x+o.w/2,y=o.y+o.h/2;
+      return island.map.terrainWalkable(x,y)&&!nav.walkable(x,y);
+    }),`${id}: objects stop movement on otherwise walkable terrain`);
+  }
   for(const sector of island.districts){assert(nav.walkable(sector.x,sector.y));assert(nav.path(spawn,sector).length,`${id}/${sector.id}`);}
   assert.equal(H.get(id).min,min);
-  const art=exported?`assets/exported-maps/${id}/map.png`:`assets/new-islands/${id}-map.png`;
+  const art=exported?.groundUrl||(exported?`assets/exported-maps/${id}/map.png`:`assets/new-islands/${id}-map.png`);
   const png=fs.readFileSync(path.join(root,art));
-  assert.deepEqual([png.readUInt32BE(16),png.readUInt32BE(20)],[island.map.width,island.map.height]);
+  assert.deepEqual([png.readUInt32BE(16),png.readUInt32BE(20)],[exported?.imageWidth??island.map.width,exported?.imageHeight??island.map.height]);
 }
 assert(islands.syrup.map.spawn.y>islands.syrup.districts[0].y);
 assert(islands.baratie.map.spawn.y>islands.baratie.districts.at(-1).y);

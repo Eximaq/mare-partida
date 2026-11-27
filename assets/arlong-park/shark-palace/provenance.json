@@ -1,0 +1,44 @@
+{
+  "asset": "arlong-park-shark-palace-hd",
+  "created": "2026-11-27",
+  "generator": "image_gen built-in image generation",
+  "promptFile": "generation-prompt.txt",
+  "file": "scene-hd.png",
+  "format": "PNG",
+  "nativeWidth": 1448,
+  "nativeHeight": 1086,
+  "sha256": "7c46e80612a0ab93293285e5ee63cc1576640d9254bbbafee408c7a5ffb310df",
+  "bytes": 3838609,
+  "integration": {
+    "worldWidth": 3072,
+    "worldHeight": 2304,
+    "worldUnitsAreNotImagePixels": true,
+    "processing": "Original generated PNG copied byte for byte; no resize, crop or recompression.",
+    "rendering": "Proportional camera crops of the full source, high-quality smoothing local to painted scenery.",
+    "depth": "21 authored polygon silhouettes clipped from the same painting; 23 physical footprints."
+  },
+  "references": [
+    {
+      "url": "https://opbr-en.bn-ent.net/stage/detail/0015.html",
+      "source": "Bandai Namco — ONE PIECE Bounty Rush, Arlong Park Stage (A)",
+      "purpose": "Research: shark pagoda, red roofs, pale paving, pool passages and marine wall motifs."
+    },
+    {
+      "url": "https://opbr-en.bn-ent.net/stage/detail/0016.html",
+      "source": "Bandai Namco — ONE PIECE Bounty Rush, Arlong Park Stage (B)",
+      "purpose": "Research: alternative view and circulation of the coastal park."
+    },
+    {
+      "url": "https://onepiece.fandom.com/wiki/Arlong_Park",
+      "source": "One Piece Wiki — Arlong Park",
+      "purpose": "Secondary research: coastal setting and pool connected to the sea."
+    }
+  ],
+  "preservedImages": {
+    "assets/new-islands/arlong-map.png": "59263b8f8f44de57950baad679c42ed158420ab1c1010abc8bf8c5d990ad53c1",
+    "assets/exported-maps/arlong/map.png": "f82ac9e049a0ed3609e3d185b05625f1ae0f26068a5f510254e4997f28f0acc9",
+    "assets/ui/voyage-hd/arlong.png": "300a96d20f2144be2be564940df6da51d8d24cea2d3237bd575704263eab2f59",
+    "assets/ui/boss-dungeons/portraits/arlong.png": "846957452d310a5919c1c190b2036c8f7fb7932448cf102740294f4121261c9a"
+  },
+  "provenance": "Original generated illustration commissioned for the user-requested One Piece fan-game location. Reference images were used for research and are not redistributed in the repository. One Piece motifs remain associated with their respective rights holders; this record does not assert a third-party commercial license."
+}

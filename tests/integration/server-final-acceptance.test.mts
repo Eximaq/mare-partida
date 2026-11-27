@@ -73,7 +73,8 @@ test('navigation upgrade reanchors only known maps and preserves all other rows'
  const skypiea=await readFile(new URL('../../apps/game-server/migrations/0065_skypiea_celestial_map.sql',import.meta.url),'utf8');
  const arrival=await readFile(new URL('../../apps/game-server/migrations/0066_skypiea_hd_arrival.sql',import.meta.url),'utf8');
  const loguetown=await readFile(new URL('../../apps/game-server/migrations/0067_loguetown_hd_map.sql',import.meta.url),'utf8');
- const currentSql=[sql,swordWorld,skypiea,arrival,loguetown].join('\n');
+ const arlong=await readFile(new URL('../../apps/game-server/migrations/0068_arlong_park_hd_map.sql',import.meta.url),'utf8');
+ const currentSql=[sql,swordWorld,skypiea,arrival,loguetown,arlong].join('\n');
  await f.pool.query(currentSql);assert.deepEqual(await snapshot(),expected);
  await f.pool.query(currentSql);assert.deepEqual(await snapshot(),expected);
  await a.read();await assert.rejects(b.read(),{code:'world_rules_changed'});

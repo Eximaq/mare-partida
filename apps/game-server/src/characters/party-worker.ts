@@ -37,6 +37,7 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
   // The shared room owns its old mobs independently of personal battle rows.
   if(/^skypiea-0[1-4]$/.test(room.area))E.reanchorSkypieaMobs(room.area,room.mobs,maps().navigation(room.mapId));
   if(room.area==='loguetown')E.reanchorLoguetownMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(room.area==='arlong')E.reanchorArlongMobs(room.area,room.mobs,maps().navigation(room.mapId));
    await refreshPartyLeader(c,candidate.party_id,roster,now);
   const ids=roster.map(m=>m.character_id),battles=await readBattleRows(c,ids);
   const connected=roster.filter(m=>m.connected&&battles.get(m.character_id)?.simulation.partyInstanceId===room.id).map(m=>m.character_id);

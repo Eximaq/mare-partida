@@ -3929,7 +3929,7 @@ ${avatarExtra}
     const id=mapKey();let image=null;
     if(MareMapExports.get(id)){
       image=MareMapExports.prepare(id);
-      const depth=MareWorldDepth.state(id),ground=id==='loguetown'?MareLoguetown.state():'ready';
+      const depth=MareWorldDepth.state(id),ground=id==='arlong'?MareArlong.state():id==='loguetown'?MareLoguetown.state():'ready';
       if(depth==='failed'||ground==='failed'||image.complete&&!image.naturalWidth)return 'failed';
       return image.complete&&depth==='ready'&&ground==='ready'?'ready':'loading';
     }

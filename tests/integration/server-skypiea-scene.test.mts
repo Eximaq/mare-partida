@@ -67,7 +67,7 @@ test('new Skypiea scene migrates four saved positions once while preserving comb
     const row=expected.character_world.find((r:any)=>r.character_id===a.c.id);row.rules_hash=W.rulesHash;
     if(i<4)Object.assign(row,{x:1296,y:2190,path:[],speed:0,motion_until:row.started_at});
    }
-   assert.deepEqual(await applyMigrations(f.pool),['0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql']);
+   assert.deepEqual(await applyMigrations(f.pool),['0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql']);
    assert.deepEqual(await persisted(f.pool),expected,'SQL changes only known world positions/signatures');
    assert.deepEqual(await applyMigrations(f.pool),[]);
    await f.pool.query(await readFile(new URL('0065_skypiea_celestial_map.sql',source),'utf8'));
@@ -143,7 +143,7 @@ test('HD Skypiea migration preserves existing paths and battles while promoting 
    }
    const before=await persisted(f.pool),expected=structuredClone(before);
    for(const a of people.slice(0,5))expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=W.rulesHash;
-   assert.deepEqual(await applyMigrations(f.pool),['0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql']);
+   assert.deepEqual(await applyMigrations(f.pool),['0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql']);
    assert.deepEqual(await persisted(f.pool),expected,'art and entry changes must not relocate existing players or affect receipts');
    assert.deepEqual(await applyMigrations(f.pool),[]);
    await f.pool.query(await readFile(new URL('0066_skypiea_hd_arrival.sql',source),'utf8'));

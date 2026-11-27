@@ -14,7 +14,7 @@ const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
 const Policy=require('./combat-action-policy.js');
 const {potionRules,potionRecovery}=require('./item-catalog.js');
-const sources=['sword-compendium.js','daily-sword-battle.cjs','daily-sword-boss-combat.js','daily-sword-boss-specials.json','attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','cp9-monsters.js','thriller-monsters.js','cp9-sprites.js','thriller-sprites.js','enies-dungeon-art.js','sabaody-monsters.js','sabaody-sprites.js','sabaody-dungeon-art.js','marineford-monsters.js','prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','late-archipelago-map-data.js','late-archipelago-world.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','loguetown-map-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const sources=['sword-compendium.js','daily-sword-battle.cjs','daily-sword-boss-combat.js','daily-sword-boss-specials.json','attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','cp9-monsters.js','thriller-monsters.js','cp9-sprites.js','thriller-sprites.js','enies-dungeon-art.js','sabaody-monsters.js','sabaody-sprites.js','sabaody-dungeon-art.js','marineford-monsters.js','prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','late-archipelago-map-data.js','late-archipelago-world.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','loguetown-map-data.js','arlong-map-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 const balanceVersion=characters.monsterBalance.version;
 const previousBalanceHash='c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b';
@@ -25,6 +25,7 @@ const previousSkypieaHash='0c6dbd3c8a12bb2e1958e830b6bdf3149be9cb911f976f7722ff1
 const previousSkypieaSceneHash='28c090f587fc5f11aa1f007f8008b509cfdd31e630fba12d83a8acfbb8391adf';
 const previousSkypieaArrivalHash='c66c9af7ffaae0d2d98c47196f5edee82ff4fa0875da9f0d08c1cf37b1e7c401';
 const previousLoguetownHash='cd060e983a8453a1ef8414cc2f9efea2f19f7c5b64021b98a3318540422f610b';
+const previousArlongHash='315259efc3b292e009398c8951e188f43f791abf03fff5a21ad6dc14bad9f4cc';
 const isSkypieaArea=area=>/^skypiea-0[1-4]$/.test(area);
 function reanchorAuthoredMobs(area,mobs,nav){
  if(!Array.isArray(mobs))return false;
@@ -57,6 +58,16 @@ function reanchorLoguetownMobs(area,mobs,nav){
  if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
  return reanchorAuthoredMobs(area,mobs,nav);
 }
+function reanchorArlongMobs(area,mobs,nav){
+ if(area!=='arlong')return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function upgradeArlongGeometry(b){
+ if(b.area!=='arlong')return;
+ reanchorArlongMobs(b.area,b.mobs);
+ cancel(b);resetHaki(b);
+}
 function upgradeLoguetownGeometry(b){
  if(b.area!=='loguetown')return;
  reanchorLoguetownMobs(b.area,b.mobs);
@@ -72,24 +83,27 @@ function addHuntLedgers(b){
 function upgradeBalance(b){
  if(!b)return;
  if(b.rulesHash===rulesHash){addHuntLedgers(b);return;}
+ if(b.rulesHash===previousArlongHash){
+  upgradeArlongGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
  if(b.rulesHash===previousLoguetownHash){
-  upgradeLoguetownGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+  upgradeLoguetownGeometry(b);upgradeArlongGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  // Higher-resolution artwork and the new entry point preserve the terrain and
  // encounters. Existing fights keep their exact positions, attacks and clocks.
- if(b.rulesHash===previousSkypieaArrivalHash){upgradeLoguetownGeometry(b);b.rulesHash=rulesHash;return;}
+ if(b.rulesHash===previousSkypieaArrivalHash){upgradeLoguetownGeometry(b);upgradeArlongGeometry(b);b.rulesHash=rulesHash;return;}
  // These audited releases precede the new four-island geometry. Keep every
  // enemy identity, HP and respawn; cancel spatial attacks only in Skypiea.
  if([previousSkypieaSceneHash,'9db64cec25862f433bf8c9a16526a7ef183a52f04419dbe618071f40c83c4c23','0d55e5e1f278e9b0ab184c2a4916d25a6f081cabcf9d7b2e0be662889bc2c04f','fde69ce5850f0028b5b45ac47805635b3fe798c56aad13c3ade9578297031259','5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810','0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'].includes(b.rulesHash)){
   if(isSkypieaArea(b.area)){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
-  upgradeLoguetownGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+  upgradeLoguetownGeometry(b);upgradeArlongGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  if([previousSkypieaHash,'a2e4d9333c0770e539dee6262fb900e1747e94b44c1226a0baacb513b6c07a57','f48377155e997f7d41c76e0d6264e321603376094b73132ef8ebbd13be5cf0f7','8a7832817164137faed714a2ead01559c6c5801e6989c2a1a3aed55d3f2b383a'].includes(b.rulesHash)){
   if(isSkypieaArea(b.area)){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
-  upgradeLoguetownGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+  upgradeLoguetownGeometry(b);upgradeArlongGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  if(!priorBalanceHashes.has(b.rulesHash))return;
- upgradeLoguetownGeometry(b);
+ upgradeLoguetownGeometry(b);upgradeArlongGeometry(b);
  const prisonSpec=b.prison&&prison.resolveEncounter(b.prison.spec,prisonCatalog);
  if(prisonSpec)b.prison.spec=prisonSpec;
  const replaced=mapExports.get(b.dungeon?'quest-dungeons':b.area);
@@ -408,4 +422,4 @@ function step(b,c){
  }
  talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};
 }
-module.exports={pendingWearIds,balanceVersion,previousBalanceHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,reanchorSkypieaMobs,reanchorLoguetownMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};
+module.exports={pendingWearIds,balanceVersion,previousBalanceHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,reanchorSkypieaMobs,reanchorLoguetownMobs,reanchorArlongMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};
