@@ -3,17 +3,25 @@
 // Inventory samples the visible sprite bounds, never magnifies the entire
 // HD source frame (which includes transparent author padding).
 const inventoryBounds=new WeakMap();
+function rasterBounds(pixels,w,h){
+ let left=w,top=h,right=-1,bottom=-1;
+ for(let y=0;y<h;y++){
+  const row=y*w*4+3;
+  let x=0;
+  while(x<w&&!pixels[row+x*4])x++;
+  if(x===w)continue;
+  left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=y;
+  for(let k=w-1;k>right;k--)if(pixels[row+k*4]){right=k;break;}
+ }
+ return right<left?null:{left,top,width:right-left+1,height:bottom-top+1};
+}
 function fitInventoryAvatar(ctx,source,referenceScale=1,{cache=true,zoom=3}={}){
  const w=source.width,h=source.height;if(!w||!h)return null;
  let bounds=cache&&inventoryBounds.get(source);
  if(!bounds){
   const pixels=source.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h).data;
-  let left=w,top=h,right=-1,bottom=-1;
-  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(pixels[(y*w+x)*4+3]){
-   if(x<left)left=x;if(x>right)right=x;if(y<top)top=y;if(y>bottom)bottom=y;
-  }
-  if(right<left)return null;
-  bounds={left,top,width:right-left+1,height:bottom-top+1};if(cache)inventoryBounds.set(source,bounds);
+  bounds=rasterBounds(pixels,w,h);if(!bounds)return null;
+  if(cache)inventoryBounds.set(source,bounds);
  }
  const cw=ctx.canvas.width,ch=ctx.canvas.height,{left,top,width,height}=bounds;
  if(!Number.isFinite(zoom)||zoom<=0||!Number.isFinite(referenceScale)||referenceScale<=0)return null;
@@ -10416,7 +10424,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   return {...result,info:{...result.info,source:r.id}};
  }
- function composeFrame(r,frame,entry){
+ function composeFrame(r,frame,entry,trackBounds=false){
   if(r.namedFirearmHead)return composeNamedFirearm(r,frame,entry);
   if(entry.firearmHeadPack&&r.basePack===entry.firearmHeadPack){
    const rig=r.basePack,p=rig.pack,d=p.directions[r.direction];
@@ -11128,14 +11136,46 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   }
   if(r.ownGauntletHead&&!r.deferFittedHelmet)drawFittedHelmet(canvas,r,entry,frame);
   if(r.gearOnlyRecord)originalHairGearRegistry.draw(canvas.getContext('2d'),r.gearOnlyRecord,entry.images,entry.proofs[frame],{carryInset});
-  const alpha=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;let top=canvas.height;for(let y=0;y<canvas.height&&top===canvas.height;y++)for(let x=0;x<canvas.width;x++)if(alpha[(y*canvas.width+x)*4+3]){top=y;break;}info.visualHeight=Math.max(0,info.pivot.y-top);return {canvas,info};
+  const {width:w,height:h}=canvas,alpha=canvas.getContext('2d').getImageData(0,0,w,h).data;
+  if(trackBounds){
+   const bounds=rasterBounds(alpha,w,h);
+   info.visualHeight=Math.max(0,info.pivot.y-(bounds?.top??h));return {canvas,info,bounds};
+  }
+  let top=h;
+  for(let y=0;y<h&&top===h;y++)for(let x=0;x<w;x++)if(alpha[(y*w+x)*4+3]){top=y;break;}
+  info.visualHeight=Math.max(0,info.pivot.y-top);return {canvas,info};
+ }
+ async function compactFramesForWorld(frames,signal,pause){
+  const compacted=new Map();
+  for(const [frame,result] of frames){
+   signal?.throwIfAborted();
+   if(!compacted.has(result)){
+    const {canvas}=result,{width:w,height:h}=canvas;
+    const bounds=(result.bounds===undefined?
+     rasterBounds(canvas.getContext('2d').getImageData(0,0,w,h).data,w,h):result.bounds)||
+     {left:0,top:0,width:1,height:1};
+    // Keep transparent neighbors around the art to preserve edge sampling.
+    const left=Math.max(0,bounds.left-2),top=Math.max(0,bounds.top-2);
+    const right=Math.min(w-1,bounds.left+bounds.width+1),bottom=Math.min(h-1,bounds.top+bounds.height+1);
+    const width=right-left+1,height=bottom-top+1;
+    if(width<w||height<h){
+     const cropped=makeCanvas(width,height),c=cropped.getContext('2d');
+     c.imageSmoothingEnabled=false;c.drawImage(canvas,left,top,width,height,0,0,width,height);
+     compacted.set(result,{canvas:cropped,info:result.info,offset:[left,top],rasterSize:[w,h]});
+     canvas.width=canvas.height=0;
+    }else compacted.set(result,result);
+   }
+   frames.set(frame,compacted.get(result));
+   const idle=pause();if(idle)await idle;
+  }
  }
  function sourceKeyFor(r,player){
-  return JSON.stringify([r.id,r.hdKind,r.direction,r.hdKind==='weapon'?r.timeline:r.pack.directions[r.direction].clip,r.colorAppearance||player.appearance96||{}]);
+  const clock=r.hdKind==='weapon'?[r.timeline,r.fps,r.orderedAttack,r.visualSampling]:r.pack.directions[r.direction].clip;
+  return JSON.stringify([r.id,r.hdKind,r.resolvedAction??r.action,r.direction,clock,r.colorAppearance||player.appearance96||{}]);
  }
  // A committed bundle owns rendered frame surfaces, outside the opportunistic
  // preview cache. Share decoded sources across all poses of one preparation.
- async function prepareConfiguration(poses,{signal,inspectPositions=false,bakePositions=false,positions=null,resolve=({player,options})=>({player,options,source:selectVisual(player,options)})}={}){
+ async function prepareConfiguration(poses,{signal,inspectPositions=false,bakePositions=false,compactFrames=false,positions=null,resolve=({player,options})=>({player,options,source:selectVisual(player,options)})}={}){
   await ready;
   if(state!=='ready')throw Error(error||'Índices HD indisponíveis');
   const sources=new Map(),routes=new Map(),decoded=new Map(),coverage=[],editors=new Map();
@@ -11145,6 +11185,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const bake=bakePositions&&!inspectPositions;
   let batchStarted=bake?performance.now():0;
   const yieldFrame=()=>new Promise(resolve=>setTimeout(resolve,0));
+  const yieldWorld=()=>performance.now()-batchStarted>=8?yieldFrame().then(()=>{batchStarted=performance.now();}):null;
   const decode=path=>{
    if(!decoded.has(path))decoded.set(path,Promise.resolve().then(()=>loadShared(path)).catch(e=>{throw Object.assign(Error(path+': '+e.message,{cause:e}),{asset:path});}));
    return decoded.get(path);
@@ -11164,33 +11205,50 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
        if(!Number.isSafeInteger(frameCount)||frameCount<1)throw Error('Clipe inválido: '+r.id);
        const frames=new Map(),entry={images:new Map(),proofs:[]};
        const positionsAPI=root.MareHDPosition;
-       const wantsOffsets=positions?.records?.some(a=>(a.range==='motion'||a.direction===r.direction)&&a.action===(r.resolvedAction||r.action)&&
-        a.body===(['female','feminino'].includes(player.appearance96?.gender)?'female':'male')&&(player.equipment?.[a.slot]?.def??player.equipment?.[a.slot])===a.item);
-       const editor=positionsAPI&&(inspectPositions||wantsOffsets)?positionsAPI.session(r,player,options,makeCanvas):null;
+       const body=['female','feminino'].includes(player.appearance96?.gender)?'female':'male';
+       const adjustedSlots=new Set(positions?.records?.filter(a=>a.direction===r.direction&&a.action===(r.resolvedAction||r.action)&&
+        a.body===body&&(player.equipment?.[a.slot]?.def??player.equipment?.[a.slot])===a.item).map(a=>a.slot));
+       const editor=positionsAPI&&(inspectPositions||adjustedSlots.size)?
+        positionsAPI.session(r,player,options,makeCanvas,bake?adjustedSlots:null):null;
        const clock=[],adjusted=new Map();
        // The authored directional walk holds repeat the same composition. Retain one
        // canvas per pose, while keeping every tick addressable at the original clock.
        const holds=r.northLayers?.spec.frameToPhase??r.profileLayers?.spec.directions[r.direction].clock??(r.action==='walk'?r.authoredPantsLayer?.spec.frameToPhase:undefined);
-       const compositions=new Map();
+       const compositions=new Map(),filesByFrame=new Map();
+       const frameAtTick=i=>frameFor(r,{...options,progress:(i+.25)/frameCount});
+       const framePaths=frame=>{
+        if(!filesByFrame.has(frame))filesByFrame.set(frame,filesFor(r,frame));
+        return filesByFrame.get(frame);
+       };
        sources.set(key,frames);
        for(let i=0;i<frameCount;i++){
         signal?.throwIfAborted();
-        const frame=frameFor(r,{...options,progress:(i+.25)/frameCount});
+        const frame=frameAtTick(i);
         if(!Number.isSafeInteger(frame)||frame<0)throw Error('Quadro inválido: '+r.id+' / '+i);
         clock.push({frame,phase:holds?.[frame]??frame});
         if(frames.has(frame))continue;
         const phase=holds?.[frame];
         if(holds&&!Number.isSafeInteger(phase))throw Error('Fase autoral inválida: '+r.id+' / '+frame);
         if(holds&&compositions.has(phase)){frames.set(frame,compositions.get(phase));continue;}
-        await Promise.all(filesFor(r,frame).map(async path=>{entry.images.set(path,await decode(path));}));
+        const loaded=Promise.all(framePaths(frame).map(async path=>{entry.images.set(path,await decode(path));}));
+        // Put only the next distinct walking frame behind the current one in
+        // the shared image queue so I/O can overlap without flooding it.
+        if(bake&&pose.options.action==='walk'){
+         for(let next=i+1;next<frameCount;next++){
+          const ahead=frameAtTick(next),aheadPhase=holds?.[ahead];
+          if(ahead===frame||frames.has(ahead)||holds&&(aheadPhase===phase||compositions.has(aheadPhase)))continue;
+          try{for(const path of framePaths(ahead))void decode(path).catch(()=>{});}catch{/* The next frame reports its own source error. */}
+          break;
+         }
+        }
+        await loaded;
         signal?.throwIfAborted();
         if(r.femaleNamedHairRecord)femaleNamedHairRegistry.compose(r,r.femaleNamedHairRecord,entry.images);
         validateFrameHead(r,frame,entry);
-        try{const rendered=editor?editor.visit(phase??frame,true,()=>composeFrame(r,frame,entry)):composeFrame(r,frame,entry);frames.set(frame,rendered);if(holds)compositions.set(phase,rendered);}
+        try{const rendered=editor?editor.visit(phase??frame,true,()=>composeFrame(r,frame,entry)):composeFrame(r,frame,entry,bake&&compactFrames);frames.set(frame,rendered);if(holds)compositions.set(phase,rendered);}
         catch(e){throw Object.assign(Error(r.id+' / '+frame+': '+e.message,{cause:e}),{asset:e.asset});}
-        if(bake?performance.now()-batchStarted>=8:i%4===3){
-         await yieldFrame();if(bake)batchStarted=performance.now();
-        }
+        const idle=bake?yieldWorld():i%4===3?yieldFrame():null;
+        if(idle)await idle;
        }
        if(editor){
         const first=frames.values().next().value,source=r;
@@ -11203,7 +11261,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
          frame(f,original=false){
           if(original||!editor.moved)return frames.get(f);
           const phase=phaseOf.get(f);
-          if(!adjusted.has(phase))adjusted.set(phase,editor.visit(phase,false,()=>composeFrame(source,f,entry)));
+          if(!adjusted.has(phase))adjusted.set(phase,editor.visit(phase,false,()=>composeFrame(source,f,entry,bake&&compactFrames)));
           return adjusted.get(phase);
          },drop};
         editors.set(key,positionView);
@@ -11215,7 +11273,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
           for(const f of frames.keys()){
            signal?.throwIfAborted();
            positionView.frame(f);
-           if(performance.now()-batchStarted>=8){await yieldFrame();batchStarted=performance.now();}
+           const idle=yieldWorld();if(idle)await idle;
           }
           signal?.throwIfAborted();
           for(const f of frames.keys())frames.set(f,adjusted.get(phaseOf.get(f)));
@@ -11225,6 +11283,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
          editors.set(key,{diagnostics});
         }
        }
+       if(bake&&compactFrames)await compactFramesForWorld(frames,signal,yieldWorld);
       }
       break;
      }catch(e){
@@ -11260,14 +11319,16 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     const route=routes.get(routeKey(o));if(!route)return null;
     const f=frameFor(route.r,{...o,action:route.options.action});
     const rendered=view(o)?.frame?.(f,original)||sources.get(route.key)?.get(f);
-    if(!rendered)return null;ctx.drawImage(rendered.canvas,0,0);return rendered.info;
+    if(!rendered)return null;ctx.drawImage(rendered.canvas,...(rendered.offset||[0,0]));return rendered.info;
    },
    draw(ctx,player,o){
     const route=routes.get(routeKey(o));if(!route)return false;
     const {r,key,options}=route,frame=frameFor(r,{...o,action:options.action}),result=editors.get(key)?.frame?.(frame)||sources.get(key)?.get(frame);
     if(!result)return false;
-    paint(ctx,player,{...o,action:options.action},r,frame,result,false);
-    this.visualHeight=result.info.visualHeight*WORLD_SCALE;
+    const previous=o.auxiliary?last:null;
+    try{paint(ctx,player,{...o,action:options.action},r,frame,result,false);}
+    finally{if(o.auxiliary)last=previous;}
+    if(!o.auxiliary)this.visualHeight=result.info.visualHeight*WORLD_SCALE;
     return true;
    },
    release(){clearEditors();clearSources();routes.clear();}
@@ -11280,9 +11341,26 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   let result=entry.frames.get(frame);if(!result){try{result=composeFrame(r,frame,entry);entry.frames.set(frame,result);while(entry.frames.size>3)entry.frames.delete(entry.frames.keys().next().value);}catch(e){failures.set(sourceKey+':'+frame,e.message);error=e.message;last={state:'failed',source:r.id,reason:e.message};onChange();return false;}}
   return paint(ctx,player,o,r,frame,result);
  }
+ let worldRaster,worldRasterFrame,worldRasterBounds;
+ function paddedWorldRaster(frame){
+  if(!frame.offset)return frame.canvas;
+  if(worldRasterFrame!==frame){
+   const [w,h]=frame.rasterSize;
+   if(!worldRaster||worldRaster.width!==w||worldRaster.height!==h){
+    worldRaster=makeCanvas(w,h);worldRasterBounds=null;
+   }
+   const surface=worldRaster.getContext('2d');
+   if(worldRasterBounds)surface.clearRect(...worldRasterBounds);
+   surface.drawImage(frame.canvas,...frame.offset);
+   worldRasterFrame=frame;
+   worldRasterBounds=[...frame.offset,frame.canvas.width,frame.canvas.height];
+  }
+  return worldRaster;
+ }
  function paint(ctx,player,o,r,frame,result,hold=true){
   if(o.inventoryPresentation){
    const fitted=fitInventoryAvatar(ctx,result.canvas,WORLD_SCALE,{zoom:o.avatarZoom});if(!fitted)return false;
+   if(result.offset){fitted.bounds={...fitted.bounds,left:fitted.bounds.left+result.offset[0],top:fitted.bounds.top+result.offset[1]};}
    last={state:'rendered',consumer:o.avatarConsumer,source:r.id,hdKind:r.hdKind,
     omitted:r.omitted||[],slotRoutes:r.slotRoutes||{},frame,...fitted};return true;
   }
@@ -11305,7 +11383,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    ctx.canvas.width/Math.max(1,result.info.width)
   ):o.preview?1:WORLD_SCALE;
   if(o.consumer==='portrait')y=Math.max(y,result.info.visualHeight*physicalScale+3);
-  ctx.save();try{ctx.imageSmoothingEnabled=false;ctx.drawImage(result.canvas,x-result.info.pivot.x*physicalScale,y-result.info.pivot.y*physicalScale,result.info.width*physicalScale,result.info.height*physicalScale);}finally{ctx.restore();}
+  // Restoring padding on a single shared surface preserves the source pixel
+  // grid when the final world transform samples it at a fractional scale.
+  const canvas=paddedWorldRaster(result);
+  ctx.save();try{ctx.imageSmoothingEnabled=false;ctx.drawImage(canvas,x-result.info.pivot.x*physicalScale,y-result.info.pivot.y*physicalScale,result.info.width*physicalScale,result.info.height*physicalScale);}finally{ctx.restore();}
   if(hold&&player&&typeof player==='object'){const key=identityKey(player)+'|'+(o.consumer||'world'),held={...result,key:identityKey(player),pose:{source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame}};lastRendered.set(key,held);lastRendered.set(key+'|'+o.direction,held);while(lastRendered.size>32)lastRendered.delete(lastRendered.keys().next().value);}
   // The authored North/profile rigs render the same verified head material
   // through the female equipment compositor, rather than the base outfit path.
@@ -11334,7 +11415,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function drawStable(ctx,player,o={}){const key=identityKey(player);if(!selectVisual(player,o)){last={state:'uncovered',action:o.action,direction:o.direction,reason:'No compatible source for this pose'};return false;}if(draw(ctx,player,o))return true;if(failureFor(player,o))return false;const consumerKey=key+'|'+(o.consumer||'world'),held=lastRendered.get(consumerKey+'|'+o.direction);if(!held&&o.action!=='idle'){const loading=last;if(draw(ctx,player,{...o,action:'idle',time:0,progress:0})){last={...last,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction};return true;}last=loading;}if(held?.key===key){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(held.canvas,(o.x||0)-held.info.pivot.x*WORLD_SCALE,(o.y||0)-held.info.pivot.y*WORLD_SCALE,held.info.width*WORLD_SCALE,held.info.height*WORLD_SCALE);ctx.restore();last={...held.pose,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction,physicalScale:WORLD_SCALE,sourceScale:1};return true;}return false;}
  const height=player=>{const held=lastRendered.get(identityKey(player)+'|world');return held?.key===identityKey(player)?held.info.visualHeight*WORLD_SCALE:null;};
  function failureFor(player,o={}){const r=selectVisual(player,o);return r?failures.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{})+':'+frameFor(r,o)):null;}
- return {ready,warmSwordCheckpoint,attackActionFor:item=>weaponRegistry?.attackAction(item),prepare:prepareForPlayer,prepareClip,prepareConfiguration,prepareStablePose,prepareFamily,draw,drawFittedAvatar,drawStable,canDrawStable,height,select,selectLayered,selectVisual,selectIndependentWorld,resolveMaleGaitTorsoSource,resolveMaleGaitHeadSource,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
+ return {ready,warmSwordCheckpoint,attackActionFor:item=>weaponRegistry?.attackAction(item),prepare:prepareForPlayer,prepareClip,prepareConfiguration,sourceKeyFor,prepareStablePose,prepareFamily,draw,drawFittedAvatar,drawStable,canDrawStable,height,select,selectLayered,selectVisual,selectIndependentWorld,resolveMaleGaitTorsoSource,resolveMaleGaitHeadSource,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
 }
 const api={create,fitInventoryAvatar};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

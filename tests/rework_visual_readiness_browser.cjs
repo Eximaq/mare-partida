@@ -11,24 +11,20 @@ const url=process.env.MARE_TEST_URL;
  const induceFailure=process.env.MARE_FAIL_VISUAL==='1';
  try{
   for(const gender of induceFailure?['masculino']:['masculino','feminino']){
-   const context=await browser.newContext({viewport:{width:1440,height:960},recordVideo:process.env.MARE_RECORD_VIDEO==='1'?{dir:path.join(out,'video'),size:{width:960,height:640}}:undefined});
+   const context=await browser.newContext({serviceWorkers:'block',viewport:{width:1440,height:960},recordVideo:process.env.MARE_RECORD_VIDEO==='1'?{dir:path.join(out,'video'),size:{width:960,height:640}}:undefined});
    const page=await context.newPage(),errors=[];
    page.on('pageerror',error=>errors.push(error.message));
    await page.route('**/api/akuma/catalog',route=>route.fulfill({status:404,body:'{}'}));
    await page.route('**/__dev_version',route=>route.fulfill({body:'stable'}));
-   // Hold the actual map request. Inventory and creation previews prepare poses too.
+   // Hold the first map composition while observing the real simulation and controls.
    await page.addInitScript(failWalk=>{
-    window.__poseLoad={held:false,released:false,rejectWalk:failWalk,failed:false,attackWaiters:[],releaseAttacks(){
-     this.attacksReleased=true;for(const resolve of this.attackWaiters.splice(0))resolve();
-    }};
+    window.__poseLoad={held:false,released:false,rejectWalk:failWalk,failed:false,calls:[]};
     window.__holdWorldPose=async(key,action)=>{
      const state=window.__poseLoad;
-     if(state.armed&&action==='idle'&&!state.held){
+     state.calls.push({key,action});
+     if(action==='idle'&&!state.held){
       state.held=true;state.heldKey=key;
       await new Promise(resolve=>{state.release=()=>{state.released=true;resolve();};});
-     }
-     if(state.armed&&action.startsWith('attack')&&!state.attacksReleased){
-      await new Promise(resolve=>state.attackWaiters.push(resolve));
      }
      if(state.held&&action==='walk'&&state.rejectWalk&&!state.failed){
       state.failed=true;state.failedKey=key;
@@ -60,14 +56,13 @@ const url=process.env.MARE_TEST_URL;
       return result;
      };
      window.__preparationQA={
-      read:()=>({visual:lobby96.worldVisual(),draws:[...draws],hero:{x:world.hero.x,y:world.hero.y,time:world.time},targetHP:world.mobs[0]?.hp,equipment:Object.fromEntries(Object.entries(game?.equipment||{}).map(([k,v])=>[k,v?.def??null]))}),
+      read:()=>({visual:lobby96.worldVisual(),diagnostics:lobby96.snapshot().errors,draws:[...draws],hero:{x:world.hero.x,y:world.hero.y,time:world.time},targetHP:world.mobs[0]?.hp,equipment:Object.fromEntries(Object.entries(game?.equipment||{}).map(([k,v])=>[k,v?.def??null]))}),
       async lane(){
        enterHunt();autoPlay=false;autoSkills=false;keys.clear();world.spawnClock=1e9;world.mobs=[];
        while(mapArtState()!=='ready')await new Promise(resolve=>setTimeout(resolve,25));
        const nav=navigator();
        for(let y=192;y<nav.map.height-192;y+=16)for(let x=192;x<nav.map.width-300;x+=16){
         if(!nav.clear({x,y},{x:x+250,y}))continue;
-        window.__poseLoad.armed=true;
         Object.assign(world.hero,{x,y,direction:'back'});camera.update(world.hero,activeMap(),0,true);
         world.mobs=[{...monsterTypes.cesar,id:'readiness-qa',type:'cesar',area:game.area,district:MareHunt.sectors(game.area)[0].id,level:1,alive:true,hp:100000,maxHP:100000,defense:0,magicDefense:0,x:x+175,y,anchorX:x+175,anchorY:y,attack:0,attackClock:1e9,speed:0,patrolClock:1e9,aggro:0,bob:0}];
         return;
@@ -95,11 +90,18 @@ const url=process.env.MARE_TEST_URL;
    const read=()=>page.evaluate(()=>__preparationQA.read());
    await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
    await page.evaluate(()=>__preparationQA.lane());
-   await page.waitForFunction(()=>__poseLoad.held&&document.querySelector('#worldLoading').classList.contains('hidden'),null,{timeout:60000});
+   await page.waitForFunction(()=>__poseLoad.held&&document.querySelector('#worldLoading').classList.contains('hidden'),null,{timeout:60000}).catch(async error=>{
+    const status=await page.evaluate(()=>{
+     const {visual,diagnostics}=__preparationQA.read();
+     return {held:__poseLoad.held,calls:__poseLoad.calls.length,visual,diagnostics};
+    });
+    throw new Error('The delayed map composition did not start: '+JSON.stringify(status),{cause:error});
+   });
    assert.equal(await page.locator('#playerVisualStatus,#retryPlayerVisual').count(),0);
    const paused=await read();
    const heldKey=await page.evaluate(()=>__poseLoad.heldKey);
-   assert.equal(paused.visual.key,heldKey);assert.equal(paused.visual.state,'loading');
+   assert.equal(paused.visual.preparation.state,'loading');
+   assert.equal(paused.visual.displayed,null);
    assert(!paused.draws.some(d=>d.displayedKey===heldKey),'An unfinished map pose was drawn');
    await page.waitForFunction(t=>__preparationQA.read().hero.time>t,paused.hero.time);
    const before=await read();
@@ -107,14 +109,11 @@ const url=process.env.MARE_TEST_URL;
    await page.keyboard.down(movementKey);
    try{
     await page.waitForFunction(x=>__preparationQA.read().hero.x>x+10,before.hero.x,{timeout:15000});
-    if(induceFailure){
-     await page.waitForFunction(()=>__poseLoad.failed);
-     await page.waitForFunction(()=>__preparationQA.read().visual?.state==='failed');
-    }
     await page.evaluate(()=>__poseLoad.release());
+    if(induceFailure)await page.waitForFunction(()=>__poseLoad.failed);
     // A cold pose can take longer than one crossing. Continue walking
     // inside the measured clear lane so the actor still requests walk.
-    const deadline=Date.now()+45000;
+    const deadline=Date.now()+90000;
     const failedKey=await page.evaluate(()=>__poseLoad.failedKey);
     let seen=false;
     while(!seen&&Date.now()<deadline){
@@ -131,37 +130,43 @@ const url=process.env.MARE_TEST_URL;
     }
     assert(seen,'An equipped walk pose must draw during continued player input');
    }finally{await page.keyboard.up(movementKey);}
+   await page.waitForFunction(()=>{
+    const plan=__preparationQA.read().visual?.preparation;
+    return plan?.essentialReady&&plan.readyWalks.length===4&&plan.readyIdles.length===4;
+   },null,{timeout:90000});
    const pos=await page.evaluate(()=>__preparationQA.target()),canvas=page.locator('#worldCanvas'),size=await canvas.boundingBox();
-   const beforeAttack=await read();
+   const beforeAttack=await read(),compositions=await page.evaluate(()=>__poseLoad.calls);
    await canvas.click({position:{x:pos.x*size.width,y:pos.y*size.height}});
    await page.waitForFunction(value=>__preparationQA.read().targetHP<value,beforeAttack.targetHP,{timeout:15000});
-   const cold=await read();
-   const coldAttacks=cold.draws.slice(beforeAttack.draws.length).filter(d=>d.action.startsWith('attack'));
-   assert(coldAttacks.length>0,'An attack was requested before its artwork was released');
-   assert(coldAttacks.every(d=>d.drawn&&!d.exact&&d.source&&d.displayedKey!==d.key),
-    'The same character remains visible on every pending attack frame');
-   assert(coldAttacks.every(d=>JSON.parse(d.displayedKey)[0]===JSON.parse(d.key)[0]),
-    'The held pose preserves the equipped appearance');
-   const [, , , , equipment]=JSON.parse(JSON.parse(coldAttacks[0].displayedKey)[0]);
+   const after=await read();
+   const attackFrames=after.draws.slice(beforeAttack.draws.length).filter(d=>d.action.startsWith('attack'));
+   assert(attackFrames.length>0,'A real attack reached the canvas');
+   const directions={right:'east',left:'west',front:'south',back:'north'};
+   assert(attackFrames.every(d=>d.drawn&&d.exact&&d.source&&d.displayedKey===d.key&&
+    d.drawnDirection===(directions[d.direction]||d.direction)),
+    'Every attack frame uses its already prepared source and requested direction');
+   const usedRoutes=new Set(after.draws.slice(beforeAttack.draws.length).filter(row=>row.drawn&&row.exact).map(row=>row.key));
+   const knownFailures=new Set(beforeAttack.visual.preparation.failed.map(pose=>pose.action+'/'+pose.direction));
+   const repeated=(await page.evaluate(()=>__poseLoad.calls)).slice(compositions.length).filter(call=>{
+    const [,action,direction]=JSON.parse(call.key);
+    return usedRoutes.has(call.key)||!knownFailures.has(action+'/'+direction);
+   });
+   assert.deepEqual(repeated,[],'Ready poses are reused during attack and movement');
+   const [, , , , equipment]=JSON.parse(JSON.parse(attackFrames[0].displayedKey)[0]);
    assert.equal(equipment.find(row=>row[0]==='weapon')?.[1],0);
    assert.equal(equipment.find(row=>row[0]==='coat')?.[1],6);
-
-   await page.evaluate(()=>__poseLoad.releaseAttacks());
-   await page.waitForFunction(index=>__preparationQA.read().draws.slice(index).some(
-    d=>d.action.startsWith('attack')&&d.drawn&&d.exact),cold.draws.length,{timeout:45000});
-   const after=await read();
    assert(after.hero.x>before.hero.x);
    assert.equal(after.equipment.coat,6);
    assert.equal(after.equipment.weapon,0);
    assert(after.draws.filter(d=>d.drawn).every(d=>d.source&&d.state==='rendered'));
    assert(after.draws.filter(d=>d.exact).every(d=>Number.isFinite(d.readyAt)&&d.readyAt<=d.at&&d.displayedKey===d.key));
    assert.deepEqual(errors,[]);
-   evidence.push({gender,paused,before,after,pendingAttackFrames:coldAttacks.length,errors,temporaryFailure:induceFailure});
+   evidence.push({gender,paused,before,after,readyAttackFrames:attackFrames.length,compositions:compositions.length,errors,temporaryFailure:induceFailure});
    await fs.writeFile(path.join(out,'runtime.json'),JSON.stringify(evidence,null,2));
    await canvas.screenshot({path:path.join(out,gender+'.png')});
    await context.close();
    if(page.video())await page.video().saveAs(path.join(out,gender+'.webm'));
-   console.log(gender+': map, simulation, movement and combat continue during visual preparation');
+   console.log(gender+': controls work during preparation, four walks and attack frames reuse the ready set');
   }
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});

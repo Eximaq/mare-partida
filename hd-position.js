@@ -247,13 +247,23 @@ function scoped(context,paint){const previous=active;active=context;try{return p
 const alphaBounds=new WeakMap();
 function bounds(image,make){
  const immutable=typeof image.getContext!=='function';let box=immutable&&alphaBounds.get(image);if(box)return box;
- const tmp=make(image.width,image.height),c=tmp.getContext('2d');c.drawImage(image,0,0);
- const {data}=c.getImageData(0,0,tmp.width,tmp.height);
- let left=tmp.width,right=0,top=tmp.height,bottom=0;
- for(let y=0;y<tmp.height;y++)for(let x=0;x<tmp.width;x++)if(data[(y*tmp.width+x)*4+3]){
-  left=Math.min(left,x);right=Math.max(right,x+1);top=Math.min(top,y);bottom=Math.max(bottom,y+1);
+ const {width,height}=image;
+ // Generated tiles are already 2D canvases. Read their alpha directly.
+ let context=immutable?null:image.getContext('2d'),scratch;
+ if(!context){scratch=make(width,height);context=scratch.getContext('2d');context.drawImage(image,0,0);}
+ const {data}=context.getImageData(0,0,width,height);
+ let left=width,right=0,top=height,bottom=0;
+ for(let y=0;y<height;y++){
+  const row=y*width*4+3;
+  let x=0;
+  while(x<width&&!data[row+x*4])x++;
+  if(x===width)continue;
+  left=Math.min(left,x);right=Math.max(right,x+1);
+  top=Math.min(top,y);bottom=y+1;
+  for(let k=width-1;k>=right;k--)if(data[row+k*4]){right=k+1;break;}
  }
- tmp.width=tmp.height=1;box=[left,top,right,bottom];if(immutable)alphaBounds.set(image,box);return box;
+ if(scratch)scratch.width=scratch.height=1;
+ box=[left,top,right,bottom];if(immutable)alphaBounds.set(image,box);return box;
 }
 function extent(ctx,img,args,make){
  const [sx,sy,sw,sh,x,y,w,h]=args.length===8?args:[0,0,img.width,img.height,...args.slice(0,2),...(args.length===4?args.slice(2):[img.width,img.height])];
@@ -301,12 +311,12 @@ function fits(d,box,w,h,sign){
 }
 const intersect=(a,b)=>a?[Math.max(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[2],b[2]),Math.min(a[3],b[3])]:b;
 function inspectingPart(slot,part){
- return !!active&&active.items.has(slot)&&(active.capture||active.offsets.has(JSON.stringify([slot,part,active.phase])));
+ return !!active&&active.items.has(slot)&&(active.capture?(!active.captureSlots||active.captureSlots.has(slot)):active.offsets.has(JSON.stringify([slot,part,active.phase])));
 }
 function blit(ctx,slot,part,source,img,args,sign=1,original=null,underlay=null,ownerPart=part,sourceArgs=args){
  if(!active||!active.items.has(slot))return ctx.drawImage(img,...args);
  const {capture,phase,descriptors,make,offsets}=active;
- if(capture){
+ if(capture&&(!active.captureSlots||active.captureSlots.has(slot))){
   let parts=descriptors.get(slot);if(!parts)descriptors.set(slot,parts=new Map());
   let p=parts.get(part);if(!p)parts.set(part,p={phases:new Map(),sources:new Map()});
   const group=slot==='boots'?bootGroup(active.items.get(slot),ownerPart):null;
@@ -334,7 +344,7 @@ function blit(ctx,slot,part,source,img,args,sign=1,original=null,underlay=null,o
     p.bodySources.get(phase).add(JSON.stringify([...signature,matrix]));
    }else p.bodyReceiver=null;
   }
- }else{
+ }else if(!capture){
   const d=offsets.get(JSON.stringify([slot,part,phase]));
   if(d&&active.hidden?.has(d.layer)){if(underlay)ctx.drawImage(underlay,...args);return;}
   if(d&&(d[0]||d[1]||oriented(d.whole)||oriented(d.foot)||oriented(d.local))){
@@ -430,7 +440,7 @@ async function digest(value){
  const sum=await root.crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value)));
  return Array.from(new Uint8Array(sum),v=>v.toString(16).padStart(2,'0')).join('');
 }
-function session(r,player,options,make){
+function session(r,player,options,make,captureSlots=null){
  const plan=r.independentPlan,body=['feminino','female'].includes(player.appearance96?.gender)?'female':'male';
  const items=new Map(),layers=new Map(),descriptors=new Map(),offsets=new Map();
  for(const slot of slots){
@@ -447,7 +457,7 @@ function session(r,player,options,make){
  const gear=gearOf(player,options.weaponless),geometry=new Map(),members=new Map(),depthByPhase=new Map();
  let targets=[],lookup=new Map();
  function visit(phase,capture,fn){
-  const context={phase,capture,make,items,layers,descriptors,offsets,geometry,members,sign:plan?.base?.base?.mirrorX||plan?.base?.mirrorX?-1:1};
+  const context={phase,capture,captureSlots,make,items,layers,descriptors,offsets,geometry,members,sign:plan?.base?.base?.mirrorX||plan?.base?.mirrorX?-1:1};
   const paint=(hidden,mark)=>scoped({...context,hidden,mark,materialCache:new Map()},fn);
   const depths=!capture&&depthByPhase.get(phase);
   return depths?.length?lowerLayers(paint,depths):paint();
