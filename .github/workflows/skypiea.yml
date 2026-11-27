@@ -1,0 +1,57 @@
+name: Novo mapa de Skypiea
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'skypiea-*.js'
+      - 'assets/skypiea/**'
+      - 'tests/skypiea*'
+      - '.github/workflows/skypiea.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'skypiea-*.js'
+      - 'assets/skypiea/**'
+      - 'tests/skypiea*'
+      - '.github/workflows/skypiea.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  skypiea:
+    name: Quatro ilhas, navegação, combate e retorno
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      MARE_QA_DIR: /tmp/mare-skypiea
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Conferir os quatro destinos e a compatibilidade dos encontros
+        run: node --test tests/skypiea.test.cjs tests/skypiea-expansion.test.cjs tests/skypiea-scene-compat.test.cjs
+      - name: Preparar Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/skypiea-browser" playwright@1.56.1 --no-save --package-lock=false
+          bash tools/install_ci_chromium.sh "$RUNNER_TEMP/skypiea-browser/node_modules/.bin/playwright"
+      - name: Preparar a versão estática
+        run: python3 tools/build_pages.py --static-demo
+      - name: Conferir cenário, combate, retorno e save em computador e celular
+        env:
+          NODE_PATH: ${{ runner.temp }}/skypiea-browser/node_modules
+        run: python3 tests/run_honors_hd_browser.py tests/skypiea_browser.cjs --offline --dist
+      - uses: actions/upload-artifact@v4
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
+        with:
+          name: skypiea-browser
+          path: /tmp/mare-skypiea/
+          if-no-files-found: warn
+          retention-days: 3

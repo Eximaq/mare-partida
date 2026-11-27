@@ -4418,7 +4418,7 @@ function applySceneHudLayout(){
     }
     if(activeMap().id==='rare'&&Math.hypot(x-MareRare.returnPoint.x,y-MareRare.returnPoint.y)<42){walkTo({...MareRare.returnPoint},{...MareRare.returnPoint,kind:'return'});return;}
     if(activeMap().id==='dawn'&&Math.hypot(x-MareDawn.returnPoint.x,y-MareDawn.returnPoint.y)<42){walkTo({...MareDawn.returnPoint},{...MareDawn.returnPoint,kind:'return'});return;}
-    if(MareMapExports.get(activeMap().id)&&activeMap().returnPoint&&Math.hypot(x-activeMap().returnPoint.x,y-activeMap().returnPoint.y)<42){walkTo({...activeMap().returnPoint},{...activeMap().returnPoint,kind:'return'});return;}
+    if((MareMapExports.get(activeMap().id)||MareSkypiea.has(activeMap().id))&&activeMap().returnPoint&&Math.hypot(x-activeMap().returnPoint.x,y-activeMap().returnPoint.y)<(activeMap().returnPoint.radius||42)){walkTo({...activeMap().returnPoint},{...activeMap().returnPoint,kind:'return'});return;}
     if(['orange','loguetown','alabasta'].includes(activeMap().id)&&Math.hypot(x-activeMap().returnPoint.x,y-activeMap().returnPoint.y)<42){walkTo({...activeMap().returnPoint},{...activeMap().returnPoint,kind:'return'});return;}
     if(activeMap().id==='embers'&&Math.hypot(x-MareEmber.returnPoint.x,y-MareEmber.returnPoint.y)<42){walkTo({...MareEmber.returnPoint},{...MareEmber.returnPoint,kind:'return'});return;}
     const target=livingMobs().find(m=>monsterPointerHit(m,x,y));
