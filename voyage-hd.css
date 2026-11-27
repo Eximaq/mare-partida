@@ -263,3 +263,8 @@
 #app #panelOverlay.voyage-hd-mode .dungeon-drops img{width:22px;height:22px}
 #app #panelOverlay.voyage-hd-mode .dungeon-facts>div{padding:6px 0}
 @media(max-height:850px) and (min-width:1051px){#app #panelOverlay.voyage-hd-mode .voyage-adversary{min-height:65px}#app #panelOverlay.voyage-hd-mode .voyage-adversary .expedition-monster{height:65px}}
+
+/* Keep every region reachable as the catalog grows, including on narrow screens. */
+#app #panelOverlay.voyage-hd-mode .voyage-region-tabs{max-width:100%;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;overscroll-behavior-x:contain}
+#app #panelOverlay.voyage-hd-mode .voyage-region-tabs button{flex:0 0 auto;white-space:nowrap}
+@media(max-width:700px){#app #panelOverlay.voyage-hd-mode .voyage-region-tabs button{min-width:max-content;padding:3px 10px}}

@@ -1,0 +1,167 @@
+name: Integração de Thriller Bark, Sabaody e Marineford
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'late-archipelago-*.js'
+      - 'archipelago.js'
+      - 'voyage-ui.js'
+      - 'voyage-hd.css'
+      - 'hud-glass.css'
+      - 'world-system.js'
+      - 'world-map-exports.js'
+      - 'world-map-exports-data.js'
+      - 'world-catalog.cjs'
+      - 'world-battle.cjs'
+      - 'monster-*.js'
+      - 'hunt-system.js'
+      - 'thriller-*.js'
+      - 'sabaody-*.js'
+      - 'marineford-*.js'
+      - 'boss-dungeon-*.js'
+      - 'prepared-dungeon-boss*.js'
+      - 'dungeon-timing.cjs'
+      - 'sprite-combat-v2.js'
+      - 'game.js'
+      - 'index.html'
+      - 'tools/build_pages.py'
+      - 'assets/exported-maps/thriller-bark/**'
+      - 'assets/exported-maps/sabaody/**'
+      - 'assets/exported-maps/marineford/**'
+      - 'assets/map-depth/objects/**'
+      - 'assets/sprites-combat-v2/**'
+      - 'assets/ui/boss-dungeons/**'
+      - 'packages/shared/src/schemas/achievements.ts'
+      - 'packages/shared/src/schemas/dungeons.ts'
+      - 'packages/shared/src/schemas/character-command.ts'
+      - 'packages/shared/src/schemas/world.ts'
+      - 'apps/game-server/migrations/0063_late_archipelago.sql'
+      - 'apps/game-server/src/characters/world.ts'
+      - 'apps/game-server/src/characters/battle.ts'
+      - 'apps/game-server/src/characters/dungeons.ts'
+      - 'apps/game-server/src/characters/achievements.ts'
+      - 'tests/late-*'
+      - 'tests/foundation/late-*'
+      - 'tests/foundation/enies-lobby-migration.test.mts'
+      - 'tests/integration/server-late-*'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/late-archipelago.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'late-archipelago-*.js'
+      - 'archipelago.js'
+      - 'voyage-ui.js'
+      - 'voyage-hd.css'
+      - 'hud-glass.css'
+      - 'world-system.js'
+      - 'world-map-exports.js'
+      - 'world-map-exports-data.js'
+      - 'world-catalog.cjs'
+      - 'world-battle.cjs'
+      - 'monster-*.js'
+      - 'hunt-system.js'
+      - 'thriller-*.js'
+      - 'sabaody-*.js'
+      - 'marineford-*.js'
+      - 'boss-dungeon-*.js'
+      - 'prepared-dungeon-boss*.js'
+      - 'dungeon-timing.cjs'
+      - 'sprite-combat-v2.js'
+      - 'game.js'
+      - 'index.html'
+      - 'tools/build_pages.py'
+      - 'assets/exported-maps/thriller-bark/**'
+      - 'assets/exported-maps/sabaody/**'
+      - 'assets/exported-maps/marineford/**'
+      - 'assets/map-depth/objects/**'
+      - 'assets/sprites-combat-v2/**'
+      - 'assets/ui/boss-dungeons/**'
+      - 'packages/shared/src/schemas/achievements.ts'
+      - 'packages/shared/src/schemas/dungeons.ts'
+      - 'packages/shared/src/schemas/character-command.ts'
+      - 'packages/shared/src/schemas/world.ts'
+      - 'apps/game-server/migrations/0063_late_archipelago.sql'
+      - 'apps/game-server/src/characters/world.ts'
+      - 'apps/game-server/src/characters/battle.ts'
+      - 'apps/game-server/src/characters/dungeons.ts'
+      - 'apps/game-server/src/characters/achievements.ts'
+      - 'tests/late-*'
+      - 'tests/foundation/late-*'
+      - 'tests/foundation/enies-lobby-migration.test.mts'
+      - 'tests/integration/server-late-*'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/late-archipelago.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  integration:
+    name: Mapas, chefes e persistência
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:18.6-bookworm
+        env:
+          POSTGRES_USER: mare_test_admin
+          POSTGRES_PASSWORD: disposable-ci-only
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mare_test_admin -d postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://mare_test_admin:disposable-ci-only@127.0.0.1:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - name: Os 14 destinos e os sete chefes
+        run: node --test tests/late-archipelago.test.cjs tests/late-world-combat.test.cjs tests/late-dungeon-bosses.test.cjs
+      - name: Snapshot com 37 visitas e cadeia de migrações
+        run: node --import tsx --test tests/foundation/late-archipelago-schema.test.mts tests/foundation/enies-lobby-migration.test.mts
+      - name: Preservação de saves e migração idempotente no PostgreSQL
+        run: node --import tsx --test --test-concurrency=1 tests/integration/server-late-archipelago.test.mts
+
+  browser:
+    name: Viagem e combate em computador e celular
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      MARE_QA_DIR: /tmp/mare-late-archipelago
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Preparar Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/late-browser" playwright@1.56.1 --no-save --package-lock=false
+          bash tools/install_ci_chromium.sh "$RUNNER_TEMP/late-browser/node_modules/.bin/playwright"
+      - name: Preparar a versão estática
+        run: python3 tools/build_pages.py --static-demo
+      - name: Conferir as novas regiões, chefes e retomada no navegador
+        env:
+          NODE_PATH: ${{ runner.temp }}/late-browser/node_modules
+        run: python3 tests/run_honors_hd_browser.py tests/late-archipelago-browser.cjs --offline --dist
+      - uses: actions/upload-artifact@v4
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
+        with:
+          name: late-archipelago-browser
+          path: /tmp/mare-late-archipelago/
+          if-no-files-found: warn
+          retention-days: 3

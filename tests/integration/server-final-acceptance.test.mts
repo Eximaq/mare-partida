@@ -65,7 +65,7 @@ test('navigation upgrade reanchors only known maps and preserves all other rows'
  const snapshot=async()=>{const out:Record<string,any[]>={};for(const t of tables){assert.match(t,/^[a-z_]+$/);const order=t==='character_world'?'t.character_id':'to_jsonb(t)::text';out[t]=(await f.pool.query(`SELECT to_jsonb(t) row FROM mare_game.${t} t ORDER BY ${order}`)).rows.map(r=>r.row);}return out;};
  const expected=await snapshot(),known=expected.character_world!.find(row=>row.character_id===a.c.id);
  Object.assign(known,world.maps.lobby.spawn,{rules_hash:world.rulesHash,path:[],speed:0,motion_until:known.started_at});
- const migrations=['0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0041_progression_hud_balance.sql','0052_world_map_exports.sql','0053_syrup_boundary.sql'];
+ const migrations=['0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0041_progression_hud_balance.sql','0052_world_map_exports.sql','0053_syrup_boundary.sql','0061_skypiea_multi_maps.sql','0062_enies_lobby.sql','0063_late_archipelago.sql'];
  const sql=(await Promise.all(migrations.map(name=>readFile(new URL('../../apps/game-server/migrations/'+name,import.meta.url),'utf8')))).join('\n');
  await f.pool.query(sql);assert.deepEqual(await snapshot(),expected);
  await f.pool.query(sql);assert.deepEqual(await snapshot(),expected);

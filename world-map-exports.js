@@ -4,7 +4,7 @@
   if(typeof module!=='undefined')require('./world-map-exports-data.js');
   const data=root.MareMapExportData;
   const step=16;
-  const mapKey=id=>id?.startsWith('enies-lobby-')?'enies-lobby':id?.startsWith('alubarna-')?'alubarna':id==='beach'?'dawn':id==='swamp'?'conchas':id;
+  const mapKey=id=>/^(thriller-bark|sabaody|marineford)-\d{2}$/.exec(id)?.[1]||(id?.startsWith('enies-lobby-')?'enies-lobby':id?.startsWith('alubarna-')?'alubarna':id==='beach'?'dawn':id==='swamp'?'conchas':id);
   const get=id=>data[mapKey(id)];
   const imageCache=new Map();
   const base=typeof document==='undefined'?null:document.currentScript?.src;

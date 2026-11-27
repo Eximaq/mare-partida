@@ -18,7 +18,10 @@ test('Enies CP9 are available for world encounters without entering the Impel Do
   assert.equal(E.worldMonsterCatalog[id].xp,xp);
   assert(!E.prisonCatalog[id],id+' is world-only');
  }
- for(const id of ['absalom','perona','ryuma','oars'])assert(!E.worldMonsterCatalog[id],id+' remains unassigned');
+ for(const id of ['absalom','perona','ryuma','oars']){
+  assert(E.worldMonsterCatalog[id].worldOnly,id+' is assigned to its own world region');
+  assert(!E.prisonCatalog[id],id+' remains outside Impel Down');
+ }
 });
 test('Lucci and Moria require their level and retain a pending victory without invented rewards',()=>{
  for(const [id,level,hp,attack,defense,magicDefense] of encounters){

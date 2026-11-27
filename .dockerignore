@@ -129,6 +129,14 @@
 !cp9-sprites.js
 !thriller-sprites.js
 !enies-dungeon-art.js
+!late-archipelago-map-data.js
+!late-archipelago-world.js
+!sabaody-monsters.js
+!sabaody-sprites.js
+!sabaody-dungeon-art.js
+!marineford-monsters.js
+!prepared-dungeon-bosses.js
+!prepared-dungeon-boss-art-data.js
 !akainu-combat.js
 !weekly-boss-rules.cjs
 !weekly-boss-battle.cjs

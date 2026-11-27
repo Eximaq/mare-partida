@@ -8,4 +8,16 @@ for(const [index,id] of ['fukurou','kalifa','jabra','blueno','kaku'].entries()){
   move_speed:76,attack_seconds:p.attackSec,aggro_radius:390,reach:70,
   behavior:'reactive_homebound',boss:false,nominalXP:entry.nominalXP};
 }
+const lateGroups=[
+ ['thriller-bark',root.MareThrillerMonsters||(typeof module!=='undefined'?require('./thriller-monsters.js'):null),['absalom','perona','ryuma','oars']],
+ ['sabaody',root.MareSabaodyMonsters||(typeof module!=='undefined'?require('./sabaody-monsters.js'):null),['pacifista','urouge','hawkins','x-drake']],
+ ['marineford',root.MareMarinefordMonsters||(typeof module!=='undefined'?require('./marineford-monsters.js'):null),['squard','onigumo','little-oars-jr','izo','vista','jozu']]
+];
+for(const [region,source,ids] of lateGroups)for(const [index,id] of ids.entries()){
+ const entry=source.catalog[id],p=entry.normalCombat;
+ catalog[id]={id,name:entry.name,level:entry.level,area:region+'-'+String(index+1).padStart(2,'0'),
+  max_hp:p.maxHP,physical_attack:p.attack,physical_defense:p.defense,magic_defense:p.magicDefense,
+  move_speed:76,attack_seconds:p.attackSec,aggro_radius:390,reach:70,
+  behavior:'reactive_homebound',boss:false,worldOnly:true,nominalXP:entry.nominalXP};
+}
 root.MareMonsterCatalog=catalog;if(typeof module!=='undefined')module.exports=catalog;})(globalThis);

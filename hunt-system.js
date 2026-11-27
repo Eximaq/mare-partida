@@ -9,8 +9,10 @@
   const alubarna=root.MareAlubarna||(typeof module!=='undefined'?require('./alubarna-world.js'):null);
   const sky=root.MareSkypiea||(typeof module!=='undefined'?require('./skypiea-world.js'):null);
   const enies=root.MareEniesLobby||(typeof module!=='undefined'?require('./enies-lobby-world.js'):null);
+  const late=root.MareLateArchipelago||(typeof module!=='undefined'?require('./late-archipelago-world.js'):null);
   const archipelago=root.MareArchipelago||(typeof module!=='undefined'?require('./archipelago.js'):null);
   const regions={
+    ...Object.fromEntries((late?.specs??[]).map(s=>[s.id,{name:s.name,min:s.min,max:s.max,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:s.districts.map(d=>({...d,min:s.level,max:s.level,roles:[s.type]}))}])),
     ...Object.fromEntries((enies?.specs??[]).map(s=>[s.id,{name:s.name,min:s.min,max:s.max,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:s.districts.map(d=>({...d,min:s.level,max:s.level,roles:[s.type]}))}])),
     ...Object.fromEntries((sky?.specs??[]).map(s=>[s.id,{name:s.name,min:s.min,max:s.max,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:s.districts.map(d=>({...d,min:s.level,max:s.level,roles:[s.type]}))}])),
     alabasta:{name:'Deserto de Alabasta',min:40,max:50,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:alabasta.districts.map(d=>({...d,min:45,max:45,roles:['bananawani']}))},

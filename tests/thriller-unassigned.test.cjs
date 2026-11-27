@@ -12,18 +12,23 @@ test('five reference profiles match reference attributes without granting reward
  for(const [id,want] of Object.entries(expected)){
   const p=T.combatProfile(id),m=T.catalog[id];assert(p);
   assert.deepEqual([p.level,p.maxHP,p.attack,p.defense,p.magicDefense,p.nominalXP??null],want);
-  assert.deepEqual([p.xp,p.gold,m.rewardConfigured,m.availability],[0,[0,0],false,id==='gecko-moria'?'boss-dungeon':'unassigned']);
+  assert.deepEqual([p.xp,p.gold,m.rewardConfigured,m.availability],[0,[0,0],false,id==='gecko-moria'?'boss-dungeon':'world']);
   assert(!Object.hasOwn(m,'area')&&!Object.hasOwn(m,'mapId')&&!Object.hasOwn(m,'dungeonId'));
  }
  assert.equal(T.catalog['gecko-moria'].profileKind,'boss-dungeon');
  assert.equal(T.combatProfile('unknown'),null);
 });
-test('only Moria enters the dungeon catalog and no Thriller species enters random pools',()=>{
+test('Thriller common encounters are world-only and Moria remains exclusive to his dungeon',()=>{
  const E=require('../world-battle.cjs'),D=require('../boss-dungeon-system.js');
  for(const id of Object.keys(expected)){
-  assert(!Object.hasOwn(E.worldMonsterCatalog,id)&&!Object.hasOwn(E.prisonCatalog,id));
-  if(id==='gecko-moria')assert.equal(D.byId[id].monster,'dungeon-gecko-moria');
-  else assert(!D.catalog.some(d=>[d.id,d.monster].includes(id)));
+  assert(!Object.hasOwn(E.prisonCatalog,id));
+  if(id==='gecko-moria'){
+   assert(!Object.hasOwn(E.worldMonsterCatalog,id));assert.equal(D.byId[id].monster,'dungeon-gecko-moria');
+   assert(E.worldMonsterCatalog['dungeon-gecko-moria'].worldOnly);assert(!E.prisonCatalog['dungeon-gecko-moria']);
+  }else{
+   assert(E.worldMonsterCatalog[id].worldOnly);assert.equal(E.worldMonsterCatalog[id].xp,expected[id][5]);
+   assert(!D.catalog.some(d=>[d.id,d.monster].includes(id)));
+  }
  }
 });
 test('80 legal authored strips load through normal directional sprite adapter',()=>{

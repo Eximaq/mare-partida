@@ -131,10 +131,11 @@ test('migration0062 preserves active saves and historical receipts, is idempoten
    const before=await persisted(f.pool),expected=structuredClone(before);
    expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=world.rulesHash;
    expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=engine.rulesHash;
-   assert.deepEqual(await applyMigrations(f.pool),['0062_enies_lobby.sql']);
+   assert.deepEqual(await applyMigrations(f.pool),['0062_enies_lobby.sql','0063_late_archipelago.sql']);
    assert.deepEqual(await persisted(f.pool),expected);
    assert.deepEqual(await applyMigrations(f.pool),[]);
    await f.pool.query(await readFile(new URL('0062_enies_lobby.sql',source),'utf8'));
+   await f.pool.query(await readFile(new URL('0063_late_archipelago.sql',source),'utf8'));
    assert.deepEqual(await persisted(f.pool),expected);
    const resumed=await a.read();
    assert.deepEqual(resumed.battle.mobs,battle.mobs);assert.deepEqual(resumed.battle.pending,battle.pending);

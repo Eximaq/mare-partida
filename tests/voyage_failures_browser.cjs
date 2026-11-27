@@ -5,7 +5,7 @@ await page.waitForTimeout(1200);await page.setViewportSize({width:1366,height:76
 await page.route('**/voyage-hd/conchas.png',r=>r.abort());
 await page.route('**/sprites-combat-v2/helmeppo/idle-south.png*',r=>r.abort());
 const legacy=[];page.on('request',r=>{if(/assets\/(?:new-islands\/helmeppo|monsters\/helmeppo)/.test(r.url()))legacy.push(r.url());});
-await page.keyboard.press('m');await page.locator('[data-quick-mode=map]').click();await page.locator('[data-island=conchas]').click();
+await page.locator('#mainMenu [data-panel=modes]').click();await page.locator('[data-quick-mode=map]').click();await page.locator('[data-island=conchas]').click();
 await page.waitForFunction(()=>document.querySelector('.voyage-adversary .expedition-monster')?.dataset.state==='unavailable');
 assert((await page.locator('.voyage-detail-scroll').textContent()).includes('Ilustração indisponível'));
 assert((await page.locator('.voyage-adversary').textContent()).includes('Arte do adversário indisponível'));
@@ -14,7 +14,7 @@ await page.locator('[data-island=syrup]').click();await page.waitForFunction(()=
 assert.equal(await page.locator('#dungeonName').textContent(),'Vila Syrup');
 await page.locator('[data-voyage-region=east-blue]').focus();const hero=await page.evaluate(()=>({x:__impelQA.world.hero.x,y:__impelQA.world.hero.y}));
 await page.keyboard.press('ArrowRight');assert.equal(await page.locator('[aria-selected=true][data-voyage-region]').getAttribute('data-voyage-region'),'alabasta');
-await page.keyboard.press('End');assert.equal(await page.locator('[aria-selected=true][data-voyage-region]').getAttribute('data-voyage-region'),'enies-lobby');
+await page.keyboard.press('End');assert.equal(await page.locator('[aria-selected=true][data-voyage-region]').getAttribute('data-voyage-region'),'marineford');
 await page.keyboard.press('Home');assert.equal(await page.locator('[aria-selected=true][data-voyage-region]').getAttribute('data-voyage-region'),'east-blue');
 assert.deepEqual(await page.evaluate(()=>({x:__impelQA.world.hero.x,y:__impelQA.world.hero.y})),hero);
 await page.locator('[data-island=conchas]').click();await page.locator('[data-island=orange-town]').click();await page.locator('[data-island=baratie]').click();

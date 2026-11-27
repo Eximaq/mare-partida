@@ -1,6 +1,6 @@
-# Thriller Bark: recursos e atribuição de Moria
+# Thriller Bark: recursos aprovados e histórico da preparação
 
-**Atualização de 26/11/2026:** Gecko Moria foi atribuído à masmorra de nível 110, com vitória persistida e recompensa ainda indefinida. Absalom, Perona, Ryuma e Oars permanecem sem encontro. Veja [Enies Lobby](ENIES-LOBBY.md).
+**Estado atual:** Gecko Moria integra a masmorra de nível 110; Absalom, Perona, Ryuma e Oars integram os quatro destinos de Thriller Bark. Veja [Enies Lobby](ENIES-LOBBY.md) e [regiões 114–180](LATE-ARCHIPELAGO.md). O texto abaixo registra a preparação anterior à ativação dos encontros.
 
 ## Registro da preparação original, anterior à atribuição de Moria
 

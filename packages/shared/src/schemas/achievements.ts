@@ -3,6 +3,6 @@ export const achievementIdSchema=z.enum(["kills-0", "kills-1", "kills-2", "kills
 const count=(max:number)=>z.number().int().min(0).max(max);
 export const achievementsSnapshotSchema=z.strictObject({
  rulesetId:z.literal('original-achievements-v1'),claimed:z.array(achievementIdSchema).max(31),bonus:count(72),kills:count(10000),
- records:z.strictObject({coins:count(1000000),peakPower:count(100000),islands:z.array(z.string().regex(/^[a-z0-9-]{1,40}$/)).max(32)}),
+ records:z.strictObject({coins:count(1000000),peakPower:count(100000),islands:z.array(z.string().regex(/^[a-z0-9-]{1,40}$/)).max(64)}),
  entries:z.array(z.strictObject({id:achievementIdSchema,category:z.string().max(32),metric:z.string().max(32),name:z.string().max(100),target:count(1000000),points:count(5),feature:z.string().max(32).nullable(),progress:count(1000000),claimed:z.boolean(),enabled:z.boolean(),ready:z.boolean()})).length(31)
 });

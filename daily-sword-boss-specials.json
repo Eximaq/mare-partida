@@ -1,0 +1,171 @@
+{
+  "frameSize": 192,
+  "frames": 6,
+  "anchor": [
+    96,
+    96
+  ],
+  "nativeAngle": 0,
+  "radialIds": [
+    "daily-rayleigh",
+    "daily-shiki"
+  ],
+  "state": "preview-only; no encounter activation or damage",
+  "actors": {
+    "daily-mihawk": {
+      "name": "Mihawk",
+      "special": "Corte da Yoru",
+      "shape": "projectile-line",
+      "dimensionsPx": {
+        "range": 235,
+        "width": 36
+      },
+      "releaseMs": 800,
+      "travelMs": 380,
+      "impactMs": 270,
+      "source": "https://one-piece.com/anime/470/index.html",
+      "adaptation": "adaptação",
+      "art": {
+        "travel": {
+          "path": "assets/vfx/daily-sword-bosses/daily-mihawk/travel.png",
+          "sha256": "c9ec3e5cee2f45862bc3cbc43e02e94500485b9eb8ee03173363a1f6ada15b0a"
+        },
+        "impact": {
+          "path": "assets/vfx/daily-sword-bosses/daily-mihawk/impact.png",
+          "sha256": "6477496819dc65ac4520befb2c8dfcfd843ad869c9a3122b434eabef1db6fc3c"
+        }
+      }
+    },
+    "daily-shanks": {
+      "name": "Shanks",
+      "special": "Kamusari",
+      "shape": "dash-lane",
+      "dimensionsPx": {
+        "range": 172,
+        "width": 48
+      },
+      "releaseMs": 800,
+      "travelMs": 180,
+      "impactMs": 290,
+      "source": "https://one-piece.com/anime/67527/index.html",
+      "adaptation": "golpe da obra, geometria adaptada",
+      "art": {
+        "travel": {
+          "path": "assets/vfx/daily-sword-bosses/daily-shanks/travel.png",
+          "sha256": "df5fd455c0824f8d61a01251fee15f342794ca06ac74289047bf9ead7416040a"
+        },
+        "impact": {
+          "path": "assets/vfx/daily-sword-bosses/daily-shanks/impact.png",
+          "sha256": "11a84ff690f6043e091891ec407b800d236a835c47632690a88bbec78544c9cc"
+        }
+      }
+    },
+    "daily-ryuma-alive": {
+      "name": "Ryuma em vida",
+      "special": "Corte do Dragão",
+      "shape": "landing-cone",
+      "dimensionsPx": {
+        "range": 117,
+        "angleDeg": 88
+      },
+      "releaseMs": 800,
+      "travelMs": 0,
+      "impactMs": 300,
+      "source": "https://one-piece.com/news/64503/index.html",
+      "adaptation": "adaptação de MONSTERS",
+      "art": {
+        "impact": {
+          "path": "assets/vfx/daily-sword-bosses/daily-ryuma-alive/impact.png",
+          "sha256": "eabb6003d51b68b0308d5a0115a81d7d29f155a5282d430d369971ef54465b6d"
+        }
+      }
+    },
+    "daily-oden": {
+      "name": "Oden",
+      "special": "Tōgen Totsuka",
+      "shape": "fixed-cross",
+      "dimensionsPx": {
+        "centerOffset": 96,
+        "armLength": 112,
+        "armWidth": 28
+      },
+      "releaseMs": 800,
+      "travelMs": 0,
+      "impactMs": 310,
+      "source": "https://one-piece.com/anime/o5745/index.html",
+      "adaptation": "golpe da obra, geometria adaptada",
+      "art": {
+        "impact": {
+          "path": "assets/vfx/daily-sword-bosses/daily-oden/impact.png",
+          "sha256": "d38d19c37ae4845bc2d9f7f9f2191321c5743c76e7bce7654b0de8e8edcf2765"
+        }
+      }
+    },
+    "daily-rayleigh": {
+      "name": "Rayleigh",
+      "special": "Corte Ascendente",
+      "shape": "point-circle",
+      "dimensionsPx": {
+        "centerOffset": 84,
+        "radius": 62
+      },
+      "releaseMs": 800,
+      "travelMs": 0,
+      "impactMs": 320,
+      "source": "https://one-piece.com/anime/405/index.html",
+      "adaptation": "habilidade original do jogo",
+      "art": {
+        "impact": {
+          "path": "assets/vfx/daily-sword-bosses/daily-rayleigh/impact.png",
+          "sha256": "3fea0c4e14a2be4cff64318799290b27143f4c2a4499a008b707693b8ed21b79"
+        }
+      }
+    },
+    "daily-zoro": {
+      "name": "Zoro",
+      "special": "Hiryū Jigoku",
+      "shape": "triple-lane",
+      "dimensionsPx": {
+        "range": 148,
+        "width": 34,
+        "laneOffset": 42
+      },
+      "releaseMs": 800,
+      "travelMs": 0,
+      "impactMs": 310,
+      "source": "https://one-piece.com/anime/61675/index.html",
+      "adaptation": "inspirado no golpe contra King",
+      "art": {
+        "impact": {
+          "path": "assets/vfx/daily-sword-bosses/daily-zoro/impact.png",
+          "sha256": "438798c7c9bb4d72c5a848592eb2a5f1b9ac2ba0120503a503e3018763a1d597"
+        }
+      }
+    },
+    "daily-shiki": {
+      "name": "Shiki",
+      "special": "Queda do Leão Dourado",
+      "shape": "zone-set",
+      "dimensionsPx": {
+        "maxTargetDistance": 140,
+        "radius": 45,
+        "count": 3
+      },
+      "releaseMs": 800,
+      "travelMs": 460,
+      "impactMs": 350,
+      "source": "https://one-piece.com/character/Shiki/index.html",
+      "adaptation": "habilidade original do jogo",
+      "art": {
+        "travel": {
+          "path": "assets/vfx/daily-sword-bosses/daily-shiki/travel.png",
+          "sha256": "8f6fcd906ae5e2aac6fef0c0c3f82a6ff32a60d6315a515a008b06f06c292514"
+        },
+        "impact": {
+          "path": "assets/vfx/daily-sword-bosses/daily-shiki/impact.png",
+          "sha256": "7de0e3202beb3ea01a0df2ee123ed445385def133f75a060a75a26113aa91058"
+        }
+      }
+    }
+  }
+}
