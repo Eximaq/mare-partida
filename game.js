@@ -1460,11 +1460,11 @@
   const classSkillArtImages=new Map(),classSkillArtClips=new Map();
   for(const [group,kinds] of [
     ['sword-rebrand',['corteMare','arcoHorizonte']],
-    ['class-rebrand',['pontoFraco','dancaAdagas','blindagemAtiva']]
+    ['class-rebrand',['pontoFraco','dancaAdagas','blindagemAtiva','bencaoFarol']]
   ]){
     const base='assets/combat-vfx/'+group+'/';
     for(const kind of kinds){const image=new Image();image.src=base+kind+'.png';classSkillArtImages.set(kind,image);}
-    fetch(base+'clips.json').then(response=>response.ok?response.json():{}).then(clips=>{
+    fetch(base+'clips.json'+(group==='class-rebrand'?'?v=farol-v2':'')).then(response=>response.ok?response.json():{}).then(clips=>{
       for(const kind of kinds)if(clips[kind])classSkillArtClips.set(kind,clips[kind]);
     }).catch(()=>{});
   }
