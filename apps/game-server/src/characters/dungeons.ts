@@ -20,7 +20,7 @@ export async function readDungeons(client:PoolClient,id:string,includeMailStatus
  if(!(await client.query("SELECT to_regclass('mare_game.character_dungeons') present")).rows[0].present)return null;
  const row=(await client.query('SELECT state FROM mare_game.character_dungeons WHERE character_id=$1',[id])).rows[0];
  const state=dungeonStateSchema.parse(D.migrate({characterId:id,bossDungeons:row?.state}).bossDungeons);
- if(Object.values(state.records).some(r=>r?.ownerId!==id||r.reward&&r.reward.boundToCharacter!==id)||state.reveal?.boundToCharacter&&state.reveal.boundToCharacter!==id)throw new AuthFault(503,'dungeon_state_unavailable');
+ if(Object.values(state.records).some(r=>r?.ownerId!==id||(r.reward&&D.rewardEntries(r.reward).some((item:{boundToCharacter?:string})=>item.boundToCharacter&&item.boundToCharacter!==id)))||state.reveal?.boundToCharacter&&state.reveal.boundToCharacter!==id)throw new AuthFault(503,'dungeon_state_unavailable');
  if(includeMailStatus){
   const letters=Object.values(state.records).filter(record=>record?.mailId);
   if(letters.length){
@@ -77,29 +77,41 @@ export async function mutateDungeon(client:PoolClient,id:string,input:CharacterC
   await storeWorld(client,id,w);await storeBattle(client,id,b);await client.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[id,now,input.control.epoch]);
  }else if(input.action==='dungeon.claim'){
   const dungeonId=input.payload.dungeonId,r=progress.records[dungeonId],chest=maps().maps['quest-dungeons'].interactions[0];
-  if(!r||r.phase!=='pending'||!r.reward)throw new AuthFault(409,'dungeon_reward_unavailable');
+  if(!r||r.phase!=='pending')throw new AuthFault(409,'dungeon_reward_unavailable');
   if(!b.dungeon||b.dungeon.id!==dungeonId||b.dungeon.record.runId!==r.runId||w.mapId!=='quest-dungeons'||b.hp<=0||Math.hypot(w.position.x-chest.x,w.position.y-chest.y)>chest.radius)throw new AuthFault(409,'dungeon_chest_out_of_range');
-  const reward=r.reward,name:string=D.byId[dungeonId].name,receipt='dungeon:'+id+':'+dungeonId;
+  let victoryLevel=base.level;
+  if(!r.reward&&(dungeonId==='rob-lucci'||dungeonId==='gecko-moria')){
+   // Older pending victories have no reward snapshot. Reuse a recorded level when available.
+   const old=(await client.query<{level:number}>(`
+    SELECT c.result #> '{state,level}' AS level
+    FROM mare_game.dungeon_victories v
+    JOIN mare_game.character_commands c ON c.character_id=v.character_id AND c.request_id=v.request_id
+    WHERE v.character_id=$1 AND v.dungeon_id=$2 AND v.run_id=$3 AND c.result->>'action'='battle.reward'
+   `,[id,dungeonId,r.runId])).rows[0]?.level;
+   if(old!==undefined&&Number.isSafeInteger(old)&&old>0&&old<=1000)victoryLevel=old;
+  }
+  const reward=D.pendingReward({...base,level:victoryLevel},dungeonId,rng),name:string=D.byId[dungeonId].name,receipt='dungeon:'+id+':'+dungeonId;
+  if(!reward)throw new AuthFault(409,'dungeon_reward_unavailable');
   const mailId=await sendOfficialMail(client,id,{
    source:'dungeon',sourceId:dungeonId,rewardId:'chest',title:'Baú de '+name,
    message:'Itens da sua vitória em Masmorra de Chefes.',
    makeAttachments:()=>{
-    const item:OriginalItemInstance|null=D.rewardItem(getGameCatalog().items,reward,dungeonId,receipt,now.getTime());
-    if(!item)throw new AuthFault(503,'dungeon_reward_catalog_unavailable');
-    return [item];
+    const items:(OriginalItemInstance|null)[]=D.rewardItems(getGameCatalog().items,reward,dungeonId,receipt,now.getTime());
+    if(!items.length||items.some(item=>!item))throw new AuthFault(503,'dungeon_reward_catalog_unavailable');
+    return items.filter((item):item is OriginalItemInstance=>item!==null);
    },
   });
-  Object.assign(r,{phase:'claimed',claimedAt:now.getTime(),receipt,mailId});
+  Object.assign(r,{phase:'claimed',reward,claimedAt:now.getTime(),receipt,mailId});
   progress.seq++;
   result={state:{bossDungeons:progress}};
   const xp=await inventoryChange(client,id,input,state,stock,null,reward.berry,reward.xp);
-  await client.query('INSERT INTO mare_game.dungeon_claims(character_id,dungeon_id,request_id,experience_delta,gold_delta) VALUES($1,$2,$3,$4,$5)',[id,dungeonId,input.requestId,xp,r.reward.berry]);
+  await client.query('INSERT INTO mare_game.dungeon_claims(character_id,dungeon_id,request_id,experience_delta,gold_delta) VALUES($1,$2,$3,$4,$5)',[id,dungeonId,input.requestId,xp,reward.berry]);
   // Emission, XP/Berry and the claimant's relocation share one transaction.
   delete b.partyInstanceId;
   E.changeArea(b,null,now.getTime(),rng);const port=maps().maps.lobby.spawn;Object.assign(w,{mapId:'lobby',area:null,position:{...port},path:[],speed:0,direction:'front',serverNow:now.toISOString(),motionUntil:now.toISOString()});await storeWorld(client,id,w);await storeBattle(client,id,b);
  }else if(input.action==='dungeon.craft'){
   result=D.craft(base,{expectedSeq:input.payload.expectedSeq,rank:input.payload.rank,defs:getGameCatalog().items,catalog:require('../../../../akuma-system.js').catalog,random:rng,commit:()=>true,now:now.getTime()});
-  if(!result.ok)throw new AuthFault(409,'dungeon_craft_unavailable');
+  if(!result.ok)throw new AuthFault(409,result.code??'dungeon_craft_unavailable');
   await inventoryChange(client,id,input,state,stock,{...stock,inventory:result.state.inventory});
  }else if(input.action==='dungeon.acknowledge'){
   result=D.acknowledge(base,input.payload.itemId,()=>true);if(!result.ok)throw new AuthFault(409,'dungeon_reveal_unavailable');
@@ -109,7 +121,7 @@ export async function mutateDungeon(client:PoolClient,id:string,input:CharacterC
 export async function completeDungeonVictory(client:PoolClient,id:string,requestId:string,state:CharacterState,b:any,kill:any,now:Date){
  const p=await readDungeons(client,id,false),r=p?.records[kill.dungeonId as keyof typeof p.records];
  if(!p||!r||!b.dungeon||b.dungeon.id!==kill.dungeonId||r.spawnId!==kill.id||r.runId!==kill.runId||r.encounterId!==kill.encounterId)throw new AuthFault(503,'dungeon_victory_invalid');
- const result=D.defeat({characterId:id,level:state.level,bossDungeons:p},kill.dungeonId,{runId:kill.runId,encounterId:kill.encounterId},legacyXpNeeded,now.getTime());
+ const result=D.defeat({characterId:id,level:state.level,bossDungeons:p},kill.dungeonId,{runId:kill.runId,encounterId:kill.encounterId},legacyXpNeeded,now.getTime(),rng);
  if(!result.ok)throw new AuthFault(503,'dungeon_victory_invalid');
  await client.query('INSERT INTO mare_game.dungeon_victories(character_id,dungeon_id,run_id,spawn_id,request_id,reward,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7)',[id,kill.dungeonId,kill.runId,kill.id,requestId,result.record.reward===null?null:JSON.stringify(result.record.reward),E.rulesHash]);
  await recordDailyProgress(client,id,[{id:kill.id,monster:kill.monster}]);

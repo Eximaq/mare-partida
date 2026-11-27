@@ -13,7 +13,10 @@ const legacyRanges={
  'alubarna-01':[50,55],'alubarna-02':[55,60],'alubarna-03':[60,65],'alubarna-04':[65,70],'alubarna-05':[70,75]
 };
 assert.deepEqual(Object.fromEntries(Object.entries(H.regions).map(([id,r])=>[id,[r.min,r.max]])),{
- ...legacyRanges,'enies-lobby-01':[95,100],'enies-lobby-02':[101,104],'enies-lobby-03':[104,106],'enies-lobby-04':[107,109],'enies-lobby-05':[110,114]
+ ...legacyRanges,'enies-lobby-01':[95,100],'enies-lobby-02':[101,104],'enies-lobby-03':[104,106],'enies-lobby-04':[107,109],'enies-lobby-05':[110,114],
+ 'thriller-bark-01':[114,117],'thriller-bark-02':[118,121],'thriller-bark-03':[122,126],'thriller-bark-04':[127,130],
+ 'sabaody-01':[131,135],'sabaody-02':[136,140],'sabaody-03':[141,145],'sabaody-04':[146,150],
+ 'marineford-01':[151,155],'marineford-02':[156,160],'marineford-03':[161,165],'marineford-04':[166,170],'marineford-05':[171,175],'marineford-06':[176,180]
 },'new destinations retain every existing area and its exact level range');
 assert.equal(H.regions.swamp.boss,null);assert(H.regions.swamp.sectors.every(s=>s.min===8&&s.max===8&&s.roles.length===1&&s.roles[0]==='helmeppo'));
 for(const [area,region] of Object.entries(H.regions).filter(([,region])=>!!region.boss)){
@@ -23,8 +26,8 @@ for(const [area,region] of Object.entries(H.regions).filter(([,region])=>!!regio
   for(const type of ['crab','bandit','spirit','boss'])for(const roll of [0,.5,.99999]){
    const m=H.profile(area,s.id,type,roll);assert(m.level>=region.min&&m.level<=region.max);assert(m.maxHP>0&&m.attack>0);
    if(type==='boss')assert.equal(m.level,region.bossLevel);
-   const data={...m,type,district:s.id},lo=H.rewards(area,data,m.level),hi=H.rewards(area,data,100);
-   assert.equal(lo.gearLevel,hi.gearLevel);assert.equal(lo.gold,hi.gold);assert(hi.xp<=lo.xp);assert(hi.xp>=Math.floor(lo.xp*.15));
+   const data={...m,type,district:s.id},lo=H.rewards(area,data,1),hi=H.rewards(area,data,100);
+   assert.equal(lo.gearLevel,hi.gearLevel);assert.equal(lo.gold,hi.gold);assert.equal(hi.xp,lo.xp/2);
   }
  }
  const s=region.sectors.at(-1);assert(!H.bossReady(g,area,s,1000,anchors));

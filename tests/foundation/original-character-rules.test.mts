@@ -15,9 +15,12 @@ test('shared catalog keeps seven classes and four factions with the updated heal
 test('original XP curve has no alpha level20 cap and uses bounded twenty-level advancement',()=>{
   const rules=require('../../character-catalog.js');
   for(const level of [1,2,20,21,50,100,1000])assert.equal(rules.legacyXpNeeded(level),Math.round(80+25*Math.pow(level-1,1.55)));
-  assert.equal(rules.xpNeeded(2),44);assert.equal(rules.xpNeeded(20),13797);
-  const step=rules.advance({level:20,start:18209n,experience:18209n+BigInt(rules.xpNeeded(20))});
-  assert.equal(step.level,21);assert.equal(step.start,32006n);
+  assert.equal(rules.version4XpNeeded(2),44);assert.equal(rules.version4XpNeeded(20),680);
+  const threshold=18209n+BigInt(rules.xpNeeded(20));
+  const pending=rules.advance({level:20,start:18209n,experience:threshold-1n});
+  assert.equal(pending.level,20);
+  const step=rules.advance({level:20,start:18209n,experience:threshold});
+  assert.equal(step.level,21);assert.equal(step.start,threshold);
   const cappedWork=rules.advance({level:1,start:0n,experience:9223372036854775807n});
   assert.equal(cappedWork.level,21,'twenty iterations per reward matches gainXP without unbounded CPU work');
   assert.equal(cappedWork.levels.length,20);
