@@ -1456,9 +1456,80 @@
   function drawCombatHeader(actor,name,hp,maxHP,width=60,color='#5ed09c'){
     const box=combatHudBox(actor,width,name);ctx.save();ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#03171c';ctx.strokeText(name,actor.x,box.nameY);ctx.fillStyle='#effcf5';ctx.fillText(name,actor.x,box.nameY);px(ctx,actor.x-width/2,box.barY,width,7,'#001819');px(ctx,actor.x-width/2+1,box.barY+1,(width-2)*Math.max(0,Math.min(1,hp/Math.max(1,maxHP))),5,color);if(world.target===actor){ctx.strokeStyle='#d9b777';ctx.lineWidth=2;ctx.strokeRect(actor.x-width/2-3,box.barY-3,width+6,13);}ctx.restore();
   }
+  // Presentation only: reuse the authoritative impact clock, anchor and dimensions.
+  const classSkillArtImages=new Map(),classSkillArtClips=new Map();
+  for(const [group,kinds] of [
+    ['sword-rebrand',['corteMare','arcoHorizonte']],
+    ['class-rebrand',['pontoFraco','dancaAdagas','blindagemAtiva','bencaoFarol']]
+  ]){
+    const base='assets/combat-vfx/'+group+'/';
+    for(const kind of kinds){const image=new Image();image.src=base+kind+'.png';classSkillArtImages.set(kind,image);}
+    fetch(base+'clips.json'+(group==='class-rebrand'?'?v=farol-v2':'')).then(response=>response.ok?response.json():{}).then(clips=>{
+      for(const kind of kinds)if(clips[kind])classSkillArtClips.set(kind,clips[kind]);
+    }).catch(()=>{});
+  }
+  function drawClassSkillArt(c,kind,x,y,elapsed,rate,options){
+    const clip=classSkillArtClips.get(kind),image=classSkillArtImages.get(kind);
+    if(!clip||!image?.naturalWidth)return false;
+    let index;
+    if(clip.duration){
+      const age=elapsed/(rate||1);
+      if(age<0||age>=clip.duration)return false;
+      index=Math.min(clip.frames.length-1,Math.floor(age*60/1000));
+    }else index=MareCombatVfx.frame(kind,elapsed,options);
+    if(index===null)return true;
+    const frame=clip.frames[index];
+    if(frame===null)return true; // Preserve intentionally transparent frames.
+    if(!frame)return false;
+    const [sx,sy,w,h,ox,oy]=frame,scale=options.width/512;
+    c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x),Math.round(y));
+    c.drawImage(image,sx,sy,w,h,ox*scale,oy*scale,w*scale,h*scale);c.restore();
+    return true;
+  }
+  // The healing tide is tied to the existing healing effect, not to a new
+  // cast, buff or health update. Its two layers bracket the actual body.
+  const healingTideArt={manifest:null,images:new Map()};
+  const healingTideBase='assets/combat-vfx/tide-v3/';
+  fetch(healingTideBase+'clips.json').then(response=>response.ok?response.json():null).then(manifest=>{
+    if(!manifest)return;
+    for(const {file} of Object.values(manifest.clips))if(!healingTideArt.images.has(file)){
+      const image=new Image();image.src=healingTideBase+file;healingTideArt.images.set(file,image);
+    }
+    healingTideArt.manifest=manifest;
+  }).catch(()=>{});
+  function healingTideState(){
+    const {manifest,images}=healingTideArt;
+    if(!manifest||world.hero.visible===false)return null;
+    const direction=({front:'south',back:'north',left:'west',right:'east'})[world.hero.direction]||world.hero.direction||'south';
+    const flip=direction==='east',key=flip?'west':direction;
+    const clips=['back','front'].map(layer=>manifest.clips[key+'-'+layer]);
+    if(!clips.every(clip=>clip&&images.get(clip.file)?.naturalWidth))return null;
+    return {manifest,clips,flip};
+  }
+  function drawHealingTide(c,state,layer,x,y,height){
+    if(!state)return;
+    const {manifest,clips,flip}=state,clip=clips[layer];
+    const scale=Math.max(.55,Math.min(2.5,(height||107)/107))/manifest.sourceDensity;
+    for(const fx of session.combatHits||[]){
+      if(fx.kind!=='mareRestauradora'||fx.actor!==world.hero)continue;
+      const age=(world.time-fx.started)*1000;
+      if(age<0||age>=manifest.durationMs)continue;
+      const frame=clip.frames[Math.min(clip.frames.length-1,Math.floor(age*manifest.fps/1000))];
+      if(!frame)continue;
+      const [sx,sy,w,h,dx,dy]=frame;
+      c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x),Math.round(y));
+      if(flip)c.scale(-1,1);
+      c.drawImage(healingTideArt.images.get(clip.file),sx,sy,w,h,dx*scale,dy*scale,w*scale,h*scale);
+      c.restore();
+    }
+  }
   function drawCombatVfx(layer='front'){
     if(layer==='front')for(const p of session.combatProjectiles||[])if(!MareClassWeaponVfx.projectile(ctx,p,{origin:combatBeamOrigin(p)}))MareCombatVfx.drawProjectile(ctx,p,{origin:combatBeamOrigin(p)});
     for(const f of session.combatHits||[]){
+      if(f.kind==='mareRestauradora'&&f.actor===world.hero){
+        const renderedWithBody=healingTideState();
+        if(renderedWithBody)continue; // Fall back to the original while the density-4 art is unavailable.
+      }
       const effect=MareCombatVfx.data.effects[f.kind];if((effect.layer||'front')!==layer)continue;const bodyHeight=effect.bodyScale&&f.actor?combatVisualHeight(f.actor):0;
       // The uploaded origin is off-centre; wrap the visible body rather than its chest or HUD.
       const point=effect.rangeBound?{x:f.x,y:f.y}:bodyHeight?{x:f.actor.x,y:f.actor.y-bodyHeight/2}:f.actor?combatChest(f.actor):f;
@@ -1467,7 +1538,7 @@
       point.x+=(effect.offsetX||0);
       if(f.zoanRework){MareZoanArt.drawRework(ctx,f.zoanRework,point.x,point.y,world.time-f.started,{index:Math.floor(f.started*6)});continue;}
       if(effect.rangeBound){ctx.save();ctx.beginPath();ctx.arc(f.x,f.y,f.radius,0,Math.PI*2);ctx.clip();}
-      if(!MareClassWeaponVfx.hit(ctx,f.weaponStyle,f.kind,point.x,point.y,elapsed,options))MareCombatVfx.draw(ctx,f.kind,point.x,point.y,elapsed,options);
+      if(!drawClassSkillArt(ctx,f.kind,point.x,point.y,elapsed,f.rate,options)&&!MareClassWeaponVfx.hit(ctx,f.weaponStyle,f.kind,point.x,point.y,elapsed,options))MareCombatVfx.draw(ctx,f.kind,point.x,point.y,elapsed,options);
       if(effect.rangeBound)ctx.restore();
     }
     if(layer!=='front')return;
@@ -1769,7 +1840,7 @@
     if(!direct)MareHaki.touch(game,session.haki);
     if(DEV_ACTIVE&&game.devOptions?.godMode)return;
     if(session.fruitInvulnerable>0)return;
-    const d=getDerived();if(!direct&&!source&&Math.random()<d.evasion){session.haki.eyeFX=.35;spawnVisual(world.hero.x,world.hero.y-46,'ESQUIVA','#b8a8ef',13);return;}
+    const d=getDerived();if(!direct&&!source&&Math.random()<d.evasion){session.haki.eyeFX=.35;session.haki.dodgeFX=.35;spawnVisual(world.hero.x,world.hero.y-46,'ESQUIVA','#b8a8ef',13);return;}
     const rawBeforeLogia=direct?amount:MareCharacters.incoming(physical?d:{...d,defense:d.magicDefense??d.defense},amount*(source?.kobuDebuffUntil>Date.now()?.8:1)*(source?.hakiDebuff>0?1-MareHakiProgression.limits.bossReduction:1)*(physical?1-(d.impactResistancePercent||0):1),session.guard>0,rand(.85,1.1),{monster:source}),raw=MareRankB.reduction(rawBeforeLogia,{equipped:MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id,physical,hasHaki:hasHaki===true||source?.hasHaki===true}),retaliation=MareAkuma.retaliate(amount,raw,{active:supaShieldActive()&&!reflected,physical,direct}),reaction=direct?{damage:raw*(bariActive?.2:1)}:MareTalentCombat.receive(game,session.talents,{stats:d,amount:retaliation.damage*(bariActive?.2:1),physical,source,melee:!!source&&physical&&(source.reach??monsterTypes[source.type]?.reach??Infinity)<=60});
     if(reaction.untargetable||reaction.invulnerable)return;
     game.energy=Math.max(0,game.energy-(reaction.energyUsed||0));
@@ -1908,7 +1979,7 @@
     });
     world.target=world.mobs.find(m=>m.id===b.targetId&&m.alive&&!m.returning)||null;
     session.talents={...MareTalentCombat.create(),...(b.talents?structuredClone(b.talents):{}),ultimate:{...MareUltimates.start(),...(b.talents?.ultimate?structuredClone(b.talents.ultimate):{})}};
-    session.haki=structuredClone(ONLINE_GAME.data.online.haki?.runtime||MareHaki.start());
+    session.haki=structuredClone(ONLINE_GAME.data.online.haki?.runtime||MareHaki.start());session.hakiVisualReceived=world.time;
     syncOnlineFruit(b);
     autoPlay=b.auto;session.cooldowns=b.cooldowns.slice();session.guard=b.guard;session.blessing=b.blessing;session.respawn=b.respawn;
     if(onlineBattleSeq===null)onlineBattleSeq=b.seq;
@@ -1990,6 +2061,9 @@
     if(session.zoanDash){const dash=session.zoanDash,step=Math.min(dash.remaining,800*dt),beforeX=world.hero.x,beforeY=world.hero.y;navigator().move(world.hero,dash.dx*step,dash.dy*step);const moved=Math.hypot(world.hero.x-beforeX,world.hero.y-beforeY);dash.remaining-=step;world.hero.walking=.2;for(const mob of livingMobs())if(!dash.hit&&(dash.hitId==null||String(dash.hitId)===String(mob.id))&&Math.hypot(mob.x-world.hero.x,mob.y-world.hero.y)<45){dash.hit=true;session.zoanVisualHitAt=world.time;outputDamage(mob,MareCharacters.damage(getFruitDerived(),enemyArmor(mob),{type:'physical',multiplier:.55}),false,{},dash.wear);navigator().move(mob,dash.dx*45,dash.dy*45);world.fx.push({x:mob.x,y:mob.y,ring:1,life:.3,max:.3,color:'#e7a65a'});}if(dash.remaining<=0||moved<.1)session.zoanDash=null;}
     stepRankA();stepJiki(dt);stepHoya(dt);stepRankB();stepExpansion(dt);stepRankC(dt);stepBasicAttack(dt);stepNekoAction(dt);stepUshiAction();stepDoruProjectiles(dt);stepWolfAction(dt);stepWolfBleeds();stepRyuAction();stepCombatVfx(dt);
     MareHaki.tick(game,session.haki,dt,{alive:game.hp>0&&session.respawn<=0,inHunt:scene==='hunt'});
+    // Visual timers are deliberately kept out of the hashed combat rules.
+    const hakiVisual=session.haki;hakiVisual.dodgeFX=hakiVisual.eyeFX>0?Math.max(0,(hakiVisual.dodgeFX||0)-dt):0;
+    if(!hakiVisual.kingFX)hakiVisual.kingOrigin=null;
     if(DEV_ACTIVE){if(game.devOptions?.infiniteWill&&game.has_haki_unlocked)game.haki.current=100;if(game.devOptions?.noCooldown){session.cooldowns=[0,0,0];game.talentCooldowns={};game.haki.kingReadyAt=0;}}
     for(const m of world.mobs)m.hakiDebuff=Math.max(0,(m.hakiDebuff||0)-dt);
     stepFruitPunch(dt);
@@ -2128,6 +2202,7 @@
     const result=MareHaki.cast(game,session.haki,world.hero,livingMobs(),{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0,clear:(a,b)=>combatLine(a,b)});
     if(!result.ok){toast(result.message,'danger');return;}
     try{localStorage.setItem(STORAGE_KEY,JSON.stringify(game));}catch{game.haki=snapshot.haki;session.haki=snapshot.runtime;for(const [m,d,c] of snapshot.mobs){m.hakiDebuff=d;m.talentControl=c;}toast('Não foi possível salvar. Haki do Rei cancelado; Vontade preservada.','danger');return;}
+    session.haki.kingOrigin={x:world.hero.x,y:world.hero.y,radius:MareHaki.progression.effects(game,'conqueror').radius};
     spawnVisual(world.hero.x,world.hero.y-65,'HAKI DO CONQUISTADOR','#e8374c',18);updateUI();
   }
   function hakiBookDetail(item){return `<div class="op-detail-wrap"><h3>Livro da Vontade</h3>${MareHakiUI.icon('book')}<p>Consumível de despertar. Requer nível 50 e libera acesso às árvores de domínio do Haki.</p><p>Origem: baú de Don Krieg Nv.50 (1 livro) ou chefes de mundo aberto/diários Nv.30+ (chance de 5%).</p><button type="button" class="op-action primary" data-use-haki-book="${escapeHTML(item.id)}" ${item.locked||game.level<50||game.has_haki_unlocked?'disabled':''}>Despertar o Haki</button><button type="button" class="op-action secondary" data-inv-lock="${escapeHTML(item.id)}">${item.locked?'Desbloquear':'Bloquear'}</button></div>`;}
@@ -3685,6 +3760,7 @@ ${avatarExtra}
     const height=entry?(entry.world_header_height||entry.worldHeight*(entry.world_scale||1))*(MareUltimates.selected(game)==='titan'?1.35:1):combatVisualHeight(world.hero);
     return Math.max(.65,Math.min(2.5,(height||96)/96));
   }
+  function presentHaki(){return MareHakiArt.presentation(session.haki,ONLINE_GAME?world.time-(session.hakiVisualReceived??world.time):0);}
   function drawTalentedHero(x,y){
     const visualPlayer=game;
     const visualFruit=MareAkuma.itemData(visualPlayer?.equipment?.akuma_no_mi,itemDefs);
@@ -3700,13 +3776,19 @@ ${avatarExtra}
     if(world.hero.visible!==false)vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1,visualFruit,'back',visualPlayer?.zoanTransformed);
     drawHoruHealFx(false);
     drawBisonShell(false,x,y);
+    const tide=(session.combatHits||[]).some(f=>f.kind==='mareRestauradora'&&f.actor===world.hero)?healingTideState():null;
+    const tideHeight=tide?combatVisualHeight(world.hero):0;
+    const haki=presentHaki(),hakiScale=hakiVisualScale(),hakiHero={x,y,direction:world.hero.direction};
+    if(world.hero.visible!==false)MareHakiArt.drawBack(ctx,haki,hakiHero,reducedFX,hakiScale,(c,x,y)=>{c.save();c.translate(x,y);if(u==='titan')c.scale(1.35,1.35);drawPlayerSprite(c,0,0);c.restore();});
+    drawHealingTide(ctx,tide,0,x,y,tideHeight);
     ctx.save();if(rt.hidden)ctx.globalAlpha=.2;if(world.hero.visible===false){drawBeriSeparation(ctx,x,y,1-session.fruitBurst/1.5);}else if(u==='titan'){ctx.translate(x,y);ctx.scale(1.35,1.35);drawPlayerSprite(ctx,0,0);}else drawPlayerSprite(ctx,x,y);ctx.restore();
+    drawHealingTide(ctx,tide,1,x,y,tideHeight);
     if(horuBuffActive()){const aura=MareRankC.rules.horu.mutationVfx;MareRankC.draw(ctx,'mutation',x,y+aura.offsetY,Date.now()-session.horuBuffStarted,{width:aura.width,height:aura.height});}
     vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1,visualFruit,'front',visualPlayer?.zoanTransformed);
     drawBisonShell(true,x,y);
     drawHoruHealFx(true);
     if(ushiBuffActive())MareZoanArt.drawRework(ctx,'giraffe-front',x,y,(Date.now()-session.ushiBuffStartedAt)/1000);
-    globalThis.MareHakiArt?.draw(ctx,session.haki,world.hero,world.time,reducedFX,(c,x,y)=>{c.save();c.translate(x,y);if(u==='titan')c.scale(1.35,1.35);drawPlayerSprite(c,0,0);c.restore();},hakiVisualScale());
+    if(world.hero.visible!==false)MareHakiArt.draw(ctx,haki,hakiHero,world.time,reducedFX,null,hakiScale);
     if(betaEquipped(visualPlayer))MareRankB.drawLegs(ctx,{x,y},world.time*1000);
     if(u==='armamentSkin'&&rt.vigor>0){px(ctx,x-30,y-94,60,6,'#10222a');px(ctx,x-29,y-93,58*rt.vigor/rt.vigorMax,4,'#e4c77b');}
   }
@@ -3746,7 +3828,7 @@ ${avatarExtra}
     }
     const elapsed=performance.now()-sharedLobbyFrame.received;
     if(elapsed>5000)return []; // Never keep ghosts indefinitely after connection loss.
-    for(const peer of sharedLobbyFrame.players)Object.assign(peer,peer.presentation.sample(performance.now()),{visualHeight:96,visualWidth:96});
+    for(const peer of sharedLobbyFrame.players)Object.assign(peer,peer.presentation.sample(performance.now()),{visualHeight:96,visualWidth:96,hakiVisualAge:elapsed/1000});
     return sharedLobbyFrame.players;
   }
   function drawSharedLobbyPlayer(peer){
@@ -3755,7 +3837,9 @@ ${avatarExtra}
     const fruit=MareAkuma.byId(peer.fruitId),key=peer.zoanTransformed&&MareSpriteCombatV2.fruits[peer.fruitId],entry=key&&MareSpriteCombatV2Data[key];
     const body=(c,x,y)=>entry?MareSpriteCombatV2.draw(c,key,x,y,{action:peer.action==='attack'?'attack':peer.moving?'walk':'idle',direction:peer.direction,time:world.time,scale:zoanVisualScale(key)*(entry.world_scale??1),height:key==='ryu'?entry.worldHeight:null}):sharedLobbyRenderer.draw(c,peer,{scene,action:peer.action==='attack'?'attack':peer.moving?'walk':'idle',direction:peer.direction,time:world.time,x,y,consumer:'shared-lobby'});
     const aura=layer=>{if(!fruit)return;if(MareRankS.has(fruit.id)){if(!partyAuraLoaded.has(fruit.id)){partyAuraLoaded.add(fruit.id);MareRankS.preload(fruit.id);}MareRankS.drawAura(ctx,fruit.id,peer.x,peer.y,world.time,fruit.id===MareRankS.rules.phoenix.id&&!peer.zoanTransformed?.7:1,layer);}else vfx_aura.draw(ctx,peer.x,peer.y,world.time,1,fruit,layer);};
-    aura('back');body(ctx,peer.x,peer.y);aura('front');if(peer.haki)MareHakiArt.draw(ctx,peer.haki,peer,world.time,false,body);
+    const hakiScale=entry?Math.max(.65,Math.min(2.5,(entry.world_header_height||entry.worldHeight*(entry.world_scale||1)||96)/96)):1;
+    const haki=MareHakiArt.presentation(peer.haki,peer.hakiVisualAge);
+    aura('back');MareHakiArt.drawBack(ctx,haki,peer,reducedFX,hakiScale,body);body(ctx,peer.x,peer.y);aura('front');MareHakiArt.draw(ctx,haki,peer,world.time,reducedFX,null,hakiScale);
     MareMapPlayerHud.draw(ctx,peer.x,peer.y-102,peer.name,null,mapPlayerIdentity(peer,peer.crew||peer.crewIdentity));
     ctx.restore();
   }
@@ -3843,7 +3927,7 @@ ${avatarExtra}
     if(state!=='ready'){ctx.fillStyle='#151217';ctx.fillRect(0,0,W,H);return;}
     drawWorld();drawPaperDollDiagnostics();
   }
-  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}camera.begin(ctx,activeMap());drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'back',world.hero);drawCombatVfx('back');drawEntityLayer();drawDungeonChestLabel();
+  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}camera.begin(ctx,activeMap());drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'back',world.hero);drawCombatVfx('back');if(scene==='hunt'){const nav=navigator();MareHakiArt.drawKing(ctx,presentHaki(),nav,combatLine,reducedFX);for(const peer of sharedLobbyPlayers())if(peer.haki?.kingFX>0)MareHakiArt.drawKing(ctx,MareHakiArt.presentation(peer.haki,peer.hakiVisualAge),nav,combatLine,reducedFX);}drawEntityLayer();drawDungeonChestLabel();
     if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'front',world.hero);
     drawRankB();
     drawExpansion();
