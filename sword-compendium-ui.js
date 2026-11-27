@@ -1,17 +1,62 @@
 ((root)=>{
  'use strict';
  const S=root.MareSwordCompendium;
- const percent=units=>new Intl.NumberFormat('pt-BR',{maximumFractionDigits:3}).format(units/1000)+'%';
+ const percentage=new Intl.NumberFormat('pt-BR',{style:'percent',maximumFractionDigits:3});
+ const bonus=units=>percentage.format(units/100000);
+ const rankColors={E:'#c0c6ce',D:'#9abd87',C:'#80b8eb',B:'#ca9ef3',A:'#f3bd68',S:'#f19797'};
+
+ function card(sword,record,ready){
+  const unlocked=record?.active===true;
+  const count=unlocked?sword.required:record?.fragments??0;
+  const enough=count>=sword.required;
+  const state=unlocked?'active':enough?'ready':count?'progress':'empty';
+  return `<article class="sword-card" data-state="${state}">
+    <div class="sword-card-art">
+      <span class="sword-card-rank" title="Rank ${sword.rank}">${sword.rank}</span>
+      <img loading="lazy" decoding="async" src="${sword.image}" alt="">
+    </div>
+    <div class="sword-card-body">
+      <h3>${sword.name}</h3>
+      <p class="sword-card-bonus">+${bonus(sword.bonus)} em cada atributo</p>
+      <div class="sword-card-progress">
+        <span>${unlocked?'Espada ativada':`${count} / ${sword.required} fragmentos`}</span>
+        <progress max="${sword.required}" value="${Math.min(count,sword.required)}" aria-label="Fragmentos de ${sword.name}"></progress>
+      </div>
+      ${unlocked?'':`<button type="button" data-sword-activate="${sword.id}"${enough&&ready?'':' disabled'}>Ativar espada</button>`}
+    </div>
+  </article>`;
+ }
+
  function render(collection,rank,{available=false,ready=false}={}){
-  const active=S.catalog.filter(s=>collection[s.id]?.active).length;
-  const ranks=Object.keys(S.ranks).map(r=>'<button type="button" data-sword-rank="'+r+'" aria-pressed="'+(r===rank)+'">Rank '+r+'</button>').join('');
-  const loot=S.ranks[rank];
-  const cards=S.byRank[rank].map(s=>{
-   const record=collection[s.id],unlocked=record?.active===true,count=unlocked?s.required:record?.fragments??0;
-   const enough=count>=s.required;
-   return '<article class="sword-card" data-state="'+(unlocked?'active':enough?'ready':count?'progress':'empty')+'"><img loading="lazy" src="'+s.image+'" alt=""><div><h3>'+s.name+'</h3><p>Bônus permanente de '+percent(s.bonus)+' em cada atributo</p><progress max="'+s.required+'" value="'+Math.min(count,s.required)+'" aria-label="Fragmentos de '+s.name+'"></progress><p>'+ (unlocked?'Ativada':count+' / '+s.required+' fragmentos')+'</p><button type="button" data-sword-activate="'+s.id+'"'+(!unlocked&&enough&&ready?'':' disabled')+'>'+(unlocked?'Ativada':'Ativar espada')+'</button></div></article>';
-  }).join('');
-  return '<section class="sword-compendium"><p>'+active+' / '+S.catalog.length+' espadas ativadas · Bônus total de '+percent(S.bonusUnits(collection))+' em cada atributo.</p><p>Resgate fragmentos pelo Correio. Ao ativar uma espada, os excedentes ficam disponíveis para negociação na mochila ou no Correio.</p>'+(available?'':'<p>Entre no jogo online para ativar espadas.</p>')+'<div class="sword-ranks" role="group" aria-label="Ranks">'+ranks+'</div><p>Chance de '+new Intl.NumberFormat('pt-BR',{style:'percent',maximumFractionDigits:1}).format(loot.chance)+' de receber '+(loot.min===loot.max?loot.max:loot.min+' a '+loot.max)+' fragmento(s) deste rank por vitória elegível.</p><div class="sword-grid">'+cards+'</div></section>';
+  const selectedRank=Object.hasOwn(S.ranks,rank)?rank:'E';
+  const collected=swords=>swords.filter(sword=>collection[sword.id]?.active===true).length;
+  const active=collected(S.catalog);
+  const ranks=Object.keys(S.ranks).map(r=>`<button type="button" data-sword-rank="${r}" aria-pressed="${r===selectedRank}" style="--sword-rank:${rankColors[r]}">
+    <span class="sword-rank-letter" aria-hidden="true">${r}</span><span>Rank ${r}</span>
+    <small>${collected(S.byRank[r])} / ${S.byRank[r].length}</small>
+  </button>`).join('');
+  const loot=S.ranks[selectedRank];
+  const quantity=loot.min===loot.max?loot.max:loot.min+' a '+loot.max;
+  return `<section class="sword-compendium" aria-label="Compêndio de Espadas">
+    <div class="sword-overview">
+      <div class="sword-overview-stat"><strong>${active} / ${S.catalog.length}</strong><span>Espadas ativadas</span></div>
+      <div class="sword-overview-stat"><strong>+${bonus(S.bonusUnits(collection))}</strong><span>Bônus em cada atributo</span></div>
+      <p>${available?'Resgate fragmentos pelo Correio. Depois de ativar uma espada, seus excedentes podem ser negociados.':'Entre no jogo online para ativar espadas.'}</p>
+    </div>
+    <div class="sword-workspace">
+      <nav class="sword-ranks" aria-label="Filtrar por rank">
+        <h3>Ranks</h3>
+        <div class="sword-rank-list">${ranks}</div>
+      </nav>
+      <section class="sword-gallery" style="--sword-rank:${rankColors[selectedRank]}">
+        <header class="sword-gallery-header">
+          <h3>Espadas · Rank ${selectedRank}</h3>
+          <p>${percentage.format(loot.chance)} de chance de receber ${quantity} ${loot.max===1?'fragmento':'fragmentos'} deste rank por vitória elegível.</p>
+        </header>
+        <div class="sword-grid">${S.byRank[selectedRank].map(sword=>card(sword,collection[sword.id],ready)).join('')}</div>
+      </section>
+    </div>
+  </section>`;
  }
  root.MareSwordCompendiumUI={render};
 })(globalThis);

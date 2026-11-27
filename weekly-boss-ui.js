@@ -3,6 +3,55 @@
  'use strict';
  const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const number=value=>Math.max(0,Math.round(Number(value)||0)).toLocaleString('pt-BR');
+
+ const arenaMap='arena-espadachins';
+ const swordDays={Mon:'Segunda-feira',Tue:'Terça-feira',Wed:'Quarta-feira',Thu:'Quinta-feira',Fri:'Sexta-feira',Sat:'Sábado',Sun:'Domingo'};
+ const swordStatus={waiting:'Aguardando abertura',open:'Em andamento',won:'Concluído por vitória',closed:'Encerrado'};
+ const swordPortrait=id=>'assets/ui/sword-event/'+id+'.webp';
+ const swordIcon='assets/ui/boss-dungeons/crossed-swords.png';
+ const swordReward='assets/ui/boss-dungeons/reward-chest.png';
+
+ function dailyMarkup(roster){
+  return `<header class="sword-event-header">
+   <span class="sword-event-emblem" aria-hidden="true"><img src="${swordIcon}" alt=""></span>
+   <div><small>EVENTO DIÁRIO COOPERATIVO</small><h2 id="swordEventTitle">Desafio das Sete Lâminas</h2></div>
+   <button type="button" data-sword-event-close aria-label="Fechar evento">×</button>
+  </header>
+  <div class="sword-event-layout">
+   <aside class="sword-event-roster" aria-label="Rodízio semanal">
+    <h3>Rodízio semanal</h3>
+    <div class="sword-roster-list">
+     ${roster.map(({id,name,day})=>`<button type="button" class="sword-roster-card" data-sword-preview="${id}" aria-pressed="false">
+      <span class="sword-roster-art" aria-hidden="true"><img loading="lazy" decoding="async" src="${swordPortrait(id)}" alt=""></span>
+      <span class="sword-roster-copy"><strong>${escape(name)}</strong><small>${escape(day)}</small></span>
+     </button>`).join('')}
+    </div>
+   </aside>
+   <section class="sword-event-details" aria-label="Detalhes da arena">
+    <div class="sword-boss-hero">
+     <img class="sword-boss-portrait" data-sword-event-art decoding="async" alt="" hidden>
+     <div class="sword-boss-caption"><small data-sword-event-day></small><h3 data-sword-event-name></h3><p>Arena dos Espadachins</p></div>
+    </div>
+    <div class="sword-event-briefing">
+     <div class="sword-event-facts">
+      <div><span>Chefe do dia</span><strong data-sword-event-today>Consultando o servidor…</strong></div>
+      <div><span>Horário de Brasília</span><strong>20h às 21h</strong></div>
+      <div data-sword-event-level-fact hidden><span>Nível mínimo</span><strong data-sword-event-level></strong></div>
+     </div>
+     <div class="sword-event-availability">
+      <strong data-sword-event-state>Consultando o servidor…</strong>
+      <span data-sword-event-countdown></span>
+     </div>
+     <div class="sword-event-reward">
+      <img src="${swordReward}" alt="" loading="lazy">
+      <div><strong>Fragmentos de Espada</strong><p>Cause dano ou cure um aliado para disputar a recompensa. Os fragmentos são entregues pelo Correio após a vitória.</p></div>
+     </div>
+     <p class="sword-event-message" role="status" data-sword-event-message hidden></p>
+     <button type="button" class="sword-event-enter" data-sword-event-join disabled>Entrar na arena</button>
+    </div>
+   </section>
+  </div>`;
+ }
  function model(data={},state={}){
   data=data||{};const events=Array.isArray(data.events)?data.events:[],ready=state.available===true&&state.controlled===true&&!state.busy&&!state.pending,admin=data.canManage===true;
   return {visible:admin||events.length>0||!!data.current||!!data.rewardPendingCycle,ready,admin,events,current:data.current||null,canConfigure:ready&&admin,canTest:ready&&admin&&!data.current,canActivate:ready&&admin&&data.marinefordReady===true&&data.config?.balanceApproved===true&&!events.some(e=>e.mode==='official'&&e.status==='active')};
@@ -30,44 +79,116 @@
  function boot(){
   const doc=root.document,menu=doc.getElementById('modesQuickMenu');if(!menu)return;
   const button=doc.createElement('button');button.id='weeklyBossMenu';button.type='button';button.setAttribute('role','menuitem');button.textContent='Boss semanal · Akainu';button.hidden=true;menu.append(button);
-  const swordButton=doc.createElement('button');swordButton.id='swordEventMenu';swordButton.type='button';swordButton.hidden=true;swordButton.setAttribute('role','menuitem');swordButton.textContent='Desafio das Sete Lâminas';menu.append(swordButton);
-  const swordDialog=doc.createElement('dialog');swordDialog.id='swordEventDialog';swordDialog.setAttribute('aria-labelledby','swordEventTitle');
-  swordDialog.innerHTML='<header class="weekly-heading"><div><small>EVENTO DIÁRIO</small><h2 id="swordEventTitle">Desafio das Sete Lâminas</h2><p>Arena dos Espadachins · 20h às 21h de Brasília</p></div><button type="button" data-sword-event-close aria-label="Fechar evento">×</button></header><div class="weekly-content"><p data-sword-event-state></p><p data-sword-event-level></p><p data-sword-event-countdown></p><p>Cause dano ou cure um aliado para participar da recompensa. A arena encerra ao derrotar o chefe e os fragmentos são enviados pelo Correio.</p><p role="status" data-sword-event-message></p><button type="button" data-sword-event-join>Entrar na arena</button></div>';
+  const swordButton=doc.createElement('button');
+  swordButton.id='swordEventMenu';
+  swordButton.type='button';
+  swordButton.hidden=true;
+  swordButton.setAttribute('role','menuitem');
+  swordButton.setAttribute('aria-label','Desafio das Sete Lâminas');
+  swordButton.innerHTML='<img src="'+swordIcon+'" alt=""><span>Desafio das Sete Lâminas<small>Evento diário cooperativo</small></span>';
+  menu.append(swordButton);
+
+  const swordDialog=doc.createElement('dialog');
+  swordDialog.id='swordEventDialog';
+  swordDialog.setAttribute('aria-labelledby','swordEventTitle');
+  const rules=root.MareSwordCompendium;
+  const roster=Object.entries(rules?.rotation??{}).map(([day,id])=>({id,name:rules.bossNames[id],day:swordDays[day]}));
+  swordDialog.innerHTML=dailyMarkup(roster);
   doc.body.append(swordDialog);
-  let swordMessage='',swordClock=null;
+  const findSword=attr=>swordDialog.querySelector('[data-sword-event-'+attr+']');
+  const art=findSword('art'),countdown=findSword('countdown'),availability=findSword('state');
+  const entry=findSword('join'),today=findSword('today'),swordNote=findSword('message');
+  const levelFact=findSword('level-fact'),level=findSword('level');
+  const rosterButtons=swordDialog.querySelectorAll('[data-sword-preview]');
+  let swordMessage='',swordClock=null,selectedSword=null,shownSword=null,shownArenaBoss=null;
+
+  function showSword(daily){
+   const current=roster.find(boss=>boss.id===daily?.boss);
+   const preview=roster.find(boss=>boss.id===selectedSword)||current||roster[0];
+   if(!preview||preview.id===shownSword&&current?.id===shownArenaBoss)return;
+   for(const button of rosterButtons){
+    const id=button.dataset.swordPreview;
+    button.setAttribute('aria-pressed',String(id===preview?.id));
+    if(id===current?.id)button.setAttribute('aria-current','date');
+    else button.removeAttribute('aria-current');
+   }
+   if(preview.id!==shownSword){
+    art.hidden=false;
+    art.src=swordPortrait(preview.id);
+   }
+   shownSword=preview.id;
+   shownArenaBoss=current?.id;
+   findSword('day').textContent=preview.id===current?.id?'CHEFE DO DIA':preview.day;
+   findSword('name').textContent=preview.name;
+  }
+  swordDialog.addEventListener('error',e=>{
+   if(e.target===art||e.target.closest?.('.sword-roster-art'))e.target.hidden=true;
+  },true);
   const dialog=doc.createElement('dialog');dialog.id='weeklyBossDialog';dialog.setAttribute('aria-labelledby','weeklyBossTitle');doc.body.append(dialog);
   const hud=doc.createElement('aside');hud.id='weeklyBossHUD';hud.hidden=true;hud.setAttribute('aria-label','Vida compartilhada do chefe');doc.body.append(hud);
   let session=null,unsubscribe=null,dirty=false,locked=false,key='',clock=0,clockAt=0,lastNotice='',message='';
   const data=()=>session?.data?.online?.weeklyBoss||null,state=()=>({available:session?.available===true,controlled:session?.controlled===true,busy:locked||session?.busy,pending:!!session?.pending});
   const close=()=>{dialog.close();dirty=false;button.focus();};
   function refresh(force=false){
-   const d=data(),weekly=d?.current?.mapId==='arena-espadachins'?{...d,current:null}:d,v=model(weekly,state());button.hidden=!v.visible;
+   const d=data(),weekly=d?.current?.mapId===arenaMap?{...d,current:null}:d,v=model(weekly,state());button.hidden=!v.visible;
    if(d?.serverNow){clock=Date.parse(d.serverNow);clockAt=performance.now();}
-   const daily=d?.daily,inside=d?.current?.mapId==='arena-espadachins';
+   const daily=d?.daily,inside=d?.current?.mapId===arenaMap;
    swordButton.hidden=!daily;
+
    if(swordDialog.open){
-    const statuses={waiting:'Aguardando abertura',open:'Em andamento',won:'Concluído por vitória',closed:'Encerrado'};
-    const status=swordDialog.querySelector('[data-sword-event-state]'),entry=swordDialog.querySelector('[data-sword-event-join]');
-    status.textContent=daily?daily.name+' · '+statuses[daily.status]:'Consultando o servidor…';
-    swordDialog.querySelector('[data-sword-event-level]').textContent=daily?'Nível '+daily.minLevel+' ou superior.':'';
-    swordDialog.querySelector('[data-sword-event-message]').textContent=swordMessage;
+    showSword(daily);
+    today.textContent=daily?.name||'Consultando o servidor…';
+    availability.textContent=swordStatus[daily?.status]||'Indisponível';
+    availability.dataset.status=daily?.status||'';
+    levelFact.hidden=!Number.isInteger(daily?.minLevel);
+    level.textContent=levelFact.hidden?'':number(daily.minLevel);
+    swordNote.textContent=swordMessage;
+    swordNote.hidden=!swordMessage;
     entry.disabled=!daily||!v.ready||(!inside&&(daily.status!=='open'||!!d.current));
     entry.textContent=inside?'Voltar ao porto':'Entrar na arena';
+    if(daily?.status!=='open')countdown.textContent='';
    }
-   const active=d?.current;hud.hidden=!active;
-   if(active){const b=active.boss||{},percent=Math.min(100,Math.max(0,b.hp/Math.max(1,b.maxHp)*100));hud.innerHTML='<strong>'+escape(b.name)+' <small>'+(inside?'SETE LÂMINAS':active.mode==='test'?'TESTE PRIVADO':'BOSS SEMANAL')+'</small></strong><div class="weekly-life"><i style="width:'+percent+'%"></i></div><span>'+number(b.hp)+' / '+number(b.maxHp)+'</span>';}
+
+   const active=d?.current;
+   hud.hidden=!active;
+   hud.classList.toggle('sword-event-combat-hud',inside);
+   if(active){
+    const b=active.boss||{};
+    const percent=Math.min(100,Math.max(0,(Number(b.hp)||0)/Math.max(1,Number(b.maxHp)||1)*100));
+    const portrait=inside&&rules&&Object.hasOwn(rules.bossNames,daily?.boss)?'<img class="sword-event-combat-portrait" src="'+swordPortrait(daily.boss)+'" alt="">':'';
+    const title='<strong>'+escape(b.name)+' <small>'+(inside?'SETE LÂMINAS':active.mode==='test'?'TESTE PRIVADO':'BOSS SEMANAL')+'</small></strong>';
+    const life='<div class="weekly-life"><i style="width:'+percent+'%"></i></div><span>'+number(b.hp)+' / '+number(b.maxHp)+'</span>';
+    hud.innerHTML=inside?portrait+'<div class="sword-event-combat-life">'+title+life+'</div>':title+life;
+   }
    if(!v.visible&&dialog.open){dialog.close();dirty=false;return;}
    const signature=JSON.stringify([d?.canManage,d?.revision,d?.config,d?.marinefordReady,d?.rewardPendingCycle,d?.lootRules,d?.current?.id,d?.current?.status,(d?.events||[]).map(e=>[e.id,e.version,e.status,e.members]),v.ready]);
    if(dialog.open&&(force||signature!==key)&&!dirty){dialog.innerHTML=render(weekly,state());key=signature;const status=dialog.querySelector('[data-weekly-message]');if(status)status.textContent=message;}
    const live=v.events.find(e=>e.mode==='official');if(live&&live.id!==lastNotice){lastNotice=live.id;button.setAttribute('aria-label','Evento Akainu disponível em Marineford');}
    if(dirty){const fieldset=dialog.querySelector('fieldset');if(fieldset)fieldset.disabled=!v.canConfigure;}
   }
-  swordButton.addEventListener('click',()=>{menu.classList.add('hidden');doc.getElementById('modesMenuTrigger')?.setAttribute('aria-expanded','false');swordMessage='';swordDialog.showModal();refresh();void session.read().catch(()=>{});});
-  swordDialog.querySelector('[data-sword-event-close]').addEventListener('click',()=>swordDialog.close());
-  swordDialog.querySelector('[data-sword-event-join]').addEventListener('click',async()=>{
+
+  swordButton.addEventListener('click',()=>{
+   menu.classList.add('hidden');
+   doc.getElementById('modesMenuTrigger')?.setAttribute('aria-expanded','false');
+   selectedSword=null;
+   swordMessage='';
+   swordDialog.showModal();
+   refresh();
+   void session.read().catch(()=>{});
+  });
+  swordDialog.addEventListener('click',e=>{
+   const option=e.target.closest('[data-sword-preview]');
+   if(option){
+    selectedSword=option.dataset.swordPreview;
+    showSword(data()?.daily);
+   }
+  });
+  findSword('close').addEventListener('click',()=>swordDialog.close());
+  swordDialog.addEventListener('close',()=>doc.getElementById('modesMenuTrigger')?.focus());
+  entry.addEventListener('click',async()=>{
    swordMessage='';locked=true;refresh();
    try{
-    const op=data()?.current?.mapId==='arena-espadachins'?'leave':'join-swords';
+    const op=data()?.current?.mapId===arenaMap?'leave':'join-swords';
     await session.command('weeklyBoss.execute',{op});await session.read();swordDialog.close();
    }catch(e){
     swordMessage={sword_event_closed:'A arena está encerrada ou ainda não abriu.',weekly_boss_level_required:'O personagem ainda não atingiu o nível exigido.',weekly_boss_return_to_port:'Volte ao Porto das Correntes para entrar.',weekly_boss_full:'A arena está lotada.'}[e.code]||'Não foi possível entrar. Confira a conexão e tente novamente.';
@@ -97,7 +218,7 @@
    if(session!==root.MareGameSession){unsubscribe?.();session=root.MareGameSession;unsubscribe=session?.subscribe(()=>refresh());refresh(true);}
    if(dialog.open&&clock)for(const element of dialog.querySelectorAll('[data-weekly-countdown]')){const seconds=Math.max(0,Math.ceil((Date.parse(element.dataset.weeklyCountdown)-clock-(performance.now()-clockAt))/1000));element.textContent='Encerra em '+Math.floor(seconds/60)+' min '+seconds%60+' s';}
 
-   const d=data()?.daily,countdown=swordDialog.querySelector('[data-sword-event-countdown]');
+   const d=data()?.daily;
    if(d&&swordDialog.open){
     if(swordClock?.stamp!==d.serverNow)swordClock={stamp:d.serverNow,at:performance.now()};
     const at=Date.parse(d.serverNow)+performance.now()-swordClock.at;

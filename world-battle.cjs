@@ -53,7 +53,7 @@ function addHuntLedgers(b){
 function upgradeBalance(b){
  if(!b)return;
  // New destinations preserve existing enemies, HP, pending attacks and clocks.
- if(b.rulesHash===rulesHash||b.rulesHash==='0d55e5e1f278e9b0ab184c2a4916d25a6f081cabcf9d7b2e0be662889bc2c04f'||b.rulesHash==='fde69ce5850f0028b5b45ac47805635b3fe798c56aad13c3ade9578297031259'||b.rulesHash==='5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810'){
+ if(b.rulesHash===rulesHash||b.rulesHash==='9db64cec25862f433bf8c9a16526a7ef183a52f04419dbe618071f40c83c4c23'||b.rulesHash==='0d55e5e1f278e9b0ab184c2a4916d25a6f081cabcf9d7b2e0be662889bc2c04f'||b.rulesHash==='fde69ce5850f0028b5b45ac47805635b3fe798c56aad13c3ade9578297031259'||b.rulesHash==='5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810'){
   addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  // The preceding main release already uses the current Skypiea coordinates.
