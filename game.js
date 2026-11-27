@@ -1456,6 +1456,23 @@
   function drawCombatHeader(actor,name,hp,maxHP,width=60,color='#5ed09c'){
     const box=combatHudBox(actor,width,name);ctx.save();ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#03171c';ctx.strokeText(name,actor.x,box.nameY);ctx.fillStyle='#effcf5';ctx.fillText(name,actor.x,box.nameY);px(ctx,actor.x-width/2,box.barY,width,7,'#001819');px(ctx,actor.x-width/2+1,box.barY+1,(width-2)*Math.max(0,Math.min(1,hp/Math.max(1,maxHP))),5,color);if(world.target===actor){ctx.strokeStyle='#d9b777';ctx.lineWidth=2;ctx.strokeRect(actor.x-width/2-3,box.barY-3,width+6,13);}ctx.restore();
   }
+  // Draw approved HD sprites through the existing class impact clock and chest anchor.
+  // CombatVfx's shared rules and the online events remain authoritative.
+  const swordSkillArtBase='assets/combat-vfx/sword-rebrand/';
+  const swordSkillArtImages=Object.fromEntries(['corteMare','arcoHorizonte'].map(kind=>{
+    const image=new Image();image.src=swordSkillArtBase+kind+'.png';return [kind,image];
+  }));
+  let swordSkillArtClips={};
+  fetch(swordSkillArtBase+'clips.json').then(response=>response.ok?response.json():{}).then(clips=>{swordSkillArtClips=clips;}).catch(()=>{});
+  function drawSwordSkillArt(c,kind,x,y,elapsed,effectWidth){
+    const clip=swordSkillArtClips[kind],image=swordSkillArtImages[kind];
+    if(!clip||!image?.naturalWidth||elapsed<0||elapsed>=clip.duration)return false;
+    const [sx,sy,w,h,ox,oy]=clip.frames[Math.floor(elapsed*60/1000)];
+    const scale=effectWidth/512;
+    c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x),Math.round(y));
+    c.drawImage(image,sx,sy,w,h,ox*scale,oy*scale,w*scale,h*scale);c.restore();
+    return true;
+  }
   function drawCombatVfx(layer='front'){
     if(layer==='front')for(const p of session.combatProjectiles||[])if(!MareClassWeaponVfx.projectile(ctx,p,{origin:combatBeamOrigin(p)}))MareCombatVfx.drawProjectile(ctx,p,{origin:combatBeamOrigin(p)});
     for(const f of session.combatHits||[]){
@@ -1467,7 +1484,7 @@
       point.x+=(effect.offsetX||0);
       if(f.zoanRework){MareZoanArt.drawRework(ctx,f.zoanRework,point.x,point.y,world.time-f.started,{index:Math.floor(f.started*6)});continue;}
       if(effect.rangeBound){ctx.save();ctx.beginPath();ctx.arc(f.x,f.y,f.radius,0,Math.PI*2);ctx.clip();}
-      if(!MareClassWeaponVfx.hit(ctx,f.weaponStyle,f.kind,point.x,point.y,elapsed,options))MareCombatVfx.draw(ctx,f.kind,point.x,point.y,elapsed,options);
+      if(!drawSwordSkillArt(ctx,f.kind,point.x,point.y,elapsed/(f.rate||1),options.width)&&!MareClassWeaponVfx.hit(ctx,f.weaponStyle,f.kind,point.x,point.y,elapsed,options))MareCombatVfx.draw(ctx,f.kind,point.x,point.y,elapsed,options);
       if(effect.rangeBound)ctx.restore();
     }
     if(layer!=='front')return;
