@@ -10,9 +10,20 @@ new vm.Script(game,{filename:'game.js'});
 const sandbox={
   MareCharacters:require('../character-system.js'),
   MareRare:{TILE:64,returnPoint:{x:0,y:0}},
-  Image:class {constructor(){this.complete=true;this.naturalWidth=100;this.src='';}}
+  Image:class {
+    set src(file){
+      this.file=file;this.complete=true;
+      const clips=Object.values(sandbox.MareSpriteCombatV2Data.cocox.clips).flatMap(Object.values);
+      const clip=clips.find(c=>c.image===file);
+      this.naturalWidth=clip?clip.size*clip.frames:100;this.naturalHeight=clip?.size??100;
+    }
+  }
 };
-vm.runInNewContext(renderer,sandbox);
+const context=vm.createContext(sandbox);
+for(const file of ['sprite-combat-v2-data.js','sprite-combat-v2.js']){
+  vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),context,{filename:file});
+}
+vm.runInContext(renderer,context);
 const r=sandbox.MareRareRenderer;
 const mob={type:'cocox',x:180,y:300,emberFacing:'south',attackAnim:0,moving:0,bob:0,hit:0};
 for(const state of [
@@ -22,7 +33,8 @@ for(const state of [
 ]){
   Object.assign(mob,state);
   const box=r.cocoxLayout(mob);
-  assert.ok(box.top<mob.y-80,'sprite extends above monster feet');
+  const idleTop=Math.round(mob.y+4-45*2.25*context.MareSpriteCombatV2.monsterScale('cocox'));
+  assert.ok(box.top<=idleTop,'interaction box reaches the authored idle height in every pose');
   assert.equal(r.cocoxHealthBarY(mob),box.top-22,'HP stays above sprite for every animation');
   assert.ok(r.cocoxHitTest(mob,mob.x,mob.y-55),'clicking sprite body selects Cocox');
   assert.ok(r.cocoxHitTest(mob,mob.x+box.halfWidth-2,mob.y-30),'sprite edge clickable');
@@ -30,8 +42,12 @@ for(const state of [
   assert.ok(!r.cocoxHitTest(mob,mob.x,mob.y+25),'far below feet not clickable');
   let placement;
   const ctx={save(){},restore(){},drawImage(...args){placement=args}};
-  assert.equal(r.monster(ctx,mob,1),true);
-  assert.equal(placement[6],box.top,'renderer shares anchor with hitbox and HP');
+  const sprites=context.MareSpriteCombatV2,action=mob.attackAnim?'attack':mob.moving?'walk':'idle';
+  const clip=sprites.resolve(mob.type,action,mob.emberFacing).clip;
+  assert.equal(sprites.monster(ctx,mob,1),true);
+  assert.equal(placement[0].file,clip.image,'the declared HD action supplies the sprite');
+  const foot=placement[6]+clip.anchor[1]*placement[8]/clip.size;
+  assert.ok(Math.abs(foot-(mob.y+3))<=1,'sprite keeps its authored ground anchor');
 }
 Object.assign(mob,{moving:0,attackAnim:0});
 const idleBar=r.cocoxHealthBarY(mob);

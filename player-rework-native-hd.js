@@ -43,9 +43,37 @@ function ownedImage(ctx,slot,part,source,image,args,sign=1,ownerPart=part){
 function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async path=>{const r=await fetch(new URL(path,baseURL));if(!r.ok)throw Error('HD index HTTP '+r.status);return r.json();},loadImage=null,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
  let combatWardrobe,swordWardrobe,daggerWardrobe,daggerP22,daggerP22Store,swordCheckpoint,northRig,profileStore,profileRig,baseIndex,outfitIndex,outfitById,swordSouth,registry,femaleNamedHairRegistry,femaleRegistry,weaponRegistry,headRegistry,headCompat,originalHairGearRegistry,assetStore,outfitRegistry,outfitStore,carryRegistry,combinedCarryRegistry,weaponStore,state='loading',last=null,error=null;const cache=new Map(),pending=new Map(),failures=new Map(),lastRendered=new Map();
  const imageLoader=loadImage||(async path=>{if(path.startsWith('tools/rework-female-dagger-p22/assets/'))return daggerP22Store.load(path);if(path.startsWith('tools/rework-female-profile-rig/assets/'))return profileStore.load(path);if(path.startsWith('tools/rework-base-hd/assets/'))return assetStore.load(path);if(path.startsWith('tools/rework-modular-outfits-hd/assets/'))return outfitStore.load(path);if(path.startsWith('tools/rework-weapon-layers-hd/assets/'))return weaponStore.load(path);const im=new Image();im.src=new URL(path,baseURL);await im.decode();return im;});
- const imageRequests=new Map();
+ const imageRequests=new Map(),decodedImages=new Map(),imageQueue=[];
+ const imageLimit=48*1024*1024,loadLimit=6;
+ let decodedBytes=0,activeLoads=0;
+ function startImageLoads(){
+  while(activeLoads<loadLimit&&imageQueue.length){
+   const {path,resolve,reject}=imageQueue.shift();
+   activeLoads++;
+   Promise.resolve().then(()=>imageLoader(path)).then(image=>{
+    const bytes=(image.naturalWidth||image.width)*(image.naturalHeight||image.height)*4;
+    if(bytes>0&&bytes<=imageLimit){
+     decodedImages.set(path,{image,bytes});decodedBytes+=bytes;
+     while(decodedBytes>imageLimit||decodedImages.size>128){
+      const oldest=decodedImages.keys().next().value;
+      decodedBytes-=decodedImages.get(oldest).bytes;decodedImages.delete(oldest);
+     }
+    }
+    resolve(image);
+   }).catch(reject).finally(()=>{activeLoads--;startImageLoads();});
+  }
+ }
  function loadShared(path){
-  if(!imageRequests.has(path))imageRequests.set(path,Promise.resolve().then(()=>imageLoader(path)).finally(()=>imageRequests.delete(path)));
+  const cached=decodedImages.get(path);
+  if(cached){
+   decodedImages.delete(path);decodedImages.set(path,cached);
+   return Promise.resolve(cached.image);
+  }
+  if(!imageRequests.has(path)){
+   const task=new Promise((resolve,reject)=>imageQueue.push({path,resolve,reject}));
+   imageRequests.set(path,task.finally(()=>imageRequests.delete(path)));
+   startImageLoads();
+  }
   return imageRequests.get(path);
  }
  // Load the optional extension in parallel with the native indexes. A missing
