@@ -1,5 +1,7 @@
 # Progressão de caçadas e perfis finais
 
+O relatório abaixo registra a curva v4 da primeira revisão do PR #393. A curva vigente v5 e os valores atualizados de Conchas estão na [auditoria até o nível 185](PROGRESSAO-ATE-185.md).
+
 A comparação usa a revisão 79026bca como base. O cálculo começa no nível 1, preserva a sobra a cada abate e muda para o mapa mais avançado assim que ele abre. Usa monstros normais e XP de caçada sem boost, Party ou bônus de tripulação. A faixa 1→5 tem quatro subidas. A faixa 180→185 mostra a continuação depois do último mapa. Os números são cálculos de XP e abates. O tempo de caçada depende do personagem e da rota.
 
 | Níveis | Mapas usados | XP anterior | XP nova | Abates anteriores | Abates novos | Crescimento dos novos abates |

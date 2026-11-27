@@ -1,12 +1,13 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),C=require('../character-system.js'),X=require('../character-catalog.js'),B=require('../world-battle.cjs'),A=require('../archipelago.js'),F=require('../forge-system.js'),D=require('../contract-system.js');
 test('preserve level and fractional XP through migration without changing earned rewards',()=>{
-  assert.equal(X.xpNeeded(1),27);assert.equal(X.xpNeeded(2),44);
-  for(const level of [3,5,10,20,40,75,180,200])for(const [version,pastCost] of [[1,X.legacyXpNeeded],[2,X.previousXpNeeded],[3,X.version3XpNeeded]]){
+  assert.equal(X.version4XpNeeded(1),27);assert.equal(X.version4XpNeeded(2),44);
+  assert.equal(X.version4XpNeeded(5),182);assert.equal(X.huntExperience.swamp,32);
+  for(const level of [1,3,5,10,20,40,75,180,184,185,200])for(const [version,pastCost] of [[1,X.legacyXpNeeded],[2,X.previousXpNeeded],[3,X.version3XpNeeded],[4,X.version4XpNeeded]]){
     const cost=X.xpNeeded(level),before=pastCost(level),stats={xpEarned:123};
     const save={level,xp:Math.floor(before/2),stats,attributes:{strength:2},xpCurveVersion:version};
     const m=X.migrateXP(save);
-    assert.deepEqual(m,{...save,xp:Math.round(save.xp*cost/before),xpCurveVersion:4});
+    assert.deepEqual(m,{...save,xp:Math.round(save.xp*cost/before),xpCurveVersion:5});
     assert.equal(X.migrateXP(m),m);
     const almost=X.migrateXP({...save,xp:before-1});
     assert.equal(almost.level,level);assert(almost.xp<cost);
@@ -32,20 +33,19 @@ test('latest accessible hunt pays full XP; all earlier maps pay exactly half bef
  const r=B.hunt.rewards('beach',{type:'boss',district:B.hunt.get('beach').sectors.at(-1).id},5);
  assert.equal(B.hunt.materialDropChance(r,2),1);
 });
-test('new kill targets compound across every 5-level block with XP carried',()=>{
-  let level=1,xp=0,previous=0;
-  for(let end=5;end<=185;end+=5){
-    let kills=0;
-    while(level<end){
-      xp+=X.huntExperience[X.latestHuntMap(level).area];kills++;
-      while(xp>=X.xpNeeded(level)){xp-=X.xpNeeded(level);level++;}
-    }
-    assert.equal(level,end);
-    if(end===35)assert.equal(kills,128);
-    if(end>=40&&end<=180)assert(kills/previous>1.10&&kills/previous<1.15);
-    if(end===185)assert.equal(kills-previous,120);
-    previous=kills;
+test('v5 grows through level 185, then continues without a new cap',()=>{
+  let xp=0n;
+  for(let level=1;level<185;level++){
+    const cost=X.xpNeeded(level);
+    assert(Number.isSafeInteger(cost)&&cost>0,level);
+    assert(X.xpNeeded(level+1)>cost,level);
+    if(level>=20)assert(X.xpNeeded(level+1)<=Math.ceil(cost*1.13),level);
+    xp+=BigInt(cost);
   }
+  assert(X.xpNeeded(1)<200);
+  assert.equal(X.advance({level:1,start:0n,experience:xp-1n},185).level,184);
+  assert.equal(X.advance({level:1,start:0n,experience:xp},185).level,185);
+  assert.equal(X.xpNeeded(186)-X.xpNeeded(185),X.xpNeeded(187)-X.xpNeeded(186));
   assert(Number.isSafeInteger(X.xpNeeded(1_000_000)));
 });
 test('dexterity scales real cadence for every class with the configured class ceilings',()=>{
@@ -67,6 +67,8 @@ test('old battle profiles are upgraded once without resetting wounds, position o
  const {x,y,id}=m;B.upgradeBalance(b);
  assert.deepEqual({x:m.x,y:m.y,id:m.id},{x,y,id});assert.equal(m.hp,Math.ceil(m.maxHP/2));assert(Math.abs(m.attackClock-m.attackSec/2)<1e-10);
  const before=structuredClone(b);B.upgradeBalance(b);assert.deepEqual(b,before);
+ b.rulesHash='25e85126fbe82f0bb9367589fc80c5a183fd64bc8ee2530d83d6bd14d8e3a142';
+ B.upgradeBalance(b);assert.deepEqual(b,before);
 });
 test('César level five halves normal and amplified incoming hits once',()=>{
   const stats={defense:40,mitigation:0,protection:0};

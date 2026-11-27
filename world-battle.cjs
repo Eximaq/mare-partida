@@ -25,6 +25,7 @@ const previousSkypieaHash='0c6dbd3c8a12bb2e1958e830b6bdf3149be9cb911f976f7722ff1
 const previousSkypieaSceneHash='28c090f587fc5f11aa1f007f8008b509cfdd31e630fba12d83a8acfbb8391adf';
 const previousSkypieaArrivalHash='c66c9af7ffaae0d2d98c47196f5edee82ff4fa0875da9f0d08c1cf37b1e7c401';
 const previousHuntProgressionHash='cd060e983a8453a1ef8414cc2f9efea2f19f7c5b64021b98a3318540422f610b';
+const previousWorldXpHash='25e85126fbe82f0bb9367589fc80c5a183fd64bc8ee2530d83d6bd14d8e3a142';
 const isSkypieaArea=area=>/^skypiea-0[1-4]$/.test(area);
 function reanchorSkypieaMobs(area,mobs,nav){
  if(!isSkypieaArea(area)||!Array.isArray(mobs))return false;
@@ -70,7 +71,7 @@ function upgradeBalance(b){
  if(b.rulesHash===rulesHash){addHuntLedgers(b);return;}
  // Higher-resolution artwork and the new entry point preserve the terrain and
  // encounters. Existing fights keep their exact positions, attacks and clocks.
- if(b.rulesHash===previousSkypieaArrivalHash||b.rulesHash===previousHuntProgressionHash){
+ if(b.rulesHash===previousSkypieaArrivalHash||b.rulesHash===previousHuntProgressionHash||b.rulesHash===previousWorldXpHash){
   upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  // These audited releases precede the new four-island geometry. Keep every

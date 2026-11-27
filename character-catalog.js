@@ -29,7 +29,7 @@ function legacyXpNeeded(level){
   if(!Number.isSafeInteger(value))throw new RangeError('XP precision limit');
   return value;
 }
-const xpCurveVersion=4, xpCurve=[0,80];
+const xpCurveVersion=5, xpCurve=[0,80];
 function previousXpNeeded(level){
   if(!Number.isSafeInteger(level)||level<1||level>1000000)throw new RangeError('XP precision limit');
   for(let n=xpCurve.length;n<=level;n++){
@@ -43,10 +43,9 @@ function previousXpNeeded(level){
 function version3XpNeeded(level){
   return Math.max(1,Math.ceil(previousXpNeeded(level)/3));
 }
-// Normal kill XP is evaluated at the map's unlock level. Prices in the old
-// curve are retained for readers migrating from version 3.
+// Reference XP per normal kill, shared by the browser and authoritative hunts.
 const huntExperience=Object.freeze({
-  beach:14, swamp:26, orange:30, rare:40, syrup:46, baratie:52, arlong:54, loguetown:60, alabasta:70,
+  beach:14, swamp:32, orange:30, rare:40, syrup:46, baratie:52, arlong:54, loguetown:60, alabasta:70,
   'alubarna-01':90,'alubarna-02':94,'alubarna-03':98,'alubarna-04':106,'alubarna-05':120,
   'skypiea-01':126,'skypiea-02':132,'skypiea-03':140,'skypiea-04':160,
   'enies-lobby-01':168,'enies-lobby-02':176,'enies-lobby-03':184,'enies-lobby-04':192,'enies-lobby-05':200,
@@ -58,22 +57,56 @@ function latestHuntMap(level){
   const atlas=root.MareArchipelago||(typeof require==='function'?require('./archipelago.js'):null);
   return atlas?.islands.findLast(map=>huntExperience[map.area]&&atlas.canTravel(map.id,level))||null;
 }
+const version4HuntXp=[
+  [1,14],[5,26],[11,30],[16,40],[21,46],[26,52],[31,54],[36,60],[40,70],
+  [50,90],[55,94],[60,98],[65,106],[70,120],[75,126],[80,132],[85,140],[90,160],
+  [95,168],[101,176],[104,184],[107,192],[110,200],[114,208],[118,220],[122,230],[127,248],
+  [131,258],[136,272],[141,298],[146,316],[151,330],[156,352],[161,368],[166,382],[171,398],
+  [176,414]
+];
 const initialXp=[0,27,44,56,70], initialBlocks=[0,36,54,70,88,108];
 const arlongBlockKills=128, killGrowth=1.12, lastContentBlock=35, postContentStep=120;
 function blockKills(block){
   return initialBlocks[block]??(Math.round(arlongBlockKills*killGrowth**(Math.min(block,lastContentBlock)-6))
     +Math.max(0,block-lastContentBlock)*postContentStep);
 }
-function xpNeeded(level){
+function version4XpNeeded(level){
   if(!Number.isSafeInteger(level)||level<1||level>1000000)throw new RangeError('XP precision limit');
   if(level<5)return initialXp[level];
   const kills=blockKills(Math.floor(level/5)), step=level%5;
   const killsForLevel=Math.floor(kills/5)+(step>=5-kills%5?1:0);
-  return killsForLevel*(huntExperience[latestHuntMap(level)?.area]??huntExperience.beach);
+  return killsForLevel*(version4HuntXp.findLast(([min])=>level>=min)[1]);
+}
+// Level 1–185 costs calibrated by tools/project_world_progression.cjs.
+const levelCostsV5=[
+  167,348,655,1122,1123,1124,1427,1761,2106,3012,
+  3013,3014,3015,3016,3312,4737,6774,7506,8131,9506,
+  10742,11387,11615,11842,12365,13973,14884,15511,16152,16764,
+  16765,16766,16767,16768,16769,18949,21413,24197,27343,29996,
+  30621,31246,31871,32496,32663,33343,34024,34704,35385,39986,
+  45185,51060,57698,65199,73675,83253,94076,106306,120126,135743,
+  153390,173331,188835,192538,211792,216204,220616,225029,229441,259269,
+  278252,283931,289609,295288,295289,295290,295291,295292,295293,295294,
+  295295,295296,295297,295298,295299,295300,295301,295302,295303,333693,
+  349190,356317,363443,370569,373539,385807,398258,410892,423710,435063,
+  439858,448835,457812,486038,493515,503797,536983,547722,558462,591241,
+  603558,615876,628193,628194,628195,628196,628197,670689,683839,694360,
+  708826,756168,771292,786415,798514,815150,897539,915490,933440,947801,
+  947802,947803,947804,961341,1012284,1087953,1110156,1132359,1154562,1172325,
+  1312820,1339613,1366405,1393197,1414631,1532157,1563426,1594694,1625963,1650978,
+  1865606,2108135,2382193,2691879,2976843,3239777,3305894,3372012,3438130,3491025,
+  3729510,3805623,3881735,3957847,4018737,4254404,4341229,4428053,4514878,4584337,
+  4880409,4980009,5079610,5179210,5258890,5576815,5690627,5804440,5918252,6009302,
+  6134496,6259690,6384884,6510077,6640279
+];
+const post185Step=132806;
+function xpNeeded(level){
+  if(!Number.isSafeInteger(level)||level<1||level>1000000)throw new RangeError('XP precision limit');
+  return level<=levelCostsV5.length?levelCostsV5[level-1]:levelCostsV5.at(-1)+(level-levelCostsV5.length)*post185Step;
 }
 function migrateXP(save){
   if(save.xpCurveVersion===xpCurveVersion)return save;
-  const type=save.xpCurveVersion, pastCost=type===3?version3XpNeeded:type===2?previousXpNeeded:legacyXpNeeded;
+  const type=save.xpCurveVersion, pastCost=type===4?version4XpNeeded:type===3?version3XpNeeded:type===2?previousXpNeeded:legacyXpNeeded;
   const oldCost=BigInt(pastCost(save.level)), newCost=BigInt(xpNeeded(save.level));
   const xp=BigInt(Math.max(0,Math.trunc(Number(save.xp)||0)));
   const progress=(xp*newCost+oldCost/2n)/oldCost;
@@ -91,7 +124,7 @@ function advance({level,start,experience},limit=20,cost=xpNeeded){
   }
   return {level,start,levels};
 }
-const api={create,xpNeeded,previousXpNeeded,legacyXpNeeded,version3XpNeeded,migrateXP,xpCurveVersion,advance,huntExperience,latestHuntMap};
+const api={create,xpNeeded,previousXpNeeded,legacyXpNeeded,version3XpNeeded,version4XpNeeded,migrateXP,xpCurveVersion,advance,huntExperience,latestHuntMap};
 root.MareCharacterCatalog=api;
 if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

@@ -54,7 +54,8 @@ test('world progression migration preserves levels, fractional XP and historical
     const a=await actor(service);await a.send(a.input('items.initialize',0));
     const start=12345678n,old=rules.version3XpNeeded(level),xp=level===31?Math.floor(old/2):old-1;
     starts.set(a.character.id,start);
-    expected.set(a.character.id,rules.migrateXP({level,xp,xpCurveVersion:3}).xp);
+    const cost=rules.version4XpNeeded(level);
+    expected.set(a.character.id,Math.min(cost-1,Math.round(xp*cost/old)));
     await pool.query('UPDATE mare_game.character_progression SET level=$1,level_start_experience=$2,experience=$3 WHERE character_id=$4',
      [level,start.toString(),(start+BigInt(xp)).toString(),a.character.id]);
    }
@@ -65,6 +66,43 @@ test('world progression migration preserves levels, fractional XP and historical
    assert.deepEqual(await applyMigrations(pool,directory),[name]);
    assert.deepEqual(await state(),before.map(row=>({...row,experience:(starts.get(row.character_id)!+BigInt(expected.get(row.character_id)!)).toString()})));
    assert.deepEqual(await history(),ledger);
+   const after=await state();
+   assert.deepEqual(await applyMigrations(pool,directory),[]);
+   assert.deepEqual(await state(),after);
+  },directory);
+ }finally{await rm(directory,{recursive:true,force:true});}
+});
+test('timed progression migrates only original characters and preserves their progress within the level',async()=>{
+ const directory=await mkdtemp(join(tmpdir(),'mare-timed-progression-'));
+ const source=new URL('../../apps/game-server/migrations/',import.meta.url),name='0069_timed_progression.sql';
+ try{
+  for(const file of await readdir(source))if(/^\d{4}_.+\.sql$/.test(file)&&file<name)await copyFile(new URL(file,source),join(directory,file));
+  await authDatabase(async({service,pool})=>{
+   const expected=new Map<string,string>();
+   for(const level of [1,50,184,200]){
+    const a=await actor(service);await a.send(a.input('items.initialize',0));
+    const start=level===1?0n:12345678n,old=BigInt(rules.version4XpNeeded(level));
+    const xp=level===1?0n:level===184?old-1n:old/2n;
+    const nextCost=BigInt(rules.xpNeeded(level));
+    const scaled=(xp*nextCost+old/2n)/old;
+    expected.set(a.character.id,(start+(scaled>=nextCost?nextCost-1n:scaled)).toString());
+    await pool.query('UPDATE mare_game.character_progression SET level=$1,level_start_experience=$2,experience=$3 WHERE character_id=$4',
+      [level,start.toString(),(start+xp).toString(),a.character.id]);
+    if(level===50)await a.send(a.input('attributes.allocate',1,{allocation:{...characters.empty(),strength:5}}));
+   }
+   await actor(service);
+   const receipts=async()=> (await pool.query('SELECT * FROM mare_game.character_level_ledger ORDER BY character_id,level')).rows;
+   const allocations=async()=> (await pool.query('SELECT * FROM mare_game.character_attribute_ledger ORDER BY character_id')).rows;
+   const state=async()=> (await pool.query(`SELECT p.character_id,level,experience::text,level_start_experience::text,gold::text,state_version::text
+     FROM mare_game.character_progression p JOIN mare_game.characters c ON c.id=p.character_id ORDER BY p.character_id`)).rows;
+   const ledger=await receipts(),alloc=await allocations(),before=await state();
+   assert.equal(alloc.length,1);
+   await copyFile(new URL(name,source),join(directory,name));
+   assert.deepEqual(await applyMigrations(pool,directory),[name]);
+   assert.deepEqual(await state(),before.map(row=>expected.has(row.character_id)
+     ?{...row,experience:expected.get(row.character_id),state_version:(BigInt(row.state_version)+1n).toString()}:row));
+   assert.deepEqual(await receipts(),ledger);
+   assert.deepEqual(await allocations(),alloc);
    const after=await state();
    assert.deepEqual(await applyMigrations(pool,directory),[]);
    assert.deepEqual(await state(),after);

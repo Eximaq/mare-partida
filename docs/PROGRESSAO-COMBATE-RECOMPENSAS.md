@@ -1,5 +1,7 @@
 # Progressão, drops e recompensas de combate
 
+O relatório abaixo registra a curva v4 da primeira revisão do PR #393. A curva vigente v5 e os valores atualizados de Conchas estão na [auditoria até o nível 185](PROGRESSAO-ATE-185.md).
+
 A base de comparação é a `main` em `79026bca14529a656f9ecc073810a578cabb4d7b`. A [tabela de progressão e monstros](PROGRESSAO-CACADAS-DADOS.md) apresenta todas as faixas de 1 a 185 e os 41 perfis normais dos 37 mapas, com XP, abates, HP, ataque, defesas e cadência.
 
 ## Progressão e caçadas
