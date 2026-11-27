@@ -49,7 +49,7 @@ test('binomial target uses personal species kill rate and targets use eligible r
     assert.equal(selectProfessionalTarget('test-recipient','2026-11-02',level,stats)?.monster,target.monster);
   }
   const highest=selectProfessionalTarget('test-recipient','2026-11-02',200,stats)!;
-  assert.deepEqual({area:highest.area,monster:highest.monster,level:highest.level},{area:'enies-lobby-05',monster:'kaku',level:110});
+  assert.deepEqual({area:highest.area,monster:highest.monster,level:highest.level},{area:'marineford-06',monster:'jozu',level:176});
 });
 
 test('prison progression, fallback and installation caps preserve earned profession level',()=>{

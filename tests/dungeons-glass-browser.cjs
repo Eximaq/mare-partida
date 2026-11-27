@@ -30,7 +30,7 @@ const out=process.env.MARE_QA_DIR||'tmp/dungeons-glass';
    assert(Math.abs(dialog.width-inventory.width)<2&&Math.abs(dialog.height-inventory.height)<2,'Dungeon window matches inventory at '+width);
    assert.equal(await p.locator('#panelOverlay > .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),'none');
    assert(dialog.x>=0&&dialog.y>=0&&dialog.x+dialog.width<=width+1&&dialog.y+dialog.height<=height+1);
-   assert.equal(await p.locator('[data-dungeon-select]').count(),11);
+   assert.equal(await p.locator('[data-dungeon-select]').count(),18);
    for(const id of ['crocodile','morgan','alvida']){
     await p.locator('[data-dungeon-select='+id+']').click();
     assert.equal(await p.locator('.dungeon-selected-portrait').getAttribute('data-dungeon-portrait'),id);
@@ -47,6 +47,6 @@ const out=process.env.MARE_QA_DIR||'tmp/dungeons-glass';
   assert.equal(await state(),initial,'Browsing bosses does not mutate progress or rewards');
   await p.locator('#closePanel').click();assert(await p.locator('#panelOverlay').isHidden());
   assert.deepEqual(errors,[]);
-  console.log('PASS dungeons glass: inventory dimensions in eight viewports, eleven selectable bosses, gated entry visible, no outer scroll, selection preserves rewards.');
+  console.log('PASS dungeons glass: inventory dimensions in eight viewports, eighteen selectable bosses, gated entry visible, no outer scroll, selection preserves rewards.');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

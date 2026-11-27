@@ -130,7 +130,7 @@
     if(action==='haki.configure')return keys==='branch,enabled'&&['armament','observation'].includes(p.branch)&&typeof p.enabled==='boolean';
     if(action==='haki.cast')return keys==='';
     if(action==='haki.invest')return keys==='expectedSeq,nodeId'&&Number.isSafeInteger(p.expectedSeq)&&p.expectedSeq>=0&&['coating','hardening','guard','imbuement','emission','armament-final','perception','anticipation','intent','serenity','future','observation-final','presence','resolve','pressure','conqueror-final'].includes(p.nodeId);
-    if(['dungeon.enter','dungeon.claim'].includes(action))return keys==='dungeonId'&&['alvida','morgan','buggy','kuro','krieg','arlong','smoker','wapol','crocodile'].includes(p.dungeonId);
+    if(['dungeon.enter','dungeon.claim'].includes(action))return keys==='dungeonId'&&['alvida','morgan','buggy','kuro','krieg','arlong','smoker','wapol','crocodile','rob-lucci','gecko-moria','kuma','kizaru','hancock','magellan','ace','aokiji','akainu'].includes(p.dungeonId);
     if(action==='dungeon.craft')return (keys==='expectedSeq'||keys==='expectedSeq,rank'&&['E','B'].includes(p.rank))&&Number.isSafeInteger(p.expectedSeq)&&p.expectedSeq>=0;
     if(action==='dungeon.acknowledge')return keys==='itemId'&&instanceId(p.itemId);
     if(['prison.prepare','prison.enter','prison.claim'].includes(action))return keys==='floor'&&Number.isInteger(p.floor)&&p.floor>=1&&p.floor<=100;

@@ -3,9 +3,16 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
 import {createRequire} from 'node:module';
+import {dungeonIdSchema} from '../../packages/shared/src/schemas/dungeons.js';
 const require=createRequire(import.meta.url),source=readFileSync(new URL('../../game.js',import.meta.url),'utf8'),session=require('../../apps/account-client/game-session.js');
 function extract(name:string){const m=new RegExp('  (?:async )?function '+name+'\\(').exec(source)!;assert(m);const rest=source.slice(m.index+m[0].length),next=rest.search(/\n  (?:async )?function /);return source.slice(m.index,m.index+m[0].length+next);}
 test('restored dungeon intentions are strict and cannot supply rewards, ownership, result fruit or position',()=>{
+ const bosses=Object.keys(require('../../boss-dungeon-system.js').byId);
+ assert.deepEqual(bosses,dungeonIdSchema.options);
+ for(const dungeonId of bosses)for(const action of ['dungeon.enter','dungeon.claim']){
+  assert(session.validIntent(action,{dungeonId}),`${action}: ${dungeonId}`);
+  for(const extra of [{reward:9},{position:{x:1,y:1}},{ownerId:'other'}])assert(!session.validIntent(action,{dungeonId,...extra}));
+ }
  assert(session.validIntent('dungeon.enter',{dungeonId:'alvida'}));assert(session.validIntent('dungeon.claim',{dungeonId:'morgan'}));assert(session.validIntent('dungeon.craft',{expectedSeq:5}));assert(session.validIntent('dungeon.acknowledge',{itemId:'formed-akuma:fixture:5'}));
  for(const p of [{dungeonId:'unknown'},{dungeonId:'alvida',reward:9},{dungeonId:'alvida',position:{x:1,y:1}},{dungeonId:'alvida',ownerId:'other'}])assert(!session.validIntent('dungeon.claim',p));
  assert(!session.validIntent('dungeon.craft',{expectedSeq:5,fruitId:'chosen'}));assert(!session.validIntent('dungeon.craft',{expectedSeq:-1}));
