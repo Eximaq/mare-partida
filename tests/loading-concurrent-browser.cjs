@@ -54,6 +54,15 @@ test('two game tabs share installation and a visit after logout reuses the bytes
       assert.equal(await page.evaluate(() => fetch('/assets/map.bin').then(r=>r.text())), bytes.toString());
       await page.goto(origin+'/online/');
     }
+    // The full install can exhaust the browser's disk quota. Persisting a new
+    // document binding is only a cache hint and must not break navigation.
+    await context.serviceWorkers()[0].evaluate(() => {
+      const put = Cache.prototype.put;
+      Cache.prototype.put = function(key,response) {
+        if (String(key).includes('/loading-session/')) return Promise.reject(new DOMException('Full','QuotaExceededError'));
+        return put.call(this,key,response);
+      };
+    });
     await a.goto(origin+'/game');
     await a.evaluate(() => window.MareGameLoading.prepare());
     assert.equal(await a.evaluate(() => fetch('/assets/map.bin').then(r=>r.text())), bytes.toString());

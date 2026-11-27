@@ -52,8 +52,10 @@ self.addEventListener('message', event => {
     try {
       if (event.data.type === 'bind') {
         await readManifest(name);
-        await (await caches.open(metadata)).put(metaKey(id), new Response(name));
         bindings.set(id, name);
+        // The live binding remains usable when the full installation fills the
+        // disk. Persisting it is an optimization, not a prerequisite for entry.
+        await (await caches.open(metadata)).put(metaKey(id), new Response(name)).catch(() => {});
       } else if (event.data.type === 'installed') {
         await cleanup(name, id);
       } else return;
@@ -114,10 +116,15 @@ self.addEventListener('fetch', event => {
       if (!page.ok || !page.headers.get('Content-Type')?.includes('text/html')) return page;
       const name = (await page.clone().text()).match(/<html\b[^>]*\bdata-game-content="(game-content-[a-f0-9]{24}\.json)"/)?.[1];
       if (name) {
-        const meta = await caches.open(metadata);
-        if (await meta.match(new URL(name, scope))) {
-          await meta.put(metaKey(event.resultingClientId), new Response(name));
-          bindings.set(event.resultingClientId, name);
+        try {
+          const meta = await caches.open(metadata);
+          if (await meta.match(new URL(name, scope))) {
+            bindings.set(event.resultingClientId, name);
+            await meta.put(metaKey(event.resultingClientId), new Response(name));
+          }
+        } catch {
+          // Return the fetched HTML even if optional cache metadata cannot be
+          // saved. Rejecting respondWith here turns a healthy page into ERR_FAILED.
         }
       }
       return page;
