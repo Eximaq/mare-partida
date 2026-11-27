@@ -1769,7 +1769,7 @@
     if(!direct)MareHaki.touch(game,session.haki);
     if(DEV_ACTIVE&&game.devOptions?.godMode)return;
     if(session.fruitInvulnerable>0)return;
-    const d=getDerived();if(!direct&&!source&&Math.random()<d.evasion){session.haki.eyeFX=.35;spawnVisual(world.hero.x,world.hero.y-46,'ESQUIVA','#b8a8ef',13);return;}
+    const d=getDerived();if(!direct&&!source&&Math.random()<d.evasion){session.haki.eyeFX=.35;session.haki.dodgeFX=.35;spawnVisual(world.hero.x,world.hero.y-46,'ESQUIVA','#b8a8ef',13);return;}
     const rawBeforeLogia=direct?amount:MareCharacters.incoming(physical?d:{...d,defense:d.magicDefense??d.defense},amount*(source?.kobuDebuffUntil>Date.now()?.8:1)*(source?.hakiDebuff>0?1-MareHakiProgression.limits.bossReduction:1)*(physical?1-(d.impactResistancePercent||0):1),session.guard>0,rand(.85,1.1),{monster:source}),raw=MareRankB.reduction(rawBeforeLogia,{equipped:MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id,physical,hasHaki:hasHaki===true||source?.hasHaki===true}),retaliation=MareAkuma.retaliate(amount,raw,{active:supaShieldActive()&&!reflected,physical,direct}),reaction=direct?{damage:raw*(bariActive?.2:1)}:MareTalentCombat.receive(game,session.talents,{stats:d,amount:retaliation.damage*(bariActive?.2:1),physical,source,melee:!!source&&physical&&(source.reach??monsterTypes[source.type]?.reach??Infinity)<=60});
     if(reaction.untargetable||reaction.invulnerable)return;
     game.energy=Math.max(0,game.energy-(reaction.energyUsed||0));
@@ -1908,7 +1908,7 @@
     });
     world.target=world.mobs.find(m=>m.id===b.targetId&&m.alive&&!m.returning)||null;
     session.talents={...MareTalentCombat.create(),...(b.talents?structuredClone(b.talents):{}),ultimate:{...MareUltimates.start(),...(b.talents?.ultimate?structuredClone(b.talents.ultimate):{})}};
-    session.haki=structuredClone(ONLINE_GAME.data.online.haki?.runtime||MareHaki.start());
+    session.haki=structuredClone(ONLINE_GAME.data.online.haki?.runtime||MareHaki.start());session.hakiVisualReceived=world.time;
     syncOnlineFruit(b);
     autoPlay=b.auto;session.cooldowns=b.cooldowns.slice();session.guard=b.guard;session.blessing=b.blessing;session.respawn=b.respawn;
     if(onlineBattleSeq===null)onlineBattleSeq=b.seq;
@@ -3685,6 +3685,7 @@ ${avatarExtra}
     const height=entry?(entry.world_header_height||entry.worldHeight*(entry.world_scale||1))*(MareUltimates.selected(game)==='titan'?1.35:1):combatVisualHeight(world.hero);
     return Math.max(.65,Math.min(2.5,(height||96)/96));
   }
+  function presentHaki(){return MareHakiArt.presentation(session.haki,ONLINE_GAME?world.time-(session.hakiVisualReceived??world.time):0);}
   function drawTalentedHero(x,y){
     const visualPlayer=game;
     const visualFruit=MareAkuma.itemData(visualPlayer?.equipment?.akuma_no_mi,itemDefs);
@@ -3700,13 +3701,15 @@ ${avatarExtra}
     if(world.hero.visible!==false)vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1,visualFruit,'back',visualPlayer?.zoanTransformed);
     drawHoruHealFx(false);
     drawBisonShell(false,x,y);
+    const haki=presentHaki(),hakiScale=hakiVisualScale(),hakiHero={x,y,direction:world.hero.direction};
+    if(world.hero.visible!==false)MareHakiArt.drawBack(ctx,haki,hakiHero,reducedFX,hakiScale,(c,x,y)=>{c.save();c.translate(x,y);if(u==='titan')c.scale(1.35,1.35);drawPlayerSprite(c,0,0);c.restore();});
     ctx.save();if(rt.hidden)ctx.globalAlpha=.2;if(world.hero.visible===false){drawBeriSeparation(ctx,x,y,1-session.fruitBurst/1.5);}else if(u==='titan'){ctx.translate(x,y);ctx.scale(1.35,1.35);drawPlayerSprite(ctx,0,0);}else drawPlayerSprite(ctx,x,y);ctx.restore();
     if(horuBuffActive()){const aura=MareRankC.rules.horu.mutationVfx;MareRankC.draw(ctx,'mutation',x,y+aura.offsetY,Date.now()-session.horuBuffStarted,{width:aura.width,height:aura.height});}
     vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1,visualFruit,'front',visualPlayer?.zoanTransformed);
     drawBisonShell(true,x,y);
     drawHoruHealFx(true);
     if(ushiBuffActive())MareZoanArt.drawRework(ctx,'giraffe-front',x,y,(Date.now()-session.ushiBuffStartedAt)/1000);
-    globalThis.MareHakiArt?.draw(ctx,session.haki,world.hero,world.time,reducedFX,(c,x,y)=>{c.save();c.translate(x,y);if(u==='titan')c.scale(1.35,1.35);drawPlayerSprite(c,0,0);c.restore();},hakiVisualScale());
+    if(world.hero.visible!==false)MareHakiArt.draw(ctx,haki,hakiHero,world.time,reducedFX,null,hakiScale);
     if(betaEquipped(visualPlayer))MareRankB.drawLegs(ctx,{x,y},world.time*1000);
     if(u==='armamentSkin'&&rt.vigor>0){px(ctx,x-30,y-94,60,6,'#10222a');px(ctx,x-29,y-93,58*rt.vigor/rt.vigorMax,4,'#e4c77b');}
   }
@@ -3746,7 +3749,7 @@ ${avatarExtra}
     }
     const elapsed=performance.now()-sharedLobbyFrame.received;
     if(elapsed>5000)return []; // Never keep ghosts indefinitely after connection loss.
-    for(const peer of sharedLobbyFrame.players)Object.assign(peer,peer.presentation.sample(performance.now()),{visualHeight:96,visualWidth:96});
+    for(const peer of sharedLobbyFrame.players)Object.assign(peer,peer.presentation.sample(performance.now()),{visualHeight:96,visualWidth:96,hakiVisualAge:elapsed/1000});
     return sharedLobbyFrame.players;
   }
   function drawSharedLobbyPlayer(peer){
@@ -3755,7 +3758,9 @@ ${avatarExtra}
     const fruit=MareAkuma.byId(peer.fruitId),key=peer.zoanTransformed&&MareSpriteCombatV2.fruits[peer.fruitId],entry=key&&MareSpriteCombatV2Data[key];
     const body=(c,x,y)=>entry?MareSpriteCombatV2.draw(c,key,x,y,{action:peer.action==='attack'?'attack':peer.moving?'walk':'idle',direction:peer.direction,time:world.time,scale:zoanVisualScale(key)*(entry.world_scale??1),height:key==='ryu'?entry.worldHeight:null}):sharedLobbyRenderer.draw(c,peer,{scene,action:peer.action==='attack'?'attack':peer.moving?'walk':'idle',direction:peer.direction,time:world.time,x,y,consumer:'shared-lobby'});
     const aura=layer=>{if(!fruit)return;if(MareRankS.has(fruit.id)){if(!partyAuraLoaded.has(fruit.id)){partyAuraLoaded.add(fruit.id);MareRankS.preload(fruit.id);}MareRankS.drawAura(ctx,fruit.id,peer.x,peer.y,world.time,fruit.id===MareRankS.rules.phoenix.id&&!peer.zoanTransformed?.7:1,layer);}else vfx_aura.draw(ctx,peer.x,peer.y,world.time,1,fruit,layer);};
-    aura('back');body(ctx,peer.x,peer.y);aura('front');if(peer.haki)MareHakiArt.draw(ctx,peer.haki,peer,world.time,false,body);
+    const hakiScale=entry?Math.max(.65,Math.min(2.5,(entry.world_header_height||entry.worldHeight*(entry.world_scale||1)||96)/96)):1;
+    const haki=MareHakiArt.presentation(peer.haki,peer.hakiVisualAge);
+    aura('back');MareHakiArt.drawBack(ctx,haki,peer,reducedFX,hakiScale,body);body(ctx,peer.x,peer.y);aura('front');MareHakiArt.draw(ctx,haki,peer,world.time,reducedFX,null,hakiScale);
     MareMapPlayerHud.draw(ctx,peer.x,peer.y-102,peer.name,null,mapPlayerIdentity(peer,peer.crew||peer.crewIdentity));
     ctx.restore();
   }
@@ -3843,7 +3848,7 @@ ${avatarExtra}
     if(state!=='ready'){ctx.fillStyle='#151217';ctx.fillRect(0,0,W,H);return;}
     drawWorld();drawPaperDollDiagnostics();
   }
-  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}camera.begin(ctx,activeMap());drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'back',world.hero);drawCombatVfx('back');drawEntityLayer();drawDungeonChestLabel();
+  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}camera.begin(ctx,activeMap());drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'back',world.hero);drawCombatVfx('back');if(scene==='hunt'){const nav=navigator();MareHakiArt.drawKing(ctx,presentHaki(),nav,combatLine,reducedFX);for(const peer of sharedLobbyPlayers())if(peer.haki?.kingFX>0)MareHakiArt.drawKing(ctx,MareHakiArt.presentation(peer.haki,peer.hakiVisualAge),nav,combatLine,reducedFX);}drawEntityLayer();drawDungeonChestLabel();
     if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'front',world.hero);
     drawRankB();
     drawExpansion();
