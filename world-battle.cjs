@@ -23,6 +23,7 @@ const priorBalanceHashes=new Set([previousBalanceHash,'3c3abd53210f73539fe46107f
 // enemy HP or stable slot IDs. Party rooms use this same projection.
 const previousSkypieaHash='0c6dbd3c8a12bb2e1958e830b6bdf3149be9cb911f976f7722ff11d99867b8c0';
 const previousSkypieaSceneHash='28c090f587fc5f11aa1f007f8008b509cfdd31e630fba12d83a8acfbb8391adf';
+const previousSkypieaArrivalHash='c66c9af7ffaae0d2d98c47196f5edee82ff4fa0875da9f0d08c1cf37b1e7c401';
 const isSkypieaArea=area=>/^skypiea-0[1-4]$/.test(area);
 function reanchorSkypieaMobs(area,mobs,nav){
  if(!isSkypieaArea(area)||!Array.isArray(mobs))return false;
@@ -55,6 +56,9 @@ function addHuntLedgers(b){
 function upgradeBalance(b){
  if(!b)return;
  if(b.rulesHash===rulesHash){addHuntLedgers(b);return;}
+ // Higher-resolution artwork and the new entry point preserve the terrain and
+ // encounters. Existing fights keep their exact positions, attacks and clocks.
+ if(b.rulesHash===previousSkypieaArrivalHash){b.rulesHash=rulesHash;return;}
  // These audited releases precede the new four-island geometry. Keep every
  // enemy identity, HP and respawn; cancel spatial attacks only in Skypiea.
  if([previousSkypieaSceneHash,'9db64cec25862f433bf8c9a16526a7ef183a52f04419dbe618071f40c83c4c23','0d55e5e1f278e9b0ab184c2a4916d25a6f081cabcf9d7b2e0be662889bc2c04f','fde69ce5850f0028b5b45ac47805635b3fe798c56aad13c3ade9578297031259','5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810','0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'].includes(b.rulesHash)){

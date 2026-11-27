@@ -71,7 +71,8 @@ test('navigation upgrade reanchors only known maps and preserves all other rows'
  const swordWorld=swords.match(/UPDATE mare_game\.character_world[\s\S]*?;/)?.[0];
  assert(swordWorld,'The arena migration includes its navigation compatibility step');
  const skypiea=await readFile(new URL('../../apps/game-server/migrations/0065_skypiea_celestial_map.sql',import.meta.url),'utf8');
- const currentSql=[sql,swordWorld,skypiea].join('\n');
+ const arrival=await readFile(new URL('../../apps/game-server/migrations/0066_skypiea_hd_arrival.sql',import.meta.url),'utf8');
+ const currentSql=[sql,swordWorld,skypiea,arrival].join('\n');
  await f.pool.query(currentSql);assert.deepEqual(await snapshot(),expected);
  await f.pool.query(currentSql);assert.deepEqual(await snapshot(),expected);
  await a.read();await assert.rejects(b.read(),{code:'world_rules_changed'});
