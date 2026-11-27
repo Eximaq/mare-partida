@@ -9,12 +9,15 @@ const source = read('game.js');
 const css = read('character-menu.css');
 const build = read('tools/build_pages.py');
 new vm.Script(source, { filename:'game.js' });
-const sections = ['status','talents','achievements','haki','akuma','hierarchy'];
+const sections = ['status','talents','achievements','haki','akuma','swords','hierarchy'];
 assert.match(index,/id="characterMenuTrigger"[^>]*aria-expanded="false"/);
 assert.doesNotMatch(index,/id="characterMenuBrowse"/,'the icon is the only character menu trigger');
 assert.match(index,/id="characterQuickMenu"[^>]*class="character-quick-menu hidden"/);
-for (const id of sections) assert.match(index,new RegExp('data-character-section="'+id+'"'),id+' has direct shortcut');
-assert.equal((index.match(/data-character-section="/g)||[]).length,6,'exactly six character menu entries');
+for(const file of ['index.html','ui-preview.html']){
+  const entries=[...read(file).matchAll(/data-character-section="([^"]+)"/g)].map(match=>match[1]);
+  assert.deepEqual(entries,sections,file+' preserves the seven direct character shortcuts in keyboard order');
+}
+assert.match(index,/<button[^>]*role="menuitem"[^>]*data-character-section="swords"[^>]*>[^]*?<span>Espadas<small>Compêndio de Espadas<\/small>/);
 assert.doesNotMatch(source,/insertAdjacentHTML\('afterend',`<nav class="character-tabs"/,'old tab bar no longer injected');
 assert.doesNotMatch(source,/body\.innerHTML=`<section class="character-choice"/,'intermediate hub removed');
 assert.match(source,/function openPanel\(panel,characterSection=null\)/);
@@ -42,4 +45,4 @@ for(const pending of [0,4]){
   context.toggleCharacterMenu();assert.equal(classes.has('hidden'),true);
   assert.equal(attributes['aria-expanded'],'false');assert.equal(focused,2);
 }
-console.log('Character navigation: 6 direct entries, keyboard, no intermediate screen, stylesheet and build verified.');
+console.log('Character navigation: 7 direct entries, keyboard, no intermediate screen, stylesheet and build verified.');

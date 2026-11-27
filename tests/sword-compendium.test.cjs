@@ -31,3 +31,15 @@ test('the server can use one weekly rotation with independent rank rolls and exc
  assert.equal(Object.values(reward).reduce((sum,n)=>sum+n,0),12);
  assert.equal(Object.values(S.roll(()=>.9999)).reduce((sum,n)=>sum+n,0),10);
 });
+
+test('upper ranks use their new activation thresholds and past activations stay active',()=>{
+ const requirements={C:15,B:10,A:10,S:10};
+ for(const [rank,required] of Object.entries(requirements)){
+  const {id,bonus}=S.byRank[rank][0];
+  assert.equal(S.ranks[rank].required,required);
+  assert.equal(S.activate({[id]:{active:false,fragments:required-1}},id),null);
+  const active=S.activate({[id]:{active:false,fragments:required}},id).collection;
+  assert.equal(S.bonusUnits(active),bonus);
+  assert.deepEqual(S.receive(active,{[id]:1}).excess,{[id]:1});
+ }
+});

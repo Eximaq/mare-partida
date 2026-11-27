@@ -4,10 +4,10 @@
  const ranks=Object.freeze({
   E:Object.freeze({chance:1,min:6,max:10,required:20,bonus:50,rarity:'common'}),
   D:Object.freeze({chance:.85,min:2,max:5,required:20,bonus:75,rarity:'uncommon'}),
-  C:Object.freeze({chance:.30,min:1,max:2,required:12,bonus:100,rarity:'rare'}),
-  B:Object.freeze({chance:.10,min:1,max:1,required:8,bonus:150,rarity:'epic'}),
-  A:Object.freeze({chance:.02,min:1,max:1,required:3,bonus:200,rarity:'legendary'}),
-  S:Object.freeze({chance:.005,min:1,max:1,required:2,bonus:250,rarity:'supreme'})
+  C:Object.freeze({chance:.30,min:1,max:2,required:15,bonus:100,rarity:'rare'}),
+  B:Object.freeze({chance:.10,min:1,max:1,required:10,bonus:150,rarity:'epic'}),
+  A:Object.freeze({chance:.02,min:1,max:1,required:10,bonus:200,rarity:'legendary'}),
+  S:Object.freeze({chance:.005,min:1,max:1,required:10,bonus:250,rarity:'supreme'})
  });
  const rows=[
   ["S","yoru","Yoru"],

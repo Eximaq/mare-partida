@@ -20,5 +20,6 @@ export async function readCharacterState(client: PoolClient, characterId: string
   );
   if (!result.rowCount) throw new AuthFault(503, "character_state_unavailable");
   const row=result.rows[0];
-  return characterStateSchema.parse({...row,swords:row.swords??undefined});
+  const {swords,...snapshot}=row;
+  return characterStateSchema.parse(swords==null?snapshot:{...snapshot,swords});
 }
