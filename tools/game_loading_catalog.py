@@ -16,7 +16,8 @@ ROOTS = ('assets', 'icones_menu_pirata', 'tools/paper-doll-96-v3', 'tools/rework
          'tools/rework-weapons', 'tools/rework-outfits', 'tools/rework-base-hd',
          'tools/rework-weapon-layers-hd', 'tools/rework-modular-outfits-hd',
          'tools/rework-female-north-rig', 'tools/rework-female-profile-rig',
-         'tools/rework-female-dagger-p22', 'tools/rework-firearm113-coat', 'tools/rework-sword0-checkpoint')
+         'tools/rework-female-dagger-p22', 'tools/rework-firearm113-coat', 'tools/rework-sword0-checkpoint',
+         'tools/rework-combat-wardrobe', 'tools/rework-female-dagger-wardrobe')
 
 
 HD_ROOTS = {'tools/rework-base-hd', 'tools/rework-weapon-layers-hd', 'tools/rework-modular-outfits-hd'}

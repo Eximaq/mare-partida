@@ -1,8 +1,8 @@
 'use strict';
-/* Native Dawn terrain and trees plus existing Cocox PixelLab animation frames. */
+/* Native Dawn terrain, trees and Cocox interaction geometry. */
 ((root)=>{
   const R=root.MareRare,images={};
-  const urls={water:'assets/dawn-manual/water.png',grass:'assets/rare-animals/grass.png',grassAlt:'assets/rare-animals/grass-alt.png',sand:'assets/rare-animals/sand.png',tree:'assets/dawn-manual/object-1.png',idle:'assets/rare-animals/cocox/idle.png',run:'assets/rare-animals/cocox/run.png',attack:'assets/rare-animals/cocox/attack.png'};
+  const urls={water:'assets/dawn-manual/water.png',grass:'assets/rare-animals/grass.png',grassAlt:'assets/rare-animals/grass-alt.png',sand:'assets/rare-animals/sand.png',tree:'assets/dawn-manual/object-1.png'};
   for(const [key,url] of Object.entries(urls)){const img=new Image();img.src=url;images[key]=img;}
   function ready(key){const im=images[key];return im?.complete&&im.naturalWidth>0;}
   function ground(ctx,camera,w,h){
@@ -40,7 +40,7 @@
   }
   const rows={south:0,west:1,east:2,north:3};
   const feet={idle:[45,44,44,47],run:[62,60,60,63],attack:[55,55,55,57]};
-  // A single sprite layout drives drawing, pointer hitbox and HP-label placement.
+  // Retain the pointer hitbox and HP-label placement for the map.
   function cocoxLayout(m){
     if(m.type!=='cocox')return null;
     const row=rows[m.emberFacing||'south']??0;
@@ -59,15 +59,6 @@
     const box=cocoxLayout(m);
     return box?box.top-22:null;
   }
-  function monster(ctx,m,time){
-    const box=cocoxLayout(m);
-    if(!box||!ready(box.key))return false;
-    const {key,frames,sourceSize,row,dest,top}=box;
-    const frame=key==='attack'?Math.min(8,Math.max(0,Math.floor((1-m.attackAnim/root.MareCharacters.monsterAttackVisualDuration(m.type))*frames))):key==='run'?Math.floor(time*8*root.MareCharacters.monsterBalance.moveSpeed+m.bob)%4:0;
-    ctx.save();ctx.imageSmoothingEnabled=false;if(m.hit>0)ctx.filter='brightness(1.5)';
-    ctx.drawImage(images[key],Math.max(0,Math.min(frames-1,frame))*sourceSize,row*sourceSize,sourceSize,sourceSize,Math.round(m.x-dest/2),top,dest,dest);
-    ctx.restore();return true;
-  }
   function environment(ctx,time){const p=R.returnPoint;ctx.save();ctx.strokeStyle='#d9ead2';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(p.x,p.y,27+Math.sin(time*2),11,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#fff2cf';ctx.font='bold 11px Trebuchet MS';ctx.textAlign='center';ctx.fillText('Voltar ao porto',p.x,p.y+30);ctx.restore();}
-  root.MareRareRenderer={ground,prop,monster,cocoxLayout,cocoxHitTest,cocoxHealthBarY,environment,images};
+  root.MareRareRenderer={ground,prop,cocoxLayout,cocoxHitTest,cocoxHealthBarY,environment,images};
 })(globalThis);
