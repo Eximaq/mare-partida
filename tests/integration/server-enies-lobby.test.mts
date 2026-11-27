@@ -108,12 +108,20 @@ async function persisted(pool:any){
  return saved;
 }
 
-test('migration0062 preserves active saves and historical receipts, is idempotent and refuses unknown hashes',async()=>{
+test('migrations 0062–0064 preserve active saves and historical receipts, is idempotent and refuses unknown hashes',async()=>{
  const directory=await mkdtemp(join(tmpdir(),'mare-enies-migrations-'));
  const source=new URL('../../apps/game-server/migrations/',import.meta.url);
  try{
   for(const name of await readdir(source))if(/^\d{4}_.+\.sql$/.test(name)&&name<'0062')await copyFile(new URL(name,source),join(directory,name));
+  const swordSql=await readFile(new URL('0064_sword_compendium.sql',source),'utf8');
+  const collectionTable=swordSql.match(/^CREATE TABLE mare_game\.sword_collections \([\s\S]*?^\);/m)?.[0];
+  assert(collectionTable,'Locate the new collection table required by the current fixture runtime');
+  const lateSql=await readFile(new URL('0063_late_archipelago.sql',source),'utf8');
+  const lateBattle=lateSql.match(/to_jsonb\('([a-f0-9]{64})'::text\)/)?.[1];
+  assert(lateBattle,'Locate the battle hash written by the historical migration');
   await authDatabase(async f=>{
+   // Build the historical fixture through today's runtime, then remove its new dependency before migrating.
+   await f.pool.query(collectionTable);
    const a=await actor(f.service),unknown=await actor(f.service);
    await level(f,a,110);await a.doit('world.travel',{islandId:'dawn'});
    await a.doit('dungeon.enter',{dungeonId:'alvida'});await defeat(f,a);
@@ -128,16 +136,18 @@ test('migration0062 preserves active saves and historical receipts, is idempoten
    await f.pool.query("UPDATE mare_game.character_world SET rules_hash=$2,path=$3,speed=120,direction='left',started_at='2026-11-01T12:00:00Z',motion_until='2026-11-01T12:00:30Z' WHERE character_id=$1",[a.c.id,previousWorld,JSON.stringify([{x:active.world.position.x+12,y:active.world.position.y}])]);
    await f.pool.query('UPDATE mare_game.character_world SET rules_hash=$2 WHERE character_id=$1',[unknown.c.id,'f'.repeat(64)]);
    await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{rulesHash}',to_jsonb($2::text)) WHERE character_id=$1",[unknown.c.id,'e'.repeat(64)]);
+   await f.pool.query('DROP TABLE mare_game.sword_collections');
    const before=await persisted(f.pool),expected=structuredClone(before);
    expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=world.rulesHash;
-   expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=engine.rulesHash;
-   assert.deepEqual(await applyMigrations(f.pool),['0062_enies_lobby.sql','0063_late_archipelago.sql']);
+   expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=lateBattle;
+   assert.deepEqual(await applyMigrations(f.pool),['0062_enies_lobby.sql','0063_late_archipelago.sql','0064_sword_compendium.sql']);
    assert.deepEqual(await persisted(f.pool),expected);
    assert.deepEqual(await applyMigrations(f.pool),[]);
    await f.pool.query(await readFile(new URL('0062_enies_lobby.sql',source),'utf8'));
    await f.pool.query(await readFile(new URL('0063_late_archipelago.sql',source),'utf8'));
    assert.deepEqual(await persisted(f.pool),expected);
    const resumed=await a.read();
+   assert.equal(resumed.world.rulesHash,world.rulesHash);assert.equal(resumed.battle.rulesHash,engine.rulesHash);
    assert.deepEqual(resumed.battle.mobs,battle.mobs);assert.deepEqual(resumed.battle.pending,battle.pending);
    assert.deepEqual(resumed.battle.cooldowns,battle.cooldowns);assert.equal(resumed.battle.hp,battle.hp);
    for(const [id,ledger] of Object.entries(battle.hunts.areas))assert.deepEqual(resumed.battle.hunts.areas[id],ledger);

@@ -33,244 +33,42 @@
 #weeklyBossHUD .weekly-life i{display:block;height:100%;background:linear-gradient(90deg,#b33931,#f08039)}
 @media(max-width:480px){#weeklyBossDialog{padding:16px;width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}#weeklyBossDialog .weekly-fields{grid-template-columns:1fr}#weeklyBossDialog .weekly-actions button{flex:1 1 100%}#weeklyBossHUD{top:64px}}
 
-/* Daily boss portraits use the same wood, brass, and button art as the dungeons. */
+/* Native daily dialog shares the boss-dungeon components and glass framing. */
 #swordEventDialog {
+  position: fixed;
+  inset: 0;
   box-sizing: border-box;
-  inline-size: min(1040px, calc(100vw - 24px));
-  max-inline-size: none;
-  max-block-size: calc(100dvh - 24px);
+  width: min(var(--glass-window-width), calc(100vw - 16px));
+  max-width: none;
+  max-height: none;
+  margin: auto;
   padding: 0;
-  border: 12px solid #755537;
-  border-image: var(--rpg-hd-panel) 105 / 24px / 0 stretch;
-  border-radius: 4px;
-  background: #231d18 var(--rpg-hd-wood) center / 512px 256px;
-  color: #f7e5c6;
-  box-shadow: 0 22px 64px #000c;
-  overflow: auto;
-  scrollbar-color: #987242 #24170f;
-  font: 16px/1.35 'Alegreya Sans', 'Segoe UI', sans-serif;
+  border: 0;
+  background: transparent;
+  overflow: visible;
 }
-#swordEventDialog::backdrop { background: #030b12bb; }
-#swordEventDialog * { box-sizing: border-box; }
+#swordEventDialog::backdrop { background: #080b104d; backdrop-filter: blur(2px); }
 #swordEventDialog [hidden] { display: none !important; }
-#swordEventDialog :focus-visible { outline: 2px solid #ffe0a0; outline-offset: 2px; }
-#swordEventDialog button { cursor: pointer; }
-#swordEventDialog button:disabled { cursor: not-allowed; }
-#swordEventDialog .sword-event-header {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-block-end: 2px solid #99703a;
-  background: linear-gradient(#0d08054a, #0d08059c);
-}
-.sword-event-emblem {
-  display: grid;
-  place-items: center;
-  inline-size: 48px;
-  block-size: 48px;
-  border: 1px solid #a9854d;
-  background: #24150d;
-  box-shadow: inset 0 0 0 2px #332319, 0 2px 4px #0008;
-}
-.sword-event-emblem img { inline-size: 32px; block-size: 32px; object-fit: contain; }
-.sword-event-header small, .sword-boss-caption small {
-  color: #e7c68c;
-  font: 700 .7rem/1.2 'Segoe UI', sans-serif;
-  letter-spacing: .09em;
-  text-shadow: 0 1px 3px #000;
-}
-#swordEventTitle {
-  margin: 3px 0 0;
-  color: #ffe0a0;
-  font: 700 clamp(1.4rem, 3vw, 2.3rem)/1.06 'Inventory Alegreya SC', Georgia, serif;
-  text-shadow: 0 2px 3px #000;
-}
-#swordEventDialog [data-sword-event-close] {
-  inline-size: 42px;
-  block-size: 42px;
-  padding: 0;
-  border: 7px solid #805f38;
-  border-image: var(--rpg-hd-secondary) 25 30 fill / 8px / 0 stretch;
-  background: #3c2b1a;
-  color: #ffe1aa;
-  font: 1.65rem/1 Georgia, serif;
-}
-.sword-event-layout {
-  display: grid;
-  grid-template-columns: minmax(190px, 27%) minmax(0, 1fr);
-  gap: 12px;
-  padding: 12px;
-}
-.sword-event-roster { min-inline-size: 0; }
-.sword-event-roster h3 {
-  margin: 0 0 7px;
-  color: #f5d694;
-  font: 700 1.125rem/1.2 'Inventory Alegreya SC', Georgia, serif;
-  text-shadow: 0 2px 3px #000;
-}
-.sword-roster-list { display: grid; gap: 6px; }
-.sword-roster-card {
-  position: relative;
-  display: grid;
-  grid-template-columns: 65px minmax(0, 1fr);
-  align-items: center;
-  min-block-size: 58px;
-  padding: 0;
-  overflow: hidden;
-  border: 1px solid #855e38;
-  border-radius: 3px;
-  background: linear-gradient(115deg, #442e20, #211718);
-  color: #f7dfb2;
-  box-shadow: 0 2px 5px #0008;
-  text-align: start;
-  font: inherit;
-}
-.sword-roster-card:hover { border-color: #deb46c; }
-.sword-roster-card[aria-current="date"] { border-inline-end: 3px solid #81b994; }
-.sword-roster-card[aria-pressed="true"] {
-  border-color: #efcb80;
-  background: linear-gradient(115deg, #6b4427, #38241b);
-  box-shadow: inset 0 0 0 1px #c89e56, 0 1px 8px #e1a95155;
-}
-.sword-roster-art { align-self: stretch; position: relative; background: #181317; }
-.sword-roster-art::after {
-  position: absolute;
-  inset: 0;
-  content: '';
-  background: linear-gradient(90deg, transparent 68%, #21171877);
-}
-.sword-roster-art img {
-  display: block;
-  inline-size: 100%;
-  block-size: 100%;
-  position: absolute;
-  object-fit: cover;
-  object-position: 50% 29%;
-  image-rendering: auto;
-}
-.sword-roster-copy { display: grid; min-inline-size: 0; gap: 1px; padding: 5px 8px; }
-.sword-roster-copy strong { color: #ffe0aa; font: 700 1rem/1.15 'Inventory Alegreya SC', Georgia, serif; }
-.sword-roster-copy small { color: #d7c3a4; font-size: .78rem; }
-.sword-event-details {
-  min-inline-size: 0;
-  border: 1px solid #a57b3d;
-  background: linear-gradient(#100c0dd9, #100c0dd9), var(--rpg-workshop-surface) center / 512px, #1f1917;
-  box-shadow: 0 3px 10px #0009;
-}
-.sword-boss-hero {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  align-items: end;
-  block-size: clamp(200px, 36dvh, 340px);
-  overflow: hidden;
-  border-block-end: 1px solid #a57b3d;
-  background: radial-gradient(ellipse at center, #665145, #151015);
-}
-.sword-boss-hero::after {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  content: '';
-  background: linear-gradient(0deg, #0d0a10 0%, #110b10bf 22%, #110b1040 47%, transparent 72%);
-}
-.sword-boss-portrait {
-  position: absolute;
-  z-index: -2;
-  inset: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  display: block;
-  object-fit: cover;
-  object-position: center 27%;
-  image-rendering: auto;
-}
-.sword-boss-caption { min-inline-size: 0; padding: 13px 18px; text-shadow: 0 2px 4px #000; }
-.sword-boss-caption h3 {
-  margin: 4px 0;
-  color: #ffe2a4;
-  font: 700 clamp(1.85rem, 4.5vw, 3.6rem)/.96 'Inventory Alegreya SC', Georgia, serif;
-}
-.sword-boss-caption p { margin: 0; color: #efdbb8; }
-.sword-event-briefing { display: grid; gap: 9px; padding: 12px; }
-.sword-event-facts { display: grid; grid-template-columns: 1.15fr 1fr .72fr; gap: 7px; }
-.sword-event-facts > div { display: grid; gap: 3px; padding: 7px 9px; min-inline-size: 0; border: 1px solid #76562f; background: #21160fb3; }
-.sword-event-facts span { color: #dccaac; font-size: .8rem; }
-.sword-event-facts strong { color: #ffe1a5; font: 700 1.03rem/1.15 'Inventory Alegreya SC', Georgia, serif; overflow-wrap: anywhere; }
-.sword-event-availability { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 10px; }
-.sword-event-availability strong { padding: 3px 8px; border: 1px solid #997340; background: #382817; color: #ffdb9c; font-size: .88rem; }
-.sword-event-availability strong[data-status="open"] { border-color: #648966; background: #172d20; color: #c7e9ce; }
-.sword-event-availability strong[data-status="closed"] { border-color: #a26967; background: #351d20; color: #ffd0c7; }
-.sword-event-availability span { color: #eadbbd; font-size: .89rem; }
-.sword-event-reward { display: flex; align-items: center; gap: 11px; border-block-start: 1px solid #725238; padding-block-start: 8px; }
-.sword-event-reward img { inline-size: 39px; block-size: 39px; object-fit: contain; image-rendering: auto; }
-.sword-event-reward strong { color: #f5d694; }
-.sword-event-reward p { margin: 0; color: #dbccb3; font-size: .89rem; }
-.sword-event-message { margin: 0; color: #ffe5a7; }
-#swordEventDialog .sword-event-enter {
-  inline-size: 100%;
-  min-block-size: 45px;
-  padding: 5px 10px;
-  border: 9px solid #ad814b;
-  border-image: var(--rpg-hd-button) 25 30 fill / 10px / 0 stretch;
-  background: var(--rpg-gold-button, #d9b379);
-  color: #251809;
-  text-shadow: 0 1px #ffe4a5;
-  font: 700 1.125rem/1.1 'Inventory Alegreya SC', Georgia, serif;
-}
-#swordEventDialog .sword-event-enter:hover:not(:disabled) { filter: brightness(1.12); }
-#swordEventDialog .sword-event-enter:disabled {
-  filter: saturate(.35);
-  opacity: .64;
-}
-#weeklyBossHUD.sword-event-combat-hud {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px 6px 6px;
-  border-radius: 3px;
-  background: linear-gradient(135deg, #271b16f5, #15151cf5);
-  box-shadow: inset 0 0 0 2px #51402c, 0 4px 16px #0008;
-}
+#swordEventTitle { display: flex; align-items: center; gap: 8px; }
+#swordEventTitle img { width: 22px; height: 22px; object-fit: contain; }
+#swordEventDialog .dialog-header { flex-wrap: nowrap; }
+#swordEventDialog .dungeon-hero-art { background: #141619; }
+#swordEventDialog .sword-event-state { display: flex; align-items: center; flex-wrap: wrap; column-gap: 10px; }
+#swordEventDialog .sword-event-state strong[data-status="open"] { color: #a5efd5; }
+#swordEventDialog .sword-event-state strong[data-status="closed"] { color: #ffb4b4; }
+#swordEventDialog [data-sword-event-message] { width: 100%; margin: 4px 0 0; color: var(--glass-gold); }
+#weeklyBossHUD.sword-event-combat-hud { display: flex; align-items: center; gap: 8px; padding: 6px 10px 6px 6px; }
 .sword-event-combat-portrait {
-  inline-size: 47px;
-  block-size: 47px;
+  inline-size: 44px;
+  block-size: 44px;
   flex: none;
   object-fit: cover;
   object-position: 50% 29%;
-  border: 1px solid #a78650;
+  border: 1px solid var(--glass-line);
+  border-radius: 8px;
   image-rendering: auto;
 }
 .sword-event-combat-life { flex: 1; min-inline-size: 0; }
-#weeklyBossHUD.sword-event-combat-hud .weekly-life i { background: linear-gradient(90deg, #a33743, #e36c48); }
-@media (max-width: 640px) {
-  #swordEventDialog { inline-size: calc(100vw - 12px); max-block-size: calc(100dvh - 12px); border-width: 8px; }
-  #swordEventDialog .sword-event-header { gap: 8px; padding: 9px; }
-  .sword-event-emblem { inline-size: 34px; block-size: 34px; }
-  .sword-event-emblem img { inline-size: 23px; block-size: 23px; }
-  .sword-event-header small { letter-spacing: .04em; font-size: .63rem; }
-  #swordEventDialog [data-sword-event-close] { inline-size: 39px; block-size: 39px; }
-  .sword-event-layout { grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 7px; }
-  .sword-roster-list {
-    display: flex;
-    overflow-x: auto;
-    scrollbar-width: thin;
-    padding: 3px;
-    scroll-snap-type: x proximity;
-  }
-  .sword-roster-card { flex: 0 0 123px; grid-template-columns: minmax(0, 1fr); min-block-size: 78px; scroll-snap-align: start; }
-  .sword-roster-art { min-block-size: 37px; }
-  .sword-roster-copy { padding: 4px 5px; }
-  .sword-roster-copy strong { font-size: .94rem; }
-  .sword-roster-copy small { font-size: .68rem; }
-  .sword-boss-hero { block-size: clamp(157px, 28dvh, 245px); }
-  .sword-boss-caption { padding: 11px; }
-  .sword-event-briefing { padding: 8px; }
-  .sword-event-facts { gap: 4px; }
-  .sword-event-facts > div { padding: 5px 6px; }
-  .sword-event-facts span { font-size: .72rem; }
-  .sword-event-facts strong { font-size: .92rem; }
+@media (max-width: 760px) {
   .sword-event-combat-portrait { inline-size: 40px; block-size: 40px; }
 }

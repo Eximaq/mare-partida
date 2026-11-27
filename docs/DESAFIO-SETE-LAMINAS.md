@@ -37,7 +37,7 @@ O resgate pelo Correio e o recebimento de uma negociação consultam a ativaçã
 
 O Compêndio reutiliza as molduras e a tipografia de Akuma no Mi. As 40 imagens e seus ícones vêm das artes fornecidas. As sete espadas de Rank B e três de Rank A vieram em 290 × 530. O reenquadramento conserva as proporções das lâminas e separa do bitmap a moldura, o nome e o rank, exibidos pela HUD. O jogo usa WebP de 768 × 768 para as cartas e de 192 × 192 para os fragmentos.
 
-O Desafio reutiliza os componentes visuais da Masmorra de Chefes. As sete ilustrações de 1024 × 1024 ficam em `assets/ui/sword-event/`. Cada retrato foi gerado individualmente com ImageGen, usando o retrato de Rob Lucci da Masmorra como referência de estilo. A direção pedida foi retrato de cintura para cima, anime cinematográfico com pintura detalhada, cenário costeiro e silhueta reconhecível, sem texto nem moldura.
+O Desafio usa a mesma HUD de vidro da Masmorra de Chefes, com lista de retratos, destaque do chefe, painel de detalhes e ação de entrada no rodapé. As sete ilustrações de 1024 × 1024 ficam em `assets/ui/sword-event/`. Cada retrato foi gerado individualmente com ImageGen, usando o retrato de Rob Lucci da Masmorra como referência de estilo. A direção pedida foi retrato de cintura para cima, anime cinematográfico com pintura detalhada, cenário costeiro e silhueta reconhecível, sem texto nem moldura.
 
 | Arte | Direção visual |
 |---|---|

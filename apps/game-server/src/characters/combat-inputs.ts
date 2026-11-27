@@ -38,7 +38,7 @@ export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
  WHERE ch.id=ANY($1::uuid[])`,[unique])).rows;
  const benefits=await readCrewBenefitsForCharacters(c,unique,rows[0]?.crew_benefits_available===true);
  for(const row of rows){
-  const state=characterStateSchema.parse({characterId:row.id,version:row.version,level:row.level,experience:row.experience,gold:row.gold,swords:row.swords??undefined});
+  const state=characterStateSchema.parse({characterId:row.id,version:row.version,level:row.level,experience:row.experience,gold:row.gold,...(row.swords==null?{}:{swords:row.swords})});
   const attributes=attributeView(row.allocated,row.last_request_id,state),inventory=originalInventoryView(row.inventory,row.id);
   const talents=talentView(row,state,row.bonus),fruits=fruitView(row.registered);
   // Preserve lazy initialization only for historical rows without a profile.

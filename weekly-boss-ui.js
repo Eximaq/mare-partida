@@ -11,45 +11,49 @@
  const swordIcon='assets/ui/boss-dungeons/crossed-swords.png';
  const swordReward='assets/ui/boss-dungeons/reward-chest.png';
 
+
  function dailyMarkup(roster){
-  return `<header class="sword-event-header">
-   <span class="sword-event-emblem" aria-hidden="true"><img src="${swordIcon}" alt=""></span>
-   <div><small>EVENTO DIÁRIO COOPERATIVO</small><h2 id="swordEventTitle">Desafio das Sete Lâminas</h2></div>
-   <button type="button" data-sword-event-close aria-label="Fechar evento">×</button>
-  </header>
-  <div class="sword-event-layout">
-   <aside class="sword-event-roster" aria-label="Rodízio semanal">
-    <h3>Rodízio semanal</h3>
-    <div class="sword-roster-list">
-     ${roster.map(({id,name,day})=>`<button type="button" class="sword-roster-card" data-sword-preview="${id}" aria-pressed="false">
-      <span class="sword-roster-art" aria-hidden="true"><img loading="lazy" decoding="async" src="${swordPortrait(id)}" alt=""></span>
-      <span class="sword-roster-copy"><strong>${escape(name)}</strong><small>${escape(day)}</small></span>
-     </button>`).join('')}
+  return `<div class="dialog">
+   <header class="dialog-header">
+    <h2 id="swordEventTitle"><img src="${swordIcon}" alt="">Desafio das Sete Lâminas</h2>
+    <button class="close-button" type="button" data-sword-event-close aria-label="Fechar evento">×</button>
+   </header>
+   <div class="dialog-body sword-event-body">
+    <div class="boss-dungeon-layout">
+     <aside class="boss-dungeon-list" aria-label="Rodízio semanal">
+      ${roster.map(({id,name,day})=>`<button type="button" class="boss-dungeon-card sword-roster-card" data-sword-preview="${id}" aria-pressed="false">
+       <img class="sword-roster-art" loading="lazy" decoding="async" src="${swordPortrait(id)}" alt="">
+       <span class="dungeon-card-shade"></span>
+       <span class="dungeon-card-symbol" aria-hidden="true"><img src="${swordIcon}" alt=""></span>
+       <span class="dungeon-card-copy"><strong>${escape(name)}</strong><small>${escape(day)}</small></span>
+      </button>`).join('')}
+     </aside>
+     <section class="boss-dungeon-details" aria-label="Detalhes da arena">
+      <div class="dungeon-hero-art">
+       <img class="dungeon-selected-portrait" data-sword-event-art decoding="async" alt="" hidden>
+       <div class="dungeon-hero-shade"></div>
+       <header><small data-sword-event-day></small><h2 data-sword-event-name></h2><p><img class="dungeon-inline-icon" src="${swordIcon}" alt=""> Arena dos Espadachins</p></header>
+       <span class="dungeon-recommended" data-sword-event-level-fact hidden>Nível mínimo<strong data-sword-event-level></strong></span>
+      </div>
+      <div class="dungeon-detail-content">
+       <p class="dungeon-description"><strong data-sword-event-today>Consultando o servidor…</strong> é o chefe de hoje. A arena abre das 20h às 21h de Brasília.</p>
+       <section class="dungeon-rewards">
+        <h3>Itens da recompensa</h3>
+        <div class="sword-event-loot"><article>
+         <img src="${swordReward}" alt="" loading="lazy">
+         <div><strong>Fragmentos de Espada</strong><span>Cause dano ou cure um aliado para participar da recompensa. Após a vitória, resgate os fragmentos pelo Correio.</span></div>
+        </article></div>
+       </section>
+       <div class="dungeon-state sword-event-state">
+        <strong data-sword-event-state>Consultando o servidor…</strong>
+        <span data-sword-event-countdown></span>
+        <p role="status" data-sword-event-message hidden></p>
+       </div>
+       <button type="button" class="dungeon-enter" data-sword-event-join disabled>Entrar na arena</button>
+      </div>
+     </section>
     </div>
-   </aside>
-   <section class="sword-event-details" aria-label="Detalhes da arena">
-    <div class="sword-boss-hero">
-     <img class="sword-boss-portrait" data-sword-event-art decoding="async" alt="" hidden>
-     <div class="sword-boss-caption"><small data-sword-event-day></small><h3 data-sword-event-name></h3><p>Arena dos Espadachins</p></div>
-    </div>
-    <div class="sword-event-briefing">
-     <div class="sword-event-facts">
-      <div><span>Chefe do dia</span><strong data-sword-event-today>Consultando o servidor…</strong></div>
-      <div><span>Horário de Brasília</span><strong>20h às 21h</strong></div>
-      <div data-sword-event-level-fact hidden><span>Nível mínimo</span><strong data-sword-event-level></strong></div>
-     </div>
-     <div class="sword-event-availability">
-      <strong data-sword-event-state>Consultando o servidor…</strong>
-      <span data-sword-event-countdown></span>
-     </div>
-     <div class="sword-event-reward">
-      <img src="${swordReward}" alt="" loading="lazy">
-      <div><strong>Fragmentos de Espada</strong><p>Cause dano ou cure um aliado para disputar a recompensa. Os fragmentos são entregues pelo Correio após a vitória.</p></div>
-     </div>
-     <p class="sword-event-message" role="status" data-sword-event-message hidden></p>
-     <button type="button" class="sword-event-enter" data-sword-event-join disabled>Entrar na arena</button>
-    </div>
-   </section>
+   </div>
   </div>`;
  }
  function model(data={},state={}){
