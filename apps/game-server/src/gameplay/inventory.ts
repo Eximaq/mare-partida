@@ -73,9 +73,10 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
  return {xp,gold};
 }
 export function validateInventoryItem(item:OriginalItemInstance,owner?:string){
-  if(item.qty!==undefined&&defs[item.def]?.kind!=='haki-fragment')throw new AuthFault(503,'original_inventory_unavailable');
+  if(item.qty!==undefined&&!['haki-fragment','sword-fragment'].includes(String(defs[item.def]?.kind)))throw new AuthFault(503,'original_inventory_unavailable');
   if(owner&&item.boundToCharacter&&item.boundToCharacter!==owner)throw new AuthFault(503,'original_inventory_unavailable');
   const def=defs[item.def];
+  if(def?.kind==='sword-fragment'&&(!item.qty||item.binding||item.boundToCharacter||item.quantity!==undefined))throw new AuthFault(503,'original_inventory_unavailable');
   if((item.type==='akuma_no_mi'||item.fruitId!==undefined)&&(def?.type!=='akuma_no_mi'||item.fruitId!==def.fruitId))throw new AuthFault(503,'original_inventory_unavailable');
   if(def?.kind==='weapon-fragment'&&(item.materialId!==def.materialId||!item.quantity||!item.boundToCharacter||item.binding!=='character'))throw new AuthFault(503,'original_inventory_unavailable');
   if(def?.kind==='xp-boost'&&item.quantity!==undefined)throw new AuthFault(503,'original_inventory_unavailable');

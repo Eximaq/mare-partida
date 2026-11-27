@@ -22,7 +22,7 @@ export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
  to_regclass('mare_game.social_friend_requests') IS NOT NULL AND to_regclass('mare_game.social_mail') IS NOT NULL AND to_regclass('mare_game.social_trades') IS NOT NULL social_available,
  to_regprocedure('mare_game.market_command(uuid,jsonb,integer,integer,integer)') IS NOT NULL market_available,
  (SELECT simulation->'haki' FROM mare_game.character_battles WHERE character_id=ch.id) haki_state,
- p.level,p.experience::text,p.gold::text,to_jsonb(i) inventory,t.build,t.revision,coalesce(a.budget,0) legacy_budget,pr.appearance,pr.preferences,
+ p.level,p.experience::text,p.gold::text,s.entries AS swords,to_jsonb(i) inventory,t.build,t.revision,coalesce(a.budget,0) legacy_budget,pr.appearance,pr.preferences,
  (SELECT jsonb_build_object('strength',coalesce(sum(strength),0),'dexterity',coalesce(sum(dexterity),0),
  'vitality',coalesce(sum(vitality),0),'intelligence',coalesce(sum(intelligence),0),'spirit',coalesce(sum(spirit),0))
  FROM mare_game.character_attribute_ledger WHERE character_id=ch.id) allocated,
@@ -30,6 +30,7 @@ export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
  (SELECT coalesce(sum(points),0)::int FROM mare_game.achievement_claims WHERE character_id=ch.id) bonus,
  ARRAY(SELECT fruit_id FROM mare_game.fruit_registrations WHERE character_id=ch.id ORDER BY fruit_id) registered
  FROM mare_game.characters ch JOIN mare_game.character_progression p ON p.character_id=ch.id
+ LEFT JOIN mare_game.sword_collections s ON s.character_id=ch.id
  LEFT JOIN mare_game.game_inventory i ON i.character_id=ch.id
  LEFT JOIN mare_game.character_talents t ON t.character_id=ch.id
  LEFT JOIN mare_game.talent_legacy_allowances a ON a.character_id=ch.id
@@ -37,7 +38,7 @@ export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
  WHERE ch.id=ANY($1::uuid[])`,[unique])).rows;
  const benefits=await readCrewBenefitsForCharacters(c,unique,rows[0]?.crew_benefits_available===true);
  for(const row of rows){
-  const state=characterStateSchema.parse({characterId:row.id,version:row.version,level:row.level,experience:row.experience,gold:row.gold});
+  const state=characterStateSchema.parse({characterId:row.id,version:row.version,level:row.level,experience:row.experience,gold:row.gold,swords:row.swords??undefined});
   const attributes=attributeView(row.allocated,row.last_request_id,state),inventory=originalInventoryView(row.inventory,row.id);
   const talents=talentView(row,state,row.bonus),fruits=fruitView(row.registered);
   // Preserve lazy initialization only for historical rows without a profile.

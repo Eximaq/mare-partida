@@ -9,5 +9,5 @@ export function itemTradeRestriction(item:OriginalItemInstance):'locked'|'bound'
   return null;
 }
 export function itemTradeQuantity(item:OriginalItemInstance){
-  return items[item.def]?.kind==='haki-fragment'?item.qty??1:1;
+  return ['haki-fragment','sword-fragment'].includes(String(items[item.def]?.kind))?item.qty??1:1;
 }

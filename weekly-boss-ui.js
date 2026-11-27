@@ -30,22 +30,49 @@
  function boot(){
   const doc=root.document,menu=doc.getElementById('modesQuickMenu');if(!menu)return;
   const button=doc.createElement('button');button.id='weeklyBossMenu';button.type='button';button.setAttribute('role','menuitem');button.textContent='Boss semanal · Akainu';button.hidden=true;menu.append(button);
+  const swordButton=doc.createElement('button');swordButton.id='swordEventMenu';swordButton.type='button';swordButton.hidden=true;swordButton.setAttribute('role','menuitem');swordButton.textContent='Desafio das Sete Lâminas';menu.append(swordButton);
+  const swordDialog=doc.createElement('dialog');swordDialog.id='swordEventDialog';swordDialog.setAttribute('aria-labelledby','swordEventTitle');
+  swordDialog.innerHTML='<header class="weekly-heading"><div><small>EVENTO DIÁRIO</small><h2 id="swordEventTitle">Desafio das Sete Lâminas</h2><p>Arena dos Espadachins · 20h às 21h de Brasília</p></div><button type="button" data-sword-event-close aria-label="Fechar evento">×</button></header><div class="weekly-content"><p data-sword-event-state></p><p data-sword-event-level></p><p data-sword-event-countdown></p><p>Cause dano ou cure um aliado para participar da recompensa. A arena encerra ao derrotar o chefe e os fragmentos são enviados pelo Correio.</p><p role="status" data-sword-event-message></p><button type="button" data-sword-event-join>Entrar na arena</button></div>';
+  doc.body.append(swordDialog);
+  let swordMessage='',swordClock=null;
   const dialog=doc.createElement('dialog');dialog.id='weeklyBossDialog';dialog.setAttribute('aria-labelledby','weeklyBossTitle');doc.body.append(dialog);
-  const hud=doc.createElement('aside');hud.id='weeklyBossHUD';hud.hidden=true;hud.setAttribute('aria-label','Vida compartilhada de Akainu');doc.body.append(hud);
+  const hud=doc.createElement('aside');hud.id='weeklyBossHUD';hud.hidden=true;hud.setAttribute('aria-label','Vida compartilhada do chefe');doc.body.append(hud);
   let session=null,unsubscribe=null,dirty=false,locked=false,key='',clock=0,clockAt=0,lastNotice='',message='';
   const data=()=>session?.data?.online?.weeklyBoss||null,state=()=>({available:session?.available===true,controlled:session?.controlled===true,busy:locked||session?.busy,pending:!!session?.pending});
   const close=()=>{dialog.close();dirty=false;button.focus();};
   function refresh(force=false){
-   const d=data(),v=model(d,state());button.hidden=!v.visible;
+   const d=data(),weekly=d?.current?.mapId==='arena-espadachins'?{...d,current:null}:d,v=model(weekly,state());button.hidden=!v.visible;
    if(d?.serverNow){clock=Date.parse(d.serverNow);clockAt=performance.now();}
+   const daily=d?.daily,inside=d?.current?.mapId==='arena-espadachins';
+   swordButton.hidden=!daily;
+   if(swordDialog.open){
+    const statuses={waiting:'Aguardando abertura',open:'Em andamento',won:'Concluído por vitória',closed:'Encerrado'};
+    const status=swordDialog.querySelector('[data-sword-event-state]'),entry=swordDialog.querySelector('[data-sword-event-join]');
+    status.textContent=daily?daily.name+' · '+statuses[daily.status]:'Consultando o servidor…';
+    swordDialog.querySelector('[data-sword-event-level]').textContent=daily?'Nível '+daily.minLevel+' ou superior.':'';
+    swordDialog.querySelector('[data-sword-event-message]').textContent=swordMessage;
+    entry.disabled=!daily||!v.ready||(!inside&&(daily.status!=='open'||!!d.current));
+    entry.textContent=inside?'Voltar ao porto':'Entrar na arena';
+   }
    const active=d?.current;hud.hidden=!active;
-   if(active){const b=active.boss||{},percent=Math.min(100,Math.max(0,b.hp/Math.max(1,b.maxHp)*100));hud.innerHTML='<strong>Akainu <small>'+(active.mode==='test'?'TESTE PRIVADO':'BOSS SEMANAL')+'</small></strong><div class="weekly-life"><i style="width:'+percent+'%"></i></div><span>'+number(b.hp)+' / '+number(b.maxHp)+'</span>';}
+   if(active){const b=active.boss||{},percent=Math.min(100,Math.max(0,b.hp/Math.max(1,b.maxHp)*100));hud.innerHTML='<strong>'+escape(b.name)+' <small>'+(inside?'SETE LÂMINAS':active.mode==='test'?'TESTE PRIVADO':'BOSS SEMANAL')+'</small></strong><div class="weekly-life"><i style="width:'+percent+'%"></i></div><span>'+number(b.hp)+' / '+number(b.maxHp)+'</span>';}
    if(!v.visible&&dialog.open){dialog.close();dirty=false;return;}
    const signature=JSON.stringify([d?.canManage,d?.revision,d?.config,d?.marinefordReady,d?.rewardPendingCycle,d?.lootRules,d?.current?.id,d?.current?.status,(d?.events||[]).map(e=>[e.id,e.version,e.status,e.members]),v.ready]);
-   if(dialog.open&&(force||signature!==key)&&!dirty){dialog.innerHTML=render(d,state());key=signature;const status=dialog.querySelector('[data-weekly-message]');if(status)status.textContent=message;}
+   if(dialog.open&&(force||signature!==key)&&!dirty){dialog.innerHTML=render(weekly,state());key=signature;const status=dialog.querySelector('[data-weekly-message]');if(status)status.textContent=message;}
    const live=v.events.find(e=>e.mode==='official');if(live&&live.id!==lastNotice){lastNotice=live.id;button.setAttribute('aria-label','Evento Akainu disponível em Marineford');}
    if(dirty){const fieldset=dialog.querySelector('fieldset');if(fieldset)fieldset.disabled=!v.canConfigure;}
   }
+  swordButton.addEventListener('click',()=>{menu.classList.add('hidden');doc.getElementById('modesMenuTrigger')?.setAttribute('aria-expanded','false');swordMessage='';swordDialog.showModal();refresh();void session.read().catch(()=>{});});
+  swordDialog.querySelector('[data-sword-event-close]').addEventListener('click',()=>swordDialog.close());
+  swordDialog.querySelector('[data-sword-event-join]').addEventListener('click',async()=>{
+   swordMessage='';locked=true;refresh();
+   try{
+    const op=data()?.current?.mapId==='arena-espadachins'?'leave':'join-swords';
+    await session.command('weeklyBoss.execute',{op});await session.read();swordDialog.close();
+   }catch(e){
+    swordMessage={sword_event_closed:'A arena está encerrada ou ainda não abriu.',weekly_boss_level_required:'O personagem ainda não atingiu o nível exigido.',weekly_boss_return_to_port:'Volte ao Porto das Correntes para entrar.',weekly_boss_full:'A arena está lotada.'}[e.code]||'Não foi possível entrar. Confira a conexão e tente novamente.';
+   }finally{locked=false;refresh();}
+  });
   button.addEventListener('click',()=>{menu.classList.add('hidden');doc.getElementById('modesMenuTrigger')?.setAttribute('aria-expanded','false');dirty=false;message='';dialog.showModal();refresh(true);});
   dialog.addEventListener('cancel',()=>{dirty=false;});dialog.addEventListener('close',()=>{dirty=false;});
   dialog.addEventListener('input',e=>{if(e.target.closest('#weeklyBossConfig'))dirty=true;});
@@ -69,6 +96,18 @@
   const timer=root.setInterval(()=>{
    if(session!==root.MareGameSession){unsubscribe?.();session=root.MareGameSession;unsubscribe=session?.subscribe(()=>refresh());refresh(true);}
    if(dialog.open&&clock)for(const element of dialog.querySelectorAll('[data-weekly-countdown]')){const seconds=Math.max(0,Math.ceil((Date.parse(element.dataset.weeklyCountdown)-clock-(performance.now()-clockAt))/1000));element.textContent='Encerra em '+Math.floor(seconds/60)+' min '+seconds%60+' s';}
+
+   const d=data()?.daily,countdown=swordDialog.querySelector('[data-sword-event-countdown]');
+   if(d&&swordDialog.open){
+    if(swordClock?.stamp!==d.serverNow)swordClock={stamp:d.serverNow,at:performance.now()};
+    const at=Date.parse(d.serverNow)+performance.now()-swordClock.at;
+    const seconds=Math.max(0,Math.ceil((Date.parse(d.endsAt)-at)/1000));
+    countdown.textContent=d.status==='open'?'Encerramento em '+Math.floor(seconds/60)+' min '+seconds%60+' s':'';
+    const boundary=d.status==='waiting'?d.opensAt:d.endsAt;
+    if(['open','waiting'].includes(d.status)&&at>=Date.parse(boundary)&&!locked&&!session?.busy&&performance.now()-(swordClock.checked??0)>3000){
+     swordClock.checked=performance.now();void session.read().catch(()=>{});
+    }
+   }
   },500);
   root.addEventListener('pagehide',()=>{root.clearInterval(timer);unsubscribe?.();},{once:true});
  }

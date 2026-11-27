@@ -1,0 +1,13 @@
+.sword-compendium { color: var(--text, #f4ebcb); }
+.sword-compendium p { margin-block: .4rem; }
+.sword-ranks { display: flex; flex-wrap: wrap; gap: .45rem; margin-block: .9rem; }
+.sword-compendium button { padding: .45rem .7rem; border: 1px solid #99764d; border-radius: .45rem; background: #233d40; color: #f4ebcb; }
+.sword-compendium button[aria-pressed="true"] { background: #68492d; border-color: #e6b874; }
+.sword-compendium button:disabled { opacity: .55; }
+.sword-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .65rem; margin-top: .7rem; }
+.sword-card { min-width: 0; display: grid; grid-template-columns: 74px minmax(0, 1fr); align-items: start; gap: .65rem; padding: .6rem; background: #142b2d; border: 1px solid #664b31; border-radius: .55rem; }
+.sword-card img { width: 74px; height: 104px; object-fit: contain; }
+.sword-card h3 { margin: 0; color: #f4d599; font-size: 1rem; }
+.sword-card progress { width: 100%; accent-color: #d4a461; }
+.sword-card[data-state="empty"] img { filter: brightness(.58); }
+.sword-card[data-state="ready"] { border-color: #e6b874; }

@@ -4,6 +4,8 @@ import {AuthFault} from '../auth/errors.js';
 import {getGameCatalog} from '../gameplay/catalog.js';
 import {event,readOriginalInventory,validateInventoryItem,writeInventory} from '../gameplay/inventory.js';
 
+import {readSwordCollection,routeSwordItems,storeSwordCollection} from './sword-collection-store.js';
+
 const pageSize=40;
 const inventoryCapacity=120;
 type Source='dungeon'|'event'|'system'|'market';
@@ -100,20 +102,24 @@ async function claimMail(client:PoolClient,characterId:string,state:CharacterSta
  const after:OriginalInventory={...before,inventory:[...before.inventory]};
  const owned=new Set([...after.inventory,...Object.values(after.equipment)].map(item=>item?.id));
  const delivered:string[]=[];
+ let collection=await readSwordCollection(client,characterId),changedCollection=false;
  for(const letter of unclaimed){
-  const items=parseAttachments(characterId,letter.attachments);
-  if(items.some(item=>owned.has(item.id)))throw new AuthFault(503,'mail_attachment_invalid');
+  const attachments=parseAttachments(characterId,letter.attachments);
+  const routed=routeSwordItems(collection,attachments),items=routed.inventoryItems;
+  if(attachments.some(item=>owned.has(item.id)))throw new AuthFault(503,'mail_attachment_invalid');
   if(after.inventory.length+items.length>inventoryCapacity){
    result.pending.push(letter.id);
    continue;
   }
+  collection=routed.collection;changedCollection||=routed.changed;
   after.inventory.push(...items);
-  for(const item of items){owned.add(item.id);delivered.push(item.id);}
+  for(const item of attachments){owned.add(item.id);delivered.push(item.id);}
   result.claimed.push(letter.id);
  }
  if(result.pending.length)result.reason='inventory_full';
  if(!result.claimed.length)return result;
- await writeInventory(client,characterId,after);
+ if(after.inventory.length!==before.inventory.length)await writeInventory(client,characterId,after);
+ if(changedCollection)await storeSwordCollection(client,characterId,collection);
  await client.query(
   'UPDATE mare_game.social_mail SET claimed_at=clock_timestamp(),claimed_request_id=$3 WHERE character_id=$1 AND id=ANY($2::uuid[])',
   [characterId,result.claimed,requestId],

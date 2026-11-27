@@ -14,7 +14,7 @@ const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
 const Policy=require('./combat-action-policy.js');
 const {potionRules,potionRecovery}=require('./item-catalog.js');
-const sources=['attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','cp9-monsters.js','thriller-monsters.js','cp9-sprites.js','thriller-sprites.js','enies-dungeon-art.js','sabaody-monsters.js','sabaody-sprites.js','sabaody-dungeon-art.js','marineford-monsters.js','prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','late-archipelago-map-data.js','late-archipelago-world.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const sources=['sword-compendium.js','daily-sword-battle.cjs','daily-sword-boss-combat.js','daily-sword-boss-specials.json','attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','cp9-monsters.js','thriller-monsters.js','cp9-sprites.js','thriller-sprites.js','enies-dungeon-art.js','sabaody-monsters.js','sabaody-sprites.js','sabaody-dungeon-art.js','marineford-monsters.js','prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','late-archipelago-map-data.js','late-archipelago-world.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 const balanceVersion=characters.monsterBalance.version;
 const previousBalanceHash='c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b';
@@ -53,7 +53,7 @@ function addHuntLedgers(b){
 function upgradeBalance(b){
  if(!b)return;
  // New destinations preserve existing enemies, HP, pending attacks and clocks.
- if(b.rulesHash===rulesHash||b.rulesHash==='fde69ce5850f0028b5b45ac47805635b3fe798c56aad13c3ade9578297031259'||b.rulesHash==='5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810'){
+ if(b.rulesHash===rulesHash||b.rulesHash==='0d55e5e1f278e9b0ab184c2a4916d25a6f081cabcf9d7b2e0be662889bc2c04f'||b.rulesHash==='fde69ce5850f0028b5b45ac47805635b3fe798c56aad13c3ade9578297031259'||b.rulesHash==='5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810'){
   addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  // The preceding main release already uses the current Skypiea coordinates.
@@ -363,10 +363,16 @@ function step(b,c){
  if(b.weeklyBossInstanceId&&c.shared&&Array.isArray(c.weeklyDamage))for(const impact of c.weeklyDamage){
   const source=b.mobs.find(m=>m.id===impact.sourceId&&m.source==='weekly-boss'),action=source?.action;
   if(!live(source)||b.hp<=0||!action?.impacted||action.id!==impact.attackId||action.kind!==impact.kind||impact.targetId!==c.shared.actorId||b.weeklyLastImpact===impact.attackId||now<action.impactAt||now>action.endAt)continue;
+  if(source.dailySwordBossId&&action.kind==='sword-special'){
+   if(action.cast?.hitIds?.[c.shared.actorId]!==true)continue;
+   b.weeklyLastImpact=impact.attackId;
+   damage(source,source.profile.aoeMultiplier);
+   continue;
+  }
   const aoe=action.kind==='aoe',origin=aoe?action.center:source;
   if(!origin||distance(hero,origin)>(aoe?action.radius:source.reach+10)||!clear(origin,hero))continue;
   b.weeklyLastImpact=impact.attackId;
-  damage(source,aoe?source.profile.aoeMultiplier:1,{damageType:'magma',groundTrap:aoe});
+  damage(source,aoe?source.profile.aoeMultiplier:1,source.dailySwordBossId?{}:{damageType:'magma',groundTrap:aoe});
  }
  stats=combatStats(b,{...c,now},rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
  if(b.wearConfirmed?.length){

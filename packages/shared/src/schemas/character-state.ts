@@ -9,6 +9,7 @@ export const characterStateSchema = z.strictObject({
   level: z.number().int().min(1).max(2147483647),
   experience: progressionAmountSchema,
   gold: progressionAmountSchema,
+  swords:z.record(z.string().regex(/^[a-z0-9-]{1,50}$/),z.strictObject({active:z.boolean(),fragments:z.number().int().nonnegative()})).optional(),
 });
 export type CharacterState = z.infer<typeof characterStateSchema>;
 

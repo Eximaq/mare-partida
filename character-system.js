@@ -57,12 +57,15 @@
       {name:'Bênção do Farol',cost:27,cd:16,type:'blessing',desc:'Proteção e regeneração por 8s; potência aumenta com Espírito.'}]};
     return classes;
   }
+  const swordCollection=()=>globalThis.MareSwordCompendium||(typeof module!=='undefined'?require('./sword-compendium.js'):null);
   const compendiumMultiplier=count=>1+Math.max(0,Number(count)||0)*.001;
   function derive(g,c,f,gear,{legacyCadence=false,crewVitality=0}={}){
     const r=roles[g.classId],lvl=g.level-1;
     const compendiumBonus=compendiumMultiplier(gear.akumaRegistered);
     const preAttributes=Object.fromEntries(keys.map(k=>[k,((birth[g.classId]||birth.sword)[k]+integer(g.attributes?.[k]))*(k==='strength'?compendiumBonus:1)+Math.max(0,Number(gear.attributes?.[k])||0)]));
     const a=Object.fromEntries(keys.map(k=>[k,preAttributes[k]*(1+Math.max(0,Number(gear.pearlPercent?.[k])||0))*(k==='vitality'?1+crewVitality:1)]));
+    const swordMultiplier=g.swords?swordCollection()?.multiplier(g.swords)??1:1;
+    if(swordMultiplier!==1)for(const key of keys)a[key]*=swordMultiplier;
     const {strength:S,dexterity:D,vitality:V,intelligence:I,spirit:E}=a;
     const b=R.bonuses(a,g.classId);
     const physical=(c.attack+lvl*c.attackStep+gear.attack)*f.attack*(1+b.physical);

@@ -41,7 +41,7 @@
     const namedInvite=(keys==='targetId'&&socialId(p.targetId))||(keys==='name'&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=40);
     if(action==='weeklyBoss.execute'){
       const version=v=>Number.isSafeInteger(v)&&v>0;
-      if(['test','leave'].includes(p.op))return keys==='op';
+      if(['test','leave','join-swords'].includes(p.op))return keys==='op';
       if(p.op==='activate')return keys==='op,revision'&&version(p.revision);
       if(p.op==='join')return keys==='eventId,op'&&socialId(p.eventId);
       if(p.op==='cancel')return keys==='eventId,op,version'&&socialId(p.eventId)&&version(p.version);
@@ -125,6 +125,7 @@
     if(action==='fruit.move')return keys==='x,y'&&['x','y'].every(k=>Number.isFinite(p[k])&&p[k]>=0&&p[k]<=100000);
     if(action==='fruit.cast')return (keys==='key'||keys==='key,point')&&['1','2','3'].includes(p.key)&&(!p.point||Object.keys(p.point).sort().join(',')==='x,y'&&['x','y'].every(k=>Number.isFinite(p.point[k])&&p.point[k]>=0&&p.point[k]<=100000));
     if(action==='hierarchy.promote')return keys==='expectedTier'&&Number.isInteger(p.expectedTier)&&p.expectedTier>=1&&p.expectedTier<=5;
+    if(action==='swords.activate')return keys==='swordId'&&typeof p.swordId==='string'&&/^[a-z][a-z0-9-]{0,63}$/.test(p.swordId);
     if(action==='haki.unlock')return keys==='itemId'&&instanceId(p.itemId);
     if(action==='haki.toggle')return keys==='branch'&&['armament','observation'].includes(p.branch);
     if(action==='haki.configure')return keys==='branch,enabled'&&['armament','observation'].includes(p.branch)&&typeof p.enabled==='boolean';

@@ -195,3 +195,20 @@ test('closed invitations, blocked contacts and expired disconnections release re
   await a.act('items.sell',{itemId:item.id});
   assert.equal((await bag(pool,a.id)).length,0);
 }));
+
+test('trade routes purchased sword fragments to the recipient’s individual counter',()=>authDatabase(async({service,pool})=>{
+ const seller=await actor(service,'Vendedor Laminas'),buyer=await actor(service,'Comprador Laminas');
+ const {swordAttachments,storeSwordCollection}=await import('../../apps/game-server/src/characters/sword-collection-store.js');
+ const [fragment]=swordAttachments({bamboo:5},'Teste');
+ const client=await pool.connect();
+ try{await storeSwordCollection(client,seller.id,{bamboo:{active:true,fragments:0}});}finally{client.release();}
+ await stock(pool,seller.id,[fragment!]);await stock(pool,buyer.id,[]);
+ const id=await start(seller,buyer);
+ await offer(seller,id,0,fragment!.id,3);
+ await lock(seller,id,1);await lock(buyer,id,1);
+ await confirm(seller,id,1);await confirm(buyer,id,1);
+ assert.equal((await bag(pool,seller.id))[0]!.qty,2);
+ assert.deepEqual(await bag(pool,buyer.id),[]);
+ assert.deepEqual((await buyer.state()).swords?.bamboo,{active:false,fragments:3});
+ assert.deepEqual((await seller.state()).swords?.bamboo,{active:true,fragments:0});
+}));

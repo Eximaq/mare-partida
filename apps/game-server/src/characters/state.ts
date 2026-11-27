@@ -13,10 +13,12 @@ export async function initializeCharacterState(client: PoolClient, characterId: 
 export async function readCharacterState(client: PoolClient, characterId: string): Promise<CharacterState> {
   const result = await client.query(
     `SELECT p.character_id AS "characterId", c.state_version::float8 AS version,
-      p.level, p.experience::text, p.gold::text
+      p.level, p.experience::text, p.gold::text, s.entries AS swords
      FROM mare_game.character_progression p JOIN mare_game.characters c ON c.id=p.character_id
+     LEFT JOIN mare_game.sword_collections s ON s.character_id=p.character_id
      WHERE p.character_id=$1`, [characterId],
   );
   if (!result.rowCount) throw new AuthFault(503, "character_state_unavailable");
-  return characterStateSchema.parse(result.rows[0]);
+  const row=result.rows[0];
+  return characterStateSchema.parse({...row,swords:row.swords??undefined});
 }

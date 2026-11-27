@@ -8,6 +8,7 @@ export const weeklyBossPayloadSchema=z.discriminatedUnion('op',[
  z.strictObject({op:z.literal('activate'),revision:version}),
  z.strictObject({op:z.literal('test')}),
  z.strictObject({op:z.literal('join'),eventId:z.uuid()}),
+ z.strictObject({op:z.literal('join-swords')}),
  z.strictObject({op:z.literal('leave')}),
  z.strictObject({op:z.literal('cancel'),eventId:z.uuid(),version}),
 ]);
