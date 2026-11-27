@@ -1,0 +1,55 @@
+name: Materialize approved Thriller Bark map
+
+on:
+  push:
+    branches:
+      - transfer/thriller-map-pr380
+    paths:
+      - .github/workflows/transfer-thriller-map-pr380.yml
+      - tools/transfer-thriller/**
+
+permissions: {}
+
+concurrency:
+  group: transfer-thriller-map-pr380
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/transfer/thriller-map-pr380'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Check out only the approved transfer parts
+        uses: actions/checkout@v4
+        with:
+          ref: transfer/thriller-map-pr380
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/transfer-thriller/
+
+      - name: Reassemble and verify the original PNG
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/transfer/thriller-map-pr380'
+          image='assets/exported-maps/thriller-bark/map.png'
+          mkdir -p assets/exported-maps/thriller-bark
+          cat tools/transfer-thriller/part-01.bin \
+              tools/transfer-thriller/part-02.bin \
+              tools/transfer-thriller/part-03.bin > "$image"
+          printf '%s  %s\n' '3f4679426507b84d795cc33514b8da1c2384600f8ca64d48db7cd4b8a9963e0d' "$image" | sha256sum --check --strict -
+          test "$(wc -c < "$image")" -eq 23393757
+          test "$(git hash-object "$image")" = 'cb95d8241c08bfabc2b51151d38d76b853cd5f2e'
+          git add --sparse -- "$image"
+          git rm --sparse -- \
+            tools/transfer-thriller/part-01.bin \
+            tools/transfer-thriller/part-02.bin \
+            tools/transfer-thriller/part-03.bin
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -m 'build: materialize approved Thriller Bark PNG'
+          git push origin HEAD:refs/heads/transfer/thriller-map-pr380
