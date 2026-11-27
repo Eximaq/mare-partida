@@ -18,7 +18,7 @@ for(const region of catalog.regions){
   assert.equal(await page.locator('.dungeon-range strong').textContent(),i.recommended[0]===i.recommended[1]?String(i.recommended[0]):i.recommended.join('–'));
   assert((await page.locator('.voyage-adversary').textContent()).includes(i.monster.name));
   assert.equal(await page.evaluate(()=>__impelQA.game.area),'beach','inspection never travels');
-  assert.equal(await page.locator('.dungeon-details .voyage-location').getAttribute('src'),i.thumbnail??'assets/ui/voyage-hd/'+i.id+'.png');
+  assert.equal(await page.locator('.dungeon-details .voyage-location').getAttribute('src'),(['enies-lobby','thriller-bark','sabaody','marineford'].includes(region.id)?'assets/ui/voyage-hd/'+region.id+'-hd.webp':(i.thumbnail??'assets/ui/voyage-hd/'+i.id+'.png')));
  }
 }
 await page.evaluate(()=>__impelQA.game.level=1);

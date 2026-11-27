@@ -11234,18 +11234,19 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     omitted:r.omitted||[],slotRoutes:r.slotRoutes||{},frame,...fitted};return true;
   }
   let x=o.x||0,y=o.y||0;
-  const creationFit=o.previewFit==='creation'&&o.consumer==='character-creation'&&o.action==='idle';
-  if(o.preview&&!creationFit){
+  const appearanceFit=o.action==='idle'&&(o.previewFit==='appearance'||
+   o.previewFit==='creation'&&o.consumer==='character-creation');
+  if(o.preview&&!appearanceFit){
    const w=Math.max(ctx.canvas.width,result.info.width),h=Math.max(ctx.canvas.height,result.info.height+48);
    if(ctx.canvas.width!==w)ctx.canvas.width=w;if(ctx.canvas.height!==h)ctx.canvas.height=h;
    if(ctx.canvas.style){ctx.canvas.style.width=w+'px';ctx.canvas.style.height=h+'px';ctx.canvas.style.maxWidth='none';}
    if(ctx.canvas.parentElement?.style)ctx.canvas.parentElement.style.overflow='auto';
    x=w/2;y=h-24;
   }
-  // The creation studio already owns its 320×256 drawing surface and CSS.
+  // The appearance studios own their drawing surfaces and CSS.
   // Fit the existing native raster around its authored foot pivot without
   // enlarging the canvas, the harbor panel, or any other consumer's preview.
-  const physicalScale=creationFit?Math.min(
+  const physicalScale=appearanceFit?Math.min(
    192/Math.max(1,result.info.visualHeight),
    Math.max(1,ctx.canvas.height-48)/Math.max(1,result.info.visualHeight),
    ctx.canvas.width/Math.max(1,result.info.width)

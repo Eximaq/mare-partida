@@ -19,6 +19,35 @@ async function settledPreview(p,direction){
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{const p=await browser.newPage({viewport:{width:1366,height:900}}),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.route(/\/game\.js(?:\?|$)/,async route=>{const response=await route.fetch();let s=await response.text();s=s.replace('  requestAnimationFrame(frame);','  window.__appearanceQA={get player(){return game},get draft(){return creationAppearanceDraft},renderer:lobby96,openCreation,openPanel,closePanel,getDerived,enterHunt,get scene(){return scene},get saveKey(){return STORAGE_KEY}};\n  requestAnimationFrame(frame);');await route.fulfill({response,body:s});});
 await p.goto(origin);await p.waitForFunction(()=>window.__appearanceQA);await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click({timeout:3000});assert(await p.locator('#appearanceStep').isVisible());assert.equal(await p.evaluate(()=>__appearanceQA.player),null);
 assert(await p.locator('#creation-gender option[value=feminino]').isDisabled());
+if(process.argv.includes('--equipment-preview')){
+ const probe=async consumer=>p.evaluate(consumer=>{
+  const q=__appearanceQA,player=q.player??{classId:'sword'};
+  const appearance=q.player?.appearance96??q.draft;
+  const args={action:'idle',direction:'south',appearance,consumer};
+  const draw=equipment=>{
+   const canvas=Object.assign(document.createElement('canvas'),{width:320,height:256});
+   const rendered=q.renderer.preview(canvas.getContext('2d'),{...player,equipment},args);
+   return rendered?canvas.toDataURL():null;
+  };
+  return [draw({}),draw({coat:{def:151},weapon:{def:0},head:{def:129},boots:{def:8}})];
+ },consumer);
+ const verify=async consumer=>{
+  await p.waitForFunction(probe=>{const q=__appearanceQA;return !!q.renderer&&q.renderer.snapshot().state==='ready';});
+  let results,deadline=Date.now()+90000;
+  do{results=await probe(consumer);if(results.every(Boolean))break;await p.waitForTimeout(80);}while(Date.now()<deadline);
+  assert(results.every(Boolean),consumer+' draws both requests');
+  assert.equal(results[0],results[1],consumer+' uses the same bare body regardless of gear');
+ };
+ await verify('character-creation');
+ await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();
+ await p.waitForFunction(()=>__appearanceQA.player);
+ const equipment=await p.evaluate(()=>__appearanceQA.player.equipment);
+ await p.evaluate(()=>__appearanceQA.openPanel('character','appearance'));
+ await verify('appearance-editor');
+ assert.deepEqual(await p.evaluate(()=>__appearanceQA.player.equipment),equipment);
+ console.log('Creation and appearance editor render the bare body and preserve saved equipment.');
+ return;
+}
 if(process.argv.includes('--availability')){
  // This browser owns a disposable save. Exercise final validation as well as disabled controls.
  await p.evaluate(()=>{__appearanceQA.draft.gender='feminino';});
