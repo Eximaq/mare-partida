@@ -29,7 +29,7 @@ function legacyXpNeeded(level){
   if(!Number.isSafeInteger(value))throw new RangeError('XP precision limit');
   return value;
 }
-const xpCurveVersion=3, xpCurve=[0,80];
+const xpCurveVersion=4, xpCurve=[0,80];
 function previousXpNeeded(level){
   if(!Number.isSafeInteger(level)||level<1||level>1000000)throw new RangeError('XP precision limit');
   for(let n=xpCurve.length;n<=level;n++){
@@ -40,14 +40,46 @@ function previousXpNeeded(level){
   }
   return Math.round(xpCurve[level]);
 }
-function xpNeeded(level){
+function version3XpNeeded(level){
   return Math.max(1,Math.ceil(previousXpNeeded(level)/3));
+}
+// Normal kill XP is evaluated at the map's unlock level. Prices in the old
+// curve are retained for readers migrating from version 3.
+const huntExperience=Object.freeze({
+  beach:14, swamp:26, orange:30, rare:40, syrup:46, baratie:52, arlong:54, loguetown:60, alabasta:70,
+  'alubarna-01':90,'alubarna-02':94,'alubarna-03':98,'alubarna-04':106,'alubarna-05':120,
+  'skypiea-01':126,'skypiea-02':132,'skypiea-03':140,'skypiea-04':160,
+  'enies-lobby-01':168,'enies-lobby-02':176,'enies-lobby-03':184,'enies-lobby-04':192,'enies-lobby-05':200,
+  'thriller-bark-01':208,'thriller-bark-02':220,'thriller-bark-03':230,'thriller-bark-04':248,
+  'sabaody-01':258,'sabaody-02':272,'sabaody-03':298,'sabaody-04':316,
+  'marineford-01':330,'marineford-02':352,'marineford-03':368,'marineford-04':382,'marineford-05':398,'marineford-06':414
+});
+function latestHuntMap(level){
+  const atlas=root.MareArchipelago||(typeof require==='function'?require('./archipelago.js'):null);
+  return atlas?.islands.findLast(map=>huntExperience[map.area]&&atlas.canTravel(map.id,level))||null;
+}
+const initialXp=[0,27,44,56,70], initialBlocks=[0,36,54,70,88,108];
+const arlongBlockKills=128, killGrowth=1.12, lastContentBlock=35, postContentStep=120;
+function blockKills(block){
+  return initialBlocks[block]??(Math.round(arlongBlockKills*killGrowth**(Math.min(block,lastContentBlock)-6))
+    +Math.max(0,block-lastContentBlock)*postContentStep);
+}
+function xpNeeded(level){
+  if(!Number.isSafeInteger(level)||level<1||level>1000000)throw new RangeError('XP precision limit');
+  if(level<5)return initialXp[level];
+  const kills=blockKills(Math.floor(level/5)), step=level%5;
+  const killsForLevel=Math.floor(kills/5)+(step>=5-kills%5?1:0);
+  return killsForLevel*(huntExperience[latestHuntMap(level)?.area]??huntExperience.beach);
 }
 function migrateXP(save){
   if(save.xpCurveVersion===xpCurveVersion)return save;
+  const type=save.xpCurveVersion, pastCost=type===3?version3XpNeeded:type===2?previousXpNeeded:legacyXpNeeded;
+  const oldCost=BigInt(pastCost(save.level)), newCost=BigInt(xpNeeded(save.level));
   const xp=BigInt(Math.max(0,Math.trunc(Number(save.xp)||0)));
-  const progress=advance({level:save.level,start:0n,experience:xp},Infinity);
-  return {...save,xpCurveVersion,level:progress.level,xp:Number(xp-progress.start)};
+  const progress=(xp*newCost+oldCost/2n)/oldCost;
+  // A fractional point rounding up must not grant a level on load.
+  const within=xp<oldCost&&progress>=newCost?newCost-1n:progress;
+  return {...save,xpCurveVersion,xp:Number(within)};
 }
 function advance({level,start,experience},limit=20,cost=xpNeeded){
   if(typeof start!=='bigint'||typeof experience!=='bigint'||start<0n||experience<start||experience>9223372036854775807n)throw new RangeError('Invalid experience');
@@ -59,5 +91,7 @@ function advance({level,start,experience},limit=20,cost=xpNeeded){
   }
   return {level,start,levels};
 }
-const api={create,xpNeeded,previousXpNeeded,legacyXpNeeded,migrateXP,xpCurveVersion,advance};root.MareCharacterCatalog=api;if(typeof module!=='undefined')module.exports=api;
+const api={create,xpNeeded,previousXpNeeded,legacyXpNeeded,version3XpNeeded,migrateXP,xpCurveVersion,advance,huntExperience,latestHuntMap};
+root.MareCharacterCatalog=api;
+if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

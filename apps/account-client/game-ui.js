@@ -191,7 +191,8 @@
     dungeon_reward_unavailable:'A recompensa está indisponível ou já foi recebida.',
     dungeon_chest_out_of_range:'Aproxime-se do baú desta masmorra para receber.',
     dungeon_inventory_full:'Libere espaço na mochila. A recompensa permanece pendente.',
-    dungeon_craft_unavailable:'Confira os dez fragmentos desbloqueados e o espaço na mochila.',
+    dungeon_craft_unavailable:'Confira a quantidade de fragmentos desbloqueados do rank selecionado e o espaço na mochila.',
+    dungeon_craft_rank_unavailable:'Não há Akuma no Mi elegível para o rank selecionado. Seus fragmentos foram preservados.',
     dungeon_reveal_unavailable:'Esta revelação já foi encerrada.',
     character_dead:'Aguarde seu personagem retornar para iniciar outra tentativa.',
 

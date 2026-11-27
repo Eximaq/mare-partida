@@ -11,6 +11,7 @@ type Transition={collection:SwordCollection;excess:FragmentCounts};
 export const swordRules=createRequire(import.meta.url)('../../../../sword-compendium.js') as {
  receive(before:SwordCollection,fragments:FragmentCounts):Transition;
  activate(before:SwordCollection,id:string):Transition|null;
+ activateComplete(before:SwordCollection,id:string):Transition|null;
  roll(random:()=>number):FragmentCounts;
 };
 export async function readSwordCollection(client:PoolClient,characterId:string):Promise<SwordCollection>{
