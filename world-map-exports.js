@@ -1,7 +1,7 @@
 'use strict';
 /* Geometry shared by the browser and the authoritative navigation catalog. */
 ((root)=>{
-  if(typeof module!=='undefined')require('./world-map-exports-data.js');
+  if(typeof module!=='undefined'){require('./world-map-exports-data.js');require('./loguetown-map-data.js');}
   const data=root.MareMapExportData;
   const step=16;
   const mapKey=id=>/^(thriller-bark|sabaody|marineford)-\d{2}$/.exec(id)?.[1]||(id?.startsWith('enies-lobby-')?'enies-lobby':id?.startsWith('alubarna-')?'alubarna':id==='beach'?'dawn':id==='swamp'?'conchas':id);
@@ -79,6 +79,7 @@
     }
   }
   function prepare(id){
+    if(id==='loguetown'&&root.MareLoguetown)return root.MareLoguetown.prepare();
     const key=mapKey(id);
     let img=imageCache.get(key);
     if(img)imageCache.delete(key);
@@ -92,6 +93,7 @@
     return img;
   }
   function ground(ctx,id,camera,w,h){
+    if(id==='loguetown'&&root.MareLoguetown){root.MareLoguetown.ground(ctx,camera,w,h);return;}
     const img=prepare(id);
     if(!img.complete||!img.naturalWidth)return;
     const x=Math.max(0,Math.floor(camera.x)),y=Math.max(0,Math.floor(camera.y));

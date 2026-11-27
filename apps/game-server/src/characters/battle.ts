@@ -25,13 +25,21 @@ import {creditProfessionKills} from './crew-professions.js';
 const require=createRequire(import.meta.url),engine=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
 const rng=()=>randomInt(0,0x100000000)/0x100000000;
 export const isBattleAction=(action:string)=>(battleActions as readonly string[]).includes(action);
+function upgradeBattleProjection(b:any){
+ engine.upgradeBalance(b);
+ // A personal row may already carry the new signature while the canonical
+ // party room still has the old layout. Project that shared geometry as well.
+ if(b?.rulesHash===engine.rulesHash&&b.partyInstanceId&&b.area==='loguetown'&&engine.reanchorLoguetownMobs(b.area,b.mobs,maps().navigation('loguetown'))){
+  engine.cancel(b);engine.resetHaki(b);
+ }
+}
 export async function readBattle(client:PoolClient,id:string){
  if(!(await client.query("SELECT to_regclass('mare_game.character_battles') present")).rows[0].present)return null;
  const row=(await client.query('SELECT simulation FROM mare_game.character_battles WHERE character_id=$1',[id])).rows[0];
  const b=row?.simulation??null;
  if(b?.partyInstanceId){const r=await partyRoom(client,b.partyInstanceId);if(r)b.mobs=r.simulation.mobs;}
  if(b?.weeklyBossInstanceId){const r=await weeklyRoom(client,b.weeklyBossInstanceId);if(r)b.mobs=r.simulation.mobs;}
- engine.upgradeBalance(b);
+ upgradeBattleProjection(b);
  return b;
 }
 /** Batched current-schema personal state with the one canonical room projection.
@@ -41,7 +49,7 @@ export async function readBattleRows(client:PoolClient,ids:readonly string[]){
  FROM mare_game.character_battles b LEFT JOIN mare_game.character_world w ON w.character_id=b.character_id
  LEFT JOIN mare_game.party_instances r ON r.id=(b.simulation->>'partyInstanceId')::uuid AND r.ended_at IS NULL
  WHERE b.character_id=ANY($1::uuid[])`,[ids])).rows;
- for(const row of rows){if(row.shared_mobs)row.simulation.mobs=row.shared_mobs;engine.upgradeBalance(row.simulation);}
+ for(const row of rows){if(row.shared_mobs)row.simulation.mobs=row.shared_mobs;upgradeBattleProjection(row.simulation);}
  return new Map(rows.map(row=>[row.character_id,row]));
 }
 export async function storeBattle(client:PoolClient,id:string,b:any,canonical=true){
