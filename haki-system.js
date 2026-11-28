@@ -70,7 +70,7 @@
     return {ok:true,state:next};
   }
   function eligibleBoss(m){return !!m&&(m.boss===true||m.type==='boss')&&['world','daily'].includes(m.source)&&Number.isFinite(m.level)&&m.level>=rules.minBossLevel;}
-  function drop(m,random=Math.random){return eligibleBoss(m)&&random()<rules.bookChance;}
+  function drop(m,random=Math.random,multiplier=1){return eligibleBoss(m)&&random()<rules.bookChance*multiplier;}
   const cooldown=(g,now=Date.now())=>Math.max(0,Math.min(rules.kingCooldown,((g.haki?.kingReadyAt||0)-now)/1000));
   function cast(g,rt,hero,enemies,{alive=true,inHunt=true,clear=()=>true,now=Date.now()}={}){
     if(!g.has_haki_unlocked||!alive||!inHunt)return {ok:false,message:'Use o Haki do Rei durante uma expedição, com o personagem vivo.'};

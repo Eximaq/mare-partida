@@ -24,6 +24,7 @@ const equipment=Object.fromEntries([...items.inventorySlotsLeft,...items.invento
 const stats=classes.derive({classId:'sword',level:75,attributes:allocated},catalog.classes.sword,catalog.factions.pirate,forge.aggregate(equipment,items.items));
 const wire={
   crewAvailable:true,
+  kairoseki:'10',kairosekiShop:{vipUntil:0,dropBoostUntil:0,serverNow:Date.now(),crewCreationCost:10,prices:{'xp-1h':5,'drop-1h':5,'vip-7d':10,'vip-30d':20}},
   state:{characterId:character.id,version:1,level:75,experience:'80',gold:'1240500'},
   inventory:{items:[],equipped:{weapon:null,armor:null}},itemCatalog:[],
   originalInventory:{catalogId:'original-game-v1',inventory:[],equipment,potions:4,materials:3,forgeVersion:4,forgeSeq:0,forgeHistory:[]},
@@ -133,12 +134,25 @@ function createGroup(payload){
     assert.equal(await view.getByText('Sem tripulação',{exact:true}).count(),0);
     await view.getByRole('button',{name:'Tentar novamente'}).click();
     await view.getByRole('heading',{name:'Sem tripulação'}).waitFor();
+    assert.equal(await view.locator('.crew-create-requirements').count(),0);
     await page.screenshot({path:path.join(out,'tripulacao-recrutamento.png')});
     await view.getByLabel('Buscar por nome ou sigla').fill('Norte');
     await view.getByRole('button',{name:'Buscar',exact:true}).click();
     await view.getByText('Corsários do Norte',{exact:false}).waitFor();
     assert.equal(search,'Norte');
     await view.getByRole('button',{name:'Criar tripulação'}).click();
+    const requirements=view.locator('.crew-create-requirements');
+    await requirements.waitFor();
+    assert.match(await requirements.innerText(),/VIP ativo\s+Obrigatório/);
+    assert.match(await requirements.innerText(),/10 Kairoseki\s+Saldo: 10/);
+    assert.equal(await view.locator('[data-crew-form="create"]').count(),0);
+    assert(await view.getByRole('button',{name:'Ver opções de VIP'}).isVisible());
+    await page.locator('#panelOverlay .dialog').screenshot({path:path.join(out,'requisitos-tripulacao.png')});
+    wire.kairosekiShop.vipUntil=Date.now()+86_400_000;
+    await page.evaluate(()=>MareGameSession.read());
+    await view.getByRole('button',{name:'Voltar ao recrutamento'}).click();
+    await view.getByRole('button',{name:'Criar tripulação'}).click();
+    assert.match(await requirements.innerText(),/VIP ativo\s+Confirmado/);
     await view.getByLabel('Nome',{exact:true}).fill('Bando do Porto');
     await view.getByLabel('Sigla',{exact:true}).fill('GPO');
     await view.getByRole('button',{name:'Revisar criação'}).click();

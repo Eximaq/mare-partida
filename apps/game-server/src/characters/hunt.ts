@@ -2,6 +2,7 @@ import type { PoolClient } from "pg";
 import type { CharacterState } from "@mare/shared";
 import { advanceLevel } from "./progression.js";
 import { AuthFault } from "../auth/errors.js";
+import {boostXp} from './contracts.js';
 
 // Versioned introductory contract: changing rewards requires a new hunt/migration.
 const catalog = Object.freeze({ catalogId: "dock-patrol-v1", name: "Ronda do cais", durationSeconds: 30,
@@ -45,8 +46,8 @@ export async function mutateHunt(client: PoolClient, id: string, requestId: stri
     // Fixed rewards, immutable audit and guarded balances; never take amounts from the caller.
     await client.query(`INSERT INTO mare_game.character_hunt_rewards(character_id,request_id,version_before,experience_before,gold_before)
       VALUES($1,$2,$3,$4,$5)`,[id,requestId,state.version,state.experience,state.gold]);
-    const credited=await client.query(`UPDATE mare_game.character_progression SET experience=experience+20,gold=gold+8
-      WHERE character_id=$1 AND experience=$2 AND gold=$3 RETURNING character_id`,[id,state.experience,state.gold]);
+    const credited=await client.query(`UPDATE mare_game.character_progression SET experience=experience+$4,gold=gold+8
+      WHERE character_id=$1 AND experience=$2 AND gold=$3 RETURNING character_id`,[id,state.experience,state.gold,(await boostXp(client,id,BigInt(catalog.experience))).toString()]);
     if (!credited.rowCount) throw new AuthFault(409,"state_version_conflict");
     await advanceLevel(client,id,requestId,state);
   }

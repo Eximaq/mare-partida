@@ -9,6 +9,7 @@ import {AuthFault} from '../auth/errors.js';
 import {advanceLevel} from './progression.js';
 import {readCharacterState} from './state.js';
 import {readFighter} from './fighter.js';
+import {rewardBoosts} from './kairoseki.js';
 const require=createRequire(import.meta.url);
 export const contracts=require('../../../../contract-system.js');
 const rulesHash=createHash('sha256').update(JSON.stringify(contracts.quests)).digest('hex');
@@ -17,9 +18,6 @@ async function available(client:PoolClient){
  return !!(await client.query("SELECT to_regclass('mare_game.contract_progress') present")).rows[0].present;
 }
 const engine=require('../../../../world-battle.cjs');
-async function dailyAvailable(client:PoolClient){
- return !!(await client.query("SELECT to_regclass('mare_game.contract_daily_cycles') present")).rows[0].present;
-}
 type DailyInputs={state:CharacterState;legacyFighter?:()=>Awaited<ReturnType<typeof readFighter>>};
 const tableByPeriod={daily:'contract_daily_cycles',weekly:'contract_weekly_cycles'} as const;
 type Period=keyof typeof tableByPeriod;
@@ -27,7 +25,8 @@ async function recurringState(client:PoolClient,id:string){
  const clock=(await client.query(`
   SELECT to_regclass('mare_game.contract_daily_cycles') daily,to_regclass('mare_game.contract_weekly_cycles') weekly,
    floor(extract(epoch FROM transaction_timestamp())*1000)::bigint now,p.level,c.faction_id,c.class_id,
-   COALESCE(extract(epoch FROM (to_jsonb(p)->>'xp_boost_until')::timestamptz)*1000,0)::bigint boost
+   COALESCE(extract(epoch FROM (to_jsonb(p)->>'xp_boost_until')::timestamptz)*1000,0)::bigint boost,
+   coalesce((to_jsonb(p)->>'xp_boost_percent')::integer,100) boost_percent
   FROM mare_game.character_progression p JOIN mare_game.characters c ON c.id=p.character_id WHERE p.character_id=$1
  `,[id])).rows[0];
  if(!clock?.daily)return null;
@@ -47,7 +46,7 @@ async function recurringState(client:PoolClient,id:string){
   return updated.rows[0]?.state??(await client.query('SELECT state FROM mare_game.'+table+' WHERE character_id=$1 AND cycle=$2',[id,cycle])).rows[0].state;
  };
  const daily=await read('daily',day),weekly=clock.weekly?await read('weekly',week):undefined;
- return {daily,...(weekly?{weekly}:{}),xpBoostUntil:Number(clock.boost)};
+ return {daily,...(weekly?{weekly}:{}),xpBoostUntil:Number(clock.boost),xpBoostPercent:clock.boost_percent};
 }
 export async function recordDailyProgress(client:PoolClient,id:string,kills:any[]){
  if(!kills.length)return;
@@ -58,10 +57,11 @@ export async function recordDailyProgress(client:PoolClient,id:string,kills:any[
   await client.query('UPDATE mare_game.'+tableByPeriod[period]+' SET state=$3 WHERE character_id=$1 AND cycle=$2',[id,state.cycle,JSON.stringify(state)]);
  }
 }
+export function effectiveXp(xp:bigint,boosts:{xp:number;vip:boolean}){
+ return xp*(100n+BigInt(boosts.xp))*(boosts.vip?120n:100n)/10_000n;
+}
 export async function boostXp(client:PoolClient,id:string,xp:bigint){
- if(xp<=0n||!await dailyAvailable(client))return xp;
- const active=(await client.query('SELECT xp_boost_until>transaction_timestamp() active FROM mare_game.character_progression WHERE character_id=$1',[id])).rows[0]?.active;
- return active?xp*BigInt(contracts.dailyRules.xpMultiplier):xp;
+ return xp<=0n?xp:effectiveXp(xp,await rewardBoosts(client,id));
 }
 async function claimRecurring(client:PoolClient,id:string,period:Period){
  const entry=(await recurringState(client,id))?.[period];

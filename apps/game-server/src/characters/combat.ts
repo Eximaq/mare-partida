@@ -9,6 +9,7 @@ import { AuthFault } from "../auth/errors.js";
 import { resolveCombatRound } from "./combat-rules.js";
 import {equipmentWear,readOriginalInventory,writeInventory} from '../gameplay/inventory.js';
 import {resolveOriginalRound} from '../gameplay/character.js';
+import {boostXp} from './contracts.js';
 
 export async function readCombat(client: PoolClient,id:string) {
   const row=(await client.query<{
@@ -90,8 +91,8 @@ export async function mutateCombat(client:PoolClient,id:string,requestId:string,
   } else {
     await client.query(`INSERT INTO mare_game.combat_rewards(character_id,request_id,version_before,experience_before,gold_before,encounter_id)
       VALUES($1,$2,$3,$4,$5,$6)`,[id,requestId,state.version,state.experience,state.gold,combat.encounterId]);
-    const credited=await client.query(`UPDATE mare_game.character_progression SET experience=experience+30,gold=gold+12
-      WHERE character_id=$1 AND experience=$2 AND gold=$3 RETURNING character_id`,[id,state.experience,state.gold]);
+    const credited=await client.query(`UPDATE mare_game.character_progression SET experience=experience+$4,gold=gold+12
+      WHERE character_id=$1 AND experience=$2 AND gold=$3 RETURNING character_id`,[id,state.experience,state.gold,(await boostXp(client,id,30n)).toString()]);
     if(!credited.rowCount) throw new AuthFault(409,"state_version_conflict");
     await advanceLevel(client,id,requestId,state);
     await awardCombatDrop(client,id,requestId,state.version,combat.encounterId!);

@@ -18,6 +18,75 @@
   const DEV_ACTIVE=!ONLINE_GAME&&MareDev.active(location.search);
   let sharedLobbyFrame=null,sharedLobbyRenderer=null;
   let socialUI=null,socialPortraitRenderer=null,marketUI=null;
+  const kairosekiIcon='assets/ui/character-hud/hd/kairoseki.webp',vipIcon='assets/ui/character-hud/hd/vip-crown.webp';
+  let premiumClock=null,premiumClockAt=0,kairosekiPanelStamp=null;
+  function kairosekiStatus(){
+    const online=ONLINE_GAME?.data?.online,shop=online?.kairosekiShop;
+    if(!shop)return null;
+    if(shop!==premiumClock){premiumClock=shop;premiumClockAt=performance.now();}
+    const now=shop.serverNow+performance.now()-premiumClockAt;
+    return {...shop,now,active:shop.vipUntil>now,balance:BigInt(online.kairoseki)};
+  }
+  function crewCreation(){
+    const shop=kairosekiStatus();
+    if(!shop)return {allowed:false};
+    const affordable=shop.balance>=BigInt(shop.crewCreationCost);
+    return {cost:shop.crewCreationCost,vipActive:shop.active,affordable,
+      balance:shop.balance.toLocaleString('pt-BR'),allowed:shop.active&&affordable};
+  }
+  function kairosekiOffers(){
+    const boost=(id)=>itemDefs.find(item=>item.id===id);
+    const xp=boost('kairoseki-xp-boost'),drop=boost('kairoseki-drop-boost');
+    return {
+      'xp-1h':{name:xp.name,hint:'+50% de XP por 1h. Ative pela mochila. Não negociável.',icon:xp.icon_path},
+      'drop-1h':{name:drop.name,hint:'Chance de saque em dobro nas caçadas por 1h. Ative pela mochila. Não negociável.',icon:drop.icon_path},
+      'vip-7d':{name:'VIP · 7 dias',hint:'+20% de XP por 7 dias. Ativação imediata e pessoal.',icon:vipIcon},
+      'vip-30d':{name:'VIP · 30 dias',hint:'+20% de XP por 30 dias. Ativação imediata e pessoal.',icon:vipIcon},
+    };
+  }
+  function renderKairosekiStore(force=false){
+    const overlay=$('panelOverlay'),body=$('dialogBody'),status=kairosekiStatus();
+    const pending=ONLINE_GAME?.pending?.action==='kairoseki.buy';
+    const canBuy=ONLINE_GAME?.available&&ONLINE_GAME.controlled&&!ONLINE_GAME.busy&&!ONLINE_GAME.pending;
+    const stamp=[status?.balance,status?.active,status?.vipUntil,pending,canBuy].join('|');
+    if(!force&&stamp===kairosekiPanelStamp&&body.dataset.view==='kairoseki')return;
+    kairosekiPanelStamp=stamp;
+    overlay.dataset.uiPanel='kairoseki';body.dataset.view='kairoseki';$('dialogTitle').textContent='Loja de Kairoseki';
+    if(!status){body.innerHTML='<p class="kairoseki-store-note">Loja disponível no modo online.</p>';return;}
+    const focused=body.contains(document.activeElement)?document.activeElement.dataset.kairosekiBuy:null;
+    const currency=value=>`<span class="kairoseki-currency"><img src="${kairosekiIcon}" alt="Kairoseki"><strong>${value.toLocaleString('pt-BR')}</strong></span>`;
+    const date=new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short'});
+    const cards=Object.entries(kairosekiOffers()).map(([id,offer])=>{
+      const price=status.prices[id];
+      return `<article class="kairoseki-offer"><button type="button" class="kairoseki-offer-help" data-kairoseki-help="${id}" data-help-text="${escapeHTML(offer.hint)}" aria-label="Sobre ${offer.name}"><span aria-hidden="true">?</span></button><span class="kairoseki-offer-art"><img src="${offer.icon}" alt=""></span><h3>${offer.name}</h3>
+        ${currency(price)}<button type="button" class="dialog-button" data-kairoseki-buy="${id}" aria-label="Comprar ${offer.name}" ${!canBuy||status.balance<BigInt(price)?'disabled':''}>Comprar</button></article>`;
+    }).join('');
+    const walletBalance=status.balance.toLocaleString('pt-BR');
+    body.innerHTML=`<section class="kairoseki-store">
+      <header class="kairoseki-store-status">
+        <div class="kairoseki-store-wallet"><img src="${kairosekiIcon}" alt=""><div><small>Saldo de Kairoseki</small><strong title="${walletBalance}">${walletBalance}</strong></div></div>
+        <div class="kairoseki-vip-status" data-active="${status.active}"><b>VIP ${status.active?'ativo':'inativo'}</b>${status.active?`<small>Até ${date.format(status.vipUntil)}</small>`:''}</div>
+      </header>
+      <div class="kairoseki-offers">${cards}</div>
+      ${pending?'<button type="button" class="dialog-button" data-kairoseki-resume '+(!ONLINE_GAME.available||ONLINE_GAME.busy?'disabled':'')+'>Verificar compra pendente</button>':''}
+      </section>`;
+    if(focused)body.querySelector('[data-kairoseki-buy="'+focused+'"]')?.focus({preventScroll:true});
+  }
+  async function buyKairoseki(product){
+    if(!product&&ONLINE_GAME?.pending?.action!=='kairoseki.buy')return;
+    const purchase=product||ONLINE_GAME.pending.payload.product,wasVip=kairosekiStatus()?.active;
+    try{
+      if(product)await ONLINE_GAME.command('kairoseki.buy',{product});
+      else await ONLINE_GAME.resume();
+      syncOnlineGame();
+      toast(purchase.endsWith('h')?'Boost enviado à mochila.':wasVip?'VIP renovado.':'VIP ativado.','good');
+    }catch(error){
+      const reason={kairoseki_insufficient:'Saldo de Kairoseki insuficiente.',inventory_full:'Libere espaço na mochila para receber o boost.'};
+      toast(reason[error.code]||'Não foi possível confirmar a compra.', 'danger');
+    }finally{
+      if(currentPanel==='kairoseki')renderKairosekiStore(true);
+    }
+  }
   const marketAvailable=()=>!!ONLINE_GAME?.available&&ONLINE_GAME.data?.online.marketAvailable===true;
   function renderMarketPanel(){
     const overlay=$('panelOverlay'),body=$('dialogBody');
@@ -72,6 +141,7 @@
     const overlay=$('panelOverlay'),body=$('dialogBody');
     overlay.classList.add('crew-mode');overlay.dataset.uiPanel='crew';body.dataset.view='crew';$('dialogTitle').textContent='Tripulação';
     crewController||=MareCrewUI.create({body,art:crewArt,
+      creation:crewCreation,openPremium:()=>openPanel('kairoseki'),
       canWrite:()=>!!ONLINE_GAME?.controlled&&!ONLINE_GAME.busy&&!ONLINE_GAME.pending,
       drawPortrait:drawContactPortrait,
       classIcon:id=>{
@@ -100,6 +170,9 @@
         crew_coin_insufficient:'Saldo de Moedas de Contribuição insuficiente.',
         inventory_full:'Libere espaço na mochila para receber o fragmento.',
         crew_insufficient_gold:'Berry insuficiente para esta ação.',
+        crew_vip_required:'Ative o VIP para criar uma tripulação.',
+        kairoseki_insufficient:'Saldo de Kairoseki insuficiente.',
+        kairoseki_unavailable:'Loja de Kairoseki indisponível.',
         crew_insufficient_treasury:'Tesouraria insuficiente para iniciar a obra.',
         crew_donation_limit:'Essa doação ultrapassa o limite diário.',
         crew_identity_taken:'Já existe uma tripulação com esse nome ou essa sigla.',
@@ -2106,6 +2179,7 @@
       }else{world.mobs=[];world.target=null;onlineEncounterId=null;}
       updateUI();onlineProjectionSnapshot=ONLINE_GAME.data;
     }
+    if(currentPanel==='kairoseki')renderKairosekiStore();
     if(currentPanel==='map'&&(voyageTravelAvailable!==voyageTravelReady()||voyageLevel!==game.level))renderPanel();
     const repairCondition=currentPanel==='forge'&&forgeUI.tab==='repair'?Object.values(game.equipment).map(item=>item&&Math.floor(MareForge.durabilityOf(item)/100)):null;
     const inventoryStamp=JSON.stringify([repairCondition,ONLINE_GAME.data.online.state.version,ONLINE_GAME.busy,!!ONLINE_GAME.pending,ONLINE_GAME.controlled,ONLINE_GAME.available]);if(ONLINE_GAME.data.online.originalInventory&&onlineInventoryStamp!==inventoryStamp){onlineInventoryStamp=inventoryStamp;if(['inventory','forge','shop','character','contracts','prison','dungeons','akuma-reveal','haki','compendium'].includes(currentPanel))renderPanel();}
@@ -2581,7 +2655,7 @@
   }
 
   // INVENTÁRIO V0.6 — layout RPG em três colunas, filtros e ações reais.
-  function itemCategory(item){const def=itemBase(item),slot=def.slot;if(def.kind==='visual-completo')return 'visuals';if(['sword-fragment','sword-collection','haki-fragment','akuma-fragment','weapon-fragment'].includes(def.kind))return 'materials';if(MareAkuma.isFruit(item,itemDefs))return 'fruits';if(['pearl-box','epic-equipment-box','haki-book','xp-boost'].includes(def.kind))return 'consumables';return slot==='pearl'?'pearls':slot==='weapon'?'weapons':'armor';}
+  function itemCategory(item){const def=itemBase(item),slot=def.slot;if(def.kind==='visual-completo')return 'visuals';if(['sword-fragment','sword-collection','haki-fragment','akuma-fragment','weapon-fragment'].includes(def.kind))return 'materials';if(MareAkuma.isFruit(item,itemDefs))return 'fruits';if(['pearl-box','epic-equipment-box','haki-book','xp-boost','drop-boost'].includes(def.kind))return 'consumables';return slot==='pearl'?'pearls':slot==='weapon'?'weapons':'armor';}
   function itemPower(item){if(!MareForge.isGear(item,itemDefs)&&!MareAkuma.isFruit(item,itemDefs))return 0;const slot=MareAkuma.isFruit(item,itemDefs)?'akuma_no_mi':itemBase(item).slot,before={...game,equipment:{...game.equipment,[slot]:null}},after={...game,equipment:{...game.equipment,[slot]:item}};return getDerived(after).power-getDerived(before).power;}
   function tooltipItem(item,inspection=null){
     if(!item)return null;
@@ -2613,6 +2687,7 @@
     return {key,name:skill.name,cooldown:MareAttributeRules.cooldown(MareAkumaPassives.cooldown(skill.cd,fruit?.id),skill,getDerived())*(game.factionId==='government'?.92:1),cost:skill.cost,resource:'Energia',description:skill.desc,damageType:game.classId==='strategist'?'magic':skill.type==='strike'||skill.type==='area'?'physical':''};
   }
   const gameTooltip=MareTooltips.attach(element=>{
+    if(element.hasAttribute('data-kairoseki-help'))return {kind:'help',compact:true,description:element.dataset.helpText};
     if(element.hasAttribute('data-studio-help'))return {kind:'help',title:element.dataset.helpTitle,description:element.dataset.helpText};
     if(!game)return null;
     if(element.hasAttribute('data-compendium-fruit'))return {kind:'compendium',fruit:MareCompendium.tooltip(game,element.dataset.compendiumFruit)};
@@ -3072,11 +3147,12 @@
       return '<div class="op-detail-wrap op-fragment-detail"><div class="op-detail-head"><div class="op-detail-icon rarity-'+def.rarity+'">'+itemIcon(sel.item.def,def.name)+'</div><div><h3>'+escapeHTML(def.name)+'</h3><small>Material · Rank '+def.rank+' · '+rarityNames[def.rarity]+'</small></div></div><dl class="op-fragment-facts"><div><dt>Quantidade nesta pilha</dt><dd>'+MareBossDungeons.quantity(sel.item)+'</dd></div><div><dt>Vínculo</dt><dd>'+(MareBossDungeons.bound(sel.item)?(own?'Este personagem':'Outro personagem'):'Sem vínculo')+'</dd></div></dl><p>Material de formação de Akuma no Mi.</p>'+(recipe?'<section class="op-detail-box"><h4>FORMAÇÃO · RANK '+recipe.rank+'</h4><dl class="op-fragment-facts"><div><dt>Fragmentos necessários</dt><dd>'+recipe.quantity+'</dd></div><div><dt>Disponíveis para consumo</dt><dd>'+count+'</dd></div></dl><p>Uma Akuma aleatória Rank '+recipe.resultRank+'. O resultado '+(formation.remaining?'será vinculado se algum fragmento consumido for vinculado.':formation.bound?'será vinculado ao personagem.':'será negociável.')+'</p><small>Pilhas bloqueadas ou de outro personagem não entram no consumo.</small></section>':'<p>Receita ainda não disponível para este rank.</p>')+(!own?'<p role="status">Este material não pode ser utilizado por este personagem.</p>':'')+'<div class="op-actions">'+(recipe?'<button type="button" class="op-action primary" data-form-rank="'+def.rank+'" data-form-akuma="'+game.bossDungeons.seq+'" '+(canForm?'':'disabled')+'>'+itemIcon(sel.item.def,def.name)+'<span>FORMAR AKUMA</span></button>':'')+(game.bossDungeons.reveal?'<button type="button" class="op-action" data-akuma-reveal-open>CONFERIR FRUTA FORMADA</button>':'')+'<button type="button" class="op-action secondary" data-inv-lock="'+escapeHTML(sel.item.id)+'">'+inventoryIcon(sel.item.locked?'unlock':'lock')+'<span>'+(sel.item.locked?'DESBLOQUEAR':'BLOQUEAR')+'</span></button></div></div>';
     }
     if(itemBase(sel.item).kind==='haki-fragment'){const def=itemBase(sel.item);return '<div class="op-detail-wrap"><h3>'+escapeHTML(def.name)+'</h3>'+MareHakiUI.icon('fragment-'+def.branch)+'<p>Material · Quantidade: '+MareHakiProgression.qty(sel.item)+'</p><p>'+escapeHTML(def.description)+'</p><button type="button" data-panel="haki">ABRIR HAKI</button><button type="button" data-inv-lock="'+escapeHTML(sel.item.id)+'">'+(sel.item.locked?'Desbloquear':'Bloquear')+'</button></div>';}
-    if(itemBase(sel.item).kind==='xp-boost'){
-      const until=ONLINE_GAME?.data?.online.contracts?.xpBoostUntil||0;
-      const serverTime=Date.parse(ONLINE_GAME?.data?.online.world?.serverNow||'')||Date.now();
-      const active=until>serverTime;
-      return `<div class="op-detail-wrap"><div class="op-detail-icon rarity-epic">${itemIcon(sel.item.def)}</div><h3>Boost de XP (1h)</h3><p>Duplica a XP de personagem por uma hora real.</p><button type="button" class="op-action primary" data-use-xp-boost="${escapeHTML(sel.item.id)}" ${active||sel.item.locked?'disabled':''}>${active?'BOOST ATIVO':'ATIVAR'}</button></div>`;
+    if(['xp-boost','drop-boost'].includes(itemBase(sel.item).kind)){
+      const definition=itemBase(sel.item),drop=definition.kind==='drop-boost',shop=kairosekiStatus();
+      const until=drop?shop?.dropBoostUntil:ONLINE_GAME?.data?.online.contracts?.xpBoostUntil??game.xpBoostUntil;
+      const active=until>(shop?.now??(Date.parse(ONLINE_GAME?.data?.online.world?.serverNow||'')||Date.now()));
+      const use=drop?'data-use-drop-boost':'data-use-xp-boost';
+      return `<div class="op-detail-wrap"><div class="op-detail-icon rarity-epic">${itemIcon(sel.item.def)}</div><h3>${definition.name}</h3><p>${definition.description}</p>${definition.tradable===false?'<small>Não negociável</small>':''}<button type="button" class="op-action primary" ${use}="${escapeHTML(sel.item.id)}" ${active||sel.item.locked?'disabled':''}>${active?'BOOST ATIVO':'ATIVAR'}</button></div>`;
     }
     if(itemBase(sel.item).kind==='haki-book')return hakiBookDetail(sel.item);
     if(MareAkuma.isFruit(sel.item,itemDefs)){
@@ -3278,6 +3354,7 @@
   function showConfirmation(title,message,accept,acceptLabel='RECOMEÇAR',danger=true,describe=null){
     if(document.querySelector('.confirmation-overlay'))return;
     const prior=document.activeElement,overlay=document.createElement('div');overlay.className='confirmation-overlay';
+    if(currentPanel==='kairoseki')overlay.classList.add('kairoseki-confirmation');
     for(const el of document.querySelectorAll('.toast.acquisition')){if(el.receipt)acquisitionBuffer.push({gains:[el.receipt]});el.remove();}
     let model=describe?.()||{result:message},busy=false,closed=false;
     const close=()=>{if(busy||closed)return;closed=true;MareUI.destroy(overlay);MareUI.syncModals();if(acquisitionBuffer.size&&!rewardTimer)rewardTimer=setTimeout(flushAcquisitionNotices,0);if(prior?.isConnected&&!prior.closest('[inert],.hidden'))prior.focus({preventScroll:true});};
@@ -3403,7 +3480,7 @@
     const art=({sword:'sword',brawler:'star',gunner:'eye',rogue:'boots',cyborg:'shield',strategist:'flame',healer:'heart'})[id];
     return art?'assets/ui/talents/cutouts/talent_'+art+'.png':null;
   }
-  function renderPanel(){if(currentPanel==='market'){renderMarketPanel();return;}if(['friends','messages','mail','trade'].includes(currentPanel)){renderSocialPanel();return;}if(currentPanel==='crew'){renderCrewPanel();return;}if(currentPanel==='party'){renderPartyPanel();return;}if(ONLINE_GAME){if(currentPanel==='map'||ONLINE_GAME.data?.online.originalInventory&&(['inventory','forge','shop'].includes(currentPanel)||(ONLINE_GAME.data.online.profile&&['myprofile','settings','journal','help'].includes(currentPanel))||(ONLINE_GAME.data.online.battle&&currentPanel==='hunt')||(ONLINE_GAME.data.online.contracts&&currentPanel==='contracts')||(ONLINE_GAME.data.online.prison&&currentPanel==='prison')||(ONLINE_GAME.data.online.dungeons&&['dungeons','akuma-reveal'].includes(currentPanel))||(ONLINE_GAME.data.online.haki&&currentPanel==='haki')||(currentPanel==='character'&&((characterTab==='status'&&ONLINE_GAME.data.online.combatPreview?.rulesetId==='original-character-v1')||(characterTab==='talents'&&ONLINE_GAME.data.online.talents)||(characterTab==='achievements'&&ONLINE_GAME.data.online.achievements)||(characterTab==='hierarchy'&&ONLINE_GAME.data.online.hierarchy)||(characterTab==='akuma'&&ONLINE_GAME.data.online.fruits)||characterTab==='swords'||(characterTab==='appearance'&&ONLINE_GAME.data.online.profile))))){onlineUI?.close();}else{onlineUI?.open(currentPanel,characterTab);return;}}if(!currentPanel||!game)return;MareHakiUI.unmount();$('panelOverlay').classList.toggle('haki-mastery-mode',currentPanel==='haki');MarePlayerHub.unmount();$('panelOverlay').classList.toggle('captain-hd-mode',['journal','myprofile','settings'].includes(currentPanel));$('panelOverlay').dataset.uiPanel=currentPanel;$('panelOverlay').classList.toggle('honors-hd-mode',currentPanel==='character'&&['achievements','hierarchy'].includes(characterTab));$('panelOverlay').classList.toggle('achievements-hd-mode',currentPanel==='character'&&characterTab==='achievements');$('panelOverlay').classList.toggle('hierarchy-hd-mode',currentPanel==='character'&&characterTab==='hierarchy');if(!['achievements','hierarchy'].includes(characterTab)||currentPanel!=='character')$('honorsHeaderNote')?.remove();const body=$('dialogBody');$('panelOverlay').classList.toggle('boss-dungeons-mode',['dungeons','akuma-reveal'].includes(currentPanel));$('panelOverlay').classList.toggle('akuma-reveal-mode',currentPanel==='akuma-reveal');MareVoyageUI.unmount();$('panelOverlay').classList.toggle('voyage-hd-mode',['map','prison'].includes(currentPanel));if(!['map','prison'].includes(currentPanel)){$('expeditionBack')?.remove();$('expeditionSubtitle')?.remove();}const isSwordCompendium=currentPanel==='character'&&characterTab==='swords';const isCompendium=currentPanel==='character'&&(characterTab==='akuma'||isSwordCompendium);$('panelOverlay').classList.toggle('sword-compendium-mode',isSwordCompendium);$('panelOverlay').classList.toggle('compendium-hd-mode',isCompendium);MareCompendium.unmount();const isTalents=currentPanel==='character'&&characterTab==='talents';$('panelOverlay').classList.toggle('talents-hd-mode',isTalents);if(!isTalents)MareTalentUI.unmount();$('panelOverlay').classList.toggle('forge-hd-mode',currentPanel==='forge');if(currentPanel!=='character')$('panelOverlay').classList.remove('character-studio-mode');$('panelOverlay').classList.toggle('contracts-mode',currentPanel==='contracts');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');$('panelOverlay').classList.toggle('voyage-mode',['map','prison'].includes(currentPanel));if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode','pirate-hd');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={haki:'Haki',journal:'Jornal do Morgan',myprofile:'Meu Perfil',settings:'Configurações',hunt:'Rota da caçada',dev:'Laboratório DEV',inventory:'Inventário',forge:'Forja das Correntes',character:'Personagem',modes:'Modos de jogo',prison:'Impel Down',dungeons:'Masmorra de Chefes','akuma-reveal':'Akuma formada',map:'Mapa do Arquipélago',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;const forgeBrand=$('dialogTitle').parentElement.querySelector('small');if(forgeBrand){if(currentPanel==='forge'){forgeBrand.dataset.originalBrand ||= forgeBrand.textContent;forgeBrand.textContent=forgeNpcName;}else if(forgeBrand.dataset.originalBrand)forgeBrand.textContent=forgeBrand.dataset.originalBrand;}if(currentPanel!=='map')$('voyageRegionTabs')?.remove();body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel||(b.dataset.panel==='modes'&&['map','prison'].includes(currentPanel)))));
+  function renderPanel(){if(currentPanel==='kairoseki'){renderKairosekiStore();return;}if(currentPanel==='market'){renderMarketPanel();return;}if(['friends','messages','mail','trade'].includes(currentPanel)){renderSocialPanel();return;}if(currentPanel==='crew'){renderCrewPanel();return;}if(currentPanel==='party'){renderPartyPanel();return;}if(ONLINE_GAME){if(currentPanel==='map'||ONLINE_GAME.data?.online.originalInventory&&(['inventory','forge','shop'].includes(currentPanel)||(ONLINE_GAME.data.online.profile&&['myprofile','settings','journal','help'].includes(currentPanel))||(ONLINE_GAME.data.online.battle&&currentPanel==='hunt')||(ONLINE_GAME.data.online.contracts&&currentPanel==='contracts')||(ONLINE_GAME.data.online.prison&&currentPanel==='prison')||(ONLINE_GAME.data.online.dungeons&&['dungeons','akuma-reveal'].includes(currentPanel))||(ONLINE_GAME.data.online.haki&&currentPanel==='haki')||(currentPanel==='character'&&((characterTab==='status'&&ONLINE_GAME.data.online.combatPreview?.rulesetId==='original-character-v1')||(characterTab==='talents'&&ONLINE_GAME.data.online.talents)||(characterTab==='achievements'&&ONLINE_GAME.data.online.achievements)||(characterTab==='hierarchy'&&ONLINE_GAME.data.online.hierarchy)||(characterTab==='akuma'&&ONLINE_GAME.data.online.fruits)||characterTab==='swords'||(characterTab==='appearance'&&ONLINE_GAME.data.online.profile))))){onlineUI?.close();}else{onlineUI?.open(currentPanel,characterTab);return;}}if(!currentPanel||!game)return;MareHakiUI.unmount();$('panelOverlay').classList.toggle('haki-mastery-mode',currentPanel==='haki');MarePlayerHub.unmount();$('panelOverlay').classList.toggle('captain-hd-mode',['journal','myprofile','settings'].includes(currentPanel));$('panelOverlay').dataset.uiPanel=currentPanel;$('panelOverlay').classList.toggle('honors-hd-mode',currentPanel==='character'&&['achievements','hierarchy'].includes(characterTab));$('panelOverlay').classList.toggle('achievements-hd-mode',currentPanel==='character'&&characterTab==='achievements');$('panelOverlay').classList.toggle('hierarchy-hd-mode',currentPanel==='character'&&characterTab==='hierarchy');if(!['achievements','hierarchy'].includes(characterTab)||currentPanel!=='character')$('honorsHeaderNote')?.remove();const body=$('dialogBody');$('panelOverlay').classList.toggle('boss-dungeons-mode',['dungeons','akuma-reveal'].includes(currentPanel));$('panelOverlay').classList.toggle('akuma-reveal-mode',currentPanel==='akuma-reveal');MareVoyageUI.unmount();$('panelOverlay').classList.toggle('voyage-hd-mode',['map','prison'].includes(currentPanel));if(!['map','prison'].includes(currentPanel)){$('expeditionBack')?.remove();$('expeditionSubtitle')?.remove();}const isSwordCompendium=currentPanel==='character'&&characterTab==='swords';const isCompendium=currentPanel==='character'&&(characterTab==='akuma'||isSwordCompendium);$('panelOverlay').classList.toggle('sword-compendium-mode',isSwordCompendium);$('panelOverlay').classList.toggle('compendium-hd-mode',isCompendium);MareCompendium.unmount();const isTalents=currentPanel==='character'&&characterTab==='talents';$('panelOverlay').classList.toggle('talents-hd-mode',isTalents);if(!isTalents)MareTalentUI.unmount();$('panelOverlay').classList.toggle('forge-hd-mode',currentPanel==='forge');if(currentPanel!=='character')$('panelOverlay').classList.remove('character-studio-mode');$('panelOverlay').classList.toggle('contracts-mode',currentPanel==='contracts');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');$('panelOverlay').classList.toggle('voyage-mode',['map','prison'].includes(currentPanel));if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode','pirate-hd');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={haki:'Haki',journal:'Jornal do Morgan',myprofile:'Meu Perfil',settings:'Configurações',hunt:'Rota da caçada',dev:'Laboratório DEV',inventory:'Inventário',forge:'Forja das Correntes',character:'Personagem',modes:'Modos de jogo',prison:'Impel Down',dungeons:'Masmorra de Chefes','akuma-reveal':'Akuma formada',map:'Mapa do Arquipélago',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;const forgeBrand=$('dialogTitle').parentElement.querySelector('small');if(forgeBrand){if(currentPanel==='forge'){forgeBrand.dataset.originalBrand ||= forgeBrand.textContent;forgeBrand.textContent=forgeNpcName;}else if(forgeBrand.dataset.originalBrand)forgeBrand.textContent=forgeBrand.dataset.originalBrand;}if(currentPanel!=='map')$('voyageRegionTabs')?.remove();body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel||(b.dataset.panel==='modes'&&['map','prison'].includes(currentPanel)))));
     if(['journal','myprofile','settings'].includes(currentPanel)){
       gameTooltip.hide();
       const g=game,s=getDerived(),className=classes[game.classId]?.name||game.classId;
@@ -3586,6 +3663,16 @@
     else trigger.focus({preventScroll:true});
   }
   function openPanel(panel,characterSection=null){
+    if(panel==='kairoseki'){
+      if(!game||!kairosekiStatus()||currentPanel===panel)return;
+      const atVip=document.activeElement?.id==='hudVip';
+      closePanel();
+      $(atVip?'hudVip':'socialMenuTrigger')?.focus({preventScroll:true});
+      MareUI.rememberFocus($('panelOverlay'));
+      currentPanel=panel;$('panelOverlay').classList.remove('hidden');renderKairosekiStore(true);$('closePanel')?.focus({preventScroll:true});
+      return;
+    }
+    if(currentPanel==='kairoseki')closePanel();
     if(panel==='market'){if(!game||currentPanel==='market')return;closePanel();$('socialMenuTrigger')?.focus({preventScroll:true});MareUI.rememberFocus($('panelOverlay'));currentPanel='market';$('panelOverlay').classList.remove('hidden');renderPanel();$('closePanel')?.focus({preventScroll:true});return;}
     if(currentPanel==='market')closePanel();
     if(['friends','messages','mail','trade'].includes(panel)){if(!game)return;if(!['friends','messages','mail','trade'].includes(currentPanel)){closePanel();$('socialMenuTrigger').focus({preventScroll:true});MareUI.rememberFocus($('panelOverlay'));}currentPanel=panel;$('panelOverlay').classList.remove('hidden');renderPanel();if(!document.activeElement?.closest('.social-mode'))$('closePanel')?.focus({preventScroll:true});return;}
@@ -4341,7 +4428,7 @@ $('gameFrame').appendChild(targetHud);
   },{passive:false,capture:true});
   MareUI.mountHUD();
   const socialAnchor=document.createElement('div');socialAnchor.className='character-menu-anchor';
-  socialAnchor.innerHTML='<button type="button" id="socialMenuTrigger" aria-label="Social" aria-expanded="false" aria-haspopup="menu" aria-controls="socialQuickMenu"><img src="assets/ui/nav-menu/social.png" alt="" draggable="false"><span class="party-invite-badge" hidden></span><span class="social-attention" data-social-attention hidden aria-hidden="true"></span><span class="menu-tooltip">SOCIAL</span></button><div id="socialQuickMenu" class="character-quick-menu hidden" role="menu" aria-label="Social"><button type="button" role="menuitem" data-party-open>'+MarePartyUI.icon+'<span><b>GRUPO / PARTY</b><small>Forme um grupo de até quatro jogadores.</small></span></button><button type="button" role="menuitem" data-crew-open>'+MareCrewUI.icon+'<span><b>TRIPULAÇÃO</b><small>Encontre ou administre sua tripulação.</small></span></button>'+MareSocialUI.menu()+MareMarketUI.menu()+'</div>';
+  socialAnchor.innerHTML='<button type="button" id="socialMenuTrigger" aria-label="Social" aria-expanded="false" aria-haspopup="menu" aria-controls="socialQuickMenu"><img src="assets/ui/nav-menu/social.png" alt="" draggable="false"><span class="party-invite-badge" hidden></span><span class="social-attention" data-social-attention hidden aria-hidden="true"></span><span class="menu-tooltip">SOCIAL</span></button><div id="socialQuickMenu" class="character-quick-menu hidden" role="menu" aria-label="Social"><button type="button" role="menuitem" data-party-open>'+MarePartyUI.icon+'<span><b>GRUPO / PARTY</b><small>Forme um grupo de até quatro jogadores.</small></span></button><button type="button" role="menuitem" data-crew-open>'+MareCrewUI.icon+'<span><b>TRIPULAÇÃO</b><small>Encontre ou administre sua tripulação.</small></span></button>'+MareSocialUI.menu()+MareMarketUI.menu()+'<button type="button" role="menuitem" id="kairosekiShopMenu" data-kairoseki-open hidden><img src="'+kairosekiIcon+'" alt=""><span><b>LOJA DE KAIROSEKI</b><small>Boosts e VIP.</small></span></button></div>';
   $('mainMenu').insertBefore(socialAnchor,$('characterMenuTrigger')?.closest('.character-menu-anchor')||$('mainMenu').firstChild);
   marketUI=MareMarketUI.create({
     root:$('dialogBody'),available:marketAvailable,controlled:()=>!!ONLINE_GAME?.controlled&&!ONLINE_GAME.busy&&!ONLINE_GAME.pending,
@@ -4379,6 +4466,20 @@ $('gameFrame').appendChild(targetHud);
   });
   document.addEventListener('click',e=>{const b=e.target.closest('[data-social-open],[data-market-open]');if(!b)return;
     $('socialQuickMenu').classList.add('hidden');$('socialMenuTrigger').setAttribute('aria-expanded','false');openPanel(b.hasAttribute('data-market-open')?'market':b.dataset.socialOpen);
+  });
+  document.addEventListener('click',event=>{
+    if(event.target.closest('[data-kairoseki-open]')){
+      $('socialQuickMenu').classList.add('hidden');$('socialMenuTrigger').setAttribute('aria-expanded','false');
+      openPanel('kairoseki');return;
+    }
+    if(currentPanel!=='kairoseki')return;
+    const button=event.target.closest('[data-kairoseki-buy],[data-kairoseki-resume]');
+    if(!button||button.disabled)return;
+    const product=button.dataset.kairosekiBuy;
+    if(!product){void buyKairoseki();return;}
+    const offer=kairosekiOffers()[product],price=kairosekiStatus()?.prices[product];
+    if(!offer||!price)return;
+    showConfirmation('Comprar '+offer.name+'?','Serão descontados '+price+' Kairoseki do seu saldo.',()=>buyKairoseki(product),'Comprar',false);
   });
   const compactParty=document.createElement('section');compactParty.id='partyCompact';compactParty.hidden=true;compactParty.setAttribute('aria-label','Membros do grupo');$('app').append(compactParty);
   $('socialMenuTrigger').addEventListener('click',e=>{e.stopPropagation();const open=$('socialQuickMenu').classList.contains('hidden');closeCharacterMenu();closeModesMenu();closeCaptainMenu();$('socialQuickMenu').classList.toggle('hidden',!open);e.currentTarget.setAttribute('aria-expanded',String(open));if(open){MareUI.positionQuickMenu(e.currentTarget);$('socialQuickMenu').querySelector('button').focus({preventScroll:true});}});
@@ -4425,12 +4526,58 @@ function applySceneHudLayout(){
   document.querySelectorAll('[data-hud]').forEach(btn=>btn.addEventListener('click',()=>btn.dataset.hud==='status'?openPanel('character'):toggleFloating(btn.dataset.hud)));
   document.addEventListener('click',e=>{const b=e.target.closest('[data-close-window]');if(b)toggleFloating(b.dataset.closeWindow,false);});
   // Indicadores compactos mantêm informações críticas legíveis com as janelas fechadas.
+  function updateBoostHud(premium){
+    const online=ONLINE_GAME?.data?.online,contract=online?.contracts;
+    const now=premium?.now??Date.now();
+    const xpUntil=ONLINE_GAME?contract?.xpBoostUntil:game.xpBoostUntil;
+    const xpPercent=contract?.xpBoostPercent??100;
+    const effects=[
+      ['hudBoostXp',xpUntil,xpPercent===100?'XP 2×':'XP +'+xpPercent+'%'],
+      ['hudBoostDrop',premium?.dropBoostUntil,'Drop 2×'],
+    ];
+    let active=false;
+    for(const [id,until,label] of effects){
+      const badge=$(id),seconds=Math.ceil(((until||0)-now)/1000);
+      const visible=seconds>0;
+      if(badge.hidden===visible)badge.hidden=!visible;
+      if(!visible)continue;
+      active=true;
+      const hours=Math.floor(seconds/3600),time=(hours?hours+':':'')+elapsedString(seconds%3600);
+      const effect=badge.querySelector('b'),clock=badge.querySelector('time');
+      if(effect.textContent!==label)effect.textContent=label;
+      if(clock.textContent!==time){clock.textContent=time;clock.dateTime='PT'+seconds+'S';}
+    }
+    const group=$('hudActiveBoosts');
+    if(group.hidden===active)group.hidden=!active;
+  }
   function updateMiniHud(){if(!game)return;const s=getDerived();
+    const premium=kairosekiStatus(),vip=$('hudVip');
+    updateBoostHud(premium);
+    vip.hidden=!premium;
+    $('kairosekiShopMenu').hidden=!premium;
+    if(premium){
+      const state=String(premium.active);
+      if(vip.dataset.active!==state){
+        vip.dataset.active=state;
+        vip.setAttribute('aria-label',(premium.active?'VIP ativo':'VIP inativo')+'. Abrir Loja de Kairoseki.');
+      }
+    }
     $('attributePointsHud').textContent=game.attributePoints+' ponto'+(game.attributePoints===1?'':'s');$('attributePointsHud').classList.toggle('has-points',game.attributePoints>0);
     $('miniLevel').textContent=String(game.level);
     if($('miniHP'))$('miniHP').style.width=(100*clamp(game.hp/s.maxHP,0,1)).toFixed(1)+'%';
     if($('miniEnergy'))$('miniEnergy').style.width=(100*clamp(game.energy/s.maxEnergy,0,1)).toFixed(1)+'%';
     if($('miniGold'))$('miniGold').textContent=fmt(game.gold);
+    const kairoseki=ONLINE_GAME?.data?.online?.kairoseki;
+    const showKairoseki=typeof kairoseki==='string'&&/^(0|[1-9]\d{0,18})$/.test(kairoseki);
+    $('hudKairoseki').hidden=!showKairoseki;
+    if(showKairoseki){
+      const balance=$('miniKairoseki');
+      if(balance.dataset.balance!==kairoseki){
+        balance.dataset.balance=kairoseki;
+        balance.textContent=BigInt(kairoseki).toLocaleString('pt-BR');
+        balance.title=balance.textContent;
+      }
+    }
 
     $('miniPower').textContent=fmt(s.power);
     $('miniHPText').textContent=fmt(game.hp)+' / '+fmt(s.maxHP);
@@ -4772,6 +4919,7 @@ function applySceneHudLayout(){
 
     b=e.target.closest('[data-haki-node]');if(b){hakiSelected=b.dataset.hakiNode;renderPanel();return;}
     b=e.target.closest('[data-haki-invest]');if(b&&!b.disabled&&!hakiInvesting){const id=b.dataset.hakiInvest,seq=Number(b.dataset.hakiSeq),node=MareHakiProgression.byId[id];showConfirmation('Confirmar graduação','Confira a graduação e os fragmentos deste ramo.',async()=>{if(hakiInvesting)return;hakiInvesting=true;try{if(ONLINE_GAME)return await onlineItemCommand('haki.invest',{nodeId:id,expectedSeq:seq});const r=MareHakiProgression.invest(game,id,seq,itemDefs,next=>{if(node.final)Object.assign(next,MareAchievements.record(next,'hakiUnlocked',node.branch));localStorage.setItem(STORAGE_KEY,JSON.stringify(next));return true;});if(r.ok){game=r.state;toast(r.message,'good');}else toast(r.message,'danger');renderPanel();updateUI();return r.ok;}finally{hakiInvesting=false;}},'INVESTIR',false,()=>MareOperationSummary.haki(game,id,seq,itemDefs));return;}
+    b=e.target.closest('[data-use-drop-boost]');if(b){if(ONLINE_GAME&&!b.disabled)void onlineItemCommand('items.use-drop-boost',{itemId:b.dataset.useDropBoost});return;}
     b=e.target.closest('[data-use-xp-boost]');if(b){if(b.disabled)return;const id=b.dataset.useXpBoost;if(ONLINE_GAME){void onlineItemCommand('items.use-xp-boost',{itemId:id});return;}const item=game.inventory.find(i=>i.id===id);if(!item||item.locked||itemBase(item).kind!=='xp-boost'||game.xpBoostUntil>Date.now()||suppressSave||!saveWriter.owner)return;const next={...game,xpBoostUntil:Date.now()+MareContracts.dailyRules.boostMs,inventory:game.inventory.filter(i=>i.id!==id)};if(persistDungeonState(next)){game=next;updateUI();renderPanel();}return;}
     b=e.target.closest('[data-use-haki-book]');if(b){const id=b.dataset.useHakiBook;showConfirmation('Despertar o Haki?','O Livro da Vontade será consumido e o acesso às árvores de Haki será liberado. Cada habilidade ativa exige concluir seu ramo.',()=>consumeHakiBook(id),'DESPERTAR',false,()=>MareOperationSummary.consumable(game,id,itemDefs,'haki-book'));return;}
     b=e.target.closest('[data-haki-toggle]');if(b){toggleHaki(b.dataset.hakiToggle);return;}

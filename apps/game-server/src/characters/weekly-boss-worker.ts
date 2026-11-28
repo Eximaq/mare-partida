@@ -56,7 +56,7 @@ export async function tickWeeklyBosses(pool:Pool,assignment?:SimulationPartition
    if(a.inventory&&a.wear?.changed)await persistEquipmentWear(c,a.id,a.inventory,a.b,a.state.version,()=>inputs.get(a.id)?.fighter(a.b));
    // Reconcile only consumables actually used during an official tick.
    if(row.mode==='official'&&result.potionsUsed){
-    const requestId=randomUUID();await awardWorldLoot(c,a.id,requestId,a.state,[],undefined,result.potionsUsed,{xpGrant:0});
+    const requestId=randomUUID();await awardWorldLoot(c,a.id,requestId,a.state,[],undefined,result.potionsUsed);
     await c.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[a.id]);
     const after=await readCharacterState(c,a.id);await c.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4)',[a.id,requestId,digest('server-weekly:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:after})]);
    }

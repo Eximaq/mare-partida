@@ -23,6 +23,24 @@ O miniporto anterior não é a entrada do produto e não deve ser promovido como
 
 - Identidade vem de `/v1/me`; estado vem do snapshot restrito ao dono. O cliente
   não escolhe accountId/ownerId/characterId para provar autorização.
+- A Kairoseki é exibida ao lado da Berry na HUD online. O snapshot privado
+  retorna o saldo da conta como texto decimal e a validade do VIP.
+  A Loja de Kairoseki está no menu Social e no botão da coroa junto ao nível.
+  Os Boosts de XP e Drop duram 1h, custam 5 Kairoseki cada e são entregues na
+  mochila do personagem. O Boost de XP da loja dá +50% de XP. O Boost de Drop duplica
+  as chances de saque dos monstros das caçadas, mantendo a elegibilidade e
+  as tabelas de raridade originais. Os dois produtos da loja são pessoais,
+  ficam na mochila até serem ativados e exibem o tempo restante na HUD. O Boost
+  de XP concedido pelos contratos conserva seu bônus de +100%.
+- O VIP de 7 dias custa 10 Kairoseki e o de 30 dias custa 20. A renovação
+  acrescenta tempo ao prazo restante. O VIP dá 20% a mais de XP do personagem,
+  cumulativo com o Boost de XP. O VIP é pessoal e começa na compra.
+  A tela de fundação apresenta os requisitos de VIP ativo e 10 Kairoseki.
+  O fim do VIP não afeta tripulações já formadas.
+- O serviço do jogo consulta a carteira e realiza débitos pela função da
+  migração `0081_kairoseki_shop.sql`, na mesma transação do recibo. Créditos
+  com dinheiro real ficam para uma etapa posterior. O ícone da pedra foi
+  fornecido pelo proprietário e a coroa foi gerada para esta HUD.
 - `/game` não lê, escreve, apaga ou importa o save da demonstração. Falta do script
   de sessão ou erro no BFF bloqueia a entrada; nunca inicia offline como fallback.
 - Itens, dinheiro, poções e materiais iniciais da demonstração são removidos da

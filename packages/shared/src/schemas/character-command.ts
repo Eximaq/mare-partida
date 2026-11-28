@@ -33,6 +33,7 @@ const socialActions = ['friend.request','friend.respond','friend.cancel','friend
 const offerVersion = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
 export const messageIdSchema = z.string().regex(/^[1-9][0-9]{0,18}$/).refine(id=>BigInt(id)<=9223372036854775807n);
 export const characterCommandSchema = z.discriminatedUnion("action", [
+ z.strictObject({...commandEnvelope,action:z.literal('kairoseki.buy'),payload:z.strictObject({product:z.enum(['xp-1h','drop-1h','vip-7d','vip-30d'])})}),
  z.strictObject({...commandEnvelope,action:z.literal('swords.activate'),payload:z.strictObject({swordId:z.string().regex(/^[a-z0-9-]{1,50}$/)})}),
  z.strictObject({...commandEnvelope,action:z.literal('weeklyBoss.execute'),payload:weeklyBossPayloadSchema}),
  z.strictObject({...commandEnvelope,action:z.enum(['friend.request','friend.remove']),payload:z.strictObject({targetId:z.uuid()})}),
@@ -106,7 +107,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
  z.strictObject({...commandEnvelope,action:z.literal('items.initialize'),payload:z.strictObject({})}),
  z.strictObject({...commandEnvelope,action:z.literal('potions.buy'),payload:z.strictObject({kind:z.enum(['health','mana']).optional(),quantity:z.number().int().min(1).max(99).optional()})}),
  z.strictObject({...commandEnvelope,action:z.literal('potions.use'),payload:z.strictObject({kind:z.enum(['health','mana']).optional()})}),
- z.strictObject({...commandEnvelope,action:z.enum(['items.equip','items.sell','items.open-box','items.use-xp-boost']),payload:z.strictObject({itemId:instanceIdSchema})}),
+ z.strictObject({...commandEnvelope,action:z.enum(['items.equip','items.sell','items.open-box','items.use-xp-boost','items.use-drop-boost']),payload:z.strictObject({itemId:instanceIdSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('items.unequip'),payload:z.strictObject({slot:originalSlotSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('items.lock'),payload:z.strictObject({itemId:instanceIdSchema,locked:z.boolean()})}),
  z.strictObject({...commandEnvelope,action:z.literal('forge.execute'),payload:z.strictObject({operation:forgeOperationSchema})}),
@@ -121,7 +122,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["weeklyBoss.execute", "swords.activate", "state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "attributes.build", "attributes.distribute", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,...cosmeticActions,'market.execute',...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
+  action: z.enum(["kairoseki.buy", "weeklyBoss.execute", "swords.activate", "state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "attributes.build", "attributes.distribute", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,...cosmeticActions,'market.execute',...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
   weeklyBoss:weeklyBossReceiptSchema.optional(),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),

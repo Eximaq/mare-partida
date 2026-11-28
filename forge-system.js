@@ -142,15 +142,15 @@
   const weaponFragmentCount=(g,recipe)=>weaponFragments(g,recipe).reduce((n,i)=>n+int(i.quantity),0);
   const legendaryLootChance=()=>generationRules.normalGearChance*legendaryRarityWeight/normalRarityScale;
   const mapFragmentRules=Object.freeze({dMinLevel:40,cMinLevel:100,dWeight:60,cWeight:30,scale:10000});
-  function rollMapFragment(monster,random=Math.random){
+  function rollMapFragment(monster,random=Math.random,multiplier=1){
     if(!worldMonsterAtLeast(monster,mapFragmentRules.dMinLevel))return null;
     const roll=draw(random);
     const {dWeight,cWeight,scale}=mapFragmentRules;
-    if(roll<dWeight/scale)return 'D';
-    if(worldMonsterAtLeast(monster,mapFragmentRules.cMinLevel)&&roll<(dWeight+cWeight)/scale)return 'C';
+    if(roll<dWeight*multiplier/scale)return 'D';
+    if(worldMonsterAtLeast(monster,mapFragmentRules.cMinLevel)&&roll<(dWeight+cWeight)*multiplier/scale)return 'C';
     return null;
   }
-  function normalLoot(defs,level,region,random=Math.random,monster){if(draw(random)>=generationRules.normalGearChance)return null;const r=rollRarity(random,monster),pool=defs.map((d,def)=>({d,def})).filter(({d})=>!d.kind&&d.type!=='akuma_no_mi'&&d.rarity===r&&!d.unavailable);if(!pool.length)throw Error('Pool de equipamentos vazio: '+r);return {def:pool[Math.floor(draw(random)*pool.length)].def,rarity:r,level:lootLevel(level,region)};}
+  function normalLoot(defs,level,region,random=Math.random,monster,multiplier=1){if(draw(random)>=generationRules.normalGearChance*multiplier)return null;const r=rollRarity(random,monster),pool=defs.map((d,def)=>({d,def})).filter(({d})=>!d.kind&&d.type!=='akuma_no_mi'&&d.rarity===r&&!d.unavailable);if(!pool.length)throw Error('Pool de equipamentos vazio: '+r);return {def:pool[Math.floor(draw(random)*pool.length)].def,rarity:r,level:lootLevel(level,region)};}
   function gearName(item,defs){const d=defs[item?.def];return isGear(item,defs)?'LV. '+item.level+' '+d.name+(item.plus?' +'+item.plus:''):d?.name||'Item';}
 
   function normalizeItem(original,defs,random=null){

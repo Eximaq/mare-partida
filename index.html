@@ -306,7 +306,12 @@
           <strong id="hudHierarchyTitle"></strong>
           <span id="hudFactionName"></span>
         </div>
-        <div class="profile-level"><span>Nv.</span><strong id="miniLevel">1</strong></div>
+        <div class="profile-level-group">
+          <button type="button" id="hudVip" class="vip-badge" data-kairoseki-open aria-label="VIP inativo. Abrir Loja de Kairoseki." hidden>
+            <img src="assets/ui/character-hud/hd/vip-crown.webp" width="30" height="28" alt=""><span>VIP</span>
+          </button>
+          <div class="profile-level"><span>Nv.</span><strong id="miniLevel">1</strong></div>
+        </div>
         <div class="hud-attributes"><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div>
       </div>
       <div class="hud-meta"><div class="profile-power"><span>Poder</span><strong id="miniPower">0</strong></div><span id="hudClassName"></span></div>
@@ -360,6 +365,10 @@
           </svg>
           <span>Berry</span><strong id="miniGold" title="Berry">0</strong>
         </div>
+        <div id="hudKairoseki" class="profile-kairoseki" hidden>
+          <img src="assets/ui/character-hud/hd/kairoseki.webp" width="24" height="24" alt="">
+          <span>Kairoseki</span><strong id="miniKairoseki">0</strong>
+        </div>
       <div id="miniWillpower" class="profile-resource haki-will hidden" role="meter" aria-label="Força de Vontade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span>Vontade</span><span class="mini-meter"><i id="willpowerFill"></i></span><b id="willpowerText">100 / 100</b></div>
       </div>
       <div id="miniTalentResource" class="profile-resource talent-resource hidden"><span id="miniTalentLabel">Vigor</span><span class="mini-meter"><i id="miniTalentFill"></i></span><b id="miniTalentText"></b></div>
@@ -370,6 +379,10 @@
         <span id="hakiQuickStatus" class="haki-quick-caption">Haki pronto</span>
       </div>
       <span id="crewHudIdentity" class="crew-hud-identity" hidden></span>
+      <div id="hudActiveBoosts" class="hud-active-boosts" role="group" aria-label="Boosts ativos" hidden>
+        <div id="hudBoostXp" class="hud-boost" data-boost="xp" hidden><img src="assets/ui/contracts-hd/kairoseki-xp.webp" alt="" width="14" height="14"><b></b><time aria-label="Tempo restante do Boost de XP" role="timer"></time></div>
+        <div id="hudBoostDrop" class="hud-boost" data-boost="drop" hidden><img src="assets/ui/contracts-hd/kairoseki-drop.webp" alt="" width="14" height="14"><b></b><time aria-label="Tempo restante do Boost de Drop" role="timer"></time></div>
+      </div>
       <section id="characterPoster" class="character-poster" hidden aria-label="Cartaz do personagem">
         <div class="wanted-sheet">
           <img class="wanted-paper" src="assets/ui/character-hud/hd/poster.png" width="448" height="600" alt="Cartaz de procurado em pergaminho" draggable="false">

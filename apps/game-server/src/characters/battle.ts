@@ -18,7 +18,7 @@ import {readCharacterState} from './state.js';
 import {advanceLevel} from './progression.js';
 import {awardWorldLoot,equipmentWear,readOriginalInventory,persistEquipmentWear} from '../gameplay/inventory.js';
 import {digest} from '../auth/vault.js';
-import {recordContractKills,recordDailyProgress,boostXp} from './contracts.js';
+import {recordContractKills,recordDailyProgress} from './contracts.js';
 import {creditCrewActivities,crewHuntEvents} from './crew-activity.js';
 import {crewCombatXp,crewMonsterBerry} from './crew-config.js';
 import {creditProfessionKills} from './crew-professions.js';
@@ -171,8 +171,8 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
     const factionMultiplier=engine.catalog.factions[fighter.factionId].gold;
     const kills=result.kills.map((k:any)=>({...k,reward:{...k.reward,xp:crewCombatXp(k.reward.xp,benefits.command)},
       berry:crewMonsterBerry(k.reward.gold,factionMultiplier,benefits.navigator)}));
-    await awardWorldLoot(client,id,requestId,state,kills,undefined,result.potionsUsed,{build:inputs.talents.build,steals:result.talentSteals,monsterBerryBonus:benefits.navigator});
-    for(const k of kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,(await boostXp(client,id,BigInt(k.reward.xp))).toString(),k.berry,engine.rulesHash]);
+    const awarded=await awardWorldLoot(client,id,requestId,state,kills,undefined,result.potionsUsed,{build:inputs.talents.build,steals:result.talentSteals,monsterBerryBonus:benefits.navigator});
+    for(const k of kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,awarded.xpBySpawn.get(k.id)!.toString(),k.berry,engine.rulesHash]);
     if(kills.length){
      await recordContractKills(client,id,kills);
      await recordDailyProgress(client,id,kills);

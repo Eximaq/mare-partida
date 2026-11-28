@@ -106,6 +106,13 @@ export async function authDatabase(
   }
 }
 
+export async function seedKairoseki(pool:pg.Pool,characterId:string,balance:number,vip=false){
+  assert.match(new URL(pool.options.connectionString!).pathname,/^\/mare_test_[a-f0-9]{32}$/);
+  await pool.query(`INSERT INTO mare_game.account_kairoseki(account_id,balance,vip_until)
+    SELECT account_id,$2,CASE WHEN $3::boolean THEN statement_timestamp()+interval '7 days' END
+    FROM mare_game.characters WHERE id=$1`,[characterId,balance,vip]);
+}
+
 // Use a trusted lobby position without consuming a character command version.
 export async function placeAtMerchant(pool:pg.Pool,characterId:string){
   assert.match(new URL(pool.options.connectionString!).pathname,/^\/mare_test_[a-f0-9]{32}$/);

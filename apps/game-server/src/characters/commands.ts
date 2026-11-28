@@ -28,6 +28,7 @@ import { attributeKeys, characterCommandResultSchema, type CharacterCommand, typ
 import { AuthFault } from "../auth/errors.js";
 import { digest } from "../auth/vault.js";
 import { readCharacterState } from "./state.js";
+import {buyKairosekiProduct} from './kairoseki-shop.js';
 import { beginJourney } from "./journey.js";
 import { mutateHunt } from "./hunt.js";
 import { mutateCombat } from "./combat.js";
@@ -92,6 +93,8 @@ export async function executeCharacterCommand(
   }
   if(isPartyAction(input.action))await mutateParty(client,characterId,input,state);
   switch(input.action){
+    case 'kairoseki.buy':
+      await buyKairosekiProduct(client,characterId,input.payload.product);break;
     case 'crew.create': case 'crew.join': case 'crew.apply': case 'crew.invite': case 'crew.respond':
     case 'crew.recruitment': case 'crew.role': case 'crew.transfer': case 'crew.kick': case 'crew.leave':
     case 'crew.dissolve': case 'crew.donate': case 'crew.upgrade': case 'crew.claim-coins': case 'crew.buy-fragment':

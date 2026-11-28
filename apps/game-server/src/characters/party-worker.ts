@@ -72,7 +72,7 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
    // Never catch up offline time. Reconnection resumes the same wounded enemies.
   const results=S.step(room,actors,{nav:maps().navigation(room.mapId),now,dt:elapsed>2?0:Math.min(1,elapsed),rng});
   for(const actor of actors)if(actor.inventory&&actor.wear.changed)await persistEquipmentWear(c,actor.id,actor.inventory,actor.b,actor.state.version,()=>inputs.get(actor.id)?.fighter(actor.b));
-  const rewards=new Map<string,number>(),victories:any[]=[];
+  const rewards=new Map<string,bigint>(),victories:any[]=[];
   const crewActivities:CrewActivity[]=[];
   const activityTime=new Date(now);
   for(const result of results)for(const k of result.kills){
@@ -86,8 +86,9 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
     if(ids.length){
       const base=E.hunt.referenceXp(k.area,k.monster),shares=P.shares(base,ids,room.seq%ids.length);
       for(const id of ids){const actor=actors.find(a=>a.id===id),factor=E.hunt.mapXpMultiplier(k.area,actor.state.level),grant=crewCombatXp(Math.round(shares[id]*factor),actor.crewBenefits.command);
-       rewards.set(id,(rewards.get(id)??0)+grant);
-       await c.query('INSERT INTO mare_game.party_experience(instance_id,spawn_id,character_id,base_amount,amount,request_id) VALUES($1,$2,$3,$4,$5,$6)',[room.id,k.id,id,shares[id],(await boostXp(c,id,BigInt(grant))).toString(),actor.requestId??=randomUUID()]);
+       const earned=await boostXp(c,id,BigInt(grant));
+       rewards.set(id,(rewards.get(id)??0n)+earned);
+       await c.query('INSERT INTO mare_game.party_experience(instance_id,spawn_id,character_id,base_amount,amount,request_id) VALUES($1,$2,$3,$4,$5,$6)',[room.id,k.id,id,shares[id],earned.toString(),actor.requestId??=randomUUID()]);
       }
      }
    }
@@ -102,7 +103,7 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
     E.cancel(a.b);
    }
    if(kills.length||rewards.has(a.id)||victory||result.potionsUsed||result.talentSteals.length){
-    const awarded=await awardWorldLoot(c,a.id,requestId,a.state,kills.map((k:any)=>({...k,reward:{...k.reward,xp:0}})),undefined,result.potionsUsed,{xpGrant:rewards.get(a.id)??0,monsterBerryBonus:a.crewBenefits.navigator,build:a.build,steals:result.talentSteals,...(room.kind==='dungeon'?{action:'dungeon.battle' as const}:{})});
+    const awarded=await awardWorldLoot(c,a.id,requestId,a.state,kills.map((k:any)=>({...k,reward:{...k.reward,xp:0}})),undefined,result.potionsUsed,{xpGrant:rewards.get(a.id)??0n,monsterBerryBonus:a.crewBenefits.navigator,build:a.build,steals:result.talentSteals,...(room.kind==='dungeon'?{action:'dungeon.battle' as const}:{})});
     if(kills.length){
      await recordContractKills(c,a.id,kills);
      await creditProfessionKills(c,a.id,kills,activityTime);

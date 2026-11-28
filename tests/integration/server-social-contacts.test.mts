@@ -8,7 +8,7 @@ import {readParty} from '../../apps/game-server/src/characters/party.js';
 import {
   isSocialCharacterOnline,readPrivateMessages,readSocialContactBadge,readSocialContacts,
 } from '../../apps/game-server/src/characters/social-contacts.js';
-import {authDatabase} from './auth-support.mjs';
+import {authDatabase,seedKairoseki} from './auth-support.mjs';
 
 async function read<T>(pool:pg.Pool,run:(client:pg.PoolClient)=>Promise<T>) {
   const client=await pool.connect();
@@ -93,6 +93,7 @@ test('amizade cruzada exige aceite, mensagens são privadas e bloqueio protege c
     VALUES($1,2,7654) ON CONFLICT(character_id) DO UPDATE SET tier=EXCLUDED.tier,power=EXCLUDED.power`,[target.id]);
   await pool.query("UPDATE mare_game.character_profile SET preferences=jsonb_set(preferences,'{hideItems}','true') WHERE character_id=$1",[target.id]);
   await sender.act('party.create');
+  await seedKairoseki(pool,sender.id,10,true);
   await sender.act('crew.create',{name:'Tripulação Coral',tag:'CRL',flag:'1'+'0'.repeat(1023),policy:'approval',minLevel:1});
   const activeFriend=(await sender.contacts()).friends[0]!;
   assert.deepEqual(activeFriend.publicProfile,{title:'Pirata Promissor',power:7654,equipmentHidden:true});

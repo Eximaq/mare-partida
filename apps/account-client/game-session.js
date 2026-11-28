@@ -176,7 +176,8 @@
     const potionKind=()=>!Object.hasOwn(p,'kind')||['health','mana'].includes(p.kind);
     if(action==='potions.buy')return ['', 'kind', 'quantity', 'kind,quantity'].includes(keys)&&potionKind()&&(!Object.hasOwn(p,'quantity')||Number.isInteger(p.quantity)&&p.quantity>=1&&p.quantity<=99);
     if(action==='potions.use')return ['', 'kind'].includes(keys)&&potionKind();
-    if(['items.equip','items.sell','items.open-box','items.use-xp-boost'].includes(action))return keys==='itemId'&&instanceId(p.itemId);
+    if(action==='kairoseki.buy')return keys==='product'&&['xp-1h','drop-1h','vip-7d','vip-30d'].includes(p.product);
+    if(['items.equip','items.sell','items.open-box','items.use-xp-boost','items.use-drop-boost'].includes(action))return keys==='itemId'&&instanceId(p.itemId);
     if(action==='items.lock')return keys==='itemId,locked'&&instanceId(p.itemId)&&typeof p.locked==='boolean';
     if(action==='items.unequip')return keys==='slot'&&originalSlots.includes(p.slot);
     if(action==='forge.execute')return keys==='operation'&&validForge(p.operation);
