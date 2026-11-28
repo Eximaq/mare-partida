@@ -65,13 +65,83 @@ test('a completed skill cannot override hurt, walking or idle, and free-hand cas
  assert.equal(renderer.pose(atlas,bare,{action:'attack',skillIndex:1,freeHandPower:true,direction:'west',progress:.5}).action,'cast_palm_shared');
 });
 
-function browserBox(fetchImpl){
+function browserBox(fetchImpl,{delay,createImageBitmap}={}){
  const imagePaths=[];
- class Img{async decode(){const source=Object.values(atlas.sources).find(s=>this.url.split('?')[0].endsWith(s.file));assert.ok(source);[this.naturalWidth,this.naturalHeight]=source.size;}set src(value){this.url=value;imagePaths.push(value);}}
- const box={fetch:fetchImpl,Image:Img,console:{error(){}},Date};
+ class Img{async decode(){const source=Object.values(atlas.sources).find(s=>this.url.split('?')[0].endsWith(s.file));assert.ok(source);await delay?.(source.file);[this.naturalWidth,this.naturalHeight]=source.size;}set src(value){this.url=value;imagePaths.push(value);}}
+ const box={fetch:fetchImpl,Image:Img,createImageBitmap,console:{error(){}},Date};
  for(const name of ['luffy-animation.js','visual-completo-luffy.js','visual-completo-renderer.js']){const file=path.join(__dirname,'..',name);if(fs.existsSync(file))vm.runInNewContext(fs.readFileSync(file,'utf8'),box);}
  return {box,imagePaths};
 }
+
+test('equipping warms only the local class and keeps the skin during delayed poses, casts and turns',async()=>{
+ const blocked=new Map(),tick=()=>new Promise(resolve=>setImmediate(resolve));
+ let disposed=0;
+ const {box,imagePaths}=browserBox(async()=>({ok:true,json:async()=>atlas}),{
+  delay:file=>new Promise(resolve=>blocked.set(file,resolve)),
+  createImageBitmap:async(image,opts)=>({url:image.url,width:opts.resizeWidth,height:opts.resizeHeight,close(){disposed++;}})
+ });
+ const player={...actor('sword',1),characterId:'local'};
+ const engine=box.MareVisualCompletoRenderer,luffy=box.MareLuffyVisual;
+ const drawn=[];
+ const ctx={canvas:{width:300,height:300},save(){},restore(){},translate(){},scale(){},drawImage(image,...args){drawn.push({image,args});}};
+ const unlock=async()=>{
+  for(const release of blocked.values())release();
+  blocked.clear();
+  await tick();
+ };
+ engine.warmClass(player,'east');
+ await tick();
+ assert.deepEqual([...blocked.keys()],['atlases/idle_sword_sabre/east.png','atlases/cast_palm_shared/east.png']);
+ assert.equal(engine.draw(ctx,player,{action:'idle',direction:'east'}),false);
+ await unlock();
+ assert.equal(engine.draw(ctx,player,{action:'idle',direction:'east'}),true);
+ assert.equal(luffy.worldReady(player),true);
+ assert.equal(engine.draw(ctx,player,{action:'attack',direction:'north'}),true);
+ assert.equal(luffy.snapshot().last.action,'idle_sword_sabre');
+ assert.equal(luffy.snapshot().last.held,true);
+ assert.equal(engine.draw(ctx,player,{action:'attack-unarmed',weaponless:true,direction:'south'}),true);
+ assert.equal(luffy.snapshot().last.action,'cast_palm_shared');
+ assert.equal(engine.draw(ctx,player,{action:'walk',direction:'west'}),true);
+ assert.ok(luffy.snapshot().pendingSources<=4);
+ for(let i=0;i<21&&luffy.snapshot().warm.ready<21;i++)await unlock();
+ assert.deepEqual({...luffy.snapshot().warm},{classId:'sword',total:21,ready:21});
+ assert.equal(imagePaths.length,21);
+ assert(imagePaths.every(p=>/sword|cast_palm_shared/.test(p)&&!p.includes('/west.png')));
+ for(const direction of ['south','north','east','west'])for(const action of ['idle','walk','attack','hurt']){
+  assert.equal(engine.draw(ctx,player,{action,direction,time:.5,progress:.5}),true);
+  assert.equal(luffy.snapshot().last.action,action+'_sword_sabre');
+  assert.equal(luffy.snapshot().last.direction,direction);
+  assert.equal(luffy.snapshot().last.held,undefined);
+ }
+ assert.equal(imagePaths.length,21,'prepared moves never request an atlas again');
+ assert(drawn.at(-1).image.url.includes('/east.png'),'west samples the mirrored east atlas');
+ engine.warmClass(null);
+ assert.equal(luffy.snapshot().warm,null);
+ assert.equal(disposed,21);
+});
+
+test('map scale matches the native body and applies only horizontal walking registration',async()=>{
+ const {box}=browserBox(async()=>({ok:true,json:async()=>atlas}));
+ const player=actor('sword',1),engine=box.MareVisualCompletoRenderer;
+ let draw;
+ const ctx={canvas:{width:300,height:300},save(){},restore(){},drawImage(...args){draw=args;}};
+ for(const action of ['walk','attack']){
+  const opts={action,direction:'east',x:150,y:240,time:.75,progress:.5};
+  const p=engine.pose(atlas,player,opts);
+  assert.equal(await engine.prepare(player,opts),true);
+  assert.equal(engine.draw(ctx,player,opts),true);
+  const scalar=105/p.bodyHeight,[ax,ay]=p.frame.anchor;
+  const offset=atlas.worldPresentation.walkOffsets[p.action]?.east[p.index]||0;
+  if(action==='walk')assert.notEqual(offset,0);
+  assert.equal(draw[5],Math.round(opts.x+(offset-ax)*scalar));
+  assert.equal(draw[6],Math.round(opts.y-ay*scalar));
+  assert.equal(draw[8],p.frame.rect[3]*scalar);
+ }
+ for(const [id,dirs] of Object.entries(atlas.worldPresentation.walkOffsets)){
+  for(const direction of ['south','north','east','west'])assert.equal(dirs[direction].length,atlas.clips[id].frames[direction].length);
+  assert(dirs.east.every((x,i)=>x===-dirs.west[i]),'walking offsets respect mirroring');
+ }
+});
 
 test('Luffy loads only the requested atlas and draw is presentation-only',async()=>{
  const {box,imagePaths}=browserBox(async()=>({ok:true,json:async()=>atlas}));

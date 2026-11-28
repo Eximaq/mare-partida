@@ -73,6 +73,12 @@
   if(!await loadAtlas())return false;
   return (await Promise.all(Object.keys(atlas.sources).filter(key=>key!=='icon').map(loadSource))).every(Boolean);
  }
+ let warmedZoro=false;
+ function warmClass(player,direction){
+  luffy?.warmClass(player,direction);
+  if(!zoroEquipped(player)){warmedZoro=false;return;}
+  if(!warmedZoro){warmedZoro=true;void prepare(player);}
+ }
  const previewFrames=new WeakMap();
  function paintFrame(ctx,im,frame,x,y,scale){
   const [sx,sy,w,h]=frame.rect,dx=Math.round(x),dy=Math.round(y);
@@ -101,8 +107,14 @@
   if(luffy?.equipped(player)){const drawn=luffy.draw(ctx,player,options);if(drawn)last=luffy.snapshot().last;return drawn;}
   if(!equipped(player)||player.zoanTransformed)return false;
   if(!atlas){void loadAtlas();return false;}
-  const p=pose(atlas,player,options);if(!p)return false;
-  const im=images.get(p.source);if(!im){void loadSource(p.source);return false;}
+  let p=pose(atlas,player,options);if(!p)return false;
+  let im=images.get(p.source);
+  if(!im){
+   void loadSource(p.source);
+   if(p.action==='castPalm')return false;
+   p=pose(atlas,player,{...options,action:'idle'});
+   im=images.get(p.source);if(!im)return false;
+  }
   if(options.inventoryPresentation&&options.avatarZoom===null){
    const fitted=fitPreview(ctx,im,p);
    if(!fitted)return false;
@@ -124,6 +136,6 @@
   last={action:p.action,direction:p.direction,frame:p.index,scale,consumer:options.consumer||'world',
    ...(anchored?{footAnchor:{x,y},multiplier:scale/p.scale}:{})};return true;
  }
- const api={equipped,skinId,pose,draw,prepare,snapshot:()=>last?.skinId==='visual_completo_luffy'?luffy.snapshot():({ready:!!atlas,error:failure,last})};
+ const api={equipped,skinId,pose,draw,prepare,warmClass,snapshot:()=>last?.skinId==='visual_completo_luffy'?luffy.snapshot():({ready:!!atlas,error:failure,last})};
  root.MareVisualCompletoRenderer=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
