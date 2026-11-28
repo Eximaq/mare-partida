@@ -1,5 +1,5 @@
 /* Approved HUD surfaces and windows share a quiet glass material. */
-#app.hud-nautical, #swordEventDialog, #gameTooltip, #toastContainer, .confirmation-overlay, .forge-presentation-overlay {
+:root {
   --glass-type: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --glass-surface: rgba(20, 22, 25, .85);
   --glass-line: rgba(212, 175, 55, .35);
@@ -2141,9 +2141,10 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & .crew-window :is(h2,h3,h4) { font-family: var(--glass-type); text-transform: none; letter-spacing: 0; text-shadow: none; }
   & .crew-window h2 { font-size: 22px; line-height: 1.3; color: #f5f6f8; }
   & .crew-window h3 { font-size: 15px; line-height: 1.4; padding-bottom: 8px; border-bottom: 1px solid #ffffff14; color: var(--glass-gold); }
+  & :is(.crew-store-header,.crew-profession-summary) h3 { padding: 0; border: 0; }
   & .crew-window h4 { font-size: 13px; }
   & .crew-window :is(small,.crew-muted) { font: 450 12px/1.4 var(--glass-type); color: var(--glass-muted); }
-  & .crew-banner { grid-template-columns: 44px minmax(0,1fr) auto; gap: 10px; background: linear-gradient(105deg,#16303de8,#111922ed); }
+  & .crew-banner { grid-template-columns: 44px minmax(0,1fr) auto; gap: 10px; background: #ffffff05; }
   & .crew-banner > .crew-flag { width: 44px; height: 44px; border: 1px solid var(--glass-line); border-radius: 8px; background: #0003; }
   & .crew-banner > b { padding: 8px; border: 1px solid #ffffff18; border-radius: 8px; background: #0002; color: var(--glass-gold); font-variant-numeric: tabular-nums; }
   & .crew-banner > div > small { font-size: 12px; }
@@ -2152,7 +2153,6 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & .crew-window .crew-role[data-role="officer"] { color:#bce1db; }
   & .crew-window .crew-role { font-weight:650; }
   & .crew-window .crew-profession-label small { color:#cac6b7; }
-  & .crew-member { background:linear-gradient(93deg,#142534cd,#10191fe8); }
   & .crew-banner p { color: var(--glass-muted); font-size: 11px; }
   & :is(.crew-row,.crew-member,.crew-directory-card,.crew-mission,.crew-objective,.crew-future,.crew-choices article,.crew-facility-detail,.crew-cabin-comparison figure) { padding: 10px; border: 1px solid #ffffff14; border-radius: 8px; background: #0002; box-shadow: none; }
   & .crew-contracts { font: 13px/1.45 var(--glass-type); color: #f5f6f8; gap: 8px; }
@@ -2165,17 +2165,15 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & .crew-objective[data-completed=true] { border-color: #69dba560; }
   & .crew-progress progress { min-width: 0; height: 6px; border: 0; border-radius: 5px; background: #0006; }
   & progress::-webkit-progress-bar { background: #0006; }
-  & progress::-webkit-progress-value { background: linear-gradient(90deg,#2186a9,#67d9ed); }
-  & progress::-moz-progress-bar { background: linear-gradient(90deg,#2186a9,#67d9ed); }
-  & .crew-banner progress::-webkit-progress-value { background: linear-gradient(90deg,#b58a35,#e4ce96); }
-  & .crew-banner progress::-moz-progress-bar { background: linear-gradient(90deg,#b58a35,#e4ce96); }
-  & .crew-vessel { border: 1px solid #ffffff14; border-radius: 8px; background: radial-gradient(ellipse at 50% 90%,#1c526366,transparent 70%),#0002; }
+  & progress::-webkit-progress-value { background: linear-gradient(90deg,#b58a35,#e4ce96); }
+  & progress::-moz-progress-bar { background: linear-gradient(90deg,#b58a35,#e4ce96); }
+  & .crew-vessel { border: 1px solid #ffffff14; border-radius: 8px; background: #0002; }
   & .crew-layout[data-overview=true] .crew-vessel-scene { max-width: 245px; }
   & .crew-vessel-scene { max-width: 330px; }
   & .crew-vessel figcaption { border: 1px solid #ffffff18; border-radius: 5px; background: #141619d9; color: var(--glass-muted); font-size: 10px; }
   & .crew-facilities { gap: 5px; }
   & #dialogBody .crew-facility { min-height: 60px; padding: 5px 2px; gap: 3px; font-size: 10px; line-height: 1.3; }
-  & #dialogBody .crew-facility[aria-pressed=true] { border-color: #6ccfdc88; background: #6ccfdc16; color: #b4edf5; }
+  & #dialogBody .crew-facility[aria-pressed=true] { border-color: #d8c18a88; background: #d4af3724; color: #f8e3af; }
   & .crew-facility img { height: 28px; max-height: 28px; }
   & .crew-facility-detail > div { flex-basis: 200px; }
   & .crew-treasury-balance { color: var(--glass-gold); font: 700 24px/1.3 var(--glass-type); }
@@ -2447,6 +2445,10 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
 }
 
 /* Friends is intentionally a narrow vertical window, unlike the large ledgers. */
+#app #panelOverlay.social-mode.hud-density[data-ui-panel="social-friends"]:has(.social-public-profile) {
+  & > .dialog { width: min(560px,100%); }
+  & .dialog-header > div > small { display: none; }
+}
 #app #panelOverlay.social-mode.hud-density[data-ui-panel="social-friends"] {
   & > .dialog { width:min(400px,100%); height:auto; max-height:min(580px,calc(100dvh - 40px)); }
   & #dialogBody { padding:10px; }

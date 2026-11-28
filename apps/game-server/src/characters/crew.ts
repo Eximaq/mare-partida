@@ -6,6 +6,7 @@ import {crewCapacity,crewFacilities,crewLevel,crewPolicy,crewProject,seaWar,type
 import {buyRankCFragment,claimContributionCoins,readContributionCoins} from './crew-contribution.js';
 import {creditCrewDonation,ensureCrewMissions,readCrewMissions} from './crew-activity.js';
 import {creditProfessionDonation,professionLevel,readCrewProfessionBenefits} from './crew-professions.js';
+import {effectiveProfession,professionIds,professions} from './crew-profession-rules.js';
 import {
   crewAvailable,crewClock,crewDonation,crewMember,crewSummary,listCrews,lockCrew,readCrewIdentities,
   type CrewRecruitment,type CrewRole,type CrewRow,
@@ -354,7 +355,8 @@ async function readGroup(client:PoolClient,viewerId:string,crew:CrewRow&{role:Cr
       level:row.level,role:row.role,power:row.power,contribution:Number(row.contribution),
       profession:row.profession===null?null:{id:row.profession,level:professionLevel(Number(row.experience))},
       ...(person?{online:person.online,appearance96:person.appearance96,
-        hideHeadgear:person.hideHeadgear,equipment:person.equipment,actions:person.actions}:{}),
+        hideHeadgear:person.hideHeadgear,equipment:person.equipment,actions:person.actions,
+        crew:person.crew,lastActivity:person.lastActivity,publicProfile:person.publicProfile}:{}),
     };
   });
   const history=(await client.query(`
@@ -364,9 +366,24 @@ async function readGroup(client:PoolClient,viewerId:string,crew:CrewRow&{role:Cr
       kind:row.kind,amount:Number(row.amount),facility:row.facility,createdAt:row.created_at,characterName:row.name,
     }));
   const benefits=await readCrewProfessionBenefits(client,crew.id);
-  return {...crewSummary(crew,members.length),xp:Number(crew.xp),treasury:Number(crew.treasury),role:crew.role,
+  const summary=crewSummary(crew,members.length);
+  const projects=crewFacilities.map(facility=>{
+    const project=crewProject(facility,crew.facilities[facility],benefits.carpenter);
+    if(project.nextLevel===null)return {...project,nextBenefit:null};
+    if(facility==='hull')return {...project,nextBenefit:{
+      kind:'capacity' as const,current:summary.capacity,next:crewCapacity({...crew.facilities,hull:project.nextLevel}),
+    }};
+    const id=professionIds.find(id=>professions[id].facility===facility);
+    if(!id)return {...project,nextBenefit:{kind:'none' as const}};
+    const highest=members.reduce((level,member)=>member.profession?.id===id?Math.max(level,member.profession.level):level,0);
+    return {...project,nextBenefit:{
+      kind:'profession' as const,id,current:benefits[id],next:effectiveProfession(id,highest,project.nextLevel),
+      currentLevelCap:project.level*2,nextLevelCap:project.nextLevel*2,
+    }};
+  });
+  return {...summary,xp:Number(crew.xp),treasury:Number(crew.treasury),role:crew.role,
     facilities:crew.facilities,members,history,benefits,missions:await readCrewMissions(client,crew,now),futureMissions:[seaWar],
-    projects:crewFacilities.map(facility=>crewProject(facility,crew.facilities[facility],benefits.carpenter))};
+    projects};
 }
 
 export async function readCrew(client:PoolClient,id:string,search='') {

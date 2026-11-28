@@ -89,9 +89,14 @@ test('amizade cruzada exige aceite, mensagens são privadas e bloqueio protege c
   assert.equal((await target.badge()).unreadMessages,0);
 
   await target.heartbeat();
+  await pool.query(`INSERT INTO mare_game.character_hierarchy(character_id,tier,power)
+    VALUES($1,2,7654) ON CONFLICT(character_id) DO UPDATE SET tier=EXCLUDED.tier,power=EXCLUDED.power`,[target.id]);
+  await pool.query("UPDATE mare_game.character_profile SET preferences=jsonb_set(preferences,'{hideItems}','true') WHERE character_id=$1",[target.id]);
   await sender.act('party.create');
   await sender.act('crew.create',{name:'Tripulação Coral',tag:'CRL',flag:'1'+'0'.repeat(1023),policy:'approval',minLevel:1});
   const activeFriend=(await sender.contacts()).friends[0]!;
+  assert.deepEqual(activeFriend.publicProfile,{title:'Pirata Promissor',power:7654,equipmentHidden:true});
+  assert.deepEqual(activeFriend.equipment,{});
   assert.equal(activeFriend.actions.party,null);
   assert.equal(activeFriend.actions.crew,null);
   await sender.act('party.invite',{targetId:target.id});
@@ -107,8 +112,12 @@ test('amizade cruzada exige aceite, mensagens são privadas e bloqueio protege c
   await assert.rejects(target.act('party.respond',{inviteId:partyInvite.id,accept:true}),{code:'contact_blocked'});
   await assert.rejects(target.act('crew.respond',{requestId:crewInvite.id,accept:true}),{code:'contact_blocked'});
   await assert.rejects(sender.act('message.send',{targetId:target.id,body:'Bloqueado'}),{code:'contact_blocked'});
-  assert.equal((await sender.thread(target.id)).character.lastActivity,null);
-  assert.equal((await target.contacts()).blocked[0]?.id,sender.id);
+  const blockedThread=(await sender.thread(target.id)).character;
+  assert.equal(blockedThread.lastActivity,null);
+  assert.equal(blockedThread.publicProfile,undefined);
+  const ownBlock=(await target.contacts()).blocked[0];
+  assert.equal(ownBlock?.id,sender.id);
+  assert.equal(ownBlock?.publicProfile,undefined);
   await target.act('contact.block',{targetId:sender.id,blocked:false});
   await sender.act('friend.remove',{targetId:target.id});
   assert.equal((await target.contacts()).friends.length,0);

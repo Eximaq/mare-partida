@@ -382,7 +382,8 @@
 .crew-roster-tools input, .crew-roster-tools select { font-size: 14px; }
 .crew-member {
   display: grid;
-  grid-template-columns: minmax(155px,1.55fr) minmax(95px,.9fr) minmax(125px,1.1fr) minmax(98px,.85fr) auto;
+  grid-template-columns: minmax(148px,1.35fr) minmax(111px,1fr) minmax(64px,.55fr) minmax(120px,1.05fr) minmax(86px,.8fr) 83px;
+  grid-template-areas: 'character class role profession totals actions';
   align-items: center;
   gap: 6px 9px;
   min-width: 0;
@@ -391,15 +392,19 @@
   border-radius: 5px;
   background: linear-gradient(100deg,#122935,#0b1925 75%);
 }
-.crew-member-identity { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.crew-member-identity { grid-area: character; display: flex; align-items: center; gap: 8px; min-width: 0; }
 .crew-member-identity .contact-face { width: 46px; }
 .crew-member-identity > div { min-width: 0; }
 .crew-member-identity strong { color: #fff0d8; font-size: 17px; font-weight: 700; line-height: 1.25; }
 .crew-member-identity .crew-presence { margin-left: 5px; }
-.crew-member-level,.crew-role { display: inline-block; padding: 1px 5px; border: 1px solid #a982437a; border-radius: 3px; background: #122536; color: #f1dbb3; font-size: 12px; font-weight: 700; }
+.crew-member-level,.crew-role { display: inline-block; padding: 1px 5px; border: 1px solid #a982437a; border-radius: 3px; background: #ffffff09; color: #f1dbb3; font-size: 12px; font-weight: 700; }
 .crew-role[data-role="captain"] { color: #ffdf9c; background: #6b481e55; border-color: #b88c50; }
-.crew-role[data-role="officer"] { color: #bce1db; background: #30596666; border-color: #477c80; }
+.crew-role[data-role="officer"] { color: #bce1db; background: #8caaa129; border-color: #8caaa177; }
 .crew-member :is(.crew-role,.crew-presence), .crew-banner-count .crew-presence { display: inline-flex; align-items: center; width: fit-content; }
+.crew-member-class { grid-area: class; min-width: 0; }
+.crew-member > .crew-role { grid-area: role; }
+.crew-member-profession { grid-area: profession; min-width: 0; }
+.crew-member-totals { grid-area: totals; }
 .crew-member-class,.crew-profession-label { display: flex; align-items: center; gap: 5px; color: #ecdbb8; font-size: 14px; font-weight: 650; }
 .crew-emblem { display: inline-grid; place-items: center; flex: none; width: 28px; height: 28px; border: 1px solid #d1ac675c; border-radius: 6px; background: #7d59242b; color: #f3d38f; }
 .crew-emblem :is(img,svg) { width: 20px; height: 20px; object-fit: contain; }
@@ -414,19 +419,23 @@
 .crew-presence { display: inline-flex; align-items: center; gap: 4px; color: #bbb8ac; }
 .crew-presence::before { content: ''; width: 6px; height: 6px; flex: none; border-radius: 50%; background: currentColor; }
 .crew-window .crew-presence[data-online="true"] { color: #a3e2c7; }
-.crew-member-actions { justify-self: end; font-size: 13px; min-width: 0; }
-.crew-member-actions summary,.crew-secondary summary {
+.crew-member-actions { grid-area: actions; justify-self: end; }
+.crew-member-action-trigger { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.crew-member-action-trigger span { color: #f0cb8e; font-size: 18px; line-height: .75; }
+#crewMemberActionsDialog { z-index: calc(var(--rpg-z-modal,100) + 1); }
+#crewMemberActionsDialog > .ui-window { width: min(360px, calc(100vw - 32px)); }
+.crew-member-dialog-actions { display: grid; gap: 6px; }
+.crew-member-dialog-actions .crew-button { text-align: start; }
+.crew-secondary summary {
   color: #f2d59c;
   cursor: pointer;
   padding: 5px 7px;
   border: 1px solid #a982437a;
   border-radius: 4px;
-  background: #101e2a;
+  background: #ffffff06;
 }
-.crew-member-actions summary:focus-visible,.crew-secondary summary:focus-visible { outline: 2px solid #ffe18e; outline-offset: 2px; }
-.crew-member:has(.crew-member-actions[open]) { align-items: start; }
-.crew-member-actions > div,.crew-secondary[open] { display: grid; gap: 5px; margin-top: 4px; }
-.crew-member-actions button { text-align: left; max-width: 155px; }
+.crew-secondary summary:focus-visible { outline: 2px solid #ffe18e; outline-offset: 2px; }
+.crew-secondary[open] { display: grid; gap: 5px; margin-top: 4px; }
 .crew-card > .crew-button { justify-self: start; }
 .crew-treasury-facts { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
 .crew-treasury-facts > div { border-left: 2px solid #a982436e; padding-left: 7px; }
@@ -434,14 +443,9 @@
 .crew-treasury-facts dd { margin: 0; color: #f5d494; font-weight: 700; }
 @media (max-width: 900px) {
   .crew-member {
-    grid-template-columns: minmax(0,1.4fr) minmax(0,1fr) auto;
-    grid-template-areas: 'character class actions' 'profession totals actions';
+    grid-template-columns: minmax(0,1.4fr) minmax(0,1fr) minmax(64px,.55fr) 83px;
+    grid-template-areas: 'character class role actions' 'profession totals totals actions';
   }
-  .crew-member-identity { grid-area: character; }
-  .crew-member-meta { grid-area: class; }
-  .crew-member-profession { grid-area: profession; }
-  .crew-member-totals { grid-area: totals; }
-  .crew-member-actions { grid-area: actions; }
 }
 @media (max-width: 480px) {
   .crew-banner { padding: 7px; gap: 6px; }
@@ -449,10 +453,8 @@
   .crew-banner-count > b { font-size: 16px; }
   .crew-member {
     grid-template-columns: minmax(0,1.2fr) minmax(0,1fr);
-    grid-template-areas: 'character character' 'class profession' 'totals actions';
+    grid-template-areas: 'character actions' 'class role' 'profession totals';
   }
-  .crew-member-actions[open] { justify-self: stretch; }
-  .crew-member-actions button { max-width: none; }
   .crew-member-identity strong { display: block; }
   .crew-roster-tools { gap: 5px; }
 }
@@ -473,3 +475,87 @@
   width: 1.16em;
   height: 1.16em;
 }
+
+.crew-store-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #ffffff14;
+}
+.crew-window .crew-store-header h3 { padding: 0; border: 0; }
+.crew-store-wallet, .crew-contribution-amount {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.crew-store-wallet {
+  flex-wrap: wrap;
+  justify-self: start;
+  padding: 3px 8px;
+  border: 1px solid #bf784854;
+  border-radius: 6px;
+  color: #f4d4ba;
+  background: #a256251f;
+}
+.crew-contribution-amount {
+  color: #ffd6a3;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.crew-contribution-amount img { width: 1.45em; height: 1.45em; flex: none; }
+.crew-store-wallet .crew-contribution-amount { font-size: 16px; }
+.crew-store-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: 12px;
+}
+.crew-store-offer {
+  flex: 0 1 318px;
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 14px;
+  text-align: center;
+  border: 1px solid #ceb47745;
+  border-radius: 8px;
+  background: #0003;
+}
+.crew-store-item-art {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--glass-line);
+  border-radius: 9px;
+  background: #ffffff06;
+  box-shadow: inset 0 0 0 3px #0003;
+}
+.crew-store-item-art img { display: block; width: 60px; height: 60px; object-fit: contain; }
+.crew-store-item-name { color: #fbf0dd; font-size: 15px; }
+.crew-store-offer p { color: #d0cbd5; max-width: 28ch; line-height: 1.4; }
+.crew-store-price { font-size: 18px; }
+.crew-store-offer .crew-button { width: 100%; max-width: 224px; }
+.crew-store-rewards {
+  flex: 1 1 235px;
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+.crew-store-reward > div { min-width: 0; }
+.crew-store-reward .crew-contribution-amount { margin-top: 2px; }
+@media (max-width: 560px) {
+  .crew-store-offer { flex-basis: 100%; }
+}
+
+.crew-profession-summary .crew-profession-label { gap: 8px; }
+.crew-profession-summary .crew-emblem { width: 34px; height: 34px; }
+.crew-window .crew-profession-summary h3 { padding: 0; border: 0; }
+.crew-profession-contracts h3 { display: flex; align-items: center; gap: 6px; }
+.crew-profession-contracts h3 img { width: 23px; height: 23px; }
+.crew-facility-detail .crew-next-benefit { display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px 8px; padding-block: 4px; }
+.crew-next-benefit b { color: #a6decb; }

@@ -37,6 +37,7 @@ const wire={
 };
 const peer={id:'33333333-3333-4333-8333-333333333333',name:'Ágata do Farol',classId:'healer',factionId:'pirate',role:'officer',level:82,online:false,appearance96:appearance.defaults,equipment:{},power:39700,contribution:900,profession:{id:'navigator',level:3},actions:{message:null,party:'party_player_unavailable'}};
 const donation={used:200,limit:1000,resetsAt:endAt};
+const coins={balance:138,price:100,claims:[{id:'44444444-4444-4444-8444-444444444444',title:'Riqueza do Convés',coins:25}]};
 const listing=[{id:crewId,name:'Corsários do Norte',tag:'CDN',flag:'f'.repeat(1024),policy:'approval',minLevel:50,memberCount:3,capacity:12,level:3}];
 const choice={id:'doctor',name:'Médico',benefit:'Melhora a potência de poções de cura na tripulação.',material:{name:'Páginas do Manual de Cirurgia',icon:'assets/ui/crew/professional-surgery-manual-pages.png'}};
 const profession={profession:'doctor',choices:[choice],level:4,experience:1950,levelStartXp:1800,nextLevelXp:2800,
@@ -52,8 +53,8 @@ function createGroup(payload){
     facilities:{hull:1,infirmary:1,galley:1,command:1,workshop:1,navigation:1,warehouse:1},
     members:[{...character,role:'captain',level:75,online:true,appearance96:appearance.defaults,equipment:{},power:28470,contribution:200,profession:{id:'doctor',level:4}},peer],
     history:[],benefits:{doctor:.02},projects:[
-      {facility:'hull',level:1,nextLevel:2,cost:24000,baseCost:24000,requiredCrewLevel:2},
-      {facility:'infirmary',level:1,nextLevel:2,cost:12000,baseCost:12000,requiredCrewLevel:2},
+      {facility:'hull',level:1,nextLevel:2,cost:24000,baseCost:24000,requiredCrewLevel:2,nextBenefit:{kind:'capacity',current:12,next:16}},
+      {facility:'infirmary',level:1,nextLevel:2,cost:12000,baseCost:12000,requiredCrewLevel:2,nextBenefit:{kind:'profession',id:'doctor',current:.02,next:.04,currentLevelCap:2,nextLevelCap:4}},
     ],
     missions:[{type:'kills',title:'Caçada dos Mares',target:120000,progress:27000,xp:800,capacity:12,completedAt:null,endsAt:endAt}],
     futureMissions:[{title:'Guerra dos Mares',xp:1200}]};
@@ -91,7 +92,7 @@ function createGroup(payload){
         await firstRead;
         if(failRead){failRead=false;return reply({error:'crew_unavailable'},503);}
         search=requestUrl.searchParams.get('q');
-        return reply({crew:{serverNow:now,blockedUntil:null,group,listing:group?[]:listing,invites:[],applications:[],donation,contribution:200},profession});
+        return reply({crew:{serverNow:now,blockedUntil:null,group,listing:group?[]:listing,invites:[],applications:[],donation,coins,contribution:200},profession});
       }
       if(requestPath.endsWith('/commands')){
         const command=route.request().postDataJSON();
@@ -186,14 +187,30 @@ function createGroup(payload){
     assert.equal(await view.locator('.crew-member').count(),1);
     await view.getByText('Navegador',{exact:false}).waitFor();
     await view.getByLabel('Buscar membro').fill('');
-    await view.getByLabel('Ordenar por').selectOption('level');
+    await view.getByRole('combobox',{name:/Ordenar por/}).click();
+    await page.getByRole('option',{name:'Nível',exact:true}).click();
     assert.equal(await view.locator('.crew-member').first().getAttribute('data-crew-member'),peer.id);
     assert(await view.getByText('1 online',{exact:true}).isVisible());
     assert(await view.evaluate(el=>el.closest('.dialog').getBoundingClientRect().bottom-el.querySelector('.crew-member:last-child').getBoundingClientRect().bottom<40),'Roster height follows content');
-    // All nine live views share the inventory frame; scrolling is contained to content.
+    const memberActions=view.getByRole('button',{name:'Ações de Ágata do Farol'});
+    const memberRow=view.locator('[data-crew-member="'+peer.id+'"]');
+    const rowHeight=(await memberRow.boundingBox()).height;
+    await memberActions.click();
+    const memberDialog=page.getByRole('dialog',{name:'Ações de Ágata do Farol'});
+    await memberDialog.getByRole('button',{name:'Ver perfil'}).waitFor();
+    const modalSurface=await memberDialog.locator('.ui-window').evaluate(el=>{
+      const style=getComputedStyle(el);
+      return [style.backgroundColor,style.borderImageSource,style.backdropFilter];
+    });
+    assert.deepEqual(modalSurface,['rgba(20, 22, 25, 0.85)','none','blur(8px)'],'shared window uses the black glass theme');
+    assert.equal((await memberRow.boundingBox()).height,rowHeight,'actions do not resize the roster');
+    await page.keyboard.press('Escape');
+    assert.equal(await memberDialog.isVisible(),false);
+    assert.equal(await memberActions.evaluate(el=>el===document.activeElement),true);
+    // All crew views share the inventory frame; scrolling is contained to content.
     for(const [width,height] of [[1920,1080],[1366,768],[1280,720],[1024,768],[768,1024],[390,844],[360,800],[844,390]]) {
       await page.mouse.move(0,0);await page.setViewportSize({width,height});
-      for(const tab of ['overview','members','profession','missions','contracts','ship','treasury','store','recruitment']) {
+      for(const tab of ['overview','members','profession','missions','ship','treasury','store','recruitment']) {
         await view.locator('[data-crew-view="'+tab+'"]').click();
         const rect=await crewBox();
         const expectedWidth=Math.min(1060,width-16);
@@ -206,11 +223,11 @@ function createGroup(payload){
         assert(await view.locator('.crew-nav button').evaluateAll(es=>es.every(e=>getComputedStyle(e).fontFamily.includes('Inter')&&parseFloat(getComputedStyle(e).borderLeftWidth)<=1)),'modern navigation');
         if(tab==='overview'){
           const icons=view.locator('.crew-nav img.crew-tab-art');
-          assert.equal(await icons.count(),9);
+          assert.equal(await icons.count(),8);
           assert.equal(await icons.evaluateAll(async images=>{
             await Promise.all(images.map(image=>image.decode()));
             return new Set(images.map(image=>image.getAttribute('src'))).size;
-          }),9,'one loaded illustration per crew tab');
+          }),8,'one loaded illustration per crew tab');
         }
         if(tab==='overview'||tab==='treasury')await page.screenshot({path:path.join(out,'crew-'+tab+'-'+width+'.png')});
       }
@@ -220,6 +237,7 @@ function createGroup(payload){
     const overviewSize=await crewBox();
     await view.getByRole('button',{name:'Navio e instalações'}).click();
     const shipSize=await crewBox();
+    assert.match(await view.locator('.crew-next-benefit').innerText(),/12 → 16 vagas/);
     assert.equal(shipSize.width,overviewSize.width,'Crew width stays fixed across views');
     assert(shipSize.height>0&&overviewSize.height>0,'Dialog fits each view');
     await view.locator('.crew-ship-preview summary').click();
@@ -229,13 +247,23 @@ function createGroup(payload){
     await nextShip.scrollIntoViewIfNeeded();
     await page.screenshot({path:path.join(out,'tripulacao-proximo-casco.png')});
     await view.getByRole('button',{name:/Enfermaria/}).click();
+    assert.match(await view.locator('.crew-next-benefit').innerText(),/2% → 4%/);
     await view.locator('.crew-ship-preview summary').click();
     assert.equal(await view.locator('.crew-ship-preview').getAttribute('open'),'');
     assert.equal(await view.locator('.crew-cabin-comparison figure').count(),2);
     await page.screenshot({path:path.join(out,'tripulacao-instalacoes.png')});
-    await view.getByRole('button',{name:'Contratos profissionais',exact:true}).click();
+    await view.getByRole('button',{name:'Minha profissão',exact:true}).click();
+    await view.getByRole('heading',{name:'Contratos da semana'}).waitFor();
+    await view.locator('.crew-profession-summary .crew-glyph').waitFor();
     await view.getByText('Contribuição à Tripulação',{exact:true}).waitFor();
     assert.equal(await view.getByRole('button',{name:/resgatar/i}).count(),0);
+    await view.getByRole('button',{name:'Loja',exact:true}).click();
+    const offer=view.locator('.crew-store-offer');
+    assert.equal(await offer.locator('.crew-store-price b').innerText(),'100');
+    await offer.locator('img').evaluateAll(images=>Promise.all(images.map(image=>image.decode())));
+    await offer.getByRole('button',{name:'Comprar',exact:true}).click();
+    await page.locator('[data-confirm-cancel]').click();
+    assert.equal(sent.length,1,'opening the review does not buy the fragment');
     await page.setViewportSize({width:390,height:844});
     await view.getByRole('button',{name:'Visão geral'}).click();
     assert(await view.evaluate(element=>element.scrollWidth<=element.clientWidth+1));

@@ -1,20 +1,16 @@
-/* Shared nautical finish for the remaining in-game window families. */
+/* Shared layout and black glass for the remaining in-game window families. */
 :root {
-  --nw-type: 'Barlow Semi Condensed', 'Alegreya Sans', sans-serif;
+  --nw-type: var(--glass-type, Inter, system-ui, sans-serif);
   --nw-ink: #f3eee3;
-  --nw-muted: #b7cbd3;
-  --nw-gold: #ffdda0;
+  --nw-muted: var(--glass-muted, #b9bec5);
+  --nw-gold: var(--glass-gold, #e4ce96);
   --nw-cyan: #7be4ec;
   --nw-mint: #89efb5;
   --nw-coral: #ff9f86;
-  --nw-line: #a77e4b70;
-  --nw-surface: linear-gradient(145deg, #112e3b, #081b27 68%);
-  --nw-header: linear-gradient(105deg, #193b48, #0a2431 64%, #081923);
-  --nw-card: linear-gradient(135deg, #12313e, #0a202d 76%);
-  --nw-rope: url('assets/ui/hud-nautical-v2/rope-frame.png');
-  --nw-helm: url('assets/ui/hud-nautical-v2/helm-crest.png');
-  --nw-plate: url('assets/ui/inventory-reference/tab.png');
-  --nw-active: url('assets/ui/inventory-reference/tab-active.png');
+  --nw-line: var(--glass-line, #d4af3759);
+  --nw-surface: var(--glass-surface, #141619d9);
+  --nw-header: #ffffff03;
+  --nw-card: #ffffff04;
 }
 
 /* Original illustrations, parchment and rank insignias keep their own materials. */
@@ -34,7 +30,7 @@
   --exp-title: var(--nw-type);
   --exp-body: var(--nw-type);
   padding: 10px;
-  background: #031218a8;
+  background: #0006;
   backdrop-filter: blur(3px);
 
   &:is(.contracts-mode, .compendium-hd-mode, .voyage-hd-mode) { --nw-width: 1200px; }
@@ -57,8 +53,8 @@
     min-height: 0;
     padding: 0;
     overflow: hidden;
-    border: 8px solid transparent;
-    border-image: var(--nw-rope) 150 / 8px round;
+    border: 1px solid var(--nw-line);
+    border-image: none;
     border-radius: 14px;
     background: var(--nw-surface) padding-box;
     box-shadow: 0 16px 46px #000b;
@@ -92,16 +88,9 @@
     gap: 7px;
     margin: 0;
     color: #ffebc1;
-    font: 700 clamp(19px, 2.4vw, 27px)/1.1 Georgia, serif;
+    font: 700 clamp(17px, 2.4vw, 20px)/1.2 var(--nw-type);
     text-shadow: 0 2px 3px #0009;
     overflow-wrap: anywhere;
-  }
-  & #dialogTitle::before {
-    content: '';
-    width: 1em;
-    height: 1em;
-    flex: none;
-    background: var(--nw-helm) center / contain no-repeat;
   }
   & #closePanel {
     align-self: center;
@@ -111,15 +100,15 @@
     min-width: 36px;
     min-height: 36px;
     padding: 0;
-    border: 4px solid transparent;
-    border-image: var(--nw-plate) 12 fill / 4px stretch;
+    border: 1px solid var(--nw-line);
+    border-image: none;
     border-radius: 6px;
     background: none;
     box-shadow: none;
     color: var(--nw-gold);
     font: 700 24px/1 var(--nw-type);
   }
-  & #closePanel:hover { border-image-source: var(--nw-active); }
+  & #closePanel:hover { background: #d4af3724; border-color: var(--nw-gold); }
   & :is(#closePanel, button, summary):focus-visible { outline: 2px solid var(--nw-gold); outline-offset: -1px; }
   & #dialogBody {
     flex: 1;
@@ -128,7 +117,7 @@
     background: none;
     color: var(--nw-ink);
     font: 500 16px/1.25 var(--nw-type);
-    scrollbar-color: #aa8650 #081a24;
+    scrollbar-color: #aa8650 #141619;
   }
 
   & :is(.captain-profile, .captain-journal, .captain-settings, .boss-dungeon-layout, .help-copy, .social-content, .crew-window, .party-layout, .dev-tools) {
@@ -145,12 +134,12 @@
     border: 1px solid var(--nw-line);
     border-radius: 7px;
     background: var(--nw-card);
-    box-shadow: inset 0 0 0 2px #05162088;
+    box-shadow: inset 0 0 0 2px #0002;
     color: var(--nw-ink);
   }
   & .voyage-map {
-    border: 5px solid transparent;
-    border-image: var(--nw-rope) 150 / 5px round;
+    border: 1px solid var(--nw-line);
+    border-image: none;
     background-clip: padding-box;
   }
   & .contract-card {
@@ -158,13 +147,13 @@
     border-radius: 7px;
   }
   & .hierarchy-intro {
-    border: 5px solid transparent;
-    border-image: var(--nw-rope) 150 / 5px round;
+    border: 1px solid var(--nw-line);
+    border-image: none;
     border-radius: 7px;
     background-clip: padding-box;
   }
   & :is(.comp-filters input, .comp-filters select, .comp-filters .ui-select-trigger) {
-    background: #0b2330;
+    background: #141619;
     border: 1px solid #7494a073;
     color: var(--nw-ink);
     font: 600 15px/1.15 var(--nw-type);
@@ -174,8 +163,8 @@
         .contract-tab, .contract-claim, .comp-availability, .comp-register-action button, .voyage-region-tabs button, .dungeon-enter,
         .social-button, .crew-button, .party-primary, .party-destination-tabs button, .party-region-tabs button,
         .hunt-sectors button, .dialog-button) {
-    border: 4px solid transparent;
-    border-image: var(--nw-plate) 12 fill / 4px stretch;
+    border: 1px solid var(--nw-line);
+    border-image: none;
     border-radius: 6px;
     background: none;
     box-shadow: none;
@@ -186,11 +175,11 @@
   & :is(.captain-tabs button, .comp-ranks button, .comp-type-tabs button, .hierarchy-factions button,
         .contract-tab, .voyage-region-tabs button, .social-button, .crew-button, .party-destination-tabs button,
         .party-region-tabs button, .hunt-sectors button):is([aria-selected=true], [aria-pressed=true], .active) {
-    border-image-source: var(--nw-active);
+    background: #d4af3724; border-color: var(--nw-gold);
     color: #fff1cb;
   }
   & :is(.contract-claim, .comp-register-action button, .dungeon-enter, .party-primary, [data-buy-potion]):enabled {
-    border-image-source: var(--nw-active);
+    background: #d4af3724; border-color: var(--nw-gold);
   }
   & :is(.captain-tabs button, .comp-ranks button, .comp-type-tabs button, .hierarchy-factions button,
         .contract-tab, .contract-claim, .voyage-region-tabs button, .dungeon-enter,
@@ -224,14 +213,14 @@
     max-width: 240px;
     border: 1px solid var(--nw-line);
     border-radius: 6px;
-    background: #0b2530;
+    background: #1a1c20;
     box-shadow: none;
     transform: none;
     color: var(--nw-muted);
     font: 500 13px/1.2 var(--nw-type);
   }
   & :is(.comp-heading-subtitle, #expeditionSubtitle) { margin: 3px 0 0; font: 500 14px/1.2 var(--nw-type); }
-  & #expeditionBack { position: static; flex: none; min-height: 32px; background: #0d2a37; }
+  & #expeditionBack { position: static; flex: none; min-height: 32px; background: #ffffff06; }
   & .comp-fruit-card[aria-pressed=true], & .boss-dungeon-card[aria-pressed=true] {
     border-color: var(--nw-cyan);
     box-shadow: inset 0 0 10px #67d4e552, 0 0 7px #67d4e54d;
@@ -283,7 +272,7 @@
       max-height: min(33dvh, 245px);
       overflow: auto;
       scrollbar-width: thin;
-      scrollbar-color: #aa8650 #081a24;
+      scrollbar-color: #aa8650 #141619;
     }
     & .boss-dungeon-card { min-height: 126px; height: 126px; }
     & :is(.captain-profile, .captain-journal, .captain-settings, .party-layout, .crew-window, .social-content) { font-size: 15px; }
@@ -291,16 +280,44 @@
 }
 
 /* The generic modal primitive and the standalone Forge result are outside #app. */
-body .ui-modal > .ui-window {
-  border: 8px solid transparent;
-  border-image: var(--nw-rope) 150 / 8px round;
+body > .ui-modal { background: #0006; backdrop-filter: blur(3px); }
+body > .ui-modal > .ui-window {
+  border: 1px solid var(--nw-line);
+  border-image: none;
   border-radius: 12px;
-  background: var(--nw-surface) padding-box;
+  background: var(--nw-surface);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--glass-shadow, 0 6px 20px #0004);
   color: var(--nw-ink);
-  font-family: var(--nw-type);
+  font: 13px/1.45 var(--nw-type);
 }
-body .ui-modal .ui-window-header { background: var(--nw-header); border-bottom: 1px solid var(--nw-line); }
-body .ui-modal .ui-window-header h2 { color: var(--nw-gold); font-family: Georgia, serif; }
+body > .ui-modal .ui-window-header {
+  gap: 8px;
+  min-height: 48px;
+  padding: 2px 8px 2px 14px;
+  background: var(--nw-header);
+  border: 0;
+  border-bottom: 1px solid #ffffff18;
+}
+body > .ui-modal .ui-window-header h2 { color: #f5f6f8; font: 700 17px/1.2 var(--nw-type); }
+body > .ui-modal .ui-window-body { padding: 12px; font: inherit; }
+body > .ui-modal :is(.ui-button,.ui-close) {
+  min-height: 36px;
+  padding: 7px 10px;
+  color: #e6e8ec;
+  font: 600 13px/1.35 var(--nw-type);
+  border: 1px solid var(--nw-line);
+  border-image: none;
+  border-radius: 8px;
+  background: #ffffff06;
+  box-shadow: none;
+  text-shadow: none;
+}
+body > .ui-modal .ui-close { border-color: transparent; background: none; font-size: 24px; }
+body > .ui-modal .crew-danger { color: #ffb7b0; border-color: #e67e7355; background: #e67e7310; }
+body > .ui-modal :is(.ui-button,.ui-close):hover:not(:disabled) { border-color: var(--nw-gold); background-color: #ffffff12; }
+body > .ui-modal :is(.ui-button,.ui-close):focus-visible { outline: 2px solid var(--nw-gold); outline-offset: -2px; }
+@media(max-width:760px) { body > .ui-modal :is(.ui-button,.ui-close) { min-height: 44px; } }
 
 @keyframes nw-fruit-reveal {
   from { transform: scale(.88) translateY(6px); opacity: .45; }
@@ -361,12 +378,6 @@ html[data-mare-motion=reduced] #app #panelOverlay.hud-density.boss-dungeons-mode
   font: 650 10px/1.2 var(--glass-type);
   letter-spacing: .09em;
   text-transform: uppercase;
-}
-.forge-presentation-eyebrow::before {
-  content: '';
-  width: 17px;
-  height: 17px;
-  background: var(--nw-helm) center / contain no-repeat;
 }
 .forge-presentation-copy { width: 100%; min-width: 0; overflow-wrap: anywhere; }
 .forge-presentation h3 {
@@ -499,13 +510,13 @@ html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-a
   rotate: 45deg;
   border: solid #b49460;
   border-width: 1px 0 0 1px;
-  background: #173847;
+  background: #202123;
   pointer-events: none;
 }
 #app #mainMenu .character-menu-anchor.quick-above::after {
   inset: auto auto calc(100% + 5px) calc(50% - 4px);
   rotate: 225deg;
-  background: #0a202d;
+  background: #17181a;
 }
 #app.hud-nautical #mainMenu .character-menu-anchor > .character-quick-menu {
   inset: calc(100% + 9px) auto auto calc(50% + var(--quick-shift, 0px));
@@ -515,7 +526,7 @@ html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-a
   padding: 5px;
   border: 1px solid #b49460;
   border-radius: 8px;
-  background: linear-gradient(#173847, #0a202d 86%);
+  background: linear-gradient(#202123, #17181a 86%);
   box-shadow: 0 10px 28px #020b12c9;
   scrollbar-width: thin;
   scrollbar-color: #a68451 #102631;
@@ -536,7 +547,7 @@ html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-a
 #app #mainMenu .character-quick-menu button[role=menuitem] :is(b,strong) { font: 700 15px/1.1 var(--nw-type); }
 #app #mainMenu .character-quick-menu button[role=menuitem]:is(:hover,:focus-visible) {
   border-color: #ae9160;
-  background: #245060;
+  background: #ffffff12;
   outline: none;
 }
 #app #chatCornerToggle[data-private-unread]::after {
@@ -562,16 +573,16 @@ html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-a
 #app #panelOverlay.hud-density.contracts-mode .contract-tab[data-contract-period=professional][aria-pressed=true] {
   border-color: #9cddd0;
   border-image: none;
-  background: #225462;
+  background: #d4af3724;
   color: #e5fffa;
 }
 .contracts-professional .crew-contracts { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
 .contracts-professional .crew-contracts > :not(.crew-objective) { grid-column: 1 / -1; }
 .contracts-professional :is(.crew-cycle,.crew-objective,.crew-future) {
-  border: 1px solid #427580;
+  border: 1px solid #ffffff18;
   border-radius: 7px;
   padding: 9px;
-  background: linear-gradient(115deg,#153946,#0b2533);
+  background: #ffffff04;
 }
 .contracts-professional .crew-cycle { align-items: center; color: #c1dddc; }
 .contracts-professional .crew-cycle b { color: #a4f2df; font-size: 18px; }
@@ -597,7 +608,7 @@ html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-a
   padding: 4px;
   border: 1px solid #496674;
   border-radius: 7px;
-  background: #0c2533;
+  background: #141619;
 }
 #app #panelOverlay.crew-mode .crew-nav button {
   gap: 7px;
@@ -609,10 +620,10 @@ html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-a
 #app #panelOverlay.crew-mode .crew-nav button[aria-pressed=true] {
   border-color: #548b92;
   border-inline-start: 3px solid #99e6d7;
-  background: #1b4250;
+  background: #d4af3724;
   color: #f8ebca;
 }
-#app #panelOverlay.crew-mode .crew-nav button:is(:hover,:focus-visible) { background: #234756; }
+#app #panelOverlay.crew-mode .crew-nav button:is(:hover,:focus-visible) { background: #ffffff12; }
 #app #panelOverlay.crew-mode :is(.crew-card,.crew-banner) { padding: 7px; gap: 6px; }
 #app #panelOverlay.crew-mode :is(.crew-panel-inner,.crew-overview-side) { gap: 6px; }
 #app #panelOverlay.crew-mode .crew-layout[data-overview=true] .crew-vessel-scene { max-width: 310px; }
@@ -627,22 +638,22 @@ html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-a
 #app #panelOverlay.captain-hd-mode[data-ui-panel=settings] .captain-setting-card {
   border: 1px solid #416375;
   border-radius: 7px;
-  background: #0b202c;
+  background: #ffffff04;
 }
 #app #panelOverlay.hud-density.captain-hd-mode[data-ui-panel=settings] .captain-setting-heading {
   min-height: 54px;
   padding: 5px 8px;
   gap: 9px;
-  background: linear-gradient(100deg,#143340,#0a202e);
+  background: #ffffff05;
   border-radius: 6px;
 }
-#app #panelOverlay.captain-hd-mode[data-ui-panel=settings] .captain-setting-heading[aria-expanded=true] { background: #204858; }
+#app #panelOverlay.captain-hd-mode[data-ui-panel=settings] .captain-setting-heading[aria-expanded=true] { background: #d4af3724; }
 #app #panelOverlay.captain-hd-mode[data-ui-panel=settings] .captain-setting-icon {
   flex-basis: 35px;
   height: 35px;
   border: 1px solid #9a8055;
   border-radius: 6px;
-  background: #102834;
+  background: #ffffff06;
 }
 #app #panelOverlay.captain-hd-mode[data-ui-panel=settings] .captain-setting-icon > .captain-icon { width: 24px; height: 24px; }
 #app #panelOverlay.captain-hd-mode[data-ui-panel=settings] .captain-setting-copy {
@@ -665,7 +676,7 @@ html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-a
   padding: 12px;
   border: 1px solid #4d7382;
   border-radius: 7px;
-  background: #102d3a;
+  background: #ffffff04;
 }
 .captain-discord h3 { margin: 0 0 5px; font-size: 18px; }
 .captain-discord a {
@@ -675,12 +686,12 @@ html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-a
   padding: 4px 12px;
   border: 1px solid #cba569;
   border-radius: 5px;
-  background: #1e495a;
+  background: #d4af3724;
   color: #fff0ce;
   font-weight: 700;
   text-decoration: none;
 }
-.captain-discord a:is(:hover,:focus-visible) { background: #2c5f71; }
+.captain-discord a:is(:hover,:focus-visible) { background: #d4af3744; }
 
 /* Keep the recurring, one-time and professional categories in the same board. */
 #app #panelOverlay.contracts-mode .contracts-tabs:has([data-contract-period="journey"]) {

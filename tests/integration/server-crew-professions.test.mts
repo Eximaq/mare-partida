@@ -71,13 +71,23 @@ test('server caps professional XP and applies the strongest offline specialist s
   await b.act('crew.profession',{profession:'cook'});
   await a.act('crew.create',{name:'Tripulação de Teste',tag:'TEST',flag:'1'+'0'.repeat(1023),policy:'open',minLevel:1});
   const crew=await transaction(pool,c=>readCrew(c,a.id));
+  const project=(facility:string)=>transaction(pool,async c=>(await readCrew(c,a.id)).group?.projects.find(p=>p.facility===facility));
+  assert.deepEqual(crew.group?.projects.find(p=>p.facility==='hull')?.nextBenefit,{kind:'capacity',current:12,next:16});
+  assert.deepEqual(crew.group?.projects.find(p=>p.facility==='warehouse')?.nextBenefit,{kind:'none'});
+  assert.deepEqual(crew.group?.projects.find(p=>p.facility==='infirmary')?.nextBenefit,{
+    kind:'profession',id:'doctor',current:0,next:0,currentLevelCap:2,nextLevelCap:4,
+  });
   await b.act('crew.join',{crewId:crew.group!.id});
   const benefits=()=>transaction(pool,c=>readCharacterCrewBenefits(c,a.id));
   assert.equal((await benefits()).cook,.002);
   await pool.query('UPDATE mare_game.character_professions SET experience=10799 WHERE character_id=$1',[b.id]);
   assert.equal((await benefits()).cook,.004,'facility 1 uses at most profession level 2');
+  assert.deepEqual((await project('galley'))?.nextBenefit,{
+    kind:'profession',id:'cook',current:.004,next:.008,currentLevelCap:2,nextLevelCap:4,
+  });
   await pool.query("UPDATE mare_game.crews SET facilities=jsonb_set(facilities,'{galley}','5') WHERE id=$1",[crew.group!.id]);
   assert.equal((await benefits()).cook,.018);
+  assert.equal((await project('galley'))?.nextBenefit,null);
   const {week}= (await transaction(pool,c=>readProfession(c,b.id)))!;
   const floor=week!.objectives.find(o=>o.id==='prison')!.floor!;
   await transaction(pool,c=>creditProfessionPrison(c,b.id,'cap-floor',floor));

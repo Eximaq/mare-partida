@@ -27,10 +27,11 @@
     navigator:'<circle cx="12" cy="12" r="9"/><path d="m15 9-2 4-4 2 2-4z"/>',
   };
   const glyph=name=>'<svg class="crew-glyph" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'+glyphs[name]+'</svg>';
+  const professionIcon=id=>{const key=id==='commander'?'command':id;return glyphs[key]?emblem(glyph(key),key):'';};
   const emblem=(content,tone='nav')=>'<span class="crew-emblem" data-tone="'+escape(tone)+'" aria-hidden="true">'+content+'</span>';
   const tabs=[
     ['overview','Visão geral'],['members','Membros'],['profession','Minha profissão','Profissão'],
-    ['missions','Missões coletivas','Missões'],['contracts','Contratos profissionais','Contratos'],['ship','Navio e instalações','Navio'],
+    ['missions','Missões coletivas','Missões'],['ship','Navio e instalações','Navio'],
     ['treasury','Tesouraria'],['store','Loja'],['recruitment','Recrutamento'],
   ];
   const policyText=policy=>policy==='open'?'Entrada livre':'Por aprovação';
@@ -56,7 +57,7 @@
     if(!max)return '';
     return '<div class="crew-progress"><progress aria-label="'+escape(label)+' · '+number(current)+' de '+number(max)+'" value="'+Math.min(current,max)+'" max="'+max+'"></progress><small>'+number(current)+' / '+number(max)+(label.startsWith('XP')?' XP':'')+'</small></div>';
   }
-  function contracts(data,{compact=false}={}){
+  function contracts(data,{collapseHistory=false}={}){
     if(!data?.profession)return '<div class="crew-contracts">'+empty('Escolha uma profissão em Social → Tripulação para iniciar seus contratos.')+'</div>';
     const week=data.week,profession=data.choices?.find(choice=>choice.id===data.profession);
     const cards=(week?.objectives||[]).map(objective=>{
@@ -71,7 +72,9 @@
       })[objective.id]||'<span aria-hidden="true">▤</span>';
       return '<article class="crew-objective" data-completed="'+completed+'"><span class="crew-objective-icon">'+artwork+'</span><div><strong>'+escape(objective.title)+'</strong><p>'+escape(objective.description)+'</p>'+progress(objective.progress,objective.target)+quantity+detail+'</div><small class="crew-objective-xp">'+(completed?'Creditado':'+'+number(objective.xp)+' XP')+'</small></article>';
     }).join('');
-    const history=compact?'':section('Histórico de XP',(data.history||[]).map(entry=>row(entry.title,date(entry.creditedAt),'<b>+'+number(entry.xp)+' XP</b>')).join('')||empty('Nenhum crédito registrado.'));
+    const entries=(data.history||[]).map(entry=>row(entry.title,date(entry.creditedAt),'<b>+'+number(entry.xp)+' XP</b>')).join('');
+    const history=collapseHistory?(entries?'<details class="crew-secondary"><summary>Histórico de XP</summary>'+entries+'</details>':''):
+      section('Histórico de XP',entries||empty('Nenhum crédito registrado.'));
     return '<div class="crew-contracts">'+(week?'<p class="crew-cycle"><b>'+number(week.earnedXp)+' / '+number(week.limit)+' XP</b><span>Renova em '+escape(date(week.endAt))+'</span></p>':'')+(cards||empty('O próximo contrato aparecerá quando o ciclo for aberto.'))+
       history+'</div>';
   }
@@ -118,6 +121,21 @@
     const future=compact?'':(group.futureMissions||[]).map(mission=>'<div class="crew-future"><b>'+escape(mission.title)+'</b><span>Expansão futura · '+number(mission.xp)+' XP da tripulação</span></div>').join('');
     return (cards||empty('Nenhuma missão ativa.'))+(future?'<details class="crew-secondary"><summary>Próximas missões</summary>'+future+'</details>':'');
   }
+  const benefitPercent=new Intl.NumberFormat('pt-BR',{style:'percent',maximumFractionDigits:1});
+  function renderProjectBenefit(nextBenefit){
+    if(!nextBenefit)return '';
+    let result,detail='';
+    switch(nextBenefit.kind){
+      case 'capacity':result=number(nextBenefit.current)+' → '+number(nextBenefit.next)+' vagas';break;
+      case 'profession':
+        result=benefitPercent.format(nextBenefit.current)+' → '+benefitPercent.format(nextBenefit.next);
+        detail='<small>Limite da profissão: Nv. '+number(nextBenefit.currentLevelCap)+' → '+number(nextBenefit.nextLevelCap)+'</small>';
+        break;
+      case 'none':result='Sem bônus adicional configurado';break;
+      default:return '';
+    }
+    return '<p class="crew-next-benefit"><span>Após a obra</span><b>'+escape(result)+'</b>'+detail+'</p>';
+  }
   function renderShip(group,activeFacility,art){
     const level=id=>group.facilities[id]??1;
     const roomArt=(id,atLevel)=>art?.[id==='hull'?'bunks':id]?.[Math.min(2,atLevel)];
@@ -125,8 +143,8 @@
     const controls='<div class="crew-facilities" role="group" aria-label="Instalações">'+Object.entries(facilities).map(([id,[name,,symbol]])=>'<button class="crew-facility" type="button" data-crew-facility="'+id+'" data-level="'+level(id)+'" aria-label="'+escape(name)+' Nv. '+number(level(id))+'" aria-pressed="'+(id===activeFacility)+'">'+facilityImage(id,level(id),symbol)+'<strong>'+escape(facilityLabels[id])+'</strong><small>Nv. '+number(level(id))+'</small></button>').join('')+'</div>';
     const [name,benefit,symbol,bonus]=facilities[activeFacility];
     const project=(group.projects||[]).find(entry=>entry.facility===activeFacility&&entry.nextLevel);
-    const boost=bonus?'<p>Benefício atual: '+escape(new Intl.NumberFormat('pt-BR',{style:'percent',maximumFractionDigits:1}).format(group.benefits?.[bonus]||0))+' · Aproveita profissão até o nível '+Math.min(10,level(activeFacility)*2)+'.</p>':'';
-    const cost=project?'<small>Nível '+number(project.nextLevel)+' · Exige tripulação Nv. '+number(project.requiredCrewLevel)+' · '+number(project.cost)+' Berry</small>':'<small>Nível máximo</small>';
+    const boost=project?.nextBenefit?renderProjectBenefit(project.nextBenefit):bonus?'<p>Atual: '+escape(benefitPercent.format(group.benefits?.[bonus]||0))+'</p>':'';
+    const cost=project?'<small>Nv. '+number(project.nextLevel)+' · Tripulação Nv. '+number(project.requiredCrewLevel)+'+ · '+berryAmount(project.cost)+'</small>':'<small>Nível máximo</small>';
     const allowed=group.role==='captain'&&project&&group.level>=project.requiredCrewLevel&&Number(group.treasury)>=Number(project.cost);
     const action=project&&group.role==='captain'?button('upgrade','Iniciar obra',activeFacility,!allowed,'crew-primary'):'';
     const roomComparison=project&&activeFacility!=='hull'&&roomArt(activeFacility,project.nextLevel);
@@ -139,12 +157,14 @@
   function renderProfession(data){
     if(!data)return empty('Profissão indisponível.');
     if(!data.profession)return section('Escolha uma profissão permanente','<div class="crew-choices">'+(data.choices||[]).map(choice=>
-      '<article><strong class="crew-profession-label">'+emblem(glyph(choice.id),choice.id)+escape(choice.name)+'</strong><p>'+escape(choice.benefit)+'</p>'+button('profession','Escolher',choice.id)+'</article>').join('')+'</div>');
+      '<article><strong class="crew-profession-label">'+professionIcon(choice.id)+escape(choice.name)+'</strong><p>'+escape(choice.benefit)+'</p>'+button('profession','Escolher',choice.id)+'</article>').join('')+'</div>');
     const choice=data.choices?.find(profession=>profession.id===data.profession);
-    return section(choice?.name||professions[data.profession]||'Minha profissão','<p><b>Profissão · Nv. '+number(data.level)+'</b></p>'+
-      progress(data.experience,data.nextLevelXp,data.levelStartXp,'XP profissional')+'<p>'+escape(choice?.benefit)+'</p>'+
-      '<details class="crew-secondary"><summary>Benefício coletivo</summary><p>Depende da instalação e do especialista elegível de maior nível.</p></details>'+
-      (data.week?button('contracts-view','Ver contratos da semana'):''));
+    const title=choice?.name||professions[data.profession]||data.profession;
+    return '<section class="crew-card crew-profession-summary"><div class="crew-profession-label">'+professionIcon(data.profession)+
+      '<div><h3>'+escape(title)+'</h3><small>Nv. '+number(data.level)+'</small></div></div>'+
+      progress(data.experience,data.nextLevelXp,data.levelStartXp,'XP profissional')+(choice?.benefit?'<p>'+escape(choice.benefit)+'</p>':'')+'</section>'+
+      '<section class="crew-card crew-profession-contracts"><h3>'+asset('assets/ui/crew/tabs/contracts.svg')+'Contratos da semana</h3>'+
+      contracts(data,{collapseHistory:true})+'</section>';
   }
   const memberOrders={rank:'Cargo',level:'Nível',contribution:'Contribuição',online:'Presença',name:'Nome'};
   const memberSearch=name=>name.normalize('NFD').replace(/\p{M}/gu,'').toLocaleLowerCase('pt-BR').trim();
@@ -162,17 +182,20 @@
       const own=member.id===selfId,known=typeof member.online==='boolean',profession=member.profession;
       const classArt=classIcon(member.classId);
       const presence=known?'<small class="crew-presence" data-online="'+member.online+'">'+(member.online?'Online':'Offline')+'</small>':'';
-      const professionLabel=profession?'<span class="crew-profession-label">'+emblem(glyph(profession.id==='commander'?'command':profession.id),profession.id)+'<span>'+escape(professions[profession.id]||profession.id)+'<small>Profissão · Nv. '+number(profession.level)+'</small></span></span>':'<small>Sem profissão</small>';
+      const professionLabel=profession?'<span class="crew-profession-label">'+professionIcon(profession.id)+'<span>'+escape(professions[profession.id]||profession.id)+'<small>Nv. '+number(profession.level)+'</small></span></span>':'<small>Sem profissão</small>';
       const contact=known&&!own?button('profile','Ver perfil',member.id)+
         (member.actions?.message===null?button('message','Conversar',member.id,!canWrite):'')+
         (member.actions?.party===null?button('party','Convidar para grupo',member.id,!canWrite):''):'';
       const manage=group.role==='captain'&&!own&&member.role!=='captain'?button('role',member.role==='officer'?'Remover cargo':'Nomear oficial',member.id)+
         button('transfer','Transferir liderança',member.id)+button('kick','Expulsar',member.id,false,'crew-danger'):'';
-      const actions=contact||manage?'<details class="crew-member-actions" data-crew-member-menu="'+escape(member.id)+'"><summary aria-label="Ações de '+escape(member.name)+'">Ações</summary><div>'+contact+manage+'</div></details>':'';
+      const actions=contact||manage?'<div class="crew-member-actions"><button type="button" class="crew-button crew-member-action-trigger" data-crew-action="member-menu" data-value="'+escape(member.id)+
+        '" aria-haspopup="dialog" aria-label="Ações de '+escape(member.name)+'"><span aria-hidden="true">⋯</span>Ações</button>'+
+        '<template><div class="crew-member-dialog-actions">'+contact+manage+'</div></template></div>':'';
       return '<article class="crew-member" data-crew-member="'+escape(member.id)+'"><div class="crew-member-identity">'+
         (root.MareSocialUI?.portrait(member,'crew')||'')+
         '<div><strong>'+escape(member.name)+'</strong><span class="crew-member-level">Nv. '+number(member.level)+'</span>'+presence+'</div></div>'+
-        '<div class="crew-member-meta"><span class="crew-member-class">'+(classArt?emblem(asset(classArt),'class'):'')+escape(classes[member.classId]||member.classId)+'</span><small class="crew-role" data-role="'+escape(member.role)+'">'+escape(roles[member.role])+'</small></div>'+
+        '<span class="crew-member-class">'+(classArt?emblem(asset(classArt),'class'):'')+'<span>'+escape(classes[member.classId]||member.classId)+'</span></span>'+
+        '<small class="crew-role" data-role="'+escape(member.role)+'">'+escape(roles[member.role])+'</small>'+
         '<div class="crew-member-profession">'+professionLabel+'</div>'+
         '<div class="crew-member-totals"><small><b>'+number(member.power)+'</b> poder</small><small><b>'+number(member.contribution)+'</b> Berry doados</small></div>'+actions+'</article>';
     }).join('')||empty('Nenhum membro corresponde à busca.');
@@ -206,15 +229,31 @@
     return section('Tesouraria','<div class="crew-treasury-balance"><b>'+berryAmount(group.treasury)+'</b></div>'+
       facts+donation+'<details class="crew-secondary"><summary>Movimentações</summary>'+(history||empty('Nenhuma movimentação.'))+'</details>');
   }
+  function contributionAmount(value,label='Moedas de Contribuição'){
+    return '<span class="crew-contribution-amount">'+asset('assets/ui/crew/contribution-coin.svg',label)+'<b>'+number(value)+'</b></span>';
+  }
   function contributionShop(crew,canBuy){
     const coins=crew.coins;
     if(!coins)return '';
-    const claims=coins.claims.map(m=>row(m.title,'Missão concluída · '+number(m.coins)+' moedas',button('claim-coins','Resgatar',m.id))).join('');
-    const offer=canBuy?row('Fragmento de Akuma Rank C','1 unidade negociável · '+number(coins.price)+' moedas',button('buy-fragment','Comprar',null,coins.balance<coins.price,'crew-primary')):'';
-    return section('Moedas de Contribuição','<p><b>'+number(coins.balance)+'</b> moedas disponíveis</p>'+offer+claims);
+    const balance='<div class="crew-store-wallet"><span>Moedas de Contribuição</span>'+contributionAmount(coins.balance,'')+'</div>';
+    const claims=coins.claims.map(m=>'<div class="crew-row crew-store-reward"><div><strong>'+escape(m.title)+'</strong>'+
+      contributionAmount(m.coins)+'</div>'+button('claim-coins','Resgatar',m.id)+'</div>').join('');
+    const rewards=claims?'<section class="crew-store-rewards"><h4>Recompensas para resgatar</h4>'+claims+'</section>':'';
+    if(!canBuy)return section('Saldo e recompensas',balance+rewards);
+
+    const fragment=root.MareBossDungeons?.fragments.find(item=>item.rank==='C');
+    const recipe=root.MareBossDungeons?.recipes.C;
+    const offer=fragment&&recipe?'<article class="crew-store-offer"><div class="crew-store-item-art">'+asset(fragment.icon_path)+'</div>'+
+      '<strong class="crew-store-item-name">'+escape(fragment.name)+'</strong>'+
+      '<p>1 unidade negociável. Junte '+number(recipe.quantity)+' para fabricar uma Akuma no Mi de Rank C.</p>'+
+      '<div class="crew-store-price">'+contributionAmount(coins.price)+'</div>'+
+      button('buy-fragment','Comprar',null,coins.balance<coins.price,'crew-primary')+
+      (coins.balance<coins.price?'<small>Saldo insuficiente</small>':'')+'</article>':empty('Oferta indisponível.');
+    return '<section class="crew-card crew-store"><header class="crew-store-header"><h3>Loja da Tripulação</h3>'+balance+
+      '</header><div class="crew-store-layout">'+offer+rewards+'</div></section>';
   }
   function unbound(crew,profession,editor,view,draft,query){
-    if(view==='profession'||view==='contracts')return '<div class="crew-panel-inner">'+button('back','Voltar ao recrutamento')+(view==='profession'?renderProfession(profession):section('Contratos profissionais',contracts(profession)))+'</div>';
+    if(view==='profession')return '<div class="crew-panel-inner">'+button('back','Voltar ao recrutamento')+renderProfession(profession)+'</div>';
     const remainingMinutes=crew.blockedUntil?Math.max(0,Math.ceil((new Date(crew.blockedUntil)-new Date(crew.serverNow))/60000)):0;
     const locked=remainingMinutes>0;
     if(view==='create'&&!locked){
@@ -246,21 +285,20 @@
       case 'members':content=roster(group,selfId,tools);break;
       case 'profession':content=renderProfession(profession);break;
       case 'missions':content=section('Missões coletivas',renderMissions(group));break;
-      case 'contracts':content=section('Contratos profissionais',contracts(profession));break;
       case 'ship':content=section('Navio e instalações',renderShip(group,activeFacility,art));break;
       case 'treasury':content=treasury(crew,group);break;
       case 'store':content=contributionShop(crew,true);break;
       case 'recruitment':content=recruitment(crew,group);break;
       default:content=section('Navio da tripulação',vessel(group,art)+button('ship-view','Ver instalações'))+section('Missão coletiva',renderMissions(group,true)+button('missions-view','Ver missões'));
     }
-    const sidebar=view==='overview'?'<aside class="crew-overview-side">'+section('Tesouraria','<strong>'+berryAmount(group.treasury)+'</strong>'+button('treasury-view','Ver tesouraria'))+section('Minha profissão',profession?.profession?'<strong>'+escape(professions[profession.profession])+' · Nv. '+number(profession.level)+'</strong>'+progress(profession.experience,profession.nextLevelXp,profession.levelStartXp,'XP profissional')+button('contracts-view','Ver contratos'):button('profession-view','Escolher profissão'))+'</aside>':'';
+    const sidebar=view==='overview'?'<aside class="crew-overview-side">'+section('Tesouraria','<strong>'+berryAmount(group.treasury)+'</strong>'+button('treasury-view','Ver tesouraria'))+section('Minha profissão',profession?.profession?'<strong>'+escape(professions[profession.profession])+' · Nv. '+number(profession.level)+'</strong>'+progress(profession.experience,profession.nextLevelXp,profession.levelStartXp,'XP profissional')+button('profession-view','Ver profissão e contratos'):button('profession-view','Escolher profissão'))+'</aside>':'';
     return header+'<div class="crew-layout" data-overview="'+(view==='overview')+'"><nav class="crew-nav" aria-label="Áreas da tripulação">'+tabs.map(([id,label,short])=>'<button type="button" data-crew-view="'+id+'" aria-label="'+escape(label)+'" aria-pressed="'+(view===id)+'">'+'<img class="crew-tab-art" src="assets/ui/crew/tabs/'+id+'.svg" width="26" height="26" alt="">'+escape(short||label)+'</button>').join('')+'</nav><div class="crew-panel-inner">'+content+'</div>'+sidebar+'</div>';
   }
 
   function create({body,read,command,confirm,onData,onError,selfId=()=>null,available=()=>true,art={},classIcon=()=>null,drawPortrait,contact,canWrite=available}){
     let active=false,phase='loading',data=null,query='',view='overview',facility='hull',busy=false;
     let timer=null,revision=0,pending=null,lastPaint='',error='',draft,editor;
-    let filter='',sort='rank';
+    let filter='',sort='rank',memberWindow=null;
     const resetDraft=()=>{draft={name:'',tag:'',policy:'open',minLevel:1};editor=flags.create();};
     resetDraft();
     const block=()=>body.querySelector('.crew-window');
@@ -281,7 +319,7 @@
     }
     function paint(force=false){
       if(!active)return;
-      if(!force&&(view==='create'||body.contains(document.activeElement)&&document.activeElement.matches('input,select,canvas')))return;
+      if(!force&&(view==='create'||memberWindow||body.contains(document.activeElement)&&document.activeElement.matches('input,select,canvas')))return;
       const isOnline=available();
       const markup=!isOnline?section('Tripulações online',empty('Conecte seu personagem ao servidor para consultar a tripulação.')):
         phase==='loading'?section('Consultando o servidor','<p role="status">Verificando seu vínculo…</p>'):
@@ -293,9 +331,7 @@
       const previous=body.querySelector('.crew-window'),scroll=previous?.scrollTop||0;
       const focused=previous?.contains(document.activeElement)?document.activeElement:null;
       const key=focused?.dataset.crewView||focused?.dataset.crewFacility;
-      const menus=new Set(Array.from(body.querySelectorAll('[data-crew-member-menu][open]'),node=>node.dataset.crewMemberMenu));
       body.innerHTML=html;
-      for(const menu of body.querySelectorAll('[data-crew-member-menu]'))menu.open=menus.has(menu.dataset.crewMemberMenu);
       refreshPortraits();
       for(const artwork of body.querySelectorAll('[data-crew-art]')){
         if(artwork.complete&&artwork.naturalWidth)artwork.hidden=false;
@@ -304,8 +340,6 @@
       block().scrollTop=scroll;
       if(key)Array.from(body.querySelectorAll('[data-crew-view],[data-crew-facility]')).find(node=>(node.dataset.crewView||node.dataset.crewFacility)===key)?.focus({preventScroll:true});
       if(focused?.dataset.crewAction)Array.from(body.querySelectorAll('[data-crew-action]')).find(el=>el.dataset.crewAction===focused.dataset.crewAction&&el.dataset.value===focused.dataset.value)?.focus({preventScroll:true});
-      const focusMenu=focused?.parentElement?.dataset.crewMemberMenu;
-      if(focusMenu)Array.from(body.querySelectorAll('[data-crew-member-menu]')).find(el=>el.dataset.crewMemberMenu===focusMenu)?.querySelector('summary')?.focus({preventScroll:true});
       if(view==='create'&&phase==='ready')editor.mount(body);
     }
     async function refresh({showLoading=false}={}){
@@ -398,10 +432,29 @@
       }else if(action==='recruitment')void send(action,{policy:fields.get('policy'),minLevel:Number(fields.get('minLevel'))});
       else if(action==='invite')void send(action,{name:String(fields.get('name')).trim()});
     });
-    body.addEventListener('click',event=>{
+    function closeMemberWindow(){
+      if(!memberWindow)return;
+      const window=memberWindow;
+      memberWindow=null;
+      root.MareUI.destroy(window);
+    }
+    function onCrewClick(event){
       const node=event.target.closest('[data-crew-action],[data-crew-view],[data-crew-facility]');
       if(!active||!node||busy||node.disabled)return;
       const {crewAction:action,value,crewView,crewFacility}=node.dataset;
+      if(action==='member-menu'){
+        const member=data?.crew.group?.members.find(person=>person.id===value);
+        if(!member)return;
+        node.focus({preventScroll:true});
+        memberWindow=root.MareUI.createWindow({
+          id:'crewMemberActionsDialog',title:'Ações de '+member.name,
+          body:node.nextElementSibling.innerHTML,onClose:closeMemberWindow,
+        });
+        memberWindow.querySelector('.ui-window-body').addEventListener('click',onCrewClick);
+        root.MareUI.open(memberWindow);
+        return;
+      }
+      closeMemberWindow();
       if(crewView||crewFacility){
         if(crewView)view=crewView;
         if(crewFacility){facility=crewFacility;if(view==='overview')view='ship';}
@@ -413,8 +466,8 @@
       if(action==='claim-coins'){void send(action,{missionId:value});return;}
       if(action==='buy-fragment'){review('Comprar Fragmento de Akuma Rank C?',number(data.crew.coins.price)+' Moedas de Contribuição por 1 fragmento negociável.',action,{},'Comprar fragmento');return;}
       if(action==='retry'){void refresh({showLoading:true});return;}
-      if(['back','create-view','profession-view','treasury-view','ship-view','missions-view','contracts-view'].includes(action)){
-        view={back:'overview','create-view':'create','profession-view':'profession','treasury-view':'treasury','ship-view':'ship','missions-view':'missions','contracts-view':'contracts'}[action];
+      if(['back','create-view','profession-view','treasury-view','ship-view','missions-view'].includes(action)){
+        view={back:'overview','create-view':'create','profession-view':'profession','treasury-view':'treasury','ship-view':'ship','missions-view':'missions'}[action];
         error='';
         paint(true);
         block().scrollTop=0;
@@ -434,7 +487,8 @@
         case 'upgrade':if(project)review('Confirmar obra?','Melhore '+facilities[value][0]+' para o nível '+project.nextLevel+' por '+number(project.cost)+' Berry da tesouraria.','upgrade',{facility:value,expectedLevel:project.level},'Iniciar obra');break;
         case 'profession':review('Escolher profissão permanente?',professions[value]+' será a profissão deste personagem.','profession',{profession:value},'Confirmar profissão');break;
       }
-    });
+    }
+    body.addEventListener('click',onCrewClick);
     function open(){
       if(active){if(!block())paint(true);return;}
       active=true;
@@ -446,6 +500,7 @@
     }
     function close(){
       if(!active)return;
+      closeMemberWindow();
       active=false;
       ++revision;
       pending=null;

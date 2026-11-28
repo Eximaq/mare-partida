@@ -1,7 +1,10 @@
 import {randomUUID} from 'node:crypto';
+import {createRequire} from 'node:module';
 import type {PoolClient} from 'pg';
 import {AuthFault} from '../auth/errors.js';
 import {crewCapacity,type CrewFacilities} from './crew-config.js';
+
+const hierarchy=createRequire(import.meta.url)('../../../../hierarchy-system.js');
 
 export type SocialContactCommand = {requestId:string} & (
   | {action:'friend.request';payload:{targetId:string}}
@@ -189,6 +192,7 @@ export async function executeSocialContact(client:PoolClient,id:string,input:Soc
 
 type PersonRow = {
   id:string; name:string; class_id:string; faction_id:string; level:number;
+  hierarchy_tier:number|null; hierarchy_power:number|null;
   appearance:unknown; preferences:{hideHeadgear?:boolean;hideItems?:boolean}|null;
   equipment:Record<string,{def?:number}>|null;
   crew_tag:string|null; crew_flag:string|null; crew_id:string|null;
@@ -252,6 +256,11 @@ function projectPerson(person:PersonRow,actor:ActorInvites,friendOrConversation:
   return {
     id:person.id,name:person.name,classId:person.class_id,factionId:person.faction_id,level:person.level,
     appearance96:person.appearance,hideHeadgear:!!person.preferences?.hideHeadgear,equipment,
+    ...(!blocked?{publicProfile:{
+      title:hierarchy.title(person.faction_id,person.hierarchy_tier??1) as string,
+      power:person.hierarchy_power,
+      equipmentHidden:!!person.preferences?.hideItems,
+    }}:{}),
     ...(person.crew_tag&&person.crew_flag?{crew:{tag:person.crew_tag,flag:person.crew_flag}}:{}),
     online:blocked?false:person.online,lastActivity:blocked?null:person.last_seen?.toISOString()??null,
     blockedByYou:person.blocked_by_you,
@@ -266,7 +275,7 @@ function projectPerson(person:PersonRow,actor:ActorInvites,friendOrConversation:
 async function readPeople(client:PoolClient,id:string,ids:readonly string[],actor:ActorInvites){
   if(!ids.length)return [];
   return (await client.query<PersonRow>(`
-    SELECT c.id,c.name,c.class_id,c.faction_id,coalesce(g.level,1) level,
+    SELECT c.id,c.name,c.class_id,c.faction_id,coalesce(g.level,1) level,rh.tier hierarchy_tier,rh.power hierarchy_power,
       pr.appearance,pr.preferences,i.equipment,h.tag crew_tag,h.flag crew_flag,h.id crew_id,
       pm.party_id,((b.simulation->>'prison') IS NOT NULL OR (b.simulation->>'dungeon') IS NOT NULL) party_unavailable,
       (cb.until_at>clock_timestamp()) IS TRUE crew_entry_blocked,
@@ -280,6 +289,7 @@ async function readPeople(client:PoolClient,id:string,ids:readonly string[],acto
     FROM mare_game.characters c
     JOIN mare_game.accounts a ON a.id=c.account_id
     LEFT JOIN mare_game.character_progression g ON g.character_id=c.id
+    LEFT JOIN mare_game.character_hierarchy rh ON rh.character_id=c.id
     LEFT JOIN mare_game.character_profile pr ON pr.character_id=c.id
     LEFT JOIN mare_game.game_inventory i ON i.character_id=c.id
     LEFT JOIN mare_game.character_control cc ON cc.character_id=c.id

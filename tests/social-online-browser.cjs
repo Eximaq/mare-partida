@@ -12,7 +12,7 @@ const forge=require('../forge-system.js');
 const itemCatalog=require('../item-catalog.js').create({forge,prison:require('../prison-system.js'),haki:require('../haki-system.js'),akuma:require('../akuma-system.js'),hakiProgression:require('../haki-progression.js')});
 const player={id:'11111111-1111-4111-8111-111111111111',name:'Navegante',classId:'sword',factionId:'pirate'};
 const peer={id:'22222222-2222-4222-8222-222222222222',name:'Lia do Farol',classId:'healer',factionId:'marine',level:46,online:true,
-  appearance96:A.defaults,equipment:{},crew:{tag:'FAR',flag:'1'.repeat(1024)},actions:{message:null,party:'party_full',crew:'crew_not_joined'}};
+  appearance96:A.defaults,equipment:{},publicProfile:{title:'Tenente',power:18490,equipmentHidden:true},crew:{tag:'FAR',flag:'1'.repeat(1024)},actions:{message:null,party:'party_full',crew:'crew_not_joined'}};
 const letterId='33333333-3333-4333-8333-333333333333';
 const tradeId='44444444-4444-4444-8444-444444444444';
 const requestId='55555555-5555-4555-8555-555555555555';
@@ -140,7 +140,12 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     assert.equal(await page.locator('[data-social-action=profile] svg').count(),1,'Friends controls use labeled vectors');
     await page.getByRole('button',{name:'Ver perfil',exact:true}).click();
     await page.getByRole('heading',{name:'Perfil do personagem'}).waitFor();
-    assert(await page.locator('.social-person-large').isVisible());
+    const publicProfile=page.locator('[data-social-profile="'+peer.id+'"]');
+    await publicProfile.getByRole('heading',{name:/Lia do Farol/}).waitFor();
+    assert.equal(await publicProfile.locator('.social-profile-title').innerText(),'Tenente');
+    assert.match(await publicProfile.locator('.social-profile-class').innerText(),/Curandeiro|Suporte/);
+    assert.match(await publicProfile.locator('.social-profile-power').innerText(),/18\.490/);
+    assert(await publicProfile.getByText('Equipamentos ocultos.').isVisible());
     await page.getByRole('button',{name:'Voltar',exact:true}).click();
     assert.equal(await page.locator('#socialFriendsFilter').count(),0,'No local filter for a single friend');
     assert.equal(await page.locator('[data-friends-section=requests]').count(),0,'No empty requests section');
