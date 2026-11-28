@@ -1,6 +1,6 @@
 import type {PoolClient} from 'pg';
 import {createRequire} from 'node:module';
-import {characterStateSchema,appearanceSchema,preferencesSchema} from '@mare/shared';
+import {characterStateSchema,appearanceSchema,preferencesSchema,type OriginalInventory} from '@mare/shared';
 import {AuthFault} from '../auth/errors.js';
 import {attributeView} from './attributes.js';
 import {talentView} from './talents.js';
@@ -19,7 +19,7 @@ export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
 }
 
 /** Read-only inputs for a single target already authorized by the Social projection. */
-export async function readPublicBountyInputs(c:PoolClient,id:string){
+export async function readPublicProfileInputs(c:PoolClient,id:string){
  return (await loadCombatInputs(c,[id],false)).get(id);
 }
 
@@ -55,8 +55,15 @@ async function loadCombatInputs(c:PoolClient,ids:readonly string[],initializePro
   const fallback=row.preferences?null:await readProfile(c,row.id);
   const preferences=preferencesSchema.parse(row.preferences??fallback?.preferences),appearance=appearanceSchema.parse(row.appearance??fallback?.appearance);
   const crewBenefits=benefits.get(row.id)??noCrewBenefits;
-  result.set(row.id,{state,attributes,inventory,talents,fruits,preferences,appearance,crewAvailable:row.crew_benefits_available===true,socialAvailable:row.social_available===true,marketAvailable:row.market_available===true,crewBenefits,permanentPower:()=>{if(!inventory)return 0;const f=deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,inventory,talents.build,undefined,row.haki_state?{state:hakiView({haki:row.haki_state}).state}:undefined,fruits,undefined,false,crewBenefits.cook);return f.rulesetId==='original-character-v1'?Math.min(1000000000,Math.max(0,Math.floor(f.stats.power))):0;},fighter:(battle:any,legacyCadence=false)=>{if(!inventory)throw new AuthFault(503,'original_inventory_required');return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,inventory,talents.build,battle?runtime.load(battle):undefined,battle?hakiView(battle):undefined,fruits,battle,legacyCadence,crewBenefits.cook);}});
+  const permanentPower=(withoutSlot?:keyof OriginalInventory['equipment'])=>{
+   if(!inventory)return 0;
+   const stock=withoutSlot?{...inventory,equipment:{...inventory.equipment,[withoutSlot]:null}}:inventory;
+   const haki=row.haki_state?{state:hakiView({haki:row.haki_state}).state}:undefined;
+   const fighter=deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,stock,talents.build,undefined,haki,fruits,undefined,false,crewBenefits.cook);
+   return fighter.rulesetId==='original-character-v1'?Math.min(1000000000,Math.max(0,Math.floor(fighter.stats.power))):0;
+  };
+  result.set(row.id,{state,attributes,inventory,talents,fruits,preferences,appearance,crewAvailable:row.crew_benefits_available===true,socialAvailable:row.social_available===true,marketAvailable:row.market_available===true,crewBenefits,permanentPower,fighter:(battle:any,legacyCadence=false)=>{if(!inventory)throw new AuthFault(503,'original_inventory_required');return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,inventory,talents.build,battle?runtime.load(battle):undefined,battle?hakiView(battle):undefined,fruits,battle,legacyCadence,crewBenefits.cook);}});
  }
  if(initializeProfile&&result.size!==unique.length)throw new AuthFault(503,'character_state_unavailable');return result;
 }
-type CombatInputs={attributes:ReturnType<typeof attributeView>;fruits:ReturnType<typeof fruitView>;permanentPower:()=>number;state:ReturnType<typeof characterStateSchema.parse>;inventory:ReturnType<typeof originalInventoryView>;talents:ReturnType<typeof talentView>;preferences:ReturnType<typeof preferencesSchema.parse>;appearance:ReturnType<typeof appearanceSchema.parse>;crewAvailable:boolean;socialAvailable:boolean;marketAvailable:boolean;crewBenefits:Readonly<CrewBenefits>;fighter:(battle:any,legacyCadence?:boolean)=>ReturnType<typeof deriveOriginalFighter>};
+type CombatInputs={attributes:ReturnType<typeof attributeView>;fruits:ReturnType<typeof fruitView>;permanentPower:(withoutSlot?:keyof OriginalInventory['equipment'])=>number;state:ReturnType<typeof characterStateSchema.parse>;inventory:ReturnType<typeof originalInventoryView>;talents:ReturnType<typeof talentView>;preferences:ReturnType<typeof preferencesSchema.parse>;appearance:ReturnType<typeof appearanceSchema.parse>;crewAvailable:boolean;socialAvailable:boolean;marketAvailable:boolean;crewBenefits:Readonly<CrewBenefits>;fighter:(battle:any,legacyCadence?:boolean)=>ReturnType<typeof deriveOriginalFighter>};

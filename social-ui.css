@@ -461,7 +461,23 @@
 .social-profile-gear-note { margin: 0; color: var(--glass-muted); }
 .social-profile-gear h4 { margin: 0 0 7px; color: var(--glass-gold); font-size: 13px; }
 .social-profile-gear ul { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,175px),1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; }
-.social-profile-gear li { display: flex; align-items: center; gap: 6px; min-width: 0; padding: 4px 6px; border: 1px solid #ffffff14; border-radius: 6px; }
+.social-profile-gear li { min-width: 0; }
+.social-profile-item { display: flex; align-items: center; gap: 6px; width: 100%; min-height: 38px; min-width: 0; padding: 4px 6px; border: 1px solid #ffffff14; border-radius: 6px; background: #ffffff03; color: inherit; font: inherit; text-align: start; }
+#app #panelOverlay.social-mode button.social-profile-item {
+  justify-content: flex-start;
+  border: 1px solid #ffffff14;
+  border-image: none;
+  border-radius: 6px;
+  background: #ffffff03;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  text-shadow: none;
+  cursor: help;
+}
+#app #panelOverlay.social-mode button.social-profile-item:hover:not(:disabled) { border-color: var(--glass-line); background: #ffffff0a; filter: none; }
+#app #panelOverlay.social-mode button.social-profile-item:focus-visible { outline: 2px solid var(--glass-gold); outline-offset: -2px; }
+@media (pointer: coarse) { .social-profile-item { min-height: 44px; } }
 .social-profile-gear li img { width: 26px; height: 26px; object-fit: contain; flex: none; }
 .social-profile-gear li :is(small,strong) { display: block; overflow-wrap: anywhere; }
 .social-profile-gear li small { color: var(--glass-muted); }

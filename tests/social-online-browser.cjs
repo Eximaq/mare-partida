@@ -19,6 +19,11 @@ const requestId='55555555-5555-4555-8555-555555555555';
 const now=new Date().toISOString();
 const item=(name,id,level)=>({id,def:Number(Object.entries(itemCatalog.items).find(([,x])=>x?.name?.includes(name))[0]),level,plus:2,rarity:'rare',potential:72,locked:false,origin:'Teste isolado'});
 const weapon=item('Sabre','dev-sabre',28),armor=item('Casaco','dev-casaco',25),extra=item('Botas','dev-botas',26);
+const inspectedSlot=itemCatalog.items[armor.def].slot;
+const generated=forge.generateItem({...armor,plus:8},itemCatalog.items,()=>.5,{potential:72});
+const inspected={def:generated.def,level:generated.level,plus:generated.plus,rarity:generated.rarity,potential:generated.potential,
+  generation:generated.generation,baseAttributes:generated.baseAttributes,baseStats:generated.baseStats,extras:generated.extras,
+  sockets:[forge.pearls[0].id,null],durability:50000,bound:true,origin:'Masmorra de Chefes',power:527};
 const stock=Array.from({length:49},(_,index)=>({...([extra,weapon,armor][index%3]),id:'stock-'+index}));
 const equipment=Object.fromEntries([...itemCatalog.inventorySlotsLeft,...itemCatalog.inventorySlotsRight].map(key=>[key,null]));
 const allocated={strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0};
@@ -35,6 +40,7 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
   const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});
   const page=await browser.newPage({viewport:{width:1440,height:900}});
   const errors=[],commands=[],faults=[];
+  let profileHidden=false;
   let unread=1, claimed=false, accepted=false, locked=false, peerLocked=false, confirmed=false, offered=false, completed=false, cancelled=false, offerVersion=2;
   const contact=(index,name)=>({...peer,id:'66666666-6666-4666-8666-'+String(index).padStart(12,'0'),name,crew:null,actions:{message:null,party:null,crew:null}});
   const joao=contact(1,'João da Maré'),rui=contact(2,'Rui do Porto'),ana=contact(3,'Ana das Velas'),ivo=contact(4,'Ivo das Ilhas');
@@ -67,7 +73,10 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
         if(view==='contacts')return reply({...contacts,matches:q.get('q')?[{...joao,friendState:contacts.friends.some(p=>p.id===joao.id)?'accepted':contacts.outgoing.some(r=>r.character.id===joao.id)?'outgoing':'none'}]:[],onlineCount:contacts.friends.filter(p=>p.online).length,conversations:[{character:peer,lastMessage:last(),unread}]});
         if(view==='profile'){
           assert.equal(q.get('target'),peer.id);
-          return reply({character:{...peer,publicProfile:{...peer.publicProfile,bounty:'5450750'}}});
+          const items=profileHidden?{}:{[inspectedSlot]:inspected};
+          const equipment=profileHidden?{}:{[inspectedSlot]:{def:inspected.def}};
+          return reply({character:{...peer,equipment,publicProfile:{...peer.publicProfile,bounty:'5450750',equipmentHidden:profileHidden,items}}});
+
         }
         if(view==='messages')return reply({character:peer,messages:messages.filter(m=>!q.has('after')||+m.id>+q.get('after')),hasMore:false});
         if(view==='mail'){
@@ -151,7 +160,27 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     assert.equal(await publicProfile.locator('.social-profile-title').innerText(),'Tenente');
     assert.match(await publicProfile.locator('.social-profile-class').innerText(),/Curandeiro|Suporte/);
     assert.match(await publicProfile.locator('.social-profile-power').innerText(),/18\.490/);
+    const publicItem=publicProfile.locator('[data-social-profile-item]');
+    await publicItem.hover();
+    const itemTip=page.locator('#gameTooltip:not(.hidden)');
+    await itemTip.getByRole('heading',{name:/LV\. 25 .*\+8/}).waitFor();
+    assert.match(await itemTip.locator('.game-tip-stats').innerText(),/Defesa/);
+    assert.match(await itemTip.locator('.equipment-potential').innerText(),/72%/);
+    assert.match(await itemTip.locator('.equipment-pearls').innerText(),/1\/2/);
+    assert.match(await itemTip.locator('.equipment-durability').innerText(),/50%/);
+    assert.match(await itemTip.locator('.game-tip-power').innerText(),/527/);
+    assert.equal(await itemTip.locator('.game-tip-compare').count(),0);
+    await page.keyboard.press('Escape');
+    await itemTip.waitFor({state:'hidden'});
+    assert(await publicProfile.isVisible());
+    await publicItem.focus();
+    await itemTip.waitFor();
+    await page.getByRole('button',{name:'Voltar',exact:true}).click();
+    profileHidden=true;
+    await page.getByRole('button',{name:'Ver perfil',exact:true}).click();
+    await publicProfile.getByText('5.450.750 Berry',{exact:true}).waitFor();
     assert(await publicProfile.getByText('Equipamentos ocultos.').isVisible());
+    assert.equal(await publicItem.count(),0);
     await page.getByRole('button',{name:'Voltar',exact:true}).click();
     assert.equal(await page.locator('#socialFriendsFilter').count(),0,'No local filter for a single friend');
     assert.equal(await page.locator('[data-friends-section=requests]').count(),0,'No empty requests section');

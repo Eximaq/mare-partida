@@ -21,7 +21,10 @@ test('Bounty uses current crew membership and returns only its displayed value',
   assert.equal(typeof before.bounty,'number');
   const publicView=await profile();
   assert('character' in publicView);
-  assert.deepEqual(publicView.character.publicProfile,{title:before.hierarchy?.title,power:before.hierarchy?.power,equipmentHidden:false,bounty:String(before.bounty)});
+  assert.equal(publicView.character.publicProfile?.title,before.hierarchy?.title);
+  assert.equal(publicView.character.publicProfile?.power,before.hierarchy?.power);
+  assert.equal(publicView.character.publicProfile?.equipmentHidden,false);
+  assert.equal(publicView.character.publicProfile?.bounty,String(before.bounty));
   assert.equal('state' in publicView.character,false);
   assert.equal('gold' in publicView.character,false);
   await act('crew.create',{name:'Marés',tag:'MAR',flag:'1'+'0'.repeat(1023),policy:'open',minLevel:1});

@@ -2557,7 +2557,7 @@
   // INVENTÁRIO V0.6 — layout RPG em três colunas, filtros e ações reais.
   function itemCategory(item){const def=itemBase(item),slot=def.slot;if(def.kind==='visual-completo')return 'visuals';if(['sword-fragment','sword-collection','haki-fragment','akuma-fragment','weapon-fragment'].includes(def.kind))return 'materials';if(MareAkuma.isFruit(item,itemDefs))return 'fruits';if(['pearl-box','epic-equipment-box','haki-book','xp-boost'].includes(def.kind))return 'consumables';return slot==='pearl'?'pearls':slot==='weapon'?'weapons':'armor';}
   function itemPower(item){if(!MareForge.isGear(item,itemDefs)&&!MareAkuma.isFruit(item,itemDefs))return 0;const slot=MareAkuma.isFruit(item,itemDefs)?'akuma_no_mi':itemBase(item).slot,before={...game,equipment:{...game.equipment,[slot]:null}},after={...game,equipment:{...game.equipment,[slot]:item}};return getDerived(after).power-getDerived(before).power;}
-  function tooltipItem(item){
+  function tooltipItem(item,inspection=null){
     if(!item)return null;
     const def=itemBase(item),fruit=MareAkuma.isFruit(item,itemDefs),gear=MareForge.isGear(item,itemDefs);
     if(!fruit&&!gear&&(!def||def===itemDefs[0]))return null;
@@ -2566,8 +2566,11 @@
     const slot=fruit?'akuma_no_mi':def.slot;
     const className=slot==='weapon'?classes[def.type]?.name||def.type:null;
     const pearl=def.kind==='pearl'?MareForge.pearlOf(item,itemDefs):null;
+    const binding=inspection?(inspection.bound?'Vinculado ao personagem':''):
+      MareBossDungeons.bound(item)?(MareBossDungeons.owner(item,game)?'Vinculado a este personagem':'Vinculado a outro personagem'):'';
+    const power=inspection?(Number.isFinite(inspection.power)?inspection.power:null):(fruit||gear?itemPower(item):null);
     const description=(gear?'':def.description)||(pearl?`Concede +${Math.round(pearl.percent*100)}% de ${MareForge.names[pearl.attribute]} ao ser instalada.`:def.kind==='pearl-box'?'Contém uma pérola para usar na forja.':def.kind==='haki-book'?'Livro necessário para despertar a Vontade.':'');
-    return {durability:MareForge.hasDurability(item,itemDefs)?MareForge.durabilityOf(item):undefined,sockets:gear?item.sockets:undefined,icon:MareItemArt.path(item.def,def)||def.icon_path,kind:def.kind,quantity:def.kind==='sword-fragment'?item.qty:['akuma-fragment','weapon-fragment'].includes(def.kind)?MareBossDungeons.quantity(item):def.kind==='haki-fragment'?MareHakiProgression.qty(item):1,binding:MareBossDungeons.bound(item)?(MareBossDungeons.owner(item,game)?'Vinculado a este personagem':'Vinculado a outro personagem'):'',name:gear?MareForge.gearName(item,itemDefs):def.name,gear,family:item.generation?.family,potential:gear?item.potential:undefined,typeName:slotNames[slot]?.toLocaleLowerCase('pt-BR')||'item',rarity:itemRarity(item),rarityName:rarityNames[itemRarity(item)],level:item.level||1,rank:fruitData?.rank||def.rank,className,allowed:!className||def.type===game.classId,stats,power:fruit||gear?itemPower(item):null,description:description+(fruitData?.physicalDamageReduction?' Intangibilidade Logia: −30% de dano físico. Ataques com Haki anulam essa redução.':''),origin:item.origin||'',slot};
+    return {durability:MareForge.hasDurability(item,itemDefs)?MareForge.durabilityOf(item):undefined,sockets:gear?item.sockets:undefined,icon:MareItemArt.path(item.def,def)||def.icon_path,kind:def.kind,quantity:def.kind==='sword-fragment'?item.qty:['akuma-fragment','weapon-fragment'].includes(def.kind)?MareBossDungeons.quantity(item):def.kind==='haki-fragment'?MareHakiProgression.qty(item):1,binding,name:gear?MareForge.gearName(item,itemDefs):def.name,gear,family:item.generation?.family,potential:gear?item.potential:undefined,typeName:slotNames[slot]?.toLocaleLowerCase('pt-BR')||'item',rarity:itemRarity(item),rarityName:rarityNames[itemRarity(item)],level:item.level||1,rank:fruitData?.rank||def.rank,className,allowed:!className||def.type===(inspection?.classId??game.classId),stats,power,description:description+(fruitData?.physicalDamageReduction?' Intangibilidade Logia: −30% de dano físico. Ataques com Haki anulam essa redução.':''),origin:item.origin||'',slot};
   }
   let backendFruitCatalog=null;
   function effectiveFruitCooldown(skill,id=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id){return MareAttributeRules.cooldown(MareAkumaPassives.cooldown(skill.cooldown,id),MareCombatPolicy.fruitMeta(id,skill.key),getDerived());}
@@ -2592,7 +2595,14 @@
     if(element.matches('[data-haki-toggle],[data-haki-cast]')){const id=element.dataset.hakiToggle||'conqueror',haki=MareHaki.catalog.find(entry=>entry.id===id);return haki?{kind:'skill',skill:{key:id==='armament'?'H':id==='observation'?'J':'K',name:haki.name,cooldown:id==='conqueror'?MareHaki.rules.kingCooldown:0,costText:haki.cost,description:haki.description,damageType:id==='conqueror'?'magic':''}}:null;}
     if(element.dataset.talentSelect){const tree=MareTalents.getTree(game.classId),id=element.dataset.talentSelect,node=MareTalents.nodes(game.classId).find(entry=>entry.id===id),special=[...(tree?.keystones||[]),...(tree?.ultimates||[])].find(entry=>entry.id===id);if(!node&&!special)return null;return {kind:'skill',skill:{passive:true,name:node?.name||special.name,description:node?MareTalents.describeNode(node):special.description}};}
     if(currentPanel==='myprofile'&&element.dataset.profileSlot){if(game.preferences?.hideItems)return null;const item=game.equipment?.[element.dataset.profileSlot];return item?{kind:'item',item:tooltipItem(item)}:null;}
-    if(element.dataset.socialItem){const row=socialUI?.findItem(element.dataset.socialItem),detail=row&&tooltipItem(row.item);if(!detail)return null;const equipped=game.equipment?.[detail.slot];return {kind:'item',item:{...detail,quantity:row.qty,level:row.item.level,plus:row.item.plus,sockets:row.item.sockets},equipped:equipped&&equipped.id!==row.item.id?tooltipItem(equipped):null};}
+    if(element.dataset.socialItem){
+      const row=socialUI?.findItem(element.dataset.socialItem);
+      if(row?.profileDetail)return {kind:'item',item:row.profileDetail};
+      const detail=row&&tooltipItem(row.item);
+      if(!detail)return null;
+      const equipped=game.equipment?.[detail.slot];
+      return {kind:'item',item:{...detail,quantity:row.qty,level:row.item.level,plus:row.item.plus,sockets:row.item.sockets},equipped:equipped&&equipped.id!==row.item.id?tooltipItem(equipped):null};
+    }
     if(currentPanel!=='inventory')return null;
     if(inventorySelection.active&&element.hasAttribute('data-item'))return null;
     const potion=element.dataset.item==='virtual-potion'?potions.health:element.dataset.item==='virtual-mana-potion'?potions.mana:null;
@@ -4159,9 +4169,12 @@ $('gameFrame').appendChild(targetHud);
       if(heading.textContent!==title)heading.textContent=title;
     },
     category:itemCategory,item:tooltipItem,profileClassIcon,
-    profileEquipment:equipment=>Object.entries(equipment||{}).flatMap(([key,item])=>{
+    profileEquipment:(equipment,items,classId)=>Object.entries(equipment||{}).flatMap(([key,item])=>{
       const def=itemDefs[item?.def];
-      return def?[{slot:slotNames[key]||key,name:def.name,icon:MareItemArt.path(item.def,def)||def.icon_path}]:[];
+      if(!def)return [];
+      const publicItem=items?.[key];
+      const detail=publicItem?.def===item.def?tooltipItem(publicItem,{classId,power:publicItem.power,bound:publicItem.bound}):null;
+      return [{key,slot:slotNames[key]||key,name:detail?.name||def.name,icon:detail?.icon||MareItemArt.path(item.def,def)||def.icon_path,detail}];
     }),
     draw:drawContactPortrait,
     read:params=>ONLINE_GAME.api('/v1/characters/'+encodeURIComponent(ONLINE_GAME.data.character.id)+'/social?'+new URLSearchParams(Object.entries(params).filter(([,value])=>value!==undefined&&value!==''))),

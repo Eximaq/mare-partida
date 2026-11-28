@@ -3,7 +3,7 @@ import type {PoolClient} from 'pg';
 import type {CharacterState} from '@mare/shared';
 import {readCrewPower} from './crew.js';
 import {readAchievements} from './achievements.js';
-import {readPublicBountyInputs} from './combat-inputs.js';
+import type {readPublicProfileInputs} from './combat-inputs.js';
 import {readPrison} from './prison.js';
 import {readHaki,type hakiView} from './haki.js';
 
@@ -35,13 +35,10 @@ export async function readBounty(client:PoolClient,state:CharacterState,sources:
   }).berry;
 }
 
-export async function readPublicBounty(client:PoolClient,id:string,factionId:string,tier:number){
-  const inputs=await readPublicBountyInputs(client,id);
-  if(!inputs?.inventory)return null;
-  const {state,fruits,crewAvailable}=inputs;
-  const power=inputs.permanentPower();
+export async function readPublicBounty(client:PoolClient,inputs:NonNullable<Awaited<ReturnType<typeof readPublicProfileInputs>>>,factionId:string,tier:number,power:number){
+  const {state,fruits,crewAvailable}=inputs,id=state.characterId;
   const prison=await readPrison(client,id),haki=await readHaki(client,id);
   const achievements=await readAchievements(client,id,state,{power,prison,haki,fruits});
   const bounty=await readBounty(client,state,{power,factionId,crewAvailable,hierarchy:{tier},achievements,prison,haki});
-  return {power,bounty:String(bounty)};
+  return String(bounty);
 }

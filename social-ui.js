@@ -210,10 +210,15 @@
         '<h3><span>'+esc(p.name)+'</span> '+tag+'</h3><span class="social-profile-class">'+
         (classIcon?'<img src="'+esc(classIcon)+'" alt="">':'')+esc(o.className(p.classId))+' · Nv. '+esc(p.level)+'</span>'+
         badge+'<span class="social-profile-presence'+(p.online?' social-online':'')+'">'+esc(status(p))+'</span></div>'+metrics+'</header>';
-      const gear=info?.equipmentHidden?[]:o.profileEquipment?.(p.equipment)||[];
+      const gear=info?.equipmentHidden?[]:o.profileEquipment?.(p.equipment,info?.items,p.classId)||[];
       const gearSection=info?.equipmentHidden?'<p class="social-profile-gear-note">Equipamentos ocultos.</p>':
-        gear.length?'<section class="social-profile-gear"><h4>Equipamentos visíveis</h4><ul>'+gear.map(item=>
-          '<li>'+(item.icon?'<img src="'+esc(item.icon)+'" alt="">':'')+'<span><small>'+esc(item.slot)+'</small><strong>'+esc(item.name)+'</strong></span></li>').join('')+'</ul></section>':'';
+        gear.length?'<section class="social-profile-gear"><h4>Equipamentos visíveis</h4><ul>'+gear.map(item=>{
+          const content=(item.icon?'<img src="'+esc(item.icon)+'" alt="">':'')+'<span><small>'+esc(item.slot)+'</small><strong>'+esc(item.name)+'</strong></span>';
+          if(!item.detail)return '<li><div class="social-profile-item">'+content+'</div></li>';
+          const key='profile:'+item.key;
+          tileItems.set(key,{profileDetail:item.detail});
+          return '<li><button type="button" class="social-profile-item" data-social-profile-item'+attr('data-social-item',key)+'>'+content+'</button></li>';
+        }).join('')+'</ul></section>':'';
       return '<section class="social-public-profile" data-social-profile="'+esc(p.id)+'" aria-label="Perfil do personagem">'+
         portraitHeader+gearSection+'<footer>'+contactActions(p,{showProfile:false})+button('Voltar','profile-close')+'</footer></section>';
     }

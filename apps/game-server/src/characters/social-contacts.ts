@@ -1,11 +1,17 @@
 import {randomUUID} from 'node:crypto';
 import {createRequire} from 'node:module';
 import type {PoolClient} from 'pg';
+import type {OriginalItemInstance} from '@mare/shared';
 import {AuthFault} from '../auth/errors.js';
 import {crewCapacity,type CrewFacilities} from './crew-config.js';
 import {readPublicBounty} from './bounty.js';
+import {readPublicProfileInputs} from './combat-inputs.js';
 
-const hierarchy=createRequire(import.meta.url)('../../../../hierarchy-system.js');
+const require=createRequire(import.meta.url);
+const hierarchy=require('../../../../hierarchy-system.js');
+const {pearlById}=require('../../../../forge-system.js');
+const publicSlots=['weapon','head','coat','gloves','legs','boots','visual_completo'] as const;
+type PublicSlot=(typeof publicSlots)[number];
 
 export type SocialContactCommand = {requestId:string} & (
   | {action:'friend.request';payload:{targetId:string}}
@@ -195,7 +201,7 @@ type PersonRow = {
   id:string; name:string; class_id:string; faction_id:string; level:number;
   hierarchy_tier:number|null; hierarchy_power:number|null;
   appearance:unknown; preferences:{hideHeadgear?:boolean;hideItems?:boolean}|null;
-  equipment:Record<string,{def?:number}>|null;
+  equipment:Record<string,{def?:number}|null>|null;
   crew_tag:string|null; crew_flag:string|null; crew_id:string|null;
   party_id:string|null; party_unavailable:boolean; crew_entry_blocked:boolean;
   party_invite_pending:boolean; crew_invite_pending:boolean;
@@ -247,10 +253,22 @@ function crewInviteReason(actor:ActorInvites,person:PersonRow) {
   return null;
 }
 
-function projectPerson(person:PersonRow,actor:ActorInvites,friendOrConversation:boolean,bounty?:string|null) {
+// Only fields used by the game's read-only item tooltip. Keep inventory identities and histories private.
+function projectPublicItem(item:OriginalItemInstance,power:number|null) {
+  const {def,level,plus,rarity,potential,generation,baseAttributes,baseStats,extras,sockets,durability,origin}=item;
+  return {def,level,plus,rarity,potential,baseAttributes,baseStats,durability,origin,power,bound:item.binding==='character',
+    generation:generation?{family:generation.family,version:generation.version,baseMultiplier:generation.baseMultiplier}:undefined,
+    extras:extras?.map(({stat,value})=>({stat,value})),
+    sockets:sockets?.map(id=>id&&Object.hasOwn(pearlById,id)?id:null),
+  };
+}
+
+function projectPerson(person:PersonRow,actor:ActorInvites,friendOrConversation:boolean,detail?:{
+  bounty:string|null;items:Partial<Record<PublicSlot,ReturnType<typeof projectPublicItem>>>;
+}) {
   const blocked=person.blocked_by_you||person.blocked_by_them;
   const equipment:Record<string,{def:number}>={};
-  if(!person.preferences?.hideItems)for(const slot of ['weapon','head','coat','gloves','legs','boots','visual_completo']){
+  if(!person.preferences?.hideItems)for(const slot of publicSlots){
     const def=person.equipment?.[slot]?.def;
     if(typeof def==='number'&&Number.isInteger(def))equipment[slot]={def};
   }
@@ -261,7 +279,7 @@ function projectPerson(person:PersonRow,actor:ActorInvites,friendOrConversation:
       title:hierarchy.title(person.faction_id,person.hierarchy_tier??1) as string,
       power:person.hierarchy_power,
       equipmentHidden:!!person.preferences?.hideItems,
-      ...(bounty!==undefined?{bounty}:{}),
+      ...detail,
     }}:{}),
     ...(person.crew_tag&&person.crew_flag?{crew:{tag:person.crew_tag,flag:person.crew_flag}}:{}),
     online:blocked?false:person.online,lastActivity:blocked?null:person.last_seen?.toISOString()??null,
@@ -413,8 +431,20 @@ export async function readSocialProfile(client:PoolClient,id:string,targetId:str
   if(person.blocked_by_you||person.blocked_by_them)throw new AuthFault(409,'contact_blocked');
   const canMessage=!!(await client.query(`SELECT 1 FROM mare_game.social_conversations WHERE character_low=$1 AND character_high=$2
     UNION ALL SELECT 1 FROM mare_game.social_friend_requests WHERE character_low=$1 AND character_high=$2 AND status='accepted'`,pair(id,target))).rowCount;
-  const bounty=await readPublicBounty(client,target,person.faction_id,person.hierarchy_tier??1);
-  return {character:projectPerson(bounty?{...person,hierarchy_power:bounty.power}:person,actor,canMessage,bounty?.bounty??null)};
+  const inputs=await readPublicProfileInputs(client,target);
+  const power=inputs?.inventory?inputs.permanentPower():null;
+  const bounty=inputs&&power!==null?await readPublicBounty(client,inputs,person.faction_id,person.hierarchy_tier??1,power):null;
+  const hideItems=!!(person.preferences?.hideItems||inputs?.preferences.hideItems);
+  const equipment=inputs?.inventory?.equipment;
+  const items:Partial<Record<PublicSlot,ReturnType<typeof projectPublicItem>>>={};
+  if(inputs&&equipment&&!hideItems)for(const slot of publicSlots){
+    const item=equipment[slot];
+    if(item)items[slot]=projectPublicItem(item,slot==='visual_completo'||power===null?null:power-inputs.permanentPower(slot));
+  }
+  return {character:projectPerson({
+    ...person,equipment:equipment??person.equipment,hierarchy_power:power??person.hierarchy_power,
+    preferences:{...person.preferences,hideItems},
+  },actor,canMessage,{bounty,items})};
 }
 
 export async function readPrivateMessages(client:PoolClient,id:string,targetId:string,
