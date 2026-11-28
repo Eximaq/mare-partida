@@ -172,7 +172,7 @@
     const signedRework=root.MarePlayerReworkRuntime?.create({release:root.MarePlayerReworkRelease,onChange,loadImage:async path=>{const im=new Image();im.src=new URL(path,baseURL).href;await im.decode();return im;}});
     const rework=weaponCycles?.active?weaponCycles:outfitCycles?.active?outfitCycles:accessoryPilot?.active?accessoryPilot:pilot?.active?pilot:signedRework;
     let state=active?'loading':'off',message='',previewMessage='',release=null,assetRevision=null,manifest,catalog,rigs,weaponCatalog,wardrobe,choices={},current={...defaults},draft={...defaults};
-    let draws=0,lastPose=null,pending=null,preparing=null,wanted=null,bundles=new Map(),failed=new Set();
+    let draws=0,peerDraws=0,lastPose=null,pending=null,preparing=null,wanted=null,bundles=new Map(),failed=new Set();
     const images=new Map(),inflight=new Map(),imageFailures=new Map(),diagnostics=new Map();let loading=0,peakLoads=0,imageBytes=0;const waiting=[];
     const pause=()=>new Promise(resolve=>setTimeout(resolve,0));
     let inventoryPreview=null;
@@ -183,7 +183,7 @@
       if(consumer==='inventory')inventoryPreview=result;
       return result;
     }
-    const snapshot=()=>({inventoryPreview,nativeHD:nativeHD?.snapshot(),defaultHD:defaultHD?.snapshot(),rework:rework?.snapshot()||{state:'disabled'},worldVisual:worldVisual(),renderer:compatibleWorldPose(worldDrawn?.entry,worldRequest)||worldRequest?.bundle?'native-hd':['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'native-hd':signedRework?.active?'rework':'pending-hd',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'ready':state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:surfacePoses.size,peakLoads});
+    const snapshot=()=>({inventoryPreview,nativeHD:nativeHD?.snapshot(),defaultHD:defaultHD?.snapshot(),rework:rework?.snapshot()||{state:'disabled'},worldVisual:worldVisual(),renderer:compatibleWorldPose(worldDrawn?.entry,worldRequest)||worldRequest?.bundle?'native-hd':['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'native-hd':signedRework?.active?'rework':'pending-hd',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'ready':state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,peerDraws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:surfacePoses.size,peakLoads});
     function diagnose(error,context={}){
       const detail={component:context.consumer||'player',...context,...error.spriteContext,status:'failed',message:error.message};
       const key=[detail.asset||detail.component,detail.code||'load-failed'].join(':');
@@ -309,6 +309,11 @@
       // without the single-actor World request/abort boundary.
       const nativeConsumer=sharedLobby?'world':consumer;
       const nativeAction=['combat-idle','guard','hurt','death'].includes(action)?'idle':action;
+      if(consumer==='shared-lobby'){
+        const drawn=drawPeerSurface(ctx,player,{scene,action:nativeAction,direction,time,progress,timing,x,y,scale,consumer,weaponless});
+        if(drawn)peerDraws++;
+        return drawn;
+      }
       if(nativeHD?.drawStable(ctx,player,{action:nativeAction,direction,time,progress,timing,x,y,consumer:nativeConsumer,weaponless})){defaultHD?.clear();draws++;return true;}
       if(drawTypedSurface(ctx,player,{action:nativeAction,direction,time,progress,timing,x,y,consumer,weaponless})){draws++;return true;}
       if(signedRework?.active&&signedRework.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,
@@ -388,6 +393,57 @@
     // Typed preview plans share the HD selector, not the World request's
     // singleton player identity. This cache is bounded and cannot paint a
     // plan prepared for an older avatar/draft.
+
+    const peerPoses=new Map(),peerDisplayed=new Map();
+    let preparingPeer=false;
+    function drawPeerSurface(ctx,player,options){
+      if(!player||player.zoanTransformed||!weaponCatalog||!nativeHD?.prepareConfiguration)return false;
+      const identity=visualIdentity(player);
+      const poseOptions={action:options.action,direction:options.direction,weaponless:options.weaponless};
+      const key=JSON.stringify([identity,poseOptions]);
+      let entry=peerPoses.get(key);
+      if(entry){
+        peerPoses.delete(key);
+        peerPoses.set(key,entry);
+      }else if(!preparingPeer&&(!worldRequest||worldRequest.bundle||worldRequest.state==='failed')){
+        const playerSnapshot={...player,appearance96:{...player.appearance96},preferences:{...player.preferences},
+          equipment:Object.fromEntries(Object.entries(player.equipment||{}).map(([slot,item])=>[slot,item&&typeof item==='object'?{...item}:item]))};
+        entry={key,options:poseOptions,bundle:null};
+        peerPoses.set(key,entry);
+        preparingPeer=true;
+        if(peerPoses.size>24){
+          const [oldKey,stale]=peerPoses.entries().next().value;
+          stale.bundle?.release();
+          stale.bundle=null;
+          peerPoses.delete(oldKey);
+        }
+        // Never select or compose a remote sprite inside the map's render call.
+        const prepare=async()=>{
+          try{
+            await nativeHD.ready;
+            const source=nativeHD.selectVisual(playerSnapshot,poseOptions);
+            if(!source)return;
+            const pose={player:playerSnapshot,options:poseOptions};
+            entry.bundle=await nativeHD.prepareConfiguration([pose],{
+              bakePositions:true,compactFrames:true,resolve:()=>({...pose,source})
+            });
+          }catch(error){diagnose(error,{consumer:'shared-lobby',asset:options.action+'/'+options.direction});}
+          finally{preparingPeer=false;}
+        };
+        if(typeof root.requestIdleCallback==='function')root.requestIdleCallback(prepare,{timeout:500});
+        else setTimeout(prepare,0);
+      }
+      const held=entry?.bundle?entry:peerDisplayed.get(identity);
+      if(!held?.bundle)return false;
+      const drew=held.bundle.draw(ctx,player,{...options,...held.options,auxiliary:true});
+      if(drew){
+        peerDisplayed.delete(identity);
+        peerDisplayed.set(identity,held);
+        if(peerDisplayed.size>24)peerDisplayed.delete(peerDisplayed.keys().next().value);
+      }
+      return drew;
+    }
+
     const surfacePoses=new Map();
     let surfaceLoading=0;
     function requestTypedSurface(player,options){

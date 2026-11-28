@@ -30,3 +30,20 @@ assert(R.enabled('?paperDoll96=0'),'historical flags cannot activate an obsolete
 assert.equal(require('../tools/paper-doll-96-v3/manifest.json').productionEnabled,false);
 assert.equal(catalog.productionEnabled,false);
 console.log('paper-doll-96-lobby: exclusive current96 player, equipment ownership, missing-art report, native timing, save/Zoan/combat isolation passed');
+
+{
+ const vm=require('node:vm');
+ let paints=0;
+ const c=vm.createContext({directionOf:R.directionOf,sharedLobby:true,root:{},draws:0,peerDraws:0,
+  nativeHD:{drawStable(){throw Error('a remote player must never compose inside the render frame');}},
+  drawPeerSurface(ctx,who,options){
+   assert.equal(who,player);
+   assert.equal(options.consumer,'shared-lobby');
+   assert.equal(options.direction,'south');
+   return ++paints===2;
+  },player});
+ vm.runInContext(source.match(/    function draw\(ctx,player,[\s\S]*?\n    }/)[0],c);
+ assert.equal(vm.runInContext("draw({},player,{direction:'front',consumer:'shared-lobby'})",c),false);
+ assert.equal(vm.runInContext("draw({},player,{direction:'front',consumer:'shared-lobby'})",c),true);
+ assert.equal(c.peerDraws,1);
+}
