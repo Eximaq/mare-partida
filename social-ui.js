@@ -60,10 +60,79 @@
     ['trade','Trocas','Negocie itens com outro jogador.'],
   ];
   const menu=()=>sections.map(([id,label,hint])=>'<button type="button" role="menuitem" data-social-open="'+id+'"><img src="'+icons[id]+'" alt="" draggable="false"><span><b>'+label.toUpperCase()+'</b><small>'+hint+'</small></span><span class="social-badge" data-social-badge="'+id+'" hidden></span></button>').join('');
+  function portrait(p,source='social'){
+    const target=source==='crew'?'data-crew-portrait':'data-social-portrait';
+    const initial=Array.from(p.name||'')[0]||'';
+    return '<span class="contact-face" aria-hidden="true"><span>'+esc(initial)+'</span><canvas width="48" height="52" '+target+'="'+esc(p.id)+'"></canvas></span>';
+  }
+  // A transparent silhouette in the front-facing idle pose establishes where
+  // the head actually begins, independently of source margins and foot pivots.
+  function headCrop(image,x,feet,aspect){
+    const {data,width,height}=image;
+    const opaque=(px,py)=>data[(py*width+px)*4+3]>64;
+    const onBody=(y,radius)=>{
+      let count=0;
+      for(let px=Math.max(0,x-radius);px<=Math.min(width-1,x+radius);px++)if(opaque(px,y))count++;
+      return count>=2;
+    };
+    const last=Math.min(height-1,feet+8);
+    let top=-1,bottom=-1;
+    for(let y=0;y<=last;y++){
+      if(!onBody(y,15))continue;
+      if(top<0&&y+1<=last&&onBody(y+1,15))top=y;
+      bottom=y;
+    }
+    if(top<0||bottom-top<12)return null;
+    const bodyHeight=bottom-top+1;
+    const headHeight=Math.max(18,Math.ceil(bodyHeight*.46));
+    let left=x,right=x;
+    for(let y=top;y<top+bodyHeight*.28;y++){
+      for(let px=Math.max(0,Math.floor(x-headHeight/2));px<=Math.min(width-1,Math.floor(x+headHeight/2));px++){
+        if(opaque(px,y)){left=Math.min(left,px);right=Math.max(right,px);}
+      }
+    }
+    const h=Math.min(height,Math.max(headHeight,Math.ceil((right-left+5)/aspect)));
+    const w=Math.min(width,Math.round(h*aspect));
+    const startX=Math.max(0,Math.min(width-w,Math.round((left+right-w)/2)));
+    const startY=Math.max(0,Math.min(height-h,top-Math.max(2,Math.round(h*.08))));
+    return [startX,startY,w,h];
+  }
+  function createPortraits(draw){
+    const cache=new Map(),painted=new WeakMap();
+    const source=document.createElement('canvas');
+    source.width=192;source.height=192;
+    const src=source.getContext('2d',{willReadFrequently:true});
+    const x=source.width/2,feet=source.height-17;
+    return function paint(canvas,player){
+      const key=JSON.stringify([player.classId,player.factionId,player.appearance96,player.hideHeadgear,player.equipment,canvas.width,canvas.height]);
+      if(painted.get(canvas)===key)return;
+      const ctx=canvas.getContext('2d');
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      delete canvas.dataset.ready;
+      painted.delete(canvas);
+      let frame=cache.get(key);
+      if(!frame){
+        src.clearRect(0,0,source.width,source.height);
+        if(!draw(src,player,{x,y:feet}))return;
+        const crop=headCrop(src.getImageData(0,0,source.width,source.height),x,feet,canvas.width/canvas.height);
+        if(!crop)return;
+        frame=document.createElement('canvas');frame.width=canvas.width;frame.height=canvas.height;
+        const destination=frame.getContext('2d');destination.imageSmoothingEnabled=false;
+        destination.drawImage(source,...crop,0,0,frame.width,frame.height);
+        cache.set(key,frame);
+        if(cache.size>64)cache.delete(cache.keys().next().value);
+      }
+      ctx.imageSmoothingEnabled=false;
+      ctx.drawImage(frame,0,0);
+      canvas.dataset.ready='true';
+      painted.set(canvas,key);
+    };
+  }
   function create(o) {
     let view='',viewEpoch=0,model=null,signature='',panelPending=false,badgePending=false,threadPending=false,mutating=false,badges={},statusText='',failed=false;
     let search='',friendsFilter='',mailTab='pending',mailPages=[],target=null,thread=null,privateOn=false,oldestAvailable=false,threadEpoch=0,readThrough=null,readWaitUntil=0;
     let tradeTarget=null,tradeHistory=[],tradeOutcome=null,profile=null,slotEdit=null,inventorySearch='',inventoryCategory='all',inventoryRarity='all',inventorySort='recent',tradeName='';
+    let profileRequest=0,profilePhase='idle';
     const people=new Map(),tileItems=new Map(),dismissedTabs=new Set();
     const chat=o.chat,bar=chat.querySelector('.chat-tabs'),log=chat.querySelector('#gameLog'),input=chat.querySelector('#chatInput');
     const threadNode=document.createElement('section');threadNode.className='social-thread';threadNode.hidden=true;log.before(threadNode);
@@ -103,34 +172,67 @@
       if(!online())return;
       try{const data=await o.read({view:'contacts'});remember(data);inbox=data.conversations||[];updateChatTabs();}catch{}
     }
-    function person(p,{large=false}={}){
+    function person(p){
       if(!p)return '';
       const faction=o.faction(p.factionId);
-      return '<div class="social-person'+(large?' social-person-large':'')+'"><canvas width="48" height="52" class="social-portrait"'+attr('data-social-portrait',p.id)+' aria-hidden="true"></canvas><span class="social-person-meta"><b>'+(p.crew?.tag?o.identity(p.crew,p.name):esc(p.name))+'</b><small>'+(faction?'<img src="assets/ui/faction-emblems/'+esc(p.factionId)+'.png"'+attr('alt',faction)+'>':'')+'Nv. '+esc(p.level)+' · '+esc(o.className(p.classId))+'</small><small'+(p.online?' class="social-online"':'')+'>'+esc(status(p))+'</small></span></div>';
+      return '<div class="social-person">'+portrait(p)+'<span class="social-person-meta"><b>'+(p.crew?.tag?o.identity(p.crew,p.name):esc(p.name))+'</b><small>'+(faction?'<img src="assets/ui/faction-emblems/'+esc(p.factionId)+'.png"'+attr('alt',faction)+'>':'')+'Nv. '+esc(p.level)+' · '+esc(o.className(p.classId))+'</small><small'+(p.online?' class="social-online"':'')+'>'+esc(status(p))+'</small></span></div>';
     }
     const explain=value=>reasons[value]||'Indisponível para este contato.';
-    function contactActions(p,{friend=false,trade=true}={}){
+    function contactActions(p,{friend=false,trade=true,showProfile=true}={}){
       const control=(label,action,id,opts)=>button(label,action,id,{...opts,icon:view==='friends'?action:undefined});
       const why=p.actions||{},crew=why.crew;
       return '<div class="social-actions">'+control('✉','private',p.id,{label:'Mensagem privada',title:why.message?explain(why.message):'Mensagem privada',disabled:!!why.message})+
-        control('◈','profile',p.id,{label:'Ver perfil',title:'Ver perfil'})+
+        (showProfile?control('◈','profile',p.id,{label:'Ver perfil',title:'Ver perfil'}):'')+
         control('♟','party',p.id,{label:'Convidar para Party',title:why.party?explain(why.party):'Convidar para Party',disabled:!!why.party||!canWrite()})+
         (['crew_forbidden','crew_not_joined','crew_officer_required','contact_blocked'].includes(crew)?'':control('⚓','crew',p.id,{label:'Convidar para Tripulação',title:crew?explain(crew):'Convidar para Tripulação',disabled:!!crew||!canWrite()}))+
         (trade?control('⇄','trade-person',p.id,{label:'Convidar para troca',title:p.online?'Convidar para troca':'Jogador offline',disabled:!p.online||p.blockedByYou||!canWrite()}):'')+
         (friend?control('−','remove',p.id,{label:'Remover amigo',title:'Remover amigo',disabled:!canWrite()}):'')+
         control(p.blockedByYou?'Desbloquear':'Bloquear','block',p.id,{disabled:!canWrite()})+'</div>';
     }
+    const profileNumber=new Intl.NumberFormat('pt-BR');
+    function publicProfile(p){
+      if(profilePhase==='unavailable'||p.blockedByYou||p.actions?.message==='contact_blocked'){
+        return '<section class="social-public-profile">'+blank('Perfil indisponível para este contato.')+button('Voltar','profile-close')+'</section>';
+      }
+      const info=p.publicProfile, faction=o.faction(p.factionId),classIcon=o.profileClassIcon?.(p.classId);
+      const tag=p.crew?.tag?'<span class="social-profile-guild" title="Sigla da tripulação">['+esc(p.crew.tag)+']</span>':'';
+      const badge=faction||info?.title?'<span class="social-profile-faction">'+
+        (faction?'<img src="assets/ui/faction-emblems/'+esc(p.factionId)+'.png" alt=""><span>'+esc(faction)+'</span>':'')+
+        (faction&&info?.title?'<span>—</span>':'')+
+        (info?.title?'<strong class="social-profile-title">'+esc(info.title)+'</strong>':'')+'</span>':'';
+      const bounty=typeof info?.bounty==='string'&&/^\d+$/.test(info.bounty)?profileNumber.format(BigInt(info.bounty)):null;
+      const metrics='<dl class="social-profile-metrics">'+
+        (Number.isFinite(info?.power)?'<div class="social-profile-power"><dt>Poder</dt><dd>'+profileNumber.format(info.power)+'</dd></div>':'')+
+        '<div class="social-profile-bounty"><dt>Recompensa</dt><dd>'+
+        (bounty==null?'<small role="status">'+(profilePhase==='loading'?'Consultando…':'Indisponível')+'</small>':
+          '<img src="assets/ui/inventory-final/berry.png" alt=""><span>'+bounty+' Berry</span>')+'</dd></div></dl>';
+      const portraitHeader='<header class="social-profile-banner">'+portrait(p)+'<div class="social-profile-identity">'+
+        '<h3><span>'+esc(p.name)+'</span> '+tag+'</h3><span class="social-profile-class">'+
+        (classIcon?'<img src="'+esc(classIcon)+'" alt="">':'')+esc(o.className(p.classId))+' · Nv. '+esc(p.level)+'</span>'+
+        badge+'<span class="social-profile-presence'+(p.online?' social-online':'')+'">'+esc(status(p))+'</span></div>'+metrics+'</header>';
+      const gear=info?.equipmentHidden?[]:o.profileEquipment?.(p.equipment,info?.items,p.classId)||[];
+      const gearSection=info?.equipmentHidden?'<p class="social-profile-gear-note">Equipamentos ocultos.</p>':
+        gear.length?'<section class="social-profile-gear"><h4>Equipamentos visíveis</h4><ul>'+gear.map(item=>{
+          const content=(item.icon?'<img src="'+esc(item.icon)+'" alt="">':'')+'<span><small>'+esc(item.slot)+'</small><strong>'+esc(item.name)+'</strong></span>';
+          if(!item.detail)return '<li><div class="social-profile-item">'+content+'</div></li>';
+          const key='profile:'+item.key;
+          tileItems.set(key,{profileDetail:item.detail});
+          return '<li><button type="button" class="social-profile-item" data-social-profile-item'+attr('data-social-item',key)+'>'+content+'</button></li>';
+        }).join('')+'</ul></section>':'';
+      return '<section class="social-public-profile" data-social-profile="'+esc(p.id)+'" aria-label="Perfil do personagem">'+
+        portraitHeader+gearSection+'<footer>'+contactActions(p,{showProfile:false})+button('Voltar','profile-close')+'</footer></section>';
+    }
     const line=(p,content)=>'<article class="social-line">'+person(p)+content+'</article>';
     const group=(title,content)=>'<section class="social-group"><h3>'+esc(title)+'</h3>'+content+'</section>';
     function friends(data){
-      const f=friendsFilter.toLocaleLowerCase('pt-BR'),list=data.friends.filter(p=>p.name.toLocaleLowerCase('pt-BR').includes(f));
+      const f=data.friends.length>1?friendsFilter.toLocaleLowerCase('pt-BR'):'',list=data.friends.filter(p=>p.name.toLocaleLowerCase('pt-BR').includes(f));
       const section=(id,title,content)=>'<section class="social-group" data-friends-section="'+id+'"><h3>'+esc(title)+'</h3>'+content+'</section>';
       const matches=search?section('search','Resultados da busca',data.matches.map(p=>line(p,p.friendState==='none'?button('Adicionar amigo','add',p.id,{disabled:!canWrite()}):'<small>'+esc({accepted:'Já é seu amigo',incoming:'Solicitação recebida',outgoing:'Solicitação enviada'}[p.friendState])+'</small>')).join('')||blank('Nenhum personagem encontrado.')):'';
       const incoming=data.incoming.map(r=>line(r.character,'<div class="social-actions">'+button('Aceitar','friend-accept',r.id,{primary:true,disabled:!canWrite()})+button('Recusar','friend-decline',r.id,{disabled:!canWrite()})+'</div>'));
       const outgoing=data.outgoing.map(r=>line(r.character,button('Cancelar','friend-cancel',r.id,{disabled:!canWrite()})));
       return '<section class="friends-desk" aria-label="Contatos e solicitações"><form class="social-tools friends-search" data-social-form="friends"><label for="socialFriendSearch">Adicionar amigo</label><input id="socialFriendSearch" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="Nome público do personagem…" maxlength="40" required value="'+esc(search)+'"><button class="social-button social-primary">Buscar</button></form><div class="friends-list" tabindex="0" role="region" aria-label="Lista de contatos">'+matches+
-        section('requests','Solicitações',incoming.concat(outgoing).join('')||blank('Nenhuma solicitação pendente.'))+
-        section('contacts','Lista de amigos · '+data.onlineCount+' de '+data.friends.length+' online','<label class="social-field">Filtrar amigos <input id="socialFriendsFilter" type="search" placeholder="Filtrar por nome…" autocomplete="off" data-social-filter="friends" maxlength="40" value="'+esc(friendsFilter)+'"></label>'+
+        (incoming.length||outgoing.length?section('requests','Solicitações',incoming.concat(outgoing).join('')):'')+
+        section('contacts','Lista de amigos · '+data.onlineCount+' de '+data.friends.length+' online',(data.friends.length>1?'<label class="social-field">Filtrar amigos <input id="socialFriendsFilter" type="search" placeholder="Filtrar por nome…" autocomplete="off" data-social-filter="friends" maxlength="40" value="'+esc(friendsFilter)+'"></label>':'')+
           (list.map(p=>line(p,contactActions(p,{friend:true}))).join('')||blank(data.friends.length?'Nenhum amigo corresponde ao filtro.':'Você ainda não adicionou amigos.')))+
         (data.blocked.length?section('blocked','Contatos bloqueados',data.blocked.map(p=>line(p,button('Desbloquear','block',p.id,{disabled:!canWrite()}))).join('')):'')+'</div></section>';
     }
@@ -269,7 +371,8 @@
     function paint(){
       if(!view)return;
       tileItems.clear();
-      const body=profile?group('Perfil do personagem',person(profile,{large:true})+contactActions(profile,{trade:true})+button('Voltar','profile-close')):
+      if(view==='friends')o.profileMode?.(!!profile);
+      const body=profile?publicProfile(profile):
         !online()?blank('Entre no servidor para usar este recurso.'):
         failed&&!model?blank('Não foi possível carregar os dados.')+button('Tentar novamente','refresh'):
         !model?blank('Carregando…'):{friends,messages,mail,trade}[view](model);
@@ -277,7 +380,7 @@
       if(signature!==html||!o.body.querySelector('.social-content')){signature=html;replace(o.body,html);}
     }
     async function refreshPanel(){
-      if(!view||!online()||panelPending||document.hidden)return;
+      if(!view||profile||!online()||panelPending||document.hidden)return;
       const epoch=viewEpoch, selected=view;
       panelPending=true;
       try{
@@ -296,16 +399,48 @@
           }
           if(tradeHistory.length){const ids=new Set(data.history.map(r=>r.id));data.history.push(...tradeHistory.flatMap(p=>p.history).filter(r=>!ids.has(r.id)));data.nextHistory=tradeHistory.at(-1).nextHistory;}
         }
-        if(profile&&people.has(profile.id))profile=people.get(profile.id);
         model=data;failed=false;paint();
       }catch{if(epoch===viewEpoch){failed=true;paint();}}finally{panelPending=false;if(epoch!==viewEpoch&&view)void refreshPanel();}
     }
+    function clearPublicProfile(){
+      ++profileRequest;
+      profile=null;
+      profilePhase='idle';
+    }
+    function openPublicProfile(person){
+      if(!person||!online())return false;
+      if(view!=='friends')o.openPanel('friends');
+      profile=person;
+      profilePhase='loading';
+      const request=++profileRequest;
+      paint();
+      void (async()=>{
+        try{
+          const {character}=await o.read({view:'profile',target:person.id});
+          if(request!==profileRequest)return;
+          if(character?.id!==person.id){profilePhase='unavailable';return;}
+          profile=character;
+          people.set(character.id,character);
+          profilePhase='ready';
+        }catch(error){
+          if(request===profileRequest)profilePhase=['contact_blocked','contact_missing','contact_self'].includes(error?.code)?'unavailable':'error';
+        }finally{
+          if(request===profileRequest)paint();
+        }
+      })();
+      return true;
+    }
+    function closePublicProfile(){
+      clearPublicProfile();
+      paint();
+      void refreshPanel();
+    }
     function open(id,personToTrade){
-      if(view!==id){view=id;viewEpoch++;model=null;profile=null;statusText='';failed=false;mailPages=[];tradeHistory=[];tradeTarget=null;tradeOutcome=null;signature='';}
+      if(view!==id){view=id;viewEpoch++;model=null;clearPublicProfile();statusText='';failed=false;mailPages=[];tradeHistory=[];tradeTarget=null;tradeOutcome=null;signature='';}
       if(personToTrade){tradeName=personToTrade.name;tradeTarget=personToTrade;}
       paint();void refreshPanel();
     }
-    function close(){if(view){view='';viewEpoch++;model=null;profile=null;signature='';tileItems.clear();}}
+    function close(){if(view){view='';viewEpoch++;model=null;clearPublicProfile();signature='';tileItems.clear();}}
     async function send(action,payload,{quiet=false}={}){
       if(!canWrite())return false;
       mutating=true;if(!quiet)statusText='';paint();
@@ -414,12 +549,12 @@
     }
     async function action(e){
       const b=e.target.closest('[data-social-action]');if(!b||b.disabled)return;
-      const key=b.dataset.socialAction,id=b.dataset.socialId,p=people.get(id);
+      const key=b.dataset.socialAction,id=b.dataset.socialId,p=profile?.id===id?profile:people.get(id);
       if(key==='private'){privateOpen(p);return;}
       if(key==='private-close'){dismissedTabs.add(id);target=null;thread=null;bar.querySelector('[data-chat-channel="all"]').click();return;}
       if(key==='private-more'){void refreshThread({older:true});return;}
-      if(key==='profile'){if(!view)o.openPanel('friends');profile=p;paint();return;}
-      if(key==='profile-close'){profile=null;paint();return;}
+      if(key==='profile'){openPublicProfile(p);return;}
+      if(key==='profile-close'){closePublicProfile();return;}
       if(key==='trade-person'){o.openPanel('trade');open('trade',p);return;}
       if(key==='refresh'){void refreshPanel();return;}
       if(key==='mail-tab'){mailTab=id;mailPages=[];model=null;viewEpoch++;paint();void refreshPanel();return;}
@@ -449,7 +584,7 @@
         'trade-lock':['trade.lock',{tradeId:id,expectedOfferVersion:t?.offerVersion,locked:!t?.ownLocked}],
         'trade-confirm':['trade.confirm',{tradeId:id,expectedOfferVersion:t?.offerVersion}],
       }[key];
-      if(commands)await send(...commands);
+      if(commands&&await send(...commands)&&key==='block'&&profile?.id===id)closePublicProfile();
     }
     function submit(e){
       const form=e.target.closest('[data-social-form]');if(!form)return;
@@ -487,8 +622,16 @@
         if(chat.classList.contains('hud-open')&&privateOn&&ticks%2===0)void refreshThread();
       },1800);
     }
-    return {open,close,start,submitChat,refreshBadge:pollBadge,chatOpened(){if(online()){void refreshInbox();if(privateOn)void refreshThread();}},
+    function openContact(person,action){
+      if(!person||!online())return false;
+      people.set(person.id,person);
+      if(action==='profile')return openPublicProfile(person);
+      if(action==='private'&&person.actions?.message===null){privateOpen(person);return true;}
+      if(action==='party'&&person.actions?.party===null)return send('party.invite',{targetId:person.id});
+      return false;
+    }
+    return {open,close,start,submitChat,openContact,refreshBadge:pollBadge,chatOpened(){if(online()){void refreshInbox();if(privateOn)void refreshThread();}},
       findItem:key=>tileItems.get(key),refreshPortraits(){refreshPortraits(o.body);refreshPortraits(threadNode);}};
   }
-  root.MareSocialUI={menu,create,errorMessage,tabs};
+  root.MareSocialUI={menu,create,errorMessage,tabs,portrait,createPortraits};
 })(globalThis);

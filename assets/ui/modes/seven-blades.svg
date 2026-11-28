@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <linearGradient id="edge" x2=".25" y2="1">
+      <stop stop-color="#fff0bd"/><stop offset="1" stop-color="#c28537"/>
+    </linearGradient>
+    <path id="blade" d="m22.6 19 .2-9L24 6l1.2 4 .2 9h1.6v1.6h-6V19z"/>
+  </defs>
+  <path d="M6 34c0-12 8-23 18-28 10 5 18 16 18 28l-18 9Z" fill="#12232a" stroke="#805a34" stroke-width="1.65"/>
+  <g fill="#b4874c">
+    <use href="#blade" transform="rotate(-54 24 33)"/><use href="#blade" transform="rotate(-32 24 33)"/>
+    <use href="#blade" transform="rotate(-15 24 33)"/><use href="#blade"/>
+    <use href="#blade" transform="rotate(15 24 33)"/><use href="#blade" transform="rotate(32 24 33)"/>
+    <use href="#blade" transform="rotate(54 24 33)"/>
+  </g>
+  <g fill="url(#edge)" stroke="#573b25" stroke-width=".85" stroke-linejoin="round">
+    <path d="m34 13 1 5-14 15 2 2-2 2-2-2-6 6-3-3 6-6-2-2 2-2 2 2Z"/>
+    <path d="m14 13-1 5 14 15-2 2 2 2 2-2 6 6 3-3-6-6 2-2-2-2-2 2Z"/>
+  </g>
+  <path d="m24 30 2.3 2.4L24 35l-2.3-2.6Z" fill="#efc574"/>
+</svg>

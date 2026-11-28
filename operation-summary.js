@@ -51,7 +51,17 @@
     }else if(c.type==='remove'){
      m.title='Remover pérola';m.acceptLabel='REMOVER PÉROLA';const p=api.pearlById[i.sockets?.[c.socket]];if(!p)m.error='A pérola não está mais neste encaixe.';else{cost({gold:api.removalCost(i,p)});m.result=p.name+' → mochila';m.success='O encaixe '+(c.socket+1)+' fica vazio. A pérola é devolvida, sem destruição.';if(s.inventory.length>=api.CAPACITY)m.error='Mochila cheia. Libere um espaço para receber a pérola.';}
     }else if(['reforge','reforgeLine'].includes(c.type)){
-     const single=c.type==='reforgeLine',extras=single?[i.extras?.[c.line]]:i.extras;m.title=single?'Reforjar atributo':'Reforjar todos os atributos';m.acceptLabel='REFORJAR';cost(api.reforgeCost(i,single));if(!extras?.length||extras.some(x=>!x))m.error='O atributo selecionado não existe mais.';else m.changes=extras.map(x=>({name:api.names[x.stat],before:x.stat==='crit'?Number((x.value*100).toFixed(2))+'%':x.value,after:'Sorteado'}));m.result='Novos atributos extras aleatórios';m.success='O resultado pode ser inferior. Base, raridade, refinamento, encaixes e pérolas são preservados.';m.notice=single?'Somente o atributo indicado será alterado.':'Todos os atributos extras indicados serão alterados.';
+     const single=c.type==='reforgeLine',extras=single?[i.extras?.[c.line]]:i.extras;
+     m.title=single?'Reforjar atributo':'Reforjar todos os extras';
+     m.acceptLabel='REFORJAR';
+     cost(api.reforgeCost(i,single));
+     if(!extras?.length||extras.some(x=>!x))m.error='O atributo selecionado não existe mais.';
+     else m.changes=extras.map(x=>({
+       name:api.names[x.stat],
+       before:['crit','attackSpeedPercent','critDamage'].includes(x.stat)?Number((x.value*100).toFixed(2))+'%':x.value,
+       after:'Sorteado'
+     }));
+     m.notice='O resultado pode ser inferior. O custo base da próxima tentativa sobe 30%.';
     }else m.error='Operação indisponível.';
    }
   }

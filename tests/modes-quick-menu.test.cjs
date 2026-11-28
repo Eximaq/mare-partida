@@ -15,6 +15,9 @@ assert.ok(html.includes('href="modes-menu.css"'));
 assert.match(js,/function toggleModesMenu\(\)/);
 assert.match(js,/function closeModesMenu\(restoreFocus=false\)/);
 assert.match(js,/if\(panel==='modes'\)\{\s*if\(currentPanel\)closePanel\(\);\s*toggleModesMenu\(\);/);
+const opener=js.slice(js.indexOf('function openPanel('),js.indexOf('function closePanel('));
+assert.ok(opener.indexOf("if(panel==='modes')")<opener.indexOf('if(ONLINE_GAME)'), 'the online keyboard shortcut reaches the same menu');
+assert.doesNotMatch(js,/function renderModes\(/,'no alternate game modes panel');
 assert.match(js,/openPanel\(quickMode\.dataset\.quickMode\)/);
 assert.match(js,/if\(k==='m'\)\{openPanel\('modes'\);return;\}/);
 assert.match(js,/if\(b\.hasAttribute\('data-modes-menu-trigger'\)\|\|b\.hasAttribute\('data-character-menu-trigger'\)\)return/,'no duplicate handler opens modal');
@@ -28,3 +31,15 @@ console.log('Menu Modos: direct map/prison actions, keyboard navigation, escape,
 assert.deepEqual([...html.matchAll(/data-quick-mode="([^"]+)"/g)].map(m=>m[1]),['map','prison','dungeons']);
 
 assert.doesNotMatch(get('ui-system.js'),/getElementById\('modesQuickMenu'\)\.append\(entry\)/,'Expedition stays outside the Modes submenu');
+
+for(const [id,icon,title] of [
+  ['weeklyBossMenu','weekly-boss.svg','Boss Semanal'],
+  ['swordEventMenu','seven-blades.svg','Desafio das Sete Lâminas']
+]){
+  const button=html.match(new RegExp('<button[^>]+id="'+id+'"[^>]*>[\\s\\S]*?<\\/button>'))?.[0];
+  assert(button?.includes('hidden'),id+' waits for online data');
+  assert(button.includes('assets/ui/modes/'+icon),id+' has its dedicated icon');
+  assert(button.includes('<span>'+title+'<small>'));
+  assert.match(get('assets/ui/modes/'+icon),/viewBox="0 0 48 48"/);
+}
+assert.match(js,/\[role="menuitem"\]:not\(\[hidden\]\):not\(:disabled\)/);

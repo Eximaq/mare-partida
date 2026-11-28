@@ -1,6 +1,6 @@
 import {lockWeeklyBoss} from '../characters/weekly-boss-store.js';
 import {readWeeklyBoss} from '../characters/weekly-boss.js';
-import {heartbeatSocialPresence,readPrivateMessages,readSocialContacts,readSocialContactBadge} from '../characters/social-contacts.js';
+import {heartbeatSocialPresence,readPrivateMessages,readSocialContacts,readSocialContactBadge,readSocialProfile} from '../characters/social-contacts.js';
 import {readSocialMail,readSocialMailCount} from '../characters/mail.js';
 import {marketAvailable,readMarket,readMarketBadge,sweepMarket,type MarketRead} from '../characters/market.js';
 import {reapExpiredTrades,readTrade,readSocialTradeCount} from '../characters/trade.js';
@@ -49,7 +49,7 @@ import { readCombat } from "../characters/combat.js";
 async function hasSocial(client:PoolClient){
   return (await client.query(`SELECT to_regclass('mare_game.social_friend_requests') IS NOT NULL AND to_regclass('mare_game.social_mail') IS NOT NULL AND to_regclass('mare_game.social_trades') IS NOT NULL AS enabled`)).rows[0]?.enabled===true;
 }
-type SocialRead={view:'badge'|'contacts'|'messages'|'mail'|'trade';search?:string|undefined;targetId?:string|undefined;before?:string|undefined;after?:string|undefined;tab?:'pending'|'claimed'|undefined;history?:{at:string;id:string}|undefined};
+type SocialRead={view:'badge'|'contacts'|'messages'|'mail'|'trade'|'profile';search?:string|undefined;targetId?:string|undefined;before?:string|undefined;after?:string|undefined;tab?:'pending'|'claimed'|undefined;history?:{at:string;id:string}|undefined};
 
 type SessionRow = {
   id: string;
@@ -333,6 +333,7 @@ export class AuthService {
         return {...await readSocialContactBadge(client,id),...await readSocialMailCount(client,id),tradeInvites:await readSocialTradeCount(client,id),marketPending:await marketAvailable(client)?(await readMarketBadge(client,id)).pending:0};
       }
       if(query.view==='contacts')return readSocialContacts(client,id,{search:query.search??''});
+      if(query.view==='profile')return readSocialProfile(client,id,query.targetId!);
       if(query.view==='messages')return readPrivateMessages(client,id,query.targetId!,{...(query.before?{before:query.before}:{}),...(query.after?{after:query.after}:{})});
       if(query.view==='mail')return readSocialMail(client,id,query.tab,query.before);
       return readTrade(client,id,query.history);

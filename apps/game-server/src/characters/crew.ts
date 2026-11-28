@@ -1,11 +1,12 @@
 import {randomUUID} from 'node:crypto';
 import type {PoolClient} from 'pg';
 import {AuthFault} from '../auth/errors.js';
-import {assertSocialContactAllowed} from './social-contacts.js';
+import {assertSocialContactAllowed,readCrewMemberContacts} from './social-contacts.js';
 import {crewCapacity,crewFacilities,crewLevel,crewPolicy,crewProject,seaWar,type CrewFacility} from './crew-config.js';
 import {buyRankCFragment,claimContributionCoins,readContributionCoins} from './crew-contribution.js';
 import {creditCrewDonation,ensureCrewMissions,readCrewMissions} from './crew-activity.js';
 import {creditProfessionDonation,professionLevel,readCrewProfessionBenefits} from './crew-professions.js';
+import {effectiveProfession,professionIds,professions} from './crew-profession-rules.js';
 import {
   crewAvailable,crewClock,crewDonation,crewMember,crewSummary,listCrews,lockCrew,readCrewIdentities,
   type CrewRecruitment,type CrewRole,type CrewRow,
@@ -332,7 +333,7 @@ async function readRequests(client:PoolClient,id:string,group:Pick<CrewRow,'id'>
   return {invites:rows.filter(r=>r.kind==='invitation'),applications:rows.filter(r=>r.kind==='application')};
 }
 
-async function readGroup(client:PoolClient,crew:CrewRow&{role:CrewRole},now:Date) {
+async function readGroup(client:PoolClient,viewerId:string,crew:CrewRow&{role:CrewRole},now:Date) {
   const rows=(await client.query<MemberViewRow>(`
     SELECT ch.id,ch.name,ch.class_id,ch.faction_id,p.level,m.role,COALESCE(h.power,0) power,
       pr.profession,pr.experience,COALESCE(gifts.amount,0)::text contribution
@@ -347,9 +348,17 @@ async function readGroup(client:PoolClient,crew:CrewRow&{role:CrewRole},now:Date
     ) gifts ON gifts.character_id=ch.id
     WHERE m.crew_id=$1 ORDER BY CASE m.role WHEN 'captain' THEN 0 WHEN 'officer' THEN 1 ELSE 2 END,m.joined_at,m.character_id`,
     [crew.id])).rows;
-  const members=rows.map(row=>({id:row.id,name:row.name,classId:row.class_id,factionId:row.faction_id,
-    level:row.level,role:row.role,power:row.power,contribution:Number(row.contribution),
-    profession:row.profession===null?null:{id:row.profession,level:professionLevel(Number(row.experience))}}));
+  const contacts=await readCrewMemberContacts(client,viewerId,rows.map(row=>row.id));
+  const members=rows.map(row=>{
+    const person=contacts.get(row.id);
+    return {id:row.id,name:row.name,classId:row.class_id,factionId:row.faction_id,
+      level:row.level,role:row.role,power:row.power,contribution:Number(row.contribution),
+      profession:row.profession===null?null:{id:row.profession,level:professionLevel(Number(row.experience))},
+      ...(person?{online:person.online,appearance96:person.appearance96,
+        hideHeadgear:person.hideHeadgear,equipment:person.equipment,actions:person.actions,
+        crew:person.crew,lastActivity:person.lastActivity,publicProfile:person.publicProfile}:{}),
+    };
+  });
   const history=(await client.query(`
     SELECT l.kind,l.amount,l.facility,l.created_at,c.name FROM mare_game.crew_ledger l
     JOIN mare_game.characters c ON c.id=l.character_id WHERE crew_id=$1
@@ -357,9 +366,24 @@ async function readGroup(client:PoolClient,crew:CrewRow&{role:CrewRole},now:Date
       kind:row.kind,amount:Number(row.amount),facility:row.facility,createdAt:row.created_at,characterName:row.name,
     }));
   const benefits=await readCrewProfessionBenefits(client,crew.id);
-  return {...crewSummary(crew,members.length),xp:Number(crew.xp),treasury:Number(crew.treasury),role:crew.role,
+  const summary=crewSummary(crew,members.length);
+  const projects=crewFacilities.map(facility=>{
+    const project=crewProject(facility,crew.facilities[facility],benefits.carpenter);
+    if(project.nextLevel===null)return {...project,nextBenefit:null};
+    if(facility==='hull')return {...project,nextBenefit:{
+      kind:'capacity' as const,current:summary.capacity,next:crewCapacity({...crew.facilities,hull:project.nextLevel}),
+    }};
+    const id=professionIds.find(id=>professions[id].facility===facility);
+    if(!id)return {...project,nextBenefit:{kind:'none' as const}};
+    const highest=members.reduce((level,member)=>member.profession?.id===id?Math.max(level,member.profession.level):level,0);
+    return {...project,nextBenefit:{
+      kind:'profession' as const,id,current:benefits[id],next:effectiveProfession(id,highest,project.nextLevel),
+      currentLevelCap:project.level*2,nextLevelCap:project.nextLevel*2,
+    }};
+  });
+  return {...summary,xp:Number(crew.xp),treasury:Number(crew.treasury),role:crew.role,
     facilities:crew.facilities,members,history,benefits,missions:await readCrewMissions(client,crew,now),futureMissions:[seaWar],
-    projects:crewFacilities.map(facility=>crewProject(facility,crew.facilities[facility],benefits.carpenter))};
+    projects};
 }
 
 export async function readCrew(client:PoolClient,id:string,search='') {
@@ -370,7 +394,7 @@ export async function readCrew(client:PoolClient,id:string,search='') {
   const serverNow=await crewClock(client);
   const blockedUntil=(await client.query<{until_at:Date}>(
     'SELECT until_at FROM mare_game.crew_entry_blocks WHERE character_id=$1 AND until_at>$2',[id,serverNow])).rows[0]?.until_at??null;
-  let group=current?await readGroup(client,current,serverNow):null;
+  let group=current?await readGroup(client,id,current,serverNow):null;
   // Drop a roster or inbox read if the viewer's membership changed during assembly.
   const membership=current?await crewMember(client,id):null;
   if(current&&(membership?.crew_id!==current.id||membership.role!==current.role))group=null;
@@ -383,14 +407,14 @@ export async function readCrewIdentity(client:PoolClient,id:string) {
   return (await readCrewIdentities(client,[id])).get(id)??null;
 }
 
-export async function readCrewPower(client:PoolClient,id:string) {
+export async function readCrewPower(client:PoolClient,id:string,ownPower?:number) {
   const {rows}=await client.query<{power:string}>(`
-    SELECT COALESCE(sum(h.power),0)::text power
+    SELECT COALESCE(sum(CASE WHEN m.character_id=$1 THEN COALESCE($2::int,h.power) ELSE h.power END),0)::text power
     FROM mare_game.crew_members member
     JOIN mare_game.crews g ON g.id=member.crew_id AND g.dissolved_at IS NULL
     JOIN mare_game.crew_members m ON m.crew_id=g.id
     LEFT JOIN mare_game.character_hierarchy h ON h.character_id=m.character_id
-    WHERE member.character_id=$1`,[id]);
+    WHERE member.character_id=$1`,[id,ownPower]);
   return Number(rows[0]?.power??0);
 }
 

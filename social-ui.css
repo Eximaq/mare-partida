@@ -43,9 +43,9 @@
 .social-person-meta small img{width:14px;height:14px;object-fit:contain}
 .social-person-meta small.social-online{color:#a9dfc6}
 .social-person .crew-flag{width:17px;height:17px}
-.social-portrait{background:#0d1923;width:39px;height:42px;flex:none;image-rendering:pixelated;border:1px solid #83613b;border-radius:3px}
-.social-person-large .social-portrait{width:69px;height:74px}
-.social-person-large{margin-bottom:8px}
+.contact-face{position:relative;display:grid;place-items:center;width:39px;aspect-ratio:12/13;flex:none;overflow:hidden;border:1px solid #a97f48;border-radius:5px;background:radial-gradient(ellipse at 50% 28%,#254555,#0b1a25 82%);color:#eccd92;font:700 14px/1 var(--rpg-ui-heading,Georgia,serif)}
+.contact-face canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.contact-face:has(canvas[data-ready="true"])>span{visibility:hidden}
 .social-empty,.social-notice{margin:5px 0;padding:8px;color:#c9bcaa}
 .social-notice{color:#ffe0a3;background:#422d14;border:1px solid #a77939;border-radius:4px}
 .social-message-summary{flex:1;min-width:0}
@@ -71,7 +71,7 @@
 .social-thread{display:flex;flex-direction:column;min-height:0;color:#f8e4bf;font:12px/1.35 var(--rpg-ui-reading,'Segoe UI',sans-serif)}
 .social-thread>header{display:flex;align-items:center;gap:5px;padding:5px 4px;border-bottom:1px solid #7b5f3d}
 .social-thread>header .social-person{margin-right:auto}
-.social-thread .social-portrait{width:28px;height:30px}
+.social-thread .contact-face{width:28px}
 .social-thread-menu[open] .social-actions{position:absolute;z-index:1;left:6px;right:6px;background:#101821;border:1px solid #997444;padding:5px}
 .social-chat-log{overflow-y:auto;overscroll-behavior:contain;height:clamp(82px,18vh,185px);scrollbar-width:thin;padding:5px}
 .social-chat-log article{background:#111d26;border-left:2px solid #695133;padding:4px 6px;margin-top:4px}
@@ -421,4 +421,71 @@
 }
 @media (prefers-reduced-motion: reduce) {
   #app #panelOverlay.social-mode .dialog .trade-desk .social-button { transition: none; }
+}
+
+.social-public-profile {
+  display: grid;
+  gap: 10px;
+  max-width: 780px;
+  margin-inline: auto;
+  font: 13px/1.4 var(--glass-type);
+  color: #f5f6f8;
+}
+.social-profile-banner {
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #ffffff20;
+  border-radius: 10px;
+  background: #ffffff04;
+}
+.social-profile-banner .contact-face { width: 78px; border-color: var(--glass-line); background: #08090b80; }
+.social-profile-identity { display: grid; align-content: start; gap: 3px; min-width: 0; }
+.social-profile-identity h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 6px; margin: 0; font: 700 22px/1.15 var(--glass-type); color: #f5f6f8; text-shadow: none; overflow-wrap: anywhere; }
+.social-profile-title { color: var(--glass-gold); font-weight: 650; }
+.social-profile-guild { color: var(--glass-gold); font-size: .62em; white-space: nowrap; }
+.social-profile-class,.social-profile-faction { display: flex; align-items: center; gap: 5px; }
+.social-profile-class img,.social-profile-faction img { width: 18px; height: 18px; object-fit: contain; flex: none; }
+.social-profile-faction { flex-wrap: wrap; }
+.social-profile-faction,.social-profile-presence { color: var(--glass-muted); font-size: 12px; }
+.social-profile-metrics { display: grid; gap: 6px; margin: 0; border-left: 1px solid #ffffff20; padding-left: 12px; }
+.social-profile-metrics dt { color: var(--glass-muted); font-size: 12px; }
+.social-profile-metrics dd { margin: 0; color: var(--glass-gold); font-weight: 750; font-variant-numeric: tabular-nums; }
+.social-profile-power dd { font-size: 22px; }
+.social-profile-bounty dd { display: flex; align-items: center; gap: 5px; font-size: 14px; white-space: nowrap; }
+.social-profile-bounty dd img { width: 17px; height: 17px; flex: none; }
+.social-profile-bounty dd small { color: var(--glass-muted); font-weight: 500; }
+.social-profile-gear,.social-profile-gear-note { padding: 9px 12px; border: 1px solid #ffffff18; border-radius: 8px; background: #ffffff04; }
+.social-profile-gear-note { margin: 0; color: var(--glass-muted); }
+.social-profile-gear h4 { margin: 0 0 7px; color: var(--glass-gold); font-size: 13px; }
+.social-profile-gear ul { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,175px),1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; }
+.social-profile-gear li { min-width: 0; }
+.social-profile-item { display: flex; align-items: center; gap: 6px; width: 100%; min-height: 38px; min-width: 0; padding: 4px 6px; border: 1px solid #ffffff14; border-radius: 6px; background: #ffffff03; color: inherit; font: inherit; text-align: start; }
+#app #panelOverlay.social-mode button.social-profile-item {
+  justify-content: flex-start;
+  border: 1px solid #ffffff14;
+  border-image: none;
+  border-radius: 6px;
+  background: #ffffff03;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  text-shadow: none;
+  cursor: help;
+}
+#app #panelOverlay.social-mode button.social-profile-item:hover:not(:disabled) { border-color: var(--glass-line); background: #ffffff0a; filter: none; }
+#app #panelOverlay.social-mode button.social-profile-item:focus-visible { outline: 2px solid var(--glass-gold); outline-offset: -2px; }
+@media (pointer: coarse) { .social-profile-item { min-height: 44px; } }
+.social-profile-gear li img { width: 26px; height: 26px; object-fit: contain; flex: none; }
+.social-profile-gear li :is(small,strong) { display: block; overflow-wrap: anywhere; }
+.social-profile-gear li small { color: var(--glass-muted); }
+.social-public-profile footer { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+@media (max-width: 520px) {
+  .social-profile-banner { grid-template-columns: auto minmax(0,1fr); gap: 8px; padding: 9px; }
+  .social-profile-banner .contact-face { width: 58px; }
+  .social-profile-identity h3 { font-size: 18px; }
+  .social-profile-metrics { grid-column: 1/-1; grid-template-columns: repeat(auto-fit,minmax(min(100%,116px),1fr)); border: 0; border-top: 1px solid #ffffff18; padding: 6px 0 0; }
+  .social-profile-power dd { font-size: 20px; }
 }
