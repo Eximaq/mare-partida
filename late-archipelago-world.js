@@ -6,8 +6,8 @@
  Object.assign(root.MareMapExportData,imported);
  const data={...imported,marineford:root.MareMapExportData.marineford};
  const goal=(region,id)=>({...data[region].goals.find(p=>p.id===id)});
- // Patrols reuse connected destinations in the approved map exports. Marineford
- // uses its existing courtyard; its weekly arena geometry remains untouched.
+ // Patrols share each region's floor. Marineford keeps separate weekly and
+ // hunt travel contracts on its shared HD painting.
  const layouts={
   'thriller-bark':{
    districts:['courtyard','garden','dead_forest'].map(id=>goal('thriller-bark',id)),
@@ -18,8 +18,8 @@
    points:['bar','park','shop','workshop','grove41','south_plaza'].map(id=>goal('sabaody',id))
   },
   marineford:{
-   districts:[{id:'west-courtyard',name:'Praça oeste',x:3048,y:3048},{id:'north-courtyard',name:'Praça central',x:3496,y:2408},{id:'east-courtyard',name:'Praça leste',x:3944,y:3048}],
-   points:[[3048,2408],[3496,2408],[3944,2408],[3048,3048],[3432,3208],[3944,3048]].map(([x,y])=>({x,y}))
+   districts:data.marineford.districts,
+   points:data.marineford.huntPoints
   }
  };
  const specs=[
@@ -46,7 +46,7 @@
   return {id,region,name,min,max,type,monster,level:min,spawn:{...data[region].spawn},districts,slots};
  });
  const worlds=Object.fromEntries(specs.map(spec=>{
-  const source=data[spec.region],map=maps.build(spec.id),returnPoint={id:'return',...(source.returnPoint||source.spawn),radius:40};
+  const source=data[spec.region],map=maps.build(spec.id),returnPoint={id:'return',...(source.huntReturnPoint||source.returnPoint||source.spawn),radius:40};
   Object.assign(map,{returnPoint,interactions:[returnPoint],safeZones:source.safeZones.length?source.safeZones.map(p=>({...p})):[{...spec.spawn,radius:160}],spawnZones:spec.districts.map(p=>({id:p.id,x:p.x-120,y:p.y-120,w:240,h:240}))});
   return [spec.id,{spec,map,districts:spec.districts,slots:spec.slots}];
  }));

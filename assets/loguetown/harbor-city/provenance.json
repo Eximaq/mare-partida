@@ -1,0 +1,22 @@
+{
+  "title": "Loguetown — cidade portuária HD",
+  "source": "New artwork generated with image_gen for this game at the owner request, 2026-11-27",
+  "asset": "scene-hd.png",
+  "nativePixels": [
+    1448,
+    1086
+  ],
+  "worldSize": [
+    4096,
+    3072
+  ],
+  "sha256": "3ba69ac0f94683e805d3872518d152f94222b70ceb81b54cc299ab155d72b9b6",
+  "processing": "Original generated PNG copied byte for byte. No resize, palette reduction or lossy compression.",
+  "artDirection": "Bright, detailed high-angle orthographic JRPG port city; terracotta merchant houses, historic execution square, clock tower, Marine headquarters, formal garden, market and harbor piers. No characters or UI.",
+  "refinement": "Preserve the full city composition and improve fine texture detail for close-up gameplay. The generator returned 1448 × 1086 pixels; this is the actual source resolution, not native 4K.",
+  "preservedAssets": [
+    "assets/exported-maps/loguetown/map.png",
+    "assets/world-maps/loguetown.png",
+    "assets/ui/voyage-hd/loguetown.png"
+  ]
+}

@@ -77,6 +77,16 @@ for(const [col,row,surface] of [[26,15,'cimento'],[24,11,'areia'],[32,11,'grama'
     assert.ok(clip.volume>0&&clip.volume<.55,'Footsteps are quieter than the user volume');
   }
 }
+// A new painting must use its visible material rather than the old PixelLab coordinates.
+context.MareOrangeTownLayout={surfaceAt:()=> 'madeira'};
+const paintedPoint={x:26*64+32,y:15*64+32},paintedFrom={...paintedPoint,x:paintedPoint.x-4};
+audio.walkOrange('orange',paintedFrom,paintedPoint,{moving:true,distance:20,stepDistance:4});
+assert.match(filename(played.at(-1)),/^passo-madeira-/,'The painted pier plays wood even where the old projection had paving');
+context.MareOrangeTownLayout.surfaceAt=()=>null;
+const silentWater=played.length;
+audio.walkOrange('orange',paintedFrom,paintedPoint,{moving:true,distance:60,stepDistance:4});
+assert.equal(played.length,silentWater,'Water in the new painting must not fall back to an old floor material');
+delete context.MareOrangeTownLayout;
 const beforeExit=played.length;
 audio.setEffectsVolume(0);
 audio.playOrange('orange','espada-corte');

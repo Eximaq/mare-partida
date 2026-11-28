@@ -97,7 +97,7 @@ test('official reward receipts record every individual outcome and deliver each 
 test('official Marineford combat persists loot outcomes only for credited participants',async()=>authDatabase(async f=>{
  const [a,b,observer]=await Promise.all([actor(f),actor(f),actor(f)]);
  await operator(f,a,1);
- const marineford={...config,spawn:{x:2560,y:1408},entry:{x:2740,y:1408}};
+ const marineford={...config,spawn:{x:1536,y:1280},entry:{x:1536,y:1448}};
  await a.event({op:'configure',revision:1,config:marineford});
  const {weeklyBoss:{eventId:id}}=await a.event({op:'activate',revision:2});
  for(const who of [a,b,observer])await who.event({op:'join',eventId:id});

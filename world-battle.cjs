@@ -14,7 +14,7 @@ const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
 const Policy=require('./combat-action-policy.js');
 const {potionRules,potionRecovery}=require('./item-catalog.js');
-const sources=['sword-compendium.js','daily-sword-battle.cjs','daily-sword-boss-combat.js','daily-sword-boss-specials.json','attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','cp9-monsters.js','thriller-monsters.js','cp9-sprites.js','thriller-sprites.js','enies-dungeon-art.js','sabaody-monsters.js','sabaody-sprites.js','sabaody-dungeon-art.js','marineford-monsters.js','prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','late-archipelago-map-data.js','late-archipelago-world.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const sources=['sword-compendium.js','daily-sword-battle.cjs','daily-sword-boss-combat.js','daily-sword-boss-specials.json','attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','cp9-monsters.js','thriller-monsters.js','cp9-sprites.js','thriller-sprites.js','enies-dungeon-art.js','sabaody-monsters.js','sabaody-sprites.js','sabaody-dungeon-art.js','marineford-monsters.js','prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','late-archipelago-map-data.js','late-archipelago-world.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','loguetown-map-data.js','arlong-map-data.js','baratie-map-data.js','syrup-map-data.js','rare-animals-map-data.js','dawn-village-map-data.js','conchas-marine-map-data.js','orange-town-map-data.js','alabasta-desert-map-data.js','alubarna-city-map-data.js','boss-arena-map-data.js','marineford-map-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 const balanceVersion=characters.monsterBalance.version;
 const previousBalanceHash='c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b';
@@ -24,11 +24,27 @@ const priorBalanceHashes=new Set([previousBalanceHash,'3c3abd53210f73539fe46107f
 const previousSkypieaHash='0c6dbd3c8a12bb2e1958e830b6bdf3149be9cb911f976f7722ff11d99867b8c0';
 const previousSkypieaSceneHash='28c090f587fc5f11aa1f007f8008b509cfdd31e630fba12d83a8acfbb8391adf';
 const previousSkypieaArrivalHash='c66c9af7ffaae0d2d98c47196f5edee82ff4fa0875da9f0d08c1cf37b1e7c401';
+const previousLoguetownHash='cd060e983a8453a1ef8414cc2f9efea2f19f7c5b64021b98a3318540422f610b';
+const previousArlongHash='315259efc3b292e009398c8951e188f43f791abf03fff5a21ad6dc14bad9f4cc';
+const previousBaratieHash='b35bd06e55109403600915cb0e386f9928d3f4166b24d527f9912e1bd9b01d61';
+const previousSyrupHash='77987989a99918858134db83b9767b30bc1fb83ab432ffbe04861b9b502b1c7d';
+const previousRareHash='c69b729bc7c2dcf29503e803e0d6c1e09ffb5293b42bf8bd9eb400377deece91';
+const previousDawnHash='0dfdc472b3ec8f7213d274bff111ed2c152d27e76dcbed3e587255713cec8bbd';
+const previousConchasHash='b936a87dc26fa164f795e1b77931888790932a37a27acdeb36c3b62152546c07';
+const previousOrangeHash='65190d0d471d444bab81b8c46ded2948934fddb0dce0ea72820c91462f949e80';
+const previousAlabastaHash='c91ad59190d5a25a2214bf4c79f3f50e4e76b84dc8050f5044ee43dbf4132518';
+const previousAlubarnaHash='6a3e08adcb2eec3da5122e2eaba5ef0f5898bdf180fdd49b34f30298d86adc65';
+const previousBossArenaHash='c9607a8978503a6a30677f041a6c8f24a932be20932e322da0f80366b0e35d32';
+const previousMarinefordHash='df87a9e7018eff5bcbee1d33a2d8ba3347ff3fc019133d6c0bdf86f8145e51cc';
 const previousHuntProgressionHash='cd060e983a8453a1ef8414cc2f9efea2f19f7c5b64021b98a3318540422f610b';
 const previousWorldXpHash='25e85126fbe82f0bb9367589fc80c5a183fd64bc8ee2530d83d6bd14d8e3a142';
+const previousProgressionReleaseHash='6d92bfa8026e119f3fcb25a55a605cf4b4b89f4d1e34887deaaede7981e7bdea';
+const previousHdMapsHash='132be50d66d77d11a46dff57be1d0a7c7c5a51125da40fe279c468032d3ff67e';
 const isSkypieaArea=area=>/^skypiea-0[1-4]$/.test(area);
-function reanchorSkypieaMobs(area,mobs,nav){
- if(!isSkypieaArea(area)||!Array.isArray(mobs))return false;
+const isAlubarnaArea=area=>/^alubarna-0[1-5]$/.test(area);
+const isMarinefordArea=area=>/^marineford-0[1-6]$/.test(area);
+function reanchorAuthoredMobs(area,mobs,nav){
+ if(!Array.isArray(mobs))return false;
  const slots=new Map(behavior.slots(area).map(s=>[s.id,s])),moves=[];
  for(const m of mobs){
   const p=m.source==='world'&&slots.get(m.spawnId);
@@ -48,12 +64,151 @@ function reanchorSkypieaMobs(area,mobs,nav){
  }
  return moves.length>0;
 }
+function reanchorSkypieaMobs(area,mobs,nav){
+ return isSkypieaArea(area)&&reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorLoguetownMobs(area,mobs,nav){
+ if(area!=='loguetown')return false;
+ // Old party snapshots can be projected before the worker has persisted the
+ // canonical room. Extras need the same navigable destination as base slots.
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorArlongMobs(area,mobs,nav){
+ if(area!=='arlong')return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorBaratieMobs(area,mobs,nav){
+ if(area!=='baratie')return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorSyrupMobs(area,mobs,nav){
+ if(area!=='syrup')return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorRareMobs(area,mobs,nav){
+ if(area!=='rare')return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorDawnMobs(area,mobs,nav){
+ if(area!=='beach')return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation('dawn');
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorConchasMobs(area,mobs,nav){
+ if(area!=='swamp')return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation('conchas');
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorOrangeMobs(area,mobs,nav){
+ if(area!=='orange')return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorAlabastaMobs(area,mobs,nav){
+ if(area!=='alabasta')return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorAlubarnaMobs(area,mobs,nav){
+ if(!isAlubarnaArea(area))return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorMarinefordMobs(area,mobs,nav){
+ if(!isMarinefordArea(area))return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function upgradeMarinefordGeometry(b){
+ if(isMarinefordArea(b.area))reanchorMarinefordMobs(b.area,b.mobs);
+ else if(b.area==='marineford'&&b.weeklyBossInstanceId&&!b.weeklyBossTest){
+  const point=mapExports.get('marineford').weeklyBossSpawn;
+  for(const m of b.mobs||[]){
+   if(!point||m.source!=='weekly-boss'||m.weeklyBossId!=='akainu'||m.anchorX===point.x&&m.anchorY===point.y)continue;
+   Object.assign(m,{x:point.x,y:point.y,anchorX:point.x,anchorY:point.y});behavior.disengage(m);m.action=null;
+  }
+ }else return;
+ cancel(b);resetHaki(b);
+}
+function upgradeAlubarnaGeometry(b){
+ if(!isAlubarnaArea(b.area))return;
+ reanchorAlubarnaMobs(b.area,b.mobs);
+ cancel(b);resetHaki(b);
+}
+function upgradeAlabastaGeometry(b){
+ if(b.area!=='alabasta')return;
+ reanchorAlabastaMobs(b.area,b.mobs);
+ cancel(b);resetHaki(b);
+}
+function upgradeOrangeGeometry(b){
+ if(b.area!=='orange')return;
+ reanchorOrangeMobs(b.area,b.mobs);
+ cancel(b);resetHaki(b);
+}
+function upgradeConchasGeometry(b){
+ if(b.area!=='swamp')return;
+ reanchorConchasMobs(b.area,b.mobs);
+ cancel(b);resetHaki(b);
+}
+function upgradeDawnGeometry(b){
+ if(b.area!=='beach')return;
+ reanchorDawnMobs(b.area,b.mobs);
+ cancel(b);resetHaki(b);
+}
+function upgradeRareGeometry(b){
+ if(b.area!=='rare')return;
+ reanchorRareMobs(b.area,b.mobs);
+ cancel(b);resetHaki(b);
+}
+function upgradeSyrupGeometry(b){
+ if(b.area!=='syrup')return;
+ reanchorSyrupMobs(b.area,b.mobs);
+ cancel(b);resetHaki(b);
+}
+function upgradeBaratieGeometry(b){
+ if(b.area!=='baratie')return;
+ reanchorBaratieMobs(b.area,b.mobs);
+ cancel(b);resetHaki(b);
+}
+function upgradeArlongGeometry(b){
+ if(b.area!=='arlong')return;
+ reanchorArlongMobs(b.area,b.mobs);
+ cancel(b);resetHaki(b);
+}
+function upgradeLoguetownGeometry(b){
+ if(b.area!=='loguetown')return;
+ reanchorLoguetownMobs(b.area,b.mobs);
+ cancel(b);resetHaki(b);
+}
 function addHuntLedgers(b){
  const areas=b?.hunts?.areas;if(!areas)return;
  const codes=['skypiea-02','skypiea-03','skypiea-04','enies-lobby-01','enies-lobby-02','enies-lobby-03','enies-lobby-04','enies-lobby-05',...late.specs.map(s=>s.id)].filter(id=>hunt.get(id)&&!Object.hasOwn(areas,id));
  if(!codes.length)return;
  const defaults=hunt.migrate({}).hunts.areas;
  for(const id of codes)areas[id]=defaults[id];
+}
+function upgradeBossArenaGeometry(b){
+ if(b.area!=='quest-dungeons')return;
+ let rehearsal;
+ for(const m of b.mobs||[]){
+  let point;
+  if(b.dungeon&&m.source==='boss-dungeon')point=dungeonMap.enemySpawn;
+  else if(b.weeklyBossTest&&b.weeklyBossInstanceId&&m.source==='weekly-boss'){
+   rehearsal??=require('./world-catalog.cjs').load().navigation('quest-dungeons').nearest({x:dungeonMap.spawn.x,y:dungeonMap.spawn.y-180});
+   point=rehearsal;
+  }
+  if(!point)continue;
+  if(m.anchorX!==point.x||m.anchorY!==point.y)Object.assign(m,{x:point.x,y:point.y,anchorX:point.x,anchorY:point.y});
+  behavior.disengage(m);
+  if(m.source==='boss-dungeon')dungeonCombat.cancel(m);
+  else m.action=null;
+ }
+ cancel(b);resetHaki(b);
 }
 function upgradeHuntProfiles(b){
  for(const m of b.mobs||[]){
@@ -68,23 +223,69 @@ function upgradeHuntProfiles(b){
 }
 function upgradeBalance(b){
  if(!b)return;
+ const previous=b.rulesHash;
+ // The map branch already has every HD arena. Apply only the progression
+ // branch's hunt profiles; active attacks and positions remain valid.
+ if(previous===previousHdMapsHash){upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;}
+ // This predecessor already has the HD dungeon arena. Leave its active fights
+ // and private rehearsals untouched while moving only Marineford geometry.
+ if(previous===previousMarinefordHash){upgradeMarinefordGeometry(b);upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;}
+ if(previous===previousBossArenaHash){addHuntLedgers(b);b.rulesHash=rulesHash;}
+ else upgradeHistoricalBalance(b);
+ // Historical branches return early. Apply this scene change only after a
+ // recognized upgrade, so every predecessor keeps its existing compatibility.
+ if(previous!==rulesHash&&b.rulesHash===rulesHash){upgradeBossArenaGeometry(b);upgradeMarinefordGeometry(b);upgradeHuntProfiles(b);addHuntLedgers(b);}
+}
+function upgradeHistoricalBalance(b){
+ if(!b)return;
  if(b.rulesHash===rulesHash){addHuntLedgers(b);return;}
+ if(b.rulesHash===previousAlubarnaHash){
+  upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
+ if(b.rulesHash===previousAlabastaHash){
+  upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
+ if(b.rulesHash===previousOrangeHash){
+  upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
+ if(b.rulesHash===previousConchasHash){
+  upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
+ if(b.rulesHash===previousDawnHash){
+  upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
+ if(b.rulesHash===previousRareHash){
+  upgradeRareGeometry(b);upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
+ if(b.rulesHash===previousSyrupHash){
+  upgradeSyrupGeometry(b);upgradeRareGeometry(b);upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
+ if(b.rulesHash===previousBaratieHash){
+  upgradeBaratieGeometry(b);upgradeSyrupGeometry(b);upgradeRareGeometry(b);upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
+ if(b.rulesHash===previousArlongHash){
+  upgradeArlongGeometry(b);upgradeBaratieGeometry(b);upgradeSyrupGeometry(b);upgradeRareGeometry(b);upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
+ // Progression releases branched before the HD map series. They need the
+ // same geometry projection even though their hunt profiles are already new.
+ if([previousLoguetownHash,previousWorldXpHash,previousProgressionReleaseHash].includes(b.rulesHash)){
+  upgradeLoguetownGeometry(b);upgradeArlongGeometry(b);upgradeBaratieGeometry(b);upgradeSyrupGeometry(b);upgradeRareGeometry(b);upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
  // Higher-resolution artwork and the new entry point preserve the terrain and
  // encounters. Existing fights keep their exact positions, attacks and clocks.
- if(b.rulesHash===previousSkypieaArrivalHash||b.rulesHash===previousHuntProgressionHash||b.rulesHash===previousWorldXpHash){
-  upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
- }
+ if(b.rulesHash===previousSkypieaArrivalHash){upgradeLoguetownGeometry(b);upgradeArlongGeometry(b);upgradeBaratieGeometry(b);upgradeSyrupGeometry(b);upgradeRareGeometry(b);upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);b.rulesHash=rulesHash;return;}
  // These audited releases precede the new four-island geometry. Keep every
  // enemy identity, HP and respawn; cancel spatial attacks only in Skypiea.
  if([previousSkypieaSceneHash,'9db64cec25862f433bf8c9a16526a7ef183a52f04419dbe618071f40c83c4c23','0d55e5e1f278e9b0ab184c2a4916d25a6f081cabcf9d7b2e0be662889bc2c04f','fde69ce5850f0028b5b45ac47805635b3fe798c56aad13c3ade9578297031259','5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810','0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'].includes(b.rulesHash)){
   if(isSkypieaArea(b.area)){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
-  upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+  upgradeLoguetownGeometry(b);upgradeArlongGeometry(b);upgradeBaratieGeometry(b);upgradeSyrupGeometry(b);upgradeRareGeometry(b);upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  if([previousSkypieaHash,'a2e4d9333c0770e539dee6262fb900e1747e94b44c1226a0baacb513b6c07a57','f48377155e997f7d41c76e0d6264e321603376094b73132ef8ebbd13be5cf0f7','8a7832817164137faed714a2ead01559c6c5801e6989c2a1a3aed55d3f2b383a'].includes(b.rulesHash)){
   if(isSkypieaArea(b.area)){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
-  upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+  upgradeLoguetownGeometry(b);upgradeArlongGeometry(b);upgradeBaratieGeometry(b);upgradeSyrupGeometry(b);upgradeRareGeometry(b);upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  if(!priorBalanceHashes.has(b.rulesHash))return;
+ upgradeLoguetownGeometry(b);upgradeArlongGeometry(b);upgradeBaratieGeometry(b);upgradeSyrupGeometry(b);upgradeRareGeometry(b);upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);
  const prisonSpec=b.prison&&prison.resolveEncounter(b.prison.spec,prisonCatalog);
  if(prisonSpec)b.prison.spec=prisonSpec;
  const replaced=mapExports.get(b.dungeon?'quest-dungeons':b.area);
@@ -403,4 +604,4 @@ function step(b,c){
  }
  talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};
 }
-module.exports={pendingWearIds,balanceVersion,previousBalanceHash,previousHuntProgressionHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,upgradeHuntProfiles,reanchorSkypieaMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};
+module.exports={pendingWearIds,balanceVersion,previousBalanceHash,previousHuntProgressionHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,upgradeHuntProfiles,reanchorSkypieaMobs,reanchorLoguetownMobs,reanchorArlongMobs,reanchorBaratieMobs,reanchorSyrupMobs,reanchorRareMobs,reanchorDawnMobs,reanchorConchasMobs,reanchorOrangeMobs,reanchorAlabastaMobs,reanchorAlubarnaMobs,reanchorMarinefordMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};

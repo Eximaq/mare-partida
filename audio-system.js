@@ -20,6 +20,8 @@
   // The published Orange projection uses these material codes at the player's feet.
   const orangeSurfaces={c:'areia',g:'grama',e:'cimento',m:'madeira',u:'madeira'};
   function orangeSurface(x,y){
+    const painted=globalThis.MareOrangeTownLayout;
+    if(painted?.surfaceAt)return painted.surfaceAt(x,y);
     const map=globalThis.MarePixelWorldMaps?.orange.source;
     if(!map)return null;
     return orangeSurfaces[map.terrain[Math.floor((y-1)/map.cellSize)]?.[Math.floor(x/map.cellSize)]]||null;

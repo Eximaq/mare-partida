@@ -1,0 +1,57 @@
+{
+  "title": "Ilha dos Animais Raros — ilha de Gaimon HD",
+  "createdDate": "2026-11-27",
+  "method": "Original image generated for this integration; original PNG copied byte for byte.",
+  "originalFile": "exec-70858398-a2d8-49fe-a9e1-9479e5b4bd3f.png",
+  "asset": "assets/rare-animals/gaimon-island/scene-hd.png",
+  "nativeSize": {
+    "width": 1447,
+    "height": 1087
+  },
+  "worldSize": {
+    "width": 3072,
+    "height": 2304,
+    "unit": "game coordinates, not source pixels"
+  },
+  "requestedSize": {
+    "width": 1448,
+    "height": 1086
+  },
+  "sizeNote": "Actual PNG header is 1447×1087. The source is not resized or recompressed; the renderer maps its real dimensions to world coordinates independently on each axis.",
+  "sha256": "c93dae2dfb9a199941c0e38bfcbaf191b8bc3ca4c35942d9ed13bd98c00012e5",
+  "bytes": 4081247,
+  "references": [
+    {
+      "url": "https://one-piece.com/anime/18/index.html",
+      "kind": "official anime episode summary",
+      "use": "Gaimon, rare animals and five empty treasure chests"
+    },
+    {
+      "url": "https://onepiece.fandom.com/wiki/Island_of_Rare_Animals",
+      "kind": "secondary geography reference",
+      "use": "Wild forest and steep treasure rock"
+    },
+    {
+      "url": "https://i.pinimg.com/736x/d6/10/2c/d6102cb442d39e04034311157107e2c7.jpg",
+      "kind": "anime overview reference",
+      "use": "Forested island with steep pale coastal cliffs"
+    },
+    {
+      "url": "https://storage.googleapis.com/stateless-thedailyfandom-org/2020/05/5a1ed8e5-57d1f9c910f643b0a4f04d945cf3259d.jpeg",
+      "kind": "anime frame reference",
+      "use": "Palms, woodland canopy and rocky shore"
+    },
+    {
+      "url": "https://cdn.shopify.com/s/files/1/0400/9767/7479/files/One_Piece_Gaimon_Stays_in_the_island_as_the_straw_hats_prepare_to_sail.png?v=1684601031",
+      "kind": "anime frame reference",
+      "use": "Natural landing and vegetation"
+    }
+  ],
+  "designNote": "Original playable interpretation, not a canonical floor plan. Small landing is a gameplay adaptation. Summit chests are scenery. Existing Cocox sprites remain separate.",
+  "referenceDistribution": "Reference images are not redistributed in this repository.",
+  "preservedAssets": [
+    "assets/new-islands/rare-map.png",
+    "assets/ui/voyage-hd/animais-raros.png"
+  ],
+  "prompt": "generation-prompt.txt"
+}

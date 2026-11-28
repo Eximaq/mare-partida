@@ -1,4 +1,6 @@
-# Deserto de Alabasta
+# Deserto de Alabasta — histórico PixelLab
+
+> O cenário ativo passou para a pintura descrita em [ALABASTA-DESERTO-HD.md](ALABASTA-DESERTO-HD.md). Este documento registra a importação original, cujas imagens e dados continuam preservados.
 
 28/10/2026. Região Alabasta disponível, entrada no nível40, recomendação40–50, sem limite superior de entrada. IDs antigos e saves preservados.
 

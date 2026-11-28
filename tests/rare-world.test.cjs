@@ -4,13 +4,17 @@ const R=require('../rare-world.js');
 require('../new-islands-data.js');
 const I=require('../new-islands.js'),H=require('../hunt-system.js');
 require('../world-system.js');
-const {Navigation}=MareWorld,nav=new Navigation(I.rare.map,32);
-assert.deepEqual([I.rare.data.width,I.rare.data.height,I.rare.map.width,I.rare.map.height],[58,50,3712,3200]);
+const {Navigation}=MareWorld,nav=new Navigation(I.rare.map,I.rare.map.navigationCell);
+// The original terrain metadata and image remain available. The installed
+// destination now uses its authored HD geometry and a separate arrival.
+assert.deepEqual([I.rare.data.width,I.rare.data.height],[58,50]);
+assert.deepEqual([I.rare.map.width,I.rare.map.height],[3072,2304]);
+assert.deepEqual([I.rare.map.spawn.x,I.rare.map.spawn.y],[1504,1952]);
 assert.equal(MareWorld.maps.rare,I.rare.map);
 assert('ei'.includes(I.rare.at(Math.floor(I.rare.spawn.x/64),Math.floor(I.rare.spawn.y/64))));
 assert(R.props.filter(p=>p.kind==='tree').length>=100);
-assert(nav.walkable(I.rare.spawn.x,I.rare.spawn.y));
-for(const d of I.rare.districts){assert(nav.path(I.rare.spawn,d).length);assert.equal(H.profile('rare',d.id,'cocox').level,18);assert.equal(H.sectorAt('rare',d,I.rare.districts).id,d.id);}
+assert(nav.walkable(I.rare.map.spawn.x,I.rare.map.spawn.y));
+for(const d of I.rare.districts){assert(nav.path(I.rare.map.spawn,d).length);assert.equal(H.profile('rare',d.id,'cocox').level,18);assert.equal(H.sectorAt('rare',d,I.rare.districts).id,d.id);}
 assert.equal(H.bossReady(H.migrate({}), 'rare',I.rare.districts.at(-1)),false);
 const db=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/monsters.json'),'utf8')).cocox;
 const c=H.profile('rare','mata-fechada','cocox');
@@ -22,4 +26,4 @@ for(const [name,size] of [['grass',64],['grass-alt',64],['sand',64]]){
 for(const [name,width,height] of [['idle',48,192],['run',320,320],['attack',612,272]]){
   const b=fs.readFileSync(path.join(__dirname,`../assets/rare-animals/cocox/${name}.png`));assert.equal(b.readUInt32BE(16),width);assert.equal(b.readUInt32BE(20),height);
 }
-console.log('Rare island: native tiles, organic forest, reachable clearings, Cocox catalog and original sheets passed.');
+console.log('Rare island: preserved native art, HD geometry, reachable clearings, Cocox catalog and original sheets passed.');

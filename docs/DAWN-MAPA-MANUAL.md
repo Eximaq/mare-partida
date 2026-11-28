@@ -1,5 +1,8 @@
 # Ilha Dawn — mapa manual do proprietário
 
+> Registro histórico da importação manual, preservada integralmente. O cenário
+> ativo de Dawn no PR #394 é descrito em [VILA-DAWN.md](VILA-DAWN.md).
+
 Importação de20/10/2026, branch `feature/dawn-mapa-manual`, base `bb2c87d` (inclui os tooltips dinâmicos do colaborador). Revisão por PR, sem publicação automática desta branch.
 
 ## O que mudou

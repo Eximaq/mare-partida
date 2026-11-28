@@ -36,10 +36,11 @@ test('new hunt instances use original maps, safe arrivals and connected patrols'
  const w=load();
  for(const [id]of cases)assert(w.maps[id],'registered map '+id);
  const late=require('../late-archipelago-world.js'),exports=require('../world-map-exports.js');
- for(const [id,width,height] of [['thriller-bark-01',3840,4992],['sabaody-01',3072,3072],['marineford-01',7168,5248]]){
+ for(const [id,width,height] of [['thriller-bark-01',3840,4992],['sabaody-01',3072,3072],['marineford-01',3072,2304]]){
   const map=w.maps[id],nav=w.navigation(id),spec=late.worlds[id].spec;
   assert.equal(map.width,width);assert.equal(map.height,height);assert(nav.walkable(map.spawn.x,map.spawn.y));
-  assert.equal(map.returnPoint.x,map.spawn.x);assert.equal(map.returnPoint.y,map.spawn.y);
+  const expectedReturn=exports.get(id).huntReturnPoint??map.spawn;
+  assert.equal(map.returnPoint.x,expectedReturn.x);assert.equal(map.returnPoint.y,expectedReturn.y);
   assert(map.interactions.some(p=>p.id==='return'));assert(!nav.walkable(32,32),'sea remains blocked');
   assert.equal(spec.slots.length,6);
   for(const slot of spec.slots){
@@ -49,8 +50,8 @@ test('new hunt instances use original maps, safe arrivals and connected patrols'
   }
   assert(nav.path(spec.slots.at(-1),map.returnPoint).length,id+' return route');
   const source=exports.get(id),file=source.imageFile||'map.png',region=spec.region;
-  assert(fs.existsSync(path.join(__dirname,'../assets/exported-maps',region,file)));
-  for(const assetId of new Set(source.props.map(p=>p.assetId)))assert(fs.existsSync(path.join(__dirname,'../assets/map-depth/objects',assetId+'.png')),assetId);
+  assert(fs.existsSync(source.groundUrl?path.join(__dirname,'..',source.groundUrl):path.join(__dirname,'../assets/exported-maps',region,file)));
+  if(source.spriteMode!=='painted')for(const assetId of new Set(source.props.map(p=>p.assetId)))assert(fs.existsSync(path.join(__dirname,'../assets/map-depth/objects',assetId+'.png')),assetId);
  }
  assert.equal(w.maps.marineford.returnPoint,undefined,'weekly arena was not changed into a hunt');
  assert.equal(w.maps.marineford.interactions.length,0);

@@ -60,6 +60,18 @@
 
 !world-catalog.cjs
 !world-map-exports-data.js
+!loguetown-map-data.js
+!arlong-map-data.js
+!baratie-map-data.js
+!syrup-map-data.js
+!rare-animals-map-data.js
+!dawn-village-map-data.js
+!conchas-marine-map-data.js
+!orange-town-map-data.js
+!alabasta-desert-map-data.js
+!alubarna-city-map-data.js
+!boss-arena-map-data.js
+!marineford-map-data.js
 !world-map-exports.js
 !island-world.js
 !lobby-map-data.js
