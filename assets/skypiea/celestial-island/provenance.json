@@ -1,0 +1,242 @@
+{
+  "name": "Skypiea — Ilha Celestial em 4K",
+  "created": "2026-11-27",
+  "origin": "Owner-requested quality correction and arrival at the marked X below the winged gate.",
+  "generator": "OpenAI imagegen (built-in), nine individually regenerated high-detail overlapping regions",
+  "image": "scene-4k.webp",
+  "sha256": "121d438597e2086162f1a0df7ff3dc8a7c1b20c2f3213611530fb3f0a35ec52a",
+  "sourcePixels": {
+    "width": 4096,
+    "height": 2731
+  },
+  "worldUnits": {
+    "width": 4608,
+    "height": 3072
+  },
+  "layoutGrid": {
+    "width": 1536,
+    "height": 1024,
+    "worldScale": 3
+  },
+  "assembly": {
+    "generatedCropPixels": {
+      "width": 1536,
+      "height": 1024
+    },
+    "referenceCropPixels": {
+      "width": 576,
+      "height": 384
+    },
+    "referenceStride": {
+      "x": 480,
+      "y": 320
+    },
+    "destinationColumns": [
+      0,
+      1280,
+      2560
+    ],
+    "destinationRows": [
+      0,
+      853,
+      1707
+    ],
+    "method": "Minimum-difference overlap seams with six-pixel feathering; broad color transition only in clear blue sky. No enlargement of generated crops.",
+    "format": "WebP near-lossless, full resolution, no chroma subsampling",
+    "pixelCountRatio": 7.111979166666667
+  },
+  "arrival": {
+    "x": 534,
+    "y": 2604,
+    "referenceGrid": {
+      "x": 178,
+      "y": 868
+    },
+    "source": "Center of the owner-marked X in the gate screenshot"
+  },
+  "rendering": "Shared high-definition texture, loaded once on demand. Existing renderer crops the native image using naturalWidth/naturalHeight; world dimensions, actor scale and nearest-neighbor drawing are unchanged.",
+  "navigation": "Same coastline, collisions, paths, encounter positions and return dais as the integrated map. New arrivals begin south of the winged gate.",
+  "artUse": "Generated for this owner-authorized Kaizoku Idle correction; original generated composition used as reference, no external asset pack.",
+  "sourceGenerations": [
+    {
+      "row": 0,
+      "column": 0,
+      "generation": "a0f7eefc-b09d-484d-ab0b-6de8b838e9d0",
+      "sourceWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 576,
+        "height": 384
+      },
+      "generatedPixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sha256": "19ae99c40732d918bbd47ff15177d2b947e8695588a4f9ac85194ea3838a8f18"
+    },
+    {
+      "row": 0,
+      "column": 1,
+      "generation": "41bfc9db-ae3c-4e7b-8f7a-d2ba969b891a",
+      "sourceWindow": {
+        "x": 480,
+        "y": 0,
+        "width": 576,
+        "height": 384
+      },
+      "generatedPixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sha256": "3ac28b523154f0ab87bb7d631e9f3986d166263ab745419fc4ad87e546851b36"
+    },
+    {
+      "row": 0,
+      "column": 2,
+      "generation": "0ab5809f-18f6-4cf4-81e9-a1a0a8ceea58",
+      "sourceWindow": {
+        "x": 960,
+        "y": 0,
+        "width": 576,
+        "height": 384
+      },
+      "generatedPixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sha256": "c3f590c112060a4a0d219fd4bdf5f78840a28b45e1ecc299af32c0bd26c53f43"
+    },
+    {
+      "row": 1,
+      "column": 0,
+      "generation": "f460a695-8719-46f1-a41c-b4a53b805417",
+      "sourceWindow": {
+        "x": 0,
+        "y": 320,
+        "width": 576,
+        "height": 384
+      },
+      "generatedPixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sha256": "2de9611c8c191ad4a4ec367fda18635cbfbbddf66c78730489314cc4e9f8bbfe"
+    },
+    {
+      "row": 1,
+      "column": 1,
+      "generation": "4b5b0fc6-6442-4615-a88c-e9c59111c355",
+      "sourceWindow": {
+        "x": 480,
+        "y": 320,
+        "width": 576,
+        "height": 384
+      },
+      "generatedPixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sha256": "5e30deab717b9607f83086b4961054cb20592e884c9b3d54b2529a9bb9c576bc"
+    },
+    {
+      "row": 1,
+      "column": 2,
+      "generation": "0535468d-c96a-4094-af04-b75dcb7ac0cd",
+      "sourceWindow": {
+        "x": 960,
+        "y": 320,
+        "width": 576,
+        "height": 384
+      },
+      "generatedPixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sha256": "76726c801069dffc0e8d96a0b1f1a274df37bbe46755eb455a6e600b2f182ba2"
+    },
+    {
+      "row": 2,
+      "column": 0,
+      "generation": "af482b57-5112-4b6b-ba8c-3ca598e2133b",
+      "sourceWindow": {
+        "x": 0,
+        "y": 640,
+        "width": 576,
+        "height": 384
+      },
+      "generatedPixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sha256": "dfb02c46a51657e48334b45e4b597f27c7e6c7358564e6dc2e22169b6d5505af"
+    },
+    {
+      "row": 2,
+      "column": 1,
+      "generation": "f39c6ca1-0381-425f-9cd1-e3ed85951957",
+      "sourceWindow": {
+        "x": 480,
+        "y": 640,
+        "width": 576,
+        "height": 384
+      },
+      "generatedPixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sha256": "c2e71c3ad085a09eb7ad4d5e1551dc4cc103a7831def4e4b8f837c31017ec360"
+    },
+    {
+      "row": 2,
+      "column": 2,
+      "generation": "39daeff9-e651-4915-8ac5-3e1b6966497b",
+      "sourceWindow": {
+        "x": 960,
+        "y": 640,
+        "width": 576,
+        "height": 384
+      },
+      "generatedPixels": {
+        "width": 1536,
+        "height": 1024
+      },
+      "sha256": "e56a5a81b128e13fbe4450d38a3ed05575016568eea2d7908f0972cb179c1c41"
+    }
+  ],
+  "previousRevision": {
+    "name": "Skypiea — Ilha Celestial",
+    "created": "2026-11-27",
+    "origin": "New image generated for the owner's explicit request to create and integrate a new Skypiea map across all four existing destinations.",
+    "generator": "OpenAI imagegen (built-in)",
+    "prompt": "Use case: stylized-concept. Asset type: complete playable top-down RPG world background for Kaizoku Idle. Create a NEW Skypiea-inspired celestial floating-island map with exceptional crisp HD pixel art, authored as a usable orthographic 2D game level, not an illustration or UI. Landscape 3:2, target 3072x2048 or highest supported resolution. Camera straight overhead, consistent top-down RPG perspective, no horizon, no isometric diamond, no tilting. An azure cloud sea surrounds one large connected ivory-cloud island filling most of the frame, its organic edge fully visible with a safe outer sky margin. Light ivory cloud ground, patches of rich emerald grass, warm pale-gold ancient stone walkways. Environment has coherent One Piece sky-island atmosphere: carved Shandoran stone ruins, a majestic golden bell shrine in the far north, wing-motif gateway at the southwest entry, elegant small cloud buildings and palms on the west edge, giant curling beanstalks and lush trees confined to the north/east edges. Level layout MUST prioritize walking and battles: wide open central circular plaza, two broad open clearing courts on the west and east, a spacious southern entry court, broad northern shrine forecourt, all connected by clearly visible wide stone paths in a loop, each path wide enough for several small RPG characters. Keep at least 65 percent of the island as unobstructed flat walkable ground; keep all large buildings, bell base, columns and trees along outer edges or in clearly separated small decorative clusters. No structures spanning the middle of paths, no broken bridges, no narrow bottlenecks. Include one small turquoise circular stone arrival/return dais in the southwest court with ample clear space immediately east of it, no labels. Intricate but restrained pixel details, clean readable ground, sharp discrete pixel clusters, no painterly brushwork, no blurry gradients, no excessive noise, no black outlines on tiles. Consistent soft sun from upper left, small contact shadows. Everything is at game-map scale, with tiny architecture relative to the entire island rather than giant hero objects. Golden bell should be distinctive but occupy less than 9 percent of map width. Show whole playable island uncut, no outside scenery covering its walkable ground. No people, NPCs, monsters, text, letters, captions, numbers, labels, markers, grid, HUD, borders, watermark or logo.",
+    "image": "scene.png",
+    "sha256": "913d628474b7acf16bdb44c2b632dfe0f1cfaf1fe4372f3a96bb4ae5d7028371",
+    "sourcePixels": {
+      "width": 1536,
+      "height": 1024
+    },
+    "worldUnits": {
+      "width": 4608,
+      "height": 3072
+    },
+    "rendering": "Original generated PNG, unchanged. Integer 3x world scale with nearest-neighbor rendering; a single image shared by all four maps.",
+    "navigation": "Manually authored polygon coastline and obstacle footprints in skypiea-map-data.js; visual coverage is independent from traversable terrain.",
+    "artUse": "Generated specifically for this owner-authorized Kaizoku Idle update; no third-party asset pack imported.",
+    "replacedRuntime": "The previous Skypiea scenery is retained in repository history/assets but no longer loaded by the four destinations."
+  },
+  "master": {
+    "file": "Skypiea_4K_master.png",
+    "sha256": "c60321f99fa9d6af94981ed4941e94354b7255aa66aa26cf7c954b071ec8f1f9",
+    "format": "RGB PNG, lossless",
+    "bytes": 27721099
+  },
+  "encoding": {
+    "nearLossless": true,
+    "quality": 50,
+    "effort": 6,
+    "bytes": 10558968,
+    "maximumDecodedChannelDifferenceFromPng": 4,
+    "psnrDb": 42.26565675213245,
+    "reason": "Full-resolution browser texture optimized from the retained PNG master."
+  }
+}

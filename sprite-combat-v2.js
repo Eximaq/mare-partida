@@ -1,11 +1,13 @@
 'use strict';
 /* Visual adapter for the existing renderers. No combat clock, callback or save data. */
 ((root)=>{
- const reactions=new WeakMap(),images=new Map(),failedAt=new Map(),lastDraw=new Map(),HURT_SECONDS=.18;
+ const reactions=new WeakMap(),images=new Map(),failures=new Map(),lastDraw=new Map(),HURT_SECONDS=.18;
+ const MAX_IMAGE_ATTEMPTS=3,IMAGE_RETRY_DELAY=1000;
  const directions={front:'south',back:'north',left:'west',right:'east'};
  const fruits={akuma_tori_albatroz:'tori',akuma_tori_phoenix:'phoenix',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko',akuma_ushi_giraffe:'ushi',akuma_inu_wolf:'wolf',akuma_ryu_ryu:'ryu',akuma_ushi_bison:'bison'};
  const data=()=>root.MareSpriteCombatV2Data||{};
  const entryFor=key=>data()[key]??root.MareCp9SpriteData?.[key];
+ const hasMonster=key=>entryFor(key)?.monster===true;
  const errors=new Map(),assetBase=typeof document!=='undefined'&&document.currentScript?.src?new URL('.',document.currentScript.src):null;
  const assetVersion=typeof document!=='undefined'&&document.currentScript?.src?new URL(document.currentScript.src).searchParams.get('v')||'current-player-v2-20261030':'current-player-v2-20261030';
  function resourceURL(file){if(!assetBase)return file;const target=new URL(file,assetBase);target.searchParams.set('revision',assetVersion);return target.href;}
@@ -37,22 +39,42 @@
   const locomotion=['walk','run'].includes(action)?(entry.clips.walk?.[facing]||entry.clips.run?.[facing]):null;
   return {entry,clip:requested||locomotion||(Object.values(fruits).includes(key)?null:entry.clips.idle[facing]||entry.clips.idle.south),requested:!!requested,action,facing};
  }
+ function failImage(url,im,context,code){
+  const previous=failures.get(url);
+  if(images.get(url)!==im||previous?.image===im)return;
+  const attempts=(previous?.attempts??0)+1;
+  failures.set(url,{image:im,attempts,retryAt:Date.now()+IMAGE_RETRY_DELAY*2**(attempts-1)});
+  reportMissing(context.consumer||'sprite-combat-v2',url,context.action,context.direction,code);
+ }
  function image(url,context={}){
   if(!/^assets\/sprites-combat-v2\/[a-z0-9-]+\/[a-zA-Z0-9_.-]+\.png$/.test(url)){reportMissing(context.consumer||'sprite-combat-v2',String(url),context.action,context.direction,'invalid-current-path');return null;}
-  if(failedAt.has(url)&&Date.now()-failedAt.get(url)>=3000)images.delete(url);
+  const failed=failures.get(url);
+  if(failed&&failed.attempts<MAX_IMAGE_ATTEMPTS&&Date.now()>=failed.retryAt&&images.get(url)===failed.image)images.delete(url);
   if(!images.has(url)){
-   failedAt.delete(url);
    const im=new Image(),notify=()=>{if(typeof window!=='undefined')window.dispatchEvent(new Event('mare-zoan-sprite-ready'));};
-   im.addEventListener?.('load',notify);im.addEventListener?.('error',()=>{failedAt.set(url,Date.now());reportMissing(context.consumer||'sprite-combat-v2',url,context.action,context.direction,'image-load');notify();});im.src=resourceURL(url);images.set(url,im);
+   im.addEventListener?.('load',notify);
+   im.addEventListener?.('error',()=>{failImage(url,im,context,'image-load');notify();});
+   images.set(url,im);im.src=resourceURL(url);
   }return images.get(url);
  }
+ function clipStatus(clip,im,context){
+  if(!im)return 'failed';
+  if(!im.complete)return 'loading';
+  if(im.naturalWidth!==clip.size*clip.frames||im.naturalHeight!==clip.size){failImage(clip.image,im,context,'image-dimensions');return 'failed';}
+  failures.delete(clip.image);return 'ready';
+ }
+ // A new connection may recover resources that exhausted their retry budget.
+ root.addEventListener?.('online',()=>{
+  for(const [url,failure] of failures){if(images.get(url)===failure.image)images.delete(url);}
+  failures.clear();
+ });
  function hybridFor(key){const cp9=root.MareCp9Monsters,hybrid=cp9?.catalog[cp9.idFor(key)]?.hybridSprite;return hybrid?(key.startsWith('dungeon-')?'dungeon-'+hybrid:hybrid):null;}
  function preload(key){const entry=entryFor(key);if(entry)for(const [action,ds]of Object.entries(entry.clips))for(const [direction,c]of Object.entries(ds))image(c.image,{consumer:'current-sprite-preload:'+key,action,direction});const hybrid=hybridFor(key);if(hybrid)preload(hybrid);}
  async function prepare(key){
   const entry=entryFor(key);if(!entry)return false;
-  try{await Promise.all(Object.entries(entry.clips).flatMap(([action,ds])=>Object.entries(ds).map(async([direction,clip])=>{const cached=images.get(clip.image);if(cached?.complete&&(cached.naturalWidth!==clip.size*clip.frames||cached.naturalHeight!==clip.size))images.delete(clip.image);const im=image(clip.image,{consumer:'dungeon-preload:'+key,action,direction});if(!im)throw Error('Recurso inválido');await im.decode();if(status(key,action,direction)!=='ready')throw Error('Frame inválido');})));const hybrid=hybridFor(key);return hybrid?await prepare(hybrid):true;}catch{return false;}
+  try{await Promise.all(Object.entries(entry.clips).flatMap(([action,ds])=>Object.entries(ds).map(async([direction,clip])=>{const context={consumer:'dungeon-preload:'+key,action,direction},im=image(clip.image,context);if(!im)throw Error('Recurso inválido');await im.decode();if(clipStatus(clip,im,context)!=='ready')throw Error('Frame inválido');})));const hybrid=hybridFor(key);return hybrid?await prepare(hybrid):true;}catch{return false;}
  }
- function status(key,action,direction){const r=resolve(key,action,direction);if(!r?.clip){reportMissing('current-sprite:'+key,key,action,direction);return 'missing';}const im=image(r.clip.image,{consumer:'current-sprite:'+key,action:r.action,direction:r.facing});if(!im)return 'failed';if(!im.complete)return 'loading';if(im.naturalWidth===r.clip.size*r.clip.frames&&im.naturalHeight===r.clip.size)return 'ready';reportMissing('current-sprite:'+key,r.clip.image,r.action,r.facing,'image-dimensions');return 'failed';}
+ function status(key,action,direction){const r=resolve(key,action,direction);if(!r?.clip){reportMissing('current-sprite:'+key,key,action,direction);return 'missing';}const context={consumer:'current-sprite:'+key,action:r.action,direction:r.facing};return clipStatus(r.clip,image(r.clip.image,context),context);}
  const clamp=n=>Math.max(0,Math.min(1,n));
  // Retiming is exclusively visual: map the unchanged logical hit ratio to the inspected contact pose.
  function frameAt(clip,{time=0,progress=null,hitRatio=null}={}){
@@ -70,9 +92,8 @@
  function draw(c,key,x,y,{action='idle',direction='front',time=0,scale=1,height=null,progress=null,hitRatio=null,flash=false,fit=null}={}){
   lastDraw.set(key,{action,direction});
   const r=resolve(key,action,direction);if(!r?.clip){reportMissing('current-sprite:'+key,key,action,direction);return false;}
-  const clip=r.clip,im=image(clip.image,{consumer:'current-sprite:'+key,action:r.action,direction:r.facing});
-  if(!im||!im.complete)return false;
-  if(im.naturalWidth!==clip.size*clip.frames||im.naturalHeight!==clip.size){reportMissing('current-sprite:'+key,clip.image,r.action,r.facing,'image-dimensions');return false;}
+  const clip=r.clip,context={consumer:'current-sprite:'+key,action:r.action,direction:r.facing},im=image(clip.image,context);
+  if(clipStatus(clip,im,context)!=='ready')return false;
   const frame=frameAt(clip,{time,progress,hitRatio}),base=r.entry.clips.idle[r.facing]||r.entry.clips.idle.south;
   const b=base.bounds[0],extent=Math.max(b[2]-b[0],b[3]-b[1]);
   const reference=r.entry.idle_extent_ratio?extent/r.entry.idle_extent_ratio:b[3]-b[1];
@@ -118,9 +139,8 @@
    system.preload=()=>{if(data()[key])preload(key);oldPreload({actors:false});};
   }
   if(root.MareNewIslandArt){const old=root.MareNewIslandArt.monster;root.MareNewIslandArt.monster=(c,m,t)=>entryFor(m.type)?.monster?monster(c,m,t):old(c,m,t);}
-  if(root.MareRareRenderer){const old=root.MareRareRenderer.monster;root.MareRareRenderer.monster=(c,m,t)=>m.type==='cocox'&&data().cocox?monster(c,m,t):old(c,m,t);}
   if(root.MareHoya){const system=root.MareHoya,old=system.drawActor,oldPreload=system.preload;system.drawActor=(c,g,t)=>{if(!data().hoya)return old(c,g,t);const p=g.clock.snapshot(),reaction=hurtProgress(g,t);return draw(c,'hoya',g.x,g.y,{action:reaction!==null?'hurt':p.locked?'attack':g.walking>0?'walk':'idle',direction:g.direction,time:t,progress:reaction??(p.locked?p.progress:null),hitRatio:p.hitFrameRatio,height:data().hoya.worldHeight*g.scale*(data().hoya.world_scale??1)});};system.preload=()=>{preload('hoya');oldPreload({actors:false});};}
  }
- root.MareSpriteCombatV2={hurt,hurtProgress,resolve,draw,monster,monsterScale,monsterHeight,status,visualStatus(key,action,direction){const p=lastDraw.get(key);return status(key,p?.action||action,p?.direction||direction);},preload,prepare,frameAt,install,fruits,HURT_SECONDS,reportMissing,diagnostics:()=>[...errors.values()]};
+ root.MareSpriteCombatV2={hurt,hurtProgress,resolve,draw,monster,hasMonster,monsterScale,monsterHeight,status,visualStatus(key,action,direction){const p=lastDraw.get(key);return status(key,p?.action||action,p?.direction||direction);},preload,prepare,frameAt,install,fruits,HURT_SECONDS,reportMissing,diagnostics:()=>[...errors.values()]};
  install();
 })(globalThis);

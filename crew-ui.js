@@ -20,15 +20,6 @@
   };
   const facilityLabels={hull:'Casco',infirmary:'Enfermaria',galley:'Cozinha',command:'Comando',workshop:'Oficina',navigation:'Navegação',warehouse:'Armazém'};
   const glyphs={
-    overview:'<path d="m12 2 8 10-8 10-8-10zM12 7v10m-3-5h6"/>',
-    members:'<circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3m1-16a3 3 0 0 1 0 6m2 3a6 6 0 0 1 3 5v2"/>',
-    profession:'<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V4h6v3M4 12h16m-8-1v4"/>',
-    missions:'<path d="m4 4 8 3 8-3v15l-8 3-8-3zm8 3v15m3-12 2-1m-2 4 2-1"/>',
-    contracts:'<path d="M6 3h9l4 4v14H6zm9 0v5h4M9 12h7m-7 4h7"/>',
-    ship:'<path d="M3 14h18l-4 6H7zm8-1V3l7 8h-7m-2 2H5l4-7m-6 16h18"/>',
-    treasury:'<circle cx="12" cy="12" r="9"/><path d="M9 9h6m-6 6h6m-3-9v12"/>',
-    store:'<path d="M3 9h18l-2-5H5zm2 0v11h14V9m-9 11v-6h4v6"/>',
-    recruitment:'<circle cx="9" cy="7" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m5-9v6m-3-3h6"/>',
     doctor:'<path d="M9 4h6v5h5v6h-5v5H9v-5H4V9h5z"/>',
     command:'<path d="M5 21V4h15l-4 4 4 4H5"/><path d="m8 17 4-2 4 2"/>',
     cook:'<path d="M4 12h16a8 8 0 0 1-16 0Zm3 8h10m-9-12c-2-2 2-2 0-4m5 4c-2-2 2-2 0-4"/>',
@@ -50,6 +41,7 @@
   const empty=label=>'<p class="crew-muted">'+escape(label)+'</p>';
   const row=(title,sub,right='')=>'<div class="crew-row"><div><strong>'+escape(title)+'</strong><small>'+escape(sub)+'</small></div>'+right+'</div>';
   const asset=(path,alt='')=>'<img src="'+escape(path)+'" alt="'+escape(alt)+'" draggable="false">';
+  const berryAmount=(value,sign='')=>'<span class="crew-berry-amount">'+asset('assets/ui/inventory-final/berry.png')+'<span>'+sign+number(value)+' Berry</span></span>';
 
   function flag(value,name=''){
     const url=flags?.dataUrl(value);
@@ -206,12 +198,12 @@
   }
   function treasury(crew,group){
     const remaining=Math.max(0,Number(crew.donation?.limit||0)-Number(crew.donation?.used||0));
-    const facts='<dl class="crew-treasury-facts"><div><dt>Doado por você</dt><dd>'+number(crew.contribution)+' Berry</dd></div>'+
-      '<div><dt>Cota disponível hoje</dt><dd>'+number(remaining)+' Berry</dd></div><div><dt>Renovação</dt><dd>'+escape(date(crew.donation?.resetsAt))+'</dd></div></dl>';
+    const facts='<dl class="crew-treasury-facts"><div><dt>Doado por você</dt><dd>'+berryAmount(crew.contribution)+'</dd></div>'+
+      '<div><dt>Cota disponível hoje</dt><dd>'+berryAmount(remaining)+'</dd></div><div><dt>Renovação</dt><dd>'+escape(date(crew.donation?.resetsAt))+'</dd></div></dl>';
     const history=(group.history||[]).map(event=>row(event.kind==='upgrade'?'Obra · '+(facilities[event.facility]?.[0]||'Instalação'):'Doação',
-      event.characterName+' · '+date(event.createdAt),'<b>'+(event.kind==='upgrade'?'−':'+')+number(Math.abs(Number(event.amount)))+' Berry</b>')).join('');
+      event.characterName+' · '+date(event.createdAt),'<b>'+berryAmount(String(event.amount??0).replace(/^-/,''),event.kind==='upgrade'?'−':'+')+'</b>')).join('');
     const donation='<form class="crew-form crew-inline-form" data-crew-form="donate"><label>Quantidade de Berry<input name="amount" type="number" min="1" max="'+remaining+'" required '+disabled(!remaining)+'></label><button type="submit" class="crew-button crew-primary"'+disabled(!remaining)+'>Doar Berry</button></form>';
-    return section('Tesouraria','<div class="crew-treasury-balance">'+asset('assets/ui/inventory-final/berry.png')+'<b>'+number(group.treasury)+' Berry</b></div>'+
+    return section('Tesouraria','<div class="crew-treasury-balance"><b>'+berryAmount(group.treasury)+'</b></div>'+
       facts+donation+'<details class="crew-secondary"><summary>Movimentações</summary>'+(history||empty('Nenhuma movimentação.'))+'</details>');
   }
   function contributionShop(crew,canBuy){
@@ -261,8 +253,8 @@
       case 'recruitment':content=recruitment(crew,group);break;
       default:content=section('Navio da tripulação',vessel(group,art)+button('ship-view','Ver instalações'))+section('Missão coletiva',renderMissions(group,true)+button('missions-view','Ver missões'));
     }
-    const sidebar=view==='overview'?'<aside class="crew-overview-side">'+section('Tesouraria','<strong>'+number(group.treasury)+' Berry</strong>'+button('treasury-view','Ver tesouraria'))+section('Minha profissão',profession?.profession?'<strong>'+escape(professions[profession.profession])+' · Nv. '+number(profession.level)+'</strong>'+progress(profession.experience,profession.nextLevelXp,profession.levelStartXp,'XP profissional')+button('contracts-view','Ver contratos'):button('profession-view','Escolher profissão'))+'</aside>':'';
-    return header+'<div class="crew-layout" data-overview="'+(view==='overview')+'"><nav class="crew-nav" aria-label="Áreas da tripulação">'+tabs.map(([id,label,short])=>'<button type="button" data-crew-view="'+id+'" aria-label="'+escape(label)+'" aria-pressed="'+(view===id)+'">'+emblem(glyph(id))+escape(short||label)+'</button>').join('')+'</nav><div class="crew-panel-inner">'+content+'</div>'+sidebar+'</div>';
+    const sidebar=view==='overview'?'<aside class="crew-overview-side">'+section('Tesouraria','<strong>'+berryAmount(group.treasury)+'</strong>'+button('treasury-view','Ver tesouraria'))+section('Minha profissão',profession?.profession?'<strong>'+escape(professions[profession.profession])+' · Nv. '+number(profession.level)+'</strong>'+progress(profession.experience,profession.nextLevelXp,profession.levelStartXp,'XP profissional')+button('contracts-view','Ver contratos'):button('profession-view','Escolher profissão'))+'</aside>':'';
+    return header+'<div class="crew-layout" data-overview="'+(view==='overview')+'"><nav class="crew-nav" aria-label="Áreas da tripulação">'+tabs.map(([id,label,short])=>'<button type="button" data-crew-view="'+id+'" aria-label="'+escape(label)+'" aria-pressed="'+(view===id)+'">'+'<img class="crew-tab-art" src="assets/ui/crew/tabs/'+id+'.svg" width="26" height="26" alt="">'+escape(short||label)+'</button>').join('')+'</nav><div class="crew-panel-inner">'+content+'</div>'+sidebar+'</div>';
   }
 
   function create({body,read,command,confirm,onData,onError,selfId=()=>null,available=()=>true,art={},classIcon=()=>null,drawPortrait,contact,canWrite=available}){

@@ -10,20 +10,19 @@ const expected=[['skypiea-01',75,'satori',77],['skypiea-02',80,'shura',84],['sky
 const stats={maxHP:100,maxEnergy:100};
 
 test('server resolves four separate Skypiea IDs, tier gates and ordinary authored opponents',()=>{
- const all=new Set<string>(),spawns=new Set<string>();
+ const all=new Set<string>();
  for(const [id,min,type,level] of expected){
   const island=W.islands.find((row:any)=>row.id===id);
   assert(island,id);
   assert.equal(island.minLevel,min);
   assert.equal(W.mapId(island.area),id);
   const n=W.navigation(id),spawn=n.map.spawn;
-  assert.deepEqual([n.map.id,n.map.width,n.map.height],[id,7616,4736]);
-  assert(!spawns.has(JSON.stringify(spawn)),id+': duplicate arrival location');
-  spawns.add(JSON.stringify(spawn));
+  assert.deepEqual([n.map.id,n.map.width,n.map.height],[id,4608,3072]);
+  assert.deepEqual([spawn.x,spawn.y],[534,2604]);
   assert(n.walkable(spawn.x,spawn.y),id+': blocked arrival');
   assert.equal(E.hunt.get(id).boss,null);
   const b=E.create(id,stats,100000,()=>.5),slots=B.slots(id);
-  assert(slots.length>0);
+  assert.equal(slots.length,6);
   assert.equal(b.mobs.length,slots.length);
   for(const s of slots){
    assert(!all.has(s.id)&&s.id.startsWith(id+'-'),s.id);

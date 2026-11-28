@@ -39,12 +39,19 @@ async function persisted(pool:any){
  return saved;
 }
 
-test('migration0063 preserves active saves and receipts while admitting 37 visits and seven pending victories',async()=>{
+test('migrations 0063–0066 preserve active saves and receipts while admitting 37 visits and seven pending victories',async()=>{
  const directory=await mkdtemp(join(tmpdir(),'mare-late-archipelago-migrations-'));
  const source=new URL('../../apps/game-server/migrations/',import.meta.url);
  try{
   for(const name of await readdir(source))if(/^\d{4}_.+\.sql$/.test(name)&&name<'0063')await copyFile(new URL(name,source),join(directory,name));
+  const swordSql=await readFile(new URL('0064_sword_compendium.sql',source),'utf8');
+  const collectionTable=swordSql.match(/^CREATE TABLE mare_game\.sword_collections \([\s\S]*?^\);/m)?.[0];
+  assert(collectionTable,'Current fixture runtime reads the sword collection table');
+  const lateSql=await readFile(new URL('0063_late_archipelago.sql',source),'utf8');
+  const lateBattle=lateSql.match(/to_jsonb\('([a-f0-9]{64})'::text\)/)?.[1];
+  assert(lateBattle,'Preserve the battle signature written by the deployed migration');
   await authDatabase(async f=>{
+   await f.pool.query(collectionTable);
    const a=await actor(f.service),unknown=await actor(f.service);
    await a.doit('world.travel',{islandId:'dawn'});
    const active=await a.read(),battle=active.battle;
@@ -57,12 +64,15 @@ test('migration0063 preserves active saves and receipts while admitting 37 visit
    await f.pool.query("UPDATE mare_game.character_world SET rules_hash=$2,path=$3,speed=120,direction='left',started_at='2026-11-01T12:00:00Z',motion_until='2026-11-01T12:00:30Z' WHERE character_id=$1",[a.c.id,previousWorld,JSON.stringify([{x:active.world.position.x+12,y:active.world.position.y}])]);
    await f.pool.query('UPDATE mare_game.character_world SET rules_hash=$2 WHERE character_id=$1',[unknown.c.id,'f'.repeat(64)]);
    await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{rulesHash}',to_jsonb($2::text)) WHERE character_id=$1",[unknown.c.id,'e'.repeat(64)]);
+   await f.pool.query('DROP TABLE mare_game.sword_collections');
    const before=await persisted(f.pool),expected=structuredClone(before);
    expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=world.rulesHash;
-   expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=engine.rulesHash;
-   assert.deepEqual(await applyMigrations(f.pool),['0063_late_archipelago.sql']);
+   expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=lateBattle;
+   const pending=['0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql'];
+   for(const name of pending)await copyFile(new URL(name,source),join(directory,name));
+   assert.deepEqual(await applyMigrations(f.pool,directory),pending);
    assert.deepEqual(await persisted(f.pool),expected);
-   assert.deepEqual(await applyMigrations(f.pool),[]);
+   assert.deepEqual(await applyMigrations(f.pool,directory),[]);
    await f.pool.query(await readFile(new URL('0063_late_archipelago.sql',source),'utf8'));
    assert.deepEqual(await persisted(f.pool),expected);
    const resumed=await a.read();

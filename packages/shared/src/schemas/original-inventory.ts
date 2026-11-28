@@ -21,9 +21,10 @@ export const instanceIdSchema = z
   .regex(/^[a-zA-Z0-9:-]+$/);
 const count = z.number().int().min(0).max(1000000000);
 const stat = z.number().finite().min(0).max(1000000);
+export const akumaRankSchema=z.enum(['E','D','C','B','A','S']);
 export const originalItemSchema = z.strictObject({
   id: instanceIdSchema,
-  def: z.number().int().min(0).max(228),
+  def: z.number().int().min(0).max(245),
   level: z.number().int().min(1).max(1000),
   plus: z.number().int().min(0).max(20),
   locked: z.boolean(),
@@ -64,10 +65,10 @@ export const originalItemSchema = z.strictObject({
   reforgeAttempts: count.optional(),
   forgeVersion: z.union([z.literal(4),z.literal(5)]).optional(),
   pearlId: z.string().max(80).optional(),
-  materialId: z.enum(['akuma_fragment_e','akuma_fragment_d','akuma_fragment_c','akuma_fragment_b','akuma_fragment_a','akuma_fragment_s','epic_weapon_fragment']).optional(),
+  materialId: z.enum(['akuma_fragment_e','akuma_fragment_d','akuma_fragment_c','akuma_fragment_b','akuma_fragment_a','akuma_fragment_s','epic_weapon_fragment','legendary_weapon_fragment']).optional(),
   qty: z.number().int().min(1).max(99999).optional(),
   quantity: z.number().int().min(1).max(9999).optional(),
-  rank: z.enum(['E','D','C','B','A','S']).optional(),
+  rank: akumaRankSchema.optional(),
   binding: z.literal('character').optional(),
   boundToCharacter: z.uuid().optional(),
   sources: z.array(z.string().max(80)).max(9).optional(),
@@ -107,7 +108,7 @@ const repairQuote = z.array(z.strictObject({id:instanceIdSchema,cost:z.number().
 export const forgeOperationSchema = z.discriminatedUnion("type", [
   z.strictObject({...item,type:z.literal("repair"),quote:repairQuote.refine(rows=>rows.length===1)}),
   z.strictObject({...revision,type:z.literal("repairAll"),quote:repairQuote}),
-  z.strictObject({...revision,type:z.literal("formEpicWeapon")}),
+  z.strictObject({...revision,type:z.enum(["formEpicWeapon","formLegendaryWeapon"])}),
   z.strictObject({ ...item, type: z.literal("upgrade") }),
   z.strictObject({
     ...revision,

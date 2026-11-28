@@ -333,10 +333,32 @@
   .crew-window .crew-palette button { min-height: 36px; width: 36px; }
 }
 
-.crew-nav .crew-glyph {
-  width: 17px;
-  height: 17px;
-  color: #edc684;
+.crew-nav .crew-tab-art {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  object-fit: contain;
+  image-rendering: auto;
+  border: 1px solid #836346;
+  border-radius: 5px;
+  background: linear-gradient(#213541,#131d26);
+  box-sizing: border-box;
+  padding: 1px;
+}
+#app #panelOverlay.crew-mode .crew-nav button {
+  border-radius: 6px;
+  color: #eee5d0;
+}
+#app #panelOverlay.crew-mode .crew-nav button[aria-pressed="true"] .crew-tab-art {
+  border-color: #eed18a;
+  background: linear-gradient(#52422b,#282a28);
+}
+#app #panelOverlay.crew-mode :is(.crew-nav button,.crew-button):not(:disabled):focus-visible {
+  outline: 2px solid #f1d18a;
+  outline-offset: -2px;
+}
+#app #panelOverlay.crew-mode :is(.crew-nav button,.crew-button):not(:disabled):not(.danger):hover {
+  border-color: #caa361;
 }
 .crew-banner {
   margin-bottom: 9px;
@@ -433,4 +455,21 @@
   .crew-member-actions button { max-width: none; }
   .crew-member-identity strong { display: block; }
   .crew-roster-tools { gap: 5px; }
+}
+
+.crew-berry-amount {
+  display: inline-flex;
+  align-items: center;
+  gap: .36em;
+  white-space: nowrap;
+}
+.crew-berry-amount img {
+  width: 1.08em;
+  height: 1.08em;
+  object-fit: contain;
+  flex: none;
+}
+.crew-treasury-balance .crew-berry-amount img {
+  width: 1.16em;
+  height: 1.16em;
 }

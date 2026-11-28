@@ -11,7 +11,7 @@ import {battleActions,battleTargetSchema} from './battle.js';
 import {inventoryTradeSchema,inventorySnapshotSchema,equipmentItemSchema,equipmentSlotSchema} from "./inventory.js";
 import { z } from "zod";
 import {marketPayloadSchema,marketReceiptSchema} from "./market.js";
-import {originalActionSchema,instanceIdSchema,originalSlotSchema,forgeOperationSchema} from './original-inventory.js';
+import {akumaRankSchema,originalActionSchema,instanceIdSchema,originalSlotSchema,forgeOperationSchema} from './original-inventory.js';
 import { renewControlSchema,characterIdentitySchema } from "./auth.js";
 import { characterStateSchema } from "./character-state.js";
 import { combatSnapshotSchema } from "./combat.js";
@@ -84,7 +84,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
  z.strictObject({...commandEnvelope,action:z.literal('haki.toggle'),payload:z.strictObject({branch:hakiContinuousSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('haki.cast'),payload:z.strictObject({})}),
  z.strictObject({...commandEnvelope,action:z.enum(['dungeon.enter','dungeon.claim']),payload:z.strictObject({dungeonId:dungeonIdSchema})}),
- z.strictObject({...commandEnvelope,action:z.literal('dungeon.craft'),payload:z.strictObject({expectedSeq:z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),rank:z.enum(['E','B']).optional()})}),
+ z.strictObject({...commandEnvelope,action:z.literal('dungeon.craft'),payload:z.strictObject({expectedSeq:z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),rank:akumaRankSchema.optional()})}),
  z.strictObject({...commandEnvelope,action:z.literal('dungeon.acknowledge'),payload:z.strictObject({itemId:instanceIdSchema})}),z.strictObject({...commandEnvelope,action:z.enum(prisonActions),payload:z.strictObject({floor:prisonFloorSchema})}),z.strictObject({...commandEnvelope,action:z.literal('achievement.claim'),payload:z.strictObject({achievementId:achievementIdSchema})}),z.strictObject({...commandEnvelope,action:z.literal('talents.commit'),payload:z.strictObject({build:talentBuildSchema})}),z.strictObject({...commandEnvelope,action:z.literal('talents.reset'),payload:z.strictObject({})}),z.strictObject({
   requestId: z.uuid(),
   action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim"]),

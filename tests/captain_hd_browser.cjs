@@ -6,13 +6,13 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  const page=await browser.newPage({viewport:{width:1448,height:1086}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
- const observePortrait=`const originalProfilePreview=lobby96.preview;
- lobby96.preview=function(ctx,player,options){
-  if(options.consumer!=='profile-portrait')return originalProfilePreview.call(this,ctx,player,options);
+ const observePortrait=`const originalWorldPortrait=lobby96.drawWorldPortrait;
+ lobby96.drawWorldPortrait=function(ctx,player,options){
+  if(options.consumer!=='profile-portrait')return originalWorldPortrait.call(this,ctx,player,options);
   const originalDraw=ctx.drawImage;let frame;
   ctx.drawImage=function(image,...args){frame={width:image.width,height:image.height};return originalDraw.call(this,image,...args);};
   try{
-   const ready=originalProfilePreview.call(this,ctx,player,options);
+   const ready=originalWorldPortrait.call(this,ctx,player,options);
    if(ready&&frame)window.__captainProfileFrame={...frame,canvas:ctx.canvas,look:JSON.stringify(player.appearance96)};
    return ready;
   }finally{ctx.drawImage=originalDraw;}
@@ -59,7 +59,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  };});
  assert(drawn?.correctCanvas&&drawn.savedLook);
  assert(drawn.width>=512&&drawn.height>=512&&drawn.width<=2048&&drawn.height<=2048,'profile receives an authored HD frame');
- assert.deepEqual([portraitRaster.width,portraitRaster.height],[drawn.width,drawn.height+48],'preview preserves native pixels and the footer margin');
+ assert.deepEqual([portraitRaster.width,portraitRaster.height],[256,256],'equipped portrait draws the HD source at map scale in the profile canvas');
  assert(portraitRaster.opaque,'portrait contains rendered pixels after its loading state clears');
  const realState=await page.evaluate(()=>JSON.stringify({eq:__captainQA.game.equipment,appearance:__captainQA.game.appearance96,attributes:__captainQA.game.attributes}));
  await shot('profile-overview');

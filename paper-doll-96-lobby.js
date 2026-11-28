@@ -153,10 +153,17 @@
   function create({search='',baseURL=root.location?.href,onChange=()=>{},sharedLobby=false}={}){
     const active=enabled(search),rehearsal=false,base=new URL('tools/paper-doll-96-v3/',baseURL);
     const nativeHD=root.MareReworkNativeHD?.create({baseURL,onChange});
-    let approved=null;
-    if(root.MareHDPosition&&nativeHD&&typeof fetch==='function')void fetch(new URL('hd-position-approved.json',baseURL),{cache:'no-cache'})
-      .then(async response=>{if(!response.ok)throw Error('HTTP '+response.status);approved=root.MareHDPosition.validate(await response.json());if(approved.records.length)onChange();})
-      .catch(error=>diagnose(error,{consumer:'hd-position',asset:'hd-position-approved.json'}));
+    const hasPositions=!!(root.MareHDPosition&&nativeHD&&typeof fetch==='function');
+    let approved=null,approvedLoaded=!hasPositions;
+    if(hasPositions)void fetch(new URL('hd-position-approved.json',baseURL),{cache:'no-cache'})
+      .then(async response=>{if(!response.ok)throw Error('HTTP '+response.status);approved=root.MareHDPosition.validate(await response.json());})
+      .catch(error=>diagnose(error,{consumer:'hd-position',asset:'hd-position-approved.json'}))
+      .finally(()=>{
+        const pending=waitingPrime;
+        waitingPrime=null;approvedLoaded=true;
+        if(pending)primeWorldVisual(pending.player,pending);
+        if(approved?.records.length)onChange();
+      });
     const defaultHD=root.MareReworkDefaultHD?.create({native:nativeHD,baseURL,onChange});
     const accessoryPilot=root.MareReworkAccessoryTest?.create({search,baseURL,onChange});
     const weaponCycles=root.MareReworkWeapons?.create({search,baseURL,onChange});
@@ -176,7 +183,7 @@
       if(consumer==='inventory')inventoryPreview=result;
       return result;
     }
-    const snapshot=()=>({inventoryPreview,nativeHD:nativeHD?.snapshot(),defaultHD:defaultHD?.snapshot(),rework:rework?.snapshot()||{state:'disabled'},worldVisual:worldVisual(),renderer:worldRequest?.bundle?'native-hd':['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'native-hd':signedRework?.active?'rework':'pending-hd',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'ready':state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:surfacePoses.size,peakLoads});
+    const snapshot=()=>({inventoryPreview,nativeHD:nativeHD?.snapshot(),defaultHD:defaultHD?.snapshot(),rework:rework?.snapshot()||{state:'disabled'},worldVisual:worldVisual(),renderer:compatibleWorldPose(worldDrawn?.entry,worldRequest)||worldRequest?.bundle?'native-hd':['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'native-hd':signedRework?.active?'rework':'pending-hd',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:['rendered','holding-native-while-loading'].includes(nativeHD?.snapshot()?.last?.state)?'ready':state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,imageBytes,bundles:bundles.size,previews:surfacePoses.size,peakLoads});
     function diagnose(error,context={}){
       const detail={component:context.consumer||'player',...context,...error.spriteContext,status:'failed',message:error.message};
       const key=[detail.asset||detail.component,detail.code||'load-failed'].join(':');
@@ -186,7 +193,7 @@
     function report(error,context={}){diagnose(error,context);message='Não foi possível carregar o visual atual. Recarregue a página; o diagnóstico registra o recurso com falha.';onChange();}
     function failure(message,context){const error=Error(message);error.spriteContext=context;return error;}
     async function json(file){const url=new URL(file,base);if(assetRevision&&file!=='player-pack.json')url.searchParams.set('revision',assetRevision);const r=await fetch(url,{cache:file==='player-pack.json'?'no-cache':'default'});if(!r.ok)throw failure('Arquivo ausente: '+file,{component:'player-manifest',asset:file,resolved:url.href,code:'manifest-http'});try{return await r.json();}catch(cause){throw failure('Manifesto inválido: '+file,{component:'player-manifest',asset:file,resolved:url.href,code:'manifest-json'});}}
-    function script(file){return new Promise((resolve,reject)=>{const node=document.createElement('script');node.src=new URL(file+'?revision='+assetRevision,base).href;node.onload=resolve;node.onerror=()=>reject(failure('Compositor indisponível: '+file,{component:'player-compositor',asset:file,resolved:node.src,code:'module-load'}));document.head.append(node);});}
+    function script(file){return new Promise((resolve,reject)=>{const node=document.createElement('script');node.async=false;node.src=new URL(file+'?revision='+assetRevision,base).href;node.onload=resolve;node.onerror=()=>reject(failure('Compositor indisponível: '+file,{component:'player-compositor',asset:file,resolved:node.src,code:'module-load'}));document.head.append(node);});}
     async function image(file,context={}){
       const size=release?.resources?.[file];
       if(!safeFile(file)||!size)throw failure('Camada fora do registro atual: '+file,{...context,asset:file,code:'unregistered-resource'});
@@ -210,7 +217,7 @@
         if(!rehearsal&&(!release||release.productionEnabled!==true||release.id!=='native-player96-v1'))throw Error('Liberação visual indisponível.');
         [manifest,catalog,rigs,weaponCatalog]=await Promise.all(['manifest.json','appearance-catalog.json','appearance-rig.json','weapons.json'].map(json));
         validateRelease(release,manifest,catalog,rigs,weaponCatalog);
-        for(const name of ['rig','layers','motion','surface','torso','appearance','weapons','wardrobe'])await script(name+'.js');
+        await Promise.all(['rig','layers','motion','surface','torso','appearance','weapons','wardrobe'].map(name=>script(name+'.js')));
         await nativeHD?.warmSwordCheckpoint?.();
         root.MareLayers96.validate(manifest);
         if(catalog.productionEnabled!==false||catalog.canonicalMirror?.allLayers!==true)throw Error('Contrato de revisão incompatível.');
@@ -250,17 +257,7 @@
       }
     }
     function releaseBundle(bundle){for(const value of new Set(bundle?.values())){const strip=value?.strip;if(strip){strip.width=0;strip.height=0;}}}
-    const directionalPreparations=new Map();
-    function prepareWorldDirections(player){
-      if(!nativeHD?.prepareStablePose||!player||player.zoanTransformed)return;
-      const key=JSON.stringify([player.appearance96,player.equipment,!!root.MareHeadgear?.hidden(player),!!root.MareAppearance96,!!root.MareCharacterAppearance],(key,value)=>key==='durability'?undefined:value);
-      if(directionalPreparations.has(key))return;
-      const preparedPlayer={...player,appearance96:{...player.appearance96},equipment:{...player.equipment},preferences:{...player.preferences}};
-      const task=(async()=>{for(const direction of ['south','east','west','north']){const options={action:'idle',direction,consumer:'world'};await nativeHD.prepareStablePose(preparedPlayer,options);}})().catch(()=>{directionalPreparations.delete(key);});
-      directionalPreparations.set(key,task);while(directionalPreparations.size>8)directionalPreparations.delete(directionalPreparations.keys().next().value);
-    }
     function ensure(player,{consumer='player-prepare'}={}){
-      prepareWorldDirections(player);
       if(!rehearsal)return prepareVisual(player,{consumer:'world',action:'idle',direction:'south'});
       if(state!=='ready')return Promise.resolve(false);
       const target=resolve(player);
@@ -301,6 +298,12 @@
     function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;
       if(consumer==='world')return drawWorldVisual(ctx,{scene,action,direction,time,progress,timing,x,y,scale,consumer,weaponless},player);
+      if(consumer==='world-silhouette'){
+        if(root.MareVisualCompletoRenderer?.equipped(player)){
+          return root.MareVisualCompletoRenderer.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer,weaponless});
+        }
+        return drawWorldSilhouette(ctx,player,{direction,time,progress,timing,x,y,scale,weaponless});
+      }
       if(root.MareVisualCompletoRenderer?.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer})){draws++;return true;}
       // Peers share this instance. Use the same approved native selectors
       // without the single-actor World request/abort boundary.
@@ -358,15 +361,25 @@
       return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(point.y-spec.pivot.y)*scale,frame:4,weapon:value.look.weapon};
     }
     async function prepareVisual(player,options={}){
+      if(options.consumer==='world'){
+        if(!player||player.zoanTransformed)return false;
+        const action=worldAction(options.action||'idle');
+        const entry=requestWorldVisual(player,{action,direction:directionOf(options.direction||'south'),consumer:'world',
+          weaponless:action!=='idle'&&!!options.weaponless},{publish:false});
+        await entry.promise;
+        return !!entry.bundle;
+      }
       if(await nativeHD?.prepareClip(player,options))return true;
       const pending=requestTypedSurface(player,options);
       if(pending&&await pending.ready)return true;
       return signedRework?.active?!!(await signedRework.prepare(player,options)):false;
     }
-    // Retain exact poses so a cached swap draws synchronously. Loading a pose
-    // never changes the player state or publishes a different pose.
+    // The current request and the pose that was actually painted may differ
+    // while its replacement is prepared.
     const worldPoses=new Map();
-    let worldRequest=null,worldIdentity=null;
+    let worldRequest=null,worldDrawn=null,worldWarm=null,worldPrime=null,waitingPrime=null;
+    const worldDirections=['north','east','south','west'];
+    const locomotion=action=>action==='idle'||action==='walk';
     const visualIdentity=player=>JSON.stringify([
       player.classId,player.factionId,player.appearance96,player.paperDollLook,
       Object.entries(player.equipment||{}).filter(([,item])=>item!=null).sort(([a],[b])=>a.localeCompare(b)).map(([slot,item])=>[slot,item.def??item,item.variant,item.variantId,item.appearanceVariant]),
@@ -418,95 +431,338 @@
       if(!bundle.draw(ctx,player,{...options,...resolved}))return null;
       return {source:source.id,omitted:source.omitted||[],slotRoutes:source.slotRoutes||{},consumer:options.consumer,typedHD:true};
     }
-    const worldPoseKey=(player,o,identity=visualIdentity(player))=>JSON.stringify([identity,o.action,o.direction,!!o.weaponless,...(approved?.records.length?[approved.revision]:[])]);
+    const positionRevision=positions=>positions?.records.length?positions.revision:null;
+    const worldPoseKey=(player,o,identity=visualIdentity(player),revision=positionRevision(approved))=>
+      JSON.stringify([identity,o.action,o.direction,!!o.weaponless,revision]);
+    const sameWorldIdentity=(a,b)=>!!a&&!!b&&a.identity===b.identity&&a.revision===b.revision;
+    const hidesWeapon=(player,options)=>{
+      const held=player.equipment?.weapon,item=held?.def??held;
+      return !!options.weaponless&&item!=null&&item!=='none'&&item!=='original';
+    };
+    const worldRetryDelay=[1500,3000];
+    const hasFailedSlot=bundle=>bundle?.coverage?.some(pose=>
+      Object.values(pose.slotResolution||{}).some(slot=>slot.state==='load-failed'));
     function releaseWorldPose(entry,reason='pose-released'){
-      if(entry.state==='loading'){
+      if(entry.promise){
         entry.state='cancelled';
         entry.reason=reason;
       }
       entry.controller.abort();
+      entry.settle?.();
+      entry.settle=null;
+      worldPrime?.queue.delete(entry.key);
       entry.bundle?.release();
+      entry.bundle=null;
       worldPoses.delete(entry.key);
+      if(worldWarm===entry)worldWarm=null;
     }
     function clearWorldVisual(){
       for(const entry of worldPoses.values())releaseWorldPose(entry);
+      worldPrime=null;
+      waitingPrime=null;
       worldRequest=null;
-      worldIdentity=null;
+      worldDrawn=null;
     }
-    const worldVisual=()=>worldRequest?{key:worldRequest.key,state:worldRequest.state,error:worldRequest.error,reason:worldRequest.reason,coverage:worldRequest.bundle?.coverage||[],preparedAt:worldRequest.preparedAt,firstDrawAt:worldRequest.firstDrawAt,publishedKey:worldRequest.bundle?worldRequest.key:undefined}:null;
-    const worldReady=player=>!!player&&worldRequest?.state==='ready'&&worldRequest.identity===visualIdentity(player);
-    function requestWorldVisual(player,options,{publish=true}={}){
-      const identity=visualIdentity(player),key=worldPoseKey(player,options,identity);
-      if(publish&&worldIdentity!==identity){
-        worldIdentity=identity;
-        for(const entry of worldPoses.values())if(entry.identity!==identity&&entry.state==='loading')releaseWorldPose(entry,'appearance-changed');
-      }
-      let entry=worldPoses.get(key),retried=false;
-      if(entry?.state==='failed'&&!entry.retried&&performance.now()-entry.failedAt>=1500){
-        releaseWorldPose(entry);
-        imageFailures.clear();
-        retried=true;
-        entry=null;
-      }
-      if(entry){
-        worldPoses.delete(key);worldPoses.set(key,entry);
-        if(publish)worldRequest=entry;
-        return entry;
-      }
-      const controller=new AbortController(),signal=controller.signal;
-      const snapshot={...player,appearance96:player.appearance96&&{...player.appearance96},preferences:{...player.preferences},
-        equipment:Object.fromEntries(Object.entries(player.equipment||{}).map(([slot,item])=>[slot,item&&typeof item==='object'?{...item}:item]))};
-      entry={key,identity,player:snapshot,state:'loading',controller,retried};
-      worldPoses.set(key,entry);if(publish)worldRequest=entry;
-      while(worldPoses.size>12){
-        const oldest=[...worldPoses.values()].find(pose=>pose!==worldRequest);
-        releaseWorldPose(oldest,'pose-evicted');
-      }
-      entry.promise=(async()=>{
-        let bundle;
+    const worldVisual=()=>worldRequest?{key:worldRequest.key,state:worldRequest.state,error:worldRequest.error,reason:worldRequest.reason,coverage:worldRequest.bundle?.coverage||[],preparedAt:worldRequest.preparedAt,firstDrawAt:worldRequest.firstDrawAt,publishedKey:worldRequest.bundle?worldRequest.key:undefined,preparation:worldPreparation(),
+      displayed:compatibleWorldPose(worldDrawn?.entry,worldRequest)?{key:worldDrawn.entry.key,action:worldDrawn.entry.options.action,direction:worldDrawn.entry.options.direction,
+        weaponless:worldDrawn.entry.options.weaponless,source:worldDrawn.entry.bundle?.coverage?.[0]?.source,exact:worldDrawn.entry===worldRequest}:null}:null;
+    const worldReady=player=>!!player&&worldRequest?.state==='ready'&&
+      sameWorldIdentity(worldRequest,{identity:visualIdentity(player),revision:positionRevision(approved)})&&
+      firstWorldPresentationReady(worldRequest);
+    async function prepareWorldPose(entry){
+      const {player,options,positions,controller:{signal}}=entry;
+      if(!entry.bundle)entry.state='loading';
+      let bundle;
         try{
           // Both providers use the appearance registry loaded by the lobby.
           await Promise.all([ready,nativeHD?.ready]);
           signal.throwIfAborted();
-          const pose={player:snapshot,options};
-          const source=selectWorldHDOnly(nativeHD,weaponCatalog,snapshot,options);
+          const pose={player,options};
+          const source=selectWorldHDOnly(nativeHD,weaponCatalog,player,options);
           if(!source)throw Object.assign(Error('Sem fonte HD: '+options.action+' / '+options.direction),{code:'no-hd-pose'});
-          bundle=await nativeHD.prepareConfiguration([pose],{signal,positions:approved,resolve:()=>({...pose,source})});
+          const plan=sameWorldIdentity(entry,worldPrime)?worldPrime:null;
+          const physical=plan&&nativeHD.sourceKeyFor&&JSON.stringify([
+            nativeHD.sourceKeyFor(source,player),source.resolvedAction??source.action,options.direction,!!options.weaponless
+          ]);
+          const cached=physical&&plan.physical.get(physical);
+          if(cached)bundle=retainWorldBundle(cached,options);
+          else{
+            bundle=await nativeHD.prepareConfiguration([pose],{signal,positions,bakePositions:true,
+              ...(plan?{compactFrames:true}:{}),resolve:()=>({...pose,source})});
+            signal.throwIfAborted();
+            if(physical&&!hasFailedSlot(bundle)&&!bundle.coverage?.some(row=>row.omitted?.length||row.unsupported?.length)){
+              const shared={bundle,options,users:0,drop:()=>plan.physical.delete(physical)};
+              plan.physical.set(physical,shared);
+              bundle=retainWorldBundle(shared,options);
+            }
+          }
           for(const reason of bundle.positionView?.(options)?.diagnostics||[])diagnose(Error(reason),{consumer:'hd-position',asset:source.id});
           signal.throwIfAborted();
-          entry.bundle=bundle;bundle=null;
+          // A retry may succeed with a different pass missing. Keep the
+          // current partial result unless the replacement preserves its passes.
+          const missing=result=>new Set((result?.coverage||[]).flatMap(pose=>pose.omitted||[]));
+          const previouslyMissing=missing(entry.bundle);
+          if(!entry.bundle||[...missing(bundle)].every(slot=>previouslyMissing.has(slot))){
+            entry.bundle?.release();
+            entry.bundle=bundle;bundle=null;
+          }
           entry.state='ready';entry.preparedAt=performance.now();
+          entry.error=null;entry.reason=null;
+          entry.retryAt=hasFailedSlot(entry.bundle)&&entry.retries<worldRetryDelay.length
+            ?entry.preparedAt+worldRetryDelay[entry.retries]:null;
         }catch(error){
           if(signal.aborted)return;
-          Object.assign(entry,{state:'failed',error:error.message,reason:error.code||(error.asset?'source-load-failed':'composition-failed'),failedAt:performance.now()});
+          const at=performance.now();
+          Object.assign(entry,{state:entry.bundle?'ready':'failed',error:error.message,
+            reason:error.code||(error.asset?'source-load-failed':'composition-failed'),
+            retryAt:error.code!=='no-hd-pose'&&entry.retries<worldRetryDelay.length?at+worldRetryDelay[entry.retries]:null});
           diagnose(error,{consumer:'world',asset:options.action+'/'+options.direction});
         }finally{bundle?.release();}
-      })();
+    }
+    function requestWorldVisual(player,options,{publish=true}={}){
+      const identity=visualIdentity(player),positions=approved,revision=positionRevision(positions);
+      const key=worldPoseKey(player,options,identity,revision),scope={identity,revision};
+      let entry=worldPoses.get(key);
+      if(publish&&worldRequest?.key!==key){
+        if(!sameWorldIdentity(worldRequest,scope)){
+          worldDrawn=null;
+          for(const previous of worldPoses.values())if(!sameWorldIdentity(previous,scope)&&previous.promise){
+            releaseWorldPose(previous,'appearance-changed');
+          }
+        }
+        if(worldWarm?.promise&&worldWarm.key!==key&&!entry?.bundle)releaseWorldPose(worldWarm,'foreground-pose');
+      }
+      if(entry){
+        worldPoses.delete(key);worldPoses.set(key,entry);
+        if(publish)worldRequest=entry;
+        if(entry.retryAt!==null&&!entry.promise&&performance.now()>=entry.retryAt){
+          entry.retries++;
+          enqueueWorldPose(entry);
+        }
+        return entry;
+      }
+      const controller=new AbortController();
+      const snapshot={...player,appearance96:player.appearance96&&{...player.appearance96},preferences:{...player.preferences},
+        equipment:Object.fromEntries(Object.entries(player.equipment||{}).map(([slot,item])=>[slot,item&&typeof item==='object'?{...item}:item]))};
+      entry={key,...scope,positions,player:snapshot,options:{...options},hidesWeapon:hidesWeapon(player,options),
+        state:'loading',controller,retries:0,retryAt:null};
+      worldPoses.set(key,entry);if(publish)worldRequest=entry;
+      const limit=worldPrime?Math.max(12,worldPrime.planned.size+4):12;
+      while(worldPoses.size>limit){
+        const oldest=[...worldPoses.values()].find(pose=>pose!==worldRequest&&pose!==worldDrawn?.entry&&!worldPrime?.planned.has(pose.key));
+        if(!oldest)break;
+        releaseWorldPose(oldest,'pose-evicted');
+      }
+      enqueueWorldPose(entry);
       return entry;
     }
+    function retainWorldBundle(shared,options){
+      const raster=shared.bundle,route=o=>({...o,action:shared.options.action});
+      shared.users++;
+      let released=false;
+      return {
+        coverage:raster.coverage?.map(row=>({...row,action:options.action})),
+        positionView:o=>raster.positionView?.(route(o)),
+        projectileOrigin:raster.projectileOrigin&&((hero,o,scale)=>raster.projectileOrigin(hero,route(o),scale)),
+        draw(ctx,player,o){
+          if(released||!raster.draw(ctx,player,route(o)))return false;
+          this.visualHeight=raster.visualHeight;
+          return true;
+        },
+        release(){
+          if(released)return;
+          released=true;
+          if(--shared.users===0){shared.drop();raster.release();}
+        }
+      };
+    }
+    function enqueueWorldPose(entry){
+      if(!sameWorldIdentity(entry,worldPrime)){
+        entry.promise=prepareWorldPose(entry).finally(()=>{entry.promise=null;});
+        return;
+      }
+      entry.promise=new Promise(resolve=>{entry.settle=resolve;});
+      worldPrime.queue.set(entry.key,entry);
+      drainWorldPrime(worldPrime);
+    }
+    function drainWorldPrime(plan){
+      if(plan!==worldPrime||plan.running||!plan.queue.size)return;
+      const next=plan.queue.get(worldRequest?.key)||plan.queue.values().next().value;
+      plan.queue.delete(next.key);
+      plan.running=next;
+      void prepareWorldPose(next).finally(()=>{
+        next.settle?.();next.settle=null;next.promise=null;
+        if(next.retryAt!==null)plan.retryAt=Math.min(plan.retryAt,next.retryAt);
+        plan.running=null;
+        drainWorldPrime(plan);
+      });
+    }
+    function essentialPosesSettled(plan){
+      for(const pose of plan.planned.values()){
+        const state=worldPoses.get(pose.key)?.state;
+        if(pose.required&&state!=='ready'&&state!=='failed')return false;
+      }
+      return true;
+    }
+    function firstWorldPresentationReady(entry){
+      return !sameWorldIdentity(entry,worldPrime)||sameWorldIdentity(worldDrawn?.entry,worldPrime)||essentialPosesSettled(worldPrime);
+    }
+    function worldPreparation(){
+      const plan=worldPrime;
+      if(!plan)return null;
+      const readyWalks=[],readyIdles=[],failed=[];
+      let prepared=0,settled=0;
+      for(const pose of plan.planned.values()){
+        const entry=worldPoses.get(pose.key);
+        if(entry?.state==='ready'||entry?.state==='failed')settled++;
+        if(entry?.bundle){
+          prepared++;
+          if(pose.action==='walk')readyWalks.push(pose.direction);
+          if(pose.action==='idle')readyIdles.push(pose.direction);
+        }
+        const reason=entry?.reason||(hasFailedSlot(entry?.bundle)?'slot-load-failed':null);
+        if(reason)failed.push({action:pose.action,direction:pose.direction,reason});
+      }
+      return {state:settled<plan.planned.size?'loading':failed.length?'degraded':'ready',
+        readyWalks:worldDirections.filter(dir=>readyWalks.includes(dir)),readyIdles:worldDirections.filter(dir=>readyIdles.includes(dir)),
+        prepared,total:plan.planned.size,failed,essentialReady:essentialPosesSettled(plan)};
+    }
+    function primeWorldVisual(player,{direction='south',actions=[]}={}){
+      if(!player||player.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(player))return;
+      if(!approvedLoaded){waitingPrime={player,direction,actions};return;}
+      const identity=visualIdentity(player),revision=positionRevision(approved),scope={identity,revision};
+      if(!sameWorldIdentity(worldPrime,scope)){
+        const previous=worldPrime;
+        worldPrime={...scope,planned:new Map(),queue:new Map(),physical:new Map(),running:null,retryAt:Infinity};
+        if(previous)for(const entry of worldPoses.values())if(sameWorldIdentity(entry,previous)){
+          releaseWorldPose(entry,'appearance-changed');
+        }
+        previous?.queue.clear();
+      }
+      const plan=worldPrime;
+      if(plan.actions!==actions){
+        plan.actions=actions;
+        const facing=directionOf(direction),directions=[facing,...worldDirections.filter(value=>value!==facing)].filter(value=>worldDirections.includes(value));
+        const variants=[{action:'idle',required:true},{action:'walk',required:true},...actions.map(spec=>{
+          const item=typeof spec==='string'?{action:spec}:spec;
+          return {action:worldAction(item.action),weaponless:!!item.weaponless,required:!!item.essential};
+        })];
+        for(const variant of variants)for(const direction of directions){
+          const options={action:variant.action,direction,weaponless:!!variant.weaponless,consumer:'world'};
+          const key=worldPoseKey(player,options,identity,revision);
+          plan.planned.set(key,{...options,key,required:variant.required||!!plan.planned.get(key)?.required});
+        }
+        for(const pose of plan.planned.values())if(!worldPoses.has(pose.key))requestWorldVisual(player,pose,{publish:false});
+      }
+      if(plan.retryAt<=performance.now()&&!plan.running){
+        plan.retryAt=Infinity;
+        for(const pose of plan.planned.values()){
+          const entry=worldPoses.get(pose.key);
+          if(entry?.retryAt==null||entry.promise)continue;
+          if(entry.retryAt<=performance.now())requestWorldVisual(player,pose,{publish:false});
+          else plan.retryAt=Math.min(plan.retryAt,entry.retryAt);
+        }
+      }
+    }
+    function warmWorldVisual(player,{action,direction,weaponless=false}={}){
+      if(!player||!action||!direction||!worldDrawn||worldWarm?.promise||worldRequest?.promise||
+         player.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(player))return false;
+      const identity=visualIdentity(player),revision=positionRevision(approved);
+      if(!sameWorldIdentity(worldDrawn.entry,{identity,revision}))return false;
+      const options={action:worldAction(action),direction:directionOf(direction),weaponless,consumer:'world'};
+      if(worldPoses.has(worldPoseKey(player,options,identity,revision)))return false;
+      worldWarm=requestWorldVisual(player,options,{publish:false});
+      return true;
+    }
     function retryWorldVisual(){
-      for(const entry of worldPoses.values())if(entry.state==='failed'||entry.bundle?.coverage.some(pose=>
-        Object.values(pose.slotResolution||{}).some(slot=>slot.state==='load-failed')))releaseWorldPose(entry);
+      for(const entry of worldPoses.values())if(!entry.promise&&(entry.state==='failed'||hasFailedSlot(entry.bundle))){
+        entry.retries=0;
+        entry.retryAt=performance.now();
+      }
       imageFailures.clear();
+    }
+    function compatibleWorldPose(candidate,requested){
+      return !!candidate?.bundle&&sameWorldIdentity(candidate,requested)&&candidate.hidesWeapon===requested.hidesWeapon;
+    }
+    function continuityPose(requested){
+      const previous=worldDrawn?.entry,strictDirection=sameWorldIdentity(requested,worldPrime);
+      const keepPrevious=compatibleWorldPose(previous,requested)&&(!strictDirection||previous.options.direction===requested.options.direction);
+      if(keepPrevious&&locomotion(previous.options.action))return previous;
+      // A finished attack may have a ready idle or walk to return to even
+      // while its exact next direction is pending.
+      let otherDirection=null;
+      for(const candidate of worldPoses.values()){
+        if(candidate===requested||!locomotion(candidate.options.action)||!compatibleWorldPose(candidate,requested))continue;
+        if(candidate.options.direction===requested.options.direction)return candidate;
+        otherDirection=candidate;
+      }
+      return (!strictDirection&&otherDirection)||(keepPrevious?previous:null);
     }
     function drawWorldVisual(ctx,options,player=worldRequest?.player,{publish=true}={}){
       if(!player)return false;
       const drawOptions={...options,direction:directionOf(options.direction)};
-      if(root.MareVisualCompletoRenderer?.equipped(player))return root.MareVisualCompletoRenderer.draw(ctx,player,drawOptions);
-      const action=worldAction(options.action);
-      const exact={...drawOptions,action,weaponless:action!=='idle'&&!!options.weaponless};
-      const entry=requestWorldVisual(player,{action,direction:exact.direction,weaponless:exact.weaponless,consumer:'world'},{publish});
-      const result=entry.bundle?.draw(ctx,player,exact)||false;
-      if(result&&publish){entry.firstDrawAt??=performance.now();defaultHD?.clear();draws++;}
-      return result;
+      if(root.MareVisualCompletoRenderer?.equipped(player)){
+        if(publish)worldDrawn=null;
+        return root.MareVisualCompletoRenderer.draw(ctx,player,drawOptions);
+      }
+      if(waitingPrime&&!approvedLoaded)return false;
+      const action=worldAction(options.action),weaponless=action!=='idle'&&!!options.weaponless;
+      const requested=requestWorldVisual(player,{action,direction:drawOptions.direction,weaponless,consumer:'world'},{publish});
+      if(publish&&!firstWorldPresentationReady(requested))return false;
+      const exact={...drawOptions,action,weaponless};
+      const now=publish?performance.now():null;
+      let painted=requested,paintOptions=exact;
+      if(!requested.bundle?.draw(ctx,player,exact)){
+        if(!publish||!worldDrawn)return false;
+        painted=continuityPose(requested);
+        if(!painted)return false;
+        const previous=worldDrawn.entry===painted?worldDrawn:null;
+        // Use the held route's own animation clock. Attack progress and
+        // contact timing only belong to the attack they were computed for.
+        const clock=locomotion(painted.options.action)
+          ?{time:(previous?.time??0)+(now-(previous?.at??now))/1000,progress:null,timing:null}
+          :{time:previous?.time,progress:previous?.progress,timing:previous?.timing};
+        paintOptions={...drawOptions,...painted.options,...clock};
+        if(!painted.bundle.draw(ctx,player,paintOptions))return false;
+      }
+      if(publish){
+        painted.firstDrawAt??=now;
+        worldDrawn={entry:painted,at:now,time:paintOptions.time,progress:paintOptions.progress,timing:paintOptions.timing};
+        defaultHD?.clear();draws++;
+        if(requested.state==='failed'&&!locomotion(painted.options.action)){
+          const {direction,weaponless}=painted.options;
+          warmWorldVisual(player,{action:'idle',direction,weaponless});
+        }
+      }
+      return true;
+    }
+    function drawWorldSilhouette(ctx,player,options){
+      const shown=worldDrawn,entry=shown?.entry;
+      if(!entry?.bundle||!sameWorldIdentity(entry,{identity:visualIdentity(player),revision:positionRevision(approved)})||
+         entry.options.direction!==options.direction||entry.hidesWeapon!==hidesWeapon(player,options))return false;
+      return entry.bundle.draw(ctx,player,{...options,...entry.options,time:shown.time,progress:shown.progress,timing:shown.timing,
+        consumer:'world-silhouette',auxiliary:true});
     }
     function drawWorldPortrait(ctx,player,{consumer,x=ctx.canvas.width/2,y=ctx.canvas.height-12,scale=null,zoom=null}={}){
       const options={action:'idle',direction:'south',time:0,progress:0,x,y,scale,consumer};
       if(zoom!==null)Object.assign(options,{inventoryPresentation:true,avatarZoom:zoom,avatarConsumer:consumer});
-      return drawWorldVisual(ctx,options,player,{publish:false});
+      const drawn=drawWorldVisual(ctx,options,player,{publish:false});
+      if(consumer==='inventory'){
+        inventoryPreview=drawn?(root.MareVisualCompletoRenderer?.equipped(player)?
+          root.MareVisualCompletoRenderer.snapshot()?.last:nativeHD?.snapshot()?.last)||null:null;
+      }
+      return drawn;
     }
-    const height=player=>active&&!player?.zoanTransformed?((worldReady(player)&&worldRequest.bundle?.visualHeight)||nativeHD?.height(player)||96):null;
-    return {ready,snapshot,draw,drawFittedAvatar,drawWorldPortrait,height,ensure,prepareVisual,worldVisual,worldReady,requestWorldVisual,clearWorldVisual,retryWorldVisual,drawWorldVisual,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
+    function height(player){
+      if(!active||!player||player.zoanTransformed)return null;
+      const shown=worldDrawn?.entry;
+      if(compatibleWorldPose(shown,worldRequest)&&shown.bundle.visualHeight&&
+         sameWorldIdentity(shown,{identity:visualIdentity(player),revision:positionRevision(approved)})){
+        return shown.bundle.visualHeight;
+      }
+      return nativeHD?.height(player)||96;
+    }
+    return {ready,snapshot,draw,drawFittedAvatar,drawWorldPortrait,height,ensure,prepareVisual,worldVisual,worldReady,requestWorldVisual,primeWorldVisual,warmWorldVisual,clearWorldVisual,retryWorldVisual,drawWorldVisual,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
   }
   root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,appearanceLook,assetReferences,validateRelease,frameAt,directionOf,actions:Object.freeze(actions),restAliases,worldAction,selectWorldHD,selectWorldHDOnly};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.MarePaperDoll96Lobby;

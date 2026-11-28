@@ -40,7 +40,13 @@ web_files += ['late-archipelago-map-data.js','late-archipelago-world.js','sabaod
 web_files += ['sabaody-monsters.js','sabaody-sprites.js','sabaody-rendering.js']
 web_files += ['marineford-monsters.js','marineford-sprites.js']
 web_files += ['prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','prepared-dungeon-boss-fx.js']
-web_files += ['daily-sword-boss-art-data.js','daily-sword-boss-preview.html','daily-sword-boss-preview.js','daily-sword-boss-preview.css','daily-sword-boss-combat.js','daily-sword-boss-specials.json']
+web_files += ['daily-sword-boss-art-data.js', 'daily-sword-boss-combat.js']
+review_scripts = ('player-rework-test.js', 'player-rework-weapons.js')
+if include_reviews:
+    web_files += ['daily-sword-boss-preview.html', 'daily-sword-boss-preview.js',
+                  'daily-sword-boss-preview.css', 'daily-sword-boss-specials.json']
+else:
+    web_files = [name for name in web_files if name not in review_scripts]
 from export_sword0_checkpoint import materialize as materialize_sword_checkpoint
 materialize_sword_checkpoint(ROOT/'docs/native-hd/editable-female-equipment/checkpoint-2026-11-18',
                              OUT/'tools/rework-sword0-checkpoint')
@@ -91,6 +97,9 @@ def version_asset(match):
 for page in ['index.html', 'ui-preview.html', 'bancada-hd.html']:
     entry = OUT / page
     html = entry.read_text(encoding='utf-8')
+    if not include_reviews:
+        for name in review_scripts:
+            html = html.replace(f'  <script defer src="{name}"></script>\n', '')
     if args.static_demo:
         html = html.replace('<html ', '<html data-runtime="static-demo" ', 1)
     html = re.sub(r'((?:src|href)=")([^"?]+)(")', version_asset, html)
@@ -108,8 +117,12 @@ for folder in ['assets', 'icones_menu_pirata']:
     # These old faction sheets and empty paper-doll manifests have no game
     # consumers. Keep source/history, and export only for explicit reviews.
     retired_player_paths = {'assets/sprites', 'assets/paper-doll'}
+    # The animated installation screen no longer requests these source illustrations.
+    retired_loading_paths = {'assets/ui/loading-art'}
+    # Cocox now draws from the directional V2 sheets. The import inputs remain in source.
+    retired_monster_inputs = {f'assets/rare-animals/cocox/{pose}.png' for pose in ('idle', 'run', 'attack')}
     def ignore_generation_inputs(directory, names):
-        excluded = generation_inputs | retired_player_paths
+        excluded = generation_inputs | retired_player_paths | retired_loading_paths | retired_monster_inputs
         return [name for name in names if (Path(directory)/name).relative_to(ROOT).as_posix() in excluded]
     ignored = None if include_reviews or folder != 'assets' else ignore_generation_inputs
     shutil.copytree(ROOT/folder, OUT/folder, ignore=ignored)
@@ -207,21 +220,22 @@ shutil.copy2(ROOT/'docs/CAPACETES-E-VISIBILIDADE.md', OUT/'docs/CAPACETES-E-VISI
 
 (OUT/".nojekyll").touch()
 
-# Explicit query-only pilot: copy only exact approved composites, not editor/source layers.
-pilot = Path('tools/rework10917/assets')
-manifest = json.loads((ROOT/pilot/'manifest.json').read_text())
-for name in ['manifest.json'] + [f['approved'] for item in manifest['items'].values() for f in item['frames']]:
-    if name != 'manifest.json' and not re.fullmatch(r'(109|17)/[0-7]-final\.png', name):
-        raise ValueError('Unsafe pilot asset')
-    target = OUT/pilot/name
-    target.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT/pilot/name, target)
+if include_reviews:
+    # Explicit query-only pilot: copy only exact approved composites, not editor/source layers.
+    pilot = Path('tools/rework10917/assets')
+    manifest = json.loads((ROOT/pilot/'manifest.json').read_text())
+    for name in ['manifest.json'] + [f['approved'] for item in manifest['items'].values() for f in item['frames']]:
+        if name != 'manifest.json' and not re.fullmatch(r'(109|17)/[0-7]-final\.png', name):
+            raise ValueError('Unsafe pilot asset')
+        target = OUT/pilot/name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT/pilot/name, target)
 
-donor = Path('tools/rework-donor-f6-north')
-for name in ['manifest.json'] + [f'frames/{i:02}.png' for i in range(12)]:
-    target = OUT/donor/name
-    target.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT/donor/name, target)
+    donor = Path('tools/rework-donor-f6-north')
+    for name in ['manifest.json'] + [f'frames/{i:02}.png' for i in range(12)]:
+        target = OUT/donor/name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT/donor/name, target)
 
 # Exact idle accessory snapshots are available only through the explicit test query.
 accessories = Path('tools/rework-accessories')
@@ -236,11 +250,13 @@ for name in accessory_files:
 
 print(f"Site criado em: {OUT} (jogo atual; bancadas históricas: {include_reviews})")
 
-# Approved cycle catalogs use immutable same-repository archives with SHA/CRC checks.
-for folder in ['tools/rework-weapons','tools/rework-outfits']:
-    source=ROOT/folder
-    if source.is_dir():
-        shutil.copytree(source,OUT/folder,dirs_exist_ok=True)
+# The live female renderer fetches these corrections by hash. The archive
+# catalogs and their sources are used only by the isolated reworkTest views.
+cycle_paths = ['tools/rework-weapons', 'tools/rework-outfits'] if include_reviews else [
+    'tools/rework-weapons/grip-corrections',
+]
+for folder in cycle_paths:
+    shutil.copytree(ROOT/folder, OUT/folder, dirs_exist_ok=True)
 
 # Native-density source modules: deploy original PNG bytes, never review-only workspaces.
 for folder in ['tools/rework-base-hd','tools/rework-weapon-layers-hd','tools/rework-modular-outfits-hd','tools/rework-female-north-rig','tools/rework-female-profile-rig','tools/rework-female-dagger-p22']:

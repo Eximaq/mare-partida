@@ -23,6 +23,17 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
   await p.locator('#'+id).click();const visible=await p.evaluate(()=>['characterQuickMenu','modesQuickMenu','captainQuickMenu'].filter(id=>!document.getElementById(id).classList.contains('hidden')));assert.equal(visible.length,1);assert.equal(visible[0],id.replace('MenuTrigger','QuickMenu'));
  }
  await p.keyboard.press('Escape');
+ await p.keyboard.press('p');
+ const characterMenu=p.locator('#characterQuickMenu');
+ await characterMenu.waitFor({state:'visible'});
+ await p.keyboard.press('End');
+ assert(await characterMenu.locator('[data-character-section=hierarchy]').evaluate(el=>el===document.activeElement));
+ await p.keyboard.press('ArrowUp');
+ assert(await characterMenu.locator('[data-character-section=swords]').evaluate(el=>el===document.activeElement));
+ await p.keyboard.press('Enter');
+ await p.getByRole('heading',{name:'Compêndio de Espadas',exact:true}).waitFor();
+ assert(await characterMenu.isHidden(),'opening Espadas closes the character dropdown');
+ await p.keyboard.press('Escape');
  await p.evaluate(()=>__controlsQA.toggle('chat',true));await p.locator('[data-chat-channel="notes"]').click();
  await p.locator('#chatInput').fill('Anotação de validação 123');await p.locator('#chatInput').press('Enter');
  assert.equal(await p.locator('#chatInput').inputValue(),'');assert((await p.locator('#gameLog').innerText()).includes('Anotação de validação 123'));

@@ -35,7 +35,7 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
   roster=await presence(c,candidate.party_id);
   const room=row.simulation,now=row.now.getTime(),elapsed=(now-row.tick_at.getTime())/1000,actors:any[]=[];let attached=0;
   // The shared room owns its old mobs independently of personal battle rows.
-  if(room.area==='skypiea-01')E.reanchorSkypieaMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(/^skypiea-0[1-4]$/.test(room.area))E.reanchorSkypieaMobs(room.area,room.mobs,maps().navigation(room.mapId));
    await refreshPartyLeader(c,candidate.party_id,roster,now);
   const ids=roster.map(m=>m.character_id),battles=await readBattleRows(c,ids);
   const connected=roster.filter(m=>m.connected&&battles.get(m.character_id)?.simulation.partyInstanceId===room.id).map(m=>m.character_id);
@@ -46,10 +46,6 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
    attached++;const input=inputs.get(m.character_id)!,{state}=input,f=input.fighter(b),w=worlds.get(m.character_id);
    if(f.rulesetId!=='original-character-v1'||!w||w.mapId!==room.mapId)throw Error('party_world_mismatch');
    b.hp=Math.min(b.hp,f.maxHp);b.energy=Math.min(b.energy,f.stats.maxEnergy);
-    if(room.mobs.some((m:any)=>m.balanceVersion!==E.balanceVersion)){
-     // The shared room, rather than a personal snapshot, owns current monster HP and clocks.
-     E.upgradeBalance({mobs:room.mobs,area:room.area,rulesHash:E.previousBalanceHash});
-    }
     if(b.rulesHash!==E.rulesHash)throw Error('party_rules_changed');
     if(elapsed>2){E.cancel(b);E.resetHaki(b);}
    const epoch=personal!.control_epoch;
@@ -58,6 +54,10 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
    actors.push({id:m.character_id,connected:true,lastSeen:new Date(m.last_seen).getTime(),instanceId:room.id,b,state,f,w,inventory,wear:equipmentWear(inventory,m.character_id),hero:{...w.position,direction:w.direction},stats:f.stats,baseStats:f.baseStats,fruitId:f.fruitId,build,classId:f.classId,factionId:f.factionId,level:state.level,preferences:input.preferences,potions:inventory?.potions??0,crewBenefits:input.crewBenefits,potionHealingBonus:input.crewBenefits.doctor,manualPath:b.auto?[]:w.path.map((p:any)=>({...p})),manualSpeed:w.speed,manualStart:personal!.started_at.getTime(),epoch:Number(m.epoch)});
   }
   if(!attached){await c.query('UPDATE mare_game.party_instances SET ended_at=$2 WHERE id=$1',[room.id,row.now]);await c.query('COMMIT');budget.commit();continue;}
+  // The room owns the wounded monsters and their attack clocks.
+  if(room.mobs.some((m:any)=>m.balanceVersion!==E.balanceVersion))
+   E.upgradeBalance({mobs:room.mobs,area:room.area,rulesHash:E.previousBalanceHash});
+  E.upgradeHuntProfiles(room);
    // Never catch up offline time. Reconnection resumes the same wounded enemies.
   const results=S.step(room,actors,{nav:maps().navigation(room.mapId),now,dt:elapsed>2?0:Math.min(1,elapsed),rng});
   for(const actor of actors)if(actor.inventory&&actor.wear.changed)await persistEquipmentWear(c,actor.id,actor.inventory,actor.b,actor.state.version,()=>inputs.get(actor.id)?.fighter(actor.b));
@@ -73,8 +73,8 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
     crewActivities.push(...crewHuntEvents(result.id,[k],activityTime));
     const ids=P.eligible(actors.map(a=>({...a,hp:a.b.hp,x:a.hero.x,y:a.hero.y})),{instanceId:room.id,x:k.monster.x,y:k.monster.y},now).map((a:any)=>a.id);
     if(ids.length){
-      const base=E.hunt.rewards(k.area,k.monster,k.monster.level??1,.5).xp,shares=P.shares(base,ids,room.seq%ids.length);
-      for(const id of ids){const actor=actors.find(a=>a.id===id),personal=E.hunt.rewards(k.area,k.monster,actor.state.level,.5).xp,grant=crewCombatXp(base>0?Math.round(shares[id]*personal/base):0,actor.crewBenefits.command);
+      const base=E.hunt.referenceXp(k.area,k.monster),shares=P.shares(base,ids,room.seq%ids.length);
+      for(const id of ids){const actor=actors.find(a=>a.id===id),factor=E.hunt.mapXpMultiplier(k.area,actor.state.level),grant=crewCombatXp(Math.round(shares[id]*factor),actor.crewBenefits.command);
        rewards.set(id,(rewards.get(id)??0)+grant);
        await c.query('INSERT INTO mare_game.party_experience(instance_id,spawn_id,character_id,base_amount,amount,request_id) VALUES($1,$2,$3,$4,$5,$6)',[room.id,k.id,id,shares[id],(await boostXp(c,id,BigInt(grant))).toString(),actor.requestId??=randomUUID()]);
       }

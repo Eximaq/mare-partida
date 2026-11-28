@@ -15,18 +15,22 @@ test('contract intent contains only a canonical ID, never progress, ownership or
  }
  for(const contractId of ['weekly','__proto__','crab\u0000',"crab' OR 1=1",'CRAB'])assert(!characterCommandSchema.safeParse({...command,payload:{contractId}}).success);
 });
-test('every authored common monster gets deterministic points and the new attack interval',()=>{
- const E=require('../../world-battle.cjs'),C=require('../../character-system.js'),B=require('../../monster-behavior.js'),raw=require('../../monster-catalog.js');
+test('authored common monsters have deterministic stats and a single older-map XP penalty',()=>{
+ const E=require('../../world-battle.cjs'),C=require('../../character-system.js'),B=require('../../monster-behavior.js'),raw=require('../../monster-catalog.js'),rules=require('../../character-catalog.js');
+ const atlas=require('../../archipelago.js');
  for(const area of Object.keys(E.hunt.regions))for(const slot of B.slots(area).filter((s:any)=>!s.boss)){
   const profile=E.hunt.profile(area,slot.sector,slot.type,0),base=raw[slot.type];
   assert.deepEqual(profile,E.hunt.profile(area,slot.sector,slot.type,.999));
   assert.equal(profile.attributePoints,3*C.earned(base.level));
-  assert.equal(profile.attackSec,base.attack_seconds/2.25);
+  assert.equal(profile.attackSec,slot.type==='helmeppo'?.9:base.attack_seconds/2.25);
   assert.equal(profile.speed,base.move_speed*2);
   assert.equal(profile.accuracy,1);
-  assert.equal(profile.defense,Math.round(Math.round((base.physical_defense+.24*profile.attributes.defense)*1.3)*1.2));
-  assert.equal(profile.magicDefense,Math.round(base.magic_defense*1.2));
-  assert.equal(E.hunt.rewards(area,{...profile,type:slot.type,district:slot.sector},profile.level).xp,2*Math.round(Math.round(profile.xp/10)*E.hunt.xpByMap(area)));
+  const late=base.level>=45,scale=base.level/45;
+  assert.equal(profile.defense,late?Math.round(192*scale**2.15):Math.round(Math.round((base.physical_defense+.24*profile.attributes.defense)*1.3)*1.2));
+  assert.equal(profile.magicDefense,late?Math.round(30*scale**2.15):Math.round(base.magic_defense*1.2));
+  const monster={...profile,type:slot.type,district:slot.sector},min=atlas.byArea(area).minLevel;
+  assert.equal(E.hunt.rewards(area,monster,min).xp,rules.huntExperience[area]);
+  assert.equal(E.hunt.rewards(area,monster,185).xp,rules.huntExperience[area]*(area==='marineford-06'?1:.5));
  }
 });
 test('shared contracts preserve original IDs, fixed rewards and migrated once-only objectives',()=>{

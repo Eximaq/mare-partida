@@ -9,7 +9,7 @@ import {authDatabase} from './auth-support.mjs';
 import {applyMigrations} from '../../apps/game-server/src/db/migrations.js';
 import {tickWorldBattles} from '../../apps/game-server/src/characters/battle.js';
 
-const require=createRequire(import.meta.url),world=require('../../world-catalog.cjs').load(),engine=require('../../world-battle.cjs');
+const require=createRequire(import.meta.url),dungeons=require('../../boss-dungeon-system.js'),world=require('../../world-catalog.cjs').load(),engine=require('../../world-battle.cjs');
 const previousWorld='1d59b830667d4842300bf0a74d9a898cdb74a910bc5819877ddcb32827bac1cd';
 const previousBattle='5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810';
 
@@ -60,7 +60,7 @@ test('Enies Lobby travel enforces all five level gates and persists each visit o
  await assert.rejects(a.doit('world.travel',{islandId:'enies-lobby-06'}),{code:'world_destination_unknown'});
 }));
 
-test('Lucci and Moria victories reload as pending without XP, Berry, items or duplicate claims',async()=>authDatabase(async f=>{
+test('Lucci and Moria victories reload as pending, then send exactly one configured mail without XP or Berry',async()=>authDatabase(async f=>{
  const a=await actor(f.service);
  for(const [dungeonId,minLevel] of [['rob-lucci',100],['gecko-moria',110]] as const){
   await level(f,a,minLevel-1);
@@ -84,20 +84,32 @@ test('Lucci and Moria victories reload as pending without XP, Berry, items or du
   await defeat(f,a);
   const won=await a.read();
   assert.equal(won.dungeons.records[dungeonId].phase,'pending');
-  assert.equal(won.dungeons.records[dungeonId].reward,null);
+  const items=dungeons.rewardEntries(won.dungeons.records[dungeonId].reward);
+  assert.equal(items.length,dungeonId==='gecko-moria'?2:1);
+  assert.deepEqual(items[0],{itemId:'epic-equipment-box',quantity:1,equipmentLevel:minLevel});
+  if(dungeonId==='gecko-moria')assert.deepEqual(items[1],{materialId:'akuma_fragment_b',quantity:10,boundToCharacter:a.c.id});
   assert.equal(won.state.experience,resumed.state.experience);assert.equal(won.state.gold,resumed.state.gold);
   assert.deepEqual(won.originalInventory,resumed.originalInventory);
   assert.deepEqual((await a.read()).dungeons.records[dungeonId],won.dungeons.records[dungeonId]);
-  await assert.rejects(a.doit('dungeon.claim',{dungeonId}),{code:'dungeon_reward_unavailable'});
+  await assert.rejects(a.doit('dungeon.claim',{dungeonId}),{code:'dungeon_chest_out_of_range'});
   await a.doit('world.return');await a.doit('dungeon.enter',{dungeonId});
   const pending=await a.read();assert.equal(pending.battle.mobs.length,0);
   assert.equal(pending.dungeons.records[dungeonId].runId,activeRecord.runId);
-  await tickWorldBattles(f.pool);await a.doit('world.return');
+  await tickWorldBattles(f.pool);
+  const chest=world.maps['quest-dungeons'].interactions[0];
+  await f.pool.query("UPDATE mare_game.character_world SET x=$2,y=$3,path='[]',speed=0 WHERE character_id=$1",[a.c.id,chest.x,chest.y+56]);
+  const claim=await a.input('dungeon.claim',{dungeonId});
+  assert.deepEqual(...await Promise.all([a.send(claim),a.send(claim)]));
+  const claimed=await a.read();
+  assert.equal(claimed.dungeons.records[dungeonId].phase,'claimed');
+  assert.equal(claimed.state.experience,won.state.experience);assert.equal(claimed.state.gold,won.state.gold);
+  assert.deepEqual(claimed.originalInventory,won.originalInventory);
+  await assert.rejects(a.doit('dungeon.claim',{dungeonId}),{code:'dungeon_reward_unavailable'});
  }
  const victories=(await f.pool.query('SELECT dungeon_id,reward FROM mare_game.dungeon_victories WHERE character_id=$1 ORDER BY dungeon_id',[a.c.id])).rows;
- assert.deepEqual(victories,[{dungeon_id:'gecko-moria',reward:null},{dungeon_id:'rob-lucci',reward:null}]);
- assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_claims WHERE character_id=$1',[a.c.id])).rows[0].n,0);
- assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.social_mail WHERE character_id=$1',[a.c.id])).rows[0].n,0);
+ assert.deepEqual(victories.map(r=>[r.dungeon_id,r.reward.items.length]),[['gecko-moria',2],['rob-lucci',1]]);
+ assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_claims WHERE character_id=$1',[a.c.id])).rows[0].n,2);
+ assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.social_mail WHERE character_id=$1',[a.c.id])).rows[0].n,2);
 }));
 
 async function persisted(pool:any){
@@ -108,12 +120,20 @@ async function persisted(pool:any){
  return saved;
 }
 
-test('migration0062 preserves active saves and historical receipts, is idempotent and refuses unknown hashes',async()=>{
+test('migrations 0062–0066 preserve active saves and historical receipts, is idempotent and refuses unknown hashes',async()=>{
  const directory=await mkdtemp(join(tmpdir(),'mare-enies-migrations-'));
  const source=new URL('../../apps/game-server/migrations/',import.meta.url);
  try{
   for(const name of await readdir(source))if(/^\d{4}_.+\.sql$/.test(name)&&name<'0062')await copyFile(new URL(name,source),join(directory,name));
+  const swordSql=await readFile(new URL('0064_sword_compendium.sql',source),'utf8');
+  const collectionTable=swordSql.match(/^CREATE TABLE mare_game\.sword_collections \([\s\S]*?^\);/m)?.[0];
+  assert(collectionTable,'Locate the new collection table required by the current fixture runtime');
+  const lateSql=await readFile(new URL('0063_late_archipelago.sql',source),'utf8');
+  const lateBattle=lateSql.match(/to_jsonb\('([a-f0-9]{64})'::text\)/)?.[1];
+  assert(lateBattle,'Locate the battle hash written by the historical migration');
   await authDatabase(async f=>{
+   // Build the historical fixture through today's runtime, then remove its new dependency before migrating.
+   await f.pool.query(collectionTable);
    const a=await actor(f.service),unknown=await actor(f.service);
    await level(f,a,110);await a.doit('world.travel',{islandId:'dawn'});
    await a.doit('dungeon.enter',{dungeonId:'alvida'});await defeat(f,a);
@@ -128,16 +148,20 @@ test('migration0062 preserves active saves and historical receipts, is idempoten
    await f.pool.query("UPDATE mare_game.character_world SET rules_hash=$2,path=$3,speed=120,direction='left',started_at='2026-11-01T12:00:00Z',motion_until='2026-11-01T12:00:30Z' WHERE character_id=$1",[a.c.id,previousWorld,JSON.stringify([{x:active.world.position.x+12,y:active.world.position.y}])]);
    await f.pool.query('UPDATE mare_game.character_world SET rules_hash=$2 WHERE character_id=$1',[unknown.c.id,'f'.repeat(64)]);
    await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{rulesHash}',to_jsonb($2::text)) WHERE character_id=$1",[unknown.c.id,'e'.repeat(64)]);
+   await f.pool.query('DROP TABLE mare_game.sword_collections');
    const before=await persisted(f.pool),expected=structuredClone(before);
    expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=world.rulesHash;
-   expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=engine.rulesHash;
-   assert.deepEqual(await applyMigrations(f.pool),['0062_enies_lobby.sql','0063_late_archipelago.sql']);
+   expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=lateBattle;
+   const pending=['0062_enies_lobby.sql','0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql'];
+   for(const name of pending)await copyFile(new URL(name,source),join(directory,name));
+   assert.deepEqual(await applyMigrations(f.pool,directory),pending);
    assert.deepEqual(await persisted(f.pool),expected);
-   assert.deepEqual(await applyMigrations(f.pool),[]);
+   assert.deepEqual(await applyMigrations(f.pool,directory),[]);
    await f.pool.query(await readFile(new URL('0062_enies_lobby.sql',source),'utf8'));
    await f.pool.query(await readFile(new URL('0063_late_archipelago.sql',source),'utf8'));
    assert.deepEqual(await persisted(f.pool),expected);
    const resumed=await a.read();
+   assert.equal(resumed.world.rulesHash,world.rulesHash);assert.equal(resumed.battle.rulesHash,engine.rulesHash);
    assert.deepEqual(resumed.battle.mobs,battle.mobs);assert.deepEqual(resumed.battle.pending,battle.pending);
    assert.deepEqual(resumed.battle.cooldowns,battle.cooldowns);assert.equal(resumed.battle.hp,battle.hp);
    for(const [id,ledger] of Object.entries(battle.hunts.areas))assert.deepEqual(resumed.battle.hunts.areas[id],ledger);

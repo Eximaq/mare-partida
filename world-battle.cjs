@@ -22,8 +22,13 @@ const priorBalanceHashes=new Set([previousBalanceHash,'3c3abd53210f73539fe46107f
 // A new terrain projection invalidates old coordinates, not combat rewards,
 // enemy HP or stable slot IDs. Party rooms use this same projection.
 const previousSkypieaHash='0c6dbd3c8a12bb2e1958e830b6bdf3149be9cb911f976f7722ff11d99867b8c0';
+const previousSkypieaSceneHash='28c090f587fc5f11aa1f007f8008b509cfdd31e630fba12d83a8acfbb8391adf';
+const previousSkypieaArrivalHash='c66c9af7ffaae0d2d98c47196f5edee82ff4fa0875da9f0d08c1cf37b1e7c401';
+const previousHuntProgressionHash='cd060e983a8453a1ef8414cc2f9efea2f19f7c5b64021b98a3318540422f610b';
+const previousWorldXpHash='25e85126fbe82f0bb9367589fc80c5a183fd64bc8ee2530d83d6bd14d8e3a142';
+const isSkypieaArea=area=>/^skypiea-0[1-4]$/.test(area);
 function reanchorSkypieaMobs(area,mobs,nav){
- if(area!=='skypiea-01'||!Array.isArray(mobs))return false;
+ if(!isSkypieaArea(area)||!Array.isArray(mobs))return false;
  const slots=new Map(behavior.slots(area).map(s=>[s.id,s])),moves=[];
  for(const m of mobs){
   const p=m.source==='world'&&slots.get(m.spawnId);
@@ -50,17 +55,34 @@ function addHuntLedgers(b){
  const defaults=hunt.migrate({}).hunts.areas;
  for(const id of codes)areas[id]=defaults[id];
 }
+function upgradeHuntProfiles(b){
+ for(const m of b.mobs||[]){
+  if(m.source!=='world'||m.type==='boss'||m.huntVersion===hunt.profileVersion)continue;
+  const area=m.area||b.area,sector=hunt.get(area)?.sectors.find(s=>s.id===m.district);
+  if(!sector||!sector.roles.includes(m.type))continue;
+  const profile=hunt.profile(area,sector.id,m.type),oldAttackSec=m.attackSec;
+  const hp=m.alive?Math.min(profile.maxHP,Math.ceil(profile.maxHP*m.hp/Math.max(1,m.maxHP))):0;
+  Object.assign(m,profile,{hp,huntVersion:hunt.profileVersion});
+  if(!m.telegraph&&oldAttackSec>0&&m.attackClock>0)m.attackClock*=m.attackSec/oldAttackSec;
+ }
+}
 function upgradeBalance(b){
  if(!b)return;
- // New destinations preserve existing enemies, HP, pending attacks and clocks.
- if(b.rulesHash===rulesHash||b.rulesHash==='9db64cec25862f433bf8c9a16526a7ef183a52f04419dbe618071f40c83c4c23'||b.rulesHash==='0d55e5e1f278e9b0ab184c2a4916d25a6f081cabcf9d7b2e0be662889bc2c04f'||b.rulesHash==='fde69ce5850f0028b5b45ac47805635b3fe798c56aad13c3ade9578297031259'||b.rulesHash==='5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810'){
-  addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ if(b.rulesHash===rulesHash){addHuntLedgers(b);return;}
+ // Higher-resolution artwork and the new entry point preserve the terrain and
+ // encounters. Existing fights keep their exact positions, attacks and clocks.
+ if(b.rulesHash===previousSkypieaArrivalHash||b.rulesHash===previousHuntProgressionHash||b.rulesHash===previousWorldXpHash){
+  upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
- // The preceding main release already uses the current Skypiea coordinates.
- if(b.rulesHash==='0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'){addHuntLedgers(b);b.rulesHash=rulesHash;return;}
+ // These audited releases precede the new four-island geometry. Keep every
+ // enemy identity, HP and respawn; cancel spatial attacks only in Skypiea.
+ if([previousSkypieaSceneHash,'9db64cec25862f433bf8c9a16526a7ef183a52f04419dbe618071f40c83c4c23','0d55e5e1f278e9b0ab184c2a4916d25a6f081cabcf9d7b2e0be662889bc2c04f','fde69ce5850f0028b5b45ac47805635b3fe798c56aad13c3ade9578297031259','5fa0fe9ceb9c07af9b4b3510e97b31edcb816034683ee0eb8f2af4da7b3f1810','0ae58ec04a2cc20713bf441306de7b193f34da0505f6568f596060d27f5dcee7'].includes(b.rulesHash)){
+  if(isSkypieaArea(b.area)){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
+  upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
+ }
  if([previousSkypieaHash,'a2e4d9333c0770e539dee6262fb900e1747e94b44c1226a0baacb513b6c07a57','f48377155e997f7d41c76e0d6264e321603376094b73132ef8ebbd13be5cf0f7','8a7832817164137faed714a2ead01559c6c5801e6989c2a1a3aed55d3f2b383a'].includes(b.rulesHash)){
-  if(b.area==='skypiea-01'){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
-  addHuntLedgers(b);b.rulesHash=rulesHash;return;
+  if(isSkypieaArea(b.area)){if(!b.partyInstanceId)reanchorSkypieaMobs(b.area,b.mobs);cancel(b);resetHaki(b);}
+  upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  if(!priorBalanceHashes.has(b.rulesHash))return;
  const prisonSpec=b.prison&&prison.resolveEncounter(b.prison.spec,prisonCatalog);
@@ -82,7 +104,7 @@ function upgradeBalance(b){
    if(['crab','bandit','spirit'].includes(m.type))m.type=sector.roles[0];
    const profile=hunt.profile(area,sector.id,m.type);
    m.hp=m.alive?Math.min(profile.maxHP,Math.ceil(profile.maxHP*m.hp/Math.max(1,m.maxHP))):0;
-   Object.assign(m,profile);
+   Object.assign(m,profile,{huntVersion:hunt.profileVersion});
   }else{
    const spec=m.source==='boss-dungeon'?worldMonsterCatalog[m.type]:prisonSpec;
    if(!spec)continue;
@@ -92,8 +114,8 @@ function upgradeBalance(b){
   if(!m.telegraph&&oldAttackSec>0&&m.attackClock>0)m.attackClock*=m.attackSec/oldAttackSec;
   m.balanceVersion=balanceVersion;
  }
- if(b.area==='skypiea-01'&&b.hunts&&(b.partyInstanceId||reanchorSkypieaMobs(b.area,b.mobs))){cancel(b);resetHaki(b);}
- addHuntLedgers(b);b.rulesHash=rulesHash;
+ if(isSkypieaArea(b.area)&&b.hunts&&(b.partyInstanceId||reanchorSkypieaMobs(b.area,b.mobs))){cancel(b);resetHaki(b);}
+ upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;
 }
 function hakiGame(b){
  b.haki??=H.migrate({}).haki;b.hakiRuntime??=H.start();
@@ -110,7 +132,7 @@ function populate(b,now,rng,hero){
  const slots=behavior.ready(b.area,b.mobs,ledger.respawns,now);
  if(hero&&hunt.bossReady(b,b.area,hero,now))slots.push(...behavior.ready(b.area,b.mobs,ledger.respawns,now,true));
  for(const s of slots){const p=hunt.profile(b.area,s.sector,s.type,.5);b.mobs=b.mobs.filter(m=>m.spawnId!==s.id||!m.alive&&!m.fruitConsumed&&m.corpseUntil>now);
-  b.mobs.push({...p,source:'world',balanceVersion,id:randomUUID(),spawnId:s.id,area:b.area,district:s.sector,type:s.type,x:s.x,y:s.y,anchorX:s.x,anchorY:s.y,hp:p.maxHP,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:rng()*Math.PI*2,patrolClock:0,telegraph:null,moving:0,attackAnim:0,emberElapsed:0,emberFacing:'south',slow:0});}
+  b.mobs.push({...p,source:'world',balanceVersion,huntVersion:hunt.profileVersion,id:randomUUID(),spawnId:s.id,area:b.area,district:s.sector,type:s.type,x:s.x,y:s.y,anchorX:s.x,anchorY:s.y,hp:p.maxHP,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:rng()*Math.PI*2,patrolClock:0,telegraph:null,moving:0,attackAnim:0,emberElapsed:0,emberFacing:'south',slow:0});}
 }
 function create(area,stats,now,rng=Math.random){
  const b={version:1,rulesHash,area,hp:stats.maxHP,energy:stats.maxEnergy,auto:false,autoSkills:true,targetId:null,pending:null,projectiles:[],attackClock:0,cooldowns:[0,0],guard:0,blessing:0,respawn:0,mobs:[],hunts:hunt.migrate({}).hunts,talents:null,talentCooldowns:{},events:[],seq:0};
@@ -381,4 +403,4 @@ function step(b,c){
  }
  talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};
 }
-module.exports={pendingWearIds,balanceVersion,previousBalanceHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,reanchorSkypieaMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};
+module.exports={pendingWearIds,balanceVersion,previousBalanceHash,previousHuntProgressionHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,upgradeHuntProfiles,reanchorSkypieaMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};

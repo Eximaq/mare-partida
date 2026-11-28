@@ -204,6 +204,14 @@ function createGroup(payload){
         assert.equal(await page.locator('#panelOverlay > .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),'none');
         assert(await view.locator('button').evaluateAll(es=>es.every(e=>getComputedStyle(e).borderImageSource==='none')),'no old button frames');
         assert(await view.locator('.crew-nav button').evaluateAll(es=>es.every(e=>getComputedStyle(e).fontFamily.includes('Inter')&&parseFloat(getComputedStyle(e).borderLeftWidth)<=1)),'modern navigation');
+        if(tab==='overview'){
+          const icons=view.locator('.crew-nav img.crew-tab-art');
+          assert.equal(await icons.count(),9);
+          assert.equal(await icons.evaluateAll(async images=>{
+            await Promise.all(images.map(image=>image.decode()));
+            return new Set(images.map(image=>image.getAttribute('src'))).size;
+          }),9,'one loaded illustration per crew tab');
+        }
         if(tab==='overview'||tab==='treasury')await page.screenshot({path:path.join(out,'crew-'+tab+'-'+width+'.png')});
       }
     }

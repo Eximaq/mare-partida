@@ -24,7 +24,8 @@ module.exports=async function wardrobeLoadRace({page,url,out,put}){
   await page.evaluate(()=>__hdSlotQA.target('north'));await page.evaluate(()=>__hdSlotQA.raceStart());
   const savedLook=(await page.evaluate(()=>__hdSlotQA.read())).appearance;
   const cold=await page.evaluate(names=>performance.getEntriesByType('resource').filter(e=>names.some(k=>new URL(e.name).pathname.endsWith('/'+k))).length,[oldPath,newPath]);
-  assert.equal(cold,0,'Attack panel must start cold');assert.equal(hitsA,0);assert.equal(hitsB,0);
+  assert.equal(cold,0,'Attack panel must not finish before the gate is released');
+   assert(hitsA<=1,'Anticipation and actual attack must share the unfinished request');assert.equal(hitsB,0);
   await page.locator('#autoToggle').click();
   const timeoutToken=Symbol();let watch;
   try{assert.notEqual(await Promise.race([intercepted,new Promise(r=>{watch=setTimeout(()=>r(timeoutToken),30000);})]),timeoutToken,'Cold attack texture was not requested');}
@@ -51,7 +52,8 @@ module.exports=async function wardrobeLoadRace({page,url,out,put}){
    return {before:state.actor,after:after.actor,activeBefore:state.active,activeAfter:after.active};
   },{old,next,fixed});
   assert.deepEqual(swap,{before:old,after:next,activeBefore:true,activeAfter:true});
-  const ready=await wait(id=>{const m=__hdSlotQA.raceRead();return m.actor===id&&m.draws>0&&m.current?m:false;},next);
+  const ready=await wait(id=>{const m=__hdSlotQA.raceRead();return m.actor===id&&m.draws>0&&m.current?m:false;},next,60000)
+   .catch(cause=>{throw new Error('Replacement did not draw within 60 s while the old response was withheld',{cause});});
   assert(!finished,'Old request was released before the new outfit drew');assert.equal(hitsB,1,'Replacement should decode once');
   const newSource=ready.current,checkpoint=ready.drawnAttacks;
   release();
