@@ -68,12 +68,42 @@
   if(!await loadAtlas())return false;
   return (await Promise.all(Object.keys(atlas.sources).filter(key=>key!=='icon').map(loadSource))).every(Boolean);
  }
+ const previewFrames=new WeakMap();
+ function paintFrame(ctx,im,frame,x,y,scale){
+  const [sx,sy,w,h]=frame.rect,dx=Math.round(x),dy=Math.round(y);
+  ctx.save();try{
+   ctx.imageSmoothingEnabled=false;
+   if(frame.clipPolygon){
+    ctx.beginPath();frame.clipPolygon.forEach(([px,py],i)=>ctx[i?'lineTo':'moveTo'](dx+px*scale,dy+py*scale));
+    ctx.closePath();ctx.clip();
+   }
+   ctx.drawImage(im,sx,sy,w,h,dx,dy,w*scale,h*scale);
+  }finally{ctx.restore();}
+ }
+ function fitPreview(ctx,im,pose){
+  const fit=root.MareReworkNativeHD?.fitInventoryAvatar;
+  if(!fit)return null;
+  let raster=previewFrames.get(pose.frame);
+  if(!raster){
+   raster=root.document.createElement('canvas');
+   [raster.width,raster.height]=pose.frame.rect.slice(2);
+   paintFrame(raster.getContext('2d'),im,pose.frame,0,0,1);
+   previewFrames.set(pose.frame,raster);
+  }
+  return fit(ctx,raster,pose.scale,{zoom:null});
+ }
  function draw(ctx,player,options={}){
   if(!equipped(player)||player.zoanTransformed)return false;
   if(!atlas){void loadAtlas();return false;}
   const p=pose(atlas,player,options);if(!p)return false;
   const im=images.get(p.source);if(!im){void loadSource(p.source);return false;}
-  const [sx,sy,w,h]=p.frame.rect,[ax,ay]=p.frame.anchor;
+  if(options.inventoryPresentation&&options.avatarZoom===null){
+   const fitted=fitPreview(ctx,im,p);
+   if(!fitted)return false;
+   last={action:p.action,direction:p.direction,frame:p.index,scale:fitted.physicalScale,consumer:options.consumer,...fitted};
+   return true;
+  }
+  const [,,w,h]=p.frame.rect,[ax,ay]=p.frame.anchor;
   let x=options.x||0,y=options.y||0,scale=p.scale*(options.scale==null?1:options.scale*46/96);
   const anchored=options.inventoryPresentation&&options.avatarWorldPose;
   if(anchored){
@@ -84,10 +114,8 @@
     available(y-margin,ay),available(ch-y-margin,h-ay));
    if(!(scale>0))return false;
   }
-  ctx.save();ctx.imageSmoothingEnabled=false;
-  if(p.frame.clipPolygon){const dx=Math.round(x-ax*scale),dy=Math.round(y-ay*scale);ctx.beginPath();p.frame.clipPolygon.forEach(([x,y],i)=>ctx[i?'lineTo':'moveTo'](dx+x*scale,dy+y*scale));ctx.closePath();ctx.clip();}
-  ctx.drawImage(im,sx,sy,w,h,Math.round(x-ax*scale),Math.round(y-ay*scale),w*scale,h*scale);
-  ctx.restore();last={action:p.action,direction:p.direction,frame:p.index,scale,consumer:options.consumer||'world',
+  paintFrame(ctx,im,p.frame,x-ax*scale,y-ay*scale,scale);
+  last={action:p.action,direction:p.direction,frame:p.index,scale,consumer:options.consumer||'world',
    ...(anchored?{footAnchor:{x,y},multiplier:scale/p.scale}:{})};return true;
  }
  const api={equipped,pose,draw,prepare,snapshot:()=>({ready:!!atlas,error:failure,last})};

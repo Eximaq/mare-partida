@@ -2,38 +2,42 @@
 (function(root){'use strict';
 // Inventory samples the visible sprite bounds, never magnifies the entire
 // HD source frame (which includes transparent author padding).
-const inventoryBounds=new WeakMap();
-function rasterBounds(pixels,w,h){
+const inventoryBounds=new WeakMap(),fittedBounds=new WeakMap();
+function rasterBounds(pixels,w,h,minAlpha=1){
  let left=w,top=h,right=-1,bottom=-1;
  for(let y=0;y<h;y++){
   const row=y*w*4+3;
   let x=0;
-  while(x<w&&!pixels[row+x*4])x++;
+  while(x<w&&pixels[row+x*4]<minAlpha)x++;
   if(x===w)continue;
   left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=y;
-  for(let k=w-1;k>right;k--)if(pixels[row+k*4]){right=k;break;}
+  for(let k=w-1;k>right;k--)if(pixels[row+k*4]>=minAlpha){right=k;break;}
  }
  return right<left?null:{left,top,width:right-left+1,height:bottom-top+1};
 }
 function fitInventoryAvatar(ctx,source,referenceScale=1,{cache=true,zoom=3,footAnchor=null}={}){
  const w=source.width,h=source.height;if(!w||!h)return null;
- let bounds=cache&&inventoryBounds.get(source);
+ const boundsCache=zoom===null?fittedBounds:inventoryBounds;
+ let bounds=cache&&boundsCache.get(source);
  if(!bounds){
   const pixels=source.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h).data;
-  bounds=rasterBounds(pixels,w,h);if(!bounds)return null;
-  if(cache)inventoryBounds.set(source,bounds);
+  // Nearly transparent pixels in some atlas margins do not define the silhouette.
+  bounds=rasterBounds(pixels,w,h,zoom===null?16:1);if(!bounds)return null;
+  if(cache)boundsCache.set(source,bounds);
  }
  const cw=ctx.canvas.width,ch=ctx.canvas.height,{left,top,width,height}=bounds;
- if(!Number.isFinite(zoom)||zoom<=0||!Number.isFinite(referenceScale)||referenceScale<=0)return null;
- const margin=10,target=referenceScale*zoom;
+ if((zoom!==null&&(!Number.isFinite(zoom)||zoom<=0))||!Number.isFinite(referenceScale)||referenceScale<=0)return null;
+ const margin=10;
  if(cw<=margin*2||ch<=margin*2)return null;
  const anchored=footAnchor&&Number.isFinite(footAnchor.x)&&Number.isFinite(footAnchor.y);
  const x=cw/2,y=ch-24;
  const available=(space,extent)=>extent>0?space/extent:Infinity;
- const physicalScale=anchored?Math.min(target,
+ const availableScale=anchored?Math.min(
   available(x-margin,footAnchor.x-left),available(cw-x-margin,left+width-footAnchor.x),
   available(y-margin,footAnchor.y-top),available(ch-y-margin,top+height-footAnchor.y)
- ):Math.min(target,(cw-margin*2)/width,(ch-margin*2)/height);
+ ):Math.min((cw-margin*2)/width,(ch-margin*2)/height);
+ const target=zoom===null?availableScale:referenceScale*zoom;
+ const physicalScale=Math.min(target,availableScale);
  if(!(physicalScale>0))return null;
  const dw=width*physicalScale,dh=height*physicalScale;
  const dx=anchored?x-(footAnchor.x-left)*physicalScale:Math.floor((cw-dw)/2);

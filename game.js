@@ -2669,7 +2669,7 @@
     const fullSkin=MareVisualCompletoRenderer.equipped(player);
     const drawn=lobby96.drawWorldPortrait(c,player,{
       consumer,zoom:2,scale:(canvas.height-24)/46,y:canvas.height-20,
-      worldPose:consumer==='inventory',time:consumer==='inventory'?world.time:0
+      fit:consumer==='inventory',worldPose:consumer==='inventory',time:consumer==='inventory'?world.time:0
     });
     canvas.dataset.avatarRenderer=drawn?(fullSkin?'visual-completo':'native-hd'):'pending-hd';
   }
