@@ -15,6 +15,7 @@ function refreshFighter(){
  wire.combatPreview={rulesetId:'original-character-v1',stats,maxHp:stats.maxHP};
 }
 refreshFighter();
+wire.kairoseki='120';
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});
  const out=process.env.MARE_QA_DIR||'tmp/original-online-inventory';fs.mkdirSync(out,{recursive:true});
@@ -62,6 +63,19 @@ refreshFighter();
   });
   await p.goto(process.env.MARE_TEST_URL);await p.locator('#gameLoading').waitFor({state:'hidden'});
   await p.waitForFunction(()=>window.MareGameSession?.controlled&&!document.body.classList.contains('online-session-loading'));
+  await p.waitForFunction(()=>document.querySelector('#miniKairoseki')?.textContent==='120');
+  assert.equal(await p.locator('#miniGold').innerText(),'535');
+  await p.waitForFunction(()=>document.querySelector('#hudKairoseki img')?.naturalWidth>0);
+  for(const width of [1366,390,360]){
+    await p.setViewportSize({width,height:768});
+    const gold=await p.locator('.profile-berry').boundingBox();
+    const kairoseki=await p.locator('#hudKairoseki').boundingBox();
+    assert(gold&&kairoseki&&Math.abs(gold.y-kairoseki.y)<1);
+    assert(gold.x+gold.width<=kairoseki.x&&kairoseki.x+kairoseki.width<=width);
+    for(const id of ['miniGold','miniKairoseki'])assert(await p.locator('#'+id).evaluate(e=>e.scrollWidth<=e.clientWidth));
+    await p.locator('.nautical-profile').screenshot({path:path.join(out,'kairoseki-hud-'+width+'.png')});
+  }
+  await p.setViewportSize({width:1366,height:768});
   await p.keyboard.press('i');await p.waitForSelector('#invSearch');
   await p.locator('[data-item="server-boots"]').click();await p.locator('[data-equip="server-boots"]').click();
   await p.waitForFunction(()=>MareGameSession.data.online.originalInventory.equipment.boots?.id==='server-boots'&&!MareGameSession.busy);
@@ -104,7 +118,9 @@ refreshFighter();
   await p.screenshot({path:path.join(out,'original-online-character.png')});
   assert.equal(await p.locator('#heroPower').textContent(),new Intl.NumberFormat('pt-BR').format(wire.combatPreview.stats.power));
 
+  wire.kairoseki='0';
   await p.reload();await p.locator('#gameLoading').waitFor({state:'hidden'});await p.waitForFunction(()=>window.MareGameSession?.controlled&&!document.body.classList.contains('online-session-loading'));
+  await p.waitForFunction(()=>!document.querySelector('#hudKairoseki').hidden&&document.querySelector('#miniKairoseki').textContent==='0');
   assert.deepEqual(await p.evaluate(()=>{const {potions,manaPotions}=MareGameSession.data.online.originalInventory;return [potions,manaPotions];}),[4,2]);
   await p.waitForFunction(()=>document.getElementById('potionCount')?.textContent==='4'&&document.getElementById('manaPotionCount')?.textContent==='2');
   assert.equal(await p.evaluate(()=>MareGameSession.data.online.attributes.allocated.strength),1);

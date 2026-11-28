@@ -73,6 +73,9 @@ test("login, control and journey work with minimum grants, with narrow economic 
         assert.equal((await restarted.characterState(login.token, character.id)).gold, "0");
         for (const sql of [
           "UPDATE mare_game.accounts SET subject='forged'",
+          "INSERT INTO mare_game.account_kairoseki(account_id,balance) VALUES(gen_random_uuid(),1)",
+          "UPDATE mare_game.account_kairoseki SET balance=1",
+          "DELETE FROM mare_game.account_kairoseki",
           "UPDATE mare_game.characters SET created_at=now()",
           "UPDATE mare_game.characters SET account_id=gen_random_uuid()",
           "DELETE FROM mare_game.characters",
@@ -151,6 +154,16 @@ test("login, control and journey work with minimum grants, with narrow economic 
         const intent=async(action:any,payload={})=>service.command(login.token,character.id,{requestId:randomUUID(),action,payload,expectedVersion:(await service.onlineState(login.token,character.id)).state.version,control} as any);
         await intent('items.initialize');await intent('world.initialize');await intent('battle.start');await intent('world.travel',{islandId:'dawn'});
         const current=await service.onlineState(login.token,character.id);assert.equal(current.battle.mobs.length,14);
+        assert.equal(current.kairoseki,"0");
+        await pool.query(`INSERT INTO mare_game.account_kairoseki(account_id,balance)
+          SELECT account_id,$2::bigint FROM mare_game.characters WHERE id=$1`,[character.id,"9007199254740993"]);
+        const funded=await service.onlineState(login.token,character.id);
+        assert.equal(funded.kairoseki,"9007199254740993");
+        assert.equal(funded.state.gold,current.state.gold);
+        const visitor=await service.login("visitor@example.invalid","fixture");
+        const other=await service.createCharacter(visitor.token,{name:"Vigia",classId:"sword",factionId:"pirate"});
+        assert.equal((await service.onlineState(visitor.token,other.id)).kairoseki,"0");
+        await assert.rejects(service.onlineState(visitor.token,character.id),{code:"character_not_found"});
         await pool.query("UPDATE mare_game.character_battles SET tick_at=clock_timestamp()-interval '250 milliseconds' WHERE character_id=$1",[character.id]);
         await tickWorldBattles(runtime);
         for(const sql of ['DELETE FROM mare_game.character_battles','UPDATE mare_game.character_battles SET character_id=gen_random_uuid()','DELETE FROM mare_game.world_battle_rewards','UPDATE mare_game.world_battle_rewards SET gold_delta=100'])await assert.rejects(runtime.query(sql),{code:'42501'});

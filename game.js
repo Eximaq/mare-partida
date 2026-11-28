@@ -4431,6 +4431,17 @@ function applySceneHudLayout(){
     if($('miniHP'))$('miniHP').style.width=(100*clamp(game.hp/s.maxHP,0,1)).toFixed(1)+'%';
     if($('miniEnergy'))$('miniEnergy').style.width=(100*clamp(game.energy/s.maxEnergy,0,1)).toFixed(1)+'%';
     if($('miniGold'))$('miniGold').textContent=fmt(game.gold);
+    const kairoseki=ONLINE_GAME?.data?.online?.kairoseki;
+    const showKairoseki=typeof kairoseki==='string'&&/^(0|[1-9]\d{0,18})$/.test(kairoseki);
+    $('hudKairoseki').hidden=!showKairoseki;
+    if(showKairoseki){
+      const balance=$('miniKairoseki');
+      if(balance.dataset.balance!==kairoseki){
+        balance.dataset.balance=kairoseki;
+        balance.textContent=BigInt(kairoseki).toLocaleString('pt-BR');
+        balance.title=balance.textContent;
+      }
+    }
 
     $('miniPower').textContent=fmt(s.power);
     $('miniHPText').textContent=fmt(game.hp)+' / '+fmt(s.maxHP);

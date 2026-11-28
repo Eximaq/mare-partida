@@ -23,6 +23,11 @@ O miniporto anterior não é a entrada do produto e não deve ser promovido como
 
 - Identidade vem de `/v1/me`; estado vem do snapshot restrito ao dono. O cliente
   não escolhe accountId/ownerId/characterId para provar autorização.
+- A Kairoseki é exibida ao lado da Berry na HUD online. O snapshot privado
+  retorna o saldo da conta como texto decimal, com zero quando a conta ainda
+  não tem registro. A migração `0080_account_kairoseki.sql` concede apenas
+  leitura ao serviço do jogo. A compra com dinheiro real ficará para uma
+  etapa posterior. O ícone da pedra foi fornecido pelo proprietário do jogo.
 - `/game` não lê, escreve, apaga ou importa o save da demonstração. Falta do script
   de sessão ou erro no BFF bloqueia a entrada; nunca inicia offline como fallback.
 - Itens, dinheiro, poções e materiais iniciais da demonstração são removidos da

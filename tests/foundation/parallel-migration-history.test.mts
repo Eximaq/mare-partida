@@ -15,7 +15,9 @@ const mapNames = [
   '0073_conchas_marine_hd_map.sql', '0074_orange_town_hd_map.sql', '0075_alabasta_desert_hd_map.sql',
   '0076_alubarna_city_hd_map.sql', '0077_boss_arena_hd_map.sql', '0078_marineford_hd_map.sql',
 ];
-const followupNames = ['0079_character_cosmetics.sql'];
+const cosmeticsName = '0079_character_cosmetics.sql';
+const kairosekiName = '0080_account_kairoseki.sql';
+const followupNames = [cosmeticsName, kairosekiName];
 const common = plan.filter(row => row.name < '0067');
 const rows = (names: string[]) => names.map(name => {
   const row = plan.find(row => row.name === name);
@@ -41,15 +43,19 @@ test('deployed main and HD-map histories execute the missing branch and real fol
   }
 });
 
-test('the real cosmetics follow-up stays pending until applied and retains checksum and prefix validation', () => {
-  const withoutCosmetics = plan.filter(row => row.name !== '0079_character_cosmetics.sql');
-  assert.deepEqual(names(pendingMigrations(plan, withoutCosmetics)), followupNames);
+test('the cosmetics and Kairoseki follow-ups retain checksum and prefix validation', () => {
+  const withoutFollowups = plan.filter(row => !followupNames.includes(row.name));
+  assert.deepEqual(names(pendingMigrations(plan, withoutFollowups)), followupNames);
+  assert.deepEqual(names(pendingMigrations(plan, [...withoutFollowups, ...rows([cosmeticsName])])), [kairosekiName]);
+  assert.throws(() => pendingMigrations(plan, [...withoutFollowups, ...rows([kairosekiName])]), /Migration history mismatch/);
   assert.deepEqual(pendingMigrations(plan, plan), []);
-  const prWithCosmetics = sorted([...prHistory, ...rows(followupNames)]);
+  const prWithCosmetics = sorted([...prHistory, ...rows([cosmeticsName])]);
   assert.throws(() => pendingMigrations(plan, prWithCosmetics), /Migration history mismatch/, 'cosmetics cannot bypass unapplied progression migrations');
-  assert.throws(() => pendingMigrations(plan, sorted([...mainHistory, ...rows(followupNames)])), /Migration history mismatch/, 'cosmetics cannot bypass unapplied map migrations');
-  const changed = plan.map(row => row.name === '0079_character_cosmetics.sql' ? {...row, checksum:'changed-cosmetics-sql'} : row);
-  assert.throws(() => pendingMigrations(plan, changed), /Migration history mismatch/);
+  assert.throws(() => pendingMigrations(plan, sorted([...mainHistory, ...rows([cosmeticsName])])), /Migration history mismatch/, 'cosmetics cannot bypass unapplied map migrations');
+  for (const name of followupNames) {
+    const changed = plan.map(row => row.name === name ? {...row, checksum:'changed-sql'} : row);
+    assert.throws(() => pendingMigrations(plan, changed), /Migration history mismatch/);
+  }
 });
 
 test('real geometry migration directories may contain only the first one or two audited collision pairs', () => {
@@ -75,7 +81,7 @@ test('parallel release compatibility still rejects reordered, missing, unknown o
     [...common, ...rows([...progressionNames].reverse())],
   ];
   for (const history of invalidHistories) assert.throws(() => pendingMigrations(plan, history), /Migration history mismatch/);
-  const future = { name: '0080_following_release.sql', checksum: 'future' };
+  const future = { name: '0081_following_release.sql', checksum: 'future' };
   assert.throws(() => pendingMigrations([...plan, future], [...prHistory, future]), /Migration history mismatch/);
   assert.deepEqual(pendingMigrations([...plan, future], [...plan, future]), []);
 });

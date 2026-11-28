@@ -365,9 +365,14 @@ export class AuthService {
       await lockParty(client,id);await lockWeeklyBoss(client,id);
       const weeklyBoss=await readWeeklyBoss(client,id,row.id);
       const party=await readParty(client,id);
-      const journey = (await client.query<{ started: boolean }>(
-        "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started", [id],
+      const {started,kairoseki_available} = (await client.query<{ started: boolean; kairoseki_available: boolean }>(
+        "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started, to_regclass('mare_game.account_kairoseki') IS NOT NULL AS kairoseki_available", [id],
       )).rows[0]!;
+      const journey={started};
+      const kairoseki=kairoseki_available
+        ? (await client.query<{ balance: string }>(
+          "SELECT balance::text FROM mare_game.account_kairoseki WHERE account_id=$1", [row.account_id],
+        )).rows[0]?.balance??"0" : undefined;
       const {profile,cosmetics}=await readProfile(client,id)??{profile:null,cosmetics:null};
       // Profile is introduced after every input table. Earlier migration fixtures
       // retain the ordinary readers; the live schema batches only under its locks.
@@ -384,7 +389,7 @@ export class AuthService {
         power:hierarchy.power,factionId:combatPreview.factionId,crewAvailable:!!inputs?.crewAvailable,
         hierarchy,achievements,prison,haki
       }):null;
-      return { sync:{protocol:2}, bounty, ...(cosmetics?{cosmetics}:{}), ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...((inputs?.socialAvailable??await hasSocial(client))?{socialAvailable:true}:{}), ...((inputs?.marketAvailable??await marketAvailable(client))?{marketAvailable:true}:{}), state, party, weeklyBoss, profile, fruits, hierarchy, haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements, talents, contracts:await readContracts(client,id,{state,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: {...(inputs?.attributes??await readAttributes(client,id,state)),build:await readAttributeBuild(client,id)}, progression: await readLevelProgression(client,state,!!originalInventory), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      return { sync:{protocol:2}, ...(kairoseki!==undefined?{kairoseki}:{}), bounty, ...(cosmetics?{cosmetics}:{}), ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...((inputs?.socialAvailable??await hasSocial(client))?{socialAvailable:true}:{}), ...((inputs?.marketAvailable??await marketAvailable(client))?{marketAvailable:true}:{}), state, party, weeklyBoss, profile, fruits, hierarchy, haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements, talents, contracts:await readContracts(client,id,{state,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: {...(inputs?.attributes??await readAttributes(client,id,state)),build:await readAttributeBuild(client,id)}, progression: await readLevelProgression(client,state,!!originalInventory), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(

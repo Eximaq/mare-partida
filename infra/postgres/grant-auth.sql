@@ -106,11 +106,11 @@ GRANT INSERT(character_id,fruit_id,item_id,request_id,version_before) ON mare_ga
 
 GRANT SELECT ON mare_game.character_profile,mare_game.profile_events TO mare_runtime;
 GRANT INSERT(character_id,appearance,preferences,class_builds,starter_classes),UPDATE(appearance,preferences,class_builds,starter_classes) ON mare_game.character_profile TO mare_runtime;
-DO $ BEGIN
+DO $$ BEGIN
  IF EXISTS(SELECT 1 FROM pg_attribute WHERE attrelid='mare_game.character_profile'::regclass AND attname='cosmetics' AND NOT attisdropped) THEN
   GRANT UPDATE(cosmetics) ON mare_game.character_profile TO mare_runtime;
  END IF;
-END $;
+END $$;
 GRANT INSERT(character_id,request_id,action,version_before,before_state,after_state) ON mare_game.profile_events TO mare_runtime;
 GRANT UPDATE(name,class_id,faction_id) ON mare_game.characters TO mare_runtime;
 
@@ -161,6 +161,12 @@ DO $$
 BEGIN
   IF to_regclass('mare_game.bounty_victories') IS NOT NULL THEN
     GRANT SELECT ON mare_game.bounty_victories TO mare_runtime;
+  END IF;
+  IF to_regclass('mare_game.sword_collections') IS NOT NULL THEN
+    GRANT SELECT ON mare_game.sword_collections TO mare_runtime;
+  END IF;
+  IF to_regclass('mare_game.account_kairoseki') IS NOT NULL THEN
+    GRANT SELECT ON mare_game.account_kairoseki TO mare_runtime;
   END IF;
   IF to_regclass('mare_game.market_listings') IS NOT NULL THEN
     GRANT SELECT ON mare_game.market_listings,mare_game.market_proposals,mare_game.market_notifications TO mare_runtime;

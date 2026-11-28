@@ -154,6 +154,36 @@ body > #gameTooltip.game-tooltip,
 #app.hud-nautical .nautical-profile .profile-berry { flex-basis: 100%; height: 24px; gap: 8px; color: #d8dce2; font: 500 13px/1.2 var(--glass-type); }
 #app.hud-nautical .nautical-profile .berry-coin { width: 24px; height: 24px; background: none; image-rendering: auto; }
 #app.hud-nautical .nautical-profile #miniGold { color: var(--glass-gold); font: 750 16px/1.2 var(--glass-type); }
+#app.hud-nautical .nautical-profile .hud-resources:has(.profile-kairoseki:not([hidden])) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 8px;
+}
+#app.hud-nautical .nautical-profile .hud-resources:has(.profile-kairoseki:not([hidden])) #miniWillpower { grid-column: 1 / -1; }
+#app.hud-nautical .nautical-profile .profile-kairoseki:not([hidden]) {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  min-width: 0;
+  gap: 5px;
+  padding-left: 8px;
+  border-left: 1px solid #cbb67c30;
+  color: #d8dce2;
+  font: 500 13px/1.2 var(--glass-type);
+}
+#app.hud-nautical .nautical-profile .profile-kairoseki img { flex: none; image-rendering: auto; }
+#app.hud-nautical .nautical-profile #miniKairoseki {
+  margin-left: auto;
+  color: #bdddf2;
+  font: 750 16px/1.2 var(--glass-type);
+  font-variant-numeric: tabular-nums;
+}
+#app.hud-nautical .nautical-profile .hud-resources:has(.profile-kairoseki:not([hidden])) :is(#miniGold, #miniKairoseki) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 #app.hud-nautical .nautical-profile #miniWillpower { padding: 4px 0 0; border: 0; justify-content: space-between; }
 #app.hud-nautical .nautical-profile #miniWillpower :is(b, span:first-child),
 #app.hud-nautical .nautical-profile #miniTalentResource :is(b, span:first-child) { color: var(--glass-muted); font: 500 14px/1.2 var(--glass-type); }
