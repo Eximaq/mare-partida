@@ -22,11 +22,12 @@ class CatalogTest(unittest.TestCase):
                     archive.writestr(f'{idx}-frame.png', shared)
                     archive.writestr('another.png', shared)
                     archive.writestr('unique.png', bytes([idx]) * 100)
-            catalog = build_catalog(root)
+            self.assertFalse(build_catalog(root)['patches'])
+            catalog = build_catalog(root, full_install=True)
             units = catalog['units']
             patches = catalog['patches']
             self.assertTrue(patches)
-            self.assertEqual(build_catalog(root), catalog)
+            self.assertEqual(build_catalog(root, full_install=True), catalog)
             saved = 0
             for index, (path, size, digest) in enumerate(units):
                 if digest not in patches:

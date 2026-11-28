@@ -93,10 +93,10 @@ def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS, *
                  or p.relative_to(root / 'tools/paper-doll-96-v3').as_posix() in compatibility_files}
     asset_paths = [p.relative_to(root).as_posix() for p in paths]
     if full_install:
-        # The beta trades a larger server artifact for fewer client requests and reused ZIP data.
+        # The full installer trades a larger server artifact for fewer requests and reused ZIP data.
         return package_catalog(root, asset_paths, pack_budget=128 * 1024**2, patch_budget=48 * 1024**2)
     # Individual resources let the active scene fetch only the pieces it uses.
-    return package_catalog(root, asset_paths, pack_budget=0)
+    return package_catalog(root, asset_paths, pack_budget=0, patch_budget=0)
 
 
 def package_catalog(root, asset_paths, *, pack_budget=36 * 1024 * 1024,
@@ -152,7 +152,8 @@ def package_catalog(root, asset_paths, *, pack_budget=36 * 1024 * 1024,
         if entry[0] is None:
             entry[0] = len(units)
             units.append([path, entry[2], entry.pop()])
-    return {'units': units, 'files': files, 'patches': hd_patches(root, units, patch_budget)}
+    patches = hd_patches(root, units, patch_budget) if patch_budget else {}
+    return {'units': units, 'files': files, 'patches': patches}
 
 
 def write_catalog(root, compatibility_files, extra_files, renderer_fixture=False, *, full_install=False):
