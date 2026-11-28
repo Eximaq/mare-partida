@@ -67,9 +67,11 @@ test('new Skypiea scene migrates four saved positions once while preserving comb
     const row=expected.character_world.find((r:any)=>r.character_id===a.c.id);row.rules_hash=W.rulesHash;
     if(i<4)Object.assign(row,{x:1296,y:2190,path:[],speed:0,motion_until:row.started_at});
    }
-   assert.deepEqual(await applyMigrations(f.pool),['0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql']);
+   const pending=['0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql'];
+   for(const name of pending)await copyFile(new URL(name,source),join(directory,name));
+   assert.deepEqual(await applyMigrations(f.pool,directory),pending);
    assert.deepEqual(await persisted(f.pool),expected,'SQL changes only known world positions/signatures');
-   assert.deepEqual(await applyMigrations(f.pool),[]);
+   assert.deepEqual(await applyMigrations(f.pool,directory),[]);
    await f.pool.query(await readFile(new URL('0065_skypiea_celestial_map.sql',source),'utf8'));
    assert.deepEqual(await persisted(f.pool),expected,'reapplying cannot relocate current saves');
    for(const [i,a] of people.slice(0,5).entries()){
@@ -143,9 +145,11 @@ test('HD Skypiea migration preserves existing paths and battles while promoting 
    }
    const before=await persisted(f.pool),expected=structuredClone(before);
    for(const a of people.slice(0,5))expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=W.rulesHash;
-   assert.deepEqual(await applyMigrations(f.pool),['0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql']);
+   const pending=['0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql'];
+   for(const name of pending)await copyFile(new URL(name,source),join(directory,name));
+   assert.deepEqual(await applyMigrations(f.pool,directory),pending);
    assert.deepEqual(await persisted(f.pool),expected,'art and entry changes must not relocate existing players or affect receipts');
-   assert.deepEqual(await applyMigrations(f.pool),[]);
+   assert.deepEqual(await applyMigrations(f.pool,directory),[]);
    await f.pool.query(await readFile(new URL('0066_skypiea_hd_arrival.sql',source),'utf8'));
    assert.deepEqual(await persisted(f.pool),expected,'direct migration replay is idempotent');
    for(const [i,a] of people.slice(0,5).entries()){

@@ -102,18 +102,24 @@ source=source.replace(hook,`  window.__eniesQA={paused:true,stepping:false,
    const before=await economy();
    await page.evaluate(()=>{const q=__eniesQA,m=q.world.mobs[0];q.damage(m,m.hp*2);q.draw();});
    assert.equal(await page.evaluate(id=>MareBossDungeons.status(__eniesQA.game,id),id),'pending');
-   await page.evaluate(()=>{__eniesQA.nearChest();__eniesQA.claim();__eniesQA.claim();});
-   const after=await economy();assert.deepEqual(after,before,'bosses without configured rewards cannot grant or duplicate currency/items');
-   await page.evaluate(()=>{__eniesQA.back();__eniesQA.save();});results.bosses.push({id,level,pending:true,rewardUnchanged:true});
+   assert.deepEqual(await economy(),before,'pending victory grants no currency or items before claiming');
+   await page.evaluate(()=>{__eniesQA.back();__eniesQA.save();});results.bosses.push({id,level,pending:true});
   }
   phase='boss victory reload';const victoryEconomy=await economy();await page.reload({waitUntil:'domcontentloaded'});await ready();
   for(const {id}of results.bosses){
    assert.equal(await page.evaluate(id=>MareBossDungeons.status(__eniesQA.game,id),id),'pending');
    await page.evaluate(async id=>{await __eniesQA.enter(id);},id);await ready();
    assert.equal(await page.evaluate(()=>__eniesQA.world.mobs.length),0,'reopening victory never spawns another boss');
-   await page.evaluate(()=>{__eniesQA.nearChest();__eniesQA.claim();__eniesQA.back();});
+   const before=await economy();
+   await page.evaluate(()=>{__eniesQA.nearChest();__eniesQA.claim();});
+   assert.equal(await page.evaluate(id=>MareBossDungeons.status(__eniesQA.game,id),id),'claimed');
+   const after=await economy();
+   assert.equal(after.items.length-before.items.length,id==='gecko-moria'?2:1);
+   await page.evaluate(()=>__eniesQA.claim());
+   assert.deepEqual(await economy(),after,'claim replay cannot grant items twice');
   }
-  assert.deepEqual(await economy(),victoryEconomy);results.victoryReload=true;
+  const after=await economy();
+  assert.deepEqual({...after,items:[]},{...victoryEconomy,items:[]});results.victoryReload=true;
 
   phase='mobile';await page.setViewportSize({width:393,height:852});await page.evaluate(()=>__eniesQA.fixture(110));await openMap();
   assert.equal(await page.locator('[data-island]').count(),5);await panelFits();await screenshot('enies-mobile-destinations');

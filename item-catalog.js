@@ -1236,6 +1236,8 @@
   itemDefs.push(BossDungeons.epicBox);
   const swords=root.MareSwordCompendium||(typeof require==='function'?require('./sword-compendium.js'):null);
   if(swords)itemDefs.push(...swords.definitions);
+  itemDefs.push(MareForge.legendaryWeaponFragment);
+  if(swords)itemDefs.push(...swords.completeDefinitions);
   return {items:itemDefs,slotNames,inventorySlotsLeft,inventorySlotsRight,capacity:BAG_CAPACITY,healerWeaponIndex};
  }
  const api={create,potions,potionRules,potionRecovery};root.MareItemCatalog=api;if(typeof module!=='undefined')module.exports=api;

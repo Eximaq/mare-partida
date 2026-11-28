@@ -64,6 +64,22 @@
   attack:0,defense:0,hp:0,symbol:'◈',icon_path:'assets/ui/sword-compendium/'+sword.id+'-fragment.webp',stackLimit:99999,
   description:'Fragmento negociável. Se a espada ainda estiver inativa, a aquisição alimenta o contador do compêndio.'
  })));
+ const completeKind='sword-collection';
+ const completeDefinitions=Object.freeze(catalog.filter(sword=>['A','B'].includes(sword.rank)).map(sword=>Object.freeze({
+  id:'sword-collection-'+sword.id,swordId:sword.id,name:sword.name,
+  kind:completeKind,slot:'material',rank:sword.rank,rarity:ranks[sword.rank].rarity,fixedRarity:true,
+  attack:0,defense:0,hp:0,symbol:'◈',icon_path:sword.image,
+  description:'Espada completa negociável. Ative-a no Compêndio de Espadas.'
+ })));
+ function rollComplete(rank,random){
+  const pool=completeDefinitions.filter(def=>def.rank===rank),roll=random();
+  return Number.isFinite(roll)&&roll>=0&&roll<1?pool[Math.floor(roll*pool.length)]??null:null;
+ }
+ function activateComplete(before,id){
+  if(!Object.hasOwn(byId,id)||before?.[id]?.active||!completeDefinitions.some(def=>def.swordId===id))return null;
+  const extra=before?.[id]?.fragments??0;
+  return {collection:{...before,[id]:{active:true,fragments:0}},excess:extra?{[id]:extra}:{}};
+ }
  const bonusUnits=collection=>catalog.reduce((sum,sword)=>sum+(collection?.[sword.id]?.active===true?sword.bonus:0),0);
  const multiplier=collection=>1+bonusUnits(collection)/100000;
  function receive(before,fragments){
@@ -107,7 +123,7 @@
   return {key:[fields.year,fields.month,fields.day].join('-'),boss:rotation[fields.weekday],
    status:hour<openingHour?'waiting':hour<closingHour?'open':'closed'};
  }
- const api=Object.freeze({ranks,catalog,byId,byRank,fragmentKind,definitions,bonusUnits,multiplier,receive,activate,roll,rotation,bossNames,timeZone,openingHour,closingHour,day});
+ const api=Object.freeze({ranks,catalog,byId,byRank,fragmentKind,definitions,completeKind,completeDefinitions,rollComplete,activateComplete,bonusUnits,multiplier,receive,activate,roll,rotation,bossNames,timeZone,openingHour,closingHour,day});
  root.MareSwordCompendium=api;
  if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

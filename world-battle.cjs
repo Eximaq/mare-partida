@@ -36,6 +36,10 @@ const previousAlabastaHash='c91ad59190d5a25a2214bf4c79f3f50e4e76b84dc8050f5044ee
 const previousAlubarnaHash='6a3e08adcb2eec3da5122e2eaba5ef0f5898bdf180fdd49b34f30298d86adc65';
 const previousBossArenaHash='c9607a8978503a6a30677f041a6c8f24a932be20932e322da0f80366b0e35d32';
 const previousMarinefordHash='df87a9e7018eff5bcbee1d33a2d8ba3347ff3fc019133d6c0bdf86f8145e51cc';
+const previousHuntProgressionHash='cd060e983a8453a1ef8414cc2f9efea2f19f7c5b64021b98a3318540422f610b';
+const previousWorldXpHash='25e85126fbe82f0bb9367589fc80c5a183fd64bc8ee2530d83d6bd14d8e3a142';
+const previousProgressionReleaseHash='6d92bfa8026e119f3fcb25a55a605cf4b4b89f4d1e34887deaaede7981e7bdea';
+const previousHdMapsHash='132be50d66d77d11a46dff57be1d0a7c7c5a51125da40fe279c468032d3ff67e';
 const isSkypieaArea=area=>/^skypiea-0[1-4]$/.test(area);
 const isAlubarnaArea=area=>/^alubarna-0[1-5]$/.test(area);
 const isMarinefordArea=area=>/^marineford-0[1-6]$/.test(area);
@@ -206,17 +210,31 @@ function upgradeBossArenaGeometry(b){
  }
  cancel(b);resetHaki(b);
 }
+function upgradeHuntProfiles(b){
+ for(const m of b.mobs||[]){
+  if(m.source!=='world'||m.type==='boss'||m.huntVersion===hunt.profileVersion)continue;
+  const area=m.area||b.area,sector=hunt.get(area)?.sectors.find(s=>s.id===m.district);
+  if(!sector||!sector.roles.includes(m.type))continue;
+  const profile=hunt.profile(area,sector.id,m.type),oldAttackSec=m.attackSec;
+  const hp=m.alive?Math.min(profile.maxHP,Math.ceil(profile.maxHP*m.hp/Math.max(1,m.maxHP))):0;
+  Object.assign(m,profile,{hp,huntVersion:hunt.profileVersion});
+  if(!m.telegraph&&oldAttackSec>0&&m.attackClock>0)m.attackClock*=m.attackSec/oldAttackSec;
+ }
+}
 function upgradeBalance(b){
  if(!b)return;
  const previous=b.rulesHash;
+ // The map branch already has every HD arena. Apply only the progression
+ // branch's hunt profiles; active attacks and positions remain valid.
+ if(previous===previousHdMapsHash){upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;}
  // This predecessor already has the HD dungeon arena. Leave its active fights
  // and private rehearsals untouched while moving only Marineford geometry.
- if(previous===previousMarinefordHash){upgradeMarinefordGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;}
+ if(previous===previousMarinefordHash){upgradeMarinefordGeometry(b);upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;}
  if(previous===previousBossArenaHash){addHuntLedgers(b);b.rulesHash=rulesHash;}
  else upgradeHistoricalBalance(b);
  // Historical branches return early. Apply this scene change only after a
  // recognized upgrade, so every predecessor keeps its existing compatibility.
- if(previous!==rulesHash&&b.rulesHash===rulesHash){upgradeBossArenaGeometry(b);upgradeMarinefordGeometry(b);}
+ if(previous!==rulesHash&&b.rulesHash===rulesHash){upgradeBossArenaGeometry(b);upgradeMarinefordGeometry(b);upgradeHuntProfiles(b);addHuntLedgers(b);}
 }
 function upgradeHistoricalBalance(b){
  if(!b)return;
@@ -248,7 +266,9 @@ function upgradeHistoricalBalance(b){
  if(b.rulesHash===previousArlongHash){
   upgradeArlongGeometry(b);upgradeBaratieGeometry(b);upgradeSyrupGeometry(b);upgradeRareGeometry(b);upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
- if(b.rulesHash===previousLoguetownHash){
+ // Progression releases branched before the HD map series. They need the
+ // same geometry projection even though their hunt profiles are already new.
+ if([previousLoguetownHash,previousWorldXpHash,previousProgressionReleaseHash].includes(b.rulesHash)){
   upgradeLoguetownGeometry(b);upgradeArlongGeometry(b);upgradeBaratieGeometry(b);upgradeSyrupGeometry(b);upgradeRareGeometry(b);upgradeDawnGeometry(b);upgradeConchasGeometry(b);upgradeOrangeGeometry(b);upgradeAlabastaGeometry(b);upgradeAlubarnaGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;
  }
  // Higher-resolution artwork and the new entry point preserve the terrain and
@@ -285,7 +305,7 @@ function upgradeHistoricalBalance(b){
    if(['crab','bandit','spirit'].includes(m.type))m.type=sector.roles[0];
    const profile=hunt.profile(area,sector.id,m.type);
    m.hp=m.alive?Math.min(profile.maxHP,Math.ceil(profile.maxHP*m.hp/Math.max(1,m.maxHP))):0;
-   Object.assign(m,profile);
+   Object.assign(m,profile,{huntVersion:hunt.profileVersion});
   }else{
    const spec=m.source==='boss-dungeon'?worldMonsterCatalog[m.type]:prisonSpec;
    if(!spec)continue;
@@ -296,7 +316,7 @@ function upgradeHistoricalBalance(b){
   m.balanceVersion=balanceVersion;
  }
  if(isSkypieaArea(b.area)&&b.hunts&&(b.partyInstanceId||reanchorSkypieaMobs(b.area,b.mobs))){cancel(b);resetHaki(b);}
- addHuntLedgers(b);b.rulesHash=rulesHash;
+ upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;
 }
 function hakiGame(b){
  b.haki??=H.migrate({}).haki;b.hakiRuntime??=H.start();
@@ -313,7 +333,7 @@ function populate(b,now,rng,hero){
  const slots=behavior.ready(b.area,b.mobs,ledger.respawns,now);
  if(hero&&hunt.bossReady(b,b.area,hero,now))slots.push(...behavior.ready(b.area,b.mobs,ledger.respawns,now,true));
  for(const s of slots){const p=hunt.profile(b.area,s.sector,s.type,.5);b.mobs=b.mobs.filter(m=>m.spawnId!==s.id||!m.alive&&!m.fruitConsumed&&m.corpseUntil>now);
-  b.mobs.push({...p,source:'world',balanceVersion,id:randomUUID(),spawnId:s.id,area:b.area,district:s.sector,type:s.type,x:s.x,y:s.y,anchorX:s.x,anchorY:s.y,hp:p.maxHP,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:rng()*Math.PI*2,patrolClock:0,telegraph:null,moving:0,attackAnim:0,emberElapsed:0,emberFacing:'south',slow:0});}
+  b.mobs.push({...p,source:'world',balanceVersion,huntVersion:hunt.profileVersion,id:randomUUID(),spawnId:s.id,area:b.area,district:s.sector,type:s.type,x:s.x,y:s.y,anchorX:s.x,anchorY:s.y,hp:p.maxHP,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:rng()*Math.PI*2,patrolClock:0,telegraph:null,moving:0,attackAnim:0,emberElapsed:0,emberFacing:'south',slow:0});}
 }
 function create(area,stats,now,rng=Math.random){
  const b={version:1,rulesHash,area,hp:stats.maxHP,energy:stats.maxEnergy,auto:false,autoSkills:true,targetId:null,pending:null,projectiles:[],attackClock:0,cooldowns:[0,0],guard:0,blessing:0,respawn:0,mobs:[],hunts:hunt.migrate({}).hunts,talents:null,talentCooldowns:{},events:[],seq:0};
@@ -584,4 +604,4 @@ function step(b,c){
  }
  talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};
 }
-module.exports={pendingWearIds,balanceVersion,previousBalanceHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,reanchorSkypieaMobs,reanchorLoguetownMobs,reanchorArlongMobs,reanchorBaratieMobs,reanchorSyrupMobs,reanchorRareMobs,reanchorDawnMobs,reanchorConchasMobs,reanchorOrangeMobs,reanchorAlabastaMobs,reanchorAlubarnaMobs,reanchorMarinefordMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};
+module.exports={pendingWearIds,balanceVersion,previousBalanceHash,previousHuntProgressionHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,upgradeHuntProfiles,reanchorSkypieaMobs,reanchorLoguetownMobs,reanchorArlongMobs,reanchorBaratieMobs,reanchorSyrupMobs,reanchorRareMobs,reanchorDawnMobs,reanchorConchasMobs,reanchorOrangeMobs,reanchorAlabastaMobs,reanchorAlubarnaMobs,reanchorMarinefordMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};

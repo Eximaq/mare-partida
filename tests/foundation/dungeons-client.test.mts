@@ -15,6 +15,8 @@ test('restored dungeon intentions are strict and cannot supply rewards, ownershi
  }
  assert(session.validIntent('dungeon.enter',{dungeonId:'alvida'}));assert(session.validIntent('dungeon.claim',{dungeonId:'morgan'}));assert(session.validIntent('dungeon.craft',{expectedSeq:5}));assert(session.validIntent('dungeon.acknowledge',{itemId:'formed-akuma:fixture:5'}));
  for(const p of [{dungeonId:'unknown'},{dungeonId:'alvida',reward:9},{dungeonId:'alvida',position:{x:1,y:1}},{dungeonId:'alvida',ownerId:'other'}])assert(!session.validIntent('dungeon.claim',p));
+ for(const rank of ['E','D','C','B','A','S'])assert(session.validIntent('dungeon.craft',{expectedSeq:5,rank}));
+ assert(!session.validIntent('dungeon.craft',{expectedSeq:5,rank:'F'}));
  assert(!session.validIntent('dungeon.craft',{expectedSeq:5,fruitId:'chosen'}));assert(!session.validIntent('dungeon.craft',{expectedSeq:-1}));
 });
 test('online entry requires its real sprite preparation before sending an intent, with no offline persistence',async()=>{

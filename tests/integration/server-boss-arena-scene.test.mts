@@ -58,6 +58,10 @@ test('boss arena migration preserves dungeon victories, claims and other maps wh
  for(const a of [running,pending,claimed])await a.doit('dungeon.enter',{dungeonId:'alvida'});
  await win(f,pending);await win(f,claimed);await nearChest(f,claimed);await claimed.doit('dungeon.claim',{dungeonId:'alvida'});
  await undefinedReward.doit('dungeon.enter',{dungeonId:'rob-lucci'});await win(f,undefinedReward);
+ // Model a victory saved before Rob Lucci received a configured reward.
+ await f.pool.query("UPDATE mare_game.dungeon_victories SET reward=NULL WHERE character_id=$1 AND dungeon_id='rob-lucci'",[undefinedReward.c.id]);
+ await f.pool.query("UPDATE mare_game.character_dungeons SET state=jsonb_set(state,'{records,rob-lucci,reward}','null') WHERE character_id=$1",[undefinedReward.c.id]);
+ await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{dungeon,record,reward}','null') WHERE character_id=$1",[undefinedReward.c.id]);
  await other.doit('world.travel',{islandId:'alubarna-01'});
  const saves=new Map<string,any>();
  for(const a of [running,pending,undefinedReward]){
@@ -90,8 +94,12 @@ test('boss arena migration preserves dungeon victories, claims and other maps wh
  const received=await pending.read();assert.equal(received.dungeons.records.alvida.phase,'claimed');assert.equal(received.world.mapId,'lobby');assert.deepEqual(received.world.position,{...W.maps.lobby.spawn});
  assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_claims WHERE character_id=$1',[pending.c.id])).rows[0].n,1);
  await assert.rejects(pending.doit('dungeon.claim',{dungeonId:'alvida'}),{code:'dungeon_reward_unavailable'});
- await nearChest(f,undefinedReward);await assert.rejects(undefinedReward.doit('dungeon.claim',{dungeonId:'rob-lucci'}),{code:'dungeon_reward_unavailable'});
  assert.equal((await undefinedReward.read()).dungeons.records['rob-lucci'].reward,null);
+ await nearChest(f,undefinedReward);await undefinedReward.doit('dungeon.claim',{dungeonId:'rob-lucci'});
+ const recovered=(await undefinedReward.read()).dungeons.records['rob-lucci'];
+ assert.equal(recovered.phase,'claimed');assert.equal(recovered.reward.items[0].itemId,'epic-equipment-box');
+ assert.equal((await f.pool.query("SELECT count(*)::int n FROM mare_game.dungeon_claims WHERE character_id=$1 AND dungeon_id='rob-lucci'",[undefinedReward.c.id])).rows[0].n,1);
+ await assert.rejects(undefinedReward.doit('dungeon.claim',{dungeonId:'rob-lucci'}),{code:'dungeon_reward_unavailable'});
 }));
 test('private rehearsal migration keeps shared boss health and restores compatible port snapshots after leave',async()=>beforeArena(async f=>{
  const people=[await actor(f),await actor(f)] as const,events:any[]=[],returns:any[]=[];

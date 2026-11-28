@@ -32,9 +32,16 @@
   const int=n=>Number.isSafeInteger(n)&&n>=0?n:0,clone=v=>JSON.parse(JSON.stringify(v));
   function draw(random){const n=random();if(!Number.isFinite(n)||n<0||n>=1)throw Error('RNG inválido');return n;}
   function range(lo,hi,random){return lo+Math.floor(draw(random)*(hi-lo+1));}
-  const normalRarityScale=1000,normalRareLimit=950;
-  function rarityFromRoll(n){if(!Number.isInteger(n)||n<1||n>normalRarityScale)throw Error('Roleta inválida');return n<=600?'common':n<=850?'uncommon':n<=normalRareLimit?'rare':'epic';}
-  const rollRarity=(random=Math.random)=>rarityFromRoll(range(1,1000,random));
+  const normalRarityScale=1000,legendaryLootMinLevel=100,legendaryRarityWeight=25;
+  const worldMonsterAtLeast=(monster,level)=>monster?.source==='world'&&monster.level>=level;
+  function rarityFromRoll(n,monster){
+    if(!Number.isInteger(n)||n<1||n>normalRarityScale)throw Error('Roleta inválida');
+    // The 12% gear gate makes 25 of these 1,000 outcomes 0.3% per kill.
+    // Shift the thresholds so only common gives up that weight.
+    if(worldMonsterAtLeast(monster,legendaryLootMinLevel))n+=legendaryRarityWeight;
+    return n<=600?'common':n<=850?'uncommon':n<=950?'rare':n<=normalRarityScale?'epic':'legendary';
+  }
+  const rollRarity=(random=Math.random,monster)=>rarityFromRoll(range(1,normalRarityScale,random),monster);
   function seeded(text){let n=2166136261;for(const c of String(text))n=Math.imul(n^c.charCodeAt(0),16777619);return ()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};}
   const isGear=(item,defs)=>!!item&&!!defs[item.def]&&!defs[item.def].kind&&defs[item.def].type!=='akuma_no_mi'&&item.type!=='akuma_no_mi'&&!item.pearlId;
   const hitsPerPercent = 1000;
@@ -123,12 +130,27 @@
   function generateItem(original,defs,random=Math.random,{potential,source='catalog',family,nativeRarity}={}){const item=normalizeItem(original,defs),d=defs[item.def];if(!isGear(item,defs))return item;const p=potential===undefined?rollPotential(random):potential;if(!Number.isInteger(p)||p<0||p>100)throw Error('Potencial inválido');family ||=d.rarity==='common'?'basic':'native';nativeRarity ||=d.rarity||'common';const mult=family==='basic'&&item.rarity!==nativeRarity?1+(rarity[item.rarity].mult-1)*generationRules.basicFusionGrowth:rarity[item.rarity].mult;
     const bounds=extraRange(item.level,item.rarity),count=rarity[item.rarity].extras,factor=family==='basic'&&item.rarity!==nativeRarity?mult/rarity[item.rarity].mult:1,min=Math.max(count,Math.ceil(count*bounds.min*factor)),max=Math.max(min,Math.ceil(count*bounds.max*factor));item.potential=p;item.generation={version:1,family,nativeRarity,source,baseMultiplier:mult,extraBudget:Math.round(min+(max-min)*p/100),minBudget:min,maxBudget:max};item.baseStats={attack:d.attack||0,defense:d.defense||0,hp:d.hp||0};item.baseAttributes=Object.fromEntries(keys.map(k=>[k,d.attributes?.[k]||0]));item.extras=qualityExtras(item,d,random);return item;}
   const weaponFragment=Object.freeze({id:'epic_weapon_fragment',materialId:'epic_weapon_fragment',name:'Fragmento de arma épica',kind:'weapon-fragment',slot:'material',rarity:'epic',fixedRarity:true,attack:0,defense:0,hp:0,icon_path:'assets/ui/items-hd/epic-weapon-fragment.png',description:'Combine 20 fragmentos para formar uma arma Épica nativa aleatória e negociável. O resultado pode pertencer a qualquer classe.'});
-  const epicWeaponPool=defs=>defs.map((d,i)=>({d,i})).filter(({d})=>d.slot==='weapon'&&d.rarity==='epic'&&d.fixedRarity&&d.icon_path&&!d.unavailable).map(({i})=>i);
-  const weaponFragments=g=>(g.inventory||[]).filter(i=>i.materialId===weaponFragment.materialId&&!i.locked&&(!i.boundToCharacter||i.boundToCharacter===g.characterId));
-  const weaponFragmentCount=g=>weaponFragments(g).reduce((n,i)=>n+int(i.quantity),0);
-  const epicDropChance=()=>generationRules.normalGearChance*(normalRarityScale-normalRareLimit)/normalRarityScale;
-  const mapFragmentChance=monster=>monster?.source==='world'&&monster.level>=40?epicDropChance():0;
-  function normalLoot(defs,level,region,random=Math.random){if(draw(random)>=generationRules.normalGearChance)return null;const r=rollRarity(random),pool=defs.map((d,def)=>({d,def})).filter(({d})=>!d.kind&&d.type!=='akuma_no_mi'&&d.rarity===r&&!d.unavailable);if(!pool.length)throw Error('Pool de equipamentos vazio: '+r);return {def:pool[Math.floor(draw(random)*pool.length)].def,rarity:r,level:lootLevel(level,region)};}
+  const legendaryWeaponFragment=Object.freeze({...weaponFragment,id:'legendary_weapon_fragment',materialId:'legendary_weapon_fragment',name:'Fragmento de Arma Lendária',rarity:'legendary',description:'Combine 20 fragmentos para formar uma arma Lendária nativa aleatória e negociável. O resultado pode pertencer a qualquer classe.'});
+  const weaponRecipes=Object.freeze({
+    formEpicWeapon:Object.freeze({material:weaponFragment,rarity:'epic',label:'Épica',quantity:20}),
+    formLegendaryWeapon:Object.freeze({material:legendaryWeaponFragment,rarity:'legendary',label:'Lendária',quantity:20})
+  });
+  const weaponRecipe=type=>Object.hasOwn(weaponRecipes,type)?weaponRecipes[type]:null;
+  const weaponPool=(defs,recipe)=>defs.map((d,i)=>({d,i})).filter(({d})=>d.slot==='weapon'&&d.rarity===recipe.rarity&&d.fixedRarity&&d.icon_path&&!d.unavailable).map(({i})=>i);
+  const epicWeaponPool=defs=>weaponPool(defs,weaponRecipes.formEpicWeapon);
+  const weaponFragments=(g,recipe=weaponRecipes.formEpicWeapon)=>(g.inventory||[]).filter(i=>i.materialId===recipe.material.id&&!i.locked&&(!i.boundToCharacter||i.boundToCharacter===g.characterId));
+  const weaponFragmentCount=(g,recipe)=>weaponFragments(g,recipe).reduce((n,i)=>n+int(i.quantity),0);
+  const legendaryLootChance=()=>generationRules.normalGearChance*legendaryRarityWeight/normalRarityScale;
+  const mapFragmentRules=Object.freeze({dMinLevel:40,cMinLevel:100,dWeight:60,cWeight:30,scale:10000});
+  function rollMapFragment(monster,random=Math.random){
+    if(!worldMonsterAtLeast(monster,mapFragmentRules.dMinLevel))return null;
+    const roll=draw(random);
+    const {dWeight,cWeight,scale}=mapFragmentRules;
+    if(roll<dWeight/scale)return 'D';
+    if(worldMonsterAtLeast(monster,mapFragmentRules.cMinLevel)&&roll<(dWeight+cWeight)/scale)return 'C';
+    return null;
+  }
+  function normalLoot(defs,level,region,random=Math.random,monster){if(draw(random)>=generationRules.normalGearChance)return null;const r=rollRarity(random,monster),pool=defs.map((d,def)=>({d,def})).filter(({d})=>!d.kind&&d.type!=='akuma_no_mi'&&d.rarity===r&&!d.unavailable);if(!pool.length)throw Error('Pool de equipamentos vazio: '+r);return {def:pool[Math.floor(draw(random)*pool.length)].def,rarity:r,level:lootLevel(level,region)};}
   function gearName(item,defs){const d=defs[item?.def];return isGear(item,defs)?'LV. '+item.level+' '+d.name+(item.plus?' +'+item.plus:''):d?.name||'Item';}
 
   function normalizeItem(original,defs,random=null){
@@ -280,12 +302,12 @@
         if(!pay(cost))return fail('Berry insuficientes para o reparo.');
         for(const {item} of plan.items)item.durability=maxDurability;
         result={type,success:true,cost,itemIds:plan.items.map(({item})=>item.id),message:plan.items.length+' equipamento(s) restaurado(s) a 100%.'};
-      }else if(type==='formEpicWeapon'){
-        const pool=epicWeaponPool(defs);if(!pool.length)return fail('Pool de armas indisponível.');if(weaponFragmentCount(g)<20)return fail('São necessários 20 fragmentos desbloqueados deste personagem.');
-        let left=20;const consume=new Map();for(const i of weaponFragments(g)){const n=Math.min(left,int(i.quantity));consume.set(i.id,n);left-=n;if(!left)break;}
+      }else if(weaponRecipe(type)){
+        const recipe=weaponRecipe(type),pool=weaponPool(defs,recipe);if(!pool.length)return fail('Pool de armas indisponível.');if(weaponFragmentCount(g,recipe)<recipe.quantity)return fail('São necessários '+recipe.quantity+' fragmentos desbloqueados deste personagem.');
+        let left=recipe.quantity;const consume=new Map();for(const i of weaponFragments(g,recipe)){const n=Math.min(left,int(i.quantity));consume.set(i.id,n);left-=n;if(!left)break;}
         const remaining=g.inventory.filter(i=>!consume.has(i.id)||int(i.quantity)>consume.get(i.id));if(remaining.length>=CAPACITY)return fail('Libere um espaço na mochila.');
-        const def=pool[Math.floor(draw(random)*pool.length)];let suffix=0,id;do{id='forge-weapon-'+(g.forgeSeq+1)+'-'+suffix++;}while(find(g,id));const output=generateItem({id,def,level:Math.min(100,Math.max(1,int(g.level))),rarity:'epic',plus:0,locked:false,obtainedAt:int(now),origin:'Síntese de 20 Fragmentos de arma épica'},defs,random,{family:'native',source:'synthesis'});
-        g.inventory=remaining.map(i=>consume.has(i.id)?{...i,quantity:i.quantity-consume.get(i.id)}:i);g.inventory.push(output);result={type,success:true,itemId:id,message:'Arma Épica formada: '+gearName(output,defs)+'. Negociável.',consumed:20};
+        const def=pool[Math.floor(draw(random)*pool.length)];let suffix=0,id;do{id='forge-weapon-'+(g.forgeSeq+1)+'-'+suffix++;}while(find(g,id));const output=generateItem({id,def,level:Math.min(100,Math.max(1,int(g.level))),rarity:recipe.rarity,plus:0,locked:false,obtainedAt:int(now),origin:'Síntese de '+recipe.quantity+' Fragmentos de arma '+recipe.label.toLowerCase()},defs,random,{family:'native',source:'synthesis'});
+        g.inventory=remaining.map(i=>consume.has(i.id)?{...i,quantity:i.quantity-consume.get(i.id)}:i);g.inventory.push(output);result={type,success:true,itemId:id,message:'Arma '+recipe.label+' formada: '+gearName(output,defs)+'. Negociável.',consumed:recipe.quantity};
       }else if(type==='dismantle'){
         const plan=dismantlePlan(g,command.itemIds,defs);
         if(plan.error)return fail(plan.error);
@@ -327,5 +349,5 @@
     }catch(error){return fail('A operação não foi concluída; nenhum recurso foi consumido.');}
   }
   function assertBudget(g){if(!Number.isFinite(g.gold)||!Number.isFinite(g.materials)||g.gold<0||g.materials<0||g.inventory.length>CAPACITY)throw Error('Saldo inválido');const ids=allGear(g).map(i=>i.id);if(new Set(ids).size!==ids.length)throw Error('IDs duplicados');}
-  const api={hitsPerPercent,maxDurability,durabilityOf,hasDurability,efficiency,repairCost,repairPlan,beginWear,confirmWear,itemFragment,fragmentYield,dismantleReturn,dismantlePlan,failedRefinement,refinementBonus,weaponFragment,weaponFragmentCount,epicWeaponPool,normalLoot,epicDropChance,mapFragmentChance,generationRules,generateItem,rollPotential,potentialProbabilities,lootLevel,gearName,VERSION,CAPACITY,refinement,equipmentFusion,pearlFusion,rarity,names,keys,pearls,pearlById,fusion,isGear,isPearl,pearlOf,normalizeItem,migrate,itemStats,aggregate,rarityFromRoll,rollRarity,rollExtras,extraRange,upgradeCost,upgradeChance,removalCost,reforgeCost,execute};root.MareForge=api;if(typeof module!=='undefined')module.exports=api;
+  const api={hitsPerPercent,maxDurability,durabilityOf,hasDurability,efficiency,repairCost,repairPlan,beginWear,confirmWear,itemFragment,fragmentYield,dismantleReturn,dismantlePlan,failedRefinement,refinementBonus,weaponFragment,legendaryWeaponFragment,weaponRecipe,weaponFragmentCount,weaponFragments,weaponPool,epicWeaponPool,normalLoot,rollMapFragment,mapFragmentRules,legendaryLootMinLevel,legendaryLootChance,generationRules,generateItem,rollPotential,potentialProbabilities,lootLevel,gearName,VERSION,CAPACITY,refinement,equipmentFusion,pearlFusion,rarity,names,keys,pearls,pearlById,fusion,isGear,isPearl,pearlOf,normalizeItem,migrate,itemStats,aggregate,rarityFromRoll,rollRarity,rollExtras,extraRange,upgradeCost,upgradeChance,removalCost,reforgeCost,execute};root.MareForge=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

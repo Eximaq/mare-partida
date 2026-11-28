@@ -43,7 +43,7 @@ test('eighteen profiles preserve level and scale common attributes, with four ea
  else{for(const k of fields)assert(Math.abs(p[k]-normal[k]*7.5)<=4,k);assert.equal(p.attackSec,baseProfile.attackSec/2.25);}
  assert.equal(p.speed,baseProfile.speed*2);for(const k of ['level','reach','aggro'])assert.equal(p[k],baseProfile[k]);assert.equal(S.status(base(d.level-1),d.id),'locked');assert.equal(S.status(base(d.level),d.id),'available');}
 });
-test('existing rewards stay configured and new victories await a reward definition',()=>{assert(S.catalog.filter(d=>d.level<=90).every(d=>d.rewardConfigured));assert(S.catalog.filter(d=>d.level>=100).every(d=>!d.rewardConfigured));});
+test('the complete dungeon catalog has configured rewards',()=>{assert.equal(S.catalog.length,18);assert(S.catalog.every(d=>d.rewardConfigured));});
 test('existing pending/claimed records survive idempotent migration independently',()=>{
  const g=claim(win(base())).state;g.bossDungeons.records.morgan={phase:'pending',ownerId:g.characterId,runId:'old',reward:{quantity:5}};
  const migrated=S.migrate(S.migrate(g));assert.deepEqual(migrated,g);assert.equal(S.status(migrated,'alvida'),'claimed');assert.equal(S.status(migrated,'morgan'),'pending');assert.equal(S.status(migrated,'buggy'),'locked');

@@ -69,20 +69,22 @@ test('a full bag permits sending mail; separate exact fragment stacks still craf
  await assert.rejects(a.doit('dungeon.craft',{expectedSeq:o.dungeons.seq}),{code:'dungeon_craft_unavailable'});await a.doit('dungeon.acknowledge',{itemId:fruit.id});assert.equal((await a.read()).dungeons.reveal,null);await assert.rejects(a.doit('dungeon.acknowledge',{itemId:fruit.id}),{code:'dungeon_reveal_unavailable'});
 }));
 
-test('dungeons 60–90 deliver the configured bound rewards once, capturing gear level at victory',async()=>authDatabase(async f=>{
- const a=await actor(f.service);await level(f,a,90);
+test('dungeons 60–110 deliver the configured rewards once, capturing box level and origin binding',async()=>authDatabase(async f=>{
+ const a=await actor(f.service);await level(f,a,110);
  const catalog=(await import('../../apps/game-server/src/gameplay/catalog.js')).getGameCatalog().items;
- for(const d of D.catalog.filter((d:any)=>d.level>=60&&d.level<=90)){
+ for(const d of D.catalog.filter((d:any)=>d.level>=60&&d.level<=110)){
   await a.doit('dungeon.enter',{dungeonId:d.id});
   const before=await a.read();
   await kill(f,a);
-  const won=await a.read(),gear=d.level<=70;
-  const reward=won.dungeons.records[d.id].reward;
+  const won=await a.read(),gear=d.level<=70||d.level>=100,bound=d.level<=90?a.c.id:undefined;
+  const entries=D.rewardEntries(won.dungeons.records[d.id].reward),[reward]=entries;
+  assert.equal(entries.length,d.level===110?2:1);
   assert.equal(won.dungeons.records[d.id].phase,'pending');
-  assert.equal(reward.boundToCharacter,a.c.id);
+  assert.equal(reward.boundToCharacter,bound);
+  if(d.level===110)assert.deepEqual(entries[1],{materialId:'akuma_fragment_b',quantity:10,boundToCharacter:a.c.id});
   assert.equal(reward.quantity,gear?1:10);
   if(gear)assert.equal(reward.equipmentLevel,before.state.level);
-  else assert.equal(reward.materialId,'akuma_fragment_b');
+  else assert.equal(reward.materialId,'akuma_fragment_c');
   await near(f,a);
   const claim=await a.input('dungeon.claim',{dungeonId:d.id});
   assert.deepEqual(...await Promise.all([a.send(claim),a.send(claim)]));
@@ -93,20 +95,21 @@ test('dungeons 60–90 deliver the configured bound rewards once, capturing gear
   if(gear){
    const box=inventory.find((i:any)=>catalog[i.def]?.kind==='epic-equipment-box');
    assert.equal(box.level,before.state.level);
-   assert.equal(box.boundToCharacter,a.c.id);
+   assert.equal(box.boundToCharacter,bound);
+   if(d.level===110)assert(inventory.some((i:any)=>i.materialId==='akuma_fragment_b'&&i.quantity===10&&i.boundToCharacter===a.c.id));
    const open=await a.input('items.open-box',{itemId:box.id});
    assert.deepEqual(...await Promise.all([a.send(open),a.send(open)]));
    const opened=(await a.read()).originalInventory.inventory;
    assert(!opened.some((i:any)=>i.id===box.id));
-   assert(opened.some((i:any)=>i.level===before.state.level&&i.rarity==='epic'&&i.potential===70&&i.boundToCharacter===a.c.id));
+   assert(opened.some((i:any)=>i.level===before.state.level&&i.rarity==='epic'&&i.potential===70&&i.boundToCharacter===bound));
   }else{
-   const stacks=inventory.filter((i:any)=>i.materialId==='akuma_fragment_b');
+   const stacks=inventory.filter((i:any)=>i.materialId==='akuma_fragment_c');
    assert(stacks.every((i:any)=>i.boundToCharacter===a.c.id));
    assert.equal(stacks.reduce((total:number,i:any)=>total+i.quantity,0),d.level===80?10:20);
   }
  }
- assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_victories')).rows[0].n,4);
- assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_claims')).rows[0].n,4);
+ assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_victories')).rows[0].n,6);
+ assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_claims')).rows[0].n,6);
 }));
 
 test('failed victory and chest commits roll back combat, progression, inventory, ledgers and version',async()=>authDatabase(async f=>{
@@ -143,7 +146,7 @@ test('versioned dungeon upgrade preserves existing characters, inventory, worlds
   for(const name of (await readdir(source)).filter(n=>n<'0025'))await copyFile(new URL(name,source),join(dir,name));
   await authDatabase(async f=>{
    const a=await actor(f.service);await a.doit('prison.enter',{floor:1});const before=await a.read();await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{rulesHash}',to_jsonb($2::text)) WHERE character_id=$1",[a.c.id,'5f9f3b94bacc9b9da99edfeee01f0ce1bbec02dc4d9897c1247fc06e5ace4dd6']);
-   assert.deepEqual(await applyMigrations(f.pool),['0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_market_wallet_grants.sql', '0050_character_xp_curve.sql', '0051_bounty_victories.sql', '0052_world_map_exports.sql', '0053_syrup_boundary.sql', '0054_akainu_weekly_boss.sql', '0055_prison_floor_rewards.sql', '0056_weekly_contracts.sql', '0057_crew_contribution_coins.sql', '0058_weekly_boss_loot.sql', '0059_boss_dungeon_rewards.sql','0060_attribute_builds.sql','0061_skypiea_multi_maps.sql','0062_enies_lobby.sql']);assert.deepEqual(await applyMigrations(f.pool),[]);const after=await a.read();assert.deepEqual(after.state,before.state);assert.deepEqual(after.originalInventory,{...before.originalInventory,manaPotions:0});assert.deepEqual(after.battle,before.battle);assert.deepEqual(after.prison,before.prison);assert.deepEqual(after.dungeons.records,{});
+   assert.deepEqual(await applyMigrations(f.pool),['0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_market_wallet_grants.sql', '0050_character_xp_curve.sql', '0051_bounty_victories.sql', '0052_world_map_exports.sql', '0053_syrup_boundary.sql', '0054_akainu_weekly_boss.sql', '0055_prison_floor_rewards.sql', '0056_weekly_contracts.sql', '0057_crew_contribution_coins.sql', '0058_weekly_boss_loot.sql', '0059_boss_dungeon_rewards.sql','0060_attribute_builds.sql','0061_skypiea_multi_maps.sql','0062_enies_lobby.sql','0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0067_world_progression.sql','0068_arlong_park_hd_map.sql','0068_dungeon_reward_catalog.sql','0069_baratie_hd_map.sql','0069_timed_progression.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql']);assert.deepEqual(await applyMigrations(f.pool),[]);const after=await a.read();assert.deepEqual(after.state,{...before.state,version:before.state.version+2});assert.deepEqual(after.originalInventory,{...before.originalInventory,manaPotions:0});assert.deepEqual(after.battle,before.battle);assert.deepEqual(after.prison,before.prison);assert.deepEqual(after.dungeons.records,{});
   },dir);
  }finally{assert.equal(dirname(resolve(dir)),resolve(tmpdir()));assert(resolve(dir).startsWith(join(resolve(tmpdir()),'mare-dungeon-migrations-')));await rm(dir,{recursive:true,force:true});}
 });
@@ -215,12 +218,11 @@ test('reward migration uses the level in a pending legacy victory receipt',async
     await f.pool.query("UPDATE mare_game.character_dungeons SET state=jsonb_set(state,ARRAY['records',$2,'reward'],'null') WHERE character_id=$1",[a.c.id,dungeonId]);
    }
    await level(f,a,150);
-   assert.deepEqual(await applyMigrations(f.pool),['0059_boss_dungeon_rewards.sql','0060_attribute_builds.sql','0061_skypiea_multi_maps.sql','0062_enies_lobby.sql']);
+   assert.deepEqual(await applyMigrations(f.pool),['0059_boss_dungeon_rewards.sql','0060_attribute_builds.sql','0061_skypiea_multi_maps.sql','0062_enies_lobby.sql','0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0067_world_progression.sql','0068_arlong_park_hd_map.sql','0068_dungeon_reward_catalog.sql','0069_baratie_hd_map.sql','0069_timed_progression.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql']);
    const {records}=(await a.read()).dungeons;
    assert.equal(records.arlong.reward.equipmentLevel,95);
    assert.equal(records.arlong.reward.boundToCharacter,a.c.id);
-   assert.equal(records.wapol.reward.quantity,10);
-   assert.equal(records.wapol.reward.boundToCharacter,a.c.id);
+   assert.deepEqual(records.wapol.reward.items,[{materialId:'akuma_fragment_c',quantity:10,boundToCharacter:a.c.id}]);
    assert.deepEqual(await applyMigrations(f.pool),[]);
    assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.dungeon_claims')).rows[0].n,0);
   },dir);

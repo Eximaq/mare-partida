@@ -17,11 +17,11 @@ const oldSlots=[[2984,3912],[3048,3912],[2424,3448],[2552,3448],[2984,3032],[311
 const sceneMigration='0076_alubarna_city_hd_map.sql';
 const sceneSpawn={x:1536,y:1536};
 const destinations=[
- ['alubarna-01',50,'puppu',53,10067,543,290],
- ['alubarna-02',55,'valentine',58,13341,681,354],
- ['alubarna-03',60,'merry',63,17771,858,431],
- ['alubarna-04',65,'doublefinger',68,23781,1083,526],
- ['alubarna-05',70,'mr1',75,35345,1645,658]
+ ['alubarna-01',50,'puppu',53,9227,479,273],
+ ['alubarna-02',55,'valentine',58,11487,609,331],
+ ['alubarna-03',60,'merry',63,14044,759,396],
+ ['alubarna-04',65,'doublefinger',68,16908,930,466],
+ ['alubarna-05',70,'mr1',75,21453,1206,576]
 ] as const;
 async function actor(f:any){
  const login=await f.service.login(randomUUID()+'@example.invalid','fixture'),name='Alubarna '+randomUUID().slice(0,8);

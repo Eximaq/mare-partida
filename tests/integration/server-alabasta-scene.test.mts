@@ -81,7 +81,7 @@ test('Alabasta desert travel keeps its level-forty gate, ten Bananawani encounte
  assert.deepEqual(first.world.position,sceneSpawn);assert.equal(first.world.mapId,'alabasta');assert.equal(first.world.area,'alabasta');
  assert.equal(first.battle.mobs.length,10);
  assert.deepEqual(first.battle.mobs.map((m:any)=>[m.type,m.level]),Array.from({length:10},()=>['bananawani',45]));
- assert.deepEqual(first.battle.mobs.map((m:any)=>[m.maxHP,m.attack,m.defense]),Array.from({length:10},()=>[8346,352,212]));
+ assert.deepEqual(first.battle.mobs.map((m:any)=>[m.maxHP,m.attack,m.defense]),Array.from({length:10},()=>[6200,310,192]));
  assert.deepEqual(first.battle.mobs.map((m:any)=>m.spawnId),['alabasta-entrada-0','alabasta-entrada-1','alabasta-oeste-0','alabasta-oeste-1','alabasta-norte-0','alabasta-norte-1','alabasta-leste-0','alabasta-leste-1','alabasta-sul-0','alabasta-sul-1']);
  assert(W.navigation('alabasta').path(first.world.position,W.maps.alabasta.returnPoint).length);
  first.battle.hunts.areas.alabasta.kills=17;first.battle.hunts.areas.alabasta.respawns[first.battle.mobs[1].spawnId]=Date.now()+600000;

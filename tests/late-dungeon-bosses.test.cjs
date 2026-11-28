@@ -4,7 +4,7 @@ const D=require('../boss-dungeon-system.js'),C=require('../character-system.js')
 const timing=require('../dungeon-timing.cjs'),maps=require('../world-catalog.cjs').load();
 const encounters=[['kuma',120],['kizaru',130],['hancock',140],['magellan',150],['ace',160],['aokiji',170],['akainu',180]];
 
-test('seven later dungeons enforce their requested levels and preserve victories without granting undefined rewards',()=>{
+test('seven later dungeons enforce their requested levels and persist the configured rewards and reject a missing item definition',()=>{
  for(const [id,level] of encounters){
   const d=D.byId[id];assert(d,id+' is available in the dungeon catalog');
   assert.equal(d.level,level);assert.equal(d.monster,'dungeon-'+id);
@@ -14,7 +14,7 @@ test('seven later dungeons enforce their requested levels and preserve victories
   assert.equal(D.status(original,id),'locked');assert.equal(D.begin(original,id,'run',1000).ok,false);
   const begun=D.begin({...original,level},id,'run',1000);assert(begun.ok);
   const profile=D.combatProfile(id);assert.equal(profile.level,level);assert.equal(profile.xp,0);assert.deepEqual(profile.gold,[0,0]);
-  const defeated=D.defeat(begun.state,id,{runId:'run',encounterId:'run:enemy'},()=>1000,2000);assert(defeated.ok);assert.equal(defeated.record.reward,null);
+  const defeated=D.defeat(begun.state,id,{runId:'run',encounterId:'run:enemy'},()=>1000,2000);assert(defeated.ok);assert.equal(defeated.record.reward.items.length,id==='kizaru'?2:1);
   const reloaded=JSON.parse(JSON.stringify(defeated.state)),resumed=D.begin(reloaded,id,'unused-run',3000);
   assert.equal(D.status(reloaded,id),'pending');assert.equal(resumed.resume,true);assert.equal(resumed.record.runId,'run');
   let committed=false;
