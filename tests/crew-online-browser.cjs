@@ -15,6 +15,7 @@ const contracts=require('../contract-system.js');
 const hierarchy=require('../hierarchy-system.js');
 const maps=require('../world-catalog.cjs').load();
 
+const appearance=require('../character-appearance.js');
 const character={id:'11111111-1111-4111-8111-111111111111',name:'José do Mar',classId:'sword',factionId:'pirate'};
 const crewId='22222222-2222-4222-8222-222222222222';
 const allocated={strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0};
@@ -34,6 +35,7 @@ const wire={
   contracts:{rulesetId:contracts.rulesetId,progress:Object.fromEntries(contracts.quests.map(q=>[q.id,0])),claimed:[]},
   hierarchy:{rulesetId:'original-hierarchy-v1',tier:2,title:hierarchy.title('pirate',2),power:28470,next:hierarchy.next(2,75)},
 };
+const peer={id:'33333333-3333-4333-8333-333333333333',name:'Ágata do Farol',classId:'healer',factionId:'pirate',role:'officer',level:82,online:false,appearance96:appearance.defaults,equipment:{},power:39700,contribution:900,profession:{id:'navigator',level:3},actions:{message:null,party:'party_player_unavailable'}};
 const donation={used:200,limit:1000,resetsAt:endAt};
 const listing=[{id:crewId,name:'Corsários do Norte',tag:'CDN',flag:'f'.repeat(1024),policy:'approval',minLevel:50,memberCount:3,capacity:12,level:3}];
 const choice={id:'doctor',name:'Médico',benefit:'Melhora a potência de poções de cura na tripulação.',material:{name:'Páginas do Manual de Cirurgia',icon:'assets/ui/crew/professional-surgery-manual-pages.png'}};
@@ -45,10 +47,10 @@ const profession={profession:'doctor',choices:[choice],level:4,experience:1950,l
     {id:'prison',title:'Desafio em Impel Down',description:'Conclua o andar 13.',progress:0,target:1,xp:200,status:'active'},
   ]}};
 function createGroup(payload){
-  return {...payload,id:crewId,role:'captain',captainId:character.id,memberCount:1,capacity:12,xp:610,level:2,
+  return {...payload,id:crewId,role:'captain',captainId:character.id,memberCount:2,capacity:12,xp:610,level:2,
     levelStartXp:500,nextLevelXp:1500,treasury:12000,shipStage:1,
     facilities:{hull:1,infirmary:1,galley:1,command:1,workshop:1,navigation:1,warehouse:1},
-    members:[{...character,role:'captain',level:75,power:28470,contribution:200,profession:{id:'doctor',level:4}}],
+    members:[{...character,role:'captain',level:75,online:true,appearance96:appearance.defaults,equipment:{},power:28470,contribution:200,profession:{id:'doctor',level:4}},peer],
     history:[],benefits:{doctor:.02},projects:[
       {facility:'hull',level:1,nextLevel:2,cost:24000,baseCost:24000,requiredCrewLevel:2},
       {facility:'infirmary',level:1,nextLevel:2,cost:12000,baseCost:12000,requiredCrewLevel:2},
@@ -178,15 +180,25 @@ function createGroup(payload){
     await view.locator('.crew-vessel-art:not([hidden])').waitFor();
     await page.screenshot({path:path.join(out,'tripulacao-geral.png')});
     const crewBox=()=>page.locator('#panelOverlay > .dialog').boundingBox();
+    await view.getByRole('button',{name:'Membros',exact:true}).click();
+    await view.locator('[data-crew-portrait][data-ready=true]').nth(1).waitFor();
+    await view.getByLabel('Buscar membro').fill('agata');
+    assert.equal(await view.locator('.crew-member').count(),1);
+    await view.getByText('Navegador',{exact:false}).waitFor();
+    await view.getByLabel('Buscar membro').fill('');
+    await view.getByLabel('Ordenar por').selectOption('level');
+    assert.equal(await view.locator('.crew-member').first().getAttribute('data-crew-member'),peer.id);
+    assert(await view.getByText('1 online',{exact:true}).isVisible());
+    assert(await view.evaluate(el=>el.closest('.dialog').getBoundingClientRect().bottom-el.querySelector('.crew-member:last-child').getBoundingClientRect().bottom<40),'Roster height follows content');
     // All nine live views share the inventory frame; scrolling is contained to content.
     for(const [width,height] of [[1920,1080],[1366,768],[1280,720],[1024,768],[768,1024],[390,844],[360,800],[844,390]]) {
       await page.mouse.move(0,0);await page.setViewportSize({width,height});
       for(const tab of ['overview','members','profession','missions','contracts','ship','treasury','store','recruitment']) {
         await view.locator('[data-crew-view="'+tab+'"]').click();
         const rect=await crewBox();
-        const expectedWidth=Math.min(width<=1100?800:1180,width-16);
+        const expectedWidth=Math.min(1060,width-16);
         const expectedHeight=width<=760?height-42:Math.min(720,height-40)-18;
-        assert(Math.abs(rect.width-expectedWidth)<2&&Math.abs(rect.height-expectedHeight)<2,'inventory frame '+width+' '+tab+' '+JSON.stringify(rect));
+        assert(Math.abs(rect.width-expectedWidth)<2&&rect.height<=expectedHeight+2,'viewport frame '+width+' '+tab+' '+JSON.stringify(rect));
         assert(await view.evaluate(e=>e.scrollWidth<=e.clientWidth+1),'content fits '+width+' '+tab);
         assert(await page.locator('#dialogBody').evaluate(e=>e.scrollHeight<=e.clientHeight+1),'body contains scrolling');
         assert.equal(await page.locator('#panelOverlay > .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),'none');
@@ -201,7 +213,7 @@ function createGroup(payload){
     await view.getByRole('button',{name:'Navio e instalações'}).click();
     const shipSize=await crewBox();
     assert.equal(shipSize.width,overviewSize.width,'Crew width stays fixed across views');
-    assert.equal(shipSize.height,overviewSize.height,'Crew height stays fixed across views');
+    assert(shipSize.height>0&&overviewSize.height>0,'Dialog fits each view');
     await view.locator('.crew-ship-preview summary').click();
     const nextShip=view.locator('.crew-ship-preview [data-stage="2"] .crew-vessel-art:not([hidden])');
     await nextShip.waitFor();

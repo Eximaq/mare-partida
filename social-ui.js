@@ -60,6 +60,74 @@
     ['trade','Trocas','Negocie itens com outro jogador.'],
   ];
   const menu=()=>sections.map(([id,label,hint])=>'<button type="button" role="menuitem" data-social-open="'+id+'"><img src="'+icons[id]+'" alt="" draggable="false"><span><b>'+label.toUpperCase()+'</b><small>'+hint+'</small></span><span class="social-badge" data-social-badge="'+id+'" hidden></span></button>').join('');
+  function portrait(p,source='social'){
+    const target=source==='crew'?'data-crew-portrait':'data-social-portrait';
+    const initial=Array.from(p.name||'')[0]||'';
+    return '<span class="contact-face" aria-hidden="true"><span>'+esc(initial)+'</span><canvas width="48" height="52" '+target+'="'+esc(p.id)+'"></canvas></span>';
+  }
+  // A transparent silhouette in the front-facing idle pose establishes where
+  // the head actually begins, independently of source margins and foot pivots.
+  function headCrop(image,x,feet,aspect){
+    const {data,width,height}=image;
+    const opaque=(px,py)=>data[(py*width+px)*4+3]>64;
+    const onBody=(y,radius)=>{
+      let count=0;
+      for(let px=Math.max(0,x-radius);px<=Math.min(width-1,x+radius);px++)if(opaque(px,y))count++;
+      return count>=2;
+    };
+    const last=Math.min(height-1,feet+8);
+    let top=-1,bottom=-1;
+    for(let y=0;y<=last;y++){
+      if(!onBody(y,15))continue;
+      if(top<0&&y+1<=last&&onBody(y+1,15))top=y;
+      bottom=y;
+    }
+    if(top<0||bottom-top<12)return null;
+    const bodyHeight=bottom-top+1;
+    const headHeight=Math.max(18,Math.ceil(bodyHeight*.46));
+    let left=x,right=x;
+    for(let y=top;y<top+bodyHeight*.28;y++){
+      for(let px=Math.max(0,Math.floor(x-headHeight/2));px<=Math.min(width-1,Math.floor(x+headHeight/2));px++){
+        if(opaque(px,y)){left=Math.min(left,px);right=Math.max(right,px);}
+      }
+    }
+    const h=Math.min(height,Math.max(headHeight,Math.ceil((right-left+5)/aspect)));
+    const w=Math.min(width,Math.round(h*aspect));
+    const startX=Math.max(0,Math.min(width-w,Math.round((left+right-w)/2)));
+    const startY=Math.max(0,Math.min(height-h,top-Math.max(2,Math.round(h*.08))));
+    return [startX,startY,w,h];
+  }
+  function createPortraits(draw){
+    const cache=new Map(),painted=new WeakMap();
+    const source=document.createElement('canvas');
+    source.width=192;source.height=192;
+    const src=source.getContext('2d',{willReadFrequently:true});
+    const x=source.width/2,feet=source.height-17;
+    return function paint(canvas,player){
+      const key=JSON.stringify([player.classId,player.factionId,player.appearance96,player.hideHeadgear,player.equipment,canvas.width,canvas.height]);
+      if(painted.get(canvas)===key)return;
+      const ctx=canvas.getContext('2d');
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      delete canvas.dataset.ready;
+      painted.delete(canvas);
+      let frame=cache.get(key);
+      if(!frame){
+        src.clearRect(0,0,source.width,source.height);
+        if(!draw(src,player,{x,y:feet}))return;
+        const crop=headCrop(src.getImageData(0,0,source.width,source.height),x,feet,canvas.width/canvas.height);
+        if(!crop)return;
+        frame=document.createElement('canvas');frame.width=canvas.width;frame.height=canvas.height;
+        const destination=frame.getContext('2d');destination.imageSmoothingEnabled=false;
+        destination.drawImage(source,...crop,0,0,frame.width,frame.height);
+        cache.set(key,frame);
+        if(cache.size>64)cache.delete(cache.keys().next().value);
+      }
+      ctx.imageSmoothingEnabled=false;
+      ctx.drawImage(frame,0,0);
+      canvas.dataset.ready='true';
+      painted.set(canvas,key);
+    };
+  }
   function create(o) {
     let view='',viewEpoch=0,model=null,signature='',panelPending=false,badgePending=false,threadPending=false,mutating=false,badges={},statusText='',failed=false;
     let search='',friendsFilter='',mailTab='pending',mailPages=[],target=null,thread=null,privateOn=false,oldestAvailable=false,threadEpoch=0,readThrough=null,readWaitUntil=0;
@@ -106,7 +174,7 @@
     function person(p,{large=false}={}){
       if(!p)return '';
       const faction=o.faction(p.factionId);
-      return '<div class="social-person'+(large?' social-person-large':'')+'"><canvas width="48" height="52" class="social-portrait"'+attr('data-social-portrait',p.id)+' aria-hidden="true"></canvas><span class="social-person-meta"><b>'+(p.crew?.tag?o.identity(p.crew,p.name):esc(p.name))+'</b><small>'+(faction?'<img src="assets/ui/faction-emblems/'+esc(p.factionId)+'.png"'+attr('alt',faction)+'>':'')+'Nv. '+esc(p.level)+' · '+esc(o.className(p.classId))+'</small><small'+(p.online?' class="social-online"':'')+'>'+esc(status(p))+'</small></span></div>';
+      return '<div class="social-person'+(large?' social-person-large':'')+'">'+portrait(p)+'<span class="social-person-meta"><b>'+(p.crew?.tag?o.identity(p.crew,p.name):esc(p.name))+'</b><small>'+(faction?'<img src="assets/ui/faction-emblems/'+esc(p.factionId)+'.png"'+attr('alt',faction)+'>':'')+'Nv. '+esc(p.level)+' · '+esc(o.className(p.classId))+'</small><small'+(p.online?' class="social-online"':'')+'>'+esc(status(p))+'</small></span></div>';
     }
     const explain=value=>reasons[value]||'Indisponível para este contato.';
     function contactActions(p,{friend=false,trade=true}={}){
@@ -123,14 +191,14 @@
     const line=(p,content)=>'<article class="social-line">'+person(p)+content+'</article>';
     const group=(title,content)=>'<section class="social-group"><h3>'+esc(title)+'</h3>'+content+'</section>';
     function friends(data){
-      const f=friendsFilter.toLocaleLowerCase('pt-BR'),list=data.friends.filter(p=>p.name.toLocaleLowerCase('pt-BR').includes(f));
+      const f=data.friends.length>1?friendsFilter.toLocaleLowerCase('pt-BR'):'',list=data.friends.filter(p=>p.name.toLocaleLowerCase('pt-BR').includes(f));
       const section=(id,title,content)=>'<section class="social-group" data-friends-section="'+id+'"><h3>'+esc(title)+'</h3>'+content+'</section>';
       const matches=search?section('search','Resultados da busca',data.matches.map(p=>line(p,p.friendState==='none'?button('Adicionar amigo','add',p.id,{disabled:!canWrite()}):'<small>'+esc({accepted:'Já é seu amigo',incoming:'Solicitação recebida',outgoing:'Solicitação enviada'}[p.friendState])+'</small>')).join('')||blank('Nenhum personagem encontrado.')):'';
       const incoming=data.incoming.map(r=>line(r.character,'<div class="social-actions">'+button('Aceitar','friend-accept',r.id,{primary:true,disabled:!canWrite()})+button('Recusar','friend-decline',r.id,{disabled:!canWrite()})+'</div>'));
       const outgoing=data.outgoing.map(r=>line(r.character,button('Cancelar','friend-cancel',r.id,{disabled:!canWrite()})));
       return '<section class="friends-desk" aria-label="Contatos e solicitações"><form class="social-tools friends-search" data-social-form="friends"><label for="socialFriendSearch">Adicionar amigo</label><input id="socialFriendSearch" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="Nome público do personagem…" maxlength="40" required value="'+esc(search)+'"><button class="social-button social-primary">Buscar</button></form><div class="friends-list" tabindex="0" role="region" aria-label="Lista de contatos">'+matches+
-        section('requests','Solicitações',incoming.concat(outgoing).join('')||blank('Nenhuma solicitação pendente.'))+
-        section('contacts','Lista de amigos · '+data.onlineCount+' de '+data.friends.length+' online','<label class="social-field">Filtrar amigos <input id="socialFriendsFilter" type="search" placeholder="Filtrar por nome…" autocomplete="off" data-social-filter="friends" maxlength="40" value="'+esc(friendsFilter)+'"></label>'+
+        (incoming.length||outgoing.length?section('requests','Solicitações',incoming.concat(outgoing).join('')):'')+
+        section('contacts','Lista de amigos · '+data.onlineCount+' de '+data.friends.length+' online',(data.friends.length>1?'<label class="social-field">Filtrar amigos <input id="socialFriendsFilter" type="search" placeholder="Filtrar por nome…" autocomplete="off" data-social-filter="friends" maxlength="40" value="'+esc(friendsFilter)+'"></label>':'')+
           (list.map(p=>line(p,contactActions(p,{friend:true}))).join('')||blank(data.friends.length?'Nenhum amigo corresponde ao filtro.':'Você ainda não adicionou amigos.')))+
         (data.blocked.length?section('blocked','Contatos bloqueados',data.blocked.map(p=>line(p,button('Desbloquear','block',p.id,{disabled:!canWrite()}))).join('')):'')+'</div></section>';
     }
@@ -487,8 +555,16 @@
         if(chat.classList.contains('hud-open')&&privateOn&&ticks%2===0)void refreshThread();
       },1800);
     }
-    return {open,close,start,submitChat,refreshBadge:pollBadge,chatOpened(){if(online()){void refreshInbox();if(privateOn)void refreshThread();}},
+    function openContact(person,action){
+      if(!person||!online())return false;
+      people.set(person.id,person);
+      if(action==='profile'){o.openPanel('friends');profile=person;paint();return true;}
+      if(action==='private'&&person.actions?.message===null){privateOpen(person);return true;}
+      if(action==='party'&&person.actions?.party===null)return send('party.invite',{targetId:person.id});
+      return false;
+    }
+    return {open,close,start,submitChat,openContact,refreshBadge:pollBadge,chatOpened(){if(online()){void refreshInbox();if(privateOn)void refreshThread();}},
       findItem:key=>tileItems.get(key),refreshPortraits(){refreshPortraits(o.body);refreshPortraits(threadNode);}};
   }
-  root.MareSocialUI={menu,create,errorMessage,tabs};
+  root.MareSocialUI={menu,create,errorMessage,tabs,portrait,createPortraits};
 })(globalThis);

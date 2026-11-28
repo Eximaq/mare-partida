@@ -26,6 +26,21 @@
     overlay.classList.add('market-mode');overlay.dataset.uiPanel='market';
     body.dataset.view='market';$('dialogTitle').textContent='Mercado dos Mares';marketUI.open();
   }
+  let drawPortrait=null,portraitRefresh=null;
+  function drawContactPortrait(canvas,player){
+    drawPortrait??=MareSocialUI.createPortraits((ctx,person,{x,y})=>{
+      socialPortraitRenderer??=MarePaperDoll96Lobby.create({search:location.search,sharedLobby:true,onChange:()=>{
+        if(portraitRefresh!==null)return;
+        portraitRefresh=requestAnimationFrame(()=>{
+          portraitRefresh=null;
+          socialUI?.refreshPortraits();
+          crewController?.refreshPortraits();
+        });
+      }});
+      return socialPortraitRenderer.draw(ctx,{...person,appearance96:MareCharacterAppearance.read(person)},{scene:'lobby',action:'idle',direction:'south',time:0,x,y,scale:.77,weaponless:true,consumer:'social-portrait'});
+    });
+    drawPortrait(canvas,player);
+  }
   const socialAvailable=()=>!!ONLINE_GAME?.available&&ONLINE_GAME.data?.online.socialAvailable===true;
   function renderSocialPanel(){
     const overlay=$('panelOverlay'),body=$('dialogBody');
@@ -59,6 +74,16 @@
     const overlay=$('panelOverlay'),body=$('dialogBody');
     overlay.classList.add('crew-mode');overlay.dataset.uiPanel='crew';body.dataset.view='crew';$('dialogTitle').textContent='Tripulação';
     crewController||=MareCrewUI.create({body,art:crewArt,
+      canWrite:()=>!!ONLINE_GAME?.controlled&&!ONLINE_GAME.busy&&!ONLINE_GAME.pending,
+      drawPortrait:drawContactPortrait,
+      classIcon:id=>{
+        if(!classes[id])return null;
+        const key=starterWeapon(id),item=itemDefs[key];
+        return MareItemArt.path(key,item)||item?.icon_path;
+      },
+      contact:(member,action)=>Promise.resolve(socialUI?.openContact(member,action)).then(ok=>{
+        if(ok&&action==='party')toast('Convite para grupo enviado.','good');
+      }),
       available:()=>!!ONLINE_GAME?.available&&crewAvailable(),
       selfId:()=>ONLINE_GAME?.data?.character?.id,
       read:query=>ONLINE_GAME.api(crewRoute()+(query?'?q='+encodeURIComponent(query):'')),
@@ -3062,7 +3087,7 @@ ${avatarExtra}
     $('voyageRegionTabs').querySelector('[aria-selected=true]')?.scrollIntoView({block:'nearest',inline:'nearest'});
   }
   function renderModes(body){
-    body.innerHTML=`<nav class="game-modes-list" aria-label="Escolha um modo de jogo"><button type="button" data-mode="map"><img src="icones_menu_pirata/png/48/mapa.png" alt=""><span>Mapa do Arquipélago<small>Ilhas e expedições</small></span></button><button type="button" data-mode="prison" data-notification="prison"><img src="assets/ui/modes/impel-down.svg" alt=""><span>Impel Down<small>Prisão de 100 andares</small></span></button><button type="button" data-mode="dungeons" data-notification="dungeons"><img src="assets/ui/contracts-hd/boss.png" alt=""><span>Masmorra de Chefes<small>Confrontos únicos · Recompensas vinculadas</small></span></button></nav>`;
+    body.innerHTML=`<nav class="game-modes-list" aria-label="Escolha um modo de jogo"><button type="button" data-mode="map"><img src="icones_menu_pirata/png/48/mapa.png" alt=""><span>Mapa do Arquipélago<small>Ilhas e expedições</small></span></button><button type="button" data-mode="prison" data-notification="prison"><img src="assets/ui/modes/impel-down.svg" alt=""><span>Impel Down<small>Prisão de 100 andares</small></span></button><button type="button" data-mode="dungeons" data-notification="dungeons"><img src="assets/ui/contracts-hd/boss.png" alt=""><span>Masmorra de Chefes<small>Confrontos únicos</small></span></button></nav>`;
   }
   let prisonPreparedDraft=null;
   function ensurePrisonEncounter(floor){
@@ -3978,11 +4003,7 @@ $('gameFrame').appendChild(targetHud);
     chatObscured:()=>!$('panelOverlay').classList.contains('hidden')||!!document.querySelector('.confirmation-overlay'),
     className:id=>classes[id]?.name||'Classe desconhecida',faction:id=>factions[id]?.name,identity:MareCrewUI.identity,
     category:itemCategory,item:tooltipItem,
-    draw:(canvas,p)=>{
-      socialPortraitRenderer??=MarePaperDoll96Lobby.create({search:location.search,sharedLobby:true,onChange:()=>socialUI?.refreshPortraits()});
-      const ctx=canvas.getContext('2d');ctx.clearRect(0,0,48,52);
-      socialPortraitRenderer.draw(ctx,p,{scene:'lobby',action:'idle',direction:'south',time:0,x:24,y:50,scale:.77,consumer:'social-portrait'});
-    },
+    draw:drawContactPortrait,
     read:params=>ONLINE_GAME.api('/v1/characters/'+encodeURIComponent(ONLINE_GAME.data.character.id)+'/social?'+new URLSearchParams(Object.entries(params).filter(([,value])=>value!==undefined&&value!==''))),
     command:async(action,payload)=>{const result=await ONLINE_GAME.command(action,payload);syncOnlineGame();return result;},
     mailReceived:ids=>{if(ids.length){log(ids.length===1?'Itens do Correio recebidos.':'Itens de '+ids.length+' entregas recebidos.','good');}},
@@ -4447,7 +4468,7 @@ function applySceneHudLayout(){
     }
     const activeQuickMenu=!$('socialQuickMenu').classList.contains('hidden')?$('socialQuickMenu'):!$('captainQuickMenu').classList.contains('hidden')?$('captainQuickMenu'):(!$('characterQuickMenu').classList.contains('hidden')?$('characterQuickMenu'):(!$('modesQuickMenu').classList.contains('hidden')?$('modesQuickMenu'):null));
     if(activeQuickMenu){
-      const menu=activeQuickMenu,items=[...menu.querySelectorAll('[role="menuitem"]')];
+      const menu=activeQuickMenu,items=[...menu.querySelectorAll('[role="menuitem"]:not([hidden]):not(:disabled)')];
       if(['ArrowUp','ArrowDown','Home','End'].includes(e.key)){
         e.preventDefault();
         const index=items.indexOf(document.activeElement);

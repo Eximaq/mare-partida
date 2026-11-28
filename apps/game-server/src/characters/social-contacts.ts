@@ -245,7 +245,7 @@ function crewInviteReason(actor:ActorInvites,person:PersonRow) {
 function projectPerson(person:PersonRow,actor:ActorInvites,friendOrConversation:boolean) {
   const blocked=person.blocked_by_you||person.blocked_by_them;
   const equipment:Record<string,{def:number}>={};
-  if(!person.preferences?.hideItems)for(const slot of ['weapon','head','coat','gloves','legs','boots']){
+  if(!person.preferences?.hideItems)for(const slot of ['weapon','head','coat','gloves','legs','boots','visual_completo']){
     const def=person.equipment?.[slot]?.def;
     if(typeof def==='number'&&Number.isInteger(def))equipment[slot]={def};
   }
@@ -293,6 +293,23 @@ async function readPeople(client:PoolClient,id:string,ids:readonly string[],acto
     LEFT JOIN mare_game.social_contact_blocks own ON own.blocker_id=$1 AND own.target_id=c.id
     LEFT JOIN mare_game.social_contact_blocks theirs ON theirs.target_id=$1 AND theirs.blocker_id=c.id
     WHERE c.id=ANY($2::uuid[])`,[id,ids,limits.onlineSeconds,actor.party_id,actor.crew_id])).rows;
+}
+
+/** Only used for the existing, authorized roster returned by the Crew view. */
+export async function readCrewMemberContacts(client:PoolClient,id:string,memberIds:readonly string[]){
+  if(!memberIds.length||!await socialAvailable(client))return new Map<string,ReturnType<typeof projectPerson>>();
+  const actor=await readActorInvites(client,id);
+  const peers=(await client.query<{peer:string}>(`
+    SELECT CASE WHEN sender_id=$1 THEN target_id ELSE sender_id END peer
+    FROM mare_game.social_friend_requests
+    WHERE status='accepted' AND (sender_id=$1 OR target_id=$1)
+    UNION
+    SELECT CASE WHEN character_low=$1 THEN character_high ELSE character_low END peer
+    FROM mare_game.social_conversations WHERE character_low=$1 OR character_high=$1`,[id])).rows;
+  const canMessage=new Set(peers.map(row=>row.peer));
+  const rows=await readPeople(client,id,memberIds,actor);
+  return new Map(rows.filter(row=>!row.blocked_by_you&&!row.blocked_by_them)
+    .map(row=>[row.id,projectPerson(row,actor,canMessage.has(row.id))]));
 }
 
 function projectMessage(row:MessageRow) {

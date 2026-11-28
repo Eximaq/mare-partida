@@ -1,7 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import type {PoolClient} from 'pg';
 import {AuthFault} from '../auth/errors.js';
-import {assertSocialContactAllowed} from './social-contacts.js';
+import {assertSocialContactAllowed,readCrewMemberContacts} from './social-contacts.js';
 import {crewCapacity,crewFacilities,crewLevel,crewPolicy,crewProject,seaWar,type CrewFacility} from './crew-config.js';
 import {buyRankCFragment,claimContributionCoins,readContributionCoins} from './crew-contribution.js';
 import {creditCrewDonation,ensureCrewMissions,readCrewMissions} from './crew-activity.js';
@@ -332,7 +332,7 @@ async function readRequests(client:PoolClient,id:string,group:Pick<CrewRow,'id'>
   return {invites:rows.filter(r=>r.kind==='invitation'),applications:rows.filter(r=>r.kind==='application')};
 }
 
-async function readGroup(client:PoolClient,crew:CrewRow&{role:CrewRole},now:Date) {
+async function readGroup(client:PoolClient,viewerId:string,crew:CrewRow&{role:CrewRole},now:Date) {
   const rows=(await client.query<MemberViewRow>(`
     SELECT ch.id,ch.name,ch.class_id,ch.faction_id,p.level,m.role,COALESCE(h.power,0) power,
       pr.profession,pr.experience,COALESCE(gifts.amount,0)::text contribution
@@ -347,9 +347,16 @@ async function readGroup(client:PoolClient,crew:CrewRow&{role:CrewRole},now:Date
     ) gifts ON gifts.character_id=ch.id
     WHERE m.crew_id=$1 ORDER BY CASE m.role WHEN 'captain' THEN 0 WHEN 'officer' THEN 1 ELSE 2 END,m.joined_at,m.character_id`,
     [crew.id])).rows;
-  const members=rows.map(row=>({id:row.id,name:row.name,classId:row.class_id,factionId:row.faction_id,
-    level:row.level,role:row.role,power:row.power,contribution:Number(row.contribution),
-    profession:row.profession===null?null:{id:row.profession,level:professionLevel(Number(row.experience))}}));
+  const contacts=await readCrewMemberContacts(client,viewerId,rows.map(row=>row.id));
+  const members=rows.map(row=>{
+    const person=contacts.get(row.id);
+    return {id:row.id,name:row.name,classId:row.class_id,factionId:row.faction_id,
+      level:row.level,role:row.role,power:row.power,contribution:Number(row.contribution),
+      profession:row.profession===null?null:{id:row.profession,level:professionLevel(Number(row.experience))},
+      ...(person?{online:person.online,appearance96:person.appearance96,
+        hideHeadgear:person.hideHeadgear,equipment:person.equipment,actions:person.actions}:{}),
+    };
+  });
   const history=(await client.query(`
     SELECT l.kind,l.amount,l.facility,l.created_at,c.name FROM mare_game.crew_ledger l
     JOIN mare_game.characters c ON c.id=l.character_id WHERE crew_id=$1
@@ -370,7 +377,7 @@ export async function readCrew(client:PoolClient,id:string,search='') {
   const serverNow=await crewClock(client);
   const blockedUntil=(await client.query<{until_at:Date}>(
     'SELECT until_at FROM mare_game.crew_entry_blocks WHERE character_id=$1 AND until_at>$2',[id,serverNow])).rows[0]?.until_at??null;
-  let group=current?await readGroup(client,current,serverNow):null;
+  let group=current?await readGroup(client,id,current,serverNow):null;
   // Drop a roster or inbox read if the viewer's membership changed during assembly.
   const membership=current?await crewMember(client,id):null;
   if(current&&(membership?.crew_id!==current.id||membership.role!==current.role))group=null;

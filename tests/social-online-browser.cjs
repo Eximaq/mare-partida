@@ -125,13 +125,16 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     await screenshot('01-social.png');
     await page.locator('#socialQuickMenu [data-social-open="friends"]').click();
     await page.getByText('1 de 1 online',{exact:false}).waitFor();
-    await page.waitForFunction(()=>Array.from(document.querySelector('canvas[data-social-portrait]').getContext('2d').getImageData(0,0,48,52).data).some((n,i)=>i%4===3&&n>0));
+    await page.waitForFunction(()=>{
+      const canvas=document.querySelector('canvas[data-social-portrait][data-ready=true]');
+      return canvas&&Array.from(canvas.getContext('2d').getImageData(0,0,48,26).data).filter((n,i)=>i%4===3&&n>64).length>90;
+    });
     assert.equal(await page.getByRole('button',{name:'Convidar para Party'}).isDisabled(),true);
     const friendsGlass=await page.locator('.social-mode .dialog').evaluate(el=>{
       const s=getComputedStyle(el),r=el.getBoundingClientRect();
       return {width:r.width,height:r.height,border:s.borderTopWidth,image:s.borderImageSource,radius:s.borderTopLeftRadius,blur:s.backdropFilter};
     });
-    assert(Math.abs(friendsGlass.width-400)<2&&Math.abs(friendsGlass.height-580)<2,'Friends uses a compact vertical frame: '+JSON.stringify(friendsGlass));
+    assert(Math.abs(friendsGlass.width-400)<2&&friendsGlass.height<400,'Friends uses a compact vertical frame: '+JSON.stringify(friendsGlass));
     assert.equal(friendsGlass.border,'1px');assert.equal(friendsGlass.image,'none');assert.equal(friendsGlass.radius,'12px');assert.match(friendsGlass.blur,/blur/);
     await screenshot('02-amigos.png');
     assert.equal(await page.locator('[data-social-action=profile] svg').count(),1,'Friends controls use labeled vectors');
@@ -139,12 +142,8 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     await page.getByRole('heading',{name:'Perfil do personagem'}).waitFor();
     assert(await page.locator('.social-person-large').isVisible());
     await page.getByRole('button',{name:'Voltar',exact:true}).click();
-    await page.locator('#socialFriendsFilter').fill('ninguém');
-    await page.getByText('Nenhum amigo corresponde ao filtro.',{exact:true}).waitFor();
-    await page.locator('#socialFriendsFilter').fill('Lia');
-    await page.locator('[data-friends-section=contacts] [data-social-action=profile]').waitFor();
-    assert.equal(await page.locator('#socialFriendsFilter').inputValue(),'Lia');
-    await page.locator('#socialFriendsFilter').fill('');
+    assert.equal(await page.locator('#socialFriendsFilter').count(),0,'No local filter for a single friend');
+    assert.equal(await page.locator('[data-friends-section=requests]').count(),0,'No empty requests section');
     for(const [width,height] of [[1920,1080],[1366,768],[1024,768],[768,1024],[390,844],[360,800],[844,390]]){
       await page.setViewportSize({width,height});
       const box=await page.locator('.friends-desk').evaluate(el=>{

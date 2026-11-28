@@ -11,3 +11,46 @@
 #mainMenu #modesMenuTrigger[aria-expanded="true"]{background-image:initial;background-position-x:initial;background-position-y:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;background-color:rgb(52, 77, 72);border-top-color:rgb(237, 197, 119);border-right-color:rgb(237, 197, 119);border-bottom-color:rgb(237, 197, 119);border-left-color:rgb(237, 197, 119);}
 #mainMenu .modes-quick-menu button[role="menuitem"]{cursor:pointer;}
 }
+
+
+/* One row shape for destinations and both live-event windows. */
+#mainMenu #modesQuickMenu{
+  width:min(294px,calc(100vw - 24px));
+  max-height:65dvh;
+  overflow-y:auto;
+}
+#mainMenu #modesQuickMenu button[role="menuitem"]{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr) 12px;
+  align-items:center;
+  gap:9px;
+  min-height:48px;
+  padding:5px 9px;
+}
+#mainMenu #modesQuickMenu button[hidden]{display:none;}
+#mainMenu #modesQuickMenu button[role="menuitem"]::after{
+  content:"";
+  width:6px;
+  height:6px;
+  border:solid #d4af6c;
+  border-width:1px 1px 0 0;
+  transform:rotate(45deg);
+  justify-self:center;
+}
+#mainMenu #modesQuickMenu button[role="menuitem"] > img{
+  width:34px;
+  height:34px;
+  padding:2px;
+  border:1px solid #705633;
+  border-radius:5px;
+  background:#13212a;
+  object-fit:contain;
+  image-rendering:auto;
+  box-sizing:border-box;
+}
+#mainMenu #modesQuickMenu button[role="menuitem"]:focus-visible{
+  outline:2px solid #f2cf85;
+  outline-offset:-2px;
+}
+
+#mainMenu #modesQuickMenu button[role="menuitem"] > span{min-width:0;max-width:none;text-align:left;}

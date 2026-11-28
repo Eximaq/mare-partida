@@ -332,3 +332,105 @@
   .crew-window button { min-height: var(--rpg-touch-target,44px); }
   .crew-window .crew-palette button { min-height: 36px; width: 36px; }
 }
+
+.crew-nav .crew-glyph {
+  width: 17px;
+  height: 17px;
+  color: #edc684;
+}
+.crew-banner {
+  margin-bottom: 9px;
+  padding: 10px 13px;
+  gap: 12px;
+  background: radial-gradient(ellipse at 0 50%,#143745 0%,transparent 58%),linear-gradient(110deg,#0d2230,#0a1520);
+}
+.crew-banner h2 > span { color: #f3c56c; }
+.crew-banner-identity { min-width: 0; }
+.crew-banner-identity .crew-progress { max-width: 320px; margin-top: 4px; }
+.crew-banner-count { display: grid; gap: 2px; align-content: center; justify-items: end; padding-inline: 11px 2px; border-left: 1px solid #a9824366; white-space: nowrap; }
+.crew-banner-count > b { color: var(--crew-accent); font-size: 21px; line-height: 1.02; }
+.crew-banner-count > small:not(.crew-presence) { color: #d4c5ac; }
+.crew-roster-tools {
+  grid-template-columns: minmax(0,1fr) minmax(112px, .34fr);
+  align-items: end;
+  gap: 8px;
+  max-width: 620px;
+}
+.crew-roster-tools label { color: #dec49c; font-size: 13px; }
+.crew-roster-tools input, .crew-roster-tools select { font-size: 14px; }
+.crew-member {
+  display: grid;
+  grid-template-columns: minmax(155px,1.55fr) minmax(95px,.9fr) minmax(125px,1.1fr) minmax(98px,.85fr) auto;
+  align-items: center;
+  gap: 6px 9px;
+  min-width: 0;
+  padding: 7px 9px;
+  border: 1px solid #a9824366;
+  border-radius: 5px;
+  background: linear-gradient(100deg,#122935,#0b1925 75%);
+}
+.crew-member-identity { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.crew-member-identity .contact-face { width: 46px; }
+.crew-member-identity > div { min-width: 0; }
+.crew-member-identity strong { color: #fff0d8; font-size: 17px; font-weight: 700; line-height: 1.25; }
+.crew-member-identity .crew-presence { margin-left: 5px; }
+.crew-member-level,.crew-role { display: inline-block; padding: 1px 5px; border: 1px solid #a982437a; border-radius: 3px; background: #122536; color: #f1dbb3; font-size: 12px; font-weight: 700; }
+.crew-role[data-role="captain"] { color: #ffdf9c; background: #6b481e55; border-color: #b88c50; }
+.crew-role[data-role="officer"] { color: #bce1db; background: #30596666; border-color: #477c80; }
+.crew-member :is(.crew-role,.crew-presence), .crew-banner-count .crew-presence { display: inline-flex; align-items: center; width: fit-content; }
+.crew-member-class,.crew-profession-label { display: flex; align-items: center; gap: 5px; color: #ecdbb8; font-size: 14px; font-weight: 650; }
+.crew-emblem { display: inline-grid; place-items: center; flex: none; width: 28px; height: 28px; border: 1px solid #d1ac675c; border-radius: 6px; background: #7d59242b; color: #f3d38f; }
+.crew-emblem :is(img,svg) { width: 20px; height: 20px; object-fit: contain; }
+.crew-emblem[data-tone="nav"] { width: 27px; height: 27px; }
+.crew-emblem[data-tone="doctor"] { color: #b8f2d4; background: #316d5657; border-color: #78c7a272; }
+.crew-emblem[data-tone="navigator"] { color: #b0e1f2; background: #2e657757; border-color: #75c3de72; }
+.crew-emblem[data-tone="command"] { color: #ebbd99; background: #9d553444; border-color: #d5916372; }
+.crew-emblem[data-tone="cook"] { color: #f3d2a6; background: #995e3850; border-color: #e0ab6a82; }
+.crew-emblem[data-tone="carpenter"] { color: #f4ca7d; background: #76592260; border-color: #d0a34e83; }
+.crew-profession-label small,.crew-member .crew-member-totals small { font-size: 12px; font-weight: 400; }
+.crew-member .crew-member-totals b { color: #e7c58f; }
+.crew-presence { display: inline-flex; align-items: center; gap: 4px; color: #bbb8ac; }
+.crew-presence::before { content: ''; width: 6px; height: 6px; flex: none; border-radius: 50%; background: currentColor; }
+.crew-window .crew-presence[data-online="true"] { color: #a3e2c7; }
+.crew-member-actions { justify-self: end; font-size: 13px; min-width: 0; }
+.crew-member-actions summary,.crew-secondary summary {
+  color: #f2d59c;
+  cursor: pointer;
+  padding: 5px 7px;
+  border: 1px solid #a982437a;
+  border-radius: 4px;
+  background: #101e2a;
+}
+.crew-member-actions summary:focus-visible,.crew-secondary summary:focus-visible { outline: 2px solid #ffe18e; outline-offset: 2px; }
+.crew-member:has(.crew-member-actions[open]) { align-items: start; }
+.crew-member-actions > div,.crew-secondary[open] { display: grid; gap: 5px; margin-top: 4px; }
+.crew-member-actions button { text-align: left; max-width: 155px; }
+.crew-card > .crew-button { justify-self: start; }
+.crew-treasury-facts { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
+.crew-treasury-facts > div { border-left: 2px solid #a982436e; padding-left: 7px; }
+.crew-treasury-facts dt { color: #cfc9b7; font-size: 12px; }
+.crew-treasury-facts dd { margin: 0; color: #f5d494; font-weight: 700; }
+@media (max-width: 900px) {
+  .crew-member {
+    grid-template-columns: minmax(0,1.4fr) minmax(0,1fr) auto;
+    grid-template-areas: 'character class actions' 'profession totals actions';
+  }
+  .crew-member-identity { grid-area: character; }
+  .crew-member-meta { grid-area: class; }
+  .crew-member-profession { grid-area: profession; }
+  .crew-member-totals { grid-area: totals; }
+  .crew-member-actions { grid-area: actions; }
+}
+@media (max-width: 480px) {
+  .crew-banner { padding: 7px; gap: 6px; }
+  .crew-banner-count { padding-inline: 5px 1px; }
+  .crew-banner-count > b { font-size: 16px; }
+  .crew-member {
+    grid-template-columns: minmax(0,1.2fr) minmax(0,1fr);
+    grid-template-areas: 'character character' 'class profession' 'totals actions';
+  }
+  .crew-member-actions[open] { justify-self: stretch; }
+  .crew-member-actions button { max-width: none; }
+  .crew-member-identity strong { display: block; }
+  .crew-roster-tools { gap: 5px; }
+}
