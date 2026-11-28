@@ -263,8 +263,11 @@ self.addEventListener('fetch', event => {
     event.respondWith((async () => {
       const page = await fetch(event.request);
       if (page.ok && page.headers.get('Content-Type')?.includes('text/html')) {
-        const name = (await page.clone().text()).match(/<html\b[^>]*\bdata-game-content="(game-content-[a-f0-9]{24}\.json)"/)?.[1];
-        if (name) await remember(event.resultingClientId, {name, onDemand: true});
+        const tag = (await page.clone().text()).match(/<html\b[^>]*>/i)?.[0];
+        const name = tag?.match(/\bdata-game-content="(game-content-[a-f0-9]{24}\.json)"/)?.[1];
+        if (name) await remember(event.resultingClientId, {
+          name, onDemand: !/\bdata-game-install="full"/.test(tag),
+        });
       }
       return page;
     })());

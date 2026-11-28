@@ -24,3 +24,7 @@
 .loading-panel progress::-moz-progress-bar { background: #ffda97; }
 .loading-panel button { margin-top: 1rem; padding: .6rem 1.25rem; background: #102c36; color: #ffe3a7; border: 1px solid #bd985c; border-radius: .45rem; }
 .loading-panel button[hidden] { display: none; }
+.loading-size { font-size: .8rem; color: #ccdadb; }
+
+/* Session and map startup have phases, without a site-wide download percentage. */
+html:not([data-game-install="full"]) #gameLoading:not([data-port-entry]) :is(progress,output,.loading-size) { display: none; }

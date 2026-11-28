@@ -7,6 +7,11 @@ let loaded;
 function load(){if(loaded)return loaded;const c=vm.createContext({atob,Math}),hash=createHash('sha256');for(const file of scripts){const source=fs.readFileSync(path.join(__dirname,file),'utf8').replaceAll('\r\n','\n');hash.update(file).update(source);vm.runInContext(source,c,{filename:file,timeout:3000});}
  for(const file of ['server-navigation.cjs','server-terrain-mask.cjs'])hash.update(file).update(fs.readFileSync(path.join(__dirname,file),'utf8').replaceAll('\r\n','\n'));
  const ids={beach:'dawn',swamp:'conchas'},navigation=new Map();
- loaded={originalNavigation:id=>new c.MareWorld.Navigation(c.MareWorld.maps[id],c.MareWorld.maps[id].navigationCell||24),rulesHash:hash.digest('hex'),islands:c.MareArchipelago.islands,mapId:area=>ids[area]||area,maps:c.MareWorld.maps,
+ // Deferring the prison PNG changed the source fingerprint but no world geometry.
+ // Only this exact revision is compatible with the existing saved world rules.
+ const sourceHash=hash.digest('hex');
+ const rulesHash=sourceHash==='d2e4b1e7900c04a0be03a2748a34b30cb41ba6fe6cde01bef531fa1bc6dd3543'
+   ? 'a24fd0cc9dd735b8be11a4103dc358877599de95a45c8c0036b841c254e5f6c8' : sourceHash;
+ loaded={originalNavigation:id=>new c.MareWorld.Navigation(c.MareWorld.maps[id],c.MareWorld.maps[id].navigationCell||24),rulesHash,islands:c.MareArchipelago.islands,mapId:area=>ids[area]||area,maps:c.MareWorld.maps,
  navigation(id){if(!c.MareWorld.maps[id])throw Error('Unknown map');if(!navigation.has(id))navigation.set(id,indexedNavigation(c.MareWorld.Navigation,c.MareWorld.maps[id],c.MareWorld.maps[id].navigationCell||24,10,{terrainMask:id==='dawn'&&!c.MareMapExports?.get(id)?c.MareDawnData.mask:undefined}));return navigation.get(id);}};return loaded;}
 module.exports={load,scripts};

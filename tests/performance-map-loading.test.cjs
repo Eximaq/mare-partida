@@ -17,8 +17,9 @@ test('Conchas loads each existing export mask once and does not load the retired
  vm.runInContext(fs.readFileSync(path.join(root,'world-depth.js'),'utf8'),c);
  const regions=c.MareWorldDepth.regions('conchas');
  assert(regions.length);
- assert.equal(urls.length,new Set(regions.map(p=>p.assetId)).size);
+ assert.equal(urls.length,new Set(regions.map(p=>p.assetId).filter(Boolean)).size);
  assert(urls.every(url=>fs.existsSync(path.join(root,url))));
+ assert(!urls.some(url=>url.endsWith('/foreground.png')));
  c.MareWorldDepth.regions('conchas');
  assert.equal(urls.length,new Set(urls).size);
 });

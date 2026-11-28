@@ -22,11 +22,12 @@ class CatalogTest(unittest.TestCase):
                     archive.writestr(f'{idx}-frame.png', shared)
                     archive.writestr('another.png', shared)
                     archive.writestr('unique.png', bytes([idx]) * 100)
-            catalog = build_catalog(root)
+            self.assertFalse(build_catalog(root)['patches'])
+            catalog = build_catalog(root, full_install=True)
             units = catalog['units']
             patches = catalog['patches']
             self.assertTrue(patches)
-            self.assertEqual(build_catalog(root), catalog)
+            self.assertEqual(build_catalog(root, full_install=True), catalog)
             saved = 0
             for index, (path, size, digest) in enumerate(units):
                 if digest not in patches:
@@ -53,6 +54,58 @@ class CatalogTest(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(rebuilt).hexdigest(), digest)
             self.assertGreater(saved, len(shared) * 2)
 
+    def test_gameplay_bundle_skips_opt_in_cycles_and_groups_medium_assets(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            inputs = {
+                'assets/ui/medium-a.png': b'a' * 80_000,
+                'assets/ui/medium-b.png': b'b' * 80_000,
+                'tools/rework-weapons/grip-corrections/approved.png': b'grip',
+                'tools/rework-weapons/catalog.json': b'preview catalog',
+                'tools/rework-outfits/generated/preview.zip': b'preview cycle',
+            }
+            for path, data in inputs.items():
+                target = root / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(data)
+            catalog = build_catalog(root, full_install=True)
+            self.assertEqual(set(catalog['files']), set(list(inputs)[:3]))
+            self.assertEqual(len(catalog['units']), 1)
+            for path, (unit, offset, size, _) in catalog['files'].items():
+                data = (root / catalog['units'][unit][0]).read_bytes()
+                self.assertEqual(data[offset:offset + size], inputs[path])
+            self.assertTrue((root / 'tools/rework-outfits/generated/preview.zip').exists())
+
+    def test_port_transport_groups_outfits_and_windows_but_keeps_destinations_independent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            names = ['assets/ui/inventory-hd/slot.png', 'assets/skins/outfit.png',
+                     'assets/impel-down/map.png', 'assets/exported-maps/dawn/map.png']
+            for name in names:
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(name.encode())
+            catalog = build_catalog(root, port_install=True)
+            self.assertEqual(catalog['portUnits'], 1)
+            for name in names[:2]:
+                self.assertEqual(catalog['files'][name][0], 0)
+            for name in names[2:]:
+                index = catalog['files'][name][0]
+                self.assertGreaterEqual(index, catalog['portUnits'])
+                self.assertEqual(catalog['units'][index][0], name)
+
+    def test_on_demand_downloads_only_the_requested_resource(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name in ('assets/first-map.png', 'assets/other-map.png'):
+                p = root / name
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_bytes(name.encode())
+            catalog = build_catalog(root)
+            for name, (index, offset, size, _) in catalog['files'].items():
+                self.assertEqual(catalog['units'][index][:2], [name, size])
+                self.assertEqual(offset, 0)
+
     def test_release_bytes_are_complete_and_versioned(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -60,7 +113,11 @@ class CatalogTest(unittest.TestCase):
                          'portal/test.png', 'docs/review.png']:
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_bytes(path.encode())
+                if target.suffix == '.zip':
+                    with zipfile.ZipFile(target, 'w') as archive:
+                        archive.writestr('frame.png', b'frame')
+                else:
+                    target.write_bytes(path.encode())
             first = build_catalog(root)
             self.assertEqual(set(first['files']), {'assets/ui/slot.png', 'tools/rework-base-hd/base.zip'})
             for path, (unit, offset, size, _) in first['files'].items():

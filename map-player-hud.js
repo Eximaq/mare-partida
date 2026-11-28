@@ -6,12 +6,23 @@
   const titleFont='italic 700 12px "Segoe UI", system-ui, sans-serif';
   const levelFont='600 12px "Segoe UI", system-ui, sans-serif';
   const insignias=new Map();
+  const nameWidths=new WeakMap();
+  const labels=new Map();
+  let labelPixels=0;
+  const maxCachedNames=256;
 
   function measure(context,name){
+    let widths=nameWidths.get(context);
+    if(!widths){widths=new Map();nameWidths.set(context,widths);}
+    const cached=widths.get(name);
+    if(cached!==undefined)return cached;
+
     context.save();
     context.font=font;
     const width=Math.ceil(context.measureText(name).width)+4;
     context.restore();
+    if(widths.size>=maxCachedNames)widths.delete(widths.keys().next().value);
+    widths.set(name,width);
     return width;
   }
 
@@ -47,6 +58,40 @@
   }
 
   function drawName(context,x,y,name,color='#fff8e9',textFont=font){
+    if(!context.canvas?.ownerDocument||name.length>128){
+      paintText(context,x,y,name,color,textFont);
+      return;
+    }
+    const key=textFont+'|'+color+'|'+name;
+    let label=labels.get(key);
+    if(!label){
+      context.font=textFont;
+      context.textAlign='center';
+      context.textBaseline='alphabetic';
+      const m=context.measureText(name);
+      const half=Math.ceil(Math.max(m.width/2,m.actualBoundingBoxLeft,m.actualBoundingBoxRight))+3;
+      const top=Math.ceil(Math.max(0,m.actualBoundingBoxAscent))+3;
+      const height=top+Math.ceil(Math.max(0,m.actualBoundingBoxDescent))+3;
+      const canvas=context.canvas.ownerDocument.createElement('canvas');
+      canvas.width=half*4;
+      canvas.height=height*2;
+      const ink=canvas.getContext('2d');
+      ink.scale(2,2);
+      paintText(ink,half,top,name,color,textFont);
+      label={canvas,half,top,height};
+      labels.set(key,label);
+      labelPixels+=canvas.width*canvas.height;
+      while(labels.size>1&&(labels.size>maxCachedNames||labelPixels>2_000_000)){
+        const oldest=labels.keys().next().value,old=labels.get(oldest).canvas;
+        labelPixels-=old.width*old.height;
+        labels.delete(oldest);
+        old.width=old.height=0;
+      }
+    }
+    context.drawImage(label.canvas,x-label.half,y-label.top,label.half*2,label.height);
+  }
+
+  function paintText(context,x,y,name,color,textFont){
     context.font=textFont;
     context.textAlign='center';
     context.textBaseline='alphabetic';
@@ -76,7 +121,7 @@
     if(identity.title)drawName(context,center,nameY-17,identity.title,identity.titleColor||'#83d7f0',titleFont);
     drawName(context,center,nameY,label,identity.self?'#ffe29a':'#fff8e9');
     if(identity.insignia){
-      drawInsignia(context,center-Math.ceil(context.measureText(label).width)/2-14,nameY-6,identity.insignia);
+      drawInsignia(context,center-(measure(context,label)-4)/2-14,nameY-6,identity.insignia);
     }
     if(hasLevel)drawName(context,center,y,'Nv '+identity.level,'#e4eaf1',levelFont);
     if(resources)drawResources(context,center,y+3,resources);

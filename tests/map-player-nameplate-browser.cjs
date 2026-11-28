@@ -11,35 +11,44 @@ const {chromium}=require('playwright');
   try{
     const page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[];
     page.on('pageerror',error=>errors.push(error.message));
+    await page.addInitScript(()=>{
+      const labels=new WeakMap(),fill=CanvasRenderingContext2D.prototype.fillText;
+      window.nameplateLabel=canvas=>labels.get(canvas);
+      CanvasRenderingContext2D.prototype.fillText=function(text,...args){
+        labels.set(this.canvas,text);
+        return fill.call(this,text,...args);
+      };
+    });
     await page.goto(process.env.MARE_QA_URL||'http://127.0.0.1:8175/');
     await page.locator('#characterName').fill('NaveganteSul');
     await page.locator('#nextToClass').click();
     await page.locator('#nextToAppearance').click();
     await page.locator('#createCharacter').click();
     await page.locator('[data-confirm-accept]').click();
-    await page.waitForFunction(()=>document.querySelector('#worldLoading').dataset.state==='ready');
+    await page.waitForFunction(()=>document.querySelector('#gameFrame').dataset.worldState==='ready');
     await page.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready');
     await page.evaluate(()=>{
       const draw=MareMapPlayerHud.draw;
       MareMapPlayerHud.draw=function(ctx,x,y,name,resources,identity){
         const rect=ctx.canvas.getBoundingClientRect(),scale=rect.height/ctx.canvas.height;
-        const transform=ctx.getTransform(),fill=ctx.fillText,track=ctx.roundRect,image=ctx.drawImage;
+        const transform=ctx.getTransform(),track=ctx.roundRect,image=ctx.drawImage;
         const result={labels:[],tracks:[],icons:0,identity};
-        ctx.fillText=function(text,tx,ty,...rest){
-          const metrics=this.measureText(text);
-          result.labels.push({text,x:rect.left+(tx+transform.e)*scale,
-            top:rect.top+(ty+transform.f-metrics.actualBoundingBoxAscent)*scale,
-            bottom:rect.top+(ty+transform.f+metrics.actualBoundingBoxDescent)*scale});
-          return fill.call(this,text,tx,ty,...rest);
-        };
         ctx.roundRect=function(bx,by,w,h,...rest){
           result.tracks.push({x:rect.left+(bx+w/2+transform.e)*scale,
             top:rect.top+(by+transform.f)*scale,height:h*scale});
           return track.call(this,bx,by,w,h,...rest);
         };
-        ctx.drawImage=function(...args){result.icons++;return image.apply(this,args);};
+        ctx.drawImage=function(source,...args){
+          const text=window.nameplateLabel(source);
+          if(text!==undefined){
+            const [left,top,w,h]=args;
+            result.labels.push({text,x:rect.left+(left+w/2+transform.e)*scale,
+              top:rect.top+(top+3+transform.f)*scale,bottom:rect.top+(top+h-3+transform.f)*scale});
+          }else if(source instanceof HTMLImageElement)result.icons++;
+          return image.call(this,source,...args);
+        };
         try{return draw.apply(this,arguments);}
-        finally{delete ctx.fillText;delete ctx.roundRect;delete ctx.drawImage;if(resources)window.nameplateQA=result;}
+        finally{delete ctx.roundRect;delete ctx.drawImage;if(resources)window.nameplateQA=result;}
       };
     });
     for(const [device,width,height] of [['desktop',1366,768],['tablet',820,1180],['phone',390,844]]){

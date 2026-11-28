@@ -23,7 +23,7 @@ ROOTS = ('assets', 'icones_menu_pirata', 'tools/paper-doll-96-v3', 'tools/rework
 HD_ROOTS = {'tools/rework-base-hd', 'tools/rework-weapon-layers-hd', 'tools/rework-modular-outfits-hd'}
 
 
-def hd_patches(root, units):
+def hd_patches(root, units, budget=5 * 1024 * 1024):
     """Ship only missing bytes when another installed archive contains identical ZIP payloads."""
     sources = defaultdict(list)
     blocks = {}
@@ -45,7 +45,6 @@ def hd_patches(root, units):
 
     # Keep original ZIP URLs for direct consumers. Limit additional Pages storage,
     # spending it on archives with the largest proportion of reusable bytes first.
-    budget = 5 * 1024 * 1024
     patches, pinned = {}, set()
     def reuse_ratio(index):
         return sum(size for _, size, key in blocks[index] if len(sources[key]) > 1) / units[index][1]
@@ -76,45 +75,89 @@ def hd_patches(root, units):
                 pinned.add(provider)
         literal.extend(data[cursor:])
         patch = 'loading-packs/' + hashlib.sha256(literal).hexdigest()[:24] + '.delta'
-        (root / patch).write_bytes(literal)
+        if not (root / patch).exists():
+            (root / patch).write_bytes(literal)
         patches[digest] = [patch, len(literal), spans]
         budget -= len(literal)
     return patches
 
 
-def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS):
+def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS, *, full_install=False, port_install=False):
+    paths = {f for prefix in roots for f in (root / prefix).rglob('*')
+             if f.is_file() and f.suffix.lower() in TYPES}
+    paths.update(root / path for path in extra_files)
+    if roots == ROOTS and (root / 'journal-feed.json').exists():
+        paths.add(root / 'journal-feed.json')
+    if compatibility_files is not None:
+        paths = {p for p in paths if not p.is_relative_to(root / 'tools/paper-doll-96-v3')
+                 or p.relative_to(root / 'tools/paper-doll-96-v3').as_posix() in compatibility_files}
+    asset_paths = [p.relative_to(root).as_posix() for p in paths]
+    if full_install:
+        # The full installer trades a larger server artifact for fewer requests and reused ZIP data.
+        return package_catalog(root, asset_paths, pack_budget=128 * 1024**2, patch_budget=48 * 1024**2)
+    if port_install:
+        return package_port_catalog(root, asset_paths)
+    # Individual resources let the active scene fetch only the pieces it uses.
+    return package_catalog(root, asset_paths, pack_budget=0, patch_budget=0)
+
+
+def port_asset(path):
+    if path.startswith('assets/ui/'):
+        return '-reference/' not in path and '/reference/' not in path and '/loading-art/' not in path
+    return path.startswith(('tools/rework-', 'tools/paper-doll-96-v3/', 'icones_menu_pirata/',
+                            'assets/skins/', 'assets/akuma/', 'assets/haki/', 'assets/classes/', 'assets/factions/'))
+
+
+def package_port_catalog(root, asset_paths):
+    # Separate before packing: a clothing archive must never pull in a destination map.
+    port = package_catalog(root, [p for p in asset_paths if port_asset(p)],
+                           pack_budget=48 * 1024**2, patch_budget=48 * 1024**2)
+    other = package_catalog(root, [p for p in asset_paths if not port_asset(p)], pack_budget=0, patch_budget=0)
+    offset = len(port['units'])
+    port['portUnits'] = offset
+    port['units'].extend(other['units'])
+    for path, (index, start, size, mime) in other['files'].items():
+        port['files'][path] = [offset + index, start, size, mime]
+    return port
+
+
+def package_catalog(root, asset_paths, *, pack_budget=36 * 1024 * 1024,
+                    patch_budget=5 * 1024 * 1024):
+    # The old composite cycles are only loaded by explicit reworkTest previews.
+    # Keep the originals published for those previews and retain grip corrections.
+    review_prefixes = ('tools/rework-outfits/generated/', 'tools/rework-weapons/generated/')
+    review_catalogs = {'tools/rework-outfits/catalog.json', 'tools/rework-weapons/catalog.json'}
+    def path_order(path):
+        # Match the Windows build on Linux so release packs keep the same hashes.
+        return tuple(part.lower() for part in path.parts), path.parts
+
+    paths = sorted((root / path for path in set(asset_paths)
+                    if path not in review_catalogs and not path.startswith(review_prefixes)),
+                   key=path_order)
     units, files, batch = [], {}, bytearray()
     pack_dir = root / 'loading-packs'
     pack_dir.mkdir(exist_ok=True)
-    budget = 36 * 1024 * 1024
+
     def flush():
         if batch:
             digest = hashlib.sha256(batch).hexdigest()
             target = pack_dir / (digest[:24] + '.bin')
-            target.write_bytes(batch)
+            if not target.exists():
+                target.write_bytes(batch)
             units.append([target.relative_to(root).as_posix(), len(batch), digest])
             batch.clear()
 
-    paths = sorted({f for prefix in roots for f in (root / prefix).rglob('*')
-                    if f.is_file() and f.suffix.lower() in TYPES})
-    paths.extend(root / path for path in extra_files)
-    if roots == ROOTS and (root / 'journal-feed.json').exists():
-        paths.append(root / 'journal-feed.json')
-    # Spend the small-file budget on the smallest files first to avoid thousands
-    # of HTTP requests without duplicating large archives in the Pages export.
+    # Prefer smaller resources for the most requests saved per duplicated byte.
     small = set()
-    for f in sorted(paths, key=lambda item: (item.stat().st_size, item)):
+    for f in sorted(paths, key=lambda item: (item.stat().st_size, path_order(item))):
         size = f.stat().st_size
-        if size > 48 * 1024 or size > budget:
+        if size > 256 * 1024 or size > pack_budget:
             break
-        if size:
+        if size and (f.suffix.lower() != '.zip' or size <= 48 * 1024):
             small.add(f)
-            budget -= size
+            pack_budget -= size
     for f in paths:
         path = f.relative_to(root).as_posix()
-        if compatibility_files is not None and path.startswith('tools/paper-doll-96-v3/'):
-            if path.split('/', 2)[2] not in compatibility_files:
-                continue
         data = f.read_bytes()
         size = len(data)
         mime = TYPES[f.suffix.lower()]
@@ -131,14 +174,16 @@ def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS):
         if entry[0] is None:
             entry[0] = len(units)
             units.append([path, entry[2], entry.pop()])
-    return {'units': units, 'files': files, 'patches': hd_patches(root, units)}
+    patches = hd_patches(root, units, patch_budget) if patch_budget else {}
+    return {'units': units, 'files': files, 'patches': patches}
 
 
-def write_catalog(root, compatibility_files, extra_files, renderer_fixture=False):
+def write_catalog(root, compatibility_files, extra_files, renderer_fixture=False, *, full_install=False, port_install=False):
     # Renderer suites intercept individual asset requests to exercise missing art and
     # fallback behavior. Run the same installer with a small, real fixture catalog.
     roots = ('assets/ui/loading',) if renderer_fixture else ROOTS
-    manifest = build_catalog(root, compatibility_files, () if renderer_fixture else extra_files, roots)
+    manifest = build_catalog(root, compatibility_files, () if renderer_fixture else extra_files, roots,
+                             full_install=full_install, port_install=port_install)
     data = json.dumps(manifest, separators=(',', ':'), ensure_ascii=True).encode()
     filename = 'game-content-' + hashlib.sha256(data).hexdigest()[:24] + '.json'
     (root / filename).write_bytes(data)

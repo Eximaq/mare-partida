@@ -13,9 +13,10 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--include-reviews", action="store_true", help="Also export isolated historical art workbenches")
 parser.add_argument('--static-demo', action='store_true', help='Build the standalone demo without optional development APIs')
 parser.add_argument('--renderer-fixture', action='store_true', help='Use a small install catalog for isolated renderer tests that intercept asset requests')
+parser.add_argument('--full-install', action='store_true', help='Install the full playable catalog before opening the game')
 args = parser.parse_args()
-if args.renderer_fixture and args.static_demo:
-    parser.error('The public Pages demo requires the complete installation catalog.')
+if args.renderer_fixture and (args.static_demo or args.full_install):
+    parser.error('Public builds and full installation require the complete content catalog.')
 include_reviews = args.include_reviews
 ROOT = Path(__file__).resolve().parent.parent
 materialize(ROOT)
@@ -100,6 +101,12 @@ for page in ['index.html', 'ui-preview.html', 'bancada-hd.html']:
     if not include_reviews:
         for name in review_scripts:
             html = html.replace(f'  <script defer src="{name}"></script>\n', '')
+    if args.full_install and page in ('index.html', 'ui-preview.html'):
+        html = html.replace('<html ', '<html data-game-install="full" ', 1)
+        html, progress = re.subn(r'(</progress>\n)', r'\1      <div class="loading-size"></div>\n', html, count=1)
+        html, map_overlay = re.subn(r'^.*<div id="worldLoading"[^\n]*\n', '', html, count=1, flags=re.MULTILINE)
+        if progress != 1 or map_overlay != 1:
+            raise ValueError(f'Unexpected loading markup in {page}')
     if args.static_demo:
         html = html.replace('<html ', '<html data-runtime="static-demo" ', 1)
     html = re.sub(r'((?:src|href)=")([^"?]+)(")', version_asset, html)
@@ -276,4 +283,4 @@ shutil.copy2(ROOT / 'apps/account-client/art/kaizoku-idle.webp', logo)
 for name in ['index.html', 'ui-preview.html']:
     entry = OUT / name
     entry.write_text(entry.read_text(encoding='utf-8').replace('apps/account-client/art/kaizoku-idle.webp', 'assets/ui/loading/kaizoku-idle.webp'), encoding='utf-8')
-write_catalog(OUT, {'player-pack.json', *PLAYER96_DATA, *PLAYER96_MODULES, *player96_release['resources']}, art_paths, args.renderer_fixture)
+write_catalog(OUT, {'player-pack.json', *PLAYER96_DATA, *PLAYER96_MODULES, *player96_release['resources']}, art_paths, args.renderer_fixture, full_install=args.full_install, port_install=not (args.static_demo or args.renderer_fixture))

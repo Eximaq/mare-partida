@@ -82,3 +82,31 @@ assert.equal(rectangles.length,0);
 referenceLabels.length=0;
 HUD.draw(identityContext,120,80,'Sem título',null,{level:null});
 assert.deepEqual(referenceLabels.map(p=>p.text),['Sem título'],'unavailable metadata is omitted');
+
+let measurementCount=0;
+const repeatContext={...context,measureText(text){
+  measurementCount++;
+  return {width:text.length*8};
+}};
+assert.equal(HUD.measure(repeatContext,'Nome fixo'),76);
+HUD.draw(repeatContext,120,80,'Nome fixo',null,{insignia:{sheet:'test.png',x:0,y:0}});
+assert.equal(HUD.measure(repeatContext,'Nome fixo'),76);
+assert.equal(measurementCount,1,'layout and the insignia reuse the name width between frames');
+assert.equal(HUD.measure(repeatContext,'Outro nome'),84);
+assert.equal(measurementCount,2,'a changed name is measured separately');
+
+{
+  const {createCanvas}=require('@napi-rs/canvas');
+  const target=createCanvas(240,100),ctx=target.getContext('2d');
+  let surfaces=0;
+  target.ownerDocument={createElement:()=>{surfaces++;return createCanvas(1,1);}};
+  let strokes=0;
+  const stroke=ctx.strokeText.bind(ctx);
+  ctx.strokeText=(...args)=>{strokes++;return stroke(...args);};
+  HUD.draw(ctx,55,30,'Capitão');
+  HUD.draw(ctx,145,75,'Capitão');
+  const containsInk=(x,y)=>ctx.getImageData(x,y,60,20).data.some((v,i)=>i%4===3&&v>0);
+  assert(containsInk(25,13)&&containsInk(115,58),'names must follow each actor');
+  assert.equal(surfaces,1,'two positions share the same label');
+  assert.equal(strokes,0,'moving a name reuses rasterized text outside the world canvas');
+}

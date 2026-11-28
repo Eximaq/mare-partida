@@ -19,3 +19,11 @@ test('imported terrain contains no ghost cells and preserves the native map pixe
  assert.equal(png.readUInt32BE(16),2176);assert.equal(png.readUInt32BE(20),1344);
  assert.equal(require('node:crypto').createHash('sha256').update(png).digest('hex'),meta.sha256);
 });
+
+test('a port visit fetches no prison image and repeated prison entry reuses it',()=>{
+ const urls=[],sandbox={Image:class {set src(url){urls.push(url);}}};
+ require('node:vm').runInNewContext(fs.readFileSync(path.join(__dirname,'../impel-down-world.js'),'utf8'),sandbox);
+ assert.deepEqual(urls,[]);
+ sandbox.MareImpel.prepare();sandbox.MareImpel.prepare();
+ assert.deepEqual(urls,['assets/impel-down/map.png']);
+});
