@@ -225,7 +225,7 @@ function upgradeBalance(b){
  if(!b)return;
  const previous=b.rulesHash;
  // Weekly-only additions do not change positions, equipment or progression for this exact predecessor.
- if(previous==='66b265a4555b30e71c6b6974e6e2de3475ead6403b1bb4f960b3f9a38bf3d47e'){b.rulesHash=rulesHash;return;}
+ if(['66b265a4555b30e71c6b6974e6e2de3475ead6403b1bb4f960b3f9a38bf3d47e','c2e241f755ef52e3a9329e6ca4e13b6c6bf30acf0d752f6bf556d2e11f3defaf'].includes(previous)){b.rulesHash=rulesHash;return;}
  // The map branch already has every HD arena. Apply only the progression
  // branch's hunt profiles; active attacks and positions remain valid.
  if(previous===previousHdMapsHash){upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;}
@@ -481,9 +481,14 @@ function step(b,c){
  function die(){b.autoRoute=null;resetHaki(b);b.hp=0;b.respawn=4.1;b.actionLockUntil=0;fruits.reset(b);b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;if(!c.shared)for(const other of enemies())behavior.disengage(other);event(b,'death');}
  function damage(m,multiplier=1,warning){
   if(warning?.groundTrap&&b.fruit?.id==='akuma_tori_albatroz'&&b.fruit.transformed&&b.fruit.effects.altitudeUntil>now/1000||b.fruit?.id==='akuma_bomu_bomu'&&warning?.damageType==='explosion')return;const physical=m.type!=='spirit'&&warning?.damageType!=='magma'&&warning?.elemental!==true;
-  if(b.hp<=0)return;const genie=b.fruit?.effects.genie;if(genie){fruits.genieDamage(genie,now/1000,m.attack*multiplier,physical);if(genie.hp<=0)delete b.fruit.effects.genie;return;}H.touch(hakiGame(b),b.hakiRuntime);stats=combatStats(b,c,rt);
-  const raw=characters.incoming(physical?stats:{...stats,defense:stats.magicDefense??stats.defense},m.attack*multiplier*(m.kobuDebuffUntil>now?.8:1)*(m.hakiDebuff>0?.85:1)*(physical?1-(stats.impactResistancePercent||0):1),b.guard>0,.85+rng()*.25,{monster:m});
-  const fruitReaction=fruits.incoming(b,{...c,stats,now},m,raw,m.attack*multiplier,physical);if(!fruitReaction.damage)return;
+  if(b.hp<=0)return;
+  const relative=warning?.weeklyRelative===true;
+  if(relative)stats=combatStats(b,c,rt);
+  const attack=relative?require('./weekly-admirals.js').attackAmount(stats.maxHP):m.attack*multiplier;
+  if(relative&&!(attack>0))return;
+  const genie=b.fruit?.effects.genie;if(genie){fruits.genieDamage(genie,now/1000,attack,physical);if(genie.hp<=0)delete b.fruit.effects.genie;return;}H.touch(hakiGame(b),b.hakiRuntime);stats=combatStats(b,c,rt);
+  const raw=characters.incoming(physical?stats:{...stats,defense:stats.magicDefense??stats.defense},attack*(m.kobuDebuffUntil>now?.8:1)*(m.hakiDebuff>0?.85:1)*(physical?1-(stats.impactResistancePercent||0):1),b.guard>0,.85+rng()*.25,{monster:m});
+  const fruitReaction=fruits.incoming(b,{...c,stats,now},m,raw,attack,physical);if(!fruitReaction.damage)return;
   const r=TC.receive(g,rt,{stats,amount:fruitReaction.damage,physical,melee:m.reach<=60,source:m,random:rng,now});
   if(r.untargetable||r.invulnerable)return;
   b.energy=Math.max(0,b.energy-(r.energyUsed||0));
@@ -599,7 +604,7 @@ function step(b,c){
    const admiral=require('./weekly-admirals.js').roster[source.weeklyBossId];if(!admiral)continue;
    const before=b.hp,aoe=action.kind==='aoe',special=action.kind!=='punch';
    b.weeklyLastImpact=impact.attackId;
-   damage(source,special?source.profile.aoeMultiplier:1,{elemental:special,damageType:special?admiral.element:undefined,groundTrap:aoe});
+   damage(source,1,{weeklyRelative:true,elemental:special,damageType:special?admiral.element:undefined,groundTrap:aoe});
    if(aoe&&admiral.element==='ice'&&b.hp>0&&b.hp<before){
     b.weeklyFrozenUntil=now+1250;b.actionLockUntil=Math.max(b.actionLockUntil||0,b.weeklyFrozenUntil);b.autoRoute=null;
     if(c.manualPath)c.manualPath.length=0;

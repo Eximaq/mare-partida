@@ -74,13 +74,14 @@ export async function executeWeeklyBoss(c:PoolClient,id:string,input:WeeklyComma
   if(p.op!=='test'&&p.revision!==settings.revision)throw new AuthFault(409,'weekly_boss_revision_conflict');
   if(p.op==='configure'){
    if((await c.query("SELECT 1 FROM mare_game.weekly_boss_events WHERE boss_id='akainu' AND mode='official' AND status='active'")).rowCount)throw new AuthFault(409,'weekly_boss_already_active');
-   const config={...p.config,profile:A.validateProfile({...p.config.profile,aoeRadius:Math.min(240,D.roster[bossId].radius*D.tile)})};
+   const config={...p.config,profile:A.validateProfile(D.balanceProfile(bossId,p.config.profile))};
    await c.query("UPDATE mare_game.weekly_boss_settings SET revision=revision+1,config=$1 WHERE boss_id='akainu'",[JSON.stringify(D.withProfile(settings.config,bossId,config))]);
    receipt={revision:settings.revision+1};await weeklyAudit(c,'configure',account,null,{revision:receipt.revision,bossId});
   }else{
    const test=p.op==='test',selected=slots[bossId];
    if(!selected?.balanceApproved)throw new AuthFault(409,'weekly_boss_config_required');
-   const config={...(test?rehearsalConfig(selected.profile):selected),admiralId:bossId};
+   const profile=A.validateProfile(D.balanceProfile(bossId,selected.profile));
+   const config={...(test?rehearsalConfig(profile):selected),profile,admiralId:bossId};
    if(!test){try{R.canActivate(config,{map:navigation,bossId});}catch(e){throw new AuthFault(409,(e as Error).message);}}
    const mode=test?'test':'official';let row=(await c.query("SELECT *,clock_timestamp() now FROM mare_game.weekly_boss_events WHERE boss_id='akainu' AND mode=$1 AND status='active' FOR UPDATE",[mode])).rows[0];
    if(row&&(!test||row.config.admiralId!==bossId))throw new AuthFault(409,'weekly_boss_already_active');
@@ -129,6 +130,9 @@ export async function readWeeklyBoss(c:PoolClient,id:string,sessionId:string){
  const rows=(await c.query("SELECT id,mode,map_id,status,version,closes_at,config,simulation->'mobs'->0 boss,(SELECT count(*)::int FROM mare_game.weekly_boss_members WHERE event_id=e.id) members FROM mare_game.weekly_boss_events e WHERE boss_id='akainu' AND status='active' AND closes_at>$1 AND (mode='official' OR $2) ORDER BY opened_at LIMIT 2",[at,canManage])).rows;
  const view=(r:any)=>({id:r.id,mode:r.mode,status:r.status,version:r.version,mapId:r.map_id,endsAt:r.closes_at.toISOString(),maxPlayers:r.config.maxPlayers,minLevel:r.config.minLevel,members:r.members??0,boss:{name:(r.boss??r.simulation?.mobs[0])?.name??'Akainu',hp:Math.max(0,(r.boss??r.simulation?.mobs[0])?.hp??0),maxHp:(r.boss??r.simulation?.mobs[0])?.maxHP??0},rewardsConfigured:r.mode==='official'});
  const settings=canManage?(await c.query("SELECT revision,config FROM mare_game.weekly_boss_settings WHERE boss_id='akainu'")).rows[0]:undefined;
+ const profiles=settings?D.profiles(settings.config):null;
+ const arena=settings?require('../../../../world-map-exports.js').get('marineford'):null;
+ const defaults=arena?.weeklyBossSpawn&&arena.spawn?Object.fromEntries(D.ids.map((bossId:string)=>[bossId,D.defaultConfig(bossId,{spawn:arena.weeklyBossSpawn,entry:arena.spawn})])):{};
  const rights={cycle:context.cycle};
  const peers:any[]=[];
  if(current){
@@ -140,5 +144,5 @@ export async function readWeeklyBoss(c:PoolClient,id:string,sessionId:string){
    peers.push({id:m.character_id,name:n.name,classId:n.class_id,factionId:n.faction_id,hierarchyTier:tiers.get(m.character_id)??null,level:input.state.level,hp:Math.max(0,b.hp),maxHp:f.maxHp,connected:true,world:w,instanceId:current.id,appearance96:input.appearance,hideHeadgear:!!input.preferences.hideHeadgear,equipment,action:b.pending||b.skillJob?'attack':'idle',fruitId:f.fruitId,zoanTransformed:b.fruit?.transformed===true,haki:b.hakiRuntime?{active:b.hakiRuntime.active,eyeFX:b.hakiRuntime.eyeFX,dodgeFX:b.hakiRuntime.dodgeFX,kingFX:b.hakiRuntime.kingFX,kingOrigin:b.hakiRuntime.kingOrigin}:null});
   }
  }
- return {canManage,daily,lootRules:weeklyBossLootRules,events:rows.map(view),current:current?view(current):null,peers,serverNow:at.toISOString(),rewardPendingCycle:rights?.cycle??null,...(settings?{revision:settings.revision,config:D.profiles(settings.config).akainu??null,profiles:D.profiles(settings.config),marinefordReady:!!maps().maps.marineford}: {})};
+ return {canManage,daily,lootRules:weeklyBossLootRules,events:rows.map(view),current:current?view(current):null,peers,serverNow:at.toISOString(),rewardPendingCycle:rights?.cycle??null,...(settings?{revision:settings.revision,config:profiles?.akainu??null,profiles,defaults,balance:D.balance,marinefordReady:!!maps().maps.marineford}: {})};
 }

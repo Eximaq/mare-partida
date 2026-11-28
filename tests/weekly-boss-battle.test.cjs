@@ -11,3 +11,22 @@ test('AoE uses the real defensive damage pipeline and hits two actors in one sha
 test('disconnected actor has no damage, cooldown advance or contribution',()=>{const f=fixture();f.actors[1].connected=false;const before=structuredClone(f.actors[1].b);f.room.mobs[0].nextAoeAt=1000;for(let t=1050;t<=2200;t+=50)step(f,t);assert.equal(f.actors[1].b.hp,before.hp);assert.equal(f.actors[1].b.metrics,undefined);assert.equal(f.room.contributions.b,undefined);});
 test('lethal player damage cancels an in-progress magma cast',()=>{const f=fixture();f.room.mobs[0].nextAoeAt=1000;step(f,1050);f.room.mobs[0].hp=1;f.actors[0].b.pending={targetId:'boss',remaining:0};step(f,1100);for(let t=1150;t<=2400;t+=50)step(f,t);assert.equal(f.actors[0].b.events.filter(e=>e.type==='hurt').length,0);assert.equal(f.room.mobs[0].telegraph,null);});
 test('combat never credits idle observation as damage or healing',()=>{const f=fixture();step(f,1050);assert.equal(f.room.contributions.a.damage,0);assert.equal(f.room.contributions.a.healing,0);});
+test('new weekly boss damage uses each defender max HP, not current HP or the legacy attack',()=>{
+ const D=require('../weekly-admirals.js'),f=fixture();
+ f.room.mobs=[D.initialize(A.create({id:'boss',x:300,y:300,profile:D.balanceProfile('kizaru'),now:1000}),'kizaru')];
+ const boss=f.room.mobs[0];boss.attack=999999;boss.nextAoeAt=1000;
+ assert.equal(boss.maxHP,300000);
+ const base=[4000,10000];
+ for(const [i,a] of f.actors.entries()){
+  a.stats={...a.stats,maxHP:base[i],mitigation:0,defense:0,magicDefense:0,impactResistancePercent:0};
+  a.baseStats=a.stats;a.b.hp=base[i]/2;
+ }
+ for(let t=1050;t<=2400;t+=50)step(f,t);
+ for(const [i,a] of f.actors.entries()){
+  const max=E.combatStats(a.b,a).maxHP;
+  const expected=C.incoming({...E.combatStats(a.b,a),defense:0},max*.05,false,.975,{monster:boss});
+  assert.equal(a.b.events.filter(e=>e.type==='hurt').length,1);
+  assert.equal(a.b.events.find(e=>e.type==='hurt').amount,expected);
+ }
+ assert.equal(boss.attack,999999,'must not mutate the shared boss attack per defender');
+});

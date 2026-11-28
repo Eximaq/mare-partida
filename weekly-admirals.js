@@ -1,7 +1,19 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.MareWeeklyAdmirals=api;})(globalThis,()=>{
  'use strict';
- // Skill tile = 64 world units (four 16-unit navigation cells); stats are not stored here.
+ // Skill tile = 64 world units (four 16-unit navigation cells).
  const tile=64,roster=Object.freeze({aokiji:Object.freeze({name:'Aokiji',height:154,line:5,width:.43,radius:5,element:'ice'}),akainu:Object.freeze({name:'Akainu',height:150,line:6,width:.47,radius:3.4,element:'magma'}),kizaru:Object.freeze({name:'Kizaru',height:156,radius:1.5,chain:4,element:'light'})});
+ // Ace's dungeon has 304,088 HP, 4,527 physical and 1,674 magical defense.
+ // Use a rounded comparable baseline for these 300,000 HP weekly variants.
+ const balance=Object.freeze({hp:300000,defense:4500,magicDefense:1650,attackFraction:.05});
+ const attackAmount=maxHP=>Number.isFinite(maxHP)&&maxHP>0?maxHP*balance.attackFraction:0;
+ const levels=Object.freeze({aokiji:170,akainu:180,kizaru:130});
+ function balanceProfile(id,profile={}){if(!valid(id))throw Error('weekly_admiral_invalid');
+  // attack=1 is only an adapter to the legacy spawn shape; every weekly hit
+  // uses attackAmount against its own defender; no prior flat damage is used.
+  return {speed:90,reach:66,attackSec:2.8,aoeCooldown:12,aoeWindup:1.15,level:levels[id],leash:700,...profile,
+   hp:balance.hp,defense:balance.defense,magicDefense:balance.magicDefense,attack:1,aoeMultiplier:1,aoeRadius:Math.min(240,roster[id].radius*tile)};
+ }
+ function defaultConfig(id,{spawn,entry}){return {mapId:'marineford',spawn:{...spawn},entry:{...entry},maxPlayers:16,minLevel:1,durationMinutes:45,balanceApproved:false,profile:balanceProfile(id)};}
  const dirs=Object.freeze({north:Object.freeze({x:0,y:-1}),east:Object.freeze({x:1,y:0}),south:Object.freeze({x:0,y:1}),west:Object.freeze({x:-1,y:0})});
  const ids=Object.freeze(Object.keys(roster));
  const valid=id=>Object.hasOwn(roster,id);
@@ -86,5 +98,5 @@
   else if(!(b.doruRootUntil>now/1000||b.betaRootUntil>now/1000))move(b,focus.hero,nav,dt);
   return hits;
  }
- return Object.freeze({tile,roster,ids,dirs,valid,extent,shape,contains,profiles,withProfile,initialize,pause,step});
+ return Object.freeze({tile,roster,balance,attackAmount,balanceProfile,defaultConfig,ids,dirs,valid,extent,shape,contains,profiles,withProfile,initialize,pause,step});
 });

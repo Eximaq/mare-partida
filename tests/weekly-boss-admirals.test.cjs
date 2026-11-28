@@ -50,3 +50,11 @@ test('natively packed body and effect textures have the exact frame dimensions',
  for(const id of D.ids)for(const d of ['north','east','south'])for(const [k,n] of Object.entries({idle:4,walk:8,attack:5,special_2:6,special_area:6}))assert.deepEqual(dimensions(path.join(root,id,d+'-'+k+'.webp')),[384*n,384]);
  for(const f of fs.readdirSync(path.join(root,'vfx')))assert.deepEqual(dimensions(path.join(root,'vfx',f)),[516,516]);
 });
+test('balance applies all three approval values while leaving old profiles inert',()=>{
+ for(const id of D.ids){
+  const p=D.balanceProfile(id,{hp:1,attack:30000,defense:0,magicDefense:0,aoeMultiplier:9,reach:73});
+  assert.deepEqual([p.hp,p.defense,p.magicDefense,p.attack,p.aoeMultiplier,p.reach],[300000,4500,1650,1,1,73]);
+  assert.deepEqual([D.attackAmount(2000),D.attackAmount(14000),D.attackAmount(0)],[100,700,0]);
+  const config=D.defaultConfig(id,{spawn:{x:1,y:2},entry:{x:3,y:4}});assert(!config.balanceApproved);assert.deepEqual(config.profile,D.balanceProfile(id));
+ }
+});
