@@ -33,9 +33,12 @@ test('cada movimento carrega sua pose enquanto o jogador já pode desenhar outra
  await api.requestWorldVisual(p,south).promise;
  assert.deepEqual(prepared.sort(),['19/false/idle/south','19/false/walk/north']);
  assert.equal(walking.state,'loading');assert(api.drawWorldVisual({},south,p));
- assert(!api.drawWorldVisual({},north,p));assert.deepEqual(drawn,['19/false/idle/south']);
+ assert(api.drawWorldVisual({},north,p));
+ assert.equal(api.worldVisual().displayed.exact,false);
+ assert.deepEqual(drawn,['19/false/idle/south','19/false/idle/south']);
  resume();await walking.promise;assert(api.drawWorldVisual({},north,p));
  assert.equal(drawn.at(-1),'19/false/walk/north');
+ assert.equal(api.worldVisual().displayed.exact,true);
 });
 
 test('trocas A → B → A reutilizam a pose pronta e a preferência do capacete tem chave própria',async()=>{

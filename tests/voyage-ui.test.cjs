@@ -19,7 +19,9 @@ test('selected details contain a current sprite key and guarded travel action',(
   assert(ui.body.includes('data-travel-island="'+i.id+'" disabled')||/data-travel-island="[^"]+"[^>]* disabled/.test(ui.body));
   assert(ui.body.includes('data-expedition-monster='));
   assert(!ui.body.includes('src="assets/monsters/'));
-  assert(ui.body.includes('Não estimada'));
+  assert(ui.body.includes('Drops possíveis'));
+  assert(ui.body.includes('<dt>Entrada</dt>'));
+  assert(!ui.body.includes('Não estimada'));
   assert(ui.body.includes('voyage-detail-scroll'));
  }
 });

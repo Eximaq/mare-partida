@@ -3,29 +3,29 @@
   'use strict';
   const DIRECTIONS = {front:'south',back:'north',left:'west',right:'east'};
   const PRIMARY = {sword:'sword_sabre',brawler:'brawler_bare',gunner:'gunner_rifle',rogue:'rogue_single_dagger',cyborg:'cyborg_hydraulic',strategist:'strategist_staff',healer:'healer_staff'};
-  const TECH = new Set([15,118,120]);
-  const ORBS = new Set([17,122]);
-  const STAFF = new Set([123]);
-  const SCEPTERS = new Set([121,124]);
-  const ROGUE_PAIRED = new Set([12,13,71,72,73,74]);
+  // Functional item IDs share the skin's base poses by class and grip.
+  const VARIANTS = {
+    gunner:{114:'gunner_dual_pistols'},
+    rogue:{12:'rogue_dual_daggers',13:'rogue_dual_daggers',71:'rogue_dual_daggers',72:'rogue_dual_daggers',73:'rogue_dual_daggers',74:'rogue_dual_daggers'},
+    cyborg:{15:'cyborg_cannon',118:'cyborg_cannon',120:'cyborg_cannon'},
+    strategist:{16:'strategist_compass',17:'strategist_orb',121:'strategist_scepter',122:'strategist_orb',124:'strategist_scepter'},
+    healer:{31:'healer_cajado',32:'healer_reliquary',125:'healer_baton',127:'healer_cajado'}
+  };
   function loadoutFor(atlas, input = {}) {
     if (input.weaponless || input.unarmed || input.weaponEquipped === false) return 'brawler_bare';
     const explicit = atlas.loadouts.find(x => x.id === input.loadout && (input.classId == null || x.classId === input.classId));
     if (explicit) return explicit.id;
-    const cls = input.classId || 'sword', id = Number(input.weaponId);
+    const cls = input.classId || 'sword';
     if (cls === 'brawler') return input.weaponId == null ? 'brawler_bare' : 'brawler_gauntlets';
-    if (input.weaponId == null && input.paired == null) return PRIMARY[cls] || PRIMARY.sword;
-    if (cls === 'gunner') return id === 114 || input.paired ? 'gunner_dual_pistols' : 'gunner_rifle';
-    if (cls === 'rogue') return (input.paired ?? ROGUE_PAIRED.has(id)) ? 'rogue_dual_daggers' : 'rogue_single_dagger';
-    if (cls === 'cyborg') return TECH.has(id) ? 'cyborg_cannon' : 'cyborg_hydraulic';
-    if (cls === 'strategist') return ORBS.has(id) ? 'strategist_orb' : STAFF.has(id) ? 'strategist_staff' : SCEPTERS.has(id) ? 'strategist_scepter' : 'strategist_compass';
-    if (cls === 'healer') return id === 32 ? 'healer_reliquary' : id === 125 ? 'healer_baton' : [31,127].includes(id) ? 'healer_cajado' : 'healer_staff';
-    return PRIMARY[cls] || PRIMARY.sword;
+    if (cls === 'gunner' && input.paired) return 'gunner_dual_pistols';
+    if (cls === 'rogue' && input.paired != null) return input.paired ? 'rogue_dual_daggers' : 'rogue_single_dagger';
+    return VARIANTS[cls]?.[input.weaponId] || PRIMARY[cls] || PRIMARY.sword;
   }
   function resolve(atlas, input = {}) {
     if (input.zoanTransformed || input.action === 'death') return null;
     const loadout = loadoutFor(atlas, input);
     const selected = atlas.loadouts.find(x => x.id === loadout);
+    if (!selected) return null;
     let clip, skill = null;
     if (input.clip) clip = input.clip;
     else if ((input.freeHandPower || input.fruitPower) && !['walk','run','idle','combat-idle','hurt'].includes(input.action || 'attack')) clip = 'cast_palm_shared';

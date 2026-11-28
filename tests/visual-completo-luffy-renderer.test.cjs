@@ -122,3 +122,49 @@ test('the actual inventory fit mode keeps tall weapons inside the portrait throu
   }
  }
 });
+
+test('extra weapons reuse the class and grip already represented in the Luffy atlas',()=>{
+ const cases=[
+  ['sword',69,0],['brawler',112,2],['gunner',116,4],['rogue',74,12],
+  ['cyborg',118,15],['cyborg',117,14],['strategist',122,17],['strategist',124,121],
+  ['healer',127,31],['healer',128,126],['healer',900,126],['strategist',900,123]
+ ];
+ for(const [classId,weaponId,baseId] of cases){
+  const player=actor(classId,weaponId),before=structuredClone(player);
+  for(const action of ['idle','walk','hurt','attack'])for(const direction of ['south','north','east','west']){
+   const opts={action,direction,progress:.5};
+   const actual=renderer.pose(atlas,player,opts),base=renderer.pose(atlas,actor(classId,baseId),opts);
+   assert.ok(actual,classId+' / '+weaponId+' / '+action+' / '+direction);
+   assert.equal(actual.loadout,base.loadout);
+   assert.equal(actual.source,base.source);
+   assert.equal(actual.index,base.index);
+   assert.equal(renderer.pose(atlas,{...player,equipment:{...player.equipment,head:{def:19},coat:{def:151}}},opts).source,base.source);
+  }
+  for(const skillIndex of [0,1]){
+   const opts={action:'attack',direction:'east',skillIndex,progress:.5};
+   assert.equal(renderer.pose(atlas,player,opts)?.source,renderer.pose(atlas,actor(classId,baseId),opts).source);
+  }
+  assert.equal(renderer.pose(atlas,player,{action:'attack',weaponless:true}).action,'cast_palm_shared');
+  assert.deepEqual(player,before);
+ }
+});
+
+test('all 42 functional weapons resolve the existing Luffy animations of their own class',()=>{
+ const requireRule=name=>require('../'+name+'.js');
+ const {items}=requireRule('item-catalog').create({
+  forge:requireRule('forge-system'),prison:requireRule('prison-system'),haki:requireRule('haki-system'),
+  akuma:requireRule('akuma-system'),hakiProgression:requireRule('haki-progression')
+ });
+ let count=0;
+ for(const [id,def] of items.entries()){
+  if(def.slot!=='weapon')continue;
+  const player=actor(def.type,id);
+  for(const action of ['idle','walk','hurt','attack'])for(const direction of ['south','north','east','west']){
+   const scene=renderer.pose(atlas,player,{action,direction});
+   assert.ok(scene,def.name+' / '+action+' / '+direction);
+   assert.equal(atlas.loadouts.find(v=>v.id===scene.loadout).classId,def.type);
+  }
+  count++;
+ }
+ assert.equal(count,42);
+});

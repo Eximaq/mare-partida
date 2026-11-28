@@ -72,6 +72,13 @@ O ambiente não dispõe de Chromium, e a instalação oficial foi bloqueada por 
 
 `approved:false` e `productionEnabled:false` no manifest registram o estado de revisão da arte. Não são chaves de ativação do renderizador. A integração fica no PR em rascunho, sem merge ou deploy realizado por esta entrega.
 
+
+### Atualização para revisão — 28/11/2026
+
+Armas funcionais compartilham a variante do Luffy pela classe e pela empunhadura. O Cajado das Marés (127) usa o mesmo ciclo do Cajado do Farol (31). O Orbe de Skypiea (122) compartilha o ciclo do Orbe das Correntes (17). Braços mecânicos e canhões conservam variantes próprias do Ciborgue. Quando um ID equipado não está registrado, o seletor usa a variante base da classe. As trocas preservam o item funcional e as regras das habilidades.
+
+A revisão de merge regenerou o manifesto native96, atualizou o teste Docker para o catálogo com 247 definições e preservou as verificações do hash e das permissões. Os testes antigos de mapa, viagem e carregamento agora conferem a cena pintada de Conchas, o balanceamento atual, as informações de viagem e a continuidade entre poses.
+
 ## Proveniência
 
 `assets/skins/visual-completo/luffy/provenance.json` registra o método, a referência do traje, o ícone e as verificações. Os hashes de cada atlas estão no manifest. Fontes de geração, prompts, vídeo e visualizador de revisão são fornecidos no pacote de arte separado e não entram no payload do jogo.

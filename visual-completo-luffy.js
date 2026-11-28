@@ -7,7 +7,7 @@
  const classes=new Set(['sword','brawler','gunner','rogue','cyborg','strategist','healer']);
  const equipped=player=>classes.has(player?.classId)&&player?.equipment?.visual_completo?.def===itemDef;
  function inputFor(player,options){
-  const weapon=player.equipment?.weapon,weaponId=Number.isInteger(weapon?.def)?weapon.def:null;
+  const weapon=player.equipment?.weapon,def=weapon?.def??weapon,weaponId=Number.isInteger(def)?def:null;
   const input={classId:player.classId,weaponId,weaponEquipped:weaponId!==null,action:options.action||'idle',direction:options.direction||'south',time:options.time||0,progress:options.progress,hitFrameRatio:options.timing?.hitFrameRatio,skillIndex:options.skillIndex,freeHandPower:!!(options.freeHandPower||options.weaponless),weaponless:!!options.weaponless};
   if(['idle','combat-idle','walk','run','hurt'].includes(input.action))input.skillIndex=undefined;
   // A missing functional weapon still has a complete Luffy body. Class powers
