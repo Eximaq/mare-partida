@@ -2876,7 +2876,7 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
    ctx.drawImage(tile,0,0);
   }finally{blade.width=1;tile.width=1;}
  }
- function render(ctx,r,images,{frame=0,state,hiddenSlots=[],appearance=r?.colorAppearance||{},omitWeaponLayer=false}={}){
+ function render(ctx,r,images,{frame=0,state,hiddenSlots=[],appearance=r?.colorAppearance||{},omitWeaponLayer=false,hatHairCutoff}={}){
   if(!r)throw Error('Missing native weapon source');if(omitWeaponLayer&&!r.ownDaggerLightMaterials&&!r.ownedDaggersSouth&&!r.w128IndependentSide&&!r.w121IndependentSide&&!r.w121IndependentNorth&&!r.w5IndependentSouth&&!r.ownedGauntlet111SouthAttack)throw Error('No signed weapon layer omission for this route');let s=state===undefined?r.states[frame]:r.states.find(s=>s.state===String(state));if(!s)throw Error('Unapproved native weapon state');
   if(r.orb122SouthOwn)return renderOwnOrb122South(ctx,r,images,{frame,state,hiddenSlots,appearance});
   if([123,124,125,126,127,128,2,3,4,5,12,13,14,16,31,32,110,121,71,72,73,74,113,114,115,116,118,119,120].includes(r.item)&&!r.hairSeparated&&hiddenSlots.length)throw Error('115 backing has baked head/hair; hiding slots is unsupported');
@@ -3444,6 +3444,17 @@ const torso=[[292,243],[354,243],[354,270],[350,293],[352,321],[297,321],[295,29
      changes.push({p:patch,a:start,b:row});
     }
     if(count!==(reg.count??4040))throw Error('Unexpected number of dagger hair samples');
+    if(r.direction==='south'&&reg.x===0&&reg.y===0&&Number.isInteger(hatHairCutoff)&&hatHairCutoff>=0&&hatHairCutoff<h){
+     // The color ranks omit some outline pixels. The signed transparent
+     // source owns the full hair silhouette, including its dark outline.
+     const upper=ctx.createImageData(w,hatHairCutoff+1);
+     upper.data.set(out.subarray(0,upper.data.length));
+     for(let i=0;i<upper.data.length;i+=4)if(orig[i+3]&&
+        orig[i]===out[i]&&orig[i+1]===out[i+1]&&orig[i+2]===out[i+2]&&orig[i+3]===out[i+3]){
+      upper.data.fill(0,i,i+4);
+     }
+     changes.push({p:upper,a:0,b:0});
+    }
    }
    if(r.orderedDaggerIris||r.dagger13SouthIris){
     const south=!!r.dagger13SouthIris,api=root.MareReworkModularOutfitsHD;

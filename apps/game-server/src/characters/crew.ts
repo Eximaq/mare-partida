@@ -355,7 +355,7 @@ async function readGroup(client:PoolClient,viewerId:string,crew:CrewRow&{role:Cr
       level:row.level,role:row.role,power:row.power,contribution:Number(row.contribution),
       profession:row.profession===null?null:{id:row.profession,level:professionLevel(Number(row.experience))},
       ...(person?{online:person.online,appearance96:person.appearance96,
-        hideHeadgear:person.hideHeadgear,equipment:person.equipment,actions:person.actions,
+        hideHeadgear:person.hideHeadgear,equipment:person.equipment,...(person.cosmetics?{cosmetics:person.cosmetics}:{}),actions:person.actions,
         crew:person.crew,lastActivity:person.lastActivity,publicProfile:person.publicProfile}:{}),
     };
   });

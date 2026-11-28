@@ -136,6 +136,7 @@
       energy: o.battle?.energy ?? 0,
       hierarchyPlayerId:data.character.id,hierarchyFaction:data.character.factionId,hierarchyTier:o.hierarchy?.tier||1,
       swords:structuredClone(o.state?.swords??{}),
+      ...(o.cosmetics ? {cosmetics:structuredClone(o.cosmetics)} : {}),
       ...(o.haki?{has_haki_unlocked:o.haki.state.unlocked,haki:structuredClone(o.haki.state)}:{}),
       ...(o.dungeons?{bossDungeons:structuredClone(o.dungeons)}:{}),
       ...(o.prison?{impelDown:structuredClone(o.prison)}:{}),

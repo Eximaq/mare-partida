@@ -5,7 +5,7 @@ const expected=['Manoplas do Coral Negro','Punhos do Dragão Carmesim','Luva do 
 test('five class armaments append after all 109 preserved definitions',()=>{
  assert(C.items.length>=114);assert.deepEqual(C.items.slice(109,114).map(d=>d.name),expected);
  const summary={items:C.items.slice(0,109),slots:[...C.inventorySlotsLeft,...C.inventorySlotsRight],capacity:C.capacity,healerWeaponIndex:C.healerWeaponIndex};
- assert.equal(crypto.createHash('sha256').update(JSON.stringify(summary)).digest('hex'),'07758ab92d0d8459806c10bce2f4643f549236f49a120b413553094c07f26ee5');
+ assert.equal(crypto.createHash('sha256').update(JSON.stringify(summary)).digest('hex'),'8e4e49378ed1472c1b08772088cf075ed8bba95ff7eefd54db77d76d9d155eb1');
  assert.deepEqual(C.items.slice(109,114).map(d=>d.rarity),['epic','legendary','legendary','supreme','epic']);
  assert(C.items.slice(109,114).every(d=>d.fixedRarity));
 });

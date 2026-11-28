@@ -2,38 +2,42 @@
 (function(root){'use strict';
 // Inventory samples the visible sprite bounds, never magnifies the entire
 // HD source frame (which includes transparent author padding).
-const inventoryBounds=new WeakMap();
-function rasterBounds(pixels,w,h){
+const inventoryBounds=new WeakMap(),fittedBounds=new WeakMap();
+function rasterBounds(pixels,w,h,minAlpha=1){
  let left=w,top=h,right=-1,bottom=-1;
  for(let y=0;y<h;y++){
   const row=y*w*4+3;
   let x=0;
-  while(x<w&&!pixels[row+x*4])x++;
+  while(x<w&&pixels[row+x*4]<minAlpha)x++;
   if(x===w)continue;
   left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=y;
-  for(let k=w-1;k>right;k--)if(pixels[row+k*4]){right=k;break;}
+  for(let k=w-1;k>right;k--)if(pixels[row+k*4]>=minAlpha){right=k;break;}
  }
  return right<left?null:{left,top,width:right-left+1,height:bottom-top+1};
 }
 function fitInventoryAvatar(ctx,source,referenceScale=1,{cache=true,zoom=3,footAnchor=null}={}){
  const w=source.width,h=source.height;if(!w||!h)return null;
- let bounds=cache&&inventoryBounds.get(source);
+ const boundsCache=zoom===null?fittedBounds:inventoryBounds;
+ let bounds=cache&&boundsCache.get(source);
  if(!bounds){
   const pixels=source.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h).data;
-  bounds=rasterBounds(pixels,w,h);if(!bounds)return null;
-  if(cache)inventoryBounds.set(source,bounds);
+  // Nearly transparent pixels in some atlas margins do not define the silhouette.
+  bounds=rasterBounds(pixels,w,h,zoom===null?16:1);if(!bounds)return null;
+  if(cache)boundsCache.set(source,bounds);
  }
  const cw=ctx.canvas.width,ch=ctx.canvas.height,{left,top,width,height}=bounds;
- if(!Number.isFinite(zoom)||zoom<=0||!Number.isFinite(referenceScale)||referenceScale<=0)return null;
- const margin=10,target=referenceScale*zoom;
+ if((zoom!==null&&(!Number.isFinite(zoom)||zoom<=0))||!Number.isFinite(referenceScale)||referenceScale<=0)return null;
+ const margin=10;
  if(cw<=margin*2||ch<=margin*2)return null;
  const anchored=footAnchor&&Number.isFinite(footAnchor.x)&&Number.isFinite(footAnchor.y);
  const x=cw/2,y=ch-24;
  const available=(space,extent)=>extent>0?space/extent:Infinity;
- const physicalScale=anchored?Math.min(target,
+ const availableScale=anchored?Math.min(
   available(x-margin,footAnchor.x-left),available(cw-x-margin,left+width-footAnchor.x),
   available(y-margin,footAnchor.y-top),available(ch-y-margin,top+height-footAnchor.y)
- ):Math.min(target,(cw-margin*2)/width,(ch-margin*2)/height);
+ ):Math.min((cw-margin*2)/width,(ch-margin*2)/height);
+ const target=zoom===null?availableScale:referenceScale*zoom;
+ const physicalScale=Math.min(target,availableScale);
  if(!(physicalScale>0))return null;
  const dw=width*physicalScale,dh=height*physicalScale;
  const dx=anchored?x-(footAnchor.x-left)*physicalScale:Math.floor((cw-dw)/2);
@@ -46,7 +50,7 @@ function fitInventoryAvatar(ctx,source,referenceScale=1,{cache=true,zoom=3,footA
   ...(anchored?{footAnchor:{x,y}}:{})};
 }
 
-const identityKey=p=>JSON.stringify([p.appearance96||{},p.equipment||{},!!p.zoanTransformed,!!root.MareHeadgear?.hidden(p)],(key,value)=>key==='durability'?undefined:value);
+const identityKey=p=>JSON.stringify([p.appearance96||{},p.equipment||{},!!p.zoanTransformed,!!root.MareHeadgear?.hidden(p),root.MareCosmeticArt?.selection(p)],(key,value)=>key==='durability'?undefined:value);
 // Approved comparison: the 374px-tall rifle115 source draws at 105px, like the Marinheiro.
 // A fixed factor across every pose prevents frame-to-frame breathing; assets and composition stay HD.
 const WORLD_SCALE=105/374;
@@ -8547,6 +8551,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...receptor,savedFocusBody:receptor};
  }
  function selectVisual(player,o={},allowOmission=true){
+  const art=root.MareCosmeticArt,chosen=art?.selection(player);
+  if(!chosen)return selectVisualBase(player,o,allowOmission);
+  const {player:appearance,shown}=art.project(player,chosen);
+  const resolve=actor=>selectVisualBase(actor,o,allowOmission);
+  return art.decorate(resolve(appearance),shown,appearance,resolve);
+ }
+ function selectVisualBase(player,o,allowOmission){
   if(root.MareHeadgear?.alwaysHidden(player))player=visibleWorldActor(player);
   const focus=savedFocusReceiver(player,o,allowOmission);if(focus)return focus;
   const bladeHead=selectSavedBladeHead(player,o);if(bladeHead)return bladeHead;
@@ -9853,7 +9864,27 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const mask=boots?parts.filter(p=>p.id==='shorts'):parts.slice(parts.findIndex(p=>p.id==='forearm-hand-far')+1);
   return mask.map(p=>'tools/rework-weapon-layers-hd/'+rig.images[p.frames?.[frame]||p.source]);
  }
+ const cosmeticTorsoParts=['underbody','torso','upper-arm-near','forearm-hand-near'];
+ function cosmeticTorsoSources(r,frame){
+  // These modular side receivers use the same physical coordinates as the
+  // painted body. Their arm ownership cuts the fabric even during contact.
+  const rig=r.basePack||r.orderedSwordFit?.rig,p=rig?.pack,d=p?.directions[r.direction];
+  if(!r.cosmeticLayers?.coat||!['east','west'].includes(r.direction)||!d||
+     d.renderMirrorFrom||r.mirrorBody||p.density!==r.density||!r.nativeCanvas)return null;
+  const parts=cosmeticTorsoParts.map(id=>d.layers.find(layer=>layer.id===id));
+  if(parts.some(part=>!part))return null;
+  const files=parts.map(l=>rig.images[l.frames?.[frame]||l.source]);
+  if(files.some(file=>typeof file!=='string'))return null;
+  return {files:files.map(file=>'tools/rework-weapon-layers-hd/'+file),pivot:p.pivot,
+   width:p.frame.width*p.density,height:p.frame.height*p.density};
+ }
  function filesFor(r,frame){
+  if(r.cosmeticLayers){
+   const {cosmeticLayers,hatV3Hairless,...base}=r,art=root.MareCosmeticArt;
+   const file=art.hatFile(r),hairless=art.hatHairless(r);
+   return [...new Set([...filesFor(base,frame),...(cosmeticTorsoSources(r,frame)?.files||[]),
+    ...(file?[file]:[]),...(hairless?filesFor(hairless,frame):[])])];
+  }
   if(r.namedFirearmHead){const {h,base}=r.namedFirearmHead,coat=h.north&&base.rifleLower?.rifleCoat?.[frame];
    return [...filesFor(base,frame),...namedFirearmFiles(h),...(coat?[combatPlatePath(coat.frontBare)]:[])];}
   if(r.staffHelmetOuter){const {base,gear,portrait,headPath,track}=r.staffHelmetOuter;return [...filesFor(base,frame),...(portrait?portraitFiles(portrait):originalHairGearRegistry.requiredFiles(gear)),headPath,...(portrait||gear.hideHair?[combatPlatePath(track.frames[frame].head.mask)]:[])];}
@@ -9993,7 +10024,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!proof.compatible)throw Error('Head identity: '+proof.reason);
   entry.proofs[frame]=proof;
  }
- async function prepare(player,o,clipFileLimit=0){await ready;const r=selectVisual(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&(!r.gaitHat||entry.proofs[frame])&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
+ async function prepare(player,o,clipFileLimit=0){await ready;const r=selectVisual(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=cacheKeyFor(r,player),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&(!r.gaitHat||entry.proofs[frame])&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
   const job=(async()=>{try{entry=entry||{images:new Map(),proofs:[],frames:new Map(),imageLimit:Math.max(64,clipFileLimit)};await Promise.all(files.map(async p=>{if(!entry.images.has(p))entry.images.set(p,await loadShared(p));}));
   if(r.femaleNamedHairRecord)femaleNamedHairRegistry.compose(r,r.femaleNamedHairRecord,entry.images);
   validateFrameHead(r,frame,entry);
@@ -10435,6 +10466,34 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...result,info:{...result.info,source:r.id}};
  }
  function composeFrame(r,frame,entry,trackBounds=false){
+  if(r.cosmeticLayers){
+   const {cosmeticLayers,hatV3Hairless,...base}=r,art=root.MareCosmeticArt;
+   const file=art.hatFile(r),hairless=art.hatHairless(r);
+   // The original South dagger/focus sheets carry a signed hair pixel mask
+   // even where there is no separately registered hairless receiver.
+   const image=file&&entry.images.get(file),hatReady=image?.width===512&&image.height===512;
+   const signedHair=hatReady&&!hairless&&base.direction==='south'&&base.orderedDaggerHair&&
+    (base.approvedDagger13South||base.approvedFocusSouth)&&base.nativeCanvas?.join()==='640,640';
+   const brim=signedHair?art.hatPlacement(base,{density:base.density,pivot:{x:base.pivot[0]*base.density,y:base.pivot[1]*base.density}},frame)?.brim:undefined;
+   const result=composeFrame(base,frame,brim==null?entry:{...entry,hatHairCutoff:brim});
+   const ownership=cosmeticTorsoSources(r,frame);
+   const images=ownership?.files.map(file=>entry.images.get(file));
+   const anatomy=images?.every(im=>im?.width===ownership.width&&im.height===ownership.height)
+    ?{torso:images.slice(0,2),arms:images.slice(2),x:result.info.pivot.x-ownership.pivot.x*result.info.density,y:result.info.pivot.y-ownership.pivot.y*result.info.density}
+    :null;
+   let underHat=null;
+   if(hatReady&&hairless){
+    const reference={...entry,proofs:[]};
+    validateFrameHead(hairless,frame,reference);
+    underHat=composeFrame(hairless,frame,reference);
+   }else if(hatReady&&base.hdKind==='carry'&&!base.headRecord&&!base.gaitHat){
+    // The carry compositor can skip its owned hair layer without changing
+    // the head base or the registered weapon pose.
+    underHat=composeFrame(base,frame,{...entry,hideCarryHair:true});
+   }
+   try{return art.compose(result,r,frame,makeCanvas,anatomy,hatReady?{image,hairless:underHat}:null);}
+   finally{if(underHat)underHat.canvas.width=underHat.canvas.height=0;}
+  }
   if(r.namedFirearmHead)return composeNamedFirearm(r,frame,entry);
   if(entry.firearmHeadPack&&r.basePack===entry.firearmHeadPack){
    const rig=r.basePack,p=rig.pack,d=p.directions[r.direction];
@@ -11129,7 +11188,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    return composeFrame({...r,registeredPaletteBody:null},frame,{...entry,images});
   }
 
-  const canvas=makeCanvas(r.hdKind==='weapon'?r.nativeCanvas[0]:r.pack.frame.width*r.pack.density,r.hdKind==='weapon'?r.nativeCanvas[1]:r.pack.frame.height*r.pack.density);const info=(r.femaleNamedHairRecord?{render:(cx,base,imgs,opts)=>base.hdKind==='outfit'?outfitRegistry.renderWithHead(cx,base,imgs,femaleNamedHairRegistry.compose(base,base.femaleNamedHairRecord,imgs),opts):femaleNamedHairRegistry.render(cx,base,base.femaleNamedHairRecord,imgs,opts)}:usesFemaleWardrobe(r)?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).render(canvas.getContext('2d'),r,entry.images,{frame,appearance:r.colorAppearance,makeCanvas,drawGaitHat:r.gaitHat?ctx=>drawGaitHat(ctx,r,frame,entry):undefined,hiddenSlots:r.headRecord||r.gearOnlyRecord?.hideHair||r.ownGauntletHead?.hideHair&&!r.compassAnatomy&&!r.orbAnatomy&&!r.orderedAnatomy&&!r.fusedFocusAnatomy&&!r.orderedSwordFit&&!r.daggerHeadRig?['hair']:[]});
+  const canvas=makeCanvas(r.hdKind==='weapon'?r.nativeCanvas[0]:r.pack.frame.width*r.pack.density,r.hdKind==='weapon'?r.nativeCanvas[1]:r.pack.frame.height*r.pack.density);const info=(r.femaleNamedHairRecord?{render:(cx,base,imgs,opts)=>base.hdKind==='outfit'?outfitRegistry.renderWithHead(cx,base,imgs,femaleNamedHairRegistry.compose(base,base.femaleNamedHairRecord,imgs),opts):femaleNamedHairRegistry.render(cx,base,base.femaleNamedHairRecord,imgs,opts)}:usesFemaleWardrobe(r)?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).render(canvas.getContext('2d'),r,entry.images,{frame,appearance:r.colorAppearance,makeCanvas,
+   hatHairCutoff:entry.hatHairCutoff,drawGaitHat:r.gaitHat?ctx=>drawGaitHat(ctx,r,frame,entry):undefined,
+   hiddenSlots:entry.hideCarryHair||r.headRecord||r.gearOnlyRecord?.hideHair||r.ownGauntletHead?.hideHair&&!r.compassAnatomy&&!r.orbAnatomy&&!r.orderedAnatomy&&!r.fusedFocusAnatomy&&!r.orderedSwordFit&&!r.daggerHeadRig?['hair']:[]});
   const carryInset=(r.hdKind==='carry'||r.hdKind==='outfit-carry')?(r.plan.paddingPhysical??0):0;
   if(r.headRecord){
    const {width,height}=r.pack.frame,density=r.pack.density;
@@ -11179,9 +11240,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const idle=pause();if(idle)await idle;
   }
  }
+ function cacheKeyFor(r,player){
+  const material=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{});
+  return r.cosmeticLayers?material+'|cosmetics:'+JSON.stringify(r.cosmeticLayers):material;
+ }
  function sourceKeyFor(r,player){
   const clock=r.hdKind==='weapon'?[r.timeline,r.fps,r.orderedAttack,r.visualSampling]:r.pack.directions[r.direction].clip;
-  return JSON.stringify([r.id,r.hdKind,r.resolvedAction??r.action,r.direction,clock,r.colorAppearance||player.appearance96||{}]);
+  return JSON.stringify([r.id,r.hdKind,r.resolvedAction??r.action,r.direction,clock,r.colorAppearance||player.appearance96||{},r.cosmeticLayers]);
  }
  // A committed bundle owns rendered frame surfaces, outside the opportunistic
  // preview cache. Share decoded sources across all poses of one preparation.
@@ -11306,7 +11371,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       if(frames)for(const {canvas} of new Set(frames.values())){canvas.width=0;canvas.height=0;}
       sources.delete(key);
       unavailable.set(failed[0],e);
-      r=assembleIndependentPose(plan,unavailable);
+      const rebuilt=assembleIndependentPose(plan,unavailable);
+      r=r.cosmeticLayers?root.MareCosmeticArt.decorate(rebuilt,Object.fromEntries(
+       Object.entries(r.cosmeticLayers).map(([slot,part])=>[slot,part.id])),player,()=>r.hatV3Hairless):rebuilt;
      }
     }
     routes.set(slot,{r,key,options});
@@ -11319,7 +11386,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     coverage.push({action:pose.options.action,direction:pose.options.direction,weaponless:!!pose.options.weaponless,
      resolvedAction:r.resolvedAction??r.action,source:r.id,frames:sources.get(key).size,
      omitted:r.omitted||resolved.omitted||[],unsupported:resolved.unsupported||[],
-     ...(slotRoutes?{slotRoutes}:{}),...(r.slotResolution?{slotResolution:r.slotResolution}:{})});
+     ...(slotRoutes?{slotRoutes}:{}),...(r.slotResolution?{slotResolution:r.slotResolution}:{}),
+     ...(r.cosmeticLayers?{cosmetics:Object.fromEntries(Object.entries(r.cosmeticLayers).map(([slot,part])=>[slot,{...part,
+      drawnFrames:[...sources.get(key).values()].filter(f=>f.info.cosmeticPasses?.includes(slot)).length}]))}:{})});
    }
   }catch(e){clearEditors();clearSources();throw e;}
   function view(o){const route=routes.get(routeKey(o));return route&&editors.get(route.key);}
@@ -11346,7 +11415,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function draw(ctx,player,o={}){
   const r=selectVisual(player,o);if(!r){last={state:state==='ready'?'uncovered':'loading',action:o.action,direction:o.direction,reason:'No compatible exact or registered layered source for this pose.'};return false;}
-  const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),entry=cache.get(sourceKey);if(!entry||!entry.frames.has(frame)&&!filesFor(r,frame).every(p=>entry.images.has(p))){void prepare(player,o);last={state:failures.has(sourceKey+':'+frame)?'failed':'loading',source:r.id};return false;}
+  const frame=frameFor(r,o),sourceKey=cacheKeyFor(r,player),entry=cache.get(sourceKey);if(!entry||!entry.frames.has(frame)&&!filesFor(r,frame).every(p=>entry.images.has(p))){void prepare(player,o);last={state:failures.has(sourceKey+':'+frame)?'failed':'loading',source:r.id};return false;}
   cache.delete(sourceKey);cache.set(sourceKey,entry);
   let result=entry.frames.get(frame);if(!result){try{result=composeFrame(r,frame,entry);entry.frames.set(frame,result);while(entry.frames.size>3)entry.frames.delete(entry.frames.keys().next().value);}catch(e){failures.set(sourceKey+':'+frame,e.message);error=e.message;last={state:'failed',source:r.id,reason:e.message};onChange();return false;}}
   return paint(ctx,player,o,r,frame,result);
@@ -11375,7 +11444,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const fitted=fitInventoryAvatar(ctx,result.canvas,WORLD_SCALE,{zoom:o.avatarZoom,footAnchor});if(!fitted)return false;
    if(result.offset){fitted.bounds={...fitted.bounds,left:fitted.bounds.left+result.offset[0],top:fitted.bounds.top+result.offset[1]};}
    last={state:'rendered',consumer:o.avatarConsumer,source:r.id,hdKind:r.hdKind,action:o.action,direction:o.direction,
-    omitted:r.omitted||[],slotRoutes:r.slotRoutes||{},frame,...fitted};return true;
+    omitted:r.omitted||[],slotRoutes:r.slotRoutes||{},frame,...fitted,...(result.info.cosmeticPasses?{cosmeticPasses:result.info.cosmeticPasses}:{})};return true;
   }
   let x=o.x||0,y=o.y||0;
   const appearanceFit=o.action==='idle'&&(o.previewFit==='appearance'||
@@ -11405,7 +11474,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // through the female equipment compositor, rather than the base outfit path.
   const renderedHead=r.femaleNamedHairRecord||(r.body==='female'&&
    (usesFemaleWardrobe(r)||['authored-north-layered','profile-separated'].includes(r.hdKind))?r.material:null);
-  last={state:'rendered',source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame,width:result.info.width,height:result.info.height,pivot:result.info.pivot,density:result.info.density,physicalScale,sourceScale:1,status:r.status,approval:r.approval,eyeStyle:r.eyeStyle||renderedHead?.eyeStyle,skinPalette:renderedHead?.skinColor,hairPalette:renderedHead?.hairColor,faceProtectedExact:!!renderedHead?.faceProtectedExact,faceProtectedExceptIris:!!renderedHead?.faceProtectedExceptIris,headSourceScale:renderedHead?.sourceScale,headStatus:renderedHead?'semantic-fringe-ownership-candidate':r.gearOnlyRecord?'gear-only-candidate-calibration':r.headRecord?.status,headIdentity:renderedHead?(renderedHead.eyeStyle?'original-face-with-eye-style':'original-face-protected-exact'):r.gearOnlyRecord?'exact-head-original-hair-preserved':r.headRecord||r.namedFirearmHead?'exact-head-source-pixels':'authored-original',headOcclusion:renderedHead?.gearRecord?renderedHead.gearPolicy:r.gearOnlyRecord?.occlusion,headGearScale:r.gearOnlyRecord?.sourceScale,headGearSource:r.gearOnlyRecord?.gear.source||renderedHead?.gearRecord?.layers.find(l=>l.id===renderedHead.gearRecord.headgearPolicy?.gearId)?.source,headGearId:r.gearOnlyRecord?.id,...(r.slotRoutes?{omitted:r.omitted,slotRoutes:r.slotRoutes}:{})};return true;
+  last={state:'rendered',source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame,width:result.info.width,height:result.info.height,pivot:result.info.pivot,density:result.info.density,physicalScale,sourceScale:1,status:r.status,approval:r.approval,eyeStyle:r.eyeStyle||renderedHead?.eyeStyle,skinPalette:renderedHead?.skinColor,hairPalette:renderedHead?.hairColor,faceProtectedExact:!!renderedHead?.faceProtectedExact,faceProtectedExceptIris:!!renderedHead?.faceProtectedExceptIris,headSourceScale:renderedHead?.sourceScale,headStatus:renderedHead?'semantic-fringe-ownership-candidate':r.gearOnlyRecord?'gear-only-candidate-calibration':r.headRecord?.status,headIdentity:renderedHead?(renderedHead.eyeStyle?'original-face-with-eye-style':'original-face-protected-exact'):r.gearOnlyRecord?'exact-head-original-hair-preserved':r.headRecord||r.namedFirearmHead?'exact-head-source-pixels':'authored-original',headOcclusion:renderedHead?.gearRecord?renderedHead.gearPolicy:r.gearOnlyRecord?.occlusion,headGearScale:r.gearOnlyRecord?.sourceScale,headGearSource:r.gearOnlyRecord?.gear.source||renderedHead?.gearRecord?.layers.find(l=>l.id===renderedHead.gearRecord.headgearPolicy?.gearId)?.source,headGearId:r.gearOnlyRecord?.id,...(result.info.cosmeticPasses?{cosmeticPasses:result.info.cosmeticPasses}:{}),...(r.slotRoutes?{omitted:r.omitted,slotRoutes:r.slotRoutes}:{})};return true;
  }
  // Use the exact normal-player idle selector but don't replace any of
  // the world's last/held poses or request the full world pose preparation.
@@ -11424,10 +11493,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  async function prepareForPlayer(player,o={}){if(!o.consumer||o.consumer==='world'){const key=identityKey(player)+'|'+!!root.MareAppearance96+'|'+!!root.MareCharacterAppearance;if(!preparedDirections.has(key)){const task=(async()=>{for(const direction of ['south','east','west','north'])await prepareStablePose(player,{action:'idle',direction,consumer:'world'});})();preparedDirections.set(key,task);while(preparedDirections.size>8)preparedDirections.delete(preparedDirections.keys().next().value);}await preparedDirections.get(key);}return prepare(player,o);}
  // Prepare the exact directional rest pose without claiming it was drawn in the world.
  async function prepareStablePose(player,o={}){if(!await prepare(player,o))return false;const key=identityKey(player)+'|'+(o.consumer||'world'),previous=last,held=lastRendered.get(key);try{return draw(makeCanvas(1,1).getContext('2d'),player,{...o,x:0,y:0,preview:false});}finally{last=previous;if(held)lastRendered.set(key,held);else lastRendered.delete(key);}}
- function canDrawStable(player,o={}){if(!selectVisual(player,o)||failureFor(player,o))return false;const prepared=pose=>{const r=selectVisual(player,pose);if(!r||failureFor(player,pose))return false;const frame=frameFor(r,pose),entry=cache.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}));return !!entry&&(entry.frames.has(frame)||filesFor(r,frame).every(p=>entry.images.has(p)));};return prepared(o)||lastRendered.has(identityKey(player)+'|'+(o.consumer||'world')+'|'+o.direction)||o.action!=='idle'&&prepared({...o,action:'idle',time:0,progress:0});}
+ function canDrawStable(player,o={}){if(!selectVisual(player,o)||failureFor(player,o))return false;const prepared=pose=>{const r=selectVisual(player,pose);if(!r||failureFor(player,pose))return false;const frame=frameFor(r,pose),entry=cache.get(cacheKeyFor(r,player));return !!entry&&(entry.frames.has(frame)||filesFor(r,frame).every(p=>entry.images.has(p)));};return prepared(o)||lastRendered.has(identityKey(player)+'|'+(o.consumer||'world')+'|'+o.direction)||o.action!=='idle'&&prepared({...o,action:'idle',time:0,progress:0});}
  function drawStable(ctx,player,o={}){const key=identityKey(player);if(!selectVisual(player,o)){last={state:'uncovered',action:o.action,direction:o.direction,reason:'No compatible source for this pose'};return false;}if(draw(ctx,player,o))return true;if(failureFor(player,o))return false;const consumerKey=key+'|'+(o.consumer||'world'),held=lastRendered.get(consumerKey+'|'+o.direction);if(!held&&o.action!=='idle'){const loading=last;if(draw(ctx,player,{...o,action:'idle',time:0,progress:0})){last={...last,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction};return true;}last=loading;}if(held?.key===key){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(held.canvas,(o.x||0)-held.info.pivot.x*WORLD_SCALE,(o.y||0)-held.info.pivot.y*WORLD_SCALE,held.info.width*WORLD_SCALE,held.info.height*WORLD_SCALE);ctx.restore();last={...held.pose,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction,physicalScale:WORLD_SCALE,sourceScale:1};return true;}return false;}
  const height=player=>{const held=lastRendered.get(identityKey(player)+'|world');return held?.key===identityKey(player)?held.info.visualHeight*WORLD_SCALE:null;};
- function failureFor(player,o={}){const r=selectVisual(player,o);return r?failures.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{})+':'+frameFor(r,o)):null;}
+ function failureFor(player,o={}){const r=selectVisual(player,o);return r?failures.get(cacheKeyFor(r,player)+':'+frameFor(r,o)):null;}
  return {ready,warmSwordCheckpoint,attackActionFor:item=>weaponRegistry?.attackAction(item),prepare:prepareForPlayer,prepareClip,prepareConfiguration,sourceKeyFor,prepareStablePose,prepareFamily,draw,drawFittedAvatar,drawStable,canDrawStable,height,select,selectLayered,selectVisual,selectIndependentWorld,resolveMaleGaitTorsoSource,resolveMaleGaitHeadSource,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
 }
 const api={create,fitInventoryAvatar};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports=api;

@@ -4,15 +4,18 @@ import { createRequire } from "node:module";
 import { randomUUID } from "node:crypto";
 const require = createRequire(import.meta.url);
 const { createSession } = require("../../apps/account-client/game-session.js");
+const cosmeticsCatalog = require("../../cosmetics.js");
 const id = "11111111-1111-4111-8111-111111111111";
 function fixture(options:any={}) {
   let version = 0,
     fail = false;
   let renewalStatus=200, acquisitionStatus=200, stateStatus=200;
+  let cosmetics=options.withCosmetics?cosmeticsCatalog.normalize():undefined;
   const requests: any[] = [],
     storage = new Map();
   const snapshot = () => ({
     ...(options.frameSupport?{sync:{protocol:1}}:{}),
+    ...(cosmetics?{cosmetics}:{}),
     state: { characterId: id, version, level: 1, experience: "20", gold: "8" },
     progression: { xpIntoLevel: "20", xpForNextLevel: "80" },
     journey: { started: true },
@@ -60,7 +63,12 @@ function fixture(options:any={}) {
         return acquisitionStatus===200?Response.json({ epoch: 1, token: "x".repeat(43) }):Response.json({error:'control_conflict'},{status:409});
       if (path.endsWith("/commands")) {
         if (fail) throw new Error("lost reply");
-        version++;
+        const intent=JSON.parse(o.body);
+        if(cosmetics&&intent.action.startsWith('cosmetics.')){
+          const updated=cosmeticsCatalog.execute(cosmetics,intent.action,intent.payload);
+          if(JSON.stringify(updated)!==JSON.stringify(cosmetics))version++;
+          cosmetics=updated;
+        }else version++;
         return Response.json({});
       }
       if (path === "/v1/auth/logout")
@@ -95,6 +103,27 @@ test("game session owns identity and economic commands; it stores only intent an
   assert.equal(body.expectedVersion, 0);
   assert.equal(body.payload.accountId, undefined);
   assert.equal(f.storage.size, 0);
+});
+
+test('cosmetics refresh the owned collection and slots through the online session',async()=>{
+  const f=fixture({withCosmetics:true});
+  await f.client.load();await f.client.acquire();
+  const before=f.client.data.online,hat='east-blue-hat';
+  await assert.rejects(f.client.command('cosmetics.equip',{cosmeticId:hat,attack:999}),{code:'invalid_intent'});
+  await assert.rejects(f.client.command('cosmetics.unequip',{slot:'ring'}),{code:'invalid_intent'});
+  await f.client.command('cosmetics.claim-demo');
+  assert.equal(f.client.data.online.cosmetics.owned.length,4);
+  await f.client.command('cosmetics.equip',{cosmeticId:hat});
+  assert.deepEqual(f.client.data.online.cosmetics.equipped,{head:hat});
+  await f.client.command('cosmetics.unequip',{slot:'head'});
+  assert.deepEqual(f.client.data.online.cosmetics.equipped,{});
+  assert.deepEqual(f.client.data.online.inventory,before.inventory);
+  assert.equal(f.client.data.online.state.gold,before.state.gold);
+  const claimedVersion=f.client.data.online.state.version;
+  await f.client.command('cosmetics.claim-demo');
+  assert.equal(f.client.data.online.state.version,claimedVersion);
+  assert.equal(f.requests.filter(r=>r.path.endsWith('/online-state')).length,5);
+  assert.equal(f.requests.filter(r=>r.path.endsWith('/commands')).length,4);
 });
 
 test('commands reuse identity and short-lived memory CSRF instead of serial redundant reads',async()=>{

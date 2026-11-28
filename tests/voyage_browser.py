@@ -37,7 +37,7 @@ with sync_playwright() as p:
    choose(q,id);assert q.locator('#dungeonName').inner_text()==NAMES[n]
    assert q.locator('.dungeon-range strong').inner_text()==f'{n*10+1}–{n*10+10}'
    assert diag(q)['scene']=='lobby' and diag(q)['hero']['x']==d0['hero']['x']
-   assert items(saved(q))==before;assert 'Não estimada' in q.locator('.dungeon-facts').inner_text();bounds(q)
+   assert items(saved(q))==before;assert 'Entrada' in q.locator('.dungeon-facts').inner_text();assert q.get_by_text('Drops possíveis',exact=True).is_visible();bounds(q)
    if n<6:
     q.wait_for_function('document.querySelector("[data-monster-preview]")?.naturalWidth>0')
     assert q.locator('.dungeon-monster').get_attribute('data-state')=='available'

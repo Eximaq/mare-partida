@@ -101,10 +101,11 @@ jobs:
           assert(world.navigation('orange').walkable(world.maps.orange.spawn.x,world.maps.orange.spawn.y));
           assert.equal(battle.create('alabasta',{maxHP:200,maxEnergy:90},0,()=>.5).mobs.length,10);
           assert(world.navigation('alabasta').walkable(world.maps.alabasta.spawn.x,world.maps.alabasta.spawn.y));
-          assert.equal(getGameCatalog().items.length, 246);
+          assert.equal(getGameCatalog().items.length, 247);
+          assert.equal(getGameCatalog().items[246]?.id, 'visual_completo_luffy');
           assert.equal(getGameCatalog().slots.length, 13);
           assert(getGameCatalog().slots.includes('visual_completo'));
-          assert.equal(getGameCatalog().rulesHash, 'c4becaac75ee93b6dd15b78e6b53d133e0977e74285519a7c03b059c6925a367');
+          assert.equal(getGameCatalog().rulesHash, 'c91b3a6f253d3ced1d671f7a27686323ca81f9d9f0496b23379bf20005a1e2ef');
           assert.notEqual(process.getuid(), 0);
           for (const path of ['/app/.env', '/app/.git', '/app/game.js', '/app/node_modules/typescript']) {
             assert.equal(existsSync(path), false, path);

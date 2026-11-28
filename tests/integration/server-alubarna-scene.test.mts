@@ -71,7 +71,7 @@ test('Alubarna city migration reanchors all five recognized maps once and preser
     const row=expected.character_world.find((r:any)=>r.character_id===a.c.id);row.rules_hash=W.rulesHash;
     if(i<5)Object.assign(row,{...sceneSpawn,path:[],speed:0,motion_until:row.started_at});
    }
-   assert.deepEqual(await applyMigrations(f.pool),[sceneMigration,'0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql']);assert.deepEqual(await snapshot(f.pool),expected);
+   assert.deepEqual(await applyMigrations(f.pool),[sceneMigration,'0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql','0079_character_cosmetics.sql']);assert.deepEqual(await snapshot(f.pool),expected);
    assert.deepEqual(await applyMigrations(f.pool),[]);await f.pool.query(await readFile(new URL(sceneMigration,source),'utf8'));assert.deepEqual(await snapshot(f.pool),expected);
    for(const [i,a] of people.slice(0,5).entries()){
     const resumed=await a.read();assert.deepEqual(resumed.world.position,sceneSpawn);assert.equal(resumed.world.mapId,areas[i]);assert.equal(resumed.battle.rulesHash,E.rulesHash);

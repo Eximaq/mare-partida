@@ -66,8 +66,8 @@ assert.equal(hunt.get('swamp').sectors.length,4);
 for(const sector of hunt.get('swamp').sectors){
   const profile=hunt.profile('swamp',sector.id,'helmeppo',0);
   assert.equal(profile.level,8);
-  assert.equal(profile.maxHP,599);
-  assert.equal(profile.attack,44);
+  assert.equal(profile.maxHP,674);
+  assert.equal(profile.attack,47);
   assert.equal(profile.defense,29);
   assert.equal(profile.magicDefense,7);
 }

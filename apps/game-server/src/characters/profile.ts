@@ -9,6 +9,7 @@ import {readTalents} from './talents.js';
 import {readFighter} from './fighter.js';
 import {readOriginalInventory,writeInventory} from '../gameplay/inventory.js';
 import {getGameCatalog} from '../gameplay/catalog.js';
+import {cosmeticCollection} from './cosmetics.js';
 const require=createRequire(import.meta.url),A=require('../../../../character-appearance.js'),T=require('../../../../talent-system.js'),engine=require('../../../../world-battle.cjs'),forge=require('../../../../forge-system.js');
 const preferences={hideItems:false,hideHeadgear:false,healThreshold:.7};
 async function available(client:PoolClient){return !!(await client.query("SELECT to_regclass('mare_game.character_profile') present")).rows[0].present;}
@@ -23,8 +24,10 @@ async function raw(client:PoolClient,id:string){
 }
 export async function readProfile(client:PoolClient,id:string){
  if(!await available(client))return null;
- const row=await raw(client,id),identity=(await client.query('SELECT name,class_id,faction_id,created_at FROM mare_game.characters WHERE id=$1',[id])).rows[0];
- return {rulesetId:'original-profile-v1',appearance:appearanceSchema.parse(row.appearance),preferences:preferencesSchema.parse(row.preferences),identity:{name:identity.name,classId:identity.class_id,factionId:identity.faction_id},createdAt:identity.created_at.toISOString()};
+ await initializeProfile(client,id);
+ const row=(await client.query(`SELECT p.appearance,p.preferences,to_jsonb(p)->'cosmetics' cosmetics,c.name,c.class_id,c.faction_id,c.created_at
+   FROM mare_game.character_profile p JOIN mare_game.characters c ON c.id=p.character_id WHERE p.character_id=$1`,[id])).rows[0];
+ return {profile:{rulesetId:'original-profile-v1',appearance:appearanceSchema.parse(row.appearance),preferences:preferencesSchema.parse(row.preferences),identity:{name:row.name,classId:row.class_id,factionId:row.faction_id},createdAt:row.created_at.toISOString()},cosmetics:cosmeticCollection(row.cosmetics)};
 }
 export async function mutateProfile(client:PoolClient,id:string,input:CharacterCommand,state:CharacterState){
  if(!['profile.appearance','profile.preferences','profile.identity'].includes(input.action))throw new AuthFault(400,'invalid_request');

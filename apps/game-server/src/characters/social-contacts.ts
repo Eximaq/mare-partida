@@ -6,6 +6,7 @@ import {AuthFault} from '../auth/errors.js';
 import {crewCapacity,type CrewFacilities} from './crew-config.js';
 import {readPublicBounty} from './bounty.js';
 import {readPublicProfileInputs} from './combat-inputs.js';
+import {equippedCosmetics} from './cosmetics.js';
 
 const require=createRequire(import.meta.url);
 const hierarchy=require('../../../../hierarchy-system.js');
@@ -201,7 +202,7 @@ type PersonRow = {
   id:string; name:string; class_id:string; faction_id:string; level:number;
   hierarchy_tier:number|null; hierarchy_power:number|null;
   appearance:unknown; preferences:{hideHeadgear?:boolean;hideItems?:boolean}|null;
-  equipment:Record<string,{def?:number}|null>|null;
+  equipment:Record<string,{def?:number}|null>|null; cosmetics:unknown;
   crew_tag:string|null; crew_flag:string|null; crew_id:string|null;
   party_id:string|null; party_unavailable:boolean; crew_entry_blocked:boolean;
   party_invite_pending:boolean; crew_invite_pending:boolean;
@@ -275,6 +276,7 @@ function projectPerson(person:PersonRow,actor:ActorInvites,friendOrConversation:
   return {
     id:person.id,name:person.name,classId:person.class_id,factionId:person.faction_id,level:person.level,
     appearance96:person.appearance,hideHeadgear:!!person.preferences?.hideHeadgear,equipment,
+    ...(!blocked&&person.cosmetics!=null?{cosmetics:equippedCosmetics(person.cosmetics,!!person.preferences?.hideItems)}:{}),
     ...(!blocked?{publicProfile:{
       title:hierarchy.title(person.faction_id,person.hierarchy_tier??1) as string,
       power:person.hierarchy_power,
@@ -296,7 +298,7 @@ async function readPeople(client:PoolClient,id:string,ids:readonly string[],acto
   if(!ids.length)return [];
   return (await client.query<PersonRow>(`
     SELECT c.id,c.name,c.class_id,c.faction_id,coalesce(g.level,1) level,rh.tier hierarchy_tier,rh.power hierarchy_power,
-      pr.appearance,pr.preferences,i.equipment,h.tag crew_tag,h.flag crew_flag,h.id crew_id,
+      pr.appearance,pr.preferences,i.equipment,to_jsonb(pr)->'cosmetics'->'equipped' cosmetics,h.tag crew_tag,h.flag crew_flag,h.id crew_id,
       pm.party_id,((b.simulation->>'prison') IS NOT NULL OR (b.simulation->>'dungeon') IS NOT NULL) party_unavailable,
       (cb.until_at>clock_timestamp()) IS TRUE crew_entry_blocked,
       EXISTS(SELECT 1 FROM mare_game.party_invites pi WHERE pi.party_id=$4 AND pi.target_id=c.id
@@ -442,7 +444,7 @@ export async function readSocialProfile(client:PoolClient,id:string,targetId:str
     if(item)items[slot]=projectPublicItem(item,slot==='visual_completo'||power===null?null:power-inputs.permanentPower(slot));
   }
   return {character:projectPerson({
-    ...person,equipment:equipment??person.equipment,hierarchy_power:power??person.hierarchy_power,
+    ...person,equipment:equipment??person.equipment,cosmetics:inputs?.cosmetics??person.cosmetics,hierarchy_power:power??person.hierarchy_power,
     preferences:{...person.preferences,hideItems},
   },actor,canMessage,{bounty,items})};
 }

@@ -313,6 +313,7 @@
   const itemDefs=catalog.items,slotNames=catalog.slotNames,inventorySlotsLeft=catalog.inventorySlotsLeft,inventorySlotsRight=catalog.inventorySlotsRight,BAG_CAPACITY=catalog.capacity,healerWeaponIndex=catalog.healerWeaponIndex;
   const rarityNames = Object.fromEntries(Object.entries(MareForge.rarity).map(([id,r])=>[id,r.name]));
   const inventoryUI={query:'',category:'all',sort:'recent',rarity:'all',page:0,tab:'equipment'};
+  const visualInventoryUI={selection:null};
   let inventoryGridObserver=null,inventoryGridFrame=0;
   let inventoryForgeReturn=null;
   const questDefs = MareContracts.quests;
@@ -1113,7 +1114,7 @@
     world.nextID=1;
     const initialWeapon = starterWeapon(cls);
     const g={version:VERSION,talentVersion:MareTalents.VERSION,talentLegacyBudget:0,name,classId:cls,factionId:selectedFaction,level:1,xp:0,xpCurveVersion:MareCharacterCatalog.xpCurveVersion,gold:120,hp:0,energy:0,inventory:[],equipment:Object.fromEntries([...inventorySlotsLeft,...inventorySlotsRight].map(key=>[key,null])),potions:4,materials:0,stats:{kills:0,crab:0,bandit:0,spirit:0,boss:0,damage:0,goldEarned:0,xpEarned:0},claimed:[],area:'beach',created:Date.now(),totalPlay:0,hasSeenBoss:false,preferences:{hideItems:false}};
-    Object.assign(g,MareCharacters.migrate(g),{forgeVersion:MareForge.VERSION,forgeSeq:0,forgeHistory:[]});
+    Object.assign(g,MareCharacters.migrate(g),{forgeVersion:MareForge.VERSION,forgeSeq:0,forgeHistory:[],cosmetics:MareCosmetics.normalize()});
     g.equipment.weapon = newItem(itemDefs[initialWeapon]); g.equipment.coat = newItem(itemDefs[6]); g.inventory.push(newItem(itemDefs[8])); g.hp=getDerived(g).maxHP;g.energy=getDerived(g).maxEnergy;
     return MareBossDungeons.migrate(MareHierarchy.migrate(MareAkuma.migrate(MareHaki.migrate(MareTalents.migrate(MarePrison.migrate(MareHunt.migrate(g)))))));
   }
@@ -1159,6 +1160,7 @@
     if(raw&&!localStorage.getItem(key))localStorage.setItem(key,raw);
   }
   function loadGame(){try{let data=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(!data||!classes[data.classId]||!Number.isInteger(data.level)||data.level<1||typeof data.name!=='string'||!data.equipment)return null;let clean={...data,claimed:Array.isArray(data.claimed)?data.claimed:[],inventory:Array.isArray(data.inventory)?data.inventory:[],stats:{kills:0,crab:0,bandit:0,spirit:0,boss:0,damage:0,goldEarned:0,xpEarned:0,...data.stats}};for(const slot of [...inventorySlotsLeft,...inventorySlotsRight])if(!(slot in clean.equipment))clean.equipment[slot]=null;
+      clean.cosmetics=MareCosmetics.normalize(clean.cosmetics);
       if(clean.appearance96)clean.appearance96=MareCharacterAppearance.normalize(clean.appearance96);
       if(!clean.preferences||typeof clean.preferences!=='object')clean.preferences={};
       if(!zones[clean.area])clean.area='beach';if(!factions[clean.factionId])clean.factionId='pirate';
@@ -1616,7 +1618,7 @@
   function outputDamage(m,amount,crit=false,visual={},wear=null){if(!m||!m.alive||m.hp<=0||m.returning||m.isUntargetable||m.isInvulnerable||!Number.isFinite(amount)||amount<=0)return 0;MareMonsterBehavior.hurt(m);MareHaki.touch(game,session.haki);if(m.rankSFreezeUntil>world.time){amount+=m.rankSFreezePower||0;m.rankSFreezeUntil=0;m.rankAStunUntil=0;m.rankSIceSlowUntil=world.time+3;m.rankSIceHeavyAttackUntil=world.time+3;}const damage=Math.min(m.hp,Math.max(1,MareCharacters.monsterDamage(amount)));m.hp=Math.max(0,m.hp-damage);if(damage>0&&wear&&!ONLINE_GAME)MareForge.confirmWear(wear,game,itemDefs);MareSpriteCombatV2.hurt(m,damage,world.time,{protected:m.hp<=0||!!m.telegraph});m.hit=.25;game.stats.damage+=damage;const fruitVisual=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs);emitCombatVfx(MareCombatVfx.classify({fruitId:fruitVisual?.id,name:fruitVisual?.skills?.[0]?.name||'',damageType:fruitVisual?.family==='logia'?'magic':undefined,...visual}),m,visual);spawnVisual(m.x+rand(-8,8),m.y-40,String(damage),crit?'#ffcd73':'#fff5e4',crit?22:15);if(((getDerived().fruitLifesteal||0)>0||wolfAuraActive())&&!session.wolfLeechResolving){session.wolfLeechResolving=true;try{session.healingDone+=restoreHero(damage*((getDerived().fruitLifesteal||0)+(wolfAuraActive()?MareWolf.rules.lifesteal:0)),{ignoreEfficiency:true});}finally{session.wolfLeechResolving=false;}}if(m.hp<=0)killMob(m);return damage;}
   function basicAttackIdentity(){return game?.zoanTransformed&&equippedZoan()?equippedZoan().id:game?.classId+':'+game?.factionId;}
   function basicAttackPose(){const a=session?.basicAttack;return a?.clock.locked()?a.clock.snapshot():null;}
-  function cancelBasicAttack(){if(session?.basicAttack)session.basicAttack.clock.reset();if(session)session.basicAttack=null;if(world?.hero)world.hero.attackAnim=0;}
+  function cancelBasicAttack(){if(session?.basicAttack)session.basicAttack.clock.reset();if(session){session.basicAttack=null;session.classSkillPose=null;}if(world?.hero)world.hero.attackAnim=0;}
   function retimeAttack(clock,speed){
     const before=clock?.snapshot();if(!before?.scaled||!clock.setAttackSpeed(speed))return;
     const after=clock.snapshot();if(session.attackClock>0)session.attackClock*=after.duration/before.duration;
@@ -1643,7 +1645,7 @@
       playOrangeSfx(orangeBasicSfx());
       if(world.mobs.includes(m))heroAttack(m,mult,null,area,true,wear);
     }});
-    session.basicAttack={clock,identity,area:zone};world.hero.walking=0;syncBasicAttackVisual();return true;
+    session.basicAttack={clock,identity,area:zone};session.classSkillPose=null;world.hero.walking=0;syncBasicAttackVisual();return true;
   }
   function heroAttack(m,mult=1,skill=null,area=false,commit=false,wear=null){
     if(!commit&&actionLocked()||hoyaActive()||session.jikiCharge)return false;
@@ -1657,7 +1659,7 @@
       faceCombatTarget(m);world.hero.walking=0;
       const action=skill?'skill':classCombat.basicAction(game,world.hero),execution=wear||captureWear();
       const accepted=controller.play(action,{direction:world.hero.direction,...(!skill?{attackSpeed:s.speed}:{}),onImpact:()=>{if(!skill)playOrangeSfx(orangeBasicSfx());heroAttack(m,mult,skill,area,true,execution);}});
-      if(accepted){controller.visualClip=null;if(!skill)world.hero.combatSequence++;}
+      if(accepted){controller.visualClip=null;controller.visualSkillIndex=null;controller.visualClassId=null;controller.visualDirection=null;session.classSkillPose=null;if(!skill)world.hero.combatSequence++;}
       return accepted;
     }
     if(!controller&&!commit&&!skill)return beginBasicAttack(m,mult,area,s.speed);
@@ -1750,24 +1752,35 @@
         const effect=classSkillEffect(skill);if(effect)emitCombatVfx(effect,game.classId==='rogue'?world.hero:m);
       }
     };
+    let visualClock=controller;
     if(controller){
       const action=classCombat.basicAction(game,world.hero);
       if(!self)faceCombatTarget(m);
       if(!controller.play(action,{direction:world.hero.direction,onImpact:impact}))return false;
       world.hero.walking=0;
     }else if(!self||skill.type==='heal'){
-      faceCombatTarget(m);
+      if(!self)faceCombatTarget(m);
       const clock=MareCombatAnimation.create({attack:{frames:4,fps:8,impact_frame:2,loop:false}});
       clock.play('attack',{direction:skill.element==='lightning'?'south':world.hero.direction,onImpact:impact});
       session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};
+      visualClock=session.basicAttack;
       world.hero.walking=0;syncBasicAttackVisual();
     }
-    if(controller&&game.classId==='sword')controller.visualClip=({'Corte de Maré':'specialTide','Arco do Horizonte':'specialHorizon'})[skill.name]||null;
-    if(session.basicAttack&&game.classId==='sword')session.basicAttack.visualClip=({'Corte de Maré':'specialTide','Arco do Horizonte':'specialHorizon'})[skill.name]||null;
+    presentClassSkill(i,skill,visualClock);
     game.energy-=energyCost;session.skillEnergySpent+=energyCost;session.cooldowns[i]=MareAttributeRules.cooldown(MareAkumaPassives.cooldown(skill.cd,MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id),skill,getDerived())*(game.factionId==='government'?.92:1);
     session.skillUses=session.skillUses||[0,0];session.skillUses[i]++;
     if(!controller&&self&&skill.type!=='heal')impact();
     return true;
+  }
+  function presentClassSkill(index,skill,clock=null,duration=.5){
+    // Cosmetic metadata follows the accepted action; this never owns a combat impact.
+    session.classSkillPose=null;
+    if(clock){
+      clock.visualSkillIndex=index;clock.visualClassId=game.classId;clock.visualDirection=world.hero.direction;
+      clock.visualClip=game.classId==='sword'?({'Corte de Maré':'specialTide','Arco do Horizonte':'specialHorizon'})[skill.name]||null:null;
+    }else{
+      session.classSkillPose={index,classId:game.classId,area:game.area,direction:world.hero.direction,started:world.time,duration:Number.isFinite(duration)&&duration>0?duration:.5};
+    }
   }
   function useAutoSkills(stats){
     if(!autoPlay||!autoSkills||actionLocked()||world.time<(session.nextSkillDecision||0))return false;
@@ -2039,7 +2052,7 @@
     if(onlineBattleSeq===null)onlineBattleSeq=b.seq;
     for(const e of b.events.filter(e=>e.seq>onlineBattleSeq)){
       const m=world.mobs.find(m=>m.id===e.id);
-      if(e.type==='attack'&&m){faceCombatTarget(m);const clock=MareCombatAnimation.create({attack:game.zoanTransformed?MareZoanArt.attackTiming(equippedZoan().id,world.hero.direction):{frames:4,fps:8,impact_frame:2,loop:false}});clock.play('attack',{direction:world.hero.direction,attackSpeed:getDerived().speed});session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};syncBasicAttackVisual();}
+      if(e.type==='attack'&&m){faceCombatTarget(m);const clock=MareCombatAnimation.create({attack:game.zoanTransformed?MareZoanArt.attackTiming(equippedZoan().id,world.hero.direction):{frames:4,fps:8,impact_frame:2,loop:false}});clock.play('attack',{direction:world.hero.direction,attackSpeed:getDerived().speed});session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};session.classSkillPose=null;syncBasicAttackVisual();}
       if(e.type==='fruit'){if(e.kind==='jiki-impact')session.jikiFx.push({kind:e.projectile==='mass'?'blast':'rocket',x:e.x,y:e.y-24,angle:e.angle,started:world.time});if(e.kind==='bomu-impact')session.expansionFx.push({kind:e.key==='1'?'breath':'bomb',x:e.x,y:e.y-24,started:world.time});if(e.kind==='horu-heal')emitCombatVfx('heal',world.hero);if(e.fruitId==='akuma_supa_supa'&&e.key==='1'){const duration=MareSupaArt.animations.slash.duration/1000;world.fx.push({x:e.x,y:e.y-32,supaVfx:'slash',startedAt:Date.now(),life:duration,max:duration});}if(e.fruitId==='akuma_beta_beta'&&e.key==='1')session.rankBBursts.push({x:e.x,y:e.y,started:world.time});if(['akuma_uma_uma','akuma_inu_dachshund','akuma_tori_albatroz'].includes(e.fruitId))world.fx.push({x:e.x,y:e.y,zoanVfx:e.fruitId,followHero:true,life:e.fruitId==='akuma_tori_albatroz'?5:.75,max:e.fruitId==='akuma_tori_albatroz'?5:.75});}
       if(e.type==='kill'&&b.dungeon)toast('Vitória! Aproxime-se do baú para receber.','good');
       if(e.type==='kill'&&b.prison)toast('Andar Concluído · '+b.prison.floor,'good');
@@ -2049,7 +2062,20 @@
       if(e.type==='talent'){world.fx.push({x:m?.x??world.hero.x,y:m?.y??world.hero.y,ring:1,life:.5,max:.5,color:'#e5c47f'});}
       if(e.type==='damage'&&m&&!e.fruitId&&session.classSkillVisual?.until>=world.time&&['pontoFraco','corteMare','arcoHorizonte','dancaAdagas','rajadaEstilhacos','tempestadeCorrentes','protocoloProvocacao'].includes(session.classSkillVisual.kind)){const kind=session.classSkillVisual.kind;emitCombatVfx(kind,['dancaAdagas','protocoloProvocacao'].includes(kind)?world.hero:m,{source:'class'});session.classSkillVisual=null;}
       if(e.type==='hurt'){if(MareVisualCompletoRenderer.equipped(game))MareSpriteCombatV2.hurt(world.hero,e.amount,world.time,{protected:game.hp<=0});spawnVisual(world.hero.x,world.hero.y-70,'-'+Math.round(e.amount),'#ff9b94',15);world.hero.hit=.2;}
-      if(e.type==='skill'){const skill=classes[game.classId].skills[e.index];session.classSkillVisual={kind:classSkillEffect(skill),id:e.id,until:world.time+2};if(game.classId==='brawler'&&e.index===0)session.brawlerAnchor={id:e.id,until:world.time+(e.duration||1)+.5};if(!['heal','guard','blessing'].includes(skill.type)&&m){faceCombatTarget(m);const clock=MareCombatAnimation.create({attack:{frames:4,fps:8,impact_frame:2,loop:false}});clock.play('attack',{direction:world.hero.direction,attackSpeed:getDerived().speed});session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};syncBasicAttackVisual();if(game.classId==='sword')session.basicAttack.visualClip=({'Corte de Maré':'specialTide','Arco do Horizonte':'specialHorizon'})[skill.name]||null;}const ironBreath=!!classSkillEffect(skill);if(!ironBreath)world.fx.push({x:world.hero.x,y:world.hero.y,ring:1,life:.5,max:.5,color:classes[game.classId].color});if(['heal','guard','blessing'].includes(skill.type))emitCombatVfx(classSkillEffect(skill)||'heal',world.hero);}
+      if(e.type==='skill'){
+        const skill=classes[game.classId].skills[e.index];let visualClock=null;
+        session.classSkillVisual={kind:classSkillEffect(skill),id:e.id,until:world.time+2};
+        if(game.classId==='brawler'&&e.index===0)session.brawlerAnchor={id:e.id,until:world.time+(e.duration||1)+.5};
+        if(!['heal','guard','blessing'].includes(skill.type)&&m){
+          faceCombatTarget(m);const clock=MareCombatAnimation.create({attack:{frames:4,fps:8,impact_frame:2,loop:false}});
+          clock.play('attack',{direction:world.hero.direction,attackSpeed:getDerived().speed});
+          session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};visualClock=session.basicAttack;syncBasicAttackVisual();
+        }
+        presentClassSkill(e.index,skill,visualClock,e.duration);
+        const ironBreath=!!classSkillEffect(skill);
+        if(!ironBreath)world.fx.push({x:world.hero.x,y:world.hero.y,ring:1,life:.5,max:.5,color:classes[game.classId].color});
+        if(['heal','guard','blessing'].includes(skill.type))emitCombatVfx(classSkillEffect(skill)||'heal',world.hero);
+      }
     }
     onlineBattleSeq=b.seq;
     if(currentPanel==='hunt')renderPanel();
@@ -2380,7 +2406,7 @@
     });}
   function drawProfilePortrait(canvas,hideItems){
     const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
-    const player=hideItems?{...game,equipment:{},zoanTransformed:false}:game,x=canvas.width/2,y=canvas.height-24,scale=160/48;
+    const player=hideItems?{...game,equipment:{},cosmetics:null,zoanTransformed:false}:game,x=canvas.width/2,y=canvas.height-24,scale=160/48;
     const auraReady=hideItems||vfx_aura.draw(c,x,y,world.time,scale);
     let ready;
     if(!hideItems&&game.zoanTransformed&&equippedZoan()){
@@ -2628,6 +2654,7 @@
     }
     if(game.materials>0)items.push({kind:'material',id:MareForge.itemFragment.id,category:MareForge.itemFragment.category,name:MareForge.itemFragment.name,rarity:MareForge.itemFragment.rarity,qty:game.materials,index:-3});
     let found=items.filter(entry=>{
+      if(entry.category==='visuals')return false;
       const q=inventoryUI.query.trim().toLocaleLowerCase('pt-BR');
       return(!q||entry.name.toLocaleLowerCase('pt-BR').includes(q))&&(inventoryUI.category==='all'||inventoryUI.category===entry.category)&&(inventoryUI.rarity==='all'||inventoryUI.rarity===entry.rarity);
     });
@@ -2666,7 +2693,7 @@
     const fullSkin=MareVisualCompletoRenderer.equipped(player);
     const drawn=lobby96.drawWorldPortrait(c,player,{
       consumer,zoom:2,scale:(canvas.height-24)/46,y:canvas.height-20,
-      worldPose:consumer==='inventory',time:consumer==='inventory'?world.time:0
+      fit:consumer==='inventory',worldPose:consumer==='inventory',time:consumer==='inventory'?world.time:0
     });
     canvas.dataset.avatarRenderer=drawn?(fullSkin?'visual-completo':'native-hd'):'pending-hd';
   }
@@ -2729,15 +2756,170 @@
       (ids.size?batchButton('clear','Limpar'):'')+'</div>'+actions+
       (ids.size&&plan.error?'<small class="batch-warning">Venda indisponível · '+escapeHTML(plan.error)+'</small>':'')+'</section>';
   }
+
+  function inventoryTopbar(visual=false){
+    return `<div class="op-topbar">
+      <div class="op-title-banner"><h2><img src="assets/ui/inventory-reference/title.png" alt="Inventário"></h2></div>
+      <div class="op-top-actions"><kbd>[I]</kbd><button type="button" class="op-close" data-close-panel aria-label="Fechar inventário">${inventoryIcon('close')}</button></div>
+      <nav class="op-section-nav" aria-label="Seções do inventário"><a href="#inventory-equipment">${visual?'Visual':'Equipamentos'}</a><a href="#inventory-bag">${visual?'Coleção':'Mochila'}</a><a href="#inventory-detail">Detalhes</a></nav>
+    </div>`;
+  }
+
+  function inventoryTabs(){
+    const tabs=[['equipment','Equipamento','equipment'],['visual','Visual','eye'],['style','Estilo','shirt']];
+    return '<div class="op-tabs" aria-label="Apresentação do personagem">'+tabs.map(([id,label,icon])=>{
+      const active=inventoryUI.tab===id;
+      return `<button type="button" data-inv-tab="${id}" class="${active?'active':''}" aria-pressed="${active}">${inventoryIcon(icon)}<span>${label}</span></button>`;
+    }).join('')+'</div>';
+  }
+
+  function inventoryAvatar(){
+    const faction=factions[game.factionId]||factions.pirate;
+    const factionId=factions[game.factionId]?game.factionId:'pirate';
+    return `<div class="op-avatar-stage"><canvas id="inventorySprite" width="180" height="220" aria-label="Visual atual do personagem"></canvas>${MareHeadgear.button(game)}</div>
+      <div class="op-avatar-meta"><strong><img src="assets/ui/faction-emblems/${escapeHTML(factionId)}.png" alt="${escapeHTML(faction.name)}"> ${escapeHTML(game.name)}</strong><span>Nível ${game.level}</span><span>Classe: ${escapeHTML(classes[game.classId].name.replace(' / ',' · '))}</span></div>`;
+  }
+
+  const visualSlotNames={head:'Cabeça',coat:'Peitoral',legs:'Calça',gloves:'Luva',boots:'Bota',weapon:'Arma',visual_completo:'Visual Completo'};
+
+  function visualInventoryModel(){
+    const state=MareCosmetics.normalize(game.cosmetics);
+    const appearance=MareCharacterAppearance.read(game);
+    const demoSupported=MareCosmetics.supportsDemo(appearance);
+    const cosmetics=state.owned.map(id=>MareCosmetics.get(id)).filter(def=>MareCosmetics.available(def,appearance));
+    const equipped=Object.fromEntries(cosmetics.filter(def=>state.equipped[def.slot]===def.id).map(def=>[def.slot,def]));
+    const complete=game.inventory.filter(item=>MareVisualCompleto.isVisual(item,itemDefs));
+    return {state,appearance,demoSupported,cosmetics,equipped,complete,full:game.equipment.visual_completo,
+      available:!ONLINE_GAME||!!ONLINE_GAME.data?.online.cosmetics};
+  }
+
+  function cosmeticIcon(def){
+    return `<img class="item-icon item-icon-hd" src="${escapeHTML(def.icon)}" alt="" draggable="false" decoding="async">`;
+  }
+
+  function visualSelectionMarkup(kind,id,label){
+    const selected=visualInventoryUI.selection?.kind===kind&&visualInventoryUI.selection.id===id;
+    return {selected,attrs:`data-inv-visual-kind="${kind}" data-inv-visual-id="${escapeHTML(id)}" aria-label="${escapeHTML(label)}" aria-pressed="${selected}"`};
+  }
+
+  function cosmeticSlotHtml(slot,model){
+    const full=slot==='visual_completo';
+    const item=full?model.full:model.equipped[slot];
+    const label=visualSlotNames[slot];
+    const {selected,attrs}=visualSelectionMarkup(item?(full?'full':'cosmetic'):'slot',item?.id??slot,
+      label+' · '+(item?(full?itemBase(item).name:item.name):'Vazio'));
+    const art=item?(full?itemIcon(item.def,itemBase(item).name):cosmeticIcon(item)):'<span class="empty-slot-mark" aria-hidden="true">·</span>';
+    return `<button type="button" class="op-equip-slot op-cosmetic-slot ${item?'filled':''} ${selected?'selected':''} ${full?'op-full-visual-slot':''}" ${attrs} ${full?'data-inv-slot="visual_completo"':''}>
+      <span class="op-slot-label">${label}</span><span class="op-slot-frame"><span class="op-slot-icon">${art}</span></span></button>`;
+  }
+
+  function visualInventoryDetail(model){
+    const selection=visualInventoryUI.selection;
+    if(selection?.kind==='full'){
+      const item=getInventoryItem(selection.id);
+      if(MareVisualCompleto.isVisual(item,itemDefs))return visualItemDetail(item);
+    }
+    const def=selection?.kind==='cosmetic'?model.cosmetics.find(option=>option.id===selection.id):null;
+    if(!def){
+      const title=selection?.kind==='slot'?visualSlotNames[selection.id]:'Nenhum visual selecionado';
+      const hint=selection?.kind==='slot'?'Nenhum visual equipado neste espaço.':'Escolha um visual da coleção ou um espaço equipado.';
+      return `<div class="op-detail-wrap op-detail-empty"><div class="op-detail-icon empty">${inventoryIcon('eye')}</div><div><h3>${escapeHTML(title)}</h3><small>${hint}</small></div></div>`;
+    }
+    const equipped=model.equipped[def.slot]?.id===def.id;
+    const action=equipped?'unequip':'equip';
+    return `<div class="op-detail-wrap"><div class="op-detail-head"><div class="op-detail-icon">${cosmeticIcon(def)}</div>
+      <div><h3>${escapeHTML(def.name)}</h3><small>${escapeHTML(visualSlotNames[def.slot])}${equipped?(model.full?' · Equipado · Encoberto':' · Equipado'):''}</small></div></div>
+      <p class="op-cosmetic-scope">Cosmético — altera apenas a aparência</p>
+      ${def.description?`<p>${escapeHTML(def.description)}</p>`:''}
+      <div class="op-item-actions"><button type="button" class="op-action primary" data-inv-cosmetic-action="${action}" data-cosmetic-id="${escapeHTML(def.id)}" data-cosmetic-slot="${escapeHTML(def.slot)}" ${cosmeticActionAvailable(model)?'':'disabled'}>
+        ${inventoryIcon(equipped?'remove':'equip')}<span>${equipped?'RETIRAR':'EQUIPAR'}</span></button></div></div>`;
+  }
+
+  function renderVisualInventory(body){
+    const model=visualInventoryModel();
+    const visibleStock=model.cosmetics.concat(model.complete);
+    const buttons=visibleStock.map(item=>{
+      const full=MareVisualCompleto.isVisual(item,itemDefs);
+      const def=full?itemBase(item):item;
+      const label=visualSlotNames[full?'visual_completo':def.slot];
+      const {selected,attrs}=visualSelectionMarkup(full?'full':'cosmetic',item.id,def.name+' · '+label);
+      const equipped=!full&&model.equipped[def.slot]?.id===def.id;
+      return `<button type="button" class="op-cosmetic-tile ${selected?'selected':''}" ${attrs}>
+        ${full?itemIcon(item.def,def.name):cosmeticIcon(def)}<span><strong>${escapeHTML(def.name)}</strong><small>${label}${equipped?(model.full?' · Encoberto':' · Em uso'):''}</small></span></button>`;
+    }).join('');
+    const equipped=Object.keys(model.equipped).length;
+    const claim=model.available&&model.demoSupported&&!model.state.demoClaimed?`<button type="button" class="op-action primary" data-inv-cosmetic-action="claim-demo" ${cosmeticActionAvailable(model)?'':'disabled'}>Resgatar visuais iniciais</button>`:'';
+    const count=visibleStock.length+(model.full?1:0);
+    body.innerHTML=`<div class="op-inventory-shell ui-hd" data-inv-view="visual">
+      ${inventoryTopbar(true)}
+      <div class="op-body-grid">
+        <section id="inventory-equipment" tabindex="-1" class="hd-frame op-panel op-character-panel">
+          ${inventoryHeading('VISUAL')}${inventoryTabs()}
+          <div class="op-character-core op-cosmetic-core">
+            <div class="op-equip-side left">${['head','coat','legs'].map(slot=>cosmeticSlotHtml(slot,model)).join('')}</div>
+            <div class="op-avatar-column">${inventoryAvatar()}</div>
+            <div class="op-equip-side right">${['gloves','boots','weapon','visual_completo'].map(slot=>cosmeticSlotHtml(slot,model)).join('')}</div>
+          </div>
+          <output class="op-cosmetic-equipped">${equipped} / ${MareCosmetics.slots.length} espaços cosméticos em uso${model.full?'<span>Os cosméticos individuais estão encobertos pelo Visual Completo.</span>':''}</output>
+        </section>
+        <section id="inventory-bag" tabindex="-1" class="hd-frame op-panel op-bag-panel">
+          <div class="op-panel-head"><div class="op-head-left">${inventoryIcon('shirt')}<h3>COLEÇÃO VISUAL</h3></div>
+            <span class="op-cosmetic-count" role="status">${count} ${count===1?'visual':'visuais'}</span></div>
+          ${claim}
+          ${model.available&&!model.demoSupported?'<p class="op-cosmetic-scope">Kit de teste disponível apenas no corpo masculino.</p>':''}
+          <div class="op-cosmetic-grid">${buttons||'<p>Nenhum visual disponível na coleção.</p>'}</div>
+        </section>
+        <section id="inventory-detail" tabindex="-1" class="hd-frame op-panel op-detail-panel">
+          ${inventoryHeading('DETALHES DO VISUAL')}${visualInventoryDetail(model)}
+        </section>
+      </div>
+    </div>`;
+  }
+
+  function selectVisualInventory(kind,id){
+    visualInventoryUI.selection={kind,id};
+    for(const button of $('dialogBody').querySelectorAll('[data-inv-visual-kind]')){
+      const selected=button.dataset.invVisualKind===kind&&button.dataset.invVisualId===id;
+      button.classList.toggle('selected',selected);
+      button.setAttribute('aria-pressed',String(selected));
+    }
+    $('inventory-detail').innerHTML=inventoryHeading('DETALHES DO VISUAL')+visualInventoryDetail(visualInventoryModel());
+    layoutInventoryDetail();
+  }
+
+  function cosmeticActionAvailable(model){
+    return model.available&&(ONLINE_GAME?
+      ONLINE_GAME.controlled&&!ONLINE_GAME.busy&&!ONLINE_GAME.pending:!!saveWriter.owner&&!suppressSave);
+  }
+  async function changeCosmetic(action,payload){
+    const model=visualInventoryModel();
+    if(!cosmeticActionAvailable(model))return;
+    if(action==='claim-demo'&&!model.demoSupported)return;
+    if(action==='equip'&&!model.cosmetics.some(def=>def.id===payload.cosmeticId))return;
+    if(action==='unequip'&&!model.equipped[payload.slot])return;
+    if(ONLINE_GAME)return onlineItemCommand('cosmetics.'+action,payload);
+    try{
+      const cosmetics=MareCosmetics.execute(game.cosmetics,'cosmetics.'+action,payload,model.appearance);
+      commitVisual({ok:true,state:{...game,cosmetics}});
+    }catch{
+      toast('Não foi possível alterar este visual.','danger');
+    }
+  }
   function renderInventory(body){
+    const overlay=$('panelOverlay');overlay.classList.add('inventory-mode','pirate-hd');
+    const headMeta=$('inventoryHeadMeta');if(headMeta)headMeta.classList.add('hidden');
+    if(inventoryUI.tab==='visual'){
+      renderVisualInventory(body);
+      finishInventoryRender(body,false);
+      return;
+    }
     const {pageSize:BAG_PER_PAGE}=inventoryGridLayout();
     if(inventoryUI.pageSize&&inventoryUI.pageSize!==BAG_PER_PAGE)inventoryUI.page=MareUI.inventoryPageAtResize(inventoryUI.page,inventoryUI.pageSize,BAG_PER_PAGE);
     inventoryUI.pageSize=BAG_PER_PAGE;
-    if(!invSelected())selectedItem=game.equipment.weapon?.id||game.inventory[0]?.id||(game.potions>0?'virtual-potion':game.manaPotions>0?'virtual-mana-potion':game.materials>0?MareForge.itemFragment.id:null);
-    const overlay=$('panelOverlay');overlay.classList.add('inventory-mode','pirate-hd');
-    const headMeta=$('inventoryHeadMeta');if(headMeta)headMeta.classList.add('hidden');
-    const stats=getDerived();const f=factions[game.factionId]||factions.pirate;
-    const filterCategories=[['all','Categorias'],['weapons','ARMAS'],['armor','ARMADURAS'],['fruits','AKUMA NO MI'],['consumables','CONSUMÍVEIS'],['materials','MATERIAIS'],['pearls','PÉROLAS'],['visuals','VISUAIS']];
+    const selected=invSelected();
+    if(!selected||MareVisualCompleto.isVisual(selected.item,itemDefs))selectedItem=game.equipment.weapon?.id||game.inventory.find(item=>!MareVisualCompleto.isVisual(item,itemDefs))?.id||(game.potions>0?'virtual-potion':game.manaPotions>0?'virtual-mana-potion':game.materials>0?MareForge.itemFragment.id:null);
+    const stats=getDerived();
+    const filterCategories=[['all','Categorias'],['weapons','ARMAS'],['armor','ARMADURAS'],['fruits','AKUMA NO MI'],['consumables','CONSUMÍVEIS'],['materials','MATERIAIS'],['pearls','PÉROLAS']];
     const all=inventoryEntries();const pages=Math.max(1,Math.ceil(all.length/BAG_PER_PAGE));inventoryUI.page=Math.min(inventoryUI.page,pages-1);
     const shown=all.slice(inventoryUI.page*BAG_PER_PAGE,(inventoryUI.page+1)*BAG_PER_PAGE);
     const slots=shown.map(entry=>{
@@ -2747,23 +2929,17 @@
     const sel=invSelected(); const detail=inventoryDetail(sel);
     const left=inventorySlotsLeft.map(invSlotHtml).join('')+'<span class="op-equip-spacer" aria-hidden="true"></span>'; const right=inventorySlotsRight.filter(slot=>slot!=='akuma_no_mi').map(invSlotHtml).join('');
     const tab=inventoryUI.tab,feedback=activeEquipmentFeedback();
-    const avatarExtra=tab==='visual'?visualSlotHtml():tab==='style'?`<div class="op-avatar-note"><strong>ESTILO</strong><p>${escapeHTML(classes[game.classId].skills[0].name)} · ${escapeHTML(classes[game.classId].skills[1].name)}</p></div>`:'';
+    const avatarExtra=tab==='style'?`<div class="op-avatar-note"><strong>ESTILO</strong><p>${escapeHTML(classes[game.classId].skills[0].name)} · ${escapeHTML(classes[game.classId].skills[1].name)}</p></div>`:'';
     body.innerHTML=`<div class="op-inventory-shell ui-hd">
-      <div class="op-topbar">
-        <div class="op-title-banner"><h2><img src="assets/ui/inventory-reference/title.png" alt="Inventário"></h2></div>
-
-        <div class="op-top-actions"><kbd>[I]</kbd><button type="button" class="op-close" data-close-panel aria-label="Fechar inventário">${inventoryIcon('close')}</button></div>
-        <nav class="op-section-nav" aria-label="Seções do inventário"><a href="#inventory-equipment">Equipamentos</a><a href="#inventory-bag">Mochila</a><a href="#inventory-detail">Detalhes</a></nav>
-      </div>
+      ${inventoryTopbar()}
       <div class="op-body-grid">
         <section id="inventory-equipment" tabindex="-1" class="hd-frame op-panel op-character-panel">
-          ${inventoryHeading('EQUIPAMENTO')}<div class="op-tabs" aria-label="Apresentação do personagem">${[['equipment','Equipamento'],['visual','Visual'],['style','Estilo']].map(([id,label])=>`<button type="button" data-inv-tab="${id}" class="${tab===id?'active':''}">${inventoryIcon(({equipment:'equipment',visual:'eye',style:'shirt'})[id])}<span>${label}</span></button>`).join('')}</div>
+          ${inventoryHeading('EQUIPAMENTO')}${inventoryTabs()}
           <div class="op-character-core">
             <div class="op-equip-side left">${left}</div>
             <div class="op-avatar-column">
-              <div class="op-avatar-stage"><canvas id="inventorySprite" width="180" height="220" aria-label="Visual atual do personagem"></canvas>${MareHeadgear.button(game)}</div>
-              <div class="op-avatar-meta"><strong><img src="assets/ui/faction-emblems/${escapeHTML(factions[game.factionId]?game.factionId:'pirate')}.png" alt="${escapeHTML(f.name)}"> ${escapeHTML(game.name)}</strong><span>Nível ${game.level}</span><span>Classe: ${escapeHTML(classes[game.classId].name.replace(' / ',' · '))}</span></div>
-${avatarExtra}
+              ${inventoryAvatar()}
+              ${avatarExtra}
             </div>
             <div class="op-equip-side right">${right}</div>
           </div>
@@ -2783,10 +2959,15 @@ ${avatarExtra}
         <section id="inventory-detail" tabindex="-1" class="hd-frame op-panel op-detail-panel">${inventoryHeading('DETALHES DO ITEM')}${detail}</section>
       </div>
     </div>`;
+    finishInventoryRender(body,true);
+  }
+  function finishInventoryRender(body,observeGrid){
     layoutInventoryDetail();
     inventoryGridObserver?.disconnect();
-    inventoryGridObserver=new ResizeObserver(scheduleInventoryGrid);
-    inventoryGridObserver.observe(body.querySelector('.op-grid-wrap'));
+    if(observeGrid){
+      inventoryGridObserver=new ResizeObserver(scheduleInventoryGrid);
+      inventoryGridObserver.observe(body.querySelector('.op-grid-wrap'));
+    }
     const preview=$('inventorySprite');
     const redraw=()=>{if(currentPanel==='inventory'&&preview.isConnected)drawInventoryAvatar(preview,{force:true});};
     redraw();void lobby96.ready.then(()=>lobby96.prepareVisual(game,{consumer:'world',action:'idle',direction:'south'})).then(redraw);
@@ -2811,7 +2992,7 @@ ${avatarExtra}
   function scheduleInventoryGrid(){
     cancelAnimationFrame(inventoryGridFrame);
     inventoryGridFrame=requestAnimationFrame(()=>{
-      if(currentPanel!=='inventory'||$('panelOverlay').classList.contains('hidden')){inventoryGridObserver?.disconnect();return;}
+      if(currentPanel!=='inventory'||inventoryUI.tab==='visual'||$('panelOverlay').classList.contains('hidden')){inventoryGridObserver?.disconnect();return;}
       if(inventoryUI.pageSize===inventoryGridLayout().pageSize)return;
       const active=document.activeElement,id=active?.id,start=active?.selectionStart,end=active?.selectionEnd;
       renderPanel();
@@ -2860,13 +3041,9 @@ ${avatarExtra}
     const primary=eq?'<button type="button" class="op-action primary" data-unequip="'+def.slot+'" '+(game.inventory.length>=BAG_CAPACITY?'disabled title="Mochila cheia"':'')+'>'+inventoryIcon('remove')+'<span class="op-action-copy">RETIRAR</span></button>':'<button type="button" class="op-action primary" data-equip="'+id+'" '+(compatible?'':'disabled')+'>'+inventoryIcon('equip')+'<span class="op-action-copy">'+(compatible?'EQUIPAR':'INCOMPATÍVEL')+'</span></button>';
     return '<div class="op-item-actions">'+primary+'<button type="button" class="op-action secondary" data-inv-lock="'+id+'" aria-pressed="'+Boolean(item.locked)+'">'+inventoryIcon(item.locked?'unlock':'lock')+'<span class="op-action-copy">'+(item.locked?'DESBLOQUEAR':'BLOQUEAR')+'</span></button><button type="button" class="op-action secondary" data-sell="'+id+'" '+(saleDisabled?'disabled title="'+escapeHTML(MareInventoryBatch.reason(item,itemDefs,game.equipment))+'"':'')+'>'+inventoryIcon('berry')+'<span class="op-action-copy"><strong>VENDER</strong><small>'+fmt(sellPrice(item))+' Berry</small></span></button><button type="button" class="op-action secondary" data-inventory-forge="'+id+'">'+inventoryIcon('forge')+'<span class="op-action-copy">FORJA</span></button></div>';
   }
-  function visualSlotHtml(){
-    const item=game.equipment.visual_completo;
-    return '<div class="op-complete-visual"><button type="button" data-inv-slot="visual_completo" aria-label="Visual Completo'+(item?' · '+escapeHTML(itemBase(item).name):' · Vazio')+'"><strong>VISUAL COMPLETO</strong><span>'+(item?itemIcon(item.def,itemBase(item).name):'Vazio')+'</span></button></div>';
-  }
   function visualItemDetail(item){
-    const def=itemBase(item),eq=hasEquipped(item),id=escapeHTML(item.id);
-    return '<div class="op-detail-wrap"><div class="op-detail-head"><div class="op-detail-icon">'+itemIcon(item.def,def.name)+'</div><div><h3>'+escapeHTML(def.name)+'</h3><small>Visual Completo · Cosmético · Exclusivo de Espadachim</small></div></div><div class="op-detail-box"><p>'+escapeHTML(def.description)+'</p></div><div class="op-item-actions">'+(eq?'<button type="button" class="op-action primary" data-unequip="visual_completo" '+(game.inventory.length>=BAG_CAPACITY?'disabled':'')+'>RETIRAR</button>':'<button type="button" class="op-action primary" data-equip="'+id+'" '+(game.classId!==def.requiredClass?'disabled':'')+'>EQUIPAR</button>')+'<button type="button" class="op-action secondary" data-inv-lock="'+id+'">'+(item.locked?'DESBLOQUEAR':'BLOQUEAR')+'</button></div></div>';
+    const def=itemBase(item),eq=hasEquipped(item),id=escapeHTML(item.id),classLabel=def.id==='visual_completo_luffy'?'Todas as classes':'Exclusivo de Espadachim';
+    return '<div class="op-detail-wrap"><div class="op-detail-head"><div class="op-detail-icon">'+itemIcon(item.def,def.name)+'</div><div><h3>'+escapeHTML(def.name)+'</h3><small>Visual Completo · '+classLabel+'</small></div></div><p class="op-cosmetic-scope">Cosmético — altera apenas a aparência</p><div class="op-detail-box"><p>'+escapeHTML(def.description)+'</p></div><div class="op-item-actions">'+(eq?'<button type="button" class="op-action primary" data-unequip="visual_completo" '+(game.inventory.length>=BAG_CAPACITY?'disabled':'')+'>RETIRAR</button>':'<button type="button" class="op-action primary" data-equip="'+id+'" '+(MareVisualCompleto.canEquip(game,def)?'':'disabled')+'>EQUIPAR</button>')+'<button type="button" class="op-action secondary" data-inv-lock="'+id+'">'+(item.locked?'DESBLOQUEAR':'BLOQUEAR')+'</button></div></div>';
   }
   function inventoryDetail(sel){
     if(!sel)return `<div class="op-detail-wrap op-detail-empty"><div class="op-detail-icon empty">${inventoryIcon('search')}</div><div><h3>Nenhum item selecionado</h3><small>Escolha um item da mochila ou um slot equipado.</small></div><p>Use os filtros centrais para localizar armas, armaduras, consumíveis e materiais.</p></div>`;
@@ -3300,7 +3477,7 @@ ${avatarExtra}
   }
   document.addEventListener('click',e=>{
     if(e.target.closest('[data-headgear-visibility]')){
-      if(currentPanel!=='inventory'||!game.equipment?.head||MareHeadgear.alwaysHidden(game))return;
+      if(currentPanel!=='inventory'||!MareHeadgear.equippedHead(game)||MareHeadgear.alwaysHidden(game))return;
       if(ONLINE_GAME){void onlineItemCommand('profile.preferences',{hideHeadgear:!MareHeadgear.hidden(game)});return;}
       const next=MareHeadgear.withPreference(game,!MareHeadgear.hidden(game));
       try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;$('saveDot').style.background='#65c9bc';}
@@ -3741,14 +3918,29 @@ ${avatarExtra}
   function drawCrate(x,y){px(ctx,x-13,y-17,30,26,'#634e38');px(ctx,x-10,y-13,24,20,'#9f8158');px(ctx,x-10,y-12,24,3,'#c29b66');px(ctx,x-2,y-13,3,20,'#5f4938');px(ctx,x-10,y+3,24,3,'#614b36');}
   function drawRuin(x,y){px(ctx,x-10,y-18,23,24,'#52635c');px(ctx,x-12,y-25,27,9,'#859385');px(ctx,x-8,y-19,5,25,'#98a18a');px(ctx,x+8,y-19,5,25,'#3e594d');px(ctx,x-18,y+6,39,9,'#53695e');}
   function drawPaperDoll(c,x,y,action,direction,time,scale=null,progress=null,timing=null,worldView=false,mapSilhouette=false){
-    const unarmed=!!fruitPunchPose();
+    const unarmed=!!fruitPunchPose(),canShowSkill=!['hurt','death'].includes(action);let skillIndex=null;
     if((worldView||mapSilhouette)&&MareVisualCompletoRenderer.equipped(game)){
-      const visualClip=world.hero.combat?.locked()?world.hero.combat.visualClip:session.basicAttack?.visualClip;
+      const luffy=MareVisualCompletoRenderer.skinId?.(game)==='visual_completo_luffy';
+      const visualClock=world.hero.combat?.locked()?world.hero.combat:session.basicAttack?.clock?.locked()?session.basicAttack:null;
+      const visualClip=visualClock?.visualClip;
       if(action==='hurt'){const reaction=MareSpriteCombatV2.hurtProgress(world.hero,world.time);action=reaction===null?'idle':'hurt';progress=reaction??0;}
-      else if(!unarmed&&timing?.locked&&visualClip&&!['hurt','death'].includes(action))action=visualClip;
+      else if(!luffy&&!unarmed&&timing?.locked&&visualClip&&!['hurt','death'].includes(action))action=visualClip;
       else if(!timing?.locked&&!session.fruitAction&&game.hp>0&&!session.zoanTransition?.effect){const reaction=MareSpriteCombatV2.hurtProgress(world.hero,world.time);if(reaction!==null){action='hurt';progress=reaction;}}
+      if(luffy){
+        const self=session.classSkillPose;
+        if(self&&(scene!=='hunt'||self.area!==game.area||self.classId!==game.classId||world.time<self.started||world.time>=self.started+self.duration||game.hp<=0||unarmed||session.zoanTransition?.effect))session.classSkillPose=null;
+        if(canShowSkill&&!unarmed&&!['hurt','death'].includes(action)&&game.hp>0&&!session.zoanTransition?.effect){
+          const presentation=session.classSkillPose;
+          if(presentation){
+            skillIndex=presentation.index;action='skill';direction=presentation.direction;time=world.time-presentation.started;progress=time/presentation.duration;
+            timing={action,locked:true,direction,elapsed:time,duration:presentation.duration,progress,hitFrameRatio:.5};
+          }else if(timing?.locked&&visualClock?.visualClassId===game.classId&&(visualClock.visualSkillIndex===0||visualClock.visualSkillIndex===1)){
+            skillIndex=visualClock.visualSkillIndex;direction=visualClock.visualDirection||direction;
+          }
+        }
+      }
     }
-    const options={scene,action:unarmed&&action!=='hurt'?'attack-unarmed':action,direction,time,progress,timing,x,y,scale,worldView,weaponless:unarmed,consumer:mapSilhouette?'world-silhouette':worldView?'world':c.canvas.id||'preview'};
+    const options={scene,classId:game.classId,skillIndex,action:unarmed&&action!=='hurt'?'attack-unarmed':action,direction,time,progress,timing,x,y,scale,worldView,weaponless:unarmed,freeHandPower:unarmed,consumer:mapSilhouette?'world-silhouette':worldView?'world':c.canvas.id||'preview'};
     return lobby96.draw(c,game,options);
   }
   function drawPlayerSprite(c,x,y,mapSilhouette=false){
@@ -3799,7 +3991,7 @@ ${avatarExtra}
     const hero=world.hero,attack=hero.attackAnim>0&&scene==='hunt',moving=hero.walking>0&&!betaEquipped();
     const zoan=game.zoanTransformed?equippedZoan():null;
     if(zoan)return drawUpdatedZoan(c,zoan,x,y,moving);
-    const combat=classCombatController(),pose=fruitPunchPose()||combat?.snapshot()||basicAttackPose(),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
+    const combat=classCombatController(),classPose=combat?.snapshot(),pose=fruitPunchPose()||(classPose?.locked?classPose:basicAttackPose()||classPose),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
     const gait=lobby96.walkPose(hero);
     const dollAction=requested==='walk'&&gait&&!gait.moving?'idle':requested,dollTime=dollAction==='walk'&&gait?gait.time:pose?.locked?pose.elapsed:world.time;
     // Some melee identities have no skill controller; reuse their real attack clip
@@ -4418,7 +4610,25 @@ function applySceneHudLayout(){
     if(e.target.closest('[data-attribute-add],[data-attribute-remove],#resetAttributeDraft,#cancelAttributes'))attributeBuildPreview=null;
     if(e.target.closest('#confirmAttributes')){confirmAttributes();return;}
     if(e.target.closest('#resetAttributeDraft')){attributeDraft=MareCharacters.empty();allocationMessage='';renderPanel();return;}
-    b=e.target.closest('[data-inv-tab]');if(b){inventoryUI.tab=b.dataset.invTab;renderPanel();return;}
+    b=e.target.closest('[data-inv-tab]');if(b){
+      const tab=b.dataset.invTab;
+      if(['equipment','visual','style'].includes(tab)&&inventoryUI.tab!==tab){
+        inventoryUI.tab=tab;renderPanel();$('dialogBody').querySelector('[data-inv-tab="'+tab+'"]')?.focus({preventScroll:true});
+      }
+      return;
+    }
+    b=e.target.closest('[data-inv-visual-kind]');if(b&&currentPanel==='inventory'&&inventoryUI.tab==='visual'){
+      selectVisualInventory(b.dataset.invVisualKind,b.dataset.invVisualId);return;
+    }
+    b=e.target.closest('[data-inv-cosmetic-action]');if(b&&currentPanel==='inventory'&&inventoryUI.tab==='visual'){
+      const action=b.dataset.invCosmeticAction;
+      if(!b.disabled){
+        if(action==='claim-demo')void changeCosmetic(action,{});
+        if(action==='equip')void changeCosmetic(action,{cosmeticId:b.dataset.cosmeticId});
+        if(action==='unequip')void changeCosmetic(action,{slot:b.dataset.cosmeticSlot});
+      }
+      return;
+    }
     b=e.target.closest('[data-inv-page]');if(b&&!b.disabled){inventoryUI.page=Number(b.dataset.invPage);renderPanel();return;}
     b=e.target.closest('[data-inv-slot]');if(b){const it=game.equipment[b.dataset.invSlot];selectInventoryItem(it?.id||null);return;}
     b=e.target.closest('[data-auto-equip]');if(b){equipBest();return;}

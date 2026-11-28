@@ -13,24 +13,23 @@ function instrument(source){
   get game(){return game},get world(){return world},
   add(def){const item=newItem(itemDefs[def],1,false);game.inventory.push(item);renderPanel();return item.id;},
   compare(){
-   const canvas=document.querySelector('#inventorySprite');drawInventoryAvatar(canvas,{force:true});
-   const meta=lobby96.snapshot().inventoryPreview;if(!meta?.footAnchor)return null;
-   const player=game.zoanTransformed?{...game,zoanTransformed:false}:game;
    const before=JSON.stringify([game.equipment,game.appearance96,game.preferences,game.zoanTransformed]);
-   const expected=Object.assign(document.createElement('canvas'),{width:canvas.width,height:canvas.height});
-   const c=expected.getContext('2d'),skin=MareVisualCompletoRenderer.equipped(player);
-   const opts={action:'idle',direction:'south',time:world.time,progress:null,consumer:'world'};
-   let drawn;
-   if(skin)drawn=lobby96.drawWorldVisual(c,{...opts,x:canvas.width/2,y:canvas.height-24,scale:meta.multiplier*96/46},player,{publish:false});
-   else{c.save();c.translate(canvas.width/2,canvas.height-24);c.scale(meta.multiplier,meta.multiplier);
-    drawn=lobby96.drawWorldVisual(c,{...opts,x:0,y:0},player,{publish:false});c.restore();}
-   if(!drawn)return null;
-   const a=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data,b=c.getImageData(0,0,canvas.width,canvas.height).data;
-   let changed=0,pixels=0,left=canvas.width,right=-1,top=canvas.height,bottom=-1;
-   for(let i=0;i<a.length;i+=4){if(a[i+3]){pixels++;const x=(i/4)%canvas.width,y=Math.floor(i/4/canvas.width);left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);}
-    if(a[i]!==b[i]||a[i+1]!==b[i+1]||a[i+2]!==b[i+2]||a[i+3]!==b[i+3])changed++;}
-   return {drawn,changed,pixels,source:meta.source||'visual-completo-zoro',direction:meta.direction,
-    anchor:meta.footAnchor,multiplier:meta.multiplier,width:canvas.width,height:canvas.height,
+   const canvas=document.querySelector('#inventorySprite');drawInventoryAvatar(canvas,{force:true});
+   const meta=lobby96.snapshot().inventoryPreview;if(!meta?.bounds)return null;
+   const player=game.zoanTransformed?{...game,zoanTransformed:false}:game;
+   const skin=MareVisualCompletoRenderer.equipped(player);
+   const idle={action:'idle',direction:'south',time:world.time,progress:null,consumer:'world'};
+   const samePose=skin?meta.action==='walk'&&meta.frame===0:
+    lobby96.requestWorldVisual(player,idle,{publish:false}).bundle?.coverage[0]?.source===meta.source;
+   const a=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
+   let pixels=0,left=canvas.width,right=-1,top=canvas.height,bottom=-1;
+   for(let i=0;i<a.length;i+=4)if(a[i+3]){
+    pixels++;
+    const x=(i/4)%canvas.width,y=Math.floor(i/4/canvas.width);
+    left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);
+   }
+   return {samePose,pixels,source:meta.source||'visual-completo-zoro',direction:meta.direction,
+    multiplier:meta.multiplier,width:canvas.width,height:canvas.height,
     bounds:{left,right,top,bottom},unchanged:before===JSON.stringify([game.equipment,game.appearance96,game.preferences,game.zoanTransformed]),
     png:canvas.toDataURL(),skin,hidden:MareHeadgear.hidden(player)};
   }};\n`+marker);
@@ -51,10 +50,13 @@ function instrument(source){
   async function verify(label){
    await page.waitForFunction(()=>!!__inventorySouthQA.compare(),null,{timeout:120000});
    const result=await page.evaluate(()=>__inventorySouthQA.compare());
-   assert(result.pixels>100,label+' visible sprite');assert.equal(result.changed,0,label+' exact world pixels');
+   assert(result.pixels>100,label+' visible sprite');assert(result.samePose,label+' uses the equipped map idle frame');
    assert.equal(result.direction,'south',label+' south');assert(result.unchanged,label+' does not mutate gear/preferences');
    assert(result.bounds.left>=9&&result.bounds.right<result.width-8&&result.bounds.top>=9&&result.bounds.bottom<result.height-8,label+' no clipping: '+JSON.stringify(result.bounds));
-   assert.equal(result.anchor.x,result.width/2);assert.equal(result.anchor.y,result.height-24);
+   const {left,right,top,bottom}=result.bounds;
+   assert(Math.abs(left+right+1-result.width)<=2,label+' centered horizontally: '+JSON.stringify({bounds:result.bounds,width:result.width}));
+   assert(Math.abs(top+bottom+1-result.height)<=2,label+' centered vertically: '+JSON.stringify({bounds:result.bounds,height:result.height}));
+   assert(Math.abs(right-left+1-(result.width-20))<=2||Math.abs(bottom-top+1-(result.height-20))<=2,label+' fills the available width or height');
    const {png,...record}=result;rows.push({label,...record});console.log('verified',label);return result;
   }
   const initial=await verify('desktop initial');
@@ -70,15 +72,18 @@ function instrument(source){
   await page.setViewportSize({width:393,height:852});await verify('mobile equipped helmet');
   await page.screenshot({path:path.join(out,'inventory-south-mobile.png')});
   const skinId=await page.evaluate(()=>__inventorySouthQA.add(187));
-  await page.locator('[data-item="'+skinId+'"]').click();await page.locator('[data-equip="'+skinId+'"]').click();
-  const skin=await verify('mobile Zoro');assert(skin.skin);await page.locator('[data-inv-tab="visual"]').click();
+  await page.locator('[data-inv-tab="visual"]').click();
+  await page.locator('.op-cosmetic-tile[data-inv-visual-kind="full"][data-inv-visual-id="'+skinId+'"]').click();
+  await page.locator('[data-equip="'+skinId+'"]').click();
+  const skin=await verify('mobile Zoro');assert(skin.skin);
   await page.screenshot({path:path.join(out,'inventory-south-zoro-mobile.png')});
   await page.setViewportSize({width:1366,height:768});await verify('desktop Zoro');
   await page.screenshot({path:path.join(out,'inventory-south-zoro-desktop.png')});
   await page.locator('[data-inv-slot="visual_completo"]').click();await page.locator('[data-unequip="visual_completo"]').click();
+  await page.locator('[data-inv-tab="equipment"]').click();
   const restored=await verify('desktop restored equipment');assert(!restored.skin);assert.equal(restored.png,helmet.png);
   assert.deepEqual(errors,[]);
   fs.writeFileSync(path.join(out,'inventory-south-results.json'),JSON.stringify({url,rows,errors},null,2));
-  console.log(JSON.stringify({cases:rows.length,exactWorldPixels:true,errors,records:rows.map(({label,width,height,pixels,multiplier})=>({label,width,height,pixels,multiplier}))},null,2));
+  console.log(JSON.stringify({cases:rows.length,fittedSouthPose:true,errors,records:rows.map(({label,width,height,pixels,multiplier})=>({label,width,height,pixels,multiplier}))},null,2));
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

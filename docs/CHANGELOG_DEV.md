@@ -1,3 +1,7 @@
+## 28/11/2026 — Validação do Visual Completo do Luffy (PR 398)
+
+Base `663ce1cf`. O seletor reaproveita as variantes por classe e empunhadura, com um clipe base da classe para armas sem registro. O manifesto native96 foi atualizado e as verificações de catálogo, Conchas, viagem e continuidade visual foram alinhadas ao comportamento atual. Os índices de itens, saves, sprites e regras de combate são compatíveis com a versão anterior. [Detalhes](VISUAL-COMPLETO-LUFFY.md)
+
 ## 04/11/2026 — Personagem visível ao conjurar Akuma no Mi
 
 - Branch `fix/akuma-player-visibility`, base `47d41506` (PR244 integrado).

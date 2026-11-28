@@ -22,14 +22,20 @@ test('normal WorldVisual keeps four native walk directions with pants21 and thre
   for(const [weapon,cls] of [[0,'sword'],[5,'gunner'],[17,'strategist']]){
    actor.classId=cls;actor.equipment={legs:{def:21},weapon:{def:weapon}};
    assert.equal(lobby.resolve(actor)?.body,'feminino');
+   let lastReadyDirection=null;
    for(const direction of directions){
     const pose={action:'walk',direction,consumer:'world'};
     const request=lobby.requestWorldVisual(actor,pose);
     assert.equal(lobby.worldVisual().key,request.key);
     if(request.state==='loading'){
      const cold=cv.createCanvas(320,320);
-     assert.equal(lobby.drawWorldVisual(cold.getContext('2d'),{...pose,time:0,x:160,y:256},actor),false);
+     const continued=lobby.drawWorldVisual(cold.getContext('2d'),{...pose,time:0,x:160,y:256},actor);
+     assert.equal(continued,lastReadyDirection!==null);
      assert.equal(lobby.worldVisual().publishedKey,undefined);
+     if(continued){
+      assert.equal(lobby.worldVisual().displayed.exact,false);
+      assert.equal(lobby.worldVisual().displayed.direction,lastReadyDirection);
+     }
     }
     await request.promise;
     const prepared=lobby.worldVisual();
@@ -48,6 +54,7 @@ test('normal WorldVisual keeps four native walk directions with pants21 and thre
      images.add(crypto.createHash('sha256').update(pixels).digest('hex'));canvas.width=1;count++;
     }
     assert(images.size>1,'walk does not freeze');
+    lastReadyDirection=direction;
    }
    assert.equal(JSON.stringify(actor.appearance96),saved);
   }

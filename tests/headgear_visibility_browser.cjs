@@ -29,7 +29,7 @@ const out=process.argv.find(s=>s.startsWith('--evidence='))?.slice(11),gameOnly=
   if(out){await fs.writeFile(path.join(out,'audit.json'),JSON.stringify(audit,null,2));const captures=await p.evaluate(async()=>{const q=__review96v3,rows=[];for(const body of ['masculino','feminino'])for(const dir of ['south','north','east','west'])for(const state of ['bare','visible','hidden','bandana']){const look={hair:'hair-wavy',face:'face-calm',skin:'light',hairColor:'brown',head:state==='bandana'?'item-18':state==='bare'?'original':'item-19',hideHeadgear:state==='hidden',torso:'item-6',pants:'item-21',boots:'item-8',cloak:'item-23'};const c=await q.render(body,'walk',dir,3,[],look);rows.push({name:[body,dir,state].join('-'),data:c.toDataURL()});}return rows;});for(const c of captures)await fs.writeFile(path.join(out,c.name+'.png'),Buffer.from(c.data.split(',')[1],'base64'));}
   await p.close();
  }
- if(!materialsOnly){const game=await browser.newPage({viewport:{width:1366,height:900}}),scriptRequests=[];game.on('pageerror',e=>errors.push(e.message));game.on('request',r=>{if(r.url().includes('/paper-doll-96-v3/wardrobe.js'))scriptRequests.push(r.url());});
+ if(!materialsOnly){const game=await browser.newPage({viewport:{width:1366,height:900},serviceWorkers:'block'}),scriptRequests=[];game.on('pageerror',e=>errors.push(e.message));game.on('request',r=>{if(r.url().includes('/paper-doll-96-v3/wardrobe.js'))scriptRequests.push(r.url());});
   await game.route('**/api/akuma/catalog',r=>r.fulfill({status:404,body:'{}'}));await game.route('**/__dev_version',r=>r.fulfill({body:'stable'}));
   await game.route('**/game.js*',async route=>{const response=await route.fetch(),source=await response.text(),hook=`window.__headQA={prepareMap(){lastTime=performance.now();if(mapArtState()!=='ready')return false;presentWorld();return lobby96.worldReady(game)},get g(){return game},get r(){return lobby96},stats:getDerived,open(){openPanel('inventory')},close:closePanel,save:saveGame,draw:presentWorld,portrait:renderPortrait,enterHunt,returnLobby,pause(){autoPlay=false;autoSkills=false;keys.clear()},async equip(id){const item=newItem(itemDefs[id],1,false);game.inventory.push(item);equipItem(item.id);if(!await lobby96.ensure(game))throw Error('Native composition failed: '+lobby96.snapshot().message);return game.equipment.head?.def},async remove(){unequip('head');await lobby96.ensure(game)},state(){return {head:game.equipment.head,inventory:game.inventory,stats:getDerived(),hidden:MareHeadgear.hidden(game),portrait:$('portrait').toDataURL(),preview:$('inventorySprite')?.toDataURL(),save:localStorage.getItem(STORAGE_KEY),renderer:lobby96.snapshot()}}};`;
    await route.fulfill({response,body:source.replace('  window.__mareDiagnostics=',hook+'\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')});});
@@ -38,7 +38,16 @@ const out=process.argv.find(s=>s.startsWith('--evidence='))?.slice(11),gameOnly=
   assert(scriptRequests.length&&scriptRequests.every(u=>new URL(u).searchParams.get('revision')!==oldRevision),'updated compositor must invalidate the previous dynamic script cache');
   await game.locator('#characterName').fill('Capacetes96');await game.locator('#nextToClass').click();await game.locator('#nextToAppearance').click();await game.locator('#createCharacter').click();await game.locator('[data-confirm-accept]').click();await game.waitForFunction(()=>__headQA.g);await game.evaluate(async()=>{__headQA.pause();await __headQA.r.ensure(__headQA.g);});
   assert.equal(await game.evaluate(()=>__headQA.r.snapshot().enabled),true,'native96 enabled without query');
-  async function settledPortrait(){await game.waitForFunction(()=>{const q=__headQA;q.portrait();const s=q.r.snapshot(),last=s.renderer==='rework-default-hd'?s.defaultHD?.last:s.nativeHD?.last;if(last?.state!=='rendered'||last.direction!=='south'||last.physicalScale!==105/374)return false;const helmet=q.g.equipment.head?.def,expected=helmet!=null&&!MareHeadgear.hidden(q.g);const source=last.source||'';const visible=source.includes(':head:'+helmet)||source.includes(':original:'+helmet+':')||source.includes(':none:'+helmet+':');return visible===expected;},null,{timeout:120000});}
+  async function settledPortrait(){await game.waitForFunction(()=>{
+   const q=__headQA;q.portrait();
+   const s=q.r.snapshot(),last=s.renderer==='rework-default-hd'?s.defaultHD?.last:s.nativeHD?.last;
+   if(last?.state!=='rendered'||last.consumer!=='compact-portrait'||last.direction!=='south'||last.physicalScale!==105/374)return false;
+   const helmet=q.g.equipment.head?.def,expected=helmet!=null&&!MareHeadgear.hidden(q.g);
+   if(last.slotRoutes)return expected?last.slotRoutes.head?.item===helmet:!last.slotRoutes.head;
+   const source=last.source||'';
+   const visible=source.includes(':head:'+helmet)||source.includes(':original:'+helmet+':')||source.includes(':none:'+helmet+':');
+   return visible===expected;
+  },null,{timeout:120000});}
   const results=[];
   for(const body of ['masculino','feminino'])for(const id of (body==='masculino'?[18,19,136]:[18,19])){
    await game.evaluate(async({body,id})=>{const q=__headQA;q.g.appearance96={...MareCharacterAppearance.read(q.g),gender:body};q.r.setDraft('body',body);q.r.setDraft('kit','equipped');q.r.apply(q.g);await q.equip(id);q.open();q.portrait();},{body,id});

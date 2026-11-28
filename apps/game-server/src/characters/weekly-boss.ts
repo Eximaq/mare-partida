@@ -14,8 +14,8 @@ import {weeklyBossAvailable,weeklyOperator,weeklyRoom,weeklyRoster,weeklyAudit,a
 const require=createRequire(import.meta.url),A=require('../../../../akainu-combat.js'),D=require('../../../../weekly-admirals.js'),R=require('../../../../weekly-boss-rules.cjs'),E=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
 type WeeklyCommand=Extract<CharacterCommand,{action:'weeklyBoss.execute'}>;
 async function now(c:PoolClient):Promise<Date>{return (await c.query('SELECT clock_timestamp() now')).rows[0].now;}
-export async function weeklyInputs(c:PoolClient,ids:string[]){
- const result=new Map<string,any>();for(let i=0;i<ids.length;i+=4)for(const [id,input]of await readCombatInputs(c,ids.slice(i,i+4)))result.set(id,input);return result;
+export async function weeklyInputs(c:PoolClient,ids:string[],includeCosmetics=false){
+ const result=new Map<string,any>();for(let i=0;i<ids.length;i+=4)for(const [id,input]of await readCombatInputs(c,ids.slice(i,i+4),includeCosmetics))result.set(id,input);return result;
 }
 function navigation(id:string){return maps().maps[id]?maps().navigation(id):null;}
 function rehearsalConfig(profile:unknown){
@@ -150,12 +150,12 @@ export async function readWeeklyBoss(c:PoolClient,id:string,sessionId:string){
  const rights={cycle:context.cycle};
  const peers:any[]=[];
  if(current){
-  const roster=(await weeklyRoster(c,current.id)).filter(m=>m.connected),ids=roster.map(m=>m.character_id),inputs=await weeklyInputs(c,ids),worlds=await readWorlds(c,ids,at),battles=await readBattleRows(c,ids);
+  const roster=(await weeklyRoster(c,current.id)).filter(m=>m.connected),ids=roster.map(m=>m.character_id),inputs=await weeklyInputs(c,ids,true),worlds=await readWorlds(c,ids,at),battles=await readBattleRows(c,ids);
   const names=new Map((await c.query('SELECT id,name,class_id,faction_id FROM mare_game.characters WHERE id=ANY($1::uuid[])',[ids])).rows.map(r=>[r.id,r]));
   const tiers=await readHierarchyTiers(c,ids);
   for(const m of roster){const input=inputs.get(m.character_id),b=battles.get(m.character_id)?.simulation,w=worlds.get(m.character_id);if(!input||!b||!w||b.weeklyBossInstanceId!==current.id)continue;const f=input.fighter(b),n=names.get(m.character_id),equipment:any={};
    if(!input.preferences.hideItems)for(const slot of ['weapon','head','coat','cloak','gloves','legs','boots']){const item=input.inventory?.equipment[slot];if(item)equipment[slot]={def:item.def};}
-   peers.push({id:m.character_id,name:n.name,classId:n.class_id,factionId:n.faction_id,hierarchyTier:tiers.get(m.character_id)??null,level:input.state.level,hp:Math.max(0,b.hp),maxHp:f.maxHp,connected:true,world:w,instanceId:current.id,appearance96:input.appearance,hideHeadgear:!!input.preferences.hideHeadgear,equipment,action:b.pending||b.skillJob?'attack':'idle',fruitId:f.fruitId,zoanTransformed:b.fruit?.transformed===true,haki:b.hakiRuntime?{active:b.hakiRuntime.active,eyeFX:b.hakiRuntime.eyeFX,dodgeFX:b.hakiRuntime.dodgeFX,kingFX:b.hakiRuntime.kingFX,kingOrigin:b.hakiRuntime.kingOrigin}:null});
+   peers.push({id:m.character_id,name:n.name,classId:n.class_id,factionId:n.faction_id,hierarchyTier:tiers.get(m.character_id)??null,level:input.state.level,hp:Math.max(0,b.hp),maxHp:f.maxHp,connected:true,world:w,instanceId:current.id,appearance96:input.appearance,hideHeadgear:!!input.preferences.hideHeadgear,equipment,...(input.cosmetics?{cosmetics:input.cosmetics}:{}),action:b.pending||b.skillJob?'attack':'idle',fruitId:f.fruitId,zoanTransformed:b.fruit?.transformed===true,haki:b.hakiRuntime?{active:b.hakiRuntime.active,eyeFX:b.hakiRuntime.eyeFX,dodgeFX:b.hakiRuntime.dodgeFX,kingFX:b.hakiRuntime.kingFX,kingOrigin:b.hakiRuntime.kingOrigin}:null});
   }
  }
  return {canManage,...publicInfo,events:rows.map(view),current:current?view(current):null,peers,serverNow:at.toISOString(),rewardPendingCycle:rights?.cycle??null,...(settings?{revision:settings.revision,config:profiles?.akainu??null,profiles,defaults,balance:D.balance,marinefordReady:!!maps().maps.marineford}: {})};

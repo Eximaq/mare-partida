@@ -46,6 +46,13 @@
     return pending.size?source:candidate;
   }
   function selectWorldHDOnly(nativeHD,weaponCatalog,player,options){
+    const art=root.MareCosmeticArt,chosen=art?.selection(player);
+    if(!chosen)return selectWorldHDSource(nativeHD,weaponCatalog,player,options);
+    const {player:appearance,shown}=art.project(player,chosen);
+    const resolve=actor=>selectWorldHDSource(nativeHD,weaponCatalog,actor,options);
+    return art.decorate(resolve(appearance),shown,appearance,resolve);
+  }
+  function selectWorldHDSource(nativeHD,weaponCatalog,player,options){
     if(!nativeHD?.selectVisual||!player||player.zoanTransformed)return null;
     if(['attack','skill'].includes(options.action)){
       const raw=player.equipment?.weapon,item=raw?.def??raw,category=weaponCatalog?.classes?.[player.classId];
@@ -295,16 +302,27 @@
       if(direction==='west'){ctx.translate(spec.width+1,0);ctx.scale(-1,1);}
       const density=value.density||1;ctx.drawImage(strip,frame*spec.width*density,0,spec.width*density,spec.height*density,0,0,spec.width,spec.height);ctx.restore();
     }
-    function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false}={}){
+    const isLuffyVisual=player=>root.MareVisualCompletoRenderer?.skinId?.(player)==='visual_completo_luffy';
+    function nativeFallbackPlayer(player){
+      if(!isLuffyVisual(player)||player.zoanTransformed)return player;
+      // Native selectors describe the functional equipment, while the complete
+      // visual belongs only to presentation. Never change the owned loadout.
+      const {visual_completo,...equipment}=player.equipment;
+      return {...player,equipment};
+    }
+    function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false,skillIndex,classId,freeHandPower=false}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;
-      if(consumer==='world')return drawWorldVisual(ctx,{scene,action,direction,time,progress,timing,x,y,scale,consumer,weaponless},player);
+      const visualOptions={scene,action,direction,time,progress,timing,x,y,scale,consumer,weaponless,skillIndex,classId,freeHandPower};
+      if(consumer==='world')return drawWorldVisual(ctx,visualOptions,player);
       if(consumer==='world-silhouette'){
         if(root.MareVisualCompletoRenderer?.equipped(player)){
-          return root.MareVisualCompletoRenderer.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer,weaponless});
+          const drawn=root.MareVisualCompletoRenderer.draw(ctx,player,visualOptions);
+          if(drawn||!isLuffyVisual(player)||player.zoanTransformed)return drawn;
         }
-        return drawWorldSilhouette(ctx,player,{direction,time,progress,timing,x,y,scale,weaponless});
+        return drawWorldSilhouette(ctx,nativeFallbackPlayer(player),{direction,time,progress,timing,x,y,scale,weaponless});
       }
-      if(root.MareVisualCompletoRenderer?.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer})){draws++;return true;}
+      if(root.MareVisualCompletoRenderer?.draw(ctx,player,visualOptions)){draws++;return true;}
+      player=nativeFallbackPlayer(player);
       // Peers share this instance. Use the same approved native selectors
       // without the single-actor World request/abort boundary.
       const nativeConsumer=sharedLobby?'world':consumer;
@@ -361,6 +379,7 @@
       return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(point.y-spec.pivot.y)*scale,frame:4,weapon:value.look.weapon};
     }
     async function prepareVisual(player,options={}){
+      player=nativeFallbackPlayer(player);
       if(options.consumer==='world'){
         if(!player||player.zoanTransformed)return false;
         const action=worldAction(options.action||'idle');
@@ -380,11 +399,15 @@
     let worldRequest=null,worldDrawn=null,worldWarm=null,worldPrime=null,waitingPrime=null;
     const worldDirections=['north','east','south','west'];
     const locomotion=action=>action==='idle'||action==='walk';
-    const visualIdentity=player=>JSON.stringify([
+    const visualIdentity=(player,includeCosmetics=true)=>{
+      player=nativeFallbackPlayer(player);
+      return JSON.stringify([
       player.classId,player.factionId,player.appearance96,player.paperDollLook,
       Object.entries(player.equipment||{}).filter(([,item])=>item!=null).sort(([a],[b])=>a.localeCompare(b)).map(([slot,item])=>[slot,item.def??item,item.variant,item.variantId,item.appearanceVariant]),
-      Headgear.hidden(player),!!player.zoanTransformed
-    ]);
+      Headgear.hidden(includeCosmetics?player:{...player,cosmetics:null}),!!player.zoanTransformed,
+      includeCosmetics?root.MareCosmeticArt?.selection(player):!!player.preferences?.hideHeadgear
+      ]);
+    };
     // Typed preview plans share the HD selector, not the World request's
     // singleton player identity. This cache is bounded and cannot paint a
     // plan prepared for an older avatar/draft.
@@ -428,7 +451,7 @@
       const entry=requestTypedSurface(player,options);
       if(!entry?.bundle)return null;
       const {source,resolved,bundle}=entry;
-      if(!bundle.draw(ctx,player,{...options,...resolved}))return null;
+      if(!bundle.draw(ctx,player,{...options,...resolved,consumer:options.consumer}))return null;
       return {source:source.id,omitted:source.omitted||[],slotRoutes:source.slotRoutes||{},consumer:options.consumer,typedHD:true};
     }
     const positionRevision=positions=>positions?.records.length?positions.revision:null;
@@ -520,12 +543,13 @@
         }finally{bundle?.release();}
     }
     function requestWorldVisual(player,options,{publish=true}={}){
+      player=nativeFallbackPlayer(player);
       const identity=visualIdentity(player),positions=approved,revision=positionRevision(positions);
       const key=worldPoseKey(player,options,identity,revision),scope={identity,revision};
       let entry=worldPoses.get(key);
       if(publish&&worldRequest?.key!==key){
         if(!sameWorldIdentity(worldRequest,scope)){
-          worldDrawn=null;
+          if(!sameWorldIdentity(worldPrime,scope)||worldPrime.handoff!==worldDrawn?.entry)worldDrawn=null;
           for(const previous of worldPoses.values())if(!sameWorldIdentity(previous,scope)&&previous.promise){
             releaseWorldPose(previous,'appearance-changed');
           }
@@ -605,7 +629,7 @@
       return true;
     }
     function firstWorldPresentationReady(entry){
-      return !sameWorldIdentity(entry,worldPrime)||sameWorldIdentity(worldDrawn?.entry,worldPrime)||essentialPosesSettled(worldPrime);
+      return !sameWorldIdentity(entry,worldPrime)||!!worldPrime.handoff||sameWorldIdentity(worldDrawn?.entry,worldPrime)||essentialPosesSettled(worldPrime);
     }
     function worldPreparation(){
       const plan=worldPrime;
@@ -628,13 +652,18 @@
         prepared,total:plan.planned.size,failed,essentialReady:essentialPosesSettled(plan)};
     }
     function primeWorldVisual(player,{direction='south',actions=[]}={}){
-      if(!player||player.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(player))return;
+      if(!player||player.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(player)&&!isLuffyVisual(player))return;
+      player=nativeFallbackPlayer(player);
       if(!approvedLoaded){waitingPrime={player,direction,actions};return;}
       const identity=visualIdentity(player),revision=positionRevision(approved),scope={identity,revision};
       if(!sameWorldIdentity(worldPrime,scope)){
-        const previous=worldPrime;
-        worldPrime={...scope,planned:new Map(),queue:new Map(),physical:new Map(),running:null,retryAt:Infinity};
-        if(previous)for(const entry of worldPoses.values())if(sameWorldIdentity(entry,previous)){
+        const previous=worldPrime,displayed=worldDrawn?.entry;
+        // Hold the exact published pose during a wardrobe-only change.
+        const handoff=!sameWorldIdentity(displayed,scope)&&displayed?.bundle&&displayed.revision===revision&&
+          visualIdentity(displayed.player,false)===visualIdentity(player,false)?displayed:null;
+        worldPrime={...scope,handoff,planned:new Map(),queue:new Map(),physical:new Map(),running:null,retryAt:Infinity};
+        if(previous)for(const entry of worldPoses.values())if(entry!==handoff&&!sameWorldIdentity(entry,scope)&&
+            (sameWorldIdentity(entry,previous)||entry===previous.handoff)){
           releaseWorldPose(entry,'appearance-changed');
         }
         previous?.queue.clear();
@@ -666,7 +695,8 @@
     }
     function warmWorldVisual(player,{action,direction,weaponless=false}={}){
       if(!player||!action||!direction||!worldDrawn||worldWarm?.promise||worldRequest?.promise||
-         player.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(player))return false;
+         player.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(player)&&!isLuffyVisual(player))return false;
+      player=nativeFallbackPlayer(player);
       const identity=visualIdentity(player),revision=positionRevision(approved);
       if(!sameWorldIdentity(worldDrawn.entry,{identity,revision}))return false;
       const options={action:worldAction(action),direction:directionOf(direction),weaponless,consumer:'world'};
@@ -701,9 +731,14 @@
     function drawWorldVisual(ctx,options,player=worldRequest?.player,{publish=true}={}){
       if(!player)return false;
       const drawOptions={...options,direction:directionOf(options.direction)};
+      const luffyFallback=isLuffyVisual(player)&&!player.zoanTransformed;
       if(root.MareVisualCompletoRenderer?.equipped(player)){
-        if(publish)worldDrawn=null;
-        return root.MareVisualCompletoRenderer.draw(ctx,player,drawOptions);
+        const drawn=root.MareVisualCompletoRenderer.draw(ctx,player,drawOptions);
+        if(drawn||!luffyFallback){
+          if(publish)worldDrawn=null;
+          return drawn;
+        }
+        player=nativeFallbackPlayer(player);
       }
       if(waitingPrime&&!approvedLoaded)return false;
       const action=worldAction(options.action),weaponless=action!=='idle'&&!!options.weaponless;
@@ -713,10 +748,14 @@
       const now=publish?performance.now():null;
       let painted=requested,paintOptions=exact;
       if(!requested.bundle?.draw(ctx,player,exact)){
-        if(!publish||!worldDrawn)return false;
+        if(!publish||!worldDrawn&&!luffyFallback)return false;
+        const held=sameWorldIdentity(worldPrime,requested)?worldPrime.handoff:null;
+        if(held?.bundle&&held.hidesWeapon===requested.hidesWeapon&&
+            held.options.action===action&&held.options.direction===exact.direction&&
+            held.bundle.draw(ctx,held.player,exact))return true;
         painted=continuityPose(requested);
         if(!painted)return false;
-        const previous=worldDrawn.entry===painted?worldDrawn:null;
+        const previous=worldDrawn?.entry===painted?worldDrawn:null;
         // Use the held route's own animation clock. Attack progress and
         // contact timing only belong to the attack they were computed for.
         const clock=locomotion(painted.options.action)
@@ -726,6 +765,11 @@
         if(!painted.bundle.draw(ctx,player,paintOptions))return false;
       }
       if(publish){
+        if(worldPrime?.handoff&&sameWorldIdentity(painted,worldPrime)){
+          const held=worldPrime.handoff;
+          worldPrime.handoff=null;
+          releaseWorldPose(held,'cosmetics-ready');
+        }
         painted.firstDrawAt??=now;
         worldDrawn={entry:painted,at:now,time:paintOptions.time,progress:paintOptions.progress,timing:paintOptions.timing};
         defaultHD?.clear();draws++;
@@ -743,9 +787,9 @@
       return entry.bundle.draw(ctx,player,{...options,...entry.options,time:shown.time,progress:shown.progress,timing:shown.timing,
         consumer:'world-silhouette',auxiliary:true});
     }
-    function drawWorldPortrait(ctx,player,{consumer,x=ctx.canvas.width/2,y=ctx.canvas.height-12,scale=null,zoom=null,worldPose=false,time=0}={}){
+    function drawWorldPortrait(ctx,player,{consumer,x=ctx.canvas.width/2,y=ctx.canvas.height-12,scale=null,zoom=null,fit=false,worldPose=false,time=0}={}){
       const options={action:'idle',direction:'south',time,progress:worldPose?null:0,x,y,scale,consumer};
-      if(zoom!==null)Object.assign(options,{inventoryPresentation:true,avatarZoom:zoom,avatarConsumer:consumer,avatarWorldPose:worldPose});
+      if(fit||zoom!==null)Object.assign(options,{inventoryPresentation:true,avatarZoom:fit?null:zoom,avatarConsumer:consumer,avatarWorldPose:worldPose&&!fit});
       const drawn=drawWorldVisual(ctx,options,player,{publish:false});
       if(consumer==='inventory'){
         inventoryPreview=drawn?(root.MareVisualCompletoRenderer?.equipped(player)?

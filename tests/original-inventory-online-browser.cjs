@@ -20,7 +20,7 @@ refreshFighter();
  const out=process.env.MARE_QA_DIR||'tmp/original-online-inventory';fs.mkdirSync(out,{recursive:true});
  let activePage,rejectForge=false,slowForge=false,dropForge=false;const receipts=new Map();
  try{
-  const context=await browser.newContext({viewport:{width:1366,height:768}}),p=await context.newPage(),errors=[],commands=[];
+ const context=await browser.newContext({viewport:{width:1366,height:768},serviceWorkers:'block'}),p=await context.newPage(),errors=[],commands=[];
   activePage=p;p.setDefaultTimeout(30000);
   p.on('pageerror',e=>errors.push(e.message));
   await p.route('https://**/*',route=>route.abort());
@@ -120,7 +120,7 @@ refreshFighter();
   await p.keyboard.press('Escape');await p.setViewportSize({width:390,height:844});await p.keyboard.press('f');
   await p.locator('[data-forge-tab="dismantle"]').click();
   for(const item of scraps)await p.locator('[data-forge-item="'+item.id+'"]').click();
-  assert.match(await p.locator('.forge2-operation-content').innerText(),/5 fragmento/);
+  assert.match(await p.locator('.forge2-operation-content').innerText(),/^\+5\s+Fragmento de Item\b/);
   const before=wire.originalInventory.materials;
   await p.locator('[data-forge-action="dismantle"]').click();
   assert.match(await p.locator('.confirmation-card').innerText(),/Fragmento de Item/);

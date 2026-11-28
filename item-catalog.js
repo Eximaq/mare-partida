@@ -1238,6 +1238,7 @@
   if(swords)itemDefs.push(...swords.definitions);
   itemDefs.push(MareForge.legendaryWeaponFragment);
   if(swords)itemDefs.push(...swords.completeDefinitions);
+  if(visuals?.luffyDefinition)itemDefs.push(visuals.luffyDefinition); // Append only: index 246.
   return {items:itemDefs,slotNames,inventorySlotsLeft,inventorySlotsRight,capacity:BAG_CAPACITY,healerWeaponIndex};
  }
  const api={create,potions,potionRules,potionRecovery};root.MareItemCatalog=api;if(typeof module!=='undefined')module.exports=api;
