@@ -108,7 +108,7 @@ async function persisted(pool:any){
  return saved;
 }
 
-test('migrations 0062–0071 preserve active saves and historical receipts, is idempotent and refuses unknown hashes',async()=>{
+test('migrations 0062–0072 preserve active saves and historical receipts, is idempotent and refuses unknown hashes',async()=>{
  const directory=await mkdtemp(join(tmpdir(),'mare-enies-migrations-'));
  const source=new URL('../../apps/game-server/migrations/',import.meta.url);
  try{
@@ -140,7 +140,7 @@ test('migrations 0062–0071 preserve active saves and historical receipts, is i
    const before=await persisted(f.pool),expected=structuredClone(before);
    expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=world.rulesHash;
    expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=lateBattle;
-   assert.deepEqual(await applyMigrations(f.pool),['0062_enies_lobby.sql','0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql']);
+   assert.deepEqual(await applyMigrations(f.pool),['0062_enies_lobby.sql','0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql']);
    assert.deepEqual(await persisted(f.pool),expected);
    assert.deepEqual(await applyMigrations(f.pool),[]);
    await f.pool.query(await readFile(new URL('0062_enies_lobby.sql',source),'utf8'));

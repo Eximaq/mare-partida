@@ -43,7 +43,7 @@ test('Loguetown shared mobs and party extras reanchor together and remain reacha
 test('Loguetown release leaves current battles, unrelated worlds and unknown signatures intact',()=>{
  const current=E.create('loguetown',stats,now,()=>.5);current.pending={targetId:current.mobs[0].id,remaining:.4};
  const same=structuredClone(current);E.upgradeBalance(current);assert.deepEqual(current,same);
- const other=E.create('beach',stats,now,()=>.5);other.rulesHash=prior;other.pending={targetId:other.mobs[0].id,remaining:.4};
+ const other=E.create('orange',stats,now,()=>.5);other.rulesHash=prior;other.pending={targetId:other.mobs[0].id,remaining:.4};
  const expected={...structuredClone(other),rulesHash:E.rulesHash};E.upgradeBalance(other);assert.deepEqual(other,expected);
  const unknown=saved('f'.repeat(64)),before=structuredClone(unknown);E.upgradeBalance(unknown);assert.deepEqual(unknown,before);
 });

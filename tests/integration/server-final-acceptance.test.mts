@@ -77,7 +77,8 @@ test('navigation upgrade reanchors only known maps and preserves all other rows'
  const baratie=await readFile(new URL('../../apps/game-server/migrations/0069_baratie_hd_map.sql',import.meta.url),'utf8');
  const syrup=await readFile(new URL('../../apps/game-server/migrations/0070_syrup_hd_map.sql',import.meta.url),'utf8');
  const rare=await readFile(new URL('../../apps/game-server/migrations/0071_rare_island_hd_map.sql',import.meta.url),'utf8');
- const currentSql=[sql,swordWorld,skypiea,arrival,loguetown,arlong,baratie,syrup,rare].join('\n');
+ const dawn=await readFile(new URL('../../apps/game-server/migrations/0072_dawn_village_hd_map.sql',import.meta.url),'utf8');
+ const currentSql=[sql,swordWorld,skypiea,arrival,loguetown,arlong,baratie,syrup,rare,dawn].join('\n');
  await f.pool.query(currentSql);assert.deepEqual(await snapshot(),expected);
  await f.pool.query(currentSql);assert.deepEqual(await snapshot(),expected);
  await a.read();await assert.rejects(b.read(),{code:'world_rules_changed'});

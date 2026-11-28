@@ -19,7 +19,7 @@ Atualização de 19/10/2026. A janela fica em **Modos de jogo (M) → Mapa do Ar
 | Parque Arlong | 31–35 | `arlong` | Nv. 31 | Jogável · Kuroobi e Chew Nv. 33 |
 | Loguetown | 36–40 | `loguetown` | Nv. 36 | Jogável · Marinheiro Nv. 40 |
 
-Ilha Dawn é o nome atual de Ruínas de Brasas; Cidade das Conchas substitui Fenda da Névoa. As renomeações se aplicam à HUD, origem de novos drops e notificações atuais. Textos históricos no inventário e saves exportados não são reescritos. A documentação anterior de Orange Town descreve o mapa antigo e está supersedida por [ORANGE-TOWN.md](ORANGE-TOWN.md).
+Ilha Dawn é o nome atual de Ruínas de Brasas; Cidade das Conchas substitui Fenda da Névoa. As renomeações se aplicam à HUD, origem de novos drops e notificações atuais. Textos históricos no inventário e saves exportados não são reescritos. Dawn agora usa a vila costeira de Foosha com moinhos e PARTYS BAR, descrita em [VILA-DAWN.md](VILA-DAWN.md); a arte manual anterior permanece preservada. A documentação anterior de Orange Town descreve o mapa antigo e está supersedida por [ORANGE-TOWN.md](ORANGE-TOWN.md).
 
 As faixas são recomendações; não alteram os requisitos existentes nem impõem nível máximo. Combate, economia, equipamentos e IDs de persistência permanecem iguais. A viagem reutiliza `worldChange`, inclusive a recuperação de vida/energia já existente.
 

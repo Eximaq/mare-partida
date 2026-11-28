@@ -1,0 +1,39 @@
+{
+  "asset": "scene-hd.png",
+  "kind": "AI-generated game map painting",
+  "method": "OpenAI built-in image_gen",
+  "requested_by": "repository owner in task: create and integrate Vila Dawn HD into PR #394",
+  "generated_at_utc": "2026-11-28",
+  "native_width": 1448,
+  "native_height": 1086,
+  "world_width": 3072,
+  "world_height": 2304,
+  "bytes": 4035964,
+  "sha256": "b074ddb95c296c077e66f0feb85df81468ff265c05a9bfd1a96e24828b592f54",
+  "requested_generation_size": [
+    3072,
+    2304
+  ],
+  "returned_generation_size": [
+    1448,
+    1086
+  ],
+  "modifications": "None. The original generated PNG was copied byte for byte. Native pixels are not game world units. Runtime uses nearest-neighbor source crops.",
+  "prompt": "generation-prompt.txt",
+  "references": [
+    {
+      "url": "https://live-action.onepiece-base.com/location/windmill-village/",
+      "role": "Official location reference: small peaceful port and windmills; layout is an original adaptation."
+    },
+    {
+      "url": "https://one-piece.com/character/Makino/index.html",
+      "role": "Official character reference: Makino and PARTYS BAR in Foosha."
+    },
+    {
+      "url": "https://onepiece.fandom.com/wiki/Foosha_Village",
+      "role": "Geographic context of Foosha within Dawn Island."
+    }
+  ],
+  "third_party_images_distributed": false,
+  "rights_note": "Original generated fan-game artwork commissioned by the user. One Piece setting and names remain associated with their rights holders; no claim of exclusive rights to those elements."
+}

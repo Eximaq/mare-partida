@@ -30,8 +30,8 @@ function upgradeBattleProjection(b:any){
  // A personal row may already carry the new signature while the canonical
  // party room still has the old layout. Project that shared geometry as well.
  if(b?.rulesHash===engine.rulesHash&&b.partyInstanceId){
-  const reanchor=b.area==='loguetown'?engine.reanchorLoguetownMobs:b.area==='arlong'?engine.reanchorArlongMobs:b.area==='baratie'?engine.reanchorBaratieMobs:b.area==='syrup'?engine.reanchorSyrupMobs:b.area==='rare'?engine.reanchorRareMobs:null;
-  if(reanchor?.(b.area,b.mobs,maps().navigation(b.area))){engine.cancel(b);engine.resetHaki(b);}
+  const reanchor=b.area==='loguetown'?engine.reanchorLoguetownMobs:b.area==='arlong'?engine.reanchorArlongMobs:b.area==='baratie'?engine.reanchorBaratieMobs:b.area==='syrup'?engine.reanchorSyrupMobs:b.area==='rare'?engine.reanchorRareMobs:b.area==='beach'?engine.reanchorDawnMobs:null;
+  if(reanchor?.(b.area,b.mobs,maps().navigation(maps().mapId(b.area)))){engine.cancel(b);engine.resetHaki(b);}
  }
 }
 export async function readBattle(client:PoolClient,id:string){

@@ -50,19 +50,19 @@ test('Rare island migration reanchors only recognized island saves and preserves
   await authDatabase(async f=>{
    const people=[await actor(f),await actor(f),await actor(f)],originals=[];
    for(const [i,a] of people.entries()){
-    const area=i===1?'beach':'rare',b=E.create(area,{maxHP:100,maxEnergy:100},100000,()=>.5);
+    const area=i===1?'orange':'rare',b=E.create(area,{maxHP:100,maxEnergy:100},100000,()=>.5);
     b.rulesHash=i===2?'e'.repeat(64):priorBattle;b.hp=43;b.energy=37;b.cooldowns=[7,3];b.auto=true;
     b.pending={targetId:b.mobs[0].id,remaining:.3};b.targetId=b.mobs[0].id;b.projectiles=[{x:1168,y:528}];
     b.hunts.areas[area].kills=17;b.hunts.areas[area].respawns[b.mobs[1].spawnId]=Date.now()+600000;
     if(area==='rare')oldMobs(b.mobs);originals.push(structuredClone(b));
     await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(b)]);
     await f.pool.query(`UPDATE mare_game.character_world SET rules_hash=$2,map_id=$3,area=$4,x=992,y=608,path='[{"x":1016,"y":608}]',speed=120,
-     direction='left',started_at='2026-11-01T12:00:00Z',motion_until='2026-11-01T12:00:30Z' WHERE character_id=$1`,[a.c.id,i===2?'f'.repeat(64):priorWorld,i===1?'dawn':'rare',area]);
+     direction='left',started_at='2026-11-01T12:00:00Z',motion_until='2026-11-01T12:00:30Z' WHERE character_id=$1`,[a.c.id,i===2?'f'.repeat(64):priorWorld,i===1?'orange':'rare',area]);
    }
    const before=await snapshot(f.pool),expected=structuredClone(before);
    for(const a of people.slice(0,2))expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=W.rulesHash;
    const island=expected.character_world.find((r:any)=>r.character_id===people[0]!.c.id);Object.assign(island,{...sceneSpawn,path:[],speed:0,motion_until:island.started_at});
-   assert.deepEqual(await applyMigrations(f.pool),[sceneMigration]);assert.deepEqual(await snapshot(f.pool),expected);
+   assert.deepEqual(await applyMigrations(f.pool),[sceneMigration,'0072_dawn_village_hd_map.sql']);assert.deepEqual(await snapshot(f.pool),expected);
    assert.deepEqual(await applyMigrations(f.pool),[]);await f.pool.query(await readFile(new URL(sceneMigration,source),'utf8'));assert.deepEqual(await snapshot(f.pool),expected);
    const resumed=await people[0]!.read();assert.deepEqual(resumed.world.position,sceneSpawn);assert.equal(resumed.battle.rulesHash,E.rulesHash);
    for(const key of ['hp','energy','cooldowns','hunts'])assert.deepEqual(resumed.battle[key],originals[0][key],key);
