@@ -7,6 +7,8 @@
   const levelFont='600 12px "Segoe UI", system-ui, sans-serif';
   const insignias=new Map();
   const nameWidths=new WeakMap();
+  const labels=new Map();
+  let labelPixels=0;
   const maxCachedNames=256;
 
   function measure(context,name){
@@ -56,6 +58,40 @@
   }
 
   function drawName(context,x,y,name,color='#fff8e9',textFont=font){
+    if(!context.canvas?.ownerDocument||name.length>128){
+      paintText(context,x,y,name,color,textFont);
+      return;
+    }
+    const key=textFont+'|'+color+'|'+name;
+    let label=labels.get(key);
+    if(!label){
+      context.font=textFont;
+      context.textAlign='center';
+      context.textBaseline='alphabetic';
+      const m=context.measureText(name);
+      const half=Math.ceil(Math.max(m.width/2,m.actualBoundingBoxLeft,m.actualBoundingBoxRight))+3;
+      const top=Math.ceil(Math.max(0,m.actualBoundingBoxAscent))+3;
+      const height=top+Math.ceil(Math.max(0,m.actualBoundingBoxDescent))+3;
+      const canvas=context.canvas.ownerDocument.createElement('canvas');
+      canvas.width=half*4;
+      canvas.height=height*2;
+      const ink=canvas.getContext('2d');
+      ink.scale(2,2);
+      paintText(ink,half,top,name,color,textFont);
+      label={canvas,half,top,height};
+      labels.set(key,label);
+      labelPixels+=canvas.width*canvas.height;
+      while(labels.size>1&&(labels.size>maxCachedNames||labelPixels>2_000_000)){
+        const oldest=labels.keys().next().value,old=labels.get(oldest).canvas;
+        labelPixels-=old.width*old.height;
+        labels.delete(oldest);
+        old.width=old.height=0;
+      }
+    }
+    context.drawImage(label.canvas,x-label.half,y-label.top,label.half*2,label.height);
+  }
+
+  function paintText(context,x,y,name,color,textFont){
     context.font=textFont;
     context.textAlign='center';
     context.textBaseline='alphabetic';

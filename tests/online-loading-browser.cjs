@@ -64,6 +64,12 @@ const server = createServer(async (req,res) => {
       const command = JSON.parse(input);
       assert.equal(command.action,'world.return');
       wire.world = {...wire.world,mapId:'lobby',area:null,position:maps.maps.lobby.spawn};
+      // Public peers carry projected item definitions, including combinations
+      // that only the layered world renderer can assemble.
+      wire.lobby={players:[{id:'equipped-peer',name:'Vigia',classId:'sword',factionId:'pirate',
+        appearance96:{version:1,gender:'masculino',hairStyle:'original',skinStyle:'natural',skinColor:'light',eyeStyle:'original',eyeColor:'blue',hairColor:'black'},
+        equipment:{weapon:{def:68},head:{def:143},coat:{def:137},legs:{def:21},gloves:{def:25},boots:{def:9},cloak:{def:156}},
+        world:{...wire.world,position:{x:wire.world.position.x+32,y:wire.world.position.y}}}]};
       wire.state.version++;
     }
     else {res.writeHead(404).end(); return;}
@@ -182,6 +188,10 @@ const server = createServer(async (req,res) => {
       document.querySelector('#gameFrame').dataset.worldState==='ready' && document.querySelector('#gameLoading').hidden);
     if (!onDemand) assert.equal(transfers,installed,'travelling uses the installed maps, not another download');
     if (onDemand) assert.equal(unexpectedPath,undefined);
+    await page.waitForFunction(()=>{
+      const lobby=window.__mareDiagnostics().sharedLobby;
+      return lobby.players.some(p=>p.name==='Vigia')&&lobby.draws>=3;
+    },null,{timeout:45000});
     assert.deepEqual(errors,[]);
     console.log('Online loading: delayed control, restored map, one overlay, desktop/mobile, warm cache and demo isolation passed.');
     await context.close();

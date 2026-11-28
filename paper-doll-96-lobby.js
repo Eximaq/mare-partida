@@ -421,7 +421,7 @@
         const prepare=async()=>{
           try{
             await nativeHD.ready;
-            const source=nativeHD.selectVisual(playerSnapshot,poseOptions);
+            const source=selectWorldHDOnly(nativeHD,weaponCatalog,playerSnapshot,poseOptions);
             if(!source)return;
             const pose={player:playerSnapshot,options:poseOptions};
             entry.bundle=await nativeHD.prepareConfiguration([pose],{
