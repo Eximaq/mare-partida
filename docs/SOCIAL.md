@@ -5,6 +5,7 @@ Tripulação, Correio e Trocas. Cada atalho abre sua própria tela. Os quatro se
 0044–0046; a demonstração local continua independente. O servidor anuncia a
 disponibilidade somente quando as três migrações estão presentes.
 
+- **Geral:** personagens conectados podem conversar sem adicionar amizade. O servidor identifica o remetente pela sessão e exige o controle do personagem para enviar. O canal mostra até 45 mensagens recentes, respeita bloqueios nos dois sentidos e atualiza a cada 2,5 segundos enquanto estiver aberto. Anotações continuam locais. A tabela de mensagens públicas é criada pela migração `0079_port_chat.sql`.
 - **Amigos e mensagens:** os vínculos usam o ID do personagem. Pedidos cruzados
   permanecem pendentes até aceite explícito. Uma nova conversa exige amizade;
   removê-la preserva o histórico. O bloqueio impede novos contatos, convites e

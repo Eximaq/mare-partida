@@ -132,7 +132,8 @@ export function createAuthHandler(options: {
         /^\/v1\/characters\/([0-9a-f-]{36})(?:\/(control)(?:\/(renew))?)?$/.exec(
           path,
         );
-      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/(state|online-state|game-catalog|frame|crew|social|market)$/.exec(path);
+      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/(state|online-state|game-catalog|frame|crew|social|port-chat|market)$/.exec(path);
+      const chatSend = /^\/v1\/characters\/([0-9a-f-]{36})\/port-chat\/send$/.exec(path);
       const commandMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/commands$/.exec(path);
       const known = [
         "/v1/auth/csrf",
@@ -148,7 +149,7 @@ export function createAuthHandler(options: {
         "/v1/crews/ranking",
         "/v1/characters",
       ];
-      if (!known.includes(path) && !match && !stateMatch && !commandMatch) {
+      if (!known.includes(path) && !match && !stateMatch && !chatSend && !commandMatch) {
         request.resume();
         reply(404, { error: "not_found" });
         return;
@@ -166,7 +167,7 @@ export function createAuthHandler(options: {
       }
       // Gameplay polling and movement share an IP behind the local gateway/NAT.
       // Reserve the original authentication budget instead of letting play traffic consume it.
-      const gameplay = path === "/v1/me" || path === "/v1/hierarchy/ranking" || path === "/v1/crews/ranking" || path === "/v1/characters" || !!match || !!stateMatch || !!commandMatch;
+      const gameplay = path === "/v1/me" || path === "/v1/hierarchy/ranking" || path === "/v1/crews/ranking" || path === "/v1/characters" || !!match || !!stateMatch || !!chatSend || !!commandMatch;
       await service.rateLimit((gameplay ? "game-ip:" : "ip:") + ip, gameplay ? 600 : 300, 60);
       const jar = cookies(request),
         session = jar.get(SESSION),
@@ -227,6 +228,10 @@ export function createAuthHandler(options: {
           const q=url.searchParams.get('q')??'',view=url.searchParams.get('view');
           if(!stateMatch||q.length>96||(view!==null&&view!=='identity')||(view!==null&&url.searchParams.has('q'))||[...url.searchParams.keys()].some(k=>k!=='q'&&k!=='view')||url.searchParams.getAll('q').length>1||url.searchParams.getAll('view').length>1)throw new AuthFault(400,"invalid_request");
           reply(200,await service.crewState(session,parse(z.uuid(),stateMatch[1]),q,view==='identity'));return;
+        }
+        if(stateMatch?.[2]==='port-chat'){
+          if(url.search)throw new AuthFault(400,'invalid_request');
+          reply(200,await service.portChat(session,parse(z.uuid(),stateMatch[1])));return;
         }
         if(stateMatch?.[2]==='market'){
           if(request.headers['transfer-encoding']||Number(request.headers['content-length']??0)!==0)throw new AuthFault(400,'invalid_request');
@@ -319,6 +324,12 @@ export function createAuthHandler(options: {
         return;
       }
       if (!session) throw unauthorized();
+      if(chatSend){
+        if(url.search)throw new AuthFault(400,'invalid_request');
+        const input=parse(z.object({requestId:z.uuid(),body:z.string().trim().min(1).max(140).regex(/^[^\u0000-\u001f\u007f]+$/u)}).strict(),value);
+        await service.sendPortChat(session,parse(z.uuid(),chatSend[1]),input);
+        reply(204);return;
+      }
       if (commandMatch) {
         if (url.search) throw new AuthFault(400, "invalid_request");
         reply(200, await service.command(session, parse(z.uuid(), commandMatch[1]), parse(characterCommandSchema, value)));

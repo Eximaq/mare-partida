@@ -324,6 +324,33 @@ export class AuthService {
       return readMarket(client,id,query);
     });
   }
+  async portChat(token:string,id:string){
+    return this.withSession(token,'play',async(client,row)=>{
+      await this.owned(client,row.account_id,id);
+      const {rows}=await client.query<{id:string;name:string;senderId:string;body:string;sentAt:Date}>(`
+        SELECT m.id,c.name,m.sender_id AS "senderId",m.body,m.sent_at AS "sentAt"
+        FROM mare_game.port_chat_messages m JOIN mare_game.characters c ON c.id=m.sender_id
+        WHERE NOT EXISTS (SELECT 1 FROM mare_game.social_contact_blocks b
+          WHERE (b.blocker_id=$1 AND b.target_id=m.sender_id) OR (b.target_id=$1 AND b.blocker_id=m.sender_id))
+        ORDER BY m.id DESC LIMIT 45`,[id]);
+      return {messages:rows.reverse()};
+    });
+  }
+  async sendPortChat(token:string,id:string,input:{requestId:string;body:string}){
+    return this.withSession(token,'play',async(client,row)=>{
+      await this.owned(client,row.account_id,id,true);
+      const control=await client.query('SELECT 1 FROM mare_game.character_control WHERE character_id=$1 AND session_id=$2 AND expires_at>clock_timestamp()',[id,row.id]);
+      if(!control.rowCount)throw new AuthFault(409,'control_required');
+      const previous=await client.query<{body:string}>('SELECT body FROM mare_game.port_chat_messages WHERE sender_id=$1 AND request_id=$2',[id,input.requestId]);
+      if(previous.rowCount){
+        if(previous.rows[0]!.body!==input.body)throw new AuthFault(409,'request_conflict');
+        return;
+      }
+      const recent=await client.query<{count:number}>("SELECT count(*)::int AS count FROM mare_game.port_chat_messages WHERE sender_id=$1 AND sent_at>clock_timestamp()-interval '1 minute'",[id]);
+      if(recent.rows[0]!.count>=20)throw new AuthFault(429,'message_rate_limited');
+      await client.query('INSERT INTO mare_game.port_chat_messages(sender_id,request_id,body) VALUES($1,$2,$3)',[id,input.requestId,input.body]);
+    });
+  }
   async socialState(token:string,id:string,query:SocialRead){
     return this.withSession(token,'play',async(client,row)=>{
       await this.owned(client,row.account_id,id);

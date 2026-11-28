@@ -81,7 +81,7 @@ for (const release of ['main', 'maps'] as const) {
         assert.equal(await isDatabaseReady(pool), false);
 
         const executions = await Promise.all([applyMigrations(pool), applyMigrations(pool)]);
-        assert.deepEqual(executions.flat().sort(), release === 'main' ? mapNames : progressionNames);
+        assert.deepEqual(executions.flat().sort(), [...(release === 'main' ? mapNames : progressionNames),'0079_port_chat.sql']);
         assert.equal(executions.filter(names => names.length).length, 1);
         const after = await characterState(pool, character.id);
         assert.deepEqual(after, {
@@ -99,7 +99,7 @@ for (const release of ['main', 'maps'] as const) {
           name, checksum: createHash('sha256').update((await readFile(new URL(name, source), 'utf8')).replaceAll('\r\n', '\n')).digest('hex'),
         })));
         assert.deepEqual(completeHistory.map(({ name, checksum }) => ({ name, checksum })), expectedHistory);
-        assert.equal(completeHistory.length, 81);
+        assert.equal(completeHistory.length, 82);
         assert.equal(await isDatabaseReady(pool), true);
         assert.deepEqual(await applyMigrations(pool), []);
         assert.deepEqual(await characterState(pool, character.id), after);
