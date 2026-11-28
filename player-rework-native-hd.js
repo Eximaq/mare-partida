@@ -15,7 +15,7 @@ function rasterBounds(pixels,w,h){
  }
  return right<left?null:{left,top,width:right-left+1,height:bottom-top+1};
 }
-function fitInventoryAvatar(ctx,source,referenceScale=1,{cache=true,zoom=3}={}){
+function fitInventoryAvatar(ctx,source,referenceScale=1,{cache=true,zoom=3,footAnchor=null}={}){
  const w=source.width,h=source.height;if(!w||!h)return null;
  let bounds=cache&&inventoryBounds.get(source);
  if(!bounds){
@@ -27,13 +27,23 @@ function fitInventoryAvatar(ctx,source,referenceScale=1,{cache=true,zoom=3}={}){
  if(!Number.isFinite(zoom)||zoom<=0||!Number.isFinite(referenceScale)||referenceScale<=0)return null;
  const margin=10,target=referenceScale*zoom;
  if(cw<=margin*2||ch<=margin*2)return null;
- const physicalScale=Math.min(target,(cw-margin*2)/width,(ch-margin*2)/height);
+ const anchored=footAnchor&&Number.isFinite(footAnchor.x)&&Number.isFinite(footAnchor.y);
+ const x=cw/2,y=ch-24;
+ const available=(space,extent)=>extent>0?space/extent:Infinity;
+ const physicalScale=anchored?Math.min(target,
+  available(x-margin,footAnchor.x-left),available(cw-x-margin,left+width-footAnchor.x),
+  available(y-margin,footAnchor.y-top),available(ch-y-margin,top+height-footAnchor.y)
+ ):Math.min(target,(cw-margin*2)/width,(ch-margin*2)/height);
+ if(!(physicalScale>0))return null;
  const dw=width*physicalScale,dh=height*physicalScale;
+ const dx=anchored?x-(footAnchor.x-left)*physicalScale:Math.floor((cw-dw)/2);
+ const dy=anchored?y-(footAnchor.y-top)*physicalScale:Math.floor((ch-dh)/2);
  ctx.save();try{
   ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,cw,ch);
-  ctx.drawImage(source,left,top,width,height,Math.floor((cw-dw)/2),Math.floor((ch-dh)/2),dw,dh);
+  ctx.drawImage(source,left,top,width,height,dx,dy,dw,dh);
  }finally{ctx.restore();}
- return {physicalScale,requestedScale:target,multiplier:physicalScale/referenceScale,limited:physicalScale<target,bounds};
+ return {physicalScale,requestedScale:target,multiplier:physicalScale/referenceScale,limited:physicalScale<target,bounds,
+  ...(anchored?{footAnchor:{x,y}}:{})};
 }
 
 const identityKey=p=>JSON.stringify([p.appearance96||{},p.equipment||{},!!p.zoanTransformed,!!root.MareHeadgear?.hidden(p)],(key,value)=>key==='durability'?undefined:value);
@@ -11359,9 +11369,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function paint(ctx,player,o,r,frame,result,hold=true){
   if(o.inventoryPresentation){
-   const fitted=fitInventoryAvatar(ctx,result.canvas,WORLD_SCALE,{zoom:o.avatarZoom});if(!fitted)return false;
+   const footAnchor=o.avatarWorldPose?{
+    x:result.info.pivot.x-(result.offset?.[0]||0),y:result.info.pivot.y-(result.offset?.[1]||0)
+   }:null;
+   const fitted=fitInventoryAvatar(ctx,result.canvas,WORLD_SCALE,{zoom:o.avatarZoom,footAnchor});if(!fitted)return false;
    if(result.offset){fitted.bounds={...fitted.bounds,left:fitted.bounds.left+result.offset[0],top:fitted.bounds.top+result.offset[1]};}
-   last={state:'rendered',consumer:o.avatarConsumer,source:r.id,hdKind:r.hdKind,
+   last={state:'rendered',consumer:o.avatarConsumer,source:r.id,hdKind:r.hdKind,action:o.action,direction:o.direction,
     omitted:r.omitted||[],slotRoutes:r.slotRoutes||{},frame,...fitted};return true;
   }
   let x=o.x||0,y=o.y||0;

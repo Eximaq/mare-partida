@@ -45,7 +45,7 @@ test('Orange Town shared mobs and party extras follow the same reachable new anc
 test('Orange Town release preserves active current battles, unrelated worlds, and unknown signatures',()=>{
  const current=E.create('orange',stats,now,()=>.5);current.pending={targetId:current.mobs[0].id,remaining:.4};
  const same=structuredClone(current);E.upgradeBalance(current);assert.deepEqual(current,same);
- for(const area of ['beach','swamp','alubarna-01','rare','syrup','baratie','arlong','loguetown','skypiea-01']){
+ for(const area of ['beach','swamp','enies-lobby-01','rare','syrup','baratie','arlong','loguetown','skypiea-01']){
   const other=E.create(area,stats,now,()=>.5);other.rulesHash=prior;other.pending={targetId:other.mobs[0].id,remaining:.4};
   const expected={...structuredClone(other),rulesHash:E.rulesHash};E.upgradeBalance(other);assert.deepEqual(other,expected);
  }
