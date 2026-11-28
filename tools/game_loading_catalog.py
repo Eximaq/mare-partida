@@ -82,7 +82,7 @@ def hd_patches(root, units, budget=5 * 1024 * 1024):
     return patches
 
 
-def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS, *, full_install=False):
+def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS, *, full_install=False, port_install=False):
     paths = {f for prefix in roots for f in (root / prefix).rglob('*')
              if f.is_file() and f.suffix.lower() in TYPES}
     paths.update(root / path for path in extra_files)
@@ -95,8 +95,30 @@ def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS, *
     if full_install:
         # The full installer trades a larger server artifact for fewer requests and reused ZIP data.
         return package_catalog(root, asset_paths, pack_budget=128 * 1024**2, patch_budget=48 * 1024**2)
+    if port_install:
+        return package_port_catalog(root, asset_paths)
     # Individual resources let the active scene fetch only the pieces it uses.
     return package_catalog(root, asset_paths, pack_budget=0, patch_budget=0)
+
+
+def port_asset(path):
+    if path.startswith('assets/ui/'):
+        return '-reference/' not in path and '/reference/' not in path and '/loading-art/' not in path
+    return path.startswith(('tools/rework-', 'tools/paper-doll-96-v3/', 'icones_menu_pirata/',
+                            'assets/skins/', 'assets/akuma/', 'assets/haki/', 'assets/classes/', 'assets/factions/'))
+
+
+def package_port_catalog(root, asset_paths):
+    # Separate before packing: a clothing archive must never pull in a destination map.
+    port = package_catalog(root, [p for p in asset_paths if port_asset(p)],
+                           pack_budget=48 * 1024**2, patch_budget=48 * 1024**2)
+    other = package_catalog(root, [p for p in asset_paths if not port_asset(p)], pack_budget=0, patch_budget=0)
+    offset = len(port['units'])
+    port['portUnits'] = offset
+    port['units'].extend(other['units'])
+    for path, (index, start, size, mime) in other['files'].items():
+        port['files'][path] = [offset + index, start, size, mime]
+    return port
 
 
 def package_catalog(root, asset_paths, *, pack_budget=36 * 1024 * 1024,
@@ -156,12 +178,12 @@ def package_catalog(root, asset_paths, *, pack_budget=36 * 1024 * 1024,
     return {'units': units, 'files': files, 'patches': patches}
 
 
-def write_catalog(root, compatibility_files, extra_files, renderer_fixture=False, *, full_install=False):
+def write_catalog(root, compatibility_files, extra_files, renderer_fixture=False, *, full_install=False, port_install=False):
     # Renderer suites intercept individual asset requests to exercise missing art and
     # fallback behavior. Run the same installer with a small, real fixture catalog.
     roots = ('assets/ui/loading',) if renderer_fixture else ROOTS
     manifest = build_catalog(root, compatibility_files, () if renderer_fixture else extra_files, roots,
-                             full_install=full_install)
+                             full_install=full_install, port_install=port_install)
     data = json.dumps(manifest, separators=(',', ':'), ensure_ascii=True).encode()
     filename = 'game-content-' + hashlib.sha256(data).hexdigest()[:24] + '.json'
     (root / filename).write_bytes(data)

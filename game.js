@@ -14,7 +14,11 @@
     try{await ONLINE_GAME.load();}
     catch(error){if(error.code==='authentication_required'){location.replace('/online/');return;}if(loading){loading.fail('Não foi possível carregar seu personagem. Tente novamente.');return;}const message=document.createElement('p');message.textContent='Não foi possível carregar seu personagem. Atualize a página para tentar novamente.';message.setAttribute('role','alert');document.body.replaceChildren(message);return;}
   }
-  if (loading?.fullInstall) await installed;
+  if (loading?.fullInstall || ONLINE_GAME?.data?.character) await installed;
+  let portEntry = !!(ONLINE_GAME?.data?.character && loading && !loading.fullInstall);
+  let portAssetsReady = !portEntry;
+  if (portEntry) loading.preparePort().then(() => { portAssetsReady = true; })
+    .catch(() => loading.fail('Não foi possível preparar os arquivos do porto. Tente novamente.'));
   let loadingHeroDrawn = false, loadingSceneTime = 0, loadingFrame = 0;
   let onlineWorldFrame=null,onlineMoveKeys='',onlineNextMove=0,onlineMoveWorking=false;
   let onlineUI=null,onlineAttackWorking=false,onlineEncounterId=null,onlineInventoryStamp=null;
@@ -109,7 +113,7 @@
   }
   function drawPartyPortraits(){
     const members=ONLINE_GAME?.data?.online.party?.group?.members;if(!members?.length)return;
-    partyPortraitRenderer??=MarePaperDoll96Lobby.create({search:location.search,beforeNativeIndexes:nativeAssetsGate,sharedLobby:true});
+    partyPortraitRenderer??=MarePaperDoll96Lobby.create({search:location.search,sharedLobby:true});
     for(const canvas of document.querySelectorAll('canvas[data-party-portrait]')){const m=members.find(m=>m.id===canvas.dataset.partyPortrait);if(!m)continue;const c=canvas.getContext('2d');c.clearRect(0,0,80,96);partyPortraitRenderer.draw(c,m,{scene:'lobby',action:'idle',direction:'south',time:world.time,x:40,y:93,scale:1.65,consumer:'party-portrait'});}
   }
   function updatePartyUI(){
@@ -140,11 +144,7 @@
     const send=async()=>{const ok=await onlineItemCommand('party.'+action,payload);if(ok&&action==='start')closePanel();else if(currentPanel==='party')renderPartyPanel();return ok;};
     if(action==='leave'||action==='kick')showConfirmation(action==='leave'?'Sair do grupo?':'Remover membro?','A participação na atividade será encerrada e o personagem retornará ao porto. Recompensas pessoais pendentes serão preservadas.',send,action==='leave'?'SAIR':'REMOVER');else await send();
   }
-  // Native indexes can be larger than the current map. Let the first map paint first.
-  let resumeNativeAssets;
-  const nativeAssetsGate = ONLINE_GAME?.data?.character && !loading?.fullInstall
-    ? new Promise(resolve => { resumeNativeAssets = resolve; }) : null;
-  const lobby96=MarePaperDoll96Lobby.create({search:location.search,beforeNativeIndexes:nativeAssetsGate,onChange:()=>{if(game){renderPortrait();const inventoryPreview=$('inventorySprite');if(currentPanel==='inventory'&&inventoryPreview)drawInventoryAvatar(inventoryPreview,{force:true});if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
+  const lobby96=MarePaperDoll96Lobby.create({search:location.search,onChange:()=>{if(game){renderPortrait();const inventoryPreview=$('inventorySprite');if(currentPanel==='inventory'&&inventoryPreview)drawInventoryAvatar(inventoryPreview,{force:true});if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
   let paperDollDebug=DEV_ACTIVE&&new URLSearchParams(location.search).get('paperDollDebug')==='1';
   const STORAGE_KEY=MareDev.key(location.search);
   const saveWriter=ONLINE_GAME?{ready:true,owner:true,exclusive:false}:MareSaveWriter.create(STORAGE_KEY);
@@ -1197,7 +1197,7 @@
   Object.defineProperty(window,'has_haki_unlocked',{get:()=>game?.has_haki_unlocked===true,configurable:true});
   function initializeSession(){session?.fruitAction?.resolve?.(false);clearRankA();if(session)for(const p of session.combatProjectiles||[])p.phase='done';clearJiki();clearHoya();clearRankB();clearExpansion();clearRankC();clearWolfState();clearRyuState();clearUshiState();clearSupaProtection();travelPath=[];keys.clear();rejectedTargets.clear();pursuit=new WeakMap();session={haki:MareHaki.start(),talents:MareTalentCombat.create(),start:performance.now()/1000,elapsed:0,xp:0,gold:0,recentLoot:[],cooldowns:[0,0,0],fruitCooldown:0,fruitInvulnerable:0,fruitBurst:0,guard:0,blessing:0,skillUses:[0,0,0],skillEnergySpent:0,healingDone:0,respawn:0,spent:0,attackClock:0,lastHit:0,heroKOs:0,bossNotice:0};world={mobs:[],corpses:[],food:[],fx:[],projectiles:[],decor:[],time:0,hero:{x:scene==='lobby'?540:580,y:scene==='lobby'?338:313,facing:1,attackAnim:0,walking:0,visible:true},target:null,spawnClock:0,bossCooldown:0,nextID:Math.floor(Date.now()%1000000)};Object.assign(world.hero,activeMap().spawn,{direction:'front'});syncZoanTransition();camera.update(world.hero,activeMap(),0,true);if(!ONLINE_GAME&&scene==='hunt')for(let i=0;i<7;i++)spawnMob();}
   function startGame(){
-    if (loading?.fullInstall) {
+    if (portEntry || loading?.fullInstall) {
       loading.scene();
       loadingHeroDrawn = false; loadingSceneTime = 0;
       cancelAnimationFrame(loadingFrame);
@@ -4002,7 +4002,7 @@ ${avatarExtra}
     else if(MareAlubarna.worlds[id])image=MareAlubarna.prepare();
     else if(MareNewIslands[id])image=MareNewIslands.prepare(id);
     else if(MarePixelWorldMaps[id])image=MarePixelWorldMaps.prepare(id);
-    else if(id==='impel-down')image=MareImpel.image;
+    else if(id==='impel-down')image=MareImpel.prepare();
     else if(id==='embers'){MareEmberRenderer.prepare();return MareEmberRenderer.state();}
     else return 'ready';
     return image?.complete?(image.naturalWidth?'ready':'failed'):'loading';
@@ -4049,11 +4049,6 @@ ${avatarExtra}
       return;
     }
     drawWorld();drawPaperDollDiagnostics();
-    if (game && resumeNativeAssets) {
-      const resume = resumeNativeAssets;
-      resumeNativeAssets = null;
-      requestAnimationFrame(resume);
-    }
   }
   function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}camera.begin(ctx,activeMap());drawBackground();drawMapTravelMarkers('back');drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'back',world.hero);drawCombatVfx('back');if(scene==='hunt'){const nav=navigator();MareHakiArt.drawKing(ctx,presentHaki(),nav,combatLine,reducedFX);for(const peer of sharedLobbyPlayers())if(peer.haki?.kingFX>0)MareHakiArt.drawKing(ctx,MareHakiArt.presentation(peer.haki,peer.hakiVisualAge),nav,combatLine,reducedFX);}drawEntityLayer();drawDungeonChestLabel();
     if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'front',world.hero);
@@ -4088,26 +4083,45 @@ ${avatarExtra}
 
     if(currentPanel==='character'&&characterTab==='akuma')for(const canvas of document.querySelectorAll('canvas[data-akuma-aura]')){const fruit=MareAkuma.byId(canvas.dataset.akumaAura),c=canvas.getContext('2d');c.clearRect(0,0,48,48);c.imageSmoothingEnabled=false;vfx_aura.draw(c,24,48,world.time,1,fruit);}
   }
+  function entryPosesReady() {
+    const plan = lobby96.worldVisual()?.preparation;
+    return !portEntry || !plan || plan.essentialReady;
+  }
+  let waitingForPeersAt = null, entryPeers;
   function prepareFirstFrame(t) {
-    if (!game || (loading.prepared && !loading.pending)) return;
-    if (loading.failed) return;
+    if (!game || loading.failed || (loading.prepared && !loading.pending)) return;
     if (loading.prepared && onlineEntryReady) {
-      if (lastTime && !document.hidden) loadingSceneTime += Math.min(250, Math.max(0, t - lastTime));
+      if ((portAssetsReady || loading.interfaceCached && !loadingHeroDrawn) && lastTime && !document.hidden) loadingSceneTime += Math.min(250, Math.max(0, t - lastTime));
       lastTime = t;
       const state = mapArtState();
-      if (state === 'failed' || lobby96.worldVisual()?.state === 'failed' || loadingSceneTime > 60000) {
+      if (state === 'failed' || lobby96.worldVisual()?.state === 'failed' || loadingSceneTime > 120000) {
         loading.fail('Não foi possível preparar o mapa ou a animação do personagem.');
         return;
       }
       if (state === 'ready') {
         presentWorld();
-        if (loadingHeroDrawn) { loading.finish(); return; }
+        if (loadingHeroDrawn && entryPosesReady()) {
+          // A changing roster cannot keep the port closed indefinitely.
+          waitingForPeersAt ??= t;
+          if (portEntry && t - waitingForPeersAt < 2500 &&
+              !lobby96.prepareEntryPeers(entryPeers ??= sharedLobbyPlayers().slice(0, 4).map(peer => ({...peer})))) {
+            loadingFrame = requestAnimationFrame(prepareFirstFrame);
+            return;
+          }
+          if (portAssetsReady) {
+            portEntry = false;
+            loading.finish();
+            return;
+          }
+          loading.markSceneReady();
+        }
       }
     }
     loadingFrame = requestAnimationFrame(prepareFirstFrame);
   }
   function frame(t){
-    if (loading?.fullInstall && (!loading.prepared || loading.failed || loading.pending)) {
+    if ((portEntry || loading?.fullInstall) && (!loading.prepared || loading.failed || loading.pending)) {
+      if (portEntry) onlineUI?.frame(t);
       requestAnimationFrame(frame); return;
     }
     // Skip floating-point leftovers that are too small to move the actor.
@@ -4186,7 +4200,7 @@ $('gameFrame').appendChild(targetHud);
     className:id=>classes[id]?.name||'Classe desconhecida',faction:id=>factions[id]?.name,identity:MareCrewUI.identity,
     category:itemCategory,item:tooltipItem,
     draw:(canvas,p)=>{
-      socialPortraitRenderer??=MarePaperDoll96Lobby.create({search:location.search,beforeNativeIndexes:nativeAssetsGate,sharedLobby:true,onChange:()=>socialUI?.refreshPortraits()});
+      socialPortraitRenderer??=MarePaperDoll96Lobby.create({search:location.search,sharedLobby:true,onChange:()=>socialUI?.refreshPortraits()});
       const ctx=canvas.getContext('2d');ctx.clearRect(0,0,48,52);
       socialPortraitRenderer.draw(ctx,p,{scene:'lobby',action:'idle',direction:'south',time:0,x:24,y:50,scale:.77,consumer:'social-portrait'});
     },
@@ -4727,7 +4741,7 @@ function applySceneHudLayout(){
   }else{
   const previous=loadGame();if(previous){game=previous;clearExpansion();let d=getDerived();game.hp=clamp(Number(game.hp)||1,0,d.maxHP);game.energy=clamp(Number(game.energy)||0,0,d.maxEnergy);startGame();toast('Bem-vindo de volta, '+game.name+'!','good');}else{$('startOverlay').classList.remove('hidden');openCreation(false);$('characterName').focus();}
   }
-  if (!loading?.fullInstall || !game) loading?.finish();
+  if ((!portEntry && !loading?.fullInstall) || !game) loading?.finish();
   // Diagnóstico somente leitura para testes de regressão da demo local.
   if(DEV_ACTIVE)window.__marePaperDollDebug=()=>lobby96.snapshot();
   window.__mareDiagnostics=()=>({visualCompleto:MareVisualCompletoRenderer.snapshot(),onlineSampledAt:world.hero.onlineSampledAt??null,sharedLobby:{players:sharedLobbyPlayers().map(p=>({name:p.name,x:p.x,y:p.y})),draws:lobby96.snapshot().peerDraws},dev:{active:DEV_ACTIVE,key:STORAGE_KEY,options:game?.devOptions},akuma:{rankA:{room:session?.rankA?.room,jobs:(session?.rankA?.jobs||[]).map(j=>({kind:j.kind,started:j.started,hit:j.hit})),active:MareRankA.roomActive(session?.rankA,world.time),dome:MareRankA.domeActive(session?.rankA,world.time),expansion:session?.rankA?.expansion?{jobs:session.rankA.expansion.jobs.length,fields:session.rankA.expansion.fields.length,dots:session.rankA.expansion.dots.length}:null},rankC:{horuActive:horuBuffActive(),horuUntil:session?.horuBuffUntil||0,speedUntil:world.hero.horuSpeedUntil||0,shots:(session?.rankCProjectiles||[]).map(p=>({...p})),marks:world.mobs.filter(m=>MareRankC.marked(m)).map(m=>({id:m.id,until:m.matoMarkUntil,charges:m.matoCharges}))},registered:MareAkuma.registered(game),equipped:game?.equipment?.akuma_no_mi?.id||null,current_fruit_vfx,cooldowns:{...game?.fruitCooldowns},combatVfx:{backend:combatVfxBackend,projectiles:(session?.combatProjectiles||[]).map(p=>({kind:p.kind,phase:p.phase,x:p.x,y:p.y,elapsed:p.elapsed})),hits:(session?.combatHits||[]).map(f=>({kind:f.kind,started:f.started})),heroStatus:session?combatStatus(world.hero):null},shieldActive:supaShieldActive(),shieldUntil:session?.supaShieldUntil||0,nekoAction:session?.nekoAction?{...session.nekoAction}:null,nekoTransformed:isNekoForm(),wolfTransformed:isWolfForm(),wolfAuraActive:wolfAuraActive(),wolfAction:session?.wolfAction?{...session.wolfAction}:null,ryuTransformed:isRyuForm(),ryuAction:session?.ryuAction?{...session.ryuAction}:null,ryuImpactPending:session?.ryuImpactPending||0,ryuSyncError:session?.ryuSyncError||null,doruProjectiles:(session?.doruProjectiles||[]).map(p=>({...p})),doruImpactPending:session?.doruImpactPending||0,doruSyncError:session?.doruSyncError||null,ushiTransformed:isUshiForm(),ushiBuffActive:ushiBuffActive(),ushiAction:session?.ushiAction?{...session.ushiAction}:null,fx:world.fx.filter(f=>f.supaVfx).map(f=>({...f}))},hakiBookDef:itemDefs.indexOf(MareHaki.book),haki:game?{...game.haki,...session?.haki,unlocked:game.has_haki_unlocked}:null,hunt:game?{progress:game.hunts,sector:MareHunt.sectorAt(game.area,world.hero,huntAnchors()),bossReady:MareHunt.bossReady(game,game.area,world.hero,Date.now(),huntAnchors())}:null,scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H,zoom:worldZoom.value,masked:camera.masked,solves:camera.solves,coverage:MareWorld.coverageFor(activeMap()).snapshot()},telemetry:session?MareHudTelemetry.stats({scene,elapsed:session.elapsed,xp:session.xp,levelXP:game?.xp,neededXP:game?xpNeeded(game.level):1}):null,map:{id:activeMap().id,width:activeMap().width,height:activeMap().height,navigation:{cached:Object.keys(navigators).length,builtRows:navigator().builtRows,rows:navigator().rows,ready:navigator().ready}},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):activeMap().id==='rare'?MareRare.paths.map(p=>({...p})):activeMap().id==='dawn'?MareDawn.paths.map(p=>({...p})):activeMap().id==='conchas'?MarePixelWorldMaps.conchas.districts.map(p=>({...p})):['orange','loguetown'].includes(activeMap().id)?huntAnchors():activeMap().id==='embers'?MareEmber.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,talents:session?.talents?MareTalentCombat.snapshot(session.talents):null,talentPoints:game?MareTalents.available(game):0,classId:game?.classId,combat:world.hero.combat?.snapshot()??basicAttackPose(),combatAssetId:world.hero.combatAssetId??null,paperDollReview:{enabled:false,state:'retired',draws:0,packId:null},lobby96:lobby96.snapshot(),paperDoll:{enabled:false,state:'retired',draws:0},energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,skillEnergySpent:session?.skillEnergySpent,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,type:m.type,name:monsterName(m),skin:m.skin,district:m.district,area:m.area,maxHP:m.maxHP,attack:m.attack,defense:m.defense,telegraph:m.telegraph?{...m.telegraph}:null,x:m.x,y:m.y,hp:m.hp,wolfBleed:m.wolfBleed?{...m.wolfBleed}:null,ryuStunUntil:m.ryuStunUntil||0,isStunned:MareRyu.stunned(m,world.time)||MareRankB.stunned(m,world.time)||m.talentControl?.remaining>0,isRooted:MareDoru.isRooted(m,world.time),doruRootUntil:m.doruRootUntil||0,poison:m.talentPoison?{...m.talentPoison}:null,level:m.level,hakiDebuff:m.hakiDebuff||0,control:m.talentControl?{...m.talentControl}:null,emp:m.empRemaining||0,marks:m.assassinMarks||0,burn:m.ultimateBurn?{...m.ultimateBurn}:null,clonePoison:m.clonePoison?{...m.clonePoison}:null,wear:m.talentWear?{...m.talentWear}:null,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});

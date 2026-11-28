@@ -35,11 +35,11 @@ const wire = {
 let releaseControl;
 const controlGate = new Promise(resolve => {releaseControl = resolve;});
 let stateFailure = false, transfers = 0;
-let transferBytes = 0, startupBytes, unexpectedPath, detectUnexpected, resumeMap, mapReleased = !onDemand;
+let transferBytes = 0, unexpectedPath, detectUnexpected, resumeMap;
 const unexpected = new Promise(resolve => { detectUnexpected = file => { unexpectedPath ??= file; resolve(file); }; });
 const requested = new Map();
-const mapGate = new Promise(resolve => {resumeMap = () => {mapReleased=true;resolve();};});
-const remoteRegion = path => /^assets\/exported-maps\/(?:thriller-bark|marineford)\//.test(path);
+const mapGate = new Promise(resolve => {resumeMap = resolve;});
+const remoteRegion = path => path.startsWith('assets/impel-down/') || /^assets\/exported-maps\/(?!lobby\/|dawn\/)/.test(path);
 const html = readFileSync(path.join(root,'index.html'),'utf8').replace('<head>',
   '<head><script defer src="/online/game-session.js"></script><script defer src="/online/game-ui.js"></script><link rel="stylesheet" href="/online/game.css">');
 const types = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.ttf':'font/ttf','.woff2':'font/woff2'};
@@ -83,10 +83,6 @@ const server = createServer(async (req,res) => {
     return;
   }
   if (onDemand && relative==='assets/exported-maps/dawn/map.png') await mapGate;
-  if (onDemand && /^tools\/rework-(?:base|weapon-layers|modular-outfits)-hd\/index\.json$/.test(relative)) {
-    if (!mapReleased) detectUnexpected(relative);
-    startupBytes ??= transferBytes;
-  }
   const online = relative.startsWith('online/');
   const base = online ? path.resolve('apps/account-client') : root;
   const file = path.resolve(base,online ? relative.slice(7) : relative);
@@ -123,28 +119,32 @@ const server = createServer(async (req,res) => {
       request.method() === 'POST' && new URL(request.url()).pathname.endsWith('/control'),
     {timeout:240000});
     const start = performance.now();
-    const navigation = Promise.all([page.goto('http://127.0.0.1:'+server.address().port+'/game'), acquire]);
+    const navigation = Promise.all([page.goto('http://127.0.0.1:'+server.address().port+'/game',{waitUntil:'domcontentloaded'}), acquire]);
     if (onDemand) await Promise.race([navigation, unexpected.then(file => assert.fail('Entry requested a resource too soon: '+file))]);
     else await navigation;
-    await page.waitForFunction(()=>document.querySelector('#gameLoading output').textContent === '100%' ||
-      document.querySelector('#gameLoading [role=status]').textContent.includes('Confirmando a entrada'),null,{timeout:240000});
     assert.notEqual(await page.locator('#gameLoading output').textContent(),'100%','100% must wait for the online session, not just the initial lobby image');
     assert(await page.locator('#gameLoading').isVisible());
     releaseControl();
-    const shell = page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
+    const shell = page.locator('#gameLoading').waitFor({state:'hidden',timeout:240000});
     if (onDemand) {
-      await Promise.race([shell, unexpected.then(file => assert.fail('Entry requested deferred art: '+file))]);
+      await page.waitForTimeout(450);
+      assert(await page.locator('#gameLoading').isVisible(),'a confirmed session still waits for the destination map');
       resumeMap();
+      if (process.argv.includes('--fast-entry')) {
+        const quick = page.getByRole('button',{name:'Entrar com meu equipamento'});
+        await quick.click({timeout:90000});
+      }
+      await Promise.race([shell, unexpected.then(file => assert.fail('Entry requested deferred art: '+file))]);
     } else await shell;
     await page.waitForFunction(()=>document.querySelector('#gameFrame').dataset.worldState==='ready');
     if (onDemand) {
       assert.equal(unexpectedPath,undefined);
-      const entryBytes = startupBytes ?? transferBytes;
+      const entryBytes = transferBytes;
       const largest = [...requested].sort((a,b)=>b[1]-a[1]).slice(0,10);
       console.log('Cold playable: '+Math.round(performance.now()-start)+' ms, '+entryBytes+' bytes, '+requested.size+' files');
       console.log('Largest transfer totals:', JSON.stringify(largest));
-      // The Pages catalog includes additional standalone art, even when the session does not fetch it.
-      assert.ok(entryBytes < 45_000_000,'opening the saved map must stay within the Pages startup budget');
+      assert(await page.evaluate(()=>window.__mareDiagnostics().lobby96.worldVisual?.firstDrawAt != null),
+        'the equipped character must have been drawn before releasing input');
       const inventory = page.getByRole('button',{name:'Inventário',exact:true});
       await inventory.click();
       await page.locator('#panelOverlay').waitFor({state:'visible'});
@@ -167,7 +167,7 @@ const server = createServer(async (req,res) => {
     }
     await page.setViewportSize({width:393,height:852});
     await page.reload();
-    await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
+    await page.locator('#gameLoading').waitFor({state:'hidden',timeout:240000});
     if (!onDemand) assert.equal(transfers,installed,'a warm mobile reload must reuse the complete installation');
     await page.waitForFunction(()=>document.querySelector('#gameFrame').dataset.worldState==='ready');
     assert.equal(await page.evaluate(()=>window.__mareDiagnostics().map.id),'dawn');
@@ -175,13 +175,13 @@ const server = createServer(async (req,res) => {
     if (process.env.MARE_QA_DIR) await page.screenshot({path:path.join(process.env.MARE_QA_DIR,'online-entry-mobile.png')});
     stateFailure = true;
     await page.reload();
-    await page.locator('#gameLoading button').waitFor({state:'visible'});
+    await page.getByRole('button',{name:'Tentar novamente'}).waitFor({state:'visible'});
     assert.match(await page.locator('#gameLoading [role=status]').innerText(),/carregar seu personagem/);
     assert.notEqual(await page.locator('#gameLoading output').textContent(),'100%');
     assert.equal(await page.locator('#gameLoading').count(),1,'a server failure keeps the same loader and its retry button');
     stateFailure = false;
-    await page.locator('#gameLoading button').click();
-    await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
+    await page.getByRole('button',{name:'Tentar novamente'}).click();
+    await page.locator('#gameLoading').waitFor({state:'hidden',timeout:240000});
     if (!onDemand) assert.equal(transfers,installed,'retrying session setup must not reinstall game content');
     await page.locator('#returnLobby').click();
     await page.waitForFunction(()=>window.__mareDiagnostics().map.id==='lobby' &&

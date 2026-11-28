@@ -396,7 +396,17 @@
 
     const peerPoses=new Map(),peerDisplayed=new Map();
     let preparingPeer=false;
-    function drawPeerSurface(ctx,player,options){
+    function prepareEntryPeers(peers){
+      for(const peer of peers){
+        if(peer.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(peer))continue;
+        for(const action of ['idle','walk']){
+          const pose={action,direction:directionOf(peer.direction||'south'),weaponless:false};
+          if(!drawPeerSurface(null,peer,pose,true))return false;
+        }
+      }
+      return !preparingPeer;
+    }
+    function drawPeerSurface(ctx,player,options,warmOnly=false){
       if(!player||player.zoanTransformed||!weaponCatalog||!nativeHD?.prepareConfiguration)return false;
       const identity=visualIdentity(player);
       const poseOptions={action:options.action,direction:options.direction,weaponless:options.weaponless};
@@ -428,11 +438,12 @@
               bakePositions:true,compactFrames:true,resolve:()=>({...pose,source})
             });
           }catch(error){diagnose(error,{consumer:'shared-lobby',asset:options.action+'/'+options.direction});}
-          finally{preparingPeer=false;}
+          finally{entry.settled=true;preparingPeer=false;}
         };
         if(typeof root.requestIdleCallback==='function')root.requestIdleCallback(prepare,{timeout:500});
         else setTimeout(prepare,0);
       }
+      if(warmOnly)return entry?.settled===true;
       const held=entry?.bundle?entry:peerDisplayed.get(identity);
       if(!held?.bundle)return false;
       const drew=held.bundle.draw(ctx,player,{...options,...held.options,auxiliary:true});
@@ -818,7 +829,7 @@
       }
       return nativeHD?.height(player)||96;
     }
-    return {ready,snapshot,draw,drawFittedAvatar,drawWorldPortrait,height,ensure,prepareVisual,worldVisual,worldReady,requestWorldVisual,primeWorldVisual,warmWorldVisual,clearWorldVisual,retryWorldVisual,drawWorldVisual,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
+    return {ready,prepareEntryPeers,snapshot,draw,drawFittedAvatar,drawWorldPortrait,height,ensure,prepareVisual,worldVisual,worldReady,requestWorldVisual,primeWorldVisual,warmWorldVisual,clearWorldVisual,retryWorldVisual,drawWorldVisual,stepWalk,walkPose,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
   }
   root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,appearanceLook,assetReferences,validateRelease,frameAt,directionOf,actions:Object.freeze(actions),restAliases,worldAction,selectWorldHD,selectWorldHDOnly};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.MarePaperDoll96Lobby;

@@ -76,6 +76,24 @@ class CatalogTest(unittest.TestCase):
                 self.assertEqual(data[offset:offset + size], inputs[path])
             self.assertTrue((root / 'tools/rework-outfits/generated/preview.zip').exists())
 
+    def test_port_transport_groups_outfits_and_windows_but_keeps_destinations_independent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            names = ['assets/ui/inventory-hd/slot.png', 'assets/skins/outfit.png',
+                     'assets/impel-down/map.png', 'assets/exported-maps/dawn/map.png']
+            for name in names:
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(name.encode())
+            catalog = build_catalog(root, port_install=True)
+            self.assertEqual(catalog['portUnits'], 1)
+            for name in names[:2]:
+                self.assertEqual(catalog['files'][name][0], 0)
+            for name in names[2:]:
+                index = catalog['files'][name][0]
+                self.assertGreaterEqual(index, catalog['portUnits'])
+                self.assertEqual(catalog['units'][index][0], name)
+
     def test_on_demand_downloads_only_the_requested_resource(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

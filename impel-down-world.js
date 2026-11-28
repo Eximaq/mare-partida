@@ -12,7 +12,8 @@
  ].map(c=>({...c,isSolid:true,blocksMovement:true,blocksProjectiles:true}));
  const spawn={x:480,y:736},enemySpawn={x:1744,y:736};
  const map={id:'impel-down',width:2176,height:1344,origin:{x:0,y:0},spawn,enemySpawn,colliders,terrainWalkable,playerFootprint:{w:32,h:20},navigationCell:32,navigationGoals:[enemySpawn],interactions:[],safeZones:[],spawnZones:[]};
- const image=typeof Image==='function'?new Image():null;if(image)image.src='assets/impel-down/map.png';
- function ground(ctx,camera,width,height){ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#181720';ctx.fillRect(camera.x,camera.y,width,height);if(image?.complete&&image.naturalWidth){const x=Math.max(0,Math.floor(camera.x)),y=Math.max(0,Math.floor(camera.y)),w=Math.min(width+2,map.width-x),h=Math.min(height+2,map.height-y);if(w>0&&h>0)ctx.drawImage(image,x,y,w,h,x,y,w,h);}ctx.restore();}
- const api={map,terrain,rows,tileSize,sourceOrigin,enemySpawn,image,ground};root.MareImpel=api;if(typeof module!=='undefined')module.exports=api;
+ let image=null;
+ function prepare(){if(!image&&typeof Image==='function'){image=new Image();image.src='assets/impel-down/map.png';}return image;}
+ function ground(ctx,camera,width,height){prepare();ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#181720';ctx.fillRect(camera.x,camera.y,width,height);if(image?.complete&&image.naturalWidth){const x=Math.max(0,Math.floor(camera.x)),y=Math.max(0,Math.floor(camera.y)),w=Math.min(width+2,map.width-x),h=Math.min(height+2,map.height-y);if(w>0&&h>0)ctx.drawImage(image,x,y,w,h,x,y,w,h);}ctx.restore();}
+ const api={map,terrain,rows,tileSize,sourceOrigin,enemySpawn,prepare,get image(){return image;},ground};root.MareImpel=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
