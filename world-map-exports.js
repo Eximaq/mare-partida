@@ -1,7 +1,7 @@
 'use strict';
 /* Geometry shared by the browser and the authoritative navigation catalog. */
 ((root)=>{
-  if(typeof module!=='undefined'){require('./world-map-exports-data.js');require('./loguetown-map-data.js');require('./arlong-map-data.js');require('./baratie-map-data.js');require('./syrup-map-data.js');require('./rare-animals-map-data.js');require('./dawn-village-map-data.js');}
+  if(typeof module!=='undefined'){require('./world-map-exports-data.js');require('./loguetown-map-data.js');require('./arlong-map-data.js');require('./baratie-map-data.js');require('./syrup-map-data.js');require('./rare-animals-map-data.js');require('./dawn-village-map-data.js');require('./conchas-marine-map-data.js');}
   const data=root.MareMapExportData;
   const step=16;
   const mapKey=id=>/^(thriller-bark|sabaody|marineford)-\d{2}$/.exec(id)?.[1]||(id?.startsWith('enies-lobby-')?'enies-lobby':id?.startsWith('alubarna-')?'alubarna':id==='beach'?'dawn':id==='swamp'?'conchas':id);
@@ -79,6 +79,7 @@
     }
   }
   function prepare(id){
+    if(id==='conchas'&&root.MareConchasMarine)return root.MareConchasMarine.prepare();
     if(id==='dawn'&&root.MareDawnVillage)return root.MareDawnVillage.prepare();
     if(id==='rare'&&root.MareRareAnimals)return root.MareRareAnimals.prepare();
     if(id==='syrup'&&root.MareSyrup)return root.MareSyrup.prepare();
@@ -98,6 +99,7 @@
     return img;
   }
   function ground(ctx,id,camera,w,h){
+    if(id==='conchas'&&root.MareConchasMarine){root.MareConchasMarine.ground(ctx,camera,w,h);return;}
     if(id==='dawn'&&root.MareDawnVillage){root.MareDawnVillage.ground(ctx,camera,w,h);return;}
     if(id==='rare'&&root.MareRareAnimals){root.MareRareAnimals.ground(ctx,camera,w,h);return;}
     if(id==='syrup'&&root.MareSyrup){root.MareSyrup.ground(ctx,camera,w,h);return;}

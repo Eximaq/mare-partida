@@ -39,7 +39,7 @@ async function persisted(pool:any){
  return saved;
 }
 
-test('migrations 0063–0072 preserve active saves and receipts while admitting 37 visits and seven pending victories',async()=>{
+test('migrations 0063–0073 preserve active saves and receipts while admitting 37 visits and seven pending victories',async()=>{
  const directory=await mkdtemp(join(tmpdir(),'mare-late-archipelago-migrations-'));
  const source=new URL('../../apps/game-server/migrations/',import.meta.url);
  try{
@@ -69,7 +69,7 @@ test('migrations 0063–0072 preserve active saves and receipts while admitting 
    const before=await persisted(f.pool),expected=structuredClone(before);
    expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=world.rulesHash;
    expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=lateBattle;
-   assert.deepEqual(await applyMigrations(f.pool),['0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql']);
+   assert.deepEqual(await applyMigrations(f.pool),['0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql']);
    assert.deepEqual(await persisted(f.pool),expected);
    assert.deepEqual(await applyMigrations(f.pool),[]);
    await f.pool.query(await readFile(new URL('0063_late_archipelago.sql',source),'utf8'));

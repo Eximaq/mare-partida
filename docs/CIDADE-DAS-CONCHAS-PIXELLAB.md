@@ -1,5 +1,7 @@
 # Cidade das Conchas — mapa PixelLab e Helmeppo
 
+> Registro histórico da arte e geometria PixelLab, preservadas integralmente. O cenário ativo passou a ser a base da Marinha em HD; veja [CIDADE-DAS-CONCHAS-HD.md](CIDADE-DAS-CONCHAS-HD.md).
+
 ## Bloqueio do forte e portão (23/10/2026)
 
 Os seis prints marcados mostram muros, quinas e o portão Marine fechado; não são as seis junções de terreno sem tileset (estas ficam nas transições entre areia, madeira e água). Os antigos colisores de placements não acompanhavam a silhueta da projeção aprovada.

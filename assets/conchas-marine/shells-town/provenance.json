@@ -1,0 +1,43 @@
+{
+  "asset": "scene-hd.png",
+  "kind": "AI-generated game map painting",
+  "method": "OpenAI built-in image_gen",
+  "requested_by": "Repository owner: Cidade das Conchas HD, Marine base and Zoro tied to a wooden cross, continuing PR #394",
+  "generated_at_utc": "2026-11-28",
+  "native_width": 1448,
+  "native_height": 1086,
+  "world_width": 3072,
+  "world_height": 2304,
+  "bytes": 3900453,
+  "sha256": "0235c4a409343995680574bf8c71cc9204548e388a910c4575ff3e57738298ed",
+  "requested_generation_size": [
+    3072,
+    2304
+  ],
+  "returned_generation_size": [
+    1448,
+    1086
+  ],
+  "modifications": "None. The original generated PNG was copied byte for byte. Native image pixels are distinct from game world units.",
+  "prompt": "generation-prompt.txt",
+  "references": [
+    {
+      "url": "https://one-piece.com/anime/2/index.html",
+      "role": "Official episode reference for the early East Blue meeting with Zoro in Shells Town."
+    },
+    {
+      "url": "https://www.b-ch.com/titles/2992/002",
+      "role": "Bandai Channel episode 2 reference for Zoro and the Marine-base setting."
+    },
+    {
+      "url": "https://opwiki.org/images/Shellstown_1.PNG",
+      "role": "Anime panorama reference for Shells Town and the white round Marine headquarters with green bands; not redistributed."
+    },
+    {
+      "url": "https://blog.ja.playstation.com/?p=7800",
+      "role": "Official Pirate Warriors 3 feature referencing the Shells Town scene; not redistributed."
+    }
+  ],
+  "third_party_images_distributed": false,
+  "rights_note": "Original generated fan-game artwork commissioned by the user. One Piece setting and characters remain associated with their rights holders; no claim of exclusive rights to those elements."
+}

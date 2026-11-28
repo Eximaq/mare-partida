@@ -18,6 +18,7 @@ test('the Enies Lobby fingerprints lead through the additive migrations to shipp
  const syrup=readMigration('0070_syrup_hd_map.sql');
  const rare=readMigration('0071_rare_island_hd_map.sql');
  const dawn=readMigration('0072_dawn_village_hd_map.sql');
+ const conchas=readMigration('0073_conchas_marine_hd_map.sql');
  const world=require('../../world-catalog.cjs').load(),battle=require('../../world-battle.cjs');
  const previousWorld=previous.match(/SET rules_hash='([a-f0-9]{64})'/)?.[1];
  const previousBattle=previous.match(/to_jsonb\('([a-f0-9]{64})'::text\)/)?.[1];
@@ -44,7 +45,9 @@ test('the Enies Lobby fingerprints lead through the additive migrations to shipp
  assert(syrupWorld&&rare.includes("WHERE rules_hash='"+syrupWorld+"'"),'Recognize worlds after the HD Syrup migration');
  const rareWorld=rare.match(/SET rules_hash='([a-f0-9]{64})'/)?.[1];
  assert(rareWorld&&dawn.includes("WHERE rules_hash='"+rareWorld+"'"),'Recognize worlds after the HD Rare island migration');
- assert(dawn.includes("SET rules_hash='"+world.rulesHash+"'"),'Migration must promote saved worlds to the shipped catalog hash');
+ const dawnWorld=dawn.match(/SET rules_hash='([a-f0-9]{64})'/)?.[1];
+ assert(dawnWorld&&conchas.includes("WHERE rules_hash='"+dawnWorld+"'"),'Recognize worlds after the HD Dawn village migration');
+ assert(conchas.includes("SET rules_hash='"+world.rulesHash+"'"),'Migration must promote saved worlds to the shipped catalog hash');
  const savedBattle={rulesHash:lateBattle,hp:17,pending:{targetId:'fixture',remaining:.3}};
  battle.upgradeBalance(savedBattle);
  assert.deepEqual(savedBattle,{rulesHash:battle.rulesHash,hp:17,pending:{targetId:'fixture',remaining:.3}},'Runtime must promote saved battles and preserve the active attack');

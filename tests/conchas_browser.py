@@ -1,4 +1,4 @@
-"""Cidade das Conchas PixelLab map, southern entry and level-8 Helmeppo patrols."""
+"""Cidade das Conchas HD map, southern entry and level-8 Helmeppo patrols."""
 import copy
 import json
 import os
@@ -110,9 +110,19 @@ with sync_playwright() as playwright:
         context, page = open_page(browser, high, size)
         travel(page)
         current = state(page)
-        assert {key: current["map"][key] for key in ("id", "width", "height")} == {"id": "conchas", "width": 4480, "height": 3456}, current["map"]
-        # Source cells include the PixelLab origin offset. Check the declared
-        # entry and its southern sector, then the actual hero position.
+        expected_geometry = page.evaluate("""() => {
+            const scene = MareMapExports.get('conchas');
+            return {id: 'conchas', width: scene.width, height: scene.height,
+                source: scene.groundUrl, mode: scene.spriteMode};
+        }""")
+        assert {key: current["map"][key] for key in ("id", "width", "height")} == {
+            key: expected_geometry[key] for key in ("id", "width", "height")
+        }, current["map"]
+        assert expected_geometry["source"] == "assets/conchas-marine/shells-town/scene-hd.png"
+        assert expected_geometry["mode"] == "painted"
+        # The new scene has independent image pixels and world coordinates.
+        # Check the installed entry and the actor's real arrival, preserving
+        # the stable southern sector without the old PixelLab cell constraint.
         entry = page.evaluate("""() => ({
             spawn: MareWorld.maps.conchas.spawn,
             exported: MareMapExports.get('conchas').spawn,
@@ -120,8 +130,7 @@ with sync_playwright() as playwright:
         })""")
         spawn = entry["spawn"]
         assert spawn == entry["exported"], entry
-        assert entry["south"]["cell"] == [11, 24], entry
-        assert abs(spawn["x"] - entry["south"]["x"]) < 16 and abs(spawn["y"] - entry["south"]["y"]) < 16, entry
+        assert entry["south"]["id"] == "areia-sul", entry
         assert ((current["hero"]["x"] - spawn["x"]) ** 2 + (current["hero"]["y"] - spawn["y"]) ** 2) ** 0.5 < 24, (current["hero"], entry)
         assert current["walkable"] and current["alive"] > 0
         assert all(mob["type"] == "helmeppo" and mob["level"] == 8 for mob in current["mobs"]), current["mobs"]
@@ -130,7 +139,7 @@ with sync_playwright() as playwright:
         assert page.evaluate("""() => {
             const expected = MareMapExports.get('conchas');
             const image = MareMapExports.prepare('conchas');
-            return image.naturalWidth === expected.width && image.naturalHeight === expected.height
+            return image.naturalWidth === expected.imageWidth && image.naturalHeight === expected.imageHeight
                 && MareWorldDepth.regions('conchas').length === expected.props.length;
         }""")
         assert page.evaluate("MareSpriteCombatV2.status('helmeppo','attack','south')==='ready'")
@@ -150,7 +159,7 @@ with sync_playwright() as playwright:
             assert saved[key] == high[key], key
         assert saved["area"] == "swamp" and saved["level"] == 20
         context.close()
-        print("Conchas PixelLab load, south spawn, Helmeppo and save compatibility", size, "passed", flush=True)
+        print("Conchas HD load, south spawn, Helmeppo and save compatibility", size, "passed", flush=True)
 
     context, page = open_page(browser, high)
     travel(page)
