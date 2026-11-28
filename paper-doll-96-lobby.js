@@ -150,9 +150,9 @@
     const frame=Number.isFinite(progress)?Math.floor(Math.max(0,Math.min(1,progress))*clip.frames):Math.floor(Math.max(0,time)*clip.fps);
     return clip.loop?frame%clip.frames:Math.min(clip.frames-1,frame);
   }
-  function create({search='',baseURL=root.location?.href,onChange=()=>{},sharedLobby=false}={}){
+  function create({search='',baseURL=root.location?.href,onChange=()=>{},sharedLobby=false,beforeNativeIndexes=null}={}){
     const active=enabled(search),rehearsal=false,base=new URL('tools/paper-doll-96-v3/',baseURL);
-    const nativeHD=root.MareReworkNativeHD?.create({baseURL,onChange});
+    const nativeHD=root.MareReworkNativeHD?.create({baseURL,onChange,beforeIndexes:beforeNativeIndexes});
     const hasPositions=!!(root.MareHDPosition&&nativeHD&&typeof fetch==='function');
     let approved=null,approvedLoaded=!hasPositions;
     if(hasPositions)void fetch(new URL('hd-position-approved.json',baseURL),{cache:'no-cache'})

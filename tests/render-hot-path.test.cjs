@@ -13,7 +13,7 @@ test('unchanged map status does not rewrite DOM each frame; load/failure/recover
  let storedState,failures=0;
  const frame={dataset:{get worldState(){return storedState;},set worldState(value){storedState=value;writes++;}}};
  const loading={pending:false,failed:false,fail(){this.failed=true;failures++;}};
- const c=vm.createContext({game:{},loading,mapArtState:()=>state,$:id=>id==='gameFrame'?frame:null,ctx:{fillRect(){}},W:100,H:100,drawWorld:()=>draws++,drawPaperDollDiagnostics(){}});
+ const c=vm.createContext({game:{},resumeNativeAssets:null,loading,mapArtState:()=>state,$:id=>id==='gameFrame'?frame:null,ctx:{fillRect(){}},W:100,H:100,drawWorld:()=>draws++,drawPaperDollDiagnostics(){}});
  let timerValue='',timerWrites=0;
  Object.assign(c,{scene:'hunt',session:{respawn:0},classCombatController:()=>true,
    recoveryNotice:{hidden:true,dataset:{}}, recoveryTitle:{},
@@ -36,7 +36,7 @@ test('visual preparation is absent from the world and HUD frame gates',()=>{
 test('a cached map transition keeps the previous frame without reopening the total loader',()=>{
  let reopened=0,cleared=0;
  const frame={dataset:{worldState:'ready'},inert:false};
- const c=vm.createContext({game:{},loading:{pending:false,failed:false},prepareScene(){reopened++;},
+ const c=vm.createContext({game:{},resumeNativeAssets:null,loading:{pending:false,failed:false},prepareScene(){reopened++;},
   mapArtState:()=> 'loading',$:id=>id==='gameFrame'?frame:null,updateRecoveryNotice(){},
   ctx:{fillRect(){cleared++;}},W:100,H:100,drawWorld(){},drawPaperDollDiagnostics(){}});
  vm.runInContext(fn('presentWorld'),c);vm.runInContext('presentWorld()',c);

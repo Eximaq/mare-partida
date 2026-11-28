@@ -14,6 +14,7 @@ const catalog = require('../item-catalog.js').create({forge,
 const characters = require('../character-system.js');
 const birth = require('../character-catalog.js').create({characters});
 const maps = require('../world-catalog.cjs').load();
+const onDemand = process.argv.includes('--on-demand');
 const root = path.resolve(process.argv.slice(2).find(arg=>!arg.startsWith('--')) || 'dist');
 const character = {id:'11111111-1111-4111-8111-111111111111', name:'Navegante', classId:'sword', factionId:'pirate'};
 const equipment = Object.fromEntries([...catalog.inventorySlotsLeft,...catalog.inventorySlotsRight].map(slot => [slot,null]));
@@ -34,6 +35,11 @@ const wire = {
 let releaseControl;
 const controlGate = new Promise(resolve => {releaseControl = resolve;});
 let stateFailure = false, transfers = 0;
+let transferBytes = 0, startupBytes, unexpectedPath, detectUnexpected, resumeMap, mapReleased = !onDemand;
+const unexpected = new Promise(resolve => { detectUnexpected = file => { unexpectedPath ??= file; resolve(file); }; });
+const requested = new Map();
+const mapGate = new Promise(resolve => {resumeMap = () => {mapReleased=true;resolve();};});
+const remoteRegion = path => /^assets\/exported-maps\/(?:thriller-bark|marineford)\//.test(path);
 const html = readFileSync(path.join(root,'index.html'),'utf8').replace('<head>',
   '<head><script defer src="/online/game-session.js"></script><script defer src="/online/game-ui.js"></script><link rel="stylesheet" href="/online/game.css">');
 const types = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.ttf':'font/ttf','.woff2':'font/woff2'};
@@ -65,6 +71,16 @@ const server = createServer(async (req,res) => {
   }
   if (url.pathname === '/game') {res.setHeader('Content-Type','text/html');res.end(html);return;}
   const relative = decodeURIComponent(url.pathname).slice(1);
+  if (onDemand && remoteRegion(relative)) {
+    detectUnexpected(relative);
+    res.writeHead(503).end();
+    return;
+  }
+  if (onDemand && relative==='assets/exported-maps/dawn/map.png') await mapGate;
+  if (onDemand && /^tools\/rework-(?:base|weapon-layers|modular-outfits)-hd\/index\.json$/.test(relative)) {
+    if (!mapReleased) detectUnexpected(relative);
+    startupBytes ??= transferBytes;
+  }
   const online = relative.startsWith('online/');
   const base = online ? path.resolve('apps/account-client') : root;
   const file = path.resolve(base,online ? relative.slice(7) : relative);
@@ -73,6 +89,10 @@ const server = createServer(async (req,res) => {
     const info = await stat(file);
     if (!info.isFile()) throw Error('not a file');
     if (url.searchParams.has('install')) transfers++;
+    res.once('finish', () => {
+      transferBytes += info.size;
+      requested.set(relative, (requested.get(relative) || 0) + info.size);
+    });
     res.writeHead(200,{'Content-Type':types[path.extname(file)] || 'application/octet-stream','Content-Length':info.size});
     createReadStream(file).pipe(res);
   } catch {res.writeHead(404).end();}
@@ -96,22 +116,43 @@ const server = createServer(async (req,res) => {
     const acquire = page.waitForRequest(request =>
       request.method() === 'POST' && new URL(request.url()).pathname.endsWith('/control'),
     {timeout:240000});
-    await page.goto('http://127.0.0.1:'+server.address().port+'/game');
-    await acquire;
+    const start = performance.now();
+    const navigation = Promise.all([page.goto('http://127.0.0.1:'+server.address().port+'/game'), acquire]);
+    if (onDemand) await Promise.race([navigation, unexpected.then(file => assert.fail('Entry requested a resource too soon: '+file))]);
+    else await navigation;
     await page.waitForFunction(()=>document.querySelector('#gameLoading output').textContent === '100%' ||
       document.querySelector('#gameLoading [role=status]').textContent.includes('Confirmando a entrada'),null,{timeout:240000});
     assert.notEqual(await page.locator('#gameLoading output').textContent(),'100%','100% must wait for the online session, not just the initial lobby image');
     assert(await page.locator('#gameLoading').isVisible());
     releaseControl();
-    await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
+    const shell = page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
+    if (onDemand) {
+      await Promise.race([shell, unexpected.then(file => assert.fail('Entry requested deferred art: '+file))]);
+      resumeMap();
+    } else await shell;
+    await page.waitForFunction(()=>document.querySelector('#gameFrame').dataset.worldState==='ready');
+    if (onDemand) {
+      assert.equal(unexpectedPath,undefined);
+      assert.ok((startupBytes ?? transferBytes) < 42_000_000,'opening the saved map must stay within the startup budget');
+      const largest = [...requested].sort((a,b)=>b[1]-a[1]).slice(0,10);
+      console.log('Cold playable: '+Math.round(performance.now()-start)+' ms, '+transferBytes+' bytes, '+requested.size+' files');
+      console.log('Largest transfer totals:', JSON.stringify(largest));
+      const inventory = page.getByRole('button',{name:'Inventário',exact:true});
+      await inventory.click();
+      await page.locator('#panelOverlay').waitFor({state:'visible'});
+      await page.keyboard.press('Escape');
+      await page.locator('#panelOverlay').waitFor({state:'hidden'});
+    }
     assert.equal(await page.evaluate(()=>window.__mareDiagnostics().map.id),'dawn','the restored server map must be ready before entry');
     assert.equal(await page.evaluate(()=>window.__mareDiagnostics().map.navigation.ready),true);
     assert.equal(await page.evaluate(()=>window.MareGameSession.controlled),true);
     assert.equal(await page.locator('#app').evaluate(el=>el.inert),false);
     assert.equal(await page.locator('#app').evaluate(el=>getComputedStyle(el).visibility),'visible');
-    assert.equal(await page.locator('#worldLoading').count(),0,'there must be no second in-game loading overlay');
+    if (onDemand) assert.equal(await page.locator('#worldLoading').isVisible(),false);
+    else assert.equal(await page.locator('#worldLoading').count(),0,'there must be no second in-game loading overlay');
     assert.equal(await page.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-byte-for-byte');
     const installed = transfers;
+    if (onDemand) await page.waitForFunction(() => window.__mareDiagnostics().lobby96.worldVisual?.firstDrawAt != null);
     if (process.env.MARE_QA_DIR) {
       mkdirSync(process.env.MARE_QA_DIR,{recursive:true});
       await page.screenshot({path:path.join(process.env.MARE_QA_DIR,'online-entry-desktop.png')});
@@ -119,8 +160,10 @@ const server = createServer(async (req,res) => {
     await page.setViewportSize({width:393,height:852});
     await page.reload();
     await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
-    assert.equal(transfers,installed,'a warm mobile reload must reuse the complete installation');
+    if (!onDemand) assert.equal(transfers,installed,'a warm mobile reload must reuse the complete installation');
+    await page.waitForFunction(()=>document.querySelector('#gameFrame').dataset.worldState==='ready');
     assert.equal(await page.evaluate(()=>window.__mareDiagnostics().map.id),'dawn');
+    if (onDemand) await page.waitForFunction(() => window.__mareDiagnostics().lobby96.worldVisual?.firstDrawAt != null);
     if (process.env.MARE_QA_DIR) await page.screenshot({path:path.join(process.env.MARE_QA_DIR,'online-entry-mobile.png')});
     stateFailure = true;
     await page.reload();
@@ -131,15 +174,16 @@ const server = createServer(async (req,res) => {
     stateFailure = false;
     await page.locator('#gameLoading button').click();
     await page.locator('#gameLoading').waitFor({state:'hidden',timeout:90000});
-    assert.equal(transfers,installed,'retrying session setup must not reinstall game content');
+    if (!onDemand) assert.equal(transfers,installed,'retrying session setup must not reinstall game content');
     await page.locator('#returnLobby').click();
     await page.waitForFunction(()=>window.__mareDiagnostics().map.id==='lobby' &&
       document.querySelector('#gameFrame').dataset.worldState==='ready' && document.querySelector('#gameLoading').hidden);
-    assert.equal(transfers,installed,'travelling uses the installed maps, not another download');
+    if (!onDemand) assert.equal(transfers,installed,'travelling uses the installed maps, not another download');
+    if (onDemand) assert.equal(unexpectedPath,undefined);
     assert.deepEqual(errors,[]);
     console.log('Online loading: delayed control, restored map, one overlay, desktop/mobile, warm cache and demo isolation passed.');
     await context.close();
   } finally {
-    releaseControl();await browser.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));
+    resumeMap();releaseControl();await browser.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));
   }
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -95,7 +95,8 @@ def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS, *
     if full_install:
         # The beta trades a larger server artifact for fewer client requests and reused ZIP data.
         return package_catalog(root, asset_paths, pack_budget=128 * 1024**2, patch_budget=48 * 1024**2)
-    return package_catalog(root, asset_paths)
+    # Individual resources let the active scene fetch only the pieces it uses.
+    return package_catalog(root, asset_paths, pack_budget=0)
 
 
 def package_catalog(root, asset_paths, *, pack_budget=36 * 1024 * 1024,

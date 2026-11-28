@@ -10,6 +10,7 @@
   const installed = loading?.prepare();
   let onlineEntryReady = !ONLINE_GAME;
   if(ONLINE_GAME){
+    if (!loading?.fullInstall) loading?.status('Restaurando sua sessão');
     try{await ONLINE_GAME.load();}
     catch(error){if(error.code==='authentication_required'){location.replace('/online/');return;}if(loading){loading.fail('Não foi possível carregar seu personagem. Tente novamente.');return;}const message=document.createElement('p');message.textContent='Não foi possível carregar seu personagem. Atualize a página para tentar novamente.';message.setAttribute('role','alert');document.body.replaceChildren(message);return;}
   }
@@ -108,7 +109,7 @@
   }
   function drawPartyPortraits(){
     const members=ONLINE_GAME?.data?.online.party?.group?.members;if(!members?.length)return;
-    partyPortraitRenderer??=MarePaperDoll96Lobby.create({search:location.search,sharedLobby:true});
+    partyPortraitRenderer??=MarePaperDoll96Lobby.create({search:location.search,beforeNativeIndexes:nativeAssetsGate,sharedLobby:true});
     for(const canvas of document.querySelectorAll('canvas[data-party-portrait]')){const m=members.find(m=>m.id===canvas.dataset.partyPortrait);if(!m)continue;const c=canvas.getContext('2d');c.clearRect(0,0,80,96);partyPortraitRenderer.draw(c,m,{scene:'lobby',action:'idle',direction:'south',time:world.time,x:40,y:93,scale:1.65,consumer:'party-portrait'});}
   }
   function updatePartyUI(){
@@ -136,7 +137,11 @@
     const send=async()=>{const ok=await onlineItemCommand('party.'+action,payload);if(ok&&action==='start')closePanel();else if(currentPanel==='party')renderPartyPanel();return ok;};
     if(action==='leave'||action==='kick')showConfirmation(action==='leave'?'Sair do grupo?':'Remover membro?','A participação na atividade será encerrada e o personagem retornará ao porto. Recompensas pessoais pendentes serão preservadas.',send,action==='leave'?'SAIR':'REMOVER');else await send();
   }
-  const lobby96=MarePaperDoll96Lobby.create({search:location.search,onChange:()=>{if(game){renderPortrait();const inventoryPreview=$('inventorySprite');if(currentPanel==='inventory'&&inventoryPreview)drawInventoryAvatar(inventoryPreview,{force:true});if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
+  // Native indexes can be larger than the current map. Let the first map paint first.
+  let resumeNativeAssets;
+  const nativeAssetsGate = ONLINE_GAME?.data?.character && !loading?.fullInstall
+    ? new Promise(resolve => { resumeNativeAssets = resolve; }) : null;
+  const lobby96=MarePaperDoll96Lobby.create({search:location.search,beforeNativeIndexes:nativeAssetsGate,onChange:()=>{if(game){renderPortrait();const inventoryPreview=$('inventorySprite');if(currentPanel==='inventory'&&inventoryPreview)drawInventoryAvatar(inventoryPreview,{force:true});if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
   let paperDollDebug=DEV_ACTIVE&&new URLSearchParams(location.search).get('paperDollDebug')==='1';
   const STORAGE_KEY=MareDev.key(location.search);
   const saveWriter=ONLINE_GAME?{ready:true,owner:true,exclusive:false}:MareSaveWriter.create(STORAGE_KEY);
@@ -3939,7 +3944,7 @@ ${avatarExtra}
     return sharedLobbyFrame.players;
   }
   function drawSharedLobbyPlayer(peer){
-    sharedLobbyRenderer??=MarePaperDoll96Lobby.create({search:location.search,sharedLobby:true});
+    sharedLobbyRenderer??=MarePaperDoll96Lobby.create({search:location.search,beforeNativeIndexes:nativeAssetsGate,sharedLobby:true});
     ctx.save();ctx.fillStyle='rgba(0,0,0,.22)';ctx.beginPath();ctx.ellipse(peer.x,peer.y,18,6,0,0,Math.PI*2);ctx.fill();
     const fruit=MareAkuma.byId(peer.fruitId),key=peer.zoanTransformed&&MareSpriteCombatV2.fruits[peer.fruitId],entry=key&&MareSpriteCombatV2Data[key];
     const body=(c,x,y)=>entry?MareSpriteCombatV2.draw(c,key,x,y,{action:peer.action==='attack'?'attack':peer.moving?'walk':'idle',direction:peer.direction,time:world.time,scale:zoanVisualScale(key)*(entry.world_scale??1),height:key==='ryu'?entry.worldHeight:null}):sharedLobbyRenderer.draw(c,peer,{scene,action:peer.action==='attack'?'attack':peer.moving?'walk':'idle',direction:peer.direction,time:world.time,x,y,consumer:'shared-lobby'});
@@ -4042,6 +4047,11 @@ ${avatarExtra}
       return;
     }
     drawWorld();drawPaperDollDiagnostics();
+    if (game && resumeNativeAssets) {
+      const resume = resumeNativeAssets;
+      resumeNativeAssets = null;
+      requestAnimationFrame(resume);
+    }
   }
   function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}camera.begin(ctx,activeMap());drawBackground();drawMapTravelMarkers('back');drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'back',world.hero);drawCombatVfx('back');if(scene==='hunt'){const nav=navigator();MareHakiArt.drawKing(ctx,presentHaki(),nav,combatLine,reducedFX);for(const peer of sharedLobbyPlayers())if(peer.haki?.kingFX>0)MareHakiArt.drawKing(ctx,MareHakiArt.presentation(peer.haki,peer.hakiVisualAge),nav,combatLine,reducedFX);}drawEntityLayer();drawDungeonChestLabel();
     if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'front',world.hero);
@@ -4174,7 +4184,7 @@ $('gameFrame').appendChild(targetHud);
     className:id=>classes[id]?.name||'Classe desconhecida',faction:id=>factions[id]?.name,identity:MareCrewUI.identity,
     category:itemCategory,item:tooltipItem,
     draw:(canvas,p)=>{
-      socialPortraitRenderer??=MarePaperDoll96Lobby.create({search:location.search,sharedLobby:true,onChange:()=>socialUI?.refreshPortraits()});
+      socialPortraitRenderer??=MarePaperDoll96Lobby.create({search:location.search,beforeNativeIndexes:nativeAssetsGate,sharedLobby:true,onChange:()=>socialUI?.refreshPortraits()});
       const ctx=canvas.getContext('2d');ctx.clearRect(0,0,48,52);
       socialPortraitRenderer.draw(ctx,p,{scene:'lobby',action:'idle',direction:'south',time:0,x:24,y:50,scale:.77,consumer:'social-portrait'});
     },
@@ -4700,7 +4710,7 @@ function applySceneHudLayout(){
     game=MareOnlineGameUI.project(createGame(character.name,character.classId),ONLINE_GAME.data);applyOnlineEquipment();
     startGame();autoPlay=false;autoSkills=false;
     onlineUI=MareOnlineGameUI.mount(ONLINE_GAME,{sync:syncOnlineGame,combat:enterOnlineCombat,close:closePanel,message:text=>toast(text,'danger')});
-    if (loading?.fullInstall) loading.status('Confirmando a entrada no servidor');
+    loading?.status('Confirmando a entrada no servidor');
     try{await ONLINE_GAME.acquire();}catch(error){if(error.code==='control_conflict'){if(confirm('Este personagem está sob controle de outra aba ou dispositivo. Assumir o controle aqui?'))await ONLINE_GAME.acquire(true).catch(e=>onlineUI.error(e));}else onlineUI.error(error);}
     if(ONLINE_GAME.controlled&&!ONLINE_GAME.data.online.originalInventory&&!ONLINE_GAME.pending){try{await ONLINE_GAME.command('items.initialize',{});}catch(error){onlineUI.error(error);}}
     if(ONLINE_GAME.controlled&&Object.hasOwn(ONLINE_GAME.data.online,'world')&&!ONLINE_GAME.data.online.world&&!['active','won'].includes(ONLINE_GAME.data.online.combat.status)&&!ONLINE_GAME.pending){try{await ONLINE_GAME.command('world.initialize',{});}catch(error){onlineUI.error(error);}}

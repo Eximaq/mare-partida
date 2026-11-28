@@ -67,13 +67,25 @@ class CatalogTest(unittest.TestCase):
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(data)
-            catalog = build_catalog(root)
+            catalog = build_catalog(root, full_install=True)
             self.assertEqual(set(catalog['files']), set(list(inputs)[:3]))
             self.assertEqual(len(catalog['units']), 1)
             for path, (unit, offset, size, _) in catalog['files'].items():
                 data = (root / catalog['units'][unit][0]).read_bytes()
                 self.assertEqual(data[offset:offset + size], inputs[path])
             self.assertTrue((root / 'tools/rework-outfits/generated/preview.zip').exists())
+
+    def test_on_demand_downloads_only_the_requested_resource(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name in ('assets/first-map.png', 'assets/other-map.png'):
+                p = root / name
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_bytes(name.encode())
+            catalog = build_catalog(root)
+            for name, (index, offset, size, _) in catalog['files'].items():
+                self.assertEqual(catalog['units'][index][:2], [name, size])
+                self.assertEqual(offset, 0)
 
     def test_release_bytes_are_complete_and_versioned(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -82,7 +94,11 @@ class CatalogTest(unittest.TestCase):
                          'portal/test.png', 'docs/review.png']:
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_bytes(path.encode())
+                if target.suffix == '.zip':
+                    with zipfile.ZipFile(target, 'w') as archive:
+                        archive.writestr('frame.png', b'frame')
+                else:
+                    target.write_bytes(path.encode())
             first = build_catalog(root)
             self.assertEqual(set(first['files']), {'assets/ui/slot.png', 'tools/rework-base-hd/base.zip'})
             for path, (unit, offset, size, _) in first['files'].items():
