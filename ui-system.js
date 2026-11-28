@@ -106,6 +106,102 @@
     dock.addEventListener('focusout',event=>{if(!dock.contains(event.relatedTarget))dock.open=false;});
     document.addEventListener('pointerdown',event=>{if(dock.open && !dock.contains(event.target))dock.open=false;});
   }
+  function mountPortChat(chat,bar,log,session){
+    if(!session)return;
+    const form=chat.querySelector('#chatForm'),input=form.querySelector('input'),button=form.querySelector('button');
+    const status=document.createElement('small');
+    status.setAttribute('role','status');
+    status.hidden=true;
+    form.before(status);
+    const general=()=>bar.querySelector('[data-chat-channel="all"]').getAttribute('aria-pressed')==='true'&&!log.hidden;
+    const actor=()=>session.available&&session.data?.character?.id;
+    const route=id=>'/v1/characters/'+encodeURIComponent(id)+'/port-chat';
+    let seen=new Set(),owner=null,reading=false,sending=false,retry=null;
+    function notice(message){
+      status.textContent=message;
+      status.hidden=!message||!general();
+    }
+    function labels(){
+      if(!general())return;
+      input.placeholder='Mensagem para todos…';
+      input.setAttribute('aria-label','Mensagem para o chat geral');
+      button.setAttribute('aria-label','Enviar ao chat geral');
+    }
+    async function refresh(){
+      const id=actor();
+      if(id!==owner){
+        log.querySelectorAll('[data-port-message]').forEach(line=>line.remove());
+        seen.clear();retry=null;owner=id;
+      }
+      if(!id||reading||document.hidden||!chat.classList.contains('hud-open')||!general())return;
+      reading=true;
+      try{
+        const {messages}=await session.api(route(id));
+        if(id!==actor())return;
+        const visible=new Set(messages.map(m=>m.id));
+        for(const line of log.querySelectorAll('[data-port-message]'))if(!visible.has(line.dataset.portMessage))line.remove();
+        for(const m of messages){
+          if(seen.has(m.id))continue;
+          const line=document.createElement('div'),time=document.createElement('time');
+          line.className='log-line';line.dataset.portMessage=m.id;
+          time.textContent=new Date(m.sentAt).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+          line.append(time,document.createTextNode(m.name+' · '+m.body));
+          log.prepend(line);
+        }
+        seen=visible;
+        while(log.children.length>90)log.lastChild.remove();
+        if(status.dataset.failure==='read'){notice('');delete status.dataset.failure;}
+      }catch{
+        if(id===actor()&&!status.textContent){status.dataset.failure='read';notice('Reconectando ao chat geral…');}
+      }finally{reading=false;}
+    }
+    form.addEventListener('submit',async e=>{
+      if(!general())return;
+      e.preventDefault();e.stopImmediatePropagation();
+      const id=actor(),body=input.value.trim();
+      if(!body||sending)return;
+      if(!id||!session.controlled){notice('Aguarde a conexão com o personagem para enviar.');return;}
+      if(!retry||retry.id!==id||retry.body!==body)retry={id,body,requestId:crypto.randomUUID()};
+      sending=true;
+      try{
+        await session.api(route(id)+'/send',{requestId:retry.requestId,body});
+        if(id!==actor())return;
+        retry=null;
+        if(general()&&input.value.trim()===body)input.value='';
+        notice('');void refresh();
+      }catch(error){
+        if(id===actor())notice(error.code==='message_rate_limited'?'Aguarde um minuto para enviar outra mensagem.':'Falha no envio. Tente novamente.');
+      }finally{sending=false;}
+    },true);
+    let lastChannel='all';
+    bar.addEventListener('click',e=>{
+      const tab=e.target.closest('button');
+      if(!tab)return;
+      const channel=tab.dataset.chatChannel||'private';
+      if(channel!==lastChannel&&(channel==='all'||lastChannel==='all'))input.value='';
+      lastChannel=channel;
+      queueMicrotask(()=>{
+        notice('');
+        if(general()){labels();void refresh();}
+        else if(!log.hidden){
+          input.placeholder='Escreva uma anotação local…';
+          input.setAttribute('aria-label','Anotação local');
+          button.setAttribute('aria-label','Enviar anotação');
+        }else{
+          input.setAttribute('aria-label','Mensagem privada');
+          button.setAttribute('aria-label','Enviar mensagem privada');
+        }
+      });
+    });
+    bar.setAttribute('aria-label','Canais de mensagens');
+    labels();
+    new MutationObserver(()=>{if(chat.classList.contains('hud-open'))void refresh();}).observe(chat,{attributes:true,attributeFilter:['class']});
+    document.addEventListener('visibilitychange',refresh);
+    setInterval(refresh,2500);
+    void refresh();
+  }
+
+
   function mountHUD(){
     const app=document.getElementById('app'),action=document.querySelector('.action-row'),journey=document.getElementById('journeyHud');
     if(!app||!action||!journey||document.getElementById('hudUtilities'))return;
@@ -144,7 +240,7 @@
     function filter(){
       for(const line of log.children){
         const note=line.classList.contains('local-note');
-        line.hidden=(channel==='notes' && !note) || (channel==='system' && note);
+        line.hidden=(channel==='notes' && !note) || (channel==='system' && (note||line.hasAttribute('data-port-message')));
       }
     }
     document.getElementById('chatForm').addEventListener('submit',()=>{
@@ -153,6 +249,7 @@
       }
     },true);
     tabBar.addEventListener('click',e=>{const b=e.target.closest('[data-chat-channel]');if(!b)return;channel=b.dataset.chatChannel;tabBar.querySelectorAll('button').forEach(t=>t.setAttribute('aria-pressed',String(t===b)));filter();});
+    mountPortChat(chat,tabBar,log,root.MareGameSession);
     const chatToggle=document.getElementById('chatCornerToggle');
     function measure(){
       const r=document.querySelector('.topbar').getBoundingClientRect(),a=document.querySelector('.action-panel').getBoundingClientRect(),m=document.getElementById('mainMenu').getBoundingClientRect();
@@ -329,7 +426,7 @@
     const delta=afterPower-beforePower;
     return {state:delta>0?'better':delta<0?'worse':'equal',delta};
   };
-  root.MareUI={lootSpace,escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,art,inspectImages,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals,positionQuickMenu,inventoryGrid,inventoryPageAtResize,inventoryNumericRows,inventoryPowerState};
+  root.MareUI={lootSpace,escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,art,inspectImages,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,mountPortChat,syncModals,positionQuickMenu,inventoryGrid,inventoryPageAtResize,inventoryNumericRows,inventoryPowerState};
   if(typeof document!=='undefined')document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot,{once:true}):boot();
   if(typeof module!=='undefined')module.exports=root.MareUI;
 })(globalThis);

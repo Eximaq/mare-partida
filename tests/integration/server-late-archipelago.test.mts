@@ -69,7 +69,7 @@ test('migrations 0063–0078 preserve active saves and receipts while admitting 
    const before=await persisted(f.pool),expected=structuredClone(before);
    expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=world.rulesHash;
    expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=lateBattle;
-   const pending=['0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql'];
+   const pending=['0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql','0079_port_chat.sql'];
    for(const name of pending)await copyFile(new URL(name,source),join(directory,name));
    assert.deepEqual(await applyMigrations(f.pool,directory),pending);
    assert.deepEqual(await persisted(f.pool),expected);

@@ -27,14 +27,14 @@ const prHistory = sorted([...common, ...rows(mapNames)]);
 const mainHistory = sorted([...common, ...rows(progressionNames)]);
 
 test('deployed main and HD-map histories execute only the other branch SQL, including every partial reconciliation', () => {
-  assert.deepEqual(names(pendingMigrations(plan, mainHistory)), mapNames);
-  assert.deepEqual(names(pendingMigrations(plan, prHistory)), progressionNames);
+  assert.deepEqual(names(pendingMigrations(plan, mainHistory)), [...mapNames,'0079_port_chat.sql']);
+  assert.deepEqual(names(pendingMigrations(plan, prHistory)), [...progressionNames,'0079_port_chat.sql']);
   assert.deepEqual(pendingMigrations(plan, []), plan);
   assert.deepEqual(pendingMigrations(plan, plan), []);
   for (let mapCount = 0; mapCount <= mapNames.length; mapCount++) {
     for (let progressionCount = 0; progressionCount <= progressionNames.length; progressionCount++) {
       const history = sorted([...common, ...rows(mapNames.slice(0, mapCount)), ...rows(progressionNames.slice(0, progressionCount))]);
-      const expected = [...mapNames.slice(mapCount), ...progressionNames.slice(progressionCount)].sort();
+      const expected = [...mapNames.slice(mapCount), ...progressionNames.slice(progressionCount),'0079_port_chat.sql'].sort();
       assert.deepEqual(names(pendingMigrations(plan, history)), expected, `maps=${mapCount}, progression=${progressionCount}`);
     }
   }
@@ -63,7 +63,7 @@ test('parallel release compatibility still rejects reordered, missing, unknown o
     [...common, ...rows([...progressionNames].reverse())],
   ];
   for (const history of invalidHistories) assert.throws(() => pendingMigrations(plan, history), /Migration history mismatch/);
-  const future = { name: '0079_following_release.sql', checksum: 'future' };
+  const future = { name: '0080_following_release.sql', checksum: 'future' };
   assert.throws(() => pendingMigrations([...plan, future], [...prHistory, future]), /Migration history mismatch/);
   assert.deepEqual(pendingMigrations([...plan, future], [...plan, future]), []);
 });
@@ -86,7 +86,7 @@ test('the deployed Akainu name remains immutable while either parallel release i
   const historic = { ...canonical, name: '0050_akainu_weekly_boss.sql' };
   for (const [history, expected] of [[prHistory, progressionNames], [mainHistory, mapNames]] as const) {
     const legacy = sorted([...history.filter(row => row.name !== canonical.name), historic]);
-    assert.deepEqual(names(pendingMigrations(plan, legacy)), expected);
+    assert.deepEqual(names(pendingMigrations(plan, legacy)), [...expected,'0079_port_chat.sql']);
     assert.throws(() => pendingMigrations(plan, legacy.map(row => row.name === historic.name ? { ...row, checksum: 'unknown' } : row)), /Migration history mismatch/);
     assert.throws(() => pendingMigrations(plan, sorted([...legacy, canonical])), /Migration history mismatch/);
   }
