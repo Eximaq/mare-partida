@@ -12,9 +12,10 @@
     {id:'east-blue-vest',slot:'coat',layer:'vest',name:'Colete Rubro da Aurora',description:'Colete aberto de lona escarlate, com fechos de latão.'},
     {id:'east-blue-shorts',slot:'legs',layer:'shorts',name:'Bermuda de Lona Índigo',description:'Lona azul com barras viradas e costuras reforçadas.'},
     {id:'east-blue-sandals',slot:'boots',layer:'sandals',name:'Sandálias do Convés',description:'Sandálias de sola trançada e tiras cruzadas de couro.'},
-  ].map(item=>Object.freeze({...item,kind:'cosmetic',body:'masculino',binding:item.binding??null,icon:artRoot+item.layer+'.png'})));
+    {id:'straw-hat-v3',slot:'head',layer:'hat-v3',name:'Chapéu de Palha',description:'Chapéu de palha trançada com faixa vermelha.',grantOnly:true,icon:'assets/player-cosmetics/straw-hat-v3/icon.png'},
+  ].map(item=>Object.freeze({...item,kind:'cosmetic',body:'masculino',binding:item.binding??null,icon:item.icon??artRoot+item.layer+'.png'})));
   const byId=new Map(definitions.map(item=>[item.id,item]));
-  const demoIds=Object.freeze(definitions.map(item=>item.id));
+  const demoIds=Object.freeze(definitions.filter(item=>!item.grantOnly).map(item=>item.id));
   const get=id=>byId.get(id);
   function available(item,appearance){
     const body=['feminino','female'].includes(appearance?.gender??appearance?.body)?'feminino':'masculino';

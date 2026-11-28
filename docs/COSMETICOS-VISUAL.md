@@ -15,6 +15,20 @@ A referência de figurino é **Romance Dawn**, do East Blue. As quatro artes de 
 
 Os ícones RGBA de 320 × 320 são reproduzíveis com `python tools/draw_cosmetic_icons.py`, usando Pillow. A arte de personagem é preparada em camadas transparentes por quadro pelo módulo `cosmetic-art.js`. As camadas acompanham a geometria e a temporização do renderizador HD e reutilizam os quadros já preparados no cache. Colete, bermuda e sandálias aproveitam a pele da base do jogador nas regiões expostas. O colete usa o tronco e as juntas do quadro atual para separar frente, costas e perfil. Em receptores laterais compatíveis, o tronco contínuo e os braços em primeiro plano são lidos das partes originais de cada quadro. As costuras e os contornos são desenhados na densidade nativa do atlas HD. Ombros, braços em primeiro plano e arma conservam a sobreposição da pose.
 
+## Chapéu de Palha
+
+O item `straw-hat-v3` é independente do Chapéu de Palha do Alísio e aparece em **Inventário → Visual** após concessão. Os quatro PNGs originais de 512 × 512 ficam em `assets/player-cosmetics/straw-hat-v3/`. O renderizador usa a direção entregue, posiciona a arte pela montagem nativa e recorta o cabelo acima da aba usando a versão sem cabelo da mesma pose, a camada própria de cabelo ou a silhueta assinada do acervo, conforme o registro disponível.
+
+O operador do banco pode conceder o item com o script abaixo, em um banco com a migração de cosméticos aplicada. O UUID deve ser o do personagem destinatário. O script compartilha a trava usada pelos comandos do personagem, preserva a seleção equipada e pode ser executado novamente sem duplicar a concessão.
+
+```sh
+psql -v ON_ERROR_STOP=1 -v character_id=UUID_DO_PERSONAGEM -f tools/grant-straw-hat-v3.sql
+```
+
+O resultado lista o personagem somente quando uma concessão foi gravada. O resgate inicial continua contendo as quatro peças anteriores.
+
+A verificação usou os PNGs originais, 126 quadros em 18 contextos do compositor HD e uma sessão no Chromium com a aba Visual, caminhada nas quatro direções e ataque de espada na Ilha Dawn. A concessão foi testada em PostgreSQL isolado.
+
 ## Persistência e limites
 
 O resgate de teste é único por personagem e está disponível para o corpo masculino. A coleção em `character_profile.cosmetics` é separada da mochila física. O servidor valida posse e slot e envia aos outros jogadores somente a seleção equipada, conforme a preferência de privacidade. A versão offline grava a coleção no save local. O equipamento funcional continua sendo a fonte de atributos, efeitos, classe de arma e colisões.

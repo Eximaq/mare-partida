@@ -49,7 +49,8 @@
     const art=root.MareCosmeticArt,chosen=art?.selection(player);
     if(!chosen)return selectWorldHDSource(nativeHD,weaponCatalog,player,options);
     const {player:appearance,shown}=art.project(player,chosen);
-    return art.decorate(selectWorldHDSource(nativeHD,weaponCatalog,appearance,options),shown);
+    const resolve=actor=>selectWorldHDSource(nativeHD,weaponCatalog,actor,options);
+    return art.decorate(resolve(appearance),shown,appearance,resolve);
   }
   function selectWorldHDSource(nativeHD,weaponCatalog,player,options){
     if(!nativeHD?.selectVisual||!player||player.zoanTransformed)return null;

@@ -8,7 +8,7 @@ require('../headgear-visibility.js');
 const art=require('../cosmetic-art.js');
 const {selectWorldHDOnly}=require('../paper-doll-96-lobby.js');
 
-const chosen=Object.fromEntries(MareCosmetics.definitions.map(item=>[item.slot,item.id]));
+const chosen=Object.fromEntries(MareCosmetics.demoIds.map(id=>[MareCosmetics.get(id).slot,id]));
 const equipment={head:{def:150},coat:{def:151},legs:{def:133},boots:{def:148},gloves:{def:25},weapon:{def:0}};
 
 test('cosmetics alter only the HD projection and respect explicit hiding and transformations',()=>{
@@ -84,4 +84,45 @@ test('independent transparent passes compose on the male native frame',()=>{
  const low=raster(coat.ctx),evidence=compare(before,low);
  assert([...evidence.keys()].some(i=>i/4%512<64*4&&Math.floor(i/4/512)<48*4),'left shoulder is covered');
  assert([...evidence.keys()].some(i=>i/4%512>64*4&&Math.floor(i/4/512)<48*4),'right shoulder is covered');
+});
+
+test('the Chapéu de Palha must be granted separately from the starter set',()=>{
+ const id='straw-hat-v3',actor={gender:'masculino'};
+ const starter=MareCosmetics.execute(null,'cosmetics.claim-demo',{},actor);
+ assert.equal(starter.owned.length,4);
+ assert.ok(!starter.owned.includes(id));
+ assert.throws(()=>MareCosmetics.execute(starter,'cosmetics.equip',{cosmeticId:id},actor),{code:'cosmetic_not_owned'});
+ const granted={...starter,owned:[...starter.owned,id]};
+ const equipped=MareCosmetics.execute(granted,'cosmetics.equip',{cosmeticId:id},actor);
+ const switched=MareCosmetics.execute(equipped,'cosmetics.equip',{cosmeticId:'east-blue-hat'},actor);
+ assert.equal(equipped.equipped.head,id);
+ assert.equal(switched.equipped.head,'east-blue-hat');
+ assert.deepEqual(switched.owned,granted.owned);
+});
+
+test('the imported hat uses native pixels and replaces hair only above its brim',()=>{
+ const original=fixture('male'),bare=fixture('male'),asset=createCanvas(512,512);
+ original.ctx.fillStyle='#172135';
+ original.ctx.fillRect(201,68,12,78);
+ bare.ctx.clearRect(201,68,6,24);
+ bare.ctx.fillStyle='#e4ab72';
+ bare.ctx.fillRect(207,93,6,35);
+ const ink=asset.getContext('2d');
+ ink.fillStyle='#d79739';ink.fillRect(196,72,120,51);
+ const actor={appearance96:{gender:'masculino',hairStyle:'hair-wavy',eyeColor:'green'}};
+ const record=art.decorate(original.record,{head:'straw-hat-v3'},actor,player=>{
+  assert.equal(player.appearance96.hairStyle,'none');
+  assert.equal(player.appearance96.eyeColor,'green');
+  return bare.record;
+ });
+ assert.equal(actor.appearance96.hairStyle,'hair-wavy');
+ assert.equal(art.hatFile(record),'assets/player-cosmetics/straw-hat-v3/sul.png');
+ assert.equal(art.hatHairless(record),bare.record);
+ const out=art.compose(original,record,0,createCanvas,null,{image:asset,hairless:bare});
+ const rgba=(x,y)=>Array.from(original.ctx.getImageData(x,y,1,1).data);
+ assert.deepEqual(out.info.cosmeticPasses,['head']);
+ assert.deepEqual(rgba(203,70),[0,0,0,0]);
+ assert.deepEqual(rgba(203,122),[215,151,57,255]);
+ assert.deepEqual(rgba(203,123),[23,33,53,255]);
+ assert.deepEqual(rgba(185,160),[237,177,125,255]);
 });

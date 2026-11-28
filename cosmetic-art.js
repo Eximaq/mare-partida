@@ -2,7 +2,19 @@
 (function(root){
  'use strict';
 
- const layers={head:'hat',coat:'vest',legs:'shorts',boots:'sandals'};
+ const layers={head:['hat','hat-v3'],coat:['vest'],legs:['shorts'],boots:['sandals']};
+ // Native 4x idle mounts measured on the supplied 512px registration.
+ // WEST has its own mirrored PNG and must never be flipped again.
+ const hatMounts={
+  south:['sul',256,176,72,122],
+  north:['norte',256,166,66,117],
+  east:['leste',259,168,69,119],
+  west:['oeste',253,168,69,119]
+ };
+ function hatFile(record){
+  const mount=hatMounts[record.direction];
+  return record.cosmeticLayers?.head?.layer==='hat-v3'&&mount?'assets/player-cosmetics/straw-hat-v3/'+mount[0]+'.png':null;
+ }
  const selection=p=>{
   if(!p||p.zoanTransformed||p.equipment?.visual_completo!=null)return null;
   const art=root.MareCosmetics;
@@ -10,7 +22,7 @@
   if(!selected)return null;
   const supported=Object.fromEntries(Object.entries(selected).filter(([slot,id])=>{
    const item=art.get(id);
-   return item?.layer===layers[slot]&&art.available(item,p.appearance96);
+   return layers[slot]?.includes(item?.layer)&&art.available(item,p.appearance96);
   }));
   return Object.keys(supported).length?supported:null;
  };
@@ -26,10 +38,25 @@
   if(root.MareHeadgear?.hidden(p))delete shown.head;
   return {player:{...p,equipment,cosmetics:null},shown};
  }
- function decorate(source,shown){
+ function decorate(source,shown,player,resolve){
   if(!source||!Object.keys(shown).length)return source;
-  const pieces=Object.entries(layers).filter(([slot])=>shown[slot]);
-  return {...source,cosmeticLayers:Object.fromEntries(pieces.map(([slot,layer])=>[slot,{id:shown[slot],layer}]))};
+  const pieces=Object.keys(layers).filter(slot=>shown[slot]).map(slot=>[slot,{id:shown[slot],layer:root.MareCosmetics.get(shown[slot]).layer}]);
+  const record={...source,cosmeticLayers:Object.fromEntries(pieces)};
+  if(!hatFile(record))return record;
+  const look=root.MareCharacterAppearance.read(player);
+  record.hatV3Hairless=look.hairStyle==='none'?null:resolve(root.MareCharacterAppearance.apply(player,{...look,hairStyle:'none'}));
+  return record;
+ }
+ function hatClock(source){
+  if(source.hdKind==='weapon')return [source.fps,source.timeline,source.states?.map(s=>s.state),source.visualSampling];
+  const c=source.pack?.directions?.[source.direction]?.clip;
+  return c&&[c.fps,c.frames,c.loop];
+ }
+ function hatHairless(record){
+  const source=record.hatV3Hairless;
+  return source&&record.body===source.body&&record.direction===source.direction&&
+   (record.resolvedAction??record.action)===(source.resolvedAction??source.action)&&
+   JSON.stringify(hatClock(record))===JSON.stringify(hatClock(source))?source:null;
  }
 
  const round=Math.round;
@@ -380,7 +407,40 @@
   }
   return {orig,fabric,footwear,transfer,joinNeck};
  }
- function compose(result,record,frame,makeCanvas,anatomy=null){
+ function hatPlacement(record,info,frame){
+  const mount=hatMounts[record.direction];
+  if(!mount||info.density!==4)return null;
+  const [,neckX,neckY,top,edge]=mount;
+  const joint=readPose(record,info,frame,4)('NECK');
+  const x=joint?round(joint.x*4)-neckX:info.pivot.x-256;
+  const y=joint?round(joint.y*4)-neckY:info.pivot.y-448;
+  return {x,y,top:y+top,brim:y+edge};
+ }
+ function paintHatV3(result,record,frame,image,hairless){
+  const {canvas,info}=result,placement=hatPlacement(record,info,frame);
+  if(!placement||image?.width!==512||image.height!==512)return null;
+  const {x,y,brim}=placement;
+  const ctx=canvas.getContext('2d');
+  if(hairless&&hairless.canvas.width===canvas.width&&hairless.canvas.height===canvas.height&&
+     hairless.info.density===info.density&&hairless.info.pivot.x===info.pivot.x&&hairless.info.pivot.y===info.pivot.y){
+   // The signed hairless variant supplies the anatomy under the brim. Copy
+   // only the upper head, leaving the eyes, lower hair and equipment alone.
+   const left=Math.max(0,136+x),top=Math.max(0,y);
+   const width=Math.min(canvas.width,376+x)-left,height=Math.min(canvas.height,brim+1)-top;
+   if(width>0&&height>0)ctx.putImageData(hairless.canvas.getContext('2d').getImageData(left,top,width,height),left,top);
+  }
+  ctx.save();
+  ctx.imageSmoothingEnabled=false;
+  ctx.drawImage(image,x,y);
+  ctx.restore();
+  return Math.max(info.visualHeight||0,info.pivot.y-placement.top);
+ }
+ function compose(result,record,frame,makeCanvas,anatomy=null,hatAssets=null){
+  const hatV3=record.cosmeticLayers.head?.layer==='hat-v3';
+  if(hatV3&&Object.keys(record.cosmeticLayers).length===1){
+   const height=paintHatV3(result,record,frame,hatAssets?.image,hatAssets?.hairless);
+   return {...result,info:{...result.info,cosmeticPasses:height===null?[]:['head'],visualHeight:height??result.info.visualHeight},bounds:undefined};
+  }
   const {canvas,info}=result,{width:w,height:h}=canvas,density=info.density||4;
   const lane={x:info.pivot.x/density,y:info.pivot.y/density};
   const joint=readPose(record,info,frame,density);
@@ -405,7 +465,7 @@
    ['legs',()=>kit.fabric()],
    ['boots',()=>kit.footwear()],
    ['coat',()=>kit.transfer(vest,true)],
-   ['head',()=>kit.transfer(hat,false)]
+   ['head',()=>hatV3?null:kit.transfer(hat,false)]
   ]){
    if(!record.cosmeticLayers[slot])continue;
    const layer=paint();
@@ -419,10 +479,12 @@
    }
    target.putImageData(kit.orig,0,0);
   }
+  const hatHeight=hatV3?paintHatV3(result,record,frame,hatAssets?.image,hatAssets?.hairless):null;
+  if(hatHeight!==null)passes.push('head');
   const next={...info,cosmeticPasses:passes};
-  if(passes.includes('head'))next.visualHeight=Math.max(info.visualHeight||0,info.pivot.y-round((headTop-7)*density));
+  if(passes.includes('head'))next.visualHeight=hatHeight??Math.max(info.visualHeight||0,info.pivot.y-round((headTop-7)*density));
   return {...result,info:next,bounds:undefined};
  }
- const api={selection,project,decorate,compose};
+ const api={selection,project,decorate,compose,hatFile,hatHairless,hatPlacement};
  root.MareCosmeticArt=api;if(typeof module==='object')module.exports=api;
 })(globalThis);

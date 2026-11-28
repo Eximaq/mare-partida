@@ -8554,7 +8554,8 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const art=root.MareCosmeticArt,chosen=art?.selection(player);
   if(!chosen)return selectVisualBase(player,o,allowOmission);
   const {player:appearance,shown}=art.project(player,chosen);
-  return art.decorate(selectVisualBase(appearance,o,allowOmission),shown);
+  const resolve=actor=>selectVisualBase(actor,o,allowOmission);
+  return art.decorate(resolve(appearance),shown,appearance,resolve);
  }
  function selectVisualBase(player,o,allowOmission){
   if(root.MareHeadgear?.alwaysHidden(player))player=visibleWorldActor(player);
@@ -9878,12 +9879,11 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    width:p.frame.width*p.density,height:p.frame.height*p.density};
  }
  function filesFor(r,frame){
-  if(r.cosmeticLayers?.coat){
-   const ownership=cosmeticTorsoSources(r,frame);
-   if(ownership){
-    const {cosmeticLayers,...base}=r;
-    return [...new Set([...filesFor(base,frame),...ownership.files])];
-   }
+  if(r.cosmeticLayers){
+   const {cosmeticLayers,hatV3Hairless,...base}=r,art=root.MareCosmeticArt;
+   const file=art.hatFile(r),hairless=art.hatHairless(r);
+   return [...new Set([...filesFor(base,frame),...(cosmeticTorsoSources(r,frame)?.files||[]),
+    ...(file?[file]:[]),...(hairless?filesFor(hairless,frame):[])])];
   }
   if(r.namedFirearmHead){const {h,base}=r.namedFirearmHead,coat=h.north&&base.rifleLower?.rifleCoat?.[frame];
    return [...filesFor(base,frame),...namedFirearmFiles(h),...(coat?[combatPlatePath(coat.frontBare)]:[])];}
@@ -10467,14 +10467,32 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function composeFrame(r,frame,entry,trackBounds=false){
   if(r.cosmeticLayers){
-   const {cosmeticLayers,...base}=r;
-   const result=composeFrame(base,frame,entry);
+   const {cosmeticLayers,hatV3Hairless,...base}=r,art=root.MareCosmeticArt;
+   const file=art.hatFile(r),hairless=art.hatHairless(r);
+   // The original South dagger/focus sheets carry a signed hair pixel mask
+   // even where there is no separately registered hairless receiver.
+   const image=file&&entry.images.get(file),hatReady=image?.width===512&&image.height===512;
+   const signedHair=hatReady&&!hairless&&base.direction==='south'&&base.orderedDaggerHair&&
+    (base.approvedDagger13South||base.approvedFocusSouth)&&base.nativeCanvas?.join()==='640,640';
+   const brim=signedHair?art.hatPlacement(base,{density:base.density,pivot:{x:base.pivot[0]*base.density,y:base.pivot[1]*base.density}},frame)?.brim:undefined;
+   const result=composeFrame(base,frame,brim==null?entry:{...entry,hatHairCutoff:brim});
    const ownership=cosmeticTorsoSources(r,frame);
    const images=ownership?.files.map(file=>entry.images.get(file));
    const anatomy=images?.every(im=>im?.width===ownership.width&&im.height===ownership.height)
     ?{torso:images.slice(0,2),arms:images.slice(2),x:result.info.pivot.x-ownership.pivot.x*result.info.density,y:result.info.pivot.y-ownership.pivot.y*result.info.density}
     :null;
-   return root.MareCosmeticArt.compose(result,r,frame,makeCanvas,anatomy);
+   let underHat=null;
+   if(hatReady&&hairless){
+    const reference={...entry,proofs:[]};
+    validateFrameHead(hairless,frame,reference);
+    underHat=composeFrame(hairless,frame,reference);
+   }else if(hatReady&&base.hdKind==='carry'&&!base.headRecord&&!base.gaitHat){
+    // The carry compositor can skip its owned hair layer without changing
+    // the head base or the registered weapon pose.
+    underHat=composeFrame(base,frame,{...entry,hideCarryHair:true});
+   }
+   try{return art.compose(result,r,frame,makeCanvas,anatomy,hatReady?{image,hairless:underHat}:null);}
+   finally{if(underHat)underHat.canvas.width=underHat.canvas.height=0;}
   }
   if(r.namedFirearmHead)return composeNamedFirearm(r,frame,entry);
   if(entry.firearmHeadPack&&r.basePack===entry.firearmHeadPack){
@@ -11170,7 +11188,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    return composeFrame({...r,registeredPaletteBody:null},frame,{...entry,images});
   }
 
-  const canvas=makeCanvas(r.hdKind==='weapon'?r.nativeCanvas[0]:r.pack.frame.width*r.pack.density,r.hdKind==='weapon'?r.nativeCanvas[1]:r.pack.frame.height*r.pack.density);const info=(r.femaleNamedHairRecord?{render:(cx,base,imgs,opts)=>base.hdKind==='outfit'?outfitRegistry.renderWithHead(cx,base,imgs,femaleNamedHairRegistry.compose(base,base.femaleNamedHairRecord,imgs),opts):femaleNamedHairRegistry.render(cx,base,base.femaleNamedHairRecord,imgs,opts)}:usesFemaleWardrobe(r)?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).render(canvas.getContext('2d'),r,entry.images,{frame,appearance:r.colorAppearance,makeCanvas,drawGaitHat:r.gaitHat?ctx=>drawGaitHat(ctx,r,frame,entry):undefined,hiddenSlots:r.headRecord||r.gearOnlyRecord?.hideHair||r.ownGauntletHead?.hideHair&&!r.compassAnatomy&&!r.orbAnatomy&&!r.orderedAnatomy&&!r.fusedFocusAnatomy&&!r.orderedSwordFit&&!r.daggerHeadRig?['hair']:[]});
+  const canvas=makeCanvas(r.hdKind==='weapon'?r.nativeCanvas[0]:r.pack.frame.width*r.pack.density,r.hdKind==='weapon'?r.nativeCanvas[1]:r.pack.frame.height*r.pack.density);const info=(r.femaleNamedHairRecord?{render:(cx,base,imgs,opts)=>base.hdKind==='outfit'?outfitRegistry.renderWithHead(cx,base,imgs,femaleNamedHairRegistry.compose(base,base.femaleNamedHairRecord,imgs),opts):femaleNamedHairRegistry.render(cx,base,base.femaleNamedHairRecord,imgs,opts)}:usesFemaleWardrobe(r)?femaleRegistry:r.hdKind==='weapon'?weaponRegistry:r.hdKind==='outfit'?outfitRegistry:r.hdKind==='carry'?carryRegistry:r.hdKind==='outfit-carry'?combinedCarryRegistry:registry).render(canvas.getContext('2d'),r,entry.images,{frame,appearance:r.colorAppearance,makeCanvas,
+   hatHairCutoff:entry.hatHairCutoff,drawGaitHat:r.gaitHat?ctx=>drawGaitHat(ctx,r,frame,entry):undefined,
+   hiddenSlots:entry.hideCarryHair||r.headRecord||r.gearOnlyRecord?.hideHair||r.ownGauntletHead?.hideHair&&!r.compassAnatomy&&!r.orbAnatomy&&!r.orderedAnatomy&&!r.fusedFocusAnatomy&&!r.orderedSwordFit&&!r.daggerHeadRig?['hair']:[]});
   const carryInset=(r.hdKind==='carry'||r.hdKind==='outfit-carry')?(r.plan.paddingPhysical??0):0;
   if(r.headRecord){
    const {width,height}=r.pack.frame,density=r.pack.density;
@@ -11353,7 +11373,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       unavailable.set(failed[0],e);
       const rebuilt=assembleIndependentPose(plan,unavailable);
       r=r.cosmeticLayers?root.MareCosmeticArt.decorate(rebuilt,Object.fromEntries(
-       Object.entries(r.cosmeticLayers).map(([slot,part])=>[slot,part.id]))):rebuilt;
+       Object.entries(r.cosmeticLayers).map(([slot,part])=>[slot,part.id])),player,()=>r.hatV3Hairless):rebuilt;
      }
     }
     routes.set(slot,{r,key,options});
