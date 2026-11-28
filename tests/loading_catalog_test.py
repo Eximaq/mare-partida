@@ -53,6 +53,28 @@ class CatalogTest(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(rebuilt).hexdigest(), digest)
             self.assertGreater(saved, len(shared) * 2)
 
+    def test_gameplay_bundle_skips_opt_in_cycles_and_groups_medium_assets(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            inputs = {
+                'assets/ui/medium-a.png': b'a' * 80_000,
+                'assets/ui/medium-b.png': b'b' * 80_000,
+                'tools/rework-weapons/grip-corrections/approved.png': b'grip',
+                'tools/rework-weapons/catalog.json': b'preview catalog',
+                'tools/rework-outfits/generated/preview.zip': b'preview cycle',
+            }
+            for path, data in inputs.items():
+                target = root / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(data)
+            catalog = build_catalog(root)
+            self.assertEqual(set(catalog['files']), set(list(inputs)[:3]))
+            self.assertEqual(len(catalog['units']), 1)
+            for path, (unit, offset, size, _) in catalog['files'].items():
+                data = (root / catalog['units'][unit][0]).read_bytes()
+                self.assertEqual(data[offset:offset + size], inputs[path])
+            self.assertTrue((root / 'tools/rework-outfits/generated/preview.zip').exists())
+
     def test_release_bytes_are_complete_and_versioned(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

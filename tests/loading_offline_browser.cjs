@@ -2,13 +2,15 @@
 const assert = require('node:assert/strict');
 const {createServer} = require('node:http');
 const {createReadStream} = require('node:fs');
-const {readdir, readFile, stat} = require('node:fs/promises');
+const {readFile, stat} = require('node:fs/promises');
 const path = require('node:path');
 const {chromium} = require('playwright');
 
 async function main() {
   const root = path.resolve(process.argv[2] || 'dist');
-  const index = (await readdir(root)).find(name => /^game-content-.*\.json$/.test(name));
+  const html = await readFile(path.join(root, 'index.html'), 'utf8');
+  const index = html.match(/data-game-content="(game-content-[a-f0-9]{24}\.json)"/)?.[1];
+  assert(index, 'the entry must name an installation catalog');
   const manifest = JSON.parse(await readFile(path.join(root, index), 'utf8'));
   const units = new Set(manifest.units.map(unit => unit[0]));
   const patches = Object.values(manifest.patches || {});

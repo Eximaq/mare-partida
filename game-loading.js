@@ -21,7 +21,7 @@
   }
   let scenePending = false, failure = false, prepared = false, interfaceReady = false, generation = 0;
   function status(message) {
-    if (!failure) phase.textContent = message;
+    if (!failure && phase.textContent !== message) phase.textContent = message;
   }
   function progress(value) {
     if (failure) return;
@@ -69,17 +69,31 @@
     });
   }
   const unitKey = hash => new URL('loading-data/' + hash, scope).href;
-  async function fetchBytes(path, hash) {
+  async function fetchBytes(path, hash, size, received) {
     const source = new URL(path, scope);
     source.searchParams.set('install', hash.slice(0, 16));
     const file = await fetch(source).catch(() => fetch(source, {cache: 'reload'}));
     if (!file.ok) throw Error('Não foi possível baixar um arquivo do jogo.');
-    return file.arrayBuffer();
+    const reader = file.body.getReader();
+    const buffer = new Uint8Array(size);
+    let offset = 0;
+    for (;;) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      if (value.length > size - offset) {
+        await reader.cancel();
+        throw Error('Um arquivo não corresponde à versão do jogo.');
+      }
+      buffer.set(value, offset);
+      offset += value.length;
+      received(value.length);
+    }
+    if (offset !== size) throw Error('Um arquivo chegou incompleto.');
+    return buffer.buffer;
   }
-  async function restoreArchive(unit, patch, units, storage) {
+  async function restoreArchive(unit, patch, units, storage, received) {
     const [path, literalSize, spans] = patch;
-    const literal = new Uint8Array(await fetchBytes(path, unit.hash));
-    if (literal.length !== literalSize) throw Error('A atualização chegou incompleta.');
+    const literal = new Uint8Array(await fetchBytes(path, unit.hash, literalSize, received));
     const output = new Uint8Array(unit.size);
     const providers = new Map();
     let cursor = 0, consumed = 0;
@@ -147,28 +161,60 @@
         }
       }
     }
-    function update() {
-      progress(96 * loaded / Math.max(1, total));
-      amount.textContent = bytes(loaded) + ' / ' + bytes(total) + ' MiB' +
-        (temporary.size ? ' · Parte dos arquivos fica nesta aba' : '');
+    let inFlight = 0, downloaded = 0, lastUpdate = -Infinity, updateTimer;
+    const start = performance.now();
+    function update(force = false) {
+      if (failure) return;
+      const now = performance.now();
+      const nextUpdate = 250 - (now - lastUpdate);
+      if (!force && nextUpdate > 0 && loaded + inFlight < total) {
+        updateTimer ??= setTimeout(() => update(true), nextUpdate);
+        return;
+      }
+      clearTimeout(updateTimer);
+      updateTimer = undefined;
+      lastUpdate = now;
+      const received = loaded + inFlight;
+      const remaining = total - received;
+      const elapsed = (now - start) / 1000;
+      const rate = downloaded / Math.max(elapsed, 1);
+      progress(96 * received / Math.max(1, total));
+      status(remaining ? 'Baixando conteúdo do jogo' : 'Verificando os arquivos do jogo');
+      let details = bytes(received) + ' / ' + bytes(total) + ' MiB';
+      if (remaining && elapsed >= 3 && rate > 0) {
+        const seconds = Math.ceil(remaining / rate);
+        const estimate = seconds < 60 ? seconds + ' s' : Math.ceil(seconds / 60) + ' min';
+        details += ' · ' + bytes(rate) + ' MiB/s · Cerca de ' + estimate;
+      }
+      if (temporary.size) details += ' · Parte dos arquivos fica nesta aba';
+      amount.textContent = details;
     }
-    update();
-    status(queue.length ? 'Preparando mapas, personagens e equipamentos' : 'Conferindo os arquivos desta versão');
+    update(true);
     let diskFull = false;
     async function installUnit(unit) {
       const {path, size, hash, key, patch, transferSize} = unit;
-      let buffer;
+      let buffer, received = 0;
+      function onChunk(size) {
+        received += size;
+        inFlight += size;
+        downloaded += size;
+        update();
+      }
       if (patch) {
         try {
-          const rebuilt = await restoreArchive(unit, patch, units, storage);
+          const rebuilt = await restoreArchive(unit, patch, units, storage, onChunk);
           if (await digestOf(rebuilt) === hash) buffer = rebuilt;
         } catch {
           // The original ZIP remains usable if a patch or its cached source was lost.
         }
       }
       if (!buffer) {
-        buffer = await fetchBytes(path, hash);
-        if (buffer.byteLength !== size) throw Error('Um arquivo chegou incompleto.');
+        if (patch) {
+          // Count the literal already received and the full fallback download.
+          total += received + size - transferSize;
+          update(true);
+        }
+        buffer = await fetchBytes(path, hash, size, onChunk);
         if (await digestOf(buffer) !== hash) throw Error('Um arquivo não corresponde à versão do jogo.');
       }
       const blob = new Blob([buffer]);
@@ -180,7 +226,9 @@
         }
       }
       if (diskFull) temporary.set(hash, blob);
-      loaded += transferSize; update();
+      inFlight -= received;
+      loaded += received;
+      update(true);
     }
     async function installBatch(batch) {
       let cursor = 0, stopped = false;
@@ -193,8 +241,12 @@
       const failed = results.find(result => result.status === 'rejected');
       if (failed) throw failed.reason;
     }
-    await installBatch(queue.filter(unit => providers.has(unit.hash)));
-    await installBatch(queue.filter(unit => !providers.has(unit.hash)));
+    try {
+      await installBatch(queue.filter(unit => providers.has(unit.hash)));
+      await installBatch(queue.filter(unit => !providers.has(unit.hash)));
+    } finally {
+      clearTimeout(updateTimer);
+    }
   }
   async function prepare() {
     show();
@@ -206,7 +258,7 @@
         if (failure) return;
         if (scenePending) scene();
         else if (interfaceReady) finish();
-        else { progress(97); phase.textContent = 'Preparando a cena de entrada'; }
+        else { progress(97); phase.textContent = 'Preparando a entrada no jogo'; }
         return;
       } catch (error) {
         const message = error.name === 'QuotaExceededError'
@@ -222,7 +274,7 @@
     interfaceReady = false;
     if (!prepared) return;
     progress(98);
-    phase.textContent = 'Preparando o mapa e a animação do personagem';
+    phase.textContent = 'Entrando no mapa';
   }
   function finish() {
     interfaceReady = true;

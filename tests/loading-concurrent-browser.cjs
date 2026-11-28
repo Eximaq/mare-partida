@@ -7,7 +7,7 @@ const {test} = require('node:test');
 const {chromium} = require('playwright');
 
 test('two game tabs share installation and a visit after logout reuses the bytes', async () => {
-  const bytes = Buffer.from('beta map');
+  const bytes = Buffer.alloc(2 * 1024 * 1024, 'm');
   const hash = data => createHash('sha256').update(data).digest('hex');
   const manifest = JSON.stringify({units:[['assets/map.bin', bytes.length, hash(bytes)]],
     files:{'assets/map.bin':[0, 0, bytes.length, 'application/octet-stream']}});
@@ -28,8 +28,9 @@ test('two game tabs share installation and a visit after logout reuses the bytes
       res.setHeader('Content-Type','text/javascript').end(readFileSync(join(__dirname,'..',url.pathname.slice(1))));
     else if (url.pathname === '/assets/map.bin' && url.searchParams.has('install')) {
       transfers++;
+      res.write(bytes.subarray(0, bytes.length / 2));
       await gate;
-      res.end(bytes);
+      res.end(bytes.subarray(bytes.length / 2));
     } else res.writeHead(404).end();
   });
   await new Promise(resolve => server.listen(0,'127.0.0.1',resolve));
@@ -44,14 +45,25 @@ test('two game tabs share installation and a visit after logout reuses the bytes
       await page.evaluate(() => {void window.MareGameLoading.prepare();});
       await page.waitForFunction(() => navigator.serviceWorker.controller !== null);
     }
-    await a.waitForFunction(() => document.querySelector('[role=status]').textContent.includes('Preparando mapas'));
+    await a.waitForFunction(() => {
+      const progress = document.querySelector('progress').value;
+      return progress > 0 && progress < 96 && document.querySelector('.loading-size').textContent.startsWith('1 / 2 MiB');
+    }, null, {timeout: 5000});
+    assert.equal(await a.evaluate(() => document.querySelector('#app').inert), true);
     // Wait until B is either waiting for the installer lock, or has started its own download.
     await b.waitForFunction(async () => (await navigator.locks.query()).pending.length > 0 ||
-      document.querySelector('[role=status]').textContent.includes('Preparando mapas'));
+      document.querySelector('progress').value > 0);
     releaseDownload();
+    async function cachedMapHash(page) {
+      return page.evaluate(async () => {
+        const data = await (await fetch('/assets/map.bin')).arrayBuffer();
+        const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', data));
+        return Array.from(digest, byte => byte.toString(16).padStart(2, '0')).join('');
+      });
+    }
     for (const page of [a,b]) {
       await page.waitForFunction(() => window.MareGameLoading.prepared);
-      assert.equal(await page.evaluate(() => fetch('/assets/map.bin').then(r=>r.text())), bytes.toString());
+      assert.equal(await cachedMapHash(page), hash(bytes));
       await page.goto(origin+'/online/');
     }
     // The full install can exhaust the browser's disk quota. Persisting a new
@@ -65,7 +77,7 @@ test('two game tabs share installation and a visit after logout reuses the bytes
     });
     await a.goto(origin+'/game');
     await a.evaluate(() => window.MareGameLoading.prepare());
-    assert.equal(await a.evaluate(() => fetch('/assets/map.bin').then(r=>r.text())), bytes.toString());
+    assert.equal(await cachedMapHash(a), hash(bytes));
     assert.equal(transfers,1,'the static map must download exactly once in this browser');
   } finally {
     releaseDownload();
