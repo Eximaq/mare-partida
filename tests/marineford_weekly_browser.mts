@@ -26,11 +26,10 @@ const root=resolve('.'),out=process.env.MARE_QA_DIR||resolve('.maintenance-local
 const port=Number(process.env.MARE_WEEKLY_QA_PORT||9447),origin='https://localhost:'+port;
 const sceneFile='assets/marineford/naval-headquarters/scene-hd.png';
 const checksum=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
-const config={mapId:'marineford',spawn:{x:1536,y:1280},entry:{x:1536,y:1488},
+const config={mapId:'marineford',spawn:{x:1536,y:1280},entry:{x:1536,y:1824},
   maxPlayers:4,minLevel:1,durationMinutes:15,balanceApproved:true,
-  profile:{hp:10000000,attack:1,defense:0,magicDefense:0,speed:50,reach:65,
-    attackSec:3,aoeCooldown:4,aoeRadius:160,aoeWindup:1.2,aoeMultiplier:1,level:50,leash:600}};
-assert.equal(config.entry.y,config.spawn.y+config.profile.aoeRadius+48);
+  profile:{speed:70,reach:65,attackSec:3,aoeCooldown:7,aoeWindup:1.2,level:180,leash:700}};
+const approved={...config,admiralId:'akainu',profile:{...config.profile,hp:300000,attack:1,defense:4500,magicDefense:1650,aoeRadius:217.6,aoeMultiplier:1}};
 await mkdir(out,{recursive:true});
 
 await authDatabase(async f=>{
@@ -75,7 +74,7 @@ await authDatabase(async f=>{
         const original=CanvasRenderingContext2D.prototype.drawImage;
         CanvasRenderingContext2D.prototype.drawImage=function(...args:any[]){
           const image=args[0],src=image?.src;
-          if(this.canvas.id==='worldCanvas'&&typeof src==='string'&&(/\/assets\/weekly-boss\/akainu\//.test(src)||src.includes('/assets/marineford/naval-headquarters/'))){
+          if(this.canvas.id==='worldCanvas'&&typeof src==='string'&&(/\/assets\/weekly-boss\/admirals\//.test(src)||src.includes('/assets/marineford/naval-headquarters/'))){
             const map=globalThis.__mareDiagnostics?.().map?.id??null;
             const key=globalThis.__marinefordWeeklyDraws.find(d=>d.src===src&&d.map===map);
             if(key)key.count++;else globalThis.__marinefordWeeklyDraws.push({src,map,natural:[image.naturalWidth,image.naturalHeight],smooth:this.imageSmoothingEnabled,count:1});
@@ -125,9 +124,9 @@ await authDatabase(async f=>{
     await clickCommand(admin,'activate','[data-weekly-op=activate]');
     await admin.waitForFunction(()=>MareGameSession.data.online.weeklyBoss.events.some((e:any)=>e.mode==='official'&&e.status==='active'));
     const event=await admin.evaluate(()=>MareGameSession.data.online.weeklyBoss.events.find((e:any)=>e.mode==='official'));
-    assert.equal(event.mapId,'marineford');results.event={id:event.id,mode:event.mode,mapId:event.mapId};
+    assert.equal(event.mapId,'marineford');assert.equal(event.boss.maxHp,300000);results.event={id:event.id,mode:event.mode,mapId:event.mapId};
     const persisted=(await f.pool.query('SELECT mode,map_id,config,status FROM mare_game.weekly_boss_events WHERE id=$1',[event.id])).rows[0];
-    assert.equal(persisted.mode,'official');assert.equal(persisted.map_id,'marineford');assert.equal(persisted.status,'active');assert.deepEqual(persisted.config,config);
+    assert.equal(persisted.mode,'official');assert.equal(persisted.map_id,'marineford');assert.equal(persisted.status,'active');assert.deepEqual(persisted.config,approved);
     await clickCommand(admin,'join','[data-weekly-op=join][data-event="'+event.id+'"]');
     await player.evaluate(()=>MareGameSession.read());await openEvent(player);await clickCommand(player,'join','[data-weekly-op=join][data-event="'+event.id+'"]');
     phase='official renderer and shared boss';
@@ -145,13 +144,13 @@ await authDatabase(async f=>{
     phase='Akainu AoE in the real world canvas';
     await admin.waitForFunction(()=>MareGameSession.data.online.battle.mobs[0]?.action?.kind==='aoe',null,{timeout:30000});
     await admin.screenshot({path:resolve(out,'marineford-weekly-aoe-warning-desktop.png')});
-    for(const page of [admin,player])await page.waitForFunction(()=>__marinefordWeeklyDraws.some(d=>d.map==='marineford'&&d.src.includes('/magma-area.webp')),null,{timeout:20000});
+    for(const page of [admin,player])await page.waitForFunction(()=>__marinefordWeeklyDraws.some(d=>d.map==='marineford'&&d.src.includes('/vfx/magma_eruption.webp')),null,{timeout:20000});
     await player.screenshot({path:resolve(out,'marineford-weekly-mobile.png')});
     const draws=[];
     for(const [index,page]of [admin,player].entries()){
       const actual=await page.evaluate(()=>__marinefordWeeklyDraws.filter(d=>d.map==='marineford'));
-      assert(actual.some((d:any)=>d.src.includes('/magma-area.webp')),'magma VFX is actually drawn on the game canvas');
-      assert(actual.some((d:any)=>/\/weekly-boss\/akainu\/(idle|walk|punch|aoe)\.webp/.test(d.src)),'weekly Akainu body is actually drawn on the game canvas');
+      assert(actual.some((d:any)=>d.src.includes('/vfx/magma_eruption.webp')),'magma VFX is actually drawn on the game canvas');
+      assert(actual.some((d:any)=>/\/weekly-boss\/admirals\/akainu\/(south|north|east)-(idle|walk|attack|special_area)\.webp/.test(d.src)),'weekly Akainu body is actually drawn on the game canvas');
       assert(actual.some((d:any)=>d.src.endsWith('/'+sceneFile)&&d.natural[0]===1448&&d.natural[1]===1086&&d.smooth===false),'Marineford is drawn directly from the HD PNG');
       draws.push({viewport:index===0?'desktop':'mobile',actual});
     }results.draws=draws;

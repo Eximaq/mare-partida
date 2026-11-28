@@ -131,7 +131,8 @@ test('null settings remain disabled and replay never rewinds a new maximum-AoE e
  const disabled=(await f.pool.query("SELECT * FROM mare_game.weekly_boss_settings WHERE boss_id='akainu'")).rows[0];assert.equal(disabled.config,null);assert.equal(disabled.revision,1);assert.equal(disabled.map_geometry_version,1);
  await assert.rejects(a.event({op:'activate',revision:1}),{code:'weekly_boss_config_required'});
  for(const radius of [48,240])R.canActivate(config(radius),{map:(id:string)=>W.navigation(id)});
- const custom=config(240);custom.entry.y+=1;R.canActivate(custom,{map:(id:string)=>W.navigation(id)});
+ const custom=config(240);custom.entry={x:1536,y:1825};custom.profile.leash=700;
+ R.canActivate(custom,{map:(id:string)=>W.navigation(id),bossId:'akainu'});
  await a.event({op:'configure',revision:1,config:custom});const configured=await rows(f.pool,'weekly_boss_settings');
  await f.pool.query(await readFile(new URL(migration,source),'utf8'));assert.deepEqual(await rows(f.pool,'weekly_boss_settings'),configured,'a new operator edit keeps its CAS revision and coordinates');
  await assert.rejects(a.event({op:'activate',revision:1}),{code:'weekly_boss_revision_conflict'});
@@ -142,7 +143,7 @@ test('null settings remain disabled and replay never rewinds a new maximum-AoE e
  const moving=await snapshot(f.pool,['weekly_boss_events','weekly_boss_settings','character_world']);await f.pool.query(await readFile(new URL(migration,source),'utf8'));assert.deepEqual(await snapshot(f.pool,['weekly_boss_events','weekly_boss_settings','character_world']),moving,'replaying SQL must not teleport a moving current-layout boss or participant');
  boss.action=null;boss.telegraph=null;boss.nextPunchAt=Date.now()+1e8;boss.nextAoeAt=Date.now()+1e8;
  await f.pool.query("UPDATE mare_game.weekly_boss_events SET simulation=$2,tick_at=clock_timestamp()-interval '150 milliseconds' WHERE id=$1",[id,row.simulation]);await tickWeeklyBosses(f.pool);
- const current=await a.read();assert.equal(current.world.mapId,'marineford');assert.equal(current.battle.mobs[0].profile.aoeRadius,240);assert.equal(current.battle.mobs[0].maxHP,20000);
+ const current=await a.read();assert.equal(current.world.mapId,'marineford');assert.equal(current.battle.mobs[0].profile.aoeRadius,217.6);assert.equal(current.battle.mobs[0].maxHP,300000);assert.equal(current.battle.mobs[0].defense,4500);assert.equal(current.battle.mobs[0].magicDefense,1650);
  await a.event({op:'leave'});assert.equal((await a.read()).world.mapId,'lobby');
 }));
 test('Marineford shared reads and worker reanchor stale canonical hunt rooms after personal hashes were already promoted',async()=>authDatabase(async f=>{

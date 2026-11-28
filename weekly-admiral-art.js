@@ -52,6 +52,23 @@
   }else{line(ctx,g.from,g.to,g.radius*2,c,.13+.11*u);ring(ctx,g.to.x,g.to.y,g.radius,c,.77,1,2.4);const p=xy(g.from,g.to,u);line(ctx,g.from,p,2,c,.92);}
  }
  const angle=(a,b)=>Math.atan2(b.y-a.y,b.x-a.x)-Math.PI/2;
+ // The leading projectile lands at the authoritative impact. Later trails
+ // and impacts are decorative; they do not apply additional damage.
+ function volley(ctx,id,p,r,c,e){
+  const count=id==='akainu'?14:26;
+  for(let j=0;j<count;j++){const theta=j*2.39996,rad=r*(.25+.71*Math.sqrt((j+.5)/count));
+   const end={x:p.x+Math.cos(theta)*rad,y:p.y+Math.sin(theta)*rad},travel=id==='akainu'?510:215,u=(e+travel-j%5*47-Math.floor(j/5)*32)/travel;
+   if(u<0)continue;
+   if(u<1){const q={x:end.x+(j%5-2)*17*(1-u),y:end.y-(id==='akainu'?265:148)*(1-u*u)};
+    if(id==='akainu')art(ctx,'meteor',q,63+j%4*8,132+j%4*14,.96,(j%5-2)*.09,.77);
+    else{line(ctx,{x:q.x+15,y:q.y-19},q,4,c,.9);star(ctx,q.x,q.y,5,c,.93);}
+   }else{
+    const f=(u-1)*travel/625;burst(ctx,end,c,f,id==='akainu'?52:26);
+    if(f<1&&id==='akainu')art(ctx,'magma_eruption',end,87,85,(1-f)*.9,(j%5-2)*.12,.82);
+    if(f<1&&id==='kizaru'&&j%2===0)art(ctx,'light_rain',end,41,65,(1-f)*.75,.1,.8);
+   }
+  }
+ }
  function vfx(ctx,m,layer='back',t=now(),reduced=false){
   if(!is(m)||!m.action?.geometry)return;
   const a=m.action,g=a.geometry,p=a.origin,c=colors[m.weeklyBossId],e=t-a.impactAt,id=m.weeklyBossId;
@@ -62,7 +79,12 @@
   if(e<0){if(layer==='front'&&!reduced){
    const u=ease((t-a.startedAt)/Math.max(1,a.impactAt-a.startedAt)),q={x:p.x,y:p.y-76};
    if(id==='kizaru'){star(ctx,q.x,q.y,6+18*u,c,u);ring(ctx,q.x,q.y,12+19*u,c,u,.88,2);}
-   if(id==='akainu')art(ctx,'fist',q,68+33*u,62+30*u,u*.83,0,.55);
+   if(g.kind==='circle'&&id!=='aokiji'){
+    img('vfx/'+(id==='akainu'?'magma_eruption':'light_rain')+'.webp');
+    const travel=id==='akainu'?510:215;
+    if(e>=-travel)volley(ctx,id,p,g.radius,c,e);
+    else if(id==='akainu')art(ctx,'fist',q,68+33*u,62+30*u,u*.83,0,.55);
+   }else if(id==='akainu')art(ctx,'fist',q,68+33*u,62+30*u,u*.83,0,.55);
    if(id==='aokiji'&&g.kind==='capsule')for(const d of [-1,1])art(ctx,'ice_lance',{x:q.x+d*27,y:q.y},26,76,u*.92,d*.13,.72);
   }return;}
   if(reduced){if(layer==='back'&&g.kind==='circle'&&e<=490)ring(ctx,g.center.x,g.center.y,g.radius,c,.8*(1-e/490),1,3);return;}
@@ -90,19 +112,7 @@
   }
   if(layer==='back'&&e<1100)ring(ctx,p.x,p.y,r*ease(e/730),c,.55*(1-e/1100),1,3);
   if(layer!=='front')return;
-  const count=id==='akainu'?14:26;
-  for(let j=0;j<count;j++){const theta=j*2.39996,rad=r*(.25+.71*Math.sqrt((j+.5)/count));
-   const end={x:p.x+Math.cos(theta)*rad,y:p.y+Math.sin(theta)*rad},travel=id==='akainu'?510:215,u=(e-j%5*47-Math.floor(j/5)*32)/travel;
-   if(u<0)continue;
-   if(u<1){const q={x:end.x+(j%5-2)*17*(1-u),y:end.y-(id==='akainu'?265:148)*(1-u*u)};
-    if(id==='akainu')art(ctx,'meteor',q,63+j%4*8,132+j%4*14,.96,(j%5-2)*.09,.77);
-    else{line(ctx,{x:q.x+15,y:q.y-19},q,4,c,.9);star(ctx,q.x,q.y,5,c,.93);}
-   }else{
-    const f=(u-1)*travel/625;burst(ctx,end,c,f,id==='akainu'?52:26);
-    if(f<1&&id==='akainu')art(ctx,'magma_eruption',end,87,85,(1-f)*.9,(j%5-2)*.12,.82);
-    if(f<1&&id==='kizaru'&&j%2===0)art(ctx,'light_rain',end,41,65,(1-f)*.75,.1,.8);
-   }
-  }
+  volley(ctx,id,p,r,c,e);
  }
  function frozen(ctx,p,h,until,t=now()){if(!(until>t))return;const u=clamp((until-t)/210),w=Math.min(33,h*.29);ctx.save();ctx.beginPath();ctx.moveTo(p.x-w,p.y-6);ctx.lineTo(p.x-w*.9,p.y-h*.7);ctx.lineTo(p.x-w*.42,p.y-h);ctx.lineTo(p.x+w*.6,p.y-h*.91);ctx.lineTo(p.x+w,p.y-h*.36);ctx.lineTo(p.x+w*.65,p.y-4);ctx.closePath();ctx.fillStyle=col([116,212,252],.25*u);ctx.strokeStyle=col([207,247,255],.81*u);ctx.lineWidth=2;ctx.fill();ctx.stroke();ctx.restore();}
  return Object.freeze({is,pose,draw,vfx,frozen,height:m=>is(m)?D.roster[m.weeklyBossId].height:114});

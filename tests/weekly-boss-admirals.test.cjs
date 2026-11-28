@@ -58,3 +58,18 @@ test('balance applies all three approval values while leaving old profiles inert
   const config=D.defaultConfig(id,{spawn:{x:1,y:2},entry:{x:3,y:4}});assert(!config.balanceApproved);assert.deepEqual(config.profile,D.balanceProfile(id));
  }
 });
+test('Akainu meteor falls during warning and first ground impact is drawn exactly at server impact',()=>{
+ const b=make('akainu'),impactAt=2200;
+ b.action={kind:'aoe',geometry:D.shape('akainu','area',origin,'south'),origin,startedAt:1000,impactAt};
+ const prior=globalThis.Image;globalThis.Image=class {complete=true;naturalWidth=516};
+ try{
+  const draws=[],ctx=new Proxy({globalAlpha:1,drawImage(im){draws.push(im.src);}},{
+   get:(o,k)=>k in o?o[k]:()=>{},set:(o,k,v)=>(o[k]=v,true)
+  });
+  art.vfx(ctx,b,'front',impactAt-240);
+  assert(draws.some(x=>x.endsWith('/meteor.webp')));
+  assert(!draws.some(x=>x.endsWith('/magma_eruption.webp')));
+  draws.length=0;art.vfx(ctx,b,'front',impactAt);
+  assert(draws.some(x=>x.endsWith('/magma_eruption.webp')));
+ }finally{globalThis.Image=prior;}
+});
