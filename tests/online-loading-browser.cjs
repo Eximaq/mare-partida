@@ -82,7 +82,7 @@ const server = createServer(async (req,res) => {
     res.writeHead(503).end();
     return;
   }
-  if (onDemand && relative==='assets/exported-maps/dawn/map.png') await mapGate;
+  if (onDemand && ['assets/exported-maps/dawn/map.png','assets/dawn-village/foosha/scene-hd.png'].includes(relative)) await mapGate;
   const online = relative.startsWith('online/');
   const base = online ? path.resolve('apps/account-client') : root;
   const file = path.resolve(base,online ? relative.slice(7) : relative);
