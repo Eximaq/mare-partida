@@ -1,0 +1,108 @@
+name: Masmorra de Chefes — arena HD e saves
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'boss-arena-*.js'
+      - 'quest-dungeons-*.js'
+      - 'world-*.js'
+      - 'world-*.cjs'
+      - 'game.js'
+      - 'index.html'
+      - 'ui-preview.html'
+      - 'tools/build_pages.py'
+      - 'assets/quest-dungeons/**'
+      - 'apps/game-server/migrations/0077_boss_arena_hd_map.sql'
+      - 'apps/game-server/src/characters/weekly-boss.ts'
+      - 'tests/boss-arena*'
+      - 'tests/boss_arena_browser.cjs'
+      - 'tests/integration/server-boss-arena-scene.test.mts'
+      - '.github/workflows/boss-arena.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'boss-arena-*.js'
+      - 'quest-dungeons-*.js'
+      - 'world-*.js'
+      - 'world-*.cjs'
+      - 'game.js'
+      - 'index.html'
+      - 'ui-preview.html'
+      - 'tools/build_pages.py'
+      - 'assets/quest-dungeons/**'
+      - 'apps/game-server/migrations/0077_boss_arena_hd_map.sql'
+      - 'apps/game-server/src/characters/weekly-boss.ts'
+      - 'tests/boss-arena*'
+      - 'tests/boss_arena_browser.cjs'
+      - 'tests/integration/server-boss-arena-scene.test.mts'
+      - '.github/workflows/boss-arena.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  layout-browser:
+    name: Arena, caminhada, combate e baú
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      MARE_QA_DIR: /tmp/mare-boss-arena
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Conferir navegação e compatibilidade
+        run: |
+          node --test tests/boss-arena-layout.test.cjs tests/boss-arena-scene-compat.test.cjs tests/boss-dungeons.test.cjs tests/world-depth.test.cjs
+          node tools/audit_maps.cjs --map quest-dungeons --full
+      - name: Preparar Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/boss-arena-browser" playwright@1.56.1 pngjs@7.0.0 --no-save --package-lock=false
+          bash tools/install_ci_chromium.sh "$RUNNER_TEMP/boss-arena-browser/node_modules/.bin/playwright"
+      - name: Preparar versão estática
+        run: python3 tools/build_pages.py --static-demo
+      - name: Jogar a arena em computador e celular
+        env:
+          NODE_PATH: ${{ runner.temp }}/boss-arena-browser/node_modules
+        run: python3 tests/run_honors_hd_browser.py tests/boss_arena_browser.cjs --offline --dist
+      - uses: actions/upload-artifact@v4
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
+        with:
+          name: boss-arena-browser
+          path: /tmp/mare-boss-arena/
+          if-no-files-found: warn
+          retention-days: 3
+
+  persistence:
+    name: Batalhas e retorno do ensaio privado
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:18.6-bookworm
+        env:
+          POSTGRES_USER: mare_test_admin
+          POSTGRES_PASSWORD: disposable-ci-only
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mare_test_admin -d postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://mare_test_admin:disposable-ci-only@127.0.0.1:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - run: node --import tsx --test --test-concurrency=1 tests/integration/server-boss-arena-scene.test.mts

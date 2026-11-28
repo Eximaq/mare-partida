@@ -1,7 +1,7 @@
 'use strict';
 /* Geometry shared by the browser and the authoritative navigation catalog. */
 ((root)=>{
-  if(typeof module!=='undefined'){require('./world-map-exports-data.js');require('./loguetown-map-data.js');require('./arlong-map-data.js');require('./baratie-map-data.js');require('./syrup-map-data.js');require('./rare-animals-map-data.js');require('./dawn-village-map-data.js');require('./conchas-marine-map-data.js');require('./orange-town-map-data.js');require('./alabasta-desert-map-data.js');require('./alubarna-city-map-data.js');}
+  if(typeof module!=='undefined'){require('./world-map-exports-data.js');require('./loguetown-map-data.js');require('./arlong-map-data.js');require('./baratie-map-data.js');require('./syrup-map-data.js');require('./rare-animals-map-data.js');require('./dawn-village-map-data.js');require('./conchas-marine-map-data.js');require('./orange-town-map-data.js');require('./alabasta-desert-map-data.js');require('./alubarna-city-map-data.js');require('./boss-arena-map-data.js');}
   const data=root.MareMapExportData;
   const step=16;
   const mapKey=id=>/^(thriller-bark|sabaody|marineford)-\d{2}$/.exec(id)?.[1]||(id?.startsWith('enies-lobby-')?'enies-lobby':id?.startsWith('alubarna-')?'alubarna':id==='beach'?'dawn':id==='swamp'?'conchas':id);
@@ -80,6 +80,7 @@
     }
   }
   function prepare(id){
+    if(id==='quest-dungeons'&&root.MareBossArena)return root.MareBossArena.prepare();
     if(mapKey(id)==='alubarna'&&root.MareAlubarnaCity)return root.MareAlubarnaCity.prepare();
     if(id==='alabasta'&&root.MareAlabastaDesert)return root.MareAlabastaDesert.prepare();
     if(id==='orange'&&root.MareOrangeTown)return root.MareOrangeTown.prepare();
@@ -103,6 +104,7 @@
     return img;
   }
   function ground(ctx,id,camera,w,h){
+    if(id==='quest-dungeons'&&root.MareBossArena){root.MareBossArena.ground(ctx,camera,w,h);return;}
     if(mapKey(id)==='alubarna'&&root.MareAlubarnaCity){root.MareAlubarnaCity.ground(ctx,camera,w,h);return;}
     if(id==='alabasta'&&root.MareAlabastaDesert){root.MareAlabastaDesert.ground(ctx,camera,w,h);return;}
     if(id==='orange'&&root.MareOrangeTown){root.MareOrangeTown.ground(ctx,camera,w,h);return;}
