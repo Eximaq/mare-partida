@@ -129,16 +129,20 @@ const server = createServer(async (req,res) => {
     if (onDemand) {
       await page.waitForTimeout(450);
       assert(await page.locator('#gameLoading').isVisible(),'a confirmed session still waits for the destination map');
-      resumeMap();
-      if (process.argv.includes('--fast-entry')) {
-        const quick = page.getByRole('button',{name:'Entrar com meu equipamento'});
+      if (process.argv.includes('--prepare-library')) {
+        const quick = page.getByRole('button',{name:'Preparar acervo HD completo'});
         await quick.click({timeout:90000});
       }
+      resumeMap();
       await Promise.race([shell, unexpected.then(file => assert.fail('Entry requested deferred art: '+file))]);
     } else await shell;
     await page.waitForFunction(()=>document.querySelector('#gameFrame').dataset.worldState==='ready');
     if (onDemand) {
       assert.equal(unexpectedPath,undefined);
+      if (!process.argv.includes('--prepare-library')) {
+        assert(![...requested.keys()].some(path=>path.includes('lateral-109-117-122-female-approved-0.zip')),
+          'entering with the active character must not install unrelated HD wardrobes');
+      }
       const entryBytes = transferBytes;
       const largest = [...requested].sort((a,b)=>b[1]-a[1]).slice(0,10);
       console.log('Cold playable: '+Math.round(performance.now()-start)+' ms, '+entryBytes+' bytes, '+requested.size+' files');

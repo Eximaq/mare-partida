@@ -116,6 +116,16 @@
     return walk(value);
   }
   function fruitView(b,time){const f=b?.fruit;return f?{...fruitTimeline(f,f.time,time),cooldowns:{...f.cooldowns}}:null;}
+  // Motion snapshots share all durable state with the last projection. A full read,
+  // an equipment change or a map transition must still go through project().
+  function isLobbyMotionUpdate(previous, next) {
+    if (!previous || previous.character !== next.character) return false;
+    const before = previous.online, after = next.online;
+    if (before.world?.mapId !== 'lobby' || after.world?.mapId !== 'lobby' || before.battle || after.battle) return false;
+    const keys = Object.keys(after);
+    return keys.length === Object.keys(before).length &&
+      keys.every(key => key === 'world' || key === 'lobby' || (Object.hasOwn(before,key) && before[key] === after[key]));
+  }
   function project(base, data) {
     const o = data.online,
       frozen = !o.battle&&['active','won','lost'].includes(o.combat?.status),
@@ -564,6 +574,6 @@
       run,
     };
   }
-  root.MareOnlineGameUI = { project, derived, mount, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline, message:e=>labels[e.code]||"Não foi possível concluir. Confira a sessão e tente novamente." };
-  if (typeof module !== "undefined") module.exports = { project, derived, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline };
+  root.MareOnlineGameUI = { project, isLobbyMotionUpdate, derived, mount, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline, message:e=>labels[e.code]||"Não foi possível concluir. Confira a sessão e tente novamente." };
+  if (typeof module !== "undefined") module.exports = { project, isLobbyMotionUpdate, derived, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline };
 })(globalThis);

@@ -397,6 +397,7 @@
     const peerPoses=new Map(),peerDisplayed=new Map();
     let preparingPeer=false;
     function prepareEntryPeers(peers){
+      if(!nativeHD?.prepareConfiguration||!weaponCatalog)return true;
       for(const peer of peers){
         if(peer.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(peer))continue;
         for(const action of ['idle','walk']){
@@ -404,7 +405,7 @@
           if(!drawPeerSurface(null,peer,pose,true))return false;
         }
       }
-      return !preparingPeer;
+      return true;
     }
     function drawPeerSurface(ctx,player,options,warmOnly=false){
       if(!player||player.zoanTransformed||!weaponCatalog||!nativeHD?.prepareConfiguration)return false;

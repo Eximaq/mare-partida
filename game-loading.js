@@ -41,6 +41,7 @@
     failure = true;
     phase.textContent = message;
     if (skipButton) skipButton.hidden = true;
+    screen.querySelector('[data-library-choice]')?.remove();
     retry.hidden = false;
     retry.onclick = () => { retry.hidden = true; failure = false; again(); };
     retry.focus({preventScroll: true});
@@ -348,9 +349,25 @@
   }
   async function preparePort() {
     screen.dataset.portEntry = 'true';
-    if (catalog) offerEarlyEntry();
-    if (catalog) await install(true);
-    await document.fonts.ready;
+    let completeLibrary = false, choice;
+    if (catalog) {
+      choice = document.createElement('button');
+      choice.type = 'button';
+      choice.dataset.libraryChoice = '';
+      choice.textContent = 'Preparar acervo HD completo';
+      choice.onclick = () => {
+        completeLibrary = true;
+        choice.remove();
+        offerEarlyEntry();
+      };
+      retry.after(choice);
+    }
+    interfaceCached = true;
+    status('Preparando o mapa e seu equipamento');
+    try {
+      await Promise.all([document.fonts.ready, sceneReady]);
+      if (completeLibrary && !libraryAbort.signal.aborted) await install(true);
+    } finally { choice?.remove(); }
     progress(98);
     status('Preparando o mapa e o personagem');
   }

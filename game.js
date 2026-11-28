@@ -2080,7 +2080,10 @@
   function syncOnlineGame(){
     if(!game||!session||!ONLINE_GAME.data)return;
     const c=ONLINE_GAME.data.online.combat;
-    if(onlineProjectionSnapshot!==ONLINE_GAME.data){
+    if (onlineProjectionSnapshot !== ONLINE_GAME.data && MareOnlineGameUI.isLobbyMotionUpdate(onlineProjectionSnapshot, ONLINE_GAME.data)) {
+      syncOnlineWorld();
+      onlineProjectionSnapshot = ONLINE_GAME.data;
+    } else if(onlineProjectionSnapshot!==ONLINE_GAME.data){
       const previousHp=game.hp;game=MareOnlineGameUI.project(game,ONLINE_GAME.data);applyOnlineEquipment();
       syncOnlineWorld();
       if(ONLINE_GAME.data.online.battle){syncOnlineBattle();}
@@ -2338,6 +2341,7 @@
       dungeons:Object.values(dungeons||{}).filter(r=>r.phase==='pending'&&r.reward).length,
       hunt:Number(!!first?.bosses&&!first.firstRewardClaimed)});
   }
+  let mapHudLimits;
   function updateUI(){if(!game||!session)return;updatePartyUI();
     const partyBattle=ONLINE_GAME?.data?.online.battle,partyHunt=ONLINE_GAME?.data?.online.party?.group?.activity?.kind==='hunt';
     const telemetry=MareHudTelemetry.stats({scene,elapsed:partyHunt?Math.max(0,(Date.now()-partyBattle.partyStartedAt)/1000):session.elapsed,xp:partyHunt?partyBattle.partyXpReceived||0:session.xp,levelXP:game.xp,neededXP:xpNeeded(game.level)});
@@ -2354,7 +2358,7 @@
       }
     }
     const rateStatus=document.querySelector('#floatingExpedition .rates-card .micro-light');if(rateStatus){const live=scene==='hunt'&&autoPlay&&session.respawn<=0;rateStatus.dataset.live=String(live);rateStatus.textContent=live?'● AO VIVO':scene==='lobby'?'● NO PORTO':'● EM PAUSA';}
-    updateHuntHUD();updateHakiHUD();if(!ONLINE_GAME&&currentPanel==='contracts')refreshContractsBoard();if(!ONLINE_GAME&&currentPanel==='inventory')refreshInventoryComparison();if(currentPanel==='haki')MareHakiUI.refresh($('dialogBody'),game,session.haki,{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0,defs:itemDefs});game=observeAchievements();updateNotifications();if(!ONLINE_GAME&&characterTab==='achievements'&&currentPanel==='character')MareTalentUI.refreshAchievements($('dialogBody'),game);updateTalentResource();if(currentPanel==='forge'&&forgeUI.tab==='fusion'&&forgeFusionStamp!==fusionInventoryStamp())renderPanel();let derived=getDerived(),c=classes[game.classId];$('heroLevel').textContent=game.level;$('heroClass').textContent=c.name.toUpperCase();configureFactionVisual();$('heroName').textContent=game.name;$('heroPower').textContent=fmt(derived.power);$('hpText').textContent=fmt(game.hp)+' / '+fmt(derived.maxHP);$('energyText').textContent=fmt(game.energy)+' / '+fmt(derived.maxEnergy);$('xpText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));bar('hpFill',game.hp,derived.maxHP);bar('energyFill',game.energy,derived.maxEnergy);bar('xpFill',game.xp,xpNeeded(game.level));$('goldAmount').textContent=fmt(game.gold);$('statAttack').textContent=fmt(derived.attack);$('statDefense').textContent=fmt(derived.defense);$('statCrit').textContent=Math.round(derived.crit*100)+'%';$('statSpeed').textContent=derived.speed.toFixed(2)+'/s';$('sessionTimer').textContent=elapsedString(session.elapsed);$('killsCount').textContent=fmt(game.stats.kills);$('bossCount').textContent=fmt(game.stats.boss);$('goldEarned').textContent=fmt(session.gold);$('damageTotal').textContent=fmt(game.stats.damage);$('expeditionState').textContent=scene==='lobby'?'NO PORTO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇANDO':'EM PAUSA';$('potionCount').textContent=game.potions;const manaStock=game.manaPotions||0;$('manaPotionCount').textContent=manaStock;$('useManaPotion').classList.toggle('hidden',manaStock<=0);$('autoLabel').textContent=autoPlay?'ATIVADA':'PAUSADA';$('autoToggle').classList.toggle('active',autoPlay);$('autoToggle').disabled=scene==='lobby';$('autoToggle').classList.toggle('hidden',scene==='lobby');$('combatState').innerHTML='<i class="pulse-dot '+(autoPlay?'':'paused')+'"></i>'+(scene==='lobby'?'PORTO SEGURO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇADA AUTOMÁTICA':'CAÇADA PAUSADA');$('targetHint').textContent=scene==='lobby'?'NPCS · MISSÕES · FORJA · EXPEDIÇÕES':world.target?.alive?'ALVO: '+monsterName(world.target).toUpperCase():'PROCURANDO ALVO...';
+    updateHuntHUD();updateHakiHUD();if(!ONLINE_GAME&&currentPanel==='contracts')refreshContractsBoard();if(!ONLINE_GAME&&currentPanel==='inventory')refreshInventoryComparison();if(currentPanel==='haki')MareHakiUI.refresh($('dialogBody'),game,session.haki,{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0,defs:itemDefs});game=observeAchievements();updateNotifications();if(!ONLINE_GAME&&characterTab==='achievements'&&currentPanel==='character')MareTalentUI.refreshAchievements($('dialogBody'),game);updateTalentResource();if(currentPanel==='forge'&&forgeUI.tab==='fusion'&&forgeFusionStamp!==fusionInventoryStamp())renderPanel();let derived=getDerived(),c=classes[game.classId];mapHudLimits=derived;$('heroLevel').textContent=game.level;$('heroClass').textContent=c.name.toUpperCase();configureFactionVisual();$('heroName').textContent=game.name;$('heroPower').textContent=fmt(derived.power);$('hpText').textContent=fmt(game.hp)+' / '+fmt(derived.maxHP);$('energyText').textContent=fmt(game.energy)+' / '+fmt(derived.maxEnergy);$('xpText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));bar('hpFill',game.hp,derived.maxHP);bar('energyFill',game.energy,derived.maxEnergy);bar('xpFill',game.xp,xpNeeded(game.level));$('goldAmount').textContent=fmt(game.gold);$('statAttack').textContent=fmt(derived.attack);$('statDefense').textContent=fmt(derived.defense);$('statCrit').textContent=Math.round(derived.crit*100)+'%';$('statSpeed').textContent=derived.speed.toFixed(2)+'/s';$('sessionTimer').textContent=elapsedString(session.elapsed);$('killsCount').textContent=fmt(game.stats.kills);$('bossCount').textContent=fmt(game.stats.boss);$('goldEarned').textContent=fmt(session.gold);$('damageTotal').textContent=fmt(game.stats.damage);$('expeditionState').textContent=scene==='lobby'?'NO PORTO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇANDO':'EM PAUSA';$('potionCount').textContent=game.potions;const manaStock=game.manaPotions||0;$('manaPotionCount').textContent=manaStock;$('useManaPotion').classList.toggle('hidden',manaStock<=0);$('autoLabel').textContent=autoPlay?'ATIVADA':'PAUSADA';$('autoToggle').classList.toggle('active',autoPlay);$('autoToggle').disabled=scene==='lobby';$('autoToggle').classList.toggle('hidden',scene==='lobby');$('combatState').innerHTML='<i class="pulse-dot '+(autoPlay?'':'paused')+'"></i>'+(scene==='lobby'?'PORTO SEGURO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇADA AUTOMÁTICA':'CAÇADA PAUSADA');$('targetHint').textContent=scene==='lobby'?'NPCS · MISSÕES · FORJA · EXPEDIÇÕES':world.target?.alive?'ALVO: '+monsterName(world.target).toUpperCase():'PROCURANDO ALVO...';
     const hasTarget=scene==='hunt'&&world.target?.alive;
     $('targetHud').classList.toggle('hidden',scene!=='hunt'||!hasTarget);
     if(scene==='hunt'){
@@ -2385,11 +2389,12 @@
     if(currentPanel==='myprofile')MarePlayerHub.refresh(game,derived,playerBounty());
     updateMiniHud();
   }
-  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{fit:64,time:world.time,scale:equippedZoan().id===MareRyu.rules.id?64/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?90/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?1:64/48});else{
+  let portraitPlayer, nextPortraitAt = 0;
+  function renderPortrait(){if(!game)return;portraitPlayer=null;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{fit:64,time:world.time,scale:equippedZoan().id===MareRyu.rules.id?64/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?90/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?1:64/48});else{
       portrait.save();
       try{
         portrait.translate(36,70);portrait.scale(.6,.6);
-        lobby96.drawWorldPortrait(portrait,game,{x:0,y:0,consumer:'compact-portrait'});
+        if (lobby96.drawWorldPortrait(portrait,game,{x:0,y:0,consumer:'compact-portrait'})) portraitPlayer=game;
       }finally{portrait.restore();}
     }vfx_aura.draw(portrait,36,70,world.time,64/48,undefined,'front');window.MareCharacterHUD?.portrait(c=>{
       const player=game.zoanTransformed?{...game,zoanTransformed:false}:game;
@@ -3965,7 +3970,7 @@ ${avatarExtra}
       MareWorldDepth.silhouette(ctx,world.hero,(c,x,y)=>drawPlayerSprite(c,x,y,true),{height:height+32,width:Math.max(160,height*1.8),occluders:regions});
     }
     const box=playerMapHudBox();
-    const {maxHP,maxEnergy}=getDerived();
+    const {maxHP,maxEnergy}=(ONLINE_GAME && mapHudLimits) || getDerived();
     MareMapPlayerHud.draw(ctx,world.hero.x,box.nameY,game.name,{hp:game.hp,maxHP,energy:game.energy,maxEnergy},mapPlayerIdentity(game,crewIdentity,true));
   }
   function sharedLobbyPlayers(){
@@ -4112,7 +4117,11 @@ ${avatarExtra}
   }
   function drawVfxPanels(){
     if(!game||document.hidden)return;
-    renderPortrait();
+    const animatedPortrait = game.zoanTransformed || world.hero.visible === false || !!game.equipment?.akuma_no_mi;
+    if (!ONLINE_GAME || (portraitPlayer !== game || animatedPortrait) && performance.now() >= nextPortraitAt) {
+      renderPortrait();
+      nextPortraitAt = performance.now() + 1000 / 24;
+    }
     if(currentPanel==='inventory'){const canvas=$('inventorySprite');if(canvas)drawInventoryAvatar(canvas);}
     if(currentPanel==='character'&&characterTab==='status')drawCharacterStatusPreview();
     if(currentPanel==='character'&&characterTab==='appearance'){
@@ -4126,7 +4135,7 @@ ${avatarExtra}
     const plan = lobby96.worldVisual()?.preparation;
     return !portEntry || !plan || plan.essentialReady;
   }
-  let waitingForPeersAt = null, entryPeers;
+  let waitingForPeersAt = null, entryPeers, nextLoadingPaint = 0;
   function prepareFirstFrame(t) {
     if (!game || loading.failed || (loading.prepared && !loading.pending)) return;
     if (loading.prepared && onlineEntryReady) {
@@ -4138,16 +4147,27 @@ ${avatarExtra}
         return;
       }
       if (state === 'ready') {
-        presentWorld();
+        // The scene is covered by the loader while the sprites are being baked.
+        if (!portEntry || t >= nextLoadingPaint) {
+          presentWorld();
+          nextLoadingPaint = t + 100;
+        }
         if (loadingHeroDrawn && entryPosesReady()) {
           // A changing roster cannot keep the port closed indefinitely.
           waitingForPeersAt ??= t;
-          if (portEntry && t - waitingForPeersAt < 2500 &&
-              !lobby96.prepareEntryPeers(entryPeers ??= sharedLobbyPlayers().slice(0, 4).map(peer => ({...peer})))) {
-            loadingFrame = requestAnimationFrame(prepareFirstFrame);
-            return;
+          if (portEntry && t - waitingForPeersAt < 90000) {
+            entryPeers ??= sharedLobbyPlayers().filter(peer =>
+              peer.x >= camera.x-96 && peer.x <= camera.x+W+96 && peer.y >= camera.y-96 && peer.y <= camera.y+H+96
+            ).sort((a,b)=>Math.hypot(a.x-world.hero.x,a.y-world.hero.y)-Math.hypot(b.x-world.hero.x,b.y-world.hero.y))
+              .slice(0,4).map(peer=>({...peer}));
+            if (!lobby96.prepareEntryPeers(entryPeers)) {
+              loading.status('Preparando os personagens próximos');
+              loadingFrame = requestAnimationFrame(prepareFirstFrame);
+              return;
+            }
           }
           if (portAssetsReady) {
+            if (portEntry) presentWorld();
             portEntry = false;
             loading.finish();
             return;

@@ -58,6 +58,38 @@ function ownedImage(ctx,slot,part,source,image,args,sign=1,ownerPart=part){
  if(root.MareHDPosition?.active)return root.MareHDPosition.blit(ctx,slot,part,source,image,args,sign,null,null,ownerPart);
  ctx.drawImage(image,...args);
 }
+// Compact animation frames keep the original raster dimensions for exact sampling.
+function createWorldRasterPool(makeCanvas){
+ const slots=[];let pixels=0;
+ const pixelBudget=4*1024*1024,slotLimit=8;
+ return function paddedWorldRaster(frame){
+  if(!frame.offset)return frame.canvas;
+  const hit=slots.findIndex(slot=>slot.frame===frame);
+  if(hit>=0){
+   const slot=slots[hit];
+   if(hit!==slots.length-1){slots.splice(hit,1);slots.push(slot);}
+   return slot.canvas;
+  }
+  const [w,h]=frame.rasterSize,size=w*h;
+  let slot;
+  if(slots.length>=slotLimit||pixels+size>pixelBudget){
+   const same=slots.findIndex(entry=>entry.canvas.width===w&&entry.canvas.height===h);
+   if(same>=0)slot=slots.splice(same,1)[0];
+  }
+  if(slot){
+   slot.context.clearRect(...slot.bounds);
+  }else{
+   while(slots.length&&(slots.length>=slotLimit||pixels+size>pixelBudget)){
+    const old=slots.shift().canvas;pixels-=old.width*old.height;
+    old.width=old.height=0;
+   }
+   const canvas=makeCanvas(w,h);slot={canvas,context:canvas.getContext('2d')};pixels+=size;
+  }
+  slot.context.drawImage(frame.canvas,...frame.offset);
+  slot.frame=frame;slot.bounds=[...frame.offset,frame.canvas.width,frame.canvas.height];slots.push(slot);
+  return slot.canvas;
+ };
+}
 function create({baseURL=root.location?.href,onChange=()=>{},beforeIndexes=null,fetchJSON:loadJSON=async path=>{const r=await fetch(new URL(path,baseURL));if(!r.ok)throw Error('HD index HTTP '+r.status);return r.json();},loadImage=null,makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
  const fetchJSON=beforeIndexes?async path=>{await beforeIndexes;return loadJSON(path);}:loadJSON;
  let combatWardrobe,swordWardrobe,daggerWardrobe,daggerP22,daggerP22Store,swordCheckpoint,northRig,profileStore,profileRig,baseIndex,outfitIndex,outfitById,swordSouth,registry,femaleNamedHairRegistry,femaleRegistry,weaponRegistry,headRegistry,headCompat,originalHairGearRegistry,assetStore,outfitRegistry,outfitStore,carryRegistry,combinedCarryRegistry,weaponStore,state='loading',last=null,error=null;const cache=new Map(),pending=new Map(),failures=new Map(),lastRendered=new Map();
@@ -11352,22 +11384,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},beforeIndexes=null,
   let result=entry.frames.get(frame);if(!result){try{result=composeFrame(r,frame,entry);entry.frames.set(frame,result);while(entry.frames.size>3)entry.frames.delete(entry.frames.keys().next().value);}catch(e){failures.set(sourceKey+':'+frame,e.message);error=e.message;last={state:'failed',source:r.id,reason:e.message};onChange();return false;}}
   return paint(ctx,player,o,r,frame,result);
  }
- let worldRaster,worldRasterFrame,worldRasterBounds;
- function paddedWorldRaster(frame){
-  if(!frame.offset)return frame.canvas;
-  if(worldRasterFrame!==frame){
-   const [w,h]=frame.rasterSize;
-   if(!worldRaster||worldRaster.width!==w||worldRaster.height!==h){
-    worldRaster=makeCanvas(w,h);worldRasterBounds=null;
-   }
-   const surface=worldRaster.getContext('2d');
-   if(worldRasterBounds)surface.clearRect(...worldRasterBounds);
-   surface.drawImage(frame.canvas,...frame.offset);
-   worldRasterFrame=frame;
-   worldRasterBounds=[...frame.offset,frame.canvas.width,frame.canvas.height];
-  }
-  return worldRaster;
- }
+ const paddedWorldRaster=createWorldRasterPool(makeCanvas);
  function paint(ctx,player,o,r,frame,result,hold=true){
   if(o.inventoryPresentation){
    const footAnchor=o.avatarWorldPose?{
@@ -11431,5 +11448,5 @@ function create({baseURL=root.location?.href,onChange=()=>{},beforeIndexes=null,
  function failureFor(player,o={}){const r=selectVisual(player,o);return r?failures.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{})+':'+frameFor(r,o)):null;}
  return {ready,warmSwordCheckpoint,attackActionFor:item=>weaponRegistry?.attackAction(item),prepare:prepareForPlayer,prepareClip,prepareConfiguration,sourceKeyFor,prepareStablePose,prepareFamily,draw,drawFittedAvatar,drawStable,canDrawStable,height,select,selectLayered,selectVisual,selectIndependentWorld,resolveMaleGaitTorsoSource,resolveMaleGaitHeadSource,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
 }
-const api={create,fitInventoryAvatar};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports=api;
+const api={create,fitInventoryAvatar};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports={...api,createWorldRasterPool};
 })(globalThis);
