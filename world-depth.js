@@ -9,7 +9,7 @@
 
  function regions(id){if(cache.has(id))return cache.get(id);let items=[];
   const imported=root.MareMapExports?.get(id);
-  if(imported)items=imported.props.map(p=>({...p,type:imported.spriteMode==='painted'&&['loguetown','arlong','baratie','syrup','rare','dawn','conchas','orange'].includes(id)?(id==='dawn'?'dawn-village':id==='conchas'?'conchas-marine':id==='orange'?'orange-town':id):'export',mapId:id,tall:p.h>56}));
+  if(imported)items=imported.props.map(p=>({...p,type:imported.spriteMode==='painted'&&['loguetown','arlong','baratie','syrup','rare','dawn','conchas','orange','alabasta'].includes(id)?(id==='dawn'?'dawn-village':id==='conchas'?'conchas-marine':id==='orange'?'orange-town':id==='alabasta'?'alabasta-desert':id):'export',mapId:id,tall:p.h>56}));
   else if(root.MareSkypiea?.has(id))items=root.MareSkypiea.props.filter(p=>!p.cloud).map(p=>({...p,type:'sky',tall:p.h>96}));
   else if(id==='lobby'&&root.MareLobby){items=root.MareLobby.depthObjects.map(p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,base:p.pivotY,tall:p.h>72,type:'lobby',assetId:p.assetId}));}
   else if(root.MareAlubarna?.worlds[id])items=root.MareAlubarna.props.filter(p=>p.h>40).map(p=>({...p,tall:p.h>96,type:'alubarna'}));
@@ -21,9 +21,9 @@
   const seen=new Set();items=items.filter(p=>{if(![p.x,p.y,p.w,p.h,p.base].every(Number.isFinite)||p.w<=0||p.h<=0)return false;const key=[p.type,p.x,p.y,p.w,p.h,p.base].join(':');if(seen.has(key))return false;seen.add(key);return true;});cache.set(id,items);prepare(items);return items;
  }
  function draw(ctx,p,actors){
-  if(p.type==='orange-town'||p.type==='conchas-marine'||p.type==='dawn-village'||p.type==='loguetown'||p.type==='arlong'||p.type==='baratie'||p.type==='syrup'||p.type==='rare'){
+  if(p.type==='alabasta-desert'||p.type==='orange-town'||p.type==='conchas-marine'||p.type==='dawn-village'||p.type==='loguetown'||p.type==='arlong'||p.type==='baratie'||p.type==='syrup'||p.type==='rare'){
    if(!actors.some(a=>root.MareWorld.occluded(a,[{...p,tall:true}],a.visualHeight||120,a.visualWidth||64)))return false;
-   return (p.type==='orange-town'?root.MareOrangeTown:p.type==='conchas-marine'?root.MareConchasMarine:p.type==='dawn-village'?root.MareDawnVillage:p.type==='rare'?root.MareRareAnimals:p.type==='syrup'?root.MareSyrup:p.type==='baratie'?root.MareBaratie:p.type==='arlong'?root.MareArlong:root.MareLoguetown).drawProp(ctx,p);
+   return (p.type==='alabasta-desert'?root.MareAlabastaDesert:p.type==='orange-town'?root.MareOrangeTown:p.type==='conchas-marine'?root.MareConchasMarine:p.type==='dawn-village'?root.MareDawnVillage:p.type==='rare'?root.MareRareAnimals:p.type==='syrup'?root.MareSyrup:p.type==='baratie'?root.MareBaratie:p.type==='arlong'?root.MareArlong:root.MareLoguetown).drawProp(ctx,p);
   }
   if(p.type==='sky'){if(actors.some(a=>root.MareWorld.occluded(a,[{...p,tall:true}],a.visualHeight||120,a.visualWidth||64)))root.MareSkypiea.drawProp(ctx,p);return true;}if(!actors.some(a=>root.MareWorld.occluded(a,[{...p,tall:true}],a.visualHeight||120,a.visualWidth||64)))return false;
   if(p.type==='dawn'){root.MareDawnRenderer.prop(ctx,p.prop,actors);return true;}

@@ -80,7 +80,8 @@ test('navigation upgrade reanchors only known maps and preserves all other rows'
  const dawn=await readFile(new URL('../../apps/game-server/migrations/0072_dawn_village_hd_map.sql',import.meta.url),'utf8');
  const conchas=await readFile(new URL('../../apps/game-server/migrations/0073_conchas_marine_hd_map.sql',import.meta.url),'utf8');
  const orange=await readFile(new URL('../../apps/game-server/migrations/0074_orange_town_hd_map.sql',import.meta.url),'utf8');
- const currentSql=[sql,swordWorld,skypiea,arrival,loguetown,arlong,baratie,syrup,rare,dawn,conchas,orange].join('\n');
+ const alabasta=await readFile(new URL('../../apps/game-server/migrations/0075_alabasta_desert_hd_map.sql',import.meta.url),'utf8');
+ const currentSql=[sql,swordWorld,skypiea,arrival,loguetown,arlong,baratie,syrup,rare,dawn,conchas,orange,alabasta].join('\n');
  await f.pool.query(currentSql);assert.deepEqual(await snapshot(),expected);
  await f.pool.query(currentSql);assert.deepEqual(await snapshot(),expected);
  await a.read();await assert.rejects(b.read(),{code:'world_rules_changed'});

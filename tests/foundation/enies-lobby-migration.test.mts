@@ -20,6 +20,7 @@ test('the Enies Lobby fingerprints lead through the additive migrations to shipp
  const dawn=readMigration('0072_dawn_village_hd_map.sql');
  const conchas=readMigration('0073_conchas_marine_hd_map.sql');
  const orange=readMigration('0074_orange_town_hd_map.sql');
+ const alabasta=readMigration('0075_alabasta_desert_hd_map.sql');
  const world=require('../../world-catalog.cjs').load(),battle=require('../../world-battle.cjs');
  const previousWorld=previous.match(/SET rules_hash='([a-f0-9]{64})'/)?.[1];
  const previousBattle=previous.match(/to_jsonb\('([a-f0-9]{64})'::text\)/)?.[1];
@@ -50,7 +51,9 @@ test('the Enies Lobby fingerprints lead through the additive migrations to shipp
  assert(dawnWorld&&conchas.includes("WHERE rules_hash='"+dawnWorld+"'"),'Recognize worlds after the HD Dawn village migration');
  const conchasWorld=conchas.match(/SET rules_hash='([a-f0-9]{64})'/)?.[1];
  assert(conchasWorld&&orange.includes("WHERE rules_hash='"+conchasWorld+"'"),'Recognize worlds after the HD Conchas migration');
- assert(orange.includes("SET rules_hash='"+world.rulesHash+"'"),'Migration must promote saved worlds to the shipped catalog hash');
+ const orangeWorld=orange.match(/SET rules_hash='([a-f0-9]{64})'/)?.[1];
+ assert(orangeWorld&&alabasta.includes("WHERE rules_hash='"+orangeWorld+"'"),'Recognize worlds after the HD Orange Town migration');
+ assert(alabasta.includes("SET rules_hash='"+world.rulesHash+"'"),'Migration must promote saved worlds to the shipped catalog hash');
  const savedBattle={rulesHash:lateBattle,hp:17,pending:{targetId:'fixture',remaining:.3}};
  battle.upgradeBalance(savedBattle);
  assert.deepEqual(savedBattle,{rulesHash:battle.rulesHash,hp:17,pending:{targetId:'fixture',remaining:.3}},'Runtime must promote saved battles and preserve the active attack');

@@ -49,7 +49,7 @@ test('Dawn projects shared monsters and party extras onto reachable anchors on m
 test('Dawn preserves current battles, other regions and unrecognized save signatures',()=>{
  const current=E.create('beach',stats,now,()=>.5);current.pending={targetId:current.mobs[0].id,remaining:.4};
  const same=structuredClone(current);E.upgradeBalance(current);assert.deepEqual(current,same);
- for(const area of ['alabasta','rare','syrup','baratie','arlong','loguetown','skypiea-01']){
+ for(const area of ['alubarna-01','rare','syrup','baratie','arlong','loguetown','skypiea-01']){
   const other=E.create(area,stats,now,()=>.5);other.rulesHash=prior;other.pending={targetId:other.mobs[0].id,remaining:.4};
   const expected={...structuredClone(other),rulesHash:E.rulesHash};E.upgradeBalance(other);assert.deepEqual(other,expected);
  }
