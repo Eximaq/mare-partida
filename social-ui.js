@@ -132,6 +132,7 @@
     let view='',viewEpoch=0,model=null,signature='',panelPending=false,badgePending=false,threadPending=false,mutating=false,badges={},statusText='',failed=false;
     let search='',friendsFilter='',mailTab='pending',mailPages=[],target=null,thread=null,privateOn=false,oldestAvailable=false,threadEpoch=0,readThrough=null,readWaitUntil=0;
     let tradeTarget=null,tradeHistory=[],tradeOutcome=null,profile=null,slotEdit=null,inventorySearch='',inventoryCategory='all',inventoryRarity='all',inventorySort='recent',tradeName='';
+    let profileRequest=0,profilePhase='idle';
     const people=new Map(),tileItems=new Map(),dismissedTabs=new Set();
     const chat=o.chat,bar=chat.querySelector('.chat-tabs'),log=chat.querySelector('#gameLog'),input=chat.querySelector('#chatInput');
     const threadNode=document.createElement('section');threadNode.className='social-thread';threadNode.hidden=true;log.before(threadNode);
@@ -190,17 +191,25 @@
     }
     const profileNumber=new Intl.NumberFormat('pt-BR');
     function publicProfile(p){
-      if(p.blockedByYou||p.actions?.message==='contact_blocked'){
+      if(profilePhase==='unavailable'||p.blockedByYou||p.actions?.message==='contact_blocked'){
         return '<section class="social-public-profile">'+blank('Perfil indisponível para este contato.')+button('Voltar','profile-close')+'</section>';
       }
       const info=p.publicProfile, faction=o.faction(p.factionId),classIcon=o.profileClassIcon?.(p.classId);
+      const tag=p.crew?.tag?'<span class="social-profile-guild" title="Sigla da tripulação">['+esc(p.crew.tag)+']</span>':'';
+      const badge=faction||info?.title?'<span class="social-profile-faction">'+
+        (faction?'<img src="assets/ui/faction-emblems/'+esc(p.factionId)+'.png" alt=""><span>'+esc(faction)+'</span>':'')+
+        (faction&&info?.title?'<span>—</span>':'')+
+        (info?.title?'<strong class="social-profile-title">'+esc(info.title)+'</strong>':'')+'</span>':'';
+      const bounty=typeof info?.bounty==='string'&&/^\d+$/.test(info.bounty)?profileNumber.format(BigInt(info.bounty)):null;
+      const metrics='<dl class="social-profile-metrics">'+
+        (Number.isFinite(info?.power)?'<div class="social-profile-power"><dt>Poder</dt><dd>'+profileNumber.format(info.power)+'</dd></div>':'')+
+        '<div class="social-profile-bounty"><dt>Recompensa</dt><dd>'+
+        (bounty==null?'<small role="status">'+(profilePhase==='loading'?'Consultando…':'Indisponível')+'</small>':
+          '<img src="assets/ui/inventory-final/berry.png" alt=""><span>'+bounty+' Berry</span>')+'</dd></div></dl>';
       const portraitHeader='<header class="social-profile-banner">'+portrait(p)+'<div class="social-profile-identity">'+
-        (info?.title?'<p class="social-profile-title">'+esc(info.title)+'</p>':'')+
-        '<h3>'+o.identity(p.crew,p.name)+'</h3><span class="social-profile-class">'+
+        '<h3><span>'+esc(p.name)+'</span> '+tag+'</h3><span class="social-profile-class">'+
         (classIcon?'<img src="'+esc(classIcon)+'" alt="">':'')+esc(o.className(p.classId))+' · Nv. '+esc(p.level)+'</span>'+
-        (faction?'<span class="social-profile-faction"><img src="assets/ui/faction-emblems/'+esc(p.factionId)+'.png" alt="">'+esc(faction)+'</span>':'')+
-        '<span class="social-profile-presence'+(p.online?' social-online':'')+'">'+esc(status(p))+'</span></div>'+
-        (Number.isFinite(info?.power)?'<div class="social-profile-power"><small>Poder</small><b>'+profileNumber.format(info.power)+'</b></div>':'')+'</header>';
+        badge+'<span class="social-profile-presence'+(p.online?' social-online':'')+'">'+esc(status(p))+'</span></div>'+metrics+'</header>';
       const gear=info?.equipmentHidden?[]:o.profileEquipment?.(p.equipment)||[];
       const gearSection=info?.equipmentHidden?'<p class="social-profile-gear-note">Equipamentos ocultos.</p>':
         gear.length?'<section class="social-profile-gear"><h4>Equipamentos visíveis</h4><ul>'+gear.map(item=>
@@ -366,7 +375,7 @@
       if(signature!==html||!o.body.querySelector('.social-content')){signature=html;replace(o.body,html);}
     }
     async function refreshPanel(){
-      if(!view||!online()||panelPending||document.hidden)return;
+      if(!view||profile||!online()||panelPending||document.hidden)return;
       const epoch=viewEpoch, selected=view;
       panelPending=true;
       try{
@@ -385,16 +394,48 @@
           }
           if(tradeHistory.length){const ids=new Set(data.history.map(r=>r.id));data.history.push(...tradeHistory.flatMap(p=>p.history).filter(r=>!ids.has(r.id)));data.nextHistory=tradeHistory.at(-1).nextHistory;}
         }
-        if(profile&&people.has(profile.id))profile=people.get(profile.id);
         model=data;failed=false;paint();
       }catch{if(epoch===viewEpoch){failed=true;paint();}}finally{panelPending=false;if(epoch!==viewEpoch&&view)void refreshPanel();}
     }
+    function clearPublicProfile(){
+      ++profileRequest;
+      profile=null;
+      profilePhase='idle';
+    }
+    function openPublicProfile(person){
+      if(!person||!online())return false;
+      if(view!=='friends')o.openPanel('friends');
+      profile=person;
+      profilePhase='loading';
+      const request=++profileRequest;
+      paint();
+      void (async()=>{
+        try{
+          const {character}=await o.read({view:'profile',target:person.id});
+          if(request!==profileRequest)return;
+          if(character?.id!==person.id){profilePhase='unavailable';return;}
+          profile=character;
+          people.set(character.id,character);
+          profilePhase='ready';
+        }catch(error){
+          if(request===profileRequest)profilePhase=['contact_blocked','contact_missing','contact_self'].includes(error?.code)?'unavailable':'error';
+        }finally{
+          if(request===profileRequest)paint();
+        }
+      })();
+      return true;
+    }
+    function closePublicProfile(){
+      clearPublicProfile();
+      paint();
+      void refreshPanel();
+    }
     function open(id,personToTrade){
-      if(view!==id){view=id;viewEpoch++;model=null;profile=null;statusText='';failed=false;mailPages=[];tradeHistory=[];tradeTarget=null;tradeOutcome=null;signature='';}
+      if(view!==id){view=id;viewEpoch++;model=null;clearPublicProfile();statusText='';failed=false;mailPages=[];tradeHistory=[];tradeTarget=null;tradeOutcome=null;signature='';}
       if(personToTrade){tradeName=personToTrade.name;tradeTarget=personToTrade;}
       paint();void refreshPanel();
     }
-    function close(){if(view){view='';viewEpoch++;model=null;profile=null;signature='';tileItems.clear();}}
+    function close(){if(view){view='';viewEpoch++;model=null;clearPublicProfile();signature='';tileItems.clear();}}
     async function send(action,payload,{quiet=false}={}){
       if(!canWrite())return false;
       mutating=true;if(!quiet)statusText='';paint();
@@ -503,12 +544,12 @@
     }
     async function action(e){
       const b=e.target.closest('[data-social-action]');if(!b||b.disabled)return;
-      const key=b.dataset.socialAction,id=b.dataset.socialId,p=people.get(id);
+      const key=b.dataset.socialAction,id=b.dataset.socialId,p=profile?.id===id?profile:people.get(id);
       if(key==='private'){privateOpen(p);return;}
       if(key==='private-close'){dismissedTabs.add(id);target=null;thread=null;bar.querySelector('[data-chat-channel="all"]').click();return;}
       if(key==='private-more'){void refreshThread({older:true});return;}
-      if(key==='profile'){if(!view)o.openPanel('friends');profile=p;paint();return;}
-      if(key==='profile-close'){profile=null;paint();return;}
+      if(key==='profile'){openPublicProfile(p);return;}
+      if(key==='profile-close'){closePublicProfile();return;}
       if(key==='trade-person'){o.openPanel('trade');open('trade',p);return;}
       if(key==='refresh'){void refreshPanel();return;}
       if(key==='mail-tab'){mailTab=id;mailPages=[];model=null;viewEpoch++;paint();void refreshPanel();return;}
@@ -538,7 +579,7 @@
         'trade-lock':['trade.lock',{tradeId:id,expectedOfferVersion:t?.offerVersion,locked:!t?.ownLocked}],
         'trade-confirm':['trade.confirm',{tradeId:id,expectedOfferVersion:t?.offerVersion}],
       }[key];
-      if(commands)await send(...commands);
+      if(commands&&await send(...commands)&&key==='block'&&profile?.id===id)closePublicProfile();
     }
     function submit(e){
       const form=e.target.closest('[data-social-form]');if(!form)return;
@@ -579,7 +620,7 @@
     function openContact(person,action){
       if(!person||!online())return false;
       people.set(person.id,person);
-      if(action==='profile'){o.openPanel('friends');profile=person;paint();return true;}
+      if(action==='profile')return openPublicProfile(person);
       if(action==='private'&&person.actions?.message===null){privateOpen(person);return true;}
       if(action==='party'&&person.actions?.party===null)return send('party.invite',{targetId:person.id});
       return false;

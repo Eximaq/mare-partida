@@ -14,11 +14,22 @@ test('Bounty uses current crew membership and returns only its displayed value',
       requestId:randomUUID(),control:{epoch:lease.epoch,token:lease.token}} as any);
   };
   await act('items.initialize');
+  const viewerSession=await service.login(randomUUID()+'@example.invalid','fixture');
+  const viewer=await service.createCharacter(viewerSession.token,{name:'Navegante Recompensa',classId:'gunner',factionId:'marine'});
+  const profile=()=>service.socialState(viewerSession.token,viewer.id,{view:'profile',targetId:character.id});
   const before=await service.onlineState(session.token,character.id);
   assert.equal(typeof before.bounty,'number');
+  const publicView=await profile();
+  assert('character' in publicView);
+  assert.deepEqual(publicView.character.publicProfile,{title:before.hierarchy?.title,power:before.hierarchy?.power,equipmentHidden:false,bounty:String(before.bounty)});
+  assert.equal('state' in publicView.character,false);
+  assert.equal('gold' in publicView.character,false);
   await act('crew.create',{name:'Marés',tag:'MAR',flag:'1'+'0'.repeat(1023),policy:'open',minLevel:1});
   const withCrew=await service.onlineState(session.token,character.id);
   assert(withCrew.bounty!>before.bounty!);
+  const publicWithCrew=await profile();
+  assert('character' in publicWithCrew);
+  assert.equal(publicWithCrew.character.publicProfile?.bounty,String(withCrew.bounty));
   const client=await pool.connect();
   try{assert((await readCrewPower(client,character.id))>0);}finally{client.release();}
   await act('crew.dissolve',{confirmed:true});
@@ -26,6 +37,9 @@ test('Bounty uses current crew membership and returns only its displayed value',
   assert.equal(after.bounty,before.bounty);
   assert.equal(after.state.gold,before.state.gold);
   assert.equal((await service.onlineState(session.token,character.id)).bounty,after.bounty);
+  await act('contact.block',{targetId:viewer.id,blocked:true});
+  await assert.rejects(profile(),{code:'contact_blocked'});
+  await assert.rejects(service.socialState(session.token,character.id,{view:'profile',targetId:viewer.id}),{code:'contact_blocked'});
 }));
 
 test('reserved official credits reject invalid, duplicated, same-account and repeated results',()=>authDatabase(async({pool,service})=>{

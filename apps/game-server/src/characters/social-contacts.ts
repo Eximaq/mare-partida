@@ -3,6 +3,7 @@ import {createRequire} from 'node:module';
 import type {PoolClient} from 'pg';
 import {AuthFault} from '../auth/errors.js';
 import {crewCapacity,type CrewFacilities} from './crew-config.js';
+import {readPublicBounty} from './bounty.js';
 
 const hierarchy=createRequire(import.meta.url)('../../../../hierarchy-system.js');
 
@@ -246,7 +247,7 @@ function crewInviteReason(actor:ActorInvites,person:PersonRow) {
   return null;
 }
 
-function projectPerson(person:PersonRow,actor:ActorInvites,friendOrConversation:boolean) {
+function projectPerson(person:PersonRow,actor:ActorInvites,friendOrConversation:boolean,bounty?:string|null) {
   const blocked=person.blocked_by_you||person.blocked_by_them;
   const equipment:Record<string,{def:number}>={};
   if(!person.preferences?.hideItems)for(const slot of ['weapon','head','coat','gloves','legs','boots','visual_completo']){
@@ -260,6 +261,7 @@ function projectPerson(person:PersonRow,actor:ActorInvites,friendOrConversation:
       title:hierarchy.title(person.faction_id,person.hierarchy_tier??1) as string,
       power:person.hierarchy_power,
       equipmentHidden:!!person.preferences?.hideItems,
+      ...(bounty!==undefined?{bounty}:{}),
     }}:{}),
     ...(person.crew_tag&&person.crew_flag?{crew:{tag:person.crew_tag,flag:person.crew_flag}}:{}),
     online:blocked?false:person.online,lastActivity:blocked?null:person.last_seen?.toISOString()??null,
@@ -397,6 +399,22 @@ export async function readSocialContacts(client:PoolClient,id:string,{search=''}
     conversations:conversations.map(row=>({character:people.get(other(id,row.character_low,row.character_high))!,
       lastMessage:projectMessage(row),unread:row.unread})),
   };
+}
+
+export async function readSocialProfile(client:PoolClient,id:string,targetId:string) {
+  await requireSocial(client);
+  id=id.toLowerCase();
+  const target=targetId.toLowerCase();
+  if(id===target)throw new AuthFault(409,'contact_self');
+  await lockPair(client,id,target);
+  const actor=await readActorInvites(client,id);
+  const [person]=await readPeople(client,id,[target],actor);
+  if(!person)throw new AuthFault(404,'contact_missing');
+  if(person.blocked_by_you||person.blocked_by_them)throw new AuthFault(409,'contact_blocked');
+  const canMessage=!!(await client.query(`SELECT 1 FROM mare_game.social_conversations WHERE character_low=$1 AND character_high=$2
+    UNION ALL SELECT 1 FROM mare_game.social_friend_requests WHERE character_low=$1 AND character_high=$2 AND status='accepted'`,pair(id,target))).rowCount;
+  const bounty=await readPublicBounty(client,target,person.faction_id,person.hierarchy_tier??1);
+  return {character:projectPerson(bounty?{...person,hierarchy_power:bounty.power}:person,actor,canMessage,bounty?.bounty??null)};
 }
 
 export async function readPrivateMessages(client:PoolClient,id:string,targetId:string,

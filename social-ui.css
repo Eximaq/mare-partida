@@ -443,14 +443,20 @@
 }
 .social-profile-banner .contact-face { width: 78px; border-color: var(--glass-line); background: #08090b80; }
 .social-profile-identity { display: grid; align-content: start; gap: 3px; min-width: 0; }
-.social-profile-identity h3 { margin: 0; font: 700 22px/1.15 var(--glass-type); color: #f5f6f8; text-shadow: none; overflow-wrap: anywhere; }
-.social-profile-title { margin: 0; color: var(--glass-gold); font-weight: 650; }
+.social-profile-identity h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 6px; margin: 0; font: 700 22px/1.15 var(--glass-type); color: #f5f6f8; text-shadow: none; overflow-wrap: anywhere; }
+.social-profile-title { color: var(--glass-gold); font-weight: 650; }
+.social-profile-guild { color: var(--glass-gold); font-size: .62em; white-space: nowrap; }
 .social-profile-class,.social-profile-faction { display: flex; align-items: center; gap: 5px; }
 .social-profile-class img,.social-profile-faction img { width: 18px; height: 18px; object-fit: contain; flex: none; }
+.social-profile-faction { flex-wrap: wrap; }
 .social-profile-faction,.social-profile-presence { color: var(--glass-muted); font-size: 12px; }
-.social-profile-power { display: grid; gap: 3px; border-left: 1px solid #ffffff20; padding-left: 14px; }
-.social-profile-power small { color: var(--glass-muted); }
-.social-profile-power b { color: var(--glass-gold); font-size: 24px; font-variant-numeric: tabular-nums; }
+.social-profile-metrics { display: grid; gap: 6px; margin: 0; border-left: 1px solid #ffffff20; padding-left: 12px; }
+.social-profile-metrics dt { color: var(--glass-muted); font-size: 12px; }
+.social-profile-metrics dd { margin: 0; color: var(--glass-gold); font-weight: 750; font-variant-numeric: tabular-nums; }
+.social-profile-power dd { font-size: 22px; }
+.social-profile-bounty dd { display: flex; align-items: center; gap: 5px; font-size: 14px; white-space: nowrap; }
+.social-profile-bounty dd img { width: 17px; height: 17px; flex: none; }
+.social-profile-bounty dd small { color: var(--glass-muted); font-weight: 500; }
 .social-profile-gear,.social-profile-gear-note { padding: 9px 12px; border: 1px solid #ffffff18; border-radius: 8px; background: #ffffff04; }
 .social-profile-gear-note { margin: 0; color: var(--glass-muted); }
 .social-profile-gear h4 { margin: 0 0 7px; color: var(--glass-gold); font-size: 13px; }
@@ -464,6 +470,6 @@
   .social-profile-banner { grid-template-columns: auto minmax(0,1fr); gap: 8px; padding: 9px; }
   .social-profile-banner .contact-face { width: 58px; }
   .social-profile-identity h3 { font-size: 18px; }
-  .social-profile-power { grid-column: 1/-1; display: flex; align-items: baseline; justify-content: space-between; border: 0; border-top: 1px solid #ffffff20; padding: 6px 0 0; }
-  .social-profile-power b { font-size: 20px; }
+  .social-profile-metrics { grid-column: 1/-1; grid-template-columns: repeat(auto-fit,minmax(min(100%,116px),1fr)); border: 0; border-top: 1px solid #ffffff18; padding: 6px 0 0; }
+  .social-profile-power dd { font-size: 20px; }
 }

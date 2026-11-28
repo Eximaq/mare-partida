@@ -407,14 +407,14 @@ export async function readCrewIdentity(client:PoolClient,id:string) {
   return (await readCrewIdentities(client,[id])).get(id)??null;
 }
 
-export async function readCrewPower(client:PoolClient,id:string) {
+export async function readCrewPower(client:PoolClient,id:string,ownPower?:number) {
   const {rows}=await client.query<{power:string}>(`
-    SELECT COALESCE(sum(h.power),0)::text power
+    SELECT COALESCE(sum(CASE WHEN m.character_id=$1 THEN COALESCE($2::int,h.power) ELSE h.power END),0)::text power
     FROM mare_game.crew_members member
     JOIN mare_game.crews g ON g.id=member.crew_id AND g.dissolved_at IS NULL
     JOIN mare_game.crew_members m ON m.crew_id=g.id
     LEFT JOIN mare_game.character_hierarchy h ON h.character_id=m.character_id
-    WHERE member.character_id=$1`,[id]);
+    WHERE member.character_id=$1`,[id,ownPower]);
   return Number(rows[0]?.power??0);
 }
 

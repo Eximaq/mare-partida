@@ -65,6 +65,10 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
         const view=q.get('view');
         if(view==='badge')return reply({friendRequests:0,unreadMessages:unread,pending:claimed?0:1,tradeInvites:accepted?0:1});
         if(view==='contacts')return reply({...contacts,matches:q.get('q')?[{...joao,friendState:contacts.friends.some(p=>p.id===joao.id)?'accepted':contacts.outgoing.some(r=>r.character.id===joao.id)?'outgoing':'none'}]:[],onlineCount:contacts.friends.filter(p=>p.online).length,conversations:[{character:peer,lastMessage:last(),unread}]});
+        if(view==='profile'){
+          assert.equal(q.get('target'),peer.id);
+          return reply({character:{...peer,publicProfile:{...peer.publicProfile,bounty:'5450750'}}});
+        }
         if(view==='messages')return reply({character:peer,messages:messages.filter(m=>!q.has('after')||+m.id>+q.get('after')),hasMore:false});
         if(view==='mail'){
           if(q.has('before'))await new Promise(resolve=>setTimeout(resolve,250));
@@ -141,7 +145,9 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     await page.getByRole('button',{name:'Ver perfil',exact:true}).click();
     await page.getByRole('heading',{name:'Perfil do personagem'}).waitFor();
     const publicProfile=page.locator('[data-social-profile="'+peer.id+'"]');
-    await publicProfile.getByRole('heading',{name:/Lia do Farol/}).waitFor();
+    await publicProfile.getByRole('heading',{name:/Lia do Farol \[FAR\]/}).waitFor();
+    await publicProfile.getByText('5.450.750 Berry',{exact:true}).waitFor();
+    assert.match(await publicProfile.locator('.social-profile-faction').innerText(),/Marinha\s*—\s*Tenente/);
     assert.equal(await publicProfile.locator('.social-profile-title').innerText(),'Tenente');
     assert.match(await publicProfile.locator('.social-profile-class').innerText(),/Curandeiro|Suporte/);
     assert.match(await publicProfile.locator('.social-profile-power').innerText(),/18\.490/);

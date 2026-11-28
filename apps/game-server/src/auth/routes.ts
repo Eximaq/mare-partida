@@ -235,13 +235,13 @@ export function createAuthHandler(options: {
         if(stateMatch?.[2]==='social'){
           if(request.headers["transfer-encoding"]||Number(request.headers["content-length"]??0)!==0)throw new AuthFault(400,'invalid_request');
           const params=url.searchParams;
-          const view=parse(z.enum(['badge','contacts','messages','mail','trade']),params.get('view')??'badge');
-          const allowed={badge:[],contacts:['q'],messages:['target','before','after'],mail:['tab','before'],trade:['beforeAt','beforeId']}[view];
+          const view=parse(z.enum(['badge','contacts','messages','mail','trade','profile']),params.get('view')??'badge');
+          const allowed={badge:[],contacts:['q'],messages:['target','before','after'],mail:['tab','before'],trade:['beforeAt','beforeId'],profile:['target']}[view];
           for(const key of params.keys())if((key!=='view'&&!(allowed as readonly string[]).includes(key))||params.getAll(key).length!==1)throw new AuthFault(400,'invalid_request');
           const opt=(key:string)=>params.get(key)??undefined;
           const q=opt('q'),before=opt('before'),after=opt('after'),tab=opt('tab'),beforeAt=opt('beforeAt'),beforeId=opt('beforeId');
           if((q&&q.length>40)||(before!==undefined&&after!==undefined)||((beforeAt===undefined)!==(beforeId===undefined)))throw new AuthFault(400,'invalid_request');
-          const query={view,search:q,targetId:view==='messages'?parse(z.uuid(),params.get('target')):undefined,
+          const query={view,search:q,targetId:view==='messages'||view==='profile'?parse(z.uuid(),params.get('target')):undefined,
             before:before===undefined?undefined:parse(view==='mail'?z.uuid():messageIdSchema,before),
             after:after===undefined?undefined:parse(messageIdSchema,after),tab:tab===undefined?undefined:parse(z.enum(['pending','claimed']),tab),
             history:beforeAt&&beforeId?{at:parse(z.iso.datetime(),beforeAt),id:parse(z.uuid(),beforeId)}:undefined};
