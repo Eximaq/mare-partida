@@ -332,3 +332,230 @@
   .crew-window button { min-height: var(--rpg-touch-target,44px); }
   .crew-window .crew-palette button { min-height: 36px; width: 36px; }
 }
+
+.crew-nav .crew-tab-art {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  object-fit: contain;
+  image-rendering: auto;
+  border: 1px solid #836346;
+  border-radius: 5px;
+  background: linear-gradient(#213541,#131d26);
+  box-sizing: border-box;
+  padding: 1px;
+}
+#app #panelOverlay.crew-mode .crew-nav button {
+  border-radius: 6px;
+  color: #eee5d0;
+}
+#app #panelOverlay.crew-mode .crew-nav button[aria-pressed="true"] .crew-tab-art {
+  border-color: #eed18a;
+  background: linear-gradient(#52422b,#282a28);
+}
+#app #panelOverlay.crew-mode :is(.crew-nav button,.crew-button):not(:disabled):focus-visible {
+  outline: 2px solid #f1d18a;
+  outline-offset: -2px;
+}
+#app #panelOverlay.crew-mode :is(.crew-nav button,.crew-button):not(:disabled):not(.danger):hover {
+  border-color: #caa361;
+}
+.crew-banner {
+  margin-bottom: 9px;
+  padding: 10px 13px;
+  gap: 12px;
+  background: radial-gradient(ellipse at 0 50%,#143745 0%,transparent 58%),linear-gradient(110deg,#0d2230,#0a1520);
+}
+.crew-banner h2 > span { color: #f3c56c; }
+.crew-banner-identity { min-width: 0; }
+.crew-banner-identity .crew-progress { max-width: 320px; margin-top: 4px; }
+.crew-banner-count { display: grid; gap: 2px; align-content: center; justify-items: end; padding-inline: 11px 2px; border-left: 1px solid #a9824366; white-space: nowrap; }
+.crew-banner-count > b { color: var(--crew-accent); font-size: 21px; line-height: 1.02; }
+.crew-banner-count > small:not(.crew-presence) { color: #d4c5ac; }
+.crew-roster-tools {
+  grid-template-columns: minmax(0,1fr) minmax(112px, .34fr);
+  align-items: end;
+  gap: 8px;
+  max-width: 620px;
+}
+.crew-roster-tools label { color: #dec49c; font-size: 13px; }
+.crew-roster-tools input, .crew-roster-tools select { font-size: 14px; }
+.crew-member {
+  display: grid;
+  grid-template-columns: minmax(148px,1.35fr) minmax(111px,1fr) minmax(64px,.55fr) minmax(120px,1.05fr) minmax(86px,.8fr) 83px;
+  grid-template-areas: 'character class role profession totals actions';
+  align-items: center;
+  gap: 6px 9px;
+  min-width: 0;
+  padding: 7px 9px;
+  border: 1px solid #a9824366;
+  border-radius: 5px;
+  background: linear-gradient(100deg,#122935,#0b1925 75%);
+}
+.crew-member-identity { grid-area: character; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.crew-member-identity .contact-face { width: 46px; }
+.crew-member-identity > div { min-width: 0; }
+.crew-member-identity strong { color: #fff0d8; font-size: 17px; font-weight: 700; line-height: 1.25; }
+.crew-member-identity .crew-presence { margin-left: 5px; }
+.crew-member-level,.crew-role { display: inline-block; padding: 1px 5px; border: 1px solid #a982437a; border-radius: 3px; background: #ffffff09; color: #f1dbb3; font-size: 12px; font-weight: 700; }
+.crew-role[data-role="captain"] { color: #ffdf9c; background: #6b481e55; border-color: #b88c50; }
+.crew-role[data-role="officer"] { color: #bce1db; background: #8caaa129; border-color: #8caaa177; }
+.crew-member :is(.crew-role,.crew-presence), .crew-banner-count .crew-presence { display: inline-flex; align-items: center; width: fit-content; }
+.crew-member-class { grid-area: class; min-width: 0; }
+.crew-member > .crew-role { grid-area: role; }
+.crew-member-profession { grid-area: profession; min-width: 0; }
+.crew-member-totals { grid-area: totals; }
+.crew-member-class,.crew-profession-label { display: flex; align-items: center; gap: 5px; color: #ecdbb8; font-size: 14px; font-weight: 650; }
+.crew-emblem { display: inline-grid; place-items: center; flex: none; width: 28px; height: 28px; border: 1px solid #d1ac675c; border-radius: 6px; background: #7d59242b; color: #f3d38f; }
+.crew-emblem :is(img,svg) { width: 20px; height: 20px; object-fit: contain; }
+.crew-emblem[data-tone="nav"] { width: 27px; height: 27px; }
+.crew-emblem[data-tone="doctor"] { color: #b8f2d4; background: #316d5657; border-color: #78c7a272; }
+.crew-emblem[data-tone="navigator"] { color: #b0e1f2; background: #2e657757; border-color: #75c3de72; }
+.crew-emblem[data-tone="command"] { color: #ebbd99; background: #9d553444; border-color: #d5916372; }
+.crew-emblem[data-tone="cook"] { color: #f3d2a6; background: #995e3850; border-color: #e0ab6a82; }
+.crew-emblem[data-tone="carpenter"] { color: #f4ca7d; background: #76592260; border-color: #d0a34e83; }
+.crew-profession-label small,.crew-member .crew-member-totals small { font-size: 12px; font-weight: 400; }
+.crew-member .crew-member-totals b { color: #e7c58f; }
+.crew-presence { display: inline-flex; align-items: center; gap: 4px; color: #bbb8ac; }
+.crew-presence::before { content: ''; width: 6px; height: 6px; flex: none; border-radius: 50%; background: currentColor; }
+.crew-window .crew-presence[data-online="true"] { color: #a3e2c7; }
+.crew-member-actions { grid-area: actions; justify-self: end; }
+.crew-member-action-trigger { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.crew-member-action-trigger span { color: #f0cb8e; font-size: 18px; line-height: .75; }
+#crewMemberActionsDialog { z-index: calc(var(--rpg-z-modal,100) + 1); }
+#crewMemberActionsDialog > .ui-window { width: min(360px, calc(100vw - 32px)); }
+.crew-member-dialog-actions { display: grid; gap: 6px; }
+.crew-member-dialog-actions .crew-button { text-align: start; }
+.crew-secondary summary {
+  color: #f2d59c;
+  cursor: pointer;
+  padding: 5px 7px;
+  border: 1px solid #a982437a;
+  border-radius: 4px;
+  background: #ffffff06;
+}
+.crew-secondary summary:focus-visible { outline: 2px solid #ffe18e; outline-offset: 2px; }
+.crew-secondary[open] { display: grid; gap: 5px; margin-top: 4px; }
+.crew-card > .crew-button { justify-self: start; }
+.crew-treasury-facts { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; }
+.crew-treasury-facts > div { border-left: 2px solid #a982436e; padding-left: 7px; }
+.crew-treasury-facts dt { color: #cfc9b7; font-size: 12px; }
+.crew-treasury-facts dd { margin: 0; color: #f5d494; font-weight: 700; }
+@media (max-width: 900px) {
+  .crew-member {
+    grid-template-columns: minmax(0,1.4fr) minmax(0,1fr) minmax(64px,.55fr) 83px;
+    grid-template-areas: 'character class role actions' 'profession totals totals actions';
+  }
+}
+@media (max-width: 480px) {
+  .crew-banner { padding: 7px; gap: 6px; }
+  .crew-banner-count { padding-inline: 5px 1px; }
+  .crew-banner-count > b { font-size: 16px; }
+  .crew-member {
+    grid-template-columns: minmax(0,1.2fr) minmax(0,1fr);
+    grid-template-areas: 'character actions' 'class role' 'profession totals';
+  }
+  .crew-member-identity strong { display: block; }
+  .crew-roster-tools { gap: 5px; }
+}
+
+.crew-berry-amount {
+  display: inline-flex;
+  align-items: center;
+  gap: .36em;
+  white-space: nowrap;
+}
+.crew-berry-amount img {
+  width: 1.08em;
+  height: 1.08em;
+  object-fit: contain;
+  flex: none;
+}
+.crew-treasury-balance .crew-berry-amount img {
+  width: 1.16em;
+  height: 1.16em;
+}
+
+.crew-store-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #ffffff14;
+}
+.crew-window .crew-store-header h3 { padding: 0; border: 0; }
+.crew-store-wallet, .crew-contribution-amount {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.crew-store-wallet {
+  flex-wrap: wrap;
+  justify-self: start;
+  padding: 3px 8px;
+  border: 1px solid #bf784854;
+  border-radius: 6px;
+  color: #f4d4ba;
+  background: #a256251f;
+}
+.crew-contribution-amount {
+  color: #ffd6a3;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.crew-contribution-amount img { width: 1.45em; height: 1.45em; flex: none; }
+.crew-store-wallet .crew-contribution-amount { font-size: 16px; }
+.crew-store-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: 12px;
+}
+.crew-store-offer {
+  flex: 0 1 318px;
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 14px;
+  text-align: center;
+  border: 1px solid #ceb47745;
+  border-radius: 8px;
+  background: #0003;
+}
+.crew-store-item-art {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--glass-line);
+  border-radius: 9px;
+  background: #ffffff06;
+  box-shadow: inset 0 0 0 3px #0003;
+}
+.crew-store-item-art img { display: block; width: 60px; height: 60px; object-fit: contain; }
+.crew-store-item-name { color: #fbf0dd; font-size: 15px; }
+.crew-store-offer p { color: #d0cbd5; max-width: 28ch; line-height: 1.4; }
+.crew-store-price { font-size: 18px; }
+.crew-store-offer .crew-button { width: 100%; max-width: 224px; }
+.crew-store-rewards {
+  flex: 1 1 235px;
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+.crew-store-reward > div { min-width: 0; }
+.crew-store-reward .crew-contribution-amount { margin-top: 2px; }
+@media (max-width: 560px) {
+  .crew-store-offer { flex-basis: 100%; }
+}
+
+.crew-profession-summary .crew-profession-label { gap: 8px; }
+.crew-profession-summary .crew-emblem { width: 34px; height: 34px; }
+.crew-window .crew-profession-summary h3 { padding: 0; border: 0; }
+.crew-profession-contracts h3 { display: flex; align-items: center; gap: 6px; }
+.crew-profession-contracts h3 img { width: 23px; height: 23px; }
+.crew-facility-detail .crew-next-benefit { display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px 8px; padding-block: 4px; }
+.crew-next-benefit b { color: #a6decb; }

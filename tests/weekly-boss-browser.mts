@@ -25,16 +25,21 @@ await authDatabase(async f=>{
    await p.goto('https://localhost:9445/online/');await p.locator('#email').fill(email);await p.locator('#password').fill('Fixture password only 123');await p.locator('#login-submit').click();await p.waitForFunction(()=>globalThis.MareGameSession?.controlled&&globalThis.MareGameSession.data?.online?.battle,null,{timeout:60000});await p.waitForFunction(()=>globalThis.__mareDiagnostics?.().lobby96.worldVisual?.state==='ready',null,{timeout:60000});return p;
   }
   const p=await login('owner@example.invalid'),q=await login('collaborator@example.invalid'),r=await login('player@example.invalid');
-  assert.equal(await r.locator('#weeklyBossMenu').isVisible(),false,'ordinary player must not see a closed event');
-  await p.locator('#modesMenuTrigger').click();await p.locator('#weeklyBossMenu').click();await p.locator('#weeklyBossDialog').waitFor();assert(await p.locator('[data-weekly-op=activate]').isDisabled());await p.screenshot({path:resolve(out,'admin-closed.png')});
-  assert(await p.locator('[data-weekly-op=test]').isDisabled());
+  await r.locator('#modesMenuTrigger').click();await r.locator('#weeklyBossMenu').click();assert(await r.locator('#weeklyBossDialog [data-weekly-op=join]').isDisabled());await r.locator('[data-weekly-close]').click();
+  await p.locator('#captainMenuTrigger').click();
+  await p.locator('#weeklyBossAdminMenu').click();
+  const admin=p.locator('#weeklyBossAdminDialog');
+  await admin.waitFor();
+  assert(await admin.locator('[data-weekly-op=activate]').isDisabled());
+  assert(await admin.locator('[data-weekly-op=test]').isDisabled());
+  await p.screenshot({path:resolve(out,'admin-closed.png')});
   await p.evaluate(async()=>{await MareGameSession.command('weeklyBoss.execute',{op:'configure',bossId:'akainu',revision:1,config:{mapId:'marineford',spawn:{x:600,y:600},entry:{x:790,y:600},maxPlayers:4,minLevel:1,durationMinutes:60,balanceApproved:true,profile:{hp:10000,attack:2,defense:0,magicDefense:0,speed:75,reach:65,attackSec:2,aoeCooldown:8,aoeRadius:120,aoeWindup:1,aoeMultiplier:1.6,level:50,leash:600}}});await MareGameSession.read();});
   await p.locator('[data-weekly-op=test]').click();await p.waitForFunction(()=>globalThis.__mareDiagnostics().map.id==='quest-dungeons'&&globalThis.__mareDiagnostics().mobs.some((m:any)=>m.name==='Akainu'),null,{timeout:20000});
   const id=await p.evaluate(()=>MareGameSession.data.online.weeklyBoss.current.id);
-  await q.locator('#modesMenuTrigger').click();await q.locator('#weeklyBossMenu').click();await q.locator(`[data-weekly-op=join][data-event="${id}"]`).click();
+  await q.locator('#captainMenuTrigger').click();await q.locator('#weeklyBossAdminMenu').click();await q.locator(`[data-weekly-op=join][data-event="${id}"]`).click();
   for(const page of [p,q])await page.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===1,null,{timeout:20000});
   assert.equal(await p.locator('#locationName').textContent(),'Akainu · Teste privado');
-  assert.equal(await r.locator('#weeklyBossMenu').isVisible(),false,'private event cannot leak into ordinary account UI');
+  await r.locator('#modesMenuTrigger').click();await r.locator('#weeklyBossMenu').click();assert(await r.locator('#weeklyBossDialog [data-weekly-op=join]').isDisabled());assert.equal(await r.locator('#weeklyBossDialog [data-event="'+id+'"]').count(),0,'private event cannot leak into ordinary account UI');await r.locator('[data-weekly-close]').click();
   const row=(await f.pool.query('SELECT simulation FROM mare_game.weekly_boss_events WHERE id=$1',[id])).rows[0],room=row.simulation;room.mobs[0].attack=room.mobs[0].profile.attack=1;await f.pool.query('UPDATE mare_game.weekly_boss_events SET simulation=$2 WHERE id=$1',[id,JSON.stringify(room)]);
   // Index/portrait readiness is earlier than publication of the playable world.
   for(const page of [p,q])await page.waitForFunction(()=>__mareDiagnostics().lobby96.worldVisual?.state==='ready',null,{timeout:90000});
@@ -42,7 +47,7 @@ await authDatabase(async f=>{
   await p.screenshot({path:resolve(out,'aoe-warning-real-game.png')});await p.waitForTimeout(1550);await p.screenshot({path:resolve(out,'aoe-impact-real-game.png')});
   const resources=await p.evaluate(()=>performance.getEntriesByType('resource').filter(r=>r.name.includes('/assets/weekly-boss/admirals/')).map(r=>r.name));const draws=await p.evaluate(()=>globalThis.__weeklyTextureDraws);console.log('Weekly texture requests',resources,'actual canvas draws',draws);assert(resources.length>=2,'real sprite textures must be requested');assert(draws.some((s:string)=>s.includes('/vfx/meteor.webp')||s.includes('/vfx/magma_eruption.webp')),'real area texture must be drawn');assert(draws.some((s:string)=>/-(idle|walk|attack|special_area)\.webp/.test(s)),'real body texture must be drawn');
   const hp=await p.evaluate(()=>MareGameSession.data.online.battle.mobs[0].hp);await q.reload();await q.waitForFunction(()=>globalThis.MareGameSession?.data?.online?.weeklyBoss?.current,null,{timeout:30000});assert.equal(await q.evaluate(()=>MareGameSession.data.online.weeklyBoss.current.id),id);assert(await q.evaluate(()=>MareGameSession.data.online.battle.mobs[0].hp)<=hp);
-  await p.setViewportSize({width:390,height:844});await p.locator('#modesMenuTrigger').click();await p.locator('#weeklyBossMenu').click();await p.screenshot({path:resolve(out,'admin-mobile.png')});assert(await p.locator('#weeklyBossDialog').evaluate((d:any)=>{const b=d.getBoundingClientRect();return b.width<=390&&b.x>=0&&b.right<=390;}));
+  await p.setViewportSize({width:390,height:844});await p.locator('#captainMenuTrigger').click();await p.locator('#weeklyBossAdminMenu').click();await p.screenshot({path:resolve(out,'admin-mobile.png')});assert(await p.locator('#weeklyBossAdminDialog').evaluate((d:any)=>{const b=d.getBoundingClientRect();return b.width<=390&&b.x>=0&&b.right<=390;}));
   // The live worker and both heartbeats can hold a peer lock or advance the
   // character version between render and click. Retry only explicit conflicts,
   // through the same UI, and require a successful authoritative receipt.

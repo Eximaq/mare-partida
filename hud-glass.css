@@ -1,5 +1,5 @@
 /* Approved HUD surfaces and windows share a quiet glass material. */
-#app.hud-nautical, #swordEventDialog, #gameTooltip, #toastContainer, .confirmation-overlay, .forge-presentation-overlay {
+:root {
   --glass-type: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --glass-surface: rgba(20, 22, 25, .85);
   --glass-line: rgba(212, 175, 55, .35);
@@ -1272,7 +1272,7 @@ body > #gameTooltip.game-tooltip,
 
   & > .dialog {
     width: min(1120px, calc(100vw - 32px));
-    height: min(660px, calc(100dvh - 40px));
+    height: min(var(--hud-window-height), calc(100dvh - 40px));
     max-height: calc(100dvh - 40px);
     padding: 0;
     border: 1px solid var(--glass-line);
@@ -1336,7 +1336,7 @@ body > #gameTooltip.game-tooltip,
     min-height: 36px;
     transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
   }
-  & .forge2-tabs { gap: 6px; margin: 0; padding: 0; background: transparent; }
+  & .forge2-tabs { grid-template-columns: repeat(6,minmax(0,1fr)); gap: 6px; margin: 0; padding: 0; background: transparent; }
   & .forge2-subtabs { gap: 6px; margin: 6px 0; }
   & .forge2-shell .forge2-tabs button { min-height: 40px; gap: 8px; font-size: 13px; }
   & .forge2-tabs .forge-hd-icon, & .forge2-subtabs .forge-hd-icon { width: 22px; height: 22px; }
@@ -1383,20 +1383,26 @@ body > #gameTooltip.game-tooltip,
   & .forge2-refinement > small { font: 400 11px/1.3 var(--glass-type); color: var(--glass-muted); }
   & .forge-anvil-stage { height: 112px; width: min(100%, 340px); }
   & .forge-bench-item .item-icon { width: 48px; height: 48px; }
-  & .forge2-shell[data-forge-view] :is(.forge2-costs, .forge-hd-cost, .forge2-socket, .forge2-imbue-preview, .forge2-fusion-materials, .forge2-fusion-details, .forge-fusion-result-stage, .forge-fusion-stat-preview, .forge-fusion-about, .forge2-material-slot, .forge2-pearl, .forge2-extras li, .forge2-empty-note, .forge2-risk) {
+  & .forge2-shell[data-forge-view] :is(.forge-hd-cost, .forge2-socket, .forge2-imbue-preview, .forge2-fusion-materials, .forge2-fusion-details, .forge-fusion-result-stage, .forge-fusion-stat-preview, .forge-fusion-about, .forge2-material-slot, .forge2-pearl, .forge2-extras li, .forge2-empty-note, .forge2-risk) {
     border: 1px solid var(--forge-line); border-image: none; border-radius: 8px; background: #ffffff03; box-shadow: none;
   }
-  & .forge2-shell .forge2-costs { padding: 6px; }
-  & [data-forge-view=upgrade] .forge2-costs { background: transparent; border: 0; padding: 4px 0; }
-  & .forge2-costs h4 { margin: 0 0 6px; font-size: 12px; }
-  & .forge2-costs > small { color: var(--glass-muted); font: 400 10px/1.35 var(--glass-type); }
-  & .forge-hd-cost-items { padding: 0; }
-  & .forge2-shell .forge-hd-cost { min-height: 52px; padding: 5px 6px; gap: 2px 6px; }
-  & .forge2-shell .forge-hd-cost > img { width: 28px; height: 28px; }
-  & .forge2-shell .forge-hd-cost > span { font: 600 12px/1.3 var(--glass-type); color: var(--forge-ivory); }
-  & .forge2-shell .forge-hd-cost > small { font: 400 10px/1.3 var(--glass-type); color: var(--glass-muted); }
-  & .forge2-shell .forge-hd-cost small b { font: 650 11px/1.3 var(--glass-type); color: var(--glass-gold); }
-  & .forge2-shell .forge-hd-cost .insufficient { color: #fb7185; }
+  & .forge2-shell[data-forge-view] .forge2-costs {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px;
+    margin: 0; padding: 4px 0; border: 0; background: none;
+  }
+  & .forge-cost-label { color: var(--glass-muted); font: 550 12px/1.3 var(--glass-type); }
+  & .forge2-shell[data-forge-view] .forge-hd-cost-items {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 5px; min-width: 0; padding: 0;
+  }
+  & .forge2-shell[data-forge-view] .forge-hd-cost {
+    display: flex; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 3px 5px;
+    min-height: 28px; padding: 2px 6px; text-align: left;
+  }
+  & .forge2-shell[data-forge-view] .forge-hd-cost > img { width: 21px; height: 21px; flex: none; }
+  & .forge2-shell .forge-hd-cost > span { font: 550 12px/1.3 var(--glass-type); color: var(--forge-ivory); }
+  & .forge2-shell .forge-hd-cost > small { display: inline; font: 500 11px/1.3 var(--glass-type); color: #ffb0bc; }
+  & .forge2-shell .forge-hd-cost b { color: var(--glass-gold); }
+  & .forge2-outcome:empty { display: none; }
   & .forge2-chance { padding: 3px 0; margin: 4px 0; }
   & .forge2-chance > span { font: 500 12px/1.3 var(--glass-type); }
   & .forge2-chance > strong { font: 750 18px/1.2 var(--glass-type); color: #a8ffc1; font-variant-numeric: tabular-nums; }
@@ -1436,8 +1442,20 @@ body > #gameTooltip.game-tooltip,
   & .forge2-extras b { font: 700 14px/1.3 var(--glass-type); }
   & .forge2-extras li .forge-hd-icon { width: 22px; height: 22px; }
   & .forge2-reforge-lines li { grid-template-columns: minmax(0,1fr) 130px; }
-  & .forge2-reforge-lines li > span { display: grid; grid-template-columns: 22px minmax(0,1fr) max-content; gap: 6px; overflow-wrap: anywhere; }
+  & .forge-reforge-stat, & .forge-reforge-delta td > span {
+    display: grid; align-items: center; grid-template-columns: 22px minmax(0,1fr) max-content;
+    gap: 6px; overflow-wrap: anywhere;
+  }
   & .forge2-shell .forge2-reforge-lines .forge2-action { min-width: 0; width: 100%; min-height: 36px; padding: 5px; font-size: 11px; margin: 0; }
+  & .forge-reforge-delta { width: 100%; table-layout: fixed; border-collapse: collapse; }
+  & .forge-reforge-delta :is(th,td) { padding: 6px; text-align: start; border-bottom: 1px solid var(--forge-line); }
+  & .forge-reforge-delta th { color: var(--glass-muted); font: 600 12px/1.3 var(--glass-type); }
+  & .forge-reforge-delta td { color: var(--forge-ivory); font: 550 12px/1.3 var(--glass-type); }
+  & .forge-reforge-delta td img, & .forge-reforge-delta td svg { width: 20px; height: 20px; }
+  & .forge-reforge-delta b, & .forge-dismantle-yield strong { color: var(--glass-gold); }
+  & .forge-reforge-delta-empty { color: var(--glass-muted); }
+  & .forge-dismantle-yield { display: flex; align-items: center; gap: 6px; }
+  & .forge-dismantle-yield .item-icon { width: 27px; height: 27px; }
   & .forge2-fusion-workspace { gap: 8px; }
   & .forge2-fusion-workspace.forge-fusion-equipment { grid-template-columns: minmax(0,1fr) minmax(0,1.1fr); }
   & .forge2-operation-content > h3 { font-size: 16px; margin: 8px 0 2px; }
@@ -1449,7 +1467,8 @@ body > #gameTooltip.game-tooltip,
   & .forge2-fusion-tools { gap: 6px; }
   & .forge2-fusion-materials > small, & .forge-result-actions small { font: 400 11px/1.4 var(--glass-type); color: var(--glass-muted); }
   & .forge-fusion-result-stage, & .forge-fusion-equipment .forge-fusion-result-stage { min-height: 96px; padding: 6px; margin-bottom: 6px; }
-  & .forge-fusion-about { margin-top: 12px; padding: 8px; }
+  & .forge-fusion-about { margin-top: 8px; padding: 6px 8px; }
+  & .forge-fusion-about summary { color: var(--forge-ivory); cursor: pointer; }
   & .forge2-fusion-arrow { height: 28px; margin: 8px 0; }
   & .forge-hd-arrow { height: 28px; }
   & .forge-fusion-result-stage > .item-icon, & .forge-fusion-result-stage > .forge-hd-mystery { width: 64px; height: 64px; }
@@ -1482,24 +1501,18 @@ body > #gameTooltip.game-tooltip,
     & .forge-fusion-stat-preview > div { min-height: 24px; padding: 3px 0; font-size: 11px; }
     & .forge-fusion-stat-preview small { line-height: 1.2; margin-block: 2px; }
     & .forge2-operation .forge-fusion-extra-note { margin: 0; }
-    & .forge-fusion-equipment .forge-hd-cost { min-height: 48px; padding: 3px; row-gap: 0; }
     & .forge-fusion-equipment .forge2-chance { margin: 0; padding: 0; }
-    & .forge-fusion-equipment .forge-hd-cost-items { grid-template-columns: repeat(2,minmax(0,1fr)); }
-    & .forge-fusion-equipment .forge2-costs { margin: 4px 0; padding: 4px; }
   }
   @container (max-width: 600px) {
     & .forge2-fusion-workspace.forge-fusion-equipment { grid-template-columns: minmax(0,1fr); }
   }
-  @media (min-width: 761px) {
-    & .forge2-shell[data-forge-view] .forge2-costs { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 4px 8px; }
-    & .forge2-shell[data-forge-view] .forge2-costs h4 { grid-area: 1/1; margin: 0; padding: 0; font: 650 12px/1.3 var(--glass-type); }
-    & .forge2-costs .forge-hd-cost-items { grid-column: 1/-1; }
-    & .forge2-shell[data-forge-view] .forge2-costs > small { grid-area: 1/2; margin: 0; text-align: right; font: 400 10px/1.3 var(--glass-type); }
-  }
-
   @media (hover: hover) {
     & .forge2-shell :is(.forge2-tabs button, .forge2-subtabs button, .forge2-pagination button, .forge2-grid-meta button, .forge2-fusion-tools button, .forge2-action):hover:not(:disabled), & #closePanel:hover { background: #ffffff12; border-color: #d8c18a; color: #fff; }
     & .forge2-shell .forge2-action:hover:not(:disabled) { background: #d4af372b; box-shadow: 0 0 12px #d4af371c; }
+  }
+  @media (min-width: 1101px) {
+    &:has(.forge2-shell[data-forge-view=reforge]) { --hud-window-height: 520px; }
+    &:has(.forge2-shell[data-forge-view=reforge] .forge-reforge-delta) { --hud-window-height: 590px; }
   }
   @media (max-width: 1100px) {
     & .forge2-layout, & [data-forge-view=fusion] .forge2-layout { grid-template-columns: 210px minmax(0,1fr); }
@@ -1507,6 +1520,7 @@ body > #gameTooltip.game-tooltip,
   }
   @media (max-width: 900px) {
     & > .dialog { height: min(820px,calc(100dvh - 40px)); }
+    & .forge2-tabs { grid-template-columns: repeat(3,minmax(0,1fr)); }
     & [data-forge-view=upgrade] .forge2-layout { grid-template-columns: 200px minmax(0,1fr); grid-template-rows: auto auto; overflow: auto; align-content: start; }
     & [data-forge-view=upgrade] .forge2-operation, & [data-forge-view=upgrade] .forge2-operation-content { overflow: visible; }
     & [data-forge-view=upgrade] .forge2-operation { min-height: 490px; }
@@ -2092,14 +2106,14 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   @media (prefers-reduced-motion:reduce) { & button, & .contract-progress > i { transition: none; } }
 }
 
-/* Crew: a stable inventory-sized glass frame across every server-backed view. */
+/* Crew: fit the content without letting long rosters extend outside the screen. */
 #app #panelOverlay.hud-density.crew-mode[data-ui-panel=crew] {
   --rpg-font: var(--glass-type);
   --rpg-hd-heading: var(--glass-type);
   padding: max(8px,var(--rpg-safe-top)) 8px max(8px,var(--rpg-safe-bottom));
   background: #0005;
   backdrop-filter: blur(3px);
-  & > .dialog { display: flex; flex-direction: column; width: min(var(--glass-window-width),100%); max-width: none; height: calc(var(--glass-window-limit) - 18px); max-height: calc(var(--glass-window-limit) - 18px); padding: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 12px; background: var(--glass-surface); backdrop-filter: blur(8px); box-shadow: var(--glass-shadow); overflow: hidden; }
+  & > .dialog { display: flex; flex-direction: column; width: min(1060px,100%); max-width: none; height: auto; max-height: calc(var(--glass-window-limit) - 18px); padding: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 12px; background: var(--glass-surface); backdrop-filter: blur(8px); box-shadow: var(--glass-shadow); overflow: hidden; }
   & .dialog-header { flex: none; min-height: 48px; padding: 2px 8px 2px 14px; gap: 12px; border: 0; border-bottom: 1px solid #ffffff18; background: #ffffff03; }
   & .dialog-header > div { gap: 8px; }
   & .dialog-header > div::before { width: 24px; height: 24px; }
@@ -2110,13 +2124,13 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & .dialog-header small { display: none; }
   & #dialogBody { display: flex; }
   & .crew-window { flex: 1; min-width: 0; min-height: 0; max-height: none; padding: 0 4px 0 0; overflow: auto; scrollbar-width: thin; scrollbar-color: #a38b58 #ffffff08; font: 13px/1.45 var(--glass-type); color: #f5f6f8; --crew-muted: #b9bec5; --crew-accent: #e4ce96; }
-  & .crew-layout, & .crew-layout[data-overview=true] { grid-template-columns: 170px minmax(0,1fr); gap: 12px; align-items: start; }
-  & .crew-layout[data-overview=true] { grid-template-columns: 170px minmax(0,1fr) 280px; }
+  & .crew-layout, & .crew-layout[data-overview=true] { grid-template-columns: minmax(0,1fr); gap: 8px; align-items: start; }
+  & .crew-layout[data-overview=true] { grid-template-columns: minmax(0,1fr) minmax(205px,.45fr); }
   & .crew-panel-inner, & .crew-overview-side { gap: 10px; }
   & .crew-overview-side { grid-column: auto; grid-template-columns: minmax(0,1fr); }
-  & .crew-nav { top: 0; padding: 5px; gap: 4px; border: 1px solid #ffffff18; border-radius: 10px; background: #141619f5; }
+  & .crew-nav { top: 0; z-index: 1; grid-column: 1/-1; display:flex; overflow:auto hidden; scrollbar-width:thin; scrollbar-color:#a38b58 #ffffff08; padding: 5px; gap: 4px; border: 1px solid #ffffff18; border-radius: 10px; background: #141619f5; }
   & #dialogBody button { border: 1px solid var(--glass-line); border-image: none; border-radius: 8px; background: #ffffff06; box-shadow: none; color: #e6e8ec; font: 600 12px/1.35 var(--glass-type); min-height: 36px; padding: 7px 10px; text-transform: none; text-shadow: none; transition: background-color .15s,border-color .15s; touch-action: manipulation; }
-  & #dialogBody .crew-nav button { grid-template-columns: 18px minmax(0,1fr); gap: 7px; padding: 9px 7px; text-align: left; border-color: transparent; background: transparent; min-width: 0; }
+  & #dialogBody .crew-nav button { flex: 1 0 auto; grid-template-columns: 27px auto; justify-content: center; gap: 6px; padding: 4px 7px; border-color: transparent; background: transparent; min-width: max-content; font-size: 13px; }
   & #dialogBody button.crew-primary, & #dialogBody .crew-nav button[aria-pressed=true] { background: #d4af3724; border-color: #d8c18a88; color: #f8e3af; box-shadow: inset 0 -2px #e4ce9640; }
   & #dialogBody button.crew-danger { color: #ffb7b0; border-color: #e67e7355; background: #e67e7310; }
   & #dialogBody button:hover:not(:disabled) { background-color: #ffffff12; border-color: var(--glass-gold); filter: none; }
@@ -2125,14 +2139,20 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & #dialogBody .crew-palette button { background: var(--ink); width: 32px; min-height: 32px; padding: 0; }
   & :is(.crew-card,.crew-banner) { padding: 12px; gap: 8px; border: 1px solid #ffffff18; border-image: none; border-radius: 10px; background: #ffffff04; box-shadow: none; }
   & .crew-window :is(h2,h3,h4) { font-family: var(--glass-type); text-transform: none; letter-spacing: 0; text-shadow: none; }
-  & .crew-window h2 { font-size: 18px; line-height: 1.3; color: #f5f6f8; }
-  & .crew-window h3 { font-size: 13px; line-height: 1.4; padding-bottom: 8px; border-bottom: 1px solid #ffffff14; color: var(--glass-gold); }
+  & .crew-window h2 { font-size: 22px; line-height: 1.3; color: #f5f6f8; }
+  & .crew-window h3 { font-size: 15px; line-height: 1.4; padding-bottom: 8px; border-bottom: 1px solid #ffffff14; color: var(--glass-gold); }
+  & :is(.crew-store-header,.crew-profession-summary) h3 { padding: 0; border: 0; }
   & .crew-window h4 { font-size: 13px; }
-  & .crew-window :is(small,.crew-muted) { font: 400 11px/1.45 var(--glass-type); color: var(--glass-muted); }
-  & .crew-banner { grid-template-columns: 44px minmax(0,1fr) auto; gap: 10px; }
+  & .crew-window :is(small,.crew-muted) { font: 450 12px/1.4 var(--glass-type); color: var(--glass-muted); }
+  & .crew-banner { grid-template-columns: 44px minmax(0,1fr) auto; gap: 10px; background: #ffffff05; }
   & .crew-banner > .crew-flag { width: 44px; height: 44px; border: 1px solid var(--glass-line); border-radius: 8px; background: #0003; }
   & .crew-banner > b { padding: 8px; border: 1px solid #ffffff18; border-radius: 8px; background: #0002; color: var(--glass-gold); font-variant-numeric: tabular-nums; }
-  & .crew-banner > div > small { font-size: 10px; letter-spacing: .04em; }
+  & .crew-banner > div > small { font-size: 12px; }
+  & .crew-window .crew-presence[data-online="true"] { color:#9de3c6; }
+  & .crew-window .crew-role[data-role="captain"] { color:#ffdf9c; }
+  & .crew-window .crew-role[data-role="officer"] { color:#bce1db; }
+  & .crew-window .crew-role { font-weight:650; }
+  & .crew-window .crew-profession-label small { color:#cac6b7; }
   & .crew-banner p { color: var(--glass-muted); font-size: 11px; }
   & :is(.crew-row,.crew-member,.crew-directory-card,.crew-mission,.crew-objective,.crew-future,.crew-choices article,.crew-facility-detail,.crew-cabin-comparison figure) { padding: 10px; border: 1px solid #ffffff14; border-radius: 8px; background: #0002; box-shadow: none; }
   & .crew-contracts { font: 13px/1.45 var(--glass-type); color: #f5f6f8; gap: 8px; }
@@ -2145,17 +2165,15 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & .crew-objective[data-completed=true] { border-color: #69dba560; }
   & .crew-progress progress { min-width: 0; height: 6px; border: 0; border-radius: 5px; background: #0006; }
   & progress::-webkit-progress-bar { background: #0006; }
-  & progress::-webkit-progress-value { background: linear-gradient(90deg,#2186a9,#67d9ed); }
-  & progress::-moz-progress-bar { background: linear-gradient(90deg,#2186a9,#67d9ed); }
-  & .crew-banner progress::-webkit-progress-value { background: linear-gradient(90deg,#b58a35,#e4ce96); }
-  & .crew-banner progress::-moz-progress-bar { background: linear-gradient(90deg,#b58a35,#e4ce96); }
-  & .crew-vessel { border: 1px solid #ffffff14; border-radius: 8px; background: radial-gradient(ellipse at 50% 90%,#1c526366,transparent 70%),#0002; }
+  & progress::-webkit-progress-value { background: linear-gradient(90deg,#b58a35,#e4ce96); }
+  & progress::-moz-progress-bar { background: linear-gradient(90deg,#b58a35,#e4ce96); }
+  & .crew-vessel { border: 1px solid #ffffff14; border-radius: 8px; background: #0002; }
   & .crew-layout[data-overview=true] .crew-vessel-scene { max-width: 245px; }
   & .crew-vessel-scene { max-width: 330px; }
   & .crew-vessel figcaption { border: 1px solid #ffffff18; border-radius: 5px; background: #141619d9; color: var(--glass-muted); font-size: 10px; }
   & .crew-facilities { gap: 5px; }
   & #dialogBody .crew-facility { min-height: 60px; padding: 5px 2px; gap: 3px; font-size: 10px; line-height: 1.3; }
-  & #dialogBody .crew-facility[aria-pressed=true] { border-color: #6ccfdc88; background: #6ccfdc16; color: #b4edf5; }
+  & #dialogBody .crew-facility[aria-pressed=true] { border-color: #d8c18a88; background: #d4af3724; color: #f8e3af; }
   & .crew-facility img { height: 28px; max-height: 28px; }
   & .crew-facility-detail > div { flex-basis: 200px; }
   & .crew-treasury-balance { color: var(--glass-gold); font: 700 24px/1.3 var(--glass-type); }
@@ -2163,11 +2181,7 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & .crew-form label { color: var(--glass-muted); font-size: 12px; }
   & .crew-note { border-radius: 4px; color: #f8d79d; background: #d4af3712; }
   & .crew-flag-grid { border-color: #ffffff26; border-radius: 8px; overflow: hidden; }
-  @media (max-width:1100px) {
-    & .crew-layout[data-overview=true] { grid-template-columns: 155px minmax(0,1fr); }
-    & .crew-layout { grid-template-columns: 155px minmax(0,1fr); }
-    & .crew-overview-side { grid-column: 2; }
-  }
+
   @media (max-width:760px) {
     & #dialogTitle { font-size: 18px; }
     & #dialogBody { padding: 8px; }
@@ -2180,7 +2194,7 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
     & .crew-card, & .crew-banner { padding: 10px; }
     & .crew-banner { grid-template-columns: 36px minmax(0,1fr) auto; gap: 8px; }
     & .crew-banner > .crew-flag { width: 36px; height: 36px; }
-    & .crew-banner h2 { font-size: 15px; }
+    & .crew-banner h2 { font-size: 18px; }
     & .crew-banner > b { padding: 5px; font-size: 11px; }
     & .crew-create-fields { grid-template-columns: minmax(0,1fr) minmax(84px,.5fr); }
     & .crew-editor-main { grid-template-columns: minmax(0,1fr); }
@@ -2431,8 +2445,12 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
 }
 
 /* Friends is intentionally a narrow vertical window, unlike the large ledgers. */
+#app #panelOverlay.social-mode.hud-density[data-ui-panel="social-friends"]:has(.social-public-profile) {
+  & > .dialog { width: min(560px,100%); }
+  & .dialog-header > div > small { display: none; }
+}
 #app #panelOverlay.social-mode.hud-density[data-ui-panel="social-friends"] {
-  & > .dialog { width:min(400px,100%); height:min(580px,calc(100dvh - 40px)); max-height:calc(100dvh - 40px); }
+  & > .dialog { width:min(400px,100%); height:auto; max-height:min(580px,calc(100dvh - 40px)); }
   & #dialogBody { padding:10px; }
   & .social-content { overflow:auto; }
   & .social-content:has(.friends-desk) { overflow:hidden; }
@@ -2446,7 +2464,7 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & .social-line { flex-direction:column; align-items:stretch; gap:10px; margin:0 0 8px; padding:10px; border:1px solid #ffffff1c; border-radius:9px; background:#ffffff04; }
   & [data-friends-section=requests] .social-line { border-color:#d4af3745; background:#d4af3705; }
   & .social-person { gap:10px; }
-  & .social-portrait { width:42px; height:46px; border:1px solid #ffffff20; border-radius:7px; background:#090c1266; }
+  & .contact-face { width:42px; border-radius:7px; }
   & .social-person-meta { flex:1; min-width:0; gap:3px; }
   & .social-person-meta b { max-width:100%; overflow-wrap:anywhere; color:#f5f6f8; font:650 13px/1.3 var(--glass-type); }
   & .social-person-meta small { color:var(--glass-muted); font:400 11px/1.35 var(--glass-type); }
@@ -2467,7 +2485,7 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & .social-field input { display:block; margin-top:5px; }
   & .social-empty { margin:0; padding:10px; border:1px dashed #ffffff18; border-radius:8px; color:var(--glass-muted); font:400 12px/1.4 var(--glass-type); }
   & .social-person-large { margin:4px 0 14px; }
-  & .social-person-large .social-portrait { width:69px; height:74px; }
+  & .social-person-large .contact-face { width:69px; }
   & [data-social-action=profile-close] { margin-top:14px; }
   & :is(button,input,.friends-list):focus-visible { outline:2px solid #edd89f; outline-offset:2px; }
   @media (pointer:coarse), (max-width:760px) {
@@ -2477,7 +2495,7 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
     & .social-actions { gap:5px; }
   }
   @media (max-height:500px) {
-    & > .dialog { height:calc(100dvh - 24px); max-height:calc(100dvh - 24px); }
+    & > .dialog { max-height:calc(100dvh - 24px); }
     & #dialogBody { padding:8px; }
   }
   @media (prefers-reduced-motion:reduce) { & .social-button { transition:none; } }
@@ -2690,21 +2708,24 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
 #app #panelOverlay.hud-density.voyage-hd-mode[data-ui-panel="map"] {
   --exp-title: var(--glass-type);
   --exp-body: var(--glass-type);
+  --map-surface: #0e1823;
+  --map-line: #b79b615c;
+  --map-gold: #e8c585;
   padding: max(8px, var(--rpg-safe-top)) 8px max(8px, var(--rpg-safe-bottom));
   background: #080b104d;
   backdrop-filter: blur(2px);
-  & > .dialog { width: min(var(--glass-window-width),100%); height: calc(var(--glass-window-limit) - 18px); max-height: calc(var(--glass-window-limit) - 18px); padding: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 12px; background: var(--glass-surface); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: var(--glass-shadow); color: #f5f6f8; }
-  & .dialog-header { display: grid; grid-template-columns: minmax(0,1fr) auto 44px; align-items: center; gap: 4px 8px; min-height: 100px; padding: 4px 10px 8px; border-bottom: 1px solid #ffffff18; background: #ffffff03; }
+  & > .dialog { width: min(var(--glass-window-width),100%); height: calc(var(--glass-window-limit) - 18px); max-height: calc(var(--glass-window-limit) - 18px); padding: 0; border: 1px solid var(--map-line); border-image: none; border-radius: 12px; background: var(--map-surface); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: var(--glass-shadow); color: #f5f6f8; }
+  & .dialog-header { display: grid; grid-template-columns: minmax(0,1fr) auto 44px; align-items: center; gap: 4px 8px; min-height: 0; padding: 6px 10px 8px; border-bottom: 1px solid var(--map-line); background: linear-gradient(108deg,#111b2b,#193754 49%,#101c2d); }
   & .dialog-header > div:first-child { display: contents; }
   & .dialog-header > div:first-child > small { display: none; }
-  & #dialogTitle { grid-column: 1; grid-row: 1; max-width: none; margin: 0; font: 700 18px/1.3 var(--glass-type); text-transform: none; letter-spacing: 0; color: var(--glass-gold); }
+  & #dialogTitle { grid-column: 1; grid-row: 1; max-width: none; margin: 0; font: 700 19px/1.3 Georgia,serif; text-transform: none; letter-spacing: 0; color: var(--map-gold); }
   & #dialogTitle::before { width: 22px; height: 22px; }
   & #closePanel { grid-column: 3; grid-row: 1; width: 44px; height: 44px; padding: 0; border: 0; border-image: none; border-radius: 8px; background: transparent; font: 26px/1 var(--glass-type); color: var(--glass-muted); }
   & #expeditionBack { position: static; grid-column: 2; grid-row: 1; margin: 0; }
   & .voyage-region-tabs { position: static; grid-row: 2; grid-column: 1/-1; width: 100%; min-width: 0; max-width: 100%; gap: 6px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scroll-padding-inline: 4px; }
-  & :is(.voyage-region-tabs button,#expeditionBack,.dungeon-back,.dungeon-travel) { min-width: 0; min-height: 36px; padding: 6px 10px; border: 1px solid var(--glass-line); border-image: none; border-radius: 8px; background: #ffffff05; box-shadow: none; color: #f5f6f8; font: 600 12px/1.3 var(--glass-type); text-transform: none; text-shadow: none; transition: background-color .15s,border-color .15s; }
+  & :is(.voyage-region-tabs button,#expeditionBack,.dungeon-back,.dungeon-travel) { min-width: 0; min-height: 36px; padding: 6px 10px; border: 1px solid var(--map-line); border-image: none; border-radius: 6px; background: #142331; box-shadow: none; color: #f2e8cd; font: 600 12px/1.3 var(--glass-type); text-transform: none; text-shadow: none; transition: background-color .15s,border-color .15s; }
   & .voyage-region-tabs button { flex: 0 0 auto; min-width: max-content; gap: 6px; }
-  & .voyage-region-tabs button[aria-selected=true] { background: #d4af371a; border-color: #d4af3770; color: var(--glass-gold); }
+  & .voyage-region-tabs button[aria-selected=true] { background: #d4af371a; border-color: var(--map-gold); color: var(--map-gold); }
   & .voyage-region-icon { width: 26px; height: 26px; background-size: 78px 26px; }
   & .voyage-region-icon[data-icon=alabasta] { background-position: -26px 0; }
   & .voyage-region-icon[data-icon=skypiea] { background-position: -52px 0; }
@@ -2742,7 +2763,8 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & .dungeon-details h4 { margin: 3px 0 0; font: 650 12px/1.4 var(--glass-type); color: var(--glass-gold); }
   & .dungeon-drops { margin: 0; gap: 4px; }
   & .dungeon-drops img, & .expedition-icon { width: 20px; height: 20px; }
-  & .dungeon-travel { flex: none; min-height: 44px; margin: 0; background: #d4af371a; color: var(--glass-gold); }
+  & .dungeon-travel { flex: none; min-height: 44px; margin: 0; }
+  & .dungeon-travel:not(:disabled) { border-color: var(--map-gold); background: linear-gradient(#eacc8f,#b48b49); color: #211708; }
   & .dungeon-placeholder { min-height: 0; gap: 12px; }
   & .dungeon-placeholder > img { width: 64px; height: 64px; }
   & .dungeon-placeholder h3 { font: 650 18px/1.3 var(--glass-type); color: var(--glass-gold); }
@@ -2782,8 +2804,8 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   @media (prefers-reduced-motion:reduce) { & button { transition: none; } }
 }
 
-/* Native weekly dialog lives outside #app, so it receives the same glass tokens. */
-#weeklyBossDialog, #weeklyBossHUD {
+/* The combat life bar retains the glass theme outside #app. */
+#weeklyBossHUD {
   --glass-type: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --glass-surface: rgba(20,22,25,.85);
   --glass-line: rgba(212,175,55,.35);
@@ -2793,54 +2815,6 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 6px 20px #0004,inset 0 1px 0 #ffffff0a;
   color: #f5f6f8; font: 400 13px/1.5 var(--glass-type);
-}
-#weeklyBossDialog {
-  width: min(760px,calc(100vw - 16px)); height: fit-content; max-width: none; max-height: calc(min(720px,100dvh - 40px) - 18px); padding: 0; overflow: hidden;
-  &[open] { display: flex; flex-direction: column; }
-  &::backdrop { background: #080b104d; backdrop-filter: blur(2px); }
-  & .weekly-heading { flex: none; align-items: center; gap: 8px; margin: 0; padding: 12px 16px; border-bottom: 1px solid #ffffff18; background: #ffffff03; }
-  & .weekly-heading h2 { font: 700 23px/1.2 var(--glass-type); color: var(--glass-gold); margin: 3px 0; }
-  & .weekly-heading small { font: 600 10px/1.4 var(--glass-type); letter-spacing: .5px; color: var(--glass-muted); }
-  & .weekly-heading p { margin: 0; color: var(--glass-muted); font-size: 12px; }
-  & .weekly-heading button { align-self: flex-start; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; font: 26px/1 var(--glass-type); color: var(--glass-muted); }
-  & .weekly-content { flex: 0 1 auto; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 12px; padding: 16px; scrollbar-width: thin; scrollbar-color: #d8c18a70 transparent; }
-  & p { margin: 0; font: 400 13px/1.5 var(--glass-type); color: var(--glass-muted); }
-  & h3 { margin: 0; font: 650 16px/1.3 var(--glass-type); color: var(--glass-gold); }
-  & .weekly-message { flex: none; min-height: 0; margin: 0; color: var(--glass-gold); }
-  & .weekly-message:empty { display: none; }
-  & :is(.weekly-event,.weekly-admin) { flex: none; display: grid; gap: 12px; margin: 0; padding: 16px; border: 1px solid #ffffff20; border-radius: 8px; background: #ffffff03; }
-  & .weekly-event { grid-template-columns: minmax(0,1fr) auto; border-left: 2px solid #d4af3780; }
-  & .weekly-event h3, & .weekly-event p { grid-column: 1; }
-  & .weekly-event [data-weekly-countdown] { grid-column: 2; grid-row: 1/3; align-self: start; padding: 6px 10px; border: 1px solid #65e99540; border-radius: 8px; background: #65e9950a; color: #a5efd5; font-variant-numeric: tabular-nums; }
-  & .weekly-event button { margin: 0; }
-  & .weekly-note { padding: 12px 16px; border: 1px solid #ffffff16; border-radius: 8px; background: #ffffff03; color: var(--glass-muted); }
-  & .weekly-closed { padding: 20px; border: 1px dashed #ffffff25; border-radius: 8px; color: var(--glass-muted); }
-  & button { min-height: 44px; padding: 8px 14px; border: 1px solid var(--glass-line); border-radius: 8px; background: #d4af371a; color: var(--glass-gold); font: 600 13px/1.3 var(--glass-type); transition: background-color .15s,border-color .15s; }
-  & button:disabled { opacity: .45; cursor: not-allowed; }
-  & .weekly-danger { border-color: #f1787855; background: #f1787812; color: #ffb4b4; }
-  & .weekly-actions { margin: 0; gap: 8px; }
-  & details { padding: 12px; border: 1px solid #ffffff20; border-radius: 8px; background: #00000018; }
-  & summary { margin: 0; min-height: 36px; padding: 6px 0; color: var(--glass-gold); font-weight: 600; }
-  & details[open] > p { margin: 4px 0 12px; }
-  & .weekly-fields { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; }
-  & label { font: 400 12px/1.4 var(--glass-type); color: var(--glass-muted); }
-  & input[type=number] { min-height: 40px; padding: 8px; border: 1px solid #ffffff25; border-radius: 8px; background: #080b104d; color: #f5f6f8; font: 500 13px/1.4 var(--glass-type); }
-  & input[type=checkbox] { accent-color: #d4af37; }
-  & .weekly-confirm { margin: 14px 0; gap: 8px; }
-  & :is(button,input,summary):focus-visible { outline: 2px solid var(--glass-gold); outline-offset: 2px; }
-  @media (hover:hover) { & button:hover:not(:disabled) { background-color: #ffffff14; border-color: var(--glass-gold); } }
-  @media (max-width:1100px) { & .weekly-fields { grid-template-columns: repeat(2,minmax(0,1fr)); } }
-  @media (max-width:760px) {
-    max-height: calc(100dvh - 42px);
-    & .weekly-heading { padding: 10px; }
-    & .weekly-content { padding: 10px; gap: 10px; }
-    & .weekly-event { grid-template-columns: minmax(0,1fr); padding: 12px; gap: 10px; }
-    & .weekly-event [data-weekly-countdown] { grid-column: 1; grid-row: auto; justify-self: start; }
-    & .weekly-admin { padding: 12px; }
-    & .weekly-actions button { flex: 1 1 180px; }
-    & .weekly-fields { gap: 8px; }
-  }
-  @media (prefers-reduced-motion:reduce) { & button { transition: none; } }
 }
 #weeklyBossHUD {
   padding: 8px 12px;

@@ -120,15 +120,29 @@ export async function readWeeklyBoss(c:PoolClient,id:string,sessionId:string){
  EXISTS(SELECT 1 FROM mare_game.weekly_boss_operators o JOIN mare_game.characters ch ON ch.account_id=o.account_id WHERE ch.id=$1) can_manage,
  EXISTS(SELECT 1 FROM mare_game.weekly_boss_members WHERE character_id=$1) member,
  EXISTS(SELECT 1 FROM mare_game.weekly_boss_events WHERE boss_id='akainu' AND mode='official' AND status='active' AND closes_at>clock_timestamp()) public_active,
- (SELECT cycle_key::text FROM mare_game.weekly_boss_entitlements WHERE character_id=$1 ORDER BY cycle_key DESC LIMIT 1) cycle`,[id])).rows[0];
+ (SELECT cycle_key::text FROM mare_game.weekly_boss_entitlements WHERE character_id=$1 ORDER BY cycle_key DESC LIMIT 1) cycle,
+ (SELECT config FROM mare_game.weekly_boss_settings WHERE boss_id='akainu') settings_config,
+ (SELECT jsonb_build_object('cycle',cycle_key,'status',status,'openedAt',opened_at,'endsAt',closes_at,'minLevel',config->'minLevel','bossId',config->>'admiralId')
+  FROM mare_game.weekly_boss_events WHERE boss_id='akainu' AND mode='official' ORDER BY opened_at DESC LIMIT 1) last_official`,[id])).rows[0];
  // Closed events must not add N+1 queries or a changing clock to unrelated state.
  const daily=await readDailySwords(c,context.now);
- if(!context.can_manage&&!context.member&&!context.public_active)return {canManage:false,events:[],current:null,peers:[],serverNow:null,rewardPendingCycle:context.cycle??null,daily};
+ const last=context.last_official;
+ const recentOfficial=last?.cycle===R.cycleKey(context.now)?{...last,bossId:D.valid(last.bossId)?last.bossId:'akainu'}:null;
+ const publicProfiles=D.profiles(context.settings_config);
+ const admiralMinLevels=Object.fromEntries(D.ids.map((bossId:string)=>[bossId,publicProfiles[bossId]?.minLevel??null]));
+ const legacyConfig=context.settings_config?.admiralsVersion===1?context.settings_config.legacyConfig:context.settings_config;
+ const publicInfo={daily,lootRules:weeklyBossLootRules,recentOfficial,akainuMinLevel:admiralMinLevels.akainu??legacyConfig?.minLevel??null,admiralMinLevels};
+ if(!context.can_manage&&!context.member&&!context.public_active)return {canManage:false,...publicInfo,events:[],current:null,peers:[],serverNow:null,rewardPendingCycle:context.cycle??null};
  const canManage=!!context.can_manage,at:Date=context.now;
  await c.query(`UPDATE mare_game.weekly_boss_members m SET last_seen=$2 FROM mare_game.character_control cc JOIN mare_game.app_sessions s ON s.id=cc.session_id JOIN mare_game.accounts a ON a.id=s.account_id WHERE m.character_id=$1 AND cc.character_id=m.character_id AND cc.expires_at>$2 AND s.kind='play' AND s.revoked_at IS NULL AND s.expires_at>$2 AND s.idle_expires_at>$2 AND s.provider_valid_until>$2 AND s.account_epoch=a.auth_epoch AND s.id=$3`,[id,at,sessionId]);
  const current=(await c.query('SELECT e.* FROM mare_game.weekly_boss_members m JOIN mare_game.weekly_boss_events e ON e.id=m.event_id WHERE m.character_id=$1',[id])).rows[0];
- const rows=(await c.query("SELECT id,mode,map_id,status,version,closes_at,config,simulation->'mobs'->0 boss,(SELECT count(*)::int FROM mare_game.weekly_boss_members WHERE event_id=e.id) members FROM mare_game.weekly_boss_events e WHERE boss_id='akainu' AND status='active' AND closes_at>$1 AND (mode='official' OR $2) ORDER BY opened_at LIMIT 2",[at,canManage])).rows;
- const view=(r:any)=>({id:r.id,mode:r.mode,status:r.status,version:r.version,mapId:r.map_id,endsAt:r.closes_at.toISOString(),maxPlayers:r.config.maxPlayers,minLevel:r.config.minLevel,members:r.members??0,boss:{name:(r.boss??r.simulation?.mobs[0])?.name??'Akainu',hp:Math.max(0,(r.boss??r.simulation?.mobs[0])?.hp??0),maxHp:(r.boss??r.simulation?.mobs[0])?.maxHP??0},rewardsConfigured:r.mode==='official'});
+ const rows=(await c.query("SELECT id,boss_id,mode,map_id,status,version,opened_at,closes_at,config,simulation->'mobs'->0 boss,(SELECT count(*)::int FROM mare_game.weekly_boss_members WHERE event_id=e.id) members FROM mare_game.weekly_boss_events e WHERE boss_id='akainu' AND status='active' AND closes_at>$1 AND (mode='official' OR $2) ORDER BY opened_at LIMIT 2",[at,canManage])).rows;
+ const view=(r:any)=>{
+  const boss=r.boss??r.simulation?.mobs?.[0];
+  // The event row keeps its weekly family ID. The public card uses the selected admiral.
+  const bossId=r.boss_id==='akainu'&&D.valid(r.config.admiralId)?r.config.admiralId:r.boss_id;
+  return {id:r.id,bossId,mode:r.mode,status:r.status,version:r.version,mapId:r.map_id,openedAt:r.opened_at.toISOString(),endsAt:r.closes_at.toISOString(),maxPlayers:r.config.maxPlayers,minLevel:r.config.minLevel,members:r.members??0,boss:{name:boss?.name??D.roster[bossId]?.name??'Akainu',hp:Math.max(0,boss?.hp??0),maxHp:boss?.maxHP??0},rewardsConfigured:r.mode==='official'};
+ };
  const settings=canManage?(await c.query("SELECT revision,config FROM mare_game.weekly_boss_settings WHERE boss_id='akainu'")).rows[0]:undefined;
  const profiles=settings?D.profiles(settings.config):null;
  const arena=settings?require('../../../../world-map-exports.js').get('marineford'):null;
@@ -144,5 +158,5 @@ export async function readWeeklyBoss(c:PoolClient,id:string,sessionId:string){
    peers.push({id:m.character_id,name:n.name,classId:n.class_id,factionId:n.faction_id,hierarchyTier:tiers.get(m.character_id)??null,level:input.state.level,hp:Math.max(0,b.hp),maxHp:f.maxHp,connected:true,world:w,instanceId:current.id,appearance96:input.appearance,hideHeadgear:!!input.preferences.hideHeadgear,equipment,action:b.pending||b.skillJob?'attack':'idle',fruitId:f.fruitId,zoanTransformed:b.fruit?.transformed===true,haki:b.hakiRuntime?{active:b.hakiRuntime.active,eyeFX:b.hakiRuntime.eyeFX,dodgeFX:b.hakiRuntime.dodgeFX,kingFX:b.hakiRuntime.kingFX,kingOrigin:b.hakiRuntime.kingOrigin}:null});
   }
  }
- return {canManage,daily,lootRules:weeklyBossLootRules,events:rows.map(view),current:current?view(current):null,peers,serverNow:at.toISOString(),rewardPendingCycle:rights?.cycle??null,...(settings?{revision:settings.revision,config:profiles?.akainu??null,profiles,defaults,balance:D.balance,marinefordReady:!!maps().maps.marineford}: {})};
+ return {canManage,...publicInfo,events:rows.map(view),current:current?view(current):null,peers,serverNow:at.toISOString(),rewardPendingCycle:rights?.cycle??null,...(settings?{revision:settings.revision,config:profiles?.akainu??null,profiles,defaults,balance:D.balance,marinefordReady:!!maps().maps.marineford}: {})};
 }

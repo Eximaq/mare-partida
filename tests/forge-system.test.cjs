@@ -148,4 +148,32 @@ test('Dismantling works at the inventory limit and every rarity uses its own lev
  assert.equal(done.state.equipment.weapon.id,g.equipment.weapon.id);
  assert.equal(done.state.gold,g.gold);
 });
+test('Compact Forge uses dedicated attribute icons and shows only changed reforge rows',()=>{
+ const UI=require('../forge-ui.js'),summary=require('../operation-summary.js');
+ require('../game-tooltips.js');
+ const g=seed('legendary'),item=g.equipment.weapon;
+ const before=F.keys.map((stat,i)=>({stat,value:i+1}));
+ item.extras=structuredClone(before);
+ item.extras[0]={stat:'attackSpeedPercent',value:.05};
+ const cost=F.reforgeCost(item,true);
+ g.gold=cost.gold-1;
+ g.materials=cost.materials;
+ const view=UI.render({game:g,defs,item,ui:{tab:'reforge'},
+  result:{type:'reforgeLine',before,after:item.extras},derive:()=>({}),
+  icon:id=>'<img data-item-art="'+id+'">',escapeHTML:String,fmt:String});
+ for(const stat of F.keys)assert(view.includes('assets/ui/character-studio/attributes/'+stat+'.png'));
+ assert(!view.includes('data-item-art="pearl_'));
+ assert(!/Saldo previsto|Faixa primária|Tentativas nesta peça/.test(view));
+ assert(view.includes('<b>'+cost.gold+'</b> Berry'));
+ assert(view.includes('<small>Falta 1</small>'));
+ assert.match(view,/data-forge-action="reforgeLine"[^>]* disabled/);
+ const comparison=view.match(/<tbody>([\s\S]*?)<\/tbody>/)[1];
+ assert.equal([...comparison.matchAll(/<tr>/g)].length,1);
+ assert.match(comparison,/Força[\s\S]*Velocidade de ataque[\s\S]*\+5\.00%/);
+ g.gold=cost.gold;
+ const confirmation=summary.forge(g,{type:'reforgeLine',itemId:item.id,line:0,expectedSeq:g.forgeSeq},defs);
+ assert.equal(confirmation.changes[0].before,'5%');
+ assert.match(confirmation.notice,/inferior.*30%/);
+ assert.equal(confirmation.costs[0].needed,cost.gold);
+});
 console.log(`${checks} expanded forge model groups passed.`);

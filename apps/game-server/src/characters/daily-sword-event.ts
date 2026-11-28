@@ -14,14 +14,15 @@ const engine=require('../../../../world-battle.cjs');
 async function clock(client:PoolClient,knownTime?:Date){
  const at:Date=knownTime??(await client.query('SELECT clock_timestamp() AS now')).rows[0].now;
  const day=rules.day(at);
- const times=(await client.query("SELECT ($1::date + time '20:00') AT TIME ZONE 'America/Sao_Paulo' AS opens, ($1::date + time '21:00') AT TIME ZONE 'America/Sao_Paulo' AS closes",[day.key])).rows[0];
+ const times=(await client.query("SELECT ($1::date + make_time($2,0,0)) AT TIME ZONE $4 AS opens, ($1::date + make_time($3,0,0)) AT TIME ZONE $4 AS closes",[day.key,rules.openingHour,rules.closingHour,rules.timeZone])).rows[0];
  return {at,day,opens:times.opens as Date,closes:times.closes as Date};
 }
 export async function readDailySwords(client:PoolClient,now:Date){
  const {at,day,opens,closes}=await clock(client,now);
- const event=(await client.query("SELECT status FROM mare_game.weekly_boss_events WHERE map_id='arena-espadachins' AND cycle_key=$1",[day.key])).rows[0];
+ const event=(await client.query(`SELECT status,(SELECT count(*)::int FROM mare_game.weekly_boss_members WHERE event_id=e.id) members
+  FROM mare_game.weekly_boss_events e WHERE map_id='arena-espadachins' AND cycle_key=$1`,[day.key])).rows[0];
  const status=event?.status==='won'?'won':event&&event.status!=='active'?'closed':day.status;
- return {boss:day.boss,name:rules.bossNames[day.boss],status,opensAt:opens.toISOString(),endsAt:closes.toISOString(),serverNow:at.toISOString(),minLevel:battle.policy.minLevel};
+ return {boss:day.boss,name:rules.bossNames[day.boss],status,opensAt:opens.toISOString(),endsAt:closes.toISOString(),serverNow:at.toISOString(),minLevel:battle.policy.minLevel,maxPlayers:battle.policy.maxPlayers,members:event?.members??0};
 }
 export async function openDailySwords(client:PoolClient,characterId:string,knownTime?:Date){
  const {at,day,opens,closes}=await clock(client,knownTime);
