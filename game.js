@@ -3930,7 +3930,7 @@ ${avatarExtra}
     const id=mapKey();let image=null;
     if(MareMapExports.get(id)){
       image=MareMapExports.prepare(id);
-      const depth=MareWorldDepth.state(id),ground=id==='quest-dungeons'?MareBossArena.state():id.startsWith('alubarna-')?MareAlubarnaCity.state():id==='alabasta'?MareAlabastaDesert.state():id==='orange'?MareOrangeTown.state():id==='conchas'?MareConchasMarine.state():id==='dawn'?MareDawnVillage.state():id==='rare'?MareRareAnimals.state():id==='syrup'?MareSyrup.state():id==='baratie'?MareBaratie.state():id==='arlong'?MareArlong.state():id==='loguetown'?MareLoguetown.state():'ready';
+      const depth=MareWorldDepth.state(id),ground=id==='marineford'||id.startsWith('marineford-')?MareMarineford.state():id==='quest-dungeons'?MareBossArena.state():id.startsWith('alubarna-')?MareAlubarnaCity.state():id==='alabasta'?MareAlabastaDesert.state():id==='orange'?MareOrangeTown.state():id==='conchas'?MareConchasMarine.state():id==='dawn'?MareDawnVillage.state():id==='rare'?MareRareAnimals.state():id==='syrup'?MareSyrup.state():id==='baratie'?MareBaratie.state():id==='arlong'?MareArlong.state():id==='loguetown'?MareLoguetown.state():'ready';
       if(depth==='failed'||ground==='failed'||image.complete&&!image.naturalWidth)return 'failed';
       return image.complete&&depth==='ready'&&ground==='ready'?'ready':'loading';
     }

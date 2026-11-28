@@ -14,7 +14,7 @@ const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
 const Policy=require('./combat-action-policy.js');
 const {potionRules,potionRecovery}=require('./item-catalog.js');
-const sources=['sword-compendium.js','daily-sword-battle.cjs','daily-sword-boss-combat.js','daily-sword-boss-specials.json','attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','cp9-monsters.js','thriller-monsters.js','cp9-sprites.js','thriller-sprites.js','enies-dungeon-art.js','sabaody-monsters.js','sabaody-sprites.js','sabaody-dungeon-art.js','marineford-monsters.js','prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','late-archipelago-map-data.js','late-archipelago-world.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','loguetown-map-data.js','arlong-map-data.js','baratie-map-data.js','syrup-map-data.js','rare-animals-map-data.js','dawn-village-map-data.js','conchas-marine-map-data.js','orange-town-map-data.js','alabasta-desert-map-data.js','alubarna-city-map-data.js','boss-arena-map-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const sources=['sword-compendium.js','daily-sword-battle.cjs','daily-sword-boss-combat.js','daily-sword-boss-specials.json','attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','cp9-monsters.js','thriller-monsters.js','cp9-sprites.js','thriller-sprites.js','enies-dungeon-art.js','sabaody-monsters.js','sabaody-sprites.js','sabaody-dungeon-art.js','marineford-monsters.js','prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','late-archipelago-map-data.js','late-archipelago-world.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','loguetown-map-data.js','arlong-map-data.js','baratie-map-data.js','syrup-map-data.js','rare-animals-map-data.js','dawn-village-map-data.js','conchas-marine-map-data.js','orange-town-map-data.js','alabasta-desert-map-data.js','alubarna-city-map-data.js','boss-arena-map-data.js','marineford-map-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 const balanceVersion=characters.monsterBalance.version;
 const previousBalanceHash='c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b';
@@ -35,8 +35,10 @@ const previousOrangeHash='65190d0d471d444bab81b8c46ded2948934fddb0dce0ea72820c91
 const previousAlabastaHash='c91ad59190d5a25a2214bf4c79f3f50e4e76b84dc8050f5044ee43dbf4132518';
 const previousAlubarnaHash='6a3e08adcb2eec3da5122e2eaba5ef0f5898bdf180fdd49b34f30298d86adc65';
 const previousBossArenaHash='c9607a8978503a6a30677f041a6c8f24a932be20932e322da0f80366b0e35d32';
+const previousMarinefordHash='df87a9e7018eff5bcbee1d33a2d8ba3347ff3fc019133d6c0bdf86f8145e51cc';
 const isSkypieaArea=area=>/^skypiea-0[1-4]$/.test(area);
 const isAlubarnaArea=area=>/^alubarna-0[1-5]$/.test(area);
+const isMarinefordArea=area=>/^marineford-0[1-6]$/.test(area);
 function reanchorAuthoredMobs(area,mobs,nav){
  if(!Array.isArray(mobs))return false;
  const slots=new Map(behavior.slots(area).map(s=>[s.id,s])),moves=[];
@@ -112,6 +114,22 @@ function reanchorAlubarnaMobs(area,mobs,nav){
  if(!isAlubarnaArea(area))return false;
  if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
  return reanchorAuthoredMobs(area,mobs,nav);
+}
+function reanchorMarinefordMobs(area,mobs,nav){
+ if(!isMarinefordArea(area))return false;
+ if(!nav&&Array.isArray(mobs)&&mobs.some(m=>m.partyExtra))nav=require('./world-catalog.cjs').load().navigation(area);
+ return reanchorAuthoredMobs(area,mobs,nav);
+}
+function upgradeMarinefordGeometry(b){
+ if(isMarinefordArea(b.area))reanchorMarinefordMobs(b.area,b.mobs);
+ else if(b.area==='marineford'&&b.weeklyBossInstanceId&&!b.weeklyBossTest){
+  const point=mapExports.get('marineford').weeklyBossSpawn;
+  for(const m of b.mobs||[]){
+   if(!point||m.source!=='weekly-boss'||m.weeklyBossId!=='akainu'||m.anchorX===point.x&&m.anchorY===point.y)continue;
+   Object.assign(m,{x:point.x,y:point.y,anchorX:point.x,anchorY:point.y});behavior.disengage(m);m.action=null;
+  }
+ }else return;
+ cancel(b);resetHaki(b);
 }
 function upgradeAlubarnaGeometry(b){
  if(!isAlubarnaArea(b.area))return;
@@ -191,11 +209,14 @@ function upgradeBossArenaGeometry(b){
 function upgradeBalance(b){
  if(!b)return;
  const previous=b.rulesHash;
+ // This predecessor already has the HD dungeon arena. Leave its active fights
+ // and private rehearsals untouched while moving only Marineford geometry.
+ if(previous===previousMarinefordHash){upgradeMarinefordGeometry(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;}
  if(previous===previousBossArenaHash){addHuntLedgers(b);b.rulesHash=rulesHash;}
  else upgradeHistoricalBalance(b);
  // Historical branches return early. Apply this scene change only after a
  // recognized upgrade, so every predecessor keeps its existing compatibility.
- if(previous!==rulesHash&&b.rulesHash===rulesHash)upgradeBossArenaGeometry(b);
+ if(previous!==rulesHash&&b.rulesHash===rulesHash){upgradeBossArenaGeometry(b);upgradeMarinefordGeometry(b);}
 }
 function upgradeHistoricalBalance(b){
  if(!b)return;
@@ -563,4 +584,4 @@ function step(b,c){
  }
  talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};
 }
-module.exports={pendingWearIds,balanceVersion,previousBalanceHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,reanchorSkypieaMobs,reanchorLoguetownMobs,reanchorArlongMobs,reanchorBaratieMobs,reanchorSyrupMobs,reanchorRareMobs,reanchorDawnMobs,reanchorConchasMobs,reanchorOrangeMobs,reanchorAlabastaMobs,reanchorAlubarnaMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};
+module.exports={pendingWearIds,balanceVersion,previousBalanceHash,populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c),beginActionWear:()=>startWear(c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,worldMonsterCatalog,create,step,skill,cancel,changeArea,upgradeBalance,reanchorSkypieaMobs,reanchorLoguetownMobs,reanchorArlongMobs,reanchorBaratieMobs,reanchorSyrupMobs,reanchorRareMobs,reanchorDawnMobs,reanchorConchasMobs,reanchorOrangeMobs,reanchorAlabastaMobs,reanchorAlubarnaMobs,reanchorMarinefordMobs,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};

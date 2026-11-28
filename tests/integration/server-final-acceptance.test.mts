@@ -82,7 +82,9 @@ test('navigation upgrade reanchors only known maps and preserves all other rows'
  const orange=await readFile(new URL('../../apps/game-server/migrations/0074_orange_town_hd_map.sql',import.meta.url),'utf8');
  const alabasta=await readFile(new URL('../../apps/game-server/migrations/0075_alabasta_desert_hd_map.sql',import.meta.url),'utf8');
  const alubarna=await readFile(new URL('../../apps/game-server/migrations/0076_alubarna_city_hd_map.sql',import.meta.url),'utf8');
- const currentSql=[sql,swordWorld,skypiea,arrival,loguetown,arlong,baratie,syrup,rare,dawn,conchas,orange,alabasta,alubarna].join('\n');
+ const bossArena=await readFile(new URL('../../apps/game-server/migrations/0077_boss_arena_hd_map.sql',import.meta.url),'utf8');
+ const marineford=await readFile(new URL('../../apps/game-server/migrations/0078_marineford_hd_map.sql',import.meta.url),'utf8');
+ const currentSql=[sql,swordWorld,skypiea,arrival,loguetown,arlong,baratie,syrup,rare,dawn,conchas,orange,alabasta,alubarna,bossArena,marineford].join('\n');
  await f.pool.query(currentSql);assert.deepEqual(await snapshot(),expected);
  await f.pool.query(currentSql);assert.deepEqual(await snapshot(),expected);
  await a.read();await assert.rejects(b.read(),{code:'world_rules_changed'});
