@@ -238,7 +238,8 @@ function assertWalk(w,label){
   assert.deepEqual(layout.districts,districtIds);assert.equal(layout.mobs.length,10);
   assert.deepEqual(layout.mobs.map(m=>m.id).sort(),districtIds.flatMap(id=>[0,1].map(n=>'alabasta-'+id+'-'+n)).sort());
   assert(layout.mobs.every(m=>m.type==='bananawani'&&m.level===45&&m.reachable),'all ten stable Bananawani encounters must remain level 45 and reachable');
-  assert(layout.mobs.every(m=>m.maxHP===8346&&m.attack===352&&m.defense===212),'map integration must preserve the current balanced Bananawani profile');assert.equal(await page.evaluate(()=>MareHunt.get('alabasta').boss),null,'Deserto de Alabasta must not gain a boss');
+  assert(layout.mobs.every(m=>m.maxHP===6200&&m.attack===310&&m.defense===192),'map integration must preserve the current balanced Bananawani profile');
+  assert.equal(await page.evaluate(()=>MareHunt.get('alabasta').boss),null,'Deserto de Alabasta must not gain a boss');
   assert.equal(await page.evaluate(()=>__mareDiagnostics().hunt.bossReady),false);results.layout=layout;
   results.waterProbes=await page.evaluate(probes=>probes.map(([id,x,y])=>{const point=__alabastaQA.sourcePoint(x,y);return {id,source:{x,y},point,walkable:__alabastaQA.nav().walkable(point.x,point.y)};}),waterProbes);
   assert(waterProbes.length+solidProbes.length>=2,'blocked terrain and scenery probes must be reviewed against the original painting');

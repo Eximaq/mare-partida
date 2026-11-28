@@ -16,7 +16,9 @@ const hook="  window.__hudQA={get game(){return game},get world(){return world},
  await p.evaluate(()=>document.fonts.load('24px "Alabasta Pirate"'));assert(await p.evaluate(()=>document.fonts.check('24px "Alabasta Pirate"')));assert.match(await p.locator('#wantedName').evaluate(e=>getComputedStyle(e).fontFamily),/Alabasta Pirate/);
  for(const ratio of [0,.25,1]){await p.evaluate(r=>{__hudQA.game.hp=__hudQA.stats().maxHP*r;__hudQA.game.energy=__hudQA.stats().maxEnergy*r;__hudQA.refresh()},ratio);for(const id of ['miniHP','miniEnergy']){const actual=await p.locator('#'+id).evaluate(e=>e.getBoundingClientRect().width/e.parentElement.getBoundingClientRect().width);assert(Math.abs(actual-ratio)<.012,id+' true fill at '+ratio)}}
  await p.evaluate(()=>{__hudQA.game.gold=987654321;__hudQA.game.xp=20;__hudQA.refresh()});
- await p.waitForTimeout(1100);await p.evaluate(()=>__hudQA.refresh());assert.equal(await p.locator('#miniXP').getAttribute('style'),'width: '+(2000/require('../character-catalog.js').xpNeeded(1)).toFixed(1)+'%;');
+ await p.waitForTimeout(1100);await p.evaluate(()=>__hudQA.refresh());
+ const xpPercent=Number((2000/require('../character-catalog.js').xpNeeded(1)).toFixed(1));
+ assert.equal(await p.locator('#miniXP').evaluate(e=>e.style.width),xpPercent+'%');
  await p.locator('#characterPosterToggle').click();assert.equal(await p.locator('#characterPosterToggle').getAttribute('aria-expanded'),'true');const displayedBounty=await p.locator('#wantedBounty').innerText();assert.match(displayedBounty,/^[0-9.]+$/);await p.waitForFunction(()=>{const v=__hudQA.portraitState();return v.last?.state==='rendered'&&v.last.consumer==='wantedPortrait'&&v.last.direction==='south';},null,{timeout:120000});await p.screenshot({path:path.join(out,'cartaz-bounty.png')});
  assert.equal(await p.locator('#wantedBountyDetails').count(),0);assert.equal(await p.locator('#wantedName').innerText(),'Bento D’Água');
  assert(await p.locator('#wantedPortrait').evaluate(c=>{const a=c.getContext('2d').getImageData(0,0,c.width,c.height).data;return a.some((v,i)=>i%4===3&&v>0)&&a[3]===0}),'shared portrait rendered');
