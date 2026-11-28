@@ -302,16 +302,27 @@
       if(direction==='west'){ctx.translate(spec.width+1,0);ctx.scale(-1,1);}
       const density=value.density||1;ctx.drawImage(strip,frame*spec.width*density,0,spec.width*density,spec.height*density,0,0,spec.width,spec.height);ctx.restore();
     }
-    function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false}={}){
+    const isLuffyVisual=player=>root.MareVisualCompletoRenderer?.skinId?.(player)==='visual_completo_luffy';
+    function nativeFallbackPlayer(player){
+      if(!isLuffyVisual(player)||player.zoanTransformed)return player;
+      // Native selectors describe the functional equipment, while the complete
+      // visual belongs only to presentation. Never change the owned loadout.
+      const {visual_completo,...equipment}=player.equipment;
+      return {...player,equipment};
+    }
+    function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false,skillIndex,classId,freeHandPower=false}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;
-      if(consumer==='world')return drawWorldVisual(ctx,{scene,action,direction,time,progress,timing,x,y,scale,consumer,weaponless},player);
+      const visualOptions={scene,action,direction,time,progress,timing,x,y,scale,consumer,weaponless,skillIndex,classId,freeHandPower};
+      if(consumer==='world')return drawWorldVisual(ctx,visualOptions,player);
       if(consumer==='world-silhouette'){
         if(root.MareVisualCompletoRenderer?.equipped(player)){
-          return root.MareVisualCompletoRenderer.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer,weaponless});
+          const drawn=root.MareVisualCompletoRenderer.draw(ctx,player,visualOptions);
+          if(drawn||!isLuffyVisual(player)||player.zoanTransformed)return drawn;
         }
-        return drawWorldSilhouette(ctx,player,{direction,time,progress,timing,x,y,scale,weaponless});
+        return drawWorldSilhouette(ctx,nativeFallbackPlayer(player),{direction,time,progress,timing,x,y,scale,weaponless});
       }
-      if(root.MareVisualCompletoRenderer?.draw(ctx,player,{scene,action,direction,time,progress,timing,x,y,scale,consumer})){draws++;return true;}
+      if(root.MareVisualCompletoRenderer?.draw(ctx,player,visualOptions)){draws++;return true;}
+      player=nativeFallbackPlayer(player);
       // Peers share this instance. Use the same approved native selectors
       // without the single-actor World request/abort boundary.
       const nativeConsumer=sharedLobby?'world':consumer;
@@ -368,6 +379,7 @@
       return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(point.y-spec.pivot.y)*scale,frame:4,weapon:value.look.weapon};
     }
     async function prepareVisual(player,options={}){
+      player=nativeFallbackPlayer(player);
       if(options.consumer==='world'){
         if(!player||player.zoanTransformed)return false;
         const action=worldAction(options.action||'idle');
@@ -387,12 +399,15 @@
     let worldRequest=null,worldDrawn=null,worldWarm=null,worldPrime=null,waitingPrime=null;
     const worldDirections=['north','east','south','west'];
     const locomotion=action=>action==='idle'||action==='walk';
-    const visualIdentity=(player,includeCosmetics=true)=>JSON.stringify([
+    const visualIdentity=(player,includeCosmetics=true)=>{
+      player=nativeFallbackPlayer(player);
+      return JSON.stringify([
       player.classId,player.factionId,player.appearance96,player.paperDollLook,
       Object.entries(player.equipment||{}).filter(([,item])=>item!=null).sort(([a],[b])=>a.localeCompare(b)).map(([slot,item])=>[slot,item.def??item,item.variant,item.variantId,item.appearanceVariant]),
       Headgear.hidden(includeCosmetics?player:{...player,cosmetics:null}),!!player.zoanTransformed,
       includeCosmetics?root.MareCosmeticArt?.selection(player):!!player.preferences?.hideHeadgear
-    ]);
+      ]);
+    };
     // Typed preview plans share the HD selector, not the World request's
     // singleton player identity. This cache is bounded and cannot paint a
     // plan prepared for an older avatar/draft.
@@ -528,6 +543,7 @@
         }finally{bundle?.release();}
     }
     function requestWorldVisual(player,options,{publish=true}={}){
+      player=nativeFallbackPlayer(player);
       const identity=visualIdentity(player),positions=approved,revision=positionRevision(positions);
       const key=worldPoseKey(player,options,identity,revision),scope={identity,revision};
       let entry=worldPoses.get(key);
@@ -636,7 +652,8 @@
         prepared,total:plan.planned.size,failed,essentialReady:essentialPosesSettled(plan)};
     }
     function primeWorldVisual(player,{direction='south',actions=[]}={}){
-      if(!player||player.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(player))return;
+      if(!player||player.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(player)&&!isLuffyVisual(player))return;
+      player=nativeFallbackPlayer(player);
       if(!approvedLoaded){waitingPrime={player,direction,actions};return;}
       const identity=visualIdentity(player),revision=positionRevision(approved),scope={identity,revision};
       if(!sameWorldIdentity(worldPrime,scope)){
@@ -678,7 +695,8 @@
     }
     function warmWorldVisual(player,{action,direction,weaponless=false}={}){
       if(!player||!action||!direction||!worldDrawn||worldWarm?.promise||worldRequest?.promise||
-         player.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(player))return false;
+         player.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(player)&&!isLuffyVisual(player))return false;
+      player=nativeFallbackPlayer(player);
       const identity=visualIdentity(player),revision=positionRevision(approved);
       if(!sameWorldIdentity(worldDrawn.entry,{identity,revision}))return false;
       const options={action:worldAction(action),direction:directionOf(direction),weaponless,consumer:'world'};
@@ -713,9 +731,14 @@
     function drawWorldVisual(ctx,options,player=worldRequest?.player,{publish=true}={}){
       if(!player)return false;
       const drawOptions={...options,direction:directionOf(options.direction)};
+      const luffyFallback=isLuffyVisual(player)&&!player.zoanTransformed;
       if(root.MareVisualCompletoRenderer?.equipped(player)){
-        if(publish)worldDrawn=null;
-        return root.MareVisualCompletoRenderer.draw(ctx,player,drawOptions);
+        const drawn=root.MareVisualCompletoRenderer.draw(ctx,player,drawOptions);
+        if(drawn||!luffyFallback){
+          if(publish)worldDrawn=null;
+          return drawn;
+        }
+        player=nativeFallbackPlayer(player);
       }
       if(waitingPrime&&!approvedLoaded)return false;
       const action=worldAction(options.action),weaponless=action!=='idle'&&!!options.weaponless;
@@ -725,14 +748,14 @@
       const now=publish?performance.now():null;
       let painted=requested,paintOptions=exact;
       if(!requested.bundle?.draw(ctx,player,exact)){
-        if(!publish||!worldDrawn)return false;
+        if(!publish||!worldDrawn&&!luffyFallback)return false;
         const held=sameWorldIdentity(worldPrime,requested)?worldPrime.handoff:null;
         if(held?.bundle&&held.hidesWeapon===requested.hidesWeapon&&
             held.options.action===action&&held.options.direction===exact.direction&&
             held.bundle.draw(ctx,held.player,exact))return true;
         painted=continuityPose(requested);
         if(!painted)return false;
-        const previous=worldDrawn.entry===painted?worldDrawn:null;
+        const previous=worldDrawn?.entry===painted?worldDrawn:null;
         // Use the held route's own animation clock. Attack progress and
         // contact timing only belong to the attack they were computed for.
         const clock=locomotion(painted.options.action)

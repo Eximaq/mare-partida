@@ -1618,7 +1618,7 @@
   function outputDamage(m,amount,crit=false,visual={},wear=null){if(!m||!m.alive||m.hp<=0||m.returning||m.isUntargetable||m.isInvulnerable||!Number.isFinite(amount)||amount<=0)return 0;MareMonsterBehavior.hurt(m);MareHaki.touch(game,session.haki);if(m.rankSFreezeUntil>world.time){amount+=m.rankSFreezePower||0;m.rankSFreezeUntil=0;m.rankAStunUntil=0;m.rankSIceSlowUntil=world.time+3;m.rankSIceHeavyAttackUntil=world.time+3;}const damage=Math.min(m.hp,Math.max(1,MareCharacters.monsterDamage(amount)));m.hp=Math.max(0,m.hp-damage);if(damage>0&&wear&&!ONLINE_GAME)MareForge.confirmWear(wear,game,itemDefs);MareSpriteCombatV2.hurt(m,damage,world.time,{protected:m.hp<=0||!!m.telegraph});m.hit=.25;game.stats.damage+=damage;const fruitVisual=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs);emitCombatVfx(MareCombatVfx.classify({fruitId:fruitVisual?.id,name:fruitVisual?.skills?.[0]?.name||'',damageType:fruitVisual?.family==='logia'?'magic':undefined,...visual}),m,visual);spawnVisual(m.x+rand(-8,8),m.y-40,String(damage),crit?'#ffcd73':'#fff5e4',crit?22:15);if(((getDerived().fruitLifesteal||0)>0||wolfAuraActive())&&!session.wolfLeechResolving){session.wolfLeechResolving=true;try{session.healingDone+=restoreHero(damage*((getDerived().fruitLifesteal||0)+(wolfAuraActive()?MareWolf.rules.lifesteal:0)),{ignoreEfficiency:true});}finally{session.wolfLeechResolving=false;}}if(m.hp<=0)killMob(m);return damage;}
   function basicAttackIdentity(){return game?.zoanTransformed&&equippedZoan()?equippedZoan().id:game?.classId+':'+game?.factionId;}
   function basicAttackPose(){const a=session?.basicAttack;return a?.clock.locked()?a.clock.snapshot():null;}
-  function cancelBasicAttack(){if(session?.basicAttack)session.basicAttack.clock.reset();if(session)session.basicAttack=null;if(world?.hero)world.hero.attackAnim=0;}
+  function cancelBasicAttack(){if(session?.basicAttack)session.basicAttack.clock.reset();if(session){session.basicAttack=null;session.classSkillPose=null;}if(world?.hero)world.hero.attackAnim=0;}
   function retimeAttack(clock,speed){
     const before=clock?.snapshot();if(!before?.scaled||!clock.setAttackSpeed(speed))return;
     const after=clock.snapshot();if(session.attackClock>0)session.attackClock*=after.duration/before.duration;
@@ -1645,7 +1645,7 @@
       playOrangeSfx(orangeBasicSfx());
       if(world.mobs.includes(m))heroAttack(m,mult,null,area,true,wear);
     }});
-    session.basicAttack={clock,identity,area:zone};world.hero.walking=0;syncBasicAttackVisual();return true;
+    session.basicAttack={clock,identity,area:zone};session.classSkillPose=null;world.hero.walking=0;syncBasicAttackVisual();return true;
   }
   function heroAttack(m,mult=1,skill=null,area=false,commit=false,wear=null){
     if(!commit&&actionLocked()||hoyaActive()||session.jikiCharge)return false;
@@ -1659,7 +1659,7 @@
       faceCombatTarget(m);world.hero.walking=0;
       const action=skill?'skill':classCombat.basicAction(game,world.hero),execution=wear||captureWear();
       const accepted=controller.play(action,{direction:world.hero.direction,...(!skill?{attackSpeed:s.speed}:{}),onImpact:()=>{if(!skill)playOrangeSfx(orangeBasicSfx());heroAttack(m,mult,skill,area,true,execution);}});
-      if(accepted){controller.visualClip=null;if(!skill)world.hero.combatSequence++;}
+      if(accepted){controller.visualClip=null;controller.visualSkillIndex=null;controller.visualClassId=null;controller.visualDirection=null;session.classSkillPose=null;if(!skill)world.hero.combatSequence++;}
       return accepted;
     }
     if(!controller&&!commit&&!skill)return beginBasicAttack(m,mult,area,s.speed);
@@ -1752,24 +1752,35 @@
         const effect=classSkillEffect(skill);if(effect)emitCombatVfx(effect,game.classId==='rogue'?world.hero:m);
       }
     };
+    let visualClock=controller;
     if(controller){
       const action=classCombat.basicAction(game,world.hero);
       if(!self)faceCombatTarget(m);
       if(!controller.play(action,{direction:world.hero.direction,onImpact:impact}))return false;
       world.hero.walking=0;
     }else if(!self||skill.type==='heal'){
-      faceCombatTarget(m);
+      if(!self)faceCombatTarget(m);
       const clock=MareCombatAnimation.create({attack:{frames:4,fps:8,impact_frame:2,loop:false}});
       clock.play('attack',{direction:skill.element==='lightning'?'south':world.hero.direction,onImpact:impact});
       session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};
+      visualClock=session.basicAttack;
       world.hero.walking=0;syncBasicAttackVisual();
     }
-    if(controller&&game.classId==='sword')controller.visualClip=({'Corte de Maré':'specialTide','Arco do Horizonte':'specialHorizon'})[skill.name]||null;
-    if(session.basicAttack&&game.classId==='sword')session.basicAttack.visualClip=({'Corte de Maré':'specialTide','Arco do Horizonte':'specialHorizon'})[skill.name]||null;
+    presentClassSkill(i,skill,visualClock);
     game.energy-=energyCost;session.skillEnergySpent+=energyCost;session.cooldowns[i]=MareAttributeRules.cooldown(MareAkumaPassives.cooldown(skill.cd,MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id),skill,getDerived())*(game.factionId==='government'?.92:1);
     session.skillUses=session.skillUses||[0,0];session.skillUses[i]++;
     if(!controller&&self&&skill.type!=='heal')impact();
     return true;
+  }
+  function presentClassSkill(index,skill,clock=null,duration=.5){
+    // Cosmetic metadata follows the accepted action; this never owns a combat impact.
+    session.classSkillPose=null;
+    if(clock){
+      clock.visualSkillIndex=index;clock.visualClassId=game.classId;clock.visualDirection=world.hero.direction;
+      clock.visualClip=game.classId==='sword'?({'Corte de Maré':'specialTide','Arco do Horizonte':'specialHorizon'})[skill.name]||null:null;
+    }else{
+      session.classSkillPose={index,classId:game.classId,area:game.area,direction:world.hero.direction,started:world.time,duration:Number.isFinite(duration)&&duration>0?duration:.5};
+    }
   }
   function useAutoSkills(stats){
     if(!autoPlay||!autoSkills||actionLocked()||world.time<(session.nextSkillDecision||0))return false;
@@ -2041,7 +2052,7 @@
     if(onlineBattleSeq===null)onlineBattleSeq=b.seq;
     for(const e of b.events.filter(e=>e.seq>onlineBattleSeq)){
       const m=world.mobs.find(m=>m.id===e.id);
-      if(e.type==='attack'&&m){faceCombatTarget(m);const clock=MareCombatAnimation.create({attack:game.zoanTransformed?MareZoanArt.attackTiming(equippedZoan().id,world.hero.direction):{frames:4,fps:8,impact_frame:2,loop:false}});clock.play('attack',{direction:world.hero.direction,attackSpeed:getDerived().speed});session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};syncBasicAttackVisual();}
+      if(e.type==='attack'&&m){faceCombatTarget(m);const clock=MareCombatAnimation.create({attack:game.zoanTransformed?MareZoanArt.attackTiming(equippedZoan().id,world.hero.direction):{frames:4,fps:8,impact_frame:2,loop:false}});clock.play('attack',{direction:world.hero.direction,attackSpeed:getDerived().speed});session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};session.classSkillPose=null;syncBasicAttackVisual();}
       if(e.type==='fruit'){if(e.kind==='jiki-impact')session.jikiFx.push({kind:e.projectile==='mass'?'blast':'rocket',x:e.x,y:e.y-24,angle:e.angle,started:world.time});if(e.kind==='bomu-impact')session.expansionFx.push({kind:e.key==='1'?'breath':'bomb',x:e.x,y:e.y-24,started:world.time});if(e.kind==='horu-heal')emitCombatVfx('heal',world.hero);if(e.fruitId==='akuma_supa_supa'&&e.key==='1'){const duration=MareSupaArt.animations.slash.duration/1000;world.fx.push({x:e.x,y:e.y-32,supaVfx:'slash',startedAt:Date.now(),life:duration,max:duration});}if(e.fruitId==='akuma_beta_beta'&&e.key==='1')session.rankBBursts.push({x:e.x,y:e.y,started:world.time});if(['akuma_uma_uma','akuma_inu_dachshund','akuma_tori_albatroz'].includes(e.fruitId))world.fx.push({x:e.x,y:e.y,zoanVfx:e.fruitId,followHero:true,life:e.fruitId==='akuma_tori_albatroz'?5:.75,max:e.fruitId==='akuma_tori_albatroz'?5:.75});}
       if(e.type==='kill'&&b.dungeon)toast('Vitória! Aproxime-se do baú para receber.','good');
       if(e.type==='kill'&&b.prison)toast('Andar Concluído · '+b.prison.floor,'good');
@@ -2051,7 +2062,20 @@
       if(e.type==='talent'){world.fx.push({x:m?.x??world.hero.x,y:m?.y??world.hero.y,ring:1,life:.5,max:.5,color:'#e5c47f'});}
       if(e.type==='damage'&&m&&!e.fruitId&&session.classSkillVisual?.until>=world.time&&['pontoFraco','corteMare','arcoHorizonte','dancaAdagas','rajadaEstilhacos','tempestadeCorrentes','protocoloProvocacao'].includes(session.classSkillVisual.kind)){const kind=session.classSkillVisual.kind;emitCombatVfx(kind,['dancaAdagas','protocoloProvocacao'].includes(kind)?world.hero:m,{source:'class'});session.classSkillVisual=null;}
       if(e.type==='hurt'){if(MareVisualCompletoRenderer.equipped(game))MareSpriteCombatV2.hurt(world.hero,e.amount,world.time,{protected:game.hp<=0});spawnVisual(world.hero.x,world.hero.y-70,'-'+Math.round(e.amount),'#ff9b94',15);world.hero.hit=.2;}
-      if(e.type==='skill'){const skill=classes[game.classId].skills[e.index];session.classSkillVisual={kind:classSkillEffect(skill),id:e.id,until:world.time+2};if(game.classId==='brawler'&&e.index===0)session.brawlerAnchor={id:e.id,until:world.time+(e.duration||1)+.5};if(!['heal','guard','blessing'].includes(skill.type)&&m){faceCombatTarget(m);const clock=MareCombatAnimation.create({attack:{frames:4,fps:8,impact_frame:2,loop:false}});clock.play('attack',{direction:world.hero.direction,attackSpeed:getDerived().speed});session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};syncBasicAttackVisual();if(game.classId==='sword')session.basicAttack.visualClip=({'Corte de Maré':'specialTide','Arco do Horizonte':'specialHorizon'})[skill.name]||null;}const ironBreath=!!classSkillEffect(skill);if(!ironBreath)world.fx.push({x:world.hero.x,y:world.hero.y,ring:1,life:.5,max:.5,color:classes[game.classId].color});if(['heal','guard','blessing'].includes(skill.type))emitCombatVfx(classSkillEffect(skill)||'heal',world.hero);}
+      if(e.type==='skill'){
+        const skill=classes[game.classId].skills[e.index];let visualClock=null;
+        session.classSkillVisual={kind:classSkillEffect(skill),id:e.id,until:world.time+2};
+        if(game.classId==='brawler'&&e.index===0)session.brawlerAnchor={id:e.id,until:world.time+(e.duration||1)+.5};
+        if(!['heal','guard','blessing'].includes(skill.type)&&m){
+          faceCombatTarget(m);const clock=MareCombatAnimation.create({attack:{frames:4,fps:8,impact_frame:2,loop:false}});
+          clock.play('attack',{direction:world.hero.direction,attackSpeed:getDerived().speed});
+          session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};visualClock=session.basicAttack;syncBasicAttackVisual();
+        }
+        presentClassSkill(e.index,skill,visualClock,e.duration);
+        const ironBreath=!!classSkillEffect(skill);
+        if(!ironBreath)world.fx.push({x:world.hero.x,y:world.hero.y,ring:1,life:.5,max:.5,color:classes[game.classId].color});
+        if(['heal','guard','blessing'].includes(skill.type))emitCombatVfx(classSkillEffect(skill)||'heal',world.hero);
+      }
     }
     onlineBattleSeq=b.seq;
     if(currentPanel==='hunt')renderPanel();
@@ -3018,8 +3042,8 @@
     return '<div class="op-item-actions">'+primary+'<button type="button" class="op-action secondary" data-inv-lock="'+id+'" aria-pressed="'+Boolean(item.locked)+'">'+inventoryIcon(item.locked?'unlock':'lock')+'<span class="op-action-copy">'+(item.locked?'DESBLOQUEAR':'BLOQUEAR')+'</span></button><button type="button" class="op-action secondary" data-sell="'+id+'" '+(saleDisabled?'disabled title="'+escapeHTML(MareInventoryBatch.reason(item,itemDefs,game.equipment))+'"':'')+'>'+inventoryIcon('berry')+'<span class="op-action-copy"><strong>VENDER</strong><small>'+fmt(sellPrice(item))+' Berry</small></span></button><button type="button" class="op-action secondary" data-inventory-forge="'+id+'">'+inventoryIcon('forge')+'<span class="op-action-copy">FORJA</span></button></div>';
   }
   function visualItemDetail(item){
-    const def=itemBase(item),eq=hasEquipped(item),id=escapeHTML(item.id);
-    return '<div class="op-detail-wrap"><div class="op-detail-head"><div class="op-detail-icon">'+itemIcon(item.def,def.name)+'</div><div><h3>'+escapeHTML(def.name)+'</h3><small>Visual Completo · Exclusivo de Espadachim</small></div></div><p class="op-cosmetic-scope">Cosmético — altera apenas a aparência</p><div class="op-detail-box"><p>'+escapeHTML(def.description)+'</p></div><div class="op-item-actions">'+(eq?'<button type="button" class="op-action primary" data-unequip="visual_completo" '+(game.inventory.length>=BAG_CAPACITY?'disabled':'')+'>RETIRAR</button>':'<button type="button" class="op-action primary" data-equip="'+id+'" '+(game.classId!==def.requiredClass?'disabled':'')+'>EQUIPAR</button>')+'<button type="button" class="op-action secondary" data-inv-lock="'+id+'">'+(item.locked?'DESBLOQUEAR':'BLOQUEAR')+'</button></div></div>';
+    const def=itemBase(item),eq=hasEquipped(item),id=escapeHTML(item.id),classLabel=def.id==='visual_completo_luffy'?'Todas as classes':'Exclusivo de Espadachim';
+    return '<div class="op-detail-wrap"><div class="op-detail-head"><div class="op-detail-icon">'+itemIcon(item.def,def.name)+'</div><div><h3>'+escapeHTML(def.name)+'</h3><small>Visual Completo · '+classLabel+'</small></div></div><p class="op-cosmetic-scope">Cosmético — altera apenas a aparência</p><div class="op-detail-box"><p>'+escapeHTML(def.description)+'</p></div><div class="op-item-actions">'+(eq?'<button type="button" class="op-action primary" data-unequip="visual_completo" '+(game.inventory.length>=BAG_CAPACITY?'disabled':'')+'>RETIRAR</button>':'<button type="button" class="op-action primary" data-equip="'+id+'" '+(MareVisualCompleto.canEquip(game,def)?'':'disabled')+'>EQUIPAR</button>')+'<button type="button" class="op-action secondary" data-inv-lock="'+id+'">'+(item.locked?'DESBLOQUEAR':'BLOQUEAR')+'</button></div></div>';
   }
   function inventoryDetail(sel){
     if(!sel)return `<div class="op-detail-wrap op-detail-empty"><div class="op-detail-icon empty">${inventoryIcon('search')}</div><div><h3>Nenhum item selecionado</h3><small>Escolha um item da mochila ou um slot equipado.</small></div><p>Use os filtros centrais para localizar armas, armaduras, consumíveis e materiais.</p></div>`;
@@ -3894,14 +3918,29 @@
   function drawCrate(x,y){px(ctx,x-13,y-17,30,26,'#634e38');px(ctx,x-10,y-13,24,20,'#9f8158');px(ctx,x-10,y-12,24,3,'#c29b66');px(ctx,x-2,y-13,3,20,'#5f4938');px(ctx,x-10,y+3,24,3,'#614b36');}
   function drawRuin(x,y){px(ctx,x-10,y-18,23,24,'#52635c');px(ctx,x-12,y-25,27,9,'#859385');px(ctx,x-8,y-19,5,25,'#98a18a');px(ctx,x+8,y-19,5,25,'#3e594d');px(ctx,x-18,y+6,39,9,'#53695e');}
   function drawPaperDoll(c,x,y,action,direction,time,scale=null,progress=null,timing=null,worldView=false,mapSilhouette=false){
-    const unarmed=!!fruitPunchPose();
+    const unarmed=!!fruitPunchPose(),canShowSkill=!['hurt','death'].includes(action);let skillIndex=null;
     if((worldView||mapSilhouette)&&MareVisualCompletoRenderer.equipped(game)){
-      const visualClip=world.hero.combat?.locked()?world.hero.combat.visualClip:session.basicAttack?.visualClip;
+      const luffy=MareVisualCompletoRenderer.skinId?.(game)==='visual_completo_luffy';
+      const visualClock=world.hero.combat?.locked()?world.hero.combat:session.basicAttack?.clock?.locked()?session.basicAttack:null;
+      const visualClip=visualClock?.visualClip;
       if(action==='hurt'){const reaction=MareSpriteCombatV2.hurtProgress(world.hero,world.time);action=reaction===null?'idle':'hurt';progress=reaction??0;}
-      else if(!unarmed&&timing?.locked&&visualClip&&!['hurt','death'].includes(action))action=visualClip;
+      else if(!luffy&&!unarmed&&timing?.locked&&visualClip&&!['hurt','death'].includes(action))action=visualClip;
       else if(!timing?.locked&&!session.fruitAction&&game.hp>0&&!session.zoanTransition?.effect){const reaction=MareSpriteCombatV2.hurtProgress(world.hero,world.time);if(reaction!==null){action='hurt';progress=reaction;}}
+      if(luffy){
+        const self=session.classSkillPose;
+        if(self&&(scene!=='hunt'||self.area!==game.area||self.classId!==game.classId||world.time<self.started||world.time>=self.started+self.duration||game.hp<=0||unarmed||session.zoanTransition?.effect))session.classSkillPose=null;
+        if(canShowSkill&&!unarmed&&!['hurt','death'].includes(action)&&game.hp>0&&!session.zoanTransition?.effect){
+          const presentation=session.classSkillPose;
+          if(presentation){
+            skillIndex=presentation.index;action='skill';direction=presentation.direction;time=world.time-presentation.started;progress=time/presentation.duration;
+            timing={action,locked:true,direction,elapsed:time,duration:presentation.duration,progress,hitFrameRatio:.5};
+          }else if(timing?.locked&&visualClock?.visualClassId===game.classId&&(visualClock.visualSkillIndex===0||visualClock.visualSkillIndex===1)){
+            skillIndex=visualClock.visualSkillIndex;direction=visualClock.visualDirection||direction;
+          }
+        }
+      }
     }
-    const options={scene,action:unarmed&&action!=='hurt'?'attack-unarmed':action,direction,time,progress,timing,x,y,scale,worldView,weaponless:unarmed,consumer:mapSilhouette?'world-silhouette':worldView?'world':c.canvas.id||'preview'};
+    const options={scene,classId:game.classId,skillIndex,action:unarmed&&action!=='hurt'?'attack-unarmed':action,direction,time,progress,timing,x,y,scale,worldView,weaponless:unarmed,freeHandPower:unarmed,consumer:mapSilhouette?'world-silhouette':worldView?'world':c.canvas.id||'preview'};
     return lobby96.draw(c,game,options);
   }
   function drawPlayerSprite(c,x,y,mapSilhouette=false){
@@ -3952,7 +3991,7 @@
     const hero=world.hero,attack=hero.attackAnim>0&&scene==='hunt',moving=hero.walking>0&&!betaEquipped();
     const zoan=game.zoanTransformed?equippedZoan():null;
     if(zoan)return drawUpdatedZoan(c,zoan,x,y,moving);
-    const combat=classCombatController(),pose=fruitPunchPose()||combat?.snapshot()||basicAttackPose(),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
+    const combat=classCombatController(),classPose=combat?.snapshot(),pose=fruitPunchPose()||(classPose?.locked?classPose:basicAttackPose()||classPose),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
     const gait=lobby96.walkPose(hero);
     const dollAction=requested==='walk'&&gait&&!gait.moving?'idle':requested,dollTime=dollAction==='walk'&&gait?gait.time:pose?.locked?pose.elapsed:world.time;
     // Some melee identities have no skill controller; reuse their real attack clip

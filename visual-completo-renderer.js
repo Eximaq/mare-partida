@@ -2,9 +2,13 @@
 (function(root){
  'use strict';
  const base='assets/skins/visual-completo/zoro/',aliases={front:'south',back:'north',left:'west',right:'east'};
- const equipped=player=>player?.classId==='sword'&&player?.equipment?.visual_completo?.def===187;
+ const luffy=root.MareLuffyVisual||(typeof require==='function'?require('./visual-completo-luffy.js'):null);
+ const zoroEquipped=player=>player?.classId==='sword'&&player?.equipment?.visual_completo?.def===187;
+ const equipped=player=>zoroEquipped(player)||!!luffy?.equipped(player);
+ const skinId=player=>luffy?.equipped(player)?'visual_completo_luffy':zoroEquipped(player)?'visual_completo_zoro':null;
  const clamp=n=>Math.max(0,Math.min(1,n));
  function pose(atlas,player,options={}){
+  if(luffy?.equipped(player))return luffy.pose(atlas,player,options);
   if(!equipped(player)||player.zoanTransformed||options.action==='death')return null;
   const requested=options.action||'idle';
   let action=requested;
@@ -64,7 +68,8 @@
   requests.set(key,task);
   return task;
  }
- async function prepare(){
+ async function prepare(player,options={}){
+  if(luffy?.equipped(player))return luffy.prepare(player,options);
   if(!await loadAtlas())return false;
   return (await Promise.all(Object.keys(atlas.sources).filter(key=>key!=='icon').map(loadSource))).every(Boolean);
  }
@@ -93,6 +98,7 @@
   return fit(ctx,raster,pose.scale,{zoom:null});
  }
  function draw(ctx,player,options={}){
+  if(luffy?.equipped(player)){const drawn=luffy.draw(ctx,player,options);if(drawn)last=luffy.snapshot().last;return drawn;}
   if(!equipped(player)||player.zoanTransformed)return false;
   if(!atlas){void loadAtlas();return false;}
   const p=pose(atlas,player,options);if(!p)return false;
@@ -118,6 +124,6 @@
   last={action:p.action,direction:p.direction,frame:p.index,scale,consumer:options.consumer||'world',
    ...(anchored?{footAnchor:{x,y},multiplier:scale/p.scale}:{})};return true;
  }
- const api={equipped,pose,draw,prepare,snapshot:()=>({ready:!!atlas,error:failure,last})};
+ const api={equipped,skinId,pose,draw,prepare,snapshot:()=>last?.skinId==='visual_completo_luffy'?luffy.snapshot():({ready:!!atlas,error:failure,last})};
  root.MareVisualCompletoRenderer=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

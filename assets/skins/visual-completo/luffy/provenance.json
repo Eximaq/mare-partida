@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "skinId": "visual_completo_luffy",
+  "itemDef": 246,
+  "sourceGameCommit": "0f16abcd20740e3e03c00c2aaee2370b0f6f47ff",
+  "integrationBaseCommit": "c55d68d3a6cda29d314f42e3e8381113aa7981d7",
+  "pullRequest": "https://github.com/Eximaq/mare-partida/pull/398",
+  "artMethod": "Raster art generated with imagegen from Luffy costume references and the native HD protagonist poses. Technical packing preserves original RGBA pixels without resampling.",
+  "costumeReference": "https://tamashiiweb.com/item/14796/?wovn=en",
+  "itemIcon": {
+    "file": "icon.png",
+    "origin": "User supplied Luffy em pixel art com moldura dourada(1).png, copied byte for byte",
+    "sha256": "dacdb2dda30e5b395579f6a1d293b0173df2411f7f82b313f8f2d602e174f4df"
+  },
+  "counts": {
+    "clips": 85,
+    "loadouts": 17,
+    "directionalAtlases": 340,
+    "framesPerDirection": 8,
+    "frames": 2720,
+    "generatedSourceSheets": 255,
+    "sourcePoses": 2040,
+    "mirroredWestFrames": 680
+  },
+  "west": "Per-frame horizontal mirror of East, same time order. This also mirrors asymmetries and equipment handedness.",
+  "skillBodies": "Shared offensive/channeling poses are declared bodyShared in atlas.json; existing gameplay clocks and VFX remain authoritative.",
+  "runtime": "Only the currently requested source is loaded; decoded image cache is limited to 12 atlases. Missing images fall back to the native character.",
+  "review": {
+    "sourceSheetsInspected": 255,
+    "assetChecks": 21768,
+    "assetErrors": 0,
+    "previewRuntimeAssertions": 3588,
+    "browserExecuted": false,
+    "gameplayCapture": false,
+    "projectileSocketsValidated": false,
+    "approved": false,
+    "productionEnabled": false,
+    "integrationChecks": {
+      "foundation": {
+        "tests": 263,
+        "passed": 263,
+        "failed": 0
+      },
+      "focused": {
+        "tests": 72,
+        "passed": 72,
+        "failed": 0
+      },
+      "typecheckExit": 0,
+      "buildCodeExit": 0,
+      "fullTestExit": 1,
+      "syntaxAndDiffCheckExit": 0,
+      "legacy": {
+        "files": 357,
+        "passed": 122,
+        "failed": 235,
+        "categories": {
+          "asset_or_fixture_assertion": 13,
+          "missing_checkout_file_or_module": 217,
+          "preexisting_fixture_reference_error": 1,
+          "preexisting_behavior_assertion": 4
+        }
+      },
+      "staticPagesBuild": {
+        "exit": 1,
+        "missing": "tools/rework-modular-outfits-hd/index.json.gz",
+        "reason": "preexisting asset index absent from selective checkout",
+        "distWritten": false
+      }
+    }
+  },
+  "notes": [
+    "approved and productionEnabled document review status; this PR is not merged or deployed.",
+    "Detailed original sheets, prompts and review video are supplied in the separate art package rather than shipping in the game."
+  ],
+  "runtimeAtlasBytes": 360774831
+}
