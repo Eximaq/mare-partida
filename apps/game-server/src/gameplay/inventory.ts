@@ -50,14 +50,15 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
  }
  for(const k of kills){
   const r=k.reward;xp+=BigInt(r.xp);gold+=BigInt(crewMonsterBerry(r.gold,battle.catalog.factions[identity.faction_id].gold,passives.monsterBerryBonus));
-  if(after.inventory.length<120){const plan=forge.normalLoot(defs,state.level,battle.hunt.get(k.area),random);if(plan){const item=make(plan.def,plan.level,plan.rarity,battle.hunt.get(k.area).name);item.generation.source='map:'+k.area;after.inventory.unshift(item);}}
-  if(forge.mapFragmentChance(k.monster)>0&&random()<forge.mapFragmentChance(k.monster)){
+  if(after.inventory.length<120){const plan=forge.normalLoot(defs,state.level,battle.hunt.get(k.area),random,k.monster);if(plan){const item=make(plan.def,plan.level,plan.rarity,battle.hunt.get(k.area).name);item.generation.source='map:'+k.area;after.inventory.unshift(item);}}
+  const fragmentRank=forge.rollMapFragment(k.monster,random);
+  if(fragmentRank){
    const fragments=require('../../../../boss-dungeon-system.js'),origin='Caçada · '+battle.hunt.get(k.area).name;
-   const fragment=fragments.addMapFragment(after.inventory,defs,origin,randomUUID);
+   const fragment=fragments.addTradeableFragment(after.inventory,defs,fragmentRank,origin,randomUUID);
    if(!fragment)await sendOfficialMail(client,id,{
-    source:'event',sourceId:k.id,rewardId:'map-rank-d',title:'Fragmento de Akuma Rank D',
+    source:'event',sourceId:k.id,rewardId:'map-akuma-fragment',title:'Fragmento de Akuma no Mi · Rank '+fragmentRank,
     message:'A mochila estava cheia. O fragmento da caçada foi enviado pelo Correio.',
-    makeAttachments:()=>[fragments.addMapFragment([],defs,origin,randomUUID)],
+    makeAttachments:()=>[fragments.addTradeableFragment([],defs,fragmentRank,origin,randomUUID)],
    });
   }
   if(random()<Math.min(1,r.potionChance*lootMultiplier))after.potions=Math.min(1000000000,after.potions+r.potions);
@@ -78,7 +79,8 @@ export function validateInventoryItem(item:OriginalItemInstance,owner?:string){
   const def=defs[item.def];
   if(def?.kind==='sword-fragment'&&(!item.qty||item.binding||item.boundToCharacter||item.quantity!==undefined))throw new AuthFault(503,'original_inventory_unavailable');
   if((item.type==='akuma_no_mi'||item.fruitId!==undefined)&&(def?.type!=='akuma_no_mi'||item.fruitId!==def.fruitId))throw new AuthFault(503,'original_inventory_unavailable');
-  if(def?.kind==='weapon-fragment'&&(item.materialId!==def.materialId||!item.quantity||!item.boundToCharacter||item.binding!=='character'))throw new AuthFault(503,'original_inventory_unavailable');
+  if(def?.kind==='weapon-fragment'&&(item.materialId!==def.materialId||!item.quantity||(def.materialId==='epic_weapon_fragment'&&(!item.boundToCharacter||item.binding!=='character'))))throw new AuthFault(503,'original_inventory_unavailable');
+  if(def?.kind==='sword-collection'&&(item.binding||item.boundToCharacter||item.materialId!==undefined||item.quantity!==undefined))throw new AuthFault(503,'original_inventory_unavailable');
   if(def?.kind==='xp-boost'&&item.quantity!==undefined)throw new AuthFault(503,'original_inventory_unavailable');
   if((item.binding==='character')!==!!item.boundToCharacter)throw new AuthFault(503,'original_inventory_unavailable');
   if(def?.kind==='akuma-fragment'&&(item.materialId!==def.materialId||item.rank!==def.rank||!item.quantity))throw new AuthFault(503,'original_inventory_unavailable');
@@ -451,7 +453,7 @@ export async function mutateOriginalInventory(
     } else if (input.action === "items.open-box") {
       const box=i.inventory.find(x=>x.id===input.payload.itemId);if(!box)throw new AuthFault(404,'item_not_found');
       const result=defs[box.def]?.kind==='epic-equipment-box'
-        ?require('../../../../boss-dungeon-system.js').openEpicBox(i,box.id,defs,random,Date.now())
+        ?require('../../../../boss-dungeon-system.js').openEpicBox({...i,characterId:id},box.id,defs,random,Date.now())
         :require('../../../../prison-system.js').openBox(i,box.id,defs,random,Date.now());
       if(!result.ok)throw new AuthFault(409,box.locked?'item_protected':'box_unavailable');
       i={...i,inventory:result.state.inventory};outcome={consumed:box.id,created:result.item.id};

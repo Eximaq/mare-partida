@@ -24,8 +24,10 @@ source=source.replace(hook,`  window.__skyQA={paused:true,stepping:false,
   if(!p)throw Error('No adjacent walkable encounter position');Object.assign(world.hero,p);m.attackClock=10;
   camera.update(world.hero,activeMap(),0,true);presentWorld();},
  arrival(){this.stop();Object.assign(world.hero,activeMap().spawn);camera.update(world.hero,activeMap(),0,true);presentWorld();},
- returnScreen(){const p=activeMap().returnPoint,r=canvas.getBoundingClientRect(),s=camera.worldToScreen(p.x,p.y);return {x:r.left+s.x*r.width/W,y:r.top+s.y*r.height/H};},
- approachReturn(){const r=activeMap().returnPoint,n=navigator();this.stop();const p=[[96,0],[0,96],[-96,0],[0,-96]].map(([dx,dy])=>({x:r.x+dx,y:r.y+dy})).find(p=>n.walkable(p.x,p.y)&&n.clear(p,r));if(!p)throw Error('No clear mobile approach to return dais');Object.assign(world.hero,p);camera.update(world.hero,activeMap(),0,true);presentWorld();}
+ // Synchronous fixture steps move the hero before the animation frame catches
+ // up. Settle the real camera before translating the upcoming pointer click.
+ returnScreen(){camera.update(nameplateCameraFocus(),activeMap(),0,true,world.hero);presentWorld();const p=activeMap().returnPoint,r=canvas.getBoundingClientRect(),s=camera.worldToScreen(p.x,p.y);return {x:r.left+s.x*r.width/W,y:r.top+s.y*r.height/H};},
+ approachReturn(){const r=activeMap().returnPoint,n=navigator();this.stop();const p=[[96,0],[0,96],[-96,0],[0,-96]].map(([dx,dy])=>({x:r.x+dx,y:r.y+dy})).find(p=>n.walkable(p.x,p.y)&&n.clear(p,r)&&n.path(world.hero,p).length);if(!p||!walkTo(p))throw Error('No walking route from the entrance to the return dais');return p;}
  };\n`+hook);
 
 (async()=>{
@@ -33,7 +35,7 @@ source=source.replace(hook,`  window.__skyQA={paused:true,stepping:false,
  const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
  let page,phase='boot';const errors=[],missing=[],results={destinations:[]};
  try{
-  const context=await browser.newContext({viewport:{width:1366,height:768}});page=await context.newPage();
+  const context=await browser.newContext({viewport:{width:1366,height:768},deviceScaleFactor:1});page=await context.newPage();
   page.setDefaultTimeout(30000);page.on('pageerror',e=>errors.push(e.message));
   page.on('response',r=>{if(r.status()>=400&&/skypiea|satori|shura|gendatsu|ohm/.test(r.url()))missing.push({status:r.status(),url:r.url()});});
   await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));
@@ -42,7 +44,9 @@ source=source.replace(hook,`  window.__skyQA={paused:true,stepping:false,
   const openMap=async()=>{await page.evaluate(()=>__skyQA.open('map'));await page.locator('[data-voyage-region=skypiea]').click();await page.waitForFunction(()=>[...document.querySelectorAll('[data-island] [data-location-art]')].every(im=>im.complete&&im.naturalWidth>0));const art=await page.evaluate(()=>({cards:[...document.querySelectorAll('[data-island] [data-location-art]')].map(im=>im.getAttribute('src')),backdrop:getComputedStyle(document.querySelector('.voyage-map')).backgroundImage,scene:MareSkypiea.data.groundUrl}));assert.equal(art.cards.length,4);assert(art.cards.every(src=>src===art.scene),'all four cards show the active map artwork');assert(art.backdrop.includes(art.scene),'region backdrop shows the active map artwork');};
   const travel=async id=>{await openMap();assert.equal(await page.locator('[data-island]').count(),4);await page.locator('[data-island="'+id+'"]').click();await page.locator('[data-travel-area="'+id+'"]').click();await page.waitForFunction(id=>__mareDiagnostics().map.id===id&&__skyQA.state()==='ready',id,{timeout:60000});};
   const returnThroughDais=async()=>{
-   await page.evaluate(()=>__skyQA.arrival());if(page.viewportSize().width<640)await page.evaluate(()=>__skyQA.approachReturn());const p=await page.evaluate(()=>__skyQA.returnScreen());
+   const approach=await page.evaluate(()=>{const q=__skyQA;q.arrival();const target=q.approachReturn();let steps=0;for(;steps<800&&Math.hypot(q.world.hero.x-target.x,q.world.hero.y-target.y)>3;steps++)q.step(.05);return {target,hero:{x:q.world.hero.x,y:q.world.hero.y},steps};});
+   assert(Math.hypot(approach.hero.x-approach.target.x,approach.hero.y-approach.target.y)<=3,'the real movement loop must traverse the winged gate');
+   const p=await page.evaluate(()=>__skyQA.returnScreen());
    await page.mouse.click(p.x,p.y);
    const returned=await page.evaluate(()=>{const q=__skyQA;for(let i=0;i<400&&__mareDiagnostics().map.id!=='lobby';i++)q.step(.05);return __mareDiagnostics().map.id;});
    assert.equal(returned,'lobby','clicking the dais must walk to it and return to the port');await ready();
@@ -55,20 +59,34 @@ source=source.replace(hook,`  window.__skyQA={paused:true,stepping:false,
    phase='travel '+id;await travel(id);
    await page.waitForFunction(type=>MareSpriteCombatV2.status(type,'walk','south')==='ready',type,{timeout:60000});
    const state=await page.evaluate(()=>{const q=__skyQA;q.stop();return {id:__mareDiagnostics().map.id,arrival:{x:q.world.hero.x,y:q.world.hero.y},mobs:q.world.mobs.map(m=>[m.spawnId,m.type,m.level]),routes:q.world.mobs.every(m=>q.nav().path(q.world.hero,m).length>0),outside:q.nav().walkable(64,64)};});
-   assert.equal(state.id,id);assert.deepEqual(state.arrival,{x:1296,y:2190});assert.equal(state.mobs.length,6);assert(state.mobs.every(m=>m[0].startsWith(id+'-')&&m[1]===type&&m[2]===level));assert(state.routes);assert.equal(state.outside,false);
+   assert.equal(state.id,id);assert.deepEqual(state.arrival,{x:534,y:2604},'real travel must arrive at the owner-marked entrance');assert.equal(state.mobs.length,6);assert(state.mobs.every(m=>m[0].startsWith(id+'-')&&m[1]===type&&m[2]===level));assert(state.routes);assert.equal(state.outside,false);
    if(id==='skypiea-01'){
     phase='scaled scene rendering';
     const pixels=await page.evaluate(()=>{
-     const S=MareSkypiea,checks=[];
-     for(const [x,y]of [[1170,2100],[2220,1350],[3450,900]]){
-      const rendered=document.createElement('canvas'),expected=document.createElement('canvas');rendered.width=expected.width=180;rendered.height=expected.height=120;
-      const a=rendered.getContext('2d'),b=expected.getContext('2d');a.translate(-x,-y);S.ground(a,{x,y},180,120);
-      b.imageSmoothingEnabled=false;b.drawImage(S.image,x/3,y/3,60,40,0,0,180,120);
-      const actual=a.getImageData(0,0,180,120).data,want=b.getImageData(0,0,180,120).data;
-      let different=0;for(let i=0;i<actual.length;i++)different+=Number(actual[i]!==want[i]);checks.push({x,y,different});
-     }return {natural:[S.image.naturalWidth,S.image.naturalHeight],checks};
+     const S=MareSkypiea,checks=[],iw=S.image.naturalWidth,ih=S.image.naturalHeight;
+     // A fractional scale can place an output pixel centre exactly between
+     // source texel centres. Either adjacent texel is a valid nearest sample.
+     // Every other pixel must match its sole source texel exactly: no colour
+     // tolerance, softened edges or general allowance for differences.
+     const nearest=(v,limit)=>{const edge=Math.round(v);return (Math.abs(v-edge)<1e-8?[edge-1,edge]:[Math.floor(v)]).filter(n=>n>=0&&n<limit);};
+     for(const [x,y]of [[470,2325],[480,2520],[2220,1350],[3450,900]]){
+      const rendered=document.createElement('canvas'),original=document.createElement('canvas');rendered.width=180;rendered.height=120;
+      const sx=Math.max(0,Math.floor(x*iw/S.data.width)-1),sy=Math.max(0,Math.floor(y*ih/S.data.height)-1);
+      original.width=Math.min(iw-sx,Math.ceil((x+180)*iw/S.data.width)-sx+1);original.height=Math.min(ih-sy,Math.ceil((y+120)*ih/S.data.height)-sy+1);
+      const a=rendered.getContext('2d'),b=original.getContext('2d');a.translate(-x,-y);S.ground(a,{x,y},180,120);
+      b.drawImage(S.image,-sx,-sy); // Read native source pixels without scaling.
+      const actual=a.getImageData(0,0,180,120).data,want=b.getImageData(0,0,original.width,original.height).data;
+      let invalidSamples=0,tiePixels=0;
+      for(let dy=0;dy<120;dy++)for(let dx=0;dx<180;dx++){
+       const i=(dy*180+dx)*4,xs=nearest((x+dx+.5)*iw/S.data.width,iw),ys=nearest((y+dy+.5)*ih/S.data.height,ih);
+       tiePixels+=Number(xs.length>1||ys.length>1);
+       const matches=ys.some(py=>xs.some(px=>[0,1,2,3].every(c=>actual[i+c]===want[((py-sy)*original.width+px-sx)*4+c])));
+       invalidSamples+=Number(!matches);
+      }
+      checks.push({x,y,invalidSamples,tiePixels});
+     }return {natural:[S.image.naturalWidth,S.image.naturalHeight],declared:[S.data.imageWidth,S.data.imageHeight],zoom:__mareDiagnostics().camera.zoom,checks};
     });
-    assert.deepEqual(pixels.natural,[1536,1024]);assert(pixels.checks.every(c=>c.different===0),JSON.stringify(pixels));results.render=pixels;
+    assert.deepEqual(pixels.natural,pixels.declared);assert(pixels.natural[0]>=3072&&pixels.natural[1]>=2048,'the browser must load the HD source');assert.equal(pixels.zoom,1,'inspect the map at 100% game zoom');assert(pixels.checks.every(c=>c.invalidSamples===0),JSON.stringify(pixels));results.render=pixels;
     await shot('skypiea-new-arrival-desktop');
    }
    phase='combat '+id;await page.evaluate(()=>__skyQA.stage());await page.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready');await shot(id+'-combat');
@@ -83,7 +101,7 @@ source=source.replace(hook,`  window.__skyQA={paused:true,stepping:false,
   assert.equal(reloaded.area,saved.area);assert.equal(reloaded.kills,saved.kills);assert.deepEqual(reloaded.respawns,saved.respawns);assert(reloaded.walkable);results.reload=true;
   phase='mobile';await page.setViewportSize({width:393,height:852});await openMap();
   const bounds=await page.locator('#panelOverlay .dialog').boundingBox();assert(bounds.x>=-1&&bounds.y>=-1&&bounds.x+bounds.width<=394&&bounds.y+bounds.height<=853);assert(await page.locator('#dialogBody').evaluate(e=>e.scrollWidth<=e.clientWidth+1));await shot('skypiea-new-mobile-tabs');
-  await page.locator('[data-island=skypiea-04]').click();await page.locator('[data-travel-area=skypiea-04]').click();await page.waitForFunction(()=>__mareDiagnostics().map.id==='skypiea-04'&&__skyQA.state()==='ready');await page.evaluate(()=>__skyQA.arrival());await shot('skypiea-new-arrival-mobile');
+  await page.locator('[data-island=skypiea-04]').click();await page.locator('[data-travel-area=skypiea-04]').click();await page.waitForFunction(()=>__mareDiagnostics().map.id==='skypiea-04'&&__skyQA.state()==='ready');const mobileArrival=await page.evaluate(()=>{__skyQA.stop();return {x:__skyQA.world.hero.x,y:__skyQA.world.hero.y};});assert.deepEqual(mobileArrival,{x:534,y:2604});await shot('skypiea-new-arrival-mobile');
   phase='mobile return';await returnThroughDais();
   assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);results.viewports=['1366x768','393x852'];results.returnByClick=true;
   fs.writeFileSync(path.join(out,'skypiea-browser-results.json'),JSON.stringify({...results,errors,missing},null,2)+'\n');console.log(JSON.stringify({...results,errors,missing}));

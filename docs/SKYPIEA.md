@@ -1,11 +1,13 @@
-# Skypiea — novo mapa celestial
+# Skypiea — mapa celestial em 4K
 
 ## Cenário atual — 27/11/2026
 
 O proprietário autorizou a criação de um mapa novo para substituir o cenário dos quatro destinos existentes. A arte mostra uma ilha sobre o mar de nuvens, com caminhos de pedra em circuito, praça central, jardins, ruínas de Shandora, entrada alada, grandes cipós e sino dourado. A mesma imagem é usada no mundo, nos quatro cards e no fundo da seleção de Skypiea.
 
-- Imagem original: `assets/skypiea/celestial-island/scene.png`, 1536 × 1024 pixels, sem alteração dos pixels gerados.
-- Mundo: **4608 × 3072 unidades**, escala inteira 3×, desenho sem suavização.
+- Imagem atual: `assets/skypiea/celestial-island/scene-4k.webp`, **4096 × 2731 pixels**. Nove trechos de 1536 × 1024 foram gerados com detalhe novo a partir de recortes sobrepostos de 576 × 384 da composição original, depois montados sem ampliar esses trechos. As junções seguem regiões de menor diferença e o céu recebe transição de cor suave.
+- Arquivo do jogo: **10.558.968 bytes**, WebP near-lossless sem subamostragem de cor; diferença máxima de 4/255 por canal frente ao PNG master preservado, com PSNR de 42,27 dB. A otimização mantém a resolução inteira.
+- Mundo: **4608 × 3072 unidades**, preservando o tamanho dos personagens. A ampliação horizontal da textura caiu de 3× para **1,125×**; a textura contém aproximadamente **7,1 vezes** mais pixels. O renderer usa as dimensões reais da imagem e continua sem suavização.
+- A grade de projeto de 1536 × 1024 e seu fator 3 continuam definindo as coordenadas do mundo; não representam a resolução da textura atual.
 - Proveniência, prompt e SHA-256: `assets/skypiea/celestial-island/provenance.json`.
 - Dados: `skypiea-map-data.js`; renderer e mapas: `skypiea-world.js`.
 - Uma imagem compartilhada e carregada sob demanda; nenhuma cópia por destino e nenhuma requisição por frame.
@@ -23,7 +25,7 @@ Cada destino mantém seis encontros e os IDs `skypiea-0N-0` a `skypiea-0N-5`. Os
 
 ## Navegação e profundidade
 
-Os quatro destinos chegam em **(1296, 2190)**, ao lado do círculo turquesa. O retorno clicável fica em **(1068, 2190)**, separado da chegada para evitar uma saída imediata. A malha de navegação usa células de 16 unidades e a pegada existente de 32 × 20.
+Os quatro destinos chegam em **(534, 2604)**, no caminho de pedra diante do portão alado: centro do X marcado pelo proprietário, equivalente a (178, 868) na grade de projeto. A passagem pelo portão dá acesso ao restante da ilha. O retorno clicável continua em **(1068, 2190)**, no círculo turquesa. A malha de navegação usa células de 16 unidades e a pegada existente de 32 × 20.
 
 A borda caminhável segue o chão da imagem. Céu, casas e o santuário além da praça ficam bloqueados. As colunas e pilares do portal têm colisão nos pés; seus recortes poligonais são redesenhados pela fila de profundidade usando os próprios pixels da cena. A imagem completa continua visível fora da área caminhável: a máscara de movimento nunca recorta o céu.
 
@@ -35,12 +37,14 @@ O save offline mantém IDs e progresso. Ao reabrir o jogo, a entrada continua no
 
 A migração aditiva `0065_skypiea_celestial_map.sql` atualiza apenas assinaturas conhecidas e reposiciona personagens que estavam nos quatro mapas substituídos. Caminhos antigos são cancelados. O upgrade de combate reancora encontros, inclusive extras de party, preservando identidade, HP, mortos/vivos, respawns e progresso. Ataques transitórios do cenário anterior são cancelados. Áreas externas e hashes desconhecidos não são realocados.
 
-A publicação estática não executa migrações no banco de produção. A etapa 0065 acompanha o código para implantação do servidor online.
+A migração `0066_skypiea_hd_arrival.sql` acompanha esta melhoria visual e a mudança da chegada. Ela promove somente a assinatura conhecida: não muda posições, caminhos, velocidades ou relógios dos saves atuais. O upgrade de combate desta versão também promove somente a assinatura, preservando ataques pendentes, projéteis, HP, cooldowns e respawns. A nova chegada vale para as próximas viagens. A migração histórica 0065 permanece intacta.
+
+A publicação estática não executa migrações no banco de produção. As etapas 0065 e 0066 acompanham o código para implantação do servidor online.
 
 ## Verificação específica
 
 - `node --test tests/skypiea.test.cjs tests/skypiea-expansion.test.cjs tests/skypiea-scene-compat.test.cjs`
-- `tests/skypiea_browser.cjs`: quatro destinos, arte real em escala 3×, combate, retorno por clique, reload e viewport estreito.
+- `tests/skypiea_browser.cjs`: quatro destinos, resolução real da arte, chegada marcada, passagem pelo portão, combate, retorno por clique, reload e viewport estreito. Os recortes usam a proporção real entre textura e mundo.
 - `tests/integration/server-skypiea-scene.test.mts`: migração real em PostgreSQL, preservação e idempotência.
 - Workflow `.github/workflows/skypiea.yml`: verificação focada desta substituição.
 

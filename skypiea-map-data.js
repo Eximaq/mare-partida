@@ -1,10 +1,10 @@
 'use strict';
-/* New celestial island, authored 27/11/2026. Coordinates below follow the
- * 1536 x 1024 source image; one source pixel is three world units. */
+/* Celestial island in 4K, authored 27/11/2026. Layout coordinates retain the
+ * original 1536 x 1024 design grid; the detailed texture is 4096 x 2731. */
 ((root)=>{
  const scale=3,point=([x,y])=>({x:x*scale,y:y*scale});
  const polygon=points=>points.map(point);
- const groundUrl='assets/skypiea/celestial-island/scene.png';
+ const groundUrl='assets/skypiea/celestial-island/scene-4k.webp';
  // Walking follows the inner cloud shore. The complete sky remains visible.
  const walkableAreas=[polygon([
   [670,172],[718,158],[817,158],[858,176],[940,210],[996,227],
@@ -65,7 +65,7 @@
   props.push({id,x:x*scale,y:y*scale,w:w*scale,h:h*scale,base:849*scale,polygon:polygon(shape),cloud:false});
   if(foot)colliders.push({id:id+'-base',x:foot.x*scale,y:foot.y*scale,w:foot.w*scale,h:foot.h*scale,isSolid:true,blocksMovement:true,blocksProjectiles:true});
  }
- const spawn=point([432,730]),returnPoint=point([356,730]);
+ const spawn=point([178,868]),returnPoint=point([356,730]);
  const routes=[
   {type:'satori',monster:'Satori',level:77,min:75,max:80,courts:[[480,620],[440,405],[768,478]]},
   {type:'shura',monster:'Shura',level:84,min:80,max:85,courts:[[480,620],[768,820],[1090,620]]},
@@ -82,8 +82,8 @@
   return {id,name:'Ilha dos Anjos'+(index?' '+(index+1):''),min:route.min,max:route.max,
    type:route.type,monster:route.monster,level:route.level,spawn:{...spawn},returnPoint:{...returnPoint},districts,slots};
  });
- const data={version:'celestial-island-2026-11-27',width:4608,height:3072,tile:64,
-  imageWidth:1536,imageHeight:1024,scale,groundUrl,walkableAreas,colliders,props,
+ const data={version:'celestial-island-4k-gate-2026-11-27',width:4608,height:3072,tile:64,
+  imageWidth:4096,imageHeight:2731,scale,groundUrl,walkableAreas,colliders,props,
   spawn,returnPoint,districts:specs[0].districts,slots:specs[0].slots,specs};
  root.MareSkypieaData=data;
  if(typeof module!=='undefined')module.exports=data;

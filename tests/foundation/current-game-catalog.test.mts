@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 import { createHash } from "node:crypto";
 import { getGameCatalog } from "../../apps/game-server/src/gameplay/catalog.js";
 const require = createRequire(import.meta.url);
-test("server and original browser rules expose 109 preserved definitions plus twenty class armaments and 56 garments, and appended weapon fragment and XP boost in the exact original order", () => {
+test("server and original browser rules expose preserved original definitions and append-only reward items in the exact catalog order", () => {
   const { create } = require("../../item-catalog.js");
   const forge = require("../../forge-system.js"),
     prison = require("../../prison-system.js"),
@@ -31,9 +31,12 @@ test("server and original browser rules expose 109 preserved definitions plus tw
   const server = getGameCatalog();
   assert.equal(server.items[187]?.id,"visual_completo_zoro");
   assert.equal(server.items[187]?.requiredClass,"sword");
-  assert.equal(server.items.length, 189);
+  assert.equal(server.items.length, 246);
+  assert.equal(server.items[228]?.id,"sword-fragment-kibarachi");
+  assert.equal(server.items[229]?.id,"legendary_weapon_fragment");
+  assert.equal(server.items.filter(item=>item.kind==="sword-collection").length,16);
   assert.equal(server.items[186]?.kind,"xp-boost");
-  assert.equal(server.rulesHash,'73e8db5876c24d2ae1d6611965fb07031f6bfe00a4865ed973166fdeb27dd1aa');
+  assert.equal(server.rulesHash,'c4becaac75ee93b6dd15b78e6b53d133e0977e74285519a7c03b059c6925a367');
   assert.deepEqual(c.items.slice(103,109),require('../../boss-dungeon-system.js').fragments);
   assert.equal(server.items.filter((i) => i.type === "akuma_no_mi").length, 30);
   assert.equal(server.slots.length, 13);

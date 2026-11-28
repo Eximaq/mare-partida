@@ -35,6 +35,8 @@ export async function mutateHaki(client:PoolClient,id:string,input:CharacterComm
   const w=await readWorld(client,id);if(!w)throw new AuthFault(409,'world_not_started');
   const now=(await client.query('SELECT clock_timestamp() now')).rows[0].now as Date;
   if(!E.hakiCast(b,{hero:w.position,nav:maps().navigation(w.mapId),now:now.getTime()}).ok)throw new AuthFault(409,'haki_cast_unavailable');
+  // Attach the confirmed cast origin for presentation without changing battle rules.
+  b.hakiRuntime.kingOrigin={x:w.position.x,y:w.position.y,radius:H.progression.effects(game,'conqueror').radius};
  }
  b.haki=hakiStateSchema.parse(next.haki);
  if(input.action==='haki.unlock'||input.action==='haki.invest'){

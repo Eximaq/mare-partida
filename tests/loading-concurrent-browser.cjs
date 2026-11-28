@@ -12,7 +12,7 @@ test('two game tabs share installation and a visit after logout reuses the bytes
   const manifest = JSON.stringify({units:[['assets/map.bin', bytes.length, hash(bytes)]],
     files:{'assets/map.bin':[0, 0, bytes.length, 'application/octet-stream']}});
   const catalog = 'game-content-' + hash(manifest).slice(0,24) + '.json';
-  const html = `<html data-game-content="${catalog}"><div id="gameLoading">
+  const html = `<html data-game-install="full" data-game-content="${catalog}"><div id="gameLoading">
     <progress></progress><output></output><p role="status"></p><p class="loading-size"></p><button></button></div>
     <div id="app"></div><script src="/game-loading.js"></script></html>`;
   let transfers = 0;
@@ -22,6 +22,8 @@ test('two game tabs share installation and a visit after logout reuses the bytes
     const url = new URL(req.url, 'http://localhost');
     res.setHeader('Cache-Control','no-store');
     if (url.pathname === '/game') res.setHeader('Content-Type','text/html').end(html);
+    else if (url.pathname === '/index.html') res.setHeader('Content-Type','text/html')
+      .end(html.replace(' data-game-install="full"', ''));
     else if (url.pathname === '/online/') res.end('Login');
     else if (url.pathname === '/' + catalog) res.setHeader('Content-Type','application/json').end(manifest);
     else if (['/game-content-worker.js','/game-loading.js'].includes(url.pathname))
@@ -39,6 +41,12 @@ test('two game tabs share installation and a visit after logout reuses the bytes
   try {
     browser = await chromium.launch({executablePath:process.env.CHROME_PATH});
     const context = await browser.newContext();
+    // On-demand and full builds can both be open under the same worker scope.
+    const demand = await context.newPage();
+    await demand.goto(origin+'/index.html');
+    await demand.evaluate(() => { void window.MareGameLoading.prepare(); window.MareGameLoading.finish(); });
+    await demand.locator('#gameLoading').waitFor({state:'hidden', timeout:4000});
+    assert.equal(transfers, 0, 'on-demand boot must not install the catalog');
     const a = await context.newPage(), b = await context.newPage();
     for (const page of [a,b]) {
       await page.goto(origin+'/game');
@@ -79,6 +87,10 @@ test('two game tabs share installation and a visit after logout reuses the bytes
     await a.evaluate(() => window.MareGameLoading.prepare());
     assert.equal(await cachedMapHash(a), hash(bytes));
     assert.equal(transfers,1,'the static map must download exactly once in this browser');
+    assert.equal(await cachedMapHash(demand), hash(bytes));
+    assert.equal(transfers,1,'the on-demand tab must reuse the installed bytes');
+    assert.equal(await a.evaluate(() => navigator.serviceWorker.controller.scriptURL),
+      await demand.evaluate(() => navigator.serviceWorker.controller.scriptURL));
   } finally {
     releaseDownload();
     if (browser) await browser.close();

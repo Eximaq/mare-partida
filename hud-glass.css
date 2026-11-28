@@ -18,7 +18,7 @@
 #app.hud-nautical .world-command #returnLobby,
 #app.hud-nautical .location-heading .location-plaque,
 #app.hud-nautical #mareMusicDock > :is(summary,.music-controls),
-#app.hud-nautical #worldRecovery > div,
+#app.hud-nautical :is(#worldLoading, #worldRecovery) > div,
 #app.hud-nautical :is(#bossBanner, #partyCompact),
 #app.hud-nautical :is(#toastContainer, #lootNotices) > .toast,
 body #toastContainer.toast-container > .toast,
@@ -3739,10 +3739,19 @@ body > #gameTooltip { font: 500 13px/1.35 var(--glass-type); }
 #gameTooltip .game-tip-class { display: inline-block; border-radius: 6px; }
 
 /* State labels sit above the painted world and remain readable at any camera zoom. */
-#app.hud-nautical #worldRecovery > div {
+#app.hud-nautical #worldLoading { background: #101419cf; }
+#app.hud-nautical :is(#worldLoading, #worldRecovery) > div {
   display: flex; align-items: center; gap: 10px; padding: 10px 14px;
   max-width: min(340px, calc(100vw - 28px)); font: 600 14px/1.4 var(--glass-type);
 }
+#app #worldLoading span { padding: 0; border: 0; background: transparent; text-align: start; }
+#app #worldLoading > div::before {
+  content: ""; width: 14px; height: 14px; flex: none; border-radius: 50%;
+  border: 2px solid #d1bb792e; border-top-color: var(--glass-gold);
+  animation: hud-map-turn 1s linear infinite;
+}
+@keyframes hud-map-turn { to { transform: rotate(1turn); } }
+#app #worldLoading[data-state=failed] > div::before { animation: none; border-color: #ff8594; }
 #worldRecovery:not([hidden]) { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; pointer-events: none; }
 #worldRecovery[data-mode=return] { background: #0b101951; }
 #app #worldRecovery span { color: var(--glass-gold); font-variant-numeric: tabular-nums; }
@@ -3795,7 +3804,8 @@ body > #gameTooltip { font: 500 13px/1.35 var(--glass-type); }
   #gameTooltip .game-tip-column { padding: 8px; }
   #gameTooltip .game-tip-stats > div, #gameTooltip .game-tip-compare > div { gap: 5px; }
 }
+[data-mare-motion=reduced] #app #worldLoading > div::before,
 [data-mare-motion=reduced] #app.hud-nautical #bossBanner:not(.hidden) { animation: none; }
 @media (prefers-reduced-motion: reduce) {
-  #app.hud-nautical #bossBanner:not(.hidden) { animation: none; }
+  #app #worldLoading > div::before, #app.hud-nautical #bossBanner:not(.hidden) { animation: none; }
 }

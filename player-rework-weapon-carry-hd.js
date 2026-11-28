@@ -8,6 +8,38 @@ function ownedImage(ctx,slot,part,source,image,args,sign=1){
 }
 function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePrefix='tools/rework-base-hd/assets/',weaponPrefix='tools/rework-weapon-layers-hd/',makeCanvas=(w,h)=>Object.assign(document.createElement('canvas'),{width:w,height:h})}={}){
  if(!vendor?.compositor)throw Error('Carry needs original compositor');const V=vendor.compositor;
+ const materialTiles=new Map(),materialIds=new WeakMap(),materialLimit=24*1024*1024;
+ let materialBytes=0,nextMaterialId=0;
+ function materialId(object){
+  if(!materialIds.has(object))materialIds.set(object,++nextMaterialId);
+  return materialIds.get(object);
+ }
+ function materialTile(image,source,isHair,skinKind,skin,hair,appearance,api,ramp){
+  const bytes=image.width*image.height*4;
+  // Shared decoded sprites are immutable. Generated surfaces may be repainted.
+  const key=typeof image.getContext!=='function'&&bytes<=materialLimit?
+   JSON.stringify([materialId(image),materialId(api),source,isHair,skinKind,skin,hair]):null;
+  if(key&&materialTiles.has(key)){
+   const cached=materialTiles.get(key);
+   materialTiles.delete(key);materialTiles.set(key,cached);
+   return cached.tile;
+  }
+  const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d');
+  tc.drawImage(image,0,0);
+  const data=tc.getImageData(0,0,image.width,image.height);
+  const anatomical=isHair?hairAnatomy?.recolor(source,data.data,appearance,api):null;
+  if(anatomical)data.data.set(anatomical);
+  else data.data.set(api.recolor(data.data,isHair?api.materialMask(data.data,'hair'):skinMaterials.mask(data.data,image.width,skinKind),ramp));
+  tc.putImageData(data,0,0);
+  if(key){
+   materialTiles.set(key,{tile,bytes});materialBytes+=bytes;
+   while(materialBytes>materialLimit){
+    const oldest=materialTiles.keys().next().value;
+    materialBytes-=materialTiles.get(oldest).bytes;materialTiles.delete(oldest);
+   }
+  }
+  return tile;
+ }
  function resolveHair(base,style){
   if(style==='original')return {};
   const d=base.pack.directions[base.direction],target=d.layers.filter(l=>l.slot==='hair');
@@ -914,7 +946,16 @@ function create(baseIndex,carryIndex,{vendor=root.ReworkAccessoryVendor,basePref
   if(!r)throw Error('Unsupported carry identity');const source=r.base.pack,original=source.directions[r.direction],d=r.hairLayers?{...original,layers:original.layers.filter(l=>l.slot!=='hair').concat(r.hairLayers)}:original,p=r.hairLayers?{...source,directions:{...source.directions,[r.direction]:d}}:source,pose=d.poses[frame];if(!pose)throw Error('No authored frame');const padding=r.plan.paddingPhysical??0;if(!Number.isInteger(padding)||padding<0)throw Error('Carry padding must be a nonnegative integer');const w=p.frame.width*4+2*padding,h=p.frame.height*4+2*padding;ctx.canvas.width=w;ctx.canvas.height=h;
   const canvas=r.base.mirrorX?makeCanvas(w,h):ctx.canvas,target=r.base.mirrorX?canvas.getContext('2d'):ctx;target.clearRect(0,0,w,h);target.imageSmoothingEnabled=false;target.save();target.translate(padding,padding);try{
   const map=new Map([...r.base.sourceRefs,...(r.hairLayers||[]).map(l=>l.source)].map(s=>[s,images.get(basePrefix+s+'.png')||images.get(s)]));const skin=appearance.skin||appearance.skinColor,hair=appearance.hairColor;
-  if((skin&&skin!=='original'||hair&&hair!=='original')){if(!appearanceAPI)throw Error('Carry palette API unavailable');for(const [source,image] of map){const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),isHair=uses.some(l=>l.slot==='hair'),skinKind=uses.length&&uses.every(l=>r.skinRepairLayers?.includes(l.id))?'mixed':skinMaterials?.ownership(uses),ramp=isHair?appearanceAPI.hairs[hair]?.ramp:skinKind?appearanceAPI.skins[skin]?.ramp:null;if(!image||!ramp&&!(isHair&&hairAnatomy?.records[source]))continue;const tile=makeCanvas(image.width,image.height),tc=tile.getContext('2d');tc.drawImage(image,0,0);const data=tc.getImageData(0,0,image.width,image.height);const anatomical=isHair?hairAnatomy?.recolor(source,data.data,appearance,appearanceAPI):null;data.data.set(anatomical||appearanceAPI.recolor(data.data,isHair?appearanceAPI.materialMask(data.data,'hair'):skinMaterials.mask(data.data,image.width,skinKind),ramp));tc.putImageData(data,0,0);map.set(source,tile);}}
+  if(skin&&skin!=='original'||hair&&hair!=='original'){
+   if(!appearanceAPI)throw Error('Carry palette API unavailable');
+   for(const [source,image] of map){
+    const uses=d.layers.filter(l=>(l.frames?.[frame]||l.source)===source),isHair=uses.some(l=>l.slot==='hair');
+    const skinKind=uses.length&&uses.every(l=>r.skinRepairLayers?.includes(l.id))?'mixed':skinMaterials?.ownership(uses);
+    const ramp=isHair?appearanceAPI.hairs[hair]?.ramp:skinKind?appearanceAPI.skins[skin]?.ramp:null;
+    if(!image||!ramp&&!(isHair&&hairAnatomy?.records[source]))continue;
+    map.set(source,materialTile(image,source,isHair,skinKind,skin,hair,appearance,appearanceAPI,ramp));
+   }
+  }
   if(r.relicEyes){
    const {sha,samples,offset}=r.relicEyes,ramp=root.MareCharacterAppearance?.eyes?.[appearance.eyeColor]?.ramp;
    const src=images.get(basePrefix+sha+'.png')||images.get(sha),im=map.get(sha);

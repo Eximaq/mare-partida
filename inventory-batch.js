@@ -1,6 +1,6 @@
 'use strict';
 ((root)=>{
- const protectedKinds=new Set(['visual-completo','pearl-box','epic-equipment-box','haki-fragment','akuma-fragment','weapon-fragment']);
+ const protectedKinds=new Set(['visual-completo','pearl-box','epic-equipment-box','haki-fragment','akuma-fragment','weapon-fragment','sword-collection']);
  const quantity=item=>item?.quantity??item?.qty??1;
  const price=item=>Math.round(14+item.level*7+item.plus*18);
  function reason(item,defs,equipment={}){if(!item)return 'Item não encontrado';if(Object.values(equipment).some(i=>i?.id===item.id))return 'Item equipado';if(item.locked)return 'Item bloqueado';if(item.reserved)return 'Item reservado';if(!defs[item.def]||protectedKinds.has(defs[item.def].kind))return 'Este item não pode ser vendido ao NPC';return '';}

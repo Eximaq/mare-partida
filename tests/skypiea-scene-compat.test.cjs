@@ -47,3 +47,18 @@ test('unchanged geometry retains attacks and unknown fingerprints remain rejecte
  const unknown=E.create('skypiea-03',stats,now,()=>.5);unknown.rulesHash='f'.repeat(64);
  const before=structuredClone(unknown);E.upgradeBalance(unknown);assert.deepEqual(unknown,before);
 });
+
+test('HD artwork and gate arrival promote existing celestial battles without changing active state',()=>{
+ const celestial='c66c9af7ffaae0d2d98c47196f5edee82ff4fa0875da9f0d08c1cf37b1e7c401';
+ for(const area of [...areas,'beach']){
+  const b=E.create(area,stats,now,()=>.5),m=b.mobs[0];
+  b.rulesHash=celestial;b.hp=43;b.energy=37;b.auto=true;b.cooldowns=[7,3];
+  b.pending={targetId:m.id,remaining:.4};b.targetId=m.id;b.projectiles=[{x:m.x,y:m.y}];
+  Object.assign(m,{x:m.x+8,y:m.y+8,hp:11,attackClock:2.25,engaged:true,telegraph:{fixture:true}});
+  Object.assign(b.mobs[1],{hp:0,alive:false,corpseUntil:now+2000});
+  b.hunts.areas[area].kills=17;b.hunts.areas[area].respawns[b.mobs[5].spawnId]=now+10000;
+  const expected={...structuredClone(b),rulesHash:E.rulesHash};
+  E.upgradeBalance(b);assert.deepEqual(b,expected,area+' preserves exact active state');
+  E.upgradeBalance(b);assert.deepEqual(b,expected,area+' promotion is idempotent');
+ }
+});

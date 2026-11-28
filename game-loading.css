@@ -5,21 +5,6 @@
   overflow: hidden; background: #081a22; color: #faf4dd;
   font-family: system-ui, sans-serif; font-variant-numeric: tabular-nums;
 }
-.loading-scene, .loading-scene::after, .loading-art { position: absolute; inset: 0; }
-.loading-scene { z-index: -1; overflow: hidden; }
-.loading-scene::after { content: ""; background: linear-gradient(0deg, #041117 3%, #07161de8 14%, #06162044 60%, #07151e33); }
-.loading-art {
-  display: block;
-  animation: harbor-crossing 21s linear infinite both;
-}
-.loading-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.loading-art:nth-child(1) { animation-delay: -1s; }
-.loading-art:nth-child(2) { animation-delay: -15s; }
-.loading-art:nth-child(3) { animation-delay: -8s; }
-@keyframes harbor-crossing {
-  0%, 40%, 100% { opacity: 0; }
-  6%, 34% { opacity: 1; }
-}
 .loading-panel {
   position: absolute; inset-inline: max(7vw, env(safe-area-inset-left)) max(7vw, env(safe-area-inset-right));
   bottom: max(clamp(1.75rem, 8vh, 6rem), env(safe-area-inset-bottom));
@@ -37,10 +22,6 @@
 .loading-panel progress::-webkit-progress-bar { background: #41616b; }
 .loading-panel progress::-webkit-progress-value { background: linear-gradient(90deg,#d69b51,#ffe1a1); }
 .loading-panel progress::-moz-progress-bar { background: #ffda97; }
-.loading-size { font-size: .8rem; color: #ccdadb; }
 .loading-panel button { margin-top: 1rem; padding: .6rem 1.25rem; background: #102c36; color: #ffe3a7; border: 1px solid #bd985c; border-radius: .45rem; }
 .loading-panel button[hidden] { display: none; }
-@media (prefers-reduced-motion: reduce) {
-  .loading-art { animation: none; }
-  .loading-art:not(:first-child) { display: none; }
-}
+.loading-size { font-size: .8rem; color: #ccdadb; }

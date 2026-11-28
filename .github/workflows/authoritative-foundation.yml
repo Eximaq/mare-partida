@@ -84,7 +84,7 @@ jobs:
           import pg from 'pg';
           import { getGameCatalog } from './apps/game-server/dist/gameplay/catalog.js';
           import {xpNeeded} from './apps/game-server/dist/gameplay/character.js';
-          assert.equal(xpNeeded(21),16001);
+          assert.equal(xpNeeded(21),10742);
           const {createRequire}=await import('node:module');
           const world=createRequire(import.meta.url)('./world-catalog.cjs').load();
           assert.equal(world.maps.lobby.spawn.x,1504);
@@ -95,10 +95,10 @@ jobs:
           assert.equal(talents.T.nodes('sword').length,15);
           assert.equal(battle.create('beach',{maxHP:200,maxEnergy:90},0,()=>.5).mobs.length,14);
           assert(world.navigation('dawn').walkable(872,1608));
-          assert.equal(getGameCatalog().items.length, 189);
+          assert.equal(getGameCatalog().items.length, 246);
           assert.equal(getGameCatalog().slots.length, 13);
           assert(getGameCatalog().slots.includes('visual_completo'));
-          assert.equal(getGameCatalog().rulesHash, '73e8db5876c24d2ae1d6611965fb07031f6bfe00a4865ed973166fdeb27dd1aa');
+          assert.equal(getGameCatalog().rulesHash, 'c4becaac75ee93b6dd15b78e6b53d133e0977e74285519a7c03b059c6925a367');
           assert.notEqual(process.getuid(), 0);
           for (const path of ['/app/.env', '/app/.git', '/app/game.js', '/app/node_modules/typescript']) {
             assert.equal(existsSync(path), false, path);
@@ -106,7 +106,7 @@ jobs:
           const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
           try {
             assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
-            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 65);
+            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 69);
             await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
           } finally { await pool.end(); }

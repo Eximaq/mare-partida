@@ -18,7 +18,7 @@ test('server resolves four separate Skypiea IDs, tier gates and ordinary authore
   assert.equal(W.mapId(island.area),id);
   const n=W.navigation(id),spawn=n.map.spawn;
   assert.deepEqual([n.map.id,n.map.width,n.map.height],[id,4608,3072]);
-  assert.deepEqual([spawn.x,spawn.y],[1296,2190]);
+  assert.deepEqual([spawn.x,spawn.y],[534,2604]);
   assert(n.walkable(spawn.x,spawn.y),id+': blocked arrival');
   assert.equal(E.hunt.get(id).boss,null);
   const b=E.create(id,stats,100000,()=>.5),slots=B.slots(id);

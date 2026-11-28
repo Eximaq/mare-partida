@@ -36,12 +36,18 @@ jobs:
           python3 tests/run_honors_hd_browser.py tests/pages-local-browser.cjs --offline --dist
           node tests/loading_offline_browser.cjs
           node --test tests/loading-concurrent-browser.cjs
-          node tests/online-loading-browser.cjs
       - name: Enviar o pacote validado
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
+      - name: Validar a instalação completa da beta
+        env:
+          NODE_PATH: ${{ runner.temp }}/pages-browser/node_modules
+        run: |
+          python3 tools/build_pages.py --static-demo --full-install
+          node tests/loading-full-browser.cjs
+          node tests/online-loading-browser.cjs
 
   deploy:
     needs: static-demo

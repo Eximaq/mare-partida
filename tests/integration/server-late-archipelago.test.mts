@@ -39,7 +39,7 @@ async function persisted(pool:any){
  return saved;
 }
 
-test('migrations 0063–0065 preserve active saves and receipts while admitting 37 visits and seven pending victories',async()=>{
+test('migrations 0063–0066 preserve active saves and receipts while admitting 37 visits and seven pending victories',async()=>{
  const directory=await mkdtemp(join(tmpdir(),'mare-late-archipelago-migrations-'));
  const source=new URL('../../apps/game-server/migrations/',import.meta.url);
  try{
@@ -68,9 +68,11 @@ test('migrations 0063–0065 preserve active saves and receipts while admitting 
    const before=await persisted(f.pool),expected=structuredClone(before);
    expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=world.rulesHash;
    expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=lateBattle;
-   assert.deepEqual(await applyMigrations(f.pool),['0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql']);
+   const pending=['0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql'];
+   for(const name of pending)await copyFile(new URL(name,source),join(directory,name));
+   assert.deepEqual(await applyMigrations(f.pool,directory),pending);
    assert.deepEqual(await persisted(f.pool),expected);
-   assert.deepEqual(await applyMigrations(f.pool),[]);
+   assert.deepEqual(await applyMigrations(f.pool,directory),[]);
    await f.pool.query(await readFile(new URL('0063_late_archipelago.sql',source),'utf8'));
    assert.deepEqual(await persisted(f.pool),expected);
    const resumed=await a.read();

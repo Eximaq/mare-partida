@@ -43,10 +43,10 @@ async function run(gender,id,action,direction,outfit){
  const b=await api.prepareConfiguration([pose],{inspectPositions:!ref,resolve:()=>({...pose,source:r})});
  try{
  const v=b.positionView?.(o),count=r.hdKind==='weapon'?r.timeline.length:r.pack.directions[direction].clip.frames;
- const image=i=>{
+ const image=(i,bundle=b)=>{
   const c=cv.createCanvas(200,200),ctx=c.getContext('2d');let raw;
   ctx.drawImage=(im)=>{raw=im;};
-  assert.ok(b.draw(ctx,a,{...o,progress:(i+.25)/count}));
+  assert.ok(bundle.draw(ctx,a,{...o,progress:(i+.25)/count}));
   return raw.getContext('2d').getImageData(0,0,raw.width,raw.height).data;
  };
  const rgba=Array.from({length:count},(_,i)=>hash(image(i))),baseline={rgba,coverage:b.coverage,meta:api.snapshot().last};
@@ -60,7 +60,29 @@ async function run(gender,id,action,direction,outfit){
   const m={...position.empty(),records:[{...identity,phases:{},cycle:[0,0]}]};
   v.set(m);assert.equal(hash(image(0)),rgba[0]);
   const moved={...m,records:[{...m.records[0],cycle:[2,1]}]};v.set(moved);
-  const changed=Array.from({length:count},(_,i)=>hash(image(i))!==rgba[i]);
+  const adjusted=Array.from({length:count},(_,i)=>hash(image(i)));
+  const changed=adjusted.map((h,i)=>h!==rgba[i]);
+  if(slot==='coat'&&action==='walk'&&!census&&!process.argv.includes('--cycles')){
+   const map=await api.prepareConfiguration([pose],{bakePositions:true,compactFrames:true,positions:moved,resolve:()=>({...pose,source:r})});
+   try{
+    assert.deepEqual(Array.from({length:count},(_,i)=>hash(image(i,map))),adjusted);
+    const rendered=(bundle,i)=>{
+     const c=cv.createCanvas(200,200),ctx=c.getContext('2d');
+     assert.ok(bundle.draw(ctx,a,{...o,x:100.5,y:150.27,progress:(i+.25)/count}));
+     return hash(ctx.getImageData(0,0,c.width,c.height).data);
+    };
+    for(let i=0;i<count;i++)assert.equal(rendered(map,i),rendered(b,i),'map phase '+i);
+    const c=cv.createCanvas(1,1),ctx=c.getContext('2d');
+    const last=api.snapshot().last,height=map.visualHeight;
+    map.draw(ctx,a,{...o,progress:0,auxiliary:true});
+    assert.equal(api.snapshot().last,last,'the silhouette leaves the map paint metadata alone');
+    assert.equal(map.visualHeight,height);
+    let storedPixels;
+    ctx.drawImage=tile=>{storedPixels=tile.width*tile.height;};
+    const logical=map.drawNative(ctx,{...o,progress:0});
+    assert(storedPixels<logical.width*logical.height,'transparent padding stays out of the cache');
+   }finally{map.release();}
+  }
   v.set(m);assert.deepEqual(Array.from({length:count},(_,i)=>hash(image(i))),rgba);
   tests[slot]={id:entry.def,result:changed.some(Boolean)?'ajuste desenhado':'sem diferença',changed:changed.filter(Boolean).length,frames:count};
  }

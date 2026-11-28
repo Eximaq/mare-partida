@@ -23,7 +23,7 @@ test('Enies CP9 are available for world encounters without entering the Impel Do
   assert(!E.prisonCatalog[id],id+' remains outside Impel Down');
  }
 });
-test('Lucci and Moria require their level and retain a pending victory without invented rewards',()=>{
+test('Lucci and Moria require their level and retain a pending victory with the configured chest',()=>{
  for(const [id,level,hp,attack,defense,magicDefense] of encounters){
   assert(D.byId[id],id+' is assigned');
   assert(!E.prisonCatalog['dungeon-'+id],id+' is not added to the prison pool');
@@ -31,7 +31,7 @@ test('Lucci and Moria require their level and retain a pending victory without i
   assert.equal(D.status(save,id),'locked');assert.equal(D.begin(save,id,'run',1000).ok,false);
   save.level=level;const begun=D.begin(save,id,'run',1000);assert(begun.ok);
   const p=D.combatProfile(id);assert.deepEqual([p.maxHP,p.attack,p.defense,p.magicDefense],[hp,attack,defense,magicDefense]);
-  const result=D.defeat(begun.state,id,{runId:'run',encounterId:'run:enemy'},()=>1000,2000);assert(result.ok);assert.equal(result.record.reward,null);
+  const result=D.defeat(begun.state,id,{runId:'run',encounterId:'run:enemy'},()=>1000,2000);assert(result.ok);assert.deepEqual(result.record.reward.items[0],{itemId:'epic-equipment-box',quantity:1,equipmentLevel:level});assert.equal(result.record.reward.items.length,id==='gecko-moria'?2:1);
   const reloaded=JSON.parse(JSON.stringify(result.state));assert.equal(D.status(reloaded,id),'pending');assert.equal(D.begin(reloaded,id,'unused',3000).resume,true);
   let committed=false;const claim=D.claim(reloaded,id,{runId:'run',position:{x:0,y:0},chest:{x:0,y:0,radius:10},defs:[],applyXP(){throw Error('No reward expected');},commit(){committed=true;return true;}});
   assert.equal(claim.ok,false);assert.equal(committed,false);assert.equal(reloaded.gold,0);

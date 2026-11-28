@@ -7,6 +7,7 @@
   const phase = screen.querySelector('[role=status]');
   const amount = screen.querySelector('.loading-size');
   const retry = screen.querySelector('button');
+  const fullInstall = document.documentElement.dataset.gameInstall === 'full';
   const catalog = document.documentElement.dataset.gameContent;
   const scope = new URL('./', document.baseURI).href;
   const temporary = new Map();
@@ -19,7 +20,7 @@
     const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', buffer));
     return Array.from(digest, n => n.toString(16).padStart(2, '0')).join('');
   }
-  let scenePending = false, failure = false, prepared = false, interfaceReady = false, generation = 0;
+  let scenePending = false, failure = false, prepared = !fullInstall, interfaceReady = false, generation = 0, preparing;
   function status(message) {
     if (!failure && phase.textContent !== message) phase.textContent = message;
   }
@@ -42,20 +43,34 @@
     retry.onclick = () => { retry.hidden = true; failure = false; again(); };
     retry.focus({preventScroll: true});
   }
+  async function waitForController(worker, script) {
+    if (worker.controller?.scriptURL === script) return worker.controller;
+    return new Promise(resolve => {
+      const done = () => {
+        const controller = worker.controller;
+        if (controller?.scriptURL === script) settle(controller);
+      };
+      const settle = controller => {
+        clearTimeout(timer);
+        worker.removeEventListener('controllerchange', done);
+        resolve(controller);
+      };
+      const timer = setTimeout(() => settle(null), 5000);
+      worker.addEventListener('controllerchange', done);
+      done();
+    });
+  }
   async function worker() {
-    if (!navigator.serviceWorker || !window.caches) throw Error('Abra o jogo por HTTPS para guardar os arquivos no dispositivo.');
     const sw = navigator.serviceWorker;
+    if (!sw || !window.caches) throw Error('Abra o jogo por HTTPS para guardar os arquivos no dispositivo.');
     const url = new URL('game-content-worker.js', scope);
+    // Both modes share one registration. The worker stores the mode per tab.
+    url.searchParams.set('on-demand', '1');
     if (document.documentElement.hasAttribute('data-renderer-fixture')) url.searchParams.set('renderer', '1');
     await sw.register(url, {scope});
-    await sw.ready;
-    if (!sw.controller) await new Promise((resolve, reject) => {
-      const done = () => { clearTimeout(timer); sw.removeEventListener('controllerchange', done); resolve(); };
-      const timer = setTimeout(() => { sw.removeEventListener('controllerchange', done); reject(Error('Atualize a página para ativar o armazenamento do jogo.')); }, 15000);
-      sw.addEventListener('controllerchange', done);
-      if (sw.controller) done();
-    });
-    return sw.controller;
+    const controller = await waitForController(sw, url.href);
+    if (!controller && fullInstall) throw Error('Atualize a página para ativar o armazenamento do jogo.');
+    return controller;
   }
   function bind(controller) {
     return new Promise((resolve, reject) => {
@@ -248,7 +263,16 @@
       clearTimeout(updateTimer);
     }
   }
-  async function prepare() {
+  function prepare() {
+    if (!catalog && !fullInstall) return;
+    if (!fullInstall) {
+      return preparing ??= worker().then(controller => {
+        controller?.postMessage({type: 'bind', catalog, onDemand: true});
+      }).catch(error => console.warn('[game] content_cache_unavailable', error));
+    }
+    return preparing ??= prepareFull();
+  }
+  async function prepareFull() {
     show();
     for (;;) {
       try {
@@ -283,14 +307,16 @@
     progress(100);
     phase.textContent = 'Tudo pronto';
     const current = ++generation;
-    requestAnimationFrame(() => requestAnimationFrame(() => {
+    const reveal = () => {
       if (generation !== current) return;
       screen.hidden = true; app.inert = false; app.removeAttribute('aria-busy');
       window.MareUI?.syncModals();
       if (!document.getElementById('startOverlay')?.classList.contains('hidden')) document.getElementById('characterName')?.focus();
-    }));
+    };
+    if (fullInstall) requestAnimationFrame(() => requestAnimationFrame(reveal));
+    else reveal();
   }
-  window.MareGameLoading = {prepare, scene, finish, fail,
+  window.MareGameLoading = {fullInstall, prepare, scene, finish, fail,
     status,
     get prepared() { return prepared; },
     get failed() { return failure; },

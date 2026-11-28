@@ -16,7 +16,8 @@ ROOTS = ('assets', 'icones_menu_pirata', 'tools/paper-doll-96-v3', 'tools/rework
          'tools/rework-weapons', 'tools/rework-outfits', 'tools/rework-base-hd',
          'tools/rework-weapon-layers-hd', 'tools/rework-modular-outfits-hd',
          'tools/rework-female-north-rig', 'tools/rework-female-profile-rig',
-         'tools/rework-female-dagger-p22', 'tools/rework-firearm113-coat', 'tools/rework-sword0-checkpoint')
+         'tools/rework-female-dagger-p22', 'tools/rework-firearm113-coat', 'tools/rework-sword0-checkpoint',
+         'tools/rework-combat-wardrobe', 'tools/rework-female-dagger-wardrobe')
 
 
 HD_ROOTS = {'tools/rework-base-hd', 'tools/rework-weapon-layers-hd', 'tools/rework-modular-outfits-hd'}
@@ -81,7 +82,7 @@ def hd_patches(root, units, budget=5 * 1024 * 1024):
     return patches
 
 
-def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS):
+def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS, *, full_install=False):
     paths = {f for prefix in roots for f in (root / prefix).rglob('*')
              if f.is_file() and f.suffix.lower() in TYPES}
     paths.update(root / path for path in extra_files)
@@ -90,7 +91,11 @@ def build_catalog(root, compatibility_files=None, extra_files=(), roots=ROOTS):
     if compatibility_files is not None:
         paths = {p for p in paths if not p.is_relative_to(root / 'tools/paper-doll-96-v3')
                  or p.relative_to(root / 'tools/paper-doll-96-v3').as_posix() in compatibility_files}
-    return package_catalog(root, [p.relative_to(root).as_posix() for p in paths])
+    asset_paths = [p.relative_to(root).as_posix() for p in paths]
+    if full_install:
+        # The beta trades a larger server artifact for fewer client requests and reused ZIP data.
+        return package_catalog(root, asset_paths, pack_budget=128 * 1024**2, patch_budget=48 * 1024**2)
+    return package_catalog(root, asset_paths)
 
 
 def package_catalog(root, asset_paths, *, pack_budget=36 * 1024 * 1024,
@@ -149,11 +154,12 @@ def package_catalog(root, asset_paths, *, pack_budget=36 * 1024 * 1024,
     return {'units': units, 'files': files, 'patches': hd_patches(root, units, patch_budget)}
 
 
-def write_catalog(root, compatibility_files, extra_files, renderer_fixture=False):
+def write_catalog(root, compatibility_files, extra_files, renderer_fixture=False, *, full_install=False):
     # Renderer suites intercept individual asset requests to exercise missing art and
     # fallback behavior. Run the same installer with a small, real fixture catalog.
     roots = ('assets/ui/loading',) if renderer_fixture else ROOTS
-    manifest = build_catalog(root, compatibility_files, () if renderer_fixture else extra_files, roots)
+    manifest = build_catalog(root, compatibility_files, () if renderer_fixture else extra_files, roots,
+                             full_install=full_install)
     data = json.dumps(manifest, separators=(',', ':'), ensure_ascii=True).encode()
     filename = 'game-content-' + hashlib.sha256(data).hexdigest()[:24] + '.json'
     (root / filename).write_bytes(data)

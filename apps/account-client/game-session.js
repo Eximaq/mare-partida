@@ -23,7 +23,7 @@
   const instanceId=v=>typeof v==='string'&&/^[a-zA-Z0-9:-]{1,80}$/.test(v);
   function validForge(op){
     if(!op||typeof op!=='object'||!Number.isSafeInteger(op.expectedSeq)||op.expectedSeq<0)return false;
-    const fields={repair:['itemId','quote'],repairAll:['quote'],formEpicWeapon:[],dismantle:['itemIds'],upgrade:['itemId'],imbue:['itemId','pearlItemId','socket'],remove:['itemId','socket'],fuse:['itemIds'],fuseEquipment:['itemIds','slot'],reforge:['itemId'],reforgeLine:['itemId','line']}[op.type];
+    const fields={repair:['itemId','quote'],repairAll:['quote'],formEpicWeapon:[],formLegendaryWeapon:[],dismantle:['itemIds'],upgrade:['itemId'],imbue:['itemId','pearlItemId','socket'],remove:['itemId','socket'],fuse:['itemIds'],fuseEquipment:['itemIds','slot'],reforge:['itemId'],reforgeLine:['itemId','line']}[op.type];
     if(!fields||Object.keys(op).sort().join()!==['type','expectedSeq',...fields].sort().join())return false;
     if(op.type==='repair'||op.type==='repairAll'){
       const q=op.quote;
@@ -132,7 +132,7 @@
     if(action==='haki.cast')return keys==='';
     if(action==='haki.invest')return keys==='expectedSeq,nodeId'&&Number.isSafeInteger(p.expectedSeq)&&p.expectedSeq>=0&&['coating','hardening','guard','imbuement','emission','armament-final','perception','anticipation','intent','serenity','future','observation-final','presence','resolve','pressure','conqueror-final'].includes(p.nodeId);
     if(['dungeon.enter','dungeon.claim'].includes(action))return keys==='dungeonId'&&['alvida','morgan','buggy','kuro','krieg','arlong','smoker','wapol','crocodile','rob-lucci','gecko-moria','kuma','kizaru','hancock','magellan','ace','aokiji','akainu'].includes(p.dungeonId);
-    if(action==='dungeon.craft')return (keys==='expectedSeq'||keys==='expectedSeq,rank'&&['E','B'].includes(p.rank))&&Number.isSafeInteger(p.expectedSeq)&&p.expectedSeq>=0;
+    if(action==='dungeon.craft')return (keys==='expectedSeq'||keys==='expectedSeq,rank'&&['E','D','C','B','A','S'].includes(p.rank))&&Number.isSafeInteger(p.expectedSeq)&&p.expectedSeq>=0;
     if(action==='dungeon.acknowledge')return keys==='itemId'&&instanceId(p.itemId);
     if(['prison.prepare','prison.enter','prison.claim'].includes(action))return keys==='floor'&&Number.isInteger(p.floor)&&p.floor>=1&&p.floor<=100;
     if(action==='talents.reset')return keys==='';
