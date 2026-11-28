@@ -4,6 +4,7 @@ import {test} from 'node:test';
 import {characterCommandSchema} from '@mare/shared';
 import {boostXp} from '../../apps/game-server/src/characters/contracts.js';
 import {rewardBoosts} from '../../apps/game-server/src/characters/kairoseki.js';
+import {itemTradeRestriction} from '../../apps/game-server/src/characters/item-negotiability.js';
 import {awardWorldLoot} from '../../apps/game-server/src/gameplay/inventory.js';
 import {authDatabase,seedKairoseki} from './auth-support.mjs';
 
@@ -22,7 +23,8 @@ test('the shop debits once, grants both boosts, renews VIP and gates crew creati
   const day=86_400_000;
 
   await act('items.initialize');
-  assert.equal((await read()).kairoseki,'0');
+  const initial=await read();
+  assert.equal(initial.kairoseki,'0');
   assert.deepEqual((await read()).kairosekiShop!.prices,{'xp-1h':5,'drop-1h':5,'vip-7d':10,'vip-30d':20});
   await assert.rejects(act('crew.create',crew),{code:'crew_vip_required'});
   await assert.rejects(act('kairoseki.buy',{product:'vip-7d'}),{code:'kairoseki_insufficient'});
@@ -35,6 +37,7 @@ test('the shop debits once, grants both boosts, renews VIP and gates crew creati
   assert.deepEqual(first,replay);
   const vip=await read(),firstUntil=vip.kairosekiShop!.vipUntil;
   assert.equal(vip.kairoseki,'40');
+  assert.equal(vip.originalInventory!.inventory.length,initial.originalInventory!.inventory.length);
   assert(Math.abs(firstUntil-vip.kairosekiShop!.serverNow-7*day)<10_000);
   await act('kairoseki.buy',{product:'vip-30d'});
   assert.equal((await read()).kairosekiShop!.vipUntil,firstUntil+30*day);
@@ -46,10 +49,12 @@ test('the shop debits once, grants both boosts, renews VIP and gates crew creati
   const drop=stock.originalInventory!.inventory.find(item=>item.def===248)!;
   assert.equal(xp.boundToCharacter,id);
   assert.equal(drop.boundToCharacter,id);
+  for(const {binding,boundToCharacter,...item} of [xp,drop])assert.equal(itemTradeRestriction(item),'bound');
   await assert.rejects(act('items.use-xp-boost',{itemId:drop.id}),{code:'item_protected'});
   await act('items.use-xp-boost',{itemId:xp.id});
   await act('items.use-drop-boost',{itemId:drop.id});
   const boosted=await read();
+  assert.equal(boosted.contracts!.xpBoostPercent,50);
   assert.equal(boosted.originalInventory!.inventory.filter(item=>[247,248].includes(item.def)).length,0);
   assert(Math.abs(boosted.contracts!.xpBoostUntil!-boosted.kairosekiShop!.serverNow-3_600_000)<10_000);
   assert(Math.abs(boosted.kairosekiShop!.dropBoostUntil-boosted.kairosekiShop!.serverNow-3_600_000)<10_000);
@@ -90,6 +95,7 @@ test('the shop debits once, grants both boosts, renews VIP and gates crew creati
     const legacy={id:randomUUID(),def:186,level:1,plus:0,rarity:'epic',locked:false,obtainedAt:Date.now()};
     await expired.query('UPDATE mare_game.game_inventory SET inventory=inventory||$2::jsonb WHERE character_id=$1',[id,JSON.stringify([legacy])]);
     await act('items.use-xp-boost',{itemId:legacy.id});
+    assert.equal((await read()).contracts!.xpBoostPercent,100);
     assert.equal(await boostXp(expired,id,100n),200n);
   }
   finally{expired.release();}

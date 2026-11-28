@@ -16,4 +16,5 @@ export const contractsSnapshotSchema=z.strictObject({
  }).optional(),
  weekly:z.strictObject({cycle:z.number().int(),endsAt:z.number().int(),claimed:z.boolean(),objectives:z.array(z.strictObject({id:z.enum(['weekly-combat','weekly-berry']),title:z.string(),desc:z.string(),target:z.number().int().positive(),current:z.number().int().nonnegative()})).length(2)}).optional(),
  xpBoostUntil:z.number().int().nonnegative().optional(),
+ xpBoostPercent:z.union([z.literal(50),z.literal(100)]).optional(),
 });

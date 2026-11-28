@@ -1240,8 +1240,8 @@
   if(swords)itemDefs.push(...swords.completeDefinitions);
   if(visuals?.luffyDefinition)itemDefs.push(visuals.luffyDefinition); // Append only: index 246.
   if(contracts)itemDefs.push(
-    {...contracts.boost,id:'kairoseki-xp-boost',name:'Boost de XP (1h)',description:'Aumenta em 50% a XP do personagem por uma hora.',boostPercent:50},
-    {...contracts.boost,id:'kairoseki-drop-boost',name:'Boost de Drop (1h)',kind:'drop-boost',icon_path:'assets/ui/boss-dungeons/reward-chest.png',description:'Duplica as chances de saque nas caçadas por uma hora.'},
+    {...contracts.boost,id:'kairoseki-xp-boost',name:'Boost de XP (1h)',icon_path:'assets/ui/contracts-hd/kairoseki-xp.webp',description:'Aumenta em 50% a XP do personagem por uma hora.',boostPercent:50,tradable:false},
+    {...contracts.boost,id:'kairoseki-drop-boost',name:'Boost de Drop (1h)',kind:'drop-boost',icon_path:'assets/ui/contracts-hd/kairoseki-drop.webp',description:'Duplica as chances de saque nas caçadas por uma hora.',tradable:false},
   );
   return {items:itemDefs,slotNames,inventorySlotsLeft,inventorySlotsRight,capacity:BAG_CAPACITY,healerWeaponIndex};
  }

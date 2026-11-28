@@ -137,6 +137,20 @@ body > #gameTooltip.game-tooltip,
 .vip-badge[data-active="true"] img { filter: drop-shadow(0 1px 3px #c7984755); }
 .vip-badge[data-active="true"] span { border-color: #f5d380; background: #594018; color: #ffdfa0; }
 .vip-badge:focus-visible { outline: 2px solid var(--glass-gold); }
+.hud-active-boosts:not([hidden]) {
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px; pointer-events: none;
+}
+.hud-boost:not([hidden]) {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 5px;
+  background: var(--glass-surface); border: 1px solid #bb9b594f; border-radius: 5px;
+  color: #ffe194; font: 650 10px/1 var(--glass-type); white-space: nowrap;
+}
+.hud-boost[data-boost="drop"] { border-color: #858bf061; color: #c4ccff; }
+.hud-boost img { object-fit: contain; }
+.hud-boost time { padding-left: 4px; border-left: 1px solid #ffffff24; color: #f1f3f6; font-variant-numeric: tabular-nums; }
+@media (min-width: 761px) {
+  #app .topbar .hud-active-boosts { position: absolute; inset: auto auto 0 calc(100% + 6px); width: max-content; flex-direction: column; }
+}
 #kairosekiShopMenu[hidden] { display: none; }
 #app.hud-nautical .nautical-profile .hud-meta { min-height: 20px; gap: 12px; }
 #app.hud-nautical .nautical-profile .profile-power > span { font: 500 13px/1.3 var(--glass-type); color: #e5e7eb; }
@@ -243,8 +257,9 @@ body > #gameTooltip.game-tooltip,
 .kairoseki-currency img { width: 23px; height: 23px; object-fit: contain; }
 .kairoseki-offers { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
 .kairoseki-offer {
+  position: relative;
   display: grid;
-  grid-template-rows: 49px auto 1fr auto auto;
+  grid-template-rows: 49px 1fr auto auto;
   gap: 4px;
   justify-items: center;
   padding: 8px;
@@ -256,9 +271,17 @@ body > #gameTooltip.game-tooltip,
 .kairoseki-offer-art { width: 52px; height: 49px; display: grid; place-items: center; border: 1px solid #ffffff22; border-radius: 8px; background: radial-gradient(#52505335,#0d0f13bd); }
 .kairoseki-offer-art img { width: 42px; height: 42px; object-fit: contain; }
 .kairoseki-offer h3 { margin: 0; color: #f5f2e9; font-size: 14px; font-weight: 730; }
-.kairoseki-offer p { margin: 0; color: var(--glass-muted); font-size: 11px; line-height: 1.35; }
 .kairoseki-offer .kairoseki-currency { font-size: 16px; font-weight: 750; }
 .kairoseki-offer .dialog-button { width: 100%; }
+#app #panelOverlay .kairoseki-offer-help {
+  position: absolute; top: 0; right: 0; display: grid; place-items: center; width: 28px; height: 28px;
+  min-width: 0; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 5px; background: transparent;
+  color: #ff989b; font: 800 11px/1 var(--glass-type); cursor: help;
+}
+.kairoseki-offer-help span { display: grid; place-items: center; width: 14px; height: 14px; border: 1px solid #f064737f; border-radius: 50%; background: #5a242c66; }
+#app #panelOverlay .kairoseki-offer-help:focus-visible { outline: 2px solid #ff989b; outline-offset: -3px; }
+body > #gameTooltip.game-tooltip.game-tooltip-compact { width: min(218px, calc(100vw - 16px)); padding: 8px 10px; font: 550 12px/1.4 var(--glass-type); }
+.game-tooltip-compact p { margin: 0; }
 .kairoseki-store-note { margin: 0; color: #cbb98f; font-size: 11px; }
 .kairoseki-confirmation.confirmation-overlay { background: #0009; }
 .kairoseki-confirmation .confirmation-card {
@@ -2275,6 +2298,7 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   background: #0005;
   backdrop-filter: blur(3px);
   & > .dialog { display: flex; flex-direction: column; width: min(1060px,100%); max-width: none; height: auto; max-height: calc(var(--glass-window-limit) - 18px); padding: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 12px; background: var(--glass-surface); backdrop-filter: blur(8px); box-shadow: var(--glass-shadow); overflow: hidden; }
+  & > .dialog:has(.crew-creation) { width: min(530px,100%); }
   & .dialog-header { flex: none; min-height: 48px; padding: 2px 8px 2px 14px; gap: 12px; border: 0; border-bottom: 1px solid #ffffff18; background: #ffffff03; }
   & .dialog-header > div { gap: 8px; }
   & .dialog-header > div::before { width: 24px; height: 24px; }
@@ -2303,6 +2327,19 @@ body:has(#panelOverlay.talents-hd-mode:not(.hidden)) > #gameTooltip .game-tip-na
   & .crew-window h2 { font-size: 22px; line-height: 1.3; color: #f5f6f8; }
   & .crew-window h3 { font-size: 15px; line-height: 1.4; padding-bottom: 8px; border-bottom: 1px solid #ffffff14; color: var(--glass-gold); }
   & :is(.crew-store-header,.crew-profession-summary) h3 { padding: 0; border: 0; }
+  & .crew-create-requirements {
+    display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; padding: 0; margin: 0;
+    list-style: none;
+  }
+  & .crew-create-requirements li {
+    display: grid; grid-template-columns: 36px minmax(0,1fr); align-items: center; gap: 8px;
+    padding: 8px 10px; border: 1px solid #e4ce9640; border-radius: 8px; background: #e4ce960b;
+  }
+  & .crew-create-requirements li[data-ready="false"] { border-color: #f07a844a; background: #bc586512; }
+  & .crew-create-requirements img { width: 34px; height: 34px; object-fit: contain; }
+  & .crew-create-requirements :is(strong,small) { display: block; overflow-wrap: anywhere; }
+  & .crew-create-requirements li[data-ready="false"] small { color: #ffadb3; }
+  & .crew-creation > button { justify-self: start; }
   & .crew-window h4 { font-size: 13px; }
   & .crew-window :is(small,.crew-muted) { font: 450 12px/1.4 var(--glass-type); color: var(--glass-muted); }
   & .crew-banner { grid-template-columns: 44px minmax(0,1fr) auto; gap: 10px; background: #ffffff05; }

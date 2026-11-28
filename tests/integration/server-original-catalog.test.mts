@@ -51,7 +51,7 @@ test("original catalog is complete, read-only and scoped by authenticated charac
       assert.equal(catalog.items[67].defIndex, 67);
       assert.equal(
         catalog.rulesHash,
-        "ed4719dfd0bf8fa9a56ab372a0409e267bb11e7d84592f06915f0f4d68ea23a2",
+        "272a1ce231e912b50dbf0a5f33b87b7b262163559ca706ad1a523bbe477b3d87",
       );
       assert.equal((await get(login.token, "?ownerId=forged")).status, 400);
       assert.equal((await get(login.token, "", "POST")).status, 405);

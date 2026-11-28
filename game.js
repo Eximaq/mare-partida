@@ -29,19 +29,19 @@
   }
   function crewCreation(){
     const shop=kairosekiStatus();
-    return shop?{cost:shop.crewCreationCost,allowed:shop.active&&shop.balance>=BigInt(shop.crewCreationCost),
-      reason:shop.active?'Saldo de Kairoseki insuficiente.':'VIP ativo necessário para criar tripulação.'}:
-      {allowed:false,reason:'Criação de tripulação indisponível.'};
+    if(!shop)return {allowed:false};
+    const affordable=shop.balance>=BigInt(shop.crewCreationCost);
+    return {cost:shop.crewCreationCost,vipActive:shop.active,affordable,
+      balance:shop.balance.toLocaleString('pt-BR'),allowed:shop.active&&affordable};
   }
   function kairosekiOffers(){
     const boost=(id)=>itemDefs.find(item=>item.id===id);
     const xp=boost('kairoseki-xp-boost'),drop=boost('kairoseki-drop-boost');
-    const benefit='Ganhe +20% de XP de personagem.';
     return {
-      'xp-1h':{name:xp.name,description:'+50% de XP de personagem.',icon:xp.icon_path},
-      'drop-1h':{name:drop.name,description:'Dobra a chance de saque na caçada.',icon:drop.icon_path},
-      'vip-7d':{name:'VIP · 7 dias',description:benefit,icon:vipIcon},
-      'vip-30d':{name:'VIP · 30 dias',description:benefit,icon:vipIcon},
+      'xp-1h':{name:xp.name,hint:'+50% de XP por 1h. Ative pela mochila. Não negociável.',icon:xp.icon_path},
+      'drop-1h':{name:drop.name,hint:'Chance de saque em dobro nas caçadas por 1h. Ative pela mochila. Não negociável.',icon:drop.icon_path},
+      'vip-7d':{name:'VIP · 7 dias',hint:'+20% de XP por 7 dias. Ativação imediata e pessoal.',icon:vipIcon},
+      'vip-30d':{name:'VIP · 30 dias',hint:'+20% de XP por 30 dias. Ativação imediata e pessoal.',icon:vipIcon},
     };
   }
   function renderKairosekiStore(force=false){
@@ -58,7 +58,7 @@
     const date=new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short'});
     const cards=Object.entries(kairosekiOffers()).map(([id,offer])=>{
       const price=status.prices[id];
-      return `<article class="kairoseki-offer"><span class="kairoseki-offer-art"><img src="${offer.icon}" alt=""></span><h3>${offer.name}</h3><p>${offer.description}</p>
+      return `<article class="kairoseki-offer"><button type="button" class="kairoseki-offer-help" data-kairoseki-help="${id}" data-help-text="${escapeHTML(offer.hint)}" aria-label="Sobre ${offer.name}"><span aria-hidden="true">?</span></button><span class="kairoseki-offer-art"><img src="${offer.icon}" alt=""></span><h3>${offer.name}</h3>
         ${currency(price)}<button type="button" class="dialog-button" data-kairoseki-buy="${id}" aria-label="Comprar ${offer.name}" ${!canBuy||status.balance<BigInt(price)?'disabled':''}>Comprar</button></article>`;
     }).join('');
     const walletBalance=status.balance.toLocaleString('pt-BR');
@@ -68,18 +68,18 @@
         <div class="kairoseki-vip-status" data-active="${status.active}"><b>VIP ${status.active?'ativo':'inativo'}</b>${status.active?`<small>Até ${date.format(status.vipUntil)}</small>`:''}</div>
       </header>
       <div class="kairoseki-offers">${cards}</div>
-      <p class="kairoseki-store-note">Criar uma tripulação custa ${status.crewCreationCost} Kairoseki e exige VIP ativo.</p>
       ${pending?'<button type="button" class="dialog-button" data-kairoseki-resume '+(!ONLINE_GAME.available||ONLINE_GAME.busy?'disabled':'')+'>Verificar compra pendente</button>':''}
       </section>`;
     if(focused)body.querySelector('[data-kairoseki-buy="'+focused+'"]')?.focus({preventScroll:true});
   }
   async function buyKairoseki(product){
     if(!product&&ONLINE_GAME?.pending?.action!=='kairoseki.buy')return;
+    const purchase=product||ONLINE_GAME.pending.payload.product,wasVip=kairosekiStatus()?.active;
     try{
       if(product)await ONLINE_GAME.command('kairoseki.buy',{product});
       else await ONLINE_GAME.resume();
       syncOnlineGame();
-      toast(product&&product.endsWith('h')?'Boost enviado à mochila.':'Compra confirmada.','good');
+      toast(purchase.endsWith('h')?'Boost enviado à mochila.':wasVip?'VIP renovado.':'VIP ativado.','good');
     }catch(error){
       const reason={kairoseki_insufficient:'Saldo de Kairoseki insuficiente.',inventory_full:'Libere espaço na mochila para receber o boost.'};
       toast(reason[error.code]||'Não foi possível confirmar a compra.', 'danger');
@@ -2687,6 +2687,7 @@
     return {key,name:skill.name,cooldown:MareAttributeRules.cooldown(MareAkumaPassives.cooldown(skill.cd,fruit?.id),skill,getDerived())*(game.factionId==='government'?.92:1),cost:skill.cost,resource:'Energia',description:skill.desc,damageType:game.classId==='strategist'?'magic':skill.type==='strike'||skill.type==='area'?'physical':''};
   }
   const gameTooltip=MareTooltips.attach(element=>{
+    if(element.hasAttribute('data-kairoseki-help'))return {kind:'help',compact:true,description:element.dataset.helpText};
     if(element.hasAttribute('data-studio-help'))return {kind:'help',title:element.dataset.helpTitle,description:element.dataset.helpText};
     if(!game)return null;
     if(element.hasAttribute('data-compendium-fruit'))return {kind:'compendium',fruit:MareCompendium.tooltip(game,element.dataset.compendiumFruit)};
@@ -3151,7 +3152,7 @@
       const until=drop?shop?.dropBoostUntil:ONLINE_GAME?.data?.online.contracts?.xpBoostUntil??game.xpBoostUntil;
       const active=until>(shop?.now??(Date.parse(ONLINE_GAME?.data?.online.world?.serverNow||'')||Date.now()));
       const use=drop?'data-use-drop-boost':'data-use-xp-boost';
-      return `<div class="op-detail-wrap"><div class="op-detail-icon rarity-epic">${itemIcon(sel.item.def)}</div><h3>${definition.name}</h3><p>${definition.description}</p><button type="button" class="op-action primary" ${use}="${escapeHTML(sel.item.id)}" ${active||sel.item.locked?'disabled':''}>${active?'BOOST ATIVO':'ATIVAR'}</button></div>`;
+      return `<div class="op-detail-wrap"><div class="op-detail-icon rarity-epic">${itemIcon(sel.item.def)}</div><h3>${definition.name}</h3><p>${definition.description}</p>${definition.tradable===false?'<small>Não negociável</small>':''}<button type="button" class="op-action primary" ${use}="${escapeHTML(sel.item.id)}" ${active||sel.item.locked?'disabled':''}>${active?'BOOST ATIVO':'ATIVAR'}</button></div>`;
     }
     if(itemBase(sel.item).kind==='haki-book')return hakiBookDetail(sel.item);
     if(MareAkuma.isFruit(sel.item,itemDefs)){
@@ -4525,8 +4526,33 @@ function applySceneHudLayout(){
   document.querySelectorAll('[data-hud]').forEach(btn=>btn.addEventListener('click',()=>btn.dataset.hud==='status'?openPanel('character'):toggleFloating(btn.dataset.hud)));
   document.addEventListener('click',e=>{const b=e.target.closest('[data-close-window]');if(b)toggleFloating(b.dataset.closeWindow,false);});
   // Indicadores compactos mantêm informações críticas legíveis com as janelas fechadas.
+  function updateBoostHud(premium){
+    const online=ONLINE_GAME?.data?.online,contract=online?.contracts;
+    const now=premium?.now??Date.now();
+    const xpUntil=ONLINE_GAME?contract?.xpBoostUntil:game.xpBoostUntil;
+    const xpPercent=contract?.xpBoostPercent??100;
+    const effects=[
+      ['hudBoostXp',xpUntil,xpPercent===100?'XP 2×':'XP +'+xpPercent+'%'],
+      ['hudBoostDrop',premium?.dropBoostUntil,'Drop 2×'],
+    ];
+    let active=false;
+    for(const [id,until,label] of effects){
+      const badge=$(id),seconds=Math.ceil(((until||0)-now)/1000);
+      const visible=seconds>0;
+      if(badge.hidden===visible)badge.hidden=!visible;
+      if(!visible)continue;
+      active=true;
+      const hours=Math.floor(seconds/3600),time=(hours?hours+':':'')+elapsedString(seconds%3600);
+      const effect=badge.querySelector('b'),clock=badge.querySelector('time');
+      if(effect.textContent!==label)effect.textContent=label;
+      if(clock.textContent!==time){clock.textContent=time;clock.dateTime='PT'+seconds+'S';}
+    }
+    const group=$('hudActiveBoosts');
+    if(group.hidden===active)group.hidden=!active;
+  }
   function updateMiniHud(){if(!game)return;const s=getDerived();
     const premium=kairosekiStatus(),vip=$('hudVip');
+    updateBoostHud(premium);
     vip.hidden=!premium;
     $('kairosekiShopMenu').hidden=!premium;
     if(premium){
