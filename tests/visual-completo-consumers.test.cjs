@@ -146,7 +146,7 @@ test('equipping Luffy keeps the already prepared native actor visible while its 
  core.clearWorldVisual();
 });
 
-test('a loaded Luffy idle hands off to a prepared native pose until its next skin clip is ready',async()=>{
+test('a loaded Luffy idle stays visible until its next skin clip is ready',async()=>{
  const {core,renderer,ctx,imageWaiters}=fixture({assetState:source=>source.file.includes('/idle_')?'ready':'pending'}),player=actor();
  const idle={consumer:'world',action:'idle',direction:'south',time:1};
  await core.ready;core.primeWorldVisual(player);await settle();
@@ -155,14 +155,16 @@ test('a loaded Luffy idle hands off to a prepared native pose until its next ski
  const attack={...idle,action:'attack',progress:.5,timing:{hitFrameRatio:.6}};
  const loading=renderer.prepare(player,attack);await settle();
  assert.equal(core.draw(ctx,player,attack),true,'an already loaded idle must not leave the world blank at the next pending clip');
- assert.equal(ctx.nativeDraws.length,1);
- assert.equal(ctx.nativeDraws[0].options.action,'idle');
- assert.equal(ctx.nativeDraws[0].options.progress,null,'native locomotion does not inherit a pending attack contact clock');
+ assert.equal(ctx.nativeDraws.length,0);
+ assert.equal(renderer.snapshot().last.action,'idle_brawler_gauntlets');
+ assert.equal(renderer.snapshot().last.requestedAction,'attack_brawler_gauntlets');
+ assert.equal(renderer.snapshot().last.frame,0,'held idle does not inherit the attack contact clock');
  assert.equal(core.draw(ctx,player,{...attack,consumer:'world-silhouette'}),true);
+ assert.equal(ctx.nativeDraws.length,0);
  for(const resume of imageWaiters)resume();assert.equal(await loading,true);
  assert.equal(core.draw(ctx,player,attack),true);
  assert.equal(renderer.snapshot().last.action,'attack_brawler_gauntlets');
- assert.equal(ctx.skinDraws.length,2);
+ assert.equal(ctx.skinDraws.length,4);
  core.clearWorldVisual();
 });
 

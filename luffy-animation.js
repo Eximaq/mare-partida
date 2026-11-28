@@ -70,13 +70,17 @@
     } else index = Math.floor(Math.max(0,input.time || 0) * (input.fps || chosen.data.fps)) % frames.length;
     return {...chosen,direction:d,index,frame:frames[index],source:dir.source,scale:dir.scale,bodyHeight:dir.bodyHeight};
   }
-  function draw(ctx, image, p, x, y, bodyHeight = 320) {
-    const [sx,sy,w,h] = p.frame.rect, [ax,ay] = p.frame.anchor;
+  function draw(ctx, image, p, x, y, bodyHeight = 320, {sourceFrame=p.frame, sourceRatio=1, mirrored=false} = {}) {
+    const [sx,sy,w,h] = sourceFrame.rect, [ax,ay] = p.frame.anchor;
     const scale = bodyHeight / p.bodyHeight;
+    const left=Math.round(x-ax*scale),top=Math.round(y-ay*scale);
     ctx.save();
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(image,sx,sy,w,h,Math.round(x - ax * scale),Math.round(y - ay * scale),w * scale,h * scale);
-    ctx.restore();
+    try{
+      if(mirrored){ctx.translate(left+w*scale,top);ctx.scale(-1,1);}
+      ctx.drawImage(image,sx*sourceRatio,sy*sourceRatio,w*sourceRatio,h*sourceRatio,
+        mirrored?0:left,mirrored?0:top,w*scale,h*scale);
+    }finally{ctx.restore();}
   }
   // Fit a complete cycle once, including its weapon sweep. This avoids scale
   // changes between frames and keeps the preview inside its allotted panel.

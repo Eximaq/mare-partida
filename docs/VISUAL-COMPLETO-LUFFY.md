@@ -58,7 +58,11 @@ O ciclo `cast_palm_shared` esconde a arma durante um poder com a mão livre e re
 
 `progress` e `hitFrameRatio` dos relógios existentes determinam o quadro de ação, normalmente índice 4. A apresentação não muda dano, velocidade, recarga, custo ou callbacks de impacto. Habilidades próprias sem um relógio usam um gesto com prazo de expiração, sem criar bloqueio de combate. Uma habilidade encerrada não prevalece sobre dano, caminhada ou repouso.
 
-O carregador busca apenas o atlas solicitado e mantém até 12 imagens decodificadas em cache, em vez de abrir os 340 arquivos na entrada. O fallback usa uma projeção de apresentação sem o slot de visual completo, preservando o personagem, a arma e o save originais. A passagem entre um clipe Luffy pronto e outro pendente mantém a locomoção nativa preparada.
+Ao equipar o Luffy, o mapa prioriza o repouso da direção atual e a conjuração de mãos livres. A primeira troca visual acontece quando essas poses estão disponíveis. Depois, se o clipe solicitado ainda estiver chegando, o mapa desenha uma pose já preparada do próprio Luffy.
+
+O carregamento continua em segundo plano para as direções, movimentos, habilidades e variantes de arma da classe equipada. O gesto de mãos livres é compartilhado. O Oeste reaproveita o atlas espelhado do Leste porque os pares entregues são equivalentes em pixels. O mapa mantém as texturas da classe em meia resolução por eixo. Os retratos podem carregar a fonte completa sob demanda. Desequipar cancela a fila restante e libera as texturas dessa classe.
+
+No mapa, a escala corporal usa a referência nativa de 105 px. Os 17 ciclos de caminhada têm correções horizontais por quadro, medidas pelo centro do chapéu. O andamento vem do relógio de deslocamento do jogo, com o mesmo pivô vertical e sem alteração da distância percorrida.
 
 ## Verificação e limites
 

@@ -652,7 +652,9 @@
         prepared,total:plan.planned.size,failed,essentialReady:essentialPosesSettled(plan)};
     }
     function primeWorldVisual(player,{direction='south',actions=[]}={}){
+      if(!sharedLobby)root.MareVisualCompletoRenderer?.warmClass?.(player,direction);
       if(!player||player.zoanTransformed||root.MareVisualCompletoRenderer?.equipped(player)&&!isLuffyVisual(player))return;
+      if(root.MareLuffyVisual?.worldReady?.(player))return;
       player=nativeFallbackPlayer(player);
       if(!approvedLoaded){waitingPrime={player,direction,actions};return;}
       const identity=visualIdentity(player),revision=positionRevision(approved),scope={identity,revision};
@@ -799,6 +801,7 @@
     }
     function height(player){
       if(!active||!player||player.zoanTransformed)return null;
+      if(root.MareLuffyVisual?.worldReady?.(player))return root.MareLuffyVisual.worldHeight;
       const shown=worldDrawn?.entry;
       if(compatibleWorldPose(shown,worldRequest)&&shown.bundle.visualHeight&&
          sameWorldIdentity(shown,{identity:visualIdentity(player),revision:positionRevision(approved)})){
