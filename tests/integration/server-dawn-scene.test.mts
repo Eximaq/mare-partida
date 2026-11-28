@@ -62,7 +62,7 @@ test('Dawn village migration reanchors only recognized island saves and preserve
    const before=await snapshot(f.pool),expected=structuredClone(before);
    for(const a of people.slice(0,2))expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=W.rulesHash;
    const island=expected.character_world.find((r:any)=>r.character_id===people[0]!.c.id);Object.assign(island,{...sceneSpawn,path:[],speed:0,motion_until:island.started_at});
-   assert.deepEqual(await applyMigrations(f.pool),[sceneMigration,'0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql']);assert.deepEqual(await snapshot(f.pool),expected);
+   assert.deepEqual(await applyMigrations(f.pool),[sceneMigration,'0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql','0079_character_cosmetics.sql']);assert.deepEqual(await snapshot(f.pool),expected);
    assert.deepEqual(await applyMigrations(f.pool),[]);await f.pool.query(await readFile(new URL(sceneMigration,source),'utf8'));assert.deepEqual(await snapshot(f.pool),expected);
    const resumed=await people[0]!.read();assert.deepEqual(resumed.world.position,sceneSpawn);assert.equal(resumed.battle.rulesHash,E.rulesHash);
    for(const key of ['hp','energy','cooldowns','hunts'])assert.deepEqual(resumed.battle[key],originals[0][key],key);

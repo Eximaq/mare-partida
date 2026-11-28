@@ -1,5 +1,6 @@
 import {weeklyBossPayloadSchema,weeklyBossReceiptSchema} from './weekly-boss.js';
 import {appearanceSchema,preferencePatchSchema} from './profile.js';
+import {cosmeticActions,cosmeticIdSchema,cosmeticSlotSchema} from './cosmetics.js';
 import {hakiActions,hakiNodeSchema,hakiContinuousSchema} from './haki.js';
 import {dungeonActions,dungeonIdSchema} from './dungeons.js';
 import {prisonActions,prisonFloorSchema} from './prison.js';
@@ -70,6 +71,9 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
  z.strictObject({...commandEnvelope,action:z.literal('party.prepare'),payload:z.strictObject({kind:z.enum(['hunt','dungeon']),destination:z.string().regex(/^[a-z0-9-]{1,40}$/)})}),
  z.strictObject({...commandEnvelope,action:z.literal('party.ready'),payload:z.strictObject({nonce:z.uuid(),ready:z.boolean()})}),
  z.strictObject({...commandEnvelope,action:z.literal('party.start'),payload:z.strictObject({nonce:z.uuid()})}),
+ z.strictObject({...commandEnvelope,action:z.literal('cosmetics.claim-demo'),payload:z.strictObject({})}),
+ z.strictObject({...commandEnvelope,action:z.literal('cosmetics.equip'),payload:z.strictObject({cosmeticId:cosmeticIdSchema})}),
+ z.strictObject({...commandEnvelope,action:z.literal('cosmetics.unequip'),payload:z.strictObject({slot:cosmeticSlotSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('profile.appearance'),payload:z.strictObject({appearance:appearanceSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('profile.preferences'),payload:preferencePatchSchema}),
  z.strictObject({...commandEnvelope,action:z.literal('profile.identity'),payload:characterIdentitySchema.extend({appearance:appearanceSchema})}),
@@ -117,7 +121,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["weeklyBoss.execute", "swords.activate", "state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "attributes.build", "attributes.distribute", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,'market.execute',...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
+  action: z.enum(["weeklyBoss.execute", "swords.activate", "state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "attributes.build", "attributes.distribute", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,...cosmeticActions,'market.execute',...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
   weeklyBoss:weeklyBossReceiptSchema.optional(),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),

@@ -46,7 +46,7 @@ function fitInventoryAvatar(ctx,source,referenceScale=1,{cache=true,zoom=3,footA
   ...(anchored?{footAnchor:{x,y}}:{})};
 }
 
-const identityKey=p=>JSON.stringify([p.appearance96||{},p.equipment||{},!!p.zoanTransformed,!!root.MareHeadgear?.hidden(p)],(key,value)=>key==='durability'?undefined:value);
+const identityKey=p=>JSON.stringify([p.appearance96||{},p.equipment||{},!!p.zoanTransformed,!!root.MareHeadgear?.hidden(p),root.MareCosmeticArt?.selection(p)],(key,value)=>key==='durability'?undefined:value);
 // Approved comparison: the 374px-tall rifle115 source draws at 105px, like the Marinheiro.
 // A fixed factor across every pose prevents frame-to-frame breathing; assets and composition stay HD.
 const WORLD_SCALE=105/374;
@@ -8547,6 +8547,12 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...receptor,savedFocusBody:receptor};
  }
  function selectVisual(player,o={},allowOmission=true){
+  const art=root.MareCosmeticArt,chosen=art?.selection(player);
+  if(!chosen)return selectVisualBase(player,o,allowOmission);
+  const {player:appearance,shown}=art.project(player,chosen);
+  return art.decorate(selectVisualBase(appearance,o,allowOmission),shown);
+ }
+ function selectVisualBase(player,o,allowOmission){
   if(root.MareHeadgear?.alwaysHidden(player))player=visibleWorldActor(player);
   const focus=savedFocusReceiver(player,o,allowOmission);if(focus)return focus;
   const bladeHead=selectSavedBladeHead(player,o);if(bladeHead)return bladeHead;
@@ -9993,7 +9999,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   if(!proof.compatible)throw Error('Head identity: '+proof.reason);
   entry.proofs[frame]=proof;
  }
- async function prepare(player,o,clipFileLimit=0){await ready;const r=selectVisual(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&(!r.gaitHat||entry.proofs[frame])&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
+ async function prepare(player,o,clipFileLimit=0){await ready;const r=selectVisual(player,o);if(!r)return false;const frame=frameFor(r,o),sourceKey=cacheKeyFor(r,player),key=sourceKey+':'+frame,files=filesFor(r,frame);let entry=cache.get(sourceKey);if(entry){cache.delete(sourceKey);cache.set(sourceKey,entry);}if(entry&&clipFileLimit)entry.imageLimit=Math.max(entry.imageLimit||64,clipFileLimit);if(entry?.frames.has(frame)||entry&&(!r.gaitHat||entry.proofs[frame])&&files.every(p=>entry.images.has(p)))return true;if(failures.has(key))return false;if(pending.has(key))return pending.get(key);
   const job=(async()=>{try{entry=entry||{images:new Map(),proofs:[],frames:new Map(),imageLimit:Math.max(64,clipFileLimit)};await Promise.all(files.map(async p=>{if(!entry.images.has(p))entry.images.set(p,await loadShared(p));}));
   if(r.femaleNamedHairRecord)femaleNamedHairRegistry.compose(r,r.femaleNamedHairRecord,entry.images);
   validateFrameHead(r,frame,entry);
@@ -10435,6 +10441,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   return {...result,info:{...result.info,source:r.id}};
  }
  function composeFrame(r,frame,entry,trackBounds=false){
+  if(r.cosmeticLayers){
+   const {cosmeticLayers,...base}=r;
+   return root.MareCosmeticArt.compose(composeFrame(base,frame,entry),r,frame,makeCanvas);
+  }
   if(r.namedFirearmHead)return composeNamedFirearm(r,frame,entry);
   if(entry.firearmHeadPack&&r.basePack===entry.firearmHeadPack){
    const rig=r.basePack,p=rig.pack,d=p.directions[r.direction];
@@ -11179,9 +11189,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const idle=pause();if(idle)await idle;
   }
  }
+ function cacheKeyFor(r,player){
+  const material=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{});
+  return r.cosmeticLayers?material+'|cosmetics:'+JSON.stringify(r.cosmeticLayers):material;
+ }
  function sourceKeyFor(r,player){
   const clock=r.hdKind==='weapon'?[r.timeline,r.fps,r.orderedAttack,r.visualSampling]:r.pack.directions[r.direction].clip;
-  return JSON.stringify([r.id,r.hdKind,r.resolvedAction??r.action,r.direction,clock,r.colorAppearance||player.appearance96||{}]);
+  return JSON.stringify([r.id,r.hdKind,r.resolvedAction??r.action,r.direction,clock,r.colorAppearance||player.appearance96||{},r.cosmeticLayers]);
  }
  // A committed bundle owns rendered frame surfaces, outside the opportunistic
  // preview cache. Share decoded sources across all poses of one preparation.
@@ -11306,7 +11320,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
       if(frames)for(const {canvas} of new Set(frames.values())){canvas.width=0;canvas.height=0;}
       sources.delete(key);
       unavailable.set(failed[0],e);
-      r=assembleIndependentPose(plan,unavailable);
+      const rebuilt=assembleIndependentPose(plan,unavailable);
+      r=r.cosmeticLayers?root.MareCosmeticArt.decorate(rebuilt,Object.fromEntries(
+       Object.entries(r.cosmeticLayers).map(([slot,part])=>[slot,part.id]))):rebuilt;
      }
     }
     routes.set(slot,{r,key,options});
@@ -11319,7 +11335,9 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
     coverage.push({action:pose.options.action,direction:pose.options.direction,weaponless:!!pose.options.weaponless,
      resolvedAction:r.resolvedAction??r.action,source:r.id,frames:sources.get(key).size,
      omitted:r.omitted||resolved.omitted||[],unsupported:resolved.unsupported||[],
-     ...(slotRoutes?{slotRoutes}:{}),...(r.slotResolution?{slotResolution:r.slotResolution}:{})});
+     ...(slotRoutes?{slotRoutes}:{}),...(r.slotResolution?{slotResolution:r.slotResolution}:{}),
+     ...(r.cosmeticLayers?{cosmetics:Object.fromEntries(Object.entries(r.cosmeticLayers).map(([slot,part])=>[slot,{...part,
+      drawnFrames:[...sources.get(key).values()].filter(f=>f.info.cosmeticPasses?.includes(slot)).length}]))}:{})});
    }
   }catch(e){clearEditors();clearSources();throw e;}
   function view(o){const route=routes.get(routeKey(o));return route&&editors.get(route.key);}
@@ -11346,7 +11364,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  }
  function draw(ctx,player,o={}){
   const r=selectVisual(player,o);if(!r){last={state:state==='ready'?'uncovered':'loading',action:o.action,direction:o.direction,reason:'No compatible exact or registered layered source for this pose.'};return false;}
-  const frame=frameFor(r,o),sourceKey=r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}),entry=cache.get(sourceKey);if(!entry||!entry.frames.has(frame)&&!filesFor(r,frame).every(p=>entry.images.has(p))){void prepare(player,o);last={state:failures.has(sourceKey+':'+frame)?'failed':'loading',source:r.id};return false;}
+  const frame=frameFor(r,o),sourceKey=cacheKeyFor(r,player),entry=cache.get(sourceKey);if(!entry||!entry.frames.has(frame)&&!filesFor(r,frame).every(p=>entry.images.has(p))){void prepare(player,o);last={state:failures.has(sourceKey+':'+frame)?'failed':'loading',source:r.id};return false;}
   cache.delete(sourceKey);cache.set(sourceKey,entry);
   let result=entry.frames.get(frame);if(!result){try{result=composeFrame(r,frame,entry);entry.frames.set(frame,result);while(entry.frames.size>3)entry.frames.delete(entry.frames.keys().next().value);}catch(e){failures.set(sourceKey+':'+frame,e.message);error=e.message;last={state:'failed',source:r.id,reason:e.message};onChange();return false;}}
   return paint(ctx,player,o,r,frame,result);
@@ -11375,7 +11393,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
    const fitted=fitInventoryAvatar(ctx,result.canvas,WORLD_SCALE,{zoom:o.avatarZoom,footAnchor});if(!fitted)return false;
    if(result.offset){fitted.bounds={...fitted.bounds,left:fitted.bounds.left+result.offset[0],top:fitted.bounds.top+result.offset[1]};}
    last={state:'rendered',consumer:o.avatarConsumer,source:r.id,hdKind:r.hdKind,action:o.action,direction:o.direction,
-    omitted:r.omitted||[],slotRoutes:r.slotRoutes||{},frame,...fitted};return true;
+    omitted:r.omitted||[],slotRoutes:r.slotRoutes||{},frame,...fitted,...(result.info.cosmeticPasses?{cosmeticPasses:result.info.cosmeticPasses}:{})};return true;
   }
   let x=o.x||0,y=o.y||0;
   const appearanceFit=o.action==='idle'&&(o.previewFit==='appearance'||
@@ -11405,7 +11423,7 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   // through the female equipment compositor, rather than the base outfit path.
   const renderedHead=r.femaleNamedHairRecord||(r.body==='female'&&
    (usesFemaleWardrobe(r)||['authored-north-layered','profile-separated'].includes(r.hdKind))?r.material:null);
-  last={state:'rendered',source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame,width:result.info.width,height:result.info.height,pivot:result.info.pivot,density:result.info.density,physicalScale,sourceScale:1,status:r.status,approval:r.approval,eyeStyle:r.eyeStyle||renderedHead?.eyeStyle,skinPalette:renderedHead?.skinColor,hairPalette:renderedHead?.hairColor,faceProtectedExact:!!renderedHead?.faceProtectedExact,faceProtectedExceptIris:!!renderedHead?.faceProtectedExceptIris,headSourceScale:renderedHead?.sourceScale,headStatus:renderedHead?'semantic-fringe-ownership-candidate':r.gearOnlyRecord?'gear-only-candidate-calibration':r.headRecord?.status,headIdentity:renderedHead?(renderedHead.eyeStyle?'original-face-with-eye-style':'original-face-protected-exact'):r.gearOnlyRecord?'exact-head-original-hair-preserved':r.headRecord||r.namedFirearmHead?'exact-head-source-pixels':'authored-original',headOcclusion:renderedHead?.gearRecord?renderedHead.gearPolicy:r.gearOnlyRecord?.occlusion,headGearScale:r.gearOnlyRecord?.sourceScale,headGearSource:r.gearOnlyRecord?.gear.source||renderedHead?.gearRecord?.layers.find(l=>l.id===renderedHead.gearRecord.headgearPolicy?.gearId)?.source,headGearId:r.gearOnlyRecord?.id,...(r.slotRoutes?{omitted:r.omitted,slotRoutes:r.slotRoutes}:{})};return true;
+  last={state:'rendered',source:r.id,action:r.resolvedAction||r.action||o.action,direction:o.direction,consumer:o.consumer,frame,width:result.info.width,height:result.info.height,pivot:result.info.pivot,density:result.info.density,physicalScale,sourceScale:1,status:r.status,approval:r.approval,eyeStyle:r.eyeStyle||renderedHead?.eyeStyle,skinPalette:renderedHead?.skinColor,hairPalette:renderedHead?.hairColor,faceProtectedExact:!!renderedHead?.faceProtectedExact,faceProtectedExceptIris:!!renderedHead?.faceProtectedExceptIris,headSourceScale:renderedHead?.sourceScale,headStatus:renderedHead?'semantic-fringe-ownership-candidate':r.gearOnlyRecord?'gear-only-candidate-calibration':r.headRecord?.status,headIdentity:renderedHead?(renderedHead.eyeStyle?'original-face-with-eye-style':'original-face-protected-exact'):r.gearOnlyRecord?'exact-head-original-hair-preserved':r.headRecord||r.namedFirearmHead?'exact-head-source-pixels':'authored-original',headOcclusion:renderedHead?.gearRecord?renderedHead.gearPolicy:r.gearOnlyRecord?.occlusion,headGearScale:r.gearOnlyRecord?.sourceScale,headGearSource:r.gearOnlyRecord?.gear.source||renderedHead?.gearRecord?.layers.find(l=>l.id===renderedHead.gearRecord.headgearPolicy?.gearId)?.source,headGearId:r.gearOnlyRecord?.id,...(result.info.cosmeticPasses?{cosmeticPasses:result.info.cosmeticPasses}:{}),...(r.slotRoutes?{omitted:r.omitted,slotRoutes:r.slotRoutes}:{})};return true;
  }
  // Use the exact normal-player idle selector but don't replace any of
  // the world's last/held poses or request the full world pose preparation.
@@ -11424,10 +11442,10 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  async function prepareForPlayer(player,o={}){if(!o.consumer||o.consumer==='world'){const key=identityKey(player)+'|'+!!root.MareAppearance96+'|'+!!root.MareCharacterAppearance;if(!preparedDirections.has(key)){const task=(async()=>{for(const direction of ['south','east','west','north'])await prepareStablePose(player,{action:'idle',direction,consumer:'world'});})();preparedDirections.set(key,task);while(preparedDirections.size>8)preparedDirections.delete(preparedDirections.keys().next().value);}await preparedDirections.get(key);}return prepare(player,o);}
  // Prepare the exact directional rest pose without claiming it was drawn in the world.
  async function prepareStablePose(player,o={}){if(!await prepare(player,o))return false;const key=identityKey(player)+'|'+(o.consumer||'world'),previous=last,held=lastRendered.get(key);try{return draw(makeCanvas(1,1).getContext('2d'),player,{...o,x:0,y:0,preview:false});}finally{last=previous;if(held)lastRendered.set(key,held);else lastRendered.delete(key);}}
- function canDrawStable(player,o={}){if(!selectVisual(player,o)||failureFor(player,o))return false;const prepared=pose=>{const r=selectVisual(player,pose);if(!r||failureFor(player,pose))return false;const frame=frameFor(r,pose),entry=cache.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{}));return !!entry&&(entry.frames.has(frame)||filesFor(r,frame).every(p=>entry.images.has(p)));};return prepared(o)||lastRendered.has(identityKey(player)+'|'+(o.consumer||'world')+'|'+o.direction)||o.action!=='idle'&&prepared({...o,action:'idle',time:0,progress:0});}
+ function canDrawStable(player,o={}){if(!selectVisual(player,o)||failureFor(player,o))return false;const prepared=pose=>{const r=selectVisual(player,pose);if(!r||failureFor(player,pose))return false;const frame=frameFor(r,pose),entry=cache.get(cacheKeyFor(r,player));return !!entry&&(entry.frames.has(frame)||filesFor(r,frame).every(p=>entry.images.has(p)));};return prepared(o)||lastRendered.has(identityKey(player)+'|'+(o.consumer||'world')+'|'+o.direction)||o.action!=='idle'&&prepared({...o,action:'idle',time:0,progress:0});}
  function drawStable(ctx,player,o={}){const key=identityKey(player);if(!selectVisual(player,o)){last={state:'uncovered',action:o.action,direction:o.direction,reason:'No compatible source for this pose'};return false;}if(draw(ctx,player,o))return true;if(failureFor(player,o))return false;const consumerKey=key+'|'+(o.consumer||'world'),held=lastRendered.get(consumerKey+'|'+o.direction);if(!held&&o.action!=='idle'){const loading=last;if(draw(ctx,player,{...o,action:'idle',time:0,progress:0})){last={...last,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction};return true;}last=loading;}if(held?.key===key){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(held.canvas,(o.x||0)-held.info.pivot.x*WORLD_SCALE,(o.y||0)-held.info.pivot.y*WORLD_SCALE,held.info.width*WORLD_SCALE,held.info.height*WORLD_SCALE);ctx.restore();last={...held.pose,state:'holding-native-while-loading',requestedAction:o.action,requestedDirection:o.direction,physicalScale:WORLD_SCALE,sourceScale:1};return true;}return false;}
  const height=player=>{const held=lastRendered.get(identityKey(player)+'|world');return held?.key===identityKey(player)?held.info.visualHeight*WORLD_SCALE:null;};
- function failureFor(player,o={}){const r=selectVisual(player,o);return r?failures.get(r.id+'|'+JSON.stringify(r.colorAppearance||player.appearance96||{})+':'+frameFor(r,o)):null;}
+ function failureFor(player,o={}){const r=selectVisual(player,o);return r?failures.get(cacheKeyFor(r,player)+':'+frameFor(r,o)):null;}
  return {ready,warmSwordCheckpoint,attackActionFor:item=>weaponRegistry?.attackAction(item),prepare:prepareForPlayer,prepareClip,prepareConfiguration,sourceKeyFor,prepareStablePose,prepareFamily,draw,drawFittedAvatar,drawStable,canDrawStable,height,select,selectLayered,selectVisual,selectIndependentWorld,resolveMaleGaitTorsoSource,resolveMaleGaitHeadSource,failureFor,snapshot:()=>({state,error,last,northRigStatus:northRig?.loadError?{state:'unavailable',error:northRig.loadError}:{state:northRig?.schema==='female-north-author-layered-rig-v1'?'ready':'unavailable'},cachedSources:cache.size,families:[...familyStates.values()].map(({state,reason})=>({state,reason})),failures:[...failures]})};
 }
 const api={create,fitInventoryAvatar};root.MareReworkNativeHD=api;if(typeof module!=='undefined')module.exports=api;

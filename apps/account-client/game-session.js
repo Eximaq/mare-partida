@@ -19,6 +19,7 @@
       "spirit",
     ],
     items = ["dock-scrap-v1", "training-weapon-v1", "dock-vest-v1"];
+  const cosmeticSlots=['head','coat','legs','gloves','boots','weapon'];
   const originalSlots=['head','necklace','coat','legs','boots','weapon','cloak','gloves','ring','belt','charm','akuma_no_mi','visual_completo'];
   const instanceId=v=>typeof v==='string'&&/^[a-zA-Z0-9:-]{1,80}$/.test(v);
   function validForge(op){
@@ -131,6 +132,9 @@
       if(action==='party.ready')return keys==='nonce,ready'&&uuid(p.nonce)&&typeof p.ready==='boolean';
       if(action==='party.start')return keys==='nonce'&&uuid(p.nonce);return false;
     }
+    if(action==='cosmetics.claim-demo')return keys==='';
+    if(action==='cosmetics.equip')return keys==='cosmeticId'&&typeof p.cosmeticId==='string'&&p.cosmeticId.length<=60&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.cosmeticId);
+    if(action==='cosmetics.unequip')return keys==='slot'&&cosmeticSlots.includes(p.slot);
     if(action==='profile.appearance'||action==='profile.identity'){
       const a=p.appearance,appearanceOK=a&&typeof a==='object'&&!Array.isArray(a)&&Object.keys(a).sort().join()==='eyeColor,eyeStyle,gender,hairColor,hairStyle,skinColor,skinStyle,version'&&a.version===1&&Object.entries(a).every(([k,v])=>k==='version'||typeof v==='string'&&/^[a-z-]{1,30}$/.test(v));
       return !!appearanceOK&&(action==='profile.appearance'?keys==='appearance':keys==='appearance,classId,factionId,name'&&classes.includes(p.classId)&&['pirate','marine','revolutionary','government'].includes(p.factionId)&&typeof p.name==='string'&&p.name.length>=1&&p.name.length<=40);

@@ -70,12 +70,15 @@ function instrument(source){
   await page.setViewportSize({width:393,height:852});await verify('mobile equipped helmet');
   await page.screenshot({path:path.join(out,'inventory-south-mobile.png')});
   const skinId=await page.evaluate(()=>__inventorySouthQA.add(187));
-  await page.locator('[data-item="'+skinId+'"]').click();await page.locator('[data-equip="'+skinId+'"]').click();
-  const skin=await verify('mobile Zoro');assert(skin.skin);await page.locator('[data-inv-tab="visual"]').click();
+  await page.locator('[data-inv-tab="visual"]').click();
+  await page.locator('.op-cosmetic-tile[data-inv-visual-kind="full"][data-inv-visual-id="'+skinId+'"]').click();
+  await page.locator('[data-equip="'+skinId+'"]').click();
+  const skin=await verify('mobile Zoro');assert(skin.skin);
   await page.screenshot({path:path.join(out,'inventory-south-zoro-mobile.png')});
   await page.setViewportSize({width:1366,height:768});await verify('desktop Zoro');
   await page.screenshot({path:path.join(out,'inventory-south-zoro-desktop.png')});
   await page.locator('[data-inv-slot="visual_completo"]').click();await page.locator('[data-unequip="visual_completo"]').click();
+  await page.locator('[data-inv-tab="equipment"]').click();
   const restored=await verify('desktop restored equipment');assert(!restored.skin);assert.equal(restored.png,helmet.png);
   assert.deepEqual(errors,[]);
   fs.writeFileSync(path.join(out,'inventory-south-results.json'),JSON.stringify({url,rows,errors},null,2));

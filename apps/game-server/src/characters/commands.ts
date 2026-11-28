@@ -10,6 +10,7 @@ import {executeCrew} from './crew.js';
 import {chooseProfession} from './crew-professions.js';
 import {lockParty} from './party-store.js';
 import {mutateProfile} from './profile.js';
+import {isCosmeticCommand,mutateCosmetics} from './cosmetics.js';
 import {registerFruit,mutateFruit} from './fruits.js';
 import {promoteHierarchy} from './hierarchy.js';
 import {isHakiAction,mutateHaki} from './haki.js';
@@ -44,6 +45,7 @@ export async function executeCharacterCommand(
   );
   if (!controller.rowCount) throw new AuthFault(409, "control_conflict");
   const social = /^(friend|contact|message|mail|trade|market)\./.test(input.action);
+  const cosmetic=isCosmeticCommand(input);
   const party=social?null:await lockParty(client,characterId);
   if(input.action==='weeklyBoss.execute')await authorizeWeeklyBoss(client,characterId,input.payload.op);
   const weekly=await lockWeeklyBoss(client,characterId);
@@ -99,8 +101,11 @@ export async function executeCharacterCommand(
       await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[characterId]);break;
   }
   state=await readCharacterState(client,characterId);
-  const before=state,powerBefore=social||input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);
+  const before=state,powerBefore=social||cosmetic||input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);
   if(input.action==='swords.activate'){await activateSword(client,characterId,state,input.requestId,input.payload.swordId);state=await readCharacterState(client,characterId);}
+  if(cosmetic){
+    await mutateCosmetics(client,characterId,input,state);state=await readCharacterState(client,characterId);
+  }
   if(input.action.startsWith('profile.')){await mutateProfile(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(['fruit.cast','fruit.transform','fruit.move'].includes(input.action)){await mutateFruit(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==='fruit.register'){await registerFruit(client,characterId,input.requestId,state,input.payload.itemId);state=await readCharacterState(client,characterId);}
@@ -139,7 +144,7 @@ export async function executeCharacterCommand(
   let inventory;
   if(input.action==="inventory.buy"||input.action==="inventory.sell"||input.action==="equipment.equip"||input.action==="equipment.unequip") {inventory=await mutateInventory(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==="combat.claim") inventory=await readInventory(client,characterId);
-  if(!weekly&&input.action!=='weeklyBoss.execute'&&!social&&input.action!=='state.sync')await observeServerAchievements(client,characterId,before,state,{powerBefore,...(input.action==='world.travel'?{island:input.payload.islandId}:{}),...(input.action==='combat.claim'?{kills:1}:{})});
+  if(!weekly&&input.action!=='weeklyBoss.execute'&&!social&&!cosmetic&&input.action!=='state.sync')await observeServerAchievements(client,characterId,before,state,{powerBefore,...(input.action==='world.travel'?{island:input.payload.islandId}:{}),...(input.action==='combat.claim'?{kills:1}:{})});
   const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(weeklyBoss ? {weeklyBoss} : {}), ...(mail ? {mail} : {}), ...(market ? {market} : {}), ...(world ? {world} : {}), ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}), ...(inventory ? {inventory} : {}) });
   await client.query(
     "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)",

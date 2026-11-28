@@ -61,7 +61,7 @@ test('Baratie migration reanchors only recognized restaurant saves and preserves
    const before=await snapshot(f.pool),expected=structuredClone(before);
    for(const a of people.slice(0,2))expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=W.rulesHash;
    const park=expected.character_world.find((r:any)=>r.character_id===people[0]!.c.id);Object.assign(park,{x:1536,y:1952,path:[],speed:0,motion_until:park.started_at});
-   const pending=[sceneMigration,'0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql'];
+   const pending=[sceneMigration,'0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql','0079_character_cosmetics.sql'];
    for(const name of pending)await copyFile(new URL(name,source),join(directory,name));
    assert.deepEqual(await applyMigrations(f.pool,directory),pending);assert.deepEqual(await snapshot(f.pool),expected);
    assert.deepEqual(await applyMigrations(f.pool,directory),[]);await f.pool.query(await readFile(new URL(sceneMigration,source),'utf8'));assert.deepEqual(await snapshot(f.pool),expected);

@@ -46,6 +46,12 @@
     return pending.size?source:candidate;
   }
   function selectWorldHDOnly(nativeHD,weaponCatalog,player,options){
+    const art=root.MareCosmeticArt,chosen=art?.selection(player);
+    if(!chosen)return selectWorldHDSource(nativeHD,weaponCatalog,player,options);
+    const {player:appearance,shown}=art.project(player,chosen);
+    return art.decorate(selectWorldHDSource(nativeHD,weaponCatalog,appearance,options),shown);
+  }
+  function selectWorldHDSource(nativeHD,weaponCatalog,player,options){
     if(!nativeHD?.selectVisual||!player||player.zoanTransformed)return null;
     if(['attack','skill'].includes(options.action)){
       const raw=player.equipment?.weapon,item=raw?.def??raw,category=weaponCatalog?.classes?.[player.classId];
@@ -380,10 +386,11 @@
     let worldRequest=null,worldDrawn=null,worldWarm=null,worldPrime=null,waitingPrime=null;
     const worldDirections=['north','east','south','west'];
     const locomotion=action=>action==='idle'||action==='walk';
-    const visualIdentity=player=>JSON.stringify([
+    const visualIdentity=(player,includeCosmetics=true)=>JSON.stringify([
       player.classId,player.factionId,player.appearance96,player.paperDollLook,
       Object.entries(player.equipment||{}).filter(([,item])=>item!=null).sort(([a],[b])=>a.localeCompare(b)).map(([slot,item])=>[slot,item.def??item,item.variant,item.variantId,item.appearanceVariant]),
-      Headgear.hidden(player),!!player.zoanTransformed
+      Headgear.hidden(includeCosmetics?player:{...player,cosmetics:null}),!!player.zoanTransformed,
+      includeCosmetics?root.MareCosmeticArt?.selection(player):!!player.preferences?.hideHeadgear
     ]);
     // Typed preview plans share the HD selector, not the World request's
     // singleton player identity. This cache is bounded and cannot paint a
@@ -525,7 +532,7 @@
       let entry=worldPoses.get(key);
       if(publish&&worldRequest?.key!==key){
         if(!sameWorldIdentity(worldRequest,scope)){
-          worldDrawn=null;
+          if(!sameWorldIdentity(worldPrime,scope)||worldPrime.handoff!==worldDrawn?.entry)worldDrawn=null;
           for(const previous of worldPoses.values())if(!sameWorldIdentity(previous,scope)&&previous.promise){
             releaseWorldPose(previous,'appearance-changed');
           }
@@ -605,7 +612,7 @@
       return true;
     }
     function firstWorldPresentationReady(entry){
-      return !sameWorldIdentity(entry,worldPrime)||sameWorldIdentity(worldDrawn?.entry,worldPrime)||essentialPosesSettled(worldPrime);
+      return !sameWorldIdentity(entry,worldPrime)||!!worldPrime.handoff||sameWorldIdentity(worldDrawn?.entry,worldPrime)||essentialPosesSettled(worldPrime);
     }
     function worldPreparation(){
       const plan=worldPrime;
@@ -632,9 +639,13 @@
       if(!approvedLoaded){waitingPrime={player,direction,actions};return;}
       const identity=visualIdentity(player),revision=positionRevision(approved),scope={identity,revision};
       if(!sameWorldIdentity(worldPrime,scope)){
-        const previous=worldPrime;
-        worldPrime={...scope,planned:new Map(),queue:new Map(),physical:new Map(),running:null,retryAt:Infinity};
-        if(previous)for(const entry of worldPoses.values())if(sameWorldIdentity(entry,previous)){
+        const previous=worldPrime,displayed=worldDrawn?.entry;
+        // Hold the exact published pose during a wardrobe-only change.
+        const handoff=!sameWorldIdentity(displayed,scope)&&displayed?.bundle&&displayed.revision===revision&&
+          visualIdentity(displayed.player,false)===visualIdentity(player,false)?displayed:null;
+        worldPrime={...scope,handoff,planned:new Map(),queue:new Map(),physical:new Map(),running:null,retryAt:Infinity};
+        if(previous)for(const entry of worldPoses.values())if(entry!==handoff&&!sameWorldIdentity(entry,scope)&&
+            (sameWorldIdentity(entry,previous)||entry===previous.handoff)){
           releaseWorldPose(entry,'appearance-changed');
         }
         previous?.queue.clear();
@@ -714,6 +725,10 @@
       let painted=requested,paintOptions=exact;
       if(!requested.bundle?.draw(ctx,player,exact)){
         if(!publish||!worldDrawn)return false;
+        const held=sameWorldIdentity(worldPrime,requested)?worldPrime.handoff:null;
+        if(held?.bundle&&held.hidesWeapon===requested.hidesWeapon&&
+            held.options.action===action&&held.options.direction===exact.direction&&
+            held.bundle.draw(ctx,held.player,exact))return true;
         painted=continuityPose(requested);
         if(!painted)return false;
         const previous=worldDrawn.entry===painted?worldDrawn:null;
@@ -726,6 +741,11 @@
         if(!painted.bundle.draw(ctx,player,paintOptions))return false;
       }
       if(publish){
+        if(worldPrime?.handoff&&sameWorldIdentity(painted,worldPrime)){
+          const held=worldPrime.handoff;
+          worldPrime.handoff=null;
+          releaseWorldPose(held,'cosmetics-ready');
+        }
         painted.firstDrawAt??=now;
         worldDrawn={entry:painted,at:now,time:paintOptions.time,progress:paintOptions.progress,timing:paintOptions.timing};
         defaultHD?.clear();draws++;

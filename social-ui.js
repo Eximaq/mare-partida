@@ -104,7 +104,7 @@
     const src=source.getContext('2d',{willReadFrequently:true});
     const x=source.width/2,feet=source.height-17;
     return function paint(canvas,player){
-      const key=JSON.stringify([player.classId,player.factionId,player.appearance96,player.hideHeadgear,player.equipment,canvas.width,canvas.height]);
+      const key=JSON.stringify([player.classId,player.factionId,player.appearance96,player.hideHeadgear,player.equipment,player.cosmetics,canvas.width,canvas.height]);
       if(painted.get(canvas)===key)return;
       const ctx=canvas.getContext('2d');
       ctx.clearRect(0,0,canvas.width,canvas.height);

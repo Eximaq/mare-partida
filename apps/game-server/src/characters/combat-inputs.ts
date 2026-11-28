@@ -7,6 +7,7 @@ import {talentView} from './talents.js';
 import {fruitView} from './fruits.js';
 import {hakiView} from './haki.js';
 import {readProfile} from './profile.js';
+import {equippedCosmetics,type CosmeticEquipment} from './cosmetics.js';
 import {originalInventoryView} from '../gameplay/inventory.js';
 import {deriveOriginalFighter} from '../gameplay/character.js';
 import {noCrewBenefits,readCrewBenefitsForCharacters,type CrewBenefits} from './crew-benefits.js';
@@ -14,16 +15,16 @@ const runtime=createRequire(import.meta.url)('../../../../talent-runtime.cjs');
 /** Current-schema, server-internal inputs. Caller must hold the existing character/
  * Party authorization locks. No cache survives this call, transaction or tick.
  * Batch size is bounded by the four-member roster, never supplied by a route. */
-export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
- return loadCombatInputs(c,ids,true);
+export async function readCombatInputs(c:PoolClient,ids:readonly string[],includeCosmetics=false){
+ return loadCombatInputs(c,ids,true,includeCosmetics);
 }
 
 /** Read-only inputs for a single target already authorized by the Social projection. */
 export async function readPublicProfileInputs(c:PoolClient,id:string){
- return (await loadCombatInputs(c,[id],false)).get(id);
+ return (await loadCombatInputs(c,[id],false,true)).get(id);
 }
 
-async function loadCombatInputs(c:PoolClient,ids:readonly string[],initializeProfile:boolean){
+async function loadCombatInputs(c:PoolClient,ids:readonly string[],initializeProfile:boolean,includeCosmetics:boolean){
  const unique=[...new Set(ids)];if(unique.length>4)throw new RangeError('combat_batch_too_large');
  const result=new Map<string,CombatInputs>();if(!unique.length)return result;
  const rows=(await c.query(`SELECT ch.id,ch.class_id,ch.faction_id,ch.state_version::float8 version,
@@ -32,6 +33,7 @@ async function loadCombatInputs(c:PoolClient,ids:readonly string[],initializePro
  to_regprocedure('mare_game.market_command(uuid,jsonb,integer,integer,integer)') IS NOT NULL market_available,
  (SELECT simulation->'haki' FROM mare_game.character_battles WHERE character_id=ch.id) haki_state,
  p.level,p.experience::text,p.gold::text,s.entries AS swords,to_jsonb(i) inventory,t.build,t.revision,coalesce(a.budget,0) legacy_budget,pr.appearance,pr.preferences,
+ ${includeCosmetics?"to_jsonb(pr)->'cosmetics'->'equipped' cosmetics,":''}
  (SELECT jsonb_build_object('strength',coalesce(sum(strength),0),'dexterity',coalesce(sum(dexterity),0),
  'vitality',coalesce(sum(vitality),0),'intelligence',coalesce(sum(intelligence),0),'spirit',coalesce(sum(spirit),0))
  FROM mare_game.character_attribute_ledger WHERE character_id=ch.id) allocated,
@@ -52,7 +54,7 @@ async function loadCombatInputs(c:PoolClient,ids:readonly string[],initializePro
   const attributes=attributeView(row.allocated,row.last_request_id,state),inventory=originalInventoryView(row.inventory,row.id);
   const talents=talentView(row,state,row.bonus),fruits=fruitView(row.registered);
   // Preserve lazy initialization only for historical rows without a profile.
-  const fallback=row.preferences?null:await readProfile(c,row.id);
+  const fallback=row.preferences?null:(await readProfile(c,row.id))?.profile;
   const preferences=preferencesSchema.parse(row.preferences??fallback?.preferences),appearance=appearanceSchema.parse(row.appearance??fallback?.appearance);
   const crewBenefits=benefits.get(row.id)??noCrewBenefits;
   const permanentPower=(withoutSlot?:keyof OriginalInventory['equipment'])=>{
@@ -62,8 +64,9 @@ async function loadCombatInputs(c:PoolClient,ids:readonly string[],initializePro
    const fighter=deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,stock,talents.build,undefined,haki,fruits,undefined,false,crewBenefits.cook);
    return fighter.rulesetId==='original-character-v1'?Math.min(1000000000,Math.max(0,Math.floor(fighter.stats.power))):0;
   };
-  result.set(row.id,{state,attributes,inventory,talents,fruits,preferences,appearance,crewAvailable:row.crew_benefits_available===true,socialAvailable:row.social_available===true,marketAvailable:row.market_available===true,crewBenefits,permanentPower,fighter:(battle:any,legacyCadence=false)=>{if(!inventory)throw new AuthFault(503,'original_inventory_required');return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,inventory,talents.build,battle?runtime.load(battle):undefined,battle?hakiView(battle):undefined,fruits,battle,legacyCadence,crewBenefits.cook);}});
+  const cosmetics=row.cosmetics==null?undefined:equippedCosmetics(row.cosmetics,preferences.hideItems);
+  result.set(row.id,{state,attributes,inventory,talents,fruits,preferences,appearance,cosmetics,crewAvailable:row.crew_benefits_available===true,socialAvailable:row.social_available===true,marketAvailable:row.market_available===true,crewBenefits,permanentPower,fighter:(battle:any,legacyCadence=false)=>{if(!inventory)throw new AuthFault(503,'original_inventory_required');return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,inventory,talents.build,battle?runtime.load(battle):undefined,battle?hakiView(battle):undefined,fruits,battle,legacyCadence,crewBenefits.cook);}});
  }
  if(initializeProfile&&result.size!==unique.length)throw new AuthFault(503,'character_state_unavailable');return result;
 }
-type CombatInputs={attributes:ReturnType<typeof attributeView>;fruits:ReturnType<typeof fruitView>;permanentPower:(withoutSlot?:keyof OriginalInventory['equipment'])=>number;state:ReturnType<typeof characterStateSchema.parse>;inventory:ReturnType<typeof originalInventoryView>;talents:ReturnType<typeof talentView>;preferences:ReturnType<typeof preferencesSchema.parse>;appearance:ReturnType<typeof appearanceSchema.parse>;crewAvailable:boolean;socialAvailable:boolean;marketAvailable:boolean;crewBenefits:Readonly<CrewBenefits>;fighter:(battle:any,legacyCadence?:boolean)=>ReturnType<typeof deriveOriginalFighter>};
+type CombatInputs={attributes:ReturnType<typeof attributeView>;fruits:ReturnType<typeof fruitView>;permanentPower:(withoutSlot?:keyof OriginalInventory['equipment'])=>number;state:ReturnType<typeof characterStateSchema.parse>;inventory:ReturnType<typeof originalInventoryView>;talents:ReturnType<typeof talentView>;preferences:ReturnType<typeof preferencesSchema.parse>;appearance:ReturnType<typeof appearanceSchema.parse>;cosmetics:CosmeticEquipment|undefined;crewAvailable:boolean;socialAvailable:boolean;marketAvailable:boolean;crewBenefits:Readonly<CrewBenefits>;fighter:(battle:any,legacyCadence?:boolean)=>ReturnType<typeof deriveOriginalFighter>};
