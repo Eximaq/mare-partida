@@ -54,8 +54,9 @@
     document.addEventListener('pointerout',event=>{if(target&&event.target.closest?.(selector)===target&&!target.contains(event.relatedTarget))hide();});
     document.addEventListener('focusin',event=>{const element=event.target.closest?.(selector);if(element)show(element);});
     document.addEventListener('focusout',event=>{if(event.target===target)hide();});
-    window.addEventListener('keydown',event=>{if(event.key==='Escape'&&target?.hasAttribute('data-studio-help')){hide();event.preventDefault();event.stopImmediatePropagation();}},true);
-    document.addEventListener('click',event=>{const element=event.target.closest?.('[data-studio-help]');if(element)show(element);else if(target?.hasAttribute('data-studio-help'))hide();});
+    const touchDetails='[data-studio-help],[data-social-profile-item]';
+    window.addEventListener('keydown',event=>{if(event.key==='Escape'&&target?.matches(touchDetails)){hide();event.preventDefault();event.stopImmediatePropagation();}},true);
+    document.addEventListener('click',event=>{const element=event.target.closest?.(touchDetails);if(element)show(element);else if(target?.matches(touchDetails))hide();});
     document.addEventListener('scroll',event=>{
       if(!target)return;
       const scroller=event.target;

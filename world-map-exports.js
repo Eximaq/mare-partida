@@ -1,7 +1,7 @@
 'use strict';
 /* Geometry shared by the browser and the authoritative navigation catalog. */
 ((root)=>{
-  if(typeof module!=='undefined')require('./world-map-exports-data.js');
+  if(typeof module!=='undefined'){require('./world-map-exports-data.js');require('./loguetown-map-data.js');require('./arlong-map-data.js');require('./baratie-map-data.js');require('./syrup-map-data.js');require('./rare-animals-map-data.js');require('./dawn-village-map-data.js');require('./conchas-marine-map-data.js');require('./orange-town-map-data.js');require('./alabasta-desert-map-data.js');require('./alubarna-city-map-data.js');require('./boss-arena-map-data.js');require('./marineford-map-data.js');}
   const data=root.MareMapExportData;
   const step=16;
   const mapKey=id=>/^(thriller-bark|sabaody|marineford)-\d{2}$/.exec(id)?.[1]||(id?.startsWith('enies-lobby-')?'enies-lobby':id?.startsWith('alubarna-')?'alubarna':id==='beach'?'dawn':id==='swamp'?'conchas':id);
@@ -71,6 +71,7 @@
       }
     };
     update(root.MareDawn,dawn);
+    update(root.MareAlabasta,data.alabasta);
     for(const collection of [root.MarePixelWorldMaps,root.MareNewIslands])for(const id of Object.keys(data))update(collection?.[id],data[id]);
     for(const world of Object.values(root.MareAlubarna?.worlds||{}))update(world,alubarna);
     if(root.MareQuestDungeonWorld&&data['quest-dungeons'].chest){
@@ -79,6 +80,18 @@
     }
   }
   function prepare(id){
+    if(mapKey(id)==='marineford'&&root.MareMarineford)return root.MareMarineford.prepare();
+    if(id==='quest-dungeons'&&root.MareBossArena)return root.MareBossArena.prepare();
+    if(mapKey(id)==='alubarna'&&root.MareAlubarnaCity)return root.MareAlubarnaCity.prepare();
+    if(id==='alabasta'&&root.MareAlabastaDesert)return root.MareAlabastaDesert.prepare();
+    if(id==='orange'&&root.MareOrangeTown)return root.MareOrangeTown.prepare();
+    if(id==='conchas'&&root.MareConchasMarine)return root.MareConchasMarine.prepare();
+    if(id==='dawn'&&root.MareDawnVillage)return root.MareDawnVillage.prepare();
+    if(id==='rare'&&root.MareRareAnimals)return root.MareRareAnimals.prepare();
+    if(id==='syrup'&&root.MareSyrup)return root.MareSyrup.prepare();
+    if(id==='baratie'&&root.MareBaratie)return root.MareBaratie.prepare();
+    if(id==='arlong'&&root.MareArlong)return root.MareArlong.prepare();
+    if(id==='loguetown'&&root.MareLoguetown)return root.MareLoguetown.prepare();
     const key=mapKey(id);
     let img=imageCache.get(key);
     if(img)imageCache.delete(key);
@@ -92,6 +105,18 @@
     return img;
   }
   function ground(ctx,id,camera,w,h){
+    if(mapKey(id)==='marineford'&&root.MareMarineford){root.MareMarineford.ground(ctx,camera,w,h);return;}
+    if(id==='quest-dungeons'&&root.MareBossArena){root.MareBossArena.ground(ctx,camera,w,h);return;}
+    if(mapKey(id)==='alubarna'&&root.MareAlubarnaCity){root.MareAlubarnaCity.ground(ctx,camera,w,h);return;}
+    if(id==='alabasta'&&root.MareAlabastaDesert){root.MareAlabastaDesert.ground(ctx,camera,w,h);return;}
+    if(id==='orange'&&root.MareOrangeTown){root.MareOrangeTown.ground(ctx,camera,w,h);return;}
+    if(id==='conchas'&&root.MareConchasMarine){root.MareConchasMarine.ground(ctx,camera,w,h);return;}
+    if(id==='dawn'&&root.MareDawnVillage){root.MareDawnVillage.ground(ctx,camera,w,h);return;}
+    if(id==='rare'&&root.MareRareAnimals){root.MareRareAnimals.ground(ctx,camera,w,h);return;}
+    if(id==='syrup'&&root.MareSyrup){root.MareSyrup.ground(ctx,camera,w,h);return;}
+    if(id==='baratie'&&root.MareBaratie){root.MareBaratie.ground(ctx,camera,w,h);return;}
+    if(id==='arlong'&&root.MareArlong){root.MareArlong.ground(ctx,camera,w,h);return;}
+    if(id==='loguetown'&&root.MareLoguetown){root.MareLoguetown.ground(ctx,camera,w,h);return;}
     const img=prepare(id);
     if(!img.complete||!img.naturalWidth)return;
     const x=Math.max(0,Math.floor(camera.x)),y=Math.max(0,Math.floor(camera.y));

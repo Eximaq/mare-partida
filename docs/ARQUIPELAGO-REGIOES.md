@@ -19,7 +19,7 @@ Atualização de 19/10/2026. A janela fica em **Modos de jogo (M) → Mapa do Ar
 | Parque Arlong | 31–35 | `arlong` | Nv. 31 | Jogável · Kuroobi e Chew Nv. 33 |
 | Loguetown | 36–40 | `loguetown` | Nv. 36 | Jogável · Marinheiro Nv. 40 |
 
-Ilha Dawn é o nome atual de Ruínas de Brasas; Cidade das Conchas substitui Fenda da Névoa. As renomeações se aplicam à HUD, origem de novos drops e notificações atuais. Textos históricos no inventário e saves exportados não são reescritos. A documentação anterior de Orange Town descreve o mapa antigo e está supersedida por [ORANGE-TOWN.md](ORANGE-TOWN.md).
+Ilha Dawn é o nome atual de Ruínas de Brasas; Cidade das Conchas substitui Fenda da Névoa. As renomeações se aplicam à HUD, origem de novos drops e notificações atuais. Textos históricos no inventário e saves exportados não são reescritos. Dawn agora usa a vila costeira de Foosha com moinhos e PARTYS BAR, descrita em [VILA-DAWN.md](VILA-DAWN.md); a arte manual anterior permanece preservada. A documentação anterior de Orange Town descreve o mapa antigo e está supersedida por [ORANGE-TOWN.md](ORANGE-TOWN.md).
 
 As faixas são recomendações; não alteram os requisitos existentes nem impõem nível máximo. Combate, economia, equipamentos e IDs de persistência permanecem iguais. A viagem reutiliza `worldChange`, inclusive a recuperação de vida/energia já existente.
 
@@ -31,7 +31,7 @@ O clique em qualquer ilha abre nome, faixa recomendada, descrição, moldura do 
 
 Os previews usam os sprites existentes: Capitão da Caldeira na Ilha Dawn e Guardião da Caldeira na Cidade das Conchas. A folha de oito direções do Capitão é recortada para uma única célula, sem editar o PNG. Não havendo monstro configurado, a moldura mostra uma silhueta com interrogação e **Indisponível**. O mesmo fallback cobre falhas ao carregar a imagem.
 
-A Ilha dos Animais Raros, Vila Syrup, Baratie e Parque Arlong usam os mapas já existentes no PixelLab. Kuroobi e Chew usam suas animações originais e retornam após 60 segundos. Ver [TRÊS-ILHAS.md](TRES-ILHAS.md) e [ARLONG-PARK.md](ARLONG-PARK.md).
+Ilha dos Animais Raros, Vila Syrup, Baratie e Parque Arlong usam pinturas HD próprias, preservando as imagens anteriores. A geometria e a chegada de Rare estão em [ILHA-ANIMAIS-RAROS.md](ILHA-ANIMAIS-RAROS.md). Kuroobi e Chew usam suas animações originais e retornam após 60 segundos. Ver [TRÊS-ILHAS.md](TRES-ILHAS.md), [VILA-SYRUP.md](VILA-SYRUP.md), [BARATIE.md](BARATIE.md) e [ARLONG-PARK.md](ARLONG-PARK.md).
 
 Os drops das áreas atuais refletem `killMob`: dobrões/XP, equipamentos compatíveis, Ferro Salgado e poções. Loguetown mostra **A definir**. Não existe cálculo de sucesso de dungeon no jogo; o painel informa **Não estimada**.
 

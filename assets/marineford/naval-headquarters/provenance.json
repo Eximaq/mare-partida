@@ -1,0 +1,79 @@
+{
+  "asset": "scene-hd.png",
+  "kind": "AI-generated original Marineford gameplay painting",
+  "method": "OpenAI built-in image_gen",
+  "requested_by": "Repository owner: create and implement Marineford, including the weekly boss, in PR #394",
+  "generated_at_utc": "2026-11-28",
+  "native_width": 1448,
+  "native_height": 1086,
+  "world_width": 3072,
+  "world_height": 2304,
+  "bytes": 3681156,
+  "sha256": "3dc00b8722c5327d23680753a3292e6294b611929788ff48941051334a598f87",
+  "requested_generation_size": [
+    3072,
+    2304
+  ],
+  "returned_generation_size": [
+    1448,
+    1086
+  ],
+  "modifications": "None. Generated PNG copied byte for byte. World units do not increase native pixel resolution.",
+  "prompt": "generation-prompt.txt",
+  "references": [
+    {
+      "url": "https://opbr-en.bn-ent.net/stage/detail/0008.html",
+      "role": "Official Marineford stage: monumental white headquarters, layered navy roofs, execution platform, coastal walls, cannon bastions and navy ships."
+    },
+    {
+      "url": "https://en.bandainamcoent.eu/one-piece/news/one-piece-odyssey-the-full-story-of-marineford",
+      "role": "Official Marineford setting and weekly boss context: Marine headquarters, harbor, execution platform and Akainu."
+    }
+  ],
+  "visual_reference_notes": "Original playable adaptation of Marineford. Its layout is designed for this game and is not claimed to reproduce a canonical map exactly. Official references informed a text-generated painting; third-party screenshots are not distributed.",
+  "gameplay_contract": {
+    "mapId": "marineford",
+    "huntMapIds": [
+      "marineford-01",
+      "marineford-02",
+      "marineford-03",
+      "marineford-04",
+      "marineford-05",
+      "marineford-06"
+    ],
+    "weekly_boss": "akainu",
+    "spawn": {
+      "x": 1536,
+      "y": 1824
+    },
+    "weeklyBossSpawn": {
+      "x": 1536,
+      "y": 1280
+    },
+    "weekly_entry": "x=1536, y=1280+profile.aoeRadius+48",
+    "huntReturnPoint": {
+      "id": "return",
+      "x": 1536,
+      "y": 2112,
+      "radius": 40
+    },
+    "weekly_travel": "No map portal or safe zone; existing event entry and exit actions remain authoritative.",
+    "hunt_slots": 36,
+    "sectors": [
+      "west-courtyard",
+      "north-courtyard",
+      "east-courtyard"
+    ]
+  },
+  "original_assets_preserved": [
+    {
+      "file": "assets/exported-maps/marineford/map.png",
+      "sha256": "9d39a63faed3ec3c1c1b6fa5e65762496ab4011e5b013e61767339dc883351b2"
+    },
+    {
+      "file": "assets/ui/voyage-hd/marineford-hd.webp",
+      "sha256": "ad223f841d4b9b158af002d4dd8bc1283c9a485bf7aad7a6c555bff53a4183d5"
+    }
+  ],
+  "rights_note": "Original user-requested fan-game artwork. One Piece reference material remains associated with its rights holders; no third-party screenshot distributed."
+}

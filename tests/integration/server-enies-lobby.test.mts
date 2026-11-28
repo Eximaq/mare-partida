@@ -120,7 +120,7 @@ async function persisted(pool:any){
  return saved;
 }
 
-test('migrations 0062–0066 preserve active saves and historical receipts, is idempotent and refuses unknown hashes',async()=>{
+test('migrations 0062–0078 preserve active saves and historical receipts, is idempotent and refuses unknown hashes',async()=>{
  const directory=await mkdtemp(join(tmpdir(),'mare-enies-migrations-'));
  const source=new URL('../../apps/game-server/migrations/',import.meta.url);
  try{
@@ -141,18 +141,20 @@ test('migrations 0062–0066 preserve active saves and historical receipts, is i
    const active=await a.read(),battle=active.battle;
    battle.hp=Math.max(1,battle.hp-3);battle.cooldowns=[7.5,2.25];battle.attackClock=1.75;
    battle.mobs[0].hp=Math.max(1,Math.floor(battle.mobs[0].hp/2));battle.mobs[0].attackClock=2.5;
+   for(const mob of battle.mobs)Object.assign(mob,{x:1816,y:1384,anchorX:1816,anchorY:1384});
    battle.pending={targetId:battle.mobs[0].id,remaining:.3};battle.rulesHash=previousBattle;
    for(const id of Object.keys(battle.hunts.areas))if(id.startsWith('enies-lobby-'))delete battle.hunts.areas[id];
    Object.assign(battle.hunts.areas.beach,{kills:7,bosses:1,firstRewardClaimed:true,bossReadyAt:1793534523000,respawns:{[randomUUID()]:1793534511000}});
    await f.pool.query("UPDATE mare_game.character_battles SET simulation=$2,tick_at='2026-11-01T12:00:00Z' WHERE character_id=$1",[a.c.id,JSON.stringify(battle)]);
-   await f.pool.query("UPDATE mare_game.character_world SET rules_hash=$2,path=$3,speed=120,direction='left',started_at='2026-11-01T12:00:00Z',motion_until='2026-11-01T12:00:30Z' WHERE character_id=$1",[a.c.id,previousWorld,JSON.stringify([{x:active.world.position.x+12,y:active.world.position.y}])]);
+   await f.pool.query("UPDATE mare_game.character_world SET rules_hash=$2,x=1824,y=2144,path=$3,speed=120,direction='left',started_at='2026-11-01T12:00:00Z',motion_until='2026-11-01T12:00:30Z' WHERE character_id=$1",[a.c.id,previousWorld,JSON.stringify([{x:1836,y:2144}])]);
    await f.pool.query('UPDATE mare_game.character_world SET rules_hash=$2 WHERE character_id=$1',[unknown.c.id,'f'.repeat(64)]);
    await f.pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{rulesHash}',to_jsonb($2::text)) WHERE character_id=$1",[unknown.c.id,'e'.repeat(64)]);
    await f.pool.query('DROP TABLE mare_game.sword_collections');
    const before=await persisted(f.pool),expected=structuredClone(before);
-   expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=world.rulesHash;
+   const migratedWorld=expected.character_world.find((r:any)=>r.character_id===a.c.id);
+   Object.assign(migratedWorld,{rules_hash:world.rulesHash,x:1536,y:1824,path:[],speed:0,motion_until:migratedWorld.started_at});
    expected.character_battles.find((r:any)=>r.character_id===a.c.id).simulation.rulesHash=lateBattle;
-   const pending=['0062_enies_lobby.sql','0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql'];
+   const pending=['0062_enies_lobby.sql','0063_late_archipelago.sql','0064_sword_compendium.sql','0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql'];
    for(const name of pending)await copyFile(new URL(name,source),join(directory,name));
    assert.deepEqual(await applyMigrations(f.pool,directory),pending);
    assert.deepEqual(await persisted(f.pool),expected);
@@ -162,7 +164,11 @@ test('migrations 0062–0066 preserve active saves and historical receipts, is i
    assert.deepEqual(await persisted(f.pool),expected);
    const resumed=await a.read();
    assert.equal(resumed.world.rulesHash,world.rulesHash);assert.equal(resumed.battle.rulesHash,engine.rulesHash);
-   assert.deepEqual(resumed.battle.mobs,battle.mobs);assert.deepEqual(resumed.battle.pending,battle.pending);
+   for(const [i,mob] of resumed.battle.mobs.entries()){
+    for(const key of ['id','spawnId','type','level','hp','maxHP','alive','attackClock','dungeonRunId','dungeonEncounterId'])assert.deepEqual(mob[key],battle.mobs[i][key],key);
+    assert.deepEqual([mob.x,mob.y,mob.anchorX,mob.anchorY],[1536,1152,1536,1152]);
+   }
+   assert.equal(resumed.battle.pending,null);assert.deepEqual(resumed.battle.projectiles,[]);
    assert.deepEqual(resumed.battle.cooldowns,battle.cooldowns);assert.equal(resumed.battle.hp,battle.hp);
    for(const [id,ledger] of Object.entries(battle.hunts.areas))assert.deepEqual(resumed.battle.hunts.areas[id],ledger);
    for(let index=1;index<=5;index++)assert.deepEqual(resumed.battle.hunts.areas[`enies-lobby-0${index}`],{kills:0,bosses:0,firstRewardClaimed:false,bossReadyAt:0,respawns:{}});

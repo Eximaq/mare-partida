@@ -5,11 +5,14 @@ const path=require('node:path');
 
 const root=path.resolve(__dirname,'..');
 const maps=require('../pixellab-world-maps.js');
+// Preserve verification of the original PixelLab import after installing the new runtime.
+const importedMap={...maps.conchas.map},importedDistricts=maps.conchas.districts.map(s=>({...s}));
+require('../world-map-exports.js');
 require('../world-system.js');
 const world=globalThis.MareWorld;
 const hunt=require('../hunt-system.js');
 require('../new-islands-art.js');
-const map=maps.conchas.map;
+const map=importedMap;
 const source=maps.conchas.source;
 const projection=require('../assets/world-maps/conchas/projection.json');
 assert.equal(maps.conchas.projectionBaked,true,'authoritative scenery must not be composed a second time');
@@ -31,7 +34,8 @@ assert.deepEqual(map.spawn,{x:2144,y:2720});
 assert.notDeepEqual(map.returnPoint,map.spawn,'return marker remains at the southern pier');
 assert.equal(source.terrain[42][33],'c','southern spawn cell is sand');
 assert.equal(map.terrainWalkable(map.spawn.x,map.spawn.y),true);
-assert.equal(world.maps.conchas,map,'world navigation selects the PixelLab map');
+assert.equal(world.maps.conchas,maps.conchas.map,'world navigation retains the Conchas map identity');
+assert.deepEqual(world.maps.conchas.spawn,globalThis.MareMapExports.get('conchas').spawn,'runtime selects the authored Marine courtyard');
 
 assert.equal(maps.conchas.props.length,source.objects.length);
 assert.equal(source.objects.length,105,'fresh PixelLab map keeps all 105 placements');
@@ -49,7 +53,7 @@ assert(map.colliders.every(c=>c.isSolid&&c.footprint));
 assert.equal(maps.actorOverlapsProp({x:140,y:150},{x:100,y:100,w:80,h:100}),true,'actor behind a prop is covered by its foreground pass');
 assert.equal(maps.actorOverlapsProp({x:140,y:220},{x:100,y:100,w:80,h:100}),false,'actor in front stays visible');
 assert.equal(maps.actorOverlapsProp({x:20,y:150},{x:100,y:100,w:80,h:100}),false,'distant actor does not trigger the foreground pass');
-for(const sector of maps.conchas.districts){
+for(const sector of importedDistricts){
   assert.equal(sector.min,8);
   assert.equal(sector.max,8);
   assert.deepEqual(sector.roles,['helmeppo']);
@@ -77,4 +81,4 @@ for(const [file,expected] of [['idle.png',{width:80,height:320}],['walk.png',{wi
 }
 for(const assetId of new Set(source.objects.map(o=>o.assetId)))assert(fs.existsSync(path.join(root,'assets/world-maps/conchas/objects',`${assetId}.png`)),`missing PixelLab object ${assetId}`);
 
-console.log('Conchas PixelLab: mapa, chegada sul, colisores, setores e Helmeppo Nv. 8 validados.');
+console.log('Conchas: original PixelLab import, source art, historical colliders and Helmeppo Nv. 8 remain preserved; runtime uses the Marine courtyard.');

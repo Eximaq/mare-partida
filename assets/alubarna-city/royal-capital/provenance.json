@@ -1,0 +1,90 @@
+{
+  "asset": "scene-hd.png",
+  "kind": "AI-generated playable city painting",
+  "method": "OpenAI built-in image_gen",
+  "requested_by": "Repository owner: create Alubarna in HD, integrate in PR #394 and use web references",
+  "generated_at_utc": "2026-11-28",
+  "native_width": 1448,
+  "native_height": 1086,
+  "world_width": 3072,
+  "world_height": 2304,
+  "bytes": 3983291,
+  "sha256": "0f790a1381b0fe18cb7c8d8ed85f4722d81cc66892b68cbe26ddd177ba1bff63",
+  "requested_generation_size": [
+    3072,
+    2304
+  ],
+  "returned_generation_size": [
+    1448,
+    1086
+  ],
+  "modifications": "None. Generated PNG copied byte for byte. World units do not increase native pixel resolution.",
+  "prompt": "generation-prompt.txt",
+  "references": [
+    {
+      "url": "https://en.bandainamcoent.eu/one-piece/news/one-piece-odyssey-the-full-story-of-alabasta",
+      "role": "Official source read for Alubarna, the palace square, clock tower and royal mausoleum."
+    },
+    {
+      "url": "https://opflag.bn-ent.net/world/world01.php",
+      "role": "Official ONE PIECE ODYSSEY Alabasta world reference."
+    },
+    {
+      "url": "https://opflag.bn-ent.net/images/world/img_world01.jpg",
+      "role": "Official linked world illustration consulted as visual context."
+    },
+    {
+      "url": "https://one-piece.com/story/alabasta/index.html",
+      "role": "Official arc synopsis retrieved via indexed search; direct opening returned HTTP 403."
+    }
+  ],
+  "visual_reference_notes": "Original playable adaptation, not a canonical city plan. Existing HD desert scene inspected for continuity. Text-only generation of a new painting; no third-party image pixels included.",
+  "gameplay_contract": {
+    "areas": [
+      "alubarna-01",
+      "alubarna-02",
+      "alubarna-03",
+      "alubarna-04",
+      "alubarna-05"
+    ],
+    "minimum_levels": [
+      50,
+      55,
+      60,
+      65,
+      70
+    ],
+    "sectors": [
+      "entrada",
+      "mercado",
+      "praca",
+      "bairro",
+      "palacio"
+    ],
+    "encounters_per_area": 10,
+    "enemies": [
+      "puppu",
+      "valentine",
+      "merry",
+      "doublefinger",
+      "mr1"
+    ],
+    "enemy_levels": [
+      53,
+      58,
+      63,
+      68,
+      75
+    ]
+  },
+  "original_assets_preserved": [
+    "assets/alubarna/map.png",
+    "assets/exported-maps/alubarna/map.png",
+    "assets/ui/voyage-hd/alubarna-01.png",
+    "assets/ui/voyage-hd/alubarna-02.png",
+    "assets/ui/voyage-hd/alubarna-03.png",
+    "assets/ui/voyage-hd/alubarna-04.png",
+    "assets/ui/voyage-hd/alubarna-05.png"
+  ],
+  "rights_note": "Original user-requested fan-game artwork; One Piece setting remains associated with its rights holders. No third-party source artwork distributed."
+}

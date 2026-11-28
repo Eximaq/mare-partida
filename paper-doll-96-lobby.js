@@ -810,9 +810,9 @@
       return entry.bundle.draw(ctx,player,{...options,...entry.options,time:shown.time,progress:shown.progress,timing:shown.timing,
         consumer:'world-silhouette',auxiliary:true});
     }
-    function drawWorldPortrait(ctx,player,{consumer,x=ctx.canvas.width/2,y=ctx.canvas.height-12,scale=null,zoom=null}={}){
-      const options={action:'idle',direction:'south',time:0,progress:0,x,y,scale,consumer};
-      if(zoom!==null)Object.assign(options,{inventoryPresentation:true,avatarZoom:zoom,avatarConsumer:consumer});
+    function drawWorldPortrait(ctx,player,{consumer,x=ctx.canvas.width/2,y=ctx.canvas.height-12,scale=null,zoom=null,worldPose=false,time=0}={}){
+      const options={action:'idle',direction:'south',time,progress:worldPose?null:0,x,y,scale,consumer};
+      if(zoom!==null)Object.assign(options,{inventoryPresentation:true,avatarZoom:zoom,avatarConsumer:consumer,avatarWorldPose:worldPose});
       const drawn=drawWorldVisual(ctx,options,player,{publish:false});
       if(consumer==='inventory'){
         inventoryPreview=drawn?(root.MareVisualCompletoRenderer?.equipped(player)?

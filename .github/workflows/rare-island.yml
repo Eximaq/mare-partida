@@ -1,0 +1,151 @@
+name: Ilha dos Animais Raros — mapa HD, navegação e saves
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'rare-*.js'
+      - 'world-map-exports.js'
+      - 'world-map-exports-data.js'
+      - 'world-depth.js'
+      - 'world-system.js'
+      - 'world-catalog.cjs'
+      - 'world-battle.cjs'
+      - 'server-navigation.cjs'
+      - 'server-terrain-mask.cjs'
+      - 'archipelago.js'
+      - 'voyage-ui.js'
+      - 'new-islands.js'
+      - 'monster-behavior.js'
+      - 'hunt-system.js'
+      - 'game.js'
+      - 'index.html'
+      - 'tools/build_pages.py'
+      - 'tools/install_ci_chromium.sh'
+      - 'assets/rare-animals/**'
+      - 'assets/sprites-combat-v2/cocox/**'
+      - 'assets/new-islands/rare-map.png'
+      - 'assets/ui/voyage-hd/animais-raros.png'
+      - 'assets/map-depth/objects/**'
+      - 'assets/dawn-manual/water.png'
+      - 'apps/game-server/migrations/0071_rare_island_hd_map.sql'
+      - 'apps/game-server/src/characters/world.ts'
+      - 'apps/game-server/src/characters/battle.ts'
+      - 'apps/game-server/src/characters/party-worker.ts'
+      - 'tests/rare*'
+      - 'tests/world-depth.test.cjs'
+      - 'tests/integration/server-rare-scene.test.mts'
+      - 'tests/integration/auth-support.mts'
+      - 'tests/run_honors_hd_browser.py'
+      - '.node-version'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/rare-island.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'rare-*.js'
+      - 'world-map-exports.js'
+      - 'world-map-exports-data.js'
+      - 'world-depth.js'
+      - 'world-system.js'
+      - 'world-catalog.cjs'
+      - 'world-battle.cjs'
+      - 'server-navigation.cjs'
+      - 'server-terrain-mask.cjs'
+      - 'archipelago.js'
+      - 'voyage-ui.js'
+      - 'new-islands.js'
+      - 'monster-behavior.js'
+      - 'hunt-system.js'
+      - 'game.js'
+      - 'index.html'
+      - 'tools/build_pages.py'
+      - 'tools/install_ci_chromium.sh'
+      - 'assets/rare-animals/**'
+      - 'assets/sprites-combat-v2/cocox/**'
+      - 'assets/new-islands/rare-map.png'
+      - 'assets/ui/voyage-hd/animais-raros.png'
+      - 'assets/map-depth/objects/**'
+      - 'assets/dawn-manual/water.png'
+      - 'apps/game-server/migrations/0071_rare_island_hd_map.sql'
+      - 'apps/game-server/src/characters/world.ts'
+      - 'apps/game-server/src/characters/battle.ts'
+      - 'apps/game-server/src/characters/party-worker.ts'
+      - 'tests/rare*'
+      - 'tests/world-depth.test.cjs'
+      - 'tests/integration/server-rare-scene.test.mts'
+      - 'tests/integration/auth-support.mts'
+      - 'tests/run_honors_hd_browser.py'
+      - '.node-version'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/rare-island.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  layout-browser:
+    name: Navegação, arte original e jogo em computador e celular
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      MARE_QA_DIR: /tmp/mare-rare
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Conferir rotas, encontros, arte e compatibilidade
+        run: node --test tests/rare-island-layout.test.cjs tests/rare-world.test.cjs tests/rare-scene-compat.test.cjs tests/syrup-scene-compat.test.cjs tests/baratie-scene-compat.test.cjs tests/arlong-scene-compat.test.cjs tests/loguetown-scene-compat.test.cjs tests/skypiea-scene-compat.test.cjs tests/world-depth.test.cjs
+      - name: Preparar Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/rare-browser" playwright@1.56.1 pngjs@7.0.0 --no-save --package-lock=false
+          bash tools/install_ci_chromium.sh "$RUNNER_TEMP/rare-browser/node_modules/.bin/playwright"
+      - name: Preparar a versão estática
+        run: python3 tools/build_pages.py --static-demo
+      - name: Conferir chegada, combate, retorno e reload no navegador
+        env:
+          NODE_PATH: ${{ runner.temp }}/rare-browser/node_modules
+        run: python3 tests/run_honors_hd_browser.py tests/rare_island_browser.cjs --offline --dist
+      - uses: actions/upload-artifact@v4
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
+        with:
+          name: rare-browser
+          path: /tmp/mare-rare/
+          if-no-files-found: warn
+          retention-days: 3
+
+  persistence:
+    name: Migração de Ilha dos Animais Raros e preservação dos saves
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:18.6-bookworm
+        env:
+          POSTGRES_USER: mare_test_admin
+          POSTGRES_PASSWORD: disposable-ci-only
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mare_test_admin -d postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://mare_test_admin:disposable-ci-only@127.0.0.1:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - name: Conferir a migração idempotente e o retorno aos encontros
+        run: node --import tsx --test --test-concurrency=1 tests/integration/server-rare-scene.test.mts

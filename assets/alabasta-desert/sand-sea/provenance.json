@@ -1,0 +1,64 @@
+{
+  "asset": "scene-hd.png",
+  "kind": "AI-generated game map painting",
+  "method": "OpenAI built-in image_gen",
+  "requested_by": "Repository owner via delegated task: create and integrate Deserto de Alabasta HD in PR #394, without merge and preserving previous images",
+  "generated_at_utc": "2026-11-28",
+  "native_width": 1448,
+  "native_height": 1086,
+  "world_width": 3072,
+  "world_height": 2304,
+  "bytes": 2945060,
+  "sha256": "bc71344d7e02c689c889760c9279e9e2316d9e3671f3672b1316043bf80738ac",
+  "requested_generation_size": [
+    3072,
+    2304
+  ],
+  "returned_generation_size": [
+    1448,
+    1086
+  ],
+  "modifications": "None. The original generated PNG was copied byte for byte. Native image pixels are distinct from game world units.",
+  "prompt": "generation-prompt.txt",
+  "references": [
+    {
+      "url": "https://one-piece.com/anime/97/index.html",
+      "role": "Official episode 97 synopsis: the crew crosses the desert toward Yuba. Retrieved from indexed search result; direct page open returned HTTP 403."
+    },
+    {
+      "url": "https://one-piece.com/anime/102/index.html",
+      "role": "Official episode 102 synopsis establishes ancient ruins encountered during the desert journey. Retrieved from indexed search result; direct page open returned HTTP 403."
+    },
+    {
+      "url": "https://www.imdb.com/title/tt0982401/",
+      "role": "Secondary episode listing hosting an anime desert still; associated still downloaded and visually inspected for golden dunes, rose sandstone formations and a small green oasis pocket."
+    },
+    {
+      "url": "https://m.media-amazon.com/images/M/MV5BNDlmOTBmMDctMTdiYy00Y2M2LWJhNmMtZDNkZTk0YmYwZjNkXkEyXkFqcGc%40._V1_.jpg",
+      "role": "Anime still actually inspected. Direction only; no source pixels included or distributed."
+    },
+    {
+      "url": "https://i.pinimg.com/736x/33/db/96/33db960ff8839c024af18d315af666f0.jpg",
+      "role": "Secondary hosted desert background actually inspected for a broad pale-sand passage between eroded rock banks. Exact source attribution was not independently established; secondary visual context only."
+    }
+  ],
+  "visual_reference_notes": "Original playable adaptation of the Alabasta desert, not a cartographically exact canonical location. Official anime descriptions guided identity; inspected anime/background images guided sand, rock and oasis palette. Existing Orange Town scene was inspected for coherent high overhead HD pixel-art style. No reference image was supplied to the generator; the prompt described the new composition.",
+  "gameplay_contract": {
+    "area": "alabasta",
+    "travel_id": "alabasta-desert",
+    "min_travel_level": 40,
+    "sectors": [
+      "entrada",
+      "oeste",
+      "norte",
+      "leste",
+      "sul"
+    ],
+    "encounters": 10,
+    "enemy": "bananawani",
+    "enemy_level": 45,
+    "boss": false
+  },
+  "third_party_images_distributed": false,
+  "rights_note": "Original generated fan-game artwork commissioned by the user. One Piece setting remains associated with its rights holders; no claim of exclusive rights to those elements."
+}

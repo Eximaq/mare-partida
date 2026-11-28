@@ -89,9 +89,14 @@ test('amizade cruzada exige aceite, mensagens são privadas e bloqueio protege c
   assert.equal((await target.badge()).unreadMessages,0);
 
   await target.heartbeat();
+  await pool.query(`INSERT INTO mare_game.character_hierarchy(character_id,tier,power)
+    VALUES($1,2,7654) ON CONFLICT(character_id) DO UPDATE SET tier=EXCLUDED.tier,power=EXCLUDED.power`,[target.id]);
+  await pool.query("UPDATE mare_game.character_profile SET preferences=jsonb_set(preferences,'{hideItems}','true') WHERE character_id=$1",[target.id]);
   await sender.act('party.create');
   await sender.act('crew.create',{name:'Tripulação Coral',tag:'CRL',flag:'1'+'0'.repeat(1023),policy:'approval',minLevel:1});
   const activeFriend=(await sender.contacts()).friends[0]!;
+  assert.deepEqual(activeFriend.publicProfile,{title:'Pirata Promissor',power:7654,equipmentHidden:true});
+  assert.deepEqual(activeFriend.equipment,{});
   assert.equal(activeFriend.actions.party,null);
   assert.equal(activeFriend.actions.crew,null);
   await sender.act('party.invite',{targetId:target.id});
@@ -107,12 +112,62 @@ test('amizade cruzada exige aceite, mensagens são privadas e bloqueio protege c
   await assert.rejects(target.act('party.respond',{inviteId:partyInvite.id,accept:true}),{code:'contact_blocked'});
   await assert.rejects(target.act('crew.respond',{requestId:crewInvite.id,accept:true}),{code:'contact_blocked'});
   await assert.rejects(sender.act('message.send',{targetId:target.id,body:'Bloqueado'}),{code:'contact_blocked'});
-  assert.equal((await sender.thread(target.id)).character.lastActivity,null);
-  assert.equal((await target.contacts()).blocked[0]?.id,sender.id);
+  const blockedThread=(await sender.thread(target.id)).character;
+  assert.equal(blockedThread.lastActivity,null);
+  assert.equal(blockedThread.publicProfile,undefined);
+  const ownBlock=(await target.contacts()).blocked[0];
+  assert.equal(ownBlock?.id,sender.id);
+  assert.equal(ownBlock?.publicProfile,undefined);
   await target.act('contact.block',{targetId:sender.id,blocked:false});
   await sender.act('friend.remove',{targetId:target.id});
   assert.equal((await target.contacts()).friends.length,0);
   assert.equal((await target.thread(sender.id)).messages.length,1);
+}));
+
+test('ficha pública usa o tooltip da instância equipada sem expor identidade, inventário ou preferências privadas',()=>authDatabase(async({service,pool})=>{
+  const owner=await actor(service,pool,'Capitão do Sul');
+  const viewer=await actor(service,pool,'Visitante do Norte');
+  const profile=async()=>{
+    const result=await service.socialState(viewer.token,viewer.id,{view:'profile',targetId:owner.id});
+    assert('character' in result);
+    return result.character;
+  };
+  await owner.act('items.initialize');
+  const changed={plus:6,potential:42,durability:50000,sockets:['pearl_for_2',null],
+    extras:[{stat:'strength',value:5,points:16}],binding:'character',boundToCharacter:owner.id,
+    origin:'Treino da vila',locked:true,sources:['registro-interno']};
+  const {rows:[stored]}=await pool.query(`UPDATE mare_game.game_inventory
+    SET equipment=jsonb_set(equipment,'{weapon}',(equipment->'weapon') || $2::jsonb)
+    WHERE character_id=$1 RETURNING equipment`,[owner.id,JSON.stringify(changed)]);
+  const {equipment}=stored;
+  const equipped=(await service.onlineState(owner.token,owner.id)).hierarchy!.power;
+  await pool.query("UPDATE mare_game.game_inventory SET equipment=equipment||'{\"weapon\":null}' WHERE character_id=$1",[owner.id]);
+  const unequipped=(await service.onlineState(owner.token,owner.id)).hierarchy!.power;
+  await pool.query('UPDATE mare_game.game_inventory SET equipment=$2 WHERE character_id=$1',[owner.id,JSON.stringify(equipment)]);
+  assert(equipped>unequipped);
+  const result=await profile(),item=result.publicProfile?.items?.weapon;
+  assert(item);
+  assert.equal(item.def,0);
+  assert.equal(item.level,equipment.weapon.level);
+  assert.equal(item.plus,6);
+  assert.equal(item.potential,42);
+  assert.equal(item.durability,50000);
+  assert.equal(item.rarity,equipment.weapon.rarity);
+  assert.deepEqual(item.sockets,changed.sockets);
+  assert.deepEqual(item.extras,[{stat:'strength',value:5}]);
+  assert.equal(item.bound,true);
+  assert.equal(item.origin,changed.origin);
+  assert.equal(item.power,equipped-unequipped);
+  for(const field of ['id','boundToCharacter','binding','locked','sources','obtainedAt','reforgeAttempts'])assert.equal(field in item,false);
+  assert.equal('source' in item.generation!,false);
+  const list=(await viewer.contacts('Capitão do Sul')).matches[0]!;
+  assert.equal(list.publicProfile?.items,undefined);
+  assert.deepEqual(list.equipment.weapon,{def:0});
+  await owner.act('profile.preferences',{hideItems:true});
+  const hidden=await profile();
+  assert.equal(hidden.publicProfile?.equipmentHidden,true);
+  assert.deepEqual(hidden.publicProfile?.items,{});
+  assert.deepEqual(hidden.equipment,{});
 }));
 
 test('limites de mensagens e paginação mantêm uma sequência estável',()=>authDatabase(async({service,pool})=>{

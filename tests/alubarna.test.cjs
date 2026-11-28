@@ -12,10 +12,10 @@ test('fixed monster levels and independent progress survive migration',()=>{
 test('full map instances provide safe spawns and routes to every encounter',()=>{
  const catalog=require('../world-catalog.cjs').load(),B=require('../monster-behavior.js');
  const map=catalog.maps['alubarna-01'],nav=catalog.navigation(map.id);
- assert.deepEqual([map.width,map.height],[8128,5568]);
+ assert.deepEqual([map.width,map.height],[3072,2304]);
  assert(nav.walkable(map.spawn.x,map.spawn.y));
  for(const [id] of specs){
-  assert.equal(catalog.maps[id].terrainWalkable(3048,4408),true);
+  assert.equal(catalog.maps[id].terrainWalkable(map.spawn.x,map.spawn.y),true);
   for(const slot of B.slots(id)){
    assert(nav.walkable(slot.x,slot.y),slot.id);
    assert(nav.path(map.spawn,slot).length,slot.id);
@@ -28,9 +28,13 @@ test('all five native animation sets obey South Hurt and apparent size order',()
  require('../sprite-combat-v2-data.js');require('../sprite-combat-v2.js');for(const [,,,type,,size]of specs){const d=MareSpriteCombatV2Data[type];assert.equal(d?.worldHeight,size);assert.equal(d.idle_extent_ratio,1);for(const dir of ['south','north','west','east']){for(const a of ['idle','walk','attack'])assert(MareSpriteCombatV2.resolve(type,a,dir).requested);assert(MareSpriteCombatV2.resolve(type,'hurt',dir).clip.image.endsWith('/hurt-south.png'));}}
 });
 
-test('the exported south and palace gates keep their openings and solid supports',()=>{
- const catalog=require('../world-catalog.cjs').load(),map=catalog.maps['alubarna-01'];
- const nav=catalog.navigation(map.id);
+test('the preserved export retains its historical south and palace gates',()=>{
+ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+ const historical=vm.createContext({atob});
+ for(const file of ['world-map-exports-data.js','world-map-exports.js'])
+  vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),historical,{filename:file});
+ const map=historical.MareMapExports.build('alubarna-01');
+ require('../world-system.js');const nav=new MareWorld.Navigation(map,16);
  for(const [x,y] of [[3042,4100],[3028,2650]]){
   assert(nav.clear({x,y:y-50},{x,y:y+50}));
   assert(nav.projectileClear({x,y:y-50},{x,y:y+50}));

@@ -1,0 +1,131 @@
+name: Marineford — mapa HD e boss semanal
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'marineford-*.js'
+      - 'late-archipelago-world.js'
+      - 'world-*.js'
+      - 'world-*.cjs'
+      - 'weekly-boss-*.js'
+      - 'weekly-boss-*.cjs'
+      - 'game.js'
+      - 'index.html'
+      - 'ui-preview.html'
+      - 'tools/build_pages.py'
+      - 'assets/marineford/**'
+      - 'apps/game-server/migrations/0078_marineford_hd_map.sql'
+      - 'apps/game-server/src/characters/battle.ts'
+      - 'apps/game-server/src/characters/party-worker.ts'
+      - 'apps/game-server/src/characters/weekly-boss*.ts'
+      - 'tests/marineford*'
+      - 'tests/integration/server-marineford-scene.test.mts'
+      - '.github/workflows/marineford.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'marineford-*.js'
+      - 'late-archipelago-world.js'
+      - 'world-*.js'
+      - 'world-*.cjs'
+      - 'weekly-boss-*.js'
+      - 'weekly-boss-*.cjs'
+      - 'game.js'
+      - 'index.html'
+      - 'ui-preview.html'
+      - 'tools/build_pages.py'
+      - 'assets/marineford/**'
+      - 'apps/game-server/migrations/0078_marineford_hd_map.sql'
+      - 'apps/game-server/src/characters/battle.ts'
+      - 'apps/game-server/src/characters/party-worker.ts'
+      - 'apps/game-server/src/characters/weekly-boss*.ts'
+      - 'tests/marineford*'
+      - 'tests/integration/server-marineford-scene.test.mts'
+      - '.github/workflows/marineford.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  regional:
+    name: Seis caçadas, navegação e retorno
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      MARE_QA_DIR: /tmp/mare-marineford-regional
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Conferir terreno, encontros e contratos
+        run: |
+          node --test tests/marineford-layout.test.cjs tests/marineford-scene-compat.test.cjs tests/marineford-prepared.test.cjs tests/late-archipelago.test.cjs tests/late-world-combat.test.cjs tests/weekly-boss-rules.test.cjs tests/world-depth.test.cjs
+          node tools/audit_maps.cjs --map marineford --full
+      - name: Preparar Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/marineford-browser" playwright@1.56.1 pngjs@7.0.0 --no-save --package-lock=false
+          bash tools/install_ci_chromium.sh "$RUNNER_TEMP/marineford-browser/node_modules/.bin/playwright"
+      - run: python3 tools/build_pages.py --static-demo
+      - name: Jogar caçadas em computador e celular
+        env:
+          NODE_PATH: ${{ runner.temp }}/marineford-browser/node_modules
+        run: python3 tests/run_honors_hd_browser.py tests/marineford_fortress_browser.cjs --offline --dist
+      - uses: actions/upload-artifact@v4
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
+        with:
+          name: marineford-regional
+          path: /tmp/mare-marineford-regional/
+          if-no-files-found: warn
+          retention-days: 3
+
+  weekly:
+    name: Persistência e evento oficial isolado
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:18.6-bookworm
+        env:
+          POSTGRES_USER: mare_test_admin
+          POSTGRES_PASSWORD: disposable-ci-only
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mare_test_admin -d postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://mare_test_admin:disposable-ci-only@127.0.0.1:5432/postgres
+      MARE_QA_DIR: /tmp/mare-marineford-weekly
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - name: Validar migração e regras do evento
+        run: node --import tsx --test --test-concurrency=1 tests/integration/server-marineford-scene.test.mts tests/integration/server-weekly-boss.test.mts
+      - name: Preparar Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/marineford-browser" playwright@1.56.1 --no-save --package-lock=false
+          bash tools/install_ci_chromium.sh "$RUNNER_TEMP/marineford-browser/node_modules/.bin/playwright"
+      - run: python3 tools/build_pages.py --static-demo
+      - name: Abrir Marineford e combater Akainu pelo navegador
+        env:
+          NODE_PATH: ${{ runner.temp }}/marineford-browser/node_modules
+        run: node --import tsx tests/marineford_weekly_browser.mts
+      - uses: actions/upload-artifact@v4
+        if: failure() || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'preserve-evidence')
+        with:
+          name: marineford-weekly
+          path: /tmp/mare-marineford-weekly/
+          if-no-files-found: warn
+          retention-days: 3

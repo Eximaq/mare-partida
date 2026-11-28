@@ -46,7 +46,7 @@ test('new Skypiea scene migrates four saved positions once while preserving comb
    const people=[];for(let i=0;i<6;i++)people.push(await actor(f.service));
    const originals=[];
    for(const [i,a] of people.entries()){
-    const area=areas[i]??'beach',isSky=i<4,start=isSky?oldStarts[i]!:[W.maps.dawn.spawn.x,W.maps.dawn.spawn.y];
+    const area=areas[i]??'enies-lobby-01',isSky=i<4,start=isSky?oldStarts[i]!:[W.maps['enies-lobby-01'].spawn.x,W.maps['enies-lobby-01'].spawn.y];
     const active=await a.read(),b=E.create(area,{maxHP:100,maxEnergy:100},100000,()=>.5);
     b.rulesHash=i===5?'e'.repeat(64):priorBattle;b.hp=43;b.energy=37;b.cooldowns=[7,3];b.auto=true;
     b.pending={targetId:b.mobs[0].id,remaining:.3};b.targetId=b.mobs[0].id;b.projectiles=[{x:start[0],y:start[1]}];
@@ -58,7 +58,7 @@ test('new Skypiea scene migrates four saved positions once while preserving comb
     await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(b)]);
     await f.pool.query(`UPDATE mare_game.character_world SET rules_hash=$2,map_id=$3,area=$4,x=$5,y=$6,path=$7,speed=120,
      direction='left',started_at='2026-11-01T12:00:00Z',motion_until='2026-11-01T12:00:30Z' WHERE character_id=$1`,
-     [a.c.id,i===5?'f'.repeat(64):priorWorld,isSky?area:'dawn',area,start[0],start[1],JSON.stringify([{x:start[0]!+16,y:start[1]}])]);
+     [a.c.id,i===5?'f'.repeat(64):priorWorld,isSky?area:'enies-lobby-01',area,start[0],start[1],JSON.stringify([{x:start[0]!+16,y:start[1]}])]);
     originals.push({active,b});
    }
    const before=await persisted(f.pool),expected=structuredClone(before);
@@ -67,7 +67,7 @@ test('new Skypiea scene migrates four saved positions once while preserving comb
     const row=expected.character_world.find((r:any)=>r.character_id===a.c.id);row.rules_hash=W.rulesHash;
     if(i<4)Object.assign(row,{x:1296,y:2190,path:[],speed:0,motion_until:row.started_at});
    }
-   const pending=['0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql'];
+   const pending=['0065_skypiea_celestial_map.sql','0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql'];
    for(const name of pending)await copyFile(new URL(name,source),join(directory,name));
    assert.deepEqual(await applyMigrations(f.pool,directory),pending);
    assert.deepEqual(await persisted(f.pool),expected,'SQL changes only known world positions/signatures');
@@ -130,7 +130,7 @@ test('HD Skypiea migration preserves existing paths and battles while promoting 
    const people=[];for(let i=0;i<6;i++)people.push(await actor(f.service));
    const originalBattles=[];
    for(const [i,a] of people.entries()){
-    const area=areas[i]??'beach',isSky=i<4,start=isSky?{x:1296,y:2190}:W.maps.dawn.spawn;
+    const area=areas[i]??'enies-lobby-01',isSky=i<4,start=isSky?{x:1296,y:2190}:W.maps['enies-lobby-01'].spawn;
     const b=E.create(area,{maxHP:100,maxEnergy:100},100000,()=>.5),m=b.mobs[0];
     b.rulesHash=i===5?'e'.repeat(64):celestialBattle;b.hp=43;b.energy=37;b.cooldowns=[7,3];b.auto=true;
     b.pending={targetId:m.id,remaining:.3};b.targetId=m.id;b.projectiles=[{x:m.x,y:m.y}];
@@ -141,11 +141,11 @@ test('HD Skypiea migration preserves existing paths and battles while promoting 
     await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(b)]);
     await f.pool.query(`UPDATE mare_game.character_world SET rules_hash=$2,map_id=$3,area=$4,x=$5,y=$6,path=$7,speed=120,
      direction='left',started_at='2026-11-01T12:00:00Z',motion_until='2026-11-01T12:00:30Z' WHERE character_id=$1`,
-     [a.c.id,i===5?'f'.repeat(64):celestialWorld,isSky?area:'dawn',area,start.x,start.y,JSON.stringify([{x:start.x+16,y:start.y}])]);
+     [a.c.id,i===5?'f'.repeat(64):celestialWorld,isSky?area:'enies-lobby-01',area,start.x,start.y,JSON.stringify([{x:start.x+16,y:start.y}])]);
    }
    const before=await persisted(f.pool),expected=structuredClone(before);
    for(const a of people.slice(0,5))expected.character_world.find((r:any)=>r.character_id===a.c.id).rules_hash=W.rulesHash;
-   const pending=['0066_skypiea_hd_arrival.sql'];
+   const pending=['0066_skypiea_hd_arrival.sql','0067_loguetown_hd_map.sql','0068_arlong_park_hd_map.sql','0069_baratie_hd_map.sql','0070_syrup_hd_map.sql','0071_rare_island_hd_map.sql','0072_dawn_village_hd_map.sql','0073_conchas_marine_hd_map.sql','0074_orange_town_hd_map.sql','0075_alabasta_desert_hd_map.sql','0076_alubarna_city_hd_map.sql','0077_boss_arena_hd_map.sql','0078_marineford_hd_map.sql'];
    for(const name of pending)await copyFile(new URL(name,source),join(directory,name));
    assert.deepEqual(await applyMigrations(f.pool,directory),pending);
    assert.deepEqual(await persisted(f.pool),expected,'art and entry changes must not relocate existing players or affect receipts');

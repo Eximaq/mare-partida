@@ -5,7 +5,7 @@ const originalMap={...O.map};
 require('../world-system.js');
 const {Navigation,Camera,maps}=MareWorld,nav=new Navigation(O.map,O.map.navigationCell);
 const legacyNav=new Navigation(originalMap,originalMap.navigationCell),current=MareMapExports.get('dawn');
-assert.equal(maps.dawn,O.map);assert.deepEqual([O.COLS,O.ROWS,O.TILE,O.map.width,O.map.height],[56,40,64,3584,2560]);
+assert.equal(maps.dawn,O.map);assert.deepEqual([O.COLS,O.ROWS,O.TILE,originalMap.width,originalMap.height],[56,40,64,3584,2560]);
 assert.equal(crypto.createHash('sha256').update(fs.readFileSync('assets/dawn-manual/map.png')).digest('hex'),D.source.sha256);
 assert(fs.readFileSync('assets/dawn-manual/map.png').equals(fs.readFileSync('pixellab-pip-generations/dawn-manual-20261020/map-composite.png')));
 assert.equal(O.props.length,42);assert.equal(O.props.filter(p=>p.kind==='tree').length,22);assert.equal(O.props.filter(p=>p.kind==='boat').length,6);

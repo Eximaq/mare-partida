@@ -74,11 +74,21 @@
   const p=pose(atlas,player,options);if(!p)return false;
   const im=images.get(p.source);if(!im){void loadSource(p.source);return false;}
   const [sx,sy,w,h]=p.frame.rect,[ax,ay]=p.frame.anchor;
-  const scale=p.scale*(options.scale==null?1:options.scale*46/96);
+  let x=options.x||0,y=options.y||0,scale=p.scale*(options.scale==null?1:options.scale*46/96);
+  const anchored=options.inventoryPresentation&&options.avatarWorldPose;
+  if(anchored){
+   const cw=ctx.canvas.width,ch=ctx.canvas.height,margin=10;
+   x=cw/2;y=ch-24;
+   const available=(space,extent)=>extent>0?space/extent:Infinity;
+   scale=Math.min(p.scale*(options.avatarZoom||2),available(x-margin,ax),available(cw-x-margin,w-ax),
+    available(y-margin,ay),available(ch-y-margin,h-ay));
+   if(!(scale>0))return false;
+  }
   ctx.save();ctx.imageSmoothingEnabled=false;
-  if(p.frame.clipPolygon){const dx=Math.round((options.x||0)-ax*scale),dy=Math.round((options.y||0)-ay*scale);ctx.beginPath();p.frame.clipPolygon.forEach(([x,y],i)=>ctx[i?'lineTo':'moveTo'](dx+x*scale,dy+y*scale));ctx.closePath();ctx.clip();}
-  ctx.drawImage(im,sx,sy,w,h,Math.round((options.x||0)-ax*scale),Math.round((options.y||0)-ay*scale),w*scale,h*scale);
-  ctx.restore();last={action:p.action,direction:p.direction,frame:p.index,scale,consumer:options.consumer||'world'};return true;
+  if(p.frame.clipPolygon){const dx=Math.round(x-ax*scale),dy=Math.round(y-ay*scale);ctx.beginPath();p.frame.clipPolygon.forEach(([x,y],i)=>ctx[i?'lineTo':'moveTo'](dx+x*scale,dy+y*scale));ctx.closePath();ctx.clip();}
+  ctx.drawImage(im,sx,sy,w,h,Math.round(x-ax*scale),Math.round(y-ay*scale),w*scale,h*scale);
+  ctx.restore();last={action:p.action,direction:p.direction,frame:p.index,scale,consumer:options.consumer||'world',
+   ...(anchored?{footAnchor:{x,y},multiplier:scale/p.scale}:{})};return true;
  }
  const api={equipped,pose,draw,prepare,snapshot:()=>({ready:!!atlas,error:failure,last})};
  root.MareVisualCompletoRenderer=api;if(typeof module!=='undefined')module.exports=api;

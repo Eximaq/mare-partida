@@ -35,7 +35,7 @@ function step(room,actors,{nav,now,dt,rng}){
     for(const other of active){if(alliedHP.has(other.id))record.healing+=Math.max(0,other.b.hp-alliedHP.get(other.id));}
    }
   }
-  const brain=boss.dailySwordBossId?daily:A;
+  const brain=boss.dailySwordBossId?daily:boss.weeklyAdmiralVersion===1?require('./weekly-admirals.js'):A;
   const hits=brain.step(boss,active,{nav,now:clock,dt:slice});
   for(const a of active){
    const incoming=hits.filter(h=>h.targetId===a.id).map(h=>({...h,sourceId:boss.id}));

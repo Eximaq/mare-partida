@@ -11,20 +11,18 @@ import {readCombatInputs} from './combat-inputs.js';
 import {readHierarchyTiers} from './hierarchy.js';
 import {lockPeer} from './party.js';
 import {weeklyBossAvailable,weeklyOperator,weeklyRoom,weeklyRoster,weeklyAudit,authorizeWeeklyBoss} from './weekly-boss-store.js';
-const require=createRequire(import.meta.url),A=require('../../../../akainu-combat.js'),R=require('../../../../weekly-boss-rules.cjs'),E=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
+const require=createRequire(import.meta.url),A=require('../../../../akainu-combat.js'),D=require('../../../../weekly-admirals.js'),R=require('../../../../weekly-boss-rules.cjs'),E=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
 type WeeklyCommand=Extract<CharacterCommand,{action:'weeklyBoss.execute'}>;
-// Private rehearsal only. These are not official balance values or public spawns.
-const rehearsalProfile={hp:20000,attack:20,defense:0,magicDefense:0,speed:70,reach:65,attackSec:2.5,aoeCooldown:8,aoeRadius:110,aoeWindup:1.2,aoeMultiplier:1.5,level:50,leash:480};
 async function now(c:PoolClient):Promise<Date>{return (await c.query('SELECT clock_timestamp() now')).rows[0].now;}
 export async function weeklyInputs(c:PoolClient,ids:string[]){
  const result=new Map<string,any>();for(let i=0;i<ids.length;i+=4)for(const [id,input]of await readCombatInputs(c,ids.slice(i,i+4)))result.set(id,input);return result;
 }
 function navigation(id:string){return maps().maps[id]?maps().navigation(id):null;}
-function rehearsalConfig(){
+function rehearsalConfig(profile:unknown){
  const nav=navigation('quest-dungeons');if(!nav)throw new AuthFault(409,'weekly_boss_test_map_unavailable');
  const entry={...nav.map.spawn},spawn=nav.nearest({x:entry.x,y:entry.y-180});
  if(!spawn||!nav.projectileClear(entry,spawn))throw new AuthFault(409,'weekly_boss_spawn_blocked');
- return {mapId:'quest-dungeons',spawn,entry,maxPlayers:2,minLevel:1,durationMinutes:15,balanceApproved:false,profile:{...rehearsalProfile}};
+ return {mapId:'quest-dungeons',spawn,entry,maxPlayers:2,minLevel:1,durationMinutes:15,balanceApproved:false,profile};
 }
 async function bump(c:PoolClient,id:string){await c.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1 AND state_version<9007199254740991',[id]);}
 /** Caller owns the event row and peer character/session locks. Test state is restored,
@@ -40,7 +38,7 @@ export async function leaveWeeklyBoss(c:PoolClient,id:string){
   if(b){b.area=null;b.mobs=[];}
  }
  await c.query('DELETE FROM mare_game.weekly_boss_members WHERE character_id=$1',[id]);
- if(b){delete b.weeklyBossInstanceId;delete b.weeklyBossTest;E.cancel(b);E.resetHaki(b);b.talents=null;await storeBattle(c,id,b,false);}
+ if(b){delete b.weeklyBossInstanceId;delete b.weeklyBossTest;delete b.weeklyFrozenUntil;delete b.weeklyLastImpact;E.cancel(b);E.resetHaki(b);b.talents=null;await storeBattle(c,id,b,false);}
  await storeWorld(c,id,{...w!,path:[],speed:0,serverNow:at.toISOString(),motionUntil:at.toISOString()});
  await c.query('UPDATE mare_game.character_battles SET tick_at=$2 WHERE character_id=$1',[id,at]);await bump(c,id);
 }
@@ -71,23 +69,28 @@ export async function executeWeeklyBoss(c:PoolClient,id:string,input:WeeklyComma
  const p=input.payload;await authorizeWeeklyBoss(c,id,p.op);const account=await weeklyOperator(c,id);let receipt:{eventId?:string;revision?:number}={};
  if(p.op==='configure'||p.op==='activate'||p.op==='test'){
   const settings=(await c.query("SELECT * FROM mare_game.weekly_boss_settings WHERE boss_id='akainu' FOR UPDATE")).rows[0];
+  const bossId=p.bossId??'akainu',slots=D.profiles(settings.config);
+  if(!D.valid(bossId))throw new AuthFault(400,'weekly_boss_config_invalid');
   if(p.op!=='test'&&p.revision!==settings.revision)throw new AuthFault(409,'weekly_boss_revision_conflict');
   if(p.op==='configure'){
    if((await c.query("SELECT 1 FROM mare_game.weekly_boss_events WHERE boss_id='akainu' AND mode='official' AND status='active'")).rowCount)throw new AuthFault(409,'weekly_boss_already_active');
-   A.validateProfile(p.config.profile);await c.query("UPDATE mare_game.weekly_boss_settings SET revision=revision+1,config=$1 WHERE boss_id='akainu'",[JSON.stringify(p.config)]);
-   receipt={revision:settings.revision+1};await weeklyAudit(c,'configure',account,null,{revision:receipt.revision});
+   const config={...p.config,profile:A.validateProfile(D.balanceProfile(bossId,p.config.profile))};
+   await c.query("UPDATE mare_game.weekly_boss_settings SET revision=revision+1,config=$1 WHERE boss_id='akainu'",[JSON.stringify(D.withProfile(settings.config,bossId,config))]);
+   receipt={revision:settings.revision+1};await weeklyAudit(c,'configure',account,null,{revision:receipt.revision,bossId});
   }else{
-   const test=p.op==='test',config=test?rehearsalConfig():settings.config;
-   if(!config)throw new AuthFault(409,'weekly_boss_config_required');
-   if(!test){try{R.canActivate(config,{map:navigation});}catch(e){throw new AuthFault(409,(e as Error).message);}}
+   const test=p.op==='test',selected=slots[bossId];
+   if(!selected?.balanceApproved)throw new AuthFault(409,'weekly_boss_config_required');
+   const profile=A.validateProfile(D.balanceProfile(bossId,selected.profile));
+   const config={...(test?rehearsalConfig(profile):selected),profile,admiralId:bossId};
+   if(!test){try{R.canActivate(config,{map:navigation,bossId});}catch(e){throw new AuthFault(409,(e as Error).message);}}
    const mode=test?'test':'official';let row=(await c.query("SELECT *,clock_timestamp() now FROM mare_game.weekly_boss_events WHERE boss_id='akainu' AND mode=$1 AND status='active' FOR UPDATE",[mode])).rows[0];
-   if(row&&!test)throw new AuthFault(409,'weekly_boss_already_active');
+   if(row&&(!test||row.config.admiralId!==bossId))throw new AuthFault(409,'weekly_boss_already_active');
    if(!row){
     const at=await now(c),key=randomUUID(),end=new Date(Math.min(at.getTime()+config.durationMinutes*60000,R.cycleEnd(at.getTime())));
-    const boss=A.create({id:randomUUID(),x:config.spawn.x,y:config.spawn.y,profile:config.profile,now:at.getTime()});boss.balanceVersion=E.balanceVersion;
+    const boss=D.initialize(A.create({id:randomUUID(),x:config.spawn.x,y:config.spawn.y,profile:config.profile,now:at.getTime()}),bossId);boss.balanceVersion=E.balanceVersion;
     const room={id:key,mapId:config.mapId,config,mode,rulesVersion:1,mobs:[boss],contributions:{}};
     row=(await c.query("INSERT INTO mare_game.weekly_boss_events(id,mode,map_id,cycle_key,config,simulation,created_by,opened_at,closes_at,tick_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$8) RETURNING *",[key,mode,config.mapId,R.cycleKey(at.getTime()),JSON.stringify(config),JSON.stringify(room),account,at,end])).rows[0];
-    await weeklyAudit(c,p.op,account,key,{mode});
+    await weeklyAudit(c,p.op,account,key,{mode,bossId});
    }
    if(test)await join(c,id,row,input.control.epoch,state);receipt={eventId:row.id};
   }
@@ -117,16 +120,33 @@ export async function readWeeklyBoss(c:PoolClient,id:string,sessionId:string){
  EXISTS(SELECT 1 FROM mare_game.weekly_boss_operators o JOIN mare_game.characters ch ON ch.account_id=o.account_id WHERE ch.id=$1) can_manage,
  EXISTS(SELECT 1 FROM mare_game.weekly_boss_members WHERE character_id=$1) member,
  EXISTS(SELECT 1 FROM mare_game.weekly_boss_events WHERE boss_id='akainu' AND mode='official' AND status='active' AND closes_at>clock_timestamp()) public_active,
- (SELECT cycle_key::text FROM mare_game.weekly_boss_entitlements WHERE character_id=$1 ORDER BY cycle_key DESC LIMIT 1) cycle`,[id])).rows[0];
+ (SELECT cycle_key::text FROM mare_game.weekly_boss_entitlements WHERE character_id=$1 ORDER BY cycle_key DESC LIMIT 1) cycle,
+ (SELECT config FROM mare_game.weekly_boss_settings WHERE boss_id='akainu') settings_config,
+ (SELECT jsonb_build_object('cycle',cycle_key,'status',status,'openedAt',opened_at,'endsAt',closes_at,'minLevel',config->'minLevel','bossId',config->>'admiralId')
+  FROM mare_game.weekly_boss_events WHERE boss_id='akainu' AND mode='official' ORDER BY opened_at DESC LIMIT 1) last_official`,[id])).rows[0];
  // Closed events must not add N+1 queries or a changing clock to unrelated state.
  const daily=await readDailySwords(c,context.now);
- if(!context.can_manage&&!context.member&&!context.public_active)return {canManage:false,events:[],current:null,peers:[],serverNow:null,rewardPendingCycle:context.cycle??null,daily};
+ const last=context.last_official;
+ const recentOfficial=last?.cycle===R.cycleKey(context.now)?{...last,bossId:D.valid(last.bossId)?last.bossId:'akainu'}:null;
+ const publicProfiles=D.profiles(context.settings_config);
+ const admiralMinLevels=Object.fromEntries(D.ids.map((bossId:string)=>[bossId,publicProfiles[bossId]?.minLevel??null]));
+ const legacyConfig=context.settings_config?.admiralsVersion===1?context.settings_config.legacyConfig:context.settings_config;
+ const publicInfo={daily,lootRules:weeklyBossLootRules,recentOfficial,akainuMinLevel:admiralMinLevels.akainu??legacyConfig?.minLevel??null,admiralMinLevels};
+ if(!context.can_manage&&!context.member&&!context.public_active)return {canManage:false,...publicInfo,events:[],current:null,peers:[],serverNow:null,rewardPendingCycle:context.cycle??null};
  const canManage=!!context.can_manage,at:Date=context.now;
  await c.query(`UPDATE mare_game.weekly_boss_members m SET last_seen=$2 FROM mare_game.character_control cc JOIN mare_game.app_sessions s ON s.id=cc.session_id JOIN mare_game.accounts a ON a.id=s.account_id WHERE m.character_id=$1 AND cc.character_id=m.character_id AND cc.expires_at>$2 AND s.kind='play' AND s.revoked_at IS NULL AND s.expires_at>$2 AND s.idle_expires_at>$2 AND s.provider_valid_until>$2 AND s.account_epoch=a.auth_epoch AND s.id=$3`,[id,at,sessionId]);
  const current=(await c.query('SELECT e.* FROM mare_game.weekly_boss_members m JOIN mare_game.weekly_boss_events e ON e.id=m.event_id WHERE m.character_id=$1',[id])).rows[0];
- const rows=(await c.query("SELECT id,mode,map_id,status,version,closes_at,config,simulation->'mobs'->0 boss,(SELECT count(*)::int FROM mare_game.weekly_boss_members WHERE event_id=e.id) members FROM mare_game.weekly_boss_events e WHERE boss_id='akainu' AND status='active' AND closes_at>$1 AND (mode='official' OR $2) ORDER BY opened_at LIMIT 2",[at,canManage])).rows;
- const view=(r:any)=>({id:r.id,mode:r.mode,status:r.status,version:r.version,mapId:r.map_id,endsAt:r.closes_at.toISOString(),maxPlayers:r.config.maxPlayers,minLevel:r.config.minLevel,members:r.members??0,boss:{name:(r.boss??r.simulation?.mobs[0])?.name??'Akainu',hp:Math.max(0,(r.boss??r.simulation?.mobs[0])?.hp??0),maxHp:(r.boss??r.simulation?.mobs[0])?.maxHP??0},rewardsConfigured:r.mode==='official'});
+ const rows=(await c.query("SELECT id,boss_id,mode,map_id,status,version,opened_at,closes_at,config,simulation->'mobs'->0 boss,(SELECT count(*)::int FROM mare_game.weekly_boss_members WHERE event_id=e.id) members FROM mare_game.weekly_boss_events e WHERE boss_id='akainu' AND status='active' AND closes_at>$1 AND (mode='official' OR $2) ORDER BY opened_at LIMIT 2",[at,canManage])).rows;
+ const view=(r:any)=>{
+  const boss=r.boss??r.simulation?.mobs?.[0];
+  // The event row keeps its weekly family ID. The public card uses the selected admiral.
+  const bossId=r.boss_id==='akainu'&&D.valid(r.config.admiralId)?r.config.admiralId:r.boss_id;
+  return {id:r.id,bossId,mode:r.mode,status:r.status,version:r.version,mapId:r.map_id,openedAt:r.opened_at.toISOString(),endsAt:r.closes_at.toISOString(),maxPlayers:r.config.maxPlayers,minLevel:r.config.minLevel,members:r.members??0,boss:{name:boss?.name??D.roster[bossId]?.name??'Akainu',hp:Math.max(0,boss?.hp??0),maxHp:boss?.maxHP??0},rewardsConfigured:r.mode==='official'};
+ };
  const settings=canManage?(await c.query("SELECT revision,config FROM mare_game.weekly_boss_settings WHERE boss_id='akainu'")).rows[0]:undefined;
+ const profiles=settings?D.profiles(settings.config):null;
+ const arena=settings?require('../../../../world-map-exports.js').get('marineford'):null;
+ const defaults=arena?.weeklyBossSpawn&&arena.spawn?Object.fromEntries(D.ids.map((bossId:string)=>[bossId,D.defaultConfig(bossId,{spawn:arena.weeklyBossSpawn,entry:arena.spawn})])):{};
  const rights={cycle:context.cycle};
  const peers:any[]=[];
  if(current){
@@ -138,5 +158,5 @@ export async function readWeeklyBoss(c:PoolClient,id:string,sessionId:string){
    peers.push({id:m.character_id,name:n.name,classId:n.class_id,factionId:n.faction_id,hierarchyTier:tiers.get(m.character_id)??null,level:input.state.level,hp:Math.max(0,b.hp),maxHp:f.maxHp,connected:true,world:w,instanceId:current.id,appearance96:input.appearance,hideHeadgear:!!input.preferences.hideHeadgear,equipment,action:b.pending||b.skillJob?'attack':'idle',fruitId:f.fruitId,zoanTransformed:b.fruit?.transformed===true,haki:b.hakiRuntime?{active:b.hakiRuntime.active,eyeFX:b.hakiRuntime.eyeFX,dodgeFX:b.hakiRuntime.dodgeFX,kingFX:b.hakiRuntime.kingFX,kingOrigin:b.hakiRuntime.kingOrigin}:null});
   }
  }
- return {canManage,daily,lootRules:weeklyBossLootRules,events:rows.map(view),current:current?view(current):null,peers,serverNow:at.toISOString(),rewardPendingCycle:rights?.cycle??null,...(settings?{revision:settings.revision,config:settings.config,marinefordReady:!!maps().maps.marineford}: {})};
+ return {canManage,...publicInfo,events:rows.map(view),current:current?view(current):null,peers,serverNow:at.toISOString(),rewardPendingCycle:rights?.cycle??null,...(settings?{revision:settings.revision,config:profiles?.akainu??null,profiles,defaults,balance:D.balance,marinefordReady:!!maps().maps.marineford}: {})};
 }

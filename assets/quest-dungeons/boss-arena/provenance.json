@@ -1,0 +1,94 @@
+{
+  "asset": "scene-hd.png",
+  "kind": "AI-generated original boss-dungeon arena painting",
+  "method": "OpenAI built-in image_gen",
+  "requested_by": "Repository owner: create the boss dungeon map with web references and integrate into PR #394",
+  "generated_at_utc": "2026-11-28",
+  "native_width": 1448,
+  "native_height": 1086,
+  "world_width": 3072,
+  "world_height": 2304,
+  "bytes": 3296555,
+  "sha256": "2cf6960aacd51640e1a6bc1850d68b77fd92cd0ac48609883c156ac8346d3945",
+  "requested_generation_size": [
+    3072,
+    2304
+  ],
+  "returned_generation_size": [
+    1448,
+    1086
+  ],
+  "modifications": "None. Generated PNG copied byte for byte. World units do not increase native pixel resolution.",
+  "prompt": "generation-prompt.txt",
+  "references": [
+    {
+      "url": "https://opbr-en.bn-ent.net/stage/detail/0021.html",
+      "role": "Official Impel Down Level 6 stage: stone prison walls, portcullis, chains and side cells."
+    },
+    {
+      "url": "https://opbr-en.bn-ent.net/stage/detail/0010.html",
+      "role": "Official Dressrosa stage: legible circular fighting floor and concentric paving."
+    },
+    {
+      "url": "https://opbr-en.bn-ent.net/stage/detail/0008.html",
+      "role": "Official Marineford stage: monumental maritime fortress masonry."
+    }
+  ],
+  "visual_reference_notes": "Original non-canonical arena, not a recreation of any official location. Official screenshots were consulted as visual references only; new painting generated from text, without third-party image pixels.",
+  "gameplay_contract": {
+    "mapId": "quest-dungeons",
+    "boss_count": 18,
+    "boss_levels": [
+      10,
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180
+    ],
+    "also_used_by": "Private Akainu rehearsal; the official weekly Marineford arena is a separate map.",
+    "spawn": {
+      "x": 1536,
+      "y": 1824
+    },
+    "enemySpawn": {
+      "x": 1536,
+      "y": 1152
+    },
+    "chest": {
+      "id": "40420c70-1e86-493e-a829-79b42d260c18",
+      "x": 1536,
+      "y": 640,
+      "radius": 90
+    },
+    "chest_sprite": "assets/map-depth/objects/export-0c9aababd1dd8d975621951c.png",
+    "exit": "Existing return action and atomic reward claim return to lobby; no new return portal."
+  },
+  "original_assets_preserved": [
+    {
+      "file": "assets/quest-dungeons/map.png",
+      "sha256": "dbef178013dab0369ac9bea943a3b77558159bd4cbe6f831661fa1bda357bd33"
+    },
+    {
+      "file": "assets/exported-maps/quest-dungeons/map.png",
+      "sha256": "c1a872f259ef5b529705667740dfa26d1cd301971dbc3fbf8aada108c8e721f2"
+    },
+    {
+      "file": "assets/map-depth/objects/export-0c9aababd1dd8d975621951c.png",
+      "sha256": "0c9aababd1dd8d975621951c49314f8796b75a0d00248e4b4368620ac7718e8c"
+    }
+  ],
+  "rights_note": "Original user-requested fan-game artwork. One Piece reference material remains associated with its rights holders; no third-party screenshot distributed."
+}

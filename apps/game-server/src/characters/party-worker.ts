@@ -36,6 +36,17 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
   const room=row.simulation,now=row.now.getTime(),elapsed=(now-row.tick_at.getTime())/1000,actors:any[]=[];let attached=0;
   // The shared room owns its old mobs independently of personal battle rows.
   if(/^skypiea-0[1-4]$/.test(room.area))E.reanchorSkypieaMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(room.area==='loguetown')E.reanchorLoguetownMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(room.area==='arlong')E.reanchorArlongMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(room.area==='baratie')E.reanchorBaratieMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(room.area==='syrup')E.reanchorSyrupMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(room.area==='rare')E.reanchorRareMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(room.area==='beach')E.reanchorDawnMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(room.area==='swamp')E.reanchorConchasMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(room.area==='orange')E.reanchorOrangeMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(room.area==='alabasta')E.reanchorAlabastaMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(/^alubarna-0[1-5]$/.test(room.area))E.reanchorAlubarnaMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(/^marineford-0[1-6]$/.test(room.area))E.reanchorMarinefordMobs(room.area,room.mobs,maps().navigation(room.mapId));
    await refreshPartyLeader(c,candidate.party_id,roster,now);
   const ids=roster.map(m=>m.character_id),battles=await readBattleRows(c,ids);
   const connected=roster.filter(m=>m.connected&&battles.get(m.character_id)?.simulation.partyInstanceId===room.id).map(m=>m.character_id);
