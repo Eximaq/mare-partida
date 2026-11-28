@@ -154,6 +154,9 @@ GRANT INSERT(character_id,item_id,trade_id,quantity,item),UPDATE(quantity),DELET
 -- runtime roles as well as databases upgraded with the role already present.
 DO $$
 BEGIN
+  IF to_regclass('mare_game.port_chat_messages') IS NOT NULL THEN
+    GRANT SELECT,INSERT(sender_id,request_id,body) ON mare_game.port_chat_messages TO mare_runtime;
+  END IF;
   IF to_regclass('mare_game.bounty_victories') IS NOT NULL THEN
     GRANT SELECT ON mare_game.bounty_victories TO mare_runtime;
   END IF;
