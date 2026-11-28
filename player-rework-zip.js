@@ -4,7 +4,7 @@
 const LIMITS=Object.freeze({archive:64*1024*1024,entry:32*1024*1024,total:128*1024*1024,entries:4096});
 const decoder=new TextDecoder('utf-8',{fatal:true});
 const crcTable=Uint32Array.from({length:256},(_,i)=>{let c=i;for(let bit=0;bit<8;bit++)c=(c>>>1)^((c&1)?0xedb88320:0);return c>>>0;});
-function crc32(bytes){let crc=0xffffffff;for(const b of bytes)crc=(crc>>>8)^crcTable[(crc^b)&255];return (crc^0xffffffff)>>>0;}
+function crc32(bytes){let crc=0xffffffff;for(let i=0;i<bytes.length;i++)crc=(crc>>>8)^crcTable[(crc^bytes[i])&255];return (crc^0xffffffff)>>>0;}
 function pathOf(bytes){let name;try{name=decoder.decode(bytes);}catch(_){throw Error('Invalid ZIP path encoding');}if(!name||name.startsWith('/')||/[:\\\x00-\x1f\x7f]/.test(name)||name.split('/').some((s,i,a)=>s==='.'||s==='..'||(!s&&i<a.length-1)))throw Error('Unsafe ZIP path');return name;}
 function extraValid(bytes){const v=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);for(let p=0;p<bytes.length;){if(p+4>bytes.length)throw Error('Invalid ZIP extra');const id=v.getUint16(p,true),n=v.getUint16(p+2,true);if(id===1)throw Error('Unsupported ZIP64');p+=4+n;if(p>bytes.length)throw Error('Invalid ZIP extra');}}
 async function loadArchive(input,expectedSHA){

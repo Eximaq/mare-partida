@@ -121,3 +121,18 @@ test('busy/control notifications retain status without reprojecting unchanged se
   c.scene='hunt';c.ONLINE_GAME.available=true;c.ONLINE_GAME.data.online.battle=null;c.ONLINE_GAME.data.online.combat.status='lost';
   vm.runInContext('syncOnlineGame()',c);assert.equal(nodes.combatState.textContent,'DERROTA');
 });
+
+test('solo world updates do not measure the party tracker layout',()=>{
+  const party={hidden:false};
+  const reads=[];
+  const c=vm.createContext({
+    ONLINE_GAME:{available:true,data:{online:{party:{group:null,invites:[]}}}},
+    $:id=>{reads.push(id);return id==='partyCompact'?party:null;},
+    document:{documentElement:{style:{setProperty(){}}}},
+    partyCompactStamp:null,currentPanel:null,drawPartyPortraits(){}
+  });
+  vm.runInContext(fn('updatePartyUI'),c);
+  vm.runInContext('updatePartyUI()',c);
+  assert.equal(party.hidden,true);
+  assert.equal(reads.includes('huntXpTracker'),false);
+});

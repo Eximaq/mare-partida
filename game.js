@@ -119,7 +119,10 @@
     if(partyCompactStamp!==summary){partyCompactStamp=summary;node.innerHTML=MarePartyUI.compact(g,partyCollapsed);}
     if(g)for(const m of g.members){const row=node.querySelector('[data-party-member="'+m.id+'"]');if(row){row.querySelector('.party-life i').style.width=Math.max(0,Math.min(100,m.hp/m.maxHp*100))+'%';row.querySelector('[data-party-hp]').textContent=fmt(m.hp)+' / '+fmt(m.maxHp)+' HP · Poder '+fmt(m.power);}}
     const badge=$('socialMenuTrigger')?.querySelector('.party-invite-badge'),pending=data?.invites.filter(i=>i.target_id===ONLINE_GAME.data.character.id&&i.status==='pending').length||0;if(badge){badge.hidden=!pending;badge.textContent=pending;}
-    const tracker=$('huntXpTracker');document.documentElement.style.setProperty('--party-tracker-height',tracker&&!tracker.hidden?Math.ceil(tracker.getBoundingClientRect().height)+'px':'0px');
+    if(g){
+      const tracker=$('huntXpTracker');
+      document.documentElement.style.setProperty('--party-tracker-height',tracker&&!tracker.hidden?Math.ceil(tracker.getBoundingClientRect().height)+'px':'0px');
+    }
     const panelStamp=JSON.stringify([summary,data?.invites,ONLINE_GAME?.available,ONLINE_GAME?.busy,ONLINE_GAME?.controlled]);
     if(currentPanel==='party'&&partyPanelStamp!==panelStamp&&!document.activeElement?.matches('#dialogBody input,#dialogBody select')){partyPanelStamp=panelStamp;renderPartyPanel();}
     if(currentPanel==='party'&&g)for(const m of g.members){const row=$('dialogBody').querySelector('[data-party-member="'+m.id+'"]');if(row){row.querySelector('.party-life i').style.width=Math.max(0,Math.min(100,m.hp/m.maxHp*100))+'%';row.querySelector('[data-party-hp]').textContent=fmt(m.hp)+' / '+fmt(m.maxHp)+' HP';}}

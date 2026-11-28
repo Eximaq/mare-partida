@@ -6,12 +6,21 @@
   const titleFont='italic 700 12px "Segoe UI", system-ui, sans-serif';
   const levelFont='600 12px "Segoe UI", system-ui, sans-serif';
   const insignias=new Map();
+  const nameWidths=new WeakMap();
+  const maxCachedNames=256;
 
   function measure(context,name){
+    let widths=nameWidths.get(context);
+    if(!widths){widths=new Map();nameWidths.set(context,widths);}
+    const cached=widths.get(name);
+    if(cached!==undefined)return cached;
+
     context.save();
     context.font=font;
     const width=Math.ceil(context.measureText(name).width)+4;
     context.restore();
+    if(widths.size>=maxCachedNames)widths.delete(widths.keys().next().value);
+    widths.set(name,width);
     return width;
   }
 
@@ -76,7 +85,7 @@
     if(identity.title)drawName(context,center,nameY-17,identity.title,identity.titleColor||'#83d7f0',titleFont);
     drawName(context,center,nameY,label,identity.self?'#ffe29a':'#fff8e9');
     if(identity.insignia){
-      drawInsignia(context,center-Math.ceil(context.measureText(label).width)/2-14,nameY-6,identity.insignia);
+      drawInsignia(context,center-(measure(context,label)-4)/2-14,nameY-6,identity.insignia);
     }
     if(hasLevel)drawName(context,center,y,'Nv '+identity.level,'#e4eaf1',levelFont);
     if(resources)drawResources(context,center,y+3,resources);

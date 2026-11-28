@@ -82,3 +82,15 @@ assert.equal(rectangles.length,0);
 referenceLabels.length=0;
 HUD.draw(identityContext,120,80,'Sem título',null,{level:null});
 assert.deepEqual(referenceLabels.map(p=>p.text),['Sem título'],'unavailable metadata is omitted');
+
+let measurementCount=0;
+const repeatContext={...context,measureText(text){
+  measurementCount++;
+  return {width:text.length*8};
+}};
+assert.equal(HUD.measure(repeatContext,'Nome fixo'),76);
+HUD.draw(repeatContext,120,80,'Nome fixo',null,{insignia:{sheet:'test.png',x:0,y:0}});
+assert.equal(HUD.measure(repeatContext,'Nome fixo'),76);
+assert.equal(measurementCount,1,'layout and the insignia reuse the name width between frames');
+assert.equal(HUD.measure(repeatContext,'Outro nome'),84);
+assert.equal(measurementCount,2,'a changed name is measured separately');
