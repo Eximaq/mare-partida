@@ -68,14 +68,16 @@ Na produção de arte, 21.768 verificações de pixels/metadados e 3.588 verific
 
 Na integração, passaram 72/72 testes focados, 263/263 testes foundation, `npm run typecheck`, `npm run build`, sintaxe e `git diff --check`. A execução completa de `npm test` terminou com 122/357 arquivos legados passando: 230 falhas dependem de arquivos/assets ausentes neste checkout, e cinco são falhas de comportamento/fixture reproduzidas na base do PR. Todos os testes novos e os de Zoro passaram também nessa execução completa.
 
-O ambiente não dispõe de Chromium, e a instalação oficial foi bloqueada por HTTP 403. Portanto, não há aprovação de navegador ou gameplay. Os emissores de projéteis continuam usando o sistema existente; o alinhamento de sockets no mundo não foi validado visualmente. O build estático parou antes de escrever `dist`, por falta de `tools/rework-modular-outfits-hd/index.json.gz` no checkout seletivo. Os resultados e limites também constam na descrição do PR.
+Na revisão inicial, a instalação do Chromium foi bloqueada por HTTP 403 e o checkout seletivo não incluía `tools/rework-modular-outfits-hd/index.json.gz`. A revisão de merge usou um checkout integral para gerar `dist` e testar o jogo no Chromium.
 
-`approved:false` e `productionEnabled:false` no manifest registram o estado de revisão da arte. Não são chaves de ativação do renderizador. A integração fica no PR em rascunho, sem merge ou deploy realizado por esta entrega.
+`approved:false` e `productionEnabled:false` no manifest registram o estado de revisão da arte. A ativação do renderizador depende do Visual Completo equipado.
 
 
 ### Atualização para revisão — 28/11/2026
 
 Armas funcionais compartilham a variante do Luffy pela classe e pela empunhadura. O Cajado das Marés (127) usa o mesmo ciclo do Cajado do Farol (31). O Orbe de Skypiea (122) compartilha o ciclo do Orbe das Correntes (17). Braços mecânicos e canhões conservam variantes próprias do Ciborgue. Quando um ID equipado não está registrado, o seletor usa a variante base da classe. As trocas preservam o item funcional e as regras das habilidades.
+
+O teste do seletor cobre as 42 armas atuais nas quatro direções em repouso, caminhada, ataque e reação a dano. No Chromium, a troca para o cajado 127, o orbe 122 e o canhão 118 preservou os ciclos previstos em repouso, caminhada e ataque no mapa. Pontos de emissão de projéteis permanecem ligados ao sistema existente e seu alinhamento visual ainda não foi medido.
 
 A revisão de merge regenerou o manifesto native96, atualizou o teste Docker para o catálogo com 247 definições e preservou as verificações do hash e das permissões. Os testes antigos de mapa, viagem e carregamento agora conferem a cena pintada de Conchas, o balanceamento atual, as informações de viagem e a continuidade entre poses.
 

@@ -451,7 +451,7 @@
       const entry=requestTypedSurface(player,options);
       if(!entry?.bundle)return null;
       const {source,resolved,bundle}=entry;
-      if(!bundle.draw(ctx,player,{...options,...resolved}))return null;
+      if(!bundle.draw(ctx,player,{...options,...resolved,consumer:options.consumer}))return null;
       return {source:source.id,omitted:source.omitted||[],slotRoutes:source.slotRoutes||{},consumer:options.consumer,typedHD:true};
     }
     const positionRevision=positions=>positions?.records.length?positions.revision:null;
