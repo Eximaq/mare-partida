@@ -1,0 +1,9 @@
+# Almirantes de Marineford, encontro semanal
+
+- Aokiji, Akainu e Kizaru entram no seletor do administrador do evento semanal. O encontro continua com um chefe por ocorrência e vida compartilhada. O Desafio das Sete Lâminas, as rotas e as masmorras não usam este elenco.
+- Não há atributos predefinidos para o trio nem abertura automática. Os operadores precisam preencher e confirmar um perfil por chefe antes de iniciar um teste ou uma edição oficial. O JSON antigo do Akainu não é um perfil elegível; permanece preservado no armazenamento. Nenhum encontro legado já criado é reequilibrado por este patch.
+- Por compatibilidade com o histórico e os drops, `weekly_boss_events.boss_id='akainu'` continua sendo a chave histórica do canal semanal. A identidade selecionada do chefe fica em `config.admiralId` e no ator `weeklyBossId`. O diário continua com seus identificadores próprios.
+- As artes aprovadas ao sul são mantidas sem perda; norte e leste têm animação própria; oeste espelha leste. Há repouso, oito quadros de caminhada, ataque básico, especial direcional e especial de área. Não há reação visual de dano: na derrota, a pose de repouso desaparece gradualmente.
+- Os tiles da habilidade são 64 unidades de mundo. Aokiji: duas lanças na linha de 5 tiles e Era do Gelo com raio de 5 tiles. Akainu: punho com alcance de 6 tiles e meteoros em raio de 3,4 tiles. Kizaru: quatro saltos entre alvos, por segmentos autorizados, e chuva em raio de 1,5 tile. O servidor limita cada cast a um acerto por alvo e bloqueia o impacto atrás de obstáculos. Os efeitos não mudam o hit após a resolução.
+- O gelo, vapor, punho e meteoros usam as texturas de 516 × 516 aprovadas e a animação é calculada continuamente a partir do relógio do encontro, sem vídeo ou sheets de VFX de alta memória no navegador. O modo de efeitos reduzidos preserva os avisos.
+- Teste de equilíbrio e abertura de evento em produção ficam pendentes dos perfis novos.

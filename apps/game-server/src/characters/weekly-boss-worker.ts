@@ -39,7 +39,7 @@ export async function tickWeeklyBosses(pool:Pool,assignment?:SimulationPartition
   const ids=roster.map(m=>m.character_id),battles=await readBattleRows(c,ids),connected=roster.filter(m=>m.connected&&battles.get(m.character_id)?.simulation.weeklyBossInstanceId===room.id).map(m=>m.character_id);
   const inputs=await weeklyInputs(c,connected),worlds=await readWorlds(c,connected,new Date(now-Math.min(1,elapsed)*1000)),actors:any[]=[];
   for(const m of roster){
-   const b=battles.get(m.character_id)?.simulation;if(!b||b.weeklyBossInstanceId!==room.id)throw Error('weekly_membership_mismatch');
+   const b=battles.get(m.character_id)?.simulation;if(b)E.upgradeBalance(b);if(!b||b.weeklyBossInstanceId!==room.id)throw Error('weekly_membership_mismatch');
    if(!m.connected||(row.mode==='test'&&!(await c.query('SELECT 1 FROM mare_game.weekly_boss_operators WHERE account_id=$1',[m.account_id])).rowCount)){
     if(now-new Date(m.last_seen).getTime()>R.policy.reconnectMs||m.connected)await leaveWeeklyBoss(c,m.character_id);else{E.cancel(b);await storeBattle(c,m.character_id,b,false);}continue;
    }
@@ -60,7 +60,7 @@ export async function tickWeeklyBosses(pool:Pool,assignment?:SimulationPartition
     await c.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[a.id]);
     const after=await readCharacterState(c,a.id);await c.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4)',[a.id,requestId,digest('server-weekly:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:after})]);
    }
-   await storeWorld(c,a.id,{...a.w,position:{x:a.hero.x,y:a.hero.y},direction:a.hero.direction,path:a.b.hp>0&&!a.b.auto?a.manualPath:[],speed:E.combatStats(a.b,a)[a.b.auto?'huntSpeed':'moveSpeed'],serverNow:row.now.toISOString(),motionUntil:new Date(Math.max(now,Date.parse(a.w.motionUntil))).toISOString()});
+   await storeWorld(c,a.id,{...a.w,position:{x:a.hero.x,y:a.hero.y},direction:a.hero.direction,path:a.b.hp>0&&!a.b.auto&&!(a.b.weeklyFrozenUntil>now)?a.manualPath:[],speed:E.combatStats(a.b,a)[a.b.auto?'huntSpeed':'moveSpeed'],serverNow:row.now.toISOString(),motionUntil:new Date(Math.max(now,Date.parse(a.w.motionUntil))).toISOString()});
    await storeBattle(c,a.id,a.b,false);await c.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[a.id,row.now,a.epoch]);await c.query('UPDATE mare_game.weekly_boss_members SET control_epoch=$2 WHERE character_id=$1',[a.id,a.epoch]);
   }
   if(!boss.alive&&boss.dailySwordBossId){

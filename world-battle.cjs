@@ -14,7 +14,7 @@ const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
 const Policy=require('./combat-action-policy.js');
 const {potionRules,potionRecovery}=require('./item-catalog.js');
-const sources=['sword-compendium.js','daily-sword-battle.cjs','daily-sword-boss-combat.js','daily-sword-boss-specials.json','attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','cp9-monsters.js','thriller-monsters.js','cp9-sprites.js','thriller-sprites.js','enies-dungeon-art.js','sabaody-monsters.js','sabaody-sprites.js','sabaody-dungeon-art.js','marineford-monsters.js','prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','late-archipelago-map-data.js','late-archipelago-world.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','loguetown-map-data.js','arlong-map-data.js','baratie-map-data.js','syrup-map-data.js','rare-animals-map-data.js','dawn-village-map-data.js','conchas-marine-map-data.js','orange-town-map-data.js','alabasta-desert-map-data.js','alubarna-city-map-data.js','boss-arena-map-data.js','marineford-map-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const sources=['sword-compendium.js','daily-sword-battle.cjs','daily-sword-boss-combat.js','daily-sword-boss-specials.json','attribute-rules.js','forge-system.js','item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','cp9-monsters.js','thriller-monsters.js','cp9-sprites.js','thriller-sprites.js','enies-dungeon-art.js','sabaody-monsters.js','sabaody-sprites.js','sabaody-dungeon-art.js','marineford-monsters.js','prepared-dungeon-bosses.js','prepared-dungeon-boss-art-data.js','late-archipelago-map-data.js','late-archipelago-world.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-map-exports-data.js','loguetown-map-data.js','arlong-map-data.js','baratie-map-data.js','syrup-map-data.js','rare-animals-map-data.js','dawn-village-map-data.js','conchas-marine-map-data.js','orange-town-map-data.js','alabasta-desert-map-data.js','alubarna-city-map-data.js','boss-arena-map-data.js','marineford-map-data.js','skypiea-map-data.js','skypiea-world.js','world-battle.cjs','akainu-combat.js','weekly-admirals.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 const balanceVersion=characters.monsterBalance.version;
 const previousBalanceHash='c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b';
@@ -224,6 +224,8 @@ function upgradeHuntProfiles(b){
 function upgradeBalance(b){
  if(!b)return;
  const previous=b.rulesHash;
+ // Weekly-only additions do not change positions, equipment or progression for this exact predecessor.
+ if(previous==='66b265a4555b30e71c6b6974e6e2de3475ead6403b1bb4f960b3f9a38bf3d47e'){b.rulesHash=rulesHash;return;}
  // The map branch already has every HD arena. Apply only the progression
  // branch's hunt profiles; active attacks and positions remain valid.
  if(previous===previousHdMapsHash){upgradeHuntProfiles(b);addHuntLedgers(b);b.rulesHash=rulesHash;return;}
@@ -478,7 +480,7 @@ function step(b,c){
  }
  function die(){b.autoRoute=null;resetHaki(b);b.hp=0;b.respawn=4.1;b.actionLockUntil=0;fruits.reset(b);b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;if(!c.shared)for(const other of enemies())behavior.disengage(other);event(b,'death');}
  function damage(m,multiplier=1,warning){
-  if(warning?.groundTrap&&b.fruit?.id==='akuma_tori_albatroz'&&b.fruit.transformed&&b.fruit.effects.altitudeUntil>now/1000||b.fruit?.id==='akuma_bomu_bomu'&&warning?.damageType==='explosion')return;const physical=m.type!=='spirit'&&warning?.damageType!=='magma';
+  if(warning?.groundTrap&&b.fruit?.id==='akuma_tori_albatroz'&&b.fruit.transformed&&b.fruit.effects.altitudeUntil>now/1000||b.fruit?.id==='akuma_bomu_bomu'&&warning?.damageType==='explosion')return;const physical=m.type!=='spirit'&&warning?.damageType!=='magma'&&warning?.elemental!==true;
   if(b.hp<=0)return;const genie=b.fruit?.effects.genie;if(genie){fruits.genieDamage(genie,now/1000,m.attack*multiplier,physical);if(genie.hp<=0)delete b.fruit.effects.genie;return;}H.touch(hakiGame(b),b.hakiRuntime);stats=combatStats(b,c,rt);
   const raw=characters.incoming(physical?stats:{...stats,defense:stats.magicDefense??stats.defense},m.attack*multiplier*(m.kobuDebuffUntil>now?.8:1)*(m.hakiDebuff>0?.85:1)*(physical?1-(stats.impactResistancePercent||0):1),b.guard>0,.85+rng()*.25,{monster:m});
   const fruitReaction=fruits.incoming(b,{...c,stats,now},m,raw,m.attack*multiplier,physical);if(!fruitReaction.damage)return;
@@ -507,7 +509,7 @@ function step(b,c){
   if(b.hp<=0){b.respawn=Math.max(0,b.respawn-dt);if(b.respawn<=1e-8){b.hp=stats.maxHP;b.energy=stats.maxEnergy;if(c.shared){Object.assign(hero,nav.map.spawn);}else if(b.prison){const m=b.mobs[0],auto=b.auto;enterPrison(b,b.prison.spec,stats,hero,{id:m.id,stolen:m.talentStolen||0});b.auto=auto;rt=talents.load(b);}else if(b.dungeon){const m=b.mobs[0],auto=b.auto;enterDungeon(b,b.dungeon.id,b.dungeon.record,stats,hero,{stolen:m?.talentStolen||0});b.auto=auto;rt=talents.load(b);}else Object.assign(hero,nav.map.spawn);b.targetId=null;event(b,'respawn');}}
   else{heal(dt*((stats.healthRegen||0)-(stats.vitalityHealthRegen||0)+(b.area?0:1.9)+(b.blessing>0?stats.regenBuff:0)));heal(dt*(stats.vitalityHealthRegen||0),true);b.energy=Math.min(stats.maxEnergy,b.energy+dt*stats.energyRegen);}
   if(!c.shared)populate(b,now,rng,hero);
-  if(!b.pending&&!b.skillJob&&(b.actionLockUntil||0)<=now&&!b.fruit?.job&&!b.fruit?.effects.genie&&!b.fruit?.effects.action&&!b.fruit?.effects.dash&&c.manualPath?.length&&b.hp>0&&now>=(c.manualStart||0))nav.follow(hero,c.manualPath,stats.moveSpeed,Math.min(dt,(now-(c.manualStart||0))/1000));
+  if(!(b.weeklyFrozenUntil>now)&&!b.pending&&!b.skillJob&&(b.actionLockUntil||0)<=now&&!b.fruit?.job&&!b.fruit?.effects.genie&&!b.fruit?.effects.action&&!b.fruit?.effects.dash&&c.manualPath?.length&&b.hp>0&&now>=(c.manualStart||0))nav.follow(hero,c.manualPath,stats.moveSpeed,Math.min(dt,(now-(c.manualStart||0))/1000));
   const fruitBusy=!!(b.fruit?.job||b.fruit?.effects.action||b.fruit?.effects.dash||b.fruit?.effects.jikiCharge||b.fruit?.effects.genie);if(fruitBusy){b.pending=null;b.skillJob=null;}
   let m=target(b);
   if(b.auto&&b.hp>0&&b.area&&!b.fruit?.effects.action&&!b.fruit?.effects.dash&&!b.fruit?.effects.jikiCharge&&b.autoSkills&&!b.pending&&!b.skillJob&&(b.actionLockUntil||0)<=now&&now>=(b.nextSkillDecision||0)){
@@ -525,7 +527,7 @@ function step(b,c){
    else if(m&&!actionLocked&&(distance(hero,m)>stats.range-8||!clear(hero,m))){
     if(b.autoRoute?.target!==m.id||distance(b.autoRoute.goal,m)>20||!b.autoRoute.path.length)b.autoRoute={target:m.id,goal:{x:m.x,y:m.y},path:nav.path(hero,m)};
     const {path}=b.autoRoute,previous={x:hero.x,y:hero.y};
-    if(path.length)nav.follow(hero,path,stats.huntSpeed,dt);
+    if(path.length&&!(b.weeklyFrozenUntil>now))nav.follow(hero,path,stats.huntSpeed,dt);
     hero.moving=distance(previous,hero)>.01?1:0;
     if(hero.moving)face(hero,{x:hero.x*2-previous.x,y:hero.y*2-previous.y});
     else{b.autoRoute=null;b.unreachableUntil??={};for(const id of Object.keys(b.unreachableUntil))if(b.unreachableUntil[id]<=now)delete b.unreachableUntil[id];b.unreachableUntil[m.id]=now+5000;b.targetId=null;m=null;}
@@ -590,6 +592,18 @@ function step(b,c){
    if(action.cast?.hitIds?.[c.shared.actorId]!==true)continue;
    b.weeklyLastImpact=impact.attackId;
    damage(source,source.profile.aoeMultiplier);
+   continue;
+  }
+  if(source.weeklyAdmiralVersion===1){
+   if(!Object.hasOwn(action.hitIds||{},c.shared.actorId)||action.hitIds[c.shared.actorId]!==true)continue;
+   const admiral=require('./weekly-admirals.js').roster[source.weeklyBossId];if(!admiral)continue;
+   const before=b.hp,aoe=action.kind==='aoe',special=action.kind!=='punch';
+   b.weeklyLastImpact=impact.attackId;
+   damage(source,special?source.profile.aoeMultiplier:1,{elemental:special,damageType:special?admiral.element:undefined,groundTrap:aoe});
+   if(aoe&&admiral.element==='ice'&&b.hp>0&&b.hp<before){
+    b.weeklyFrozenUntil=now+1250;b.actionLockUntil=Math.max(b.actionLockUntil||0,b.weeklyFrozenUntil);b.autoRoute=null;
+    if(c.manualPath)c.manualPath.length=0;
+   }
    continue;
   }
   const aoe=action.kind==='aoe',origin=aoe?action.center:source;
