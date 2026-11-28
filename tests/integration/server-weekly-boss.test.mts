@@ -30,19 +30,23 @@ test('official activation rejects a blocked Marineford spawn even for an authori
 }));
 test('two operators share one private test boss, public users cannot see it, cancel restores the original port',async()=>authDatabase(async f=>{
  const a=await actor(f),b=await actor(f),outsider=await actor(f);await operator(f,a,1);await operator(f,b,2);
- const command=await a.input('weeklyBoss.execute',{op:'test'}),first=await a.send(command);await a.send(command);const id=first.weeklyBoss.eventId;assert(id);
- await b.event({op:'join',eventId:id});const av=await a.read(),bv=await b.read();assert.equal(av.battle.weeklyBossInstanceId,id);assert.equal(bv.battle.weeklyBossInstanceId,id);assert.equal(av.battle.mobs.length,1);assert.deepEqual(av.battle.mobs,bv.battle.mobs);
+ await assert.rejects(a.event({op:'test',bossId:'aokiji'}),{code:'weekly_boss_config_required'});
+ await f.pool.query("UPDATE mare_game.weekly_boss_settings SET config=$1 WHERE boss_id='akainu'",[config]);
+ await assert.rejects(a.event({op:'test',bossId:'akainu'}),{code:'weekly_boss_config_required'});
+ await a.event({op:'configure',bossId:'aokiji',revision:1,config});
+ const command=await a.input('weeklyBoss.execute',{op:'test',bossId:'aokiji'}),first=await a.send(command);await a.send(command);const id=first.weeklyBoss.eventId;assert(id);
+ await b.event({op:'join',eventId:id});const av=await a.read(),bv=await b.read();assert.equal(av.battle.weeklyBossInstanceId,id);assert.equal(bv.battle.weeklyBossInstanceId,id);assert.equal(av.battle.mobs.length,1);assert.equal(av.battle.mobs[0].weeklyBossId,'aokiji');assert.deepEqual(av.battle.mobs,bv.battle.mobs);
  assert.equal((await outsider.read()).weeklyBoss.events.length,0);await assert.rejects(outsider.event({op:'join',eventId:id}),{code:'weekly_boss_event_unavailable'});
  await a.event({op:'cancel',eventId:id,version:1});for(const who of [a,b]){const v=await who.read();assert.equal(v.world.mapId,'lobby');assert.equal(v.battle.weeklyBossInstanceId,undefined);assert.equal(v.weeklyBoss.current,null);}
  assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.weekly_boss_victories')).rows[0].n,0);
  assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.weekly_boss_events')).rows[0].n,1);
 }));
 test('operator authority and controller leases are checked before replaying administrative receipts',async()=>authDatabase(async f=>{
- const a=await actor(f),account=await operator(f,a,1),command=await a.input('weeklyBoss.execute',{op:'test'});await a.send(command);
+ const a=await actor(f),account=await operator(f,a,1);await a.event({op:'configure',bossId:'kizaru',revision:1,config});const command=await a.input('weeklyBoss.execute',{op:'test',bossId:'kizaru'});await a.send(command);
  await f.pool.query('DELETE FROM mare_game.weekly_boss_operators WHERE account_id=$1',[account]);await assert.rejects(a.send(command),{code:'weekly_boss_operator_required'});
 }));
 test('private boss victory cannot mint XP, Berry, profession progress or weekly reward rights',async()=>authDatabase(async f=>{
- const a=await actor(f);await operator(f,a,1);const before=await a.read(),r=await a.event({op:'test'}),id=r.weeklyBoss.eventId;
+ const a=await actor(f);await operator(f,a,1);await a.event({op:'configure',bossId:'akainu',revision:1,config});const before=await a.read(),r=await a.event({op:'test',bossId:'akainu'}),id=r.weeklyBoss.eventId;
  const row=(await f.pool.query('SELECT simulation FROM mare_game.weekly_boss_events WHERE id=$1',[id])).rows[0],room=row.simulation,m=room.mobs[0];m.hp=1;m.nextPunchAt=Date.now()+1e8;m.nextAoeAt=Date.now()+1e8;
  await f.pool.query('UPDATE mare_game.weekly_boss_events SET simulation=$2 WHERE id=$1',[id,JSON.stringify(room)]);
  const v=await a.read();v.battle.auto=false;v.battle.autoSkills=false;await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(v.battle)]);
@@ -98,14 +102,17 @@ test('official Marineford combat persists loot outcomes only for credited partic
  const [a,b,observer]=await Promise.all([actor(f),actor(f),actor(f)]);
  await operator(f,a,1);
  const marineford={...config,spawn:{x:1536,y:1280},entry:{x:1536,y:1448}};
- await a.event({op:'configure',revision:1,config:marineford});
- const {weeklyBoss:{eventId:id}}=await a.event({op:'activate',revision:2});
+ await a.event({op:'configure',bossId:'kizaru',revision:1,config:marineford});
+ const {weeklyBoss:{eventId:id}}=await a.event({op:'activate',bossId:'kizaru',revision:2});
  for(const who of [a,b,observer])await who.event({op:'join',eventId:id});
  const {tickWeeklyBosses}=await import('../../apps/game-server/src/characters/weekly-boss-worker.js');
  const {rows:[{simulation:room}]}=await f.pool.query('SELECT simulation FROM mare_game.weekly_boss_events WHERE id=$1',[id]);
  const mob=room.mobs[0];
  mob.hp=1;mob.nextPunchAt=Date.now()+1e8;mob.nextAoeAt=Date.now()+1e8;
- for(const who of [a,b])room.contributions[who.c.id]={damage:100,healing:0,combatMs:11000};
+ assert.equal(mob.maxHP,300000);
+ // Official eligibility requires 0.1% of the boss’s maximum HP, not its remaining HP.
+ for(const who of [a,b])room.contributions[who.c.id]={damage:300,healing:0,combatMs:11000};
+ room.contributions[observer.c.id]={damage:299,healing:0,combatMs:11000};
  await f.pool.query('UPDATE mare_game.weekly_boss_events SET simulation=$2 WHERE id=$1',[id,room]);
  for(const who of [a,b]){
   const v=await who.read();

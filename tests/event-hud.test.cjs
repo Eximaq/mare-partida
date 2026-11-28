@@ -38,6 +38,31 @@ test('weekly consultation shows three admirals and only permits the live matchin
  assert.match(UI.renderAdmin(data,ready),/id="weeklyBossConfig"/);
  assert.equal(UI.renderAdmin({...data,canManage:false},ready),'');
 });
+test('admirals keep separate public schedules and operator approval',()=>{
+ const event={...official,bossId:'kizaru',boss:{name:'Kizaru'},minLevel:75};
+ const recent={...official,bossId:'aokiji',minLevel:90,openedAt:'2026-11-27T23:00:00Z',endsAt:'2026-11-28T00:00:00Z'};
+ const data={canManage:true,marinefordReady:true,events:[event],recentOfficial:recent,
+  admiralMinLevels:{akainu:10,aokiji:90,kizaru:75},
+  profiles:{kizaru:{balanceApproved:true,minLevel:75}},
+  defaults:{aokiji:{minLevel:1}}};
+ const model=UI.model(data,ready,undefined,now);
+ assert.equal(model.card.id,'kizaru');
+ assert.equal(model.canJoin,true);
+ const closed=UI.model(data,ready,'aokiji',now);
+ assert.equal(closed.card.label,'Encerrado');
+ assert.equal(closed.card.minLevel,90);
+ assert.equal(closed.canJoin,false);
+ assert.equal(UI.model({...data,current:event},ready,'kizaru',now).canLeave,true);
+ const informed=UI.renderAdmin(data,ready,'kizaru');
+ assert.match(informed,/value="kizaru" selected/);
+ assert.match(informed,/data-weekly-op="test">Teste privado/);
+ assert.match(informed,/Abrir Kizaru em Marineford/);
+ const waiting=UI.renderAdmin(data,ready,'aokiji');
+ assert.match(waiting,/value="aokiji" selected/);
+ assert.match(waiting,/name="minLevel"[^>]*value="1"/);
+ assert.match(waiting,/data-weekly-op="test" disabled/);
+ assert.match(waiting,/data-weekly-op="activate" disabled/);
+});
 test('daily roster follows the real Brasília schedule and a defeated boss cannot be joined',()=>{
  const data={daily};
  const active=UI.dailyModel(data,ready,undefined,now,Sword);

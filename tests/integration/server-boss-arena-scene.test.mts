@@ -10,7 +10,7 @@ import {applyMigrations} from '../../apps/game-server/src/db/migrations.js';
 import {tickWorldBattles} from '../../apps/game-server/src/characters/battle.js';
 import {tickWeeklyBosses} from '../../apps/game-server/src/characters/weekly-boss-worker.js';
 
-const require=createRequire(import.meta.url),W=require('../../world-catalog.cjs').load(),E=require('../../world-battle.cjs');
+const require=createRequire(import.meta.url),W=require('../../world-catalog.cjs').load(),E=require('../../world-battle.cjs'),A=require('../../akainu-combat.js'),R=require('../../weekly-boss-rules.cjs');
 const priorWorld='efc2eb76ac5f608179bfd25a1b796ee0b975ca21a62a9c45fd1beb482c088d87';
 const priorBattle='c9607a8978503a6a30677f041a6c8f24a932be20932e322da0f80366b0e35d32';
 const migration='0077_boss_arena_hd_map.sql';
@@ -106,7 +106,20 @@ test('private rehearsal migration keeps shared boss health and restores compatib
  for(const [i,a] of people.entries()){
   const account=(await f.service.me(a.login.token)).account.id;await f.pool.query('INSERT INTO mare_game.weekly_boss_operators(account_id,slot) VALUES($1,$2)',[account,i+1]);
   const b=(await a.read()).battle;b.hp=43;b.energy=37;b.cooldowns=[7,3];await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(b)]);
-  const start=await a.event({op:'test'}),id=start.weeklyBoss.eventId;
+  // Reconstruct an existing legacy room. The current test command deliberately
+  // requires an approved new profile and cannot generate a 20,000 HP room.
+  const id=randomUUID(),at=new Date(),nav=W.navigation('quest-dungeons'),entry={...nav.map.spawn};
+  const spawn=nav.nearest({x:entry.x,y:entry.y-180});
+  assert.ok(spawn);
+  const profile={hp:20000,attack:20,defense:0,magicDefense:0,speed:70,reach:65,attackSec:2.5,aoeCooldown:8,aoeRadius:110,aoeWindup:1.2,aoeMultiplier:1.5,level:50,leash:480};
+  const rehearsal={mapId:'quest-dungeons',spawn,entry,maxPlayers:2,minLevel:1,durationMinutes:15,balanceApproved:false,profile};
+  const boss=A.create({id:randomUUID(),...spawn,profile,now:at.getTime()});
+  boss.balanceVersion=E.balanceVersion;
+  const room={id,mapId:rehearsal.mapId,config:rehearsal,mode:'test',rulesVersion:1,mobs:[boss],contributions:{}};
+  const closes=new Date(Math.min(at.getTime()+15*60000,R.cycleEnd(at.getTime())));
+  await f.pool.query("INSERT INTO mare_game.weekly_boss_events(id,mode,map_id,cycle_key,config,simulation,created_by,opened_at,closes_at,tick_at) VALUES($1,'test',$2,$3,$4,$5,$6,$7,$8,$7)",
+   [id,rehearsal.mapId,R.cycleKey(at.getTime()),rehearsal,room,account,at,closes]);
+  await a.event({op:'join',eventId:id});
   const row=(await f.pool.query('SELECT * FROM mare_game.weekly_boss_events WHERE id=$1',[id])).rows[0],config={...row.config,entry:{x:1824,y:2144},spawn:{x:1824,y:1964}},simulation=row.simulation;
   simulation.config=config;simulation.contributions[a.c.id]={damage:123,healing:45,combatMs:600,lastSeen:1000};
   Object.assign(simulation.mobs[0],{x:1840,y:2000,anchorX:1824,anchorY:1964,hp:i===0?0:12345,alive:i!==0,action:{kind:'aoe',center:{x:1840,y:2000}},telegraph:{x:1840,y:2000},attackCount:7});

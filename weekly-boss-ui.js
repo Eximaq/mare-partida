@@ -25,18 +25,22 @@
   observation:'assets/haki/mastery/fragment-observation.png',
   fragment:'assets/ui/sword-compendium/yoru-fragment.webp'
  };
- const knownAdmiral=e=>admirals.find(b=>b.id===e?.bossId||b.name===e?.boss?.name)?.id||(e?.mode==='official'?'akainu':null);
+ const knownAdmiral=e=>admirals.find(b=>b.name===e?.boss?.name)?.id
+  ??admirals.find(b=>b.id===e?.bossId)?.id??(e?.mode==='official'?'akainu':null);
+ const admiralName=e=>e.boss?.name||admirals.find(b=>b.id===knownAdmiral(e))?.name||'Almirante';
  const eventLive=(e,now)=>e?.status==='active'&&stamp(e.endsAt)>now;
  const official=e=>e.mode==='official'&&e.mapId!==arenaMap;
  const isReady=state=>state.available===true&&state.controlled===true&&!state.busy&&!state.pending;
 
- function adminModel(data={},state={}) {
+ function adminModel(data={},state={},selected) {
   data=data||{};
   const events=Array.isArray(data.events)?data.events:[];
   const ready=isReady(state),admin=data.canManage===true;
-  return {ready,admin,events,current:data.current||null,canConfigure:ready&&admin,
-   canTest:ready&&admin&&!data.current,
-   canActivate:ready&&admin&&data.marinefordReady===true&&data.config?.balanceApproved===true&&!events.some(official)};
+  const boss=admirals.find(b=>b.id===selected)||admirals[0];
+  const config=data.profiles?.[boss.id]??(!data.profiles&&boss.id==='akainu'?data.config:null);
+  return {ready,admin,events,boss,config,current:data.current||null,canConfigure:ready&&admin,
+   canTest:ready&&admin&&!data.current&&(!data.profiles||config?.balanceApproved===true),
+   canActivate:ready&&admin&&data.marinefordReady===true&&config?.balanceApproved===true&&!events.some(official)};
  }
 
  function permission(state,{current,maxPlayers,members,minLevel,open}) {
@@ -57,16 +61,18 @@
   const events=(data.events||[]).filter(official);
   const cards=admirals.map(card=>{
    const event=events.find(e=>knownAdmiral(e)===card.id);
-   const recent=card.id==='akainu'?data.recentOfficial:null;
+   const recent=knownAdmiral(data.recentOfficial)===card.id?data.recentOfficial:null;
+   const configuredLevel=data.admiralMinLevels?.[card.id]??(card.id==='akainu'?data.akainuMinLevel:null);
    const occurrence=event||recent;
    const active=eventLive(event,now);
    const yours=current?.mode==='official'&&knownAdmiral(current)===card.id;
    const ended=!!occurrence&&!active;
-   const schedule=occurrence?.openedAt?weekday.format(new Date(occurrence.openedAt))+' · '+span(occurrence.openedAt,occurrence.endsAt):card.id==='akainu'?'Abertura manual':'Sem programação';
+   const manual=card.id==='akainu'||configuredLevel!=null;
+   const schedule=occurrence?.openedAt?weekday.format(new Date(occurrence.openedAt))+' · '+span(occurrence.openedAt,occurrence.endsAt):manual?'Abertura manual':'Sem programação';
    return {...card,event,occurrence,active,ended,yours,schedule,
-    label:active?'Disponível agora':ended?'Encerrado':card.id==='akainu'?'Aguardando abertura':'Sem data definida',
+    label:active?'Disponível agora':ended?'Encerrado':manual?'Aguardando abertura':'Sem data definida',
     status:active?'open':ended?'closed':'waiting',
-    minLevel:event?.minLevel??recent?.minLevel??(card.id==='akainu'?data.akainuMinLevel:null)};
+    minLevel:event?.minLevel??recent?.minLevel??configuredLevel};
   });
   const card=cards.find(c=>c.id===selected)||cards.find(c=>c.yours)||cards.find(c=>c.active)||cards[0];
   const canLeave=card.yours;
@@ -169,27 +175,34 @@
    +swordLoot(rules)+action(m.canLeave,m.canJoin,m.ready,'data-sword-event-join','data-sword-event-join data-event-leave',m.reason,m.canLeave?'Voltar ao porto':'Entrar na arena')
    +'</div></section></div>';
  }
- const fields=[['spawn.x','Nascimento X',0,100000],['spawn.y','Nascimento Y',0,100000],['entry.x','Entrada X',0,100000],['entry.y','Entrada Y',0,100000],['maxPlayers','Lotação',1,16],['minLevel','Nível mínimo',1,1000],['durationMinutes','Duração (minutos)',1,180],['profile.hp','Vida',1,1000000000],['profile.attack','Ataque',1,1000000],['profile.defense','Defesa física',0,1000000],['profile.magicDefense','Defesa mágica',0,1000000],['profile.speed','Velocidade',1,240],['profile.reach','Alcance do soco',24,160],['profile.attackSec','Intervalo do soco (s)',1,30],['profile.aoeCooldown','Recarga da área (s)',4,120],['profile.aoeRadius','Raio da área',48,240],['profile.aoeWindup','Aviso da área (s)',.8,5],['profile.aoeMultiplier','Multiplicador da área',.1,10],['profile.level','Nível do chefe',1,1000],['profile.leash','Limite de perseguição',240,1200]];
+ const fields=[['spawn.x','Nascimento X',0,100000],['spawn.y','Nascimento Y',0,100000],['entry.x','Entrada X',0,100000],['entry.y','Entrada Y',0,100000],['maxPlayers','Lotação',1,16],['minLevel','Nível mínimo',1,1000],['durationMinutes','Duração (minutos)',1,180],['profile.speed','Velocidade',1,240],['profile.reach','Alcance do soco',24,160],['profile.attackSec','Intervalo do soco (s)',1,30],['profile.aoeCooldown','Recarga da área (s)',4,120],['profile.aoeWindup','Aviso da área (s)',.8,5],['profile.level','Nível do chefe',1,1000],['profile.leash','Limite de perseguição',240,1200]];
  const get=(o,key)=>key.split('.').reduce((v,k)=>v?.[k],o);
- function renderAdmin(data,state) {
-  const m=adminModel(data,state);
+ function renderAdmin(data,state,selected) {
+  const m=adminModel(data,state,selected);
   if(!m.admin)return '';
   const d=m.ready?'':' disabled';
   let html=header('Operação de eventos','weeklyBossAdminTitle','data-weekly-admin-close')
-   +'<div class="event-admin-content"><p role="status" data-event-message></p><div class="event-admin-actions">'
+   +'<div class="event-admin-content"><p role="status" data-event-message></p><label>Almirante <select data-weekly-admiral'+d+'>'
+   +admirals.map(b=>'<option value="'+escape(b.id)+'"'+(b.id===m.boss.id?' selected':'')+'>'+escape(b.name)+'</option>').join('')
+   +'</select></label><div class="event-admin-actions">'
    +'<button type="button" data-weekly-op="test"'+(m.canTest?'':' disabled')+'>Teste privado</button>'
-   +'<button type="button" data-weekly-op="activate"'+(m.canActivate?'':' disabled')+'>Abrir Akainu em Marineford</button></div>';
+   +'<button type="button" data-weekly-op="activate"'+(m.canActivate?'':' disabled')+'>Abrir '+escape(m.boss.name)+' em Marineford</button></div>';
   if(!data.marinefordReady)html+='<p>Marineford indisponível.</p>';
+  if(!m.config?.balanceApproved)html+='<p>Salve a configuração de '+escape(m.boss.name)+' antes de testar ou abrir.</p>';
+  const balance=data.balance;
+  if(balance)html+='<p>Vida '+number.format(balance.hp)+' · Defesa física '+number.format(balance.defense)
+   +' · Defesa mágica '+number.format(balance.magicDefense)+' · Ataque-base '+number.format(100*balance.attackFraction)+'% da vida máxima do alvo.</p>';
+
   for(const e of m.events) {
-   html+='<div class="event-admin-actions"><strong>'+(e.mode==='test'?'Ensaio privado':'Akainu')+'</strong>';
+   html+='<div class="event-admin-actions"><strong>'+(e.mode==='test'?'Ensaio privado · ':'')+escape(admiralName(e))+'</strong>';
    if(e.id===m.current?.id)html+='<button type="button" data-weekly-op="leave"'+d+'>Voltar ao porto</button>';
    else if(e.mode==='test')html+='<button type="button" data-weekly-op="join" data-event="'+escape(e.id)+'"'+d+'>Entrar no ensaio</button>';
    html+='<button type="button" data-weekly-op="cancel" data-event="'+escape(e.id)+'" data-version="'+escape(e.version)+'"'+d+'>Encerrar encontro</button></div>';
   }
   html+='<details><summary>Configuração do próximo evento</summary><form id="weeklyBossConfig" data-revision="'+escape(data.revision||1)+'"><fieldset'+(m.canConfigure?'':' disabled')+'><div class="weekly-fields">';
   for(const [key,label,min,max] of fields)
-   html+='<label>'+label+'<input name="'+key+'" type="number" min="'+min+'" max="'+max+'" step="'+(['profile.aoeWindup','profile.aoeMultiplier','profile.attackSec'].includes(key)?'0.1':'1')+'" required value="'+escape(get(data.config,key)??'')+'"></label>';
-  return html+'</div><label class="weekly-confirm"><input type="checkbox" name="balanceApproved" required'+(data.config?.balanceApproved?' checked':'')+'>Confirmo que o balanceamento foi revisado.</label><button type="submit" data-weekly-op="configure">Salvar configuração</button></fieldset></form></details></div>';
+   html+='<label>'+label+'<input name="'+key+'" type="number" min="'+min+'" max="'+max+'" step="'+(['maxPlayers','minLevel','durationMinutes','profile.level'].includes(key)?'1':'any')+'" required value="'+escape(get(m.config??data.defaults?.[m.boss.id],key)??'')+'"></label>';
+  return html+'</div><label class="weekly-confirm"><input type="checkbox" name="balanceApproved" required'+(m.config?.balanceApproved?' checked':'')+'>Confirmo que o balanceamento foi revisado.</label><button type="submit" data-weekly-op="configure">Salvar configuração</button></fieldset></form></details></div>';
  }
  const API={model:weeklyModel,render,dailyModel,renderDaily,renderAdmin};
  root.MareWeeklyBossUI=API;
@@ -274,16 +287,20 @@
    for(const dialog of dialogs) {
     if(!dialog.open)continue;
     const html=dialog===weekly?render(d,s,selection.get(dialog),now())
-     :dialog===swords?renderDaily(d,s,selection.get(dialog),now()):renderAdmin(d,s);
+     :dialog===swords?renderDaily(d,s,selection.get(dialog),now()):renderAdmin(d,s,selection.get(admin));
     if(dialog===admin&&dirty) {
      const fieldset=admin.querySelector('fieldset');
-     if(fieldset)fieldset.disabled=!adminModel(d,s).canConfigure;
+     if(fieldset)fieldset.disabled=!adminModel(d,s,selection.get(admin)).canConfigure;
     } else if(signatures.get(dialog)!==html) {
      const focus=doc.activeElement?.dataset;
      const selectedKey=focus?.weeklyPreview??focus?.swordPreview;
+     const editOpen=dialog===admin&&dialog.querySelector('details')?.open;
+     const focusAdmiral=dialog===admin&&doc.activeElement?.matches('[data-weekly-admiral]');
      const roster=dialog.querySelector('.event-roster'),x=roster?.scrollLeft||0,y=roster?.scrollTop||0;
      renderDialog(dialog,html);
      signatures.set(dialog,html);
+     if(editOpen)dialog.querySelector('details')?.setAttribute('open','');
+     if(focusAdmiral)dialog.querySelector('[data-weekly-admiral]')?.focus({preventScroll:true});
      dialog.querySelector('.event-roster')?.scrollTo(x,y);
      if(selectedKey)[...dialog.querySelectorAll('[data-weekly-preview],[data-sword-preview]')]
       .find(e=>e.dataset.weeklyPreview===selectedKey||e.dataset.swordPreview===selectedKey)?.focus({preventScroll:true});
@@ -348,7 +365,7 @@
    weekly_boss_level_required:'O personagem ainda não atingiu o nível exigido.',weekly_boss_return_to_port:'Volte ao Porto das Correntes para entrar.',
    weekly_boss_full:'A arena está lotada.',weekly_boss_operator_required:'Esta conta não administra eventos.',
    weekly_boss_map_unavailable:'Marineford indisponível.',weekly_boss_balance_required:'Revise o balanceamento antes da abertura.',
-   weekly_boss_config_invalid:'Confira a configuração.',weekly_boss_spawn_blocked:'Local ou alcance inválido.',
+   weekly_boss_config_required:'Salve a configuração do almirante selecionado.',weekly_boss_config_invalid:'Confira a configuração.',weekly_boss_spawn_blocked:'Local ou alcance inválido.',
    weekly_boss_revision_conflict:'A configuração mudou. Atualize o painel.',
    control_required:'Retome o controle do personagem.',pending_command:'Aguarde a confirmação da operação.',weekly_boss_busy:'O evento está ocupado. Tente novamente.'};
   function publicEntry(dialog,payload) {
@@ -407,15 +424,22 @@
    }
   });
   admin.addEventListener('input',e=>{if(e.target.closest('#weeklyBossConfig'))dirty=true;});
+  admin.addEventListener('change',e=>{
+   if(!e.target.matches('[data-weekly-admiral]')||!admirals.some(b=>b.id===e.target.value))return;
+   selection.set(admin,e.target.value);
+   dirty=false;
+   messages.delete(admin);
+   refresh();
+  });
   admin.addEventListener('click',e=>{
    const button=e.target.closest('button');
    if(!button||button.disabled)return;
    if(button.hasAttribute('data-weekly-admin-close'))return admin.close();
-   const op=button.dataset.weeklyOp,m=adminModel(data(),state());
+   const op=button.dataset.weeklyOp,m=adminModel(data(),state(),selection.get(admin));
    if(!m.admin||!m.ready)return;
-   if(op==='activate'&&m.canActivate&&root.confirm('Abrir Akainu em Marineford?'))
-    void send(admin,{op,revision:data().revision});
-   if(op==='test'&&m.canTest)void send(admin,{op},{close:true});
+   if(op==='activate'&&m.canActivate&&root.confirm('Abrir '+m.boss.name+' em Marineford?'))
+    void send(admin,{op,bossId:m.boss.id,revision:data().revision});
+   if(op==='test'&&m.canTest)void send(admin,{op,bossId:m.boss.id},{close:true});
    if(op==='join')void send(admin,{op,eventId:button.dataset.event},{close:true});
    if(op==='leave')void send(admin,{op},{close:true});
    if(op==='cancel'&&root.confirm('Encerrar este encontro e retornar os participantes ao porto?'))
@@ -424,13 +448,14 @@
   admin.addEventListener('submit',e=>{
    if(e.target.id!=='weeklyBossConfig')return;
    e.preventDefault();
-   if(!adminModel(data(),state()).canConfigure||!e.target.reportValidity())return;
+   const m=adminModel(data(),state(),selection.get(admin));
+   if(!m.canConfigure||!e.target.reportValidity())return;
    const form=new FormData(e.target),config={mapId:'marineford',spawn:{},entry:{},profile:{},balanceApproved:form.get('balanceApproved')==='on'};
    for(const [name] of fields) {
     const [group,field]=name.split('.'),n=Number(form.get(name));
     if(field)config[group][field]=n;else config[group]=n;
    }
-   void send(admin,{op:'configure',revision:Number(e.target.dataset.revision),config});
+   void send(admin,{op:'configure',bossId:m.boss.id,revision:Number(e.target.dataset.revision),config});
   });
   doc.addEventListener('visibilitychange',()=>{if(!doc.hidden&&dialogs.some(d=>d.open))read();});
   doc.getElementById('modesMenuTrigger')?.addEventListener('click',connect);

@@ -254,7 +254,7 @@
 .event-admin-content fieldset{border:0;padding:0;margin:10px 0 0;min-width:0}
 .event-admin-content .weekly-fields{display:grid;gap:7px;grid-template-columns:repeat(3,minmax(0,1fr))}
 .event-admin-content label{display:grid;gap:3px;font-size:12px}
-.event-admin-content input[type="number"]{min-width:0;width:100%;padding:6px;color:inherit;background:#141619;border:1px solid var(--event-line);border-radius:4px;font:inherit}
+.event-admin-content :is(input[type="number"],select){min-width:0;width:100%;padding:6px;color:inherit;background:#141619;border:1px solid var(--event-line);border-radius:4px;font:inherit}
 .event-admin-content .weekly-confirm{display:flex;gap:7px;align-items:center;margin:12px 0}
 .event-admin-actions{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
 .event-admin-actions button[data-weekly-op="cancel"]{border-color:#9e5951;background:#582d2a;color:#ffe2d8}

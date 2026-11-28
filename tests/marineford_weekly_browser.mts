@@ -26,11 +26,10 @@ const root=resolve('.'),out=process.env.MARE_QA_DIR||resolve('.maintenance-local
 const port=Number(process.env.MARE_WEEKLY_QA_PORT||9447),origin='https://localhost:'+port;
 const sceneFile='assets/marineford/naval-headquarters/scene-hd.png';
 const checksum=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
-const config={mapId:'marineford',spawn:{x:1536,y:1280},entry:{x:1536,y:1488},
+const config={mapId:'marineford',spawn:{x:1536,y:1280},entry:{x:1536,y:1824},
   maxPlayers:4,minLevel:1,durationMinutes:15,balanceApproved:true,
-  profile:{hp:10000000,attack:1,defense:0,magicDefense:0,speed:50,reach:65,
-    attackSec:3,aoeCooldown:4,aoeRadius:160,aoeWindup:1.2,aoeMultiplier:1,level:50,leash:600}};
-assert.equal(config.entry.y,config.spawn.y+config.profile.aoeRadius+48);
+  profile:{speed:70,reach:65,attackSec:3,aoeCooldown:7,aoeWindup:1.2,level:180,leash:700}};
+const approved={...config,admiralId:'akainu',profile:{...config.profile,hp:300000,attack:1,defense:4500,magicDefense:1650,aoeRadius:217.6,aoeMultiplier:1}};
 await mkdir(out,{recursive:true});
 
 await authDatabase(async f=>{
@@ -75,7 +74,7 @@ await authDatabase(async f=>{
         const original=CanvasRenderingContext2D.prototype.drawImage;
         CanvasRenderingContext2D.prototype.drawImage=function(...args:any[]){
           const image=args[0],src=image?.src;
-          if(this.canvas.id==='worldCanvas'&&typeof src==='string'&&(/\/assets\/weekly-boss\/akainu\//.test(src)||src.includes('/assets/marineford/naval-headquarters/'))){
+          if(this.canvas.id==='worldCanvas'&&typeof src==='string'&&(/\/assets\/weekly-boss\/admirals\//.test(src)||src.includes('/assets/marineford/naval-headquarters/'))){
             const map=globalThis.__mareDiagnostics?.().map?.id??null;
             const key=globalThis.__marinefordWeeklyDraws.find(d=>d.src===src&&d.map===map);
             if(key)key.count++;else globalThis.__marinefordWeeklyDraws.push({src,map,natural:[image.naturalWidth,image.naturalHeight],smooth:this.imageSmoothingEnabled,count:1});
@@ -101,9 +100,17 @@ await authDatabase(async f=>{
       if(await page.locator('#weeklyBossDialog').evaluate((d:any)=>d.open))return;
       await page.locator('#modesMenuTrigger').click();await page.locator('#weeklyBossMenu').click();await page.locator('#weeklyBossDialog').waitFor();
     }
-    async function clickCommand(page:any,op:string,selector:string){
+    const adminPanel='#weeklyBossAdminDialog';
+    async function openAdmin(page:any){
+      if(await page.locator(adminPanel).evaluate((d:any)=>d.open))return;
+      await page.locator('#captainMenuTrigger').click();
+      await page.locator('#weeklyBossAdminMenu').click();
+      await page.locator(adminPanel).waitFor();
+    }
+    async function clickCommand(page:any,op:string,selector:string,bossId?:string){
       for(let attempt=0;attempt<4;attempt++){
         const [response]=await Promise.all([page.waitForResponse((r:any)=>r.url().endsWith('/commands')&&r.request().postDataJSON()?.action==='weeklyBoss.execute'&&r.request().postDataJSON()?.payload?.op===op),page.locator(selector).click()]);
+        if(bossId)assert.equal(response.request().postDataJSON().payload.bossId,bossId);
         const receipt=await response.json();results.commands.push({op,attempt,status:response.status(),error:receipt.error??null});
         if(response.ok()){await page.waitForFunction(()=>!MareGameSession.busy);return receipt;}
         assert.equal(response.status(),409,'an unsuccessful command must be an explicit concurrency conflict');
@@ -113,23 +120,38 @@ await authDatabase(async f=>{
     }
     const admin=await login('marine-admin@example.invalid'),player=await login('marine-player@example.invalid',true);
     phase='configure isolated official event';
-    assert.equal(await player.locator('#weeklyBossMenu').isVisible(),false,'ordinary player has no weekly event before activation');
-    await openEvent(admin);assert(await admin.locator('[data-weekly-op=activate]').isDisabled(),'null settings do not activate an official event');
-    await admin.locator('#weeklyBossDialog details summary').click();
-    const fields:Record<string,number>={...Object.fromEntries(Object.entries(config.spawn).map(([k,v])=>['spawn.'+k,v])),
-      ...Object.fromEntries(Object.entries(config.entry).map(([k,v])=>['entry.'+k,v])),maxPlayers:config.maxPlayers,minLevel:config.minLevel,durationMinutes:config.durationMinutes,
-      ...Object.fromEntries(Object.entries(config.profile).map(([k,v])=>['profile.'+k,v]))};
-    for(const [name,value]of Object.entries(fields))await admin.locator('#weeklyBossConfig [name="'+name+'"]').fill(String(value));
-    await admin.locator('#weeklyBossConfig [name=balanceApproved]').check();await clickCommand(admin,'configure','[data-weekly-op=configure]');
-    await admin.waitForFunction(()=>MareGameSession.data.online.weeklyBoss.config?.spawn.x===1536&&MareGameSession.data.online.weeklyBoss.config?.spawn.y===1280);
-    await clickCommand(admin,'activate','[data-weekly-op=activate]');
+    await openEvent(player);
+    assert(await player.locator('#weeklyBossDialog [data-weekly-op=join]').isDisabled(),'ordinary player cannot join before activation');
+    await player.locator('#weeklyBossDialog [data-weekly-close]').click();
+    await openAdmin(admin);
+    assert(await admin.locator(adminPanel+' [data-weekly-op=activate]').isDisabled(),'null settings do not activate an official event');
+    async function configureAdmiral(bossId:string){
+      await openAdmin(admin);
+      await admin.locator(adminPanel+' [data-weekly-admiral]').selectOption(bossId);
+      const details=admin.locator(adminPanel+' details');
+      if(!await details.evaluate((d:any)=>d.open))await details.locator('summary').click();
+      const fields:Record<string,number>={...Object.fromEntries(Object.entries(config.spawn).map(([k,v])=>['spawn.'+k,v])),
+        ...Object.fromEntries(Object.entries(config.entry).map(([k,v])=>['entry.'+k,v])),maxPlayers:config.maxPlayers,minLevel:config.minLevel,durationMinutes:config.durationMinutes,
+        ...Object.fromEntries(Object.entries(config.profile).map(([k,v])=>['profile.'+k,v]))};
+      for(const [name,value]of Object.entries(fields))await admin.locator('#weeklyBossConfig [name="'+name+'"]').fill(String(value));
+      await admin.locator('#weeklyBossConfig [name=balanceApproved]').check();
+      await clickCommand(admin,'configure',adminPanel+' [data-weekly-op=configure]',bossId);
+      await admin.waitForFunction((id:string)=>{
+        const saved=MareGameSession.data.online.weeklyBoss.profiles?.[id];
+        return saved?.balanceApproved===true&&saved.spawn?.x===1536&&saved.spawn?.y===1280;
+      },bossId);
+    }
+    await configureAdmiral('akainu');
+    await clickCommand(admin,'activate',adminPanel+' [data-weekly-op=activate]','akainu');
     await admin.waitForFunction(()=>MareGameSession.data.online.weeklyBoss.events.some((e:any)=>e.mode==='official'&&e.status==='active'));
     const event=await admin.evaluate(()=>MareGameSession.data.online.weeklyBoss.events.find((e:any)=>e.mode==='official'));
-    assert.equal(event.mapId,'marineford');results.event={id:event.id,mode:event.mode,mapId:event.mapId};
+    assert.equal(event.mapId,'marineford');assert.equal(event.bossId,'akainu');assert.equal(event.boss.maxHp,300000);results.event={id:event.id,mode:event.mode,mapId:event.mapId};
     const persisted=(await f.pool.query('SELECT mode,map_id,config,status FROM mare_game.weekly_boss_events WHERE id=$1',[event.id])).rows[0];
-    assert.equal(persisted.mode,'official');assert.equal(persisted.map_id,'marineford');assert.equal(persisted.status,'active');assert.deepEqual(persisted.config,config);
-    await clickCommand(admin,'join','[data-weekly-op=join][data-event="'+event.id+'"]');
-    await player.evaluate(()=>MareGameSession.read());await openEvent(player);await clickCommand(player,'join','[data-weekly-op=join][data-event="'+event.id+'"]');
+    assert.equal(persisted.mode,'official');assert.equal(persisted.map_id,'marineford');assert.equal(persisted.status,'active');assert.deepEqual(persisted.config,approved);
+    await admin.locator(adminPanel+' [data-weekly-admin-close]').click();
+    await openEvent(admin);
+    await clickCommand(admin,'join','#weeklyBossDialog [data-weekly-op=join][data-event="'+event.id+'"]');
+    await player.evaluate(()=>MareGameSession.read());await openEvent(player);await clickCommand(player,'join','#weeklyBossDialog [data-weekly-op=join][data-event="'+event.id+'"]');
     phase='official renderer and shared boss';
     for(const page of [admin,player]){
       await page.waitForFunction(()=>__mareDiagnostics().map.id==='marineford'&&MareGameSession.data.online.weeklyBoss.current?.mode==='official'&&MareGameSession.data.online.battle.mobs.some((m:any)=>m.type==='weekly-akainu'),null,{timeout:30000});
@@ -145,13 +167,13 @@ await authDatabase(async f=>{
     phase='Akainu AoE in the real world canvas';
     await admin.waitForFunction(()=>MareGameSession.data.online.battle.mobs[0]?.action?.kind==='aoe',null,{timeout:30000});
     await admin.screenshot({path:resolve(out,'marineford-weekly-aoe-warning-desktop.png')});
-    for(const page of [admin,player])await page.waitForFunction(()=>__marinefordWeeklyDraws.some(d=>d.map==='marineford'&&d.src.includes('/magma-area.webp')),null,{timeout:20000});
+    for(const page of [admin,player])await page.waitForFunction(()=>__marinefordWeeklyDraws.some(d=>d.map==='marineford'&&d.src.includes('/vfx/magma_eruption.webp')),null,{timeout:20000});
     await player.screenshot({path:resolve(out,'marineford-weekly-mobile.png')});
     const draws=[];
     for(const [index,page]of [admin,player].entries()){
       const actual=await page.evaluate(()=>__marinefordWeeklyDraws.filter(d=>d.map==='marineford'));
-      assert(actual.some((d:any)=>d.src.includes('/magma-area.webp')),'magma VFX is actually drawn on the game canvas');
-      assert(actual.some((d:any)=>/\/weekly-boss\/akainu\/(idle|walk|punch|aoe)\.webp/.test(d.src)),'weekly Akainu body is actually drawn on the game canvas');
+      assert(actual.some((d:any)=>d.src.includes('/vfx/magma_eruption.webp')),'magma VFX is actually drawn on the game canvas');
+      assert(actual.some((d:any)=>/\/weekly-boss\/admirals\/akainu\/(south|north|east)-(idle|walk|attack|special_area)\.webp/.test(d.src)),'weekly Akainu body is actually drawn on the game canvas');
       assert(actual.some((d:any)=>d.src.endsWith('/'+sceneFile)&&d.natural[0]===1448&&d.natural[1]===1086&&d.smooth===false),'Marineford is drawn directly from the HD PNG');
       draws.push({viewport:index===0?'desktop':'mobile',actual});
     }results.draws=draws;
@@ -163,9 +185,22 @@ await authDatabase(async f=>{
     assert(await player.evaluate(()=>MareGameSession.data.online.battle.mobs[0].hp)<=before.hp);results.reconnect=true;
     phase='leave and close official event';
     await player.locator('#returnLobby').click();await player.waitForFunction(()=>MareGameSession.data.online.world.mapId==='lobby'&&!MareGameSession.data.online.battle.weeklyBossInstanceId,null,{timeout:30000});
-    await openEvent(admin);await clickCommand(admin,'cancel','[data-weekly-op=cancel][data-event="'+event.id+'"]');
+    await openAdmin(admin);await clickCommand(admin,'cancel',adminPanel+' [data-weekly-op=cancel][data-event="'+event.id+'"]');
     await admin.waitForFunction(()=>MareGameSession.data.online.world.mapId==='lobby'&&!MareGameSession.data.online.battle.weeklyBossInstanceId,null,{timeout:30000});
     results.returned=true;
+    phase='Aokiji private rehearsal from the real admin form';
+    await configureAdmiral('aokiji');
+    await clickCommand(admin,'test',adminPanel+' [data-weekly-op=test]','aokiji');
+    await admin.waitForFunction(()=>MareGameSession.data.online.weeklyBoss.current?.mode==='test'
+      &&MareGameSession.data.online.weeklyBoss.current?.bossId==='aokiji'
+      &&MareGameSession.data.online.battle.mobs.some((m:any)=>m.type==='weekly-aokiji'),null,{timeout:30000});
+    const privateId=await admin.evaluate(()=>MareGameSession.data.online.weeklyBoss.current.id);
+    await player.evaluate(()=>MareGameSession.read());
+    assert.equal(await player.evaluate((id:string)=>MareGameSession.data.online.weeklyBoss.events.some((e:any)=>e.id===id),privateId),false);
+    await openAdmin(admin);
+    await clickCommand(admin,'cancel',adminPanel+' [data-weekly-op=cancel][data-event="'+privateId+'"]');
+    await admin.waitForFunction(()=>MareGameSession.data.online.world.mapId==='lobby'&&!MareGameSession.data.online.battle.weeklyBossInstanceId,null,{timeout:30000});
+    results.privateAdmiral='aokiji';
     for(const page of pages)assert.equal(await page.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'sentinel-marineford-weekly');
     for(const table of ['weekly_boss_victories','weekly_boss_entitlements','weekly_boss_loot'])assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.'+table)).rows[0].n,0,'closing the QA event creates no victory or rewards');
     assert.deepEqual(errors,[]);assert.deepEqual(workerErrors,[]);assert.deepEqual(missing,[]);
