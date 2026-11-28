@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {test} from 'node:test';
-import {authDatabase} from './auth-support.mjs';
+import {authDatabase,seedKairoseki} from './auth-support.mjs';
 import {readCrewPower} from '../../apps/game-server/src/characters/crew.js';
 
 test('Bounty uses current crew membership and returns only its displayed value',()=>authDatabase(async({service,pool})=>{
@@ -27,6 +27,7 @@ test('Bounty uses current crew membership and returns only its displayed value',
   assert.equal(publicView.character.publicProfile?.bounty,String(before.bounty));
   assert.equal('state' in publicView.character,false);
   assert.equal('gold' in publicView.character,false);
+  await seedKairoseki(pool,character.id,10,true);
   await act('crew.create',{name:'Marés',tag:'MAR',flag:'1'+'0'.repeat(1023),policy:'open',minLevel:1});
   const withCrew=await service.onlineState(session.token,character.id);
   assert(withCrew.bounty!>before.bounty!);

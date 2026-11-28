@@ -252,12 +252,12 @@
     return '<section class="crew-card crew-store"><header class="crew-store-header"><h3>Loja da Tripulação</h3>'+balance+
       '</header><div class="crew-store-layout">'+offer+rewards+'</div></section>';
   }
-  function unbound(crew,profession,editor,view,draft,query){
+  function unbound(crew,profession,editor,view,draft,query,gate){
     if(view==='profession')return '<div class="crew-panel-inner">'+button('back','Voltar ao recrutamento')+renderProfession(profession)+'</div>';
     const remainingMinutes=crew.blockedUntil?Math.max(0,Math.ceil((new Date(crew.blockedUntil)-new Date(crew.serverNow))/60000)):0;
     const locked=remainingMinutes>0;
-    if(view==='create'&&!locked){
-      return '<div class="crew-panel-inner">'+button('back','Voltar ao recrutamento')+section('Criar tripulação','<p class="crew-note">Nome, sigla e bandeira ficam permanentes após a criação.</p><form data-crew-form="create" class="crew-form"><div class="crew-create-fields"><label>Nome<input name="name" maxlength="32" minlength="3" required value="'+escape(draft.name)+'" autocomplete="off"></label><label>Sigla<input name="tag" maxlength="6" minlength="2" required pattern="[A-Za-z0-9]{2,6}" value="'+escape(draft.tag)+'" autocomplete="off"></label><label>Recrutamento<select name="policy"><option value="open"'+selected('open',draft.policy)+'>Entrada livre</option><option value="approval"'+selected('approval',draft.policy)+'>Por aprovação</option></select></label><label>Nível mínimo<input name="minLevel" type="number" min="1" max="1000" value="'+Number(draft.minLevel)+'" required></label></div>'+editor.markup+'<button class="crew-button crew-primary" type="submit">Revisar criação</button></form>')+'</div>';
+    if(view==='create'&&!locked&&gate.allowed){
+      return '<div class="crew-panel-inner">'+button('back','Voltar ao recrutamento')+section('Criar tripulação','<p class="crew-note">'+gate.cost+' Kairoseki · Nome, sigla e bandeira permanentes.</p><form data-crew-form="create" class="crew-form"><div class="crew-create-fields"><label>Nome<input name="name" maxlength="32" minlength="3" required value="'+escape(draft.name)+'" autocomplete="off"></label><label>Sigla<input name="tag" maxlength="6" minlength="2" required pattern="[A-Za-z0-9]{2,6}" value="'+escape(draft.tag)+'" autocomplete="off"></label><label>Recrutamento<select name="policy"><option value="open"'+selected('open',draft.policy)+'>Entrada livre</option><option value="approval"'+selected('approval',draft.policy)+'>Por aprovação</option></select></label><label>Nível mínimo<input name="minLevel" type="number" min="1" max="1000" value="'+Number(draft.minLevel)+'" required></label></div>'+editor.markup+'<button class="crew-button crew-primary" type="submit">Revisar criação</button></form>')+'</div>';
     }
     const outgoing=(crew.applications||[]).filter(request=>request.direction==='own');
     const directory=(crew.listing||[]).map(group=>{
@@ -267,7 +267,7 @@
       return '<article class="crew-directory-card">'+flag(group.flag)+'<div><strong>['+escape(group.tag)+'] '+escape(group.name)+'</strong><small>'+escape(description)+'</small></div>'+button(group.policy==='open'?'join':'apply',applied?'Pendente':atCap?'Lotada':group.policy==='open'?'Entrar':'Candidatar-se',group.id,applied||atCap||locked&&group.policy==='open','crew-primary')+'</article>';
     }).join('');
     const block=locked?'<p class="crew-note" role="status">Novo vínculo disponível em '+Math.floor(remainingMinutes/60)+'h '+remainingMinutes%60+'min · '+escape(date(crew.blockedUntil))+'.</p>':'';
-    return '<div class="crew-panel-inner">'+section('Sem tripulação',block+'<div class="crew-row-actions">'+button('create-view','Criar tripulação',null,locked,'crew-primary')+button('profession-view','Minha profissão')+'</div>')+
+    return '<div class="crew-panel-inner">'+section('Sem tripulação',block+(!gate.allowed&&!locked?'<p class="crew-note">'+escape(gate.reason)+'</p>':'')+'<div class="crew-row-actions">'+button('create-view','Criar tripulação'+(gate.cost?' · '+gate.cost+' Kairoseki':''),null,locked||!gate.allowed,'crew-primary')+(!gate.allowed&&gate.cost?button('vip-store','Loja de Kairoseki'):'')+button('profession-view','Minha profissão')+'</div>')+
       section('Encontrar tripulação','<form class="crew-form crew-inline-form" data-crew-form="search"><label>Buscar por nome ou sigla<input name="query" maxlength="32" value="'+escape(query)+'" autocomplete="off"></label><button type="submit" class="crew-button">Buscar</button></form><div class="crew-directory">'+(directory||empty('Nenhuma tripulação encontrada.'))+'</div>')+
       contributionShop(crew,false)+section('Convites recebidos',requests(crew.invites,'invites',locked))+(outgoing.length?section('Minhas candidaturas',requests(outgoing,'outgoing')):'')+'</div>';
   }
@@ -295,7 +295,7 @@
     return header+'<div class="crew-layout" data-overview="'+(view==='overview')+'"><nav class="crew-nav" aria-label="Áreas da tripulação">'+tabs.map(([id,label,short])=>'<button type="button" data-crew-view="'+id+'" aria-label="'+escape(label)+'" aria-pressed="'+(view===id)+'">'+'<img class="crew-tab-art" src="assets/ui/crew/tabs/'+id+'.svg" width="26" height="26" alt="">'+escape(short||label)+'</button>').join('')+'</nav><div class="crew-panel-inner">'+content+'</div>'+sidebar+'</div>';
   }
 
-  function create({body,read,command,confirm,onData,onError,selfId=()=>null,available=()=>true,art={},classIcon=()=>null,drawPortrait,contact,canWrite=available}){
+  function create({body,read,command,confirm,onData,onError,selfId=()=>null,available=()=>true,art={},classIcon=()=>null,drawPortrait,contact,canWrite=available,creation=()=>({allowed:false,reason:"Criação de tripulação indisponível."}),openPremium}){
     let active=false,phase='loading',data=null,query='',view='overview',facility='hull',busy=false;
     let timer=null,revision=0,pending=null,lastPaint='',error='',draft,editor;
     let filter='',sort='rank',memberWindow=null;
@@ -324,7 +324,7 @@
       const markup=!isOnline?section('Tripulações online',empty('Conecte seu personagem ao servidor para consultar a tripulação.')):
         phase==='loading'?section('Consultando o servidor','<p role="status">Verificando seu vínculo…</p>'):
         phase==='error'?section('Tripulações indisponíveis',empty('Não foi possível consultar o vínculo.')+button('retry','Tentar novamente')):
-        data.crew.group?bound(data.crew,data.profession,view,facility,selfId(),art,memberTools()):unbound(data.crew,data.profession,editor,view,draft,query);
+        data.crew.group?bound(data.crew,data.profession,view,facility,selfId(),art,memberTools()):unbound(data.crew,data.profession,editor,view,draft,query,creation());
       const html='<div class="crew-window" aria-busy="'+busy+'">'+(error?'<p class="crew-note" role="alert">'+escape(error)+'</p>':'')+markup+'</div>';
       if(!force&&html===lastPaint&&block())return;
       lastPaint=html;
@@ -415,6 +415,8 @@
       const fields=new FormData(form);
       if(action==='search'){query=String(fields.get('query')||'').trim();void refresh({showLoading:true});return;}
       if(action==='create'){
+        const gate=creation();
+        if(!gate.allowed){error=gate.reason;view='overview';paint(true);return;}
         updateDraft(form);
         if(editor.value===flags.empty){
           error='Desenhe pelo menos um pixel para criar a bandeira.';
@@ -423,7 +425,7 @@
           return;
         }
         const name=draft.name.trim().replace(/\s+/g,' '),tag=draft.tag.toUpperCase();
-        review('Fundar ['+tag+'] '+name+'?','Revise o nome, a sigla e o desenho da bandeira. Eles ficarão permanentes após a criação.','create',{...draft,name,tag,flag:editor.value},'Criar tripulação');
+        review('Fundar ['+tag+'] '+name+'?','Serão descontados '+gate.cost+' Kairoseki. Nome, sigla e bandeira ficam permanentes.','create',{...draft,name,tag,flag:editor.value},'Criar tripulação');
         return;
       }
       if(action==='donate'){
@@ -464,6 +466,8 @@
         return;
       }
       if(action==='claim-coins'){void send(action,{missionId:value});return;}
+      if(action==='vip-store'){openPremium?.();return;}
+      if(action==='create-view'&&!creation().allowed){paint(true);return;}
       if(action==='buy-fragment'){review('Comprar Fragmento de Akuma Rank C?',number(data.crew.coins.price)+' Moedas de Contribuição por 1 fragmento negociável.',action,{},'Comprar fragmento');return;}
       if(action==='retry'){void refresh({showLoading:true});return;}
       if(['back','create-view','profession-view','treasury-view','ship-view','missions-view'].includes(action)){

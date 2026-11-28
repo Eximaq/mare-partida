@@ -31,8 +31,10 @@ test("server and original browser rules expose preserved original definitions an
   const server = getGameCatalog();
   assert.equal(server.items[187]?.id,"visual_completo_zoro");
   assert.equal(server.items[187]?.requiredClass,"sword");
-  assert.equal(server.items.length, 247);
+  assert.equal(server.items.length, 249);
   assert.equal(server.items[246]?.id,"visual_completo_luffy");
+  assert.equal(server.items[247]?.id,"kairoseki-xp-boost");
+  assert.equal(server.items[248]?.id,"kairoseki-drop-boost");
   assert.equal(server.items[228]?.id,"sword-fragment-kibarachi");
   assert.equal(server.items[229]?.id,"legendary_weapon_fragment");
   assert.equal(server.items.filter(item=>item.kind==="sword-collection").length,16);

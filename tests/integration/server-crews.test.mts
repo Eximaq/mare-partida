@@ -6,7 +6,7 @@ import type {AuthService} from '../../apps/game-server/src/auth/service.js';
 import {creditCrewActivities,readCrew,readCrewIdentity,readCrewRankings} from '../../apps/game-server/src/characters/crew.js';
 import {crewMissionRules,crewWeek,seaWar} from '../../apps/game-server/src/characters/crew-config.js';
 import {itemTradeRestriction} from '../../apps/game-server/src/characters/item-negotiability.js';
-import {authDatabase} from './auth-support.mjs';
+import {authDatabase,seedKairoseki} from './auth-support.mjs';
 
 const flag='1'+'0'.repeat(1023);
 type CrewPayload=Parameters<AuthService['command']>[2];
@@ -50,6 +50,8 @@ test('crew identity is immutable and recruitment revalidates roles and the two p
   const second=await actor(service,pool,'Capitão Sul');
   const extra=await actor(service,pool,'Mestre');
   const identity={name:'  Maré   Azul ',tag:'MAR',flag,policy:'approval',minLevel:1};
+  await seedKairoseki(pool,leader.id,10,true);
+  await seedKairoseki(pool,second.id,10,true);
   await leader.act('crew.create',identity);
   const crew=(await leader.crew()).group!;
   assert.equal(crew.name,'Maré Azul');
@@ -97,6 +99,7 @@ test('crew identity is immutable and recruitment revalidates roles and the two p
 test('last berth is atomic and treasury, donated Berry and weekly rewards are each credited once',()=>authDatabase(async({service,pool})=>{
   const captain=await actor(service,pool,'Almirante');
   const crewName={name:'Mar de Aço',tag:'ACO',flag,policy:'open',minLevel:1};
+  await seedKairoseki(pool,captain.id,10,true);
   await captain.act('crew.create',crewName);
   const crew=(await captain.crew()).group!;
   const crewId=crew.id;
@@ -164,6 +167,7 @@ test('one week of personal crew claims buys one tradable Rank C fragment and pre
   const captain=await actor(service,pool,'Capitão das Moedas');
   const member=await actor(service,pool,'Navegante das Moedas');
   const outsider=await actor(service,pool,'Observador do Convés');
+  await seedKairoseki(pool,captain.id,10,true);
   await captain.act('crew.create',{name:'Rota da Contribuição',tag:'MOED',flag,policy:'open',minLevel:1});
   const {id:crewId}=(await captain.crew()).group!;
   await member.act('crew.join',{crewId});

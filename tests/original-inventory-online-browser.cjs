@@ -16,6 +16,8 @@ function refreshFighter(){
 }
 refreshFighter();
 wire.kairoseki='120';
+wire.kairosekiShop={vipUntil:0,dropBoostUntil:0,serverNow:Date.now(),crewCreationCost:10,
+ prices:{'xp-1h':5,'drop-1h':5,'vip-7d':10,'vip-30d':20}};
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});
  const out=process.env.MARE_QA_DIR||'tmp/original-online-inventory';fs.mkdirSync(out,{recursive:true});
@@ -39,7 +41,11 @@ wire.kairoseki='120';
     if(input.action==='forge.execute'&&slowForge){slowForge=false;await new Promise(resolve=>setTimeout(resolve,300));}
     assert.equal(input.expectedVersion,wire.state.version);
     assert.deepEqual(Object.keys(input).sort(),['action','control','expectedVersion','payload','requestId']);
-    if(input.action==='items.equip'){
+    if(input.action==='kairoseki.buy'){
+     assert.deepEqual(input.payload,{product:'vip-7d'});
+     wire.kairoseki=String(Number(wire.kairoseki)-wire.kairosekiShop.prices[input.payload.product]);
+     wire.kairosekiShop.vipUntil=Date.now()+7*86_400_000;
+    }else if(input.action==='items.equip'){
      assert.deepEqual(Object.keys(input.payload),['itemId']);const item=wire.originalInventory.inventory.find(i=>i.id===input.payload.itemId);assert(item);
      const slot=catalog.items[item.def].slot,old=wire.originalInventory.equipment[slot];wire.originalInventory.inventory=wire.originalInventory.inventory.filter(i=>i.id!==item.id);wire.originalInventory.equipment[slot]=item;if(old)wire.originalInventory.inventory.push(old);
     }else if(input.action==='forge.execute'){
@@ -76,6 +82,36 @@ wire.kairoseki='120';
     await p.locator('.nautical-profile').screenshot({path:path.join(out,'kairoseki-hud-'+width+'.png')});
   }
   await p.setViewportSize({width:1366,height:768});
+  assert.match(await p.locator('#hudVip img').evaluate(img=>getComputedStyle(img).filter),/grayscale\(1\)/);
+  await p.locator('#hudVip[data-active="false"]').click();
+  assert.match(await p.locator('#dialogTitle').innerText(),/Loja de Kairoseki/);
+  assert.deepEqual(await p.locator('.kairoseki-offer .kairoseki-currency strong').allTextContents(),['5','5','10','20']);
+  assert.deepEqual((await p.locator('.kairoseki-offer h3').allTextContents()).slice(0,2),['Boost de XP (1h)','Boost de Drop (1h)']);
+  assert.match(await p.locator('.kairoseki-offer').first().innerText(),/\+50% de XP/);
+  await p.waitForFunction(()=>document.querySelectorAll('.kairoseki-offer-art img').length===4&&[...document.querySelectorAll('.kairoseki-offer-art img')].every(img=>img.naturalWidth>0));
+  assert(await p.locator('#hudVip span').evaluate(span=>{
+    const label=span.getBoundingClientRect(),crown=span.previousElementSibling.getBoundingClientRect();
+    return label.top>crown.top+crown.height/2&&Math.abs(label.bottom-crown.bottom)<3;
+  }));
+  assert.equal(await p.locator('#panelOverlay .dialog').evaluate(dialog=>getComputedStyle(dialog).backgroundColor),'rgba(20, 22, 25, 0.85)');
+  assert((await p.locator('#panelOverlay .dialog').boundingBox()).width<=500);
+  await p.locator('#panelOverlay .dialog').first().screenshot({path:path.join(out,'loja-kairoseki.png')});
+  await p.setViewportSize({width:390,height:844});
+  await p.locator('#panelOverlay .dialog').first().screenshot({path:path.join(out,'loja-kairoseki-390.png')});
+  await p.setViewportSize({width:1366,height:768});
+  await p.locator('[data-kairoseki-buy="vip-7d"]').click();
+  assert.match(await p.locator('.confirmation-card').innerText(),/10 Kairoseki/);
+  assert.equal(await p.locator('.kairoseki-confirmation .confirmation-card').evaluate(card=>getComputedStyle(card).backgroundColor),'rgba(20, 22, 25, 0.85)');
+  await p.locator('[data-confirm-accept]').click();
+  await p.waitForFunction(()=>document.querySelector('#miniKairoseki').textContent==='110'&&document.querySelector('#hudVip').dataset.active==='true');
+  assert.doesNotMatch(await p.locator('#hudVip img').evaluate(img=>getComputedStyle(img).filter),/grayscale/);
+  await p.locator('#closePanel').click();
+  await p.locator('.nautical-profile').screenshot({path:path.join(out,'vip-ativo.png')});
+  await p.locator('#socialMenuTrigger').click();
+  assert.equal(await p.locator('#kairosekiShopMenu').evaluate(el=>el.previousElementSibling.hasAttribute('data-market-open')),true);
+  await p.locator('#kairosekiShopMenu').click();
+  assert.match(await p.locator('.kairoseki-store-status').innerText(),/VIP ativo/);
+  await p.locator('#closePanel').click();
   await p.keyboard.press('i');await p.waitForSelector('#invSearch');
   await p.locator('[data-item="server-boots"]').click();await p.locator('[data-equip="server-boots"]').click();
   await p.waitForFunction(()=>MareGameSession.data.online.originalInventory.equipment.boots?.id==='server-boots'&&!MareGameSession.busy);
@@ -129,7 +165,7 @@ wire.kairoseki='120';
   await p.waitForFunction(()=>{const c=document.getElementById('inventorySprite');return c&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0);},null,{timeout:90000});
   await p.evaluate(()=>document.fonts.ready);
   await p.screenshot({path:path.join(out,'original-online-inventory.png')});
-  assert.deepEqual(commands.map(c=>c.action),['items.equip','forge.execute','forge.execute','forge.execute','forge.execute','forge.execute','attributes.allocate']);
+  assert.deepEqual(commands.map(c=>c.action),['kairoseki.buy','items.equip','forge.execute','forge.execute','forge.execute','forge.execute','forge.execute','attributes.allocate']);
   const scraps=[make(8,'salvage-a'),{...make(6,'salvage-b'),level:41}];
   wire.originalInventory.inventory.push(...scraps);
   wire.state.version++;await p.evaluate(()=>MareGameSession.read());

@@ -45,7 +45,7 @@ body > #gameTooltip.game-tooltip,
 }
 #app.hud-nautical .nautical-profile .hud-captain {
   position: relative;
-  grid-template-columns: 58px minmax(0, 1fr) 42px;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
   gap: 10px;
   min-height: 62px;
 }
@@ -107,6 +107,37 @@ body > #gameTooltip.game-tooltip,
 }
 #app.hud-nautical .nautical-profile .profile-level > span { font: 600 10px/1.3 var(--glass-type); color: #dce2e8; }
 #app.hud-nautical .nautical-profile #miniLevel { font: 750 23px/1.1 var(--glass-type); color: #fff; }
+.profile-level-group { display: flex; align-items: center; gap: 6px; }
+.vip-badge:not([hidden]) {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  width: 34px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+.vip-badge img { grid-area: 1/1; align-self: start; object-fit: contain; filter: grayscale(1) brightness(.82); }
+.vip-badge span {
+  grid-area: 1/1;
+  align-self: end;
+  z-index: 1;
+  min-width: 24px;
+  border: 1px solid #838995;
+  border-radius: 2px;
+  padding: 1px 2px;
+  background: #292e36;
+  color: #dcdee1;
+  font: 850 9px/1 var(--glass-type);
+  text-align: center;
+}
+.vip-badge[data-active="true"] img { filter: drop-shadow(0 1px 3px #c7984755); }
+.vip-badge[data-active="true"] span { border-color: #f5d380; background: #594018; color: #ffdfa0; }
+.vip-badge:focus-visible { outline: 2px solid var(--glass-gold); }
+#kairosekiShopMenu[hidden] { display: none; }
 #app.hud-nautical .nautical-profile .hud-meta { min-height: 20px; gap: 12px; }
 #app.hud-nautical .nautical-profile .profile-power > span { font: 500 13px/1.3 var(--glass-type); color: #e5e7eb; }
 #app.hud-nautical .nautical-profile #miniPower { font: 750 16px/1.3 var(--glass-type); color: var(--glass-gold); }
@@ -178,6 +209,70 @@ body > #gameTooltip.game-tooltip,
   font: 750 16px/1.2 var(--glass-type);
   font-variant-numeric: tabular-nums;
 }
+#app #panelOverlay.hud-density[data-ui-panel="kairoseki"] {
+  padding: max(8px,var(--rpg-safe-top)) 8px max(8px,var(--rpg-safe-bottom));
+  background: #0005;
+  backdrop-filter: blur(3px);
+  & > .dialog { display: flex; flex-direction: column; width: min(500px,100%); max-width: none; height: auto; max-height: var(--glass-window-limit); padding: 0; border: 1px solid var(--glass-line); border-image: none; border-radius: 12px; background: var(--glass-surface); backdrop-filter: blur(8px); box-shadow: var(--glass-shadow); overflow: hidden; }
+  & .dialog-header { flex: none; min-height: 52px; padding: 3px 7px 3px 16px; border: 0; border-bottom: 1px solid #ffffff18; background: #ffffff03; }
+  & .dialog-header small { display: none; }
+  & #dialogTitle { margin: 0; color: #f5f6f8; font: 750 20px/1.2 var(--glass-type); text-transform: none; letter-spacing: -.02em; text-shadow: none; }
+  & #closePanel { width: 44px; height: 44px; min-height: 44px; padding: 0; border: 0; border-image: none; border-radius: 8px; background: transparent; box-shadow: none; color: var(--glass-muted); font: 26px/1 var(--glass-type); }
+  & #closePanel:hover { background: #ffffff12; }
+  & #dialogBody { min-height: 0; padding: 12px; overflow: auto; color: #f0f2f5; font: 13px/1.4 var(--glass-type); scrollbar-width: thin; }
+  & .kairoseki-store .dialog-button { min-height: 36px; padding: 6px 10px; border: 1px solid #e9c97b; border-image: none; border-radius: 7px; background: linear-gradient(#ecd18e,#d7ad5c); box-shadow: inset 0 1px #fff4, 0 2px 4px #0003; color: #24180a; font: 750 13px/1.2 var(--glass-type); text-transform: none; text-shadow: none; touch-action: manipulation; }
+  & .kairoseki-store .dialog-button:hover:not(:disabled) { background: #f3d996; color: #24180a; }
+  & .kairoseki-store .dialog-button:disabled { color: var(--glass-muted); border-color: #ffffff20; background: #ffffff08; box-shadow: none; }
+  & :is(#closePanel,.dialog-button):focus-visible { outline: 2px solid var(--glass-gold); outline-offset: -2px; }
+  @media (pointer: coarse) { & .kairoseki-store .dialog-button { min-height: 42px; } }
+}
+.kairoseki-store { display: grid; gap: 10px; }
+.kairoseki-store-status {
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(0,auto); align-items: center; gap: 8px;
+  padding: 8px 12px; border: 1px solid #f0d79526; border-radius: 9px; background: #0b0d10a8;
+}
+.kairoseki-store-wallet { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.kairoseki-store-wallet img { flex: none; width: 33px; height: 33px; object-fit: contain; }
+.kairoseki-store-wallet > div, .kairoseki-vip-status { display: grid; min-width: 0; gap: 2px; }
+.kairoseki-store-wallet small, .kairoseki-vip-status small { font-size: 11px; color: var(--glass-muted); }
+.kairoseki-store-wallet strong { overflow: hidden; text-overflow: ellipsis; color: #d5edf9; font-size: 22px; line-height: 1; font-variant-numeric: tabular-nums; }
+.kairoseki-vip-status { justify-items: end; padding-left: 8px; text-align: right; }
+.kairoseki-vip-status b { padding: 3px 7px; border: 1px solid #ffffff26; border-radius: 4px; color: #d2d4d7; font-size: 11px; }
+.kairoseki-vip-status[data-active="true"] b { color: #ffe3a2; border-color: #d7ac5b73; background: #d7ac5b17; }
+.kairoseki-currency { display: inline-flex; align-items: center; gap: 5px; color: #cfe8f7; font-variant-numeric: tabular-nums; }
+.kairoseki-currency img { width: 23px; height: 23px; object-fit: contain; }
+.kairoseki-offers { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+.kairoseki-offer {
+  display: grid;
+  grid-template-rows: 49px auto 1fr auto auto;
+  gap: 4px;
+  justify-items: center;
+  padding: 8px;
+  border: 1px solid #ffffff1c;
+  border-radius: 9px;
+  background: linear-gradient(165deg,#ffffff07,#0003);
+  text-align: center;
+}
+.kairoseki-offer-art { width: 52px; height: 49px; display: grid; place-items: center; border: 1px solid #ffffff22; border-radius: 8px; background: radial-gradient(#52505335,#0d0f13bd); }
+.kairoseki-offer-art img { width: 42px; height: 42px; object-fit: contain; }
+.kairoseki-offer h3 { margin: 0; color: #f5f2e9; font-size: 14px; font-weight: 730; }
+.kairoseki-offer p { margin: 0; color: var(--glass-muted); font-size: 11px; line-height: 1.35; }
+.kairoseki-offer .kairoseki-currency { font-size: 16px; font-weight: 750; }
+.kairoseki-offer .dialog-button { width: 100%; }
+.kairoseki-store-note { margin: 0; color: #cbb98f; font-size: 11px; }
+.kairoseki-confirmation.confirmation-overlay { background: #0009; }
+.kairoseki-confirmation .confirmation-card {
+  width: min(370px,100%); padding: 18px; border: 1px solid var(--glass-line); border-image: none;
+  border-radius: 12px; background: var(--glass-surface); backdrop-filter: blur(8px); box-shadow: var(--glass-shadow);
+  color: #f5f6f8; font: 14px/1.4 var(--glass-type);
+}
+.kairoseki-confirmation .confirmation-card h2 { color: #f5f6f8; font: 750 18px/1.25 var(--glass-type); }
+.kairoseki-confirmation .confirmation-card p { color: var(--glass-muted); }
+.kairoseki-confirmation .confirmation-card footer button {
+  min-height: 38px; border: 1px solid #ffffff28; border-image: none; border-radius: 7px;
+  background: #ffffff09; color: #e8e9ed; font: 700 13px/1.2 var(--glass-type); text-shadow: none;
+}
+.kairoseki-confirmation .confirmation-card [data-confirm-accept] { border-color: #e9c97b; background: #e5c47c; color: #24180a; }
 #app.hud-nautical .nautical-profile .hud-resources:has(.profile-kairoseki:not([hidden])) :is(#miniGold, #miniKairoseki) {
   min-width: 0;
   overflow: hidden;

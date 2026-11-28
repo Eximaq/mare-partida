@@ -1,5 +1,6 @@
 import {sendOfficialMail} from '../characters/mail.js';
-import {boostXp} from '../characters/contracts.js';
+import {effectiveXp} from '../characters/contracts.js';
+import {rewardBoosts} from '../characters/kairoseki.js';
 import {crewMonsterBerry} from '../characters/crew-config.js';
 import { createRequire } from "node:module";
 import { randomInt, randomUUID, createHash } from "node:crypto";
@@ -31,12 +32,16 @@ const random = () => randomInt(0, 0x100000000) / 0x100000000;
 const maxGold = 9223372036854775807n;
 export const isOriginalAction = (action: string) =>
   originalActionSchema.options.includes(action as any);
-export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{xpGrant?:number;monsterBerryBonus?:number;build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number;grant?:OriginalItemInstance|undefined;action?:'prison.reward'|'prison.claim'|'dungeon.battle'}={}){
+export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{xpGrant?:bigint;monsterBerryBonus?:number;build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number;grant?:OriginalItemInstance|undefined;action?:'prison.reward'|'prison.claim'|'dungeon.battle'}={}){
  const roll=passives.rng??(()=>randomInt(0,0x100000000)/0x100000000),random=()=>{const r=roll();if(!Number.isFinite(r)||r<0||r>=1)throw new RangeError('Invalid loot RNG');return r;};
  const before=await readOriginalInventory(client,id);if(!before)throw new AuthFault(409,'original_inventory_required');
  const after=structuredClone(before),identity=(await client.query('SELECT class_id,faction_id FROM mare_game.characters WHERE id=$1',[id])).rows[0];
  const T=require('../../../../talent-system.js'),U=require('../../../../ultimate-system.js'),g={classId:identity.class_id,talentBuilds:{[identity.class_id]:passives.build||T.empty()}},underworld=U.selected(g)==='underworld',lootMultiplier=underworld?2:1,rareChance=Math.min(.5,(T.bonuses(g).rareChance||0)+(T.keystone(g)==='lightHands'?.2:0));
- const battle=require('../../../../world-battle.cjs');if(passives.xpGrant!==undefined&&(!Number.isSafeInteger(passives.xpGrant)||passives.xpGrant<0))throw new AuthFault(503,'party_xp_invalid');let xp=BigInt(passives.xpGrant??0),gold=BigInt(first?.gold??0);
+ const battle=require('../../../../world-battle.cjs'),xpBySpawn=new Map<string,bigint>();
+ const boosts=kills.length?await rewardBoosts(client,id):{xp:0,drop:false,vip:false};
+ const dropMultiplier=boosts.drop?2:1;
+ let xp=passives.xpGrant??0n,gold=BigInt(first?.gold??0);
+ if(xp<0n)throw new AuthFault(503,'party_xp_invalid');
  if(!Number.isSafeInteger(potionsUsed)||potionsUsed<0||potionsUsed>after.potions)throw new AuthFault(503,'potion_stock_conflict');after.potions-=potionsUsed;
  const make=(def:number,level:number,rarity:string,origin:string)=>forge.generateItem({id:randomUUID(),def,level,rarity,plus:0,locked:false,obtainedAt:Date.now(),origin},defs,random);
  for(const steal of passives.steals??[]){
@@ -49,9 +54,9 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
   after.inventory.unshift(make(def,first.level,first.rarity,'Primeira vitória · '+battle.hunt.get(first.area).name));
  }
  for(const k of kills){
-  const r=k.reward;xp+=BigInt(r.xp);gold+=BigInt(crewMonsterBerry(r.gold,battle.catalog.factions[identity.faction_id].gold,passives.monsterBerryBonus));
-  if(after.inventory.length<120){const plan=forge.normalLoot(defs,state.level,battle.hunt.get(k.area),random,k.monster);if(plan){const item=make(plan.def,plan.level,plan.rarity,battle.hunt.get(k.area).name);item.generation.source='map:'+k.area;after.inventory.unshift(item);}}
-  const fragmentRank=forge.rollMapFragment(k.monster,random);
+  const r=k.reward,earned=effectiveXp(BigInt(r.xp),boosts);xp+=earned;xpBySpawn.set(k.id,earned);gold+=BigInt(crewMonsterBerry(r.gold,battle.catalog.factions[identity.faction_id].gold,passives.monsterBerryBonus));
+  if(after.inventory.length<120){const plan=forge.normalLoot(defs,state.level,battle.hunt.get(k.area),random,k.monster,dropMultiplier);if(plan){const item=make(plan.def,plan.level,plan.rarity,battle.hunt.get(k.area).name);item.generation.source='map:'+k.area;after.inventory.unshift(item);}}
+  const fragmentRank=forge.rollMapFragment(k.monster,random,dropMultiplier);
   if(fragmentRank){
    const fragments=require('../../../../boss-dungeon-system.js'),origin='Caçada · '+battle.hunt.get(k.area).name;
    const fragment=fragments.addTradeableFragment(after.inventory,defs,fragmentRank,origin,randomUUID);
@@ -61,17 +66,16 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
     makeAttachments:()=>[fragments.addTradeableFragment([],defs,fragmentRank,origin,randomUUID)],
    });
   }
-  if(random()<Math.min(1,r.potionChance*lootMultiplier))after.potions=Math.min(1000000000,after.potions+r.potions);
-  if(require('../../../../haki-system.js').drop({...k.monster,source:k.monster.source??'world'},random)&&after.inventory.length<120){const def=defs.findIndex(d=>d.kind==='haki-book');if(def<0)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(def,1,'epic',battle.hunt.get(k.area).name));}
+  if(random()<Math.min(1,r.potionChance*lootMultiplier*dropMultiplier))after.potions=Math.min(1000000000,after.potions+r.potions);
+  if(require('../../../../haki-system.js').drop({...k.monster,source:k.monster.source??'world'},random,dropMultiplier)&&after.inventory.length<120){const def=defs.findIndex(d=>d.kind==='haki-book');if(def<0)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(def,1,'epic',battle.hunt.get(k.area).name));}
 
  }
  if(passives.grant){if(after.inventory.length>=120)throw new AuthFault(409,'inventory_full');after.inventory.push(passives.grant);}
- xp=await boostXp(client,id,xp);
  if(BigInt(state.gold)+gold>maxGold||BigInt(state.experience)+xp>maxGold)throw new AuthFault(409,'progression_limit');
  await writeInventory(client,id,after);
  await client.query('UPDATE mare_game.character_progression SET gold=gold+$2,experience=experience+$3 WHERE character_id=$1',[id,gold.toString(),xp.toString()]);
  await event(client,id,requestId,state.version,passives.action??(first?'battle.first':'battle.reward'),before,after,BigInt(state.gold),gold,{experience:xp.toString(),spawns:kills.map(k=>k.id),potionsUsed,firstArea:first?.area??null,domainItem:passives.grant?.id??null,talentSteals:passives.steals??[],underworld,rareChance});
- return {xp,gold};
+ return {xp,gold,xpBySpawn};
 }
 export function validateInventoryItem(item:OriginalItemInstance,owner?:string){
   if(item.qty!==undefined&&!['haki-fragment','sword-fragment'].includes(String(defs[item.def]?.kind)))throw new AuthFault(503,'original_inventory_unavailable');
@@ -81,7 +85,7 @@ export function validateInventoryItem(item:OriginalItemInstance,owner?:string){
   if((item.type==='akuma_no_mi'||item.fruitId!==undefined)&&(def?.type!=='akuma_no_mi'||item.fruitId!==def.fruitId))throw new AuthFault(503,'original_inventory_unavailable');
   if(def?.kind==='weapon-fragment'&&(item.materialId!==def.materialId||!item.quantity||(def.materialId==='epic_weapon_fragment'&&(!item.boundToCharacter||item.binding!=='character'))))throw new AuthFault(503,'original_inventory_unavailable');
   if(def?.kind==='sword-collection'&&(item.binding||item.boundToCharacter||item.materialId!==undefined||item.quantity!==undefined))throw new AuthFault(503,'original_inventory_unavailable');
-  if(def?.kind==='xp-boost'&&item.quantity!==undefined)throw new AuthFault(503,'original_inventory_unavailable');
+  if((def?.kind==='xp-boost'||def?.kind==='drop-boost')&&item.quantity!==undefined)throw new AuthFault(503,'original_inventory_unavailable');
   if((item.binding==='character')!==!!item.boundToCharacter)throw new AuthFault(503,'original_inventory_unavailable');
   if(def?.kind==='akuma-fragment'&&(item.materialId!==def.materialId||item.rank!==def.rank||!item.quantity))throw new AuthFault(503,'original_inventory_unavailable');
 }
@@ -437,19 +441,28 @@ export async function mutateOriginalInventory(
         i.equipment[slot] = item;
         if (previous) i.inventory.push(previous);
       }
-    } else if (input.action === "items.use-xp-boost") {
+    } else if (input.action === "items.use-xp-boost" || input.action === "items.use-drop-boost") {
+      const drop=input.action==='items.use-drop-boost',kind=drop?'drop-boost':'xp-boost';
       const item=i.inventory.find(x=>x.id===input.payload.itemId);
-      if(!item||defs[item.def]?.kind!=='xp-boost'||item.locked||(item.boundToCharacter&&item.boundToCharacter!==id))
+      if(!item||defs[item.def]?.kind!==kind||item.locked||(item.boundToCharacter&&item.boundToCharacter!==id))
         throw new AuthFault(409,'item_protected');
-      const available=await client.query("SELECT to_regclass('mare_game.contract_daily_cycles') present");
-      if(!available.rows[0].present)throw new AuthFault(503,'contracts_unavailable');
+      const {shop,contracts}=(await client.query(`
+        SELECT to_regprocedure('mare_game.spend_kairoseki(uuid,integer,integer,boolean)') IS NOT NULL shop,
+               to_regclass('mare_game.contract_daily_cycles') IS NOT NULL contracts
+      `)).rows[0];
+      if(drop?!shop:!contracts)throw new AuthFault(503,drop?'kairoseki_unavailable':'contracts_unavailable');
+      const column=drop?'drop_boost_until':'xp_boost_until';
+      const percent=defs[item.def]?.boostPercent;
+      if(percent!==undefined&&!shop)throw new AuthFault(503,'kairoseki_unavailable');
+      const setPercent=!drop&&shop;
       const updated=await client.query(
-        "UPDATE mare_game.character_progression SET xp_boost_until=statement_timestamp()+interval '1 hour' WHERE character_id=$1 AND (xp_boost_until IS NULL OR xp_boost_until<=statement_timestamp()) RETURNING xp_boost_until",
-        [id],
+        `UPDATE mare_game.character_progression SET ${column}=statement_timestamp()+interval '1 hour'${setPercent?', xp_boost_percent=$2':''}
+         WHERE character_id=$1 AND (${column} IS NULL OR ${column}<=statement_timestamp()) RETURNING ${column} until`,
+        setPercent?[id,percent??100]:[id],
       );
-      if(!updated.rowCount)throw new AuthFault(409,'xp_boost_active');
+      if(!updated.rowCount)throw new AuthFault(409,drop?'drop_boost_active':'xp_boost_active');
       i.inventory=i.inventory.filter(x=>x.id!==item.id);
-      outcome={xpBoostUntil:updated.rows[0].xp_boost_until};
+      outcome=drop?{dropBoostUntil:updated.rows[0].until}:{xpBoostUntil:updated.rows[0].until};
     } else if (input.action === "items.open-box") {
       const box=i.inventory.find(x=>x.id===input.payload.itemId);if(!box)throw new AuthFault(404,'item_not_found');
       const result=defs[box.def]?.kind==='epic-equipment-box'

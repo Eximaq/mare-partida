@@ -11,7 +11,7 @@ test('Visual Completo can use existing owned-item commands and old inventories r
  assert.equal(parsed.equipment.visual_completo,null);
  const next=originalInventorySchema.parse({...old,equipment:{...equipment,visual_completo:item}});
  assert.equal(next.equipment.visual_completo?.id,'zoro-test');
- assert.equal(originalItemSchema.safeParse({...item,def:247}).success,false);
+ assert.equal(originalItemSchema.safeParse({...item,def:249}).success,false);
 });
 
 test('Luffy index 246 persists in the original inventory and equipment schema',()=>{
@@ -22,6 +22,6 @@ test('Luffy index 246 persists in the original inventory and equipment schema',(
  assert.deepEqual(originalInventorySchema.parse(JSON.parse(JSON.stringify(backpack))).inventory,[item]);
  const equipped={...backpack,inventory:[],equipment:{...equipment,visual_completo:item}};
  assert.deepEqual(originalInventorySchema.parse(JSON.parse(JSON.stringify(equipped))).equipment.visual_completo,item);
- for(const def of [-1,246.5,247])assert.equal(originalItemSchema.safeParse({...item,def}).success,false,String(def));
+ for(const def of [-1,246.5,249])assert.equal(originalItemSchema.safeParse({...item,def}).success,false,String(def));
  assert.equal(originalItemSchema.safeParse({...item,def:245}).success,true,'last preexisting item remains accepted');
 });

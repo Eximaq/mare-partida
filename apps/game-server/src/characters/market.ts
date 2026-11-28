@@ -70,7 +70,7 @@ export function marketItemDetails(item:OriginalItemInstance){
   const rarity=(fruit?akuma.rarityFor(fruit):item.rarity??def.rarity??'common') as typeof rarities[number];
   const kind=String(def.kind??'');
   const category=fruit?'fruits':kind==='pearl'?'pearls':kind.endsWith('-fragment')?'fragments':
-    ['pearl-box','epic-equipment-box','haki-book','xp-boost','potion'].includes(kind)?'consumables':kind.includes('material')?'materials':
+    ['pearl-box','epic-equipment-box','haki-book','xp-boost','drop-boost','potion'].includes(kind)?'consumables':kind.includes('material')?'materials':
     def.slot==='weapon'?'weapons':['necklace','ring','belt','charm'].includes(def.slot)?'accessories':gear?'armor':'other';
   const {attributes:core={},...stats}=gear?forge.itemStats(item,items):{attributes:fruit?akuma.bonusStats(item,items):{}};
   const attributes=Object.fromEntries(Object.entries({...core,...stats}).filter(([,value])=>typeof value==='number'&&value>0)) as Record<string,number>;

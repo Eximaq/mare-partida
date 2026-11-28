@@ -7,7 +7,7 @@ import {readCrew} from '../../apps/game-server/src/characters/crew.js';
 import {readCombatInputs} from '../../apps/game-server/src/characters/combat-inputs.js';
 import {creditProfessionKills,creditProfessionPrison,readCharacterCrewBenefits,readProfession} from '../../apps/game-server/src/characters/crew-professions.js';
 import {professionWeek} from '../../apps/game-server/src/characters/crew-profession-rules.js';
-import {authDatabase} from './auth-support.mjs';
+import {authDatabase,seedKairoseki} from './auth-support.mjs';
 
 type Command=Parameters<AuthService['command']>[2];
 async function transaction<T>(pool:pg.Pool,run:(client:pg.PoolClient)=>Promise<T>){
@@ -69,6 +69,7 @@ test('server caps professional XP and applies the strongest offline specialist s
   const before=await fighter();
   await a.act('crew.profession',{profession:'cook'});
   await b.act('crew.profession',{profession:'cook'});
+  await seedKairoseki(pool,a.id,10,true);
   await a.act('crew.create',{name:'Tripulação de Teste',tag:'TEST',flag:'1'+'0'.repeat(1023),policy:'open',minLevel:1});
   const crew=await transaction(pool,c=>readCrew(c,a.id));
   const project=(facility:string)=>transaction(pool,async c=>(await readCrew(c,a.id)).group?.projects.find(p=>p.facility===facility));
@@ -115,6 +116,7 @@ test('manual potion recovery uses the Doctor bonus without increasing general he
   await wounded();
   await a.act('potions.use');
   const ordinary=(await hp())-1;
+  await seedKairoseki(pool,doctor.id,10,true);
   await doctor.act('crew.create',{name:'Tripulação da Cura',tag:'CURA',flag:'1'+'0'.repeat(1023),policy:'open',minLevel:1});
   const crew=await transaction(pool,c=>readCrew(c,doctor.id));
   await a.act('crew.join',{crewId:crew.group!.id});

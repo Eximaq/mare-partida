@@ -1,6 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import type {PoolClient} from 'pg';
 import {AuthFault} from '../auth/errors.js';
+import {crewCreationCost,spendKairoseki} from './kairoseki.js';
 import {assertSocialContactAllowed,readCrewMemberContacts} from './social-contacts.js';
 import {crewCapacity,crewFacilities,crewLevel,crewPolicy,crewProject,seaWar,type CrewFacility} from './crew-config.js';
 import {buyRankCFragment,claimContributionCoins,readContributionCoins} from './crew-contribution.js';
@@ -111,6 +112,7 @@ async function createCrew(client:PoolClient,id:string,input:Extract<CrewCommand,
   const {policy,minLevel}=input.payload;
   await lockEntry(client,id);
   await enforceEntry(client,id);
+  await spendKairoseki(client,id,crewCreationCost,0,true);
   const crewId=randomUUID();
   const crew=(await client.query<CrewRow>(`
     INSERT INTO mare_game.crews(id,name,name_key,tag,flag,captain_id,policy,min_level)

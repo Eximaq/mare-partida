@@ -17,7 +17,8 @@ const mapNames = [
 ];
 const cosmeticsName = '0079_character_cosmetics.sql';
 const kairosekiName = '0080_account_kairoseki.sql';
-const followupNames = [cosmeticsName, kairosekiName];
+const shopName = '0081_kairoseki_shop.sql';
+const followupNames = [cosmeticsName, kairosekiName, shopName];
 const common = plan.filter(row => row.name < '0067');
 const rows = (names: string[]) => names.map(name => {
   const row = plan.find(row => row.name === name);
@@ -46,7 +47,8 @@ test('deployed main and HD-map histories execute the missing branch and real fol
 test('the cosmetics and Kairoseki follow-ups retain checksum and prefix validation', () => {
   const withoutFollowups = plan.filter(row => !followupNames.includes(row.name));
   assert.deepEqual(names(pendingMigrations(plan, withoutFollowups)), followupNames);
-  assert.deepEqual(names(pendingMigrations(plan, [...withoutFollowups, ...rows([cosmeticsName])])), [kairosekiName]);
+  assert.deepEqual(names(pendingMigrations(plan, [...withoutFollowups, ...rows([cosmeticsName])])), [kairosekiName,shopName]);
+  assert.deepEqual(names(pendingMigrations(plan, [...withoutFollowups, ...rows([cosmeticsName,kairosekiName])])), [shopName]);
   assert.throws(() => pendingMigrations(plan, [...withoutFollowups, ...rows([kairosekiName])]), /Migration history mismatch/);
   assert.deepEqual(pendingMigrations(plan, plan), []);
   const prWithCosmetics = sorted([...prHistory, ...rows([cosmeticsName])]);
@@ -81,7 +83,7 @@ test('parallel release compatibility still rejects reordered, missing, unknown o
     [...common, ...rows([...progressionNames].reverse())],
   ];
   for (const history of invalidHistories) assert.throws(() => pendingMigrations(plan, history), /Migration history mismatch/);
-  const future = { name: '0081_following_release.sql', checksum: 'future' };
+  const future = { name: '0082_following_release.sql', checksum: 'future' };
   assert.throws(() => pendingMigrations([...plan, future], [...prHistory, future]), /Migration history mismatch/);
   assert.deepEqual(pendingMigrations([...plan, future], [...plan, future]), []);
 });

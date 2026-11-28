@@ -24,6 +24,7 @@ const equipment=Object.fromEntries([...items.inventorySlotsLeft,...items.invento
 const stats=classes.derive({classId:'sword',level:75,attributes:allocated},catalog.classes.sword,catalog.factions.pirate,forge.aggregate(equipment,items.items));
 const wire={
   crewAvailable:true,
+  kairoseki:'10',kairosekiShop:{vipUntil:Date.now()+86_400_000,dropBoostUntil:0,serverNow:Date.now(),crewCreationCost:10,prices:{'xp-1h':5,'drop-1h':5,'vip-7d':10,'vip-30d':20}},
   state:{characterId:character.id,version:1,level:75,experience:'80',gold:'1240500'},
   inventory:{items:[],equipped:{weapon:null,armor:null}},itemCatalog:[],
   originalInventory:{catalogId:'original-game-v1',inventory:[],equipment,potions:4,materials:3,forgeVersion:4,forgeSeq:0,forgeHistory:[]},

@@ -168,6 +168,10 @@ BEGIN
   IF to_regclass('mare_game.account_kairoseki') IS NOT NULL THEN
     GRANT SELECT ON mare_game.account_kairoseki TO mare_runtime;
   END IF;
+  IF to_regprocedure('mare_game.spend_kairoseki(uuid,integer,integer,boolean)') IS NOT NULL THEN
+    GRANT EXECUTE ON FUNCTION mare_game.spend_kairoseki(uuid, integer, integer, boolean) TO mare_runtime;
+    GRANT UPDATE (drop_boost_until, xp_boost_percent) ON mare_game.character_progression TO mare_runtime;
+  END IF;
   IF to_regclass('mare_game.market_listings') IS NOT NULL THEN
     GRANT SELECT ON mare_game.market_listings,mare_game.market_proposals,mare_game.market_notifications TO mare_runtime;
     GRANT EXECUTE ON FUNCTION mare_game.market_balance(uuid),mare_game.market_reward_wallet_offset(uuid),

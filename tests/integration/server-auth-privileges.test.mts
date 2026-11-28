@@ -160,6 +160,11 @@ test("login, control and journey work with minimum grants, with narrow economic 
         const funded=await service.onlineState(login.token,character.id);
         assert.equal(funded.kairoseki,"9007199254740993");
         assert.equal(funded.state.gold,current.state.gold);
+        await service.command(login.token,character.id,{...command,requestId:randomUUID(),
+          action:'kairoseki.buy',payload:{product:'vip-7d'},expectedVersion:funded.state.version});
+        const purchased=await service.onlineState(login.token,character.id);
+        assert.equal(purchased.kairoseki,"9007199254740983");
+        assert(purchased.kairosekiShop!.vipUntil>purchased.kairosekiShop!.serverNow);
         const visitor=await service.login("visitor@example.invalid","fixture");
         const other=await service.createCharacter(visitor.token,{name:"Vigia",classId:"sword",factionId:"pirate"});
         assert.equal((await service.onlineState(visitor.token,other.id)).kairoseki,"0");

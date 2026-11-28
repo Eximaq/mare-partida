@@ -46,6 +46,8 @@ test('one tradable Rank C goes to the existing Correio with a full bag',async()=
  const client={query:async(sql:string,args:unknown[]=[]):Promise<{rows:unknown[];rowCount?:number}>=>{
   if(sql.includes('SELECT i.inventory'))return {rows:[{inventory:stock,equipment,materials:0,potions:0,forge_seq:0,forge_history:[]}]};
   if(sql.includes('SELECT class_id,faction_id'))return {rows:[{class_id:'sword',faction_id:'pirate'}]};
+  if(sql.includes('to_regprocedure'))return {rows:[{present:false}]};
+  if(sql.includes('false drop, false vip'))return {rows:[{xp:0,drop:false,vip:false}]};
   if(sql.includes('SELECT id FROM mare_game.characters'))return {rows:[{id}],rowCount:1};
   if(sql.includes('SELECT id FROM mare_game.social_mail'))return {rows:[letters.get(args.slice(0,4).join(':'))].filter(Boolean)};
   if(sql.includes('INSERT INTO mare_game.social_mail')){
