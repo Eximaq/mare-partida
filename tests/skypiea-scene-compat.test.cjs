@@ -39,8 +39,8 @@ test('shared Skypiea enemies and party extras move together exactly once on ever
 });
 
 test('unchanged geometry retains attacks and unknown fingerprints remain rejected',()=>{
- for(const area of ['orange',...areas]){
-  const b=E.create(area,stats,now,()=>.5);b.rulesHash=area==='orange'?prior:E.rulesHash;
+ for(const area of ['alabasta',...areas]){
+  const b=E.create(area,stats,now,()=>.5);b.rulesHash=area==='alabasta'?prior:E.rulesHash;
   b.pending={targetId:b.mobs[0]?.id,remaining:.4};b.projectiles=[{x:100,y:200}];b.auto=true;b.cooldowns=[5,2];
   const expected={...structuredClone(b),rulesHash:E.rulesHash};E.upgradeBalance(b);assert.deepEqual(b,expected,area);
  }
@@ -50,7 +50,7 @@ test('unchanged geometry retains attacks and unknown fingerprints remain rejecte
 
 test('HD artwork and gate arrival promote existing celestial battles without changing active state',()=>{
  const celestial='c66c9af7ffaae0d2d98c47196f5edee82ff4fa0875da9f0d08c1cf37b1e7c401';
- for(const area of [...areas,'orange']){
+ for(const area of [...areas,'alabasta']){
   const b=E.create(area,stats,now,()=>.5),m=b.mobs[0];
   b.rulesHash=celestial;b.hp=43;b.energy=37;b.auto=true;b.cooldowns=[7,3];
   b.pending={targetId:m.id,remaining:.4};b.targetId=m.id;b.projectiles=[{x:m.x,y:m.y}];

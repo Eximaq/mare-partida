@@ -3,6 +3,9 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 require('../pixellab-world-maps-data.js');
 const pixelMaps=require('../pixellab-world-maps.js');
+// Keep the original imports independently verifiable after painted runtime installation.
+const importedMaps=Object.fromEntries(['orange','loguetown'].map(id=>[id,{...pixelMaps[id].map}]));
+const importedDistricts=Object.fromEntries(['orange','loguetown'].map(id=>[id,pixelMaps[id].districts.map(d=>({...d}))]));
 require('../world-system.js');
 const archipelago=require('../archipelago.js');
 const monsters=require('../monster-catalog.js');
@@ -15,7 +18,7 @@ function pngSize(file){
   return {width:bytes.readUInt32BE(16),height:bytes.readUInt32BE(20)};
 }
 
-test('PixelLab maps replace Orange Town and unlock Loguetown with passable, reachable spawns',()=>{
+test('preserved PixelLab sources retain their geometry and Loguetown travel gate',()=>{
   const world=globalThis.MareWorld;
   assert.equal(archipelago.byArea('orange').area,'orange');
   assert.equal(archipelago.byArea('loguetown').area,'loguetown');
@@ -24,7 +27,7 @@ test('PixelLab maps replace Orange Town and unlock Loguetown with passable, reac
 
   for(const id of ['orange','loguetown']){
     const source=globalThis.MarePixelWorldMapsData[id==='orange'?'orange':'loguetown'];
-    const map=world.maps[id];
+    const map=importedMaps[id];
     const nav=new world.Navigation(map,24);
     assert.equal(map.pixelLabId,source.pixelLabId);
     assert.equal(map.width,source.columns*64);
@@ -33,7 +36,7 @@ test('PixelLab maps replace Orange Town and unlock Loguetown with passable, reac
     assert(map.colliders.every(c=>c.isSolid&&c.footprint));
     assert.equal(nav.walkable(map.spawn.x,map.spawn.y),true);
     assert.ok(nav.path(map.spawn,map.returnPoint).length>0);
-    for(const district of pixelMaps[id].districts){
+    for(const district of importedDistricts[id]){
       assert.equal(nav.walkable(district.x,district.y),true,district.id);
       assert.ok(nav.path(map.spawn,district).length>0,district.id);
     }
@@ -41,7 +44,7 @@ test('PixelLab maps replace Orange Town and unlock Loguetown with passable, reac
     assert(solid,'object-base colliders must block a passable map tile');
   }
 
-  const orange=world.maps.orange, orangeNav=new world.Navigation(orange,24);
+  const orange=importedMaps.orange, orangeNav=new world.Navigation(orange,24);
   assert.equal(orangeNav.walkable(8,8),false,'water and empty map edges are not walkable');
   assert.deepEqual(pngSize(require('node:path').join(__dirname,'../assets/world-maps/orange.png')),{width:3904,height:2816});
   assert.deepEqual(pngSize(require('node:path').join(__dirname,'../assets/world-maps/loguetown.png')),{width:2752,height:2880});

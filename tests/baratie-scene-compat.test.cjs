@@ -45,7 +45,7 @@ test('Baratie shared mobs and party extras follow the same reachable new anchors
 test('Baratie release preserves active current battles, unrelated worlds, and unknown signatures',()=>{
  const current=E.create('baratie',stats,now,()=>.5);current.pending={targetId:current.mobs[0].id,remaining:.4};
  const same=structuredClone(current);E.upgradeBalance(current);assert.deepEqual(current,same);
- for(const area of ['orange','arlong','loguetown','skypiea-01']){
+ for(const area of ['alabasta','arlong','loguetown','skypiea-01']){
   const other=E.create(area,stats,now,()=>.5);other.rulesHash=prior;other.pending={targetId:other.mobs[0].id,remaining:.4};
   const expected={...structuredClone(other),rulesHash:E.rulesHash};E.upgradeBalance(other);assert.deepEqual(other,expected);
  }

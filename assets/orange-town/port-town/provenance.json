@@ -1,0 +1,48 @@
+{
+  "asset": "scene-hd.png",
+  "kind": "AI-generated game map painting",
+  "method": "OpenAI built-in image_gen",
+  "requested_by": "Repository owner via delegated task: create and integrate Orange Town HD in PR #394, without merge and preserving previous images",
+  "generated_at_utc": "2026-11-28",
+  "native_width": 1448,
+  "native_height": 1086,
+  "world_width": 3072,
+  "world_height": 2304,
+  "bytes": 3837016,
+  "sha256": "7ad098491f8effe3190f6cdb7e9bc342891c5f4590dc9542b4c55d7674a52826",
+  "requested_generation_size": [
+    3072,
+    2304
+  ],
+  "returned_generation_size": [
+    1448,
+    1086
+  ],
+  "modifications": "None. The original generated PNG was copied byte for byte. Native image pixels are distinct from game world units.",
+  "prompt": "generation-prompt.txt",
+  "references": [
+    {
+      "url": "https://one-piece.com/anime/5/index.html",
+      "role": "Official episode 5 reference: Buggy occupies Orange Town and uses his cannon."
+    },
+    {
+      "url": "https://www.toei-anim.co.jp/tv/onep/character/category.html",
+      "role": "Official Toei location description: Orange Town is a rebuilt harbor town, setting of episodes 5-8."
+    },
+    {
+      "url": "https://www.b-ch.com/titles/2992/006",
+      "role": "Bandai Channel episode 6 synopsis confirms Chouchou guarding the pet shop."
+    },
+    {
+      "url": "https://opwiki.org/wiki/Orgel-Insel",
+      "role": "Cross-check for the Drinker Pub rooftop encampment/cannon and Pet Food shop; layout is an original playable adaptation."
+    },
+    {
+      "url": "https://one-piece-shop.fr/wp-content/uploads/2021/12/Orange_Town_Anime_Infobox-990x557.png",
+      "role": "Anime aerial frame reproduced on a secondary site; downloaded and visually inspected for pale half-timber facades, pitched roofs, paved streets and small rooftop camp. Not distributed."
+    }
+  ],
+  "visual_reference_notes": "The anime frame was the main architectural reference. A separate Orange_town.jpeg panorama containing a game marker was inspected only as secondary illustrated context and was not treated as an anime frame. No live-action circus architecture was used.",
+  "third_party_images_distributed": false,
+  "rights_note": "Original generated fan-game artwork commissioned by the user. One Piece setting and characters remain associated with their rights holders; no claim of exclusive rights to those elements."
+}

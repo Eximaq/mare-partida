@@ -43,6 +43,7 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
   if(room.area==='rare')E.reanchorRareMobs(room.area,room.mobs,maps().navigation(room.mapId));
   if(room.area==='beach')E.reanchorDawnMobs(room.area,room.mobs,maps().navigation(room.mapId));
   if(room.area==='swamp')E.reanchorConchasMobs(room.area,room.mobs,maps().navigation(room.mapId));
+  if(room.area==='orange')E.reanchorOrangeMobs(room.area,room.mobs,maps().navigation(room.mapId));
    await refreshPartyLeader(c,candidate.party_id,roster,now);
   const ids=roster.map(m=>m.character_id),battles=await readBattleRows(c,ids);
   const connected=roster.filter(m=>m.connected&&battles.get(m.character_id)?.simulation.partyInstanceId===room.id).map(m=>m.character_id);

@@ -1,4 +1,6 @@
-# Orange Town — mapa PixelLab Nv.11–15
+# Orange Town — histórico PixelLab e efeitos sonoros
+
+> O cenário ativo passou a ser a pintura HD descrita em [ORANGE-TOWN-HD.md](ORANGE-TOWN-HD.md). A arte, geometria e bancadas históricas abaixo permanecem preservadas. Os passos da versão HD seguem os materiais da nova pintura; a projeção PixelLab continua como fallback.
 
 ## Piloto de efeitos sonoros (demonstração)
 
