@@ -109,7 +109,10 @@ test('official Marineford combat persists loot outcomes only for credited partic
  const {rows:[{simulation:room}]}=await f.pool.query('SELECT simulation FROM mare_game.weekly_boss_events WHERE id=$1',[id]);
  const mob=room.mobs[0];
  mob.hp=1;mob.nextPunchAt=Date.now()+1e8;mob.nextAoeAt=Date.now()+1e8;
- for(const who of [a,b])room.contributions[who.c.id]={damage:100,healing:0,combatMs:11000};
+ assert.equal(mob.maxHP,300000);
+ // Official eligibility requires 0.1% of the boss’s maximum HP, not its remaining HP.
+ for(const who of [a,b])room.contributions[who.c.id]={damage:300,healing:0,combatMs:11000};
+ room.contributions[observer.c.id]={damage:299,healing:0,combatMs:11000};
  await f.pool.query('UPDATE mare_game.weekly_boss_events SET simulation=$2 WHERE id=$1',[id,room]);
  for(const who of [a,b]){
   const v=await who.read();

@@ -41,13 +41,29 @@
     const namedInvite=(keys==='targetId'&&socialId(p.targetId))||(keys==='name'&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=40);
     if(action==='weeklyBoss.execute'){
       const version=v=>Number.isSafeInteger(v)&&v>0;
-      if(['test','leave','join-swords'].includes(p.op))return keys==='op';
-      if(p.op==='activate')return keys==='op,revision'&&version(p.revision);
+      const admiralKeys=required=>Object.hasOwn(p,'bossId')
+        ? ['akainu','aokiji','kizaru'].includes(p.bossId)&&keys===['bossId',...required].sort().join()
+        : keys===required.sort().join();
+      if(['leave','join-swords'].includes(p.op))return keys==='op';
+      if(p.op==='test')return admiralKeys(['op']);
+      if(p.op==='activate')return admiralKeys(['op','revision'])&&version(p.revision);
       if(p.op==='join')return keys==='eventId,op'&&socialId(p.eventId);
       if(p.op==='cancel')return keys==='eventId,op,version'&&socialId(p.eventId)&&version(p.version);
       if(p.op==='configure'){
-        const c=p.config,q=c?.profile,limits={hp:[1,1e9],attack:[1,1e6],defense:[0,1e6],magicDefense:[0,1e6],speed:[1,240],reach:[24,160],attackSec:[1,30],aoeCooldown:[4,120],aoeRadius:[48,240],aoeWindup:[.8,5],aoeMultiplier:[.1,10],level:[1,1000],leash:[240,1200]},point=v=>v&&Object.keys(v).sort().join()==='x,y'&&[v.x,v.y].every(n=>Number.isFinite(n)&&n>=0&&n<=100000);
-        return keys==='config,op,revision'&&version(p.revision)&&c&&Object.keys(c).sort().join()==='balanceApproved,durationMinutes,entry,mapId,maxPlayers,minLevel,profile,spawn'&&c.mapId==='marineford'&&c.balanceApproved===true&&point(c.spawn)&&point(c.entry)&&Number.isInteger(c.maxPlayers)&&c.maxPlayers>=1&&c.maxPlayers<=16&&Number.isInteger(c.minLevel)&&c.minLevel>=1&&c.minLevel<=1000&&Number.isInteger(c.durationMinutes)&&c.durationMinutes>=1&&c.durationMinutes<=180&&q&&Object.keys(q).sort().join()===Object.keys(limits).sort().join()&&Object.entries(limits).every(([k,[lo,hi]])=>Number.isFinite(q[k])&&q[k]>=lo&&q[k]<=hi)&&Number.isInteger(q.hp)&&Number.isInteger(q.level)&&q.leash>=q.aoeRadius+64;
+        const c=p.config,q=c?.profile;
+        const required={speed:[1,240],reach:[24,160],attackSec:[1,30],aoeCooldown:[4,120],aoeWindup:[.8,5],level:[1,1000],leash:[240,1200]};
+        const optional={hp:[1,1e9],attack:[1,1e6],defense:[0,1e6],magicDefense:[0,1e6],aoeRadius:[48,240],aoeMultiplier:[.1,10]};
+        const limits={...required,...optional};
+        const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
+        const point=v=>object(v)&&Object.keys(v).sort().join()==='x,y'&&[v.x,v.y].every(n=>Number.isFinite(n)&&n>=0&&n<=100000);
+        const whole=(v,max)=>Number.isInteger(v)&&v>=1&&v<=max;
+        return admiralKeys(['config','op','revision'])&&version(p.revision)&&object(c)
+          &&Object.keys(c).sort().join()==='balanceApproved,durationMinutes,entry,mapId,maxPlayers,minLevel,profile,spawn'
+          &&c.mapId==='marineford'&&c.balanceApproved===true&&point(c.spawn)&&point(c.entry)
+          &&whole(c.maxPlayers,16)&&whole(c.minLevel,1000)&&whole(c.durationMinutes,180)&&object(q)
+          &&Object.keys(required).every(k=>Object.hasOwn(q,k))
+          &&Object.entries(q).every(([k,n])=>Object.hasOwn(limits,k)&&Number.isFinite(n)&&n>=limits[k][0]&&n<=limits[k][1]
+            &&(!['hp','level'].includes(k)||Number.isInteger(n)));
       }return false;
     }
     if(['party.invite','crew.invite','trade.invite'].includes(action))return namedInvite;
