@@ -5,11 +5,12 @@
  const layers={head:['hat','hat-v3'],coat:['vest'],legs:['shorts'],boots:['sandals']};
  // Native 4x idle mounts measured on the supplied 512px registration.
  // WEST has its own mirrored PNG and must never be flipped again.
+ // The last value nudges the side views toward the face by one logical pixel.
  const hatMounts={
   south:['sul',256,176,72,122],
   north:['norte',256,166,66,117],
-  east:['leste',259,168,69,119],
-  west:['oeste',253,168,69,119]
+  east:['leste',259,168,69,119,4],
+  west:['oeste',253,168,69,119,-4]
  };
  function hatFile(record){
   const mount=hatMounts[record.direction];
@@ -410,9 +411,9 @@
  function hatPlacement(record,info,frame){
   const mount=hatMounts[record.direction];
   if(!mount||info.density!==4)return null;
-  const [,neckX,neckY,top,edge]=mount;
+  const [,neckX,neckY,top,edge,forward=0]=mount;
   const joint=readPose(record,info,frame,4)('NECK');
-  const x=joint?round(joint.x*4)-neckX:info.pivot.x-256;
+  const x=(joint?round(joint.x*4)-neckX:info.pivot.x-256)+forward;
   const y=joint?round(joint.y*4)-neckY:info.pivot.y-448;
   return {x,y,top:y+top,brim:y+edge};
  }

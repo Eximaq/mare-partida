@@ -126,3 +126,17 @@ test('the imported hat uses native pixels and replaces hair only above its brim'
  assert.deepEqual(rgba(203,123),[23,33,53,255]);
  assert.deepEqual(rgba(185,160),[237,177,125,255]);
 });
+
+test('the side views move one logical pixel toward the face',()=>{
+ const {info,record}=fixture('male');
+ const cases=[
+  ['south',64,44,0],
+  ['north',64,41.5,0],
+  ['east',64.75,42,4],
+  ['west',63.25,42,-4]
+ ];
+ for(const [direction,x,y,offset] of cases){
+  const {x:dx,y:dy}=art.hatPlacement({...record,direction},{...info,pose:{NECK:{x,y}}},0);
+  assert.deepEqual([dx,dy],[offset,0],direction);
+ }
+});
