@@ -33,7 +33,7 @@ const wire = {
 };
 let releaseControl;
 const controlGate = new Promise(resolve => {releaseControl = resolve;});
-let controlRequested = false, stateFailure = false, transfers = 0;
+let stateFailure = false, transfers = 0;
 const html = readFileSync(path.join(root,'index.html'),'utf8').replace('<head>',
   '<head><script defer src="/online/game-session.js"></script><script defer src="/online/game-ui.js"></script><link rel="stylesheet" href="/online/game.css">');
 const types = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.ttf':'font/ttf','.woff2':'font/woff2'};
@@ -49,7 +49,6 @@ const server = createServer(async (req,res) => {
       body = wire;
     }
     else if (url.pathname.endsWith('/control')) {
-      controlRequested = true;
       await controlGate;
       body = {epoch:1,token:'x'.repeat(43)};
     } else if (url.pathname.endsWith('/renew')) body = {epoch:1};
@@ -94,10 +93,13 @@ const server = createServer(async (req,res) => {
     const session = await context.newCDPSession(page);
     await session.send('Storage.overrideQuotaForOrigin',{origin:'http://127.0.0.1:'+server.address().port,quotaSize:2*1024**3});
     await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-byte-for-byte'));
+    const acquire = page.waitForRequest(request =>
+      request.method() === 'POST' && new URL(request.url()).pathname.endsWith('/control'),
+    {timeout:240000});
     await page.goto('http://127.0.0.1:'+server.address().port+'/game');
+    await acquire;
     await page.waitForFunction(()=>document.querySelector('#gameLoading output').textContent === '100%' ||
       document.querySelector('#gameLoading [role=status]').textContent.includes('Confirmando a entrada'),null,{timeout:240000});
-    assert(controlRequested,'the scene check must run while the real session acquisition is pending');
     assert.notEqual(await page.locator('#gameLoading output').textContent(),'100%','100% must wait for the online session, not just the initial lobby image');
     assert(await page.locator('#gameLoading').isVisible());
     releaseControl();
