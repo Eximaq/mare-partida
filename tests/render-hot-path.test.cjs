@@ -3,10 +3,15 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const source=fs.readFileSync(require('node:path').join(__dirname,'../game.js'),'utf8');
 const fn=name=>source.match(new RegExp('  function '+name+'\\([^]*?\\n  }'))[0];
 test('offscreen portal drawing is culled while an edge-overlapping label remains visible',()=>{
- let strokes=0;const ctx=new Proxy({}, {get:(_,key)=>key==='stroke'?()=>strokes++:()=>{},set:()=>true});
- const c=vm.createContext({ctx,world:{time:1},lobbyDestination:null,camera:{x:1000,y:1000},W:800,H:600,MareLobby:{portals:[{x:100,y:100}]}});
- vm.runInContext(fn('drawTownActors'),c);vm.runInContext('drawTownActors()',c);assert.equal(strokes,0);
- c.MareLobby.portals=[{x:950,y:1100}];vm.runInContext('drawTownActors()',c);assert.equal(strokes,1);
+ const visible=[];
+ const c=vm.createContext({ctx:{},world:{time:1},scene:'lobby',activeMap:()=>({id:'lobby'}),ambientReduced:()=>false,
+  camera:{x:1000,y:1000},W:800,H:600,MareLobby:{portals:[{x:100,y:100}]},
+  drawTravelMarker(ctx,point,label,time,reduced,layer){visible.push([point.x,label,layer]);}});
+ vm.runInContext(fn('drawMapTravelMarkers'),c);
+ vm.runInContext("drawMapTravelMarkers('front')",c);assert.equal(visible.length,0);
+ c.MareLobby.portals=[{x:950,y:1100}];
+ vm.runInContext("drawMapTravelMarkers('front')",c);
+ assert.deepEqual(visible,[[950,'Mapa do Mundo','front']]);
 });
 test('unchanged map status does not rewrite DOM each frame; load/failure/recovery still update',()=>{
  let state='loading',writes=0,draws=0;
@@ -112,7 +117,7 @@ test('HUD integer formatting reuses one formatter while preserving Portuguese ou
 test('busy/control notifications retain status without reprojecting unchanged server data',()=>{
  let projections=0,updates=0;const nodes={};
  const c=vm.createContext({game:{hp:10},session:{},ONLINE_GAME:{data:{online:{state:{version:1,gold:'8'},battle:{},combat:{}}},available:true,controlled:true},onlineProjectionSnapshot:null,
-  MareOnlineGameUI:{project(g){projections++;return g;}},applyOnlineEquipment(){},syncOnlineWorld(){},syncOnlineBattle(){},updateUI(){updates++;},scene:'lobby',currentPanel:null,onlineInventoryStamp:null,
+  MareOnlineGameUI:{isLobbyMotionUpdate:require('../apps/account-client/game-ui.js').isLobbyMotionUpdate,project(g){projections++;return g;}},applyOnlineEquipment(){},syncOnlineWorld(){},syncOnlineBattle(){},updateUI(){updates++;},scene:'lobby',currentPanel:null,onlineInventoryStamp:null,
   $:id=>nodes[id]??=( {} )});
  vm.runInContext(fn('syncOnlineGame'),c);for(let i=0;i<4;i++){c.ONLINE_GAME.busy=!!(i%2);vm.runInContext('syncOnlineGame()',c);}
  assert.equal(projections,1);assert.equal(updates,1);
