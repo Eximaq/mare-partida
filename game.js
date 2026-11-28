@@ -2760,9 +2760,12 @@
 
   function visualInventoryModel(){
     const state=MareCosmetics.normalize(game.cosmetics);
-    const cosmetics=state.owned.map(id=>MareCosmetics.get(id)).filter(Boolean);
+    const appearance=MareCharacterAppearance.read(game);
+    const demoSupported=MareCosmetics.supportsDemo(appearance);
+    const cosmetics=state.owned.map(id=>MareCosmetics.get(id)).filter(def=>MareCosmetics.available(def,appearance));
+    const equipped=Object.fromEntries(cosmetics.filter(def=>state.equipped[def.slot]===def.id).map(def=>[def.slot,def]));
     const complete=game.inventory.filter(item=>MareVisualCompleto.isVisual(item,itemDefs));
-    return {state,cosmetics,complete,full:game.equipment.visual_completo,
+    return {state,appearance,demoSupported,cosmetics,equipped,complete,full:game.equipment.visual_completo,
       available:!ONLINE_GAME||!!ONLINE_GAME.data?.online.cosmetics};
   }
 
@@ -2777,7 +2780,7 @@
 
   function cosmeticSlotHtml(slot,model){
     const full=slot==='visual_completo';
-    const item=full?model.full:MareCosmetics.get(model.state.equipped[slot]);
+    const item=full?model.full:model.equipped[slot];
     const label=visualSlotNames[slot];
     const {selected,attrs}=visualSelectionMarkup(item?(full?'full':'cosmetic'):'slot',item?.id??slot,
       label+' · '+(item?(full?itemBase(item).name:item.name):'Vazio'));
@@ -2792,13 +2795,13 @@
       const item=getInventoryItem(selection.id);
       if(MareVisualCompleto.isVisual(item,itemDefs))return visualItemDetail(item);
     }
-    const def=selection?.kind==='cosmetic'&&model.state.owned.includes(selection.id)?MareCosmetics.get(selection.id):null;
+    const def=selection?.kind==='cosmetic'?model.cosmetics.find(option=>option.id===selection.id):null;
     if(!def){
       const title=selection?.kind==='slot'?visualSlotNames[selection.id]:'Nenhum visual selecionado';
       const hint=selection?.kind==='slot'?'Nenhum visual equipado neste espaço.':'Escolha um visual da coleção ou um espaço equipado.';
       return `<div class="op-detail-wrap op-detail-empty"><div class="op-detail-icon empty">${inventoryIcon('eye')}</div><div><h3>${escapeHTML(title)}</h3><small>${hint}</small></div></div>`;
     }
-    const equipped=model.state.equipped[def.slot]===def.id;
+    const equipped=model.equipped[def.slot]?.id===def.id;
     const action=equipped?'unequip':'equip';
     return `<div class="op-detail-wrap"><div class="op-detail-head"><div class="op-detail-icon">${cosmeticIcon(def)}</div>
       <div><h3>${escapeHTML(def.name)}</h3><small>${escapeHTML(visualSlotNames[def.slot])}${equipped?(model.full?' · Equipado · Encoberto':' · Equipado'):''}</small></div></div>
@@ -2816,12 +2819,12 @@
       const def=full?itemBase(item):item;
       const label=visualSlotNames[full?'visual_completo':def.slot];
       const {selected,attrs}=visualSelectionMarkup(full?'full':'cosmetic',item.id,def.name+' · '+label);
-      const equipped=!full&&model.state.equipped[def.slot]===def.id;
+      const equipped=!full&&model.equipped[def.slot]?.id===def.id;
       return `<button type="button" class="op-cosmetic-tile ${selected?'selected':''}" ${attrs}>
         ${full?itemIcon(item.def,def.name):cosmeticIcon(def)}<span><strong>${escapeHTML(def.name)}</strong><small>${label}${equipped?(model.full?' · Encoberto':' · Em uso'):''}</small></span></button>`;
     }).join('');
-    const equipped=MareCosmetics.slots.filter(slot=>model.state.equipped[slot]).length;
-    const claim=model.available&&!model.state.demoClaimed?`<button type="button" class="op-action primary" data-inv-cosmetic-action="claim-demo" ${cosmeticActionAvailable(model)?'':'disabled'}>Resgatar visuais iniciais</button>`:'';
+    const equipped=Object.keys(model.equipped).length;
+    const claim=model.available&&model.demoSupported&&!model.state.demoClaimed?`<button type="button" class="op-action primary" data-inv-cosmetic-action="claim-demo" ${cosmeticActionAvailable(model)?'':'disabled'}>Resgatar visuais iniciais</button>`:'';
     const count=visibleStock.length+(model.full?1:0);
     body.innerHTML=`<div class="op-inventory-shell ui-hd" data-inv-view="visual">
       ${inventoryTopbar(true)}
@@ -2839,6 +2842,7 @@
           <div class="op-panel-head"><div class="op-head-left">${inventoryIcon('shirt')}<h3>COLEÇÃO VISUAL</h3></div>
             <span class="op-cosmetic-count" role="status">${count} ${count===1?'visual':'visuais'}</span></div>
           ${claim}
+          ${model.available&&!model.demoSupported?'<p class="op-cosmetic-scope">Kit de teste disponível apenas no corpo masculino.</p>':''}
           <div class="op-cosmetic-grid">${buttons||'<p>Nenhum visual disponível na coleção.</p>'}</div>
         </section>
         <section id="inventory-detail" tabindex="-1" class="hd-frame op-panel op-detail-panel">
@@ -2864,10 +2868,14 @@
       ONLINE_GAME.controlled&&!ONLINE_GAME.busy&&!ONLINE_GAME.pending:!!saveWriter.owner&&!suppressSave);
   }
   async function changeCosmetic(action,payload){
-    if(!cosmeticActionAvailable(visualInventoryModel()))return;
+    const model=visualInventoryModel();
+    if(!cosmeticActionAvailable(model))return;
+    if(action==='claim-demo'&&!model.demoSupported)return;
+    if(action==='equip'&&!model.cosmetics.some(def=>def.id===payload.cosmeticId))return;
+    if(action==='unequip'&&!model.equipped[payload.slot])return;
     if(ONLINE_GAME)return onlineItemCommand('cosmetics.'+action,payload);
     try{
-      const cosmetics=MareCosmetics.execute(game.cosmetics,'cosmetics.'+action,payload);
+      const cosmetics=MareCosmetics.execute(game.cosmetics,'cosmetics.'+action,payload,model.appearance);
       commitVisual({ok:true,state:{...game,cosmetics}});
     }catch{
       toast('Não foi possível alterar este visual.','danger');

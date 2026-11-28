@@ -10,7 +10,7 @@ type CosmeticCollection={owned:string[];equipped:CosmeticEquipment;demoClaimed:b
 const catalog=createRequire(import.meta.url)('../../../../cosmetics.js') as {
   visualSelection(value:unknown):CosmeticEquipment;
   normalize(value:unknown):CosmeticCollection;
-  execute(value:CosmeticCollection,action:CosmeticAction,payload:CosmeticCommand['payload']):CosmeticCollection;
+  execute(value:CosmeticCollection,action:CosmeticAction,payload:CosmeticCommand['payload'],appearance:unknown):CosmeticCollection;
 };
 
 export const isCosmeticCommand=(input:CharacterCommand):input is CosmeticCommand=>
@@ -27,17 +27,18 @@ export function cosmeticCollection(value:unknown) {
 export async function mutateCosmetics(client:PoolClient,id:string,input:CosmeticCommand,state:CharacterState) {
   if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
   const {rows:[row]}=await client.query(
-    "SELECT to_jsonb(p)->'cosmetics' AS cosmetics FROM mare_game.character_profile p WHERE p.character_id=$1",
+    "SELECT p.appearance,to_jsonb(p)->'cosmetics' AS cosmetics FROM mare_game.character_profile p WHERE p.character_id=$1",
     [id],
   );
   const before=cosmeticCollection(row?.cosmetics);
   if(!before)throw new AuthFault(503,'cosmetics_unavailable');
   let after:CosmeticCollection;
   try{
-    after=catalog.execute(before,input.action,input.payload);
+    after=catalog.execute(before,input.action,input.payload,row.appearance);
   }catch(error){
     if(error instanceof Error&&'code' in error&&typeof error.code==='string'&&error.code.startsWith('cosmetic_')){
-      throw new AuthFault(error.code==='cosmetic_not_owned'?409:400,error.code);
+      const conflict=error.code==='cosmetic_not_owned'||error.code==='cosmetic_body_unsupported';
+      throw new AuthFault(conflict?409:400,error.code);
     }
     throw error;
   }

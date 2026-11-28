@@ -6,6 +6,7 @@ global.MareCosmetics=require('../cosmetics.js');
 require('../character-appearance.js');
 require('../headgear-visibility.js');
 const art=require('../cosmetic-art.js');
+const {selectWorldHDOnly}=require('../paper-doll-96-lobby.js');
 
 const chosen=Object.fromEntries(MareCosmetics.definitions.map(item=>[item.slot,item.id]));
 const equipment={head:{def:150},coat:{def:151},legs:{def:133},boots:{def:148},gloves:{def:25},weapon:{def:0}};
@@ -30,6 +31,16 @@ test('cosmetics alter only the HD projection and respect explicit hiding and tra
  assert.equal(MareHeadgear.hidden({...helmet18,preferences:{hideHeadgear:true}}),true);
 });
 
+test('female actors retain the original HD selection with this kit equipped in old data',()=>{
+ const source={id:'female-base',direction:'south',action:'idle'};
+ const actor={equipment,cosmetics:{equipped:chosen},appearance96:{gender:'feminino'}};
+ const options={direction:'south',action:'idle',consumer:'world'};
+ const nativeHD={selectVisual(player){assert.equal(player,actor);return source;}};
+ assert.equal(art.selection(actor),null);
+ assert.equal(selectWorldHDOnly(nativeHD,null,actor,options),source);
+ assert.equal(actor.equipment,equipment);
+});
+
 function fixture(body){
  const canvas=createCanvas(512,512),ctx=canvas.getContext('2d');
  ctx.fillStyle='#edb17d';ctx.fillRect(45*4,17*4,37*4,94*4);
@@ -47,7 +58,8 @@ function compare(a,b){
  return pixels;
 }
 
-for(const body of ['male','female'])test('independent transparent passes compose on the '+body+' native frame',()=>{
+test('independent transparent passes compose on the male native frame',()=>{
+ const body='male';
  const all=fixture(body),original=raster(all.ctx),record=art.decorate(all.record,chosen);
  const actual=art.compose(all,record,0,createCanvas);
  assert.equal(record.id,'body');

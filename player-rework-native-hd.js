@@ -9859,7 +9859,28 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
   const mask=boots?parts.filter(p=>p.id==='shorts'):parts.slice(parts.findIndex(p=>p.id==='forearm-hand-far')+1);
   return mask.map(p=>'tools/rework-weapon-layers-hd/'+rig.images[p.frames?.[frame]||p.source]);
  }
+ const cosmeticTorsoParts=['underbody','torso','upper-arm-near','forearm-hand-near'];
+ function cosmeticTorsoSources(r,frame){
+  // These modular side receivers use the same physical coordinates as the
+  // painted body. Their arm ownership cuts the fabric even during contact.
+  const rig=r.basePack||r.orderedSwordFit?.rig,p=rig?.pack,d=p?.directions[r.direction];
+  if(!r.cosmeticLayers?.coat||!['east','west'].includes(r.direction)||!d||
+     d.renderMirrorFrom||r.mirrorBody||p.density!==r.density||!r.nativeCanvas)return null;
+  const parts=cosmeticTorsoParts.map(id=>d.layers.find(layer=>layer.id===id));
+  if(parts.some(part=>!part))return null;
+  const files=parts.map(l=>rig.images[l.frames?.[frame]||l.source]);
+  if(files.some(file=>typeof file!=='string'))return null;
+  return {files:files.map(file=>'tools/rework-weapon-layers-hd/'+file),pivot:p.pivot,
+   width:p.frame.width*p.density,height:p.frame.height*p.density};
+ }
  function filesFor(r,frame){
+  if(r.cosmeticLayers?.coat){
+   const ownership=cosmeticTorsoSources(r,frame);
+   if(ownership){
+    const {cosmeticLayers,...base}=r;
+    return [...new Set([...filesFor(base,frame),...ownership.files])];
+   }
+  }
   if(r.namedFirearmHead){const {h,base}=r.namedFirearmHead,coat=h.north&&base.rifleLower?.rifleCoat?.[frame];
    return [...filesFor(base,frame),...namedFirearmFiles(h),...(coat?[combatPlatePath(coat.frontBare)]:[])];}
   if(r.staffHelmetOuter){const {base,gear,portrait,headPath,track}=r.staffHelmetOuter;return [...filesFor(base,frame),...(portrait?portraitFiles(portrait):originalHairGearRegistry.requiredFiles(gear)),headPath,...(portrait||gear.hideHair?[combatPlatePath(track.frames[frame].head.mask)]:[])];}
@@ -10443,7 +10464,13 @@ function create({baseURL=root.location?.href,onChange=()=>{},fetchJSON=async pat
  function composeFrame(r,frame,entry,trackBounds=false){
   if(r.cosmeticLayers){
    const {cosmeticLayers,...base}=r;
-   return root.MareCosmeticArt.compose(composeFrame(base,frame,entry),r,frame,makeCanvas);
+   const result=composeFrame(base,frame,entry);
+   const ownership=cosmeticTorsoSources(r,frame);
+   const images=ownership?.files.map(file=>entry.images.get(file));
+   const anatomy=images?.every(im=>im?.width===ownership.width&&im.height===ownership.height)
+    ?{torso:images.slice(0,2),arms:images.slice(2),x:result.info.pivot.x-ownership.pivot.x*result.info.density,y:result.info.pivot.y-ownership.pivot.y*result.info.density}
+    :null;
+   return root.MareCosmeticArt.compose(result,r,frame,makeCanvas,anatomy);
   }
   if(r.namedFirearmHead)return composeNamedFirearm(r,frame,entry);
   if(entry.firearmHeadPack&&r.basePack===entry.firearmHeadPack){
